@@ -1,4 +1,4 @@
-package eiren.io.vr.bridge;
+package io.eiren.vr.bridge;
 
 public interface VRBridge {
 	

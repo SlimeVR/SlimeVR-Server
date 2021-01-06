@@ -1,4 +1,4 @@
-package eiren.io.vr.sensors;
+package io.eiren.vr.sensors;
 
 import com.jme3.math.Quaternion;
 import com.jme3.math.Vector3f;

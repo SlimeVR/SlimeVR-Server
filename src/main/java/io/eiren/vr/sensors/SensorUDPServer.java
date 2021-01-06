@@ -1,4 +1,4 @@
-package eiren.io.vr.sensors;
+package io.eiren.vr.sensors;
 
 import java.net.DatagramPacket;
 import java.net.DatagramSocket;
