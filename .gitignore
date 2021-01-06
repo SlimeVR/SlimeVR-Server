@@ -8,3 +8,5 @@ build
 
 # Syncthing ignore file
 .stignore
+
+MagnetoLib.dll
