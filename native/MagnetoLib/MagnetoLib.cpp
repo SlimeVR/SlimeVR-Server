@@ -4,7 +4,28 @@
 #include "magnetolib.h"
 #include "magneto.h"
 
-void calculate(double data[], int nlines, double nxsrej, double hm, double B[3], double A_1[6 * 6])
+double calculateHnorm(double data[], int nlines) {
+	double x, y, z, x2, xave;
+	int i;
+	//
+	// calculate mean (norm) and standard deviation for possible outlier rejection
+	//
+
+	xave = 0;
+	for (i = 0; i < nlines; i++)
+	{
+		x = data[i * 3 + 0];
+		y = data[i * 3 + 1];
+		z = data[i * 3 + 2];
+		x2 = x*x + y*y + z*z;
+		xave += sqrt(x2);
+	}
+	xave = xave / nlines; //mean vector length
+
+	return xave;
+}
+
+void calculate(double data[], int nlines, double nxsrej, double hm, double B[3], double A_1[3 * 3])
 {
 	int nlines2 = 0;
 	char buf[120];

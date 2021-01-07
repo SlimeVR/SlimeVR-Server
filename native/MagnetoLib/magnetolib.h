@@ -28,4 +28,6 @@
 #endif
 #endif
 
-extern "C" EXPORTED void calculate(double data[], int nlines, double nxsrej, double hm, double B[3], double A_1[6 * 6]);
+extern "C" EXPORTED void calculate(double data[], int nlines, double nxsrej, double hm, double B[3], double A_1[3 * 3]);
+
+extern "C" EXPORTED double calculateHnorm(double data[], int nlines);
