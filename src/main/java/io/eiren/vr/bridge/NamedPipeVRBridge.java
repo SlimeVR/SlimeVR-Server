@@ -4,29 +4,41 @@ import java.io.IOException;
 import java.nio.charset.Charset;
 import java.util.List;
 
+import com.jme3.math.Quaternion;
+import com.jme3.math.Vector3f;
 import com.sun.jna.platform.win32.Kernel32;
 import com.sun.jna.platform.win32.WinBase;
 import com.sun.jna.platform.win32.WinNT.HANDLE;
 import com.sun.jna.ptr.IntByReference;
 
 import essentia.util.collections.FastList;
-import io.eiren.util.StringUtils;
 import io.eiren.util.logging.LogManager;
+import io.eiren.vr.trackers.HMDTracker;
+import io.eiren.vr.trackers.Tracker;
+import io.eiren.vr.trackers.TrackerStatus;
 
 public class NamedPipeVRBridge extends Thread implements VRBridge {
 	
 	public static final String HMDPipeName = "\\\\.\\pipe\\HMDPipe";
 	public static final String TrackersPipeName = "\\\\.\\pipe\\TrackPipe";
+	public static final Charset ASCII = Charset.forName("ASCII");
 	
-	public static final int TRACKERS = 3;
-	private static final byte[] buffer = new byte[1024];
+	private final byte[] buffer = new byte[1024];
+	private final StringBuilder sbBuffer = new StringBuilder(1024);
+	private final Vector3f vBuffer = new Vector3f();
+	private final Quaternion qBuffer = new Quaternion();
 	
 	private Pipe hmdPipe;
-	private List<Pipe> trackerPipes = new FastList<>();
+	private final HMDTracker hmd;
+	private final List<Pipe> trackerPipes;
+	private final List<? extends Tracker> shareTrackers;
 	protected VRBridgeState bridgeState = VRBridgeState.NOT_STARTED;
 	
-	public NamedPipeVRBridge() {
+	public NamedPipeVRBridge(HMDTracker hmd, List<? extends Tracker> shareTrackers) {
 		super("Named Pipe VR Bridge");
+		this.hmd = hmd;
+		this.shareTrackers = new FastList<>(shareTrackers);
+		this.trackerPipes = new FastList<>(shareTrackers.size());
 	}
 	
 	@Override
@@ -58,9 +70,13 @@ public class NamedPipeVRBridge extends Thread implements VRBridge {
 						Thread.sleep(200L);
 					}
 				} else {
-					updateHMD();
-					for(int i = 0; i < trackerPipes.size(); ++i) {
-						updateTracker(trackerPipes.get(i), i);
+					// TODO Handle pipes disconnect, reset state and prepare to send hello again
+					if(updateHMD()) { // Update at HMDs frequency
+						for(int i = 0; i < trackerPipes.size(); ++i) {
+							updateTracker(i);
+						}
+					} else {
+						Thread.sleep(5); // Up to 200Hz
 					}
 				}
 			}
@@ -70,12 +86,12 @@ public class NamedPipeVRBridge extends Thread implements VRBridge {
 		}
 	}
 	
-	public void updateHMD() {
+	public boolean updateHMD() {
 		IntByReference bytesAvailable = new IntByReference(0);
 		if(Kernel32.INSTANCE.PeekNamedPipe(hmdPipe.pipeHandle, null, 0, null, bytesAvailable, null)) {
 			if(bytesAvailable.getValue() > 0) {
 				if(Kernel32.INSTANCE.ReadFile(hmdPipe.pipeHandle, buffer, buffer.length, bytesAvailable, null)) {
-					String str = new String(buffer, 0, bytesAvailable.getValue() - 1, Charset.forName("ASCII"));
+					String str = new String(buffer, 0, bytesAvailable.getValue() - 1, ASCII);
 					String[] split = str.split("\n")[0].split(" ");
 					try {
 						double x = Double.parseDouble(split[0]);
@@ -85,38 +101,45 @@ public class NamedPipeVRBridge extends Thread implements VRBridge {
 						double qx = Double.parseDouble(split[4]);
 						double qy = Double.parseDouble(split[5]);
 						double qz = Double.parseDouble(split[6]);
-						LogManager.log.info("[VRBridge] New HMD position:"
-								+ " " + StringUtils.prettyNumber((float) x, 2)
-								+ " " + StringUtils.prettyNumber((float) y, 2)
-								+ " " + StringUtils.prettyNumber((float) z, 2)
-								+ " " + StringUtils.prettyNumber((float) qw, 2)
-								+ " " + StringUtils.prettyNumber((float) qx, 2)
-								+ " " + StringUtils.prettyNumber((float) qy, 2)
-								+ " " + StringUtils.prettyNumber((float) qz, 2));
+						
+						hmd.position.set((float) x, (float) y, (float) z);
+						hmd.rotation.set((float) qx, (float) qy, (float) qz, (float) qw);
 					} catch(NumberFormatException e) {
 						e.printStackTrace();
 					}
 				}
+				return true;
 			}
 		}
+		return false;
 	}
 	
-	public void updateTracker(Pipe pipe, int trackerId) {
-		
+	public void updateTracker(int trackerId) {
+		sbBuffer.setLength(0);
+		Tracker sensor = shareTrackers.get(trackerId);
+		sensor.getPosition(vBuffer);
+		sensor.getRotation(qBuffer);
+		sbBuffer.append(vBuffer.x).append(' ').append(vBuffer.y).append(' ').append(vBuffer.z).append(' ');
+		sbBuffer.append(qBuffer.getW()).append(' ').append(qBuffer.getX()).append(' ').append(qBuffer.getY()).append(' ').append(qBuffer.getZ()).append('\n');
+		String str = sbBuffer.toString();
+		System.arraycopy(str.getBytes(ASCII), 0, buffer, 0, str.length());
+		buffer[str.length()] = '\0';
+		IntByReference lpNumberOfBytesWritten = new IntByReference(0);
+		Kernel32.INSTANCE.WriteFile(trackerPipes.get(trackerId).pipeHandle, buffer, str.length() + 1, lpNumberOfBytesWritten, null);
 	}
 	
 	private void initHMDPipe(Pipe pipe) {
-		
+		hmd.setStatus(TrackerStatus.OK);
 	}
 	
 	private void initTrackerPipe(Pipe pipe, int trackerId) {
-		String trackerHello = TRACKERS + " 0";
-		byte[] buff = new byte[trackerHello.length() + 1];// = length of string + terminating '\0' !!!
-		System.arraycopy(trackerHello.getBytes(Charset.forName("ASCII")), 0, buff, 0, trackerHello.length());
+		String trackerHello = this.shareTrackers.size() + " 0";
+		System.arraycopy(trackerHello.getBytes(ASCII), 0, buffer, 0, trackerHello.length());
+		buffer[trackerHello.length()] = '\0';
 		IntByReference lpNumberOfBytesWritten = new IntByReference(0);
 		Kernel32.INSTANCE.WriteFile(pipe.pipeHandle,
-			buff,
-			buff.length,
+			buffer,
+			trackerHello.length() + 1,
 			lpNumberOfBytesWritten,
 			null);
 	}
@@ -153,7 +176,7 @@ public class NamedPipeVRBridge extends Thread implements VRBridge {
 			LogManager.log.info("[VRBridge] Pipe " + hmdPipe.name + " created");
 			if(WinBase.INVALID_HANDLE_VALUE.equals(hmdPipe.pipeHandle))
 				throw new IOException("Can't open " + HMDPipeName + " pipe: " + Kernel32.INSTANCE.GetLastError());
-			for(int i = 0; i < TRACKERS; ++i) {
+			for(int i = 0; i < this.shareTrackers.size(); ++i) {
 				String pipeName = TrackersPipeName + i;
 				HANDLE pipeHandle = Kernel32.INSTANCE.CreateNamedPipe(pipeName, WinBase.PIPE_ACCESS_DUPLEX, // dwOpenMode
 					WinBase.PIPE_TYPE_BYTE | WinBase.PIPE_READMODE_BYTE | WinBase.PIPE_WAIT, // dwPipeMode

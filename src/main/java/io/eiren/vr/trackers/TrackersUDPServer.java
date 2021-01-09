@@ -1,4 +1,4 @@
-package io.eiren.vr.sensors;
+package io.eiren.vr.trackers;
 
 import java.io.IOException;
 import java.io.UnsupportedEncodingException;
@@ -8,73 +8,83 @@ import java.net.SocketAddress;
 import java.net.SocketTimeoutException;
 import java.nio.ByteBuffer;
 import java.nio.ByteOrder;
-import java.nio.DoubleBuffer;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.function.Supplier;
+import java.util.function.Consumer;
 
-import org.apache.commons.math3.util.DoubleArray;
-
-import com.sun.jna.ptr.DoubleByReference;
+import com.jme3.math.Quaternion;
 
 import essentia.util.collections.FastList;
 import io.eiren.hardware.magentometer.Magneto;
 import io.eiren.util.Util;
 
-public class SensorUDPServer extends Thread {
+/**
+ * Recieves trackers data by UDP using extended owoTrack protocol.
+ */
+public class TrackersUDPServer extends Thread {
 	
 	private static final byte[] HANDSHAKE_BUFFER = new byte[64];
 	private static final byte[] KEEPUP_BUFFER = new byte[64];
 	private static final byte[] CALIBRATION_BUFFER = new byte[64];
 
-	DatagramSocket socket = null;
-	byte[] sendBuffer = new byte[64];
-	long lastKeepup = System.currentTimeMillis();
-	private final Supplier<RotationSensor> sensorSupplier;
+	private final Quaternion buf = new Quaternion();
+	private final byte[] sendBuffer = new byte[64];
+
+	private final List<TrackerConnection> trackers = new FastList<>();
+	private final Map<SocketAddress, TrackerConnection> trackersMap = new HashMap<>();
+	private final Consumer<IMUTracker> trackersConsumer;
 	private final int port;
-	private List<SensorConnection> sensors = new FastList<>();
-	private Map<SocketAddress, SensorConnection> sensorsMap = new HashMap<>();
 	
-	public SensorUDPServer(int port, String name, Supplier<RotationSensor> sensorSupplier) {
+	protected DatagramSocket socket = null;
+	protected long lastKeepup = System.currentTimeMillis();
+	
+	public TrackersUDPServer(int port, String name, Consumer<IMUTracker> trackersConsumer) {
 		super(name);
 		this.port = port;
-		this.sensorSupplier = sensorSupplier;
+		this.trackersConsumer = trackersConsumer;
 	}
 	
-	public void sendCalibrationCommand(int sensorId) {
-		SensorConnection sensor;
-		synchronized(sensors) {
-			if(sensors.size() < sensorId + 1)
-				return;
-			sensor = sensors.get(sensorId);
+	public void sendCalibrationCommand(Tracker tracker) {
+		TrackerConnection connection = null;
+		synchronized(trackers) {
+			for(int i = 0; i < trackers.size(); ++i) {
+				if(trackers.get(i).tracker == tracker) {
+					connection = trackers.get(i);
+					break;
+				}
+			}
 		}
-		synchronized(sensor) {
-			if(sensor.isCalibrating)
+		if(connection == null)
+			return;
+		synchronized(connection) {
+			if(connection.isCalibrating)
 				return;
-			sensor.isCalibrating = true;
-			sensor.rawCalibrationData.clear();
+			connection.tracker.setStatus(TrackerStatus.BUSY);
+			connection.isCalibrating = true;
+			connection.rawCalibrationData.clear();
 		}
 		try {
-			socket.send(new DatagramPacket(CALIBRATION_BUFFER, CALIBRATION_BUFFER.length, sensor.address));
-			System.out.println("Calibrating sensor on " + sensor.address);
+			socket.send(new DatagramPacket(CALIBRATION_BUFFER, CALIBRATION_BUFFER.length, connection.address));
+			System.out.println("[TrackerServer] Calibrating sensor on " + connection.address);
 		} catch(IOException e) {
 			e.printStackTrace();
 		}
 	}
 	
-	private void stopCalibration(SensorConnection sensor) {
+	private void stopCalibration(TrackerConnection sensor) {
 		synchronized(sensor) {
 			if(!sensor.isCalibrating)
 				return;
 			if(sensor.gyroCalibrationData == null || sensor.rawCalibrationData.size() == 0)
 				return; // Calibration not started yet
+			sensor.tracker.setStatus(TrackerStatus.OK);
 			sensor.isCalibrating = false;
 		}
 		if(sensor.rawCalibrationData.size() > 50 && sensor.gyroCalibrationData != null) {
-			System.out.println("Gathered " + sensor.address + " calibrration data, processing...");
+			System.out.println("[TrackerServer] Gathered " + sensor.address + " calibrration data, processing...");
 		} else {
-			System.out.println("Can't gather enough calibration data, aboring...");
+			System.out.println("[TrackerServer] Can't gather enough calibration data, aboring...");
 			return;
 		}
 		double[] accelBasis = new double[3];
@@ -96,9 +106,9 @@ public class SensorUDPServer extends Thread {
 		}
 		
 		
-		System.out.println("Accelerometer Hnorm: " + Magneto.INSTANCE.calculateHnorm(accelData, sensor.rawCalibrationData.size()));
+		System.out.println("[TrackerServer] Accelerometer Hnorm: " + Magneto.INSTANCE.calculateHnorm(accelData, sensor.rawCalibrationData.size()));
 		Magneto.INSTANCE.calculate(accelData, sensor.rawCalibrationData.size(), 2, 10000, accelBasis, accelAInv);
-		System.out.println("Magentometer Hnorm: " + Magneto.INSTANCE.calculateHnorm(magData, sensor.rawCalibrationData.size()));
+		System.out.println("[TrackerServer] Magentometer Hnorm: " + Magneto.INSTANCE.calculateHnorm(magData, sensor.rawCalibrationData.size()));
 		Magneto.INSTANCE.calculate(magData, sensor.rawCalibrationData.size(), 2, 100, magBasis, magAInv);
 		
 		System.out.println("float G_off[3] =");
@@ -118,21 +128,23 @@ public class SensorUDPServer extends Thread {
 	}
 	
 	private void setUpNewSensor(DatagramPacket handshakePacket, ByteBuffer data) throws IOException {
-		System.out.println("Handshake recieved from " + handshakePacket.getAddress() + ":" + handshakePacket.getPort());
+		System.out.println("[TrackerServer] Handshake recieved from " + handshakePacket.getAddress() + ":" + handshakePacket.getPort());
 		SocketAddress addr = handshakePacket.getSocketAddress();
-		SensorConnection sensor;
-		synchronized(sensors) {
-			sensor = sensorsMap.get(addr);
+		TrackerConnection sensor;
+		synchronized(trackers) {
+			sensor = trackersMap.get(addr);
 		}
 		if(sensor == null) {
-			sensor = new SensorConnection(sensorSupplier.get(), addr);
+			IMUTracker imu = new IMUTracker(handshakePacket.getSocketAddress().toString(), this);
+			trackersConsumer.accept(imu);
+			sensor = new TrackerConnection(imu, addr);
 			int i = 0;
-			synchronized(sensors) {
-				i = sensors.size();
-				sensors.add(sensor);
-				sensorsMap.put(addr, sensor);
+			synchronized(trackers) {
+				i = trackers.size();
+				trackers.add(sensor);
+				trackersMap.put(addr, sensor);
 			}
-			System.out.println("Sensor " + i + " added with address " + addr);
+			System.out.println("[TrackerServer] Sensor " + i + " added with address " + addr);
 		}
         socket.send(new DatagramPacket(HANDSHAKE_BUFFER, HANDSHAKE_BUFFER.length, handshakePacket.getAddress(), handshakePacket.getPort()));
 	}
@@ -149,9 +161,9 @@ public class SensorUDPServer extends Thread {
 					socket.receive(recieve);
 					bb.rewind();
 
-					SensorConnection sensor;
-					synchronized(sensors) {
-						sensor = sensorsMap.get(recieve.getSocketAddress());
+					TrackerConnection sensor;
+					synchronized(trackers) {
+						sensor = trackersMap.get(recieve.getSocketAddress());
 					}
 					int packetId;
 					switch(packetId = bb.getInt()) {
@@ -163,8 +175,9 @@ public class SensorUDPServer extends Thread {
 							break;
 						bb.getLong();
 						stopCalibration(sensor);
-						sensor.sensor.rotQuaternion.set(bb.getFloat(), bb.getFloat(), bb.getFloat(), bb.getFloat());
-						//rotQuaternion.set(-rotQuaternion.getY(), rotQuaternion.getX(), rotQuaternion.getZ(), rotQuaternion.getW());
+						buf.set(bb.getFloat(), bb.getFloat(), bb.getFloat(), bb.getFloat());
+						buf.set(-buf.getX(), buf.getZ(), buf.getY(), buf.getW()); // Change from sensor rotation to OpenGL/SteamVR rotation
+						sensor.tracker.rotQuaternion.set(buf);
 						//System.out.println("Rot: " + rotQuaternion.getX() + "," + rotQuaternion.getY() + "," + rotQuaternion.getZ() + "," + rotQuaternion.getW());
 						break;
 					case 2:
@@ -172,7 +185,7 @@ public class SensorUDPServer extends Thread {
 							break;
 						bb.getLong();
 						stopCalibration(sensor);
-						sensor.sensor.gyroVector.set(bb.getFloat(), bb.getFloat(), bb.getFloat());
+						sensor.tracker.gyroVector.set(bb.getFloat(), bb.getFloat(), bb.getFloat());
 						//System.out.println("Gyro: " + bb.getFloat() + "," + bb.getFloat() + "," + bb.getFloat());
 						break;
 					case 4:
@@ -180,7 +193,7 @@ public class SensorUDPServer extends Thread {
 							break;
 						bb.getLong();
 						stopCalibration(sensor);
-						sensor.sensor.accelVector.set(bb.getFloat(), bb.getFloat(), bb.getFloat());
+						sensor.tracker.accelVector.set(bb.getFloat(), bb.getFloat(), bb.getFloat());
 						//System.out.println("Accel: " + bb.getFloat() + "," + bb.getFloat() + "," + bb.getFloat());
 						break;
 					case 5:
@@ -188,7 +201,7 @@ public class SensorUDPServer extends Thread {
 							break;
 						bb.getLong();
 						stopCalibration(sensor);
-						sensor.sensor.magVector.set(bb.getFloat(), bb.getFloat(), bb.getFloat());
+						sensor.tracker.magVector.set(bb.getFloat(), bb.getFloat(), bb.getFloat());
 						//System.out.println("Accel: " + bb.getFloat() + "," + bb.getFloat() + "," + bb.getFloat());
 						break;
 					case 6: // PACKET_RAW_CALIBRATION_DATA
@@ -204,14 +217,14 @@ public class SensorUDPServer extends Thread {
 						sensor.gyroCalibrationData = new double[] {bb.getFloat(), bb.getFloat(), bb.getFloat()};
 						break;
 					default:
-						System.out.println("Unknown data recieved: " + packetId);
+						System.out.println("[TrackerServer] Unknown data recieved: " + packetId + " from " + recieve.getSocketAddress());
 						break;
 					}
 					if(lastKeepup + 500 < System.currentTimeMillis()) {
 						lastKeepup = System.currentTimeMillis();
-						synchronized(sensors) {
-							for(int i = 0; i < sensors.size(); ++i)
-								socket.send(new DatagramPacket(KEEPUP_BUFFER, KEEPUP_BUFFER.length, sensors.get(i).address));
+						synchronized(trackers) {
+							for(int i = 0; i < trackers.size(); ++i)
+								socket.send(new DatagramPacket(KEEPUP_BUFFER, KEEPUP_BUFFER.length, trackers.get(i).address));
 						}
 					}
 				} catch(SocketTimeoutException e) {
@@ -226,16 +239,16 @@ public class SensorUDPServer extends Thread {
 		}
 	}
 	
-	private class SensorConnection {
+	private class TrackerConnection {
 		
-		RotationSensor sensor;
+		IMUTracker tracker;
 		SocketAddress address;
 		boolean isCalibrating;
 		private List<double[]> rawCalibrationData = new FastList<>();
 		private double[] gyroCalibrationData;
 		
-		public SensorConnection(RotationSensor sensor, SocketAddress address) {
-			this.sensor = sensor;
+		public TrackerConnection(IMUTracker tracker, SocketAddress address) {
+			this.tracker = tracker;
 			this.address = address;
 		}
 	}
