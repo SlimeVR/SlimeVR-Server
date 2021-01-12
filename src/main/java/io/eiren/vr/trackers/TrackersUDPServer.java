@@ -13,7 +13,9 @@ import java.util.List;
 import java.util.Map;
 import java.util.function.Consumer;
 
+import com.jme3.math.FastMath;
 import com.jme3.math.Quaternion;
+import com.jme3.math.Vector3f;
 
 import essentia.util.collections.FastList;
 import io.eiren.hardware.magentometer.Magneto;
@@ -135,7 +137,7 @@ public class TrackersUDPServer extends Thread {
 			sensor = trackersMap.get(addr);
 		}
 		if(sensor == null) {
-			IMUTracker imu = new IMUTracker(handshakePacket.getSocketAddress().toString(), this);
+			IMUTracker imu = new IMUTracker("udp://" + handshakePacket.getAddress().toString(), this);
 			trackersConsumer.accept(imu);
 			sensor = new TrackerConnection(imu, addr);
 			int i = 0;
@@ -148,6 +150,8 @@ public class TrackersUDPServer extends Thread {
 		}
         socket.send(new DatagramPacket(HANDSHAKE_BUFFER, HANDSHAKE_BUFFER.length, handshakePacket.getAddress(), handshakePacket.getPort()));
 	}
+	
+	private static final Quaternion offset = new Quaternion().fromAngleAxis(-FastMath.HALF_PI, Vector3f.UNIT_X);
 	
 	@Override
 	public void run() {
@@ -176,7 +180,9 @@ public class TrackersUDPServer extends Thread {
 						bb.getLong();
 						stopCalibration(sensor);
 						buf.set(bb.getFloat(), bb.getFloat(), bb.getFloat(), bb.getFloat());
-						buf.set(-buf.getX(), buf.getZ(), buf.getY(), buf.getW()); // Change from sensor rotation to OpenGL/SteamVR rotation
+						//buf.set(buf.getY(), buf.getZ(), buf.getY(), buf.getW()); // Change from sensor rotation to OpenGL/SteamVR rotation
+						//Quaternion q3 = new Quaternion().fromAngleAxis(FastMath.PI, Vector3f.UNIT_Y).multLocal(q2);
+						offset.mult(buf, buf);
 						sensor.tracker.rotQuaternion.set(buf);
 						//System.out.println("Rot: " + rotQuaternion.getX() + "," + rotQuaternion.getY() + "," + rotQuaternion.getZ() + "," + rotQuaternion.getW());
 						break;

@@ -13,7 +13,7 @@ import io.eiren.vr.trackers.Tracker;
 public class VRServer extends Thread {
 	
 	private final List<Tracker> trackers = new FastList<>();
-	private final HumanPoseProcessor humanPoseProcessor;
+	public final HumanPoseProcessor humanPoseProcessor;
 	private final TrackersUDPServer trackersServer = new TrackersUDPServer(6969, "Sensors UDP server", this::registerTracker);
 	private final NamedPipeVRBridge driverBridge;
 	
