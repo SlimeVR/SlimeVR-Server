@@ -1,8 +1,10 @@
 package io.eiren.vr.processor;
 
 import java.util.EnumMap;
+import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Map;
 
 import com.jme3.math.Quaternion;
 import com.jme3.math.Vector3f;
@@ -19,15 +21,15 @@ public class HumanPoseProcessor {
 	private final VRServer server;
 	private final HMDTracker hmd;
 	private final List<ComputedHumanPoseTracker> computedTrackers = new FastList<>();
-	private final EnumMap<TrackerBodyPosition, AdjustedTracker> trackers = new EnumMap<>(TrackerBodyPosition.class);
+	private final Map<TrackerBodyPosition, AdjustedTracker> trackers = new EnumMap<>(TrackerBodyPosition.class);
 	private HumanSkeleton skeleton;
 
 	public HumanPoseProcessor(VRServer server, HMDTracker hmd) {
 		this.server = server;
 		this.hmd = hmd;
 		computedTrackers.add(new ComputedHumanPoseTracker(ComputedHumanPoseTrackerPosition.WAIST));
-		//computedTrackers.add(new ComputedHumanPoseTracker(ComputedHumanPoseTrackerPosition.LEFT_FOOT));
-		//computedTrackers.add(new ComputedHumanPoseTracker(ComputedHumanPoseTrackerPosition.RIGHT_FOOT));
+		computedTrackers.add(new ComputedHumanPoseTracker(ComputedHumanPoseTrackerPosition.LEFT_ANKLE));
+		computedTrackers.add(new ComputedHumanPoseTracker(ComputedHumanPoseTrackerPosition.RIGHT_ANKLE));
 	}
 	
 	public List<? extends Tracker> getComputedTrackers() {
@@ -58,19 +60,23 @@ public class HumanPoseProcessor {
 	
 	private void updateSekeltonModel() {
 		boolean hasWaist = false;
-		//boolean hasBothLegs = false;
+		boolean hasBothLegs = false;
 		//boolean hasChest = false;
 		if(trackers.get(TrackerBodyPosition.WAIST) != null)
 			hasWaist = true;
 		//if(trackers.get(TrackerBodyPosition.CHEST) != null)
 		//	hasChest = true;
-		//if(trackers.get(TrackerBodyPosition.LEFT_FOOT) != null && trackers.get(TrackerBodyPosition.LEFT_LEG) != null
-		//		&& trackers.get(TrackerBodyPosition.RIGHT_FOOT) != null && trackers.get(TrackerBodyPosition.RIGHT_LEG) != null)
-		//	hasBothLegs = true;
+		if(trackers.get(TrackerBodyPosition.LEFT_ANKLE) != null && trackers.get(TrackerBodyPosition.LEFT_LEG) != null
+				&& trackers.get(TrackerBodyPosition.RIGHT_ANKLE) != null && trackers.get(TrackerBodyPosition.RIGHT_LEG) != null)
+			hasBothLegs = true;
 		if(!hasWaist) {
 			skeleton = null; // Can't track anything without waist
+		} else if(hasBothLegs) {
+			if(skeleton instanceof HumanSekeletonWithLegs) {
+				return; // Proper skeleton applied
+			}
+			skeleton = new HumanSekeletonWithLegs(server, trackers, computedTrackers);
 		} else {
-			// TODO : Add legs and chest support
 			if(skeleton instanceof HumanSkeleonWithWaist) {
 				return; // Proper skeleton applied
 			}

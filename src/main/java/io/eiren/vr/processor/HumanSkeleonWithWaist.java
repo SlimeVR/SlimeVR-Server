@@ -41,6 +41,12 @@ public class HumanSkeleonWithWaist extends HumanSkeleton {
 	
 	@Override
 	public void updatePose() {
+		updateLocalTransforms();
+		hmdNode.update();
+		updateComputedTrackers();
+	}
+	
+	protected void updateLocalTransforms() {
 		wasitTracker.getRotation(qBuf);
 		if(waistSwingMultiplier != 1.0) {
 			// TODO : Adjust waist swing if swing multiplier != 0
@@ -49,13 +55,9 @@ public class HumanSkeleonWithWaist extends HumanSkeleton {
 		hmdTracker.getPosition(vBuf);
 		hmdNode.localTransform.setTranslation(vBuf);
 		hmdNode.localTransform.setRotation(qBuf);
-		
-		hmdNode.update();
-		
-		updateTrackers();
 	}
 	
-	protected void updateTrackers() {
+	protected void updateComputedTrackers() {
 		computedWaistTracker.position.set(waistNode.worldTransform.getTranslation());
 		computedWaistTracker.rotation.set(waistNode.worldTransform.getRotation());
 	}
