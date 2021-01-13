@@ -2,7 +2,6 @@ package io.eiren.vr;
 
 import java.io.File;
 import java.io.FileInputStream;
-import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.util.HashMap;
@@ -79,14 +78,28 @@ public class VRServer extends Thread {
 
 	@ThreadSafe
 	public void saveConfig() {
-		List<Object> trackersConfig = new FastList<>();
+		List<YamlNode> nodes = config.getNodeList("trackers", null);
+		List<Map<String, Object>> trackersConfig = new FastList<>(nodes.size());
+		for(int i = 0; i < nodes.size(); ++i) {
+			trackersConfig.add(nodes.get(i).root);
+		}
 		config.setProperty("trackers", trackersConfig);
 		synchronized(configuration) {
 			Iterator<TrackerConfig> iterator = configuration.values().iterator();
 			while(iterator.hasNext()) {
 				TrackerConfig tc = iterator.next();
-				Map<String, Object> cfg = new HashMap<>();
-				trackersConfig.add(cfg);
+				Map<String, Object> cfg = null;
+				for(int i = 0; i < trackersConfig.size(); ++i) {
+					Map<String, Object> c = trackersConfig.get(i);
+					if(tc.trackerName.equals(c.get("name"))) {
+						cfg = c;
+						break;
+					}
+				}
+				if(cfg == null) {
+					cfg = new HashMap<>();
+					trackersConfig.add(cfg);
+				}
 				tc.saveConfig(new YamlNode(cfg));
 			}
 		}
