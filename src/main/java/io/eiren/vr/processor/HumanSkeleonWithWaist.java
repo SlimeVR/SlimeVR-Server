@@ -55,6 +55,7 @@ public class HumanSkeleonWithWaist extends HumanSkeleton {
 		hmdTracker.getPosition(vBuf);
 		hmdNode.localTransform.setTranslation(vBuf);
 		hmdNode.localTransform.setRotation(qBuf);
+		waistNode.localTransform.setRotation(qBuf);
 	}
 	
 	protected void updateComputedTrackers() {

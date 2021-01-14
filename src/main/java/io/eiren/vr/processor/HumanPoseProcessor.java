@@ -93,18 +93,18 @@ public class HumanPoseProcessor {
 		Vector3f hmdFront = new Vector3f(0, 0, 1);
 		hmdRotation.multLocal(hmdFront);
 		hmdFront.multLocal(1, 0, 1).normalizeLocal();
-		hmdRotation.lookAt(hmdFront, Vector3f.UNIT_Y);
+		//hmdRotation.lookAt(hmdFront, Vector3f.UNIT_Y);
 		
 		Iterator<AdjustedTracker> iterator = trackers.values().iterator();
 		while(iterator.hasNext()) {
 			AdjustedTracker tt = iterator.next();
-			tt.getRotation(sensorRotation);
+			tt.tracker.getRotation(sensorRotation);
 
 			// Adjust only yaw rotation
 			Vector3f sensorFront = new Vector3f(0, 0, 1);
 			sensorRotation.multLocal(sensorFront);
 			sensorFront.multLocal(1, 0, 1).normalizeLocal();
-			sensorRotation.lookAt(sensorFront, Vector3f.UNIT_Y);
+			//sensorRotation.lookAt(sensorFront, Vector3f.UNIT_Y);
 			
 			
 			tt.position.baseRotation.mult(hmdRotation, targetTrackerRotation);

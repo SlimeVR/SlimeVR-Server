@@ -45,10 +45,10 @@ public class HumanSekeletonWithLegs extends HumanSkeleonWithWaist {
 		computedRightAnkleTracker = rat;
 		
 		waistNode.attachChild(leftLegNode);
-		leftLegNode.localTransform.setTranslation(-hipsWidth / 2, 0, 0);
+		leftLegNode.localTransform.setTranslation(hipsWidth / 2, 0, 0);
 		
 		waistNode.attachChild(rightLegNode);
-		rightLegNode.localTransform.setTranslation(hipsWidth / 2, 0, 0);
+		rightLegNode.localTransform.setTranslation(-hipsWidth / 2, 0, 0);
 		
 		leftLegNode.attachChild(leftKneeNode);
 		leftKneeNode.localTransform.setTranslation(0, -kneeLength, 0);
@@ -74,9 +74,11 @@ public class HumanSekeletonWithLegs extends HumanSkeleonWithWaist {
 		
 		leftAnkleTracker.getRotation(qBuf);
 		leftKneeNode.localTransform.setRotation(qBuf);
+		leftAnkleNode.localTransform.setRotation(qBuf);
 		
 		rightAnkleTracker.getRotation(qBuf);
 		rightKneeNode.localTransform.setRotation(qBuf);
+		rightAnkleNode.localTransform.setRotation(qBuf);
 	}
 
 	@Override

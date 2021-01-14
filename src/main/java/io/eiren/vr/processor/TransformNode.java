@@ -33,7 +33,18 @@ public class TransformNode {
 			if(localRotation)
 				worldTransform.combineWithParent(parent.worldTransform);
 			else
-				worldTransform.combineWithParentGlobalRotation(localTransform);
+				combineWithParentGlobalRotation(parent.worldTransform);
 		}
 	}
+	
+
+    public void combineWithParentGlobalRotation(Transform parent) {
+    	worldTransform.getScale().multLocal(parent.getScale());
+    	worldTransform.getTranslation().multLocal(parent.getScale());
+        
+        parent
+            .getRotation()
+            .multLocal(worldTransform.getTranslation())
+            .addLocal(parent.getTranslation());
+    }
 }
