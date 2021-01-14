@@ -137,7 +137,7 @@ public class TrackersUDPServer extends Thread {
 			sensor = trackersMap.get(addr);
 		}
 		if(sensor == null) {
-			IMUTracker imu = new IMUTracker("udp://" + handshakePacket.getAddress().toString(), this);
+			IMUTracker imu = new IMUTracker("udp:/" + handshakePacket.getAddress().toString(), this);
 			trackersConsumer.accept(imu);
 			sensor = new TrackerConnection(imu, addr);
 			int i = 0;

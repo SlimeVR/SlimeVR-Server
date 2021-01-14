@@ -11,6 +11,7 @@ public class TransformNode {
 	public final Transform localTransform = new Transform();
 	public final Transform worldTransform = new Transform();
 	public final List<TransformNode> children = new FastList<>();
+	public boolean localRotation = false;
 	private TransformNode parent;
 	
 	public void attachChild(TransformNode node) {
@@ -29,7 +30,10 @@ public class TransformNode {
 			worldTransform.set(localTransform);
 		} else {
 			worldTransform.set(localTransform);
-			worldTransform.combineWithParent(parent.worldTransform);
+			if(localRotation)
+				worldTransform.combineWithParent(parent.worldTransform);
+			else
+				worldTransform.combineWithParentGlobalRotation(localTransform);
 		}
 	}
 }
