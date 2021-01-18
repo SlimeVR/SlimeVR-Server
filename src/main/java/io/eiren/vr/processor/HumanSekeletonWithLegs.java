@@ -5,6 +5,7 @@ import java.util.Map;
 
 import io.eiren.vr.VRServer;
 import io.eiren.vr.trackers.Tracker;
+import io.eiren.vr.trackers.TrackerStatus;
 
 public class HumanSekeletonWithLegs extends HumanSkeleonWithWaist {
 	
@@ -15,16 +16,16 @@ public class HumanSekeletonWithLegs extends HumanSkeleonWithWaist {
 	protected final Tracker rightAnkleTracker;
 	protected final ComputedHumanPoseTracker computedRightAnkleTracker;
 	
-	protected final TransformNode leftLegNode = new TransformNode();
+	protected final TransformNode leftHipNode = new TransformNode();
 	protected final TransformNode leftKneeNode = new TransformNode();
 	protected final TransformNode leftAnkleNode = new TransformNode();
-	protected final TransformNode rightLegNode = new TransformNode();
+	protected final TransformNode rightHipNode = new TransformNode();
 	protected final TransformNode rightKneeNode = new TransformNode();
 	protected final TransformNode rightAnkleNode = new TransformNode();
 	
 	protected float hipsWidth = 0.3f;
-	protected float kneeLength = 0.5f;
-	protected float ankleLength = 0.4f;
+	protected float hipLength = 0.86f;
+	protected float ankleLength = 0.42f;
 
 	public HumanSekeletonWithLegs(VRServer server, Map<TrackerBodyPosition, ? extends Tracker> trackers, List<ComputedHumanPoseTracker> computedTrackers) {
 		super(server, trackers.get(TrackerBodyPosition.WAIST), computedTrackers);
@@ -43,18 +44,20 @@ public class HumanSekeletonWithLegs extends HumanSkeleonWithWaist {
 		}
 		computedLeftAnkleTracker = lat;
 		computedRightAnkleTracker = rat;
+		lat.setStatus(TrackerStatus.OK);
+		rat.setStatus(TrackerStatus.OK);
 		
-		waistNode.attachChild(leftLegNode);
-		leftLegNode.localTransform.setTranslation(hipsWidth / 2, 0, 0);
+		waistNode.attachChild(leftHipNode);
+		leftHipNode.localTransform.setTranslation(hipsWidth / 2, 0, 0);
 		
-		waistNode.attachChild(rightLegNode);
-		rightLegNode.localTransform.setTranslation(-hipsWidth / 2, 0, 0);
+		waistNode.attachChild(rightHipNode);
+		rightHipNode.localTransform.setTranslation(-hipsWidth / 2, 0, 0);
 		
-		leftLegNode.attachChild(leftKneeNode);
-		leftKneeNode.localTransform.setTranslation(0, -kneeLength, 0);
+		leftHipNode.attachChild(leftKneeNode);
+		leftKneeNode.localTransform.setTranslation(0, -hipLength, 0);
 		
-		rightLegNode.attachChild(rightKneeNode);
-		rightKneeNode.localTransform.setTranslation(0, -kneeLength, 0);
+		rightHipNode.attachChild(rightKneeNode);
+		rightKneeNode.localTransform.setTranslation(0, -hipLength, 0);
 		
 		leftKneeNode.attachChild(leftAnkleNode);
 		leftAnkleNode.localTransform.setTranslation(0, -ankleLength, 0);
@@ -67,10 +70,10 @@ public class HumanSekeletonWithLegs extends HumanSkeleonWithWaist {
 	public void updateLocalTransforms() {
 		super.updateLocalTransforms();
 		leftLegTracker.getRotation(qBuf);
-		leftLegNode.localTransform.setRotation(qBuf);
+		leftHipNode.localTransform.setRotation(qBuf);
 		
 		rightLegTracker.getRotation(qBuf);
-		rightLegNode.localTransform.setRotation(qBuf);
+		rightHipNode.localTransform.setRotation(qBuf);
 		
 		leftAnkleTracker.getRotation(qBuf);
 		leftKneeNode.localTransform.setRotation(qBuf);

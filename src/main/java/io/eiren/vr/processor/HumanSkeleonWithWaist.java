@@ -8,6 +8,7 @@ import com.jme3.math.Vector3f;
 import io.eiren.vr.VRServer;
 import io.eiren.vr.trackers.HMDTracker;
 import io.eiren.vr.trackers.Tracker;
+import io.eiren.vr.trackers.TrackerStatus;
 
 public class HumanSkeleonWithWaist extends HumanSkeleton {
 	
@@ -17,10 +18,13 @@ public class HumanSkeleonWithWaist extends HumanSkeleton {
 	protected final Tracker wasitTracker;
 	protected final HMDTracker hmdTracker;
 	protected final ComputedHumanPoseTracker computedWaistTracker;
-	protected float waistDistance = 0.63f;
-	protected float waistSwingMultiplier = 1f;
 	protected final TransformNode hmdNode = new TransformNode();
+	protected final TransformNode neckNode = new TransformNode();
 	protected final TransformNode waistNode = new TransformNode();
+	
+	protected float waistDistance = 0.72f;
+	protected float waistSwingMultiplier = 1f;
+	protected float neckLength = 0.2f;
 
 	public HumanSkeleonWithWaist(VRServer server, Tracker waistTracker, List<ComputedHumanPoseTracker> computedTrackers) {
 		this.wasitTracker = waistTracker;
@@ -32,11 +36,15 @@ public class HumanSkeleonWithWaist extends HumanSkeleton {
 				cwt = t;
 		}
 		computedWaistTracker = cwt;
+		cwt.setStatus(TrackerStatus.OK);
 		waistDistance = server.config.getFloat("body.waistDistance", waistDistance);
 		waistSwingMultiplier = server.config.getFloat("body.waistSwingMultiplier", waistSwingMultiplier);
 		// Build skeleton
-		hmdNode.attachChild(waistNode);
-		waistNode.localTransform.setTranslation(0, -waistDistance, 0);
+		hmdNode.attachChild(neckNode);
+		waistNode.localTransform.setTranslation(0, -neckLength, 0);
+		
+		neckNode.attachChild(waistNode);
+		waistNode.localTransform.setTranslation(0, -waistDistance + neckLength, 0);
 	}
 	
 	@Override
@@ -47,14 +55,17 @@ public class HumanSkeleonWithWaist extends HumanSkeleton {
 	}
 	
 	protected void updateLocalTransforms() {
+		hmdTracker.getPosition(vBuf);
+		hmdTracker.getRotation(qBuf);
+		hmdNode.localTransform.setTranslation(vBuf);
+		hmdNode.localTransform.setRotation(qBuf);
+		
 		wasitTracker.getRotation(qBuf);
 		if(waistSwingMultiplier != 1.0) {
 			// TODO : Adjust waist swing if swing multiplier != 0
 		}
 		
-		hmdTracker.getPosition(vBuf);
-		hmdNode.localTransform.setTranslation(vBuf);
-		hmdNode.localTransform.setRotation(qBuf);
+		neckNode.localTransform.setRotation(qBuf);
 		waistNode.localTransform.setRotation(qBuf);
 	}
 	

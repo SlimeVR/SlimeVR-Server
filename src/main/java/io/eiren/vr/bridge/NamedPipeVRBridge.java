@@ -32,7 +32,6 @@ public class NamedPipeVRBridge extends Thread implements VRBridge {
 	private final HMDTracker hmd;
 	private final List<Pipe> trackerPipes;
 	private final List<? extends Tracker> shareTrackers;
-	protected VRBridgeState bridgeState = VRBridgeState.NOT_STARTED;
 	
 	public NamedPipeVRBridge(HMDTracker hmd, List<? extends Tracker> shareTrackers) {
 		super("Named Pipe VR Bridge");
@@ -42,90 +41,87 @@ public class NamedPipeVRBridge extends Thread implements VRBridge {
 	}
 	
 	@Override
-	public VRBridgeState getBridgeState() {
-		return bridgeState;
-	}
-	
-	@Override
 	public void run() {
 		try {
 			createPipes();
-			bridgeState = VRBridgeState.STARTED;
 			while(true) {
-				if(bridgeState == VRBridgeState.STARTED) {
-					if(hmdPipe != null && hmdPipe.state == PipeState.CREATED) {
-						if(tryOpeningPipe(hmdPipe))
-							initHMDPipe(hmdPipe);
-					}
+				waitForPipesToOpen();
+				if(areAllPipesOpen()) {
+					boolean hmdUpdated = updateHMD(); // Update at HMDs frequency
 					for(int i = 0; i < trackerPipes.size(); ++i) {
-						Pipe trackerPipe = trackerPipes.get(i);
-						if(trackerPipe.state == PipeState.CREATED)
-							if(tryOpeningPipe(trackerPipe))
-								initTrackerPipe(trackerPipe, i);
+						updateTracker(i, hmdUpdated);
 					}
-					if(areAllPipesOpen()) {
-						bridgeState = VRBridgeState.CONNECTED;
-						LogManager.log.info("[VRBridge] All pipes are connected!");
-					} else {
-						Thread.sleep(200L);
-					}
-				} else {
-					// TODO Handle pipes disconnect, reset state and prepare to send hello again
-					if(updateHMD()) { // Update at HMDs frequency
-						for(int i = 0; i < trackerPipes.size(); ++i) {
-							updateTracker(i);
-						}
-					} else {
+					if(!hmdUpdated) {
 						Thread.sleep(5); // Up to 200Hz
 					}
 				}
 			}
 		} catch(Exception e) {
 			e.printStackTrace();
-			bridgeState = VRBridgeState.ERROR;
+		}
+	}
+	
+	private void waitForPipesToOpen() {
+		if(hmdPipe.state == PipeState.CREATED) {
+			if(tryOpeningPipe(hmdPipe))
+				initHMDPipe(hmdPipe);
+		}
+		for(int i = 0; i < trackerPipes.size(); ++i) {
+			Pipe trackerPipe = trackerPipes.get(i);
+			if(trackerPipe.state == PipeState.CREATED) {
+				if(tryOpeningPipe(trackerPipe))
+					initTrackerPipe(trackerPipe, i);
+			}
 		}
 	}
 	
 	public boolean updateHMD() {
-		IntByReference bytesAvailable = new IntByReference(0);
-		if(Kernel32.INSTANCE.PeekNamedPipe(hmdPipe.pipeHandle, null, 0, null, bytesAvailable, null)) {
-			if(bytesAvailable.getValue() > 0) {
-				if(Kernel32.INSTANCE.ReadFile(hmdPipe.pipeHandle, buffer, buffer.length, bytesAvailable, null)) {
-					String str = new String(buffer, 0, bytesAvailable.getValue() - 1, ASCII);
-					String[] split = str.split("\n")[0].split(" ");
-					try {
-						double x = Double.parseDouble(split[0]);
-						double y = Double.parseDouble(split[1]);
-						double z = Double.parseDouble(split[2]);
-						double qw = Double.parseDouble(split[3]);
-						double qx = Double.parseDouble(split[4]);
-						double qy = Double.parseDouble(split[5]);
-						double qz = Double.parseDouble(split[6]);
-						
-						hmd.position.set((float) x, (float) y, (float) z);
-						hmd.rotation.set((float) qx, (float) qy, (float) qz, (float) qw);
-					} catch(NumberFormatException e) {
-						e.printStackTrace();
+		if(hmdPipe.state == PipeState.OPEN) {
+			IntByReference bytesAvailable = new IntByReference(0);
+			if(Kernel32.INSTANCE.PeekNamedPipe(hmdPipe.pipeHandle, null, 0, null, bytesAvailable, null)) {
+				if(bytesAvailable.getValue() > 0) {
+					if(Kernel32.INSTANCE.ReadFile(hmdPipe.pipeHandle, buffer, buffer.length, bytesAvailable, null)) {
+						String str = new String(buffer, 0, bytesAvailable.getValue() - 1, ASCII);
+						String[] split = str.split("\n")[0].split(" ");
+						try {
+							double x = Double.parseDouble(split[0]);
+							double y = Double.parseDouble(split[1]);
+							double z = Double.parseDouble(split[2]);
+							double qw = Double.parseDouble(split[3]);
+							double qx = Double.parseDouble(split[4]);
+							double qy = Double.parseDouble(split[5]);
+							double qz = Double.parseDouble(split[6]);
+							
+							hmd.position.set((float) x, (float) y, (float) z);
+							hmd.rotation.set((float) qx, (float) qy, (float) qz, (float) qw);
+						} catch(NumberFormatException e) {
+							e.printStackTrace();
+						}
 					}
+					return true;
 				}
-				return true;
 			}
 		}
 		return false;
 	}
 	
-	public void updateTracker(int trackerId) {
-		sbBuffer.setLength(0);
+	public void updateTracker(int trackerId, boolean hmdUpdated) {
 		Tracker sensor = shareTrackers.get(trackerId);
-		sensor.getPosition(vBuffer);
-		sensor.getRotation(qBuffer);
-		sbBuffer.append(vBuffer.x).append(' ').append(vBuffer.y).append(' ').append(vBuffer.z).append(' ');
-		sbBuffer.append(qBuffer.getW()).append(' ').append(qBuffer.getX()).append(' ').append(qBuffer.getY()).append(' ').append(qBuffer.getZ()).append('\n');
-		String str = sbBuffer.toString();
-		System.arraycopy(str.getBytes(ASCII), 0, buffer, 0, str.length());
-		buffer[str.length()] = '\0';
-		IntByReference lpNumberOfBytesWritten = new IntByReference(0);
-		Kernel32.INSTANCE.WriteFile(trackerPipes.get(trackerId).pipeHandle, buffer, str.length() + 1, lpNumberOfBytesWritten, null);
+		if(sensor.getStatus().sendData) {
+			Pipe trackerPipe = trackerPipes.get(trackerId);
+			if(hmdUpdated && trackerPipe.state == PipeState.OPEN) {
+				sbBuffer.setLength(0);
+				sensor.getPosition(vBuffer);
+				sensor.getRotation(qBuffer);
+				sbBuffer.append(vBuffer.x).append(' ').append(vBuffer.y).append(' ').append(vBuffer.z).append(' ');
+				sbBuffer.append(qBuffer.getW()).append(' ').append(qBuffer.getX()).append(' ').append(qBuffer.getY()).append(' ').append(qBuffer.getZ()).append('\n');
+				String str = sbBuffer.toString();
+				System.arraycopy(str.getBytes(ASCII), 0, buffer, 0, str.length());
+				buffer[str.length()] = '\0';
+				IntByReference lpNumberOfBytesWritten = new IntByReference(0);
+				Kernel32.INSTANCE.WriteFile(trackerPipe.pipeHandle, buffer, str.length() + 1, lpNumberOfBytesWritten, null);
+			}
+		}
 	}
 	
 	private void initHMDPipe(Pipe pipe) {
@@ -150,6 +146,8 @@ public class NamedPipeVRBridge extends Thread implements VRBridge {
 			LogManager.log.info("[VRBridge] Pipe " + pipe.name + " is open");
 			return true;
 		}
+		
+		LogManager.log.info("[VRBridge] Error connecting to pipe " + pipe.name + ": " + Kernel32.INSTANCE.GetLastError());
 		return false;
 	}
 	

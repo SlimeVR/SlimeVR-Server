@@ -6,10 +6,11 @@ import java.util.List;
 import java.util.Map;
 
 import com.jme3.math.Quaternion;
-import com.jme3.math.Vector3f;
 
 import essentia.util.collections.FastList;
 import io.eiren.vr.VRServer;
+import io.eiren.vr.trackers.AdjustedTracker;
+import io.eiren.vr.trackers.AdjustedYawTracker;
 import io.eiren.vr.trackers.HMDTracker;
 import io.eiren.vr.trackers.Tracker;
 import io.eiren.vr.trackers.TrackerConfig;
@@ -46,7 +47,7 @@ public class HumanPoseProcessor {
 	}
 	
 	private void addTracker(Tracker tracker, TrackerBodyPosition position) {
-		AdjustedTracker tt = new AdjustedTracker(tracker, position);
+		AdjustedTracker tt = new AdjustedYawTracker(tracker);
 		
 		TrackerConfig config = server.getTrackerConfig(tt);
 		if(config.adjustment != null)
@@ -74,82 +75,39 @@ public class HumanPoseProcessor {
 			if(skeleton instanceof HumanSekeletonWithLegs) {
 				return; // Proper skeleton applied
 			}
+			disconnectAllTrackers();
 			skeleton = new HumanSekeletonWithLegs(server, trackers, computedTrackers);
 		} else {
 			if(skeleton instanceof HumanSkeleonWithWaist) {
 				return; // Proper skeleton applied
 			}
+			disconnectAllTrackers();
 			skeleton = new HumanSkeleonWithWaist(server, trackers.get(TrackerBodyPosition.WAIST), computedTrackers);
 		}
 	}
 	
+	private void disconnectAllTrackers() {
+		for(int i = 0; i < computedTrackers.size(); ++i) {
+			computedTrackers.get(i).setStatus(TrackerStatus.DISCONNECTED);
+		}
+	}
+	
 	public void resetTrackers() {
-		Quaternion sensorRotation = new Quaternion();
 		Quaternion hmdRotation = new Quaternion();
-		Quaternion targetTrackerRotation = new Quaternion();
 		hmd.getRotation(hmdRotation);
-
-		// Adjust only yaw rotation
-		Vector3f hmdFront = new Vector3f(0, 0, 1);
-		hmdRotation.multLocal(hmdFront);
-		hmdFront.multLocal(1, 0, 1).normalizeLocal();
-		//hmdRotation.lookAt(hmdFront, Vector3f.UNIT_Y);
 		
 		Iterator<AdjustedTracker> iterator = trackers.values().iterator();
 		while(iterator.hasNext()) {
 			AdjustedTracker tt = iterator.next();
-			tt.tracker.getRotation(sensorRotation);
-
-			// Adjust only yaw rotation
-			Vector3f sensorFront = new Vector3f(0, 0, 1);
-			sensorRotation.multLocal(sensorFront);
-			sensorFront.multLocal(1, 0, 1).normalizeLocal();
-			//sensorRotation.lookAt(sensorFront, Vector3f.UNIT_Y);
-			
-			
-			tt.position.baseRotation.mult(hmdRotation, targetTrackerRotation);
-			tt.adjustment.set(sensorRotation).inverseLocal().multLocal(targetTrackerRotation);
+			tt.adjust(hmdRotation);
 			
 			TrackerConfig config = server.getTrackerConfig(tt);
-			config.adjustment = new Quaternion(tt.adjustment);
+			tt.saveAdjustment(config);
 		}
 	}
 	
 	public void update() {
 		if(skeleton != null)
 			skeleton.updatePose();
-	}
-	
-	private static class AdjustedTracker implements Tracker {
-		public final Tracker tracker;
-		public final Quaternion adjustment = new Quaternion();
-		public final TrackerBodyPosition position;
-		
-		public AdjustedTracker(Tracker tracker, TrackerBodyPosition position) {
-			this.tracker = tracker;
-			this.position = position;
-		}
-		
-		@Override
-		public boolean getRotation(Quaternion store) {
-			tracker.getRotation(store);
-			adjustment.mult(store, store);
-			return true;
-		}
-
-		@Override
-		public boolean getPosition(Vector3f store) {
-			return tracker.getPosition(store);
-		}
-
-		@Override
-		public String getName() {
-			return tracker.getName() + "/adj";
-		}
-
-		@Override
-		public TrackerStatus getStatus() {
-			return tracker.getStatus();
-		}
 	}
 }

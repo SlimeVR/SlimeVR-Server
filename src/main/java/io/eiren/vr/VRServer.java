@@ -10,6 +10,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Queue;
 import java.util.concurrent.LinkedBlockingQueue;
+import java.util.function.Consumer;
 
 import essentia.util.ann.ThreadSafe;
 import essentia.util.ann.ThreadSecure;
@@ -34,6 +35,7 @@ public class VRServer extends Thread {
 	private final Map<String, TrackerConfig> configuration = new HashMap<>();
 	public final YamlFile config = new YamlFile();
 	public final HMDTracker hmdTracker;
+	private final List<Consumer<Tracker>> newTrackersConsumers = new FastList<>();
 	
 	public VRServer() {
 		super("VRServer");
@@ -73,6 +75,16 @@ public class VRServer extends Thread {
 			synchronized(configuration) {
 				configuration.put(cfg.trackerName, cfg);
 			}
+		}
+	}
+	
+	public void addNewTrackerConsumer(Consumer<Tracker> consumer) {
+		synchronized(newTrackersConsumers) {
+			newTrackersConsumers.add(consumer);
+		}
+		synchronized(trackers) {
+			for(int i = 0; i < trackers.size(); ++i)
+				consumer.accept(trackers.get(i));
 		}
 	}
 
@@ -151,6 +163,10 @@ public class VRServer extends Thread {
 			trackers.add(tracker);
 		}
 		autoAssignTracker(tracker);
+		synchronized(newTrackersConsumers) {
+			for(int i = 0; i < newTrackersConsumers.size(); ++i)
+				newTrackersConsumers.get(i).accept(tracker);
+		}
 	}
 	
 	public void calibrate(Tracker tracker) {

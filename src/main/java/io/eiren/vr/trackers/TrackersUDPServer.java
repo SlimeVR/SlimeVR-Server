@@ -25,13 +25,17 @@ import io.eiren.util.Util;
  * Recieves trackers data by UDP using extended owoTrack protocol.
  */
 public class TrackersUDPServer extends Thread {
+
+	/**
+	 * Change between IMU axises and OpenGL/SteamVR axises
+	 */
+	private static final Quaternion offset = new Quaternion().fromAngleAxis(-FastMath.HALF_PI, Vector3f.UNIT_X);
 	
 	private static final byte[] HANDSHAKE_BUFFER = new byte[64];
 	private static final byte[] KEEPUP_BUFFER = new byte[64];
 	private static final byte[] CALIBRATION_BUFFER = new byte[64];
 
 	private final Quaternion buf = new Quaternion();
-	private final byte[] sendBuffer = new byte[64];
 
 	private final List<TrackerConnection> trackers = new FastList<>();
 	private final Map<SocketAddress, TrackerConnection> trackersMap = new HashMap<>();
@@ -151,7 +155,6 @@ public class TrackersUDPServer extends Thread {
         socket.send(new DatagramPacket(HANDSHAKE_BUFFER, HANDSHAKE_BUFFER.length, handshakePacket.getAddress(), handshakePacket.getPort()));
 	}
 	
-	private static final Quaternion offset = new Quaternion().fromAngleAxis(-FastMath.HALF_PI, Vector3f.UNIT_X);
 	
 	@Override
 	public void run() {
@@ -180,11 +183,9 @@ public class TrackersUDPServer extends Thread {
 						bb.getLong();
 						stopCalibration(sensor);
 						buf.set(bb.getFloat(), bb.getFloat(), bb.getFloat(), bb.getFloat());
-						//buf.set(buf.getY(), buf.getZ(), buf.getY(), buf.getW()); // Change from sensor rotation to OpenGL/SteamVR rotation
-						//Quaternion q3 = new Quaternion().fromAngleAxis(FastMath.PI, Vector3f.UNIT_Y).multLocal(q2);
 						offset.mult(buf, buf);
 						sensor.tracker.rotQuaternion.set(buf);
-						//System.out.println("Rot: " + rotQuaternion.getX() + "," + rotQuaternion.getY() + "," + rotQuaternion.getZ() + "," + rotQuaternion.getW());
+						sensor.tracker.dataTick();
 						break;
 					case 2:
 						if(sensor == null)
@@ -192,7 +193,6 @@ public class TrackersUDPServer extends Thread {
 						bb.getLong();
 						stopCalibration(sensor);
 						sensor.tracker.gyroVector.set(bb.getFloat(), bb.getFloat(), bb.getFloat());
-						//System.out.println("Gyro: " + bb.getFloat() + "," + bb.getFloat() + "," + bb.getFloat());
 						break;
 					case 4:
 						if(sensor == null)
@@ -200,7 +200,6 @@ public class TrackersUDPServer extends Thread {
 						bb.getLong();
 						stopCalibration(sensor);
 						sensor.tracker.accelVector.set(bb.getFloat(), bb.getFloat(), bb.getFloat());
-						//System.out.println("Accel: " + bb.getFloat() + "," + bb.getFloat() + "," + bb.getFloat());
 						break;
 					case 5:
 						if(sensor == null)
@@ -208,7 +207,6 @@ public class TrackersUDPServer extends Thread {
 						bb.getLong();
 						stopCalibration(sensor);
 						sensor.tracker.magVector.set(bb.getFloat(), bb.getFloat(), bb.getFloat());
-						//System.out.println("Accel: " + bb.getFloat() + "," + bb.getFloat() + "," + bb.getFloat());
 						break;
 					case 6: // PACKET_RAW_CALIBRATION_DATA
 						if(sensor == null)
@@ -223,7 +221,7 @@ public class TrackersUDPServer extends Thread {
 						sensor.gyroCalibrationData = new double[] {bb.getFloat(), bb.getFloat(), bb.getFloat()};
 						break;
 					default:
-						System.out.println("[TrackerServer] Unknown data recieved: " + packetId + " from " + recieve.getSocketAddress());
+						System.out.println("[TrackerServer] Unknown data received: " + packetId + " from " + recieve.getSocketAddress());
 						break;
 					}
 					if(lastKeepup + 500 < System.currentTimeMillis()) {
