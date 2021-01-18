@@ -23,8 +23,17 @@ public class HumanSekeletonWithLegs extends HumanSkeleonWithWaist {
 	protected final TransformNode rightKneeNode = new TransformNode();
 	protected final TransformNode rightAnkleNode = new TransformNode();
 	
+	/**
+	 * Distance between centers of both hips
+	 */
 	protected float hipsWidth = 0.3f;
+	/**
+	 * Length from waist to knees
+	 */
 	protected float hipLength = 0.86f;
+	/**
+	 * Distance from waist to ankle
+	 */
 	protected float ankleLength = 0.42f;
 
 	public HumanSekeletonWithLegs(VRServer server, Map<TrackerBodyPosition, ? extends Tracker> trackers, List<ComputedHumanPoseTracker> computedTrackers) {
