@@ -18,11 +18,11 @@ public class HumanSkeleonWithWaist extends HumanSkeleton {
 	protected final Tracker wasitTracker;
 	protected final HMDTracker hmdTracker;
 	protected final ComputedHumanPoseTracker computedWaistTracker;
-	protected final TransformNode hmdNode = new TransformNode();
-	protected final TransformNode headNode = new TransformNode();
-	protected final TransformNode neckNode = new TransformNode();
-	protected final TransformNode waistNode = new TransformNode();
-	protected final TransformNode trackerWaistNode = new TransformNode();
+	protected final TransformNode hmdNode = new TransformNode("HMD", false);
+	protected final TransformNode headNode = new TransformNode("Head", false);
+	protected final TransformNode neckNode = new TransformNode("Neck", false);
+	protected final TransformNode waistNode = new TransformNode("Waist", false);
+	protected final TransformNode trackerWaistNode = new TransformNode("Waist-Tracker", false);
 	
 	/**
 	 * Distance from eyes to waist
@@ -67,6 +67,11 @@ public class HumanSkeleonWithWaist extends HumanSkeleton {
 		
 		neckNode.attachChild(trackerWaistNode);
 		trackerWaistNode.localTransform.setTranslation(0, -trackerWaistDistance + neckLength, 0);
+	}
+	
+	@Override
+	public TransformNode getRootNode() {
+		return hmdNode;
 	}
 	
 	@Override

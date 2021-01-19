@@ -16,12 +16,12 @@ public class HumanSekeletonWithLegs extends HumanSkeleonWithWaist {
 	protected final Tracker rightAnkleTracker;
 	protected final ComputedHumanPoseTracker computedRightAnkleTracker;
 	
-	protected final TransformNode leftHipNode = new TransformNode();
-	protected final TransformNode leftKneeNode = new TransformNode();
-	protected final TransformNode leftAnkleNode = new TransformNode();
-	protected final TransformNode rightHipNode = new TransformNode();
-	protected final TransformNode rightKneeNode = new TransformNode();
-	protected final TransformNode rightAnkleNode = new TransformNode();
+	protected final TransformNode leftHipNode = new TransformNode("Left-Hip", false);
+	protected final TransformNode leftKneeNode = new TransformNode("Left-Knee", false);
+	protected final TransformNode leftAnkleNode = new TransformNode("Left-Ankle", false);
+	protected final TransformNode rightHipNode = new TransformNode("Right-Hip", false);
+	protected final TransformNode rightKneeNode = new TransformNode("Right-Knee", false);
+	protected final TransformNode rightAnkleNode = new TransformNode("Right-Ankle", false);
 	
 	/**
 	 * Distance between centers of both hips

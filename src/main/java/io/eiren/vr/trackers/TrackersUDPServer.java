@@ -17,9 +17,9 @@ import com.jme3.math.FastMath;
 import com.jme3.math.Quaternion;
 import com.jme3.math.Vector3f;
 
-import essentia.util.collections.FastList;
 import io.eiren.hardware.magentometer.Magneto;
 import io.eiren.util.Util;
+import io.eiren.util.collections.FastList;
 
 /**
  * Recieves trackers data by UDP using extended owoTrack protocol.

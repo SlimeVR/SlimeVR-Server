@@ -4,5 +4,5 @@ public abstract class HumanSkeleton {
 	
 	public abstract void updatePose();
 	
-	
+	public abstract TransformNode getRootNode();
 }

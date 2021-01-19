@@ -12,11 +12,13 @@ import java.util.Queue;
 import java.util.concurrent.LinkedBlockingQueue;
 import java.util.function.Consumer;
 
-import essentia.util.ann.ThreadSafe;
-import essentia.util.ann.ThreadSecure;
-import essentia.util.collections.FastList;
+import io.eiren.util.ann.ThreadSafe;
+import io.eiren.util.ann.ThreadSecure;
+import io.eiren.util.ann.VRServerThread;
+import io.eiren.util.collections.FastList;
 import io.eiren.vr.bridge.NamedPipeVRBridge;
 import io.eiren.vr.processor.HumanPoseProcessor;
+import io.eiren.vr.processor.HumanSkeleton;
 import io.eiren.vr.trackers.HMDTracker;
 import io.eiren.vr.trackers.TrackersUDPServer;
 import io.eiren.yaml.YamlException;
@@ -78,14 +80,20 @@ public class VRServer extends Thread {
 		}
 	}
 	
+	@ThreadSafe
 	public void addNewTrackerConsumer(Consumer<Tracker> consumer) {
-		synchronized(newTrackersConsumers) {
+		queueTask(() -> {
 			newTrackersConsumers.add(consumer);
-		}
-		synchronized(trackers) {
 			for(int i = 0; i < trackers.size(); ++i)
 				consumer.accept(trackers.get(i));
-		}
+		});
+	}
+
+	@ThreadSafe
+	public void addSkeletonUpdatedCallback(Consumer<HumanSkeleton> consumer) {
+		queueTask(() -> {
+			humanPoseProcessor.addSkeletonUpdatedCallback(consumer);
+		});
 	}
 
 	@ThreadSafe
@@ -124,6 +132,7 @@ public class VRServer extends Thread {
 	}
 	
 	@Override
+	@VRServerThread
 	public void run() {
 		loadConfig();
 		trackersServer.start();
@@ -146,33 +155,25 @@ public class VRServer extends Thread {
 			}
 		}
 	}
-	
+
+	@ThreadSafe
 	public void queueTask(Runnable r) {
 		tasks.add(r);
 	}
 	
+	@VRServerThread
 	private void autoAssignTracker(Tracker tracker) {
-		queueTask(() -> {
-			humanPoseProcessor.trackerAdded(tracker);
-		});
+		humanPoseProcessor.trackerAdded(tracker);
 	}
 	
 	@ThreadSecure
 	public void registerTracker(Tracker tracker) {
-		synchronized(trackers) {
+		queueTask(() -> {
 			trackers.add(tracker);
-		}
-		autoAssignTracker(tracker);
-		synchronized(newTrackersConsumers) {
+			autoAssignTracker(tracker);
 			for(int i = 0; i < newTrackersConsumers.size(); ++i)
 				newTrackersConsumers.get(i).accept(tracker);
-		}
-	}
-	
-	public void calibrate(Tracker tracker) {
-		if(tracker.getName().startsWith("udp://")) {
-			trackersServer.sendCalibrationCommand(tracker);
-		}
+		});
 	}
 	
 	public void resetTrackers() {
@@ -182,14 +183,10 @@ public class VRServer extends Thread {
 	}
 	
 	public int getTrackersCount() {
-		synchronized(trackers) {
-			return trackers.size();
-		}
+		return trackers.size();
 	}
-	
+
 	public List<Tracker> getAllTrackers() {
-		synchronized(trackers) {
-			return new FastList<>(trackers);
-		}
+		return new FastList<>(trackers);
 	}
 }

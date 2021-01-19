@@ -1,10 +1,11 @@
 package io.eiren.vr.processor;
 
 import java.util.List;
+import java.util.function.Consumer;
 
 import com.jme3.math.Transform;
 
-import essentia.util.collections.FastList;
+import io.eiren.util.collections.FastList;
 
 public class TransformNode {
 	
@@ -12,7 +13,17 @@ public class TransformNode {
 	public final Transform worldTransform = new Transform();
 	public final List<TransformNode> children = new FastList<>();
 	public boolean localRotation = false;
-	private TransformNode parent;
+	protected TransformNode parent;
+	protected String name;
+	
+	public TransformNode(String name, boolean localRotation) {
+		this.name = name;
+		this.localRotation = localRotation;
+	}
+	
+	public TransformNode(String name) {
+		this(name, true);
+	}
 	
 	public void attachChild(TransformNode node) {
 		this.children.add(node);
@@ -37,6 +48,16 @@ public class TransformNode {
 		}
 	}
 	
+	public void depthFirstTraversal(Consumer<TransformNode> visitor) {
+		for(int i = 0; i < children.size(); ++i) {
+			children.get(i).depthFirstTraversal(visitor);
+		}
+		visitor.accept(this);
+	}
+	
+	public String getName() {
+		return name;
+	}
 
     public void combineWithParentGlobalRotation(Transform parent) {
     	worldTransform.getScale().multLocal(parent.getScale());
