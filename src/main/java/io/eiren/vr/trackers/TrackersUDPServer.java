@@ -20,6 +20,7 @@ import com.jme3.math.Vector3f;
 import io.eiren.hardware.magentometer.Magneto;
 import io.eiren.util.Util;
 import io.eiren.util.collections.FastList;
+import io.eiren.vr.trackers.IMUTracker.CalibrationData;
 
 /**
  * Recieves trackers data by UDP using extended owoTrack protocol.
@@ -34,11 +35,14 @@ public class TrackersUDPServer extends Thread {
 	private static final byte[] HANDSHAKE_BUFFER = new byte[64];
 	private static final byte[] KEEPUP_BUFFER = new byte[64];
 	private static final byte[] CALIBRATION_BUFFER = new byte[64];
+	private static final byte[] CALIBRATION_REQUEST_BUFFER = new byte[64];
 
 	private final Quaternion buf = new Quaternion();
 
 	private final List<TrackerConnection> trackers = new FastList<>();
 	private final Map<SocketAddress, TrackerConnection> trackersMap = new HashMap<>();
+	private final Map<Tracker, Consumer<String>> calibrationDataRequests = new HashMap<>();
+	private final Map<Tracker, Consumer<String>> newCalibrationDataRequests = new HashMap<>();
 	private final Consumer<IMUTracker> trackersConsumer;
 	private final int port;
 	
@@ -51,7 +55,7 @@ public class TrackersUDPServer extends Thread {
 		this.trackersConsumer = trackersConsumer;
 	}
 	
-	public void sendCalibrationCommand(Tracker tracker) {
+	public void sendCalibrationCommand(Tracker tracker, Consumer<String> calibrationDataConsumer) {
 		TrackerConnection connection = null;
 		synchronized(trackers) {
 			for(int i = 0; i < trackers.size(); ++i) {
@@ -70,9 +74,53 @@ public class TrackersUDPServer extends Thread {
 			connection.isCalibrating = true;
 			connection.rawCalibrationData.clear();
 		}
+		if(calibrationDataConsumer != null)
+			newCalibrationDataRequests.put(tracker, calibrationDataConsumer);
 		try {
 			socket.send(new DatagramPacket(CALIBRATION_BUFFER, CALIBRATION_BUFFER.length, connection.address));
 			System.out.println("[TrackerServer] Calibrating sensor on " + connection.address);
+		} catch(IOException e) {
+			e.printStackTrace();
+		}
+	}
+	
+	public void requestCalibrationData(Tracker tracker, Consumer<String> consumer) {
+		TrackerConnection connection = null;
+		synchronized(trackers) {
+			for(int i = 0; i < trackers.size(); ++i) {
+				if(trackers.get(i).tracker == tracker) {
+					connection = trackers.get(i);
+					break;
+				}
+			}
+		}
+		if(connection == null)
+			return;
+		calibrationDataRequests.put(tracker, consumer);
+		try {
+			socket.send(new DatagramPacket(CALIBRATION_REQUEST_BUFFER, CALIBRATION_REQUEST_BUFFER.length, connection.address));
+			System.out.println("[TrackerServer] Requesting config from " + connection.address);
+		} catch(IOException e) {
+			e.printStackTrace();
+		}
+	}
+	
+	public void uploadNewCalibrationData(Tracker tracker, CalibrationData data) {
+		TrackerConnection connection = null;
+		synchronized(trackers) {
+			for(int i = 0; i < trackers.size(); ++i) {
+				if(trackers.get(i).tracker == tracker) {
+					connection = trackers.get(i);
+					break;
+				}
+			}
+		}
+		if(connection == null)
+			return;
+		// TODO
+		try {
+			socket.send(new DatagramPacket(CALIBRATION_REQUEST_BUFFER, CALIBRATION_REQUEST_BUFFER.length, connection.address));
+			System.out.println("[TrackerServer] Requesting config from " + connection.address);
 		} catch(IOException e) {
 			e.printStackTrace();
 		}
@@ -117,8 +165,6 @@ public class TrackersUDPServer extends Thread {
 		System.out.println("[TrackerServer] Magentometer Hnorm: " + Magneto.INSTANCE.calculateHnorm(magData, sensor.rawCalibrationData.size()));
 		Magneto.INSTANCE.calculate(magData, sensor.rawCalibrationData.size(), 2, 100, magBasis, magAInv);
 		
-		System.out.println("float G_off[3] =");
-		System.out.println(String.format("  {%8.2f, %8.2f, %8.2f}", gyroOffset[0], gyroOffset[1], gyroOffset[2]));
 		System.out.println("float A_B[3] =");
 		System.out.println(String.format("  {%8.2f,%8.2f,%8.2f},", accelBasis[0], accelBasis[1], accelBasis[2]));
 		System.out.println("float A_Ainv[3][3] =");
@@ -131,6 +177,16 @@ public class TrackersUDPServer extends Thread {
 		System.out.println(String.format("  {{%9.5f,%9.5f,%9.5f},", magAInv[0], magAInv[1], magAInv[2]));
 		System.out.println(String.format("  {%9.5f,%9.5f,%9.5f},", magAInv[3], magAInv[4], magAInv[5]));
 		System.out.println(String.format("  {%9.5f,%9.5f,%9.5f}},", magAInv[6], magAInv[7], magAInv[8]));
+		System.out.println("float G_off[3] =");
+		System.out.println(String.format("  {%8.2f, %8.2f, %8.2f}};", gyroOffset[0], gyroOffset[1], gyroOffset[2]));
+		
+		IMUTracker.CalibrationData data = new IMUTracker.CalibrationData(accelBasis, accelAInv, magBasis, magAInv, gyroOffset);
+		sensor.tracker.newCalibrationData = data;
+		
+		Consumer<String> consumer = newCalibrationDataRequests.remove(sensor.tracker);
+		if(consumer != null) {
+			consumer.accept(data.toTextMatrix());
+		}
 	}
 	
 	private void setUpNewSensor(DatagramPacket handshakePacket, ByteBuffer data) throws IOException {
@@ -158,7 +214,7 @@ public class TrackersUDPServer extends Thread {
 	
 	@Override
 	public void run() {
-		byte[] rcvBuffer = new byte[64];
+		byte[] rcvBuffer = new byte[512];
 		ByteBuffer bb = ByteBuffer.wrap(rcvBuffer).order(ByteOrder.BIG_ENDIAN);
 		try {
 			socket = new DatagramSocket(port);
@@ -220,6 +276,16 @@ public class TrackersUDPServer extends Thread {
 						bb.getLong();
 						sensor.gyroCalibrationData = new double[] {bb.getFloat(), bb.getFloat(), bb.getFloat()};
 						break;
+					case 8: // PACKET_CONFIG
+						if(sensor == null)
+							break;
+						bb.getLong();
+						IMUTracker.CalibrationData data = new IMUTracker.CalibrationData(bb);
+						Consumer<String> dataConsumer = calibrationDataRequests.remove(sensor.tracker);
+						if(dataConsumer != null) {
+							dataConsumer.accept(data.toTextMatrix());
+						}
+						break;
 					default:
 						System.out.println("[TrackerServer] Unknown data received: " + packetId + " from " + recieve.getSocketAddress());
 						break;
@@ -268,5 +334,7 @@ public class TrackersUDPServer extends Thread {
 		KEEPUP_BUFFER[3] = 1;
 		CALIBRATION_BUFFER[3] = 4;
 		CALIBRATION_BUFFER[4] = 1;
+		CALIBRATION_REQUEST_BUFFER[3] = 4;
+		CALIBRATION_REQUEST_BUFFER[4] = 2;
 	}
 }

@@ -38,10 +38,12 @@ public class VRServer extends Thread {
 	public final YamlFile config = new YamlFile();
 	public final HMDTracker hmdTracker;
 	private final List<Consumer<Tracker>> newTrackersConsumers = new FastList<>();
+	private final List<Runnable> onTick = new FastList<>();
 	
 	public VRServer() {
 		super("VRServer");
 		hmdTracker = new HMDTracker("HMD");
+		hmdTracker.position.set(0, 1.8f, 0); // Set starting position for easier debugging
 		humanPoseProcessor = new HumanPoseProcessor(this, hmdTracker);
 		List<? extends Tracker> shareTrackers = humanPoseProcessor.getComputedTrackers();
 		driverBridge = new NamedPipeVRBridge(hmdTracker, shareTrackers);
@@ -78,6 +80,10 @@ public class VRServer extends Thread {
 				configuration.put(cfg.trackerName, cfg);
 			}
 		}
+	}
+	
+	public void addOnTick(Runnable runnable) {
+		this.onTick.add(runnable);
 	}
 	
 	@ThreadSafe
@@ -145,6 +151,10 @@ public class VRServer extends Thread {
 					break;
 				task.run();
 			} while(true);
+			
+			for(int i = 0; i < onTick.size(); ++i) {
+				this.onTick.get(i).run();
+			}
 			
 			humanPoseProcessor.update();
 			

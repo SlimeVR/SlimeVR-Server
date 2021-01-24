@@ -26,15 +26,15 @@ public class HumanSekeletonWithLegs extends HumanSkeleonWithWaist {
 	/**
 	 * Distance between centers of both hips
 	 */
-	protected float hipsWidth = 0.3f;
+	protected float hipsWidth = 0.22f;
 	/**
 	 * Length from waist to knees
 	 */
-	protected float hipLength = 0.86f;
+	protected float hipsLength = 0.46f;
 	/**
 	 * Distance from waist to ankle
 	 */
-	protected float ankleLength = 0.42f;
+	protected float ankleLength = 0.4f;
 
 	public HumanSekeletonWithLegs(VRServer server, Map<TrackerBodyPosition, ? extends Tracker> trackers, List<ComputedHumanPoseTracker> computedTrackers) {
 		super(server, trackers.get(TrackerBodyPosition.WAIST), computedTrackers);
@@ -55,6 +55,9 @@ public class HumanSekeletonWithLegs extends HumanSkeleonWithWaist {
 		computedRightAnkleTracker = rat;
 		lat.setStatus(TrackerStatus.OK);
 		rat.setStatus(TrackerStatus.OK);
+		hipsWidth = server.config.getFloat("body.hipsWidth", hipsWidth);
+		hipsLength = server.config.getFloat("body.hipsLength", hipsLength);
+		ankleLength = server.config.getFloat("body.ankleLength", ankleLength);
 		
 		waistNode.attachChild(leftHipNode);
 		leftHipNode.localTransform.setTranslation(hipsWidth / 2, 0, 0);
@@ -63,16 +66,45 @@ public class HumanSekeletonWithLegs extends HumanSkeleonWithWaist {
 		rightHipNode.localTransform.setTranslation(-hipsWidth / 2, 0, 0);
 		
 		leftHipNode.attachChild(leftKneeNode);
-		leftKneeNode.localTransform.setTranslation(0, -hipLength, 0);
+		leftKneeNode.localTransform.setTranslation(0, -hipsLength, 0);
 		
 		rightHipNode.attachChild(rightKneeNode);
-		rightKneeNode.localTransform.setTranslation(0, -hipLength, 0);
+		rightKneeNode.localTransform.setTranslation(0, -hipsLength, 0);
 		
 		leftKneeNode.attachChild(leftAnkleNode);
 		leftAnkleNode.localTransform.setTranslation(0, -ankleLength, 0);
 		
 		rightKneeNode.attachChild(rightAnkleNode);
 		rightAnkleNode.localTransform.setTranslation(0, -ankleLength, 0);
+		
+		jointsMap.put(HumanJoint.HIPS_WIDTH, hipsWidth);
+		jointsMap.put(HumanJoint.HIPS_LENGTH, hipsLength);
+		jointsMap.put(HumanJoint.LEGS_LENGTH, ankleLength);
+	}
+	
+	@Override
+	public void sentJointLength(HumanJoint joint, float newLength) {
+		super.sentJointLength(joint, newLength);
+		switch(joint) {
+		case HIPS_WIDTH:
+			hipsWidth = newLength;
+			server.config.setProperty("body.hipsWidth", hipsWidth);
+			leftHipNode.localTransform.setTranslation(hipsWidth / 2, 0, 0);
+			rightHipNode.localTransform.setTranslation(-hipsWidth / 2, 0, 0);
+			break;
+		case HIPS_LENGTH:
+			hipsLength = newLength;
+			server.config.setProperty("body.hipsLength", hipsLength);
+			leftKneeNode.localTransform.setTranslation(0, -hipsLength, 0);
+			rightKneeNode.localTransform.setTranslation(0, -hipsLength, 0);
+			break;
+		case LEGS_LENGTH:
+			ankleLength = newLength;
+			server.config.setProperty("body.ankleLength", ankleLength);
+			leftAnkleNode.localTransform.setTranslation(0, -ankleLength, 0);
+			rightAnkleNode.localTransform.setTranslation(0, -ankleLength, 0);
+			break;
+		}
 	}
 	
 	@Override
