@@ -12,4 +12,10 @@ public interface Tracker {
 	public String getName();
 	
 	public TrackerStatus getStatus();
+	
+	public void loadConfig(TrackerConfig config);
+	
+	public void saveConfig(TrackerConfig config);
+	
+	public float getConfidenceLevel();
 }

@@ -18,6 +18,7 @@ public class IMUTracker implements Tracker, CalibratingTracker {
 	
 	protected final String name;
 	protected final TrackersUDPServer server;
+	protected float confidence = 0;
 	
 	protected BufferedTimer timer = new BufferedTimer(1f);
 	public CalibrationData newCalibrationData;
@@ -25,6 +26,14 @@ public class IMUTracker implements Tracker, CalibratingTracker {
 	public IMUTracker(String name, TrackersUDPServer server) {
 		this.name = name;
 		this.server = server;
+	}
+	
+	@Override
+	public void saveConfig(TrackerConfig config) {
+	}
+	
+	@Override
+	public void loadConfig(TrackerConfig config) {
 	}
 	
 	@Override
@@ -76,6 +85,15 @@ public class IMUTracker implements Tracker, CalibratingTracker {
 		server.uploadNewCalibrationData(this, newCalibrationData);
 	}
 	
+	@Override
+	public float getConfidenceLevel() {
+		return confidence;
+	}
+	
+	public void setConfidence(float newConf) {
+		this.confidence = newConf;
+	}
+	
 	public static class CalibrationData {
 
 	    //acel offsets and correction matrix
@@ -122,6 +140,7 @@ public class IMUTracker implements Tracker, CalibratingTracker {
 	    }
 		
 		public CalibrationData(ByteBuffer buffer) {
+			buffer.getFloat(); // TODO : WHY???
 			// Data is read in reverse, because it was reversed when sending
 			G_off[2] = buffer.getFloat();
 			G_off[1] = buffer.getFloat();

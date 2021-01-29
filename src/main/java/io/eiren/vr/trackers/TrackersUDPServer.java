@@ -159,11 +159,13 @@ public class TrackersUDPServer extends Thread {
 			magData[i * 3 + 2] = line[5];
 		}
 		
+		double accelHnorm = 10000;
+		double magentometerHnorm = 100;
 		
-		System.out.println("[TrackerServer] Accelerometer Hnorm: " + Magneto.INSTANCE.calculateHnorm(accelData, sensor.rawCalibrationData.size()));
-		Magneto.INSTANCE.calculate(accelData, sensor.rawCalibrationData.size(), 2, 10000, accelBasis, accelAInv);
-		System.out.println("[TrackerServer] Magentometer Hnorm: " + Magneto.INSTANCE.calculateHnorm(magData, sensor.rawCalibrationData.size()));
-		Magneto.INSTANCE.calculate(magData, sensor.rawCalibrationData.size(), 2, 100, magBasis, magAInv);
+		System.out.println("[TrackerServer] Accelerometer Hnorm: " + (accelHnorm = Magneto.INSTANCE.calculateHnorm(accelData, sensor.rawCalibrationData.size())));
+		Magneto.INSTANCE.calculate(accelData, sensor.rawCalibrationData.size(), 0, accelHnorm, accelBasis, accelAInv);
+		System.out.println("[TrackerServer] Magentometer Hnorm: " + (magentometerHnorm = Magneto.INSTANCE.calculateHnorm(magData, sensor.rawCalibrationData.size())));
+		Magneto.INSTANCE.calculate(magData, sensor.rawCalibrationData.size(), 0, magentometerHnorm, magBasis, magAInv);
 		
 		System.out.println("float A_B[3] =");
 		System.out.println(String.format("  {%8.2f,%8.2f,%8.2f},", accelBasis[0], accelBasis[1], accelBasis[2]));
@@ -285,6 +287,15 @@ public class TrackersUDPServer extends Thread {
 						if(dataConsumer != null) {
 							dataConsumer.accept(data.toTextMatrix());
 						}
+						break;
+					case 9: // PACKET_RAW_MAGENTOMETER
+						if(sensor == null)
+							break;
+						bb.getLong();
+						float mx = bb.getFloat();
+						float my = bb.getFloat();
+						float mz = bb.getFloat();
+						sensor.tracker.confidence = (float) Math.sqrt(mx * mx + my * my + mz * mz);
 						break;
 					default:
 						System.out.println("[TrackerServer] Unknown data received: " + packetId + " from " + recieve.getSocketAddress());

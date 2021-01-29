@@ -3,11 +3,20 @@ package io.eiren.vr.processor;
 import java.util.List;
 import java.util.Map;
 
+import com.jme3.math.FastMath;
+import com.jme3.math.Quaternion;
+
+import io.eiren.math.FloatMath;
 import io.eiren.vr.VRServer;
 import io.eiren.vr.trackers.Tracker;
 import io.eiren.vr.trackers.TrackerStatus;
 
 public class HumanSekeletonWithLegs extends HumanSkeleonWithWaist {
+	
+	protected final float[] kneeAngles = new float[3];
+	protected final float[] hipAngles = new float[3];
+	protected final Quaternion hipBuf = new Quaternion();
+	protected final Quaternion kneeBuf = new Quaternion();
 	
 	protected final Tracker leftLegTracker;
 	protected final Tracker leftAnkleTracker;
@@ -26,7 +35,7 @@ public class HumanSekeletonWithLegs extends HumanSkeleonWithWaist {
 	/**
 	 * Distance between centers of both hips
 	 */
-	protected float hipsWidth = 0.22f;
+	protected float hipsWidth = 0.33f;
 	/**
 	 * Length from waist to knees
 	 */
@@ -35,6 +44,11 @@ public class HumanSekeletonWithLegs extends HumanSkeleonWithWaist {
 	 * Distance from waist to ankle
 	 */
 	protected float ankleLength = 0.4f;
+	
+	protected float minKneePitch = 0f * FastMath.DEG_TO_RAD;
+	protected float maxKneePitch = 90f * FastMath.DEG_TO_RAD;
+	
+	protected float kneeLerpFactor = 0.5f;
 
 	public HumanSekeletonWithLegs(VRServer server, Map<TrackerBodyPosition, ? extends Tracker> trackers, List<ComputedHumanPoseTracker> computedTrackers) {
 		super(server, trackers.get(TrackerBodyPosition.WAIST), computedTrackers);
@@ -60,10 +74,10 @@ public class HumanSekeletonWithLegs extends HumanSkeleonWithWaist {
 		ankleLength = server.config.getFloat("body.ankleLength", ankleLength);
 		
 		waistNode.attachChild(leftHipNode);
-		leftHipNode.localTransform.setTranslation(hipsWidth / 2, 0, 0);
+		leftHipNode.localTransform.setTranslation(-hipsWidth / 2, 0, 0);
 		
 		waistNode.attachChild(rightHipNode);
-		rightHipNode.localTransform.setTranslation(-hipsWidth / 2, 0, 0);
+		rightHipNode.localTransform.setTranslation(hipsWidth / 2, 0, 0);
 		
 		leftHipNode.attachChild(leftKneeNode);
 		leftKneeNode.localTransform.setTranslation(0, -hipsLength, 0);
@@ -77,28 +91,28 @@ public class HumanSekeletonWithLegs extends HumanSkeleonWithWaist {
 		rightKneeNode.attachChild(rightAnkleNode);
 		rightAnkleNode.localTransform.setTranslation(0, -ankleLength, 0);
 		
-		jointsMap.put(HumanJoint.HIPS_WIDTH, hipsWidth);
-		jointsMap.put(HumanJoint.HIPS_LENGTH, hipsLength);
-		jointsMap.put(HumanJoint.LEGS_LENGTH, ankleLength);
+		configMap.put("Hips width", hipsWidth);
+		configMap.put("Hips length", hipsLength);
+		configMap.put("Legs length", ankleLength);
 	}
 	
 	@Override
-	public void sentJointLength(HumanJoint joint, float newLength) {
-		super.sentJointLength(joint, newLength);
+	public void setSkeletonConfig(String joint, float newLength) {
+		super.setSkeletonConfig(joint, newLength);
 		switch(joint) {
-		case HIPS_WIDTH:
+		case "Hips width":
 			hipsWidth = newLength;
 			server.config.setProperty("body.hipsWidth", hipsWidth);
 			leftHipNode.localTransform.setTranslation(hipsWidth / 2, 0, 0);
 			rightHipNode.localTransform.setTranslation(-hipsWidth / 2, 0, 0);
 			break;
-		case HIPS_LENGTH:
+		case "Hips length":
 			hipsLength = newLength;
 			server.config.setProperty("body.hipsLength", hipsLength);
 			leftKneeNode.localTransform.setTranslation(0, -hipsLength, 0);
 			rightKneeNode.localTransform.setTranslation(0, -hipsLength, 0);
 			break;
-		case LEGS_LENGTH:
+		case "Legs length":
 			ankleLength = newLength;
 			server.config.setProperty("body.ankleLength", ankleLength);
 			leftAnkleNode.localTransform.setTranslation(0, -ankleLength, 0);
@@ -110,21 +124,60 @@ public class HumanSekeletonWithLegs extends HumanSkeleonWithWaist {
 	@Override
 	public void updateLocalTransforms() {
 		super.updateLocalTransforms();
-		leftLegTracker.getRotation(qBuf);
-		leftHipNode.localTransform.setRotation(qBuf);
-		
-		rightLegTracker.getRotation(qBuf);
-		rightHipNode.localTransform.setRotation(qBuf);
-		
-		leftAnkleTracker.getRotation(qBuf);
-		leftKneeNode.localTransform.setRotation(qBuf);
-		leftAnkleNode.localTransform.setRotation(qBuf);
-		
-		rightAnkleTracker.getRotation(qBuf);
-		rightKneeNode.localTransform.setRotation(qBuf);
-		rightAnkleNode.localTransform.setRotation(qBuf);
-	}
+		// Left Leg
+		leftLegTracker.getRotation(hipBuf);
+		leftAnkleTracker.getRotation(kneeBuf);
 
+		calculateKneeLimits(hipBuf, kneeBuf, leftLegTracker.getConfidenceLevel(), leftAnkleTracker.getConfidenceLevel());
+		
+		leftHipNode.localTransform.setRotation(hipBuf);
+		leftKneeNode.localTransform.setRotation(kneeBuf);
+		leftAnkleNode.localTransform.setRotation(kneeBuf);
+
+		// Right Leg
+		rightLegTracker.getRotation(hipBuf);
+		rightAnkleTracker.getRotation(kneeBuf);
+		
+		calculateKneeLimits(hipBuf, kneeBuf, rightLegTracker.getConfidenceLevel(), rightAnkleTracker.getConfidenceLevel());
+		
+		rightHipNode.localTransform.setRotation(hipBuf);
+		rightKneeNode.localTransform.setRotation(kneeBuf);
+		rightAnkleNode.localTransform.setRotation(kneeBuf);
+	}
+	
+	// Knee basically has only 1 DoF (pitch), average yaw between knee and hip
+	protected void calculateKneeLimits(Quaternion hipBuf, Quaternion kneeBuf, float hipConfidense, float kneeConfidense) {
+		hipBuf.toAngles(hipAngles);
+		kneeBuf.toAngles(kneeAngles);
+		
+		hipConfidense = Math.abs(1 - hipConfidense);
+		kneeConfidense = Math.abs(1 - kneeConfidense);
+		float confidenseDiff = hipConfidense < kneeConfidense ? 1 : 0;//FloatMath.equalsToZero(hipConfidense) ? 1.0f : FastMath.clamp(0.5f * (kneeConfidense / hipConfidense), 0f, 1f);
+		
+		hipAngles[1] = kneeAngles[1] = interpolateRadians(confidenseDiff, kneeAngles[1], hipAngles[1]);
+		//hipAngles[2] = kneeAngles[2] = interpolateRadians(kneeLerpFactor, kneeAngles[2], hipAngles[2]);
+		
+		hipBuf.fromAngles(hipAngles[0], hipAngles[1], hipAngles[2]);
+		kneeBuf.fromAngles(kneeAngles[0], kneeAngles[1], kneeAngles[2]);
+	}
+	
+	public static float normalizeRad(float angle) {
+		return FastMath.normalize(angle, -FastMath.PI, FastMath.PI);
+	}
+	
+	public static float interpolateRadians(float factor, float start, float end) {
+		float angle = Math.abs(end - start);
+		if(angle > FastMath.PI) {
+			if(end > start) {
+				start += FastMath.TWO_PI;
+			} else {
+				end += FastMath.TWO_PI;
+			}
+		}
+		float val = start + (end - start) * factor;
+		return normalizeRad(val);
+	}
+	
 	@Override
 	protected void updateComputedTrackers() {
 		super.updateComputedTrackers();

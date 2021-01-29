@@ -15,7 +15,7 @@ import io.eiren.vr.trackers.TrackerStatus;
 
 public class HumanSkeleonWithWaist extends HumanSkeleton {
 	
-	protected final Map<HumanJoint, Float> jointsMap = new HashMap<>();
+	protected final Map<String, Float> configMap = new HashMap<>();
 	protected final VRServer server;
 	
 	protected final Quaternion qBuf = new Quaternion();
@@ -47,7 +47,7 @@ public class HumanSkeleonWithWaist extends HumanSkeleton {
 	/**
 	 * Distance from eyes to ear
 	 */
-	protected float headShift = 0.00f;
+	protected float headShift = 0.05f;
 
 	public HumanSkeleonWithWaist(VRServer server, Tracker waistTracker, List<ComputedHumanPoseTracker> computedTrackers) {
 		this.wasitTracker = waistTracker;
@@ -78,37 +78,37 @@ public class HumanSkeleonWithWaist extends HumanSkeleton {
 		neckNode.attachChild(trackerWaistNode);
 		trackerWaistNode.localTransform.setTranslation(0, -trackerWaistDistance, 0);
 		
-		jointsMap.put(HumanJoint.HEAD, headShift);
-		jointsMap.put(HumanJoint.NECK, neckLength);
-		jointsMap.put(HumanJoint.WAIST, waistDistance);
-		jointsMap.put(HumanJoint.WASIT_VIRTUAL, trackerWaistDistance);
+		configMap.put("Head", headShift);
+		configMap.put("Neck", neckLength);
+		configMap.put("Waist", waistDistance);
+		configMap.put("Virtual waist", trackerWaistDistance);
 	}
 	
 	@Override
-	public Map<HumanJoint, Float> getJointsMap() {
-		return jointsMap;
+	public Map<String, Float> getSkeletonConfig() {
+		return configMap;
 	}
 
 	@Override
-	public void sentJointLength(HumanJoint joint, float newLength) {
-		jointsMap.put(joint, newLength);
+	public void setSkeletonConfig(String joint, float newLength) {
+		configMap.put(joint, newLength);
 		switch(joint) {
-		case HEAD:
+		case "Head":
 			headShift = newLength;
 			server.config.setProperty("body.headShift", headShift);
 			headNode.localTransform.setTranslation(0, 0, headShift);
 			break;
-		case NECK:
+		case "Neck":
 			neckLength = newLength;
 			server.config.setProperty("body.neckLength", neckLength);
 			neckNode.localTransform.setTranslation(0, -neckLength, 0);
 			break;
-		case WAIST:
+		case "Waist":
 			waistDistance = newLength;
 			server.config.setProperty("body.waistDistance", waistDistance);
 			waistNode.localTransform.setTranslation(0, -waistDistance, 0);
 			break;
-		case WASIT_VIRTUAL:
+		case "Virtual waist":
 			trackerWaistDistance = newLength;
 			server.config.setProperty("body.trackerWaistDistance", trackerWaistDistance);
 			trackerWaistNode.localTransform.setTranslation(0, -trackerWaistDistance, 0);
@@ -144,6 +144,7 @@ public class HumanSkeleonWithWaist extends HumanSkeleton {
 		// Pelvic bone doesn't tilt when humans tilt, unless they really try.
 		// Can't calculate tilt without additional sensors, so just remove it
 		// completely.
+		vBuf.set(0, 0, 1);
 		qBuf.multLocal(vBuf);
 		vBuf.multLocal(1, 0, 1); // Keep only yaw / Don't normalize, it's done by lookAt()
 		qBuf.lookAt(vBuf, Vector3f.UNIT_Y);

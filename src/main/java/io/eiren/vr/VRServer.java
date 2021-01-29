@@ -178,6 +178,8 @@ public class VRServer extends Thread {
 	
 	@ThreadSecure
 	public void registerTracker(Tracker tracker) {
+		TrackerConfig config = getTrackerConfig(tracker);
+		tracker.loadConfig(config);
 		queueTask(() -> {
 			trackers.add(tracker);
 			autoAssignTracker(tracker);

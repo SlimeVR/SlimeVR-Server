@@ -4,7 +4,6 @@ import java.awt.GridBagConstraints;
 import java.awt.event.MouseEvent;
 import java.util.List;
 
-import javax.swing.BoxLayout;
 import javax.swing.JButton;
 import javax.swing.JLabel;
 import javax.swing.event.MouseInputAdapter;
@@ -19,7 +18,10 @@ import io.eiren.util.ann.ThreadSafe;
 import io.eiren.util.ann.VRServerThread;
 import io.eiren.util.collections.FastList;
 import io.eiren.vr.VRServer;
+import io.eiren.vr.trackers.AdjustedTracker;
 import io.eiren.vr.trackers.CalibratingTracker;
+import io.eiren.vr.trackers.ComputedTracker;
+import io.eiren.vr.trackers.HMDTracker;
 import io.eiren.vr.trackers.IMUTracker;
 import io.eiren.vr.trackers.Tracker;
 import io.eiren.vr.trackers.TrackerConfig;
@@ -41,6 +43,15 @@ public class TrackersList extends EJBag {
 		this.gui = gui;
 
 		setAlignmentY(TOP_ALIGNMENT);
+		
+		
+		server.addNewTrackerConsumer(this::newTrackerAdded);
+	}
+
+	@AWTThread
+	private void build() {
+		removeAll();
+		
 		add(new JLabel("Tracker"), c(0, 0, 2));
 		add(new JLabel("Designation"), c(1, 0, 2));
 		add(new JLabel("X"), c(2, 0, 2));
@@ -51,8 +62,41 @@ public class TrackersList extends EJBag {
 		add(new JLabel("Roll"), c(7, 0, 2));
 		add(new JLabel("Status"), c(8, 0, 2));
 		add(new JLabel("TPS"), c(9, 0, 2));
+		add(new JLabel("Conf"), c(10, 0, 2));
 		
-		server.addNewTrackerConsumer(this::newTrackerAdded);
+		trackers.sort((tr1, tr2) -> getTrackerSort(tr1.t) - getTrackerSort(tr2.t));
+		
+		Class<? extends Tracker> currentClass = null;
+		
+		int n = 1;
+		
+		for(int i = 0; i < trackers.size(); ++i) {
+			TrackerRow tr = trackers.get(i);
+			Tracker t = tr.t;
+			if(currentClass != t.getClass()) {
+				currentClass = t.getClass();
+				add(new JLabel(currentClass.getSimpleName()), c(0, n, 5, GridBagConstraints.CENTER));
+				n++;
+			}
+
+			tr.build(n);
+			TrackerConfig cfg = server.getTrackerConfig(t);
+			
+			if(cfg.designation != null)
+				add(new JLabel(cfg.designation), c(1, n, 2));
+			if(t instanceof CalibratingTracker) {
+				add(new JButton("Calibrate") {{
+					addMouseListener(new MouseInputAdapter() {
+						@Override
+						public void mouseClicked(MouseEvent e) {
+							new CalibrationWindow(t);
+						}
+					});
+				}}, c(11, n, 2));
+			}
+			n++;
+		}
+		gui.refresh();
 	}
 	
 	@VRServerThread
@@ -66,30 +110,14 @@ public class TrackersList extends EJBag {
 	@ThreadSafe
 	public void newTrackerAdded(Tracker t) {
 		java.awt.EventQueue.invokeLater(() -> {
-			final int n = trackers.size();
-			TrackerConfig cfg = server.getTrackerConfig(t);
-			
-			trackers.add(new TrackerRow(t, n + 1));
-			if(cfg.designation != null)
-				add(new JLabel(cfg.designation), c(1, n + 1, 2));
-			if(t instanceof CalibratingTracker) {
-				add(new JButton("Calibrate") {{
-					addMouseListener(new MouseInputAdapter() {
-						@Override
-						public void mouseClicked(MouseEvent e) {
-							new CalibrationWindow(t);
-						}
-					});
-				}}, c(10, n + 1, 2));
-			}
-			
-			gui.refresh();
+			trackers.add(new TrackerRow(t));
+			build();
 		});
 	}
 	
 	private class TrackerRow {
 		
-		Tracker t;
+		final Tracker t;
 		JLabel x;
 		JLabel y;
 		JLabel z;
@@ -98,10 +126,15 @@ public class TrackersList extends EJBag {
 		JLabel a3;
 		JLabel status;
 		JLabel tps;
+		JLabel conf;
 		
 		@AWTThread
-		public TrackerRow(Tracker t, int n) {
+		public TrackerRow(Tracker t) {
 			this.t = t;
+		}
+
+		@AWTThread
+		public TrackerRow build(int n) {
 			add(new JLabel(t.getName()), c(0, n, 2, GridBagConstraints.FIRST_LINE_START));
 			add(x = new JLabel("0"), c(2, n, 2, GridBagConstraints.FIRST_LINE_START));
 			add(y = new JLabel("0"), c(3, n, 2, GridBagConstraints.FIRST_LINE_START));
@@ -112,11 +145,17 @@ public class TrackersList extends EJBag {
 			add(status = new JLabel(t.getStatus().toString()), c(8, n, 2, GridBagConstraints.FIRST_LINE_START));
 			if(t instanceof IMUTracker) {
 				add(tps = new JLabel("0"), c(9, n, 2, GridBagConstraints.FIRST_LINE_START));
+			} else {
+				add(new JLabel(""), c(9, n, 2, GridBagConstraints.FIRST_LINE_START));
 			}
+			add(conf = new JLabel("0"), c(10, n, 2, GridBagConstraints.FIRST_LINE_START));
+			return this;
 		}
 
 		@AWTThread
 		public void update() {
+			if(x == null)
+				return;
 			t.getRotation(q);
 			t.getPosition(v);
 			q.toAngles(angles);
@@ -132,6 +171,19 @@ public class TrackersList extends EJBag {
 			if(t instanceof IMUTracker) {
 				tps.setText(StringUtils.prettyNumber(((IMUTracker) t).getTPS(), 1));
 			}
+			conf.setText(StringUtils.prettyNumber(t.getConfidenceLevel(), 1));
 		}
+	}
+	
+	private static int getTrackerSort(Tracker t) {
+		if(t instanceof HMDTracker)
+			return 0;
+		if(t instanceof ComputedTracker)
+			return 1;
+		if(t instanceof IMUTracker)
+			return 2;
+		if(t instanceof AdjustedTracker)
+			return 5;
+		return 1000;
 	}
 }

@@ -14,28 +14,8 @@ public abstract class HumanSkeleton {
 	public abstract TransformNode getRootNode();
 
 	@ThreadSafe
-	public abstract Map<HumanJoint, Float> getJointsMap();
+	public abstract Map<String, Float> getSkeletonConfig();
 
 	@ThreadSafe
-	public abstract void sentJointLength(HumanJoint joint, float newLength);
-	
-	public enum HumanJoint {
-		
-		HEAD("Head", ""),
-		NECK("Neck", ""),
-		WAIST("Waist", ""),
-		WASIT_VIRTUAL("Virtual waist", ""),
-		HIPS_WIDTH("Hips width", ""),
-		HIPS_LENGTH("Hips length", ""),
-		LEGS_LENGTH("Legs length", ""),
-		;
-		
-		public final String name;
-		public final String description;
-		
-		private HumanJoint(String name, String description) {
-			this.name = name;
-			this.description = description;
-		}
-	}
+	public abstract void setSkeletonConfig(String key, float newLength);
 }

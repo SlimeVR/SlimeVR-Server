@@ -15,6 +15,14 @@ public class ComputedTracker implements Tracker {
 	}
 	
 	@Override
+	public void saveConfig(TrackerConfig config) {
+	}
+	
+	@Override
+	public void loadConfig(TrackerConfig config) {
+	}
+	
+	@Override
 	public String getName() {
 		return this.name;
 	}
@@ -38,5 +46,10 @@ public class ComputedTracker implements Tracker {
 	
 	public void setStatus(TrackerStatus status) {
 		this.status = status;
+	}
+	
+	@Override
+	public float getConfidenceLevel() {
+		return 1.0f;
 	}
 }

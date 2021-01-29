@@ -1,7 +1,6 @@
 package io.eiren.vr.trackers;
 
 import com.jme3.math.Quaternion;
-import com.jme3.math.Vector3f;
 
 public class AdjustedYawTracker extends AdjustedTracker {
 
@@ -13,21 +12,19 @@ public class AdjustedYawTracker extends AdjustedTracker {
 	public void adjust(Quaternion reference) {
 		Quaternion targetTrackerRotation = new Quaternion(reference);
 		
-		// Use only yaw rotation
-		Vector3f hmdFront = new Vector3f(0, 0, 1);
-		targetTrackerRotation.multLocal(hmdFront);
-		hmdFront.multLocal(1, 0, 1).normalizeLocal();
-		targetTrackerRotation.lookAt(hmdFront, Vector3f.UNIT_Y);
+		float[] angles = new float[3];
+		targetTrackerRotation.toAngles(angles);
+		targetTrackerRotation.fromAngles(0, angles[1], 0);
 		
 		Quaternion sensorRotation = new Quaternion();
 		tracker.getRotation(sensorRotation);
 		
-		// Adjust only yaw rotation
-		Vector3f sensorFront = new Vector3f(0, 0, 1);
-		sensorRotation.multLocal(sensorFront);
-		sensorFront.multLocal(1, 0, 1).normalizeLocal();
-		sensorRotation.lookAt(sensorFront, Vector3f.UNIT_Y);
+		sensorRotation.toAngles(angles);
+		sensorRotation.fromAngles(0, angles[1], 0);
 		
 		adjustment.set(sensorRotation).inverseLocal().multLocal(targetTrackerRotation);
+		
+		confidenceMultiplier = 1.0f / tracker.getConfidenceLevel();
+		lastAngles[0] = 1000;
 	}
 }

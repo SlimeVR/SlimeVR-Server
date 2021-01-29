@@ -63,10 +63,6 @@ public class HumanPoseProcessor {
 	private void addTracker(Tracker tracker, TrackerBodyPosition position) {
 		AdjustedTracker tt = new AdjustedYawTracker(tracker);
 		
-		TrackerConfig config = server.getTrackerConfig(tt);
-		if(config.adjustment != null)
-			tt.adjustment.set(config.adjustment);
-		
 		trackers.put(position, tt);
 		server.registerTracker(tt);
 		updateSekeltonModel();
@@ -123,7 +119,7 @@ public class HumanPoseProcessor {
 			tt.adjust(hmdRotation);
 			
 			TrackerConfig config = server.getTrackerConfig(tt);
-			tt.saveAdjustment(config);
+			tt.saveConfig(config);
 		}
 	}
 
