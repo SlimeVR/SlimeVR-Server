@@ -94,6 +94,7 @@ public class NamedPipeVRBridge extends Thread implements VRBridge {
 							
 							hmd.position.set((float) x, (float) y, (float) z);
 							hmd.rotation.set((float) qx, (float) qy, (float) qz, (float) qw);
+							hmd.dataTick();
 						} catch(NumberFormatException e) {
 							e.printStackTrace();
 						}

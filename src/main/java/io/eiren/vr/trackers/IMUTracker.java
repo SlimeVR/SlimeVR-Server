@@ -8,7 +8,7 @@ import com.jme3.math.Vector3f;
 
 import io.eiren.util.BufferedTimer;
 
-public class IMUTracker implements Tracker, CalibratingTracker {
+public class IMUTracker implements Tracker, CalibratingTracker, TrackerWithTPS {
 	
 	public final Vector3f gyroVector = new Vector3f();
 	public final Vector3f accelVector = new Vector3f();
@@ -67,10 +67,12 @@ public class IMUTracker implements Tracker, CalibratingTracker {
 		server.sendCalibrationCommand(this, calibrationDataConsumer);
 	}
 	
+	@Override
 	public float getTPS() {
 		return timer.getAverageFPS();
 	}
 	
+	@Override
 	public void dataTick() {
 		timer.update();
 	}

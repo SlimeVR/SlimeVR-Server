@@ -1,9 +1,22 @@
 package io.eiren.vr.trackers;
 
-public class HMDTracker extends ComputedTracker {
+import io.eiren.util.BufferedTimer;
 
+public class HMDTracker extends ComputedTracker implements TrackerWithTPS {
+
+	protected BufferedTimer timer = new BufferedTimer(1f);
+	
 	public HMDTracker(String name) {
 		super(name);
 	}
 	
+	@Override
+	public float getTPS() {
+		return timer.getAverageFPS();
+	}
+	
+	@Override
+	public void dataTick() {
+		timer.update();
+	}
 }

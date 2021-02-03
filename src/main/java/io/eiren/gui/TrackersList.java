@@ -25,6 +25,7 @@ import io.eiren.vr.trackers.HMDTracker;
 import io.eiren.vr.trackers.IMUTracker;
 import io.eiren.vr.trackers.Tracker;
 import io.eiren.vr.trackers.TrackerConfig;
+import io.eiren.vr.trackers.TrackerWithTPS;
 
 public class TrackersList extends EJBag {
 	
@@ -94,7 +95,7 @@ public class TrackersList extends EJBag {
 					});
 				}}, c(11, n, 2));
 			}
-			n++;
+			n += tr.getSize();
 		}
 		gui.refresh();
 	}
@@ -110,7 +111,10 @@ public class TrackersList extends EJBag {
 	@ThreadSafe
 	public void newTrackerAdded(Tracker t) {
 		java.awt.EventQueue.invokeLater(() -> {
-			trackers.add(new TrackerRow(t));
+			if(t instanceof IMUTracker)
+				trackers.add(new IMUTrackerRow((IMUTracker) t));
+			else
+				trackers.add(new TrackerRow(t));
 			build();
 		});
 	}
@@ -143,7 +147,7 @@ public class TrackersList extends EJBag {
 			add(a2 = new JLabel("0"), c(6, n, 2, GridBagConstraints.FIRST_LINE_START));
 			add(a3 = new JLabel("0"), c(7, n, 2, GridBagConstraints.FIRST_LINE_START));
 			add(status = new JLabel(t.getStatus().toString()), c(8, n, 2, GridBagConstraints.FIRST_LINE_START));
-			if(t instanceof IMUTracker) {
+			if(t instanceof TrackerWithTPS) {
 				add(tps = new JLabel("0"), c(9, n, 2, GridBagConstraints.FIRST_LINE_START));
 			} else {
 				add(new JLabel(""), c(9, n, 2, GridBagConstraints.FIRST_LINE_START));
@@ -168,10 +172,64 @@ public class TrackersList extends EJBag {
 			a3.setText(StringUtils.prettyNumber(angles[2] * FastMath.RAD_TO_DEG, 0));
 			status.setText(t.getStatus().toString());
 			
-			if(t instanceof IMUTracker) {
-				tps.setText(StringUtils.prettyNumber(((IMUTracker) t).getTPS(), 1));
+			if(t instanceof TrackerWithTPS) {
+				tps.setText(StringUtils.prettyNumber(((TrackerWithTPS) t).getTPS(), 1));
 			}
 			conf.setText(StringUtils.prettyNumber(t.getConfidenceLevel(), 1));
+		}
+		
+		public int getSize() {
+			return 1;
+		}
+	}
+	
+	private class IMUTrackerRow extends TrackerRow {
+		
+		IMUTracker it;
+		JLabel mx;
+		JLabel my;
+		JLabel mz;
+		JLabel ax;
+		JLabel ay;
+		JLabel az;
+		
+		public IMUTrackerRow(IMUTracker t) {
+			super(t);
+			it = t;
+		}
+
+		@Override
+		public TrackerRow build(int n) {
+			super.build(n);
+			n++;
+			add(new JLabel("Mag / Accel:"), c(0, n, 2, GridBagConstraints.FIRST_LINE_END));
+			add(mx = new JLabel("0"), c(2, n, 2, GridBagConstraints.FIRST_LINE_START));
+			add(my = new JLabel("0"), c(3, n, 2, GridBagConstraints.FIRST_LINE_START));
+			add(mz = new JLabel("0"), c(4, n, 2, GridBagConstraints.FIRST_LINE_START));
+			add(ax = new JLabel("0"), c(5, n, 2, GridBagConstraints.FIRST_LINE_START));
+			add(ay = new JLabel("0"), c(6, n, 2, GridBagConstraints.FIRST_LINE_START));
+			add(az = new JLabel("0"), c(7, n, 2, GridBagConstraints.FIRST_LINE_START));
+			return this;
+		}
+		
+		@Override
+		public void update() {
+			super.update();
+			q.lookAt(it.magVector, Vector3f.UNIT_Y);
+			q.toAngles(angles);
+			mx.setText(StringUtils.prettyNumber(angles[0] * FastMath.RAD_TO_DEG, 0));
+			my.setText(StringUtils.prettyNumber(angles[1] * FastMath.RAD_TO_DEG, 0));
+			mz.setText(StringUtils.prettyNumber(angles[2] * FastMath.RAD_TO_DEG, 0));
+			q.lookAt(it.accelVector, Vector3f.UNIT_Y);
+			q.toAngles(angles);
+			ax.setText(StringUtils.prettyNumber(angles[0] * FastMath.RAD_TO_DEG, 0));
+			ay.setText(StringUtils.prettyNumber(angles[1] * FastMath.RAD_TO_DEG, 0));
+			az.setText(StringUtils.prettyNumber(angles[2] * FastMath.RAD_TO_DEG, 0));
+		}
+		
+		@Override
+		public int getSize() {
+			return super.getSize() + 1;
 		}
 	}
 	

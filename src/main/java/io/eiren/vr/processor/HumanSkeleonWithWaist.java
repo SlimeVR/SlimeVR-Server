@@ -144,15 +144,16 @@ public class HumanSkeleonWithWaist extends HumanSkeleton {
 		// Pelvic bone doesn't tilt when humans tilt, unless they really try.
 		// Can't calculate tilt without additional sensors, so just remove it
 		// completely.
-		vBuf.set(0, 0, 1);
-		qBuf.multLocal(vBuf);
-		vBuf.multLocal(1, 0, 1); // Keep only yaw / Don't normalize, it's done by lookAt()
-		qBuf.lookAt(vBuf, Vector3f.UNIT_Y);
+		//vBuf.set(0, 0, 1);
+		//qBuf.multLocal(vBuf);
+		//vBuf.multLocal(1, 0, 1); // Keep only yaw / Don't normalize, it's done by lookAt()
+		//qBuf.lookAt(vBuf, Vector3f.UNIT_Y);
 		waistNode.localTransform.setRotation(qBuf);
 	}
 	
 	protected void updateComputedTrackers() {
 		computedWaistTracker.position.set(trackerWaistNode.worldTransform.getTranslation());
 		computedWaistTracker.rotation.set(trackerWaistNode.worldTransform.getRotation());
+		computedWaistTracker.dataTick();
 	}
 }

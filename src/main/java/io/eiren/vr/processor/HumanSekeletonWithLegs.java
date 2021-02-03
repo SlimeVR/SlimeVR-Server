@@ -6,7 +6,6 @@ import java.util.Map;
 import com.jme3.math.FastMath;
 import com.jme3.math.Quaternion;
 
-import io.eiren.math.FloatMath;
 import io.eiren.vr.VRServer;
 import io.eiren.vr.trackers.Tracker;
 import io.eiren.vr.trackers.TrackerStatus;
@@ -150,11 +149,13 @@ public class HumanSekeletonWithLegs extends HumanSkeleonWithWaist {
 		hipBuf.toAngles(hipAngles);
 		kneeBuf.toAngles(kneeAngles);
 		
+		// TODO
 		hipConfidense = Math.abs(1 - hipConfidense);
 		kneeConfidense = Math.abs(1 - kneeConfidense);
 		float confidenseDiff = hipConfidense < kneeConfidense ? 1 : 0;//FloatMath.equalsToZero(hipConfidense) ? 1.0f : FastMath.clamp(0.5f * (kneeConfidense / hipConfidense), 0f, 1f);
 		
-		hipAngles[1] = kneeAngles[1] = interpolateRadians(confidenseDiff, kneeAngles[1], hipAngles[1]);
+		
+		hipAngles[1] = kneeAngles[1] = interpolateRadians(0.5f, kneeAngles[1], hipAngles[1]);
 		//hipAngles[2] = kneeAngles[2] = interpolateRadians(kneeLerpFactor, kneeAngles[2], hipAngles[2]);
 		
 		hipBuf.fromAngles(hipAngles[0], hipAngles[1], hipAngles[2]);
@@ -184,8 +185,10 @@ public class HumanSekeletonWithLegs extends HumanSkeleonWithWaist {
 		
 		computedLeftAnkleTracker.position.set(leftAnkleNode.worldTransform.getTranslation());
 		computedLeftAnkleTracker.rotation.set(leftAnkleNode.worldTransform.getRotation());
+		computedLeftAnkleTracker.dataTick();
 		
 		computedRightAnkleTracker.position.set(rightAnkleNode.worldTransform.getTranslation());
 		computedRightAnkleTracker.rotation.set(rightAnkleNode.worldTransform.getRotation());
+		computedRightAnkleTracker.dataTick();
 	}
 }

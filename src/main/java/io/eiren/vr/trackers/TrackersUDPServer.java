@@ -149,6 +149,12 @@ public class TrackersUDPServer extends Thread {
 		
 		double[] accelData = new double[sensor.rawCalibrationData.size() * 3];
 		double[] magData = new double[sensor.rawCalibrationData.size() * 3];
+		double magMinX = Double.MAX_VALUE;
+		double magMinY = Double.MAX_VALUE;
+		double magMinZ = Double.MAX_VALUE;
+		double magMaxX = Double.MIN_VALUE;
+		double magMaxY = Double.MIN_VALUE;
+		double magMaxZ = Double.MIN_VALUE;
 		for(int i = 0; i < sensor.rawCalibrationData.size(); ++i) {
 			double[] line = sensor.rawCalibrationData.get(i);
 			accelData[i * 3 + 0] = line[0];
@@ -157,15 +163,21 @@ public class TrackersUDPServer extends Thread {
 			magData[i * 3 + 0] = line[3];
 			magData[i * 3 + 1] = line[4];
 			magData[i * 3 + 2] = line[5];
+			magMinX = Math.min(magMinX, line[3]);
+			magMinY = Math.min(magMinY, line[4]);
+			magMinZ = Math.min(magMinZ, line[5]);
+			magMaxX = Math.max(magMaxX, line[3]);
+			magMaxY = Math.max(magMaxY, line[4]);
+			magMaxZ = Math.max(magMaxZ, line[5]);
 		}
 		
 		double accelHnorm = 10000;
 		double magentometerHnorm = 100;
 		
 		System.out.println("[TrackerServer] Accelerometer Hnorm: " + (accelHnorm = Magneto.INSTANCE.calculateHnorm(accelData, sensor.rawCalibrationData.size())));
-		Magneto.INSTANCE.calculate(accelData, sensor.rawCalibrationData.size(), 0, accelHnorm, accelBasis, accelAInv);
+		Magneto.INSTANCE.calculate(accelData, sensor.rawCalibrationData.size(), 2, accelHnorm, accelBasis, accelAInv);
 		System.out.println("[TrackerServer] Magentometer Hnorm: " + (magentometerHnorm = Magneto.INSTANCE.calculateHnorm(magData, sensor.rawCalibrationData.size())));
-		Magneto.INSTANCE.calculate(magData, sensor.rawCalibrationData.size(), 0, magentometerHnorm, magBasis, magAInv);
+		Magneto.INSTANCE.calculate(magData, sensor.rawCalibrationData.size(), 2, magentometerHnorm, magBasis, magAInv);
 		
 		System.out.println("float A_B[3] =");
 		System.out.println(String.format("  {%8.2f,%8.2f,%8.2f},", accelBasis[0], accelBasis[1], accelBasis[2]));
@@ -181,6 +193,9 @@ public class TrackersUDPServer extends Thread {
 		System.out.println(String.format("  {%9.5f,%9.5f,%9.5f}},", magAInv[6], magAInv[7], magAInv[8]));
 		System.out.println("float G_off[3] =");
 		System.out.println(String.format("  {%8.2f, %8.2f, %8.2f}};", gyroOffset[0], gyroOffset[1], gyroOffset[2]));
+		System.out.println(String.format("Min/Max {%8.2f, %8.2f, %8.2f} / {%8.2f, %8.2f, %8.2f}", magMinX, magMinY, magMinZ, magMaxX, magMaxY, magMaxZ));
+		System.out.println(String.format("Mag agv {%8.2f, %8.2f, %8.2f},", (magMaxX + magMinX) / 2, (magMaxY + magMinY) / 2, (magMaxZ + magMinZ) / 2));
+		
 		
 		IMUTracker.CalibrationData data = new IMUTracker.CalibrationData(accelBasis, accelAInv, magBasis, magAInv, gyroOffset);
 		sensor.tracker.newCalibrationData = data;
@@ -220,6 +235,7 @@ public class TrackersUDPServer extends Thread {
 		ByteBuffer bb = ByteBuffer.wrap(rcvBuffer).order(ByteOrder.BIG_ENDIAN);
 		try {
 			socket = new DatagramSocket(port);
+			socket.setSoTimeout(250);
 			while(true) {
 				try {
 					DatagramPacket recieve = new DatagramPacket(rcvBuffer, rcvBuffer.length);
@@ -230,6 +246,8 @@ public class TrackersUDPServer extends Thread {
 					synchronized(trackers) {
 						sensor = trackersMap.get(recieve.getSocketAddress());
 					}
+					if(sensor != null)
+						sensor.lastPacket = System.currentTimeMillis();
 					int packetId;
 					switch(packetId = bb.getInt()) {
 					case 3:
@@ -257,14 +275,20 @@ public class TrackersUDPServer extends Thread {
 							break;
 						bb.getLong();
 						stopCalibration(sensor);
-						sensor.tracker.accelVector.set(bb.getFloat(), bb.getFloat(), bb.getFloat());
+						float x = bb.getFloat();
+						float z = bb.getFloat();
+						float y = bb.getFloat();
+						sensor.tracker.accelVector.set(x, y, z);
 						break;
 					case 5:
 						if(sensor == null)
 							break;
 						bb.getLong();
 						stopCalibration(sensor);
-						sensor.tracker.magVector.set(bb.getFloat(), bb.getFloat(), bb.getFloat());
+						x = bb.getFloat();
+						z = bb.getFloat();
+						y = bb.getFloat();
+						sensor.tracker.magVector.set(x, y, z);
 						break;
 					case 6: // PACKET_RAW_CALIBRATION_DATA
 						if(sensor == null)
@@ -301,16 +325,22 @@ public class TrackersUDPServer extends Thread {
 						System.out.println("[TrackerServer] Unknown data received: " + packetId + " from " + recieve.getSocketAddress());
 						break;
 					}
-					if(lastKeepup + 500 < System.currentTimeMillis()) {
-						lastKeepup = System.currentTimeMillis();
-						synchronized(trackers) {
-							for(int i = 0; i < trackers.size(); ++i)
-								socket.send(new DatagramPacket(KEEPUP_BUFFER, KEEPUP_BUFFER.length, trackers.get(i).address));
-						}
-					}
 				} catch(SocketTimeoutException e) {
 				} catch(Exception e) {
 					e.printStackTrace();
+				}
+				if(lastKeepup + 500 < System.currentTimeMillis()) {
+					lastKeepup = System.currentTimeMillis();
+					synchronized(trackers) {
+						for(int i = 0; i < trackers.size(); ++i) {
+							TrackerConnection conn = trackers.get(i);
+							socket.send(new DatagramPacket(KEEPUP_BUFFER, KEEPUP_BUFFER.length, conn.address));
+							if(conn.lastPacket + 1000 < System.currentTimeMillis())
+								conn.tracker.setStatus(TrackerStatus.DISCONNECTED);
+							else
+								conn.tracker.setStatus(TrackerStatus.OK);
+						}
+					}
 				}
 			}
 		} catch(Exception e) {
@@ -327,6 +357,7 @@ public class TrackersUDPServer extends Thread {
 		boolean isCalibrating;
 		private List<double[]> rawCalibrationData = new FastList<>();
 		private double[] gyroCalibrationData;
+		public long lastPacket = System.currentTimeMillis();
 		
 		public TrackerConnection(IMUTracker tracker, SocketAddress address) {
 			this.tracker = tracker;

@@ -79,7 +79,7 @@ public class VRServerGUI extends JFrame {
 
 			add(new EJBox(PAGE_AXIS) {{
 				setAlignmentY(TOP_ALIGNMENT);
-				add(new JLabel("Sekelton"));
+				add(new JLabel("Skeleton"));
 				add(skeletonList);
 				add(Box.createVerticalGlue());
 			}});
