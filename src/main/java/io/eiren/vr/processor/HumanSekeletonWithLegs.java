@@ -142,6 +142,8 @@ public class HumanSekeletonWithLegs extends HumanSkeleonWithWaist {
 		rightHipNode.localTransform.setRotation(hipBuf);
 		rightKneeNode.localTransform.setRotation(kneeBuf);
 		rightAnkleNode.localTransform.setRotation(kneeBuf);
+		
+		// TODO Calculate waist node as some function between waist and hip rotations
 	}
 	
 	// Knee basically has only 1 DoF (pitch), average yaw between knee and hip
@@ -149,17 +151,11 @@ public class HumanSekeletonWithLegs extends HumanSkeleonWithWaist {
 		hipBuf.toAngles(hipAngles);
 		kneeBuf.toAngles(kneeAngles);
 		
-		// TODO
-		hipConfidense = Math.abs(1 - hipConfidense);
-		kneeConfidense = Math.abs(1 - kneeConfidense);
-		float confidenseDiff = hipConfidense < kneeConfidense ? 1 : 0;//FloatMath.equalsToZero(hipConfidense) ? 1.0f : FastMath.clamp(0.5f * (kneeConfidense / hipConfidense), 0f, 1f);
-		
-		
-		hipAngles[1] = kneeAngles[1] = interpolateRadians(0.5f, kneeAngles[1], hipAngles[1]);
+		hipAngles[1] = kneeAngles[1] = interpolateRadians(kneeLerpFactor, kneeAngles[1], hipAngles[1]);
 		//hipAngles[2] = kneeAngles[2] = interpolateRadians(kneeLerpFactor, kneeAngles[2], hipAngles[2]);
 		
-		hipBuf.fromAngles(hipAngles[0], hipAngles[1], hipAngles[2]);
-		kneeBuf.fromAngles(kneeAngles[0], kneeAngles[1], kneeAngles[2]);
+		hipBuf.fromAngles(hipAngles);
+		kneeBuf.fromAngles(kneeAngles);
 	}
 	
 	public static float normalizeRad(float angle) {

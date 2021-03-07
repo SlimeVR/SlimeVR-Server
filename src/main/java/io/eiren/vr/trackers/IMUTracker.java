@@ -6,9 +6,10 @@ import java.util.function.Consumer;
 import com.jme3.math.Quaternion;
 import com.jme3.math.Vector3f;
 
+import io.eiren.math.FloatMath;
 import io.eiren.util.BufferedTimer;
 
-public class IMUTracker implements Tracker, CalibratingTracker, TrackerWithTPS {
+public class IMUTracker implements Tracker, CalibratingTracker, TrackerWithTPS, TrackerWithBattery {
 	
 	public final Vector3f gyroVector = new Vector3f();
 	public final Vector3f accelVector = new Vector3f();
@@ -19,9 +20,13 @@ public class IMUTracker implements Tracker, CalibratingTracker, TrackerWithTPS {
 	protected final String name;
 	protected final TrackersUDPServer server;
 	protected float confidence = 0;
+	protected float batteryVoltage = 0;
 	
 	protected BufferedTimer timer = new BufferedTimer(1f);
-	public CalibrationData newCalibrationData;
+	public ConfigurationData newCalibrationData;
+	
+	public StringBuilder serialBuffer = new StringBuilder();
+	long lastSerialUpdate = 0;
 	
 	public IMUTracker(String name, TrackersUDPServer server) {
 		this.name = name;
@@ -96,7 +101,21 @@ public class IMUTracker implements Tracker, CalibratingTracker, TrackerWithTPS {
 		this.confidence = newConf;
 	}
 	
-	public static class CalibrationData {
+	@Override
+	public float getBatteryLevel() {
+		return FloatMath.mapValue(getBatteryVoltage(), 3.6f, 4.2f, 0f, 1f);
+	}
+	
+	@Override
+	public float getBatteryVoltage() {
+		return batteryVoltage;
+	}
+	
+	public void setBatteryVoltage(float voltage) {
+		this.batteryVoltage = voltage;
+	}
+	
+	public static class ConfigurationData {
 
 	    //acel offsets and correction matrix
 		float[] A_B = new float[3];
@@ -106,8 +125,10 @@ public class IMUTracker implements Tracker, CalibratingTracker, TrackerWithTPS {
 	    float[][] M_Ainv = new float[3][3];
 	    //raw offsets, determined for gyro at rest
 	    float[] G_off = new float[3];
+	    int deviceId = -1;
+	    int deviceMode = -1;
 	    
-	    public CalibrationData(double[] accelBasis, double[] accelAInv, double[] magBasis, double[] magAInv, double[] gyroOffset) {
+	    public ConfigurationData(double[] accelBasis, double[] accelAInv, double[] magBasis, double[] magAInv, double[] gyroOffset) {
 	    	A_B[0] = (float) accelBasis[0];
 	    	A_B[1] = (float) accelBasis[1];
 	    	A_B[2] = (float) accelBasis[2];
@@ -141,8 +162,9 @@ public class IMUTracker implements Tracker, CalibratingTracker, TrackerWithTPS {
 	    	G_off[2] = (float) gyroOffset[2];
 	    }
 		
-		public CalibrationData(ByteBuffer buffer) {
-			buffer.getFloat(); // TODO : WHY???
+		public ConfigurationData(ByteBuffer buffer) {
+			deviceMode = buffer.getInt();
+			deviceId = buffer.getInt();
 			// Data is read in reverse, because it was reversed when sending
 			G_off[2] = buffer.getFloat();
 			G_off[1] = buffer.getFloat();

@@ -25,6 +25,7 @@ import io.eiren.vr.trackers.HMDTracker;
 import io.eiren.vr.trackers.IMUTracker;
 import io.eiren.vr.trackers.Tracker;
 import io.eiren.vr.trackers.TrackerConfig;
+import io.eiren.vr.trackers.TrackerWithBattery;
 import io.eiren.vr.trackers.TrackerWithTPS;
 
 public class TrackersList extends EJBag {
@@ -63,7 +64,8 @@ public class TrackersList extends EJBag {
 		add(new JLabel("Roll"), c(7, 0, 2));
 		add(new JLabel("Status"), c(8, 0, 2));
 		add(new JLabel("TPS"), c(9, 0, 2));
-		add(new JLabel("Conf"), c(10, 0, 2));
+		add(new JLabel("Bat"), c(10, 0, 2));
+		
 		
 		trackers.sort((tr1, tr2) -> getTrackerSort(tr1.t) - getTrackerSort(tr2.t));
 		
@@ -130,7 +132,7 @@ public class TrackersList extends EJBag {
 		JLabel a3;
 		JLabel status;
 		JLabel tps;
-		JLabel conf;
+		JLabel bat;
 		
 		@AWTThread
 		public TrackerRow(Tracker t) {
@@ -152,7 +154,7 @@ public class TrackersList extends EJBag {
 			} else {
 				add(new JLabel(""), c(9, n, 2, GridBagConstraints.FIRST_LINE_START));
 			}
-			add(conf = new JLabel("0"), c(10, n, 2, GridBagConstraints.FIRST_LINE_START));
+			add(bat = new JLabel("0"), c(10, n, 2, GridBagConstraints.FIRST_LINE_START));
 			return this;
 		}
 
@@ -175,7 +177,8 @@ public class TrackersList extends EJBag {
 			if(t instanceof TrackerWithTPS) {
 				tps.setText(StringUtils.prettyNumber(((TrackerWithTPS) t).getTPS(), 1));
 			}
-			conf.setText(StringUtils.prettyNumber(t.getConfidenceLevel(), 1));
+			if(t instanceof TrackerWithBattery)
+				bat.setText(StringUtils.prettyNumber(((TrackerWithBattery) t).getBatteryVoltage(), 1));
 		}
 		
 		public int getSize() {

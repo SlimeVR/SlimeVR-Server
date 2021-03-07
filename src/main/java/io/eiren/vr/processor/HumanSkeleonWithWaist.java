@@ -17,7 +17,8 @@ public class HumanSkeleonWithWaist extends HumanSkeleton {
 	
 	protected final Map<String, Float> configMap = new HashMap<>();
 	protected final VRServer server;
-	
+
+	protected final float[] waistAngles = new float[3];
 	protected final Quaternion qBuf = new Quaternion();
 	protected final Vector3f vBuf = new Vector3f();
 	
@@ -43,11 +44,11 @@ public class HumanSkeleonWithWaist extends HumanSkeleton {
 	/**
 	 * Distacne from eyes to the base of the neck
 	 */
-	protected float neckLength = 0.2f;
+	protected float neckLength = 0.1f;
 	/**
 	 * Distance from eyes to ear
 	 */
-	protected float headShift = 0.05f;
+	protected float headShift = 0.1f;
 
 	public HumanSkeleonWithWaist(VRServer server, Tracker waistTracker, List<ComputedHumanPoseTracker> computedTrackers) {
 		this.wasitTracker = waistTracker;
@@ -144,10 +145,10 @@ public class HumanSkeleonWithWaist extends HumanSkeleton {
 		// Pelvic bone doesn't tilt when humans tilt, unless they really try.
 		// Can't calculate tilt without additional sensors, so just remove it
 		// completely.
-		//vBuf.set(0, 0, 1);
-		//qBuf.multLocal(vBuf);
-		//vBuf.multLocal(1, 0, 1); // Keep only yaw / Don't normalize, it's done by lookAt()
-		//qBuf.lookAt(vBuf, Vector3f.UNIT_Y);
+		qBuf.toAngles(waistAngles);
+		waistAngles[0] = 0;
+		waistAngles[2] *= 0.2f; // Keep some roll
+		qBuf.fromAngles(waistAngles);
 		waistNode.localTransform.setRotation(qBuf);
 	}
 	

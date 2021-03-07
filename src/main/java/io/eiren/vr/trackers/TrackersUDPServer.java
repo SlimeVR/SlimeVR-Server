@@ -20,7 +20,7 @@ import com.jme3.math.Vector3f;
 import io.eiren.hardware.magentometer.Magneto;
 import io.eiren.util.Util;
 import io.eiren.util.collections.FastList;
-import io.eiren.vr.trackers.IMUTracker.CalibrationData;
+import io.eiren.vr.trackers.IMUTracker.ConfigurationData;
 
 /**
  * Recieves trackers data by UDP using extended owoTrack protocol.
@@ -105,7 +105,7 @@ public class TrackersUDPServer extends Thread {
 		}
 	}
 	
-	public void uploadNewCalibrationData(Tracker tracker, CalibrationData data) {
+	public void uploadNewCalibrationData(Tracker tracker, ConfigurationData data) {
 		TrackerConnection connection = null;
 		synchronized(trackers) {
 			for(int i = 0; i < trackers.size(); ++i) {
@@ -197,7 +197,7 @@ public class TrackersUDPServer extends Thread {
 		System.out.println(String.format("Mag agv {%8.2f, %8.2f, %8.2f},", (magMaxX + magMinX) / 2, (magMaxY + magMinY) / 2, (magMaxZ + magMinZ) / 2));
 		
 		
-		IMUTracker.CalibrationData data = new IMUTracker.CalibrationData(accelBasis, accelAInv, magBasis, magAInv, gyroOffset);
+		IMUTracker.ConfigurationData data = new IMUTracker.ConfigurationData(accelBasis, accelAInv, magBasis, magAInv, gyroOffset);
 		sensor.tracker.newCalibrationData = data;
 		
 		Consumer<String> consumer = newCalibrationDataRequests.remove(sensor.tracker);
@@ -233,6 +233,7 @@ public class TrackersUDPServer extends Thread {
 	public void run() {
 		byte[] rcvBuffer = new byte[512];
 		ByteBuffer bb = ByteBuffer.wrap(rcvBuffer).order(ByteOrder.BIG_ENDIAN);
+		StringBuilder serialBuffer2 = new StringBuilder();
 		try {
 			socket = new DatagramSocket(port);
 			socket.setSoTimeout(250);
@@ -306,7 +307,7 @@ public class TrackersUDPServer extends Thread {
 						if(sensor == null)
 							break;
 						bb.getLong();
-						IMUTracker.CalibrationData data = new IMUTracker.CalibrationData(bb);
+						IMUTracker.ConfigurationData data = new IMUTracker.ConfigurationData(bb);
 						Consumer<String> dataConsumer = calibrationDataRequests.remove(sensor.tracker);
 						if(dataConsumer != null) {
 							dataConsumer.accept(data.toTextMatrix());
@@ -321,6 +322,31 @@ public class TrackersUDPServer extends Thread {
 						float mz = bb.getFloat();
 						sensor.tracker.confidence = (float) Math.sqrt(mx * mx + my * my + mz * mz);
 						break;
+					case 11: // PACKET_SERIAL
+						if(sensor == null)
+							break;
+						IMUTracker tracker = sensor.tracker;
+						bb.getLong();
+						int length = bb.getInt();
+						for(int i = 0; i < length; ++i) {
+							char ch = (char) bb.get();
+							if(ch == '\n') {
+								serialBuffer2.append('[').append(tracker.getName()).append("] ").append(tracker.serialBuffer);
+								System.out.println(serialBuffer2.toString());
+								serialBuffer2.setLength(0);
+								tracker.serialBuffer.setLength(0);
+							} else {
+								tracker.serialBuffer.append(ch);
+							}
+						}
+						break;
+					case 12: // PACKET_BATTERY_VOLTAGE
+						if(sensor == null)
+							break;
+						tracker = sensor.tracker;
+						bb.getLong();
+						tracker.setBatteryVoltage(bb.getFloat());
+						break;
 					default:
 						System.out.println("[TrackerServer] Unknown data received: " + packetId + " from " + recieve.getSocketAddress());
 						break;
@@ -334,11 +360,20 @@ public class TrackersUDPServer extends Thread {
 					synchronized(trackers) {
 						for(int i = 0; i < trackers.size(); ++i) {
 							TrackerConnection conn = trackers.get(i);
+							IMUTracker tracker = conn.tracker;
 							socket.send(new DatagramPacket(KEEPUP_BUFFER, KEEPUP_BUFFER.length, conn.address));
 							if(conn.lastPacket + 1000 < System.currentTimeMillis())
-								conn.tracker.setStatus(TrackerStatus.DISCONNECTED);
+								tracker.setStatus(TrackerStatus.DISCONNECTED);
 							else
-								conn.tracker.setStatus(TrackerStatus.OK);
+								tracker.setStatus(TrackerStatus.OK);
+							if(tracker.serialBuffer.length() > 0) {
+								if(tracker.lastSerialUpdate + 500L < System.currentTimeMillis()) {
+									serialBuffer2.append('[').append(tracker.getName()).append("] ").append(tracker.serialBuffer);
+									System.out.println(serialBuffer2.toString());
+									serialBuffer2.setLength(0);
+									tracker.serialBuffer.setLength(0);
+								}
+							}
 						}
 					}
 				}
