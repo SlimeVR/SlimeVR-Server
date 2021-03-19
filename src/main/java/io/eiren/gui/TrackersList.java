@@ -204,21 +204,21 @@ public class TrackersList extends EJBag {
 		@Override
 		public TrackerRow build(int n) {
 			super.build(n);
-			n++;
+			/*n++;
 			add(new JLabel("Mag / Accel:"), c(0, n, 2, GridBagConstraints.FIRST_LINE_END));
 			add(mx = new JLabel("0"), c(2, n, 2, GridBagConstraints.FIRST_LINE_START));
 			add(my = new JLabel("0"), c(3, n, 2, GridBagConstraints.FIRST_LINE_START));
 			add(mz = new JLabel("0"), c(4, n, 2, GridBagConstraints.FIRST_LINE_START));
 			add(ax = new JLabel("0"), c(5, n, 2, GridBagConstraints.FIRST_LINE_START));
 			add(ay = new JLabel("0"), c(6, n, 2, GridBagConstraints.FIRST_LINE_START));
-			add(az = new JLabel("0"), c(7, n, 2, GridBagConstraints.FIRST_LINE_START));
+			add(az = new JLabel("0"), c(7, n, 2, GridBagConstraints.FIRST_LINE_START));*/
 			return this;
 		}
 		
 		@Override
 		public void update() {
 			super.update();
-			q.lookAt(it.magVector, Vector3f.UNIT_Y);
+			/*q.lookAt(it.magVector, Vector3f.UNIT_Y);
 			q.toAngles(angles);
 			mx.setText(StringUtils.prettyNumber(angles[0] * FastMath.RAD_TO_DEG, 0));
 			my.setText(StringUtils.prettyNumber(angles[1] * FastMath.RAD_TO_DEG, 0));
@@ -227,7 +227,7 @@ public class TrackersList extends EJBag {
 			q.toAngles(angles);
 			ax.setText(StringUtils.prettyNumber(angles[0] * FastMath.RAD_TO_DEG, 0));
 			ay.setText(StringUtils.prettyNumber(angles[1] * FastMath.RAD_TO_DEG, 0));
-			az.setText(StringUtils.prettyNumber(angles[2] * FastMath.RAD_TO_DEG, 0));
+			az.setText(StringUtils.prettyNumber(angles[2] * FastMath.RAD_TO_DEG, 0));*/
 		}
 		
 		@Override

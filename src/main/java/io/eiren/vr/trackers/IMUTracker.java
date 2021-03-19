@@ -3,6 +3,7 @@ package io.eiren.vr.trackers;
 import java.nio.ByteBuffer;
 import java.util.function.Consumer;
 
+import com.jme3.math.FastMath;
 import com.jme3.math.Quaternion;
 import com.jme3.math.Vector3f;
 
@@ -15,6 +16,7 @@ public class IMUTracker implements Tracker, CalibratingTracker, TrackerWithTPS, 
 	public final Vector3f accelVector = new Vector3f();
 	public final Vector3f magVector = new Vector3f();
 	public final Quaternion rotQuaternion = new Quaternion();
+	protected final Quaternion rotAdjust = new Quaternion();
 	protected TrackerStatus status = TrackerStatus.OK;
 	
 	protected final String name;
@@ -39,6 +41,9 @@ public class IMUTracker implements Tracker, CalibratingTracker, TrackerWithTPS, 
 	
 	@Override
 	public void loadConfig(TrackerConfig config) {
+		if(!FloatMath.equalsToZero(config.trackerRotation)) {
+			rotAdjust.fromAngles(0, config.trackerRotation * FastMath.DEG_TO_RAD, 0);
+		}
 	}
 	
 	@Override
@@ -55,6 +60,7 @@ public class IMUTracker implements Tracker, CalibratingTracker, TrackerWithTPS, 
 	@Override
 	public boolean getRotation(Quaternion store) {
 		store.set(rotQuaternion);
+		store.multLocal(rotAdjust);
 		return true;
 	}
 
