@@ -42,7 +42,7 @@ public class HumanSekeletonWithLegs extends HumanSkeleonWithWaist {
 	/**
 	 * Distance from waist to ankle
 	 */
-	protected float ankleLength = 0.4f;
+	protected float ankleLength = 0.5f;
 	
 	protected float minKneePitch = 0f * FastMath.DEG_TO_RAD;
 	protected float maxKneePitch = 90f * FastMath.DEG_TO_RAD;

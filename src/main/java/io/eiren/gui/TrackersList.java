@@ -65,6 +65,7 @@ public class TrackersList extends EJBag {
 		add(new JLabel("Status"), c(8, 0, 2));
 		add(new JLabel("TPS"), c(9, 0, 2));
 		add(new JLabel("Bat"), c(10, 0, 2));
+		add(new JLabel("Ping"), c(11, 0, 2));
 		
 		
 		trackers.sort((tr1, tr2) -> getTrackerSort(tr1.t) - getTrackerSort(tr2.t));
@@ -95,7 +96,7 @@ public class TrackersList extends EJBag {
 							new CalibrationWindow(t);
 						}
 					});
-				}}, c(11, n, 2));
+				}}, c(12, n, 2));
 			}
 			n += tr.getSize();
 		}
@@ -133,6 +134,7 @@ public class TrackersList extends EJBag {
 		JLabel status;
 		JLabel tps;
 		JLabel bat;
+		JLabel ping;
 		
 		@AWTThread
 		public TrackerRow(Tracker t) {
@@ -155,6 +157,7 @@ public class TrackersList extends EJBag {
 				add(new JLabel(""), c(9, n, 2, GridBagConstraints.FIRST_LINE_START));
 			}
 			add(bat = new JLabel("0"), c(10, n, 2, GridBagConstraints.FIRST_LINE_START));
+			add(ping = new JLabel(""), c(11, n, 2, GridBagConstraints.FIRST_LINE_START));
 			return this;
 		}
 
@@ -179,6 +182,8 @@ public class TrackersList extends EJBag {
 			}
 			if(t instanceof TrackerWithBattery)
 				bat.setText(StringUtils.prettyNumber(((TrackerWithBattery) t).getBatteryVoltage(), 1));
+			if(t instanceof IMUTracker)
+				ping.setText(String.valueOf(((IMUTracker) t).ping));
 		}
 		
 		public int getSize() {

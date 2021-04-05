@@ -145,10 +145,10 @@ public class HumanSkeleonWithWaist extends HumanSkeleton {
 		// Pelvic bone doesn't tilt when humans tilt, unless they really try.
 		// Can't calculate tilt without additional sensors, so just remove it
 		// completely.
-		qBuf.toAngles(waistAngles);
-		waistAngles[0] = 0;
-		waistAngles[2] *= 0.2f; // Keep some roll
-		qBuf.fromAngles(waistAngles);
+		//qBuf.toAngles(waistAngles);
+		//waistAngles[0] = 0;
+		//waistAngles[2] *= 0.2f; // Keep some roll
+		//qBuf.fromAngles(waistAngles);
 		waistNode.localTransform.setRotation(qBuf);
 	}
 	

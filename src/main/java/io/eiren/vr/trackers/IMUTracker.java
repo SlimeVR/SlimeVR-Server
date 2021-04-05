@@ -26,6 +26,7 @@ public class IMUTracker implements Tracker, CalibratingTracker, TrackerWithTPS, 
 	
 	protected BufferedTimer timer = new BufferedTimer(1f);
 	public ConfigurationData newCalibrationData;
+	public int ping = -1;
 	
 	public StringBuilder serialBuffer = new StringBuilder();
 	long lastSerialUpdate = 0;

@@ -11,6 +11,7 @@ import java.nio.ByteOrder;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Random;
 import java.util.function.Consumer;
 
 import com.jme3.math.FastMath;
@@ -38,7 +39,7 @@ public class TrackersUDPServer extends Thread {
 	private static final byte[] CALIBRATION_REQUEST_BUFFER = new byte[64];
 
 	private final Quaternion buf = new Quaternion();
-
+	private final Random random = new Random();
 	private final List<TrackerConnection> trackers = new FastList<>();
 	private final Map<SocketAddress, TrackerConnection> trackersMap = new HashMap<>();
 	private final Map<Tracker, Consumer<String>> calibrationDataRequests = new HashMap<>();
@@ -322,6 +323,15 @@ public class TrackersUDPServer extends Thread {
 						float mz = bb.getFloat();
 						sensor.tracker.confidence = (float) Math.sqrt(mx * mx + my * my + mz * mz);
 						break;
+					case 10: // PACKET_PING_PONG:
+						if(sensor == null)
+							break;
+						int pingId = bb.getInt();
+						if(sensor.lastPingPacketId == pingId) {
+							IMUTracker tracker = sensor.tracker;
+							tracker.ping = (int) (System.currentTimeMillis() - sensor.lastPingPacketTime) / 2;
+						}
+						break;
 					case 11: // PACKET_SERIAL
 						if(sensor == null)
 							break;
@@ -346,6 +356,14 @@ public class TrackersUDPServer extends Thread {
 						tracker = sensor.tracker;
 						bb.getLong();
 						tracker.setBatteryVoltage(bb.getFloat());
+						break;
+					case 13: // PACKET_TAP
+						if(sensor == null)
+							break;
+						tracker = sensor.tracker;
+						bb.getLong();
+						byte tap = bb.get();
+						System.out.println("[TrackerServer] Tap packet received from " + tracker.getName() + ": b" + Integer.toBinaryString(tap));
 						break;
 					default:
 						System.out.println("[TrackerServer] Unknown data received: " + packetId + " from " + recieve.getSocketAddress());
@@ -374,6 +392,14 @@ public class TrackersUDPServer extends Thread {
 									tracker.serialBuffer.setLength(0);
 								}
 							}
+							if(conn.lastPingPacketTime + 500 < System.currentTimeMillis()) {
+								conn.lastPingPacketId = random.nextInt();
+								conn.lastPingPacketTime = System.currentTimeMillis();
+								bb.rewind();
+								bb.putInt(10);
+								bb.putInt(conn.lastPingPacketId);
+								socket.send(new DatagramPacket(rcvBuffer, bb.position(), conn.address));
+							}
 						}
 					}
 				}
@@ -393,6 +419,8 @@ public class TrackersUDPServer extends Thread {
 		private List<double[]> rawCalibrationData = new FastList<>();
 		private double[] gyroCalibrationData;
 		public long lastPacket = System.currentTimeMillis();
+		public int lastPingPacketId = -1;
+		public long lastPingPacketTime = 0;
 		
 		public TrackerConnection(IMUTracker tracker, SocketAddress address) {
 			this.tracker = tracker;
