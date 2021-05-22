@@ -34,23 +34,23 @@ public class HumanSekeletonWithLegs extends HumanSkeleonWithWaist {
 	/**
 	 * Distance between centers of both hips
 	 */
-	protected float hipsWidth = 0.33f;
+	protected float hipsWidth = 0.30f;
 	/**
 	 * Length from waist to knees
 	 */
-	protected float hipsLength = 0.46f;
+	protected float hipsLength = 0.51f;
 	/**
 	 * Distance from waist to ankle
 	 */
-	protected float ankleLength = 0.5f;
+	protected float ankleLength = 0.55f;
 	
 	protected float minKneePitch = 0f * FastMath.DEG_TO_RAD;
 	protected float maxKneePitch = 90f * FastMath.DEG_TO_RAD;
 	
 	protected float kneeLerpFactor = 0.5f;
 
-	public HumanSekeletonWithLegs(VRServer server, Map<TrackerBodyPosition, ? extends Tracker> trackers, List<ComputedHumanPoseTracker> computedTrackers) {
-		super(server, trackers.get(TrackerBodyPosition.WAIST), computedTrackers);
+	public HumanSekeletonWithLegs(VRServer server, Tracker waistTracker, Tracker chestTracker, Map<TrackerBodyPosition, ? extends Tracker> trackers, List<ComputedHumanPoseTracker> computedTrackers) {
+		super(server, waistTracker, chestTracker, computedTrackers);
 		this.leftLegTracker = trackers.get(TrackerBodyPosition.LEFT_LEG);
 		this.leftAnkleTracker = trackers.get(TrackerBodyPosition.LEFT_ANKLE);
 		this.rightLegTracker = trackers.get(TrackerBodyPosition.RIGHT_LEG);

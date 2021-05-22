@@ -226,6 +226,7 @@ public class TrackersUDPServer extends Thread {
 			}
 			System.out.println("[TrackerServer] Sensor " + i + " added with address " + addr);
 		}
+		sensor.tracker.setStatus(TrackerStatus.OK);
         socket.send(new DatagramPacket(HANDSHAKE_BUFFER, HANDSHAKE_BUFFER.length, handshakePacket.getAddress(), handshakePacket.getPort()));
 	}
 	
@@ -365,6 +366,15 @@ public class TrackersUDPServer extends Thread {
 						byte tap = bb.get();
 						System.out.println("[TrackerServer] Tap packet received from " + tracker.getName() + ": b" + Integer.toBinaryString(tap));
 						break;
+					case 14: // PACKET_RESET_REASON
+						bb.getLong();
+						byte reason = bb.get();
+						System.out.println("[TrackerServer] Reset recieved from " + recieve.getSocketAddress() + ": " + reason);
+						if(sensor == null)
+							break;
+						tracker = sensor.tracker;
+						tracker.setStatus(TrackerStatus.ERROR);
+						break;
 					default:
 						System.out.println("[TrackerServer] Unknown data received: " + packetId + " from " + recieve.getSocketAddress());
 						break;
@@ -380,9 +390,11 @@ public class TrackersUDPServer extends Thread {
 							TrackerConnection conn = trackers.get(i);
 							IMUTracker tracker = conn.tracker;
 							socket.send(new DatagramPacket(KEEPUP_BUFFER, KEEPUP_BUFFER.length, conn.address));
-							if(conn.lastPacket + 1000 < System.currentTimeMillis())
-								tracker.setStatus(TrackerStatus.DISCONNECTED);
-							else
+							if(conn.lastPacket + 1000 < System.currentTimeMillis()) {
+								if(tracker.getStatus() != TrackerStatus.DISCONNECTED) {
+									tracker.setStatus(TrackerStatus.DISCONNECTED);
+								}
+							} else if(tracker.getStatus() != TrackerStatus.ERROR && tracker.getStatus() != TrackerStatus.BUSY)
 								tracker.setStatus(TrackerStatus.OK);
 							if(tracker.serialBuffer.length() > 0) {
 								if(tracker.lastSerialUpdate + 500L < System.currentTimeMillis()) {

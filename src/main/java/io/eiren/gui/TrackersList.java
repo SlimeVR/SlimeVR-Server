@@ -88,7 +88,7 @@ public class TrackersList extends EJBag {
 			
 			if(cfg.designation != null)
 				add(new JLabel(cfg.designation), c(1, n, 2));
-			if(t instanceof CalibratingTracker) {
+			/*if(t instanceof CalibratingTracker) {
 				add(new JButton("Calibrate") {{
 					addMouseListener(new MouseInputAdapter() {
 						@Override
@@ -97,7 +97,7 @@ public class TrackersList extends EJBag {
 						}
 					});
 				}}, c(12, n, 2));
-			}
+			}*/
 			n += tr.getSize();
 		}
 		gui.refresh();

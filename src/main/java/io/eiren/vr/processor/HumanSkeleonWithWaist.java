@@ -22,25 +22,27 @@ public class HumanSkeleonWithWaist extends HumanSkeleton {
 	protected final Quaternion qBuf = new Quaternion();
 	protected final Vector3f vBuf = new Vector3f();
 	
-	protected final Tracker wasitTracker;
+	protected final Tracker waistTracker;
+	protected final Tracker chestTracker;
 	protected final HMDTracker hmdTracker;
 	protected final ComputedHumanPoseTracker computedWaistTracker;
 	protected final TransformNode hmdNode = new TransformNode("HMD", false);
 	protected final TransformNode headNode = new TransformNode("Head", false);
 	protected final TransformNode neckNode = new TransformNode("Neck", false);
 	protected final TransformNode waistNode = new TransformNode("Waist", false);
+	protected final TransformNode chestNode = new TransformNode("Chest", false);
 	protected final TransformNode trackerWaistNode = new TransformNode("Waist-Tracker", false);
 	
 	/**
 	 * Distance from eyes to waist
 	 */
-	protected float waistDistance = 0.55f;
+	protected float waistDistance = 0.85f;
 	/**
 	 * Distance from eyes to waist, defines reported
 	 * tracker position, if you want to move resulting
 	 * tracker up or down from actual waist
 	 */
-	protected float trackerWaistDistance = 0.55f;
+	protected float trackerWaistDistance = 0.57f;
 	/**
 	 * Distacne from eyes to the base of the neck
 	 */
@@ -50,8 +52,9 @@ public class HumanSkeleonWithWaist extends HumanSkeleton {
 	 */
 	protected float headShift = 0.1f;
 
-	public HumanSkeleonWithWaist(VRServer server, Tracker waistTracker, List<ComputedHumanPoseTracker> computedTrackers) {
-		this.wasitTracker = waistTracker;
+	public HumanSkeleonWithWaist(VRServer server, Tracker waistTracker, Tracker chestTracker, List<ComputedHumanPoseTracker> computedTrackers) {
+		this.waistTracker = waistTracker;
+		this.chestTracker = chestTracker;
 		this.hmdTracker = server.hmdTracker;
 		this.server = server;
 		ComputedHumanPoseTracker cwt = null;
@@ -73,11 +76,14 @@ public class HumanSkeleonWithWaist extends HumanSkeleton {
 		headNode.attachChild(neckNode);
 		neckNode.localTransform.setTranslation(0, -neckLength, 0);
 		
-		neckNode.attachChild(waistNode);
-		waistNode.localTransform.setTranslation(0, -waistDistance, 0);
+		neckNode.attachChild(chestNode);
+		chestNode.localTransform.setTranslation(0, -waistDistance / 2, 0);
 		
-		neckNode.attachChild(trackerWaistNode);
-		trackerWaistNode.localTransform.setTranslation(0, -trackerWaistDistance, 0);
+		chestNode.attachChild(waistNode);
+		waistNode.localTransform.setTranslation(0, -waistDistance / 2, 0);
+		
+		chestNode.attachChild(trackerWaistNode);
+		trackerWaistNode.localTransform.setTranslation(0, -(trackerWaistDistance - waistDistance / 2), 0);
 		
 		configMap.put("Head", headShift);
 		configMap.put("Neck", neckLength);
@@ -107,12 +113,14 @@ public class HumanSkeleonWithWaist extends HumanSkeleton {
 		case "Waist":
 			waistDistance = newLength;
 			server.config.setProperty("body.waistDistance", waistDistance);
-			waistNode.localTransform.setTranslation(0, -waistDistance, 0);
+			chestNode.localTransform.setTranslation(0, -waistDistance / 2, 0);
+			waistNode.localTransform.setTranslation(0, -waistDistance / 2, 0);
+			trackerWaistNode.localTransform.setTranslation(0, -(trackerWaistDistance - waistDistance / 2), 0);
 			break;
 		case "Virtual waist":
 			trackerWaistDistance = newLength;
 			server.config.setProperty("body.trackerWaistDistance", trackerWaistDistance);
-			trackerWaistNode.localTransform.setTranslation(0, -trackerWaistDistance, 0);
+			trackerWaistNode.localTransform.setTranslation(0, -(trackerWaistDistance - waistDistance / 2), 0);
 			break;
 		}
 	}
@@ -137,18 +145,12 @@ public class HumanSkeleonWithWaist extends HumanSkeleton {
 		hmdNode.localTransform.setRotation(qBuf);
 		headNode.localTransform.setRotation(qBuf);
 		
-		wasitTracker.getRotation(qBuf);
-		
+		chestTracker.getRotation(qBuf);
 		neckNode.localTransform.setRotation(qBuf);
+		
+		waistTracker.getRotation(qBuf);
 		trackerWaistNode.localTransform.setRotation(qBuf);
-
-		// Pelvic bone doesn't tilt when humans tilt, unless they really try.
-		// Can't calculate tilt without additional sensors, so just remove it
-		// completely.
-		//qBuf.toAngles(waistAngles);
-		//waistAngles[0] = 0;
-		//waistAngles[2] *= 0.2f; // Keep some roll
-		//qBuf.fromAngles(waistAngles);
+		chestNode.localTransform.setRotation(qBuf);
 		waistNode.localTransform.setRotation(qBuf);
 	}
 	

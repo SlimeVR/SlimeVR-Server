@@ -12,8 +12,8 @@ import io.eiren.util.ann.ThreadSafe;
 import io.eiren.util.ann.VRServerThread;
 import io.eiren.util.collections.FastList;
 import io.eiren.vr.VRServer;
+import io.eiren.vr.trackers.AdjustedFullTracker;
 import io.eiren.vr.trackers.AdjustedTracker;
-import io.eiren.vr.trackers.AdjustedYawTracker;
 import io.eiren.vr.trackers.HMDTracker;
 import io.eiren.vr.trackers.Tracker;
 import io.eiren.vr.trackers.TrackerConfig;
@@ -44,6 +44,19 @@ public class HumanPoseProcessor {
 	}
 	
 	@ThreadSafe
+	public void setSkeletonConfig(String key, float newLength) {
+		if(skeleton != null)
+			skeleton.setSkeletonConfig(key, newLength);
+	}
+	
+	@ThreadSafe
+	public float getSkeletonConfig(String key) {
+		if(skeleton != null)
+			return skeleton.getSkeletonConfig().get(key);
+		return 0.0f;
+	}
+	
+	@ThreadSafe
 	public List<? extends Tracker> getComputedTrackers() {
 		return computedTrackers;
 	}
@@ -61,7 +74,7 @@ public class HumanPoseProcessor {
 
 	@VRServerThread
 	private void addTracker(Tracker tracker, TrackerBodyPosition position) {
-		AdjustedTracker tt = new AdjustedYawTracker(tracker);
+		AdjustedTracker tt = new AdjustedFullTracker(tracker);
 		
 		trackers.put(position, tt);
 		server.registerTracker(tt);
@@ -72,30 +85,36 @@ public class HumanPoseProcessor {
 	private void updateSekeltonModel() {
 		boolean hasWaist = false;
 		boolean hasBothLegs = false;
-		//boolean hasChest = false;
+		boolean hasChest = false;
 		if(trackers.get(TrackerBodyPosition.WAIST) != null)
 			hasWaist = true;
-		//if(trackers.get(TrackerBodyPosition.CHEST) != null)
-		//	hasChest = true;
+		if(trackers.get(TrackerBodyPosition.CHEST) != null)
+			hasChest = true;
 		if(trackers.get(TrackerBodyPosition.LEFT_ANKLE) != null && trackers.get(TrackerBodyPosition.LEFT_LEG) != null
 				&& trackers.get(TrackerBodyPosition.RIGHT_ANKLE) != null && trackers.get(TrackerBodyPosition.RIGHT_LEG) != null)
 			hasBothLegs = true;
-		if(!hasWaist) {
+		if(!hasWaist && !hasChest) {
 			skeleton = null; // Can't track anything without waist
 		} else if(hasBothLegs) {
-			if(skeleton instanceof HumanSekeletonWithLegs) {
-				return; // Proper skeleton applied
-			}
 			disconnectAllTrackers();
-			skeleton = new HumanSekeletonWithLegs(server, trackers, computedTrackers);
+			AdjustedTracker waist = trackers.get(TrackerBodyPosition.WAIST);
+			if(waist == null)
+				waist = trackers.get(TrackerBodyPosition.CHEST);
+			AdjustedTracker chest = trackers.get(TrackerBodyPosition.CHEST);
+			if(chest == null)
+				chest = trackers.get(TrackerBodyPosition.WAIST);
+			skeleton = new HumanSekeletonWithLegs(server, waist, chest, trackers, computedTrackers);
 			for(int i = 0; i < onSkeletonUpdated.size(); ++i)
 				onSkeletonUpdated.get(i).accept(skeleton);
 		} else {
-			if(skeleton instanceof HumanSkeleonWithWaist) {
-				return; // Proper skeleton applied
-			}
+			AdjustedTracker waist = trackers.get(TrackerBodyPosition.WAIST);
+			if(waist == null)
+				waist = trackers.get(TrackerBodyPosition.CHEST);
+			AdjustedTracker chest = trackers.get(TrackerBodyPosition.CHEST);
+			if(chest == null)
+				chest = trackers.get(TrackerBodyPosition.WAIST);
 			disconnectAllTrackers();
-			skeleton = new HumanSkeleonWithWaist(server, trackers.get(TrackerBodyPosition.WAIST), computedTrackers);
+			skeleton = new HumanSkeleonWithWaist(server, waist, chest, computedTrackers);
 			for(int i = 0; i < onSkeletonUpdated.size(); ++i)
 				onSkeletonUpdated.get(i).accept(skeleton);
 		}
