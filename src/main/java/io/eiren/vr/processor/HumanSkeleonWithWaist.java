@@ -33,6 +33,7 @@ public class HumanSkeleonWithWaist extends HumanSkeleton {
 	protected final TransformNode chestNode = new TransformNode("Chest", false);
 	protected final TransformNode trackerWaistNode = new TransformNode("Waist-Tracker", false);
 	
+	protected float chestDistance = 0.42f;
 	/**
 	 * Distance from eyes to waist
 	 */
@@ -67,6 +68,7 @@ public class HumanSkeleonWithWaist extends HumanSkeleton {
 		cwt.setStatus(TrackerStatus.OK);
 		headShift = server.config.getFloat("body.headShift", headShift);
 		neckLength = server.config.getFloat("body.neckLength", neckLength);
+		chestDistance = server.config.getFloat("body.chestDistance", chestDistance);
 		waistDistance = server.config.getFloat("body.waistDistance", waistDistance);
 		trackerWaistDistance = server.config.getFloat("body.trackerWaistDistance", trackerWaistDistance);
 		// Build skeleton
@@ -77,16 +79,17 @@ public class HumanSkeleonWithWaist extends HumanSkeleton {
 		neckNode.localTransform.setTranslation(0, -neckLength, 0);
 		
 		neckNode.attachChild(chestNode);
-		chestNode.localTransform.setTranslation(0, -waistDistance / 2, 0);
+		chestNode.localTransform.setTranslation(0, -chestDistance, 0);
 		
 		chestNode.attachChild(waistNode);
-		waistNode.localTransform.setTranslation(0, -waistDistance / 2, 0);
+		waistNode.localTransform.setTranslation(0, -(waistDistance - chestDistance), 0);
 		
 		chestNode.attachChild(trackerWaistNode);
-		trackerWaistNode.localTransform.setTranslation(0, -(trackerWaistDistance - waistDistance / 2), 0);
+		trackerWaistNode.localTransform.setTranslation(0, -(trackerWaistDistance - chestDistance), 0);
 		
 		configMap.put("Head", headShift);
 		configMap.put("Neck", neckLength);
+		configMap.put("Chest", chestDistance);
 		configMap.put("Waist", waistDistance);
 		configMap.put("Virtual waist", trackerWaistDistance);
 	}
@@ -113,14 +116,19 @@ public class HumanSkeleonWithWaist extends HumanSkeleton {
 		case "Waist":
 			waistDistance = newLength;
 			server.config.setProperty("body.waistDistance", waistDistance);
-			chestNode.localTransform.setTranslation(0, -waistDistance / 2, 0);
-			waistNode.localTransform.setTranslation(0, -waistDistance / 2, 0);
-			trackerWaistNode.localTransform.setTranslation(0, -(trackerWaistDistance - waistDistance / 2), 0);
+			waistNode.localTransform.setTranslation(0, -(waistDistance - chestDistance), 0);
+			break;
+		case "Chest":
+			chestDistance = newLength;
+			server.config.setProperty("body.chestDistance", chestDistance);
+			chestNode.localTransform.setTranslation(0, -chestDistance, 0);
+			waistNode.localTransform.setTranslation(0, -(waistDistance - chestDistance), 0);
+			trackerWaistNode.localTransform.setTranslation(0, -(trackerWaistDistance - chestDistance), 0);
 			break;
 		case "Virtual waist":
 			trackerWaistDistance = newLength;
 			server.config.setProperty("body.trackerWaistDistance", trackerWaistDistance);
-			trackerWaistNode.localTransform.setTranslation(0, -(trackerWaistDistance - waistDistance / 2), 0);
+			trackerWaistNode.localTransform.setTranslation(0, -(trackerWaistDistance - chestDistance), 0);
 			break;
 		}
 	}

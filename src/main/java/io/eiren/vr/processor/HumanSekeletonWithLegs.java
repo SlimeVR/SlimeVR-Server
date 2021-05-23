@@ -69,7 +69,7 @@ public class HumanSekeletonWithLegs extends HumanSkeleonWithWaist {
 		lat.setStatus(TrackerStatus.OK);
 		rat.setStatus(TrackerStatus.OK);
 		hipsWidth = server.config.getFloat("body.hipsWidth", hipsWidth);
-		hipsLength = server.config.getFloat("body.hipsLength", hipsLength);
+		hipsLength = server.config.getFloat("body.hipLength", hipsLength);
 		ankleLength = server.config.getFloat("body.ankleLength", ankleLength);
 		
 		waistNode.attachChild(leftHipNode);
@@ -91,8 +91,8 @@ public class HumanSekeletonWithLegs extends HumanSkeleonWithWaist {
 		rightAnkleNode.localTransform.setTranslation(0, -ankleLength, 0);
 		
 		configMap.put("Hips width", hipsWidth);
-		configMap.put("Hips length", hipsLength);
-		configMap.put("Legs length", ankleLength);
+		configMap.put("Hip length", hipsLength);
+		configMap.put("Ankle length", ankleLength);
 	}
 	
 	@Override
@@ -105,13 +105,13 @@ public class HumanSekeletonWithLegs extends HumanSkeleonWithWaist {
 			leftHipNode.localTransform.setTranslation(hipsWidth / 2, 0, 0);
 			rightHipNode.localTransform.setTranslation(-hipsWidth / 2, 0, 0);
 			break;
-		case "Hips length":
+		case "Hip length":
 			hipsLength = newLength;
-			server.config.setProperty("body.hipsLength", hipsLength);
+			server.config.setProperty("body.hipLength", hipsLength);
 			leftKneeNode.localTransform.setTranslation(0, -hipsLength, 0);
 			rightKneeNode.localTransform.setTranslation(0, -hipsLength, 0);
 			break;
-		case "Legs length":
+		case "Ankle length":
 			ankleLength = newLength;
 			server.config.setProperty("body.ankleLength", ankleLength);
 			leftAnkleNode.localTransform.setTranslation(0, -ankleLength, 0);

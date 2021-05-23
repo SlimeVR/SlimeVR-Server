@@ -34,6 +34,12 @@ public class SkeletonConfig extends EJBag {
 			removeAll();
 			
 			int row = 0;
+
+			add(new JLabel("Chest"), c(0, row, 1));
+			add(new AdjButton("+", "Chest", 0.01f), c(1, row, 1));
+			add(new SkeletonLabel("Chest"), c(2, row, 1));
+			add(new AdjButton("-", "Chest", -0.01f), c(3, row, 1));
+			row++;
 			
 			add(new JLabel("Waist"), c(0, row, 1));
 			add(new AdjButton("+", "Waist", 0.01f), c(1, row, 1));
@@ -46,11 +52,35 @@ public class SkeletonConfig extends EJBag {
 			add(new SkeletonLabel("Virtual waist"), c(2, row, 1));
 			add(new AdjButton("-", "Virtual waist", -0.01f), c(3, row, 1));
 			row++;
-			
-			add(new JLabel("Head shift"), c(0, row, 1));
+
+			add(new JLabel("Hips width"), c(0, row, 1));
+			add(new AdjButton("+", "Hips width", 0.01f), c(1, row, 1));
+			add(new SkeletonLabel("Hips width"), c(2, row, 1));
+			add(new AdjButton("-", "Hips width", -0.01f), c(3, row, 1));
+			row++;
+
+			add(new JLabel("Hip length"), c(0, row, 1));
+			add(new AdjButton("+", "Hip length", 0.01f), c(1, row, 1));
+			add(new SkeletonLabel("Hip length"), c(2, row, 1));
+			add(new AdjButton("-", "Hip length", -0.01f), c(3, row, 1));
+			row++;
+
+			add(new JLabel("Ankle length"), c(0, row, 1));
+			add(new AdjButton("+", "Ankle length", 0.01f), c(1, row, 1));
+			add(new SkeletonLabel("Ankle length"), c(2, row, 1));
+			add(new AdjButton("-", "Ankle length", -0.01f), c(3, row, 1));
+			row++;
+
+			add(new JLabel("Head offset"), c(0, row, 1));
 			add(new AdjButton("+", "Head", 0.01f), c(1, row, 1));
 			add(new SkeletonLabel("Head"), c(2, row, 1));
 			add(new AdjButton("-", "Head", -0.01f), c(3, row, 1));
+			row++;
+
+			add(new JLabel("Neck length"), c(0, row, 1));
+			add(new AdjButton("+", "Neck", 0.01f), c(1, row, 1));
+			add(new SkeletonLabel("Neck"), c(2, row, 1));
+			add(new AdjButton("-", "Neck", -0.01f), c(3, row, 1));
 			row++;
 			
 			gui.refresh();
