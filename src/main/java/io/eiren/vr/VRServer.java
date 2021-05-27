@@ -144,7 +144,7 @@ public class VRServer extends Thread {
 		trackersServer.start();
 		driverBridge.start();
 		while(true) {
-			final long start = System.currentTimeMillis();
+			//final long start = System.currentTimeMillis();
 			do {
 				Runnable task = tasks.poll();
 				if(task == null)
@@ -158,9 +158,9 @@ public class VRServer extends Thread {
 			
 			humanPoseProcessor.update();
 			
-			final long time = System.currentTimeMillis() - start;
+			//final long time = System.currentTimeMillis() - start;
 			try {
-				Thread.sleep(Math.max(1, 10L - time)); // 100Hz
+				Thread.sleep(1); // 1000Hz
 			} catch(InterruptedException e) {
 			}
 		}

@@ -90,6 +90,7 @@ public class SkeletonConfig extends EJBag {
 	private void change(String joint, float diff) {
 		float current = server.humanPoseProcessor.getSkeletonConfig(joint);
 		server.humanPoseProcessor.setSkeletonConfig(joint, current + diff);
+		server.saveConfig();
 		labels.get(joint).setText(StringUtils.prettyNumber(current + diff, 2));
 	}
 	

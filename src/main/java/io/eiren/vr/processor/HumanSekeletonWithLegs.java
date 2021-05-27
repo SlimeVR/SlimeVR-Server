@@ -19,17 +19,21 @@ public class HumanSekeletonWithLegs extends HumanSkeleonWithWaist {
 	
 	protected final Tracker leftLegTracker;
 	protected final Tracker leftAnkleTracker;
-	protected final ComputedHumanPoseTracker computedLeftAnkleTracker;
+	protected final Tracker leftFootTracker;
+	protected final ComputedHumanPoseTracker computedLeftFootTracker;
 	protected final Tracker rightLegTracker;
 	protected final Tracker rightAnkleTracker;
-	protected final ComputedHumanPoseTracker computedRightAnkleTracker;
+	protected final Tracker rightFootTracker;
+	protected final ComputedHumanPoseTracker computedRightFootTracker;
 	
 	protected final TransformNode leftHipNode = new TransformNode("Left-Hip", false);
 	protected final TransformNode leftKneeNode = new TransformNode("Left-Knee", false);
 	protected final TransformNode leftAnkleNode = new TransformNode("Left-Ankle", false);
+	protected final TransformNode leftFootNode = new TransformNode("Left-Foot", false);
 	protected final TransformNode rightHipNode = new TransformNode("Right-Hip", false);
 	protected final TransformNode rightKneeNode = new TransformNode("Right-Knee", false);
 	protected final TransformNode rightAnkleNode = new TransformNode("Right-Ankle", false);
+	protected final TransformNode rightFootNode = new TransformNode("Right-Foot", false);
 	
 	/**
 	 * Distance between centers of both hips
@@ -53,19 +57,21 @@ public class HumanSekeletonWithLegs extends HumanSkeleonWithWaist {
 		super(server, waistTracker, chestTracker, computedTrackers);
 		this.leftLegTracker = trackers.get(TrackerBodyPosition.LEFT_LEG);
 		this.leftAnkleTracker = trackers.get(TrackerBodyPosition.LEFT_ANKLE);
+		this.leftFootTracker = trackers.get(TrackerBodyPosition.LEFT_FOOT);
 		this.rightLegTracker = trackers.get(TrackerBodyPosition.RIGHT_LEG);
 		this.rightAnkleTracker = trackers.get(TrackerBodyPosition.RIGHT_ANKLE);
+		this.rightFootTracker = trackers.get(TrackerBodyPosition.RIGHT_FOOT);
 		ComputedHumanPoseTracker lat = null;
 		ComputedHumanPoseTracker rat = null;
 		for(int i = 0; i < computedTrackers.size(); ++i) {
 			ComputedHumanPoseTracker t = computedTrackers.get(i);
-			if(t.skeletonPosition == ComputedHumanPoseTrackerPosition.LEFT_ANKLE)
+			if(t.skeletonPosition == ComputedHumanPoseTrackerPosition.LEFT_FOOT)
 				lat = t;
-			if(t.skeletonPosition == ComputedHumanPoseTrackerPosition.RIGHT_ANKLE)
+			if(t.skeletonPosition == ComputedHumanPoseTrackerPosition.RIGHT_FOOT)
 				rat = t;
 		}
-		computedLeftAnkleTracker = lat;
-		computedRightAnkleTracker = rat;
+		computedLeftFootTracker = lat;
+		computedRightFootTracker = rat;
 		lat.setStatus(TrackerStatus.OK);
 		rat.setStatus(TrackerStatus.OK);
 		hipsWidth = server.config.getFloat("body.hipsWidth", hipsWidth);
@@ -89,6 +95,9 @@ public class HumanSekeletonWithLegs extends HumanSkeleonWithWaist {
 		
 		rightKneeNode.attachChild(rightAnkleNode);
 		rightAnkleNode.localTransform.setTranslation(0, -ankleLength, 0);
+
+		leftAnkleNode.attachChild(leftFootNode);
+		rightAnkleNode.attachChild(rightFootNode);
 		
 		configMap.put("Hips width", hipsWidth);
 		configMap.put("Hip length", hipsLength);
@@ -132,7 +141,13 @@ public class HumanSekeletonWithLegs extends HumanSkeleonWithWaist {
 		leftHipNode.localTransform.setRotation(hipBuf);
 		leftKneeNode.localTransform.setRotation(kneeBuf);
 		leftAnkleNode.localTransform.setRotation(kneeBuf);
+		leftFootNode.localTransform.setRotation(kneeBuf);
 
+		if(leftFootTracker != null) {
+			leftFootTracker.getRotation(kneeBuf);
+			leftFootNode.localTransform.setRotation(kneeBuf);
+		}
+		
 		// Right Leg
 		rightLegTracker.getRotation(hipBuf);
 		rightAnkleTracker.getRotation(kneeBuf);
@@ -142,6 +157,12 @@ public class HumanSekeletonWithLegs extends HumanSkeleonWithWaist {
 		rightHipNode.localTransform.setRotation(hipBuf);
 		rightKneeNode.localTransform.setRotation(kneeBuf);
 		rightAnkleNode.localTransform.setRotation(kneeBuf);
+		rightFootNode.localTransform.setRotation(kneeBuf);
+		
+		if(rightFootTracker != null) {
+			rightFootTracker.getRotation(kneeBuf);
+			rightFootNode.localTransform.setRotation(kneeBuf);
+		}
 		
 		// TODO Calculate waist node as some function between waist and hip rotations
 	}
@@ -179,12 +200,12 @@ public class HumanSekeletonWithLegs extends HumanSkeleonWithWaist {
 	protected void updateComputedTrackers() {
 		super.updateComputedTrackers();
 		
-		computedLeftAnkleTracker.position.set(leftAnkleNode.worldTransform.getTranslation());
-		computedLeftAnkleTracker.rotation.set(leftAnkleNode.worldTransform.getRotation());
-		computedLeftAnkleTracker.dataTick();
+		computedLeftFootTracker.position.set(leftFootNode.worldTransform.getTranslation());
+		computedLeftFootTracker.rotation.set(leftFootNode.worldTransform.getRotation());
+		computedLeftFootTracker.dataTick();
 		
-		computedRightAnkleTracker.position.set(rightAnkleNode.worldTransform.getTranslation());
-		computedRightAnkleTracker.rotation.set(rightAnkleNode.worldTransform.getRotation());
-		computedRightAnkleTracker.dataTick();
+		computedRightFootTracker.position.set(rightFootNode.worldTransform.getTranslation());
+		computedRightFootTracker.rotation.set(rightFootNode.worldTransform.getRotation());
+		computedRightFootTracker.dataTick();
 	}
 }

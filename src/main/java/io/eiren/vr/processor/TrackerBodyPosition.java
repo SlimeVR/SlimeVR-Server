@@ -13,6 +13,8 @@ public enum TrackerBodyPosition {
 	RIGHT_LEG(Quaternion.IDENTITY, "body:right_leg"),
 	LEFT_ANKLE(Quaternion.IDENTITY, "body:left_ankle"),
 	RIGHT_ANKLE(Quaternion.IDENTITY, "body:right_ankle"),
+	LEFT_FOOT(Quaternion.IDENTITY, "body:left_foot"),
+	RIGHT_FOOT(Quaternion.IDENTITY, "body:right_foot"),
 	;
 	
 	public final Quaternion baseRotation;

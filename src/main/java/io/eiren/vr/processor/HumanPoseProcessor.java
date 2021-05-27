@@ -32,8 +32,8 @@ public class HumanPoseProcessor {
 		this.server = server;
 		this.hmd = hmd;
 		computedTrackers.add(new ComputedHumanPoseTracker(ComputedHumanPoseTrackerPosition.WAIST));
-		computedTrackers.add(new ComputedHumanPoseTracker(ComputedHumanPoseTrackerPosition.LEFT_ANKLE));
-		computedTrackers.add(new ComputedHumanPoseTracker(ComputedHumanPoseTrackerPosition.RIGHT_ANKLE));
+		computedTrackers.add(new ComputedHumanPoseTracker(ComputedHumanPoseTrackerPosition.LEFT_FOOT));
+		computedTrackers.add(new ComputedHumanPoseTracker(ComputedHumanPoseTrackerPosition.RIGHT_FOOT));
 	}
 
 	@VRServerThread

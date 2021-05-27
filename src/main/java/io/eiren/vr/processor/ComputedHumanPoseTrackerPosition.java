@@ -4,6 +4,6 @@ public enum ComputedHumanPoseTrackerPosition {
 	
 	WAIST,
 	CHEST,
-	LEFT_ANKLE,
-	RIGHT_ANKLE;
+	LEFT_FOOT,
+	RIGHT_FOOT;
 }
