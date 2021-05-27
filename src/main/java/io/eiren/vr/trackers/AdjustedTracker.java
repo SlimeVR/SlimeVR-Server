@@ -4,13 +4,17 @@ import com.jme3.math.FastMath;
 import com.jme3.math.Quaternion;
 import com.jme3.math.Vector3f;
 
-public abstract class AdjustedTracker implements Tracker {
+public class AdjustedTracker implements Tracker {
 	
 	public final Tracker tracker;
 	private final Quaternion smoothedQuaternion = new Quaternion();
-	private float[] angles = new float[3];
+	public final Quaternion adjustmentYaw = new Quaternion();
+	public final Quaternion adjustmentAttachment = new Quaternion();
 	protected float[] lastAngles = new float[3];
 	public float smooth = 0 * FastMath.DEG_TO_RAD;
+	private final float[] angles = new float[3];
+	private float pitchCorrection = 0;
+	private float rollCorrection = 0;
 	
 	protected float confidenceMultiplier = 1.0f;
 	
@@ -25,8 +29,41 @@ public abstract class AdjustedTracker implements Tracker {
 	@Override
 	public void saveConfig(TrackerConfig config) {
 	}
+
+	public void adjustFull(Quaternion reference) {
+		adjustYaw(reference);
+		
+		Quaternion sensorRotation = new Quaternion();
+		tracker.getRotation(sensorRotation);
+		adjustmentYaw.mult(sensorRotation, sensorRotation);
+		
+		adjustmentAttachment.set(sensorRotation).inverseLocal();
+	}
 	
-	public abstract void adjust(Quaternion reference);
+	public void adjustYaw(Quaternion reference) {
+		Quaternion targetTrackerRotation = new Quaternion(reference);
+
+		// Use only yaw HMD rotation
+		float[] angles = new float[3];
+		targetTrackerRotation.toAngles(angles);
+		targetTrackerRotation.fromAngles(0, angles[1], 0);
+		
+		Quaternion sensorRotation = new Quaternion();
+		tracker.getRotation(sensorRotation);
+		
+		sensorRotation.toAngles(angles);
+		sensorRotation.fromAngles(0, angles[1], 0);
+		
+		adjustmentYaw.set(sensorRotation).inverseLocal().multLocal(targetTrackerRotation);
+		
+		confidenceMultiplier = 1.0f / tracker.getConfidenceLevel();
+		lastAngles[0] = 1000;
+	}
+	
+	protected void adjustInternal(Quaternion store) {
+		store.multLocal(adjustmentAttachment);
+		adjustmentYaw.mult(store, store);
+	}
 	
 	@Override
 	public boolean getRotation(Quaternion store) {
@@ -43,8 +80,6 @@ public abstract class AdjustedTracker implements Tracker {
 		adjustInternal(store);
 		return true;
 	}
-	
-	protected abstract void adjustInternal(Quaternion store);
 
 	@Override
 	public boolean getPosition(Vector3f store) {

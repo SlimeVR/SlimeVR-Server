@@ -74,7 +74,7 @@ public class HumanPoseProcessor {
 
 	@VRServerThread
 	private void addTracker(Tracker tracker, TrackerBodyPosition position) {
-		AdjustedTracker tt = new AdjustedFullTracker(tracker);
+		AdjustedTracker tt = new AdjustedTracker(tracker);
 		
 		trackers.put(position, tt);
 		server.registerTracker(tt);
@@ -135,7 +135,7 @@ public class HumanPoseProcessor {
 		Iterator<AdjustedTracker> iterator = trackers.values().iterator();
 		while(iterator.hasNext()) {
 			AdjustedTracker tt = iterator.next();
-			tt.adjust(hmdRotation);
+			tt.adjustFull(hmdRotation);
 			
 			TrackerConfig config = server.getTrackerConfig(tt);
 			tt.saveConfig(config);
