@@ -230,6 +230,14 @@ public class TrackersUDPServer extends Thread {
         socket.send(new DatagramPacket(HANDSHAKE_BUFFER, HANDSHAKE_BUFFER.length, handshakePacket.getAddress(), handshakePacket.getPort()));
 	}
 	
+	private void setUpAuxialrySensor(TrackerConnection connection) throws IOException {
+		System.out.println("[TrackerServer] Setting up auxilary sensor for " + connection.tracker.getName());
+		IMUTracker imu = new IMUTracker(connection.tracker.getName() + "/1", this);
+		connection.secondTracker = imu;
+		trackersConsumer.accept(imu);
+		System.out.println("[TrackerServer] Sensor added with address " + imu.getName());
+	}
+	
 	
 	@Override
 	public void run() {
@@ -256,15 +264,24 @@ public class TrackersUDPServer extends Thread {
 					case 3:
 						setUpNewSensor(recieve, bb);
 						break;
-					case 1:
+					case 1: // PACKET_ROTATION
+					case 16: // PACKET_ROTATION_2
 						if(sensor == null)
 							break;
 						bb.getLong();
 						stopCalibration(sensor);
 						buf.set(bb.getFloat(), bb.getFloat(), bb.getFloat(), bb.getFloat());
 						offset.mult(buf, buf);
-						sensor.tracker.rotQuaternion.set(buf);
-						sensor.tracker.dataTick();
+						IMUTracker tracker;
+						if(packetId == 1) {
+							tracker = sensor.tracker;
+						} else {
+							tracker = sensor.secondTracker;
+						}
+						if(tracker == null)
+							break;
+						tracker.rotQuaternion.set(buf);
+						tracker.dataTick();
 						break;
 					case 2:
 						if(sensor == null)
@@ -329,14 +346,14 @@ public class TrackersUDPServer extends Thread {
 							break;
 						int pingId = bb.getInt();
 						if(sensor.lastPingPacketId == pingId) {
-							IMUTracker tracker = sensor.tracker;
+							tracker = sensor.tracker;
 							tracker.ping = (int) (System.currentTimeMillis() - sensor.lastPingPacketTime) / 2;
 						}
 						break;
 					case 11: // PACKET_SERIAL
 						if(sensor == null)
 							break;
-						IMUTracker tracker = sensor.tracker;
+						tracker = sensor.tracker;
 						bb.getLong();
 						int length = bb.getInt();
 						for(int i = 0; i < length; ++i) {
@@ -375,6 +392,22 @@ public class TrackersUDPServer extends Thread {
 						tracker = sensor.tracker;
 						tracker.setStatus(TrackerStatus.ERROR);
 						break;
+					case 15: // PACKET_SENSOR_INFO
+						if(sensor == null)
+							break;
+						bb.getLong();
+						int sensorId = bb.get() & 0xFF;
+						int sensorStatus = bb.get() & 0xFF;
+						if(sensorId == 1 && sensorStatus == 1 && sensor.secondTracker == null) {
+							setUpAuxialrySensor(sensor);
+						}
+						bb.rewind();
+						bb.putInt(15);
+						bb.put((byte) sensorId);
+						bb.put((byte) sensorStatus);
+						socket.send(new DatagramPacket(rcvBuffer, bb.position(), sensor.address));
+						System.out.println("[TrackerServer] Sensor info for " + sensor.tracker.getName() + "/" + sensorId + ": " + sensorStatus);
+						break;
 					default:
 						System.out.println("[TrackerServer] Unknown data received: " + packetId + " from " + recieve.getSocketAddress());
 						break;
@@ -393,9 +426,14 @@ public class TrackersUDPServer extends Thread {
 							if(conn.lastPacket + 1000 < System.currentTimeMillis()) {
 								if(tracker.getStatus() != TrackerStatus.DISCONNECTED) {
 									tracker.setStatus(TrackerStatus.DISCONNECTED);
+									if(conn.secondTracker != null)
+										conn.secondTracker.setStatus(TrackerStatus.DISCONNECTED);
 								}
-							} else if(tracker.getStatus() != TrackerStatus.ERROR && tracker.getStatus() != TrackerStatus.BUSY)
+							} else if(tracker.getStatus() != TrackerStatus.ERROR && tracker.getStatus() != TrackerStatus.BUSY) {
 								tracker.setStatus(TrackerStatus.OK);
+								if(conn.secondTracker != null)
+									conn.secondTracker.setStatus(TrackerStatus.OK);
+							}
 							if(tracker.serialBuffer.length() > 0) {
 								if(tracker.lastSerialUpdate + 500L < System.currentTimeMillis()) {
 									serialBuffer2.append('[').append(tracker.getName()).append("] ").append(tracker.serialBuffer);
@@ -426,6 +464,7 @@ public class TrackersUDPServer extends Thread {
 	private class TrackerConnection {
 		
 		IMUTracker tracker;
+		IMUTracker secondTracker;
 		SocketAddress address;
 		boolean isCalibrating;
 		private List<double[]> rawCalibrationData = new FastList<>();
