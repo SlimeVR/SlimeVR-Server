@@ -215,6 +215,20 @@ public class TrackersUDPServer extends Thread {
 			sensor = trackersMap.get(addr);
 		}
 		if(sensor == null) {
+			data.getLong(); // Skip packet number
+			int boardType = data.getInt();
+			int imuType = data.getInt();
+			data.getInt(); // IMU info
+			data.getInt();
+			data.getInt();
+			int firmwareBuild = data.getInt();
+			StringBuilder sb = new StringBuilder();
+			while(true) {
+				char c = (char) data.get();
+				if(c == 0)
+					break;
+				sb.append(c);
+			}
 			IMUTracker imu = new IMUTracker("udp:/" + handshakePacket.getAddress().toString(), this);
 			trackersConsumer.accept(imu);
 			sensor = new TrackerConnection(imu, addr);
@@ -224,7 +238,7 @@ public class TrackersUDPServer extends Thread {
 				trackers.add(sensor);
 				trackersMap.put(addr, sensor);
 			}
-			System.out.println("[TrackerServer] Sensor " + i + " added with address " + addr);
+			System.out.println("[TrackerServer] Sensor " + i + " added with address " + addr + ". Board type: " + boardType + ", imu type: " + imuType + ", firmware: " + sb + " (" + firmwareBuild + ")");
 		}
 		sensor.tracker.setStatus(TrackerStatus.OK);
         socket.send(new DatagramPacket(HANDSHAKE_BUFFER, HANDSHAKE_BUFFER.length, handshakePacket.getAddress(), handshakePacket.getPort()));
