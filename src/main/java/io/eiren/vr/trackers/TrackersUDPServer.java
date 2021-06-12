@@ -216,19 +216,33 @@ public class TrackersUDPServer extends Thread {
 		}
 		if(sensor == null) {
 			data.getLong(); // Skip packet number
-			int boardType = data.getInt();
-			int imuType = data.getInt();
-			data.getInt(); // IMU info
-			data.getInt();
-			data.getInt();
-			int firmwareBuild = data.getInt();
+			int boardType = -1;
+			int imuType = -1;
+			int firmwareBuild = -1;
 			StringBuilder sb = new StringBuilder();
-			while(true) {
-				char c = (char) data.get();
-				if(c == 0)
-					break;
-				sb.append(c);
+			if(data.remaining() > 0) {
+				if(data.remaining() > 3)
+					boardType = data.getInt();
+				if(data.remaining() > 3)
+					imuType = data.getInt();
+				if(data.remaining() > 11) {
+					data.getInt(); // IMU info
+					data.getInt();
+					data.getInt();
+				}
+				if(data.remaining() > 3)
+					firmwareBuild = data.getInt();
+				while(true) {
+					if(data.remaining() == 0)
+						break;
+					char c = (char) data.get();
+					if(c == 0)
+						break;
+					sb.append(c);
+				}
 			}
+			if(sb.length() == 0)
+				sb.append("owoTrack");
 			IMUTracker imu = new IMUTracker("udp:/" + handshakePacket.getAddress().toString(), this);
 			trackersConsumer.accept(imu);
 			sensor = new TrackerConnection(imu, addr);
