@@ -147,19 +147,22 @@ public class HumanSkeleonWithWaist extends HumanSkeleton {
 	}
 	
 	protected void updateLocalTransforms() {
-		hmdTracker.getPosition(vBuf);
-		hmdTracker.getRotation(qBuf);
-		hmdNode.localTransform.setTranslation(vBuf);
-		hmdNode.localTransform.setRotation(qBuf);
-		headNode.localTransform.setRotation(qBuf);
+		if(hmdTracker.getPosition(vBuf)) {
+			hmdNode.localTransform.setTranslation(vBuf);
+		}
+		if(hmdTracker.getRotation(qBuf)) {
+			hmdNode.localTransform.setRotation(qBuf);
+			headNode.localTransform.setRotation(qBuf);
+		}
+			
+		if(chestTracker.getRotation(qBuf))
+			neckNode.localTransform.setRotation(qBuf);
 		
-		chestTracker.getRotation(qBuf);
-		neckNode.localTransform.setRotation(qBuf);
-		
-		waistTracker.getRotation(qBuf);
-		trackerWaistNode.localTransform.setRotation(qBuf);
-		chestNode.localTransform.setRotation(qBuf);
-		waistNode.localTransform.setRotation(qBuf);
+		if(waistTracker.getRotation(qBuf)) {
+			trackerWaistNode.localTransform.setRotation(qBuf);
+			chestNode.localTransform.setRotation(qBuf);
+			waistNode.localTransform.setRotation(qBuf);
+		}
 	}
 	
 	protected void updateComputedTrackers() {

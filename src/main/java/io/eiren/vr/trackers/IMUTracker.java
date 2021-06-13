@@ -76,7 +76,7 @@ public class IMUTracker implements Tracker, CalibratingTracker, TrackerWithTPS, 
 	
 	@Override
 	public void startCalibration(Consumer<String> calibrationDataConsumer) {
-		server.sendCalibrationCommand(this, calibrationDataConsumer);
+		//server.sendCalibrationCommand(this, calibrationDataConsumer);
 	}
 	
 	@Override
@@ -91,12 +91,12 @@ public class IMUTracker implements Tracker, CalibratingTracker, TrackerWithTPS, 
 	
 	@Override
 	public void requestCalibrationData(Consumer<String> calibrationDataConsumer) {
-		server.requestCalibrationData(this, calibrationDataConsumer);
+		//server.requestCalibrationData(this, calibrationDataConsumer);
 	}
 	
 	@Override
 	public void uploadNewClibrationData() {
-		server.uploadNewCalibrationData(this, newCalibrationData);
+		//server.uploadNewCalibrationData(this, newCalibrationData);
 	}
 	
 	@Override

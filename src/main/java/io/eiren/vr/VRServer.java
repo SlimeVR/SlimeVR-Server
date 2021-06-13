@@ -4,6 +4,8 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.net.InetAddress;
+import java.net.UnknownHostException;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
@@ -17,6 +19,8 @@ import io.eiren.util.ann.ThreadSecure;
 import io.eiren.util.ann.VRServerThread;
 import io.eiren.util.collections.FastList;
 import io.eiren.vr.bridge.NamedPipeVRBridge;
+import io.eiren.vr.bridge.VMCBridge;
+import io.eiren.vr.bridge.VRBridge;
 import io.eiren.vr.processor.HumanPoseProcessor;
 import io.eiren.vr.processor.HumanSkeleton;
 import io.eiren.vr.trackers.HMDTracker;
@@ -32,7 +36,7 @@ public class VRServer extends Thread {
 	private final List<Tracker> trackers = new FastList<>();
 	public final HumanPoseProcessor humanPoseProcessor;
 	private final TrackersUDPServer trackersServer = new TrackersUDPServer(6969, "Sensors UDP server", this::registerTracker);
-	private final NamedPipeVRBridge driverBridge;
+	private final List<VRBridge> bridges = new FastList<>();
 	private final Queue<Runnable> tasks = new LinkedBlockingQueue<>();
 	private final Map<String, TrackerConfig> configuration = new HashMap<>();
 	public final YamlFile config = new YamlFile();
@@ -46,7 +50,19 @@ public class VRServer extends Thread {
 		hmdTracker.position.set(0, 1.8f, 0); // Set starting position for easier debugging
 		humanPoseProcessor = new HumanPoseProcessor(this, hmdTracker);
 		List<? extends Tracker> shareTrackers = humanPoseProcessor.getComputedTrackers();
-		driverBridge = new NamedPipeVRBridge(hmdTracker, shareTrackers);
+		
+		// Create named pipe bridge for SteamVR driver
+		NamedPipeVRBridge driverBridge = new NamedPipeVRBridge(hmdTracker, shareTrackers);
+		tasks.add(() -> driverBridge.start());
+		
+		// Create VMCBridge
+		try {
+			VMCBridge vmcBridge = new VMCBridge(39539, 39540, InetAddress.getLocalHost());
+			tasks.add(() -> vmcBridge.start());
+		} catch(UnknownHostException e) {
+			e.printStackTrace();
+		}
+		
 		
 		registerTracker(hmdTracker);
 		for(int i = 0; i < shareTrackers.size(); ++i)
@@ -142,7 +158,6 @@ public class VRServer extends Thread {
 	public void run() {
 		loadConfig();
 		trackersServer.start();
-		driverBridge.start();
 		while(true) {
 			//final long start = System.currentTimeMillis();
 			do {
@@ -155,9 +170,11 @@ public class VRServer extends Thread {
 			for(int i = 0; i < onTick.size(); ++i) {
 				this.onTick.get(i).run();
 			}
-			
+			for(int i = 0; i < bridges.size(); ++i)
+				bridges.get(i).dataRead();
 			humanPoseProcessor.update();
-			
+			for(int i = 0; i < bridges.size(); ++i)
+				bridges.get(i).dataWrite();
 			//final long time = System.currentTimeMillis() - start;
 			try {
 				Thread.sleep(1); // 1000Hz

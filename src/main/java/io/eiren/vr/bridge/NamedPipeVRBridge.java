@@ -3,6 +3,7 @@ package io.eiren.vr.bridge;
 import java.io.IOException;
 import java.nio.charset.Charset;
 import java.util.List;
+import java.util.concurrent.atomic.AtomicBoolean;
 
 import com.jme3.math.Quaternion;
 import com.jme3.math.Vector3f;
@@ -13,6 +14,7 @@ import com.sun.jna.ptr.IntByReference;
 
 import io.eiren.util.collections.FastList;
 import io.eiren.util.logging.LogManager;
+import io.eiren.vr.trackers.ComputedTracker;
 import io.eiren.vr.trackers.HMDTracker;
 import io.eiren.vr.trackers.Tracker;
 import io.eiren.vr.trackers.TrackerStatus;
@@ -32,12 +34,21 @@ public class NamedPipeVRBridge extends Thread implements VRBridge {
 	private final HMDTracker hmd;
 	private final List<Pipe> trackerPipes;
 	private final List<? extends Tracker> shareTrackers;
+	private final List<ComputedTracker> internalTrackers;
+	
+	private final HMDTracker internalHMDTracker = new HMDTracker("itnernal://HMD");
+	private final AtomicBoolean newHMDData = new AtomicBoolean(false);
 	
 	public NamedPipeVRBridge(HMDTracker hmd, List<? extends Tracker> shareTrackers) {
 		super("Named Pipe VR Bridge");
 		this.hmd = hmd;
 		this.shareTrackers = new FastList<>(shareTrackers);
 		this.trackerPipes = new FastList<>(shareTrackers.size());
+		this.internalTrackers = new FastList<>(shareTrackers.size());
+		for(int i = 0; i < shareTrackers.size(); ++i) {
+			Tracker t = shareTrackers.get(i);
+			this.internalTrackers.add(new ComputedTracker("internal://" + t.getName()));
+		}
 	}
 	
 	@Override
@@ -58,6 +69,27 @@ public class NamedPipeVRBridge extends Thread implements VRBridge {
 			}
 		} catch(Exception e) {
 			e.printStackTrace();
+		}
+	}
+
+	@Override
+	public void dataRead() {
+		if(newHMDData.compareAndSet(true, false)) {
+			hmd.position.set(internalHMDTracker.position);
+			hmd.rotation.set(internalHMDTracker.rotation);
+			hmd.dataTick();
+		}
+	}
+
+	@Override
+	public void dataWrite() {
+		for(int i = 0; i < shareTrackers.size(); ++i) {
+			Tracker t = shareTrackers.get(i);
+			ComputedTracker it = this.internalTrackers.get(i);
+			if(t.getPosition(vBuffer))
+				it.position.set(vBuffer);
+			if(t.getRotation(qBuffer))
+				it.rotation.set(qBuffer);
 		}
 	}
 	
@@ -92,9 +124,10 @@ public class NamedPipeVRBridge extends Thread implements VRBridge {
 							double qy = Double.parseDouble(split[5]);
 							double qz = Double.parseDouble(split[6]);
 							
-							hmd.position.set((float) x, (float) y, (float) z);
-							hmd.rotation.set((float) qx, (float) qy, (float) qz, (float) qw);
-							hmd.dataTick();
+							internalHMDTracker.position.set((float) x, (float) y, (float) z);
+							internalHMDTracker.rotation.set((float) qx, (float) qy, (float) qz, (float) qw);
+							internalHMDTracker.dataTick();
+							newHMDData.set(true);
 						} catch(NumberFormatException e) {
 							e.printStackTrace();
 						}
@@ -107,7 +140,7 @@ public class NamedPipeVRBridge extends Thread implements VRBridge {
 	}
 	
 	public void updateTracker(int trackerId, boolean hmdUpdated) {
-		Tracker sensor = shareTrackers.get(trackerId);
+		Tracker sensor = internalTrackers.get(trackerId);
 		if(sensor.getStatus().sendData) {
 			Pipe trackerPipe = trackerPipes.get(trackerId);
 			if(hmdUpdated && trackerPipe.state == PipeState.OPEN) {
