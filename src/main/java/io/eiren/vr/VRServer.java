@@ -54,11 +54,13 @@ public class VRServer extends Thread {
 		// Create named pipe bridge for SteamVR driver
 		NamedPipeVRBridge driverBridge = new NamedPipeVRBridge(hmdTracker, shareTrackers);
 		tasks.add(() -> driverBridge.start());
+		bridges.add(driverBridge);
 		
 		// Create VMCBridge
 		try {
 			VMCBridge vmcBridge = new VMCBridge(39539, 39540, InetAddress.getLocalHost());
 			tasks.add(() -> vmcBridge.start());
+			bridges.add(vmcBridge);
 		} catch(UnknownHostException e) {
 			e.printStackTrace();
 		}
