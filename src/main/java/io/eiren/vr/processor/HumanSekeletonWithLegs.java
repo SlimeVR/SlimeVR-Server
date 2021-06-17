@@ -97,7 +97,10 @@ public class HumanSekeletonWithLegs extends HumanSkeleonWithWaist {
 		rightAnkleNode.localTransform.setTranslation(0, -ankleLength, 0);
 
 		leftAnkleNode.attachChild(leftFootNode);
+		leftFootNode.localTransform.setTranslation(0, 0, -0.05f);
+		
 		rightAnkleNode.attachChild(rightFootNode);
+		rightFootNode.localTransform.setTranslation(0, 0, -0.05f);
 		
 		configMap.put("Hips width", hipsWidth);
 		configMap.put("Hip length", hipsLength);
@@ -145,6 +148,7 @@ public class HumanSekeletonWithLegs extends HumanSkeleonWithWaist {
 
 		if(leftFootTracker != null) {
 			leftFootTracker.getRotation(kneeBuf);
+			leftAnkleNode.localTransform.setRotation(kneeBuf);
 			leftFootNode.localTransform.setRotation(kneeBuf);
 		}
 		
@@ -161,6 +165,7 @@ public class HumanSekeletonWithLegs extends HumanSkeleonWithWaist {
 		
 		if(rightFootTracker != null) {
 			rightFootTracker.getRotation(kneeBuf);
+			rightAnkleNode.localTransform.setRotation(kneeBuf);
 			rightFootNode.localTransform.setRotation(kneeBuf);
 		}
 		

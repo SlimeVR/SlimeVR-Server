@@ -3,27 +3,24 @@ package io.eiren.vr.processor;
 import java.util.HashMap;
 import java.util.Map;
 
-import com.jme3.math.Quaternion;
-
 public enum TrackerBodyPosition {
 	
-	CHEST(Quaternion.IDENTITY, "body:chest"),
-	WAIST(Quaternion.IDENTITY, "body:waist"),
-	LEFT_LEG(Quaternion.IDENTITY, "body:left_leg"),
-	RIGHT_LEG(Quaternion.IDENTITY, "body:right_leg"),
-	LEFT_ANKLE(Quaternion.IDENTITY, "body:left_ankle"),
-	RIGHT_ANKLE(Quaternion.IDENTITY, "body:right_ankle"),
-	LEFT_FOOT(Quaternion.IDENTITY, "body:left_foot"),
-	RIGHT_FOOT(Quaternion.IDENTITY, "body:right_foot"),
+	NONE(""),
+	CHEST("body:chest"),
+	WAIST("body:waist"),
+	LEFT_LEG("body:left_leg"),
+	RIGHT_LEG("body:right_leg"),
+	LEFT_ANKLE("body:left_ankle"),
+	RIGHT_ANKLE("body:right_ankle"),
+	LEFT_FOOT("body:left_foot"),
+	RIGHT_FOOT("body:right_foot"),
 	;
 	
-	public final Quaternion baseRotation;
 	public final String designation;
 	
 	private static final Map<String, TrackerBodyPosition> byDesignation = new HashMap<>();
 	
-	private TrackerBodyPosition(Quaternion base, String designation) {
-		this.baseRotation = base;
+	private TrackerBodyPosition(String designation) {
 		this.designation = designation;
 	}
 	
