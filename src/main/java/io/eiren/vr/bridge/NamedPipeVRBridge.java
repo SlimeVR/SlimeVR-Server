@@ -28,7 +28,9 @@ public class NamedPipeVRBridge extends Thread implements VRBridge {
 	private final byte[] buffer = new byte[1024];
 	private final StringBuilder sbBuffer = new StringBuilder(1024);
 	private final Vector3f vBuffer = new Vector3f();
+	private final Vector3f vBuffer2 = new Vector3f();
 	private final Quaternion qBuffer = new Quaternion();
+	private final Quaternion qBuffer2 = new Quaternion();
 	
 	private Pipe hmdPipe;
 	private final HMDTracker hmd;
@@ -88,10 +90,10 @@ public class NamedPipeVRBridge extends Thread implements VRBridge {
 		for(int i = 0; i < shareTrackers.size(); ++i) {
 			Tracker t = shareTrackers.get(i);
 			ComputedTracker it = this.internalTrackers.get(i);
-			if(t.getPosition(vBuffer))
-				it.position.set(vBuffer);
-			if(t.getRotation(qBuffer))
-				it.rotation.set(qBuffer);
+			if(t.getPosition(vBuffer2))
+				it.position.set(vBuffer2);
+			if(t.getRotation(qBuffer2))
+				it.rotation.set(qBuffer2);
 		}
 	}
 	
