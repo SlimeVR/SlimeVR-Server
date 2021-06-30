@@ -4,7 +4,9 @@ import com.jme3.math.FastMath;
 import com.jme3.math.Quaternion;
 import com.jme3.math.Vector3f;
 
-public class AdjustedTracker implements Tracker {
+import io.eiren.vr.processor.TrackerBodyPosition;
+
+public class ReferenceAdjustedTracker implements Tracker {
 	
 	public final Tracker tracker;
 	private final Quaternion smoothedQuaternion = new Quaternion();
@@ -13,12 +15,9 @@ public class AdjustedTracker implements Tracker {
 	protected float[] lastAngles = new float[3];
 	public float smooth = 0 * FastMath.DEG_TO_RAD;
 	private final float[] angles = new float[3];
-	private float pitchCorrection = 0;
-	private float rollCorrection = 0;
-	
 	protected float confidenceMultiplier = 1.0f;
 	
-	public AdjustedTracker(Tracker tracker) {
+	public ReferenceAdjustedTracker(Tracker tracker) {
 		this.tracker = tracker;
 	}
 
@@ -30,8 +29,9 @@ public class AdjustedTracker implements Tracker {
 	public void saveConfig(TrackerConfig config) {
 	}
 
-	public void adjustFull(Quaternion reference) {
-		adjustYaw(reference);
+	@Override
+	public void resetFull(Quaternion reference) {
+		resetYaw(reference);
 		
 		Quaternion sensorRotation = new Quaternion();
 		tracker.getRotation(sensorRotation);
@@ -40,7 +40,8 @@ public class AdjustedTracker implements Tracker {
 		adjustmentAttachment.set(sensorRotation).inverseLocal();
 	}
 	
-	public void adjustYaw(Quaternion reference) {
+	@Override
+	public void resetYaw(Quaternion reference) {
 		Quaternion targetTrackerRotation = new Quaternion(reference);
 
 		// Use only yaw HMD rotation
@@ -99,5 +100,15 @@ public class AdjustedTracker implements Tracker {
 	@Override
 	public float getConfidenceLevel() {
 		return tracker.getConfidenceLevel() * confidenceMultiplier;
+	}
+
+	@Override
+	public TrackerBodyPosition getBodyPosition() {
+		return tracker.getBodyPosition();
+	}
+
+	@Override
+	public void setBodyPosition(TrackerBodyPosition position) {
+		tracker.setBodyPosition(position);
 	}
 }

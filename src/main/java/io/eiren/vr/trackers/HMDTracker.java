@@ -1,6 +1,7 @@
 package io.eiren.vr.trackers;
 
 import io.eiren.util.BufferedTimer;
+import io.eiren.vr.processor.TrackerBodyPosition;
 
 public class HMDTracker extends ComputedTracker implements TrackerWithTPS {
 
@@ -8,6 +9,7 @@ public class HMDTracker extends ComputedTracker implements TrackerWithTPS {
 	
 	public HMDTracker(String name) {
 		super(name);
+		setBodyPosition(TrackerBodyPosition.HMD);
 	}
 	
 	@Override

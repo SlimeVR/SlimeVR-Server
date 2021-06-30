@@ -12,6 +12,7 @@ import io.eiren.vr.VRServer;
 import io.eiren.vr.trackers.HMDTracker;
 import io.eiren.vr.trackers.Tracker;
 import io.eiren.vr.trackers.TrackerStatus;
+import io.eiren.vr.trackers.TrackerUtils;
 
 public class HumanSkeleonWithWaist extends HumanSkeleton {
 	
@@ -43,7 +44,7 @@ public class HumanSkeleonWithWaist extends HumanSkeleton {
 	 * tracker position, if you want to move resulting
 	 * tracker up or down from actual waist
 	 */
-	protected float trackerWaistDistance = 0.57f;
+	protected float trackerWaistDistance = 0.0f;
 	/**
 	 * Distacne from eyes to the base of the neck
 	 */
@@ -53,9 +54,10 @@ public class HumanSkeleonWithWaist extends HumanSkeleton {
 	 */
 	protected float headShift = 0.1f;
 
-	public HumanSkeleonWithWaist(VRServer server, Tracker waistTracker, Tracker chestTracker, List<ComputedHumanPoseTracker> computedTrackers) {
-		this.waistTracker = waistTracker;
-		this.chestTracker = chestTracker;
+	public HumanSkeleonWithWaist(VRServer server, List<ComputedHumanPoseTracker> computedTrackers) {
+		List<Tracker> allTracekrs = server.getAllTrackers();
+		this.waistTracker = TrackerUtils.findTrackerForBodyPosition(allTracekrs, TrackerBodyPosition.WAIST, TrackerBodyPosition.CHEST);
+		this.chestTracker = TrackerUtils.findTrackerForBodyPosition(allTracekrs, TrackerBodyPosition.CHEST, TrackerBodyPosition.WAIST);
 		this.hmdTracker = server.hmdTracker;
 		this.server = server;
 		ComputedHumanPoseTracker cwt = null;
@@ -85,7 +87,7 @@ public class HumanSkeleonWithWaist extends HumanSkeleton {
 		waistNode.localTransform.setTranslation(0, -(waistDistance - chestDistance), 0);
 		
 		chestNode.attachChild(trackerWaistNode);
-		trackerWaistNode.localTransform.setTranslation(0, -(trackerWaistDistance - chestDistance), 0);
+		trackerWaistNode.localTransform.setTranslation(0, -(waistDistance + trackerWaistDistance - chestDistance), 0);
 		
 		configMap.put("Head", headShift);
 		configMap.put("Neck", neckLength);
@@ -123,12 +125,12 @@ public class HumanSkeleonWithWaist extends HumanSkeleton {
 			server.config.setProperty("body.chestDistance", chestDistance);
 			chestNode.localTransform.setTranslation(0, -chestDistance, 0);
 			waistNode.localTransform.setTranslation(0, -(waistDistance - chestDistance), 0);
-			trackerWaistNode.localTransform.setTranslation(0, -(trackerWaistDistance - chestDistance), 0);
+			trackerWaistNode.localTransform.setTranslation(0, -(waistDistance + trackerWaistDistance - chestDistance), 0);
 			break;
 		case "Virtual waist":
 			trackerWaistDistance = newLength;
 			server.config.setProperty("body.trackerWaistDistance", trackerWaistDistance);
-			trackerWaistNode.localTransform.setTranslation(0, -(trackerWaistDistance - chestDistance), 0);
+			trackerWaistNode.localTransform.setTranslation(0, -(waistDistance + trackerWaistDistance - chestDistance), 0);
 			break;
 		}
 	}
@@ -169,5 +171,19 @@ public class HumanSkeleonWithWaist extends HumanSkeleton {
 		computedWaistTracker.position.set(trackerWaistNode.worldTransform.getTranslation());
 		computedWaistTracker.rotation.set(trackerWaistNode.worldTransform.getRotation());
 		computedWaistTracker.dataTick();
+	}
+	
+	@Override
+	@VRServerThread
+	public void resetTrackersFull() {
+		// Each tracker uses the tracker before it to adjust iteself,
+		// so trackers that don't need adjustments could be used too
+		Quaternion referenceRotation = new Quaternion();
+		server.hmdTracker.getRotation(referenceRotation);
+		
+		this.chestTracker.resetFull(referenceRotation);
+		this.chestTracker.getRotation(referenceRotation);
+		
+		this.waistTracker.resetFull(referenceRotation);
 	}
 }

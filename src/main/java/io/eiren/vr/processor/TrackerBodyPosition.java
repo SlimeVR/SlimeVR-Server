@@ -6,6 +6,7 @@ import java.util.Map;
 public enum TrackerBodyPosition {
 	
 	NONE(""),
+	HMD("body:HMD"),
 	CHEST("body:chest"),
 	WAIST("body:waist"),
 	LEFT_LEG("body:left_leg"),

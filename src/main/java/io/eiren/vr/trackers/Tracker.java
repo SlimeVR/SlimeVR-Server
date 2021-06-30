@@ -3,6 +3,8 @@ package io.eiren.vr.trackers;
 import com.jme3.math.Quaternion;
 import com.jme3.math.Vector3f;
 
+import io.eiren.vr.processor.TrackerBodyPosition;
+
 public interface Tracker {
 	
 	public boolean getPosition(Vector3f store);
@@ -18,4 +20,12 @@ public interface Tracker {
 	public void saveConfig(TrackerConfig config);
 	
 	public float getConfidenceLevel();
+	
+	public void resetFull(Quaternion reference);
+	
+	public void resetYaw(Quaternion reference);
+	
+	public TrackerBodyPosition getBodyPosition();
+	
+	public void setBodyPosition(TrackerBodyPosition position);
 }

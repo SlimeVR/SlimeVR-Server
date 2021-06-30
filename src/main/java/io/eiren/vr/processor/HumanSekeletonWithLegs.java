@@ -1,14 +1,15 @@
 package io.eiren.vr.processor;
 
 import java.util.List;
-import java.util.Map;
 
 import com.jme3.math.FastMath;
 import com.jme3.math.Quaternion;
 
+import io.eiren.util.ann.VRServerThread;
 import io.eiren.vr.VRServer;
 import io.eiren.vr.trackers.Tracker;
 import io.eiren.vr.trackers.TrackerStatus;
+import io.eiren.vr.trackers.TrackerUtils;
 
 public class HumanSekeletonWithLegs extends HumanSkeleonWithWaist {
 	
@@ -53,14 +54,15 @@ public class HumanSekeletonWithLegs extends HumanSkeleonWithWaist {
 	
 	protected float kneeLerpFactor = 0.5f;
 
-	public HumanSekeletonWithLegs(VRServer server, Tracker waistTracker, Tracker chestTracker, Map<TrackerBodyPosition, ? extends Tracker> trackers, List<ComputedHumanPoseTracker> computedTrackers) {
-		super(server, waistTracker, chestTracker, computedTrackers);
-		this.leftLegTracker = trackers.get(TrackerBodyPosition.LEFT_LEG);
-		this.leftAnkleTracker = trackers.get(TrackerBodyPosition.LEFT_ANKLE);
-		this.leftFootTracker = trackers.get(TrackerBodyPosition.LEFT_FOOT);
-		this.rightLegTracker = trackers.get(TrackerBodyPosition.RIGHT_LEG);
-		this.rightAnkleTracker = trackers.get(TrackerBodyPosition.RIGHT_ANKLE);
-		this.rightFootTracker = trackers.get(TrackerBodyPosition.RIGHT_FOOT);
+	public HumanSekeletonWithLegs(VRServer server, List<ComputedHumanPoseTracker> computedTrackers) {
+		super(server, computedTrackers);
+		List<Tracker> allTracekrs = server.getAllTrackers();
+		this.leftLegTracker = TrackerUtils.findTrackerForBodyPosition(allTracekrs, TrackerBodyPosition.LEFT_LEG);
+		this.leftAnkleTracker = TrackerUtils.findTrackerForBodyPosition(allTracekrs, TrackerBodyPosition.LEFT_ANKLE);
+		this.leftFootTracker = TrackerUtils.findTrackerForBodyPosition(allTracekrs, TrackerBodyPosition.LEFT_FOOT);
+		this.rightLegTracker = TrackerUtils.findTrackerForBodyPosition(allTracekrs, TrackerBodyPosition.RIGHT_LEG);
+		this.rightAnkleTracker = TrackerUtils.findTrackerForBodyPosition(allTracekrs, TrackerBodyPosition.RIGHT_ANKLE);
+		this.rightFootTracker = TrackerUtils.findTrackerForBodyPosition(allTracekrs, TrackerBodyPosition.RIGHT_FOOT);
 		ComputedHumanPoseTracker lat = null;
 		ComputedHumanPoseTracker rat = null;
 		for(int i = 0; i < computedTrackers.size(); ++i) {
@@ -212,5 +214,36 @@ public class HumanSekeletonWithLegs extends HumanSkeleonWithWaist {
 		computedRightFootTracker.position.set(rightFootNode.worldTransform.getTranslation());
 		computedRightFootTracker.rotation.set(rightFootNode.worldTransform.getRotation());
 		computedRightFootTracker.dataTick();
+	}
+	
+	@Override
+	@VRServerThread
+	public void resetTrackersFull() {
+		// Each tracker uses the tracker before it to adjust iteself,
+		// so trackers that don't need adjustments could be used too
+		super.resetTrackersFull();
+		// Start with waist, it was reset in the parent
+		Quaternion referenceRotation = new Quaternion();
+		this.waistTracker.getRotation(referenceRotation);
+		
+		this.leftLegTracker.resetFull(referenceRotation);
+		this.rightLegTracker.resetFull(referenceRotation);
+		this.leftLegTracker.getRotation(referenceRotation);
+		
+		this.leftAnkleTracker.resetFull(referenceRotation);
+		this.leftAnkleTracker.getRotation(referenceRotation);
+		
+		if(this.leftFootTracker != null) {
+			this.leftFootTracker.resetFull(referenceRotation);
+		}
+
+		this.rightLegTracker.getRotation(referenceRotation);
+		
+		this.rightAnkleTracker.resetFull(referenceRotation);
+		this.rightAnkleTracker.getRotation(referenceRotation);
+		
+		if(this.rightAnkleTracker != null) {
+			this.rightAnkleTracker.resetFull(referenceRotation);
+		}
 	}
 }

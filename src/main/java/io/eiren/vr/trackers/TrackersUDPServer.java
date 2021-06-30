@@ -41,13 +41,13 @@ public class TrackersUDPServer extends Thread {
 	private final List<TrackerConnection> trackers = new FastList<>();
 	private final Map<SocketAddress, TrackerConnection> trackersMap = new HashMap<>();
 	private final Map<Tracker, Consumer<String>> calibrationDataRequests = new HashMap<>();
-	private final Consumer<IMUTracker> trackersConsumer;
+	private final Consumer<Tracker> trackersConsumer;
 	private final int port;
 	
 	protected DatagramSocket socket = null;
 	protected long lastKeepup = System.currentTimeMillis();
 	
-	public TrackersUDPServer(int port, String name, Consumer<IMUTracker> trackersConsumer) {
+	public TrackersUDPServer(int port, String name, Consumer<Tracker> trackersConsumer) {
 		super(name);
 		this.port = port;
 		this.trackersConsumer = trackersConsumer;
@@ -90,7 +90,8 @@ public class TrackersUDPServer extends Thread {
 			if(sb.length() == 0)
 				sb.append("owoTrack");
 			IMUTracker imu = new IMUTracker("udp:/" + handshakePacket.getAddress().toString(), this);
-			trackersConsumer.accept(imu);
+			IMUReferenceAdjustedTracker<IMUTracker> adjustedTracker = new IMUReferenceAdjustedTracker<>(imu);
+			trackersConsumer.accept(adjustedTracker);
 			sensor = new TrackerConnection(imu, addr);
 			int i = 0;
 			synchronized(trackers) {
@@ -108,7 +109,8 @@ public class TrackersUDPServer extends Thread {
 		System.out.println("[TrackerServer] Setting up auxilary sensor for " + connection.tracker.getName());
 		IMUTracker imu = new IMUTracker(connection.tracker.getName() + "/1", this);
 		connection.secondTracker = imu;
-		trackersConsumer.accept(imu);
+		IMUReferenceAdjustedTracker<IMUTracker> adjustedTracker = new IMUReferenceAdjustedTracker<>(imu);
+		trackersConsumer.accept(adjustedTracker);
 		System.out.println("[TrackerServer] Sensor added with address " + imu.getName());
 	}
 	
@@ -135,6 +137,8 @@ public class TrackersUDPServer extends Thread {
 						sensor.lastPacket = System.currentTimeMillis();
 					int packetId;
 					switch(packetId = bb.getInt()) {
+					case 0:
+						break;
 					case 3:
 						setUpNewSensor(recieve, bb);
 						break;
@@ -196,7 +200,7 @@ public class TrackersUDPServer extends Thread {
 						if(sensor == null)
 							break;
 						bb.getLong();
-						IMUTracker.ConfigurationData data = new IMUTracker.ConfigurationData(bb);
+						MPUTracker.ConfigurationData data = new MPUTracker.ConfigurationData(bb);
 						Consumer<String> dataConsumer = calibrationDataRequests.remove(sensor.tracker);
 						if(dataConsumer != null) {
 							dataConsumer.accept(data.toTextMatrix());

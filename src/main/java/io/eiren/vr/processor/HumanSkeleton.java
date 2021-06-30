@@ -18,4 +18,7 @@ public abstract class HumanSkeleton {
 
 	@ThreadSafe
 	public abstract void setSkeletonConfig(String key, float newLength);
+
+	@VRServerThread
+	public abstract void resetTrackersFull();
 }

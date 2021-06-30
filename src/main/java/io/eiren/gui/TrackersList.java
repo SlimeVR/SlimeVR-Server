@@ -1,12 +1,9 @@
 package io.eiren.gui;
 
 import java.awt.GridBagConstraints;
-import java.awt.event.MouseEvent;
 import java.util.List;
 
-import javax.swing.JButton;
 import javax.swing.JLabel;
-import javax.swing.event.MouseInputAdapter;
 
 import com.jme3.math.FastMath;
 import com.jme3.math.Quaternion;
@@ -18,8 +15,7 @@ import io.eiren.util.ann.ThreadSafe;
 import io.eiren.util.ann.VRServerThread;
 import io.eiren.util.collections.FastList;
 import io.eiren.vr.VRServer;
-import io.eiren.vr.trackers.AdjustedTracker;
-import io.eiren.vr.trackers.CalibratingTracker;
+import io.eiren.vr.trackers.ReferenceAdjustedTracker;
 import io.eiren.vr.trackers.ComputedTracker;
 import io.eiren.vr.trackers.HMDTracker;
 import io.eiren.vr.trackers.IMUTracker;
@@ -248,7 +244,7 @@ public class TrackersList extends EJBag {
 			return 1;
 		if(t instanceof IMUTracker)
 			return 2;
-		if(t instanceof AdjustedTracker)
+		if(t instanceof ReferenceAdjustedTracker)
 			return 5;
 		return 1000;
 	}
