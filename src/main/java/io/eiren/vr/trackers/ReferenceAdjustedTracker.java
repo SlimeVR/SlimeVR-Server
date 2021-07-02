@@ -29,6 +29,13 @@ public class ReferenceAdjustedTracker implements Tracker {
 	public void saveConfig(TrackerConfig config) {
 	}
 
+	/**
+	 *  Reset the tracker so that it's current rotation
+	 *  is counted as (0, <HMD Yaw>, 0). This allows tracker
+	 *  to be strapped to body at any pitch and roll.
+	 *  <p>Performs {@link #resetYaw(Quaternion)} for yaw
+	 *  drift correction.
+	 */
 	@Override
 	public void resetFull(Quaternion reference) {
 		resetYaw(reference);
@@ -36,15 +43,27 @@ public class ReferenceAdjustedTracker implements Tracker {
 		Quaternion sensorRotation = new Quaternion();
 		tracker.getRotation(sensorRotation);
 		adjustmentYaw.mult(sensorRotation, sensorRotation);
-		
-		adjustmentAttachment.set(sensorRotation).inverseLocal();
-	}
-	
-	@Override
-	public void resetYaw(Quaternion reference) {
-		Quaternion targetTrackerRotation = new Quaternion(reference);
 
 		// Use only yaw HMD rotation
+		Quaternion targetTrackerRotation = new Quaternion(reference);
+		float[] angles = new float[3];
+		targetTrackerRotation.toAngles(angles);
+		targetTrackerRotation.fromAngles(0, angles[1], 0);
+		
+		adjustmentAttachment.set(sensorRotation).inverseLocal().multLocal(targetTrackerRotation);
+	}
+
+	/**
+	 *  Reset the tracker so that it's current yaw rotation
+	 *  is counted as <HMD Yaw>. This allows the tracker
+	 *  to have yaw independant of the HMD. Tracker should
+	 *  still report yaw as if it was mounted facing HMD,
+	 *  mounting position should be corrected in the source.
+	 */
+	@Override
+	public void resetYaw(Quaternion reference) {
+		// Use only yaw HMD rotation
+		Quaternion targetTrackerRotation = new Quaternion(reference);
 		float[] angles = new float[3];
 		targetTrackerRotation.toAngles(angles);
 		targetTrackerRotation.fromAngles(0, angles[1], 0);

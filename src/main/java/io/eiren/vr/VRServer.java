@@ -48,6 +48,7 @@ public class VRServer extends Thread {
 		super("VRServer");
 		hmdTracker = new HMDTracker("HMD");
 		hmdTracker.position.set(0, 1.8f, 0); // Set starting position for easier debugging
+		// TODO Multiple processors
 		humanPoseProcessor = new HumanPoseProcessor(this, hmdTracker);
 		List<? extends Tracker> shareTrackers = humanPoseProcessor.getComputedTrackers();
 		
@@ -191,7 +192,7 @@ public class VRServer extends Thread {
 	}
 	
 	@VRServerThread
-	private void autoAssignTracker(Tracker tracker) {
+	private void trackerAdded(Tracker tracker) {
 		humanPoseProcessor.trackerAdded(tracker);
 	}
 	
@@ -201,7 +202,7 @@ public class VRServer extends Thread {
 		tracker.loadConfig(config);
 		queueTask(() -> {
 			trackers.add(tracker);
-			autoAssignTracker(tracker);
+			trackerAdded(tracker);
 			for(int i = 0; i < newTrackersConsumers.size(); ++i)
 				newTrackersConsumers.get(i).accept(tracker);
 		});
