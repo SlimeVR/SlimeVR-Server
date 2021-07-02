@@ -19,10 +19,19 @@ public class Main {
 			e1.printStackTrace();
 		}
 		
-		VRServer vrServer = new VRServer();
-		vrServer.start();
-		
-		new VRServerGUI(vrServer);
+		try {
+			VRServer vrServer = new VRServer();
+			vrServer.start();
+			new VRServerGUI(vrServer);
+		} catch(Throwable e) {
+			e.printStackTrace();
+		} finally {
+			try {
+				Thread.sleep(2000L);
+			} catch(InterruptedException e) {
+				e.printStackTrace();
+			}
+		}
 	}
 	
 }

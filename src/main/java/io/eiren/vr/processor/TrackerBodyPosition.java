@@ -26,7 +26,7 @@ public enum TrackerBodyPosition {
 	}
 	
 	public static TrackerBodyPosition getByDesignation(String designation) {
-		return byDesignation.get(designation.toLowerCase());
+		return designation == null ? null : byDesignation.get(designation.toLowerCase());
 	}
 	
 	static {
