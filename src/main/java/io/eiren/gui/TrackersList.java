@@ -83,7 +83,6 @@ public class TrackersList extends EJBox {
 		java.awt.EventQueue.invokeLater(() -> {
 			for(int i = 0; i < trackers.size(); ++i)
 				trackers.get(i).update();
-			gui.refresh();
 		});
 	}
 	
