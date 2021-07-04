@@ -28,4 +28,6 @@ public interface Tracker {
 	public TrackerBodyPosition getBodyPosition();
 	
 	public void setBodyPosition(TrackerBodyPosition position);
+	
+	public boolean userEditable();
 }

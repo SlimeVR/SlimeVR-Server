@@ -1,8 +1,11 @@
 package io.eiren.gui;
 
 import java.awt.GridBagConstraints;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 import java.util.List;
 
+import javax.swing.JComboBox;
 import javax.swing.JLabel;
 
 import com.jme3.math.FastMath;
@@ -15,6 +18,7 @@ import io.eiren.util.ann.ThreadSafe;
 import io.eiren.util.ann.VRServerThread;
 import io.eiren.util.collections.FastList;
 import io.eiren.vr.VRServer;
+import io.eiren.vr.processor.TrackerBodyPosition;
 import io.eiren.vr.trackers.ReferenceAdjustedTracker;
 import io.eiren.vr.trackers.ComputedTracker;
 import io.eiren.vr.trackers.HMDTracker;
@@ -80,20 +84,27 @@ public class TrackersList extends EJBag {
 			}
 
 			tr.build(n);
-			TrackerConfig cfg = server.getTrackerConfig(t);
-			
-			if(cfg.designation != null)
-				add(new JLabel(cfg.designation), c(1, n, 2));
-			/*if(t instanceof CalibratingTracker) {
-				add(new JButton("Calibrate") {{
-					addMouseListener(new MouseInputAdapter() {
-						@Override
-						public void mouseClicked(MouseEvent e) {
-							new CalibrationWindow(t);
-						}
-					});
-				}}, c(12, n, 2));
-			}*/
+			if(t.userEditable()) {
+				TrackerConfig cfg = server.getTrackerConfig(t);
+				JComboBox<String> desSelect;
+				add(desSelect = new JComboBox<>(), c(1, n, 2));
+				for(TrackerBodyPosition p : TrackerBodyPosition.values) {
+					desSelect.addItem(p.name());
+				}
+				if(cfg.designation != null) {
+					TrackerBodyPosition p = TrackerBodyPosition.getByDesignation(cfg.designation);
+					if(p != null)
+						desSelect.setSelectedItem(p.name());
+				}
+				desSelect.addActionListener(new ActionListener() {
+					@Override
+					public void actionPerformed(ActionEvent e) {
+						TrackerBodyPosition p = TrackerBodyPosition.valueOf(String.valueOf(desSelect.getSelectedItem()));
+						t.setBodyPosition(p);
+						server.trackerUpdated(t);
+					}
+				});
+			}
 			n += tr.getSize();
 		}
 		gui.refresh();

@@ -20,13 +20,20 @@ public class ReferenceAdjustedTracker implements Tracker {
 	public ReferenceAdjustedTracker(Tracker tracker) {
 		this.tracker = tracker;
 	}
+	
+	@Override
+	public boolean userEditable() {
+		return this.tracker.userEditable();
+	}
 
 	@Override
 	public void loadConfig(TrackerConfig config) {
+		this.tracker.loadConfig(config);
 	}
 
 	@Override
 	public void saveConfig(TrackerConfig config) {
+		this.tracker.saveConfig(config);
 	}
 
 	/**

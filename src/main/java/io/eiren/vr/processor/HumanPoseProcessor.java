@@ -41,8 +41,11 @@ public class HumanPoseProcessor {
 	
 	@ThreadSafe
 	public float getSkeletonConfig(String key) {
-		if(skeleton != null)
-			return skeleton.getSkeletonConfig().get(key);
+		if(skeleton != null) {
+			Number f = skeleton.getSkeletonConfig().get(key);
+			if(f != null)
+				return f.floatValue();
+		}
 		return 0.0f;
 	}
 	

@@ -113,6 +113,14 @@ public class VRServer extends Thread {
 				consumer.accept(trackers.get(i));
 		});
 	}
+	
+	@ThreadSafe
+	public void trackerUpdated(Tracker tracker) {
+		queueTask(() -> {
+			humanPoseProcessor.trackerUpdated(tracker);
+			saveConfig();
+		});
+	}
 
 	@ThreadSafe
 	public void addSkeletonUpdatedCallback(Consumer<HumanSkeleton> consumer) {

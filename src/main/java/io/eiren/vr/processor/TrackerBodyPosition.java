@@ -19,6 +19,7 @@ public enum TrackerBodyPosition {
 	
 	public final String designation;
 	
+	public static final TrackerBodyPosition[] values = values();
 	private static final Map<String, TrackerBodyPosition> byDesignation = new HashMap<>();
 	
 	private TrackerBodyPosition(String designation) {

@@ -75,6 +75,7 @@ public class VRServerGUI extends JFrame {
 				
 				add(new JLabel("Trackers"));
 				add(trackersList);
+				add(Box.createVerticalGlue());
 			}});
 
 			add(new EJBox(PAGE_AXIS) {{

@@ -75,4 +75,9 @@ public class ComputedTracker implements Tracker {
 	public void setBodyPosition(TrackerBodyPosition position) {
 		this.bodyPosition = position;
 	}
+
+	@Override
+	public boolean userEditable() {
+		return false;
+	}
 }
