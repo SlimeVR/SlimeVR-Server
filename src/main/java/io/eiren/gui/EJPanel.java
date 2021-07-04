@@ -86,6 +86,12 @@ public abstract class EJPanel extends JPanel {
 		return c;
 	}
 	
+	public static GridBagConstraints s(GridBagConstraints c, int gridwidth, int gridheight) {
+		c.gridwidth = gridwidth;
+		c.gridheight = gridheight;
+		return c;
+	}
+	
 	public static Insets i(int s) {
 		return new Insets(s, s, s, s);
 	}

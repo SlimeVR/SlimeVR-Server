@@ -1,6 +1,5 @@
 package io.eiren.vr.trackers;
 
-import com.jme3.math.FastMath;
 import com.jme3.math.Quaternion;
 import com.jme3.math.Vector3f;
 
@@ -15,6 +14,7 @@ public class IMUTracker implements Tracker, TrackerWithTPS, TrackerWithBattery {
 	public final Vector3f magVector = new Vector3f();
 	public final Quaternion rotQuaternion = new Quaternion();
 	protected final Quaternion rotAdjust = new Quaternion();
+	protected TrackerMountingRotation mounting = null;
 	protected TrackerStatus status = TrackerStatus.OK;
 	
 	protected final String name;
@@ -37,16 +37,35 @@ public class IMUTracker implements Tracker, TrackerWithTPS, TrackerWithBattery {
 	@Override
 	public void saveConfig(TrackerConfig config) {
 		config.setDesignation(bodyPosition == null ? null : bodyPosition.designation);
+		config.mountingRotation = mounting != null ? mounting.name() : null;
 	}
 	
 	@Override
 	public void loadConfig(TrackerConfig config) {
-		if(!FloatMath.equalsToZero(config.trackerRotation)) {
-			rotAdjust.fromAngles(0, config.trackerRotation * FastMath.DEG_TO_RAD, 0);
+		if(config.mountingRotation != null) {
+			mounting = TrackerMountingRotation.valueOf(config.mountingRotation);
+			if(mounting != null) {
+				rotAdjust.set(mounting.quaternion);
+			} else {
+				rotAdjust.loadIdentity();
+			}
 		} else {
 			rotAdjust.loadIdentity();
 		}
 		bodyPosition = TrackerBodyPosition.getByDesignation(config.designation);
+	}
+	
+	public TrackerMountingRotation getMountingRotation() {
+		return mounting;
+	}
+	
+	public void setMountingRotation(TrackerMountingRotation mr) {
+		mounting = mr;
+		if(mounting != null) {
+			rotAdjust.set(mounting.quaternion);
+		} else {
+			rotAdjust.loadIdentity();
+		}
 	}
 	
 	@Override

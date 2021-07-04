@@ -6,9 +6,9 @@ import com.jme3.math.Vector3f;
 
 import io.eiren.vr.processor.TrackerBodyPosition;
 
-public class ReferenceAdjustedTracker implements Tracker {
+public class ReferenceAdjustedTracker<E extends Tracker> implements Tracker {
 	
-	public final Tracker tracker;
+	public final E tracker;
 	private final Quaternion smoothedQuaternion = new Quaternion();
 	public final Quaternion adjustmentYaw = new Quaternion();
 	public final Quaternion adjustmentAttachment = new Quaternion();
@@ -17,8 +17,12 @@ public class ReferenceAdjustedTracker implements Tracker {
 	private final float[] angles = new float[3];
 	protected float confidenceMultiplier = 1.0f;
 	
-	public ReferenceAdjustedTracker(Tracker tracker) {
+	public ReferenceAdjustedTracker(E tracker) {
 		this.tracker = tracker;
+	}
+	
+	public E getTracker() {
+		return this.tracker;
 	}
 	
 	@Override

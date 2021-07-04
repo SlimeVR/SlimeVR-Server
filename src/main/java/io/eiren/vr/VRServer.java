@@ -118,6 +118,8 @@ public class VRServer extends Thread {
 	public void trackerUpdated(Tracker tracker) {
 		queueTask(() -> {
 			humanPoseProcessor.trackerUpdated(tracker);
+			TrackerConfig tc = getTrackerConfig(tracker);
+			tracker.saveConfig(tc);
 			saveConfig();
 		});
 	}
