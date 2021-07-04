@@ -14,6 +14,7 @@ import com.sun.jna.ptr.IntByReference;
 
 import io.eiren.util.collections.FastList;
 import io.eiren.util.logging.LogManager;
+import io.eiren.vr.VRServer;
 import io.eiren.vr.trackers.ComputedTracker;
 import io.eiren.vr.trackers.HMDTracker;
 import io.eiren.vr.trackers.Tracker;
@@ -32,6 +33,7 @@ public class NamedPipeVRBridge extends Thread implements VRBridge {
 	private final Quaternion qBuffer = new Quaternion();
 	private final Quaternion qBuffer2 = new Quaternion();
 	
+	private final VRServer server;
 	private Pipe hmdPipe;
 	private final HMDTracker hmd;
 	private final List<Pipe> trackerPipes;
@@ -41,8 +43,11 @@ public class NamedPipeVRBridge extends Thread implements VRBridge {
 	private final HMDTracker internalHMDTracker = new HMDTracker("itnernal://HMD");
 	private final AtomicBoolean newHMDData = new AtomicBoolean(false);
 	
-	public NamedPipeVRBridge(HMDTracker hmd, List<? extends Tracker> shareTrackers) {
+	private boolean spawnOneTracker = false;
+	
+	public NamedPipeVRBridge(HMDTracker hmd, List<? extends Tracker> shareTrackers, VRServer server) {
 		super("Named Pipe VR Bridge");
+		this.server = server;
 		this.hmd = hmd;
 		this.shareTrackers = new FastList<>(shareTrackers);
 		this.trackerPipes = new FastList<>(shareTrackers.size());
@@ -53,6 +58,26 @@ public class NamedPipeVRBridge extends Thread implements VRBridge {
 			ct.setStatus(TrackerStatus.OK);
 			this.internalTrackers.add(ct);
 		}
+		this.spawnOneTracker = server.config.getBoolean("openvr.onetracker", spawnOneTracker);
+	}
+	
+	public boolean isOneTrackerMode() {
+		return this.spawnOneTracker;
+	}
+	
+	/**
+	 * Makes OpenVR bridge spawn only 1 tracker instead of 3, for
+	 * use with only waist/chest tracking. Requires restart.
+	 */
+	public void setSpawnOneTracker(boolean spawnOneTracker) {
+		if(spawnOneTracker == this.spawnOneTracker)
+			return;
+		this.spawnOneTracker = spawnOneTracker;
+		if(this.spawnOneTracker)
+			this.server.config.setProperty("openvr.onetracker", true);
+		else
+			this.server.config.removeProperty("openvr.onetracker");
+		this.server.saveConfig();
 	}
 	
 	@Override
@@ -108,6 +133,8 @@ public class NamedPipeVRBridge extends Thread implements VRBridge {
 				if(tryOpeningPipe(trackerPipe))
 					initTrackerPipe(trackerPipe, i);
 			}
+			if(spawnOneTracker)
+				return;
 		}
 	}
 	
@@ -167,7 +194,7 @@ public class NamedPipeVRBridge extends Thread implements VRBridge {
 	}
 	
 	private void initTrackerPipe(Pipe pipe, int trackerId) {
-		String trackerHello = this.shareTrackers.size() + " 0";
+		String trackerHello = (spawnOneTracker ? "1" : this.shareTrackers.size()) + " 0";
 		System.arraycopy(trackerHello.getBytes(ASCII), 0, buffer, 0, trackerHello.length());
 		buffer[trackerHello.length()] = '\0';
 		IntByReference lpNumberOfBytesWritten = new IntByReference(0);

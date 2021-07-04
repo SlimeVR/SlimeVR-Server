@@ -46,6 +46,7 @@ public class VRServer extends Thread {
 	
 	public VRServer() {
 		super("VRServer");
+		loadConfig();
 		hmdTracker = new HMDTracker("HMD");
 		hmdTracker.position.set(0, 1.8f, 0); // Set starting position for easier debugging
 		// TODO Multiple processors
@@ -53,7 +54,7 @@ public class VRServer extends Thread {
 		List<? extends Tracker> shareTrackers = humanPoseProcessor.getComputedTrackers();
 		
 		// Create named pipe bridge for SteamVR driver
-		NamedPipeVRBridge driverBridge = new NamedPipeVRBridge(hmdTracker, shareTrackers);
+		NamedPipeVRBridge driverBridge = new NamedPipeVRBridge(hmdTracker, shareTrackers, this);
 		tasks.add(() -> driverBridge.start());
 		bridges.add(driverBridge);
 		
@@ -70,6 +71,16 @@ public class VRServer extends Thread {
 		registerTracker(hmdTracker);
 		for(int i = 0; i < shareTrackers.size(); ++i)
 			registerTracker(shareTrackers.get(i));
+	}
+
+	@ThreadSafe
+	public <E extends VRBridge> E getVRBridge(Class<E> cls) {
+		for(int i = 0; i < bridges.size(); ++i) {
+			VRBridge b = bridges.get(i);
+			if(cls.isInstance(b))
+				return cls.cast(b);
+		}
+		return null;
 	}
 	
 	@ThreadSafe
@@ -169,7 +180,6 @@ public class VRServer extends Thread {
 	@Override
 	@VRServerThread
 	public void run() {
-		loadConfig();
 		trackersServer.start();
 		while(true) {
 			//final long start = System.currentTimeMillis();

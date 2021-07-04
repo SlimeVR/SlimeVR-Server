@@ -6,6 +6,7 @@ import javax.swing.event.MouseInputAdapter;
 
 import io.eiren.util.ann.AWTThread;
 import io.eiren.vr.VRServer;
+import io.eiren.vr.bridge.NamedPipeVRBridge;
 
 import java.awt.event.MouseEvent;
 import java.util.TimerTask;
@@ -57,8 +58,12 @@ public class VRServerGUI extends JFrame {
 	private void build() {
 		pane.removeAll();
 		
+		NamedPipeVRBridge npvb = server.getVRBridge(NamedPipeVRBridge.class);
+		
 		pane.add(new EJBox(LINE_AXIS) {{
 			setBorder(new EmptyBorder(i(5)));
+			
+			add(Box.createHorizontalGlue());
 			add(resetButton = new JButton("RESET") {{
 				addMouseListener(new MouseInputAdapter() {
 					@Override
@@ -67,6 +72,19 @@ public class VRServerGUI extends JFrame {
 					}
 				});
 			}});
+			add(Box.createHorizontalGlue());
+			if(npvb != null) {
+				add(new JButton(npvb.isOneTrackerMode() ? "1" : "3") {{
+					addMouseListener(new MouseInputAdapter() {
+						@Override
+						public void mouseClicked(MouseEvent e) {
+							npvb.setSpawnOneTracker(!npvb.isOneTrackerMode());
+							setText(npvb.isOneTrackerMode() ? "1" : "3");
+						}
+					});
+				}});
+				add(Box.createHorizontalStrut(10));
+			}
 		}});
 		
 		pane.add(new EJBox(LINE_AXIS) {{
