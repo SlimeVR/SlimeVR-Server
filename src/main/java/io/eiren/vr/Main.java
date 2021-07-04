@@ -8,6 +8,7 @@ import io.eiren.util.logging.LogManager;
 
 public class Main {
 	
+	@SuppressWarnings("unused")
 	public static void main(String[] args) {
 		System.setProperty("awt.useSystemAAFontSettings", "on");
 		System.setProperty("swing.aatext", "true");
