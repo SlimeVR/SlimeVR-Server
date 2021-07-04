@@ -11,7 +11,6 @@ import javax.swing.Box;
 import javax.swing.BoxLayout;
 import javax.swing.JComboBox;
 import javax.swing.JLabel;
-import javax.swing.border.BevelBorder;
 
 import com.jme3.math.FastMath;
 import com.jme3.math.Quaternion;
@@ -20,7 +19,6 @@ import com.jme3.math.Vector3f;
 import io.eiren.util.StringUtils;
 import io.eiren.util.ann.AWTThread;
 import io.eiren.util.ann.ThreadSafe;
-import io.eiren.util.ann.VRServerThread;
 import io.eiren.util.collections.FastList;
 import io.eiren.vr.VRServer;
 import io.eiren.vr.processor.TrackerBodyPosition;

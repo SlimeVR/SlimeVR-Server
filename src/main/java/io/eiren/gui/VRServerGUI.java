@@ -7,7 +7,6 @@ import javax.swing.event.MouseInputAdapter;
 import io.eiren.util.ann.AWTThread;
 import io.eiren.vr.VRServer;
 
-import java.awt.Container;
 import java.awt.event.MouseEvent;
 import java.util.TimerTask;
 
@@ -21,6 +20,8 @@ public class VRServerGUI extends JFrame {
 	private final SkeletonList skeletonList;
 	private java.util.Timer timer = new java.util.Timer();
 	private JButton resetButton;
+	private JScrollPane scroll;
+	private EJBox pane;
 	
 	@AWTThread
 	public VRServerGUI(VRServer server) {
@@ -33,6 +34,8 @@ public class VRServerGUI extends JFrame {
 		
 		this.trackersList = new TrackersList(server, this);
 		this.skeletonList = new SkeletonList(server, this);
+		
+		add(scroll = new JScrollPane(pane = new EJBox(PAGE_AXIS), ScrollPaneConstants.VERTICAL_SCROLLBAR_AS_NEEDED, ScrollPaneConstants.HORIZONTAL_SCROLLBAR_AS_NEEDED));
 		
 		build();
 	}
@@ -52,8 +55,6 @@ public class VRServerGUI extends JFrame {
 	
 	@AWTThread
 	private void build() {
-		Container pane = getContentPane();
-		
 		pane.removeAll();
 		
 		pane.add(new EJBox(LINE_AXIS) {{
