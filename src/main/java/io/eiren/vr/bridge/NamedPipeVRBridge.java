@@ -134,7 +134,7 @@ public class NamedPipeVRBridge extends Thread implements VRBridge {
 					initTrackerPipe(trackerPipe, i);
 			}
 			if(spawnOneTracker)
-				return;
+				break;
 		}
 	}
 	
@@ -252,6 +252,8 @@ public class NamedPipeVRBridge extends Thread implements VRBridge {
 					throw new IOException("Can't open " + pipeName + " pipe: " + Kernel32.INSTANCE.GetLastError());
 				LogManager.log.info("[VRBridge] Pipe " + pipeName + " created");
 				trackerPipes.add(new Pipe(pipeHandle, pipeName));
+				if(spawnOneTracker)
+					break;
 			}
 			LogManager.log.info("[VRBridge] Pipes are open");
 		} catch(IOException e) {

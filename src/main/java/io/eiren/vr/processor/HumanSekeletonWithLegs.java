@@ -116,8 +116,8 @@ public class HumanSekeletonWithLegs extends HumanSkeleonWithWaist {
 		case "Hips width":
 			hipsWidth = newLength;
 			server.config.setProperty("body.hipsWidth", hipsWidth);
-			leftHipNode.localTransform.setTranslation(hipsWidth / 2, 0, 0);
-			rightHipNode.localTransform.setTranslation(-hipsWidth / 2, 0, 0);
+			leftHipNode.localTransform.setTranslation(-hipsWidth / 2, 0, 0);
+			rightHipNode.localTransform.setTranslation(hipsWidth / 2, 0, 0);
 			break;
 		case "Hip length":
 			hipsLength = newLength;
