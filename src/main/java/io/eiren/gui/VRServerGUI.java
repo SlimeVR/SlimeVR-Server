@@ -8,8 +8,10 @@ import io.eiren.util.ann.AWTThread;
 import io.eiren.vr.VRServer;
 import io.eiren.vr.bridge.NamedPipeVRBridge;
 
+import java.awt.Component;
+import java.awt.Container;
+import java.awt.Font;
 import java.awt.event.MouseEvent;
-import java.util.TimerTask;
 
 import static javax.swing.BoxLayout.PAGE_AXIS;
 import static javax.swing.BoxLayout.LINE_AXIS;
@@ -19,17 +21,23 @@ public class VRServerGUI extends JFrame {
 	public final VRServer server;
 	private final TrackersList trackersList;
 	private final SkeletonList skeletonList;
-	private java.util.Timer timer = new java.util.Timer();
 	private JButton resetButton;
 	private JScrollPane scroll;
 	private EJBox pane;
 	
+	private float zoom = 1.5f;
+	
 	@AWTThread
 	public VRServerGUI(VRServer server) {
 		super("SlimeVR Server");
-		increaseFontSize();
+		//increaseFontSize();
 		
 		this.server = server;
+		
+		this.zoom = server.config.getFloat("zoom", zoom);
+		setDefaultFontSize(zoom);
+		// All components should be constructed to the current zoom level by default
+		
 		setDefaultCloseOperation(EXIT_ON_CLOSE);
 		getContentPane().setLayout(new BoxLayout(getContentPane(), PAGE_AXIS));
 		
@@ -39,6 +47,10 @@ public class VRServerGUI extends JFrame {
 		add(scroll = new JScrollPane(pane = new EJBox(PAGE_AXIS), ScrollPaneConstants.VERTICAL_SCROLLBAR_AS_NEEDED, ScrollPaneConstants.HORIZONTAL_SCROLLBAR_AS_NEEDED));
 		
 		build();
+	}
+	
+	public float getZoom() {
+		return this.zoom;
 	}
 	
 	public void refresh() {
@@ -74,17 +86,26 @@ public class VRServerGUI extends JFrame {
 			}});
 			add(Box.createHorizontalGlue());
 			if(npvb != null) {
-				add(new JButton(npvb.isOneTrackerMode() ? "1" : "3") {{
+				add(new JButton(npvb.isOneTrackerMode() ? "Trackers: 1" : "Trackers: 3") {{
 					addMouseListener(new MouseInputAdapter() {
 						@Override
 						public void mouseClicked(MouseEvent e) {
 							npvb.setSpawnOneTracker(!npvb.isOneTrackerMode());
-							setText(npvb.isOneTrackerMode() ? "1" : "3");
+							setText(npvb.isOneTrackerMode() ? "Trackers: 1" : "Trackers: 3");
 						}
 					});
 				}});
 				add(Box.createHorizontalStrut(10));
 			}
+			add(new JButton("GUI Zoom") {{
+				addMouseListener(new MouseInputAdapter() {
+					@Override
+					public void mouseClicked(MouseEvent e) {
+						guiZoom();
+					}
+				});
+			}});
+			add(Box.createHorizontalStrut(10));
 		}});
 		
 		pane.add(new EJBox(LINE_AXIS) {{
@@ -99,10 +120,10 @@ public class VRServerGUI extends JFrame {
 
 			add(new EJBox(PAGE_AXIS) {{
 				setAlignmentY(TOP_ALIGNMENT);
-				add(new JLabel("Skeleton"));
-				add(skeletonList);
-				add(new JLabel("Skeleton config"));
+				add(new JLabel("Body proportions"));
 				add(new SkeletonConfig(server, VRServerGUI.this));
+				add(new JLabel("Skeleton data"));
+				add(skeletonList);
 				add(Box.createVerticalGlue());
 			}});
 		}});
@@ -114,14 +135,48 @@ public class VRServerGUI extends JFrame {
 		server.addOnTick(skeletonList::updateBones);
 	}
 	
-	private static void increaseFontSize() {
+	// For now only changes font size, but should change fixed components size in the future too
+	private void guiZoom() {
+		float zoomUpdate = zoom;
+		if(zoom <= 1.0f) {
+			zoom = 1.5f;
+		} else if(zoom <= 1.5f) {
+			zoom = 1.75f;
+		} else if(zoom <= 1.75f) {
+			zoom = 2.0f;
+		} else if(zoom <= 2.0f) {
+			zoom = 2.5f;
+		} else {
+			zoom = 1.0f;
+		}
+		zoomUpdate = zoom / zoomUpdate;
+		processNewZoom(zoomUpdate, pane);
+		refresh();
+		server.config.setProperty("zoom", zoom);
+		server.saveConfig();
+	}
+	
+	private static void processNewZoom(float zoom, Component comp) {
+		if(comp.isFontSet()) {
+			Font font = comp.getFont();
+			Font newFont = font.deriveFont(font.getSize() * zoom);
+			comp.setFont(newFont);
+		}
+		if(comp instanceof Container) {
+			Container cont = (Container) comp;
+			for(Component child : cont.getComponents())
+				processNewZoom(zoom, child);
+		}
+	}
+	
+	private static void setDefaultFontSize(float zoom) {
 		java.util.Enumeration<Object> keys = UIManager.getDefaults().keys();
 		while(keys.hasMoreElements()) {
 			Object key = keys.nextElement();
 			Object value = UIManager.get(key);
 			if(value instanceof javax.swing.plaf.FontUIResource) {
 				javax.swing.plaf.FontUIResource f = (javax.swing.plaf.FontUIResource) value;
-				javax.swing.plaf.FontUIResource f2 = new javax.swing.plaf.FontUIResource(f.deriveFont(f.getSize() * 2f));
+				javax.swing.plaf.FontUIResource f2 = new javax.swing.plaf.FontUIResource(f.deriveFont(f.getSize() * zoom));
 				UIManager.put(key, f2);
 			}
 		}
@@ -129,37 +184,6 @@ public class VRServerGUI extends JFrame {
 	
 	@AWTThread
 	private void reset() {
-		resetButton.setText("5");
-		timer.schedule(new TimerTask() {
-			@Override
-			public void run() {
-				resetButton.setText("4");
-				timer.schedule(new TimerTask() {
-					@Override
-					public void run() {
-						resetButton.setText("3");
-						timer.schedule(new TimerTask() {
-							@Override
-							public void run() {
-								resetButton.setText("2");
-								timer.schedule(new TimerTask() {
-									@Override
-									public void run() {
-										resetButton.setText("1");
-										timer.schedule(new TimerTask() {
-											@Override
-											public void run() {
-												server.resetTrackers();
-												resetButton.setText("RESET");
-											}
-										}, 1000);
-									}
-								}, 1000);
-							}
-						}, 1000);
-					}
-				}, 1000);
-			}
-		}, 1000);
+		ButtonTimer.runTimer(resetButton, 3, "RESET", server::resetTrackers);
 	}
 }
