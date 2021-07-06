@@ -119,6 +119,7 @@ public class HumanSkeleonWithWaist extends HumanSkeleton {
 			waistDistance = newLength;
 			server.config.setProperty("body.waistDistance", waistDistance);
 			waistNode.localTransform.setTranslation(0, -(waistDistance - chestDistance), 0);
+			trackerWaistNode.localTransform.setTranslation(0, -(waistDistance + trackerWaistDistance - chestDistance), 0);
 			break;
 		case "Chest":
 			chestDistance = newLength;
