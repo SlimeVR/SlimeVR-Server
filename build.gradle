@@ -36,7 +36,8 @@ dependencies {
     testImplementation 'junit:junit:4.12'
 }
 
-jar {
+subprojects.each { subproject -> evaluationDependsOn(subproject.path) }
+task serverJar (type: Jar, dependsOn: subprojects.tasks['build']) {
     manifest {
         attributes 'Main-Class': 'io.eiren.vr.Main'
     }
@@ -44,4 +45,5 @@ jar {
     from {
         configurations.compile.collect { it.isDirectory() ? it : zipTree(it) }
     }
+    with jar
 }
