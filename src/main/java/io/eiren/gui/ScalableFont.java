@@ -28,7 +28,7 @@ public class ScalableFont extends Font {
 			this.initPointSize = sourceFont.getInitSize2D();
 			
 			this.size = this.initSize;
-	        this.pointSize = this.initPointSize;
+			this.pointSize = this.initPointSize;
 		} else {
 			this.initSize = this.size;
 			this.initPointSize = this.pointSize;
