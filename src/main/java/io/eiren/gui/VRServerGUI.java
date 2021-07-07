@@ -26,6 +26,7 @@ public class VRServerGUI extends JFrame {
 	private EJBox pane;
 	
 	private float zoom = 1.5f;
+	private float initZoom = zoom;
 	
 	@AWTThread
 	public VRServerGUI(VRServer server) {
@@ -35,6 +36,7 @@ public class VRServerGUI extends JFrame {
 		this.server = server;
 		
 		this.zoom = server.config.getFloat("zoom", zoom);
+		this.initZoom = zoom;
 		setDefaultFontSize(zoom);
 		// All components should be constructed to the current zoom level by default
 		
@@ -97,11 +99,12 @@ public class VRServerGUI extends JFrame {
 				}});
 				add(Box.createHorizontalStrut(10));
 			}
-			add(new JButton("GUI Zoom") {{
+			add(new JButton("GUI Zoom (" + zoom + ")") {{
 				addMouseListener(new MouseInputAdapter() {
 					@Override
 					public void mouseClicked(MouseEvent e) {
 						guiZoom();
+						setText("GUI Zoom (" + zoom + ")");
 					}
 				});
 			}});
@@ -137,7 +140,6 @@ public class VRServerGUI extends JFrame {
 	
 	// For now only changes font size, but should change fixed components size in the future too
 	private void guiZoom() {
-		float zoomUpdate = zoom;
 		if(zoom <= 1.0f) {
 			zoom = 1.5f;
 		} else if(zoom <= 1.5f) {
@@ -149,8 +151,7 @@ public class VRServerGUI extends JFrame {
 		} else {
 			zoom = 1.0f;
 		}
-		zoomUpdate = zoom / zoomUpdate;
-		processNewZoom(zoomUpdate, pane);
+		processNewZoom(zoom / initZoom, pane);
 		refresh();
 		server.config.setProperty("zoom", zoom);
 		server.saveConfig();
@@ -158,8 +159,7 @@ public class VRServerGUI extends JFrame {
 	
 	private static void processNewZoom(float zoom, Component comp) {
 		if(comp.isFontSet()) {
-			Font font = comp.getFont();
-			Font newFont = font.deriveFont(font.getSize() * zoom);
+			Font newFont = new ScalableFont(comp.getFont(), zoom);
 			comp.setFont(newFont);
 		}
 		if(comp instanceof Container) {
