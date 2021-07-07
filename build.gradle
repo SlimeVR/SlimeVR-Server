@@ -19,6 +19,8 @@ repositories {
 }
 
 dependencies {
+	compile project(':Slime Java Commons')
+
     // This dependency is exported to consumers, that is to say found on their compile classpath.
     api 'org.apache.commons:commons-math3:3.6.1'
     api 'org.yaml:snakeyaml:1.25'
@@ -32,4 +34,14 @@ dependencies {
 
     // Use JUnit test framework
     testImplementation 'junit:junit:4.12'
+}
+
+jar {
+    manifest {
+        attributes 'Main-Class': 'io.eiren.vr.Main'
+    }
+    
+    from {
+        configurations.compile.collect { it.isDirectory() ? it : zipTree(it) }
+    }
 }
