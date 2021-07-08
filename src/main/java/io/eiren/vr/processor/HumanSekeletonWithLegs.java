@@ -4,6 +4,7 @@ import java.util.List;
 
 import com.jme3.math.FastMath;
 import com.jme3.math.Quaternion;
+import com.jme3.math.Vector3f;
 
 import io.eiren.util.ann.VRServerThread;
 import io.eiren.vr.VRServer;
@@ -12,6 +13,10 @@ import io.eiren.vr.trackers.TrackerStatus;
 import io.eiren.vr.trackers.TrackerUtils;
 
 public class HumanSekeletonWithLegs extends HumanSkeleonWithWaist {
+	
+	public static final float HIPS_WIDTH_DEFAULT = 0.3f;
+	public static final float FOOT_LENGTH_DEFAULT = 0.05f;
+	public static final float DEFAULT_FLOOR_OFFSET = 0.05f;
 	
 	protected final float[] kneeAngles = new float[3];
 	protected final float[] hipAngles = new float[3];
@@ -39,7 +44,7 @@ public class HumanSekeletonWithLegs extends HumanSkeleonWithWaist {
 	/**
 	 * Distance between centers of both hips
 	 */
-	protected float hipsWidth = 0.30f;
+	protected float hipsWidth = HIPS_WIDTH_DEFAULT;
 	/**
 	 * Length from waist to knees
 	 */
@@ -48,6 +53,7 @@ public class HumanSekeletonWithLegs extends HumanSkeleonWithWaist {
 	 * Distance from waist to ankle
 	 */
 	protected float ankleLength = 0.55f;
+	protected float footLength = FOOT_LENGTH_DEFAULT;
 	
 	protected float minKneePitch = 0f * FastMath.DEG_TO_RAD;
 	protected float maxKneePitch = 90f * FastMath.DEG_TO_RAD;
@@ -79,6 +85,7 @@ public class HumanSekeletonWithLegs extends HumanSkeleonWithWaist {
 		hipsWidth = server.config.getFloat("body.hipsWidth", hipsWidth);
 		hipsLength = server.config.getFloat("body.hipLength", hipsLength);
 		ankleLength = server.config.getFloat("body.ankleLength", ankleLength);
+		footLength = server.config.getFloat("body.footLength", footLength);
 		
 		waistNode.attachChild(leftHipNode);
 		leftHipNode.localTransform.setTranslation(-hipsWidth / 2, 0, 0);
@@ -99,14 +106,51 @@ public class HumanSekeletonWithLegs extends HumanSkeleonWithWaist {
 		rightAnkleNode.localTransform.setTranslation(0, -ankleLength, 0);
 
 		leftAnkleNode.attachChild(leftFootNode);
-		leftFootNode.localTransform.setTranslation(0, 0, -0.05f);
+		leftFootNode.localTransform.setTranslation(0, 0, -footLength);
 		
 		rightAnkleNode.attachChild(rightFootNode);
-		rightFootNode.localTransform.setTranslation(0, 0, -0.05f);
+		rightFootNode.localTransform.setTranslation(0, 0, -footLength);
 		
 		configMap.put("Hips width", hipsWidth);
 		configMap.put("Hip length", hipsLength);
 		configMap.put("Ankle length", ankleLength);
+		configMap.put("Foot length", footLength);
+	}
+	
+	@Override
+	public void resetSkeletonConfig(String joint) {
+		super.resetSkeletonConfig(joint);
+		switch(joint) {
+		case "All":
+			// Resets from the parent already performed
+			resetSkeletonConfig("Hips width");
+			resetSkeletonConfig("Foot length");
+			resetSkeletonConfig("Ankle length");
+			resetSkeletonConfig("Hip length");
+			break;
+		case "Hips width":
+			setSkeletonConfig(joint, HIPS_WIDTH_DEFAULT);
+			break;
+		case "Foot length":
+			setSkeletonConfig(joint, FOOT_LENGTH_DEFAULT);
+			break;
+		case "Ankle length": // Ankle position is half the distance from waist to 0.05 cm above the floor
+			Vector3f vec = new Vector3f();
+			hmdTracker.getPosition(vec);
+			float height = vec.y;
+			if(height > 0.5f) { // Reset only if floor level is right, todo: read floor level from SteamVR if it's not 0
+				setSkeletonConfig(joint, (height - DEFAULT_FLOOR_OFFSET) / 4.0f);
+			}
+			break;
+		case "Hip length": // Hip length is the same as ankle length
+			vec = new Vector3f();
+			hmdTracker.getPosition(vec);
+			height = vec.y;
+			if(height > 0.5f) { // Reset only if floor level is right, todo: read floor level from SteamVR if it's not 0
+				setSkeletonConfig(joint, (height - DEFAULT_FLOOR_OFFSET) / 4.0f);
+			}
+			break;
+		}
 	}
 	
 	@Override
@@ -130,6 +174,12 @@ public class HumanSekeletonWithLegs extends HumanSkeleonWithWaist {
 			server.config.setProperty("body.ankleLength", ankleLength);
 			leftAnkleNode.localTransform.setTranslation(0, -ankleLength, 0);
 			rightAnkleNode.localTransform.setTranslation(0, -ankleLength, 0);
+			break;
+		case "Foot length":
+			footLength = newLength;
+			server.config.setProperty("body.footLength", footLength);
+			leftFootNode.localTransform.setTranslation(0, 0, -footLength);
+			rightFootNode.localTransform.setTranslation(0, 0, -footLength);
 			break;
 		}
 	}

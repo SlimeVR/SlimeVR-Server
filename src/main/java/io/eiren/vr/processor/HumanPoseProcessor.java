@@ -38,6 +38,12 @@ public class HumanPoseProcessor {
 		if(skeleton != null)
 			skeleton.setSkeletonConfig(key, newLength);
 	}
+
+	@ThreadSafe
+	public void resetSkeletonConfig(String key) {
+		if(skeleton != null)
+			skeleton.resetSkeletonConfig(key);
+	}
 	
 	@ThreadSafe
 	public float getSkeletonConfig(String key) {

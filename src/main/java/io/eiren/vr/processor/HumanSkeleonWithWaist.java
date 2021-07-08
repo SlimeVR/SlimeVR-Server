@@ -16,6 +16,9 @@ import io.eiren.vr.trackers.TrackerUtils;
 
 public class HumanSkeleonWithWaist extends HumanSkeleton {
 	
+	public static final float HEAD_SHIFT_DEFAULT = 0.1f;
+	public static final float NECK_LENGTH_DEFAULT = 0.1f;
+	
 	protected final Map<String, Float> configMap = new HashMap<>();
 	protected final VRServer server;
 
@@ -48,11 +51,11 @@ public class HumanSkeleonWithWaist extends HumanSkeleton {
 	/**
 	 * Distacne from eyes to the base of the neck
 	 */
-	protected float neckLength = 0.1f;
+	protected float neckLength = NECK_LENGTH_DEFAULT;
 	/**
 	 * Distance from eyes to ear
 	 */
-	protected float headShift = 0.1f;
+	protected float headShift = HEAD_SHIFT_DEFAULT;
 
 	public HumanSkeleonWithWaist(VRServer server, List<ComputedHumanPoseTracker> computedTrackers) {
 		List<Tracker> allTracekrs = server.getAllTrackers();
@@ -94,6 +97,39 @@ public class HumanSkeleonWithWaist extends HumanSkeleton {
 		configMap.put("Chest", chestDistance);
 		configMap.put("Waist", waistDistance);
 		configMap.put("Virtual waist", trackerWaistDistance);
+	}
+	
+	@Override
+	public void resetSkeletonConfig(String joint) {
+		switch(joint) {
+		case "All": // Reset all joints according to height
+			resetSkeletonConfig("Head");
+			resetSkeletonConfig("Neck");
+			resetSkeletonConfig("Virtual waist");
+			resetSkeletonConfig("Waist");
+			resetSkeletonConfig("Chest");
+			break;
+		case "Head": 
+			setSkeletonConfig(joint, HEAD_SHIFT_DEFAULT);
+			break;
+		case "Neck": 
+			setSkeletonConfig(joint, NECK_LENGTH_DEFAULT);
+			break;
+		case "Virtual waist": 
+			setSkeletonConfig(joint, 0.0f);
+			break;
+		case "Chest": 
+			setSkeletonConfig(joint, waistDistance / 2.0f);
+			break;
+		case "Waist": // Puts Waist in the middle of the height
+			Vector3f vec = new Vector3f();
+			hmdTracker.getPosition(vec);
+			float height = vec.y;
+			if(height > 0.5f) { // Reset only if floor level is right, todo: read floor level from SteamVR if it's not 0
+				setSkeletonConfig(joint, (height) / 2.0f);
+			}
+			break;
+		}
 	}
 	
 	@Override
