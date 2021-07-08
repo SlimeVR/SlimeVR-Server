@@ -188,7 +188,7 @@ public class HumanSekeletonWithLegs extends HumanSkeleonWithWaist {
 		leftLegTracker.getRotation(hipBuf);
 		leftAnkleTracker.getRotation(kneeBuf);
 
-		calculateKneeLimits(hipBuf, kneeBuf, leftLegTracker.getConfidenceLevel(), leftAnkleTracker.getConfidenceLevel());
+		//calculateKneeLimits(hipBuf, kneeBuf, leftLegTracker.getConfidenceLevel(), leftAnkleTracker.getConfidenceLevel());
 		
 		leftHipNode.localTransform.setRotation(hipBuf);
 		leftKneeNode.localTransform.setRotation(kneeBuf);
@@ -205,7 +205,7 @@ public class HumanSekeletonWithLegs extends HumanSkeleonWithWaist {
 		rightLegTracker.getRotation(hipBuf);
 		rightAnkleTracker.getRotation(kneeBuf);
 		
-		calculateKneeLimits(hipBuf, kneeBuf, rightLegTracker.getConfidenceLevel(), rightAnkleTracker.getConfidenceLevel());
+		//calculateKneeLimits(hipBuf, kneeBuf, rightLegTracker.getConfidenceLevel(), rightAnkleTracker.getConfidenceLevel());
 		
 		rightHipNode.localTransform.setRotation(hipBuf);
 		rightKneeNode.localTransform.setRotation(kneeBuf);

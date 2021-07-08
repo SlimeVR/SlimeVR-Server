@@ -101,6 +101,7 @@ public class TrackersList extends EJBox {
 		JLabel tps;
 		JLabel bat;
 		JLabel ping;
+		JLabel raw;
 		
 		@AWTThread
 		public TrackerRow(Tracker t) {
@@ -175,12 +176,17 @@ public class TrackersList extends EJBox {
 			add(status = new JLabel(t.getStatus().toString().toLowerCase()), c(1, 4, 0, GridBagConstraints.FIRST_LINE_START));
 			add(new JLabel("Battery:"), c(2, 4, 0, GridBagConstraints.FIRST_LINE_START));
 			add(bat = new JLabel("0"), c(3, 4, 0, GridBagConstraints.FIRST_LINE_START));
+			if(t instanceof ReferenceAdjustedTracker) {
+				add(new JLabel("Raw:"), c(0, 5, 0, GridBagConstraints.FIRST_LINE_START));
+				add(raw = new JLabel("0 0 0 0"), s(c(1, 5, 0, GridBagConstraints.FIRST_LINE_START), 3, 1));
+			}
 
 			setBorder(BorderFactory.createLineBorder(new Color(0x663399), 4, true));
 			TrackersList.this.add(this);
 			return this;
 		}
 
+		@SuppressWarnings("unchecked")
 		@AWTThread
 		public void update() {
 			if(position == null)
@@ -204,6 +210,14 @@ public class TrackersList extends EJBox {
 				bat.setText(StringUtils.prettyNumber(((TrackerWithBattery) t).getBatteryVoltage(), 1));
 			if(t instanceof IMUTracker)
 				ping.setText(String.valueOf(((IMUTracker) t).ping));
+			if(t instanceof ReferenceAdjustedTracker) {
+				ReferenceAdjustedTracker<Tracker> t2 = (ReferenceAdjustedTracker<Tracker>) t;
+				t2.getTracker().getRotation(q);
+				raw.setText(StringUtils.prettyNumber(q.getX(), 4)
+						+ " " + StringUtils.prettyNumber(q.getY(), 4)
+						+ " " + StringUtils.prettyNumber(q.getZ(), 4)
+						+ " " + StringUtils.prettyNumber(q.getW(), 4));
+			}
 		}
 	}
 	

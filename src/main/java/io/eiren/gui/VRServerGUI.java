@@ -63,7 +63,6 @@ public class VRServerGUI extends JFrame {
 		java.awt.EventQueue.invokeLater(new Runnable() {
 			@Override
 			public void run() {
-				toFront();
 				repaint();
 			}
 		});

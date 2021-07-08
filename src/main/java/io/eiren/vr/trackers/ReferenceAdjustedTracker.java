@@ -1,6 +1,5 @@
 package io.eiren.vr.trackers;
 
-import com.jme3.math.FastMath;
 import com.jme3.math.Quaternion;
 import com.jme3.math.Vector3f;
 
@@ -9,12 +8,8 @@ import io.eiren.vr.processor.TrackerBodyPosition;
 public class ReferenceAdjustedTracker<E extends Tracker> implements Tracker {
 	
 	public final E tracker;
-	private final Quaternion smoothedQuaternion = new Quaternion();
 	public final Quaternion adjustmentYaw = new Quaternion();
 	public final Quaternion adjustmentAttachment = new Quaternion();
-	protected float[] lastAngles = new float[3];
-	public float smooth = 0 * FastMath.DEG_TO_RAD;
-	private final float[] angles = new float[3];
 	protected float confidenceMultiplier = 1.0f;
 	
 	public ReferenceAdjustedTracker(E tracker) {
@@ -88,7 +83,6 @@ public class ReferenceAdjustedTracker<E extends Tracker> implements Tracker {
 		adjustmentYaw.set(sensorRotation).inverseLocal().multLocal(targetTrackerRotation);
 		
 		confidenceMultiplier = 1.0f / tracker.getConfidenceLevel();
-		lastAngles[0] = 1000;
 	}
 	
 	protected void adjustInternal(Quaternion store) {
@@ -99,15 +93,6 @@ public class ReferenceAdjustedTracker<E extends Tracker> implements Tracker {
 	@Override
 	public boolean getRotation(Quaternion store) {
 		tracker.getRotation(store);
-		if(smooth > 0) {
-			store.toAngles(angles);
-			if(Math.abs(angles[0] - lastAngles[0]) > smooth || Math.abs(angles[1] - lastAngles[1]) > smooth || Math.abs(angles[2] - lastAngles[2]) > smooth) {
-				smoothedQuaternion.set(store);
-				store.toAngles(lastAngles);
-			} else {
-				store.set(smoothedQuaternion);
-			}
-		}
 		adjustInternal(store);
 		return true;
 	}
