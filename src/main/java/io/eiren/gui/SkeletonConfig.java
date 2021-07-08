@@ -59,18 +59,18 @@ public class SkeletonConfig extends EJBag {
 			add(new ResetButton("Reset", "Hips width"), c(4, row, 1));
 			row++;
 
-			add(new JLabel("Hip length"), c(0, row, 1));
-			add(new AdjButton("+", "Hip length", 0.01f), c(1, row, 1));
-			add(new SkeletonLabel("Hip length"), c(2, row, 1));
-			add(new AdjButton("-", "Hip length", -0.01f), c(3, row, 1));
-			add(new TimedResetButton("Reset", "Hip length"), c(4, row, 1));
+			add(new JLabel("Legs length"), c(0, row, 1));
+			add(new AdjButton("+", "Legs length", 0.01f), c(1, row, 1));
+			add(new SkeletonLabel("Legs length"), c(2, row, 1));
+			add(new AdjButton("-", "Legs length", -0.01f), c(3, row, 1));
+			add(new TimedResetButton("Reset", "Legs length"), c(4, row, 1));
 			row++;
 
-			add(new JLabel("Ankle length"), c(0, row, 1));
-			add(new AdjButton("+", "Ankle length", 0.01f), c(1, row, 1));
-			add(new SkeletonLabel("Ankle length"), c(2, row, 1));
-			add(new AdjButton("-", "Ankle length", -0.01f), c(3, row, 1));
-			add(new TimedResetButton("Reset", "Ankle length"), c(4, row, 1));
+			add(new JLabel("Knee height"), c(0, row, 1));
+			add(new AdjButton("+", "Knee height", 0.01f), c(1, row, 1));
+			add(new SkeletonLabel("Knee height"), c(2, row, 1));
+			add(new AdjButton("-", "Knee height", -0.01f), c(3, row, 1));
+			add(new TimedResetButton("Reset", "Knee height"), c(4, row, 1));
 			row++;
 
 			add(new JLabel("Foot length"), c(0, row, 1));
