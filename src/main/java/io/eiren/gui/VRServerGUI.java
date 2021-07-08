@@ -4,6 +4,7 @@ import javax.swing.*;
 import javax.swing.border.EmptyBorder;
 import javax.swing.event.MouseInputAdapter;
 
+import io.eiren.util.StringUtils;
 import io.eiren.util.ann.AWTThread;
 import io.eiren.vr.VRServer;
 import io.eiren.vr.bridge.NamedPipeVRBridge;
@@ -99,12 +100,12 @@ public class VRServerGUI extends JFrame {
 				}});
 				add(Box.createHorizontalStrut(10));
 			}
-			add(new JButton("GUI Zoom (" + zoom + ")") {{
+			add(new JButton("GUI Zoom (x" + StringUtils.prettyNumber(zoom, 2) + ")") {{
 				addMouseListener(new MouseInputAdapter() {
 					@Override
 					public void mouseClicked(MouseEvent e) {
 						guiZoom();
-						setText("GUI Zoom (" + zoom + ")");
+						setText("GUI Zoom (x" + StringUtils.prettyNumber(zoom, 2) + ")");
 					}
 				});
 			}});
