@@ -44,19 +44,14 @@ public class ReferenceAdjustedTracker<E extends Tracker> implements Tracker {
 	 */
 	@Override
 	public void resetFull(Quaternion reference) {
-		resetYaw(reference);
-		
 		Quaternion sensorRotation = new Quaternion();
 		tracker.getRotation(sensorRotation);
-		adjustmentYaw.mult(sensorRotation, sensorRotation);
-
-		// Use only yaw HMD rotation
-		Quaternion targetTrackerRotation = new Quaternion(reference);
 		float[] angles = new float[3];
-		targetTrackerRotation.toAngles(angles);
-		targetTrackerRotation.fromAngles(0, angles[1], 0);
+		sensorRotation.toAngles(angles);
+		sensorRotation.fromAngles(angles[0], 0, angles[2]);
+		adjustmentAttachment.set(sensorRotation).inverseLocal();
 		
-		adjustmentAttachment.set(sensorRotation).inverseLocal().multLocal(targetTrackerRotation);
+		resetYaw(reference);
 	}
 
 	/**
@@ -76,6 +71,7 @@ public class ReferenceAdjustedTracker<E extends Tracker> implements Tracker {
 		
 		Quaternion sensorRotation = new Quaternion();
 		tracker.getRotation(sensorRotation);
+		sensorRotation.multLocal(adjustmentAttachment);
 		
 		sensorRotation.toAngles(angles);
 		sensorRotation.fromAngles(0, angles[1], 0);
