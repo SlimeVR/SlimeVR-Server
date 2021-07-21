@@ -102,6 +102,8 @@ public class TrackersList extends EJBox {
 		JLabel bat;
 		JLabel ping;
 		JLabel raw;
+		JLabel adj;
+		JLabel adjYaw;
 		
 		@AWTThread
 		public TrackerRow(Tracker t) {
@@ -178,6 +180,13 @@ public class TrackersList extends EJBox {
 			add(bat = new JLabel("0"), c(3, 4, 0, GridBagConstraints.FIRST_LINE_START));
 			add(new JLabel("Raw:"), c(0, 5, 0, GridBagConstraints.FIRST_LINE_START));
 			add(raw = new JLabel("0 0 0 0"), s(c(1, 5, 0, GridBagConstraints.FIRST_LINE_START), 3, 1));
+			
+			if(t instanceof ReferenceAdjustedTracker) {
+				add(new JLabel("Adj:"), c(0, 6, 0, GridBagConstraints.FIRST_LINE_START));
+				add(adj = new JLabel("0 0 0 0"), c(1, 6, 0, GridBagConstraints.FIRST_LINE_START));
+				add(new JLabel("AdjY:"), c(2, 6, 0, GridBagConstraints.FIRST_LINE_START));
+				add(adjYaw = new JLabel("0 0 0 0"), c(3, 6, 0, GridBagConstraints.FIRST_LINE_START));
+			}
 
 			setBorder(BorderFactory.createLineBorder(new Color(0x663399), 4, true));
 			TrackersList.this.add(this);
@@ -207,8 +216,17 @@ public class TrackersList extends EJBox {
 			if(t instanceof TrackerWithBattery)
 				bat.setText(StringUtils.prettyNumber(((TrackerWithBattery) t).getBatteryVoltage(), 1));
 			Tracker t2 = t;
-			if(t instanceof ReferenceAdjustedTracker)
+			if(t instanceof ReferenceAdjustedTracker) {
 				t2 = ((ReferenceAdjustedTracker<Tracker>) t).getTracker();
+				((ReferenceAdjustedTracker<Tracker>) t).adjustmentAttachment.toAngles(angles);
+				adj.setText(StringUtils.prettyNumber(angles[0] * FastMath.RAD_TO_DEG, 0)
+						+ " " + StringUtils.prettyNumber(angles[1] * FastMath.RAD_TO_DEG, 0)
+						+ " " + StringUtils.prettyNumber(angles[2] * FastMath.RAD_TO_DEG, 0));
+				((ReferenceAdjustedTracker<Tracker>) t).adjustmentYaw.toAngles(angles);
+				adjYaw.setText(StringUtils.prettyNumber(angles[0] * FastMath.RAD_TO_DEG, 0)
+						+ " " + StringUtils.prettyNumber(angles[1] * FastMath.RAD_TO_DEG, 0)
+						+ " " + StringUtils.prettyNumber(angles[2] * FastMath.RAD_TO_DEG, 0));
+			}
 			if(t2 instanceof IMUTracker)
 				ping.setText(String.valueOf(((IMUTracker) t2).ping));
 			t2.getRotation(q);

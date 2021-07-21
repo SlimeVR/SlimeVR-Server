@@ -6,6 +6,7 @@ import javax.swing.event.MouseInputAdapter;
 
 import io.eiren.util.StringUtils;
 import io.eiren.util.ann.AWTThread;
+import io.eiren.vr.Main;
 import io.eiren.vr.VRServer;
 import io.eiren.vr.bridge.NamedPipeVRBridge;
 
@@ -31,7 +32,7 @@ public class VRServerGUI extends JFrame {
 	
 	@AWTThread
 	public VRServerGUI(VRServer server) {
-		super("SlimeVR Server");
+		super("SlimeVR Server (" + Main.VERSION + ")");
 		//increaseFontSize();
 		
 		this.server = server;

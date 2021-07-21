@@ -8,7 +8,10 @@ import io.eiren.util.logging.LogManager;
 
 public class Main {
 	
-	@SuppressWarnings("unused")
+	public static String VERSION = "0.0.7 DEV 1";
+	
+	public static VRServer vrServer;
+	
 	public static void main(String[] args) {
 		System.setProperty("awt.useSystemAAFontSettings", "on");
 		System.setProperty("swing.aatext", "true");
@@ -21,7 +24,7 @@ public class Main {
 		}
 		
 		try {
-			VRServer vrServer = new VRServer();
+			vrServer = new VRServer();
 			vrServer.start();
 			new VRServerGUI(vrServer);
 		} catch(Throwable e) {
