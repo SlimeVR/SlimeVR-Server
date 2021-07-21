@@ -14,3 +14,16 @@ Integrations:
 ## How to use
 
 Latest instructions are currently [here](https://gist.github.com/Eirenliel/8c0eefcdbda1076d5c2e1bf634831d20). Will be updated and republished as time goes on.
+
+## How to build
+
+You need to execute this commands in folder where you want this project.
+
+git clone https://github.com/SlimeVR/SlimeVR-Server.git
+git clone https://github.com/Eirenliel/slime-java-commons.git
+cd SlimeVR-Server
+gradlew serverJar
+
+Open Slime Vr Server project in Eclipse or Intellij Idea
+
+run gradle command "serverJar"
