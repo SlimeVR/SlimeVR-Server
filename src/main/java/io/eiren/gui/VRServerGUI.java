@@ -110,6 +110,16 @@ public class VRServerGUI extends JFrame {
 				});
 			}});
 			add(Box.createHorizontalStrut(10));
+			add(new JButton("WiFi") {{
+				addMouseListener(new MouseInputAdapter() {
+					@SuppressWarnings("unused")
+					@Override
+					public void mouseClicked(MouseEvent e) {
+						new WiFiWindow(VRServerGUI.this);
+					}
+				});
+			}});
+			add(Box.createHorizontalStrut(10));
 		}});
 		
 		pane.add(new EJBox(LINE_AXIS) {{
