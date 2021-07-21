@@ -9,3 +9,4 @@
 
 rootProject.name = 'SlimeVR Server'
 include('Slime Java Commons')
+project(':Slime Java Commons').projectDir = new File(settingsDir, '../Slime Java Commons')
