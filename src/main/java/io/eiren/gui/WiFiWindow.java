@@ -53,7 +53,7 @@ public class WiFiWindow extends JFrame {
 		
 		SerialPort[] ports = SerialPort.getCommPorts();
 		for(SerialPort port : ports) {
-			if(port.getDescriptivePortName().contains("CH340")) {
+			if(port.getDescriptivePortName().contains("CH340") || port.getDescriptivePortName().toLowerCase().contains("cp21")) {
 				trackerPort = port;
 				break;
 			}
