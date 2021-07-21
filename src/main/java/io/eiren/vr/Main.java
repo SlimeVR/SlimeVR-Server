@@ -8,7 +8,7 @@ import io.eiren.util.logging.LogManager;
 
 public class Main {
 	
-	public static String VERSION = "0.0.9";
+	public static String VERSION = "0.0.10";
 	
 	public static VRServer vrServer;
 	
