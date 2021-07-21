@@ -19,8 +19,8 @@ def commonsDirs = [
 
 for (commonsDir in commonsDirs) {
     if (commonsDir.isDirectory()) {
-        project(':Slime Java Commons').projectDir = commonsDir
         logger.info('\"Slime Java Commons\" subproject detected at \"{}\"', commonsDir.getCanonicalPath())
+        project(':Slime Java Commons').projectDir = commonsDir
         break
     }
 }
