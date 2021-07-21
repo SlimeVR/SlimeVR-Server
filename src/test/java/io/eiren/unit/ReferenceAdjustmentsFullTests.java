@@ -149,12 +149,13 @@ public class ReferenceAdjustmentsFullTests {
 		targetTrackerRotation.fromAngles(0, angles[1], 0);
 		
 		assertEquals("Adjusted quat is not equal to reference quat (" + toDegs(targetTrackerRotation) + " vs " + toDegs(read) + ")", new QuatEqualFullWithEpsilon(targetTrackerRotation), new QuatEqualFullWithEpsilon(read));
-		if(refYaw == 0)
-			testAdjustedTracker(tracker, adj, name, refYaw);
+		testAdjustedTracker(tracker, adj, name, refYaw);
 	}
 	
-	//private static int errors = 0;
-	//private static int successes = 0;
+	private static final boolean PRINT_TEST_RESULTS = false;
+	
+	private static int errors = 0;
+	private static int successes = 0;
 	
 	private void testAdjustedTracker(ComputedTracker tracker, ReferenceAdjustedTracker<ComputedTracker> adj, String name, int refYaw) {
 		if(!testedTrackerNames.add(name))
@@ -164,6 +165,7 @@ public class ReferenceAdjustmentsFullTests {
 		trackerBase.set(tracker.rotation);
 		
 		Quaternion rotation = new Quaternion();
+		Quaternion rotationCompare = new Quaternion();
 		Quaternion read = new Quaternion();
 		Quaternion diff = new Quaternion();
 		float[] angles = new float[3];
@@ -176,10 +178,11 @@ public class ReferenceAdjustmentsFullTests {
 		
 		trackerNode.localTransform.setRotation(trackerBase);
 		
-		for(int yaw = 0; yaw <= 360; yaw += 90) {
-			for(int pitch = -90; pitch <= 90; pitch += 30) {
-				for(int roll = -90; roll <= 90; roll += 30) {
-					rotation.fromAngles(pitch, yaw, roll);
+		for(int yaw = 0; yaw <= 360; yaw += 30) {
+			for(int pitch = -90; pitch <= 90; pitch += 15) {
+				for(int roll = -90; roll <= 90; roll += 15) {
+					rotation.fromAngles(pitch * FastMath.DEG_TO_RAD, yaw * FastMath.DEG_TO_RAD, roll * FastMath.DEG_TO_RAD);
+					rotationCompare.fromAngles(pitch * FastMath.DEG_TO_RAD, (yaw + refYaw) * FastMath.DEG_TO_RAD, roll * FastMath.DEG_TO_RAD);
 					rotationNode.localTransform.setRotation(rotation);
 					trackerNode.update();
 					rotationNode.update();
@@ -189,21 +192,34 @@ public class ReferenceAdjustmentsFullTests {
 					adj.getRotation(read);
 					read.toAngles(anglesAdj);
 					
-					diff.set(read).inverseLocal().multLocal(rotation);
-					
+					diff.set(read).inverseLocal().multLocal(rotationCompare);
 					diff.toAngles(anglesDiff);
-					assertTrue(name + ". Rot: " + yaw + "/" + pitch + ". "
-							+ "Angles: " + StringUtils.prettyNumber(angles[0] * FastMath.RAD_TO_DEG, 1) + "/" + StringUtils.prettyNumber(anglesAdj[0] * FastMath.RAD_TO_DEG, 1) + ", "
-							+ StringUtils.prettyNumber(angles[1] * FastMath.RAD_TO_DEG, 1) + "/" + StringUtils.prettyNumber(anglesAdj[1] * FastMath.RAD_TO_DEG, 1) + ", "
-							+ StringUtils.prettyNumber(angles[2] * FastMath.RAD_TO_DEG, 1) + "/" + StringUtils.prettyNumber(anglesAdj[2] * FastMath.RAD_TO_DEG, 1) + ". Diff: "
-							+ StringUtils.prettyNumber(anglesDiff[0] * FastMath.RAD_TO_DEG, 1) + ", "
-							+ StringUtils.prettyNumber(anglesDiff[1] * FastMath.RAD_TO_DEG, 1) + ", "
-							+ StringUtils.prettyNumber(anglesDiff[2] * FastMath.RAD_TO_DEG, 1),
-							FloatMath.equalsToZero(anglesDiff[0]) && FloatMath.equalsToZero(anglesDiff[1]) && FloatMath.equalsToZero(anglesDiff[2]));
+					
+					if(!PRINT_TEST_RESULTS) {
+						assertTrue(name(name, yaw, pitch, roll, angles, anglesAdj, anglesDiff),
+								FloatMath.equalsToZero(anglesDiff[0]) && FloatMath.equalsToZero(anglesDiff[1]) && FloatMath.equalsToZero(anglesDiff[2]));
+					} else {
+						if(FloatMath.equalsToZero(anglesDiff[0]) && FloatMath.equalsToZero(anglesDiff[1]) && FloatMath.equalsToZero(anglesDiff[2]))
+							successes++;
+						else
+							errors++;
+						System.out.println(name(name, yaw, pitch, roll, angles, anglesAdj, anglesDiff));
+					}
 				}
 			}
 		}
-		//System.out.println("Errors: " + errors + ", successes: " + successes);
+		if(PRINT_TEST_RESULTS)
+			System.out.println("Errors: " + errors + ", successes: " + successes);
+	}
+	
+	private static String name(String name, int yaw, int pitch, int roll, float[] angles, float[] anglesAdj, float[] anglesDiff) {
+		return name + ". Rot: " + yaw + "/" + pitch + ". "
+				+ "Angles: " + StringUtils.prettyNumber(angles[0] * FastMath.RAD_TO_DEG, 1) + "/" + StringUtils.prettyNumber(anglesAdj[0] * FastMath.RAD_TO_DEG, 1) + ", "
+				+ StringUtils.prettyNumber(angles[1] * FastMath.RAD_TO_DEG, 1) + "/" + StringUtils.prettyNumber(anglesAdj[1] * FastMath.RAD_TO_DEG, 1) + ", "
+				+ StringUtils.prettyNumber(angles[2] * FastMath.RAD_TO_DEG, 1) + "/" + StringUtils.prettyNumber(anglesAdj[2] * FastMath.RAD_TO_DEG, 1) + ". Diff: "
+				+ StringUtils.prettyNumber(anglesDiff[0] * FastMath.RAD_TO_DEG, 1) + ", "
+				+ StringUtils.prettyNumber(anglesDiff[1] * FastMath.RAD_TO_DEG, 1) + ", "
+				+ StringUtils.prettyNumber(anglesDiff[2] * FastMath.RAD_TO_DEG, 1);
 	}
 	
 	public static String toDegs(Quaternion q) {
