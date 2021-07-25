@@ -38,6 +38,9 @@ dependencies {
 	testImplementation 'org.junit.jupiter:junit-jupiter'
 	testImplementation 'org.junit.platform:junit-platform-launcher'
 }
+test {
+    useJUnitPlatform()
+}
 
 subprojects.each { subproject -> evaluationDependsOn(subproject.path) }
 task serverJar (type: Jar, dependsOn: subprojects.tasks['build']) {
