@@ -8,8 +8,9 @@ import io.eiren.vr.processor.TrackerBodyPosition;
 public class ReferenceAdjustedTracker<E extends Tracker> implements Tracker {
 	
 	public final E tracker;
-	public final Quaternion adjustmentYaw = new Quaternion();
-	public final Quaternion adjustmentAttachment = new Quaternion();
+	public final Quaternion yawFix = new Quaternion();
+	public final Quaternion gyroFix = new Quaternion();
+	public final Quaternion attachmentFix = new Quaternion();
 	protected float confidenceMultiplier = 1.0f;
 	
 	public ReferenceAdjustedTracker(E tracker) {
@@ -44,9 +45,12 @@ public class ReferenceAdjustedTracker<E extends Tracker> implements Tracker {
 	 */
 	@Override
 	public void resetFull(Quaternion reference) {
+		fixGyroscope();
+		
 		Quaternion sensorRotation = new Quaternion();
 		tracker.getRotation(sensorRotation);
-		adjustmentAttachment.set(sensorRotation).inverseLocal();
+		gyroFix.mult(sensorRotation, sensorRotation);
+		attachmentFix.set(sensorRotation).inverseLocal();
 		
 		resetYaw(reference);
 	}
@@ -68,19 +72,31 @@ public class ReferenceAdjustedTracker<E extends Tracker> implements Tracker {
 		
 		Quaternion sensorRotation = new Quaternion();
 		tracker.getRotation(sensorRotation);
-		sensorRotation.multLocal(adjustmentAttachment);
+		gyroFix.mult(sensorRotation, sensorRotation);
+		sensorRotation.multLocal(attachmentFix);
 		
 		sensorRotation.toAngles(angles);
 		sensorRotation.fromAngles(0, angles[1], 0);
 		
-		adjustmentYaw.set(sensorRotation).inverseLocal().multLocal(targetTrackerRotation);
+		yawFix.set(sensorRotation).inverseLocal().multLocal(targetTrackerRotation);
+	}
+	
+	private void fixGyroscope() {
+		float[] angles = new float[3];
 		
-		confidenceMultiplier = 1.0f / tracker.getConfidenceLevel();
+		Quaternion sensorRotation = new Quaternion();
+		tracker.getRotation(sensorRotation);
+		
+		sensorRotation.toAngles(angles);
+		sensorRotation.fromAngles(0, angles[1], 0);
+		
+		gyroFix.set(sensorRotation).inverseLocal();
 	}
 	
 	protected void adjustInternal(Quaternion store) {
-		store.multLocal(adjustmentAttachment);
-		adjustmentYaw.mult(store, store);
+		gyroFix.mult(store, store);
+		store.multLocal(attachmentFix);
+		yawFix.mult(store, store);
 	}
 	
 	@Override

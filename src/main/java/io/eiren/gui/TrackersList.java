@@ -218,11 +218,11 @@ public class TrackersList extends EJBox {
 			Tracker t2 = t;
 			if(t instanceof ReferenceAdjustedTracker) {
 				t2 = ((ReferenceAdjustedTracker<Tracker>) t).getTracker();
-				((ReferenceAdjustedTracker<Tracker>) t).adjustmentAttachment.toAngles(angles);
+				((ReferenceAdjustedTracker<Tracker>) t).attachmentFix.toAngles(angles);
 				adj.setText(StringUtils.prettyNumber(angles[0] * FastMath.RAD_TO_DEG, 0)
 						+ " " + StringUtils.prettyNumber(angles[1] * FastMath.RAD_TO_DEG, 0)
 						+ " " + StringUtils.prettyNumber(angles[2] * FastMath.RAD_TO_DEG, 0));
-				((ReferenceAdjustedTracker<Tracker>) t).adjustmentYaw.toAngles(angles);
+				((ReferenceAdjustedTracker<Tracker>) t).yawFix.toAngles(angles);
 				adjYaw.setText(StringUtils.prettyNumber(angles[0] * FastMath.RAD_TO_DEG, 0)
 						+ " " + StringUtils.prettyNumber(angles[1] * FastMath.RAD_TO_DEG, 0)
 						+ " " + StringUtils.prettyNumber(angles[2] * FastMath.RAD_TO_DEG, 0));

@@ -96,12 +96,6 @@ public class ReferenceAdjustmentsTests {
 				"Adjusted quat is not equal to reference quat (" + toDegs(referenceQuat) + " vs " + toDegs(read) + ")");
 	}
 	
-	public static String toDegs(Quaternion q) {
-		float[] degs = new float[3];
-		q.toAngles(degs);
-		return StringUtils.prettyNumber(degs[0] * FastMath.RAD_TO_DEG, 0) + "," + StringUtils.prettyNumber(degs[1] * FastMath.RAD_TO_DEG, 0) + "," + StringUtils.prettyNumber(degs[2] * FastMath.RAD_TO_DEG, 0);
-	}
-	
 	private void testAdjustedTrackerRotation(Quaternion trackerQuat, int refPitch, int refYaw, int refRoll) {
 		Quaternion referenceQuat = q(refPitch, refYaw, refRoll);
 		ComputedTracker tracker = new ComputedTracker("test");
@@ -173,6 +167,12 @@ public class ReferenceAdjustmentsTests {
 	
 	public static Quaternion q(float pitch, float yaw, float roll) {
 		return new Quaternion().fromAngles(pitch * FastMath.DEG_TO_RAD, yaw * FastMath.DEG_TO_RAD, roll * FastMath.DEG_TO_RAD);
+	}
+	
+	public static String toDegs(Quaternion q) {
+		float[] degs = new float[3];
+		q.toAngles(degs);
+		return StringUtils.prettyNumber(degs[0] * FastMath.RAD_TO_DEG, 0) + "," + StringUtils.prettyNumber(degs[1] * FastMath.RAD_TO_DEG, 0) + "," + StringUtils.prettyNumber(degs[2] * FastMath.RAD_TO_DEG, 0);
 	}
 	
 	private static class QuatEqualYawWithEpsilon {
