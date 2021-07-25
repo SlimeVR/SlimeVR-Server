@@ -12,8 +12,8 @@ import io.eiren.vr.trackers.ReferenceAdjustedTracker;
 import static org.junit.jupiter.api.Assertions.*;
 import static org.junit.jupiter.api.DynamicTest.dynamicTest;
 
-import java.util.ArrayList;
-import java.util.List;
+import java.util.function.Function;
+import java.util.stream.IntStream;
 import java.util.stream.Stream;
 
 import org.junit.jupiter.api.DynamicTest;
@@ -27,47 +27,42 @@ public class ReferenceAdjustmentsTests {
 	private static final int[] yaws = {0, 45, 90, 180, 270};
 	private static final int[] pitches = {0, 15, 35, -15, -35};
 	private static final int[] rolls = {0, 15, 35, -15, -35};
+	private static final boolean PRINT_TEST_RESULTS = false;
+	private static int errors = 0;
+	private static int successes = 0;
 	
-	public static List<AnglesSet> getAnglesSet() {
-		List<AnglesSet> angles = new ArrayList<>();
-		for(int yaw : yaws) {
-			for(int pitch : pitches) {
-				for(int roll : rolls) {
-					angles.add(new AnglesSet(pitch, yaw, roll));
-				}
-			}
-		}
-		return angles;
+	public static Stream<AnglesSet> getAnglesSet() {
+		return IntStream.of(yaws).mapToObj((yaw) ->
+				IntStream.of(pitches).mapToObj((pitch) ->
+					IntStream.of(rolls).mapToObj((roll) -> new AnglesSet(pitch, yaw, roll)
+			))).flatMap(Function.identity()).flatMap(Function.identity());
 	}
 	
 	@TestFactory
 	Stream<DynamicTest> getTestsYaw() {
-		return getAnglesSet().stream().map((p) -> 
+		return getAnglesSet().map((p) -> 
 			dynamicTest("Adjustment Yaw Test of Tracker(" + p.pitch + "," + p.yaw + "," + p.roll + ")",
-					() -> {
-						getAnglesSet().forEach((ref) ->
-							checkReferenceAdjustmentYaw(q(p.pitch, p.yaw, p.roll), ref.pitch, ref.yaw, ref.roll));
-					}));
+					() -> IntStream.of(yaws).forEach((refYaw) ->
+							checkReferenceAdjustmentYaw(q(p.pitch, p.yaw, p.roll), 0, refYaw, 0))
+					));
 	}
 	
 	@TestFactory
 	Stream<DynamicTest> getTestsFull() {
-		return getAnglesSet().stream().map((p) -> 
+		return getAnglesSet().map((p) -> 
 		dynamicTest("Adjustment Full Test of Tracker(" + p.pitch + "," + p.yaw + "," + p.roll + ")",
-				() -> {
-					getAnglesSet().forEach((ref) ->
-					checkReferenceAdjustmentFull(q(p.pitch, p.yaw, p.roll), ref.pitch, ref.yaw, ref.roll));
-				}));
+				() -> getAnglesSet().forEach((ref) ->
+						checkReferenceAdjustmentFull(q(p.pitch, p.yaw, p.roll), ref.pitch, ref.yaw, ref.roll))
+				));
 	}
 	
 	@TestFactory
 	Stream<DynamicTest> getTestsForRotation() {
-		return getAnglesSet().stream().map((p) -> 
-		dynamicTest("Adjustment Rotation Test of Tracker(" + p.pitch + "," + p.yaw + "," + p.roll + ")",
-				() -> {
-					getAnglesSet().forEach((ref) ->
-					testAdjustedTrackerRotation(q(p.pitch, p.yaw, p.roll), ref.pitch, ref.yaw, ref.roll));
-				}));
+		return getAnglesSet().map((p) -> 
+			IntStream.of(yaws).mapToObj((refYaw) ->
+				dynamicTest("Adjustment Rotation Test of Tracker(" + p.pitch + "," + p.yaw + "," + p.roll + "), Ref " + refYaw,
+					() -> testAdjustedTrackerRotation(q(p.pitch, p.yaw, p.roll), 0, refYaw, 0)
+			))).flatMap(Function.identity());
 	}
 	
 	public void checkReferenceAdjustmentFull(Quaternion trackerQuat, int refPitch, int refYaw, int refRoll) {
@@ -107,29 +102,20 @@ public class ReferenceAdjustmentsTests {
 		return StringUtils.prettyNumber(degs[0] * FastMath.RAD_TO_DEG, 0) + "," + StringUtils.prettyNumber(degs[1] * FastMath.RAD_TO_DEG, 0) + "," + StringUtils.prettyNumber(degs[2] * FastMath.RAD_TO_DEG, 0);
 	}
 	
-	private static final boolean PRINT_TEST_RESULTS = false;
-	
-	private static int errors = 0;
-	private static int successes = 0;
-	
 	private void testAdjustedTrackerRotation(Quaternion trackerQuat, int refPitch, int refYaw, int refRoll) {
 		Quaternion referenceQuat = q(refPitch, refYaw, refRoll);
 		ComputedTracker tracker = new ComputedTracker("test");
 		tracker.rotation.set(trackerQuat);
 		ReferenceAdjustedTracker<ComputedTracker> adj = new ReferenceAdjustedTracker<>(tracker);
 		adj.resetFull(referenceQuat);
-		Quaternion read = new Quaternion();
-		assertTrue(adj.getRotation(read), "Adjusted tracker didn't return rotation");
 
 		// Use only yaw HMD rotation
 		Quaternion targetTrackerRotation = new Quaternion(referenceQuat);
 		float[] angles = new float[3];
 		targetTrackerRotation.toAngles(angles);
 		targetTrackerRotation.fromAngles(0, angles[1], 0);
-		
-		final Quaternion trackerBase = new Quaternion();
-		trackerBase.set(tracker.rotation);
-		
+
+		Quaternion read = new Quaternion();
 		Quaternion rotation = new Quaternion();
 		Quaternion rotationCompare = new Quaternion();
 		Quaternion diff = new Quaternion();
@@ -140,7 +126,7 @@ public class ReferenceAdjustmentsTests {
 		TransformNode rotationNode = new TransformNode("Rot", true);
 		rotationNode.attachChild(trackerNode);
 		
-		trackerNode.localTransform.setRotation(trackerBase);
+		trackerNode.localTransform.setRotation(tracker.rotation);
 		
 		for(int yaw = 0; yaw <= 360; yaw += 30) {
 			for(int pitch = -90; pitch <= 90; pitch += 15) {
