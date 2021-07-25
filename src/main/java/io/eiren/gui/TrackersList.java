@@ -179,7 +179,7 @@ public class TrackersList extends EJBox {
 			add(new JLabel("Battery:"), c(2, 4, 0, GridBagConstraints.FIRST_LINE_START));
 			add(bat = new JLabel("0"), c(3, 4, 0, GridBagConstraints.FIRST_LINE_START));
 			add(new JLabel("Raw:"), c(0, 5, 0, GridBagConstraints.FIRST_LINE_START));
-			add(raw = new JLabel("0 0 0 0"), s(c(1, 5, 0, GridBagConstraints.FIRST_LINE_START), 3, 1));
+			add(raw = new JLabel("0 0 0"), s(c(1, 5, 0, GridBagConstraints.FIRST_LINE_START), 3, 1));
 			
 			if(t instanceof ReferenceAdjustedTracker) {
 				add(new JLabel("Adj:"), c(0, 6, 0, GridBagConstraints.FIRST_LINE_START));
@@ -230,10 +230,10 @@ public class TrackersList extends EJBox {
 			if(t2 instanceof IMUTracker)
 				ping.setText(String.valueOf(((IMUTracker) t2).ping));
 			t2.getRotation(q);
-			raw.setText(StringUtils.prettyNumber(q.getX(), 4)
-					+ " " + StringUtils.prettyNumber(q.getY(), 4)
-					+ " " + StringUtils.prettyNumber(q.getZ(), 4)
-					+ " " + StringUtils.prettyNumber(q.getW(), 4));
+			q.toAngles(angles);
+			raw.setText(StringUtils.prettyNumber(angles[0] * FastMath.RAD_TO_DEG, 0)
+					+ " " + StringUtils.prettyNumber(angles[1] * FastMath.RAD_TO_DEG, 0)
+					+ " " + StringUtils.prettyNumber(angles[2] * FastMath.RAD_TO_DEG, 0));
 		}
 	}
 	
