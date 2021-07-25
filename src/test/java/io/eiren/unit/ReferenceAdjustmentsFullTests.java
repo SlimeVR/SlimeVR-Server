@@ -9,12 +9,12 @@ import io.eiren.vr.processor.TransformNode;
 import io.eiren.vr.trackers.ComputedTracker;
 import io.eiren.vr.trackers.ReferenceAdjustedTracker;
 
-import static org.junit.Assert.*;
+import static org.junit.jupiter.api.Assertions.*;
 
 import java.util.HashSet;
 import java.util.Set;
 
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 /**
  * Tests {@link ReferenceAdjustedTracker#resetFull(Quaternion)}
@@ -140,7 +140,7 @@ public class ReferenceAdjustmentsFullTests {
 		ReferenceAdjustedTracker<ComputedTracker> adj = new ReferenceAdjustedTracker<>(tracker);
 		adj.resetFull(referenceQuat);
 		Quaternion read = new Quaternion();
-		assertTrue("Adjusted tracker didn't return rotation", adj.getRotation(read));
+		assertTrue(adj.getRotation(read), "Adjusted tracker didn't return rotation");
 
 		// Use only yaw HMD rotation
 		Quaternion targetTrackerRotation = new Quaternion(referenceQuat);
@@ -148,7 +148,8 @@ public class ReferenceAdjustmentsFullTests {
 		targetTrackerRotation.toAngles(angles);
 		targetTrackerRotation.fromAngles(0, angles[1], 0);
 		
-		assertEquals("Adjusted quat is not equal to reference quat (" + toDegs(targetTrackerRotation) + " vs " + toDegs(read) + ")", new QuatEqualFullWithEpsilon(targetTrackerRotation), new QuatEqualFullWithEpsilon(read));
+		assertEquals(new QuatEqualFullWithEpsilon(read), new QuatEqualFullWithEpsilon(targetTrackerRotation),
+				"Adjusted quat is not equal to reference quat (" + toDegs(targetTrackerRotation) + " vs " + toDegs(read) + ")");
 		testAdjustedTracker(tracker, adj, name, refYaw);
 	}
 	
@@ -174,7 +175,7 @@ public class ReferenceAdjustmentsFullTests {
 		
 		TransformNode trackerNode = new TransformNode(name, true);
 		TransformNode rotationNode = new TransformNode("Rot", true);
-		trackerNode.attachChild(rotationNode);
+		rotationNode.attachChild(trackerNode);
 		
 		trackerNode.localTransform.setRotation(trackerBase);
 		
@@ -184,9 +185,8 @@ public class ReferenceAdjustmentsFullTests {
 					rotation.fromAngles(pitch * FastMath.DEG_TO_RAD, yaw * FastMath.DEG_TO_RAD, roll * FastMath.DEG_TO_RAD);
 					rotationCompare.fromAngles(pitch * FastMath.DEG_TO_RAD, (yaw + refYaw) * FastMath.DEG_TO_RAD, roll * FastMath.DEG_TO_RAD);
 					rotationNode.localTransform.setRotation(rotation);
-					trackerNode.update();
 					rotationNode.update();
-					tracker.rotation.set(rotationNode.worldTransform.getRotation());
+					tracker.rotation.set(trackerNode.worldTransform.getRotation());
 					tracker.rotation.toAngles(angles);
 					
 					adj.getRotation(read);
@@ -196,8 +196,8 @@ public class ReferenceAdjustmentsFullTests {
 					diff.toAngles(anglesDiff);
 					
 					if(!PRINT_TEST_RESULTS) {
-						assertTrue(name(name, yaw, pitch, roll, angles, anglesAdj, anglesDiff),
-								FloatMath.equalsToZero(anglesDiff[0]) && FloatMath.equalsToZero(anglesDiff[1]) && FloatMath.equalsToZero(anglesDiff[2]));
+						assertTrue(FloatMath.equalsToZero(anglesDiff[0]) && FloatMath.equalsToZero(anglesDiff[1]) && FloatMath.equalsToZero(anglesDiff[2]),
+								name(name, yaw, pitch, roll, angles, anglesAdj, anglesDiff));
 					} else {
 						if(FloatMath.equalsToZero(anglesDiff[0]) && FloatMath.equalsToZero(anglesDiff[1]) && FloatMath.equalsToZero(anglesDiff[2]))
 							successes++;

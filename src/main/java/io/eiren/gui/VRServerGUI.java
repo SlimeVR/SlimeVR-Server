@@ -33,6 +33,11 @@ public class VRServerGUI extends JFrame {
 	@AWTThread
 	public VRServerGUI(VRServer server) {
 		super("SlimeVR Server (" + Main.VERSION + ")");
+		try {
+			UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
+		} catch(Exception e) {
+			e.printStackTrace();
+		}
 		//increaseFontSize();
 		
 		this.server = server;
