@@ -5,13 +5,13 @@ import java.io.File;
 import io.eiren.gui.VRServerGUI;
 import io.eiren.util.logging.LogManager;
 
-
 public class Main {
 	
-	public static String VERSION = "0.0.10";
+	public static String VERSION = "0.0.11";
 	
 	public static VRServer vrServer;
 	
+	@SuppressWarnings("unused")
 	public static void main(String[] args) {
 		System.setProperty("awt.useSystemAAFontSettings", "on");
 		System.setProperty("swing.aatext", "true");

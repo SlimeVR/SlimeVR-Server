@@ -162,7 +162,7 @@ public class ReferenceAdjustmentsTests {
 	}
 	
 	private static String name(int yaw, int pitch, int roll, float[] angles, float[] anglesAdj, float[] anglesDiff) {
-		return "Rot: " + yaw + "/" + pitch + ". "
+		return "Rot: " + yaw + "/" + pitch + "/" + roll + ". "
 				+ "Angles: " + StringUtils.prettyNumber(angles[0] * FastMath.RAD_TO_DEG, 1) + "/" + StringUtils.prettyNumber(anglesAdj[0] * FastMath.RAD_TO_DEG, 1) + ", "
 				+ StringUtils.prettyNumber(angles[1] * FastMath.RAD_TO_DEG, 1) + "/" + StringUtils.prettyNumber(anglesAdj[1] * FastMath.RAD_TO_DEG, 1) + ", "
 				+ StringUtils.prettyNumber(angles[2] * FastMath.RAD_TO_DEG, 1) + "/" + StringUtils.prettyNumber(anglesAdj[2] * FastMath.RAD_TO_DEG, 1) + ". Diff: "
