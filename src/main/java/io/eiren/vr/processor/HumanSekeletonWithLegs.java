@@ -289,8 +289,8 @@ public class HumanSekeletonWithLegs extends HumanSkeleonWithWaist {
 		this.rightAnkleTracker.resetFull(referenceRotation);
 		this.rightAnkleTracker.getRotation(referenceRotation);
 		
-		if(this.rightAnkleTracker != null) {
-			this.rightAnkleTracker.resetFull(referenceRotation);
+		if(this.rightFootTracker != null) {
+			this.rightFootTracker.resetFull(referenceRotation);
 		}
 	}
 }
