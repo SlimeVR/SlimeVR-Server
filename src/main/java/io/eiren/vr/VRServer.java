@@ -50,7 +50,7 @@ public class VRServer extends Thread {
 		hmdTracker = new HMDTracker("HMD");
 		hmdTracker.position.set(0, 1.8f, 0); // Set starting position for easier debugging
 		// TODO Multiple processors
-		humanPoseProcessor = new HumanPoseProcessor(this, hmdTracker);
+		humanPoseProcessor = new HumanPoseProcessor(this, hmdTracker, config.getInt("vitrualtrackers", 3));
 		List<? extends Tracker> shareTrackers = humanPoseProcessor.getComputedTrackers();
 		
 		// Create named pipe bridge for SteamVR driver

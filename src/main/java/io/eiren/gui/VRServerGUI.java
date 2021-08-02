@@ -8,11 +8,12 @@ import io.eiren.util.StringUtils;
 import io.eiren.util.ann.AWTThread;
 import io.eiren.vr.Main;
 import io.eiren.vr.VRServer;
-import io.eiren.vr.bridge.NamedPipeVRBridge;
 
 import java.awt.Component;
 import java.awt.Container;
 import java.awt.Font;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 import java.awt.event.MouseEvent;
 
 import static javax.swing.BoxLayout.PAGE_AXIS;
@@ -78,8 +79,6 @@ public class VRServerGUI extends JFrame {
 	private void build() {
 		pane.removeAll();
 		
-		NamedPipeVRBridge npvb = server.getVRBridge(NamedPipeVRBridge.class);
-		
 		pane.add(new EJBox(LINE_AXIS) {{
 			setBorder(new EmptyBorder(i(5)));
 			
@@ -93,18 +92,6 @@ public class VRServerGUI extends JFrame {
 				});
 			}});
 			add(Box.createHorizontalGlue());
-			if(npvb != null) {
-				add(new JButton(npvb.isOneTrackerMode() ? "Trackers: 1" : "Trackers: 3") {{
-					addMouseListener(new MouseInputAdapter() {
-						@Override
-						public void mouseClicked(MouseEvent e) {
-							npvb.setSpawnOneTracker(!npvb.isOneTrackerMode());
-							setText(npvb.isOneTrackerMode() ? "Trackers: 1" : "Trackers: 3");
-						}
-					});
-				}});
-				add(Box.createHorizontalStrut(10));
-			}
 			add(new JButton("GUI Zoom (x" + StringUtils.prettyNumber(zoom, 2) + ")") {{
 				addMouseListener(new MouseInputAdapter() {
 					@Override
@@ -131,8 +118,57 @@ public class VRServerGUI extends JFrame {
 			setBorder(new EmptyBorder(i(5)));
 			add(new EJBox(PAGE_AXIS) {{
 				setAlignmentY(TOP_ALIGNMENT);
+				add(new JLabel("SteamVR Trackers:"));
+				JComboBox<String> trackersSelect;
+				add(trackersSelect = new JComboBox<>());
+				trackersSelect.addItem("Waist");
+				trackersSelect.addItem("Waist + Feet");
+				trackersSelect.addItem("Waist + Feet + Chest");
+				trackersSelect.addItem("Waist + Feet + Knees");
+				trackersSelect.addItem("Waist + Feet + Chest + Knees");
+				switch(server.config.getInt("vitrualtrackers", 3)) {
+				case 1:
+					trackersSelect.setSelectedIndex(0);
+					break;
+				case 3:
+					trackersSelect.setSelectedIndex(1);
+					break;
+				case 4:
+					trackersSelect.setSelectedIndex(2);
+					break;
+				case 5:
+					trackersSelect.setSelectedIndex(3);
+					break;
+				case 6:
+					trackersSelect.setSelectedIndex(4);
+					break;
+				}
+				trackersSelect.addActionListener(new ActionListener() {
+					@Override
+					public void actionPerformed(ActionEvent e) {
+						switch(trackersSelect.getSelectedIndex()) {
+						case 0:
+							server.config.setProperty("vitrualtrackers", 1);
+							break;
+						case 1:
+							server.config.setProperty("vitrualtrackers", 3);
+							break;
+						case 2:
+							server.config.setProperty("vitrualtrackers", 4);
+							break;
+						case 3:
+							server.config.setProperty("vitrualtrackers", 5);
+							break;
+						case 4:
+							server.config.setProperty("vitrualtrackers", 6);
+							break;
+						}
+						server.saveConfig();
+					}
+				});
+				add(Box.createHorizontalStrut(10));
 				
-				add(new JLabel("Trackers"));
+				add(new JLabel("Trackers list"));
 				add(trackersList);
 				add(Box.createVerticalGlue());
 			}});

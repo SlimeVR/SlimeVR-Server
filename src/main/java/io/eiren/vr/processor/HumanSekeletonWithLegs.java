@@ -27,10 +27,12 @@ public class HumanSekeletonWithLegs extends HumanSkeleonWithWaist {
 	protected final Tracker leftAnkleTracker;
 	protected final Tracker leftFootTracker;
 	protected final ComputedHumanPoseTracker computedLeftFootTracker;
+	protected final ComputedHumanPoseTracker computedLeftKneeTracker;
 	protected final Tracker rightLegTracker;
 	protected final Tracker rightAnkleTracker;
 	protected final Tracker rightFootTracker;
 	protected final ComputedHumanPoseTracker computedRightFootTracker;
+	protected final ComputedHumanPoseTracker computedRightKneeTracker;
 	
 	protected final TransformNode leftHipNode = new TransformNode("Left-Hip", false);
 	protected final TransformNode leftKneeNode = new TransformNode("Left-Knee", false);
@@ -71,15 +73,23 @@ public class HumanSekeletonWithLegs extends HumanSkeleonWithWaist {
 		this.rightFootTracker = TrackerUtils.findTrackerForBodyPosition(allTracekrs, TrackerBodyPosition.RIGHT_FOOT);
 		ComputedHumanPoseTracker lat = null;
 		ComputedHumanPoseTracker rat = null;
+		ComputedHumanPoseTracker rkt = null;
+		ComputedHumanPoseTracker lkt = null;
 		for(int i = 0; i < computedTrackers.size(); ++i) {
 			ComputedHumanPoseTracker t = computedTrackers.get(i);
 			if(t.skeletonPosition == ComputedHumanPoseTrackerPosition.LEFT_FOOT)
 				lat = t;
 			if(t.skeletonPosition == ComputedHumanPoseTrackerPosition.RIGHT_FOOT)
 				rat = t;
+			if(t.skeletonPosition == ComputedHumanPoseTrackerPosition.LEFT_KNEE)
+				lkt = t;
+			if(t.skeletonPosition == ComputedHumanPoseTrackerPosition.RIGHT_KNEE)
+				rkt = t;
 		}
 		computedLeftFootTracker = lat;
 		computedRightFootTracker = rat;
+		computedLeftKneeTracker = lkt;
+		computedRightKneeTracker = rkt;
 		lat.setStatus(TrackerStatus.OK);
 		rat.setStatus(TrackerStatus.OK);
 		hipsWidth = server.config.getFloat("body.hipsWidth", hipsWidth);
@@ -254,13 +264,29 @@ public class HumanSekeletonWithLegs extends HumanSkeleonWithWaist {
 	protected void updateComputedTrackers() {
 		super.updateComputedTrackers();
 		
-		computedLeftFootTracker.position.set(leftFootNode.worldTransform.getTranslation());
-		computedLeftFootTracker.rotation.set(leftFootNode.worldTransform.getRotation());
-		computedLeftFootTracker.dataTick();
+		if(computedLeftFootTracker != null) {
+			computedLeftFootTracker.position.set(leftFootNode.worldTransform.getTranslation());
+			computedLeftFootTracker.rotation.set(leftFootNode.worldTransform.getRotation());
+			computedLeftFootTracker.dataTick();
+		}
 		
-		computedRightFootTracker.position.set(rightFootNode.worldTransform.getTranslation());
-		computedRightFootTracker.rotation.set(rightFootNode.worldTransform.getRotation());
-		computedRightFootTracker.dataTick();
+		if(computedLeftKneeTracker != null) {
+			computedLeftKneeTracker.position.set(leftKneeNode.worldTransform.getTranslation());
+			computedLeftKneeTracker.rotation.set(leftHipNode.worldTransform.getRotation());
+			computedLeftKneeTracker.dataTick();
+		}
+		
+		if(computedRightFootTracker != null) {
+			computedRightFootTracker.position.set(rightFootNode.worldTransform.getTranslation());
+			computedRightFootTracker.rotation.set(rightFootNode.worldTransform.getRotation());
+			computedRightFootTracker.dataTick();
+		}
+		
+		if(computedRightKneeTracker != null) {
+			computedRightKneeTracker.position.set(rightKneeNode.worldTransform.getTranslation());
+			computedRightKneeTracker.rotation.set(rightHipNode.worldTransform.getRotation());
+			computedRightKneeTracker.dataTick();
+		}
 	}
 	
 	@Override

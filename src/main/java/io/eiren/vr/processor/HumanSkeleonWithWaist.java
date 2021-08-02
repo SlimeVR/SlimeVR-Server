@@ -30,6 +30,7 @@ public class HumanSkeleonWithWaist extends HumanSkeleton {
 	protected final Tracker chestTracker;
 	protected final HMDTracker hmdTracker;
 	protected final ComputedHumanPoseTracker computedWaistTracker;
+	protected final ComputedHumanPoseTracker computedChestTracker;
 	protected final TransformNode hmdNode = new TransformNode("HMD", false);
 	protected final TransformNode headNode = new TransformNode("Head", false);
 	protected final TransformNode neckNode = new TransformNode("Neck", false);
@@ -64,12 +65,16 @@ public class HumanSkeleonWithWaist extends HumanSkeleton {
 		this.hmdTracker = server.hmdTracker;
 		this.server = server;
 		ComputedHumanPoseTracker cwt = null;
+		ComputedHumanPoseTracker cct = null;
 		for(int i = 0; i < computedTrackers.size(); ++i) {
 			ComputedHumanPoseTracker t = computedTrackers.get(i);
 			if(t.skeletonPosition == ComputedHumanPoseTrackerPosition.WAIST)
 				cwt = t;
+			if(t.skeletonPosition == ComputedHumanPoseTrackerPosition.CHEST)
+				cct = t;
 		}
 		computedWaistTracker = cwt;
+		computedChestTracker = cct;
 		cwt.setStatus(TrackerStatus.OK);
 		headShift = server.config.getFloat("body.headShift", headShift);
 		neckLength = server.config.getFloat("body.neckLength", neckLength);
@@ -205,9 +210,17 @@ public class HumanSkeleonWithWaist extends HumanSkeleton {
 	}
 	
 	protected void updateComputedTrackers() {
-		computedWaistTracker.position.set(trackerWaistNode.worldTransform.getTranslation());
-		computedWaistTracker.rotation.set(trackerWaistNode.worldTransform.getRotation());
-		computedWaistTracker.dataTick();
+		if(computedWaistTracker != null) {
+			computedWaistTracker.position.set(trackerWaistNode.worldTransform.getTranslation());
+			computedWaistTracker.rotation.set(trackerWaistNode.worldTransform.getRotation());
+			computedWaistTracker.dataTick();
+		}
+		
+		if(computedChestTracker != null) {
+			computedChestTracker.position.set(chestNode.worldTransform.getTranslation());
+			computedChestTracker.rotation.set(neckNode.worldTransform.getRotation());
+			computedChestTracker.dataTick();
+		}
 	}
 	
 	@Override

@@ -43,8 +43,6 @@ public class NamedPipeVRBridge extends Thread implements VRBridge {
 	private final HMDTracker internalHMDTracker = new HMDTracker("itnernal://HMD");
 	private final AtomicBoolean newHMDData = new AtomicBoolean(false);
 	
-	private boolean spawnOneTracker = false;
-	
 	public NamedPipeVRBridge(HMDTracker hmd, List<? extends Tracker> shareTrackers, VRServer server) {
 		super("Named Pipe VR Bridge");
 		this.server = server;
@@ -58,26 +56,6 @@ public class NamedPipeVRBridge extends Thread implements VRBridge {
 			ct.setStatus(TrackerStatus.OK);
 			this.internalTrackers.add(ct);
 		}
-		this.spawnOneTracker = server.config.getBoolean("openvr.onetracker", spawnOneTracker);
-	}
-	
-	public boolean isOneTrackerMode() {
-		return this.spawnOneTracker;
-	}
-	
-	/**
-	 * Makes OpenVR bridge spawn only 1 tracker instead of 3, for
-	 * use with only waist/chest tracking. Requires restart.
-	 */
-	public void setSpawnOneTracker(boolean spawnOneTracker) {
-		if(spawnOneTracker == this.spawnOneTracker)
-			return;
-		this.spawnOneTracker = spawnOneTracker;
-		if(this.spawnOneTracker)
-			this.server.config.setProperty("openvr.onetracker", true);
-		else
-			this.server.config.removeProperty("openvr.onetracker");
-		this.server.saveConfig();
 	}
 	
 	@Override
@@ -133,8 +111,6 @@ public class NamedPipeVRBridge extends Thread implements VRBridge {
 				if(tryOpeningPipe(trackerPipe))
 					initTrackerPipe(trackerPipe, i);
 			}
-			if(spawnOneTracker)
-				break;
 		}
 	}
 	
@@ -194,7 +170,7 @@ public class NamedPipeVRBridge extends Thread implements VRBridge {
 	}
 	
 	private void initTrackerPipe(Pipe pipe, int trackerId) {
-		String trackerHello = (spawnOneTracker ? "1" : this.shareTrackers.size()) + " 0";
+		String trackerHello = this.shareTrackers.size() + " 0";
 		System.arraycopy(trackerHello.getBytes(ASCII), 0, buffer, 0, trackerHello.length());
 		buffer[trackerHello.length()] = '\0';
 		IntByReference lpNumberOfBytesWritten = new IntByReference(0);
@@ -252,8 +228,6 @@ public class NamedPipeVRBridge extends Thread implements VRBridge {
 					throw new IOException("Can't open " + pipeName + " pipe: " + Kernel32.INSTANCE.GetLastError());
 				LogManager.log.info("[VRBridge] Pipe " + pipeName + " created");
 				trackerPipes.add(new Pipe(pipeHandle, pipeName));
-				if(spawnOneTracker)
-					break;
 			}
 			LogManager.log.info("[VRBridge] Pipes are open");
 		} catch(IOException e) {

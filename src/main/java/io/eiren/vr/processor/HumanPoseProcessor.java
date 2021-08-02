@@ -19,11 +19,20 @@ public class HumanPoseProcessor {
 	private final List<Consumer<HumanSkeleton>> onSkeletonUpdated = new FastList<>();
 	private HumanSkeleton skeleton;
 
-	public HumanPoseProcessor(VRServer server, HMDTracker hmd) {
+	public HumanPoseProcessor(VRServer server, HMDTracker hmd, int trackersAmount) {
 		this.server = server;
 		computedTrackers.add(new ComputedHumanPoseTracker(ComputedHumanPoseTrackerPosition.WAIST));
-		computedTrackers.add(new ComputedHumanPoseTracker(ComputedHumanPoseTrackerPosition.LEFT_FOOT));
-		computedTrackers.add(new ComputedHumanPoseTracker(ComputedHumanPoseTrackerPosition.RIGHT_FOOT));
+		if(trackersAmount > 2) {
+			computedTrackers.add(new ComputedHumanPoseTracker(ComputedHumanPoseTrackerPosition.LEFT_FOOT));
+			computedTrackers.add(new ComputedHumanPoseTracker(ComputedHumanPoseTrackerPosition.RIGHT_FOOT));
+			if(trackersAmount == 4 || trackersAmount >= 6) {
+				computedTrackers.add(new ComputedHumanPoseTracker(ComputedHumanPoseTrackerPosition.CHEST));
+			}
+			if(trackersAmount >= 5) {
+				computedTrackers.add(new ComputedHumanPoseTracker(ComputedHumanPoseTrackerPosition.LEFT_KNEE));
+				computedTrackers.add(new ComputedHumanPoseTracker(ComputedHumanPoseTrackerPosition.RIGHT_KNEE));
+			}
+		}
 	}
 
 	@VRServerThread
