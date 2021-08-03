@@ -194,8 +194,14 @@ public class HumanSekeletonWithLegs extends HumanSkeleonWithWaist {
 	@Override
 	public void updateLocalTransforms() {
 		super.updateLocalTransforms();
-		// Left Leg
+		// Waist
 		leftLegTracker.getRotation(hipBuf);
+		rightLegTracker.getRotation(kneeBuf);
+		kneeBuf.slerp(hipBuf, 0.5f);
+		waistNode.localTransform.setRotation(kneeBuf);
+		
+		// Left Leg
+		//leftLegTracker.getRotation(hipBuf);
 		leftAnkleTracker.getRotation(kneeBuf);
 
 		//calculateKneeLimits(hipBuf, kneeBuf, leftLegTracker.getConfidenceLevel(), leftAnkleTracker.getConfidenceLevel());
