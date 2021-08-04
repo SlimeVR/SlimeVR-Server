@@ -52,7 +52,7 @@ public class ReferenceAdjustedTracker<E extends Tracker> implements Tracker {
 		gyroFix.mult(sensorRotation, sensorRotation);
 		attachmentFix.set(sensorRotation).inverseLocal();
 		
-		resetYaw(reference);
+		fixYaw(reference);
 	}
 
 	/**
@@ -64,6 +64,10 @@ public class ReferenceAdjustedTracker<E extends Tracker> implements Tracker {
 	 */
 	@Override
 	public void resetYaw(Quaternion reference) {
+		fixYaw(reference);
+	}
+	
+	private void fixYaw(Quaternion reference) {
 		// Use only yaw HMD rotation
 		Quaternion targetTrackerRotation = new Quaternion(reference);
 		float[] angles = new float[3];

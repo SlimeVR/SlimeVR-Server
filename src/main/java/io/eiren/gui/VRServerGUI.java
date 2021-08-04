@@ -91,6 +91,15 @@ public class VRServerGUI extends JFrame {
 					}
 				});
 			}});
+			add(Box.createHorizontalStrut(10));
+			add(new JButton("Fast Reset") {{
+				addMouseListener(new MouseInputAdapter() {
+					@Override
+					public void mouseClicked(MouseEvent e) {
+						resetFast();
+					}
+				});
+			}});
 			add(Box.createHorizontalGlue());
 			add(new JButton("GUI Zoom (x" + StringUtils.prettyNumber(zoom, 2) + ")") {{
 				addMouseListener(new MouseInputAdapter() {
@@ -232,6 +241,11 @@ public class VRServerGUI extends JFrame {
 				UIManager.put(key, f2);
 			}
 		}
+	}
+	
+	@AWTThread
+	private void resetFast() {
+		server.resetTrackersYaw();
 	}
 	
 	@AWTThread

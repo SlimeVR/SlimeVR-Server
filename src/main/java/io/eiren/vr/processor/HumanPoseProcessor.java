@@ -126,4 +126,10 @@ public class HumanPoseProcessor {
 		if(skeleton != null)
 			skeleton.resetTrackersFull();
 	}
+
+	@VRServerThread
+	public void resetTrackersYaw() {
+		if(skeleton != null)
+			skeleton.resetTrackersYaw();
+	}
 }

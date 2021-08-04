@@ -236,4 +236,18 @@ public class HumanSkeleonWithWaist extends HumanSkeleton {
 		
 		this.waistTracker.resetFull(referenceRotation);
 	}
+	
+	@Override
+	@VRServerThread
+	public void resetTrackersYaw() {
+		// Each tracker uses the tracker before it to adjust iteself,
+		// so trackers that don't need adjustments could be used too
+		Quaternion referenceRotation = new Quaternion();
+		server.hmdTracker.getRotation(referenceRotation);
+		
+		this.chestTracker.resetYaw(referenceRotation);
+		this.chestTracker.getRotation(referenceRotation);
+		
+		this.waistTracker.resetYaw(referenceRotation);
+	}
 }
