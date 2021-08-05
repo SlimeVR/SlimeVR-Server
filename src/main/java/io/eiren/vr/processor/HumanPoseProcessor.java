@@ -34,6 +34,10 @@ public class HumanPoseProcessor {
 			}
 		}
 	}
+	
+	public HumanSkeleton getSkeleton() {
+		return skeleton;
+	}
 
 	@VRServerThread
 	public void addSkeletonUpdatedCallback(Consumer<HumanSkeleton> consumer) {
@@ -85,24 +89,22 @@ public class HumanPoseProcessor {
 		boolean hasBothLegs = false;
 		List<Tracker> allTrackers = server.getAllTrackers();
 		Tracker waist = TrackerUtils.findTrackerForBodyPosition(allTrackers, TrackerBodyPosition.WAIST, TrackerBodyPosition.CHEST);
-		Tracker leftAnkle = TrackerUtils.findTrackerForBodyPosition(allTrackers, TrackerBodyPosition.LEFT_ANKLE);
-		Tracker rightAnkle = TrackerUtils.findTrackerForBodyPosition(allTrackers, TrackerBodyPosition.RIGHT_ANKLE);
-		Tracker leftLeg = TrackerUtils.findTrackerForBodyPosition(allTrackers, TrackerBodyPosition.LEFT_LEG);
-		Tracker rightLeg = TrackerUtils.findTrackerForBodyPosition(allTrackers, TrackerBodyPosition.RIGHT_LEG);
+		Tracker leftAnkle = TrackerUtils.findTrackerForBodyPosition(allTrackers, TrackerBodyPosition.LEFT_ANKLE, TrackerBodyPosition.LEFT_LEG);
+		Tracker rightAnkle = TrackerUtils.findTrackerForBodyPosition(allTrackers, TrackerBodyPosition.RIGHT_ANKLE, TrackerBodyPosition.RIGHT_LEG);
 		if(waist != null)
 			hasWaist = true;
-		if(leftAnkle != null && rightAnkle != null && leftLeg != null && rightLeg != null)
+		if(leftAnkle != null && rightAnkle != null)
 			hasBothLegs = true;
 		if(!hasWaist) {
 			skeleton = null; // Can't track anything without waist
 		} else if(hasBothLegs) {
 			disconnectAllTrackers();
-			skeleton = new HumanSekeletonWithLegs(server, computedTrackers);
+			skeleton = new HumanSkeletonWithLegs(server, computedTrackers);
 			for(int i = 0; i < onSkeletonUpdated.size(); ++i)
 				onSkeletonUpdated.get(i).accept(skeleton);
 		} else {
 			disconnectAllTrackers();
-			skeleton = new HumanSkeleonWithWaist(server, computedTrackers);
+			skeleton = new HumanSkeletonWithWaist(server, computedTrackers);
 			for(int i = 0; i < onSkeletonUpdated.size(); ++i)
 				onSkeletonUpdated.get(i).accept(skeleton);
 		}

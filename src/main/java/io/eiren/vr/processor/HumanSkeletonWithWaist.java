@@ -14,7 +14,7 @@ import io.eiren.vr.trackers.Tracker;
 import io.eiren.vr.trackers.TrackerStatus;
 import io.eiren.vr.trackers.TrackerUtils;
 
-public class HumanSkeleonWithWaist extends HumanSkeleton {
+public class HumanSkeletonWithWaist extends HumanSkeleton {
 	
 	public static final float HEAD_SHIFT_DEFAULT = 0.1f;
 	public static final float NECK_LENGTH_DEFAULT = 0.1f;
@@ -58,7 +58,7 @@ public class HumanSkeleonWithWaist extends HumanSkeleton {
 	 */
 	protected float headShift = HEAD_SHIFT_DEFAULT;
 
-	public HumanSkeleonWithWaist(VRServer server, List<ComputedHumanPoseTracker> computedTrackers) {
+	public HumanSkeletonWithWaist(VRServer server, List<ComputedHumanPoseTracker> computedTrackers) {
 		List<Tracker> allTracekrs = server.getAllTrackers();
 		this.waistTracker = TrackerUtils.findTrackerForBodyPosition(allTracekrs, TrackerBodyPosition.WAIST, TrackerBodyPosition.CHEST);
 		this.chestTracker = TrackerUtils.findTrackerForBodyPosition(allTracekrs, TrackerBodyPosition.CHEST, TrackerBodyPosition.WAIST);

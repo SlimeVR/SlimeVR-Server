@@ -1,16 +1,20 @@
 package io.eiren.gui;
 
+import java.awt.event.ItemEvent;
+import java.awt.event.ItemListener;
 import java.awt.event.MouseEvent;
 import java.util.HashMap;
 import java.util.Map;
 
 import javax.swing.JButton;
+import javax.swing.JCheckBox;
 import javax.swing.JLabel;
 import javax.swing.event.MouseInputAdapter;
 
 import io.eiren.util.StringUtils;
 import io.eiren.util.ann.ThreadSafe;
 import io.eiren.vr.VRServer;
+import io.eiren.vr.processor.HumanSkeletonWithLegs;
 import io.eiren.vr.processor.HumanSkeleton;
 
 public class SkeletonConfig extends EJBag {
@@ -26,6 +30,7 @@ public class SkeletonConfig extends EJBag {
 
 		setAlignmentY(TOP_ALIGNMENT);
 		server.humanPoseProcessor.addSkeletonUpdatedCallback(this::skeletonUpdated);
+		skeletonUpdated(null);
 	}
 	
 	@ThreadSafe
@@ -34,6 +39,56 @@ public class SkeletonConfig extends EJBag {
 			removeAll();
 			
 			int row = 0;
+
+			add(new JCheckBox("Extended pelvis model") {{
+				addItemListener(new ItemListener() {
+				    @Override
+				    public void itemStateChanged(ItemEvent e) {
+				        if(e.getStateChange() == ItemEvent.SELECTED) {//checkbox has been selected
+				        	if(newSkeleton != null && newSkeleton instanceof HumanSkeletonWithLegs) {
+				        		HumanSkeletonWithLegs hswl = (HumanSkeletonWithLegs) newSkeleton;
+				        		hswl.setSkeletonConfigBoolean("Extended pelvis model", true);
+				        	}
+				        } else {
+				        	if(newSkeleton != null && newSkeleton instanceof HumanSkeletonWithLegs) {
+				        		HumanSkeletonWithLegs hswl = (HumanSkeletonWithLegs) newSkeleton;
+				        		hswl.setSkeletonConfigBoolean("Extended pelvis model", false);
+				        	}
+				        }
+				    }
+				});
+				if(newSkeleton != null && newSkeleton instanceof HumanSkeletonWithLegs) {
+	        		HumanSkeletonWithLegs hswl = (HumanSkeletonWithLegs) newSkeleton;
+	        		setSelected(hswl.getSkeletonConfigBoolean("Extended pelvis model"));
+				}
+			}}, s(c(0, row, 1), 3, 1));
+			row++;
+			
+			/*
+			add(new JCheckBox("Extended knee model") {{
+				addItemListener(new ItemListener() {
+				    @Override
+				    public void itemStateChanged(ItemEvent e) {
+				        if(e.getStateChange() == ItemEvent.SELECTED) {//checkbox has been selected
+				        	if(newSkeleton != null && newSkeleton instanceof HumanSkeletonWithLegs) {
+				        		HumanSkeletonWithLegs hswl = (HumanSkeletonWithLegs) newSkeleton;
+				        		hswl.setSkeletonConfigBoolean("Extended knee model", true);
+				        	}
+				        } else {
+				        	if(newSkeleton != null && newSkeleton instanceof HumanSkeletonWithLegs) {
+				        		HumanSkeletonWithLegs hswl = (HumanSkeletonWithLegs) newSkeleton;
+				        		hswl.setSkeletonConfigBoolean("Extended knee model", false);
+				        	}
+				        }
+				    }
+				});
+				if(newSkeleton != null && newSkeleton instanceof HumanSkeletonWithLegs) {
+	        		HumanSkeletonWithLegs hswl = (HumanSkeletonWithLegs) newSkeleton;
+	        		setSelected(hswl.getSkeletonConfigBoolean("Extended knee model"));
+				}
+			}}, s(c(0, row, 1), 3, 1));
+			row++;
+			//*/
 			
 			add(new TimedResetButton("Reset All", "All"), s(c(1, row, 1), 3, 1));
 			row++;
