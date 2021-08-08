@@ -6,7 +6,6 @@ import com.jme3.math.FastMath;
 import com.jme3.math.Quaternion;
 import com.jme3.math.Vector3f;
 
-import io.eiren.math.FloatMath;
 import io.eiren.util.ann.VRServerThread;
 import io.eiren.vr.VRServer;
 import io.eiren.vr.trackers.Tracker;
@@ -22,8 +21,8 @@ public class HumanSkeletonWithLegs extends HumanSkeletonWithWaist {
 	protected final Quaternion hipBuf = new Quaternion();
 	protected final Quaternion kneeBuf = new Quaternion();
 	protected final Vector3f hipVector = new Vector3f();
-	protected final Vector3f kneeVector = new Vector3f();
-	protected final Quaternion ankleRotation = new Quaternion();
+	protected final Vector3f ankleVector = new Vector3f();
+	protected final Quaternion kneeRotation = new Quaternion();
 	
 	protected final Tracker leftLegTracker;
 	protected final Tracker leftAnkleTracker;
@@ -223,13 +222,6 @@ public class HumanSkeletonWithLegs extends HumanSkeletonWithWaist {
 	@Override
 	public void updateLocalTransforms() {
 		super.updateLocalTransforms();
-		if(extendedPelvisModel) {
-			// Waist
-			leftLegTracker.getRotation(hipBuf);
-			rightLegTracker.getRotation(kneeBuf);
-			kneeBuf.slerp(hipBuf, 0.5f);
-			waistNode.localTransform.setRotation(kneeBuf);
-		}
 		// Left Leg
 		leftLegTracker.getRotation(hipBuf);
 		leftAnkleTracker.getRotation(kneeBuf);
@@ -265,26 +257,35 @@ public class HumanSkeletonWithLegs extends HumanSkeletonWithWaist {
 			rightAnkleNode.localTransform.setRotation(kneeBuf);
 			rightFootNode.localTransform.setRotation(kneeBuf);
 		}
-		
-		// TODO Calculate waist node as some function between waist and hip rotations
+
+		if(extendedPelvisModel) {
+			// Average pelvis between two legs
+			leftHipNode.localTransform.getRotation(hipBuf);
+			rightHipNode.localTransform.getRotation(kneeBuf);
+			kneeBuf.slerp(hipBuf, 0.5f);
+			waistNode.localTransform.setRotation(kneeBuf);
+			// TODO : Use vectors to add like 50% of wasit tracker yaw to waist node to reduce drift and let user take weird poses
+		}
 	}
 	
 	// Knee basically has only 1 DoF (pitch), average yaw and roll between knee and hip
 	protected void calculateKneeLimits(Quaternion hipBuf, Quaternion kneeBuf, float hipConfidense, float kneeConfidense) {
-		kneeVector.set(0, 1, 0);
-		hipVector.set(0, 1, 0);
+		ankleVector.set(0, -1, 0);
+		hipVector.set(0, -1, 0);
 		hipBuf.multLocal(hipVector);
-		kneeBuf.multLocal(kneeVector);
-		float angle = hipVector.angleBetween(kneeVector);
-		if(FloatMath.equalsToZero(angle))
-			ankleRotation.loadIdentity();
-		else
-			ankleRotation.fromAngleAxis(angle, 1, 0, 0);
+		kneeBuf.multLocal(ankleVector);
+		kneeRotation.angleBetweenVectors(hipVector, ankleVector); // Find knee angle
 		
+		// Substract knee angle from knee rotation. With perfect leg and perfect
+		// sensors result should match hip rotation perfectly
+		kneeBuf.multLocal(kneeRotation.inverse());
+		
+		// Average knee and hip with a slerp
 		hipBuf.slerp(kneeBuf, 0.5f); // TODO : Use confidence to calculate changeAmt
 		kneeBuf.set(hipBuf);
-		//ankleRotation.mult(kneeBuf, kneeBuf);
-		kneeBuf.multLocal(ankleRotation);
+
+		// Return knee angle into knee rotation
+		kneeBuf.multLocal(kneeRotation);
 	}
 	
 	public static float normalizeRad(float angle) {
