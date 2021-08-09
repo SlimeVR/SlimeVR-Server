@@ -90,7 +90,7 @@ public class TrackersUDPServer extends Thread {
 			if(sb.length() == 0)
 				sb.append("owoTrack");
 			IMUTracker imu = new IMUTracker("udp:/" + handshakePacket.getAddress().toString(), this);
-			IMUReferenceAdjustedTracker<IMUTracker> adjustedTracker = new IMUReferenceAdjustedTracker<>(imu);
+			ReferenceAdjustedTracker<IMUTracker> adjustedTracker = new ReferenceAdjustedTracker<>(imu);
 			trackersConsumer.accept(adjustedTracker);
 			sensor = new TrackerConnection(imu, addr);
 			int i = 0;
@@ -109,7 +109,7 @@ public class TrackersUDPServer extends Thread {
 		System.out.println("[TrackerServer] Setting up auxilary sensor for " + connection.tracker.getName());
 		IMUTracker imu = new IMUTracker(connection.tracker.getName() + "/1", this);
 		connection.secondTracker = imu;
-		IMUReferenceAdjustedTracker<IMUTracker> adjustedTracker = new IMUReferenceAdjustedTracker<>(imu);
+		ReferenceAdjustedTracker<IMUTracker> adjustedTracker = new ReferenceAdjustedTracker<>(imu);
 		trackersConsumer.accept(adjustedTracker);
 		System.out.println("[TrackerServer] Sensor added with address " + imu.getName());
 	}
@@ -129,12 +129,13 @@ public class TrackersUDPServer extends Thread {
 					socket.receive(recieve);
 					bb.rewind();
 
-					TrackerConnection sensor;
+					TrackerConnection connection;
+					IMUTracker tracker = null;
 					synchronized(trackers) {
-						sensor = trackersMap.get(recieve.getSocketAddress());
+						connection = trackersMap.get(recieve.getSocketAddress());
 					}
-					if(sensor != null)
-						sensor.lastPacket = System.currentTimeMillis();
+					if(connection != null)
+						connection.lastPacket = System.currentTimeMillis();
 					int packetId;
 					switch(packetId = bb.getInt()) {
 					case 0:
@@ -144,90 +145,131 @@ public class TrackersUDPServer extends Thread {
 						break;
 					case 1: // PACKET_ROTATION
 					case 16: // PACKET_ROTATION_2
-						if(sensor == null)
+						if(connection == null)
 							break;
 						bb.getLong();
 						buf.set(bb.getFloat(), bb.getFloat(), bb.getFloat(), bb.getFloat());
 						offset.mult(buf, buf);
-						IMUTracker tracker;
 						if(packetId == 1) {
-							tracker = sensor.tracker;
+							tracker = connection.tracker;
 						} else {
-							tracker = sensor.secondTracker;
+							tracker = connection.secondTracker;
 						}
 						if(tracker == null)
 							break;
 						tracker.rotQuaternion.set(buf);
 						tracker.dataTick();
 						break;
+					case 17: // PACKET_ROTATION_DATA
+						bb.getLong();
+						int sensorId = bb.get() & 0xFF;
+						if(sensorId == 0) {
+							tracker = connection.tracker;
+						} else if(sensorId == 1) {
+							tracker = connection.secondTracker;
+						}
+						if(tracker == null)
+							break;
+						
+						int dataType = bb.get() & 0xFF;
+						buf.set(bb.getFloat(), bb.getFloat(), bb.getFloat(), bb.getFloat());
+						offset.mult(buf, buf);
+						int calibrationInfo = bb.get() & 0xFF;
+						
+						switch(dataType) {
+						case 1: // DATA_TYPE_NORMAL
+							tracker.rotQuaternion.set(buf);
+							tracker.calibrationStatus = calibrationInfo;
+							tracker.dataTick();
+							break;
+						case 2: // DATA_TYPE_CORRECTION
+							tracker.rotMagQuaternion.set(buf);
+							tracker.dataTick();
+							break;
+						}
+						break;
+					case 18: // PACKET_MAGENTOMETER_ACCURACY
+						bb.getLong();
+						sensorId = bb.get() & 0xFF;
+						if(sensorId == 0) {
+							tracker = connection.tracker;
+						} else if(sensorId == 1) {
+							tracker = connection.secondTracker;
+						}
+						if(tracker == null)
+							break;
+						float accuracyInfo = bb.getFloat();
+						tracker.magnetometerAccuracy = accuracyInfo;
+						// TODO
+						break;
 					case 2:
-						if(sensor == null)
+						if(connection == null)
 							break;
 						bb.getLong();
-						sensor.tracker.gyroVector.set(bb.getFloat(), bb.getFloat(), bb.getFloat());
+						connection.tracker.gyroVector.set(bb.getFloat(), bb.getFloat(), bb.getFloat());
 						break;
 					case 4:
-						if(sensor == null)
+						if(connection == null)
 							break;
 						bb.getLong();
 						float x = bb.getFloat();
 						float z = bb.getFloat();
 						float y = bb.getFloat();
-						sensor.tracker.accelVector.set(x, y, z);
+						connection.tracker.accelVector.set(x, y, z);
 						break;
 					case 5:
-						if(sensor == null)
+						if(connection == null)
 							break;
 						bb.getLong();
 						x = bb.getFloat();
 						z = bb.getFloat();
 						y = bb.getFloat();
-						sensor.tracker.magVector.set(x, y, z);
+						connection.tracker.magVector.set(x, y, z);
 						break;
 					case 6: // PACKET_RAW_CALIBRATION_DATA
-						if(sensor == null)
+						if(connection == null)
 							break;
 						bb.getLong();
 						//sensor.rawCalibrationData.add(new double[] {bb.getInt(), bb.getInt(), bb.getInt(), bb.getInt(), bb.getInt(), bb.getInt()});
 						break;
 					case 7: // PACKET_GYRO_CALIBRATION_DATA
-						if(sensor == null)
+						if(connection == null)
 							break;
 						bb.getLong();
 						//sensor.gyroCalibrationData = new double[] {bb.getFloat(), bb.getFloat(), bb.getFloat()};
 						break;
 					case 8: // PACKET_CONFIG
-						if(sensor == null)
+						if(connection == null)
 							break;
 						bb.getLong();
 						MPUTracker.ConfigurationData data = new MPUTracker.ConfigurationData(bb);
-						Consumer<String> dataConsumer = calibrationDataRequests.remove(sensor.tracker);
+						Consumer<String> dataConsumer = calibrationDataRequests.remove(connection.tracker);
 						if(dataConsumer != null) {
 							dataConsumer.accept(data.toTextMatrix());
 						}
 						break;
 					case 9: // PACKET_RAW_MAGENTOMETER
-						if(sensor == null)
+						if(connection == null)
 							break;
 						bb.getLong();
 						float mx = bb.getFloat();
 						float my = bb.getFloat();
 						float mz = bb.getFloat();
-						sensor.tracker.confidence = (float) Math.sqrt(mx * mx + my * my + mz * mz);
+						connection.tracker.confidence = (float) Math.sqrt(mx * mx + my * my + mz * mz);
 						break;
 					case 10: // PACKET_PING_PONG:
-						if(sensor == null)
+						if(connection == null)
 							break;
 						int pingId = bb.getInt();
-						if(sensor.lastPingPacketId == pingId) {
-							tracker = sensor.tracker;
-							tracker.ping = (int) (System.currentTimeMillis() - sensor.lastPingPacketTime) / 2;
+						if(connection.lastPingPacketId == pingId) {
+							tracker = connection.tracker;
+							tracker.ping = (int) (System.currentTimeMillis() - connection.lastPingPacketTime) / 2;
 						}
 						break;
 					case 11: // PACKET_SERIAL
-						if(sensor == null)
+						if(connection == null)
 							break;
-						tracker = sensor.tracker;
+						tracker = connection.tracker;
 						bb.getLong();
 						int length = bb.getInt();
 						for(int i = 0; i < length; ++i) {
@@ -243,16 +285,16 @@ public class TrackersUDPServer extends Thread {
 						}
 						break;
 					case 12: // PACKET_BATTERY_VOLTAGE
-						if(sensor == null)
+						if(connection == null)
 							break;
-						tracker = sensor.tracker;
+						tracker = connection.tracker;
 						bb.getLong();
 						tracker.setBatteryVoltage(bb.getFloat());
 						break;
 					case 13: // PACKET_TAP
-						if(sensor == null)
+						if(connection == null)
 							break;
-						tracker = sensor.tracker;
+						tracker = connection.tracker;
 						bb.getLong();
 						byte tap = bb.get();
 						System.out.println("[TrackerServer] Tap packet received from " + tracker.getName() + ": b" + Integer.toBinaryString(tap));
@@ -261,26 +303,26 @@ public class TrackersUDPServer extends Thread {
 						bb.getLong();
 						byte reason = bb.get();
 						System.out.println("[TrackerServer] Reset recieved from " + recieve.getSocketAddress() + ": " + reason);
-						if(sensor == null)
+						if(connection == null)
 							break;
-						tracker = sensor.tracker;
+						tracker = connection.tracker;
 						tracker.setStatus(TrackerStatus.ERROR);
 						break;
 					case 15: // PACKET_SENSOR_INFO
-						if(sensor == null)
+						if(connection == null)
 							break;
 						bb.getLong();
-						int sensorId = bb.get() & 0xFF;
+						sensorId = bb.get() & 0xFF;
 						int sensorStatus = bb.get() & 0xFF;
-						if(sensorId == 1 && sensorStatus == 1 && sensor.secondTracker == null) {
-							setUpAuxialrySensor(sensor);
+						if(sensorId == 1 && sensorStatus == 1 && connection.secondTracker == null) {
+							setUpAuxialrySensor(connection);
 						}
 						bb.rewind();
 						bb.putInt(15);
 						bb.put((byte) sensorId);
 						bb.put((byte) sensorStatus);
-						socket.send(new DatagramPacket(rcvBuffer, bb.position(), sensor.address));
-						System.out.println("[TrackerServer] Sensor info for " + sensor.tracker.getName() + "/" + sensorId + ": " + sensorStatus);
+						socket.send(new DatagramPacket(rcvBuffer, bb.position(), connection.address));
+						System.out.println("[TrackerServer] Sensor info for " + connection.tracker.getName() + "/" + sensorId + ": " + sensorStatus);
 						break;
 					default:
 						System.out.println("[TrackerServer] Unknown data received: " + packetId + " from " + recieve.getSocketAddress());

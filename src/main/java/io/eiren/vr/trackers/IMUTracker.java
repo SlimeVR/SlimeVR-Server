@@ -13,6 +13,7 @@ public class IMUTracker implements Tracker, TrackerWithTPS, TrackerWithBattery {
 	public final Vector3f accelVector = new Vector3f();
 	public final Vector3f magVector = new Vector3f();
 	public final Quaternion rotQuaternion = new Quaternion();
+	public final Quaternion rotMagQuaternion = new Quaternion();
 	protected final Quaternion rotAdjust = new Quaternion();
 	protected TrackerMountingRotation mounting = null;
 	protected TrackerStatus status = TrackerStatus.OK;
@@ -21,6 +22,8 @@ public class IMUTracker implements Tracker, TrackerWithTPS, TrackerWithBattery {
 	protected final TrackersUDPServer server;
 	protected float confidence = 0;
 	protected float batteryVoltage = 0;
+	public int calibrationStatus = 0;
+	public float magnetometerAccuracy = 0;
 	
 	protected BufferedTimer timer = new BufferedTimer(1f);
 	public int ping = -1;
