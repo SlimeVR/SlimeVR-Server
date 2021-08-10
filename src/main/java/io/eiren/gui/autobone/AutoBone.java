@@ -87,6 +87,10 @@ public class AutoBone {
 		frameRecordingCursor = frames.length;
 	}
 
+	public boolean isRecording() {
+		return frameRecordingCursor >= 0 && frameRecordingCursor < frames.length;
+	}
+
 	public void processFrames() {
 		int cursorOffset = 1;
 		float adjustRate = 0.5f;
@@ -102,6 +106,10 @@ public class AutoBone {
 			do {
 				PoseFrame frame1 = frames[frameCursor1];
 				PoseFrame frame2 = frames[frameCursor2];
+
+				if (frame1 == null || frame2 == null) {
+					continue;
+				}
 
 				setSkeletonLengths(skeleton1);
 				setSkeletonLengths(skeleton2);

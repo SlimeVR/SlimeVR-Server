@@ -5,6 +5,7 @@ import java.awt.event.ItemListener;
 import java.awt.event.MouseEvent;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Map.Entry;
 
 import javax.swing.JButton;
 import javax.swing.JCheckBox;
@@ -20,12 +21,12 @@ import io.eiren.vr.processor.HumanSkeleton;
 import io.eiren.util.logging.LogManager;
 
 public class SkeletonConfig extends EJBag {
-	
+
 	private final VRServer server;
 	private final VRServerGUI gui;
 	private final AutoBone autoBone;
 	private Map<String, SkeletonLabel> labels = new HashMap<>();
-	
+
 	public SkeletonConfig(VRServer server, VRServerGUI gui) {
 		super();
 		this.server = server;
@@ -36,12 +37,12 @@ public class SkeletonConfig extends EJBag {
 		server.humanPoseProcessor.addSkeletonUpdatedCallback(this::skeletonUpdated);
 		skeletonUpdated(null);
 	}
-	
+
 	@ThreadSafe
 	public void skeletonUpdated(HumanSkeleton newSkeleton) {
 		java.awt.EventQueue.invokeLater(() -> {
 			removeAll();
-			
+
 			int row = 0;
 
 			add(new JCheckBox("Extended pelvis model") {{
@@ -67,7 +68,7 @@ public class SkeletonConfig extends EJBag {
 				}
 			}}, s(c(0, row, 1), 3, 1));
 			row++;
-			
+
 			/*
 			add(new JCheckBox("Extended knee model") {{
 				addItemListener(new ItemListener() {
@@ -93,28 +94,65 @@ public class SkeletonConfig extends EJBag {
 			}}, s(c(0, row, 1), 3, 1));
 			row++;
 			//*/
-			
+
 			add(new TimedResetButton("Reset All", "All"), s(c(1, row, 1), 3, 1));
 			add(new JButton("Auto") {{
 				addMouseListener(new MouseInputAdapter() {
 					@Override
 					public void mouseClicked(MouseEvent e) {
-						LogManager.log.info("[AutoBone] Recording 250 samples at a 6 frame interval");
-						autoBone.startFrameRecording(250, 6);
-						LogManager.log.info("[AutoBone] Done recording! Processing frames...");
-						autoBone.processFrames();
+						Thread thread = new Thread() {
+							@Override
+							public void run() {
+								try {
+									setText("Wait");
+									LogManager.log.info("[AutoBone] Recording 250 samples at a 6 frame interval");
+									autoBone.startFrameRecording(250, 6);
+
+									while (autoBone.isRecording()) {
+										Thread.sleep(10);
+									}
+
+									LogManager.log.info("[AutoBone] Done recording! Processing frames...");
+									autoBone.processFrames();
+									LogManager.log.info("[AutoBone] Done processing!");
+
+									boolean first = true;
+									StringBuilder configInfo = new StringBuilder("[");
+
+									for (Entry<String, Float> entry : autoBone.configs.entrySet()) {
+										if (!first) {
+											configInfo.append(", ");
+										} else {
+											first = false;
+										}
+
+										configInfo.append("{" + entry.getKey() + ": " + StringUtils.prettyNumber(entry.getValue()) + "}");
+									}
+
+									configInfo.append(']');
+
+									LogManager.log.info("[AutoBone] Length values: " + configInfo.toString());
+								} catch (Exception e1) {
+									LogManager.log.severe("[AutoBone] Failed adjustment!", e1);
+								} finally {
+									setText("Auto");
+								}
+							}
+						};
+
+						thread.start();
 					}
 				});
 			}}, s(c(4, row, 1), 3, 1));
 			row++;
-			
+
 			add(new JLabel("Chest"), c(0, row, 1));
 			add(new AdjButton("+", "Chest", 0.01f), c(1, row, 1));
 			add(new SkeletonLabel("Chest"), c(2, row, 1));
 			add(new AdjButton("-", "Chest", -0.01f), c(3, row, 1));
 			add(new ResetButton("Reset", "Chest"), c(4, row, 1));
 			row++;
-			
+
 			add(new JLabel("Waist"), c(0, row, 1));
 			add(new AdjButton("+", "Waist", 0.01f), c(1, row, 1));
 			add(new SkeletonLabel("Waist"), c(2, row, 1));
@@ -163,14 +201,14 @@ public class SkeletonConfig extends EJBag {
 			add(new AdjButton("-", "Neck", -0.01f), c(3, row, 1));
 			add(new ResetButton("Reset", "Neck"), c(4, row, 1));
 			row++;
-			
+
 			add(new JLabel("Virtual waist"), c(0, row, 1));
 			add(new AdjButton("+", "Virtual waist", 0.01f), c(1, row, 1));
 			add(new SkeletonLabel("Virtual waist"), c(2, row, 1));
 			add(new AdjButton("-", "Virtual waist", -0.01f), c(3, row, 1));
 			add(new ResetButton("Reset", "Virtual waist"), c(4, row, 1));
 			row++;
-			
+
 			gui.refresh();
 		});
 	}
@@ -183,14 +221,14 @@ public class SkeletonConfig extends EJBag {
 			});
 		});
 	}
-	
+
 	private void change(String joint, float diff) {
 		float current = server.humanPoseProcessor.getSkeletonConfig(joint);
 		server.humanPoseProcessor.setSkeletonConfig(joint, current + diff);
 		server.saveConfig();
 		labels.get(joint).setText(StringUtils.prettyNumber((current + diff) * 100, 0));
 	}
-	
+
 	private void reset(String joint) {
 		server.humanPoseProcessor.resetSkeletonConfig(joint);
 		server.saveConfig();
@@ -204,17 +242,17 @@ public class SkeletonConfig extends EJBag {
 			});
 		}
 	}
-	
+
 	private class SkeletonLabel extends JLabel {
-		
+
 		public SkeletonLabel(String joint) {
 			super(StringUtils.prettyNumber(server.humanPoseProcessor.getSkeletonConfig(joint) * 100, 0));
 			labels.put(joint, this);
 		}
 	}
-	
+
 	private class AdjButton extends JButton {
-		
+
 		public AdjButton(String text, String joint, float diff) {
 			super(text);
 			addMouseListener(new MouseInputAdapter() {
@@ -225,9 +263,9 @@ public class SkeletonConfig extends EJBag {
 			});
 		}
 	}
-	
+
 	private class ResetButton extends JButton {
-		
+
 		public ResetButton(String text, String joint) {
 			super(text);
 			addMouseListener(new MouseInputAdapter() {
@@ -238,9 +276,9 @@ public class SkeletonConfig extends EJBag {
 			});
 		}
 	}
-	
+
 	private class TimedResetButton extends JButton {
-		
+
 		public TimedResetButton(String text, String joint) {
 			super(text);
 			addMouseListener(new MouseInputAdapter() {
