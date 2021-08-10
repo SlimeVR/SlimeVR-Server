@@ -65,12 +65,16 @@ public class TrackersUDPServer extends Thread {
 			int boardType = -1;
 			int imuType = -1;
 			int firmwareBuild = -1;
-			StringBuilder sb = new StringBuilder();
+			StringBuilder firmware = new StringBuilder();
+			byte[] mac = new byte[6];
+			String macString = null;
 			if(data.remaining() > 0) {
 				if(data.remaining() > 3)
 					boardType = data.getInt();
 				if(data.remaining() > 3)
 					imuType = data.getInt();
+				if(data.remaining() > 3)
+					data.getInt(); // MCU TYPE
 				if(data.remaining() > 11) {
 					data.getInt(); // IMU info
 					data.getInt();
@@ -78,17 +82,23 @@ public class TrackersUDPServer extends Thread {
 				}
 				if(data.remaining() > 3)
 					firmwareBuild = data.getInt();
-				while(true) {
-					if(data.remaining() == 0)
-						break;
+				int length = 0;
+				if(data.remaining() > 0)
+					length = data.get() & 0xFF; // firmware version length is 1 longer than that because it's nul-terminated
+				while(length > 0 && data.remaining() != 0) {
 					char c = (char) data.get();
 					if(c == 0)
 						break;
-					sb.append(c);
+					firmware.append(c);
+					length--;
+				}
+				if(data.remaining() > mac.length) {
+					data.get(mac);
+					macString = String.format("%02X:%02X:%02X:%02X:%02X:%02X", mac[0], mac[1], mac[2], mac[3], mac[4], mac[5]);
 				}
 			}
-			if(sb.length() == 0)
-				sb.append("owoTrack");
+			if(firmware.length() == 0)
+				firmware.append("owoTrack");
 			IMUTracker imu = new IMUTracker("udp:/" + handshakePacket.getAddress().toString(), this);
 			ReferenceAdjustedTracker<IMUTracker> adjustedTracker = new ReferenceAdjustedTracker<>(imu);
 			trackersConsumer.accept(adjustedTracker);
@@ -99,7 +109,7 @@ public class TrackersUDPServer extends Thread {
 				trackers.add(sensor);
 				trackersMap.put(addr, sensor);
 			}
-			System.out.println("[TrackerServer] Sensor " + i + " added with address " + addr + ". Board type: " + boardType + ", imu type: " + imuType + ", firmware: " + sb + " (" + firmwareBuild + ")");
+			System.out.println("[TrackerServer] Sensor " + i + " added with address " + addr + ". Board type: " + boardType + ", imu type: " + imuType + ", firmware: " + firmware + " (" + firmwareBuild + "), mac: " + macString);
 		}
 		sensor.tracker.setStatus(TrackerStatus.OK);
         socket.send(new DatagramPacket(HANDSHAKE_BUFFER, HANDSHAKE_BUFFER.length, handshakePacket.getAddress(), handshakePacket.getPort()));
