@@ -1,5 +1,8 @@
 package io.eiren.gui.autobone;
 
+import java.util.HashMap;
+import java.util.Map.Entry;
+
 import io.eiren.util.ann.ThreadSafe;
 import io.eiren.vr.VRServer;
 import io.eiren.vr.processor.HumanSkeleton;
@@ -16,35 +19,16 @@ public class AutoBone {
 	protected final SimpleSkeleton skeleton1;
 	protected final SimpleSkeleton skeleton2;
 
-	// Waist
-	protected float chestDistance = 0.42f;
-	/**
-	 * Distance from eyes to waist
-	 */
-	protected float waistDistance = 0.85f;
-	/**
-	 * Distance from eyes to the base of the neck
-	 */
-	protected float neckLength = HumanSkeletonWithWaist.NECK_LENGTH_DEFAULT;
-	/**
-	 * Distance from eyes to ear
-	 */
-	protected float headShift = HumanSkeletonWithWaist.HEAD_SHIFT_DEFAULT;
-
-	// Legs
-	/**
-	 * Distance between centers of both hips
-	 */
-	protected float hipsWidth = HumanSkeletonWithLegs.HIPS_WIDTH_DEFAULT;
-	/**
-	 * Length from waist to knees
-	 */
-	protected float kneeHeight = 0.42f;
-	/**
-	 * Distance from waist to ankle
-	 */
-	protected float legsLength = 0.84f;
-	protected float footLength = HumanSkeletonWithLegs.FOOT_LENGTH_DEFAULT;
+	public final HashMap<String, Float> configs = new HashMap<String, Float>() {{
+		put("Head", HumanSkeletonWithWaist.HEAD_SHIFT_DEFAULT);
+		put("Neck", HumanSkeletonWithWaist.NECK_LENGTH_DEFAULT);
+		put("Waist", 0.85f);
+		put("Chest", 0.42f);
+		put("Hips width", HumanSkeletonWithLegs.HIPS_WIDTH_DEFAULT);
+		put("Knee height", 0.42f);
+		put("Legs length", 0.84f);
+		put("Foot length", HumanSkeletonWithLegs.FOOT_LENGTH_DEFAULT);
+	}};
 
 	public AutoBone(VRServer server) {
 		this.server = server;
@@ -59,27 +43,22 @@ public class AutoBone {
 
 	public void reloadConfigValues() {
 		// Load waist configs
-		headShift = server.config.getFloat("body.headShift", HumanSkeletonWithWaist.HEAD_SHIFT_DEFAULT);
-		neckLength = server.config.getFloat("body.neckLength", HumanSkeletonWithWaist.NECK_LENGTH_DEFAULT);
-		chestDistance = server.config.getFloat("body.chestDistance", 0.42f);
-		waistDistance = server.config.getFloat("body.waistDistance", 0.85f);
+		configs.put("Head", server.config.getFloat("body.headShift", HumanSkeletonWithWaist.HEAD_SHIFT_DEFAULT));
+		configs.put("Neck", server.config.getFloat("body.neckLength", HumanSkeletonWithWaist.NECK_LENGTH_DEFAULT));
+		configs.put("Waist", server.config.getFloat("body.waistDistance", 0.85f));
+		configs.put("Chest", server.config.getFloat("body.chestDistance", 0.42f));
 
 		// Load leg configs
-		hipsWidth = server.config.getFloat("body.hipsWidth", HumanSkeletonWithLegs.HIPS_WIDTH_DEFAULT);
-		kneeHeight = server.config.getFloat("body.kneeHeight", 0.42f);
-		legsLength = server.config.getFloat("body.legsLength", 0.84f);
-		footLength = server.config.getFloat("body.footLength", HumanSkeletonWithLegs.FOOT_LENGTH_DEFAULT);
+		configs.put("Hips width", server.config.getFloat("body.hipsWidth", HumanSkeletonWithLegs.HIPS_WIDTH_DEFAULT));
+		configs.put("Knee height", server.config.getFloat("body.kneeHeight", 0.42f));
+		configs.put("Legs length", server.config.getFloat("body.legsLength", 0.84f));
+		configs.put("Foot length", server.config.getFloat("body.footLength", HumanSkeletonWithLegs.FOOT_LENGTH_DEFAULT));
 	}
 
 	public void setSkeletonLengths(SimpleSkeleton skeleton) {
-		skeleton.setSkeletonConfig("Head", headShift);
-		skeleton.setSkeletonConfig("Neck", neckLength);
-		skeleton.setSkeletonConfig("Waist", waistDistance);
-		skeleton.setSkeletonConfig("Chest", chestDistance);
-		skeleton.setSkeletonConfig("Hips width", hipsWidth);
-		skeleton.setSkeletonConfig("Knee height", kneeHeight);
-		skeleton.setSkeletonConfig("Legs length", legsLength);
-		skeleton.setSkeletonConfig("Foot length", footLength);
+		for (Entry<String, Float> entry : configs.entrySet()) {
+			skeleton.setSkeletonConfig(entry.getKey(), entry.getValue());
+		}
 	}
 
 	@ThreadSafe
@@ -103,6 +82,7 @@ public class AutoBone {
 
 	public void processFrames() {
 		int cursorOffset = 1;
+		float adjustRate = 0.5f;
 
 		for (;;) {
 			// Detect end of iteration
@@ -116,9 +96,61 @@ public class AutoBone {
 				PoseFrame frame1 = frames[frameCursor1];
 				PoseFrame frame2 = frames[frameCursor2];
 
+				setSkeletonLengths(skeleton1);
+				setSkeletonLengths(skeleton2);
+
 				skeleton1.setPoseFromFrame(frame1);
 				skeleton2.setPoseFromFrame(frame2);
+
+				skeleton1.updatePose();
+				skeleton2.updatePose();
+
+				float error = getFootError(skeleton1, skeleton2);
+				float adjustVal = error * adjustRate;
+
+				for (Entry<String, Float> entry : configs.entrySet()) {
+					float newLength = entry.getValue() + adjustVal;
+					updateSekeletonBoneLength(entry.getKey(), newLength);
+					float newError = getFootError(skeleton1, skeleton2);
+
+					if (newError >= error) {
+						newLength = entry.getValue() - adjustVal;
+						updateSekeletonBoneLength(entry.getKey(), newLength);
+						newError = getFootError(skeleton1, skeleton2);
+
+						if (newError >= error) {
+							// Reset value and continue without getting new error values
+							updateSekeletonBoneLength(entry.getKey(), entry.getValue());
+							continue;
+						} else {
+							configs.put(entry.getKey(), newLength);
+						}
+					} else {
+						configs.put(entry.getKey(), newLength);
+					}
+
+					// Update values with the new length
+					error = getFootError(skeleton1, skeleton2);
+					adjustVal = error * adjustRate;
+				}
 			} while (++frameCursor1 < frames.length && ++frameCursor2 < frames.length);
 		}
+	}
+
+	protected static float getFootError(SimpleSkeleton skeleton1, SimpleSkeleton skeleton2) {
+		float distLeft = skeleton1.getLeftFootPos().distance(skeleton2.getLeftFootPos());
+		float distRight = skeleton1.getRightFootPos().distance(skeleton2.getRightFootPos());
+
+		float avg = (distLeft + distRight) / 2f;
+
+		return avg * avg;
+	}
+
+	protected void updateSekeletonBoneLength(String joint, float newLength) {
+		skeleton1.setSkeletonConfig(joint, newLength);
+		skeleton2.setSkeletonConfig(joint, newLength);
+
+		skeleton1.updatePose();
+		skeleton2.updatePose();
 	}
 }
