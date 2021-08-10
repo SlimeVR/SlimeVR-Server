@@ -1,5 +1,7 @@
 package io.eiren.gui.autobone;
 
+import java.util.HashMap;
+
 import io.eiren.vr.VRServer;
 import io.eiren.vr.processor.HumanSkeletonWithLegs;
 import io.eiren.vr.processor.HumanSkeletonWithWaist;
@@ -54,6 +56,8 @@ public class SimpleSkeleton {
 	protected float legsLength = 0.84f;
 	protected float footLength = HumanSkeletonWithLegs.FOOT_LENGTH_DEFAULT;
 
+	HashMap<String, TransformNode> nodes = new HashMap<String,TransformNode>();
+
 	public SimpleSkeleton(VRServer server) {
 		this.server = server;
 
@@ -106,6 +110,22 @@ public class SimpleSkeleton {
 
 		rightAnkleNode.attachChild(rightFootNode);
 		rightFootNode.localTransform.setTranslation(0, 0, -footLength);
+
+		// Set up a HashMap to get nodes by name easily
+		hmdNode.depthFirstTraversal(visitor -> {
+			nodes.put(visitor.getName(), visitor);
+		});
+	}
+
+	public void poseFromSkeleton(HumanSkeletonWithLegs humanSkeleton) {
+		humanSkeleton.getRootNode().depthFirstTraversal(visitor -> {
+			TransformNode targetNode = nodes.get(visitor.getName());
+
+			// Handle unexpected nodes gracefully
+			if (targetNode != null) {
+				targetNode.localTransform.setRotation(visitor.localTransform.getRotation());
+			}
+		});
 	}
 
 	public void setSkeletonConfig(String joint, float newLength) {
