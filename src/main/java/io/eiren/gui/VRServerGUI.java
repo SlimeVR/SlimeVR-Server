@@ -135,7 +135,7 @@ public class VRServerGUI extends JFrame {
 				trackersSelect.addItem("Waist + Feet + Chest");
 				trackersSelect.addItem("Waist + Feet + Knees");
 				trackersSelect.addItem("Waist + Feet + Chest + Knees");
-				switch(server.config.getInt("vitrualtrackers", 3)) {
+				switch(server.config.getInt("virtualtrackers", 3)) {
 				case 1:
 					trackersSelect.setSelectedIndex(0);
 					break;
@@ -157,19 +157,19 @@ public class VRServerGUI extends JFrame {
 					public void actionPerformed(ActionEvent e) {
 						switch(trackersSelect.getSelectedIndex()) {
 						case 0:
-							server.config.setProperty("vitrualtrackers", 1);
+							server.config.setProperty("virtualtrackers", 1);
 							break;
 						case 1:
-							server.config.setProperty("vitrualtrackers", 3);
+							server.config.setProperty("virtualtrackers", 3);
 							break;
 						case 2:
-							server.config.setProperty("vitrualtrackers", 4);
+							server.config.setProperty("virtualtrackers", 4);
 							break;
 						case 3:
-							server.config.setProperty("vitrualtrackers", 5);
+							server.config.setProperty("virtualtrackers", 5);
 							break;
 						case 4:
-							server.config.setProperty("vitrualtrackers", 6);
+							server.config.setProperty("virtualtrackers", 6);
 							break;
 						}
 						server.saveConfig();
