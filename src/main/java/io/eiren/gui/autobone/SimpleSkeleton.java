@@ -1,6 +1,10 @@
 package io.eiren.gui.autobone;
 
 import java.util.HashMap;
+import java.util.Map.Entry;
+
+import com.jme3.math.Quaternion;
+import com.jme3.math.Vector3f;
 
 import io.eiren.vr.VRServer;
 import io.eiren.vr.processor.HumanSkeletonWithLegs;
@@ -24,7 +28,7 @@ public class SimpleSkeleton {
 	 */
 	protected float waistDistance = 0.85f;
 	/**
-	 * Distacne from eyes to the base of the neck
+	 * Distance from eyes to the base of the neck
 	 */
 	protected float neckLength = HumanSkeletonWithWaist.NECK_LENGTH_DEFAULT;
 	/**
@@ -56,7 +60,7 @@ public class SimpleSkeleton {
 	protected float legsLength = 0.84f;
 	protected float footLength = HumanSkeletonWithLegs.FOOT_LENGTH_DEFAULT;
 
-	HashMap<String, TransformNode> nodes = new HashMap<String,TransformNode>();
+	protected final HashMap<String, TransformNode> nodes = new HashMap<String,TransformNode>();
 
 	public SimpleSkeleton(VRServer server) {
 		this.server = server;
@@ -117,8 +121,14 @@ public class SimpleSkeleton {
 		});
 	}
 
-	public void poseFromSkeleton(HumanSkeletonWithLegs humanSkeleton) {
-		humanSkeleton.getRootNode().depthFirstTraversal(visitor -> {
+	public void setPoseFromSkeleton(HumanSkeletonWithLegs humanSkeleton) {
+		TransformNode rootNode = humanSkeleton.getRootNode();
+
+		// Copy headset position
+		hmdNode.localTransform.setTranslation(rootNode.localTransform.getTranslation());
+
+		// Copy all rotations
+		rootNode.depthFirstTraversal(visitor -> {
 			TransformNode targetNode = nodes.get(visitor.getName());
 
 			// Handle unexpected nodes gracefully
@@ -126,6 +136,21 @@ public class SimpleSkeleton {
 				targetNode.localTransform.setRotation(visitor.localTransform.getRotation());
 			}
 		});
+	}
+
+	public void setPoseFromFrame(PoseFrame frame) {
+		// Copy headset position
+		hmdNode.localTransform.setTranslation(frame.rootPos);
+
+		// Copy all rotations
+		for (Entry<String, Quaternion> rotation : frame.rotations.entrySet()) {
+			TransformNode targetNode = nodes.get(rotation.getKey());
+
+			// Handle unexpected nodes gracefully
+			if (targetNode != null) {
+				targetNode.localTransform.setRotation(rotation.getValue());
+			}
+		}
 	}
 
 	public void setSkeletonConfig(String joint, float newLength) {
@@ -170,6 +195,18 @@ public class SimpleSkeleton {
 			rightFootNode.localTransform.setTranslation(0, 0, -footLength);
 			break;
 		}
+	}
+
+	public void updatePose() {
+		hmdNode.update();
+	}
+
+	public Vector3f getLeftFootPos() {
+		return leftAnkleNode.worldTransform.getTranslation();
+	}
+
+	public Vector3f getRightFootPos() {
+		return rightAnkleNode.worldTransform.getTranslation();
 	}
 
 	public void saveConfigs() {
