@@ -15,6 +15,8 @@ public class AutoBone {
 
 	protected PoseFrame[] frames = new PoseFrame[0];
 	protected int frameRecordingCursor = -1;
+	protected int frameRecordingInterval = 1;
+	protected int frameIntervalCounter = 0;
 
 	protected final SimpleSkeleton skeleton1;
 	protected final SimpleSkeleton skeleton2;
@@ -63,15 +65,18 @@ public class AutoBone {
 
 	@ThreadSafe
 	public void skeletonUpdated(HumanSkeleton newSkeleton) {
-		if (frameRecordingCursor >= 0 && frameRecordingCursor < frames.length && newSkeleton instanceof HumanSkeletonWithLegs) {
+		if (frameRecordingCursor >= 0 && frameRecordingCursor < frames.length && newSkeleton instanceof HumanSkeletonWithLegs && frameIntervalCounter++ % frameRecordingInterval == 0) {
+			frameIntervalCounter = 0;
+
 			HumanSkeletonWithLegs newLegSkeleton = (HumanSkeletonWithLegs)newSkeleton;
 			PoseFrame frame = new PoseFrame(newLegSkeleton);
 			frames[frameRecordingCursor++] = frame;
 		}
 	}
 
-	public void startFrameRecording(int numFrames) {
+	public void startFrameRecording(int numFrames, int interval) {
 		frames = new PoseFrame[numFrames];
+		frameRecordingInterval = interval;
 		frameRecordingCursor = 0;
 	}
 
