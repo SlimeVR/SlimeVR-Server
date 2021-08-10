@@ -104,7 +104,7 @@ public class IMUTracker implements Tracker, TrackerWithTPS, TrackerWithBattery {
 	@Override
 	public boolean getRotation(Quaternion store) {
 		store.set(rotQuaternion);
-		correction.mult(store, store);
+		//correction.mult(store, store); // Correction is not used now to preven accidental errors while debugging other things
 		store.multLocal(rotAdjust);
 		return true;
 	}
