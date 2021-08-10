@@ -107,4 +107,62 @@ public class SimpleSkeleton {
 		rightAnkleNode.attachChild(rightFootNode);
 		rightFootNode.localTransform.setTranslation(0, 0, -footLength);
 	}
+
+	public void setSkeletonConfig(String joint, float newLength) {
+		switch(joint) {
+		case "Head":
+			headShift = newLength;
+			headNode.localTransform.setTranslation(0, 0, headShift);
+			break;
+		case "Neck":
+			neckLength = newLength;
+			neckNode.localTransform.setTranslation(0, -neckLength, 0);
+			break;
+		case "Waist":
+			waistDistance = newLength;
+			waistNode.localTransform.setTranslation(0, -(waistDistance - chestDistance), 0);
+			break;
+		case "Chest":
+			chestDistance = newLength;
+			chestNode.localTransform.setTranslation(0, -chestDistance, 0);
+			waistNode.localTransform.setTranslation(0, -(waistDistance - chestDistance), 0);
+			break;
+		case "Hips width":
+			hipsWidth = newLength;
+			leftHipNode.localTransform.setTranslation(-hipsWidth / 2, 0, 0);
+			rightHipNode.localTransform.setTranslation(hipsWidth / 2, 0, 0);
+			break;
+		case "Knee height":
+			kneeHeight = newLength;
+			leftAnkleNode.localTransform.setTranslation(0, -kneeHeight, 0);
+			rightAnkleNode.localTransform.setTranslation(0, -kneeHeight, 0);
+			leftKneeNode.localTransform.setTranslation(0, -(legsLength - kneeHeight), 0);
+			rightKneeNode.localTransform.setTranslation(0, -(legsLength - kneeHeight), 0);
+			break;
+		case "Legs length":
+			legsLength = newLength;
+			leftKneeNode.localTransform.setTranslation(0, -(legsLength - kneeHeight), 0);
+			rightKneeNode.localTransform.setTranslation(0, -(legsLength - kneeHeight), 0);
+			break;
+		case "Foot length":
+			footLength = newLength;
+			leftFootNode.localTransform.setTranslation(0, 0, -footLength);
+			rightFootNode.localTransform.setTranslation(0, 0, -footLength);
+			break;
+		}
+	}
+
+	public void saveConfigs() {
+		// Save waist configs
+		server.config.setProperty("body.headShift", headShift);
+		server.config.setProperty("body.neckLength", neckLength);
+		server.config.setProperty("body.waistDistance", waistDistance);
+		server.config.setProperty("body.chestDistance", chestDistance);
+
+		// Save leg configs
+		server.config.setProperty("body.hipsWidth", hipsWidth);
+		server.config.setProperty("body.kneeHeight", kneeHeight);
+		server.config.setProperty("body.legsLength", legsLength);
+		server.config.setProperty("body.footLength", footLength);
+	}
 }
