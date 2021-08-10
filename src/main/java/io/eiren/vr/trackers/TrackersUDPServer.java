@@ -184,6 +184,7 @@ public class TrackersUDPServer extends Thread {
 							break;
 						case 2: // DATA_TYPE_CORRECTION
 							tracker.rotMagQuaternion.set(buf);
+							tracker.magCalibrationStatus = calibrationInfo;
 							tracker.dataTick();
 							break;
 						}

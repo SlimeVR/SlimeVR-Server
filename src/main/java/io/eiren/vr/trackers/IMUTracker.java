@@ -23,6 +23,7 @@ public class IMUTracker implements Tracker, TrackerWithTPS, TrackerWithBattery {
 	protected float confidence = 0;
 	protected float batteryVoltage = 0;
 	public int calibrationStatus = 0;
+	public int magCalibrationStatus = 0;
 	public float magnetometerAccuracy = 0;
 	
 	protected BufferedTimer timer = new BufferedTimer(1f);
@@ -152,5 +153,32 @@ public class IMUTracker implements Tracker, TrackerWithTPS, TrackerWithBattery {
 	@Override
 	public boolean userEditable() {
 		return true;
+	}
+	
+	public enum CalibrationAccuracy {
+		
+		UNRELIABLE(0),
+		LOW(1),
+		MEDIUM(2),
+		HIGH(3),
+		;
+		
+		private static final CalibrationAccuracy[] byStatus = new CalibrationAccuracy[4];
+		public final int status;
+		
+		private CalibrationAccuracy(int status) {
+			this.status = status;
+		}
+		
+		public static CalibrationAccuracy getByStatus(int status) {
+			if(status < 0 || status > 3)
+				return null;
+			return byStatus[status];
+		}
+		
+		static {
+			for(CalibrationAccuracy ca : values())
+				byStatus[ca.status] = ca;
+		}
 	}
 }
