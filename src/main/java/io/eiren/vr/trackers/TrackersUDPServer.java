@@ -161,6 +161,8 @@ public class TrackersUDPServer extends Thread {
 						tracker.dataTick();
 						break;
 					case 17: // PACKET_ROTATION_DATA
+						if(connection == null)
+							break;
 						bb.getLong();
 						int sensorId = bb.get() & 0xFF;
 						if(sensorId == 0) {
@@ -185,11 +187,13 @@ public class TrackersUDPServer extends Thread {
 						case 2: // DATA_TYPE_CORRECTION
 							tracker.rotMagQuaternion.set(buf);
 							tracker.magCalibrationStatus = calibrationInfo;
-							tracker.dataTick();
+							tracker.hasNewCorrectionData = true;
 							break;
 						}
 						break;
 					case 18: // PACKET_MAGENTOMETER_ACCURACY
+						if(connection == null)
+							break;
 						bb.getLong();
 						sensorId = bb.get() & 0xFF;
 						if(sensorId == 0) {
@@ -297,8 +301,15 @@ public class TrackersUDPServer extends Thread {
 							break;
 						tracker = connection.tracker;
 						bb.getLong();
-						byte tap = bb.get();
-						System.out.println("[TrackerServer] Tap packet received from " + tracker.getName() + ": b" + Integer.toBinaryString(tap));
+						sensorId = bb.get() & 0xFF;
+						if(sensorId == 0) {
+							tracker = connection.tracker;
+						} else if(sensorId == 1) {
+							tracker = connection.secondTracker;
+						}
+						int tap = bb.get() & 0xFF;
+						BnoTap tapObj = new BnoTap(tap);
+						System.out.println("[TrackerServer] Tap packet received from " + tracker.getName() + "/" + sensorId + ": " + tapObj  + " (b" + Integer.toBinaryString(tap) + ")");
 						break;
 					case 14: // PACKET_RESET_REASON
 						bb.getLong();

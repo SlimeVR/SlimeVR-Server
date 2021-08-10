@@ -45,6 +45,7 @@ public class ReferenceAdjustedTracker<E extends Tracker> implements Tracker {
 	 */
 	@Override
 	public void resetFull(Quaternion reference) {
+		tracker.resetFull(reference);
 		fixGyroscope();
 		
 		Quaternion sensorRotation = new Quaternion();
@@ -64,6 +65,7 @@ public class ReferenceAdjustedTracker<E extends Tracker> implements Tracker {
 	 */
 	@Override
 	public void resetYaw(Quaternion reference) {
+		tracker.resetYaw(reference);
 		fixYaw(reference);
 	}
 	
@@ -138,5 +140,10 @@ public class ReferenceAdjustedTracker<E extends Tracker> implements Tracker {
 	@Override
 	public void setBodyPosition(TrackerBodyPosition position) {
 		tracker.setBodyPosition(position);
+	}
+
+	@Override
+	public void tick() {
+		tracker.tick();
 	}
 }

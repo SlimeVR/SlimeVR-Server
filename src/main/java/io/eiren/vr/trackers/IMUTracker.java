@@ -1,5 +1,6 @@
 package io.eiren.vr.trackers;
 
+import com.jme3.math.FastMath;
 import com.jme3.math.Quaternion;
 import com.jme3.math.Vector3f;
 
@@ -9,12 +10,15 @@ import io.eiren.vr.processor.TrackerBodyPosition;
 
 public class IMUTracker implements Tracker, TrackerWithTPS, TrackerWithBattery {
 	
+	public static final float MAX_MAG_CORRECTION_ACCURACY = 5 * FastMath.RAD_TO_DEG;
+	
 	public final Vector3f gyroVector = new Vector3f();
 	public final Vector3f accelVector = new Vector3f();
 	public final Vector3f magVector = new Vector3f();
 	public final Quaternion rotQuaternion = new Quaternion();
 	public final Quaternion rotMagQuaternion = new Quaternion();
 	protected final Quaternion rotAdjust = new Quaternion();
+	protected final Quaternion correction = new Quaternion();
 	protected TrackerMountingRotation mounting = null;
 	protected TrackerStatus status = TrackerStatus.OK;
 	
@@ -25,6 +29,8 @@ public class IMUTracker implements Tracker, TrackerWithTPS, TrackerWithBattery {
 	public int calibrationStatus = 0;
 	public int magCalibrationStatus = 0;
 	public float magnetometerAccuracy = 0;
+	protected boolean magentometerCalibrated = false;
+	public boolean hasNewCorrectionData = false;
 	
 	protected BufferedTimer timer = new BufferedTimer(1f);
 	public int ping = -1;
@@ -73,6 +79,18 @@ public class IMUTracker implements Tracker, TrackerWithTPS, TrackerWithBattery {
 	}
 	
 	@Override
+	public void tick() {
+		if(magentometerCalibrated && hasNewCorrectionData) {
+			hasNewCorrectionData = false;
+			if(magnetometerAccuracy <= MAX_MAG_CORRECTION_ACCURACY) {
+				// Adjust gyro rotation to match magnetometer rotation only if magnetometer
+				// accuracy is within the parameters
+				calculateLiveMagnetometerCorrection();
+			}
+		}
+	}
+	
+	@Override
 	public String getName() {
 		return this.name;
 	}
@@ -86,8 +104,13 @@ public class IMUTracker implements Tracker, TrackerWithTPS, TrackerWithBattery {
 	@Override
 	public boolean getRotation(Quaternion store) {
 		store.set(rotQuaternion);
+		correction.mult(store, store);
 		store.multLocal(rotAdjust);
 		return true;
+	}
+	
+	public void getCorrection(Quaternion store) {
+		store.set(correction);
 	}
 
 	@Override
@@ -134,10 +157,31 @@ public class IMUTracker implements Tracker, TrackerWithTPS, TrackerWithBattery {
 
 	@Override
 	public void resetFull(Quaternion reference) {
+		resetYaw(reference);
 	}
 
+	/**
+	 * Does not perform actual gyro reset to reference, that's the task of
+	 * reference adjusted tracker. Only aligns gyro with magnetometer if
+	 * it's reliable
+	 */
 	@Override
 	public void resetYaw(Quaternion reference) {
+		if(magCalibrationStatus >= CalibrationAccuracy.HIGH.status) {
+			magentometerCalibrated = true;
+			// During calibration set correction to match magnetometer readings exactly
+			// TODO : Correct only yaw
+			correction.set(rotQuaternion).inverseLocal().multLocal(rotMagQuaternion);
+		}
+	}
+	
+	/**
+	 * Calculate correction between normal and magnetometer
+	 * readings up to accuracy threshold
+	 */
+	protected void calculateLiveMagnetometerCorrection() {
+		// TODO Magic, correct only yaw
+		// TODO Print "jump" length when correcing if it's more than 1 degree
 	}
 
 	@Override

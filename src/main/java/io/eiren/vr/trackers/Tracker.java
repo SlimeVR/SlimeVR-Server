@@ -25,6 +25,8 @@ public interface Tracker {
 	
 	public void resetYaw(Quaternion reference);
 	
+	public void tick();
+	
 	public TrackerBodyPosition getBodyPosition();
 	
 	public void setBodyPosition(TrackerBodyPosition position);

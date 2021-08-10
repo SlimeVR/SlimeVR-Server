@@ -189,6 +189,8 @@ public class VRServer extends Thread {
 					break;
 				task.run();
 			} while(true);
+			for(int i = 0; i < trackers.size(); ++i)
+				trackers.get(i).tick();
 			
 			for(int i = 0; i < onTick.size(); ++i) {
 				this.onTick.get(i).run();

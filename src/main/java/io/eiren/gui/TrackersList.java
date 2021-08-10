@@ -107,6 +107,7 @@ public class TrackersList extends EJBox {
 		JLabel magAccuracy;
 		JLabel adj;
 		JLabel adjYaw;
+		JLabel correction;
 		
 		@AWTThread
 		public TrackerRow(Tracker t) {
@@ -171,7 +172,7 @@ public class TrackersList extends EJBox {
 				row++;
 			}
 			add(new JLabel("Rotation"), c(0, row, 0, GridBagConstraints.FIRST_LINE_START));
-			add(new JLabel("Postion"), c(1, row, 0, GridBagConstraints.FIRST_LINE_START));
+			add(new JLabel("Position"), c(1, row, 0, GridBagConstraints.FIRST_LINE_START));
 			add(new JLabel("Ping"), c(2, row, 0, GridBagConstraints.FIRST_LINE_START));
 			add(new JLabel("TPS"), c(3, row, 0, GridBagConstraints.FIRST_LINE_START));
 			row++;
@@ -200,6 +201,9 @@ public class TrackersList extends EJBox {
 				add(calibration = new JLabel("0"), c(1, row, 0, GridBagConstraints.FIRST_LINE_START));
 				add(new JLabel("Mag acc:"), c(2, row, 0, GridBagConstraints.FIRST_LINE_START));
 				add(magAccuracy = new JLabel("0°"), c(3, row, 0, GridBagConstraints.FIRST_LINE_START));
+				row++;
+				add(new JLabel("Correction:"), c(0, row, 0, GridBagConstraints.FIRST_LINE_START));
+				add(correction = new JLabel("0 0 0"), s(c(1, row, 0, GridBagConstraints.FIRST_LINE_START), 3, 1));
 				row++;
 			}
 			
@@ -265,6 +269,11 @@ public class TrackersList extends EJBox {
 						+ " " + StringUtils.prettyNumber(angles[2] * FastMath.RAD_TO_DEG, 0));
 				calibration.setText(((IMUTracker) realTracker).calibrationStatus + " / " + ((IMUTracker) realTracker).magCalibrationStatus);
 				magAccuracy.setText(StringUtils.prettyNumber(((IMUTracker) realTracker).magnetometerAccuracy * FastMath.RAD_TO_DEG, 1) + "°");
+				((IMUTracker) realTracker).getCorrection(q);
+				q.toAngles(angles);
+				correction.setText(StringUtils.prettyNumber(angles[0] * FastMath.RAD_TO_DEG, 0)
+						+ " " + StringUtils.prettyNumber(angles[1] * FastMath.RAD_TO_DEG, 0)
+						+ " " + StringUtils.prettyNumber(angles[2] * FastMath.RAD_TO_DEG, 0));
 			}
 		}
 	}

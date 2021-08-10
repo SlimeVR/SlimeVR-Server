@@ -80,4 +80,8 @@ public class ComputedTracker implements Tracker {
 	public boolean userEditable() {
 		return false;
 	}
+
+	@Override
+	public void tick() {
+	}
 }
