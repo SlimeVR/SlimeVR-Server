@@ -4,6 +4,8 @@ import java.util.HashMap;
 import java.util.Map.Entry;
 
 import io.eiren.util.ann.ThreadSafe;
+import io.eiren.util.logging.LogManager;
+import io.eiren.util.StringUtils;
 import io.eiren.vr.VRServer;
 import io.eiren.vr.processor.HumanSkeleton;
 import io.eiren.vr.processor.HumanSkeletonWithLegs;
@@ -112,6 +114,7 @@ public class AutoBone {
 
 				float error = getFootError(skeleton1, skeleton2);
 				float adjustVal = error * adjustRate;
+				LogManager.log.info("[AutoBone] Current position error: " + StringUtils.prettyNumber(error));
 
 				for (Entry<String, Float> entry : configs.entrySet()) {
 					float newLength = entry.getValue() + adjustVal;

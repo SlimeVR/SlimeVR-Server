@@ -11,22 +11,26 @@ import javax.swing.JCheckBox;
 import javax.swing.JLabel;
 import javax.swing.event.MouseInputAdapter;
 
+import io.eiren.gui.autobone.AutoBone;
 import io.eiren.util.StringUtils;
 import io.eiren.util.ann.ThreadSafe;
 import io.eiren.vr.VRServer;
 import io.eiren.vr.processor.HumanSkeletonWithLegs;
 import io.eiren.vr.processor.HumanSkeleton;
+import io.eiren.util.logging.LogManager;
 
 public class SkeletonConfig extends EJBag {
 	
 	private final VRServer server;
 	private final VRServerGUI gui;
+	private final AutoBone autoBone;
 	private Map<String, SkeletonLabel> labels = new HashMap<>();
 	
 	public SkeletonConfig(VRServer server, VRServerGUI gui) {
 		super();
 		this.server = server;
 		this.gui = gui;
+		this.autoBone = new AutoBone(server);
 
 		setAlignmentY(TOP_ALIGNMENT);
 		server.humanPoseProcessor.addSkeletonUpdatedCallback(this::skeletonUpdated);
@@ -91,6 +95,17 @@ public class SkeletonConfig extends EJBag {
 			//*/
 			
 			add(new TimedResetButton("Reset All", "All"), s(c(1, row, 1), 3, 1));
+			add(new JButton("Auto") {{
+				addMouseListener(new MouseInputAdapter() {
+					@Override
+					public void mouseClicked(MouseEvent e) {
+						LogManager.log.info("[AutoBone] Recording 250 samples at a 6 frame interval");
+						autoBone.startFrameRecording(250, 6);
+						LogManager.log.info("[AutoBone] Done recording! Processing frames...");
+						autoBone.processFrames();
+					}
+				});
+			}}, s(c(4, row, 1), 3, 1));
 			row++;
 			
 			add(new JLabel("Chest"), c(0, row, 1));
