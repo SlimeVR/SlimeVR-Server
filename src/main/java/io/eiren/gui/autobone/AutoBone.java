@@ -4,6 +4,7 @@ import java.util.HashMap;
 import java.util.Map.Entry;
 
 import io.eiren.util.ann.ThreadSafe;
+import io.eiren.util.ann.VRServerThread;
 import io.eiren.util.logging.LogManager;
 import io.eiren.util.StringUtils;
 import io.eiren.vr.VRServer;
@@ -15,10 +16,13 @@ public class AutoBone {
 
 	protected final VRServer server;
 
+	HumanSkeletonWithLegs skeleton = null;
+
 	protected PoseFrame[] frames = new PoseFrame[0];
 	protected int frameRecordingCursor = -1;
-	protected int frameRecordingInterval = 1;
-	protected int frameIntervalCounter = 0;
+
+	protected long frameRecordingInterval = 60L;
+	protected long lastFrameTimeMs = 0L;
 
 	protected final SimpleSkeleton skeleton1;
 	protected final SimpleSkeleton skeleton2;
@@ -43,6 +47,7 @@ public class AutoBone {
 		this.skeleton2 = new SimpleSkeleton(server);
 
 		server.addSkeletonUpdatedCallback(this::skeletonUpdated);
+		server.addOnTick(this::onTick);
 	}
 
 	public void reloadConfigValues() {
@@ -67,19 +72,35 @@ public class AutoBone {
 
 	@ThreadSafe
 	public void skeletonUpdated(HumanSkeleton newSkeleton) {
-		if (frameRecordingCursor >= 0 && frameRecordingCursor < frames.length && newSkeleton instanceof HumanSkeletonWithLegs && frameIntervalCounter++ % frameRecordingInterval == 0) {
-			frameIntervalCounter = 0;
+		java.awt.EventQueue.invokeLater(() -> {
+			if (newSkeleton instanceof HumanSkeletonWithLegs) {
+				skeleton = (HumanSkeletonWithLegs)newSkeleton;
+				LogManager.log.info("Received updated skeleton");
+			}
+		});
+	}
 
-			HumanSkeletonWithLegs newLegSkeleton = (HumanSkeletonWithLegs)newSkeleton;
-			PoseFrame frame = new PoseFrame(newLegSkeleton);
+	@VRServerThread
+	public void onTick() {
+		if (frameRecordingCursor >= 0 && frameRecordingCursor < frames.length && skeleton != null && System.currentTimeMillis() - lastFrameTimeMs >= frameRecordingInterval) {
+			lastFrameTimeMs = System.currentTimeMillis();
+
+			PoseFrame frame = new PoseFrame(skeleton);
 			frames[frameRecordingCursor++] = frame;
+
+			LogManager.log.info("Recorded frame " + frameRecordingCursor);
 		}
 	}
 
-	public void startFrameRecording(int numFrames, int interval) {
+	public void startFrameRecording(int numFrames, long interval) {
 		frames = new PoseFrame[numFrames];
+
 		frameRecordingInterval = interval;
+		lastFrameTimeMs = 0L;
+
 		frameRecordingCursor = 0;
+
+		LogManager.log.info("[AutoBone] Recording " + numFrames + " samples at a " + interval + " ms frame interval");
 	}
 
 	public void stopFrameRecording() {
@@ -126,7 +147,7 @@ public class AutoBone {
 
 				float error = getFootError(skeleton1, skeleton2);
 				float adjustVal = error * adjustRate;
-				LogManager.log.info("[AutoBone] Current position error: " + StringUtils.prettyNumber(error));
+				LogManager.log.info("[AutoBone] Current position error: " + error);
 
 				for (Entry<String, Float> entry : configs.entrySet()) {
 					float newLength = entry.getValue() + adjustVal;

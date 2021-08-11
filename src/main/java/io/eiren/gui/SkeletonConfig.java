@@ -106,8 +106,7 @@ public class SkeletonConfig extends EJBag {
 							public void run() {
 								try {
 									setText("Move");
-									LogManager.log.info("[AutoBone] Recording 250 samples at a 6 frame interval");
-									autoBone.startFrameRecording(250, 6);
+									autoBone.startFrameRecording(250, 60);
 
 									while (autoBone.isRecording()) {
 										Thread.sleep(10);
