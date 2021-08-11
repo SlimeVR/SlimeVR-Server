@@ -104,7 +104,7 @@ public class SkeletonConfig extends EJBag {
 							@Override
 							public void run() {
 								try {
-									setText("Wait");
+									setText("Move");
 									LogManager.log.info("[AutoBone] Recording 250 samples at a 6 frame interval");
 									autoBone.startFrameRecording(250, 6);
 
@@ -113,6 +113,7 @@ public class SkeletonConfig extends EJBag {
 									}
 
 									LogManager.log.info("[AutoBone] Done recording! Processing frames...");
+									setText("Wait");
 									autoBone.processFrames();
 									LogManager.log.info("[AutoBone] Done processing!");
 
