@@ -35,7 +35,7 @@ public class AutoBone {
 		put("Hips width", HumanSkeletonWithLegs.HIPS_WIDTH_DEFAULT);
 		put("Knee height", 0.42f);
 		put("Legs length", 0.84f);
-		put("Foot length", HumanSkeletonWithLegs.FOOT_LENGTH_DEFAULT);
+		//put("Foot length", HumanSkeletonWithLegs.FOOT_LENGTH_DEFAULT); // Feet aren't actually used
 	}};
 
 	public AutoBone(VRServer server) {
@@ -61,7 +61,7 @@ public class AutoBone {
 		configs.put("Hips width", server.config.getFloat("body.hipsWidth", HumanSkeletonWithLegs.HIPS_WIDTH_DEFAULT));
 		configs.put("Knee height", server.config.getFloat("body.kneeHeight", 0.42f));
 		configs.put("Legs length", server.config.getFloat("body.legsLength", 0.84f));
-		configs.put("Foot length", server.config.getFloat("body.footLength", HumanSkeletonWithLegs.FOOT_LENGTH_DEFAULT));
+		//configs.put("Foot length", server.config.getFloat("body.footLength", HumanSkeletonWithLegs.FOOT_LENGTH_DEFAULT)); // Feet aren't actually used
 	}
 
 	public void setSkeletonLengths(SimpleSkeleton skeleton) {
