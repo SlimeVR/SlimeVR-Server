@@ -91,6 +91,10 @@ public class AutoBone {
 		return frameRecordingCursor >= 0 && frameRecordingCursor < frames.length;
 	}
 
+	public PoseFrame[] getFrames() {
+		return frames;
+	}
+
 	public void processFrames() {
 		int cursorOffset = 1;
 		float adjustRate = 0.5f;

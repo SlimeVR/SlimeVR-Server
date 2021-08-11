@@ -13,6 +13,7 @@ import javax.swing.JLabel;
 import javax.swing.event.MouseInputAdapter;
 
 import io.eiren.gui.autobone.AutoBone;
+import io.eiren.gui.autobone.PoseRecordIO;
 import io.eiren.util.StringUtils;
 import io.eiren.util.ann.ThreadSafe;
 import io.eiren.vr.VRServer;
@@ -112,8 +113,13 @@ public class SkeletonConfig extends EJBag {
 										Thread.sleep(10);
 									}
 
-									LogManager.log.info("[AutoBone] Done recording! Processing frames...");
 									setText("Wait");
+									LogManager.log.info("[AutoBone] Done recording! Exporting frames to \"ABRecording.abf\"...");
+
+									PoseRecordIO exporter = new PoseRecordIO("ABRecording.abf");
+									exporter.writeToFile(autoBone.getFrames());
+
+									LogManager.log.info("[AutoBone] Done exporting! Processing frames...");
 									autoBone.processFrames();
 									LogManager.log.info("[AutoBone] Done processing!");
 
