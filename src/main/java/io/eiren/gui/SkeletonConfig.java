@@ -3,6 +3,7 @@ package io.eiren.gui;
 import java.awt.event.ItemEvent;
 import java.awt.event.ItemListener;
 import java.awt.event.MouseEvent;
+import java.io.File;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Map.Entry;
@@ -13,6 +14,7 @@ import javax.swing.JLabel;
 import javax.swing.event.MouseInputAdapter;
 
 import io.eiren.gui.autobone.AutoBone;
+import io.eiren.gui.autobone.PoseFrame;
 import io.eiren.gui.autobone.PoseRecordIO;
 import io.eiren.util.StringUtils;
 import io.eiren.util.ann.ThreadSafe;
@@ -105,20 +107,36 @@ public class SkeletonConfig extends EJBag {
 							@Override
 							public void run() {
 								try {
-									setText("Move");
-									autoBone.startFrameRecording(250, 60);
+									File recording = new File("ABRecording_Load.abf");
 
-									while (autoBone.isRecording()) {
-										Thread.sleep(10);
+									if (recording.exists()) {
+										setText("Load");
+										PoseRecordIO importer = new PoseRecordIO("ABRecording_Load.abf");
+										PoseFrame[] frames = importer.readFromFile();
+
+										if (frames == null) {
+											throw new NullPointerException("Reading frames from \"ABRecording_Load.abf\" failed...");
+										}
+
+										autoBone.setFrames(frames);
+
+										setText("Wait");
+									} else {
+										setText("Move");
+										autoBone.startFrameRecording(250, 60);
+
+										while (autoBone.isRecording()) {
+											Thread.sleep(10);
+										}
+
+										setText("Wait");
+										LogManager.log.info("[AutoBone] Done recording! Exporting frames to \"ABRecording.abf\"...");
+
+										PoseRecordIO exporter = new PoseRecordIO("ABRecording.abf");
+										exporter.writeToFile(autoBone.getFrames());
+										LogManager.log.info("[AutoBone] Done exporting! Processing frames...");
 									}
 
-									setText("Wait");
-									LogManager.log.info("[AutoBone] Done recording! Exporting frames to \"ABRecording.abf\"...");
-
-									PoseRecordIO exporter = new PoseRecordIO("ABRecording.abf");
-									exporter.writeToFile(autoBone.getFrames());
-
-									LogManager.log.info("[AutoBone] Done exporting! Processing frames...");
 									autoBone.processFrames();
 									LogManager.log.info("[AutoBone] Done processing!");
 

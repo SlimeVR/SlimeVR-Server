@@ -116,6 +116,10 @@ public class AutoBone {
 		return frames;
 	}
 
+	public void setFrames(PoseFrame[] frames) {
+		this.frames = frames;
+	}
+
 	public void processFrames() {
 		int cursorOffset = 1;
 		float adjustRate = 0.5f;
