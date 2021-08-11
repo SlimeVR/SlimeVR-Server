@@ -13,7 +13,10 @@ import io.eiren.vr.processor.HumanSkeletonWithWaist;
 
 public class AutoBone {
 
-	protected final static int NUM_EPOCHS = 10;
+	protected final static int MIN_DATA_DISTANCE = 5;
+	protected final static int MAX_DATA_DISTANCE = 10;
+
+	protected final static int NUM_EPOCHS = 100;
 
 	protected final static float INITIAL_ADJUSTMENT_RATE = 1f;
 	protected final static float ADJUSTMENT_RATE_DECAY = 1.05f;
@@ -128,7 +131,7 @@ public class AutoBone {
 		int epochs = NUM_EPOCHS;
 		int epochCounter = 0;
 
-		int cursorOffset = 1;
+		int cursorOffset = MIN_DATA_DISTANCE;
 
 		float adjustRate = INITIAL_ADJUSTMENT_RATE;
 
@@ -137,7 +140,7 @@ public class AutoBone {
 
 		for (;;) {
 			// Detect end of iteration
-			if (cursorOffset >= frames.length) {
+			if (cursorOffset >= frames.length || cursorOffset > MAX_DATA_DISTANCE) {
 				epochCounter++;
 
 				// Calculate average error over the epoch
@@ -153,7 +156,7 @@ public class AutoBone {
 					break;
 				} else {
 					// Reset cursor offset and decay the adjustment rate
-					cursorOffset = 1;
+					cursorOffset = MIN_DATA_DISTANCE;
 					adjustRate /= ADJUSTMENT_RATE_DECAY;
 				}
 			}
