@@ -6,13 +6,17 @@ import java.util.Map.Entry;
 import io.eiren.util.ann.ThreadSafe;
 import io.eiren.util.ann.VRServerThread;
 import io.eiren.util.logging.LogManager;
-import io.eiren.util.StringUtils;
 import io.eiren.vr.VRServer;
 import io.eiren.vr.processor.HumanSkeleton;
 import io.eiren.vr.processor.HumanSkeletonWithLegs;
 import io.eiren.vr.processor.HumanSkeletonWithWaist;
 
 public class AutoBone {
+
+	protected final static int NUM_EPOCHS = 10;
+
+	protected final static float INITIAL_ADJUSTMENT_RATE = 1f;
+	protected final static float ADJUSTMENT_RATE_DECAY = 1.05f;
 
 	protected final VRServer server;
 
@@ -121,13 +125,38 @@ public class AutoBone {
 	}
 
 	public void processFrames() {
+		int epochs = NUM_EPOCHS;
+		int epochCounter = 0;
+
 		int cursorOffset = 1;
-		float adjustRate = 0.5f;
+
+		float adjustRate = INITIAL_ADJUSTMENT_RATE;
+
+		float sumError = 0f;
+		int errorCount = 0;
 
 		for (;;) {
 			// Detect end of iteration
-			if (cursorOffset >= frames.length)
-				break;
+			if (cursorOffset >= frames.length) {
+				epochCounter++;
+
+				// Calculate average error over the epoch
+				float avgError = errorCount > 0 ? sumError / errorCount : -1f;
+
+				// Reset error sum values
+				sumError = 0f;
+				errorCount = 0;
+
+				LogManager.log.info("[AutoBone] Epoch " + epochCounter + " average error: " + avgError);
+
+				if (epochCounter >= epochs) {
+					break;
+				} else {
+					// Reset cursor offset and decay the adjustment rate
+					cursorOffset = 1;
+					adjustRate /= ADJUSTMENT_RATE_DECAY;
+				}
+			}
 
 			int frameCursor1 = 0;
 			int frameCursor2 = cursorOffset++;
@@ -136,6 +165,7 @@ public class AutoBone {
 				PoseFrame frame1 = frames[frameCursor1];
 				PoseFrame frame2 = frames[frameCursor2];
 
+				// If there's missing data, skip it
 				if (frame1 == null || frame2 == null) {
 					continue;
 				}
@@ -150,22 +180,46 @@ public class AutoBone {
 				skeleton2.updatePose();
 
 				float error = getFootError(skeleton1, skeleton2);
+
+				// In case of fire
+				if (Float.isNaN(error) || Float.isInfinite(error)) {
+					// Extinguish
+					LogManager.log.warning("[AutoBone] Error value is invalid, resetting variables to recover");
+					reloadConfigValues();
+
+					// Reset error sum values
+					sumError = 0f;
+					errorCount = 0;
+
+					// Continue on new data
+					continue;
+				}
+
+				// Store the error count for logging purposes
+				sumError += error;
+				errorCount++;
+
 				float adjustVal = error * adjustRate;
-				LogManager.log.info("[AutoBone] Current position error: " + error);
+
+				// if (frameCursor1 == 0 && frameCursor2 == 1) {
+				// 	LogManager.log.info("[AutoBone] Current position error: " + error);
+				// }
 
 				for (Entry<String, Float> entry : configs.entrySet()) {
-					float newLength = entry.getValue() + adjustVal;
+					float originalLength = entry.getValue();
+
+					float newLength = originalLength + adjustVal;
 					updateSekeletonBoneLength(entry.getKey(), newLength);
 					float newError = getFootError(skeleton1, skeleton2);
 
 					if (newError >= error) {
-						newLength = entry.getValue() - adjustVal;
+						newLength = originalLength - adjustVal;
 						updateSekeletonBoneLength(entry.getKey(), newLength);
 						newError = getFootError(skeleton1, skeleton2);
 
 						if (newError >= error) {
 							// Reset value and continue without getting new error values
-							updateSekeletonBoneLength(entry.getKey(), entry.getValue());
+							updateSekeletonBoneLength(entry.getKey(), originalLength);
 							continue;
 						} else {
 							configs.put(entry.getKey(), newLength);
@@ -175,20 +229,21 @@ public class AutoBone {
 					}
 
 					// Update values with the new length
-					error = getFootError(skeleton1, skeleton2);
-					adjustVal = error * adjustRate;
+					// error = getFootError(skeleton1, skeleton2);
+					// adjustVal = error * adjustRate;
+
+					// Reset the length to minimize bias in other variables, it's applied later
+					updateSekeletonBoneLength(entry.getKey(), originalLength);
 				}
 			} while (++frameCursor1 < frames.length && ++frameCursor2 < frames.length);
 		}
 	}
 
 	protected static float getFootError(SimpleSkeleton skeleton1, SimpleSkeleton skeleton2) {
-		float distLeft = skeleton1.getLeftFootPos().distance(skeleton2.getLeftFootPos());
-		float distRight = skeleton1.getRightFootPos().distance(skeleton2.getRightFootPos());
+		float distLeft = skeleton1.getLeftFootPos().distanceSquared(skeleton2.getLeftFootPos());
+		float distRight = skeleton1.getRightFootPos().distanceSquared(skeleton2.getRightFootPos());
 
-		float avg = (distLeft + distRight) / 2f;
-
-		return avg * avg;
+		return distLeft + distRight;
 	}
 
 	protected void updateSekeletonBoneLength(String joint, float newLength) {
