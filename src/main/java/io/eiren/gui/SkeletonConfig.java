@@ -18,6 +18,7 @@ import io.eiren.gui.autobone.PoseFrame;
 import io.eiren.gui.autobone.PoseRecordIO;
 import io.eiren.util.StringUtils;
 import io.eiren.util.ann.ThreadSafe;
+import io.eiren.util.collections.FastList;
 import io.eiren.vr.VRServer;
 import io.eiren.vr.processor.HumanSkeletonWithLegs;
 import io.eiren.vr.processor.HumanSkeleton;
@@ -123,6 +124,25 @@ public class SkeletonConfig extends EJBag {
 
 										if (frames == null) {
 											throw new NullPointerException("Reading frames from \"" + loadRecording.getPath() + "\" failed...");
+										}
+
+										FastList<PoseFrame> newFrames = new FastList<PoseFrame>(frames);
+										int recordNumber = 1;
+										for (;;) {
+											File loadRecordingI = new File("ABRecording_Load" + recordNumber++ + ".abf");
+
+											if (loadRecordingI.exists()) {
+												PoseFrame[] framesI = PoseRecordIO.readFromFile(loadRecordingI);
+
+												if (framesI == null) {
+													throw new NullPointerException("Reading frames from \"" + loadRecordingI.getPath() + "\" failed...");
+												}
+
+												newFrames.addAll(framesI);
+											} else {
+												frames = newFrames.toArray(frames);
+												break;
+											}
 										}
 
 										autoBone.setFrames(frames);

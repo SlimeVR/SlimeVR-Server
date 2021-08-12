@@ -15,7 +15,7 @@ import io.eiren.vr.processor.HumanSkeletonWithWaist;
 public class AutoBone {
 
 	protected final static int MIN_DATA_DISTANCE = 1;
-	protected final static int MAX_DATA_DISTANCE = 1000;
+	protected final static int MAX_DATA_DISTANCE = 200;
 
 	protected final static int NUM_EPOCHS = 20;
 
@@ -27,6 +27,18 @@ public class AutoBone {
 	protected final static float HEIGHT_ERROR_FACTOR = 0.75f;
 
 	protected final static float HEADSET_HEIGHT_RATIO = 0.91f;
+
+	protected final static float CHEST_WAIST_RATIO_MIN = 0.2f;
+	protected final static float CHEST_WAIST_RATIO_MAX = 0.6f;
+
+	protected final static float HIP_MIN = 0.08f;
+	protected final static float HIP_WAIST_RATIO_MAX = 0.4f;
+
+	protected final static float LEG_WAIST_RATIO_MIN = 0.5235f;
+	protected final static float LEG_WAIST_RATIO_MAX = 1.7235f;
+
+	protected final static float KNEE_LEG_RATIO_MIN = 0.42f;
+	protected final static float KNEE_LEG_RATIO_MAX = 0.58f;
 
 	protected final VRServer server;
 
@@ -161,17 +173,26 @@ public class AutoBone {
 	}
 
 	public void processFrames() {
+		processFrames(NUM_EPOCHS, true, INITIAL_ADJUSTMENT_RATE, ADJUSTMENT_RATE_DECAY, MIN_DATA_DISTANCE, MAX_DATA_DISTANCE);
+	}
+
+	public void processFrames(int epochs, boolean calcInitError) {
+		processFrames(epochs, calcInitError, INITIAL_ADJUSTMENT_RATE, ADJUSTMENT_RATE_DECAY, MIN_DATA_DISTANCE, MAX_DATA_DISTANCE);
+	}
+
+	public void processFrames(int epochs, boolean calcInitError, float adjustRate, float adjustRateDecay) {
+		processFrames(epochs, calcInitError, adjustRate, adjustRateDecay, MIN_DATA_DISTANCE, MAX_DATA_DISTANCE);
+	}
+
+	public void processFrames(int epochs, boolean calcInitError, float adjustRate, float adjustRateDecay, int minDataDist, int maxDataDist) {
 		Set<Entry<String, Float>> configSet = configs.entrySet();
 
 		SimpleSkeleton skeleton1 = new SimpleSkeleton(configSet);
 		SimpleSkeleton skeleton2 = new SimpleSkeleton(configSet);
 
-		int epochs = NUM_EPOCHS;
-		int epochCounter = -1;
+		int epochCounter = calcInitError ? -1 : 0;
 
-		int cursorOffset = MIN_DATA_DISTANCE;
-
-		float adjustRate = INITIAL_ADJUSTMENT_RATE;
+		int cursorOffset = minDataDist;
 
 		float sumError = 0f;
 		int errorCount = 0;
@@ -188,7 +209,7 @@ public class AutoBone {
 
 		for (;;) {
 			// Detect end of iteration
-			if (cursorOffset >= frames.length || cursorOffset > MAX_DATA_DISTANCE) {
+			if (cursorOffset >= frames.length || cursorOffset > maxDataDist) {
 				epochCounter++;
 
 				// Calculate average error over the epoch
@@ -204,8 +225,8 @@ public class AutoBone {
 					break;
 				} else {
 					// Reset cursor offset and decay the adjustment rate
-					cursorOffset = MIN_DATA_DISTANCE;
-					adjustRate /= ADJUSTMENT_RATE_DECAY;
+					cursorOffset = minDataDist;
+					adjustRate /= adjustRateDecay;
 				}
 			}
 
@@ -256,7 +277,7 @@ public class AutoBone {
 				// 	LogManager.log.info("[AutoBone] Current position error: " + error);
 				// }
 
-				for (Entry<String, Float> entry : configs.entrySet()) {
+				entryLoop: for (Entry<String, Float> entry : configs.entrySet()) {
 					// Skip adjustment if the epoch is before starting (for logging only)
 					if (epochCounter < 0) {
 						break;
@@ -265,7 +286,7 @@ public class AutoBone {
 					float originalLength = entry.getValue();
 
 					// Try positive and negative adjustments
-					for (int i = 0; i < 2; i++) {
+					posNegAdj: for (int i = 0; i < 2; i++) {
 						float curAdjustVal = i == 0 ? adjustVal : -adjustVal;
 						float newLength = originalLength + curAdjustVal;
 
@@ -274,34 +295,62 @@ public class AutoBone {
 							continue;
 						}
 
-						// Detect and skip invalid values
+						// Detect and fix invalid values, skipping adjustment
 						Float val;
 						switch (entry.getKey()) {
 						case "Chest":
 							val = configs.get("Waist");
-							if (val == null || newLength <= 0.2f * val || newLength >= 0.6f * val) {
-								continue;
+							if (val == null || newLength <= CHEST_WAIST_RATIO_MIN * val || newLength >= CHEST_WAIST_RATIO_MAX * val) {
+								entry.setValue(Math.min(Math.max(newLength, CHEST_WAIST_RATIO_MIN * val), CHEST_WAIST_RATIO_MAX * val));
+
+								// If bone length hasn't been changed on skeleton, skip right to next entry
+								if (i > 0) {
+									break posNegAdj;
+								} else {
+									continue entryLoop;
+								}
 							}
 							break;
 
 						case "Hips width":
 							val = configs.get("Waist");
-							if (val == null || newLength < 0.08f || newLength >= 0.4f * val) {
-								continue;
-							}
-							break;
+							if (val == null || newLength < HIP_MIN || newLength >= HIP_WAIST_RATIO_MAX * val) {
+								entry.setValue(Math.min(Math.max(newLength, HIP_MIN), HIP_WAIST_RATIO_MAX * val));
 
-						case "Knee height":
-							val = configs.get("Legs length");
-							if (val == null || newLength <= 0.375f * val || newLength >= 0.625f * val) {
-								continue;
+								// If bone length hasn't been changed on skeleton, skip right to next entry
+								if (i > 0) {
+									break posNegAdj;
+								} else {
+									continue entryLoop;
+								}
 							}
 							break;
 
 						case "Legs length":
 							val = configs.get("Waist");
-							if (val == null || newLength <= 0.5235f * val || newLength >= 1.7235f * val) {
-								continue;
+							if (val == null || newLength <= LEG_WAIST_RATIO_MIN * val || newLength >= LEG_WAIST_RATIO_MAX * val) {
+								entry.setValue(Math.min(Math.max(newLength, LEG_WAIST_RATIO_MIN * val), LEG_WAIST_RATIO_MAX * val));
+
+								// If bone length hasn't been changed on skeleton, skip right to next entry
+								if (i > 0) {
+									break posNegAdj;
+								} else {
+									continue entryLoop;
+								}
+							}
+							break;
+
+						case "Knee height":
+							val = configs.get("Legs length");
+							if (val == null || newLength <= KNEE_LEG_RATIO_MIN * val || newLength >= KNEE_LEG_RATIO_MAX * val) {
+								entry.setValue(Math.min(Math.max(newLength, KNEE_LEG_RATIO_MIN * val), KNEE_LEG_RATIO_MAX * val));
+
+								// If bone length hasn't been changed on skeleton, skip right to next entry
+								if (i > 0) {
+									break posNegAdj;
+								} else {
+									continue entryLoop;
+								}
 							}
 							break;
 						}
