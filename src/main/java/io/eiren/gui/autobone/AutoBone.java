@@ -173,18 +173,34 @@ public class AutoBone {
 	}
 
 	public void processFrames() {
-		processFrames(NUM_EPOCHS, true, INITIAL_ADJUSTMENT_RATE, ADJUSTMENT_RATE_DECAY, MIN_DATA_DISTANCE, MAX_DATA_DISTANCE);
+		processFrames(NUM_EPOCHS, true);
+	}
+
+	public void processFrames(float targetHeight) {
+		processFrames(NUM_EPOCHS, true, targetHeight);
 	}
 
 	public void processFrames(int epochs, boolean calcInitError) {
-		processFrames(epochs, calcInitError, INITIAL_ADJUSTMENT_RATE, ADJUSTMENT_RATE_DECAY, MIN_DATA_DISTANCE, MAX_DATA_DISTANCE);
+		processFrames(epochs, calcInitError, INITIAL_ADJUSTMENT_RATE, ADJUSTMENT_RATE_DECAY);
+	}
+
+	public void processFrames(int epochs, boolean calcInitError, float targetHeight) {
+		processFrames(epochs, calcInitError, INITIAL_ADJUSTMENT_RATE, ADJUSTMENT_RATE_DECAY, targetHeight);
 	}
 
 	public void processFrames(int epochs, boolean calcInitError, float adjustRate, float adjustRateDecay) {
 		processFrames(epochs, calcInitError, adjustRate, adjustRateDecay, MIN_DATA_DISTANCE, MAX_DATA_DISTANCE);
 	}
 
+	public void processFrames(int epochs, boolean calcInitError, float adjustRate, float adjustRateDecay, float targetHeight) {
+		processFrames(epochs, calcInitError, adjustRate, adjustRateDecay, MIN_DATA_DISTANCE, MAX_DATA_DISTANCE, targetHeight);
+	}
+
 	public void processFrames(int epochs, boolean calcInitError, float adjustRate, float adjustRateDecay, int minDataDist, int maxDataDist) {
+		processFrames(epochs, calcInitError, adjustRate, adjustRateDecay, minDataDist, maxDataDist, -1f);
+	}
+
+	public void processFrames(int epochs, boolean calcInitError, float adjustRate, float adjustRateDecay, int minDataDist, int maxDataDist, float targetHeight) {
 		Set<Entry<String, Float>> configSet = configs.entrySet();
 
 		SimpleSkeleton skeleton1 = new SimpleSkeleton(configSet);
@@ -197,15 +213,18 @@ public class AutoBone {
 		float sumError = 0f;
 		int errorCount = 0;
 
-		float hmdHeight = getMaxHmdHeight(frames);
-		if (hmdHeight <= 0.50f) {
-			LogManager.log.warning("[AutoBone] Max headset height detected (Value seems too low, did you not stand up straight while measuring?): " + hmdHeight);
-		} else {
-			LogManager.log.info("[AutoBone] Max headset height detected: " + hmdHeight);
-		}
+		// If target height isn't specified, auto-detect
+		if (targetHeight < 0f) {
+			float hmdHeight = getMaxHmdHeight(frames);
+			if (hmdHeight <= 0.50f) {
+				LogManager.log.warning("[AutoBone] Max headset height detected (Value seems too low, did you not stand up straight while measuring?): " + hmdHeight);
+			} else {
+				LogManager.log.info("[AutoBone] Max headset height detected: " + hmdHeight);
+			}
 
-		// Estimate target height from HMD height
-		float targetHeight = hmdHeight * HEADSET_HEIGHT_RATIO;
+			// Estimate target height from HMD height
+			targetHeight = hmdHeight * HEADSET_HEIGHT_RATIO;
+		}
 
 		for (;;) {
 			// Detect end of iteration
