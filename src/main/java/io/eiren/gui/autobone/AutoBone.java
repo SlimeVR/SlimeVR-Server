@@ -178,7 +178,7 @@ public class AutoBone {
 
 		float hmdHeight = getMaxHmdHeight(frames);
 		if (hmdHeight <= 0.50f) {
-			LogManager.log.warning("[AutoBone] Max headset height detected (Value seems too low, did you stand straight while measuring?): " + hmdHeight);
+			LogManager.log.warning("[AutoBone] Max headset height detected (Value seems too low, did you not stand up straight while measuring?): " + hmdHeight);
 		} else {
 			LogManager.log.info("[AutoBone] Max headset height detected: " + hmdHeight);
 		}
