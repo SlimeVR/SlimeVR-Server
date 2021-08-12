@@ -13,12 +13,12 @@ import io.eiren.vr.processor.HumanSkeletonWithWaist;
 
 public class AutoBone {
 
-	protected final static int MIN_DATA_DISTANCE = 4;
-	protected final static int MAX_DATA_DISTANCE = 10;
+	protected final static int MIN_DATA_DISTANCE = 20;
+	protected final static int MAX_DATA_DISTANCE = 40;
 
 	protected final static int NUM_EPOCHS = 200;
 
-	protected final static float INITIAL_ADJUSTMENT_RATE = 0.9f;
+	protected final static float INITIAL_ADJUSTMENT_RATE = 0.5f;
 	protected final static float ADJUSTMENT_RATE_DECAY = 1.057f;
 
 	protected final VRServer server;
@@ -223,38 +223,22 @@ public class AutoBone {
 				for (Entry<String, Float> entry : configs.entrySet()) {
 					float originalLength = entry.getValue();
 
-					float heightChange = originalHeight - (getHeight() + adjustVal);
-					// Use Math.abs() to retain the sign while being squared
-					float heightAdjustVal = (heightChange * Math.abs(heightChange));
+					// Try positive and negative adjustments
+					for (int i = 0; i < 2; i++) {
+						float curAdjustVal = i == 0 ? adjustVal : -adjustVal;
 
-					float newLength = originalLength + adjustVal + heightAdjustVal;
-					updateSekeletonBoneLength(entry.getKey(), newLength);
-					float newError = getFootError(skeleton1, skeleton2);
+						float heightChange = originalHeight - (getHeight() + curAdjustVal);
+						float heightAdjustVal = heightChange * Math.abs(heightChange); // Use Math.abs to retain the sign
 
-					if (newError >= error) {
-
-						heightChange = originalHeight - (getHeight() - adjustVal);
-						// Use Math.abs() to retain the sign while being squared
-						heightAdjustVal = (heightChange * Math.abs(heightChange));
-
-						newLength = (originalLength - adjustVal) + heightAdjustVal;
+						float newLength = originalLength + curAdjustVal + heightAdjustVal;
 						updateSekeletonBoneLength(entry.getKey(), newLength);
-						newError = getFootError(skeleton1, skeleton2);
+						float newError = getFootError(skeleton1, skeleton2);
 
-						if (newError >= error) {
-							// Reset value and continue without getting new error values
-							updateSekeletonBoneLength(entry.getKey(), originalLength);
-							continue;
-						} else {
+						if (newError < error) {
 							configs.put(entry.getKey(), newLength);
+							break;
 						}
-					} else {
-						configs.put(entry.getKey(), newLength);
 					}
-
-					// Update values with the new length
-					// error = getFootError(skeleton1, skeleton2);
-					// adjustVal = error * adjustRate;
 
 					// Reset the length to minimize bias in other variables, it's applied later
 					updateSekeletonBoneLength(entry.getKey(), originalLength);
