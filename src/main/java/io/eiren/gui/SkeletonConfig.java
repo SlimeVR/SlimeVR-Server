@@ -28,6 +28,7 @@ public class SkeletonConfig extends EJBag {
 	private final VRServer server;
 	private final VRServerGUI gui;
 	private final AutoBone autoBone;
+	private Thread autoBoneThread = null;
 	private Map<String, SkeletonLabel> labels = new HashMap<>();
 
 	public SkeletonConfig(VRServer server, VRServerGUI gui) {
@@ -103,6 +104,11 @@ public class SkeletonConfig extends EJBag {
 				addMouseListener(new MouseInputAdapter() {
 					@Override
 					public void mouseClicked(MouseEvent e) {
+						// Prevent running multiple times
+						if (autoBoneThread != null) {
+							return;
+						}
+
 						Thread thread = new Thread() {
 							@Override
 							public void run() {
@@ -161,10 +167,12 @@ public class SkeletonConfig extends EJBag {
 									LogManager.log.severe("[AutoBone] Failed adjustment!", e1);
 								} finally {
 									setText("Auto");
+									autoBoneThread = null;
 								}
 							}
 						};
 
+						autoBoneThread = thread;
 						thread.start();
 					}
 				});
