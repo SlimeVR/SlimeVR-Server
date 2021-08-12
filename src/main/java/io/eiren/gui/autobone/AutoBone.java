@@ -300,7 +300,7 @@ public class AutoBone {
 
 						case "Legs length":
 							val = configs.get("Waist");
-							if (val == null || newLength <= 0.667f * val || newLength >= 1.333f * val) {
+							if (val == null || newLength <= 0.5235f * val || newLength >= 1.7235f * val) {
 								continue;
 							}
 							break;
