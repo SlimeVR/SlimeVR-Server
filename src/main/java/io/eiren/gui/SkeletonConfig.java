@@ -107,20 +107,22 @@ public class SkeletonConfig extends EJBag {
 							@Override
 							public void run() {
 								try {
-									File recording = new File("ABRecording_Load.abf");
+									File saveRecording = new File("ABRecording.abf");
+									File loadRecording = new File("ABRecording_Load.abf");
 
-									if (recording.exists()) {
+									if (loadRecording.exists()) {
 										setText("Load");
-										PoseRecordIO importer = new PoseRecordIO("ABRecording_Load.abf");
-										PoseFrame[] frames = importer.readFromFile();
+										LogManager.log.info("[AutoBone] Detected recording at \"" + loadRecording.getPath() + "\", loading frames...");
+										PoseFrame[] frames = PoseRecordIO.readFromFile(loadRecording);
 
 										if (frames == null) {
-											throw new NullPointerException("Reading frames from \"ABRecording_Load.abf\" failed...");
+											throw new NullPointerException("Reading frames from \"" + loadRecording.getPath() + "\" failed...");
 										}
 
 										autoBone.setFrames(frames);
 
 										setText("Wait");
+										LogManager.log.info("[AutoBone] Done loading frames! Processing frames...");
 									} else {
 										setText("Move");
 										autoBone.startFrameRecording(250, 60);
@@ -130,10 +132,9 @@ public class SkeletonConfig extends EJBag {
 										}
 
 										setText("Wait");
-										LogManager.log.info("[AutoBone] Done recording! Exporting frames to \"ABRecording.abf\"...");
+										LogManager.log.info("[AutoBone] Done recording! Exporting frames to \"" + saveRecording.getPath() + "\"...");
+										PoseRecordIO.writeToFile(saveRecording, autoBone.getFrames());
 
-										PoseRecordIO exporter = new PoseRecordIO("ABRecording.abf");
-										exporter.writeToFile(autoBone.getFrames());
 										LogManager.log.info("[AutoBone] Done exporting! Processing frames...");
 									}
 

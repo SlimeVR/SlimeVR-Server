@@ -13,13 +13,13 @@ import io.eiren.vr.processor.HumanSkeletonWithWaist;
 
 public class AutoBone {
 
-	protected final static int MIN_DATA_DISTANCE = 5;
+	protected final static int MIN_DATA_DISTANCE = 4;
 	protected final static int MAX_DATA_DISTANCE = 10;
 
-	protected final static int NUM_EPOCHS = 100;
+	protected final static int NUM_EPOCHS = 200;
 
-	protected final static float INITIAL_ADJUSTMENT_RATE = 1f;
-	protected final static float ADJUSTMENT_RATE_DECAY = 1.05f;
+	protected final static float INITIAL_ADJUSTMENT_RATE = 0.9f;
+	protected final static float ADJUSTMENT_RATE_DECAY = 1.057f;
 
 	protected final VRServer server;
 
@@ -35,7 +35,7 @@ public class AutoBone {
 	protected final SimpleSkeleton skeleton2;
 
 	public final HashMap<String, Float> configs = new HashMap<String, Float>() {{
-		put("Head", HumanSkeletonWithWaist.HEAD_SHIFT_DEFAULT);
+		//put("Head", HumanSkeletonWithWaist.HEAD_SHIFT_DEFAULT);
 		put("Neck", HumanSkeletonWithWaist.NECK_LENGTH_DEFAULT);
 		put("Waist", 0.85f);
 		put("Chest", 0.42f);
@@ -59,7 +59,7 @@ public class AutoBone {
 
 	public void reloadConfigValues() {
 		// Load waist configs
-		configs.put("Head", server.config.getFloat("body.headShift", HumanSkeletonWithWaist.HEAD_SHIFT_DEFAULT));
+		//configs.put("Head", server.config.getFloat("body.headShift", HumanSkeletonWithWaist.HEAD_SHIFT_DEFAULT));
 		configs.put("Neck", server.config.getFloat("body.neckLength", HumanSkeletonWithWaist.NECK_LENGTH_DEFAULT));
 		configs.put("Waist", server.config.getFloat("body.waistDistance", 0.85f));
 		configs.put("Chest", server.config.getFloat("body.chestDistance", 0.42f));
@@ -127,6 +127,16 @@ public class AutoBone {
 		this.frames = frames;
 	}
 
+	public float getHeight() {
+		float height = 0f;
+
+		for (float length : configs.values()) {
+			height += length;
+		}
+
+		return height;
+	}
+
 	public void processFrames() {
 		int epochs = NUM_EPOCHS;
 		int epochCounter = 0;
@@ -137,6 +147,8 @@ public class AutoBone {
 
 		float sumError = 0f;
 		int errorCount = 0;
+
+		float originalHeight = getHeight();
 
 		for (;;) {
 			// Detect end of iteration
@@ -211,12 +223,21 @@ public class AutoBone {
 				for (Entry<String, Float> entry : configs.entrySet()) {
 					float originalLength = entry.getValue();
 
-					float newLength = originalLength + adjustVal;
+					float heightChange = originalHeight - (getHeight() + adjustVal);
+					// Use Math.abs() to retain the sign while being squared
+					float heightAdjustVal = (heightChange * Math.abs(heightChange));
+
+					float newLength = originalLength + adjustVal + heightAdjustVal;
 					updateSekeletonBoneLength(entry.getKey(), newLength);
 					float newError = getFootError(skeleton1, skeleton2);
 
 					if (newError >= error) {
-						newLength = originalLength - adjustVal;
+
+						heightChange = originalHeight - (getHeight() - adjustVal);
+						// Use Math.abs() to retain the sign while being squared
+						heightAdjustVal = (heightChange * Math.abs(heightChange));
+
+						newLength = (originalLength - adjustVal) + heightAdjustVal;
 						updateSekeletonBoneLength(entry.getKey(), newLength);
 						newError = getFootError(skeleton1, skeleton2);
 
@@ -240,6 +261,8 @@ public class AutoBone {
 				}
 			} while (++frameCursor1 < frames.length && ++frameCursor2 < frames.length);
 		}
+
+		LogManager.log.info("[AutoBone] Original height: " + originalHeight + " New height: " + getHeight());
 	}
 
 	protected static float getFootError(SimpleSkeleton skeleton1, SimpleSkeleton skeleton2) {
