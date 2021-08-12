@@ -13,13 +13,17 @@ import io.eiren.vr.processor.HumanSkeletonWithWaist;
 
 public class AutoBone {
 
-	protected final static int MIN_DATA_DISTANCE = 20;
-	protected final static int MAX_DATA_DISTANCE = 40;
+	protected final static int MIN_DATA_DISTANCE = 15;
+	protected final static int MAX_DATA_DISTANCE = 50;
 
-	protected final static int NUM_EPOCHS = 200;
+	protected final static int NUM_EPOCHS = 50;
 
-	protected final static float INITIAL_ADJUSTMENT_RATE = 0.5f;
-	protected final static float ADJUSTMENT_RATE_DECAY = 1.057f;
+	protected final static float INITIAL_ADJUSTMENT_RATE = 1f;
+	protected final static float ADJUSTMENT_RATE_DECAY = 1.4f;
+
+	protected final static float SLIDE_ERROR_FACTOR = 1f;
+	protected final static float OFFSET_ERROR_FACTOR = 0.75f;
+	protected final static float HEIGHT_ERROR_FACTOR = 1f;
 
 	protected final VRServer server;
 
@@ -34,16 +38,8 @@ public class AutoBone {
 	protected final SimpleSkeleton skeleton1;
 	protected final SimpleSkeleton skeleton2;
 
-	public final HashMap<String, Float> configs = new HashMap<String, Float>() {{
-		//put("Head", HumanSkeletonWithWaist.HEAD_SHIFT_DEFAULT);
-		put("Neck", HumanSkeletonWithWaist.NECK_LENGTH_DEFAULT);
-		put("Waist", 0.85f);
-		put("Chest", 0.42f);
-		put("Hips width", HumanSkeletonWithLegs.HIPS_WIDTH_DEFAULT);
-		put("Knee height", 0.42f);
-		put("Legs length", 0.84f);
-		//put("Foot length", HumanSkeletonWithLegs.FOOT_LENGTH_DEFAULT); // Feet aren't actually used
-	}};
+	// This is filled by reloadConfigValues()
+	public final HashMap<String, Float> configs = new HashMap<String, Float>();
 
 	public AutoBone(VRServer server) {
 		this.server = server;
@@ -59,7 +55,7 @@ public class AutoBone {
 
 	public void reloadConfigValues() {
 		// Load waist configs
-		//configs.put("Head", server.config.getFloat("body.headShift", HumanSkeletonWithWaist.HEAD_SHIFT_DEFAULT));
+		configs.put("Head", server.config.getFloat("body.headShift", HumanSkeletonWithWaist.HEAD_SHIFT_DEFAULT));
 		configs.put("Neck", server.config.getFloat("body.neckLength", HumanSkeletonWithWaist.NECK_LENGTH_DEFAULT));
 		configs.put("Waist", server.config.getFloat("body.waistDistance", 0.85f));
 		configs.put("Chest", server.config.getFloat("body.chestDistance", 0.42f));
@@ -82,9 +78,22 @@ public class AutoBone {
 		java.awt.EventQueue.invokeLater(() -> {
 			if (newSkeleton instanceof HumanSkeletonWithLegs) {
 				skeleton = (HumanSkeletonWithLegs)newSkeleton;
+				applyConfigToSkeleton(newSkeleton);
 				LogManager.log.info("Received updated skeleton");
 			}
 		});
+	}
+
+	public boolean applyConfigToSkeleton(HumanSkeleton skeleton) {
+		if (skeleton == null) {
+			return false;
+		}
+
+		for (Entry<String, Float> entry : configs.entrySet()) {
+			skeleton.setSkeletonConfig(entry.getKey(), entry.getValue());
+		}
+
+		return true;
 	}
 
 	@VRServerThread
@@ -130,8 +139,14 @@ public class AutoBone {
 	public float getHeight() {
 		float height = 0f;
 
-		for (float length : configs.values()) {
-			height += length;
+		Float waistLength = configs.get("Waist");
+		if (waistLength != null) {
+			height += waistLength;
+		}
+
+		Float legsLength = configs.get("Legs length");
+		if (legsLength != null) {
+			height += legsLength;
 		}
 
 		return height;
@@ -139,7 +154,7 @@ public class AutoBone {
 
 	public void processFrames() {
 		int epochs = NUM_EPOCHS;
-		int epochCounter = 0;
+		int epochCounter = -1;
 
 		int cursorOffset = MIN_DATA_DISTANCE;
 
@@ -194,7 +209,7 @@ public class AutoBone {
 				skeleton1.updatePose();
 				skeleton2.updatePose();
 
-				float error = getFootError(skeleton1, skeleton2);
+				float error = getError(skeleton1, skeleton2, getHeight() - originalHeight);
 
 				// In case of fire
 				if (Float.isNaN(error) || Float.isInfinite(error)) {
@@ -221,18 +236,44 @@ public class AutoBone {
 				// }
 
 				for (Entry<String, Float> entry : configs.entrySet()) {
+					// Skip adjustment if the epoch is before starting (for logging only)
+					if (epochCounter < 0) {
+						break;
+					}
+
 					float originalLength = entry.getValue();
 
 					// Try positive and negative adjustments
 					for (int i = 0; i < 2; i++) {
 						float curAdjustVal = i == 0 ? adjustVal : -adjustVal;
+						float newLength = originalLength + curAdjustVal;
 
-						float heightChange = originalHeight - (getHeight() + curAdjustVal);
-						float heightAdjustVal = heightChange * Math.abs(heightChange); // Use Math.abs to retain the sign
+						// No small or negative numbers!!! Bad algorithm!
+						if (newLength < 0.01f) {
+							continue;
+						}
 
-						float newLength = originalLength + curAdjustVal + heightAdjustVal;
+						Float val;
+						switch (entry.getKey()) {
+						case "Chest":
+							// If the chest length is an invalid value, skip it
+							val = configs.get("Waist");
+							if (val == null || newLength >= 0.75f * val) {
+								continue;
+							}
+							break;
+
+						case "Knee height":
+							val = configs.get("Legs length");
+							// If the knee height is an invalid value, skip it
+							if (val == null || newLength >= 0.75f * val) {
+								continue;
+							}
+							break;
+						}
+
 						updateSekeletonBoneLength(entry.getKey(), newLength);
-						float newError = getFootError(skeleton1, skeleton2);
+						float newError = getError(skeleton1, skeleton2, (getHeight() + curAdjustVal) - originalHeight);
 
 						if (newError < error) {
 							configs.put(entry.getKey(), newLength);
@@ -247,13 +288,26 @@ public class AutoBone {
 		}
 
 		LogManager.log.info("[AutoBone] Original height: " + originalHeight + " New height: " + getHeight());
+
+		LogManager.log.info("[AutoBone] Done! Applying to skeleton...");
+		applyConfigToSkeleton(skeleton);
 	}
 
-	protected static float getFootError(SimpleSkeleton skeleton1, SimpleSkeleton skeleton2) {
-		float distLeft = skeleton1.getLeftFootPos().distanceSquared(skeleton2.getLeftFootPos());
-		float distRight = skeleton1.getRightFootPos().distanceSquared(skeleton2.getRightFootPos());
+	protected static float getError(SimpleSkeleton skeleton1, SimpleSkeleton skeleton2, float heightChange) {
+		float slideLeft = skeleton1.getLeftFootPos().distance(skeleton2.getLeftFootPos());
+		float slideRight = skeleton1.getRightFootPos().distance(skeleton2.getRightFootPos());
 
-		return distLeft + distRight;
+		// Averaged error
+		float slideError = (slideLeft + slideRight) / 2f;
+
+		float dist1 = skeleton1.getLeftFootPos().y - skeleton1.getRightFootPos().y;
+		float dist2 = skeleton2.getLeftFootPos().y - skeleton2.getRightFootPos().y;
+
+		// Averaged error
+		float distError = (dist1 + dist2) / 2f;
+
+		// Minimize sliding, minimize foot height offset, minimize change in total height
+		return (SLIDE_ERROR_FACTOR * (slideError * slideError)) + (OFFSET_ERROR_FACTOR * (distError * distError)) + (HEIGHT_ERROR_FACTOR * (heightChange * heightChange));
 	}
 
 	protected void updateSekeletonBoneLength(String joint, float newLength) {

@@ -201,6 +201,10 @@ public class SimpleSkeleton {
 		hmdNode.update();
 	}
 
+	public Vector3f getHMDPos() {
+		return hmdNode.worldTransform.getTranslation();
+	}
+
 	public Vector3f getLeftFootPos() {
 		return leftAnkleNode.worldTransform.getTranslation();
 	}
