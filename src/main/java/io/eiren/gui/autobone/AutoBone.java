@@ -13,17 +13,19 @@ import io.eiren.vr.processor.HumanSkeletonWithWaist;
 
 public class AutoBone {
 
-	protected final static int MIN_DATA_DISTANCE = 15;
-	protected final static int MAX_DATA_DISTANCE = 50;
+	protected final static int MIN_DATA_DISTANCE = 1;
+	protected final static int MAX_DATA_DISTANCE = 1000;
 
-	protected final static int NUM_EPOCHS = 50;
+	protected final static int NUM_EPOCHS = 20;
 
 	protected final static float INITIAL_ADJUSTMENT_RATE = 1f;
-	protected final static float ADJUSTMENT_RATE_DECAY = 1.4f;
+	protected final static float ADJUSTMENT_RATE_DECAY = 1.1f;
 
 	protected final static float SLIDE_ERROR_FACTOR = 1f;
 	protected final static float OFFSET_ERROR_FACTOR = 0.75f;
-	protected final static float HEIGHT_ERROR_FACTOR = 1f;
+	protected final static float HEIGHT_ERROR_FACTOR = 0.75f;
+
+	protected final static float HEADSET_HEIGHT_RATIO = 0.91f;
 
 	protected final VRServer server;
 
@@ -33,7 +35,7 @@ public class AutoBone {
 	protected int frameRecordingCursor = -1;
 
 	protected long frameRecordingInterval = 60L;
-	protected long lastFrameTimeMs = 0L;
+	protected long lastFrameTimeMs = -1L;
 
 	protected final SimpleSkeleton skeleton1;
 	protected final SimpleSkeleton skeleton2;
@@ -79,7 +81,7 @@ public class AutoBone {
 			if (newSkeleton instanceof HumanSkeletonWithLegs) {
 				skeleton = (HumanSkeletonWithLegs)newSkeleton;
 				applyConfigToSkeleton(newSkeleton);
-				LogManager.log.info("Received updated skeleton");
+				LogManager.log.info("[AutoBone] Received updated skeleton");
 			}
 		});
 	}
@@ -93,6 +95,7 @@ public class AutoBone {
 			skeleton.setSkeletonConfig(entry.getKey(), entry.getValue());
 		}
 
+		LogManager.log.info("[AutoBone] Configured skeleton bone lengths");
 		return true;
 	}
 
@@ -152,6 +155,16 @@ public class AutoBone {
 		return height;
 	}
 
+	public float getMaxHmdHeight(PoseFrame[] frames) {
+		float maxHeight = 0f;
+		for (PoseFrame frame : frames) {
+			if (frame.rootPos.y > maxHeight) {
+				maxHeight = frame.rootPos.y;
+			}
+		}
+		return maxHeight;
+	}
+
 	public void processFrames() {
 		int epochs = NUM_EPOCHS;
 		int epochCounter = -1;
@@ -163,7 +176,15 @@ public class AutoBone {
 		float sumError = 0f;
 		int errorCount = 0;
 
-		float originalHeight = getHeight();
+		float hmdHeight = getMaxHmdHeight(frames);
+		if (hmdHeight <= 0.50f) {
+			LogManager.log.warning("[AutoBone] Max headset height detected (Value seems too low, did you stand straight while measuring?): " + hmdHeight);
+		} else {
+			LogManager.log.info("[AutoBone] Max headset height detected: " + hmdHeight);
+		}
+
+		// Estimate target height from HMD height
+		float targetHeight = hmdHeight * HEADSET_HEIGHT_RATIO;
 
 		for (;;) {
 			// Detect end of iteration
@@ -209,7 +230,7 @@ public class AutoBone {
 				skeleton1.updatePose();
 				skeleton2.updatePose();
 
-				float error = getError(skeleton1, skeleton2, getHeight() - originalHeight);
+				float error = getError(skeleton1, skeleton2, getHeight() - targetHeight);
 
 				// In case of fire
 				if (Float.isNaN(error) || Float.isInfinite(error)) {
@@ -253,27 +274,40 @@ public class AutoBone {
 							continue;
 						}
 
+						// Detect and skip invalid values
 						Float val;
 						switch (entry.getKey()) {
 						case "Chest":
-							// If the chest length is an invalid value, skip it
 							val = configs.get("Waist");
-							if (val == null || newLength >= 0.75f * val) {
+							if (val == null || newLength <= 0.2f * val || newLength >= 0.6f * val) {
+								continue;
+							}
+							break;
+
+						case "Hips width":
+							val = configs.get("Waist");
+							if (val == null || newLength < 0.08f || newLength >= 0.4f * val) {
 								continue;
 							}
 							break;
 
 						case "Knee height":
 							val = configs.get("Legs length");
-							// If the knee height is an invalid value, skip it
-							if (val == null || newLength >= 0.75f * val) {
+							if (val == null || newLength <= 0.375f * val || newLength >= 0.625f * val) {
+								continue;
+							}
+							break;
+
+						case "Legs length":
+							val = configs.get("Waist");
+							if (val == null || newLength <= 0.667f * val || newLength >= 1.333f * val) {
 								continue;
 							}
 							break;
 						}
 
 						updateSekeletonBoneLength(entry.getKey(), newLength);
-						float newError = getError(skeleton1, skeleton2, (getHeight() + curAdjustVal) - originalHeight);
+						float newError = getError(skeleton1, skeleton2, (getHeight() + curAdjustVal) - targetHeight);
 
 						if (newError < error) {
 							configs.put(entry.getKey(), newLength);
@@ -287,7 +321,7 @@ public class AutoBone {
 			} while (++frameCursor1 < frames.length && ++frameCursor2 < frames.length);
 		}
 
-		LogManager.log.info("[AutoBone] Original height: " + originalHeight + " New height: " + getHeight());
+		LogManager.log.info("[AutoBone] Target height: " + targetHeight + " New height: " + getHeight());
 
 		LogManager.log.info("[AutoBone] Done! Applying to skeleton...");
 		applyConfigToSkeleton(skeleton);
