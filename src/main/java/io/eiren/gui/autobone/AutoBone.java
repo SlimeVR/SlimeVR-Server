@@ -1,6 +1,7 @@
 package io.eiren.gui.autobone;
 
 import java.util.HashMap;
+import java.util.Set;
 import java.util.Map.Entry;
 
 import io.eiren.util.ann.ThreadSafe;
@@ -37,9 +38,6 @@ public class AutoBone {
 	protected long frameRecordingInterval = 60L;
 	protected long lastFrameTimeMs = -1L;
 
-	protected final SimpleSkeleton skeleton1;
-	protected final SimpleSkeleton skeleton2;
-
 	// This is filled by reloadConfigValues()
 	public final HashMap<String, Float> configs = new HashMap<String, Float>();
 
@@ -47,9 +45,6 @@ public class AutoBone {
 		this.server = server;
 
 		reloadConfigValues();
-
-		this.skeleton1 = new SimpleSkeleton(server);
-		this.skeleton2 = new SimpleSkeleton(server);
 
 		server.addSkeletonUpdatedCallback(this::skeletonUpdated);
 		server.addOnTick(this::onTick);
@@ -166,6 +161,11 @@ public class AutoBone {
 	}
 
 	public void processFrames() {
+		Set<Entry<String, Float>> configSet = configs.entrySet();
+
+		SimpleSkeleton skeleton1 = new SimpleSkeleton(configSet);
+		SimpleSkeleton skeleton2 = new SimpleSkeleton(configSet);
+
 		int epochs = NUM_EPOCHS;
 		int epochCounter = -1;
 
@@ -306,17 +306,17 @@ public class AutoBone {
 							break;
 						}
 
-						updateSekeletonBoneLength(entry.getKey(), newLength);
+						updateSekeletonBoneLength(skeleton1, skeleton2, entry.getKey(), newLength);
 						float newError = getError(skeleton1, skeleton2, (getHeight() + curAdjustVal) - targetHeight);
 
 						if (newError < error) {
-							configs.put(entry.getKey(), newLength);
+							entry.setValue(newLength);
 							break;
 						}
 					}
 
 					// Reset the length to minimize bias in other variables, it's applied later
-					updateSekeletonBoneLength(entry.getKey(), originalLength);
+					updateSekeletonBoneLength(skeleton1, skeleton2, entry.getKey(), originalLength);
 				}
 			} while (++frameCursor1 < frames.length && ++frameCursor2 < frames.length);
 		}
@@ -344,7 +344,7 @@ public class AutoBone {
 		return (SLIDE_ERROR_FACTOR * (slideError * slideError)) + (OFFSET_ERROR_FACTOR * (distError * distError)) + (HEIGHT_ERROR_FACTOR * (heightChange * heightChange));
 	}
 
-	protected void updateSekeletonBoneLength(String joint, float newLength) {
+	protected void updateSekeletonBoneLength(SimpleSkeleton skeleton1, SimpleSkeleton skeleton2, String joint, float newLength) {
 		skeleton1.setSkeletonConfig(joint, newLength);
 		skeleton2.setSkeletonConfig(joint, newLength);
 

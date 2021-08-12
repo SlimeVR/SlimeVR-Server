@@ -10,10 +10,9 @@ import io.eiren.vr.VRServer;
 import io.eiren.vr.processor.HumanSkeletonWithLegs;
 import io.eiren.vr.processor.HumanSkeletonWithWaist;
 import io.eiren.vr.processor.TransformNode;
+import io.eiren.yaml.YamlFile;
 
 public class SimpleSkeleton {
-
-	protected final VRServer server;
 
 	// Waist
 	protected final TransformNode hmdNode = new TransformNode("HMD", false);
@@ -40,11 +39,9 @@ public class SimpleSkeleton {
 	protected final TransformNode leftHipNode = new TransformNode("Left-Hip", false);
 	protected final TransformNode leftKneeNode = new TransformNode("Left-Knee", false);
 	protected final TransformNode leftAnkleNode = new TransformNode("Left-Ankle", false);
-	protected final TransformNode leftFootNode = new TransformNode("Left-Foot", false);
 	protected final TransformNode rightHipNode = new TransformNode("Right-Hip", false);
 	protected final TransformNode rightKneeNode = new TransformNode("Right-Knee", false);
 	protected final TransformNode rightAnkleNode = new TransformNode("Right-Ankle", false);
-	protected final TransformNode rightFootNode = new TransformNode("Right-Foot", false);
 
 	/**
 	 * Distance between centers of both hips
@@ -58,25 +55,10 @@ public class SimpleSkeleton {
 	 * Distance from waist to ankle
 	 */
 	protected float legsLength = 0.84f;
-	protected float footLength = HumanSkeletonWithLegs.FOOT_LENGTH_DEFAULT;
 
 	protected final HashMap<String, TransformNode> nodes = new HashMap<String,TransformNode>();
 
-	public SimpleSkeleton(VRServer server) {
-		this.server = server;
-
-		// Load waist configs
-		headShift = server.config.getFloat("body.headShift", headShift);
-		neckLength = server.config.getFloat("body.neckLength", neckLength);
-		chestDistance = server.config.getFloat("body.chestDistance", chestDistance);
-		waistDistance = server.config.getFloat("body.waistDistance", waistDistance);
-
-		// Load leg configs
-		hipsWidth = server.config.getFloat("body.hipsWidth", hipsWidth);
-		kneeHeight = server.config.getFloat("body.kneeHeight", kneeHeight);
-		legsLength = server.config.getFloat("body.legsLength", legsLength);
-		footLength = server.config.getFloat("body.footLength", footLength);
-
+	public SimpleSkeleton() {
 		// Assemble skeleton to waist
 		hmdNode.attachChild(headNode);
 		headNode.localTransform.setTranslation(0, 0, headShift);
@@ -109,16 +91,18 @@ public class SimpleSkeleton {
 		rightKneeNode.attachChild(rightAnkleNode);
 		rightAnkleNode.localTransform.setTranslation(0, -kneeHeight, 0);
 
-		leftAnkleNode.attachChild(leftFootNode);
-		leftFootNode.localTransform.setTranslation(0, 0, -footLength);
-
-		rightAnkleNode.attachChild(rightFootNode);
-		rightFootNode.localTransform.setTranslation(0, 0, -footLength);
-
 		// Set up a HashMap to get nodes by name easily
 		hmdNode.depthFirstTraversal(visitor -> {
 			nodes.put(visitor.getName(), visitor);
 		});
+	}
+
+	public SimpleSkeleton(Iterable<Entry<String, Float>> configs) {
+		// Initialize
+		this();
+
+		// Set configs
+		setSkeletonConfigs(configs);
 	}
 
 	public void setPoseFromSkeleton(HumanSkeletonWithLegs humanSkeleton) {
@@ -150,6 +134,12 @@ public class SimpleSkeleton {
 			if (targetNode != null) {
 				targetNode.localTransform.setRotation(rotation.getValue());
 			}
+		}
+	}
+
+	public void setSkeletonConfigs(Iterable<Entry<String, Float>> configs) {
+		for (Entry<String, Float> config : configs) {
+			setSkeletonConfig(config.getKey(), config.getValue());
 		}
 	}
 
@@ -189,11 +179,6 @@ public class SimpleSkeleton {
 			leftKneeNode.localTransform.setTranslation(0, -(legsLength - kneeHeight), 0);
 			rightKneeNode.localTransform.setTranslation(0, -(legsLength - kneeHeight), 0);
 			break;
-		case "Foot length":
-			footLength = newLength;
-			leftFootNode.localTransform.setTranslation(0, 0, -footLength);
-			rightFootNode.localTransform.setTranslation(0, 0, -footLength);
-			break;
 		}
 	}
 
@@ -213,17 +198,16 @@ public class SimpleSkeleton {
 		return rightAnkleNode.worldTransform.getTranslation();
 	}
 
-	public void saveConfigs() {
+	public void saveConfigs(YamlFile config) {
 		// Save waist configs
-		server.config.setProperty("body.headShift", headShift);
-		server.config.setProperty("body.neckLength", neckLength);
-		server.config.setProperty("body.waistDistance", waistDistance);
-		server.config.setProperty("body.chestDistance", chestDistance);
+		config.setProperty("body.headShift", headShift);
+		config.setProperty("body.neckLength", neckLength);
+		config.setProperty("body.waistDistance", waistDistance);
+		config.setProperty("body.chestDistance", chestDistance);
 
 		// Save leg configs
-		server.config.setProperty("body.hipsWidth", hipsWidth);
-		server.config.setProperty("body.kneeHeight", kneeHeight);
-		server.config.setProperty("body.legsLength", legsLength);
-		server.config.setProperty("body.footLength", footLength);
+		config.setProperty("body.hipsWidth", hipsWidth);
+		config.setProperty("body.kneeHeight", kneeHeight);
+		config.setProperty("body.legsLength", legsLength);
 	}
 }
