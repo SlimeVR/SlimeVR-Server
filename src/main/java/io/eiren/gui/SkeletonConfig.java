@@ -159,6 +159,15 @@ public class SkeletonConfig extends EJBag {
 			gui.refresh();
 		});
 	}
+
+	@ThreadSafe
+	public void refreshAll() {
+		java.awt.EventQueue.invokeLater(() -> {
+			labels.forEach((joint, label) -> {
+				label.setText(StringUtils.prettyNumber(server.humanPoseProcessor.getSkeletonConfig(joint)));
+			});
+		});
+	}
 	
 	private void change(String joint, float diff) {
 		float current = server.humanPoseProcessor.getSkeletonConfig(joint);
