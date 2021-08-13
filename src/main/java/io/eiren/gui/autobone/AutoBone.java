@@ -72,8 +72,8 @@ public class AutoBone {
 
 		// Load leg configs
 		configs.put("Hips width", server.config.getFloat("body.hipsWidth", HumanSkeletonWithLegs.HIPS_WIDTH_DEFAULT));
-		configs.put("Knee height", server.config.getFloat("body.kneeHeight", 0.42f));
 		configs.put("Legs length", server.config.getFloat("body.legsLength", 0.84f));
+		configs.put("Knee height", server.config.getFloat("body.kneeHeight", 0.42f));
 	}
 
 	public void setSkeletonLengths(SimpleSkeleton skeleton) {
@@ -102,8 +102,50 @@ public class AutoBone {
 			skeleton.setSkeletonConfig(entry.getKey(), entry.getValue());
 		}
 
+		server.saveConfig();
+
 		LogManager.log.info("[AutoBone] Configured skeleton bone lengths");
 		return true;
+	}
+
+	// This doesn't require a skeleton, therefore can be used if skeleton is null
+	public void saveConfigs() {
+		Float headOffset = configs.get("Head");
+		if (headOffset != null) {
+			server.config.setProperty("body.headShift", headOffset);
+		}
+
+		Float neckLength = configs.get("Neck");
+		if (neckLength != null) {
+			server.config.setProperty("body.neckLength", neckLength);
+		}
+
+		Float waistLength = configs.get("Waist");
+		if (waistLength != null) {
+			server.config.setProperty("body.waistDistance", waistLength);
+		}
+
+		Float chestDistance = configs.get("Chest");
+		if (chestDistance != null) {
+			server.config.setProperty("body.chestDistance", chestDistance);
+		}
+
+		Float hipsWidth = configs.get("Hips width");
+		if (hipsWidth != null) {
+			server.config.setProperty("body.hipsWidth", hipsWidth);
+		}
+
+		Float legsLength = configs.get("Legs length");
+		if (legsLength != null) {
+			server.config.setProperty("body.legsLength", legsLength);
+		}
+
+		Float kneeHeight = configs.get("Knee height");
+		if (kneeHeight != null) {
+			server.config.setProperty("body.kneeHeight", kneeHeight);
+		}
+
+		server.saveConfig();
 	}
 
 	@VRServerThread
@@ -392,7 +434,10 @@ public class AutoBone {
 		LogManager.log.info("[AutoBone] Target height: " + targetHeight + " New height: " + getHeight());
 
 		LogManager.log.info("[AutoBone] Done! Applying to skeleton...");
-		applyConfigToSkeleton(skeleton);
+		if (!applyConfigToSkeleton(skeleton)) {
+			LogManager.log.info("[AutoBone] Applying to skeleton failed, only saving configs...");
+			saveConfigs();
+		}
 	}
 
 	protected static float getError(SimpleSkeleton skeleton1, SimpleSkeleton skeleton2, float heightChange) {
