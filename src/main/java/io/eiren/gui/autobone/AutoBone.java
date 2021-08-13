@@ -28,14 +28,15 @@ public class AutoBone {
 
 	protected final static float HEADSET_HEIGHT_RATIO = 0.91f;
 
-	protected final static float CHEST_WAIST_RATIO_MIN = 0.2f;
-	protected final static float CHEST_WAIST_RATIO_MAX = 0.6f;
+	protected final static float CHEST_WAIST_RATIO_MIN = 0.333f;
+	protected final static float CHEST_WAIST_RATIO_MAX = 0.667f;
 
 	protected final static float HIP_MIN = 0.08f;
 	protected final static float HIP_WAIST_RATIO_MAX = 0.4f;
 
-	protected final static float LEG_WAIST_RATIO_MIN = 0.5235f;
-	protected final static float LEG_WAIST_RATIO_MAX = 1.7235f;
+	// Human average is 1.1235 (SD 0.07)
+	protected final static float LEG_WAIST_RATIO_MIN = 1.1235f - 0.27f;
+	protected final static float LEG_WAIST_RATIO_MAX = 1.1235f + 0.27f;
 
 	protected final static float KNEE_LEG_RATIO_MIN = 0.42f;
 	protected final static float KNEE_LEG_RATIO_MAX = 0.58f;
