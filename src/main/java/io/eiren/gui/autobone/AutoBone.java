@@ -74,7 +74,6 @@ public class AutoBone {
 		configs.put("Hips width", server.config.getFloat("body.hipsWidth", HumanSkeletonWithLegs.HIPS_WIDTH_DEFAULT));
 		configs.put("Knee height", server.config.getFloat("body.kneeHeight", 0.42f));
 		configs.put("Legs length", server.config.getFloat("body.legsLength", 0.84f));
-		//configs.put("Foot length", server.config.getFloat("body.footLength", HumanSkeletonWithLegs.FOOT_LENGTH_DEFAULT)); // Feet aren't actually used
 	}
 
 	public void setSkeletonLengths(SimpleSkeleton skeleton) {
