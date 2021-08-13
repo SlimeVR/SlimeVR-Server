@@ -192,6 +192,9 @@ public class SkeletonConfig extends EJBag {
 									configInfo.append(']');
 
 									LogManager.log.info("[AutoBone] Length values: " + configInfo.toString());
+
+									// Update GUI values after adjustment
+									refreshAll();
 								} catch (Exception e1) {
 									LogManager.log.severe("[AutoBone] Failed adjustment!", e1);
 								} finally {
