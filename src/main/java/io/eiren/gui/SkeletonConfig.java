@@ -164,7 +164,7 @@ public class SkeletonConfig extends EJBag {
 	public void refreshAll() {
 		java.awt.EventQueue.invokeLater(() -> {
 			labels.forEach((joint, label) -> {
-				label.setText(StringUtils.prettyNumber(server.humanPoseProcessor.getSkeletonConfig(joint)));
+				label.setText(StringUtils.prettyNumber(server.humanPoseProcessor.getSkeletonConfig(joint) * 100, 0));
 			});
 		});
 	}

@@ -18,6 +18,8 @@ import io.eiren.vr.processor.HumanSkeleton;
 import io.eiren.vr.processor.TransformNode;
 
 public class SkeletonList extends EJBag {
+	
+	private static final long UPDATE_DELAY = 50;
 
 	Quaternion q = new Quaternion();
 	Vector3f v = new Vector3f();
@@ -26,6 +28,7 @@ public class SkeletonList extends EJBag {
 	private final VRServer server;
 	private final VRServerGUI gui;
 	private final List<NodeStatus> nodes = new FastList<>();
+	private long lastUpdate = 0;
 	
 	public SkeletonList(VRServer server, VRServerGUI gui) {
 		super();
@@ -62,6 +65,9 @@ public class SkeletonList extends EJBag {
 	
 	@VRServerThread
 	public void updateBones() {
+		if(lastUpdate + UPDATE_DELAY > System.currentTimeMillis())
+			return;
+		lastUpdate = System.currentTimeMillis();
 		java.awt.EventQueue.invokeLater(() -> {
 			for(int i = 0; i < nodes.size(); ++i)
 				nodes.get(i).update();

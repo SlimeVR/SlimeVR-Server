@@ -34,6 +34,8 @@ import io.eiren.vr.trackers.TrackerWithTPS;
 
 public class TrackersList extends EJBox {
 	
+	private static final long UPDATE_DELAY = 50;
+	
 	Quaternion q = new Quaternion();
 	Vector3f v = new Vector3f();
 	float[] angles = new float[3];
@@ -42,6 +44,7 @@ public class TrackersList extends EJBox {
 	
 	private final VRServer server;
 	private final VRServerGUI gui;
+	private long lastUpdate = 0;
 
 	public TrackersList(VRServer server, VRServerGUI gui) {
 		super(BoxLayout.PAGE_AXIS);
@@ -78,6 +81,9 @@ public class TrackersList extends EJBox {
 	
 	@ThreadSafe
 	public void updateTrackers() {
+		if(lastUpdate + UPDATE_DELAY > System.currentTimeMillis())
+			return;
+		lastUpdate = System.currentTimeMillis();
 		java.awt.EventQueue.invokeLater(() -> {
 			for(int i = 0; i < trackers.size(); ++i)
 				trackers.get(i).update();
