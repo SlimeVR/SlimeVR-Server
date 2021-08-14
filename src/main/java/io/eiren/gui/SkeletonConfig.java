@@ -115,38 +115,30 @@ public class SkeletonConfig extends EJBag {
 							public void run() {
 								try {
 									File saveRecording = new File("ABRecording.abf");
-									File loadRecording = new File("ABRecording_Load.abf");
+									File recordFolder = new File("LoadRecordings");
 
-									if (loadRecording.exists()) {
+									FastList<PoseFrame[]> frameRecordings = new FastList<PoseFrame[]>();
+
+									if (recordFolder.isDirectory()) {
 										setText("Load");
-										LogManager.log.info("[AutoBone] Detected recording at \"" + loadRecording.getPath() + "\", loading frames...");
-										PoseFrame[] frames = PoseRecordIO.readFromFile(loadRecording);
 
-										if (frames == null) {
-											throw new NullPointerException("Reading frames from \"" + loadRecording.getPath() + "\" failed...");
-										}
+										for (File file : recordFolder.listFiles()) {
+											if (file.isFile() && org.apache.commons.lang3.StringUtils.endsWithIgnoreCase(file.getName(), ".abf")) {
+												LogManager.log.info("[AutoBone] Detected recording at \"" + file.getPath() + "\", loading frames...");
+												PoseFrame[] frames = PoseRecordIO.readFromFile(file);
 
-										FastList<PoseFrame> newFrames = new FastList<PoseFrame>(frames);
-										int recordNumber = 1;
-										for (;;) {
-											File loadRecordingI = new File("ABRecording_Load" + recordNumber++ + ".abf");
-
-											if (loadRecordingI.exists()) {
-												PoseFrame[] framesI = PoseRecordIO.readFromFile(loadRecordingI);
-
-												if (framesI == null) {
-													throw new NullPointerException("Reading frames from \"" + loadRecordingI.getPath() + "\" failed...");
+												if (frames == null) {
+													LogManager.log.severe("Reading frames from \"" + file.getPath() + "\" failed...");
+												} else {
+													frameRecordings.add(frames);
 												}
-
-												newFrames.addAll(framesI);
 											} else {
-												frames = newFrames.toArray(frames);
 												break;
 											}
 										}
+									}
 
-										autoBone.setFrames(frames);
-
+									if (frameRecordings.size() > 0) {
 										setText("Wait");
 										LogManager.log.info("[AutoBone] Done loading frames! Processing frames...");
 									} else {
@@ -161,37 +153,60 @@ public class SkeletonConfig extends EJBag {
 										setText("Wait");
 										LogManager.log.info("[AutoBone] Done recording! Exporting frames to \"" + saveRecording.getPath() + "\"...");
 										PoseRecordIO.writeToFile(saveRecording, autoBone.getFrames());
+										frameRecordings.add(autoBone.getFrames());
 
 										LogManager.log.info("[AutoBone] Done exporting! Processing frames...");
 									}
 
-									int epochs = server.config.getInt("autobone.epochCount", AutoBone.NUM_EPOCHS);
-									boolean calcInitError = server.config.getBoolean("autobone.calculateInitialError", true);
-									float adjustRate = server.config.getFloat("autobone.adjustRate", AutoBone.INITIAL_ADJUSTMENT_RATE);
-									float adjustRateDecay = server.config.getFloat("autobone.adjustRateDecay", AutoBone.ADJUSTMENT_RATE_DECAY);
-									int minDataDist = server.config.getInt("autobone.minimumDataDistance", AutoBone.MIN_DATA_DISTANCE);
-									int maxDataDist = server.config.getInt("autobone.maximumDataDistance", AutoBone.MAX_DATA_DISTANCE);
-									float targetHeight = server.config.getFloat("autobone.manualTargetHeight", -1f);
-									autoBone.processFrames(epochs, calcInitError, adjustRate, adjustRateDecay, minDataDist, maxDataDist, targetHeight);
+									FastList<Float> heightPercentError = new FastList<Float>(frameRecordings.size());
+									for (PoseFrame[] recording : frameRecordings) {
+										autoBone.setFrames(recording);
 
-									LogManager.log.info("[AutoBone] Done processing!");
+										int epochs = server.config.getInt("autobone.epochCount", AutoBone.NUM_EPOCHS);
+										boolean calcInitError = server.config.getBoolean("autobone.calculateInitialError", true);
+										float adjustRate = server.config.getFloat("autobone.adjustRate", AutoBone.INITIAL_ADJUSTMENT_RATE);
+										float adjustRateDecay = server.config.getFloat("autobone.adjustRateDecay", AutoBone.ADJUSTMENT_RATE_DECAY);
+										int minDataDist = server.config.getInt("autobone.minimumDataDistance", AutoBone.MIN_DATA_DISTANCE);
+										int maxDataDist = server.config.getInt("autobone.maximumDataDistance", AutoBone.MAX_DATA_DISTANCE);
+										float targetHeight = server.config.getFloat("autobone.manualTargetHeight", -1f);
+										heightPercentError.add(autoBone.processFrames(epochs, calcInitError, adjustRate, adjustRateDecay, minDataDist, maxDataDist, targetHeight));
 
-									boolean first = true;
-									StringBuilder configInfo = new StringBuilder("[");
+										LogManager.log.info("[AutoBone] Done processing!");
 
-									for (Entry<String, Float> entry : autoBone.configs.entrySet()) {
-										if (!first) {
-											configInfo.append(", ");
-										} else {
-											first = false;
+										boolean first = true;
+										StringBuilder configInfo = new StringBuilder("[");
+
+										for (Entry<String, Float> entry : autoBone.configs.entrySet()) {
+											if (!first) {
+												configInfo.append(", ");
+											} else {
+												first = false;
+											}
+
+											configInfo.append("{" + entry.getKey() + ": " + StringUtils.prettyNumber(entry.getValue()) + "}");
 										}
 
-										configInfo.append("{" + entry.getKey() + ": " + StringUtils.prettyNumber(entry.getValue()) + "}");
+										configInfo.append(']');
+
+										LogManager.log.info("[AutoBone] Length values: " + configInfo.toString());
 									}
 
-									configInfo.append(']');
+									if (heightPercentError.size() > 0) {
+										float mean = 0f;
+										for (float val : heightPercentError) {
+											mean += val;
+										}
+										mean /= heightPercentError.size();
 
-									LogManager.log.info("[AutoBone] Length values: " + configInfo.toString());
+										float std = 0f;
+										for (float val : heightPercentError) {
+											float stdVal = val - mean;
+											std += stdVal * stdVal;
+										}
+										std = (float)Math.sqrt(std / heightPercentError.size());
+
+										LogManager.log.info("[AutoBone] Average height error: " + StringUtils.prettyNumber(mean, 6) + " (SD " + StringUtils.prettyNumber(std, 6) + ")");
+									}
 
 									// Update GUI values after adjustment
 									refreshAll();

@@ -18,12 +18,12 @@ import io.eiren.vr.processor.HumanSkeletonWithWaist;
 public class AutoBone {
 
 	public final static int MIN_DATA_DISTANCE = 1;
-	public final static int MAX_DATA_DISTANCE = 2;
+	public final static int MAX_DATA_DISTANCE = 1;
 
 	public final static int NUM_EPOCHS = 50;
 
 	public final static float INITIAL_ADJUSTMENT_RATE = 1f;
-	public final static float ADJUSTMENT_RATE_DECAY = 1.01f;
+	public final static float ADJUSTMENT_RATE_DECAY = 1.1f;
 
 	protected final static float SLIDE_ERROR_FACTOR = 1.0f;
 	protected final static float OFFSET_ERROR_FACTOR = 0.0f;
@@ -251,7 +251,7 @@ public class AutoBone {
 		processFrames(epochs, calcInitError, adjustRate, adjustRateDecay, minDataDist, maxDataDist, -1f);
 	}
 
-	public void processFrames(int epochs, boolean calcInitError, float adjustRate, float adjustRateDecay, int minDataDist, int maxDataDist, float targetHeight) {
+	public float processFrames(int epochs, boolean calcInitError, float adjustRate, float adjustRateDecay, int minDataDist, int maxDataDist, float targetHeight) {
 		Set<Entry<String, Float>> configSet = configs.entrySet();
 
 		SimpleSkeleton skeleton1 = new SimpleSkeleton(configSet);
@@ -383,12 +383,14 @@ public class AutoBone {
 
 					if (finalNewLength > 0f) {
 						// Keep values within a reasonable range
-						/*
 						Float val;
 						switch (entry.getKey()) {
+						/*
 						case "Neck":
 							val = configs.get("Waist");
-							if (val == null || finalNewLength <= NECK_WAIST_RATIO_MIN * val || finalNewLength >= NECK_WAIST_RATIO_MAX * val) {
+							if (val == null) {
+								break;
+							} else if (finalNewLength <= NECK_WAIST_RATIO_MIN * val || finalNewLength >= NECK_WAIST_RATIO_MAX * val) {
 								entry.setValue(Math.min(Math.max(finalNewLength, NECK_WAIST_RATIO_MIN * val), NECK_WAIST_RATIO_MAX * val));
 							} else {
 								entry.setValue(finalNewLength);
@@ -397,7 +399,9 @@ public class AutoBone {
 
 						case "Chest":
 							val = configs.get("Waist");
-							if (val == null || finalNewLength <= CHEST_WAIST_RATIO_MIN * val || finalNewLength >= CHEST_WAIST_RATIO_MAX * val) {
+							if (val == null) {
+								break;
+							} else if (finalNewLength <= CHEST_WAIST_RATIO_MIN * val || finalNewLength >= CHEST_WAIST_RATIO_MAX * val) {
 								entry.setValue(Math.min(Math.max(finalNewLength, CHEST_WAIST_RATIO_MIN * val), CHEST_WAIST_RATIO_MAX * val));
 							} else {
 								entry.setValue(finalNewLength);
@@ -406,7 +410,9 @@ public class AutoBone {
 
 						case "Hips width":
 							val = configs.get("Waist");
-							if (val == null || finalNewLength < HIP_MIN || finalNewLength >= HIP_WAIST_RATIO_MAX * val) {
+							if (val == null) {
+								break;
+							} else if (finalNewLength < HIP_MIN || finalNewLength >= HIP_WAIST_RATIO_MAX * val) {
 								entry.setValue(Math.min(Math.max(finalNewLength, HIP_MIN), HIP_WAIST_RATIO_MAX * val));
 							} else {
 								entry.setValue(finalNewLength);
@@ -415,7 +421,9 @@ public class AutoBone {
 
 						case "Legs length":
 							val = configs.get("Waist");
-							if (val == null || finalNewLength <= LEG_WAIST_RATIO_MIN * val || finalNewLength >= LEG_WAIST_RATIO_MAX * val) {
+							if (val == null) {
+								break;
+							} else if (finalNewLength <= LEG_WAIST_RATIO_MIN * val || finalNewLength >= LEG_WAIST_RATIO_MAX * val) {
 								entry.setValue(Math.min(Math.max(finalNewLength, LEG_WAIST_RATIO_MIN * val), LEG_WAIST_RATIO_MAX * val));
 							} else {
 								entry.setValue(finalNewLength);
@@ -424,7 +432,9 @@ public class AutoBone {
 
 						case "Knee height":
 							val = configs.get("Legs length");
-							if (val == null || finalNewLength <= KNEE_LEG_RATIO_MIN * val || finalNewLength >= KNEE_LEG_RATIO_MAX * val) {
+							if (val == null) {
+								break;
+							} else if (finalNewLength <= KNEE_LEG_RATIO_MIN * val || finalNewLength >= KNEE_LEG_RATIO_MAX * val) {
 								entry.setValue(Math.min(Math.max(finalNewLength, KNEE_LEG_RATIO_MIN * val), KNEE_LEG_RATIO_MAX * val));
 							} else {
 								entry.setValue(finalNewLength);
@@ -447,7 +457,8 @@ public class AutoBone {
 			} while (++frameCursor1 < frames.length && ++frameCursor2 < frames.length);
 		}
 
-		LogManager.log.info("[AutoBone] Target height: " + targetHeight + " New height: " + getHeight(configs));
+		float finalHeight = getHeight(configs);
+		LogManager.log.info("[AutoBone] Target height: " + targetHeight + " New height: " + finalHeight);
 
 		try {
 			LogManager.log.info("[AutoBone] Ratios: [{Neck-Waist: " + StringUtils.prettyNumber(configs.get("Neck") / configs.get("Waist")) +
@@ -464,6 +475,8 @@ public class AutoBone {
 			LogManager.log.info("[AutoBone] Applying to skeleton failed, only saving configs...");
 			saveConfigs();
 		}
+
+		return Math.abs(finalHeight - targetHeight);
 	}
 
 	protected static float getErrorDeriv(SimpleSkeleton skeleton1, SimpleSkeleton skeleton2, float heightChange) {
