@@ -17,35 +17,35 @@ import io.eiren.vr.processor.HumanSkeletonWithWaist;
 
 public class AutoBone {
 
-	public final static int MIN_DATA_DISTANCE = 1;
-	public final static int MAX_DATA_DISTANCE = 2;
+	public int minDataDistance = 1;
+	public int maxDataDistance = 2;
 
-	public final static int NUM_EPOCHS = 75;
+	public int numEpochs = 100;
 
-	public final static float INITIAL_ADJUSTMENT_RATE = 2.5f;
-	public final static float ADJUSTMENT_RATE_DECAY = 1.045f;
+	public float initialAdjustRate = 2.5f;
+	public float adjustRateDecay = 1.03f;
 
-	protected final static float SLIDE_ERROR_FACTOR = 1.0f;
-	protected final static float OFFSET_ERROR_FACTOR = 0.0f;
-	protected final static float HEIGHT_ERROR_FACTOR = 0.0f;
+	public float slideErrorFactor = 1.0f;
+	public float offsetErrorFactor = 0.0f;
+	public float heightErrorFactor = 0.004f;
 
-	protected final static float HEADSET_HEIGHT_RATIO = 1.0f;
+	/*
+	public float NECK_WAIST_RATIO_MIN = 0.2f;
+	public float NECK_WAIST_RATIO_MAX = 0.3f;
 
-	protected final static float NECK_WAIST_RATIO_MIN = 0.2f;
-	protected final static float NECK_WAIST_RATIO_MAX = 0.3f;
+	public float CHEST_WAIST_RATIO_MIN = 0.35f;
+	public float CHEST_WAIST_RATIO_MAX = 0.6f;
 
-	protected final static float CHEST_WAIST_RATIO_MIN = 0.35f;
-	protected final static float CHEST_WAIST_RATIO_MAX = 0.6f;
-
-	protected final static float HIP_MIN = 0.08f;
-	protected final static float HIP_WAIST_RATIO_MAX = 0.4f;
+	public float HIP_MIN = 0.08f;
+	public float HIP_WAIST_RATIO_MAX = 0.4f;
 
 	// Human average is 1.1235 (SD 0.07)
-	protected final static float LEG_WAIST_RATIO_MIN = 1.1235f - ((0.07f * 3f) + 0.05f);
-	protected final static float LEG_WAIST_RATIO_MAX = 1.1235f + ((0.07f * 3f) + 0.05f);
+	public float LEG_WAIST_RATIO_MIN = 1.1235f - ((0.07f * 3f) + 0.05f);
+	public float LEG_WAIST_RATIO_MAX = 1.1235f + ((0.07f * 3f) + 0.05f);
 
-	protected final static float KNEE_LEG_RATIO_MIN = 0.42f;
-	protected final static float KNEE_LEG_RATIO_MAX = 0.58f;
+	public float KNEE_LEG_RATIO_MIN = 0.42f;
+	public float KNEE_LEG_RATIO_MAX = 0.58f;
+	*/
 
 	protected final VRServer server;
 
@@ -234,34 +234,14 @@ public class AutoBone {
 	}
 
 	public void processFrames() {
-		processFrames(NUM_EPOCHS, true);
+		processFrames(-1f);
 	}
 
 	public void processFrames(float targetHeight) {
-		processFrames(NUM_EPOCHS, true, targetHeight);
+		processFrames(true, targetHeight);
 	}
 
-	public void processFrames(int epochs, boolean calcInitError) {
-		processFrames(epochs, calcInitError, INITIAL_ADJUSTMENT_RATE, ADJUSTMENT_RATE_DECAY);
-	}
-
-	public void processFrames(int epochs, boolean calcInitError, float targetHeight) {
-		processFrames(epochs, calcInitError, INITIAL_ADJUSTMENT_RATE, ADJUSTMENT_RATE_DECAY, targetHeight);
-	}
-
-	public void processFrames(int epochs, boolean calcInitError, float adjustRate, float adjustRateDecay) {
-		processFrames(epochs, calcInitError, adjustRate, adjustRateDecay, MIN_DATA_DISTANCE, MAX_DATA_DISTANCE);
-	}
-
-	public void processFrames(int epochs, boolean calcInitError, float adjustRate, float adjustRateDecay, float targetHeight) {
-		processFrames(epochs, calcInitError, adjustRate, adjustRateDecay, MIN_DATA_DISTANCE, MAX_DATA_DISTANCE, targetHeight);
-	}
-
-	public void processFrames(int epochs, boolean calcInitError, float adjustRate, float adjustRateDecay, int minDataDist, int maxDataDist) {
-		processFrames(epochs, calcInitError, adjustRate, adjustRateDecay, minDataDist, maxDataDist, -1f);
-	}
-
-	public float processFrames(int epochs, boolean calcInitError, float adjustRate, float adjustRateDecay, int minDataDist, int maxDataDist, float targetHeight) {
+	public float processFrames(boolean calcInitError, float targetHeight) {
 		Set<Entry<String, Float>> configSet = configs.entrySet();
 
 		SimpleSkeleton skeleton1 = new SimpleSkeleton(configSet);
@@ -269,7 +249,9 @@ public class AutoBone {
 
 		int epochCounter = calcInitError ? -1 : 0;
 
-		int cursorOffset = minDataDist;
+		int cursorOffset = minDataDistance;
+
+		float adjustRate = initialAdjustRate;
 
 		float sumError = 0f;
 		int errorCount = 0;
@@ -288,13 +270,13 @@ public class AutoBone {
 				}
 
 				// Estimate target height from HMD height
-				targetHeight = hmdHeight * HEADSET_HEIGHT_RATIO;
+				targetHeight = hmdHeight;
 			}
 		}
 
 		for (;;) {
 			// Detect end of iteration
-			if (cursorOffset >= frames.length || cursorOffset > maxDataDist) {
+			if (cursorOffset >= frames.length || cursorOffset > maxDataDistance) {
 				epochCounter++;
 
 				// Calculate average error over the epoch
@@ -306,11 +288,11 @@ public class AutoBone {
 
 				LogManager.log.info("[AutoBone] Epoch " + epochCounter + " average error: " + avgError);
 
-				if (epochCounter >= epochs) {
+				if (epochCounter >= numEpochs) {
 					break;
 				} else {
 					// Reset cursor offset and decay the adjustment rate
-					cursorOffset = minDataDist;
+					cursorOffset = minDataDistance;
 					adjustRate /= adjustRateDecay;
 				}
 			}
@@ -338,7 +320,7 @@ public class AutoBone {
 
 				float totalLength = getLengthSum(configs);
 				float curHeight = getHeight(configs);
-				float errorDeriv = getErrorDeriv(skeleton1, skeleton2, curHeight - targetHeight);
+				float errorDeriv = getErrorDeriv(skeleton1, skeleton2, targetHeight - curHeight);
 				float error = errorFunc(errorDeriv);
 
 				// In case of fire
@@ -370,6 +352,7 @@ public class AutoBone {
 					float originalLength = entry.getValue();
 
 					// Try positive and negative adjustments
+					boolean isHeightVar = heightConfigs.contains(entry.getKey());
 					float minError = error;
 					float finalNewLength = -1f;
 					for (int i = 0; i < 2; i++) {
@@ -384,8 +367,8 @@ public class AutoBone {
 
 						updateSekeletonBoneLength(skeleton1, skeleton2, entry.getKey(), newLength);
 
-						float newHeight = heightConfigs.contains(entry.getKey()) ? curHeight + curAdjustVal : curHeight;
-						float newError = errorFunc(getErrorDeriv(skeleton1, skeleton2, newHeight - targetHeight));
+						float newHeight = isHeightVar ? curHeight + curAdjustVal : curHeight;
+						float newError = errorFunc(getErrorDeriv(skeleton1, skeleton2, targetHeight - newHeight));
 
 						if (newError < minError) {
 							minError = newError;
@@ -491,7 +474,7 @@ public class AutoBone {
 		return Math.abs(finalHeight - targetHeight);
 	}
 
-	protected static float getErrorDeriv(SimpleSkeleton skeleton1, SimpleSkeleton skeleton2, float heightChange) {
+	protected float getErrorDeriv(SimpleSkeleton skeleton1, SimpleSkeleton skeleton2, float heightChange) {
 		float slideLeft = skeleton1.getLeftFootPos().distance(skeleton2.getLeftFootPos());
 		float slideRight = skeleton1.getRightFootPos().distance(skeleton2.getRightFootPos());
 
@@ -505,10 +488,10 @@ public class AutoBone {
 		float distError = (dist1 + dist2) / 2f;
 
 		// Minimize sliding, minimize foot height offset, minimize change in total height
-		return ((SLIDE_ERROR_FACTOR * Math.abs(slideError)) +
-		(OFFSET_ERROR_FACTOR * Math.abs(distError)) +
-		(HEIGHT_ERROR_FACTOR * Math.abs(heightChange))) /
-		(SLIDE_ERROR_FACTOR + OFFSET_ERROR_FACTOR + HEIGHT_ERROR_FACTOR);
+		return ((slideErrorFactor * Math.abs(slideError)) +
+		(offsetErrorFactor * Math.abs(distError)) +
+		(heightErrorFactor * Math.abs(heightChange))) /
+		(slideErrorFactor + offsetErrorFactor + heightErrorFactor);
 	}
 
 	// Mean square error function

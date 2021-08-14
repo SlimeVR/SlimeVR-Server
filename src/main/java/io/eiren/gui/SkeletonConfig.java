@@ -134,8 +134,6 @@ public class SkeletonConfig extends EJBag {
 												} else {
 													frameRecordings.add(Pair.of(file.getName(), frames));
 												}
-											} else {
-												break;
 											}
 										}
 									}
@@ -165,14 +163,18 @@ public class SkeletonConfig extends EJBag {
 										LogManager.log.info("[AutoBone] Processing frames from \"" + recording.getKey() + "\"...");
 										autoBone.setFrames(recording.getValue());
 
-										int epochs = server.config.getInt("autobone.epochCount", AutoBone.NUM_EPOCHS);
+										autoBone.minDataDistance = server.config.getInt("autobone.minimumDataDistance", autoBone.minDataDistance);
+										autoBone.maxDataDistance = server.config.getInt("autobone.maximumDataDistance", autoBone.maxDataDistance);
+										autoBone.numEpochs = server.config.getInt("autobone.epochCount", autoBone.numEpochs);
+										autoBone.initialAdjustRate = server.config.getFloat("autobone.adjustRate", autoBone.initialAdjustRate);
+										autoBone.adjustRateDecay = server.config.getFloat("autobone.adjustRateDecay", autoBone.adjustRateDecay);
+										autoBone.slideErrorFactor = server.config.getFloat("autobone.slideErrorFactor", autoBone.slideErrorFactor);
+										autoBone.offsetErrorFactor = server.config.getFloat("autobone.offsetErrorFactor", autoBone.offsetErrorFactor);
+										autoBone.heightErrorFactor = server.config.getFloat("autobone.heightErrorFactor", autoBone.heightErrorFactor);
+
 										boolean calcInitError = server.config.getBoolean("autobone.calculateInitialError", true);
-										float adjustRate = server.config.getFloat("autobone.adjustRate", AutoBone.INITIAL_ADJUSTMENT_RATE);
-										float adjustRateDecay = server.config.getFloat("autobone.adjustRateDecay", AutoBone.ADJUSTMENT_RATE_DECAY);
-										int minDataDist = server.config.getInt("autobone.minimumDataDistance", AutoBone.MIN_DATA_DISTANCE);
-										int maxDataDist = server.config.getInt("autobone.maximumDataDistance", AutoBone.MAX_DATA_DISTANCE);
 										float targetHeight = server.config.getFloat("autobone.manualTargetHeight", -1f);
-										heightPercentError.add(autoBone.processFrames(epochs, calcInitError, adjustRate, adjustRateDecay, minDataDist, maxDataDist, targetHeight));
+										heightPercentError.add(autoBone.processFrames(calcInitError, targetHeight));
 
 										LogManager.log.info("[AutoBone] Done processing!");
 
