@@ -13,6 +13,8 @@ import javax.swing.JCheckBox;
 import javax.swing.JLabel;
 import javax.swing.event.MouseInputAdapter;
 
+import org.apache.commons.lang3.tuple.Pair;
+
 import io.eiren.gui.autobone.AutoBone;
 import io.eiren.gui.autobone.PoseFrame;
 import io.eiren.gui.autobone.PoseRecordIO;
@@ -117,7 +119,7 @@ public class SkeletonConfig extends EJBag {
 									File saveRecording = new File("ABRecording.abf");
 									File recordFolder = new File("LoadRecordings");
 
-									FastList<PoseFrame[]> frameRecordings = new FastList<PoseFrame[]>();
+									FastList<Pair<String, PoseFrame[]>> frameRecordings = new FastList<Pair<String, PoseFrame[]>>();
 
 									if (recordFolder.isDirectory()) {
 										setText("Load");
@@ -130,7 +132,7 @@ public class SkeletonConfig extends EJBag {
 												if (frames == null) {
 													LogManager.log.severe("Reading frames from \"" + file.getPath() + "\" failed...");
 												} else {
-													frameRecordings.add(frames);
+													frameRecordings.add(Pair.of(file.getName(), frames));
 												}
 											} else {
 												break;
@@ -153,14 +155,15 @@ public class SkeletonConfig extends EJBag {
 										setText("Wait");
 										LogManager.log.info("[AutoBone] Done recording! Exporting frames to \"" + saveRecording.getPath() + "\"...");
 										PoseRecordIO.writeToFile(saveRecording, autoBone.getFrames());
-										frameRecordings.add(autoBone.getFrames());
+										frameRecordings.add(Pair.of("<Recording>", autoBone.getFrames()));
 
 										LogManager.log.info("[AutoBone] Done exporting! Processing frames...");
 									}
 
 									FastList<Float> heightPercentError = new FastList<Float>(frameRecordings.size());
-									for (PoseFrame[] recording : frameRecordings) {
-										autoBone.setFrames(recording);
+									for (Pair<String, PoseFrame[]> recording : frameRecordings) {
+										LogManager.log.info("[AutoBone] Processing frames from \"" + recording.getKey() + "\"...");
+										autoBone.setFrames(recording.getValue());
 
 										int epochs = server.config.getInt("autobone.epochCount", AutoBone.NUM_EPOCHS);
 										boolean calcInitError = server.config.getBoolean("autobone.calculateInitialError", true);
