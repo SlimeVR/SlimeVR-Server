@@ -465,16 +465,6 @@ public class AutoBone {
 		float finalHeight = getHeight(configs);
 		LogManager.log.info("[AutoBone] Target height: " + targetHeight + " New height: " + finalHeight);
 
-		try {
-			LogManager.log.info("[AutoBone] Ratios: [{Neck-Waist: " + StringUtils.prettyNumber(configs.get("Neck") / configs.get("Waist")) +
-			"}, {Chest-Waist: " + StringUtils.prettyNumber(configs.get("Chest") / configs.get("Waist")) +
-			"}, {Hip-Waist: " + StringUtils.prettyNumber(configs.get("Hips width") / configs.get("Waist")) +
-			"}, {Leg-Waist: " + StringUtils.prettyNumber(configs.get("Legs length") / configs.get("Waist")) +
-			"}, {Knee-Leg: " + StringUtils.prettyNumber(configs.get("Knee height") / configs.get("Legs length")) + "}]");
-		} catch (Exception e) {
-			// I literally couldn't care less, this is only for debugging
-		}
-
 		LogManager.log.info("[AutoBone] Done! Applying to skeleton...");
 		if (!applyConfigToSkeleton(skeleton)) {
 			LogManager.log.info("[AutoBone] Applying to skeleton failed, only saving configs...");
