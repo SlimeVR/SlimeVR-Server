@@ -14,6 +14,8 @@ import io.eiren.vr.VRServer;
 import io.eiren.vr.processor.HumanSkeleton;
 import io.eiren.vr.processor.HumanSkeletonWithLegs;
 import io.eiren.vr.processor.HumanSkeletonWithWaist;
+import io.eiren.vr.processor.TrackerBodyPosition;
+import io.eiren.vr.trackers.TrackerUtils;
 
 public class AutoBone {
 
@@ -80,7 +82,15 @@ public class AutoBone {
 		configs.put("Head", server.config.getFloat("body.headShift", HumanSkeletonWithWaist.HEAD_SHIFT_DEFAULT));
 		configs.put("Neck", server.config.getFloat("body.neckLength", HumanSkeletonWithWaist.NECK_LENGTH_DEFAULT));
 		configs.put("Waist", server.config.getFloat("body.waistDistance", 0.85f));
-		configs.put("Chest", server.config.getFloat("body.chestDistance", 0.42f));
+
+		if (server.config.getBoolean("autobone.forceChestTracker", false) ||
+		TrackerUtils.findTrackerForBodyPosition(server.getAllTrackers(), TrackerBodyPosition.CHEST) != null) {
+			// If force enabled or has a chest tracker
+			configs.put("Chest", server.config.getFloat("body.chestDistance", 0.42f));
+		} else {
+			// Otherwise make sure it's not used
+			configs.remove("Chest");
+		}
 
 		// Load leg configs
 		configs.put("Hips width", server.config.getFloat("body.hipsWidth", HumanSkeletonWithLegs.HIPS_WIDTH_DEFAULT));
