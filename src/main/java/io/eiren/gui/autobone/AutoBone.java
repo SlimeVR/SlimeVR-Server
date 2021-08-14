@@ -383,9 +383,9 @@ public class AutoBone {
 
 					if (finalNewLength > 0f) {
 						// Keep values within a reasonable range
+						/*
 						Float val;
 						switch (entry.getKey()) {
-						/*
 						case "Neck":
 							val = configs.get("Waist");
 							if (val == null) {
