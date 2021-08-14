@@ -18,12 +18,12 @@ import io.eiren.vr.processor.HumanSkeletonWithWaist;
 public class AutoBone {
 
 	public final static int MIN_DATA_DISTANCE = 1;
-	public final static int MAX_DATA_DISTANCE = 1;
+	public final static int MAX_DATA_DISTANCE = 2;
 
-	public final static int NUM_EPOCHS = 50;
+	public final static int NUM_EPOCHS = 75;
 
-	public final static float INITIAL_ADJUSTMENT_RATE = 1f;
-	public final static float ADJUSTMENT_RATE_DECAY = 1.1f;
+	public final static float INITIAL_ADJUSTMENT_RATE = 2.5f;
+	public final static float ADJUSTMENT_RATE_DECAY = 1.045f;
 
 	protected final static float SLIDE_ERROR_FACTOR = 1.0f;
 	protected final static float OFFSET_ERROR_FACTOR = 0.0f;
@@ -213,6 +213,16 @@ public class AutoBone {
 		return height;
 	}
 
+	public float getLengthSum(Map<String, Float> configs) {
+		float length = 0f;
+
+		for (float boneLength : configs.values()) {
+			length += boneLength;
+		}
+
+		return length;
+	}
+
 	public float getMaxHmdHeight(PoseFrame[] frames) {
 		float maxHeight = 0f;
 		for (PoseFrame frame : frames) {
@@ -326,6 +336,7 @@ public class AutoBone {
 				skeleton1.updatePose();
 				skeleton2.updatePose();
 
+				float totalLength = getLengthSum(configs);
 				float curHeight = getHeight(configs);
 				float errorDeriv = getErrorDeriv(skeleton1, skeleton2, curHeight - targetHeight);
 				float error = errorFunc(errorDeriv);
@@ -362,7 +373,8 @@ public class AutoBone {
 					float minError = error;
 					float finalNewLength = -1f;
 					for (int i = 0; i < 2; i++) {
-						float curAdjustVal = i == 0 ? adjustVal : -adjustVal;
+						// Scale by the ratio for smooth adjustment and more stable results
+						float curAdjustVal = (i == 0 ? adjustVal : -adjustVal) * (originalLength / totalLength);
 						float newLength = originalLength + curAdjustVal;
 
 						// No small or negative numbers!!! Bad algorithm!
