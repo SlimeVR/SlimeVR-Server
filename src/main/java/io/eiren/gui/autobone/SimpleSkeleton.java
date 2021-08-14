@@ -6,7 +6,6 @@ import java.util.Map.Entry;
 import com.jme3.math.Quaternion;
 import com.jme3.math.Vector3f;
 
-import io.eiren.vr.VRServer;
 import io.eiren.vr.processor.HumanSkeletonWithLegs;
 import io.eiren.vr.processor.HumanSkeletonWithWaist;
 import io.eiren.vr.processor.TransformNode;

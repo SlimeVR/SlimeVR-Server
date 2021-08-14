@@ -151,8 +151,8 @@ public class SkeletonConfig extends EJBag {
 										LogManager.log.info("[AutoBone] Done loading frames! Processing frames...");
 									} else {
 										setText("Move");
-										// 400 samples at 50 ms per sample is 20 seconds
-										autoBone.startFrameRecording(server.config.getInt("autobone.sampleCount", 400), server.config.getInt("autobone.sampleRateMs", 50));
+										// 1000 samples at 20 ms per sample is 20 seconds
+										autoBone.startFrameRecording(server.config.getInt("autobone.sampleCount", 1000), server.config.getInt("autobone.sampleRateMs", 20));
 
 										while (autoBone.isRecording()) {
 											Thread.sleep(10);
@@ -165,12 +165,12 @@ public class SkeletonConfig extends EJBag {
 										LogManager.log.info("[AutoBone] Done exporting! Processing frames...");
 									}
 
-									int epochs = server.config.getInt("autobone.epochCount", 20);
+									int epochs = server.config.getInt("autobone.epochCount", AutoBone.NUM_EPOCHS);
 									boolean calcInitError = server.config.getBoolean("autobone.calculateInitialError", true);
-									float adjustRate = server.config.getFloat("autobone.adjustRate", 1f);
-									float adjustRateDecay = server.config.getFloat("autobone.adjustRateDecay", 1.1f);
-									int minDataDist = server.config.getInt("autobone.minimumDataDistance", 1);
-									int maxDataDist = server.config.getInt("autobone.maximumDataDistance", 200);
+									float adjustRate = server.config.getFloat("autobone.adjustRate", AutoBone.INITIAL_ADJUSTMENT_RATE);
+									float adjustRateDecay = server.config.getFloat("autobone.adjustRateDecay", AutoBone.ADJUSTMENT_RATE_DECAY);
+									int minDataDist = server.config.getInt("autobone.minimumDataDistance", AutoBone.MIN_DATA_DISTANCE);
+									int maxDataDist = server.config.getInt("autobone.maximumDataDistance", AutoBone.MAX_DATA_DISTANCE);
 									float targetHeight = server.config.getFloat("autobone.manualTargetHeight", -1f);
 									autoBone.processFrames(epochs, calcInitError, adjustRate, adjustRateDecay, minDataDist, maxDataDist, targetHeight);
 
