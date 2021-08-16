@@ -277,7 +277,7 @@ public class AutoBone {
 
 						// Try positive and negative adjustments
 						boolean isHeightVar = heightConfigs.contains(entry.getKey());
-						float minError = error;
+						float minError = errorDeriv;
 						float finalNewLength = -1f;
 						for (int i = 0; i < 2; i++) {
 							// Scale by the ratio for smooth adjustment and more stable results
@@ -292,10 +292,10 @@ public class AutoBone {
 							updateSkeletonBoneLength(skeleton1, skeleton2, entry.getKey(), newLength);
 
 							float newHeight = isHeightVar ? curHeight + curAdjustVal : curHeight;
-							float newError = errorFunc(getErrorDeriv(skeleton1, skeleton2, targetHeight - newHeight));
+							float newErrorDeriv = getErrorDeriv(skeleton1, skeleton2, targetHeight - newHeight);
 
-							if (newError < minError) {
-								minError = newError;
+							if (newErrorDeriv < minError) {
+								minError = newErrorDeriv;
 								finalNewLength = newLength;
 							}
 						}
@@ -328,23 +328,39 @@ public class AutoBone {
 	}
 
 	protected float getErrorDeriv(SimpleSkeleton skeleton1, SimpleSkeleton skeleton2, float heightChange) {
-		float slideLeft = skeleton1.getLeftFootPos().distance(skeleton2.getLeftFootPos());
-		float slideRight = skeleton1.getRightFootPos().distance(skeleton2.getRightFootPos());
+		float totalError = 0f;
+		float sumWeight = 0f;
 
-		// Averaged error
-		float slideError = (slideLeft + slideRight) / 2f;
+		if (slideErrorFactor > 0f) {
+			float slideLeft = skeleton1.getLeftFootPos().distance(skeleton2.getLeftFootPos());
+			float slideRight = skeleton1.getRightFootPos().distance(skeleton2.getRightFootPos());
 
-		float dist1 = skeleton1.getLeftFootPos().y - skeleton1.getRightFootPos().y;
-		float dist2 = skeleton2.getLeftFootPos().y - skeleton2.getRightFootPos().y;
+			totalError += Math.abs((slideLeft + slideRight) / 2f) * slideErrorFactor;
+			sumWeight += slideErrorFactor;
+		}
 
-		// Averaged error
-		float distError = (dist1 + dist2) / 2f;
+		if (offsetErrorFactor > 0f) {
+			float dist1 = skeleton1.getLeftFootPos().y - skeleton1.getRightFootPos().y;
+			float dist2 = skeleton2.getLeftFootPos().y - skeleton2.getRightFootPos().y;
+
+			float dist3 = skeleton1.getLeftFootPos().y - skeleton2.getRightFootPos().y;
+			float dist4 = skeleton1.getLeftFootPos().y - skeleton2.getRightFootPos().y;
+
+			float dist5 = skeleton1.getLeftFootPos().y - skeleton2.getLeftFootPos().y;
+			float dist6 = skeleton1.getRightFootPos().y - skeleton2.getRightFootPos().y;
+
+			// Averaged error
+			totalError += Math.abs((dist1 + dist2 + dist3 + dist4 + dist5 + dist6) / 6f) * offsetErrorFactor;
+			sumWeight += offsetErrorFactor;
+		}
+
+		if (heightErrorFactor > 0f) {
+			totalError += Math.abs(heightChange) * heightErrorFactor;
+			sumWeight += heightErrorFactor;
+		}
 
 		// Minimize sliding, minimize foot height offset, minimize change in total height
-		return ((slideErrorFactor * Math.abs(slideError)) +
-		(offsetErrorFactor * Math.abs(distError)) +
-		(heightErrorFactor * Math.abs(heightChange))) /
-		(slideErrorFactor + offsetErrorFactor + heightErrorFactor);
+		return sumWeight > 0f ? totalError / sumWeight : 0f;
 	}
 
 	// Mean square error function
