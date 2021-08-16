@@ -161,6 +161,7 @@ public class SkeletonConfig extends EJBag {
 									FastList<Float> heightPercentError = new FastList<Float>(frameRecordings.size());
 									for (Pair<String, PoseFrame[]> recording : frameRecordings) {
 										LogManager.log.info("[AutoBone] Processing frames from \"" + recording.getKey() + "\"...");
+										autoBone.reloadConfigValues();
 										autoBone.setFrames(recording.getValue());
 
 										autoBone.minDataDistance = server.config.getInt("autobone.minimumDataDistance", autoBone.minDataDistance);
