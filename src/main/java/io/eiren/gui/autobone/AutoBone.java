@@ -20,12 +20,12 @@ public class AutoBone {
 	public int cursorIncrement = 1;
 
 	public int minDataDistance = 1;
-	public int maxDataDistance = 2;
+	public int maxDataDistance = 1;
 
-	public int numEpochs = 100;
+	public int numEpochs = 5;
 
-	public float initialAdjustRate = 2.5f;
-	public float adjustRateDecay = 1.03f;
+	public float initialAdjustRate = 1.0f;
+	public float adjustRateDecay = 1.05f;
 
 	public float slideErrorFactor = 1.0f;
 	public float offsetErrorFactor = 0.0f;
@@ -72,7 +72,7 @@ public class AutoBone {
 
 	public void reloadConfigValues() {
 		// Load waist configs
-		configs.put("Head", server.config.getFloat("body.headShift", HumanSkeletonWithWaist.HEAD_SHIFT_DEFAULT));
+		//configs.put("Head", server.config.getFloat("body.headShift", HumanSkeletonWithWaist.HEAD_SHIFT_DEFAULT));
 		configs.put("Neck", server.config.getFloat("body.neckLength", HumanSkeletonWithWaist.NECK_LENGTH_DEFAULT));
 		configs.put("Waist", server.config.getFloat("body.waistDistance", 0.85f));
 
@@ -243,7 +243,6 @@ public class AutoBone {
 					skeleton1.setPoseFromFrame(frame1);
 					skeleton2.setPoseFromFrame(frame2);
 
-					float totalLength = getLengthSum(configs);
 					float curHeight = getHeight(configs);
 					float errorDeriv = getErrorDeriv(skeleton1, skeleton2, targetHeight - curHeight);
 					float error = errorFunc(errorDeriv);
@@ -282,7 +281,7 @@ public class AutoBone {
 						float finalNewLength = -1f;
 						for (int i = 0; i < 2; i++) {
 							// Scale by the ratio for smooth adjustment and more stable results
-							float curAdjustVal = (i == 0 ? adjustVal : -adjustVal) * (originalLength / totalLength);
+							float curAdjustVal = (i == 0 ? adjustVal : -adjustVal) * originalLength;
 							float newLength = originalLength + curAdjustVal;
 
 							// No small or negative numbers!!! Bad algorithm!
