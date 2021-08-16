@@ -17,6 +17,8 @@ import io.eiren.vr.trackers.TrackerUtils;
 
 public class AutoBone {
 
+	public int cursorIncrement = 1;
+
 	public int minDataDistance = 1;
 	public int maxDataDistance = 2;
 
@@ -206,15 +208,6 @@ public class AutoBone {
 		SimpleSkeleton skeleton1 = new SimpleSkeleton(configSet);
 		SimpleSkeleton skeleton2 = new SimpleSkeleton(configSet);
 
-		int epochCounter = calcInitError ? -1 : 0;
-
-		int cursorOffset = minDataDistance;
-
-		float adjustRate = initialAdjustRate;
-
-		float sumError = 0f;
-		int errorCount = 0;
-
 		// If target height isn't specified, auto-detect
 		if (targetHeight < 0f) {
 			if (skeleton != null) {
@@ -233,182 +226,102 @@ public class AutoBone {
 			}
 		}
 
-		for (;;) {
-			// Detect end of iteration
-			if (cursorOffset >= frames.length || cursorOffset > maxDataDistance) {
-				epochCounter++;
+		for (int epoch = calcInitError ? -1 : 0; epoch < numEpochs; epoch++) {
+			float sumError = 0f;
+			int errorCount = 0;
 
-				// Calculate average error over the epoch
-				float avgError = errorCount > 0 ? sumError / errorCount : -1f;
+			float adjustRate = epoch >= 0 ? (float)(initialAdjustRate / Math.pow(adjustRateDecay, epoch)) : 0f;
 
-				// Reset error sum values
-				sumError = 0f;
-				errorCount = 0;
+			for (int cursorOffset = minDataDistance; cursorOffset <= maxDataDistance && cursorOffset < frames.length ; cursorOffset++) {
+				for (int frameCursor = 0; frameCursor < frames.length - cursorOffset; frameCursor += cursorIncrement) {
+					PoseFrame frame1 = frames[frameCursor];
+					PoseFrame frame2 = frames[frameCursor + cursorOffset];
 
-				LogManager.log.info("[AutoBone] Epoch " + epochCounter + " average error: " + avgError);
+					// If there's missing data, skip it
+					if (frame1 == null || frame2 == null) {
+						continue;
+					}
 
-				if (epochCounter >= numEpochs) {
-					break;
-				} else {
-					// Reset cursor offset and decay the adjustment rate
-					cursorOffset = minDataDistance;
-					adjustRate /= adjustRateDecay;
+					setSkeletonLengths(skeleton1);
+					setSkeletonLengths(skeleton2);
+
+					skeleton1.setPoseFromFrame(frame1);
+					skeleton2.setPoseFromFrame(frame2);
+
+					skeleton1.updatePose();
+					skeleton2.updatePose();
+
+					float totalLength = getLengthSum(configs);
+					float curHeight = getHeight(configs);
+					float errorDeriv = getErrorDeriv(skeleton1, skeleton2, targetHeight - curHeight);
+					float error = errorFunc(errorDeriv);
+
+					// In case of fire
+					if (Float.isNaN(error) || Float.isInfinite(error)) {
+						// Extinguish
+						LogManager.log.warning("[AutoBone] Error value is invalid, resetting variables to recover");
+						reloadConfigValues();
+
+						// Reset error sum values
+						sumError = 0f;
+						errorCount = 0;
+
+						// Continue on new data
+						continue;
+					}
+
+					// Store the error count for logging purposes
+					sumError += errorDeriv;
+					errorCount++;
+
+					float adjustVal = error * adjustRate;
+
+					for (Entry<String, Float> entry : configs.entrySet()) {
+						// Skip adjustment if the epoch is before starting (for logging only)
+						if (epoch < 0) {
+							break;
+						}
+
+						float originalLength = entry.getValue();
+
+						// Try positive and negative adjustments
+						boolean isHeightVar = heightConfigs.contains(entry.getKey());
+						float minError = error;
+						float finalNewLength = -1f;
+						for (int i = 0; i < 2; i++) {
+							// Scale by the ratio for smooth adjustment and more stable results
+							float curAdjustVal = (i == 0 ? adjustVal : -adjustVal) * (originalLength / totalLength);
+							float newLength = originalLength + curAdjustVal;
+
+							// No small or negative numbers!!! Bad algorithm!
+							if (newLength < 0.01f) {
+								continue;
+							}
+
+							updateSkeletonBoneLength(skeleton1, skeleton2, entry.getKey(), newLength);
+
+							float newHeight = isHeightVar ? curHeight + curAdjustVal : curHeight;
+							float newError = errorFunc(getErrorDeriv(skeleton1, skeleton2, targetHeight - newHeight));
+
+							if (newError < minError) {
+								minError = newError;
+								finalNewLength = newLength;
+							}
+						}
+
+						if (finalNewLength > 0f) {
+							entry.setValue(finalNewLength);
+						}
+
+						// Reset the length to minimize bias in other variables, it's applied later
+						updateSkeletonBoneLength(skeleton1, skeleton2, entry.getKey(), originalLength);
+					}
 				}
 			}
 
-			int frameCursor1 = 0;
-			int frameCursor2 = cursorOffset++;
-
-			do {
-				PoseFrame frame1 = frames[frameCursor1];
-				PoseFrame frame2 = frames[frameCursor2];
-
-				// If there's missing data, skip it
-				if (frame1 == null || frame2 == null) {
-					continue;
-				}
-
-				setSkeletonLengths(skeleton1);
-				setSkeletonLengths(skeleton2);
-
-				skeleton1.setPoseFromFrame(frame1);
-				skeleton2.setPoseFromFrame(frame2);
-
-				skeleton1.updatePose();
-				skeleton2.updatePose();
-
-				float totalLength = getLengthSum(configs);
-				float curHeight = getHeight(configs);
-				float errorDeriv = getErrorDeriv(skeleton1, skeleton2, targetHeight - curHeight);
-				float error = errorFunc(errorDeriv);
-
-				// In case of fire
-				if (Float.isNaN(error) || Float.isInfinite(error)) {
-					// Extinguish
-					LogManager.log.warning("[AutoBone] Error value is invalid, resetting variables to recover");
-					reloadConfigValues();
-
-					// Reset error sum values
-					sumError = 0f;
-					errorCount = 0;
-
-					// Continue on new data
-					continue;
-				}
-
-				// Store the error count for logging purposes
-				sumError += errorDeriv;
-				errorCount++;
-
-				float adjustVal = error * adjustRate;
-
-				for (Entry<String, Float> entry : configs.entrySet()) {
-					// Skip adjustment if the epoch is before starting (for logging only)
-					if (epochCounter < 0) {
-						break;
-					}
-
-					float originalLength = entry.getValue();
-
-					// Try positive and negative adjustments
-					boolean isHeightVar = heightConfigs.contains(entry.getKey());
-					float minError = error;
-					float finalNewLength = -1f;
-					for (int i = 0; i < 2; i++) {
-						// Scale by the ratio for smooth adjustment and more stable results
-						float curAdjustVal = (i == 0 ? adjustVal : -adjustVal) * (originalLength / totalLength);
-						float newLength = originalLength + curAdjustVal;
-
-						// No small or negative numbers!!! Bad algorithm!
-						if (newLength < 0.01f) {
-							continue;
-						}
-
-						updateSkeletonBoneLength(skeleton1, skeleton2, entry.getKey(), newLength);
-
-						float newHeight = isHeightVar ? curHeight + curAdjustVal : curHeight;
-						float newError = errorFunc(getErrorDeriv(skeleton1, skeleton2, targetHeight - newHeight));
-
-						if (newError < minError) {
-							minError = newError;
-							finalNewLength = newLength;
-						}
-					}
-
-					if (finalNewLength > 0f) {
-						// Keep values within a reasonable range
-						/*
-						Float val;
-						switch (entry.getKey()) {
-						case "Neck":
-							val = configs.get("Waist");
-							if (val == null) {
-								break;
-							} else if (finalNewLength <= NECK_WAIST_RATIO_MIN * val || finalNewLength >= NECK_WAIST_RATIO_MAX * val) {
-								entry.setValue(Math.min(Math.max(finalNewLength, NECK_WAIST_RATIO_MIN * val), NECK_WAIST_RATIO_MAX * val));
-							} else {
-								entry.setValue(finalNewLength);
-							}
-							break;
-
-						case "Chest":
-							val = configs.get("Waist");
-							if (val == null) {
-								break;
-							} else if (finalNewLength <= CHEST_WAIST_RATIO_MIN * val || finalNewLength >= CHEST_WAIST_RATIO_MAX * val) {
-								entry.setValue(Math.min(Math.max(finalNewLength, CHEST_WAIST_RATIO_MIN * val), CHEST_WAIST_RATIO_MAX * val));
-							} else {
-								entry.setValue(finalNewLength);
-							}
-							break;
-
-						case "Hips width":
-							val = configs.get("Waist");
-							if (val == null) {
-								break;
-							} else if (finalNewLength < HIP_MIN || finalNewLength >= HIP_WAIST_RATIO_MAX * val) {
-								entry.setValue(Math.min(Math.max(finalNewLength, HIP_MIN), HIP_WAIST_RATIO_MAX * val));
-							} else {
-								entry.setValue(finalNewLength);
-							}
-							break;
-
-						case "Legs length":
-							val = configs.get("Waist");
-							if (val == null) {
-								break;
-							} else if (finalNewLength <= LEG_WAIST_RATIO_MIN * val || finalNewLength >= LEG_WAIST_RATIO_MAX * val) {
-								entry.setValue(Math.min(Math.max(finalNewLength, LEG_WAIST_RATIO_MIN * val), LEG_WAIST_RATIO_MAX * val));
-							} else {
-								entry.setValue(finalNewLength);
-							}
-							break;
-
-						case "Knee height":
-							val = configs.get("Legs length");
-							if (val == null) {
-								break;
-							} else if (finalNewLength <= KNEE_LEG_RATIO_MIN * val || finalNewLength >= KNEE_LEG_RATIO_MAX * val) {
-								entry.setValue(Math.min(Math.max(finalNewLength, KNEE_LEG_RATIO_MIN * val), KNEE_LEG_RATIO_MAX * val));
-							} else {
-								entry.setValue(finalNewLength);
-							}
-							break;
-
-						default:
-							entry.setValue(finalNewLength);
-							break;
-						}
-						*/
-
-						// Temp while above is commented
-						entry.setValue(finalNewLength);
-					}
-
-					// Reset the length to minimize bias in other variables, it's applied later
-					updateSkeletonBoneLength(skeleton1, skeleton2, entry.getKey(), originalLength);
-				}
-			} while (++frameCursor1 < frames.length && ++frameCursor2 < frames.length);
+			// Calculate average error over the epoch
+			float avgError = errorCount > 0 ? sumError / errorCount : -1f;
+			LogManager.log.info("[AutoBone] Epoch " + (epoch + 1) + " average error: " + avgError);
 		}
 
 		float finalHeight = getHeight(configs);
