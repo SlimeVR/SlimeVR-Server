@@ -22,10 +22,10 @@ public class AutoBone {
 	public int minDataDistance = 1;
 	public int maxDataDistance = 1;
 
-	public int numEpochs = 5;
+	public int numEpochs = 100;
 
-	public float initialAdjustRate = 1.0f;
-	public float adjustRateDecay = 1.05f;
+	public float initialAdjustRate = 2.0f;
+	public float adjustRateDecay = 1.04f;
 
 	public float slideErrorFactor = 1.0f;
 	public float offsetErrorFactor = 0.0f;
@@ -86,7 +86,7 @@ public class AutoBone {
 		}
 
 		// Load leg configs
-		configs.put("Hips width", server.config.getFloat("body.hipsWidth", HumanSkeletonWithLegs.HIPS_WIDTH_DEFAULT));
+		//configs.put("Hips width", server.config.getFloat("body.hipsWidth", HumanSkeletonWithLegs.HIPS_WIDTH_DEFAULT));
 		configs.put("Legs length", server.config.getFloat("body.legsLength", 0.84f));
 		configs.put("Knee height", server.config.getFloat("body.kneeHeight", 0.42f));
 	}
@@ -243,6 +243,7 @@ public class AutoBone {
 					skeleton1.setPoseFromFrame(frame1);
 					skeleton2.setPoseFromFrame(frame2);
 
+					float totalLength = getLengthSum(configs);
 					float curHeight = getHeight(configs);
 					float errorDeriv = getErrorDeriv(skeleton1, skeleton2, targetHeight - curHeight);
 					float error = errorFunc(errorDeriv);
@@ -281,7 +282,7 @@ public class AutoBone {
 						float finalNewLength = -1f;
 						for (int i = 0; i < 2; i++) {
 							// Scale by the ratio for smooth adjustment and more stable results
-							float curAdjustVal = (i == 0 ? adjustVal : -adjustVal) * originalLength;
+							float curAdjustVal = (i == 0 ? adjustVal : -adjustVal) * (originalLength / totalLength);
 							float newLength = originalLength + curAdjustVal;
 
 							// No small or negative numbers!!! Bad algorithm!
@@ -335,22 +336,23 @@ public class AutoBone {
 			float slideLeft = skeleton1.getLeftFootPos().distance(skeleton2.getLeftFootPos());
 			float slideRight = skeleton1.getRightFootPos().distance(skeleton2.getRightFootPos());
 
-			totalError += Math.abs((slideLeft + slideRight) / 2f) * slideErrorFactor;
+			// Divide by 4 to halve and average, it's halved because you want to approach a midpoint, not the other point
+			totalError += ((slideLeft + slideRight) / 4f) * slideErrorFactor;
 			sumWeight += slideErrorFactor;
 		}
 
 		if (offsetErrorFactor > 0f) {
-			float dist1 = skeleton1.getLeftFootPos().y - skeleton1.getRightFootPos().y;
-			float dist2 = skeleton2.getLeftFootPos().y - skeleton2.getRightFootPos().y;
+			float dist1 = Math.abs(skeleton1.getLeftFootPos().y - skeleton1.getRightFootPos().y);
+			float dist2 = Math.abs(skeleton2.getLeftFootPos().y - skeleton2.getRightFootPos().y);
 
-			float dist3 = skeleton1.getLeftFootPos().y - skeleton2.getRightFootPos().y;
-			float dist4 = skeleton1.getLeftFootPos().y - skeleton2.getRightFootPos().y;
+			float dist3 = Math.abs(skeleton1.getLeftFootPos().y - skeleton2.getRightFootPos().y);
+			float dist4 = Math.abs(skeleton1.getLeftFootPos().y - skeleton2.getRightFootPos().y);
 
-			float dist5 = skeleton1.getLeftFootPos().y - skeleton2.getLeftFootPos().y;
-			float dist6 = skeleton1.getRightFootPos().y - skeleton2.getRightFootPos().y;
+			float dist5 = Math.abs(skeleton1.getLeftFootPos().y - skeleton2.getLeftFootPos().y);
+			float dist6 = Math.abs(skeleton1.getRightFootPos().y - skeleton2.getRightFootPos().y);
 
-			// Averaged error
-			totalError += Math.abs((dist1 + dist2 + dist3 + dist4 + dist5 + dist6) / 6f) * offsetErrorFactor;
+			// Divide by 12 to halve and average, it's halved because you want to approach a midpoint, not the other point
+			totalError += ((dist1 + dist2 + dist3 + dist4 + dist5 + dist6) / 12f) * offsetErrorFactor;
 			sumWeight += offsetErrorFactor;
 		}
 
