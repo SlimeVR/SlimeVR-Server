@@ -7,12 +7,14 @@ import java.io.File;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Map.Entry;
+import java.util.concurrent.Future;
 
 import javax.swing.JButton;
 import javax.swing.JCheckBox;
 import javax.swing.JLabel;
 import javax.swing.event.MouseInputAdapter;
 
+import io.eiren.gui.autobone.PoseRecorder;
 import org.apache.commons.lang3.tuple.Pair;
 
 import io.eiren.gui.autobone.AutoBone;
@@ -30,6 +32,7 @@ public class SkeletonConfig extends EJBag {
 
 	private final VRServer server;
 	private final VRServerGUI gui;
+	private final PoseRecorder poseRecorder;
 	private final AutoBone autoBone;
 	private Thread autoBoneThread = null;
 	private Map<String, SkeletonLabel> labels = new HashMap<>();
@@ -38,6 +41,7 @@ public class SkeletonConfig extends EJBag {
 		super();
 		this.server = server;
 		this.gui = gui;
+		this.poseRecorder = new PoseRecorder(server);
 		this.autoBone = new AutoBone(server);
 
 		setAlignmentY(TOP_ALIGNMENT);
@@ -116,23 +120,24 @@ public class SkeletonConfig extends EJBag {
 							@Override
 							public void run() {
 								try {
-									File saveRecording = new File("ABRecording.abf");
-									File recordFolder = new File("LoadRecordings");
-
 									FastList<Pair<String, PoseFrame[]>> frameRecordings = new FastList<Pair<String, PoseFrame[]>>();
 
-									if (recordFolder.isDirectory()) {
+									File loadFolder = new File("LoadRecordings");
+									if (loadFolder.isDirectory()) {
 										setText("Load");
 
-										for (File file : recordFolder.listFiles()) {
-											if (file.isFile() && org.apache.commons.lang3.StringUtils.endsWithIgnoreCase(file.getName(), ".abf")) {
-												LogManager.log.info("[AutoBone] Detected recording at \"" + file.getPath() + "\", loading frames...");
-												PoseFrame[] frames = PoseRecordIO.readFromFile(file);
+										File[] files = loadFolder.listFiles();
+										if (files != null) {
+											for (File file : files) {
+												if (file.isFile() && org.apache.commons.lang3.StringUtils.endsWithIgnoreCase(file.getName(), ".abf")) {
+													LogManager.log.info("[AutoBone] Detected recording at \"" + file.getPath() + "\", loading frames...");
+													PoseFrame[] frames = PoseRecordIO.readFromFile(file);
 
-												if (frames == null) {
-													LogManager.log.severe("Reading frames from \"" + file.getPath() + "\" failed...");
-												} else {
-													frameRecordings.add(Pair.of(file.getName(), frames));
+													if (frames == null) {
+														LogManager.log.severe("Reading frames from \"" + file.getPath() + "\" failed...");
+													} else {
+														frameRecordings.add(Pair.of(file.getName(), frames));
+													}
 												}
 											}
 										}
@@ -140,29 +145,44 @@ public class SkeletonConfig extends EJBag {
 
 									if (frameRecordings.size() > 0) {
 										setText("Wait");
-										LogManager.log.info("[AutoBone] Done loading frames! Processing frames...");
+										LogManager.log.info("[AutoBone] Done loading frames!");
 									} else {
 										setText("Move");
 										// 1000 samples at 20 ms per sample is 20 seconds
-										autoBone.startFrameRecording(server.config.getInt("autobone.sampleCount", 1000), server.config.getInt("autobone.sampleRateMs", 20));
-
-										while (autoBone.isRecording()) {
-											Thread.sleep(10);
-										}
+										int sampleCount = server.config.getInt("autobone.sampleCount", 1000);
+										long sampleRate = server.config.getLong("autobone.sampleRateMs", 20L);
+										Future<PoseFrame[]> framesFuture = poseRecorder.startFrameRecording(sampleCount, sampleRate);
+										PoseFrame[] frames = framesFuture.get();
+										LogManager.log.info("[AutoBone] Done recording!");
 
 										setText("Wait");
-										LogManager.log.info("[AutoBone] Done recording! Exporting frames to \"" + saveRecording.getPath() + "\"...");
-										PoseRecordIO.writeToFile(saveRecording, autoBone.getFrames());
-										frameRecordings.add(Pair.of("<Recording>", autoBone.getFrames()));
+										if (server.config.getBoolean("autobone.saveRecordings", true)) {
+											File saveFolder = new File("Recordings");
+											if (saveFolder.isDirectory() || saveFolder.mkdirs()) {
+												File saveRecording;
+												int recordingIndex = 1;
+												do {
+													saveRecording = new File(saveFolder, "ABRecording" + recordingIndex++ + ".abf");
+												} while (saveRecording.exists());
 
-										LogManager.log.info("[AutoBone] Done exporting! Processing frames...");
+												LogManager.log.info("[AutoBone] Exporting frames to \"" + saveRecording.getPath() + "\"...");
+												if (PoseRecordIO.writeToFile(saveRecording, frames)) {
+													LogManager.log.info("[AutoBone] Done exporting! Recording can be found at \"" + saveRecording.getPath() + "\".");
+												} else {
+													LogManager.log.severe("[AutoBone] Failed to export the recording to \"" + saveRecording.getPath() + "\".");
+												}
+											} else {
+												LogManager.log.severe("[AutoBone] Failed to create the recording directory \"" + saveFolder.getPath() + "\".");
+											}
+										}
+										frameRecordings.add(Pair.of("<Recording>", frames));
 									}
 
+									LogManager.log.info("[AutoBone] Processing frames...");
 									FastList<Float> heightPercentError = new FastList<Float>(frameRecordings.size());
 									for (Pair<String, PoseFrame[]> recording : frameRecordings) {
 										LogManager.log.info("[AutoBone] Processing frames from \"" + recording.getKey() + "\"...");
 										autoBone.reloadConfigValues();
-										autoBone.setFrames(recording.getValue());
 
 										autoBone.minDataDistance = server.config.getInt("autobone.minimumDataDistance", autoBone.minDataDistance);
 										autoBone.maxDataDistance = server.config.getInt("autobone.maximumDataDistance", autoBone.maxDataDistance);
@@ -175,7 +195,7 @@ public class SkeletonConfig extends EJBag {
 
 										boolean calcInitError = server.config.getBoolean("autobone.calculateInitialError", true);
 										float targetHeight = server.config.getFloat("autobone.manualTargetHeight", -1f);
-										heightPercentError.add(autoBone.processFrames(calcInitError, targetHeight));
+										heightPercentError.add(autoBone.processFrames(recording.getValue(), calcInitError, targetHeight));
 
 										LogManager.log.info("[AutoBone] Done processing!");
 

@@ -6,9 +6,7 @@ import java.util.Set;
 import java.util.Map.Entry;
 
 import io.eiren.util.ann.ThreadSafe;
-import io.eiren.util.ann.VRServerThread;
 import io.eiren.util.logging.LogManager;
-import io.eiren.util.StringUtils;
 import io.eiren.util.collections.FastList;
 import io.eiren.vr.VRServer;
 import io.eiren.vr.processor.HumanSkeleton;
@@ -53,12 +51,6 @@ public class AutoBone {
 
 	HumanSkeletonWithLegs skeleton = null;
 
-	protected PoseFrame[] frames = new PoseFrame[0];
-	protected int frameRecordingCursor = -1;
-
-	protected long frameRecordingInterval = 60L;
-	protected long nextFrameTimeMs = -1L;
-
 	// This is filled by reloadConfigValues()
 	public final HashMap<String, Float> configs = new HashMap<String, Float>();
 
@@ -74,7 +66,6 @@ public class AutoBone {
 		reloadConfigValues();
 
 		server.addSkeletonUpdatedCallback(this::skeletonUpdated);
-		server.addOnTick(this::onTick);
 	}
 
 	public void reloadConfigValues() {
@@ -88,7 +79,7 @@ public class AutoBone {
 			// If force enabled or has a chest tracker
 			configs.put("Chest", server.config.getFloat("body.chestDistance", 0.42f));
 		} else {
-			// Otherwise make sure it's not used
+			// Otherwise, make sure it's not used
 			configs.remove("Chest");
 		}
 
@@ -106,13 +97,11 @@ public class AutoBone {
 
 	@ThreadSafe
 	public void skeletonUpdated(HumanSkeleton newSkeleton) {
-		java.awt.EventQueue.invokeLater(() -> {
-			if (newSkeleton instanceof HumanSkeletonWithLegs) {
-				skeleton = (HumanSkeletonWithLegs)newSkeleton;
-				applyConfigToSkeleton(newSkeleton);
-				LogManager.log.info("[AutoBone] Received updated skeleton");
-			}
-		});
+		if (newSkeleton instanceof HumanSkeletonWithLegs) {
+			skeleton = (HumanSkeletonWithLegs)newSkeleton;
+			applyConfigToSkeleton(newSkeleton);
+			LogManager.log.info("[AutoBone] Received updated skeleton");
+		}
 	}
 
 	public boolean applyConfigToSkeleton(HumanSkeleton skeleton) {
@@ -170,46 +159,6 @@ public class AutoBone {
 		server.saveConfig();
 	}
 
-	@VRServerThread
-	public void onTick() {
-		if (frameRecordingCursor >= 0 && frameRecordingCursor < frames.length && skeleton != null && System.currentTimeMillis() >= nextFrameTimeMs) {
-			nextFrameTimeMs = System.currentTimeMillis() + frameRecordingInterval;
-
-			PoseFrame frame = new PoseFrame(skeleton);
-			frames[frameRecordingCursor++] = frame;
-
-			LogManager.log.info("Recorded frame " + frameRecordingCursor);
-		}
-	}
-
-	public void startFrameRecording(int numFrames, long interval) {
-		frames = new PoseFrame[numFrames];
-
-		frameRecordingInterval = interval;
-		nextFrameTimeMs = -1L;
-
-		frameRecordingCursor = 0;
-
-		LogManager.log.info("[AutoBone] Recording " + numFrames + " samples at a " + interval + " ms frame interval");
-	}
-
-	public void stopFrameRecording() {
-		// Set to end of the frame array to prevent race condition with `frameRecordingCursor++`
-		frameRecordingCursor = frames.length;
-	}
-
-	public boolean isRecording() {
-		return frameRecordingCursor >= 0 && frameRecordingCursor < frames.length;
-	}
-
-	public PoseFrame[] getFrames() {
-		return frames;
-	}
-
-	public void setFrames(PoseFrame[] frames) {
-		this.frames = frames;
-	}
-
 	public float getHeight(Map<String, Float> configs) {
 		float height = 0f;
 
@@ -243,15 +192,15 @@ public class AutoBone {
 		return maxHeight;
 	}
 
-	public void processFrames() {
-		processFrames(-1f);
+	public void processFrames(PoseFrame[] frames) {
+		processFrames(frames, -1f);
 	}
 
-	public void processFrames(float targetHeight) {
-		processFrames(true, targetHeight);
+	public void processFrames(PoseFrame[] frames, float targetHeight) {
+		processFrames(frames, true, targetHeight);
 	}
 
-	public float processFrames(boolean calcInitError, float targetHeight) {
+	public float processFrames(PoseFrame[] frames, boolean calcInitError, float targetHeight) {
 		Set<Entry<String, Float>> configSet = configs.entrySet();
 
 		SimpleSkeleton skeleton1 = new SimpleSkeleton(configSet);
@@ -375,7 +324,7 @@ public class AutoBone {
 							continue;
 						}
 
-						updateSekeletonBoneLength(skeleton1, skeleton2, entry.getKey(), newLength);
+						updateSkeletonBoneLength(skeleton1, skeleton2, entry.getKey(), newLength);
 
 						float newHeight = isHeightVar ? curHeight + curAdjustVal : curHeight;
 						float newError = errorFunc(getErrorDeriv(skeleton1, skeleton2, targetHeight - newHeight));
@@ -457,7 +406,7 @@ public class AutoBone {
 					}
 
 					// Reset the length to minimize bias in other variables, it's applied later
-					updateSekeletonBoneLength(skeleton1, skeleton2, entry.getKey(), originalLength);
+					updateSkeletonBoneLength(skeleton1, skeleton2, entry.getKey(), originalLength);
 				}
 			} while (++frameCursor1 < frames.length && ++frameCursor2 < frames.length);
 		}
@@ -499,7 +448,7 @@ public class AutoBone {
 		return 0.5f * (errorDeriv * errorDeriv);
 	}
 
-	protected void updateSekeletonBoneLength(SimpleSkeleton skeleton1, SimpleSkeleton skeleton2, String joint, float newLength) {
+	protected void updateSkeletonBoneLength(SimpleSkeleton skeleton1, SimpleSkeleton skeleton2, String joint, float newLength) {
 		skeleton1.setSkeletonConfig(joint, newLength);
 		skeleton2.setSkeletonConfig(joint, newLength);
 
