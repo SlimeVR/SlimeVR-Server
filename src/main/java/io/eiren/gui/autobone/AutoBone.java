@@ -91,12 +91,6 @@ public class AutoBone {
 		configs.put("Knee height", server.config.getFloat("body.kneeHeight", 0.42f));
 	}
 
-	public void setSkeletonLengths(SimpleSkeleton skeleton) {
-		for (Entry<String, Float> entry : configs.entrySet()) {
-			skeleton.setSkeletonConfig(entry.getKey(), entry.getValue());
-		}
-	}
-
 	@ThreadSafe
 	public void skeletonUpdated(HumanSkeleton newSkeleton) {
 		if (newSkeleton instanceof HumanSkeletonWithLegs) {
@@ -232,7 +226,7 @@ public class AutoBone {
 
 			float adjustRate = epoch >= 0 ? (float)(initialAdjustRate / Math.pow(adjustRateDecay, epoch)) : 0f;
 
-			for (int cursorOffset = minDataDistance; cursorOffset <= maxDataDistance && cursorOffset < frames.length ; cursorOffset++) {
+			for (int cursorOffset = minDataDistance; cursorOffset <= maxDataDistance && cursorOffset < frames.length; cursorOffset++) {
 				for (int frameCursor = 0; frameCursor < frames.length - cursorOffset; frameCursor += cursorIncrement) {
 					PoseFrame frame1 = frames[frameCursor];
 					PoseFrame frame2 = frames[frameCursor + cursorOffset];
@@ -242,14 +236,12 @@ public class AutoBone {
 						continue;
 					}
 
-					setSkeletonLengths(skeleton1);
-					setSkeletonLengths(skeleton2);
+					configSet = configs.entrySet();
+					skeleton1.setSkeletonConfigs(configSet);
+					skeleton2.setSkeletonConfigs(configSet);
 
 					skeleton1.setPoseFromFrame(frame1);
 					skeleton2.setPoseFromFrame(frame2);
-
-					skeleton1.updatePose();
-					skeleton2.updatePose();
 
 					float totalLength = getLengthSum(configs);
 					float curHeight = getHeight(configs);
@@ -362,10 +354,7 @@ public class AutoBone {
 	}
 
 	protected void updateSkeletonBoneLength(SimpleSkeleton skeleton1, SimpleSkeleton skeleton2, String joint, float newLength) {
-		skeleton1.setSkeletonConfig(joint, newLength);
-		skeleton2.setSkeletonConfig(joint, newLength);
-
-		skeleton1.updatePose();
-		skeleton2.updatePose();
+		skeleton1.setSkeletonConfig(joint, newLength, true);
+		skeleton2.setSkeletonConfig(joint, newLength, true);
 	}
 }

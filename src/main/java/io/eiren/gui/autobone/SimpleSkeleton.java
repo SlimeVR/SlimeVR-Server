@@ -134,6 +134,8 @@ public class SimpleSkeleton {
 				targetNode.localTransform.setRotation(rotation.getValue());
 			}
 		}
+
+		updatePose();
 	}
 
 	public void setSkeletonConfigs(Iterable<Entry<String, Float>> configs) {
@@ -143,28 +145,48 @@ public class SimpleSkeleton {
 	}
 
 	public void setSkeletonConfig(String joint, float newLength) {
+		setSkeletonConfig(joint, newLength, false);
+	}
+
+	public void setSkeletonConfig(String joint, float newLength, boolean updatePose) {
 		switch(joint) {
 		case "Head":
 			headShift = newLength;
 			headNode.localTransform.setTranslation(0, 0, headShift);
+			if (updatePose) {
+				headNode.update();
+			}
 			break;
 		case "Neck":
 			neckLength = newLength;
 			neckNode.localTransform.setTranslation(0, -neckLength, 0);
+			if (updatePose) {
+				neckNode.update();
+			}
 			break;
 		case "Waist":
 			waistDistance = newLength;
 			waistNode.localTransform.setTranslation(0, -(waistDistance - chestDistance), 0);
+			if (updatePose) {
+				waistNode.update();
+			}
 			break;
 		case "Chest":
 			chestDistance = newLength;
 			chestNode.localTransform.setTranslation(0, -chestDistance, 0);
 			waistNode.localTransform.setTranslation(0, -(waistDistance - chestDistance), 0);
+			if (updatePose) {
+				chestNode.update();
+			}
 			break;
 		case "Hips width":
 			hipsWidth = newLength;
 			leftHipNode.localTransform.setTranslation(-hipsWidth / 2, 0, 0);
 			rightHipNode.localTransform.setTranslation(hipsWidth / 2, 0, 0);
+			if (updatePose) {
+				leftHipNode.update();
+				rightHipNode.update();
+			}
 			break;
 		case "Knee height":
 			kneeHeight = newLength;
@@ -172,11 +194,19 @@ public class SimpleSkeleton {
 			rightAnkleNode.localTransform.setTranslation(0, -kneeHeight, 0);
 			leftKneeNode.localTransform.setTranslation(0, -(legsLength - kneeHeight), 0);
 			rightKneeNode.localTransform.setTranslation(0, -(legsLength - kneeHeight), 0);
+			if (updatePose) {
+				leftKneeNode.update();
+				rightKneeNode.update();
+			}
 			break;
 		case "Legs length":
 			legsLength = newLength;
 			leftKneeNode.localTransform.setTranslation(0, -(legsLength - kneeHeight), 0);
 			rightKneeNode.localTransform.setTranslation(0, -(legsLength - kneeHeight), 0);
+			if (updatePose) {
+				leftKneeNode.update();
+				rightKneeNode.update();
+			}
 			break;
 		}
 	}
