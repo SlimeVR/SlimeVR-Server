@@ -146,7 +146,7 @@ public class SkeletonConfig extends EJBag {
 									if (frameRecordings.size() > 0) {
 										setText("Wait");
 										LogManager.log.info("[AutoBone] Done loading frames!");
-									} else if (newSkeleton != null) {
+									} else if (poseRecorder.isReadyToRecord()) {
 										setText("Move");
 										// 1000 samples at 20 ms per sample is 20 seconds
 										int sampleCount = server.config.getInt("autobone.sampleCount", 1000);

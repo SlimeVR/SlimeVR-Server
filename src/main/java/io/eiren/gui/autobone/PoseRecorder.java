@@ -85,6 +85,10 @@ public class PoseRecorder {
 		return numFrames > frames.size();
 	}
 
+	public boolean isReadyToRecord() {
+		return skeleton != null;
+	}
+
 	public PoseFrame[] getFrames() throws ExecutionException, InterruptedException {
 		CompletableFuture<PoseFrame[]> currentRecording = this.currentRecording;
 		return currentRecording != null ? currentRecording.get() : null;
