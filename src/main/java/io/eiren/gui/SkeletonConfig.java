@@ -200,23 +200,25 @@ public class SkeletonConfig extends EJBag {
 										LogManager.log.info("[AutoBone] Done processing!");
 
 										//#region Stats/Values
-										Float neckLength = autoBone.configs.get("Neck");
-										Float chestLength = autoBone.configs.get("Chest");
-										Float waistLength = autoBone.configs.get("Waist");
-										Float hipWidth = autoBone.configs.get("Hips width");
-										Float legsLength = autoBone.configs.get("Legs length");
-										Float kneeHeight = autoBone.configs.get("Knee height");
+										Float neckLength = autoBone.getConfig("Neck");
+										Float chestLength = autoBone.getConfig("Chest");
+										Float waistLength = autoBone.getConfig("Waist");
+										Float hipWidth = autoBone.getConfig("Hips width");
+										Float legsLength = autoBone.getConfig("Legs length");
+										Float kneeHeight = autoBone.getConfig("Knee height");
 
 										float neckWaist = neckLength != null && waistLength != null ? neckLength / waistLength : 0f;
 										float chestWaist = chestLength != null && waistLength != null ? chestLength / waistLength : 0f;
 										float hipWaist = hipWidth != null && waistLength != null ? hipWidth / waistLength : 0f;
 										float legWaist = legsLength != null && waistLength != null ? legsLength / waistLength : 0f;
+										float legBody = legsLength != null && waistLength != null && neckLength != null ? legsLength / (waistLength + neckLength) : 0f;
 										float kneeLeg = kneeHeight != null && legsLength != null ? kneeHeight / legsLength : 0f;
 
 										LogManager.log.info("[AutoBone] Ratios: [{Neck-Waist: " + StringUtils.prettyNumber(neckWaist) +
 										"}, {Chest-Waist: " + StringUtils.prettyNumber(chestWaist) +
 										"}, {Hip-Waist: " + StringUtils.prettyNumber(hipWaist) +
 										"}, {Leg-Waist: " + StringUtils.prettyNumber(legWaist) +
+										"}, {Leg-Body: " + StringUtils.prettyNumber(legBody) +
 										"}, {Knee-Leg: " + StringUtils.prettyNumber(kneeLeg) + "}]");
 
 										boolean first = true;

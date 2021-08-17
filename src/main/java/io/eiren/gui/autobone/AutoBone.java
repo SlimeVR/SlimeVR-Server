@@ -19,17 +19,17 @@ public class AutoBone {
 
 	public int cursorIncrement = 1;
 
-	public int minDataDistance = 1;
-	public int maxDataDistance = 1;
+	public int minDataDistance = 2;
+	public int maxDataDistance = 32;
 
-	public int numEpochs = 100;
+	public int numEpochs = 50;
 
 	public float initialAdjustRate = 2.0f;
-	public float adjustRateDecay = 1.04f;
+	public float adjustRateDecay = 1.01f;
 
 	public float slideErrorFactor = 1.0f;
 	public float offsetErrorFactor = 0.0f;
-	public float heightErrorFactor = 0.004f;
+	public float heightErrorFactor = 0.05f;
 
 	/*
 	public float NECK_WAIST_RATIO_MIN = 0.2f;
@@ -55,6 +55,7 @@ public class AutoBone {
 
 	// This is filled by reloadConfigValues()
 	public final HashMap<String, Float> configs = new HashMap<String, Float>();
+	public final HashMap<String, Float> staticConfigs = new HashMap<String, Float>();
 
 	public final FastList<String> heightConfigs = new FastList<String>(new String[] {
 		"Neck",
@@ -72,8 +73,8 @@ public class AutoBone {
 
 	public void reloadConfigValues() {
 		// Load waist configs
-		//configs.put("Head", server.config.getFloat("body.headShift", HumanSkeletonWithWaist.HEAD_SHIFT_DEFAULT));
-		configs.put("Neck", server.config.getFloat("body.neckLength", HumanSkeletonWithWaist.NECK_LENGTH_DEFAULT));
+		staticConfigs.put("Head", server.config.getFloat("body.headShift", HumanSkeletonWithWaist.HEAD_SHIFT_DEFAULT));
+		staticConfigs.put("Neck", server.config.getFloat("body.neckLength", HumanSkeletonWithWaist.NECK_LENGTH_DEFAULT));
 		configs.put("Waist", server.config.getFloat("body.waistDistance", 0.85f));
 
 		if (server.config.getBoolean("autobone.forceChestTracker", false) ||
@@ -83,10 +84,11 @@ public class AutoBone {
 		} else {
 			// Otherwise, make sure it's not used
 			configs.remove("Chest");
+			staticConfigs.put("Chest", server.config.getFloat("body.chestDistance", 0.42f));
 		}
 
 		// Load leg configs
-		//configs.put("Hips width", server.config.getFloat("body.hipsWidth", HumanSkeletonWithLegs.HIPS_WIDTH_DEFAULT));
+		staticConfigs.put("Hips width", server.config.getFloat("body.hipsWidth", HumanSkeletonWithLegs.HIPS_WIDTH_DEFAULT));
 		configs.put("Legs length", server.config.getFloat("body.legsLength", 0.84f));
 		configs.put("Knee height", server.config.getFloat("body.kneeHeight", 0.42f));
 	}
@@ -115,51 +117,49 @@ public class AutoBone {
 		return true;
 	}
 
+	private void setConfig(String name, String path) {
+		Float value = configs.get(name);
+		if (value != null) {
+			server.config.setProperty(path, value);
+		}
+	}
+
 	// This doesn't require a skeleton, therefore can be used if skeleton is null
 	public void saveConfigs() {
-		Float headOffset = configs.get("Head");
-		if (headOffset != null) {
-			server.config.setProperty("body.headShift", headOffset);
-		}
-
-		Float neckLength = configs.get("Neck");
-		if (neckLength != null) {
-			server.config.setProperty("body.neckLength", neckLength);
-		}
-
-		Float waistLength = configs.get("Waist");
-		if (waistLength != null) {
-			server.config.setProperty("body.waistDistance", waistLength);
-		}
-
-		Float chestDistance = configs.get("Chest");
-		if (chestDistance != null) {
-			server.config.setProperty("body.chestDistance", chestDistance);
-		}
-
-		Float hipsWidth = configs.get("Hips width");
-		if (hipsWidth != null) {
-			server.config.setProperty("body.hipsWidth", hipsWidth);
-		}
-
-		Float legsLength = configs.get("Legs length");
-		if (legsLength != null) {
-			server.config.setProperty("body.legsLength", legsLength);
-		}
-
-		Float kneeHeight = configs.get("Knee height");
-		if (kneeHeight != null) {
-			server.config.setProperty("body.kneeHeight", kneeHeight);
-		}
+		setConfig("Head", "body.headShift");
+		setConfig("Neck", "body.neckLength");
+		setConfig("Waist", "body.waistDistance");
+		setConfig("Chest", "body.chestDistance");
+		setConfig("Hips width", "body.hipsWidth");
+		setConfig("Legs length", "body.legsLength");
+		setConfig("Knee height", "body.kneeHeight");
 
 		server.saveConfig();
 	}
 
+	public Float getConfig(String config) {
+		Float configVal = configs.get(config);
+		return configVal != null ? configVal : staticConfigs.get(config);
+	}
+
+	public Float getConfig(String config, Map<String, Float> configs, Map<String, Float> configsAlt) {
+		if (configs == null) {
+			throw new NullPointerException("Argument \"configs\" must not be null");
+		}
+
+		Float configVal = configs.get(config);
+		return configVal != null || configsAlt == null ? configVal : configsAlt.get(config);
+	}
+
 	public float getHeight(Map<String, Float> configs) {
+		return getHeight(configs, null);
+	}
+
+	public float getHeight(Map<String, Float> configs, Map<String, Float> configsAlt) {
 		float height = 0f;
 
 		for (String heightConfig : heightConfigs) {
-			Float length = configs.get(heightConfig);
+			Float length = getConfig(heightConfig, configs, configsAlt);
 			if (length != null) {
 				height += length;
 			}
@@ -220,6 +220,11 @@ public class AutoBone {
 			}
 		}
 
+		for (Entry<String, Float> entry : configSet) {
+			entry.setValue(1f);
+		}
+
+		HashMap<String, Float> iterConfigs = new HashMap<String, Float>(configs);
 		for (int epoch = calcInitError ? -1 : 0; epoch < numEpochs; epoch++) {
 			float sumError = 0f;
 			int errorCount = 0;
@@ -244,7 +249,7 @@ public class AutoBone {
 					skeleton2.setPoseFromFrame(frame2);
 
 					float totalLength = getLengthSum(configs);
-					float curHeight = getHeight(configs);
+					float curHeight = getHeight(configs, staticConfigs);
 					float errorDeriv = getErrorDeriv(skeleton1, skeleton2, targetHeight - curHeight);
 					float error = errorFunc(errorDeriv);
 
@@ -268,6 +273,7 @@ public class AutoBone {
 
 					float adjustVal = error * adjustRate;
 
+					iterConfigs.putAll(configs);
 					for (Entry<String, Float> entry : configs.entrySet()) {
 						// Skip adjustment if the epoch is before starting (for logging only)
 						if (epoch < 0) {
@@ -282,7 +288,7 @@ public class AutoBone {
 						float finalNewLength = -1f;
 						for (int i = 0; i < 2; i++) {
 							// Scale by the ratio for smooth adjustment and more stable results
-							float curAdjustVal = (i == 0 ? adjustVal : -adjustVal) * (originalLength / totalLength);
+							float curAdjustVal = ((i == 0 ? adjustVal : -adjustVal) * originalLength) / totalLength;
 							float newLength = originalLength + curAdjustVal;
 
 							// No small or negative numbers!!! Bad algorithm!
@@ -328,31 +334,39 @@ public class AutoBone {
 		return Math.abs(finalHeight - targetHeight);
 	}
 
+	protected float getSlideErrorDeriv(SimpleSkeleton skeleton1, SimpleSkeleton skeleton2) {
+		float slideLeft = skeleton1.getLeftFootPos().distance(skeleton2.getLeftFootPos());
+		float slideRight = skeleton1.getRightFootPos().distance(skeleton2.getRightFootPos());
+
+		// Divide by 4 to halve and average, it's halved because you want to approach a midpoint, not the other point
+		return (slideLeft + slideRight) / 4f;
+	}
+
+	protected float getOffsetErrorDeriv(SimpleSkeleton skeleton1, SimpleSkeleton skeleton2) {
+		float dist1 = Math.abs(skeleton1.getLeftFootPos().y - skeleton1.getRightFootPos().y);
+		float dist2 = Math.abs(skeleton2.getLeftFootPos().y - skeleton2.getRightFootPos().y);
+
+		float dist3 = Math.abs(skeleton1.getLeftFootPos().y - skeleton2.getRightFootPos().y);
+		float dist4 = Math.abs(skeleton1.getLeftFootPos().y - skeleton2.getRightFootPos().y);
+
+		float dist5 = Math.abs(skeleton1.getLeftFootPos().y - skeleton2.getLeftFootPos().y);
+		float dist6 = Math.abs(skeleton1.getRightFootPos().y - skeleton2.getRightFootPos().y);
+
+		// Divide by 12 to halve and average, it's halved because you want to approach a midpoint, not the other point
+		return (dist1 + dist2 + dist3 + dist4 + dist5 + dist6) / 12f;
+	}
+
 	protected float getErrorDeriv(SimpleSkeleton skeleton1, SimpleSkeleton skeleton2, float heightChange) {
 		float totalError = 0f;
 		float sumWeight = 0f;
 
 		if (slideErrorFactor > 0f) {
-			float slideLeft = skeleton1.getLeftFootPos().distance(skeleton2.getLeftFootPos());
-			float slideRight = skeleton1.getRightFootPos().distance(skeleton2.getRightFootPos());
-
-			// Divide by 4 to halve and average, it's halved because you want to approach a midpoint, not the other point
-			totalError += ((slideLeft + slideRight) / 4f) * slideErrorFactor;
+			totalError += getSlideErrorDeriv(skeleton1, skeleton2) * slideErrorFactor;
 			sumWeight += slideErrorFactor;
 		}
 
 		if (offsetErrorFactor > 0f) {
-			float dist1 = Math.abs(skeleton1.getLeftFootPos().y - skeleton1.getRightFootPos().y);
-			float dist2 = Math.abs(skeleton2.getLeftFootPos().y - skeleton2.getRightFootPos().y);
-
-			float dist3 = Math.abs(skeleton1.getLeftFootPos().y - skeleton2.getRightFootPos().y);
-			float dist4 = Math.abs(skeleton1.getLeftFootPos().y - skeleton2.getRightFootPos().y);
-
-			float dist5 = Math.abs(skeleton1.getLeftFootPos().y - skeleton2.getLeftFootPos().y);
-			float dist6 = Math.abs(skeleton1.getRightFootPos().y - skeleton2.getRightFootPos().y);
-
-			// Divide by 12 to halve and average, it's halved because you want to approach a midpoint, not the other point
-			totalError += ((dist1 + dist2 + dist3 + dist4 + dist5 + dist6) / 12f) * offsetErrorFactor;
+			totalError += getOffsetErrorDeriv(skeleton1, skeleton2) * offsetErrorFactor;
 			sumWeight += offsetErrorFactor;
 		}
 
