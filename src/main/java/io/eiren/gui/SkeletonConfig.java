@@ -146,7 +146,7 @@ public class SkeletonConfig extends EJBag {
 									if (frameRecordings.size() > 0) {
 										setText("Wait");
 										LogManager.log.info("[AutoBone] Done loading frames!");
-									} else {
+									} else if (newSkeleton != null) {
 										setText("Move");
 										// 1000 samples at 20 ms per sample is 20 seconds
 										int sampleCount = server.config.getInt("autobone.sampleCount", 1000);
@@ -176,6 +176,9 @@ public class SkeletonConfig extends EJBag {
 											}
 										}
 										frameRecordings.add(Pair.of("<Recording>", frames));
+									} else {
+										LogManager.log.severe("[AutoBone] No recordings found in \"" + loadFolder.getPath() + "\" and unable to record...");
+										return;
 									}
 
 									LogManager.log.info("[AutoBone] Processing frames...");
@@ -191,6 +194,7 @@ public class SkeletonConfig extends EJBag {
 										autoBone.adjustRateDecay = server.config.getFloat("autobone.adjustRateDecay", autoBone.adjustRateDecay);
 										autoBone.slideErrorFactor = server.config.getFloat("autobone.slideErrorFactor", autoBone.slideErrorFactor);
 										autoBone.offsetErrorFactor = server.config.getFloat("autobone.offsetErrorFactor", autoBone.offsetErrorFactor);
+										autoBone.proportionErrorFactor = server.config.getFloat("autobone.proportionErrorFactor", autoBone.proportionErrorFactor);
 										autoBone.heightErrorFactor = server.config.getFloat("autobone.heightErrorFactor", autoBone.heightErrorFactor);
 
 										boolean calcInitError = server.config.getBoolean("autobone.calculateInitialError", true);

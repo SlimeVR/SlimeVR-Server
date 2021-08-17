@@ -1,6 +1,7 @@
 package io.eiren.gui.autobone;
 
 import java.util.HashMap;
+import java.util.Map;
 import java.util.Map.Entry;
 
 import com.jme3.math.Quaternion;
@@ -96,12 +97,28 @@ public class SimpleSkeleton {
 		});
 	}
 
-	public SimpleSkeleton(Iterable<Entry<String, Float>> configs) {
+	public SimpleSkeleton(Iterable<Entry<String, Float>> configs, Iterable<Entry<String, Float>> altConfigs) {
 		// Initialize
 		this();
 
 		// Set configs
+		if (altConfigs != null) {
+			// Set alts first, so if there's any overlap it doesn't affect the values
+			setSkeletonConfigs(altConfigs);
+		}
 		setSkeletonConfigs(configs);
+	}
+
+	public SimpleSkeleton(Map<String, Float> configs, Map<String, Float> altConfigs) {
+		this(configs.entrySet(), altConfigs.entrySet());
+	}
+
+	public SimpleSkeleton(Iterable<Entry<String, Float>> configs) {
+		this(configs, null);
+	}
+
+	public SimpleSkeleton(Map<String, Float> configs) {
+		this(configs.entrySet());
 	}
 
 	public void setPoseFromSkeleton(HumanSkeletonWithLegs humanSkeleton) {
@@ -142,6 +159,10 @@ public class SimpleSkeleton {
 		for (Entry<String, Float> config : configs) {
 			setSkeletonConfig(config.getKey(), config.getValue());
 		}
+	}
+
+	public void setSkeletonConfigs(Map<String, Float> configs) {
+		setSkeletonConfigs(configs.entrySet());
 	}
 
 	public void setSkeletonConfig(String joint, float newLength) {
@@ -209,6 +230,27 @@ public class SimpleSkeleton {
 			}
 			break;
 		}
+	}
+
+	public Float getSkeletonConfig(String joint) {
+		switch(joint) {
+		case "Head":
+			return headShift;
+		case "Neck":
+			return neckLength;
+		case "Waist":
+			return waistDistance;
+		case "Chest":
+			return chestDistance;
+		case "Hips width":
+			return hipsWidth;
+		case "Knee height":
+			return kneeHeight;
+		case "Legs length":
+			return legsLength;
+		}
+
+		return null;
 	}
 
 	public void updatePose() {

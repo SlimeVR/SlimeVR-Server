@@ -2,7 +2,6 @@ package io.eiren.gui.autobone;
 
 import java.util.HashMap;
 import java.util.Map;
-import java.util.Set;
 import java.util.Map.Entry;
 
 import io.eiren.util.ann.ThreadSafe;
@@ -22,14 +21,15 @@ public class AutoBone {
 	public int minDataDistance = 2;
 	public int maxDataDistance = 32;
 
-	public int numEpochs = 50;
+	public int numEpochs = 5;
 
-	public float initialAdjustRate = 2.0f;
+	public float initialAdjustRate = 2.5f;
 	public float adjustRateDecay = 1.01f;
 
 	public float slideErrorFactor = 1.0f;
 	public float offsetErrorFactor = 0.0f;
-	public float heightErrorFactor = 0.05f;
+	public float proportionErrorFactor = 0.2f;
+	public float heightErrorFactor = 0.1f;
 
 	/*
 	public float NECK_WAIST_RATIO_MIN = 0.2f;
@@ -197,10 +197,8 @@ public class AutoBone {
 	}
 
 	public float processFrames(PoseFrame[] frames, boolean calcInitError, float targetHeight) {
-		Set<Entry<String, Float>> configSet = configs.entrySet();
-
-		SimpleSkeleton skeleton1 = new SimpleSkeleton(configSet);
-		SimpleSkeleton skeleton2 = new SimpleSkeleton(configSet);
+		SimpleSkeleton skeleton1 = new SimpleSkeleton(configs, staticConfigs);
+		SimpleSkeleton skeleton2 = new SimpleSkeleton(configs, staticConfigs);
 
 		// If target height isn't specified, auto-detect
 		if (targetHeight < 0f) {
@@ -220,7 +218,6 @@ public class AutoBone {
 			}
 		}
 
-		HashMap<String, Float> iterConfigs = new HashMap<String, Float>(configs);
 		for (int epoch = calcInitError ? -1 : 0; epoch < numEpochs; epoch++) {
 			float sumError = 0f;
 			int errorCount = 0;
@@ -237,9 +234,8 @@ public class AutoBone {
 						continue;
 					}
 
-					configSet = configs.entrySet();
-					skeleton1.setSkeletonConfigs(configSet);
-					skeleton2.setSkeletonConfigs(configSet);
+					skeleton1.setSkeletonConfigs(configs);
+					skeleton2.setSkeletonConfigs(configs);
 
 					skeleton1.setPoseFromFrame(frame1);
 					skeleton2.setPoseFromFrame(frame2);
@@ -269,7 +265,6 @@ public class AutoBone {
 
 					float adjustVal = error * adjustRate;
 
-					iterConfigs.putAll(configs);
 					for (Entry<String, Float> entry : configs.entrySet()) {
 						// Skip adjustment if the epoch is before starting (for logging only)
 						if (epoch < 0) {
@@ -318,7 +313,7 @@ public class AutoBone {
 			LogManager.log.info("[AutoBone] Epoch " + (epoch + 1) + " average error: " + avgError);
 		}
 
-		float finalHeight = getHeight(configs);
+		float finalHeight = getHeight(configs, staticConfigs);
 		LogManager.log.info("[AutoBone] Target height: " + targetHeight + " New height: " + finalHeight);
 
 		LogManager.log.info("[AutoBone] Done! Applying to skeleton...");
@@ -352,6 +347,28 @@ public class AutoBone {
 		return (dist1 + dist2 + dist3 + dist4 + dist5 + dist6) / 12f;
 	}
 
+	protected float getProportionErrorDeriv(SimpleSkeleton skeleton) {
+		Float neckLength = skeleton.getSkeletonConfig("Neck");
+		Float chestLength = skeleton.getSkeletonConfig("Chest");
+		Float waistLength = skeleton.getSkeletonConfig("Waist");
+		Float legsLength = skeleton.getSkeletonConfig("Legs length");
+		Float kneeHeight = skeleton.getSkeletonConfig("Knee height");
+
+		float chestWaist = chestLength != null && waistLength != null ? Math.abs((chestLength / waistLength) - 0.5f) : 0f;
+		float legBody = legsLength != null && waistLength != null && neckLength != null ? Math.abs((legsLength / (waistLength + neckLength)) - 1.1235f) : 0f;
+		float kneeLeg = kneeHeight != null && legsLength != null ? Math.abs((kneeHeight / legsLength) - 0.5f) : 0f;
+
+		// SD of 0.07, capture 68% within range
+		float sdValue = 0.07f;
+		if (legBody <= sdValue) {
+			legBody = 0f;
+		} else {
+			legBody -= sdValue;
+		}
+
+		return (chestWaist + legBody + kneeLeg) / 3f;
+	}
+
 	protected float getErrorDeriv(SimpleSkeleton skeleton1, SimpleSkeleton skeleton2, float heightChange) {
 		float totalError = 0f;
 		float sumWeight = 0f;
@@ -364,6 +381,11 @@ public class AutoBone {
 		if (offsetErrorFactor > 0f) {
 			totalError += getOffsetErrorDeriv(skeleton1, skeleton2) * offsetErrorFactor;
 			sumWeight += offsetErrorFactor;
+		}
+
+		if (proportionErrorFactor > 0f) {
+			totalError += getProportionErrorDeriv(skeleton1) * proportionErrorFactor;
+			sumWeight += proportionErrorFactor;
 		}
 
 		if (heightErrorFactor > 0f) {
