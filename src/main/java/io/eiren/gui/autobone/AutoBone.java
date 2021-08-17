@@ -220,10 +220,6 @@ public class AutoBone {
 			}
 		}
 
-		for (Entry<String, Float> entry : configSet) {
-			entry.setValue(1f);
-		}
-
 		HashMap<String, Float> iterConfigs = new HashMap<String, Float>(configs);
 		for (int epoch = calcInitError ? -1 : 0; epoch < numEpochs; epoch++) {
 			float sumError = 0f;
