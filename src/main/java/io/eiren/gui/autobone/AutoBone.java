@@ -265,9 +265,9 @@ public class AutoBone {
 					PoseFrame frame1 = frames[frameCursor];
 					PoseFrame frame2 = frames[frameCursor + cursorOffset];
 
-					// If there's missing data, skip it
+					// If there's missing data, throw an exception
 					if (frame1 == null || frame2 == null) {
-						continue;
+						throw new NullPointerException("Frames are missing from processing data");
 					}
 
 					skeleton1.setSkeletonConfigs(configs);
