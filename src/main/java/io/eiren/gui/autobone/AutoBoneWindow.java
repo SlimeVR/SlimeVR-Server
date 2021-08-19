@@ -37,7 +37,12 @@ public class AutoBoneWindow extends JFrame {
 	private final AutoBone autoBone;
 
 	private Thread recordingThread = null;
+	private Thread saveRecordingThread = null;
 	private Thread autoBoneThread = null;
+
+	private JButton saveRecordingButton;
+	private JButton adjustButton;
+	private JButton applyButton;
 
 	private JLabel processLabel;
 	private JLabel lengthsLabel;
@@ -70,6 +75,25 @@ public class AutoBoneWindow extends JFrame {
 		}
 
 		return configInfo.toString();
+	}
+
+	private void saveRecording(PoseFrame[] frames) {
+		if (saveDir.isDirectory() || saveDir.mkdirs()) {
+			File saveRecording;
+			int recordingIndex = 1;
+			do {
+				saveRecording = new File(saveDir, "ABRecording" + recordingIndex++ + ".abf");
+			} while (saveRecording.exists());
+
+			LogManager.log.info("[AutoBone] Exporting frames to \"" + saveRecording.getPath() + "\"...");
+			if (PoseFrameIO.writeToFile(saveRecording, frames)) {
+				LogManager.log.info("[AutoBone] Done exporting! Recording can be found at \"" + saveRecording.getPath() + "\".");
+			} else {
+				LogManager.log.severe("[AutoBone] Failed to export the recording to \"" + saveRecording.getPath() + "\".");
+			}
+		} else {
+			LogManager.log.severe("[AutoBone] Failed to create the recording directory \"" + saveDir.getPath() + "\".");
+		}
 	}
 
 	private List<Pair<String, PoseFrame[]>> loadRecordings() {
@@ -130,7 +154,7 @@ public class AutoBoneWindow extends JFrame {
 					@Override
 					public void mouseClicked(MouseEvent e) {
 						// Prevent running multiple times
-						if (recordingThread != null) {
+						if (!isEnabled() || recordingThread != null) {
 							return;
 						}
 
@@ -147,24 +171,12 @@ public class AutoBoneWindow extends JFrame {
 										PoseFrame[] frames = framesFuture.get();
 										LogManager.log.info("[AutoBone] Done recording!");
 
-										setText("Saving...");
-										if (server.config.getBoolean("autobone.saveRecordings", true)) {
-											if (saveDir.isDirectory() || saveDir.mkdirs()) {
-												File saveRecording;
-												int recordingIndex = 1;
-												do {
-													saveRecording = new File(saveDir, "ABRecording" + recordingIndex++ + ".abf");
-												} while (saveRecording.exists());
+										saveRecordingButton.setEnabled(true);
+										adjustButton.setEnabled(true);
 
-												LogManager.log.info("[AutoBone] Exporting frames to \"" + saveRecording.getPath() + "\"...");
-												if (PoseFrameIO.writeToFile(saveRecording, frames)) {
-													LogManager.log.info("[AutoBone] Done exporting! Recording can be found at \"" + saveRecording.getPath() + "\".");
-												} else {
-													LogManager.log.severe("[AutoBone] Failed to export the recording to \"" + saveRecording.getPath() + "\".");
-												}
-											} else {
-												LogManager.log.severe("[AutoBone] Failed to create the recording directory \"" + saveDir.getPath() + "\".");
-											}
+										if (server.config.getBoolean("autobone.saveRecordings", false)) {
+											setText("Saving...");
+											saveRecording(frames);
 										}
 									} else {
 										setText("Not Ready...");
@@ -193,12 +205,70 @@ public class AutoBoneWindow extends JFrame {
 				});
 			}});
 
-			add(new JButton("Auto-Adjust") {{
+			add(saveRecordingButton = new JButton("Save Recording") {{
+				setEnabled(poseRecorder.hasRecording());
 				addMouseListener(new MouseInputAdapter() {
 					@Override
 					public void mouseClicked(MouseEvent e) {
 						// Prevent running multiple times
-						if (autoBoneThread != null) {
+						if (!isEnabled() || saveRecordingThread != null) {
+							return;
+						}
+
+						Thread thread = new Thread() {
+							@Override
+							public void run() {
+								try {
+									Future<PoseFrame[]> framesFuture = poseRecorder.getFramesAsync();
+									if (framesFuture != null) {
+										setText("Waiting for Recording...");
+										PoseFrame[] frames = framesFuture.get();
+
+										if (frames.length <= 0) {
+											throw new IllegalStateException("Recording has no frames");
+										}
+
+										setText("Saving...");
+										saveRecording(frames);
+									} else {
+										setText("No Recording...");
+										LogManager.log.severe("[AutoBone] Unable to save, no recording was done...");
+										try {
+											Thread.sleep(3000); // Wait for 3 seconds
+										} catch (Exception e1) {
+											// Ignore
+										}
+										return;
+									}
+								} catch (Exception e) {
+									setText("Saving Failed...");
+									LogManager.log.severe("[AutoBone] Failed to save recording!", e);
+									try {
+										Thread.sleep(3000); // Wait for 3 seconds
+									} catch (Exception e1) {
+										// Ignore
+									}
+								} finally {
+									setText("Save Recording");
+									saveRecordingThread = null;
+								}
+							}
+						};
+
+						saveRecordingThread = thread;
+						thread.start();
+					}
+				});
+			}});
+
+			add(adjustButton = new JButton("Auto-Adjust") {{
+				// If there are files to load, enable the button
+				setEnabled(poseRecorder.hasRecording() || (loadDir.isDirectory() && loadDir.list().length > 0));
+				addMouseListener(new MouseInputAdapter() {
+					@Override
+					public void mouseClicked(MouseEvent e) {
+						// Prevent running multiple times
+						if (!isEnabled() || autoBoneThread != null) {
 							return;
 						}
 
@@ -242,6 +312,7 @@ public class AutoBoneWindow extends JFrame {
 
 										heightPercentError.add(processFrames(recording.getValue()));
 										LogManager.log.info("[AutoBone] Done processing!");
+										applyButton.setEnabled(true);
 
 										//#region Stats/Values
 										Float neckLength = autoBone.getConfig("Neck");
@@ -308,12 +379,16 @@ public class AutoBoneWindow extends JFrame {
 				});
 			}});
 
-			add(new JButton("Apply Values") {{
+			add(applyButton = new JButton("Apply Values") {{
+				setEnabled(false);
 				addMouseListener(new MouseInputAdapter() {
 					@Override
 					public void mouseClicked(MouseEvent e) {
-						autoBone.applyConfig();
+						if (!isEnabled()) {
+							return;
+						}
 
+						autoBone.applyConfig();
 						// Update GUI values after applying
 						skeletonConfig.refreshAll();
 					}

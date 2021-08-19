@@ -105,12 +105,16 @@ public class PoseRecorder {
 		numFrames = -1;
 	}
 
+	public boolean isReadyToRecord() {
+		return skeleton != null;
+	}
+
 	public boolean isRecording() {
 		return numFrames > frames.size();
 	}
 
-	public boolean isReadyToRecord() {
-		return skeleton != null;
+	public boolean hasRecording() {
+		return currentRecording != null;
 	}
 
 	public Future<PoseFrame[]> getFramesAsync() {
