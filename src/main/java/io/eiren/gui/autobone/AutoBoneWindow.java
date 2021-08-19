@@ -180,10 +180,16 @@ public class AutoBoneWindow extends JFrame {
 									if (frameRecordings.size() > 0) {
 										LogManager.log.info("[AutoBone] Done loading frames!");
 									} else {
-										Future<PoseFrame[]> frames = poseRecorder.getFramesAsync();
-										if (frames != null) {
+										Future<PoseFrame[]> framesFuture = poseRecorder.getFramesAsync();
+										if (framesFuture != null) {
 											setText("Waiting for Recording...");
-											frameRecordings.add(Pair.of("<Recording>", frames.get()));
+											PoseFrame[] frames = framesFuture.get();
+
+											if (frames.length <= 0) {
+												throw new IllegalStateException("Recording has no frames");
+											}
+
+											frameRecordings.add(Pair.of("<Recording>", frames));
 										} else {
 											setText("No Recordings...");
 											LogManager.log.severe("[AutoBone] No recordings found in \"" + loadFolder.getPath() + "\" and no recording was done...");

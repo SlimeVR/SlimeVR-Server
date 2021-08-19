@@ -39,13 +39,15 @@ public class PoseRecorder {
 				if (System.currentTimeMillis() >= nextFrameTimeMs) {
 					nextFrameTimeMs = System.currentTimeMillis() + frameRecordingInterval;
 					frames.add(new PoseFrame(skeleton));
+
+					// If done, send finished recording
+					if (frames.size() >= numFrames) {
+						internalStopRecording();
+					}
 				}
 			} else {
-				// If done, send finished recording
-				CompletableFuture<PoseFrame[]> currentRecording = this.currentRecording;
-				if (currentRecording != null && !currentRecording.isDone()) {
-					currentRecording.complete(frames.toArray(new PoseFrame[0]));
-				}
+				// If done and hasn't yet, send finished recording
+				internalStopRecording();
 			}
 		}
 	}
@@ -79,8 +81,8 @@ public class PoseRecorder {
 		return currentRecording;
 	}
 
-	public synchronized void stopFrameRecording() {
-		// Synchronized, this value can be expected to stay the same
+	private void internalStopRecording() {
+		CompletableFuture<PoseFrame[]> currentRecording = this.currentRecording;
 		if (currentRecording != null && !currentRecording.isDone()) {
 			// Stop the recording, returning the frames recorded
 			currentRecording.complete(frames.toArray(new PoseFrame[0]));
@@ -89,8 +91,12 @@ public class PoseRecorder {
 		numFrames = -1;
 	}
 
+	public synchronized void stopFrameRecording() {
+		internalStopRecording();
+	}
+
 	public synchronized void cancelFrameRecording() {
-		// Synchronized, this value can be expected to stay the same
+		CompletableFuture<PoseFrame[]> currentRecording = this.currentRecording;
 		if (currentRecording != null && !currentRecording.isDone()) {
 			// Cancel the current recording and return nothing
 			currentRecording.cancel(true);
