@@ -183,7 +183,7 @@ public class NamedPipeVRBridge extends Thread implements VRBridge {
 	
 	private boolean tryOpeningPipe(Pipe pipe) {
 		if(Kernel32.INSTANCE.ConnectNamedPipe(pipe.pipeHandle, null)) {
-			pipe.state = NamedPipeVRBridge.PipeState.OPEN;
+			pipe.state = PipeState.OPEN;
 			LogManager.log.info("[VRBridge] Pipe " + pipe.name + " is open");
 			return true;
 		}
@@ -245,22 +245,5 @@ public class NamedPipeVRBridge extends Thread implements VRBridge {
 				Kernel32.INSTANCE.DisconnectNamedPipe(pipe.pipeHandle);
 		} catch(Exception e) {
 		}
-	}
-	
-	private static class Pipe {
-		final String name;
-		final HANDLE pipeHandle;
-		PipeState state = PipeState.CREATED;
-		
-		public Pipe(HANDLE pipeHandle, String name) {
-			this.pipeHandle = pipeHandle;
-			this.name = name;
-		}
-	}
-	
-	private static enum PipeState {
-		CREATED,
-		OPEN,
-		ERROR;
 	}
 }
