@@ -18,6 +18,7 @@ import com.sun.jna.ptr.IntByReference;
 import io.eiren.util.collections.FastList;
 import io.eiren.util.logging.LogManager;
 import io.eiren.vr.VRServer;
+import io.eiren.vr.processor.TrackerBodyPosition;
 import io.eiren.vr.trackers.SteamVRTracker;
 import io.eiren.vr.trackers.TrackerStatus;
 
@@ -98,9 +99,14 @@ public class SteamVRPipeInputBridge extends Thread implements VRBridge {
 		String[] command = commandBuilder.toString().split(" ");
 		switch(command[0]) {
 		case "ADD": // Add new tracker
-			if(command.length < 3)
-				throw new IOException("Error in ADD command. Command requires at least 3 arguments. Supplied: " + commandBuilder.toString());
-			SteamVRTracker internalTracker = new SteamVRTracker(Integer.parseInt(command[1]), StringUtils.join(command, " ", 2, command.length));
+			if(command.length < 4)
+				throw new IOException("Error in ADD command. Command requires at least 4 arguments. Supplied: " + commandBuilder.toString());
+			SteamVRTracker internalTracker = new SteamVRTracker(Integer.parseInt(command[1]), StringUtils.join(command, " ", 3, command.length));
+			int roleId = Integer.parseInt(command[2]);
+			if(roleId >= 0 && roleId < SteamVRInputRoles.values.length) {
+				SteamVRInputRoles svrRole = SteamVRInputRoles.values[roleId];
+				internalTracker.bodyPosition = svrRole.bodyPosition;
+			}
 			SteamVRTracker oldTracker;
 			synchronized(trackersInternal) {
 				oldTracker = trackersInternal.put(internalTracker.id, internalTracker);
@@ -166,6 +172,7 @@ public class SteamVRPipeInputBridge extends Thread implements VRBridge {
 						}
 						// Tracker is not found in current trackers
 						SteamVRTracker tracker = new SteamVRTracker(internalTracker.id, internalTracker.getName());
+						tracker.bodyPosition = internalTracker.bodyPosition;
 						trackers.add(tracker);
 						server.registerTracker(tracker);
 					}
@@ -230,4 +237,27 @@ public class SteamVRPipeInputBridge extends Thread implements VRBridge {
 		}
 	}
 	
+	public enum SteamVRInputRoles {
+		HEAD(TrackerBodyPosition.HMD),
+		LEFT_HAND(TrackerBodyPosition.LEFT_CONTROLLER),
+		RIGHT_HAND(TrackerBodyPosition.RIGHT_CONTROLLER),
+		LEFT_FOOT(TrackerBodyPosition.LEFT_FOOT),
+		RIGHT_FOOT(TrackerBodyPosition.RIGHT_FOOT),
+		LEFT_SHOULDER(TrackerBodyPosition.NONE),
+		RIGHT_SHOULDER(TrackerBodyPosition.NONE),
+		LEFT_ELBOW(TrackerBodyPosition.NONE),
+		RIGHT_ELBOW(TrackerBodyPosition.NONE),
+		LEFT_KNEE(TrackerBodyPosition.LEFT_LEG),
+		RIGHT_KNEE(TrackerBodyPosition.RIGHT_LEG),
+		WAIST(TrackerBodyPosition.WAIST),
+		CHEST(TrackerBodyPosition.CHEST),
+		;
+		
+		private static final SteamVRInputRoles[] values = values();
+		public final TrackerBodyPosition bodyPosition;
+		
+		private SteamVRInputRoles(TrackerBodyPosition slimeVrPosition) {
+			this.bodyPosition = slimeVrPosition;
+		}
+	}
 }

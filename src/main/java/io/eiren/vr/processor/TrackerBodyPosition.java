@@ -15,6 +15,8 @@ public enum TrackerBodyPosition {
 	RIGHT_ANKLE("body:right_ankle"),
 	LEFT_FOOT("body:left_foot"),
 	RIGHT_FOOT("body:right_foot"),
+	LEFT_CONTROLLER("body:left_controller"),
+	RIGHT_CONTROLLER("body:right_conroller"),
 	;
 	
 	public final String designation;
