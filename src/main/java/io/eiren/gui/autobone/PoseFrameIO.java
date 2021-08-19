@@ -15,9 +15,9 @@ import com.jme3.math.Vector3f;
 
 import io.eiren.util.logging.LogManager;
 
-public final class PoseRecordIO {
+public final class PoseFrameIO {
 
-	private PoseRecordIO() {
+	private PoseFrameIO() {
 		// Do not allow instantiating
 	}
 

@@ -9,6 +9,7 @@ import javax.swing.JButton;
 import javax.swing.border.EmptyBorder;
 import java.awt.event.MouseEvent;
 import java.io.File;
+import java.util.List;
 import java.util.Map.Entry;
 import java.util.concurrent.Future;
 
@@ -24,6 +25,9 @@ import javax.swing.event.MouseInputAdapter;
 import org.apache.commons.lang3.tuple.Pair;
 
 public class AutoBoneWindow extends JFrame {
+
+	private static File saveDir = new File("Recordings");
+	private static File loadDir = new File("LoadRecordings");
 
 	private EJBox pane;
 
@@ -66,6 +70,29 @@ public class AutoBoneWindow extends JFrame {
 		}
 
 		return configInfo.toString();
+	}
+
+	private List<Pair<String, PoseFrame[]>> loadRecordings() {
+		List<Pair<String, PoseFrame[]>> recordings = new FastList<Pair<String, PoseFrame[]>>();
+		if (loadDir.isDirectory()) {
+			File[] files = loadDir.listFiles();
+			if (files != null) {
+				for (File file : files) {
+					if (file.isFile() && org.apache.commons.lang3.StringUtils.endsWithIgnoreCase(file.getName(), ".abf")) {
+						LogManager.log.info("[AutoBone] Detected recording at \"" + file.getPath() + "\", loading frames...");
+						PoseFrame[] frames = PoseFrameIO.readFromFile(file);
+
+						if (frames == null) {
+							LogManager.log.severe("Reading frames from \"" + file.getPath() + "\" failed...");
+						} else {
+							recordings.add(Pair.of(file.getName(), frames));
+						}
+					}
+				}
+			}
+		}
+
+		return recordings;
 	}
 
 	private float processFrames(PoseFrame[] frames) {
@@ -122,22 +149,21 @@ public class AutoBoneWindow extends JFrame {
 
 										setText("Saving...");
 										if (server.config.getBoolean("autobone.saveRecordings", true)) {
-											File saveFolder = new File("Recordings");
-											if (saveFolder.isDirectory() || saveFolder.mkdirs()) {
+											if (saveDir.isDirectory() || saveDir.mkdirs()) {
 												File saveRecording;
 												int recordingIndex = 1;
 												do {
-													saveRecording = new File(saveFolder, "ABRecording" + recordingIndex++ + ".abf");
+													saveRecording = new File(saveDir, "ABRecording" + recordingIndex++ + ".abf");
 												} while (saveRecording.exists());
 
 												LogManager.log.info("[AutoBone] Exporting frames to \"" + saveRecording.getPath() + "\"...");
-												if (PoseRecordIO.writeToFile(saveRecording, frames)) {
+												if (PoseFrameIO.writeToFile(saveRecording, frames)) {
 													LogManager.log.info("[AutoBone] Done exporting! Recording can be found at \"" + saveRecording.getPath() + "\".");
 												} else {
 													LogManager.log.severe("[AutoBone] Failed to export the recording to \"" + saveRecording.getPath() + "\".");
 												}
 											} else {
-												LogManager.log.severe("[AutoBone] Failed to create the recording directory \"" + saveFolder.getPath() + "\".");
+												LogManager.log.severe("[AutoBone] Failed to create the recording directory \"" + saveDir.getPath() + "\".");
 											}
 										}
 									} else {
@@ -180,28 +206,8 @@ public class AutoBoneWindow extends JFrame {
 							@Override
 							public void run() {
 								try {
-									FastList<Pair<String, PoseFrame[]>> frameRecordings = new FastList<Pair<String, PoseFrame[]>>();
-
-									File loadFolder = new File("LoadRecordings");
-									if (loadFolder.isDirectory()) {
-										setText("Load...");
-
-										File[] files = loadFolder.listFiles();
-										if (files != null) {
-											for (File file : files) {
-												if (file.isFile() && org.apache.commons.lang3.StringUtils.endsWithIgnoreCase(file.getName(), ".abf")) {
-													LogManager.log.info("[AutoBone] Detected recording at \"" + file.getPath() + "\", loading frames...");
-													PoseFrame[] frames = PoseRecordIO.readFromFile(file);
-
-													if (frames == null) {
-														LogManager.log.severe("Reading frames from \"" + file.getPath() + "\" failed...");
-													} else {
-														frameRecordings.add(Pair.of(file.getName(), frames));
-													}
-												}
-											}
-										}
-									}
+									setText("Load...");
+									List<Pair<String, PoseFrame[]>> frameRecordings = loadRecordings();
 
 									if (frameRecordings.size() > 0) {
 										LogManager.log.info("[AutoBone] Done loading frames!");
@@ -218,7 +224,7 @@ public class AutoBoneWindow extends JFrame {
 											frameRecordings.add(Pair.of("<Recording>", frames));
 										} else {
 											setText("No Recordings...");
-											LogManager.log.severe("[AutoBone] No recordings found in \"" + loadFolder.getPath() + "\" and no recording was done...");
+											LogManager.log.severe("[AutoBone] No recordings found in \"" + loadDir.getPath() + "\" and no recording was done...");
 											try {
 												Thread.sleep(3000); // Wait for 3 seconds
 											} catch (Exception e1) {
@@ -316,10 +322,12 @@ public class AutoBoneWindow extends JFrame {
 		}});
 
 		pane.add(new EJBox(BoxLayout.LINE_AXIS) {{
+			setBorder(new EmptyBorder(i(5)));
 			add(processLabel = new JLabel("Processing has not been started..."));
 		}});
 
 		pane.add(new EJBox(BoxLayout.LINE_AXIS) {{
+			setBorder(new EmptyBorder(i(5)));
 			add(lengthsLabel = new JLabel(getLengthsString()));
 		}});
 
