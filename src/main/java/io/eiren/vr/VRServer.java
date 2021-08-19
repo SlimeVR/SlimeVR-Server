@@ -19,6 +19,7 @@ import io.eiren.util.ann.ThreadSecure;
 import io.eiren.util.ann.VRServerThread;
 import io.eiren.util.collections.FastList;
 import io.eiren.vr.bridge.NamedPipeVRBridge;
+import io.eiren.vr.bridge.SteamVRPipeInputBridge;
 import io.eiren.vr.bridge.VMCBridge;
 import io.eiren.vr.bridge.VRBridge;
 import io.eiren.vr.processor.HumanPoseProcessor;
@@ -57,6 +58,10 @@ public class VRServer extends Thread {
 		NamedPipeVRBridge driverBridge = new NamedPipeVRBridge(hmdTracker, shareTrackers, this);
 		tasks.add(() -> driverBridge.start());
 		bridges.add(driverBridge);
+		// Create named pipe bridge for SteamVR input
+		SteamVRPipeInputBridge steamVRInput = new SteamVRPipeInputBridge(this);
+		tasks.add(() -> steamVRInput.start());
+		bridges.add(steamVRInput);
 		
 		// Create VMCBridge
 		try {
