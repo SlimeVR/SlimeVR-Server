@@ -43,18 +43,39 @@ public final class PoseRecordIO {
 			outputStream.writeFloat(frame.rootPos.y);
 			outputStream.writeFloat(frame.rootPos.z);
 
-			// Write rotations
-			outputStream.writeInt(frame.rotations.size());
-			for (Entry<String, Quaternion> entry : frame.rotations.entrySet()) {
-				// Write the label string
-				outputStream.writeUTF(entry.getKey());
+			if (frame.rotations != null) {
+				// Write rotations
+				outputStream.writeInt(frame.rotations.size());
+				for (Entry<String, Quaternion> entry : frame.rotations.entrySet()) {
+					// Write the label string
+					outputStream.writeUTF(entry.getKey());
 
-				// Write the rotation quaternion
-				Quaternion quat = entry.getValue();
-				outputStream.writeFloat(quat.getX());
-				outputStream.writeFloat(quat.getY());
-				outputStream.writeFloat(quat.getZ());
-				outputStream.writeFloat(quat.getW());
+					// Write the rotation quaternion
+					Quaternion quat = entry.getValue();
+					outputStream.writeFloat(quat.getX());
+					outputStream.writeFloat(quat.getY());
+					outputStream.writeFloat(quat.getZ());
+					outputStream.writeFloat(quat.getW());
+				}
+			} else {
+				outputStream.writeInt(0);
+			}
+
+			if (frame.positions != null) {
+				// Write positions
+				outputStream.writeInt(frame.positions.size());
+				for (Entry<String, Vector3f> entry : frame.positions.entrySet()) {
+					// Write the label string
+					outputStream.writeUTF(entry.getKey());
+
+					// Write the rotation quaternion
+					Vector3f vec = entry.getValue();
+					outputStream.writeFloat(vec.getX());
+					outputStream.writeFloat(vec.getY());
+					outputStream.writeFloat(vec.getZ());
+				}
+			} else {
+				outputStream.writeInt(0);
 			}
 		} catch (Exception e) {
 			LogManager.log.severe("Error writing frame to stream", e);
@@ -101,20 +122,39 @@ public final class PoseRecordIO {
 			Vector3f vector = new Vector3f(vecX, vecY, vecZ);
 
 			int rotationCount = inputStream.readInt();
-			HashMap<String, Quaternion> rotations = new HashMap<String, Quaternion>(rotationCount);
-			for (int j = 0; j < rotationCount; j++) {
-				String label = inputStream.readUTF();
+			HashMap<String, Quaternion> rotations = null;
+			if (rotationCount > 0) {
+				rotations = new HashMap<String, Quaternion>(rotationCount);
+				for (int j = 0; j < rotationCount; j++) {
+					String label = inputStream.readUTF();
 
-				float quatX = inputStream.readFloat();
-				float quatY = inputStream.readFloat();
-				float quatZ = inputStream.readFloat();
-				float quatW = inputStream.readFloat();
-				Quaternion quaternion = new Quaternion(quatX, quatY, quatZ, quatW);
+					float quatX = inputStream.readFloat();
+					float quatY = inputStream.readFloat();
+					float quatZ = inputStream.readFloat();
+					float quatW = inputStream.readFloat();
+					Quaternion quaternion = new Quaternion(quatX, quatY, quatZ, quatW);
 
-				rotations.put(label, quaternion);
+					rotations.put(label, quaternion);
+				}
 			}
 
-			return new PoseFrame(vector, rotations);
+			int positionCount = inputStream.readInt();
+			HashMap<String, Vector3f> positions = null;
+			if (positionCount > 0) {
+				positions = new HashMap<String, Vector3f>(positionCount);
+				for (int j = 0; j < positionCount; j++) {
+					String label = inputStream.readUTF();
+
+					float posX = inputStream.readFloat();
+					float posY = inputStream.readFloat();
+					float posZ = inputStream.readFloat();
+					Vector3f position = new Vector3f(posX, posY, posZ);
+
+					positions.put(label, position);
+				}
+			}
+
+			return new PoseFrame(vector, rotations, positions);
 		} catch (Exception e) {
 			LogManager.log.severe("Error reading frame from stream", e);
 		}

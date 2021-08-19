@@ -68,6 +68,32 @@ public class AutoBoneWindow extends JFrame {
 		return configInfo.toString();
 	}
 
+	private float processFrames(PoseFrame[] frames) {
+		autoBone.reloadConfigValues();
+
+		autoBone.minDataDistance = server.config.getInt("autobone.minimumDataDistance", autoBone.minDataDistance);
+		autoBone.maxDataDistance = server.config.getInt("autobone.maximumDataDistance", autoBone.maxDataDistance);
+
+		autoBone.numEpochs = server.config.getInt("autobone.epochCount", autoBone.numEpochs);
+
+		autoBone.initialAdjustRate = server.config.getFloat("autobone.adjustRate", autoBone.initialAdjustRate);
+		autoBone.adjustRateDecay = server.config.getFloat("autobone.adjustRateDecay", autoBone.adjustRateDecay);
+
+		autoBone.slideErrorFactor = server.config.getFloat("autobone.slideErrorFactor", autoBone.slideErrorFactor);
+		autoBone.offsetErrorFactor = server.config.getFloat("autobone.offsetErrorFactor", autoBone.offsetErrorFactor);
+		autoBone.proportionErrorFactor = server.config.getFloat("autobone.proportionErrorFactor", autoBone.proportionErrorFactor);
+		autoBone.heightErrorFactor = server.config.getFloat("autobone.heightErrorFactor", autoBone.heightErrorFactor);
+		autoBone.positionErrorFactor = server.config.getFloat("autobone.positionErrorFactor", autoBone.positionErrorFactor);
+		autoBone.positionOffsetErrorFactor = server.config.getFloat("autobone.positionOffsetErrorFactor", autoBone.positionOffsetErrorFactor);
+
+		boolean calcInitError = server.config.getBoolean("autobone.calculateInitialError", true);
+		float targetHeight = server.config.getFloat("autobone.manualTargetHeight", -1f);
+		return autoBone.processFrames(frames, calcInitError, targetHeight, (epoch) -> {
+			processLabel.setText(epoch.toString());
+			lengthsLabel.setText(getLengthsString());
+		});
+	}
+
 	@AWTThread
 	private void build() {
 		pane.add(new EJBox(BoxLayout.LINE_AXIS) {{
@@ -207,25 +233,8 @@ public class AutoBoneWindow extends JFrame {
 									FastList<Float> heightPercentError = new FastList<Float>(frameRecordings.size());
 									for (Pair<String, PoseFrame[]> recording : frameRecordings) {
 										LogManager.log.info("[AutoBone] Processing frames from \"" + recording.getKey() + "\"...");
-										autoBone.reloadConfigValues();
 
-										autoBone.minDataDistance = server.config.getInt("autobone.minimumDataDistance", autoBone.minDataDistance);
-										autoBone.maxDataDistance = server.config.getInt("autobone.maximumDataDistance", autoBone.maxDataDistance);
-										autoBone.numEpochs = server.config.getInt("autobone.epochCount", autoBone.numEpochs);
-										autoBone.initialAdjustRate = server.config.getFloat("autobone.adjustRate", autoBone.initialAdjustRate);
-										autoBone.adjustRateDecay = server.config.getFloat("autobone.adjustRateDecay", autoBone.adjustRateDecay);
-										autoBone.slideErrorFactor = server.config.getFloat("autobone.slideErrorFactor", autoBone.slideErrorFactor);
-										autoBone.offsetErrorFactor = server.config.getFloat("autobone.offsetErrorFactor", autoBone.offsetErrorFactor);
-										autoBone.proportionErrorFactor = server.config.getFloat("autobone.proportionErrorFactor", autoBone.proportionErrorFactor);
-										autoBone.heightErrorFactor = server.config.getFloat("autobone.heightErrorFactor", autoBone.heightErrorFactor);
-
-										boolean calcInitError = server.config.getBoolean("autobone.calculateInitialError", true);
-										float targetHeight = server.config.getFloat("autobone.manualTargetHeight", -1f);
-										heightPercentError.add(autoBone.processFrames(recording.getValue(), calcInitError, targetHeight, (epoch) -> {
-											processLabel.setText(epoch.toString());
-											lengthsLabel.setText(getLengthsString());
-										}));
-
+										heightPercentError.add(processFrames(recording.getValue()));
 										LogManager.log.info("[AutoBone] Done processing!");
 
 										//#region Stats/Values

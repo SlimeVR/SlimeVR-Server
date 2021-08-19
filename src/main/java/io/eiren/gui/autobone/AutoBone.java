@@ -5,6 +5,8 @@ import java.util.Map;
 import java.util.Map.Entry;
 import java.util.function.Consumer;
 
+import com.jme3.math.Vector3f;
+
 import io.eiren.util.ann.ThreadSafe;
 import io.eiren.util.logging.LogManager;
 import io.eiren.util.collections.FastList;
@@ -47,6 +49,8 @@ public class AutoBone {
 	public float offsetErrorFactor = 0.0f;
 	public float proportionErrorFactor = 0.2f;
 	public float heightErrorFactor = 0.1f;
+	public float positionErrorFactor = 0.0f;
+	public float positionOffsetErrorFactor = 0.0f;
 
 	/*
 	public float NECK_WAIST_RATIO_MIN = 0.2f;
@@ -278,7 +282,7 @@ public class AutoBone {
 
 					float totalLength = getLengthSum(configs);
 					float curHeight = getHeight(configs, staticConfigs);
-					float errorDeriv = getErrorDeriv(skeleton1, skeleton2, targetHeight - curHeight);
+					float errorDeriv = getErrorDeriv(frame1, frame2, skeleton1, skeleton2, targetHeight - curHeight);
 					float error = errorFunc(errorDeriv);
 
 					// In case of fire
@@ -326,7 +330,7 @@ public class AutoBone {
 							updateSkeletonBoneLength(skeleton1, skeleton2, entry.getKey(), newLength);
 
 							float newHeight = isHeightVar ? curHeight + curAdjustVal : curHeight;
-							float newErrorDeriv = getErrorDeriv(skeleton1, skeleton2, targetHeight - newHeight);
+							float newErrorDeriv = getErrorDeriv(frame1, frame2, skeleton1, skeleton2, targetHeight - newHeight);
 
 							if (newErrorDeriv < minError) {
 								minError = newErrorDeriv;
@@ -359,6 +363,7 @@ public class AutoBone {
 		return Math.abs(finalHeight - targetHeight);
 	}
 
+	// The change in position of the ankle over time
 	protected float getSlideErrorDeriv(SimpleSkeleton skeleton1, SimpleSkeleton skeleton2) {
 		float slideLeft = skeleton1.getLeftFootPos().distance(skeleton2.getLeftFootPos());
 		float slideRight = skeleton1.getRightFootPos().distance(skeleton2.getRightFootPos());
@@ -367,6 +372,7 @@ public class AutoBone {
 		return (slideLeft + slideRight) / 4f;
 	}
 
+	// The offset between both feet at one instant and over time
 	protected float getOffsetErrorDeriv(SimpleSkeleton skeleton1, SimpleSkeleton skeleton2) {
 		float dist1 = Math.abs(skeleton1.getLeftFootPos().y - skeleton1.getRightFootPos().y);
 		float dist2 = Math.abs(skeleton2.getLeftFootPos().y - skeleton2.getRightFootPos().y);
@@ -381,6 +387,7 @@ public class AutoBone {
 		return (dist1 + dist2 + dist3 + dist4 + dist5 + dist6) / 12f;
 	}
 
+	// The distance from average human proportions
 	protected float getProportionErrorDeriv(SimpleSkeleton skeleton) {
 		Float neckLength = skeleton.getSkeletonConfig("Neck");
 		Float chestLength = skeleton.getSkeletonConfig("Chest");
@@ -403,7 +410,58 @@ public class AutoBone {
 		return (chestWaist + legBody + kneeLeg) / 3f;
 	}
 
-	protected float getErrorDeriv(SimpleSkeleton skeleton1, SimpleSkeleton skeleton2, float heightChange) {
+	// The distance of any points to the corresponding absolute position
+	protected float getPositionErrorDeriv(PoseFrame frame, SimpleSkeleton skeleton) {
+		float offset = 0f;
+		int offsetCount = 0;
+
+		if (frame.positions != null) {
+			for (Entry<String, Vector3f> entry : frame.positions.entrySet()) {
+				Vector3f nodePos = skeleton.getNodePosition(entry.getKey());
+				if (nodePos != null) {
+					offset += Math.abs(nodePos.distance(entry.getValue()));
+					offsetCount++;
+				}
+			}
+		}
+
+		return offsetCount > 0 ? offset / offsetCount : 0f;
+	}
+
+	// The difference between offset of absolute position and the corresponding point over time
+	protected float getPositionOffsetErrorDeriv(PoseFrame frame1, PoseFrame frame2, SimpleSkeleton skeleton1, SimpleSkeleton skeleton2) {
+		float offset = 0f;
+		int offsetCount = 0;
+
+		if (frame1.positions != null && frame2.positions != null) {
+			for (Entry<String, Vector3f> entry : frame1.positions.entrySet()) {
+				Vector3f frame2Pos = frame2.positions.get(entry.getKey());
+				if (frame2Pos == null) {
+					continue;
+				}
+
+				Vector3f nodePos1 = skeleton1.getNodePosition(entry.getKey());
+				if (nodePos1 == null) {
+					continue;
+				}
+
+				Vector3f nodePos2 = skeleton2.getNodePosition(entry.getKey());
+				if (nodePos2 == null) {
+					continue;
+				}
+
+				float dist1 = Math.abs(nodePos1.distance(entry.getValue()));
+				float dist2 = Math.abs(nodePos2.distance(frame2Pos));
+
+				offset += Math.abs(dist2 - dist1);
+				offsetCount++;
+			}
+		}
+
+		return offsetCount > 0 ? offset / offsetCount : 0f;
+	}
+
+	protected float getErrorDeriv(PoseFrame frame1, PoseFrame frame2, SimpleSkeleton skeleton1, SimpleSkeleton skeleton2, float heightChange) {
 		float totalError = 0f;
 		float sumWeight = 0f;
 
@@ -418,6 +476,7 @@ public class AutoBone {
 		}
 
 		if (proportionErrorFactor > 0f) {
+			// Either skeleton will work fine, skeleton1 is used as a default
 			totalError += getProportionErrorDeriv(skeleton1) * proportionErrorFactor;
 			sumWeight += proportionErrorFactor;
 		}
@@ -425,6 +484,16 @@ public class AutoBone {
 		if (heightErrorFactor > 0f) {
 			totalError += Math.abs(heightChange) * heightErrorFactor;
 			sumWeight += heightErrorFactor;
+		}
+
+		if (positionErrorFactor > 0f) {
+			totalError += (getPositionErrorDeriv(frame1, skeleton1) + getPositionErrorDeriv(frame2, skeleton2) / 2f) * positionErrorFactor;
+			sumWeight += positionErrorFactor;
+		}
+
+		if (positionOffsetErrorFactor > 0f) {
+			totalError += getPositionOffsetErrorDeriv(frame1, frame2, skeleton1, skeleton2) * positionOffsetErrorFactor;
+			sumWeight += positionOffsetErrorFactor;
 		}
 
 		// Minimize sliding, minimize foot height offset, minimize change in total height

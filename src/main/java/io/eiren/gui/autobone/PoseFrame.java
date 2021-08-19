@@ -12,10 +12,12 @@ public final class PoseFrame {
 
 	public final Vector3f rootPos;
 	public final HashMap<String, Quaternion> rotations;
+	public final HashMap<String, Vector3f> positions;
 
-	public PoseFrame(Vector3f rootPos, HashMap<String, Quaternion> rotations) {
+	public PoseFrame(Vector3f rootPos, HashMap<String, Quaternion> rotations, HashMap<String, Vector3f> positions) {
 		this.rootPos = rootPos;
 		this.rotations = rotations;
+		this.positions = positions;
 	}
 
 	public PoseFrame(HumanSkeletonWithLegs skeleton) {
@@ -29,5 +31,7 @@ public final class PoseFrame {
 			// Insert a copied quaternion so it isn't changed by reference
 			rotations.put(visitor.getName(), new Quaternion(visitor.localTransform.getRotation()));
 		});
+
+		this.positions = null;
 	}
 }

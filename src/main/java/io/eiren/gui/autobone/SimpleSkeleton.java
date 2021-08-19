@@ -56,7 +56,7 @@ public class SimpleSkeleton {
 	 */
 	protected float legsLength = 0.84f;
 
-	protected final HashMap<String, TransformNode> nodes = new HashMap<String,TransformNode>();
+	protected final HashMap<String, TransformNode> nodes = new HashMap<String, TransformNode>();
 
 	public SimpleSkeleton() {
 		// Assemble skeleton to waist
@@ -142,13 +142,15 @@ public class SimpleSkeleton {
 		// Copy headset position
 		hmdNode.localTransform.setTranslation(frame.rootPos);
 
-		// Copy all rotations
-		for (Entry<String, Quaternion> rotation : frame.rotations.entrySet()) {
-			TransformNode targetNode = nodes.get(rotation.getKey());
+		if (frame.rotations != null) {
+			// Copy all rotations
+			for (Entry<String, Quaternion> rotation : frame.rotations.entrySet()) {
+				TransformNode targetNode = nodes.get(rotation.getKey());
 
-			// Handle unexpected nodes gracefully
-			if (targetNode != null) {
-				targetNode.localTransform.setRotation(rotation.getValue());
+				// Handle unexpected nodes gracefully
+				if (targetNode != null) {
+					targetNode.localTransform.setRotation(rotation.getValue());
+				}
 			}
 		}
 
@@ -255,6 +257,11 @@ public class SimpleSkeleton {
 
 	public void updatePose() {
 		hmdNode.update();
+	}
+
+	public Vector3f getNodePosition(String node) {
+		TransformNode transformNode = nodes.get(node);
+		return transformNode != null ? transformNode.worldTransform.getTranslation() : null;
 	}
 
 	public Vector3f getHMDPos() {
