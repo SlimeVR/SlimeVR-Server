@@ -34,15 +34,18 @@ public class PoseRecorder {
 	@VRServerThread
 	public void onTick() {
 		HumanSkeletonWithLegs skeleton = this.skeleton;
-		if (skeleton != null && frames.size() < numFrames && System.currentTimeMillis() >= nextFrameTimeMs) {
-			nextFrameTimeMs = System.currentTimeMillis() + frameRecordingInterval;
-
-			frames.add(new PoseFrame(skeleton));
-
-			// If done recording
-			CompletableFuture<PoseFrame[]> currentRecording = this.currentRecording;
-			if (currentRecording != null && frames.size() >= numFrames) {
-				currentRecording.complete(frames.toArray(new PoseFrame[0]));
+		if (skeleton != null) {
+			if (frames.size() < numFrames) {
+				if (System.currentTimeMillis() >= nextFrameTimeMs) {
+					nextFrameTimeMs = System.currentTimeMillis() + frameRecordingInterval;
+					frames.add(new PoseFrame(skeleton));
+				}
+			} else {
+				// If done, send finished recording
+				CompletableFuture<PoseFrame[]> currentRecording = this.currentRecording;
+				if (currentRecording != null && !currentRecording.isDone()) {
+					currentRecording.complete(frames.toArray(new PoseFrame[0]));
+				}
 			}
 		}
 	}
@@ -59,7 +62,7 @@ public class PoseRecorder {
 			throw new IllegalStateException("PoseRecorder isn't ready to record!");
 		}
 
-		stopFrameRecording();
+		cancelFrameRecording();
 
 		// Clear old frames and ensure new size can be held
 		frames.clear();
@@ -77,12 +80,23 @@ public class PoseRecorder {
 	}
 
 	public synchronized void stopFrameRecording() {
-		numFrames = -1;
-
 		// Synchronized, this value can be expected to stay the same
-		if (currentRecording != null) {
+		if (currentRecording != null && !currentRecording.isDone()) {
+			// Stop the recording, returning the frames recorded
 			currentRecording.complete(frames.toArray(new PoseFrame[0]));
 		}
+
+		numFrames = -1;
+	}
+
+	public synchronized void cancelFrameRecording() {
+		// Synchronized, this value can be expected to stay the same
+		if (currentRecording != null && !currentRecording.isDone()) {
+			// Cancel the current recording and return nothing
+			currentRecording.cancel(true);
+		}
+
+		numFrames = -1;
 	}
 
 	public boolean isRecording() {
