@@ -55,6 +55,10 @@ public class PoseRecorder {
 	}
 
 	public synchronized Future<PoseFrame[]> startFrameRecording(int numFrames, long interval) {
+		if (!isReadyToRecord()) {
+			throw new IllegalStateException("PoseRecorder isn't ready to record!");
+		}
+
 		stopFrameRecording();
 
 		// Clear old frames and ensure new size can be held
@@ -87,6 +91,10 @@ public class PoseRecorder {
 
 	public boolean isReadyToRecord() {
 		return skeleton != null;
+	}
+
+	public Future<PoseFrame[]> getFramesAsync() {
+		return currentRecording;
 	}
 
 	public PoseFrame[] getFrames() throws ExecutionException, InterruptedException {

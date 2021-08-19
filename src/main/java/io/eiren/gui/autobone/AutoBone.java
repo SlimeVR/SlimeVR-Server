@@ -3,6 +3,7 @@ package io.eiren.gui.autobone;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Map.Entry;
+import java.util.function.Consumer;
 
 import io.eiren.util.ann.ThreadSafe;
 import io.eiren.util.logging.LogManager;
@@ -15,6 +16,22 @@ import io.eiren.vr.processor.TrackerBodyPosition;
 import io.eiren.vr.trackers.TrackerUtils;
 
 public class AutoBone {
+
+	public class Epoch {
+
+		public final int epoch;
+		public final float epochError;
+
+		public Epoch(int epoch, float epochError) {
+			this.epoch = epoch;
+			this.epochError = epochError;
+		}
+
+		@Override
+		public String toString() {
+			return "Epoch: " + epoch + ", Epoch Error: " + epochError;
+		}
+	}
 
 	public int cursorIncrement = 1;
 
@@ -51,7 +68,7 @@ public class AutoBone {
 
 	protected final VRServer server;
 
-	HumanSkeletonWithLegs skeleton = null;
+	protected HumanSkeletonWithLegs skeleton = null;
 
 	// This is filled by reloadConfigValues()
 	public final HashMap<String, Float> configs = new HashMap<String, Float>();
@@ -99,6 +116,13 @@ public class AutoBone {
 			skeleton = (HumanSkeletonWithLegs)newSkeleton;
 			applyConfigToSkeleton(newSkeleton);
 			LogManager.log.info("[AutoBone] Received updated skeleton");
+		}
+	}
+
+	public void applyConfig() {
+		if (!applyConfigToSkeleton(skeleton)) {
+			// Unable to apply to skeleton, save directly
+			saveConfigs();
 		}
 	}
 
@@ -192,11 +216,23 @@ public class AutoBone {
 		processFrames(frames, -1f);
 	}
 
+	public void processFrames(PoseFrame[] frames, Consumer<Epoch> epochCallback) {
+		processFrames(frames, -1f, epochCallback);
+	}
+
 	public void processFrames(PoseFrame[] frames, float targetHeight) {
 		processFrames(frames, true, targetHeight);
 	}
 
+	public void processFrames(PoseFrame[] frames, float targetHeight, Consumer<Epoch> epochCallback) {
+		processFrames(frames, true, targetHeight, epochCallback);
+	}
+
 	public float processFrames(PoseFrame[] frames, boolean calcInitError, float targetHeight) {
+		return processFrames(frames, calcInitError, targetHeight, null);
+	}
+
+	public float processFrames(PoseFrame[] frames, boolean calcInitError, float targetHeight, Consumer<Epoch> epochCallback) {
 		SimpleSkeleton skeleton1 = new SimpleSkeleton(configs, staticConfigs);
 		SimpleSkeleton skeleton2 = new SimpleSkeleton(configs, staticConfigs);
 
@@ -311,16 +347,14 @@ public class AutoBone {
 			// Calculate average error over the epoch
 			float avgError = errorCount > 0 ? sumError / errorCount : -1f;
 			LogManager.log.info("[AutoBone] Epoch " + (epoch + 1) + " average error: " + avgError);
+
+			if (epochCallback != null) {
+				epochCallback.accept(new Epoch(epoch + 1, avgError));
+			}
 		}
 
 		float finalHeight = getHeight(configs, staticConfigs);
 		LogManager.log.info("[AutoBone] Target height: " + targetHeight + " New height: " + finalHeight);
-
-		LogManager.log.info("[AutoBone] Done! Applying to skeleton...");
-		if (!applyConfigToSkeleton(skeleton)) {
-			LogManager.log.info("[AutoBone] Applying to skeleton failed, only saving configs...");
-			saveConfigs();
-		}
 
 		return Math.abs(finalHeight - targetHeight);
 	}
