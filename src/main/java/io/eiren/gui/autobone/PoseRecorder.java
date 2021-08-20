@@ -33,21 +33,23 @@ public class PoseRecorder {
 
 	@VRServerThread
 	public void onTick() {
-		HumanSkeletonWithLegs skeleton = this.skeleton;
-		if (skeleton != null) {
-			if (frames.size() < numFrames) {
-				if (System.currentTimeMillis() >= nextFrameTimeMs) {
-					nextFrameTimeMs = System.currentTimeMillis() + frameRecordingInterval;
-					frames.add(new PoseFrame(skeleton));
+		if (numFrames > 0) {
+			HumanSkeletonWithLegs skeleton = this.skeleton;
+			if (skeleton != null) {
+				if (frames.size() < numFrames) {
+					if (System.currentTimeMillis() >= nextFrameTimeMs) {
+						nextFrameTimeMs = System.currentTimeMillis() + frameRecordingInterval;
+						frames.add(new PoseFrame(skeleton));
 
-					// If done, send finished recording
-					if (frames.size() >= numFrames) {
-						internalStopRecording();
+						// If done, send finished recording
+						if (frames.size() >= numFrames) {
+							internalStopRecording();
+						}
 					}
+				} else {
+					// If done and hasn't yet, send finished recording
+					internalStopRecording();
 				}
-			} else {
-				// If done and hasn't yet, send finished recording
-				internalStopRecording();
 			}
 		}
 	}
@@ -60,6 +62,12 @@ public class PoseRecorder {
 	}
 
 	public synchronized Future<PoseFrame[]> startFrameRecording(int numFrames, long interval) {
+		if (numFrames < 1) {
+			throw new IllegalArgumentException("numFrames must at least have a value of 1");
+		}
+		if (interval < 1) {
+			throw new IllegalArgumentException("interval must at least have a value of 1");
+		}
 		if (!isReadyToRecord()) {
 			throw new IllegalStateException("PoseRecorder isn't ready to record!");
 		}
