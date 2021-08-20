@@ -131,10 +131,10 @@ public class VRServerGUI extends JFrame {
 				JComboBox<String> trackersSelect;
 				add(trackersSelect = new JComboBox<>());
 				trackersSelect.addItem("Waist");
-				trackersSelect.addItem("Waist + Feet");
-				trackersSelect.addItem("Waist + Feet + Chest");
-				trackersSelect.addItem("Waist + Feet + Knees");
-				trackersSelect.addItem("Waist + Feet + Chest + Knees");
+				trackersSelect.addItem("Waist + Legs");
+				trackersSelect.addItem("Waist + Legs + Chest");
+				trackersSelect.addItem("Waist + Legs + Knees");
+				trackersSelect.addItem("Waist + Legs + Chest + Knees");
 				switch(server.config.getInt("virtualtrackers", 3)) {
 				case 1:
 					trackersSelect.setSelectedIndex(0);
