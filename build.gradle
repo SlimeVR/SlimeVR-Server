@@ -11,6 +11,24 @@ plugins {
     id 'java-library'
 }
 
+sourceCompatibility = 1.8
+targetCompatibility = 1.8
+
+// Set compiler to use UTF-8
+compileJava.options.encoding = 'UTF-8'
+compileTestJava.options.encoding = 'UTF-8'
+javadoc.options.encoding = 'UTF-8'
+
+tasks.withType(JavaCompile) {
+	options.encoding = 'UTF-8'
+}
+tasks.withType(Test) {
+	systemProperty('file.encoding', 'UTF-8')
+}
+tasks.withType(Javadoc){
+	options.encoding = 'UTF-8'
+}
+
 repositories {
     // Use jcenter for resolving dependencies.
     // You can declare any Maven/Ivy/file repository here.
@@ -31,7 +49,7 @@ dependencies {
 
     // This dependency is used internally, and not exposed to consumers on their own compile classpath.
     implementation 'com.google.guava:guava:28.2-jre'
-    
+
 
     // Use JUnit test framework
 	testImplementation platform('org.junit:junit-bom:5.7.2')
@@ -48,7 +66,7 @@ task serverJar (type: Jar, dependsOn: subprojects.tasks['build']) {
     manifest {
         attributes 'Main-Class': 'io.eiren.vr.Main'
     }
-    
+
     // Pack all dependencies within the JAR
     from {
         configurations.compile.collect { it.isDirectory() ? it : zipTree(it) }
