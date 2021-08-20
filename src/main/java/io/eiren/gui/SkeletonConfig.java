@@ -16,6 +16,7 @@ import io.eiren.util.StringUtils;
 import io.eiren.util.ann.ThreadSafe;
 import io.eiren.vr.VRServer;
 import io.eiren.vr.processor.HumanSkeletonWithLegs;
+import io.eiren.vr.processor.HumanSkeletonWithWaist;
 import io.eiren.vr.processor.HumanSkeleton;
 
 public class SkeletonConfig extends EJBag {
@@ -63,6 +64,30 @@ public class SkeletonConfig extends EJBag {
 				if(newSkeleton != null && newSkeleton instanceof HumanSkeletonWithLegs) {
 	        		HumanSkeletonWithLegs hswl = (HumanSkeletonWithLegs) newSkeleton;
 	        		setSelected(hswl.getSkeletonConfigBoolean("Extended pelvis model"));
+				}
+			}}, s(c(0, row, 1), 3, 1));
+			row++;
+
+			add(new JCheckBox("Extended spine model #1") {{
+				addItemListener(new ItemListener() {
+				    @Override
+				    public void itemStateChanged(ItemEvent e) {
+				        if(e.getStateChange() == ItemEvent.SELECTED) {//checkbox has been selected
+				        	if(newSkeleton != null && newSkeleton instanceof HumanSkeletonWithWaist) {
+				        		HumanSkeletonWithWaist hswl = (HumanSkeletonWithWaist) newSkeleton;
+				        		hswl.setSkeletonConfigBoolean("Extended spine model 1", true);
+				        	}
+				        } else {
+				        	if(newSkeleton != null && newSkeleton instanceof HumanSkeletonWithWaist) {
+				        		HumanSkeletonWithWaist hswl = (HumanSkeletonWithWaist) newSkeleton;
+				        		hswl.setSkeletonConfigBoolean("Extended spine model 1", false);
+				        	}
+				        }
+				    }
+				});
+				if(newSkeleton != null && newSkeleton instanceof HumanSkeletonWithWaist) {
+					HumanSkeletonWithWaist hswl = (HumanSkeletonWithWaist) newSkeleton;
+	        		setSelected(hswl.getSkeletonConfigBoolean("Extended spine model 1"));
 				}
 			}}, s(c(0, row, 1), 3, 1));
 			row++;

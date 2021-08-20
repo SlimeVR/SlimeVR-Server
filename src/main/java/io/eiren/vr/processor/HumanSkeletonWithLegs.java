@@ -197,6 +197,7 @@ public class HumanSkeletonWithLegs extends HumanSkeletonWithWaist {
 		}
 	}
 	
+	@Override
 	public boolean getSkeletonConfigBoolean(String config) {
 		switch(config) {
 		case "Extended pelvis model":
@@ -204,9 +205,10 @@ public class HumanSkeletonWithLegs extends HumanSkeletonWithWaist {
 		case "Extended knee model":
 			return extendedKneeModel;
 		}
-		return false;
+		return super.getSkeletonConfigBoolean(config);
 	}
 	
+	@Override
 	public void setSkeletonConfigBoolean(String config, boolean newState) {
 		switch(config) {
 		case "Extended pelvis model":
@@ -216,6 +218,10 @@ public class HumanSkeletonWithLegs extends HumanSkeletonWithWaist {
 		case "Extended knee model":
 			extendedKneeModel = newState;
 			server.config.setProperty("body.model.extendedKnee", newState);
+			break;
+		default:
+			super.setSkeletonConfigBoolean(config, newState);
+			break;
 		}
 	}
 	
