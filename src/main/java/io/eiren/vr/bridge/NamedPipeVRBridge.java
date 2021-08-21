@@ -7,6 +7,7 @@ import java.util.concurrent.atomic.AtomicBoolean;
 
 import com.jme3.math.Quaternion;
 import com.jme3.math.Vector3f;
+import com.sun.jna.Native;
 import com.sun.jna.platform.win32.Kernel32;
 import com.sun.jna.platform.win32.WinBase;
 import com.sun.jna.platform.win32.WinNT.HANDLE;
@@ -21,28 +22,28 @@ import io.eiren.vr.trackers.Tracker;
 import io.eiren.vr.trackers.TrackerStatus;
 
 public class NamedPipeVRBridge extends Thread implements VRBridge {
-	
+
 	public static final String HMDPipeName = "\\\\.\\pipe\\HMDPipe";
 	public static final String TrackersPipeName = "\\\\.\\pipe\\TrackPipe";
 	public static final Charset ASCII = Charset.forName("ASCII");
-	
+
 	private final byte[] buffer = new byte[1024];
 	private final StringBuilder sbBuffer = new StringBuilder(1024);
 	private final Vector3f vBuffer = new Vector3f();
 	private final Vector3f vBuffer2 = new Vector3f();
 	private final Quaternion qBuffer = new Quaternion();
 	private final Quaternion qBuffer2 = new Quaternion();
-	
+
 	private final VRServer server;
 	private Pipe hmdPipe;
 	private final HMDTracker hmd;
 	private final List<Pipe> trackerPipes;
 	private final List<? extends Tracker> shareTrackers;
 	private final List<ComputedTracker> internalTrackers;
-	
+
 	private final HMDTracker internalHMDTracker = new HMDTracker("itnernal://HMD");
 	private final AtomicBoolean newHMDData = new AtomicBoolean(false);
-	
+
 	public NamedPipeVRBridge(HMDTracker hmd, List<? extends Tracker> shareTrackers, VRServer server) {
 		super("Named Pipe VR Bridge");
 		this.server = server;
@@ -57,7 +58,7 @@ public class NamedPipeVRBridge extends Thread implements VRBridge {
 			this.internalTrackers.add(ct);
 		}
 	}
-	
+
 	@Override
 	public void run() {
 		try {
@@ -99,7 +100,7 @@ public class NamedPipeVRBridge extends Thread implements VRBridge {
 				it.rotation.set(qBuffer2);
 		}
 	}
-	
+
 	private void waitForPipesToOpen() {
 		if(hmdPipe.state == PipeState.CREATED) {
 			if(tryOpeningPipe(hmdPipe))
@@ -113,39 +114,70 @@ public class NamedPipeVRBridge extends Thread implements VRBridge {
 			}
 		}
 	}
-	
+
 	public boolean updateHMD() {
-		if(hmdPipe.state == PipeState.OPEN) {
-			IntByReference bytesAvailable = new IntByReference(0);
-			if(Kernel32.INSTANCE.PeekNamedPipe(hmdPipe.pipeHandle, null, 0, null, bytesAvailable, null)) {
-				if(bytesAvailable.getValue() > 0) {
-					if(Kernel32.INSTANCE.ReadFile(hmdPipe.pipeHandle, buffer, buffer.length, bytesAvailable, null)) {
-						String str = new String(buffer, 0, bytesAvailable.getValue() - 1, ASCII);
-						String[] split = str.split("\n")[0].split(" ");
-						try {
-							double x = Double.parseDouble(split[0]);
-							double y = Double.parseDouble(split[1]);
-							double z = Double.parseDouble(split[2]);
-							double qw = Double.parseDouble(split[3]);
-							double qx = Double.parseDouble(split[4]);
-							double qy = Double.parseDouble(split[5]);
-							double qz = Double.parseDouble(split[6]);
-							
-							internalHMDTracker.position.set((float) x, (float) y, (float) z);
-							internalHMDTracker.rotation.set((float) qx, (float) qy, (float) qz, (float) qw);
-							internalHMDTracker.dataTick();
-							newHMDData.set(true);
-						} catch(NumberFormatException e) {
-							e.printStackTrace();
-						}
-					}
-					return true;
-				}
+		// pipe isn't open, don't even bother.
+		if(hmdPipe.state != PipeState.OPEN) {
+			return false;
+		}
+
+		// take a peek at what's there
+		IntByReference bytesRead = new IntByReference(0);
+		if(!Kernel32.INSTANCE.PeekNamedPipe(hmdPipe.pipeHandle, buffer, buffer.length, bytesRead, null, null)) {
+			return false;
+		}
+
+		// nothing there
+		if (bytesRead.getValue() <= 0) {
+			return false;
+		}
+
+		// determine how much is a single entry
+		int newline_index = -1;
+		for (int iii = 0; iii < bytesRead.getValue(); ++iii) {
+			if (buffer[iii] == '\n') {
+				newline_index = iii;
+				break;
 			}
 		}
-		return false;
+
+		// don't consume partial data.
+		if (newline_index == -1) {
+			return false;
+		}
+
+		// consume a single entry, including the newline
+		if(!Kernel32.INSTANCE.ReadFile(hmdPipe.pipeHandle, buffer, newline_index + 1, bytesRead, null)) {
+			// something went wrong while consuming the data!
+			// TODO: throw exception?
+			return false;
+		}
+
+		// TODO: should we check that we got the number of bytes we asked for?
+
+		// discard the newline
+		String str = new String(buffer, 0, bytesRead.getValue() - 1, ASCII);
+		String[] split = str.split(" ");
+		try {
+			double x = Double.parseDouble(split[0]);
+			double y = Double.parseDouble(split[1]);
+			double z = Double.parseDouble(split[2]);
+			double qw = Double.parseDouble(split[3]);
+			double qx = Double.parseDouble(split[4]);
+			double qy = Double.parseDouble(split[5]);
+			double qz = Double.parseDouble(split[6]);
+
+			internalHMDTracker.position.set((float) x, (float) y, (float) z);
+			internalHMDTracker.rotation.set((float) qx, (float) qy, (float) qz, (float) qw);
+			internalHMDTracker.dataTick();
+			newHMDData.set(true);
+		} catch(NumberFormatException e) {
+			e.printStackTrace();
+		}
+
+		return true;
 	}
-	
+
 	public void updateTracker(int trackerId, boolean hmdUpdated) {
 		Tracker sensor = internalTrackers.get(trackerId);
 		if(sensor.getStatus().sendData) {
@@ -157,41 +189,39 @@ public class NamedPipeVRBridge extends Thread implements VRBridge {
 				sbBuffer.append(vBuffer.x).append(' ').append(vBuffer.y).append(' ').append(vBuffer.z).append(' ');
 				sbBuffer.append(qBuffer.getW()).append(' ').append(qBuffer.getX()).append(' ').append(qBuffer.getY()).append(' ').append(qBuffer.getZ()).append('\n');
 				String str = sbBuffer.toString();
-				System.arraycopy(str.getBytes(ASCII), 0, buffer, 0, str.length());
-				buffer[str.length()] = '\0';
+				byte[] str_bytes = Native.toByteArray(str, ASCII);
 				IntByReference lpNumberOfBytesWritten = new IntByReference(0);
-				Kernel32.INSTANCE.WriteFile(trackerPipe.pipeHandle, buffer, str.length() + 1, lpNumberOfBytesWritten, null);
+				Kernel32.INSTANCE.WriteFile(trackerPipe.pipeHandle, str_bytes, str_bytes.length, lpNumberOfBytesWritten, null);
 			}
 		}
 	}
-	
+
 	private void initHMDPipe(Pipe pipe) {
 		hmd.setStatus(TrackerStatus.OK);
 	}
-	
+
 	private void initTrackerPipe(Pipe pipe, int trackerId) {
 		String trackerHello = this.shareTrackers.size() + " 0";
-		System.arraycopy(trackerHello.getBytes(ASCII), 0, buffer, 0, trackerHello.length());
-		buffer[trackerHello.length()] = '\0';
+		byte[] trackerHelloBytes = Native.toByteArray(trackerHello);
 		IntByReference lpNumberOfBytesWritten = new IntByReference(0);
 		Kernel32.INSTANCE.WriteFile(pipe.pipeHandle,
-			buffer,
-			trackerHello.length() + 1,
+			trackerHelloBytes,
+			trackerHelloBytes.length,
 			lpNumberOfBytesWritten,
 			null);
 	}
-	
+
 	private boolean tryOpeningPipe(Pipe pipe) {
 		if(Kernel32.INSTANCE.ConnectNamedPipe(pipe.pipeHandle, null)) {
 			pipe.state = PipeState.OPEN;
 			LogManager.log.info("[VRBridge] Pipe " + pipe.name + " is open");
 			return true;
 		}
-		
+
 		LogManager.log.info("[VRBridge] Error connecting to pipe " + pipe.name + ": " + Kernel32.INSTANCE.GetLastError());
 		return false;
 	}
-	
+
 	private boolean areAllPipesOpen() {
 		if(hmdPipe == null || hmdPipe.state == PipeState.CREATED) {
 			return false;
@@ -202,7 +232,7 @@ public class NamedPipeVRBridge extends Thread implements VRBridge {
 		}
 		return true;
 	}
-	
+
 	private void createPipes() throws IOException {
 		try {
 			hmdPipe = new Pipe(Kernel32.INSTANCE.CreateNamedPipe(HMDPipeName, WinBase.PIPE_ACCESS_DUPLEX, // dwOpenMode
@@ -238,7 +268,7 @@ public class NamedPipeVRBridge extends Thread implements VRBridge {
 			throw e;
 		}
 	}
-	
+
 	public static void safeDisconnect(Pipe pipe) {
 		try {
 			if(pipe != null && pipe.pipeHandle != null)
