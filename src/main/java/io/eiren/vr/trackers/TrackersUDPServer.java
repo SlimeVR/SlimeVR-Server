@@ -61,6 +61,7 @@ public class TrackersUDPServer extends Thread {
 			sensor = trackersMap.get(addr);
 		}
 		if(sensor == null) {
+			boolean isOwo = false;
 			data.getLong(); // Skip packet number
 			int boardType = -1;
 			int imuType = -1;
@@ -97,12 +98,15 @@ public class TrackersUDPServer extends Thread {
 					macString = String.format("%02X:%02X:%02X:%02X:%02X:%02X", mac[0], mac[1], mac[2], mac[3], mac[4], mac[5]);
 				}
 			}
-			if(firmware.length() == 0)
+			if(firmware.length() == 0) {
 				firmware.append("owoTrack");
+				isOwo = true;
+			}
 			IMUTracker imu = new IMUTracker("udp:/" + handshakePacket.getAddress().toString(), this);
 			ReferenceAdjustedTracker<IMUTracker> adjustedTracker = new ReferenceAdjustedTracker<>(imu);
 			trackersConsumer.accept(adjustedTracker);
 			sensor = new TrackerConnection(imu, addr);
+			sensor.isOwoTrack = isOwo;
 			int i = 0;
 			synchronized(trackers) {
 				i = trackers.size();
@@ -173,6 +177,8 @@ public class TrackersUDPServer extends Thread {
 					case 17: // PACKET_ROTATION_DATA
 						if(connection == null)
 							break;
+						if(connection.isOwoTrack)
+							break;
 						bb.getLong();
 						int sensorId = bb.get() & 0xFF;
 						if(sensorId == 0) {
@@ -203,6 +209,8 @@ public class TrackersUDPServer extends Thread {
 						break;
 					case 18: // PACKET_MAGENTOMETER_ACCURACY
 						if(connection == null)
+							break;
+						if(connection.isOwoTrack)
 							break;
 						bb.getLong();
 						sensorId = bb.get() & 0xFF;
@@ -235,6 +243,8 @@ public class TrackersUDPServer extends Thread {
 					case 5:
 						if(connection == null)
 							break;
+						if(connection.isOwoTrack)
+							break;
 						bb.getLong();
 						x = bb.getFloat();
 						z = bb.getFloat();
@@ -244,17 +254,23 @@ public class TrackersUDPServer extends Thread {
 					case 6: // PACKET_RAW_CALIBRATION_DATA
 						if(connection == null)
 							break;
+						if(connection.isOwoTrack)
+							break;
 						bb.getLong();
 						//sensor.rawCalibrationData.add(new double[] {bb.getInt(), bb.getInt(), bb.getInt(), bb.getInt(), bb.getInt(), bb.getInt()});
 						break;
 					case 7: // PACKET_GYRO_CALIBRATION_DATA
 						if(connection == null)
 							break;
+						if(connection.isOwoTrack)
+							break;
 						bb.getLong();
 						//sensor.gyroCalibrationData = new double[] {bb.getFloat(), bb.getFloat(), bb.getFloat()};
 						break;
 					case 8: // PACKET_CONFIG
 						if(connection == null)
+							break;
+						if(connection.isOwoTrack)
 							break;
 						bb.getLong();
 						MPUTracker.ConfigurationData data = new MPUTracker.ConfigurationData(bb);
@@ -266,6 +282,8 @@ public class TrackersUDPServer extends Thread {
 					case 9: // PACKET_RAW_MAGENTOMETER
 						if(connection == null)
 							break;
+						if(connection.isOwoTrack)
+							break;
 						bb.getLong();
 						float mx = bb.getFloat();
 						float my = bb.getFloat();
@@ -275,6 +293,8 @@ public class TrackersUDPServer extends Thread {
 					case 10: // PACKET_PING_PONG:
 						if(connection == null)
 							break;
+						if(connection.isOwoTrack)
+							break;
 						int pingId = bb.getInt();
 						if(connection.lastPingPacketId == pingId) {
 							tracker = connection.tracker;
@@ -283,6 +303,8 @@ public class TrackersUDPServer extends Thread {
 						break;
 					case 11: // PACKET_SERIAL
 						if(connection == null)
+							break;
+						if(connection.isOwoTrack)
 							break;
 						tracker = connection.tracker;
 						bb.getLong();
@@ -308,6 +330,8 @@ public class TrackersUDPServer extends Thread {
 						break;
 					case 13: // PACKET_TAP
 						if(connection == null)
+							break;
+						if(connection.isOwoTrack)
 							break;
 						tracker = connection.tracker;
 						bb.getLong();
@@ -407,6 +431,7 @@ public class TrackersUDPServer extends Thread {
 		public long lastPacket = System.currentTimeMillis();
 		public int lastPingPacketId = -1;
 		public long lastPingPacketTime = 0;
+		public boolean isOwoTrack = false;
 		
 		public TrackerConnection(IMUTracker tracker, SocketAddress address) {
 			this.tracker = tracker;
