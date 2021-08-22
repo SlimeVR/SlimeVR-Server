@@ -25,39 +25,39 @@ tasks.withType(JavaCompile) {
 tasks.withType(Test) {
 	systemProperty('file.encoding', 'UTF-8')
 }
-tasks.withType(Javadoc){
+tasks.withType(Javadoc) {
 	options.encoding = 'UTF-8'
 }
 
 repositories {
-    // Use jcenter for resolving dependencies.
-    // You can declare any Maven/Ivy/file repository here.
-    jcenter()
-    mavenCentral()
+	// Use jcenter for resolving dependencies.
+	// You can declare any Maven/Ivy/file repository here.
+	jcenter()
+	mavenCentral()
 }
 
 dependencies {
 	compile project(':Slime Java Commons')
 
-    // This dependency is exported to consumers, that is to say found on their compile classpath.
-    compile 'org.apache.commons:commons-math3:3.6.1'
-    compile 'org.yaml:snakeyaml:1.25'
-    compile 'net.java.dev.jna:jna:5.6.0'
-    compile 'net.java.dev.jna:jna-platform:5.6.0'
-    compile 'com.illposed.osc:javaosc-core:0.8'
-    compile 'com.fazecast:jSerialComm:[2.0.0,3.0.0)'
+	// This dependency is exported to consumers, that is to say found on their compile classpath.
+	compile 'org.apache.commons:commons-math3:3.6.1'
+	compile 'org.yaml:snakeyaml:1.25'
+	compile 'net.java.dev.jna:jna:5.6.0'
+	compile 'net.java.dev.jna:jna-platform:5.6.0'
+	compile 'com.illposed.osc:javaosc-core:0.8'
+	compile 'com.fazecast:jSerialComm:[2.0.0,3.0.0)'
 
-    // This dependency is used internally, and not exposed to consumers on their own compile classpath.
-    implementation 'com.google.guava:guava:28.2-jre'
+	// This dependency is used internally, and not exposed to consumers on their own compile classpath.
+	implementation 'com.google.guava:guava:28.2-jre'
 
 
-    // Use JUnit test framework
+	// Use JUnit test framework
 	testImplementation platform('org.junit:junit-bom:5.7.2')
 	testImplementation 'org.junit.jupiter:junit-jupiter'
 	testImplementation 'org.junit.platform:junit-platform-launcher'
 }
 test {
-    useJUnitPlatform()
+	useJUnitPlatform()
 }
 
 shadowJar {

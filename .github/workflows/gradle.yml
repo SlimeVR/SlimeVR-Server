@@ -3,63 +3,63 @@
 
 name: SlimeVR Server
 
-on: [push, pull_request]
+on: [ push, pull_request ]
 
 jobs:
   test:
     runs-on: ubuntu-latest
 
     steps:
-    - uses: actions/checkout@v2.3.4
+      - uses: actions/checkout@v2.3.4
 
-    - name: Clone Slime Java Commons
-      uses: actions/checkout@v2.3.4
-      with:
-        repository: Eirenliel/slime-java-commons
-        # Relative path under $GITHUB_WORKSPACE to place the repository
-        path: Slime Java Commons
+      - name: Clone Slime Java Commons
+        uses: actions/checkout@v2.3.4
+        with:
+          repository: Eirenliel/slime-java-commons
+          # Relative path under $GITHUB_WORKSPACE to place the repository
+          path: Slime Java Commons
 
-    - name: Set up JDK 8
-      uses: actions/setup-java@v2.1.0
-      with:
-        java-version: '8'
-        distribution: 'adopt'
+      - name: Set up JDK 8
+        uses: actions/setup-java@v2.1.0
+        with:
+          java-version: '8'
+          distribution: 'adopt'
 
-    - name: Grant execute permission for gradlew
-      run: chmod +x gradlew
+      - name: Grant execute permission for gradlew
+        run: chmod +x gradlew
 
-    - name: Test with Gradle
-      run: ./gradlew clean test
+      - name: Test with Gradle
+        run: ./gradlew clean test
 
   build:
     runs-on: ubuntu-latest
 
     steps:
-    - uses: actions/checkout@v2.3.4
+      - uses: actions/checkout@v2.3.4
 
-    - name: Clone Slime Java Commons
-      uses: actions/checkout@v2.3.4
-      with:
-        repository: Eirenliel/slime-java-commons
-        # Relative path under $GITHUB_WORKSPACE to place the repository
-        path: Slime Java Commons
+      - name: Clone Slime Java Commons
+        uses: actions/checkout@v2.3.4
+        with:
+          repository: Eirenliel/slime-java-commons
+          # Relative path under $GITHUB_WORKSPACE to place the repository
+          path: Slime Java Commons
 
-    - name: Set up JDK 8
-      uses: actions/setup-java@v2.1.0
-      with:
-        java-version: '8'
-        distribution: 'adopt'
+      - name: Set up JDK 8
+        uses: actions/setup-java@v2.1.0
+        with:
+          java-version: '8'
+          distribution: 'adopt'
 
-    - name: Grant execute permission for gradlew
-      run: chmod +x gradlew
+      - name: Grant execute permission for gradlew
+        run: chmod +x gradlew
 
-    - name: Build with Gradle
-      run: ./gradlew clean shadowJar
+      - name: Build with Gradle
+        run: ./gradlew clean shadowJar
 
-    - name: Upload the Server JAR as a Build Artifact
-      uses: actions/upload-artifact@v2.2.4
-      with:
-        # Artifact name
-        name: "SlimeVR-Server" # optional, default is artifact
-        # A file, directory or wildcard pattern that describes what to upload
-        path: build/libs/*
+      - name: Upload the Server JAR as a Build Artifact
+        uses: actions/upload-artifact@v2.2.4
+        with:
+          # Artifact name
+          name: "SlimeVR-Server" # optional, default is artifact
+          # A file, directory or wildcard pattern that describes what to upload
+          path: build/libs/*
