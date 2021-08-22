@@ -7,8 +7,8 @@
  */
 
 plugins {
-    // Apply the java-library plugin to add support for Java Library
-    id 'java-library'
+	id 'application'
+	id "com.github.johnrengelman.shadow" version "6.1.0"
 }
 
 sourceCompatibility = 1.8
@@ -60,18 +60,11 @@ test {
     useJUnitPlatform()
 }
 
-subprojects.each { subproject -> evaluationDependsOn(subproject.path) }
-task serverJar (type: Jar, dependsOn: subprojects.tasks['build']) {
-    // Make the JAR runnable
-    manifest {
-        attributes 'Main-Class': 'io.eiren.vr.Main'
-    }
-
-    // Pack all dependencies within the JAR
-    from {
-        configurations.compile.collect { it.isDirectory() ? it : zipTree(it) }
-    }
-
-    // Add this project's classes in the JAR
-    with jar
+shadowJar {
+	archiveBaseName.set('slimevr')
+	archiveClassifier.set('')
+	archiveVersion.set('')
+}
+application {
+	mainClassName = 'io.eiren.vr.Main'
 }
