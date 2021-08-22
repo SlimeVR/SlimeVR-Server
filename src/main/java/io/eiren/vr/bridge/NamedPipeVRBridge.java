@@ -128,8 +128,10 @@ public class NamedPipeVRBridge extends Thread implements VRBridge {
 								commandBuilder.setLength(0);
 							} else {
 								commandBuilder.append(c);
-								if(commandBuilder.length() >= MAX_COMMAND_LENGTH)
-									throw new IOException("Command from the pipe is too long");
+								if(commandBuilder.length() >= MAX_COMMAND_LENGTH) {
+									LogManager.log.severe("[VRBridge] Command from the pipe is too long, flushing buffer");
+									commandBuilder.setLength(0);
+								}
 							}
 						}
 						if(bytesRead < buffArray.length)
@@ -144,6 +146,10 @@ public class NamedPipeVRBridge extends Thread implements VRBridge {
 	
 	private void executeHMDInput() throws IOException {
 		String[] split = commandBuilder.toString().split(" ");
+		if(split.length < 7) {
+			LogManager.log.severe("[VRBridge] Short HMD data recieved: " + commandBuilder.toString());
+			return;
+		}
 		try {
 			double x = Double.parseDouble(split[0]);
 			double y = Double.parseDouble(split[1]);
