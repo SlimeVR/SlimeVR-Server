@@ -51,8 +51,6 @@ jobs:
           java-version: '8'
           distribution: 'adopt'
           cache: 'gradle' # will restore cache of dependencies and wrappers
-          cache: 'gradle' # will restore cache of dependencies and wrappers
-
       - name: Grant execute permission for gradlew
         run: chmod +x gradlew
 
