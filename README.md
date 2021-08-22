@@ -26,7 +26,7 @@ git clone https://github.com/Eirenliel/slime-java-commons.git
 
 # Enter the directory and build the runnable server JAR
 cd SlimeVR-Server
-gradlew serverJar
+gradlew shadowJar
 ```
 
 Open Slime VR Server project in Eclipse or Intellij Idea
