@@ -31,4 +31,4 @@ gradlew shadowJar
 
 Open Slime VR Server project in Eclipse or Intellij Idea
 
-run gradle command `serverJar` to build a runnable server JAR
+run gradle command `shadowJar` to build a runnable server JAR
