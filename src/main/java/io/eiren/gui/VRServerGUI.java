@@ -11,6 +11,7 @@ import io.eiren.vr.VRServer;
 
 import java.awt.Component;
 import java.awt.Container;
+import java.awt.Dimension;
 import java.awt.Font;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -56,6 +57,8 @@ public class VRServerGUI extends JFrame {
 		
 		add(scroll = new JScrollPane(pane = new EJBox(PAGE_AXIS), ScrollPaneConstants.VERTICAL_SCROLLBAR_AS_NEEDED, ScrollPaneConstants.HORIZONTAL_SCROLLBAR_AS_NEEDED));
 		
+		setMinimumSize(new Dimension(1280, 1080));
+		
 		build();
 	}
 	
@@ -65,7 +68,7 @@ public class VRServerGUI extends JFrame {
 	
 	public void refresh() {
 		// Pack and display
-		pack();
+		//pack();
 		setVisible(true);
 		java.awt.EventQueue.invokeLater(new Runnable() {
 			@Override

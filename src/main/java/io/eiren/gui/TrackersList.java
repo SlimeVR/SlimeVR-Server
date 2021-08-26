@@ -1,6 +1,7 @@
 package io.eiren.gui;
 
 import java.awt.Color;
+import java.awt.Font;
 import java.awt.GridBagConstraints;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -40,7 +41,7 @@ public class TrackersList extends EJBox {
 	Vector3f v = new Vector3f();
 	float[] angles = new float[3];
 	
-	private List<TrackerRow> trackers = new FastList<>();
+	private List<TrackerPanel> trackers = new FastList<>();
 	
 	private final VRServer server;
 	private final VRServerGUI gui;
@@ -64,16 +65,42 @@ public class TrackersList extends EJBox {
 		
 		Class<? extends Tracker> currentClass = null;
 		
+		EJBox line = null;
+		boolean first = true;
+		
 		for(int i = 0; i < trackers.size(); ++i) {
-			add(Box.createVerticalStrut(3));
-			TrackerRow tr = trackers.get(i);
+			TrackerPanel tr = trackers.get(i);
 			Tracker t = tr.t;
+			if(t instanceof ReferenceAdjustedTracker)
+				t = ((ReferenceAdjustedTracker<?>) t).getTracker();
 			if(currentClass != t.getClass()) {
 				currentClass = t.getClass();
-				add(new JLabel(currentClass.getSimpleName()));
+				if(line != null)
+					line.add(Box.createHorizontalGlue());
+				line = null;
+				line = new EJBox(BoxLayout.LINE_AXIS);
+				line.add(Box.createHorizontalGlue());
+				JLabel nameLabel;
+				line.add(nameLabel = new JLabel(currentClass.getSimpleName()));
+				nameLabel.setFont(nameLabel.getFont().deriveFont(Font.BOLD));
+				line.add(Box.createHorizontalGlue());
+				add(line);
+				line = null;
 			}
-
+			
+			if(line == null) {
+				line = new EJBox(BoxLayout.LINE_AXIS);
+				add(Box.createVerticalStrut(3));
+				add(line);
+				first = true;
+			} else {
+				line.add(Box.createHorizontalStrut(3));
+				first = false;
+			}
 			tr.build();
+			line.add(tr);
+			if(!first)
+				line = null;
 		}
 		validate();
 		gui.refresh();
@@ -93,12 +120,12 @@ public class TrackersList extends EJBox {
 	@ThreadSafe
 	public void newTrackerAdded(Tracker t) {
 		java.awt.EventQueue.invokeLater(() -> {
-			trackers.add(new TrackerRow(t));
+			trackers.add(new TrackerPanel(t));
 			build();
 		});
 	}
 	
-	private class TrackerRow extends EJBag {
+	private class TrackerPanel extends EJBag {
 		
 		final Tracker t;
 		JLabel position;
@@ -116,21 +143,23 @@ public class TrackersList extends EJBox {
 		JLabel correction;
 		
 		@AWTThread
-		public TrackerRow(Tracker t) {
+		public TrackerPanel(Tracker t) {
 			super();
 			this.t = t;
 		}
 
 		@SuppressWarnings("unchecked")
 		@AWTThread
-		public TrackerRow build() {
+		public TrackerPanel build() {
 			int row = 0;
 			
 			Tracker realTracker = t;
 			if(t instanceof ReferenceAdjustedTracker)
 				realTracker = ((ReferenceAdjustedTracker<? extends Tracker>) t).getTracker();
 			removeAll();
-			add(new JLabel(t.getName()), s(c(0, row, 0, GridBagConstraints.FIRST_LINE_START), 4, 1));
+			JLabel nameLabel;
+			add(nameLabel = new JLabel(t.getName()), s(c(0, row, 0, GridBagConstraints.FIRST_LINE_START), 4, 1));
+			nameLabel.setFont(nameLabel.getFont().deriveFont(Font.BOLD));
 			row++;
 			
 			if(t.userEditable()) {
@@ -285,14 +314,14 @@ public class TrackersList extends EJBox {
 	}
 	
 	private static int getTrackerSort(Tracker t) {
-		if(t instanceof HMDTracker)
-			return 0;
-		if(t instanceof ComputedTracker)
-			return 1;
-		if(t instanceof IMUTracker)
-			return 2;
 		if(t instanceof ReferenceAdjustedTracker)
-			return 5;
+			t = ((ReferenceAdjustedTracker<?>) t).getTracker();
+		if(t instanceof IMUTracker)
+			return 0;
+		if(t instanceof HMDTracker)
+			return 100;
+		if(t instanceof ComputedTracker)
+			return 200;
 		return 1000;
 	}
 }
