@@ -9,10 +9,7 @@ import io.eiren.util.ann.AWTThread;
 import io.eiren.vr.Main;
 import io.eiren.vr.VRServer;
 
-import java.awt.Component;
-import java.awt.Container;
-import java.awt.Dimension;
-import java.awt.Font;
+import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.MouseEvent;
@@ -21,51 +18,59 @@ import static javax.swing.BoxLayout.PAGE_AXIS;
 import static javax.swing.BoxLayout.LINE_AXIS;
 
 public class VRServerGUI extends JFrame {
-	
+
 	public final VRServer server;
 	private final TrackersList trackersList;
 	private final SkeletonList skeletonList;
 	private JButton resetButton;
 	private JScrollPane scroll;
 	private EJBox pane;
-	
+
 	private float zoom = 1.5f;
 	private float initZoom = zoom;
-	
+
 	@AWTThread
 	public VRServerGUI(VRServer server) {
 		super("SlimeVR Server (" + Main.VERSION + ")");
+
+		setLogoImage();
+
 		try {
 			UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
 		} catch(Exception e) {
 			e.printStackTrace();
 		}
 		//increaseFontSize();
-		
+
 		this.server = server;
-		
+
 		this.zoom = server.config.getFloat("zoom", zoom);
 		this.initZoom = zoom;
 		setDefaultFontSize(zoom);
 		// All components should be constructed to the current zoom level by default
-		
+
 		setDefaultCloseOperation(EXIT_ON_CLOSE);
 		getContentPane().setLayout(new BoxLayout(getContentPane(), PAGE_AXIS));
-		
+
 		this.trackersList = new TrackersList(server, this);
 		this.skeletonList = new SkeletonList(server, this);
-		
+
 		add(scroll = new JScrollPane(pane = new EJBox(PAGE_AXIS), ScrollPaneConstants.VERTICAL_SCROLLBAR_AS_NEEDED, ScrollPaneConstants.HORIZONTAL_SCROLLBAR_AS_NEEDED));
-		
+
 		setMinimumSize(new Dimension(1280, 1080));
-		
+
 		build();
 	}
-	
+
+	public void setLogoImage() {
+		Image icon = Toolkit.getDefaultToolkit().getImage("./assets/logo.png");
+		this.setIconImage(icon);
+	}
+
 	public float getZoom() {
 		return this.zoom;
 	}
-	
+
 	public void refresh() {
 		// Pack and display
 		//pack();
@@ -77,14 +82,14 @@ public class VRServerGUI extends JFrame {
 			}
 		});
 	}
-	
+
 	@AWTThread
 	private void build() {
 		pane.removeAll();
-		
+
 		pane.add(new EJBox(LINE_AXIS) {{
 			setBorder(new EmptyBorder(i(5)));
-			
+
 			add(Box.createHorizontalGlue());
 			add(resetButton = new JButton("RESET") {{
 				addMouseListener(new MouseInputAdapter() {
@@ -125,7 +130,7 @@ public class VRServerGUI extends JFrame {
 			}});
 			add(Box.createHorizontalStrut(10));
 		}});
-		
+
 		pane.add(new EJBox(LINE_AXIS) {{
 			setBorder(new EmptyBorder(i(5)));
 			add(new EJBox(PAGE_AXIS) {{
@@ -179,7 +184,7 @@ public class VRServerGUI extends JFrame {
 					}
 				});
 				add(Box.createHorizontalStrut(10));
-				
+
 				add(new JLabel("Trackers list"));
 				add(trackersList);
 				add(Box.createVerticalGlue());
@@ -194,14 +199,14 @@ public class VRServerGUI extends JFrame {
 				add(Box.createVerticalGlue());
 			}});
 		}});
-		
+
 		refresh();
 		setLocationRelativeTo(null);
-		
+
 		server.addOnTick(trackersList::updateTrackers);
 		server.addOnTick(skeletonList::updateBones);
 	}
-	
+
 	// For now only changes font size, but should change fixed components size in the future too
 	private void guiZoom() {
 		if(zoom <= 1.0f) {
@@ -220,7 +225,7 @@ public class VRServerGUI extends JFrame {
 		server.config.setProperty("zoom", zoom);
 		server.saveConfig();
 	}
-	
+
 	private static void processNewZoom(float zoom, Component comp) {
 		if(comp.isFontSet()) {
 			Font newFont = new ScalableFont(comp.getFont(), zoom);
@@ -232,7 +237,7 @@ public class VRServerGUI extends JFrame {
 				processNewZoom(zoom, child);
 		}
 	}
-	
+
 	private static void setDefaultFontSize(float zoom) {
 		java.util.Enumeration<Object> keys = UIManager.getDefaults().keys();
 		while(keys.hasMoreElements()) {
@@ -245,12 +250,12 @@ public class VRServerGUI extends JFrame {
 			}
 		}
 	}
-	
+
 	@AWTThread
 	private void resetFast() {
 		server.resetTrackersYaw();
 	}
-	
+
 	@AWTThread
 	private void reset() {
 		ButtonTimer.runTimer(resetButton, 3, "RESET", server::resetTrackers);
