@@ -7,7 +7,7 @@ import io.eiren.util.logging.LogManager;
 
 public class Main {
 	
-	public static String VERSION = "0.0.17";
+	public static String VERSION = "0.0.18";
 	
 	public static VRServer vrServer;
 	
@@ -29,6 +29,12 @@ public class Main {
 			new VRServerGUI(vrServer);
 		} catch(Throwable e) {
 			e.printStackTrace();
+			try {
+				Thread.sleep(2000L);
+			} catch(InterruptedException e2) {
+				e.printStackTrace();
+			}
+			System.exit(1); // Exit in case error happened on init and window not appeared, but some thread started
 		} finally {
 			try {
 				Thread.sleep(2000L);

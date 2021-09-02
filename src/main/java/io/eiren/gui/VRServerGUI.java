@@ -1,9 +1,12 @@
 package io.eiren.gui;
 
+import javax.imageio.ImageIO;
 import javax.swing.*;
 import javax.swing.border.EmptyBorder;
 import javax.swing.event.MouseInputAdapter;
 
+import io.eiren.util.MacOSX;
+import io.eiren.util.OperatingSystem;
 import io.eiren.util.StringUtils;
 import io.eiren.util.ann.AWTThread;
 import io.eiren.vr.Main;
@@ -13,14 +16,23 @@ import java.awt.Component;
 import java.awt.Container;
 import java.awt.Dimension;
 import java.awt.Font;
+import java.awt.GraphicsConfiguration;
+import java.awt.Rectangle;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.event.ComponentEvent;
 import java.awt.event.MouseEvent;
+import java.awt.image.BufferedImage;
+import java.io.IOException;
+import java.util.ArrayList;
+import java.util.List;
 
 import static javax.swing.BoxLayout.PAGE_AXIS;
 import static javax.swing.BoxLayout.LINE_AXIS;
 
 public class VRServerGUI extends JFrame {
+	
+	public static final String TITLE = "SlimeVR Server (" + Main.VERSION + ")";
 	
 	public final VRServer server;
 	private final TrackersList trackersList;
@@ -34,13 +46,29 @@ public class VRServerGUI extends JFrame {
 	
 	@AWTThread
 	public VRServerGUI(VRServer server) {
-		super("SlimeVR Server (" + Main.VERSION + ")");
+		super(TITLE);
 		try {
 			UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
 		} catch(Exception e) {
 			e.printStackTrace();
 		}
-		//increaseFontSize();
+		if(OperatingSystem.getCurrentPlatform() == OperatingSystem.OSX)
+			MacOSX.setTitle(TITLE);
+		try {
+			List<BufferedImage> images = new ArrayList<BufferedImage>(6);
+			images.add(ImageIO.read(VRServerGUI.class.getResource("/icon16.png")));
+			images.add(ImageIO.read(VRServerGUI.class.getResource("/icon32.png")));
+			images.add(ImageIO.read(VRServerGUI.class.getResource("/icon48.png")));
+			images.add(ImageIO.read(VRServerGUI.class.getResource("/icon64.png")));
+			images.add(ImageIO.read(VRServerGUI.class.getResource("/icon128.png")));
+			images.add(ImageIO.read(VRServerGUI.class.getResource("/icon256.png")));
+			setIconImages(images);
+			if(OperatingSystem.getCurrentPlatform() == OperatingSystem.OSX) {
+				MacOSX.setIcons(images);
+			}
+		} catch(IOException e1) {
+			e1.printStackTrace();
+		}
 		
 		this.server = server;
 		
@@ -56,10 +84,35 @@ public class VRServerGUI extends JFrame {
 		this.skeletonList = new SkeletonList(server, this);
 		
 		add(scroll = new JScrollPane(pane = new EJBox(PAGE_AXIS), ScrollPaneConstants.VERTICAL_SCROLLBAR_AS_NEEDED, ScrollPaneConstants.HORIZONTAL_SCROLLBAR_AS_NEEDED));
+		GraphicsConfiguration gc = getGraphicsConfiguration();
+		Rectangle screenBounds = gc.getBounds();
+		setMinimumSize(new Dimension(100, 100));
+		setSize(Math.min(server.config.getInt("window.width", 800), screenBounds.width), Math.min(server.config.getInt("window.height", 800), screenBounds.height));
+		setLocation(server.config.getInt("window.posx", screenBounds.x + (screenBounds.width - getSize().width) / 2), screenBounds.y + server.config.getInt("window.posy", (screenBounds.height - getSize().height) / 2));
 		
-		setMinimumSize(new Dimension(1280, 1080));
+		// Resize and close listeners to save position and size betwen launcher starts
+		addComponentListener(new AbstractComponentListener() {
+			@Override
+			public void componentResized(ComponentEvent e) {
+				saveFrameInfo();
+			}
+			
+			@Override
+			public void componentMoved(ComponentEvent e) {
+				saveFrameInfo();
+			}
+		});
 		
 		build();
+	}
+	
+	protected void saveFrameInfo() {
+		Rectangle b = getBounds();
+		server.config.setProperty("window.width", b.width);
+		server.config.setProperty("window.height", b.height);
+		server.config.setProperty("window.posx", b.x);
+		server.config.setProperty("window.posy", b.y);
+		server.saveConfig();
 	}
 	
 	public float getZoom() {
@@ -196,7 +249,6 @@ public class VRServerGUI extends JFrame {
 		}});
 		
 		refresh();
-		setLocationRelativeTo(null);
 		
 		server.addOnTick(trackersList::updateTrackers);
 		server.addOnTick(skeletonList::updateBones);
