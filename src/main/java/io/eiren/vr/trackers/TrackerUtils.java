@@ -24,4 +24,14 @@ public class TrackerUtils {
 			return t;
 		return findTrackerForBodyPosition(allTrackers, altPosition);
 	}
+	
+	public static Tracker findTrackerForBodyPositionOrEmpty(List<Tracker> allTrackers, TrackerBodyPosition position, TrackerBodyPosition altPosition) {
+		Tracker t = findTrackerForBodyPosition(allTrackers, position);
+		if(t != null)
+			return t;
+		t = findTrackerForBodyPosition(allTrackers, altPosition);
+		if(t != null)
+			return t;
+		return new ComputedTracker("Empty tracker");
+	}
 }

@@ -85,29 +85,10 @@ public class HumanPoseProcessor {
 
 	@VRServerThread
 	private void updateSekeltonModel() {
-		boolean hasWaist = false;
-		boolean hasBothLegs = false;
-		List<Tracker> allTrackers = server.getAllTrackers();
-		Tracker waist = TrackerUtils.findTrackerForBodyPosition(allTrackers, TrackerBodyPosition.WAIST, TrackerBodyPosition.CHEST);
-		Tracker leftAnkle = TrackerUtils.findTrackerForBodyPosition(allTrackers, TrackerBodyPosition.LEFT_ANKLE, TrackerBodyPosition.LEFT_LEG);
-		Tracker rightAnkle = TrackerUtils.findTrackerForBodyPosition(allTrackers, TrackerBodyPosition.RIGHT_ANKLE, TrackerBodyPosition.RIGHT_LEG);
-		if(waist != null)
-			hasWaist = true;
-		if(leftAnkle != null && rightAnkle != null)
-			hasBothLegs = true;
-		if(!hasWaist) {
-			skeleton = null; // Can't track anything without waist
-		} else if(hasBothLegs) {
-			disconnectAllTrackers();
-			skeleton = new HumanSkeletonWithLegs(server, computedTrackers);
-			for(int i = 0; i < onSkeletonUpdated.size(); ++i)
-				onSkeletonUpdated.get(i).accept(skeleton);
-		} else {
-			disconnectAllTrackers();
-			skeleton = new HumanSkeletonWithWaist(server, computedTrackers);
-			for(int i = 0; i < onSkeletonUpdated.size(); ++i)
-				onSkeletonUpdated.get(i).accept(skeleton);
-		}
+		disconnectAllTrackers();
+		skeleton = new HumanSkeletonWithLegs(server, computedTrackers);
+		for(int i = 0; i < onSkeletonUpdated.size(); ++i)
+			onSkeletonUpdated.get(i).accept(skeleton);
 	}
 
 	@VRServerThread

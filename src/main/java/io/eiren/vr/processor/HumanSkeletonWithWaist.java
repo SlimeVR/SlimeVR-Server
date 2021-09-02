@@ -60,8 +60,8 @@ public class HumanSkeletonWithWaist extends HumanSkeleton {
 	
 	public HumanSkeletonWithWaist(VRServer server, List<ComputedHumanPoseTracker> computedTrackers) {
 		List<Tracker> allTracekrs = server.getAllTrackers();
-		this.waistTracker = TrackerUtils.findTrackerForBodyPosition(allTracekrs, TrackerBodyPosition.WAIST, TrackerBodyPosition.CHEST);
-		this.chestTracker = TrackerUtils.findTrackerForBodyPosition(allTracekrs, TrackerBodyPosition.CHEST, TrackerBodyPosition.WAIST);
+		this.waistTracker = TrackerUtils.findTrackerForBodyPositionOrEmpty(allTracekrs, TrackerBodyPosition.WAIST, TrackerBodyPosition.CHEST);
+		this.chestTracker = TrackerUtils.findTrackerForBodyPositionOrEmpty(allTracekrs, TrackerBodyPosition.CHEST, TrackerBodyPosition.WAIST);
 		this.hmdTracker = server.hmdTracker;
 		this.server = server;
 		ComputedHumanPoseTracker cwt = null;
