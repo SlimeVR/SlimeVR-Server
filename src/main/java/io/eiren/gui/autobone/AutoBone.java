@@ -52,23 +52,14 @@ public class AutoBone {
 	public float positionErrorFactor = 0.0f;
 	public float positionOffsetErrorFactor = 0.0f;
 
-	/*
-	public float NECK_WAIST_RATIO_MIN = 0.2f;
-	public float NECK_WAIST_RATIO_MAX = 0.3f;
+	// Human average is probably 1.1235 (SD 0.07)
+	public float legBodyRatio = 1.1235f;
+	// SD of 0.07, capture 68% within range
+	public float legBodyRatioRange = 0.07f;
 
-	public float CHEST_WAIST_RATIO_MIN = 0.35f;
-	public float CHEST_WAIST_RATIO_MAX = 0.6f;
-
-	public float HIP_MIN = 0.08f;
-	public float HIP_WAIST_RATIO_MAX = 0.4f;
-
-	// Human average is 1.1235 (SD 0.07)
-	public float LEG_WAIST_RATIO_MIN = 1.1235f - ((0.07f * 3f) + 0.05f);
-	public float LEG_WAIST_RATIO_MAX = 1.1235f + ((0.07f * 3f) + 0.05f);
-
-	public float KNEE_LEG_RATIO_MIN = 0.42f;
-	public float KNEE_LEG_RATIO_MAX = 0.58f;
-	*/
+	// Assume these to be approximately half
+	public float kneeLegRatio = 0.5f;
+	public float chestWaistRatio = 0.5f;
 
 	protected final VRServer server;
 
@@ -395,16 +386,14 @@ public class AutoBone {
 		Float legsLength = skeleton.getSkeletonConfig("Legs length");
 		Float kneeHeight = skeleton.getSkeletonConfig("Knee height");
 
-		float chestWaist = chestLength != null && waistLength != null ? Math.abs((chestLength / waistLength) - 0.5f) : 0f;
-		float legBody = legsLength != null && waistLength != null && neckLength != null ? Math.abs((legsLength / (waistLength + neckLength)) - 1.1235f) : 0f;
-		float kneeLeg = kneeHeight != null && legsLength != null ? Math.abs((kneeHeight / legsLength) - 0.5f) : 0f;
+		float chestWaist = chestLength != null && waistLength != null ? Math.abs((chestLength / waistLength) - chestWaistRatio) : 0f;
+		float legBody = legsLength != null && waistLength != null && neckLength != null ? Math.abs((legsLength / (waistLength + neckLength)) - legBodyRatio) : 0f;
+		float kneeLeg = kneeHeight != null && legsLength != null ? Math.abs((kneeHeight / legsLength) - kneeLegRatio) : 0f;
 
-		// SD of 0.07, capture 68% within range
-		float sdValue = 0.07f;
-		if (legBody <= sdValue) {
+		if (legBody <= legBodyRatioRange) {
 			legBody = 0f;
 		} else {
-			legBody -= sdValue;
+			legBody -= legBodyRatioRange;
 		}
 
 		return (chestWaist + legBody + kneeLeg) / 3f;
