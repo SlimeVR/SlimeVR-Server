@@ -8,6 +8,7 @@ import com.jme3.math.Vector3f;
 
 import io.eiren.util.ann.VRServerThread;
 import io.eiren.vr.VRServer;
+import io.eiren.vr.trackers.ComputedTracker;
 import io.eiren.vr.trackers.Tracker;
 import io.eiren.vr.trackers.TrackerStatus;
 import io.eiren.vr.trackers.TrackerUtils;
@@ -90,6 +91,10 @@ public class HumanSkeletonWithLegs extends HumanSkeletonWithWaist {
 			if(t.skeletonPosition == ComputedHumanPoseTrackerPosition.RIGHT_KNEE)
 				rkt = t;
 		}
+		if(lat == null)
+			lat = new ComputedHumanPoseTracker(ComputedHumanPoseTrackerPosition.LEFT_FOOT);
+		if(rat == null)
+			rat = new ComputedHumanPoseTracker(ComputedHumanPoseTrackerPosition.RIGHT_FOOT);
 		computedLeftFootTracker = lat;
 		computedRightFootTracker = rat;
 		computedLeftKneeTracker = lkt;

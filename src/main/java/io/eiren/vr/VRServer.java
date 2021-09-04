@@ -149,7 +149,7 @@ public class VRServer extends Thread {
 	}
 
 	@ThreadSafe
-	public void saveConfig() {
+	public synchronized void saveConfig() {
 		List<YamlNode> nodes = config.getNodeList("trackers", null);
 		List<Map<String, Object>> trackersConfig = new FastList<>(nodes.size());
 		for(int i = 0; i < nodes.size(); ++i) {
