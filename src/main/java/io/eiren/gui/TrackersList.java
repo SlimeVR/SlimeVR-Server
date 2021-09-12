@@ -261,7 +261,7 @@ public class TrackersList extends EJBox {
 		@SuppressWarnings("unchecked")
 		@AWTThread
 		public void update() {
-			if(position == null)
+			if(position == null && rotation == null)
 				return;
 			Tracker realTracker = t;
 			if(t instanceof ReferenceAdjustedTracker)
