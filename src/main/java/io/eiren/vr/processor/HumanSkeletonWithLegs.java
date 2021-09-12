@@ -273,7 +273,9 @@ public class HumanSkeletonWithLegs extends HumanSkeletonWithWaist {
 			// Average pelvis between two legs
 			leftHipNode.localTransform.getRotation(hipBuf);
 			rightHipNode.localTransform.getRotation(kneeBuf);
-			kneeBuf.slerp(hipBuf, 0.5f);
+			kneeBuf.nlerp(hipBuf, 0.5f);
+			chestNode.localTransform.getRotation(hipBuf);
+			kneeBuf.nlerp(hipBuf, 0.3333333f);
 			waistNode.localTransform.setRotation(kneeBuf);
 			// TODO : Use vectors to add like 50% of wasit tracker yaw to waist node to reduce drift and let user take weird poses
 			// TODO Set virtual waist node yaw to that of waist node
