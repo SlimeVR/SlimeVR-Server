@@ -7,8 +7,8 @@ public class SteamVRTracker extends ComputedTracker implements TrackerWithTPS {
 	public final int id;
 	protected BufferedTimer timer = new BufferedTimer(1f);
 	
-	public SteamVRTracker(int id, String name) {
-		super(name);
+	public SteamVRTracker(int id, String name, boolean hasRotation, boolean hasPosition) {
+		super(name, hasRotation, hasPosition);
 		this.id = id;
 	}
 	
@@ -20,5 +20,10 @@ public class SteamVRTracker extends ComputedTracker implements TrackerWithTPS {
 	@Override
 	public void dataTick() {
 		timer.update();
+	}
+	
+	@Override
+	public boolean userEditable() {
+		return true;
 	}
 }

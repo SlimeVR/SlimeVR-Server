@@ -225,4 +225,14 @@ public class IMUTracker implements Tracker, TrackerWithTPS, TrackerWithBattery {
 				byStatus[ca.status] = ca;
 		}
 	}
+
+	@Override
+	public boolean hasRotation() {
+		return true;
+	}
+
+	@Override
+	public boolean hasPosition() {
+		return false;
+	}
 }

@@ -67,7 +67,7 @@ public class ReferenceAdjustmentsTests {
 	
 	public void checkReferenceAdjustmentFull(Quaternion trackerQuat, int refPitch, int refYaw, int refRoll) {
 		Quaternion referenceQuat = q(refPitch, refYaw, refRoll);
-		ComputedTracker tracker = new ComputedTracker("test");
+		ComputedTracker tracker = new ComputedTracker("test", true, false);
 		tracker.rotation.set(trackerQuat);
 		ReferenceAdjustedTracker<ComputedTracker> adj = new ReferenceAdjustedTracker<>(tracker);
 		adj.resetFull(referenceQuat);
@@ -86,7 +86,7 @@ public class ReferenceAdjustmentsTests {
 	
 	public void checkReferenceAdjustmentYaw(Quaternion trackerQuat, int refPitch, int refYaw, int refRoll) {
 		Quaternion referenceQuat = q(refPitch, refYaw, refRoll);
-		ComputedTracker tracker = new ComputedTracker("test");
+		ComputedTracker tracker = new ComputedTracker("test", true, false);
 		tracker.rotation.set(trackerQuat);
 		ReferenceAdjustedTracker<ComputedTracker> adj = new ReferenceAdjustedTracker<>(tracker);
 		adj.resetYaw(referenceQuat);
@@ -98,7 +98,7 @@ public class ReferenceAdjustmentsTests {
 	
 	private void testAdjustedTrackerRotation(Quaternion trackerQuat, int refPitch, int refYaw, int refRoll) {
 		Quaternion referenceQuat = q(refPitch, refYaw, refRoll);
-		ComputedTracker tracker = new ComputedTracker("test");
+		ComputedTracker tracker = new ComputedTracker("test", true, false);
 		tracker.rotation.set(trackerQuat);
 		ReferenceAdjustedTracker<ComputedTracker> adj = new ReferenceAdjustedTracker<>(tracker);
 		adj.resetFull(referenceQuat);

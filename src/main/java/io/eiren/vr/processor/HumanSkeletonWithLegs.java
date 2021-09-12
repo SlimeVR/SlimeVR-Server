@@ -8,7 +8,6 @@ import com.jme3.math.Vector3f;
 
 import io.eiren.util.ann.VRServerThread;
 import io.eiren.vr.VRServer;
-import io.eiren.vr.trackers.ComputedTracker;
 import io.eiren.vr.trackers.Tracker;
 import io.eiren.vr.trackers.TrackerStatus;
 import io.eiren.vr.trackers.TrackerUtils;
@@ -105,7 +104,7 @@ public class HumanSkeletonWithLegs extends HumanSkeletonWithWaist {
 		kneeHeight = server.config.getFloat("body.kneeHeight", kneeHeight);
 		legsLength = server.config.getFloat("body.legsLength", legsLength);
 		footLength = server.config.getFloat("body.footLength", footLength);
-		extendedPelvisModel = server.config.getBoolean("body.model.extendedPelvis", extendedPelvisModel);
+		//extendedPelvisModel = server.config.getBoolean("body.model.extendedPelvis", extendedPelvisModel);
 		extendedKneeModel = server.config.getBoolean("body.model.extendedKnee", extendedKneeModel);
 		
 		waistNode.attachChild(leftHipNode);

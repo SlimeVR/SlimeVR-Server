@@ -32,6 +32,6 @@ public class TrackerUtils {
 		t = findTrackerForBodyPosition(allTrackers, altPosition);
 		if(t != null)
 			return t;
-		return new ComputedTracker("Empty tracker");
+		return new ComputedTracker("Empty tracker", false, false);
 	}
 }

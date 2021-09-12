@@ -52,7 +52,7 @@ public class NamedPipeVRBridge extends Thread implements VRBridge {
 		this.internalTrackers = new FastList<>(shareTrackers.size());
 		for(int i = 0; i < shareTrackers.size(); ++i) {
 			Tracker t = shareTrackers.get(i);
-			ComputedTracker ct = new ComputedTracker("internal://" + t.getName());
+			ComputedTracker ct = new ComputedTracker("internal://" + t.getName(), true, true);
 			ct.setStatus(TrackerStatus.OK);
 			this.internalTrackers.add(ct);
 		}

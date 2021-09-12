@@ -105,7 +105,7 @@ public class SteamVRPipeInputBridge extends Thread implements VRBridge {
 				LogManager.log.severe("[SteamVRPipeInputBridge] Error in ADD command. Command requires at least 4 arguments. Supplied: " + commandBuilder.toString());
 				return;
 			}
-			SteamVRTracker internalTracker = new SteamVRTracker(Integer.parseInt(command[1]), StringUtils.join(command, " ", 3, command.length));
+			SteamVRTracker internalTracker = new SteamVRTracker(Integer.parseInt(command[1]), StringUtils.join(command, " ", 3, command.length), true, true);
 			int roleId = Integer.parseInt(command[2]);
 			if(roleId >= 0 && roleId < SteamVRInputRoles.values.length) {
 				SteamVRInputRoles svrRole = SteamVRInputRoles.values[roleId];
@@ -183,7 +183,7 @@ public class SteamVRPipeInputBridge extends Thread implements VRBridge {
 								continue internal;
 						}
 						// Tracker is not found in current trackers
-						SteamVRTracker tracker = new SteamVRTracker(internalTracker.id, internalTracker.getName());
+						SteamVRTracker tracker = new SteamVRTracker(internalTracker.id, internalTracker.getName(), true, true);
 						tracker.bodyPosition = internalTracker.bodyPosition;
 						trackers.add(tracker);
 						server.registerTracker(tracker);

@@ -146,4 +146,14 @@ public class ReferenceAdjustedTracker<E extends Tracker> implements Tracker {
 	public void tick() {
 		tracker.tick();
 	}
+
+	@Override
+	public boolean hasRotation() {
+		return tracker.hasRotation();
+	}
+
+	@Override
+	public boolean hasPosition() {
+		return tracker.hasPosition();
+	}
 }

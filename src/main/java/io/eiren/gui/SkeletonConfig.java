@@ -43,6 +43,7 @@ public class SkeletonConfig extends EJBag {
 
 			int row = 0;
 
+			/**
 			add(new JCheckBox("Extended pelvis model") {{
 				addItemListener(new ItemListener() {
 				    @Override
@@ -66,7 +67,7 @@ public class SkeletonConfig extends EJBag {
 				}
 			}}, s(c(0, row, 1), 3, 1));
 			row++;
-
+			//*/
 			/*
 			add(new JCheckBox("Extended knee model") {{
 				addItemListener(new ItemListener() {

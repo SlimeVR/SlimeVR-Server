@@ -32,4 +32,8 @@ public interface Tracker {
 	public void setBodyPosition(TrackerBodyPosition position);
 	
 	public boolean userEditable();
+	
+	public boolean hasRotation();
+	
+	public boolean hasPosition();
 }

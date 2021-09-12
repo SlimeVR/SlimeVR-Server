@@ -206,13 +206,17 @@ public class TrackersList extends EJBox {
 				}
 				row++;
 			}
-			add(new JLabel("Rotation"), c(0, row, 0, GridBagConstraints.FIRST_LINE_START));
-			add(new JLabel("Position"), c(1, row, 0, GridBagConstraints.FIRST_LINE_START));
+			if(t.hasRotation())
+				add(new JLabel("Rotation"), c(0, row, 0, GridBagConstraints.FIRST_LINE_START));
+			if(t.hasPosition())
+				add(new JLabel("Position"), c(1, row, 0, GridBagConstraints.FIRST_LINE_START));
 			add(new JLabel("Ping"), c(2, row, 0, GridBagConstraints.FIRST_LINE_START));
 			add(new JLabel("TPS"), c(3, row, 0, GridBagConstraints.FIRST_LINE_START));
 			row++;
-			add(rotation = new JLabel("0 0 0"), c(0, row, 0, GridBagConstraints.FIRST_LINE_START));
-			add(position = new JLabel("0 0 0"), c(1, row, 0, GridBagConstraints.FIRST_LINE_START));
+			if(t.hasRotation())
+				add(rotation = new JLabel("0 0 0"), c(0, row, 0, GridBagConstraints.FIRST_LINE_START));
+			if(t.hasPosition())
+				add(position = new JLabel("0 0 0"), c(1, row, 0, GridBagConstraints.FIRST_LINE_START));
 			add(ping = new JLabel(""), c(2, row, 0, GridBagConstraints.FIRST_LINE_START));
 			if(realTracker instanceof TrackerWithTPS) {
 				add(tps = new JLabel("0"), c(3, row, 0, GridBagConstraints.FIRST_LINE_START));
@@ -266,12 +270,14 @@ public class TrackersList extends EJBox {
 			t.getPosition(v);
 			q.toAngles(angles);
 			
-			position.setText(StringUtils.prettyNumber(v.x, 1)
-					+ " " + StringUtils.prettyNumber(v.y, 1)
-					+ " " + StringUtils.prettyNumber(v.z, 1));
-			rotation.setText(StringUtils.prettyNumber(angles[0] * FastMath.RAD_TO_DEG, 0)
-					+ " " + StringUtils.prettyNumber(angles[1] * FastMath.RAD_TO_DEG, 0)
-					+ " " + StringUtils.prettyNumber(angles[2] * FastMath.RAD_TO_DEG, 0));
+			if(position != null)
+				position.setText(StringUtils.prettyNumber(v.x, 1)
+						+ " " + StringUtils.prettyNumber(v.y, 1)
+						+ " " + StringUtils.prettyNumber(v.z, 1));
+			if(rotation != null)
+				rotation.setText(StringUtils.prettyNumber(angles[0] * FastMath.RAD_TO_DEG, 0)
+						+ " " + StringUtils.prettyNumber(angles[1] * FastMath.RAD_TO_DEG, 0)
+						+ " " + StringUtils.prettyNumber(angles[2] * FastMath.RAD_TO_DEG, 0));
 			status.setText(t.getStatus().toString().toLowerCase());
 			
 			if(realTracker instanceof TrackerWithTPS) {
