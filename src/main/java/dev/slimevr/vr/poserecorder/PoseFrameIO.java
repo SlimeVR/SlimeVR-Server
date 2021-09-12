@@ -103,85 +103,38 @@ public final class PoseFrameIO {
 
 	public static PoseFrame readFrame(DataInputStream inputStream) {
 		try {
-			/*
-			float vecX = inputStream.readFloat();
-			float vecY = inputStream.readFloat();
-			float vecZ = inputStream.readFloat();
+			int trackerFrameCount = inputStream.readInt();
 
-			Vector3f vector = new Vector3f(vecX, vecY, vecZ);
+			List<TrackerFrame> trackerFrames = new FastList<TrackerFrame>(trackerFrameCount);
+			for (int i = 0; i < trackerFrameCount; i++) {
+				int dataFlags = inputStream.readInt();
 
-			int rotationCount = inputStream.readInt();
-			HashMap<String, Quaternion> rotations = null;
-			if (rotationCount > 0) {
-				rotations = new HashMap<String, Quaternion>(rotationCount);
-				for (int j = 0; j < rotationCount; j++) {
-					String label = inputStream.readUTF();
+				TrackerBodyPosition designation = null;
+				if (TrackerFrameData.DESIGNATION.check(dataFlags)) {
+					designation = TrackerBodyPosition.getByDesignation(inputStream.readUTF());
+				}
 
+				Quaternion rotation = null;
+				if (TrackerFrameData.ROTATION.check(dataFlags)) {
 					float quatX = inputStream.readFloat();
 					float quatY = inputStream.readFloat();
 					float quatZ = inputStream.readFloat();
 					float quatW = inputStream.readFloat();
-					Quaternion quaternion = new Quaternion(quatX, quatY, quatZ, quatW);
-
-					rotations.put(label, quaternion);
+					rotation = new Quaternion(quatX, quatY, quatZ, quatW);
 				}
-			}
 
-			int positionCount = inputStream.readInt();
-			HashMap<String, Vector3f> positions = null;
-			if (positionCount > 0) {
-				positions = new HashMap<String, Vector3f>(positionCount);
-				for (int j = 0; j < positionCount; j++) {
-					String label = inputStream.readUTF();
-
+				Vector3f position = null;
+				if (TrackerFrameData.POSITION.check(dataFlags)) {
 					float posX = inputStream.readFloat();
 					float posY = inputStream.readFloat();
 					float posZ = inputStream.readFloat();
-					Vector3f position = new Vector3f(posX, posY, posZ);
-
-					positions.put(label, position);
-				}
-			}
-
-			return new PoseFrame(vector, rotations, positions);
-			*/
-
-			int trackerFrameCount = inputStream.readInt();
-			if (trackerFrameCount > 0) {
-				List<TrackerFrame> trackerFrames = new FastList<TrackerFrame>(trackerFrameCount);
-
-				for (int i = 0; i < trackerFrameCount; i++) {
-					int dataFlags = inputStream.readInt();
-
-					TrackerBodyPosition designation = null;
-					if (TrackerFrameData.DESIGNATION.check(dataFlags)) {
-						designation = TrackerBodyPosition.getByDesignation(inputStream.readUTF());
-					}
-
-					Quaternion rotation = null;
-					if (TrackerFrameData.ROTATION.check(dataFlags)) {
-						float quatX = inputStream.readFloat();
-						float quatY = inputStream.readFloat();
-						float quatZ = inputStream.readFloat();
-						float quatW = inputStream.readFloat();
-						rotation = new Quaternion(quatX, quatY, quatZ, quatW);
-					}
-
-					Vector3f position = null;
-					if (TrackerFrameData.POSITION.check(dataFlags)) {
-						float posX = inputStream.readFloat();
-						float posY = inputStream.readFloat();
-						float posZ = inputStream.readFloat();
-						position = new Vector3f(posX, posY, posZ);
-					}
-
-					trackerFrames.add(new TrackerFrame(designation, rotation, position));
+					position = new Vector3f(posX, posY, posZ);
 				}
 
-				return new PoseFrame(trackerFrames);
-			} else {
-				return null;
+				trackerFrames.add(new TrackerFrame(designation, rotation, position));
 			}
+
+			return new PoseFrame(trackerFrames);
 		} catch (Exception e) {
 			LogManager.log.severe("Error reading frame from stream", e);
 		}
