@@ -34,6 +34,6 @@ public enum TrackerBodyPosition {
 	
 	static {
 		for(TrackerBodyPosition tbp : values())
-			byDesignation.put(tbp.designation, tbp);
+			byDesignation.put(tbp.designation.toLowerCase(), tbp);
 	}
 }
