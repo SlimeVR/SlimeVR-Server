@@ -7,12 +7,11 @@ import java.io.DataOutputStream;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
-import java.util.List;
+import java.util.HashMap;
 
 import com.jme3.math.Quaternion;
 import com.jme3.math.Vector3f;
 
-import io.eiren.util.collections.FastList;
 import io.eiren.util.logging.LogManager;
 import io.eiren.vr.processor.TrackerBodyPosition;
 
@@ -105,7 +104,7 @@ public final class PoseFrameIO {
 		try {
 			int trackerFrameCount = inputStream.readInt();
 
-			List<TrackerFrame> trackerFrames = new FastList<TrackerFrame>(trackerFrameCount);
+			HashMap<TrackerBodyPosition, TrackerFrame> trackerFrames = new HashMap<TrackerBodyPosition, TrackerFrame>(trackerFrameCount);
 			for (int i = 0; i < trackerFrameCount; i++) {
 				int dataFlags = inputStream.readInt();
 
@@ -131,7 +130,7 @@ public final class PoseFrameIO {
 					position = new Vector3f(posX, posY, posZ);
 				}
 
-				trackerFrames.add(new TrackerFrame(designation, rotation, position));
+				trackerFrames.put(designation, new TrackerFrame(designation, rotation, position));
 			}
 
 			return new PoseFrame(trackerFrames);
