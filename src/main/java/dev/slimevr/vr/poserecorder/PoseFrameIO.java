@@ -130,7 +130,9 @@ public final class PoseFrameIO {
 					position = new Vector3f(posX, posY, posZ);
 				}
 
-				trackerFrames.put(designation, new TrackerFrame(designation, rotation, position));
+				if (designation != null) {
+					trackerFrames.put(designation, new TrackerFrame(designation, rotation, position));
+				}
 			}
 
 			return new PoseFrame(trackerFrames);
