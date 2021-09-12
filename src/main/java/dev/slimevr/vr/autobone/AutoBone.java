@@ -1,4 +1,4 @@
-package io.eiren.gui.autobone;
+package dev.slimevr.vr.autobone;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -7,10 +7,13 @@ import java.util.function.Consumer;
 
 import com.jme3.math.Vector3f;
 
+import dev.slimevr.vr.poserecorder.PoseFrame;
+import dev.slimevr.vr.poserecorder.TrackerFrameData;
 import io.eiren.util.ann.ThreadSafe;
 import io.eiren.util.logging.LogManager;
 import io.eiren.util.collections.FastList;
 import io.eiren.vr.VRServer;
+import dev.slimevr.vr.poserecorder.TrackerFrame;
 import io.eiren.vr.processor.HumanSkeleton;
 import io.eiren.vr.processor.HumanSkeletonWithLegs;
 import io.eiren.vr.processor.HumanSkeletonWithWaist;
@@ -200,8 +203,9 @@ public class AutoBone {
 	public float getMaxHmdHeight(PoseFrame[] frames) {
 		float maxHeight = 0f;
 		for (PoseFrame frame : frames) {
-			if (frame.rootPos.y > maxHeight) {
-				maxHeight = frame.rootPos.y;
+			TrackerFrame hmd = frame.trackerFrames.get(TrackerBodyPosition.HMD);
+			if (hmd != null && hmd.hasData(TrackerFrameData.POSITION) && hmd.position.y > maxHeight) {
+				maxHeight = hmd.position.y;
 			}
 		}
 		return maxHeight;
@@ -356,8 +360,8 @@ public class AutoBone {
 
 	// The change in position of the ankle over time
 	protected float getSlideErrorDeriv(SimpleSkeleton skeleton1, SimpleSkeleton skeleton2) {
-		float slideLeft = skeleton1.getLeftFootPos().distance(skeleton2.getLeftFootPos());
-		float slideRight = skeleton1.getRightFootPos().distance(skeleton2.getRightFootPos());
+		float slideLeft = skeleton1.getNodePosition(TrackerBodyPosition.LEFT_ANKLE).distance(skeleton2.getNodePosition(TrackerBodyPosition.LEFT_ANKLE));
+		float slideRight = skeleton1.getNodePosition(TrackerBodyPosition.RIGHT_ANKLE).distance(skeleton2.getNodePosition(TrackerBodyPosition.RIGHT_ANKLE));
 
 		// Divide by 4 to halve and average, it's halved because you want to approach a midpoint, not the other point
 		return (slideLeft + slideRight) / 4f;
@@ -365,14 +369,20 @@ public class AutoBone {
 
 	// The offset between both feet at one instant and over time
 	protected float getOffsetErrorDeriv(SimpleSkeleton skeleton1, SimpleSkeleton skeleton2) {
-		float dist1 = Math.abs(skeleton1.getLeftFootPos().y - skeleton1.getRightFootPos().y);
-		float dist2 = Math.abs(skeleton2.getLeftFootPos().y - skeleton2.getRightFootPos().y);
+		float skeleton1Left = skeleton1.getNodePosition(TrackerBodyPosition.LEFT_ANKLE).getY();
+		float skeleton1Right = skeleton1.getNodePosition(TrackerBodyPosition.RIGHT_ANKLE).getY();
 
-		float dist3 = Math.abs(skeleton1.getLeftFootPos().y - skeleton2.getRightFootPos().y);
-		float dist4 = Math.abs(skeleton1.getLeftFootPos().y - skeleton2.getRightFootPos().y);
+		float skeleton2Left = skeleton2.getNodePosition(TrackerBodyPosition.LEFT_ANKLE).getY();
+		float skeleton2Right = skeleton2.getNodePosition(TrackerBodyPosition.RIGHT_ANKLE).getY();
 
-		float dist5 = Math.abs(skeleton1.getLeftFootPos().y - skeleton2.getLeftFootPos().y);
-		float dist6 = Math.abs(skeleton1.getRightFootPos().y - skeleton2.getRightFootPos().y);
+		float dist1 = Math.abs(skeleton1Left - skeleton1Right);
+		float dist2 = Math.abs(skeleton2Left - skeleton2Right);
+
+		float dist3 = Math.abs(skeleton1Left - skeleton2Right);
+		float dist4 = Math.abs(skeleton2Left - skeleton1Right);
+
+		float dist5 = Math.abs(skeleton1Left - skeleton2Left);
+		float dist6 = Math.abs(skeleton1Right - skeleton2Right);
 
 		// Divide by 12 to halve and average, it's halved because you want to approach a midpoint, not the other point
 		return (dist1 + dist2 + dist3 + dist4 + dist5 + dist6) / 12f;
@@ -404,13 +414,15 @@ public class AutoBone {
 		float offset = 0f;
 		int offsetCount = 0;
 
-		if (frame.positions != null) {
-			for (Entry<String, Vector3f> entry : frame.positions.entrySet()) {
-				Vector3f nodePos = skeleton.getNodePosition(entry.getKey());
-				if (nodePos != null) {
-					offset += Math.abs(nodePos.distance(entry.getValue()));
-					offsetCount++;
-				}
+		for (TrackerFrame trackerFrame : frame.trackerFrames.values()) {
+			if (!trackerFrame.hasData(TrackerFrameData.POSITION)) {
+				continue;
+			}
+
+			Vector3f nodePos = skeleton.getNodePosition(trackerFrame.designation.designation);
+			if (nodePos != null) {
+				offset += Math.abs(nodePos.distance(trackerFrame.position));
+				offsetCount++;
 			}
 		}
 
@@ -422,29 +434,31 @@ public class AutoBone {
 		float offset = 0f;
 		int offsetCount = 0;
 
-		if (frame1.positions != null && frame2.positions != null) {
-			for (Entry<String, Vector3f> entry : frame1.positions.entrySet()) {
-				Vector3f frame2Pos = frame2.positions.get(entry.getKey());
-				if (frame2Pos == null) {
-					continue;
-				}
-
-				Vector3f nodePos1 = skeleton1.getNodePosition(entry.getKey());
-				if (nodePos1 == null) {
-					continue;
-				}
-
-				Vector3f nodePos2 = skeleton2.getNodePosition(entry.getKey());
-				if (nodePos2 == null) {
-					continue;
-				}
-
-				float dist1 = Math.abs(nodePos1.distance(entry.getValue()));
-				float dist2 = Math.abs(nodePos2.distance(frame2Pos));
-
-				offset += Math.abs(dist2 - dist1);
-				offsetCount++;
+		for (TrackerFrame trackerFrame1 : frame1.trackerFrames.values()) {
+			if (!trackerFrame1.hasData(TrackerFrameData.POSITION)) {
+				continue;
 			}
+
+			TrackerFrame trackerFrame2 = frame2.trackerFrames.get(trackerFrame1.designation);
+			if (trackerFrame2 == null || !trackerFrame2.hasData(TrackerFrameData.POSITION)) {
+				continue;
+			}
+
+			Vector3f nodePos1 = skeleton1.getNodePosition(trackerFrame1.designation);
+			if (nodePos1 == null) {
+				continue;
+			}
+
+			Vector3f nodePos2 = skeleton2.getNodePosition(trackerFrame2.designation);
+			if (nodePos2 == null) {
+				continue;
+			}
+
+			float dist1 = Math.abs(nodePos1.distance(trackerFrame1.position));
+			float dist2 = Math.abs(nodePos2.distance(trackerFrame2.position));
+
+			offset += Math.abs(dist2 - dist1);
+			offsetCount++;
 		}
 
 		return offsetCount > 0 ? offset / offsetCount : 0f;

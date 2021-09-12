@@ -1,4 +1,4 @@
-package io.eiren.gui.autobone;
+package dev.slimevr.vr.poserecorder;
 
 import java.io.BufferedInputStream;
 import java.io.BufferedOutputStream;
@@ -7,13 +7,14 @@ import java.io.DataOutputStream;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
-import java.util.HashMap;
-import java.util.Map.Entry;
+import java.util.List;
 
 import com.jme3.math.Quaternion;
 import com.jme3.math.Vector3f;
 
+import io.eiren.util.collections.FastList;
 import io.eiren.util.logging.LogManager;
+import io.eiren.vr.processor.TrackerBodyPosition;
 
 public final class PoseFrameIO {
 
@@ -38,41 +39,28 @@ public final class PoseFrameIO {
 
 	public static boolean writeFrame(DataOutputStream outputStream, PoseFrame frame) {
 		try {
-			// Write root position vector
-			outputStream.writeFloat(frame.rootPos.x);
-			outputStream.writeFloat(frame.rootPos.y);
-			outputStream.writeFloat(frame.rootPos.z);
+			if (frame != null && frame.trackerFrames != null) {
+				outputStream.writeInt(frame.trackerFrames.size());
 
-			if (frame.rotations != null) {
-				// Write rotations
-				outputStream.writeInt(frame.rotations.size());
-				for (Entry<String, Quaternion> entry : frame.rotations.entrySet()) {
-					// Write the label string
-					outputStream.writeUTF(entry.getKey());
+				for (TrackerFrame trackerFrame : frame.trackerFrames.values()) {
+					outputStream.writeInt(trackerFrame.getDataFlags());
 
-					// Write the rotation quaternion
-					Quaternion quat = entry.getValue();
-					outputStream.writeFloat(quat.getX());
-					outputStream.writeFloat(quat.getY());
-					outputStream.writeFloat(quat.getZ());
-					outputStream.writeFloat(quat.getW());
-				}
-			} else {
-				outputStream.writeInt(0);
-			}
+					if (trackerFrame.hasData(TrackerFrameData.DESIGNATION)) {
+						outputStream.writeUTF(trackerFrame.designation.designation);
+					}
 
-			if (frame.positions != null) {
-				// Write positions
-				outputStream.writeInt(frame.positions.size());
-				for (Entry<String, Vector3f> entry : frame.positions.entrySet()) {
-					// Write the label string
-					outputStream.writeUTF(entry.getKey());
+					if (trackerFrame.hasData(TrackerFrameData.ROTATION)) {
+						outputStream.writeFloat(trackerFrame.rotation.getX());
+						outputStream.writeFloat(trackerFrame.rotation.getY());
+						outputStream.writeFloat(trackerFrame.rotation.getZ());
+						outputStream.writeFloat(trackerFrame.rotation.getW());
+					}
 
-					// Write the rotation quaternion
-					Vector3f vec = entry.getValue();
-					outputStream.writeFloat(vec.getX());
-					outputStream.writeFloat(vec.getY());
-					outputStream.writeFloat(vec.getZ());
+					if (trackerFrame.hasData(TrackerFrameData.POSITION)) {
+						outputStream.writeFloat(trackerFrame.position.getX());
+						outputStream.writeFloat(trackerFrame.position.getY());
+						outputStream.writeFloat(trackerFrame.position.getZ());
+					}
 				}
 			} else {
 				outputStream.writeInt(0);
@@ -115,6 +103,7 @@ public final class PoseFrameIO {
 
 	public static PoseFrame readFrame(DataInputStream inputStream) {
 		try {
+			/*
 			float vecX = inputStream.readFloat();
 			float vecY = inputStream.readFloat();
 			float vecZ = inputStream.readFloat();
@@ -155,6 +144,44 @@ public final class PoseFrameIO {
 			}
 
 			return new PoseFrame(vector, rotations, positions);
+			*/
+
+			int trackerFrameCount = inputStream.readInt();
+			if (trackerFrameCount > 0) {
+				List<TrackerFrame> trackerFrames = new FastList<TrackerFrame>(trackerFrameCount);
+
+				for (int i = 0; i < trackerFrameCount; i++) {
+					int dataFlags = inputStream.readInt();
+
+					TrackerBodyPosition designation = null;
+					if (TrackerFrameData.DESIGNATION.check(dataFlags)) {
+						designation = TrackerBodyPosition.getByDesignation(inputStream.readUTF());
+					}
+
+					Quaternion rotation = null;
+					if (TrackerFrameData.ROTATION.check(dataFlags)) {
+						float quatX = inputStream.readFloat();
+						float quatY = inputStream.readFloat();
+						float quatZ = inputStream.readFloat();
+						float quatW = inputStream.readFloat();
+						rotation = new Quaternion(quatX, quatY, quatZ, quatW);
+					}
+
+					Vector3f position = null;
+					if (TrackerFrameData.POSITION.check(dataFlags)) {
+						float posX = inputStream.readFloat();
+						float posY = inputStream.readFloat();
+						float posZ = inputStream.readFloat();
+						position = new Vector3f(posX, posY, posZ);
+					}
+
+					trackerFrames.add(new TrackerFrame(designation, rotation, position));
+				}
+
+				return new PoseFrame(trackerFrames);
+			} else {
+				return null;
+			}
 		} catch (Exception e) {
 			LogManager.log.severe("Error reading frame from stream", e);
 		}

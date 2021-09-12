@@ -1,16 +1,15 @@
-package io.eiren.gui.autobone;
+package dev.slimevr.vr.poserecorder;
 
+import java.util.List;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.Future;
 
-import io.eiren.util.ann.ThreadSafe;
 import io.eiren.util.ann.VRServerThread;
 import io.eiren.util.collections.FastList;
 import io.eiren.util.logging.LogManager;
 import io.eiren.vr.VRServer;
-import io.eiren.vr.processor.HumanSkeleton;
-import io.eiren.vr.processor.HumanSkeletonWithLegs;
+import io.eiren.vr.trackers.Tracker;
 
 public class PoseRecorder {
 
@@ -23,41 +22,39 @@ public class PoseRecorder {
 	protected CompletableFuture<PoseFrame[]> currentRecording;
 
 	protected final VRServer server;
-	HumanSkeletonWithLegs skeleton = null;
+	List<Tracker> trackers = null;
 
 	public PoseRecorder(VRServer server) {
 		this.server = server;
 		server.addOnTick(this::onTick);
-		server.addSkeletonUpdatedCallback(this::skeletonUpdated);
 	}
 
 	@VRServerThread
 	public void onTick() {
 		if (numFrames > 0) {
-			HumanSkeletonWithLegs skeleton = this.skeleton;
-			if (skeleton != null) {
+			List<Tracker> trackers = this.trackers;
+			if (trackers != null) {
 				if (frames.size() < numFrames) {
 					if (System.currentTimeMillis() >= nextFrameTimeMs) {
 						nextFrameTimeMs = System.currentTimeMillis() + frameRecordingInterval;
-						frames.add(new PoseFrame(skeleton));
+						PoseFrame frame = PoseFrame.fromTrackers(trackers);
 
-						// If done, send finished recording
-						if (frames.size() >= numFrames) {
-							internalStopRecording();
+						if (frame != null) {
+							frames.add(frame);
+
+							// If done, send finished recording
+							if (frames.size() >= numFrames) {
+								internalStopRecording();
+							}
 						}
 					}
 				} else {
 					// If done and hasn't yet, send finished recording
 					internalStopRecording();
 				}
+			} else {
+				this.trackers = server.getAllTrackers();
 			}
-		}
-	}
-
-	@ThreadSafe
-	public void skeletonUpdated(HumanSkeleton newSkeleton) {
-		if (newSkeleton instanceof HumanSkeletonWithLegs) {
-			skeleton = (HumanSkeletonWithLegs) newSkeleton;
 		}
 	}
 
@@ -73,6 +70,9 @@ public class PoseRecorder {
 		}
 
 		cancelFrameRecording();
+
+		// Update tracker list
+		this.trackers = server.getAllTrackers();
 
 		// Clear old frames and ensure new size can be held
 		frames.clear();
@@ -114,7 +114,7 @@ public class PoseRecorder {
 	}
 
 	public boolean isReadyToRecord() {
-		return skeleton != null;
+		return server.getTrackersCount() > 0;
 	}
 
 	public boolean isRecording() {

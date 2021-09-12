@@ -1,14 +1,17 @@
-package io.eiren.gui.autobone;
+package dev.slimevr.vr.autobone;
 
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Map.Entry;
 
-import com.jme3.math.Quaternion;
 import com.jme3.math.Vector3f;
 
+import dev.slimevr.vr.poserecorder.PoseFrame;
+import dev.slimevr.vr.poserecorder.TrackerFrameData;
+import dev.slimevr.vr.poserecorder.TrackerFrame;
 import io.eiren.vr.processor.HumanSkeletonWithLegs;
 import io.eiren.vr.processor.HumanSkeletonWithWaist;
+import io.eiren.vr.processor.TrackerBodyPosition;
 import io.eiren.vr.processor.TransformNode;
 import io.eiren.yaml.YamlFile;
 
@@ -121,35 +124,18 @@ public class SimpleSkeleton {
 		this(configs.entrySet());
 	}
 
-	public void setPoseFromSkeleton(HumanSkeletonWithLegs humanSkeleton) {
-		TransformNode rootNode = humanSkeleton.getRootNode();
-
-		// Copy headset position
-		hmdNode.localTransform.setTranslation(rootNode.localTransform.getTranslation());
-
-		// Copy all rotations
-		rootNode.depthFirstTraversal(visitor -> {
-			TransformNode targetNode = nodes.get(visitor.getName());
-
-			// Handle unexpected nodes gracefully
-			if (targetNode != null) {
-				targetNode.localTransform.setRotation(visitor.localTransform.getRotation());
-			}
-		});
-	}
-
 	public void setPoseFromFrame(PoseFrame frame) {
-		// Copy headset position
-		hmdNode.localTransform.setTranslation(frame.rootPos);
+		for (TrackerFrame trackerFrame : frame.trackerFrames.values()) {
+			// Set HMD position
+			if (trackerFrame.designation == TrackerBodyPosition.HMD && trackerFrame.hasData(TrackerFrameData.POSITION)) {
+				hmdNode.localTransform.setTranslation(trackerFrame.position);
+			}
 
-		if (frame.rotations != null) {
-			// Copy all rotations
-			for (Entry<String, Quaternion> rotation : frame.rotations.entrySet()) {
-				TransformNode targetNode = nodes.get(rotation.getKey());
-
-				// Handle unexpected nodes gracefully
-				if (targetNode != null) {
-					targetNode.localTransform.setRotation(rotation.getValue());
+			// Set joint rotations
+			if (trackerFrame.hasData(TrackerFrameData.ROTATION)) {
+				TransformNode node = getNode(trackerFrame.designation, true);
+				if (node != null) {
+					node.localTransform.setRotation(trackerFrame.rotation);
 				}
 			}
 		}
@@ -256,24 +242,59 @@ public class SimpleSkeleton {
 	}
 
 	public void updatePose() {
+		// Rotate hips with waist
+		waistNode.localTransform.setRotation(chestNode.localTransform.getRotation());
 		hmdNode.update();
 	}
 
-	public Vector3f getNodePosition(String node) {
+	public TransformNode getNode(String node) {
 		TransformNode transformNode = nodes.get(node);
+		return transformNode;
+	}
+
+	public TransformNode getNode(TrackerBodyPosition bodyPosition) {
+		return getNode(bodyPosition, false);
+	}
+
+	public TransformNode getNode(TrackerBodyPosition bodyPosition, boolean rotationNode) {
+		if (bodyPosition == null) {
+			return null;
+		}
+
+		switch (bodyPosition) {
+		case HMD:
+			return hmdNode;
+		case CHEST:
+			return rotationNode ? neckNode : chestNode;
+		case WAIST:
+			return rotationNode ? chestNode : waistNode;
+
+		case LEFT_LEG:
+			return rotationNode ? leftHipNode : leftKneeNode;
+		case RIGHT_LEG:
+			return rotationNode ? rightHipNode : rightKneeNode;
+
+		case LEFT_ANKLE:
+			return rotationNode ? leftKneeNode : leftAnkleNode;
+		case RIGHT_ANKLE:
+			return rotationNode ? rightKneeNode : rightAnkleNode;
+		}
+
+		return null;
+	}
+
+	public Vector3f getNodePosition(String node) {
+		TransformNode transformNode = getNode(node);
 		return transformNode != null ? transformNode.worldTransform.getTranslation() : null;
 	}
 
-	public Vector3f getHMDPos() {
-		return hmdNode.worldTransform.getTranslation();
-	}
+	public Vector3f getNodePosition(TrackerBodyPosition bodyPosition) {
+		TransformNode node = getNode(bodyPosition);
+		if (node == null) {
+			return null;
+		}
 
-	public Vector3f getLeftFootPos() {
-		return leftAnkleNode.worldTransform.getTranslation();
-	}
-
-	public Vector3f getRightFootPos() {
-		return rightAnkleNode.worldTransform.getTranslation();
+		return node.worldTransform.getTranslation();
 	}
 
 	public void saveConfigs(YamlFile config) {

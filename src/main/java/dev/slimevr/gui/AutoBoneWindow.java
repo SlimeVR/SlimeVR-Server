@@ -1,4 +1,4 @@
-package io.eiren.gui.autobone;
+package dev.slimevr.gui;
 
 import javax.swing.BoxLayout;
 import javax.swing.JFrame;
@@ -20,9 +20,15 @@ import io.eiren.util.ann.AWTThread;
 import io.eiren.util.collections.FastList;
 import io.eiren.util.logging.LogManager;
 import io.eiren.vr.VRServer;
+import dev.slimevr.vr.autobone.AutoBone;
+
 import javax.swing.event.MouseInputAdapter;
 
 import org.apache.commons.lang3.tuple.Pair;
+
+import dev.slimevr.vr.poserecorder.PoseFrame;
+import dev.slimevr.vr.poserecorder.PoseFrameIO;
+import dev.slimevr.vr.poserecorder.PoseRecorder;
 
 public class AutoBoneWindow extends JFrame {
 
@@ -82,7 +88,7 @@ public class AutoBoneWindow extends JFrame {
 			File saveRecording;
 			int recordingIndex = 1;
 			do {
-				saveRecording = new File(saveDir, "ABRecording" + recordingIndex++ + ".abf");
+				saveRecording = new File(saveDir, "ABRecording" + recordingIndex++ + ".pfr");
 			} while (saveRecording.exists());
 
 			LogManager.log.info("[AutoBone] Exporting frames to \"" + saveRecording.getPath() + "\"...");
@@ -102,7 +108,7 @@ public class AutoBoneWindow extends JFrame {
 			File[] files = loadDir.listFiles();
 			if (files != null) {
 				for (File file : files) {
-					if (file.isFile() && org.apache.commons.lang3.StringUtils.endsWithIgnoreCase(file.getName(), ".abf")) {
+					if (file.isFile() && org.apache.commons.lang3.StringUtils.endsWithIgnoreCase(file.getName(), ".pfr")) {
 						LogManager.log.info("[AutoBone] Detected recording at \"" + file.getPath() + "\", loading frames...");
 						PoseFrame[] frames = PoseFrameIO.readFromFile(file);
 
@@ -230,6 +236,13 @@ public class AutoBoneWindow extends JFrame {
 
 										setText("Saving...");
 										saveRecording(frames);
+
+										setText("Recording Saved!");
+										try {
+											Thread.sleep(3000); // Wait for 3 seconds
+										} catch (Exception e1) {
+											// Ignore
+										}
 									} else {
 										setText("No Recording...");
 										LogManager.log.severe("[AutoBone] Unable to save, no recording was done...");
