@@ -126,8 +126,6 @@ public class AutoBoneWindow extends JFrame {
 	}
 
 	private float processFrames(PoseFrame frames) {
-		autoBone.reloadConfigValues();
-
 		autoBone.minDataDistance = server.config.getInt("autobone.minimumDataDistance", autoBone.minDataDistance);
 		autoBone.maxDataDistance = server.config.getInt("autobone.maximumDataDistance", autoBone.maxDataDistance);
 

@@ -88,12 +88,17 @@ public class AutoBone {
 	}
 
 	public void reloadConfigValues() {
+		reloadConfigValues(null);
+	}
+
+	public void reloadConfigValues(TrackerFrame[] frame) {
 		// Load waist configs
 		staticConfigs.put("Head", server.config.getFloat("body.headShift", HumanSkeletonWithWaist.HEAD_SHIFT_DEFAULT));
 		staticConfigs.put("Neck", server.config.getFloat("body.neckLength", HumanSkeletonWithWaist.NECK_LENGTH_DEFAULT));
 		configs.put("Waist", server.config.getFloat("body.waistDistance", 0.85f));
 
 		if (server.config.getBoolean("autobone.forceChestTracker", false) ||
+		(frame != null && TrackerUtils.findTrackerForBodyPosition(frame, TrackerBodyPosition.CHEST) != null) ||
 		TrackerUtils.findTrackerForBodyPosition(server.getAllTrackers(), TrackerBodyPosition.CHEST) != null) {
 			// If force enabled or has a chest tracker
 			configs.put("Chest", server.config.getFloat("body.chestDistance", 0.42f));
@@ -236,6 +241,9 @@ public class AutoBone {
 		final SimpleSkeleton skeleton1 = new SimpleSkeleton(configs, staticConfigs);
 		final TrackerFrame[] trackerBuffer1 = new TrackerFrame[frames.getTrackerCount()];
 
+		frames.getFrames(0, trackerBuffer1);
+		reloadConfigValues(trackerBuffer1); // Reload configs and detect chest tracker from the first frame
+
 		final SimpleSkeleton skeleton2 = new SimpleSkeleton(configs, staticConfigs);
 		final TrackerFrame[] trackerBuffer2 = new TrackerFrame[frames.getTrackerCount()];
 
@@ -283,7 +291,7 @@ public class AutoBone {
 					if (Float.isNaN(error) || Float.isInfinite(error)) {
 						// Extinguish
 						LogManager.log.warning("[AutoBone] Error value is invalid, resetting variables to recover");
-						reloadConfigValues();
+						reloadConfigValues(trackerBuffer1);
 
 						// Reset error sum values
 						sumError = 0f;
@@ -414,7 +422,7 @@ public class AutoBone {
 		int offsetCount = 0;
 
 		for (TrackerFrame trackerFrame : frame) {
-			if (!trackerFrame.hasData(TrackerFrameData.POSITION)) {
+			if (trackerFrame == null || !trackerFrame.hasData(TrackerFrameData.POSITION)) {
 				continue;
 			}
 
@@ -434,7 +442,7 @@ public class AutoBone {
 		int offsetCount = 0;
 
 		for (TrackerFrame trackerFrame1 : frame1) {
-			if (!trackerFrame1.hasData(TrackerFrameData.POSITION)) {
+			if (trackerFrame1 == null || !trackerFrame1.hasData(TrackerFrameData.POSITION)) {
 				continue;
 			}
 
