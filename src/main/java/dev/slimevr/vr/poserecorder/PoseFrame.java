@@ -4,6 +4,7 @@ import java.util.List;
 
 import io.eiren.util.collections.FastList;
 import io.eiren.vr.processor.TrackerBodyPosition;
+import io.eiren.vr.trackers.ComputedTracker;
 import io.eiren.vr.trackers.Tracker;
 import io.eiren.vr.trackers.TrackerUtils;
 
@@ -15,7 +16,12 @@ public final class PoseFrame {
 		this.trackerFrames = trackerFrames;
 	}
 
+	// Ignore computed trackers by default
 	public static PoseFrame fromTrackers(List<Tracker> trackers) {
+		return fromTrackers(trackers, false);
+	}
+
+	public static PoseFrame fromTrackers(List<Tracker> trackers, boolean includeComputed) {
 		if (trackers == null || trackers.isEmpty()) {
 			return null;
 		}
@@ -23,6 +29,11 @@ public final class PoseFrame {
 		List<TrackerFrame> trackerFrames = new FastList<TrackerFrame>(trackers.size());
 
 		for (Tracker tracker : trackers) {
+			// Ignore computed trackers if they aren't requested
+			if (!includeComputed && tracker.getClass().equals(ComputedTracker.class)) {
+				continue;
+			}
+
 			TrackerFrame trackerFrame = TrackerFrame.fromTracker(tracker);
 
 			if (trackerFrame != null) {

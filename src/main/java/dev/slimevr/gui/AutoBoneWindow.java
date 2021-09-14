@@ -37,14 +37,14 @@ public class AutoBoneWindow extends JFrame {
 
 	private EJBox pane;
 
-	private final VRServer server;
-	private final SkeletonConfig skeletonConfig;
-	private final PoseRecorder poseRecorder;
-	private final AutoBone autoBone;
+	private final transient VRServer server;
+	private final transient SkeletonConfig skeletonConfig;
+	private final transient PoseRecorder poseRecorder;
+	private final transient AutoBone autoBone;
 
-	private Thread recordingThread = null;
-	private Thread saveRecordingThread = null;
-	private Thread autoBoneThread = null;
+	private transient Thread recordingThread = null;
+	private transient Thread saveRecordingThread = null;
+	private transient Thread autoBoneThread = null;
 
 	private JButton saveRecordingButton;
 	private JButton adjustButton;
@@ -292,7 +292,7 @@ public class AutoBoneWindow extends JFrame {
 									setText("Load...");
 									List<Pair<String, PoseFrame[]>> frameRecordings = loadRecordings();
 
-									if (frameRecordings.size() > 0) {
+									if (!frameRecordings.isEmpty()) {
 										LogManager.log.info("[AutoBone] Done loading frames!");
 									} else {
 										Future<PoseFrame[]> framesFuture = poseRecorder.getFramesAsync();
@@ -354,7 +354,7 @@ public class AutoBoneWindow extends JFrame {
 										lengthsLabel.setText(lengthsString);
 									}
 
-									if (heightPercentError.size() > 0) {
+									if (!heightPercentError.isEmpty()) {
 										float mean = 0f;
 										for (float val : heightPercentError) {
 											mean += val;

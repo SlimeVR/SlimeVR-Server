@@ -248,8 +248,7 @@ public class SimpleSkeleton {
 	}
 
 	public TransformNode getNode(String node) {
-		TransformNode transformNode = nodes.get(node);
-		return transformNode;
+		return nodes.get(node);
 	}
 
 	public TransformNode getNode(TrackerBodyPosition bodyPosition) {
