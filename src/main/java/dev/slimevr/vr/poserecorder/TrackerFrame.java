@@ -53,13 +53,18 @@ public final class TrackerFrame implements Tracker {
 	}
 
 	public static TrackerFrame fromTracker(Tracker tracker) {
-		// If null or has no data
-		if (tracker == null || (!tracker.hasRotation() && !tracker.hasPosition())) {
+		if (tracker == null) {
 			return null;
 		}
 
 		// If the tracker is not ready
-		if (tracker.getStatus() != TrackerStatus.OK && tracker.getStatus() != TrackerStatus.OCCLUDED) {
+		if (tracker.getStatus() != TrackerStatus.OK && tracker.getStatus() != TrackerStatus.BUSY && tracker.getStatus() != TrackerStatus.OCCLUDED) {
+			return null;
+		}
+
+		boolean hasPosition = tracker.hasPosition() && tracker.getStatus() != TrackerStatus.OCCLUDED;
+		// If tracker has no data
+		if (tracker.getBodyPosition() == null && !tracker.hasRotation() && !hasPosition) {
 			return null;
 		}
 
@@ -71,7 +76,7 @@ public final class TrackerFrame implements Tracker {
 
 		// If the tracker is occluded, don't get the position
 		Vector3f position = null;
-		if (tracker.hasPosition() && tracker.getStatus() != TrackerStatus.OCCLUDED) {
+		if (hasPosition) {
 			position = new Vector3f();
 			tracker.getPosition(position);
 		}
@@ -122,12 +127,12 @@ public final class TrackerFrame implements Tracker {
 
 	@Override
 	public void loadConfig(TrackerConfig config) {
-		throw new UnsupportedOperationException("TrackerFrame does not implement this method");
+		throw new UnsupportedOperationException("TrackerFrame does not implement configuration");
 	}
 
 	@Override
 	public void saveConfig(TrackerConfig config) {
-		throw new UnsupportedOperationException("TrackerFrame does not implement this method");
+		throw new UnsupportedOperationException("TrackerFrame does not implement configuration");
 	}
 
 	@Override
@@ -137,12 +142,12 @@ public final class TrackerFrame implements Tracker {
 
 	@Override
 	public void resetFull(Quaternion reference) {
-		throw new UnsupportedOperationException("TrackerFrame does not implement this method");
+		throw new UnsupportedOperationException("TrackerFrame does not implement calibration");
 	}
 
 	@Override
 	public void resetYaw(Quaternion reference) {
-		throw new UnsupportedOperationException("TrackerFrame does not implement this method");
+		throw new UnsupportedOperationException("TrackerFrame does not implement calibration");
 	}
 
 	@Override
@@ -157,7 +162,7 @@ public final class TrackerFrame implements Tracker {
 
 	@Override
 	public void setBodyPosition(TrackerBodyPosition position) {
-		throw new UnsupportedOperationException("TrackerFrame does not implement this method");
+		throw new UnsupportedOperationException("TrackerFrame does not allow setting the body position");
 	}
 
 	@Override
