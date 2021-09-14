@@ -28,7 +28,10 @@ public class ComputedTracker implements Tracker {
 	
 	@Override
 	public void loadConfig(TrackerConfig config) {
-		bodyPosition = TrackerBodyPosition.getByDesignation(config.designation);
+		// Loading a config is an act of user editing, therefore it shouldn't not be allowed if editing is not allowed
+		if (userEditable()) {
+			bodyPosition = TrackerBodyPosition.getByDesignation(config.designation);
+		}
 	}
 	
 	@Override

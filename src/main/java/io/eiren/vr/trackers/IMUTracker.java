@@ -52,17 +52,20 @@ public class IMUTracker implements Tracker, TrackerWithTPS, TrackerWithBattery {
 	
 	@Override
 	public void loadConfig(TrackerConfig config) {
-		if(config.mountingRotation != null) {
-			mounting = TrackerMountingRotation.valueOf(config.mountingRotation);
-			if(mounting != null) {
-				rotAdjust.set(mounting.quaternion);
+		// Loading a config is an act of user editing, therefore it shouldn't not be allowed if editing is not allowed
+		if (userEditable()) {
+			if(config.mountingRotation != null) {
+				mounting = TrackerMountingRotation.valueOf(config.mountingRotation);
+				if(mounting != null) {
+					rotAdjust.set(mounting.quaternion);
+				} else {
+					rotAdjust.loadIdentity();
+				}
 			} else {
 				rotAdjust.loadIdentity();
 			}
-		} else {
-			rotAdjust.loadIdentity();
+			bodyPosition = TrackerBodyPosition.getByDesignation(config.designation);
 		}
-		bodyPosition = TrackerBodyPosition.getByDesignation(config.designation);
 	}
 	
 	public TrackerMountingRotation getMountingRotation() {
