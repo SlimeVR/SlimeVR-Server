@@ -203,7 +203,7 @@ public class AutoBone {
 	public float getMaxHmdHeight(PoseFrame[] frames) {
 		float maxHeight = 0f;
 		for (PoseFrame frame : frames) {
-			TrackerFrame hmd = frame.trackerFrames.get(TrackerBodyPosition.HMD);
+			TrackerFrame hmd = frame.findTracker(TrackerBodyPosition.HMD);
 			if (hmd != null && hmd.hasData(TrackerFrameData.POSITION) && hmd.position.y > maxHeight) {
 				maxHeight = hmd.position.y;
 			}
@@ -414,7 +414,7 @@ public class AutoBone {
 		float offset = 0f;
 		int offsetCount = 0;
 
-		for (TrackerFrame trackerFrame : frame.trackerFrames.values()) {
+		for (TrackerFrame trackerFrame : frame.trackerFrames) {
 			if (!trackerFrame.hasData(TrackerFrameData.POSITION)) {
 				continue;
 			}
@@ -434,12 +434,12 @@ public class AutoBone {
 		float offset = 0f;
 		int offsetCount = 0;
 
-		for (TrackerFrame trackerFrame1 : frame1.trackerFrames.values()) {
+		for (TrackerFrame trackerFrame1 : frame1.trackerFrames) {
 			if (!trackerFrame1.hasData(TrackerFrameData.POSITION)) {
 				continue;
 			}
 
-			TrackerFrame trackerFrame2 = frame2.trackerFrames.get(trackerFrame1.designation);
+			TrackerFrame trackerFrame2 = frame2.findTracker(trackerFrame1.designation);
 			if (trackerFrame2 == null || !trackerFrame2.hasData(TrackerFrameData.POSITION)) {
 				continue;
 			}

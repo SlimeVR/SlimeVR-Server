@@ -125,7 +125,7 @@ public class SimpleSkeleton {
 	}
 
 	public void setPoseFromFrame(PoseFrame frame) {
-		for (TrackerFrame trackerFrame : frame.trackerFrames.values()) {
+		for (TrackerFrame trackerFrame : frame.trackerFrames) {
 			// Set HMD position
 			if (trackerFrame.designation == TrackerBodyPosition.HMD && trackerFrame.hasData(TrackerFrameData.POSITION)) {
 				hmdNode.localTransform.setTranslation(trackerFrame.position);

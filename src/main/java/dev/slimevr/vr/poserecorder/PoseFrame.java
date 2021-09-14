@@ -1,27 +1,18 @@
 package dev.slimevr.vr.poserecorder;
 
-import java.util.HashMap;
 import java.util.List;
 
+import io.eiren.util.collections.FastList;
 import io.eiren.vr.processor.TrackerBodyPosition;
 import io.eiren.vr.trackers.Tracker;
+import io.eiren.vr.trackers.TrackerUtils;
 
 public final class PoseFrame {
 
-	public final HashMap<TrackerBodyPosition, TrackerFrame> trackerFrames;
-
-	public PoseFrame(HashMap<TrackerBodyPosition, TrackerFrame> trackerFrames) {
-		this.trackerFrames = trackerFrames;
-	}
+	public final List<TrackerFrame> trackerFrames;
 
 	public PoseFrame(List<TrackerFrame> trackerFrames) {
-		HashMap<TrackerBodyPosition, TrackerFrame> trackerFramesMap = new HashMap<TrackerBodyPosition, TrackerFrame>(trackerFrames.size());
-
-		for (TrackerFrame trackerFrame : trackerFrames) {
-			trackerFramesMap.put(trackerFrame.designation, trackerFrame);
-		}
-
-		this.trackerFrames = trackerFramesMap;
+		this.trackerFrames = trackerFrames;
 	}
 
 	public static PoseFrame fromTrackers(List<Tracker> trackers) {
@@ -29,16 +20,26 @@ public final class PoseFrame {
 			return null;
 		}
 
-		HashMap<TrackerBodyPosition, TrackerFrame> trackerFrames = new HashMap<TrackerBodyPosition, TrackerFrame>(trackers.size());
+		List<TrackerFrame> trackerFrames = new FastList<TrackerFrame>(trackers.size());
 
 		for (Tracker tracker : trackers) {
 			TrackerFrame trackerFrame = TrackerFrame.fromTracker(tracker);
 
 			if (trackerFrame != null) {
-				trackerFrames.put(trackerFrame.designation, trackerFrame);
+				trackerFrames.add(trackerFrame);
 			}
 		}
 
 		return new PoseFrame(trackerFrames);
 	}
+
+	//#region Easy Utility Access
+	public TrackerFrame findTracker(TrackerBodyPosition designation) {
+		return (TrackerFrame)TrackerUtils.findTrackerForBodyPosition(trackerFrames, designation);
+	}
+
+	public TrackerFrame findTracker(TrackerBodyPosition designation, TrackerBodyPosition altDesignation) {
+		return (TrackerFrame)TrackerUtils.findTrackerForBodyPosition(trackerFrames, designation, altDesignation);
+	}
+	//#endregion
 }

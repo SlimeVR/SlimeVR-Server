@@ -8,8 +8,8 @@ public class TrackerUtils {
 	
 	private TrackerUtils() {
 	}
-	
-	public static Tracker findTrackerForBodyPosition(List<Tracker> allTrackers, TrackerBodyPosition position) {
+
+	public static Tracker findTrackerForBodyPosition(List<? extends Tracker> allTrackers, TrackerBodyPosition position) {
 		for(int i = 0; i < allTrackers.size(); ++i) {
 			Tracker t = allTrackers.get(i);
 			if(t.getBodyPosition() == position)
@@ -17,15 +17,15 @@ public class TrackerUtils {
 		}
 		return null;
 	}
-	
-	public static Tracker findTrackerForBodyPosition(List<Tracker> allTrackers, TrackerBodyPosition position, TrackerBodyPosition altPosition) {
+
+	public static Tracker findTrackerForBodyPosition(List<? extends Tracker> allTrackers, TrackerBodyPosition position, TrackerBodyPosition altPosition) {
 		Tracker t = findTrackerForBodyPosition(allTrackers, position);
 		if(t != null)
 			return t;
 		return findTrackerForBodyPosition(allTrackers, altPosition);
 	}
-	
-	public static Tracker findTrackerForBodyPositionOrEmpty(List<Tracker> allTrackers, TrackerBodyPosition position, TrackerBodyPosition altPosition) {
+
+	public static Tracker findTrackerForBodyPositionOrEmpty(List<? extends Tracker> allTrackers, TrackerBodyPosition position, TrackerBodyPosition altPosition) {
 		Tracker t = findTrackerForBodyPosition(allTrackers, position);
 		if(t != null)
 			return t;

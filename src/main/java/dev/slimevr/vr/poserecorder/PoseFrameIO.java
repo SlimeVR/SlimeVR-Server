@@ -8,10 +8,12 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.util.HashMap;
+import java.util.List;
 
 import com.jme3.math.Quaternion;
 import com.jme3.math.Vector3f;
 
+import io.eiren.util.collections.FastList;
 import io.eiren.util.logging.LogManager;
 import io.eiren.vr.processor.TrackerBodyPosition;
 
@@ -41,7 +43,7 @@ public final class PoseFrameIO {
 			if (frame != null && frame.trackerFrames != null) {
 				outputStream.writeInt(frame.trackerFrames.size());
 
-				for (TrackerFrame trackerFrame : frame.trackerFrames.values()) {
+				for (TrackerFrame trackerFrame : frame.trackerFrames) {
 					outputStream.writeInt(trackerFrame.getDataFlags());
 
 					if (trackerFrame.hasData(TrackerFrameData.DESIGNATION)) {
@@ -104,13 +106,15 @@ public final class PoseFrameIO {
 		try {
 			int trackerFrameCount = inputStream.readInt();
 
-			HashMap<TrackerBodyPosition, TrackerFrame> trackerFrames = new HashMap<TrackerBodyPosition, TrackerFrame>(trackerFrameCount);
+			List<TrackerFrame> trackerFrames = new FastList<TrackerFrame>(trackerFrameCount);
 			for (int i = 0; i < trackerFrameCount; i++) {
 				int dataFlags = inputStream.readInt();
 
+				String designationString = null;
 				TrackerBodyPosition designation = null;
 				if (TrackerFrameData.DESIGNATION.check(dataFlags)) {
-					designation = TrackerBodyPosition.getByDesignation(inputStream.readUTF());
+					designationString = inputStream.readUTF();
+					designation = TrackerBodyPosition.getByDesignation(designationString);
 				}
 
 				Quaternion rotation = null;
@@ -130,9 +134,7 @@ public final class PoseFrameIO {
 					position = new Vector3f(posX, posY, posZ);
 				}
 
-				if (designation != null) {
-					trackerFrames.put(designation, new TrackerFrame(designation, rotation, position));
-				}
+				trackerFrames.add(new TrackerFrame(designationString, designation, rotation, position));
 			}
 
 			return new PoseFrame(trackerFrames);
