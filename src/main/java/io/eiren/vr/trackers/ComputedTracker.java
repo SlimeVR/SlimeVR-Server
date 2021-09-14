@@ -101,4 +101,9 @@ public class ComputedTracker implements Tracker {
 	public boolean hasPosition() {
 		return hasPosition;
 	}
+
+	@Override
+	public boolean isComputed() {
+		return true;
+	}
 }

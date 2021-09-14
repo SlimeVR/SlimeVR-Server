@@ -156,4 +156,9 @@ public class ReferenceAdjustedTracker<E extends Tracker> implements Tracker {
 	public boolean hasPosition() {
 		return tracker.hasPosition();
 	}
+
+	@Override
+	public boolean isComputed() {
+		return tracker.isComputed();
+	}
 }

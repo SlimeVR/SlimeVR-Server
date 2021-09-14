@@ -238,4 +238,9 @@ public class IMUTracker implements Tracker, TrackerWithTPS, TrackerWithBattery {
 	public boolean hasPosition() {
 		return false;
 	}
+
+	@Override
+	public boolean isComputed() {
+		return false;
+	}
 }

@@ -26,4 +26,9 @@ public class SteamVRTracker extends ComputedTracker implements TrackerWithTPS {
 	public boolean userEditable() {
 		return true;
 	}
+
+	@Override
+	public boolean isComputed() {
+		return false;
+	}
 }

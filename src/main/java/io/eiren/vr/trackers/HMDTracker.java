@@ -21,4 +21,9 @@ public class HMDTracker extends ComputedTracker implements TrackerWithTPS {
 	public void dataTick() {
 		timer.update();
 	}
+
+	@Override
+	public boolean isComputed() {
+		return false;
+	}
 }

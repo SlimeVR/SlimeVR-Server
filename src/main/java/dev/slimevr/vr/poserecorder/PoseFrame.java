@@ -3,9 +3,11 @@ package dev.slimevr.vr.poserecorder;
 import java.util.List;
 
 import io.eiren.util.collections.FastList;
+import io.eiren.vr.processor.ComputedHumanPoseTracker;
 import io.eiren.vr.processor.TrackerBodyPosition;
 import io.eiren.vr.trackers.ComputedTracker;
 import io.eiren.vr.trackers.Tracker;
+import io.eiren.vr.trackers.TrackerStatus;
 import io.eiren.vr.trackers.TrackerUtils;
 
 public final class PoseFrame {
@@ -30,7 +32,7 @@ public final class PoseFrame {
 
 		for (Tracker tracker : trackers) {
 			// Ignore computed trackers if they aren't requested
-			if (!includeComputed && tracker.getClass().equals(ComputedTracker.class)) {
+			if (!includeComputed && tracker.isComputed()) {
 				continue;
 			}
 

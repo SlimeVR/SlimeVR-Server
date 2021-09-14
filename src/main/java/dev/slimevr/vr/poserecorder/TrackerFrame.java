@@ -58,14 +58,20 @@ public final class TrackerFrame implements Tracker {
 			return null;
 		}
 
+		// If the tracker is not ready
+		if (tracker.getStatus() != TrackerStatus.OK && tracker.getStatus() != TrackerStatus.OCCLUDED) {
+			return null;
+		}
+
 		Quaternion rotation = null;
 		if (tracker.hasRotation()) {
 			rotation = new Quaternion();
 			tracker.getRotation(rotation);
 		}
 
+		// If the tracker is occluded, don't get the position
 		Vector3f position = null;
-		if (tracker.hasPosition()) {
+		if (tracker.hasPosition() && tracker.getStatus() != TrackerStatus.OCCLUDED) {
 			position = new Vector3f();
 			tracker.getPosition(position);
 		}
@@ -167,6 +173,11 @@ public final class TrackerFrame implements Tracker {
 	@Override
 	public boolean hasPosition() {
 		return hasData(TrackerFrameData.POSITION);
+	}
+
+	@Override
+	public boolean isComputed() {
+		return true;
 	}
 	//#endregion
 }
