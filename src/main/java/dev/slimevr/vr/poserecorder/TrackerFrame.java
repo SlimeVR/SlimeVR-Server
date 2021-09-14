@@ -43,23 +43,27 @@ public final class TrackerFrame implements Tracker {
 			return null;
 		}
 
-		boolean hasPosition = tracker.hasPosition() && tracker.getStatus() != TrackerStatus.OCCLUDED;
 		// If tracker has no data
-		if (tracker.getBodyPosition() == null && !tracker.hasRotation() && !hasPosition) {
+		if (tracker.getBodyPosition() == null && !tracker.hasRotation() && !tracker.hasPosition()) {
 			return null;
 		}
 
 		Quaternion rotation = null;
 		if (tracker.hasRotation()) {
 			rotation = new Quaternion();
-			tracker.getRotation(rotation);
+			if (!tracker.getRotation(rotation)) {
+				// If getting the rotation failed, set it back to null
+				rotation = null;
+			}
 		}
 
-		// If the tracker is occluded, don't get the position
 		Vector3f position = null;
-		if (hasPosition) {
+		if (tracker.hasPosition()) {
 			position = new Vector3f();
-			tracker.getPosition(position);
+			if (!tracker.getPosition(position)) {
+				// If getting the position failed, set it back to null
+				position = null;
+			}
 		}
 
 		return new TrackerFrame(tracker.getBodyPosition(), rotation, position);
