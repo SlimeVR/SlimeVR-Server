@@ -22,7 +22,7 @@ public final class PoseFrameIO {
 		// Do not allow instantiating
 	}
 
-	public static boolean writeFrame(DataOutputStream outputStream, PoseFrame frames) {
+	public static boolean writeFrames(DataOutputStream outputStream, PoseFrame frames) {
 		try {
 			if (frames != null) {
 
@@ -71,7 +71,7 @@ public final class PoseFrameIO {
 
 	public static boolean writeToFile(File file, PoseFrame frames) {
 		try (DataOutputStream outputStream = new DataOutputStream(new BufferedOutputStream(new FileOutputStream(file)))) {
-			writeFrame(outputStream, frames);
+			writeFrames(outputStream, frames);
 		} catch (Exception e) {
 			LogManager.log.severe("Error writing frames to file", e);
 			return false;
@@ -88,17 +88,14 @@ public final class PoseFrameIO {
 			for (int i = 0; i < trackerCount; i++) {
 
 				String name = inputStream.readUTF();
-
 				int trackerFrameCount = inputStream.readInt();
 				FastList<TrackerFrame> trackerFrames = new FastList<TrackerFrame>(trackerFrameCount);
 				for (int j = 0; j < trackerFrameCount; j++) {
 					int dataFlags = inputStream.readInt();
 
-					String designationString = null;
 					TrackerBodyPosition designation = null;
 					if (TrackerFrameData.DESIGNATION.check(dataFlags)) {
-						designationString = inputStream.readUTF();
-						designation = TrackerBodyPosition.getByDesignation(designationString);
+						designation = TrackerBodyPosition.getByDesignation(inputStream.readUTF());
 					}
 
 					Quaternion rotation = null;
