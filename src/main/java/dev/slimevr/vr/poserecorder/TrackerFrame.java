@@ -12,18 +12,11 @@ public final class TrackerFrame implements Tracker {
 
 	private int dataFlags = 0;
 
-	public final String name;
 	public final TrackerBodyPosition designation;
 	public final Quaternion rotation;
 	public final Vector3f position;
 
-	public TrackerFrame(String designationString, TrackerBodyPosition designation, Quaternion rotation, Vector3f position) {
-		if (designationString != null) {
-			this.name = "TrackerFrame:/" + designationString;
-		} else {
-			this.name = "TrackerFrame";
-		}
-
+	public TrackerFrame(TrackerBodyPosition designation, Quaternion rotation, Vector3f position) {
 		this.designation = designation;
 		if (designation != null) {
 			dataFlags |= TrackerFrameData.DESIGNATION.flag;
@@ -38,18 +31,6 @@ public final class TrackerFrame implements Tracker {
 		if (position != null) {
 			dataFlags |= TrackerFrameData.POSITION.flag;
 		}
-	}
-
-	public TrackerFrame(TrackerBodyPosition designation, Quaternion rotation, Vector3f position) {
-		this(designation == null ? null : designation.designation, designation, rotation, position);
-	}
-
-	public TrackerFrame(TrackerBodyPosition designation, Quaternion rotation) {
-		this(designation, rotation, null);
-	}
-
-	public TrackerFrame(TrackerBodyPosition designation, Vector3f position) {
-		this(designation, null, position);
 	}
 
 	public static TrackerFrame fromTracker(Tracker tracker) {
@@ -117,7 +98,7 @@ public final class TrackerFrame implements Tracker {
 
 	@Override
 	public String getName() {
-		return name;
+		return "TrackerFrame:/" + (designation != null ? designation.designation : "null");
 	}
 
 	@Override

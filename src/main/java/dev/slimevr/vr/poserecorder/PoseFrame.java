@@ -1,58 +1,143 @@
 package dev.slimevr.vr.poserecorder;
 
+import java.util.Iterator;
 import java.util.List;
+import java.util.NoSuchElementException;
 
 import io.eiren.util.collections.FastList;
-import io.eiren.vr.processor.ComputedHumanPoseTracker;
-import io.eiren.vr.processor.TrackerBodyPosition;
-import io.eiren.vr.trackers.ComputedTracker;
 import io.eiren.vr.trackers.Tracker;
-import io.eiren.vr.trackers.TrackerStatus;
-import io.eiren.vr.trackers.TrackerUtils;
 
-public final class PoseFrame {
+public final class PoseFrame implements Iterable<TrackerFrame[]> {
 
-	public final List<TrackerFrame> trackerFrames;
+	private final FastList<PoseFrameTracker> trackers;
 
-	public PoseFrame(List<TrackerFrame> trackerFrames) {
-		this.trackerFrames = trackerFrames;
+	public PoseFrame(FastList<PoseFrameTracker> trackers) {
+		this.trackers = trackers;
 	}
 
-	// Ignore computed trackers by default
-	public static PoseFrame fromTrackers(List<Tracker> trackers) {
-		return fromTrackers(trackers, false);
+	public PoseFrame(int initialCapacity) {
+		this.trackers = new FastList<PoseFrameTracker>(initialCapacity);
 	}
 
-	public static PoseFrame fromTrackers(List<Tracker> trackers, boolean includeComputed) {
-		if (trackers == null || trackers.isEmpty()) {
-			return null;
+	public PoseFrame() {
+		this(5);
+	}
+
+	public PoseFrameTracker addTracker(PoseFrameTracker tracker) {
+		trackers.add(tracker);
+		return tracker;
+	}
+
+	public PoseFrameTracker addTracker(Tracker tracker, int initialCapacity) {
+		return addTracker(new PoseFrameTracker(tracker.getName(), initialCapacity));
+	}
+
+	public PoseFrameTracker addTracker(Tracker tracker) {
+		return addTracker(tracker, 5);
+	}
+
+	public PoseFrameTracker removeTracker(int index) {
+		return trackers.remove(index);
+	}
+
+	public PoseFrameTracker removeTracker(PoseFrameTracker tracker) {
+		trackers.remove(tracker);
+		return tracker;
+	}
+
+	public void clearTrackers() {
+		trackers.clear();
+	}
+
+	public void fakeClearTrackers() {
+		trackers.fakeClear();
+	}
+
+	public int getTrackerCount() {
+		return trackers.size();
+	}
+
+	public List<PoseFrameTracker> getTrackers() {
+		return trackers;
+	}
+
+	public int getMaxFrameCount() {
+		int maxFrames = 0;
+
+		for (int i = 0; i < trackers.size(); i++) {
+			PoseFrameTracker tracker = trackers.get(i);
+			if (tracker != null && tracker.getFrameCount() > maxFrames) {
+				maxFrames = tracker.getFrameCount();
+			}
 		}
 
-		List<TrackerFrame> trackerFrames = new FastList<TrackerFrame>(trackers.size());
+		return maxFrames;
+	}
 
-		for (Tracker tracker : trackers) {
-			// Ignore computed trackers if they aren't requested
-			if (!includeComputed && tracker.isComputed()) {
-				continue;
-			}
+	public int getFrames(int frameIndex, TrackerFrame[] buffer) {
+		for (int i = 0; i < trackers.size(); i++) {
+			PoseFrameTracker tracker = trackers.get(i);
+			buffer[i] = tracker != null ? tracker.safeGetFrame(frameIndex) : null;
+		}
+		return trackers.size();
+	}
 
-			TrackerFrame trackerFrame = TrackerFrame.fromTracker(tracker);
+	public int getFrames(int frameIndex, List<TrackerFrame> buffer) {
+		for (int i = 0; i < trackers.size(); i++) {
+			PoseFrameTracker tracker = trackers.get(i);
+			buffer.add(i, tracker != null ? tracker.safeGetFrame(frameIndex) : null);
+		}
+		return trackers.size();
+	}
 
-			if (trackerFrame != null) {
-				trackerFrames.add(trackerFrame);
-			}
+	public TrackerFrame[] getFrames(int frameIndex) {
+		TrackerFrame[] trackerFrames = new TrackerFrame[trackers.size()];
+		getFrames(frameIndex, trackerFrames);
+		return trackerFrames;
+	}
+
+	@Override
+	public Iterator<TrackerFrame[]> iterator() {
+		return new PoseFrameIterator(this);
+	}
+
+	public class PoseFrameIterator implements Iterator<TrackerFrame[]> {
+
+		private final PoseFrame poseFrame;
+		private final TrackerFrame[] trackerFrameBuffer;
+
+		private int cursor = 0;
+
+		public PoseFrameIterator(PoseFrame poseFrame) {
+			this.poseFrame = poseFrame;
+			trackerFrameBuffer = new TrackerFrame[poseFrame.getTrackerCount()];
 		}
 
-		return new PoseFrame(trackerFrames);
-	}
+		@Override
+		public boolean hasNext() {
+			if (trackers.isEmpty()) {
+				return false;
+			}
 
-	//#region Easy Utility Access
-	public TrackerFrame findTracker(TrackerBodyPosition designation) {
-		return (TrackerFrame)TrackerUtils.findTrackerForBodyPosition(trackerFrames, designation);
-	}
+			for (int i = 0; i < trackers.size(); i++) {
+				PoseFrameTracker tracker = trackers.get(i);
+				if (tracker != null && cursor < tracker.getFrameCount()) {
+					return true;
+				}
+			}
 
-	public TrackerFrame findTracker(TrackerBodyPosition designation, TrackerBodyPosition altDesignation) {
-		return (TrackerFrame)TrackerUtils.findTrackerForBodyPosition(trackerFrames, designation, altDesignation);
+			return false;
+		}
+
+		@Override
+		public TrackerFrame[] next() {
+			if (!hasNext()) {
+				throw new NoSuchElementException();
+			}
+
+			poseFrame.getFrames(cursor++, trackerFrameBuffer);
+
+			return trackerFrameBuffer;
+		}
 	}
-	//#endregion
 }

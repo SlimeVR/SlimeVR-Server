@@ -1,12 +1,11 @@
 package dev.slimevr.vr.autobone;
 
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
-import java.util.Map.Entry;
 
 import com.jme3.math.Vector3f;
 
-import dev.slimevr.vr.poserecorder.PoseFrame;
 import dev.slimevr.vr.poserecorder.TrackerFrameData;
 import dev.slimevr.vr.poserecorder.TrackerFrame;
 import io.eiren.vr.processor.HumanSkeletonWithLegs;
@@ -100,7 +99,7 @@ public class SimpleSkeleton {
 		});
 	}
 
-	public SimpleSkeleton(Iterable<Entry<String, Float>> configs, Iterable<Entry<String, Float>> altConfigs) {
+	public SimpleSkeleton(Map<String, Float> configs, Map<String, Float> altConfigs) {
 		// Initialize
 		this();
 
@@ -112,45 +111,48 @@ public class SimpleSkeleton {
 		setSkeletonConfigs(configs);
 	}
 
-	public SimpleSkeleton(Map<String, Float> configs, Map<String, Float> altConfigs) {
-		this(configs.entrySet(), altConfigs.entrySet());
-	}
-
-	public SimpleSkeleton(Iterable<Entry<String, Float>> configs) {
+	public SimpleSkeleton(Map<String, Float> configs) {
 		this(configs, null);
 	}
 
-	public SimpleSkeleton(Map<String, Float> configs) {
-		this(configs.entrySet());
+	public void setPoseFromFrame(TrackerFrame trackerFrame) {
+		if (trackerFrame == null) {
+			return;
+		}
+
+		// Set HMD position
+		if (trackerFrame.designation == TrackerBodyPosition.HMD && trackerFrame.hasData(TrackerFrameData.POSITION)) {
+			hmdNode.localTransform.setTranslation(trackerFrame.position);
+		}
+
+		// Set joint rotations
+		if (trackerFrame.hasData(TrackerFrameData.ROTATION)) {
+			TransformNode node = getNode(trackerFrame.designation, true);
+			if (node != null) {
+				node.localTransform.setRotation(trackerFrame.rotation);
+			}
+		}
 	}
 
-	public void setPoseFromFrame(PoseFrame frame) {
-		for (TrackerFrame trackerFrame : frame.trackerFrames) {
-			// Set HMD position
-			if (trackerFrame.designation == TrackerBodyPosition.HMD && trackerFrame.hasData(TrackerFrameData.POSITION)) {
-				hmdNode.localTransform.setTranslation(trackerFrame.position);
-			}
-
-			// Set joint rotations
-			if (trackerFrame.hasData(TrackerFrameData.ROTATION)) {
-				TransformNode node = getNode(trackerFrame.designation, true);
-				if (node != null) {
-					node.localTransform.setRotation(trackerFrame.rotation);
-				}
-			}
+	public void setPoseFromFrame(List<TrackerFrame> frame) {
+		for (int i = 0; i < frame.size(); i++) {
+			TrackerFrame trackerFrame = frame.get(i);
+			setPoseFromFrame(trackerFrame);
 		}
 
 		updatePose();
 	}
 
-	public void setSkeletonConfigs(Iterable<Entry<String, Float>> configs) {
-		for (Entry<String, Float> config : configs) {
-			setSkeletonConfig(config.getKey(), config.getValue());
+	public void setPoseFromFrame(TrackerFrame[] frame) {
+		for (TrackerFrame trackerFrame : frame) {
+			setPoseFromFrame(trackerFrame);
 		}
+
+		updatePose();
 	}
 
 	public void setSkeletonConfigs(Map<String, Float> configs) {
-		setSkeletonConfigs(configs.entrySet());
+		configs.forEach(this::setSkeletonConfig);
 	}
 
 	public void setSkeletonConfig(String joint, float newLength) {
