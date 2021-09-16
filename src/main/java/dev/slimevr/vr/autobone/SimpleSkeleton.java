@@ -4,6 +4,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import com.jme3.math.Quaternion;
 import com.jme3.math.Vector3f;
 
 import dev.slimevr.vr.poserecorder.TrackerFrameData;
@@ -59,6 +60,9 @@ public class SimpleSkeleton {
 	protected float legsLength = 0.84f;
 
 	protected final HashMap<String, TransformNode> nodes = new HashMap<String, TransformNode>();
+
+	private Quaternion rotBuf1 = new Quaternion();
+	private Quaternion rotBuf2 = new Quaternion();
 
 	public SimpleSkeleton() {
 		// Assemble skeleton to waist
@@ -244,8 +248,20 @@ public class SimpleSkeleton {
 	}
 
 	public void updatePose() {
+		// Rotate neck with the HMD
+		headNode.localTransform.setRotation(hmdNode.localTransform.getRotation());
+
 		// Rotate hips with waist
-		waistNode.localTransform.setRotation(chestNode.localTransform.getRotation());
+		// waistNode.localTransform.setRotation(chestNode.localTransform.getRotation());
+
+		// Average pelvis between two legs
+		leftHipNode.localTransform.getRotation(rotBuf1);
+		rightHipNode.localTransform.getRotation(rotBuf2);
+		rotBuf1.nlerp(rotBuf2, 0.5f);
+		chestNode.localTransform.getRotation(rotBuf2);
+		rotBuf1.nlerp(rotBuf2, 0.3333333f);
+		waistNode.localTransform.setRotation(rotBuf1);
+
 		hmdNode.update();
 	}
 
