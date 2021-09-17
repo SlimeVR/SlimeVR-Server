@@ -21,6 +21,11 @@ javadoc.options.encoding = 'UTF-8'
 
 tasks.withType(JavaCompile) {
 	options.encoding = 'UTF-8'
+	if (JavaVersion.current().isJava9Compatible()) {
+		// TODO: Gradle 6.6
+		// options.release = 8
+		options.compilerArgs.addAll(['--release', '8'])
+	}
 }
 tasks.withType(Test) {
 	systemProperty('file.encoding', 'UTF-8')
