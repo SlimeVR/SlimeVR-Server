@@ -199,6 +199,7 @@ public class SteamVRPipeInputBridge extends Thread implements VRBridge {
 					tracker.position.set(vBuffer);
 				if(internal.getRotation(qBuffer))
 					tracker.rotation.set(qBuffer);
+				tracker.setStatus(internal.getStatus());
 				tracker.dataTick();
 			}
 		}
