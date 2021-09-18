@@ -10,7 +10,6 @@ import io.eiren.vr.VRServer;
 import io.eiren.vr.trackers.HMDTracker;
 import io.eiren.vr.trackers.Tracker;
 import io.eiren.vr.trackers.TrackerStatus;
-import io.eiren.vr.trackers.TrackerUtils;
 
 public class HumanPoseProcessor {
 	

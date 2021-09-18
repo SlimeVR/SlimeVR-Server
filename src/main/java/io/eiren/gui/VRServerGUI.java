@@ -38,7 +38,6 @@ public class VRServerGUI extends JFrame {
 	private final TrackersList trackersList;
 	private final SkeletonList skeletonList;
 	private JButton resetButton;
-	private JScrollPane scroll;
 	private EJBox pane;
 	
 	private float zoom = 1.5f;
@@ -83,7 +82,7 @@ public class VRServerGUI extends JFrame {
 		this.trackersList = new TrackersList(server, this);
 		this.skeletonList = new SkeletonList(server, this);
 		
-		add(scroll = new JScrollPane(pane = new EJBox(PAGE_AXIS), ScrollPaneConstants.VERTICAL_SCROLLBAR_AS_NEEDED, ScrollPaneConstants.HORIZONTAL_SCROLLBAR_AS_NEEDED));
+		add(new JScrollPane(pane = new EJBox(PAGE_AXIS), ScrollPaneConstants.VERTICAL_SCROLLBAR_AS_NEEDED, ScrollPaneConstants.HORIZONTAL_SCROLLBAR_AS_NEEDED));
 		GraphicsConfiguration gc = getGraphicsConfiguration();
 		Rectangle screenBounds = gc.getBounds();
 		setMinimumSize(new Dimension(100, 100));
