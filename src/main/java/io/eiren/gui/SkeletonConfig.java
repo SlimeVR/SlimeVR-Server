@@ -11,7 +11,7 @@ import javax.swing.JCheckBox;
 import javax.swing.JLabel;
 import javax.swing.event.MouseInputAdapter;
 
-import io.eiren.gui.autobone.AutoBoneWindow;
+import dev.slimevr.gui.AutoBoneWindow;
 import io.eiren.util.StringUtils;
 import io.eiren.util.ann.ThreadSafe;
 import io.eiren.vr.VRServer;

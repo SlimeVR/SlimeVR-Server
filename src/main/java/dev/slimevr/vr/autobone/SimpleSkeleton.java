@@ -1,15 +1,18 @@
-package io.eiren.gui.autobone;
+package dev.slimevr.vr.autobone;
 
 import java.util.HashMap;
 import java.util.Map;
-import java.util.Map.Entry;
 
 import com.jme3.math.Quaternion;
 import com.jme3.math.Vector3f;
 
+import dev.slimevr.vr.poserecorder.TrackerFrameData;
+import dev.slimevr.vr.poserecorder.TrackerFrame;
 import io.eiren.vr.processor.HumanSkeletonWithLegs;
 import io.eiren.vr.processor.HumanSkeletonWithWaist;
+import io.eiren.vr.processor.TrackerBodyPosition;
 import io.eiren.vr.processor.TransformNode;
+import io.eiren.vr.trackers.TrackerUtils;
 import io.eiren.yaml.YamlFile;
 
 public class SimpleSkeleton {
@@ -58,6 +61,9 @@ public class SimpleSkeleton {
 
 	protected final HashMap<String, TransformNode> nodes = new HashMap<String, TransformNode>();
 
+	private Quaternion rotBuf1 = new Quaternion();
+	private Quaternion rotBuf2 = new Quaternion();
+
 	public SimpleSkeleton() {
 		// Assemble skeleton to waist
 		hmdNode.attachChild(headNode);
@@ -97,7 +103,7 @@ public class SimpleSkeleton {
 		});
 	}
 
-	public SimpleSkeleton(Iterable<Entry<String, Float>> configs, Iterable<Entry<String, Float>> altConfigs) {
+	public SimpleSkeleton(Map<String, Float> configs, Map<String, Float> altConfigs) {
 		// Initialize
 		this();
 
@@ -109,62 +115,92 @@ public class SimpleSkeleton {
 		setSkeletonConfigs(configs);
 	}
 
-	public SimpleSkeleton(Map<String, Float> configs, Map<String, Float> altConfigs) {
-		this(configs.entrySet(), altConfigs.entrySet());
-	}
-
-	public SimpleSkeleton(Iterable<Entry<String, Float>> configs) {
+	public SimpleSkeleton(Map<String, Float> configs) {
 		this(configs, null);
 	}
 
-	public SimpleSkeleton(Map<String, Float> configs) {
-		this(configs.entrySet());
-	}
+	public void setPoseFromFrame(TrackerFrame[] frame) {
 
-	public void setPoseFromSkeleton(HumanSkeletonWithLegs humanSkeleton) {
-		TransformNode rootNode = humanSkeleton.getRootNode();
+		TrackerFrame hmd = TrackerUtils.findTrackerForBodyPosition(frame, TrackerBodyPosition.HMD);
 
-		// Copy headset position
-		hmdNode.localTransform.setTranslation(rootNode.localTransform.getTranslation());
-
-		// Copy all rotations
-		rootNode.depthFirstTraversal(visitor -> {
-			TransformNode targetNode = nodes.get(visitor.getName());
-
-			// Handle unexpected nodes gracefully
-			if (targetNode != null) {
-				targetNode.localTransform.setRotation(visitor.localTransform.getRotation());
+		if (hmd != null)
+		{
+			if (hmd.hasData(TrackerFrameData.ROTATION))
+			{
+				hmdNode.localTransform.setRotation(hmd.rotation);
+				headNode.localTransform.setRotation(hmd.rotation);
 			}
-		});
-	}
 
-	public void setPoseFromFrame(PoseFrame frame) {
-		// Copy headset position
-		hmdNode.localTransform.setTranslation(frame.rootPos);
-
-		if (frame.rotations != null) {
-			// Copy all rotations
-			for (Entry<String, Quaternion> rotation : frame.rotations.entrySet()) {
-				TransformNode targetNode = nodes.get(rotation.getKey());
-
-				// Handle unexpected nodes gracefully
-				if (targetNode != null) {
-					targetNode.localTransform.setRotation(rotation.getValue());
-				}
+			if (hmd.hasData(TrackerFrameData.POSITION))
+			{
+				hmdNode.localTransform.setTranslation(hmd.position);
 			}
 		}
+
+		TrackerFrame chest = TrackerUtils.findTrackerForBodyPosition(frame, TrackerBodyPosition.CHEST, TrackerBodyPosition.WAIST);
+		setRotation(chest, neckNode);
+
+		TrackerFrame waist = TrackerUtils.findTrackerForBodyPosition(frame, TrackerBodyPosition.WAIST, TrackerBodyPosition.CHEST);
+		setRotation(waist, chestNode);
+
+		TrackerFrame leftLeg = TrackerUtils.findTrackerForBodyPosition(frame, TrackerBodyPosition.LEFT_LEG);
+		TrackerFrame rightLeg = TrackerUtils.findTrackerForBodyPosition(frame, TrackerBodyPosition.RIGHT_LEG);
+
+		averagePelvis(waist, leftLeg, rightLeg);
+
+		setRotation(leftLeg, leftHipNode);
+		setRotation(rightLeg, rightHipNode);
+
+		TrackerFrame leftAnkle = TrackerUtils.findTrackerForBodyPosition(frame, TrackerBodyPosition.LEFT_ANKLE);
+		setRotation(leftAnkle, rightKneeNode);
+
+		TrackerFrame rightAnkle = TrackerUtils.findTrackerForBodyPosition(frame, TrackerBodyPosition.RIGHT_ANKLE);
+		setRotation(rightAnkle, leftKneeNode);
 
 		updatePose();
 	}
 
-	public void setSkeletonConfigs(Iterable<Entry<String, Float>> configs) {
-		for (Entry<String, Float> config : configs) {
-			setSkeletonConfig(config.getKey(), config.getValue());
+	public void setRotation(TrackerFrame trackerFrame, TransformNode node) {
+		if (trackerFrame != null && trackerFrame.hasData(TrackerFrameData.ROTATION)) {
+			node.localTransform.setRotation(trackerFrame.rotation);
 		}
 	}
 
+	public void averagePelvis(TrackerFrame waist, TrackerFrame leftLeg, TrackerFrame rightLeg)
+	{
+		if ((leftLeg == null || rightLeg == null) || (!leftLeg.hasData(TrackerFrameData.ROTATION) || !rightLeg.hasData(TrackerFrameData.ROTATION)))
+		{
+			setRotation(waist, waistNode);
+			return;
+		}
+
+		if (waist == null || !waist.hasData(TrackerFrameData.ROTATION))
+		{
+			if ((leftLeg != null && rightLeg != null) && (leftLeg.hasData(TrackerFrameData.ROTATION) && rightLeg.hasData(TrackerFrameData.ROTATION)))
+			{
+				leftLeg.getRotation(rotBuf1);
+				rightLeg.getRotation(rotBuf2);
+				rotBuf1.nlerp(rotBuf2, 0.5f);
+
+				waistNode.localTransform.setRotation(rotBuf1);
+			}
+
+			return;
+		}
+
+		// Average the pelvis with the waist rotation
+		leftLeg.getRotation(rotBuf1);
+		rightLeg.getRotation(rotBuf2);
+		rotBuf1.nlerp(rotBuf2, 0.5f);
+
+		waist.getRotation(rotBuf2);
+		rotBuf1.nlerp(rotBuf2, 0.3333333f);
+
+		waistNode.localTransform.setRotation(rotBuf1);
+	}
+
 	public void setSkeletonConfigs(Map<String, Float> configs) {
-		setSkeletonConfigs(configs.entrySet());
+		configs.forEach(this::setSkeletonConfig);
 	}
 
 	public void setSkeletonConfig(String joint, float newLength) {
@@ -259,21 +295,53 @@ public class SimpleSkeleton {
 		hmdNode.update();
 	}
 
+	public TransformNode getNode(String node) {
+		return nodes.get(node);
+	}
+
+	public TransformNode getNode(TrackerBodyPosition bodyPosition) {
+		return getNode(bodyPosition, false);
+	}
+
+	public TransformNode getNode(TrackerBodyPosition bodyPosition, boolean rotationNode) {
+		if (bodyPosition == null) {
+			return null;
+		}
+
+		switch (bodyPosition) {
+		case HMD:
+			return hmdNode;
+		case CHEST:
+			return rotationNode ? neckNode : chestNode;
+		case WAIST:
+			return rotationNode ? chestNode : waistNode;
+
+		case LEFT_LEG:
+			return rotationNode ? leftHipNode : leftKneeNode;
+		case RIGHT_LEG:
+			return rotationNode ? rightHipNode : rightKneeNode;
+
+		case LEFT_ANKLE:
+			return rotationNode ? leftKneeNode : leftAnkleNode;
+		case RIGHT_ANKLE:
+			return rotationNode ? rightKneeNode : rightAnkleNode;
+		}
+
+		return null;
+	}
+
 	public Vector3f getNodePosition(String node) {
-		TransformNode transformNode = nodes.get(node);
+		TransformNode transformNode = getNode(node);
 		return transformNode != null ? transformNode.worldTransform.getTranslation() : null;
 	}
 
-	public Vector3f getHMDPos() {
-		return hmdNode.worldTransform.getTranslation();
-	}
+	public Vector3f getNodePosition(TrackerBodyPosition bodyPosition) {
+		TransformNode node = getNode(bodyPosition);
+		if (node == null) {
+			return null;
+		}
 
-	public Vector3f getLeftFootPos() {
-		return leftAnkleNode.worldTransform.getTranslation();
-	}
-
-	public Vector3f getRightFootPos() {
-		return rightAnkleNode.worldTransform.getTranslation();
+		return node.worldTransform.getTranslation();
 	}
 
 	public void saveConfigs(YamlFile config) {

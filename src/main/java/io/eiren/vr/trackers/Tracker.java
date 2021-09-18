@@ -36,4 +36,6 @@ public interface Tracker {
 	public boolean hasRotation();
 	
 	public boolean hasPosition();
+
+	public boolean isComputed();
 }

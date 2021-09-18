@@ -1,16 +1,20 @@
-package io.eiren.gui.autobone;
+package dev.slimevr.vr.autobone;
 
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.function.Consumer;
 
 import com.jme3.math.Vector3f;
 
+import dev.slimevr.vr.poserecorder.PoseFrame;
+import dev.slimevr.vr.poserecorder.TrackerFrameData;
 import io.eiren.util.ann.ThreadSafe;
 import io.eiren.util.logging.LogManager;
 import io.eiren.util.collections.FastList;
 import io.eiren.vr.VRServer;
+import dev.slimevr.vr.poserecorder.TrackerFrame;
 import io.eiren.vr.processor.HumanSkeleton;
 import io.eiren.vr.processor.HumanSkeletonWithLegs;
 import io.eiren.vr.processor.HumanSkeletonWithWaist;
@@ -84,12 +88,17 @@ public class AutoBone {
 	}
 
 	public void reloadConfigValues() {
+		reloadConfigValues(null);
+	}
+
+	public void reloadConfigValues(TrackerFrame[] frame) {
 		// Load waist configs
 		staticConfigs.put("Head", server.config.getFloat("body.headShift", HumanSkeletonWithWaist.HEAD_SHIFT_DEFAULT));
 		staticConfigs.put("Neck", server.config.getFloat("body.neckLength", HumanSkeletonWithWaist.NECK_LENGTH_DEFAULT));
 		configs.put("Waist", server.config.getFloat("body.waistDistance", 0.85f));
 
 		if (server.config.getBoolean("autobone.forceChestTracker", false) ||
+		(frame != null && TrackerUtils.findTrackerForBodyPosition(frame, TrackerBodyPosition.CHEST) != null) ||
 		TrackerUtils.findTrackerForBodyPosition(server.getAllTrackers(), TrackerBodyPosition.CHEST) != null) {
 			// If force enabled or has a chest tracker
 			configs.put("Chest", server.config.getFloat("body.chestDistance", 0.42f));
@@ -126,9 +135,7 @@ public class AutoBone {
 			return false;
 		}
 
-		for (Entry<String, Float> entry : configs.entrySet()) {
-			skeleton.setSkeletonConfig(entry.getKey(), entry.getValue());
-		}
+		configs.forEach(skeleton::setSkeletonConfig);
 
 		server.saveConfig();
 
@@ -197,39 +204,48 @@ public class AutoBone {
 		return length;
 	}
 
-	public float getMaxHmdHeight(PoseFrame[] frames) {
+	public float getMaxHmdHeight(PoseFrame frames) {
 		float maxHeight = 0f;
-		for (PoseFrame frame : frames) {
-			if (frame.rootPos.y > maxHeight) {
-				maxHeight = frame.rootPos.y;
+		for (TrackerFrame[] frame : frames) {
+			TrackerFrame hmd = TrackerUtils.findTrackerForBodyPosition(frame, TrackerBodyPosition.HMD);
+			if (hmd != null && hmd.hasData(TrackerFrameData.POSITION) && hmd.position.y > maxHeight) {
+				maxHeight = hmd.position.y;
 			}
 		}
 		return maxHeight;
 	}
 
-	public void processFrames(PoseFrame[] frames) {
+	public void processFrames(PoseFrame frames) {
 		processFrames(frames, -1f);
 	}
 
-	public void processFrames(PoseFrame[] frames, Consumer<Epoch> epochCallback) {
+	public void processFrames(PoseFrame frames, Consumer<Epoch> epochCallback) {
 		processFrames(frames, -1f, epochCallback);
 	}
 
-	public void processFrames(PoseFrame[] frames, float targetHeight) {
+	public void processFrames(PoseFrame frames, float targetHeight) {
 		processFrames(frames, true, targetHeight);
 	}
 
-	public void processFrames(PoseFrame[] frames, float targetHeight, Consumer<Epoch> epochCallback) {
+	public void processFrames(PoseFrame frames, float targetHeight, Consumer<Epoch> epochCallback) {
 		processFrames(frames, true, targetHeight, epochCallback);
 	}
 
-	public float processFrames(PoseFrame[] frames, boolean calcInitError, float targetHeight) {
+	public float processFrames(PoseFrame frames, boolean calcInitError, float targetHeight) {
 		return processFrames(frames, calcInitError, targetHeight, null);
 	}
 
-	public float processFrames(PoseFrame[] frames, boolean calcInitError, float targetHeight, Consumer<Epoch> epochCallback) {
-		SimpleSkeleton skeleton1 = new SimpleSkeleton(configs, staticConfigs);
-		SimpleSkeleton skeleton2 = new SimpleSkeleton(configs, staticConfigs);
+	public float processFrames(PoseFrame frames, boolean calcInitError, float targetHeight, Consumer<Epoch> epochCallback) {
+		final int frameCount = frames.getMaxFrameCount();
+
+		final SimpleSkeleton skeleton1 = new SimpleSkeleton(configs, staticConfigs);
+		final TrackerFrame[] trackerBuffer1 = new TrackerFrame[frames.getTrackerCount()];
+
+		frames.getFrames(0, trackerBuffer1);
+		reloadConfigValues(trackerBuffer1); // Reload configs and detect chest tracker from the first frame
+
+		final SimpleSkeleton skeleton2 = new SimpleSkeleton(configs, staticConfigs);
+		final TrackerFrame[] trackerBuffer2 = new TrackerFrame[frames.getTrackerCount()];
 
 		// If target height isn't specified, auto-detect
 		if (targetHeight < 0f) {
@@ -255,32 +271,27 @@ public class AutoBone {
 
 			float adjustRate = epoch >= 0 ? (float)(initialAdjustRate / Math.pow(adjustRateDecay, epoch)) : 0f;
 
-			for (int cursorOffset = minDataDistance; cursorOffset <= maxDataDistance && cursorOffset < frames.length; cursorOffset++) {
-				for (int frameCursor = 0; frameCursor < frames.length - cursorOffset; frameCursor += cursorIncrement) {
-					PoseFrame frame1 = frames[frameCursor];
-					PoseFrame frame2 = frames[frameCursor + cursorOffset];
-
-					// If there's missing data, throw an exception
-					if (frame1 == null || frame2 == null) {
-						throw new NullPointerException("Frames are missing from processing data");
-					}
+			for (int cursorOffset = minDataDistance; cursorOffset <= maxDataDistance && cursorOffset < frameCount; cursorOffset++) {
+				for (int frameCursor = 0; frameCursor < frameCount - cursorOffset; frameCursor += cursorIncrement) {
+					frames.getFrames(frameCursor, trackerBuffer1);
+					frames.getFrames(frameCursor + cursorOffset, trackerBuffer2);
 
 					skeleton1.setSkeletonConfigs(configs);
 					skeleton2.setSkeletonConfigs(configs);
 
-					skeleton1.setPoseFromFrame(frame1);
-					skeleton2.setPoseFromFrame(frame2);
+					skeleton1.setPoseFromFrame(trackerBuffer1);
+					skeleton2.setPoseFromFrame(trackerBuffer2);
 
 					float totalLength = getLengthSum(configs);
 					float curHeight = getHeight(configs, staticConfigs);
-					float errorDeriv = getErrorDeriv(frame1, frame2, skeleton1, skeleton2, targetHeight - curHeight);
+					float errorDeriv = getErrorDeriv(trackerBuffer1, trackerBuffer2, skeleton1, skeleton2, targetHeight - curHeight);
 					float error = errorFunc(errorDeriv);
 
 					// In case of fire
 					if (Float.isNaN(error) || Float.isInfinite(error)) {
 						// Extinguish
 						LogManager.log.warning("[AutoBone] Error value is invalid, resetting variables to recover");
-						reloadConfigValues();
+						reloadConfigValues(trackerBuffer1);
 
 						// Reset error sum values
 						sumError = 0f;
@@ -321,7 +332,7 @@ public class AutoBone {
 							updateSkeletonBoneLength(skeleton1, skeleton2, entry.getKey(), newLength);
 
 							float newHeight = isHeightVar ? curHeight + curAdjustVal : curHeight;
-							float newErrorDeriv = getErrorDeriv(frame1, frame2, skeleton1, skeleton2, targetHeight - newHeight);
+							float newErrorDeriv = getErrorDeriv(trackerBuffer1, trackerBuffer2, skeleton1, skeleton2, targetHeight - newHeight);
 
 							if (newErrorDeriv < minError) {
 								minError = newErrorDeriv;
@@ -356,8 +367,8 @@ public class AutoBone {
 
 	// The change in position of the ankle over time
 	protected float getSlideErrorDeriv(SimpleSkeleton skeleton1, SimpleSkeleton skeleton2) {
-		float slideLeft = skeleton1.getLeftFootPos().distance(skeleton2.getLeftFootPos());
-		float slideRight = skeleton1.getRightFootPos().distance(skeleton2.getRightFootPos());
+		float slideLeft = skeleton1.getNodePosition(TrackerBodyPosition.LEFT_ANKLE).distance(skeleton2.getNodePosition(TrackerBodyPosition.LEFT_ANKLE));
+		float slideRight = skeleton1.getNodePosition(TrackerBodyPosition.RIGHT_ANKLE).distance(skeleton2.getNodePosition(TrackerBodyPosition.RIGHT_ANKLE));
 
 		// Divide by 4 to halve and average, it's halved because you want to approach a midpoint, not the other point
 		return (slideLeft + slideRight) / 4f;
@@ -365,14 +376,20 @@ public class AutoBone {
 
 	// The offset between both feet at one instant and over time
 	protected float getOffsetErrorDeriv(SimpleSkeleton skeleton1, SimpleSkeleton skeleton2) {
-		float dist1 = Math.abs(skeleton1.getLeftFootPos().y - skeleton1.getRightFootPos().y);
-		float dist2 = Math.abs(skeleton2.getLeftFootPos().y - skeleton2.getRightFootPos().y);
+		float skeleton1Left = skeleton1.getNodePosition(TrackerBodyPosition.LEFT_ANKLE).getY();
+		float skeleton1Right = skeleton1.getNodePosition(TrackerBodyPosition.RIGHT_ANKLE).getY();
 
-		float dist3 = Math.abs(skeleton1.getLeftFootPos().y - skeleton2.getRightFootPos().y);
-		float dist4 = Math.abs(skeleton1.getLeftFootPos().y - skeleton2.getRightFootPos().y);
+		float skeleton2Left = skeleton2.getNodePosition(TrackerBodyPosition.LEFT_ANKLE).getY();
+		float skeleton2Right = skeleton2.getNodePosition(TrackerBodyPosition.RIGHT_ANKLE).getY();
 
-		float dist5 = Math.abs(skeleton1.getLeftFootPos().y - skeleton2.getLeftFootPos().y);
-		float dist6 = Math.abs(skeleton1.getRightFootPos().y - skeleton2.getRightFootPos().y);
+		float dist1 = Math.abs(skeleton1Left - skeleton1Right);
+		float dist2 = Math.abs(skeleton2Left - skeleton2Right);
+
+		float dist3 = Math.abs(skeleton1Left - skeleton2Right);
+		float dist4 = Math.abs(skeleton2Left - skeleton1Right);
+
+		float dist5 = Math.abs(skeleton1Left - skeleton2Left);
+		float dist6 = Math.abs(skeleton1Right - skeleton2Right);
 
 		// Divide by 12 to halve and average, it's halved because you want to approach a midpoint, not the other point
 		return (dist1 + dist2 + dist3 + dist4 + dist5 + dist6) / 12f;
@@ -400,49 +417,18 @@ public class AutoBone {
 	}
 
 	// The distance of any points to the corresponding absolute position
-	protected float getPositionErrorDeriv(PoseFrame frame, SimpleSkeleton skeleton) {
+	protected float getPositionErrorDeriv(TrackerFrame[] frame, SimpleSkeleton skeleton) {
 		float offset = 0f;
 		int offsetCount = 0;
 
-		if (frame.positions != null) {
-			for (Entry<String, Vector3f> entry : frame.positions.entrySet()) {
-				Vector3f nodePos = skeleton.getNodePosition(entry.getKey());
-				if (nodePos != null) {
-					offset += Math.abs(nodePos.distance(entry.getValue()));
-					offsetCount++;
-				}
+		for (TrackerFrame trackerFrame : frame) {
+			if (trackerFrame == null || !trackerFrame.hasData(TrackerFrameData.POSITION)) {
+				continue;
 			}
-		}
 
-		return offsetCount > 0 ? offset / offsetCount : 0f;
-	}
-
-	// The difference between offset of absolute position and the corresponding point over time
-	protected float getPositionOffsetErrorDeriv(PoseFrame frame1, PoseFrame frame2, SimpleSkeleton skeleton1, SimpleSkeleton skeleton2) {
-		float offset = 0f;
-		int offsetCount = 0;
-
-		if (frame1.positions != null && frame2.positions != null) {
-			for (Entry<String, Vector3f> entry : frame1.positions.entrySet()) {
-				Vector3f frame2Pos = frame2.positions.get(entry.getKey());
-				if (frame2Pos == null) {
-					continue;
-				}
-
-				Vector3f nodePos1 = skeleton1.getNodePosition(entry.getKey());
-				if (nodePos1 == null) {
-					continue;
-				}
-
-				Vector3f nodePos2 = skeleton2.getNodePosition(entry.getKey());
-				if (nodePos2 == null) {
-					continue;
-				}
-
-				float dist1 = Math.abs(nodePos1.distance(entry.getValue()));
-				float dist2 = Math.abs(nodePos2.distance(frame2Pos));
-
-				offset += Math.abs(dist2 - dist1);
+			Vector3f nodePos = skeleton.getNodePosition(trackerFrame.designation.designation);
+			if (nodePos != null) {
+				offset += Math.abs(nodePos.distance(trackerFrame.position));
 				offsetCount++;
 			}
 		}
@@ -450,7 +436,42 @@ public class AutoBone {
 		return offsetCount > 0 ? offset / offsetCount : 0f;
 	}
 
-	protected float getErrorDeriv(PoseFrame frame1, PoseFrame frame2, SimpleSkeleton skeleton1, SimpleSkeleton skeleton2, float heightChange) {
+	// The difference between offset of absolute position and the corresponding point over time
+	protected float getPositionOffsetErrorDeriv(TrackerFrame[] frame1, TrackerFrame[] frame2, SimpleSkeleton skeleton1, SimpleSkeleton skeleton2) {
+		float offset = 0f;
+		int offsetCount = 0;
+
+		for (TrackerFrame trackerFrame1 : frame1) {
+			if (trackerFrame1 == null || !trackerFrame1.hasData(TrackerFrameData.POSITION)) {
+				continue;
+			}
+
+			TrackerFrame trackerFrame2 = TrackerUtils.findTrackerForBodyPosition(frame2, trackerFrame1.designation);
+			if (trackerFrame2 == null || !trackerFrame2.hasData(TrackerFrameData.POSITION)) {
+				continue;
+			}
+
+			Vector3f nodePos1 = skeleton1.getNodePosition(trackerFrame1.designation);
+			if (nodePos1 == null) {
+				continue;
+			}
+
+			Vector3f nodePos2 = skeleton2.getNodePosition(trackerFrame2.designation);
+			if (nodePos2 == null) {
+				continue;
+			}
+
+			float dist1 = Math.abs(nodePos1.distance(trackerFrame1.position));
+			float dist2 = Math.abs(nodePos2.distance(trackerFrame2.position));
+
+			offset += Math.abs(dist2 - dist1);
+			offsetCount++;
+		}
+
+		return offsetCount > 0 ? offset / offsetCount : 0f;
+	}
+
+	protected float getErrorDeriv(TrackerFrame[] frame1, TrackerFrame[] frame2, SimpleSkeleton skeleton1, SimpleSkeleton skeleton2, float heightChange) {
 		float totalError = 0f;
 		float sumWeight = 0f;
 
