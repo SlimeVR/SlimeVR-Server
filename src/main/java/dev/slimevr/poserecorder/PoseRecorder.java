@@ -37,11 +37,17 @@ public class PoseRecorder {
 		if(numFrames > 0) {
 			PoseFrame poseFrame = this.poseFrame;
 			List<Pair<Tracker, PoseFrameTracker>> trackers = this.trackers;
-			if(poseFrame != null && trackers != null) {
-				if(frameCursor < numFrames) {
-					if(System.currentTimeMillis() >= nextFrameTimeMs) {
-						nextFrameTimeMs = System.currentTimeMillis() + frameRecordingInterval;
-						
+			if (poseFrame != null && trackers != null) {
+				if (frameCursor < numFrames) {
+					long curTime = System.currentTimeMillis();
+					if (curTime >= nextFrameTimeMs) {
+						nextFrameTimeMs += frameRecordingInterval;
+
+						// To prevent duplicate frames, make sure the frame time is always in the future
+						if (nextFrameTimeMs <= curTime) {
+							nextFrameTimeMs = curTime + frameRecordingInterval;
+						}
+
 						int cursor = frameCursor++;
 						for(Pair<Tracker, PoseFrameTracker> tracker : trackers) {
 							// Add a frame for each tracker
