@@ -25,47 +25,47 @@ import org.apache.commons.lang3.tuple.Pair;
 
 import dev.slimevr.autobone.AutoBone;
 import dev.slimevr.gui.swing.EJBox;
-import dev.slimevr.poserecorder.PoseFrame;
+import dev.slimevr.poserecorder.PoseFrames;
 import dev.slimevr.poserecorder.PoseFrameIO;
 import dev.slimevr.poserecorder.PoseRecorder;
 
 public class AutoBoneWindow extends JFrame {
-	
+
 	private static File saveDir = new File("Recordings");
 	private static File loadDir = new File("LoadRecordings");
-	
+
 	private EJBox pane;
-	
+
 	private final transient VRServer server;
 	private final transient SkeletonConfig skeletonConfig;
 	private final transient PoseRecorder poseRecorder;
 	private final transient AutoBone autoBone;
-	
+
 	private transient Thread recordingThread = null;
 	private transient Thread saveRecordingThread = null;
 	private transient Thread autoBoneThread = null;
-	
+
 	private JButton saveRecordingButton;
 	private JButton adjustButton;
 	private JButton applyButton;
-	
+
 	private JLabel processLabel;
 	private JLabel lengthsLabel;
-	
+
 	public AutoBoneWindow(VRServer server, SkeletonConfig skeletonConfig) {
 		super("Skeleton Auto-Configuration");
-		
+
 		this.server = server;
 		this.skeletonConfig = skeletonConfig;
 		this.poseRecorder = new PoseRecorder(server);
 		this.autoBone = new AutoBone(server);
-		
+
 		getContentPane().setLayout(new BoxLayout(getContentPane(), BoxLayout.PAGE_AXIS));
 		add(new JScrollPane(pane = new EJBox(BoxLayout.PAGE_AXIS), ScrollPaneConstants.VERTICAL_SCROLLBAR_AS_NEEDED, ScrollPaneConstants.HORIZONTAL_SCROLLBAR_AS_NEEDED));
-		
+
 		build();
 	}
-	
+
 	private String getLengthsString() {
 		boolean first = true;
 		StringBuilder configInfo = new StringBuilder("");
@@ -75,21 +75,21 @@ public class AutoBoneWindow extends JFrame {
 			} else {
 				first = false;
 			}
-			
+
 			configInfo.append(entry.getKey() + ": " + StringUtils.prettyNumber(entry.getValue() * 100f, 2));
 		}
-		
+
 		return configInfo.toString();
 	}
-	
-	private void saveRecording(PoseFrame frames) {
+
+	private void saveRecording(PoseFrames frames) {
 		if(saveDir.isDirectory() || saveDir.mkdirs()) {
 			File saveRecording;
 			int recordingIndex = 1;
 			do {
 				saveRecording = new File(saveDir, "ABRecording" + recordingIndex++ + ".pfr");
 			} while(saveRecording.exists());
-			
+
 			LogManager.log.info("[AutoBone] Exporting frames to \"" + saveRecording.getPath() + "\"...");
 			if(PoseFrameIO.writeToFile(saveRecording, frames)) {
 				LogManager.log.info("[AutoBone] Done exporting! Recording can be found at \"" + saveRecording.getPath() + "\".");
@@ -100,17 +100,17 @@ public class AutoBoneWindow extends JFrame {
 			LogManager.log.severe("[AutoBone] Failed to create the recording directory \"" + saveDir.getPath() + "\".");
 		}
 	}
-	
-	private List<Pair<String, PoseFrame>> loadRecordings() {
-		List<Pair<String, PoseFrame>> recordings = new FastList<Pair<String, PoseFrame>>();
+
+	private List<Pair<String, PoseFrames>> loadRecordings() {
+		List<Pair<String, PoseFrames>> recordings = new FastList<Pair<String, PoseFrames>>();
 		if(loadDir.isDirectory()) {
 			File[] files = loadDir.listFiles();
 			if(files != null) {
 				for(File file : files) {
 					if(file.isFile() && org.apache.commons.lang3.StringUtils.endsWithIgnoreCase(file.getName(), ".pfr")) {
 						LogManager.log.info("[AutoBone] Detected recording at \"" + file.getPath() + "\", loading frames...");
-						PoseFrame frames = PoseFrameIO.readFromFile(file);
-						
+						PoseFrames frames = PoseFrameIO.readFromFile(file);
+
 						if(frames == null) {
 							LogManager.log.severe("Reading frames from \"" + file.getPath() + "\" failed...");
 						} else {
@@ -120,26 +120,26 @@ public class AutoBoneWindow extends JFrame {
 				}
 			}
 		}
-		
+
 		return recordings;
 	}
-	
-	private float processFrames(PoseFrame frames) {
+
+	private float processFrames(PoseFrames frames) {
 		autoBone.minDataDistance = server.config.getInt("autobone.minimumDataDistance", autoBone.minDataDistance);
 		autoBone.maxDataDistance = server.config.getInt("autobone.maximumDataDistance", autoBone.maxDataDistance);
-		
+
 		autoBone.numEpochs = server.config.getInt("autobone.epochCount", autoBone.numEpochs);
-		
+
 		autoBone.initialAdjustRate = server.config.getFloat("autobone.adjustRate", autoBone.initialAdjustRate);
 		autoBone.adjustRateDecay = server.config.getFloat("autobone.adjustRateDecay", autoBone.adjustRateDecay);
-		
+
 		autoBone.slideErrorFactor = server.config.getFloat("autobone.slideErrorFactor", autoBone.slideErrorFactor);
 		autoBone.offsetErrorFactor = server.config.getFloat("autobone.offsetErrorFactor", autoBone.offsetErrorFactor);
 		autoBone.proportionErrorFactor = server.config.getFloat("autobone.proportionErrorFactor", autoBone.proportionErrorFactor);
 		autoBone.heightErrorFactor = server.config.getFloat("autobone.heightErrorFactor", autoBone.heightErrorFactor);
 		autoBone.positionErrorFactor = server.config.getFloat("autobone.positionErrorFactor", autoBone.positionErrorFactor);
 		autoBone.positionOffsetErrorFactor = server.config.getFloat("autobone.positionOffsetErrorFactor", autoBone.positionOffsetErrorFactor);
-		
+
 		boolean calcInitError = server.config.getBoolean("autobone.calculateInitialError", true);
 		float targetHeight = server.config.getFloat("autobone.manualTargetHeight", -1f);
 		return autoBone.processFrames(frames, calcInitError, targetHeight, (epoch) -> {
@@ -147,7 +147,7 @@ public class AutoBoneWindow extends JFrame {
 			lengthsLabel.setText(getLengthsString());
 		});
 	}
-	
+
 	@AWTThread
 	private void build() {
 		pane.add(new EJBox(BoxLayout.LINE_AXIS) {
@@ -162,7 +162,7 @@ public class AutoBoneWindow extends JFrame {
 								if(!isEnabled() || recordingThread != null) {
 									return;
 								}
-								
+
 								Thread thread = new Thread() {
 									@Override
 									public void run() {
@@ -172,13 +172,13 @@ public class AutoBoneWindow extends JFrame {
 												// 1000 samples at 20 ms per sample is 20 seconds
 												int sampleCount = server.config.getInt("autobone.sampleCount", 1000);
 												long sampleRate = server.config.getLong("autobone.sampleRateMs", 20L);
-												Future<PoseFrame> framesFuture = poseRecorder.startFrameRecording(sampleCount, sampleRate);
-												PoseFrame frames = framesFuture.get();
+												Future<PoseFrames> framesFuture = poseRecorder.startFrameRecording(sampleCount, sampleRate);
+												PoseFrames frames = framesFuture.get();
 												LogManager.log.info("[AutoBone] Done recording!");
-												
+
 												saveRecordingButton.setEnabled(true);
 												adjustButton.setEnabled(true);
-												
+
 												if(server.config.getBoolean("autobone.saveRecordings", false)) {
 													setText("Saving...");
 													saveRecording(frames);
@@ -203,14 +203,14 @@ public class AutoBoneWindow extends JFrame {
 										}
 									}
 								};
-								
+
 								recordingThread = thread;
 								thread.start();
 							}
 						});
 					}
 				});
-				
+
 				add(saveRecordingButton = new JButton("Save Recording") {
 					{
 						setEnabled(poseRecorder.hasRecording());
@@ -221,27 +221,27 @@ public class AutoBoneWindow extends JFrame {
 								if(!isEnabled() || saveRecordingThread != null) {
 									return;
 								}
-								
+
 								Thread thread = new Thread() {
 									@Override
 									public void run() {
 										try {
-											Future<PoseFrame> framesFuture = poseRecorder.getFramesAsync();
+											Future<PoseFrames> framesFuture = poseRecorder.getFramesAsync();
 											if(framesFuture != null) {
 												setText("Waiting for Recording...");
-												PoseFrame frames = framesFuture.get();
-												
+												PoseFrames frames = framesFuture.get();
+
 												if(frames.getTrackerCount() <= 0) {
 													throw new IllegalStateException("Recording has no trackers");
 												}
-												
+
 												if(frames.getMaxFrameCount() <= 0) {
 													throw new IllegalStateException("Recording has no frames");
 												}
-												
+
 												setText("Saving...");
 												saveRecording(frames);
-												
+
 												setText("Recording Saved!");
 												try {
 													Thread.sleep(3000); // Wait for 3 seconds
@@ -272,14 +272,14 @@ public class AutoBoneWindow extends JFrame {
 										}
 									}
 								};
-								
+
 								saveRecordingThread = thread;
 								thread.start();
 							}
 						});
 					}
 				});
-				
+
 				add(adjustButton = new JButton("Auto-Adjust") {
 					{
 						// If there are files to load, enable the button
@@ -291,30 +291,30 @@ public class AutoBoneWindow extends JFrame {
 								if(!isEnabled() || autoBoneThread != null) {
 									return;
 								}
-								
+
 								Thread thread = new Thread() {
 									@Override
 									public void run() {
 										try {
 											setText("Load...");
-											List<Pair<String, PoseFrame>> frameRecordings = loadRecordings();
-											
+											List<Pair<String, PoseFrames>> frameRecordings = loadRecordings();
+
 											if(!frameRecordings.isEmpty()) {
 												LogManager.log.info("[AutoBone] Done loading frames!");
 											} else {
-												Future<PoseFrame> framesFuture = poseRecorder.getFramesAsync();
+												Future<PoseFrames> framesFuture = poseRecorder.getFramesAsync();
 												if(framesFuture != null) {
 													setText("Waiting for Recording...");
-													PoseFrame frames = framesFuture.get();
-													
+													PoseFrames frames = framesFuture.get();
+
 													if(frames.getTrackerCount() <= 0) {
 														throw new IllegalStateException("Recording has no trackers");
 													}
-													
+
 													if(frames.getMaxFrameCount() <= 0) {
 														throw new IllegalStateException("Recording has no frames");
 													}
-													
+
 													frameRecordings.add(Pair.of("<Recording>", frames));
 												} else {
 													setText("No Recordings...");
@@ -327,17 +327,17 @@ public class AutoBoneWindow extends JFrame {
 													return;
 												}
 											}
-											
+
 											setText("Processing...");
 											LogManager.log.info("[AutoBone] Processing frames...");
 											FastList<Float> heightPercentError = new FastList<Float>(frameRecordings.size());
-											for(Pair<String, PoseFrame> recording : frameRecordings) {
+											for(Pair<String, PoseFrames> recording : frameRecordings) {
 												LogManager.log.info("[AutoBone] Processing frames from \"" + recording.getKey() + "\"...");
-												
+
 												heightPercentError.add(processFrames(recording.getValue()));
 												LogManager.log.info("[AutoBone] Done processing!");
 												applyButton.setEnabled(true);
-												
+
 												//#region Stats/Values
 												Float neckLength = autoBone.getConfig("Neck");
 												Float chestLength = autoBone.getConfig("Chest");
@@ -345,35 +345,35 @@ public class AutoBoneWindow extends JFrame {
 												Float hipWidth = autoBone.getConfig("Hips width");
 												Float legsLength = autoBone.getConfig("Legs length");
 												Float kneeHeight = autoBone.getConfig("Knee height");
-												
+
 												float neckWaist = neckLength != null && waistLength != null ? neckLength / waistLength : 0f;
 												float chestWaist = chestLength != null && waistLength != null ? chestLength / waistLength : 0f;
 												float hipWaist = hipWidth != null && waistLength != null ? hipWidth / waistLength : 0f;
 												float legWaist = legsLength != null && waistLength != null ? legsLength / waistLength : 0f;
 												float legBody = legsLength != null && waistLength != null && neckLength != null ? legsLength / (waistLength + neckLength) : 0f;
 												float kneeLeg = kneeHeight != null && legsLength != null ? kneeHeight / legsLength : 0f;
-												
+
 												LogManager.log.info("[AutoBone] Ratios: [{Neck-Waist: " + StringUtils.prettyNumber(neckWaist) + "}, {Chest-Waist: " + StringUtils.prettyNumber(chestWaist) + "}, {Hip-Waist: " + StringUtils.prettyNumber(hipWaist) + "}, {Leg-Waist: " + StringUtils.prettyNumber(legWaist) + "}, {Leg-Body: " + StringUtils.prettyNumber(legBody) + "}, {Knee-Leg: " + StringUtils.prettyNumber(kneeLeg) + "}]");
-												
+
 												String lengthsString = getLengthsString();
 												LogManager.log.info("[AutoBone] Length values: " + lengthsString);
 												lengthsLabel.setText(lengthsString);
 											}
-											
+
 											if(!heightPercentError.isEmpty()) {
 												float mean = 0f;
 												for(float val : heightPercentError) {
 													mean += val;
 												}
 												mean /= heightPercentError.size();
-												
+
 												float std = 0f;
 												for(float val : heightPercentError) {
 													float stdVal = val - mean;
 													std += stdVal * stdVal;
 												}
 												std = (float) Math.sqrt(std / heightPercentError.size());
-												
+
 												LogManager.log.info("[AutoBone] Average height error: " + StringUtils.prettyNumber(mean, 6) + " (SD " + StringUtils.prettyNumber(std, 6) + ")");
 											}
 											//#endregion
@@ -391,14 +391,14 @@ public class AutoBoneWindow extends JFrame {
 										}
 									}
 								};
-								
+
 								autoBoneThread = thread;
 								thread.start();
 							}
 						});
 					}
 				});
-				
+
 				add(applyButton = new JButton("Apply Values") {
 					{
 						setEnabled(false);
@@ -408,7 +408,7 @@ public class AutoBoneWindow extends JFrame {
 								if(!isEnabled()) {
 									return;
 								}
-								
+
 								autoBone.applyConfig();
 								// Update GUI values after applying
 								skeletonConfig.refreshAll();
@@ -418,21 +418,21 @@ public class AutoBoneWindow extends JFrame {
 				});
 			}
 		});
-		
+
 		pane.add(new EJBox(BoxLayout.LINE_AXIS) {
 			{
 				setBorder(new EmptyBorder(i(5)));
 				add(processLabel = new JLabel("Processing has not been started..."));
 			}
 		});
-		
+
 		pane.add(new EJBox(BoxLayout.LINE_AXIS) {
 			{
 				setBorder(new EmptyBorder(i(5)));
 				add(lengthsLabel = new JLabel(getLengthsString()));
 			}
 		});
-		
+
 		// Pack and display
 		pack();
 		setLocationRelativeTo(null);
