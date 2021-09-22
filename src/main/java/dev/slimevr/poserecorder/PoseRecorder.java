@@ -67,16 +67,16 @@ public class PoseRecorder {
 		}
 	}
 
-	public synchronized Future<PoseFrames> startFrameRecording(int numFrames, long interval) {
-		return startFrameRecording(numFrames, interval, server.getAllTrackers());
+	public synchronized Future<PoseFrames> startFrameRecording(int numFrames, long intervalMs) {
+		return startFrameRecording(numFrames, intervalMs, server.getAllTrackers());
 	}
 
-	public synchronized Future<PoseFrames> startFrameRecording(int numFrames, long interval, List<Tracker> trackers) {
+	public synchronized Future<PoseFrames> startFrameRecording(int numFrames, long intervalMs, List<Tracker> trackers) {
 		if(numFrames < 1) {
 			throw new IllegalArgumentException("numFrames must at least have a value of 1");
 		}
-		if(interval < 1) {
-			throw new IllegalArgumentException("interval must at least have a value of 1");
+		if(intervalMs < 1) {
+			throw new IllegalArgumentException("intervalMs must at least have a value of 1");
 		}
 		if(trackers == null) {
 			throw new IllegalArgumentException("trackers must not be null");
@@ -107,10 +107,10 @@ public class PoseRecorder {
 		this.frameCursor = 0;
 		this.numFrames = numFrames;
 
-		frameRecordingInterval = interval;
+		frameRecordingInterval = intervalMs;
 		nextFrameTimeMs = -1L;
 
-		LogManager.log.info("[PoseRecorder] Recording " + numFrames + " samples at a " + interval + " ms frame interval");
+		LogManager.log.info("[PoseRecorder] Recording " + numFrames + " samples at a " + intervalMs + " ms frame interval");
 
 		currentRecording = new CompletableFuture<PoseFrames>();
 		return currentRecording;
