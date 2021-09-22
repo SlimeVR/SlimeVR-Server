@@ -103,7 +103,8 @@ public class TrackersUDPServer extends Thread {
 				firmware.append("owoTrack");
 				isOwo = true;
 			}
-			IMUTracker imu = new IMUTracker("udp:/" + handshakePacket.getAddress().toString(), this);
+			String trackerName = macString != null ? "upd://" + macString : "udp:/" + handshakePacket.getAddress().toString();
+			IMUTracker imu = new IMUTracker(trackerName, this);
 			ReferenceAdjustedTracker<IMUTracker> adjustedTracker = new ReferenceAdjustedTracker<>(imu);
 			trackersConsumer.accept(adjustedTracker);
 			sensor = new TrackerConnection(imu, handshakePacket.getSocketAddress());
@@ -114,7 +115,7 @@ public class TrackersUDPServer extends Thread {
 				trackers.add(sensor);
 				trackersMap.put(addr, sensor);
 			}
-			System.out.println("[TrackerServer] Sensor " + i + " added with address " + handshakePacket.getSocketAddress() + ". Board type: " + boardType + ", imu type: " + imuType + ", firmware: " + firmware + " (" + firmwareBuild + "), mac: " + macString);
+			System.out.println("[TrackerServer] Sensor " + i + " added with address " + handshakePacket.getSocketAddress() + ". Board type: " + boardType + ", imu type: " + imuType + ", firmware: " + firmware + " (" + firmwareBuild + "), mac: " + macString + ", name: " + trackerName);
 		}
 		sensor.tracker.setStatus(TrackerStatus.OK);
         socket.send(new DatagramPacket(HANDSHAKE_BUFFER, HANDSHAKE_BUFFER.length, handshakePacket.getAddress(), handshakePacket.getPort()));

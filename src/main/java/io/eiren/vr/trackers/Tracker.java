@@ -38,4 +38,8 @@ public interface Tracker {
 	public boolean hasPosition();
 
 	public boolean isComputed();
+	
+	public default String getDescriptiveName() {
+		return getName();
+	}
 }

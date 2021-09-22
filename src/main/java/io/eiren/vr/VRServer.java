@@ -94,7 +94,7 @@ public class VRServer extends Thread {
 		synchronized(configuration) {
 			TrackerConfig config = configuration.get(tracker.getName());
 			if(config == null) {
-				config = new TrackerConfig(tracker.getName());
+				config = new TrackerConfig(tracker);
 				configuration.put(tracker.getName(), config);
 			}
 			return config;
