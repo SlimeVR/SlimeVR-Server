@@ -214,13 +214,15 @@ public class TrackersList extends EJBoxNoStretch {
 			if(t.hasPosition())
 				add(new JLabel("Position"), c(1, row, 2, GridBagConstraints.FIRST_LINE_START));
 			add(new JLabel("TPS"), c(3, row, 2, GridBagConstraints.FIRST_LINE_START));
+			if(realTracker instanceof IMUTracker) {
+				add(new JLabel("Ping"), c(2, row, 2, GridBagConstraints.FIRST_LINE_START));
+			}
 			row++;
 			if(t.hasRotation())
 				add(rotation = new JLabel("0 0 0"), c(0, row, 2, GridBagConstraints.FIRST_LINE_START));
 			if(t.hasPosition())
 				add(position = new JLabel("0 0 0"), c(1, row, 2, GridBagConstraints.FIRST_LINE_START));
 			if(realTracker instanceof IMUTracker) {
-				add(new JLabel("Ping"), c(2, row, 2, GridBagConstraints.FIRST_LINE_START));
 				add(ping = new JLabel(""), c(2, row, 2, GridBagConstraints.FIRST_LINE_START));
 			}
 			if(realTracker instanceof TrackerWithTPS) {

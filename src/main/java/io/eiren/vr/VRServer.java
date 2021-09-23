@@ -23,6 +23,7 @@ import io.eiren.vr.bridge.NamedPipeVRBridge;
 import io.eiren.vr.bridge.SteamVRPipeInputBridge;
 import io.eiren.vr.bridge.VMCBridge;
 import io.eiren.vr.bridge.VRBridge;
+import io.eiren.vr.bridge.WebSocketVRBridge;
 import io.eiren.vr.processor.HumanPoseProcessor;
 import io.eiren.vr.processor.HumanSkeleton;
 import io.eiren.vr.trackers.HMDTracker;
@@ -63,6 +64,10 @@ public class VRServer extends Thread {
 		SteamVRPipeInputBridge steamVRInput = new SteamVRPipeInputBridge(this);
 		tasks.add(() -> steamVRInput.start());
 		bridges.add(steamVRInput);
+		// Create WebSocket server
+		WebSocketVRBridge wsBridge = new WebSocketVRBridge(hmdTracker, shareTrackers, this);
+		tasks.add(() -> wsBridge.start());
+		bridges.add(wsBridge);
 		
 		// Create VMCBridge
 		try {

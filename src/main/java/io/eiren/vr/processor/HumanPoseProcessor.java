@@ -20,16 +20,16 @@ public class HumanPoseProcessor {
 
 	public HumanPoseProcessor(VRServer server, HMDTracker hmd, int trackersAmount) {
 		this.server = server;
-		computedTrackers.add(new ComputedHumanPoseTracker(ComputedHumanPoseTrackerPosition.WAIST));
+		computedTrackers.add(new ComputedHumanPoseTracker(ComputedHumanPoseTrackerPosition.WAIST, TrackerBodyPosition.WAIST));
 		if(trackersAmount > 2) {
-			computedTrackers.add(new ComputedHumanPoseTracker(ComputedHumanPoseTrackerPosition.LEFT_FOOT));
-			computedTrackers.add(new ComputedHumanPoseTracker(ComputedHumanPoseTrackerPosition.RIGHT_FOOT));
+			computedTrackers.add(new ComputedHumanPoseTracker(ComputedHumanPoseTrackerPosition.LEFT_FOOT, TrackerBodyPosition.LEFT_FOOT));
+			computedTrackers.add(new ComputedHumanPoseTracker(ComputedHumanPoseTrackerPosition.RIGHT_FOOT, TrackerBodyPosition.RIGHT_FOOT));
 			if(trackersAmount == 4 || trackersAmount >= 6) {
-				computedTrackers.add(new ComputedHumanPoseTracker(ComputedHumanPoseTrackerPosition.CHEST));
+				computedTrackers.add(new ComputedHumanPoseTracker(ComputedHumanPoseTrackerPosition.CHEST, TrackerBodyPosition.CHEST));
 			}
 			if(trackersAmount >= 5) {
-				computedTrackers.add(new ComputedHumanPoseTracker(ComputedHumanPoseTrackerPosition.LEFT_KNEE));
-				computedTrackers.add(new ComputedHumanPoseTracker(ComputedHumanPoseTrackerPosition.RIGHT_KNEE));
+				computedTrackers.add(new ComputedHumanPoseTracker(ComputedHumanPoseTrackerPosition.LEFT_KNEE, TrackerBodyPosition.LEFT_ANKLE));
+				computedTrackers.add(new ComputedHumanPoseTracker(ComputedHumanPoseTrackerPosition.RIGHT_KNEE, TrackerBodyPosition.RIGHT_ANKLE));
 			}
 		}
 	}
