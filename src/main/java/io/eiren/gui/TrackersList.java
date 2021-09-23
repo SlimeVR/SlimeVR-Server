@@ -147,6 +147,7 @@ public class TrackersList extends EJBoxNoStretch {
 		@AWTThread
 		public TrackerPanel(Tracker t) {
 			super(false, true);
+			
 			this.t = t;
 		}
 
@@ -160,14 +161,14 @@ public class TrackersList extends EJBoxNoStretch {
 				realTracker = ((ReferenceAdjustedTracker<? extends Tracker>) t).getTracker();
 			removeAll();
 			JLabel nameLabel;
-			add(nameLabel = new JLabel(t.getName()), s(c(0, row, 0, GridBagConstraints.FIRST_LINE_START), 4, 1));
+			add(nameLabel = new JLabel(t.getName()), s(c(0, row, 2, GridBagConstraints.FIRST_LINE_START), 4, 1));
 			nameLabel.setFont(nameLabel.getFont().deriveFont(Font.BOLD));
 			row++;
 			
 			if(t.userEditable()) {
 				TrackerConfig cfg = server.getTrackerConfig(t);
 				JComboBox<String> desSelect;
-				add(desSelect = new JComboBox<>(), s(c(0, row, 0, GridBagConstraints.FIRST_LINE_START), 2, 1));
+				add(desSelect = new JComboBox<>(), s(c(0, row, 2, GridBagConstraints.FIRST_LINE_START), 2, 1));
 				for(TrackerBodyPosition p : TrackerBodyPosition.values) {
 					desSelect.addItem(p.name());
 				}
@@ -188,7 +189,7 @@ public class TrackersList extends EJBoxNoStretch {
 					IMUTracker imu = (IMUTracker) realTracker;
 					TrackerMountingRotation tr = imu.getMountingRotation();
 					JComboBox<String> mountSelect;
-					add(mountSelect = new JComboBox<>(), s(c(2, row, 0, GridBagConstraints.FIRST_LINE_START), 2, 1));
+					add(mountSelect = new JComboBox<>(), s(c(2, row, 2, GridBagConstraints.FIRST_LINE_START), 2, 1));
 					for(TrackerMountingRotation p : TrackerMountingRotation.values) {
 						mountSelect.addItem(p.name());
 					}
@@ -209,50 +210,54 @@ public class TrackersList extends EJBoxNoStretch {
 				row++;
 			}
 			if(t.hasRotation())
-				add(new JLabel("Rotation"), c(0, row, 0, GridBagConstraints.FIRST_LINE_START));
+				add(new JLabel("Rotation"), c(0, row, 2, GridBagConstraints.FIRST_LINE_START));
 			if(t.hasPosition())
-				add(new JLabel("Position"), c(1, row, 0, GridBagConstraints.FIRST_LINE_START));
-			add(new JLabel("Ping"), c(2, row, 0, GridBagConstraints.FIRST_LINE_START));
-			add(new JLabel("TPS"), c(3, row, 0, GridBagConstraints.FIRST_LINE_START));
+				add(new JLabel("Position"), c(1, row, 2, GridBagConstraints.FIRST_LINE_START));
+			add(new JLabel("TPS"), c(3, row, 2, GridBagConstraints.FIRST_LINE_START));
 			row++;
 			if(t.hasRotation())
-				add(rotation = new JLabel("0 0 0"), c(0, row, 0, GridBagConstraints.FIRST_LINE_START));
+				add(rotation = new JLabel("0 0 0"), c(0, row, 2, GridBagConstraints.FIRST_LINE_START));
 			if(t.hasPosition())
-				add(position = new JLabel("0 0 0"), c(1, row, 0, GridBagConstraints.FIRST_LINE_START));
-			add(ping = new JLabel(""), c(2, row, 0, GridBagConstraints.FIRST_LINE_START));
+				add(position = new JLabel("0 0 0"), c(1, row, 2, GridBagConstraints.FIRST_LINE_START));
+			if(realTracker instanceof IMUTracker) {
+				add(new JLabel("Ping"), c(2, row, 2, GridBagConstraints.FIRST_LINE_START));
+				add(ping = new JLabel(""), c(2, row, 2, GridBagConstraints.FIRST_LINE_START));
+			}
 			if(realTracker instanceof TrackerWithTPS) {
-				add(tps = new JLabel("0"), c(3, row, 0, GridBagConstraints.FIRST_LINE_START));
+				add(tps = new JLabel("0"), c(3, row, 2, GridBagConstraints.FIRST_LINE_START));
 			} else {
-				add(new JLabel(""), c(3, row, 0, GridBagConstraints.FIRST_LINE_START));
+				add(new JLabel(""), c(3, row, 2, GridBagConstraints.FIRST_LINE_START));
 			}
 			row++;
-			add(new JLabel("Status:"), c(0, row, 0, GridBagConstraints.FIRST_LINE_START));
-			add(status = new JLabel(t.getStatus().toString().toLowerCase()), c(1, row, 0, GridBagConstraints.FIRST_LINE_START));
-			add(new JLabel("Battery:"), c(2, row, 0, GridBagConstraints.FIRST_LINE_START));
-			add(bat = new JLabel("0"), c(3, row, 0, GridBagConstraints.FIRST_LINE_START));
+			add(new JLabel("Status:"), c(0, row, 2, GridBagConstraints.FIRST_LINE_START));
+			add(status = new JLabel(t.getStatus().toString().toLowerCase()), c(1, row, 2, GridBagConstraints.FIRST_LINE_START));
+			if(realTracker instanceof TrackerWithBattery) {
+				add(new JLabel("Battery:"), c(2, row, 2, GridBagConstraints.FIRST_LINE_START));
+				add(bat = new JLabel("0"), c(3, row, 2, GridBagConstraints.FIRST_LINE_START));
+			}
 			row++;
-			add(new JLabel("Raw:"), c(0, row, 0, GridBagConstraints.FIRST_LINE_START));
-			add(raw = new JLabel("0 0 0"), s(c(1, row, 0, GridBagConstraints.FIRST_LINE_START), 3, 1));
+			add(new JLabel("Raw:"), c(0, row, 2, GridBagConstraints.FIRST_LINE_START));
+			add(raw = new JLabel("0 0 0"), s(c(1, row, 2, GridBagConstraints.FIRST_LINE_START), 3, 1));
 			row++;
 			if(realTracker instanceof IMUTracker) {
-				add(new JLabel("Raw mag:"), c(0, row, 0, GridBagConstraints.FIRST_LINE_START));
-				add(rawMag = new JLabel("0 0 0"), s(c(1, row, 0, GridBagConstraints.FIRST_LINE_START), 3, 1));
+				add(new JLabel("Raw mag:"), c(0, row, 2, GridBagConstraints.FIRST_LINE_START));
+				add(rawMag = new JLabel("0 0 0"), s(c(1, row, 2, GridBagConstraints.FIRST_LINE_START), 3, 1));
 				row++;
-				add(new JLabel("Cal:"), c(0, row, 0, GridBagConstraints.FIRST_LINE_START));
-				add(calibration = new JLabel("0"), c(1, row, 0, GridBagConstraints.FIRST_LINE_START));
-				add(new JLabel("Mag acc:"), c(2, row, 0, GridBagConstraints.FIRST_LINE_START));
-				add(magAccuracy = new JLabel("0°"), c(3, row, 0, GridBagConstraints.FIRST_LINE_START));
+				add(new JLabel("Cal:"), c(0, row, 2, GridBagConstraints.FIRST_LINE_START));
+				add(calibration = new JLabel("0"), c(1, row, 2, GridBagConstraints.FIRST_LINE_START));
+				add(new JLabel("Mag acc:"), c(2, row, 2, GridBagConstraints.FIRST_LINE_START));
+				add(magAccuracy = new JLabel("0°"), c(3, row, 2, GridBagConstraints.FIRST_LINE_START));
 				row++;
-				add(new JLabel("Correction:"), c(0, row, 0, GridBagConstraints.FIRST_LINE_START));
-				add(correction = new JLabel("0 0 0"), s(c(1, row, 0, GridBagConstraints.FIRST_LINE_START), 3, 1));
+				add(new JLabel("Correction:"), c(0, row, 2, GridBagConstraints.FIRST_LINE_START));
+				add(correction = new JLabel("0 0 0"), s(c(1, row, 2, GridBagConstraints.FIRST_LINE_START), 3, 1));
 				row++;
 			}
 			
 			if(t instanceof ReferenceAdjustedTracker) {	
-				add(new JLabel("Adj:"), c(0, row, 0, GridBagConstraints.FIRST_LINE_START));
-				add(adj = new JLabel("0 0 0 0"), c(1, row, 0, GridBagConstraints.FIRST_LINE_START));
-				add(new JLabel("AdjY:"), c(2, row, 0, GridBagConstraints.FIRST_LINE_START));
-				add(adjYaw = new JLabel("0 0 0 0"), c(3, row, 0, GridBagConstraints.FIRST_LINE_START));
+				add(new JLabel("Adj:"), c(0, row, 2, GridBagConstraints.FIRST_LINE_START));
+				add(adj = new JLabel("0 0 0 0"), c(1, row, 2, GridBagConstraints.FIRST_LINE_START));
+				add(new JLabel("AdjY:"), c(2, row, 2, GridBagConstraints.FIRST_LINE_START));
+				add(adjYaw = new JLabel("0 0 0 0"), c(3, row, 2, GridBagConstraints.FIRST_LINE_START));
 			}
 
 			setBorder(BorderFactory.createLineBorder(new Color(0x663399), 2, false));

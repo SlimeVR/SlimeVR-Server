@@ -26,14 +26,12 @@ public class SkeletonList extends EJBagNoStretch {
 	Vector3f v = new Vector3f();
 	float[] angles = new float[3];
 	
-	private final VRServer server;
 	private final VRServerGUI gui;
 	private final List<NodeStatus> nodes = new FastList<>();
 	private long lastUpdate = 0;
 	
 	public SkeletonList(VRServer server, VRServerGUI gui) {
 		super(false, true);
-		this.server = server;
 		this.gui = gui;
 
 		setAlignmentY(TOP_ALIGNMENT);
