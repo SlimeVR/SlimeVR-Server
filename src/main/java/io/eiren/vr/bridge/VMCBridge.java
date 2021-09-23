@@ -2,6 +2,8 @@ package io.eiren.vr.bridge;
 
 import java.net.InetAddress;
 
+import io.eiren.vr.trackers.Tracker;
+
 public class VMCBridge extends Thread implements VRBridge {
 	
 	public final int readPort;
@@ -25,6 +27,18 @@ public class VMCBridge extends Thread implements VRBridge {
 	
 	@Override
 	public void dataWrite() {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public void addSharedTracker(Tracker tracker) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public void removeSharedTracker(Tracker tracker) {
 		// TODO Auto-generated method stub
 		
 	}

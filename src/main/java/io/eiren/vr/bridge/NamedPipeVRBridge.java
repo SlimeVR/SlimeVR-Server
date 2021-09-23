@@ -268,4 +268,16 @@ public class NamedPipeVRBridge extends Thread implements VRBridge {
 		} catch(Exception e) {
 		}
 	}
+
+	@Override
+	public void addSharedTracker(Tracker tracker) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public void removeSharedTracker(Tracker tracker) {
+		// TODO Auto-generated method stub
+		
+	}
 }

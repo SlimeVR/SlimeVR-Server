@@ -2,12 +2,12 @@ package io.eiren.vr.trackers;
 
 import io.eiren.util.BufferedTimer;
 
-public class SteamVRTracker extends ComputedTracker implements TrackerWithTPS {
+public class VRTracker extends ComputedTracker {
 
 	public final int id;
 	protected BufferedTimer timer = new BufferedTimer(1f);
 	
-	public SteamVRTracker(int id, String name, boolean hasRotation, boolean hasPosition) {
+	public VRTracker(int id, String name, boolean hasRotation, boolean hasPosition) {
 		super(name, hasRotation, hasPosition);
 		this.id = id;
 	}

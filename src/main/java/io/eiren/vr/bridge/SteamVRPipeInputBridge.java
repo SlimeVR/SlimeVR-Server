@@ -19,7 +19,8 @@ import io.eiren.util.collections.FastList;
 import io.eiren.util.logging.LogManager;
 import io.eiren.vr.VRServer;
 import io.eiren.vr.processor.TrackerBodyPosition;
-import io.eiren.vr.trackers.SteamVRTracker;
+import io.eiren.vr.trackers.VRTracker;
+import io.eiren.vr.trackers.Tracker;
 import io.eiren.vr.trackers.TrackerStatus;
 
 public class SteamVRPipeInputBridge extends Thread implements VRBridge {
@@ -30,8 +31,8 @@ public class SteamVRPipeInputBridge extends Thread implements VRBridge {
 	private final byte[] buffArray = new byte[1024];
 	private final VRServer server;
 	private final StringBuilder commandBuilder = new StringBuilder(1024);
-	private final List<SteamVRTracker> trackers = new FastList<>();
-	private final Map<Integer, SteamVRTracker> trackersInternal = new HashMap<>();
+	private final List<VRTracker> trackers = new FastList<>();
+	private final Map<Integer, VRTracker> trackersInternal = new HashMap<>();
 	private AtomicBoolean newData = new AtomicBoolean(false);
 	private final Vector3f vBuffer = new Vector3f();
 	private final Quaternion qBuffer = new Quaternion();
@@ -105,13 +106,13 @@ public class SteamVRPipeInputBridge extends Thread implements VRBridge {
 				LogManager.log.severe("[SteamVRPipeInputBridge] Error in ADD command. Command requires at least 4 arguments. Supplied: " + commandBuilder.toString());
 				return;
 			}
-			SteamVRTracker internalTracker = new SteamVRTracker(Integer.parseInt(command[1]), StringUtils.join(command, " ", 3, command.length), true, true);
+			VRTracker internalTracker = new VRTracker(Integer.parseInt(command[1]), StringUtils.join(command, " ", 3, command.length), true, true);
 			int roleId = Integer.parseInt(command[2]);
 			if(roleId >= 0 && roleId < SteamVRInputRoles.values.length) {
 				SteamVRInputRoles svrRole = SteamVRInputRoles.values[roleId];
 				internalTracker.bodyPosition = svrRole.bodyPosition;
 			}
-			SteamVRTracker oldTracker;
+			VRTracker oldTracker;
 			synchronized(trackersInternal) {
 				oldTracker = trackersInternal.put(internalTracker.id, internalTracker);
 			}
@@ -165,25 +166,20 @@ public class SteamVRPipeInputBridge extends Thread implements VRBridge {
 	
 	@Override
 	public void dataRead() {
-		// Not used, only input
-	}
-	
-	@Override
-	public void dataWrite() {
 		if(newData.getAndSet(false)) {
 			if(trackers.size() < trackersInternal.size()) {
 				// Add new trackers
 				synchronized(trackersInternal) {
-					Iterator<SteamVRTracker> iterator = trackersInternal.values().iterator();
+					Iterator<VRTracker> iterator = trackersInternal.values().iterator();
 					internal: while(iterator.hasNext()) {
-						SteamVRTracker internalTracker = iterator.next();
+						VRTracker internalTracker = iterator.next();
 						for(int i = 0; i < trackers.size(); ++i) {
-							SteamVRTracker t = trackers.get(i);
+							VRTracker t = trackers.get(i);
 							if(t.id == internalTracker.id)
 								continue internal;
 						}
 						// Tracker is not found in current trackers
-						SteamVRTracker tracker = new SteamVRTracker(internalTracker.id, internalTracker.getName(), true, true);
+						VRTracker tracker = new VRTracker(internalTracker.id, internalTracker.getName(), true, true);
 						tracker.bodyPosition = internalTracker.bodyPosition;
 						trackers.add(tracker);
 						server.registerTracker(tracker);
@@ -191,8 +187,8 @@ public class SteamVRPipeInputBridge extends Thread implements VRBridge {
 				}
 			}
 			for(int i = 0; i < trackers.size(); ++i) {
-				SteamVRTracker tracker = trackers.get(i);
-				SteamVRTracker internal = trackersInternal.get(tracker.id);
+				VRTracker tracker = trackers.get(i);
+				VRTracker internal = trackersInternal.get(tracker.id);
 				if(internal == null)
 					throw new NullPointerException("Lost internal tracker somehow: " + tracker.id); // Shouln't really happen even, but better to catch it like this
 				if(internal.getPosition(vBuffer))
@@ -203,6 +199,11 @@ public class SteamVRPipeInputBridge extends Thread implements VRBridge {
 				tracker.dataTick();
 			}
 		}
+	}
+	
+	@Override
+	public void dataWrite() {
+		// Not used, only input
 	}
 	
 	private boolean tryOpeningPipe(Pipe pipe) {
@@ -248,6 +249,16 @@ public class SteamVRPipeInputBridge extends Thread implements VRBridge {
 				Kernel32.INSTANCE.DisconnectNamedPipe(pipe.pipeHandle);
 		} catch(Exception e) {
 		}
+	}
+
+	@Override
+	public void addSharedTracker(Tracker tracker) {
+		// Doesn't share any trackers
+	}
+
+	@Override
+	public void removeSharedTracker(Tracker tracker) {
+		// Doesn't share any trackers
 	}
 	
 	public enum SteamVRInputRoles {

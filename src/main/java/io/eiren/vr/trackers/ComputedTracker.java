@@ -5,7 +5,7 @@ import com.jme3.math.Vector3f;
 
 import io.eiren.vr.processor.TrackerBodyPosition;
 
-public class ComputedTracker implements Tracker {
+public class ComputedTracker implements Tracker, TrackerWithTPS {
 
 	public final Vector3f position = new Vector3f();
 	public final Quaternion rotation = new Quaternion();
@@ -87,6 +87,10 @@ public class ComputedTracker implements Tracker {
 	public boolean userEditable() {
 		return false;
 	}
+	
+	@Override
+	public void dataTick() {
+	}
 
 	@Override
 	public void tick() {
@@ -105,5 +109,10 @@ public class ComputedTracker implements Tracker {
 	@Override
 	public boolean isComputed() {
 		return true;
+	}
+
+	@Override
+	public float getTPS() {
+		return -1;
 	}
 }
