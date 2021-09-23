@@ -9,7 +9,7 @@ import com.jme3.math.FastMath;
 import com.jme3.math.Quaternion;
 import com.jme3.math.Vector3f;
 
-import dev.slimevr.gui.swing.EJBag;
+import dev.slimevr.gui.swing.EJBagNoStretch;
 import io.eiren.util.StringUtils;
 import io.eiren.util.ann.ThreadSafe;
 import io.eiren.util.ann.VRServerThread;
@@ -18,7 +18,7 @@ import io.eiren.vr.VRServer;
 import io.eiren.vr.processor.HumanSkeleton;
 import io.eiren.vr.processor.TransformNode;
 
-public class SkeletonList extends EJBag {
+public class SkeletonList extends EJBagNoStretch {
 	
 	private static final long UPDATE_DELAY = 50;
 
@@ -32,7 +32,7 @@ public class SkeletonList extends EJBag {
 	private long lastUpdate = 0;
 	
 	public SkeletonList(VRServer server, VRServerGUI gui) {
-		super();
+		super(false, true);
 		this.server = server;
 		this.gui = gui;
 

@@ -7,6 +7,7 @@ import javax.swing.event.MouseInputAdapter;
 
 import dev.slimevr.gui.swing.ButtonTimer;
 import dev.slimevr.gui.swing.EJBox;
+import dev.slimevr.gui.swing.EJBoxNoStretch;
 import io.eiren.util.MacOSX;
 import io.eiren.util.OperatingSystem;
 import io.eiren.util.StringUtils;
@@ -136,7 +137,7 @@ public class VRServerGUI extends JFrame {
 	private void build() {
 		pane.removeAll();
 		
-		pane.add(new EJBox(LINE_AXIS) {{
+		pane.add(new EJBoxNoStretch(LINE_AXIS, false, true) {{
 			setBorder(new EmptyBorder(i(5)));
 			
 			add(Box.createHorizontalGlue());
@@ -182,19 +183,19 @@ public class VRServerGUI extends JFrame {
 		
 		pane.add(new EJBox(LINE_AXIS) {{
 			setBorder(new EmptyBorder(i(5)));
-			add(new EJBox(PAGE_AXIS) {{
+			add(new EJBoxNoStretch(PAGE_AXIS, false, true) {{
 				setAlignmentY(TOP_ALIGNMENT);
 				add(new JLabel("Trackers list"));
 				add(trackersList);
 				add(Box.createVerticalGlue());
 			}});
 
-			add(new EJBox(PAGE_AXIS) {{
+			add(new EJBoxNoStretch(PAGE_AXIS, false, true) {{
 				setAlignmentY(TOP_ALIGNMENT);
 				add(new JLabel("Body proportions"));
 				add(new SkeletonConfig(server, VRServerGUI.this));
 				add(Box.createVerticalStrut(10));
-				add(new JLabel("SteamVR Trackers:"));
+				add(new JLabel("SteamVR trackers"));
 				JComboBox<String> trackersSelect;
 				add(trackersSelect = new JComboBox<>());
 				trackersSelect.addItem("Waist");
@@ -248,6 +249,7 @@ public class VRServerGUI extends JFrame {
 				add(Box.createVerticalGlue());
 			}});
 		}});
+		pane.add(Box.createVerticalGlue());
 		
 		refresh();
 		

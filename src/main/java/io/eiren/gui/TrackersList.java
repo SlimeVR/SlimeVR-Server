@@ -17,8 +17,8 @@ import com.jme3.math.FastMath;
 import com.jme3.math.Quaternion;
 import com.jme3.math.Vector3f;
 
-import dev.slimevr.gui.swing.EJBag;
-import dev.slimevr.gui.swing.EJBox;
+import dev.slimevr.gui.swing.EJBagNoStretch;
+import dev.slimevr.gui.swing.EJBoxNoStretch;
 import io.eiren.util.StringUtils;
 import io.eiren.util.ann.AWTThread;
 import io.eiren.util.ann.ThreadSafe;
@@ -35,7 +35,7 @@ import io.eiren.vr.trackers.TrackerMountingRotation;
 import io.eiren.vr.trackers.TrackerWithBattery;
 import io.eiren.vr.trackers.TrackerWithTPS;
 
-public class TrackersList extends EJBox {
+public class TrackersList extends EJBoxNoStretch {
 	
 	private static final long UPDATE_DELAY = 50;
 	
@@ -50,7 +50,7 @@ public class TrackersList extends EJBox {
 	private long lastUpdate = 0;
 
 	public TrackersList(VRServer server, VRServerGUI gui) {
-		super(BoxLayout.PAGE_AXIS);
+		super(BoxLayout.PAGE_AXIS, false, true);
 		this.server = server;
 		this.gui = gui;
 
@@ -67,7 +67,7 @@ public class TrackersList extends EJBox {
 		
 		Class<? extends Tracker> currentClass = null;
 		
-		EJBox line = null;
+		EJBoxNoStretch line = null;
 		boolean first = true;
 		
 		for(int i = 0; i < trackers.size(); ++i) {
@@ -80,7 +80,7 @@ public class TrackersList extends EJBox {
 				if(line != null)
 					line.add(Box.createHorizontalGlue());
 				line = null;
-				line = new EJBox(BoxLayout.LINE_AXIS);
+				line = new EJBoxNoStretch(BoxLayout.LINE_AXIS, false, true);
 				line.add(Box.createHorizontalGlue());
 				JLabel nameLabel;
 				line.add(nameLabel = new JLabel(currentClass.getSimpleName()));
@@ -91,7 +91,7 @@ public class TrackersList extends EJBox {
 			}
 			
 			if(line == null) {
-				line = new EJBox(BoxLayout.LINE_AXIS);
+				line = new EJBoxNoStretch(BoxLayout.LINE_AXIS, false, true);
 				add(Box.createVerticalStrut(3));
 				add(line);
 				first = true;
@@ -127,7 +127,7 @@ public class TrackersList extends EJBox {
 		});
 	}
 	
-	private class TrackerPanel extends EJBag {
+	private class TrackerPanel extends EJBagNoStretch {
 		
 		final Tracker t;
 		JLabel position;
@@ -146,7 +146,7 @@ public class TrackersList extends EJBox {
 		
 		@AWTThread
 		public TrackerPanel(Tracker t) {
-			super();
+			super(false, true);
 			this.t = t;
 		}
 

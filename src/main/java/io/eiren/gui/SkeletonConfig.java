@@ -10,13 +10,13 @@ import javax.swing.event.MouseInputAdapter;
 
 import dev.slimevr.gui.AutoBoneWindow;
 import dev.slimevr.gui.swing.ButtonTimer;
-import dev.slimevr.gui.swing.EJBag;
+import dev.slimevr.gui.swing.EJBagNoStretch;
 import io.eiren.util.StringUtils;
 import io.eiren.util.ann.ThreadSafe;
 import io.eiren.vr.VRServer;
 import io.eiren.vr.processor.HumanSkeleton;
 
-public class SkeletonConfig extends EJBag {
+public class SkeletonConfig extends EJBagNoStretch {
 
 	private final VRServer server;
 	private final VRServerGUI gui;
@@ -24,7 +24,7 @@ public class SkeletonConfig extends EJBag {
 	private Map<String, SkeletonLabel> labels = new HashMap<>();
 
 	public SkeletonConfig(VRServer server, VRServerGUI gui) {
-		super();
+		super(false, true);
 		this.server = server;
 		this.gui = gui;
 		this.autoBone = new AutoBoneWindow(server, this);
