@@ -1,4 +1,4 @@
-package io.eiren.gui;
+package dev.slimevr.gui.swing;
 
 import javax.swing.BoxLayout;
 

@@ -9,6 +9,8 @@ import javax.swing.JLabel;
 import javax.swing.event.MouseInputAdapter;
 
 import dev.slimevr.gui.AutoBoneWindow;
+import dev.slimevr.gui.swing.ButtonTimer;
+import dev.slimevr.gui.swing.EJBag;
 import io.eiren.util.StringUtils;
 import io.eiren.util.ann.ThreadSafe;
 import io.eiren.vr.VRServer;

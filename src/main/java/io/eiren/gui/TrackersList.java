@@ -17,6 +17,8 @@ import com.jme3.math.FastMath;
 import com.jme3.math.Quaternion;
 import com.jme3.math.Vector3f;
 
+import dev.slimevr.gui.swing.EJBag;
+import dev.slimevr.gui.swing.EJBox;
 import io.eiren.util.StringUtils;
 import io.eiren.util.ann.AWTThread;
 import io.eiren.util.ann.ThreadSafe;
@@ -253,7 +255,7 @@ public class TrackersList extends EJBox {
 				add(adjYaw = new JLabel("0 0 0 0"), c(3, row, 0, GridBagConstraints.FIRST_LINE_START));
 			}
 
-			setBorder(BorderFactory.createLineBorder(new Color(0x663399), 4, true));
+			setBorder(BorderFactory.createLineBorder(new Color(0x663399), 2, false));
 			TrackersList.this.add(this);
 			return this;
 		}
