@@ -63,32 +63,27 @@ public class PoseStreamer {
 	}
 
 	public void setOutput(PoseFileStream poseFileStream) throws IOException {
-		poseFileStream.writeHeader(skeleton);
+		poseFileStream.writeHeader(skeleton, this);
 		this.poseFileStream = poseFileStream;
 		nextFrameTimeMs = -1L; // Reset the frame timing
+	}
+
+	public void setOutput(PoseFileStream poseFileStream, long intervalMs) throws IOException {
+		setFrameInterval(intervalMs);
+		setOutput(poseFileStream);
 	}
 
 	public PoseFileStream getOutput() {
 		return poseFileStream;
 	}
 
-	public void closeOutput() {
+	public void closeOutput() throws IOException {
 		PoseFileStream poseFileStream = this.poseFileStream;
-		
-		if (poseFileStream != null) {
-			try {
-				poseFileStream.writeFooter(skeleton);
-			} catch (Exception e) {
-				// Ignore
-				LogManager.log.severe("[PoseStreamer] Exception while writing file footer", e);
-			}
 
-			try {
-				poseFileStream.close();
-			} catch (Exception e) {
-				// Ignore
-				LogManager.log.severe("[PoseStreamer] Exception while closing file stream", e);
-			}
+		if (poseFileStream != null) {
+			poseFileStream.writeFooter(skeleton);
+			poseFileStream.close();
+			this.poseFileStream = null;
 		}
 	}
 }

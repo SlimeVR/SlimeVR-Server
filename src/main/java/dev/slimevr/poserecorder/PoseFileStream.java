@@ -1,7 +1,6 @@
 package dev.slimevr.poserecorder;
 
 import java.io.BufferedOutputStream;
-import java.io.DataOutputStream;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
@@ -11,11 +10,13 @@ import java.io.OutputStream;
 import io.eiren.vr.processor.HumanSkeleton;
 
 public abstract class PoseFileStream implements AutoCloseable {
-	
-	protected DataOutputStream dataStream;
+
+	protected final OutputStream parentStream;
+	protected final BufferedOutputStream outputStream;
 
 	protected PoseFileStream(OutputStream outputStream) {
-		this.dataStream = new DataOutputStream(new BufferedOutputStream(outputStream));
+		this.parentStream = outputStream;
+		this.outputStream = new BufferedOutputStream(outputStream);
 	}
 
 	protected PoseFileStream(File file) throws FileNotFoundException {
@@ -26,14 +27,16 @@ public abstract class PoseFileStream implements AutoCloseable {
 		this(new FileOutputStream(file));
 	}
 
-	abstract boolean writeHeader(HumanSkeleton skeleton) throws IOException;
+	public void writeHeader(HumanSkeleton skeleton, PoseStreamer streamer) throws IOException {
+	}
 
-	abstract boolean writeFrame(HumanSkeleton skeleton) throws IOException;
+	abstract void writeFrame(HumanSkeleton skeleton) throws IOException;
 
-	abstract boolean writeFooter(HumanSkeleton skeleton) throws IOException;
+	public void writeFooter(HumanSkeleton skeleton) throws IOException {
+	}
 
 	@Override
 	public void close() throws IOException {
-		dataStream.close();
+		outputStream.close();
 	}
 }
