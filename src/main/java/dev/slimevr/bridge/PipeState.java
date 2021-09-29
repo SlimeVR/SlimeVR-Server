@@ -1,4 +1,4 @@
-package io.eiren.vr.bridge;
+package dev.slimevr.bridge;
 
 enum PipeState {
 	CREATED,

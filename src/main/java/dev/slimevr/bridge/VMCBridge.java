@@ -1,10 +1,10 @@
-package io.eiren.vr.bridge;
+package dev.slimevr.bridge;
 
 import java.net.InetAddress;
 
 import io.eiren.vr.trackers.Tracker;
 
-public class VMCBridge extends Thread implements VRBridge {
+public class VMCBridge extends Thread implements Bridge {
 	
 	public final int readPort;
 	public final int writePort;

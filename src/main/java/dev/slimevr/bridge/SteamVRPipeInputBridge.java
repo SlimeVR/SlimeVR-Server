@@ -1,4 +1,4 @@
-package io.eiren.vr.bridge;
+package dev.slimevr.bridge;
 
 import java.io.IOException;
 import java.util.HashMap;
@@ -23,7 +23,7 @@ import io.eiren.vr.trackers.VRTracker;
 import io.eiren.vr.trackers.Tracker;
 import io.eiren.vr.trackers.TrackerStatus;
 
-public class SteamVRPipeInputBridge extends Thread implements VRBridge {
+public class SteamVRPipeInputBridge extends Thread implements Bridge {
 
 	private static final int MAX_COMMAND_LENGTH = 2048;
 	public static final String PipeName = "\\\\.\\pipe\\SlimeVRInput";

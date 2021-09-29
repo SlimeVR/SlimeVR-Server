@@ -5,6 +5,7 @@ import javax.swing.*;
 import javax.swing.border.EmptyBorder;
 import javax.swing.event.MouseInputAdapter;
 
+import dev.slimevr.bridge.NamedPipeVRBridge;
 import dev.slimevr.gui.swing.ButtonTimer;
 import dev.slimevr.gui.swing.EJBox;
 import dev.slimevr.gui.swing.EJBoxNoStretch;
@@ -14,7 +15,6 @@ import io.eiren.util.StringUtils;
 import io.eiren.util.ann.AWTThread;
 import io.eiren.vr.Main;
 import io.eiren.vr.VRServer;
-import io.eiren.vr.bridge.NamedPipeVRBridge;
 
 import java.awt.Component;
 import java.awt.Container;

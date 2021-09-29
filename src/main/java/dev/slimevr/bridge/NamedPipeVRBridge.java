@@ -1,4 +1,4 @@
-package io.eiren.vr.bridge;
+package dev.slimevr.bridge;
 
 import java.io.IOException;
 import java.nio.charset.Charset;
@@ -20,7 +20,7 @@ import io.eiren.vr.trackers.HMDTracker;
 import io.eiren.vr.trackers.Tracker;
 import io.eiren.vr.trackers.TrackerStatus;
 
-public class NamedPipeVRBridge extends Thread implements VRBridge {
+public class NamedPipeVRBridge extends Thread implements Bridge {
 
 	private static final int MAX_COMMAND_LENGTH = 2048;
 	public static final String HMDPipeName = "\\\\.\\pipe\\HMDPipe";

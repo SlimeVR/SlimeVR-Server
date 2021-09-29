@@ -15,16 +15,16 @@ import java.util.Queue;
 import java.util.concurrent.LinkedBlockingQueue;
 import java.util.function.Consumer;
 
+import dev.slimevr.bridge.Bridge;
+import dev.slimevr.bridge.NamedPipeVRBridge;
+import dev.slimevr.bridge.SteamVRPipeInputBridge;
+import dev.slimevr.bridge.VMCBridge;
+import dev.slimevr.bridge.WebSocketVRBridge;
 import io.eiren.util.OperatingSystem;
 import io.eiren.util.ann.ThreadSafe;
 import io.eiren.util.ann.ThreadSecure;
 import io.eiren.util.ann.VRServerThread;
 import io.eiren.util.collections.FastList;
-import io.eiren.vr.bridge.NamedPipeVRBridge;
-import io.eiren.vr.bridge.SteamVRPipeInputBridge;
-import io.eiren.vr.bridge.VMCBridge;
-import io.eiren.vr.bridge.VRBridge;
-import io.eiren.vr.bridge.WebSocketVRBridge;
 import io.eiren.vr.processor.HumanPoseProcessor;
 import io.eiren.vr.processor.HumanSkeleton;
 import io.eiren.vr.trackers.HMDTracker;
@@ -40,7 +40,7 @@ public class VRServer extends Thread {
 	private final List<Tracker> trackers = new FastList<>();
 	public final HumanPoseProcessor humanPoseProcessor;
 	private final TrackersUDPServer trackersServer;
-	private final List<VRBridge> bridges = new FastList<>();
+	private final List<Bridge> bridges = new FastList<>();
 	private final Queue<Runnable> tasks = new LinkedBlockingQueue<>();
 	private final Map<String, TrackerConfig> configuration = new HashMap<>();
 	public final YamlFile config = new YamlFile();
@@ -92,7 +92,7 @@ public class VRServer extends Thread {
 			registerTracker(shareTrackers.get(i));
 	}
 	
-	public boolean hasBridge(Class<? extends VRBridge> bridgeClass) {
+	public boolean hasBridge(Class<? extends Bridge> bridgeClass) {
 		for(int i = 0; i < bridges.size(); ++i) {
 			return bridgeClass.isAssignableFrom(bridges.get(i).getClass());
 		}
@@ -100,9 +100,9 @@ public class VRServer extends Thread {
 	}
 
 	@ThreadSafe
-	public <E extends VRBridge> E getVRBridge(Class<E> cls) {
+	public <E extends Bridge> E getVRBridge(Class<E> cls) {
 		for(int i = 0; i < bridges.size(); ++i) {
-			VRBridge b = bridges.get(i);
+			Bridge b = bridges.get(i);
 			if(cls.isInstance(b))
 				return cls.cast(b);
 		}

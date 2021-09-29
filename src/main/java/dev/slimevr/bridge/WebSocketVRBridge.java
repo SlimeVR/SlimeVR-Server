@@ -1,4 +1,4 @@
-package io.eiren.vr.bridge;
+package dev.slimevr.bridge;
 
 import java.net.InetSocketAddress;
 import java.nio.ByteBuffer;
@@ -26,7 +26,7 @@ import io.eiren.vr.trackers.HMDTracker;
 import io.eiren.vr.trackers.Tracker;
 import io.eiren.vr.trackers.TrackerStatus;
 
-public class WebSocketVRBridge extends WebSocketServer implements VRBridge {
+public class WebSocketVRBridge extends WebSocketServer implements Bridge {
 	
 	private final Vector3f vBuffer = new Vector3f();
 	private final Quaternion qBuffer = new Quaternion();
@@ -172,5 +172,17 @@ public class WebSocketVRBridge extends WebSocketServer implements VRBridge {
 		LogManager.log.info("[WebSocket] Web Socket VR Bridge started on port " + getPort());
 		setConnectionLostTimeout(0);
 	    setConnectionLostTimeout(1);
+	}
+
+	@Override
+	public void addSharedTracker(Tracker tracker) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public void removeSharedTracker(Tracker tracker) {
+		// TODO Auto-generated method stub
+		
 	}
 }

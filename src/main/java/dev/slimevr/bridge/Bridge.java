@@ -1,11 +1,22 @@
-package io.eiren.vr.bridge;
+package dev.slimevr.bridge;
 
+import io.eiren.util.ann.ThreadSafe;
+import io.eiren.util.ann.VRServerThread;
 import io.eiren.vr.trackers.Tracker;
 
-public interface VRBridge {
+/**
+ * Bridge handles sending and recieving tracker data
+ * between SlimeVR and other systems like VR APIs (SteamVR, OpenXR, etc),
+ * apps and protocols (VMC, WebSocket, TIP). It can create and manage
+ * tracker recieved from the <b>remote side</b> or send shared <b>local
+ * trackers</b> to the other side.
+ */
+public interface Bridge {
 
+	@VRServerThread
 	public void dataRead();
-	
+
+	@VRServerThread
 	public void dataWrite();
 	
 	/**
@@ -14,6 +25,7 @@ public interface VRBridge {
 	 * this bridge serves, and start sending data each update
 	 * @param tracker
 	 */
+	@ThreadSafe
 	public void addSharedTracker(Tracker tracker);
 	
 	/**
@@ -24,5 +36,6 @@ public interface VRBridge {
 	 * available.
 	 * @param tracker
 	 */
+	@ThreadSafe
 	public void removeSharedTracker(Tracker tracker);
 }

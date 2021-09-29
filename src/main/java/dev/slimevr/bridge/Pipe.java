@@ -1,4 +1,4 @@
-package io.eiren.vr.bridge;
+package dev.slimevr.bridge;
 
 import com.sun.jna.platform.win32.WinNT.HANDLE;
 
