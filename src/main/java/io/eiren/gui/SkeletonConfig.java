@@ -9,12 +9,14 @@ import javax.swing.JLabel;
 import javax.swing.event.MouseInputAdapter;
 
 import dev.slimevr.gui.AutoBoneWindow;
+import dev.slimevr.gui.swing.ButtonTimer;
+import dev.slimevr.gui.swing.EJBagNoStretch;
 import io.eiren.util.StringUtils;
 import io.eiren.util.ann.ThreadSafe;
 import io.eiren.vr.VRServer;
 import io.eiren.vr.processor.HumanSkeleton;
 
-public class SkeletonConfig extends EJBag {
+public class SkeletonConfig extends EJBagNoStretch {
 
 	private final VRServer server;
 	private final VRServerGUI gui;
@@ -22,7 +24,7 @@ public class SkeletonConfig extends EJBag {
 	private Map<String, SkeletonLabel> labels = new HashMap<>();
 
 	public SkeletonConfig(VRServer server, VRServerGUI gui) {
-		super();
+		super(false, true);
 		this.server = server;
 		this.gui = gui;
 		this.autoBone = new AutoBoneWindow(server, this);
@@ -61,7 +63,7 @@ public class SkeletonConfig extends EJBag {
 	        		HumanSkeletonWithLegs hswl = (HumanSkeletonWithLegs) newSkeleton;
 	        		setSelected(hswl.getSkeletonConfigBoolean("Extended pelvis model"));
 				}
-			}}, s(c(0, row, 1), 3, 1));
+			}}, s(c(0, row, 2), 3, 1));
 			row++;
 			//*/
 			/*
@@ -86,11 +88,11 @@ public class SkeletonConfig extends EJBag {
 	        		HumanSkeletonWithLegs hswl = (HumanSkeletonWithLegs) newSkeleton;
 	        		setSelected(hswl.getSkeletonConfigBoolean("Extended knee model"));
 				}
-			}}, s(c(0, row, 1), 3, 1));
+			}}, s(c(0, row, 2), 3, 1));
 			row++;
 			//*/
 
-			add(new TimedResetButton("Reset All", "All"), s(c(1, row, 1), 3, 1));
+			add(new TimedResetButton("Reset All", "All"), s(c(1, row, 2), 3, 1));
 			add(new JButton("Auto") {{
 				addMouseListener(new MouseInputAdapter() {
 					@Override
@@ -99,70 +101,70 @@ public class SkeletonConfig extends EJBag {
 						autoBone.toFront();
 					}
 				});
-			}}, s(c(4, row, 1), 3, 1));
+			}}, s(c(4, row, 2), 3, 1));
 			row++;
 
-			add(new JLabel("Chest"), c(0, row, 1));
-			add(new AdjButton("+", "Chest", 0.01f), c(1, row, 1));
-			add(new SkeletonLabel("Chest"), c(2, row, 1));
-			add(new AdjButton("-", "Chest", -0.01f), c(3, row, 1));
-			add(new ResetButton("Reset", "Chest"), c(4, row, 1));
+			add(new JLabel("Chest"), c(0, row, 2));
+			add(new AdjButton("+", "Chest", 0.01f), c(1, row, 2));
+			add(new SkeletonLabel("Chest"), c(2, row, 2));
+			add(new AdjButton("-", "Chest", -0.01f), c(3, row, 2));
+			add(new ResetButton("Reset", "Chest"), c(4, row, 2));
 			row++;
 
-			add(new JLabel("Waist"), c(0, row, 1));
-			add(new AdjButton("+", "Waist", 0.01f), c(1, row, 1));
-			add(new SkeletonLabel("Waist"), c(2, row, 1));
-			add(new AdjButton("-", "Waist", -0.01f), c(3, row, 1));
-			add(new TimedResetButton("Reset", "Waist"), c(4, row, 1));
+			add(new JLabel("Waist"), c(0, row, 2));
+			add(new AdjButton("+", "Waist", 0.01f), c(1, row, 2));
+			add(new SkeletonLabel("Waist"), c(2, row, 2));
+			add(new AdjButton("-", "Waist", -0.01f), c(3, row, 2));
+			add(new TimedResetButton("Reset", "Waist"), c(4, row, 2));
 			row++;
 
-			add(new JLabel("Hips width"), c(0, row, 1));
-			add(new AdjButton("+", "Hips width", 0.01f), c(1, row, 1));
-			add(new SkeletonLabel("Hips width"), c(2, row, 1));
-			add(new AdjButton("-", "Hips width", -0.01f), c(3, row, 1));
-			add(new ResetButton("Reset", "Hips width"), c(4, row, 1));
+			add(new JLabel("Hips width"), c(0, row, 2));
+			add(new AdjButton("+", "Hips width", 0.01f), c(1, row, 2));
+			add(new SkeletonLabel("Hips width"), c(2, row, 2));
+			add(new AdjButton("-", "Hips width", -0.01f), c(3, row, 2));
+			add(new ResetButton("Reset", "Hips width"), c(4, row, 2));
 			row++;
 
-			add(new JLabel("Legs length"), c(0, row, 1));
-			add(new AdjButton("+", "Legs length", 0.01f), c(1, row, 1));
-			add(new SkeletonLabel("Legs length"), c(2, row, 1));
-			add(new AdjButton("-", "Legs length", -0.01f), c(3, row, 1));
-			add(new TimedResetButton("Reset", "Legs length"), c(4, row, 1));
+			add(new JLabel("Legs length"), c(0, row, 2));
+			add(new AdjButton("+", "Legs length", 0.01f), c(1, row, 2));
+			add(new SkeletonLabel("Legs length"), c(2, row, 2));
+			add(new AdjButton("-", "Legs length", -0.01f), c(3, row, 2));
+			add(new TimedResetButton("Reset", "Legs length"), c(4, row, 2));
 			row++;
 
-			add(new JLabel("Knee height"), c(0, row, 1));
-			add(new AdjButton("+", "Knee height", 0.01f), c(1, row, 1));
-			add(new SkeletonLabel("Knee height"), c(2, row, 1));
-			add(new AdjButton("-", "Knee height", -0.01f), c(3, row, 1));
-			add(new TimedResetButton("Reset", "Knee height"), c(4, row, 1));
+			add(new JLabel("Knee height"), c(0, row, 2));
+			add(new AdjButton("+", "Knee height", 0.01f), c(1, row, 2));
+			add(new SkeletonLabel("Knee height"), c(2, row, 2));
+			add(new AdjButton("-", "Knee height", -0.01f), c(3, row, 2));
+			add(new TimedResetButton("Reset", "Knee height"), c(4, row, 2));
 			row++;
 
-			add(new JLabel("Foot length"), c(0, row, 1));
-			add(new AdjButton("+", "Foot length", 0.01f), c(1, row, 1));
-			add(new SkeletonLabel("Foot length"), c(2, row, 1));
-			add(new AdjButton("-", "Foot length", -0.01f), c(3, row, 1));
-			add(new ResetButton("Reset", "Foot length"), c(4, row, 1));
+			add(new JLabel("Foot length"), c(0, row, 2));
+			add(new AdjButton("+", "Foot length", 0.01f), c(1, row, 2));
+			add(new SkeletonLabel("Foot length"), c(2, row, 2));
+			add(new AdjButton("-", "Foot length", -0.01f), c(3, row, 2));
+			add(new ResetButton("Reset", "Foot length"), c(4, row, 2));
 			row++;
 
-			add(new JLabel("Head offset"), c(0, row, 1));
-			add(new AdjButton("+", "Head", 0.01f), c(1, row, 1));
-			add(new SkeletonLabel("Head"), c(2, row, 1));
-			add(new AdjButton("-", "Head", -0.01f), c(3, row, 1));
-			add(new ResetButton("Reset", "Head"), c(4, row, 1));
+			add(new JLabel("Head offset"), c(0, row, 2));
+			add(new AdjButton("+", "Head", 0.01f), c(1, row, 2));
+			add(new SkeletonLabel("Head"), c(2, row, 2));
+			add(new AdjButton("-", "Head", -0.01f), c(3, row, 2));
+			add(new ResetButton("Reset", "Head"), c(4, row, 2));
 			row++;
 
-			add(new JLabel("Neck length"), c(0, row, 1));
-			add(new AdjButton("+", "Neck", 0.01f), c(1, row, 1));
-			add(new SkeletonLabel("Neck"), c(2, row, 1));
-			add(new AdjButton("-", "Neck", -0.01f), c(3, row, 1));
-			add(new ResetButton("Reset", "Neck"), c(4, row, 1));
+			add(new JLabel("Neck length"), c(0, row, 2));
+			add(new AdjButton("+", "Neck", 0.01f), c(1, row, 2));
+			add(new SkeletonLabel("Neck"), c(2, row, 2));
+			add(new AdjButton("-", "Neck", -0.01f), c(3, row, 2));
+			add(new ResetButton("Reset", "Neck"), c(4, row, 2));
 			row++;
 
-			add(new JLabel("Virtual waist"), c(0, row, 1));
-			add(new AdjButton("+", "Virtual waist", 0.01f), c(1, row, 1));
-			add(new SkeletonLabel("Virtual waist"), c(2, row, 1));
-			add(new AdjButton("-", "Virtual waist", -0.01f), c(3, row, 1));
-			add(new ResetButton("Reset", "Virtual waist"), c(4, row, 1));
+			add(new JLabel("Virtual waist"), c(0, row, 2));
+			add(new AdjButton("+", "Virtual waist", 0.01f), c(1, row, 2));
+			add(new SkeletonLabel("Virtual waist"), c(2, row, 2));
+			add(new AdjButton("-", "Virtual waist", -0.01f), c(3, row, 2));
+			add(new ResetButton("Reset", "Virtual waist"), c(4, row, 2));
 			row++;
 
 			gui.refresh();

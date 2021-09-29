@@ -26,6 +26,7 @@ import javax.swing.event.MouseInputAdapter;
 
 import com.fazecast.jSerialComm.SerialPort;
 
+import dev.slimevr.gui.swing.EJBox;
 import io.eiren.util.ann.AWTThread;
 
 public class WiFiWindow extends JFrame {

@@ -1,4 +1,4 @@
-package io.eiren.gui;
+package dev.slimevr.gui.swing;
 
 import java.awt.Component;
 import java.awt.Dimension;

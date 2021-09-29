@@ -91,9 +91,9 @@ public class HumanSkeletonWithLegs extends HumanSkeletonWithWaist {
 				rkt = t;
 		}
 		if(lat == null)
-			lat = new ComputedHumanPoseTracker(ComputedHumanPoseTrackerPosition.LEFT_FOOT);
+			lat = new ComputedHumanPoseTracker(ComputedHumanPoseTrackerPosition.LEFT_FOOT, TrackerBodyPosition.LEFT_FOOT);
 		if(rat == null)
-			rat = new ComputedHumanPoseTracker(ComputedHumanPoseTrackerPosition.RIGHT_FOOT);
+			rat = new ComputedHumanPoseTracker(ComputedHumanPoseTrackerPosition.RIGHT_FOOT, TrackerBodyPosition.RIGHT_FOOT);
 		computedLeftFootTracker = lat;
 		computedRightFootTracker = rat;
 		computedLeftKneeTracker = lkt;

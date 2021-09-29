@@ -13,7 +13,6 @@ import java.util.List;
 import java.util.Map.Entry;
 import java.util.concurrent.Future;
 
-import io.eiren.gui.EJBox;
 import io.eiren.gui.SkeletonConfig;
 import io.eiren.util.StringUtils;
 import io.eiren.util.ann.AWTThread;
@@ -26,6 +25,7 @@ import javax.swing.event.MouseInputAdapter;
 import org.apache.commons.lang3.tuple.Pair;
 
 import dev.slimevr.autobone.AutoBone;
+import dev.slimevr.gui.swing.EJBox;
 import dev.slimevr.poserecorder.PoseFrame;
 import dev.slimevr.poserecorder.PoseFrameIO;
 import dev.slimevr.poserecorder.PoseRecorder;

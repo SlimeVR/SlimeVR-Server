@@ -5,12 +5,16 @@ import javax.swing.*;
 import javax.swing.border.EmptyBorder;
 import javax.swing.event.MouseInputAdapter;
 
+import dev.slimevr.gui.swing.ButtonTimer;
+import dev.slimevr.gui.swing.EJBox;
+import dev.slimevr.gui.swing.EJBoxNoStretch;
 import io.eiren.util.MacOSX;
 import io.eiren.util.OperatingSystem;
 import io.eiren.util.StringUtils;
 import io.eiren.util.ann.AWTThread;
 import io.eiren.vr.Main;
 import io.eiren.vr.VRServer;
+import io.eiren.vr.bridge.NamedPipeVRBridge;
 
 import java.awt.Component;
 import java.awt.Container;
@@ -134,7 +138,7 @@ public class VRServerGUI extends JFrame {
 	private void build() {
 		pane.removeAll();
 		
-		pane.add(new EJBox(LINE_AXIS) {{
+		pane.add(new EJBoxNoStretch(LINE_AXIS, false, true) {{
 			setBorder(new EmptyBorder(i(5)));
 			
 			add(Box.createHorizontalGlue());
@@ -180,72 +184,76 @@ public class VRServerGUI extends JFrame {
 		
 		pane.add(new EJBox(LINE_AXIS) {{
 			setBorder(new EmptyBorder(i(5)));
-			add(new EJBox(PAGE_AXIS) {{
+			add(new EJBoxNoStretch(PAGE_AXIS, false, true) {{
 				setAlignmentY(TOP_ALIGNMENT);
-				add(new JLabel("SteamVR Trackers:"));
-				JComboBox<String> trackersSelect;
-				add(trackersSelect = new JComboBox<>());
-				trackersSelect.addItem("Waist");
-				trackersSelect.addItem("Waist + Legs");
-				trackersSelect.addItem("Waist + Legs + Chest");
-				trackersSelect.addItem("Waist + Legs + Knees");
-				trackersSelect.addItem("Waist + Legs + Chest + Knees");
-				switch(server.config.getInt("virtualtrackers", 3)) {
-				case 1:
-					trackersSelect.setSelectedIndex(0);
-					break;
-				case 3:
-					trackersSelect.setSelectedIndex(1);
-					break;
-				case 4:
-					trackersSelect.setSelectedIndex(2);
-					break;
-				case 5:
-					trackersSelect.setSelectedIndex(3);
-					break;
-				case 6:
-					trackersSelect.setSelectedIndex(4);
-					break;
-				}
-				trackersSelect.addActionListener(new ActionListener() {
-					@Override
-					public void actionPerformed(ActionEvent e) {
-						switch(trackersSelect.getSelectedIndex()) {
-						case 0:
-							server.config.setProperty("virtualtrackers", 1);
-							break;
-						case 1:
-							server.config.setProperty("virtualtrackers", 3);
-							break;
-						case 2:
-							server.config.setProperty("virtualtrackers", 4);
-							break;
-						case 3:
-							server.config.setProperty("virtualtrackers", 5);
-							break;
-						case 4:
-							server.config.setProperty("virtualtrackers", 6);
-							break;
-						}
-						server.saveConfig();
-					}
-				});
-				add(Box.createHorizontalStrut(10));
-				
 				add(new JLabel("Trackers list"));
 				add(trackersList);
 				add(Box.createVerticalGlue());
 			}});
 
-			add(new EJBox(PAGE_AXIS) {{
+			add(new EJBoxNoStretch(PAGE_AXIS, false, true) {{
 				setAlignmentY(TOP_ALIGNMENT);
 				add(new JLabel("Body proportions"));
 				add(new SkeletonConfig(server, VRServerGUI.this));
+				add(Box.createVerticalStrut(10));
+				
+				if(server.hasBridge(NamedPipeVRBridge.class)) {
+					add(new JLabel("SteamVR trackers"));
+					JComboBox<String> trackersSelect;
+					add(trackersSelect = new JComboBox<>());
+					trackersSelect.addItem("Waist");
+					trackersSelect.addItem("Waist + Legs");
+					trackersSelect.addItem("Waist + Legs + Chest");
+					trackersSelect.addItem("Waist + Legs + Knees");
+					trackersSelect.addItem("Waist + Legs + Chest + Knees");
+					switch(server.config.getInt("virtualtrackers", 3)) {
+					case 1:
+						trackersSelect.setSelectedIndex(0);
+						break;
+					case 3:
+						trackersSelect.setSelectedIndex(1);
+						break;
+					case 4:
+						trackersSelect.setSelectedIndex(2);
+						break;
+					case 5:
+						trackersSelect.setSelectedIndex(3);
+						break;
+					case 6:
+						trackersSelect.setSelectedIndex(4);
+						break;
+					}
+					trackersSelect.addActionListener(new ActionListener() {
+						@Override
+						public void actionPerformed(ActionEvent e) {
+							switch(trackersSelect.getSelectedIndex()) {
+							case 0:
+								server.config.setProperty("virtualtrackers", 1);
+								break;
+							case 1:
+								server.config.setProperty("virtualtrackers", 3);
+								break;
+							case 2:
+								server.config.setProperty("virtualtrackers", 4);
+								break;
+							case 3:
+								server.config.setProperty("virtualtrackers", 5);
+								break;
+							case 4:
+								server.config.setProperty("virtualtrackers", 6);
+								break;
+							}
+							server.saveConfig();
+						}
+					});
+					add(Box.createVerticalStrut(10));
+				}
 				add(new JLabel("Skeleton data"));
 				add(skeletonList);
 				add(Box.createVerticalGlue());
 			}});
 		}});
+		pane.add(Box.createVerticalGlue());
 		
 		refresh();
 		

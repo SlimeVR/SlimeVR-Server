@@ -15,6 +15,7 @@ import java.util.Queue;
 import java.util.concurrent.LinkedBlockingQueue;
 import java.util.function.Consumer;
 
+import io.eiren.util.OperatingSystem;
 import io.eiren.util.ann.ThreadSafe;
 import io.eiren.util.ann.ThreadSecure;
 import io.eiren.util.ann.VRServerThread;
@@ -23,6 +24,7 @@ import io.eiren.vr.bridge.NamedPipeVRBridge;
 import io.eiren.vr.bridge.SteamVRPipeInputBridge;
 import io.eiren.vr.bridge.VMCBridge;
 import io.eiren.vr.bridge.VRBridge;
+import io.eiren.vr.bridge.WebSocketVRBridge;
 import io.eiren.vr.processor.HumanPoseProcessor;
 import io.eiren.vr.processor.HumanSkeleton;
 import io.eiren.vr.trackers.HMDTracker;
@@ -37,7 +39,7 @@ public class VRServer extends Thread {
 	
 	private final List<Tracker> trackers = new FastList<>();
 	public final HumanPoseProcessor humanPoseProcessor;
-	private final TrackersUDPServer trackersServer = new TrackersUDPServer(6969, "Sensors UDP server", this::registerTracker);
+	private final TrackersUDPServer trackersServer;
 	private final List<VRBridge> bridges = new FastList<>();
 	private final Queue<Runnable> tasks = new LinkedBlockingQueue<>();
 	private final Map<String, TrackerConfig> configuration = new HashMap<>();
@@ -55,14 +57,25 @@ public class VRServer extends Thread {
 		humanPoseProcessor = new HumanPoseProcessor(this, hmdTracker, config.getInt("virtualtrackers", 3));
 		List<? extends Tracker> shareTrackers = humanPoseProcessor.getComputedTrackers();
 		
-		// Create named pipe bridge for SteamVR driver
-		NamedPipeVRBridge driverBridge = new NamedPipeVRBridge(hmdTracker, shareTrackers, this);
-		tasks.add(() -> driverBridge.start());
-		bridges.add(driverBridge);
-		// Create named pipe bridge for SteamVR input
-		SteamVRPipeInputBridge steamVRInput = new SteamVRPipeInputBridge(this);
-		tasks.add(() -> steamVRInput.start());
-		bridges.add(steamVRInput);
+		// Start server for SlimeVR trackers
+		trackersServer = new TrackersUDPServer(6969, "Sensors UDP server", this::registerTracker);
+		
+		// OpenVR bridge currently only supports Windows
+		if(OperatingSystem.getCurrentPlatform() == OperatingSystem.WINDOWS) {
+			// Create named pipe bridge for SteamVR driver
+			NamedPipeVRBridge driverBridge = new NamedPipeVRBridge(hmdTracker, shareTrackers, this);
+			tasks.add(() -> driverBridge.start());
+			bridges.add(driverBridge);
+			// Create named pipe bridge for SteamVR input
+			SteamVRPipeInputBridge steamVRInput = new SteamVRPipeInputBridge(this);
+			tasks.add(() -> steamVRInput.start());
+			bridges.add(steamVRInput);
+		}
+		
+		// Create WebSocket server
+		WebSocketVRBridge wsBridge = new WebSocketVRBridge(hmdTracker, shareTrackers, this);
+		tasks.add(() -> wsBridge.start());
+		bridges.add(wsBridge);
 		
 		// Create VMCBridge
 		try {
@@ -77,6 +90,13 @@ public class VRServer extends Thread {
 		registerTracker(hmdTracker);
 		for(int i = 0; i < shareTrackers.size(); ++i)
 			registerTracker(shareTrackers.get(i));
+	}
+	
+	public boolean hasBridge(Class<? extends VRBridge> bridgeClass) {
+		for(int i = 0; i < bridges.size(); ++i) {
+			return bridgeClass.isAssignableFrom(bridges.get(i).getClass());
+		}
+		return false;
 	}
 
 	@ThreadSafe
