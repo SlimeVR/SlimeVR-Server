@@ -40,6 +40,7 @@ allprojects {
 		// You can declare any Maven/Ivy/file repository here.
 		jcenter()
 		mavenCentral()
+		maven {url 'https://jitpack.io'}
 	}
 }
 

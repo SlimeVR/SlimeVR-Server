@@ -46,7 +46,14 @@ public class WiFiWindow extends JFrame {
 		
 		build();
 	}
-	
+
+	public WiFiWindow() {
+		super("WiFi Settings");
+		getContentPane().setLayout(new BoxLayout(getContentPane(), BoxLayout.LINE_AXIS));
+
+		build();
+	}
+
 	@AWTThread
 	private void build() {
 		Container pane = getContentPane();

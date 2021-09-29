@@ -1,0 +1,125 @@
+.button {
+    -fx-base: #444;
+    /*-fx-background-color: linear-gradient(#9EA7E5, #61a2b1);*/
+    -fx-effect: dropshadow(three-pass-box, rgba(0, 0, 0, 0.5), 10, 0.5, 0.0, 0.0);
+    -fx-focus-color: transparent;
+    -fx-faint-focus-color: transparent;
+    -fx-background-radius: 5,4,3,5;
+    -fx-background-insets: 0,1,2,0;
+    -fx-text-fill: #f4f4f4;
+}
+
+
+
+/*for some reason, the general assignment of parameters does not work for panes*/
+#mainPane {
+-fx-background-color: #373737;
+}
+#logoPane, #trackerPane, #skeletonPane {
+-fx-background-color: #444;
+-fx-background-radius: 15;
+-fx-effect: dropshadow(three-pass-box, rgba(0, 0, 0, 0.5), 10, 0.5, 0.0, 0.0);
+}
+
+#bodyPane {
+-fx-background-color: #444;
+-fx-background-radius: 15;
+}
+#jointTextFlow > Text {
+    -fx-fill: #f4f4f4;
+    -fx-font-size : 15px;
+    -fx-effect: dropshadow(three-pass-box, rgba(0, 0, 0, 0.5), 10, 0.5, 0.0, 0.0);
+}
+#xTextFlow > Text {
+    -fx-fill: #f4f4f4;
+    -fx-font-size : 15px;
+    -fx-effect: dropshadow(three-pass-box, rgba(0, 0, 0, 0.5), 10, 0.5, 0.0, 0.0);
+}
+#yTextFlow > Text {
+    -fx-fill: #f4f4f4;
+    -fx-font-size : 15px;
+    -fx-effect: dropshadow(three-pass-box, rgba(0, 0, 0, 0.5), 10, 0.5, 0.0, 0.0);
+}
+#zTextFlow > Text {
+    -fx-fill: #f4f4f4;
+    -fx-font-size : 15px;
+    -fx-effect: dropshadow(three-pass-box, rgba(0, 0, 0, 0.5), 10, 0.5, 0.0, 0.0);
+}
+#pitchTextFlow > Text {
+    -fx-fill: #f4f4f4;
+    -fx-font-size : 15px;
+    -fx-effect: dropshadow(three-pass-box, rgba(0, 0, 0, 0.5), 10, 0.5, 0.0, 0.0);
+}
+#yawTextFlow > Text {
+    -fx-fill: #f4f4f4;
+    -fx-font-size : 15px;
+    -fx-effect: dropshadow(three-pass-box, rgba(0, 0, 0, 0.5), 10, 0.5, 0.0, 0.0);
+}
+#rollTextFlow > Text {
+    -fx-fill: #f4f4f4;
+    -fx-font-size : 15px;
+    -fx-effect: dropshadow(three-pass-box, rgba(0, 0, 0, 0.5), 10, 0.5, 0.0, 0.0);
+}
+
+
+#logoText {
+-fx-font-family: 'Harlow Solid Italic';
+-fx-font-size: 32px;
+-fx-text-fill: linear-gradient(#be5bd0, #650d62);
+-fx-effect: dropshadow(three-pass-box, rgba(0, 0, 0, 0.5), 10, 0.5, 0.0, 0.0);
+}
+
+
+
+/*menu panel*/
+#fxMenuBar {
+	-fx-accent: black;
+	-fx-focus-color: -fx-accent;
+	-fx-base: black;
+	-fx-control-inner-background: derive(-fx-base, 35%);
+}
+.menu-bar .menu-button:hover {
+    -fx-background-color: black;
+}
+.menu-bar .menu-button:focused, .menu-bar .menu-button:showing {
+    -fx-background-color: black;
+    -fx-opacity: 0.6;
+}
+.menu-bar .menu-item:hover, .menu-bar .menu-item:focused {
+    -fx-background-color: black;
+}
+.menu-bar .menu-item:showing {
+    -fx-background-color: black;
+    -fx-opacity: 0.6;
+}
+
+
+
+/*close, tray buttons */
+#closeBTN {
+    -fx-background-image: url("close-v3.png");
+    -fx-background-size: 25 25;
+    -fx-background-repeat: no-repeat;
+    -fx-background-position:left;
+    -fx-background-color:#444;
+}
+#closeBTN:hover {
+    -fx-background-image: url("close-onAction-v2.png");
+    -fx-background-size: 25 25;
+    -fx-background-repeat: no-repeat;
+    -fx-background-position:left;
+}
+#trayBTN {
+    -fx-background-image: url("tray-v3.png");
+    -fx-background-size: 25 25;
+    -fx-background-repeat: no-repeat;
+    -fx-background-position:left;
+    -fx-background-color:#444;
+}
+#trayBTN:hover {
+    -fx-background-image: url("tray-onAction-v2.png");
+    -fx-background-size: 25 25;
+    -fx-background-repeat: no-repeat;
+    -fx-background-position:left;
+}
+
