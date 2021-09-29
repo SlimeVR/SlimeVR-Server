@@ -1,0 +1,443 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!--
+  Copyright (c) 2015, 2019, Gluon and/or its affiliates.
+  All rights reserved. Use is subject to license terms.
+
+  This file is available and licensed under the following license:
+
+  Redistribution and use in source and binary forms, with or without
+  modification, are permitted provided that the following conditions
+  are met:
+
+  - Redistributions of source code must retain the above copyright
+    notice, this list of conditions and the following disclaimer.
+  - Redistributions in binary form must reproduce the above copyright
+    notice, this list of conditions and the following disclaimer in
+    the documentation and/or other materials provided with the distribution.
+  - Neither the name of Oracle Corporation nor the names of its
+    contributors may be used to endorse or promote products derived
+    from this software without specific prior written permission.
+
+  THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS
+  "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT
+  LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR
+  A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT
+  OWNER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL,
+  SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT
+  LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE,
+  DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY
+  THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
+  (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
+  OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+-->
+
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.Menu?>
+<?import javafx.scene.control.MenuBar?>
+<?import javafx.scene.control.MenuItem?>
+<?import javafx.scene.control.SeparatorMenuItem?>
+<?import javafx.scene.effect.DropShadow?>
+<?import javafx.scene.image.Image?>
+<?import javafx.scene.image.ImageView?>
+<?import javafx.scene.layout.AnchorPane?>
+<?import javafx.scene.text.Font?>
+<?import javafx.scene.text.TextFlow?>
+
+<AnchorPane fx:id="mainPane" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" minHeight="-Infinity" minWidth="-Infinity" prefHeight="633.0" prefWidth="950.0" stylesheets="@main.css" xmlns="http://javafx.com/javafx/16" xmlns:fx="http://javafx.com/fxml/1">
+   <children>
+
+      <MenuBar fx:id="fxMenuBar" prefHeight="27.0" prefWidth="950.0">
+        <menus>
+          <Menu fx:id="helpMenu" mnemonicParsing="false" text="Help">
+            <items>
+                  <MenuItem mnemonicParsing="false" text="Getting Started" />
+                  <SeparatorMenuItem mnemonicParsing="false" />
+                  <MenuItem mnemonicParsing="false" text="Check for Updates" />
+              <MenuItem mnemonicParsing="false" text="About" />
+            </items>
+          </Menu>
+        </menus>
+      </MenuBar>
+<!--      <ImageView fitHeight="25.0" fitWidth="25.0" layoutX="925.0">-->
+<!--         <image>-->
+<!--            <Image  url="@close-v3.png" />-->
+<!--         </image>-->
+<!--         <effect>-->
+<!--            <DropShadow />-->
+<!--         </effect>-->
+<!--      </ImageView>-->
+<!--      <ImageView fitHeight="25.0" fitWidth="25.0" layoutX="897.0">-->
+<!--         <image>-->
+<!--            <Image fx:id="fxTray" url="@tray-v3.png" />-->
+<!--         </image>-->
+<!--         <effect>-->
+<!--            <DropShadow />-->
+<!--         </effect>-->
+<!--      </ImageView>-->
+      <AnchorPane fx:id="logoPane" layoutX="14.0" layoutY="34.0" prefHeight="70.0" prefWidth="221.0">
+         <children>
+            <ImageView fitHeight="60.0" fitWidth="60.0" layoutX="7.0" layoutY="5.0">
+               <image>
+                  <Image url="@v6.gif" />
+               </image>
+               <effect>
+                  <DropShadow />
+               </effect>
+            </ImageView>
+            <Label fx:id="logoText" layoutX="75.0" layoutY="3.0" prefHeight="51.0" prefWidth="141.0" text="SlimeVR" textOverrun="CLIP" />
+         </children>
+      </AnchorPane>
+      <AnchorPane fx:id="trackerPane" layoutX="14.0" layoutY="124.0" prefHeight="488.0" prefWidth="497.0" />
+      <Button fx:id="wifiBTN" layoutX="855.0" layoutY="43.0" mnemonicParsing="false" prefHeight="50.0" prefWidth="81.0" textFill="#f4f4f4">
+         <font>
+            <Font size="14.0" />
+         </font>
+         <graphic>
+            <ImageView fitHeight="41.0" fitWidth="60.0">
+               <image>
+                  <Image url="@wi-fi.png" />
+               </image>
+               <effect>
+                  <DropShadow />
+               </effect>
+            </ImageView>
+         </graphic>
+      </Button>
+      <Button layoutX="737.0" layoutY="53.0" mnemonicParsing="false" prefHeight="31.0" prefWidth="85.0" text="Fast Reset">
+         <font>
+            <Font size="14.0" />
+         </font>
+      </Button>
+      <Button layoutX="644.0" layoutY="53.0" mnemonicParsing="false" prefHeight="31.0" prefWidth="85.0" text="Reset">
+         <font>
+            <Font size="14.0" />
+         </font>
+      </Button>
+      <AnchorPane fx:id="skeletonPane" layoutX="528.0" layoutY="124.0" prefHeight="488.0" prefWidth="409.0">
+         <children>
+            <Button fx:id="skeletonBTN" layoutX="12.0" layoutY="14.0" mnemonicParsing="false" prefHeight="31.0" prefWidth="85.0" text="Skeleton">
+               <font>
+                  <Font size="14.0" />
+               </font>
+            </Button>
+            <Button layoutX="163.0" layoutY="14.0" mnemonicParsing="false" prefHeight="31.0" prefWidth="85.0" text="Reset All">
+               <font>
+                  <Font size="14.0" />
+               </font>
+            </Button>
+            <Button layoutX="311.0" layoutY="14.0" mnemonicParsing="false" prefHeight="31.0" prefWidth="85.0" text="Auto">
+               <font>
+                  <Font size="14.0" />
+               </font>
+            </Button>
+            <Label layoutX="35.0" layoutY="72.0" text="Chest" textFill="#f4f4f4">
+               <font>
+                  <Font size="16.0" />
+               </font>
+               <effect>
+                  <DropShadow />
+               </effect>
+            </Label>
+            <Button layoutX="117.0" layoutY="69.0" mnemonicParsing="false" prefHeight="31.0" prefWidth="31.0" text="+">
+               <font>
+                  <Font name="System Bold Italic" size="15.0" />
+               </font>
+            </Button>
+            <Label alignment="CENTER" layoutX="175.0" layoutY="70.0" prefHeight="30.0" prefWidth="60.0" text="000" textAlignment="CENTER" textFill="#f4f4f4" wrapText="true">
+               <font>
+                  <Font name="System Bold" size="20.0" />
+               </font>
+               <effect>
+                  <DropShadow />
+               </effect>
+            </Label>
+            <Button layoutX="263.0" layoutY="69.0" mnemonicParsing="false" prefHeight="31.0" prefWidth="31.0" text="-">
+               <font>
+                  <Font name="System Bold Italic" size="15.0" />
+               </font>
+            </Button>
+            <Button layoutX="340.0" layoutY="69.0" mnemonicParsing="false" prefHeight="31.0" prefWidth="55.0" text="Reset">
+               <font>
+                  <Font size="14.0" />
+               </font>
+            </Button>
+            <Button layoutX="340.0" layoutY="114.0" mnemonicParsing="false" prefHeight="31.0" prefWidth="55.0" text="Reset">
+               <font>
+                  <Font size="14.0" />
+               </font>
+            </Button>
+            <Button layoutX="340.0" layoutY="159.0" mnemonicParsing="false" prefHeight="31.0" prefWidth="55.0" text="Reset">
+               <font>
+                  <Font size="14.0" />
+               </font>
+            </Button>
+            <Button layoutX="340.0" layoutY="204.0" mnemonicParsing="false" prefHeight="31.0" prefWidth="55.0" text="Reset">
+               <font>
+                  <Font size="14.0" />
+               </font>
+            </Button>
+            <Button layoutX="340.0" layoutY="249.0" mnemonicParsing="false" prefHeight="31.0" prefWidth="55.0" text="Reset">
+               <font>
+                  <Font size="14.0" />
+               </font>
+            </Button>
+            <Button layoutX="340.0" layoutY="294.0" mnemonicParsing="false" prefHeight="31.0" prefWidth="55.0" text="Reset">
+               <font>
+                  <Font size="14.0" />
+               </font>
+            </Button>
+            <Button layoutX="340.0" layoutY="339.0" mnemonicParsing="false" prefHeight="31.0" prefWidth="55.0" text="Reset">
+               <font>
+                  <Font size="14.0" />
+               </font>
+            </Button>
+            <Button layoutX="340.0" layoutY="384.0" mnemonicParsing="false" prefHeight="31.0" prefWidth="55.0" text="Reset">
+               <font>
+                  <Font size="14.0" />
+               </font>
+            </Button>
+            <Button layoutX="340.0" layoutY="429.0" mnemonicParsing="false" prefHeight="31.0" prefWidth="55.0" text="Reset">
+               <font>
+                  <Font size="14.0" />
+               </font>
+            </Button>
+            <Button layoutX="117.0" layoutY="114.0" mnemonicParsing="false" prefHeight="31.0" prefWidth="31.0" text="+">
+               <font>
+                  <Font name="System Bold Italic" size="15.0" />
+               </font>
+            </Button>
+            <Button layoutX="117.0" layoutY="159.0" mnemonicParsing="false" prefHeight="31.0" prefWidth="31.0" text="+">
+               <font>
+                  <Font name="System Bold Italic" size="15.0" />
+               </font>
+            </Button>
+            <Button layoutX="117.0" layoutY="204.0" mnemonicParsing="false" prefHeight="31.0" prefWidth="31.0" text="+">
+               <font>
+                  <Font name="System Bold Italic" size="15.0" />
+               </font>
+            </Button>
+            <Button layoutX="117.0" layoutY="249.0" mnemonicParsing="false" prefHeight="31.0" prefWidth="8.0" text="+">
+               <font>
+                  <Font name="System Bold Italic" size="15.0" />
+               </font>
+            </Button>
+            <Button layoutX="117.0" layoutY="294.0" mnemonicParsing="false" prefHeight="31.0" prefWidth="8.0" text="+">
+               <font>
+                  <Font name="System Bold Italic" size="15.0" />
+               </font>
+            </Button>
+            <Button layoutX="117.0" layoutY="339.0" mnemonicParsing="false" prefHeight="31.0" prefWidth="8.0" text="+">
+               <font>
+                  <Font name="System Bold Italic" size="15.0" />
+               </font>
+            </Button>
+            <Button layoutX="117.0" layoutY="384.0" mnemonicParsing="false" prefHeight="31.0" prefWidth="8.0" text="+">
+               <font>
+                  <Font name="System Bold Italic" size="15.0" />
+               </font>
+            </Button>
+            <Button layoutX="117.0" layoutY="429.0" mnemonicParsing="false" prefHeight="31.0" prefWidth="8.0" text="+">
+               <font>
+                  <Font name="System Bold Italic" size="15.0" />
+               </font>
+            </Button>
+            <Button layoutX="263.0" layoutY="114.0" mnemonicParsing="false" prefHeight="31.0" prefWidth="31.0" text="-">
+               <font>
+                  <Font name="System Bold Italic" size="15.0" />
+               </font>
+            </Button>
+            <Button layoutX="263.0" layoutY="159.0" mnemonicParsing="false" prefHeight="31.0" prefWidth="31.0" text="-">
+               <font>
+                  <Font name="System Bold Italic" size="15.0" />
+               </font>
+            </Button>
+            <Button layoutX="263.0" layoutY="204.0" mnemonicParsing="false" prefHeight="31.0" prefWidth="31.0" text="-">
+               <font>
+                  <Font name="System Bold Italic" size="15.0" />
+               </font>
+            </Button>
+            <Button layoutX="263.0" layoutY="249.0" mnemonicParsing="false" prefHeight="31.0" prefWidth="31.0" text="-">
+               <font>
+                  <Font name="System Bold Italic" size="15.0" />
+               </font>
+            </Button>
+            <Button layoutX="263.0" layoutY="294.0" mnemonicParsing="false" prefHeight="31.0" prefWidth="31.0" text="-">
+               <font>
+                  <Font name="System Bold Italic" size="15.0" />
+               </font>
+            </Button>
+            <Button layoutX="263.0" layoutY="339.0" mnemonicParsing="false" prefHeight="31.0" prefWidth="31.0" text="-">
+               <font>
+                  <Font name="System Bold Italic" size="15.0" />
+               </font>
+            </Button>
+            <Button layoutX="263.0" layoutY="384.0" mnemonicParsing="false" prefHeight="31.0" prefWidth="31.0" text="-">
+               <font>
+                  <Font name="System Bold Italic" size="15.0" />
+               </font>
+            </Button>
+            <Button layoutX="263.0" layoutY="429.0" mnemonicParsing="false" prefHeight="31.0" prefWidth="31.0" text="-">
+               <font>
+                  <Font name="System Bold Italic" size="15.0" />
+               </font>
+            </Button>
+            <Label layoutX="35.0" layoutY="117.0" text="Waist" textFill="#f4f4f4">
+               <font>
+                  <Font size="16.0" />
+               </font>
+               <effect>
+                  <DropShadow />
+               </effect>
+            </Label>
+            <Label layoutX="16.0" layoutY="162.0" text="Hips width" textFill="#f4f4f4">
+               <font>
+                  <Font size="16.0" />
+               </font>
+               <effect>
+                  <DropShadow />
+               </effect>
+            </Label>
+            <Label layoutX="14.0" layoutY="207.0" text="Legs length" textFill="#f4f4f4">
+               <font>
+                  <Font size="16.0" />
+               </font>
+               <effect>
+                  <DropShadow />
+               </effect>
+            </Label>
+            <Label layoutX="12.0" layoutY="253.0" text="Knee height" textFill="#f4f4f4">
+               <font>
+                  <Font size="16.0" />
+               </font>
+               <effect>
+                  <DropShadow />
+               </effect>
+            </Label>
+            <Label layoutX="14.0" layoutY="297.0" text="Foot length" textFill="#f4f4f4">
+               <font>
+                  <Font size="16.0" />
+               </font>
+               <effect>
+                  <DropShadow />
+               </effect>
+            </Label>
+            <Label layoutX="14.0" layoutY="342.0" text="Head offset" textFill="#f4f4f4">
+               <font>
+                  <Font size="16.0" />
+               </font>
+               <effect>
+                  <DropShadow />
+               </effect>
+            </Label>
+            <Label layoutX="12.0" layoutY="387.0" text="Neck length" textFill="#f4f4f4">
+               <font>
+                  <Font size="16.0" />
+               </font>
+               <effect>
+                  <DropShadow />
+               </effect>
+            </Label>
+            <Label layoutX="11.0" layoutY="432.0" text="Virtual waist" textFill="#f4f4f4">
+               <font>
+                  <Font size="16.0" />
+               </font>
+               <effect>
+                  <DropShadow />
+               </effect>
+            </Label>
+            <Label alignment="CENTER" layoutX="175.0" layoutY="115.0" prefHeight="30.0" prefWidth="60.0" text="000" textAlignment="CENTER" textFill="#f4f4f4" wrapText="true">
+               <font>
+                  <Font name="System Bold" size="20.0" />
+               </font>
+               <effect>
+                  <DropShadow />
+               </effect>
+            </Label>
+            <Label alignment="CENTER" layoutX="175.0" layoutY="160.0" prefHeight="30.0" prefWidth="60.0" text="000" textAlignment="CENTER" textFill="#f4f4f4" wrapText="true">
+               <font>
+                  <Font name="System Bold" size="20.0" />
+               </font>
+               <effect>
+                  <DropShadow />
+               </effect>
+            </Label>
+            <Label alignment="CENTER" layoutX="175.0" layoutY="205.0" prefHeight="30.0" prefWidth="60.0" text="000" textAlignment="CENTER" textFill="#f4f4f4" wrapText="true">
+               <font>
+                  <Font name="System Bold" size="20.0" />
+               </font>
+               <effect>
+                  <DropShadow />
+               </effect>
+            </Label>
+            <Label alignment="CENTER" layoutX="175.0" layoutY="251.0" prefHeight="30.0" prefWidth="60.0" text="000" textAlignment="CENTER" textFill="#f4f4f4" wrapText="true">
+               <font>
+                  <Font name="System Bold" size="20.0" />
+               </font>
+               <effect>
+                  <DropShadow />
+               </effect>
+            </Label>
+            <Label alignment="CENTER" layoutX="175.0" layoutY="295.0" prefHeight="30.0" prefWidth="60.0" text="000" textAlignment="CENTER" textFill="#f4f4f4" wrapText="true">
+               <font>
+                  <Font name="System Bold" size="20.0" />
+               </font>
+               <effect>
+                  <DropShadow />
+               </effect>
+            </Label>
+            <Label alignment="CENTER" layoutX="175.0" layoutY="340.0" prefHeight="30.0" prefWidth="60.0" text="000" textAlignment="CENTER" textFill="#f4f4f4" wrapText="true">
+               <font>
+                  <Font name="System Bold" size="20.0" />
+               </font>
+               <effect>
+                  <DropShadow />
+               </effect>
+            </Label>
+            <Label alignment="CENTER" layoutX="175.0" layoutY="385.0" prefHeight="30.0" prefWidth="60.0" text="000" textAlignment="CENTER" textFill="#f4f4f4" wrapText="true">
+               <font>
+                  <Font name="System Bold" size="20.0" />
+               </font>
+               <effect>
+                  <DropShadow />
+               </effect>
+            </Label>
+            <Label alignment="CENTER" layoutX="175.0" layoutY="430.0" prefHeight="30.0" prefWidth="60.0" text="000" textAlignment="CENTER" textFill="#f4f4f4" wrapText="true">
+               <font>
+                  <Font name="System Bold" size="20.0" />
+               </font>
+               <effect>
+                  <DropShadow />
+               </effect>
+            </Label>
+         </children>
+      </AnchorPane>
+      <AnchorPane fx:id="bodyPane" layoutX="528.0" layoutY="124.0" prefHeight="488.0" prefWidth="409.0" visible="false">
+         <children>
+            <Button fx:id="bodyBTN" layoutX="12.0" layoutY="14.0" mnemonicParsing="false" prefHeight="31.0" prefWidth="85.0" text="Body">
+               <font>
+                  <Font size="14.0" />
+               </font>
+            </Button>
+            <TextFlow fx:id="jointTextFlow" layoutX="17.0" layoutY="58.0" prefHeight="416.0" prefWidth="93.0" />
+            <TextFlow fx:id="skeletonTextFlow1" layoutX="110.0" layoutY="58.0" prefHeight="416.0" prefWidth="47.0" />
+            <TextFlow layoutX="111.0" layoutY="58.0" prefHeight="416.0" prefWidth="47.0" fx:id="xTextFlow" />
+            <TextFlow fx:id="yTextFlow" layoutX="157.0" layoutY="58.0" prefHeight="416.0" prefWidth="47.0" />
+            <TextFlow fx:id="zTextFlow" layoutX="204.0" layoutY="58.0" prefHeight="416.0" prefWidth="47.0" />
+            <TextFlow fx:id="pitchTextFlow" layoutX="251.0" layoutY="58.0" prefHeight="416.0" prefWidth="47.0" />
+            <TextFlow fx:id="yawTextFlow" layoutX="298.0" layoutY="58.0" prefHeight="416.0" prefWidth="47.0" />
+            <TextFlow fx:id="rollTextFlow" layoutX="345.0" layoutY="58.0" prefHeight="416.0" prefWidth="47.0" />
+         </children>
+      </AnchorPane>
+      <Button fx:id="closeBTN" layoutX="925.0" layoutY="1.0" mnemonicParsing="false" prefHeight="25.0" prefWidth="25.0">
+         <effect>
+            <DropShadow />
+         </effect></Button>
+      <Button fx:id="trayBTN" layoutX="896.0" layoutY="1.0" mnemonicParsing="false" prefHeight="25.0" prefWidth="25.0">
+         <effect>
+            <DropShadow />
+         </effect>
+      </Button>
+   </children>
+</AnchorPane>

@@ -3,6 +3,7 @@ package io.eiren.vr;
 import java.io.File;
 
 import io.eiren.gui.VRServerGUI;
+import io.eiren.newGui.MainStage;
 import io.eiren.util.logging.LogManager;
 
 public class Main {
@@ -27,6 +28,9 @@ public class Main {
 			vrServer = new VRServer();
 			vrServer.start();
 			new VRServerGUI(vrServer);
+
+			MainStage.launch(MainStage.class);
+
 		} catch(Throwable e) {
 			e.printStackTrace();
 			try {

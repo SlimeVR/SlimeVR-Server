@@ -39,6 +39,7 @@ repositories {
 	// You can declare any Maven/Ivy/file repository here.
 	jcenter()
 	mavenCentral()
+	maven {url 'https://jitpack.io'}
 }
 
 dependencies {
@@ -51,11 +52,20 @@ dependencies {
 	compile 'net.java.dev.jna:jna-platform:5.6.0'
 	compile 'com.illposed.osc:javaosc-core:0.8'
 	compile 'com.fazecast:jSerialComm:[2.0.0,3.0.0)'
+	compile group: 'com.dustinredmond.fxtrayicon', name: 'FXTrayIcon', version: '3.0.1'
 	compile 'com.google.protobuf:protobuf-java:3.17.3'
 	compile "org.java-websocket:Java-WebSocket:1.5.1"
 
 	// This dependency is used internally, and not exposed to consumers on their own compile classpath.
 	implementation 'com.google.guava:guava:28.2-jre'
+
+	implementation 'org.openjfx:javafx-base:18-ea+2'
+	implementation 'org.openjfx:javafx-graphics:18-ea+2'
+	implementation 'org.openjfx:javafx-controls:18-ea+2'
+	implementation 'org.openjfx:javafx-fxml:18-ea+2'
+	implementation 'org.openjfx:javafx-swing:18-ea+2'
+	implementation 'org.openjfx:javafx-media:18-ea+2'
+	implementation 'com.jfoenix:jfoenix:9.0.10'
 
 	// Use JUnit test framework
 	testImplementation platform('org.junit:junit-bom:5.7.2')
