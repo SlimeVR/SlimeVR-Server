@@ -412,6 +412,11 @@
             <TextFlow fx:id="pitchTextFlow" layoutX="251.0" layoutY="58.0" prefHeight="416.0" prefWidth="47.0" />
             <TextFlow fx:id="yawTextFlow" layoutX="298.0" layoutY="58.0" prefHeight="416.0" prefWidth="47.0" />
             <TextFlow fx:id="rollTextFlow" layoutX="345.0" layoutY="58.0" prefHeight="416.0" prefWidth="47.0" />
+            <Button fx:id="bodyArrowBTN" layoutX="110.0" layoutY="14.0" mnemonicParsing="false" onAction="#bodyArrowBtnAction" prefHeight="31.0" prefWidth="31.0" text="❮" textAlignment="CENTER">
+               <font>
+                  <Font name="System Bold" size="15.0" />
+               </font>
+            </Button>
          </children>
       </AnchorPane>
       <Button fx:id="closeBTN" layoutX="925.0" layoutY="1.0" mnemonicParsing="false" onAction="#closeBtnAction" prefHeight="25.0" prefWidth="25.0">

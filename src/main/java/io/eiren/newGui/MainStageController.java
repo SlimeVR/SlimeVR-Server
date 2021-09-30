@@ -21,6 +21,7 @@ import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.control.Button;
 import javafx.scene.control.MenuBar;
+import javafx.scene.effect.DropShadow;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.text.Text;
@@ -67,6 +68,12 @@ public class MainStageController implements Initializable {
 	@FXML
 	private TextFlow rollTextFlow;
 
+	@FXML
+	private Button bodyArrowBTN;
+
+	@FXML
+	private Button bodyBTN;
+
 	private int i = 0;
 	private int n = 0;
 
@@ -107,8 +114,28 @@ public class MainStageController implements Initializable {
 	}
 
 	@FXML
+	private void bodyArrowBtnAction(ActionEvent event) {
+		bodyPane.setLayoutX(102);
+		bodyPane.setLayoutY(124);
+		bodyPane.setEffect(new DropShadow());
+		bodyArrowBTN.setVisible(false);
+		bodyBTN.setText("\uD83D\uDFAB");
+		bodyBTN.setPrefSize(31, 31);
+		bodyBTN.setStyle("-fx-font-size : 13.5px");
+		bodyBTN.setLayoutX(364);
+		bodyBTN.setLayoutY(14);
+	}
+
+	@FXML
 	private void skeletonBtnAction(ActionEvent event) {
 		bodyPane.setVisible(true);
+		bodyPane.setLayoutX(528);
+		bodyPane.setLayoutY(124);
+		bodyArrowBTN.setVisible(true);
+		bodyBTN.setText("Body");
+		bodyBTN.setPrefSize(85, 31);
+		bodyBTN.setLayoutX(12);
+		bodyBTN.setLayoutY(14);
 	}
 
 	@FXML
