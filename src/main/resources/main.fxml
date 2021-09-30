@@ -60,22 +60,6 @@
           </Menu>
         </menus>
       </MenuBar>
-<!--      <ImageView fitHeight="25.0" fitWidth="25.0" layoutX="925.0">-->
-<!--         <image>-->
-<!--            <Image  url="@close-v3.png" />-->
-<!--         </image>-->
-<!--         <effect>-->
-<!--            <DropShadow />-->
-<!--         </effect>-->
-<!--      </ImageView>-->
-<!--      <ImageView fitHeight="25.0" fitWidth="25.0" layoutX="897.0">-->
-<!--         <image>-->
-<!--            <Image fx:id="fxTray" url="@tray-v3.png" />-->
-<!--         </image>-->
-<!--         <effect>-->
-<!--            <DropShadow />-->
-<!--         </effect>-->
-<!--      </ImageView>-->
       <AnchorPane fx:id="logoPane" layoutX="14.0" layoutY="34.0" prefHeight="70.0" prefWidth="221.0">
          <children>
             <ImageView fitHeight="60.0" fitWidth="60.0" layoutX="7.0" layoutY="5.0">
@@ -90,7 +74,7 @@
          </children>
       </AnchorPane>
       <AnchorPane fx:id="trackerPane" layoutX="14.0" layoutY="124.0" prefHeight="488.0" prefWidth="497.0" />
-      <Button fx:id="wifiBTN" layoutX="855.0" layoutY="43.0" mnemonicParsing="false" prefHeight="50.0" prefWidth="81.0" textFill="#f4f4f4">
+      <Button fx:id="wifiBTN" layoutX="855.0" layoutY="43.0" mnemonicParsing="false" onAction="#wifiBtnAction" prefHeight="50.0" prefWidth="81.0" textFill="#f4f4f4">
          <font>
             <Font size="14.0" />
          </font>
@@ -105,19 +89,19 @@
             </ImageView>
          </graphic>
       </Button>
-      <Button layoutX="737.0" layoutY="53.0" mnemonicParsing="false" prefHeight="31.0" prefWidth="85.0" text="Fast Reset">
+      <Button fx:id="fastReset" layoutX="737.0" layoutY="53.0" mnemonicParsing="false" onAction="#fastReset" prefHeight="31.0" prefWidth="85.0" text="Fast Reset">
          <font>
             <Font size="14.0" />
          </font>
       </Button>
-      <Button layoutX="644.0" layoutY="53.0" mnemonicParsing="false" prefHeight="31.0" prefWidth="85.0" text="Reset">
+      <Button fx:id="reset" layoutX="644.0" layoutY="53.0" mnemonicParsing="false" onAction="#reset" prefHeight="31.0" prefWidth="85.0" text="Reset">
          <font>
             <Font size="14.0" />
          </font>
       </Button>
       <AnchorPane fx:id="skeletonPane" layoutX="528.0" layoutY="124.0" prefHeight="488.0" prefWidth="409.0">
          <children>
-            <Button fx:id="skeletonBTN" layoutX="12.0" layoutY="14.0" mnemonicParsing="false" prefHeight="31.0" prefWidth="85.0" text="Skeleton">
+            <Button fx:id="skeletonBTN" layoutX="12.0" layoutY="14.0" mnemonicParsing="false" onAction="#skeletonBtnAction" prefHeight="31.0" prefWidth="85.0" text="Skeleton">
                <font>
                   <Font size="14.0" />
                </font>
@@ -415,7 +399,7 @@
       </AnchorPane>
       <AnchorPane fx:id="bodyPane" layoutX="528.0" layoutY="124.0" prefHeight="488.0" prefWidth="409.0" visible="false">
          <children>
-            <Button fx:id="bodyBTN" layoutX="12.0" layoutY="14.0" mnemonicParsing="false" prefHeight="31.0" prefWidth="85.0" text="Body">
+            <Button fx:id="bodyBTN" layoutX="12.0" layoutY="14.0" mnemonicParsing="false" onAction="#bodyBtnAction" prefHeight="31.0" prefWidth="85.0" text="Body">
                <font>
                   <Font size="14.0" />
                </font>
@@ -430,11 +414,11 @@
             <TextFlow fx:id="rollTextFlow" layoutX="345.0" layoutY="58.0" prefHeight="416.0" prefWidth="47.0" />
          </children>
       </AnchorPane>
-      <Button fx:id="closeBTN" layoutX="925.0" layoutY="1.0" mnemonicParsing="false" prefHeight="25.0" prefWidth="25.0">
+      <Button fx:id="closeBTN" layoutX="925.0" layoutY="1.0" mnemonicParsing="false" onAction="#closeBtnAction" prefHeight="25.0" prefWidth="25.0">
          <effect>
             <DropShadow />
          </effect></Button>
-      <Button fx:id="trayBTN" layoutX="896.0" layoutY="1.0" mnemonicParsing="false" prefHeight="25.0" prefWidth="25.0">
+      <Button fx:id="trayBTN" layoutX="896.0" layoutY="1.0" mnemonicParsing="false" onAction="#trayBtnAction" prefHeight="25.0" prefWidth="25.0">
          <effect>
             <DropShadow />
          </effect>
