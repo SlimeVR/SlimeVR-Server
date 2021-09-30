@@ -6,7 +6,6 @@ import com.jme3.math.Vector3f;
 
 import io.eiren.math.FloatMath;
 import io.eiren.util.BufferedTimer;
-import io.eiren.vr.processor.TrackerBodyPosition;
 
 public class IMUTracker implements Tracker, TrackerWithTPS, TrackerWithBattery {
 	
@@ -21,6 +20,7 @@ public class IMUTracker implements Tracker, TrackerWithTPS, TrackerWithBattery {
 	protected final Quaternion correction = new Quaternion();
 	protected TrackerMountingRotation mounting = null;
 	protected TrackerStatus status = TrackerStatus.OK;
+	protected final int trackerId;
 	
 	protected final String name;
 	protected final TrackersUDPServer server;
@@ -37,11 +37,12 @@ public class IMUTracker implements Tracker, TrackerWithTPS, TrackerWithBattery {
 	
 	public StringBuilder serialBuffer = new StringBuilder();
 	long lastSerialUpdate = 0;
-	public TrackerBodyPosition bodyPosition = null;
+	public TrackerPosition bodyPosition = null;
 	
-	public IMUTracker(String name, TrackersUDPServer server) {
+	public IMUTracker(int trackerId, String name, TrackersUDPServer server) {
 		this.name = name;
 		this.server = server;
+		this.trackerId = trackerId;
 	}
 	
 	@Override
@@ -64,7 +65,7 @@ public class IMUTracker implements Tracker, TrackerWithTPS, TrackerWithBattery {
 			} else {
 				rotAdjust.loadIdentity();
 			}
-			bodyPosition = TrackerBodyPosition.getByDesignation(config.designation);
+			bodyPosition = TrackerPosition.getByDesignation(config.designation);
 		}
 	}
 	
@@ -188,12 +189,12 @@ public class IMUTracker implements Tracker, TrackerWithTPS, TrackerWithBattery {
 	}
 
 	@Override
-	public TrackerBodyPosition getBodyPosition() {
+	public TrackerPosition getBodyPosition() {
 		return bodyPosition;
 	}
 
 	@Override
-	public void setBodyPosition(TrackerBodyPosition position) {
+	public void setBodyPosition(TrackerPosition position) {
 		this.bodyPosition = position;
 	}
 
@@ -242,5 +243,10 @@ public class IMUTracker implements Tracker, TrackerWithTPS, TrackerWithBattery {
 	@Override
 	public boolean isComputed() {
 		return false;
+	}
+
+	@Override
+	public int getTrackerId() {
+		return this.trackerId;
 	}
 }

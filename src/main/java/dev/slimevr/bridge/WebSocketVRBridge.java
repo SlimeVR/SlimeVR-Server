@@ -45,7 +45,7 @@ public class WebSocketVRBridge extends WebSocketServer implements Bridge {
 		this.internalTrackers = new FastList<>(shareTrackers.size());
 		for(int i = 0; i < shareTrackers.size(); ++i) {
 			Tracker t = shareTrackers.get(i);
-			ComputedTracker ct = new ComputedTracker("internal://" + t.getName(), true, true);
+			ComputedTracker ct = new ComputedTracker(t.getTrackerId(), "internal://" + t.getName(), true, true);
 			ct.setStatus(TrackerStatus.OK);
 			ct.bodyPosition = t.getBodyPosition();
 			this.internalTrackers.add(ct);
@@ -184,5 +184,10 @@ public class WebSocketVRBridge extends WebSocketServer implements Bridge {
 	public void removeSharedTracker(Tracker tracker) {
 		// TODO Auto-generated method stub
 		
+	}
+
+	@Override
+	public void startBridge() {
+		start();
 	}
 }

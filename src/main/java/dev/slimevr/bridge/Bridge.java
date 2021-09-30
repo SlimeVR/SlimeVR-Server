@@ -1,6 +1,5 @@
 package dev.slimevr.bridge;
 
-import io.eiren.util.ann.ThreadSafe;
 import io.eiren.util.ann.VRServerThread;
 import io.eiren.vr.trackers.Tracker;
 
@@ -25,7 +24,7 @@ public interface Bridge {
 	 * this bridge serves, and start sending data each update
 	 * @param tracker
 	 */
-	@ThreadSafe
+	@VRServerThread
 	public void addSharedTracker(Tracker tracker);
 	
 	/**
@@ -36,6 +35,9 @@ public interface Bridge {
 	 * available.
 	 * @param tracker
 	 */
-	@ThreadSafe
+	@VRServerThread
 	public void removeSharedTracker(Tracker tracker);
+
+	@VRServerThread
+	public void startBridge();
 }

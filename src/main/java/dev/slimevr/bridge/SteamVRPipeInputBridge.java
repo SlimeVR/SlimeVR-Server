@@ -18,9 +18,9 @@ import com.sun.jna.ptr.IntByReference;
 import io.eiren.util.collections.FastList;
 import io.eiren.util.logging.LogManager;
 import io.eiren.vr.VRServer;
-import io.eiren.vr.processor.TrackerBodyPosition;
 import io.eiren.vr.trackers.VRTracker;
 import io.eiren.vr.trackers.Tracker;
+import io.eiren.vr.trackers.TrackerPosition;
 import io.eiren.vr.trackers.TrackerStatus;
 
 public class SteamVRPipeInputBridge extends Thread implements Bridge {
@@ -114,7 +114,7 @@ public class SteamVRPipeInputBridge extends Thread implements Bridge {
 			}
 			VRTracker oldTracker;
 			synchronized(trackersInternal) {
-				oldTracker = trackersInternal.put(internalTracker.id, internalTracker);
+				oldTracker = trackersInternal.put(internalTracker.getTrackerId(), internalTracker);
 			}
 			if(oldTracker != null) {
 				LogManager.log.severe("[SteamVRPipeInputBridge] New tracker added with the same id. Supplied: " + commandBuilder.toString());
@@ -175,11 +175,11 @@ public class SteamVRPipeInputBridge extends Thread implements Bridge {
 						VRTracker internalTracker = iterator.next();
 						for(int i = 0; i < trackers.size(); ++i) {
 							VRTracker t = trackers.get(i);
-							if(t.id == internalTracker.id)
+							if(t.getTrackerId() == internalTracker.getTrackerId())
 								continue internal;
 						}
 						// Tracker is not found in current trackers
-						VRTracker tracker = new VRTracker(internalTracker.id, internalTracker.getName(), true, true);
+						VRTracker tracker = new VRTracker(internalTracker.getTrackerId(), internalTracker.getName(), true, true);
 						tracker.bodyPosition = internalTracker.bodyPosition;
 						trackers.add(tracker);
 						server.registerTracker(tracker);
@@ -188,9 +188,9 @@ public class SteamVRPipeInputBridge extends Thread implements Bridge {
 			}
 			for(int i = 0; i < trackers.size(); ++i) {
 				VRTracker tracker = trackers.get(i);
-				VRTracker internal = trackersInternal.get(tracker.id);
+				VRTracker internal = trackersInternal.get(tracker.getTrackerId());
 				if(internal == null)
-					throw new NullPointerException("Lost internal tracker somehow: " + tracker.id); // Shouln't really happen even, but better to catch it like this
+					throw new NullPointerException("Lost internal tracker somehow: " + tracker.getTrackerId()); // Shouln't really happen even, but better to catch it like this
 				if(internal.getPosition(vBuffer))
 					tracker.position.set(vBuffer);
 				if(internal.getRotation(qBuffer))
@@ -262,26 +262,31 @@ public class SteamVRPipeInputBridge extends Thread implements Bridge {
 	}
 	
 	public enum SteamVRInputRoles {
-		HEAD(TrackerBodyPosition.HMD),
-		LEFT_HAND(TrackerBodyPosition.LEFT_CONTROLLER),
-		RIGHT_HAND(TrackerBodyPosition.RIGHT_CONTROLLER),
-		LEFT_FOOT(TrackerBodyPosition.LEFT_FOOT),
-		RIGHT_FOOT(TrackerBodyPosition.RIGHT_FOOT),
-		LEFT_SHOULDER(TrackerBodyPosition.NONE),
-		RIGHT_SHOULDER(TrackerBodyPosition.NONE),
-		LEFT_ELBOW(TrackerBodyPosition.NONE),
-		RIGHT_ELBOW(TrackerBodyPosition.NONE),
-		LEFT_KNEE(TrackerBodyPosition.LEFT_LEG),
-		RIGHT_KNEE(TrackerBodyPosition.RIGHT_LEG),
-		WAIST(TrackerBodyPosition.WAIST),
-		CHEST(TrackerBodyPosition.CHEST),
+		HEAD(TrackerPosition.HMD),
+		LEFT_HAND(TrackerPosition.LEFT_CONTROLLER),
+		RIGHT_HAND(TrackerPosition.RIGHT_CONTROLLER),
+		LEFT_FOOT(TrackerPosition.LEFT_FOOT),
+		RIGHT_FOOT(TrackerPosition.RIGHT_FOOT),
+		LEFT_SHOULDER(TrackerPosition.NONE),
+		RIGHT_SHOULDER(TrackerPosition.NONE),
+		LEFT_ELBOW(TrackerPosition.NONE),
+		RIGHT_ELBOW(TrackerPosition.NONE),
+		LEFT_KNEE(TrackerPosition.LEFT_LEG),
+		RIGHT_KNEE(TrackerPosition.RIGHT_LEG),
+		WAIST(TrackerPosition.WAIST),
+		CHEST(TrackerPosition.CHEST),
 		;
 		
 		private static final SteamVRInputRoles[] values = values();
-		public final TrackerBodyPosition bodyPosition;
+		public final TrackerPosition bodyPosition;
 		
-		private SteamVRInputRoles(TrackerBodyPosition slimeVrPosition) {
+		private SteamVRInputRoles(TrackerPosition slimeVrPosition) {
 			this.bodyPosition = slimeVrPosition;
 		}
+	}
+
+	@Override
+	public void startBridge() {
+		start();
 	}
 }

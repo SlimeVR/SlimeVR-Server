@@ -6,8 +6,8 @@ public class MPUTracker extends IMUTracker {
 	
 	public ConfigurationData newCalibrationData;
 	
-	public MPUTracker(String name, TrackersUDPServer server) {
-		super(name, server);
+	public MPUTracker(int trackerId, String name, TrackersUDPServer server) {
+		super(trackerId, name, server);
 	}
 	
 	public static class ConfigurationData {

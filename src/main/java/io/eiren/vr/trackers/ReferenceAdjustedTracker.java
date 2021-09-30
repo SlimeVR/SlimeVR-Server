@@ -3,8 +3,6 @@ package io.eiren.vr.trackers;
 import com.jme3.math.Quaternion;
 import com.jme3.math.Vector3f;
 
-import io.eiren.vr.processor.TrackerBodyPosition;
-
 public class ReferenceAdjustedTracker<E extends Tracker> implements Tracker {
 	
 	public final E tracker;
@@ -133,12 +131,12 @@ public class ReferenceAdjustedTracker<E extends Tracker> implements Tracker {
 	}
 
 	@Override
-	public TrackerBodyPosition getBodyPosition() {
+	public TrackerPosition getBodyPosition() {
 		return tracker.getBodyPosition();
 	}
 
 	@Override
-	public void setBodyPosition(TrackerBodyPosition position) {
+	public void setBodyPosition(TrackerPosition position) {
 		tracker.setBodyPosition(position);
 	}
 
@@ -160,5 +158,10 @@ public class ReferenceAdjustedTracker<E extends Tracker> implements Tracker {
 	@Override
 	public boolean isComputed() {
 		return tracker.isComputed();
+	}
+	
+	@Override
+	public int getTrackerId() {
+		return tracker.getTrackerId();
 	}
 }

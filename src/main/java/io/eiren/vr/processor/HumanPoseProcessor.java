@@ -9,6 +9,7 @@ import io.eiren.util.collections.FastList;
 import io.eiren.vr.VRServer;
 import io.eiren.vr.trackers.HMDTracker;
 import io.eiren.vr.trackers.Tracker;
+import io.eiren.vr.trackers.TrackerPosition;
 import io.eiren.vr.trackers.TrackerStatus;
 
 public class HumanPoseProcessor {
@@ -20,16 +21,16 @@ public class HumanPoseProcessor {
 
 	public HumanPoseProcessor(VRServer server, HMDTracker hmd, int trackersAmount) {
 		this.server = server;
-		computedTrackers.add(new ComputedHumanPoseTracker(ComputedHumanPoseTrackerPosition.WAIST, TrackerBodyPosition.WAIST));
+		computedTrackers.add(new ComputedHumanPoseTracker(Tracker.getNextLocalTrackerId(), ComputedHumanPoseTrackerPosition.WAIST, TrackerPosition.WAIST));
 		if(trackersAmount > 2) {
-			computedTrackers.add(new ComputedHumanPoseTracker(ComputedHumanPoseTrackerPosition.LEFT_FOOT, TrackerBodyPosition.LEFT_FOOT));
-			computedTrackers.add(new ComputedHumanPoseTracker(ComputedHumanPoseTrackerPosition.RIGHT_FOOT, TrackerBodyPosition.RIGHT_FOOT));
+			computedTrackers.add(new ComputedHumanPoseTracker(Tracker.getNextLocalTrackerId(), ComputedHumanPoseTrackerPosition.LEFT_FOOT, TrackerPosition.LEFT_FOOT));
+			computedTrackers.add(new ComputedHumanPoseTracker(Tracker.getNextLocalTrackerId(), ComputedHumanPoseTrackerPosition.RIGHT_FOOT, TrackerPosition.RIGHT_FOOT));
 			if(trackersAmount == 4 || trackersAmount >= 6) {
-				computedTrackers.add(new ComputedHumanPoseTracker(ComputedHumanPoseTrackerPosition.CHEST, TrackerBodyPosition.CHEST));
+				computedTrackers.add(new ComputedHumanPoseTracker(Tracker.getNextLocalTrackerId(), ComputedHumanPoseTrackerPosition.CHEST, TrackerPosition.CHEST));
 			}
 			if(trackersAmount >= 5) {
-				computedTrackers.add(new ComputedHumanPoseTracker(ComputedHumanPoseTrackerPosition.LEFT_KNEE, TrackerBodyPosition.LEFT_ANKLE));
-				computedTrackers.add(new ComputedHumanPoseTracker(ComputedHumanPoseTrackerPosition.RIGHT_KNEE, TrackerBodyPosition.RIGHT_ANKLE));
+				computedTrackers.add(new ComputedHumanPoseTracker(Tracker.getNextLocalTrackerId(), ComputedHumanPoseTrackerPosition.LEFT_KNEE, TrackerPosition.LEFT_ANKLE));
+				computedTrackers.add(new ComputedHumanPoseTracker(Tracker.getNextLocalTrackerId(), ComputedHumanPoseTrackerPosition.RIGHT_KNEE, TrackerPosition.RIGHT_ANKLE));
 			}
 		}
 	}

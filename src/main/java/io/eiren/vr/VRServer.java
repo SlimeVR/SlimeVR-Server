@@ -64,23 +64,23 @@ public class VRServer extends Thread {
 		if(OperatingSystem.getCurrentPlatform() == OperatingSystem.WINDOWS) {
 			// Create named pipe bridge for SteamVR driver
 			NamedPipeVRBridge driverBridge = new NamedPipeVRBridge(hmdTracker, shareTrackers, this);
-			tasks.add(() -> driverBridge.start());
+			tasks.add(() -> driverBridge.startBridge());
 			bridges.add(driverBridge);
 			// Create named pipe bridge for SteamVR input
 			SteamVRPipeInputBridge steamVRInput = new SteamVRPipeInputBridge(this);
-			tasks.add(() -> steamVRInput.start());
+			tasks.add(() -> steamVRInput.startBridge());
 			bridges.add(steamVRInput);
 		}
 		
 		// Create WebSocket server
 		WebSocketVRBridge wsBridge = new WebSocketVRBridge(hmdTracker, shareTrackers, this);
-		tasks.add(() -> wsBridge.start());
+		tasks.add(() -> wsBridge.startBridge());
 		bridges.add(wsBridge);
 		
 		// Create VMCBridge
 		try {
 			VMCBridge vmcBridge = new VMCBridge(39539, 39540, InetAddress.getLocalHost());
-			tasks.add(() -> vmcBridge.start());
+			tasks.add(() -> vmcBridge.startBridge());
 			bridges.add(vmcBridge);
 		} catch(UnknownHostException e) {
 			e.printStackTrace();

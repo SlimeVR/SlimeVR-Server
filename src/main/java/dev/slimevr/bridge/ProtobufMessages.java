@@ -14,6 +14,424 @@ public final class ProtobufMessages {
     registerAllExtensions(
         (com.google.protobuf.ExtensionRegistryLite) registry);
   }
+  public interface PingPongOrBuilder extends
+      // @@protoc_insertion_point(interface_extends:messages.PingPong)
+      com.google.protobuf.MessageOrBuilder {
+  }
+  /**
+   * Protobuf type {@code messages.PingPong}
+   */
+  public static final class PingPong extends
+      com.google.protobuf.GeneratedMessageV3 implements
+      // @@protoc_insertion_point(message_implements:messages.PingPong)
+      PingPongOrBuilder {
+  private static final long serialVersionUID = 0L;
+    // Use PingPong.newBuilder() to construct.
+    private PingPong(com.google.protobuf.GeneratedMessageV3.Builder<?> builder) {
+      super(builder);
+    }
+    private PingPong() {
+    }
+
+    @java.lang.Override
+    @SuppressWarnings({"unused"})
+    protected java.lang.Object newInstance(
+        UnusedPrivateParameter unused) {
+      return new PingPong();
+    }
+
+    @java.lang.Override
+    public final com.google.protobuf.UnknownFieldSet
+    getUnknownFields() {
+      return this.unknownFields;
+    }
+    private PingPong(
+        com.google.protobuf.CodedInputStream input,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      this();
+      if (extensionRegistry == null) {
+        throw new java.lang.NullPointerException();
+      }
+      com.google.protobuf.UnknownFieldSet.Builder unknownFields =
+          com.google.protobuf.UnknownFieldSet.newBuilder();
+      try {
+        boolean done = false;
+        while (!done) {
+          int tag = input.readTag();
+          switch (tag) {
+            case 0:
+              done = true;
+              break;
+            default: {
+              if (!parseUnknownField(
+                  input, unknownFields, extensionRegistry, tag)) {
+                done = true;
+              }
+              break;
+            }
+          }
+        }
+      } catch (com.google.protobuf.InvalidProtocolBufferException e) {
+        throw e.setUnfinishedMessage(this);
+      } catch (java.io.IOException e) {
+        throw new com.google.protobuf.InvalidProtocolBufferException(
+            e).setUnfinishedMessage(this);
+      } finally {
+        this.unknownFields = unknownFields.build();
+        makeExtensionsImmutable();
+      }
+    }
+    public static final com.google.protobuf.Descriptors.Descriptor
+        getDescriptor() {
+      return dev.slimevr.bridge.ProtobufMessages.internal_static_messages_PingPong_descriptor;
+    }
+
+    @java.lang.Override
+    protected com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
+        internalGetFieldAccessorTable() {
+      return dev.slimevr.bridge.ProtobufMessages.internal_static_messages_PingPong_fieldAccessorTable
+          .ensureFieldAccessorsInitialized(
+              dev.slimevr.bridge.ProtobufMessages.PingPong.class, dev.slimevr.bridge.ProtobufMessages.PingPong.Builder.class);
+    }
+
+    private byte memoizedIsInitialized = -1;
+    @java.lang.Override
+    public final boolean isInitialized() {
+      byte isInitialized = memoizedIsInitialized;
+      if (isInitialized == 1) return true;
+      if (isInitialized == 0) return false;
+
+      memoizedIsInitialized = 1;
+      return true;
+    }
+
+    @java.lang.Override
+    public void writeTo(com.google.protobuf.CodedOutputStream output)
+                        throws java.io.IOException {
+      unknownFields.writeTo(output);
+    }
+
+    @java.lang.Override
+    public int getSerializedSize() {
+      int size = memoizedSize;
+      if (size != -1) return size;
+
+      size = 0;
+      size += unknownFields.getSerializedSize();
+      memoizedSize = size;
+      return size;
+    }
+
+    @java.lang.Override
+    public boolean equals(final java.lang.Object obj) {
+      if (obj == this) {
+       return true;
+      }
+      if (!(obj instanceof dev.slimevr.bridge.ProtobufMessages.PingPong)) {
+        return super.equals(obj);
+      }
+      dev.slimevr.bridge.ProtobufMessages.PingPong other = (dev.slimevr.bridge.ProtobufMessages.PingPong) obj;
+
+      if (!unknownFields.equals(other.unknownFields)) return false;
+      return true;
+    }
+
+    @java.lang.Override
+    public int hashCode() {
+      if (memoizedHashCode != 0) {
+        return memoizedHashCode;
+      }
+      int hash = 41;
+      hash = (19 * hash) + getDescriptor().hashCode();
+      hash = (29 * hash) + unknownFields.hashCode();
+      memoizedHashCode = hash;
+      return hash;
+    }
+
+    public static dev.slimevr.bridge.ProtobufMessages.PingPong parseFrom(
+        java.nio.ByteBuffer data)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data);
+    }
+    public static dev.slimevr.bridge.ProtobufMessages.PingPong parseFrom(
+        java.nio.ByteBuffer data,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data, extensionRegistry);
+    }
+    public static dev.slimevr.bridge.ProtobufMessages.PingPong parseFrom(
+        com.google.protobuf.ByteString data)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data);
+    }
+    public static dev.slimevr.bridge.ProtobufMessages.PingPong parseFrom(
+        com.google.protobuf.ByteString data,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data, extensionRegistry);
+    }
+    public static dev.slimevr.bridge.ProtobufMessages.PingPong parseFrom(byte[] data)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data);
+    }
+    public static dev.slimevr.bridge.ProtobufMessages.PingPong parseFrom(
+        byte[] data,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data, extensionRegistry);
+    }
+    public static dev.slimevr.bridge.ProtobufMessages.PingPong parseFrom(java.io.InputStream input)
+        throws java.io.IOException {
+      return com.google.protobuf.GeneratedMessageV3
+          .parseWithIOException(PARSER, input);
+    }
+    public static dev.slimevr.bridge.ProtobufMessages.PingPong parseFrom(
+        java.io.InputStream input,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws java.io.IOException {
+      return com.google.protobuf.GeneratedMessageV3
+          .parseWithIOException(PARSER, input, extensionRegistry);
+    }
+    public static dev.slimevr.bridge.ProtobufMessages.PingPong parseDelimitedFrom(java.io.InputStream input)
+        throws java.io.IOException {
+      return com.google.protobuf.GeneratedMessageV3
+          .parseDelimitedWithIOException(PARSER, input);
+    }
+    public static dev.slimevr.bridge.ProtobufMessages.PingPong parseDelimitedFrom(
+        java.io.InputStream input,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws java.io.IOException {
+      return com.google.protobuf.GeneratedMessageV3
+          .parseDelimitedWithIOException(PARSER, input, extensionRegistry);
+    }
+    public static dev.slimevr.bridge.ProtobufMessages.PingPong parseFrom(
+        com.google.protobuf.CodedInputStream input)
+        throws java.io.IOException {
+      return com.google.protobuf.GeneratedMessageV3
+          .parseWithIOException(PARSER, input);
+    }
+    public static dev.slimevr.bridge.ProtobufMessages.PingPong parseFrom(
+        com.google.protobuf.CodedInputStream input,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws java.io.IOException {
+      return com.google.protobuf.GeneratedMessageV3
+          .parseWithIOException(PARSER, input, extensionRegistry);
+    }
+
+    @java.lang.Override
+    public Builder newBuilderForType() { return newBuilder(); }
+    public static Builder newBuilder() {
+      return DEFAULT_INSTANCE.toBuilder();
+    }
+    public static Builder newBuilder(dev.slimevr.bridge.ProtobufMessages.PingPong prototype) {
+      return DEFAULT_INSTANCE.toBuilder().mergeFrom(prototype);
+    }
+    @java.lang.Override
+    public Builder toBuilder() {
+      return this == DEFAULT_INSTANCE
+          ? new Builder() : new Builder().mergeFrom(this);
+    }
+
+    @java.lang.Override
+    protected Builder newBuilderForType(
+        com.google.protobuf.GeneratedMessageV3.BuilderParent parent) {
+      Builder builder = new Builder(parent);
+      return builder;
+    }
+    /**
+     * Protobuf type {@code messages.PingPong}
+     */
+    public static final class Builder extends
+        com.google.protobuf.GeneratedMessageV3.Builder<Builder> implements
+        // @@protoc_insertion_point(builder_implements:messages.PingPong)
+        dev.slimevr.bridge.ProtobufMessages.PingPongOrBuilder {
+      public static final com.google.protobuf.Descriptors.Descriptor
+          getDescriptor() {
+        return dev.slimevr.bridge.ProtobufMessages.internal_static_messages_PingPong_descriptor;
+      }
+
+      @java.lang.Override
+      protected com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
+          internalGetFieldAccessorTable() {
+        return dev.slimevr.bridge.ProtobufMessages.internal_static_messages_PingPong_fieldAccessorTable
+            .ensureFieldAccessorsInitialized(
+                dev.slimevr.bridge.ProtobufMessages.PingPong.class, dev.slimevr.bridge.ProtobufMessages.PingPong.Builder.class);
+      }
+
+      // Construct using messages.ProtobufMessages.PingPong.newBuilder()
+      private Builder() {
+        maybeForceBuilderInitialization();
+      }
+
+      private Builder(
+          com.google.protobuf.GeneratedMessageV3.BuilderParent parent) {
+        super(parent);
+        maybeForceBuilderInitialization();
+      }
+      private void maybeForceBuilderInitialization() {
+        if (com.google.protobuf.GeneratedMessageV3
+                .alwaysUseFieldBuilders) {
+        }
+      }
+      @java.lang.Override
+      public Builder clear() {
+        super.clear();
+        return this;
+      }
+
+      @java.lang.Override
+      public com.google.protobuf.Descriptors.Descriptor
+          getDescriptorForType() {
+        return dev.slimevr.bridge.ProtobufMessages.internal_static_messages_PingPong_descriptor;
+      }
+
+      @java.lang.Override
+      public dev.slimevr.bridge.ProtobufMessages.PingPong getDefaultInstanceForType() {
+        return dev.slimevr.bridge.ProtobufMessages.PingPong.getDefaultInstance();
+      }
+
+      @java.lang.Override
+      public dev.slimevr.bridge.ProtobufMessages.PingPong build() {
+        dev.slimevr.bridge.ProtobufMessages.PingPong result = buildPartial();
+        if (!result.isInitialized()) {
+          throw newUninitializedMessageException(result);
+        }
+        return result;
+      }
+
+      @java.lang.Override
+      public dev.slimevr.bridge.ProtobufMessages.PingPong buildPartial() {
+        dev.slimevr.bridge.ProtobufMessages.PingPong result = new dev.slimevr.bridge.ProtobufMessages.PingPong(this);
+        onBuilt();
+        return result;
+      }
+
+      @java.lang.Override
+      public Builder clone() {
+        return super.clone();
+      }
+      @java.lang.Override
+      public Builder setField(
+          com.google.protobuf.Descriptors.FieldDescriptor field,
+          java.lang.Object value) {
+        return super.setField(field, value);
+      }
+      @java.lang.Override
+      public Builder clearField(
+          com.google.protobuf.Descriptors.FieldDescriptor field) {
+        return super.clearField(field);
+      }
+      @java.lang.Override
+      public Builder clearOneof(
+          com.google.protobuf.Descriptors.OneofDescriptor oneof) {
+        return super.clearOneof(oneof);
+      }
+      @java.lang.Override
+      public Builder setRepeatedField(
+          com.google.protobuf.Descriptors.FieldDescriptor field,
+          int index, java.lang.Object value) {
+        return super.setRepeatedField(field, index, value);
+      }
+      @java.lang.Override
+      public Builder addRepeatedField(
+          com.google.protobuf.Descriptors.FieldDescriptor field,
+          java.lang.Object value) {
+        return super.addRepeatedField(field, value);
+      }
+      @java.lang.Override
+      public Builder mergeFrom(com.google.protobuf.Message other) {
+        if (other instanceof dev.slimevr.bridge.ProtobufMessages.PingPong) {
+          return mergeFrom((dev.slimevr.bridge.ProtobufMessages.PingPong)other);
+        } else {
+          super.mergeFrom(other);
+          return this;
+        }
+      }
+
+      public Builder mergeFrom(dev.slimevr.bridge.ProtobufMessages.PingPong other) {
+        if (other == dev.slimevr.bridge.ProtobufMessages.PingPong.getDefaultInstance()) return this;
+        this.mergeUnknownFields(other.unknownFields);
+        onChanged();
+        return this;
+      }
+
+      @java.lang.Override
+      public final boolean isInitialized() {
+        return true;
+      }
+
+      @java.lang.Override
+      public Builder mergeFrom(
+          com.google.protobuf.CodedInputStream input,
+          com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+          throws java.io.IOException {
+        dev.slimevr.bridge.ProtobufMessages.PingPong parsedMessage = null;
+        try {
+          parsedMessage = PARSER.parsePartialFrom(input, extensionRegistry);
+        } catch (com.google.protobuf.InvalidProtocolBufferException e) {
+          parsedMessage = (dev.slimevr.bridge.ProtobufMessages.PingPong) e.getUnfinishedMessage();
+          throw e.unwrapIOException();
+        } finally {
+          if (parsedMessage != null) {
+            mergeFrom(parsedMessage);
+          }
+        }
+        return this;
+      }
+      @java.lang.Override
+      public final Builder setUnknownFields(
+          final com.google.protobuf.UnknownFieldSet unknownFields) {
+        return super.setUnknownFields(unknownFields);
+      }
+
+      @java.lang.Override
+      public final Builder mergeUnknownFields(
+          final com.google.protobuf.UnknownFieldSet unknownFields) {
+        return super.mergeUnknownFields(unknownFields);
+      }
+
+
+      // @@protoc_insertion_point(builder_scope:messages.PingPong)
+    }
+
+    // @@protoc_insertion_point(class_scope:messages.PingPong)
+    private static final dev.slimevr.bridge.ProtobufMessages.PingPong DEFAULT_INSTANCE;
+    static {
+      DEFAULT_INSTANCE = new dev.slimevr.bridge.ProtobufMessages.PingPong();
+    }
+
+    public static dev.slimevr.bridge.ProtobufMessages.PingPong getDefaultInstance() {
+      return DEFAULT_INSTANCE;
+    }
+
+    private static final com.google.protobuf.Parser<PingPong>
+        PARSER = new com.google.protobuf.AbstractParser<PingPong>() {
+      @java.lang.Override
+      public PingPong parsePartialFrom(
+          com.google.protobuf.CodedInputStream input,
+          com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+          throws com.google.protobuf.InvalidProtocolBufferException {
+        return new PingPong(input, extensionRegistry);
+      }
+    };
+
+    public static com.google.protobuf.Parser<PingPong> parser() {
+      return PARSER;
+    }
+
+    @java.lang.Override
+    public com.google.protobuf.Parser<PingPong> getParserForType() {
+      return PARSER;
+    }
+
+    @java.lang.Override
+    public dev.slimevr.bridge.ProtobufMessages.PingPong getDefaultInstanceForType() {
+      return DEFAULT_INSTANCE;
+    }
+
+  }
+
   public interface PositionOrBuilder extends
       // @@protoc_insertion_point(interface_extends:messages.Position)
       com.google.protobuf.MessageOrBuilder {
@@ -26,16 +444,31 @@ public final class ProtobufMessages {
 
     /**
      * <code>float x = 2;</code>
+     * @return Whether the x field is set.
+     */
+    boolean hasX();
+    /**
+     * <code>float x = 2;</code>
      * @return The x.
      */
     float getX();
 
     /**
      * <code>float y = 3;</code>
+     * @return Whether the y field is set.
+     */
+    boolean hasY();
+    /**
+     * <code>float y = 3;</code>
      * @return The y.
      */
     float getY();
 
+    /**
+     * <code>float z = 4;</code>
+     * @return Whether the z field is set.
+     */
+    boolean hasZ();
     /**
      * <code>float z = 4;</code>
      * @return The z.
@@ -118,6 +551,7 @@ public final class ProtobufMessages {
       if (extensionRegistry == null) {
         throw new java.lang.NullPointerException();
       }
+      int mutable_bitField0_ = 0;
       com.google.protobuf.UnknownFieldSet.Builder unknownFields =
           com.google.protobuf.UnknownFieldSet.newBuilder();
       try {
@@ -134,17 +568,17 @@ public final class ProtobufMessages {
               break;
             }
             case 21: {
-
+              bitField0_ |= 0x00000001;
               x_ = input.readFloat();
               break;
             }
             case 29: {
-
+              bitField0_ |= 0x00000002;
               y_ = input.readFloat();
               break;
             }
             case 37: {
-
+              bitField0_ |= 0x00000004;
               z_ = input.readFloat();
               break;
             }
@@ -170,7 +604,7 @@ public final class ProtobufMessages {
             }
             case 72: {
               int rawValue = input.readEnum();
-              bitField0_ |= 0x00000001;
+              bitField0_ |= 0x00000008;
               dataSource_ = rawValue;
               break;
             }
@@ -352,6 +786,14 @@ public final class ProtobufMessages {
     private float x_;
     /**
      * <code>float x = 2;</code>
+     * @return Whether the x field is set.
+     */
+    @java.lang.Override
+    public boolean hasX() {
+      return ((bitField0_ & 0x00000001) != 0);
+    }
+    /**
+     * <code>float x = 2;</code>
      * @return The x.
      */
     @java.lang.Override
@@ -363,6 +805,14 @@ public final class ProtobufMessages {
     private float y_;
     /**
      * <code>float y = 3;</code>
+     * @return Whether the y field is set.
+     */
+    @java.lang.Override
+    public boolean hasY() {
+      return ((bitField0_ & 0x00000002) != 0);
+    }
+    /**
+     * <code>float y = 3;</code>
      * @return The y.
      */
     @java.lang.Override
@@ -372,6 +822,14 @@ public final class ProtobufMessages {
 
     public static final int Z_FIELD_NUMBER = 4;
     private float z_;
+    /**
+     * <code>float z = 4;</code>
+     * @return Whether the z field is set.
+     */
+    @java.lang.Override
+    public boolean hasZ() {
+      return ((bitField0_ & 0x00000004) != 0);
+    }
     /**
      * <code>float z = 4;</code>
      * @return The z.
@@ -432,7 +890,7 @@ public final class ProtobufMessages {
      * @return Whether the dataSource field is set.
      */
     @java.lang.Override public boolean hasDataSource() {
-      return ((bitField0_ & 0x00000001) != 0);
+      return ((bitField0_ & 0x00000008) != 0);
     }
     /**
      * <code>.messages.Position.DataSource data_source = 9;</code>
@@ -446,6 +904,7 @@ public final class ProtobufMessages {
      * @return The dataSource.
      */
     @java.lang.Override public dev.slimevr.bridge.ProtobufMessages.Position.DataSource getDataSource() {
+      @SuppressWarnings("deprecation")
       dev.slimevr.bridge.ProtobufMessages.Position.DataSource result = dev.slimevr.bridge.ProtobufMessages.Position.DataSource.valueOf(dataSource_);
       return result == null ? dev.slimevr.bridge.ProtobufMessages.Position.DataSource.UNRECOGNIZED : result;
     }
@@ -467,13 +926,13 @@ public final class ProtobufMessages {
       if (trackerId_ != 0) {
         output.writeInt32(1, trackerId_);
       }
-      if (x_ != 0F) {
+      if (((bitField0_ & 0x00000001) != 0)) {
         output.writeFloat(2, x_);
       }
-      if (y_ != 0F) {
+      if (((bitField0_ & 0x00000002) != 0)) {
         output.writeFloat(3, y_);
       }
-      if (z_ != 0F) {
+      if (((bitField0_ & 0x00000004) != 0)) {
         output.writeFloat(4, z_);
       }
       if (qx_ != 0F) {
@@ -488,7 +947,7 @@ public final class ProtobufMessages {
       if (qw_ != 0F) {
         output.writeFloat(8, qw_);
       }
-      if (((bitField0_ & 0x00000001) != 0)) {
+      if (((bitField0_ & 0x00000008) != 0)) {
         output.writeEnum(9, dataSource_);
       }
       unknownFields.writeTo(output);
@@ -504,15 +963,15 @@ public final class ProtobufMessages {
         size += com.google.protobuf.CodedOutputStream
           .computeInt32Size(1, trackerId_);
       }
-      if (x_ != 0F) {
+      if (((bitField0_ & 0x00000001) != 0)) {
         size += com.google.protobuf.CodedOutputStream
           .computeFloatSize(2, x_);
       }
-      if (y_ != 0F) {
+      if (((bitField0_ & 0x00000002) != 0)) {
         size += com.google.protobuf.CodedOutputStream
           .computeFloatSize(3, y_);
       }
-      if (z_ != 0F) {
+      if (((bitField0_ & 0x00000004) != 0)) {
         size += com.google.protobuf.CodedOutputStream
           .computeFloatSize(4, z_);
       }
@@ -532,7 +991,7 @@ public final class ProtobufMessages {
         size += com.google.protobuf.CodedOutputStream
           .computeFloatSize(8, qw_);
       }
-      if (((bitField0_ & 0x00000001) != 0)) {
+      if (((bitField0_ & 0x00000008) != 0)) {
         size += com.google.protobuf.CodedOutputStream
           .computeEnumSize(9, dataSource_);
       }
@@ -553,15 +1012,24 @@ public final class ProtobufMessages {
 
       if (getTrackerId()
           != other.getTrackerId()) return false;
-      if (java.lang.Float.floatToIntBits(getX())
-          != java.lang.Float.floatToIntBits(
-              other.getX())) return false;
-      if (java.lang.Float.floatToIntBits(getY())
-          != java.lang.Float.floatToIntBits(
-              other.getY())) return false;
-      if (java.lang.Float.floatToIntBits(getZ())
-          != java.lang.Float.floatToIntBits(
-              other.getZ())) return false;
+      if (hasX() != other.hasX()) return false;
+      if (hasX()) {
+        if (java.lang.Float.floatToIntBits(getX())
+            != java.lang.Float.floatToIntBits(
+                other.getX())) return false;
+      }
+      if (hasY() != other.hasY()) return false;
+      if (hasY()) {
+        if (java.lang.Float.floatToIntBits(getY())
+            != java.lang.Float.floatToIntBits(
+                other.getY())) return false;
+      }
+      if (hasZ() != other.hasZ()) return false;
+      if (hasZ()) {
+        if (java.lang.Float.floatToIntBits(getZ())
+            != java.lang.Float.floatToIntBits(
+                other.getZ())) return false;
+      }
       if (java.lang.Float.floatToIntBits(getQx())
           != java.lang.Float.floatToIntBits(
               other.getQx())) return false;
@@ -591,15 +1059,21 @@ public final class ProtobufMessages {
       hash = (19 * hash) + getDescriptor().hashCode();
       hash = (37 * hash) + TRACKER_ID_FIELD_NUMBER;
       hash = (53 * hash) + getTrackerId();
-      hash = (37 * hash) + X_FIELD_NUMBER;
-      hash = (53 * hash) + java.lang.Float.floatToIntBits(
-          getX());
-      hash = (37 * hash) + Y_FIELD_NUMBER;
-      hash = (53 * hash) + java.lang.Float.floatToIntBits(
-          getY());
-      hash = (37 * hash) + Z_FIELD_NUMBER;
-      hash = (53 * hash) + java.lang.Float.floatToIntBits(
-          getZ());
+      if (hasX()) {
+        hash = (37 * hash) + X_FIELD_NUMBER;
+        hash = (53 * hash) + java.lang.Float.floatToIntBits(
+            getX());
+      }
+      if (hasY()) {
+        hash = (37 * hash) + Y_FIELD_NUMBER;
+        hash = (53 * hash) + java.lang.Float.floatToIntBits(
+            getY());
+      }
+      if (hasZ()) {
+        hash = (37 * hash) + Z_FIELD_NUMBER;
+        hash = (53 * hash) + java.lang.Float.floatToIntBits(
+            getZ());
+      }
       hash = (37 * hash) + QX_FIELD_NUMBER;
       hash = (53 * hash) + java.lang.Float.floatToIntBits(
           getQx());
@@ -752,11 +1226,11 @@ public final class ProtobufMessages {
         trackerId_ = 0;
 
         x_ = 0F;
-
+        bitField0_ = (bitField0_ & ~0x00000001);
         y_ = 0F;
-
+        bitField0_ = (bitField0_ & ~0x00000002);
         z_ = 0F;
-
+        bitField0_ = (bitField0_ & ~0x00000004);
         qx_ = 0F;
 
         qy_ = 0F;
@@ -766,7 +1240,7 @@ public final class ProtobufMessages {
         qw_ = 0F;
 
         dataSource_ = 0;
-        bitField0_ = (bitField0_ & ~0x00000001);
+        bitField0_ = (bitField0_ & ~0x00000008);
         return this;
       }
 
@@ -796,15 +1270,24 @@ public final class ProtobufMessages {
         int from_bitField0_ = bitField0_;
         int to_bitField0_ = 0;
         result.trackerId_ = trackerId_;
-        result.x_ = x_;
-        result.y_ = y_;
-        result.z_ = z_;
+        if (((from_bitField0_ & 0x00000001) != 0)) {
+          result.x_ = x_;
+          to_bitField0_ |= 0x00000001;
+        }
+        if (((from_bitField0_ & 0x00000002) != 0)) {
+          result.y_ = y_;
+          to_bitField0_ |= 0x00000002;
+        }
+        if (((from_bitField0_ & 0x00000004) != 0)) {
+          result.z_ = z_;
+          to_bitField0_ |= 0x00000004;
+        }
         result.qx_ = qx_;
         result.qy_ = qy_;
         result.qz_ = qz_;
         result.qw_ = qw_;
-        if (((from_bitField0_ & 0x00000001) != 0)) {
-          to_bitField0_ |= 0x00000001;
+        if (((from_bitField0_ & 0x00000008) != 0)) {
+          to_bitField0_ |= 0x00000008;
         }
         result.dataSource_ = dataSource_;
         result.bitField0_ = to_bitField0_;
@@ -859,13 +1342,13 @@ public final class ProtobufMessages {
         if (other.getTrackerId() != 0) {
           setTrackerId(other.getTrackerId());
         }
-        if (other.getX() != 0F) {
+        if (other.hasX()) {
           setX(other.getX());
         }
-        if (other.getY() != 0F) {
+        if (other.hasY()) {
           setY(other.getY());
         }
-        if (other.getZ() != 0F) {
+        if (other.hasZ()) {
           setZ(other.getZ());
         }
         if (other.getQx() != 0F) {
@@ -947,6 +1430,14 @@ public final class ProtobufMessages {
       private float x_ ;
       /**
        * <code>float x = 2;</code>
+       * @return Whether the x field is set.
+       */
+      @java.lang.Override
+      public boolean hasX() {
+        return ((bitField0_ & 0x00000001) != 0);
+      }
+      /**
+       * <code>float x = 2;</code>
        * @return The x.
        */
       @java.lang.Override
@@ -959,7 +1450,7 @@ public final class ProtobufMessages {
        * @return This builder for chaining.
        */
       public Builder setX(float value) {
-        
+        bitField0_ |= 0x00000001;
         x_ = value;
         onChanged();
         return this;
@@ -969,13 +1460,21 @@ public final class ProtobufMessages {
        * @return This builder for chaining.
        */
       public Builder clearX() {
-        
+        bitField0_ = (bitField0_ & ~0x00000001);
         x_ = 0F;
         onChanged();
         return this;
       }
 
       private float y_ ;
+      /**
+       * <code>float y = 3;</code>
+       * @return Whether the y field is set.
+       */
+      @java.lang.Override
+      public boolean hasY() {
+        return ((bitField0_ & 0x00000002) != 0);
+      }
       /**
        * <code>float y = 3;</code>
        * @return The y.
@@ -990,7 +1489,7 @@ public final class ProtobufMessages {
        * @return This builder for chaining.
        */
       public Builder setY(float value) {
-        
+        bitField0_ |= 0x00000002;
         y_ = value;
         onChanged();
         return this;
@@ -1000,13 +1499,21 @@ public final class ProtobufMessages {
        * @return This builder for chaining.
        */
       public Builder clearY() {
-        
+        bitField0_ = (bitField0_ & ~0x00000002);
         y_ = 0F;
         onChanged();
         return this;
       }
 
       private float z_ ;
+      /**
+       * <code>float z = 4;</code>
+       * @return Whether the z field is set.
+       */
+      @java.lang.Override
+      public boolean hasZ() {
+        return ((bitField0_ & 0x00000004) != 0);
+      }
       /**
        * <code>float z = 4;</code>
        * @return The z.
@@ -1021,7 +1528,7 @@ public final class ProtobufMessages {
        * @return This builder for chaining.
        */
       public Builder setZ(float value) {
-        
+        bitField0_ |= 0x00000004;
         z_ = value;
         onChanged();
         return this;
@@ -1031,7 +1538,7 @@ public final class ProtobufMessages {
        * @return This builder for chaining.
        */
       public Builder clearZ() {
-        
+        bitField0_ = (bitField0_ & ~0x00000004);
         z_ = 0F;
         onChanged();
         return this;
@@ -1167,7 +1674,7 @@ public final class ProtobufMessages {
        * @return Whether the dataSource field is set.
        */
       @java.lang.Override public boolean hasDataSource() {
-        return ((bitField0_ & 0x00000001) != 0);
+        return ((bitField0_ & 0x00000008) != 0);
       }
       /**
        * <code>.messages.Position.DataSource data_source = 9;</code>
@@ -1182,7 +1689,7 @@ public final class ProtobufMessages {
        * @return This builder for chaining.
        */
       public Builder setDataSourceValue(int value) {
-        bitField0_ |= 0x00000001;
+        bitField0_ |= 0x00000008;
         dataSource_ = value;
         onChanged();
         return this;
@@ -1206,7 +1713,7 @@ public final class ProtobufMessages {
         if (value == null) {
           throw new NullPointerException();
         }
-        bitField0_ |= 0x00000001;
+        bitField0_ |= 0x00000008;
         dataSource_ = value.getNumber();
         onChanged();
         return this;
@@ -1216,7 +1723,7 @@ public final class ProtobufMessages {
        * @return This builder for chaining.
        */
       public Builder clearDataSource() {
-        bitField0_ = (bitField0_ & ~0x00000001);
+        bitField0_ = (bitField0_ & ~0x00000008);
         dataSource_ = 0;
         onChanged();
         return this;
@@ -1821,6 +2328,7 @@ public final class ProtobufMessages {
       @java.lang.Override
       public dev.slimevr.bridge.ProtobufMessages.UserAction buildPartial() {
         dev.slimevr.bridge.ProtobufMessages.UserAction result = new dev.slimevr.bridge.ProtobufMessages.UserAction(this);
+        int from_bitField0_ = bitField0_;
         result.name_ = name_;
         result.actionArguments_ = internalGetActionArguments();
         result.actionArguments_.makeImmutable();
@@ -5763,6 +6271,11 @@ public final class ProtobufMessages {
   }
 
   private static final com.google.protobuf.Descriptors.Descriptor
+    internal_static_messages_PingPong_descriptor;
+  private static final 
+    com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
+      internal_static_messages_PingPong_fieldAccessorTable;
+  private static final com.google.protobuf.Descriptors.Descriptor
     internal_static_messages_Position_descriptor;
   private static final 
     com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
@@ -5806,48 +6319,55 @@ public final class ProtobufMessages {
       descriptor;
   static {
     java.lang.String[] descriptorData = {
-      "\n\026ProtobufMessages.proto\022\010messages\"\362\001\n\010P" +
-      "osition\022\022\n\ntracker_id\030\001 \001(\005\022\t\n\001x\030\002 \001(\002\022\t" +
-      "\n\001y\030\003 \001(\002\022\t\n\001z\030\004 \001(\002\022\n\n\002qx\030\005 \001(\002\022\n\n\002qy\030\006" +
-      " \001(\002\022\n\n\002qz\030\007 \001(\002\022\n\n\002qw\030\010 \001(\002\0227\n\013data_sou" +
-      "rce\030\t \001(\0162\035.messages.Position.DataSource" +
-      "H\000\210\001\001\"8\n\nDataSource\022\010\n\004NONE\020\000\022\007\n\003IMU\020\001\022\r" +
-      "\n\tPRECISION\020\002\022\010\n\004FULL\020\003B\016\n\014_data_source\"" +
-      "\227\001\n\nUserAction\022\014\n\004name\030\001 \001(\t\022C\n\020action_a" +
-      "rguments\030\002 \003(\0132).messages.UserAction.Act" +
-      "ionArgumentsEntry\0326\n\024ActionArgumentsEntr" +
-      "y\022\013\n\003key\030\001 \001(\t\022\r\n\005value\030\002 \001(\t:\0028\001\"f\n\014Tra" +
-      "ckerAdded\022\022\n\ntracker_id\030\001 \001(\005\022\026\n\016tracker" +
-      "_serial\030\002 \001(\t\022\024\n\014tracker_name\030\003 \001(\t\022\024\n\014t" +
-      "racker_role\030\004 \001(\005\"\374\002\n\rTrackerStatus\022\022\n\nt" +
-      "racker_id\030\001 \001(\005\022.\n\006status\030\002 \001(\0162\036.messag" +
-      "es.TrackerStatus.Status\0221\n\005extra\030\003 \003(\0132\"" +
-      ".messages.TrackerStatus.ExtraEntry\022;\n\nco" +
-      "nfidence\030\004 \001(\0162\".messages.TrackerStatus." +
-      "ConfidenceH\000\210\001\001\032,\n\nExtraEntry\022\013\n\003key\030\001 \001" +
-      "(\t\022\r\n\005value\030\002 \001(\t:\0028\001\"E\n\006Status\022\020\n\014DISCO" +
-      "NNECTED\020\000\022\006\n\002OK\020\001\022\010\n\004BUSY\020\002\022\t\n\005ERROR\020\003\022\014" +
-      "\n\010OCCLUDED\020\004\"3\n\nConfidence\022\006\n\002NO\020\000\022\007\n\003LO" +
-      "W\020\001\022\n\n\006MEDIUM\020\005\022\010\n\004HIGH\020\nB\r\n\013_confidence" +
-      "\"\325\001\n\017ProtobufMessage\022&\n\010position\030\001 \001(\0132\022" +
-      ".messages.PositionH\000\022+\n\013user_action\030\002 \001(" +
-      "\0132\024.messages.UserActionH\000\022/\n\rtracker_add" +
-      "ed\030\003 \001(\0132\026.messages.TrackerAddedH\000\0221\n\016tr" +
-      "acker_status\030\004 \001(\0132\027.messages.TrackerSta" +
-      "tusH\000B\t\n\007messageb\006proto3"
+      "\n\026ProtobufMessages.proto\022\010messages\"\n\n\010Pi" +
+      "ngPong\"\223\002\n\010Position\022\022\n\ntracker_id\030\001 \001(\005\022" +
+      "\016\n\001x\030\002 \001(\002H\000\210\001\001\022\016\n\001y\030\003 \001(\002H\001\210\001\001\022\016\n\001z\030\004 \001" +
+      "(\002H\002\210\001\001\022\n\n\002qx\030\005 \001(\002\022\n\n\002qy\030\006 \001(\002\022\n\n\002qz\030\007 " +
+      "\001(\002\022\n\n\002qw\030\010 \001(\002\0227\n\013data_source\030\t \001(\0162\035.m" +
+      "essages.Position.DataSourceH\003\210\001\001\"8\n\nData" +
+      "Source\022\010\n\004NONE\020\000\022\007\n\003IMU\020\001\022\r\n\tPRECISION\020\002" +
+      "\022\010\n\004FULL\020\003B\004\n\002_xB\004\n\002_yB\004\n\002_zB\016\n\014_data_so" +
+      "urce\"\227\001\n\nUserAction\022\014\n\004name\030\001 \001(\t\022C\n\020act" +
+      "ion_arguments\030\002 \003(\0132).messages.UserActio" +
+      "n.ActionArgumentsEntry\0326\n\024ActionArgument" +
+      "sEntry\022\013\n\003key\030\001 \001(\t\022\r\n\005value\030\002 \001(\t:\0028\001\"f" +
+      "\n\014TrackerAdded\022\022\n\ntracker_id\030\001 \001(\005\022\026\n\016tr" +
+      "acker_serial\030\002 \001(\t\022\024\n\014tracker_name\030\003 \001(\t" +
+      "\022\024\n\014tracker_role\030\004 \001(\005\"\374\002\n\rTrackerStatus" +
+      "\022\022\n\ntracker_id\030\001 \001(\005\022.\n\006status\030\002 \001(\0162\036.m" +
+      "essages.TrackerStatus.Status\0221\n\005extra\030\003 " +
+      "\003(\0132\".messages.TrackerStatus.ExtraEntry\022" +
+      ";\n\nconfidence\030\004 \001(\0162\".messages.TrackerSt" +
+      "atus.ConfidenceH\000\210\001\001\032,\n\nExtraEntry\022\013\n\003ke" +
+      "y\030\001 \001(\t\022\r\n\005value\030\002 \001(\t:\0028\001\"E\n\006Status\022\020\n\014" +
+      "DISCONNECTED\020\000\022\006\n\002OK\020\001\022\010\n\004BUSY\020\002\022\t\n\005ERRO" +
+      "R\020\003\022\014\n\010OCCLUDED\020\004\"3\n\nConfidence\022\006\n\002NO\020\000\022" +
+      "\007\n\003LOW\020\001\022\n\n\006MEDIUM\020\005\022\010\n\004HIGH\020\nB\r\n\013_confi" +
+      "dence\"\325\001\n\017ProtobufMessage\022&\n\010position\030\001 " +
+      "\001(\0132\022.messages.PositionH\000\022+\n\013user_action" +
+      "\030\002 \001(\0132\024.messages.UserActionH\000\022/\n\rtracke" +
+      "r_added\030\003 \001(\0132\026.messages.TrackerAddedH\000\022" +
+      "1\n\016tracker_status\030\004 \001(\0132\027.messages.Track" +
+      "erStatusH\000B\t\n\007messageb\006proto3"
     };
     descriptor = com.google.protobuf.Descriptors.FileDescriptor
       .internalBuildGeneratedFileFrom(descriptorData,
         new com.google.protobuf.Descriptors.FileDescriptor[] {
         });
-    internal_static_messages_Position_descriptor =
+    internal_static_messages_PingPong_descriptor =
       getDescriptor().getMessageTypes().get(0);
+    internal_static_messages_PingPong_fieldAccessorTable = new
+      com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
+        internal_static_messages_PingPong_descriptor,
+        new java.lang.String[] { });
+    internal_static_messages_Position_descriptor =
+      getDescriptor().getMessageTypes().get(1);
     internal_static_messages_Position_fieldAccessorTable = new
       com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
         internal_static_messages_Position_descriptor,
-        new java.lang.String[] { "TrackerId", "X", "Y", "Z", "Qx", "Qy", "Qz", "Qw", "DataSource", "DataSource", });
+        new java.lang.String[] { "TrackerId", "X", "Y", "Z", "Qx", "Qy", "Qz", "Qw", "DataSource", "X", "Y", "Z", "DataSource", });
     internal_static_messages_UserAction_descriptor =
-      getDescriptor().getMessageTypes().get(1);
+      getDescriptor().getMessageTypes().get(2);
     internal_static_messages_UserAction_fieldAccessorTable = new
       com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
         internal_static_messages_UserAction_descriptor,
@@ -5859,13 +6379,13 @@ public final class ProtobufMessages {
         internal_static_messages_UserAction_ActionArgumentsEntry_descriptor,
         new java.lang.String[] { "Key", "Value", });
     internal_static_messages_TrackerAdded_descriptor =
-      getDescriptor().getMessageTypes().get(2);
+      getDescriptor().getMessageTypes().get(3);
     internal_static_messages_TrackerAdded_fieldAccessorTable = new
       com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
         internal_static_messages_TrackerAdded_descriptor,
         new java.lang.String[] { "TrackerId", "TrackerSerial", "TrackerName", "TrackerRole", });
     internal_static_messages_TrackerStatus_descriptor =
-      getDescriptor().getMessageTypes().get(3);
+      getDescriptor().getMessageTypes().get(4);
     internal_static_messages_TrackerStatus_fieldAccessorTable = new
       com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
         internal_static_messages_TrackerStatus_descriptor,
@@ -5877,7 +6397,7 @@ public final class ProtobufMessages {
         internal_static_messages_TrackerStatus_ExtraEntry_descriptor,
         new java.lang.String[] { "Key", "Value", });
     internal_static_messages_ProtobufMessage_descriptor =
-      getDescriptor().getMessageTypes().get(4);
+      getDescriptor().getMessageTypes().get(5);
     internal_static_messages_ProtobufMessage_fieldAccessorTable = new
       com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
         internal_static_messages_ProtobufMessage_descriptor,

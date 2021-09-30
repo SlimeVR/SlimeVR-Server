@@ -52,7 +52,7 @@ public class NamedPipeVRBridge extends Thread implements Bridge {
 		this.internalTrackers = new FastList<>(shareTrackers.size());
 		for(int i = 0; i < shareTrackers.size(); ++i) {
 			Tracker t = shareTrackers.get(i);
-			ComputedTracker ct = new ComputedTracker("internal://" + t.getName(), true, true);
+			ComputedTracker ct = new ComputedTracker(t.getTrackerId(), "internal://" + t.getName(), true, true);
 			ct.setStatus(TrackerStatus.OK);
 			this.internalTrackers.add(ct);
 		}
@@ -279,5 +279,10 @@ public class NamedPipeVRBridge extends Thread implements Bridge {
 	public void removeSharedTracker(Tracker tracker) {
 		// TODO Auto-generated method stub
 		
+	}
+
+	@Override
+	public void startBridge() {
+		start();
 	}
 }

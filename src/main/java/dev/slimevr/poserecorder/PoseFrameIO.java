@@ -13,7 +13,7 @@ import com.jme3.math.Vector3f;
 
 import io.eiren.util.collections.FastList;
 import io.eiren.util.logging.LogManager;
-import io.eiren.vr.processor.TrackerBodyPosition;
+import io.eiren.vr.trackers.TrackerPosition;
 
 public final class PoseFrameIO {
 	
@@ -91,9 +91,9 @@ public final class PoseFrameIO {
 				for(int j = 0; j < trackerFrameCount; j++) {
 					int dataFlags = inputStream.readInt();
 					
-					TrackerBodyPosition designation = null;
+					TrackerPosition designation = null;
 					if(TrackerFrameData.DESIGNATION.check(dataFlags)) {
-						designation = TrackerBodyPosition.getByDesignation(inputStream.readUTF());
+						designation = TrackerPosition.getByDesignation(inputStream.readUTF());
 					}
 					
 					Quaternion rotation = null;

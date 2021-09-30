@@ -104,7 +104,7 @@ public class TrackersUDPServer extends Thread {
 				isOwo = true;
 			}
 			String trackerName = macString != null ? "upd://" + macString : "udp:/" + handshakePacket.getAddress().toString();
-			IMUTracker imu = new IMUTracker(trackerName, this);
+			IMUTracker imu = new IMUTracker(Tracker.getNextLocalTrackerId(), trackerName, this);
 			ReferenceAdjustedTracker<IMUTracker> adjustedTracker = new ReferenceAdjustedTracker<>(imu);
 			trackersConsumer.accept(adjustedTracker);
 			sensor = new TrackerConnection(imu, handshakePacket.getSocketAddress());
@@ -123,7 +123,7 @@ public class TrackersUDPServer extends Thread {
 	
 	private void setUpAuxilarySensor(TrackerConnection connection) throws IOException {
 		System.out.println("[TrackerServer] Setting up auxilary sensor for " + connection.tracker.getName());
-		IMUTracker imu = new IMUTracker(connection.tracker.getName() + "/1", this);
+		IMUTracker imu = new IMUTracker(Tracker.getNextLocalTrackerId(), connection.tracker.getName() + "/1", this);
 		connection.secondTracker = imu;
 		ReferenceAdjustedTracker<IMUTracker> adjustedTracker = new ReferenceAdjustedTracker<>(imu);
 		trackersConsumer.accept(adjustedTracker);

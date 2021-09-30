@@ -6,9 +6,9 @@ import com.jme3.math.Quaternion;
 import com.jme3.math.Vector3f;
 
 import io.eiren.util.collections.FastList;
-import io.eiren.vr.processor.TrackerBodyPosition;
 import io.eiren.vr.trackers.Tracker;
 import io.eiren.vr.trackers.TrackerConfig;
+import io.eiren.vr.trackers.TrackerPosition;
 import io.eiren.vr.trackers.TrackerStatus;
 
 public class PoseFrameTracker implements Tracker, Iterable<TrackerFrame> {
@@ -17,6 +17,7 @@ public class PoseFrameTracker implements Tracker, Iterable<TrackerFrame> {
 	
 	private final FastList<TrackerFrame> frames;
 	private int frameCursor = 0;
+	private final int trackerId = Tracker.getNextLocalTrackerId();
 	
 	public PoseFrameTracker(String name, FastList<TrackerFrame> frames) {
 		if(frames == null) {
@@ -193,13 +194,13 @@ public class PoseFrameTracker implements Tracker, Iterable<TrackerFrame> {
 	}
 	
 	@Override
-	public TrackerBodyPosition getBodyPosition() {
+	public TrackerPosition getBodyPosition() {
 		TrackerFrame frame = safeGetFrame();
 		return frame == null ? null : frame.designation;
 	}
 	
 	@Override
-	public void setBodyPosition(TrackerBodyPosition position) {
+	public void setBodyPosition(TrackerPosition position) {
 		throw new UnsupportedOperationException("PoseFrameTracker does not allow setting the body position");
 	}
 	
@@ -229,5 +230,10 @@ public class PoseFrameTracker implements Tracker, Iterable<TrackerFrame> {
 	@Override
 	public Iterator<TrackerFrame> iterator() {
 		return frames.iterator();
+	}
+
+	@Override
+	public int getTrackerId() {
+		return this.trackerId;
 	}
 }

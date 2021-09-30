@@ -1,26 +1,53 @@
 package dev.slimevr.bridge;
 
 import dev.slimevr.bridge.ProtobufMessages.ProtobufMessage;
-import io.eiren.vr.trackers.Tracker;
+import dev.slimevr.bridge.ProtobufMessages.TrackerAdded;
+import io.eiren.util.ann.VRServerThread;
+import io.eiren.vr.trackers.TrackerPosition;
+import io.eiren.vr.trackers.TrackerRole;
 import io.eiren.vr.trackers.VRTracker;
 
-public class NamedPipeBridge extends ProtobufBridge<VRTracker> {
+public class NamedPipeBridge extends ProtobufBridge<VRTracker> implements Runnable {
 	
-	public NamedPipeBridge() {
-		// TODO Auto-generated constructor stub
+	protected final String pipeName;
+	protected final Thread runnerThread;
+	
+	public NamedPipeBridge(String pipeName) {
+		this.pipeName = pipeName;
+		runnerThread = new Thread(this, "Named pipe thread");
 	}
-	
+
 	@Override
-	protected void sendMessage(ProtobufMessage message) {
+	@BridgeThread
+	protected void sendMessageReal(ProtobufMessage message) {
 		// TODO Auto-generated method stub
 		
 	}
 
 	@Override
-	protected VRTracker createInternalSharedTracker(Tracker source) {
-		// TODO Auto-generated method stub
-		return null;
+	@VRServerThread
+	protected VRTracker createNewTracker(TrackerAdded trackerAdded) {
+		VRTracker tracker = new VRTracker(trackerAdded.getTrackerId(), trackerAdded.getTrackerSerial(), trackerAdded.getTrackerName(), true, true);
+		TrackerRole role = TrackerRole.getById(trackerAdded.getTrackerRole());
+		if(role != null) {
+			tracker.setBodyPosition(TrackerPosition.getByRole(role));
+		}
+		return tracker;
 	}
+
+	@Override
+	@BridgeThread
+	public void run() {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	@VRServerThread
+	public void startBridge() {
+		runnerThread.start();
+	}
+
 	
 	
 	

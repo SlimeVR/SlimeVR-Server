@@ -42,5 +42,10 @@ public class VMCBridge extends Thread implements Bridge {
 		// TODO Auto-generated method stub
 		
 	}
+
+	@Override
+	public void startBridge() {
+		start();
+	}
 	
 }

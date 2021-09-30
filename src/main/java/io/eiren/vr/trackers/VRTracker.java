@@ -4,12 +4,14 @@ import io.eiren.util.BufferedTimer;
 
 public class VRTracker extends ComputedTracker {
 
-	public final int id;
 	protected BufferedTimer timer = new BufferedTimer(1f);
 	
+	public VRTracker(int id, String serial, String name, boolean hasRotation, boolean hasPosition) {
+		super(id, serial, name, hasRotation, hasPosition);
+	}
+	
 	public VRTracker(int id, String name, boolean hasRotation, boolean hasPosition) {
-		super(name, hasRotation, hasPosition);
-		this.id = id;
+		super(id, name, name, hasRotation, hasPosition);
 	}
 	
 	@Override
