@@ -103,7 +103,7 @@ public class TrackersUDPServer extends Thread {
 				firmware.append("owoTrack");
 				isOwo = true;
 			}
-			String trackerName = macString != null ? "upd://" + macString : "udp:/" + handshakePacket.getAddress().toString();
+			String trackerName = macString != null ? "udp://" + macString : "udp:/" + handshakePacket.getAddress().toString();
 			IMUTracker imu = new IMUTracker(trackerName, this);
 			ReferenceAdjustedTracker<IMUTracker> adjustedTracker = new ReferenceAdjustedTracker<>(imu);
 			trackersConsumer.accept(adjustedTracker);
