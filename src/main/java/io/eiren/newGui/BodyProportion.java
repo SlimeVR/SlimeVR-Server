@@ -4,9 +4,14 @@ import io.eiren.util.StringUtils;
 import io.eiren.vr.VRServer;
 import javafx.animation.KeyFrame;
 import javafx.animation.Timeline;
+import javafx.geometry.Insets;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.input.MouseEvent;
+import javafx.scene.layout.AnchorPane;
+import javafx.scene.text.Text;
+import javafx.scene.text.TextAlignment;
+import javafx.scene.text.TextFlow;
 import javafx.util.Duration;
 
 import java.util.HashMap;
@@ -22,6 +27,44 @@ public class BodyProportion {
 		this.server = server;
 	}
 
+	public void bodyProportionInit(TextFlow name, TextFlow plus, TextFlow lable, TextFlow minus, TextFlow reset) {
+
+		name.setTextAlignment(TextAlignment.CENTER);
+		name.setLineSpacing(24.0f);
+		name.setPadding(new Insets(15, 0, 0, 0));
+
+		name.getChildren().addAll(new Text("Chest"), new Text(System.lineSeparator()),
+				new Text("Waist"), new Text(System.lineSeparator()),
+				new Text("Hips width"), new Text(System.lineSeparator()),
+				new Text("Legs length"), new Text(System.lineSeparator()),
+				new Text("Knee height"), new Text(System.lineSeparator()),
+				new Text("Foot length"), new Text(System.lineSeparator()),
+				new Text("Head offset"), new Text(System.lineSeparator()),
+				new Text("Neck length"), new Text(System.lineSeparator()),
+				new Text("Virtual waist"));
+
+
+		plus.setPadding(new Insets(13, 0, 0, 0));
+		plus.setTextAlignment(TextAlignment.CENTER);
+		plus.setLineSpacing(14.0f);
+
+		plus.getChildren().addAll(new ArithmOpBodyButton("+", "Chest", 0.01f),
+				new ArithmOpBodyButton("+", "Waist", 0.01f),
+				new ArithmOpBodyButton("+", "Hips width", 0.01f),
+				new ArithmOpBodyButton("+", "Legs length", 0.01f),
+				new ArithmOpBodyButton("+", "Knee height", 0.01f),
+				new ArithmOpBodyButton("+", "Foot length", 0.01f),
+				new ArithmOpBodyButton("+", "Head offset", 0.01f),
+				new ArithmOpBodyButton("+", "Neck length", 0.01f),
+				new ArithmOpBodyButton("+", "Virtual waist", 0.01f));
+	}
+
+	private void customizeTextFlow(TextFlow t) {
+		t.setTextAlignment(TextAlignment.CENTER);
+		t.setLineSpacing(24.0f);
+		t.setPadding(new Insets(15, 0, 0, 0));
+	}
+
 	private class BodyLabel extends Label {
 
 		public BodyLabel(String joint) {
@@ -34,6 +77,8 @@ public class BodyProportion {
 
 		public ArithmOpBodyButton(String text, String joint, float diff) {
 			super(text);
+			setPrefSize(31, 31);
+			setStyle("-fx-font-size : 15px;");
 			addEventHandler(MouseEvent.MOUSE_CLICKED, e -> change(joint, diff));
 		}
 	}

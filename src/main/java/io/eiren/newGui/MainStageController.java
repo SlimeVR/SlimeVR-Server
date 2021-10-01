@@ -47,12 +47,16 @@ public class MainStageController implements Initializable {
 
 	@FXML
 	private MenuBar fxMenuBar;
-	@FXML
-	private AnchorPane bodyPane;
 
 	@FXML
 	private Button reset;
 
+	@FXML
+	private AnchorPane skeletonPane;
+	@FXML
+	private Button skeletonBTN;
+	@FXML
+	private Button skeletonArrowBTN;
 	@FXML
 	private TextFlow jointTextFlow;
 	@FXML
@@ -68,11 +72,19 @@ public class MainStageController implements Initializable {
 	@FXML
 	private TextFlow rollTextFlow;
 
+	private BodyProportion bodyProportion = new BodyProportion(server);
+//	@FXML
+//	private AnchorPane bodyPane;
 	@FXML
-	private Button bodyArrowBTN;
-
+	private TextFlow bodyNameTextFlow;
 	@FXML
-	private Button bodyBTN;
+	private TextFlow bodyPlusTextFlow;
+	@FXML
+	private TextFlow bodyLableTextFlow;
+	@FXML
+	private TextFlow bodyMinusTextFlow;
+	@FXML
+	private TextFlow bodyResetTextFlow;
 
 	private int i = 0;
 	private int n = 0;
@@ -101,6 +113,9 @@ public class MainStageController implements Initializable {
 		});
 
 		skeletonDataInit();
+
+		bodyProportion.bodyProportionInit(bodyNameTextFlow, bodyPlusTextFlow,
+				bodyLableTextFlow, bodyMinusTextFlow, bodyResetTextFlow);
 	}
 
 	@FXML
@@ -109,33 +124,35 @@ public class MainStageController implements Initializable {
 	}
 
 	@FXML
-	private void bodyBtnAction(ActionEvent event) {
-		bodyPane.setVisible(false);
-	}
-
-	@FXML
-	private void bodyArrowBtnAction(ActionEvent event) {
-		bodyPane.setLayoutX(102);
-		bodyPane.setLayoutY(124);
-		bodyPane.setEffect(new DropShadow());
-		bodyArrowBTN.setVisible(false);
-		bodyBTN.setText("\uD83D\uDFAB");
-		bodyBTN.setPrefSize(31, 31);
-		bodyBTN.setStyle("-fx-font-size : 13.5px");
-		bodyBTN.setLayoutX(364);
-		bodyBTN.setLayoutY(14);
-	}
-
-	@FXML
 	private void skeletonBtnAction(ActionEvent event) {
-		bodyPane.setVisible(true);
-		bodyPane.setLayoutX(528);
-		bodyPane.setLayoutY(124);
-		bodyArrowBTN.setVisible(true);
-		bodyBTN.setText("Body");
-		bodyBTN.setPrefSize(85, 31);
-		bodyBTN.setLayoutX(12);
-		bodyBTN.setLayoutY(14);
+		skeletonPane.setVisible(false);
+		skeletonPane.setEffect(null);
+	}
+
+	@FXML
+	private void skeletonArrowBtnAction(ActionEvent event) {
+		skeletonPane.setLayoutX(102);
+		skeletonPane.setLayoutY(124);
+		skeletonPane.setEffect(new DropShadow());
+		skeletonArrowBTN.setVisible(false);
+		skeletonBTN.setText("\uD83D\uDFAB");
+		skeletonBTN.setPrefSize(31, 31);
+		skeletonBTN.setStyle("-fx-font-size : 13.5px");
+		skeletonBTN.setLayoutX(364);
+		skeletonBTN.setLayoutY(14);
+	}
+
+	@FXML
+	private void bodyBtnAction(ActionEvent event) {
+		skeletonPane.setVisible(true);
+		skeletonPane.setLayoutX(528);
+		skeletonPane.setLayoutY(124);
+		skeletonArrowBTN.setVisible(true);
+		skeletonBTN.setText("Body");
+		skeletonBTN.setPrefSize(85, 31);
+		skeletonBTN.setLayoutX(12);
+		skeletonBTN.setLayoutY(14);
+		skeletonPane.setEffect(null);
 	}
 
 	@FXML
