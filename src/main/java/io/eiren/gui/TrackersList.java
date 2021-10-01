@@ -161,7 +161,7 @@ public class TrackersList extends EJBoxNoStretch {
 				realTracker = ((ReferenceAdjustedTracker<? extends Tracker>) t).getTracker();
 			removeAll();
 			JLabel nameLabel;
-			add(nameLabel = new JLabel(t.getName()), s(c(0, row, 2, GridBagConstraints.FIRST_LINE_START), 4, 1));
+			add(nameLabel = new JLabel(t.getDescriptiveName()), s(c(0, row, 2, GridBagConstraints.FIRST_LINE_START), 4, 1));
 			nameLabel.setFont(nameLabel.getFont().deriveFont(Font.BOLD));
 			row++;
 			

@@ -104,7 +104,8 @@ public class TrackersUDPServer extends Thread {
 				isOwo = true;
 			}
 			String trackerName = macString != null ? "upd://" + macString : "udp:/" + handshakePacket.getAddress().toString();
-			IMUTracker imu = new IMUTracker(Tracker.getNextLocalTrackerId(), trackerName, this);
+			String descriptiveName = "udp:/" + handshakePacket.getAddress().toString();
+			IMUTracker imu = new IMUTracker(Tracker.getNextLocalTrackerId(), trackerName, descriptiveName, this);
 			ReferenceAdjustedTracker<IMUTracker> adjustedTracker = new ReferenceAdjustedTracker<>(imu);
 			trackersConsumer.accept(adjustedTracker);
 			sensor = new TrackerConnection(imu, handshakePacket.getSocketAddress());
@@ -121,9 +122,9 @@ public class TrackersUDPServer extends Thread {
         socket.send(new DatagramPacket(HANDSHAKE_BUFFER, HANDSHAKE_BUFFER.length, handshakePacket.getAddress(), handshakePacket.getPort()));
 	}
 	
-	private void setUpAuxilarySensor(TrackerConnection connection) throws IOException {
+	private void setUpAuxilarySensor(TrackerConnection connection, int trackerId) throws IOException {
 		System.out.println("[TrackerServer] Setting up auxilary sensor for " + connection.tracker.getName());
-		IMUTracker imu = new IMUTracker(Tracker.getNextLocalTrackerId(), connection.tracker.getName() + "/1", this);
+		IMUTracker imu = new IMUTracker(Tracker.getNextLocalTrackerId(), connection.tracker.getName() + "/" + trackerId, connection.tracker.getDescriptiveName() + "/" + trackerId, this);
 		connection.secondTracker = imu;
 		ReferenceAdjustedTracker<IMUTracker> adjustedTracker = new ReferenceAdjustedTracker<>(imu);
 		trackersConsumer.accept(adjustedTracker);
@@ -362,8 +363,8 @@ public class TrackersUDPServer extends Thread {
 						bb.getLong();
 						sensorId = bb.get() & 0xFF;
 						int sensorStatus = bb.get() & 0xFF;
-						if(sensorId == 1 && sensorStatus == 1 && connection.secondTracker == null) {
-							setUpAuxilarySensor(connection);
+						if(sensorId > 0 && sensorStatus == 1 && connection.secondTracker == null) {
+							setUpAuxilarySensor(connection, sensorId);
 						}
 						bb.rewind();
 						bb.putInt(15);

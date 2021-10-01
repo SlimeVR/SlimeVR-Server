@@ -164,4 +164,9 @@ public class ReferenceAdjustedTracker<E extends Tracker> implements Tracker {
 	public int getTrackerId() {
 		return tracker.getTrackerId();
 	}
+	
+	@Override
+	public String getDescriptiveName() {
+		return tracker.getDescriptiveName();
+	}
 }

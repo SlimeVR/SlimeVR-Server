@@ -23,6 +23,7 @@ public class IMUTracker implements Tracker, TrackerWithTPS, TrackerWithBattery {
 	protected final int trackerId;
 	
 	protected final String name;
+	protected final String descriptiveName;
 	protected final TrackersUDPServer server;
 	protected float confidence = 0;
 	protected float batteryVoltage = 0;
@@ -39,10 +40,11 @@ public class IMUTracker implements Tracker, TrackerWithTPS, TrackerWithBattery {
 	long lastSerialUpdate = 0;
 	public TrackerPosition bodyPosition = null;
 	
-	public IMUTracker(int trackerId, String name, TrackersUDPServer server) {
+	public IMUTracker(int trackerId, String name, String descriptiveName, TrackersUDPServer server) {
 		this.name = name;
 		this.server = server;
 		this.trackerId = trackerId;
+		this.descriptiveName = descriptiveName;
 	}
 	
 	@Override
@@ -202,6 +204,31 @@ public class IMUTracker implements Tracker, TrackerWithTPS, TrackerWithBattery {
 	public boolean userEditable() {
 		return true;
 	}
+
+	@Override
+	public boolean hasRotation() {
+		return true;
+	}
+
+	@Override
+	public boolean hasPosition() {
+		return false;
+	}
+
+	@Override
+	public boolean isComputed() {
+		return false;
+	}
+
+	@Override
+	public int getTrackerId() {
+		return this.trackerId;
+	}
+	
+	@Override
+	public String getDescriptiveName() {
+		return this.descriptiveName;
+	}
 	
 	public enum CalibrationAccuracy {
 		
@@ -228,25 +255,5 @@ public class IMUTracker implements Tracker, TrackerWithTPS, TrackerWithBattery {
 			for(CalibrationAccuracy ca : values())
 				byStatus[ca.status] = ca;
 		}
-	}
-
-	@Override
-	public boolean hasRotation() {
-		return true;
-	}
-
-	@Override
-	public boolean hasPosition() {
-		return false;
-	}
-
-	@Override
-	public boolean isComputed() {
-		return false;
-	}
-
-	@Override
-	public int getTrackerId() {
-		return this.trackerId;
 	}
 }
