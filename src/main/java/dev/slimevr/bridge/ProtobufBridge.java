@@ -18,8 +18,12 @@ import io.eiren.util.ann.Synchronize;
 import io.eiren.util.ann.ThreadSafe;
 import io.eiren.util.ann.VRServerThread;
 import io.eiren.util.collections.FastList;
+import io.eiren.util.logging.LogManager;
 import io.eiren.vr.Main;
+import io.eiren.vr.trackers.ComputedTracker;
+import io.eiren.vr.trackers.HMDTracker;
 import io.eiren.vr.trackers.Tracker;
+import io.eiren.vr.trackers.TrackerRole;
 import io.eiren.vr.trackers.VRTracker;
 
 public abstract class ProtobufBridge<T extends VRTracker> implements Bridge {
@@ -40,11 +44,17 @@ public abstract class ProtobufBridge<T extends VRTracker> implements Bridge {
 	
 	private boolean hadNewData = false;
 	
-	public ProtobufBridge() {
+	private T hmdTracker;
+	private final HMDTracker hmd;
+	protected final String bridgeName;
+	
+	public ProtobufBridge(String bridgeName, HMDTracker hmd) {
+		this.bridgeName = bridgeName;
+		this.hmd = hmd;
 	}
 
 	@BridgeThread
-	protected abstract void sendMessageReal(ProtobufMessage message);
+	protected abstract boolean sendMessageReal(ProtobufMessage message);
 
 	@BridgeThread
 	protected void messageRecieved(ProtobufMessage message) {
@@ -60,7 +70,8 @@ public abstract class ProtobufBridge<T extends VRTracker> implements Bridge {
 	protected void updateMessageQueue() {
 		ProtobufMessage message = null;
 		while((message = outputQueue.poll()) != null) {
-			sendMessageReal(message);
+			if(!sendMessageReal(message))
+				return;
 		}
 	}
 	
@@ -73,6 +84,16 @@ public abstract class ProtobufBridge<T extends VRTracker> implements Bridge {
 			processMessageRecieved(message);
 			hadNewData = true;
 		}
+		if(hadNewData && hmdTracker != null) {
+			trackerOverrideUpdate(hmdTracker, hmd);
+		}
+	}
+	
+	protected void trackerOverrideUpdate(T source, ComputedTracker target) {
+		target.position.set(source.position);
+		target.rotation.set(source.rotation);
+		target.setStatus(source.getStatus());
+		target.dataTick();
 	}
 
 	@VRServerThread
@@ -104,6 +125,8 @@ public abstract class ProtobufBridge<T extends VRTracker> implements Bridge {
 	
 	@VRServerThread
 	protected void processMessageRecieved(ProtobufMessage message) {
+		//if(!message.hasPosition())
+		//	LogManager.log.info("[" + bridgeName + "] MSG: " + message);
 		if(message.hasPosition()) {
 			positionRecieved(message.getPosition());
 		} else if(message.hasUserAction()) {
@@ -131,12 +154,22 @@ public abstract class ProtobufBridge<T extends VRTracker> implements Bridge {
 
 	@VRServerThread
 	protected void trackerAddedRecieved(TrackerAdded trackerAdded) {
-		T tracker = createNewTracker(trackerAdded);
+		T tracker = getInternalRemoteTrackerById(trackerAdded.getTrackerId());
+		if(tracker != null) {
+			// TODO reinit?
+			return;
+		}
+		tracker = createNewTracker(trackerAdded);
 		synchronized(remoteTrackersBySerial) {
 			remoteTrackersBySerial.put(tracker.getName(), tracker);
 		}
 		synchronized(remoteTrackersByTrackerId) {
 			remoteTrackersByTrackerId.put(tracker.getTrackerId(), tracker);
+		}
+		if(trackerAdded.getTrackerRole() == TrackerRole.HMD.id) {
+			hmdTracker = tracker;
+		} else {
+			Main.vrServer.registerTracker(tracker);
 		}
 	}
 
@@ -166,8 +199,19 @@ public abstract class ProtobufBridge<T extends VRTracker> implements Bridge {
 	}
 
 	@VRServerThread
+	protected void reconnected() {
+		for(int i = 0; i < localTrackers.size(); ++i) {
+			Tracker tracker = localTrackers.get(i);
+			TrackerAdded.Builder builder = TrackerAdded.newBuilder().setTrackerId(tracker.getTrackerId()).setTrackerName(tracker.getDescriptiveName()).setTrackerSerial(tracker.getName()).setTrackerRole(tracker.getBodyPosition().trackerRole.id);
+			sendMessage(ProtobufMessage.newBuilder().setTrackerAdded(builder).build());
+		}
+	}
+
+	@VRServerThread
 	@Override
 	public void addSharedTracker(Tracker tracker) {
+		if(localTrackers.contains(tracker))
+			return;
 		localTrackers.add(tracker);
 		TrackerAdded.Builder builder = TrackerAdded.newBuilder().setTrackerId(tracker.getTrackerId()).setTrackerName(tracker.getDescriptiveName()).setTrackerSerial(tracker.getName()).setTrackerRole(tracker.getBodyPosition().trackerRole.id);
 		sendMessage(ProtobufMessage.newBuilder().setTrackerAdded(builder).build());

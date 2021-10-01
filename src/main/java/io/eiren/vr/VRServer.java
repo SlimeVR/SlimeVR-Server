@@ -16,8 +16,7 @@ import java.util.concurrent.LinkedBlockingQueue;
 import java.util.function.Consumer;
 
 import dev.slimevr.bridge.Bridge;
-import dev.slimevr.bridge.NamedPipeVRBridge;
-import dev.slimevr.bridge.SteamVRPipeInputBridge;
+import dev.slimevr.bridge.NamedPipeBridge;
 import dev.slimevr.bridge.VMCBridge;
 import dev.slimevr.bridge.WebSocketVRBridge;
 import io.eiren.util.OperatingSystem;
@@ -62,6 +61,7 @@ public class VRServer extends Thread {
 		
 		// OpenVR bridge currently only supports Windows
 		if(OperatingSystem.getCurrentPlatform() == OperatingSystem.WINDOWS) {
+			/*
 			// Create named pipe bridge for SteamVR driver
 			NamedPipeVRBridge driverBridge = new NamedPipeVRBridge(hmdTracker, shareTrackers, this);
 			tasks.add(() -> driverBridge.startBridge());
@@ -70,6 +70,15 @@ public class VRServer extends Thread {
 			SteamVRPipeInputBridge steamVRInput = new SteamVRPipeInputBridge(this);
 			tasks.add(() -> steamVRInput.startBridge());
 			bridges.add(steamVRInput);
+			//*/
+			NamedPipeBridge driverBridge = new NamedPipeBridge(hmdTracker, "SteamVR Driver Bridge", "\\\\.\\pipe\\SlimeVRDriver");
+			tasks.add(() -> driverBridge.startBridge());
+			tasks.add(() -> {
+				// TODO : THIS SHOULD BE HANDLED COMPLETELY DIFFERENT AND FOR EACH BRIDGE TOGETHER
+				for(int i = 0; i < shareTrackers.size(); ++i)
+					driverBridge.addSharedTracker(shareTrackers.get(i));
+			});
+			bridges.add(driverBridge);
 		}
 		
 		// Create WebSocket server

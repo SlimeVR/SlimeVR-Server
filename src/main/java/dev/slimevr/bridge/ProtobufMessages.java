@@ -259,7 +259,7 @@ public final class ProtobufMessages {
                 dev.slimevr.bridge.ProtobufMessages.PingPong.class, dev.slimevr.bridge.ProtobufMessages.PingPong.Builder.class);
       }
 
-      // Construct using messages.ProtobufMessages.PingPong.newBuilder()
+      // Construct using dev.slimevr.bridge.ProtobufMessages.PingPong.newBuilder()
       private Builder() {
         maybeForceBuilderInitialization();
       }
@@ -1205,7 +1205,7 @@ public final class ProtobufMessages {
                 dev.slimevr.bridge.ProtobufMessages.Position.class, dev.slimevr.bridge.ProtobufMessages.Position.Builder.class);
       }
 
-      // Construct using messages.ProtobufMessages.Position.newBuilder()
+      // Construct using dev.slimevr.bridge.ProtobufMessages.Position.newBuilder()
       private Builder() {
         maybeForceBuilderInitialization();
       }
@@ -2281,7 +2281,7 @@ public final class ProtobufMessages {
                 dev.slimevr.bridge.ProtobufMessages.UserAction.class, dev.slimevr.bridge.ProtobufMessages.UserAction.Builder.class);
       }
 
-      // Construct using messages.ProtobufMessages.UserAction.newBuilder()
+      // Construct using dev.slimevr.bridge.ProtobufMessages.UserAction.newBuilder()
       private Builder() {
         maybeForceBuilderInitialization();
       }
@@ -3120,7 +3120,7 @@ public final class ProtobufMessages {
                 dev.slimevr.bridge.ProtobufMessages.TrackerAdded.class, dev.slimevr.bridge.ProtobufMessages.TrackerAdded.Builder.class);
       }
 
-      // Construct using messages.ProtobufMessages.TrackerAdded.newBuilder()
+      // Construct using dev.slimevr.bridge.ProtobufMessages.TrackerAdded.newBuilder()
       private Builder() {
         maybeForceBuilderInitialization();
       }
@@ -4384,7 +4384,7 @@ public final class ProtobufMessages {
                 dev.slimevr.bridge.ProtobufMessages.TrackerStatus.class, dev.slimevr.bridge.ProtobufMessages.TrackerStatus.Builder.class);
       }
 
-      // Construct using messages.ProtobufMessages.TrackerStatus.newBuilder()
+      // Construct using dev.slimevr.bridge.ProtobufMessages.TrackerStatus.newBuilder()
       private Builder() {
         maybeForceBuilderInitialization();
       }
@@ -5465,7 +5465,7 @@ public final class ProtobufMessages {
                 dev.slimevr.bridge.ProtobufMessages.ProtobufMessage.class, dev.slimevr.bridge.ProtobufMessages.ProtobufMessage.Builder.class);
       }
 
-      // Construct using messages.ProtobufMessages.ProtobufMessage.newBuilder()
+      // Construct using dev.slimevr.bridge.ProtobufMessages.ProtobufMessage.newBuilder()
       private Builder() {
         maybeForceBuilderInitialization();
       }
@@ -6348,7 +6348,8 @@ public final class ProtobufMessages {
       "\030\002 \001(\0132\024.messages.UserActionH\000\022/\n\rtracke" +
       "r_added\030\003 \001(\0132\026.messages.TrackerAddedH\000\022" +
       "1\n\016tracker_status\030\004 \001(\0132\027.messages.Track" +
-      "erStatusH\000B\t\n\007messageb\006proto3"
+      "erStatusH\000B\t\n\007messageB&\n\022dev.slimevr.bri" +
+      "dgeB\020ProtobufMessagesb\006proto3"
     };
     descriptor = com.google.protobuf.Descriptors.FileDescriptor
       .internalBuildGeneratedFileFrom(descriptorData,
