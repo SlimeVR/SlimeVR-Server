@@ -138,6 +138,7 @@ public class NamedPipeBridge extends ProtobufBridge<VRTracker> implements Runnab
 	private void resetPipe() {
 		Pipe.safeDisconnect(pipe);
 		pipe.state = PipeState.CREATED;
+		Main.vrServer.queueTask(this::disconnected);
 	}
 	
 	private void createPipe() throws IOException {

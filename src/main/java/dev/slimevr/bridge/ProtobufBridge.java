@@ -1,8 +1,10 @@
 package dev.slimevr.bridge;
 
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
+import java.util.Map.Entry;
 import java.util.Queue;
 import java.util.concurrent.LinkedBlockingQueue;
 
@@ -18,7 +20,6 @@ import io.eiren.util.ann.Synchronize;
 import io.eiren.util.ann.ThreadSafe;
 import io.eiren.util.ann.VRServerThread;
 import io.eiren.util.collections.FastList;
-import io.eiren.util.logging.LogManager;
 import io.eiren.vr.Main;
 import io.eiren.vr.trackers.ComputedTracker;
 import io.eiren.vr.trackers.HMDTracker;
@@ -88,7 +89,8 @@ public abstract class ProtobufBridge<T extends VRTracker> implements Bridge {
 			trackerOverrideUpdate(hmdTracker, hmd);
 		}
 	}
-	
+
+	@VRServerThread
 	protected void trackerOverrideUpdate(T source, ComputedTracker target) {
 		target.position.set(source.position);
 		target.rotation.set(source.rotation);
@@ -137,7 +139,7 @@ public abstract class ProtobufBridge<T extends VRTracker> implements Bridge {
 			trackerAddedRecieved(message.getTrackerAdded());
 		}
 	}
-
+	
 	@VRServerThread
 	protected void positionRecieved(Position positionMessage) {
 		T tracker = getInternalRemoteTrackerById(positionMessage.getTrackerId());
@@ -148,7 +150,7 @@ public abstract class ProtobufBridge<T extends VRTracker> implements Bridge {
 			tracker.dataTick();
 		}
 	}
-
+	
 	@VRServerThread
 	protected abstract T createNewTracker(TrackerAdded trackerAdded);
 
@@ -204,6 +206,19 @@ public abstract class ProtobufBridge<T extends VRTracker> implements Bridge {
 			Tracker tracker = localTrackers.get(i);
 			TrackerAdded.Builder builder = TrackerAdded.newBuilder().setTrackerId(tracker.getTrackerId()).setTrackerName(tracker.getDescriptiveName()).setTrackerSerial(tracker.getName()).setTrackerRole(tracker.getBodyPosition().trackerRole.id);
 			sendMessage(ProtobufMessage.newBuilder().setTrackerAdded(builder).build());
+		}
+	}
+
+	@VRServerThread
+	protected void disconnected() {
+		synchronized(remoteTrackersByTrackerId) {
+			Iterator<Entry<Integer, T>> iterator = remoteTrackersByTrackerId.entrySet().iterator();
+			while(iterator.hasNext()) {
+				iterator.next().getValue().setStatus(io.eiren.vr.trackers.TrackerStatus.DISCONNECTED);
+			}
+		}
+		if(hmdTracker != null) {
+			hmd.setStatus(io.eiren.vr.trackers.TrackerStatus.DISCONNECTED);
 		}
 	}
 
