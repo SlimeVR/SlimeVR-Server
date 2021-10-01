@@ -153,11 +153,13 @@ public class MainStageController implements Initializable {
 	@FXML
 	private void reset(ActionEvent event) {
 		reset.setText(String.valueOf(3));
-		server.resetTrackers();
 		n = 2;
 		Timeline timeline = new Timeline(new KeyFrame(Duration.seconds(1), timeLineEvent -> {
 			if (n > 0) reset.setText(String.valueOf(n));
-			if (n == 0) reset.setText("Reset");
+			if (n == 0){
+				server.resetTrackers();
+				reset.setText("Reset");
+			}
 			n--;
 		}));
 		timeline.setCycleCount(3);
@@ -189,7 +191,7 @@ public class MainStageController implements Initializable {
 			rollTextFlow.getChildren().clear();
 
 			for (TransformNode n : nodes) {
-				update(n);
+				updateSkeletonData(n);
 			}
 		}));
 
@@ -210,7 +212,7 @@ public class MainStageController implements Initializable {
 		//t.setPadding(new Insets(0, 50, 0, 0));
 	}
 
-	private void update(TransformNode n) {
+	private void updateSkeletonData(TransformNode n) {
 
 		Text name = new Text(n.getName());
 		Text x = new Text();
