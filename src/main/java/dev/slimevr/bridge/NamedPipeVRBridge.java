@@ -18,6 +18,7 @@ import io.eiren.util.logging.LogManager;
 import io.eiren.vr.VRServer;
 import io.eiren.vr.trackers.ComputedTracker;
 import io.eiren.vr.trackers.HMDTracker;
+import io.eiren.vr.trackers.ShareableTracker;
 import io.eiren.vr.trackers.Tracker;
 import io.eiren.vr.trackers.TrackerStatus;
 
@@ -271,13 +272,13 @@ public class NamedPipeVRBridge extends Thread implements Bridge {
 	}
 
 	@Override
-	public void addSharedTracker(Tracker tracker) {
+	public void addSharedTracker(ShareableTracker tracker) {
 		// TODO Auto-generated method stub
 		
 	}
 
 	@Override
-	public void removeSharedTracker(Tracker tracker) {
+	public void removeSharedTracker(ShareableTracker tracker) {
 		// TODO Auto-generated method stub
 		
 	}

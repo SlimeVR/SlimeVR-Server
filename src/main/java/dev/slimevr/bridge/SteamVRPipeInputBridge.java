@@ -20,6 +20,7 @@ import io.eiren.util.collections.FastList;
 import io.eiren.util.logging.LogManager;
 import io.eiren.vr.VRServer;
 import io.eiren.vr.trackers.VRTracker;
+import io.eiren.vr.trackers.ShareableTracker;
 import io.eiren.vr.trackers.Tracker;
 import io.eiren.vr.trackers.TrackerPosition;
 import io.eiren.vr.trackers.TrackerStatus;
@@ -253,13 +254,15 @@ public class SteamVRPipeInputBridge extends Thread implements Bridge {
 	}
 
 	@Override
-	public void addSharedTracker(Tracker tracker) {
-		// Doesn't share any trackers
+	public void addSharedTracker(ShareableTracker tracker) {
+		// TODO Auto-generated method stub
+		
 	}
 
 	@Override
-	public void removeSharedTracker(Tracker tracker) {
-		// Doesn't share any trackers
+	public void removeSharedTracker(ShareableTracker tracker) {
+		// TODO Auto-generated method stub
+		
 	}
 	
 	public enum SteamVRInputRoles {

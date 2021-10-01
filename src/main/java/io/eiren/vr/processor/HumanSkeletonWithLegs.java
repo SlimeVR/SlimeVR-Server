@@ -10,6 +10,7 @@ import io.eiren.util.ann.VRServerThread;
 import io.eiren.vr.VRServer;
 import io.eiren.vr.trackers.Tracker;
 import io.eiren.vr.trackers.TrackerPosition;
+import io.eiren.vr.trackers.TrackerRole;
 import io.eiren.vr.trackers.TrackerStatus;
 import io.eiren.vr.trackers.TrackerUtils;
 
@@ -92,9 +93,9 @@ public class HumanSkeletonWithLegs extends HumanSkeletonWithWaist {
 				rkt = t;
 		}
 		if(lat == null)
-			lat = new ComputedHumanPoseTracker(Tracker.getNextLocalTrackerId(), ComputedHumanPoseTrackerPosition.LEFT_FOOT, TrackerPosition.LEFT_FOOT);
+			lat = new ComputedHumanPoseTracker(Tracker.getNextLocalTrackerId(), ComputedHumanPoseTrackerPosition.LEFT_FOOT, TrackerRole.LEFT_FOOT);
 		if(rat == null)
-			rat = new ComputedHumanPoseTracker(Tracker.getNextLocalTrackerId(), ComputedHumanPoseTrackerPosition.RIGHT_FOOT, TrackerPosition.RIGHT_FOOT);
+			rat = new ComputedHumanPoseTracker(Tracker.getNextLocalTrackerId(), ComputedHumanPoseTrackerPosition.RIGHT_FOOT, TrackerRole.RIGHT_FOOT);
 		computedLeftFootTracker = lat;
 		computedRightFootTracker = rat;
 		computedLeftKneeTracker = lkt;

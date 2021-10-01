@@ -2,6 +2,7 @@ package dev.slimevr.bridge;
 
 import java.net.InetAddress;
 
+import io.eiren.vr.trackers.ShareableTracker;
 import io.eiren.vr.trackers.Tracker;
 
 public class VMCBridge extends Thread implements Bridge {
@@ -32,13 +33,13 @@ public class VMCBridge extends Thread implements Bridge {
 	}
 
 	@Override
-	public void addSharedTracker(Tracker tracker) {
+	public void addSharedTracker(ShareableTracker tracker) {
 		// TODO Auto-generated method stub
 		
 	}
 
 	@Override
-	public void removeSharedTracker(Tracker tracker) {
+	public void removeSharedTracker(ShareableTracker tracker) {
 		// TODO Auto-generated method stub
 		
 	}

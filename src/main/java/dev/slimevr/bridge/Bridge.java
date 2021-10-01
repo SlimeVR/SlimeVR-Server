@@ -1,7 +1,7 @@
 package dev.slimevr.bridge;
 
 import io.eiren.util.ann.VRServerThread;
-import io.eiren.vr.trackers.Tracker;
+import io.eiren.vr.trackers.ShareableTracker;
 
 /**
  * Bridge handles sending and recieving tracker data
@@ -25,7 +25,7 @@ public interface Bridge {
 	 * @param tracker
 	 */
 	@VRServerThread
-	public void addSharedTracker(Tracker tracker);
+	public void addSharedTracker(ShareableTracker tracker);
 	
 	/**
 	 * Removes tracker from a bridge. If the other side supports
@@ -36,7 +36,7 @@ public interface Bridge {
 	 * @param tracker
 	 */
 	@VRServerThread
-	public void removeSharedTracker(Tracker tracker);
+	public void removeSharedTracker(ShareableTracker tracker);
 
 	@VRServerThread
 	public void startBridge();

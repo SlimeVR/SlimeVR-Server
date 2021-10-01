@@ -27,6 +27,7 @@ import io.eiren.util.collections.FastList;
 import io.eiren.vr.processor.HumanPoseProcessor;
 import io.eiren.vr.processor.HumanSkeleton;
 import io.eiren.vr.trackers.HMDTracker;
+import io.eiren.vr.trackers.ShareableTracker;
 import io.eiren.vr.trackers.TrackersUDPServer;
 import io.eiren.yaml.YamlException;
 import io.eiren.yaml.YamlFile;
@@ -54,7 +55,7 @@ public class VRServer extends Thread {
 		hmdTracker.position.set(0, 1.8f, 0); // Set starting position for easier debugging
 		// TODO Multiple processors
 		humanPoseProcessor = new HumanPoseProcessor(this, hmdTracker, config.getInt("virtualtrackers", 3));
-		List<? extends Tracker> shareTrackers = humanPoseProcessor.getComputedTrackers();
+		List<? extends ShareableTracker> shareTrackers = humanPoseProcessor.getComputedTrackers();
 		
 		// Start server for SlimeVR trackers
 		trackersServer = new TrackersUDPServer(6969, "Sensors UDP server", this::registerTracker);

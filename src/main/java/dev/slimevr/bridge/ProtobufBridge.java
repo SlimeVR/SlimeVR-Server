@@ -23,6 +23,7 @@ import io.eiren.util.collections.FastList;
 import io.eiren.vr.Main;
 import io.eiren.vr.trackers.ComputedTracker;
 import io.eiren.vr.trackers.HMDTracker;
+import io.eiren.vr.trackers.ShareableTracker;
 import io.eiren.vr.trackers.Tracker;
 import io.eiren.vr.trackers.TrackerRole;
 import io.eiren.vr.trackers.VRTracker;
@@ -37,7 +38,7 @@ public abstract class ProtobufBridge<T extends VRTracker> implements Bridge {
 	@ThreadSafe
 	private final Queue<ProtobufMessage> outputQueue = new LinkedBlockingQueue<>();
 	@VRServerThread
-	private final List<Tracker> localTrackers = new FastList<>();
+	private final List<ShareableTracker> sharedTrackers = new FastList<>();
 	@Synchronize("self")
 	private final Map<String, T> remoteTrackersBySerial = new HashMap<>();
 	@Synchronize("self")
@@ -103,13 +104,13 @@ public abstract class ProtobufBridge<T extends VRTracker> implements Bridge {
 	public void dataWrite() {
 		if(!hadNewData) // Don't write anything if no message were recieved, we always process at the speed of the other side
 			return;
-		for(int i = 0; i < localTrackers.size(); ++i) {
-			writeTrackerUpdate(localTrackers.get(i));
+		for(int i = 0; i < sharedTrackers.size(); ++i) {
+			writeTrackerUpdate(sharedTrackers.get(i));
 		}
 	}
 
 	@VRServerThread
-	protected void writeTrackerUpdate(Tracker localTracker) {
+	protected void writeTrackerUpdate(ShareableTracker localTracker) {
 		Position.Builder builder = Position.newBuilder().setTrackerId(localTracker.getTrackerId());
 		if(localTracker.getPosition(vec1)) {
 			builder.setX(vec1.x);
@@ -202,9 +203,9 @@ public abstract class ProtobufBridge<T extends VRTracker> implements Bridge {
 
 	@VRServerThread
 	protected void reconnected() {
-		for(int i = 0; i < localTrackers.size(); ++i) {
-			Tracker tracker = localTrackers.get(i);
-			TrackerAdded.Builder builder = TrackerAdded.newBuilder().setTrackerId(tracker.getTrackerId()).setTrackerName(tracker.getDescriptiveName()).setTrackerSerial(tracker.getName()).setTrackerRole(tracker.getBodyPosition().trackerRole.id);
+		for(int i = 0; i < sharedTrackers.size(); ++i) {
+			ShareableTracker tracker = sharedTrackers.get(i);
+			TrackerAdded.Builder builder = TrackerAdded.newBuilder().setTrackerId(tracker.getTrackerId()).setTrackerName(tracker.getDescriptiveName()).setTrackerSerial(tracker.getName()).setTrackerRole(tracker.getTrackerRole().id);
 			sendMessage(ProtobufMessage.newBuilder().setTrackerAdded(builder).build());
 		}
 	}
@@ -224,18 +225,18 @@ public abstract class ProtobufBridge<T extends VRTracker> implements Bridge {
 
 	@VRServerThread
 	@Override
-	public void addSharedTracker(Tracker tracker) {
-		if(localTrackers.contains(tracker))
+	public void addSharedTracker(ShareableTracker tracker) {
+		if(sharedTrackers.contains(tracker))
 			return;
-		localTrackers.add(tracker);
-		TrackerAdded.Builder builder = TrackerAdded.newBuilder().setTrackerId(tracker.getTrackerId()).setTrackerName(tracker.getDescriptiveName()).setTrackerSerial(tracker.getName()).setTrackerRole(tracker.getBodyPosition().trackerRole.id);
+		sharedTrackers.add(tracker);
+		TrackerAdded.Builder builder = TrackerAdded.newBuilder().setTrackerId(tracker.getTrackerId()).setTrackerName(tracker.getDescriptiveName()).setTrackerSerial(tracker.getName()).setTrackerRole(tracker.getTrackerRole().id);
 		sendMessage(ProtobufMessage.newBuilder().setTrackerAdded(builder).build());
 	}
 
 	@VRServerThread
 	@Override
-	public void removeSharedTracker(Tracker tracker) {
-		localTrackers.remove(tracker);
+	public void removeSharedTracker(ShareableTracker tracker) {
+		sharedTrackers.remove(tracker);
 		// No message can be sent to the remote side, protocol doesn't support tracker removal (yet)
 	}
 }
