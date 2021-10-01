@@ -17,6 +17,7 @@ import java.util.function.Consumer;
 
 import dev.slimevr.bridge.Bridge;
 import dev.slimevr.bridge.NamedPipeBridge;
+import dev.slimevr.bridge.SteamVRPipeInputBridge;
 import dev.slimevr.bridge.VMCBridge;
 import dev.slimevr.bridge.WebSocketVRBridge;
 import io.eiren.util.OperatingSystem;
@@ -67,6 +68,7 @@ public class VRServer extends Thread {
 			NamedPipeVRBridge driverBridge = new NamedPipeVRBridge(hmdTracker, shareTrackers, this);
 			tasks.add(() -> driverBridge.startBridge());
 			bridges.add(driverBridge);
+			//*/
 			// Create named pipe bridge for SteamVR input
 			SteamVRPipeInputBridge steamVRInput = new SteamVRPipeInputBridge(this);
 			tasks.add(() -> steamVRInput.startBridge());

@@ -13,6 +13,7 @@ import com.jme3.math.Quaternion;
 import com.jme3.math.Vector3f;
 import com.sun.jna.platform.win32.Kernel32;
 import com.sun.jna.platform.win32.WinBase;
+import com.sun.jna.platform.win32.WinError;
 import com.sun.jna.ptr.IntByReference;
 
 import dev.slimevr.bridge.Pipe.PipeState;
@@ -21,7 +22,6 @@ import io.eiren.util.logging.LogManager;
 import io.eiren.vr.VRServer;
 import io.eiren.vr.trackers.VRTracker;
 import io.eiren.vr.trackers.ShareableTracker;
-import io.eiren.vr.trackers.Tracker;
 import io.eiren.vr.trackers.TrackerPosition;
 import io.eiren.vr.trackers.TrackerStatus;
 
@@ -49,24 +49,26 @@ public class SteamVRPipeInputBridge extends Thread implements Bridge {
 		try {
 			createPipes();
 			while(true) {
-				waitForPipesToOpen();
-				if(areAllPipesOpen()) {
-					boolean pipesUpdated = updatePipes(); // Update at HMDs frequency
-					if(!pipesUpdated) {
+				boolean pipesUpdated = false;
+				if(pipe.state == PipeState.CREATED) {
+					tryOpeningPipe(pipe);
+				}
+				if(pipe.state == PipeState.OPEN) {
+					pipesUpdated = updatePipes();
+				}
+				if(pipe.state == PipeState.ERROR) {
+					resetPipe();
+				}
+				if(!pipesUpdated) {
+					try {
 						Thread.sleep(5); // Up to 200Hz
+					} catch(InterruptedException e) {
+						e.printStackTrace();
 					}
-				} else {
-					Thread.sleep(10);
 				}
 			}
 		} catch(Exception e) {
 			e.printStackTrace();
-		}
-	}
-	
-	private void waitForPipesToOpen() {
-		if(pipe.state == PipeState.CREATED) {
-			tryOpeningPipe(pipe);
 		}
 	}
 	
@@ -91,11 +93,15 @@ public class SteamVRPipeInputBridge extends Thread implements Bridge {
 							}
 						}
 						if(bytesRead < buffArray.length)
-							break; // Don't repeat, we read all available bytes
+							return true; // All pipe data read
 					}
-					return true;
+				} else {
+					return false; // Pipe was empty, it's okay
 				}
 			}
+			// PeekNamedPipe or ReadFile returned an error
+			pipe.state = PipeState.ERROR;
+			LogManager.log.severe("[SteamVRPipeInputBridge] Pipe error: " + Kernel32.INSTANCE.GetLastError());
 		}
 		return false;
 	}
@@ -208,8 +214,14 @@ public class SteamVRPipeInputBridge extends Thread implements Bridge {
 		// Not used, only input
 	}
 	
+	private void resetPipe() {
+		Pipe.safeDisconnect(pipe);
+		pipe.state = PipeState.CREATED;
+		//Main.vrServer.queueTask(this::disconnected);
+	}
+	
 	private boolean tryOpeningPipe(Pipe pipe) {
-		if(Kernel32.INSTANCE.ConnectNamedPipe(pipe.pipeHandle, null)) {
+		if(Kernel32.INSTANCE.ConnectNamedPipe(pipe.pipeHandle, null) || Kernel32.INSTANCE.GetLastError() == WinError.ERROR_PIPE_CONNECTED) {
 			pipe.state = PipeState.OPEN;
 			LogManager.log.info("[SteamVRPipeInputBridge] Pipe " + pipe.name + " is open");
 			return true;
@@ -217,13 +229,6 @@ public class SteamVRPipeInputBridge extends Thread implements Bridge {
 		
 		LogManager.log.info("[SteamVRPipeInputBridge] Error connecting to pipe " + pipe.name + ": " + Kernel32.INSTANCE.GetLastError());
 		return false;
-	}
-	
-	private boolean areAllPipesOpen() {
-		if(pipe == null || pipe.state == PipeState.CREATED) {
-			return false;
-		}
-		return true;
 	}
 	
 	private void createPipes() throws IOException {
@@ -240,16 +245,8 @@ public class SteamVRPipeInputBridge extends Thread implements Bridge {
 				throw new IOException("Can't open " + PipeName + " pipe: " + Kernel32.INSTANCE.GetLastError());
 			LogManager.log.info("[SteamVRPipeInputBridge] Pipes are open");
 		} catch(IOException e) {
-			safeDisconnect(pipe);
+			Pipe.safeDisconnect(pipe);
 			throw e;
-		}
-	}
-	
-	public static void safeDisconnect(Pipe pipe) {
-		try {
-			if(pipe != null && pipe.pipeHandle != null)
-				Kernel32.INSTANCE.DisconnectNamedPipe(pipe.pipeHandle);
-		} catch(Exception e) {
 		}
 	}
 
