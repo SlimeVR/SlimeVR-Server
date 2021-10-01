@@ -15,13 +15,21 @@
 #mainPane {
 -fx-background-color: #373737;
 }
-#logoPane, #trackerPane, #skeletonPane {
+#logoPane, #trackerPane, #bodyPane {
 -fx-background-color: #444;
 -fx-background-radius: 15;
 -fx-effect: dropshadow(three-pass-box, rgba(0, 0, 0, 0.5), 10, 0.5, 0.0, 0.0);
 }
 
-#bodyPane {
+
+#bodyNameTextFlow > Text {
+    -fx-fill: #f4f4f4;
+    -fx-font-size : 16px;
+    -fx-effect: dropshadow(three-pass-box, rgba(0, 0, 0, 0.5), 10, 0.5, 0.0, 0.0);
+}
+
+
+#skeletonPane {
 -fx-background-color: #444;
 -fx-background-radius: 15;
 }

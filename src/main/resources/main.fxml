@@ -73,7 +73,126 @@
             <Label fx:id="logoText" layoutX="75.0" layoutY="3.0" prefHeight="51.0" prefWidth="141.0" text="SlimeVR" textOverrun="CLIP" />
          </children>
       </AnchorPane>
-      <AnchorPane fx:id="trackerPane" layoutX="14.0" layoutY="124.0" prefHeight="488.0" prefWidth="497.0" />
+      <AnchorPane fx:id="trackerPane" layoutX="14.0" layoutY="124.0" prefHeight="488.0" prefWidth="497.0">
+         <children>
+            <Label layoutX="171.0" layoutY="64.0" text="Chest" textFill="#f4f4f4">
+               <font>
+                  <Font size="16.0" />
+               </font>
+               <effect>
+                  <DropShadow />
+               </effect>
+            </Label>
+            <Label layoutX="171.0" layoutY="109.0" text="Waist" textFill="#f4f4f4">
+               <font>
+                  <Font size="16.0" />
+               </font>
+               <effect>
+                  <DropShadow />
+               </effect>
+            </Label>
+            <Label layoutX="152.0" layoutY="154.0" text="Hips width" textFill="#f4f4f4">
+               <font>
+                  <Font size="16.0" />
+               </font>
+               <effect>
+                  <DropShadow />
+               </effect>
+            </Label>
+            <Label layoutX="150.0" layoutY="199.0" text="Legs length" textFill="#f4f4f4">
+               <font>
+                  <Font size="16.0" />
+               </font>
+               <effect>
+                  <DropShadow />
+               </effect>
+            </Label>
+            <Label layoutX="148.0" layoutY="245.0" text="Knee height" textFill="#f4f4f4">
+               <font>
+                  <Font size="16.0" />
+               </font>
+               <effect>
+                  <DropShadow />
+               </effect>
+            </Label>
+            <Label layoutX="150.0" layoutY="289.0" text="Foot length" textFill="#f4f4f4">
+               <font>
+                  <Font size="16.0" />
+               </font>
+               <effect>
+                  <DropShadow />
+               </effect>
+            </Label>
+            <Label layoutX="150.0" layoutY="334.0" text="Head offset" textFill="#f4f4f4">
+               <font>
+                  <Font size="16.0" />
+               </font>
+               <effect>
+                  <DropShadow />
+               </effect>
+            </Label>
+            <Label layoutX="148.0" layoutY="379.0" text="Neck length" textFill="#f4f4f4">
+               <font>
+                  <Font size="16.0" />
+               </font>
+               <effect>
+                  <DropShadow />
+               </effect>
+            </Label>
+            <Label layoutX="147.0" layoutY="424.0" text="Virtual waist" textFill="#f4f4f4">
+               <font>
+                  <Font size="16.0" />
+               </font>
+               <effect>
+                  <DropShadow />
+               </effect>
+            </Label>
+            <Button layoutX="302.0" layoutY="49.0" mnemonicParsing="false" prefHeight="31.0" prefWidth="31.0" text="+">
+               <font>
+                  <Font name="System Bold Italic" size="15.0" />
+               </font>
+            </Button>
+            <Button layoutX="302.0" layoutY="94.0" mnemonicParsing="false" prefHeight="31.0" prefWidth="31.0" text="+">
+               <font>
+                  <Font name="System Bold Italic" size="15.0" />
+               </font>
+            </Button>
+            <Button layoutX="302.0" layoutY="139.0" mnemonicParsing="false" prefHeight="31.0" prefWidth="31.0" text="+">
+               <font>
+                  <Font name="System Bold Italic" size="15.0" />
+               </font>
+            </Button>
+            <Button layoutX="302.0" layoutY="184.0" mnemonicParsing="false" prefHeight="31.0" prefWidth="31.0" text="+">
+               <font>
+                  <Font name="System Bold Italic" size="15.0" />
+               </font>
+            </Button>
+            <Button layoutX="302.0" layoutY="229.0" mnemonicParsing="false" prefHeight="31.0" prefWidth="8.0" text="+">
+               <font>
+                  <Font name="System Bold Italic" size="15.0" />
+               </font>
+            </Button>
+            <Button layoutX="302.0" layoutY="274.0" mnemonicParsing="false" prefHeight="31.0" prefWidth="8.0" text="+">
+               <font>
+                  <Font name="System Bold Italic" size="15.0" />
+               </font>
+            </Button>
+            <Button layoutX="302.0" layoutY="319.0" mnemonicParsing="false" prefHeight="31.0" prefWidth="8.0" text="+">
+               <font>
+                  <Font name="System Bold Italic" size="15.0" />
+               </font>
+            </Button>
+            <Button layoutX="302.0" layoutY="364.0" mnemonicParsing="false" prefHeight="31.0" prefWidth="8.0" text="+">
+               <font>
+                  <Font name="System Bold Italic" size="15.0" />
+               </font>
+            </Button>
+            <Button layoutX="302.0" layoutY="409.0" mnemonicParsing="false" prefHeight="31.0" prefWidth="8.0" text="+">
+               <font>
+                  <Font name="System Bold Italic" size="15.0" />
+               </font>
+            </Button>
+         </children></AnchorPane>
       <Button fx:id="wifiBTN" layoutX="855.0" layoutY="43.0" mnemonicParsing="false" onAction="#wifiBtnAction" prefHeight="50.0" prefWidth="81.0" textFill="#f4f4f4">
          <font>
             <Font size="14.0" />
@@ -99,9 +218,9 @@
             <Font size="14.0" />
          </font>
       </Button>
-      <AnchorPane fx:id="skeletonPane" layoutX="528.0" layoutY="124.0" prefHeight="488.0" prefWidth="409.0">
+      <AnchorPane fx:id="bodyPane" layoutX="528.0" layoutY="124.0" prefHeight="488.0" prefWidth="409.0">
          <children>
-            <Button fx:id="skeletonBTN" layoutX="12.0" layoutY="14.0" mnemonicParsing="false" onAction="#skeletonBtnAction" prefHeight="31.0" prefWidth="85.0" text="Skeleton">
+            <Button fx:id="bodyBTN" layoutX="12.0" layoutY="14.0" mnemonicParsing="false" onAction="#bodyBtnAction" prefHeight="31.0" prefWidth="85.0" text="Skeleton">
                <font>
                   <Font size="14.0" />
                </font>
@@ -114,19 +233,6 @@
             <Button layoutX="311.0" layoutY="14.0" mnemonicParsing="false" prefHeight="31.0" prefWidth="85.0" text="Auto">
                <font>
                   <Font size="14.0" />
-               </font>
-            </Button>
-            <Label layoutX="35.0" layoutY="72.0" text="Chest" textFill="#f4f4f4">
-               <font>
-                  <Font size="16.0" />
-               </font>
-               <effect>
-                  <DropShadow />
-               </effect>
-            </Label>
-            <Button layoutX="117.0" layoutY="69.0" mnemonicParsing="false" prefHeight="31.0" prefWidth="31.0" text="+">
-               <font>
-                  <Font name="System Bold Italic" size="15.0" />
                </font>
             </Button>
             <Label alignment="CENTER" layoutX="175.0" layoutY="70.0" prefHeight="30.0" prefWidth="60.0" text="000" textAlignment="CENTER" textFill="#f4f4f4" wrapText="true">
@@ -187,46 +293,6 @@
                   <Font size="14.0" />
                </font>
             </Button>
-            <Button layoutX="117.0" layoutY="114.0" mnemonicParsing="false" prefHeight="31.0" prefWidth="31.0" text="+">
-               <font>
-                  <Font name="System Bold Italic" size="15.0" />
-               </font>
-            </Button>
-            <Button layoutX="117.0" layoutY="159.0" mnemonicParsing="false" prefHeight="31.0" prefWidth="31.0" text="+">
-               <font>
-                  <Font name="System Bold Italic" size="15.0" />
-               </font>
-            </Button>
-            <Button layoutX="117.0" layoutY="204.0" mnemonicParsing="false" prefHeight="31.0" prefWidth="31.0" text="+">
-               <font>
-                  <Font name="System Bold Italic" size="15.0" />
-               </font>
-            </Button>
-            <Button layoutX="117.0" layoutY="249.0" mnemonicParsing="false" prefHeight="31.0" prefWidth="8.0" text="+">
-               <font>
-                  <Font name="System Bold Italic" size="15.0" />
-               </font>
-            </Button>
-            <Button layoutX="117.0" layoutY="294.0" mnemonicParsing="false" prefHeight="31.0" prefWidth="8.0" text="+">
-               <font>
-                  <Font name="System Bold Italic" size="15.0" />
-               </font>
-            </Button>
-            <Button layoutX="117.0" layoutY="339.0" mnemonicParsing="false" prefHeight="31.0" prefWidth="8.0" text="+">
-               <font>
-                  <Font name="System Bold Italic" size="15.0" />
-               </font>
-            </Button>
-            <Button layoutX="117.0" layoutY="384.0" mnemonicParsing="false" prefHeight="31.0" prefWidth="8.0" text="+">
-               <font>
-                  <Font name="System Bold Italic" size="15.0" />
-               </font>
-            </Button>
-            <Button layoutX="117.0" layoutY="429.0" mnemonicParsing="false" prefHeight="31.0" prefWidth="8.0" text="+">
-               <font>
-                  <Font name="System Bold Italic" size="15.0" />
-               </font>
-            </Button>
             <Button layoutX="263.0" layoutY="114.0" mnemonicParsing="false" prefHeight="31.0" prefWidth="31.0" text="-">
                <font>
                   <Font name="System Bold Italic" size="15.0" />
@@ -267,70 +333,6 @@
                   <Font name="System Bold Italic" size="15.0" />
                </font>
             </Button>
-            <Label layoutX="35.0" layoutY="117.0" text="Waist" textFill="#f4f4f4">
-               <font>
-                  <Font size="16.0" />
-               </font>
-               <effect>
-                  <DropShadow />
-               </effect>
-            </Label>
-            <Label layoutX="16.0" layoutY="162.0" text="Hips width" textFill="#f4f4f4">
-               <font>
-                  <Font size="16.0" />
-               </font>
-               <effect>
-                  <DropShadow />
-               </effect>
-            </Label>
-            <Label layoutX="14.0" layoutY="207.0" text="Legs length" textFill="#f4f4f4">
-               <font>
-                  <Font size="16.0" />
-               </font>
-               <effect>
-                  <DropShadow />
-               </effect>
-            </Label>
-            <Label layoutX="12.0" layoutY="253.0" text="Knee height" textFill="#f4f4f4">
-               <font>
-                  <Font size="16.0" />
-               </font>
-               <effect>
-                  <DropShadow />
-               </effect>
-            </Label>
-            <Label layoutX="14.0" layoutY="297.0" text="Foot length" textFill="#f4f4f4">
-               <font>
-                  <Font size="16.0" />
-               </font>
-               <effect>
-                  <DropShadow />
-               </effect>
-            </Label>
-            <Label layoutX="14.0" layoutY="342.0" text="Head offset" textFill="#f4f4f4">
-               <font>
-                  <Font size="16.0" />
-               </font>
-               <effect>
-                  <DropShadow />
-               </effect>
-            </Label>
-            <Label layoutX="12.0" layoutY="387.0" text="Neck length" textFill="#f4f4f4">
-               <font>
-                  <Font size="16.0" />
-               </font>
-               <effect>
-                  <DropShadow />
-               </effect>
-            </Label>
-            <Label layoutX="11.0" layoutY="432.0" text="Virtual waist" textFill="#f4f4f4">
-               <font>
-                  <Font size="16.0" />
-               </font>
-               <effect>
-                  <DropShadow />
-               </effect>
-            </Label>
             <Label alignment="CENTER" layoutX="175.0" layoutY="115.0" prefHeight="30.0" prefWidth="60.0" text="000" textAlignment="CENTER" textFill="#f4f4f4" wrapText="true">
                <font>
                   <Font name="System Bold" size="20.0" />
@@ -395,11 +397,16 @@
                   <DropShadow />
                </effect>
             </Label>
+            <TextFlow fx:id="bodyMinusTextFlow" layoutX="255.0" layoutY="58.0" prefHeight="416.0" prefWidth="47.0" />
+            <TextFlow fx:id="bodyLableTextFlow" layoutX="182.0" layoutY="58.0" prefHeight="416.0" prefWidth="47.0" />
+            <TextFlow fx:id="bodyResetTextFlow" layoutX="341.0" layoutY="57.0" prefHeight="416.0" prefWidth="55.0" />
+            <TextFlow fx:id="bodyNameTextFlow" layoutX="14.0" layoutY="58.0" prefHeight="416.0" prefWidth="93.0" />
+            <TextFlow fx:id="bodyPlusTextFlow" layoutX="116.0" layoutY="58.0" prefHeight="416.0" prefWidth="47.0" />
          </children>
       </AnchorPane>
-      <AnchorPane fx:id="bodyPane" layoutX="528.0" layoutY="124.0" prefHeight="488.0" prefWidth="409.0" visible="false">
+      <AnchorPane fx:id="skeletonPane" layoutX="528.0" layoutY="124.0" prefHeight="488.0" prefWidth="409.0" visible="false">
          <children>
-            <Button fx:id="bodyBTN" layoutX="12.0" layoutY="14.0" mnemonicParsing="false" onAction="#bodyBtnAction" prefHeight="31.0" prefWidth="85.0" text="Body">
+            <Button fx:id="skeletonBTN" layoutX="12.0" layoutY="14.0" mnemonicParsing="false" onAction="#skeletonBtnAction" prefHeight="31.0" prefWidth="85.0" text="Body">
                <font>
                   <Font size="14.0" />
                </font>
@@ -412,7 +419,7 @@
             <TextFlow fx:id="pitchTextFlow" layoutX="251.0" layoutY="58.0" prefHeight="416.0" prefWidth="47.0" />
             <TextFlow fx:id="yawTextFlow" layoutX="298.0" layoutY="58.0" prefHeight="416.0" prefWidth="47.0" />
             <TextFlow fx:id="rollTextFlow" layoutX="345.0" layoutY="58.0" prefHeight="416.0" prefWidth="47.0" />
-            <Button fx:id="bodyArrowBTN" layoutX="110.0" layoutY="14.0" mnemonicParsing="false" onAction="#bodyArrowBtnAction" prefHeight="31.0" prefWidth="31.0" text="❮" textAlignment="CENTER">
+            <Button fx:id="skeletonArrowBTN" layoutX="110.0" layoutY="14.0" mnemonicParsing="false" onAction="#skeletonArrowBtnAction" prefHeight="31.0" prefWidth="31.0" text="❮" textAlignment="CENTER">
                <font>
                   <Font name="System Bold" size="15.0" />
                </font>
