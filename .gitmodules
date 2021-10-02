@@ -1,0 +1,3 @@
+[submodule "slime-java-commons"]
+	path = slime-java-commons
+	url = https://github.com/Eirenliel/slime-java-commons.git

@@ -8,19 +8,4 @@
  */
 
 rootProject.name = 'SlimeVR Server'
-include('Slime Java Commons')
-
-def commonsDirs = [
-    new File(settingsDir, 'Slime Java Commons'),
-    new File(settingsDir, 'slime-java-commons'),
-    new File(settingsDir, '../Slime Java Commons'),
-    new File(settingsDir, '../slime-java-commons')
-]
-
-for (commonsDir in commonsDirs) {
-    if (commonsDir.isDirectory()) {
-        logger.info('\"Slime Java Commons\" subproject detected at \"{}\"', commonsDir.getCanonicalPath())
-        project(':Slime Java Commons').projectDir = commonsDir
-        break
-    }
-}
+include ':slime-java-commons'
