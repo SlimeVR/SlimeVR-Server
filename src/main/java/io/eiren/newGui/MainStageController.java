@@ -4,6 +4,7 @@ import com.dustinredmond.fxtrayicon.FXTrayIcon;
 import com.jme3.math.FastMath;
 import com.jme3.math.Quaternion;
 import com.jme3.math.Vector3f;
+import dev.slimevr.gui.AutoBoneWindow;
 import io.eiren.gui.WiFiWindow;
 import io.eiren.util.StringUtils;
 import io.eiren.util.ann.ThreadSafe;
@@ -20,6 +21,7 @@ import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.control.Button;
+import javafx.scene.control.ComboBox;
 import javafx.scene.control.MenuBar;
 import javafx.scene.effect.DropShadow;
 import javafx.scene.input.MouseEvent;
@@ -41,6 +43,8 @@ public class MainStageController implements Initializable {
 	private FXTrayIcon icon; //required to trigger tray notifications
 	private final List<TransformNode> nodes = new FastList<>();
 
+	private AutoBoneWindow autoBone;
+
 	Quaternion q = new Quaternion();
 	Vector3f v = new Vector3f();
 	float[] angles = new float[3];
@@ -50,6 +54,9 @@ public class MainStageController implements Initializable {
 
 	@FXML
 	private Button reset;
+
+	@FXML
+	private ComboBox steamVRComboBox;
 
 	@FXML
 	private AnchorPane skeletonPane;
@@ -85,6 +92,10 @@ public class MainStageController implements Initializable {
 	private TextFlow bodyMinusTextFlow;
 	@FXML
 	private TextFlow bodyResetTextFlow;
+	@FXML
+	private Button bodyResetAll;
+	@FXML
+	private Button bodyAuto;
 
 	private int i = 0;
 	private int n = 0;
@@ -112,10 +123,37 @@ public class MainStageController implements Initializable {
 			stage.setY(event.getScreenY() - yOffset);
 		});
 
+
+		steamVRTrackersSetup();
+
 		skeletonDataInit();
+
 
 		bodyProportion.bodyProportionInit(bodyNameTextFlow, bodyPlusTextFlow,
 				bodyLableTextFlow, bodyMinusTextFlow, bodyResetTextFlow);
+
+		bodyResetAll.addEventHandler(MouseEvent.MOUSE_CLICKED, e -> {
+			bodyResetAll.setText(String.valueOf(3));
+			i = 2;
+			Timeline timeline = new Timeline(new KeyFrame(Duration.seconds(1), timeLineEvent -> {
+				if (i > 0) bodyResetAll.setText(String.valueOf(i));
+				if (i == 0) {
+					bodyProportion.reset("All");
+					bodyResetAll.setText("Reset All");
+				}
+				i--;
+			}));
+			timeline.setCycleCount(3);
+			timeline.play();
+		});
+
+		bodyAuto.setOnAction(event -> {
+			autoBone = new AutoBoneWindow(server, bodyProportion);
+			autoBone.setVisible(true);
+			autoBone.toFront();
+		});
+
+
 	}
 
 	@FXML
@@ -198,7 +236,6 @@ public class MainStageController implements Initializable {
 		customizeTextFlow(rollTextFlow);
 
 		Timeline timeline = new Timeline(new KeyFrame(Duration.millis(500), event -> {
-			i++;
 			jointTextFlow.getChildren().clear();
 			xTextFlow.getChildren().clear();
 			yTextFlow.getChildren().clear();
@@ -261,6 +298,53 @@ public class MainStageController implements Initializable {
 		pitchTextFlow.getChildren().addAll(a1, new Text(System.lineSeparator()));
 		yawTextFlow.getChildren().addAll(a2, new Text(System.lineSeparator()));
 		rollTextFlow.getChildren().addAll(a3, new Text(System.lineSeparator()));
+	}
+
+	public void steamVRTrackersSetup() {
+		steamVRComboBox.getItems().addAll("Waist",
+				"Waist + Legs",
+				"Waist + Legs + Chest",
+				"Waist + Legs + Knees",
+				"Waist + Legs + Chest + Knees");
+
+		switch(server.config.getInt("virtualtrackers", 3)) {
+			case 1:
+				steamVRComboBox.getSelectionModel().select(0);
+				break;
+			case 3:
+				steamVRComboBox.getSelectionModel().select(1);
+				break;
+			case 4:
+				steamVRComboBox.getSelectionModel().select(2);
+				break;
+			case 5:
+				steamVRComboBox.getSelectionModel().select(3);
+				break;
+			case 6:
+				steamVRComboBox.getSelectionModel().select(4);
+				break;
+		}
+
+		steamVRComboBox.setOnAction(e -> {
+			switch(steamVRComboBox.getSelectionModel().getSelectedIndex()) {
+				case 0:
+					server.config.setProperty("virtualtrackers", 1);
+					break;
+				case 1:
+					server.config.setProperty("virtualtrackers", 3);
+					break;
+				case 2:
+					server.config.setProperty("virtualtrackers", 4);
+					break;
+				case 3:
+					server.config.setProperty("virtualtrackers", 5);
+					break;
+				case 4:
+					server.config.setProperty("virtualtrackers", 6);
+					break;
+			}
+			server.saveConfig();
+		});
 	}
 
 	private void closeProgram() {

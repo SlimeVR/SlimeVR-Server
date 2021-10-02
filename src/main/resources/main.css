@@ -11,14 +11,78 @@
 
 
 
+#logoText {
+-fx-font-family: 'Harlow Solid Italic';
+-fx-font-size: 32px;
+-fx-text-fill: linear-gradient(#be5bd0, #650d62);
+-fx-effect: dropshadow(three-pass-box, rgba(0, 0, 0, 0.5), 10, 0.5, 0.0, 0.0);
+}
+
+
+
+/*menu panel*/
+#fxMenuBar {
+	-fx-accent: black;
+	-fx-focus-color: -fx-accent;
+	-fx-base: black;
+	-fx-control-inner-background: derive(-fx-base, 35%);
+}
+.menu-bar .menu-button:hover {
+    -fx-background-color: black;
+}
+.menu-bar .menu-button:focused, .menu-bar .menu-button:showing {
+    -fx-background-color: black;
+    -fx-opacity: 0.6;
+}
+.menu-bar .menu-item:hover, .menu-bar .menu-item:focused {
+    -fx-background-color: black;
+}
+.menu-bar .menu-item:showing {
+    -fx-background-color: black;
+    -fx-opacity: 0.6;
+}
+
+
+
+#comboBoxLable {
+    -fx-font-size : 16px;
+    -fx-effect: dropshadow(three-pass-box, rgba(0, 0, 0, 0.5), 10, 0.5, 0.0, 0.0);
+}
+.combo-box {
+	-fx-font-size : 13px;
+	-fx-background-color: #444;
+	-fx-background-radius: 10;
+	-fx-alignment: CENTER;
+	-fx-effect: dropshadow(three-pass-box, rgba(0, 0, 0, 0.5), 8, 0.5, 0.0, 0.0);
+}
+.combo-box .list-view {
+	-fx-background-color: #444;
+	-fx-text-fill: #f4f4f4;
+	-fx-background-radius: 10;
+	-fx-effect: dropshadow(three-pass-box, rgba(0, 0, 0, 0.5), 5, 0.5, 0.0, 0.0);
+}
+.combo-box .list-cell {
+	-fx-background-color: #444;
+	-fx-text-fill: #f4f4f4;
+	-fx-background-radius: 10;
+	-fx-alignment: CENTER;
+}
+.combo-box .list-cell:hover {
+	-fx-text-fill: #f4f4f4;
+	-fx-background-radius: 10;
+ 	-fx-background-color: #373737;
+}
+
+
+
 /*for some reason, the general assignment of parameters does not work for panes*/
 #mainPane {
--fx-background-color: #373737;
+	-fx-background-color: #373737;
 }
 #logoPane, #trackerPane, #bodyPane {
--fx-background-color: #444;
--fx-background-radius: 15;
--fx-effect: dropshadow(three-pass-box, rgba(0, 0, 0, 0.5), 10, 0.5, 0.0, 0.0);
+	-fx-background-color: #444;
+	-fx-background-radius: 15;
+	-fx-effect: dropshadow(three-pass-box, rgba(0, 0, 0, 0.5), 10, 0.5, 0.0, 0.0);
 }
 
 
@@ -27,6 +91,14 @@
     -fx-font-size : 16px;
     -fx-effect: dropshadow(three-pass-box, rgba(0, 0, 0, 0.5), 10, 0.5, 0.0, 0.0);
 }
+
+#bodyLableTextFlow {
+/*color in java code #f4f4f4*/
+    -fx-font-size : 20px;
+    -fx-font-weight: bold;
+    -fx-effect: dropshadow(three-pass-box, rgba(0, 0, 0, 0.5), 10, 0.5, 0.0, 0.0);
+}
+
 
 
 #skeletonPane {
@@ -70,38 +142,6 @@
 }
 
 
-#logoText {
--fx-font-family: 'Harlow Solid Italic';
--fx-font-size: 32px;
--fx-text-fill: linear-gradient(#be5bd0, #650d62);
--fx-effect: dropshadow(three-pass-box, rgba(0, 0, 0, 0.5), 10, 0.5, 0.0, 0.0);
-}
-
-
-
-/*menu panel*/
-#fxMenuBar {
-	-fx-accent: black;
-	-fx-focus-color: -fx-accent;
-	-fx-base: black;
-	-fx-control-inner-background: derive(-fx-base, 35%);
-}
-.menu-bar .menu-button:hover {
-    -fx-background-color: black;
-}
-.menu-bar .menu-button:focused, .menu-bar .menu-button:showing {
-    -fx-background-color: black;
-    -fx-opacity: 0.6;
-}
-.menu-bar .menu-item:hover, .menu-bar .menu-item:focused {
-    -fx-background-color: black;
-}
-.menu-bar .menu-item:showing {
-    -fx-background-color: black;
-    -fx-opacity: 0.6;
-}
-
-
 
 /*close, tray buttons */
 #closeBTN {
@@ -130,6 +170,3 @@
     -fx-background-repeat: no-repeat;
     -fx-background-position:left;
 }
-
-
-
