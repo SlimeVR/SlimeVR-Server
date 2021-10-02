@@ -26,6 +26,7 @@ public class Main {
 		try {
 			vrServer = new VRServer();
 			vrServer.start();
+			new Keybinding(vrServer);
 			new VRServerGUI(vrServer);
 		} catch(Throwable e) {
 			e.printStackTrace();
