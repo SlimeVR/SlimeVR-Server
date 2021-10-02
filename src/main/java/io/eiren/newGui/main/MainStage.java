@@ -1,4 +1,4 @@
-package io.eiren.newGui;
+package io.eiren.newGui.main;
 
 import com.dustinredmond.fxtrayicon.FXTrayIcon;
 import io.eiren.vr.Main;
@@ -14,7 +14,6 @@ import java.util.Objects;
 
 public class MainStage extends Application {
 
-	//public boolean isMac;
 	public FXTrayIcon icon;
 
     @Override
@@ -23,7 +22,6 @@ public class MainStage extends Application {
 		//if (FXTrayIcon.isSupported()) {
 		icon = new FXTrayIcon(stage, getClass().getResource("/icon256.png"));
 		icon.show();
-		//}
 
         FXMLLoader fxmlLoader = new FXMLLoader(MainStage.class.getResource("/main.fxml"));
 		MainStageController controller = new MainStageController(stage, icon);
@@ -35,13 +33,6 @@ public class MainStage extends Application {
 		stage.setResizable(false);
 		stage.centerOnScreen();
 		stage.initStyle(StageStyle.UNDECORATED);
-
-
-
-//		isMac = System.getProperty("os.name")
-//				.toLowerCase(Locale.ENGLISH)
-//				.contains("mac");
-
 
         stage.show();
     }

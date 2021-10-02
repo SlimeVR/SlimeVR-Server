@@ -78,6 +78,7 @@
          <children>
             <Label fx:id="comboBoxLable" layoutX="183.0" layoutY="14.0" text="Steam VR Trackers" textFill="WHITE" />
             <ComboBox fx:id="steamVRComboBox" layoutX="44.0" layoutY="39.0" prefHeight="31.0" prefWidth="409.0" />
+            <TextFlow fx:id="trackersListTextFlow" layoutX="15.0" layoutY="88.0" prefHeight="386.0" prefWidth="468.0" />
          </children></AnchorPane>
       <AnchorPane fx:id="bodyPane" layoutX="528.0" layoutY="124.0" prefHeight="488.0" prefWidth="409.0">
          <children>

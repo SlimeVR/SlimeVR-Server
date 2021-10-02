@@ -1,4 +1,4 @@
-package io.eiren.newGui;
+package io.eiren.newGui.main;
 
 import com.dustinredmond.fxtrayicon.FXTrayIcon;
 import com.jme3.math.FastMath;
@@ -6,6 +6,7 @@ import com.jme3.math.Quaternion;
 import com.jme3.math.Vector3f;
 import dev.slimevr.gui.AutoBoneWindow;
 import io.eiren.gui.WiFiWindow;
+import io.eiren.newGui.other.ConfirmBox;
 import io.eiren.util.StringUtils;
 import io.eiren.util.ann.ThreadSafe;
 import io.eiren.util.collections.FastList;
@@ -39,9 +40,10 @@ import java.util.ResourceBundle;
 public class MainStageController implements Initializable {
 
 	private Stage stage;
-	private VRServer server = Main.vrServer;
+	private VRServer server;
 	private FXTrayIcon icon; //required to trigger tray notifications
-	private final List<TransformNode> nodes = new FastList<>();
+	private final List<TransformNode> nodes;
+	private TrackersListNew trackersList;
 
 	private AutoBoneWindow autoBone;
 
@@ -79,9 +81,8 @@ public class MainStageController implements Initializable {
 	@FXML
 	private TextFlow rollTextFlow;
 
-	private BodyProportion bodyProportion = new BodyProportion(server);
-//	@FXML
-//	private AnchorPane bodyPane;
+	private BodyProportion bodyProportion;
+
 	@FXML
 	private TextFlow bodyNameTextFlow;
 	@FXML
@@ -105,7 +106,10 @@ public class MainStageController implements Initializable {
 
 	public MainStageController(Stage stage, FXTrayIcon icon) {
 		this.stage = stage;
+		this.server = Main.vrServer;
 		this.icon = icon;
+		this.nodes = new FastList<>();
+		this.bodyProportion = new BodyProportion(server);
 
 		server.addSkeletonUpdatedCallback(this::skeletonUpdated);
 	}
@@ -113,46 +117,13 @@ public class MainStageController implements Initializable {
 	@Override
 	public void initialize(URL location, ResourceBundle resources) {
 
-		fxMenuBar.prefWidthProperty().bind(stage.widthProperty());
-		fxMenuBar.addEventHandler(MouseEvent.MOUSE_PRESSED, e -> {
-			xOffset = e.getSceneX();
-			yOffset = e.getSceneY();
-		});
-		fxMenuBar.addEventHandler(MouseEvent.MOUSE_DRAGGED, event -> {
-			stage.setX(event.getScreenX() - xOffset);
-			stage.setY(event.getScreenY() - yOffset);
-		});
-
+		menuBarInit();
 
 		steamVRTrackersSetup();
 
+		bodyProportionInit();
+
 		skeletonDataInit();
-
-
-		bodyProportion.bodyProportionInit(bodyNameTextFlow, bodyPlusTextFlow,
-				bodyLableTextFlow, bodyMinusTextFlow, bodyResetTextFlow);
-
-		bodyResetAll.addEventHandler(MouseEvent.MOUSE_CLICKED, e -> {
-			bodyResetAll.setText(String.valueOf(3));
-			i = 2;
-			Timeline timeline = new Timeline(new KeyFrame(Duration.seconds(1), timeLineEvent -> {
-				if (i > 0) bodyResetAll.setText(String.valueOf(i));
-				if (i == 0) {
-					bodyProportion.reset("All");
-					bodyResetAll.setText("Reset All");
-				}
-				i--;
-			}));
-			timeline.setCycleCount(3);
-			timeline.play();
-		});
-
-		bodyAuto.setOnAction(event -> {
-			autoBone = new AutoBoneWindow(server, bodyProportion);
-			autoBone.setVisible(true);
-			autoBone.toFront();
-		});
-
 
 	}
 
@@ -344,6 +315,44 @@ public class MainStageController implements Initializable {
 					break;
 			}
 			server.saveConfig();
+		});
+	}
+
+	public void bodyProportionInit() {
+		bodyProportion.bodyProportionInit(bodyNameTextFlow, bodyPlusTextFlow,
+				bodyLableTextFlow, bodyMinusTextFlow, bodyResetTextFlow);
+
+		bodyResetAll.addEventHandler(MouseEvent.MOUSE_CLICKED, e -> {
+			bodyResetAll.setText(String.valueOf(3));
+			i = 2;
+			Timeline timeline = new Timeline(new KeyFrame(Duration.seconds(1), timeLineEvent -> {
+				if (i > 0) bodyResetAll.setText(String.valueOf(i));
+				if (i == 0) {
+					bodyProportion.reset("All");
+					bodyResetAll.setText("Reset All");
+				}
+				i--;
+			}));
+			timeline.setCycleCount(3);
+			timeline.play();
+		});
+
+		bodyAuto.setOnAction(event -> {
+			autoBone = new AutoBoneWindow(server, bodyProportion);
+			autoBone.setVisible(true);
+			autoBone.toFront();
+		});
+	}
+
+	public void menuBarInit() {
+		fxMenuBar.prefWidthProperty().bind(stage.widthProperty());
+		fxMenuBar.addEventHandler(MouseEvent.MOUSE_PRESSED, e -> {
+			xOffset = e.getSceneX();
+			yOffset = e.getSceneY();
+		});
+		fxMenuBar.addEventHandler(MouseEvent.MOUSE_DRAGGED, event -> {
+			stage.setX(event.getScreenX() - xOffset);
+			stage.setY(event.getScreenY() - yOffset);
 		});
 	}
 
