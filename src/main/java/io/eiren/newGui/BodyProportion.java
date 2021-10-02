@@ -1,6 +1,7 @@
 package io.eiren.newGui;
 
 import io.eiren.util.StringUtils;
+import io.eiren.util.ann.ThreadSafe;
 import io.eiren.vr.VRServer;
 import javafx.animation.KeyFrame;
 import javafx.animation.Timeline;
@@ -8,7 +9,6 @@ import javafx.geometry.Insets;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.input.MouseEvent;
-import javafx.scene.layout.AnchorPane;
 import javafx.scene.text.Text;
 import javafx.scene.text.TextAlignment;
 import javafx.scene.text.TextFlow;
@@ -29,46 +29,59 @@ public class BodyProportion {
 
 	public void bodyProportionInit(TextFlow name, TextFlow plus, TextFlow lable, TextFlow minus, TextFlow reset) {
 
-		name.setTextAlignment(TextAlignment.CENTER);
-		name.setLineSpacing(24.0f);
-		name.setPadding(new Insets(15, 0, 0, 0));
+		customizeTextFlow(name, 24.0f, 15);
+		customizeTextFlow(plus, 14.0f, 13);
+		customizeTextFlow(lable, 15.0f, 14);
+		customizeTextFlow(minus, 14.0f, 13);
+		customizeTextFlow(reset, 14.0f, 13);
 
-		name.getChildren().addAll(new Text("Chest"), new Text(System.lineSeparator()),
-				new Text("Waist"), new Text(System.lineSeparator()),
-				new Text("Hips width"), new Text(System.lineSeparator()),
-				new Text("Legs length"), new Text(System.lineSeparator()),
-				new Text("Knee height"), new Text(System.lineSeparator()),
-				new Text("Foot length"), new Text(System.lineSeparator()),
-				new Text("Head offset"), new Text(System.lineSeparator()),
-				new Text("Neck length"), new Text(System.lineSeparator()),
-				new Text("Virtual waist"));
+		addBodyProp(name, plus, lable, minus, reset, "Chest", true);
+		addBodyPropTimedResetBtn(name, plus, lable, minus, reset, "Waist", true);
+		addBodyProp(name, plus, lable, minus, reset, "Hips width", true);
+		addBodyPropTimedResetBtn(name, plus, lable, minus, reset, "Legs length", true);
+		addBodyPropTimedResetBtn(name, plus, lable, minus, reset, "Knee height", true);
+		addBodyProp(name, plus, lable, minus, reset, "Foot length", true);
+		addBodyProp(name, plus, lable, minus, reset, "Head", true);
+		addBodyProp(name, plus, lable, minus, reset, "Neck", true);
+		addBodyProp(name, plus, lable, minus, reset, "Virtual waist", false);
 
-
-		plus.setPadding(new Insets(13, 0, 0, 0));
-		plus.setTextAlignment(TextAlignment.CENTER);
-		plus.setLineSpacing(14.0f);
-
-		plus.getChildren().addAll(new ArithmOpBodyButton("+", "Chest", 0.01f),
-				new ArithmOpBodyButton("+", "Waist", 0.01f),
-				new ArithmOpBodyButton("+", "Hips width", 0.01f),
-				new ArithmOpBodyButton("+", "Legs length", 0.01f),
-				new ArithmOpBodyButton("+", "Knee height", 0.01f),
-				new ArithmOpBodyButton("+", "Foot length", 0.01f),
-				new ArithmOpBodyButton("+", "Head offset", 0.01f),
-				new ArithmOpBodyButton("+", "Neck length", 0.01f),
-				new ArithmOpBodyButton("+", "Virtual waist", 0.01f));
 	}
 
-	private void customizeTextFlow(TextFlow t) {
+
+	private void addBodyProp(TextFlow name, TextFlow plus, TextFlow lable,
+							 TextFlow minus, TextFlow reset, String nameStr, boolean lineSeparator) {
+		if (lineSeparator) name.getChildren().addAll(new Text(nameStr), new Text(System.lineSeparator()));
+		else name.getChildren().add(new Text(nameStr));
+		plus.getChildren().add(new ArithmOpBodyButton("+", nameStr, 0.01f));
+		if (lineSeparator) lable.getChildren().addAll(new BodyLabel(nameStr), new Text(System.lineSeparator()));
+		else lable.getChildren().add(new BodyLabel(nameStr));
+		minus.getChildren().add(new ArithmOpBodyButton("-", nameStr, -0.01f));
+		reset.getChildren().add(new ResetBodyButton(nameStr));
+	}
+
+	private void addBodyPropTimedResetBtn(TextFlow name, TextFlow plus, TextFlow lable,
+							 TextFlow minus, TextFlow reset, String nameStr, boolean lineSeparator) {
+		if (lineSeparator) name.getChildren().addAll(new Text(nameStr), new Text(System.lineSeparator()));
+		else name.getChildren().add(new Text(nameStr));
+		plus.getChildren().add(new ArithmOpBodyButton("+", nameStr, 0.01f));
+		if (lineSeparator) lable.getChildren().addAll(new BodyLabel(nameStr), new Text(System.lineSeparator()));
+		else lable.getChildren().add(new BodyLabel(nameStr));
+		minus.getChildren().add(new ArithmOpBodyButton("-", nameStr, -0.01f));
+		reset.getChildren().add(new TimedResetBodyButton(nameStr));
+	}
+
+
+	private void customizeTextFlow(TextFlow t, float lineSpacing, int topPadding) {
 		t.setTextAlignment(TextAlignment.CENTER);
-		t.setLineSpacing(24.0f);
-		t.setPadding(new Insets(15, 0, 0, 0));
+		t.setLineSpacing(lineSpacing);
+		t.setPadding(new Insets(topPadding, 0, 0, 0));
 	}
 
 	private class BodyLabel extends Label {
 
 		public BodyLabel(String joint) {
 			super(StringUtils.prettyNumber(server.humanPoseProcessor.getSkeletonConfig(joint) * 100, 0));
+			setStyle("-fx-text-fill: #f4f4f4;");
 			labels.put(joint, this);
 		}
 	}
@@ -85,16 +98,19 @@ public class BodyProportion {
 
 	private class ResetBodyButton extends Button {
 
-		public ResetBodyButton(String text, String joint) {
-			super(text);
+		public ResetBodyButton(String joint) {
+			super("Reset");
+			setPrefSize(55, 31);
+
 			addEventHandler(MouseEvent.MOUSE_CLICKED, e -> reset(joint));
 		}
 	}
 
 	private class TimedResetBodyButton extends Button {
 
-		public TimedResetBodyButton(String text, String joint) {
-			super(text);
+		public TimedResetBodyButton(String joint) {
+			super("Reset");
+			setPrefSize(55, 31);
 
 			addEventHandler(MouseEvent.MOUSE_CLICKED, e -> {
 				setText(String.valueOf(3));
@@ -103,7 +119,7 @@ public class BodyProportion {
 					if (counter > 0) setText(String.valueOf(counter));
 					if (counter == 0) {
 						reset(joint);
-						setText(text);
+						setText("Reset");
 					}
 					counter--;
 				}));
@@ -120,7 +136,7 @@ public class BodyProportion {
 		labels.get(joint).setText(StringUtils.prettyNumber((current + diff) * 100, 0));
 	}
 
-	private void reset(String joint) {
+	public void reset(String joint) {
 		server.humanPoseProcessor.resetSkeletonConfig(joint);
 		server.saveConfig();
 		if(!"All".equals(joint)) {
@@ -132,6 +148,13 @@ public class BodyProportion {
 				label.setText(StringUtils.prettyNumber((current) * 100, 0));
 			});
 		}
+	}
+
+	@ThreadSafe
+	public void refreshAll() {
+		labels.forEach((joint, label) -> {
+			label.setText(StringUtils.prettyNumber(server.humanPoseProcessor.getSkeletonConfig(joint) * 100, 0));
+		});
 	}
 
 }
