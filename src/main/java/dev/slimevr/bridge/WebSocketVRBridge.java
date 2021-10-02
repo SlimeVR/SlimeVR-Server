@@ -33,13 +33,13 @@ public class WebSocketVRBridge extends WebSocketServer implements Bridge {
 	private final Quaternion qBuffer = new Quaternion();
 	
 	private final HMDTracker hmd;
-	private final List<? extends Tracker> shareTrackers;
+	private final List<? extends ShareableTracker> shareTrackers;
 	private final List<ComputedTracker> internalTrackers;
 	
 	private final HMDTracker internalHMDTracker = new HMDTracker("itnernal://HMD");
 	private final AtomicBoolean newHMDData = new AtomicBoolean(false);
 	
-	public WebSocketVRBridge(HMDTracker hmd, List<? extends Tracker> shareTrackers, VRServer server) {
+	public WebSocketVRBridge(HMDTracker hmd, List<? extends ShareableTracker> shareTrackers, VRServer server) {
 		super(new InetSocketAddress(21110), Collections.<Draft>singletonList(new Draft_6455()));
 		this.hmd = hmd;
 		this.shareTrackers = new FastList<>(shareTrackers);
@@ -82,7 +82,7 @@ public class WebSocketVRBridge extends WebSocketServer implements Bridge {
 			JSONObject message = new JSONObject();
 			message.put("type", "config");
 			message.put("tracker_id", "SlimeVR Tracker " + (i + 1));
-			message.put("location", internalTrackers.get(i).bodyPosition.designation);
+			message.put("location", shareTrackers.get(i).getTrackerRole().name().toLowerCase());
 			message.put("tracker_type", message.optString("location"));
 			conn.send(message.toString());
 		}
