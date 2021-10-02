@@ -58,8 +58,6 @@ dependencies {
 	// This dependency is used internally, and not exposed to consumers on their own compile classpath.
 	implementation 'com.google.guava:guava:28.2-jre'
 
-	implementation 'org.json:json:20210307'
-
 	// Use JUnit test framework
 	testImplementation platform('org.junit:junit-bom:5.7.2')
 	testImplementation 'org.junit.jupiter:junit-jupiter'
