@@ -44,6 +44,7 @@
 
 
 
+/*SteamVR Trackers*/
 #comboBoxLable {
     -fx-font-size : 16px;
     -fx-effect: dropshadow(three-pass-box, rgba(0, 0, 0, 0.5), 10, 0.5, 0.0, 0.0);

@@ -1,4 +1,4 @@
-package io.eiren.newGui;
+package io.eiren.newGui.main;
 
 import io.eiren.util.StringUtils;
 import io.eiren.util.ann.ThreadSafe;
@@ -52,9 +52,12 @@ public class BodyProportion {
 							 TextFlow minus, TextFlow reset, String nameStr, boolean lineSeparator) {
 		if (lineSeparator) name.getChildren().addAll(new Text(nameStr), new Text(System.lineSeparator()));
 		else name.getChildren().add(new Text(nameStr));
+
 		plus.getChildren().add(new ArithmOpBodyButton("+", nameStr, 0.01f));
+
 		if (lineSeparator) lable.getChildren().addAll(new BodyLabel(nameStr), new Text(System.lineSeparator()));
 		else lable.getChildren().add(new BodyLabel(nameStr));
+
 		minus.getChildren().add(new ArithmOpBodyButton("-", nameStr, -0.01f));
 		reset.getChildren().add(new ResetBodyButton(nameStr));
 	}
@@ -63,9 +66,12 @@ public class BodyProportion {
 							 TextFlow minus, TextFlow reset, String nameStr, boolean lineSeparator) {
 		if (lineSeparator) name.getChildren().addAll(new Text(nameStr), new Text(System.lineSeparator()));
 		else name.getChildren().add(new Text(nameStr));
+
 		plus.getChildren().add(new ArithmOpBodyButton("+", nameStr, 0.01f));
+
 		if (lineSeparator) lable.getChildren().addAll(new BodyLabel(nameStr), new Text(System.lineSeparator()));
 		else lable.getChildren().add(new BodyLabel(nameStr));
+
 		minus.getChildren().add(new ArithmOpBodyButton("-", nameStr, -0.01f));
 		reset.getChildren().add(new TimedResetBodyButton(nameStr));
 	}
