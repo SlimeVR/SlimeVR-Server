@@ -8,6 +8,7 @@
 
 plugins {
 	id 'application'
+	id 'org.openjfx.javafxplugin' version '0.0.9'
 	id "com.github.johnrengelman.shadow" version "6.1.0"
 }
 
@@ -44,6 +45,11 @@ allprojects {
 	}
 }
 
+javafx {
+	version = "15.0.1"
+	modules = [ 'javafx.controls','javafx.fxml' ]
+}
+
 dependencies {
 	compile project(':slime-java-commons')
 
@@ -62,13 +68,6 @@ dependencies {
 	// This dependency is used internally, and not exposed to consumers on their own compile classpath.
 	implementation 'com.google.guava:guava:28.2-jre'
 
-	implementation 'org.openjfx:javafx-base:18-ea+2'
-	implementation 'org.openjfx:javafx-graphics:18-ea+2'
-	implementation 'org.openjfx:javafx-controls:18-ea+2'
-	implementation 'org.openjfx:javafx-fxml:18-ea+2'
-	implementation 'org.openjfx:javafx-swing:18-ea+2'
-	implementation 'org.openjfx:javafx-media:18-ea+2'
-	implementation 'com.jfoenix:jfoenix:9.0.10'
 
 	// Use JUnit test framework
 	testImplementation platform('org.junit:junit-bom:5.7.2')
