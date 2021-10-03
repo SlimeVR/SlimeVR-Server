@@ -25,9 +25,21 @@ public interface Tracker {
 	
 	public void resetYaw(Quaternion reference);
 	
+	public void tick();
+	
 	public TrackerBodyPosition getBodyPosition();
 	
 	public void setBodyPosition(TrackerBodyPosition position);
 	
 	public boolean userEditable();
+	
+	public boolean hasRotation();
+	
+	public boolean hasPosition();
+
+	public boolean isComputed();
+	
+	public default String getDescriptiveName() {
+		return getName();
+	}
 }

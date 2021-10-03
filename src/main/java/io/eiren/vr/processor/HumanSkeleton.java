@@ -24,4 +24,7 @@ public abstract class HumanSkeleton {
 
 	@VRServerThread
 	public abstract void resetTrackersFull();
+	
+	@VRServerThread
+	public abstract void resetTrackersYaw();
 }

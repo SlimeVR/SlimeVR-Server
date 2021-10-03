@@ -8,8 +8,9 @@ import io.eiren.vr.processor.TrackerBodyPosition;
 public class ReferenceAdjustedTracker<E extends Tracker> implements Tracker {
 	
 	public final E tracker;
-	public final Quaternion adjustmentYaw = new Quaternion();
-	public final Quaternion adjustmentAttachment = new Quaternion();
+	public final Quaternion yawFix = new Quaternion();
+	public final Quaternion gyroFix = new Quaternion();
+	public final Quaternion attachmentFix = new Quaternion();
 	protected float confidenceMultiplier = 1.0f;
 	
 	public ReferenceAdjustedTracker(E tracker) {
@@ -44,14 +45,15 @@ public class ReferenceAdjustedTracker<E extends Tracker> implements Tracker {
 	 */
 	@Override
 	public void resetFull(Quaternion reference) {
+		tracker.resetFull(reference);
+		fixGyroscope();
+		
 		Quaternion sensorRotation = new Quaternion();
 		tracker.getRotation(sensorRotation);
-		//float[] angles = new float[3];
-		//sensorRotation.toAngles(angles);
-		//sensorRotation.fromAngles(angles[0], 0, angles[2]);
-		adjustmentAttachment.set(sensorRotation).inverseLocal();
+		gyroFix.mult(sensorRotation, sensorRotation);
+		attachmentFix.set(sensorRotation).inverseLocal();
 		
-		resetYaw(reference);
+		fixYaw(reference);
 	}
 
 	/**
@@ -63,6 +65,11 @@ public class ReferenceAdjustedTracker<E extends Tracker> implements Tracker {
 	 */
 	@Override
 	public void resetYaw(Quaternion reference) {
+		tracker.resetYaw(reference);
+		fixYaw(reference);
+	}
+	
+	private void fixYaw(Quaternion reference) {
 		// Use only yaw HMD rotation
 		Quaternion targetTrackerRotation = new Quaternion(reference);
 		float[] angles = new float[3];
@@ -71,21 +78,31 @@ public class ReferenceAdjustedTracker<E extends Tracker> implements Tracker {
 		
 		Quaternion sensorRotation = new Quaternion();
 		tracker.getRotation(sensorRotation);
-		adjustmentAttachment.mult(sensorRotation, sensorRotation);
-		//sensorRotation.multLocal(adjustmentAttachment);
+		gyroFix.mult(sensorRotation, sensorRotation);
+		sensorRotation.multLocal(attachmentFix);
 		
 		sensorRotation.toAngles(angles);
 		sensorRotation.fromAngles(0, angles[1], 0);
 		
-		adjustmentYaw.set(sensorRotation).inverseLocal().multLocal(targetTrackerRotation);
+		yawFix.set(sensorRotation).inverseLocal().multLocal(targetTrackerRotation);
+	}
+	
+	private void fixGyroscope() {
+		float[] angles = new float[3];
 		
-		confidenceMultiplier = 1.0f / tracker.getConfidenceLevel();
+		Quaternion sensorRotation = new Quaternion();
+		tracker.getRotation(sensorRotation);
+		
+		sensorRotation.toAngles(angles);
+		sensorRotation.fromAngles(0, angles[1], 0);
+		
+		gyroFix.set(sensorRotation).inverseLocal();
 	}
 	
 	protected void adjustInternal(Quaternion store) {
-		//store.multLocal(adjustmentAttachment);
-		adjustmentAttachment.mult(store, store);
-		adjustmentYaw.mult(store, store);
+		gyroFix.mult(store, store);
+		store.multLocal(attachmentFix);
+		yawFix.mult(store, store);
 	}
 	
 	@Override
@@ -123,5 +140,25 @@ public class ReferenceAdjustedTracker<E extends Tracker> implements Tracker {
 	@Override
 	public void setBodyPosition(TrackerBodyPosition position) {
 		tracker.setBodyPosition(position);
+	}
+
+	@Override
+	public void tick() {
+		tracker.tick();
+	}
+
+	@Override
+	public boolean hasRotation() {
+		return tracker.hasRotation();
+	}
+
+	@Override
+	public boolean hasPosition() {
+		return tracker.hasPosition();
+	}
+
+	@Override
+	public boolean isComputed() {
+		return tracker.isComputed();
 	}
 }

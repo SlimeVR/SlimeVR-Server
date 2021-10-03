@@ -9,6 +9,7 @@ import com.jme3.math.FastMath;
 import com.jme3.math.Quaternion;
 import com.jme3.math.Vector3f;
 
+import dev.slimevr.gui.swing.EJBagNoStretch;
 import io.eiren.util.StringUtils;
 import io.eiren.util.ann.ThreadSafe;
 import io.eiren.util.ann.VRServerThread;
@@ -17,19 +18,20 @@ import io.eiren.vr.VRServer;
 import io.eiren.vr.processor.HumanSkeleton;
 import io.eiren.vr.processor.TransformNode;
 
-public class SkeletonList extends EJBag {
+public class SkeletonList extends EJBagNoStretch {
+	
+	private static final long UPDATE_DELAY = 50;
 
 	Quaternion q = new Quaternion();
 	Vector3f v = new Vector3f();
 	float[] angles = new float[3];
 	
-	private final VRServer server;
 	private final VRServerGUI gui;
 	private final List<NodeStatus> nodes = new FastList<>();
+	private long lastUpdate = 0;
 	
 	public SkeletonList(VRServer server, VRServerGUI gui) {
-		super();
-		this.server = server;
+		super(false, true);
 		this.gui = gui;
 
 		setAlignmentY(TOP_ALIGNMENT);
@@ -62,6 +64,9 @@ public class SkeletonList extends EJBag {
 	
 	@VRServerThread
 	public void updateBones() {
+		if(lastUpdate + UPDATE_DELAY > System.currentTimeMillis())
+			return;
+		lastUpdate = System.currentTimeMillis();
 		java.awt.EventQueue.invokeLater(() -> {
 			for(int i = 0; i < nodes.size(); ++i)
 				nodes.get(i).update();

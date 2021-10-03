@@ -12,6 +12,7 @@ import javax.swing.JTextArea;
 import javax.swing.border.EmptyBorder;
 import javax.swing.event.MouseInputAdapter;
 
+import dev.slimevr.gui.swing.EJBox;
 import io.eiren.util.ann.AWTThread;
 import io.eiren.vr.trackers.CalibratingTracker;
 import io.eiren.vr.trackers.Tracker;

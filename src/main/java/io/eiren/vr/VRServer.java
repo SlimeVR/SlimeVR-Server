@@ -2,6 +2,7 @@ package io.eiren.vr;
 
 import java.io.File;
 import java.io.FileInputStream;
+import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.net.InetAddress;
@@ -14,13 +15,16 @@ import java.util.Queue;
 import java.util.concurrent.LinkedBlockingQueue;
 import java.util.function.Consumer;
 
+import io.eiren.util.OperatingSystem;
 import io.eiren.util.ann.ThreadSafe;
 import io.eiren.util.ann.ThreadSecure;
 import io.eiren.util.ann.VRServerThread;
 import io.eiren.util.collections.FastList;
 import io.eiren.vr.bridge.NamedPipeVRBridge;
+import io.eiren.vr.bridge.SteamVRPipeInputBridge;
 import io.eiren.vr.bridge.VMCBridge;
 import io.eiren.vr.bridge.VRBridge;
+import io.eiren.vr.bridge.WebSocketVRBridge;
 import io.eiren.vr.processor.HumanPoseProcessor;
 import io.eiren.vr.processor.HumanSkeleton;
 import io.eiren.vr.trackers.HMDTracker;
@@ -35,7 +39,7 @@ public class VRServer extends Thread {
 	
 	private final List<Tracker> trackers = new FastList<>();
 	public final HumanPoseProcessor humanPoseProcessor;
-	private final TrackersUDPServer trackersServer = new TrackersUDPServer(6969, "Sensors UDP server", this::registerTracker);
+	private final TrackersUDPServer trackersServer;
 	private final List<VRBridge> bridges = new FastList<>();
 	private final Queue<Runnable> tasks = new LinkedBlockingQueue<>();
 	private final Map<String, TrackerConfig> configuration = new HashMap<>();
@@ -50,13 +54,28 @@ public class VRServer extends Thread {
 		hmdTracker = new HMDTracker("HMD");
 		hmdTracker.position.set(0, 1.8f, 0); // Set starting position for easier debugging
 		// TODO Multiple processors
-		humanPoseProcessor = new HumanPoseProcessor(this, hmdTracker);
+		humanPoseProcessor = new HumanPoseProcessor(this, hmdTracker, config.getInt("virtualtrackers", 3));
 		List<? extends Tracker> shareTrackers = humanPoseProcessor.getComputedTrackers();
 		
-		// Create named pipe bridge for SteamVR driver
-		NamedPipeVRBridge driverBridge = new NamedPipeVRBridge(hmdTracker, shareTrackers, this);
-		tasks.add(() -> driverBridge.start());
-		bridges.add(driverBridge);
+		// Start server for SlimeVR trackers
+		trackersServer = new TrackersUDPServer(6969, "Sensors UDP server", this::registerTracker);
+		
+		// OpenVR bridge currently only supports Windows
+		if(OperatingSystem.getCurrentPlatform() == OperatingSystem.WINDOWS) {
+			// Create named pipe bridge for SteamVR driver
+			NamedPipeVRBridge driverBridge = new NamedPipeVRBridge(hmdTracker, shareTrackers, this);
+			tasks.add(() -> driverBridge.start());
+			bridges.add(driverBridge);
+			// Create named pipe bridge for SteamVR input
+			SteamVRPipeInputBridge steamVRInput = new SteamVRPipeInputBridge(this);
+			tasks.add(() -> steamVRInput.start());
+			bridges.add(steamVRInput);
+		}
+		
+		// Create WebSocket server
+		WebSocketVRBridge wsBridge = new WebSocketVRBridge(hmdTracker, shareTrackers, this);
+		tasks.add(() -> wsBridge.start());
+		bridges.add(wsBridge);
 		
 		// Create VMCBridge
 		try {
@@ -71,6 +90,13 @@ public class VRServer extends Thread {
 		registerTracker(hmdTracker);
 		for(int i = 0; i < shareTrackers.size(); ++i)
 			registerTracker(shareTrackers.get(i));
+	}
+	
+	public boolean hasBridge(Class<? extends VRBridge> bridgeClass) {
+		for(int i = 0; i < bridges.size(); ++i) {
+			return bridgeClass.isAssignableFrom(bridges.get(i).getClass());
+		}
+		return false;
 	}
 
 	@ThreadSafe
@@ -88,7 +114,7 @@ public class VRServer extends Thread {
 		synchronized(configuration) {
 			TrackerConfig config = configuration.get(tracker.getName());
 			if(config == null) {
-				config = new TrackerConfig(tracker.getName());
+				config = new TrackerConfig(tracker);
 				configuration.put(tracker.getName(), config);
 			}
 			return config;
@@ -98,8 +124,8 @@ public class VRServer extends Thread {
 	private void loadConfig() {
 		try {
 			config.load(new FileInputStream(new File("vrconfig.yml")));
-		} catch(IOException e) {
-			e.printStackTrace();
+		} catch(FileNotFoundException e) {
+			// Config file didn't exist, is not an error
 		} catch(YamlException e) {
 			e.printStackTrace();
 		}
@@ -143,7 +169,7 @@ public class VRServer extends Thread {
 	}
 
 	@ThreadSafe
-	public void saveConfig() {
+	public synchronized void saveConfig() {
 		List<YamlNode> nodes = config.getNodeList("trackers", null);
 		List<Map<String, Object>> trackersConfig = new FastList<>(nodes.size());
 		for(int i = 0; i < nodes.size(); ++i) {
@@ -189,12 +215,13 @@ public class VRServer extends Thread {
 					break;
 				task.run();
 			} while(true);
-			
 			for(int i = 0; i < onTick.size(); ++i) {
 				this.onTick.get(i).run();
 			}
 			for(int i = 0; i < bridges.size(); ++i)
 				bridges.get(i).dataRead();
+			for(int i = 0; i < trackers.size(); ++i)
+				trackers.get(i).tick();
 			humanPoseProcessor.update();
 			for(int i = 0; i < bridges.size(); ++i)
 				bridges.get(i).dataWrite();
@@ -231,6 +258,12 @@ public class VRServer extends Thread {
 	public void resetTrackers() {
 		queueTask(() -> {
 			humanPoseProcessor.resetTrackers();
+		});
+	}
+	
+	public void resetTrackersYaw() {
+		queueTask(() -> {
+			humanPoseProcessor.resetTrackersYaw();
 		});
 	}
 	

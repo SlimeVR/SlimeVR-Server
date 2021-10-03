@@ -26,6 +26,7 @@ import javax.swing.event.MouseInputAdapter;
 
 import com.fazecast.jSerialComm.SerialPort;
 
+import dev.slimevr.gui.swing.EJBox;
 import io.eiren.util.ann.AWTThread;
 
 public class WiFiWindow extends JFrame {
@@ -53,7 +54,7 @@ public class WiFiWindow extends JFrame {
 		
 		SerialPort[] ports = SerialPort.getCommPorts();
 		for(SerialPort port : ports) {
-			if(port.getDescriptivePortName().toLowerCase().contains("ch340") || port.getDescriptivePortName().toLowerCase().contains("cp21")) {
+			if(port.getDescriptivePortName().toLowerCase().contains("ch340") || port.getDescriptivePortName().toLowerCase().contains("cp21") || port.getDescriptivePortName().toLowerCase().contains("ch910")) {
 				trackerPort = port;
 				break;
 			}

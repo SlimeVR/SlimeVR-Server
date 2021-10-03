@@ -9,9 +9,10 @@ public class ComputedHumanPoseTracker extends ComputedTracker implements Tracker
 	public final ComputedHumanPoseTrackerPosition skeletonPosition;
 	protected BufferedTimer timer = new BufferedTimer(1f);
 
-	public ComputedHumanPoseTracker(ComputedHumanPoseTrackerPosition skeletonPosition) {
-		super("human://" + skeletonPosition.name());
+	public ComputedHumanPoseTracker(ComputedHumanPoseTrackerPosition skeletonPosition, TrackerBodyPosition bodyPosition) {
+		super("human://" + skeletonPosition.name(), true, true);
 		this.skeletonPosition = skeletonPosition;
+		this.bodyPosition = bodyPosition;
 	}
 	
 	@Override

@@ -2,16 +2,18 @@ package io.eiren.vr;
 
 import java.io.File;
 
+import io.eiren.gui.VRServerGUI;
 import io.eiren.gui.jfx.SlimeVRGUIJFX;
 import io.eiren.util.logging.LogManager;
 import javafx.application.Application;
 
 public class Main {
 	
-	public static String VERSION = "0.0.10";
+	public static String VERSION = "0.0.19 Test 1";
 	
 	public static VRServer vrServer;
 	
+	@SuppressWarnings("unused")
 	public static void main(String[] args) {
 		System.setProperty("awt.useSystemAAFontSettings", "on");
 		System.setProperty("swing.aatext", "true");
@@ -27,8 +29,16 @@ public class Main {
 			vrServer = new VRServer();
 			vrServer.start();
 			Application.launch(SlimeVRGUIJFX.class, args);
+			new Keybinding(vrServer);
+			new VRServerGUI(vrServer);
 		} catch(Throwable e) {
 			e.printStackTrace();
+			try {
+				Thread.sleep(2000L);
+			} catch(InterruptedException e2) {
+				e.printStackTrace();
+			}
+			System.exit(1); // Exit in case error happened on init and window not appeared, but some thread started
 		} finally {
 			try {
 				Thread.sleep(2000L);

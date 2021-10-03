@@ -12,25 +12,28 @@ import io.eiren.vr.trackers.Tracker;
 import io.eiren.vr.trackers.TrackerStatus;
 import io.eiren.vr.trackers.TrackerUtils;
 
-public class HumanSekeletonWithLegs extends HumanSkeleonWithWaist {
+public class HumanSkeletonWithLegs extends HumanSkeletonWithWaist {
 	
 	public static final float HIPS_WIDTH_DEFAULT = 0.3f;
 	public static final float FOOT_LENGTH_DEFAULT = 0.05f;
 	public static final float DEFAULT_FLOOR_OFFSET = 0.05f;
 	
-	protected final float[] kneeAngles = new float[3];
-	protected final float[] hipAngles = new float[3];
 	protected final Quaternion hipBuf = new Quaternion();
 	protected final Quaternion kneeBuf = new Quaternion();
+	protected final Vector3f hipVector = new Vector3f();
+	protected final Vector3f ankleVector = new Vector3f();
+	protected final Quaternion kneeRotation = new Quaternion();
 	
 	protected final Tracker leftLegTracker;
 	protected final Tracker leftAnkleTracker;
 	protected final Tracker leftFootTracker;
 	protected final ComputedHumanPoseTracker computedLeftFootTracker;
+	protected final ComputedHumanPoseTracker computedLeftKneeTracker;
 	protected final Tracker rightLegTracker;
 	protected final Tracker rightAnkleTracker;
 	protected final Tracker rightFootTracker;
 	protected final ComputedHumanPoseTracker computedRightFootTracker;
+	protected final ComputedHumanPoseTracker computedRightKneeTracker;
 	
 	protected final TransformNode leftHipNode = new TransformNode("Left-Hip", false);
 	protected final TransformNode leftKneeNode = new TransformNode("Left-Knee", false);
@@ -59,33 +62,50 @@ public class HumanSekeletonWithLegs extends HumanSkeleonWithWaist {
 	protected float maxKneePitch = 90f * FastMath.DEG_TO_RAD;
 	
 	protected float kneeLerpFactor = 0.5f;
+	
+	protected boolean extendedPelvisModel = true;
+	protected boolean extendedKneeModel = false;
 
-	public HumanSekeletonWithLegs(VRServer server, List<ComputedHumanPoseTracker> computedTrackers) {
+	public HumanSkeletonWithLegs(VRServer server, List<ComputedHumanPoseTracker> computedTrackers) {
 		super(server, computedTrackers);
 		List<Tracker> allTracekrs = server.getAllTrackers();
-		this.leftLegTracker = TrackerUtils.findTrackerForBodyPosition(allTracekrs, TrackerBodyPosition.LEFT_LEG);
-		this.leftAnkleTracker = TrackerUtils.findTrackerForBodyPosition(allTracekrs, TrackerBodyPosition.LEFT_ANKLE);
+		this.leftLegTracker = TrackerUtils.findTrackerForBodyPositionOrEmpty(allTracekrs, TrackerBodyPosition.LEFT_LEG, TrackerBodyPosition.LEFT_ANKLE);
+		this.leftAnkleTracker = TrackerUtils.findTrackerForBodyPositionOrEmpty(allTracekrs, TrackerBodyPosition.LEFT_ANKLE, TrackerBodyPosition.LEFT_LEG);
 		this.leftFootTracker = TrackerUtils.findTrackerForBodyPosition(allTracekrs, TrackerBodyPosition.LEFT_FOOT);
-		this.rightLegTracker = TrackerUtils.findTrackerForBodyPosition(allTracekrs, TrackerBodyPosition.RIGHT_LEG);
-		this.rightAnkleTracker = TrackerUtils.findTrackerForBodyPosition(allTracekrs, TrackerBodyPosition.RIGHT_ANKLE);
+		this.rightLegTracker = TrackerUtils.findTrackerForBodyPositionOrEmpty(allTracekrs, TrackerBodyPosition.RIGHT_LEG, TrackerBodyPosition.RIGHT_ANKLE);
+		this.rightAnkleTracker = TrackerUtils.findTrackerForBodyPositionOrEmpty(allTracekrs, TrackerBodyPosition.RIGHT_ANKLE, TrackerBodyPosition.RIGHT_LEG);
 		this.rightFootTracker = TrackerUtils.findTrackerForBodyPosition(allTracekrs, TrackerBodyPosition.RIGHT_FOOT);
 		ComputedHumanPoseTracker lat = null;
 		ComputedHumanPoseTracker rat = null;
+		ComputedHumanPoseTracker rkt = null;
+		ComputedHumanPoseTracker lkt = null;
 		for(int i = 0; i < computedTrackers.size(); ++i) {
 			ComputedHumanPoseTracker t = computedTrackers.get(i);
 			if(t.skeletonPosition == ComputedHumanPoseTrackerPosition.LEFT_FOOT)
 				lat = t;
 			if(t.skeletonPosition == ComputedHumanPoseTrackerPosition.RIGHT_FOOT)
 				rat = t;
+			if(t.skeletonPosition == ComputedHumanPoseTrackerPosition.LEFT_KNEE)
+				lkt = t;
+			if(t.skeletonPosition == ComputedHumanPoseTrackerPosition.RIGHT_KNEE)
+				rkt = t;
 		}
+		if(lat == null)
+			lat = new ComputedHumanPoseTracker(ComputedHumanPoseTrackerPosition.LEFT_FOOT, TrackerBodyPosition.LEFT_FOOT);
+		if(rat == null)
+			rat = new ComputedHumanPoseTracker(ComputedHumanPoseTrackerPosition.RIGHT_FOOT, TrackerBodyPosition.RIGHT_FOOT);
 		computedLeftFootTracker = lat;
 		computedRightFootTracker = rat;
+		computedLeftKneeTracker = lkt;
+		computedRightKneeTracker = rkt;
 		lat.setStatus(TrackerStatus.OK);
 		rat.setStatus(TrackerStatus.OK);
 		hipsWidth = server.config.getFloat("body.hipsWidth", hipsWidth);
 		kneeHeight = server.config.getFloat("body.kneeHeight", kneeHeight);
 		legsLength = server.config.getFloat("body.legsLength", legsLength);
 		footLength = server.config.getFloat("body.footLength", footLength);
+		//extendedPelvisModel = server.config.getBoolean("body.model.extendedPelvis", extendedPelvisModel);
+		extendedKneeModel = server.config.getBoolean("body.model.extendedKnee", extendedKneeModel);
 		
 		waistNode.attachChild(leftHipNode);
 		leftHipNode.localTransform.setTranslation(-hipsWidth / 2, 0, 0);
@@ -182,13 +202,42 @@ public class HumanSekeletonWithLegs extends HumanSkeleonWithWaist {
 	}
 	
 	@Override
+	public boolean getSkeletonConfigBoolean(String config) {
+		switch(config) {
+		case "Extended pelvis model":
+			return extendedPelvisModel;
+		case "Extended knee model":
+			return extendedKneeModel;
+		}
+		return super.getSkeletonConfigBoolean(config);
+	}
+	
+	@Override
+	public void setSkeletonConfigBoolean(String config, boolean newState) {
+		switch(config) {
+		case "Extended pelvis model":
+			extendedPelvisModel = newState;
+			server.config.setProperty("body.model.extendedPelvis", newState);
+			break;
+		case "Extended knee model":
+			extendedKneeModel = newState;
+			server.config.setProperty("body.model.extendedKnee", newState);
+			break;
+		default:
+			super.setSkeletonConfigBoolean(config, newState);
+			break;
+		}
+	}
+	
+	@Override
 	public void updateLocalTransforms() {
 		super.updateLocalTransforms();
 		// Left Leg
 		leftLegTracker.getRotation(hipBuf);
 		leftAnkleTracker.getRotation(kneeBuf);
 
-		//calculateKneeLimits(hipBuf, kneeBuf, leftLegTracker.getConfidenceLevel(), leftAnkleTracker.getConfidenceLevel());
+		if(extendedKneeModel)
+			calculateKneeLimits(hipBuf, kneeBuf, leftLegTracker.getConfidenceLevel(), leftAnkleTracker.getConfidenceLevel());
 		
 		leftHipNode.localTransform.setRotation(hipBuf);
 		leftKneeNode.localTransform.setRotation(kneeBuf);
@@ -205,7 +254,8 @@ public class HumanSekeletonWithLegs extends HumanSkeleonWithWaist {
 		rightLegTracker.getRotation(hipBuf);
 		rightAnkleTracker.getRotation(kneeBuf);
 		
-		//calculateKneeLimits(hipBuf, kneeBuf, rightLegTracker.getConfidenceLevel(), rightAnkleTracker.getConfidenceLevel());
+		if(extendedKneeModel)
+			calculateKneeLimits(hipBuf, kneeBuf, rightLegTracker.getConfidenceLevel(), rightAnkleTracker.getConfidenceLevel());
 		
 		rightHipNode.localTransform.setRotation(hipBuf);
 		rightKneeNode.localTransform.setRotation(kneeBuf);
@@ -217,20 +267,38 @@ public class HumanSekeletonWithLegs extends HumanSkeleonWithWaist {
 			rightAnkleNode.localTransform.setRotation(kneeBuf);
 			rightFootNode.localTransform.setRotation(kneeBuf);
 		}
-		
-		// TODO Calculate waist node as some function between waist and hip rotations
+
+		if(extendedPelvisModel) {
+			// Average pelvis between two legs
+			leftHipNode.localTransform.getRotation(hipBuf);
+			rightHipNode.localTransform.getRotation(kneeBuf);
+			kneeBuf.nlerp(hipBuf, 0.5f);
+			chestNode.localTransform.getRotation(hipBuf);
+			kneeBuf.nlerp(hipBuf, 0.3333333f);
+			waistNode.localTransform.setRotation(kneeBuf);
+			// TODO : Use vectors to add like 50% of wasit tracker yaw to waist node to reduce drift and let user take weird poses
+			// TODO Set virtual waist node yaw to that of waist node
+		}
 	}
 	
-	// Knee basically has only 1 DoF (pitch), average yaw between knee and hip
+	// Knee basically has only 1 DoF (pitch), average yaw and roll between knee and hip
 	protected void calculateKneeLimits(Quaternion hipBuf, Quaternion kneeBuf, float hipConfidense, float kneeConfidense) {
-		hipBuf.toAngles(hipAngles);
-		kneeBuf.toAngles(kneeAngles);
+		ankleVector.set(0, -1, 0);
+		hipVector.set(0, -1, 0);
+		hipBuf.multLocal(hipVector);
+		kneeBuf.multLocal(ankleVector);
+		kneeRotation.angleBetweenVectors(hipVector, ankleVector); // Find knee angle
 		
-		hipAngles[1] = kneeAngles[1] = interpolateRadians(kneeLerpFactor, kneeAngles[1], hipAngles[1]);
-		//hipAngles[2] = kneeAngles[2] = interpolateRadians(kneeLerpFactor, kneeAngles[2], hipAngles[2]);
+		// Substract knee angle from knee rotation. With perfect leg and perfect
+		// sensors result should match hip rotation perfectly
+		kneeBuf.multLocal(kneeRotation.inverse());
 		
-		hipBuf.fromAngles(hipAngles);
-		kneeBuf.fromAngles(kneeAngles);
+		// Average knee and hip with a slerp
+		hipBuf.slerp(kneeBuf, 0.5f); // TODO : Use confidence to calculate changeAmt
+		kneeBuf.set(hipBuf);
+
+		// Return knee angle into knee rotation
+		kneeBuf.multLocal(kneeRotation);
 	}
 	
 	public static float normalizeRad(float angle) {
@@ -254,13 +322,29 @@ public class HumanSekeletonWithLegs extends HumanSkeleonWithWaist {
 	protected void updateComputedTrackers() {
 		super.updateComputedTrackers();
 		
-		computedLeftFootTracker.position.set(leftFootNode.worldTransform.getTranslation());
-		computedLeftFootTracker.rotation.set(leftFootNode.worldTransform.getRotation());
-		computedLeftFootTracker.dataTick();
+		if(computedLeftFootTracker != null) {
+			computedLeftFootTracker.position.set(leftFootNode.worldTransform.getTranslation());
+			computedLeftFootTracker.rotation.set(leftFootNode.worldTransform.getRotation());
+			computedLeftFootTracker.dataTick();
+		}
 		
-		computedRightFootTracker.position.set(rightFootNode.worldTransform.getTranslation());
-		computedRightFootTracker.rotation.set(rightFootNode.worldTransform.getRotation());
-		computedRightFootTracker.dataTick();
+		if(computedLeftKneeTracker != null) {
+			computedLeftKneeTracker.position.set(leftKneeNode.worldTransform.getTranslation());
+			computedLeftKneeTracker.rotation.set(leftHipNode.worldTransform.getRotation());
+			computedLeftKneeTracker.dataTick();
+		}
+		
+		if(computedRightFootTracker != null) {
+			computedRightFootTracker.position.set(rightFootNode.worldTransform.getTranslation());
+			computedRightFootTracker.rotation.set(rightFootNode.worldTransform.getRotation());
+			computedRightFootTracker.dataTick();
+		}
+		
+		if(computedRightKneeTracker != null) {
+			computedRightKneeTracker.position.set(rightKneeNode.worldTransform.getTranslation());
+			computedRightKneeTracker.rotation.set(rightHipNode.worldTransform.getRotation());
+			computedRightKneeTracker.dataTick();
+		}
 	}
 	
 	@Override
@@ -289,8 +373,39 @@ public class HumanSekeletonWithLegs extends HumanSkeleonWithWaist {
 		this.rightAnkleTracker.resetFull(referenceRotation);
 		this.rightAnkleTracker.getRotation(referenceRotation);
 		
-		if(this.rightAnkleTracker != null) {
-			this.rightAnkleTracker.resetFull(referenceRotation);
+		if(this.rightFootTracker != null) {
+			this.rightFootTracker.resetFull(referenceRotation);
+		}
+	}
+	
+	@Override
+	@VRServerThread
+	public void resetTrackersYaw() {
+		// Each tracker uses the tracker before it to adjust iteself,
+		// so trackers that don't need adjustments could be used too
+		super.resetTrackersYaw();
+		// Start with waist, it was reset in the parent
+		Quaternion referenceRotation = new Quaternion();
+		this.waistTracker.getRotation(referenceRotation);
+		
+		this.leftLegTracker.resetYaw(referenceRotation);
+		this.rightLegTracker.resetYaw(referenceRotation);
+		this.leftLegTracker.getRotation(referenceRotation);
+		
+		this.leftAnkleTracker.resetYaw(referenceRotation);
+		this.leftAnkleTracker.getRotation(referenceRotation);
+		
+		if(this.leftFootTracker != null) {
+			this.leftFootTracker.resetYaw(referenceRotation);
+		}
+
+		this.rightLegTracker.getRotation(referenceRotation);
+		
+		this.rightAnkleTracker.resetYaw(referenceRotation);
+		this.rightAnkleTracker.getRotation(referenceRotation);
+		
+		if(this.rightFootTracker != null) {
+			this.rightFootTracker.resetYaw(referenceRotation);
 		}
 	}
 }

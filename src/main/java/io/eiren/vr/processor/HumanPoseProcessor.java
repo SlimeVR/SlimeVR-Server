@@ -10,7 +10,6 @@ import io.eiren.vr.VRServer;
 import io.eiren.vr.trackers.HMDTracker;
 import io.eiren.vr.trackers.Tracker;
 import io.eiren.vr.trackers.TrackerStatus;
-import io.eiren.vr.trackers.TrackerUtils;
 
 public class HumanPoseProcessor {
 	
@@ -19,11 +18,24 @@ public class HumanPoseProcessor {
 	private final List<Consumer<HumanSkeleton>> onSkeletonUpdated = new FastList<>();
 	private HumanSkeleton skeleton;
 
-	public HumanPoseProcessor(VRServer server, HMDTracker hmd) {
+	public HumanPoseProcessor(VRServer server, HMDTracker hmd, int trackersAmount) {
 		this.server = server;
-		computedTrackers.add(new ComputedHumanPoseTracker(ComputedHumanPoseTrackerPosition.WAIST));
-		computedTrackers.add(new ComputedHumanPoseTracker(ComputedHumanPoseTrackerPosition.LEFT_FOOT));
-		computedTrackers.add(new ComputedHumanPoseTracker(ComputedHumanPoseTrackerPosition.RIGHT_FOOT));
+		computedTrackers.add(new ComputedHumanPoseTracker(ComputedHumanPoseTrackerPosition.WAIST, TrackerBodyPosition.WAIST));
+		if(trackersAmount > 2) {
+			computedTrackers.add(new ComputedHumanPoseTracker(ComputedHumanPoseTrackerPosition.LEFT_FOOT, TrackerBodyPosition.LEFT_FOOT));
+			computedTrackers.add(new ComputedHumanPoseTracker(ComputedHumanPoseTrackerPosition.RIGHT_FOOT, TrackerBodyPosition.RIGHT_FOOT));
+			if(trackersAmount == 4 || trackersAmount >= 6) {
+				computedTrackers.add(new ComputedHumanPoseTracker(ComputedHumanPoseTrackerPosition.CHEST, TrackerBodyPosition.CHEST));
+			}
+			if(trackersAmount >= 5) {
+				computedTrackers.add(new ComputedHumanPoseTracker(ComputedHumanPoseTrackerPosition.LEFT_KNEE, TrackerBodyPosition.LEFT_ANKLE));
+				computedTrackers.add(new ComputedHumanPoseTracker(ComputedHumanPoseTrackerPosition.RIGHT_KNEE, TrackerBodyPosition.RIGHT_ANKLE));
+			}
+		}
+	}
+	
+	public HumanSkeleton getSkeleton() {
+		return skeleton;
 	}
 
 	@VRServerThread
@@ -72,31 +84,10 @@ public class HumanPoseProcessor {
 
 	@VRServerThread
 	private void updateSekeltonModel() {
-		boolean hasWaist = false;
-		boolean hasBothLegs = false;
-		List<Tracker> allTrackers = server.getAllTrackers();
-		Tracker waist = TrackerUtils.findTrackerForBodyPosition(allTrackers, TrackerBodyPosition.WAIST, TrackerBodyPosition.CHEST);
-		Tracker leftAnkle = TrackerUtils.findTrackerForBodyPosition(allTrackers, TrackerBodyPosition.LEFT_ANKLE);
-		Tracker rightAnkle = TrackerUtils.findTrackerForBodyPosition(allTrackers, TrackerBodyPosition.RIGHT_ANKLE);
-		Tracker leftLeg = TrackerUtils.findTrackerForBodyPosition(allTrackers, TrackerBodyPosition.LEFT_LEG);
-		Tracker rightLeg = TrackerUtils.findTrackerForBodyPosition(allTrackers, TrackerBodyPosition.RIGHT_LEG);
-		if(waist != null)
-			hasWaist = true;
-		if(leftAnkle != null && rightAnkle != null && leftLeg != null && rightLeg != null)
-			hasBothLegs = true;
-		if(!hasWaist) {
-			skeleton = null; // Can't track anything without waist
-		} else if(hasBothLegs) {
-			disconnectAllTrackers();
-			skeleton = new HumanSekeletonWithLegs(server, computedTrackers);
-			for(int i = 0; i < onSkeletonUpdated.size(); ++i)
-				onSkeletonUpdated.get(i).accept(skeleton);
-		} else {
-			disconnectAllTrackers();
-			skeleton = new HumanSkeleonWithWaist(server, computedTrackers);
-			for(int i = 0; i < onSkeletonUpdated.size(); ++i)
-				onSkeletonUpdated.get(i).accept(skeleton);
-		}
+		disconnectAllTrackers();
+		skeleton = new HumanSkeletonWithLegs(server, computedTrackers);
+		for(int i = 0; i < onSkeletonUpdated.size(); ++i)
+			onSkeletonUpdated.get(i).accept(skeleton);
 	}
 
 	@VRServerThread
@@ -116,5 +107,11 @@ public class HumanPoseProcessor {
 	public void resetTrackers() {
 		if(skeleton != null)
 			skeleton.resetTrackersFull();
+	}
+
+	@VRServerThread
+	public void resetTrackersYaw() {
+		if(skeleton != null)
+			skeleton.resetTrackersYaw();
 	}
 }

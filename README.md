@@ -21,14 +21,13 @@ You need to execute these commands in the folder where you want this project.
 
 ```bash
 # Clone repositories
-git clone https://github.com/SlimeVR/SlimeVR-Server.git
-git clone https://github.com/Eirenliel/slime-java-commons.git
+git clone --recursive https://github.com/SlimeVR/SlimeVR-Server.git
 
 # Enter the directory and build the runnable server JAR
 cd SlimeVR-Server
-gradlew serverJar
+gradlew shadowJar
 ```
 
 Open Slime VR Server project in Eclipse or Intellij Idea
 
-run gradle command `serverJar` to build a runnable server JAR
+run gradle command `shadowJar` to build a runnable server JAR

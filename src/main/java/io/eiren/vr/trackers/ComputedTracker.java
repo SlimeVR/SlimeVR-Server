@@ -12,9 +12,13 @@ public class ComputedTracker implements Tracker {
 	protected final String name;
 	protected TrackerStatus status = TrackerStatus.DISCONNECTED;
 	public TrackerBodyPosition bodyPosition = null;
+	protected final boolean hasRotation;
+	protected final boolean hasPosition;
 	
-	public ComputedTracker(String name) {
+	public ComputedTracker(String name, boolean hasRotation, boolean hasPosition) {
 		this.name = name;
+		this.hasRotation = hasRotation;
+		this.hasPosition = hasPosition;
 	}
 	
 	@Override
@@ -24,7 +28,10 @@ public class ComputedTracker implements Tracker {
 	
 	@Override
 	public void loadConfig(TrackerConfig config) {
-		bodyPosition = TrackerBodyPosition.getByDesignation(config.designation);
+		// Loading a config is an act of user editing, therefore it shouldn't not be allowed if editing is not allowed
+		if (userEditable()) {
+			bodyPosition = TrackerBodyPosition.getByDesignation(config.designation);
+		}
 	}
 	
 	@Override
@@ -79,5 +86,24 @@ public class ComputedTracker implements Tracker {
 	@Override
 	public boolean userEditable() {
 		return false;
+	}
+
+	@Override
+	public void tick() {
+	}
+
+	@Override
+	public boolean hasRotation() {
+		return hasRotation;
+	}
+
+	@Override
+	public boolean hasPosition() {
+		return hasPosition;
+	}
+
+	@Override
+	public boolean isComputed() {
+		return true;
 	}
 }

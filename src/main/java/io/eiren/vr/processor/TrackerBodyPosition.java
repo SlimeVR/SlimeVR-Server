@@ -6,15 +6,17 @@ import java.util.Map;
 public enum TrackerBodyPosition {
 	
 	NONE(""),
-	HMD("body:HMD"),
-	CHEST("body:chest"),
-	WAIST("body:waist"),
-	LEFT_LEG("body:left_leg"),
-	RIGHT_LEG("body:right_leg"),
-	LEFT_ANKLE("body:left_ankle"),
-	RIGHT_ANKLE("body:right_ankle"),
-	LEFT_FOOT("body:left_foot"),
-	RIGHT_FOOT("body:right_foot"),
+	HMD("HMD"),
+	CHEST("chest"),
+	WAIST("waist"),
+	LEFT_LEG("left_leg"),
+	RIGHT_LEG("right_leg"),
+	LEFT_ANKLE("left_ankle"),
+	RIGHT_ANKLE("right_ankle"),
+	LEFT_FOOT("left_foot"),
+	RIGHT_FOOT("right_foot"),
+	LEFT_CONTROLLER("left_controller"),
+	RIGHT_CONTROLLER("right_conroller"),
 	;
 	
 	public final String designation;
@@ -32,6 +34,6 @@ public enum TrackerBodyPosition {
 	
 	static {
 		for(TrackerBodyPosition tbp : values())
-			byDesignation.put(tbp.designation, tbp);
+			byDesignation.put(tbp.designation.toLowerCase(), tbp);
 	}
 }

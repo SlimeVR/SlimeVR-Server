@@ -1,9 +1,15 @@
 package io.eiren.gui;
 
+import javax.imageio.ImageIO;
 import javax.swing.*;
 import javax.swing.border.EmptyBorder;
 import javax.swing.event.MouseInputAdapter;
 
+import dev.slimevr.gui.swing.ButtonTimer;
+import dev.slimevr.gui.swing.EJBox;
+import dev.slimevr.gui.swing.EJBoxNoStretch;
+import io.eiren.util.MacOSX;
+import io.eiren.util.OperatingSystem;
 import io.eiren.util.StringUtils;
 import io.eiren.util.ann.AWTThread;
 import io.eiren.vr.Main;
@@ -12,19 +18,30 @@ import io.eiren.vr.bridge.NamedPipeVRBridge;
 
 import java.awt.Component;
 import java.awt.Container;
+import java.awt.Dimension;
 import java.awt.Font;
+import java.awt.GraphicsConfiguration;
+import java.awt.Rectangle;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+import java.awt.event.ComponentEvent;
 import java.awt.event.MouseEvent;
+import java.awt.image.BufferedImage;
+import java.io.IOException;
+import java.util.ArrayList;
+import java.util.List;
 
 import static javax.swing.BoxLayout.PAGE_AXIS;
 import static javax.swing.BoxLayout.LINE_AXIS;
 
 public class VRServerGUI extends JFrame {
 	
+	public static final String TITLE = "SlimeVR Server (" + Main.VERSION + ")";
+	
 	public final VRServer server;
 	private final TrackersList trackersList;
 	private final SkeletonList skeletonList;
 	private JButton resetButton;
-	private JScrollPane scroll;
 	private EJBox pane;
 	
 	private float zoom = 1.5f;
@@ -32,8 +49,29 @@ public class VRServerGUI extends JFrame {
 	
 	@AWTThread
 	public VRServerGUI(VRServer server) {
-		super("SlimeVR Server (" + Main.VERSION + ")");
-		//increaseFontSize();
+		super(TITLE);
+		try {
+			UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
+		} catch(Exception e) {
+			e.printStackTrace();
+		}
+		if(OperatingSystem.getCurrentPlatform() == OperatingSystem.OSX)
+			MacOSX.setTitle(TITLE);
+		try {
+			List<BufferedImage> images = new ArrayList<BufferedImage>(6);
+			images.add(ImageIO.read(VRServerGUI.class.getResource("/icon16.png")));
+			images.add(ImageIO.read(VRServerGUI.class.getResource("/icon32.png")));
+			images.add(ImageIO.read(VRServerGUI.class.getResource("/icon48.png")));
+			images.add(ImageIO.read(VRServerGUI.class.getResource("/icon64.png")));
+			images.add(ImageIO.read(VRServerGUI.class.getResource("/icon128.png")));
+			images.add(ImageIO.read(VRServerGUI.class.getResource("/icon256.png")));
+			setIconImages(images);
+			if(OperatingSystem.getCurrentPlatform() == OperatingSystem.OSX) {
+				MacOSX.setIcons(images);
+			}
+		} catch(IOException e1) {
+			e1.printStackTrace();
+		}
 		
 		this.server = server;
 		
@@ -48,9 +86,36 @@ public class VRServerGUI extends JFrame {
 		this.trackersList = new TrackersList(server, this);
 		this.skeletonList = new SkeletonList(server, this);
 		
-		add(scroll = new JScrollPane(pane = new EJBox(PAGE_AXIS), ScrollPaneConstants.VERTICAL_SCROLLBAR_AS_NEEDED, ScrollPaneConstants.HORIZONTAL_SCROLLBAR_AS_NEEDED));
+		add(new JScrollPane(pane = new EJBox(PAGE_AXIS), ScrollPaneConstants.VERTICAL_SCROLLBAR_AS_NEEDED, ScrollPaneConstants.HORIZONTAL_SCROLLBAR_AS_NEEDED));
+		GraphicsConfiguration gc = getGraphicsConfiguration();
+		Rectangle screenBounds = gc.getBounds();
+		setMinimumSize(new Dimension(100, 100));
+		setSize(Math.min(server.config.getInt("window.width", 800), screenBounds.width), Math.min(server.config.getInt("window.height", 800), screenBounds.height));
+		setLocation(server.config.getInt("window.posx", screenBounds.x + (screenBounds.width - getSize().width) / 2), screenBounds.y + server.config.getInt("window.posy", (screenBounds.height - getSize().height) / 2));
+		
+		// Resize and close listeners to save position and size betwen launcher starts
+		addComponentListener(new AbstractComponentListener() {
+			@Override
+			public void componentResized(ComponentEvent e) {
+				saveFrameInfo();
+			}
+			
+			@Override
+			public void componentMoved(ComponentEvent e) {
+				saveFrameInfo();
+			}
+		});
 		
 		build();
+	}
+	
+	protected void saveFrameInfo() {
+		Rectangle b = getBounds();
+		server.config.setProperty("window.width", b.width);
+		server.config.setProperty("window.height", b.height);
+		server.config.setProperty("window.posx", b.x);
+		server.config.setProperty("window.posy", b.y);
+		server.saveConfig();
 	}
 	
 	public float getZoom() {
@@ -59,7 +124,7 @@ public class VRServerGUI extends JFrame {
 	
 	public void refresh() {
 		// Pack and display
-		pack();
+		//pack();
 		setVisible(true);
 		java.awt.EventQueue.invokeLater(new Runnable() {
 			@Override
@@ -73,9 +138,7 @@ public class VRServerGUI extends JFrame {
 	private void build() {
 		pane.removeAll();
 		
-		NamedPipeVRBridge npvb = server.getVRBridge(NamedPipeVRBridge.class);
-		
-		pane.add(new EJBox(LINE_AXIS) {{
+		pane.add(new EJBoxNoStretch(LINE_AXIS, false, true) {{
 			setBorder(new EmptyBorder(i(5)));
 			
 			add(Box.createHorizontalGlue());
@@ -87,19 +150,16 @@ public class VRServerGUI extends JFrame {
 					}
 				});
 			}});
+			add(Box.createHorizontalStrut(10));
+			add(new JButton("Fast Reset") {{
+				addMouseListener(new MouseInputAdapter() {
+					@Override
+					public void mouseClicked(MouseEvent e) {
+						resetFast();
+					}
+				});
+			}});
 			add(Box.createHorizontalGlue());
-			if(npvb != null) {
-				add(new JButton(npvb.isOneTrackerMode() ? "Trackers: 1" : "Trackers: 3") {{
-					addMouseListener(new MouseInputAdapter() {
-						@Override
-						public void mouseClicked(MouseEvent e) {
-							npvb.setSpawnOneTracker(!npvb.isOneTrackerMode());
-							setText(npvb.isOneTrackerMode() ? "Trackers: 1" : "Trackers: 3");
-						}
-					});
-				}});
-				add(Box.createHorizontalStrut(10));
-			}
 			add(new JButton("GUI Zoom (x" + StringUtils.prettyNumber(zoom, 2) + ")") {{
 				addMouseListener(new MouseInputAdapter() {
 					@Override
@@ -124,26 +184,78 @@ public class VRServerGUI extends JFrame {
 		
 		pane.add(new EJBox(LINE_AXIS) {{
 			setBorder(new EmptyBorder(i(5)));
-			add(new EJBox(PAGE_AXIS) {{
+			add(new EJBoxNoStretch(PAGE_AXIS, false, true) {{
 				setAlignmentY(TOP_ALIGNMENT);
-				
-				add(new JLabel("Trackers"));
+				add(new JLabel("Trackers list"));
 				add(trackersList);
 				add(Box.createVerticalGlue());
 			}});
 
-			add(new EJBox(PAGE_AXIS) {{
+			add(new EJBoxNoStretch(PAGE_AXIS, false, true) {{
 				setAlignmentY(TOP_ALIGNMENT);
 				add(new JLabel("Body proportions"));
 				add(new SkeletonConfig(server, VRServerGUI.this));
+				add(Box.createVerticalStrut(10));
+				
+				if(server.hasBridge(NamedPipeVRBridge.class)) {
+					add(new JLabel("SteamVR trackers"));
+					JComboBox<String> trackersSelect;
+					add(trackersSelect = new JComboBox<>());
+					trackersSelect.addItem("Waist");
+					trackersSelect.addItem("Waist + Legs");
+					trackersSelect.addItem("Waist + Legs + Chest");
+					trackersSelect.addItem("Waist + Legs + Knees");
+					trackersSelect.addItem("Waist + Legs + Chest + Knees");
+					switch(server.config.getInt("virtualtrackers", 3)) {
+					case 1:
+						trackersSelect.setSelectedIndex(0);
+						break;
+					case 3:
+						trackersSelect.setSelectedIndex(1);
+						break;
+					case 4:
+						trackersSelect.setSelectedIndex(2);
+						break;
+					case 5:
+						trackersSelect.setSelectedIndex(3);
+						break;
+					case 6:
+						trackersSelect.setSelectedIndex(4);
+						break;
+					}
+					trackersSelect.addActionListener(new ActionListener() {
+						@Override
+						public void actionPerformed(ActionEvent e) {
+							switch(trackersSelect.getSelectedIndex()) {
+							case 0:
+								server.config.setProperty("virtualtrackers", 1);
+								break;
+							case 1:
+								server.config.setProperty("virtualtrackers", 3);
+								break;
+							case 2:
+								server.config.setProperty("virtualtrackers", 4);
+								break;
+							case 3:
+								server.config.setProperty("virtualtrackers", 5);
+								break;
+							case 4:
+								server.config.setProperty("virtualtrackers", 6);
+								break;
+							}
+							server.saveConfig();
+						}
+					});
+					add(Box.createVerticalStrut(10));
+				}
 				add(new JLabel("Skeleton data"));
 				add(skeletonList);
 				add(Box.createVerticalGlue());
 			}});
 		}});
+		pane.add(Box.createVerticalGlue());
 		
 		refresh();
-		setLocationRelativeTo(null);
 		
 		server.addOnTick(trackersList::updateTrackers);
 		server.addOnTick(skeletonList::updateBones);
@@ -191,6 +303,11 @@ public class VRServerGUI extends JFrame {
 				UIManager.put(key, f2);
 			}
 		}
+	}
+	
+	@AWTThread
+	private void resetFast() {
+		server.resetTrackersYaw();
 	}
 	
 	@AWTThread
