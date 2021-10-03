@@ -2,9 +2,8 @@ package io.eiren.vr;
 
 import java.io.File;
 
-
+import dev.slimevr.gui.MainStage;
 import io.eiren.gui.VRServerGUI;
-import io.eiren.newGui.main.MainStage;
 import io.eiren.util.logging.LogManager;
 import io.eiren.gui.jfx.SlimeVRGUIJFX;
 import javafx.application.Application;
