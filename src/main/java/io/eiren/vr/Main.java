@@ -9,7 +9,6 @@ import io.eiren.util.logging.LogManager;
 import io.eiren.gui.jfx.SlimeVRGUIJFX;
 import javafx.application.Application;
 
-
 public class Main {
 
 	public static String VERSION = "0.0.19 Test 1";
@@ -31,7 +30,6 @@ public class Main {
 		try {
 			vrServer = new VRServer();
 			vrServer.start();
-
 			new Keybinding(vrServer);
 			//new VRServerGUI(vrServer);
 
