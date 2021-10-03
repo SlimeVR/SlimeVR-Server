@@ -5,6 +5,7 @@ import java.awt.Font;
 import java.awt.GridBagConstraints;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.util.Comparator;
 import java.util.List;
 
 import javax.swing.BorderFactory;
@@ -36,15 +37,15 @@ import io.eiren.vr.trackers.TrackerWithBattery;
 import io.eiren.vr.trackers.TrackerWithTPS;
 
 public class TrackersList extends EJBoxNoStretch {
-	
+
 	private static final long UPDATE_DELAY = 50;
-	
+
 	Quaternion q = new Quaternion();
 	Vector3f v = new Vector3f();
 	float[] angles = new float[3];
-	
+
 	private List<TrackerPanel> trackers = new FastList<>();
-	
+
 	private final VRServer server;
 	private final VRServerGUI gui;
 	private long lastUpdate = 0;
@@ -55,21 +56,21 @@ public class TrackersList extends EJBoxNoStretch {
 		this.gui = gui;
 
 		setAlignmentY(TOP_ALIGNMENT);
-		
+
 		server.addNewTrackerConsumer(this::newTrackerAdded);
 	}
 
 	@AWTThread
 	private void build() {
 		removeAll();
-		
-		trackers.sort((tr1, tr2) -> getTrackerSort(tr1.t) - getTrackerSort(tr2.t));
-		
+
+		trackers.sort(Comparator.comparingInt(tr -> getTrackerSort(tr.t)));
+
 		Class<? extends Tracker> currentClass = null;
-		
+
 		EJBoxNoStretch line = null;
 		boolean first = true;
-		
+
 		for(int i = 0; i < trackers.size(); ++i) {
 			TrackerPanel tr = trackers.get(i);
 			Tracker t = tr.t;
@@ -89,7 +90,7 @@ public class TrackersList extends EJBoxNoStretch {
 				add(line);
 				line = null;
 			}
-			
+
 			if(line == null) {
 				line = new EJBoxNoStretch(BoxLayout.LINE_AXIS, false, true);
 				add(Box.createVerticalStrut(3));
@@ -107,7 +108,7 @@ public class TrackersList extends EJBoxNoStretch {
 		validate();
 		gui.refresh();
 	}
-	
+
 	@ThreadSafe
 	public void updateTrackers() {
 		if(lastUpdate + UPDATE_DELAY > System.currentTimeMillis())
@@ -118,7 +119,7 @@ public class TrackersList extends EJBoxNoStretch {
 				trackers.get(i).update();
 		});
 	}
-	
+
 	@ThreadSafe
 	public void newTrackerAdded(Tracker t) {
 		java.awt.EventQueue.invokeLater(() -> {
@@ -126,9 +127,9 @@ public class TrackersList extends EJBoxNoStretch {
 			build();
 		});
 	}
-	
+
 	private class TrackerPanel extends EJBagNoStretch {
-		
+
 		final Tracker t;
 		JLabel position;
 		JLabel rotation;
@@ -143,11 +144,11 @@ public class TrackersList extends EJBoxNoStretch {
 		JLabel adj;
 		JLabel adjYaw;
 		JLabel correction;
-		
+
 		@AWTThread
 		public TrackerPanel(Tracker t) {
 			super(false, true);
-			
+
 			this.t = t;
 		}
 
@@ -155,7 +156,7 @@ public class TrackersList extends EJBoxNoStretch {
 		@AWTThread
 		public TrackerPanel build() {
 			int row = 0;
-			
+
 			Tracker realTracker = t;
 			if(t instanceof ReferenceAdjustedTracker)
 				realTracker = ((ReferenceAdjustedTracker<? extends Tracker>) t).getTracker();
@@ -164,7 +165,7 @@ public class TrackersList extends EJBoxNoStretch {
 			add(nameLabel = new JLabel(t.getName()), s(c(0, row, 2, GridBagConstraints.FIRST_LINE_START), 4, 1));
 			nameLabel.setFont(nameLabel.getFont().deriveFont(Font.BOLD));
 			row++;
-			
+
 			if(t.userEditable()) {
 				TrackerConfig cfg = server.getTrackerConfig(t);
 				JComboBox<String> desSelect;
@@ -254,8 +255,8 @@ public class TrackersList extends EJBoxNoStretch {
 				add(correction = new JLabel("0 0 0"), s(c(1, row, 2, GridBagConstraints.FIRST_LINE_START), 3, 1));
 				row++;
 			}
-			
-			if(t instanceof ReferenceAdjustedTracker) {	
+
+			if(t instanceof ReferenceAdjustedTracker) {
 				add(new JLabel("Adj:"), c(0, row, 2, GridBagConstraints.FIRST_LINE_START));
 				add(adj = new JLabel("0 0 0 0"), c(1, row, 2, GridBagConstraints.FIRST_LINE_START));
 				add(new JLabel("AdjY:"), c(2, row, 2, GridBagConstraints.FIRST_LINE_START));
@@ -278,7 +279,7 @@ public class TrackersList extends EJBoxNoStretch {
 			t.getRotation(q);
 			t.getPosition(v);
 			q.toAngles(angles);
-			
+
 			if(position != null)
 				position.setText(StringUtils.prettyNumber(v.x, 1)
 						+ " " + StringUtils.prettyNumber(v.y, 1)
@@ -288,7 +289,7 @@ public class TrackersList extends EJBoxNoStretch {
 						+ " " + StringUtils.prettyNumber(angles[1] * FastMath.RAD_TO_DEG, 0)
 						+ " " + StringUtils.prettyNumber(angles[2] * FastMath.RAD_TO_DEG, 0));
 			status.setText(t.getStatus().toString().toLowerCase());
-			
+
 			if(realTracker instanceof TrackerWithTPS) {
 				tps.setText(StringUtils.prettyNumber(((TrackerWithTPS) realTracker).getTPS(), 1));
 			}
@@ -327,7 +328,7 @@ public class TrackersList extends EJBoxNoStretch {
 			}
 		}
 	}
-	
+
 	private static int getTrackerSort(Tracker t) {
 		if(t instanceof ReferenceAdjustedTracker)
 			t = ((ReferenceAdjustedTracker<?>) t).getTracker();
