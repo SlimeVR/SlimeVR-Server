@@ -2,9 +2,13 @@ package io.eiren.vr;
 
 import java.io.File;
 
+
 import io.eiren.gui.VRServerGUI;
 import io.eiren.newGui.main.MainStage;
 import io.eiren.util.logging.LogManager;
+import io.eiren.gui.jfx.SlimeVRGUIJFX;
+import javafx.application.Application;
+
 
 public class Main {
 
@@ -27,10 +31,14 @@ public class Main {
 		try {
 			vrServer = new VRServer();
 			vrServer.start();
+
 			new Keybinding(vrServer);
-			new VRServerGUI(vrServer);
+			//new VRServerGUI(vrServer);
 
 			MainStage.launch(MainStage.class);
+
+
+			//Application.launch(SlimeVRGUIJFX.class, args);
 
 		} catch(Throwable e) {
 			e.printStackTrace();
