@@ -1,4 +1,4 @@
-package io.eiren.vr.bridge;
+package dev.slimevr.bridge;
 
 import java.io.IOException;
 import java.util.HashMap;
@@ -13,16 +13,19 @@ import com.jme3.math.Quaternion;
 import com.jme3.math.Vector3f;
 import com.sun.jna.platform.win32.Kernel32;
 import com.sun.jna.platform.win32.WinBase;
+import com.sun.jna.platform.win32.WinError;
 import com.sun.jna.ptr.IntByReference;
 
+import dev.slimevr.bridge.Pipe.PipeState;
 import io.eiren.util.collections.FastList;
 import io.eiren.util.logging.LogManager;
 import io.eiren.vr.VRServer;
-import io.eiren.vr.processor.TrackerBodyPosition;
-import io.eiren.vr.trackers.SteamVRTracker;
+import io.eiren.vr.trackers.VRTracker;
+import io.eiren.vr.trackers.ShareableTracker;
+import io.eiren.vr.trackers.TrackerPosition;
 import io.eiren.vr.trackers.TrackerStatus;
 
-public class SteamVRPipeInputBridge extends Thread implements VRBridge {
+public class SteamVRPipeInputBridge extends Thread implements Bridge {
 
 	private static final int MAX_COMMAND_LENGTH = 2048;
 	public static final String PipeName = "\\\\.\\pipe\\SlimeVRInput";
@@ -30,8 +33,8 @@ public class SteamVRPipeInputBridge extends Thread implements VRBridge {
 	private final byte[] buffArray = new byte[1024];
 	private final VRServer server;
 	private final StringBuilder commandBuilder = new StringBuilder(1024);
-	private final List<SteamVRTracker> trackers = new FastList<>();
-	private final Map<Integer, SteamVRTracker> trackersInternal = new HashMap<>();
+	private final List<VRTracker> trackers = new FastList<>();
+	private final Map<Integer, VRTracker> trackersInternal = new HashMap<>();
 	private AtomicBoolean newData = new AtomicBoolean(false);
 	private final Vector3f vBuffer = new Vector3f();
 	private final Quaternion qBuffer = new Quaternion();
@@ -46,24 +49,26 @@ public class SteamVRPipeInputBridge extends Thread implements VRBridge {
 		try {
 			createPipes();
 			while(true) {
-				waitForPipesToOpen();
-				if(areAllPipesOpen()) {
-					boolean pipesUpdated = updatePipes(); // Update at HMDs frequency
-					if(!pipesUpdated) {
+				boolean pipesUpdated = false;
+				if(pipe.state == PipeState.CREATED) {
+					tryOpeningPipe(pipe);
+				}
+				if(pipe.state == PipeState.OPEN) {
+					pipesUpdated = updatePipes();
+				}
+				if(pipe.state == PipeState.ERROR) {
+					resetPipe();
+				}
+				if(!pipesUpdated) {
+					try {
 						Thread.sleep(5); // Up to 200Hz
+					} catch(InterruptedException e) {
+						e.printStackTrace();
 					}
-				} else {
-					Thread.sleep(10);
 				}
 			}
 		} catch(Exception e) {
 			e.printStackTrace();
-		}
-	}
-	
-	private void waitForPipesToOpen() {
-		if(pipe.state == PipeState.CREATED) {
-			tryOpeningPipe(pipe);
 		}
 	}
 	
@@ -88,11 +93,15 @@ public class SteamVRPipeInputBridge extends Thread implements VRBridge {
 							}
 						}
 						if(bytesRead < buffArray.length)
-							break; // Don't repeat, we read all available bytes
+							return true; // All pipe data read
 					}
-					return true;
+				} else {
+					return false; // Pipe was empty, it's okay
 				}
 			}
+			// PeekNamedPipe or ReadFile returned an error
+			pipe.state = PipeState.ERROR;
+			LogManager.log.severe("[SteamVRPipeInputBridge] Pipe error: " + Kernel32.INSTANCE.GetLastError());
 		}
 		return false;
 	}
@@ -105,15 +114,15 @@ public class SteamVRPipeInputBridge extends Thread implements VRBridge {
 				LogManager.log.severe("[SteamVRPipeInputBridge] Error in ADD command. Command requires at least 4 arguments. Supplied: " + commandBuilder.toString());
 				return;
 			}
-			SteamVRTracker internalTracker = new SteamVRTracker(Integer.parseInt(command[1]), StringUtils.join(command, " ", 3, command.length), true, true);
+			VRTracker internalTracker = new VRTracker(Integer.parseInt(command[1]), StringUtils.join(command, " ", 3, command.length), true, true);
 			int roleId = Integer.parseInt(command[2]);
 			if(roleId >= 0 && roleId < SteamVRInputRoles.values.length) {
 				SteamVRInputRoles svrRole = SteamVRInputRoles.values[roleId];
 				internalTracker.bodyPosition = svrRole.bodyPosition;
 			}
-			SteamVRTracker oldTracker;
+			VRTracker oldTracker;
 			synchronized(trackersInternal) {
-				oldTracker = trackersInternal.put(internalTracker.id, internalTracker);
+				oldTracker = trackersInternal.put(internalTracker.getTrackerId(), internalTracker);
 			}
 			if(oldTracker != null) {
 				LogManager.log.severe("[SteamVRPipeInputBridge] New tracker added with the same id. Supplied: " + commandBuilder.toString());
@@ -165,25 +174,20 @@ public class SteamVRPipeInputBridge extends Thread implements VRBridge {
 	
 	@Override
 	public void dataRead() {
-		// Not used, only input
-	}
-	
-	@Override
-	public void dataWrite() {
 		if(newData.getAndSet(false)) {
 			if(trackers.size() < trackersInternal.size()) {
 				// Add new trackers
 				synchronized(trackersInternal) {
-					Iterator<SteamVRTracker> iterator = trackersInternal.values().iterator();
+					Iterator<VRTracker> iterator = trackersInternal.values().iterator();
 					internal: while(iterator.hasNext()) {
-						SteamVRTracker internalTracker = iterator.next();
+						VRTracker internalTracker = iterator.next();
 						for(int i = 0; i < trackers.size(); ++i) {
-							SteamVRTracker t = trackers.get(i);
-							if(t.id == internalTracker.id)
+							VRTracker t = trackers.get(i);
+							if(t.getTrackerId() == internalTracker.getTrackerId())
 								continue internal;
 						}
 						// Tracker is not found in current trackers
-						SteamVRTracker tracker = new SteamVRTracker(internalTracker.id, internalTracker.getName(), true, true);
+						VRTracker tracker = new VRTracker(internalTracker.getTrackerId(), internalTracker.getName(), true, true);
 						tracker.bodyPosition = internalTracker.bodyPosition;
 						trackers.add(tracker);
 						server.registerTracker(tracker);
@@ -191,10 +195,10 @@ public class SteamVRPipeInputBridge extends Thread implements VRBridge {
 				}
 			}
 			for(int i = 0; i < trackers.size(); ++i) {
-				SteamVRTracker tracker = trackers.get(i);
-				SteamVRTracker internal = trackersInternal.get(tracker.id);
+				VRTracker tracker = trackers.get(i);
+				VRTracker internal = trackersInternal.get(tracker.getTrackerId());
 				if(internal == null)
-					throw new NullPointerException("Lost internal tracker somehow: " + tracker.id); // Shouln't really happen even, but better to catch it like this
+					throw new NullPointerException("Lost internal tracker somehow: " + tracker.getTrackerId()); // Shouln't really happen even, but better to catch it like this
 				if(internal.getPosition(vBuffer))
 					tracker.position.set(vBuffer);
 				if(internal.getRotation(qBuffer))
@@ -205,8 +209,19 @@ public class SteamVRPipeInputBridge extends Thread implements VRBridge {
 		}
 	}
 	
+	@Override
+	public void dataWrite() {
+		// Not used, only input
+	}
+	
+	private void resetPipe() {
+		Pipe.safeDisconnect(pipe);
+		pipe.state = PipeState.CREATED;
+		//Main.vrServer.queueTask(this::disconnected);
+	}
+	
 	private boolean tryOpeningPipe(Pipe pipe) {
-		if(Kernel32.INSTANCE.ConnectNamedPipe(pipe.pipeHandle, null)) {
+		if(Kernel32.INSTANCE.ConnectNamedPipe(pipe.pipeHandle, null) || Kernel32.INSTANCE.GetLastError() == WinError.ERROR_PIPE_CONNECTED) {
 			pipe.state = PipeState.OPEN;
 			LogManager.log.info("[SteamVRPipeInputBridge] Pipe " + pipe.name + " is open");
 			return true;
@@ -214,13 +229,6 @@ public class SteamVRPipeInputBridge extends Thread implements VRBridge {
 		
 		LogManager.log.info("[SteamVRPipeInputBridge] Error connecting to pipe " + pipe.name + ": " + Kernel32.INSTANCE.GetLastError());
 		return false;
-	}
-	
-	private boolean areAllPipesOpen() {
-		if(pipe == null || pipe.state == PipeState.CREATED) {
-			return false;
-		}
-		return true;
 	}
 	
 	private void createPipes() throws IOException {
@@ -237,40 +245,49 @@ public class SteamVRPipeInputBridge extends Thread implements VRBridge {
 				throw new IOException("Can't open " + PipeName + " pipe: " + Kernel32.INSTANCE.GetLastError());
 			LogManager.log.info("[SteamVRPipeInputBridge] Pipes are open");
 		} catch(IOException e) {
-			safeDisconnect(pipe);
+			Pipe.safeDisconnect(pipe);
 			throw e;
 		}
 	}
-	
-	public static void safeDisconnect(Pipe pipe) {
-		try {
-			if(pipe != null && pipe.pipeHandle != null)
-				Kernel32.INSTANCE.DisconnectNamedPipe(pipe.pipeHandle);
-		} catch(Exception e) {
-		}
+
+	@Override
+	public void addSharedTracker(ShareableTracker tracker) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public void removeSharedTracker(ShareableTracker tracker) {
+		// TODO Auto-generated method stub
+		
 	}
 	
 	public enum SteamVRInputRoles {
-		HEAD(TrackerBodyPosition.HMD),
-		LEFT_HAND(TrackerBodyPosition.LEFT_CONTROLLER),
-		RIGHT_HAND(TrackerBodyPosition.RIGHT_CONTROLLER),
-		LEFT_FOOT(TrackerBodyPosition.LEFT_FOOT),
-		RIGHT_FOOT(TrackerBodyPosition.RIGHT_FOOT),
-		LEFT_SHOULDER(TrackerBodyPosition.NONE),
-		RIGHT_SHOULDER(TrackerBodyPosition.NONE),
-		LEFT_ELBOW(TrackerBodyPosition.NONE),
-		RIGHT_ELBOW(TrackerBodyPosition.NONE),
-		LEFT_KNEE(TrackerBodyPosition.LEFT_LEG),
-		RIGHT_KNEE(TrackerBodyPosition.RIGHT_LEG),
-		WAIST(TrackerBodyPosition.WAIST),
-		CHEST(TrackerBodyPosition.CHEST),
+		HEAD(TrackerPosition.HMD),
+		LEFT_HAND(TrackerPosition.LEFT_CONTROLLER),
+		RIGHT_HAND(TrackerPosition.RIGHT_CONTROLLER),
+		LEFT_FOOT(TrackerPosition.LEFT_FOOT),
+		RIGHT_FOOT(TrackerPosition.RIGHT_FOOT),
+		LEFT_SHOULDER(TrackerPosition.NONE),
+		RIGHT_SHOULDER(TrackerPosition.NONE),
+		LEFT_ELBOW(TrackerPosition.NONE),
+		RIGHT_ELBOW(TrackerPosition.NONE),
+		LEFT_KNEE(TrackerPosition.LEFT_LEG),
+		RIGHT_KNEE(TrackerPosition.RIGHT_LEG),
+		WAIST(TrackerPosition.WAIST),
+		CHEST(TrackerPosition.CHEST),
 		;
 		
 		private static final SteamVRInputRoles[] values = values();
-		public final TrackerBodyPosition bodyPosition;
+		public final TrackerPosition bodyPosition;
 		
-		private SteamVRInputRoles(TrackerBodyPosition slimeVrPosition) {
+		private SteamVRInputRoles(TrackerPosition slimeVrPosition) {
 			this.bodyPosition = slimeVrPosition;
 		}
+	}
+
+	@Override
+	public void startBridge() {
+		start();
 	}
 }

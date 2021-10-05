@@ -13,7 +13,9 @@ Integrations:
 
 ## How to use
 
-Latest instructions are currently [here](https://gist.github.com/Eirenliel/8c0eefcdbda1076d5c2e1bf634831d20). Will be updated and republished as time goes on.
+It's recommended to download installer from here: https://github.com/SlimeVR/SlimeVR-Installer/releases/latest/download/slimevr_web_installer.exe
+
+Latest instructions are [on our site](https://docs.slimevr.dev/slimevr-setup.html).
 
 ## How to build
 
@@ -31,3 +33,15 @@ gradlew shadowJar
 Open Slime VR Server project in Eclipse or Intellij Idea
 
 run gradle command `shadowJar` to build a runnable server JAR
+
+## License Clarifications
+
+**SlimeVR software** (including server, firmware, drivers, installator, documents, and others - see licence for each case specifically) **is distributed under MIT License and is copyright of Eiren Rain and SlimeVR.** MIT Licence is a permissive license giving you rights to modify and distribute the software with little strings attached.
+
+**However, there are some limits, and if you wish to distribute software based on SlimeVR, you need to be aware of them:**
+
+* When distributing any software based on SlimeVR, you have to clarify to the end user that your software is based on SlimeVR that is distributed under MIT License and is subject to copyright of Eiren Rain
+* You must clarify either which parts of original software you're using, or what changes you did to the original software (i.e. clarify which parts of your software is covered by MIT License)
+* You must provide a copy of the original license (see LICENSE file)
+* You don't have to release your own software under MIT License or even open source at all, but you have to state that it's based on SlimeVR
+* This applies even if you distribute software without the source code

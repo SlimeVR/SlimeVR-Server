@@ -3,14 +3,14 @@ package io.eiren.vr;
 import java.io.File;
 
 import dev.slimevr.gui.MainStage;
-import io.eiren.gui.VRServerGUI;
+import dev.slimevr.gui.VRServerGUI;
 import io.eiren.util.logging.LogManager;
 import io.eiren.gui.jfx.SlimeVRGUIJFX;
 import javafx.application.Application;
 
 public class Main {
-
-	public static String VERSION = "0.0.19 Test 1";
+	
+	public static String VERSION = "0.1.0";
 
 	public static VRServer vrServer;
 

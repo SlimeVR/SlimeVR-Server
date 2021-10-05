@@ -8,6 +8,7 @@ import io.eiren.util.StringUtils;
 import io.eiren.vr.processor.TransformNode;
 import io.eiren.vr.trackers.ComputedTracker;
 import io.eiren.vr.trackers.ReferenceAdjustedTracker;
+import io.eiren.vr.trackers.Tracker;
 
 import static org.junit.jupiter.api.Assertions.*;
 import static org.junit.jupiter.api.DynamicTest.dynamicTest;
@@ -67,7 +68,7 @@ public class ReferenceAdjustmentsTests {
 	
 	public void checkReferenceAdjustmentFull(Quaternion trackerQuat, int refPitch, int refYaw, int refRoll) {
 		Quaternion referenceQuat = q(refPitch, refYaw, refRoll);
-		ComputedTracker tracker = new ComputedTracker("test", true, false);
+		ComputedTracker tracker = new ComputedTracker(Tracker.getNextLocalTrackerId(), "test", true, false);
 		tracker.rotation.set(trackerQuat);
 		ReferenceAdjustedTracker<ComputedTracker> adj = new ReferenceAdjustedTracker<>(tracker);
 		adj.resetFull(referenceQuat);
@@ -86,7 +87,7 @@ public class ReferenceAdjustmentsTests {
 	
 	public void checkReferenceAdjustmentYaw(Quaternion trackerQuat, int refPitch, int refYaw, int refRoll) {
 		Quaternion referenceQuat = q(refPitch, refYaw, refRoll);
-		ComputedTracker tracker = new ComputedTracker("test", true, false);
+		ComputedTracker tracker = new ComputedTracker(Tracker.getNextLocalTrackerId(), "test", true, false);
 		tracker.rotation.set(trackerQuat);
 		ReferenceAdjustedTracker<ComputedTracker> adj = new ReferenceAdjustedTracker<>(tracker);
 		adj.resetYaw(referenceQuat);
@@ -98,7 +99,7 @@ public class ReferenceAdjustmentsTests {
 	
 	private void testAdjustedTrackerRotation(Quaternion trackerQuat, int refPitch, int refYaw, int refRoll) {
 		Quaternion referenceQuat = q(refPitch, refYaw, refRoll);
-		ComputedTracker tracker = new ComputedTracker("test", true, false);
+		ComputedTracker tracker = new ComputedTracker(Tracker.getNextLocalTrackerId(), "test", true, false);
 		tracker.rotation.set(trackerQuat);
 		ReferenceAdjustedTracker<ComputedTracker> adj = new ReferenceAdjustedTracker<>(tracker);
 		adj.resetFull(referenceQuat);

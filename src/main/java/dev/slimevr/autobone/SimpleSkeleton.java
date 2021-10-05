@@ -10,8 +10,8 @@ import dev.slimevr.poserecorder.TrackerFrame;
 import dev.slimevr.poserecorder.TrackerFrameData;
 import io.eiren.vr.processor.HumanSkeletonWithLegs;
 import io.eiren.vr.processor.HumanSkeletonWithWaist;
-import io.eiren.vr.processor.TrackerBodyPosition;
 import io.eiren.vr.processor.TransformNode;
+import io.eiren.vr.trackers.TrackerPosition;
 import io.eiren.vr.trackers.TrackerUtils;
 import io.eiren.yaml.YamlFile;
 
@@ -121,7 +121,7 @@ public class SimpleSkeleton {
 	
 	public void setPoseFromFrame(TrackerFrame[] frame) {
 		
-		TrackerFrame hmd = TrackerUtils.findTrackerForBodyPosition(frame, TrackerBodyPosition.HMD);
+		TrackerFrame hmd = TrackerUtils.findTrackerForBodyPosition(frame, TrackerPosition.HMD);
 		
 		if(hmd != null) {
 			if(hmd.hasData(TrackerFrameData.ROTATION)) {
@@ -134,24 +134,24 @@ public class SimpleSkeleton {
 			}
 		}
 		
-		TrackerFrame chest = TrackerUtils.findTrackerForBodyPosition(frame, TrackerBodyPosition.CHEST, TrackerBodyPosition.WAIST);
+		TrackerFrame chest = TrackerUtils.findTrackerForBodyPosition(frame, TrackerPosition.CHEST, TrackerPosition.WAIST);
 		setRotation(chest, neckNode);
 		
-		TrackerFrame waist = TrackerUtils.findTrackerForBodyPosition(frame, TrackerBodyPosition.WAIST, TrackerBodyPosition.CHEST);
+		TrackerFrame waist = TrackerUtils.findTrackerForBodyPosition(frame, TrackerPosition.WAIST, TrackerPosition.CHEST);
 		setRotation(waist, chestNode);
 		
-		TrackerFrame leftLeg = TrackerUtils.findTrackerForBodyPosition(frame, TrackerBodyPosition.LEFT_LEG);
-		TrackerFrame rightLeg = TrackerUtils.findTrackerForBodyPosition(frame, TrackerBodyPosition.RIGHT_LEG);
+		TrackerFrame leftLeg = TrackerUtils.findTrackerForBodyPosition(frame, TrackerPosition.LEFT_LEG);
+		TrackerFrame rightLeg = TrackerUtils.findTrackerForBodyPosition(frame, TrackerPosition.RIGHT_LEG);
 		
 		averagePelvis(waist, leftLeg, rightLeg);
 		
 		setRotation(leftLeg, leftHipNode);
 		setRotation(rightLeg, rightHipNode);
 		
-		TrackerFrame leftAnkle = TrackerUtils.findTrackerForBodyPosition(frame, TrackerBodyPosition.LEFT_ANKLE);
+		TrackerFrame leftAnkle = TrackerUtils.findTrackerForBodyPosition(frame, TrackerPosition.LEFT_ANKLE);
 		setRotation(leftAnkle, rightKneeNode);
 		
-		TrackerFrame rightAnkle = TrackerUtils.findTrackerForBodyPosition(frame, TrackerBodyPosition.RIGHT_ANKLE);
+		TrackerFrame rightAnkle = TrackerUtils.findTrackerForBodyPosition(frame, TrackerPosition.RIGHT_ANKLE);
 		setRotation(rightAnkle, leftKneeNode);
 		
 		updatePose();
@@ -292,11 +292,11 @@ public class SimpleSkeleton {
 		return nodes.get(node);
 	}
 	
-	public TransformNode getNode(TrackerBodyPosition bodyPosition) {
+	public TransformNode getNode(TrackerPosition bodyPosition) {
 		return getNode(bodyPosition, false);
 	}
 	
-	public TransformNode getNode(TrackerBodyPosition bodyPosition, boolean rotationNode) {
+	public TransformNode getNode(TrackerPosition bodyPosition, boolean rotationNode) {
 		if(bodyPosition == null) {
 			return null;
 		}
@@ -328,7 +328,7 @@ public class SimpleSkeleton {
 		return transformNode != null ? transformNode.worldTransform.getTranslation() : null;
 	}
 	
-	public Vector3f getNodePosition(TrackerBodyPosition bodyPosition) {
+	public Vector3f getNodePosition(TrackerPosition bodyPosition) {
 		TransformNode node = getNode(bodyPosition);
 		if(node == null) {
 			return null;

@@ -41,11 +41,11 @@ public class Keybinding implements HotkeyListener {
 		switch(identifier) {
 		case RESET:
 			LogManager.log.info("[Keybinding] Reset pressed");
-			server.resetTrackersYaw();
+			server.resetTrackers();
 			break;
 		case QUICK_RESET:
 			LogManager.log.info("[Keybinding] Quick reset pressed");
-			server.resetTrackers();
+			server.resetTrackersYaw();
 			break;
 		}
 	}

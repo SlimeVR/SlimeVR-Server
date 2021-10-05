@@ -1,11 +1,14 @@
-package io.eiren.gui;
+package dev.slimevr.gui;
 
 import javax.imageio.ImageIO;
 import javax.swing.*;
 import javax.swing.border.EmptyBorder;
 import javax.swing.event.MouseInputAdapter;
 
+import dev.slimevr.bridge.NamedPipeBridge;
+import dev.slimevr.bridge.NamedPipeVRBridge;
 import dev.slimevr.gui.swing.ButtonTimer;
+import dev.slimevr.gui.swing.EJBagNoStretch;
 import dev.slimevr.gui.swing.EJBox;
 import dev.slimevr.gui.swing.EJBoxNoStretch;
 import io.eiren.util.MacOSX;
@@ -14,7 +17,7 @@ import io.eiren.util.StringUtils;
 import io.eiren.util.ann.AWTThread;
 import io.eiren.vr.Main;
 import io.eiren.vr.VRServer;
-import io.eiren.vr.bridge.NamedPipeVRBridge;
+import io.eiren.vr.trackers.TrackerRole;
 
 import java.awt.Component;
 import java.awt.Container;
@@ -186,67 +189,86 @@ public class VRServerGUI extends JFrame {
 			setBorder(new EmptyBorder(i(5)));
 			add(new EJBoxNoStretch(PAGE_AXIS, false, true) {{
 				setAlignmentY(TOP_ALIGNMENT);
-				add(new JLabel("Trackers list"));
+				JLabel l;
+				add(l = new JLabel("Trackers list"));
+				l.setFont(l.getFont().deriveFont(Font.BOLD));
+				l.setAlignmentX(0.5f);
 				add(trackersList);
 				add(Box.createVerticalGlue());
 			}});
 
 			add(new EJBoxNoStretch(PAGE_AXIS, false, true) {{
 				setAlignmentY(TOP_ALIGNMENT);
-				add(new JLabel("Body proportions"));
+				JLabel l;
+				add(l = new JLabel("Body proportions"));
+				l.setFont(l.getFont().deriveFont(Font.BOLD));
+				l.setAlignmentX(0.5f);
 				add(new SkeletonConfig(server, VRServerGUI.this));
 				add(Box.createVerticalStrut(10));
-				
-				if(server.hasBridge(NamedPipeVRBridge.class)) {
-					add(new JLabel("SteamVR trackers"));
-					JComboBox<String> trackersSelect;
-					add(trackersSelect = new JComboBox<>());
-					trackersSelect.addItem("Waist");
-					trackersSelect.addItem("Waist + Legs");
-					trackersSelect.addItem("Waist + Legs + Chest");
-					trackersSelect.addItem("Waist + Legs + Knees");
-					trackersSelect.addItem("Waist + Legs + Chest + Knees");
-					switch(server.config.getInt("virtualtrackers", 3)) {
-					case 1:
-						trackersSelect.setSelectedIndex(0);
-						break;
-					case 3:
-						trackersSelect.setSelectedIndex(1);
-						break;
-					case 4:
-						trackersSelect.setSelectedIndex(2);
-						break;
-					case 5:
-						trackersSelect.setSelectedIndex(3);
-						break;
-					case 6:
-						trackersSelect.setSelectedIndex(4);
-						break;
-					}
-					trackersSelect.addActionListener(new ActionListener() {
-						@Override
-						public void actionPerformed(ActionEvent e) {
-							switch(trackersSelect.getSelectedIndex()) {
-							case 0:
-								server.config.setProperty("virtualtrackers", 1);
-								break;
-							case 1:
-								server.config.setProperty("virtualtrackers", 3);
-								break;
-							case 2:
-								server.config.setProperty("virtualtrackers", 4);
-								break;
-							case 3:
-								server.config.setProperty("virtualtrackers", 5);
-								break;
-							case 4:
-								server.config.setProperty("virtualtrackers", 6);
-								break;
+				if(server.hasBridge(NamedPipeBridge.class)) {
+					NamedPipeBridge br = server.getVRBridge(NamedPipeBridge.class);
+					add(l = new JLabel("SteamVR Trackers"));
+					l.setFont(l.getFont().deriveFont(Font.BOLD));
+					l.setAlignmentX(0.5f);
+					add(l = new JLabel("Changes may require restart of SteamVR"));
+					l.setFont(l.getFont().deriveFont(Font.ITALIC));
+					l.setAlignmentX(0.5f);
+					
+					add(new EJBagNoStretch(false, true) {{
+						JCheckBox waistCb;
+						add(waistCb = new JCheckBox("Waist"), c(1, 1));
+						waistCb.setSelected(br.getShareSetting(TrackerRole.WAIST));
+						waistCb.addActionListener(new ActionListener() {
+							@Override
+							public void actionPerformed(ActionEvent e) {
+								server.queueTask(() -> {
+									br.changeShareSettings(TrackerRole.WAIST, waistCb.isSelected());
+								});
 							}
-							server.saveConfig();
-						}
-					});
-					add(Box.createVerticalStrut(10));
+						});
+
+						JCheckBox legsCb;
+						add(legsCb = new JCheckBox("Legs"), c(2, 1));
+						legsCb.setSelected(br.getShareSetting(TrackerRole.LEFT_FOOT) && br.getShareSetting(TrackerRole.RIGHT_FOOT));
+						legsCb.addActionListener(new ActionListener() {
+							@Override
+							public void actionPerformed(ActionEvent e) {
+								server.queueTask(() -> {
+									br.changeShareSettings(TrackerRole.LEFT_FOOT, legsCb.isSelected());
+									br.changeShareSettings(TrackerRole.RIGHT_FOOT, legsCb.isSelected());
+								});
+							}
+						});
+
+						JCheckBox chestCb;
+						add(chestCb = new JCheckBox("Chest"), c(1, 2));
+						chestCb.setSelected(br.getShareSetting(TrackerRole.CHEST));
+						chestCb.addActionListener(new ActionListener() {
+							@Override
+							public void actionPerformed(ActionEvent e) {
+								server.queueTask(() -> {
+									br.changeShareSettings(TrackerRole.CHEST, chestCb.isSelected());
+								});
+							}
+						});
+
+						JCheckBox kneesCb;
+						add(kneesCb = new JCheckBox("Knees"), c(2, 2));
+						kneesCb.setSelected(br.getShareSetting(TrackerRole.LEFT_KNEE) && br.getShareSetting(TrackerRole.RIGHT_KNEE));
+						kneesCb.addActionListener(new ActionListener() {
+							@Override
+							public void actionPerformed(ActionEvent e) {
+								server.queueTask(() -> {
+									br.changeShareSettings(TrackerRole.LEFT_KNEE, kneesCb.isSelected());
+									br.changeShareSettings(TrackerRole.RIGHT_KNEE, kneesCb.isSelected());
+								});
+							}
+						});
+						
+					}});
+					
+					
+				add(Box.createVerticalStrut(10));
 				}
 				add(new JLabel("Skeleton data"));
 				add(skeletonList);

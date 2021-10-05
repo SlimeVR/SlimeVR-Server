@@ -15,19 +15,20 @@ import java.util.Queue;
 import java.util.concurrent.LinkedBlockingQueue;
 import java.util.function.Consumer;
 
+import dev.slimevr.bridge.Bridge;
+import dev.slimevr.bridge.NamedPipeBridge;
+import dev.slimevr.bridge.SteamVRPipeInputBridge;
+import dev.slimevr.bridge.VMCBridge;
+import dev.slimevr.bridge.WebSocketVRBridge;
 import io.eiren.util.OperatingSystem;
 import io.eiren.util.ann.ThreadSafe;
 import io.eiren.util.ann.ThreadSecure;
 import io.eiren.util.ann.VRServerThread;
 import io.eiren.util.collections.FastList;
-import io.eiren.vr.bridge.NamedPipeVRBridge;
-import io.eiren.vr.bridge.SteamVRPipeInputBridge;
-import io.eiren.vr.bridge.VMCBridge;
-import io.eiren.vr.bridge.VRBridge;
-import io.eiren.vr.bridge.WebSocketVRBridge;
 import io.eiren.vr.processor.HumanPoseProcessor;
 import io.eiren.vr.processor.HumanSkeleton;
 import io.eiren.vr.trackers.HMDTracker;
+import io.eiren.vr.trackers.ShareableTracker;
 import io.eiren.vr.trackers.TrackersUDPServer;
 import io.eiren.yaml.YamlException;
 import io.eiren.yaml.YamlFile;
@@ -40,13 +41,14 @@ public class VRServer extends Thread {
 	private final List<Tracker> trackers = new FastList<>();
 	public final HumanPoseProcessor humanPoseProcessor;
 	private final TrackersUDPServer trackersServer;
-	private final List<VRBridge> bridges = new FastList<>();
+	private final List<Bridge> bridges = new FastList<>();
 	private final Queue<Runnable> tasks = new LinkedBlockingQueue<>();
 	private final Map<String, TrackerConfig> configuration = new HashMap<>();
 	public final YamlFile config = new YamlFile();
 	public final HMDTracker hmdTracker;
 	private final List<Consumer<Tracker>> newTrackersConsumers = new FastList<>();
 	private final List<Runnable> onTick = new FastList<>();
+	private final List<? extends ShareableTracker> shareTrackers;
 	
 	public VRServer() {
 		super("VRServer");
@@ -54,33 +56,39 @@ public class VRServer extends Thread {
 		hmdTracker = new HMDTracker("HMD");
 		hmdTracker.position.set(0, 1.8f, 0); // Set starting position for easier debugging
 		// TODO Multiple processors
-		humanPoseProcessor = new HumanPoseProcessor(this, hmdTracker, config.getInt("virtualtrackers", 3));
-		List<? extends Tracker> shareTrackers = humanPoseProcessor.getComputedTrackers();
+		humanPoseProcessor = new HumanPoseProcessor(this, hmdTracker);
+		shareTrackers = humanPoseProcessor.getComputedTrackers();
 		
 		// Start server for SlimeVR trackers
 		trackersServer = new TrackersUDPServer(6969, "Sensors UDP server", this::registerTracker);
 		
 		// OpenVR bridge currently only supports Windows
 		if(OperatingSystem.getCurrentPlatform() == OperatingSystem.WINDOWS) {
+			/*
 			// Create named pipe bridge for SteamVR driver
 			NamedPipeVRBridge driverBridge = new NamedPipeVRBridge(hmdTracker, shareTrackers, this);
-			tasks.add(() -> driverBridge.start());
+			tasks.add(() -> driverBridge.startBridge());
 			bridges.add(driverBridge);
+			//*/
 			// Create named pipe bridge for SteamVR input
 			SteamVRPipeInputBridge steamVRInput = new SteamVRPipeInputBridge(this);
-			tasks.add(() -> steamVRInput.start());
+			tasks.add(() -> steamVRInput.startBridge());
 			bridges.add(steamVRInput);
+			//*/
+			NamedPipeBridge driverBridge = new NamedPipeBridge(hmdTracker, "steamvr", "SteamVR Driver Bridge", "\\\\.\\pipe\\SlimeVRDriver", shareTrackers);
+			tasks.add(() -> driverBridge.startBridge());
+			bridges.add(driverBridge);
 		}
 		
 		// Create WebSocket server
 		WebSocketVRBridge wsBridge = new WebSocketVRBridge(hmdTracker, shareTrackers, this);
-		tasks.add(() -> wsBridge.start());
+		tasks.add(() -> wsBridge.startBridge());
 		bridges.add(wsBridge);
 		
 		// Create VMCBridge
 		try {
 			VMCBridge vmcBridge = new VMCBridge(39539, 39540, InetAddress.getLocalHost());
-			tasks.add(() -> vmcBridge.start());
+			tasks.add(() -> vmcBridge.startBridge());
 			bridges.add(vmcBridge);
 		} catch(UnknownHostException e) {
 			e.printStackTrace();
@@ -92,19 +100,20 @@ public class VRServer extends Thread {
 			registerTracker(shareTrackers.get(i));
 	}
 	
-	public boolean hasBridge(Class<? extends VRBridge> bridgeClass) {
+	public boolean hasBridge(Class<? extends Bridge> bridgeClass) {
 		for(int i = 0; i < bridges.size(); ++i) {
-			return bridgeClass.isAssignableFrom(bridges.get(i).getClass());
+			if(bridgeClass.isAssignableFrom(bridges.get(i).getClass()))
+				return true;
 		}
 		return false;
 	}
 
 	@ThreadSafe
-	public <E extends VRBridge> E getVRBridge(Class<E> cls) {
+	public <E extends Bridge> E getVRBridge(Class<E> bridgeClass) {
 		for(int i = 0; i < bridges.size(); ++i) {
-			VRBridge b = bridges.get(i);
-			if(cls.isInstance(b))
-				return cls.cast(b);
+			Bridge b = bridges.get(i);
+			if(bridgeClass.isAssignableFrom(b.getClass()))
+				return bridgeClass.cast(b);
 		}
 		return null;
 	}

@@ -1,11 +1,13 @@
 package io.eiren.vr.trackers;
 
+import java.util.concurrent.atomic.AtomicInteger;
+
 import com.jme3.math.Quaternion;
 import com.jme3.math.Vector3f;
 
-import io.eiren.vr.processor.TrackerBodyPosition;
-
 public interface Tracker {
+	
+	public static final AtomicInteger nextLocalTrackerId = new AtomicInteger();
 	
 	public boolean getPosition(Vector3f store);
 	
@@ -27,9 +29,9 @@ public interface Tracker {
 	
 	public void tick();
 	
-	public TrackerBodyPosition getBodyPosition();
+	public TrackerPosition getBodyPosition();
 	
-	public void setBodyPosition(TrackerBodyPosition position);
+	public void setBodyPosition(TrackerPosition position);
 	
 	public boolean userEditable();
 	
@@ -39,7 +41,13 @@ public interface Tracker {
 
 	public boolean isComputed();
 	
+	public int getTrackerId();
+	
 	public default String getDescriptiveName() {
 		return getName();
+	}
+	
+	public static int getNextLocalTrackerId() {
+		return nextLocalTrackerId.incrementAndGet();
 	}
 }

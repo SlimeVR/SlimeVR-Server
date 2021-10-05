@@ -1,4 +1,4 @@
-package io.eiren.gui;
+package dev.slimevr.gui;
 
 import java.awt.Color;
 import java.awt.Font;
@@ -25,7 +25,6 @@ import io.eiren.util.ann.AWTThread;
 import io.eiren.util.ann.ThreadSafe;
 import io.eiren.util.collections.FastList;
 import io.eiren.vr.VRServer;
-import io.eiren.vr.processor.TrackerBodyPosition;
 import io.eiren.vr.trackers.ReferenceAdjustedTracker;
 import io.eiren.vr.trackers.ComputedTracker;
 import io.eiren.vr.trackers.HMDTracker;
@@ -33,6 +32,7 @@ import io.eiren.vr.trackers.IMUTracker;
 import io.eiren.vr.trackers.Tracker;
 import io.eiren.vr.trackers.TrackerConfig;
 import io.eiren.vr.trackers.TrackerMountingRotation;
+import io.eiren.vr.trackers.TrackerPosition;
 import io.eiren.vr.trackers.TrackerWithBattery;
 import io.eiren.vr.trackers.TrackerWithTPS;
 
@@ -162,7 +162,7 @@ public class TrackersList extends EJBoxNoStretch {
 				realTracker = ((ReferenceAdjustedTracker<? extends Tracker>) t).getTracker();
 			removeAll();
 			JLabel nameLabel;
-			add(nameLabel = new JLabel(t.getName()), s(c(0, row, 2, GridBagConstraints.FIRST_LINE_START), 4, 1));
+			add(nameLabel = new JLabel(t.getDescriptiveName()), s(c(0, row, 2, GridBagConstraints.FIRST_LINE_START), 4, 1));
 			nameLabel.setFont(nameLabel.getFont().deriveFont(Font.BOLD));
 			row++;
 
@@ -170,18 +170,18 @@ public class TrackersList extends EJBoxNoStretch {
 				TrackerConfig cfg = server.getTrackerConfig(t);
 				JComboBox<String> desSelect;
 				add(desSelect = new JComboBox<>(), s(c(0, row, 2, GridBagConstraints.FIRST_LINE_START), 2, 1));
-				for(TrackerBodyPosition p : TrackerBodyPosition.values) {
+				for(TrackerPosition p : TrackerPosition.values) {
 					desSelect.addItem(p.name());
 				}
 				if(cfg.designation != null) {
-					TrackerBodyPosition p = TrackerBodyPosition.getByDesignation(cfg.designation);
+					TrackerPosition p = TrackerPosition.getByDesignation(cfg.designation);
 					if(p != null)
 						desSelect.setSelectedItem(p.name());
 				}
 				desSelect.addActionListener(new ActionListener() {
 					@Override
 					public void actionPerformed(ActionEvent e) {
-						TrackerBodyPosition p = TrackerBodyPosition.valueOf(String.valueOf(desSelect.getSelectedItem()));
+						TrackerPosition p = TrackerPosition.valueOf(String.valueOf(desSelect.getSelectedItem()));
 						t.setBodyPosition(p);
 						server.trackerUpdated(t);
 					}

@@ -8,7 +8,9 @@ import io.eiren.util.ann.VRServerThread;
 import io.eiren.util.collections.FastList;
 import io.eiren.vr.VRServer;
 import io.eiren.vr.trackers.HMDTracker;
+import io.eiren.vr.trackers.ShareableTracker;
 import io.eiren.vr.trackers.Tracker;
+import io.eiren.vr.trackers.TrackerRole;
 import io.eiren.vr.trackers.TrackerStatus;
 
 public class HumanPoseProcessor {
@@ -18,20 +20,14 @@ public class HumanPoseProcessor {
 	private final List<Consumer<HumanSkeleton>> onSkeletonUpdated = new FastList<>();
 	private HumanSkeleton skeleton;
 
-	public HumanPoseProcessor(VRServer server, HMDTracker hmd, int trackersAmount) {
+	public HumanPoseProcessor(VRServer server, HMDTracker hmd) {
 		this.server = server;
-		computedTrackers.add(new ComputedHumanPoseTracker(ComputedHumanPoseTrackerPosition.WAIST, TrackerBodyPosition.WAIST));
-		if(trackersAmount > 2) {
-			computedTrackers.add(new ComputedHumanPoseTracker(ComputedHumanPoseTrackerPosition.LEFT_FOOT, TrackerBodyPosition.LEFT_FOOT));
-			computedTrackers.add(new ComputedHumanPoseTracker(ComputedHumanPoseTrackerPosition.RIGHT_FOOT, TrackerBodyPosition.RIGHT_FOOT));
-			if(trackersAmount == 4 || trackersAmount >= 6) {
-				computedTrackers.add(new ComputedHumanPoseTracker(ComputedHumanPoseTrackerPosition.CHEST, TrackerBodyPosition.CHEST));
-			}
-			if(trackersAmount >= 5) {
-				computedTrackers.add(new ComputedHumanPoseTracker(ComputedHumanPoseTrackerPosition.LEFT_KNEE, TrackerBodyPosition.LEFT_ANKLE));
-				computedTrackers.add(new ComputedHumanPoseTracker(ComputedHumanPoseTrackerPosition.RIGHT_KNEE, TrackerBodyPosition.RIGHT_ANKLE));
-			}
-		}
+		computedTrackers.add(new ComputedHumanPoseTracker(Tracker.getNextLocalTrackerId(), ComputedHumanPoseTrackerPosition.WAIST, TrackerRole.WAIST));
+		computedTrackers.add(new ComputedHumanPoseTracker(Tracker.getNextLocalTrackerId(), ComputedHumanPoseTrackerPosition.LEFT_FOOT, TrackerRole.LEFT_FOOT));
+		computedTrackers.add(new ComputedHumanPoseTracker(Tracker.getNextLocalTrackerId(), ComputedHumanPoseTrackerPosition.RIGHT_FOOT, TrackerRole.RIGHT_FOOT));
+		computedTrackers.add(new ComputedHumanPoseTracker(Tracker.getNextLocalTrackerId(), ComputedHumanPoseTrackerPosition.CHEST, TrackerRole.CHEST));
+		computedTrackers.add(new ComputedHumanPoseTracker(Tracker.getNextLocalTrackerId(), ComputedHumanPoseTrackerPosition.LEFT_KNEE, TrackerRole.LEFT_KNEE));
+		computedTrackers.add(new ComputedHumanPoseTracker(Tracker.getNextLocalTrackerId(), ComputedHumanPoseTrackerPosition.RIGHT_KNEE, TrackerRole.RIGHT_KNEE));
 	}
 	
 	public HumanSkeleton getSkeleton() {
@@ -68,7 +64,7 @@ public class HumanPoseProcessor {
 	}
 	
 	@ThreadSafe
-	public List<? extends Tracker> getComputedTrackers() {
+	public List<? extends ShareableTracker> getComputedTrackers() {
 		return computedTrackers;
 	}
 

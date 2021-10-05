@@ -17,7 +17,7 @@ import io.eiren.vr.VRServer;
 import io.eiren.vr.processor.HumanSkeleton;
 import io.eiren.vr.processor.HumanSkeletonWithLegs;
 import io.eiren.vr.processor.HumanSkeletonWithWaist;
-import io.eiren.vr.processor.TrackerBodyPosition;
+import io.eiren.vr.trackers.TrackerPosition;
 import io.eiren.vr.trackers.TrackerUtils;
 
 public class AutoBone {
@@ -93,7 +93,7 @@ public class AutoBone {
 		staticConfigs.put("Neck", server.config.getFloat("body.neckLength", HumanSkeletonWithWaist.NECK_LENGTH_DEFAULT));
 		configs.put("Waist", server.config.getFloat("body.waistDistance", 0.85f));
 		
-		if(server.config.getBoolean("autobone.forceChestTracker", false) || (frame != null && TrackerUtils.findTrackerForBodyPosition(frame, TrackerBodyPosition.CHEST) != null) || TrackerUtils.findTrackerForBodyPosition(server.getAllTrackers(), TrackerBodyPosition.CHEST) != null) {
+		if(server.config.getBoolean("autobone.forceChestTracker", false) || (frame != null && TrackerUtils.findTrackerForBodyPosition(frame, TrackerPosition.CHEST) != null) || TrackerUtils.findTrackerForBodyPosition(server.getAllTrackers(), TrackerPosition.CHEST) != null) {
 			// If force enabled or has a chest tracker
 			configs.put("Chest", server.config.getFloat("body.chestDistance", 0.42f));
 		} else {
@@ -201,7 +201,7 @@ public class AutoBone {
 	public float getMaxHmdHeight(PoseFrame frames) {
 		float maxHeight = 0f;
 		for(TrackerFrame[] frame : frames) {
-			TrackerFrame hmd = TrackerUtils.findTrackerForBodyPosition(frame, TrackerBodyPosition.HMD);
+			TrackerFrame hmd = TrackerUtils.findTrackerForBodyPosition(frame, TrackerPosition.HMD);
 			if(hmd != null && hmd.hasData(TrackerFrameData.POSITION) && hmd.position.y > maxHeight) {
 				maxHeight = hmd.position.y;
 			}
@@ -361,8 +361,8 @@ public class AutoBone {
 	
 	// The change in position of the ankle over time
 	protected float getSlideErrorDeriv(SimpleSkeleton skeleton1, SimpleSkeleton skeleton2) {
-		float slideLeft = skeleton1.getNodePosition(TrackerBodyPosition.LEFT_ANKLE).distance(skeleton2.getNodePosition(TrackerBodyPosition.LEFT_ANKLE));
-		float slideRight = skeleton1.getNodePosition(TrackerBodyPosition.RIGHT_ANKLE).distance(skeleton2.getNodePosition(TrackerBodyPosition.RIGHT_ANKLE));
+		float slideLeft = skeleton1.getNodePosition(TrackerPosition.LEFT_ANKLE).distance(skeleton2.getNodePosition(TrackerPosition.LEFT_ANKLE));
+		float slideRight = skeleton1.getNodePosition(TrackerPosition.RIGHT_ANKLE).distance(skeleton2.getNodePosition(TrackerPosition.RIGHT_ANKLE));
 		
 		// Divide by 4 to halve and average, it's halved because you want to approach a midpoint, not the other point
 		return (slideLeft + slideRight) / 4f;
@@ -370,11 +370,11 @@ public class AutoBone {
 	
 	// The offset between both feet at one instant and over time
 	protected float getOffsetErrorDeriv(SimpleSkeleton skeleton1, SimpleSkeleton skeleton2) {
-		float skeleton1Left = skeleton1.getNodePosition(TrackerBodyPosition.LEFT_ANKLE).getY();
-		float skeleton1Right = skeleton1.getNodePosition(TrackerBodyPosition.RIGHT_ANKLE).getY();
+		float skeleton1Left = skeleton1.getNodePosition(TrackerPosition.LEFT_ANKLE).getY();
+		float skeleton1Right = skeleton1.getNodePosition(TrackerPosition.RIGHT_ANKLE).getY();
 		
-		float skeleton2Left = skeleton2.getNodePosition(TrackerBodyPosition.LEFT_ANKLE).getY();
-		float skeleton2Right = skeleton2.getNodePosition(TrackerBodyPosition.RIGHT_ANKLE).getY();
+		float skeleton2Left = skeleton2.getNodePosition(TrackerPosition.LEFT_ANKLE).getY();
+		float skeleton2Right = skeleton2.getNodePosition(TrackerPosition.RIGHT_ANKLE).getY();
 		
 		float dist1 = Math.abs(skeleton1Left - skeleton1Right);
 		float dist2 = Math.abs(skeleton2Left - skeleton2Right);
