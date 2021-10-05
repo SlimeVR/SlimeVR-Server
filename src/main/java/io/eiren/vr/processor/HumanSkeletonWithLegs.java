@@ -9,6 +9,8 @@ import com.jme3.math.Vector3f;
 import io.eiren.util.ann.VRServerThread;
 import io.eiren.vr.VRServer;
 import io.eiren.vr.trackers.Tracker;
+import io.eiren.vr.trackers.TrackerPosition;
+import io.eiren.vr.trackers.TrackerRole;
 import io.eiren.vr.trackers.TrackerStatus;
 import io.eiren.vr.trackers.TrackerUtils;
 
@@ -69,12 +71,12 @@ public class HumanSkeletonWithLegs extends HumanSkeletonWithWaist {
 	public HumanSkeletonWithLegs(VRServer server, List<ComputedHumanPoseTracker> computedTrackers) {
 		super(server, computedTrackers);
 		List<Tracker> allTracekrs = server.getAllTrackers();
-		this.leftLegTracker = TrackerUtils.findTrackerForBodyPositionOrEmpty(allTracekrs, TrackerBodyPosition.LEFT_LEG, TrackerBodyPosition.LEFT_ANKLE);
-		this.leftAnkleTracker = TrackerUtils.findTrackerForBodyPositionOrEmpty(allTracekrs, TrackerBodyPosition.LEFT_ANKLE, TrackerBodyPosition.LEFT_LEG);
-		this.leftFootTracker = TrackerUtils.findTrackerForBodyPosition(allTracekrs, TrackerBodyPosition.LEFT_FOOT);
-		this.rightLegTracker = TrackerUtils.findTrackerForBodyPositionOrEmpty(allTracekrs, TrackerBodyPosition.RIGHT_LEG, TrackerBodyPosition.RIGHT_ANKLE);
-		this.rightAnkleTracker = TrackerUtils.findTrackerForBodyPositionOrEmpty(allTracekrs, TrackerBodyPosition.RIGHT_ANKLE, TrackerBodyPosition.RIGHT_LEG);
-		this.rightFootTracker = TrackerUtils.findTrackerForBodyPosition(allTracekrs, TrackerBodyPosition.RIGHT_FOOT);
+		this.leftLegTracker = TrackerUtils.findTrackerForBodyPositionOrEmpty(allTracekrs, TrackerPosition.LEFT_LEG, TrackerPosition.LEFT_ANKLE);
+		this.leftAnkleTracker = TrackerUtils.findTrackerForBodyPositionOrEmpty(allTracekrs, TrackerPosition.LEFT_ANKLE, TrackerPosition.LEFT_LEG);
+		this.leftFootTracker = TrackerUtils.findTrackerForBodyPosition(allTracekrs, TrackerPosition.LEFT_FOOT);
+		this.rightLegTracker = TrackerUtils.findTrackerForBodyPositionOrEmpty(allTracekrs, TrackerPosition.RIGHT_LEG, TrackerPosition.RIGHT_ANKLE);
+		this.rightAnkleTracker = TrackerUtils.findTrackerForBodyPositionOrEmpty(allTracekrs, TrackerPosition.RIGHT_ANKLE, TrackerPosition.RIGHT_LEG);
+		this.rightFootTracker = TrackerUtils.findTrackerForBodyPosition(allTracekrs, TrackerPosition.RIGHT_FOOT);
 		ComputedHumanPoseTracker lat = null;
 		ComputedHumanPoseTracker rat = null;
 		ComputedHumanPoseTracker rkt = null;
@@ -91,9 +93,9 @@ public class HumanSkeletonWithLegs extends HumanSkeletonWithWaist {
 				rkt = t;
 		}
 		if(lat == null)
-			lat = new ComputedHumanPoseTracker(ComputedHumanPoseTrackerPosition.LEFT_FOOT, TrackerBodyPosition.LEFT_FOOT);
+			lat = new ComputedHumanPoseTracker(Tracker.getNextLocalTrackerId(), ComputedHumanPoseTrackerPosition.LEFT_FOOT, TrackerRole.LEFT_FOOT);
 		if(rat == null)
-			rat = new ComputedHumanPoseTracker(ComputedHumanPoseTrackerPosition.RIGHT_FOOT, TrackerBodyPosition.RIGHT_FOOT);
+			rat = new ComputedHumanPoseTracker(Tracker.getNextLocalTrackerId(), ComputedHumanPoseTrackerPosition.RIGHT_FOOT, TrackerRole.RIGHT_FOOT);
 		computedLeftFootTracker = lat;
 		computedRightFootTracker = rat;
 		computedLeftKneeTracker = lkt;

@@ -1,4 +1,4 @@
-package io.eiren.vr.bridge;
+package dev.slimevr.bridge;
 
 import java.io.IOException;
 import java.nio.charset.Charset;
@@ -12,15 +12,17 @@ import com.sun.jna.platform.win32.WinBase;
 import com.sun.jna.platform.win32.WinNT.HANDLE;
 import com.sun.jna.ptr.IntByReference;
 
+import dev.slimevr.bridge.Pipe.PipeState;
 import io.eiren.util.collections.FastList;
 import io.eiren.util.logging.LogManager;
 import io.eiren.vr.VRServer;
 import io.eiren.vr.trackers.ComputedTracker;
 import io.eiren.vr.trackers.HMDTracker;
+import io.eiren.vr.trackers.ShareableTracker;
 import io.eiren.vr.trackers.Tracker;
 import io.eiren.vr.trackers.TrackerStatus;
 
-public class NamedPipeVRBridge extends Thread implements VRBridge {
+public class NamedPipeVRBridge extends Thread implements Bridge {
 
 	private static final int MAX_COMMAND_LENGTH = 2048;
 	public static final String HMDPipeName = "\\\\.\\pipe\\HMDPipe";
@@ -52,7 +54,7 @@ public class NamedPipeVRBridge extends Thread implements VRBridge {
 		this.internalTrackers = new FastList<>(shareTrackers.size());
 		for(int i = 0; i < shareTrackers.size(); ++i) {
 			Tracker t = shareTrackers.get(i);
-			ComputedTracker ct = new ComputedTracker("internal://" + t.getName(), true, true);
+			ComputedTracker ct = new ComputedTracker(t.getTrackerId(), "internal://" + t.getName(), true, true);
 			ct.setStatus(TrackerStatus.OK);
 			this.internalTrackers.add(ct);
 		}
@@ -267,5 +269,22 @@ public class NamedPipeVRBridge extends Thread implements VRBridge {
 				Kernel32.INSTANCE.DisconnectNamedPipe(pipe.pipeHandle);
 		} catch(Exception e) {
 		}
+	}
+
+	@Override
+	public void addSharedTracker(ShareableTracker tracker) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public void removeSharedTracker(ShareableTracker tracker) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public void startBridge() {
+		start();
 	}
 }

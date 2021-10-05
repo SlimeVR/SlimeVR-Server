@@ -3,20 +3,21 @@ package dev.slimevr.poserecorder;
 import com.jme3.math.Quaternion;
 import com.jme3.math.Vector3f;
 
-import io.eiren.vr.processor.TrackerBodyPosition;
 import io.eiren.vr.trackers.Tracker;
 import io.eiren.vr.trackers.TrackerConfig;
+import io.eiren.vr.trackers.TrackerPosition;
 import io.eiren.vr.trackers.TrackerStatus;
 
 public final class TrackerFrame implements Tracker {
 	
 	private int dataFlags = 0;
 	
-	public final TrackerBodyPosition designation;
+	public final TrackerPosition designation;
 	public final Quaternion rotation;
 	public final Vector3f position;
+	private final int trackerId = Tracker.getNextLocalTrackerId();
 	
-	public TrackerFrame(TrackerBodyPosition designation, Quaternion rotation, Vector3f position) {
+	public TrackerFrame(TrackerPosition designation, Quaternion rotation, Vector3f position) {
 		this.designation = designation;
 		if(designation != null) {
 			dataFlags |= TrackerFrameData.DESIGNATION.flag;
@@ -141,12 +142,12 @@ public final class TrackerFrame implements Tracker {
 	}
 	
 	@Override
-	public TrackerBodyPosition getBodyPosition() {
+	public TrackerPosition getBodyPosition() {
 		return designation;
 	}
 	
 	@Override
-	public void setBodyPosition(TrackerBodyPosition position) {
+	public void setBodyPosition(TrackerPosition position) {
 		throw new UnsupportedOperationException("TrackerFrame does not allow setting the body position");
 	}
 	
@@ -170,4 +171,9 @@ public final class TrackerFrame implements Tracker {
 		return true;
 	}
 	//#endregion
+
+	@Override
+	public int getTrackerId() {
+		return this.trackerId;
+	}
 }

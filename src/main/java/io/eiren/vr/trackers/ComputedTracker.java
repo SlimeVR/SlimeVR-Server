@@ -3,22 +3,28 @@ package io.eiren.vr.trackers;
 import com.jme3.math.Quaternion;
 import com.jme3.math.Vector3f;
 
-import io.eiren.vr.processor.TrackerBodyPosition;
-
-public class ComputedTracker implements Tracker {
+public class ComputedTracker implements Tracker, TrackerWithTPS {
 
 	public final Vector3f position = new Vector3f();
 	public final Quaternion rotation = new Quaternion();
 	protected final String name;
+	protected final String serial;
 	protected TrackerStatus status = TrackerStatus.DISCONNECTED;
-	public TrackerBodyPosition bodyPosition = null;
+	public TrackerPosition bodyPosition = null;
 	protected final boolean hasRotation;
 	protected final boolean hasPosition;
+	protected final int trackerId;
 	
-	public ComputedTracker(String name, boolean hasRotation, boolean hasPosition) {
+	public ComputedTracker(int trackerId, String serial, String name, boolean hasRotation, boolean hasPosition) {
 		this.name = name;
+		this.serial = serial;
 		this.hasRotation = hasRotation;
 		this.hasPosition = hasPosition;
+		this.trackerId = trackerId;
+	}
+	
+	public ComputedTracker(int trackerId, String name, boolean hasRotation, boolean hasPosition) {
+		this(trackerId, name, name, hasRotation, hasPosition);
 	}
 	
 	@Override
@@ -30,12 +36,17 @@ public class ComputedTracker implements Tracker {
 	public void loadConfig(TrackerConfig config) {
 		// Loading a config is an act of user editing, therefore it shouldn't not be allowed if editing is not allowed
 		if (userEditable()) {
-			bodyPosition = TrackerBodyPosition.getByDesignation(config.designation);
+			bodyPosition = TrackerPosition.getByDesignation(config.designation);
 		}
 	}
 	
 	@Override
 	public String getName() {
+		return this.serial;
+	}
+	
+	@Override
+	public String getDescriptiveName() {
 		return this.name;
 	}
 	
@@ -74,18 +85,22 @@ public class ComputedTracker implements Tracker {
 	}
 
 	@Override
-	public TrackerBodyPosition getBodyPosition() {
+	public TrackerPosition getBodyPosition() {
 		return bodyPosition;
 	}
 
 	@Override
-	public void setBodyPosition(TrackerBodyPosition position) {
+	public void setBodyPosition(TrackerPosition position) {
 		this.bodyPosition = position;
 	}
 
 	@Override
 	public boolean userEditable() {
 		return false;
+	}
+	
+	@Override
+	public void dataTick() {
 	}
 
 	@Override
@@ -105,5 +120,15 @@ public class ComputedTracker implements Tracker {
 	@Override
 	public boolean isComputed() {
 		return true;
+	}
+
+	@Override
+	public float getTPS() {
+		return -1;
+	}
+
+	@Override
+	public int getTrackerId() {
+		return this.trackerId;
 	}
 }

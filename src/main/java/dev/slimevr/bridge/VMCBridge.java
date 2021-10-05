@@ -1,8 +1,11 @@
-package io.eiren.vr.bridge;
+package dev.slimevr.bridge;
 
 import java.net.InetAddress;
 
-public class VMCBridge extends Thread implements VRBridge {
+import io.eiren.vr.trackers.ShareableTracker;
+import io.eiren.vr.trackers.Tracker;
+
+public class VMCBridge extends Thread implements Bridge {
 	
 	public final int readPort;
 	public final int writePort;
@@ -27,6 +30,23 @@ public class VMCBridge extends Thread implements VRBridge {
 	public void dataWrite() {
 		// TODO Auto-generated method stub
 		
+	}
+
+	@Override
+	public void addSharedTracker(ShareableTracker tracker) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public void removeSharedTracker(ShareableTracker tracker) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public void startBridge() {
+		start();
 	}
 	
 }

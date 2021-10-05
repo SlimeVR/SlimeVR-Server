@@ -1,4 +1,4 @@
-package io.eiren.vr.bridge;
+package dev.slimevr.bridge;
 
 import java.net.InetSocketAddress;
 import java.nio.ByteBuffer;
@@ -23,29 +23,30 @@ import io.eiren.vr.Main;
 import io.eiren.vr.VRServer;
 import io.eiren.vr.trackers.ComputedTracker;
 import io.eiren.vr.trackers.HMDTracker;
+import io.eiren.vr.trackers.ShareableTracker;
 import io.eiren.vr.trackers.Tracker;
 import io.eiren.vr.trackers.TrackerStatus;
 
-public class WebSocketVRBridge extends WebSocketServer implements VRBridge {
+public class WebSocketVRBridge extends WebSocketServer implements Bridge {
 	
 	private final Vector3f vBuffer = new Vector3f();
 	private final Quaternion qBuffer = new Quaternion();
 	
 	private final HMDTracker hmd;
-	private final List<? extends Tracker> shareTrackers;
+	private final List<? extends ShareableTracker> shareTrackers;
 	private final List<ComputedTracker> internalTrackers;
 	
 	private final HMDTracker internalHMDTracker = new HMDTracker("itnernal://HMD");
 	private final AtomicBoolean newHMDData = new AtomicBoolean(false);
 	
-	public WebSocketVRBridge(HMDTracker hmd, List<? extends Tracker> shareTrackers, VRServer server) {
+	public WebSocketVRBridge(HMDTracker hmd, List<? extends ShareableTracker> shareTrackers, VRServer server) {
 		super(new InetSocketAddress(21110), Collections.<Draft>singletonList(new Draft_6455()));
 		this.hmd = hmd;
 		this.shareTrackers = new FastList<>(shareTrackers);
 		this.internalTrackers = new FastList<>(shareTrackers.size());
 		for(int i = 0; i < shareTrackers.size(); ++i) {
 			Tracker t = shareTrackers.get(i);
-			ComputedTracker ct = new ComputedTracker("internal://" + t.getName(), true, true);
+			ComputedTracker ct = new ComputedTracker(t.getTrackerId(), "internal://" + t.getName(), true, true);
 			ct.setStatus(TrackerStatus.OK);
 			ct.bodyPosition = t.getBodyPosition();
 			this.internalTrackers.add(ct);
@@ -81,7 +82,7 @@ public class WebSocketVRBridge extends WebSocketServer implements VRBridge {
 			JSONObject message = new JSONObject();
 			message.put("type", "config");
 			message.put("tracker_id", "SlimeVR Tracker " + (i + 1));
-			message.put("location", internalTrackers.get(i).bodyPosition.designation);
+			message.put("location", shareTrackers.get(i).getTrackerRole().name().toLowerCase());
 			message.put("tracker_type", message.optString("location"));
 			conn.send(message.toString());
 		}
@@ -172,5 +173,22 @@ public class WebSocketVRBridge extends WebSocketServer implements VRBridge {
 		LogManager.log.info("[WebSocket] Web Socket VR Bridge started on port " + getPort());
 		setConnectionLostTimeout(0);
 	    setConnectionLostTimeout(1);
+	}
+
+	@Override
+	public void addSharedTracker(ShareableTracker tracker) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public void removeSharedTracker(ShareableTracker tracker) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public void startBridge() {
+		start();
 	}
 }
