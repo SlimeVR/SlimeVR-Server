@@ -1,5 +1,8 @@
 # Ignore Gradle project-specific cache directory
 .gradle
+.idea
+logs
+*.log
 
 # Ignore Gradle build output directory
 build
@@ -10,3 +13,4 @@ build
 .stignore
 
 MagnetoLib.dll
+/vrconfig.yml

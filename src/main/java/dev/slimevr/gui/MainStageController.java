@@ -6,7 +6,6 @@ import com.jme3.math.Quaternion;
 import com.jme3.math.Vector3f;
 
 import dev.slimevr.gui.javafx.ConfirmBox;
-import io.eiren.gui.WiFiWindow;
 import io.eiren.util.StringUtils;
 import io.eiren.util.ann.ThreadSafe;
 import io.eiren.util.collections.FastList;
@@ -38,28 +37,28 @@ import java.util.List;
 import java.util.ResourceBundle;
 
 public class MainStageController implements Initializable {
-	
+
 	private Stage stage;
 	private VRServer server;
 	private FXTrayIcon icon; //required to trigger tray notifications
 	private final List<TransformNode> nodes;
 	private TrackersListNew trackersList;
-	
+
 	private AutoBoneWindow autoBone;
-	
+
 	Quaternion q = new Quaternion();
 	Vector3f v = new Vector3f();
 	float[] angles = new float[3];
-	
+
 	@FXML
 	private MenuBar fxMenuBar;
-	
+
 	@FXML
 	private Button reset;
-	
+
 	@FXML
 	private ComboBox steamVRComboBox;
-	
+
 	@FXML
 	private AnchorPane skeletonPane;
 	@FXML
@@ -80,9 +79,9 @@ public class MainStageController implements Initializable {
 	private TextFlow yawTextFlow;
 	@FXML
 	private TextFlow rollTextFlow;
-	
+
 	private BodyProportion bodyProportion;
-	
+
 	@FXML
 	private TextFlow bodyNameTextFlow;
 	@FXML
@@ -97,47 +96,47 @@ public class MainStageController implements Initializable {
 	private Button bodyResetAll;
 	@FXML
 	private Button bodyAuto;
-	
+
 	private int i = 0;
 	private int n = 0;
-	
+
 	private double xOffset = 0;
 	private double yOffset = 0;
-	
+
 	public MainStageController(Stage stage, FXTrayIcon icon) {
 		this.stage = stage;
 		this.server = Main.vrServer;
 		this.icon = icon;
 		this.nodes = new FastList<>();
 		this.bodyProportion = new BodyProportion(server);
-		
+
 		server.addSkeletonUpdatedCallback(this::skeletonUpdated);
 	}
-	
+
 	@Override
 	public void initialize(URL location, ResourceBundle resources) {
-		
+
 		menuBarInit();
-		
+
 		steamVRTrackersSetup();
-		
+
 		bodyProportionInit();
-		
+
 		skeletonDataInit();
-		
+
 	}
-	
+
 	@FXML
 	private void wifiBtnAction(ActionEvent event) {
 		new WiFiWindow();
 	}
-	
+
 	@FXML
 	private void skeletonBtnAction(ActionEvent event) {
 		skeletonPane.setVisible(false);
 		skeletonPane.setEffect(null);
 	}
-	
+
 	@FXML
 	private void skeletonArrowBtnAction(ActionEvent event) {
 		skeletonPane.setLayoutX(102);
@@ -150,7 +149,7 @@ public class MainStageController implements Initializable {
 		skeletonBTN.setLayoutX(364);
 		skeletonBTN.setLayoutY(14);
 	}
-	
+
 	@FXML
 	private void bodyBtnAction(ActionEvent event) {
 		skeletonPane.setVisible(true);
@@ -163,19 +162,19 @@ public class MainStageController implements Initializable {
 		skeletonBTN.setLayoutY(14);
 		skeletonPane.setEffect(null);
 	}
-	
+
 	@FXML
 	private void closeBtnAction(ActionEvent event) {
 		closeProgram();
 	}
-	
+
 	@FXML
 	private void trayBtnAction(ActionEvent event) {
 		//stage.setIconified(true);
 		stage.hide();
 		icon.showMessage("Slime VR", "Application minimized to tray");
 	}
-	
+
 	@FXML
 	private void reset(ActionEvent event) {
 		reset.setText(String.valueOf(3));
@@ -192,12 +191,12 @@ public class MainStageController implements Initializable {
 		timeline.setCycleCount(3);
 		timeline.play();
 	}
-	
+
 	@FXML
 	private void fastReset(ActionEvent event) {
 		server.resetTrackersYaw();
 	}
-	
+
 	private void skeletonDataInit() {
 		customizeTextFlow(jointTextFlow);
 		customizeTextFlow(xTextFlow);
@@ -206,7 +205,7 @@ public class MainStageController implements Initializable {
 		customizeTextFlow(pitchTextFlow);
 		customizeTextFlow(yawTextFlow);
 		customizeTextFlow(rollTextFlow);
-		
+
 		Timeline timeline = new Timeline(new KeyFrame(Duration.millis(500), event -> {
 			jointTextFlow.getChildren().clear();
 			xTextFlow.getChildren().clear();
@@ -215,31 +214,31 @@ public class MainStageController implements Initializable {
 			pitchTextFlow.getChildren().clear();
 			yawTextFlow.getChildren().clear();
 			rollTextFlow.getChildren().clear();
-			
+
 			for(TransformNode n : nodes) {
 				updateSkeletonData(n);
 			}
 		}));
-		
+
 		timeline.setCycleCount(Animation.INDEFINITE);
 		timeline.play();
 	}
-	
+
 	@ThreadSafe
 	private void skeletonUpdated(HumanSkeleton newSkeleton) {
 		newSkeleton.getRootNode().depthFirstTraversal((node) -> {
 			nodes.add(node);
 		});
 	}
-	
+
 	private void customizeTextFlow(TextFlow t) {
 		t.setTextAlignment(TextAlignment.CENTER);
 		t.setLineSpacing(10.0f);
 		//t.setPadding(new Insets(0, 50, 0, 0));
 	}
-	
+
 	private void updateSkeletonData(TransformNode n) {
-		
+
 		Text name = new Text(n.getName());
 		Text x = new Text();
 		Text y = new Text();
@@ -247,22 +246,22 @@ public class MainStageController implements Initializable {
 		Text a1 = new Text();
 		Text a2 = new Text();
 		Text a3 = new Text();
-		
+
 		n.worldTransform.getTranslation(v);
 		n.worldTransform.getRotation(q);
 		q.toAngles(angles);
-		
+
 		x.setText(" " + StringUtils.prettyNumber(v.x, 2) + " ");
 		y.setText(StringUtils.prettyNumber(v.y, 2) + " ");
 		z.setText(StringUtils.prettyNumber(v.z, 2) + " ");
 		a1.setText(StringUtils.prettyNumber(angles[0] * FastMath.RAD_TO_DEG, 0) + " ");
 		a2.setText(StringUtils.prettyNumber(angles[1] * FastMath.RAD_TO_DEG, 0) + " ");
 		a3.setText(StringUtils.prettyNumber(angles[2] * FastMath.RAD_TO_DEG, 0));
-		
+
 		//final Separator separator = new Separator(Orientation.HORIZONTAL);
 		//separator.prefWidthProperty().bind(skeletonTextFlow.widthProperty());
 		//separator.setStyle("-fx-background-color: red;");
-		
+
 		jointTextFlow.getChildren().addAll(name, new Text(System.lineSeparator()));
 		xTextFlow.getChildren().addAll(x, new Text(System.lineSeparator()));
 		yTextFlow.getChildren().addAll(y, new Text(System.lineSeparator()));
@@ -271,10 +270,10 @@ public class MainStageController implements Initializable {
 		yawTextFlow.getChildren().addAll(a2, new Text(System.lineSeparator()));
 		rollTextFlow.getChildren().addAll(a3, new Text(System.lineSeparator()));
 	}
-	
+
 	public void steamVRTrackersSetup() {
 		steamVRComboBox.getItems().addAll("Waist", "Waist + Legs", "Waist + Legs + Chest", "Waist + Legs + Knees", "Waist + Legs + Chest + Knees");
-		
+
 		switch(server.config.getInt("virtualtrackers", 3)) {
 		case 1:
 			steamVRComboBox.getSelectionModel().select(0);
@@ -292,7 +291,7 @@ public class MainStageController implements Initializable {
 			steamVRComboBox.getSelectionModel().select(4);
 			break;
 		}
-		
+
 		steamVRComboBox.setOnAction(e -> {
 			switch(steamVRComboBox.getSelectionModel().getSelectedIndex()) {
 			case 0:
@@ -314,10 +313,10 @@ public class MainStageController implements Initializable {
 			server.saveConfig();
 		});
 	}
-	
+
 	public void bodyProportionInit() {
 		bodyProportion.bodyProportionInit(bodyNameTextFlow, bodyPlusTextFlow, bodyLableTextFlow, bodyMinusTextFlow, bodyResetTextFlow);
-		
+
 		bodyResetAll.addEventHandler(MouseEvent.MOUSE_CLICKED, e -> {
 			bodyResetAll.setText(String.valueOf(3));
 			i = 2;
@@ -333,14 +332,14 @@ public class MainStageController implements Initializable {
 			timeline.setCycleCount(3);
 			timeline.play();
 		});
-		
+
 		bodyAuto.setOnAction(event -> {
 			autoBone = new AutoBoneWindow(server, bodyProportion);
 			autoBone.setVisible(true);
 			autoBone.toFront();
 		});
 	}
-	
+
 	public void menuBarInit() {
 		fxMenuBar.prefWidthProperty().bind(stage.widthProperty());
 		fxMenuBar.addEventHandler(MouseEvent.MOUSE_PRESSED, e -> {
@@ -352,7 +351,7 @@ public class MainStageController implements Initializable {
 			stage.setY(event.getScreenY() - yOffset);
 		});
 	}
-	
+
 	private void closeProgram() {
 		if(ConfirmBox.display("Confirm Exit", "Are you sure you want to exit?")) {
 			// TODO add save settings
@@ -360,5 +359,5 @@ public class MainStageController implements Initializable {
 			System.exit(0);
 		}
 	}
-	
+
 }
