@@ -221,7 +221,9 @@ public class VRServerGUI extends JFrame {
 						waistCb.addActionListener(new ActionListener() {
 							@Override
 							public void actionPerformed(ActionEvent e) {
-								br.changeShareSettings(TrackerRole.WAIST, waistCb.isSelected());
+								server.queueTask(() -> {
+									br.changeShareSettings(TrackerRole.WAIST, waistCb.isSelected());
+								});
 							}
 						});
 
@@ -231,8 +233,10 @@ public class VRServerGUI extends JFrame {
 						legsCb.addActionListener(new ActionListener() {
 							@Override
 							public void actionPerformed(ActionEvent e) {
-								br.changeShareSettings(TrackerRole.LEFT_FOOT, legsCb.isSelected());
-								br.changeShareSettings(TrackerRole.RIGHT_FOOT, legsCb.isSelected());
+								server.queueTask(() -> {
+									br.changeShareSettings(TrackerRole.LEFT_FOOT, legsCb.isSelected());
+									br.changeShareSettings(TrackerRole.RIGHT_FOOT, legsCb.isSelected());
+								});
 							}
 						});
 
@@ -242,7 +246,9 @@ public class VRServerGUI extends JFrame {
 						chestCb.addActionListener(new ActionListener() {
 							@Override
 							public void actionPerformed(ActionEvent e) {
-								br.changeShareSettings(TrackerRole.CHEST, chestCb.isSelected());
+								server.queueTask(() -> {
+									br.changeShareSettings(TrackerRole.CHEST, chestCb.isSelected());
+								});
 							}
 						});
 
@@ -252,8 +258,10 @@ public class VRServerGUI extends JFrame {
 						kneesCb.addActionListener(new ActionListener() {
 							@Override
 							public void actionPerformed(ActionEvent e) {
-								br.changeShareSettings(TrackerRole.LEFT_KNEE, kneesCb.isSelected());
-								br.changeShareSettings(TrackerRole.RIGHT_KNEE, kneesCb.isSelected());
+								server.queueTask(() -> {
+									br.changeShareSettings(TrackerRole.LEFT_KNEE, kneesCb.isSelected());
+									br.changeShareSettings(TrackerRole.RIGHT_KNEE, kneesCb.isSelected());
+								});
 							}
 						});
 						
