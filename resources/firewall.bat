@@ -1,6 +1,10 @@
 @echo off
 echo Installing firewall rules...
 
+rem Discovery defauly port
+netsh advfirewall firewall add rule name="SlimeVR UDP 35903 incoming" dir=in action=allow protocol=UDP localport=35903
+netsh advfirewall firewall add rule name="SlimeVR UDP 35903 outgoing" dir=out action=allow protocol=UDP localport=35903
+
 rem Rotational data default port
 netsh advfirewall firewall add rule name="SlimeVR UDP 6969 incoming" dir=in action=allow protocol=UDP localport=6969
 netsh advfirewall firewall add rule name="SlimeVR UDP 6969 outgoing" dir=out action=allow protocol=UDP localport=6969
