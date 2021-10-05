@@ -1,4 +1,4 @@
-package io.eiren.gui;
+package dev.slimevr.gui;
 
 import java.awt.event.MouseEvent;
 import java.util.HashMap;
@@ -8,7 +8,6 @@ import javax.swing.JButton;
 import javax.swing.JLabel;
 import javax.swing.event.MouseInputAdapter;
 
-import dev.slimevr.gui.AutoBoneWindow;
 import dev.slimevr.gui.swing.ButtonTimer;
 import dev.slimevr.gui.swing.EJBagNoStretch;
 import io.eiren.util.StringUtils;

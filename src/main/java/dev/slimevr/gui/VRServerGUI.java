@@ -1,4 +1,4 @@
-package io.eiren.gui;
+package dev.slimevr.gui;
 
 import javax.imageio.ImageIO;
 import javax.swing.*;

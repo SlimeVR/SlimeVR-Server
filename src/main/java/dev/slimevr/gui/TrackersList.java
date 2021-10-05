@@ -1,4 +1,4 @@
-package io.eiren.gui;
+package dev.slimevr.gui;
 
 import java.awt.Color;
 import java.awt.Font;

@@ -2,7 +2,7 @@ package io.eiren.vr;
 
 import java.io.File;
 
-import io.eiren.gui.VRServerGUI;
+import dev.slimevr.gui.VRServerGUI;
 import io.eiren.util.logging.LogManager;
 
 public class Main {
