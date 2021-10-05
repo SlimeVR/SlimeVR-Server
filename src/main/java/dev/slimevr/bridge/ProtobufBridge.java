@@ -24,7 +24,6 @@ import io.eiren.vr.Main;
 import io.eiren.vr.trackers.ComputedTracker;
 import io.eiren.vr.trackers.HMDTracker;
 import io.eiren.vr.trackers.ShareableTracker;
-import io.eiren.vr.trackers.Tracker;
 import io.eiren.vr.trackers.TrackerRole;
 import io.eiren.vr.trackers.VRTracker;
 
@@ -38,7 +37,7 @@ public abstract class ProtobufBridge<T extends VRTracker> implements Bridge {
 	@ThreadSafe
 	private final Queue<ProtobufMessage> outputQueue = new LinkedBlockingQueue<>();
 	@VRServerThread
-	private final List<ShareableTracker> sharedTrackers = new FastList<>();
+	protected final List<ShareableTracker> sharedTrackers = new FastList<>();
 	@Synchronize("self")
 	private final Map<String, T> remoteTrackersBySerial = new HashMap<>();
 	@Synchronize("self")

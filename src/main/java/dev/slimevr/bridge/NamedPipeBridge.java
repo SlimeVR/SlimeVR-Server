@@ -1,6 +1,7 @@
 package dev.slimevr.bridge;
 
 import java.io.IOException;
+import java.util.List;
 
 import com.google.protobuf.CodedOutputStream;
 import com.sun.jna.platform.win32.Kernel32;
@@ -15,22 +16,72 @@ import io.eiren.util.ann.VRServerThread;
 import io.eiren.util.logging.LogManager;
 import io.eiren.vr.Main;
 import io.eiren.vr.trackers.HMDTracker;
+import io.eiren.vr.trackers.ShareableTracker;
 import io.eiren.vr.trackers.TrackerPosition;
 import io.eiren.vr.trackers.TrackerRole;
 import io.eiren.vr.trackers.VRTracker;
 
 public class NamedPipeBridge extends ProtobufBridge<VRTracker> implements Runnable {
+	
+	private final TrackerRole[] defaultRoles = new TrackerRole[] {TrackerRole.WAIST, TrackerRole.LEFT_FOOT, TrackerRole.RIGHT_FOOT};
 
 	private final byte[] buffArray = new byte[2048];
 	
 	protected Pipe pipe;
 	protected final String pipeName;
+	protected final String bridgeSettingsKey;
 	protected final Thread runnerThread;
+	private final List<? extends ShareableTracker> shareableTrackers;
 	
-	public NamedPipeBridge(HMDTracker hmd, String bridgeName, String pipeName) {
+	public NamedPipeBridge(HMDTracker hmd, String bridgeSettingsKey, String bridgeName, String pipeName, List<? extends ShareableTracker> shareableTrackers) {
 		super(bridgeName, hmd);
 		this.pipeName = pipeName;
+		this.bridgeSettingsKey = bridgeSettingsKey;
 		this.runnerThread = new Thread(this, "Named pipe thread");
+		this.shareableTrackers = shareableTrackers;
+	}
+
+	@Override
+	@VRServerThread
+	public void startBridge() {
+		for(TrackerRole role : defaultRoles) {
+			changeShareSettings(role, Main.vrServer.config.getBoolean("bridge." + bridgeSettingsKey + ".trackers." + role.name().toLowerCase(), true));
+		}
+		for(int i = 0; i < shareableTrackers.size(); ++i) {
+			ShareableTracker tr = shareableTrackers.get(i);
+			TrackerRole role = tr.getTrackerRole();
+			changeShareSettings(role, Main.vrServer.config.getBoolean("bridge." + bridgeSettingsKey + ".trackers." + role.name().toLowerCase(), false));
+		}
+		runnerThread.start();
+	}
+
+	@VRServerThread
+	public boolean getShareSetting(TrackerRole role) {
+		for(int i = 0; i < shareableTrackers.size(); ++i) {
+			ShareableTracker tr = shareableTrackers.get(i);
+			if(tr.getTrackerRole() == role) {
+				return sharedTrackers.contains(tr);
+			}
+		}
+		return false;
+	}
+
+	@VRServerThread
+	public void changeShareSettings(TrackerRole role, boolean share) {
+		if(role == null)
+			return;
+		for(int i = 0; i < shareableTrackers.size(); ++i) {
+			ShareableTracker tr = shareableTrackers.get(i);
+			if(tr.getTrackerRole() == role) {
+				if(share) {
+					addSharedTracker(tr);
+				} else {
+					removeSharedTracker(tr);
+				}
+				Main.vrServer.config.setProperty("bridge." + bridgeSettingsKey + ".trackers." + role.name().toLowerCase(), share);
+				Main.vrServer.saveConfig();
+			}
+		}
 	}
 
 	@Override
@@ -169,11 +220,5 @@ public class NamedPipeBridge extends ProtobufBridge<VRTracker> implements Runnab
 		}
 		LogManager.log.info("[" + bridgeName + "] Error connecting to pipe " + pipe.name + ": " + Kernel32.INSTANCE.GetLastError());
 		return false;
-	}
-
-	@Override
-	@VRServerThread
-	public void startBridge() {
-		runnerThread.start();
 	}
 }

@@ -20,20 +20,14 @@ public class HumanPoseProcessor {
 	private final List<Consumer<HumanSkeleton>> onSkeletonUpdated = new FastList<>();
 	private HumanSkeleton skeleton;
 
-	public HumanPoseProcessor(VRServer server, HMDTracker hmd, int trackersAmount) {
+	public HumanPoseProcessor(VRServer server, HMDTracker hmd) {
 		this.server = server;
 		computedTrackers.add(new ComputedHumanPoseTracker(Tracker.getNextLocalTrackerId(), ComputedHumanPoseTrackerPosition.WAIST, TrackerRole.WAIST));
-		if(trackersAmount > 2) {
-			computedTrackers.add(new ComputedHumanPoseTracker(Tracker.getNextLocalTrackerId(), ComputedHumanPoseTrackerPosition.LEFT_FOOT, TrackerRole.LEFT_FOOT));
-			computedTrackers.add(new ComputedHumanPoseTracker(Tracker.getNextLocalTrackerId(), ComputedHumanPoseTrackerPosition.RIGHT_FOOT, TrackerRole.RIGHT_FOOT));
-			if(trackersAmount == 4 || trackersAmount >= 6) {
-				computedTrackers.add(new ComputedHumanPoseTracker(Tracker.getNextLocalTrackerId(), ComputedHumanPoseTrackerPosition.CHEST, TrackerRole.CHEST));
-			}
-			if(trackersAmount >= 5) {
-				computedTrackers.add(new ComputedHumanPoseTracker(Tracker.getNextLocalTrackerId(), ComputedHumanPoseTrackerPosition.LEFT_KNEE, TrackerRole.LEFT_KNEE));
-				computedTrackers.add(new ComputedHumanPoseTracker(Tracker.getNextLocalTrackerId(), ComputedHumanPoseTrackerPosition.RIGHT_KNEE, TrackerRole.RIGHT_KNEE));
-			}
-		}
+		computedTrackers.add(new ComputedHumanPoseTracker(Tracker.getNextLocalTrackerId(), ComputedHumanPoseTrackerPosition.LEFT_FOOT, TrackerRole.LEFT_FOOT));
+		computedTrackers.add(new ComputedHumanPoseTracker(Tracker.getNextLocalTrackerId(), ComputedHumanPoseTrackerPosition.RIGHT_FOOT, TrackerRole.RIGHT_FOOT));
+		computedTrackers.add(new ComputedHumanPoseTracker(Tracker.getNextLocalTrackerId(), ComputedHumanPoseTrackerPosition.CHEST, TrackerRole.CHEST));
+		computedTrackers.add(new ComputedHumanPoseTracker(Tracker.getNextLocalTrackerId(), ComputedHumanPoseTrackerPosition.LEFT_KNEE, TrackerRole.LEFT_KNEE));
+		computedTrackers.add(new ComputedHumanPoseTracker(Tracker.getNextLocalTrackerId(), ComputedHumanPoseTrackerPosition.RIGHT_KNEE, TrackerRole.RIGHT_KNEE));
 	}
 	
 	public HumanSkeleton getSkeleton() {

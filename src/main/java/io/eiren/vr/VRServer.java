@@ -48,6 +48,7 @@ public class VRServer extends Thread {
 	public final HMDTracker hmdTracker;
 	private final List<Consumer<Tracker>> newTrackersConsumers = new FastList<>();
 	private final List<Runnable> onTick = new FastList<>();
+	private final List<? extends ShareableTracker> shareTrackers;
 	
 	public VRServer() {
 		super("VRServer");
@@ -55,8 +56,8 @@ public class VRServer extends Thread {
 		hmdTracker = new HMDTracker("HMD");
 		hmdTracker.position.set(0, 1.8f, 0); // Set starting position for easier debugging
 		// TODO Multiple processors
-		humanPoseProcessor = new HumanPoseProcessor(this, hmdTracker, config.getInt("virtualtrackers", 3));
-		List<? extends ShareableTracker> shareTrackers = humanPoseProcessor.getComputedTrackers();
+		humanPoseProcessor = new HumanPoseProcessor(this, hmdTracker);
+		shareTrackers = humanPoseProcessor.getComputedTrackers();
 		
 		// Start server for SlimeVR trackers
 		trackersServer = new TrackersUDPServer(6969, "Sensors UDP server", this::registerTracker);
@@ -74,13 +75,8 @@ public class VRServer extends Thread {
 			tasks.add(() -> steamVRInput.startBridge());
 			bridges.add(steamVRInput);
 			//*/
-			NamedPipeBridge driverBridge = new NamedPipeBridge(hmdTracker, "SteamVR Driver Bridge", "\\\\.\\pipe\\SlimeVRDriver");
+			NamedPipeBridge driverBridge = new NamedPipeBridge(hmdTracker, "steamvr", "SteamVR Driver Bridge", "\\\\.\\pipe\\SlimeVRDriver", shareTrackers);
 			tasks.add(() -> driverBridge.startBridge());
-			tasks.add(() -> {
-				// TODO : THIS SHOULD BE HANDLED COMPLETELY DIFFERENT AND FOR EACH BRIDGE TOGETHER
-				for(int i = 0; i < shareTrackers.size(); ++i)
-					driverBridge.addSharedTracker(shareTrackers.get(i));
-			});
 			bridges.add(driverBridge);
 		}
 		
@@ -106,17 +102,18 @@ public class VRServer extends Thread {
 	
 	public boolean hasBridge(Class<? extends Bridge> bridgeClass) {
 		for(int i = 0; i < bridges.size(); ++i) {
-			return bridgeClass.isAssignableFrom(bridges.get(i).getClass());
+			if(bridgeClass.isAssignableFrom(bridges.get(i).getClass()))
+				return true;
 		}
 		return false;
 	}
 
 	@ThreadSafe
-	public <E extends Bridge> E getVRBridge(Class<E> cls) {
+	public <E extends Bridge> E getVRBridge(Class<E> bridgeClass) {
 		for(int i = 0; i < bridges.size(); ++i) {
 			Bridge b = bridges.get(i);
-			if(cls.isInstance(b))
-				return cls.cast(b);
+			if(bridgeClass.isAssignableFrom(b.getClass()))
+				return bridgeClass.cast(b);
 		}
 		return null;
 	}
