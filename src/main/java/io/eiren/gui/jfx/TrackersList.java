@@ -1,17 +1,9 @@
 package io.eiren.gui.jfx;
 
-import java.awt.Color;
-import java.awt.GridBagConstraints;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
 import java.util.List;
 import java.util.concurrent.atomic.AtomicBoolean;
 
-import javax.swing.BorderFactory;
-import javax.swing.Box;
 import javax.swing.BoxLayout;
-import javax.swing.JComboBox;
-import javax.swing.JLabel;
 
 import com.jme3.math.FastMath;
 import com.jme3.math.Quaternion;
@@ -22,29 +14,21 @@ import io.eiren.util.ann.AWTThread;
 import io.eiren.util.ann.ThreadSafe;
 import io.eiren.util.collections.FastList;
 import io.eiren.vr.VRServer;
-import io.eiren.vr.processor.TrackerBodyPosition;
-import io.eiren.vr.trackers.ReferenceAdjustedTracker;
-import io.eiren.vr.trackers.ComputedTracker;
-import io.eiren.vr.trackers.HMDTracker;
-import io.eiren.vr.trackers.IMUTracker;
-import io.eiren.vr.trackers.Tracker;
-import io.eiren.vr.trackers.TrackerConfig;
-import io.eiren.vr.trackers.TrackerMountingRotation;
-import io.eiren.vr.trackers.TrackerWithBattery;
-import io.eiren.vr.trackers.TrackerWithTPS;
+
+import io.eiren.vr.trackers.*;
 import javafx.scene.control.ComboBox;
 import javafx.scene.control.Label;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.VBox;
 
 public class TrackersList extends VBox {
-	
+
 	Quaternion q = new Quaternion();
 	Vector3f v = new Vector3f();
 	float[] angles = new float[3];
-	
+
 	private List<TrackerRow> trackers = new FastList<>();
-	
+
 	private final VRServer server;
 	private final SlimeVRGUIJFX gui;
 
@@ -60,11 +44,11 @@ public class TrackersList extends VBox {
 	@AWTThread
 	private void build() {
 		getChildren().clear();
-		
+
 		trackers.sort((tr1, tr2) -> getTrackerSort(tr1.t) - getTrackerSort(tr2.t));
-		
+
 		Class<? extends Tracker> currentClass = null;
-		
+
 		for(int i = 0; i < trackers.size(); ++i) {
 			//getChildren().add(Box.createVerticalStrut(3));
 			TrackerRow tr = trackers.get(i);
@@ -78,9 +62,9 @@ public class TrackersList extends VBox {
 		}
 		gui.refresh();
 	}
-	
+
 	AtomicBoolean updateQueued = new AtomicBoolean();
-	
+
 	@ThreadSafe
 	public void updateTrackers() {
 		if(updateQueued.getAndSet(true))
@@ -91,7 +75,7 @@ public class TrackersList extends VBox {
 				trackers.get(i).update();
 		});
 	}
-	
+
 	@ThreadSafe
 	public void newTrackerAdded(Tracker t) {
 		javafx.application.Platform.runLater(() -> {
@@ -99,9 +83,9 @@ public class TrackersList extends VBox {
 			build();
 		});
 	}
-	
+
 	private class TrackerRow extends GridPane {
-		
+
 		final Tracker t;
 		Label position;
 		Label rotation;
@@ -110,7 +94,7 @@ public class TrackersList extends VBox {
 		Label bat;
 		Label ping;
 		Label raw;
-		
+
 		@AWTThread
 		public TrackerRow(Tracker t) {
 			super();
@@ -125,11 +109,11 @@ public class TrackersList extends VBox {
 				TrackerConfig cfg = server.getTrackerConfig(t);
 				ComboBox<String> desSelect;
 				add(desSelect = new ComboBox<>(), 0, 1, 2, 1);
-				for(TrackerBodyPosition p : TrackerBodyPosition.values) {
+				for(TrackerPosition p : TrackerPosition.values) {
 					desSelect.getItems().add(p.name());
 				}
 				if(cfg.designation != null) {
-					TrackerBodyPosition p = TrackerBodyPosition.getByDesignation(cfg.designation);
+					TrackerPosition p = TrackerPosition.getByDesignation(cfg.designation);
 					//if(p != null)
 					//	desSelect.setSelectedItem(p.name());
 				}
@@ -199,7 +183,7 @@ public class TrackersList extends VBox {
 			t.getRotation(q);
 			t.getPosition(v);
 			q.toAngles(angles);
-			
+
 			position.setText(StringUtils.prettyNumber(v.x, 1)
 					+ " " + StringUtils.prettyNumber(v.y, 1)
 					+ " " + StringUtils.prettyNumber(v.z, 1));
@@ -207,7 +191,7 @@ public class TrackersList extends VBox {
 					+ " " + StringUtils.prettyNumber(angles[1] * FastMath.RAD_TO_DEG, 0)
 					+ " " + StringUtils.prettyNumber(angles[2] * FastMath.RAD_TO_DEG, 0));
 			status.setText(t.getStatus().toString().toLowerCase());
-			
+
 			if(t instanceof TrackerWithTPS) {
 				tps.setText(StringUtils.prettyNumber(((TrackerWithTPS) t).getTPS(), 1));
 			}
@@ -225,7 +209,7 @@ public class TrackersList extends VBox {
 					+ " " + StringUtils.prettyNumber(q.getW(), 4));
 		}
 	}
-	
+
 	private static int getTrackerSort(Tracker t) {
 		if(t instanceof HMDTracker)
 			return 0;
