@@ -10,3 +10,7 @@ build
 .stignore
 
 MagnetoLib.dll
+/.idea/
+*.log
+logs
+vrconfig.yml
