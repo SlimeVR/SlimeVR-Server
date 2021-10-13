@@ -7,5 +7,7 @@ root = true
 indent_style = tab
 end_of_line = lf
 charset = utf-8
+# This line causes problems with VSCode and potentially with other editors where all purely
+# whitespace lines are trimmed to be empty when saved, causing excessive worthless changes with Git
 #trim_trailing_whitespace = true
 insert_final_newline = true
