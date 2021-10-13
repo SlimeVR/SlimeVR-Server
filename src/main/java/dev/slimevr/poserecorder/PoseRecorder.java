@@ -34,35 +34,47 @@ public class PoseRecorder {
 
 	@VRServerThread
 	public void onTick() {
-		if(numFrames > 0) {
-			PoseFrames poseFrame = this.poseFrame;
-			List<Pair<Tracker, PoseFrameTracker>> trackers = this.trackers;
-			if (poseFrame != null && trackers != null) {
-				if (frameCursor < numFrames) {
-					long curTime = System.currentTimeMillis();
-					if (curTime >= nextFrameTimeMs) {
-						nextFrameTimeMs += frameRecordingInterval;
+		if (numFrames <= 0) {
+			return;
+		}
 
-						// To prevent duplicate frames, make sure the frame time is always in the future
-						if (nextFrameTimeMs <= curTime) {
-							nextFrameTimeMs = curTime + frameRecordingInterval;
-						}
+		PoseFrames poseFrame = this.poseFrame;
+		List<Pair<Tracker, PoseFrameTracker>> trackers = this.trackers;
+		if (poseFrame == null || trackers == null) {
+			return;
+		}
 
-						int cursor = frameCursor++;
-						for(Pair<Tracker, PoseFrameTracker> tracker : trackers) {
-							// Add a frame for each tracker
-							tracker.getRight().addFrame(cursor, tracker.getLeft());
-						}
+		if (frameCursor >= numFrames) {
+			// If done and hasn't yet, send finished recording
+			stopFrameRecording();
+			return;
+		}
+		
+		long curTime = System.currentTimeMillis();
+		if (curTime < nextFrameTimeMs) {
+			return;
+		}
 
-						// If done, send finished recording
-						if(frameCursor >= numFrames) {
-							internalStopRecording();
-						}
-					}
-				} else {
-					// If done and hasn't yet, send finished recording
-					internalStopRecording();
-				}
+		nextFrameTimeMs += frameRecordingInterval;
+
+		// To prevent duplicate frames, make sure the frame time is always in the future
+		if (nextFrameTimeMs <= curTime) {
+			nextFrameTimeMs = curTime + frameRecordingInterval;
+		}
+
+		// Make sure it's synchronized since this is the server thread interacting with
+		// an unknown outside thread controlling this class
+		synchronized (this) {
+			// A stopped recording will be accounted for by an empty "trackers" list
+			int cursor = frameCursor++;
+			for(Pair<Tracker, PoseFrameTracker> tracker : trackers) {
+				// Add a frame for each tracker
+				tracker.getRight().addFrame(cursor, tracker.getLeft());
+			}
+
+			// If done, send finished recording
+			if(frameCursor >= numFrames) {
+				stopFrameRecording();
 			}
 		}
 	}
@@ -116,7 +128,7 @@ public class PoseRecorder {
 		return currentRecording;
 	}
 
-	private void internalStopRecording() {
+	public synchronized void stopFrameRecording() {
 		CompletableFuture<PoseFrames> currentRecording = this.currentRecording;
 		if(currentRecording != null && !currentRecording.isDone()) {
 			// Stop the recording, returning the frames recorded
@@ -127,10 +139,6 @@ public class PoseRecorder {
 		frameCursor = 0;
 		trackers.clear();
 		poseFrame = null;
-	}
-
-	public synchronized void stopFrameRecording() {
-		internalStopRecording();
 	}
 
 	public synchronized void cancelFrameRecording() {
@@ -146,23 +154,23 @@ public class PoseRecorder {
 		poseFrame = null;
 	}
 
-	public boolean isReadyToRecord() {
+	public synchronized boolean isReadyToRecord() {
 		return server.getTrackersCount() > 0;
 	}
 
-	public boolean isRecording() {
+	public synchronized boolean isRecording() {
 		return numFrames > frameCursor;
 	}
 
-	public boolean hasRecording() {
+	public synchronized boolean hasRecording() {
 		return currentRecording != null;
 	}
 
-	public Future<PoseFrames> getFramesAsync() {
+	public synchronized Future<PoseFrames> getFramesAsync() {
 		return currentRecording;
 	}
 
-	public PoseFrames getFrames() throws ExecutionException, InterruptedException {
+	public synchronized PoseFrames getFrames() throws ExecutionException, InterruptedException {
 		CompletableFuture<PoseFrames> currentRecording = this.currentRecording;
 		return currentRecording != null ? currentRecording.get() : null;
 	}

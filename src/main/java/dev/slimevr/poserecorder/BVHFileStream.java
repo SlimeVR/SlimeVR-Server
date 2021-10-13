@@ -180,5 +180,6 @@ public class BVHFileStream extends PoseDataStream {
 	@Override
 	public void close() throws IOException {
 		writer.close();
+		super.close();
 	}
 }
