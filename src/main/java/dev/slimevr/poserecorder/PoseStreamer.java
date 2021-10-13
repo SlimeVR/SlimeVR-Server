@@ -13,7 +13,7 @@ public class PoseStreamer {
 	protected long nextFrameTimeMs = -1L;
 
 	private HumanSkeleton skeleton;
-	private PoseFileStream poseFileStream;
+	private PoseDataStream poseFileStream;
 
 	protected final VRServer server;
 
@@ -32,7 +32,7 @@ public class PoseStreamer {
 
 	@VRServerThread
 	public void onTick() {
-		PoseFileStream poseFileStream = this.poseFileStream;
+		PoseDataStream poseFileStream = this.poseFileStream;
 		if (poseFileStream != null) {
 
 			long curTime = System.currentTimeMillis();
@@ -62,23 +62,23 @@ public class PoseStreamer {
 		this.frameRecordingInterval = intervalMs;
 	}
 
-	public void setOutput(PoseFileStream poseFileStream) throws IOException {
+	public void setOutput(PoseDataStream poseFileStream) throws IOException {
 		poseFileStream.writeHeader(skeleton, this);
 		this.poseFileStream = poseFileStream;
 		nextFrameTimeMs = -1L; // Reset the frame timing
 	}
 
-	public void setOutput(PoseFileStream poseFileStream, long intervalMs) throws IOException {
+	public void setOutput(PoseDataStream poseFileStream, long intervalMs) throws IOException {
 		setFrameInterval(intervalMs);
 		setOutput(poseFileStream);
 	}
 
-	public PoseFileStream getOutput() {
+	public PoseDataStream getOutput() {
 		return poseFileStream;
 	}
 
 	public void closeOutput() throws IOException {
-		PoseFileStream poseFileStream = this.poseFileStream;
+		PoseDataStream poseFileStream = this.poseFileStream;
 
 		if (poseFileStream != null) {
 			poseFileStream.writeFooter(skeleton);

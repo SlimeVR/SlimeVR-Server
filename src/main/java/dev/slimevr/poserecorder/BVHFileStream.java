@@ -16,7 +16,7 @@ import org.apache.commons.lang3.StringUtils;
 import io.eiren.vr.processor.HumanSkeleton;
 import io.eiren.vr.processor.TransformNode;
 
-public class BVHFileStream extends PoseFileStream {
+public class BVHFileStream extends PoseDataStream {
 
 	private static final int LONG_MAX_VALUE_DIGITS = Long.toString(Long.MAX_VALUE).length();
 	private static final float POS_SCALE = 10f;
@@ -31,17 +31,17 @@ public class BVHFileStream extends PoseFileStream {
 
 	public BVHFileStream(OutputStream outputStream) {
 		super(outputStream);
-		writer = new BufferedWriter(new OutputStreamWriter(outputStream), 128);
+		writer = new BufferedWriter(new OutputStreamWriter(outputStream), 4096);
 	}
 
 	public BVHFileStream(File file) throws FileNotFoundException {
 		super(file);
-		writer = new BufferedWriter(new OutputStreamWriter(outputStream), 128);
+		writer = new BufferedWriter(new OutputStreamWriter(outputStream), 4096);
 	}
 
 	public BVHFileStream(String file) throws FileNotFoundException {
 		super(file);
-		writer = new BufferedWriter(new OutputStreamWriter(outputStream), 128);
+		writer = new BufferedWriter(new OutputStreamWriter(outputStream), 4096);
 	}
 
 	private String getBufferedFrameCount(long frameCount) {
@@ -107,8 +107,8 @@ public class BVHFileStream extends PoseFileStream {
 		writer.write("Frames: ");
 
 		// Get frame offset for finishing writing the file
-		if (parentStream instanceof FileOutputStream) {
-			FileOutputStream fileOutputStream = (FileOutputStream)parentStream;
+		if (outputStream instanceof FileOutputStream) {
+			FileOutputStream fileOutputStream = (FileOutputStream)outputStream;
 			// Flush buffer to get proper offset
 			writer.flush();
 			frameCountOffset = fileOutputStream.getChannel().position();
@@ -166,8 +166,8 @@ public class BVHFileStream extends PoseFileStream {
 	@Override
 	public void writeFooter(HumanSkeleton skeleton) throws IOException {
 		// Write the final frame count for files
-		if (parentStream instanceof FileOutputStream) {
-			FileOutputStream fileOutputStream = (FileOutputStream)parentStream;
+		if (outputStream instanceof FileOutputStream) {
+			FileOutputStream fileOutputStream = (FileOutputStream)outputStream;
 			// Flush before anything else
 			writer.flush();
 			// Seek to the count offset
