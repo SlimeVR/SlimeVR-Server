@@ -32,133 +32,75 @@
   OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 -->
 
+<?import javafx.geometry.Insets?>
 <?import javafx.scene.control.Button?>
-<?import javafx.scene.control.ComboBox?>
 <?import javafx.scene.control.Label?>
-<?import javafx.scene.control.Menu?>
-<?import javafx.scene.control.MenuBar?>
-<?import javafx.scene.control.MenuItem?>
-<?import javafx.scene.control.SeparatorMenuItem?>
-<?import javafx.scene.effect.DropShadow?>
-<?import javafx.scene.image.Image?>
+<?import javafx.scene.control.Tab?>
+<?import javafx.scene.control.TabPane?>
 <?import javafx.scene.image.ImageView?>
 <?import javafx.scene.layout.AnchorPane?>
-<?import javafx.scene.text.Font?>
-<?import javafx.scene.text.TextFlow?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.Pane?>
 
-<AnchorPane fx:id="mainPane" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" minHeight="-Infinity" minWidth="-Infinity" prefHeight="633.0" prefWidth="950.0" stylesheets="@main.css" xmlns="http://javafx.com/javafx/16" xmlns:fx="http://javafx.com/fxml/1">
-   <children>
-
-      <MenuBar fx:id="fxMenuBar" prefHeight="27.0" prefWidth="950.0">
-        <menus>
-          <Menu fx:id="helpMenu" mnemonicParsing="false" text="Help">
-            <items>
-                  <MenuItem mnemonicParsing="false" text="Getting Started" />
-                  <SeparatorMenuItem mnemonicParsing="false" />
-                  <MenuItem mnemonicParsing="false" text="Check for Updates" />
-              <MenuItem mnemonicParsing="false" text="About" />
-            </items>
-          </Menu>
-        </menus>
-      </MenuBar>
-      <AnchorPane fx:id="logoPane" layoutX="14.0" layoutY="34.0" prefHeight="70.0" prefWidth="221.0">
-         <children>
-            <ImageView fitHeight="60.0" fitWidth="60.0" layoutX="7.0" layoutY="5.0">
-               <image>
-                  <Image url="@v6.gif" />
-               </image>
-               <effect>
-                  <DropShadow />
-               </effect>
-            </ImageView>
-            <Label fx:id="logoText" layoutX="75.0" layoutY="3.0" prefHeight="51.0" prefWidth="141.0" text="SlimeVR" textOverrun="CLIP" />
-         </children>
-      </AnchorPane>
-      <AnchorPane fx:id="trackerPane" layoutX="14.0" layoutY="124.0" prefHeight="488.0" prefWidth="497.0">
-         <children>
-            <Label fx:id="comboBoxLable" layoutX="183.0" layoutY="14.0" text="Steam VR Trackers" textFill="WHITE" />
-            <ComboBox fx:id="steamVRComboBox" layoutX="44.0" layoutY="39.0" prefHeight="31.0" prefWidth="409.0" />
-            <TextFlow fx:id="trackersListTextFlow" layoutX="15.0" layoutY="88.0" prefHeight="386.0" prefWidth="468.0" />
-         </children></AnchorPane>
-      <AnchorPane fx:id="bodyPane" layoutX="528.0" layoutY="124.0" prefHeight="488.0" prefWidth="409.0">
-         <children>
-            <Button fx:id="bodyBTN" layoutX="12.0" layoutY="14.0" mnemonicParsing="false" onAction="#bodyBtnAction" prefHeight="31.0" prefWidth="85.0" text="Skeleton">
-               <font>
-                  <Font size="14.0" />
-               </font>
-            </Button>
-            <Button fx:id="bodyResetAll" layoutX="311.0" layoutY="14.0" mnemonicParsing="false" prefHeight="31.0" prefWidth="85.0" text="Reset All">
-               <font>
-                  <Font size="14.0" />
-               </font>
-            </Button>
-            <Button fx:id="bodyAuto" layoutX="163.0" layoutY="14.0" mnemonicParsing="false" prefHeight="31.0" prefWidth="85.0" text="Auto">
-               <font>
-                  <Font size="14.0" />
-               </font>
-            </Button>
-            <TextFlow fx:id="bodyMinusTextFlow" layoutX="238.0" layoutY="58.0" prefHeight="416.0" prefWidth="47.0" />
-            <TextFlow fx:id="bodyLableTextFlow" layoutX="182.0" layoutY="58.0" prefHeight="416.0" prefWidth="47.0" />
-            <TextFlow fx:id="bodyResetTextFlow" layoutX="326.0" layoutY="58.0" prefHeight="416.0" prefWidth="55.0" />
-            <TextFlow fx:id="bodyNameTextFlow" layoutX="14.0" layoutY="58.0" prefHeight="416.0" prefWidth="93.0" />
-            <TextFlow fx:id="bodyPlusTextFlow" layoutX="125.0" layoutY="58.0" prefHeight="416.0" prefWidth="47.0" />
-         </children>
-      </AnchorPane>
-      <AnchorPane fx:id="skeletonPane" layoutX="528.0" layoutY="124.0" prefHeight="488.0" prefWidth="409.0" visible="false">
-         <children>
-            <Button fx:id="skeletonBTN" layoutX="12.0" layoutY="14.0" mnemonicParsing="false" onAction="#skeletonBtnAction" prefHeight="31.0" prefWidth="85.0" text="Body">
-               <font>
-                  <Font size="14.0" />
-               </font>
-            </Button>
-            <TextFlow fx:id="jointTextFlow" layoutX="17.0" layoutY="58.0" prefHeight="416.0" prefWidth="93.0" />
-            <TextFlow fx:id="skeletonTextFlow1" layoutX="110.0" layoutY="58.0" prefHeight="416.0" prefWidth="47.0" />
-            <TextFlow layoutX="111.0" layoutY="58.0" prefHeight="416.0" prefWidth="47.0" fx:id="xTextFlow" />
-            <TextFlow fx:id="yTextFlow" layoutX="157.0" layoutY="58.0" prefHeight="416.0" prefWidth="47.0" />
-            <TextFlow fx:id="zTextFlow" layoutX="204.0" layoutY="58.0" prefHeight="416.0" prefWidth="47.0" />
-            <TextFlow fx:id="pitchTextFlow" layoutX="251.0" layoutY="58.0" prefHeight="416.0" prefWidth="47.0" />
-            <TextFlow fx:id="yawTextFlow" layoutX="298.0" layoutY="58.0" prefHeight="416.0" prefWidth="47.0" />
-            <TextFlow fx:id="rollTextFlow" layoutX="345.0" layoutY="58.0" prefHeight="416.0" prefWidth="47.0" />
-            <Button fx:id="skeletonArrowBTN" layoutX="110.0" layoutY="14.0" mnemonicParsing="false" onAction="#skeletonArrowBtnAction" prefHeight="31.0" prefWidth="31.0" text="❮" textAlignment="CENTER">
-               <font>
-                  <Font name="System Bold" size="15.0" />
-               </font>
-            </Button>
-         </children>
-      </AnchorPane>
-      <Button fx:id="wifiBTN" layoutX="855.0" layoutY="43.0" mnemonicParsing="false" onAction="#wifiBtnAction" prefHeight="50.0" prefWidth="81.0" textFill="#f4f4f4">
-         <font>
-            <Font size="14.0" />
-         </font>
-         <graphic>
-            <ImageView fitHeight="41.0" fitWidth="60.0">
-               <image>
-                  <Image url="@wi-fi.png" />
-               </image>
-               <effect>
-                  <DropShadow />
-               </effect>
-            </ImageView>
-         </graphic>
-      </Button>
-      <Button fx:id="fastReset" layoutX="737.0" layoutY="53.0" mnemonicParsing="false" onAction="#fastReset" prefHeight="31.0" prefWidth="85.0" text="Fast Reset">
-         <font>
-            <Font size="14.0" />
-         </font>
-      </Button>
-      <Button fx:id="reset" layoutX="644.0" layoutY="53.0" mnemonicParsing="false" onAction="#reset" prefHeight="31.0" prefWidth="85.0" text="Reset">
-         <font>
-            <Font size="14.0" />
-         </font>
-      </Button>
-      <Button fx:id="closeBTN" layoutX="925.0" layoutY="1.0" mnemonicParsing="false" onAction="#closeBtnAction" prefHeight="25.0" prefWidth="25.0">
-         <effect>
-            <DropShadow />
-         </effect></Button>
-      <Button fx:id="trayBTN" layoutX="896.0" layoutY="1.0" mnemonicParsing="false" onAction="#trayBtnAction" prefHeight="25.0" prefWidth="25.0">
-         <effect>
-            <DropShadow />
-         </effect>
-      </Button>
-   </children>
+<AnchorPane fx:id="mainPane" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" minHeight="-Infinity" minWidth="-Infinity" prefHeight="746.0" prefWidth="1113.0" stylesheets="@main.css" xmlns="http://javafx.com/javafx/17" xmlns:fx="http://javafx.com/fxml/1">
+	<children>
+		<Pane id="topMenu" prefHeight="132.0" prefWidth="1113.0" AnchorPane.bottomAnchor="614.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+			<children>
+				<ImageView fx:id="logoImage" fitHeight="132.0" fitWidth="200.0" layoutY="2.0" pickOnBounds="true" preserveRatio="true" />
+				<Label fx:id="logoLabel" layoutX="200.0" layoutY="68.0" text="LogoLabel" />
+				<HBox fx:id="buttonsBox" layoutX="456.0" layoutY="1.0" prefHeight="132.0" prefWidth="651.0">
+					<children>
+						<Button fx:id="buttonMainTab" mnemonicParsing="false" onAction="#buttonMainTabPressed" prefHeight="157.0" prefWidth="151.0" text="Main">
+							<HBox.margin>
+								<Insets right="10.0" />
+							</HBox.margin>
+						</Button>
+						<Button fx:id="buttonBodyTab" layoutX="10.0" layoutY="10.0" mnemonicParsing="false" onAction="#buttonBodyTabPressed" prefHeight="157.0" prefWidth="151.0" text="Body">
+							<HBox.margin>
+								<Insets right="10.0" />
+							</HBox.margin>
+						</Button>
+						<Button fx:id="buttonSettingsTab" layoutX="161.0" layoutY="10.0" mnemonicParsing="false" onAction="#buttonSettingsTabPressed" prefHeight="157.0" prefWidth="151.0" text="Settings">
+							<HBox.margin>
+								<Insets right="10.0" />
+							</HBox.margin>
+						</Button>
+						<Button fx:id="buttonLinksTab" layoutX="312.0" layoutY="10.0" mnemonicParsing="false" onAction="#buttonLinksTabPressed" prefHeight="157.0" prefWidth="151.0" text="Links">
+							<HBox.margin>
+								<Insets right="10.0" />
+							</HBox.margin>
+						</Button>
+					</children>
+				</HBox>
+			</children>
+		</Pane>
+		<AnchorPane layoutY="132.0" prefHeight="615.0" prefWidth="1113.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="132.0">
+			<children>
+				<TabPane fx:id="tabsPane" prefHeight="615.0" prefWidth="1113.0" tabClosingPolicy="UNAVAILABLE" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+					<tabs>
+						<Tab fx:id="mainTab" text="Main">
+							<content>
+								<fx:include fx:id="mainTabPage" source="mainTab.fxml" />
+							</content>
+						</Tab>
+						<Tab fx:id="bodyTab" text="Body">
+							<content>
+								<fx:include fx:id="bodyTabPage" source="bodyTab.fxml" />
+							</content>
+						</Tab>
+						<Tab fx:id="settingsTab" text="Settings">
+							<content>
+								<fx:include fx:id="settingsTabPage" source="settingsTab.fxml" />
+							</content>
+						</Tab>
+						<Tab fx:id="linksTab" text="Links">
+							<content>
+								<fx:include fx:id="linksTabPage" source="linksTab.fxml" />
+							</content>
+						</Tab>
+					</tabs>
+				</TabPane>
+			</children>
+		</AnchorPane>
+	</children>
 </AnchorPane>

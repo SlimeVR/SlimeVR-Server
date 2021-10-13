@@ -13,16 +13,16 @@ import java.io.IOException;
 import java.util.Objects;
 
 public class MainStage extends Application {
-	
+
 	public FXTrayIcon icon;
-	
+
 	@Override
 	public void start(Stage stage) throws IOException {
-		
+
 		//if (FXTrayIcon.isSupported()) {
 		icon = new FXTrayIcon(stage, getClass().getResource("/icon256.png"));
 		icon.show();
-		
+
 		FXMLLoader fxmlLoader = new FXMLLoader(MainStage.class.getResource("/main.fxml"));
 		MainStageController controller = new MainStageController(stage, icon);
 		fxmlLoader.setController(controller);
@@ -30,11 +30,11 @@ public class MainStage extends Application {
 		stage.setTitle("SlimeVR Server (" + Main.VERSION + ")");
 		stage.getIcons().add(new Image(Objects.requireNonNull(getClass().getResourceAsStream("/icon256.png"))));
 		stage.setScene(scene);
-		stage.setResizable(false);
+		stage.setResizable(true);
 		stage.centerOnScreen();
 		stage.initStyle(StageStyle.UNDECORATED);
-		
+
 		stage.show();
 	}
-	
+
 }
