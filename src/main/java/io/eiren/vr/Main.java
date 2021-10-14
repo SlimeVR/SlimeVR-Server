@@ -2,6 +2,11 @@ package io.eiren.vr;
 
 import java.io.File;
 
+import javax.swing.JOptionPane;
+
+import org.apache.commons.lang3.JavaVersion;
+import org.apache.commons.lang3.SystemUtils;
+
 import dev.slimevr.gui.VRServerGUI;
 import io.eiren.util.logging.LogManager;
 
@@ -21,6 +26,12 @@ public class Main {
 			LogManager.initialize(new File(dir, "logs/"), dir);
 		} catch(Exception e1) {
 			e1.printStackTrace();
+		}
+
+		if (!SystemUtils.isJavaVersionAtLeast(JavaVersion.JAVA_11)) {
+			LogManager.log.severe("SlimeVR start-up error! A minimum of Java 11 is required.");
+			JOptionPane.showMessageDialog(null, "SlimeVR start-up error! A minimum of Java 11 is required.", "SlimeVR: Java Runtime Mismatch", JOptionPane.ERROR_MESSAGE);
+			return;
 		}
 		
 		try {
