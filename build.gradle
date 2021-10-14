@@ -54,13 +54,6 @@ dependencies {
 	compile project(':slime-java-commons')
 
 
-	/*	implementation 'org.openjfx:javafx-base:18-ea+2'
-	implementation 'org.openjfx:javafx-graphics:18-ea+2'
-	implementation 'org.openjfx:javafx-controls:18-ea+2'
-	implementation 'org.openjfx:javafx-fxml:18-ea+2'
-	implementation 'org.openjfx:javafx-swing:18-ea+2'
-	implementation 'org.openjfx:javafx-media:18-ea+2'
-	implementation 'com.jfoenix:jfoenix:9.0.10'*/
 	// This dependency is exported to consumers, that is to say found on their compile classpath.
 	compile 'org.apache.commons:commons-math3:3.6.1'
 	compile 'org.yaml:snakeyaml:1.25'
@@ -93,4 +86,7 @@ shadowJar {
 }
 application {
 	mainClassName = 'io.eiren.vr.Main'
+}
+repositories {
+	mavenCentral()
 }

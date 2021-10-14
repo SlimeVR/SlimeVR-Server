@@ -6,6 +6,10 @@ import com.jme3.math.Quaternion;
 import com.jme3.math.Vector3f;
 
 import dev.slimevr.gui.javafx.ConfirmBox;
+import dev.slimevr.gui.tabs.BodyTabController;
+import dev.slimevr.gui.tabs.LinksTabController;
+import dev.slimevr.gui.tabs.MainTabController;
+import dev.slimevr.gui.tabs.SettingsTabController;
 import io.eiren.util.StringUtils;
 import io.eiren.util.ann.ThreadSafe;
 import io.eiren.util.collections.FastList;
@@ -13,24 +17,19 @@ import io.eiren.vr.Main;
 import io.eiren.vr.VRServer;
 import io.eiren.vr.processor.HumanSkeleton;
 import io.eiren.vr.processor.TransformNode;
-import javafx.animation.Animation;
-import javafx.animation.KeyFrame;
-import javafx.animation.Timeline;
+
 import javafx.application.Platform;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
-import javafx.scene.control.Button;
-import javafx.scene.control.ComboBox;
-import javafx.scene.control.MenuBar;
-import javafx.scene.effect.DropShadow;
-import javafx.scene.input.MouseEvent;
+import javafx.scene.control.*;
+import javafx.scene.image.ImageView;
 import javafx.scene.layout.AnchorPane;
+import javafx.scene.layout.HBox;
 import javafx.scene.text.Text;
 import javafx.scene.text.TextAlignment;
 import javafx.scene.text.TextFlow;
 import javafx.stage.Stage;
-import javafx.util.Duration;
 
 import java.net.URL;
 import java.util.List;
@@ -50,52 +49,65 @@ public class MainStageController implements Initializable {
 	Vector3f v = new Vector3f();
 	float[] angles = new float[3];
 
-	@FXML
-	private MenuBar fxMenuBar;
 
 	@FXML
-	private Button reset;
+	private ResourceBundle resources;
 
 	@FXML
-	private ComboBox steamVRComboBox;
+	private URL location;
 
 	@FXML
-	private AnchorPane skeletonPane;
+	private Tab bodyTab;
+
 	@FXML
-	private Button skeletonBTN;
+	private Button buttonBodyTab;
+
 	@FXML
-	private Button skeletonArrowBTN;
+	private Button buttonLinksTab;
+
 	@FXML
-	private TextFlow jointTextFlow;
+	private Button buttonMainTab;
+
 	@FXML
-	private TextFlow xTextFlow;
+	private Button buttonSettingsTab;
+
 	@FXML
-	private TextFlow yTextFlow;
+	private HBox buttonsBox;
+
 	@FXML
-	private TextFlow zTextFlow;
+	private Tab linksTab;
+
 	@FXML
-	private TextFlow pitchTextFlow;
+	private ImageView logoImage;
+
 	@FXML
-	private TextFlow yawTextFlow;
+	private Label logoLabel;
+
 	@FXML
-	private TextFlow rollTextFlow;
+	private AnchorPane mainPane;
+
+	@FXML
+	private Tab mainTab;
+
+
+	@FXML
+	private Tab settingsTab;
+
+	@FXML
+	private TabPane tabsPane;
+
+	@FXML
+	private MainTabController mainTabPageController;
+
+	@FXML
+	private BodyTabController bodyTabPageController;
+
+	@FXML
+	private SettingsTabController settingsTabController;
+	@FXML
+	private LinksTabController linksTabController;
 
 	private BodyProportion bodyProportion;
-
-	@FXML
-	private TextFlow bodyNameTextFlow;
-	@FXML
-	private TextFlow bodyPlusTextFlow;
-	@FXML
-	private TextFlow bodyLableTextFlow;
-	@FXML
-	private TextFlow bodyMinusTextFlow;
-	@FXML
-	private TextFlow bodyResetTextFlow;
-	@FXML
-	private Button bodyResetAll;
-	@FXML
-	private Button bodyAuto;
 
 	private int i = 0;
 	private int n = 0;
@@ -116,7 +128,6 @@ public class MainStageController implements Initializable {
 	@Override
 	public void initialize(URL location, ResourceBundle resources) {
 
-		menuBarInit();
 
 		steamVRTrackersSetup();
 
@@ -126,42 +137,6 @@ public class MainStageController implements Initializable {
 
 	}
 
-	@FXML
-	private void wifiBtnAction(ActionEvent event) {
-		new WiFiWindow();
-	}
-
-	@FXML
-	private void skeletonBtnAction(ActionEvent event) {
-		skeletonPane.setVisible(false);
-		skeletonPane.setEffect(null);
-	}
-
-	@FXML
-	private void skeletonArrowBtnAction(ActionEvent event) {
-		skeletonPane.setLayoutX(102);
-		skeletonPane.setLayoutY(124);
-		skeletonPane.setEffect(new DropShadow());
-		skeletonArrowBTN.setVisible(false);
-		skeletonBTN.setText("\uD83D\uDFAB");
-		skeletonBTN.setPrefSize(31, 31);
-		skeletonBTN.setStyle("-fx-font-size : 13.5px");
-		skeletonBTN.setLayoutX(364);
-		skeletonBTN.setLayoutY(14);
-	}
-
-	@FXML
-	private void bodyBtnAction(ActionEvent event) {
-		skeletonPane.setVisible(true);
-		skeletonPane.setLayoutX(528);
-		skeletonPane.setLayoutY(124);
-		skeletonArrowBTN.setVisible(true);
-		skeletonBTN.setText("Body");
-		skeletonBTN.setPrefSize(85, 31);
-		skeletonBTN.setLayoutX(12);
-		skeletonBTN.setLayoutY(14);
-		skeletonPane.setEffect(null);
-	}
 
 	@FXML
 	private void closeBtnAction(ActionEvent event) {
@@ -176,29 +151,32 @@ public class MainStageController implements Initializable {
 	}
 
 	@FXML
-	private void reset(ActionEvent event) {
-		reset.setText(String.valueOf(3));
-		n = 2;
-		Timeline timeline = new Timeline(new KeyFrame(Duration.seconds(1), timeLineEvent -> {
-			if(n > 0)
-				reset.setText(String.valueOf(n));
-			if(n == 0) {
-				server.resetTrackers();
-				reset.setText("Reset");
-			}
-			n--;
-		}));
-		timeline.setCycleCount(3);
-		timeline.play();
+	public void buttonMainTabPressed(ActionEvent actionEvent) {
+		changeTab(mainTab);
 	}
 
 	@FXML
-	private void fastReset(ActionEvent event) {
-		server.resetTrackersYaw();
+	public void buttonBodyTabPressed(ActionEvent actionEvent) {
+		changeTab(bodyTab);
+	}
+
+	@FXML
+	public void buttonSettingsTabPressed(ActionEvent actionEvent) {
+		changeTab(settingsTab);
+	}
+
+	@FXML
+	public void buttonLinksTabPressed(ActionEvent actionEvent) {
+		changeTab(linksTab);
+	}
+
+	private void changeTab(Tab tab)
+	{
+		tabsPane.getSelectionModel().select(tab);
 	}
 
 	private void skeletonDataInit() {
-		customizeTextFlow(jointTextFlow);
+		/*customizeTextFlow(jointTextFlow);
 		customizeTextFlow(xTextFlow);
 		customizeTextFlow(yTextFlow);
 		customizeTextFlow(zTextFlow);
@@ -221,7 +199,7 @@ public class MainStageController implements Initializable {
 		}));
 
 		timeline.setCycleCount(Animation.INDEFINITE);
-		timeline.play();
+		timeline.play();*/
 	}
 
 	@ThreadSafe
@@ -262,17 +240,17 @@ public class MainStageController implements Initializable {
 		//separator.prefWidthProperty().bind(skeletonTextFlow.widthProperty());
 		//separator.setStyle("-fx-background-color: red;");
 
-		jointTextFlow.getChildren().addAll(name, new Text(System.lineSeparator()));
+		/*jointTextFlow.getChildren().addAll(name, new Text(System.lineSeparator()));
 		xTextFlow.getChildren().addAll(x, new Text(System.lineSeparator()));
 		yTextFlow.getChildren().addAll(y, new Text(System.lineSeparator()));
 		zTextFlow.getChildren().addAll(z, new Text(System.lineSeparator()));
 		pitchTextFlow.getChildren().addAll(a1, new Text(System.lineSeparator()));
 		yawTextFlow.getChildren().addAll(a2, new Text(System.lineSeparator()));
-		rollTextFlow.getChildren().addAll(a3, new Text(System.lineSeparator()));
+		rollTextFlow.getChildren().addAll(a3, new Text(System.lineSeparator()));*/
 	}
 
 	public void steamVRTrackersSetup() {
-		steamVRComboBox.getItems().addAll("Waist", "Waist + Legs", "Waist + Legs + Chest", "Waist + Legs + Knees", "Waist + Legs + Chest + Knees");
+		/*steamVRComboBox.getItems().addAll("Waist", "Waist + Legs", "Waist + Legs + Chest", "Waist + Legs + Knees", "Waist + Legs + Chest + Knees");
 
 		switch(server.config.getInt("virtualtrackers", 3)) {
 		case 1:
@@ -311,11 +289,11 @@ public class MainStageController implements Initializable {
 				break;
 			}
 			server.saveConfig();
-		});
+		});*/
 	}
 
 	public void bodyProportionInit() {
-		bodyProportion.bodyProportionInit(bodyNameTextFlow, bodyPlusTextFlow, bodyLableTextFlow, bodyMinusTextFlow, bodyResetTextFlow);
+		/*bodyProportion.bodyProportionInit(bodyNameTextFlow, bodyPlusTextFlow, bodyLableTextFlow, bodyMinusTextFlow, bodyResetTextFlow);
 
 		bodyResetAll.addEventHandler(MouseEvent.MOUSE_CLICKED, e -> {
 			bodyResetAll.setText(String.valueOf(3));
@@ -337,27 +315,17 @@ public class MainStageController implements Initializable {
 			autoBone = new AutoBoneWindow(server, bodyProportion);
 			autoBone.setVisible(true);
 			autoBone.toFront();
-		});
+		});*/
 	}
 
-	public void menuBarInit() {
-		fxMenuBar.prefWidthProperty().bind(stage.widthProperty());
-		fxMenuBar.addEventHandler(MouseEvent.MOUSE_PRESSED, e -> {
-			xOffset = e.getSceneX();
-			yOffset = e.getSceneY();
-		});
-		fxMenuBar.addEventHandler(MouseEvent.MOUSE_DRAGGED, event -> {
-			stage.setX(event.getScreenX() - xOffset);
-			stage.setY(event.getScreenY() - yOffset);
-		});
-	}
 
 	private void closeProgram() {
-		if(ConfirmBox.display("Confirm Exit", "Are you sure you want to exit?")) {
+		if (ConfirmBox.display("Confirm Exit", "Are you sure you want to exit?")) {
 			// TODO add save settings
 			Platform.exit();
 			System.exit(0);
 		}
 	}
+
 
 }
