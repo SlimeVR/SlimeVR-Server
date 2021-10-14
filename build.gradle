@@ -10,7 +10,6 @@ plugins {
 	id 'application'
 	id 'org.openjfx.javafxplugin' version '0.0.9'
 	id "com.github.johnrengelman.shadow" version "6.1.0"
-	id 'org.jetbrains.kotlin.jvm' version '1.6.0-RC'
 }
 
 sourceCompatibility = 1.8
@@ -75,7 +74,6 @@ dependencies {
 	testImplementation platform('org.junit:junit-bom:5.7.2')
 	testImplementation 'org.junit.jupiter:junit-jupiter'
 	testImplementation 'org.junit.platform:junit-platform-launcher'
-	implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk8"
 }
 test {
 	useJUnitPlatform()
@@ -91,14 +89,4 @@ application {
 }
 repositories {
 	mavenCentral()
-}
-compileKotlin {
-	kotlinOptions {
-		jvmTarget = "1.8"
-	}
-}
-compileTestKotlin {
-	kotlinOptions {
-		jvmTarget = "1.8"
-	}
 }
