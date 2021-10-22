@@ -145,6 +145,13 @@ public class SkeletonConfig extends EJBagNoStretch {
 			add(new ResetButton("Reset", "Foot length"), c(4, row, 2));
 			row++;
 
+			add(new JLabel("Foot offset"), c(0, row, 2));
+			add(new AdjButton("+", "Foot offset", 0.01f), c(1, row, 2));
+			add(new SkeletonLabel("Foot offset"), c(2, row, 2));
+			add(new AdjButton("-", "Foot offset", -0.01f), c(3, row, 2));
+			add(new ResetButton("Reset", "Foot offset"), c(4, row, 2));
+			row++;
+
 			add(new JLabel("Head offset"), c(0, row, 2));
 			add(new AdjButton("+", "Head", 0.01f), c(1, row, 2));
 			add(new SkeletonLabel("Head"), c(2, row, 2));

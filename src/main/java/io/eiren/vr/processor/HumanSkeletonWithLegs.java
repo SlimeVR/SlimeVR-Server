@@ -59,6 +59,7 @@ public class HumanSkeletonWithLegs extends HumanSkeletonWithWaist {
 	 */
 	protected float legsLength = 0.84f;
 	protected float footLength = FOOT_LENGTH_DEFAULT;
+	protected float footOffset = 0f; //horizontal forward/backwards translation feet offset for avatars with bent knees
 	
 	protected float minKneePitch = 0f * FastMath.DEG_TO_RAD;
 	protected float maxKneePitch = 90f * FastMath.DEG_TO_RAD;
@@ -106,6 +107,7 @@ public class HumanSkeletonWithLegs extends HumanSkeletonWithWaist {
 		kneeHeight = server.config.getFloat("body.kneeHeight", kneeHeight);
 		legsLength = server.config.getFloat("body.legsLength", legsLength);
 		footLength = server.config.getFloat("body.footLength", footLength);
+		footOffset = server.config.getFloat("body.footOffset", footOffset);
 		//extendedPelvisModel = server.config.getBoolean("body.model.extendedPelvis", extendedPelvisModel);
 		extendedKneeModel = server.config.getBoolean("body.model.extendedKnee", extendedKneeModel);
 		
@@ -122,10 +124,10 @@ public class HumanSkeletonWithLegs extends HumanSkeletonWithWaist {
 		rightKneeNode.localTransform.setTranslation(0, -(legsLength - kneeHeight), 0);
 		
 		leftKneeNode.attachChild(leftAnkleNode);
-		leftAnkleNode.localTransform.setTranslation(0, -kneeHeight, 0);
+		leftAnkleNode.localTransform.setTranslation(0, -kneeHeight, -footOffset);
 		
 		rightKneeNode.attachChild(rightAnkleNode);
-		rightAnkleNode.localTransform.setTranslation(0, -kneeHeight, 0);
+		rightAnkleNode.localTransform.setTranslation(0, -kneeHeight, -footOffset);
 
 		leftAnkleNode.attachChild(leftFootNode);
 		leftFootNode.localTransform.setTranslation(0, 0, -footLength);
@@ -137,6 +139,7 @@ public class HumanSkeletonWithLegs extends HumanSkeletonWithWaist {
 		configMap.put("Legs length", legsLength);
 		configMap.put("Knee height", kneeHeight);
 		configMap.put("Foot length", footLength);
+		configMap.put("Foot offset", footOffset);
 	}
 	
 	@Override
@@ -147,6 +150,7 @@ public class HumanSkeletonWithLegs extends HumanSkeletonWithWaist {
 			// Resets from the parent already performed
 			resetSkeletonConfig("Hips width");
 			resetSkeletonConfig("Foot length");
+			resetSkeletonConfig("Foot offset");
 			resetSkeletonConfig("Legs length");
 			break;
 		case "Hips width":
@@ -154,6 +158,9 @@ public class HumanSkeletonWithLegs extends HumanSkeletonWithWaist {
 			break;
 		case "Foot length":
 			setSkeletonConfig(joint, FOOT_LENGTH_DEFAULT);
+			break;
+		case "Foot offset":
+			setSkeletonConfig(joint, 0f);
 			break;
 		case "Legs length": // Set legs length to be 5cm above floor level
 			Vector3f vec = new Vector3f();
@@ -183,8 +190,8 @@ public class HumanSkeletonWithLegs extends HumanSkeletonWithWaist {
 		case "Knee height":
 			kneeHeight = newLength;
 			server.config.setProperty("body.kneeHeight", kneeHeight);
-			leftAnkleNode.localTransform.setTranslation(0, -kneeHeight, 0);
-			rightAnkleNode.localTransform.setTranslation(0, -kneeHeight, 0);
+			leftAnkleNode.localTransform.setTranslation(0, -kneeHeight, -footOffset);
+			rightAnkleNode.localTransform.setTranslation(0, -kneeHeight, -footOffset);
 			leftKneeNode.localTransform.setTranslation(0, -(legsLength - kneeHeight), 0);
 			rightKneeNode.localTransform.setTranslation(0, -(legsLength - kneeHeight), 0);
 			break;
@@ -199,6 +206,12 @@ public class HumanSkeletonWithLegs extends HumanSkeletonWithWaist {
 			server.config.setProperty("body.footLength", footLength);
 			leftFootNode.localTransform.setTranslation(0, 0, -footLength);
 			rightFootNode.localTransform.setTranslation(0, 0, -footLength);
+			break;
+		case "Foot offset":
+			footOffset = newLength;
+			server.config.setProperty("body.footOffset", footOffset);
+			leftAnkleNode.localTransform.setTranslation(0, -kneeHeight, -footOffset);
+			rightAnkleNode.localTransform.setTranslation(0, -kneeHeight, -footOffset);
 			break;
 		}
 	}

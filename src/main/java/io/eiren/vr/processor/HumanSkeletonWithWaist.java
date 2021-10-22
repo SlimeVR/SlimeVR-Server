@@ -51,7 +51,7 @@ public class HumanSkeletonWithWaist extends HumanSkeleton {
 	 */
 	protected float trackerWaistDistance = 0.0f;
 	/**
-	 * Distacne from eyes to the base of the neck
+	 * Distance from eyes to the base of the neck
 	 */
 	protected float neckLength = NECK_LENGTH_DEFAULT;
 	/**
