@@ -25,7 +25,7 @@ import org.apache.commons.lang3.tuple.Pair;
 
 import dev.slimevr.autobone.AutoBone;
 import dev.slimevr.gui.swing.EJBox;
-import dev.slimevr.poserecorder.PoseFrame;
+import dev.slimevr.poserecorder.PoseFrames;
 import dev.slimevr.poserecorder.PoseFrameIO;
 import dev.slimevr.poserecorder.PoseRecorder;
 
@@ -82,7 +82,7 @@ public class AutoBoneWindow extends JFrame {
 		return configInfo.toString();
 	}
 	
-	private void saveRecording(PoseFrame frames) {
+	private void saveRecording(PoseFrames frames) {
 		if(saveDir.isDirectory() || saveDir.mkdirs()) {
 			File saveRecording;
 			int recordingIndex = 1;
@@ -101,15 +101,15 @@ public class AutoBoneWindow extends JFrame {
 		}
 	}
 	
-	private List<Pair<String, PoseFrame>> loadRecordings() {
-		List<Pair<String, PoseFrame>> recordings = new FastList<Pair<String, PoseFrame>>();
+	private List<Pair<String, PoseFrames>> loadRecordings() {
+		List<Pair<String, PoseFrames>> recordings = new FastList<Pair<String, PoseFrames>>();
 		if(loadDir.isDirectory()) {
 			File[] files = loadDir.listFiles();
 			if(files != null) {
 				for(File file : files) {
 					if(file.isFile() && org.apache.commons.lang3.StringUtils.endsWithIgnoreCase(file.getName(), ".pfr")) {
 						LogManager.log.info("[AutoBone] Detected recording at \"" + file.getPath() + "\", loading frames...");
-						PoseFrame frames = PoseFrameIO.readFromFile(file);
+						PoseFrames frames = PoseFrameIO.readFromFile(file);
 						
 						if(frames == null) {
 							LogManager.log.severe("Reading frames from \"" + file.getPath() + "\" failed...");
@@ -124,7 +124,7 @@ public class AutoBoneWindow extends JFrame {
 		return recordings;
 	}
 	
-	private float processFrames(PoseFrame frames) {
+	private float processFrames(PoseFrames frames) {
 		autoBone.minDataDistance = server.config.getInt("autobone.minimumDataDistance", autoBone.minDataDistance);
 		autoBone.maxDataDistance = server.config.getInt("autobone.maximumDataDistance", autoBone.maxDataDistance);
 		
@@ -172,8 +172,8 @@ public class AutoBoneWindow extends JFrame {
 												// 1000 samples at 20 ms per sample is 20 seconds
 												int sampleCount = server.config.getInt("autobone.sampleCount", 1000);
 												long sampleRate = server.config.getLong("autobone.sampleRateMs", 20L);
-												Future<PoseFrame> framesFuture = poseRecorder.startFrameRecording(sampleCount, sampleRate);
-												PoseFrame frames = framesFuture.get();
+												Future<PoseFrames> framesFuture = poseRecorder.startFrameRecording(sampleCount, sampleRate);
+												PoseFrames frames = framesFuture.get();
 												LogManager.log.info("[AutoBone] Done recording!");
 												
 												saveRecordingButton.setEnabled(true);
@@ -226,10 +226,10 @@ public class AutoBoneWindow extends JFrame {
 									@Override
 									public void run() {
 										try {
-											Future<PoseFrame> framesFuture = poseRecorder.getFramesAsync();
+											Future<PoseFrames> framesFuture = poseRecorder.getFramesAsync();
 											if(framesFuture != null) {
 												setText("Waiting for Recording...");
-												PoseFrame frames = framesFuture.get();
+												PoseFrames frames = framesFuture.get();
 												
 												if(frames.getTrackerCount() <= 0) {
 													throw new IllegalStateException("Recording has no trackers");
@@ -297,15 +297,15 @@ public class AutoBoneWindow extends JFrame {
 									public void run() {
 										try {
 											setText("Load...");
-											List<Pair<String, PoseFrame>> frameRecordings = loadRecordings();
+											List<Pair<String, PoseFrames>> frameRecordings = loadRecordings();
 											
 											if(!frameRecordings.isEmpty()) {
 												LogManager.log.info("[AutoBone] Done loading frames!");
 											} else {
-												Future<PoseFrame> framesFuture = poseRecorder.getFramesAsync();
+												Future<PoseFrames> framesFuture = poseRecorder.getFramesAsync();
 												if(framesFuture != null) {
 													setText("Waiting for Recording...");
-													PoseFrame frames = framesFuture.get();
+													PoseFrames frames = framesFuture.get();
 													
 													if(frames.getTrackerCount() <= 0) {
 														throw new IllegalStateException("Recording has no trackers");
@@ -331,7 +331,7 @@ public class AutoBoneWindow extends JFrame {
 											setText("Processing...");
 											LogManager.log.info("[AutoBone] Processing frames...");
 											FastList<Float> heightPercentError = new FastList<Float>(frameRecordings.size());
-											for(Pair<String, PoseFrame> recording : frameRecordings) {
+											for(Pair<String, PoseFrames> recording : frameRecordings) {
 												LogManager.log.info("[AutoBone] Processing frames from \"" + recording.getKey() + "\"...");
 												
 												heightPercentError.add(processFrames(recording.getValue()));

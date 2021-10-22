@@ -7,7 +7,7 @@ import java.util.function.Consumer;
 
 import com.jme3.math.Vector3f;
 
-import dev.slimevr.poserecorder.PoseFrame;
+import dev.slimevr.poserecorder.PoseFrames;
 import dev.slimevr.poserecorder.TrackerFrame;
 import dev.slimevr.poserecorder.TrackerFrameData;
 import io.eiren.util.ann.ThreadSafe;
@@ -198,7 +198,7 @@ public class AutoBone {
 		return length;
 	}
 	
-	public float getMaxHmdHeight(PoseFrame frames) {
+	public float getMaxHmdHeight(PoseFrames frames) {
 		float maxHeight = 0f;
 		for(TrackerFrame[] frame : frames) {
 			TrackerFrame hmd = TrackerUtils.findTrackerForBodyPosition(frame, TrackerPosition.HMD);
@@ -209,27 +209,27 @@ public class AutoBone {
 		return maxHeight;
 	}
 	
-	public void processFrames(PoseFrame frames) {
+	public void processFrames(PoseFrames frames) {
 		processFrames(frames, -1f);
 	}
 	
-	public void processFrames(PoseFrame frames, Consumer<Epoch> epochCallback) {
+	public void processFrames(PoseFrames frames, Consumer<Epoch> epochCallback) {
 		processFrames(frames, -1f, epochCallback);
 	}
 	
-	public void processFrames(PoseFrame frames, float targetHeight) {
+	public void processFrames(PoseFrames frames, float targetHeight) {
 		processFrames(frames, true, targetHeight);
 	}
 	
-	public void processFrames(PoseFrame frames, float targetHeight, Consumer<Epoch> epochCallback) {
+	public void processFrames(PoseFrames frames, float targetHeight, Consumer<Epoch> epochCallback) {
 		processFrames(frames, true, targetHeight, epochCallback);
 	}
 	
-	public float processFrames(PoseFrame frames, boolean calcInitError, float targetHeight) {
+	public float processFrames(PoseFrames frames, boolean calcInitError, float targetHeight) {
 		return processFrames(frames, calcInitError, targetHeight, null);
 	}
 	
-	public float processFrames(PoseFrame frames, boolean calcInitError, float targetHeight, Consumer<Epoch> epochCallback) {
+	public float processFrames(PoseFrames frames, boolean calcInitError, float targetHeight, Consumer<Epoch> epochCallback) {
 		final int frameCount = frames.getMaxFrameCount();
 		
 		final SimpleSkeleton skeleton1 = new SimpleSkeleton(configs, staticConfigs);
