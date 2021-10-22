@@ -66,7 +66,7 @@ public class BVHFileStream extends PoseDataStream {
 	}
 
 	private TransformNodeWrapper wrapSkeleton(HumanSkeleton skeleton) {
-		TransformNodeWrapper wrapper = wrapNodeHierarchy(skeleton.getRootNode());
+		TransformNodeWrapper wrapper = wrapSkeletonNodes(skeleton.getRootNode());
 
 		wrappedSkeleton = skeleton;
 		rootNode = wrapper;
@@ -74,7 +74,11 @@ public class BVHFileStream extends PoseDataStream {
 		return wrapper;
 	}
 
-	private TransformNodeWrapper wrapNodeHierarchy(TransformNode node) {
+	protected TransformNodeWrapper wrapSkeletonNodes(TransformNode rootNode) {
+		return wrapNodeHierarchy(rootNode);
+	}
+
+	protected TransformNodeWrapper wrapNodeHierarchy(TransformNode node) {
 		TransformNodeWrapper wrapper = new TransformNodeWrapper(node);
 
 		for (TransformNode child : node.children) {
@@ -89,6 +93,11 @@ public class BVHFileStream extends PoseDataStream {
 	}
 
 	private void writeNodeHierarchy(TransformNodeWrapper node, int level) throws IOException {
+		// Don't write end sites at populated nodes
+		if (node.children.isEmpty() && node.getParent().children.size() > 1) {
+			return;
+		}
+
 		String indentLevel = StringUtils.repeat("\t", level);
 		String nextIndentLevel = indentLevel + "\t";
 
@@ -100,9 +109,10 @@ public class BVHFileStream extends PoseDataStream {
 		}
 		writer.write(indentLevel + "{\n");
 
-		if (level > 0) {
+		// Ignore the root offset and original root offset
+		if (level > 0 && node.wrappedNode.getParent() != null) {
 			Vector3f offset = node.localTransform.getTranslation();
-			writer.write(nextIndentLevel + "OFFSET " + Float.toString(offset.getX() * POS_SCALE) + " " + Float.toString(offset.getY() * POS_SCALE) + " " + Float.toString(offset.getZ() * POS_SCALE) + "\n");
+			writer.write(nextIndentLevel + "OFFSET " + Float.toString(offset.getX() * POS_SCALE) + " " + Float.toString(offset.getY() * POS_SCALE * (offset.getY() != 0 && node.flippedOffset ? -1 : 1)) + " " + Float.toString(offset.getZ() * POS_SCALE) + "\n");
 		} else {
 			writer.write(nextIndentLevel + "OFFSET 0.0 0.0 0.0\n");
 		}
@@ -186,7 +196,7 @@ public class BVHFileStream extends PoseDataStream {
 
 		TransformNodeWrapper rootNode = wrapSkeletonIfNew(skeleton);
 
-		Vector3f rootPos = rootNode.localTransform.getTranslation();
+		Vector3f rootPos = rootNode.worldTransform.getTranslation();
 
 		// Write root position
 		writer.write(Float.toString(rootPos.getX() * POS_SCALE) + " " + Float.toString(rootPos.getY() * POS_SCALE) + " " + Float.toString(rootPos.getZ() * POS_SCALE) + " ");
