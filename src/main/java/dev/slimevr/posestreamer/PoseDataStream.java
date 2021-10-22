@@ -1,4 +1,4 @@
-package dev.slimevr.poserecorder;
+package dev.slimevr.posestreamer;
 
 import java.io.File;
 import java.io.FileNotFoundException;
