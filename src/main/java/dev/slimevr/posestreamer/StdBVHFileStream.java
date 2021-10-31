@@ -22,50 +22,7 @@ public class StdBVHFileStream extends BVHFileStream {
 	
 	@Override
 	protected TransformNodeWrapper wrapSkeletonNodes(TransformNode rootNode) {
-		TransformNode waistNode = getNodeFromHierarchy(rootNode, "Waist");
-
-		TransformNodeWrapper waistWrapper = wrapNodeHierarchy(waistNode);
-
-		addReverseWrappedNodeHierarchy(waistWrapper);
-
-		return waistWrapper;
-	}
-
-	protected void addReverseWrappedNodeHierarchy(TransformNodeWrapper node) {
-		TransformNode parent = node.wrappedNode.getParent();
-		if (parent == null) {
-			return;
-		}
-
-		// Flip the offset for these reversed nodes
-		TransformNodeWrapper wrapper = new TransformNodeWrapper(parent, true);
-		node.attachChild(wrapper);
-
-		// Re-attach other children
-		if (parent.children.size() > 1) {
-			for (TransformNode child : parent.children) {
-				// Skip the original node
-				if (child == node.wrappedNode) {
-					continue;
-				}
-
-				wrapper.attachChild(wrapNodeHierarchy(child));
-			}
-		}
-
-		// Continue up the hierarchy
-		addReverseWrappedNodeHierarchy(wrapper);
-	}
-
-	@Override
-	protected TransformNodeWrapper wrapNodeHierarchy(TransformNode node) {
-		TransformNodeWrapper wrapper = new TransformNodeWrapper(node);
-
-		for (TransformNode child : node.children) {
-			wrapper.attachChild(wrapNodeHierarchy(child));
-		}
-
-		return wrapper;
+		return TransformNodeWrapper.wrapFullHierarchy(getNodeFromHierarchy(rootNode, "Waist"));
 	}
 
 	private TransformNode getNodeFromHierarchy(TransformNode node, String name) {

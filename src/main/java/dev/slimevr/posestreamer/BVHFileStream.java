@@ -19,7 +19,7 @@ import io.eiren.vr.processor.TransformNode;
 public class BVHFileStream extends PoseDataStream {
 
 	private static final int LONG_MAX_VALUE_DIGITS = Long.toString(Long.MAX_VALUE).length();
-	private static final float POS_SCALE = 10f;
+	private static final float POS_SCALE = 100f;
 
 	private long frameCount = 0;
 	private final BufferedWriter writer;
@@ -75,17 +75,7 @@ public class BVHFileStream extends PoseDataStream {
 	}
 
 	protected TransformNodeWrapper wrapSkeletonNodes(TransformNode rootNode) {
-		return wrapNodeHierarchy(rootNode);
-	}
-
-	protected TransformNodeWrapper wrapNodeHierarchy(TransformNode node) {
-		TransformNodeWrapper wrapper = new TransformNodeWrapper(node);
-
-		for (TransformNode child : node.children) {
-			wrapper.attachChild(wrapNodeHierarchy(child));
-		}
-
-		return wrapper;
+		return TransformNodeWrapper.wrapFullHierarchy(rootNode);
 	}
 
 	private void writeNodeHierarchy(TransformNodeWrapper node) throws IOException {
@@ -112,7 +102,8 @@ public class BVHFileStream extends PoseDataStream {
 		// Ignore the root offset and original root offset
 		if (level > 0 && node.wrappedNode.getParent() != null) {
 			Vector3f offset = node.localTransform.getTranslation();
-			writer.write(nextIndentLevel + "OFFSET " + Float.toString(offset.getX() * POS_SCALE) + " " + Float.toString(offset.getY() * POS_SCALE * (offset.getY() != 0 && node.flippedOffset ? -1 : 1)) + " " + Float.toString(offset.getZ() * POS_SCALE) + "\n");
+			float reverseMultiplier = node.reversedHierarchy ? -1 : 1;
+			writer.write(nextIndentLevel + "OFFSET " + Float.toString(offset.getX() * POS_SCALE * reverseMultiplier) + " " + Float.toString(offset.getY() * POS_SCALE * reverseMultiplier) + " " + Float.toString(offset.getZ() * POS_SCALE * reverseMultiplier) + "\n");
 		} else {
 			writer.write(nextIndentLevel + "OFFSET 0.0 0.0 0.0\n");
 		}
