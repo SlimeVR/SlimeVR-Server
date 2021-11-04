@@ -59,7 +59,7 @@ public class HumanSkeletonWithLegs extends HumanSkeletonWithWaist {
 	 */
 	protected float legsLength = 0.84f;
 	protected float footLength = FOOT_LENGTH_DEFAULT;
-	protected float footOffset = 0f; //horizontal forward/backwards translation feet offset for avatars with bent knees
+	protected float footOffset = 0f; //horizontal forward/backwards translation foot offset for avatars with bent knees
 	
 	protected float minKneePitch = 0f * FastMath.DEG_TO_RAD;
 	protected float maxKneePitch = 90f * FastMath.DEG_TO_RAD;

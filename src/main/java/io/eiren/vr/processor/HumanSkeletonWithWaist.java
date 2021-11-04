@@ -39,11 +39,15 @@ public class HumanSkeletonWithWaist extends HumanSkeleton {
 	protected final TransformNode chestNode = new TransformNode("Chest", false);
 	protected final TransformNode trackerWaistNode = new TransformNode("Waist-Tracker", false);
 	
-	protected float chestDistance = 0.42f;
+	protected float skeletonOffset = 0f;
+	/**
+	 * Half of the offset applied to chest and the other one to neck to offset the whole skeleton backwards or forwards.
+	 */
+	protected float chestDistance = 0.4f;
 	/**
 	 * Distance from eyes to waist
 	 */
-	protected float waistDistance = 0.85f;
+	protected float waistDistance = 0.8f;
 	/**
 	 * Distance from eyes to waist, defines reported
 	 * tracker position, if you want to move resulting
@@ -82,15 +86,16 @@ public class HumanSkeletonWithWaist extends HumanSkeleton {
 		chestDistance = server.config.getFloat("body.chestDistance", chestDistance);
 		waistDistance = server.config.getFloat("body.waistDistance", waistDistance);
 		trackerWaistDistance = server.config.getFloat("body.trackerWaistDistance", trackerWaistDistance);
+		skeletonOffset = server.config.getFloat("body.skeletonOffset", skeletonOffset);
 		// Build skeleton
 		hmdNode.attachChild(headNode);
 		headNode.localTransform.setTranslation(0, 0, headShift);
 		
 		headNode.attachChild(neckNode);
-		neckNode.localTransform.setTranslation(0, -neckLength, 0);
+		neckNode.localTransform.setTranslation(0, -neckLength, -skeletonOffset/2f);
 		
 		neckNode.attachChild(chestNode);
-		chestNode.localTransform.setTranslation(0, -chestDistance, 0);
+		chestNode.localTransform.setTranslation(0, -chestDistance, -skeletonOffset/2f);
 		
 		chestNode.attachChild(waistNode);
 		waistNode.localTransform.setTranslation(0, -(waistDistance - chestDistance), 0);
@@ -103,6 +108,7 @@ public class HumanSkeletonWithWaist extends HumanSkeleton {
 		configMap.put("Chest", chestDistance);
 		configMap.put("Waist", waistDistance);
 		configMap.put("Virtual waist", trackerWaistDistance);
+		configMap.put("Skeleton offset", skeletonOffset);
 	}
 	
 	@Override
@@ -114,6 +120,7 @@ public class HumanSkeletonWithWaist extends HumanSkeleton {
 			resetSkeletonConfig("Virtual waist");
 			resetSkeletonConfig("Waist");
 			resetSkeletonConfig("Chest");
+			resetSkeletonConfig("Skeleton offset");
 			break;
 		case "Head":
 			setSkeletonConfig(joint, HEAD_SHIFT_DEFAULT);
@@ -135,6 +142,9 @@ public class HumanSkeletonWithWaist extends HumanSkeleton {
 				setSkeletonConfig(joint, (height) / 2.0f);
 			}
 			break;
+		case "Skeleton offset":
+			setSkeletonConfig(joint, 0f);
+			break;
 		}
 	}
 	
@@ -155,7 +165,7 @@ public class HumanSkeletonWithWaist extends HumanSkeleton {
 		case "Neck":
 			neckLength = newLength;
 			server.config.setProperty("body.neckLength", neckLength);
-			neckNode.localTransform.setTranslation(0, -neckLength, 0);
+			neckNode.localTransform.setTranslation(0, -neckLength, -skeletonOffset/2f);
 			break;
 		case "Waist":
 			waistDistance = newLength;
@@ -166,7 +176,7 @@ public class HumanSkeletonWithWaist extends HumanSkeleton {
 		case "Chest":
 			chestDistance = newLength;
 			server.config.setProperty("body.chestDistance", chestDistance);
-			chestNode.localTransform.setTranslation(0, -chestDistance, 0);
+			chestNode.localTransform.setTranslation(0, -chestDistance, -skeletonOffset/2f);
 			waistNode.localTransform.setTranslation(0, -(waistDistance - chestDistance), 0);
 			trackerWaistNode.localTransform.setTranslation(0, -(waistDistance + trackerWaistDistance - chestDistance), 0);
 			break;
@@ -174,6 +184,12 @@ public class HumanSkeletonWithWaist extends HumanSkeleton {
 			trackerWaistDistance = newLength;
 			server.config.setProperty("body.trackerWaistDistance", trackerWaistDistance);
 			trackerWaistNode.localTransform.setTranslation(0, -(waistDistance + trackerWaistDistance - chestDistance), 0);
+			break;
+		case "Skeleton offset":
+			skeletonOffset = newLength;
+			server.config.setProperty("body.skeletonOffset", skeletonOffset);
+			chestNode.localTransform.setTranslation(0, -chestDistance, -skeletonOffset/2f);
+			neckNode.localTransform.setTranslation(0, -neckLength, -skeletonOffset/2f);
 			break;
 		}
 	}
