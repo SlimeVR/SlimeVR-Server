@@ -35,6 +35,16 @@ public class Main {
 		}
 		
 		try {
+			new ServerSocket(6969).close();
+			new ServerSocket(35903).close();
+			new ServerSocket(21110).close();
+		} catch (IOException e) {
+			LogManager.log.severe("SlimeVR start-up error! Required ports are busy. Make sure there is no other instance of SlimeVR Server running.");
+			JOptionPane.showMessageDialog(null, "SlimeVR start-up error! Required ports are busy. Make sure there is no other instance of SlimeVR Server running.", "SlimeVR: Ports are busy", JOptionPane.ERROR_MESSAGE);
+			return;
+		}
+
+		try {
 			vrServer = new VRServer();
 			vrServer.start();
 			new Keybinding(vrServer);
