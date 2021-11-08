@@ -1,6 +1,8 @@
 package io.eiren.vr;
 
 import java.io.File;
+import java.io.IOException;
+import java.net.ServerSocket;
 
 import javax.swing.JOptionPane;
 
