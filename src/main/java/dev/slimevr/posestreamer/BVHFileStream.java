@@ -8,6 +8,7 @@ import java.io.IOException;
 import java.io.OutputStream;
 import java.io.OutputStreamWriter;
 
+import com.jme3.math.FastMath;
 import com.jme3.math.Quaternion;
 import com.jme3.math.Vector3f;
 
@@ -159,23 +160,27 @@ public class BVHFileStream extends PoseDataStream {
 
 		// Adjust to local rotation
 		if (inverseRootRot != null) {
-			rotBuf = inverseRootRot.mult(rotBuf, rotBuf);
+			rotBuf = node.calculateLocalRotationInverse(inverseRootRot, rotBuf);
 		}
 
+		// Yaw, roll, pitch
 		angleBuf = rotBuf.toAngles(angleBuf);
-		writer.write(Float.toString((float)Math.toDegrees(angleBuf[2])) + " " + Float.toString((float)Math.toDegrees(angleBuf[0])) + " " + Float.toString((float)Math.toDegrees(angleBuf[1])));
+		// Output in order of Z, X, Y
+		writer.write(Float.toString(angleBuf[2] * FastMath.RAD_TO_DEG) + " " + Float.toString(angleBuf[0] * FastMath.RAD_TO_DEG) + " " + Float.toString(-angleBuf[1] * FastMath.RAD_TO_DEG));
 
 		// Get inverse rotation for child local rotations
-		Quaternion inverseRot = node.localTransform.getRotation().inverse();
-		for (TransformNodeWrapper childNode : node.children) {
-			if (childNode.children.isEmpty()) {
-				// If it's an end node, skip
-				continue;
-			}
+		if (!node.children.isEmpty()) {
+			Quaternion inverseRot = node.worldTransform.getRotation().inverse();
+			for (TransformNodeWrapper childNode : node.children) {
+				if (childNode.children.isEmpty()) {
+					// If it's an end node, skip
+					continue;
+				}
 
-			// Add spacing
-			writer.write(" ");
-			writeNodeHierarchyRotation(childNode, inverseRot);
+				// Add spacing
+				writer.write(" ");
+				writeNodeHierarchyRotation(childNode, inverseRot);
+			}
 		}
 	}
 

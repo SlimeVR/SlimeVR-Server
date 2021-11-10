@@ -113,8 +113,20 @@ public class TransformNodeWrapper {
 		return wrappedNode.localRotation;
 	}
 
-	public Quaternion calculateLocalRotation () {
-		throw new NotImplementedException("Local rotation calculation is not yet implemented");
+	public Quaternion calculateLocalRotation (Quaternion result) {
+		return calculateLocalRotation(worldTransform.getRotation(), result);
+	}
+
+	public Quaternion calculateLocalRotation (Quaternion relativeTo, Quaternion result) {
+		return calculateLocalRotationInverse(relativeTo.inverse(), result);
+	}
+
+	public Quaternion calculateLocalRotationInverse (Quaternion inverseRelativeTo, Quaternion result) {
+		if (result == null) {
+			result = new Quaternion();
+		}
+
+		return inverseRelativeTo.mult(worldTransform.getRotation(result), result);
 	}
 
 	public void attachChild(TransformNodeWrapper node) {
