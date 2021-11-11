@@ -1,6 +1,7 @@
 package io.eiren.vr;
 
 import com.melloware.jintellitype.JIntellitype;
+import com.melloware.jintellitype.JIntellitypeException;
 import com.melloware.jintellitype.HotkeyListener;
 import io.eiren.util.ann.AWTThread;
 import io.eiren.util.logging.LogManager;
@@ -14,24 +15,30 @@ public class Keybinding implements HotkeyListener {
 	public Keybinding(VRServer server) {
 		this.server = server;
 
-		if(JIntellitype.isJIntellitypeSupported()) {
-			JIntellitype.getInstance().addHotKeyListener(this);
+		try {
+			if(JIntellitype.isJIntellitypeSupported()) {
+				JIntellitype.getInstance().addHotKeyListener(this);
 
-			String resetBinding = this.server.config.getString("keybindings.reset");
-			if(resetBinding == null) {
-				resetBinding = "CTRL+ALT+SHIFT+Y";
-				this.server.config.setProperty("keybindings.reset", resetBinding);
-			}
-			JIntellitype.getInstance().registerHotKey(RESET, resetBinding);
-			LogManager.log.info("[Keybinding] Bound reset to " + resetBinding);
+				String resetBinding = this.server.config.getString("keybindings.reset");
+				if(resetBinding == null) {
+					resetBinding = "CTRL+ALT+SHIFT+Y";
+					this.server.config.setProperty("keybindings.reset", resetBinding);
+				}
+				JIntellitype.getInstance().registerHotKey(RESET, resetBinding);
+				LogManager.log.info("[Keybinding] Bound reset to " + resetBinding);
 
-			String quickResetBinding = this.server.config.getString("keybindings.quickReset");
-			if(quickResetBinding == null) {
-				quickResetBinding = "CTRL+ALT+SHIFT+U";
-				this.server.config.setProperty("keybindings.quickReset", quickResetBinding);
+				String quickResetBinding = this.server.config.getString("keybindings.quickReset");
+				if(quickResetBinding == null) {
+					quickResetBinding = "CTRL+ALT+SHIFT+U";
+					this.server.config.setProperty("keybindings.quickReset", quickResetBinding);
+				}
+				JIntellitype.getInstance().registerHotKey(QUICK_RESET, quickResetBinding);
+				LogManager.log.info("[Keybinding] Bound quick reset to " + quickResetBinding);
 			}
-			JIntellitype.getInstance().registerHotKey(QUICK_RESET, quickResetBinding);
-			LogManager.log.info("[Keybinding] Bound quick reset to " + quickResetBinding);
+		}
+		catch (JIntellitypeException je)
+		{
+			LogManager.log.info("[Keybinding] JIntellitype initialization failed. Keybindings will be disabled. Try restarting your computer.");
 		}
 	}
 
