@@ -16,7 +16,7 @@ public class Keybinding implements HotkeyListener {
 		this.server = server;
 
 		try {
-			if(JIntellitype.isJIntellitypeSupported()) {
+			if(JIntellitype.getInstance() instanceof JIntellitype) {
 				JIntellitype.getInstance().addHotKeyListener(this);
 
 				String resetBinding = this.server.config.getString("keybindings.reset");
@@ -37,6 +37,10 @@ public class Keybinding implements HotkeyListener {
 			}
 		}
 		catch (JIntellitypeException je)
+		{
+			LogManager.log.info("[Keybinding] JIntellitype initialization failed. Keybindings will be disabled. Try restarting your computer.");
+		}
+		catch (ExceptionInInitializerError e)
 		{
 			LogManager.log.info("[Keybinding] JIntellitype initialization failed. Keybindings will be disabled. Try restarting your computer.");
 		}
