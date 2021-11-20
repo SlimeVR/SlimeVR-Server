@@ -39,11 +39,14 @@ public class TrackerUtils {
 		return findTrackerForBodyPosition(allTrackers, altPosition);
 	}
 
-	public static Tracker findTrackerForBodyPositionOrEmpty(List<? extends Tracker> allTrackers, TrackerPosition position, TrackerPosition altPosition) {
+	public static Tracker findTrackerForBodyPositionOrEmpty(List<? extends Tracker> allTrackers, TrackerPosition position, TrackerPosition altPosition, TrackerPosition secondAltPosition) {
 		Tracker t = findTrackerForBodyPosition(allTrackers, position);
 		if(t != null)
 			return t;
 		t = findTrackerForBodyPosition(allTrackers, altPosition);
+		if(t != null)
+			return t;
+		t = findTrackerForBodyPosition(allTrackers, secondAltPosition);
 		if(t != null)
 			return t;
 		return new ComputedTracker(Tracker.getNextLocalTrackerId(), "Empty tracker", false, false);

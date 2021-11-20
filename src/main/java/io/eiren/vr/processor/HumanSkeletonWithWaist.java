@@ -67,9 +67,9 @@ public class HumanSkeletonWithWaist extends HumanSkeleton {
 	
 	public HumanSkeletonWithWaist(VRServer server, List<ComputedHumanPoseTracker> computedTrackers) {
 		List<Tracker> allTracekrs = server.getAllTrackers();
-		this.waistTracker = TrackerUtils.findTrackerForBodyPositionOrEmpty(allTracekrs, TrackerPosition.WAIST, TrackerPosition.CHEST);
-		this.chestTracker = TrackerUtils.findTrackerForBodyPositionOrEmpty(allTracekrs, TrackerPosition.CHEST, TrackerPosition.WAIST);
-		this.hipTracker = TrackerUtils.findTrackerForBodyPositionOrEmpty(allTracekrs, TrackerPosition.HIP, this.waistTracker.getBodyPosition());
+		this.waistTracker = TrackerUtils.findTrackerForBodyPositionOrEmpty(allTracekrs, TrackerPosition.WAIST, TrackerPosition.CHEST, TrackerPosition.HIP);
+		this.chestTracker = TrackerUtils.findTrackerForBodyPositionOrEmpty(allTracekrs, TrackerPosition.CHEST, TrackerPosition.WAIST, TrackerPosition.HIP);
+		this.hipTracker = TrackerUtils.findTrackerForBodyPositionOrEmpty(allTracekrs, TrackerPosition.HIP, TrackerPosition.WAIST, TrackerPosition.CHEST);
 		this.hmdTracker = server.hmdTracker;
 		this.server = server;
 		ComputedHumanPoseTracker cwt = null;
@@ -239,10 +239,6 @@ public class HumanSkeletonWithWaist extends HumanSkeleton {
 			trackerWaistNode.localTransform.setRotation(qBuf);
 			hipNode.localTransform.setRotation(qBuf);
 		}
-		else if(waistTracker.getRotation(qBuf)){
-			waistNode.localTransform.setRotation(qBuf);
-			trackerWaistNode.localTransform.setRotation(qBuf);
-		}
 	}
 	
 	protected void updateComputedTrackers() {
@@ -271,7 +267,8 @@ public class HumanSkeletonWithWaist extends HumanSkeleton {
 		this.chestTracker.getRotation(referenceRotation);
 		
 		this.waistTracker.resetFull(referenceRotation);
-
+		this.waistTracker.getRotation(referenceRotation);
+		
 		this.hipTracker.resetFull(referenceRotation);
 	}
 	
@@ -287,6 +284,7 @@ public class HumanSkeletonWithWaist extends HumanSkeleton {
 		this.chestTracker.getRotation(referenceRotation);
 		
 		this.waistTracker.resetYaw(referenceRotation);
+		this.waistTracker.getRotation(referenceRotation);
 
 		this.hipTracker.resetYaw(referenceRotation);
 	}
