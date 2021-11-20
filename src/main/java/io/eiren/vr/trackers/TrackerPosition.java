@@ -10,6 +10,7 @@ public enum TrackerPosition {
 	HMD("HMD", TrackerRole.HMD),
 	CHEST("body:chest", TrackerRole.CHEST),
 	WAIST("body:waist", TrackerRole.WAIST),
+	HIP("body:hip", null),
 	LEFT_LEG("body:left_leg", TrackerRole.LEFT_KNEE),
 	RIGHT_LEG("body:right_leg", TrackerRole.RIGHT_KNEE),
 	LEFT_ANKLE("body:left_ankle", null),

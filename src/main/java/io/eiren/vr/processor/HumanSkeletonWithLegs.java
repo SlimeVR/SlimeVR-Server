@@ -111,10 +111,10 @@ public class HumanSkeletonWithLegs extends HumanSkeletonWithWaist {
 		//extendedPelvisModel = server.config.getBoolean("body.model.extendedPelvis", extendedPelvisModel);
 		extendedKneeModel = server.config.getBoolean("body.model.extendedKnee", extendedKneeModel);
 		
-		waistNode.attachChild(leftHipNode);
+		hipNode.attachChild(leftHipNode);
 		leftHipNode.localTransform.setTranslation(-hipsWidth / 2, 0, 0);
 		
-		waistNode.attachChild(rightHipNode);
+		hipNode.attachChild(rightHipNode);
 		rightHipNode.localTransform.setTranslation(hipsWidth / 2, 0, 0);
 		
 		leftHipNode.attachChild(leftKneeNode);
@@ -290,7 +290,7 @@ public class HumanSkeletonWithLegs extends HumanSkeletonWithWaist {
 			kneeBuf.nlerp(hipBuf, 0.5f);
 			chestNode.localTransform.getRotation(hipBuf);
 			kneeBuf.nlerp(hipBuf, 0.3333333f);
-			waistNode.localTransform.setRotation(kneeBuf);
+			hipNode.localTransform.setRotation(kneeBuf);
 			// TODO : Use vectors to add like 50% of wasit tracker yaw to waist node to reduce drift and let user take weird poses
 			// TODO Set virtual waist node yaw to that of waist node
 		}

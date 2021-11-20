@@ -117,6 +117,13 @@ public class SkeletonConfig extends EJBagNoStretch {
 			add(new TimedResetButton("Reset", "Waist"), c(4, row, 2));
 			row++;
 
+			add(new JLabel("Hip"), c(0, row, 2));
+			add(new AdjButton("+", "Hip", 0.01f), c(1, row, 2));
+			add(new SkeletonLabel("Hip"), c(2, row, 2));
+			add(new AdjButton("-", "Hip", -0.01f), c(3, row, 2));
+			add(new ResetButton("Reset", "Hip"), c(4, row, 2));
+			row++;
+
 			add(new JLabel("Hips width"), c(0, row, 2));
 			add(new AdjButton("+", "Hips width", 0.01f), c(1, row, 2));
 			add(new SkeletonLabel("Hips width"), c(2, row, 2));

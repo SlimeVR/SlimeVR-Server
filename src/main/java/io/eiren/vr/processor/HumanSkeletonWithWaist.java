@@ -29,6 +29,7 @@ public class HumanSkeletonWithWaist extends HumanSkeleton {
 	
 	protected final Tracker waistTracker;
 	protected final Tracker chestTracker;
+	protected final Tracker hipTracker;
 	protected final HMDTracker hmdTracker;
 	protected final ComputedHumanPoseTracker computedWaistTracker;
 	protected final ComputedHumanPoseTracker computedChestTracker;
@@ -38,12 +39,17 @@ public class HumanSkeletonWithWaist extends HumanSkeleton {
 	protected final TransformNode waistNode = new TransformNode("Waist", false);
 	protected final TransformNode chestNode = new TransformNode("Chest", false);
 	protected final TransformNode trackerWaistNode = new TransformNode("Waist-Tracker", false);
+	protected final TransformNode hipNode = new TransformNode("Hip", false);
 	
 	protected float chestDistance = 0.42f;
 	/**
 	 * Distance from eyes to waist
 	 */
 	protected float waistDistance = 0.85f;
+	/**
+	 * Distance from waist to hip
+	 */
+	protected float hipDistance = 0f;
 	/**
 	 * Distance from eyes to waist, defines reported
 	 * tracker position, if you want to move resulting
@@ -63,6 +69,7 @@ public class HumanSkeletonWithWaist extends HumanSkeleton {
 		List<Tracker> allTracekrs = server.getAllTrackers();
 		this.waistTracker = TrackerUtils.findTrackerForBodyPositionOrEmpty(allTracekrs, TrackerPosition.WAIST, TrackerPosition.CHEST);
 		this.chestTracker = TrackerUtils.findTrackerForBodyPositionOrEmpty(allTracekrs, TrackerPosition.CHEST, TrackerPosition.WAIST);
+		this.hipTracker = TrackerUtils.findTrackerForBodyPositionOrEmpty(allTracekrs, TrackerPosition.HIP, TrackerPosition.WAIST);
 		this.hmdTracker = server.hmdTracker;
 		this.server = server;
 		ComputedHumanPoseTracker cwt = null;
@@ -81,6 +88,7 @@ public class HumanSkeletonWithWaist extends HumanSkeleton {
 		neckLength = server.config.getFloat("body.neckLength", neckLength);
 		chestDistance = server.config.getFloat("body.chestDistance", chestDistance);
 		waistDistance = server.config.getFloat("body.waistDistance", waistDistance);
+		hipDistance = server.config.getFloat("body.hipDistance", hipDistance);
 		trackerWaistDistance = server.config.getFloat("body.trackerWaistDistance", trackerWaistDistance);
 		// Build skeleton
 		hmdNode.attachChild(headNode);
@@ -94,15 +102,19 @@ public class HumanSkeletonWithWaist extends HumanSkeleton {
 		
 		chestNode.attachChild(waistNode);
 		waistNode.localTransform.setTranslation(0, -(waistDistance - chestDistance), 0);
-		
-		chestNode.attachChild(trackerWaistNode);
-		trackerWaistNode.localTransform.setTranslation(0, -(waistDistance + trackerWaistDistance - chestDistance), 0);
+
+		waistNode.attachChild(hipNode);
+		hipNode.localTransform.setTranslation(0, -hipDistance, 0);
+
+		hipNode.attachChild(trackerWaistNode);
+		trackerWaistNode.localTransform.setTranslation(0, trackerWaistDistance, 0);
 		
 		configMap.put("Head", headShift);
 		configMap.put("Neck", neckLength);
 		configMap.put("Chest", chestDistance);
 		configMap.put("Waist", waistDistance);
 		configMap.put("Virtual waist", trackerWaistDistance);
+		configMap.put("Hip", hipDistance);
 	}
 	
 	@Override
@@ -114,6 +126,7 @@ public class HumanSkeletonWithWaist extends HumanSkeleton {
 			resetSkeletonConfig("Virtual waist");
 			resetSkeletonConfig("Waist");
 			resetSkeletonConfig("Chest");
+			resetSkeletonConfig("Hip");
 			break;
 		case "Head":
 			setSkeletonConfig(joint, HEAD_SHIFT_DEFAULT);
@@ -126,6 +139,9 @@ public class HumanSkeletonWithWaist extends HumanSkeleton {
 			break;
 		case "Chest":
 			setSkeletonConfig(joint, waistDistance / 2.0f);
+			break;
+		case "Hip":
+			setSkeletonConfig(joint, 0.0f);
 			break;
 		case "Waist": // Puts Waist in the middle of the height
 			Vector3f vec = new Vector3f();
@@ -161,19 +177,24 @@ public class HumanSkeletonWithWaist extends HumanSkeleton {
 			waistDistance = newLength;
 			server.config.setProperty("body.waistDistance", waistDistance);
 			waistNode.localTransform.setTranslation(0, -(waistDistance - chestDistance), 0);
-			trackerWaistNode.localTransform.setTranslation(0, -(waistDistance + trackerWaistDistance - chestDistance), 0);
 			break;
 		case "Chest":
 			chestDistance = newLength;
 			server.config.setProperty("body.chestDistance", chestDistance);
 			chestNode.localTransform.setTranslation(0, -chestDistance, 0);
 			waistNode.localTransform.setTranslation(0, -(waistDistance - chestDistance), 0);
-			trackerWaistNode.localTransform.setTranslation(0, -(waistDistance + trackerWaistDistance - chestDistance), 0);
+			trackerWaistNode.localTransform.setTranslation(0, trackerWaistDistance, 0);
+			break;
+		case "Hip":
+			hipDistance = newLength;
+			server.config.setProperty("body.hipDistance", hipDistance);
+			hipNode.localTransform.setTranslation(0, -hipDistance, 0);
+			trackerWaistNode.localTransform.setTranslation(0, trackerWaistDistance, 0);
 			break;
 		case "Virtual waist":
 			trackerWaistDistance = newLength;
 			server.config.setProperty("body.trackerWaistDistance", trackerWaistDistance);
-			trackerWaistNode.localTransform.setTranslation(0, -(waistDistance + trackerWaistDistance - chestDistance), 0);
+			trackerWaistNode.localTransform.setTranslation(0, trackerWaistDistance, 0);
 			break;
 		}
 	}
@@ -211,9 +232,16 @@ public class HumanSkeletonWithWaist extends HumanSkeleton {
 			neckNode.localTransform.setRotation(qBuf);
 		
 		if(waistTracker.getRotation(qBuf)) {
-			trackerWaistNode.localTransform.setRotation(qBuf);
 			chestNode.localTransform.setRotation(qBuf);
+		}
+		if(hipTracker.getRotation(qBuf)) {
 			waistNode.localTransform.setRotation(qBuf);
+			trackerWaistNode.localTransform.setRotation(qBuf);
+			hipNode.localTransform.setRotation(qBuf);
+		}
+		else if(waistTracker.getRotation(qBuf)){
+			waistNode.localTransform.setRotation(qBuf);
+			trackerWaistNode.localTransform.setRotation(qBuf);
 		}
 	}
 	
@@ -243,6 +271,8 @@ public class HumanSkeletonWithWaist extends HumanSkeleton {
 		this.chestTracker.getRotation(referenceRotation);
 		
 		this.waistTracker.resetFull(referenceRotation);
+
+		this.hipTracker.resetFull(referenceRotation);
 	}
 	
 	@Override
@@ -257,5 +287,7 @@ public class HumanSkeletonWithWaist extends HumanSkeleton {
 		this.chestTracker.getRotation(referenceRotation);
 		
 		this.waistTracker.resetYaw(referenceRotation);
+
+		this.hipTracker.resetYaw(referenceRotation);
 	}
 }
