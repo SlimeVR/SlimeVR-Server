@@ -69,7 +69,7 @@ public class HumanSkeletonWithWaist extends HumanSkeleton {
 		List<Tracker> allTracekrs = server.getAllTrackers();
 		this.waistTracker = TrackerUtils.findTrackerForBodyPositionOrEmpty(allTracekrs, TrackerPosition.WAIST, TrackerPosition.CHEST);
 		this.chestTracker = TrackerUtils.findTrackerForBodyPositionOrEmpty(allTracekrs, TrackerPosition.CHEST, TrackerPosition.WAIST);
-		this.hipTracker = TrackerUtils.findTrackerForBodyPositionOrEmpty(allTracekrs, TrackerPosition.HIP, TrackerPosition.WAIST);
+		this.hipTracker = TrackerUtils.findTrackerForBodyPositionOrEmpty(allTracekrs, TrackerPosition.HIP, this.waistTracker.getBodyPosition());
 		this.hmdTracker = server.hmdTracker;
 		this.server = server;
 		ComputedHumanPoseTracker cwt = null;
