@@ -291,8 +291,8 @@ public class HumanSkeletonWithLegs extends HumanSkeletonWithWaist {
 			chestNode.localTransform.getRotation(hipBuf);
 			kneeBuf.nlerp(hipBuf, 0.3333333f);
 			hipNode.localTransform.setRotation(kneeBuf);
-			// TODO : Use vectors to add like 50% of wasit tracker yaw to waist node to reduce drift and let user take weird poses
-			// TODO Set virtual waist node yaw to that of waist node
+			trackerWaistNode.localTransform.setRotation(kneeBuf);
+			// TODO : Use vectors to add like 50% of waist tracker yaw to waist node to reduce drift and let user take weird poses
 		}
 	}
 	
