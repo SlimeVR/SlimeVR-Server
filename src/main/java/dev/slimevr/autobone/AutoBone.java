@@ -91,15 +91,15 @@ public class AutoBone {
 		// Load waist configs
 		staticConfigs.put("Head", server.config.getFloat("body.headShift", HumanSkeletonWithWaist.HEAD_SHIFT_DEFAULT));
 		staticConfigs.put("Neck", server.config.getFloat("body.neckLength", HumanSkeletonWithWaist.NECK_LENGTH_DEFAULT));
-		configs.put("Waist", server.config.getFloat("body.waistDistance", 0.85f));
+		configs.put("Waist", server.config.getFloat("body.waistDistance", 0.64f));
 		
 		if(server.config.getBoolean("autobone.forceChestTracker", false) || (frame != null && TrackerUtils.findTrackerForBodyPosition(frame, TrackerPosition.CHEST) != null) || TrackerUtils.findTrackerForBodyPosition(server.getAllTrackers(), TrackerPosition.CHEST) != null) {
 			// If force enabled or has a chest tracker
-			configs.put("Chest", server.config.getFloat("body.chestDistance", 0.42f));
+			configs.put("Chest", server.config.getFloat("body.chestDistance", 0.32f));
 		} else {
 			// Otherwise, make sure it's not used
 			configs.remove("Chest");
-			staticConfigs.put("Chest", server.config.getFloat("body.chestDistance", 0.42f));
+			staticConfigs.put("Chest", server.config.getFloat("body.chestDistance", 0.32f));
 		}
 		
 		// Load leg configs

@@ -23,12 +23,17 @@ public class SimpleSkeleton {
 	protected final TransformNode neckNode = new TransformNode("Neck", false);
 	protected final TransformNode waistNode = new TransformNode("Waist", false);
 	protected final TransformNode chestNode = new TransformNode("Chest", false);
+	protected final TransformNode hipNode = new TransformNode("Hip", false);
 	
-	protected float chestDistance = 0.42f;
+	protected float chestDistance = 0.32f;
 	/**
 	 * Distance from eyes to waist
 	 */
-	protected float waistDistance = 0.85f;
+	protected float waistDistance = 0.64f;
+	/**
+	 * Distance from waist to hip
+	 */
+	protected float hipDistance = 0.05f;
 	/**
 	 * Distance from eyes to the base of the neck
 	 */

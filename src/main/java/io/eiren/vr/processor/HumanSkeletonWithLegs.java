@@ -167,7 +167,7 @@ public class HumanSkeletonWithLegs extends HumanSkeletonWithWaist {
 			hmdTracker.getPosition(vec);
 			float height = vec.y;
 			if(height > 0.5f) { // Reset only if floor level is right, todo: read floor level from SteamVR if it's not 0
-				setSkeletonConfig(joint, height - neckLength - waistDistance - DEFAULT_FLOOR_OFFSET);
+				setSkeletonConfig(joint, height - neckLength - waistDistance - hipDistance - DEFAULT_FLOOR_OFFSET);
 			}
 			resetSkeletonConfig("Knee height");
 			break;

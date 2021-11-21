@@ -41,15 +41,15 @@ public class HumanSkeletonWithWaist extends HumanSkeleton {
 	protected final TransformNode trackerWaistNode = new TransformNode("Waist-Tracker", false);
 	protected final TransformNode hipNode = new TransformNode("Hip", false);
 	
-	protected float chestDistance = 0.42f;
+	protected float chestDistance = 0.32f;
 	/**
 	 * Distance from eyes to waist
 	 */
-	protected float waistDistance = 0.85f;
+	protected float waistDistance = 0.64f;
 	/**
 	 * Distance from waist to hip
 	 */
-	protected float hipDistance = 0f;
+	protected float hipDistance = 0.05f;
 	/**
 	 * Distance from eyes to waist, defines reported
 	 * tracker position, if you want to move resulting
@@ -124,9 +124,9 @@ public class HumanSkeletonWithWaist extends HumanSkeleton {
 			resetSkeletonConfig("Head");
 			resetSkeletonConfig("Neck");
 			resetSkeletonConfig("Virtual waist");
+			resetSkeletonConfig("Hip");
 			resetSkeletonConfig("Waist");
 			resetSkeletonConfig("Chest");
-			resetSkeletonConfig("Hip");
 			break;
 		case "Head":
 			setSkeletonConfig(joint, HEAD_SHIFT_DEFAULT);
@@ -138,17 +138,17 @@ public class HumanSkeletonWithWaist extends HumanSkeleton {
 			setSkeletonConfig(joint, 0.0f);
 			break;
 		case "Chest":
-			setSkeletonConfig(joint, waistDistance / 2.0f);
+			setSkeletonConfig(joint, (waistDistance / 2.0f) - hipDistance);
 			break;
 		case "Hip":
-			setSkeletonConfig(joint, 0.0f);
+			setSkeletonConfig(joint, 0.05f);
 			break;
 		case "Waist": // Puts Waist in the middle of the height
 			Vector3f vec = new Vector3f();
 			hmdTracker.getPosition(vec);
 			float height = vec.y;
 			if(height > 0.5f) { // Reset only if floor level is right, todo: read floor level from SteamVR if it's not 0
-				setSkeletonConfig(joint, (height) / 2.0f);
+				setSkeletonConfig(joint, ((height) / 2.0f) - hipDistance);
 			}
 			break;
 		}
