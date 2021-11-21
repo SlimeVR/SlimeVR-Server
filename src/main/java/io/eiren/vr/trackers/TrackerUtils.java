@@ -32,11 +32,14 @@ public class TrackerUtils {
 		return findTrackerForBodyPosition(allTrackers, altPosition);
 	}
 
-	public static <T extends Tracker> T findTrackerForBodyPosition(T[] allTrackers, TrackerPosition position, TrackerPosition altPosition) {
+	public static <T extends Tracker> T findTrackerForBodyPosition(T[] allTrackers, TrackerPosition position, TrackerPosition altPosition, TrackerPosition secondAltPosition) {
 		T t = findTrackerForBodyPosition(allTrackers, position);
 		if(t != null)
 			return t;
-		return findTrackerForBodyPosition(allTrackers, altPosition);
+		t = findTrackerForBodyPosition(allTrackers, altPosition);
+		if(t != null)
+			return t;
+		return findTrackerForBodyPosition(allTrackers, secondAltPosition);
 	}
 
 	public static Tracker findTrackerForBodyPositionOrEmpty(List<? extends Tracker> allTrackers, TrackerPosition position, TrackerPosition altPosition, TrackerPosition secondAltPosition) {

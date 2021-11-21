@@ -72,8 +72,7 @@ public class AutoBone {
 	public final HashMap<String, Float> configs = new HashMap<String, Float>();
 	public final HashMap<String, Float> staticConfigs = new HashMap<String, Float>();
 	
-	public final FastList<String> heightConfigs = new FastList<String>(new String[]{"Neck", "Waist", "Legs length"
-	});
+	public final FastList<String> heightConfigs = new FastList<String>(new String[]{"Neck", "Waist", "Hip", "Legs length"});
 	
 	public AutoBone(VRServer server) {
 		this.server = server;
@@ -91,15 +90,22 @@ public class AutoBone {
 		// Load waist configs
 		staticConfigs.put("Head", server.config.getFloat("body.headShift", HumanSkeletonWithWaist.HEAD_SHIFT_DEFAULT));
 		staticConfigs.put("Neck", server.config.getFloat("body.neckLength", HumanSkeletonWithWaist.NECK_LENGTH_DEFAULT));
-		configs.put("Waist", server.config.getFloat("body.waistDistance", 0.64f));
-		
+		configs.put("Waist", server.config.getFloat("body.waistDistance", 0.6f));
 		if(server.config.getBoolean("autobone.forceChestTracker", false) || (frame != null && TrackerUtils.findTrackerForBodyPosition(frame, TrackerPosition.CHEST) != null) || TrackerUtils.findTrackerForBodyPosition(server.getAllTrackers(), TrackerPosition.CHEST) != null) {
 			// If force enabled or has a chest tracker
-			configs.put("Chest", server.config.getFloat("body.chestDistance", 0.32f));
+			configs.put("Chest", server.config.getFloat("body.chestDistance", 0.35f));
 		} else {
 			// Otherwise, make sure it's not used
 			configs.remove("Chest");
-			staticConfigs.put("Chest", server.config.getFloat("body.chestDistance", 0.32f));
+			staticConfigs.put("Chest", server.config.getFloat("body.chestDistance", 0.35f));
+		}
+		if(server.config.getBoolean("autobone.forceHipTracker", false) || (frame != null && TrackerUtils.findTrackerForBodyPosition(frame, TrackerPosition.HIP) != null) || TrackerUtils.findTrackerForBodyPosition(server.getAllTrackers(), TrackerPosition.HIP) != null) {
+			// If force enabled or has a hip tracker
+			configs.put("Hip", server.config.getFloat("body.hipDistance", 0.1f));
+		} else {
+			// Otherwise, make sure it's not used
+			configs.remove("Hip");
+			staticConfigs.put("Hip", server.config.getFloat("body.hipDistance", 0.1f));
 		}
 		
 		// Load leg configs
@@ -150,6 +156,7 @@ public class AutoBone {
 		setConfig("Neck", "body.neckLength");
 		setConfig("Waist", "body.waistDistance");
 		setConfig("Chest", "body.chestDistance");
+		setConfig("Hip", "body.hipDistance");
 		setConfig("Hips width", "body.hipsWidth");
 		setConfig("Legs length", "body.legsLength");
 		setConfig("Knee height", "body.kneeHeight");

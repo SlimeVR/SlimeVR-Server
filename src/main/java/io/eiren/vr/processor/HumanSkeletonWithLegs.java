@@ -71,13 +71,13 @@ public class HumanSkeletonWithLegs extends HumanSkeletonWithWaist {
 
 	public HumanSkeletonWithLegs(VRServer server, List<ComputedHumanPoseTracker> computedTrackers) {
 		super(server, computedTrackers);
-		List<Tracker> allTracekrs = server.getAllTrackers();
-		this.leftLegTracker = TrackerUtils.findTrackerForBodyPositionOrEmpty(allTracekrs, TrackerPosition.LEFT_LEG, TrackerPosition.LEFT_ANKLE, null);
-		this.leftAnkleTracker = TrackerUtils.findTrackerForBodyPositionOrEmpty(allTracekrs, TrackerPosition.LEFT_ANKLE, TrackerPosition.LEFT_LEG, null);
-		this.leftFootTracker = TrackerUtils.findTrackerForBodyPosition(allTracekrs, TrackerPosition.LEFT_FOOT);
-		this.rightLegTracker = TrackerUtils.findTrackerForBodyPositionOrEmpty(allTracekrs, TrackerPosition.RIGHT_LEG, TrackerPosition.RIGHT_ANKLE, null);
-		this.rightAnkleTracker = TrackerUtils.findTrackerForBodyPositionOrEmpty(allTracekrs, TrackerPosition.RIGHT_ANKLE, TrackerPosition.RIGHT_LEG, null);
-		this.rightFootTracker = TrackerUtils.findTrackerForBodyPosition(allTracekrs, TrackerPosition.RIGHT_FOOT);
+		List<Tracker> allTrackers = server.getAllTrackers();
+		this.leftLegTracker = TrackerUtils.findTrackerForBodyPositionOrEmpty(allTrackers, TrackerPosition.LEFT_LEG, TrackerPosition.LEFT_ANKLE, null);
+		this.leftAnkleTracker = TrackerUtils.findTrackerForBodyPositionOrEmpty(allTrackers, TrackerPosition.LEFT_ANKLE, TrackerPosition.LEFT_LEG, null);
+		this.leftFootTracker = TrackerUtils.findTrackerForBodyPosition(allTrackers, TrackerPosition.LEFT_FOOT);
+		this.rightLegTracker = TrackerUtils.findTrackerForBodyPositionOrEmpty(allTrackers, TrackerPosition.RIGHT_LEG, TrackerPosition.RIGHT_ANKLE, null);
+		this.rightAnkleTracker = TrackerUtils.findTrackerForBodyPositionOrEmpty(allTrackers, TrackerPosition.RIGHT_ANKLE, TrackerPosition.RIGHT_LEG, null);
+		this.rightFootTracker = TrackerUtils.findTrackerForBodyPosition(allTrackers, TrackerPosition.RIGHT_FOOT);
 		ComputedHumanPoseTracker lat = null;
 		ComputedHumanPoseTracker rat = null;
 		ComputedHumanPoseTracker rkt = null;
@@ -291,7 +291,8 @@ public class HumanSkeletonWithLegs extends HumanSkeletonWithWaist {
 			chestNode.localTransform.getRotation(hipBuf);
 			kneeBuf.nlerp(hipBuf, 0.3333333f);
 			hipNode.localTransform.setRotation(kneeBuf);
-			trackerWaistNode.localTransform.setRotation(kneeBuf);
+			//trackerWaistNode.localTransform.setRotation(kneeBuf); // <== Provides cursed results from my test in VRChat when sitting or laying down -Erimel
+			// TODO : Correct the trackerWaistNode without getting cursed results (only correct yaw?)
 			// TODO : Use vectors to add like 50% of waist tracker yaw to waist node to reduce drift and let user take weird poses
 		}
 	}
