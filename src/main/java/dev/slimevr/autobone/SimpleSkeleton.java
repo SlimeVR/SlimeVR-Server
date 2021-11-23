@@ -324,7 +324,7 @@ public class SimpleSkeleton {
 		case WAIST:
 			return rotationNode ? chestNode : waistNode;
 		case HIP:
-			return rotationNode ? hipNode : waistNode; //TODO check, need 3?
+			return rotationNode ? waistNode : hipNode;
 		
 		case LEFT_LEG:
 			return rotationNode ? leftHipNode : leftKneeNode;
