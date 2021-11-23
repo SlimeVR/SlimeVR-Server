@@ -342,6 +342,7 @@ public class AutoBoneWindow extends JFrame {
 												Float neckLength = autoBone.getConfig("Neck");
 												Float chestLength = autoBone.getConfig("Chest");
 												Float waistLength = autoBone.getConfig("Waist");
+												Float hipLength = autoBone.getConfig("Hip");
 												Float hipWidth = autoBone.getConfig("Hips width");
 												Float legsLength = autoBone.getConfig("Legs length");
 												Float kneeHeight = autoBone.getConfig("Knee height");

@@ -71,13 +71,13 @@ public class HumanSkeletonWithLegs extends HumanSkeletonWithWaist {
 
 	public HumanSkeletonWithLegs(VRServer server, List<ComputedHumanPoseTracker> computedTrackers) {
 		super(server, computedTrackers);
-		List<Tracker> allTracekrs = server.getAllTrackers();
-		this.leftLegTracker = TrackerUtils.findTrackerForBodyPositionOrEmpty(allTracekrs, TrackerPosition.LEFT_LEG, TrackerPosition.LEFT_ANKLE);
-		this.leftAnkleTracker = TrackerUtils.findTrackerForBodyPositionOrEmpty(allTracekrs, TrackerPosition.LEFT_ANKLE, TrackerPosition.LEFT_LEG);
-		this.leftFootTracker = TrackerUtils.findTrackerForBodyPosition(allTracekrs, TrackerPosition.LEFT_FOOT);
-		this.rightLegTracker = TrackerUtils.findTrackerForBodyPositionOrEmpty(allTracekrs, TrackerPosition.RIGHT_LEG, TrackerPosition.RIGHT_ANKLE);
-		this.rightAnkleTracker = TrackerUtils.findTrackerForBodyPositionOrEmpty(allTracekrs, TrackerPosition.RIGHT_ANKLE, TrackerPosition.RIGHT_LEG);
-		this.rightFootTracker = TrackerUtils.findTrackerForBodyPosition(allTracekrs, TrackerPosition.RIGHT_FOOT);
+		List<Tracker> allTrackers = server.getAllTrackers();
+		this.leftLegTracker = TrackerUtils.findTrackerForBodyPositionOrEmpty(allTrackers, TrackerPosition.LEFT_LEG, TrackerPosition.LEFT_ANKLE, null);
+		this.leftAnkleTracker = TrackerUtils.findTrackerForBodyPositionOrEmpty(allTrackers, TrackerPosition.LEFT_ANKLE, TrackerPosition.LEFT_LEG, null);
+		this.leftFootTracker = TrackerUtils.findTrackerForBodyPosition(allTrackers, TrackerPosition.LEFT_FOOT);
+		this.rightLegTracker = TrackerUtils.findTrackerForBodyPositionOrEmpty(allTrackers, TrackerPosition.RIGHT_LEG, TrackerPosition.RIGHT_ANKLE, null);
+		this.rightAnkleTracker = TrackerUtils.findTrackerForBodyPositionOrEmpty(allTrackers, TrackerPosition.RIGHT_ANKLE, TrackerPosition.RIGHT_LEG, null);
+		this.rightFootTracker = TrackerUtils.findTrackerForBodyPosition(allTrackers, TrackerPosition.RIGHT_FOOT);
 		ComputedHumanPoseTracker lat = null;
 		ComputedHumanPoseTracker rat = null;
 		ComputedHumanPoseTracker rkt = null;
@@ -111,10 +111,10 @@ public class HumanSkeletonWithLegs extends HumanSkeletonWithWaist {
 		//extendedPelvisModel = server.config.getBoolean("body.model.extendedPelvis", extendedPelvisModel);
 		extendedKneeModel = server.config.getBoolean("body.model.extendedKnee", extendedKneeModel);
 		
-		waistNode.attachChild(leftHipNode);
+		hipNode.attachChild(leftHipNode);
 		leftHipNode.localTransform.setTranslation(-hipsWidth / 2, 0, 0);
 		
-		waistNode.attachChild(rightHipNode);
+		hipNode.attachChild(rightHipNode);
 		rightHipNode.localTransform.setTranslation(hipsWidth / 2, 0, 0);
 		
 		leftHipNode.attachChild(leftKneeNode);
@@ -167,7 +167,7 @@ public class HumanSkeletonWithLegs extends HumanSkeletonWithWaist {
 			hmdTracker.getPosition(vec);
 			float height = vec.y;
 			if(height > 0.5f) { // Reset only if floor level is right, todo: read floor level from SteamVR if it's not 0
-				setSkeletonConfig(joint, height - neckLength - waistDistance - DEFAULT_FLOOR_OFFSET);
+				setSkeletonConfig(joint, height - neckLength - waistDistance - hipDistance - DEFAULT_FLOOR_OFFSET);
 			}
 			resetSkeletonConfig("Knee height");
 			break;
@@ -290,9 +290,10 @@ public class HumanSkeletonWithLegs extends HumanSkeletonWithWaist {
 			kneeBuf.nlerp(hipBuf, 0.5f);
 			chestNode.localTransform.getRotation(hipBuf);
 			kneeBuf.nlerp(hipBuf, 0.3333333f);
-			waistNode.localTransform.setRotation(kneeBuf);
-			// TODO : Use vectors to add like 50% of wasit tracker yaw to waist node to reduce drift and let user take weird poses
-			// TODO Set virtual waist node yaw to that of waist node
+			hipNode.localTransform.setRotation(kneeBuf);
+			//trackerWaistNode.localTransform.setRotation(kneeBuf); // <== Provides cursed results from my test in VRChat when sitting or laying down -Erimel
+			// TODO : Correct the trackerWaistNode without getting cursed results (only correct yaw?)
+			// TODO : Use vectors to add like 50% of waist tracker yaw to waist node to reduce drift and let user take weird poses
 		}
 	}
 	
@@ -370,7 +371,7 @@ public class HumanSkeletonWithLegs extends HumanSkeletonWithWaist {
 		super.resetTrackersFull();
 		// Start with waist, it was reset in the parent
 		Quaternion referenceRotation = new Quaternion();
-		this.waistTracker.getRotation(referenceRotation);
+		this.hipTracker.getRotation(referenceRotation);
 		
 		this.leftLegTracker.resetFull(referenceRotation);
 		this.rightLegTracker.resetFull(referenceRotation);
@@ -401,7 +402,7 @@ public class HumanSkeletonWithLegs extends HumanSkeletonWithWaist {
 		super.resetTrackersYaw();
 		// Start with waist, it was reset in the parent
 		Quaternion referenceRotation = new Quaternion();
-		this.waistTracker.getRotation(referenceRotation);
+		this.hipTracker.getRotation(referenceRotation);
 		
 		this.leftLegTracker.resetYaw(referenceRotation);
 		this.rightLegTracker.resetYaw(referenceRotation);
