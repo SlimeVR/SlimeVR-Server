@@ -340,21 +340,20 @@ public class AutoBoneWindow extends JFrame {
 												
 												//#region Stats/Values
 												Float neckLength = autoBone.getConfig("Neck");
-												Float chestLength = autoBone.getConfig("Chest");
-												Float waistLength = autoBone.getConfig("Waist");
-												Float hipLength = autoBone.getConfig("Hip");
+												Float chestDistance = autoBone.getConfig("Chest");
+												Float torsoLength = autoBone.getConfig("Torso");
 												Float hipWidth = autoBone.getConfig("Hips width");
 												Float legsLength = autoBone.getConfig("Legs length");
 												Float kneeHeight = autoBone.getConfig("Knee height");
 												
-												float neckWaist = neckLength != null && waistLength != null ? neckLength / waistLength : 0f;
-												float chestWaist = chestLength != null && waistLength != null ? chestLength / waistLength : 0f;
-												float hipWaist = hipWidth != null && waistLength != null ? hipWidth / waistLength : 0f;
-												float legWaist = legsLength != null && waistLength != null ? legsLength / waistLength : 0f;
-												float legBody = legsLength != null && waistLength != null && neckLength != null ? legsLength / (waistLength + neckLength) : 0f;
+												float neckHip = neckLength != null && torsoLength != null ? neckLength / torsoLength : 0f;
+												float chestHip = chestDistance != null && torsoLength != null ? chestDistance / torsoLength : 0f;
+												float hipWaist = hipWidth != null && torsoLength != null ? hipWidth / torsoLength : 0f;
+												float legWaist = legsLength != null && torsoLength != null ? legsLength / torsoLength : 0f;
+												float legBody = legsLength != null && torsoLength != null && neckLength != null ? legsLength / (torsoLength + neckLength) : 0f;
 												float kneeLeg = kneeHeight != null && legsLength != null ? kneeHeight / legsLength : 0f;
 												
-												LogManager.log.info("[AutoBone] Ratios: [{Neck-Waist: " + StringUtils.prettyNumber(neckWaist) + "}, {Chest-Waist: " + StringUtils.prettyNumber(chestWaist) + "}, {Hip-Waist: " + StringUtils.prettyNumber(hipWaist) + "}, {Leg-Waist: " + StringUtils.prettyNumber(legWaist) + "}, {Leg-Body: " + StringUtils.prettyNumber(legBody) + "}, {Knee-Leg: " + StringUtils.prettyNumber(kneeLeg) + "}]");
+												LogManager.log.info("[AutoBone] Ratios: [{Neck-Hip: " + StringUtils.prettyNumber(neckHip) + "}, {Chest-Hip: " + StringUtils.prettyNumber(chestHip) + "}, {Hip-Waist: " + StringUtils.prettyNumber(hipWaist) + "}, {Leg-Hip: " + StringUtils.prettyNumber(legWaist) + "}, {Leg-Body: " + StringUtils.prettyNumber(legBody) + "}, {Knee-Leg: " + StringUtils.prettyNumber(kneeLeg) + "}]");
 												
 												String lengthsString = getLengthsString();
 												LogManager.log.info("[AutoBone] Length values: " + lengthsString);

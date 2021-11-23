@@ -41,21 +41,24 @@ public class HumanSkeletonWithWaist extends HumanSkeleton {
 	protected final TransformNode trackerWaistNode = new TransformNode("Waist-Tracker", false);
 	protected final TransformNode hipNode = new TransformNode("Hip", false);
 	
+	/**
+	 * Distance from shoulders to chest
+	 */
 	protected float chestDistance = 0.35f;
 	/**
-	 * Distance from eyes to waist
+	 * Distance from hip to waist
 	 */
-	protected float waistDistance = 0.6f;
+	protected float waistDistance = 0.1f;
 	/**
-	 * Distance from waist to hip
+	 * Distance from shoulder to hip
 	 */
-	protected float hipDistance = 0.1f;
+	protected float torsoLength = 0.7f;
 	/**
-	 * Distance from eyes to waist, defines reported
+	 * Distance from eyes to hip, defines reported
 	 * tracker position, if you want to move resulting
-	 * tracker up or down from actual waist
+	 * tracker up or down from actual hip
 	 */
-	protected float trackerWaistDistance = 0.0f;
+	protected float hipOffset = 0.0f;
 	/**
 	 * Distance from eyes to the base of the neck
 	 */
@@ -88,8 +91,8 @@ public class HumanSkeletonWithWaist extends HumanSkeleton {
 		neckLength = server.config.getFloat("body.neckLength", neckLength);
 		chestDistance = server.config.getFloat("body.chestDistance", chestDistance);
 		waistDistance = server.config.getFloat("body.waistDistance", waistDistance);
-		hipDistance = server.config.getFloat("body.hipDistance", hipDistance);
-		trackerWaistDistance = server.config.getFloat("body.trackerWaistDistance", trackerWaistDistance);
+		torsoLength = server.config.getFloat("body.torsoLength", torsoLength);
+		hipOffset = server.config.getFloat("body.hipOffset", hipOffset);
 		// Build skeleton
 		hmdNode.attachChild(headNode);
 		headNode.localTransform.setTranslation(0, 0, headShift);
@@ -101,20 +104,20 @@ public class HumanSkeletonWithWaist extends HumanSkeleton {
 		chestNode.localTransform.setTranslation(0, -chestDistance, 0);
 		
 		chestNode.attachChild(waistNode);
-		waistNode.localTransform.setTranslation(0, -(waistDistance - chestDistance), 0);
+		waistNode.localTransform.setTranslation(0, (chestDistance - torsoLength + waistDistance), 0);
 
 		waistNode.attachChild(hipNode);
-		hipNode.localTransform.setTranslation(0, -hipDistance, 0);
+		hipNode.localTransform.setTranslation(0, -waistDistance, 0);
 
 		hipNode.attachChild(trackerWaistNode);
-		trackerWaistNode.localTransform.setTranslation(0, trackerWaistDistance, 0);
+		trackerWaistNode.localTransform.setTranslation(0, hipOffset, 0);
 		
 		configMap.put("Head", headShift);
 		configMap.put("Neck", neckLength);
 		configMap.put("Chest", chestDistance);
 		configMap.put("Waist", waistDistance);
-		configMap.put("Virtual waist", trackerWaistDistance);
-		configMap.put("Hip", hipDistance);
+		configMap.put("Hip offset", hipOffset);
+		configMap.put("Torso", torsoLength);
 	}
 	
 	@Override
@@ -123,8 +126,8 @@ public class HumanSkeletonWithWaist extends HumanSkeleton {
 		case "All": // Reset all joints according to height
 			resetSkeletonConfig("Head");
 			resetSkeletonConfig("Neck");
-			resetSkeletonConfig("Virtual waist");
-			resetSkeletonConfig("Hip");
+			resetSkeletonConfig("Hip offset");
+			resetSkeletonConfig("Torso");
 			resetSkeletonConfig("Waist");
 			resetSkeletonConfig("Chest");
 			break;
@@ -134,22 +137,26 @@ public class HumanSkeletonWithWaist extends HumanSkeleton {
 		case "Neck":
 			setSkeletonConfig(joint, NECK_LENGTH_DEFAULT);
 			break;
-		case "Virtual waist":
-			setSkeletonConfig(joint, 0.0f);
-			break;
-		case "Chest": //Chest is half of the upper body (half of the waist with the hip)
-			setSkeletonConfig(joint, (waistDistance + hipDistance) / 2.0f);
-			break;
-		case "Hip": // Distance between waist and hip
-			setSkeletonConfig(joint, 0.1f);
-			break;
-		case "Waist": // waist length is from shoulders (bottom of neck) to waist (right above the hip)
+		case "Torso": // Distance from shoulders to hip (full torso length)
 			Vector3f vec = new Vector3f();
 			hmdTracker.getPosition(vec);
 			float height = vec.y;
 			if(height > 0.5f) { // Reset only if floor level is right, TODO: read floor level from SteamVR if it's not 0
-				setSkeletonConfig(joint, ((height) / 2.0f) - hipDistance - neckLength);
+				setSkeletonConfig(joint, ((height) / 2.0f) - neckLength);
 			}
+			else// if floor level is incorrect
+			{
+				setSkeletonConfig(joint, 0.7f);
+			}
+			break;
+		case "Chest": //Chest is roughly half of the upper body (shoulders to chest)
+			setSkeletonConfig(joint, torsoLength / 2.0f);
+			break;
+		case "Waist": // waist length is from hips to waist
+			setSkeletonConfig(joint, 0.1f);
+			break;
+		case "Hip offset":
+			setSkeletonConfig(joint, 0.0f);
 			break;
 		}
 	}
@@ -173,28 +180,27 @@ public class HumanSkeletonWithWaist extends HumanSkeleton {
 			server.config.setProperty("body.neckLength", neckLength);
 			neckNode.localTransform.setTranslation(0, -neckLength, 0);
 			break;
-		case "Waist":
-			waistDistance = newLength;
-			server.config.setProperty("body.waistDistance", waistDistance);
-			waistNode.localTransform.setTranslation(0, -(waistDistance - chestDistance), 0);
+		case "Torso":
+			torsoLength = newLength;
+			server.config.setProperty("body.torsoLength", torsoLength);
+			waistNode.localTransform.setTranslation(0, (chestDistance - torsoLength + waistDistance), 0);
 			break;
 		case "Chest":
 			chestDistance = newLength;
 			server.config.setProperty("body.chestDistance", chestDistance);
 			chestNode.localTransform.setTranslation(0, -chestDistance, 0);
-			waistNode.localTransform.setTranslation(0, -(waistDistance - chestDistance), 0);
-			trackerWaistNode.localTransform.setTranslation(0, trackerWaistDistance, 0);
+			waistNode.localTransform.setTranslation(0, (chestDistance - torsoLength + waistDistance), 0);
 			break;
-		case "Hip":
-			hipDistance = newLength;
-			server.config.setProperty("body.hipDistance", hipDistance);
-			hipNode.localTransform.setTranslation(0, -hipDistance, 0);
-			trackerWaistNode.localTransform.setTranslation(0, trackerWaistDistance, 0);
+		case "Waist":
+			waistDistance = newLength;
+			server.config.setProperty("body.waistDistance", waistDistance);
+			waistNode.localTransform.setTranslation(0, (chestDistance - torsoLength + waistDistance), 0);
+			hipNode.localTransform.setTranslation(0, -waistDistance, 0);
 			break;
-		case "Virtual waist":
-			trackerWaistDistance = newLength;
-			server.config.setProperty("body.trackerWaistDistance", trackerWaistDistance);
-			trackerWaistNode.localTransform.setTranslation(0, trackerWaistDistance, 0);
+		case "Hip offset":
+			hipOffset = newLength;
+			server.config.setProperty("body.hipOffset", hipOffset);
+			trackerWaistNode.localTransform.setTranslation(0, hipOffset, 0);
 			break;
 		}
 	}
