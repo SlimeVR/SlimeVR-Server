@@ -103,25 +103,25 @@ public class SkeletonConfig extends EJBagNoStretch {
 			}}, s(c(4, row, 2), 3, 1));
 			row++;
 
-			add(new JLabel("Chest"), c(0, row, 2));
+			add(new JLabel("Torso length"), c(0, row, 2));
+			add(new AdjButton("+", "Torso", 0.01f), c(1, row, 2));
+			add(new SkeletonLabel("Torso"), c(2, row, 2));
+			add(new AdjButton("-", "Torso", -0.01f), c(3, row, 2));
+			add(new TimedResetButton("Reset", "Torso"), c(4, row, 2));
+			row++;
+
+			add(new JLabel("Chest distance"), c(0, row, 2));
 			add(new AdjButton("+", "Chest", 0.01f), c(1, row, 2));
 			add(new SkeletonLabel("Chest"), c(2, row, 2));
 			add(new AdjButton("-", "Chest", -0.01f), c(3, row, 2));
 			add(new ResetButton("Reset", "Chest"), c(4, row, 2));
 			row++;
 
-			add(new JLabel("Waist"), c(0, row, 2));
+			add(new JLabel("Waist distance"), c(0, row, 2));
 			add(new AdjButton("+", "Waist", 0.01f), c(1, row, 2));
 			add(new SkeletonLabel("Waist"), c(2, row, 2));
 			add(new AdjButton("-", "Waist", -0.01f), c(3, row, 2));
-			add(new TimedResetButton("Reset", "Waist"), c(4, row, 2));
-			row++;
-
-			add(new JLabel("Hip"), c(0, row, 2));
-			add(new AdjButton("+", "Hip", 0.01f), c(1, row, 2));
-			add(new SkeletonLabel("Hip"), c(2, row, 2));
-			add(new AdjButton("-", "Hip", -0.01f), c(3, row, 2));
-			add(new ResetButton("Reset", "Hip"), c(4, row, 2));
+			add(new ResetButton("Reset", "Waist"), c(4, row, 2));
 			row++;
 
 			add(new JLabel("Hips width"), c(0, row, 2));
@@ -142,7 +142,7 @@ public class SkeletonConfig extends EJBagNoStretch {
 			add(new AdjButton("+", "Knee height", 0.01f), c(1, row, 2));
 			add(new SkeletonLabel("Knee height"), c(2, row, 2));
 			add(new AdjButton("-", "Knee height", -0.01f), c(3, row, 2));
-			add(new TimedResetButton("Reset", "Knee height"), c(4, row, 2));
+			add(new ResetButton("Reset", "Knee height"), c(4, row, 2));
 			row++;
 
 			add(new JLabel("Foot length"), c(0, row, 2));
@@ -150,13 +150,6 @@ public class SkeletonConfig extends EJBagNoStretch {
 			add(new SkeletonLabel("Foot length"), c(2, row, 2));
 			add(new AdjButton("-", "Foot length", -0.01f), c(3, row, 2));
 			add(new ResetButton("Reset", "Foot length"), c(4, row, 2));
-			row++;
-
-			add(new JLabel("Foot offset"), c(0, row, 2));
-			add(new AdjButton("+", "Foot offset", 0.01f), c(1, row, 2));
-			add(new SkeletonLabel("Foot offset"), c(2, row, 2));
-			add(new AdjButton("-", "Foot offset", -0.01f), c(3, row, 2));
-			add(new ResetButton("Reset", "Foot offset"), c(4, row, 2));
 			row++;
 
 			add(new JLabel("Head offset"), c(0, row, 2));
@@ -173,11 +166,18 @@ public class SkeletonConfig extends EJBagNoStretch {
 			add(new ResetButton("Reset", "Neck"), c(4, row, 2));
 			row++;
 
-			add(new JLabel("Virtual waist"), c(0, row, 2));
-			add(new AdjButton("+", "Virtual waist", 0.01f), c(1, row, 2));
-			add(new SkeletonLabel("Virtual waist"), c(2, row, 2));
-			add(new AdjButton("-", "Virtual waist", -0.01f), c(3, row, 2));
-			add(new ResetButton("Reset", "Virtual waist"), c(4, row, 2));
+			add(new JLabel("Hip offset"), c(0, row, 2));
+			add(new AdjButton("+", "Hip offset", 0.01f), c(1, row, 2));
+			add(new SkeletonLabel("Hip offset"), c(2, row, 2));
+			add(new AdjButton("-", "Hip offset", -0.01f), c(3, row, 2));
+			add(new ResetButton("Reset", "Hip offset"), c(4, row, 2));
+			row++;
+			
+			add(new JLabel("Foot offset"), c(0, row, 2));
+			add(new AdjButton("+", "Foot offset", 0.01f), c(1, row, 2));
+			add(new SkeletonLabel("Foot offset"), c(2, row, 2));
+			add(new AdjButton("-", "Foot offset", -0.01f), c(3, row, 2));
+			add(new ResetButton("Reset", "Foot offset"), c(4, row, 2));
 			row++;
 
 			gui.refresh();

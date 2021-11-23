@@ -62,7 +62,7 @@ public class AutoBone {
 	
 	// Assume these to be approximately half
 	public float kneeLegRatio = 0.5f;
-	public float chestWaistRatio = 0.5f;
+	public float chestHipRatio = 0.5f;
 	
 	protected final VRServer server;
 	
@@ -72,7 +72,7 @@ public class AutoBone {
 	public final HashMap<String, Float> configs = new HashMap<String, Float>();
 	public final HashMap<String, Float> staticConfigs = new HashMap<String, Float>();
 	
-	public final FastList<String> heightConfigs = new FastList<String>(new String[]{"Neck", "Waist", "Hip", "Legs length"});
+	public final FastList<String> heightConfigs = new FastList<String>(new String[]{"Neck", "Torso", "Legs length"});
 	
 	public AutoBone(VRServer server) {
 		this.server = server;
@@ -87,10 +87,10 @@ public class AutoBone {
 	}
 	
 	public void reloadConfigValues(TrackerFrame[] frame) {
-		// Load waist configs
+		// Load torso configs
 		staticConfigs.put("Head", server.config.getFloat("body.headShift", HumanSkeletonWithWaist.HEAD_SHIFT_DEFAULT));
 		staticConfigs.put("Neck", server.config.getFloat("body.neckLength", HumanSkeletonWithWaist.NECK_LENGTH_DEFAULT));
-		configs.put("Waist", server.config.getFloat("body.waistDistance", 0.6f));
+		configs.put("Torso", server.config.getFloat("body.torsoLength", 0.7f));
 		if(server.config.getBoolean("autobone.forceChestTracker", false) || (frame != null && TrackerUtils.findTrackerForBodyPosition(frame, TrackerPosition.CHEST) != null) || TrackerUtils.findTrackerForBodyPosition(server.getAllTrackers(), TrackerPosition.CHEST) != null) {
 			// If force enabled or has a chest tracker
 			configs.put("Chest", server.config.getFloat("body.chestDistance", 0.35f));
@@ -101,11 +101,11 @@ public class AutoBone {
 		}
 		if(server.config.getBoolean("autobone.forceHipTracker", false) || (frame != null && TrackerUtils.findTrackerForBodyPosition(frame, TrackerPosition.HIP) != null) || TrackerUtils.findTrackerForBodyPosition(server.getAllTrackers(), TrackerPosition.HIP) != null) {
 			// If force enabled or has a hip tracker
-			configs.put("Hip", server.config.getFloat("body.hipDistance", 0.1f));
+			configs.put("Waist", server.config.getFloat("body.waistDistance", 0.1f));
 		} else {
 			// Otherwise, make sure it's not used
-			configs.remove("Hip");
-			staticConfigs.put("Hip", server.config.getFloat("body.hipDistance", 0.1f));
+			configs.remove("Waist");
+			staticConfigs.put("Waist", server.config.getFloat("body.waistDistance", 0.1f));
 		}
 		
 		// Load leg configs
@@ -156,7 +156,7 @@ public class AutoBone {
 		setConfig("Neck", "body.neckLength");
 		setConfig("Waist", "body.waistDistance");
 		setConfig("Chest", "body.chestDistance");
-		setConfig("Hip", "body.hipDistance");
+		setConfig("Torso", "body.torsoLength");
 		setConfig("Hips width", "body.hipsWidth");
 		setConfig("Legs length", "body.legsLength");
 		setConfig("Knee height", "body.kneeHeight");
@@ -400,12 +400,12 @@ public class AutoBone {
 	protected float getProportionErrorDeriv(SimpleSkeleton skeleton) {
 		Float neckLength = skeleton.getSkeletonConfig("Neck");
 		Float chestLength = skeleton.getSkeletonConfig("Chest");
-		Float waistLength = skeleton.getSkeletonConfig("Waist");
+		Float torsoLength = skeleton.getSkeletonConfig("Torso");
 		Float legsLength = skeleton.getSkeletonConfig("Legs length");
 		Float kneeHeight = skeleton.getSkeletonConfig("Knee height");
 		
-		float chestWaist = chestLength != null && waistLength != null ? Math.abs((chestLength / waistLength) - chestWaistRatio) : 0f;
-		float legBody = legsLength != null && waistLength != null && neckLength != null ? Math.abs((legsLength / (waistLength + neckLength)) - legBodyRatio) : 0f;
+		float chestHip = chestLength != null && torsoLength != null ? Math.abs((chestLength / torsoLength) - chestHipRatio) : 0f;
+		float legBody = legsLength != null && torsoLength != null && neckLength != null ? Math.abs((legsLength / (torsoLength + neckLength)) - legBodyRatio) : 0f;
 		float kneeLeg = kneeHeight != null && legsLength != null ? Math.abs((kneeHeight / legsLength) - kneeLegRatio) : 0f;
 		
 		if(legBody <= legBodyRatioRange) {
@@ -414,7 +414,7 @@ public class AutoBone {
 			legBody -= legBodyRatioRange;
 		}
 		
-		return (chestWaist + legBody + kneeLeg) / 3f;
+		return (chestHip + legBody + kneeLeg) / 3f;
 	}
 	
 	// The distance of any points to the corresponding absolute position
