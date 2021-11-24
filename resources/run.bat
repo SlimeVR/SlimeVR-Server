@@ -1,4 +1,6 @@
 @echo off
+setlocal enableextensions
+cd /d "%~dp0"
 
 WHERE java >nul 2>&1 && (
     java -Xmx512M -jar slimevr.jar
