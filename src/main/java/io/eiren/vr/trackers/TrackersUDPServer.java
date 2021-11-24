@@ -98,6 +98,8 @@ public class TrackersUDPServer extends Thread {
 				if(data.remaining() > mac.length) {
 					data.get(mac);
 					macString = String.format("%02X:%02X:%02X:%02X:%02X:%02X", mac[0], mac[1], mac[2], mac[3], mac[4], mac[5]);
+					if(macString.equals("00:00:00:00:00:00"))
+						macString = null;
 				}
 			}
 			if(firmware.length() == 0) {
@@ -125,11 +127,15 @@ public class TrackersUDPServer extends Thread {
 	
 	private void setUpAuxilarySensor(TrackerConnection connection, int trackerId) throws IOException {
 		System.out.println("[TrackerServer] Setting up auxilary sensor for " + connection.sensors.get(0).getName());
-		IMUTracker imu = new IMUTracker(Tracker.getNextLocalTrackerId(), connection.sensors.get(0).getName() + "/" + trackerId, connection.sensors.get(0).getDescriptiveName() + "/" + trackerId, this);
-		connection.sensors.put(trackerId, imu);
-		ReferenceAdjustedTracker<IMUTracker> adjustedTracker = new ReferenceAdjustedTracker<>(imu);
-		trackersConsumer.accept(adjustedTracker);
-		System.out.println("[TrackerServer] Sensor added with address " + imu.getName());
+		IMUTracker imu = connection.sensors.get(trackerId);
+		if(imu == null) {
+			imu = new IMUTracker(Tracker.getNextLocalTrackerId(), connection.sensors.get(0).getName() + "/" + trackerId, connection.sensors.get(0).getDescriptiveName() + "/" + trackerId, this);
+			connection.sensors.put(trackerId, imu);
+			ReferenceAdjustedTracker<IMUTracker> adjustedTracker = new ReferenceAdjustedTracker<>(imu);
+			trackersConsumer.accept(adjustedTracker);
+			System.out.println("[TrackerServer] Sensor added with address " + imu.getName());
+		}
+		imu.setStatus(TrackerStatus.OK);
 	}
 	
 	
@@ -219,34 +225,12 @@ public class TrackersUDPServer extends Thread {
 							break;
 						float accuracyInfo = bb.getFloat();
 						tracker.magnetometerAccuracy = accuracyInfo;
-						// TODO
 						break;
-					case 2:
-						if(connection == null)
-							break;
-						bb.getLong();
-						connection.sensors.get(0).gyroVector.set(bb.getFloat(), bb.getFloat(), bb.getFloat());
-						break;
-					case 4:
-						if(connection == null)
-							break;
-						bb.getLong();
-						float x = bb.getFloat();
-						float z = bb.getFloat();
-						float y = bb.getFloat();
-						connection.sensors.get(0).accelVector.set(x, y, z);
-						break;
-					case 5:
-						if(connection == null)
-							break;
-						if(connection.isOwoTrack)
-							break;
-						bb.getLong();
-						x = bb.getFloat();
-						z = bb.getFloat();
-						y = bb.getFloat();
-						connection.sensors.get(0).magVector.set(x, y, z);
-						break;
+					case 2: // PACKET_GYRO
+					case 4: // PACKET_ACCEL
+					case 5: // PACKET_MAG
+					case 9: // PACKET_RAW_MAGENTOMETER
+						break; // None of these packets are used by SlimeVR trackers and are deprecated, use more generic PACKET_ROTATION_DATA
 					case 8: // PACKET_CONFIG
 						if(connection == null)
 							break;
@@ -259,17 +243,6 @@ public class TrackersUDPServer extends Thread {
 							dataConsumer.accept(data.toTextMatrix());
 						}
 						break;
-					case 9: // PACKET_RAW_MAGENTOMETER
-						if(connection == null)
-							break;
-						if(connection.isOwoTrack)
-							break;
-						bb.getLong();
-						float mx = bb.getFloat();
-						float my = bb.getFloat();
-						float mz = bb.getFloat();
-						connection.sensors.get(0).confidence = (float) Math.sqrt(mx * mx + my * my + mz * mz);
-						break;
 					case 10: // PACKET_PING_PONG:
 						if(connection == null)
 							break;
@@ -277,8 +250,11 @@ public class TrackersUDPServer extends Thread {
 							break;
 						int pingId = bb.getInt();
 						if(connection.lastPingPacketId == pingId) {
-							tracker = connection.sensors.get(0);
-							tracker.ping = (int) (System.currentTimeMillis() - connection.lastPingPacketTime) / 2;
+							for(int i = 0; i < connection.sensors.size(); ++i) {
+								tracker = connection.sensors.get(i);
+								tracker.ping = (int) (System.currentTimeMillis() - connection.lastPingPacketTime) / 2;
+								tracker.dataTick();
+							}
 						}
 						break;
 					case 11: // PACKET_SERIAL
@@ -328,7 +304,10 @@ public class TrackersUDPServer extends Thread {
 						System.out.println("[TrackerServer] Reset recieved from " + recieve.getSocketAddress() + ": " + reason);
 						if(connection == null)
 							break;
-						tracker = connection.sensors.get(0);
+						sensorId = bb.get() & 0xFF;
+						tracker = connection.sensors.get(sensorId);
+						if(tracker == null)
+							break;
 						tracker.setStatus(TrackerStatus.ERROR);
 						break;
 					case 15: // PACKET_SENSOR_INFO
@@ -337,7 +316,7 @@ public class TrackersUDPServer extends Thread {
 						bb.getLong();
 						sensorId = bb.get() & 0xFF;
 						int sensorStatus = bb.get() & 0xFF;
-						if(sensorId > 0 && sensorStatus == 1 && !connection.sensors.containsKey(sensorId)) {
+						if(sensorId > 0 && sensorStatus == 1) {
 							setUpAuxilarySensor(connection, sensorId);
 						}
 						bb.rewind();
@@ -360,21 +339,25 @@ public class TrackersUDPServer extends Thread {
 					synchronized(trackers) {
 						for(int i = 0; i < trackers.size(); ++i) {
 							TrackerConnection conn = trackers.get(i);
-							IMUTracker tracker = conn.sensors.get(0);
 							socket.send(new DatagramPacket(KEEPUP_BUFFER, KEEPUP_BUFFER.length, conn.address));
 							if(conn.lastPacket + 1000 < System.currentTimeMillis()) {
-								if(tracker.getStatus() != TrackerStatus.DISCONNECTED) {
-									tracker.setStatus(TrackerStatus.DISCONNECTED);
-									Iterator<IMUTracker> iterator = conn.sensors.values().iterator();
-									while(iterator.hasNext())
-										iterator.next().setStatus(TrackerStatus.DISCONNECTED);
-								}
-							} else if(tracker.getStatus() != TrackerStatus.ERROR && tracker.getStatus() != TrackerStatus.BUSY) {
-								tracker.setStatus(TrackerStatus.OK);
 								Iterator<IMUTracker> iterator = conn.sensors.values().iterator();
-								while(iterator.hasNext())
-									iterator.next().setStatus(TrackerStatus.OK);
+								while(iterator.hasNext()) {
+									IMUTracker tracker = iterator.next();
+									if(tracker.getStatus() == TrackerStatus.OK)
+										tracker.setStatus(TrackerStatus.DISCONNECTED);
+								}
+							} else {
+								Iterator<IMUTracker> iterator = conn.sensors.values().iterator();
+								while(iterator.hasNext()) {
+									IMUTracker tracker = iterator.next();
+									if(tracker.getStatus() == TrackerStatus.DISCONNECTED)
+										tracker.setStatus(TrackerStatus.OK);
+								}
 							}
+							IMUTracker tracker = conn.sensors.get(0);
+							if(tracker == null)
+								continue;
 							if(tracker.serialBuffer.length() > 0) {
 								if(tracker.lastSerialUpdate + 500L < System.currentTimeMillis()) {
 									serialBuffer2.append('[').append(tracker.getName()).append("] ").append(tracker.serialBuffer);

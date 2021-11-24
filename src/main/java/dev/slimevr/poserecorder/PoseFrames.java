@@ -7,19 +7,19 @@ import java.util.NoSuchElementException;
 import io.eiren.util.collections.FastList;
 import io.eiren.vr.trackers.Tracker;
 
-public final class PoseFrame implements Iterable<TrackerFrame[]> {
+public final class PoseFrames implements Iterable<TrackerFrame[]> {
 	
 	private final FastList<PoseFrameTracker> trackers;
 	
-	public PoseFrame(FastList<PoseFrameTracker> trackers) {
+	public PoseFrames(FastList<PoseFrameTracker> trackers) {
 		this.trackers = trackers;
 	}
 	
-	public PoseFrame(int initialCapacity) {
+	public PoseFrames(int initialCapacity) {
 		this.trackers = new FastList<PoseFrameTracker>(initialCapacity);
 	}
 	
-	public PoseFrame() {
+	public PoseFrames() {
 		this(5);
 	}
 	
@@ -103,12 +103,12 @@ public final class PoseFrame implements Iterable<TrackerFrame[]> {
 	
 	public class PoseFrameIterator implements Iterator<TrackerFrame[]> {
 		
-		private final PoseFrame poseFrame;
+		private final PoseFrames poseFrame;
 		private final TrackerFrame[] trackerFrameBuffer;
 		
 		private int cursor = 0;
 		
-		public PoseFrameIterator(PoseFrame poseFrame) {
+		public PoseFrameIterator(PoseFrames poseFrame) {
 			this.poseFrame = poseFrame;
 			trackerFrameBuffer = new TrackerFrame[poseFrame.getTrackerCount()];
 		}

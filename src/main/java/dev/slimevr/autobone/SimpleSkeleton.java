@@ -23,12 +23,20 @@ public class SimpleSkeleton {
 	protected final TransformNode neckNode = new TransformNode("Neck", false);
 	protected final TransformNode waistNode = new TransformNode("Waist", false);
 	protected final TransformNode chestNode = new TransformNode("Chest", false);
+	protected final TransformNode hipNode = new TransformNode("Hip", false);
 	
-	protected float chestDistance = 0.42f;
 	/**
-	 * Distance from eyes to waist
+	 * Distance from shoulders to chest
 	 */
-	protected float waistDistance = 0.85f;
+	protected float chestDistance = 0.35f;
+	/**
+	 * Distance from hip to waist
+	 */
+	protected float waistDistance = 0.1f;
+	/**
+	 * Distance from shoulder to hip
+	 */
+	protected float torsoLength = 0.7f;
 	/**
 	 * Distance from eyes to the base of the neck
 	 */
@@ -76,13 +84,16 @@ public class SimpleSkeleton {
 		chestNode.localTransform.setTranslation(0, -chestDistance, 0);
 		
 		chestNode.attachChild(waistNode);
-		waistNode.localTransform.setTranslation(0, -(waistDistance - chestDistance), 0);
+		waistNode.localTransform.setTranslation(0, (chestDistance - torsoLength + waistDistance), 0);
+
+		waistNode.attachChild(hipNode);
+		hipNode.localTransform.setTranslation(0, -waistDistance, 0);
 		
 		// Assemble skeleton to feet
-		waistNode.attachChild(leftHipNode);
+		hipNode.attachChild(leftHipNode);
 		leftHipNode.localTransform.setTranslation(-hipsWidth / 2, 0, 0);
 		
-		waistNode.attachChild(rightHipNode);
+		hipNode.attachChild(rightHipNode);
 		rightHipNode.localTransform.setTranslation(hipsWidth / 2, 0, 0);
 		
 		leftHipNode.attachChild(leftKneeNode);
@@ -133,17 +144,17 @@ public class SimpleSkeleton {
 				hmdNode.localTransform.setTranslation(hmd.position);
 			}
 		}
-		
-		TrackerFrame chest = TrackerUtils.findTrackerForBodyPosition(frame, TrackerPosition.CHEST, TrackerPosition.WAIST);
+		TrackerFrame chest = TrackerUtils.findTrackerForBodyPosition(frame, TrackerPosition.CHEST, TrackerPosition.WAIST, TrackerPosition.HIP);
 		setRotation(chest, neckNode);
 		
-		TrackerFrame waist = TrackerUtils.findTrackerForBodyPosition(frame, TrackerPosition.WAIST, TrackerPosition.CHEST);
+		TrackerFrame waist = TrackerUtils.findTrackerForBodyPosition(frame, TrackerPosition.WAIST, TrackerPosition.CHEST, TrackerPosition.HIP);
 		setRotation(waist, chestNode);
 		
 		TrackerFrame leftLeg = TrackerUtils.findTrackerForBodyPosition(frame, TrackerPosition.LEFT_LEG);
 		TrackerFrame rightLeg = TrackerUtils.findTrackerForBodyPosition(frame, TrackerPosition.RIGHT_LEG);
 		
-		averagePelvis(waist, leftLeg, rightLeg);
+		TrackerFrame hip = TrackerUtils.findTrackerForBodyPosition(frame, TrackerPosition.HIP, TrackerPosition.WAIST, TrackerPosition.CHEST);
+		averagePelvis(hip, leftLeg, rightLeg);
 		
 		setRotation(leftLeg, leftHipNode);
 		setRotation(rightLeg, rightHipNode);
@@ -163,19 +174,18 @@ public class SimpleSkeleton {
 		}
 	}
 	
-	public void averagePelvis(TrackerFrame waist, TrackerFrame leftLeg, TrackerFrame rightLeg) {
+	public void averagePelvis(TrackerFrame hip, TrackerFrame leftLeg, TrackerFrame rightLeg) {
 		if((leftLeg == null || rightLeg == null) || (!leftLeg.hasData(TrackerFrameData.ROTATION) || !rightLeg.hasData(TrackerFrameData.ROTATION))) {
-			setRotation(waist, waistNode);
+			setRotation(hip, waistNode);
 			return;
 		}
-		
-		if(waist == null || !waist.hasData(TrackerFrameData.ROTATION)) {
+		if(hip == null || !hip.hasData(TrackerFrameData.ROTATION)) {
 			if(leftLeg.hasData(TrackerFrameData.ROTATION) && rightLeg.hasData(TrackerFrameData.ROTATION)) {
 				leftLeg.getRotation(rotBuf1);
 				rightLeg.getRotation(rotBuf2);
 				rotBuf1.nlerp(rotBuf2, 0.5f);
 				
-				waistNode.localTransform.setRotation(rotBuf1);
+				hipNode.localTransform.setRotation(rotBuf1);
 			}
 			
 			return;
@@ -185,11 +195,10 @@ public class SimpleSkeleton {
 		leftLeg.getRotation(rotBuf1);
 		rightLeg.getRotation(rotBuf2);
 		rotBuf1.nlerp(rotBuf2, 0.5f);
-		
-		waist.getRotation(rotBuf2);
+		hip.getRotation(rotBuf2);
 		rotBuf1.nlerp(rotBuf2, 0.3333333f);
 		
-		waistNode.localTransform.setRotation(rotBuf1);
+		hipNode.localTransform.setRotation(rotBuf1);
 	}
 	
 	public void setSkeletonConfigs(Map<String, Float> configs) {
@@ -216,21 +225,29 @@ public class SimpleSkeleton {
 				neckNode.update();
 			}
 			break;
-		case "Waist":
-			waistDistance = newLength;
-			waistNode.localTransform.setTranslation(0, -(waistDistance - chestDistance), 0);
+		case "Torso":
+			torsoLength = newLength;
+			waistNode.localTransform.setTranslation(0, (chestDistance - torsoLength + waistDistance), 0);
 			if(updatePose) {
-				waistNode.update();
+				hipNode.update();
 			}
 			break;
 		case "Chest":
 			chestDistance = newLength;
 			chestNode.localTransform.setTranslation(0, -chestDistance, 0);
-			waistNode.localTransform.setTranslation(0, -(waistDistance - chestDistance), 0);
+			waistNode.localTransform.setTranslation(0, (chestDistance - torsoLength + waistDistance), 0);
 			if(updatePose) {
 				chestNode.update();
 			}
 			break;
+		case "Waist":
+			waistDistance = newLength;
+			waistNode.localTransform.setTranslation(0, (chestDistance - torsoLength + waistDistance), 0);
+			hipNode.localTransform.setTranslation(0, -waistDistance, 0);
+			if(updatePose) {
+				waistNode.update();
+			}
+			break;	
 		case "Hips width":
 			hipsWidth = newLength;
 			leftHipNode.localTransform.setTranslation(-hipsWidth / 2, 0, 0);
@@ -269,6 +286,8 @@ public class SimpleSkeleton {
 			return headShift;
 		case "Neck":
 			return neckLength;
+		case "Torso":
+			return torsoLength;	
 		case "Waist":
 			return waistDistance;
 		case "Chest":
@@ -308,6 +327,8 @@ public class SimpleSkeleton {
 			return rotationNode ? neckNode : chestNode;
 		case WAIST:
 			return rotationNode ? chestNode : waistNode;
+		case HIP:
+			return rotationNode ? waistNode : hipNode;
 		
 		case LEFT_LEG:
 			return rotationNode ? leftHipNode : leftKneeNode;
@@ -343,6 +364,7 @@ public class SimpleSkeleton {
 		config.setProperty("body.neckLength", neckLength);
 		config.setProperty("body.waistDistance", waistDistance);
 		config.setProperty("body.chestDistance", chestDistance);
+		config.setProperty("body.torsoLength", torsoLength);
 		
 		// Save leg configs
 		config.setProperty("body.hipsWidth", hipsWidth);

@@ -4632,7 +4632,7 @@ public final class ProtobufMessages {
       }
       private com.google.protobuf.MapField<java.lang.String, java.lang.String>
       internalGetMutableExtra() {
-        onChanged();;
+        onChanged();
         if (extra_ == null) {
           extra_ = com.google.protobuf.MapField.newMapField(
               ExtraDefaultEntryHolder.defaultEntry);
@@ -5099,7 +5099,7 @@ public final class ProtobufMessages {
 	public int getNumber() {
         return this.value;
       }
-    };
+    }
 
     @Override
 	public MessageCase
@@ -5791,7 +5791,7 @@ public final class ProtobufMessages {
           message_ = null;
         }
         messageCase_ = 1;
-        onChanged();;
+        onChanged();
         return positionBuilder_;
       }
 
@@ -5932,7 +5932,7 @@ public final class ProtobufMessages {
           message_ = null;
         }
         messageCase_ = 2;
-        onChanged();;
+        onChanged();
         return userActionBuilder_;
       }
 
@@ -6073,7 +6073,7 @@ public final class ProtobufMessages {
           message_ = null;
         }
         messageCase_ = 3;
-        onChanged();;
+        onChanged();
         return trackerAddedBuilder_;
       }
 
@@ -6214,7 +6214,7 @@ public final class ProtobufMessages {
           message_ = null;
         }
         messageCase_ = 4;
-        onChanged();;
+        onChanged();
         return trackerStatusBuilder_;
       }
       @java.lang.Override
