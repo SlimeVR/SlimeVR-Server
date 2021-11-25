@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.layout.AnchorPane?>
+<?import javafx.scene.layout.GridPane?>
+<?import javafx.scene.layout.VBox?>
+
+<?import dev.slimevr.gui.TrackersListPane?>
+<AnchorPane fx:id="mainTabPageAnchor" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" xmlns="http://javafx.com/javafx/17" xmlns:fx="http://javafx.com/fxml/1" fx:controller="dev.slimevr.gui.tabs.MainTabController">
+   <children>
+	   <VBox fx:id="trackersListContainer" layoutX="10.0" prefHeight="390.0" prefWidth="389.0">
+	   </VBox>
+      <VBox layoutX="467.0" layoutY="14.0" prefHeight="200.0" prefWidth="100.0" />
+   </children>
+</AnchorPane>

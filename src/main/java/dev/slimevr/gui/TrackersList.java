@@ -23,6 +23,7 @@ import io.eiren.util.StringUtils;
 import io.eiren.util.ann.AWTThread;
 import io.eiren.util.ann.ThreadSafe;
 import io.eiren.util.collections.FastList;
+import io.eiren.util.logging.LogManager;
 import io.eiren.vr.VRServer;
 import io.eiren.vr.trackers.ReferenceAdjustedTracker;
 import io.eiren.vr.trackers.ComputedTracker;
@@ -36,7 +37,7 @@ import io.eiren.vr.trackers.TrackerWithBattery;
 import io.eiren.vr.trackers.TrackerWithTPS;
 
 public class TrackersList extends EJBoxNoStretch {
-	
+
 	private static final long UPDATE_DELAY = 50;
 	
 	Quaternion q = new Quaternion();
@@ -121,6 +122,7 @@ public class TrackersList extends EJBoxNoStretch {
 	
 	@ThreadSafe
 	public void newTrackerAdded(Tracker t) {
+		LogManager.log.debug(String.format("new tracker added %s",t.getClass().getName()));
 		java.awt.EventQueue.invokeLater(() -> {
 			trackers.add(new TrackerPanel(t));
 			build();
@@ -154,9 +156,11 @@ public class TrackersList extends EJBoxNoStretch {
 		@SuppressWarnings("unchecked")
 		@AWTThread
 		public TrackerPanel build() {
+
 			int row = 0;
 			
 			Tracker realTracker = t;
+			LogManager.log.debug(String.format("new tracker panel created %s", realTracker.getClass().getName()));
 			if(t instanceof ReferenceAdjustedTracker)
 				realTracker = ((ReferenceAdjustedTracker<? extends Tracker>) t).getTracker();
 			removeAll();

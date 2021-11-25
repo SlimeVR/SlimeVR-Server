@@ -3,8 +3,11 @@ package dev.slimevr.gui;
 import com.dustinredmond.fxtrayicon.FXTrayIcon;
 import io.eiren.vr.Main;
 import javafx.application.Application;
+import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Scene;
+import javafx.scene.control.Button;
+import javafx.scene.control.TabPane;
 import javafx.scene.image.Image;
 import javafx.stage.Stage;
 import javafx.stage.StageStyle;
@@ -32,9 +35,12 @@ public class MainStage extends Application {
 		stage.setScene(scene);
 		stage.setResizable(true);
 		stage.centerOnScreen();
-		stage.initStyle(StageStyle.UNDECORATED);
+		// stage.initStyle(StageStyle.UNDECORATED);
 
 		stage.show();
 	}
+
+
+
 
 }
