@@ -54,9 +54,8 @@ public class Main {
 			vrServer = new VRServer();
 			vrServer.start();
 			new Keybinding(vrServer);
-			//new VRServerGUI(vrServer);
-
-			MainStage.launch(MainStage.class);
+			new VRServerGUI(vrServer);
+			//MainStage.launch(MainStage.class);
 
 
 			//Application.launch(SlimeVRGUIJFX.class, args);

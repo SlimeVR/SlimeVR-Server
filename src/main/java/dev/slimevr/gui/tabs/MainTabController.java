@@ -30,6 +30,8 @@ public class MainTabController {
 	@FXML
 	public VBox trackersListContainer;
 
+	private TrackersListPane trackersListPane = null;
+
 
 
 	private Stage stage;
@@ -71,7 +73,9 @@ public class MainTabController {
 	private void initGui() {
 		LogManager.log.debug("init main tab");
 
-		trackersListContainer.getChildren().add(new TrackersListPane(server));
+		trackersListPane = new TrackersListPane(server);
+		trackersListContainer.getChildren().add(trackersListPane);
+		server.addOnTick(trackersListPane::updateTrackers);
 
 		/*int currentRow = 0;
 		int currentColumn = 0;
