@@ -19,7 +19,7 @@ public class SkeletonConfigView extends VBox implements Initializable {
 	private Map<String, SkeletonConfigItemView> configItems = new HashMap<>();
 
 	public SkeletonConfigView(VRServer server) {
-		FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource(
+		/*FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource(
 				"/gui/skeletonConfigView.fxml"));
 		fxmlLoader.setRoot(this);
 		fxmlLoader.setController(this);
@@ -29,7 +29,7 @@ public class SkeletonConfigView extends VBox implements Initializable {
 		} catch (IOException exception) {
 			throw new RuntimeException(exception);
 		}
-
+*/
 		this.server = server;
 		populateSkeletonItems();
 
@@ -37,6 +37,8 @@ public class SkeletonConfigView extends VBox implements Initializable {
 		server.humanPoseProcessor.addSkeletonUpdatedCallback(this::skeletonUpdated);
 		//skeletonUpdated(null);
 	}
+
+
 
 
 	private void populateSkeletonItems() {

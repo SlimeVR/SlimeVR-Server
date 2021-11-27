@@ -4,7 +4,7 @@
 <?import javafx.scene.layout.HBox?>
 <?import javafx.scene.text.Text?>
 
-<fx:root type="javafx.scene.layout.HBox" xmlns="http://javafx.com/javafx/17" xmlns:fx="http://javafx.com/fxml/1">
+<fx:root type="javafx.scene.layout.HBox" xmlns="http://javafx.com/javafx/17" xmlns:fx="http://javafx.com/fxml/1" >
    <children>
       <Text id="title" fx:id="itemTitle" strokeType="OUTSIDE" strokeWidth="0.0" text="Title" />
       <Button id="itemMinusButton" fx:id="itemMinusButton" mnemonicParsing="false" text="-" />

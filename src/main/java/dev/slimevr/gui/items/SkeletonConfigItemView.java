@@ -65,6 +65,11 @@ public class SkeletonConfigItemView extends HBox  implements Initializable{
 
 	}
 
+	@FXML
+	public void initialize() {
+		LogManager.log.debug("initialize "+joint+" "+bundle.getString(joint)+" "+value);
+	}
+
 	@Override
 	public void initialize(URL location, ResourceBundle resources) {
 		bundle = resources;

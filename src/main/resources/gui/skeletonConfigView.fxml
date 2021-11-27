@@ -2,5 +2,5 @@
 
 <?import javafx.scene.layout.*?>
 
-<fx:root type="javafx.scene.layout.VBox" xmlns:fx="http://javafx.com/fxml">
+<fx:root type="javafx.scene.layout.VBox" xmlns:fx="http://javafx.com/fxml" fx:controller="dev.slimevr.gui.views.SkeletonConfigView">
 </fx:root>

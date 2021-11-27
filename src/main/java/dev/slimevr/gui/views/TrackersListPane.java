@@ -22,7 +22,7 @@ public class TrackersListPane extends GridPane implements Initializable {
 
 	private static final long UPDATE_DELAY = 50;
 	private List<TrackerPanelCell> trackers;
-	
+
 	Quaternion q = new Quaternion();
 	Vector3f v = new Vector3f();
 	float[] angles = new float[3];
@@ -43,7 +43,7 @@ public class TrackersListPane extends GridPane implements Initializable {
 		}
 		this.server = server;
 		this.trackers = new FastList<>();
-		
+
 		server.addNewTrackerConsumer(this::newTrackerAdded);
 	}
 
@@ -65,7 +65,7 @@ public class TrackersListPane extends GridPane implements Initializable {
 	}
 
 
-	
+
 	public void trackersListInit() {
 		/*trackers.sort(Comparator.comparingInt(tr -> getTrackerSort(tr.tracker)));
 		
@@ -81,7 +81,7 @@ public class TrackersListPane extends GridPane implements Initializable {
 				t = ((ReferenceAdjustedTracker<?>) t).getTracker();
 			
 		}*/
-		
+
 	}
 
 	@ThreadSafe
@@ -89,12 +89,13 @@ public class TrackersListPane extends GridPane implements Initializable {
 		if(lastUpdate + UPDATE_DELAY > System.currentTimeMillis())
 			return;
 		lastUpdate = System.currentTimeMillis();
-		java.awt.EventQueue.invokeLater(() -> {
+		for(int i = 0; i < trackers.size(); ++i) trackers.get(i).update();
+		/*java.awt.EventQueue.invokeLater(() -> {
 			for(int i = 0; i < trackers.size(); ++i)
 				trackers.get(i).update();
-		});
+		});*/
 	}
-	
+
 	private int getTrackerSort(Tracker t) {
 		if(t instanceof ReferenceAdjustedTracker)
 			t = ((ReferenceAdjustedTracker<?>) t).getTracker();
@@ -107,7 +108,7 @@ public class TrackersListPane extends GridPane implements Initializable {
 		return 1000;
 	}
 
-	
+
 	@ThreadSafe
 	public void newTrackerAdded(Tracker t) {
 		trackers.add(new TrackerPanelCell(t,server));
