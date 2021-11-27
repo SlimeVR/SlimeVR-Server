@@ -6,7 +6,7 @@ import com.jme3.math.Quaternion;
 import com.jme3.math.Vector3f;
 import dev.slimevr.gui.AutoBoneWindow;
 import dev.slimevr.gui.BodyProportion;
-import dev.slimevr.gui.TrackersListPane;
+import dev.slimevr.gui.views.TrackersListPane;
 import io.eiren.util.StringUtils;
 import io.eiren.util.ann.ThreadSafe;
 import io.eiren.util.collections.FastList;

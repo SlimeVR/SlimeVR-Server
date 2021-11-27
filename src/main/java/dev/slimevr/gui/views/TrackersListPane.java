@@ -1,4 +1,4 @@
-package dev.slimevr.gui;
+package dev.slimevr.gui.views;
 
 import com.jme3.math.Quaternion;
 import com.jme3.math.Vector3f;
