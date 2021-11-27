@@ -1,6 +1,7 @@
 package dev.slimevr.gui.items;
 
 import io.eiren.util.StringUtils;
+import io.eiren.util.logging.LogManager;
 import io.eiren.vr.VRServer;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
@@ -45,6 +46,13 @@ public class SkeletonConfigItemView extends HBox {
 
 
 	public SkeletonConfigItemView(VRServer server, String joint, String jointName, SkeletonConfigItemListener itemListener) {
+
+		this.server = server;
+		this.itemListener = itemListener;
+		this.joint = joint;
+		this.jointName = jointName;
+		this.value = server.humanPoseProcessor.getSkeletonConfig(joint);
+
 		FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("/cells/skeletonConfigItemView.fxml"));
 		fxmlLoader.setRoot(this);
 		fxmlLoader.setController(this);
@@ -53,16 +61,13 @@ public class SkeletonConfigItemView extends HBox {
 		} catch (IOException e) {
 			throw new RuntimeException(e);
 		}
-		this.server = server;
-		this.itemListener = itemListener;
-		this.joint = joint;
-		this.jointName = jointName;
-		this.value = server.humanPoseProcessor.getSkeletonConfig(joint) * 100;
+
 
 	}
 
 	@FXML
 	void initialize() {
+		LogManager.log.debug("initialize "+joint+" "+jointName+" "+value);
 		itemTitle.setText(jointName);
 		setItemValueText(value);
 		itemResetButton.setOnAction(new EventHandler<ActionEvent>() {

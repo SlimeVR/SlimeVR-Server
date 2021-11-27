@@ -34,9 +34,10 @@ public class SkeletonConfigView extends VBox implements Initializable {
 		populateSkeletonItems();
 
 
-		//server.humanPoseProcessor.addSkeletonUpdatedCallback(this::skeletonUpdated);
+		server.humanPoseProcessor.addSkeletonUpdatedCallback(this::skeletonUpdated);
 		//skeletonUpdated(null);
 	}
+
 
 	private void populateSkeletonItems() {
 		SkeletonConfigItemView.SkeletonConfigItemListener skeletonConfigItemListener = subscribeToSkeletonItems();
@@ -48,8 +49,8 @@ public class SkeletonConfigView extends VBox implements Initializable {
 	}
 
 	private void addSkeletonItem(JointModel jointModel, SkeletonConfigItemView.SkeletonConfigItemListener skeletonConfigItemListener) {
-		SkeletonConfigItemView skeletonConfigItemView = new SkeletonConfigItemView(server,jointModel.joint,jointModel.jointName,skeletonConfigItemListener);
-		configItems.put(jointModel.jointName,skeletonConfigItemView);
+		SkeletonConfigItemView skeletonConfigItemView = new SkeletonConfigItemView(server, jointModel.joint, jointModel.jointName, skeletonConfigItemListener);
+		configItems.put(jointModel.joint, skeletonConfigItemView);
 		this.getChildren().add(skeletonConfigItemView);
 	}
 
@@ -57,6 +58,9 @@ public class SkeletonConfigView extends VBox implements Initializable {
 		List<JointModel> jointModels = new ArrayList<>();
 		jointModels.add(new JointModel("Torso", "Torso length"));
 		jointModels.add(new JointModel("Chest", "Chest distance"));
+		jointModels.add(new JointModel("Waist", "Waist distance"));
+		jointModels.add(new JointModel("Hips width", "Hips width"));
+		jointModels.add(new JointModel("Legs length", "Legs length"));
 		jointModels.add(new JointModel("Knee height", "Knee height"));
 		jointModels.add(new JointModel("Foot length", "Foot length"));
 		jointModels.add(new JointModel("Head", "Head offset"));
@@ -74,6 +78,11 @@ public class SkeletonConfigView extends VBox implements Initializable {
 				new SkeletonConfigItemView(server,"Torso","Torso length",skeletonConfigItemListener)
 		);*/
 
+		newSkeleton.getSkeletonConfig().entrySet().stream().forEach(skeletonJoint ->
+		{
+			updateSkeletonConfigItem(skeletonJoint.getKey(), skeletonJoint.getValue());
+		});
+
 
 	}
 
@@ -81,15 +90,36 @@ public class SkeletonConfigView extends VBox implements Initializable {
 		return new SkeletonConfigItemView.SkeletonConfigItemListener() {
 			@Override
 			public void change(String joint, float diff) {
-				LogManager.log.debug("change "+joint+" "+diff);
+				LogManager.log.debug("change " + joint + " " + diff);
+				changeJointValue(joint,diff);
 			}
 
 			@Override
 			public void reset(String joint) {
 
-				LogManager.log.debug("reset "+joint);
+				LogManager.log.debug("reset " + joint);
+				resetJoint(joint);
 			}
 		};
+	}
+
+	private void resetJoint(String joint) {
+		server.humanPoseProcessor.resetSkeletonConfig(joint);
+		server.saveConfig();
+		float current = server.humanPoseProcessor.getSkeletonConfig(joint);
+		updateSkeletonConfigItem(joint,current);
+	}
+
+	private void changeJointValue(String joint, float diff) {
+		float current = server.humanPoseProcessor.getSkeletonConfig(joint);
+		server.humanPoseProcessor.setSkeletonConfig(joint, current + diff);
+		server.saveConfig();
+		updateSkeletonConfigItem(joint,current+diff);
+	}
+
+
+	private void updateSkeletonConfigItem(String joint, float value) {
+		configItems.get(joint).refreshJoint(value);
 	}
 
 	@Override
