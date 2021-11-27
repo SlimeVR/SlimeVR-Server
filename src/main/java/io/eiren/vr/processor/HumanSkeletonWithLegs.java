@@ -135,11 +135,11 @@ public class HumanSkeletonWithLegs extends HumanSkeletonWithWaist {
 		rightAnkleNode.attachChild(rightFootNode);
 		rightFootNode.localTransform.setTranslation(0, 0, -footLength);
 		
-		configMap.put("Hips width", hipsWidth);
-		configMap.put("Legs length", legsLength);
-		configMap.put("Knee height", kneeHeight);
-		configMap.put("Foot length", footLength);
-		configMap.put("Foot offset", footOffset);
+		configMap.put("Hips_width", hipsWidth);
+		configMap.put("Legs_length", legsLength);
+		configMap.put("Knee_height", kneeHeight);
+		configMap.put("Foot_length", footLength);
+		configMap.put("Foot_offset", footOffset);
 	}
 	
 	@Override
@@ -148,21 +148,21 @@ public class HumanSkeletonWithLegs extends HumanSkeletonWithWaist {
 		switch(joint) {
 		case "All":
 			// Resets from the parent already performed
-			resetSkeletonConfig("Hips width");
-			resetSkeletonConfig("Foot length");
-			resetSkeletonConfig("Foot offset");
-			resetSkeletonConfig("Legs length");
+			resetSkeletonConfig("Hips_width");
+			resetSkeletonConfig("Legs_length");
+			resetSkeletonConfig("Foot_offset");
+			resetSkeletonConfig("Legs_length");
 			break;
-		case "Hips width":
+		case "Hips_width":
 			setSkeletonConfig(joint, HIPS_WIDTH_DEFAULT);
 			break;
-		case "Foot length":
+		case "Foot_length":
 			setSkeletonConfig(joint, FOOT_LENGTH_DEFAULT);
 			break;
-		case "Foot offset":
+		case "Foot_offset":
 			setSkeletonConfig(joint, 0f);
 			break;
-		case "Legs length": // Set legs length to be 5cm above floor level
+		case "Legs_length": // Set legs length to be 5cm above floor level
 			Vector3f vec = new Vector3f();
 			hmdTracker.getPosition(vec);
 			float height = vec.y;
@@ -173,9 +173,9 @@ public class HumanSkeletonWithLegs extends HumanSkeletonWithWaist {
 			{
 				setSkeletonConfig(joint, 0.84f);
 			}
-			resetSkeletonConfig("Knee height");
+			resetSkeletonConfig("Knee_height");
 			break;
-		case "Knee height": // Knees are at 50% of the legs by default
+		case "Knee_height": // Knees are at 50% of the legs by default
 			setSkeletonConfig(joint, legsLength / 2.0f);
 			break;
 		}
@@ -185,13 +185,13 @@ public class HumanSkeletonWithLegs extends HumanSkeletonWithWaist {
 	public void setSkeletonConfig(String joint, float newLength) {
 		super.setSkeletonConfig(joint, newLength);
 		switch(joint) {
-		case "Hips width":
+		case "Hips_width":
 			hipsWidth = newLength;
 			server.config.setProperty("body.hipsWidth", hipsWidth);
 			leftHipNode.localTransform.setTranslation(-hipsWidth / 2, 0, 0);
 			rightHipNode.localTransform.setTranslation(hipsWidth / 2, 0, 0);
 			break;
-		case "Knee height":
+		case "Knee_height":
 			kneeHeight = newLength;
 			server.config.setProperty("body.kneeHeight", kneeHeight);
 			leftAnkleNode.localTransform.setTranslation(0, -kneeHeight, -footOffset);
@@ -199,19 +199,19 @@ public class HumanSkeletonWithLegs extends HumanSkeletonWithWaist {
 			leftKneeNode.localTransform.setTranslation(0, -(legsLength - kneeHeight), 0);
 			rightKneeNode.localTransform.setTranslation(0, -(legsLength - kneeHeight), 0);
 			break;
-		case "Legs length":
+		case "Legs_length":
 			legsLength = newLength;
 			server.config.setProperty("body.legsLength", legsLength);
 			leftKneeNode.localTransform.setTranslation(0, -(legsLength - kneeHeight), 0);
 			rightKneeNode.localTransform.setTranslation(0, -(legsLength - kneeHeight), 0);
 			break;
-		case "Foot length":
+		case "Foot_length":
 			footLength = newLength;
 			server.config.setProperty("body.footLength", footLength);
 			leftFootNode.localTransform.setTranslation(0, 0, -footLength);
 			rightFootNode.localTransform.setTranslation(0, 0, -footLength);
 			break;
-		case "Foot offset":
+		case "Foot_offset":
 			footOffset = newLength;
 			server.config.setProperty("body.footOffset", footOffset);
 			leftAnkleNode.localTransform.setTranslation(0, -kneeHeight, -footOffset);

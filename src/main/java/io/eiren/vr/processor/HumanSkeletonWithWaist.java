@@ -116,7 +116,7 @@ public class HumanSkeletonWithWaist extends HumanSkeleton {
 		configMap.put("Neck", neckLength);
 		configMap.put("Chest", chestDistance);
 		configMap.put("Waist", waistDistance);
-		configMap.put("Hip offset", hipOffset);
+		configMap.put("Hip_offset", hipOffset);
 		configMap.put("Torso", torsoLength);
 	}
 	
@@ -126,7 +126,7 @@ public class HumanSkeletonWithWaist extends HumanSkeleton {
 		case "All": // Reset all joints according to height
 			resetSkeletonConfig("Head");
 			resetSkeletonConfig("Neck");
-			resetSkeletonConfig("Hip offset");
+			resetSkeletonConfig("Hip_offset");
 			resetSkeletonConfig("Torso");
 			resetSkeletonConfig("Waist");
 			resetSkeletonConfig("Chest");
@@ -155,7 +155,7 @@ public class HumanSkeletonWithWaist extends HumanSkeleton {
 		case "Waist": // waist length is from hips to waist
 			setSkeletonConfig(joint, 0.1f);
 			break;
-		case "Hip offset":
+		case "Hip_offset":
 			setSkeletonConfig(joint, 0.0f);
 			break;
 		}

@@ -41,16 +41,19 @@ public class SkeletonConfigView extends VBox implements Initializable {
 
 	private void populateSkeletonItems() {
 		SkeletonConfigItemView.SkeletonConfigItemListener skeletonConfigItemListener = subscribeToSkeletonItems();
-		List<JointModel> jointModels = populateJoints();
-		for (JointModel jointModel : jointModels) {
-			addSkeletonItem(jointModel, skeletonConfigItemListener);
-		}
+
+		server.humanPoseProcessor.getSkeleton().getSkeletonConfig().keySet().stream().forEach(joint ->
+				{
+					addSkeletonItem(joint, skeletonConfigItemListener);
+				}
+		);
+
 
 	}
 
-	private void addSkeletonItem(JointModel jointModel, SkeletonConfigItemView.SkeletonConfigItemListener skeletonConfigItemListener) {
-		SkeletonConfigItemView skeletonConfigItemView = new SkeletonConfigItemView(server, jointModel.joint, jointModel.jointName, skeletonConfigItemListener);
-		configItems.put(jointModel.joint, skeletonConfigItemView);
+	private void addSkeletonItem(String joint, SkeletonConfigItemView.SkeletonConfigItemListener skeletonConfigItemListener) {
+		SkeletonConfigItemView skeletonConfigItemView = new SkeletonConfigItemView(server, joint, skeletonConfigItemListener);
+		configItems.put(joint, skeletonConfigItemView);
 		this.getChildren().add(skeletonConfigItemView);
 	}
 
@@ -91,7 +94,7 @@ public class SkeletonConfigView extends VBox implements Initializable {
 			@Override
 			public void change(String joint, float diff) {
 				LogManager.log.debug("change " + joint + " " + diff);
-				changeJointValue(joint,diff);
+				changeJointValue(joint, diff);
 			}
 
 			@Override
@@ -107,14 +110,14 @@ public class SkeletonConfigView extends VBox implements Initializable {
 		server.humanPoseProcessor.resetSkeletonConfig(joint);
 		server.saveConfig();
 		float current = server.humanPoseProcessor.getSkeletonConfig(joint);
-		updateSkeletonConfigItem(joint,current);
+		updateSkeletonConfigItem(joint, current);
 	}
 
 	private void changeJointValue(String joint, float diff) {
 		float current = server.humanPoseProcessor.getSkeletonConfig(joint);
 		server.humanPoseProcessor.setSkeletonConfig(joint, current + diff);
 		server.saveConfig();
-		updateSkeletonConfigItem(joint,current+diff);
+		updateSkeletonConfigItem(joint, current + diff);
 	}
 
 

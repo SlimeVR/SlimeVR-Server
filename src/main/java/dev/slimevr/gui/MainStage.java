@@ -13,7 +13,9 @@ import javafx.stage.Stage;
 import javafx.stage.StageStyle;
 
 import java.io.IOException;
+import java.util.Locale;
 import java.util.Objects;
+import java.util.ResourceBundle;
 
 public class MainStage extends Application {
 
@@ -29,6 +31,7 @@ public class MainStage extends Application {
 		FXMLLoader fxmlLoader = new FXMLLoader(MainStage.class.getResource("/main.fxml"));
 		MainStageController controller = new MainStageController(stage, icon);
 		fxmlLoader.setController(controller);
+		fxmlLoader.setResources(ResourceBundle.getBundle("localization_files/LangBundle", new Locale("en", "EN")));
 		Scene scene = new Scene(fxmlLoader.load());
 		stage.setTitle("SlimeVR Server (" + Main.VERSION + ")");
 		stage.getIcons().add(new Image(Objects.requireNonNull(getClass().getResourceAsStream("/icon256.png"))));
