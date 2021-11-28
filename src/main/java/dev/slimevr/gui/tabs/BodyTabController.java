@@ -10,6 +10,8 @@ public class BodyTabController {
 
 	@FXML
 	VBox bodyItems;
+	@FXML
+	VBox skeletonData;
 
 	private VRServer server;
 

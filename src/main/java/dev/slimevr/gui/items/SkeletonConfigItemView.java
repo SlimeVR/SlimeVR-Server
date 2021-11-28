@@ -97,28 +97,6 @@ public class SkeletonConfigItemView extends HBox  implements Initializable{
 		});
 	}
 
-
-	/*private void change(String joint, float diff) {
-		float current = server.humanPoseProcessor.getSkeletonConfig(joint);
-		server.humanPoseProcessor.setSkeletonConfig(joint, current + diff);
-		server.saveConfig();
-		// labels.get(joint).setText(StringUtils.prettyNumber((current + diff) * 100, 0));
-	}
-
-	private void reset(String joint) {
-		server.humanPoseProcessor.resetSkeletonConfig(joint);
-		server.saveConfig();
-		*//*if(!"All".equals(joint)) {
-			float current = server.humanPoseProcessor.getSkeletonConfig(joint);
-			// labels.get(joint).setText(StringUtils.prettyNumber((current) * 100, 0));
-		} else {
-			labels.forEach((jnt, label) -> {
-				float current = server.humanPoseProcessor.getSkeletonConfig(jnt);
-				label.setText(StringUtils.prettyNumber((current) * 100, 0));
-			});
-		}*//*
-	}*/
-
 	private void change(float diff) {
 		itemListener.change(joint, diff);
 	}

@@ -59,29 +59,8 @@ public class SkeletonConfigView extends VBox implements Initializable {
 		this.getChildren().add(skeletonConfigItemView);
 	}
 
-	private List<JointModel> populateJoints() {
-		List<JointModel> jointModels = new ArrayList<>();
-		jointModels.add(new JointModel("Torso", "Torso length"));
-		jointModels.add(new JointModel("Chest", "Chest distance"));
-		jointModels.add(new JointModel("Waist", "Waist distance"));
-		jointModels.add(new JointModel("Hips width", "Hips width"));
-		jointModels.add(new JointModel("Legs length", "Legs length"));
-		jointModels.add(new JointModel("Knee height", "Knee height"));
-		jointModels.add(new JointModel("Foot length", "Foot length"));
-		jointModels.add(new JointModel("Head", "Head offset"));
-		jointModels.add(new JointModel("Neck", "Neck length"));
-		jointModels.add(new JointModel("Hip offset", "Hip offset"));
-		jointModels.add(new JointModel("Foot offset", "Foot offset"));
-
-		return jointModels;
-	}
-
 
 	public void skeletonUpdated(HumanSkeleton newSkeleton) {
-		//SkeletonConfigItemView.SkeletonConfigItemListener skeletonConfigItemListener = subscribeToSkeletonItems();
-		/*this.getChildren().add(
-				new SkeletonConfigItemView(server,"Torso","Torso length",skeletonConfigItemListener)
-		);*/
 
 		newSkeleton.getSkeletonConfig().entrySet().stream().forEach(skeletonJoint ->
 		{

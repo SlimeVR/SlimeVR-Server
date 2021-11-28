@@ -6,19 +6,28 @@
 <?import javafx.scene.layout.VBox?>
 <?import javafx.scene.text.Text?>
 
-<AnchorPane prefHeight="800.0" prefWidth="800.0" style="-fx-background-color: #ffffff;" xmlns="http://javafx.com/javafx/17" xmlns:fx="http://javafx.com/fxml/1" fx:controller="dev.slimevr.gui.tabs.BodyTabController">
-   <children>
-      <VBox fx:id="bodyItems" layoutX="78.0" layoutY="155.0" prefHeight="200.0" prefWidth="278.0">
-         <children>
-            <Text strokeType="OUTSIDE" strokeWidth="0.0" text="Body Proportions" wrappingWidth="102.13671875" />
-            <HBox>
-               <children>
-                  <Button mnemonicParsing="false" text="%ui.skeletonConfig.resetAll" textAlignment="CENTER" />
-                  <Button mnemonicParsing="false" text="%ui.skeletonConfig.auto" textAlignment="CENTER" HBox.hgrow="ALWAYS" />
-               </children>
-            </HBox>
+<AnchorPane prefHeight="800.0" prefWidth="800.0" style="-fx-background-color: #ffffff;"
+			xmlns="http://javafx.com/javafx/17" xmlns:fx="http://javafx.com/fxml/1"
+			fx:controller="dev.slimevr.gui.tabs.BodyTabController">
+	<children>
+		<VBox>
+			<VBox fx:id="bodyItems" layoutX="78.0" layoutY="155.0" prefHeight="200.0" prefWidth="278.0">
+				<children>
+					<Text strokeType="OUTSIDE" strokeWidth="0.0" text="%ui.skeletonConfig.bodyProportions.title"
+						  wrappingWidth="102.13671875"/>
+					<HBox>
+						<children>
+							<Button mnemonicParsing="false" text="%ui.skeletonConfig.resetAll" textAlignment="CENTER"/>
+							<Button mnemonicParsing="false" text="%ui.skeletonConfig.auto" textAlignment="CENTER"
+									HBox.hgrow="ALWAYS"/>
+						</children>
+					</HBox>
 
-         </children>
-      </VBox>
-   </children>
+				</children>
+			</VBox>
+			<VBox fx:id="skeletonData" layoutX="78.0" layoutY="155.0" prefHeight="200.0" prefWidth="278.0">
+
+			</VBox>
+		</VBox>
+	</children>
 </AnchorPane>
