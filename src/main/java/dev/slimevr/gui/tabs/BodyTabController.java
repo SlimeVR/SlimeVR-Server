@@ -1,6 +1,7 @@
 package dev.slimevr.gui.tabs;
 
 import dev.slimevr.gui.views.SkeletonConfigView;
+import dev.slimevr.gui.views.SkeletonDataListView;
 import io.eiren.vr.Main;
 import io.eiren.vr.VRServer;
 import javafx.fxml.FXML;
@@ -22,10 +23,18 @@ public class BodyTabController {
 	@FXML
 	public void initialize() {
 		initSkeletonConfigList();
+		initSkeletonDataList();
 	}
+
+
 
 	private void initSkeletonConfigList() {
 		SkeletonConfigView skeletonConfigView = new SkeletonConfigView(server);
 		bodyItems.getChildren().add(skeletonConfigView);
+	}
+
+	private void initSkeletonDataList() {
+		SkeletonDataListView skeletonDataListView = new SkeletonDataListView(server);
+		skeletonData.getChildren().add(skeletonDataListView);
 	}
 }

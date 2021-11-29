@@ -112,22 +112,4 @@ public class SkeletonConfigView extends VBox implements Initializable {
 	}
 
 
-	private class JointModel {
-		private String joint;
-		private String jointName;
-
-		public JointModel(String joint, String jointName) {
-			this.joint = joint;
-			this.jointName = jointName;
-		}
-
-		public String getJoint() {
-			return joint;
-		}
-
-		public String getJointName() {
-			return jointName;
-		}
-	}
-
 }

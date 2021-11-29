@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.text.Text?>
+
+<fx:root type="javafx.scene.layout.HBox" xmlns="http://javafx.com/javafx/17" xmlns:fx="http://javafx.com/fxml/1">
+   <children>
+      <Text id="%ui.skeletonData.joint.column" fx:id="itemJointName" strokeType="OUTSIDE" strokeWidth="0.0" text="Joint" />
+      <Text id="%ui.skeletonData.x.column" fx:id="itemXcoord" layoutX="10.0" layoutY="23.0" strokeType="OUTSIDE" strokeWidth="0.0" text="X" />
+      <Text id="%ui.skeletonData.y.column" fx:id="itemYcoord" layoutX="36.0" layoutY="23.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Y" />
+      <Text id="%ui.skeletonData.z.column" fx:id="itemZcoord" layoutX="62.0" layoutY="23.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Z" />
+      <Text id="%ui.skeletonData.pitch.column" fx:id="itemPitch" layoutX="88.0" layoutY="23.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Pitch" />
+      <Text id="%ui.skeletonData.yaw.column" fx:id="itemYaw" layoutX="114.0" layoutY="23.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Yaw" />
+      <Text id="%ui.skeletonData.roll.column" fx:id="itemRoll" layoutX="140.0" layoutY="23.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Roll" />
+   </children>
+</fx:root>
