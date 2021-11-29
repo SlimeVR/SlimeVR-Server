@@ -28,17 +28,22 @@ public class SkeletonDataListView extends VBox implements Initializable {
 		this.server = server;
 		populateSkeletonItems();
 
-		server.addSkeletonUpdatedCallback(this::skeletonUpdated);
+		// server.addSkeletonUpdatedCallback(this::skeletonUpdated);
+		server.addOnTick(this::updateBones);
 
 	}
 
-	private void skeletonUpdated(HumanSkeleton humanSkeleton) {
+	private void updateBones() {
 		if (lastUpdate + UPDATE_DELAY > System.currentTimeMillis())
 			return;
 		lastUpdate = System.currentTimeMillis();
 		Platform.runLater(() -> {
 			nodes.forEach((key, value) -> value.update());
 		});
+	}
+
+	private void skeletonUpdated(HumanSkeleton humanSkeleton) {
+
 	}
 
 
