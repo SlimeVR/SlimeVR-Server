@@ -5,7 +5,6 @@ import java.awt.Font;
 import java.awt.GridBagConstraints;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.util.Comparator;
 import java.util.List;
 
 import javax.swing.BorderFactory;
@@ -24,6 +23,7 @@ import io.eiren.util.StringUtils;
 import io.eiren.util.ann.AWTThread;
 import io.eiren.util.ann.ThreadSafe;
 import io.eiren.util.collections.FastList;
+import io.eiren.util.logging.LogManager;
 import io.eiren.vr.VRServer;
 import io.eiren.vr.trackers.ReferenceAdjustedTracker;
 import io.eiren.vr.trackers.ComputedTracker;
@@ -39,13 +39,13 @@ import io.eiren.vr.trackers.TrackerWithTPS;
 public class TrackersList extends EJBoxNoStretch {
 
 	private static final long UPDATE_DELAY = 50;
-
+	
 	Quaternion q = new Quaternion();
 	Vector3f v = new Vector3f();
 	float[] angles = new float[3];
-
+	
 	private List<TrackerPanel> trackers = new FastList<>();
-
+	
 	private final VRServer server;
 	private final VRServerGUI gui;
 	private long lastUpdate = 0;
@@ -56,21 +56,21 @@ public class TrackersList extends EJBoxNoStretch {
 		this.gui = gui;
 
 		setAlignmentY(TOP_ALIGNMENT);
-
+		
 		server.addNewTrackerConsumer(this::newTrackerAdded);
 	}
 
 	@AWTThread
 	private void build() {
 		removeAll();
-
-		trackers.sort(Comparator.comparingInt(tr -> getTrackerSort(tr.t)));
-
+		
+		trackers.sort((tr1, tr2) -> getTrackerSort(tr1.t) - getTrackerSort(tr2.t));
+		
 		Class<? extends Tracker> currentClass = null;
-
+		
 		EJBoxNoStretch line = null;
 		boolean first = true;
-
+		
 		for(int i = 0; i < trackers.size(); ++i) {
 			TrackerPanel tr = trackers.get(i);
 			Tracker t = tr.t;
@@ -90,7 +90,7 @@ public class TrackersList extends EJBoxNoStretch {
 				add(line);
 				line = null;
 			}
-
+			
 			if(line == null) {
 				line = new EJBoxNoStretch(BoxLayout.LINE_AXIS, false, true);
 				add(Box.createVerticalStrut(3));
@@ -108,7 +108,7 @@ public class TrackersList extends EJBoxNoStretch {
 		validate();
 		gui.refresh();
 	}
-
+	
 	@ThreadSafe
 	public void updateTrackers() {
 		if(lastUpdate + UPDATE_DELAY > System.currentTimeMillis())
@@ -119,17 +119,18 @@ public class TrackersList extends EJBoxNoStretch {
 				trackers.get(i).update();
 		});
 	}
-
+	
 	@ThreadSafe
 	public void newTrackerAdded(Tracker t) {
+		LogManager.log.debug(String.format("new tracker added %s",t.getClass().getName()));
 		java.awt.EventQueue.invokeLater(() -> {
 			trackers.add(new TrackerPanel(t));
 			build();
 		});
 	}
-
+	
 	private class TrackerPanel extends EJBagNoStretch {
-
+		
 		final Tracker t;
 		JLabel position;
 		JLabel rotation;
@@ -144,20 +145,22 @@ public class TrackersList extends EJBoxNoStretch {
 		JLabel adj;
 		JLabel adjYaw;
 		JLabel correction;
-
+		
 		@AWTThread
 		public TrackerPanel(Tracker t) {
 			super(false, true);
-
+			
 			this.t = t;
 		}
 
 		@SuppressWarnings("unchecked")
 		@AWTThread
 		public TrackerPanel build() {
-			int row = 0;
 
+			int row = 0;
+			
 			Tracker realTracker = t;
+			LogManager.log.debug(String.format("new tracker panel created %s", realTracker.getClass().getName()));
 			if(t instanceof ReferenceAdjustedTracker)
 				realTracker = ((ReferenceAdjustedTracker<? extends Tracker>) t).getTracker();
 			removeAll();
@@ -165,7 +168,7 @@ public class TrackersList extends EJBoxNoStretch {
 			add(nameLabel = new JLabel(t.getDescriptiveName()), s(c(0, row, 2, GridBagConstraints.FIRST_LINE_START), 4, 1));
 			nameLabel.setFont(nameLabel.getFont().deriveFont(Font.BOLD));
 			row++;
-
+			
 			if(t.userEditable()) {
 				TrackerConfig cfg = server.getTrackerConfig(t);
 				JComboBox<String> desSelect;
@@ -242,6 +245,7 @@ public class TrackersList extends EJBoxNoStretch {
 			add(new JLabel("Raw:"), c(0, row, 2, GridBagConstraints.FIRST_LINE_START));
 			add(raw = new JLabel("0 0 0"), s(c(1, row, 2, GridBagConstraints.FIRST_LINE_START), 3, 1));
 			row++;
+			/*
 			if(realTracker instanceof IMUTracker) {
 				add(new JLabel("Raw mag:"), c(0, row, 2, GridBagConstraints.FIRST_LINE_START));
 				add(rawMag = new JLabel("0 0 0"), s(c(1, row, 2, GridBagConstraints.FIRST_LINE_START), 3, 1));
@@ -255,13 +259,16 @@ public class TrackersList extends EJBoxNoStretch {
 				add(correction = new JLabel("0 0 0"), s(c(1, row, 2, GridBagConstraints.FIRST_LINE_START), 3, 1));
 				row++;
 			}
-
-			if(t instanceof ReferenceAdjustedTracker) {
+			//*/
+			
+			/*
+			if(t instanceof ReferenceAdjustedTracker) {	
 				add(new JLabel("Adj:"), c(0, row, 2, GridBagConstraints.FIRST_LINE_START));
 				add(adj = new JLabel("0 0 0 0"), c(1, row, 2, GridBagConstraints.FIRST_LINE_START));
 				add(new JLabel("AdjY:"), c(2, row, 2, GridBagConstraints.FIRST_LINE_START));
 				add(adjYaw = new JLabel("0 0 0 0"), c(3, row, 2, GridBagConstraints.FIRST_LINE_START));
 			}
+			//*/
 
 			setBorder(BorderFactory.createLineBorder(new Color(0x663399), 2, false));
 			TrackersList.this.add(this);
@@ -279,7 +286,7 @@ public class TrackersList extends EJBoxNoStretch {
 			t.getRotation(q);
 			t.getPosition(v);
 			q.toAngles(angles);
-
+			
 			if(position != null)
 				position.setText(StringUtils.prettyNumber(v.x, 1)
 						+ " " + StringUtils.prettyNumber(v.y, 1)
@@ -289,7 +296,7 @@ public class TrackersList extends EJBoxNoStretch {
 						+ " " + StringUtils.prettyNumber(angles[1] * FastMath.RAD_TO_DEG, 0)
 						+ " " + StringUtils.prettyNumber(angles[2] * FastMath.RAD_TO_DEG, 0));
 			status.setText(t.getStatus().toString().toLowerCase());
-
+			
 			if(realTracker instanceof TrackerWithTPS) {
 				tps.setText(StringUtils.prettyNumber(((TrackerWithTPS) realTracker).getTPS(), 1));
 			}
@@ -297,16 +304,19 @@ public class TrackersList extends EJBoxNoStretch {
 				bat.setText(StringUtils.prettyNumber(((TrackerWithBattery) realTracker).getBatteryVoltage(), 1));
 			if(t instanceof ReferenceAdjustedTracker) {
 				((ReferenceAdjustedTracker<Tracker>) t).attachmentFix.toAngles(angles);
-				adj.setText(StringUtils.prettyNumber(angles[0] * FastMath.RAD_TO_DEG, 0)
-						+ " " + StringUtils.prettyNumber(angles[1] * FastMath.RAD_TO_DEG, 0)
-						+ " " + StringUtils.prettyNumber(angles[2] * FastMath.RAD_TO_DEG, 0));
+				if(adj != null)
+					adj.setText(StringUtils.prettyNumber(angles[0] * FastMath.RAD_TO_DEG, 0)
+							+ " " + StringUtils.prettyNumber(angles[1] * FastMath.RAD_TO_DEG, 0)
+							+ " " + StringUtils.prettyNumber(angles[2] * FastMath.RAD_TO_DEG, 0));
 				((ReferenceAdjustedTracker<Tracker>) t).yawFix.toAngles(angles);
-				adjYaw.setText(StringUtils.prettyNumber(angles[0] * FastMath.RAD_TO_DEG, 0)
-						+ " " + StringUtils.prettyNumber(angles[1] * FastMath.RAD_TO_DEG, 0)
-						+ " " + StringUtils.prettyNumber(angles[2] * FastMath.RAD_TO_DEG, 0));
+				if(adjYaw != null)
+					adjYaw.setText(StringUtils.prettyNumber(angles[0] * FastMath.RAD_TO_DEG, 0)
+							+ " " + StringUtils.prettyNumber(angles[1] * FastMath.RAD_TO_DEG, 0)
+							+ " " + StringUtils.prettyNumber(angles[2] * FastMath.RAD_TO_DEG, 0));
 			}
 			if(realTracker instanceof IMUTracker) {
-				ping.setText(String.valueOf(((IMUTracker) realTracker).ping));
+				if(ping != null)
+					ping.setText(String.valueOf(((IMUTracker) realTracker).ping));
 			}
 			realTracker.getRotation(q);
 			q.toAngles(angles);
@@ -315,20 +325,24 @@ public class TrackersList extends EJBoxNoStretch {
 					+ " " + StringUtils.prettyNumber(angles[2] * FastMath.RAD_TO_DEG, 0));
 			if(realTracker instanceof IMUTracker) {
 				((IMUTracker) realTracker).rotMagQuaternion.toAngles(angles);
-				rawMag.setText(StringUtils.prettyNumber(angles[0] * FastMath.RAD_TO_DEG, 0)
-						+ " " + StringUtils.prettyNumber(angles[1] * FastMath.RAD_TO_DEG, 0)
-						+ " " + StringUtils.prettyNumber(angles[2] * FastMath.RAD_TO_DEG, 0));
-				calibration.setText(((IMUTracker) realTracker).calibrationStatus + " / " + ((IMUTracker) realTracker).magCalibrationStatus);
-				magAccuracy.setText(StringUtils.prettyNumber(((IMUTracker) realTracker).magnetometerAccuracy * FastMath.RAD_TO_DEG, 1) + "°");
+				if(rawMag != null)
+					rawMag.setText(StringUtils.prettyNumber(angles[0] * FastMath.RAD_TO_DEG, 0)
+							+ " " + StringUtils.prettyNumber(angles[1] * FastMath.RAD_TO_DEG, 0)
+							+ " " + StringUtils.prettyNumber(angles[2] * FastMath.RAD_TO_DEG, 0));
+				if(calibration != null)
+					calibration.setText(((IMUTracker) realTracker).calibrationStatus + " / " + ((IMUTracker) realTracker).magCalibrationStatus);
+				if(magAccuracy != null)
+					magAccuracy.setText(StringUtils.prettyNumber(((IMUTracker) realTracker).magnetometerAccuracy * FastMath.RAD_TO_DEG, 1) + "°");
 				((IMUTracker) realTracker).getCorrection(q);
 				q.toAngles(angles);
-				correction.setText(StringUtils.prettyNumber(angles[0] * FastMath.RAD_TO_DEG, 0)
-						+ " " + StringUtils.prettyNumber(angles[1] * FastMath.RAD_TO_DEG, 0)
-						+ " " + StringUtils.prettyNumber(angles[2] * FastMath.RAD_TO_DEG, 0));
+				if(correction != null)
+					correction.setText(StringUtils.prettyNumber(angles[0] * FastMath.RAD_TO_DEG, 0)
+							+ " " + StringUtils.prettyNumber(angles[1] * FastMath.RAD_TO_DEG, 0)
+							+ " " + StringUtils.prettyNumber(angles[2] * FastMath.RAD_TO_DEG, 0));
 			}
 		}
 	}
-
+	
 	private static int getTrackerSort(Tracker t) {
 		if(t instanceof ReferenceAdjustedTracker)
 			t = ((ReferenceAdjustedTracker<?>) t).getTracker();

@@ -21,7 +21,7 @@ public final class PoseFrameIO {
 		// Do not allow instantiating
 	}
 	
-	public static boolean writeFrames(DataOutputStream outputStream, PoseFrame frames) {
+	public static boolean writeFrames(DataOutputStream outputStream, PoseFrames frames) {
 		try {
 			if(frames != null) {
 				outputStream.writeInt(frames.getTrackerCount());
@@ -67,7 +67,7 @@ public final class PoseFrameIO {
 		return true;
 	}
 	
-	public static boolean writeToFile(File file, PoseFrame frames) {
+	public static boolean writeToFile(File file, PoseFrames frames) {
 		try(DataOutputStream outputStream = new DataOutputStream(new BufferedOutputStream(new FileOutputStream(file)))) {
 			writeFrames(outputStream, frames);
 		} catch(Exception e) {
@@ -78,7 +78,7 @@ public final class PoseFrameIO {
 		return true;
 	}
 	
-	public static PoseFrame readFrames(DataInputStream inputStream) {
+	public static PoseFrames readFrames(DataInputStream inputStream) {
 		try {
 			
 			int trackerCount = inputStream.readInt();
@@ -119,7 +119,7 @@ public final class PoseFrameIO {
 				trackers.add(new PoseFrameTracker(name, trackerFrames));
 			}
 			
-			return new PoseFrame(trackers);
+			return new PoseFrames(trackers);
 		} catch(Exception e) {
 			LogManager.log.severe("Error reading frame from stream", e);
 		}
@@ -127,7 +127,7 @@ public final class PoseFrameIO {
 		return null;
 	}
 	
-	public static PoseFrame readFromFile(File file) {
+	public static PoseFrames readFromFile(File file) {
 		try {
 			return readFrames(new DataInputStream(new BufferedInputStream(new FileInputStream(file))));
 		} catch(Exception e) {

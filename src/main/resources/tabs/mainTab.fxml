@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.ScrollPane?>
+<?import javafx.scene.layout.AnchorPane?>
+<?import javafx.scene.layout.VBox?>
+
+<AnchorPane fx:id="mainTabPageAnchor" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" xmlns="http://javafx.com/javafx/17" xmlns:fx="http://javafx.com/fxml/1" fx:controller="dev.slimevr.gui.tabs.MainTabController">
+   <children>
+      <VBox layoutX="467.0" layoutY="14.0" prefHeight="200.0" prefWidth="100.0" />
+      <ScrollPane  AnchorPane.topAnchor="0.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" >
+         <content>
+      	   <VBox fx:id="trackersListContainer" prefHeight="600.0" prefWidth="389.0">
+	   </VBox>
+         </content>
+      </ScrollPane>
+   </children>
+</AnchorPane>
