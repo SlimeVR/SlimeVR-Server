@@ -43,7 +43,7 @@
 <?import javafx.scene.layout.HBox?>
 <?import javafx.scene.layout.Pane?>
 
-<AnchorPane fx:id="mainPane" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" minHeight="-Infinity" minWidth="-Infinity" prefHeight="813.0" prefWidth="1113.0" stylesheets="@main.css" xmlns="http://javafx.com/javafx/17" xmlns:fx="http://javafx.com/fxml/1" >
+<AnchorPane fx:id="mainPane" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" minHeight="-Infinity" minWidth="-Infinity" prefHeight="813.0" prefWidth="1113.0" stylesheets="@main.css" xmlns="http://javafx.com/javafx/17" xmlns:fx="http://javafx.com/fxml/1">
 	<children>
 		<MenuBar fx:id="fxMenuBar" prefHeight="27.0" prefWidth="950.0">
 
@@ -78,9 +78,9 @@
 				</HBox>
 			</children>
 		</Pane>
-		<AnchorPane   layoutY="190.0" prefHeight="623.0" prefWidth="1113.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="190.0">
+		<AnchorPane layoutY="190.0" prefHeight="623.0" prefWidth="1113.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="190.0">
 			<children>
-				<TabPane fx:id="tabsPane" prefHeight="694.0" prefWidth="1113.0" tabClosingPolicy="UNAVAILABLE" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+				<TabPane fx:id="tabsPane" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
 					<tabs>
 						<Tab fx:id="mainTab" text="Main">
 							<content>

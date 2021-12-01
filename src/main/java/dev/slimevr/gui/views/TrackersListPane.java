@@ -26,10 +26,10 @@ public class TrackersListPane extends GridPane implements Initializable {
 	Vector3f v = new Vector3f();
 	float[] angles = new float[3];
 
-	private final VRServer server;
+	private VRServer server;
 	private long lastUpdate = 0;
 
-	public TrackersListPane(VRServer server) {
+	public TrackersListPane() {
 		FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource(
 				"/gui/trackersListPane.fxml"));
 		fxmlLoader.setRoot(this);
@@ -40,6 +40,15 @@ public class TrackersListPane extends GridPane implements Initializable {
 		} catch (IOException exception) {
 			throw new RuntimeException(exception);
 		}
+
+	}
+
+	public TrackersListPane(VRServer server) {
+
+	}
+
+	public void init(VRServer server)
+	{
 		this.server = server;
 		this.trackers = new FastList<>();
 
@@ -47,22 +56,27 @@ public class TrackersListPane extends GridPane implements Initializable {
 	}
 
 
-
-
 	private void build() {
 		getChildren().clear();
 		trackers.sort((tr1, tr2) -> getTrackerSort(tr1.t) - getTrackerSort(tr2.t));
 		Class<? extends Tracker> currentClass = null;
 		boolean first = true;
-		for(int i = 0; i < trackers.size(); ++i) {
+		int row = 0;
+		int column =0;
+		for (int i = 0; i < trackers.size(); ++i) {
+			if(column==2)
+			{
+				column=0;
+				row++;
+			}
 			TrackerPanelCell tr = trackers.get(i);
 			Tracker t = tr.t;
-			this.add(tr.getTrackerContainer(),0,i);
+			this.add(tr.getTrackerContainer(), column, row);
+			column++;
 			tr.build();
 		}
 
 	}
-
 
 
 	public void trackersListInit() {
@@ -85,10 +99,13 @@ public class TrackersListPane extends GridPane implements Initializable {
 
 	@ThreadSafe
 	public void updateTrackers() {
-		if(lastUpdate + UPDATE_DELAY > System.currentTimeMillis())
+		if (lastUpdate + UPDATE_DELAY > System.currentTimeMillis())
 			return;
 		lastUpdate = System.currentTimeMillis();
-		for(int i = 0; i < trackers.size(); ++i) trackers.get(i).update();
+		Platform.runLater(() -> {
+			for (TrackerPanelCell tracker : trackers) tracker.update();
+		});
+
 		/*java.awt.EventQueue.invokeLater(() -> {
 			for(int i = 0; i < trackers.size(); ++i)
 				trackers.get(i).update();
@@ -96,13 +113,13 @@ public class TrackersListPane extends GridPane implements Initializable {
 	}
 
 	private int getTrackerSort(Tracker t) {
-		if(t instanceof ReferenceAdjustedTracker)
+		if (t instanceof ReferenceAdjustedTracker)
 			t = ((ReferenceAdjustedTracker<?>) t).getTracker();
-		if(t instanceof IMUTracker)
+		if (t instanceof IMUTracker)
 			return 0;
-		if(t instanceof HMDTracker)
+		if (t instanceof HMDTracker)
 			return 100;
-		if(t instanceof ComputedTracker)
+		if (t instanceof ComputedTracker)
 			return 200;
 		return 1000;
 	}
@@ -110,7 +127,7 @@ public class TrackersListPane extends GridPane implements Initializable {
 
 	@ThreadSafe
 	public void newTrackerAdded(Tracker t) {
-		trackers.add(new TrackerPanelCell(t,server));
+		trackers.add(new TrackerPanelCell(t, server));
 		Platform.runLater(
 				this::build
 		);

@@ -6,7 +6,7 @@
 <?import javafx.scene.layout.VBox?>
 <?import javafx.scene.text.Text?>
 
-<AnchorPane prefHeight="800.0" prefWidth="800.0" style="-fx-background-color: #ffffff;"
+<AnchorPane style="-fx-background-color: #ffffff;"
 			xmlns="http://javafx.com/javafx/17" xmlns:fx="http://javafx.com/fxml/1"
 			fx:controller="dev.slimevr.gui.tabs.BodyTabController">
 	<children>

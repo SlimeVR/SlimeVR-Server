@@ -8,6 +8,8 @@ import io.eiren.vr.VRServer;
 import io.eiren.vr.trackers.*;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
+import javafx.scene.control.Label;
+import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.Pane;
 import javafx.scene.text.Text;
 
@@ -27,6 +29,28 @@ public class TrackerPanelCell {
 	private ResourceBundle resources;
 
 	@FXML
+	private Label bat;
+
+	@FXML
+	private Label nameLabel;
+
+	@FXML
+	private Label ping;
+
+	@FXML
+	private Label position;
+
+	@FXML
+	private Label rotation;
+
+	@FXML
+	private Label status;
+
+	@FXML
+	private Label tps;
+
+
+/*	@FXML
 	private URL location;
 
 	@FXML
@@ -69,10 +93,10 @@ public class TrackerPanelCell {
 	private Text status;
 
 	@FXML
-	private Text tps;
+	private Text tps;*/
 
 	@FXML
-	private Pane trackerContainer;
+	private AnchorPane trackerContainer;
 
 	private VRServer server;
 
@@ -138,7 +162,7 @@ public class TrackerPanelCell {
 			bat.setText("0");
 		}
 
-		raw.setText("0 0 0");
+		//raw.setText("0 0 0");
 
 
 		return this;
@@ -155,7 +179,7 @@ public class TrackerPanelCell {
 		position.setText(String.format("%s %s %s", StringUtils.prettyNumber(v.x, 1),
 				StringUtils.prettyNumber(v.y, 1),
 				StringUtils.prettyNumber(v.z, 1)));
-		position.setText(String.format("%s %s %s", StringUtils.prettyNumber(angles[0] * FastMath.RAD_TO_DEG, 0),
+		rotation.setText(String.format("%s %s %s", StringUtils.prettyNumber(angles[0] * FastMath.RAD_TO_DEG, 0),
 				StringUtils.prettyNumber(angles[1] * FastMath.RAD_TO_DEG, 0),
 				StringUtils.prettyNumber(angles[2] * FastMath.RAD_TO_DEG, 0)));
 		status.setText(t.getStatus().toString().toLowerCase());
@@ -165,9 +189,12 @@ public class TrackerPanelCell {
 		}
 
 		if (realTracker instanceof TrackerWithBattery)
+		{
 			bat.setText(StringUtils.prettyNumber(((TrackerWithBattery) realTracker).getBatteryVoltage(), 1));
+		}
 
-		if (t instanceof ReferenceAdjustedTracker) {
+
+	/*	if (t instanceof ReferenceAdjustedTracker) {
 			((ReferenceAdjustedTracker<Tracker>) t).attachmentFix.toAngles(angles);
 			adj.setText(StringUtils.prettyNumber(angles[0] * FastMath.RAD_TO_DEG, 0)
 					+ " " + StringUtils.prettyNumber(angles[1] * FastMath.RAD_TO_DEG, 0)
@@ -176,13 +203,13 @@ public class TrackerPanelCell {
 			adjYaw.setText(StringUtils.prettyNumber(angles[0] * FastMath.RAD_TO_DEG, 0)
 					+ " " + StringUtils.prettyNumber(angles[1] * FastMath.RAD_TO_DEG, 0)
 					+ " " + StringUtils.prettyNumber(angles[2] * FastMath.RAD_TO_DEG, 0));
-		}
+		}*/
 		if (realTracker instanceof IMUTracker) {
 			ping.setText(String.valueOf(((IMUTracker) realTracker).ping));
 		}
 
 		q.toAngles(angles);
-		raw.setText(StringUtils.prettyNumber(angles[0] * FastMath.RAD_TO_DEG, 0)
+		/*raw.setText(StringUtils.prettyNumber(angles[0] * FastMath.RAD_TO_DEG, 0)
 				+ " " + StringUtils.prettyNumber(angles[1] * FastMath.RAD_TO_DEG, 0)
 				+ " " + StringUtils.prettyNumber(angles[2] * FastMath.RAD_TO_DEG, 0));
 		if (realTracker instanceof IMUTracker) {
@@ -197,7 +224,7 @@ public class TrackerPanelCell {
 			correction.setText(StringUtils.prettyNumber(angles[0] * FastMath.RAD_TO_DEG, 0)
 					+ " " + StringUtils.prettyNumber(angles[1] * FastMath.RAD_TO_DEG, 0)
 					+ " " + StringUtils.prettyNumber(angles[2] * FastMath.RAD_TO_DEG, 0));
-		}
+		}*/
 
 	}
 

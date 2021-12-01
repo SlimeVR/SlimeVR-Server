@@ -16,6 +16,7 @@ import io.eiren.vr.VRServer;
 import io.eiren.vr.processor.HumanSkeleton;
 import io.eiren.vr.processor.TransformNode;
 import javafx.fxml.FXML;
+import javafx.scene.layout.Pane;
 import javafx.scene.layout.VBox;
 import javafx.scene.text.Text;
 import javafx.scene.text.TextAlignment;
@@ -28,9 +29,8 @@ public class MainTabController {
 
 
 	@FXML
-	public VBox trackersListContainer;
+	public TrackersListPane trackersListPane;
 
-	private TrackersListPane trackersListPane = null;
 
 
 
@@ -56,8 +56,8 @@ public class MainTabController {
 	private void initGui() {
 		LogManager.log.debug("init main tab");
 
-		trackersListPane = new TrackersListPane(server);
-		trackersListContainer.getChildren().add(trackersListPane);
+		//trackersListPane = new TrackersListPane(server);
+		trackersListPane.init(server);
 		server.addOnTick(trackersListPane::updateTrackers);
 
 		/*int currentRow = 0;
