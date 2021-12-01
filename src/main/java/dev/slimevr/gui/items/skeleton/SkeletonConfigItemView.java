@@ -1,4 +1,4 @@
-package dev.slimevr.gui.items;
+package dev.slimevr.gui.items.skeleton;
 
 import io.eiren.util.StringUtils;
 import io.eiren.util.logging.LogManager;
@@ -52,7 +52,7 @@ public class SkeletonConfigItemView extends HBox  implements Initializable{
 		this.joint = joint;
 		this.value = server.humanPoseProcessor.getSkeletonConfig(joint);
 
-		FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("/cells/skeletonConfigItemView.fxml"));
+		FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("/cells/skeleton/skeletonConfigItemView.fxml"));
 		fxmlLoader.setResources(ResourceBundle.getBundle("localization_files/LangBundle", new Locale("en", "EN")));
 		fxmlLoader.setRoot(this);
 		fxmlLoader.setController(this);

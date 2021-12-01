@@ -1,4 +1,4 @@
-package dev.slimevr.gui.items;
+package dev.slimevr.gui.items.trackers;
 
 import com.jme3.math.FastMath;
 import com.jme3.math.Quaternion;
@@ -11,8 +11,6 @@ import javafx.fxml.FXMLLoader;
 import javafx.scene.layout.Pane;
 import javafx.scene.text.Text;
 
-import javax.swing.*;
-import java.awt.*;
 import java.io.IOException;
 import java.net.URL;
 import java.util.Locale;
@@ -82,7 +80,7 @@ public class TrackerPanelCell {
 	public final Tracker t;
 
 	public TrackerPanelCell(Tracker tracker, VRServer server) {
-		FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("/cells/trackerCell.fxml"));
+		FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("/cells/trackers/trackerCell.fxml"));
 		fxmlLoader.setController(this);
 		try {
 			fxmlLoader.load();

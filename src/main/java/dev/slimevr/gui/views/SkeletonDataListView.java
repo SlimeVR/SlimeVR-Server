@@ -1,10 +1,7 @@
 package dev.slimevr.gui.views;
 
-import dev.slimevr.gui.SkeletonList;
-import dev.slimevr.gui.items.SkeletonConfigItemView;
-import dev.slimevr.gui.items.SkeletonDataItemView;
-import dev.slimevr.gui.items.SkeletonDataTitleItemView;
-import io.eiren.util.logging.LogManager;
+import dev.slimevr.gui.items.skeleton.SkeletonDataItemView;
+import dev.slimevr.gui.items.skeleton.SkeletonDataTitleItemView;
 import io.eiren.vr.VRServer;
 import io.eiren.vr.processor.HumanSkeleton;
 import io.eiren.vr.processor.TransformNode;

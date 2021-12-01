@@ -2,7 +2,7 @@ package dev.slimevr.gui.views;
 
 import com.jme3.math.Quaternion;
 import com.jme3.math.Vector3f;
-import dev.slimevr.gui.items.TrackerPanelCell;
+import dev.slimevr.gui.items.trackers.TrackerPanelCell;
 import io.eiren.util.ann.ThreadSafe;
 import io.eiren.util.collections.FastList;
 import io.eiren.vr.VRServer;
@@ -14,7 +14,6 @@ import javafx.scene.layout.GridPane;
 
 import java.io.IOException;
 import java.net.URL;
-import java.util.Comparator;
 import java.util.List;
 import java.util.ResourceBundle;
 

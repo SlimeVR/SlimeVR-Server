@@ -1,14 +1,12 @@
 package dev.slimevr.gui.views;
 
-import dev.slimevr.gui.items.SkeletonConfigItemView;
+import dev.slimevr.gui.items.skeleton.SkeletonConfigItemView;
 import io.eiren.util.logging.LogManager;
 import io.eiren.vr.VRServer;
 import io.eiren.vr.processor.HumanSkeleton;
-import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
 import javafx.scene.layout.VBox;
 
-import java.io.IOException;
 import java.net.URL;
 import java.util.*;
 

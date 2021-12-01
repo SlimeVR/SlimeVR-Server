@@ -1,4 +1,4 @@
-package dev.slimevr.gui.items;
+package dev.slimevr.gui.items.skeleton;
 
 import com.jme3.math.FastMath;
 import com.jme3.math.Quaternion;
@@ -59,7 +59,7 @@ public class SkeletonDataItemView extends HBox  implements Initializable{
 		this.server = server;
 		this.node = node;
 
-		FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("/cells/skeletonDataItemView.fxml"));
+		FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("/cells/skeleton/skeletonDataItemView.fxml"));
 		fxmlLoader.setResources(ResourceBundle.getBundle("localization_files/LangBundle", new Locale("en", "EN")));
 		fxmlLoader.setRoot(this);
 		fxmlLoader.setController(this);

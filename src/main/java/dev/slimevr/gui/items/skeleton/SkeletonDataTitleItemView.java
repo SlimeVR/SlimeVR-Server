@@ -1,11 +1,9 @@
-package dev.slimevr.gui.items;
+package dev.slimevr.gui.items.skeleton;
 
-import io.eiren.vr.VRServer;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
 import javafx.scene.layout.HBox;
-import javafx.scene.text.Text;
 
 import java.io.IOException;
 import java.net.URL;
@@ -22,7 +20,7 @@ public class SkeletonDataTitleItemView extends HBox  implements Initializable{
 
 	public SkeletonDataTitleItemView() {
 
-		FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("/cells/skeletonDataTitleItemView.fxml"));
+		FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("/cells/skeleton/skeletonDataTitleItemView.fxml"));
 		fxmlLoader.setResources(ResourceBundle.getBundle("localization_files/LangBundle", new Locale("en", "EN")));
 		fxmlLoader.setRoot(this);
 		fxmlLoader.setController(this);

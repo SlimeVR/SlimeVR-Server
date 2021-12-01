@@ -37,24 +37,10 @@ public class MainTabController {
 	private Stage stage;
 	private VRServer server;
 	private FXTrayIcon icon; //required to trigger tray notifications
-	private final List<TransformNode> nodes;
-
-	private AutoBoneWindow autoBone;
-
-	Quaternion q = new Quaternion();
-	Vector3f v = new Vector3f();
-	float[] angles = new float[3];
-
-
-	private BodyProportion bodyProportion;
 
 
 	public MainTabController() {
 		this.server = Main.vrServer;
-		this.nodes = new FastList<>();
-		this.bodyProportion = new BodyProportion(server);
-
-		server.addSkeletonUpdatedCallback(this::skeletonUpdated);
 	}
 
 
@@ -65,9 +51,6 @@ public class MainTabController {
 
 		steamVRTrackersSetup();
 
-		bodyProportionInit();
-
-		skeletonDataInit();
 	}
 
 	private void initGui() {
@@ -117,81 +100,6 @@ public class MainTabController {
 	}
 
 
-	private void skeletonDataInit() {
-		/*customizeTextFlow(jointTextFlow);
-		customizeTextFlow(xTextFlow);
-		customizeTextFlow(yTextFlow);
-		customizeTextFlow(zTextFlow);
-		customizeTextFlow(pitchTextFlow);
-		customizeTextFlow(yawTextFlow);
-		customizeTextFlow(rollTextFlow);
-
-		Timeline timeline = new Timeline(new KeyFrame(Duration.millis(500), event -> {
-			jointTextFlow.getChildren().clear();
-			xTextFlow.getChildren().clear();
-			yTextFlow.getChildren().clear();
-			zTextFlow.getChildren().clear();
-			pitchTextFlow.getChildren().clear();
-			yawTextFlow.getChildren().clear();
-			rollTextFlow.getChildren().clear();
-
-			for(TransformNode n : nodes) {
-				updateSkeletonData(n);
-			}
-		}));
-
-		timeline.setCycleCount(Animation.INDEFINITE);
-		timeline.play();*/
-	}
-
-	@ThreadSafe
-	private void skeletonUpdated(HumanSkeleton newSkeleton) {
-		newSkeleton.getRootNode().depthFirstTraversal((node) -> {
-			nodes.add(node);
-		});
-	}
-
-
-	private void customizeTextFlow(TextFlow t) {
-		t.setTextAlignment(TextAlignment.CENTER);
-		t.setLineSpacing(10.0f);
-		//t.setPadding(new Insets(0, 50, 0, 0));
-	}
-
-	private void updateSkeletonData(TransformNode n) {
-
-		Text name = new Text(n.getName());
-		Text x = new Text();
-		Text y = new Text();
-		Text z = new Text();
-		Text a1 = new Text();
-		Text a2 = new Text();
-		Text a3 = new Text();
-
-		n.worldTransform.getTranslation(v);
-		n.worldTransform.getRotation(q);
-		q.toAngles(angles);
-
-		x.setText(" " + StringUtils.prettyNumber(v.x, 2) + " ");
-		y.setText(StringUtils.prettyNumber(v.y, 2) + " ");
-		z.setText(StringUtils.prettyNumber(v.z, 2) + " ");
-		a1.setText(StringUtils.prettyNumber(angles[0] * FastMath.RAD_TO_DEG, 0) + " ");
-		a2.setText(StringUtils.prettyNumber(angles[1] * FastMath.RAD_TO_DEG, 0) + " ");
-		a3.setText(StringUtils.prettyNumber(angles[2] * FastMath.RAD_TO_DEG, 0));
-
-		//final Separator separator = new Separator(Orientation.HORIZONTAL);
-		//separator.prefWidthProperty().bind(skeletonTextFlow.widthProperty());
-		//separator.setStyle("-fx-background-color: red;");
-
-		/*jointTextFlow.getChildren().addAll(name, new Text(System.lineSeparator()));
-		xTextFlow.getChildren().addAll(x, new Text(System.lineSeparator()));
-		yTextFlow.getChildren().addAll(y, new Text(System.lineSeparator()));
-		zTextFlow.getChildren().addAll(z, new Text(System.lineSeparator()));
-		pitchTextFlow.getChildren().addAll(a1, new Text(System.lineSeparator()));
-		yawTextFlow.getChildren().addAll(a2, new Text(System.lineSeparator()));
-		rollTextFlow.getChildren().addAll(a3, new Text(System.lineSeparator()));*/
-	}
-
 	public void steamVRTrackersSetup() {
 		/*steamVRComboBox.getItems().addAll("Waist", "Waist + Legs", "Waist + Legs + Chest", "Waist + Legs + Knees", "Waist + Legs + Chest + Knees");
 
@@ -235,29 +143,4 @@ public class MainTabController {
 		});*/
 	}
 
-	public void bodyProportionInit() {
-		/*bodyProportion.bodyProportionInit(bodyNameTextFlow, bodyPlusTextFlow, bodyLableTextFlow, bodyMinusTextFlow, bodyResetTextFlow);
-
-		bodyResetAll.addEventHandler(MouseEvent.MOUSE_CLICKED, e -> {
-			bodyResetAll.setText(String.valueOf(3));
-			i = 2;
-			Timeline timeline = new Timeline(new KeyFrame(Duration.seconds(1), timeLineEvent -> {
-				if(i > 0)
-					bodyResetAll.setText(String.valueOf(i));
-				if(i == 0) {
-					bodyProportion.reset("All");
-					bodyResetAll.setText("Reset All");
-				}
-				i--;
-			}));
-			timeline.setCycleCount(3);
-			timeline.play();
-		});
-
-		bodyAuto.setOnAction(event -> {
-			autoBone = new AutoBoneWindow(server, bodyProportion);
-			autoBone.setVisible(true);
-			autoBone.toFront();
-		});*/
-	}
 }
