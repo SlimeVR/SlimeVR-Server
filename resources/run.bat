@@ -2,9 +2,10 @@
 setlocal enableextensions
 cd /d "%~dp0"
 
-WHERE java >nul 2>&1 && (
+where java >nul 2>&1
+if %errorlevel% EQU 0 (
     java -Xmx512M -jar slimevr.jar
-) || (
+) else (
     echo Java was not found in your system.
     echo.
     echo Either use SlimeVR Installer to install the server by following this link:
@@ -12,5 +13,7 @@ WHERE java >nul 2>&1 && (
     echo.
     echo Or download Java 11 by following this link:
     echo https://adoptium.net/releases.html?variant=openjdk11^&jvmVariant=hotspot
+)
+if %errorlevel% NEQ 0 (
     pause
 )
