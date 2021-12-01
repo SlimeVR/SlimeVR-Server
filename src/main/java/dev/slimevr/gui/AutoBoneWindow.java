@@ -346,14 +346,14 @@ public class AutoBoneWindow extends JFrame {
 												Float legsLength = autoBone.getConfig("Legs length");
 												Float kneeHeight = autoBone.getConfig("Knee height");
 												
-												float neckHip = neckLength != null && torsoLength != null ? neckLength / torsoLength : 0f;
-												float chestHip = chestDistance != null && torsoLength != null ? chestDistance / torsoLength : 0f;
-												float hipWaist = hipWidth != null && torsoLength != null ? hipWidth / torsoLength : 0f;
-												float legWaist = legsLength != null && torsoLength != null ? legsLength / torsoLength : 0f;
+												float neckTorso = neckLength != null && torsoLength != null ? neckLength / torsoLength : 0f;
+												float chestTorso = chestDistance != null && torsoLength != null ? chestDistance / torsoLength : 0f;
+												float torsoWaist = hipWidth != null && torsoLength != null ? hipWidth / torsoLength : 0f;
+												float legTorso = legsLength != null && torsoLength != null ? legsLength / torsoLength : 0f;
 												float legBody = legsLength != null && torsoLength != null && neckLength != null ? legsLength / (torsoLength + neckLength) : 0f;
 												float kneeLeg = kneeHeight != null && legsLength != null ? kneeHeight / legsLength : 0f;
 												
-												LogManager.log.info("[AutoBone] Ratios: [{Neck-Hip: " + StringUtils.prettyNumber(neckHip) + "}, {Chest-Hip: " + StringUtils.prettyNumber(chestHip) + "}, {Hip-Waist: " + StringUtils.prettyNumber(hipWaist) + "}, {Leg-Hip: " + StringUtils.prettyNumber(legWaist) + "}, {Leg-Body: " + StringUtils.prettyNumber(legBody) + "}, {Knee-Leg: " + StringUtils.prettyNumber(kneeLeg) + "}]");
+												LogManager.log.info("[AutoBone] Ratios: [{Neck-Torso: " + StringUtils.prettyNumber(neckTorso) + "}, {Chest-Torso: " + StringUtils.prettyNumber(chestTorso) + "}, {Torso-Waist: " + StringUtils.prettyNumber(torsoWaist) + "}, {Leg-Torso: " + StringUtils.prettyNumber(legTorso) + "}, {Leg-Body: " + StringUtils.prettyNumber(legBody) + "}, {Knee-Leg: " + StringUtils.prettyNumber(kneeLeg) + "}]");
 												
 												String lengthsString = getLengthsString();
 												LogManager.log.info("[AutoBone] Length values: " + lengthsString);

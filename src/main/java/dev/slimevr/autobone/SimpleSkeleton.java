@@ -17,7 +17,7 @@ import io.eiren.yaml.YamlFile;
 
 public class SimpleSkeleton {
 	
-	// Waist
+	// Upper body (torso)
 	protected final TransformNode hmdNode = new TransformNode("HMD", false);
 	protected final TransformNode headNode = new TransformNode("Head", false);
 	protected final TransformNode neckNode = new TransformNode("Neck", false);
@@ -46,7 +46,7 @@ public class SimpleSkeleton {
 	 */
 	protected float headShift = HumanSkeletonWithWaist.HEAD_SHIFT_DEFAULT;
 	
-	// Legs
+	// Lower body (legs)
 	protected final TransformNode leftHipNode = new TransformNode("Left-Hip", false);
 	protected final TransformNode leftKneeNode = new TransformNode("Left-Knee", false);
 	protected final TransformNode leftAnkleNode = new TransformNode("Left-Ankle", false);
@@ -59,11 +59,11 @@ public class SimpleSkeleton {
 	 */
 	protected float hipsWidth = HumanSkeletonWithLegs.HIPS_WIDTH_DEFAULT;
 	/**
-	 * Length from waist to knees
+	 * Length from hip to knees
 	 */
 	protected float kneeHeight = 0.42f;
 	/**
-	 * Distance from waist to ankle
+	 * Distance from hip to ankle
 	 */
 	protected float legsLength = 0.84f;
 	
@@ -73,7 +73,7 @@ public class SimpleSkeleton {
 	private Quaternion rotBuf2 = new Quaternion();
 	
 	public SimpleSkeleton() {
-		// Assemble skeleton to waist
+		// Assemble skeleton to hip
 		hmdNode.attachChild(headNode);
 		headNode.localTransform.setTranslation(0, 0, headShift);
 		

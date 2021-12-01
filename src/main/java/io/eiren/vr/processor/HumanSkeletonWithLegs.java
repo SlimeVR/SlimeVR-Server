@@ -51,11 +51,11 @@ public class HumanSkeletonWithLegs extends HumanSkeletonWithWaist {
 	 */
 	protected float hipsWidth = HIPS_WIDTH_DEFAULT;
 	/**
-	 * Length from waist to knees
+	 * Length from hip to knees
 	 */
 	protected float kneeHeight = 0.42f;
 	/**
-	 * Distance from waist to ankle
+	 * Distance from hip to ankle
 	 */
 	protected float legsLength = 0.84f;
 	protected float footLength = FOOT_LENGTH_DEFAULT;
