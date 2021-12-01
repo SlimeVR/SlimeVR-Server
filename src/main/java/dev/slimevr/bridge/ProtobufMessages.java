@@ -2506,7 +2506,7 @@ public final class ProtobufMessages {
       }
       private com.google.protobuf.MapField<java.lang.String, java.lang.String>
       internalGetMutableActionArguments() {
-        onChanged();;
+        onChanged();
         if (actionArguments_ == null) {
           actionArguments_ = com.google.protobuf.MapField.newMapField(
               ActionArgumentsDefaultEntryHolder.defaultEntry);
