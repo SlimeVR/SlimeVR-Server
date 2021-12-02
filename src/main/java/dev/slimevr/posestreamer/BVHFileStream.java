@@ -157,6 +157,7 @@ public class BVHFileStream extends PoseDataStream {
 		writer.write("Frame Time: " + (streamer.frameRecordingInterval / 1000d) + "\n");
 	}
 
+	// Roughly based off code from https://github.com/TrackLab/ViRe/blob/50a987eff4db31036b2ebaeb5a28983cd473f267/Assets/Scripts/BVH/BVHRecorder.cs
 	private float[] quatToXyzAngles(Quaternion q, float[] angles) {
 		if (angles == null) {
 			angles = new float[3];
