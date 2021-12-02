@@ -10,6 +10,7 @@ import java.io.OutputStreamWriter;
 
 import com.jme3.math.FastMath;
 import com.jme3.math.Quaternion;
+import com.jme3.math.Transform;
 import com.jme3.math.Vector3f;
 
 import org.apache.commons.lang3.StringUtils;
@@ -104,7 +105,7 @@ public class BVHFileStream extends PoseDataStream {
 		// Ignore the root offset and original root offset
 		if (level > 0 && node.wrappedNode.getParent() != null) {
 			Vector3f offset = node.localTransform.getTranslation();
-			float reverseMultiplier = node.reversedHierarchy ? -1 : 1;
+			float reverseMultiplier = node.hasReversedHierarchy() ? -1 : 1;
 			writer.write(nextIndentLevel + "OFFSET " + Float.toString(offset.getX() * OFFSET_SCALE * reverseMultiplier) + " " + Float.toString(offset.getY() * OFFSET_SCALE * reverseMultiplier) + " " + Float.toString(offset.getZ() * OFFSET_SCALE * reverseMultiplier) + "\n");
 		} else {
 			writer.write(nextIndentLevel + "OFFSET 0.0 0.0 0.0\n");
@@ -187,11 +188,25 @@ public class BVHFileStream extends PoseDataStream {
 	}
 
 	private void writeNodeHierarchyRotation(TransformNodeWrapper node, Quaternion inverseRootRot) throws IOException {
-		rotBuf = node.worldTransform.getRotation(rotBuf);
+		Transform transform = node.worldTransform;
+
+		/*
+		if (node.hasReversedHierarchy()) {
+			for (TransformNodeWrapper childNode : node.children) {
+				// If the hierarchy is fully reversed, set the rotation for the upper bone
+				if (childNode.hasReversedHierarchy()) {
+					transform = childNode.worldTransform;
+					break;
+				}
+			}
+		}
+		*/
+
+		rotBuf = transform.getRotation(rotBuf);
 
 		// Adjust to local rotation
 		if (inverseRootRot != null) {
-			rotBuf = node.calculateLocalRotationInverse(inverseRootRot, rotBuf);
+			rotBuf = rotBuf.multLocal(inverseRootRot);
 		}
 
 		// Yaw (Z), roll (X), pitch (Y) (intrinsic)
@@ -205,7 +220,7 @@ public class BVHFileStream extends PoseDataStream {
 
 		// Get inverse rotation for child local rotations
 		if (!node.children.isEmpty()) {
-			Quaternion inverseRot = node.worldTransform.getRotation().inverse();
+			Quaternion inverseRot = transform.getRotation().inverse();
 			for (TransformNodeWrapper childNode : node.children) {
 				if (childNode.children.isEmpty()) {
 					// If it's an end node, skip

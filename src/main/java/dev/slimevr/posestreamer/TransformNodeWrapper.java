@@ -5,8 +5,6 @@ import java.util.List;
 import com.jme3.math.Quaternion;
 import com.jme3.math.Transform;
 
-import org.apache.commons.lang3.NotImplementedException;
-
 import io.eiren.util.collections.FastList;
 import io.eiren.vr.processor.TransformNode;
 
@@ -19,7 +17,7 @@ public class TransformNodeWrapper {
 	public final Transform localTransform;
 	public final Transform worldTransform;
 
-	public final boolean reversedHierarchy;
+	private boolean reversedHierarchy = false;
 
 	protected TransformNodeWrapper parent;
 	public final List<TransformNodeWrapper> children;
@@ -45,12 +43,12 @@ public class TransformNodeWrapper {
 		this(nodeToWrap, name, false, 5);
 	}
 
-	public TransformNodeWrapper(TransformNode nodeToWrap, boolean flippedOffset, int initialChildCapacity) {
-		this(nodeToWrap, nodeToWrap.getName(), flippedOffset, initialChildCapacity);
+	public TransformNodeWrapper(TransformNode nodeToWrap, boolean reversedHierarchy, int initialChildCapacity) {
+		this(nodeToWrap, nodeToWrap.getName(), reversedHierarchy, initialChildCapacity);
 	}
 
-	public TransformNodeWrapper(TransformNode nodeToWrap, boolean flippedOffset) {
-		this(nodeToWrap, nodeToWrap.getName(), flippedOffset, 5);
+	public TransformNodeWrapper(TransformNode nodeToWrap, boolean reversedHierarchy) {
+		this(nodeToWrap, nodeToWrap.getName(), reversedHierarchy, 5);
 	}
 
 	public TransformNodeWrapper(TransformNode nodeToWrap, int initialChildCapacity) {
@@ -82,20 +80,24 @@ public class TransformNodeWrapper {
 	}
 
 	public static TransformNodeWrapper wrapNodeHierarchyUp(TransformNodeWrapper root) {
-		TransformNode parent = root.wrappedNode.getParent();
+		return wrapNodeHierarchyUp(root.wrappedNode, root);
+	}
+
+	public static TransformNodeWrapper wrapNodeHierarchyUp(TransformNode root, TransformNodeWrapper target) {
+		TransformNode parent = root.getParent();
 		if (parent == null) {
-			return root;
+			return target;
 		}
 
 		// Flip the offset for these reversed nodes
 		TransformNodeWrapper wrapper = new TransformNodeWrapper(parent, true, (parent.getParent() != null ? 1 : 0) + Math.max(0, parent.children.size() - 1));
-		root.attachChild(wrapper);
+		target.attachChild(wrapper);
 
 		// Re-attach other children
 		if (parent.children.size() > 1) {
 			for (TransformNode child : parent.children) {
 				// Skip the original node
-				if (child == root.wrappedNode) {
+				if (child == target.wrappedNode) {
 					continue;
 				}
 
@@ -106,15 +108,19 @@ public class TransformNodeWrapper {
 		// Continue up the hierarchy
 		wrapNodeHierarchyUp(wrapper);
 		// Return original node
-		return root;
+		return target;
+	}
+
+	public boolean hasReversedHierarchy () {
+		return reversedHierarchy;
+	}
+
+	public void setReversedHierarchy (boolean reversedHierarchy) {
+		this.reversedHierarchy = reversedHierarchy;
 	}
 
 	public boolean hasLocalRotation () {
 		return wrappedNode.localRotation;
-	}
-
-	public Quaternion calculateLocalRotation (Quaternion result) {
-		return calculateLocalRotation(worldTransform.getRotation(), result);
 	}
 
 	public Quaternion calculateLocalRotation (Quaternion relativeTo, Quaternion result) {
@@ -126,7 +132,7 @@ public class TransformNodeWrapper {
 			result = new Quaternion();
 		}
 
-		return inverseRelativeTo.mult(worldTransform.getRotation(result), result);
+		return worldTransform.getRotation().mult(inverseRelativeTo, result);
 	}
 
 	public void attachChild(TransformNodeWrapper node) {

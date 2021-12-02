@@ -22,7 +22,28 @@ public class StdBVHFileStream extends BVHFileStream {
 	
 	@Override
 	protected TransformNodeWrapper wrapSkeletonNodes(TransformNode rootNode) {
-		return TransformNodeWrapper.wrapFullHierarchy(getNodeFromHierarchy(rootNode, "Waist"));
+		TransformNode newRoot = getNodeFromHierarchy(rootNode, "Hip");
+		if (newRoot == null) {
+			return null;
+		}
+
+		TransformNodeWrapper wrappedRoot = TransformNodeWrapper.wrapHierarchyDown(newRoot);
+
+		/*
+		// If should wrap up hierarchy
+		if (newRoot.getParent() != null) {
+			// Create an extra node for full proper rotation
+			TransformNodeWrapper spineWrapper = new TransformNodeWrapper(new TransformNode("Spine", false), true, 1);
+			wrappedRoot.attachChild(spineWrapper);
+
+			// Wrap up on top of the spine node
+			TransformNodeWrapper.wrapNodeHierarchyUp(newRoot, spineWrapper);
+		}
+		*/
+
+		TransformNodeWrapper.wrapNodeHierarchyUp(wrappedRoot);
+
+		return wrappedRoot;
 	}
 
 	private TransformNode getNodeFromHierarchy(TransformNode node, String name) {
