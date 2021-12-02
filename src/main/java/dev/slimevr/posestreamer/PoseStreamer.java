@@ -102,9 +102,15 @@ public class PoseStreamer {
 		PoseDataStream poseFileStream = this.poseFileStream;
 
 		if (poseFileStream != null) {
+			closeOutput(poseFileStream);
+			this.poseFileStream = null;
+		}
+	}
+
+	public synchronized void closeOutput(PoseDataStream poseFileStream) throws IOException {
+		if (poseFileStream != null) {
 			poseFileStream.writeFooter(skeleton);
 			poseFileStream.close();
-			this.poseFileStream = null;
 		}
 	}
 }

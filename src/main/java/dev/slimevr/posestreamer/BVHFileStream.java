@@ -156,14 +156,14 @@ public class BVHFileStream extends PoseDataStream {
 	}
 
 	private void writeNodeHierarchyRotation(TransformNodeWrapper node, Quaternion inverseRootRot) throws IOException {
-		rotBuf = node.localTransform.getRotation(rotBuf);
+		rotBuf = node.worldTransform.getRotation(rotBuf);
 
 		// Adjust to local rotation
 		if (inverseRootRot != null) {
 			rotBuf = node.calculateLocalRotationInverse(inverseRootRot, rotBuf);
 		}
 
-		// Yaw, roll, pitch
+		// Yaw (Z), roll (X), pitch (Y)
 		angleBuf = rotBuf.toAngles(angleBuf);
 		// Output in order of Z, X, Y
 		writer.write(Float.toString(angleBuf[2] * FastMath.RAD_TO_DEG) + " " + Float.toString(angleBuf[0] * FastMath.RAD_TO_DEG) + " " + Float.toString(-angleBuf[1] * FastMath.RAD_TO_DEG));
