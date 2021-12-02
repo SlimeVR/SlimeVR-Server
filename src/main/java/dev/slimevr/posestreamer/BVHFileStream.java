@@ -20,7 +20,8 @@ import io.eiren.vr.processor.TransformNode;
 public class BVHFileStream extends PoseDataStream {
 
 	private static final int LONG_MAX_VALUE_DIGITS = Long.toString(Long.MAX_VALUE).length();
-	private static final float POS_SCALE = 100f;
+	private static final float OFFSET_SCALE = 100f;
+	private static final float POSITION_SCALE = 100f;
 
 	private long frameCount = 0;
 	private final BufferedWriter writer;
@@ -104,7 +105,7 @@ public class BVHFileStream extends PoseDataStream {
 		if (level > 0 && node.wrappedNode.getParent() != null) {
 			Vector3f offset = node.localTransform.getTranslation();
 			float reverseMultiplier = node.reversedHierarchy ? -1 : 1;
-			writer.write(nextIndentLevel + "OFFSET " + Float.toString(offset.getX() * POS_SCALE * reverseMultiplier) + " " + Float.toString(offset.getY() * POS_SCALE * reverseMultiplier) + " " + Float.toString(offset.getZ() * POS_SCALE * reverseMultiplier) + "\n");
+			writer.write(nextIndentLevel + "OFFSET " + Float.toString(offset.getX() * OFFSET_SCALE * reverseMultiplier) + " " + Float.toString(offset.getY() * OFFSET_SCALE * reverseMultiplier) + " " + Float.toString(offset.getZ() * OFFSET_SCALE * reverseMultiplier) + "\n");
 		} else {
 			writer.write(nextIndentLevel + "OFFSET 0.0 0.0 0.0\n");
 		}
@@ -155,6 +156,36 @@ public class BVHFileStream extends PoseDataStream {
 		writer.write("Frame Time: " + (streamer.frameRecordingInterval / 1000d) + "\n");
 	}
 
+	private float[] quatToXyzAngles(Quaternion q, float[] angles) {
+		if (angles == null) {
+			angles = new float[3];
+		} else if (angles.length != 3) {
+			throw new IllegalArgumentException("Angles array must have three elements");
+		}
+
+		float x = q.getX();
+		float y = q.getY();
+		float z = q.getZ();
+		float w = q.getW();
+
+		// Roll (X)
+		float sinrCosp = 2f * (w * x + y * z);
+		float cosrCosp = 1f - 2f * (x * x + y * y);
+		angles[0] = FastMath.atan2(sinrCosp, cosrCosp);
+
+		// Pitch (Y)
+		float sinp = 2f * (w * y - z * x);
+		// Use 90 degrees if out of range
+		angles[1] = FastMath.abs(sinp) >= 1f ? FastMath.copysign(FastMath.PI / 2f, sinp) : FastMath.asin(sinp);
+
+		// Yaw (Z)
+		float sinyCosp = 2f * (w * z + x * y);
+		float cosyCosp = 1f - 2f * (y * y + z * z);
+		angles[2] = -FastMath.atan2(sinyCosp, cosyCosp);
+		
+		return angles;
+	}
+
 	private void writeNodeHierarchyRotation(TransformNodeWrapper node, Quaternion inverseRootRot) throws IOException {
 		rotBuf = node.worldTransform.getRotation(rotBuf);
 
@@ -163,10 +194,14 @@ public class BVHFileStream extends PoseDataStream {
 			rotBuf = node.calculateLocalRotationInverse(inverseRootRot, rotBuf);
 		}
 
-		// Yaw (Z), roll (X), pitch (Y)
-		angleBuf = rotBuf.toAngles(angleBuf);
-		// Output in order of Z, X, Y
-		writer.write(Float.toString(angleBuf[2] * FastMath.RAD_TO_DEG) + " " + Float.toString(angleBuf[0] * FastMath.RAD_TO_DEG) + " " + Float.toString(-angleBuf[1] * FastMath.RAD_TO_DEG));
+		// Yaw (Z), roll (X), pitch (Y) (intrinsic)
+		// angleBuf = rotBuf.toAngles(angleBuf);
+
+		// Roll (X), pitch (Y), yaw (Z) (intrinsic)
+		angleBuf = quatToXyzAngles(rotBuf.normalizeLocal(), angleBuf);
+
+		// Output in order of roll (Z), pitch (X), yaw (Y) (extrinsic)
+		writer.write(Float.toString(angleBuf[0] * FastMath.RAD_TO_DEG) + " " + Float.toString(angleBuf[1] * FastMath.RAD_TO_DEG) + " " + Float.toString(angleBuf[2] * FastMath.RAD_TO_DEG));
 
 		// Get inverse rotation for child local rotations
 		if (!node.children.isEmpty()) {
@@ -195,7 +230,7 @@ public class BVHFileStream extends PoseDataStream {
 		Vector3f rootPos = rootNode.worldTransform.getTranslation();
 
 		// Write root position
-		writer.write(Float.toString(rootPos.getX() * POS_SCALE) + " " + Float.toString(rootPos.getY() * POS_SCALE) + " " + Float.toString(rootPos.getZ() * POS_SCALE) + " ");
+		writer.write(Float.toString(rootPos.getX() * POSITION_SCALE) + " " + Float.toString(rootPos.getY() * POSITION_SCALE) + " " + Float.toString(rootPos.getZ() * POSITION_SCALE) + " ");
 		writeNodeHierarchyRotation(rootNode, null);
 
 		writer.newLine();
