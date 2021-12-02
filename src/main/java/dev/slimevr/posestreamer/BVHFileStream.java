@@ -8,7 +8,9 @@ import java.io.IOException;
 import java.io.OutputStream;
 import java.io.OutputStreamWriter;
 
+import com.jme3.math.FastMath;
 import com.jme3.math.Quaternion;
+import com.jme3.math.Transform;
 import com.jme3.math.Vector3f;
 
 import org.apache.commons.lang3.StringUtils;
@@ -19,7 +21,8 @@ import io.eiren.vr.processor.TransformNode;
 public class BVHFileStream extends PoseDataStream {
 
 	private static final int LONG_MAX_VALUE_DIGITS = Long.toString(Long.MAX_VALUE).length();
-	private static final float POS_SCALE = 10f;
+	private static final float OFFSET_SCALE = 100f;
+	private static final float POSITION_SCALE = 100f;
 
 	private long frameCount = 0;
 	private final BufferedWriter writer;
@@ -28,6 +31,9 @@ public class BVHFileStream extends PoseDataStream {
 
 	private float[] angleBuf = new float[3];
 	private Quaternion rotBuf = new Quaternion();
+
+	private HumanSkeleton wrappedSkeleton;
+	private TransformNodeWrapper rootNode;
 
 	public BVHFileStream(OutputStream outputStream) {
 		super(outputStream);
@@ -51,11 +57,40 @@ public class BVHFileStream extends PoseDataStream {
 		return bufferCount > 0 ? frameString + StringUtils.repeat(' ', bufferCount) : frameString;
 	}
 
-	private void writeTransformNodeHierarchy(TransformNode node) throws IOException {
-		writeTransformNodeHierarchy(node, 0);
+	private TransformNodeWrapper wrapSkeletonIfNew(HumanSkeleton skeleton) {
+		TransformNodeWrapper wrapper = rootNode;
+
+		// If the wrapped skeleton is missing or the skeleton is updated
+		if (wrapper == null || skeleton != wrappedSkeleton) {
+			wrapper = wrapSkeleton(skeleton);
+		}
+
+		return wrapper;
 	}
 
-	private void writeTransformNodeHierarchy(TransformNode node, int level) throws IOException {
+	private TransformNodeWrapper wrapSkeleton(HumanSkeleton skeleton) {
+		TransformNodeWrapper wrapper = wrapSkeletonNodes(skeleton.getRootNode());
+
+		wrappedSkeleton = skeleton;
+		rootNode = wrapper;
+
+		return wrapper;
+	}
+
+	protected TransformNodeWrapper wrapSkeletonNodes(TransformNode rootNode) {
+		return TransformNodeWrapper.wrapFullHierarchy(rootNode);
+	}
+
+	private void writeNodeHierarchy(TransformNodeWrapper node) throws IOException {
+		writeNodeHierarchy(node, 0);
+	}
+
+	private void writeNodeHierarchy(TransformNodeWrapper node, int level) throws IOException {
+		// Don't write end sites at populated nodes
+		if (node.children.isEmpty() && node.getParent().children.size() > 1) {
+			return;
+		}
+
 		String indentLevel = StringUtils.repeat("\t", level);
 		String nextIndentLevel = indentLevel + "\t";
 
@@ -67,9 +102,11 @@ public class BVHFileStream extends PoseDataStream {
 		}
 		writer.write(indentLevel + "{\n");
 
-		if (level > 0) {
+		// Ignore the root offset and original root offset
+		if (level > 0 && node.wrappedNode.getParent() != null) {
 			Vector3f offset = node.localTransform.getTranslation();
-			writer.write(nextIndentLevel + "OFFSET " + Float.toString(offset.getX() * POS_SCALE) + " " + Float.toString(offset.getY() * POS_SCALE) + " " + Float.toString(offset.getZ() * POS_SCALE) + "\n");
+			float reverseMultiplier = node.hasReversedHierarchy() ? -1 : 1;
+			writer.write(nextIndentLevel + "OFFSET " + Float.toString(offset.getX() * OFFSET_SCALE * reverseMultiplier) + " " + Float.toString(offset.getY() * OFFSET_SCALE * reverseMultiplier) + " " + Float.toString(offset.getZ() * OFFSET_SCALE * reverseMultiplier) + "\n");
 		} else {
 			writer.write(nextIndentLevel + "OFFSET 0.0 0.0 0.0\n");
 		}
@@ -83,8 +120,8 @@ public class BVHFileStream extends PoseDataStream {
 				writer.write(nextIndentLevel + "CHANNELS 6 Xposition Yposition Zposition Zrotation Xrotation Yrotation\n");
 			}
 
-			for (TransformNode childNode : node.children) {
-				writeTransformNodeHierarchy(childNode, level + 1);
+			for (TransformNodeWrapper childNode : node.children) {
+				writeNodeHierarchy(childNode, level + 1);
 			}
 		}
 
@@ -101,7 +138,7 @@ public class BVHFileStream extends PoseDataStream {
 		}
 
 		writer.write("HIERARCHY\n");
-		writeTransformNodeHierarchy(skeleton.getRootNode());
+		writeNodeHierarchy(wrapSkeletonIfNew(skeleton));
 
 		writer.write("MOTION\n");
 		writer.write("Frames: ");
@@ -120,28 +157,81 @@ public class BVHFileStream extends PoseDataStream {
 		writer.write("Frame Time: " + (streamer.frameRecordingInterval / 1000d) + "\n");
 	}
 
-	private void writeTransformHierarchyRotation(TransformNode node, Quaternion inverseRootRot) throws IOException {
-		rotBuf = node.localTransform.getRotation(rotBuf);
+	// Roughly based off code from https://github.com/TrackLab/ViRe/blob/50a987eff4db31036b2ebaeb5a28983cd473f267/Assets/Scripts/BVH/BVHRecorder.cs
+	private float[] quatToXyzAngles(Quaternion q, float[] angles) {
+		if (angles == null) {
+			angles = new float[3];
+		} else if (angles.length != 3) {
+			throw new IllegalArgumentException("Angles array must have three elements");
+		}
+
+		float x = q.getX();
+		float y = q.getY();
+		float z = q.getZ();
+		float w = q.getW();
+
+		// Roll (X)
+		float sinrCosp = -2f * (x * y - w * z);
+		float cosrCosp = w * w - x * x + y * y - z * z;
+		angles[0] = FastMath.atan2(sinrCosp, cosrCosp);
+
+		// Pitch (Y)
+		float sinp = 2f * (y * z + w * x);
+		// Use 90 degrees if out of range
+		angles[1] = FastMath.abs(sinp) >= 1f ? FastMath.copysign(FastMath.PI / 2f, sinp) : FastMath.asin(sinp);
+
+		// Yaw (Z)
+		float sinyCosp = -2f * (x * z - w * y);
+		float cosyCosp = w * w - x * x - y * y + z * z;
+		angles[2] = FastMath.atan2(sinyCosp, cosyCosp);
+		
+		return angles;
+	}
+
+	private void writeNodeHierarchyRotation(TransformNodeWrapper node, Quaternion inverseRootRot) throws IOException {
+		Transform transform = node.worldTransform;
+
+		/*
+		if (node.hasReversedHierarchy()) {
+			for (TransformNodeWrapper childNode : node.children) {
+				// If the hierarchy is fully reversed, set the rotation for the upper bone
+				if (childNode.hasReversedHierarchy()) {
+					transform = childNode.worldTransform;
+					break;
+				}
+			}
+		}
+		*/
+
+		rotBuf = transform.getRotation(rotBuf);
 
 		// Adjust to local rotation
 		if (inverseRootRot != null) {
-			rotBuf = inverseRootRot.mult(rotBuf, rotBuf);
+			rotBuf = rotBuf.multLocal(inverseRootRot);
 		}
 
-		angleBuf = rotBuf.toAngles(angleBuf);
-		writer.write(Float.toString((float)Math.toDegrees(angleBuf[2])) + " " + Float.toString((float)Math.toDegrees(angleBuf[0])) + " " + Float.toString((float)Math.toDegrees(angleBuf[1])));
+		// Yaw (Z), roll (X), pitch (Y) (intrinsic)
+		// angleBuf = rotBuf.toAngles(angleBuf);
+
+		// Roll (X), pitch (Y), yaw (Z) (intrinsic)
+		angleBuf = quatToXyzAngles(rotBuf.normalizeLocal(), angleBuf);
+
+		// Output in order of roll (Z), pitch (X), yaw (Y) (extrinsic)
+		writer.write(Float.toString(angleBuf[0] * FastMath.RAD_TO_DEG) + " " + Float.toString(angleBuf[1] * FastMath.RAD_TO_DEG) + " " + Float.toString(angleBuf[2] * FastMath.RAD_TO_DEG));
 
 		// Get inverse rotation for child local rotations
-		Quaternion inverseRot = node.localTransform.getRotation().inverse();
-		for (TransformNode childNode : node.children) {
-			if (childNode.children.isEmpty()) {
-				// If it's an end node, skip
-				continue;
-			}
+		if (!node.children.isEmpty()) {
+			Quaternion inverseRot = transform.getRotation().inverse();
+			for (TransformNodeWrapper childNode : node.children) {
+				if (childNode.children.isEmpty()) {
+					// If it's an end node, skip
+					continue;
+				}
 
-			// Add spacing
-			writer.write(" ");
-			writeTransformHierarchyRotation(childNode, inverseRot);
+				// Add spacing
+				writer.write(" ");
+				writeNodeHierarchyRotation(childNode, inverseRot);
+			}
 		}
 	}
 
@@ -151,12 +241,13 @@ public class BVHFileStream extends PoseDataStream {
 			throw new NullPointerException("skeleton must not be null");
 		}
 
-		TransformNode root = skeleton.getRootNode();
-		Vector3f rootPos = root.localTransform.getTranslation();
+		TransformNodeWrapper rootNode = wrapSkeletonIfNew(skeleton);
+
+		Vector3f rootPos = rootNode.worldTransform.getTranslation();
 
 		// Write root position
-		writer.write(Float.toString(rootPos.getX() * POS_SCALE) + " " + Float.toString(rootPos.getY() * POS_SCALE) + " " + Float.toString(rootPos.getZ() * POS_SCALE) + " ");
-		writeTransformHierarchyRotation(root, null);
+		writer.write(Float.toString(rootPos.getX() * POSITION_SCALE) + " " + Float.toString(rootPos.getY() * POSITION_SCALE) + " " + Float.toString(rootPos.getZ() * POSITION_SCALE) + " ");
+		writeNodeHierarchyRotation(rootNode, null);
 
 		writer.newLine();
 
