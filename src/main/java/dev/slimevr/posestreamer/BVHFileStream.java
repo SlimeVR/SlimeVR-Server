@@ -169,19 +169,19 @@ public class BVHFileStream extends PoseDataStream {
 		float w = q.getW();
 
 		// Roll (X)
-		float sinrCosp = 2f * (w * x + y * z);
-		float cosrCosp = 1f - 2f * (x * x + y * y);
+		float sinrCosp = -2f * (x * y - w * z);
+		float cosrCosp = w * w - x * x + y * y - z * z;
 		angles[0] = FastMath.atan2(sinrCosp, cosrCosp);
 
 		// Pitch (Y)
-		float sinp = 2f * (w * y - z * x);
+		float sinp = 2f * (y * z + w * x);
 		// Use 90 degrees if out of range
 		angles[1] = FastMath.abs(sinp) >= 1f ? FastMath.copysign(FastMath.PI / 2f, sinp) : FastMath.asin(sinp);
 
 		// Yaw (Z)
-		float sinyCosp = 2f * (w * z + x * y);
-		float cosyCosp = 1f - 2f * (y * y + z * z);
-		angles[2] = -FastMath.atan2(sinyCosp, cosyCosp);
+		float sinyCosp = -2f * (x * z - w * y);
+		float cosyCosp = w * w - x * x - y * y + z * z;
+		angles[2] = FastMath.atan2(sinyCosp, cosyCosp);
 		
 		return angles;
 	}
