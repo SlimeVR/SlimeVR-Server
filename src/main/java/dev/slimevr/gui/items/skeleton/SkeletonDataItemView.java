@@ -9,6 +9,7 @@ import io.eiren.vr.processor.TransformNode;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
+import javafx.scene.control.Label;
 import javafx.scene.layout.HBox;
 import javafx.scene.text.Text;
 
@@ -30,25 +31,25 @@ public class SkeletonDataItemView extends HBox  implements Initializable{
 
 
 	@FXML
-	private Text itemJointName;
+	private Label itemJointName;
 
 	@FXML
-	private Text itemPitch;
+	private Label itemPitch;
 
 	@FXML
-	private Text itemRoll;
+	private Label itemRoll;
 
 	@FXML
-	private Text itemXcoord;
+	private Label itemXcoord;
 
 	@FXML
-	private Text itemYaw;
+	private Label itemYaw;
 
 	@FXML
-	private Text itemYcoord;
+	private Label itemYcoord;
 
 	@FXML
-	private Text itemZcoord;
+	private Label itemZcoord;
 
 	private final VRServer server;
 	private ResourceBundle bundle;

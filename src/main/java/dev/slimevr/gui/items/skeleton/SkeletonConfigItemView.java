@@ -9,6 +9,7 @@ import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
 import javafx.scene.control.Button;
+import javafx.scene.control.Label;
 import javafx.scene.layout.HBox;
 import javafx.scene.text.Text;
 
@@ -33,10 +34,10 @@ public class SkeletonConfigItemView extends HBox  implements Initializable{
 	private Button itemResetButton;
 
 	@FXML
-	private Text itemValue;
+	private Label itemValue;
 
 	@FXML
-	private Text itemTitle;
+	private Label itemTitle;
 
 	private String joint;
 	private float value;
