@@ -70,10 +70,17 @@ public class TrackersListPane extends GridPane implements Initializable {
 				row++;
 			}
 			TrackerPanelCell tr = trackers.get(i);
-			Tracker t = tr.t;
-			this.add(tr.getTrackerContainer(), column, row);
+			this.add(tr, column, row);
 			column++;
-			tr.build();
+		/*	if(! this.getChildren().contains(tr))
+			{
+				this.add(tr, column, row);
+				column++;
+			}*/
+
+			//Tracker t = tr.t;
+
+			//tr.build();
 		}
 
 	}
@@ -127,7 +134,10 @@ public class TrackersListPane extends GridPane implements Initializable {
 
 	@ThreadSafe
 	public void newTrackerAdded(Tracker t) {
-		trackers.add(new TrackerPanelCell(t, server));
+		TrackerPanelCell trackerPanelCell = new TrackerPanelCell(t, server);
+		trackerPanelCell.build();
+		trackers.add(trackerPanelCell);
+
 		Platform.runLater(
 				this::build
 		);

@@ -16,6 +16,8 @@ import io.eiren.vr.VRServer;
 import io.eiren.vr.processor.HumanSkeleton;
 import io.eiren.vr.processor.TransformNode;
 import javafx.fxml.FXML;
+import javafx.scene.control.ChoiceBox;
+import javafx.scene.control.ComboBox;
 import javafx.scene.layout.Pane;
 import javafx.scene.layout.VBox;
 import javafx.scene.text.Text;
@@ -30,8 +32,7 @@ public class MainTabController {
 
 	@FXML
 	public TrackersListPane trackersListPane;
-
-
+	public ComboBox<String> testbox;
 
 
 	private Stage stage;
@@ -50,6 +51,9 @@ public class MainTabController {
 		initGui();
 
 		steamVRTrackersSetup();
+
+		testbox.getItems().add("asdasd");
+		testbox.getItems().add("aasdasxzcz");
 
 	}
 

@@ -4,10 +4,15 @@ import com.jme3.math.FastMath;
 import com.jme3.math.Quaternion;
 import com.jme3.math.Vector3f;
 import io.eiren.util.StringUtils;
+import io.eiren.util.logging.LogManager;
 import io.eiren.vr.VRServer;
 import io.eiren.vr.trackers.*;
+import javafx.event.ActionEvent;
+import javafx.event.EventHandler;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
+import javafx.scene.control.ChoiceBox;
+import javafx.scene.control.ComboBox;
 import javafx.scene.control.Label;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.Pane;
@@ -18,7 +23,7 @@ import java.net.URL;
 import java.util.Locale;
 import java.util.ResourceBundle;
 
-public class TrackerPanelCell {
+public class TrackerPanelCell extends AnchorPane {
 
 
 	Quaternion q = new Quaternion();
@@ -48,6 +53,12 @@ public class TrackerPanelCell {
 
 	@FXML
 	private Label tps;
+
+	@FXML
+	private ComboBox<String> desSelect;
+
+	@FXML
+	private ComboBox<String> mountSelect;
 
 
 /*	@FXML
@@ -106,6 +117,7 @@ public class TrackerPanelCell {
 	public TrackerPanelCell(Tracker tracker, VRServer server) {
 		FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("/cells/trackers/trackerCell.fxml"));
 		fxmlLoader.setController(this);
+		fxmlLoader.setRoot(this);
 		try {
 			fxmlLoader.load();
 		} catch (IOException e) {
@@ -124,6 +136,7 @@ public class TrackerPanelCell {
 
 	public TrackerPanelCell build() {
 
+		LogManager.log.severe("TrackerPanelCell build() " + t.getTrackerId());
 		Tracker realTracker = t;
 		if (t instanceof ReferenceAdjustedTracker)
 			realTracker = ((ReferenceAdjustedTracker<? extends Tracker>) t).getTracker();
@@ -131,7 +144,6 @@ public class TrackerPanelCell {
 
 		if (t.userEditable()) {
 			TrackerConfig cfg = server.getTrackerConfig(t);
-
 			if (realTracker instanceof IMUTracker) {
 				IMUTracker imu = (IMUTracker) realTracker;
 				TrackerMountingRotation tr = imu.getMountingRotation();
@@ -162,6 +174,52 @@ public class TrackerPanelCell {
 			bat.setText("0");
 		}
 
+		if (t.userEditable()) {
+			TrackerConfig cfg = server.getTrackerConfig(t);
+			for (TrackerPosition p : TrackerPosition.values) {
+				LogManager.log.severe(" " + p.name());
+				desSelect.getItems().add(p.name());
+			}
+
+			if (cfg.designation != null) {
+				TrackerPosition p = TrackerPosition.getByDesignation(cfg.designation);
+				if (p != null) desSelect.setValue(p.name());
+			}
+			desSelect.setOnAction(new EventHandler<ActionEvent>() {
+				@Override
+				public void handle(ActionEvent event) {
+					TrackerPosition p = TrackerPosition.valueOf(String.valueOf(desSelect.getValue()));
+					t.setBodyPosition(p);
+					server.trackerUpdated(t);
+				}
+			});
+
+		} else desSelect.setVisible(false);
+
+
+		if (realTracker instanceof IMUTracker) {
+			IMUTracker imu = (IMUTracker) realTracker;
+			TrackerMountingRotation tr = imu.getMountingRotation();
+			for (TrackerMountingRotation p : TrackerMountingRotation.values) {
+				mountSelect.getItems().add(p.name());
+			}
+			if (tr != null) {
+				mountSelect.setValue(tr.name());
+			} else {
+				mountSelect.setValue(TrackerMountingRotation.BACK.name());
+			}
+
+			desSelect.setOnAction(new EventHandler<ActionEvent>() {
+				@Override
+				public void handle(ActionEvent event) {
+					TrackerMountingRotation tr = TrackerMountingRotation.valueOf(String.valueOf(mountSelect.getValue()));
+					imu.setMountingRotation(tr);
+					server.trackerUpdated(t);
+				}
+			});
+
+		} else mountSelect.setVisible(false);
+
 		//raw.setText("0 0 0");
 
 
@@ -188,8 +246,7 @@ public class TrackerPanelCell {
 			tps.setText(StringUtils.prettyNumber(((TrackerWithTPS) realTracker).getTPS(), 1));
 		}
 
-		if (realTracker instanceof TrackerWithBattery)
-		{
+		if (realTracker instanceof TrackerWithBattery) {
 			bat.setText(StringUtils.prettyNumber(((TrackerWithBattery) realTracker).getBatteryVoltage(), 1));
 		}
 

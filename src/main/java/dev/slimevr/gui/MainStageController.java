@@ -157,7 +157,7 @@ public class MainStageController implements Initializable {
 
 	private void changeTab(Tab tab)
 	{
-		tabsPane.getSelectionModel().select(tab);
+		if(tabsPane.getSelectionModel().getSelectedItem() != tab) tabsPane.getSelectionModel().select(tab);
 	}
 
 
