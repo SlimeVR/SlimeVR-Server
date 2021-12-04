@@ -60,6 +60,9 @@ public class AutoBone {
 	public float positionErrorFactor = 0.0f;
 	public float positionOffsetErrorFactor = 0.0f;
 	
+	// For scaling distances, since smaller sizes will cause smaller distances
+	private float totalLengthBase = 2f;
+
 	// Human average is probably 1.1235 (SD 0.07)
 	public float legBodyRatio = 1.1235f;
 	// SD of 0.07, capture 68% within range
@@ -78,6 +81,7 @@ public class AutoBone {
 	public final HashMap<String, Float> staticConfigs = new HashMap<String, Float>();
 	
 	public final FastList<String> heightConfigs = new FastList<String>(new String[]{"Neck", "Torso", "Legs length"});
+	public final FastList<String> lengthConfigs = new FastList<String>(new String[]{"Head", "Neck", "Torso", "Hips width", "Legs length"});
 	
 	public AutoBone(VRServer server) {
 		this.server = server;
@@ -188,28 +192,37 @@ public class AutoBone {
 		Float configVal = configs.get(config);
 		return configVal != null || configsAlt == null ? configVal : configsAlt.get(config);
 	}
-	
-	public float getHeight(Map<String, Float> configs) {
-		return getHeight(configs, null);
-	}
-	
-	public float getHeight(Map<String, Float> configs, Map<String, Float> configsAlt) {
-		float height = 0f;
+
+	public float sumSelectConfigs(List<String> selection, Map<String, Float> configs, Map<String, Float> configsAlt) {
+		float sum = 0f;
 		
-		for(String heightConfig : heightConfigs) {
-			Float length = getConfig(heightConfig, configs, configsAlt);
+		for (String config : selection) {
+			Float length = getConfig(config, configs, configsAlt);
 			if(length != null) {
-				height += length;
+				sum += length;
 			}
 		}
 		
-		return height;
+		return sum;
 	}
 	
 	public float getLengthSum(Map<String, Float> configs) {
+		return getLengthSum(configs, null);
+	}
+
+	public float getLengthSum(Map<String, Float> configs, Map<String, Float> configsAlt) {
 		float length = 0f;
 		
-		for(float boneLength : configs.values()) {
+		if (configsAlt != null) {
+			for(Entry<String, Float> config : configsAlt.entrySet()) {
+				// If there isn't a duplicate config
+				if (!configs.containsKey(config.getKey())) {
+					length += config.getValue();
+				}
+			}
+		}
+
+		for(Float boneLength : configs.values()) {
 			length += boneLength;
 		}
 		
@@ -259,7 +272,7 @@ public class AutoBone {
 		// If target height isn't specified, auto-detect
 		if(targetHeight < 0f) {
 			if(skeleton != null) {
-				targetHeight = getHeight(skeleton.getSkeletonConfig());
+				targetHeight = sumSelectConfigs(heightConfigs, skeleton.getSkeletonConfig(), staticConfigs);
 				LogManager.log.warning("[AutoBone] Target height loaded from skeleton (Make sure you reset before running!): " + targetHeight);
 			} else {
 				float hmdHeight = getMaxHmdHeight(frames);
@@ -294,8 +307,9 @@ public class AutoBone {
 					skeleton2.updatePose();
 					
 					float totalLength = getLengthSum(configs);
-					float curHeight = getHeight(configs, staticConfigs);
-					float errorDeriv = getErrorDeriv(frames, frameCursor, frameCursor2, skeleton1, skeleton2, targetHeight - curHeight);
+					float curHeight = sumSelectConfigs(heightConfigs, configs, staticConfigs);
+					float scaleLength = sumSelectConfigs(lengthConfigs, configs, staticConfigs);
+					float errorDeriv = getErrorDeriv(frames, frameCursor, frameCursor2, skeleton1, skeleton2, targetHeight - curHeight, totalLengthBase / scaleLength);
 					float error = errorFunc(errorDeriv);
 					
 					// In case of fire
@@ -333,6 +347,7 @@ public class AutoBone {
 						
 						// Try positive and negative adjustments
 						boolean isHeightVar = heightConfigs.contains(entry.getKey());
+						boolean isLengthVar = lengthConfigs.contains(entry.getKey());
 						float minError = errorDeriv;
 						float finalNewLength = -1f;
 						for(int i = 0; i < 2; i++) {
@@ -348,7 +363,8 @@ public class AutoBone {
 							updateSkeletonBoneLength(skeleton1, skeleton2, entry.getKey(), newLength);
 							
 							float newHeight = isHeightVar ? curHeight + curAdjustVal : curHeight;
-							float newErrorDeriv = getErrorDeriv(frames, frameCursor, frameCursor2, skeleton1, skeleton2, targetHeight - newHeight);
+							float newScaleLength = isLengthVar ? scaleLength + curAdjustVal : scaleLength;
+							float newErrorDeriv = getErrorDeriv(frames, frameCursor, frameCursor2, skeleton1, skeleton2, targetHeight - newHeight, totalLengthBase / newScaleLength);
 							
 							if(newErrorDeriv < minError) {
 								minError = newErrorDeriv;
@@ -375,7 +391,7 @@ public class AutoBone {
 			}
 		}
 		
-		float finalHeight = getHeight(configs, staticConfigs);
+		float finalHeight = sumSelectConfigs(heightConfigs, configs, staticConfigs);
 		LogManager.log.info("[AutoBone] Target height: " + targetHeight + " New height: " + finalHeight);
 		
 		return FastMath.abs(finalHeight - targetHeight);
@@ -495,17 +511,17 @@ public class AutoBone {
 		return offsetCount > 0 ? offset / offsetCount : 0f;
 	}
 	
-	protected float getErrorDeriv(PoseFrames frames, int cursor1, int cursor2, PoseFrameSkeleton skeleton1, PoseFrameSkeleton skeleton2, float heightChange) {
+	protected float getErrorDeriv(PoseFrames frames, int cursor1, int cursor2, PoseFrameSkeleton skeleton1, PoseFrameSkeleton skeleton2, float heightChange, float distScale) {
 		float totalError = 0f;
 		float sumWeight = 0f;
 		
 		if(slideErrorFactor > 0f) {
-			totalError += getSlideErrorDeriv(skeleton1, skeleton2) * slideErrorFactor;
+			totalError += getSlideErrorDeriv(skeleton1, skeleton2) * distScale * slideErrorFactor;
 			sumWeight += slideErrorFactor;
 		}
 		
 		if(offsetErrorFactor > 0f) {
-			totalError += getOffsetErrorDeriv(skeleton1, skeleton2) * offsetErrorFactor;
+			totalError += getOffsetErrorDeriv(skeleton1, skeleton2) * distScale * offsetErrorFactor;
 			sumWeight += offsetErrorFactor;
 		}
 		
@@ -521,12 +537,12 @@ public class AutoBone {
 		}
 		
 		if(positionErrorFactor > 0f) {
-			totalError += (getPositionErrorDeriv(frames, cursor1, skeleton1) + getPositionErrorDeriv(frames, cursor2, skeleton2) / 2f) * positionErrorFactor;
+			totalError += (getPositionErrorDeriv(frames, cursor1, skeleton1) + getPositionErrorDeriv(frames, cursor2, skeleton2) / 2f) * distScale * positionErrorFactor;
 			sumWeight += positionErrorFactor;
 		}
 		
 		if(positionOffsetErrorFactor > 0f) {
-			totalError += getPositionOffsetErrorDeriv(frames, cursor1, cursor2, skeleton1, skeleton2) * positionOffsetErrorFactor;
+			totalError += getPositionOffsetErrorDeriv(frames, cursor1, cursor2, skeleton1, skeleton2) * distScale * positionOffsetErrorFactor;
 			sumWeight += positionOffsetErrorFactor;
 		}
 		
