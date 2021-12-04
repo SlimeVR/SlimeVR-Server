@@ -283,6 +283,7 @@ public class TrackersUDPServer extends Thread {
 						tracker = connection.sensors.get(0);
 						bb.getLong();
 						tracker.setBatteryVoltage(bb.getFloat());
+						tracker.setBatteryPercentage(bb.getFloat());
 						break;
 					case 13: // PACKET_TAP
 						if(connection == null)
