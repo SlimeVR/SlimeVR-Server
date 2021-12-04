@@ -234,8 +234,8 @@ public class TrackersList extends EJBoxNoStretch {
 			add(new JLabel("Status:"), c(0, row, 2, GridBagConstraints.FIRST_LINE_START));
 			add(status = new JLabel(t.getStatus().toString().toLowerCase()), c(1, row, 2, GridBagConstraints.FIRST_LINE_START));
 			if(realTracker instanceof TrackerWithBattery) {
-				add(new JLabel("Battery%:"), c(2, row, 2, GridBagConstraints.FIRST_LINE_START));
-				add(batlvl = new JLabel("0"), c(3, row, 2, GridBagConstraints.FIRST_LINE_START));
+				add(new JLabel("Battery:"), c(2, row, 2, GridBagConstraints.FIRST_LINE_START));
+				add(batlvl = new JLabel("0%"), c(3, row, 2, GridBagConstraints.FIRST_LINE_START));
 				add(new JLabel("Voltage:"), c(2, row, 3, GridBagConstraints.FIRST_LINE_START));
 				add(bat = new JLabel("0"), c(3, row, 3, GridBagConstraints.FIRST_LINE_START));
 			}
@@ -300,7 +300,7 @@ public class TrackersList extends EJBoxNoStretch {
 			}
 			if(realTracker instanceof TrackerWithBattery) {
 				bat.setText(StringUtils.prettyNumber(((TrackerWithBattery) realTracker).getBatteryVoltage(), 1));
-				batlvl.setText(StringUtils.prettyNumber(((TrackerWithBattery) realTracker).getBatteryLevel() * 100, 0));
+				batlvl.setText(StringUtils.prettyNumber(((TrackerWithBattery) realTracker).getBatteryLevel() * 100, 0) + "%");
 			}
 			if(t instanceof ReferenceAdjustedTracker) {
 				((ReferenceAdjustedTracker<Tracker>) t).attachmentFix.toAngles(angles);
