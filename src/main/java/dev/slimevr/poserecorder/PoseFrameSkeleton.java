@@ -1,0 +1,71 @@
+package dev.slimevr.poserecorder;
+
+import java.util.List;
+import java.util.Map;
+
+import dev.slimevr.vr.processor.SimpleSkeleton;
+import io.eiren.vr.VRServer;
+import io.eiren.vr.processor.ComputedHumanPoseTracker;
+import io.eiren.vr.trackers.Tracker;
+
+public class PoseFrameSkeleton extends SimpleSkeleton {
+
+	private int frameCursor = 0;
+
+	protected PoseFrameSkeleton(List<? extends ComputedHumanPoseTracker> computedTrackers) {
+		super(computedTrackers);
+	}
+
+	public PoseFrameSkeleton(VRServer server, List<? extends ComputedHumanPoseTracker> computedTrackers) {
+		super(server, computedTrackers);
+	}
+	
+	public PoseFrameSkeleton(List<? extends Tracker> trackers, List<? extends ComputedHumanPoseTracker> computedTrackers) {
+		super(trackers, computedTrackers);
+	}
+
+	public PoseFrameSkeleton(List<? extends Tracker> trackers, List<? extends ComputedHumanPoseTracker> computedTrackers, Map<String, Float> configs, Map<String, Float> altConfigs) {
+		super(trackers, computedTrackers, configs, altConfigs);
+	}
+	
+	public PoseFrameSkeleton(List<? extends Tracker> trackers, List<? extends ComputedHumanPoseTracker> computedTrackers, Map<String, Float> configs) {
+		super(trackers, computedTrackers, configs);
+	}
+
+	private int limitCursor() {
+		if(frameCursor < 0) {
+			frameCursor = 0;
+		}
+		
+		return frameCursor;
+	}
+	
+	public int setCursor(int index) {
+		frameCursor = index;
+		return limitCursor();
+	}
+	
+	public int incrementCursor(int increment) {
+		frameCursor += increment;
+		return limitCursor();
+	}
+	
+	public int incrementCursor() {
+		return incrementCursor(1);
+	}
+	
+	public int getCursor() {
+		return frameCursor;
+	}
+
+	// Get tracker for specific frame
+	@Override
+	protected Tracker trackerPreUpdate(Tracker tracker) {
+		if (tracker instanceof PoseFrameTracker) {
+			// Return frame if available, otherwise return the original tracker
+			TrackerFrame frame = ((PoseFrameTracker)tracker).safeGetFrame(frameCursor);
+			return frame == null ? tracker : frame;
+		}
+		return tracker;
+	}
+}
