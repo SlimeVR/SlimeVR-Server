@@ -53,7 +53,8 @@ public class AutoBone {
 	public float initialAdjustRate = 2.5f;
 	public float adjustRateDecay = 1.01f;
 	
-	public float slideErrorFactor = 1.0f;
+	public float slideErrorFactor = 0.0f;
+	public float offsetSlideErrorFactor = 1.0f;
 	public float offsetErrorFactor = 0.0f;
 	public float proportionErrorFactor = 0.2f;
 	public float heightErrorFactor = 0.1f;
@@ -405,23 +406,50 @@ public class AutoBone {
 		// Divide by 4 to halve and average, it's halved because you want to approach a midpoint, not the other point
 		return (slideLeft + slideRight) / 4f;
 	}
+
+	// The change in distance between both of the ankles over time
+	protected float getOffsetSlideErrorDeriv(PoseFrameSkeleton skeleton1, PoseFrameSkeleton skeleton2) {
+		Vector3f leftFoot1 = skeleton1.getComputedTracker(TrackerRole.LEFT_FOOT).position;
+		Vector3f rightFoot1 = skeleton1.getComputedTracker(TrackerRole.RIGHT_FOOT).position;
+
+		Vector3f leftFoot2 = skeleton2.getComputedTracker(TrackerRole.LEFT_FOOT).position;
+		Vector3f rightFoot2 = skeleton2.getComputedTracker(TrackerRole.RIGHT_FOOT).position;
+
+		float slideDist1 = leftFoot1.distance(rightFoot1);
+		float slideDist2 = leftFoot2.distance(rightFoot2);
+
+		float slideDist3 = leftFoot1.distance(rightFoot2);
+		float slideDist4 = leftFoot2.distance(rightFoot1);
+
+		float dist1 = FastMath.abs(slideDist1 - slideDist2);
+		float dist2 = FastMath.abs(slideDist3 - slideDist4);
+		
+		float dist3 = FastMath.abs(slideDist1 - slideDist3);
+		float dist4 = FastMath.abs(slideDist1 - slideDist4);
+		
+		float dist5 = FastMath.abs(slideDist2 - slideDist3);
+		float dist6 = FastMath.abs(slideDist2 - slideDist4);
+		
+		// Divide by 12 to halve and average, it's halved because you want to approach a midpoint, not the other point
+		return (dist1 + dist2 + dist3 + dist4 + dist5 + dist6) / 12f;
+	}
 	
 	// The offset between both feet at one instant and over time
 	protected float getOffsetErrorDeriv(PoseFrameSkeleton skeleton1, PoseFrameSkeleton skeleton2) {
-		float skeleton1Left = skeleton1.getComputedTracker(TrackerRole.LEFT_FOOT).position.getY();
-		float skeleton1Right = skeleton1.getComputedTracker(TrackerRole.RIGHT_FOOT).position.getY();
+		float leftFoot1 = skeleton1.getComputedTracker(TrackerRole.LEFT_FOOT).position.getY();
+		float rightFoot1 = skeleton1.getComputedTracker(TrackerRole.RIGHT_FOOT).position.getY();
+
+		float leftFoot2 = skeleton2.getComputedTracker(TrackerRole.LEFT_FOOT).position.getY();
+		float rightFoot2 = skeleton2.getComputedTracker(TrackerRole.RIGHT_FOOT).position.getY();
 		
-		float skeleton2Left = skeleton2.getComputedTracker(TrackerRole.LEFT_FOOT).position.getY();
-		float skeleton2Right = skeleton2.getComputedTracker(TrackerRole.RIGHT_FOOT).position.getY();
+		float dist1 = FastMath.abs(leftFoot1 - rightFoot1);
+		float dist2 = FastMath.abs(leftFoot2 - rightFoot2);
 		
-		float dist1 = FastMath.abs(skeleton1Left - skeleton1Right);
-		float dist2 = FastMath.abs(skeleton2Left - skeleton2Right);
+		float dist3 = FastMath.abs(leftFoot1 - rightFoot2);
+		float dist4 = FastMath.abs(leftFoot2 - rightFoot1);
 		
-		float dist3 = FastMath.abs(skeleton1Left - skeleton2Right);
-		float dist4 = FastMath.abs(skeleton2Left - skeleton1Right);
-		
-		float dist5 = FastMath.abs(skeleton1Left - skeleton2Left);
-		float dist6 = FastMath.abs(skeleton1Right - skeleton2Right);
+		float dist5 = FastMath.abs(leftFoot1 - leftFoot2);
+		float dist6 = FastMath.abs(rightFoot1 - rightFoot2);
 		
 		// Divide by 12 to halve and average, it's halved because you want to approach a midpoint, not the other point
 		return (dist1 + dist2 + dist3 + dist4 + dist5 + dist6) / 12f;
@@ -518,6 +546,11 @@ public class AutoBone {
 		if(slideErrorFactor > 0f) {
 			totalError += getSlideErrorDeriv(skeleton1, skeleton2) * distScale * slideErrorFactor;
 			sumWeight += slideErrorFactor;
+		}
+
+		if(offsetSlideErrorFactor > 0f) {
+			totalError += getOffsetSlideErrorDeriv(skeleton1, skeleton2) * distScale * offsetSlideErrorFactor;
+			sumWeight += offsetSlideErrorFactor;
 		}
 		
 		if(offsetErrorFactor > 0f) {
