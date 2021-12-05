@@ -60,12 +60,16 @@ public class BodyTabController {
 	private void openAutoConfiguration() {
 		FXMLLoader fxmlLoader = new FXMLLoader(getResource("/dialogs/autoConfigurationDialog.fxml"));
 		Stage stage = new Stage();
-		AutoConfigurationDialog autoConfigurationDialog = new AutoConfigurationDialog(stage);
+		//AutoConfigurationDialog autoConfigurationDialog = new AutoConfigurationDialog(server,stage);
+		//fxmlLoader.setController(autoConfigurationDialog);
 		// fxmlLoader.setController(autoConfigurationDialog);
 		fxmlLoader.setResources(ResourceBundle.getBundle("localization_files/LangBundle", new Locale("en", "EN")));
 		Scene scene = null;
 		try {
+
 			scene = new Scene(fxmlLoader.load());
+			AutoConfigurationDialog controller = fxmlLoader.getController();
+			controller.init(server,stage);
 			stage.setScene(scene);
 			stage.setTitle("Skeleton Auto-Configuration");
 			stage.setResizable(false);

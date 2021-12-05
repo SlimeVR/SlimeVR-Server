@@ -38,7 +38,6 @@
 <?import javafx.scene.layout.BorderPane?>
 <?import javafx.scene.layout.ColumnConstraints?>
 <?import javafx.scene.layout.GridPane?>
-<?import javafx.scene.layout.Pane?>
 <?import javafx.scene.layout.RowConstraints?>
 <?import javafx.scene.layout.VBox?>
 
@@ -57,26 +56,26 @@
                 <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
               </rowConstraints>
                <children>
-                  <Button fx:id="startRecordingButton" mnemonicParsing="false" text="%ui.autobone.window.button.start_recording" />
-                  <Button fx:id="saveRecordingButton" mnemonicParsing="false" text="%ui.autobone.window.button.save_recording" GridPane.columnIndex="1" />
-                  <Button fx:id="adjustButton" mnemonicParsing="false" text="%ui.autobone.window.button.auto_adjust" GridPane.columnIndex="2" />
-                  <Button mnemonicParsing="false" text="%ui.autobone.window.button.apply_values" GridPane.columnIndex="3" />
+                  <Button fx:id="startRecordingButton" mnemonicParsing="false" onAction="#startRecordingButtonClicked" text="%ui.autobone.window.button.start_recording" />
+                  <Button fx:id="saveRecordingButton" mnemonicParsing="false" onAction="#saveRecordingButtonClicked" text="%ui.autobone.window.button.save_recording" GridPane.columnIndex="1" />
+                  <Button fx:id="adjustButton" mnemonicParsing="false" onAction="#autoAdjustButtonClicked" text="%ui.autobone.window.button.auto_adjust" GridPane.columnIndex="2" />
+                  <Button fx:id="applyButton" mnemonicParsing="false" onAction="#applyValuesButtonClicked" text="%ui.autobone.window.button.apply_values" GridPane.columnIndex="3" />
                </children>
             </GridPane>
          </top>
          <center>
             <VBox BorderPane.alignment="CENTER">
                <children>
-                  <Pane>
+                  <AnchorPane>
                      <children>
-                        <Label fx:id="processLabel" alignment="CENTER" text="Label" />
+                        <Label fx:id="processLabel" alignment="CENTER" text="%ui.autobone.window.label.process_label.init_text" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0" />
                      </children>
-                  </Pane>
-                  <Pane>
+                  </AnchorPane>
+                  <AnchorPane>
                      <children>
-                        <Label fx:id="lengthsLabel" text="Label" />
+                        <Label fx:id="lengthsLabel" alignment="CENTER"  AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0" />
                      </children>
-                  </Pane>
+                  </AnchorPane>
                </children>
             </VBox>
          </center>
