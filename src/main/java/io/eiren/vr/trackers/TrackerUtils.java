@@ -8,6 +8,8 @@ public class TrackerUtils {
 	}
 
 	public static <T extends Tracker> T findTrackerForBodyPosition(T[] allTrackers, TrackerPosition position) {
+		if(position == null)
+			return null;
 		for(int i = 0; i < allTrackers.length; ++i) {
 			T t = allTrackers[i];
 			if(t != null && t.getBodyPosition() == position)
@@ -17,6 +19,8 @@ public class TrackerUtils {
 	}
 
 	public static <T extends Tracker> T findTrackerForBodyPosition(List<T> allTrackers, TrackerPosition position) {
+		if(position == null)
+			return null;
 		for(int i = 0; i < allTrackers.size(); ++i) {
 			T t = allTrackers.get(i);
 			if(t != null && t.getBodyPosition() == position)

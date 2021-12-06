@@ -1,4 +1,4 @@
-package dev.slimevr.gui.items;
+package dev.slimevr.gui.items.skeleton;
 
 import com.jme3.math.FastMath;
 import com.jme3.math.Quaternion;
@@ -9,6 +9,7 @@ import io.eiren.vr.processor.TransformNode;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
+import javafx.scene.control.Label;
 import javafx.scene.layout.HBox;
 import javafx.scene.text.Text;
 
@@ -30,25 +31,25 @@ public class SkeletonDataItemView extends HBox  implements Initializable{
 
 
 	@FXML
-	private Text itemJointName;
+	private Label itemJointName;
 
 	@FXML
-	private Text itemPitch;
+	private Label itemPitch;
 
 	@FXML
-	private Text itemRoll;
+	private Label itemRoll;
 
 	@FXML
-	private Text itemXcoord;
+	private Label itemXcoord;
 
 	@FXML
-	private Text itemYaw;
+	private Label itemYaw;
 
 	@FXML
-	private Text itemYcoord;
+	private Label itemYcoord;
 
 	@FXML
-	private Text itemZcoord;
+	private Label itemZcoord;
 
 	private final VRServer server;
 	private ResourceBundle bundle;
@@ -59,7 +60,7 @@ public class SkeletonDataItemView extends HBox  implements Initializable{
 		this.server = server;
 		this.node = node;
 
-		FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("/cells/skeletonDataItemView.fxml"));
+		FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("/cells/skeleton/skeletonDataItemView.fxml"));
 		fxmlLoader.setResources(ResourceBundle.getBundle("localization_files/LangBundle", new Locale("en", "EN")));
 		fxmlLoader.setRoot(this);
 		fxmlLoader.setController(this);

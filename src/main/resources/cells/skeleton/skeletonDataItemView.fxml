@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.layout.HBox?>
+
+<fx:root type="javafx.scene.layout.HBox" xmlns="http://javafx.com/javafx/17" xmlns:fx="http://javafx.com/fxml/1">
+   <children>
+      <Label id="jointName" fx:id="itemJointName" text="Joint">
+         <HBox.margin>
+            <Insets right="10.0" />
+         </HBox.margin></Label>
+      <Label id="xCoord" fx:id="itemXcoord" layoutX="10.0" layoutY="23.0" text="X">
+         <HBox.margin>
+            <Insets right="5.0" />
+         </HBox.margin></Label>
+      <Label id="Ycoord" fx:id="itemYcoord" layoutX="36.0" layoutY="23.0" text="Y">
+         <HBox.margin>
+            <Insets right="5.0" />
+         </HBox.margin></Label>
+      <Label id="zCoord" fx:id="itemZcoord" layoutX="62.0" layoutY="23.0" text="Z">
+         <HBox.margin>
+            <Insets right="5.0" />
+         </HBox.margin></Label>
+      <Label id="pitch" fx:id="itemPitch" layoutX="88.0" layoutY="23.0" text="Pitch">
+         <HBox.margin>
+            <Insets left="5.0" right="5.0" />
+         </HBox.margin></Label>
+      <Label id="yaw" fx:id="itemYaw" layoutX="114.0" layoutY="23.0" text="Yaw">
+         <HBox.margin>
+            <Insets right="5.0" />
+         </HBox.margin></Label>
+      <Label id="roll" fx:id="itemRoll" layoutX="140.0" layoutY="23.0" text="Roll">
+         <HBox.margin>
+            <Insets right="5.0" />
+         </HBox.margin></Label>
+   </children>
+</fx:root>

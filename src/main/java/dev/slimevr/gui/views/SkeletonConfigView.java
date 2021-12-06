@@ -1,14 +1,12 @@
 package dev.slimevr.gui.views;
 
-import dev.slimevr.gui.items.SkeletonConfigItemView;
+import dev.slimevr.gui.items.skeleton.SkeletonConfigItemView;
 import io.eiren.util.logging.LogManager;
 import io.eiren.vr.VRServer;
 import io.eiren.vr.processor.HumanSkeleton;
-import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
 import javafx.scene.layout.VBox;
 
-import java.io.IOException;
 import java.net.URL;
 import java.util.*;
 
@@ -39,8 +37,6 @@ public class SkeletonConfigView extends VBox implements Initializable {
 	}
 
 
-
-
 	private void populateSkeletonItems() {
 		SkeletonConfigItemView.SkeletonConfigItemListener skeletonConfigItemListener = subscribeToSkeletonItems();
 
@@ -59,6 +55,12 @@ public class SkeletonConfigView extends VBox implements Initializable {
 		this.getChildren().add(skeletonConfigItemView);
 	}
 
+
+	public void refreshAll() {
+		configItems.forEach((joint, skeletonConfigItemView) ->
+				skeletonConfigItemView.refreshJoint(server.humanPoseProcessor.getSkeletonConfig(joint))
+				);
+	}
 
 	public void skeletonUpdated(HumanSkeleton newSkeleton) {
 

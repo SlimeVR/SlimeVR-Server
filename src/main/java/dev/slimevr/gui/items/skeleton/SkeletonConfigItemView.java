@@ -1,4 +1,4 @@
-package dev.slimevr.gui.items;
+package dev.slimevr.gui.items.skeleton;
 
 import io.eiren.util.StringUtils;
 import io.eiren.util.logging.LogManager;
@@ -9,6 +9,7 @@ import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
 import javafx.scene.control.Button;
+import javafx.scene.control.Label;
 import javafx.scene.layout.HBox;
 import javafx.scene.text.Text;
 
@@ -33,10 +34,10 @@ public class SkeletonConfigItemView extends HBox  implements Initializable{
 	private Button itemResetButton;
 
 	@FXML
-	private Text itemValue;
+	private Label itemValue;
 
 	@FXML
-	private Text itemTitle;
+	private Label itemTitle;
 
 	private String joint;
 	private float value;
@@ -52,7 +53,7 @@ public class SkeletonConfigItemView extends HBox  implements Initializable{
 		this.joint = joint;
 		this.value = server.humanPoseProcessor.getSkeletonConfig(joint);
 
-		FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("/cells/skeletonConfigItemView.fxml"));
+		FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("/cells/skeleton/skeletonConfigItemView.fxml"));
 		fxmlLoader.setResources(ResourceBundle.getBundle("localization_files/LangBundle", new Locale("en", "EN")));
 		fxmlLoader.setRoot(this);
 		fxmlLoader.setController(this);
