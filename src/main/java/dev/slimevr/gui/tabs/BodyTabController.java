@@ -29,6 +29,8 @@ public class BodyTabController {
 	VBox skeletonData;
 
 	private VRServer server;
+	SkeletonConfigView skeletonConfigView;
+	SkeletonDataListView skeletonDataListView;
 
 	public BodyTabController() {
 		this.server = Main.vrServer;
@@ -43,12 +45,12 @@ public class BodyTabController {
 
 
 	private void initSkeletonConfigList() {
-		SkeletonConfigView skeletonConfigView = new SkeletonConfigView(server);
+		skeletonConfigView = new SkeletonConfigView(server);
 		bodyItems.getChildren().add(skeletonConfigView);
 	}
 
 	private void initSkeletonDataList() {
-		SkeletonDataListView skeletonDataListView = new SkeletonDataListView(server);
+		skeletonDataListView = new SkeletonDataListView(server);
 		skeletonData.getChildren().add(skeletonDataListView);
 	}
 
@@ -69,7 +71,7 @@ public class BodyTabController {
 
 			scene = new Scene(fxmlLoader.load());
 			AutoConfigurationDialog controller = fxmlLoader.getController();
-			controller.init(server,stage);
+			controller.init(server, stage, this::updateSkeletonConfig);
 			stage.setScene(scene);
 			stage.setTitle("Skeleton Auto-Configuration");
 			stage.setResizable(false);
@@ -88,6 +90,11 @@ public class BodyTabController {
 		stage.setResizable(false);
 		stage.centerOnScreen();
 		stage.show();*/
+
+	}
+
+	private void updateSkeletonConfig() {
+		skeletonConfigView.refreshAll();
 
 	}
 

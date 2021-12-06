@@ -37,8 +37,6 @@ public class SkeletonConfigView extends VBox implements Initializable {
 	}
 
 
-
-
 	private void populateSkeletonItems() {
 		SkeletonConfigItemView.SkeletonConfigItemListener skeletonConfigItemListener = subscribeToSkeletonItems();
 
@@ -57,6 +55,12 @@ public class SkeletonConfigView extends VBox implements Initializable {
 		this.getChildren().add(skeletonConfigItemView);
 	}
 
+
+	public void refreshAll() {
+		configItems.forEach((joint, skeletonConfigItemView) ->
+				skeletonConfigItemView.refreshJoint(server.humanPoseProcessor.getSkeletonConfig(joint))
+				);
+	}
 
 	public void skeletonUpdated(HumanSkeleton newSkeleton) {
 

@@ -1,7 +1,7 @@
 package dev.slimevr.gui.dialogs;
 
 import dev.slimevr.autobone.AutoBone;
-import dev.slimevr.gui.SkeletonConfig;
+import dev.slimevr.gui.views.SkeletonConfigView;
 import dev.slimevr.poserecorder.PoseFrameIO;
 import dev.slimevr.poserecorder.PoseFrames;
 import dev.slimevr.poserecorder.PoseRecorder;
@@ -36,6 +36,7 @@ public class AutoConfigurationDialog  extends AnchorPane implements Initializabl
 	private VRServer server;
 	private PoseRecorder poseRecorder;
 	private AutoBone autoBone;
+	private AutoConfigurationListener autoConfigurationListener;
 
 	private transient Thread recordingThread = null;
 	private transient Thread saveRecordingThread = null;
@@ -68,12 +69,13 @@ public class AutoConfigurationDialog  extends AnchorPane implements Initializabl
 		this.autoBone = new AutoBone(server);
 	}
 
-	public void init(VRServer server, Stage stage)
+	public void init(VRServer server, Stage stage, AutoConfigurationListener autoConfigurationListener)
 	{
 		this.server = server;
 		//this.skeletonConfig = skeletonConfig;
 		this.poseRecorder = new PoseRecorder(server);
 		this.autoBone = new AutoBone(server);
+		this.autoConfigurationListener = autoConfigurationListener;
 		initUi();
 	}
 
@@ -316,6 +318,7 @@ public class AutoConfigurationDialog  extends AnchorPane implements Initializabl
 			return;
 		}
 		autoBone.applyConfig();
+		autoConfigurationListener.onConfigurationChanged();
 	}
 
 	@Override
@@ -419,6 +422,11 @@ public class AutoConfigurationDialog  extends AnchorPane implements Initializabl
 		});
 	}
 
+
+	public interface AutoConfigurationListener
+	{
+		void onConfigurationChanged();
+	}
 
 
 }
