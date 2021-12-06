@@ -1,31 +1,24 @@
 package dev.slimevr.gui.tabs;
 
 import com.dustinredmond.fxtrayicon.FXTrayIcon;
-import com.jme3.math.FastMath;
-import com.jme3.math.Quaternion;
-import com.jme3.math.Vector3f;
-import dev.slimevr.gui.AutoBoneWindow;
-import dev.slimevr.gui.BodyProportion;
+import dev.slimevr.gui.dialogs.AutoConfigurationDialog;
+import dev.slimevr.gui.dialogs.WifiTrackerConfigurationDialog;
 import dev.slimevr.gui.views.TrackersListPane;
-import io.eiren.util.StringUtils;
-import io.eiren.util.ann.ThreadSafe;
-import io.eiren.util.collections.FastList;
 import io.eiren.util.logging.LogManager;
 import io.eiren.vr.Main;
 import io.eiren.vr.VRServer;
-import io.eiren.vr.processor.HumanSkeleton;
-import io.eiren.vr.processor.TransformNode;
+import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
-import javafx.scene.control.ChoiceBox;
+import javafx.fxml.FXMLLoader;
+import javafx.scene.Scene;
 import javafx.scene.control.ComboBox;
-import javafx.scene.layout.Pane;
-import javafx.scene.layout.VBox;
-import javafx.scene.text.Text;
-import javafx.scene.text.TextAlignment;
-import javafx.scene.text.TextFlow;
 import javafx.stage.Stage;
 
-import java.util.List;
+import java.io.IOException;
+import java.util.Locale;
+import java.util.ResourceBundle;
+
+import static com.sun.javafx.scene.control.skin.Utils.getResource;
 
 public class MainTabController {
 
@@ -103,6 +96,31 @@ public class MainTabController {
 
 	}
 
+
+
+	@FXML
+	void wifiClicked(ActionEvent event) {
+		openWifiDialog();
+	}
+
+	private void openWifiDialog() {
+		FXMLLoader fxmlLoader = new FXMLLoader(getResource("/dialogs/trackerConfigurationDialog.fxml"));
+		Stage stage = new Stage();
+		fxmlLoader.setResources(ResourceBundle.getBundle("localization_files/LangBundle", new Locale("en", "EN")));
+		Scene scene = null;
+		try {
+			scene = new Scene(fxmlLoader.load());
+			WifiTrackerConfigurationDialog controller = fxmlLoader.getController();
+			controller.init(server,stage);
+			stage.setScene(scene);
+			stage.setTitle("WiFi Settings");
+			stage.setResizable(false);
+			stage.centerOnScreen();
+			stage.show();
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+	}
 
 	public void steamVRTrackersSetup() {
 		/*steamVRComboBox.getItems().addAll("Waist", "Waist + Legs", "Waist + Legs + Chest", "Waist + Legs + Knees", "Waist + Legs + Chest + Knees");

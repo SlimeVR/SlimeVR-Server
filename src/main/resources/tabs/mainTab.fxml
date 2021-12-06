@@ -35,7 +35,7 @@
                </children>
             </AnchorPane>
             <Button mnemonicParsing="false" text="Button" GridPane.columnIndex="1" GridPane.rowIndex="2" />
-            <Button mnemonicParsing="false" text="Button" GridPane.columnIndex="1" GridPane.rowIndex="3" />
+            <Button fx:id="wifiButton" mnemonicParsing="false" onAction="#wifiClicked" text="wifi" GridPane.columnIndex="1" GridPane.rowIndex="3" />
             <Pane GridPane.columnIndex="1">
                <children>
                   <VBox prefHeight="200.0" prefWidth="100.0">
