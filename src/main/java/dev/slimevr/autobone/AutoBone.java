@@ -53,16 +53,17 @@ public class AutoBone {
 	public float initialAdjustRate = 2.5f;
 	public float adjustRateDecay = 1.01f;
 	
-	public float slideErrorFactor = 0.0f;
-	public float offsetSlideErrorFactor = 1.0f;
+	public float slideErrorFactor = 1.0f;
+	public float offsetSlideErrorFactor = 0.0f;
 	public float offsetErrorFactor = 0.0f;
 	public float proportionErrorFactor = 0.2f;
 	public float heightErrorFactor = 0.1f;
 	public float positionErrorFactor = 0.0f;
 	public float positionOffsetErrorFactor = 0.0f;
 	
+	// TODO Needs much more work, probably going to rethink how the errors work to avoid this barely functional workaround -Butterscotch
 	// For scaling distances, since smaller sizes will cause smaller distances
-	private float totalLengthBase = 2f;
+	//private float totalLengthBase = 2f;
 
 	// Human average is probably 1.1235 (SD 0.07)
 	public float legBodyRatio = 1.1235f;
@@ -82,7 +83,7 @@ public class AutoBone {
 	public final HashMap<String, Float> staticConfigs = new HashMap<String, Float>();
 	
 	public final FastList<String> heightConfigs = new FastList<String>(new String[]{"Neck", "Torso", "Legs length"});
-	public final FastList<String> lengthConfigs = new FastList<String>(new String[]{"Head", "Neck", "Torso", "Hips width", "Legs length"});
+	//public final FastList<String> lengthConfigs = new FastList<String>(new String[]{"Head", "Neck", "Torso", "Hips width", "Legs length"});
 	
 	public AutoBone(VRServer server) {
 		this.server = server;
@@ -309,8 +310,8 @@ public class AutoBone {
 					
 					float totalLength = getLengthSum(configs);
 					float curHeight = sumSelectConfigs(heightConfigs, configs, staticConfigs);
-					float scaleLength = sumSelectConfigs(lengthConfigs, configs, staticConfigs);
-					float errorDeriv = getErrorDeriv(frames, frameCursor, frameCursor2, skeleton1, skeleton2, targetHeight - curHeight, totalLengthBase / scaleLength);
+					//float scaleLength = sumSelectConfigs(lengthConfigs, configs, staticConfigs);
+					float errorDeriv = getErrorDeriv(frames, frameCursor, frameCursor2, skeleton1, skeleton2, targetHeight - curHeight, 1f);
 					float error = errorFunc(errorDeriv);
 					
 					// In case of fire
@@ -348,7 +349,7 @@ public class AutoBone {
 						
 						// Try positive and negative adjustments
 						boolean isHeightVar = heightConfigs.contains(entry.getKey());
-						boolean isLengthVar = lengthConfigs.contains(entry.getKey());
+						//boolean isLengthVar = lengthConfigs.contains(entry.getKey());
 						float minError = errorDeriv;
 						float finalNewLength = -1f;
 						for(int i = 0; i < 2; i++) {
@@ -364,8 +365,8 @@ public class AutoBone {
 							updateSkeletonBoneLength(skeleton1, skeleton2, entry.getKey(), newLength);
 							
 							float newHeight = isHeightVar ? curHeight + curAdjustVal : curHeight;
-							float newScaleLength = isLengthVar ? scaleLength + curAdjustVal : scaleLength;
-							float newErrorDeriv = getErrorDeriv(frames, frameCursor, frameCursor2, skeleton1, skeleton2, targetHeight - newHeight, totalLengthBase / newScaleLength);
+							//float newScaleLength = isLengthVar ? scaleLength + curAdjustVal : scaleLength;
+							float newErrorDeriv = getErrorDeriv(frames, frameCursor, frameCursor2, skeleton1, skeleton2, targetHeight - newHeight, 1f);
 							
 							if(newErrorDeriv < minError) {
 								minError = newErrorDeriv;

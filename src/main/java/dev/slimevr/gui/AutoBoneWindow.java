@@ -134,6 +134,7 @@ public class AutoBoneWindow extends JFrame {
 		autoBone.adjustRateDecay = server.config.getFloat("autobone.adjustRateDecay", autoBone.adjustRateDecay);
 		
 		autoBone.slideErrorFactor = server.config.getFloat("autobone.slideErrorFactor", autoBone.slideErrorFactor);
+		autoBone.offsetSlideErrorFactor = server.config.getFloat("autobone.offsetSlideErrorFactor", autoBone.offsetSlideErrorFactor);
 		autoBone.offsetErrorFactor = server.config.getFloat("autobone.offsetErrorFactor", autoBone.offsetErrorFactor);
 		autoBone.proportionErrorFactor = server.config.getFloat("autobone.proportionErrorFactor", autoBone.proportionErrorFactor);
 		autoBone.heightErrorFactor = server.config.getFloat("autobone.heightErrorFactor", autoBone.heightErrorFactor);
