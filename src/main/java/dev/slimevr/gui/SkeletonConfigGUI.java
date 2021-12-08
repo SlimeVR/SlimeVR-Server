@@ -15,14 +15,14 @@ import io.eiren.util.ann.ThreadSafe;
 import io.eiren.vr.VRServer;
 import io.eiren.vr.processor.HumanSkeleton;
 
-public class SkeletonConfig extends EJBagNoStretch {
+public class SkeletonConfigGUI extends EJBagNoStretch {
 
 	private final VRServer server;
 	private final VRServerGUI gui;
 	private final AutoBoneWindow autoBone;
 	private Map<String, SkeletonLabel> labels = new HashMap<>();
 
-	public SkeletonConfig(VRServer server, VRServerGUI gui) {
+	public SkeletonConfigGUI(VRServer server, VRServerGUI gui) {
 		super(false, true);
 		this.server = server;
 		this.gui = gui;

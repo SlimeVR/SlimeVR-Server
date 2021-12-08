@@ -37,7 +37,7 @@ public class AutoBoneWindow extends JFrame {
 	private EJBox pane;
 	
 	private final transient VRServer server;
-	private final transient SkeletonConfig skeletonConfig;
+	private final transient SkeletonConfigGUI skeletonConfig;
 	private final transient PoseRecorder poseRecorder;
 	private final transient AutoBone autoBone;
 	
@@ -52,7 +52,7 @@ public class AutoBoneWindow extends JFrame {
 	private JLabel processLabel;
 	private JLabel lengthsLabel;
 	
-	public AutoBoneWindow(VRServer server, SkeletonConfig skeletonConfig) {
+	public AutoBoneWindow(VRServer server, SkeletonConfigGUI skeletonConfig) {
 		super("Skeleton Auto-Configuration");
 		
 		this.server = server;
