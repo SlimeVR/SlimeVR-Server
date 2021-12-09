@@ -5,6 +5,7 @@ import java.util.Map;
 
 import com.jme3.math.Vector3f;
 
+import io.eiren.util.logging.LogManager;
 import io.eiren.yaml.YamlFile;
 
 public class SkeletonConfig {
@@ -13,25 +14,62 @@ public class SkeletonConfig {
 	protected final EnumMap<SkeletonConfigToggle, Boolean> toggles = new EnumMap<SkeletonConfigToggle, Boolean>(SkeletonConfigToggle.class);
 	protected final EnumMap<SkeletonNodeOffset, Vector3f> nodeOffsets = new EnumMap<SkeletonNodeOffset, Vector3f>(SkeletonNodeOffset.class);
 
-	public SkeletonConfig() {
-		computeAllNodeOffsets();
+	protected final boolean autoUpdateOffsets;
+	protected final SkeletonConfigCallback callback;
+
+	public SkeletonConfig(boolean autoUpdateOffsets) {
+		this.autoUpdateOffsets = autoUpdateOffsets;
+		this.callback = null;
+
+		if (autoUpdateOffsets) {
+			computeAllNodeOffsets();
+		}
 	}
 
-	public SkeletonConfig(Map<SkeletonConfigValue, Float> configs, Map<SkeletonConfigToggle, Boolean> toggles) {
+	public SkeletonConfig(boolean autoUpdateOffsets, SkeletonConfigCallback callback) {
+		this.autoUpdateOffsets = autoUpdateOffsets;
+		this.callback = callback;
+		
+		if (autoUpdateOffsets) {
+			computeAllNodeOffsets();
+		}
+	}
+
+	public SkeletonConfig(Map<SkeletonConfigValue, Float> configs, Map<SkeletonConfigToggle, Boolean> toggles, boolean autoUpdateOffsets, SkeletonConfigCallback callback) {
+		this.autoUpdateOffsets = autoUpdateOffsets;
+		this.callback = callback;
 		setConfigs(configs, toggles);
 	}
 
-	public SkeletonConfig(SkeletonConfig skeletonConfig) {
+	public SkeletonConfig(Map<SkeletonConfigValue, Float> configs, Map<SkeletonConfigToggle, Boolean> toggles, boolean autoUpdateOffsets) {
+		this(configs, toggles, autoUpdateOffsets, null);
+	}
+
+	public SkeletonConfig(SkeletonConfig skeletonConfig, boolean autoUpdateOffsets, SkeletonConfigCallback callback) {
+		this.autoUpdateOffsets = autoUpdateOffsets;
+		this.callback = callback;
 		setConfigs(skeletonConfig);
+	}
+
+	public SkeletonConfig(SkeletonConfig skeletonConfig, boolean autoUpdateOffsets) {
+		this(skeletonConfig, autoUpdateOffsets, null);
 	}
 
 	public Float setConfig(SkeletonConfigValue config, float newValue) {
 		Float origVal = configs.put(config, newValue);
 
 		// Re-compute the affected offsets
-		if (config.affectedOffsets != null) {
+		if (autoUpdateOffsets && config.affectedOffsets != null) {
 			for (SkeletonNodeOffset offset : config.affectedOffsets) {
 				computeNodeOffset(offset);
+			}
+		}
+
+		if (callback != null) {
+			try {
+				callback.updateConfigState(config, newValue);
+			} catch (Exception e) {
+				LogManager.log.severe("[SkeletonConfig] Exception while calling callback", e);
 			}
 		}
 
@@ -50,29 +88,48 @@ public class SkeletonConfig {
 		return getConfig(SkeletonConfigValue.getByStringValue(config));
 	}
 
-	public Boolean setConfigToggle(SkeletonConfigToggle config, boolean newValue) {
-		return toggles.put(config, newValue);
+	public Boolean setToggle(SkeletonConfigToggle config, boolean newValue) {
+		Boolean origVal = toggles.put(config, newValue);
+
+		if (callback != null) {
+			try {
+				callback.updateToggleState(config, newValue);
+			} catch (Exception e) {
+				LogManager.log.severe("[SkeletonConfig] Exception while calling callback", e);
+			}
+		}
+
+		return origVal;
 	}
 
-	public Boolean setConfigToggle(String config, boolean newValue) {
-		return setConfigToggle(SkeletonConfigToggle.getByStringValue(config), newValue);
+	public Boolean setToggle(String config, boolean newValue) {
+		return setToggle(SkeletonConfigToggle.getByStringValue(config), newValue);
 	}
 
-	public boolean getConfigToggle(SkeletonConfigToggle config) {
+	public boolean getToggle(SkeletonConfigToggle config) {
 		return toggles.getOrDefault(config, config.defaultValue);
 	}
 
-	public boolean getConfigToggle(String config) {
-		return getConfigToggle(SkeletonConfigToggle.getByStringValue(config));
+	public boolean getToggle(String config) {
+		return getToggle(SkeletonConfigToggle.getByStringValue(config));
 	}
 
 	protected void setNodeOffset(SkeletonNodeOffset nodeOffset, float x, float y, float z) {
 		Vector3f offset = nodeOffsets.get(nodeOffset);
 
 		if (offset == null) {
-			nodeOffsets.put(nodeOffset, new Vector3f(x, y, z));
+			offset = new Vector3f(x, y, z);
+			nodeOffsets.put(nodeOffset, offset);
 		} else {
 			offset.set(x, y, z);
+		}
+
+		if (callback != null) {
+			try {
+				callback.updateNodeOffset(nodeOffset, offset);
+			} catch (Exception e) {
+				LogManager.log.severe("[SkeletonConfig] Exception while calling callback", e);
+			}
 		}
 	}
 
@@ -84,7 +141,7 @@ public class SkeletonConfig {
 		return nodeOffsets.getOrDefault(nodeOffset, Vector3f.ZERO);
 	}
 
-	protected void computeNodeOffset(SkeletonNodeOffset nodeOffset) {
+	public void computeNodeOffset(SkeletonNodeOffset nodeOffset) {
 		switch (nodeOffset) {
 		case HEAD:
 			setNodeOffset(nodeOffset, 0, 0, getConfig(SkeletonConfigValue.HEAD));
@@ -124,7 +181,7 @@ public class SkeletonConfig {
 		}
 	}
 
-	protected void computeAllNodeOffsets() {
+	public void computeAllNodeOffsets() {
 		for (SkeletonNodeOffset offset : SkeletonNodeOffset.values) {
 			computeNodeOffset(offset);
 		}
@@ -139,7 +196,27 @@ public class SkeletonConfig {
 			this.toggles.putAll(toggles);
 		}
 
-		computeAllNodeOffsets();
+		if (autoUpdateOffsets) {
+			computeAllNodeOffsets();
+		}
+	}
+
+	public void setStringConfigs(Map<String, Float> configs, Map<String, Boolean> toggles) {
+		if (configs != null) {
+			configs.forEach((key, value) -> {
+				this.configs.put(SkeletonConfigValue.getByStringValue(key), value);
+			});
+		}
+		
+		if (toggles != null) {
+			toggles.forEach((key, value) -> {
+				this.toggles.put(SkeletonConfigToggle.getByStringValue(key), value);
+			});
+		}
+
+		if (autoUpdateOffsets) {
+			computeAllNodeOffsets();
+		}
 	}
 
 	public void setConfigs(SkeletonConfig skeletonConfig) {
@@ -191,7 +268,9 @@ public class SkeletonConfig {
 			}
 		}
 
-		computeAllNodeOffsets();
+		if (autoUpdateOffsets) {
+			computeAllNodeOffsets();
+		}
 	}
 
 	public void saveToConfig(YamlFile config) {
@@ -207,6 +286,8 @@ public class SkeletonConfig {
 	public void resetConfigs() {
 		configs.clear();
 		toggles.clear();
-		computeAllNodeOffsets();
+		if (autoUpdateOffsets) {
+			computeAllNodeOffsets();
+		}
 	}
 }

@@ -14,6 +14,8 @@ import dev.slimevr.poserecorder.PoseFrameTracker;
 import dev.slimevr.poserecorder.PoseFrames;
 import dev.slimevr.poserecorder.TrackerFrame;
 import dev.slimevr.poserecorder.TrackerFrameData;
+import dev.slimevr.vr.processor.SkeletonConfig;
+import dev.slimevr.vr.processor.SkeletonConfigValue;
 import io.eiren.util.ann.ThreadSafe;
 import io.eiren.util.logging.LogManager;
 import io.eiren.util.collections.FastList;
@@ -299,8 +301,8 @@ public class AutoBone {
 				for(int frameCursor = 0; frameCursor < frameCount - cursorOffset; frameCursor += cursorIncrement) {
 					int frameCursor2 = frameCursor + cursorOffset;
 
-					skeleton1.setSkeletonConfigs(configs);
-					skeleton2.setSkeletonConfigs(configs);
+					skeleton1.skeletonConfig.setStringConfigs(configs, null);
+					skeleton2.skeletonConfig.setStringConfigs(configs, null);
 					
 					skeleton1.setCursor(frameCursor);
 					skeleton1.updatePose();
@@ -457,12 +459,12 @@ public class AutoBone {
 	}
 	
 	// The distance from average human proportions
-	protected float getProportionErrorDeriv(PoseFrameSkeleton skeleton) {
-		Float neckLength = skeleton.getSkeletonConfig("Neck");
-		Float chestLength = skeleton.getSkeletonConfig("Chest");
-		Float torsoLength = skeleton.getSkeletonConfig("Torso");
-		Float legsLength = skeleton.getSkeletonConfig("Legs length");
-		Float kneeHeight = skeleton.getSkeletonConfig("Knee height");
+	protected float getProportionErrorDeriv(SkeletonConfig skeleton) {
+		Float neckLength = skeleton.getConfig("Neck");
+		Float chestLength = skeleton.getConfig("Chest");
+		Float torsoLength = skeleton.getConfig("Torso");
+		Float legsLength = skeleton.getConfig("Legs length");
+		Float kneeHeight = skeleton.getConfig("Knee height");
 
 		float chestTorso = chestLength != null && torsoLength != null ? FastMath.abs((chestLength / torsoLength) - chestTorsoRatio) : 0f;
 		float legBody = legsLength != null && torsoLength != null && neckLength != null ? FastMath.abs((legsLength / (torsoLength + neckLength)) - legBodyRatio) : 0f;
@@ -561,7 +563,7 @@ public class AutoBone {
 		
 		if(proportionErrorFactor > 0f) {
 			// Either skeleton will work fine, skeleton1 is used as a default
-			totalError += getProportionErrorDeriv(skeleton1) * proportionErrorFactor;
+			totalError += getProportionErrorDeriv(skeleton1.skeletonConfig) * proportionErrorFactor;
 			sumWeight += proportionErrorFactor;
 		}
 		
@@ -590,7 +592,12 @@ public class AutoBone {
 	}
 	
 	protected void updateSkeletonBoneLength(PoseFrameSkeleton skeleton1, PoseFrameSkeleton skeleton2, String joint, float newLength) {
-		skeleton1.setSkeletonConfig(joint, newLength, true);
-		skeleton2.setSkeletonConfig(joint, newLength, true);
+		SkeletonConfigValue value = SkeletonConfigValue.getByStringValue(joint);
+		
+		skeleton1.skeletonConfig.setConfig(value, newLength);
+		skeleton1.updatePoseAffectedByConfig(value);
+
+		skeleton2.skeletonConfig.setConfig(value, newLength);
+		skeleton2.updatePoseAffectedByConfig(value);
 	}
 }

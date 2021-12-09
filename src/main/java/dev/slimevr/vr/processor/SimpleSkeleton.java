@@ -12,17 +12,14 @@ import io.eiren.util.collections.FastList;
 import io.eiren.vr.VRServer;
 import io.eiren.vr.processor.ComputedHumanPoseTracker;
 import io.eiren.vr.processor.ComputedHumanPoseTrackerPosition;
-import io.eiren.vr.processor.HumanSkeletonWithLegs;
-import io.eiren.vr.processor.HumanSkeletonWithWaist;
 import io.eiren.vr.processor.TransformNode;
 import io.eiren.vr.trackers.Tracker;
 import io.eiren.vr.trackers.TrackerPosition;
 import io.eiren.vr.trackers.TrackerRole;
 import io.eiren.vr.trackers.TrackerStatus;
 import io.eiren.vr.trackers.TrackerUtils;
-import io.eiren.yaml.YamlFile;
 
-public class SimpleSkeleton {
+public class SimpleSkeleton implements SkeletonConfigCallback {
 	
 	//#region Upper body nodes (torso)
 	protected final TransformNode hmdNode = new TransformNode("HMD", false);
@@ -32,33 +29,6 @@ public class SimpleSkeleton {
 	protected final TransformNode waistNode = new TransformNode("Waist", false);
 	protected final TransformNode hipNode = new TransformNode("Hip", false);
 	protected final TransformNode trackerWaistNode = new TransformNode("Waist-Tracker", false);
-	
-	/**
-	 * Distance from shoulders to chest
-	 */
-	protected float chestDistance = 0.35f;
-	/**
-	 * Distance from hip to waist
-	 */
-	protected float waistDistance = 0.1f;
-	/**
-	 * Distance from shoulder to hip
-	 */
-	protected float torsoLength = 0.7f;
-	/**
-	 * Distance from eyes to hip, defines reported
-	 * tracker position, if you want to move resulting
-	 * tracker up or down from actual hip
-	 */
-	protected float hipOffset = 0.0f;
-	/**
-	 * Distance from eyes to the base of the neck
-	 */
-	protected float neckLength = HumanSkeletonWithWaist.NECK_LENGTH_DEFAULT;
-	/**
-	 * Distance from eyes to ear
-	 */
-	protected float headShift = HumanSkeletonWithWaist.HEAD_SHIFT_DEFAULT;
 	//#endregion
 	
 	//#region Lower body nodes (legs)
@@ -71,22 +41,6 @@ public class SimpleSkeleton {
 	protected final TransformNode rightKneeNode = new TransformNode("Right-Knee", false);
 	protected final TransformNode rightAnkleNode = new TransformNode("Right-Ankle", false);
 	protected final TransformNode rightFootNode = new TransformNode("Right-Foot", false);
-	
-	/**
-	 * Distance between centers of both hips
-	 */
-	protected float hipsWidth = HumanSkeletonWithLegs.HIPS_WIDTH_DEFAULT;
-	/**
-	 * Length from hip to knees
-	 */
-	protected float kneeHeight = 0.42f;
-	/**
-	 * Distance from hip to ankle
-	 */
-	protected float legsLength = 0.84f;
-
-	protected float footLength = HumanSkeletonWithLegs.FOOT_LENGTH_DEFAULT;
-	protected float footOffset = 0f; //horizontal forward/backwards translation feet offset for avatars with bent knees
 	
 	protected float minKneePitch = 0f * FastMath.DEG_TO_RAD;
 	protected float maxKneePitch = 90f * FastMath.DEG_TO_RAD;
@@ -119,11 +73,11 @@ public class SimpleSkeleton {
 	protected ComputedHumanPoseTracker computedRightKneeTracker;
 	protected ComputedHumanPoseTracker computedRightFootTracker;
 	//#endregion
-
-	protected final HashMap<String, TransformNode> nodes = new HashMap<String, TransformNode>();
 	
 	protected boolean extendedPelvisModel = true;
 	protected boolean extendedKneeModel = false;
+
+	public final SkeletonConfig skeletonConfig;
 
 	//#region Buffers
 	private Vector3f posBuf = new Vector3f();
@@ -141,54 +95,29 @@ public class SimpleSkeleton {
 	protected SimpleSkeleton(List<? extends ComputedHumanPoseTracker> computedTrackers) {
 		//#region Assemble skeleton to hip
 		hmdNode.attachChild(headNode);
-		headNode.localTransform.setTranslation(0, 0, headShift);
-		
 		headNode.attachChild(neckNode);
-		neckNode.localTransform.setTranslation(0, -neckLength, 0);
-		
 		neckNode.attachChild(chestNode);
-		chestNode.localTransform.setTranslation(0, -chestDistance, 0);
-		
 		chestNode.attachChild(waistNode);
-		waistNode.localTransform.setTranslation(0, (chestDistance - torsoLength + waistDistance), 0);
-
 		waistNode.attachChild(hipNode);
-		hipNode.localTransform.setTranslation(0, -waistDistance, 0);
-
 		hipNode.attachChild(trackerWaistNode);
-		trackerWaistNode.localTransform.setTranslation(0, hipOffset, 0);
 		//#endregion
 		
 		//#region Assemble skeleton to feet
 		hipNode.attachChild(leftHipNode);
-		leftHipNode.localTransform.setTranslation(-hipsWidth / 2f, 0, 0);
-		
 		hipNode.attachChild(rightHipNode);
-		rightHipNode.localTransform.setTranslation(hipsWidth / 2f, 0, 0);
-		
+
 		leftHipNode.attachChild(leftKneeNode);
-		leftKneeNode.localTransform.setTranslation(0, -(legsLength - kneeHeight), 0);
-		
 		rightHipNode.attachChild(rightKneeNode);
-		rightKneeNode.localTransform.setTranslation(0, -(legsLength - kneeHeight), 0);
-		
+
 		leftKneeNode.attachChild(leftAnkleNode);
-		leftAnkleNode.localTransform.setTranslation(0, -kneeHeight, -footOffset);
-		
 		rightKneeNode.attachChild(rightAnkleNode);
-		rightAnkleNode.localTransform.setTranslation(0, -kneeHeight, -footOffset);
 
 		leftAnkleNode.attachChild(leftFootNode);
-		leftFootNode.localTransform.setTranslation(0, 0, -footLength);
-		
 		rightAnkleNode.attachChild(rightFootNode);
-		rightFootNode.localTransform.setTranslation(0, 0, -footLength);
 		//#endregion
-		
-		// Set up a HashMap to get nodes by name easily
-		hmdNode.depthFirstTraversal(visitor -> {
-			nodes.put(visitor.getName(), visitor);
-		});
+
+		// Set default skeleton configuration (callback automatically sets initial offsets)
+		skeletonConfig = new SkeletonConfig(true, this);
 
 		if (computedTrackers != null) {
 			setComputedTrackers(computedTrackers);
@@ -199,7 +128,7 @@ public class SimpleSkeleton {
 	public SimpleSkeleton(VRServer server, List<? extends ComputedHumanPoseTracker> computedTrackers) {
 		this(computedTrackers);
 		setTrackersFromServer(server);
-		loadConfigs(server.config);
+		skeletonConfig.loadFromConfig(server.config);
 	}
 	
 	public SimpleSkeleton(List<? extends Tracker> trackers, List<? extends ComputedHumanPoseTracker> computedTrackers) {
@@ -219,9 +148,9 @@ public class SimpleSkeleton {
 		// Set configs
 		if(altConfigs != null) {
 			// Set alts first, so if there's any overlap it doesn't affect the values
-			setSkeletonConfigs(altConfigs);
+			altConfigs.forEach(skeletonConfig::setConfig);
 		}
-		setSkeletonConfigs(configs);
+		configs.forEach(skeletonConfig::setConfig);
 	}
 	
 	public SimpleSkeleton(List<? extends Tracker> trackers, List<? extends ComputedHumanPoseTracker> computedTrackers, Map<String, Float> configs) {
@@ -541,186 +470,119 @@ public class SimpleSkeleton {
 	//#endregion
 	
 	//#region Skeleton Config
-	public void setSkeletonConfigs(Map<String, Float> configs) {
-		configs.forEach(this::setSkeletonConfig);
+	@Override
+	public void updateConfigState(SkeletonConfigValue config, float newValue) {
+		// Do nothing, the node offset callback handles all that's needed
 	}
-	
-	public void setSkeletonConfig(String joint, float newLength) {
-		setSkeletonConfig(joint, newLength, false);
-	}
-	
-	public void setSkeletonConfig(String joint, float newLength, boolean updatePose) {
-		switch(joint) {
-		case "Head":
-			headShift = newLength;
-			headNode.localTransform.setTranslation(0, 0, headShift);
-			if(updatePose) {
-				headNode.update();
-				updateComputedTrackers();
-			}
+
+	@Override
+	public void updateToggleState(SkeletonConfigToggle configToggle, boolean newValue) {
+		// Cache the values of these configs
+		switch (configToggle) {
+		case EXTENDED_PELVIS_MODEL:
+			extendedPelvisModel = newValue;
 			break;
-		case "Neck":
-			neckLength = newLength;
-			neckNode.localTransform.setTranslation(0, -neckLength, 0);
-			if(updatePose) {
-				neckNode.update();
-				updateComputedTrackers();
-			}
-			break;
-		case "Torso":
-			torsoLength = newLength;
-			waistNode.localTransform.setTranslation(0, (chestDistance - torsoLength + waistDistance), 0);
-			if(updatePose) {
-				hipNode.update();
-				updateComputedTrackers();
-			}
-			break;
-		case "Chest":
-			chestDistance = newLength;
-			chestNode.localTransform.setTranslation(0, -chestDistance, 0);
-			waistNode.localTransform.setTranslation(0, (chestDistance - torsoLength + waistDistance), 0);
-			if(updatePose) {
-				chestNode.update();
-				updateComputedTrackers();
-			}
-			break;
-		case "Waist":
-			waistDistance = newLength;
-			waistNode.localTransform.setTranslation(0, (chestDistance - torsoLength + waistDistance), 0);
-			hipNode.localTransform.setTranslation(0, -waistDistance, 0);
-			if(updatePose) {
-				waistNode.update();
-				updateComputedTrackers();
-			}
-			break;
-		case "Hip offset":
-			hipOffset = newLength;
-			trackerWaistNode.localTransform.setTranslation(0, hipOffset, 0);
-			if(updatePose) {
-				trackerWaistNode.update();
-				updateComputedTrackers();
-			}
-			break;
-		case "Hips width":
-			hipsWidth = newLength;
-			leftHipNode.localTransform.setTranslation(-hipsWidth / 2f, 0, 0);
-			rightHipNode.localTransform.setTranslation(hipsWidth / 2f, 0, 0);
-			if(updatePose) {
-				leftHipNode.update();
-				rightHipNode.update();
-				updateComputedTrackers();
-			}
-			break;
-		case "Knee height":
-			kneeHeight = newLength;
-			leftAnkleNode.localTransform.setTranslation(0, -kneeHeight, -footOffset);
-			rightAnkleNode.localTransform.setTranslation(0, -kneeHeight, -footOffset);
-			leftKneeNode.localTransform.setTranslation(0, -(legsLength - kneeHeight), 0);
-			rightKneeNode.localTransform.setTranslation(0, -(legsLength - kneeHeight), 0);
-			if(updatePose) {
-				leftKneeNode.update();
-				rightKneeNode.update();
-				updateComputedTrackers();
-			}
-			break;
-		case "Legs length":
-			legsLength = newLength;
-			leftKneeNode.localTransform.setTranslation(0, -(legsLength - kneeHeight), 0);
-			rightKneeNode.localTransform.setTranslation(0, -(legsLength - kneeHeight), 0);
-			if(updatePose) {
-				leftKneeNode.update();
-				rightKneeNode.update();
-				updateComputedTrackers();
-			}
-			break;
-		case "Foot length":
-			footLength = newLength;
-			leftFootNode.localTransform.setTranslation(0, 0, -footLength);
-			rightFootNode.localTransform.setTranslation(0, 0, -footLength);
-			if(updatePose) {
-				leftFootNode.update();
-				rightFootNode.update();
-				updateComputedTrackers();
-			}
-			break;
-		case "Foot offset":
-			footOffset = newLength;
-			leftAnkleNode.localTransform.setTranslation(0, -kneeHeight, -footOffset);
-			rightAnkleNode.localTransform.setTranslation(0, -kneeHeight, -footOffset);
-			if(updatePose) {
-				leftAnkleNode.update();
-				rightAnkleNode.update();
-				updateComputedTrackers();
-			}
+		case EXTENDED_KNEE_MODEL:
+			extendedKneeModel = newValue;
 			break;
 		}
 	}
-	
-	public Float getSkeletonConfig(String joint) {
-		switch(joint) {
-		case "Head":
-			return headShift;
-		case "Neck":
-			return neckLength;
-		case "Torso":
-			return torsoLength;
-		case "Waist":
-			return waistDistance;
-		case "Chest":
-			return chestDistance;
-		case "Hip offset":
-			return hipOffset;
-		case "Hips width":
-			return hipsWidth;
-		case "Knee height":
-			return kneeHeight;
-		case "Legs length":
-			return legsLength;
-		case "Foot length":
-			return footLength;
-		case "Foot offset":
-			return footOffset;
+
+	@Override
+	public void updateNodeOffset(SkeletonNodeOffset nodeOffset, Vector3f offset) {
+		switch (nodeOffset) {
+		case HEAD:
+			headNode.localTransform.setTranslation(offset);
+			break;
+		case NECK:
+			neckNode.localTransform.setTranslation(offset);
+			break;
+		case CHEST:
+			chestNode.localTransform.setTranslation(offset);
+			break;
+		case WAIST:
+			waistNode.localTransform.setTranslation(offset);
+			break;
+		case HIP:
+			hipNode.localTransform.setTranslation(offset);
+			break;
+		case HIP_TRACKER:
+			trackerWaistNode.localTransform.setTranslation(offset);
+			break;
+
+		case LEFT_HIP:
+			leftHipNode.localTransform.setTranslation(offset);
+			break;
+		case RIGHT_HIP:
+			rightHipNode.localTransform.setTranslation(offset);
+			break;
+			
+		case KNEE:
+			leftKneeNode.localTransform.setTranslation(offset);
+			rightKneeNode.localTransform.setTranslation(offset);
+			break;
+		case ANKLE:
+			leftAnkleNode.localTransform.setTranslation(offset);
+			rightAnkleNode.localTransform.setTranslation(offset);
+			break;
+		case FOOT:
+			leftFootNode.localTransform.setTranslation(offset);
+			rightFootNode.localTransform.setTranslation(offset);
+			break;
 		}
-		
-		return null;
 	}
 
-	public void loadConfigs(YamlFile config) {
-		// Save waist configs
-		headShift = config.getFloat("body.headShift", headShift);
-		neckLength = config.getFloat("body.neckLength", neckLength);
-		chestDistance = config.getFloat("body.chestDistance", chestDistance);
-		waistDistance = config.getFloat("body.waistDistance", waistDistance);
-		torsoLength = config.getFloat("body.torsoLength", torsoLength);
-		hipOffset = config.getFloat("body.hipOffset", hipOffset);
-		
-		// Save leg configs
-		hipsWidth = config.getFloat("body.hipsWidth", hipsWidth);
-		kneeHeight = config.getFloat("body.kneeHeight", kneeHeight);
-		legsLength = config.getFloat("body.legsLength", legsLength);
-		footLength = config.getFloat("body.footLength", footLength);
-		footOffset = config.getFloat("body.footOffset", footOffset);
-		//extendedPelvisModel = config.getBoolean("body.model.extendedPelvis", extendedPelvisModel);
-		extendedKneeModel = config.getBoolean("body.model.extendedKnee", extendedKneeModel);
-	}
-
-	public void saveConfigs(YamlFile config) {
-		// Save waist configs
-		config.setProperty("body.headShift", headShift);
-		config.setProperty("body.neckLength", neckLength);
-		config.setProperty("body.waistDistance", waistDistance);
-		config.setProperty("body.chestDistance", chestDistance);
-		config.setProperty("body.torsoLength", torsoLength);
-		config.setProperty("body.hipOffset", hipOffset);
-		
-		// Save leg configs
-		config.setProperty("body.hipsWidth", hipsWidth);
-		config.setProperty("body.kneeHeight", kneeHeight);
-		config.setProperty("body.legsLength", legsLength);
-		config.setProperty("body.footLength", footLength);
-		config.setProperty("body.footOffset", footOffset);
-		//config.setProperty("body.model.extendedPelvis", extendedPelvisModel);
-		config.setProperty("body.model.extendedKnee", extendedKneeModel);
+	public void updatePoseAffectedByConfig(SkeletonConfigValue config) {
+		switch(config) {
+		case HEAD:
+			headNode.update();
+			updateComputedTrackers();
+			break;
+		case NECK:
+			neckNode.update();
+			updateComputedTrackers();
+			break;
+		case TORSO:
+			hipNode.update();
+			updateComputedTrackers();
+			break;
+		case CHEST:
+			chestNode.update();
+			updateComputedTrackers();
+			break;
+		case WAIST:
+			waistNode.update();
+			updateComputedTrackers();
+			break;
+		case HIP_OFFSET:
+			trackerWaistNode.update();
+			updateComputedTrackers();
+			break;
+		case HIPS_WIDTH:
+			leftHipNode.update();
+			rightHipNode.update();
+			updateComputedTrackers();
+			break;
+		case KNEE_HEIGHT:
+			leftKneeNode.update();
+			rightKneeNode.update();
+			break;
+		case LEGS_LENGTH:
+			leftKneeNode.update();
+			rightKneeNode.update();
+			updateComputedTrackers();
+			break;
+		case FOOT_LENGTH:
+			leftFootNode.update();
+			rightFootNode.update();
+			updateComputedTrackers();
+			break;
+		case FOOT_OFFSET:
+			leftAnkleNode.update();
+			rightAnkleNode.update();
+			updateComputedTrackers();
+			break;
+		}
 	}
 	//#endregion
 }
