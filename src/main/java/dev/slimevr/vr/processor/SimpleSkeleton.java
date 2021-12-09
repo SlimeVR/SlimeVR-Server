@@ -1,6 +1,5 @@
 package dev.slimevr.vr.processor;
 
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -8,10 +7,12 @@ import com.jme3.math.FastMath;
 import com.jme3.math.Quaternion;
 import com.jme3.math.Vector3f;
 
+import io.eiren.util.ann.VRServerThread;
 import io.eiren.util.collections.FastList;
 import io.eiren.vr.VRServer;
 import io.eiren.vr.processor.ComputedHumanPoseTracker;
 import io.eiren.vr.processor.ComputedHumanPoseTrackerPosition;
+import io.eiren.vr.processor.HumanSkeleton;
 import io.eiren.vr.processor.TransformNode;
 import io.eiren.vr.trackers.Tracker;
 import io.eiren.vr.trackers.TrackerPosition;
@@ -19,8 +20,10 @@ import io.eiren.vr.trackers.TrackerRole;
 import io.eiren.vr.trackers.TrackerStatus;
 import io.eiren.vr.trackers.TrackerUtils;
 
-public class SimpleSkeleton implements SkeletonConfigCallback {
+public class SimpleSkeleton extends HumanSkeleton implements SkeletonConfigCallback {
 	
+	public static final float DEFAULT_FLOOR_OFFSET = 0.05f;
+
 	//#region Upper body nodes (torso)
 	protected final TransformNode hmdNode = new TransformNode("HMD", false);
 	protected final TransformNode headNode = new TransformNode("Head", false);
@@ -287,6 +290,8 @@ public class SimpleSkeleton implements SkeletonConfigCallback {
 	}
 
 	// Updates the pose from tracker positions
+	@VRServerThread
+	@Override
 	public void updatePose() {
 		updateLocalTransforms();
 		hmdNode.update();
@@ -585,4 +590,181 @@ public class SimpleSkeleton implements SkeletonConfigCallback {
 		}
 	}
 	//#endregion
+
+	@Override
+	public TransformNode getRootNode() {
+		return hmdNode;
+	}
+
+	@Override
+	public SkeletonConfig getSkeletonConfig() {
+		return skeletonConfig;
+	}
+
+	@Override
+	public void resetSkeletonConfig(SkeletonConfigValue config) {
+		Vector3f vec;
+		float height;
+		switch(config) {
+		case HEAD:
+			skeletonConfig.setConfig(SkeletonConfigValue.HEAD, null);
+			break;
+		case NECK:
+			skeletonConfig.setConfig(SkeletonConfigValue.NECK, null);
+			break;
+		case TORSO: // Distance from shoulders to hip (full torso length)
+			vec = new Vector3f();
+			hmdTracker.getPosition(vec);
+			height = vec.y;
+			if(height > 0.5f) { // Reset only if floor level is right, TODO: read floor level from SteamVR if it's not 0
+				skeletonConfig.setConfig(SkeletonConfigValue.TORSO, ((height) / 2.0f) - skeletonConfig.getConfig(SkeletonConfigValue.NECK));
+			}
+			else// if floor level is incorrect
+			{
+				skeletonConfig.setConfig(SkeletonConfigValue.TORSO, null);
+			}
+			break;
+		case CHEST: //Chest is roughly half of the upper body (shoulders to chest)
+			skeletonConfig.setConfig(SkeletonConfigValue.CHEST, skeletonConfig.getConfig(SkeletonConfigValue.TORSO) / 2.0f);
+			break;
+		case WAIST: // waist length is from hips to waist
+			skeletonConfig.setConfig(SkeletonConfigValue.WAIST, null);
+			break;
+		case HIP_OFFSET:
+			skeletonConfig.setConfig(SkeletonConfigValue.HIP_OFFSET, null);
+			break;
+		case HIPS_WIDTH:
+			skeletonConfig.setConfig(SkeletonConfigValue.HIPS_WIDTH, null);
+			break;
+		case FOOT_LENGTH:
+			skeletonConfig.setConfig(SkeletonConfigValue.FOOT_LENGTH, null);
+			break;
+		case FOOT_OFFSET:
+			skeletonConfig.setConfig(SkeletonConfigValue.FOOT_OFFSET, null);
+			break;
+		case LEGS_LENGTH: // Set legs length to be 5cm above floor level
+			vec = new Vector3f();
+			hmdTracker.getPosition(vec);
+			height = vec.y;
+			if(height > 0.5f) { // Reset only if floor level is right, todo: read floor level from SteamVR if it's not 0
+				skeletonConfig.setConfig(SkeletonConfigValue.LEGS_LENGTH, height - skeletonConfig.getConfig(SkeletonConfigValue.NECK) - skeletonConfig.getConfig(SkeletonConfigValue.TORSO) - DEFAULT_FLOOR_OFFSET);
+			}
+			else //if floor level is incorrect
+			{
+				skeletonConfig.setConfig(SkeletonConfigValue.LEGS_LENGTH, null);
+			}
+			resetSkeletonConfig(SkeletonConfigValue.KNEE_HEIGHT);
+			break;
+		case KNEE_HEIGHT: // Knees are at 50% of the legs by default
+			skeletonConfig.setConfig(SkeletonConfigValue.KNEE_HEIGHT, skeletonConfig.getConfig(SkeletonConfigValue.LEGS_LENGTH) / 2.0f);
+			break;
+		}
+	}
+
+	@Override
+	public void resetTrackersFull() {
+		//#region Pass all trackers through trackerPreUpdate
+		Tracker hmdTracker = trackerPreUpdate(this.hmdTracker);
+
+		Tracker chestTracker = trackerPreUpdate(this.chestTracker);
+		Tracker waistTracker = trackerPreUpdate(this.waistTracker);
+		Tracker hipTracker = trackerPreUpdate(this.hipTracker);
+
+		Tracker leftLegTracker = trackerPreUpdate(this.leftLegTracker);
+		Tracker leftAnkleTracker = trackerPreUpdate(this.leftAnkleTracker);
+		Tracker leftFootTracker = trackerPreUpdate(this.leftFootTracker);
+
+		Tracker rightLegTracker = trackerPreUpdate(this.rightLegTracker);
+		Tracker rightAnkleTracker = trackerPreUpdate(this.rightAnkleTracker);
+		Tracker rightFootTracker = trackerPreUpdate(this.rightFootTracker);
+		//#endregion
+
+		// Each tracker uses the tracker before it to adjust itself,
+		// so trackers that don't need adjustments could be used too
+		Quaternion referenceRotation = new Quaternion();
+		hmdTracker.getRotation(referenceRotation);
+		
+		chestTracker.resetFull(referenceRotation);
+		chestTracker.getRotation(referenceRotation);
+		
+		waistTracker.resetFull(referenceRotation);
+		waistTracker.getRotation(referenceRotation);
+
+		hipTracker.resetFull(referenceRotation);
+		hipTracker.getRotation(referenceRotation);
+		
+		leftLegTracker.resetFull(referenceRotation);
+		rightLegTracker.resetFull(referenceRotation);
+		leftLegTracker.getRotation(referenceRotation);
+		
+		leftAnkleTracker.resetFull(referenceRotation);
+		leftAnkleTracker.getRotation(referenceRotation);
+		
+		if(leftFootTracker != null) {
+			leftFootTracker.resetFull(referenceRotation);
+		}
+
+		rightLegTracker.getRotation(referenceRotation);
+		
+		rightAnkleTracker.resetFull(referenceRotation);
+		rightAnkleTracker.getRotation(referenceRotation);
+		
+		if(rightFootTracker != null) {
+			rightFootTracker.resetFull(referenceRotation);
+		}
+	}
+
+	@Override
+	@VRServerThread
+	public void resetTrackersYaw() {
+		//#region Pass all trackers through trackerPreUpdate
+		Tracker hmdTracker = trackerPreUpdate(this.hmdTracker);
+
+		Tracker chestTracker = trackerPreUpdate(this.chestTracker);
+		Tracker waistTracker = trackerPreUpdate(this.waistTracker);
+		Tracker hipTracker = trackerPreUpdate(this.hipTracker);
+
+		Tracker leftLegTracker = trackerPreUpdate(this.leftLegTracker);
+		Tracker leftAnkleTracker = trackerPreUpdate(this.leftAnkleTracker);
+		Tracker leftFootTracker = trackerPreUpdate(this.leftFootTracker);
+
+		Tracker rightLegTracker = trackerPreUpdate(this.rightLegTracker);
+		Tracker rightAnkleTracker = trackerPreUpdate(this.rightAnkleTracker);
+		Tracker rightFootTracker = trackerPreUpdate(this.rightFootTracker);
+		//#endregion
+
+		// Each tracker uses the tracker before it to adjust itself,
+		// so trackers that don't need adjustments could be used too
+		Quaternion referenceRotation = new Quaternion();
+		hmdTracker.getRotation(referenceRotation);
+		
+		chestTracker.resetYaw(referenceRotation);
+		chestTracker.getRotation(referenceRotation);
+		
+		waistTracker.resetYaw(referenceRotation);
+		waistTracker.getRotation(referenceRotation);
+
+		hipTracker.resetYaw(referenceRotation);
+		hipTracker.getRotation(referenceRotation);
+		
+		leftLegTracker.resetYaw(referenceRotation);
+		rightLegTracker.resetYaw(referenceRotation);
+		leftLegTracker.getRotation(referenceRotation);
+		
+		leftAnkleTracker.resetYaw(referenceRotation);
+		leftAnkleTracker.getRotation(referenceRotation);
+		
+		if(leftFootTracker != null) {
+			leftFootTracker.resetYaw(referenceRotation);
+		}
+
+		rightLegTracker.getRotation(referenceRotation);
+		
+		rightAnkleTracker.resetYaw(referenceRotation);
+		rightAnkleTracker.getRotation(referenceRotation);
+		
+		if(rightFootTracker != null) {
+			rightFootTracker.resetYaw(referenceRotation);
+		}
+	}
 }

@@ -7,6 +7,8 @@ import java.util.Map;
 import com.jme3.math.Quaternion;
 import com.jme3.math.Vector3f;
 
+import dev.slimevr.vr.processor.SkeletonConfig;
+import dev.slimevr.vr.processor.SkeletonConfigValue;
 import io.eiren.util.ann.VRServerThread;
 import io.eiren.vr.VRServer;
 import io.eiren.vr.trackers.HMDTracker;
@@ -162,11 +164,10 @@ public class HumanSkeletonWithWaist extends HumanSkeleton {
 	}
 	
 	@Override
-	public Map<String, Float> getSkeletonConfig() {
-		return configMap;
+	public SkeletonConfig getSkeletonConfig() {
+		return null;
 	}
 	
-	@Override
 	public void setSkeletonConfig(String joint, float newLength) {
 		configMap.put(joint, newLength);
 		switch(joint) {
@@ -293,5 +294,10 @@ public class HumanSkeletonWithWaist extends HumanSkeleton {
 		this.waistTracker.getRotation(referenceRotation);
 
 		this.hipTracker.resetYaw(referenceRotation);
+	}
+
+	@Override
+	public void resetSkeletonConfig(SkeletonConfigValue config) {
+		// TODO Auto-generated method stub
 	}
 }

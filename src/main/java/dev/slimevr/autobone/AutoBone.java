@@ -65,7 +65,7 @@ public class AutoBone {
 	public float positionErrorFactor = 0.0f;
 	public float positionOffsetErrorFactor = 0.0f;
 	
-	// TODO Needs much more work, probably going to rethink how the errors work to avoid this barely functional workaround -Butterscotch
+	// TODO Needs much more work, probably going to rethink how the errors work to avoid this barely functional workaround @ButterscotchVanilla
 	// For scaling distances, since smaller sizes will cause smaller distances
 	//private float totalLengthBase = 2f;
 
