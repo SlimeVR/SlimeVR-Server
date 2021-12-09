@@ -1,7 +1,6 @@
 package dev.slimevr.autobone;
 
 import java.util.EnumMap;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
@@ -16,18 +15,16 @@ import dev.slimevr.poserecorder.PoseFrames;
 import dev.slimevr.poserecorder.TrackerFrame;
 import dev.slimevr.poserecorder.TrackerFrameData;
 import dev.slimevr.vr.processor.skeleton.HumanSkeleton;
+import dev.slimevr.vr.processor.skeleton.SimpleSkeleton;
 import dev.slimevr.vr.processor.skeleton.SkeletonConfig;
 import dev.slimevr.vr.processor.skeleton.SkeletonConfigValue;
 import io.eiren.util.ann.ThreadSafe;
 import io.eiren.util.logging.LogManager;
 import io.eiren.util.collections.FastList;
 import io.eiren.vr.VRServer;
-import io.eiren.vr.processor.HumanSkeletonWithLegs;
-import io.eiren.vr.processor.HumanSkeletonWithWaist;
 import io.eiren.vr.trackers.TrackerPosition;
 import io.eiren.vr.trackers.TrackerRole;
 import io.eiren.vr.trackers.TrackerUtils;
-import io.eiren.yaml.YamlFile;
 
 public class AutoBone {
 	
@@ -80,7 +77,7 @@ public class AutoBone {
 	
 	protected final VRServer server;
 	
-	protected HumanSkeletonWithLegs skeleton = null;
+	protected SimpleSkeleton skeleton = null;
 	
 	// This is filled by reloadConfigValues()
 	public final EnumMap<SkeletonConfigValue, Float> configs = new EnumMap<SkeletonConfigValue, Float>(SkeletonConfigValue.class);
@@ -143,8 +140,8 @@ public class AutoBone {
 	
 	@ThreadSafe
 	public void skeletonUpdated(HumanSkeleton newSkeleton) {
-		if(newSkeleton instanceof HumanSkeletonWithLegs) {
-			skeleton = (HumanSkeletonWithLegs) newSkeleton;
+		if(newSkeleton instanceof SimpleSkeleton) {
+			skeleton = (SimpleSkeleton) newSkeleton;
 			applyConfigToSkeleton(newSkeleton);
 			LogManager.log.info("[AutoBone] Received updated skeleton");
 		}
@@ -171,23 +168,18 @@ public class AutoBone {
 		return true;
 	}
 	
-	private void setConfig(String name, String path) {
-		Float value = configs.get(name);
+	private void setConfig(SkeletonConfigValue config) {
+		Float value = configs.get(config);
 		if(value != null) {
-			server.config.setProperty(path, value);
+			server.config.setProperty(config.configKey, value);
 		}
 	}
 	
 	// This doesn't require a skeleton, therefore can be used if skeleton is null
 	public void saveConfigs() {
-		setConfig("Head", "body.headShift");
-		setConfig("Neck", "body.neckLength");
-		setConfig("Waist", "body.waistDistance");
-		setConfig("Chest", "body.chestDistance");
-		setConfig("Torso", "body.torsoLength");
-		setConfig("Hips width", "body.hipsWidth");
-		setConfig("Legs length", "body.legsLength");
-		setConfig("Knee height", "body.kneeHeight");
+		for (SkeletonConfigValue config : SkeletonConfigValue.values) {
+			setConfig(config);
+		}
 		
 		server.saveConfig();
 	}

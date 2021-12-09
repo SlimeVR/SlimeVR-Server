@@ -4,6 +4,7 @@ import java.util.List;
 import java.util.function.Consumer;
 
 import dev.slimevr.vr.processor.skeleton.HumanSkeleton;
+import dev.slimevr.vr.processor.skeleton.SimpleSkeleton;
 import io.eiren.util.ann.ThreadSafe;
 import io.eiren.util.ann.VRServerThread;
 import io.eiren.util.collections.FastList;
@@ -82,7 +83,7 @@ public class HumanPoseProcessor {
 	@VRServerThread
 	private void updateSekeltonModel() {
 		disconnectAllTrackers();
-		skeleton = new HumanSkeletonWithLegs(server, computedTrackers);
+		skeleton = new SimpleSkeleton(server, computedTrackers);
 		for(int i = 0; i < onSkeletonUpdated.size(); ++i)
 			onSkeletonUpdated.get(i).accept(skeleton);
 	}

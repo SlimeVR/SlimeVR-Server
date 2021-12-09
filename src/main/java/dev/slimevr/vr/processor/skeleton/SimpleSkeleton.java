@@ -481,6 +481,10 @@ public class SimpleSkeleton extends HumanSkeleton implements SkeletonConfigCallb
 
 	@Override
 	public void updateToggleState(SkeletonConfigToggle configToggle, boolean newValue) {
+		if (configToggle == null) {
+			return;
+		}
+
 		// Cache the values of these configs
 		switch (configToggle) {
 		case EXTENDED_PELVIS_MODEL:
@@ -494,6 +498,10 @@ public class SimpleSkeleton extends HumanSkeleton implements SkeletonConfigCallb
 
 	@Override
 	public void updateNodeOffset(SkeletonNodeOffset nodeOffset, Vector3f offset) {
+		if (nodeOffset == null) {
+			return;
+		}
+
 		switch (nodeOffset) {
 		case HEAD:
 			headNode.localTransform.setTranslation(offset);
@@ -602,6 +610,10 @@ public class SimpleSkeleton extends HumanSkeleton implements SkeletonConfigCallb
 
 	@Override
 	public void resetSkeletonConfig(SkeletonConfigValue config) {
+		if (config == null) {
+			return;
+		}
+
 		Vector3f vec;
 		float height;
 		switch(config) {
