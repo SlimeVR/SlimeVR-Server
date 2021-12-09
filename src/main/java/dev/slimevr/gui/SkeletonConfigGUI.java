@@ -10,10 +10,10 @@ import javax.swing.event.MouseInputAdapter;
 
 import dev.slimevr.gui.swing.ButtonTimer;
 import dev.slimevr.gui.swing.EJBagNoStretch;
+import dev.slimevr.vr.processor.skeleton.HumanSkeleton;
 import io.eiren.util.StringUtils;
 import io.eiren.util.ann.ThreadSafe;
 import io.eiren.vr.VRServer;
-import io.eiren.vr.processor.HumanSkeleton;
 
 public class SkeletonConfigGUI extends EJBagNoStretch {
 

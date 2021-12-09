@@ -3,8 +3,8 @@ package dev.slimevr.poserecorder;
 import java.util.List;
 import java.util.Map;
 
-import dev.slimevr.vr.processor.SimpleSkeleton;
-import dev.slimevr.vr.processor.SkeletonConfigValue;
+import dev.slimevr.vr.processor.skeleton.SimpleSkeleton;
+import dev.slimevr.vr.processor.skeleton.SkeletonConfigValue;
 import io.eiren.vr.VRServer;
 import io.eiren.vr.processor.ComputedHumanPoseTracker;
 import io.eiren.vr.trackers.Tracker;

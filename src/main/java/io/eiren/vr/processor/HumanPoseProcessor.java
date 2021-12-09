@@ -3,6 +3,7 @@ package io.eiren.vr.processor;
 import java.util.List;
 import java.util.function.Consumer;
 
+import dev.slimevr.vr.processor.skeleton.HumanSkeleton;
 import io.eiren.util.ann.ThreadSafe;
 import io.eiren.util.ann.VRServerThread;
 import io.eiren.util.collections.FastList;

@@ -1,4 +1,4 @@
-package dev.slimevr.vr.processor;
+package dev.slimevr.vr.processor.skeleton;
 
 import java.util.List;
 import java.util.Map;
@@ -12,7 +12,6 @@ import io.eiren.util.collections.FastList;
 import io.eiren.vr.VRServer;
 import io.eiren.vr.processor.ComputedHumanPoseTracker;
 import io.eiren.vr.processor.ComputedHumanPoseTrackerPosition;
-import io.eiren.vr.processor.HumanSkeleton;
 import io.eiren.vr.processor.TransformNode;
 import io.eiren.vr.trackers.Tracker;
 import io.eiren.vr.trackers.TrackerPosition;

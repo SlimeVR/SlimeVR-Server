@@ -28,7 +28,7 @@ import dev.slimevr.gui.swing.EJBox;
 import dev.slimevr.poserecorder.PoseFrames;
 import dev.slimevr.poserecorder.PoseFrameIO;
 import dev.slimevr.poserecorder.PoseRecorder;
-import dev.slimevr.vr.processor.SkeletonConfigValue;
+import dev.slimevr.vr.processor.skeleton.SkeletonConfigValue;
 
 public class AutoBoneWindow extends JFrame {
 	

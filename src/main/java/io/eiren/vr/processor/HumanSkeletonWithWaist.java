@@ -7,8 +7,9 @@ import java.util.Map;
 import com.jme3.math.Quaternion;
 import com.jme3.math.Vector3f;
 
-import dev.slimevr.vr.processor.SkeletonConfig;
-import dev.slimevr.vr.processor.SkeletonConfigValue;
+import dev.slimevr.vr.processor.skeleton.HumanSkeleton;
+import dev.slimevr.vr.processor.skeleton.SkeletonConfig;
+import dev.slimevr.vr.processor.skeleton.SkeletonConfigValue;
 import io.eiren.util.ann.VRServerThread;
 import io.eiren.vr.VRServer;
 import io.eiren.vr.trackers.HMDTracker;

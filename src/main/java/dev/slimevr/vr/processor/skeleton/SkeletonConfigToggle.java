@@ -1,4 +1,4 @@
-package dev.slimevr.vr.processor;
+package dev.slimevr.vr.processor.skeleton;
 
 import java.util.HashMap;
 import java.util.Map;

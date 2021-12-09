@@ -1,11 +1,10 @@
-package io.eiren.vr.processor;
+package dev.slimevr.vr.processor.skeleton;
 
 import java.util.Map;
 
-import dev.slimevr.vr.processor.SkeletonConfig;
-import dev.slimevr.vr.processor.SkeletonConfigValue;
 import io.eiren.util.ann.ThreadSafe;
 import io.eiren.util.ann.VRServerThread;
+import io.eiren.vr.processor.TransformNode;
 
 public abstract class HumanSkeleton {
 

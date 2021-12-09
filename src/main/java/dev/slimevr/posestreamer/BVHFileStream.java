@@ -15,7 +15,7 @@ import com.jme3.math.Vector3f;
 
 import org.apache.commons.lang3.StringUtils;
 
-import io.eiren.vr.processor.HumanSkeleton;
+import dev.slimevr.vr.processor.skeleton.HumanSkeleton;
 import io.eiren.vr.processor.TransformNode;
 
 public class BVHFileStream extends PoseDataStream {
