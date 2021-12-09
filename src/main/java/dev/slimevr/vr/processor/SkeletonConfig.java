@@ -1,8 +1,11 @@
 package dev.slimevr.vr.processor;
 
 import java.util.EnumMap;
+import java.util.Map;
 
 import com.jme3.math.Vector3f;
+
+import io.eiren.yaml.YamlFile;
 
 public class SkeletonConfig {
 
@@ -11,8 +14,15 @@ public class SkeletonConfig {
 	protected final EnumMap<SkeletonNodeOffset, Vector3f> nodeOffsets = new EnumMap<SkeletonNodeOffset, Vector3f>(SkeletonNodeOffset.class);
 
 	public SkeletonConfig() {
-		// Setup node offsets
 		computeAllNodeOffsets();
+	}
+
+	public SkeletonConfig(Map<SkeletonConfigValue, Float> configs, Map<SkeletonConfigToggle, Boolean> toggles) {
+		setConfigs(configs, toggles);
+	}
+
+	public SkeletonConfig(SkeletonConfig skeletonConfig) {
+		setConfigs(skeletonConfig);
 	}
 
 	public Float setConfig(SkeletonConfigValue config, float newValue) {
@@ -66,6 +76,10 @@ public class SkeletonConfig {
 		}
 	}
 
+	protected void setNodeOffset(SkeletonNodeOffset nodeOffset, Vector3f offset) {
+		setNodeOffset(nodeOffset, offset.x, offset.y, offset.z);
+	}
+
 	public Vector3f getNodeOffset(SkeletonNodeOffset nodeOffset) {
 		return nodeOffsets.getOrDefault(nodeOffset, Vector3f.ZERO);
 	}
@@ -114,5 +128,85 @@ public class SkeletonConfig {
 		for (SkeletonNodeOffset offset : SkeletonNodeOffset.values) {
 			computeNodeOffset(offset);
 		}
+	}
+
+	public void setConfigs(Map<SkeletonConfigValue, Float> configs, Map<SkeletonConfigToggle, Boolean> toggles) {
+		if (configs != null) {
+			this.configs.putAll(configs);
+		}
+		
+		if (toggles != null) {
+			this.toggles.putAll(toggles);
+		}
+
+		computeAllNodeOffsets();
+	}
+
+	public void setConfigs(SkeletonConfig skeletonConfig) {
+		setConfigs(skeletonConfig.configs, skeletonConfig.toggles);
+	}
+
+	//#region Cast utilities for config reading
+	private static Float castFloat(Object o) {
+		if(o == null) {
+			return null;
+		} else if(o instanceof Float) {
+			return (Float) o;
+		} else if(o instanceof Double) {
+			return ((Double) o).floatValue();
+		} else if(o instanceof Byte) {
+			return (float) (Byte) o;
+		} else if(o instanceof Integer) {
+			return (float) (Integer) o;
+		} else if(o instanceof Long) {
+			return (float) (Long) o;
+		} else {
+			return null;
+		}
+	}
+
+	private static Boolean castBoolean(Object o) {
+		if(o == null) {
+			return null;
+		} else if(o instanceof Boolean) {
+			return (Boolean) o;
+		} else {
+			return null;
+		}
+	}
+	//#endregion
+
+	public void loadFromConfig(YamlFile config) {
+		for (SkeletonConfigValue configValue : SkeletonConfigValue.values) {
+			Float val = castFloat(config.getProperty(configValue.configKey));
+			if (val != null) {
+				configs.put(configValue, val);
+			}
+		}
+
+		for (SkeletonConfigToggle configValue : SkeletonConfigToggle.values) {
+			Boolean val = castBoolean(config.getProperty(configValue.configKey));
+			if (val != null) {
+				toggles.put(configValue, val);
+			}
+		}
+
+		computeAllNodeOffsets();
+	}
+
+	public void saveToConfig(YamlFile config) {
+		configs.forEach((key, value) -> {
+			config.setProperty(key.configKey, value);
+		});
+
+		toggles.forEach((key, value) -> {
+			config.setProperty(key.configKey, value);
+		});
+	}
+
+	public void resetConfigs() {
+		configs.clear();
+		toggles.clear();
+		computeAllNodeOffsets();
 	}
 }
