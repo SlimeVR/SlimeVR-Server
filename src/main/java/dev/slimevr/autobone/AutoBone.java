@@ -1,5 +1,6 @@
 package dev.slimevr.autobone;
 
+import java.util.EnumMap;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -26,6 +27,7 @@ import io.eiren.vr.processor.HumanSkeletonWithWaist;
 import io.eiren.vr.trackers.TrackerPosition;
 import io.eiren.vr.trackers.TrackerRole;
 import io.eiren.vr.trackers.TrackerUtils;
+import io.eiren.yaml.YamlFile;
 
 public class AutoBone {
 	
@@ -81,11 +83,13 @@ public class AutoBone {
 	protected HumanSkeletonWithLegs skeleton = null;
 	
 	// This is filled by reloadConfigValues()
-	public final HashMap<String, Float> configs = new HashMap<String, Float>();
-	public final HashMap<String, Float> staticConfigs = new HashMap<String, Float>();
+	public final EnumMap<SkeletonConfigValue, Float> configs = new EnumMap<SkeletonConfigValue, Float>(SkeletonConfigValue.class);
+	public final EnumMap<SkeletonConfigValue, Float> staticConfigs = new EnumMap<SkeletonConfigValue, Float>(SkeletonConfigValue.class);
 	
-	public final FastList<String> heightConfigs = new FastList<String>(new String[]{"Neck", "Torso", "Legs length"});
-	//public final FastList<String> lengthConfigs = new FastList<String>(new String[]{"Head", "Neck", "Torso", "Hips width", "Legs length"});
+	public final FastList<SkeletonConfigValue> heightConfigs = new FastList<SkeletonConfigValue>(new SkeletonConfigValue[] {
+		SkeletonConfigValue.NECK, SkeletonConfigValue.TORSO, SkeletonConfigValue.LEGS_LENGTH});
+	public final FastList<SkeletonConfigValue> lengthConfigs = new FastList<SkeletonConfigValue>(new SkeletonConfigValue[] {
+		SkeletonConfigValue.HEAD, SkeletonConfigValue.NECK, SkeletonConfigValue.TORSO, SkeletonConfigValue.HIPS_WIDTH, SkeletonConfigValue.LEGS_LENGTH});
 	
 	public AutoBone(VRServer server) {
 		this.server = server;
@@ -99,38 +103,42 @@ public class AutoBone {
 		reloadConfigValues(null);
 	}
 	
+	private float readFromConfig(SkeletonConfigValue configValue) {
+		return server.config.getFloat(configValue.configKey, configValue.defaultValue);
+	}
+	
 	public void reloadConfigValues(List<PoseFrameTracker> trackers) {
 		// Load torso configs
-		staticConfigs.put("Head", server.config.getFloat("body.headShift", HumanSkeletonWithWaist.HEAD_SHIFT_DEFAULT));
-		staticConfigs.put("Neck", server.config.getFloat("body.neckLength", HumanSkeletonWithWaist.NECK_LENGTH_DEFAULT));
-		configs.put("Torso", server.config.getFloat("body.torsoLength", 0.7f));
+		staticConfigs.put(SkeletonConfigValue.HEAD, readFromConfig(SkeletonConfigValue.HEAD));
+		staticConfigs.put(SkeletonConfigValue.NECK, readFromConfig(SkeletonConfigValue.NECK));
+		configs.put(SkeletonConfigValue.TORSO, readFromConfig(SkeletonConfigValue.TORSO));
 		if(server.config.getBoolean("autobone.forceChestTracker", false) || (trackers != null && TrackerUtils.findTrackerForBodyPosition(trackers, TrackerPosition.CHEST) != null)) {
 			// If force enabled or has a chest tracker
-			staticConfigs.remove("Chest");
-			configs.put("Chest", server.config.getFloat("body.chestDistance", 0.35f));
+			staticConfigs.remove(SkeletonConfigValue.CHEST);
+			configs.put(SkeletonConfigValue.CHEST, readFromConfig(SkeletonConfigValue.CHEST));
 		} else {
 			// Otherwise, make sure it's not used
-			configs.remove("Chest");
-			staticConfigs.put("Chest", server.config.getFloat("body.chestDistance", 0.35f));
+			configs.remove(SkeletonConfigValue.CHEST);
+			staticConfigs.put(SkeletonConfigValue.CHEST, readFromConfig(SkeletonConfigValue.CHEST));
 		}
 		if(server.config.getBoolean("autobone.forceHipTracker", false) || (trackers != null && TrackerUtils.findTrackerForBodyPosition(trackers, TrackerPosition.HIP) != null && TrackerUtils.findTrackerForBodyPosition(trackers, TrackerPosition.WAIST) != null)) {
 			// If force enabled or has a hip tracker and waist tracker
-			staticConfigs.remove("Waist");
-			configs.put("Waist", server.config.getFloat("body.waistDistance", 0.1f));
+			staticConfigs.remove(SkeletonConfigValue.WAIST);
+			configs.put(SkeletonConfigValue.WAIST, readFromConfig(SkeletonConfigValue.WAIST));
 		} else {
 			// Otherwise, make sure it's not used
-			configs.remove("Waist");
-			staticConfigs.put("Waist", server.config.getFloat("body.waistDistance", 0.1f));
+			configs.remove(SkeletonConfigValue.WAIST);
+			staticConfigs.put(SkeletonConfigValue.WAIST, readFromConfig(SkeletonConfigValue.WAIST));
 		}
 		
 		// Load leg configs
-		staticConfigs.put("Hips width", server.config.getFloat("body.hipsWidth", HumanSkeletonWithLegs.HIPS_WIDTH_DEFAULT));
-		configs.put("Legs length", server.config.getFloat("body.legsLength", 0.84f));
-		configs.put("Knee height", server.config.getFloat("body.kneeHeight", 0.42f));
+		staticConfigs.put(SkeletonConfigValue.HIPS_WIDTH, readFromConfig(SkeletonConfigValue.HIPS_WIDTH));
+		configs.put(SkeletonConfigValue.LEGS_LENGTH, readFromConfig(SkeletonConfigValue.LEGS_LENGTH));
+		configs.put(SkeletonConfigValue.KNEE_HEIGHT, readFromConfig(SkeletonConfigValue.KNEE_HEIGHT));
 
 		// Keep "feet" at ankles
-		staticConfigs.put("Foot length", 0f);
-		staticConfigs.put("Foot offset", 0f);
+		staticConfigs.put(SkeletonConfigValue.FOOT_LENGTH, 0f);
+		staticConfigs.put(SkeletonConfigValue.FOOT_OFFSET, 0f);
 	}
 	
 	@ThreadSafe
@@ -154,7 +162,8 @@ public class AutoBone {
 			return false;
 		}
 		
-		configs.forEach(skeleton::setSkeletonConfig);
+		// TODO Temporarily disabled, will fix in a later commit @ButterscotchVanilla
+		//configs.forEach(skeleton::setSkeletonConfig);
 		
 		server.saveConfig();
 		
@@ -183,12 +192,12 @@ public class AutoBone {
 		server.saveConfig();
 	}
 	
-	public Float getConfig(String config) {
+	public Float getConfig(SkeletonConfigValue config) {
 		Float configVal = configs.get(config);
 		return configVal != null ? configVal : staticConfigs.get(config);
 	}
 	
-	public Float getConfig(String config, Map<String, Float> configs, Map<String, Float> configsAlt) {
+	public Float getConfig(SkeletonConfigValue config, Map<SkeletonConfigValue, Float> configs, Map<SkeletonConfigValue, Float> configsAlt) {
 		if(configs == null) {
 			throw new NullPointerException("Argument \"configs\" must not be null");
 		}
@@ -197,10 +206,10 @@ public class AutoBone {
 		return configVal != null || configsAlt == null ? configVal : configsAlt.get(config);
 	}
 
-	public float sumSelectConfigs(List<String> selection, Map<String, Float> configs, Map<String, Float> configsAlt) {
+	public float sumSelectConfigs(List<SkeletonConfigValue> selection, Map<SkeletonConfigValue, Float> configs, Map<SkeletonConfigValue, Float> configsAlt) {
 		float sum = 0f;
 		
-		for (String config : selection) {
+		for (SkeletonConfigValue config : selection) {
 			Float length = getConfig(config, configs, configsAlt);
 			if(length != null) {
 				sum += length;
@@ -210,15 +219,15 @@ public class AutoBone {
 		return sum;
 	}
 	
-	public float getLengthSum(Map<String, Float> configs) {
+	public float getLengthSum(Map<SkeletonConfigValue, Float> configs) {
 		return getLengthSum(configs, null);
 	}
 
-	public float getLengthSum(Map<String, Float> configs, Map<String, Float> configsAlt) {
+	public float getLengthSum(Map<SkeletonConfigValue, Float> configs, Map<SkeletonConfigValue, Float> configsAlt) {
 		float length = 0f;
 		
 		if (configsAlt != null) {
-			for(Entry<String, Float> config : configsAlt.entrySet()) {
+			for(Entry<SkeletonConfigValue, Float> config : configsAlt.entrySet()) {
 				// If there isn't a duplicate config
 				if (!configs.containsKey(config.getKey())) {
 					length += config.getValue();
@@ -276,7 +285,8 @@ public class AutoBone {
 		// If target height isn't specified, auto-detect
 		if(targetHeight < 0f) {
 			if(skeleton != null) {
-				targetHeight = sumSelectConfigs(heightConfigs, skeleton.getSkeletonConfig(), staticConfigs);
+				// TODO Fix height calculation @ButterscotchVanilla
+				targetHeight = 1.75f; //sumSelectConfigs(heightConfigs, skeleton.getSkeletonConfig(), staticConfigs);
 				LogManager.log.warning("[AutoBone] Target height loaded from skeleton (Make sure you reset before running!): " + targetHeight);
 			} else {
 				float hmdHeight = getMaxHmdHeight(frames);
@@ -301,8 +311,8 @@ public class AutoBone {
 				for(int frameCursor = 0; frameCursor < frameCount - cursorOffset; frameCursor += cursorIncrement) {
 					int frameCursor2 = frameCursor + cursorOffset;
 
-					skeleton1.skeletonConfig.setStringConfigs(configs, null);
-					skeleton2.skeletonConfig.setStringConfigs(configs, null);
+					skeleton1.skeletonConfig.setConfigs(configs, null);
+					skeleton2.skeletonConfig.setConfigs(configs, null);
 					
 					skeleton1.setCursor(frameCursor);
 					skeleton1.updatePose();
@@ -341,7 +351,7 @@ public class AutoBone {
 						continue;
 					}
 					
-					for(Entry<String, Float> entry : configs.entrySet()) {
+					for(Entry<SkeletonConfigValue, Float> entry : configs.entrySet()) {
 						// Skip adjustment if the epoch is before starting (for logging only)
 						if(epoch < 0) {
 							break;
@@ -460,15 +470,15 @@ public class AutoBone {
 	
 	// The distance from average human proportions
 	protected float getProportionErrorDeriv(SkeletonConfig skeleton) {
-		Float neckLength = skeleton.getConfig("Neck");
-		Float chestLength = skeleton.getConfig("Chest");
-		Float torsoLength = skeleton.getConfig("Torso");
-		Float legsLength = skeleton.getConfig("Legs length");
-		Float kneeHeight = skeleton.getConfig("Knee height");
+		float neckLength = skeleton.getConfig(SkeletonConfigValue.NECK);
+		float chestLength = skeleton.getConfig(SkeletonConfigValue.CHEST);
+		float torsoLength = skeleton.getConfig(SkeletonConfigValue.TORSO);
+		float legsLength = skeleton.getConfig(SkeletonConfigValue.LEGS_LENGTH);
+		float kneeHeight = skeleton.getConfig(SkeletonConfigValue.KNEE_HEIGHT);
 
-		float chestTorso = chestLength != null && torsoLength != null ? FastMath.abs((chestLength / torsoLength) - chestTorsoRatio) : 0f;
-		float legBody = legsLength != null && torsoLength != null && neckLength != null ? FastMath.abs((legsLength / (torsoLength + neckLength)) - legBodyRatio) : 0f;
-		float kneeLeg = kneeHeight != null && legsLength != null ? FastMath.abs((kneeHeight / legsLength) - kneeLegRatio) : 0f;
+		float chestTorso = FastMath.abs((chestLength / torsoLength) - chestTorsoRatio);
+		float legBody = FastMath.abs((legsLength / (torsoLength + neckLength)) - legBodyRatio);
+		float kneeLeg = FastMath.abs((kneeHeight / legsLength) - kneeLegRatio);
 		
 		if(legBody <= legBodyRatioRange) {
 			legBody = 0f;
@@ -591,13 +601,11 @@ public class AutoBone {
 		return 0.5f * (errorDeriv * errorDeriv);
 	}
 	
-	protected void updateSkeletonBoneLength(PoseFrameSkeleton skeleton1, PoseFrameSkeleton skeleton2, String joint, float newLength) {
-		SkeletonConfigValue value = SkeletonConfigValue.getByStringValue(joint);
-		
-		skeleton1.skeletonConfig.setConfig(value, newLength);
-		skeleton1.updatePoseAffectedByConfig(value);
+	protected void updateSkeletonBoneLength(PoseFrameSkeleton skeleton1, PoseFrameSkeleton skeleton2, SkeletonConfigValue config, float newLength) {
+		skeleton1.skeletonConfig.setConfig(config, newLength);
+		skeleton1.updatePoseAffectedByConfig(config);
 
-		skeleton2.skeletonConfig.setConfig(value, newLength);
-		skeleton2.updatePoseAffectedByConfig(value);
+		skeleton2.skeletonConfig.setConfig(config, newLength);
+		skeleton2.updatePoseAffectedByConfig(config);
 	}
 }

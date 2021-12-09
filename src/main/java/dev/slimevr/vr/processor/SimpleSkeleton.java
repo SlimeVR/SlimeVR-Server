@@ -141,19 +141,19 @@ public class SimpleSkeleton implements SkeletonConfigCallback {
 		}
 	}
 
-	public SimpleSkeleton(List<? extends Tracker> trackers, List<? extends ComputedHumanPoseTracker> computedTrackers, Map<String, Float> configs, Map<String, Float> altConfigs) {
+	public SimpleSkeleton(List<? extends Tracker> trackers, List<? extends ComputedHumanPoseTracker> computedTrackers, Map<SkeletonConfigValue, Float> configs, Map<SkeletonConfigValue, Float> altConfigs) {
 		// Initialize
 		this(trackers, computedTrackers);
 		
 		// Set configs
 		if(altConfigs != null) {
 			// Set alts first, so if there's any overlap it doesn't affect the values
-			altConfigs.forEach(skeletonConfig::setConfig);
+			skeletonConfig.setConfigs(altConfigs, null);
 		}
-		configs.forEach(skeletonConfig::setConfig);
+		skeletonConfig.setConfigs(configs, null);
 	}
 	
-	public SimpleSkeleton(List<? extends Tracker> trackers, List<? extends ComputedHumanPoseTracker> computedTrackers, Map<String, Float> configs) {
+	public SimpleSkeleton(List<? extends Tracker> trackers, List<? extends ComputedHumanPoseTracker> computedTrackers, Map<SkeletonConfigValue, Float> configs) {
 		this(trackers, computedTrackers, configs, null);
 	}
 	//#endregion

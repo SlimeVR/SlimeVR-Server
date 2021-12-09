@@ -4,6 +4,7 @@ import java.util.List;
 import java.util.Map;
 
 import dev.slimevr.vr.processor.SimpleSkeleton;
+import dev.slimevr.vr.processor.SkeletonConfigValue;
 import io.eiren.vr.VRServer;
 import io.eiren.vr.processor.ComputedHumanPoseTracker;
 import io.eiren.vr.trackers.Tracker;
@@ -24,11 +25,11 @@ public class PoseFrameSkeleton extends SimpleSkeleton {
 		super(trackers, computedTrackers);
 	}
 
-	public PoseFrameSkeleton(List<? extends Tracker> trackers, List<? extends ComputedHumanPoseTracker> computedTrackers, Map<String, Float> configs, Map<String, Float> altConfigs) {
+	public PoseFrameSkeleton(List<? extends Tracker> trackers, List<? extends ComputedHumanPoseTracker> computedTrackers, Map<SkeletonConfigValue, Float> configs, Map<SkeletonConfigValue, Float> altConfigs) {
 		super(trackers, computedTrackers, configs, altConfigs);
 	}
 	
-	public PoseFrameSkeleton(List<? extends Tracker> trackers, List<? extends ComputedHumanPoseTracker> computedTrackers, Map<String, Float> configs) {
+	public PoseFrameSkeleton(List<? extends Tracker> trackers, List<? extends ComputedHumanPoseTracker> computedTrackers, Map<SkeletonConfigValue, Float> configs) {
 		super(trackers, computedTrackers, configs);
 	}
 

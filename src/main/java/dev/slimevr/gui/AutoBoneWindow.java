@@ -28,6 +28,7 @@ import dev.slimevr.gui.swing.EJBox;
 import dev.slimevr.poserecorder.PoseFrames;
 import dev.slimevr.poserecorder.PoseFrameIO;
 import dev.slimevr.poserecorder.PoseRecorder;
+import dev.slimevr.vr.processor.SkeletonConfigValue;
 
 public class AutoBoneWindow extends JFrame {
 	
@@ -67,17 +68,14 @@ public class AutoBoneWindow extends JFrame {
 	}
 	
 	private String getLengthsString() {
-		boolean first = true;
-		StringBuilder configInfo = new StringBuilder("");
-		for(Entry<String, Float> entry : autoBone.configs.entrySet()) {
-			if(!first) {
+		final StringBuilder configInfo = new StringBuilder();
+		autoBone.configs.forEach((key, value) -> {
+			if(!configInfo.isEmpty()) {
 				configInfo.append(", ");
-			} else {
-				first = false;
 			}
 			
-			configInfo.append(entry.getKey() + ": " + StringUtils.prettyNumber(entry.getValue() * 100f, 2));
-		}
+			configInfo.append(key.stringVal + ": " + StringUtils.prettyNumber(value * 100f, 2));
+		});
 		
 		return configInfo.toString();
 	}
@@ -340,12 +338,12 @@ public class AutoBoneWindow extends JFrame {
 												applyButton.setEnabled(true);
 												
 												//#region Stats/Values
-												Float neckLength = autoBone.getConfig("Neck");
-												Float chestDistance = autoBone.getConfig("Chest");
-												Float torsoLength = autoBone.getConfig("Torso");
-												Float hipWidth = autoBone.getConfig("Hips width");
-												Float legsLength = autoBone.getConfig("Legs length");
-												Float kneeHeight = autoBone.getConfig("Knee height");
+												Float neckLength = autoBone.getConfig(SkeletonConfigValue.NECK);
+												Float chestDistance = autoBone.getConfig(SkeletonConfigValue.CHEST);
+												Float torsoLength = autoBone.getConfig(SkeletonConfigValue.TORSO);
+												Float hipWidth = autoBone.getConfig(SkeletonConfigValue.HIPS_WIDTH);
+												Float legsLength = autoBone.getConfig(SkeletonConfigValue.LEGS_LENGTH);
+												Float kneeHeight = autoBone.getConfig(SkeletonConfigValue.KNEE_HEIGHT);
 												
 												float neckTorso = neckLength != null && torsoLength != null ? neckLength / torsoLength : 0f;
 												float chestTorso = chestDistance != null && torsoLength != null ? chestDistance / torsoLength : 0f;
