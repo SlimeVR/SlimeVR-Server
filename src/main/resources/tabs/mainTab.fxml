@@ -1,50 +1,51 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<?import dev.slimevr.gui.views.TrackersListPane?>
-<?import javafx.scene.control.Button?>
-<?import javafx.scene.control.ComboBox?>
-<?import javafx.scene.control.ScrollPane?>
-<?import javafx.scene.layout.AnchorPane?>
-<?import javafx.scene.layout.ColumnConstraints?>
-<?import javafx.scene.layout.GridPane?>
-<?import javafx.scene.layout.Pane?>
-<?import javafx.scene.layout.RowConstraints?>
-<?import javafx.scene.layout.VBox?>
+<?import dev.slimevr.gui.views.*?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
 
-<AnchorPane maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" prefHeight="400.0" prefWidth="600.0" style="-fx-background-color: #4f22ff;" xmlns="http://javafx.com/javafx/17" xmlns:fx="http://javafx.com/fxml/1" fx:controller="dev.slimevr.gui.tabs.MainTabController">
+<AnchorPane maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" prefHeight="400.0" style="-fx-background-color: #4f22ff;" xmlns="http://javafx.com/javafx/11.0.2" xmlns:fx="http://javafx.com/fxml/1" fx:controller="dev.slimevr.gui.tabs.MainTabController">
    <children>
-      <GridPane style="-fx-background-color: #34ff00;" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+      <GridPane prefHeight="400.0" prefWidth="599.0" style="-fx-background-color: #34ff00;" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
         <columnConstraints>
-          <ColumnConstraints hgrow="ALWAYS" maxWidth="1.7976931348623157E308" percentWidth="70.0" />
-          <ColumnConstraints hgrow="ALWAYS" percentWidth="20.0" />
+          <ColumnConstraints hgrow="ALWAYS" maxWidth="1.7976931348623157E308" percentWidth="81.0" />
+          <ColumnConstraints hgrow="ALWAYS" />
         </columnConstraints>
         <rowConstraints>
           <RowConstraints vgrow="ALWAYS" />
-            <RowConstraints maxHeight="1.7976931348623157E308" vgrow="ALWAYS" />
-            <RowConstraints maxHeight="1.7976931348623157E308" vgrow="ALWAYS" />
-            <RowConstraints maxHeight="1.7976931348623157E308" vgrow="ALWAYS" />
         </rowConstraints>
          <children>
-            <AnchorPane maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" GridPane.rowSpan="2147483647">
+            <ScrollPane>
+               <content>
+						 <TrackersListPane fx:id="trackersListPane" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" />
+               </content>
+            </ScrollPane>
+            <AnchorPane prefHeight="200.0" prefWidth="200.0" GridPane.columnIndex="1">
                <children>
-                  <ScrollPane layoutX="420.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
-                     <content>
-      						 <TrackersListPane fx:id="trackersListPane" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" />
-                     </content>
-                  </ScrollPane>
-               </children>
-            </AnchorPane>
-            <Button mnemonicParsing="false" text="Button" GridPane.columnIndex="1" GridPane.rowIndex="2" />
-            <Button fx:id="wifiButton" mnemonicParsing="false" onAction="#wifiClicked" text="wifi" GridPane.columnIndex="1" GridPane.rowIndex="3" />
-            <Pane GridPane.columnIndex="1">
-               <children>
-                  <VBox prefHeight="200.0" prefWidth="100.0">
+                  <VBox prefHeight="400.0" prefWidth="114.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
                      <children>
-                        <ComboBox fx:id="testbox" prefWidth="150.0" />
+                        <AnchorPane prefHeight="200.0" prefWidth="200.0">
+                           <children>
+                              <Button mnemonicParsing="false" prefHeight="133.0" prefWidth="150.0" text="Button" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0" />
+                           </children>
+                        </AnchorPane>
+                        <AnchorPane prefHeight="200.0" prefWidth="200.0">
+							<children>
+							<Button fx:id="wifiButton" mnemonicParsing="false" onAction="#wifiClicked" text="wifi" GridPane.columnIndex="1" GridPane.rowIndex="3" />
+							</children>
+							<children>
+                              <Button mnemonicParsing="false" prefHeight="133.0" prefWidth="150.0" text="Button" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0" />
+                           </children>
+                        </AnchorPane>
+                        <AnchorPane prefHeight="200.0" prefWidth="200.0">
+                           <children>
+                              <ComboBox fx:id="testbox" prefHeight="134.0" prefWidth="150.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0" />
+                           </children>
+                        </AnchorPane>
                      </children>
                   </VBox>
                </children>
-            </Pane>
+            </AnchorPane>
          </children>
       </GridPane>
    </children>

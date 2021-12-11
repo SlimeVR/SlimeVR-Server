@@ -1,29 +1,58 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<?import javafx.scene.control.Button?>
-<?import javafx.scene.layout.AnchorPane?>
-<?import javafx.scene.layout.HBox?>
-<?import javafx.scene.layout.VBox?>
-<?import javafx.scene.text.Text?>
+<?import javafx.geometry.*?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+<?import javafx.scene.text.*?>
 
-<AnchorPane style="-fx-background-color: #ffffff;" xmlns="http://javafx.com/javafx/17" xmlns:fx="http://javafx.com/fxml/1" fx:controller="dev.slimevr.gui.tabs.BodyTabController">
-	<children>
-		<VBox>
-			<VBox fx:id="bodyItems" layoutX="78.0" layoutY="155.0" prefHeight="200.0" prefWidth="278.0">
-				<children>
-					<Text strokeType="OUTSIDE" strokeWidth="0.0" text="%ui.skeletonConfig.bodyProportions.title" wrappingWidth="102.13671875" />
-					<HBox>
-						<children>
-							<Button mnemonicParsing="false" text="%ui.skeletonConfig.resetAll" textAlignment="CENTER" />
-							<Button mnemonicParsing="false" onAction="#openAutoConfigurationPressed" text="%ui.skeletonConfig.auto" textAlignment="CENTER" HBox.hgrow="ALWAYS" />
-						</children>
-					</HBox>
+<BorderPane maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" prefWidth="1113.0" xmlns="http://javafx.com/javafx/11.0.2" xmlns:fx="http://javafx.com/fxml/1" fx:controller="dev.slimevr.gui.tabs.BodyTabController">
+   <center>
+      <AnchorPane prefHeight="397.0" prefWidth="484.0" style="-fx-background-color: #ffffff;" BorderPane.alignment="CENTER">
+      	<children>
+            <HBox layoutX="313.0" prefHeight="397.0" prefWidth="1113.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+                <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="397.0" prefWidth="303.0" />
+                <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="397.0" prefWidth="287.0">
+                     <children>
+                  		<VBox prefHeight="397.0" prefWidth="283.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+                  			<VBox fx:id="bodyItems" layoutX="78.0" layoutY="155.0" prefHeight="301.0" prefWidth="279.0">
+                  				<children>
+                  					<Text strokeType="OUTSIDE" strokeWidth="0.0" text="%ui.skeletonConfig.bodyProportions.title" wrappingWidth="277.13671875" />
+                  					<HBox prefHeight="0.0" prefWidth="283.0" />
 
-				</children>
+                        				</children>
+                  			</VBox>
+                        <GridPane hgap="10.0" prefHeight="45.0" prefWidth="282.0">
+                          <columnConstraints>
+                            <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
+                            <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
+                          </columnConstraints>
+                          <rowConstraints>
+                            <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+                          </rowConstraints>
+                           <children>
+                              <AnchorPane prefHeight="200.0" prefWidth="200.0">
+                                 <children>
+                  							<Button mnemonicParsing="false" onAction="#openAutoConfigurationPressed" prefHeight="25.0" prefWidth="145.0" text="%ui.skeletonConfig.auto" textAlignment="CENTER" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0" />
+                                 </children>
+                              </AnchorPane>
+                              <AnchorPane prefHeight="200.0" prefWidth="200.0" GridPane.columnIndex="1">
+                                 <children>
+                  							<Button mnemonicParsing="false" prefHeight="25.0" prefWidth="160.0" text="%ui.skeletonConfig.resetAll" textAlignment="CENTER" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0" />
+                                 </children>
+                              </AnchorPane>
+                           </children>
+                           <padding>
+                              <Insets bottom="10.0" top="10.0" />
+                           </padding>
+                        </GridPane>
+                  			<VBox fx:id="skeletonData" layoutX="78.0" layoutY="155.0" prefHeight="197.0" prefWidth="668.0">
+
 			</VBox>
-			<VBox fx:id="skeletonData" layoutX="78.0" layoutY="155.0" prefHeight="200.0" prefWidth="278.0">
-
-			</VBox>
-		</VBox>
-	</children>
-</AnchorPane>
+                  		</VBox>
+                     </children>
+                  </AnchorPane>
+            </HBox>
+      	</children>
+      </AnchorPane>
+   </center>
+</BorderPane>
