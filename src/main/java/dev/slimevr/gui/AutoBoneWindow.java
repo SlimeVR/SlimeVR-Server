@@ -70,7 +70,7 @@ public class AutoBoneWindow extends JFrame {
 	private String getLengthsString() {
 		final StringBuilder configInfo = new StringBuilder();
 		autoBone.configs.forEach((key, value) -> {
-			if(!configInfo.isEmpty()) {
+			if(configInfo.length() > 0) {
 				configInfo.append(", ");
 			}
 			
