@@ -53,11 +53,11 @@ public class HumanSkeletonWithLegs extends HumanSkeletonWithWaist {
 	/**
 	 * Length from hip to knees
 	 */
-	protected float kneeHeight = 0.42f;
+	protected float kneeHeight = 0.43f;
 	/**
 	 * Distance from hip to ankle
 	 */
-	protected float legsLength = 0.84f;
+	protected float legsLength = 0.86f;
 	protected float footLength = FOOT_LENGTH_DEFAULT;
 	protected float footOffset = 0f; //horizontal forward/backwards translation feet offset for avatars with bent knees
 	
@@ -171,7 +171,7 @@ public class HumanSkeletonWithLegs extends HumanSkeletonWithWaist {
 			}
 			else //if floor level is incorrect
 			{
-				setSkeletonConfig(joint, 0.84f);
+				setSkeletonConfig(joint, 0.86f);
 			}
 			resetSkeletonConfig("Knee height");
 			break;
