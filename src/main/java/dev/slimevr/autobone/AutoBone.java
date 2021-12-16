@@ -159,9 +159,9 @@ public class AutoBone {
 			return false;
 		}
 		
-		// TODO Temporarily disabled, will fix in a later commit @ButterscotchVanilla
-		//configs.forEach(skeleton::setSkeletonConfig);
-		
+		SkeletonConfig skeletonConfig = skeleton.getSkeletonConfig();
+		skeletonConfig.setConfigs(configs, null);
+		skeletonConfig.saveToConfig(server.config);
 		server.saveConfig();
 		
 		LogManager.log.info("[AutoBone] Configured skeleton bone lengths");
@@ -211,6 +211,16 @@ public class AutoBone {
 		return sum;
 	}
 	
+	public float sumSelectConfigs(List<SkeletonConfigValue> selection, SkeletonConfig skeletonConfig) {
+		float sum = 0f;
+		
+		for (SkeletonConfigValue config : selection) {
+			sum += skeletonConfig.getConfig(config);
+		}
+		
+		return sum;
+	}
+
 	public float getLengthSum(Map<SkeletonConfigValue, Float> configs) {
 		return getLengthSum(configs, null);
 	}
@@ -278,7 +288,7 @@ public class AutoBone {
 		if(targetHeight < 0f) {
 			if(skeleton != null) {
 				// TODO Fix height calculation @ButterscotchVanilla
-				targetHeight = 1.75f; //sumSelectConfigs(heightConfigs, skeleton.getSkeletonConfig(), staticConfigs);
+				targetHeight = sumSelectConfigs(heightConfigs, skeleton.getSkeletonConfig());
 				LogManager.log.warning("[AutoBone] Target height loaded from skeleton (Make sure you reset before running!): " + targetHeight);
 			} else {
 				float hmdHeight = getMaxHmdHeight(frames);

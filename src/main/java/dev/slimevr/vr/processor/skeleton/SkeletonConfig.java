@@ -91,11 +91,11 @@ public class SkeletonConfig {
 		}
 	}
 
-	public Float setConfig(SkeletonConfigValue config, Float newValue) {
+	public Float setConfig(SkeletonConfigValue config, Float newValue, boolean computeOffsets) {
 		Float origVal = newValue != null ? configs.put(config, newValue) : configs.remove(config);
 
 		// Re-compute the affected offsets
-		if (autoUpdateOffsets && config.affectedOffsets != null) {
+		if (computeOffsets && autoUpdateOffsets && config.affectedOffsets != null) {
 			for (SkeletonNodeOffset offset : config.affectedOffsets) {
 				computeNodeOffset(offset);
 			}
@@ -110,6 +110,10 @@ public class SkeletonConfig {
 		}
 
 		return origVal;
+	}
+
+	public Float setConfig(SkeletonConfigValue config, Float newValue) {
+		return setConfig(config, newValue, true);
 	}
 
 	public Float setConfig(String config, Float newValue) {
@@ -249,7 +253,10 @@ public class SkeletonConfig {
 
 	public void setConfigs(Map<SkeletonConfigValue, Float> configs, Map<SkeletonConfigToggle, Boolean> toggles) {
 		if (configs != null) {
-			configs.forEach(this::setConfig);
+			configs.forEach((key, value) -> {
+				// Do not recalculate the offsets, these are done in bulk at the end
+				setConfig(key, value, false);
+			});
 		}
 		
 		if (toggles != null) {
@@ -264,7 +271,8 @@ public class SkeletonConfig {
 	public void setStringConfigs(Map<String, Float> configs, Map<String, Boolean> toggles) {
 		if (configs != null) {
 			configs.forEach((key, value) -> {
-				setConfig(SkeletonConfigValue.getByStringValue(key), value);
+				// Do not recalculate the offsets, these are done in bulk at the end
+				setConfig(SkeletonConfigValue.getByStringValue(key), value, false);
 			});
 		}
 		
@@ -317,7 +325,8 @@ public class SkeletonConfig {
 		for (SkeletonConfigValue configValue : SkeletonConfigValue.values) {
 			Float val = castFloat(config.getProperty(configValue.configKey));
 			if (val != null) {
-				setConfig(configValue, val);
+				// Do not recalculate the offsets, these are done in bulk at the end
+				setConfig(configValue, val, false);
 			}
 		}
 
