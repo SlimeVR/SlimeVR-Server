@@ -21,11 +21,6 @@ public abstract class HumanSkeleton {
 	public abstract void resetSkeletonConfig(SkeletonConfigValue config);
 
 	@ThreadSafe
-	public void resetSkeletonConfig(String config) {
-		resetSkeletonConfig(SkeletonConfigValue.getByStringValue(config));
-	}
-
-	@ThreadSafe
 	public void resetAllSkeletonConfigs() {
 		for (SkeletonConfigValue config : SkeletonConfigValue.values) {
 			resetSkeletonConfig(config);

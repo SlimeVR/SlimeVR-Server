@@ -92,7 +92,7 @@ public class SkeletonConfig {
 	}
 
 	public Float setConfig(SkeletonConfigValue config, Float newValue) {
-		Float origVal = configs.put(config, newValue);
+		Float origVal = newValue != null ? configs.put(config, newValue) : configs.remove(config);
 
 		// Re-compute the affected offsets
 		if (autoUpdateOffsets && config.affectedOffsets != null) {
@@ -117,15 +117,24 @@ public class SkeletonConfig {
 	}
 
 	public float getConfig(SkeletonConfigValue config) {
-		return configs.getOrDefault(config, config.defaultValue);
+		if (config == null) {
+			return 0f;
+		}
+
+		// IMPORTANT!! This null check is necessary, getOrDefault seems to randomly decide to return null at times, so this is a secondary check
+		Float val = configs.getOrDefault(config, config.defaultValue);
+		return val != null ? val : config.defaultValue;
 	}
 
 	public float getConfig(String config) {
+		if (config == null) {
+			return 0f;
+		}
 		return getConfig(SkeletonConfigValue.getByStringValue(config));
 	}
 
 	public Boolean setToggle(SkeletonConfigToggle config, Boolean newValue) {
-		Boolean origVal = toggles.put(config, newValue);
+		Boolean origVal = newValue != null ? toggles.put(config, newValue) : toggles.remove(config);
 
 		if (callback != null) {
 			try {
@@ -143,10 +152,20 @@ public class SkeletonConfig {
 	}
 
 	public boolean getToggle(SkeletonConfigToggle config) {
-		return toggles.getOrDefault(config, config.defaultValue);
+		if (config == null) {
+			return false;
+		}
+
+		// IMPORTANT!! This null check is necessary, getOrDefault seems to randomly decide to return null at times, so this is a secondary check
+		Boolean val = toggles.getOrDefault(config, config.defaultValue);
+		return val != null ? val : config.defaultValue;
 	}
 
 	public boolean getToggle(String config) {
+		if (config == null) {
+			return false;
+		}
+
 		return getToggle(SkeletonConfigToggle.getByStringValue(config));
 	}
 
@@ -170,6 +189,11 @@ public class SkeletonConfig {
 	}
 
 	protected void setNodeOffset(SkeletonNodeOffset nodeOffset, Vector3f offset) {
+		if (offset == null) {
+			setNodeOffset(nodeOffset, 0f, 0f, 0f);
+			return;
+		}
+
 		setNodeOffset(nodeOffset, offset.x, offset.y, offset.z);
 	}
 
