@@ -127,24 +127,34 @@ public class SkeletonConfigGUI extends EJBagNoStretch {
 	}
 
 	private void change(SkeletonConfigValue joint, float diff) {
+		// Update config value
 		float current = server.humanPoseProcessor.getSkeletonConfig(joint);
 		server.humanPoseProcessor.setSkeletonConfig(joint, current + diff);
+		server.humanPoseProcessor.getSkeletonConfig().saveToConfig(server.config);
 		server.saveConfig();
+
+		// Update GUI
 		labels.get(joint).setText(StringUtils.prettyNumber((current + diff) * 100, 0));
 	}
 
 	private void reset(SkeletonConfigValue joint) {
+		// Update config value
 		server.humanPoseProcessor.resetSkeletonConfig(joint);
+		server.humanPoseProcessor.getSkeletonConfig().saveToConfig(server.config);
 		server.saveConfig();
 
+		// Update GUI
 		float current = server.humanPoseProcessor.getSkeletonConfig(joint);
 		labels.get(joint).setText(StringUtils.prettyNumber((current) * 100, 0));
 	}
 
 	private void resetAll() {
+		// Update config value
 		server.humanPoseProcessor.resetAllSkeletonConfigs();
+		server.humanPoseProcessor.getSkeletonConfig().saveToConfig(server.config);
 		server.saveConfig();
 
+		// Update GUI
 		refreshAll();
 	}
 

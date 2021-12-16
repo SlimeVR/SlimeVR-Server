@@ -64,29 +64,29 @@ public class SkeletonConfig {
 	}
 
 	private void callCallbackOnAll(boolean defaultOnly) {
+		if (callback == null) {
+			return;
+		}
+
 		for (SkeletonConfigValue config : SkeletonConfigValue.values) {
-			if (callback != null) {
-				try {
-					Float val = configs.get(config);
-					if (!defaultOnly || val == null) {
-						callback.updateConfigState(config, val == null ? config.defaultValue : val);
-					}
-				} catch (Exception e) {
-					LogManager.log.severe("[SkeletonConfig] Exception while calling callback", e);
+			try {
+				Float val = configs.get(config);
+				if (!defaultOnly || val == null) {
+					callback.updateConfigState(config, val == null ? config.defaultValue : val);
 				}
+			} catch (Exception e) {
+				LogManager.log.severe("[SkeletonConfig] Exception while calling callback", e);
 			}
 		}
 
 		for (SkeletonConfigToggle config : SkeletonConfigToggle.values) {
-			if (callback != null) {
-				try {
-					Boolean val = toggles.get(config);
-					if (!defaultOnly || val == null) {
-						callback.updateToggleState(config, val == null ? config.defaultValue : val);
-					}
-				} catch (Exception e) {
-					LogManager.log.severe("[SkeletonConfig] Exception while calling callback", e);
+			try {
+				Boolean val = toggles.get(config);
+				if (!defaultOnly || val == null) {
+					callback.updateToggleState(config, val == null ? config.defaultValue : val);
 				}
+			} catch (Exception e) {
+				LogManager.log.severe("[SkeletonConfig] Exception while calling callback", e);
 			}
 		}
 	}
@@ -334,13 +334,14 @@ public class SkeletonConfig {
 	}
 
 	public void saveToConfig(YamlFile config) {
-		configs.forEach((key, value) -> {
-			config.setProperty(key.configKey, value);
-		});
+		// Write all possible values, this keeps configs consistent even if defaults were changed
+		for (SkeletonConfigValue value : SkeletonConfigValue.values) {
+			config.setProperty(value.configKey, getConfig(value));
+		}
 
-		toggles.forEach((key, value) -> {
-			config.setProperty(key.configKey, value);
-		});
+		for (SkeletonConfigToggle value : SkeletonConfigToggle.values) {
+			config.setProperty(value.configKey, getToggle(value));
+		}
 	}
 
 	public void resetConfigs() {

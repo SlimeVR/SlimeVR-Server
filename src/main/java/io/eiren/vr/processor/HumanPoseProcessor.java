@@ -5,6 +5,7 @@ import java.util.function.Consumer;
 
 import dev.slimevr.vr.processor.skeleton.HumanSkeleton;
 import dev.slimevr.vr.processor.skeleton.SimpleSkeleton;
+import dev.slimevr.vr.processor.skeleton.SkeletonConfig;
 import dev.slimevr.vr.processor.skeleton.SkeletonConfigValue;
 import io.eiren.util.ann.ThreadSafe;
 import io.eiren.util.ann.VRServerThread;
@@ -62,6 +63,11 @@ public class HumanPoseProcessor {
 			skeleton.resetAllSkeletonConfigs();
 	}
 	
+	@ThreadSafe
+	public SkeletonConfig getSkeletonConfig() {
+		return skeleton.getSkeletonConfig();
+	}
+
 	@ThreadSafe
 	public float getSkeletonConfig(SkeletonConfigValue key) {
 		if(skeleton != null) {
