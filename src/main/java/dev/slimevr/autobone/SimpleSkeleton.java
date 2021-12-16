@@ -28,15 +28,15 @@ public class SimpleSkeleton {
 	/**
 	 * Distance from shoulders to chest
 	 */
-	protected float chestDistance = 0.35f;
+	protected float chestDistance = 0.32f;
 	/**
 	 * Distance from hip to waist
 	 */
-	protected float waistDistance = 0.1f;
+	protected float waistDistance = 0.05f;
 	/**
 	 * Distance from shoulder to hip
 	 */
-	protected float torsoLength = 0.7f;
+	protected float torsoLength = 0.64f;
 	/**
 	 * Distance from eyes to the base of the neck
 	 */
@@ -61,11 +61,11 @@ public class SimpleSkeleton {
 	/**
 	 * Length from hip to knees
 	 */
-	protected float kneeHeight = 0.42f;
+	protected float kneeHeight = 0.43f;
 	/**
 	 * Distance from hip to ankle
 	 */
-	protected float legsLength = 0.84f;
+	protected float legsLength = 0.86f;
 	
 	protected final HashMap<String, TransformNode> nodes = new HashMap<String, TransformNode>();
 	

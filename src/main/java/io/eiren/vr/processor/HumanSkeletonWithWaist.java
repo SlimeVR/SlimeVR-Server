@@ -44,15 +44,15 @@ public class HumanSkeletonWithWaist extends HumanSkeleton {
 	/**
 	 * Distance from shoulders to chest
 	 */
-	protected float chestDistance = 0.35f;
+	protected float chestDistance = 0.32f;
 	/**
 	 * Distance from hip to waist
 	 */
-	protected float waistDistance = 0.1f;
+	protected float waistDistance = 0.05f;
 	/**
 	 * Distance from shoulder to hip
 	 */
-	protected float torsoLength = 0.7f;
+	protected float torsoLength = 0.64f;
 	/**
 	 * Distance from eyes to hip, defines reported
 	 * tracker position, if you want to move resulting
@@ -146,14 +146,14 @@ public class HumanSkeletonWithWaist extends HumanSkeleton {
 			}
 			else// if floor level is incorrect
 			{
-				setSkeletonConfig(joint, 0.7f);
+				setSkeletonConfig(joint, 0.64f);
 			}
 			break;
 		case "Chest": //Chest is roughly half of the upper body (shoulders to chest)
 			setSkeletonConfig(joint, torsoLength / 2.0f);
 			break;
 		case "Waist": // waist length is from hips to waist
-			setSkeletonConfig(joint, 0.1f);
+			setSkeletonConfig(joint, 0.05f);
 			break;
 		case "Hip offset":
 			setSkeletonConfig(joint, 0.0f);
