@@ -287,7 +287,6 @@ public class AutoBone {
 		// If target height isn't specified, auto-detect
 		if(targetHeight < 0f) {
 			if(skeleton != null) {
-				// TODO Fix height calculation @ButterscotchVanilla
 				targetHeight = sumSelectConfigs(heightConfigs, skeleton.getSkeletonConfig());
 				LogManager.log.warning("[AutoBone] Target height loaded from skeleton (Make sure you reset before running!): " + targetHeight);
 			} else {
