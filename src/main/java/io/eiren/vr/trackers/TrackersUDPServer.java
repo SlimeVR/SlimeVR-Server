@@ -4,11 +4,16 @@ import java.io.IOException;
 import java.io.UnsupportedEncodingException;
 import java.net.DatagramPacket;
 import java.net.DatagramSocket;
+import java.net.Inet6Address;
 import java.net.InetAddress;
+import java.net.InetSocketAddress;
+import java.net.NetworkInterface;
 import java.net.SocketAddress;
 import java.net.SocketTimeoutException;
 import java.nio.ByteBuffer;
 import java.nio.ByteOrder;
+import java.util.ArrayList;
+import java.util.Enumeration;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
@@ -146,9 +151,51 @@ public class TrackersUDPServer extends Thread {
 		StringBuilder serialBuffer2 = new StringBuilder();
 		try {
 			socket = new DatagramSocket(port);
+
+			// Why not just 255.255.255.255? Because Windows.
+			// https://social.technet.microsoft.com/Forums/windows/en-US/72e7387a-9f2c-4bf4-a004-c89ddde1c8aa/how-to-fix-the-global-broadcast-address-255255255255-behavior-on-windows
+			ArrayList<SocketAddress> addresses = new ArrayList<SocketAddress>();
+			Enumeration<NetworkInterface> ifaces = NetworkInterface.getNetworkInterfaces();
+			while (ifaces.hasMoreElements()) {
+				NetworkInterface iface = ifaces.nextElement();
+				// Ignore loopback, PPP, virtual and disabled devices
+				if (iface.isLoopback() || !iface.isUp() || iface.isPointToPoint() || iface.isVirtual()) {
+					continue;
+				}
+				Enumeration<InetAddress> iaddrs = iface.getInetAddresses();
+				while (iaddrs.hasMoreElements()) {
+					InetAddress iaddr = iaddrs.nextElement();
+					// Ignore IPv6 addresses
+					if (iaddr instanceof Inet6Address) {
+						continue;
+					}
+					String[] iaddrParts = iaddr.getHostAddress().split("\\.");
+					addresses.add(new InetSocketAddress(String.format("%s.%s.%s.255", iaddrParts[0], iaddrParts[1], iaddrParts[2]), port));
+				}
+			}
+			byte[] dummyPacket = new byte[] {0x0};
+
+			long prevPacketTime = System.currentTimeMillis();
 			socket.setSoTimeout(250);
 			while(true) {
 				try {
+					boolean hasActiveTrackers = false;
+					for (TrackerConnection tracker: trackers) {
+						if (tracker.sensors.get(0).getStatus() == TrackerStatus.OK) {
+							hasActiveTrackers = true;
+							break;
+						}
+					}
+					if (!hasActiveTrackers) {
+						long discoveryPacketTime = System.currentTimeMillis();
+						if ((discoveryPacketTime - prevPacketTime) >= 2000) {
+							for (SocketAddress addr: addresses) {
+								socket.send(new DatagramPacket(dummyPacket, dummyPacket.length, addr));
+							}
+							prevPacketTime = discoveryPacketTime;
+						}
+					}
+
 					DatagramPacket recieve = new DatagramPacket(rcvBuffer, rcvBuffer.length);
 					socket.receive(recieve);
 					bb.rewind();
