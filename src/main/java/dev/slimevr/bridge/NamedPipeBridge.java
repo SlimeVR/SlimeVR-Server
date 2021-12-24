@@ -9,17 +9,17 @@ import com.sun.jna.platform.win32.WinBase;
 import com.sun.jna.platform.win32.WinError;
 import com.sun.jna.ptr.IntByReference;
 
+import dev.slimevr.Main;
 import dev.slimevr.bridge.Pipe.PipeState;
 import dev.slimevr.bridge.ProtobufMessages.ProtobufMessage;
 import dev.slimevr.bridge.ProtobufMessages.TrackerAdded;
-import io.eiren.util.ann.VRServerThread;
+import dev.slimevr.util.ann.VRServerThread;
+import dev.slimevr.vr.trackers.HMDTracker;
+import dev.slimevr.vr.trackers.ShareableTracker;
+import dev.slimevr.vr.trackers.TrackerPosition;
+import dev.slimevr.vr.trackers.TrackerRole;
+import dev.slimevr.vr.trackers.VRTracker;
 import io.eiren.util.logging.LogManager;
-import io.eiren.vr.Main;
-import io.eiren.vr.trackers.HMDTracker;
-import io.eiren.vr.trackers.ShareableTracker;
-import io.eiren.vr.trackers.TrackerPosition;
-import io.eiren.vr.trackers.TrackerRole;
-import io.eiren.vr.trackers.VRTracker;
 
 public class NamedPipeBridge extends ProtobufBridge<VRTracker> implements Runnable {
 	

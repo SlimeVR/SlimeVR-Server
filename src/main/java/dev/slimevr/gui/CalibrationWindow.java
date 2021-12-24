@@ -13,9 +13,9 @@ import javax.swing.border.EmptyBorder;
 import javax.swing.event.MouseInputAdapter;
 
 import dev.slimevr.gui.swing.EJBox;
+import dev.slimevr.vr.trackers.CalibratingTracker;
+import dev.slimevr.vr.trackers.Tracker;
 import io.eiren.util.ann.AWTThread;
-import io.eiren.vr.trackers.CalibratingTracker;
-import io.eiren.vr.trackers.Tracker;
 
 public class CalibrationWindow extends JFrame {
 	

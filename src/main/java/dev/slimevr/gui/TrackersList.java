@@ -17,23 +17,23 @@ import com.jme3.math.FastMath;
 import com.jme3.math.Quaternion;
 import com.jme3.math.Vector3f;
 
+import dev.slimevr.VRServer;
 import dev.slimevr.gui.swing.EJBagNoStretch;
 import dev.slimevr.gui.swing.EJBoxNoStretch;
+import dev.slimevr.vr.trackers.ComputedTracker;
+import dev.slimevr.vr.trackers.HMDTracker;
+import dev.slimevr.vr.trackers.IMUTracker;
+import dev.slimevr.vr.trackers.ReferenceAdjustedTracker;
+import dev.slimevr.vr.trackers.Tracker;
+import dev.slimevr.vr.trackers.TrackerConfig;
+import dev.slimevr.vr.trackers.TrackerMountingRotation;
+import dev.slimevr.vr.trackers.TrackerPosition;
+import dev.slimevr.vr.trackers.TrackerWithBattery;
+import dev.slimevr.vr.trackers.TrackerWithTPS;
 import io.eiren.util.StringUtils;
 import io.eiren.util.ann.AWTThread;
 import io.eiren.util.ann.ThreadSafe;
 import io.eiren.util.collections.FastList;
-import io.eiren.vr.VRServer;
-import io.eiren.vr.trackers.ReferenceAdjustedTracker;
-import io.eiren.vr.trackers.ComputedTracker;
-import io.eiren.vr.trackers.HMDTracker;
-import io.eiren.vr.trackers.IMUTracker;
-import io.eiren.vr.trackers.Tracker;
-import io.eiren.vr.trackers.TrackerConfig;
-import io.eiren.vr.trackers.TrackerMountingRotation;
-import io.eiren.vr.trackers.TrackerPosition;
-import io.eiren.vr.trackers.TrackerWithBattery;
-import io.eiren.vr.trackers.TrackerWithTPS;
 
 public class TrackersList extends EJBoxNoStretch {
 	

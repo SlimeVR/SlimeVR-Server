@@ -1,7 +1,7 @@
 package dev.slimevr.bridge;
 
-import io.eiren.util.ann.VRServerThread;
-import io.eiren.vr.trackers.ShareableTracker;
+import dev.slimevr.util.ann.VRServerThread;
+import dev.slimevr.vr.trackers.ShareableTracker;
 
 /**
  * Bridge handles sending and recieving tracker data

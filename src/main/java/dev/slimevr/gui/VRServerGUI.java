@@ -5,18 +5,18 @@ import javax.swing.*;
 import javax.swing.border.EmptyBorder;
 import javax.swing.event.MouseInputAdapter;
 
+import dev.slimevr.Main;
+import dev.slimevr.VRServer;
 import dev.slimevr.bridge.NamedPipeBridge;
 import dev.slimevr.gui.swing.ButtonTimer;
 import dev.slimevr.gui.swing.EJBagNoStretch;
 import dev.slimevr.gui.swing.EJBox;
 import dev.slimevr.gui.swing.EJBoxNoStretch;
+import dev.slimevr.vr.trackers.TrackerRole;
 import io.eiren.util.MacOSX;
 import io.eiren.util.OperatingSystem;
 import io.eiren.util.StringUtils;
 import io.eiren.util.ann.AWTThread;
-import io.eiren.vr.Main;
-import io.eiren.vr.VRServer;
-import io.eiren.vr.trackers.TrackerRole;
 
 import java.awt.Component;
 import java.awt.Container;

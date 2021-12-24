@@ -2,10 +2,10 @@ package dev.slimevr.posestreamer;
 
 import java.io.IOException;
 
+import dev.slimevr.VRServer;
+import dev.slimevr.util.ann.VRServerThread;
 import dev.slimevr.vr.processor.skeleton.HumanSkeleton;
-import io.eiren.util.ann.VRServerThread;
 import io.eiren.util.logging.LogManager;
-import io.eiren.vr.VRServer;
 
 public class PoseStreamer {
 

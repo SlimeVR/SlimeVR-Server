@@ -5,11 +5,11 @@ import java.util.Iterator;
 import com.jme3.math.Quaternion;
 import com.jme3.math.Vector3f;
 
+import dev.slimevr.vr.trackers.Tracker;
+import dev.slimevr.vr.trackers.TrackerConfig;
+import dev.slimevr.vr.trackers.TrackerPosition;
+import dev.slimevr.vr.trackers.TrackerStatus;
 import io.eiren.util.collections.FastList;
-import io.eiren.vr.trackers.Tracker;
-import io.eiren.vr.trackers.TrackerConfig;
-import io.eiren.vr.trackers.TrackerPosition;
-import io.eiren.vr.trackers.TrackerStatus;
 
 public class PoseFrameTracker implements Tracker, Iterable<TrackerFrame> {
 	

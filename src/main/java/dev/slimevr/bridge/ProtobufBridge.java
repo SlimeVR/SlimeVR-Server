@@ -11,21 +11,21 @@ import java.util.concurrent.LinkedBlockingQueue;
 import com.jme3.math.Quaternion;
 import com.jme3.math.Vector3f;
 
+import dev.slimevr.Main;
 import dev.slimevr.bridge.ProtobufMessages.Position;
 import dev.slimevr.bridge.ProtobufMessages.ProtobufMessage;
 import dev.slimevr.bridge.ProtobufMessages.TrackerAdded;
 import dev.slimevr.bridge.ProtobufMessages.TrackerStatus;
 import dev.slimevr.bridge.ProtobufMessages.UserAction;
+import dev.slimevr.util.ann.VRServerThread;
+import dev.slimevr.vr.trackers.ComputedTracker;
+import dev.slimevr.vr.trackers.HMDTracker;
+import dev.slimevr.vr.trackers.ShareableTracker;
+import dev.slimevr.vr.trackers.TrackerRole;
+import dev.slimevr.vr.trackers.VRTracker;
 import io.eiren.util.ann.Synchronize;
 import io.eiren.util.ann.ThreadSafe;
-import io.eiren.util.ann.VRServerThread;
 import io.eiren.util.collections.FastList;
-import io.eiren.vr.Main;
-import io.eiren.vr.trackers.ComputedTracker;
-import io.eiren.vr.trackers.HMDTracker;
-import io.eiren.vr.trackers.ShareableTracker;
-import io.eiren.vr.trackers.TrackerRole;
-import io.eiren.vr.trackers.VRTracker;
 
 public abstract class ProtobufBridge<T extends VRTracker> implements Bridge {
 
@@ -189,7 +189,7 @@ public abstract class ProtobufBridge<T extends VRTracker> implements Bridge {
 	protected void trackerStatusRecieved(TrackerStatus trackerStatus) {
 		T tracker = getInternalRemoteTrackerById(trackerStatus.getTrackerId());
 		if(tracker != null) {
-			tracker.setStatus(io.eiren.vr.trackers.TrackerStatus.getById(trackerStatus.getStatusValue()));
+			tracker.setStatus(dev.slimevr.vr.trackers.TrackerStatus.getById(trackerStatus.getStatusValue()));
 		}
 	}
     
@@ -214,11 +214,11 @@ public abstract class ProtobufBridge<T extends VRTracker> implements Bridge {
 		synchronized(remoteTrackersByTrackerId) {
 			Iterator<Entry<Integer, T>> iterator = remoteTrackersByTrackerId.entrySet().iterator();
 			while(iterator.hasNext()) {
-				iterator.next().getValue().setStatus(io.eiren.vr.trackers.TrackerStatus.DISCONNECTED);
+				iterator.next().getValue().setStatus(dev.slimevr.vr.trackers.TrackerStatus.DISCONNECTED);
 			}
 		}
 		if(hmdTracker != null) {
-			hmd.setStatus(io.eiren.vr.trackers.TrackerStatus.DISCONNECTED);
+			hmd.setStatus(dev.slimevr.vr.trackers.TrackerStatus.DISCONNECTED);
 		}
 	}
 

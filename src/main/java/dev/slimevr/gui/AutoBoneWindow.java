@@ -10,19 +10,18 @@ import javax.swing.border.EmptyBorder;
 import java.awt.event.MouseEvent;
 import java.io.File;
 import java.util.List;
-import java.util.Map.Entry;
 import java.util.concurrent.Future;
 
 import io.eiren.util.StringUtils;
 import io.eiren.util.ann.AWTThread;
 import io.eiren.util.collections.FastList;
 import io.eiren.util.logging.LogManager;
-import io.eiren.vr.VRServer;
 
 import javax.swing.event.MouseInputAdapter;
 
 import org.apache.commons.lang3.tuple.Pair;
 
+import dev.slimevr.VRServer;
 import dev.slimevr.autobone.AutoBone;
 import dev.slimevr.gui.swing.EJBox;
 import dev.slimevr.poserecorder.PoseFrames;

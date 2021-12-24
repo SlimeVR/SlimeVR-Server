@@ -7,11 +7,11 @@ import java.util.concurrent.Future;
 
 import org.apache.commons.lang3.tuple.Pair;
 
-import io.eiren.util.ann.VRServerThread;
+import dev.slimevr.VRServer;
+import dev.slimevr.util.ann.VRServerThread;
+import dev.slimevr.vr.trackers.Tracker;
 import io.eiren.util.collections.FastList;
 import io.eiren.util.logging.LogManager;
-import io.eiren.vr.VRServer;
-import io.eiren.vr.trackers.Tracker;
 
 public class PoseRecorder {
 

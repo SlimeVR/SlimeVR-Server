@@ -12,15 +12,15 @@ import com.sun.jna.platform.win32.WinBase;
 import com.sun.jna.platform.win32.WinNT.HANDLE;
 import com.sun.jna.ptr.IntByReference;
 
+import dev.slimevr.VRServer;
 import dev.slimevr.bridge.Pipe.PipeState;
+import dev.slimevr.vr.trackers.ComputedTracker;
+import dev.slimevr.vr.trackers.HMDTracker;
+import dev.slimevr.vr.trackers.ShareableTracker;
+import dev.slimevr.vr.trackers.Tracker;
+import dev.slimevr.vr.trackers.TrackerStatus;
 import io.eiren.util.collections.FastList;
 import io.eiren.util.logging.LogManager;
-import io.eiren.vr.VRServer;
-import io.eiren.vr.trackers.ComputedTracker;
-import io.eiren.vr.trackers.HMDTracker;
-import io.eiren.vr.trackers.ShareableTracker;
-import io.eiren.vr.trackers.Tracker;
-import io.eiren.vr.trackers.TrackerStatus;
 
 public class NamedPipeVRBridge extends Thread implements Bridge {
 

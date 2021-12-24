@@ -9,6 +9,7 @@ import java.util.function.Consumer;
 import com.jme3.math.FastMath;
 import com.jme3.math.Vector3f;
 
+import dev.slimevr.VRServer;
 import dev.slimevr.poserecorder.PoseFrameSkeleton;
 import dev.slimevr.poserecorder.PoseFrameTracker;
 import dev.slimevr.poserecorder.PoseFrames;
@@ -18,13 +19,12 @@ import dev.slimevr.vr.processor.skeleton.HumanSkeleton;
 import dev.slimevr.vr.processor.skeleton.SimpleSkeleton;
 import dev.slimevr.vr.processor.skeleton.SkeletonConfig;
 import dev.slimevr.vr.processor.skeleton.SkeletonConfigValue;
+import dev.slimevr.vr.trackers.TrackerPosition;
+import dev.slimevr.vr.trackers.TrackerRole;
+import dev.slimevr.vr.trackers.TrackerUtils;
 import io.eiren.util.ann.ThreadSafe;
 import io.eiren.util.logging.LogManager;
 import io.eiren.util.collections.FastList;
-import io.eiren.vr.VRServer;
-import io.eiren.vr.trackers.TrackerPosition;
-import io.eiren.vr.trackers.TrackerRole;
-import io.eiren.vr.trackers.TrackerUtils;
 
 public class AutoBone {
 	

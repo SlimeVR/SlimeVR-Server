@@ -4,7 +4,7 @@ import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.OutputStream;
 
-import io.eiren.vr.processor.TransformNode;
+import dev.slimevr.vr.processor.TransformNode;
 
 public class StdBVHFileStream extends BVHFileStream {
 

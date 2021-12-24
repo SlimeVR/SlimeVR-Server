@@ -4,8 +4,8 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.NoSuchElementException;
 
+import dev.slimevr.vr.trackers.Tracker;
 import io.eiren.util.collections.FastList;
-import io.eiren.vr.trackers.Tracker;
 
 public final class PoseFrames implements Iterable<TrackerFrame[]> {
 	

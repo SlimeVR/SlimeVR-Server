@@ -7,17 +7,17 @@ import com.jme3.math.FastMath;
 import com.jme3.math.Quaternion;
 import com.jme3.math.Vector3f;
 
-import io.eiren.util.ann.VRServerThread;
+import dev.slimevr.VRServer;
+import dev.slimevr.util.ann.VRServerThread;
+import dev.slimevr.vr.processor.ComputedHumanPoseTracker;
+import dev.slimevr.vr.processor.ComputedHumanPoseTrackerPosition;
+import dev.slimevr.vr.processor.TransformNode;
+import dev.slimevr.vr.trackers.Tracker;
+import dev.slimevr.vr.trackers.TrackerPosition;
+import dev.slimevr.vr.trackers.TrackerRole;
+import dev.slimevr.vr.trackers.TrackerStatus;
+import dev.slimevr.vr.trackers.TrackerUtils;
 import io.eiren.util.collections.FastList;
-import io.eiren.vr.VRServer;
-import io.eiren.vr.processor.ComputedHumanPoseTracker;
-import io.eiren.vr.processor.ComputedHumanPoseTrackerPosition;
-import io.eiren.vr.processor.TransformNode;
-import io.eiren.vr.trackers.Tracker;
-import io.eiren.vr.trackers.TrackerPosition;
-import io.eiren.vr.trackers.TrackerRole;
-import io.eiren.vr.trackers.TrackerStatus;
-import io.eiren.vr.trackers.TrackerUtils;
 
 public class SimpleSkeleton extends HumanSkeleton implements SkeletonConfigCallback {
 	

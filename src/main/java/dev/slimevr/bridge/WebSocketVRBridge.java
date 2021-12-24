@@ -17,15 +17,15 @@ import org.json.JSONObject;
 import com.jme3.math.Quaternion;
 import com.jme3.math.Vector3f;
 
+import dev.slimevr.Main;
+import dev.slimevr.VRServer;
+import dev.slimevr.vr.trackers.ComputedTracker;
+import dev.slimevr.vr.trackers.HMDTracker;
+import dev.slimevr.vr.trackers.ShareableTracker;
+import dev.slimevr.vr.trackers.Tracker;
+import dev.slimevr.vr.trackers.TrackerStatus;
 import io.eiren.util.collections.FastList;
 import io.eiren.util.logging.LogManager;
-import io.eiren.vr.Main;
-import io.eiren.vr.VRServer;
-import io.eiren.vr.trackers.ComputedTracker;
-import io.eiren.vr.trackers.HMDTracker;
-import io.eiren.vr.trackers.ShareableTracker;
-import io.eiren.vr.trackers.Tracker;
-import io.eiren.vr.trackers.TrackerStatus;
 
 public class WebSocketVRBridge extends WebSocketServer implements Bridge {
 	
