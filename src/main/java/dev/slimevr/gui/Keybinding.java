@@ -13,15 +13,15 @@ public class Keybinding implements HotkeyListener {
 	public final VRServer server;
 	private static final int RESET = 1;
 	private static final int QUICK_RESET = 2;
-
+	
 	@AWTThread
 	public Keybinding(VRServer server) {
 		this.server = server;
-
+		
 		try {
 			if(JIntellitype.getInstance() instanceof JIntellitype) {
 				JIntellitype.getInstance().addHotKeyListener(this);
-
+				
 				String resetBinding = this.server.config.getString("keybindings.reset");
 				if(resetBinding == null) {
 					resetBinding = "CTRL+ALT+SHIFT+Y";
@@ -29,7 +29,7 @@ public class Keybinding implements HotkeyListener {
 				}
 				JIntellitype.getInstance().registerHotKey(RESET, resetBinding);
 				LogManager.log.info("[Keybinding] Bound reset to " + resetBinding);
-
+				
 				String quickResetBinding = this.server.config.getString("keybindings.quickReset");
 				if(quickResetBinding == null) {
 					quickResetBinding = "CTRL+ALT+SHIFT+U";
@@ -38,17 +38,13 @@ public class Keybinding implements HotkeyListener {
 				JIntellitype.getInstance().registerHotKey(QUICK_RESET, quickResetBinding);
 				LogManager.log.info("[Keybinding] Bound quick reset to " + quickResetBinding);
 			}
-		}
-		catch (JIntellitypeException je)
-		{
+		} catch(JIntellitypeException je) {
 			LogManager.log.info("[Keybinding] JIntellitype initialization failed. Keybindings will be disabled. Try restarting your computer.");
-		}
-		catch (ExceptionInInitializerError e)
-		{
+		} catch(ExceptionInInitializerError e) {
 			LogManager.log.info("[Keybinding] JIntellitype initialization failed. Keybindings will be disabled. Try restarting your computer.");
 		}
 	}
-
+	
 	@AWTThread
 	@Override
 	public void onHotKey(int identifier) {

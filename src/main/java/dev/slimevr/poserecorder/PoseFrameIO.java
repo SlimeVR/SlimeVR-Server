@@ -26,7 +26,6 @@ public final class PoseFrameIO {
 			if(frames != null) {
 				outputStream.writeInt(frames.getTrackerCount());
 				for(PoseFrameTracker tracker : frames.getTrackers()) {
-					
 					outputStream.writeUTF(tracker.name);
 					outputStream.writeInt(tracker.getFrameCount());
 					for(int i = 0; i < tracker.getFrameCount(); i++) {

@@ -171,7 +171,7 @@ public final class TrackerFrame implements Tracker {
 		return true;
 	}
 	//#endregion
-
+	
 	@Override
 	public int getTrackerId() {
 		return this.trackerId;

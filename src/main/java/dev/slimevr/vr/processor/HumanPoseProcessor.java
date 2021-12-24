@@ -23,7 +23,7 @@ public class HumanPoseProcessor {
 	private final List<ComputedHumanPoseTracker> computedTrackers = new FastList<>();
 	private final List<Consumer<HumanSkeleton>> onSkeletonUpdated = new FastList<>();
 	private HumanSkeleton skeleton;
-
+	
 	public HumanPoseProcessor(VRServer server, HMDTracker hmd) {
 		this.server = server;
 		computedTrackers.add(new ComputedHumanPoseTracker(Tracker.getNextLocalTrackerId(), ComputedHumanPoseTrackerPosition.WAIST, TrackerRole.WAIST));
@@ -37,7 +37,7 @@ public class HumanPoseProcessor {
 	public HumanSkeleton getSkeleton() {
 		return skeleton;
 	}
-
+	
 	@VRServerThread
 	public void addSkeletonUpdatedCallback(Consumer<HumanSkeleton> consumer) {
 		onSkeletonUpdated.add(consumer);
@@ -50,13 +50,13 @@ public class HumanPoseProcessor {
 		if(skeleton != null)
 			skeleton.getSkeletonConfig().setConfig(key, newLength);
 	}
-
+	
 	@ThreadSafe
 	public void resetSkeletonConfig(SkeletonConfigValue key) {
 		if(skeleton != null)
 			skeleton.resetSkeletonConfig(key);
 	}
-
+	
 	@ThreadSafe
 	public void resetAllSkeletonConfigs() {
 		if(skeleton != null)
@@ -67,7 +67,7 @@ public class HumanPoseProcessor {
 	public SkeletonConfig getSkeletonConfig() {
 		return skeleton.getSkeletonConfig();
 	}
-
+	
 	@ThreadSafe
 	public float getSkeletonConfig(SkeletonConfigValue key) {
 		if(skeleton != null) {
@@ -80,17 +80,17 @@ public class HumanPoseProcessor {
 	public List<? extends ShareableTracker> getComputedTrackers() {
 		return computedTrackers;
 	}
-
+	
 	@VRServerThread
 	public void trackerAdded(Tracker tracker) {
 		updateSekeltonModel();
 	}
-
+	
 	@VRServerThread
 	public void trackerUpdated(Tracker tracker) {
 		updateSekeltonModel();
 	}
-
+	
 	@VRServerThread
 	private void updateSekeltonModel() {
 		disconnectAllTrackers();
@@ -98,26 +98,26 @@ public class HumanPoseProcessor {
 		for(int i = 0; i < onSkeletonUpdated.size(); ++i)
 			onSkeletonUpdated.get(i).accept(skeleton);
 	}
-
+	
 	@VRServerThread
 	private void disconnectAllTrackers() {
 		for(int i = 0; i < computedTrackers.size(); ++i) {
 			computedTrackers.get(i).setStatus(TrackerStatus.DISCONNECTED);
 		}
 	}
-
+	
 	@VRServerThread
 	public void update() {
 		if(skeleton != null)
 			skeleton.updatePose();
 	}
-
+	
 	@VRServerThread
 	public void resetTrackers() {
 		if(skeleton != null)
 			skeleton.resetTrackersFull();
 	}
-
+	
 	@VRServerThread
 	public void resetTrackersYaw() {
 		if(skeleton != null)

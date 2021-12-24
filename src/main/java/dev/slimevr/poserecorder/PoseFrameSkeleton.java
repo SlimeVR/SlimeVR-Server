@@ -10,13 +10,13 @@ import dev.slimevr.vr.processor.skeleton.SkeletonConfigValue;
 import dev.slimevr.vr.trackers.Tracker;
 
 public class PoseFrameSkeleton extends SimpleSkeleton {
-
+	
 	private int frameCursor = 0;
-
+	
 	protected PoseFrameSkeleton(List<? extends ComputedHumanPoseTracker> computedTrackers) {
 		super(computedTrackers);
 	}
-
+	
 	public PoseFrameSkeleton(VRServer server, List<? extends ComputedHumanPoseTracker> computedTrackers) {
 		super(server, computedTrackers);
 	}
@@ -24,7 +24,7 @@ public class PoseFrameSkeleton extends SimpleSkeleton {
 	public PoseFrameSkeleton(List<? extends Tracker> trackers, List<? extends ComputedHumanPoseTracker> computedTrackers) {
 		super(trackers, computedTrackers);
 	}
-
+	
 	public PoseFrameSkeleton(List<? extends Tracker> trackers, List<? extends ComputedHumanPoseTracker> computedTrackers, Map<SkeletonConfigValue, Float> configs, Map<SkeletonConfigValue, Float> altConfigs) {
 		super(trackers, computedTrackers, configs, altConfigs);
 	}
@@ -32,7 +32,7 @@ public class PoseFrameSkeleton extends SimpleSkeleton {
 	public PoseFrameSkeleton(List<? extends Tracker> trackers, List<? extends ComputedHumanPoseTracker> computedTrackers, Map<SkeletonConfigValue, Float> configs) {
 		super(trackers, computedTrackers, configs);
 	}
-
+	
 	private int limitCursor() {
 		if(frameCursor < 0) {
 			frameCursor = 0;
@@ -58,13 +58,13 @@ public class PoseFrameSkeleton extends SimpleSkeleton {
 	public int getCursor() {
 		return frameCursor;
 	}
-
+	
 	// Get tracker for specific frame
 	@Override
 	protected Tracker trackerPreUpdate(Tracker tracker) {
-		if (tracker instanceof PoseFrameTracker) {
+		if(tracker instanceof PoseFrameTracker) {
 			// Return frame if available, otherwise return the original tracker
-			TrackerFrame frame = ((PoseFrameTracker)tracker).safeGetFrame(frameCursor);
+			TrackerFrame frame = ((PoseFrameTracker) tracker).safeGetFrame(frameCursor);
 			return frame == null ? tracker : frame;
 		}
 		return tracker;

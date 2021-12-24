@@ -65,7 +65,7 @@ public class AutoBone {
 	// TODO Needs much more work, probably going to rethink how the errors work to avoid this barely functional workaround @ButterscotchVanilla
 	// For scaling distances, since smaller sizes will cause smaller distances
 	//private float totalLengthBase = 2f;
-
+	
 	// Human average is probably 1.1235 (SD 0.07)
 	public float legBodyRatio = 1.1235f;
 	// SD of 0.07, capture 68% within range
@@ -83,10 +83,10 @@ public class AutoBone {
 	public final EnumMap<SkeletonConfigValue, Float> configs = new EnumMap<SkeletonConfigValue, Float>(SkeletonConfigValue.class);
 	public final EnumMap<SkeletonConfigValue, Float> staticConfigs = new EnumMap<SkeletonConfigValue, Float>(SkeletonConfigValue.class);
 	
-	public final FastList<SkeletonConfigValue> heightConfigs = new FastList<SkeletonConfigValue>(new SkeletonConfigValue[] {
-		SkeletonConfigValue.NECK, SkeletonConfigValue.TORSO, SkeletonConfigValue.LEGS_LENGTH});
-	public final FastList<SkeletonConfigValue> lengthConfigs = new FastList<SkeletonConfigValue>(new SkeletonConfigValue[] {
-		SkeletonConfigValue.HEAD, SkeletonConfigValue.NECK, SkeletonConfigValue.TORSO, SkeletonConfigValue.HIPS_WIDTH, SkeletonConfigValue.LEGS_LENGTH});
+	public final FastList<SkeletonConfigValue> heightConfigs = new FastList<SkeletonConfigValue>(new SkeletonConfigValue[]{
+			SkeletonConfigValue.NECK, SkeletonConfigValue.TORSO, SkeletonConfigValue.LEGS_LENGTH});
+	public final FastList<SkeletonConfigValue> lengthConfigs = new FastList<SkeletonConfigValue>(new SkeletonConfigValue[]{
+			SkeletonConfigValue.HEAD, SkeletonConfigValue.NECK, SkeletonConfigValue.TORSO, SkeletonConfigValue.HIPS_WIDTH, SkeletonConfigValue.LEGS_LENGTH});
 	
 	public AutoBone(VRServer server) {
 		this.server = server;
@@ -132,7 +132,7 @@ public class AutoBone {
 		staticConfigs.put(SkeletonConfigValue.HIPS_WIDTH, readFromConfig(SkeletonConfigValue.HIPS_WIDTH));
 		configs.put(SkeletonConfigValue.LEGS_LENGTH, readFromConfig(SkeletonConfigValue.LEGS_LENGTH));
 		configs.put(SkeletonConfigValue.KNEE_HEIGHT, readFromConfig(SkeletonConfigValue.KNEE_HEIGHT));
-
+		
 		// Keep "feet" at ankles
 		staticConfigs.put(SkeletonConfigValue.FOOT_LENGTH, 0f);
 		staticConfigs.put(SkeletonConfigValue.FOOT_OFFSET, 0f);
@@ -177,7 +177,7 @@ public class AutoBone {
 	
 	// This doesn't require a skeleton, therefore can be used if skeleton is null
 	public void saveConfigs() {
-		for (SkeletonConfigValue config : SkeletonConfigValue.values) {
+		for(SkeletonConfigValue config : SkeletonConfigValue.values) {
 			setConfig(config);
 		}
 		
@@ -197,11 +197,11 @@ public class AutoBone {
 		Float configVal = configs.get(config);
 		return configVal != null || configsAlt == null ? configVal : configsAlt.get(config);
 	}
-
+	
 	public float sumSelectConfigs(List<SkeletonConfigValue> selection, Map<SkeletonConfigValue, Float> configs, Map<SkeletonConfigValue, Float> configsAlt) {
 		float sum = 0f;
 		
-		for (SkeletonConfigValue config : selection) {
+		for(SkeletonConfigValue config : selection) {
 			Float length = getConfig(config, configs, configsAlt);
 			if(length != null) {
 				sum += length;
@@ -214,29 +214,29 @@ public class AutoBone {
 	public float sumSelectConfigs(List<SkeletonConfigValue> selection, SkeletonConfig skeletonConfig) {
 		float sum = 0f;
 		
-		for (SkeletonConfigValue config : selection) {
+		for(SkeletonConfigValue config : selection) {
 			sum += skeletonConfig.getConfig(config);
 		}
 		
 		return sum;
 	}
-
+	
 	public float getLengthSum(Map<SkeletonConfigValue, Float> configs) {
 		return getLengthSum(configs, null);
 	}
-
+	
 	public float getLengthSum(Map<SkeletonConfigValue, Float> configs, Map<SkeletonConfigValue, Float> configsAlt) {
 		float length = 0f;
 		
-		if (configsAlt != null) {
+		if(configsAlt != null) {
 			for(Entry<SkeletonConfigValue, Float> config : configsAlt.entrySet()) {
 				// If there isn't a duplicate config
-				if (!configs.containsKey(config.getKey())) {
+				if(!configs.containsKey(config.getKey())) {
 					length += config.getValue();
 				}
 			}
 		}
-
+		
 		for(Float boneLength : configs.values()) {
 			length += boneLength;
 		}
@@ -277,7 +277,7 @@ public class AutoBone {
 	
 	public float processFrames(PoseFrames frames, boolean calcInitError, float targetHeight, Consumer<Epoch> epochCallback) {
 		final int frameCount = frames.getMaxFrameCount();
-
+		
 		List<PoseFrameTracker> trackers = frames.getTrackers();
 		reloadConfigValues(trackers); // Reload configs and detect chest tracker from the first frame
 		
@@ -311,13 +311,13 @@ public class AutoBone {
 			for(int cursorOffset = minDataDistance; cursorOffset <= maxDataDistance && cursorOffset < frameCount; cursorOffset++) {
 				for(int frameCursor = 0; frameCursor < frameCount - cursorOffset; frameCursor += cursorIncrement) {
 					int frameCursor2 = frameCursor + cursorOffset;
-
+					
 					skeleton1.skeletonConfig.setConfigs(configs, null);
 					skeleton2.skeletonConfig.setConfigs(configs, null);
 					
 					skeleton1.setCursor(frameCursor);
 					skeleton1.updatePose();
-
+					
 					skeleton2.setCursor(frameCursor2);
 					skeleton2.updatePose();
 					
@@ -348,7 +348,7 @@ public class AutoBone {
 					float adjustVal = error * adjustRate;
 					
 					// If there is no adjustment whatsoever, skip this
-					if (adjustVal == 0f) {
+					if(adjustVal == 0f) {
 						continue;
 					}
 					
@@ -420,21 +420,21 @@ public class AutoBone {
 		// Divide by 4 to halve and average, it's halved because you want to approach a midpoint, not the other point
 		return (slideLeft + slideRight) / 4f;
 	}
-
+	
 	// The change in distance between both of the ankles over time
 	protected float getOffsetSlideErrorDeriv(PoseFrameSkeleton skeleton1, PoseFrameSkeleton skeleton2) {
 		Vector3f leftFoot1 = skeleton1.getComputedTracker(TrackerRole.LEFT_FOOT).position;
 		Vector3f rightFoot1 = skeleton1.getComputedTracker(TrackerRole.RIGHT_FOOT).position;
-
+		
 		Vector3f leftFoot2 = skeleton2.getComputedTracker(TrackerRole.LEFT_FOOT).position;
 		Vector3f rightFoot2 = skeleton2.getComputedTracker(TrackerRole.RIGHT_FOOT).position;
-
+		
 		float slideDist1 = leftFoot1.distance(rightFoot1);
 		float slideDist2 = leftFoot2.distance(rightFoot2);
-
+		
 		float slideDist3 = leftFoot1.distance(rightFoot2);
 		float slideDist4 = leftFoot2.distance(rightFoot1);
-
+		
 		float dist1 = FastMath.abs(slideDist1 - slideDist2);
 		float dist2 = FastMath.abs(slideDist3 - slideDist4);
 		
@@ -452,7 +452,7 @@ public class AutoBone {
 	protected float getOffsetErrorDeriv(PoseFrameSkeleton skeleton1, PoseFrameSkeleton skeleton2) {
 		float leftFoot1 = skeleton1.getComputedTracker(TrackerRole.LEFT_FOOT).position.getY();
 		float rightFoot1 = skeleton1.getComputedTracker(TrackerRole.RIGHT_FOOT).position.getY();
-
+		
 		float leftFoot2 = skeleton2.getComputedTracker(TrackerRole.LEFT_FOOT).position.getY();
 		float rightFoot2 = skeleton2.getComputedTracker(TrackerRole.RIGHT_FOOT).position.getY();
 		
@@ -476,7 +476,7 @@ public class AutoBone {
 		float torsoLength = skeleton.getConfig(SkeletonConfigValue.TORSO);
 		float legsLength = skeleton.getConfig(SkeletonConfigValue.LEGS_LENGTH);
 		float kneeHeight = skeleton.getConfig(SkeletonConfigValue.KNEE_HEIGHT);
-
+		
 		float chestTorso = FastMath.abs((chestLength / torsoLength) - chestTorsoRatio);
 		float legBody = FastMath.abs((legsLength / (torsoLength + neckLength)) - legBodyRatio);
 		float kneeLeg = FastMath.abs((kneeHeight / legsLength) - kneeLegRatio);
@@ -496,9 +496,9 @@ public class AutoBone {
 		int offsetCount = 0;
 		
 		List<PoseFrameTracker> trackers = frames.getTrackers();
-		for (int i = 0; i < trackers.size(); i++) {
+		for(int i = 0; i < trackers.size(); i++) {
 			PoseFrameTracker tracker = trackers.get(i);
-
+			
 			TrackerFrame trackerFrame = tracker.safeGetFrame(cursor);
 			if(trackerFrame == null || !trackerFrame.hasData(TrackerFrameData.POSITION)) {
 				continue;
@@ -520,9 +520,9 @@ public class AutoBone {
 		int offsetCount = 0;
 		
 		List<PoseFrameTracker> trackers = frames.getTrackers();
-		for (int i = 0; i < trackers.size(); i++) {
+		for(int i = 0; i < trackers.size(); i++) {
 			PoseFrameTracker tracker = trackers.get(i);
-
+			
 			TrackerFrame trackerFrame1 = tracker.safeGetFrame(cursor1);
 			if(trackerFrame1 == null || !trackerFrame1.hasData(TrackerFrameData.POSITION)) {
 				continue;
@@ -561,7 +561,7 @@ public class AutoBone {
 			totalError += getSlideErrorDeriv(skeleton1, skeleton2) * distScale * slideErrorFactor;
 			sumWeight += slideErrorFactor;
 		}
-
+		
 		if(offsetSlideErrorFactor > 0f) {
 			totalError += getOffsetSlideErrorDeriv(skeleton1, skeleton2) * distScale * offsetSlideErrorFactor;
 			sumWeight += offsetSlideErrorFactor;
@@ -605,7 +605,7 @@ public class AutoBone {
 	protected void updateSkeletonBoneLength(PoseFrameSkeleton skeleton1, PoseFrameSkeleton skeleton2, SkeletonConfigValue config, float newLength) {
 		skeleton1.skeletonConfig.setConfig(config, newLength);
 		skeleton1.updatePoseAffectedByConfig(config);
-
+		
 		skeleton2.skeletonConfig.setConfig(config, newLength);
 		skeleton2.updatePoseAffectedByConfig(config);
 	}

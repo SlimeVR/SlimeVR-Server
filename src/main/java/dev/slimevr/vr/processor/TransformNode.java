@@ -26,10 +26,10 @@ public class TransformNode {
 	}
 	
 	public void attachChild(TransformNode node) {
-		if (node.parent != null) {
+		if(node.parent != null) {
 			throw new IllegalArgumentException("The child node must not already have a parent");
 		}
-
+		
 		this.children.add(node);
 		node.parent = this;
 	}
@@ -37,7 +37,7 @@ public class TransformNode {
 	public TransformNode getParent() {
 		return parent;
 	}
-
+	
 	public void update() {
 		updateWorldTransforms(); // Call update on each frame because we have relatively few nodes
 		for(int i = 0; i < children.size(); ++i)
@@ -66,14 +66,11 @@ public class TransformNode {
 	public String getName() {
 		return name;
 	}
-
-    public void combineWithParentGlobalRotation(Transform parent) {
-    	worldTransform.getScale().multLocal(parent.getScale());
-    	worldTransform.getTranslation().multLocal(parent.getScale());
-        
-        parent
-            .getRotation()
-            .multLocal(worldTransform.getTranslation())
-            .addLocal(parent.getTranslation());
-    }
+	
+	public void combineWithParentGlobalRotation(Transform parent) {
+		worldTransform.getScale().multLocal(parent.getScale());
+		worldTransform.getTranslation().multLocal(parent.getScale());
+		
+		parent.getRotation().multLocal(worldTransform.getTranslation()).addLocal(parent.getTranslation());
+	}
 }
