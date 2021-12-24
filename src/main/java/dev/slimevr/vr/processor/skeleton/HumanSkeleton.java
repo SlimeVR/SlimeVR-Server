@@ -1,9 +1,10 @@
-package io.eiren.vr.processor;
+package dev.slimevr.vr.processor.skeleton;
 
 import java.util.Map;
 
 import io.eiren.util.ann.ThreadSafe;
 import io.eiren.util.ann.VRServerThread;
+import io.eiren.vr.processor.TransformNode;
 
 public abstract class HumanSkeleton {
 
@@ -12,15 +13,19 @@ public abstract class HumanSkeleton {
 	
 	@ThreadSafe
 	public abstract TransformNode getRootNode();
-
-	@ThreadSafe
-	public abstract Map<String, Float> getSkeletonConfig();
-
-	@ThreadSafe
-	public abstract void setSkeletonConfig(String key, float newLength);
 	
 	@ThreadSafe
-	public abstract void resetSkeletonConfig(String joint);
+	public abstract SkeletonConfig getSkeletonConfig();
+
+	@ThreadSafe
+	public abstract void resetSkeletonConfig(SkeletonConfigValue config);
+
+	@ThreadSafe
+	public void resetAllSkeletonConfigs() {
+		for (SkeletonConfigValue config : SkeletonConfigValue.values) {
+			resetSkeletonConfig(config);
+		}
+	}
 
 	@VRServerThread
 	public abstract void resetTrackersFull();

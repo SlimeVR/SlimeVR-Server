@@ -202,7 +202,7 @@ public class VRServerGUI extends JFrame {
 				add(l = new JLabel("Body proportions"));
 				l.setFont(l.getFont().deriveFont(Font.BOLD));
 				l.setAlignmentX(0.5f);
-				add(new SkeletonConfig(server, VRServerGUI.this));
+				add(new SkeletonConfigGUI(server, VRServerGUI.this));
 				add(Box.createVerticalStrut(10));
 				if(server.hasBridge(NamedPipeBridge.class)) {
 					NamedPipeBridge br = server.getVRBridge(NamedPipeBridge.class);

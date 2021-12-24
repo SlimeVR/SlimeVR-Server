@@ -137,7 +137,7 @@ public class PoseFrameTracker implements Tracker, Iterable<TrackerFrame> {
 			return true;
 		}
 		
-		store.set(0, 0, 0, 1);
+		store.set(Quaternion.IDENTITY);
 		return false;
 	}
 	
@@ -149,7 +149,7 @@ public class PoseFrameTracker implements Tracker, Iterable<TrackerFrame> {
 			return true;
 		}
 		
-		store.set(0, 0, 0);
+		store.set(Vector3f.ZERO);
 		return false;
 	}
 	
@@ -175,7 +175,7 @@ public class PoseFrameTracker implements Tracker, Iterable<TrackerFrame> {
 	
 	@Override
 	public float getConfidenceLevel() {
-		return 0;
+		return 1f;
 	}
 	
 	@Override

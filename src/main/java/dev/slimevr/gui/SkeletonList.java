@@ -10,12 +10,12 @@ import com.jme3.math.Quaternion;
 import com.jme3.math.Vector3f;
 
 import dev.slimevr.gui.swing.EJBagNoStretch;
+import dev.slimevr.vr.processor.skeleton.HumanSkeleton;
 import io.eiren.util.StringUtils;
 import io.eiren.util.ann.ThreadSafe;
 import io.eiren.util.ann.VRServerThread;
 import io.eiren.util.collections.FastList;
 import io.eiren.vr.VRServer;
-import io.eiren.vr.processor.HumanSkeleton;
 import io.eiren.vr.processor.TransformNode;
 
 public class SkeletonList extends EJBagNoStretch {

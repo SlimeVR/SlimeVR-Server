@@ -28,6 +28,7 @@ import dev.slimevr.gui.swing.EJBox;
 import dev.slimevr.poserecorder.PoseFrames;
 import dev.slimevr.poserecorder.PoseFrameIO;
 import dev.slimevr.poserecorder.PoseRecorder;
+import dev.slimevr.vr.processor.skeleton.SkeletonConfigValue;
 
 public class AutoBoneWindow extends JFrame {
 	
@@ -37,7 +38,7 @@ public class AutoBoneWindow extends JFrame {
 	private EJBox pane;
 	
 	private final transient VRServer server;
-	private final transient SkeletonConfig skeletonConfig;
+	private final transient SkeletonConfigGUI skeletonConfig;
 	private final transient PoseRecorder poseRecorder;
 	private final transient AutoBone autoBone;
 	
@@ -52,7 +53,7 @@ public class AutoBoneWindow extends JFrame {
 	private JLabel processLabel;
 	private JLabel lengthsLabel;
 	
-	public AutoBoneWindow(VRServer server, SkeletonConfig skeletonConfig) {
+	public AutoBoneWindow(VRServer server, SkeletonConfigGUI skeletonConfig) {
 		super("Skeleton Auto-Configuration");
 		
 		this.server = server;
@@ -67,17 +68,14 @@ public class AutoBoneWindow extends JFrame {
 	}
 	
 	private String getLengthsString() {
-		boolean first = true;
-		StringBuilder configInfo = new StringBuilder("");
-		for(Entry<String, Float> entry : autoBone.configs.entrySet()) {
-			if(!first) {
+		final StringBuilder configInfo = new StringBuilder();
+		autoBone.configs.forEach((key, value) -> {
+			if(configInfo.length() > 0) {
 				configInfo.append(", ");
-			} else {
-				first = false;
 			}
 			
-			configInfo.append(entry.getKey() + ": " + StringUtils.prettyNumber(entry.getValue() * 100f, 2));
-		}
+			configInfo.append(key.stringVal + ": " + StringUtils.prettyNumber(value * 100f, 2));
+		});
 		
 		return configInfo.toString();
 	}
@@ -134,6 +132,7 @@ public class AutoBoneWindow extends JFrame {
 		autoBone.adjustRateDecay = server.config.getFloat("autobone.adjustRateDecay", autoBone.adjustRateDecay);
 		
 		autoBone.slideErrorFactor = server.config.getFloat("autobone.slideErrorFactor", autoBone.slideErrorFactor);
+		autoBone.offsetSlideErrorFactor = server.config.getFloat("autobone.offsetSlideErrorFactor", autoBone.offsetSlideErrorFactor);
 		autoBone.offsetErrorFactor = server.config.getFloat("autobone.offsetErrorFactor", autoBone.offsetErrorFactor);
 		autoBone.proportionErrorFactor = server.config.getFloat("autobone.proportionErrorFactor", autoBone.proportionErrorFactor);
 		autoBone.heightErrorFactor = server.config.getFloat("autobone.heightErrorFactor", autoBone.heightErrorFactor);
@@ -339,12 +338,12 @@ public class AutoBoneWindow extends JFrame {
 												applyButton.setEnabled(true);
 												
 												//#region Stats/Values
-												Float neckLength = autoBone.getConfig("Neck");
-												Float chestDistance = autoBone.getConfig("Chest");
-												Float torsoLength = autoBone.getConfig("Torso");
-												Float hipWidth = autoBone.getConfig("Hips width");
-												Float legsLength = autoBone.getConfig("Legs length");
-												Float kneeHeight = autoBone.getConfig("Knee height");
+												Float neckLength = autoBone.getConfig(SkeletonConfigValue.NECK);
+												Float chestDistance = autoBone.getConfig(SkeletonConfigValue.CHEST);
+												Float torsoLength = autoBone.getConfig(SkeletonConfigValue.TORSO);
+												Float hipWidth = autoBone.getConfig(SkeletonConfigValue.HIPS_WIDTH);
+												Float legsLength = autoBone.getConfig(SkeletonConfigValue.LEGS_LENGTH);
+												Float kneeHeight = autoBone.getConfig(SkeletonConfigValue.KNEE_HEIGHT);
 												
 												float neckTorso = neckLength != null && torsoLength != null ? neckLength / torsoLength : 0f;
 												float chestTorso = chestDistance != null && torsoLength != null ? chestDistance / torsoLength : 0f;

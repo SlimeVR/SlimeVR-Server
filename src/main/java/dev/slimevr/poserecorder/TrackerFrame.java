@@ -86,7 +86,7 @@ public final class TrackerFrame implements Tracker {
 			return true;
 		}
 		
-		store.set(0, 0, 0, 1);
+		store.set(Quaternion.IDENTITY);
 		return false;
 	}
 	
@@ -97,7 +97,7 @@ public final class TrackerFrame implements Tracker {
 			return true;
 		}
 		
-		store.set(0, 0, 0);
+		store.set(Vector3f.ZERO);
 		return false;
 	}
 	
@@ -123,7 +123,7 @@ public final class TrackerFrame implements Tracker {
 	
 	@Override
 	public float getConfidenceLevel() {
-		return 0;
+		return 1f;
 	}
 	
 	@Override
