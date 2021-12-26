@@ -1,12 +1,10 @@
 package dev.slimevr.gui;
 
-import java.util.Locale;
-
 import com.melloware.jintellitype.HotkeyListener;
 import com.melloware.jintellitype.JIntellitype;
-import com.melloware.jintellitype.JIntellitypeException;
 
 import dev.slimevr.VRServer;
+import io.eiren.util.OperatingSystem;
 import io.eiren.util.ann.AWTThread;
 import io.eiren.util.logging.LogManager;
 
@@ -19,14 +17,8 @@ public class Keybinding implements HotkeyListener {
 	public Keybinding(VRServer server) {
 		this.server = server;
 		
-		try {
-			String osName = System.getProperty("os.name", "generic").toLowerCase(Locale.ENGLISH);
-			if(!osName.contains("windows")) {
-				LogManager.log.info("[Keybinding] Currently only supported on Windows. Keybindings will be disabled.");
-				return;
-			}
-		} catch (SecurityException e) {
-			LogManager.log.info("[Keybinding] Can't check operating system name. Keybindings will be disabled.");
+		if (OperatingSystem.getCurrentPlatform() == OperatingSystem.WINDOWS) {
+			LogManager.log.info("[Keybinding] Currently only supported on Windows. Keybindings will be disabled.");
 			return;
 		}
 		
@@ -50,7 +42,7 @@ public class Keybinding implements HotkeyListener {
 				JIntellitype.getInstance().registerHotKey(QUICK_RESET, quickResetBinding);
 				LogManager.log.info("[Keybinding] Bound quick reset to " + quickResetBinding);
 			}
-		} catch(JIntellitypeException | ExceptionInInitializerError | UnsatisfiedLinkError e) {
+		} catch(Throwable e) {
 			LogManager.log.info("[Keybinding] JIntellitype initialization failed. Keybindings will be disabled. Try restarting your computer.");
 		}
 	}
