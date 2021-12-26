@@ -75,5 +75,5 @@ shadowJar {
 	archiveVersion.set('')
 }
 application {
-	mainClassName = 'io.eiren.vr.Main'
+	mainClassName = 'dev.slimevr.Main'
 }
