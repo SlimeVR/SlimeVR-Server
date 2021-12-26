@@ -17,7 +17,7 @@ public class Keybinding implements HotkeyListener {
 	public Keybinding(VRServer server) {
 		this.server = server;
 		
-		if (OperatingSystem.getCurrentPlatform() == OperatingSystem.WINDOWS) {
+		if (OperatingSystem.getCurrentPlatform() != OperatingSystem.WINDOWS) {
 			LogManager.log.info("[Keybinding] Currently only supported on Windows. Keybindings will be disabled.");
 			return;
 		}
