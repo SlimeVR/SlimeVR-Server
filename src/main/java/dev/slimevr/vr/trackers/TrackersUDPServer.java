@@ -373,6 +373,19 @@ public class TrackersUDPServer extends Thread {
 						socket.send(new DatagramPacket(rcvBuffer, bb.position(), connection.address));
 						System.out.println("[TrackerServer] Sensor info for " + connection.sensors.get(0).getName() + "/" + sensorId + ": " + sensorStatus);
 						break;
+					case 19:
+						if(connection == null)
+							break;
+						if(connection.isOwoTrack)
+							break;
+						bb.getLong();
+						sensorId = bb.get() & 0xFF;
+						tracker = connection.sensors.get(sensorId);
+						if(tracker == null)
+							break;
+						int signalStrength = bb.get();
+						tracker.signalStrength = signalStrength;
+						break;
 					default:
 						System.out.println("[TrackerServer] Unknown data received: " + packetId + " from " + recieve.getSocketAddress());
 						break;
