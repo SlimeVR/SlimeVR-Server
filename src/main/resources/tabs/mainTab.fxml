@@ -1,10 +1,12 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
+<?import javafx.scene.image.*?>
+<?import java.lang.*?>
 <?import dev.slimevr.gui.views.*?>
 <?import javafx.scene.control.*?>
 <?import javafx.scene.layout.*?>
 
-<AnchorPane maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" prefHeight="400.0" style="-fx-background-color: #4f22ff;" xmlns="http://javafx.com/javafx/11.0.2" xmlns:fx="http://javafx.com/fxml/1" fx:controller="dev.slimevr.gui.tabs.MainTabController">
+<AnchorPane maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" prefHeight="400.0" style="-fx-background-color: #2e2e2e;" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="dev.slimevr.gui.tabs.MainTabController">
    <children>
       <GridPane prefHeight="400.0" prefWidth="599.0" style="-fx-background-color: #34ff00;" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
         <columnConstraints>
@@ -15,31 +17,61 @@
           <RowConstraints vgrow="ALWAYS" />
         </rowConstraints>
          <children>
-            <ScrollPane>
+            <ScrollPane hbarPolicy="NEVER" style="-fx-background-color: #2e2e2e;" vbarPolicy="ALWAYS">
                <content>
 						 <TrackersListPane fx:id="trackersListPane" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" />
                </content>
             </ScrollPane>
-            <AnchorPane prefHeight="200.0" prefWidth="200.0" GridPane.columnIndex="1">
+            <AnchorPane prefHeight="200.0" prefWidth="200.0" style="-fx-background-color: #2e2e2e;" GridPane.columnIndex="1">
                <children>
-                  <VBox prefHeight="400.0" prefWidth="114.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+                  <VBox prefHeight="400.0" prefWidth="114.0" style="-fx-background-color: #2e2e2e;" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
                      <children>
-                        <AnchorPane prefHeight="200.0" prefWidth="200.0">
+                        <AnchorPane prefHeight="100.0" prefWidth="114.0">
                            <children>
-                              <Button mnemonicParsing="false" prefHeight="133.0" prefWidth="150.0" text="Button" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0" />
+                              <Button contentDisplay="TOP" layoutX="6.0" layoutY="13.0" mnemonicParsing="false" prefHeight="25.0" prefWidth="94.0" text="Reset" AnchorPane.bottomAnchor="10.0" AnchorPane.leftAnchor="10.0" AnchorPane.rightAnchor="10.0" AnchorPane.topAnchor="10.0">
+                                 <graphic>
+                                    <ImageView fitHeight="28.0" fitWidth="30.0" pickOnBounds="true" preserveRatio="true">
+                                       <image>
+                                          <Image url="@../reset.png" />
+                                       </image>
+                                    </ImageView>
+                                 </graphic></Button>
                            </children>
                         </AnchorPane>
-                        <AnchorPane prefHeight="200.0" prefWidth="200.0">
-							<children>
-							<Button fx:id="wifiButton" mnemonicParsing="false" onAction="#wifiClicked" text="wifi" GridPane.columnIndex="1" GridPane.rowIndex="3" />
-							</children>
-							<children>
-                              <Button mnemonicParsing="false" prefHeight="133.0" prefWidth="150.0" text="Button" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0" />
+                        <AnchorPane prefHeight="100.0" prefWidth="114.0">
+                           <children>
+                              <Button contentDisplay="TOP" layoutX="6.0" layoutY="13.0" mnemonicParsing="false" prefHeight="25.0" prefWidth="94.0" text="Quick Reset" AnchorPane.bottomAnchor="10.0" AnchorPane.leftAnchor="10.0" AnchorPane.rightAnchor="10.0" AnchorPane.topAnchor="10.0">
+                                 <graphic>
+                                    <ImageView fitHeight="28.0" fitWidth="30.0" pickOnBounds="true" preserveRatio="true">
+                                       <image>
+                                          <Image url="@../reset.png" />
+                                       </image>
+                                    </ImageView>
+                                 </graphic></Button>
                            </children>
                         </AnchorPane>
-                        <AnchorPane prefHeight="200.0" prefWidth="200.0">
+                        <AnchorPane prefHeight="100.0" prefWidth="114.0">
                            <children>
-                              <ComboBox fx:id="testbox" prefHeight="134.0" prefWidth="150.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0" />
+                              <Button contentDisplay="TOP" layoutX="6.0" layoutY="13.0" mnemonicParsing="false" prefHeight="25.0" prefWidth="94.0" text="Wifi" AnchorPane.bottomAnchor="10.0" AnchorPane.leftAnchor="10.0" AnchorPane.rightAnchor="10.0" AnchorPane.topAnchor="10.0">
+                                 <graphic>
+                                    <ImageView fitHeight="28.0" fitWidth="30.0" pickOnBounds="true" preserveRatio="true">
+                                       <image>
+                                          <Image url="@../wi-fi.png" />
+                                       </image>
+                                    </ImageView>
+                                 </graphic></Button>
+                           </children>
+                        </AnchorPane>
+                        <AnchorPane prefHeight="100.0" prefWidth="114.0">
+                           <children>
+                              <Button contentDisplay="TOP" layoutX="6.0" layoutY="13.0" mnemonicParsing="false" prefHeight="25.0" prefWidth="94.0" text="Debug" AnchorPane.bottomAnchor="10.0" AnchorPane.leftAnchor="10.0" AnchorPane.rightAnchor="10.0" AnchorPane.topAnchor="10.0">
+                                 <graphic>
+                                    <ImageView fitHeight="28.0" fitWidth="30.0" pickOnBounds="true" preserveRatio="true">
+                                       <image>
+                                          <Image url="@../experimentalLegGraphic.png" />
+                                       </image>
+                                    </ImageView>
+                                 </graphic></Button>
                            </children>
                         </AnchorPane>
                      </children>
