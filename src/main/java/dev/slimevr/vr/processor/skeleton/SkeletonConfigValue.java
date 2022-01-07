@@ -15,8 +15,7 @@ public enum SkeletonConfigValue {
 	LEGS_LENGTH("Legs length", "legsLength", "Legs length", 0.86f, new SkeletonNodeOffset[]{SkeletonNodeOffset.KNEE}),
 	KNEE_HEIGHT("Knee height", "kneeHeight", "Knee height", 0.43f, new SkeletonNodeOffset[]{SkeletonNodeOffset.KNEE, SkeletonNodeOffset.ANKLE}),
 	FOOT_LENGTH("Foot length", "footLength", "Foot length", 0.05f, new SkeletonNodeOffset[]{SkeletonNodeOffset.FOOT}),
-	FOOT_OFFSET_Y("Foot offset y", "footOffsetY", "Foot offset y", 0.0f, new SkeletonNodeOffset[]{SkeletonNodeOffset.FOOT_TRACKER}),
-	FOOT_OFFSET_Z("Foot offset z", "footOffsetZ", "Foot offset z", 0.0f, new SkeletonNodeOffset[]{SkeletonNodeOffset.ANKLE}),
+	FOOT_OFFSET("Foot offset", "footOffset", "Foot offset", 0.0f, new SkeletonNodeOffset[]{SkeletonNodeOffset.ANKLE}),
 	SKELETON_OFFSET("Skeleton offset", "skeletonOffset", "Skeleton offset", 0.0f, new SkeletonNodeOffset[]{SkeletonNodeOffset.CHEST_TRACKER, SkeletonNodeOffset.HIP_TRACKER, SkeletonNodeOffset.KNEE_TRACKER, SkeletonNodeOffset.FOOT_TRACKER}),
 	;
 	

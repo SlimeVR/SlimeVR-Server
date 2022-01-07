@@ -243,13 +243,13 @@ public class SkeletonConfig {
 			setNodeOffset(nodeOffset, 0, 0, -getConfig(SkeletonConfigValue.SKELETON_OFFSET));
 			break;
 		case ANKLE:
-			setNodeOffset(nodeOffset, 0, -getConfig(SkeletonConfigValue.KNEE_HEIGHT), -getConfig(SkeletonConfigValue.FOOT_OFFSET_Z));
+			setNodeOffset(nodeOffset, 0, -getConfig(SkeletonConfigValue.KNEE_HEIGHT), -getConfig(SkeletonConfigValue.FOOT_OFFSET));
 			break;
 		case FOOT:
 			setNodeOffset(nodeOffset, 0, 0, -getConfig(SkeletonConfigValue.FOOT_LENGTH));
 			break;
 		case FOOT_TRACKER:
-			setNodeOffset(nodeOffset, 0, getConfig(SkeletonConfigValue.FOOT_OFFSET_Y), -getConfig(SkeletonConfigValue.SKELETON_OFFSET));
+			setNodeOffset(nodeOffset, 0, 0, -getConfig(SkeletonConfigValue.SKELETON_OFFSET));
 			break;
 		}
 	}

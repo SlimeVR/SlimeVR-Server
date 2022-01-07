@@ -624,12 +624,7 @@ public class SimpleSkeleton extends HumanSkeleton implements SkeletonConfigCallb
 			rightFootNode.update();
 			updateComputedTrackers();
 			break;
-		case FOOT_OFFSET_Y:
-			trackerLeftFootNode.update();
-			trackerRightFootNode.update();
-			updateComputedTrackers();
-			break;
-		case FOOT_OFFSET_Z:
+		case FOOT_OFFSET:
 			leftAnkleNode.update();
 			rightAnkleNode.update();
 			updateComputedTrackers();
@@ -698,11 +693,8 @@ public class SimpleSkeleton extends HumanSkeleton implements SkeletonConfigCallb
 		case FOOT_LENGTH:
 			skeletonConfig.setConfig(SkeletonConfigValue.FOOT_LENGTH, null);
 			break;
-		case FOOT_OFFSET_Y:
-			skeletonConfig.setConfig(SkeletonConfigValue.FOOT_OFFSET_Y, null);
-			break;
-		case FOOT_OFFSET_Z:
-			skeletonConfig.setConfig(SkeletonConfigValue.FOOT_OFFSET_Z, null);
+		case FOOT_OFFSET:
+			skeletonConfig.setConfig(SkeletonConfigValue.FOOT_OFFSET, null);
 			break;
 		case SKELETON_OFFSET:
 			skeletonConfig.setConfig(SkeletonConfigValue.SKELETON_OFFSET, null);
