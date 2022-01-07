@@ -126,11 +126,11 @@ public class SimpleSkeleton extends HumanSkeleton implements SkeletonConfigCallb
 		chestNode.attachChild(trackerChestNode);
 		hipNode.attachChild(trackerWaistNode);
 
-		leftHipNode.attachChild(trackerLeftKneeNode);
-		rightHipNode.attachChild(trackerRightKneeNode);
+		leftKneeNode.attachChild(trackerLeftKneeNode);
+		rightKneeNode.attachChild(trackerRightKneeNode);
 
-		leftAnkleNode.attachChild(trackerLeftFootNode);
-		rightAnkleNode.attachChild(trackerRightFootNode);
+		leftFootNode.attachChild(trackerLeftFootNode);
+		rightFootNode.attachChild(trackerRightFootNode);
 		//#endregion
 		
 		// Set default skeleton configuration (callback automatically sets initial offsets)
@@ -377,6 +377,7 @@ public class SimpleSkeleton extends HumanSkeleton implements SkeletonConfigCallb
 			leftFootTracker.getRotation(rotBuf2);
 			leftAnkleNode.localTransform.setRotation(rotBuf2);
 			leftFootNode.localTransform.setRotation(rotBuf2);
+			trackerLeftFootNode.localTransform.setRotation(rotBuf2);
 		}
 		
 		// Right Leg
@@ -398,6 +399,7 @@ public class SimpleSkeleton extends HumanSkeleton implements SkeletonConfigCallb
 			rightFootTracker.getRotation(rotBuf2);
 			rightAnkleNode.localTransform.setRotation(rotBuf2);
 			rightFootNode.localTransform.setRotation(rotBuf2);
+			trackerRightFootNode.localTransform.setRotation(rotBuf2);
 		}
 		
 		if(extendedPelvisModel) {
@@ -628,8 +630,8 @@ public class SimpleSkeleton extends HumanSkeleton implements SkeletonConfigCallb
 			updateComputedTrackers();
 			break;
 		case FOOT_OFFSET_Z:
-			trackerLeftFootNode.update();
-			trackerRightFootNode.update();
+			leftAnkleNode.update();
+			rightAnkleNode.update();
 			updateComputedTrackers();
 			break;
 		case SKELETON_OFFSET:
