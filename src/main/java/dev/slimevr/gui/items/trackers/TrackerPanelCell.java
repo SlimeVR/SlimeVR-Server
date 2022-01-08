@@ -174,9 +174,9 @@ public class TrackerPanelCell extends AnchorPane {
 
 		status.setText(t.getStatus().toString().toLowerCase(Locale.ROOT));
 		if (status.getText().equals("ok")) {
-			connectIMG.setImage(new Image(getClass().getResource("/activeSlime.png").toString(), true));
+			connectIMG.setImage(new Image(getClass().getResource("/active_slime.png").toString(), true));
 		} else {
-			connectIMG.setImage(new Image(getClass().getResource("/deactivedSlime.png").toString(), true));
+			connectIMG.setImage(new Image(getClass().getResource("/deactived_slime.png").toString(), true));
 		}
 
 		if (realTracker instanceof TrackerWithBattery) {

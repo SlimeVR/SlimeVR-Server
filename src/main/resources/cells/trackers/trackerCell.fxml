@@ -66,7 +66,7 @@
                            <children>
                               <ImageView fx:id="connectIMG" fitHeight="38.0" fitWidth="38.0" layoutX="15.0" layoutY="2.0" pickOnBounds="true" preserveRatio="true">
                                  <image>
-                                    <Image url="@../../activeSlime.png" />
+                                    <Image url="@../../active_slime.png" />
                                  </image></ImageView>
                            </children>
                         </AnchorPane>

@@ -68,7 +68,7 @@
                                  <graphic>
                                     <ImageView fitHeight="28.0" fitWidth="30.0" pickOnBounds="true" preserveRatio="true">
                                        <image>
-                                          <Image url="@../experimentalLegGraphic.png" />
+                                          <Image url="@../leg_graphic.png" />
                                        </image>
                                     </ImageView>
                                  </graphic></Button>

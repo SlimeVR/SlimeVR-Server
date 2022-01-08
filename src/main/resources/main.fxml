@@ -85,7 +85,7 @@
                      <graphic>
                         <ImageView fitHeight="48.0" fitWidth="48.0" nodeOrientation="INHERIT" pickOnBounds="true" preserveRatio="true">
                            <image>
-                              <Image url="@slimeAvatar.png" />
+                              <Image url="@slime_avatar.png" />
                            </image>
                         </ImageView>
                      </graphic>
