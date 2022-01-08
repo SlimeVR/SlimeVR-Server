@@ -43,7 +43,7 @@ public class NamedPipeVRBridge extends Thread implements Bridge {
 	private final List<? extends Tracker> shareTrackers;
 	private final List<ComputedTracker> internalTrackers;
 	
-	private final HMDTracker internalHMDTracker = new HMDTracker("itnernal://HMD");
+	private final HMDTracker internalHMDTracker = new HMDTracker("internal://HMD");
 	private final AtomicBoolean newHMDData = new AtomicBoolean(false);
 	
 	public NamedPipeVRBridge(HMDTracker hmd, List<? extends Tracker> shareTrackers, VRServer server) {
@@ -149,7 +149,7 @@ public class NamedPipeVRBridge extends Thread implements Bridge {
 	private void executeHMDInput() throws IOException {
 		String[] split = commandBuilder.toString().split(" ");
 		if(split.length < 7) {
-			LogManager.log.severe("[VRBridge] Short HMD data recieved: " + commandBuilder.toString());
+			LogManager.log.severe("[VRBridge] Short HMD data received: " + commandBuilder.toString());
 			return;
 		}
 		try {
