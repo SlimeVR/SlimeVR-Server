@@ -143,6 +143,7 @@ public class TrackersList extends EJBoxNoStretch {
 		JLabel adj;
 		JLabel adjYaw;
 		JLabel correction;
+		JLabel signalStrength;
 		
 		@AWTThread
 		public TrackerPanel(Tracker t) {
@@ -216,6 +217,7 @@ public class TrackersList extends EJBoxNoStretch {
 			add(new JLabel("TPS"), c(3, row, 2, GridBagConstraints.FIRST_LINE_START));
 			if(realTracker instanceof IMUTracker) {
 				add(new JLabel("Ping"), c(2, row, 2, GridBagConstraints.FIRST_LINE_START));
+				add(new JLabel("RSSI"), c(4, row, 2, GridBagConstraints.FIRST_LINE_START));
 			}
 			row++;
 			if(t.hasRotation())
@@ -224,6 +226,7 @@ public class TrackersList extends EJBoxNoStretch {
 				add(position = new JLabel("0 0 0"), c(1, row, 2, GridBagConstraints.FIRST_LINE_START));
 			if(realTracker instanceof IMUTracker) {
 				add(ping = new JLabel(""), c(2, row, 2, GridBagConstraints.FIRST_LINE_START));
+				add(signalStrength = new JLabel(""), c(4, row, 2, GridBagConstraints.FIRST_LINE_START));
 			}
 			if(realTracker instanceof TrackerWithTPS) {
 				add(tps = new JLabel("0"), c(3, row, 2, GridBagConstraints.FIRST_LINE_START));
@@ -313,6 +316,17 @@ public class TrackersList extends EJBoxNoStretch {
 			if(realTracker instanceof IMUTracker) {
 				if(ping != null)
 					ping.setText(String.valueOf(((IMUTracker) realTracker).ping));
+				if (signalStrength != null) {
+					int signal = ((IMUTracker) realTracker).signalStrength;
+					if (signal == -1) {
+						signalStrength.setText("N/A");
+					} else {
+						// -40 dBm is excellent, -95 dBm is very poor
+						int percentage = (signal - -95) * (100 - 0) / (-40 - -95) + 0;
+						percentage = Math.max(Math.min(percentage, 100), 0);
+						signalStrength.setText(String.valueOf(percentage) + "% " + "(" + String.valueOf(signal) + " dBm" + ")");
+					}
+				}
 			}
 			realTracker.getRotation(q);
 			q.toAngles(angles);
