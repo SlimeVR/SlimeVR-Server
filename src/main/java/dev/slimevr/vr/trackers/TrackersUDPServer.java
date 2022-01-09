@@ -400,15 +400,12 @@ public class TrackersUDPServer extends Thread {
 										tracker.setStatus(TrackerStatus.OK);
 								}
 							}
-							IMUTracker tracker = conn.sensors.get(0);
-							if(tracker == null)
-								continue;
-							if(tracker.serialBuffer.length() > 0) {
-								if(tracker.lastSerialUpdate + 500L < System.currentTimeMillis()) {
-									serialBuffer2.append('[').append(tracker.getName()).append("] ").append(tracker.serialBuffer);
+							if(conn.serialBuffer.length() > 0) {
+								if(conn.lastSerialUpdate + 500L < System.currentTimeMillis()) {
+									serialBuffer2.append('[').append(conn.name).append("] ").append(conn.serialBuffer);
 									System.out.println(serialBuffer2.toString());
 									serialBuffer2.setLength(0);
-									tracker.serialBuffer.setLength(0);
+									conn.serialBuffer.setLength(0);
 								}
 							}
 							if(conn.lastPingPacketTime + 500 < System.currentTimeMillis()) {
