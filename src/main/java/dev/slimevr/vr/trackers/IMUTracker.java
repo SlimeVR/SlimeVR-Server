@@ -36,8 +36,6 @@ public class IMUTracker implements Tracker, TrackerWithTPS, TrackerWithBattery {
 	protected BufferedTimer timer = new BufferedTimer(1f);
 	public int ping = -1;
 	
-	public StringBuilder serialBuffer = new StringBuilder();
-	long lastSerialUpdate = 0;
 	public TrackerPosition bodyPosition = null;
 	
 	public IMUTracker(int trackerId, String name, String descriptiveName, TrackersUDPServer server) {

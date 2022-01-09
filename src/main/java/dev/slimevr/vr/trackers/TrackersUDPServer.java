@@ -13,6 +13,7 @@ import java.net.SocketTimeoutException;
 import java.nio.ByteBuffer;
 import java.nio.ByteOrder;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.Enumeration;
 import java.util.HashMap;
 import java.util.Iterator;
@@ -60,15 +61,15 @@ public class TrackersUDPServer extends Thread {
 		this.trackersConsumer = trackersConsumer;
 	}
 	
-	private void setUpNewSensor(DatagramPacket handshakePacket, ByteBuffer data) throws IOException {
+	private void setUpNewTracker(DatagramPacket handshakePacket, ByteBuffer data) throws IOException {
 		System.out.println("[TrackerServer] Handshake recieved from " + handshakePacket.getAddress() + ":" + handshakePacket.getPort());
 		InetAddress addr = handshakePacket.getAddress();
-		TrackerConnection sensor;
+		TrackerConnection tracker;
 		synchronized(trackers) {
-			sensor = trackersMap.get(addr);
+			tracker = trackersMap.get(addr);
 		}
-		if(sensor == null) {
-			boolean isOwo = false;
+		if(tracker == null) {
+			tracker = new TrackerConnection(handshakePacket.getSocketAddress());
 			data.getLong(); // Skip packet number
 			int boardType = -1;
 			int imuType = -1;
@@ -109,32 +110,27 @@ public class TrackersUDPServer extends Thread {
 			}
 			if(firmware.length() == 0) {
 				firmware.append("owoTrack");
-				isOwo = true;
+				tracker.isOwoTrack = true;
 			}
-			String trackerName = macString != null ? "udp://" + macString : "udp:/" + handshakePacket.getAddress().toString();
-			String descriptiveName = "udp:/" + handshakePacket.getAddress().toString();
-			IMUTracker imu = new IMUTracker(Tracker.getNextLocalTrackerId(), trackerName, descriptiveName, this);
-			ReferenceAdjustedTracker<IMUTracker> adjustedTracker = new ReferenceAdjustedTracker<>(imu);
-			trackersConsumer.accept(adjustedTracker);
-			sensor = new TrackerConnection(imu, handshakePacket.getSocketAddress());
-			sensor.isOwoTrack = isOwo;
+			tracker.name = macString != null ? "udp://" + macString : "udp:/" + handshakePacket.getAddress().toString();
+			tracker.descriptiveName = "udp:/" + handshakePacket.getAddress().toString();
 			int i = 0;
 			synchronized(trackers) {
 				i = trackers.size();
-				trackers.add(sensor);
-				trackersMap.put(addr, sensor);
+				trackers.add(tracker);
+				trackersMap.put(addr, tracker);
 			}
-			System.out.println("[TrackerServer] Sensor " + i + " added with address " + handshakePacket.getSocketAddress() + ". Board type: " + boardType + ", imu type: " + imuType + ", firmware: " + firmware + " (" + firmwareBuild + "), mac: " + macString + ", name: " + trackerName);
+			System.out.println("[TrackerServer] Sensor " + i + " added with address " + handshakePacket.getSocketAddress() + ". Board type: " + boardType + ", imu type: " + imuType + ", firmware: " + firmware + " (" + firmwareBuild + "), mac: " + macString + ", name: " + tracker.name);
 		}
-		sensor.sensors.get(0).setStatus(TrackerStatus.OK);
+		tracker.sensors.get(0).setStatus(TrackerStatus.OK);
         socket.send(new DatagramPacket(HANDSHAKE_BUFFER, HANDSHAKE_BUFFER.length, handshakePacket.getAddress(), handshakePacket.getPort()));
 	}
 	
-	private void setUpAuxilarySensor(TrackerConnection connection, int trackerId) throws IOException {
-		System.out.println("[TrackerServer] Setting up auxilary sensor for " + connection.sensors.get(0).getName());
+	private void setUpSensor(TrackerConnection connection, int trackerId) throws IOException {
+		System.out.println("[TrackerServer] Setting up auxilary sensor for " + connection.name);
 		IMUTracker imu = connection.sensors.get(trackerId);
 		if(imu == null) {
-			imu = new IMUTracker(Tracker.getNextLocalTrackerId(), connection.sensors.get(0).getName() + "/" + trackerId, connection.sensors.get(0).getDescriptiveName() + "/" + trackerId, this);
+			imu = new IMUTracker(Tracker.getNextLocalTrackerId(), connection.name + "/" + trackerId, connection.descriptiveName + "/" + trackerId, this);
 			connection.sensors.put(trackerId, imu);
 			ReferenceAdjustedTracker<IMUTracker> adjustedTracker = new ReferenceAdjustedTracker<>(imu);
 			trackersConsumer.accept(adjustedTracker);
@@ -142,7 +138,6 @@ public class TrackersUDPServer extends Thread {
 		}
 		imu.setStatus(TrackerStatus.OK);
 	}
-	
 	
 	@Override
 	public void run() {
@@ -212,7 +207,7 @@ public class TrackersUDPServer extends Thread {
 					case 0:
 						break;
 					case 3:
-						setUpNewSensor(recieve, bb);
+						setUpNewTracker(recieve, bb);
 						break;
 					case 1: // PACKET_ROTATION
 					case 16: // PACKET_ROTATION_2
@@ -309,27 +304,30 @@ public class TrackersUDPServer extends Thread {
 							break;
 						if(connection.isOwoTrack)
 							break;
-						tracker = connection.sensors.get(0);
 						bb.getLong();
 						int length = bb.getInt();
 						for(int i = 0; i < length; ++i) {
 							char ch = (char) bb.get();
 							if(ch == '\n') {
-								serialBuffer2.append('[').append(tracker.getName()).append("] ").append(tracker.serialBuffer);
+								serialBuffer2.append('[').append(connection.name).append("] ").append(connection.serialBuffer);
 								System.out.println(serialBuffer2.toString());
 								serialBuffer2.setLength(0);
-								tracker.serialBuffer.setLength(0);
+								connection.serialBuffer.setLength(0);
 							} else {
-								tracker.serialBuffer.append(ch);
+								connection.serialBuffer.append(ch);
 							}
 						}
 						break;
 					case 12: // PACKET_BATTERY_VOLTAGE
 						if(connection == null)
 							break;
-						tracker = connection.sensors.get(0);
 						bb.getLong();
-						tracker.setBatteryVoltage(bb.getFloat());
+						if(connection.sensors.size() > 0) {
+							Collection<IMUTracker> trackers = connection.sensors.values();
+							Iterator<IMUTracker> iterator = trackers.iterator();
+							while(iterator.hasNext())
+								iterator.next().setBatteryVoltage(bb.getFloat());
+						}
 						break;
 					case 13: // PACKET_TAP
 						if(connection == null)
@@ -345,10 +343,10 @@ public class TrackersUDPServer extends Thread {
 						BnoTap tapObj = new BnoTap(tap);
 						System.out.println("[TrackerServer] Tap packet received from " + tracker.getName() + "/" + sensorId + ": " + tapObj  + " (b" + Integer.toBinaryString(tap) + ")");
 						break;
-					case 14: // PACKET_RESET_REASON
+					case 14: // PACKET_ERROR
 						bb.getLong();
 						byte reason = bb.get();
-						System.out.println("[TrackerServer] Reset recieved from " + recieve.getSocketAddress() + ": " + reason);
+						System.out.println("[TrackerServer] Error recieved from " + recieve.getSocketAddress() + ": " + reason);
 						if(connection == null)
 							break;
 						sensorId = bb.get() & 0xFF;
@@ -363,8 +361,8 @@ public class TrackersUDPServer extends Thread {
 						bb.getLong();
 						sensorId = bb.get() & 0xFF;
 						int sensorStatus = bb.get() & 0xFF;
-						if(sensorId > 0 && sensorStatus == 1) {
-							setUpAuxilarySensor(connection, sensorId);
+						if(sensorStatus == 1) {
+							setUpSensor(connection, sensorId);
 						}
 						bb.rewind();
 						bb.putInt(15);
@@ -440,9 +438,12 @@ public class TrackersUDPServer extends Thread {
 		public int lastPingPacketId = -1;
 		public long lastPingPacketTime = 0;
 		public boolean isOwoTrack = false;
+		public String name;
+		public String descriptiveName;
+		public StringBuilder serialBuffer = new StringBuilder();
+		long lastSerialUpdate = 0;
 		
-		public TrackerConnection(IMUTracker tracker, SocketAddress address) {
-			this.sensors.put(0, tracker);
+		public TrackerConnection(SocketAddress address) {
 			this.address = address;
 		}
 	}
