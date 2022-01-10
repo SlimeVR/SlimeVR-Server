@@ -126,17 +126,27 @@ public class TrackersUDPServer extends Thread {
         socket.send(new DatagramPacket(HANDSHAKE_BUFFER, HANDSHAKE_BUFFER.length, handshakePacket.getAddress(), handshakePacket.getPort()));
 	}
 	
-	private void setUpSensor(TrackerConnection connection, int trackerId) throws IOException {
-		System.out.println("[TrackerServer] Setting up auxilary sensor for " + connection.name);
+	private void setUpSensor(TrackerConnection connection, int trackerId, int sensorType, int sensorStatus) throws IOException {
+		System.out.println("[TrackerServer] Sensor " + trackerId + " for " + connection.name + " status: " + sensorStatus);
 		IMUTracker imu = connection.sensors.get(trackerId);
 		if(imu == null) {
 			imu = new IMUTracker(Tracker.getNextLocalTrackerId(), connection.name + "/" + trackerId, connection.descriptiveName + "/" + trackerId, this);
 			connection.sensors.put(trackerId, imu);
 			ReferenceAdjustedTracker<IMUTracker> adjustedTracker = new ReferenceAdjustedTracker<>(imu);
 			trackersConsumer.accept(adjustedTracker);
-			System.out.println("[TrackerServer] Sensor added with address " + imu.getName());
+			System.out.println("[TrackerServer] Added up sensor " + trackerId + " for " + connection.name + ", type " + sensorType);
 		}
-		imu.setStatus(TrackerStatus.OK);
+		switch(sensorStatus) {
+		case 0:
+			imu.setStatus(TrackerStatus.DISCONNECTED);
+			break;
+		case 1:
+			imu.setStatus(TrackerStatus.OK);
+			break;
+		case 2:
+			imu.setStatus(TrackerStatus.ERROR);
+			break;
+		}
 	}
 	
 	@Override
@@ -361,9 +371,9 @@ public class TrackersUDPServer extends Thread {
 						bb.getLong();
 						sensorId = bb.get() & 0xFF;
 						int sensorStatus = bb.get() & 0xFF;
-						if(sensorStatus == 1) {
-							setUpSensor(connection, sensorId);
-						}
+						int sensorType = bb.get() & 0xFF;
+						setUpSensor(connection, sensorId, sensorType, sensorStatus);
+						// Send ack
 						bb.rewind();
 						bb.putInt(15);
 						bb.put((byte) sensorId);
