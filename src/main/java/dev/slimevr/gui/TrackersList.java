@@ -300,7 +300,7 @@ public class TrackersList extends EJBoxNoStretch {
 				tps.setText(StringUtils.prettyNumber(((TrackerWithTPS) realTracker).getTPS(), 1));
 			}
 			if(realTracker instanceof TrackerWithBattery)
-				bat.setText(StringUtils.prettyNumber(((TrackerWithBattery) realTracker).getBatteryVoltage(), 1));
+				bat.setText(String.format("%d%% (%sV)", Math.round(((TrackerWithBattery) realTracker).getBatteryLevel()), StringUtils.prettyNumber(((TrackerWithBattery) realTracker).getBatteryVoltage()), 1));
 			if(t instanceof ReferenceAdjustedTracker) {
 				((ReferenceAdjustedTracker<Tracker>) t).attachmentFix.toAngles(angles);
 				if(adj != null)

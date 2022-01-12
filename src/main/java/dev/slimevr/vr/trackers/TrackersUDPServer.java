@@ -33,6 +33,12 @@ import io.eiren.util.collections.FastList;
  */
 public class TrackersUDPServer extends Thread {
 
+	enum ProtocolCompat {
+		OWOTRACK_LEGACY,
+		OWOTRACK8,
+		SLIMEVR
+	}
+
 	/**
 	 * Change between IMU axises and OpenGL/SteamVR axises
 	 */
@@ -68,7 +74,6 @@ public class TrackersUDPServer extends Thread {
 			sensor = trackersMap.get(addr);
 		}
 		if(sensor == null) {
-			boolean isOwo = false;
 			data.getLong(); // Skip packet number
 			int boardType = -1;
 			int imuType = -1;
@@ -107,17 +112,19 @@ public class TrackersUDPServer extends Thread {
 						macString = null;
 				}
 			}
+			ProtocolCompat protocolCompat = ProtocolCompat.SLIMEVR;
 			if(firmware.length() == 0) {
 				firmware.append("owoTrack");
-				isOwo = true;
+				protocolCompat = ProtocolCompat.OWOTRACK_LEGACY;
+			} else if (firmware.toString().equals("owoTrack8")) {
+				protocolCompat = ProtocolCompat.OWOTRACK8;
 			}
 			String trackerName = macString != null ? "udp://" + macString : "udp:/" + handshakePacket.getAddress().toString();
 			String descriptiveName = "udp:/" + handshakePacket.getAddress().toString();
 			IMUTracker imu = new IMUTracker(Tracker.getNextLocalTrackerId(), trackerName, descriptiveName, this);
 			ReferenceAdjustedTracker<IMUTracker> adjustedTracker = new ReferenceAdjustedTracker<>(imu);
 			trackersConsumer.accept(adjustedTracker);
-			sensor = new TrackerConnection(imu, handshakePacket.getSocketAddress());
-			sensor.isOwoTrack = isOwo;
+			sensor = new TrackerConnection(imu, handshakePacket.getSocketAddress(), protocolCompat);
 			int i = 0;
 			synchronized(trackers) {
 				i = trackers.size();
@@ -234,7 +241,7 @@ public class TrackersUDPServer extends Thread {
 					case 17: // PACKET_ROTATION_DATA
 						if(connection == null)
 							break;
-						if(connection.isOwoTrack)
+						if(connection.protocol == ProtocolCompat.OWOTRACK_LEGACY)
 							break;
 						bb.getLong();
 						int sensorId = bb.get() & 0xFF;
@@ -263,7 +270,7 @@ public class TrackersUDPServer extends Thread {
 					case 18: // PACKET_MAGENTOMETER_ACCURACY
 						if(connection == null)
 							break;
-						if(connection.isOwoTrack)
+						if(connection.protocol == ProtocolCompat.OWOTRACK_LEGACY)
 							break;
 						bb.getLong();
 						sensorId = bb.get() & 0xFF;
@@ -281,7 +288,7 @@ public class TrackersUDPServer extends Thread {
 					case 8: // PACKET_CONFIG
 						if(connection == null)
 							break;
-						if(connection.isOwoTrack)
+						if(connection.protocol == ProtocolCompat.OWOTRACK_LEGACY)
 							break;
 						bb.getLong();
 						MPUTracker.ConfigurationData data = new MPUTracker.ConfigurationData(bb);
@@ -293,7 +300,7 @@ public class TrackersUDPServer extends Thread {
 					case 10: // PACKET_PING_PONG:
 						if(connection == null)
 							break;
-						if(connection.isOwoTrack)
+						if(connection.protocol == ProtocolCompat.OWOTRACK_LEGACY)
 							break;
 						int pingId = bb.getInt();
 						if(connection.lastPingPacketId == pingId) {
@@ -307,7 +314,7 @@ public class TrackersUDPServer extends Thread {
 					case 11: // PACKET_SERIAL
 						if(connection == null)
 							break;
-						if(connection.isOwoTrack)
+						if(connection.protocol == ProtocolCompat.OWOTRACK_LEGACY)
 							break;
 						tracker = connection.sensors.get(0);
 						bb.getLong();
@@ -329,12 +336,17 @@ public class TrackersUDPServer extends Thread {
 							break;
 						tracker = connection.sensors.get(0);
 						bb.getLong();
+						if(connection.protocol == ProtocolCompat.OWOTRACK_LEGACY || connection.protocol == ProtocolCompat.OWOTRACK8) {
+							tracker.setBatteryLevel(bb.getFloat());
+							break;
+						}
 						tracker.setBatteryVoltage(bb.getFloat());
+						tracker.setBatteryLevel(bb.getFloat() * 100);
 						break;
 					case 13: // PACKET_TAP
 						if(connection == null)
 							break;
-						if(connection.isOwoTrack)
+						if(connection.protocol == ProtocolCompat.OWOTRACK_LEGACY)
 							break;
 						bb.getLong();
 						sensorId = bb.get() & 0xFF;
@@ -375,8 +387,6 @@ public class TrackersUDPServer extends Thread {
 						break;
 					case 19:
 						if(connection == null)
-							break;
-						if(connection.isOwoTrack)
 							break;
 						bb.getLong();
 						sensorId = bb.get() & 0xFF;
@@ -452,11 +462,12 @@ public class TrackersUDPServer extends Thread {
 		public long lastPacket = System.currentTimeMillis();
 		public int lastPingPacketId = -1;
 		public long lastPingPacketTime = 0;
-		public boolean isOwoTrack = false;
+		public ProtocolCompat protocol;
 		
-		public TrackerConnection(IMUTracker tracker, SocketAddress address) {
+		public TrackerConnection(IMUTracker tracker, SocketAddress address, ProtocolCompat protocol) {
 			this.sensors.put(0, tracker);
 			this.address = address;
+			this.protocol = protocol;
 		}
 	}
 	
