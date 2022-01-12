@@ -1,5 +1,10 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
+<?import java.lang.*?>
+<?import javafx.geometry.*?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.image.*?>
+<?import javafx.scene.layout.*?>
 <?import javafx.geometry.Insets?>
 <?import javafx.scene.control.ChoiceBox?>
 <?import javafx.scene.control.Label?>
@@ -10,9 +15,9 @@
 <?import javafx.scene.layout.GridPane?>
 <?import javafx.scene.layout.RowConstraints?>
 <?import javafx.scene.layout.VBox?>
-
 <?import javafx.scene.control.ComboBox?>
-<fx:root fx:id="trackerContainer" prefHeight="205.0" prefWidth="400.0" type="javafx.scene.layout.AnchorPane" xmlns="http://javafx.com/javafx/17" xmlns:fx="http://javafx.com/fxml/1">
+
+<fx:root fx:id="trackerContainer" prefHeight="205.0" prefWidth="400.0" style="-fx-background-color: #1a1a1a;" type="javafx.scene.layout.AnchorPane" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1">
    <children>
 <!--      <BorderPane prefHeight="205.0" prefWidth="90.0" style="-fx-background-color: #ffffff;" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="-90.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">-->
 <!--         <top>-->
@@ -33,7 +38,7 @@
 <!--            <Insets bottom="30.0" left="30.0" right="30.0" />-->
 <!--         </padding>-->
 <!--      </BorderPane>-->
-      <VBox prefHeight="205.0" prefWidth="400.0" style="-fx-background-color: white">
+      <VBox prefHeight="205.0" prefWidth="400.0" style="-fx-background-color: #1a1a1a;">
          <children>
             <AnchorPane prefHeight="200.0" prefWidth="400.0">
                <children>
@@ -49,23 +54,26 @@
                      <children>
                         <AnchorPane prefHeight="45.0" prefWidth="123.0">
                            <children>
-                              <ComboBox fx:id="desSelect" prefHeight="45.0" prefWidth="166.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0" />
+                              <ComboBox fx:id="desSelect" layoutX="8.0" prefHeight="45.0" prefWidth="166.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="8.0" AnchorPane.rightAnchor="-8.0" AnchorPane.topAnchor="0.0" />
                            </children>
                         </AnchorPane>
                         <AnchorPane GridPane.columnIndex="1">
                            <children>
-                              <ComboBox fx:id="mountSelect" prefHeight="45.0" prefWidth="85.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0" />
+                              <ComboBox fx:id="mountSelect" layoutX="11.0" prefHeight="38.0" prefWidth="164.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="11.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0" />
                            </children>
                         </AnchorPane>
                         <AnchorPane prefHeight="200.0" prefWidth="200.0" GridPane.columnIndex="2">
                            <children>
-                              <ImageView fitHeight="45.0" fitWidth="65.0" layoutX="10.0" pickOnBounds="true" preserveRatio="true" />
+                              <ImageView fx:id="connectIMG" fitHeight="38.0" fitWidth="38.0" layoutX="15.0" layoutY="2.0" pickOnBounds="true" preserveRatio="true">
+                                 <image>
+                                    <Image url="@../../active_slime.png" />
+                                 </image></ImageView>
                            </children>
                         </AnchorPane>
                      </children>
                   </GridPane>
                </children></AnchorPane>
-            <AnchorPane prefHeight="221.0" prefWidth="400.0" />
+            <AnchorPane prefHeight="221.0" prefWidth="400.0" style="-fx-background-color: #262626;" />
             <AnchorPane prefHeight="250.0" prefWidth="400.0">
                <children>
                   <BorderPane prefHeight="200.0" prefWidth="400.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
@@ -85,21 +93,21 @@
                               <RowConstraints minHeight="10.0" vgrow="SOMETIMES" />
                           </rowConstraints>
                            <children>
-                              <Label id="TPS_title" text="TPS" />
-                              <Label id="Ping_title" text="Ping" GridPane.columnIndex="1" />
-                              <Label id="nameLabel" fx:id="nameLabel" text="udp://1999" GridPane.columnIndex="2" GridPane.columnSpan="2147483647" GridPane.rowSpan="2" />
-                              <Label id="tps" fx:id="tps" prefHeight="20.0" prefWidth="2.0" text="100" GridPane.rowIndex="1" />
-                              <Label id="ping" fx:id="ping" text="12" GridPane.columnIndex="1" GridPane.rowIndex="1" />
-                              <Label id="Rot_title" text="Rot" GridPane.rowIndex="2" />
-                              <Label id="rotation" fx:id="rotation" text="0 0 0" GridPane.columnIndex="1" GridPane.rowIndex="2" />
-                              <Label id="XYZ_rot_title" text="XYZ" GridPane.columnIndex="1" GridPane.rowIndex="3" />
-                              <Label id="Pos_tiitle" text="Pos" GridPane.columnIndex="2" GridPane.rowIndex="2" />
-                              <Label id="position" fx:id="position" layoutX="68.0" layoutY="44.0" text="0 0 0" GridPane.columnIndex="3" GridPane.rowIndex="2" />
-                              <Label id="XYZ_pos_title" layoutX="68.0" layoutY="61.0" text="XYZ" GridPane.columnIndex="3" GridPane.rowIndex="3" />
-                              <Label id="Battery_title" text="Battery" GridPane.rowIndex="4" />
-                              <Label id="bat" fx:id="bat" text="12" GridPane.columnIndex="1" GridPane.rowIndex="4" />
-                              <Label id="Status_title" text="Status" GridPane.columnIndex="2" GridPane.rowIndex="4" />
-                              <Label id="status" fx:id="status" text="error" GridPane.columnIndex="3" GridPane.rowIndex="4" />
+                              <Label id="TPS_title" text="TPS" textFill="WHITE" />
+                              <Label id="Ping_title" text="Ping" textFill="WHITE" GridPane.columnIndex="1" />
+                              <Label id="nameLabel" fx:id="nameLabel" text="udp://1999" textFill="WHITE" GridPane.columnIndex="2" GridPane.columnSpan="2147483647" GridPane.rowSpan="2" />
+                              <Label id="tps" fx:id="tps" prefHeight="20.0" prefWidth="39.0" text="100" textFill="WHITE" GridPane.rowIndex="1" />
+                              <Label id="ping" fx:id="ping" prefHeight="17.0" prefWidth="39.0" text="12" textFill="WHITE" GridPane.columnIndex="1" GridPane.rowIndex="1" />
+                              <Label id="Rot_title" text="Rot" textFill="WHITE" GridPane.rowIndex="2" />
+                              <Label id="rotation" fx:id="rotation" text="0 0 0" textFill="WHITE" GridPane.columnIndex="1" GridPane.rowIndex="2" />
+                              <Label id="XYZ_rot_title" text="X Y Z" textFill="WHITE" GridPane.columnIndex="1" GridPane.rowIndex="3" />
+                              <Label id="Pos_tiitle" text="Pos" textFill="WHITE" GridPane.columnIndex="2" GridPane.rowIndex="2" />
+                              <Label id="position" fx:id="position" layoutX="68.0" layoutY="44.0" text="0 0 0" textFill="WHITE" GridPane.columnIndex="3" GridPane.rowIndex="2" />
+                              <Label id="XYZ_pos_title" layoutX="68.0" layoutY="61.0" text="X Y Z" textFill="WHITE" GridPane.columnIndex="3" GridPane.rowIndex="3" />
+                              <Label id="Battery_title" text="Battery" textFill="WHITE" GridPane.rowIndex="4" />
+                              <Label id="bat" fx:id="bat" text="12" textFill="WHITE" GridPane.columnIndex="1" GridPane.rowIndex="4" />
+                              <Label id="Status_title" text="Status" textFill="WHITE" GridPane.columnIndex="2" GridPane.rowIndex="4" />
+                              <Label id="status" fx:id="status" text="error" textFill="WHITE" GridPane.columnIndex="3" GridPane.rowIndex="4" />
                            </children>
                         </GridPane>
                      </top>

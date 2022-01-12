@@ -14,6 +14,8 @@ import javafx.fxml.FXMLLoader;
 import javafx.scene.control.ChoiceBox;
 import javafx.scene.control.ComboBox;
 import javafx.scene.control.Label;
+import javafx.scene.image.Image;
+import javafx.scene.image.ImageView;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.Pane;
 import javafx.scene.text.Text;
@@ -59,6 +61,9 @@ public class TrackerPanelCell extends AnchorPane {
 
 	@FXML
 	private ComboBox<String> mountSelect;
+	
+	@FXML
+	private ImageView connectIMG;
 
 
 /*	@FXML
@@ -168,6 +173,11 @@ public class TrackerPanelCell extends AnchorPane {
 		}
 
 		status.setText(t.getStatus().toString().toLowerCase(Locale.ROOT));
+		if (status.getText().equals("ok")) {
+			connectIMG.setImage(new Image(getClass().getResource("/active_slime.png").toString(), true));
+		} else {
+			connectIMG.setImage(new Image(getClass().getResource("/deactived_slime.png").toString(), true));
+		}
 
 		if (realTracker instanceof TrackerWithBattery) {
 			bat.setVisible(true);
@@ -241,6 +251,11 @@ public class TrackerPanelCell extends AnchorPane {
 				StringUtils.prettyNumber(angles[1] * FastMath.RAD_TO_DEG, 0),
 				StringUtils.prettyNumber(angles[2] * FastMath.RAD_TO_DEG, 0)));
 		status.setText(t.getStatus().toString().toLowerCase());
+		if (status.getText().equals("ok")) {
+			connectIMG.setImage(new Image(getClass().getResource("/activeSlime.png").toString(), true));
+		} else {
+			connectIMG.setImage(new Image(getClass().getResource("/deactivedSlime.png").toString(), true));
+		}
 
 		if (realTracker instanceof TrackerWithTPS) {
 			tps.setText(StringUtils.prettyNumber(((TrackerWithTPS) realTracker).getTPS(), 1));

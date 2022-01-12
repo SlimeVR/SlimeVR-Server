@@ -10,6 +10,9 @@ import io.eiren.vr.trackers.*;
 import javafx.application.Platform;
 import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
+import javafx.geometry.Insets;
+import javafx.geometry.Pos;
+import javafx.scene.layout.ColumnConstraints;
 import javafx.scene.layout.GridPane;
 
 import java.io.IOException;
@@ -58,6 +61,19 @@ public class TrackersListPane extends GridPane implements Initializable {
 
 	private void build() {
 		getChildren().clear();
+		
+		//Test Column Constraints
+		ColumnConstraints column1 = new ColumnConstraints();
+		column1.setPercentWidth(50);
+		this.getColumnConstraints().add(column1);
+		ColumnConstraints column2 = new ColumnConstraints();
+		column2.setPercentWidth(50);
+		this.getColumnConstraints().add(column2);
+		
+		this.setHgap(50);
+		this.setVgap(50);
+		this.setPadding(new Insets(50, 50, 50, 50));
+		
 		trackers.sort((tr1, tr2) -> getTrackerSort(tr1.t) - getTrackerSort(tr2.t));
 		Class<? extends Tracker> currentClass = null;
 		boolean first = true;

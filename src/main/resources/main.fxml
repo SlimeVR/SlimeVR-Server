@@ -32,6 +32,12 @@
   OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 -->
 
+<?import javafx.scene.text.*?>
+<?import java.lang.*?>
+<?import javafx.geometry.*?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.image.*?>
+<?import javafx.scene.layout.*?>
 <?import javafx.geometry.Insets?>
 <?import javafx.scene.control.Button?>
 <?import javafx.scene.control.Label?>
@@ -43,44 +49,78 @@
 <?import javafx.scene.layout.HBox?>
 <?import javafx.scene.layout.Pane?>
 
-<AnchorPane fx:id="mainPane" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" minHeight="-Infinity" minWidth="-Infinity" prefHeight="813.0" prefWidth="1113.0" stylesheets="@main.css" xmlns="http://javafx.com/javafx/17" xmlns:fx="http://javafx.com/fxml/1">
+<AnchorPane fx:id="mainPane" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" minHeight="-Infinity" minWidth="-Infinity" prefHeight="813.0" prefWidth="1113.0" stylesheets="@main.css" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1">
 	<children>
-		<MenuBar fx:id="fxMenuBar" prefHeight="27.0" prefWidth="950.0">
+		<!-- <MenuBar fx:id="fxMenuBar" prefHeight="27.0" prefWidth="950.0">
 
-		</MenuBar>
-		<Pane id="topMenu" layoutY="46.0" prefHeight="146.0" prefWidth="1113.0" AnchorPane.bottomAnchor="621.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="46.0">
+		</MenuBar> -->
+		<Pane id="topMenu" prefHeight="148.0" prefWidth="1113.0" style="-fx-background-color: #663399;" AnchorPane.bottomAnchor="665.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
 			<children>
-				<ImageView fx:id="logoImage" fitHeight="132.0" fitWidth="200.0" layoutY="2.0" pickOnBounds="true" preserveRatio="true" />
-				<Label fx:id="logoLabel" layoutX="200.0" layoutY="68.0" text="LogoLabel" />
-				<HBox fx:id="buttonsBox" layoutX="456.0" layoutY="1.0" prefHeight="132.0" prefWidth="651.0">
+				<ImageView fx:id="logoImage" fitHeight="148.0" fitWidth="212.0" layoutX="52.0" pickOnBounds="true" preserveRatio="true">
+               <image>
+                  <Image url="@icon256.png" />
+               </image></ImageView>
+				<Label fx:id="logoLabel" layoutX="200.0" layoutY="51.0" text="SlimeVR" textFill="WHITE">
+               <font>
+                  <Font name="Agency FB" size="35.0" />
+               </font></Label>
+				<HBox fx:id="buttonsBox" layoutX="456.0" layoutY="11.0" prefHeight="122.0" prefWidth="651.0">
 					<children>
-						<Button fx:id="buttonMainTab" mnemonicParsing="false" onAction="#buttonMainTabPressed" prefHeight="157.0" prefWidth="151.0" text="Main">
+						<Button fx:id="buttonMainTab" contentDisplay="TOP" mnemonicParsing="false" onAction="#buttonMainTabPressed" prefHeight="157.0" prefWidth="151.0" text="Main">
 							<HBox.margin>
 								<Insets right="10.0" />
 							</HBox.margin>
+                     <graphic>
+                        <ImageView fitHeight="48.0" fitWidth="48.0" nodeOrientation="INHERIT" pickOnBounds="true" preserveRatio="true">
+                           <image>
+                              <Image url="@main.png" />
+                           </image>
+                        </ImageView>
+                     </graphic>
 						</Button>
-						<Button fx:id="buttonBodyTab" layoutX="10.0" layoutY="10.0" mnemonicParsing="false" onAction="#buttonBodyTabPressed" prefHeight="157.0" prefWidth="151.0" text="Body">
+						<Button fx:id="buttonBodyTab" contentDisplay="TOP" layoutX="10.0" layoutY="10.0" mnemonicParsing="false" onAction="#buttonBodyTabPressed" prefHeight="157.0" prefWidth="151.0" text="Body">
 							<HBox.margin>
 								<Insets right="10.0" />
 							</HBox.margin>
+                     <graphic>
+                        <ImageView fitHeight="48.0" fitWidth="48.0" nodeOrientation="INHERIT" pickOnBounds="true" preserveRatio="true">
+                           <image>
+                              <Image url="@slime_avatar.png" />
+                           </image>
+                        </ImageView>
+                     </graphic>
 						</Button>
-						<Button fx:id="buttonSettingsTab" layoutX="161.0" layoutY="10.0" mnemonicParsing="false" onAction="#buttonSettingsTabPressed" prefHeight="157.0" prefWidth="151.0" text="Settings">
+						<Button fx:id="buttonSettingsTab" contentDisplay="TOP" layoutX="161.0" layoutY="10.0" mnemonicParsing="false" onAction="#buttonSettingsTabPressed" prefHeight="157.0" prefWidth="151.0" text="Settings">
 							<HBox.margin>
 								<Insets right="10.0" />
 							</HBox.margin>
+                     <graphic>
+                        <ImageView fitHeight="48.0" fitWidth="48.0" nodeOrientation="INHERIT" pickOnBounds="true" preserveRatio="true">
+                           <image>
+                              <Image url="@settings.png" />
+                           </image>
+                        </ImageView>
+                     </graphic>
 						</Button>
-						<Button fx:id="buttonLinksTab" layoutX="312.0" layoutY="10.0" mnemonicParsing="false" onAction="#buttonLinksTabPressed" prefHeight="157.0" prefWidth="151.0" text="Links">
+						<Button fx:id="buttonLinksTab" contentDisplay="TOP" layoutX="312.0" layoutY="10.0" mnemonicParsing="false" onAction="#buttonLinksTabPressed" prefHeight="157.0" prefWidth="151.0" text="Links">
 							<HBox.margin>
 								<Insets right="10.0" />
 							</HBox.margin>
+                     <graphic>
+                        <ImageView fitHeight="48.0" fitWidth="48.0" nodeOrientation="INHERIT" pickOnBounds="true" preserveRatio="true">
+                           <image>
+                              <Image url="@links.png" />
+                           </image>
+                        </ImageView>
+                     </graphic>
 						</Button>
 					</children>
 				</HBox>
 			</children>
 		</Pane>
-		<AnchorPane layoutY="190.0" prefHeight="623.0" prefWidth="1113.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="190.0">
+		<AnchorPane layoutY="147.0" prefHeight="666.0" prefWidth="1113.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="147.0">
 			<children>
-				<TabPane fx:id="tabsPane" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+				<TabPane fx:id="tabsPane" style="-fx-background-color: #2e2e2e;" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
 					<tabs>
 						<Tab fx:id="mainTab" text="Main">
 							<content>

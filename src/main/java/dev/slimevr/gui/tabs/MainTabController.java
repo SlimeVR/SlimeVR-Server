@@ -45,8 +45,6 @@ public class MainTabController {
 
 		steamVRTrackersSetup();
 
-		testbox.getItems().add("asdasd");
-		testbox.getItems().add("aasdasxzcz");
 
 	}
 
