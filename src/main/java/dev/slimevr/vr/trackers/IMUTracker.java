@@ -4,7 +4,6 @@ import com.jme3.math.FastMath;
 import com.jme3.math.Quaternion;
 import com.jme3.math.Vector3f;
 
-import io.eiren.math.FloatMath;
 import io.eiren.util.BufferedTimer;
 
 public class IMUTracker implements Tracker, TrackerWithTPS, TrackerWithBattery {
@@ -27,6 +26,7 @@ public class IMUTracker implements Tracker, TrackerWithTPS, TrackerWithBattery {
 	protected final TrackersUDPServer server;
 	protected float confidence = 0;
 	protected float batteryVoltage = 0;
+	protected float batteryLevel = 0;
 	public int calibrationStatus = 0;
 	public int magCalibrationStatus = 0;
 	public float magnetometerAccuracy = 0;
@@ -150,7 +150,7 @@ public class IMUTracker implements Tracker, TrackerWithTPS, TrackerWithBattery {
 	
 	@Override
 	public float getBatteryLevel() {
-		return FloatMath.mapValue(getBatteryVoltage(), 3.6f, 4.2f, 0f, 1f);
+		return batteryLevel;
 	}
 	
 	@Override
@@ -158,6 +158,10 @@ public class IMUTracker implements Tracker, TrackerWithTPS, TrackerWithBattery {
 		return batteryVoltage;
 	}
 	
+	public void setBatteryLevel(float level) {
+		this.batteryLevel = level;
+	}
+
 	public void setBatteryVoltage(float voltage) {
 		this.batteryVoltage = voltage;
 	}
