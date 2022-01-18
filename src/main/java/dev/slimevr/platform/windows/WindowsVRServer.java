@@ -1,4 +1,4 @@
-package dev.slimevr;
+package dev.slimevr.platform.windows;
 
 import java.io.File;
 import java.io.FileInputStream;
@@ -16,9 +16,10 @@ import java.util.concurrent.LinkedBlockingQueue;
 import java.util.function.Consumer;
 
 import dev.slimevr.bridge.Bridge;
-import dev.slimevr.bridge.SteamVRPipeInputBridge;
 import dev.slimevr.bridge.VMCBridge;
 import dev.slimevr.bridge.WebSocketVRBridge;
+import dev.slimevr.platform.windows.WindowsNamedPipeBridge;
+import dev.slimevr.platform.windows.WindowsSteamVRPipeInputBridge;
 import dev.slimevr.util.ann.VRServerThread;
 import dev.slimevr.vr.processor.HumanPoseProcessor;
 import dev.slimevr.vr.processor.skeleton.HumanSkeleton;
@@ -35,7 +36,7 @@ import io.eiren.yaml.YamlException;
 import io.eiren.yaml.YamlFile;
 import io.eiren.yaml.YamlNode;
 
-public class VRServer extends Thread {
+public class WindowsVRServer extends Thread {
 	
 	private final List<Tracker> trackers = new FastList<>();
 	public final HumanPoseProcessor humanPoseProcessor;
@@ -49,7 +50,7 @@ public class VRServer extends Thread {
 	private final List<Runnable> onTick = new FastList<>();
 	private final List<? extends ShareableTracker> shareTrackers;
 	
-	public VRServer() {
+	public WindowsVRServer() {
 		super("VRServer");
 		loadConfig();
 		hmdTracker = new HMDTracker("HMD");
@@ -70,11 +71,11 @@ public class VRServer extends Thread {
 			bridges.add(driverBridge);
 			//*/
 			// Create named pipe bridge for SteamVR input
-			SteamVRPipeInputBridge steamVRInput = new SteamVRPipeInputBridge(this);
+			WindowsSteamVRPipeInputBridge steamVRInput = new WindowsSteamVRPipeInputBridge(this);
 			tasks.add(() -> steamVRInput.startBridge());
 			bridges.add(steamVRInput);
 			//*/
-			NamedPipeBridge driverBridge = new NamedPipeBridge(hmdTracker, "steamvr", "SteamVR Driver Bridge", "\\\\.\\pipe\\SlimeVRDriver", shareTrackers);
+			WindowsNamedPipeBridge driverBridge = new WindowsNamedPipeBridge(hmdTracker, "steamvr", "SteamVR Driver Bridge", "\\\\.\\pipe\\SlimeVRDriver", shareTrackers);
 			tasks.add(() -> driverBridge.startBridge());
 			bridges.add(driverBridge);
 		}

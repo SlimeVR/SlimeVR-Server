@@ -7,7 +7,7 @@ import com.jme3.math.FastMath;
 import com.jme3.math.Quaternion;
 import com.jme3.math.Vector3f;
 
-import dev.slimevr.VRServer;
+import dev.slimevr.platform.windows.WindowsVRServer;
 import dev.slimevr.util.ann.VRServerThread;
 import dev.slimevr.vr.processor.ComputedHumanPoseTracker;
 import dev.slimevr.vr.processor.ComputedHumanPoseTrackerPosition;
@@ -127,7 +127,7 @@ public class SimpleSkeleton extends HumanSkeleton implements SkeletonConfigCallb
 		fillNullComputedTrackers(true);
 	}
 	
-	public SimpleSkeleton(VRServer server, List<? extends ComputedHumanPoseTracker> computedTrackers) {
+	public SimpleSkeleton(WindowsVRServer server, List<? extends ComputedHumanPoseTracker> computedTrackers) {
 		this(computedTrackers);
 		setTrackersFromServer(server);
 		skeletonConfig.loadFromConfig(server.config);
@@ -183,7 +183,7 @@ public class SimpleSkeleton extends HumanSkeleton implements SkeletonConfigCallb
 		setTrackersFromList(trackers, true);
 	}
 	
-	public void setTrackersFromServer(VRServer server) {
+	public void setTrackersFromServer(WindowsVRServer server) {
 		this.hmdTracker = server.hmdTracker;
 		setTrackersFromList(server.getAllTrackers(), false);
 	}

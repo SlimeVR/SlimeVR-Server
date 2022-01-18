@@ -17,7 +17,7 @@ import com.jme3.math.FastMath;
 import com.jme3.math.Quaternion;
 import com.jme3.math.Vector3f;
 
-import dev.slimevr.VRServer;
+import dev.slimevr.platform.windows.WindowsVRServer;
 import dev.slimevr.gui.swing.EJBagNoStretch;
 import dev.slimevr.gui.swing.EJBoxNoStretch;
 import dev.slimevr.vr.trackers.ComputedTracker;
@@ -45,11 +45,11 @@ public class TrackersList extends EJBoxNoStretch {
 	
 	private List<TrackerPanel> trackers = new FastList<>();
 	
-	private final VRServer server;
+	private final WindowsVRServer server;
 	private final VRServerGUI gui;
 	private long lastUpdate = 0;
 
-	public TrackersList(VRServer server, VRServerGUI gui) {
+	public TrackersList(WindowsVRServer server, VRServerGUI gui) {
 		super(BoxLayout.PAGE_AXIS, false, true);
 		this.server = server;
 		this.gui = gui;

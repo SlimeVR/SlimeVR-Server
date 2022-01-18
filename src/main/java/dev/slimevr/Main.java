@@ -6,6 +6,7 @@ import java.net.ServerSocket;
 
 import javax.swing.JOptionPane;
 
+import dev.slimevr.platform.windows.WindowsVRServer;
 import org.apache.commons.lang3.JavaVersion;
 import org.apache.commons.lang3.SystemUtils;
 
@@ -17,7 +18,7 @@ public class Main {
 	
 	public static String VERSION = "0.1.3";
 	
-	public static VRServer vrServer;
+	public static WindowsVRServer vrServer;
 	
 	@SuppressWarnings("unused")
 	public static void main(String[] args) {
@@ -48,7 +49,7 @@ public class Main {
 		}
 
 		try {
-			vrServer = new VRServer();
+			vrServer = new WindowsVRServer();
 			vrServer.start();
 			new Keybinding(vrServer);
 			new VRServerGUI(vrServer);

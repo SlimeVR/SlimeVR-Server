@@ -8,7 +8,7 @@ import javax.swing.JButton;
 import javax.swing.JLabel;
 import javax.swing.event.MouseInputAdapter;
 
-import dev.slimevr.VRServer;
+import dev.slimevr.platform.windows.WindowsVRServer;
 import dev.slimevr.gui.swing.ButtonTimer;
 import dev.slimevr.gui.swing.EJBagNoStretch;
 import dev.slimevr.vr.processor.skeleton.HumanSkeleton;
@@ -18,12 +18,12 @@ import io.eiren.util.ann.ThreadSafe;
 
 public class SkeletonConfigGUI extends EJBagNoStretch {
 
-	private final VRServer server;
+	private final WindowsVRServer server;
 	private final VRServerGUI gui;
 	private final AutoBoneWindow autoBone;
 	private Map<SkeletonConfigValue, SkeletonLabel> labels = new HashMap<>();
 
-	public SkeletonConfigGUI(VRServer server, VRServerGUI gui) {
+	public SkeletonConfigGUI(WindowsVRServer server, VRServerGUI gui) {
 		super(false, true);
 		this.server = server;
 		this.gui = gui;

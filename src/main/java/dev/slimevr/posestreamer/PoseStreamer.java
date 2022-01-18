@@ -2,7 +2,7 @@ package dev.slimevr.posestreamer;
 
 import java.io.IOException;
 
-import dev.slimevr.VRServer;
+import dev.slimevr.platform.windows.WindowsVRServer;
 import dev.slimevr.util.ann.VRServerThread;
 import dev.slimevr.vr.processor.skeleton.HumanSkeleton;
 import io.eiren.util.logging.LogManager;
@@ -15,9 +15,9 @@ public class PoseStreamer {
 	private HumanSkeleton skeleton;
 	private PoseDataStream poseFileStream;
 	
-	protected final VRServer server;
+	protected final WindowsVRServer server;
 	
-	public PoseStreamer(VRServer server) {
+	public PoseStreamer(WindowsVRServer server) {
 		this.server = server;
 		
 		// Register callbacks/events

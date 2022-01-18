@@ -9,7 +9,7 @@ import java.util.function.Consumer;
 import com.jme3.math.FastMath;
 import com.jme3.math.Vector3f;
 
-import dev.slimevr.VRServer;
+import dev.slimevr.platform.windows.WindowsVRServer;
 import dev.slimevr.poserecorder.PoseFrameSkeleton;
 import dev.slimevr.poserecorder.PoseFrameTracker;
 import dev.slimevr.poserecorder.PoseFrames;
@@ -75,7 +75,7 @@ public class AutoBone {
 	public float kneeLegRatio = 0.5f;
 	public float chestTorsoRatio = 0.5f;
 	
-	protected final VRServer server;
+	protected final WindowsVRServer server;
 	
 	protected SimpleSkeleton skeleton = null;
 	
@@ -88,7 +88,7 @@ public class AutoBone {
 	public final FastList<SkeletonConfigValue> lengthConfigs = new FastList<SkeletonConfigValue>(new SkeletonConfigValue[]{
 			SkeletonConfigValue.HEAD, SkeletonConfigValue.NECK, SkeletonConfigValue.TORSO, SkeletonConfigValue.HIPS_WIDTH, SkeletonConfigValue.LEGS_LENGTH});
 	
-	public AutoBone(VRServer server) {
+	public AutoBone(WindowsVRServer server) {
 		this.server = server;
 		
 		reloadConfigValues();

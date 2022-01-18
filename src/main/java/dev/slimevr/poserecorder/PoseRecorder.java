@@ -7,7 +7,7 @@ import java.util.concurrent.Future;
 
 import org.apache.commons.lang3.tuple.Pair;
 
-import dev.slimevr.VRServer;
+import dev.slimevr.platform.windows.WindowsVRServer;
 import dev.slimevr.util.ann.VRServerThread;
 import dev.slimevr.vr.trackers.Tracker;
 import io.eiren.util.collections.FastList;
@@ -24,10 +24,10 @@ public class PoseRecorder {
 	
 	protected CompletableFuture<PoseFrames> currentRecording;
 	
-	protected final VRServer server;
+	protected final WindowsVRServer server;
 	FastList<Pair<Tracker, PoseFrameTracker>> trackers = new FastList<Pair<Tracker, PoseFrameTracker>>();
 	
-	public PoseRecorder(VRServer server) {
+	public PoseRecorder(WindowsVRServer server) {
 		this.server = server;
 		server.addOnTick(this::onTick);
 	}
