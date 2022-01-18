@@ -9,7 +9,7 @@ import com.jme3.math.FastMath;
 import com.jme3.math.Quaternion;
 import com.jme3.math.Vector3f;
 
-import dev.slimevr.VRServer;
+import dev.slimevr.platform.windows.WindowsVRServer;
 import dev.slimevr.gui.swing.EJBagNoStretch;
 import dev.slimevr.util.ann.VRServerThread;
 import dev.slimevr.vr.processor.TransformNode;
@@ -30,7 +30,7 @@ public class SkeletonList extends EJBagNoStretch {
 	private final List<NodeStatus> nodes = new FastList<>();
 	private long lastUpdate = 0;
 	
-	public SkeletonList(VRServer server, VRServerGUI gui) {
+	public SkeletonList(WindowsVRServer server, VRServerGUI gui) {
 		super(false, true);
 		this.gui = gui;
 

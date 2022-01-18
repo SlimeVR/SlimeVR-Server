@@ -18,7 +18,7 @@ import com.jme3.math.Quaternion;
 import com.jme3.math.Vector3f;
 
 import dev.slimevr.Main;
-import dev.slimevr.VRServer;
+import dev.slimevr.platform.windows.WindowsVRServer;
 import dev.slimevr.vr.trackers.ComputedTracker;
 import dev.slimevr.vr.trackers.HMDTracker;
 import dev.slimevr.vr.trackers.ShareableTracker;
@@ -39,7 +39,7 @@ public class WebSocketVRBridge extends WebSocketServer implements Bridge {
 	private final HMDTracker internalHMDTracker = new HMDTracker("internal://HMD");
 	private final AtomicBoolean newHMDData = new AtomicBoolean(false);
 	
-	public WebSocketVRBridge(HMDTracker hmd, List<? extends ShareableTracker> shareTrackers, VRServer server) {
+	public WebSocketVRBridge(HMDTracker hmd, List<? extends ShareableTracker> shareTrackers, WindowsVRServer server) {
 		super(new InetSocketAddress(21110), Collections.<Draft>singletonList(new Draft_6455()));
 		this.hmd = hmd;
 		this.shareTrackers = new FastList<>(shareTrackers);

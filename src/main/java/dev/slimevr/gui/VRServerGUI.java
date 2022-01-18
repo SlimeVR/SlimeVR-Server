@@ -6,7 +6,7 @@ import javax.swing.border.EmptyBorder;
 import javax.swing.event.MouseInputAdapter;
 
 import dev.slimevr.Main;
-import dev.slimevr.VRServer;
+import dev.slimevr.platform.windows.WindowsVRServer;
 import dev.slimevr.gui.swing.ButtonTimer;
 import dev.slimevr.gui.swing.EJBagNoStretch;
 import dev.slimevr.gui.swing.EJBox;
@@ -45,7 +45,7 @@ public class VRServerGUI extends JFrame {
 	
 	public static final String TITLE = "SlimeVR Server (" + Main.VERSION + ")";
 	
-	public final VRServer server;
+	public final WindowsVRServer server;
 	private final TrackersList trackersList;
 	private final SkeletonList skeletonList;
 	private JButton resetButton;
@@ -59,7 +59,7 @@ public class VRServerGUI extends JFrame {
 	private float initZoom = zoom;
 	
 	@AWTThread
-	public VRServerGUI(VRServer server) {
+	public VRServerGUI(WindowsVRServer server) {
 		super(TITLE);
 		try {
 			UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
