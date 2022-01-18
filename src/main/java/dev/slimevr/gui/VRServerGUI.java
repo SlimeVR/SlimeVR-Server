@@ -7,7 +7,6 @@ import javax.swing.event.MouseInputAdapter;
 
 import dev.slimevr.Main;
 import dev.slimevr.VRServer;
-import dev.slimevr.bridge.NamedPipeBridge;
 import dev.slimevr.gui.swing.ButtonTimer;
 import dev.slimevr.gui.swing.EJBagNoStretch;
 import dev.slimevr.gui.swing.EJBox;
