@@ -16,7 +16,6 @@ import java.util.concurrent.LinkedBlockingQueue;
 import java.util.function.Consumer;
 
 import dev.slimevr.bridge.Bridge;
-import dev.slimevr.bridge.NamedPipeBridge;
 import dev.slimevr.bridge.SteamVRPipeInputBridge;
 import dev.slimevr.bridge.VMCBridge;
 import dev.slimevr.bridge.WebSocketVRBridge;
