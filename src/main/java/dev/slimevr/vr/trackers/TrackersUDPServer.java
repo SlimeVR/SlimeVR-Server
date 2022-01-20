@@ -390,13 +390,16 @@ public class TrackersUDPServer extends Thread {
 					case 19:
 						if(connection == null)
 							break;
-						bb.getLong();
-						sensorId = bb.get() & 0xFF;
-						tracker = connection.sensors.get(sensorId);
-						if(tracker == null)
-							break;
+						sensorId = bb.get() & 0xFF; // This is sent but ignored
 						int signalStrength = bb.get();
-						tracker.signalStrength = signalStrength;
+						if(connection.sensors.size() > 0) {
+							Collection<IMUTracker> trackers = connection.sensors.values();
+							Iterator<IMUTracker> iterator = trackers.iterator();
+							while(iterator.hasNext()) {
+								IMUTracker tr = iterator.next();
+								tr.signalStrength = signalStrength;
+							}
+						}
 						break;
 					default:
 						LogManager.log.warning("[TrackerServer] Unknown data received: " + packetId + " from " + recieve.getSocketAddress());
