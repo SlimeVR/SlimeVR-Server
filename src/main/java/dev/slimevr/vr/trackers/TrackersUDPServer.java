@@ -28,6 +28,7 @@ import com.jme3.math.Vector3f;
 
 import io.eiren.util.Util;
 import io.eiren.util.collections.FastList;
+import io.eiren.util.logging.LogManager;
 
 /**
  * Recieves trackers data by UDP using extended owoTrack protocol.
@@ -62,7 +63,7 @@ public class TrackersUDPServer extends Thread {
 	}
 	
 	private void setUpNewTracker(DatagramPacket handshakePacket, ByteBuffer data) throws IOException {
-		System.out.println("[TrackerServer] Handshake recieved from " + handshakePacket.getAddress() + ":" + handshakePacket.getPort());
+		LogManager.log.info("[TrackerServer] Handshake recieved from " + handshakePacket.getAddress() + ":" + handshakePacket.getPort());
 		InetAddress addr = handshakePacket.getAddress();
 		TrackerConnection tracker;
 		synchronized(trackers) {
@@ -70,7 +71,6 @@ public class TrackersUDPServer extends Thread {
 		}
 		if(tracker == null) {
 			tracker = new TrackerConnection(handshakePacket.getSocketAddress());
-			data.getLong(); // Skip packet number
 			int boardType = -1;
 			int imuType = -1;
 			int firmwareBuild = -1;
@@ -122,21 +122,21 @@ public class TrackersUDPServer extends Thread {
 				trackers.add(tracker);
 				trackersMap.put(addr, tracker);
 			}
-			System.out.println("[TrackerServer] Sensor " + i + " added with address " + handshakePacket.getSocketAddress() + ". Board type: " + boardType + ", imu type: " + imuType + ", firmware: " + firmware + " (" + firmwareBuild + "), mac: " + macString + ", name: " + tracker.name);
+			LogManager.log.info("[TrackerServer] Tracker " + i + " added with address " + handshakePacket.getSocketAddress() + ". Board type: " + boardType + ", imu type: " + imuType + ", firmware: " + firmware + " (" + firmwareBuild + "), mac: " + macString + ", name: " + tracker.name);
+	        // TODO : Set up new sensor for older protocols
 		}
-		tracker.sensors.get(0).setStatus(TrackerStatus.OK);
         socket.send(new DatagramPacket(HANDSHAKE_BUFFER, HANDSHAKE_BUFFER.length, handshakePacket.getAddress(), handshakePacket.getPort()));
 	}
 	
 	private void setUpSensor(TrackerConnection connection, int trackerId, int sensorType, int sensorStatus) throws IOException {
-		System.out.println("[TrackerServer] Sensor " + trackerId + " for " + connection.name + " status: " + sensorStatus);
+		LogManager.log.info("[TrackerServer] Sensor " + trackerId + " for " + connection.name + " status: " + sensorStatus);
 		IMUTracker imu = connection.sensors.get(trackerId);
 		if(imu == null) {
 			imu = new IMUTracker(Tracker.getNextLocalTrackerId(), connection.name + "/" + trackerId, connection.descriptiveName + "/" + trackerId, this);
 			connection.sensors.put(trackerId, imu);
 			ReferenceAdjustedTracker<IMUTracker> adjustedTracker = new ReferenceAdjustedTracker<>(imu);
 			trackersConsumer.accept(adjustedTracker);
-			System.out.println("[TrackerServer] Added up sensor " + trackerId + " for " + connection.name + ", type " + sensorType);
+			LogManager.log.info("[TrackerServer] Added sensor " + trackerId + " for " + connection.name + ", type " + sensorType);
 		}
 		switch(sensorStatus) {
 		case 0:
@@ -187,16 +187,16 @@ public class TrackersUDPServer extends Thread {
 			while(true) {
 				try {
 					boolean hasActiveTrackers = false;
-					for (TrackerConnection tracker: trackers) {
-						if (tracker.sensors.get(0).getStatus() == TrackerStatus.OK) {
+					for(TrackerConnection tracker : trackers) {
+						if(tracker.sensors.size() > 0) {
 							hasActiveTrackers = true;
 							break;
 						}
 					}
-					if (!hasActiveTrackers) {
+					if(!hasActiveTrackers) {
 						long discoveryPacketTime = System.currentTimeMillis();
-						if ((discoveryPacketTime - prevPacketTime) >= 2000) {
-							for (SocketAddress addr: addresses) {
+						if((discoveryPacketTime - prevPacketTime) >= 2000) {
+							for(SocketAddress addr: addresses) {
 								socket.send(new DatagramPacket(dummyPacket, dummyPacket.length, addr));
 							}
 							prevPacketTime = discoveryPacketTime;
@@ -212,10 +212,20 @@ public class TrackersUDPServer extends Thread {
 					synchronized(trackers) {
 						connection = trackersMap.get(recieve.getAddress());
 					}
-					if(connection != null)
+					int packetId = bb.getInt();
+					long packetNumber = bb.getLong();
+
+					if(connection != null) {
+						if(packetId != 10) {
+							if(!connection.isNextPacket(packetNumber)) {
+								// Skip packet because it's not next
+								LogManager.log.warning("[TrackerServer] Out of order packet received: id " + packetId + ", number " + packetNumber + ", last " + connection.lastPacketNumber + ", from " + recieve.getSocketAddress());
+								continue;
+							}
+						}
 						connection.lastPacket = System.currentTimeMillis();
-					int packetId;
-					switch(packetId = bb.getInt()) {
+					}
+					switch(packetId) {
 					case 0:
 						break;
 					case 3:
@@ -225,7 +235,6 @@ public class TrackersUDPServer extends Thread {
 					case 16: // PACKET_ROTATION_2
 						if(connection == null)
 							break;
-						bb.getLong();
 						buf.set(bb.getFloat(), bb.getFloat(), bb.getFloat(), bb.getFloat());
 						offset.mult(buf, buf);
 						if(packetId == 1) {
@@ -243,12 +252,10 @@ public class TrackersUDPServer extends Thread {
 							break;
 						if(connection.isOwoTrack)
 							break;
-						bb.getLong();
 						int sensorId = bb.get() & 0xFF;
 						tracker = connection.sensors.get(sensorId);
 						if(tracker == null)
 							break;
-						
 						int dataType = bb.get() & 0xFF;
 						buf.set(bb.getFloat(), bb.getFloat(), bb.getFloat(), bb.getFloat());
 						offset.mult(buf, buf);
@@ -272,7 +279,6 @@ public class TrackersUDPServer extends Thread {
 							break;
 						if(connection.isOwoTrack)
 							break;
-						bb.getLong();
 						sensorId = bb.get() & 0xFF;
 						tracker = connection.sensors.get(sensorId);
 						if(tracker == null)
@@ -290,7 +296,6 @@ public class TrackersUDPServer extends Thread {
 							break;
 						if(connection.isOwoTrack)
 							break;
-						bb.getLong();
 						MPUTracker.ConfigurationData data = new MPUTracker.ConfigurationData(bb);
 						Consumer<String> dataConsumer = calibrationDataRequests.remove(connection.sensors.get(0));
 						if(dataConsumer != null) {
@@ -316,7 +321,6 @@ public class TrackersUDPServer extends Thread {
 							break;
 						if(connection.isOwoTrack)
 							break;
-						bb.getLong();
 						int length = bb.getInt();
 						for(int i = 0; i < length; ++i) {
 							char ch = (char) bb.get();
@@ -333,7 +337,6 @@ public class TrackersUDPServer extends Thread {
 					case 12: // PACKET_BATTERY_VOLTAGE
 						if(connection == null)
 							break;
-						bb.getLong();
 						float voltage = bb.getFloat();
 						float level = bb.getFloat() * 100; // Use default level if recieved 0
 						if(connection.sensors.size() > 0) {
@@ -342,7 +345,7 @@ public class TrackersUDPServer extends Thread {
 							while(iterator.hasNext()) {
 								IMUTracker tr = iterator.next();
 								tr.setBatteryVoltage(voltage);
-								tr.setBatteryLevel(bb.getFloat() * 100);
+								tr.setBatteryLevel(level);
 							}
 						}
 						break;
@@ -351,19 +354,17 @@ public class TrackersUDPServer extends Thread {
 							break;
 						if(connection.isOwoTrack)
 							break;
-						bb.getLong();
 						sensorId = bb.get() & 0xFF;
 						tracker = connection.sensors.get(sensorId);
 						if(tracker == null)
 							break;
 						int tap = bb.get() & 0xFF;
 						BnoTap tapObj = new BnoTap(tap);
-						System.out.println("[TrackerServer] Tap packet received from " + tracker.getName() + "/" + sensorId + ": " + tapObj  + " (b" + Integer.toBinaryString(tap) + ")");
+						LogManager.log.info("[TrackerServer] Tap packet received from " + tracker.getName() + "/" + sensorId + ": " + tapObj  + " (b" + Integer.toBinaryString(tap) + ")");
 						break;
 					case 14: // PACKET_ERROR
-						bb.getLong();
 						byte reason = bb.get();
-						System.out.println("[TrackerServer] Error recieved from " + recieve.getSocketAddress() + ": " + reason);
+						LogManager.log.severe("[TrackerServer] Error recieved from " + recieve.getSocketAddress() + ": " + reason);
 						if(connection == null)
 							break;
 						sensorId = bb.get() & 0xFF;
@@ -375,7 +376,6 @@ public class TrackersUDPServer extends Thread {
 					case 15: // PACKET_SENSOR_INFO
 						if(connection == null)
 							break;
-						bb.getLong();
 						sensorId = bb.get() & 0xFF;
 						int sensorStatus = bb.get() & 0xFF;
 						int sensorType = bb.get() & 0xFF;
@@ -386,7 +386,7 @@ public class TrackersUDPServer extends Thread {
 						bb.put((byte) sensorId);
 						bb.put((byte) sensorStatus);
 						socket.send(new DatagramPacket(rcvBuffer, bb.position(), connection.address));
-						System.out.println("[TrackerServer] Sensor info for " + connection.sensors.get(0).getName() + "/" + sensorId + ": " + sensorStatus);
+						LogManager.log.info("[TrackerServer] Sensor info for " + connection.sensors.get(0).getName() + "/" + sensorId + ": " + sensorStatus);
 						break;
 					case 19:
 						if(connection == null)
@@ -400,7 +400,7 @@ public class TrackersUDPServer extends Thread {
 						tracker.signalStrength = signalStrength;
 						break;
 					default:
-						System.out.println("[TrackerServer] Unknown data received: " + packetId + " from " + recieve.getSocketAddress());
+						LogManager.log.warning("[TrackerServer] Unknown data received: " + packetId + " from " + recieve.getSocketAddress());
 						break;
 					}
 				} catch(SocketTimeoutException e) {
@@ -441,6 +441,7 @@ public class TrackersUDPServer extends Thread {
 								conn.lastPingPacketTime = System.currentTimeMillis();
 								bb.rewind();
 								bb.putInt(10);
+								bb.putLong(0);
 								bb.putInt(conn.lastPingPacketId);
 								socket.send(new DatagramPacket(rcvBuffer, bb.position(), conn.address));
 							}
@@ -467,9 +468,19 @@ public class TrackersUDPServer extends Thread {
 		public String descriptiveName;
 		public StringBuilder serialBuffer = new StringBuilder();
 		long lastSerialUpdate = 0;
+		long lastPacketNumber = -1;
 		
 		public TrackerConnection(SocketAddress address) {
 			this.address = address;
+		}
+		
+		public boolean isNextPacket(long packetId) {
+			if(packetId == 0)
+				return true;
+			if(packetId <= lastPacketNumber) // Skip repeated or out-of-order packets
+				return false;
+			lastPacketNumber = packetId;
+			return true;
 		}
 	}
 	
