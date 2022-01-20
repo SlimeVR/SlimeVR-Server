@@ -144,6 +144,8 @@ public class TrackersList extends EJBoxNoStretch {
 		JLabel adjYaw;
 		JLabel correction;
 		JLabel signalStrength;
+		JLabel rotQuat;
+		JLabel rotAdj;
 		
 		@AWTThread
 		public TrackerPanel(Tracker t) {
@@ -217,7 +219,7 @@ public class TrackersList extends EJBoxNoStretch {
 			add(new JLabel("TPS"), c(3, row, 2, GridBagConstraints.FIRST_LINE_START));
 			if(realTracker instanceof IMUTracker) {
 				add(new JLabel("Ping"), c(2, row, 2, GridBagConstraints.FIRST_LINE_START));
-				add(new JLabel("RSSI"), c(4, row, 2, GridBagConstraints.FIRST_LINE_START));
+				add(new JLabel("Signal"), c(4, row, 2, GridBagConstraints.FIRST_LINE_START));
 			}
 			row++;
 			if(t.hasRotation())
@@ -243,11 +245,19 @@ public class TrackersList extends EJBoxNoStretch {
 			row++;
 			add(new JLabel("Raw:"), c(0, row, 2, GridBagConstraints.FIRST_LINE_START));
 			add(raw = new JLabel("0 0 0"), s(c(1, row, 2, GridBagConstraints.FIRST_LINE_START), 3, 1));
+			/*
+			if(realTracker instanceof IMUTracker) {
+				add(new JLabel("Quat:"), c(2, row, 2, GridBagConstraints.FIRST_LINE_START));
+				add(rotQuat = new JLabel("0"), c(3, row, 2, GridBagConstraints.FIRST_LINE_START));
+			}
+			//*/
 			row++;
 			/*
 			if(realTracker instanceof IMUTracker) {
 				add(new JLabel("Raw mag:"), c(0, row, 2, GridBagConstraints.FIRST_LINE_START));
 				add(rawMag = new JLabel("0 0 0"), s(c(1, row, 2, GridBagConstraints.FIRST_LINE_START), 3, 1));
+				add(new JLabel("Hash:"), c(2, row, 2, GridBagConstraints.FIRST_LINE_START));
+				add(new JLabel(String.format("0x%8x", realTracker.hashCode())), s(c(3, row, 2, GridBagConstraints.FIRST_LINE_START), 3, 1));
 				row++;
 				add(new JLabel("Cal:"), c(0, row, 2, GridBagConstraints.FIRST_LINE_START));
 				add(calibration = new JLabel("0"), c(1, row, 2, GridBagConstraints.FIRST_LINE_START));
@@ -256,6 +266,8 @@ public class TrackersList extends EJBoxNoStretch {
 				row++;
 				add(new JLabel("Correction:"), c(0, row, 2, GridBagConstraints.FIRST_LINE_START));
 				add(correction = new JLabel("0 0 0"), s(c(1, row, 2, GridBagConstraints.FIRST_LINE_START), 3, 1));
+				add(new JLabel("RotAdj:"), c(2, row, 2, GridBagConstraints.FIRST_LINE_START));
+				add(rotAdj = new JLabel("0"), c(3, row, 2, GridBagConstraints.FIRST_LINE_START));
 				row++;
 			}
 			//*/
@@ -334,21 +346,34 @@ public class TrackersList extends EJBoxNoStretch {
 					+ " " + StringUtils.prettyNumber(angles[1] * FastMath.RAD_TO_DEG, 0)
 					+ " " + StringUtils.prettyNumber(angles[2] * FastMath.RAD_TO_DEG, 0));
 			if(realTracker instanceof IMUTracker) {
-				((IMUTracker) realTracker).rotMagQuaternion.toAngles(angles);
+				IMUTracker imu = (IMUTracker) realTracker;
+				imu.rotMagQuaternion.toAngles(angles);
 				if(rawMag != null)
 					rawMag.setText(StringUtils.prettyNumber(angles[0] * FastMath.RAD_TO_DEG, 0)
 							+ " " + StringUtils.prettyNumber(angles[1] * FastMath.RAD_TO_DEG, 0)
 							+ " " + StringUtils.prettyNumber(angles[2] * FastMath.RAD_TO_DEG, 0));
 				if(calibration != null)
-					calibration.setText(((IMUTracker) realTracker).calibrationStatus + " / " + ((IMUTracker) realTracker).magCalibrationStatus);
+					calibration.setText(imu.calibrationStatus + " / " + imu.magCalibrationStatus);
 				if(magAccuracy != null)
-					magAccuracy.setText(StringUtils.prettyNumber(((IMUTracker) realTracker).magnetometerAccuracy * FastMath.RAD_TO_DEG, 1) + "°");
-				((IMUTracker) realTracker).getCorrection(q);
+					magAccuracy.setText(StringUtils.prettyNumber(imu.magnetometerAccuracy * FastMath.RAD_TO_DEG, 1) + "°");
+				imu.getCorrection(q);
 				q.toAngles(angles);
 				if(correction != null)
 					correction.setText(StringUtils.prettyNumber(angles[0] * FastMath.RAD_TO_DEG, 0)
 							+ " " + StringUtils.prettyNumber(angles[1] * FastMath.RAD_TO_DEG, 0)
 							+ " " + StringUtils.prettyNumber(angles[2] * FastMath.RAD_TO_DEG, 0));
+				if(rotQuat != null) {
+					imu.rotQuaternion.toAngles(angles);
+					rotQuat.setText(StringUtils.prettyNumber(angles[0] * FastMath.RAD_TO_DEG, 0)
+							+ " " + StringUtils.prettyNumber(angles[1] * FastMath.RAD_TO_DEG, 0)
+							+ " " + StringUtils.prettyNumber(angles[2] * FastMath.RAD_TO_DEG, 0));
+				}
+				if(rotAdj != null) {
+					imu.rotAdjust.toAngles(angles);
+					rotAdj.setText(StringUtils.prettyNumber(angles[0] * FastMath.RAD_TO_DEG, 0)
+							+ " " + StringUtils.prettyNumber(angles[1] * FastMath.RAD_TO_DEG, 0)
+							+ " " + StringUtils.prettyNumber(angles[2] * FastMath.RAD_TO_DEG, 0));
+				}
 			}
 		}
 	}

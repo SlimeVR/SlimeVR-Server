@@ -10,12 +10,12 @@ public class IMUTracker implements Tracker, TrackerWithTPS, TrackerWithBattery {
 	
 	public static final float MAX_MAG_CORRECTION_ACCURACY = 5 * FastMath.RAD_TO_DEG;
 	
-	public final Vector3f gyroVector = new Vector3f();
-	public final Vector3f accelVector = new Vector3f();
+	//public final Vector3f gyroVector = new Vector3f();
+	//public final Vector3f accelVector = new Vector3f();
 	public final Vector3f magVector = new Vector3f();
 	public final Quaternion rotQuaternion = new Quaternion();
 	public final Quaternion rotMagQuaternion = new Quaternion();
-	protected final Quaternion rotAdjust = new Quaternion();
+	public final Quaternion rotAdjust = new Quaternion();
 	protected final Quaternion correction = new Quaternion();
 	protected TrackerMountingRotation mounting = null;
 	protected TrackerStatus status = TrackerStatus.OK;
