@@ -15,10 +15,10 @@ public class LinuxPipe {
 		this.pipe = pipe;
 		this.name = name;
 	}
-	public static void safeDisconnect(RandomAccessFile pipe) {
+	public static void safeDisconnect(LinuxPipe pipe) {
 		try {
-			if(pipe != null) {
-				pipe.close();
+			if(pipe != null && pipe.pipe != null) {
+				pipe.pipe.close();
 			}
 		} catch (Exception e) {
 		}

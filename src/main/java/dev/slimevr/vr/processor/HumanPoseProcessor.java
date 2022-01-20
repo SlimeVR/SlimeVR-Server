@@ -3,7 +3,7 @@ package dev.slimevr.vr.processor;
 import java.util.List;
 import java.util.function.Consumer;
 
-import dev.slimevr.platform.windows.WindowsVRServer;
+import dev.slimevr.VRServer;
 import dev.slimevr.util.ann.VRServerThread;
 import dev.slimevr.vr.processor.skeleton.HumanSkeleton;
 import dev.slimevr.vr.processor.skeleton.SimpleSkeleton;
@@ -18,13 +18,13 @@ import io.eiren.util.ann.ThreadSafe;
 import io.eiren.util.collections.FastList;
 
 public class HumanPoseProcessor {
-	
-	private final WindowsVRServer server;
+
+	private final VRServer server;
 	private final List<ComputedHumanPoseTracker> computedTrackers = new FastList<>();
 	private final List<Consumer<HumanSkeleton>> onSkeletonUpdated = new FastList<>();
 	private HumanSkeleton skeleton;
 	
-	public HumanPoseProcessor(WindowsVRServer server, HMDTracker hmd) {
+	public HumanPoseProcessor(VRServer server, HMDTracker hmd) {
 		this.server = server;
 		computedTrackers.add(new ComputedHumanPoseTracker(Tracker.getNextLocalTrackerId(), ComputedHumanPoseTrackerPosition.WAIST, TrackerRole.WAIST));
 		computedTrackers.add(new ComputedHumanPoseTracker(Tracker.getNextLocalTrackerId(), ComputedHumanPoseTrackerPosition.LEFT_FOOT, TrackerRole.LEFT_FOOT));

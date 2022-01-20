@@ -7,6 +7,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.concurrent.atomic.AtomicBoolean;
 
+import dev.slimevr.VRServer;
 import dev.slimevr.bridge.Bridge;
 import org.apache.commons.lang3.StringUtils;
 
@@ -31,7 +32,7 @@ public class WindowsSteamVRPipeInputBridge extends Thread implements Bridge {
 	public static final String PipeName = "\\\\.\\pipe\\SlimeVRInput";
 
 	private final byte[] buffArray = new byte[1024];
-	private final WindowsVRServer server;
+	private final VRServer server;
 	private final StringBuilder commandBuilder = new StringBuilder(1024);
 	private final List<VRTracker> trackers = new FastList<>();
 	private final Map<Integer, VRTracker> trackersInternal = new HashMap<>();
@@ -40,7 +41,7 @@ public class WindowsSteamVRPipeInputBridge extends Thread implements Bridge {
 	private final Quaternion qBuffer = new Quaternion();
 	private WindowsPipe pipe;
 
-	public WindowsSteamVRPipeInputBridge(WindowsVRServer server) {
+	public WindowsSteamVRPipeInputBridge(VRServer server) {
 		this.server = server;
 	}
 

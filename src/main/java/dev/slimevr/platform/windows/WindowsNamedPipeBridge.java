@@ -11,7 +11,6 @@ import com.sun.jna.ptr.IntByReference;
 
 import dev.slimevr.Main;
 import dev.slimevr.bridge.BridgeThread;
-import dev.slimevr.bridge.Pipe;
 import dev.slimevr.bridge.PipeState;
 import dev.slimevr.bridge.ProtobufBridge;
 import dev.slimevr.bridge.ProtobufMessages.ProtobufMessage;

@@ -3,7 +3,7 @@ package dev.slimevr.poserecorder;
 import java.util.List;
 import java.util.Map;
 
-import dev.slimevr.platform.windows.WindowsVRServer;
+import dev.slimevr.VRServer;
 import dev.slimevr.vr.processor.ComputedHumanPoseTracker;
 import dev.slimevr.vr.processor.skeleton.SimpleSkeleton;
 import dev.slimevr.vr.processor.skeleton.SkeletonConfigValue;
@@ -17,7 +17,7 @@ public class PoseFrameSkeleton extends SimpleSkeleton {
 		super(computedTrackers);
 	}
 	
-	public PoseFrameSkeleton(WindowsVRServer server, List<? extends ComputedHumanPoseTracker> computedTrackers) {
+	public PoseFrameSkeleton(VRServer server, List<? extends ComputedHumanPoseTracker> computedTrackers) {
 		super(server, computedTrackers);
 	}
 	
