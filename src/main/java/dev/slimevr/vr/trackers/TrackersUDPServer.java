@@ -213,15 +213,14 @@ public class TrackersUDPServer extends Thread {
 						connection = trackersMap.get(recieve.getAddress());
 					}
 					int packetId = bb.getInt();
-					long packetNumber = bb.getLong();
+					// TODO Ping is not working at all
+					long packetNumber = packetId != 10 ? bb.getLong() : 0;
 
 					if(connection != null) {
-						if(packetId != 10) {
-							if(!connection.isNextPacket(packetNumber)) {
-								// Skip packet because it's not next
-								LogManager.log.warning("[TrackerServer] Out of order packet received: id " + packetId + ", number " + packetNumber + ", last " + connection.lastPacketNumber + ", from " + recieve.getSocketAddress());
-								continue;
-							}
+						if(!connection.isNextPacket(packetNumber)) {
+							// Skip packet because it's not next
+							LogManager.log.warning("[TrackerServer] Out of order packet received: id " + packetId + ", number " + packetNumber + ", last " + connection.lastPacketNumber + ", from " + recieve.getSocketAddress());
+							continue;
 						}
 						connection.lastPacket = System.currentTimeMillis();
 					}
