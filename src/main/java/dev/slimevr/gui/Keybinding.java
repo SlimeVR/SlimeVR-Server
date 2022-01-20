@@ -3,18 +3,18 @@ package dev.slimevr.gui;
 import com.melloware.jintellitype.HotkeyListener;
 import com.melloware.jintellitype.JIntellitype;
 
-import dev.slimevr.platform.windows.WindowsVRServer;
+import dev.slimevr.VRServer;
 import io.eiren.util.OperatingSystem;
 import io.eiren.util.ann.AWTThread;
 import io.eiren.util.logging.LogManager;
 
 public class Keybinding implements HotkeyListener {
-	public final WindowsVRServer server;
+	public final VRServer server;
 	private static final int RESET = 1;
 	private static final int QUICK_RESET = 2;
 	
 	@AWTThread
-	public Keybinding(WindowsVRServer server) {
+	public Keybinding(VRServer server) {
 		this.server = server;
 		
 		if (OperatingSystem.getCurrentPlatform() != OperatingSystem.WINDOWS) {

@@ -12,6 +12,7 @@ import com.sun.jna.platform.win32.WinBase;
 import com.sun.jna.platform.win32.WinNT.HANDLE;
 import com.sun.jna.ptr.IntByReference;
 
+import dev.slimevr.VRServer;
 import dev.slimevr.bridge.Bridge;
 import dev.slimevr.bridge.PipeState;
 import dev.slimevr.vr.trackers.ComputedTracker;
@@ -46,7 +47,7 @@ public class WindowsNamedPipeVRBridge extends Thread implements Bridge {
 	private final HMDTracker internalHMDTracker = new HMDTracker("internal://HMD");
 	private final AtomicBoolean newHMDData = new AtomicBoolean(false);
 
-	public WindowsNamedPipeVRBridge(HMDTracker hmd, List<? extends Tracker> shareTrackers, WindowsVRServer server) {
+	public WindowsNamedPipeVRBridge(HMDTracker hmd, List<? extends Tracker> shareTrackers, VRServer server) {
 		super("Named Pipe VR Bridge");
 		this.hmd = hmd;
 		this.shareTrackers = new FastList<>(shareTrackers);

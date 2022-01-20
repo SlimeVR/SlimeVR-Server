@@ -12,6 +12,7 @@ import java.io.File;
 import java.util.List;
 import java.util.concurrent.Future;
 
+import dev.slimevr.VRServer;
 import io.eiren.util.StringUtils;
 import io.eiren.util.ann.AWTThread;
 import io.eiren.util.collections.FastList;
@@ -21,7 +22,7 @@ import javax.swing.event.MouseInputAdapter;
 
 import org.apache.commons.lang3.tuple.Pair;
 
-import dev.slimevr.platform.windows.WindowsVRServer;
+import dev.slimevr.platform.windows.VRServer;
 import dev.slimevr.autobone.AutoBone;
 import dev.slimevr.gui.swing.EJBox;
 import dev.slimevr.poserecorder.PoseFrames;
@@ -36,7 +37,7 @@ public class AutoBoneWindow extends JFrame {
 	
 	private EJBox pane;
 	
-	private final transient WindowsVRServer server;
+	private final transient VRServer server;
 	private final transient SkeletonConfigGUI skeletonConfig;
 	private final transient PoseRecorder poseRecorder;
 	private final transient AutoBone autoBone;
@@ -52,7 +53,7 @@ public class AutoBoneWindow extends JFrame {
 	private JLabel processLabel;
 	private JLabel lengthsLabel;
 	
-	public AutoBoneWindow(WindowsVRServer server, SkeletonConfigGUI skeletonConfig) {
+	public AutoBoneWindow(VRServer server, SkeletonConfigGUI skeletonConfig) {
 		super("Skeleton Auto-Configuration");
 		
 		this.server = server;
