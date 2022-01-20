@@ -15,14 +15,13 @@ import dev.slimevr.poserecorder.PoseFrameTracker;
 import dev.slimevr.poserecorder.PoseFrames;
 import dev.slimevr.poserecorder.TrackerFrame;
 import dev.slimevr.poserecorder.TrackerFrameData;
+import dev.slimevr.vr.processor.HumanPoseProcessor;
 import dev.slimevr.vr.processor.skeleton.HumanSkeleton;
-import dev.slimevr.vr.processor.skeleton.SimpleSkeleton;
 import dev.slimevr.vr.processor.skeleton.SkeletonConfig;
 import dev.slimevr.vr.processor.skeleton.SkeletonConfigValue;
 import dev.slimevr.vr.trackers.TrackerPosition;
 import dev.slimevr.vr.trackers.TrackerRole;
 import dev.slimevr.vr.trackers.TrackerUtils;
-import io.eiren.util.ann.ThreadSafe;
 import io.eiren.util.logging.LogManager;
 import io.eiren.util.collections.FastList;
 
@@ -77,8 +76,6 @@ public class AutoBone {
 	
 	protected final VRServer server;
 	
-	protected SimpleSkeleton skeleton = null;
-	
 	// This is filled by reloadConfigValues()
 	public final EnumMap<SkeletonConfigValue, Float> configs = new EnumMap<SkeletonConfigValue, Float>(SkeletonConfigValue.class);
 	public final EnumMap<SkeletonConfigValue, Float> staticConfigs = new EnumMap<SkeletonConfigValue, Float>(SkeletonConfigValue.class);
@@ -90,10 +87,7 @@ public class AutoBone {
 	
 	public AutoBone(VRServer server) {
 		this.server = server;
-		
 		reloadConfigValues();
-		
-		server.addSkeletonUpdatedCallback(this::skeletonUpdated);
 	}
 	
 	public void reloadConfigValues() {
@@ -139,17 +133,18 @@ public class AutoBone {
 		staticConfigs.put(SkeletonConfigValue.SKELETON_OFFSET, 0f);
 	}
 	
-	@ThreadSafe
-	public void skeletonUpdated(HumanSkeleton newSkeleton) {
-		if(newSkeleton instanceof SimpleSkeleton) {
-			skeleton = (SimpleSkeleton) newSkeleton;
-			applyConfigToSkeleton(newSkeleton);
-			LogManager.log.info("[AutoBone] Received updated skeleton");
-		}
+	/**
+	 * A simple utility method to get the {@link HumanSkeleton} from the {@link VRServer}
+	 * @return The {@link HumanSkeleton} associated with the {@link VRServer}, or null if there is none available
+	 * @see {@link VRServer}, {@link HumanSkeleton}
+	 */
+	private HumanSkeleton getSkeleton() {
+		HumanPoseProcessor humanPoseProcessor = server != null ? server.humanPoseProcessor : null;
+		return humanPoseProcessor != null ? humanPoseProcessor.getSkeleton() : null;
 	}
-	
+
 	public void applyConfig() {
-		if(!applyConfigToSkeleton(skeleton)) {
+		if(!applyConfigToSkeleton(getSkeleton())) {
 			// Unable to apply to skeleton, save directly
 			saveConfigs();
 		}
@@ -287,10 +282,14 @@ public class AutoBone {
 		
 		// If target height isn't specified, auto-detect
 		if(targetHeight < 0f) {
+			// Get the current skeleton from the server
+			HumanSkeleton skeleton = getSkeleton();
 			if(skeleton != null) {
+				// If there is a skeleton available, calculate the target height from its configs
 				targetHeight = sumSelectConfigs(heightConfigs, skeleton.getSkeletonConfig());
 				LogManager.log.warning("[AutoBone] Target height loaded from skeleton (Make sure you reset before running!): " + targetHeight);
 			} else {
+				// Otherwise if there is no skeleton available, attempt to get the max HMD height from the recording
 				float hmdHeight = getMaxHmdHeight(frames);
 				if(hmdHeight <= 0.50f) {
 					LogManager.log.warning("[AutoBone] Max headset height detected (Value seems too low, did you not stand up straight while measuring?): " + hmdHeight);
@@ -303,12 +302,14 @@ public class AutoBone {
 			}
 		}
 		
+		// Epoch loop, each epoch is one full iteration over the full dataset
 		for(int epoch = calcInitError ? -1 : 0; epoch < numEpochs; epoch++) {
 			float sumError = 0f;
 			int errorCount = 0;
 			
 			float adjustRate = epoch >= 0 ? (initialAdjustRate / FastMath.pow(adjustRateDecay, epoch)) : 0f;
 			
+			// Iterate over the frames using a cursor and an offset for comparing frames a certain number of frames apart
 			for(int cursorOffset = minDataDistance; cursorOffset <= maxDataDistance && cursorOffset < frameCount; cursorOffset++) {
 				for(int frameCursor = 0; frameCursor < frameCount - cursorOffset; frameCursor += cursorIncrement) {
 					int frameCursor2 = frameCursor + cursorOffset;
@@ -559,42 +560,48 @@ public class AutoBone {
 		float sumWeight = 0f;
 		
 		if(slideErrorFactor > 0f) {
+			// This is the main error function, this calculates the distance between the foot positions on both frames
 			totalError += getSlideErrorDeriv(skeleton1, skeleton2) * distScale * slideErrorFactor;
 			sumWeight += slideErrorFactor;
 		}
 		
 		if(offsetSlideErrorFactor > 0f) {
+			// This error function compares the distance between the feet on each frame and returns the offset between them
 			totalError += getOffsetSlideErrorDeriv(skeleton1, skeleton2) * distScale * offsetSlideErrorFactor;
 			sumWeight += offsetSlideErrorFactor;
 		}
 		
 		if(offsetErrorFactor > 0f) {
+			// This error function compares the height of each foot in each frame
 			totalError += getOffsetErrorDeriv(skeleton1, skeleton2) * distScale * offsetErrorFactor;
 			sumWeight += offsetErrorFactor;
 		}
 		
 		if(proportionErrorFactor > 0f) {
+			// This error function compares the current values to general expected proportions to keep measurements in line
 			// Either skeleton will work fine, skeleton1 is used as a default
 			totalError += getProportionErrorDeriv(skeleton1.skeletonConfig) * proportionErrorFactor;
 			sumWeight += proportionErrorFactor;
 		}
 		
 		if(heightErrorFactor > 0f) {
+			// This error function compares the height change to the actual measured height of the headset
 			totalError += FastMath.abs(heightChange) * heightErrorFactor;
 			sumWeight += heightErrorFactor;
 		}
 		
 		if(positionErrorFactor > 0f) {
+			// This error function compares the position of an assigned tracker with the position on the skeleton
 			totalError += (getPositionErrorDeriv(frames, cursor1, skeleton1) + getPositionErrorDeriv(frames, cursor2, skeleton2) / 2f) * distScale * positionErrorFactor;
 			sumWeight += positionErrorFactor;
 		}
 		
 		if(positionOffsetErrorFactor > 0f) {
+			// This error function compares the offset of the position of an assigned tracker with the position on the skeleton
 			totalError += getPositionOffsetErrorDeriv(frames, cursor1, cursor2, skeleton1, skeleton2) * distScale * positionOffsetErrorFactor;
 			sumWeight += positionOffsetErrorFactor;
 		}
 		
-		// Minimize sliding, minimize foot height offset, minimize change in total height
 		return sumWeight > 0f ? totalError / sumWeight : 0f;
 	}
 	
