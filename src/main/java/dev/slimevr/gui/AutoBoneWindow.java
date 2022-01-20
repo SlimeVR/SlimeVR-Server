@@ -22,7 +22,6 @@ import javax.swing.event.MouseInputAdapter;
 
 import org.apache.commons.lang3.tuple.Pair;
 
-import dev.slimevr.platform.windows.VRServer;
 import dev.slimevr.autobone.AutoBone;
 import dev.slimevr.gui.swing.EJBox;
 import dev.slimevr.poserecorder.PoseFrames;
