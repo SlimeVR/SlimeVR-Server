@@ -109,6 +109,8 @@ public class TrackersUDPServer extends Thread {
 				}
 			}
 			if(firmware.length() == 0) {
+				// TODO Owo track can report firmware
+				// Will be not important after refactoring, but need not forget
 				firmware.append("owoTrack");
 				tracker.isOwoTrack = true;
 			}
@@ -332,11 +334,16 @@ public class TrackersUDPServer extends Thread {
 						if(connection == null)
 							break;
 						bb.getLong();
+						float voltage = bb.getFloat();
+						float level = bb.getFloat() * 100; // Use default level if recieved 0
 						if(connection.sensors.size() > 0) {
 							Collection<IMUTracker> trackers = connection.sensors.values();
 							Iterator<IMUTracker> iterator = trackers.iterator();
-							while(iterator.hasNext())
-								iterator.next().setBatteryVoltage(bb.getFloat());
+							while(iterator.hasNext()) {
+								IMUTracker tr = iterator.next();
+								tr.setBatteryVoltage(voltage);
+								tr.setBatteryLevel(bb.getFloat() * 100);
+							}
 						}
 						break;
 					case 13: // PACKET_TAP
@@ -380,6 +387,17 @@ public class TrackersUDPServer extends Thread {
 						bb.put((byte) sensorStatus);
 						socket.send(new DatagramPacket(rcvBuffer, bb.position(), connection.address));
 						System.out.println("[TrackerServer] Sensor info for " + connection.sensors.get(0).getName() + "/" + sensorId + ": " + sensorStatus);
+						break;
+					case 19:
+						if(connection == null)
+							break;
+						bb.getLong();
+						sensorId = bb.get() & 0xFF;
+						tracker = connection.sensors.get(sensorId);
+						if(tracker == null)
+							break;
+						int signalStrength = bb.get();
+						tracker.signalStrength = signalStrength;
 						break;
 					default:
 						System.out.println("[TrackerServer] Unknown data received: " + packetId + " from " + recieve.getSocketAddress());

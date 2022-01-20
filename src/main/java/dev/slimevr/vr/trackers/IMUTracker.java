@@ -4,19 +4,18 @@ import com.jme3.math.FastMath;
 import com.jme3.math.Quaternion;
 import com.jme3.math.Vector3f;
 
-import io.eiren.math.FloatMath;
 import io.eiren.util.BufferedTimer;
 
 public class IMUTracker implements Tracker, TrackerWithTPS, TrackerWithBattery {
 	
 	public static final float MAX_MAG_CORRECTION_ACCURACY = 5 * FastMath.RAD_TO_DEG;
 	
-	public final Vector3f gyroVector = new Vector3f();
-	public final Vector3f accelVector = new Vector3f();
+	//public final Vector3f gyroVector = new Vector3f();
+	//public final Vector3f accelVector = new Vector3f();
 	public final Vector3f magVector = new Vector3f();
 	public final Quaternion rotQuaternion = new Quaternion();
 	public final Quaternion rotMagQuaternion = new Quaternion();
-	protected final Quaternion rotAdjust = new Quaternion();
+	public final Quaternion rotAdjust = new Quaternion();
 	protected final Quaternion correction = new Quaternion();
 	protected TrackerMountingRotation mounting = null;
 	protected TrackerStatus status = TrackerStatus.OK;
@@ -27,6 +26,7 @@ public class IMUTracker implements Tracker, TrackerWithTPS, TrackerWithBattery {
 	protected final TrackersUDPServer server;
 	protected float confidence = 0;
 	protected float batteryVoltage = 0;
+	protected float batteryLevel = 0;
 	public int calibrationStatus = 0;
 	public int magCalibrationStatus = 0;
 	public float magnetometerAccuracy = 0;
@@ -35,6 +35,7 @@ public class IMUTracker implements Tracker, TrackerWithTPS, TrackerWithBattery {
 	
 	protected BufferedTimer timer = new BufferedTimer(1f);
 	public int ping = -1;
+	public int signalStrength = -1;
 	
 	public TrackerPosition bodyPosition = null;
 	
@@ -147,7 +148,7 @@ public class IMUTracker implements Tracker, TrackerWithTPS, TrackerWithBattery {
 	
 	@Override
 	public float getBatteryLevel() {
-		return FloatMath.mapValue(getBatteryVoltage(), 3.6f, 4.2f, 0f, 1f);
+		return batteryLevel;
 	}
 	
 	@Override
@@ -155,6 +156,10 @@ public class IMUTracker implements Tracker, TrackerWithTPS, TrackerWithBattery {
 		return batteryVoltage;
 	}
 	
+	public void setBatteryLevel(float level) {
+		this.batteryLevel = level;
+	}
+
 	public void setBatteryVoltage(float voltage) {
 		this.batteryVoltage = voltage;
 	}
