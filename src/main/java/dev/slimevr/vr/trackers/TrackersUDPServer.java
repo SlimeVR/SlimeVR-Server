@@ -34,7 +34,7 @@ import io.eiren.util.logging.LogManager;
  * Recieves trackers data by UDP using extended owoTrack protocol.
  */
 public class TrackersUDPServer extends Thread {
-
+	
 	/**
 	 * Change between IMU axises and OpenGL/SteamVR axises
 	 */
@@ -44,12 +44,12 @@ public class TrackersUDPServer extends Thread {
 	private static final byte[] KEEPUP_BUFFER = new byte[64];
 	private static final byte[] CALIBRATION_BUFFER = new byte[64];
 	private static final byte[] CALIBRATION_REQUEST_BUFFER = new byte[64];
-
+	
 	private final Quaternion buf = new Quaternion();
 	private final Random random = new Random();
-	private final List<TrackerConnection> trackers = new FastList<>();
-	private final Map<InetAddress, TrackerConnection> trackersMap = new HashMap<>();
-	private final Map<Tracker, Consumer<String>> calibrationDataRequests = new HashMap<>();
+	private final List<TrackerConnection> connections = new FastList<>();
+	private final Map<InetAddress, TrackerConnection> connectionsByAddress = new HashMap<>();
+	private final Map<String, TrackerConnection> connectionsByMAC = new HashMap<>();
 	private final Consumer<Tracker> trackersConsumer;
 	private final int port;
 	
@@ -62,15 +62,15 @@ public class TrackersUDPServer extends Thread {
 		this.trackersConsumer = trackersConsumer;
 	}
 	
-	private void setUpNewTracker(DatagramPacket handshakePacket, ByteBuffer data) throws IOException {
+	private void setUpNewConnection(DatagramPacket handshakePacket, ByteBuffer data) throws IOException {
 		LogManager.log.info("[TrackerServer] Handshake recieved from " + handshakePacket.getAddress() + ":" + handshakePacket.getPort());
 		InetAddress addr = handshakePacket.getAddress();
-		TrackerConnection tracker;
-		synchronized(trackers) {
-			tracker = trackersMap.get(addr);
+		TrackerConnection connection;
+		synchronized(connections) {
+			connection = connectionsByAddress.get(addr);
 		}
-		if(tracker == null) {
-			tracker = new TrackerConnection(handshakePacket.getSocketAddress());
+		if(connection == null) {
+			connection = new TrackerConnection(handshakePacket.getSocketAddress(), addr);
 			int boardType = -1;
 			int imuType = -1;
 			int firmwareBuild = -1;
@@ -112,20 +112,35 @@ public class TrackersUDPServer extends Thread {
 				// TODO Owo track can report firmware
 				// Will be not important after refactoring, but need not forget
 				firmware.append("owoTrack");
-				tracker.isOwoTrack = true;
+				connection.isOwoTrack = true;
 			}
-			tracker.name = macString != null ? "udp://" + macString : "udp:/" + handshakePacket.getAddress().toString();
-			tracker.descriptiveName = "udp:/" + handshakePacket.getAddress().toString();
+			connection.name = macString != null ? "udp://" + macString : "udp:/" + handshakePacket.getAddress().toString();
+			connection.descriptiveName = "udp:/" + handshakePacket.getAddress().toString();
 			int i = 0;
-			synchronized(trackers) {
-				i = trackers.size();
-				trackers.add(tracker);
-				trackersMap.put(addr, tracker);
+			synchronized(connections) {
+				if(macString != null && connectionsByMAC.containsKey(macString)) {
+					TrackerConnection previousConnection = connectionsByMAC.get(macString);
+					i = connections.indexOf(previousConnection);
+					connectionsByAddress.remove(previousConnection.ipAddress);
+					previousConnection.ipAddress = addr;
+					previousConnection.address = handshakePacket.getSocketAddress();
+					previousConnection.name = connection.name;
+					previousConnection.descriptiveName = connection.descriptiveName;
+					connectionsByAddress.put(addr, previousConnection);
+					LogManager.log.info("[TrackerServer] Tracker " + i + " handed over to address " + handshakePacket.getSocketAddress() + ". Board type: " + boardType + ", imu type: " + imuType + ", firmware: " + firmware + " (" + firmwareBuild + "), mac: " + macString + ", name: " + previousConnection.name);
+				} else {
+					i = connections.size();
+					connections.add(connection);
+					connectionsByAddress.put(addr, connection);
+					if(macString != null) {
+						connectionsByMAC.put(macString, connection);
+					}
+					LogManager.log.info("[TrackerServer] Tracker " + i + " added with address " + handshakePacket.getSocketAddress() + ". Board type: " + boardType + ", imu type: " + imuType + ", firmware: " + firmware + " (" + firmwareBuild + "), mac: " + macString + ", name: " + connection.name);
+				}
 			}
-			LogManager.log.info("[TrackerServer] Tracker " + i + " added with address " + handshakePacket.getSocketAddress() + ". Board type: " + boardType + ", imu type: " + imuType + ", firmware: " + firmware + " (" + firmwareBuild + "), mac: " + macString + ", name: " + tracker.name);
-	        // TODO : Set up new sensor for older protocols
+			// TODO : Set up new sensor for older protocols
 		}
-        socket.send(new DatagramPacket(HANDSHAKE_BUFFER, HANDSHAKE_BUFFER.length, handshakePacket.getAddress(), handshakePacket.getPort()));
+		socket.send(new DatagramPacket(HANDSHAKE_BUFFER, HANDSHAKE_BUFFER.length, handshakePacket.getAddress(), handshakePacket.getPort()));
 	}
 	
 	private void setUpSensor(TrackerConnection connection, int trackerId, int sensorType, int sensorStatus) throws IOException {
@@ -158,36 +173,36 @@ public class TrackersUDPServer extends Thread {
 		StringBuilder serialBuffer2 = new StringBuilder();
 		try {
 			socket = new DatagramSocket(port);
-
+			
 			// Why not just 255.255.255.255? Because Windows.
 			// https://social.technet.microsoft.com/Forums/windows/en-US/72e7387a-9f2c-4bf4-a004-c89ddde1c8aa/how-to-fix-the-global-broadcast-address-255255255255-behavior-on-windows
 			ArrayList<SocketAddress> addresses = new ArrayList<SocketAddress>();
 			Enumeration<NetworkInterface> ifaces = NetworkInterface.getNetworkInterfaces();
-			while (ifaces.hasMoreElements()) {
+			while(ifaces.hasMoreElements()) {
 				NetworkInterface iface = ifaces.nextElement();
 				// Ignore loopback, PPP, virtual and disabled devices
-				if (iface.isLoopback() || !iface.isUp() || iface.isPointToPoint() || iface.isVirtual()) {
+				if(iface.isLoopback() || !iface.isUp() || iface.isPointToPoint() || iface.isVirtual()) {
 					continue;
 				}
 				Enumeration<InetAddress> iaddrs = iface.getInetAddresses();
-				while (iaddrs.hasMoreElements()) {
+				while(iaddrs.hasMoreElements()) {
 					InetAddress iaddr = iaddrs.nextElement();
 					// Ignore IPv6 addresses
-					if (iaddr instanceof Inet6Address) {
+					if(iaddr instanceof Inet6Address) {
 						continue;
 					}
 					String[] iaddrParts = iaddr.getHostAddress().split("\\.");
 					addresses.add(new InetSocketAddress(String.format("%s.%s.%s.255", iaddrParts[0], iaddrParts[1], iaddrParts[2]), port));
 				}
 			}
-			byte[] dummyPacket = new byte[] {0x0};
-
+			byte[] dummyPacket = new byte[]{0x0};
+			
 			long prevPacketTime = System.currentTimeMillis();
 			socket.setSoTimeout(250);
 			while(true) {
 				try {
 					boolean hasActiveTrackers = false;
-					for(TrackerConnection tracker : trackers) {
+					for(TrackerConnection tracker : connections) {
 						if(tracker.sensors.size() > 0) {
 							hasActiveTrackers = true;
 							break;
@@ -196,26 +211,26 @@ public class TrackersUDPServer extends Thread {
 					if(!hasActiveTrackers) {
 						long discoveryPacketTime = System.currentTimeMillis();
 						if((discoveryPacketTime - prevPacketTime) >= 2000) {
-							for(SocketAddress addr: addresses) {
+							for(SocketAddress addr : addresses) {
 								socket.send(new DatagramPacket(dummyPacket, dummyPacket.length, addr));
 							}
 							prevPacketTime = discoveryPacketTime;
 						}
 					}
-
+					
 					DatagramPacket recieve = new DatagramPacket(rcvBuffer, rcvBuffer.length);
 					socket.receive(recieve);
 					bb.rewind();
-
+					
 					TrackerConnection connection;
 					IMUTracker tracker = null;
-					synchronized(trackers) {
-						connection = trackersMap.get(recieve.getAddress());
+					synchronized(connections) {
+						connection = connectionsByAddress.get(recieve.getAddress());
 					}
 					int packetId = bb.getInt();
 					// TODO Ping is not working at all
 					long packetNumber = packetId != 10 ? bb.getLong() : 0;
-
+					
 					if(connection != null) {
 						if(!connection.isNextPacket(packetNumber)) {
 							// Skip packet because it's not next
@@ -228,7 +243,7 @@ public class TrackersUDPServer extends Thread {
 					case 0:
 						break;
 					case 3:
-						setUpNewTracker(recieve, bb);
+						setUpNewConnection(recieve, bb);
 						break;
 					case 1: // PACKET_ROTATION
 					case 16: // PACKET_ROTATION_2
@@ -295,11 +310,6 @@ public class TrackersUDPServer extends Thread {
 							break;
 						if(connection.isOwoTrack)
 							break;
-						MPUTracker.ConfigurationData data = new MPUTracker.ConfigurationData(bb);
-						Consumer<String> dataConsumer = calibrationDataRequests.remove(connection.sensors.get(0));
-						if(dataConsumer != null) {
-							dataConsumer.accept(data.toTextMatrix());
-						}
 						break;
 					case 10: // PACKET_PING_PONG:
 						if(connection == null)
@@ -359,7 +369,7 @@ public class TrackersUDPServer extends Thread {
 							break;
 						int tap = bb.get() & 0xFF;
 						BnoTap tapObj = new BnoTap(tap);
-						LogManager.log.info("[TrackerServer] Tap packet received from " + tracker.getName() + "/" + sensorId + ": " + tapObj  + " (b" + Integer.toBinaryString(tap) + ")");
+						LogManager.log.info("[TrackerServer] Tap packet received from " + tracker.getName() + "/" + sensorId + ": " + tapObj + " (b" + Integer.toBinaryString(tap) + ")");
 						break;
 					case 14: // PACKET_ERROR
 						byte reason = bb.get();
@@ -405,15 +415,14 @@ public class TrackersUDPServer extends Thread {
 						LogManager.log.warning("[TrackerServer] Unknown data received: " + packetId + " from " + recieve.getSocketAddress());
 						break;
 					}
-				} catch(SocketTimeoutException e) {
-				} catch(Exception e) {
+				} catch(SocketTimeoutException e) {} catch(Exception e) {
 					e.printStackTrace();
 				}
 				if(lastKeepup + 500 < System.currentTimeMillis()) {
 					lastKeepup = System.currentTimeMillis();
-					synchronized(trackers) {
-						for(int i = 0; i < trackers.size(); ++i) {
-							TrackerConnection conn = trackers.get(i);
+					synchronized(connections) {
+						for(int i = 0; i < connections.size(); ++i) {
+							TrackerConnection conn = connections.get(i);
 							socket.send(new DatagramPacket(KEEPUP_BUFFER, KEEPUP_BUFFER.length, conn.address));
 							if(conn.lastPacket + 1000 < System.currentTimeMillis()) {
 								Iterator<IMUTracker> iterator = conn.sensors.values().iterator();
@@ -462,6 +471,7 @@ public class TrackersUDPServer extends Thread {
 		
 		Map<Integer, IMUTracker> sensors = new HashMap<>();
 		SocketAddress address;
+		InetAddress ipAddress;
 		public long lastPacket = System.currentTimeMillis();
 		public int lastPingPacketId = -1;
 		public long lastPingPacketTime = 0;
@@ -472,8 +482,9 @@ public class TrackersUDPServer extends Thread {
 		long lastSerialUpdate = 0;
 		long lastPacketNumber = -1;
 		
-		public TrackerConnection(SocketAddress address) {
+		public TrackerConnection(SocketAddress address, InetAddress ipAddress) {
 			this.address = address;
+			this.ipAddress = ipAddress;
 		}
 		
 		public boolean isNextPacket(long packetId) {
@@ -490,7 +501,7 @@ public class TrackersUDPServer extends Thread {
 		try {
 			HANDSHAKE_BUFFER[0] = 3;
 			byte[] str = "Hey OVR =D 5".getBytes("ASCII");
-	        System.arraycopy(str, 0, HANDSHAKE_BUFFER, 1, str.length);
+			System.arraycopy(str, 0, HANDSHAKE_BUFFER, 1, str.length);
 		} catch(UnsupportedEncodingException e) {
 			throw new AssertionError(e);
 		}
