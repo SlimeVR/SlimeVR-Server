@@ -108,12 +108,6 @@ public class TrackersUDPServer extends Thread {
 						macString = null;
 				}
 			}
-			if(firmware.length() == 0) {
-				// TODO Owo track can report firmware
-				// Will be not important after refactoring, but need not forget
-				firmware.append("owoTrack");
-				connection.isOwoTrack = true;
-			}
 			connection.name = macString != null ? "udp://" + macString : "udp:/" + handshakePacket.getAddress().toString();
 			connection.descriptiveName = "udp:/" + handshakePacket.getAddress().toString();
 			int i = 0;
@@ -122,6 +116,7 @@ public class TrackersUDPServer extends Thread {
 					TrackerConnection previousConnection = connectionsByMAC.get(macString);
 					i = connections.indexOf(previousConnection);
 					connectionsByAddress.remove(previousConnection.ipAddress);
+					previousConnection.lastPacketNumber = 0;
 					previousConnection.ipAddress = addr;
 					previousConnection.address = handshakePacket.getSocketAddress();
 					previousConnection.name = connection.name;
@@ -228,8 +223,7 @@ public class TrackersUDPServer extends Thread {
 						connection = connectionsByAddress.get(recieve.getAddress());
 					}
 					int packetId = bb.getInt();
-					// TODO Ping is not working at all
-					long packetNumber = packetId != 10 ? bb.getLong() : 0;
+					long packetNumber = bb.getLong();
 					
 					if(connection != null) {
 						if(!connection.isNextPacket(packetNumber)) {
@@ -264,8 +258,6 @@ public class TrackersUDPServer extends Thread {
 					case 17: // PACKET_ROTATION_DATA
 						if(connection == null)
 							break;
-						if(connection.isOwoTrack)
-							break;
 						int sensorId = bb.get() & 0xFF;
 						tracker = connection.sensors.get(sensorId);
 						if(tracker == null)
@@ -291,8 +283,6 @@ public class TrackersUDPServer extends Thread {
 					case 18: // PACKET_MAGENTOMETER_ACCURACY
 						if(connection == null)
 							break;
-						if(connection.isOwoTrack)
-							break;
 						sensorId = bb.get() & 0xFF;
 						tracker = connection.sensors.get(sensorId);
 						if(tracker == null)
@@ -308,13 +298,9 @@ public class TrackersUDPServer extends Thread {
 					case 8: // PACKET_CONFIG
 						if(connection == null)
 							break;
-						if(connection.isOwoTrack)
-							break;
 						break;
 					case 10: // PACKET_PING_PONG:
 						if(connection == null)
-							break;
-						if(connection.isOwoTrack)
 							break;
 						int pingId = bb.getInt();
 						if(connection.lastPingPacketId == pingId) {
@@ -323,12 +309,12 @@ public class TrackersUDPServer extends Thread {
 								tracker.ping = (int) (System.currentTimeMillis() - connection.lastPingPacketTime) / 2;
 								tracker.dataTick();
 							}
+						} else {
+							LogManager.log.debug("Wrog ping id " + pingId + " != " + connection.lastPingPacketId);
 						}
 						break;
 					case 11: // PACKET_SERIAL
 						if(connection == null)
-							break;
-						if(connection.isOwoTrack)
 							break;
 						int length = bb.getInt();
 						for(int i = 0; i < length; ++i) {
@@ -360,8 +346,6 @@ public class TrackersUDPServer extends Thread {
 						break;
 					case 13: // PACKET_TAP
 						if(connection == null)
-							break;
-						if(connection.isOwoTrack)
 							break;
 						sensorId = bb.get() & 0xFF;
 						tracker = connection.sensors.get(sensorId);
@@ -475,7 +459,6 @@ public class TrackersUDPServer extends Thread {
 		public long lastPacket = System.currentTimeMillis();
 		public int lastPingPacketId = -1;
 		public long lastPingPacketTime = 0;
-		public boolean isOwoTrack = false;
 		public String name;
 		public String descriptiveName;
 		public StringBuilder serialBuffer = new StringBuilder();
@@ -488,9 +471,7 @@ public class TrackersUDPServer extends Thread {
 		}
 		
 		public boolean isNextPacket(long packetId) {
-			if(packetId == 0)
-				return true;
-			if(packetId <= lastPacketNumber) // Skip repeated or out-of-order packets
+			if(packetId != 0 && packetId <= lastPacketNumber)
 				return false;
 			lastPacketNumber = packetId;
 			return true;
