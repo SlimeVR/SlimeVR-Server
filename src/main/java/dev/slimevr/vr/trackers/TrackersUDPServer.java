@@ -28,6 +28,7 @@ import com.jme3.math.FastMath;
 import com.jme3.math.Quaternion;
 import com.jme3.math.Vector3f;
 
+import dev.slimevr.NetworkProtocol;
 import io.eiren.util.Util;
 import io.eiren.util.collections.FastList;
 import io.eiren.util.logging.LogManager;
@@ -99,7 +100,6 @@ public class TrackersUDPServer extends Thread {
 			connection = new TrackerConnection(handshakePacket.getSocketAddress(), addr);
 			int boardType = -1;
 			int imuType = -1;
-			int firmwareBuild = -1;
 			StringBuilder firmware = new StringBuilder();
 			byte[] mac = new byte[6];
 			String macString = null;
@@ -116,7 +116,7 @@ public class TrackersUDPServer extends Thread {
 					data.getInt();
 				}
 				if(data.remaining() > 3)
-					firmwareBuild = data.getInt();
+					connection.firmwareBuild = data.getInt();
 				int length = 0;
 				if(data.remaining() > 0)
 					length = data.get() & 0xFF; // firmware version length is 1 longer than that because it's nul-terminated
@@ -127,12 +127,18 @@ public class TrackersUDPServer extends Thread {
 					firmware.append(c);
 					length--;
 				}
-				if(data.remaining() > mac.length) {
+				if(data.remaining() >= mac.length) {
 					data.get(mac);
 					macString = String.format("%02X:%02X:%02X:%02X:%02X:%02X", mac[0], mac[1], mac[2], mac[3], mac[4], mac[5]);
 					if(macString.equals("00:00:00:00:00:00"))
 						macString = null;
 				}
+			}
+			if(firmware.length() == 0) {
+				// Only old owoTrack doesn't report firmware and have differenet packet IDs with SlimeVR
+				connection.protocol = NetworkProtocol.OWO_LEGACY;
+			} else {
+				connection.protocol = NetworkProtocol.SLIMEVR_RAW;
 			}
 			connection.name = macString != null ? "udp://" + macString : "udp:/" + handshakePacket.getAddress().toString();
 			connection.descriptiveName = "udp:/" + handshakePacket.getAddress().toString();
@@ -148,7 +154,7 @@ public class TrackersUDPServer extends Thread {
 					previousConnection.name = connection.name;
 					previousConnection.descriptiveName = connection.descriptiveName;
 					connectionsByAddress.put(addr, previousConnection);
-					LogManager.log.info("[TrackerServer] Tracker " + i + " handed over to address " + handshakePacket.getSocketAddress() + ". Board type: " + boardType + ", imu type: " + imuType + ", firmware: " + firmware + " (" + firmwareBuild + "), mac: " + macString + ", name: " + previousConnection.name);
+					LogManager.log.info("[TrackerServer] Tracker " + i + " handed over to address " + handshakePacket.getSocketAddress() + ". Board type: " + boardType + ", imu type: " + imuType + ", firmware: " + firmware + " (" + connection.firmwareBuild + "), mac: " + macString + ", name: " + previousConnection.name);
 				} else {
 					i = connections.size();
 					connections.add(connection);
@@ -156,10 +162,14 @@ public class TrackersUDPServer extends Thread {
 					if(macString != null) {
 						connectionsByMAC.put(macString, connection);
 					}
-					LogManager.log.info("[TrackerServer] Tracker " + i + " added with address " + handshakePacket.getSocketAddress() + ". Board type: " + boardType + ", imu type: " + imuType + ", firmware: " + firmware + " (" + firmwareBuild + "), mac: " + macString + ", name: " + connection.name);
+					LogManager.log.info("[TrackerServer] Tracker " + i + " added with address " + handshakePacket.getSocketAddress() + ". Board type: " + boardType + ", imu type: " + imuType + ", firmware: " + firmware + " (" + connection.firmwareBuild + "), mac: " + macString + ", name: " + connection.name);
 				}
 			}
-			// TODO : Set up new sensor for older protocols
+			if(connection.protocol == NetworkProtocol.OWO_LEGACY || connection.firmwareBuild < 8) {
+				// Set up new sensor for older firmware
+				// Firmware after 7 should send sensor status packet and sensor will be created when it's received
+				setUpSensor(connection, 0, imuType, 1);
+			}
 		}
 		socket.send(new DatagramPacket(HANDSHAKE_BUFFER, HANDSHAKE_BUFFER.length, handshakePacket.getAddress(), handshakePacket.getPort()));
 	}
@@ -476,14 +486,16 @@ public class TrackersUDPServer extends Thread {
 		Map<Integer, IMUTracker> sensors = new HashMap<>();
 		SocketAddress address;
 		InetAddress ipAddress;
-		public long lastPacket = System.currentTimeMillis();
-		public int lastPingPacketId = -1;
-		public long lastPingPacketTime = 0;
-		public String name;
-		public String descriptiveName;
-		public StringBuilder serialBuffer = new StringBuilder();
+		long lastPacket = System.currentTimeMillis();
+		int lastPingPacketId = -1;
+		long lastPingPacketTime = 0;
+		String name;
+		String descriptiveName;
+		StringBuilder serialBuffer = new StringBuilder();
 		long lastSerialUpdate = 0;
 		long lastPacketNumber = -1;
+		NetworkProtocol protocol = null;
+		int firmwareBuild = 0;
 		
 		public TrackerConnection(SocketAddress address, InetAddress ipAddress) {
 			this.address = address;
