@@ -1,7 +1,6 @@
 package dev.slimevr.vr.trackers.udp;
 
 import java.io.IOException;
-import java.io.UnsupportedEncodingException;
 import java.net.DatagramPacket;
 import java.net.DatagramSocket;
 import java.net.Inet6Address;
@@ -46,10 +45,6 @@ public class TrackersUDPServer extends Thread {
 	 * Change between IMU axises and OpenGL/SteamVR axises
 	 */
 	private static final Quaternion offset = new Quaternion().fromAngleAxis(-FastMath.HALF_PI, Vector3f.UNIT_X);
-	
-	private static final byte[] HANDSHAKE_BUFFER = new byte[64];
-	private static final byte[] KEEPUP_BUFFER = new byte[64];
-	private static final byte[] dummyPacket = new byte[12];
 	
 	private final Quaternion buf = new Quaternion();
 	private final Random random = new Random();
@@ -141,7 +136,10 @@ public class TrackersUDPServer extends Thread {
 				setUpSensor(connection, 0, handshake.imuType, 1);
 			}
 		}
-		socket.send(new DatagramPacket(HANDSHAKE_BUFFER, HANDSHAKE_BUFFER.length, handshakePacket.getAddress(), handshakePacket.getPort()));
+		bb.limit(bb.capacity());
+		bb.rewind();
+		parser.writeHandshakeResponse(bb, connection);
+		socket.send(new DatagramPacket(rcvBuffer, bb.position(), connection.address));
 	}
 	
 	private void setUpSensor(TrackerUDPConnection connection, int trackerId, int sensorType, int sensorStatus) throws IOException {
@@ -181,7 +179,10 @@ public class TrackersUDPServer extends Thread {
 						long discoveryPacketTime = System.currentTimeMillis();
 						if((discoveryPacketTime - prevPacketTime) >= 2000) {
 							for(SocketAddress addr : broadcastAddresses) {
-								socket.send(new DatagramPacket(dummyPacket, dummyPacket.length, addr));
+								bb.limit(bb.capacity());
+								bb.rewind();
+								parser.write(bb, null, new UDPPacket0Heartbeat());
+								socket.send(new DatagramPacket(rcvBuffer, bb.position(), addr));
 							}
 							prevPacketTime = discoveryPacketTime;
 						}
@@ -210,7 +211,10 @@ public class TrackersUDPServer extends Thread {
 					synchronized(connections) {
 						for(int i = 0; i < connections.size(); ++i) {
 							TrackerUDPConnection conn = connections.get(i);
-							socket.send(new DatagramPacket(KEEPUP_BUFFER, KEEPUP_BUFFER.length, conn.address));
+							bb.limit(bb.capacity());
+							bb.rewind();
+							parser.write(bb, conn, new UDPPacket1Heartbeat());
+							socket.send(new DatagramPacket(rcvBuffer, bb.position(), conn.address));
 							if(conn.lastPacket + 1000 < System.currentTimeMillis()) {
 								Iterator<IMUTracker> iterator = conn.sensors.values().iterator();
 								while(iterator.hasNext()) {
@@ -237,8 +241,8 @@ public class TrackersUDPServer extends Thread {
 							if(conn.lastPingPacketTime + 500 < System.currentTimeMillis()) {
 								conn.lastPingPacketId = random.nextInt();
 								conn.lastPingPacketTime = System.currentTimeMillis();
-								bb.rewind();
 								bb.limit(bb.capacity());
+								bb.rewind();
 								bb.putInt(10);
 								bb.putLong(0);
 								bb.putInt(conn.lastPingPacketId);
@@ -376,6 +380,7 @@ public class TrackersUDPServer extends Thread {
 			UDPPacket15SensorInfo info = (UDPPacket15SensorInfo) packet;
 			setUpSensor(connection, info.getSensorId(), info.sensorType, info.sensorStatus);
 			// Send ack
+			bb.limit(bb.capacity());
 			bb.rewind();
 			parser.writeSensorInfoResponse(bb, connection, info);
 			socket.send(new DatagramPacket(rcvBuffer, bb.position(), connection.address));
@@ -420,16 +425,5 @@ public class TrackersUDPServer extends Thread {
 		sb.append(ArrayUtils.toString(packet.getData()));
 		sb.append('}');
 		return sb.toString();
-	}
-	
-	static {
-		try {
-			HANDSHAKE_BUFFER[0] = 3;
-			byte[] str = "Hey OVR =D 5".getBytes("ASCII");
-			System.arraycopy(str, 0, HANDSHAKE_BUFFER, 1, str.length);
-		} catch(UnsupportedEncodingException e) {
-			throw new AssertionError(e);
-		}
-		KEEPUP_BUFFER[3] = 1;
 	}
 }
