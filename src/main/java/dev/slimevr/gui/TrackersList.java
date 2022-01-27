@@ -154,6 +154,7 @@ public class TrackersList extends EJBoxNoStretch {
 		JLabel signalStrength;
 		JLabel rotQuat;
 		JLabel rotAdj;
+		JLabel temperature;
 		
 		@AWTThread
 		public TrackerPanel(Tracker t) {
@@ -286,6 +287,8 @@ public class TrackersList extends EJBoxNoStretch {
 				row++;
 				add(new JLabel("Gyro Fix:"), c(0, row, 2, GridBagConstraints.FIRST_LINE_START));
 				add(adjGyro = new JLabel("0 0 0 0"), c(1, row, 2, GridBagConstraints.FIRST_LINE_START));
+				add(new JLabel("Temp:"), c(2, row, 2, GridBagConstraints.FIRST_LINE_START));
+				add(temperature = new JLabel("?"), c(3, row, 2, GridBagConstraints.FIRST_LINE_START));
 			}
 
 			setBorder(BorderFactory.createLineBorder(new Color(0x663399), 2, false));
@@ -391,6 +394,14 @@ public class TrackersList extends EJBoxNoStretch {
 					rotAdj.setText(StringUtils.prettyNumber(angles[0] * FastMath.RAD_TO_DEG, 0)
 							+ " " + StringUtils.prettyNumber(angles[1] * FastMath.RAD_TO_DEG, 0)
 							+ " " + StringUtils.prettyNumber(angles[2] * FastMath.RAD_TO_DEG, 0));
+				}
+				if(temperature != null) {
+					if(imu.temperature == 0.0f) {
+						// Can't be exact 0, so no info received
+						temperature.setText("?");
+					} else {
+						temperature.setText(StringUtils.prettyNumber(imu.temperature, 1) + "∘C");
+					}
 				}
 			}
 		}
