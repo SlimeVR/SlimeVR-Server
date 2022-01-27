@@ -22,6 +22,8 @@ import java.util.Map;
 import java.util.Random;
 import java.util.function.Consumer;
 
+import org.apache.commons.lang3.ArrayUtils;
+
 import com.jme3.math.FastMath;
 import com.jme3.math.Quaternion;
 import com.jme3.math.Vector3f;
@@ -44,6 +46,7 @@ public class TrackersUDPServer extends Thread {
 	private static final byte[] KEEPUP_BUFFER = new byte[64];
 	private static final byte[] CALIBRATION_BUFFER = new byte[64];
 	private static final byte[] CALIBRATION_REQUEST_BUFFER = new byte[64];
+	private static final byte[] dummyPacket = new byte[12];
 	
 	private final Quaternion buf = new Quaternion();
 	private final Random random = new Random();
@@ -52,6 +55,7 @@ public class TrackersUDPServer extends Thread {
 	private final Map<String, TrackerConnection> connectionsByMAC = new HashMap<>();
 	private final Consumer<Tracker> trackersConsumer;
 	private final int port;
+	private final ArrayList<SocketAddress> broadcastAddresses = new ArrayList<>();
 	
 	protected DatagramSocket socket = null;
 	protected long lastKeepup = System.currentTimeMillis();
@@ -60,6 +64,28 @@ public class TrackersUDPServer extends Thread {
 		super(name);
 		this.port = port;
 		this.trackersConsumer = trackersConsumer;
+		try {
+		Enumeration<NetworkInterface> ifaces = NetworkInterface.getNetworkInterfaces();
+		while(ifaces.hasMoreElements()) {
+			NetworkInterface iface = ifaces.nextElement();
+			// Ignore loopback, PPP, virtual and disabled devices
+			if(iface.isLoopback() || !iface.isUp() || iface.isPointToPoint() || iface.isVirtual()) {
+				continue;
+			}
+			Enumeration<InetAddress> iaddrs = iface.getInetAddresses();
+			while(iaddrs.hasMoreElements()) {
+				InetAddress iaddr = iaddrs.nextElement();
+				// Ignore IPv6 addresses
+				if(iaddr instanceof Inet6Address) {
+					continue;
+				}
+				String[] iaddrParts = iaddr.getHostAddress().split("\\.");
+				broadcastAddresses.add(new InetSocketAddress(String.format("%s.%s.%s.255", iaddrParts[0], iaddrParts[1], iaddrParts[2]), port));
+			}
+		}
+		} catch(Exception e) {
+			LogManager.log.severe("[TrackerServer] Can't enumerate network interfaces", e);
+		}
 	}
 	
 	private void setUpNewConnection(DatagramPacket handshakePacket, ByteBuffer data) throws IOException {
@@ -169,32 +195,10 @@ public class TrackersUDPServer extends Thread {
 		try {
 			socket = new DatagramSocket(port);
 			
-			// Why not just 255.255.255.255? Because Windows.
-			// https://social.technet.microsoft.com/Forums/windows/en-US/72e7387a-9f2c-4bf4-a004-c89ddde1c8aa/how-to-fix-the-global-broadcast-address-255255255255-behavior-on-windows
-			ArrayList<SocketAddress> addresses = new ArrayList<SocketAddress>();
-			Enumeration<NetworkInterface> ifaces = NetworkInterface.getNetworkInterfaces();
-			while(ifaces.hasMoreElements()) {
-				NetworkInterface iface = ifaces.nextElement();
-				// Ignore loopback, PPP, virtual and disabled devices
-				if(iface.isLoopback() || !iface.isUp() || iface.isPointToPoint() || iface.isVirtual()) {
-					continue;
-				}
-				Enumeration<InetAddress> iaddrs = iface.getInetAddresses();
-				while(iaddrs.hasMoreElements()) {
-					InetAddress iaddr = iaddrs.nextElement();
-					// Ignore IPv6 addresses
-					if(iaddr instanceof Inet6Address) {
-						continue;
-					}
-					String[] iaddrParts = iaddr.getHostAddress().split("\\.");
-					addresses.add(new InetSocketAddress(String.format("%s.%s.%s.255", iaddrParts[0], iaddrParts[1], iaddrParts[2]), port));
-				}
-			}
-			byte[] dummyPacket = new byte[]{0x0};
-			
 			long prevPacketTime = System.currentTimeMillis();
 			socket.setSoTimeout(250);
 			while(true) {
+				DatagramPacket received = null;
 				try {
 					boolean hasActiveTrackers = false;
 					for(TrackerConnection tracker : connections) {
@@ -206,21 +210,22 @@ public class TrackersUDPServer extends Thread {
 					if(!hasActiveTrackers) {
 						long discoveryPacketTime = System.currentTimeMillis();
 						if((discoveryPacketTime - prevPacketTime) >= 2000) {
-							for(SocketAddress addr : addresses) {
+							for(SocketAddress addr : broadcastAddresses) {
 								socket.send(new DatagramPacket(dummyPacket, dummyPacket.length, addr));
 							}
 							prevPacketTime = discoveryPacketTime;
 						}
 					}
 					
-					DatagramPacket recieve = new DatagramPacket(rcvBuffer, rcvBuffer.length);
-					socket.receive(recieve);
+					received = new DatagramPacket(rcvBuffer, rcvBuffer.length);
+					socket.receive(received);
+					bb.limit(received.getLength());
 					bb.rewind();
 					
 					TrackerConnection connection;
 					IMUTracker tracker = null;
 					synchronized(connections) {
-						connection = connectionsByAddress.get(recieve.getAddress());
+						connection = connectionsByAddress.get(received.getAddress());
 					}
 					int packetId = bb.getInt();
 					long packetNumber = bb.getLong();
@@ -228,7 +233,7 @@ public class TrackersUDPServer extends Thread {
 					if(connection != null) {
 						if(!connection.isNextPacket(packetNumber)) {
 							// Skip packet because it's not next
-							LogManager.log.warning("[TrackerServer] Out of order packet received: id " + packetId + ", number " + packetNumber + ", last " + connection.lastPacketNumber + ", from " + recieve.getSocketAddress());
+							LogManager.log.warning("[TrackerServer] Out of order packet received: id " + packetId + ", number " + packetNumber + ", last " + connection.lastPacketNumber + ", from " + received.getSocketAddress());
 							continue;
 						}
 						connection.lastPacket = System.currentTimeMillis();
@@ -237,7 +242,7 @@ public class TrackersUDPServer extends Thread {
 					case 0:
 						break;
 					case 3:
-						setUpNewConnection(recieve, bb);
+						setUpNewConnection(received, bb);
 						break;
 					case 1: // PACKET_ROTATION
 					case 16: // PACKET_ROTATION_2
@@ -352,12 +357,12 @@ public class TrackersUDPServer extends Thread {
 						if(tracker == null)
 							break;
 						int tap = bb.get() & 0xFF;
-						BnoTap tapObj = new BnoTap(tap);
+						SensorTap tapObj = new SensorTap(tap);
 						LogManager.log.info("[TrackerServer] Tap packet received from " + tracker.getName() + "/" + sensorId + ": " + tapObj + " (b" + Integer.toBinaryString(tap) + ")");
 						break;
 					case 14: // PACKET_ERROR
 						byte reason = bb.get();
-						LogManager.log.severe("[TrackerServer] Error recieved from " + recieve.getSocketAddress() + ": " + reason);
+						LogManager.log.severe("[TrackerServer] Error recieved from " + received.getSocketAddress() + ": " + reason);
 						if(connection == null)
 							break;
 						sensorId = bb.get() & 0xFF;
@@ -396,11 +401,12 @@ public class TrackersUDPServer extends Thread {
 						}
 						break;
 					default:
-						LogManager.log.warning("[TrackerServer] Unknown data received: " + packetId + " from " + recieve.getSocketAddress());
+						LogManager.log.warning("[TrackerServer] Unknown data received: " + packetId + " from " + received.getSocketAddress() + ": " + packetToString(received));
 						break;
 					}
-				} catch(SocketTimeoutException e) {} catch(Exception e) {
-					e.printStackTrace();
+				} catch(SocketTimeoutException e) {
+				} catch(Exception e) {
+					LogManager.log.warning("Error parsing packet " + packetToString(received), e);
 				}
 				if(lastKeepup + 500 < System.currentTimeMillis()) {
 					lastKeepup = System.currentTimeMillis();
@@ -435,6 +441,7 @@ public class TrackersUDPServer extends Thread {
 								conn.lastPingPacketId = random.nextInt();
 								conn.lastPingPacketTime = System.currentTimeMillis();
 								bb.rewind();
+								bb.limit(bb.capacity());
 								bb.putInt(10);
 								bb.putLong(0);
 								bb.putInt(conn.lastPingPacketId);
@@ -449,6 +456,19 @@ public class TrackersUDPServer extends Thread {
 		} finally {
 			Util.close(socket);
 		}
+	}
+	
+	private static String packetToString(DatagramPacket packet) {
+		StringBuilder sb = new StringBuilder();
+		sb.append("DatagramPacket{");
+		sb.append(packet.getAddress().toString());
+		sb.append(packet.getPort());
+		sb.append(',');
+		sb.append(packet.getLength());
+		sb.append(',');
+		sb.append(ArrayUtils.toString(packet.getData()));
+		sb.append('}');
+		return sb.toString();
 	}
 	
 	private class TrackerConnection {

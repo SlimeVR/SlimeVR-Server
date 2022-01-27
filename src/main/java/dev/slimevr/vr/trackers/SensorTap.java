@@ -1,10 +1,10 @@
 package dev.slimevr.vr.trackers;
 
-public class BnoTap {
+public class SensorTap {
 	
 	public final boolean doubleTap;
 	
-	public BnoTap(int tapBits) {
+	public SensorTap(int tapBits) {
 		doubleTap = (tapBits & 0x40) > 0;
 	}
 	

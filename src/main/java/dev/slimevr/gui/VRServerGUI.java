@@ -198,6 +198,17 @@ public class VRServerGUI extends JFrame {
 
 			add(new EJBoxNoStretch(PAGE_AXIS, false, true) {{
 				setAlignmentY(TOP_ALIGNMENT);
+				
+				JCheckBox debugCb;
+				add(debugCb = new JCheckBox("Show debug information"));
+				debugCb.setSelected(false);
+				debugCb.addActionListener(new ActionListener() {
+					@Override
+					public void actionPerformed(ActionEvent e) {
+						trackersList.setDebug(debugCb.isSelected());
+					}
+				});
+				
 				JLabel l;
 				add(l = new JLabel("Body proportions"));
 				l.setFont(l.getFont().deriveFont(Font.BOLD));
