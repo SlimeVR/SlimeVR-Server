@@ -15,7 +15,7 @@ import io.eiren.util.logging.LogManager;
 
 public class Main {
 	
-	public static String VERSION = "0.1.3";
+	public static String VERSION = "0.1.4";
 	
 	public static VRServer vrServer;
 	

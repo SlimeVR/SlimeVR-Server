@@ -4,6 +4,7 @@ import com.jme3.math.FastMath;
 import com.jme3.math.Quaternion;
 import com.jme3.math.Vector3f;
 
+import dev.slimevr.vr.trackers.udp.TrackersUDPServer;
 import io.eiren.util.BufferedTimer;
 
 public class IMUTracker implements Tracker, TrackerWithTPS, TrackerWithBattery {
@@ -36,9 +37,8 @@ public class IMUTracker implements Tracker, TrackerWithTPS, TrackerWithBattery {
 	protected BufferedTimer timer = new BufferedTimer(1f);
 	public int ping = -1;
 	public int signalStrength = -1;
+	public float temperature = 0;
 	
-	public StringBuilder serialBuffer = new StringBuilder();
-	long lastSerialUpdate = 0;
 	public TrackerPosition bodyPosition = null;
 	
 	public IMUTracker(int trackerId, String name, String descriptiveName, TrackersUDPServer server) {

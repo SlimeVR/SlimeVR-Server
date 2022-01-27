@@ -45,3 +45,7 @@ run gradle command `shadowJar` to build a runnable server JAR
 * You must provide a copy of the original license (see LICENSE file)
 * You don't have to release your own software under MIT License or even open source at all, but you have to state that it's based on SlimeVR
 * This applies even if you distribute software without the source code
+
+## Contributions
+
+By contributing to this project you are placing all your code under MIT or less restricting licenses, and you certify that the code you have used is compatible with those licenses or is authored by you. If you're doing so on your work time, you certify that your employer is okay with this.

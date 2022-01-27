@@ -48,6 +48,7 @@ public class TrackersList extends EJBoxNoStretch {
 	private final VRServer server;
 	private final VRServerGUI gui;
 	private long lastUpdate = 0;
+	private boolean debug = false;
 
 	public TrackersList(VRServer server, VRServerGUI gui) {
 		super(BoxLayout.PAGE_AXIS, false, true);
@@ -57,6 +58,12 @@ public class TrackersList extends EJBoxNoStretch {
 		setAlignmentY(TOP_ALIGNMENT);
 		
 		server.addNewTrackerConsumer(this::newTrackerAdded);
+	}
+
+	@AWTThread
+	public void setDebug(boolean debug) {
+		this.debug = debug;
+		build();
 	}
 
 	@AWTThread
@@ -142,10 +149,12 @@ public class TrackersList extends EJBoxNoStretch {
 		JLabel magAccuracy;
 		JLabel adj;
 		JLabel adjYaw;
+		JLabel adjGyro;
 		JLabel correction;
 		JLabel signalStrength;
 		JLabel rotQuat;
 		JLabel rotAdj;
+		JLabel temperature;
 		
 		@AWTThread
 		public TrackerPanel(Tracker t) {
@@ -245,18 +254,17 @@ public class TrackersList extends EJBoxNoStretch {
 			row++;
 			add(new JLabel("Raw:"), c(0, row, 2, GridBagConstraints.FIRST_LINE_START));
 			add(raw = new JLabel("0 0 0"), s(c(1, row, 2, GridBagConstraints.FIRST_LINE_START), 3, 1));
-			/*
-			if(realTracker instanceof IMUTracker) {
+			
+			if(debug && realTracker instanceof IMUTracker) {
 				add(new JLabel("Quat:"), c(2, row, 2, GridBagConstraints.FIRST_LINE_START));
 				add(rotQuat = new JLabel("0"), c(3, row, 2, GridBagConstraints.FIRST_LINE_START));
 			}
-			//*/
 			row++;
-			/*
-			if(realTracker instanceof IMUTracker) {
+			
+			if(debug && realTracker instanceof IMUTracker) {
 				add(new JLabel("Raw mag:"), c(0, row, 2, GridBagConstraints.FIRST_LINE_START));
 				add(rawMag = new JLabel("0 0 0"), s(c(1, row, 2, GridBagConstraints.FIRST_LINE_START), 3, 1));
-				add(new JLabel("Hash:"), c(2, row, 2, GridBagConstraints.FIRST_LINE_START));
+				add(new JLabel("Gyro fix:"), c(2, row, 2, GridBagConstraints.FIRST_LINE_START));
 				add(new JLabel(String.format("0x%8x", realTracker.hashCode())), s(c(3, row, 2, GridBagConstraints.FIRST_LINE_START), 3, 1));
 				row++;
 				add(new JLabel("Cal:"), c(0, row, 2, GridBagConstraints.FIRST_LINE_START));
@@ -270,16 +278,18 @@ public class TrackersList extends EJBoxNoStretch {
 				add(rotAdj = new JLabel("0"), c(3, row, 2, GridBagConstraints.FIRST_LINE_START));
 				row++;
 			}
-			//*/
 			
-			/*
-			if(t instanceof ReferenceAdjustedTracker) {	
-				add(new JLabel("Adj:"), c(0, row, 2, GridBagConstraints.FIRST_LINE_START));
+			if(debug && t instanceof ReferenceAdjustedTracker) {	
+				add(new JLabel("Att fix:"), c(0, row, 2, GridBagConstraints.FIRST_LINE_START));
 				add(adj = new JLabel("0 0 0 0"), c(1, row, 2, GridBagConstraints.FIRST_LINE_START));
-				add(new JLabel("AdjY:"), c(2, row, 2, GridBagConstraints.FIRST_LINE_START));
+				add(new JLabel("Yaw Fix:"), c(2, row, 2, GridBagConstraints.FIRST_LINE_START));
 				add(adjYaw = new JLabel("0 0 0 0"), c(3, row, 2, GridBagConstraints.FIRST_LINE_START));
+				row++;
+				add(new JLabel("Gyro Fix:"), c(0, row, 2, GridBagConstraints.FIRST_LINE_START));
+				add(adjGyro = new JLabel("0 0 0 0"), c(1, row, 2, GridBagConstraints.FIRST_LINE_START));
+				add(new JLabel("Temp:"), c(2, row, 2, GridBagConstraints.FIRST_LINE_START));
+				add(temperature = new JLabel("?"), c(3, row, 2, GridBagConstraints.FIRST_LINE_START));
 			}
-			//*/
 
 			setBorder(BorderFactory.createLineBorder(new Color(0x663399), 2, false));
 			TrackersList.this.add(this);
@@ -314,21 +324,30 @@ public class TrackersList extends EJBoxNoStretch {
 			if(realTracker instanceof TrackerWithBattery)
 				bat.setText(String.format("%d%% (%sV)", Math.round(((TrackerWithBattery) realTracker).getBatteryLevel()), StringUtils.prettyNumber(((TrackerWithBattery) realTracker).getBatteryVoltage(), 2)));
 			if(t instanceof ReferenceAdjustedTracker) {
-				((ReferenceAdjustedTracker<Tracker>) t).attachmentFix.toAngles(angles);
-				if(adj != null)
+				ReferenceAdjustedTracker<Tracker> rat = (ReferenceAdjustedTracker<Tracker>) t;
+				if(adj != null) {
+					rat.attachmentFix.toAngles(angles);
 					adj.setText(StringUtils.prettyNumber(angles[0] * FastMath.RAD_TO_DEG, 0)
 							+ " " + StringUtils.prettyNumber(angles[1] * FastMath.RAD_TO_DEG, 0)
 							+ " " + StringUtils.prettyNumber(angles[2] * FastMath.RAD_TO_DEG, 0));
-				((ReferenceAdjustedTracker<Tracker>) t).yawFix.toAngles(angles);
-				if(adjYaw != null)
+				}
+				if(adjYaw != null) {
+					rat.yawFix.toAngles(angles);
 					adjYaw.setText(StringUtils.prettyNumber(angles[0] * FastMath.RAD_TO_DEG, 0)
 							+ " " + StringUtils.prettyNumber(angles[1] * FastMath.RAD_TO_DEG, 0)
 							+ " " + StringUtils.prettyNumber(angles[2] * FastMath.RAD_TO_DEG, 0));
+				}
+				if(adjGyro != null) {
+					rat.gyroFix.toAngles(angles);
+					adjGyro.setText(StringUtils.prettyNumber(angles[0] * FastMath.RAD_TO_DEG, 0)
+							+ " " + StringUtils.prettyNumber(angles[1] * FastMath.RAD_TO_DEG, 0)
+							+ " " + StringUtils.prettyNumber(angles[2] * FastMath.RAD_TO_DEG, 0));
+				}
 			}
 			if(realTracker instanceof IMUTracker) {
 				if(ping != null)
 					ping.setText(String.valueOf(((IMUTracker) realTracker).ping));
-				if (signalStrength != null) {
+				if(signalStrength != null) {
 					int signal = ((IMUTracker) realTracker).signalStrength;
 					if (signal == -1) {
 						signalStrength.setText("N/A");
@@ -347,21 +366,23 @@ public class TrackersList extends EJBoxNoStretch {
 					+ " " + StringUtils.prettyNumber(angles[2] * FastMath.RAD_TO_DEG, 0));
 			if(realTracker instanceof IMUTracker) {
 				IMUTracker imu = (IMUTracker) realTracker;
-				imu.rotMagQuaternion.toAngles(angles);
-				if(rawMag != null)
+				if(rawMag != null) {
+					imu.rotMagQuaternion.toAngles(angles);
 					rawMag.setText(StringUtils.prettyNumber(angles[0] * FastMath.RAD_TO_DEG, 0)
 							+ " " + StringUtils.prettyNumber(angles[1] * FastMath.RAD_TO_DEG, 0)
 							+ " " + StringUtils.prettyNumber(angles[2] * FastMath.RAD_TO_DEG, 0));
+				}
 				if(calibration != null)
 					calibration.setText(imu.calibrationStatus + " / " + imu.magCalibrationStatus);
 				if(magAccuracy != null)
 					magAccuracy.setText(StringUtils.prettyNumber(imu.magnetometerAccuracy * FastMath.RAD_TO_DEG, 1) + "°");
-				imu.getCorrection(q);
-				q.toAngles(angles);
-				if(correction != null)
+				if(correction != null) {
+					imu.getCorrection(q);
+					q.toAngles(angles);
 					correction.setText(StringUtils.prettyNumber(angles[0] * FastMath.RAD_TO_DEG, 0)
 							+ " " + StringUtils.prettyNumber(angles[1] * FastMath.RAD_TO_DEG, 0)
 							+ " " + StringUtils.prettyNumber(angles[2] * FastMath.RAD_TO_DEG, 0));
+				}
 				if(rotQuat != null) {
 					imu.rotQuaternion.toAngles(angles);
 					rotQuat.setText(StringUtils.prettyNumber(angles[0] * FastMath.RAD_TO_DEG, 0)
@@ -373,6 +394,14 @@ public class TrackersList extends EJBoxNoStretch {
 					rotAdj.setText(StringUtils.prettyNumber(angles[0] * FastMath.RAD_TO_DEG, 0)
 							+ " " + StringUtils.prettyNumber(angles[1] * FastMath.RAD_TO_DEG, 0)
 							+ " " + StringUtils.prettyNumber(angles[2] * FastMath.RAD_TO_DEG, 0));
+				}
+				if(temperature != null) {
+					if(imu.temperature == 0.0f) {
+						// Can't be exact 0, so no info received
+						temperature.setText("?");
+					} else {
+						temperature.setText(StringUtils.prettyNumber(imu.temperature, 1) + "∘C");
+					}
 				}
 			}
 		}

@@ -27,7 +27,7 @@ import dev.slimevr.vr.trackers.HMDTracker;
 import dev.slimevr.vr.trackers.ShareableTracker;
 import dev.slimevr.vr.trackers.Tracker;
 import dev.slimevr.vr.trackers.TrackerConfig;
-import dev.slimevr.vr.trackers.TrackersUDPServer;
+import dev.slimevr.vr.trackers.udp.TrackersUDPServer;
 import io.eiren.util.OperatingSystem;
 import io.eiren.util.ann.ThreadSafe;
 import io.eiren.util.ann.ThreadSecure;
