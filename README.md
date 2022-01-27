@@ -15,7 +15,7 @@ Integrations:
 
 It's recommended to download installer from here: https://github.com/SlimeVR/SlimeVR-Installer/releases/latest/download/slimevr_web_installer.exe
 
-Latest instructions are [on our site](https://docs.slimevr.dev/slimevr-setup.html).
+Latest instructions are [on our site](https://docs.slimevr.dev/server-setup/slimevr-setup.html).
 
 ## How to build
 
