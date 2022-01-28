@@ -130,7 +130,7 @@ public class TrackersUDPServer extends Thread {
 					LogManager.log.info("[TrackerServer] Tracker " + i + " added with address " + handshakePacket.getSocketAddress() + ". Board type: " + handshake.boardType + ", imu type: " + handshake.imuType + ", firmware: " + handshake.firmware + " (" + connection.firmwareBuild + "), mac: " + handshake.macString + ", name: " + connection.name);
 				}
 			}
-			if(connection.protocol == NetworkProtocol.OWO_LEGACY || connection.firmwareBuild < 8) {
+			if(connection.protocol == NetworkProtocol.OWO_LEGACY || connection.firmwareBuild < 9) {
 				// Set up new sensor for older firmware
 				// Firmware after 7 should send sensor status packet and sensor will be created when it's received
 				setUpSensor(connection, 0, handshake.imuType, 1);

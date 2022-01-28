@@ -23,7 +23,8 @@ public class UDPPacket15SensorInfo extends UDPPacket implements SensorSpecificPa
 	public void readData(ByteBuffer buf) throws IOException {
 		sensorId = buf.get() & 0xFF;
 		sensorStatus = buf.get() & 0xFF;
-		sensorType = buf.get() & 0xFF;
+		if(buf.remaining() > 0)
+			sensorType = buf.get() & 0xFF;
 	}
 	
 	@Override
