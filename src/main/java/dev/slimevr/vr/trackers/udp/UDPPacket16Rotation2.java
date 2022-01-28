@@ -12,6 +12,6 @@ public class UDPPacket16Rotation2 extends UDPPacket1Rotation {
 
 	@Override
 	public int getSensorId() {
-		return 2;
+		return 1;
 	}
 }

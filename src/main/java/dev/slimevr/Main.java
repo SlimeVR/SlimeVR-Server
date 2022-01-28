@@ -15,7 +15,7 @@ import io.eiren.util.logging.LogManager;
 
 public class Main {
 	
-	public static String VERSION = "0.1.4a";
+	public static String VERSION = "0.1.4b";
 	
 	public static VRServer vrServer;
 	
@@ -49,7 +49,7 @@ public class Main {
 
 		try {
 			vrServer = new VRServer();
-			vrServer.start();
+			vrServer.start(); 
 			new Keybinding(vrServer);
 			new VRServerGUI(vrServer);
 		} catch(Throwable e) {
