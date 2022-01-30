@@ -2,9 +2,10 @@ package dev.slimevr.platform.linux;
 
 import com.jme3.math.Quaternion;
 import com.jme3.math.Vector3f;
-import com.sun.jna.platform.win32.Kernel32;
-import com.sun.jna.platform.win32.WinBase;
-import com.sun.jna.platform.win32.WinNT;
+import com.sun.jna.Native;
+import com.sun.jna.platform.linux.LibC;
+import com.sun.jna.platform.linux.ErrNo;
+import com.sun.jna.platform.linux.LibRT;
 import com.sun.jna.ptr.IntByReference;
 import dev.slimevr.VRServer;
 import dev.slimevr.bridge.Bridge;
@@ -209,7 +210,7 @@ public class LinuxNamedPipeVRBridge extends Thread implements Bridge {
 			return true;
 		}
 
-		LogManager.log.info("[VRBridge] Error connecting to pipe " + pipe.name + ": " + Kernel32.INSTANCE.GetLastError());
+		LogManager.log.info("[VRBridge] Error connecting to pipe " + pipe.name + ": " + Native.getLastError());
 		return false;
 	}
 
@@ -235,7 +236,7 @@ public class LinuxNamedPipeVRBridge extends Thread implements Bridge {
 					null), HMDPipeName); // lpSecurityAttributes
 			LogManager.log.info("[VRBridge] Pipe " + hmdPipe.name + " created");
 			if(WinBase.INVALID_HANDLE_VALUE.equals(hmdPipe.pipeHandle))
-				throw new IOException("Can't open " + HMDPipeName + " pipe: " + Kernel32.INSTANCE.GetLastError());
+				throw new IOException("Can't open " + HMDPipeName + " pipe: " + Native.getLastError());
 			for(int i = 0; i < this.shareTrackers.size(); ++i) {
 				String pipeName = TrackersPipeName + i;
 				WinNT.HANDLE pipeHandle = Kernel32.INSTANCE.CreateNamedPipe(pipeName, WinBase.PIPE_ACCESS_DUPLEX, // dwOpenMode
@@ -246,7 +247,7 @@ public class LinuxNamedPipeVRBridge extends Thread implements Bridge {
 						0, // nDefaultTimeOut,
 						null); // lpSecurityAttributes
 				if(WinBase.INVALID_HANDLE_VALUE.equals(pipeHandle))
-					throw new IOException("Can't open " + pipeName + " pipe: " + Kernel32.INSTANCE.GetLastError());
+					throw new IOException("Can't open " + pipeName + " pipe: " + Native.getLastError());
 				LogManager.log.info("[VRBridge] Pipe " + pipeName + " created");
 				trackerPipes.add(new LinuxPipe(pipeHandle, pipeName));
 			}

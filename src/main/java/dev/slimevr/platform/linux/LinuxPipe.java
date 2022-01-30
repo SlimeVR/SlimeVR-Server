@@ -8,10 +8,10 @@ public class LinuxPipe {
 
 	public final String name;
 
-	public RandomAccessFile pipe;
+	public int pipe;
 	public PipeState state = PipeState.CREATED;
 
-	public LinuxPipe(RandomAccessFile pipe, String name) {
+	public LinuxPipe(int pipe, String name) {
 		this.pipe = pipe;
 		this.name = name;
 	}

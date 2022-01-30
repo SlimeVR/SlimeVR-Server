@@ -274,7 +274,7 @@ public class VRServerGUI extends JFrame {
 				l.setFont(l.getFont().deriveFont(Font.BOLD));
 				l.setAlignmentX(0.5f);
 				add(new SkeletonConfigGUI(server, VRServerGUI.this));
-				add(Box.createVerticalStrut(10)); // make linux version of this  \/
+				add(Box.createVerticalStrut(10));
 				if(server.hasBridge(WindowsNamedPipeBridge.class)) { // Win ver
 					WindowsNamedPipeBridge br = server.getVRBridge(WindowsNamedPipeBridge.class);
 					add(l = new JLabel("SteamVR Trackers"));
