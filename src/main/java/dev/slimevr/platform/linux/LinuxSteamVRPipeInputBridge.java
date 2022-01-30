@@ -2,9 +2,9 @@ package dev.slimevr.platform.linux;
 
 import com.jme3.math.Quaternion;
 import com.jme3.math.Vector3f;
-import com.sun.jna.platform.win32.Kernel32;
-import com.sun.jna.platform.win32.WinBase;
-import com.sun.jna.platform.win32.WinError;
+import com.sun.jna.Native;
+import com.sun.jna.platform.linux.Fcntl;
+import com.sun.jna.platform.linux.ErrNo;
 import com.sun.jna.ptr.IntByReference;
 import dev.slimevr.VRServer;
 import dev.slimevr.bridge.Bridge;
@@ -18,6 +18,7 @@ import io.eiren.util.logging.LogManager;
 import org.apache.commons.lang3.StringUtils;
 
 import java.io.IOException;
+import java.io.RandomAccessFile;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
@@ -100,7 +101,7 @@ public class LinuxSteamVRPipeInputBridge extends Thread implements Bridge {
 			}
 			// PeekNamedPipe or ReadFile returned an error
 			pipe.state = PipeState.ERROR;
-			LogManager.log.severe("[SteamVRPipeInputBridge] Pipe error: " + Kernel32.INSTANCE.GetLastError());
+			LogManager.log.severe("[SteamVRPipeInputBridge] Pipe error: " + Native.getLastError());
 		}
 		return false;
 	}
@@ -219,8 +220,9 @@ public class LinuxSteamVRPipeInputBridge extends Thread implements Bridge {
 		//Main.vrServer.queueTask(this::disconnected);
 	}
 
-	private boolean tryOpeningPipe(LinuxPipe pipe) {
-		if(Kernel32.INSTANCE.ConnectNamedPipe(pipe.pipeHandle, null) || Kernel32.INSTANCE.GetLastError() == WinError.ERROR_PIPE_CONNECTED) {
+	//TODO: remove seems unneeded
+/*	private boolean tryOpeningPipe(LinuxPipe pipe) {
+		if(Kernel32.INSTANCE.ConnectNamedPipe(pipe.pipe, null) || Kernel32.INSTANCE.GetLastError() == WinError.ERROR_PIPE_CONNECTED) {
 			pipe.state = PipeState.OPEN;
 			LogManager.log.info("[SteamVRPipeInputBridge] Pipe " + pipe.name + " is open");
 			return true;
@@ -228,20 +230,15 @@ public class LinuxSteamVRPipeInputBridge extends Thread implements Bridge {
 
 		LogManager.log.info("[SteamVRPipeInputBridge] Error connecting to pipe " + pipe.name + ": " + Kernel32.INSTANCE.GetLastError());
 		return false;
-	}
+	}*/
 
 	private void createPipes() throws IOException {
 		try {
-			pipe = new LinuxPipe(Kernel32.INSTANCE.CreateNamedPipe(PipeName, WinBase.PIPE_ACCESS_DUPLEX, // dwOpenMode
-					WinBase.PIPE_TYPE_BYTE | WinBase.PIPE_READMODE_BYTE | WinBase.PIPE_WAIT, // dwPipeMode
-					1, // nMaxInstances,
-					1024 * 16, // nOutBufferSize,
-					1024 * 16, // nInBufferSize,
-					0, // nDefaultTimeOut,
-					null), PipeName); // lpSecurityAttributes
+			RandomAccessFile fd = new RandomAccessFile(PipeName, "rw");
+			pipe = new LinuxPipe(fd, PipeName); // lpSecurityAttributes
 			LogManager.log.info("[SteamVRPipeInputBridge] Pipe " + pipe.name + " created");
-			if(WinBase.INVALID_HANDLE_VALUE.equals(pipe.pipeHandle))
-				throw new IOException("Can't open " + PipeName + " pipe: " + Kernel32.INSTANCE.GetLastError());
+			if(pipe.pipe == null)
+				throw new IOException("Can't open " + PipeName + " pipe: " + Native.getLastError());
 			LogManager.log.info("[SteamVRPipeInputBridge] Pipes are open");
 		} catch(IOException e) {
 			LinuxPipe.safeDisconnect(pipe);

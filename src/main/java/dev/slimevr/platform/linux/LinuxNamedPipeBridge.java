@@ -1,9 +1,9 @@
 package dev.slimevr.platform.linux;
 
 import com.google.protobuf.CodedOutputStream;
-import com.sun.jna.platform.win32.Kernel32;
-import com.sun.jna.platform.win32.WinBase;
-import com.sun.jna.platform.win32.WinError;
+import com.sun.jna.Native;
+import com.sun.jna.platform.linux.LibRT;
+import com.sun.jna.platform.linux.LibC;
 import com.sun.jna.ptr.IntByReference;
 import dev.slimevr.Main;
 import dev.slimevr.bridge.BridgeThread;
@@ -15,6 +15,7 @@ import dev.slimevr.vr.trackers.*;
 import io.eiren.util.logging.LogManager;
 
 import java.io.IOException;
+import java.io.RandomAccessFile;
 import java.util.List;
 
 public class LinuxNamedPipeBridge extends ProtobufBridge<VRTracker> implements Runnable {
@@ -135,12 +136,15 @@ public class LinuxNamedPipeBridge extends ProtobufBridge<VRTracker> implements R
 				buffArray[1] = (byte) ((size >> 8) & 0xFF);
 				buffArray[2] = (byte) ((size >> 16) & 0xFF);
 				buffArray[3] = (byte) ((size >> 24) & 0xFF);
-				if(Kernel32.INSTANCE.WriteFile(pipe.pipeHandle, buffArray, size, null, null)) {
+				try {
+					pipe.pipe.write(buffArray);
 					return true;
+				} catch (IOException e) {
+					pipe.state = PipeState.ERROR;
+					LogManager.log.severe("[" + bridgeName + "] Pipe error: " + Native.getLastError());
+					e.printStackTrace();
 				}
-				pipe.state = PipeState.ERROR;
-				LogManager.log.severe("[" + bridgeName + "] Pipe error: " + Kernel32.INSTANCE.GetLastError());
-			} catch(IOException e) {
+			} catch (IOException e) {
 				e.printStackTrace();
 			}
 		}
@@ -151,7 +155,7 @@ public class LinuxNamedPipeBridge extends ProtobufBridge<VRTracker> implements R
 		if(pipe.state == PipeState.OPEN) {
 			boolean readAnything = false;
 			IntByReference bytesAvailable = new IntByReference(0);
-			while(Kernel32.INSTANCE.PeekNamedPipe(pipe.pipeHandle, buffArray, 4, null, bytesAvailable, null)) {
+			while(pipe.pipe.(pipe.pipe, buffArray, 4, null, bytesAvailable, null)) {
 				if(bytesAvailable.getValue() >= 4) { // Got size
 					int messageLength = (buffArray[3] << 24) | (buffArray[2] << 16) | (buffArray[1] << 8) | buffArray[0];
 					if(messageLength > 1024) { // Overflow
@@ -160,13 +164,13 @@ public class LinuxNamedPipeBridge extends ProtobufBridge<VRTracker> implements R
 						return readAnything;
 					}
 					if(bytesAvailable.getValue() >= messageLength) {
-						if(Kernel32.INSTANCE.ReadFile(pipe.pipeHandle, buffArray, messageLength, bytesAvailable, null)) {
+						if(pipe.pipe.read(buffArray, 0, messageLength)) {
 							ProtobufMessages.ProtobufMessage message = ProtobufMessages.ProtobufMessage.parser().parseFrom(buffArray, 4, messageLength - 4);
 							messageRecieved(message);
 							readAnything = true;
 						} else {
 							pipe.state = PipeState.ERROR;
-							LogManager.log.severe("[" + bridgeName + "] Pipe error: " + Kernel32.INSTANCE.GetLastError());
+							LogManager.log.severe("[" + bridgeName + "] Pipe error: " + Native.getLastError());
 							return readAnything;
 						}
 					} else {
@@ -177,7 +181,7 @@ public class LinuxNamedPipeBridge extends ProtobufBridge<VRTracker> implements R
 				}
 			}
 			pipe.state = PipeState.ERROR;
-			LogManager.log.severe("[" + bridgeName + "] Pipe error: " + Kernel32.INSTANCE.GetLastError());
+			LogManager.log.severe("[" + bridgeName + "] Pipe error: " + Native.getLastError());
 		}
 		return false;
 	}
@@ -188,27 +192,23 @@ public class LinuxNamedPipeBridge extends ProtobufBridge<VRTracker> implements R
 		Main.vrServer.queueTask(this::disconnected);
 	}
 
-	private void createPipe() throws IOException {
+	private void createPipes() throws IOException {
 		try {
-			pipe = new LinuxPipe(Kernel32.INSTANCE.CreateNamedPipe(pipeName, WinBase.PIPE_ACCESS_DUPLEX, // dwOpenMode
-					WinBase.PIPE_TYPE_BYTE | WinBase.PIPE_READMODE_BYTE | WinBase.PIPE_WAIT, // dwPipeMode
-					1, // nMaxInstances,
-					1024 * 16, // nOutBufferSize,
-					1024 * 16, // nInBufferSize,
-					0, // nDefaultTimeOut,
-					null), pipeName); // lpSecurityAttributes
-			LogManager.log.info("[" + bridgeName + "] Pipe " + pipe.name + " created");
-			if(WinBase.INVALID_HANDLE_VALUE.equals(pipe.pipeHandle))
-				throw new IOException("Can't open " + pipeName + " pipe: " + Kernel32.INSTANCE.GetLastError());
-			LogManager.log.info("[" + bridgeName + "] Pipes are created");
+			int fd = LibRT.INSTANCE.shm_open(pipeName, "rw");
+			pipe = new LinuxPipe(fd, pipeName); // lpSecurityAttributes
+			LogManager.log.info("[SteamVRPipeInputBridge] Pipe " + pipe.name + " created");
+			if(pipe.pipe == -1)
+				throw new IOException("Can't open " + pipeName + " pipe: " + Native.getLastError());
+			LogManager.log.info("[SteamVRPipeInputBridge] Pipes are open");
 		} catch(IOException e) {
 			LinuxPipe.safeDisconnect(pipe);
 			throw e;
 		}
 	}
 
-	private boolean tryOpeningPipe(LinuxPipe pipe) {
-		if(Kernel32.INSTANCE.ConnectNamedPipe(pipe.pipeHandle, null) || Kernel32.INSTANCE.GetLastError() == WinError.ERROR_PIPE_CONNECTED) {
+	//TODO: remove seems unneeded
+/*	private boolean tryOpeningPipe(LinuxPipe pipe) {
+		if(Kernel32.INSTANCE.ConnectNamedPipe(pipe.pipeHandle, null) || Native.getLastError() == WinError.ERROR_PIPE_CONNECTED) {
 			pipe.state = PipeState.OPEN;
 			LogManager.log.info("[" + bridgeName + "] Pipe " + pipe.name + " is open");
 			Main.vrServer.queueTask(this::reconnected);
@@ -216,5 +216,5 @@ public class LinuxNamedPipeBridge extends ProtobufBridge<VRTracker> implements R
 		}
 		LogManager.log.info("[" + bridgeName + "] Error connecting to pipe " + pipe.name + ": " + Kernel32.INSTANCE.GetLastError());
 		return false;
-	}
+	}*/
 }
