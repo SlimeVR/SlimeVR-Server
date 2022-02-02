@@ -2,16 +2,16 @@ package dev.slimevr.platform.linux;
 
 import dev.slimevr.bridge.PipeState;
 
-import java.io.RandomAccessFile;
+import java.nio.channels.FileChannel;
 
 public class LinuxPipe {
 
 	public final String name;
 
-	public int pipe;
+	public FileChannel pipe;
 	public PipeState state = PipeState.CREATED;
 
-	public LinuxPipe(int pipe, String name) {
+	public LinuxPipe(FileChannel pipe, String name) {
 		this.pipe = pipe;
 		this.name = name;
 	}

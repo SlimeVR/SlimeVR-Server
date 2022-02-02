@@ -3,9 +3,6 @@ package dev.slimevr.platform.linux;
 import com.jme3.math.Quaternion;
 import com.jme3.math.Vector3f;
 import com.sun.jna.Native;
-import com.sun.jna.platform.linux.LibC;
-import com.sun.jna.platform.linux.ErrNo;
-import com.sun.jna.platform.linux.LibRT;
 import com.sun.jna.ptr.IntByReference;
 import dev.slimevr.VRServer;
 import dev.slimevr.bridge.Bridge;
@@ -16,6 +13,8 @@ import io.eiren.util.logging.LogManager;
 
 import java.io.IOException;
 import java.io.RandomAccessFile;
+import java.nio.ByteBuffer;
+import java.nio.channels.FileChannel;
 import java.nio.charset.Charset;
 import java.util.List;
 import java.util.concurrent.atomic.AtomicBoolean;
@@ -117,9 +116,8 @@ public class LinuxNamedPipeVRBridge extends Thread implements Bridge {
 	public boolean updateHMD() throws IOException {
 		if(hmdPipe.state == PipeState.OPEN) {
 			IntByReference bytesAvailable = new IntByReference(0);
-			if(Kernel32.INSTANCE.PeekNamedPipe(hmdPipe.pipeHandle, null, 0, null, bytesAvailable, null)) {
 				if(bytesAvailable.getValue() > 0) {
-					while(Kernel32.INSTANCE.ReadFile(hmdPipe.pipeHandle, buffArray, buffArray.length, bytesAvailable, null)) {
+					while(hmdPipe.pipe.read(ByteBuffer.wrap(buffArray)) != 0) {
 						int bytesRead = bytesAvailable.getValue();
 						for(int i = 0; i < bytesRead; ++i) {
 							char c = (char) buffArray[i];
@@ -139,7 +137,6 @@ public class LinuxNamedPipeVRBridge extends Thread implements Bridge {
 					}
 					return true;
 				}
-			}
 		}
 		return false;
 	}
@@ -182,7 +179,11 @@ public class LinuxNamedPipeVRBridge extends Thread implements Bridge {
 				System.arraycopy(str.getBytes(ASCII), 0, buffArray, 0, str.length());
 				buffArray[str.length()] = '\0';
 				IntByReference lpNumberOfBytesWritten = new IntByReference(0);
-				Kernel32.INSTANCE.WriteFile(trackerPipe.pipeHandle, buffArray, str.length() + 1, lpNumberOfBytesWritten, null);
+				try {
+					trackerPipe.pipe.write(ByteBuffer.wrap(buffArray));
+				} catch(IOException e) {
+
+				}
 			}
 		}
 	}
@@ -196,15 +197,15 @@ public class LinuxNamedPipeVRBridge extends Thread implements Bridge {
 		System.arraycopy(trackerHello.getBytes(ASCII), 0, buffArray, 0, trackerHello.length());
 		buffArray[trackerHello.length()] = '\0';
 		IntByReference lpNumberOfBytesWritten = new IntByReference(0);
-		Kernel32.INSTANCE.WriteFile(pipe.pipeHandle,
-				buffArray,
-				trackerHello.length() + 1,
-				lpNumberOfBytesWritten,
-				null);
+		try {
+			pipe.pipe.write(ByteBuffer.wrap(buffArray));
+		} catch(IOException e) {
+
+		}
 	}
 
 	private boolean tryOpeningPipe(LinuxPipe pipe) {
-		if(Kernel32.INSTANCE.ConnectNamedPipe(pipe.pipeHandle, null)) {
+		if(pipe.pipe.isOpen()) {
 			pipe.state = PipeState.OPEN;
 			LogManager.log.info("[VRBridge] Pipe " + pipe.name + " is open");
 			return true;
@@ -227,29 +228,21 @@ public class LinuxNamedPipeVRBridge extends Thread implements Bridge {
 
 	private void createPipes() throws IOException {
 		try {
-			hmdPipe = new LinuxPipe(Kernel32.INSTANCE.CreateNamedPipe(HMDPipeName, WinBase.PIPE_ACCESS_DUPLEX, // dwOpenMode
-					WinBase.PIPE_TYPE_BYTE | WinBase.PIPE_READMODE_BYTE | WinBase.PIPE_WAIT, // dwPipeMode
-					1, // nMaxInstances,
-					1024 * 16, // nOutBufferSize,
-					1024 * 16, // nInBufferSize,
-					0, // nDefaultTimeOut,
-					null), HMDPipeName); // lpSecurityAttributes
+			RandomAccessFile rw = new RandomAccessFile(HMDPipeName, "rw");
+			FileChannel fc = rw.getChannel();
+			hmdPipe = new LinuxPipe(fc, HMDPipeName); // lpSecurityAttributes
 			LogManager.log.info("[VRBridge] Pipe " + hmdPipe.name + " created");
-			if(WinBase.INVALID_HANDLE_VALUE.equals(hmdPipe.pipeHandle))
-				throw new IOException("Can't open " + HMDPipeName + " pipe: " + Native.getLastError());
+			//if(WinBase.INVALID_HANDLE_VALUE.equals(hmdPipe.pipeHandle))
+			//	throw new IOException("Can't open " + HMDPipeName + " pipe: " + Native.getLastError());
 			for(int i = 0; i < this.shareTrackers.size(); ++i) {
 				String pipeName = TrackersPipeName + i;
-				WinNT.HANDLE pipeHandle = Kernel32.INSTANCE.CreateNamedPipe(pipeName, WinBase.PIPE_ACCESS_DUPLEX, // dwOpenMode
-						WinBase.PIPE_TYPE_BYTE | WinBase.PIPE_READMODE_BYTE | WinBase.PIPE_WAIT, // dwPipeMode
-						1, // nMaxInstances,
-						1024 * 16, // nOutBufferSize,
-						1024 * 16, // nInBufferSize,
-						0, // nDefaultTimeOut,
-						null); // lpSecurityAttributes
-				if(WinBase.INVALID_HANDLE_VALUE.equals(pipeHandle))
-					throw new IOException("Can't open " + pipeName + " pipe: " + Native.getLastError());
+				RandomAccessFile Trw = new RandomAccessFile(pipeName, "rw");
+				FileChannel Tfc = Trw.getChannel();
+				 LinuxPipe pipeHandle = new LinuxPipe(Tfc, pipeName+i); // lpSecurityAttributes
+				//if(WinBase.INVALID_HANDLE_VALUE.equals(pipeHandle))
+				//	throw new IOException("Can't open " + pipeName + " pipe: " + Native.getLastError());
 				LogManager.log.info("[VRBridge] Pipe " + pipeName + " created");
-				trackerPipes.add(new LinuxPipe(pipeHandle, pipeName));
+				trackerPipes.add(new LinuxPipe(pipeHandle.pipe, pipeName));
 			}
 			LogManager.log.info("[VRBridge] Pipes are open");
 		} catch(IOException e) {
