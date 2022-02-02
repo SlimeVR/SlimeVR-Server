@@ -321,8 +321,18 @@ public class TrackersList extends EJBoxNoStretch {
 			if(realTracker instanceof TrackerWithTPS) {
 				tps.setText(StringUtils.prettyNumber(((TrackerWithTPS) realTracker).getTPS(), 1));
 			}
-			if(realTracker instanceof TrackerWithBattery)
-				bat.setText(String.format("%d%% (%sV)", Math.round(((TrackerWithBattery) realTracker).getBatteryLevel()), StringUtils.prettyNumber(((TrackerWithBattery) realTracker).getBatteryVoltage(), 2)));
+			if(realTracker instanceof TrackerWithBattery) {
+				TrackerWithBattery twb = (TrackerWithBattery) realTracker;
+				float level = twb.getBatteryLevel();
+				float voltage = twb.getBatteryVoltage();
+				if(level == 0.0f) {
+					bat.setText(String.format("%sV", StringUtils.prettyNumber(voltage, 2)));
+				} else if(voltage == 0.0f) {
+					bat.setText(String.format("%d%%", Math.round(level)));
+				} else {
+					bat.setText(String.format("%d%% (%sV)", Math.round(level), StringUtils.prettyNumber(voltage, 2)));
+				}
+			}
 			if(t instanceof ReferenceAdjustedTracker) {
 				ReferenceAdjustedTracker<Tracker> rat = (ReferenceAdjustedTracker<Tracker>) t;
 				if(adj != null) {

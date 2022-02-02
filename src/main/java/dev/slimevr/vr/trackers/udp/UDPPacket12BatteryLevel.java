@@ -19,8 +19,12 @@ public class UDPPacket12BatteryLevel extends UDPPacket {
 	@Override
 	public void readData(ByteBuffer buf) throws IOException {
 		voltage = buf.getFloat();
-		if(buf.remaining() > 3)
+		if(buf.remaining() > 3) {
 			level = buf.getFloat();
+		} else {
+			level = voltage;
+			voltage = 0.0f;
+		}
 	}
 	
 	@Override
