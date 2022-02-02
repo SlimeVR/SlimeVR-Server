@@ -19,6 +19,8 @@ import org.apache.commons.lang3.StringUtils;
 
 import java.io.IOException;
 import java.io.RandomAccessFile;
+import java.nio.ByteBuffer;
+import java.nio.channels.FileChannel;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
@@ -75,9 +77,8 @@ public class LinuxSteamVRPipeInputBridge extends Thread implements Bridge {
 	public boolean updatePipes() throws IOException {
 		if(pipe.state == PipeState.OPEN) {
 			IntByReference bytesAvailable = new IntByReference(0);
-			if(Kernel32.INSTANCE.PeekNamedPipe(pipe.pipeHandle, null, 0, null, bytesAvailable, null)) {
 				if(bytesAvailable.getValue() > 0) {
-					while(Kernel32.INSTANCE.ReadFile(pipe.pipeHandle, buffArray, buffArray.length, bytesAvailable, null)) {
+					while(pipe.pipe.write(ByteBuffer.wrap(buffArray)) != 0) {
 						int bytesRead = bytesAvailable.getValue();
 						for(int i = 0; i < bytesRead; ++i) {
 							char c = (char) buffArray[i];
@@ -98,7 +99,6 @@ public class LinuxSteamVRPipeInputBridge extends Thread implements Bridge {
 				} else {
 					return false; // Pipe was empty, it's okay
 				}
-			}
 			// PeekNamedPipe or ReadFile returned an error
 			pipe.state = PipeState.ERROR;
 			LogManager.log.severe("[SteamVRPipeInputBridge] Pipe error: " + Native.getLastError());
@@ -198,7 +198,7 @@ public class LinuxSteamVRPipeInputBridge extends Thread implements Bridge {
 				VRTracker tracker = trackers.get(i);
 				VRTracker internal = trackersInternal.get(tracker.getTrackerId());
 				if(internal == null)
-					throw new NullPointerException("Lost internal tracker somehow: " + tracker.getTrackerId()); // Shouln't really happen even, but better to catch it like this
+					throw new NullPointerException("Lost internal tracker somehow: " + tracker.getTrackerId()); // Shouldn't really happen even, but better to catch it like this
 				if(internal.getPosition(vBuffer))
 					tracker.position.set(vBuffer);
 				if(internal.getRotation(qBuffer))
@@ -220,22 +220,23 @@ public class LinuxSteamVRPipeInputBridge extends Thread implements Bridge {
 		//Main.vrServer.queueTask(this::disconnected);
 	}
 
-	//TODO: remove seems unneeded
-/*	private boolean tryOpeningPipe(LinuxPipe pipe) {
-		if(Kernel32.INSTANCE.ConnectNamedPipe(pipe.pipe, null) || Kernel32.INSTANCE.GetLastError() == WinError.ERROR_PIPE_CONNECTED) {
+
+	private boolean tryOpeningPipe(LinuxPipe pipe) {
+		if(pipe.pipe.isOpen()) {
 			pipe.state = PipeState.OPEN;
 			LogManager.log.info("[SteamVRPipeInputBridge] Pipe " + pipe.name + " is open");
 			return true;
 		}
 
-		LogManager.log.info("[SteamVRPipeInputBridge] Error connecting to pipe " + pipe.name + ": " + Kernel32.INSTANCE.GetLastError());
+		LogManager.log.info("[SteamVRPipeInputBridge] Error connecting to pipe " + pipe.name + ": " + Native.getLastError());
 		return false;
-	}*/
+	}
 
 	private void createPipes() throws IOException {
 		try {
-			RandomAccessFile fd = new RandomAccessFile(PipeName, "rw");
-			pipe = new LinuxPipe(fd, PipeName); // lpSecurityAttributes
+			RandomAccessFile rw = new RandomAccessFile(PipeName, "rw");
+			FileChannel fc = rw.getChannel();
+			pipe = new LinuxPipe(fc, PipeName); // lpSecurityAttributes
 			LogManager.log.info("[SteamVRPipeInputBridge] Pipe " + pipe.name + " created");
 			if(pipe.pipe == null)
 				throw new IOException("Can't open " + PipeName + " pipe: " + Native.getLastError());
