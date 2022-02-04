@@ -11,7 +11,6 @@ import dev.slimevr.gui.swing.ButtonTimer;
 import dev.slimevr.gui.swing.EJBagNoStretch;
 import dev.slimevr.gui.swing.EJBox;
 import dev.slimevr.gui.swing.EJBoxNoStretch;
-import dev.slimevr.platform.linux.LinuxNamedPipeBridge;
 import dev.slimevr.platform.windows.WindowsNamedPipeBridge;
 import dev.slimevr.vr.trackers.TrackerRole;
 import io.eiren.util.MacOSX;
@@ -269,70 +268,6 @@ public class VRServerGUI extends JFrame {
 					
 					
 				add(Box.createVerticalStrut(10));
-				} else if(server.hasBridge(LinuxNamedPipeBridge.class)) { // Linux GUI ver
-					LinuxNamedPipeBridge br = server.getVRBridge(LinuxNamedPipeBridge.class);
-					add(l = new JLabel("SteamVR Trackers"));
-					l.setFont(l.getFont().deriveFont(Font.BOLD));
-					l.setAlignmentX(0.5f);
-					add(l = new JLabel("Changes may require restart of SteamVR"));
-					l.setFont(l.getFont().deriveFont(Font.ITALIC));
-					l.setAlignmentX(0.5f);
-
-					add(new EJBagNoStretch(false, true) {{
-						JCheckBox waistCb;
-						add(waistCb = new JCheckBox("Waist"), c(1, 1));
-						waistCb.setSelected(br.getShareSetting(TrackerRole.WAIST));
-						waistCb.addActionListener(new ActionListener() {
-							@Override
-							public void actionPerformed(ActionEvent e) {
-								server.queueTask(() -> {
-									br.changeShareSettings(TrackerRole.WAIST, waistCb.isSelected());
-								});
-							}
-						});
-
-						JCheckBox legsCb;
-						add(legsCb = new JCheckBox("Legs"), c(2, 1));
-						legsCb.setSelected(br.getShareSetting(TrackerRole.LEFT_FOOT) && br.getShareSetting(TrackerRole.RIGHT_FOOT));
-						legsCb.addActionListener(new ActionListener() {
-							@Override
-							public void actionPerformed(ActionEvent e) {
-								server.queueTask(() -> {
-									br.changeShareSettings(TrackerRole.LEFT_FOOT, legsCb.isSelected());
-									br.changeShareSettings(TrackerRole.RIGHT_FOOT, legsCb.isSelected());
-								});
-							}
-						});
-
-						JCheckBox chestCb;
-						add(chestCb = new JCheckBox("Chest"), c(1, 2));
-						chestCb.setSelected(br.getShareSetting(TrackerRole.CHEST));
-						chestCb.addActionListener(new ActionListener() {
-							@Override
-							public void actionPerformed(ActionEvent e) {
-								server.queueTask(() -> {
-									br.changeShareSettings(TrackerRole.CHEST, chestCb.isSelected());
-								});
-							}
-						});
-
-						JCheckBox kneesCb;
-						add(kneesCb = new JCheckBox("Knees"), c(2, 2));
-						kneesCb.setSelected(br.getShareSetting(TrackerRole.LEFT_KNEE) && br.getShareSetting(TrackerRole.RIGHT_KNEE));
-						kneesCb.addActionListener(new ActionListener() {
-							@Override
-							public void actionPerformed(ActionEvent e) {
-								server.queueTask(() -> {
-									br.changeShareSettings(TrackerRole.LEFT_KNEE, kneesCb.isSelected());
-									br.changeShareSettings(TrackerRole.RIGHT_KNEE, kneesCb.isSelected());
-								});
-							}
-						});
-
-					}});
-
-
-					add(Box.createVerticalStrut(10));
 				}
 				add(new JLabel("Skeleton data"));
 				add(skeletonList);
