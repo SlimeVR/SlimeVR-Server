@@ -8,7 +8,7 @@
 
 plugins {
 	id 'application'
-	id "com.github.johnrengelman.shadow" version "6.1.0"
+	id "com.github.johnrengelman.shadow" version "7.1.2"
 }
 
 sourceCompatibility = 1.8
@@ -22,9 +22,7 @@ javadoc.options.encoding = 'UTF-8'
 tasks.withType(JavaCompile) {
 	options.encoding = 'UTF-8'
 	if (JavaVersion.current().isJava9Compatible()) {
-		// TODO: Gradle 6.6
-		// options.release = 8
-		options.compilerArgs.addAll(['--release', '8'])
+		options.release = 8
 	}
 }
 tasks.withType(Test) {
@@ -38,30 +36,25 @@ allprojects {
 	repositories {
 		// Use jcenter for resolving dependencies.
 		// You can declare any Maven/Ivy/file repository here.
-		jcenter()
 		mavenCentral()
 	}
 }
 
 dependencies {
-	compile project(':slime-java-commons')
-
-	// This dependency is exported to consumers, that is to say found on their compile classpath.
-	compile 'org.apache.commons:commons-math3:3.6.1'
-	compile 'org.yaml:snakeyaml:1.25'
-	compile 'net.java.dev.jna:jna:5.6.0'
-	compile 'net.java.dev.jna:jna-platform:5.6.0'
-	compile 'com.illposed.osc:javaosc-core:0.8'
-	compile 'com.fazecast:jSerialComm:[2.0.0,3.0.0)'
-	compile 'com.google.protobuf:protobuf-java:3.17.3'
-	compile "org.java-websocket:Java-WebSocket:1.5.1"
-	compile 'com.melloware:jintellitype:1.4.0'
+	implementation project(':slime-java-commons')
 
 	// This dependency is used internally, and not exposed to consumers on their own compile classpath.
-	implementation 'com.google.guava:guava:28.2-jre'
+	implementation 'org.apache.commons:commons-math3:3.6.1'
+	implementation 'net.java.dev.jna:jna:5.10.0'
+	implementation 'net.java.dev.jna:jna-platform:5.10.0'
+	implementation 'com.illposed.osc:javaosc-core:0.8'
+	implementation 'com.fazecast:jSerialComm:2.9.0'
+	implementation 'com.google.protobuf:protobuf-java:3.19.4'
+	implementation "org.java-websocket:Java-WebSocket:1.5.2"
+	implementation 'com.melloware:jintellitype:1.4.0'
 
 	// Use JUnit test framework
-	testImplementation platform('org.junit:junit-bom:5.7.2')
+	testImplementation platform('org.junit:junit-bom:5.8.2')
 	testImplementation 'org.junit.jupiter:junit-jupiter'
 	testImplementation 'org.junit.platform:junit-platform-launcher'
 }
@@ -75,5 +68,5 @@ shadowJar {
 	archiveVersion.set('')
 }
 application {
-	mainClassName = 'dev.slimevr.Main'
+	getMainClass().set('dev.slimevr.Main')
 }
