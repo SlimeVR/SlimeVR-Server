@@ -27,23 +27,7 @@ public class StdBVHFileStream extends BVHFileStream {
 			return null;
 		}
 		
-		TransformNodeWrapper wrappedRoot = TransformNodeWrapper.wrapHierarchyDown(newRoot);
-		
-		/*
-		// If should wrap up hierarchy
-		if (newRoot.getParent() != null) {
-			// Create an extra node for full proper rotation
-			TransformNodeWrapper spineWrapper = new TransformNodeWrapper(new TransformNode("Spine", false), true, 1);
-			wrappedRoot.attachChild(spineWrapper);
-		
-			// Wrap up on top of the spine node
-			TransformNodeWrapper.wrapNodeHierarchyUp(newRoot, spineWrapper);
-		}
-		*/
-		
-		TransformNodeWrapper.wrapNodeHierarchyUp(wrappedRoot);
-		
-		return wrappedRoot;
+		return TransformNodeWrapper.wrapFullHierarchy(newRoot);
 	}
 	
 	private TransformNode getNodeFromHierarchy(TransformNode node, String name) {
