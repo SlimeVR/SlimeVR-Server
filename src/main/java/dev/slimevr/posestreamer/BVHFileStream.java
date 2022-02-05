@@ -207,7 +207,7 @@ public class BVHFileStream extends PoseDataStream {
 		
 		// Adjust to local rotation
 		if(inverseRootRot != null) {
-			rotBuf = rotBuf.multLocal(inverseRootRot);
+			rotBuf = inverseRootRot.mult(rotBuf, rotBuf);
 		}
 		
 		// Yaw (Z), roll (X), pitch (Y) (intrinsic)
