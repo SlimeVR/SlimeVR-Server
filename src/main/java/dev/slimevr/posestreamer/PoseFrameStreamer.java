@@ -1,7 +1,6 @@
 package dev.slimevr.posestreamer;
 
 import java.io.File;
-import java.util.List;
 
 import dev.slimevr.poserecorder.PoseFrameIO;
 import dev.slimevr.poserecorder.PoseFrameSkeleton;
@@ -9,12 +8,19 @@ import dev.slimevr.poserecorder.PoseFrames;
 
 public class PoseFrameStreamer extends PoseStreamer {
 
-	protected PoseFrames frames;
+	private PoseFrames frames;
 
 	public PoseFrameStreamer(String path) {
+		this(new File(path));
+	}
+
+	public PoseFrameStreamer(File file) {
+		this(PoseFrameIO.readFromFile(file));
+	}
+
+	public PoseFrameStreamer(PoseFrames frames) {
 		super(null);
 
-		PoseFrames frames = PoseFrameIO.readFromFile(new File(path));
 		this.frames = frames;
 
 		PoseFrameSkeleton skeleton = new PoseFrameSkeleton(frames.getTrackers(), null);
@@ -23,5 +29,14 @@ public class PoseFrameStreamer extends PoseStreamer {
 
 	public PoseFrames getFrames() {
 		return frames;
+	}
+
+	public synchronized void streamAllFrames() {
+		PoseFrameSkeleton skeleton = (PoseFrameSkeleton) this.skeleton;
+		for (int i = 0; i < frames.getMaxFrameCount(); i++) {
+			skeleton.setCursor(i);
+			skeleton.updatePose();
+			captureFrame();
+		}
 	}
 }
