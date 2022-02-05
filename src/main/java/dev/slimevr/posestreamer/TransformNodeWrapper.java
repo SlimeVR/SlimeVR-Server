@@ -58,25 +58,38 @@ public class TransformNodeWrapper {
 	public TransformNodeWrapper(TransformNode nodeToWrap) {
 		this(nodeToWrap, nodeToWrap.getName());
 	}
+
+	public static TransformNodeWrapper wrapFullHierarchyWithFakeRoot(TransformNode root) {
+		// Allocate a "fake" root with appropriate size depending on connections the root has
+		TransformNodeWrapper fakeRoot = new TransformNodeWrapper(root, root.getParent() != null ? 2 : 1);
+
+		// Attach downwards hierarchy to the fake root
+		wrapNodeHierarchyDown(root, fakeRoot);
+
+		// Attach upwards hierarchy to the fake root
+		fakeRoot.attachChild(wrapHierarchyUp(root));
+
+		return fakeRoot;
+	}
 	
 	public static TransformNodeWrapper wrapFullHierarchy(TransformNode root) {
 		return wrapNodeHierarchyUp(wrapHierarchyDown(root));
 	}
 	
 	public static TransformNodeWrapper wrapHierarchyDown(TransformNode root) {
-		return wrapNodeHierarchyDown(new TransformNodeWrapper(root, root.children.size()));
+		return wrapNodeHierarchyDown(root, new TransformNodeWrapper(root, root.children.size()));
 	}
 	
-	public static TransformNodeWrapper wrapNodeHierarchyDown(TransformNodeWrapper root) {
-		for(TransformNode child : root.wrappedNode.children) {
-			root.attachChild(wrapHierarchyDown(child));
+	public static TransformNodeWrapper wrapNodeHierarchyDown(TransformNode root, TransformNodeWrapper target) {
+		for(TransformNode child : root.children) {
+			target.attachChild(wrapHierarchyDown(child));
 		}
 		
-		return root;
+		return target;
 	}
 	
 	public static TransformNodeWrapper wrapHierarchyUp(TransformNode root) {
-		return wrapNodeHierarchyUp(new TransformNodeWrapper(root, root.getParent() != null ? 1 : 0));
+		return wrapNodeHierarchyUp(new TransformNodeWrapper(root, true, root.getParent() != null ? 1 : 0));
 	}
 	
 	public static TransformNodeWrapper wrapNodeHierarchyUp(TransformNodeWrapper root) {
@@ -132,7 +145,7 @@ public class TransformNodeWrapper {
 			result = new Quaternion();
 		}
 		
-		return worldTransform.getRotation().mult(inverseRelativeTo, result);
+		return inverseRelativeTo.mult(worldTransform.getRotation(), result);
 	}
 	
 	public void attachChild(TransformNodeWrapper node) {

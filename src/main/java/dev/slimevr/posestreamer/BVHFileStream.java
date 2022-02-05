@@ -154,7 +154,7 @@ public class BVHFileStream extends PoseDataStream {
 		writer.write(getBufferedFrameCount(frameCount) + "\n");
 		
 		// Frame time in seconds
-		writer.write("Frame Time: " + (streamer.frameRecordingInterval / 1000d) + "\n");
+		writer.write("Frame Time: " + (streamer.getFrameInterval() / 1000d) + "\n");
 	}
 	
 	// Roughly based off code from https://github.com/TrackLab/ViRe/blob/50a987eff4db31036b2ebaeb5a28983cd473f267/Assets/Scripts/BVH/BVHRecorder.cs
@@ -207,7 +207,7 @@ public class BVHFileStream extends PoseDataStream {
 		
 		// Adjust to local rotation
 		if(inverseRootRot != null) {
-			rotBuf = rotBuf.multLocal(inverseRootRot);
+			rotBuf = inverseRootRot.mult(rotBuf, rotBuf);
 		}
 		
 		// Yaw (Z), roll (X), pitch (Y) (intrinsic)
