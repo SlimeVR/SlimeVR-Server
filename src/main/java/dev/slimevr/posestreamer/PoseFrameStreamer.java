@@ -19,12 +19,8 @@ public class PoseFrameStreamer extends PoseStreamer {
 	}
 
 	public PoseFrameStreamer(PoseFrames frames) {
-		super(null);
-
+		super(new PoseFrameSkeleton(frames.getTrackers(), null));
 		this.frames = frames;
-
-		PoseFrameSkeleton skeleton = new PoseFrameSkeleton(frames.getTrackers(), null);
-		this.skeleton = skeleton;
 	}
 
 	public PoseFrames getFrames() {
