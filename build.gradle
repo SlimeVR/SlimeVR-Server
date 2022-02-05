@@ -52,7 +52,6 @@ dependencies {
 	implementation "org.java-websocket:Java-WebSocket:1.5.2"
 	implementation 'com.melloware:jintellitype:1.4.0'
 	implementation 'org.slf4j:slf4j-simple:1.7.35'
-	implementation 'com.google.guava:guava:31.0.1-jre'
 
 	// Use JUnit test framework
 	testImplementation platform('org.junit:junit-bom:5.8.2')
