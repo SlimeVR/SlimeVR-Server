@@ -51,7 +51,7 @@ public class UDPProtocolParser {
 		if(newPacket != null) {
 			newPacket.readData(buf);
 		} else {
-			//LogManager.log.debug("[UDPPorotocolParser] Skipped packet id " + packetId + " from " + connection);
+			//LogManager.log.debug("[UDPProtocolParser] Skipped packet id " + packetId + " from " + connection);
 		}
 		return newPacket;
 	}

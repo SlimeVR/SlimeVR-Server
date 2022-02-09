@@ -57,7 +57,7 @@ public class ReferenceAdjustedTracker<E extends Tracker> implements Tracker {
 	/**
 	 *  Reset the tracker so that it's current yaw rotation
 	 *  is counted as <HMD Yaw>. This allows the tracker
-	 *  to have yaw independant of the HMD. Tracker should
+	 *  to have yaw independent of the HMD. Tracker should
 	 *  still report yaw as if it was mounted facing HMD,
 	 *  mounting position should be corrected in the source.
 	 */

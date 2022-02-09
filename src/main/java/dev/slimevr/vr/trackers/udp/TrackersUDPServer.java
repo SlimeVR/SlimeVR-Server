@@ -37,12 +37,12 @@ import io.eiren.util.collections.FastList;
 import io.eiren.util.logging.LogManager;
 
 /**
- * Recieves trackers data by UDP using extended owoTrack protocol.
+ * Receives trackers data by UDP using extended owoTrack protocol.
  */
 public class TrackersUDPServer extends Thread {
 	
 	/**
-	 * Change between IMU axises and OpenGL/SteamVR axises
+	 * Change between IMU axes and OpenGL/SteamVR axes
 	 */
 	private static final Quaternion offset = new Quaternion().fromAngleAxis(-FastMath.HALF_PI, Vector3f.UNIT_X);
 	
@@ -90,7 +90,7 @@ public class TrackersUDPServer extends Thread {
 	}
 	
 	private void setUpNewConnection(DatagramPacket handshakePacket, UDPPacket3Handshake handshake) throws IOException {
-		LogManager.log.info("[TrackerServer] Handshake recieved from " + handshakePacket.getAddress() + ":" + handshakePacket.getPort());
+		LogManager.log.info("[TrackerServer] Handshake received from " + handshakePacket.getAddress() + ":" + handshakePacket.getPort());
 		InetAddress addr = handshakePacket.getAddress();
 		TrackerUDPConnection connection;
 		synchronized(connections) {
@@ -100,7 +100,7 @@ public class TrackersUDPServer extends Thread {
 			connection = new TrackerUDPConnection(handshakePacket.getSocketAddress(), addr);
 			connection.firmwareBuild = handshake.firmwareBuild;
 			if(handshake.firmware == null || handshake.firmware.length() == 0) {
-				// Only old owoTrack doesn't report firmware and have differenet packet IDs with SlimeVR
+				// Only old owoTrack doesn't report firmware and have different packet IDs with SlimeVR
 				connection.protocol = NetworkProtocol.OWO_LEGACY;
 			} else {
 				connection.protocol = NetworkProtocol.SLIMEVR_RAW;
@@ -332,7 +332,7 @@ public class TrackersUDPServer extends Thread {
 					tracker.dataTick();
 				}
 			} else {
-				LogManager.log.debug("[TrackerServer] Wrog ping id " + ping.pingId + " != " + connection.lastPingPacketId);
+				LogManager.log.debug("[TrackerServer] Wrong ping id " + ping.pingId + " != " + connection.lastPingPacketId);
 			}
 			break;
 		case UDPProtocolParser.PACKET_SERIAL:
@@ -366,7 +366,7 @@ public class TrackersUDPServer extends Thread {
 			break;
 		case UDPProtocolParser.PACKET_ERROR:
 			UDPPacket14Error error = (UDPPacket14Error) packet;
-			LogManager.log.severe("[TrackerServer] Error recieved from " + received.getSocketAddress() + ": " + error.errorNumber);
+			LogManager.log.severe("[TrackerServer] Error received from " + received.getSocketAddress() + ": " + error.errorNumber);
 			if(connection == null)
 				break;
 			tracker = connection.sensors.get(error.getSensorId());

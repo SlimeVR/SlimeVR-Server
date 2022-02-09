@@ -166,7 +166,7 @@ public class NamedPipeBridge extends ProtobufBridge<VRTracker> implements Runnab
 					if(bytesAvailable.getValue() >= messageLength) {
 						if(Kernel32.INSTANCE.ReadFile(pipe.pipeHandle, buffArray, messageLength, bytesAvailable, null)) {
 							ProtobufMessage message = ProtobufMessage.parser().parseFrom(buffArray, 4, messageLength - 4);
-							messageRecieved(message);
+							messageReceived(message);
 							readAnything = true;
 						} else {
 							pipe.state = PipeState.ERROR;
