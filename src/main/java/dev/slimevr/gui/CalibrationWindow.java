@@ -32,14 +32,14 @@ public class CalibrationWindow extends JFrame {
 		build();
 	}
 	
-	public void currentCalibrationRecieved(String str) {
+	public void currentCalibrationReceived(String str) {
 		java.awt.EventQueue.invokeLater(() -> {
 			currentCalibration.setText(str);
 			pack();
 		});
 	}
 	
-	public void newCalibrationRecieved(String str) {
+	public void newCalibrationReceived(String str) {
 		java.awt.EventQueue.invokeLater(() -> {
 			calibrateButton.setText("Calibrate");
 			newCalibration.setText(str);
@@ -56,7 +56,7 @@ public class CalibrationWindow extends JFrame {
 				@Override
 				public void mouseClicked(MouseEvent e) {
 					calibrateButton.setText("Calibrating...");
-					((CalibratingTracker) tracker).startCalibration(CalibrationWindow.this::newCalibrationRecieved);
+					((CalibratingTracker) tracker).startCalibration(CalibrationWindow.this::newCalibrationReceived);
 				}
 			});
 		}});
@@ -66,7 +66,7 @@ public class CalibrationWindow extends JFrame {
 			add(new JLabel("Current calibration"));
 			add(currentCalibration = new JTextArea(10, 25));
 			
-			((CalibratingTracker) tracker).requestCalibrationData(CalibrationWindow.this::currentCalibrationRecieved);
+			((CalibratingTracker) tracker).requestCalibrationData(CalibrationWindow.this::currentCalibrationReceived);
 		}});
 		pane.add(new EJBox(BoxLayout.PAGE_AXIS) {{
 			setBorder(new EmptyBorder(i(5)));

@@ -36,7 +36,7 @@ public class WebSocketVRBridge extends WebSocketServer implements Bridge {
 	private final List<? extends ShareableTracker> shareTrackers;
 	private final List<ComputedTracker> internalTrackers;
 	
-	private final HMDTracker internalHMDTracker = new HMDTracker("itnernal://HMD");
+	private final HMDTracker internalHMDTracker = new HMDTracker("internal://HMD");
 	private final AtomicBoolean newHMDData = new AtomicBoolean(false);
 	
 	public WebSocketVRBridge(HMDTracker hmd, List<? extends ShareableTracker> shareTrackers, VRServer server) {
@@ -116,7 +116,7 @@ public class WebSocketVRBridge extends WebSocketServer implements Bridge {
 					parseAction(json, conn);
 					return;
 				case "config": // TODO Ignore it for now, it should only register HMD in our test case with id 0
-					LogManager.log.info("[WebSocket] Config recieved: " + json.toString());
+					LogManager.log.info("[WebSocket] Config received: " + json.toString());
 					return;
 				}
 			}

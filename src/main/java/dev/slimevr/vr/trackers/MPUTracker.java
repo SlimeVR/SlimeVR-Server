@@ -14,7 +14,7 @@ public class MPUTracker extends IMUTracker {
 	
 	public static class ConfigurationData {
 
-	    //acel offsets and correction matrix
+	    //accel offsets and correction matrix
 		float[] A_B = new float[3];
 	    float[][] A_Ainv = new float[3][3];
 	    // mag offsets and correction matrix

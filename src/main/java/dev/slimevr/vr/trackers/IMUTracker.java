@@ -111,7 +111,7 @@ public class IMUTracker implements Tracker, TrackerWithTPS, TrackerWithBattery {
 	@Override
 	public boolean getRotation(Quaternion store) {
 		store.set(rotQuaternion);
-		//correction.mult(store, store); // Correction is not used now to preven accidental errors while debugging other things
+		//correction.mult(store, store); // Correction is not used now to prevent accidental errors while debugging other things
 		store.multLocal(rotAdjust);
 		return true;
 	}
@@ -192,7 +192,7 @@ public class IMUTracker implements Tracker, TrackerWithTPS, TrackerWithBattery {
 	 */
 	protected void calculateLiveMagnetometerCorrection() {
 		// TODO Magic, correct only yaw
-		// TODO Print "jump" length when correcing if it's more than 1 degree
+		// TODO Print "jump" length when correcting if it's more than 1 degree
 	}
 
 	@Override

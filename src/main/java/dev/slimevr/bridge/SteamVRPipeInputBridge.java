@@ -198,7 +198,7 @@ public class SteamVRPipeInputBridge extends Thread implements Bridge {
 				VRTracker tracker = trackers.get(i);
 				VRTracker internal = trackersInternal.get(tracker.getTrackerId());
 				if(internal == null)
-					throw new NullPointerException("Lost internal tracker somehow: " + tracker.getTrackerId()); // Shouln't really happen even, but better to catch it like this
+					throw new NullPointerException("Lost internal tracker somehow: " + tracker.getTrackerId()); // Shouldn't really happen even, but better to catch it like this
 				if(internal.getPosition(vBuffer))
 					tracker.position.set(vBuffer);
 				if(internal.getRotation(qBuffer))
