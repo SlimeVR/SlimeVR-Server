@@ -7,7 +7,7 @@ import javax.swing.event.MouseInputAdapter;
 
 import dev.slimevr.Main;
 import dev.slimevr.VRServer;
-import dev.slimevr.bridge.NamedPipeBridge;
+import dev.slimevr.platform.windows.WindowsNamedPipeBridge;
 import dev.slimevr.gui.swing.ButtonTimer;
 import dev.slimevr.gui.swing.EJBagNoStretch;
 import dev.slimevr.gui.swing.EJBox;
@@ -34,7 +34,6 @@ import java.awt.event.ComponentEvent;
 import java.awt.event.MouseEvent;
 import java.awt.image.BufferedImage;
 import java.io.File;
-import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
@@ -274,8 +273,8 @@ public class VRServerGUI extends JFrame {
 				l.setAlignmentX(0.5f);
 				add(new SkeletonConfigGUI(server, VRServerGUI.this));
 				add(Box.createVerticalStrut(10));
-				if(server.hasBridge(NamedPipeBridge.class)) {
-					NamedPipeBridge br = server.getVRBridge(NamedPipeBridge.class);
+				if(server.hasBridge(WindowsNamedPipeBridge.class)) {
+					WindowsNamedPipeBridge br = server.getVRBridge(WindowsNamedPipeBridge.class);
 					add(l = new JLabel("SteamVR Trackers"));
 					l.setFont(l.getFont().deriveFont(Font.BOLD));
 					l.setAlignmentX(0.5f);

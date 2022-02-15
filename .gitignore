@@ -6,6 +6,9 @@ build
 
 /bin/
 
+# Ignore .idea
+.idea
+
 # Syncthing ignore file
 .stignore
 
