@@ -204,7 +204,7 @@ public class TrackersUDPServer extends Thread {
 					}
 				} catch(SocketTimeoutException e) {
 				} catch(Exception e) {
-					LogManager.log.warning("Error parsing packet " + packetToString(received), e);
+					LogManager.log.warning("[TrackerServer] Error parsing packet " + packetToString(received), e);
 				}
 				if(lastKeepup + 500 < System.currentTimeMillis()) {
 					lastKeepup = System.currentTimeMillis();
@@ -222,7 +222,12 @@ public class TrackersUDPServer extends Thread {
 									if(tracker.getStatus() == TrackerStatus.OK)
 										tracker.setStatus(TrackerStatus.DISCONNECTED);
 								}
+								if(!conn.timedOut) {
+									conn.timedOut = true;
+									LogManager.log.info("[TrackerServer] Tracker timed out: " + conn);
+								}
 							} else {
+								conn.timedOut = false;
 								Iterator<IMUTracker> iterator = conn.sensors.values().iterator();
 								while(iterator.hasNext()) {
 									IMUTracker tracker = iterator.next();

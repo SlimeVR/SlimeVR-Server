@@ -23,6 +23,7 @@ public class TrackerUDPConnection {
 	public long lastPacketNumber = -1;
 	public NetworkProtocol protocol = null;
 	public int firmwareBuild = 0;
+	public boolean timedOut = false;
 	
 	public TrackerUDPConnection(SocketAddress address, InetAddress ipAddress) {
 		this.address = address;
