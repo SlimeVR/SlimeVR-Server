@@ -333,6 +333,8 @@ public class TrackersUDPServer extends Thread {
 			if(connection.lastPingPacketId == ping.pingId) {
 				for(int i = 0; i < connection.sensors.size(); ++i) {
 					tracker = connection.sensors.get(i);
+					if (tracker == null)
+						continue;
 					tracker.ping = (int) (System.currentTimeMillis() - connection.lastPingPacketTime) / 2;
 					tracker.dataTick();
 				}
