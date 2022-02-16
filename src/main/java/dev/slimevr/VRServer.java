@@ -16,6 +16,8 @@ import java.util.concurrent.LinkedBlockingQueue;
 import java.util.function.Consumer;
 
 import dev.slimevr.bridge.Bridge;
+import dev.slimevr.platform.linux.LinuxNamedPipeBridge;
+import dev.slimevr.platform.linux.LinuxSteamVRPipeInputBridge;
 import dev.slimevr.platform.windows.WindowsNamedPipeBridge;
 import dev.slimevr.platform.windows.WindowsSteamVRPipeInputBridge;
 import dev.slimevr.bridge.VMCBridge;
@@ -62,7 +64,7 @@ public class VRServer extends Thread {
 		// Start server for SlimeVR trackers
 		trackersServer = new TrackersUDPServer(6969, "Sensors UDP server", this::registerTracker);
 		
-		// OpenVR bridge currently only supports Windows
+		// OpenVR bridge currently only supports Windows and Linux
 		if(OperatingSystem.getCurrentPlatform() == OperatingSystem.WINDOWS) {
 			/*
 			// Create named pipe bridge for SteamVR driver
@@ -76,6 +78,21 @@ public class VRServer extends Thread {
 			bridges.add(steamVRInput);
 			//*/
 			WindowsNamedPipeBridge driverBridge = new WindowsNamedPipeBridge(hmdTracker, "steamvr", "SteamVR Driver Bridge", "\\\\.\\pipe\\SlimeVRDriver", shareTrackers);
+			tasks.add(() -> driverBridge.startBridge());
+			bridges.add(driverBridge);
+		} else if (OperatingSystem.getCurrentPlatform() == OperatingSystem.LINUX) {
+			/*
+			// Create named pipe bridge for SteamVR driver
+			NamedPipeVRBridge driverBridge = new NamedPipeVRBridge(hmdTracker, shareTrackers, this);
+			tasks.add(() -> driverBridge.startBridge());
+			bridges.add(driverBridge);
+			//*/
+			// Create named pipe bridge for SteamVR input
+			LinuxSteamVRPipeInputBridge steamVRInput = new LinuxSteamVRPipeInputBridge(this);
+			tasks.add(() -> steamVRInput.startBridge());
+			bridges.add(steamVRInput);
+			//*/
+			LinuxNamedPipeBridge driverBridge = new LinuxNamedPipeBridge(hmdTracker, "steamvr", "SteamVR Driver Bridge", "\\\\.\\pipe\\SlimeVRDriver", shareTrackers);
 			tasks.add(() -> driverBridge.startBridge());
 			bridges.add(driverBridge);
 		}
