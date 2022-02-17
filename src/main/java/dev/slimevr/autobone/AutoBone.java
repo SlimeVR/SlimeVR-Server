@@ -61,7 +61,7 @@ public class AutoBone {
 	public float positionErrorFactor = 0.0f;
 	public float positionOffsetErrorFactor = 0.0f;
 	
-	// TODO Needs much more work, probably going to rethink how the errors work to avoid this barely functional workaround @ButterscotchVanilla
+	// TODO Needs much more work, probably going to rethink how the errors work to avoid this barely functional workaround @ButterscotchV
 	// For scaling distances, since smaller sizes will cause smaller distances
 	//private float totalLengthBase = 2f;
 	
@@ -240,35 +240,12 @@ public class AutoBone {
 		return length;
 	}
 	
-	public float getMaxHmdHeight(PoseFrames frames) {
-		float maxHeight = 0f;
-		for(TrackerFrame[] frame : frames) {
-			TrackerFrame hmd = TrackerUtils.findTrackerForBodyPosition(frame, TrackerPosition.HMD);
-			if(hmd != null && hmd.hasData(TrackerFrameData.POSITION) && hmd.position.y > maxHeight) {
-				maxHeight = hmd.position.y;
-			}
-		}
-		return maxHeight;
-	}
-	
-	public void processFrames(PoseFrames frames) {
-		processFrames(frames, -1f);
-	}
-	
 	public void processFrames(PoseFrames frames, Consumer<Epoch> epochCallback) {
 		processFrames(frames, -1f, epochCallback);
 	}
 	
-	public void processFrames(PoseFrames frames, float targetHeight) {
-		processFrames(frames, true, targetHeight);
-	}
-	
 	public void processFrames(PoseFrames frames, float targetHeight, Consumer<Epoch> epochCallback) {
 		processFrames(frames, true, targetHeight, epochCallback);
-	}
-	
-	public float processFrames(PoseFrames frames, boolean calcInitError, float targetHeight) {
-		return processFrames(frames, calcInitError, targetHeight, null);
 	}
 	
 	public float processFrames(PoseFrames frames, boolean calcInitError, float targetHeight, Consumer<Epoch> epochCallback) {
@@ -290,7 +267,7 @@ public class AutoBone {
 				LogManager.log.warning("[AutoBone] Target height loaded from skeleton (Make sure you reset before running!): " + targetHeight);
 			} else {
 				// Otherwise if there is no skeleton available, attempt to get the max HMD height from the recording
-				float hmdHeight = getMaxHmdHeight(frames);
+				float hmdHeight = frames.getMaxHmdHeight();
 				if(hmdHeight <= 0.50f) {
 					LogManager.log.warning("[AutoBone] Max headset height detected (Value seems too low, did you not stand up straight while measuring?): " + hmdHeight);
 				} else {

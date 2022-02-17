@@ -112,8 +112,12 @@ public class PoseRecorder {
 				continue;
 			}
 			
+			// Create a tracker recording
+			PoseFrameTracker poseFrameTracker = new PoseFrameTracker(tracker, numFrames);
+			poseFrame.addTracker(poseFrameTracker);
+
 			// Pair tracker with recording
-			this.trackers.add(Pair.of(tracker, poseFrame.addTracker(tracker, numFrames)));
+			this.trackers.add(Pair.of(tracker, poseFrameTracker));
 		}
 		
 		this.frameCursor = 0;
