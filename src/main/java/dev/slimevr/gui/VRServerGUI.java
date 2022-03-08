@@ -332,6 +332,19 @@ public class VRServerGUI extends JFrame {
 								});
 							}
 						});
+
+						JCheckBox elbowsCb;
+						add(elbowsCb = new JCheckBox("Elbows"), c(1, 3));
+						elbowsCb.setSelected(br.getShareSetting(TrackerRole.LEFT_ELBOW) && br.getShareSetting(TrackerRole.RIGHT_ELBOW));
+						elbowsCb.addActionListener(new ActionListener() {
+							@Override
+							public void actionPerformed(ActionEvent e) {
+								server.queueTask(() -> {
+									br.changeShareSettings(TrackerRole.LEFT_ELBOW, elbowsCb.isSelected());
+									br.changeShareSettings(TrackerRole.RIGHT_ELBOW, elbowsCb.isSelected());
+								});
+							}
+						});
 						
 					}});
 					

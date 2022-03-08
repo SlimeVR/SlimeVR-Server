@@ -56,6 +56,14 @@ public class SkeletonList extends EJBagNoStretch {
 				int n = nodes.size();
 				nodes.add(new NodeStatus(node, n + 1));
 			});
+			newSkeleton.getLeftController().depthFirstTraversal((node) -> {
+				int n = nodes.size();
+				nodes.add(new NodeStatus(node, n + 1));
+			});
+			newSkeleton.getRightController().depthFirstTraversal((node) -> {
+				int n = nodes.size();
+				nodes.add(new NodeStatus(node, n + 1));
+			});
 			
 			
 			gui.refresh();

@@ -11,6 +11,12 @@ public abstract class HumanSkeleton {
 	
 	@ThreadSafe
 	public abstract TransformNode getRootNode();
+
+	@ThreadSafe
+	public abstract TransformNode getLeftController();
+
+	@ThreadSafe
+	public abstract TransformNode getRightController();
 	
 	@ThreadSafe
 	public abstract SkeletonConfig getSkeletonConfig();
