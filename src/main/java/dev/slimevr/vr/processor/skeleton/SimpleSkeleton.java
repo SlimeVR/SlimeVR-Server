@@ -5,7 +5,6 @@ import java.util.Map;
 
 import com.jme3.math.FastMath;
 import com.jme3.math.Quaternion;
-import com.jme3.math.Transform;
 import com.jme3.math.Vector3f;
 
 import dev.slimevr.VRServer;
@@ -59,6 +58,8 @@ public class SimpleSkeleton extends HumanSkeleton implements SkeletonConfigCallb
 	//#region Arms (elbows)
 	protected final TransformNode leftHandNode = new TransformNode("Left-Hand", false);
 	protected final TransformNode rightHandNode = new TransformNode("Right-Hand", false);
+	protected final TransformNode leftWristNode = new TransformNode("Left-Wrist", false);
+	protected final TransformNode rightWristNode = new TransformNode("Right-Wrist", false);
 	protected final TransformNode leftElbowNode = new TransformNode("Left-Elbow", false);
 	protected final TransformNode rightElbowNode = new TransformNode("Right-Elbow", false);
 	protected final TransformNode trackerLeftElbowNode = new TransformNode("Left-Elbow-Tracker", false);
@@ -141,8 +142,10 @@ public class SimpleSkeleton extends HumanSkeleton implements SkeletonConfigCallb
 		//#endregion
 
 		//#region Assemble skeleton arms
-		leftHandNode.attachChild(leftElbowNode);
-		rightHandNode.attachChild(rightElbowNode);
+		leftHandNode.attachChild(leftWristNode);
+		rightHandNode.attachChild(rightWristNode);
+		leftWristNode.attachChild(leftElbowNode);
+		rightWristNode.attachChild(rightElbowNode);
 		//#endregion
 
 		//#region Attach tracker nodes for offsets
@@ -359,10 +362,13 @@ public class SimpleSkeleton extends HumanSkeleton implements SkeletonConfigCallb
 	@Override
 	public void updatePose() {
 		updateLocalTransforms();
+		updateRootTrackers();
+		updateComputedTrackers();
+	}
+	void updateRootTrackers(){
 		hmdNode.update();
 		leftHandNode.update();
 		rightHandNode.update();
-		updateComputedTrackers();
 	}
 	
 	//#region Update the node transforms from the trackers
@@ -483,7 +489,7 @@ public class SimpleSkeleton extends HumanSkeleton implements SkeletonConfigCallb
 		}
 		if(leftElbowTracker != null){
 			if(leftElbowTracker.getRotation(rotBuf1)){
-				leftElbowNode.localTransform.setRotation(rotBuf1);
+				leftWristNode.localTransform.setRotation(rotBuf1);
 				trackerLeftElbowNode.localTransform.setRotation(rotBuf1);
 			}
 		}
@@ -497,7 +503,7 @@ public class SimpleSkeleton extends HumanSkeleton implements SkeletonConfigCallb
 		}
 		if(rightElbowTracker != null){
 			if(rightElbowTracker.getRotation(rotBuf1)){
-				rightElbowNode.localTransform.setRotation(rotBuf1);
+				rightWristNode.localTransform.setRotation(rotBuf1);
 				trackerRightElbowNode.localTransform.setRotation(rotBuf1);
 			}
 		}
@@ -677,8 +683,8 @@ public class SimpleSkeleton extends HumanSkeleton implements SkeletonConfigCallb
 			break;
 
 		case HAND:
-			leftHandNode.localTransform.setTranslation(offset);
-			rightHandNode.localTransform.setTranslation(offset);
+			leftWristNode.localTransform.setTranslation(offset);
+			rightWristNode.localTransform.setTranslation(offset);
 			break;
 		case ELBOW:
 			leftElbowNode.localTransform.setTranslation(offset);
@@ -749,8 +755,8 @@ public class SimpleSkeleton extends HumanSkeleton implements SkeletonConfigCallb
 			updateComputedTrackers();
 			break;
 		case CONTROLLER_DISTANCE:
-			leftHandNode.update();
-			rightHandNode.update();
+			leftWristNode.update();
+			rightWristNode.update();
 			updateComputedTrackers();
 			break;
 		case ELBOW_DISTANCE:
