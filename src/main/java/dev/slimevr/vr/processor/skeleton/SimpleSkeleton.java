@@ -5,6 +5,7 @@ import java.util.Map;
 
 import com.jme3.math.FastMath;
 import com.jme3.math.Quaternion;
+import com.jme3.math.Transform;
 import com.jme3.math.Vector3f;
 
 import dev.slimevr.VRServer;
@@ -767,13 +768,14 @@ public class SimpleSkeleton extends HumanSkeleton implements SkeletonConfigCallb
 	}
 
 	@Override
-	public TransformNode getLeftController() {
-		return leftHandNode;
-	}
+	public TransformNode[] getAllNodes() {
+		List<TransformNode> nodesList = new FastList<>();
 
-	@Override
-	public TransformNode getRightController() {
-		return rightHandNode;
+		hmdNode.depthFirstTraversal((node) -> {nodesList.add(node);});
+		leftHandNode.depthFirstTraversal((node) -> {nodesList.add(node);});
+		rightHandNode.depthFirstTraversal((node) -> {nodesList.add(node);});
+
+		return nodesList.toArray(new TransformNode[0]);
 	}
 	
 	@Override

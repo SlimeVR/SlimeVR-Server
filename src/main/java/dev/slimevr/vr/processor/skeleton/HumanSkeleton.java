@@ -13,10 +13,7 @@ public abstract class HumanSkeleton {
 	public abstract TransformNode getRootNode();
 
 	@ThreadSafe
-	public abstract TransformNode getLeftController();
-
-	@ThreadSafe
-	public abstract TransformNode getRightController();
+	public abstract TransformNode[] getAllNodes();
 	
 	@ThreadSafe
 	public abstract SkeletonConfig getSkeletonConfig();

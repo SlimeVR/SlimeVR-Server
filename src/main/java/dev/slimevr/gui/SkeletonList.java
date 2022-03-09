@@ -52,19 +52,11 @@ public class SkeletonList extends EJBagNoStretch {
 			add(new JLabel("Yaw"), c(5, 0, 2));
 			add(new JLabel("Roll"), c(6, 0, 2));
 			
-			newSkeleton.getRootNode().depthFirstTraversal((node) -> {
-				int n = nodes.size();
-				nodes.add(new NodeStatus(node, n + 1));
-			});
-			newSkeleton.getLeftController().depthFirstTraversal((node) -> {
-				int n = nodes.size();
-				nodes.add(new NodeStatus(node, n + 1));
-			});
-			newSkeleton.getRightController().depthFirstTraversal((node) -> {
-				int n = nodes.size();
-				nodes.add(new NodeStatus(node, n + 1));
-			});
-			
+			TransformNode[] allNodes = newSkeleton.getAllNodes();
+
+			for(int i = 0; i < allNodes.length; i++){
+				nodes.add(new NodeStatus(allNodes[i], i + 1));
+			}
 			
 			gui.refresh();
 		});
