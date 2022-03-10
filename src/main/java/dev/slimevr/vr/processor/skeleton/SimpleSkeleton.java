@@ -860,64 +860,31 @@ public class SimpleSkeleton extends HumanSkeleton implements SkeletonConfigCallb
 		}
 	}
 	
+	Tracker[] getTrackerToReset(){
+		return new Tracker[] {trackerPreUpdate(this.chestTracker), trackerPreUpdate(this.waistTracker), 
+			trackerPreUpdate(this.hipTracker), trackerPreUpdate(this.leftLegTracker),
+			trackerPreUpdate(this.leftAnkleTracker), trackerPreUpdate(this.leftFootTracker),
+			trackerPreUpdate(this.rightLegTracker), trackerPreUpdate(this.rightAnkleTracker),
+			trackerPreUpdate(this.rightFootTracker), trackerPreUpdate(this.rightElbowTracker),
+			trackerPreUpdate(this.leftElbowTracker)};
+	}
+
 	@Override
 	public void resetTrackersFull() {
 		//#region Pass all trackers through trackerPreUpdate
 		Tracker hmdTracker = trackerPreUpdate(this.hmdTracker);
-		
-		Tracker chestTracker = trackerPreUpdate(this.chestTracker);
-		Tracker waistTracker = trackerPreUpdate(this.waistTracker);
-		Tracker hipTracker = trackerPreUpdate(this.hipTracker);
-		
-		Tracker leftLegTracker = trackerPreUpdate(this.leftLegTracker);
-		Tracker leftAnkleTracker = trackerPreUpdate(this.leftAnkleTracker);
-		Tracker leftFootTracker = trackerPreUpdate(this.leftFootTracker);
-		
-		Tracker rightLegTracker = trackerPreUpdate(this.rightLegTracker);
-		Tracker rightAnkleTracker = trackerPreUpdate(this.rightAnkleTracker);
-		Tracker rightFootTracker = trackerPreUpdate(this.rightFootTracker);
-
-		Tracker rightElbowTracker = trackerPreUpdate(this.rightElbowTracker);
-		Tracker leftElbowTracker = trackerPreUpdate(this.leftElbowTracker);
+		Tracker[] trackersToReset = getTrackerToReset();
 		//#endregion
 		
-		// Each tracker uses the tracker before it to adjust itself,
-		// so trackers that don't need adjustments could be used too
+		// Resets all axis of the trackers with the HMD as reference.
 		Quaternion referenceRotation = new Quaternion();
 		hmdTracker.getRotation(referenceRotation);
-
-		chestTracker.resetFull(referenceRotation);
-		chestTracker.getRotation(referenceRotation);
 		
-		waistTracker.resetFull(referenceRotation);
-		waistTracker.getRotation(referenceRotation);
-		
-		hipTracker.resetFull(referenceRotation);
-		hipTracker.getRotation(referenceRotation);
-		
-		leftLegTracker.resetFull(referenceRotation);
-		rightLegTracker.resetFull(referenceRotation);
-		leftLegTracker.getRotation(referenceRotation);
-		
-		leftAnkleTracker.resetFull(referenceRotation);
-		leftAnkleTracker.getRotation(referenceRotation);
-		
-		if(leftFootTracker != null) {
-			leftFootTracker.resetFull(referenceRotation);
+		for (Tracker tracker : trackersToReset) {
+			if(tracker != null){
+				tracker.resetFull(referenceRotation);
+			}
 		}
-		
-		rightLegTracker.getRotation(referenceRotation);
-		
-		rightAnkleTracker.resetFull(referenceRotation);
-		rightAnkleTracker.getRotation(referenceRotation);
-		
-		if(rightFootTracker != null) {
-			rightFootTracker.resetFull(referenceRotation);
-		}
-
-		leftElbowTracker.resetFull(referenceRotation);
-		rightElbowTracker.resetFull(referenceRotation);
-
 	}
 	
 	@Override
@@ -925,59 +892,17 @@ public class SimpleSkeleton extends HumanSkeleton implements SkeletonConfigCallb
 	public void resetTrackersYaw() {
 		//#region Pass all trackers through trackerPreUpdate
 		Tracker hmdTracker = trackerPreUpdate(this.hmdTracker);
-		
-		Tracker chestTracker = trackerPreUpdate(this.chestTracker);
-		Tracker waistTracker = trackerPreUpdate(this.waistTracker);
-		Tracker hipTracker = trackerPreUpdate(this.hipTracker);
-		
-		Tracker leftLegTracker = trackerPreUpdate(this.leftLegTracker);
-		Tracker leftAnkleTracker = trackerPreUpdate(this.leftAnkleTracker);
-		Tracker leftFootTracker = trackerPreUpdate(this.leftFootTracker);
-		
-		Tracker rightLegTracker = trackerPreUpdate(this.rightLegTracker);
-		Tracker rightAnkleTracker = trackerPreUpdate(this.rightAnkleTracker);
-		Tracker rightFootTracker = trackerPreUpdate(this.rightFootTracker);
-
-		Tracker rightElbowTracker = trackerPreUpdate(this.rightElbowTracker);
-		Tracker leftElbowTracker = trackerPreUpdate(this.leftElbowTracker);
+		Tracker[] trackersToReset = getTrackerToReset();
 		//#endregion
 		
-		// Each tracker uses the tracker before it to adjust itself,
-		// so trackers that don't need adjustments could be used too
+		// Resets the yaw of the trackers with the HMD as reference.
 		Quaternion referenceRotation = new Quaternion();
 		hmdTracker.getRotation(referenceRotation);
 		
-		chestTracker.resetYaw(referenceRotation);
-		chestTracker.getRotation(referenceRotation);
-		
-		waistTracker.resetYaw(referenceRotation);
-		waistTracker.getRotation(referenceRotation);
-		
-		hipTracker.resetYaw(referenceRotation);
-		hipTracker.getRotation(referenceRotation);
-		
-		leftLegTracker.resetYaw(referenceRotation);
-		rightLegTracker.resetYaw(referenceRotation);
-		leftLegTracker.getRotation(referenceRotation);
-		
-		leftAnkleTracker.resetYaw(referenceRotation);
-		leftAnkleTracker.getRotation(referenceRotation);
-		
-		if(leftFootTracker != null) {
-			leftFootTracker.resetYaw(referenceRotation);
+		for (Tracker tracker : trackersToReset) {
+			if(tracker != null){
+				tracker.resetYaw(referenceRotation);
+			}
 		}
-		
-		rightLegTracker.getRotation(referenceRotation);
-		
-		rightAnkleTracker.resetYaw(referenceRotation);
-		rightAnkleTracker.getRotation(referenceRotation);
-		
-		if(rightFootTracker != null) {
-			rightFootTracker.resetYaw(referenceRotation);
-		}
-
-		leftElbowTracker.resetYaw(referenceRotation);
-		rightElbowTracker.resetYaw(referenceRotation);
-
 	}
 }

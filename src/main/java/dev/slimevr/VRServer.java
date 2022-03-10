@@ -64,21 +64,18 @@ public class VRServer extends Thread {
 		
 		// OpenVR bridge currently only supports Windows
 		if(OperatingSystem.getCurrentPlatform() == OperatingSystem.WINDOWS) {
-			/*
+			
 			// Create named pipe bridge for SteamVR driver
-			NamedPipeVRBridge driverBridge = new NamedPipeVRBridge(hmdTracker, shareTrackers, this);
+			WindowsNamedPipeBridge driverBridge = new WindowsNamedPipeBridge(hmdTracker, "steamvr", "SteamVR Driver Bridge", "\\\\.\\pipe\\SlimeVRDriver", shareTrackers);
 			tasks.add(() -> driverBridge.startBridge());
 			bridges.add(driverBridge);
-			//*/
+			
 			// Create named pipe bridge for SteamVR input
 			// TODO: how do we want to handle HMD input from the feeder app?
 			WindowsNamedPipeBridge feederBridge = new WindowsNamedPipeBridge(null, "steamvr_feeder", "SteamVR Feeder Bridge", "\\\\.\\pipe\\SlimeVRInput", new FastList<ShareableTracker>());
 			tasks.add(() -> feederBridge.startBridge());
 			bridges.add(feederBridge);
-			//*/
-			WindowsNamedPipeBridge driverBridge = new WindowsNamedPipeBridge(hmdTracker, "steamvr", "SteamVR Driver Bridge", "\\\\.\\pipe\\SlimeVRDriver", shareTrackers);
-			tasks.add(() -> driverBridge.startBridge());
-			bridges.add(driverBridge);
+			
 		}
 		
 		// Create WebSocket server
