@@ -5,7 +5,7 @@ import com.jme3.math.Quaternion;
 
 public enum TrackerMountingRotation {
 	
-	FORWARD(180),
+	FRONT(180),
 	LEFT(90),
 	BACK(0),
 	RIGHT(-90);
