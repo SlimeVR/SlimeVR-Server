@@ -877,8 +877,6 @@ public class SimpleSkeleton extends HumanSkeleton implements SkeletonConfigCallb
 		Tracker rightAnkleTracker = trackerPreUpdate(this.rightAnkleTracker);
 		Tracker rightFootTracker = trackerPreUpdate(this.rightFootTracker);
 
-		Tracker leftHandTracker = trackerPreUpdate(this.leftHandTracker);
-		Tracker rightHandTracker = trackerPreUpdate(this.rightHandTracker);
 		Tracker rightElbowTracker = trackerPreUpdate(this.rightElbowTracker);
 		Tracker leftElbowTracker = trackerPreUpdate(this.leftElbowTracker);
 		//#endregion
@@ -887,9 +885,6 @@ public class SimpleSkeleton extends HumanSkeleton implements SkeletonConfigCallb
 		// so trackers that don't need adjustments could be used too
 		Quaternion referenceRotation = new Quaternion();
 		hmdTracker.getRotation(referenceRotation);
-		
-		leftElbowTracker.resetFull(referenceRotation);
-		rightElbowTracker.resetFull(referenceRotation);
 
 		chestTracker.resetFull(referenceRotation);
 		chestTracker.getRotation(referenceRotation);
@@ -920,6 +915,9 @@ public class SimpleSkeleton extends HumanSkeleton implements SkeletonConfigCallb
 			rightFootTracker.resetFull(referenceRotation);
 		}
 
+		leftElbowTracker.resetFull(referenceRotation);
+		rightElbowTracker.resetFull(referenceRotation);
+
 	}
 	
 	@Override
@@ -940,8 +938,6 @@ public class SimpleSkeleton extends HumanSkeleton implements SkeletonConfigCallb
 		Tracker rightAnkleTracker = trackerPreUpdate(this.rightAnkleTracker);
 		Tracker rightFootTracker = trackerPreUpdate(this.rightFootTracker);
 
-		Tracker leftHandTracker = trackerPreUpdate(this.leftHandTracker);
-		Tracker rightHandTracker = trackerPreUpdate(this.rightHandTracker);
 		Tracker rightElbowTracker = trackerPreUpdate(this.rightElbowTracker);
 		Tracker leftElbowTracker = trackerPreUpdate(this.leftElbowTracker);
 		//#endregion
@@ -950,9 +946,6 @@ public class SimpleSkeleton extends HumanSkeleton implements SkeletonConfigCallb
 		// so trackers that don't need adjustments could be used too
 		Quaternion referenceRotation = new Quaternion();
 		hmdTracker.getRotation(referenceRotation);
-
-		leftElbowTracker.resetYaw(referenceRotation);
-		rightElbowTracker.resetYaw(referenceRotation);
 		
 		chestTracker.resetYaw(referenceRotation);
 		chestTracker.getRotation(referenceRotation);
@@ -982,6 +975,9 @@ public class SimpleSkeleton extends HumanSkeleton implements SkeletonConfigCallb
 		if(rightFootTracker != null) {
 			rightFootTracker.resetYaw(referenceRotation);
 		}
+
+		leftElbowTracker.resetYaw(referenceRotation);
+		rightElbowTracker.resetYaw(referenceRotation);
 
 	}
 }
