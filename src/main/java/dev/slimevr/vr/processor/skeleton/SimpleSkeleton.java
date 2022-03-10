@@ -888,6 +888,9 @@ public class SimpleSkeleton extends HumanSkeleton implements SkeletonConfigCallb
 		Quaternion referenceRotation = new Quaternion();
 		hmdTracker.getRotation(referenceRotation);
 		
+		leftElbowTracker.resetFull(referenceRotation);
+		rightElbowTracker.resetFull(referenceRotation);
+
 		chestTracker.resetFull(referenceRotation);
 		chestTracker.getRotation(referenceRotation);
 		
@@ -917,12 +920,6 @@ public class SimpleSkeleton extends HumanSkeleton implements SkeletonConfigCallb
 			rightFootTracker.resetFull(referenceRotation);
 		}
 
-
-		leftHandTracker.getRotation(referenceRotation);
-		leftElbowTracker.resetFull(referenceRotation);
-
-		rightHandTracker.getRotation(referenceRotation);
-		rightElbowTracker.resetFull(referenceRotation);
 	}
 	
 	@Override
@@ -953,6 +950,9 @@ public class SimpleSkeleton extends HumanSkeleton implements SkeletonConfigCallb
 		// so trackers that don't need adjustments could be used too
 		Quaternion referenceRotation = new Quaternion();
 		hmdTracker.getRotation(referenceRotation);
+
+		leftElbowTracker.resetYaw(referenceRotation);
+		rightElbowTracker.resetYaw(referenceRotation);
 		
 		chestTracker.resetYaw(referenceRotation);
 		chestTracker.getRotation(referenceRotation);
@@ -983,11 +983,5 @@ public class SimpleSkeleton extends HumanSkeleton implements SkeletonConfigCallb
 			rightFootTracker.resetYaw(referenceRotation);
 		}
 
-
-		leftHandTracker.getRotation(referenceRotation);
-		leftElbowTracker.resetYaw(referenceRotation);
-
-		rightHandTracker.getRotation(referenceRotation);
-		rightElbowTracker.resetYaw(referenceRotation);
 	}
 }

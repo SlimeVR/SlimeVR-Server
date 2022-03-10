@@ -17,8 +17,8 @@ public enum SkeletonConfigValue {
 	FOOT_LENGTH("Foot length", "footLength", "Foot length", 0.05f, new SkeletonNodeOffset[]{SkeletonNodeOffset.FOOT}),
 	FOOT_OFFSET("Foot offset", "footOffset", "Foot offset", 0.0f, new SkeletonNodeOffset[]{SkeletonNodeOffset.ANKLE}),
 	SKELETON_OFFSET("Skeleton offset", "skeletonOffset", "Skeleton offset", 0.0f, new SkeletonNodeOffset[]{SkeletonNodeOffset.CHEST_TRACKER, SkeletonNodeOffset.HIP_TRACKER, SkeletonNodeOffset.KNEE_TRACKER, SkeletonNodeOffset.FOOT_TRACKER, SkeletonNodeOffset.ELBOW_TRACKER}),
-	CONTROLLER_DISTANCE("Controller distance", "controllerDistance", "Controller distance", 0.05f, new SkeletonNodeOffset[]{SkeletonNodeOffset.HAND}),
-	ELBOW_DISTANCE("Elbow distance", "elbowDistance", "Elbow distance", 0.4f, new SkeletonNodeOffset[]{SkeletonNodeOffset.ELBOW}),
+	CONTROLLER_DISTANCE("Controller distance", "controllerDistance", "Controller distance", 0.15f, new SkeletonNodeOffset[]{SkeletonNodeOffset.HAND}),
+	ELBOW_DISTANCE("Elbow distance", "elbowDistance", "Elbow distance", 0.3f, new SkeletonNodeOffset[]{SkeletonNodeOffset.ELBOW}),
 	;
 	
 	private static final String CONFIG_PREFIX = "body.";
