@@ -754,7 +754,8 @@ public class SimpleSkeleton extends HumanSkeleton implements SkeletonConfigCallb
 			trackerRightElbowNode.update();
 			updateComputedTrackers();
 			break;
-		case CONTROLLER_DISTANCE:
+		case CONTROLLER_DISTANCE_Z:
+		case CONTROLLER_DISTANCE_Y:
 			leftWristNode.update();
 			rightWristNode.update();
 			updateComputedTrackers();
@@ -851,8 +852,11 @@ public class SimpleSkeleton extends HumanSkeleton implements SkeletonConfigCallb
 		case KNEE_HEIGHT: // Knees are at 50% of the legs by default
 			skeletonConfig.setConfig(SkeletonConfigValue.KNEE_HEIGHT, skeletonConfig.getConfig(SkeletonConfigValue.LEGS_LENGTH) / 2.0f);
 			break;
-		case CONTROLLER_DISTANCE:
-			skeletonConfig.setConfig(SkeletonConfigValue.CONTROLLER_DISTANCE, null);
+		case CONTROLLER_DISTANCE_Z:
+			skeletonConfig.setConfig(SkeletonConfigValue.CONTROLLER_DISTANCE_Z, null);
+			break;
+		case CONTROLLER_DISTANCE_Y:
+			skeletonConfig.setConfig(SkeletonConfigValue.CONTROLLER_DISTANCE_Y, null);
 			break;
 		case ELBOW_DISTANCE:
 			skeletonConfig.setConfig(SkeletonConfigValue.ELBOW_DISTANCE, null);

@@ -253,7 +253,7 @@ public class SkeletonConfig {
 			break;
 
 		case HAND:
-			setNodeOffset(nodeOffset, 0, 0, getConfig(SkeletonConfigValue.CONTROLLER_DISTANCE));
+			setNodeOffset(nodeOffset, 0, getConfig(SkeletonConfigValue.CONTROLLER_DISTANCE_Y), getConfig(SkeletonConfigValue.CONTROLLER_DISTANCE_Z));
 			break;
 		case ELBOW:
 			setNodeOffset(nodeOffset, 0, getConfig(SkeletonConfigValue.ELBOW_DISTANCE), 0);
