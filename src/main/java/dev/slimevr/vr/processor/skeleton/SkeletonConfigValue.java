@@ -19,7 +19,7 @@ public enum SkeletonConfigValue {
 	SKELETON_OFFSET("Skeleton offset", "skeletonOffset", "Skeleton offset", 0.0f, new SkeletonNodeOffset[]{SkeletonNodeOffset.CHEST_TRACKER, SkeletonNodeOffset.HIP_TRACKER, SkeletonNodeOffset.KNEE_TRACKER, SkeletonNodeOffset.FOOT_TRACKER}),
 	CONTROLLER_DISTANCE_Z("Controller distance z", "controllerDistanceZ", "Controller distance z", 0.15f, new SkeletonNodeOffset[]{SkeletonNodeOffset.HAND}),
 	CONTROLLER_DISTANCE_Y("Controller distance y", "controllerDistanceY", "Controller distance y", 0.05f, new SkeletonNodeOffset[]{SkeletonNodeOffset.HAND}),
-	ELBOW_DISTANCE("Elbow distance", "elbowDistance", "Elbow distance", 0.25f, new SkeletonNodeOffset[]{SkeletonNodeOffset.ELBOW}),
+	ELBOW_DISTANCE("Elbow distance", "elbowDistance", "Elbow distance", 0.22f, new SkeletonNodeOffset[]{SkeletonNodeOffset.ELBOW}),
 	;
 	
 	private static final String CONFIG_PREFIX = "body.";
