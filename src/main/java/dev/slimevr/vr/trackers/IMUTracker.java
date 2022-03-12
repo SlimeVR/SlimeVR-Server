@@ -59,7 +59,13 @@ public class IMUTracker implements Tracker, TrackerWithTPS, TrackerWithBattery {
 		// Loading a config is an act of user editing, therefore it shouldn't not be allowed if editing is not allowed
 		if (userEditable()) {
 			if(config.mountingRotation != null) {
-				mounting = TrackerMountingRotation.valueOf(config.mountingRotation);
+				try{
+					mounting = TrackerMountingRotation.valueOf(config.mountingRotation);
+				}
+				catch (Exception e){ // FORWARD was renamed to FRONT
+					mounting = TrackerMountingRotation.FRONT;
+					config.mountingRotation = "FRONT";
+				}
 				if(mounting != null) {
 					rotAdjust.set(mounting.quaternion);
 				} else {

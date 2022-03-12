@@ -54,6 +54,17 @@ public class SimpleSkeleton extends HumanSkeleton implements SkeletonConfigCallb
 	
 	protected float kneeLerpFactor = 0.5f;
 	//#endregion
+
+	//#region Arms (elbows)
+	protected final TransformNode leftHandNode = new TransformNode("Left-Hand", false);
+	protected final TransformNode rightHandNode = new TransformNode("Right-Hand", false);
+	protected final TransformNode leftWristNode = new TransformNode("Left-Wrist", false);
+	protected final TransformNode rightWristNode = new TransformNode("Right-Wrist", false);
+	protected final TransformNode leftElbowNode = new TransformNode("Left-Elbow", false);
+	protected final TransformNode rightElbowNode = new TransformNode("Right-Elbow", false);
+	protected final TransformNode trackerLeftElbowNode = new TransformNode("Left-Elbow-Tracker", false);
+	protected final TransformNode trackerRightElbowNode = new TransformNode("Right-Elbow-Tracker", false);
+	//#endregion
 	
 	//#region Tracker Input
 	protected Tracker hmdTracker;
@@ -68,6 +79,11 @@ public class SimpleSkeleton extends HumanSkeleton implements SkeletonConfigCallb
 	protected Tracker rightLegTracker;
 	protected Tracker rightAnkleTracker;
 	protected Tracker rightFootTracker;
+
+	protected Tracker leftHandTracker;
+	protected Tracker rightHandTracker;
+	protected Tracker leftElbowTracker;
+	protected Tracker rightElbowTracker;
 	//#endregion
 	
 	//#region Tracker Output
@@ -79,6 +95,9 @@ public class SimpleSkeleton extends HumanSkeleton implements SkeletonConfigCallb
 	
 	protected ComputedHumanPoseTracker computedRightKneeTracker;
 	protected ComputedHumanPoseTracker computedRightFootTracker;
+
+	protected ComputedHumanPoseTracker computedLeftElbowTracker;
+	protected ComputedHumanPoseTracker computedRightElbowTracker;
 	//#endregion
 	
 	protected boolean extendedPelvisModel = true;
@@ -122,6 +141,13 @@ public class SimpleSkeleton extends HumanSkeleton implements SkeletonConfigCallb
 		rightAnkleNode.attachChild(rightFootNode);
 		//#endregion
 
+		//#region Assemble skeleton arms
+		leftHandNode.attachChild(leftWristNode);
+		rightHandNode.attachChild(rightWristNode);
+		leftWristNode.attachChild(leftElbowNode);
+		rightWristNode.attachChild(rightElbowNode);
+		//#endregion
+
 		//#region Attach tracker nodes for offsets
 		chestNode.attachChild(trackerChestNode);
 		hipNode.attachChild(trackerWaistNode);
@@ -131,6 +157,9 @@ public class SimpleSkeleton extends HumanSkeleton implements SkeletonConfigCallb
 
 		leftFootNode.attachChild(trackerLeftFootNode);
 		rightFootNode.attachChild(trackerRightFootNode);
+
+		leftElbowNode.attachChild(trackerLeftElbowNode);
+		rightElbowNode.attachChild(trackerRightElbowNode);
 		//#endregion
 		
 		// Set default skeleton configuration (callback automatically sets initial offsets)
@@ -192,6 +221,11 @@ public class SimpleSkeleton extends HumanSkeleton implements SkeletonConfigCallb
 		this.rightLegTracker = TrackerUtils.findTrackerForBodyPositionOrEmpty(trackers, TrackerPosition.RIGHT_LEG, TrackerPosition.RIGHT_ANKLE, null);
 		this.rightAnkleTracker = TrackerUtils.findTrackerForBodyPositionOrEmpty(trackers, TrackerPosition.RIGHT_ANKLE, TrackerPosition.RIGHT_LEG, null);
 		this.rightFootTracker = TrackerUtils.findTrackerForBodyPosition(trackers, TrackerPosition.RIGHT_FOOT);
+
+		this.leftHandTracker = TrackerUtils.findTrackerForBodyPosition(trackers, TrackerPosition.LEFT_CONTROLLER);
+		this.rightHandTracker = TrackerUtils.findTrackerForBodyPosition(trackers, TrackerPosition.RIGHT_CONTROLLER);
+		this.leftElbowTracker = TrackerUtils.findTrackerForBodyPosition(trackers, TrackerPosition.LEFT_ELBOW);
+		this.rightElbowTracker = TrackerUtils.findTrackerForBodyPosition(trackers, TrackerPosition.RIGHT_ELBOW);
 	}
 	
 	public void setTrackersFromList(List<? extends Tracker> trackers) {
@@ -224,6 +258,13 @@ public class SimpleSkeleton extends HumanSkeleton implements SkeletonConfigCallb
 			break;
 		case RIGHT_FOOT:
 			computedRightFootTracker = tracker;
+			break;
+
+		case LEFT_ELBOW:
+			computedLeftElbowTracker = tracker;
+			break;
+		case RIGHT_ELBOW:
+			computedRightElbowTracker = tracker;
 			break;
 		}
 	}
@@ -270,6 +311,15 @@ public class SimpleSkeleton extends HumanSkeleton implements SkeletonConfigCallb
 				computedRightKneeTracker = new ComputedHumanPoseTracker(Tracker.getNextLocalTrackerId(), ComputedHumanPoseTrackerPosition.RIGHT_KNEE, TrackerRole.RIGHT_KNEE);
 				computedRightKneeTracker.setStatus(TrackerStatus.OK);
 			}
+			
+			if(computedLeftElbowTracker == null) {
+				computedLeftElbowTracker = new ComputedHumanPoseTracker(Tracker.getNextLocalTrackerId(), ComputedHumanPoseTrackerPosition.LEFT_ELBOW, TrackerRole.LEFT_ELBOW);
+				computedLeftElbowTracker.setStatus(TrackerStatus.OK);
+			}
+			if(computedRightElbowTracker == null) {
+				computedRightElbowTracker = new ComputedHumanPoseTracker(Tracker.getNextLocalTrackerId(), ComputedHumanPoseTrackerPosition.RIGHT_ELBOW, TrackerRole.RIGHT_ELBOW);
+				computedRightElbowTracker.setStatus(TrackerStatus.OK);
+			}
 		}
 	}
 	//#endregion
@@ -281,16 +331,20 @@ public class SimpleSkeleton extends HumanSkeleton implements SkeletonConfigCallb
 			return computedChestTracker;
 		case WAIST:
 			return computedWaistTracker;
-		
+
 		case LEFT_KNEE:
 			return computedLeftKneeTracker;
 		case LEFT_FOOT:
 			return computedLeftFootTracker;
-		
+
 		case RIGHT_KNEE:
 			return computedRightKneeTracker;
 		case RIGHT_FOOT:
 			return computedRightFootTracker;
+		case LEFT_ELBOW:
+			return computedLeftElbowTracker;
+		case RIGHT_ELBOW:
+			return computedRightElbowTracker;
 		}
 		
 		return null;
@@ -308,8 +362,13 @@ public class SimpleSkeleton extends HumanSkeleton implements SkeletonConfigCallb
 	@Override
 	public void updatePose() {
 		updateLocalTransforms();
-		hmdNode.update();
+		updateRootTrackers();
 		updateComputedTrackers();
+	}
+	void updateRootTrackers(){
+		hmdNode.update();
+		leftHandNode.update();
+		rightHandNode.update();
 	}
 	
 	//#region Update the node transforms from the trackers
@@ -328,6 +387,11 @@ public class SimpleSkeleton extends HumanSkeleton implements SkeletonConfigCallb
 		Tracker rightLegTracker = trackerPreUpdate(this.rightLegTracker);
 		Tracker rightAnkleTracker = trackerPreUpdate(this.rightAnkleTracker);
 		Tracker rightFootTracker = trackerPreUpdate(this.rightFootTracker);
+
+		Tracker leftHandTracker = trackerPreUpdate(this.leftHandTracker);
+		Tracker rightHandTracker = trackerPreUpdate(this.rightHandTracker);
+		Tracker rightElbowTracker = trackerPreUpdate(this.rightElbowTracker);
+		Tracker leftElbowTracker = trackerPreUpdate(this.leftElbowTracker);
 		//#endregion
 		
 		if(hmdTracker != null) {
@@ -414,6 +478,35 @@ public class SimpleSkeleton extends HumanSkeleton implements SkeletonConfigCallb
 			// TODO : Correct the trackerWaistNode without getting cursed results (only correct yaw?)
 			// TODO : Use vectors to add like 50% of waist tracker yaw to waist node to reduce drift and let user take weird poses
 		}
+
+
+		// Left arm
+		if(leftHandTracker != null){
+			if(leftHandTracker.getPosition(posBuf)) 				
+				leftHandNode.localTransform.setTranslation(posBuf);
+			if(leftHandTracker.getRotation(rotBuf1)) 
+				leftHandNode.localTransform.setRotation(rotBuf1);
+		}
+		if(leftElbowTracker != null){
+			if(leftElbowTracker.getRotation(rotBuf1)){
+				leftWristNode.localTransform.setRotation(rotBuf1);
+				trackerLeftElbowNode.localTransform.setRotation(rotBuf1);
+			}
+		}
+
+		// Right arm
+		if(rightHandTracker != null){
+			if(rightHandTracker.getPosition(posBuf)) 				
+				rightHandNode.localTransform.setTranslation(posBuf);
+			if(rightHandTracker.getRotation(rotBuf1)) 
+			rightHandNode.localTransform.setRotation(rotBuf1);
+		}
+		if(rightElbowTracker != null){
+			if(rightElbowTracker.getRotation(rotBuf1)){
+				rightWristNode.localTransform.setRotation(rotBuf1);
+				trackerRightElbowNode.localTransform.setRotation(rotBuf1);
+			}
+		}
 	}
 	//#endregion
 	
@@ -492,6 +585,18 @@ public class SimpleSkeleton extends HumanSkeleton implements SkeletonConfigCallb
 			computedRightFootTracker.position.set(trackerRightFootNode.worldTransform.getTranslation());
 			computedRightFootTracker.rotation.set(trackerRightFootNode.worldTransform.getRotation());
 			computedRightFootTracker.dataTick();
+		}
+
+		if(computedLeftElbowTracker != null) {
+			computedLeftElbowTracker.position.set(trackerLeftElbowNode.worldTransform.getTranslation());
+			computedLeftElbowTracker.rotation.set(trackerLeftElbowNode.worldTransform.getRotation());
+			computedLeftElbowTracker.dataTick();
+		}
+
+		if(computedRightElbowTracker != null) {
+			computedRightElbowTracker.position.set(trackerRightElbowNode.worldTransform.getTranslation());
+			computedRightElbowTracker.rotation.set(trackerRightElbowNode.worldTransform.getRotation());
+			computedRightElbowTracker.dataTick();
 		}
 	}
 	//#endregion
@@ -576,6 +681,15 @@ public class SimpleSkeleton extends HumanSkeleton implements SkeletonConfigCallb
 			trackerLeftFootNode.localTransform.setTranslation(offset);
 			trackerRightFootNode.localTransform.setTranslation(offset);
 			break;
+
+		case HAND:
+			leftWristNode.localTransform.setTranslation(offset);
+			rightWristNode.localTransform.setTranslation(offset);
+			break;
+		case ELBOW:
+			leftElbowNode.localTransform.setTranslation(offset);
+			rightElbowNode.localTransform.setTranslation(offset);
+			break;
 		}
 	}
 	
@@ -636,6 +750,19 @@ public class SimpleSkeleton extends HumanSkeleton implements SkeletonConfigCallb
 			trackerRightKneeNode.update();
 			trackerLeftFootNode.update();
 			trackerRightFootNode.update();
+			trackerLeftElbowNode.update();
+			trackerRightElbowNode.update();
+			updateComputedTrackers();
+			break;
+		case CONTROLLER_DISTANCE_Z:
+		case CONTROLLER_DISTANCE_Y:
+			leftWristNode.update();
+			rightWristNode.update();
+			updateComputedTrackers();
+			break;
+		case ELBOW_DISTANCE:
+			leftElbowNode.update();
+			rightElbowNode.update();
 			updateComputedTrackers();
 			break;
 		}
@@ -645,6 +772,17 @@ public class SimpleSkeleton extends HumanSkeleton implements SkeletonConfigCallb
 	@Override
 	public TransformNode getRootNode() {
 		return hmdNode;
+	}
+
+	@Override
+	public TransformNode[] getAllNodes() {
+		List<TransformNode> nodesList = new FastList<>();
+
+		hmdNode.depthFirstTraversal((node) -> {nodesList.add(node);});
+		leftHandNode.depthFirstTraversal((node) -> {nodesList.add(node);});
+		rightHandNode.depthFirstTraversal((node) -> {nodesList.add(node);});
+
+		return nodesList.toArray(new TransformNode[0]);
 	}
 	
 	@Override
@@ -714,59 +852,42 @@ public class SimpleSkeleton extends HumanSkeleton implements SkeletonConfigCallb
 		case KNEE_HEIGHT: // Knees are at 50% of the legs by default
 			skeletonConfig.setConfig(SkeletonConfigValue.KNEE_HEIGHT, skeletonConfig.getConfig(SkeletonConfigValue.LEGS_LENGTH) / 2.0f);
 			break;
+		case CONTROLLER_DISTANCE_Z:
+			skeletonConfig.setConfig(SkeletonConfigValue.CONTROLLER_DISTANCE_Z, null);
+			break;
+		case CONTROLLER_DISTANCE_Y:
+			skeletonConfig.setConfig(SkeletonConfigValue.CONTROLLER_DISTANCE_Y, null);
+			break;
+		case ELBOW_DISTANCE:
+			skeletonConfig.setConfig(SkeletonConfigValue.ELBOW_DISTANCE, null);
+			break;
 		}
 	}
 	
+	Tracker[] getTrackerToReset(){
+		return new Tracker[] {trackerPreUpdate(this.chestTracker), trackerPreUpdate(this.waistTracker), 
+			trackerPreUpdate(this.hipTracker), trackerPreUpdate(this.leftLegTracker),
+			trackerPreUpdate(this.leftAnkleTracker), trackerPreUpdate(this.leftFootTracker),
+			trackerPreUpdate(this.rightLegTracker), trackerPreUpdate(this.rightAnkleTracker),
+			trackerPreUpdate(this.rightFootTracker), trackerPreUpdate(this.rightElbowTracker),
+			trackerPreUpdate(this.leftElbowTracker)};
+	}
+
 	@Override
 	public void resetTrackersFull() {
 		//#region Pass all trackers through trackerPreUpdate
 		Tracker hmdTracker = trackerPreUpdate(this.hmdTracker);
-		
-		Tracker chestTracker = trackerPreUpdate(this.chestTracker);
-		Tracker waistTracker = trackerPreUpdate(this.waistTracker);
-		Tracker hipTracker = trackerPreUpdate(this.hipTracker);
-		
-		Tracker leftLegTracker = trackerPreUpdate(this.leftLegTracker);
-		Tracker leftAnkleTracker = trackerPreUpdate(this.leftAnkleTracker);
-		Tracker leftFootTracker = trackerPreUpdate(this.leftFootTracker);
-		
-		Tracker rightLegTracker = trackerPreUpdate(this.rightLegTracker);
-		Tracker rightAnkleTracker = trackerPreUpdate(this.rightAnkleTracker);
-		Tracker rightFootTracker = trackerPreUpdate(this.rightFootTracker);
+		Tracker[] trackersToReset = getTrackerToReset();
 		//#endregion
 		
-		// Each tracker uses the tracker before it to adjust itself,
-		// so trackers that don't need adjustments could be used too
+		// Resets all axis of the trackers with the HMD as reference.
 		Quaternion referenceRotation = new Quaternion();
 		hmdTracker.getRotation(referenceRotation);
 		
-		chestTracker.resetFull(referenceRotation);
-		chestTracker.getRotation(referenceRotation);
-		
-		waistTracker.resetFull(referenceRotation);
-		waistTracker.getRotation(referenceRotation);
-		
-		hipTracker.resetFull(referenceRotation);
-		hipTracker.getRotation(referenceRotation);
-		
-		leftLegTracker.resetFull(referenceRotation);
-		rightLegTracker.resetFull(referenceRotation);
-		leftLegTracker.getRotation(referenceRotation);
-		
-		leftAnkleTracker.resetFull(referenceRotation);
-		leftAnkleTracker.getRotation(referenceRotation);
-		
-		if(leftFootTracker != null) {
-			leftFootTracker.resetFull(referenceRotation);
-		}
-		
-		rightLegTracker.getRotation(referenceRotation);
-		
-		rightAnkleTracker.resetFull(referenceRotation);
-		rightAnkleTracker.getRotation(referenceRotation);
-		
-		if(rightFootTracker != null) {
-			rightFootTracker.resetFull(referenceRotation);
+		for (Tracker tracker : trackersToReset) {
+			if(tracker != null){
+				tracker.resetFull(referenceRotation);
+			}
 		}
 	}
 	
@@ -775,52 +896,17 @@ public class SimpleSkeleton extends HumanSkeleton implements SkeletonConfigCallb
 	public void resetTrackersYaw() {
 		//#region Pass all trackers through trackerPreUpdate
 		Tracker hmdTracker = trackerPreUpdate(this.hmdTracker);
-		
-		Tracker chestTracker = trackerPreUpdate(this.chestTracker);
-		Tracker waistTracker = trackerPreUpdate(this.waistTracker);
-		Tracker hipTracker = trackerPreUpdate(this.hipTracker);
-		
-		Tracker leftLegTracker = trackerPreUpdate(this.leftLegTracker);
-		Tracker leftAnkleTracker = trackerPreUpdate(this.leftAnkleTracker);
-		Tracker leftFootTracker = trackerPreUpdate(this.leftFootTracker);
-		
-		Tracker rightLegTracker = trackerPreUpdate(this.rightLegTracker);
-		Tracker rightAnkleTracker = trackerPreUpdate(this.rightAnkleTracker);
-		Tracker rightFootTracker = trackerPreUpdate(this.rightFootTracker);
+		Tracker[] trackersToReset = getTrackerToReset();
 		//#endregion
 		
-		// Each tracker uses the tracker before it to adjust itself,
-		// so trackers that don't need adjustments could be used too
+		// Resets the yaw of the trackers with the HMD as reference.
 		Quaternion referenceRotation = new Quaternion();
 		hmdTracker.getRotation(referenceRotation);
 		
-		chestTracker.resetYaw(referenceRotation);
-		chestTracker.getRotation(referenceRotation);
-		
-		waistTracker.resetYaw(referenceRotation);
-		waistTracker.getRotation(referenceRotation);
-		
-		hipTracker.resetYaw(referenceRotation);
-		hipTracker.getRotation(referenceRotation);
-		
-		leftLegTracker.resetYaw(referenceRotation);
-		rightLegTracker.resetYaw(referenceRotation);
-		leftLegTracker.getRotation(referenceRotation);
-		
-		leftAnkleTracker.resetYaw(referenceRotation);
-		leftAnkleTracker.getRotation(referenceRotation);
-		
-		if(leftFootTracker != null) {
-			leftFootTracker.resetYaw(referenceRotation);
-		}
-		
-		rightLegTracker.getRotation(referenceRotation);
-		
-		rightAnkleTracker.resetYaw(referenceRotation);
-		rightAnkleTracker.getRotation(referenceRotation);
-		
-		if(rightFootTracker != null) {
-			rightFootTracker.resetYaw(referenceRotation);
+		for (Tracker tracker : trackersToReset) {
+			if(tracker != null){
+				tracker.resetYaw(referenceRotation);
+			}
 		}
 	}
 }

@@ -251,6 +251,16 @@ public class SkeletonConfig {
 		case FOOT_TRACKER:
 			setNodeOffset(nodeOffset, 0, 0, -getConfig(SkeletonConfigValue.SKELETON_OFFSET));
 			break;
+
+		case HAND:
+			setNodeOffset(nodeOffset, 0, getConfig(SkeletonConfigValue.CONTROLLER_DISTANCE_Y), getConfig(SkeletonConfigValue.CONTROLLER_DISTANCE_Z));
+			break;
+		case ELBOW:
+			setNodeOffset(nodeOffset, 0, getConfig(SkeletonConfigValue.ELBOW_DISTANCE), 0);
+			break;
+		case ELBOW_TRACKER:
+			setNodeOffset(nodeOffset, 0, 0, 0);
+			break;
 		}
 	}
 	
