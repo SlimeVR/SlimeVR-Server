@@ -99,7 +99,9 @@ public class VRServerGUI extends JFrame {
 		
 		this.poseStreamer = new ServerPoseStreamer(server);
 
-		add(new JScrollPane(pane = new EJBox(PAGE_AXIS), ScrollPaneConstants.VERTICAL_SCROLLBAR_AS_NEEDED, ScrollPaneConstants.HORIZONTAL_SCROLLBAR_AS_NEEDED));
+		JScrollPane scrollPane = (JScrollPane) add(new JScrollPane(pane = new EJBox(PAGE_AXIS), ScrollPaneConstants.VERTICAL_SCROLLBAR_AS_NEEDED, ScrollPaneConstants.HORIZONTAL_SCROLLBAR_AS_NEEDED));
+		scrollPane.getVerticalScrollBar().setUnitIncrement(16);
+
 		GraphicsConfiguration gc = getGraphicsConfiguration();
 		Rectangle screenBounds = gc.getBounds();
 		setMinimumSize(new Dimension(100, 100));
