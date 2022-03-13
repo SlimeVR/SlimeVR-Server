@@ -70,9 +70,12 @@ public class AutoBone {
 	// SD of 0.07, capture 68% within range
 	public float legBodyRatioRange = 0.07f;
 	
-	// Assume these to be approximately half
-	public float kneeLegRatio = 0.5f;
-	public float chestTorsoRatio = 0.5f;
+	// kneeLegRatio seems to be around 0.54 to 0.6 after asking a few people in the SlimeVR discord.
+	public float kneeLegRatio = 0.55f;
+	// kneeLegRatio seems to be around 0.55 to 0.64 after asking a few people in the SlimeVR discord. TODO : Chest should be a bit shorter (0.54?) if user has an additional hip tracker.
+	public float chestTorsoRatio = 0.57f;
+
+	// TODO hip tracker stuff... Hip tracker should be around 3 to 5 centimeters.
 	
 	protected final VRServer server;
 	
