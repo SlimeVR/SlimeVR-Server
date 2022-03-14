@@ -7,19 +7,19 @@ public enum SkeletonConfigValue {
 	
 	HEAD("Head", "headShift", "Head shift", 0.1f, new SkeletonNodeOffset[]{SkeletonNodeOffset.HEAD}),
 	NECK("Neck", "neckLength", "Neck length", 0.1f, new SkeletonNodeOffset[]{SkeletonNodeOffset.NECK}),
-	TORSO("Torso", "torsoLength", "Torso length", 0.6f, new SkeletonNodeOffset[]{SkeletonNodeOffset.WAIST}),
-	CHEST("Chest", "chestDistance", "Chest distance", 0.3f, new SkeletonNodeOffset[]{SkeletonNodeOffset.CHEST, SkeletonNodeOffset.WAIST}),
-	WAIST("Waist", "waistDistance", "Waist distance", 0.05f, new SkeletonNodeOffset[]{SkeletonNodeOffset.WAIST, SkeletonNodeOffset.HIP}),
+	TORSO("Torso", "torsoLength", "Torso length", 0.56f, new SkeletonNodeOffset[]{SkeletonNodeOffset.WAIST}),
+	CHEST("Chest", "chestDistance", "Chest distance", 0.32f, new SkeletonNodeOffset[]{SkeletonNodeOffset.CHEST, SkeletonNodeOffset.WAIST}),
+	WAIST("Waist", "waistDistance", "Waist distance", 0.04f, new SkeletonNodeOffset[]{SkeletonNodeOffset.WAIST, SkeletonNodeOffset.HIP}),
 	HIP_OFFSET("Hip offset", "hipOffset", "Hip offset", 0.0f, new SkeletonNodeOffset[]{SkeletonNodeOffset.HIP_TRACKER}),
-	HIPS_WIDTH("Hips width", "hipsWidth", "Hips width", 0.28f, new SkeletonNodeOffset[]{SkeletonNodeOffset.LEFT_HIP, SkeletonNodeOffset.RIGHT_HIP}),
-	LEGS_LENGTH("Legs length", "legsLength", "Legs length", 0.88f, new SkeletonNodeOffset[]{SkeletonNodeOffset.KNEE}),
-	KNEE_HEIGHT("Knee height", "kneeHeight", "Knee height", 0.44f, new SkeletonNodeOffset[]{SkeletonNodeOffset.KNEE, SkeletonNodeOffset.ANKLE}),
+	HIPS_WIDTH("Hips width", "hipsWidth", "Hips width", 0.26f, new SkeletonNodeOffset[]{SkeletonNodeOffset.LEFT_HIP, SkeletonNodeOffset.RIGHT_HIP}),
+	LEGS_LENGTH("Legs length", "legsLength", "Legs length", 0.92f, new SkeletonNodeOffset[]{SkeletonNodeOffset.KNEE}),
+	KNEE_HEIGHT("Knee height", "kneeHeight", "Knee height", 0.50f, new SkeletonNodeOffset[]{SkeletonNodeOffset.KNEE, SkeletonNodeOffset.ANKLE}),
 	FOOT_LENGTH("Foot length", "footLength", "Foot length", 0.05f, new SkeletonNodeOffset[]{SkeletonNodeOffset.FOOT}),
-	FOOT_OFFSET("Foot offset", "footOffset", "Foot offset", 0.0f, new SkeletonNodeOffset[]{SkeletonNodeOffset.ANKLE}),
+	FOOT_OFFSET("Foot offset", "footOffset", "Foot offset", -0.05f, new SkeletonNodeOffset[]{SkeletonNodeOffset.ANKLE}),
 	SKELETON_OFFSET("Skeleton offset", "skeletonOffset", "Skeleton offset", 0.0f, new SkeletonNodeOffset[]{SkeletonNodeOffset.CHEST_TRACKER, SkeletonNodeOffset.HIP_TRACKER, SkeletonNodeOffset.KNEE_TRACKER, SkeletonNodeOffset.FOOT_TRACKER}),
 	CONTROLLER_DISTANCE_Z("Controller distance z", "controllerDistanceZ", "Controller distance z", 0.15f, new SkeletonNodeOffset[]{SkeletonNodeOffset.HAND}),
 	CONTROLLER_DISTANCE_Y("Controller distance y", "controllerDistanceY", "Controller distance y", 0.05f, new SkeletonNodeOffset[]{SkeletonNodeOffset.HAND}),
-	ELBOW_DISTANCE("Elbow distance", "elbowDistance", "Elbow distance", 0.22f, new SkeletonNodeOffset[]{SkeletonNodeOffset.ELBOW}),
+	ELBOW_DISTANCE("Elbow distance", "elbowDistance", "Elbow distance", 0.24f, new SkeletonNodeOffset[]{SkeletonNodeOffset.ELBOW}),
 	;
 	
 	private static final String CONFIG_PREFIX = "body.";

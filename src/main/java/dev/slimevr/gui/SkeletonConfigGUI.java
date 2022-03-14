@@ -13,7 +13,6 @@ import dev.slimevr.gui.swing.ButtonTimer;
 import dev.slimevr.gui.swing.EJBagNoStretch;
 import dev.slimevr.vr.processor.skeleton.HumanSkeleton;
 import dev.slimevr.vr.processor.skeleton.SkeletonConfigValue;
-import io.eiren.util.StringUtils;
 import io.eiren.util.ann.ThreadSafe;
 
 public class SkeletonConfigGUI extends EJBagNoStretch {
@@ -106,9 +105,9 @@ public class SkeletonConfigGUI extends EJBagNoStretch {
 
 			for (SkeletonConfigValue config : SkeletonConfigValue.values) {
 				add(new JLabel(config.label), c(0, row, 2));
-				add(new AdjButton("+", config, 0.01f), c(1, row, 2));
+				add(new AdjButton("+", config, 0.005f), c(1, row, 2));
 				add(new SkeletonLabel(config), c(2, row, 2));
-				add(new AdjButton("-", config, -0.01f), c(3, row, 2));
+				add(new AdjButton("-", config, -0.005f), c(3, row, 2));
 
 				// Only use a timer on configs that need time to get into position for
 				switch (config) {
@@ -128,11 +127,15 @@ public class SkeletonConfigGUI extends EJBagNoStretch {
 		});
 	}
 
+	String getBoneLengthString(SkeletonConfigValue joint){ // Rounded to the nearest 0.5
+		return ("" + Math.round(server.humanPoseProcessor.getSkeletonConfig(joint) * 200) / 2.0f);
+	}
+
 	@ThreadSafe
 	public void refreshAll() {
 		java.awt.EventQueue.invokeLater(() -> {
 			labels.forEach((joint, label) -> {
-				label.setText(StringUtils.prettyNumber(server.humanPoseProcessor.getSkeletonConfig(joint) * 100, 0));
+				label.setText(getBoneLengthString(joint));
 			});
 		});
 	}
@@ -145,7 +148,7 @@ public class SkeletonConfigGUI extends EJBagNoStretch {
 		server.saveConfig();
 
 		// Update GUI
-		labels.get(joint).setText(StringUtils.prettyNumber((current + diff) * 100, 0));
+		labels.get(joint).setText(getBoneLengthString(joint));
 	}
 
 	private void reset(SkeletonConfigValue joint) {
@@ -155,8 +158,7 @@ public class SkeletonConfigGUI extends EJBagNoStretch {
 		server.saveConfig();
 
 		// Update GUI
-		float current = server.humanPoseProcessor.getSkeletonConfig(joint);
-		labels.get(joint).setText(StringUtils.prettyNumber((current) * 100, 0));
+		labels.get(joint).setText(getBoneLengthString(joint));
 	}
 
 	private void resetAll() {
@@ -172,7 +174,7 @@ public class SkeletonConfigGUI extends EJBagNoStretch {
 	private class SkeletonLabel extends JLabel {
 
 		public SkeletonLabel(SkeletonConfigValue joint) {
-			super(StringUtils.prettyNumber(server.humanPoseProcessor.getSkeletonConfig(joint) * 100, 0));
+			super(getBoneLengthString(joint));
 			labels.put(joint, this);
 		}
 	}

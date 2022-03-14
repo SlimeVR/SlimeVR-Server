@@ -20,9 +20,7 @@ import dev.slimevr.vr.trackers.TrackerUtils;
 import io.eiren.util.collections.FastList;
 
 public class SimpleSkeleton extends HumanSkeleton implements SkeletonConfigCallback {
-	
-	public static final float DEFAULT_FLOOR_OFFSET = 0.05f;
-	
+		
 	//#region Upper body nodes (torso)
 	protected final TransformNode hmdNode = new TransformNode("HMD", false);
 	protected final TransformNode headNode = new TransformNode("Head", false);
@@ -810,14 +808,14 @@ public class SimpleSkeleton extends HumanSkeleton implements SkeletonConfigCallb
 			hmdTracker.getPosition(vec);
 			height = vec.y;
 			if(height > 0.5f) { // Reset only if floor level is right, TODO: read floor level from SteamVR if it's not 0
-				skeletonConfig.setConfig(SkeletonConfigValue.TORSO, ((height) / 2.0f) - skeletonConfig.getConfig(SkeletonConfigValue.NECK));
+				skeletonConfig.setConfig(SkeletonConfigValue.TORSO, ((height) * 0.42f) - skeletonConfig.getConfig(SkeletonConfigValue.NECK));
 			} else// if floor level is incorrect
 			{
 				skeletonConfig.setConfig(SkeletonConfigValue.TORSO, null);
 			}
 			break;
-		case CHEST: //Chest is roughly half of the upper body (shoulders to chest)
-			skeletonConfig.setConfig(SkeletonConfigValue.CHEST, skeletonConfig.getConfig(SkeletonConfigValue.TORSO) / 2.0f);
+		case CHEST: //Chest is 57% of the upper body by default (shoulders to chest)
+			skeletonConfig.setConfig(SkeletonConfigValue.CHEST, skeletonConfig.getConfig(SkeletonConfigValue.TORSO) * 0.57f);
 			break;
 		case WAIST: // waist length is from hips to waist
 			skeletonConfig.setConfig(SkeletonConfigValue.WAIST, null);
@@ -842,15 +840,15 @@ public class SimpleSkeleton extends HumanSkeleton implements SkeletonConfigCallb
 			hmdTracker.getPosition(vec);
 			height = vec.y;
 			if(height > 0.5f) { // Reset only if floor level is right, todo: read floor level from SteamVR if it's not 0
-				skeletonConfig.setConfig(SkeletonConfigValue.LEGS_LENGTH, height - skeletonConfig.getConfig(SkeletonConfigValue.NECK) - skeletonConfig.getConfig(SkeletonConfigValue.TORSO) - DEFAULT_FLOOR_OFFSET);
+				skeletonConfig.setConfig(SkeletonConfigValue.LEGS_LENGTH, height - skeletonConfig.getConfig(SkeletonConfigValue.NECK) - skeletonConfig.getConfig(SkeletonConfigValue.TORSO) - 0.05f);
 			} else //if floor level is incorrect
 			{
 				skeletonConfig.setConfig(SkeletonConfigValue.LEGS_LENGTH, null);
 			}
 			resetSkeletonConfig(SkeletonConfigValue.KNEE_HEIGHT);
 			break;
-		case KNEE_HEIGHT: // Knees are at 50% of the legs by default
-			skeletonConfig.setConfig(SkeletonConfigValue.KNEE_HEIGHT, skeletonConfig.getConfig(SkeletonConfigValue.LEGS_LENGTH) / 2.0f);
+		case KNEE_HEIGHT: // Knees are at 55% of the legs by default
+			skeletonConfig.setConfig(SkeletonConfigValue.KNEE_HEIGHT, skeletonConfig.getConfig(SkeletonConfigValue.LEGS_LENGTH) * 0.55f);
 			break;
 		case CONTROLLER_DISTANCE_Z:
 			skeletonConfig.setConfig(SkeletonConfigValue.CONTROLLER_DISTANCE_Z, null);
