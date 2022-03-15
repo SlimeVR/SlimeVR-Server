@@ -5,6 +5,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 import javax.swing.JButton;
+import javax.swing.JCheckBox;
 import javax.swing.JLabel;
 import javax.swing.event.MouseInputAdapter;
 
@@ -13,6 +14,7 @@ import dev.slimevr.gui.swing.ButtonTimer;
 import dev.slimevr.gui.swing.EJBagNoStretch;
 import dev.slimevr.vr.processor.skeleton.HumanSkeleton;
 import dev.slimevr.vr.processor.skeleton.SkeletonConfigValue;
+import io.eiren.util.StringUtils;
 import io.eiren.util.ann.ThreadSafe;
 
 public class SkeletonConfigGUI extends EJBagNoStretch {
@@ -21,6 +23,7 @@ public class SkeletonConfigGUI extends EJBagNoStretch {
 	private final VRServerGUI gui;
 	private final AutoBoneWindow autoBone;
 	private Map<SkeletonConfigValue, SkeletonLabel> labels = new HashMap<>();
+	private JCheckBox precisionCb;
 
 	public SkeletonConfigGUI(VRServer server, VRServerGUI gui) {
 		super(false, true);
@@ -101,13 +104,17 @@ public class SkeletonConfigGUI extends EJBagNoStretch {
 					}
 				});
 			}}, s(c(4, row, 2), 3, 1));
-			row++;
 
+			add(precisionCb = new JCheckBox("Precision adjust") , c(0, row, 2));
+			precisionCb.setSelected(false);
+
+			row++;
+			
 			for (SkeletonConfigValue config : SkeletonConfigValue.values) {
 				add(new JLabel(config.label), c(0, row, 2));
-				add(new AdjButton("+", config, 0.005f), c(1, row, 2));
+				add(new AdjButton("+", config, false), c(1, row, 2));
 				add(new SkeletonLabel(config), c(2, row, 2));
-				add(new AdjButton("-", config, -0.005f), c(3, row, 2));
+				add(new AdjButton("-", config, true), c(3, row, 2));
 
 				// Only use a timer on configs that need time to get into position for
 				switch (config) {
@@ -127,8 +134,15 @@ public class SkeletonConfigGUI extends EJBagNoStretch {
 		});
 	}
 
+	float proportionsIncrement(Boolean negative){
+		float increment = 0.01f;
+		if(negative) increment = -0.01f;
+		if(precisionCb.isSelected()) increment /= 2f;
+		return increment;
+	}
+
 	String getBoneLengthString(SkeletonConfigValue joint){ // Rounded to the nearest 0.5
-		return ("" + Math.round(server.humanPoseProcessor.getSkeletonConfig(joint) * 200) / 2.0f);
+		return (StringUtils.prettyNumber(Math.round(server.humanPoseProcessor.getSkeletonConfig(joint) * 200) / 2.0f, 1) );
 	}
 
 	@ThreadSafe
@@ -181,12 +195,12 @@ public class SkeletonConfigGUI extends EJBagNoStretch {
 
 	private class AdjButton extends JButton {
 
-		public AdjButton(String text, SkeletonConfigValue joint, float diff) {
+		public AdjButton(String text, SkeletonConfigValue joint, boolean negative) {
 			super(text);
 			addMouseListener(new MouseInputAdapter() {
 				@Override
 				public void mouseClicked(MouseEvent e) {
-					change(joint, diff);
+					change(joint, proportionsIncrement(negative));
 				}
 			});
 		}
