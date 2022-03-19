@@ -21,7 +21,7 @@ public class IMUTracker implements Tracker, TrackerWithTPS, TrackerWithBattery {
 	public final Quaternion rotAdjust = new Quaternion();
 	protected final Quaternion correction = new Quaternion();
 	protected LinkedList<Quaternion> previousRots = new LinkedList<Quaternion>();
-	public float movementFilterFrameCount = 0;
+	public float movementFilterTickCount = 0;
 	public float movementFilterAmount = 1f;
 	protected TrackerMountingRotation mounting = null;
 	protected TrackerStatus status = TrackerStatus.OK;
@@ -82,26 +82,25 @@ public class IMUTracker implements Tracker, TrackerWithTPS, TrackerWithBattery {
 				rotAdjust.loadIdentity();
 			}
 			bodyPosition = TrackerPosition.getByDesignation(config.designation);
-			setFilter(vrserver.config.getString("filters.type"), vrserver.config.getFloat("filters.amount", 0.5f), vrserver.config.getInt("filters.frameCount", 3));
+			setFilter(vrserver.config.getString("filters.type"), vrserver.config.getFloat("filters.amount", 0.5f), vrserver.config.getInt("filters.tickCount", 3));
 		}
 	}
-	public void setFilter(String type, float amount, int frames){
+	public void setFilter(String type, float amount, int ticks){
 		amount = FastMath.clamp(amount, 0, 1f);
-		frames = (int) FastMath.clamp(frames, 0, 80);
+		ticks = (int) FastMath.clamp(ticks, 0, 80);
 		switch(type){
 			case "INTERPOLATION":
-				movementFilterAmount = 1f - (amount / 2f);
-				movementFilterFrameCount = frames;
-
+				movementFilterAmount = 1f - (amount / 1.75f);
+				movementFilterTickCount = ticks;
 				break;
 			case "EXTRAPOLATION":
-				movementFilterAmount = amount + 1;
-				movementFilterFrameCount = frames;
+				movementFilterAmount = 1f + (amount * 1.1f);
+				movementFilterTickCount = ticks;
 				break;
 			case "NONE":
 			default:
 				movementFilterAmount = 1f;
-				movementFilterFrameCount = 0;
+				movementFilterTickCount = 0;
 				break;
 		}
 	}
@@ -128,9 +127,9 @@ public class IMUTracker implements Tracker, TrackerWithTPS, TrackerWithBattery {
 				calculateLiveMagnetometerCorrection();
 			}
 		}
-		if(movementFilterFrameCount != 0){
+		if(movementFilterTickCount != 0){
 			previousRots.addLast(new Quaternion(rotQuaternion));
-			if(previousRots.size() > movementFilterFrameCount){
+			if(previousRots.size() > movementFilterTickCount){
 				previousRots.removeFirst();
 			}
 		}
@@ -149,7 +148,7 @@ public class IMUTracker implements Tracker, TrackerWithTPS, TrackerWithBattery {
 	
 	@Override
 	public boolean getRotation(Quaternion store) {
-		if(movementFilterFrameCount > 0 && movementFilterAmount != 1){
+		if(movementFilterTickCount > 0 && movementFilterAmount != 1){
 			store.set(getFilteredRotation(rotQuaternion, previousRots.getFirst(), movementFilterAmount));
 		}
 		else{
@@ -162,6 +161,7 @@ public class IMUTracker implements Tracker, TrackerWithTPS, TrackerWithBattery {
 
 	// Original code: https://answers.unity.com/questions/168779/extrapolating-quaternion-rotation.html
 	Quaternion getFilteredRotation(Quaternion latestRot, Quaternion oldRot, float factor){
+		// TODO use more points of reference if possible
 		Quaternion rot = oldRot.mult(latestRot.inverse());
 		while (factor > 1){
 			oldRot = latestRot;

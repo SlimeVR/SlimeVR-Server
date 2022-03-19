@@ -27,9 +27,9 @@ public class TrackersFiltersGUI extends EJBagNoStretch {
 	private final VRServer server;
 	String filterType;
 	float filterAmount;
-	int filterFrames;
+	int filterTicks;
 	private List<Tracker> allTrackers = new FastList<>();
-	private JLabel amountLabel, framesLabel;
+	private JLabel amountLabel, ticksLabel;
 	
 	public TrackersFiltersGUI(VRServer server, VRServerGUI gui) {
 
@@ -78,11 +78,11 @@ public class TrackersFiltersGUI extends EJBagNoStretch {
 		add(new AdjButton("-", 0, true), c(3, row, 2));
 		row++;
 
-		filterFrames = (int) FastMath.clamp(server.config.getInt("filters.frameCount", 3), 0, 80);
+		filterTicks = (int) FastMath.clamp(server.config.getInt("filters.tickCount", 3), 0, 80);
 
-		add(new JLabel("Frames"), c(0, row, 2));
+		add(new JLabel("Ticks"), c(0, row, 2));
 		add(new AdjButton("+", 1, false), c(1, row, 2));
-		add(framesLabel = new JLabel(StringUtils.prettyNumber(filterFrames)), c(2, row, 2));
+		add(ticksLabel = new JLabel(StringUtils.prettyNumber(filterTicks)), c(2, row, 2));
 		add(new AdjButton("-", 1, true), c(3, row, 2));
 
 	}
@@ -96,7 +96,7 @@ public class TrackersFiltersGUI extends EJBagNoStretch {
 			realTracker = ((ReferenceAdjustedTracker<? extends Tracker>) t).getTracker();
 			if(realTracker instanceof IMUTracker){
 				imu = (IMUTracker)realTracker;
-				imu.setFilter(filterType, filterAmount, filterFrames);
+				imu.setFilter(filterType, filterAmount, filterTicks);
 			}
 		}
 	}
@@ -114,13 +114,13 @@ public class TrackersFiltersGUI extends EJBagNoStretch {
 		}
 		else if(cat == 1){
 			if(neg){
-				filterFrames = (int) FastMath.clamp(filterFrames - 1, 0, 80);
+				filterTicks = (int) FastMath.clamp(filterTicks - 1, 0, 80);
 			}
 			else{
-				filterFrames = (int) FastMath.clamp(filterFrames + 1, 0, 80);
+				filterTicks = (int) FastMath.clamp(filterTicks + 1, 0, 80);
 			}
-			framesLabel.setText((StringUtils.prettyNumber(filterFrames)));
-			server.config.setProperty("filters.frameCount", filterFrames);
+			ticksLabel.setText((StringUtils.prettyNumber(filterTicks)));
+			server.config.setProperty("filters.tickCount", filterTicks);
 		}
 		
 		server.saveConfig();
