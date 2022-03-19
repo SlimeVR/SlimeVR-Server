@@ -27,6 +27,7 @@ import com.jme3.math.FastMath;
 import com.jme3.math.Quaternion;
 import com.jme3.math.Vector3f;
 
+import dev.slimevr.Main;
 import dev.slimevr.NetworkProtocol;
 import dev.slimevr.vr.trackers.IMUTracker;
 import dev.slimevr.vr.trackers.ReferenceAdjustedTracker;
@@ -146,7 +147,7 @@ public class TrackersUDPServer extends Thread {
 		LogManager.log.info("[TrackerServer] Sensor " + trackerId + " for " + connection.name + " status: " + sensorStatus);
 		IMUTracker imu = connection.sensors.get(trackerId);
 		if(imu == null) {
-			imu = new IMUTracker(Tracker.getNextLocalTrackerId(), connection.name + "/" + trackerId, connection.descriptiveName + "/" + trackerId, this);
+			imu = new IMUTracker(Tracker.getNextLocalTrackerId(), connection.name + "/" + trackerId, connection.descriptiveName + "/" + trackerId, this, Main.vrServer);
 			connection.sensors.put(trackerId, imu);
 			ReferenceAdjustedTracker<IMUTracker> adjustedTracker = new ReferenceAdjustedTracker<>(imu);
 			trackersConsumer.accept(adjustedTracker);

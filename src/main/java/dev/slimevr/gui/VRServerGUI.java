@@ -47,6 +47,7 @@ public class VRServerGUI extends JFrame {
 	
 	public final VRServer server;
 	private final TrackersList trackersList;
+	private final TrackersFiltersGUI trackersFiltersGUI;
 	private final SkeletonList skeletonList;
 	private JButton resetButton;
 	private EJBox pane;
@@ -95,6 +96,7 @@ public class VRServerGUI extends JFrame {
 		getContentPane().setLayout(new BoxLayout(getContentPane(), PAGE_AXIS));
 		
 		this.trackersList = new TrackersList(server, this);
+		trackersFiltersGUI = new TrackersFiltersGUI(server, this);
 		this.skeletonList = new SkeletonList(server, this);
 		
 		this.poseStreamer = new ServerPoseStreamer(server);
@@ -353,6 +355,14 @@ public class VRServerGUI extends JFrame {
 					
 				add(Box.createVerticalStrut(10));
 				}
+
+				add(l = new JLabel("Trackers filtering"));
+				l.setFont(l.getFont().deriveFont(Font.BOLD));
+				l.setAlignmentX(0.5f);
+				add(trackersFiltersGUI);
+
+				add(Box.createVerticalStrut(10));
+
 				add(new JLabel("Skeleton data"));
 				add(skeletonList);
 				add(Box.createVerticalGlue());

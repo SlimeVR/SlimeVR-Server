@@ -5,6 +5,7 @@ import com.jme3.math.FastMath;
 import com.jme3.math.Quaternion;
 import com.jme3.math.Vector3f;
 
+import dev.slimevr.VRServer;
 import dev.slimevr.vr.trackers.udp.TrackersUDPServer;
 import io.eiren.util.BufferedTimer;
 
@@ -20,6 +21,8 @@ public class IMUTracker implements Tracker, TrackerWithTPS, TrackerWithBattery {
 	public final Quaternion rotAdjust = new Quaternion();
 	protected final Quaternion correction = new Quaternion();
 	protected LinkedList<Quaternion> previousRots = new LinkedList<Quaternion>();
+	public float movementFilterFrameCount = 0;
+	public float movementFilterAmount = 1f;
 	protected TrackerMountingRotation mounting = null;
 	protected TrackerStatus status = TrackerStatus.OK;
 	protected final int trackerId;
@@ -27,6 +30,7 @@ public class IMUTracker implements Tracker, TrackerWithTPS, TrackerWithBattery {
 	protected final String name;
 	protected final String descriptiveName;
 	protected final TrackersUDPServer server;
+	protected final VRServer vrserver;
 	protected float confidence = 0;
 	protected float batteryVoltage = 0;
 	protected float batteryLevel = 0;
@@ -43,11 +47,12 @@ public class IMUTracker implements Tracker, TrackerWithTPS, TrackerWithBattery {
 	
 	public TrackerPosition bodyPosition = null;
 	
-	public IMUTracker(int trackerId, String name, String descriptiveName, TrackersUDPServer server) {
+	public IMUTracker(int trackerId, String name, String descriptiveName, TrackersUDPServer server, VRServer vrserver) {
 		this.name = name;
 		this.server = server;
 		this.trackerId = trackerId;
 		this.descriptiveName = descriptiveName;
+		this.vrserver = vrserver;
 	}
 	
 	@Override
@@ -77,9 +82,29 @@ public class IMUTracker implements Tracker, TrackerWithTPS, TrackerWithBattery {
 				rotAdjust.loadIdentity();
 			}
 			bodyPosition = TrackerPosition.getByDesignation(config.designation);
+			setFilter(vrserver.config.getString("filters.type"), vrserver.config.getFloat("filters.amount", 0.5f), vrserver.config.getInt("filters.frameCount", 3));
 		}
 	}
-	
+	public void setFilter(String type, float amount, int frames){
+		amount = FastMath.clamp(amount, 0, 1f);
+		frames = (int) FastMath.clamp(frames, 0, 80);
+		switch(type){
+			case "INTERPOLATION":
+				movementFilterAmount = 1f - (amount / 2f);
+				movementFilterFrameCount = frames;
+
+				break;
+			case "EXTRAPOLATION":
+				movementFilterAmount = amount + 1;
+				movementFilterFrameCount = frames;
+				break;
+			case "NONE":
+			default:
+				movementFilterAmount = 1f;
+				movementFilterFrameCount = 0;
+				break;
+		}
+	}
 	public TrackerMountingRotation getMountingRotation() {
 		return mounting;
 	}
@@ -103,9 +128,11 @@ public class IMUTracker implements Tracker, TrackerWithTPS, TrackerWithBattery {
 				calculateLiveMagnetometerCorrection();
 			}
 		}
-		previousRots.addLast(new Quaternion(rotQuaternion));
-		if(previousRots.size() > 2){ // How far back in will getFilteredRotation go to get oldRot
-			previousRots.removeFirst();
+		if(movementFilterFrameCount != 0){
+			previousRots.addLast(new Quaternion(rotQuaternion));
+			if(previousRots.size() > movementFilterFrameCount){
+				previousRots.removeFirst();
+			}
 		}
 	}
 	
@@ -122,8 +149,12 @@ public class IMUTracker implements Tracker, TrackerWithTPS, TrackerWithBattery {
 	
 	@Override
 	public boolean getRotation(Quaternion store) {
-		float filterFactor = 1f; // 1 = do nothing, >0<1 = interpolation, >1 = exterpolation
-		store.set(getFilteredRotation(rotQuaternion, previousRots.getFirst(), filterFactor));
+		if(movementFilterFrameCount > 0 && movementFilterAmount != 1){
+			store.set(getFilteredRotation(rotQuaternion, previousRots.getFirst(), movementFilterAmount));
+		}
+		else{
+			store.set(rotQuaternion);
+		}
 		//correction.mult(store, store); // Correction is not used now to prevent accidental errors while debugging other things
 		store.multLocal(rotAdjust);
 		return true;
