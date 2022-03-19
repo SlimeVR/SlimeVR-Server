@@ -1,5 +1,6 @@
 package dev.slimevr.vr.trackers;
 
+import java.util.LinkedList;
 import com.jme3.math.FastMath;
 import com.jme3.math.Quaternion;
 import com.jme3.math.Vector3f;
@@ -18,6 +19,7 @@ public class IMUTracker implements Tracker, TrackerWithTPS, TrackerWithBattery {
 	public final Quaternion rotMagQuaternion = new Quaternion();
 	public final Quaternion rotAdjust = new Quaternion();
 	protected final Quaternion correction = new Quaternion();
+	protected LinkedList<Quaternion> previousRots = new LinkedList<Quaternion>();
 	protected TrackerMountingRotation mounting = null;
 	protected TrackerStatus status = TrackerStatus.OK;
 	protected final int trackerId;
@@ -101,6 +103,10 @@ public class IMUTracker implements Tracker, TrackerWithTPS, TrackerWithBattery {
 				calculateLiveMagnetometerCorrection();
 			}
 		}
+		previousRots.addLast(new Quaternion(rotQuaternion));
+		if(previousRots.size() > 2){ // How far back in will getFilteredRotation go to get oldRot
+			previousRots.removeFirst();
+		}
 	}
 	
 	@Override
@@ -116,10 +122,24 @@ public class IMUTracker implements Tracker, TrackerWithTPS, TrackerWithBattery {
 	
 	@Override
 	public boolean getRotation(Quaternion store) {
-		store.set(rotQuaternion);
+		float filterFactor = 1f; // 1 = do nothing, >0<1 = interpolation, >1 = exterpolation
+		store.set(getFilteredRotation(rotQuaternion, previousRots.getFirst(), filterFactor));
 		//correction.mult(store, store); // Correction is not used now to prevent accidental errors while debugging other things
 		store.multLocal(rotAdjust);
 		return true;
+	}
+
+	// Original code: https://answers.unity.com/questions/168779/extrapolating-quaternion-rotation.html
+	Quaternion getFilteredRotation(Quaternion latestRot, Quaternion oldRot, float factor){
+		Quaternion rot = oldRot.mult(latestRot.inverse());
+		while (factor > 1){
+			oldRot = latestRot;
+			latestRot = latestRot.mult(rot);
+			factor -= 1;
+		}
+		Quaternion filteredQuaternion = new Quaternion();
+		filteredQuaternion = filteredQuaternion.slerp(oldRot, latestRot, factor);
+		return filteredQuaternion;
 	}
 	
 	public void getCorrection(Quaternion store) {
