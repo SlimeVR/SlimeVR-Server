@@ -21,8 +21,8 @@ public enum TrackerPosition {
 	RIGHT_CONTROLLER("body:right_controller", TrackerRole.RIGHT_CONTROLLER),
 	LEFT_FOREARM("body:left_forearm", TrackerRole.LEFT_ELBOW),
 	RIGHT_FOREARM("body:right_forearm", TrackerRole.RIGHT_ELBOW),
-	LEFT_UPPERARM("body:left_upperarm", null),
-	RIGHT_UPPERARM("body:right_upperarm", null),
+	LEFT_UPPER_ARM("body:left_upperarm", null),
+	RIGHT_UPPER_ARM("body:right_upperarm", null),
 	;
 	
 	public final String designation;
