@@ -88,20 +88,26 @@ public class IMUTracker implements Tracker, TrackerWithTPS, TrackerWithBattery {
 	public void setFilter(String type, float amount, int ticks){
 		amount = FastMath.clamp(amount, 0, 1f);
 		ticks = (int) FastMath.clamp(ticks, 0, 80);
-		switch(type){
-			case "INTERPOLATION":
-				movementFilterAmount = 1f - (amount / 1.75f);
-				movementFilterTickCount = ticks;
-				break;
-			case "EXTRAPOLATION":
-				movementFilterAmount = 1f + (amount * 1.1f);
-				movementFilterTickCount = ticks;
-				break;
-			case "NONE":
-			default:
-				movementFilterAmount = 1f;
-				movementFilterTickCount = 0;
-				break;
+		if(type != null){
+			switch(type){
+				case "INTERPOLATION":
+					movementFilterAmount = 1f - (amount / 1.75f);
+					movementFilterTickCount = ticks;
+					break;
+				case "EXTRAPOLATION":
+					movementFilterAmount = 1f + (amount * 1.1f);
+					movementFilterTickCount = ticks;
+					break;
+				case "NONE":
+				default:
+					movementFilterAmount = 1f;
+					movementFilterTickCount = 0;
+					break;
+			}
+		}
+		else{
+			movementFilterAmount = 1f;
+			movementFilterTickCount = 0;
 		}
 	}
 	public TrackerMountingRotation getMountingRotation() {
