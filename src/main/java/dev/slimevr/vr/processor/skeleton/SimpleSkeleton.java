@@ -80,8 +80,10 @@ public class SimpleSkeleton extends HumanSkeleton implements SkeletonConfigCallb
 
 	protected Tracker leftHandTracker;
 	protected Tracker rightHandTracker;
-	protected Tracker leftElbowTracker;
-	protected Tracker rightElbowTracker;
+	protected Tracker leftForearmTracker;
+	protected Tracker rightForearmTracker;
+	protected Tracker leftUpperarmTracker;
+	protected Tracker rightUpperarmTracker;
 	//#endregion
 	
 	//#region Tracker Output
@@ -222,8 +224,10 @@ public class SimpleSkeleton extends HumanSkeleton implements SkeletonConfigCallb
 
 		this.leftHandTracker = TrackerUtils.findTrackerForBodyPosition(trackers, TrackerPosition.LEFT_CONTROLLER);
 		this.rightHandTracker = TrackerUtils.findTrackerForBodyPosition(trackers, TrackerPosition.RIGHT_CONTROLLER);
-		this.leftElbowTracker = TrackerUtils.findTrackerForBodyPosition(trackers, TrackerPosition.LEFT_ELBOW);
-		this.rightElbowTracker = TrackerUtils.findTrackerForBodyPosition(trackers, TrackerPosition.RIGHT_ELBOW);
+		this.leftForearmTracker = TrackerUtils.findTrackerForBodyPosition(trackers, TrackerPosition.LEFT_FOREARM);
+		this.rightForearmTracker = TrackerUtils.findTrackerForBodyPosition(trackers, TrackerPosition.RIGHT_FOREARM);
+		this.leftUpperarmTracker = TrackerUtils.findTrackerForBodyPosition(trackers, TrackerPosition.LEFT_UPPERARM);
+		this.rightUpperarmTracker = TrackerUtils.findTrackerForBodyPosition(trackers, TrackerPosition.RIGHT_UPPERARM);
 	}
 	
 	public void setTrackersFromList(List<? extends Tracker> trackers) {
@@ -388,8 +392,10 @@ public class SimpleSkeleton extends HumanSkeleton implements SkeletonConfigCallb
 
 		Tracker leftHandTracker = trackerPreUpdate(this.leftHandTracker);
 		Tracker rightHandTracker = trackerPreUpdate(this.rightHandTracker);
-		Tracker rightElbowTracker = trackerPreUpdate(this.rightElbowTracker);
-		Tracker leftElbowTracker = trackerPreUpdate(this.leftElbowTracker);
+		Tracker rightForearmTracker = trackerPreUpdate(this.rightForearmTracker);
+		Tracker leftForearmTracker = trackerPreUpdate(this.leftForearmTracker);
+		Tracker rightUpperarmTracker = trackerPreUpdate(this.rightUpperarmTracker);
+		Tracker leftUpperarmTracker = trackerPreUpdate(this.leftUpperarmTracker);
 		//#endregion
 		
 		if(hmdTracker != null) {
@@ -485,10 +491,19 @@ public class SimpleSkeleton extends HumanSkeleton implements SkeletonConfigCallb
 			if(leftHandTracker.getRotation(rotBuf1)) 
 				leftHandNode.localTransform.setRotation(rotBuf1);
 		}
-		if(leftElbowTracker != null){
-			if(leftElbowTracker.getRotation(rotBuf1)){
+		if(leftForearmTracker != null){
+			if(leftForearmTracker.getRotation(rotBuf1)){
 				leftWristNode.localTransform.setRotation(rotBuf1);
-				trackerLeftElbowNode.localTransform.setRotation(rotBuf1);
+				if(leftUpperarmTracker != null){
+					if(leftUpperarmTracker.getRotation(rotBuf2)){
+						leftElbowNode.localTransform.setRotation(rotBuf2);
+						trackerLeftElbowNode.localTransform.setRotation(rotBuf2);
+					}
+				}
+				else{
+					leftElbowNode.localTransform.setRotation(rotBuf1);
+					trackerLeftElbowNode.localTransform.setRotation(rotBuf1);
+				}
 			}
 		}
 
@@ -497,12 +512,21 @@ public class SimpleSkeleton extends HumanSkeleton implements SkeletonConfigCallb
 			if(rightHandTracker.getPosition(posBuf)) 				
 				rightHandNode.localTransform.setTranslation(posBuf);
 			if(rightHandTracker.getRotation(rotBuf1)) 
-			rightHandNode.localTransform.setRotation(rotBuf1);
+				rightHandNode.localTransform.setRotation(rotBuf1);
 		}
-		if(rightElbowTracker != null){
-			if(rightElbowTracker.getRotation(rotBuf1)){
+		if(rightForearmTracker != null){
+			if(rightForearmTracker.getRotation(rotBuf1)){
 				rightWristNode.localTransform.setRotation(rotBuf1);
-				trackerRightElbowNode.localTransform.setRotation(rotBuf1);
+				if(rightUpperarmTracker != null){
+					if(rightUpperarmTracker.getRotation(rotBuf2)){
+						rightElbowNode.localTransform.setRotation(rotBuf2);
+						trackerRightElbowNode.localTransform.setRotation(rotBuf2);
+					}
+				}
+				else{
+					rightElbowNode.localTransform.setRotation(rotBuf1);
+					trackerRightElbowNode.localTransform.setRotation(rotBuf1);
+				}			
 			}
 		}
 	}
@@ -867,8 +891,9 @@ public class SimpleSkeleton extends HumanSkeleton implements SkeletonConfigCallb
 			trackerPreUpdate(this.hipTracker), trackerPreUpdate(this.leftLegTracker),
 			trackerPreUpdate(this.leftAnkleTracker), trackerPreUpdate(this.leftFootTracker),
 			trackerPreUpdate(this.rightLegTracker), trackerPreUpdate(this.rightAnkleTracker),
-			trackerPreUpdate(this.rightFootTracker), trackerPreUpdate(this.rightElbowTracker),
-			trackerPreUpdate(this.leftElbowTracker)};
+			trackerPreUpdate(this.rightFootTracker), trackerPreUpdate(this.rightForearmTracker),
+			trackerPreUpdate(this.leftForearmTracker), trackerPreUpdate(this.rightUpperarmTracker),
+			trackerPreUpdate(this.leftUpperarmTracker)};
 	}
 
 	@Override
