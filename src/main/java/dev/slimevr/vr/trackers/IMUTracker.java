@@ -82,7 +82,7 @@ public class IMUTracker implements Tracker, TrackerWithTPS, TrackerWithBattery {
 				rotAdjust.loadIdentity();
 			}
 			bodyPosition = TrackerPosition.getByDesignation(config.designation);
-			setFilter(vrserver.config.getString("filters.type"), vrserver.config.getFloat("filters.amount", 0.5f), vrserver.config.getInt("filters.tickCount", 3));
+			setFilter(vrserver.config.getString("filters.type"), vrserver.config.getFloat("filters.amount", 0.3f), vrserver.config.getInt("filters.tickCount", 2));
 		}
 	}
 	public void setFilter(String type, float amount, int ticks){
