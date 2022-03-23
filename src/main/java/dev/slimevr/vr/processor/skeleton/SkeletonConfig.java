@@ -258,6 +258,9 @@ public class SkeletonConfig {
 		case ELBOW:
 			setNodeOffset(nodeOffset, 0, getConfig(SkeletonConfigValue.ELBOW_DISTANCE), 0);
 			break;
+		case UPPER_ARM:
+			setNodeOffset(nodeOffset, 0, getConfig(SkeletonConfigValue.UPPER_ARM_DISTANCE), 0);
+			break;
 		case ELBOW_TRACKER:
 			setNodeOffset(nodeOffset, 0, 0, 0);
 			break;

@@ -18,6 +18,7 @@ public enum SkeletonNodeOffset {
 	FOOT_TRACKER,
 	HAND,
 	ELBOW,
+	UPPER_ARM,
 	ELBOW_TRACKER
 	;
 	
