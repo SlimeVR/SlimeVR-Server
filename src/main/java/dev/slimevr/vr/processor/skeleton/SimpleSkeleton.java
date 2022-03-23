@@ -437,7 +437,7 @@ public class SimpleSkeleton extends HumanSkeleton implements SkeletonConfigCallb
 			}
 		}
 		else if(hmdTracker != null){ // If no spine tracker, allign spine yaw with HMD
-			rotBuf1 = rotBuf1.fromAngles(0, rotBuf1.toAngles(null)[1], 0);
+			rotBuf1 = rotBuf1.fromAngles(0, rotBuf1.getYaw(), 0);
 			neckNode.localTransform.setRotation(rotBuf1);
 			chestNode.localTransform.setRotation(rotBuf1);
 			trackerChestNode.localTransform.setRotation(rotBuf1);
