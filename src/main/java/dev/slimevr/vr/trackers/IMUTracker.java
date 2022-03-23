@@ -154,8 +154,8 @@ public class IMUTracker implements Tracker, TrackerWithTPS, TrackerWithBattery {
 	
 	@Override
 	public boolean getRotation(Quaternion store) {
-		if(movementFilterTickCount > 0 && movementFilterAmount != 1){
-			store.set(getFilteredRotation(rotQuaternion, previousRots.getFirst(), movementFilterAmount));
+		if(movementFilterTickCount > 0 && movementFilterAmount != 1 && previousRots.getFirst() != null){
+			store.set(new Quaternion().slerp(rotQuaternion, previousRots.getFirst(), movementFilterAmount));
 		}
 		else{
 			store.set(rotQuaternion);
@@ -163,20 +163,6 @@ public class IMUTracker implements Tracker, TrackerWithTPS, TrackerWithBattery {
 		//correction.mult(store, store); // Correction is not used now to prevent accidental errors while debugging other things
 		store.multLocal(rotAdjust);
 		return true;
-	}
-
-	// Original code: https://answers.unity.com/questions/168779/extrapolating-quaternion-rotation.html
-	Quaternion getFilteredRotation(Quaternion latestRot, Quaternion oldRot, float factor){
-		// TODO use more points of reference if possible
-		Quaternion rot = oldRot.mult(latestRot.inverse());
-		while (factor > 1){
-			oldRot = latestRot;
-			latestRot = latestRot.mult(rot);
-			factor -= 1;
-		}
-		Quaternion filteredQuaternion = new Quaternion();
-		filteredQuaternion = filteredQuaternion.slerp(oldRot, latestRot, factor);
-		return filteredQuaternion;
 	}
 	
 	public void getCorrection(Quaternion store) {
