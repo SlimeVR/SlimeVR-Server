@@ -31,9 +31,17 @@ public class PoseFrameTracker implements Tracker, Iterable<TrackerFrame> {
 	public PoseFrameTracker(String name, int initialCapacity) {
 		this(name, new FastList<TrackerFrame>(initialCapacity));
 	}
+
+	public PoseFrameTracker(Tracker parent, int initialCapacity) {
+		this(parent.getName(), initialCapacity);
+	}
 	
 	public PoseFrameTracker(String name) {
 		this(name, 5);
+	}
+
+	public PoseFrameTracker(Tracker parent) {
+		this(parent.getName());
 	}
 	
 	private int limitCursor() {
