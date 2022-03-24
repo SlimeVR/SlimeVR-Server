@@ -117,6 +117,8 @@ public class SimpleSkeleton extends HumanSkeleton implements SkeletonConfigCallb
 	protected final Vector3f ankleVector = new Vector3f();
 	
 	protected final Quaternion kneeRotation = new Quaternion();
+
+	private boolean hasSpineTracker;
 	//#endregion
 	
 	//#region Constructors
@@ -402,6 +404,8 @@ public class SimpleSkeleton extends HumanSkeleton implements SkeletonConfigCallb
 		Tracker leftUpperArmTracker = trackerPreUpdate(this.leftUpperArmTracker);
 		//#endregion
 		
+		hasSpineTracker = chestTracker.hasRotation() || waistTracker.hasRotation() || hipTracker.hasRotation();
+
 		if(hmdTracker != null) {
 			if(hmdTracker.getPosition(posBuf)) {
 				hmdNode.localTransform.setTranslation(posBuf);
@@ -417,17 +421,29 @@ public class SimpleSkeleton extends HumanSkeleton implements SkeletonConfigCallb
 			headNode.localTransform.setRotation(Quaternion.IDENTITY);
 		}
 		
-		if(chestTracker.getRotation(rotBuf1)) {
-			neckNode.localTransform.setRotation(rotBuf1);
+		// Spine
+		if(hasSpineTracker){
+			if(chestTracker.getRotation(rotBuf1)) {
+				neckNode.localTransform.setRotation(rotBuf1);
+			}
+			if(waistTracker.getRotation(rotBuf1)) {
+				chestNode.localTransform.setRotation(rotBuf1);
+				trackerChestNode.localTransform.setRotation(rotBuf1);
+			}
+			if(hipTracker.getRotation(rotBuf1)) {
+				waistNode.localTransform.setRotation(rotBuf1);
+				hipNode.localTransform.setRotation(rotBuf1);
+				trackerWaistNode.localTransform.setRotation(rotBuf1);
+			}
 		}
-		if(waistTracker.getRotation(rotBuf1)) {
+		else if(hmdTracker != null){ // If no spine tracker, allign spine yaw with HMD
+			rotBuf1 = rotBuf1.fromAngles(0, rotBuf1.getYaw(), 0);
+			neckNode.localTransform.setRotation(rotBuf1);
 			chestNode.localTransform.setRotation(rotBuf1);
 			trackerChestNode.localTransform.setRotation(rotBuf1);
-		}
-		if(hipTracker.getRotation(rotBuf1)) {
 			waistNode.localTransform.setRotation(rotBuf1);
-			trackerWaistNode.localTransform.setRotation(rotBuf1);
 			hipNode.localTransform.setRotation(rotBuf1);
+			trackerWaistNode.localTransform.setRotation(rotBuf1);
 		}
 		
 		// Left Leg
