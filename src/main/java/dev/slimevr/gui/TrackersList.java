@@ -6,12 +6,16 @@ import java.awt.GridBagConstraints;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.util.List;
+import java.awt.event.MouseEvent;
+
 
 import javax.swing.BorderFactory;
 import javax.swing.Box;
 import javax.swing.BoxLayout;
+import javax.swing.JButton;
 import javax.swing.JComboBox;
 import javax.swing.JLabel;
+import javax.swing.event.MouseInputAdapter;
 
 import com.jme3.math.FastMath;
 import com.jme3.math.Quaternion;
@@ -26,7 +30,6 @@ import dev.slimevr.vr.trackers.IMUTracker;
 import dev.slimevr.vr.trackers.ReferenceAdjustedTracker;
 import dev.slimevr.vr.trackers.Tracker;
 import dev.slimevr.vr.trackers.TrackerConfig;
-import dev.slimevr.vr.trackers.TrackerMountingRotation;
 import dev.slimevr.vr.trackers.TrackerPosition;
 import dev.slimevr.vr.trackers.TrackerWithBattery;
 import dev.slimevr.vr.trackers.TrackerWithTPS;
@@ -199,25 +202,17 @@ public class TrackersList extends EJBoxNoStretch {
 				});
 				if(realTracker instanceof IMUTracker) {
 					IMUTracker imu = (IMUTracker) realTracker;
-					TrackerMountingRotation tr = imu.getMountingRotation();
-					JComboBox<String> mountSelect;
-					add(mountSelect = new JComboBox<>(), s(c(2, row, 2, GridBagConstraints.FIRST_LINE_START), 2, 1));
-					for(TrackerMountingRotation p : TrackerMountingRotation.values) {
-						mountSelect.addItem(p.name());
-					}
-					if(tr != null) {
-						mountSelect.setSelectedItem(tr.name());
-					} else {
-						mountSelect.setSelectedItem(TrackerMountingRotation.BACK.name());
-					}
-					mountSelect.addActionListener(new ActionListener() {
-						@Override
-						public void actionPerformed(ActionEvent e) {
-							TrackerMountingRotation tr = TrackerMountingRotation.valueOf(String.valueOf(mountSelect.getSelectedItem()));
-							imu.setMountingRotation(tr);
-							server.trackerUpdated(t);
-						}
-					});
+					add(new JButton("Calibrate") {{
+						addMouseListener(new MouseInputAdapter() {
+							@Override
+							public void mouseClicked(MouseEvent e) {
+								MountingCalibrationWindow calibrationWindow;
+								calibrationWindow = new MountingCalibrationWindow(server, imu, t);
+								calibrationWindow.setVisible(true);
+								calibrationWindow.toFront();
+							}
+						});
+					}}, s(c(2, row, 0), 3, 1));
 				}
 				row++;
 			}

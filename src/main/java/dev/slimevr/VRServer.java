@@ -17,10 +17,10 @@ import java.util.function.Consumer;
 
 import dev.slimevr.bridge.Bridge;
 import dev.slimevr.platform.windows.WindowsNamedPipeBridge;
-import dev.slimevr.platform.windows.WindowsSteamVRPipeInputBridge;
 import dev.slimevr.bridge.VMCBridge;
 import dev.slimevr.bridge.WebSocketVRBridge;
 import dev.slimevr.util.ann.VRServerThread;
+import dev.slimevr.vr.MountingCalibration;
 import dev.slimevr.vr.processor.HumanPoseProcessor;
 import dev.slimevr.vr.processor.skeleton.HumanSkeleton;
 import dev.slimevr.vr.trackers.HMDTracker;
@@ -50,7 +50,8 @@ public class VRServer extends Thread {
 	private final List<Runnable> onTick = new FastList<>();
 	private final List<? extends ShareableTracker> shareTrackers;
 	private String m_configPath;	
-
+	public final MountingCalibration mountingCalibration;
+	
 	public VRServer() {
 		this("vrconfig.yml");
 	}
@@ -64,6 +65,8 @@ public class VRServer extends Thread {
 		// TODO Multiple processors
 		humanPoseProcessor = new HumanPoseProcessor(this, hmdTracker);
 		shareTrackers = humanPoseProcessor.getComputedTrackers();
+
+		mountingCalibration = new MountingCalibration(this);
 		
 		// Start server for SlimeVR trackers
 		trackersServer = new TrackersUDPServer(6969, "Sensors UDP server", this::registerTracker);
@@ -272,6 +275,13 @@ public class VRServer extends Thread {
 		queueTask(() -> {
 			humanPoseProcessor.resetTrackers();
 		});
+	}
+	public void captureIdleOrientations() {
+		mountingCalibration.GetIdle();
+	}
+	
+	public void calibrateTrackers() {
+		mountingCalibration.CalibrateTrackers();
 	}
 	
 	public void resetTrackersYaw() {

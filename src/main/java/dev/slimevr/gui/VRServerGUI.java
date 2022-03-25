@@ -50,6 +50,7 @@ public class VRServerGUI extends JFrame {
 	private final TrackersFiltersGUI trackersFiltersGUI;
 	private final SkeletonList skeletonList;
 	private JButton resetButton;
+	private JButton calibrateButton;
 	private EJBox pane;
 
 	private static File bvhSaveDir = new File("BVH Recordings");
@@ -175,6 +176,15 @@ public class VRServerGUI extends JFrame {
 			setBorder(new EmptyBorder(i(5)));
 			
 			add(Box.createHorizontalGlue());
+			add(calibrateButton = new JButton("CALIBRATE") {{
+				addMouseListener(new MouseInputAdapter() {
+					@Override
+					public void mouseClicked(MouseEvent e) {
+						calibrateMounting();
+					}
+				});
+			}});
+			add(Box.createHorizontalStrut(21));
 			add(resetButton = new JButton("RESET") {{
 				addMouseListener(new MouseInputAdapter() {
 					@Override
@@ -183,7 +193,7 @@ public class VRServerGUI extends JFrame {
 					}
 				});
 			}});
-			add(Box.createHorizontalStrut(10));
+			add(Box.createHorizontalStrut(9));
 			add(new JButton("Fast Reset") {{
 				addMouseListener(new MouseInputAdapter() {
 					@Override
@@ -441,5 +451,11 @@ public class VRServerGUI extends JFrame {
 	@AWTThread
 	private void reset() {
 		ButtonTimer.runTimer(resetButton, 3, "RESET", server::resetTrackers);
+	}
+	
+	@AWTThread
+	private void calibrateMounting() {
+		server.captureIdleOrientations();
+		ButtonTimer.runTimer(calibrateButton, 5, "CALIBRATE", server::calibrateTrackers);
 	}
 }
