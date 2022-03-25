@@ -5,11 +5,11 @@ import java.util.Iterator;
 import com.jme3.math.Quaternion;
 import com.jme3.math.Vector3f;
 
+import dev.slimevr.vr.trackers.Tracker;
+import dev.slimevr.vr.trackers.TrackerConfig;
+import dev.slimevr.vr.trackers.TrackerPosition;
+import dev.slimevr.vr.trackers.TrackerStatus;
 import io.eiren.util.collections.FastList;
-import io.eiren.vr.trackers.Tracker;
-import io.eiren.vr.trackers.TrackerConfig;
-import io.eiren.vr.trackers.TrackerPosition;
-import io.eiren.vr.trackers.TrackerStatus;
 
 public class PoseFrameTracker implements Tracker, Iterable<TrackerFrame> {
 	
@@ -31,9 +31,17 @@ public class PoseFrameTracker implements Tracker, Iterable<TrackerFrame> {
 	public PoseFrameTracker(String name, int initialCapacity) {
 		this(name, new FastList<TrackerFrame>(initialCapacity));
 	}
+
+	public PoseFrameTracker(Tracker parent, int initialCapacity) {
+		this(parent.getName(), initialCapacity);
+	}
 	
 	public PoseFrameTracker(String name) {
 		this(name, 5);
+	}
+
+	public PoseFrameTracker(Tracker parent) {
+		this(parent.getName());
 	}
 	
 	private int limitCursor() {
@@ -137,7 +145,7 @@ public class PoseFrameTracker implements Tracker, Iterable<TrackerFrame> {
 			return true;
 		}
 		
-		store.set(0, 0, 0, 1);
+		store.set(Quaternion.IDENTITY);
 		return false;
 	}
 	
@@ -149,7 +157,7 @@ public class PoseFrameTracker implements Tracker, Iterable<TrackerFrame> {
 			return true;
 		}
 		
-		store.set(0, 0, 0);
+		store.set(Vector3f.ZERO);
 		return false;
 	}
 	
@@ -175,7 +183,7 @@ public class PoseFrameTracker implements Tracker, Iterable<TrackerFrame> {
 	
 	@Override
 	public float getConfidenceLevel() {
-		return 0;
+		return 1f;
 	}
 	
 	@Override
@@ -231,7 +239,7 @@ public class PoseFrameTracker implements Tracker, Iterable<TrackerFrame> {
 	public Iterator<TrackerFrame> iterator() {
 		return frames.iterator();
 	}
-
+	
 	@Override
 	public int getTrackerId() {
 		return this.trackerId;

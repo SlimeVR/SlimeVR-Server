@@ -1,6 +1,6 @@
 package io.eiren.gui.jfx;
 
-import io.eiren.vr.Main;
+import dev.slimevr.Main;
 import javafx.application.Application;
 import javafx.scene.Scene;
 import javafx.scene.control.Label;
@@ -40,7 +40,7 @@ public class SlimeVRGUIJFX extends Application {
 		Tab trackersTab = new Tab("Trackers", tl = new TrackersList(Main.vrServer, this));
 		tabs.getTabs().add(trackersTab);
 		
-		Tab proportionsTab = new Tab("Body proportions", new SkeletonConfig(Main.vrServer, this));
+		Tab proportionsTab = new Tab("Body proportions", new SkeletonConfigGUI(Main.vrServer, this));
 		tabs.getTabs().add(proportionsTab);
 
 		stage.setScene(new Scene(vBox));

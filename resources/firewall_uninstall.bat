@@ -1,5 +1,5 @@
 @echo off
-echo Installing firewall rules...
+echo Uninstalling firewall rules...
 
 rem Discovery defauly port
 netsh advfirewall firewall delete rule name="SlimeVR UDP 35903 incoming"

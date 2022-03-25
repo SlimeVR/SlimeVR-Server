@@ -2,9 +2,9 @@ package dev.slimevr.gui.views;
 
 import dev.slimevr.gui.items.skeleton.SkeletonDataItemView;
 import dev.slimevr.gui.items.skeleton.SkeletonDataTitleItemView;
-import io.eiren.vr.VRServer;
-import io.eiren.vr.processor.HumanSkeleton;
-import io.eiren.vr.processor.TransformNode;
+import dev.slimevr.VRServer;
+import dev.slimevr.vr.processor.skeleton.HumanSkeleton;
+import dev.slimevr.vr.processor.TransformNode;
 import javafx.application.Platform;
 import javafx.fxml.Initializable;
 import javafx.scene.layout.VBox;

@@ -17,15 +17,15 @@ import org.json.JSONObject;
 import com.jme3.math.Quaternion;
 import com.jme3.math.Vector3f;
 
+import dev.slimevr.Main;
+import dev.slimevr.VRServer;
+import dev.slimevr.vr.trackers.ComputedTracker;
+import dev.slimevr.vr.trackers.HMDTracker;
+import dev.slimevr.vr.trackers.ShareableTracker;
+import dev.slimevr.vr.trackers.Tracker;
+import dev.slimevr.vr.trackers.TrackerStatus;
 import io.eiren.util.collections.FastList;
 import io.eiren.util.logging.LogManager;
-import io.eiren.vr.Main;
-import io.eiren.vr.VRServer;
-import io.eiren.vr.trackers.ComputedTracker;
-import io.eiren.vr.trackers.HMDTracker;
-import io.eiren.vr.trackers.ShareableTracker;
-import io.eiren.vr.trackers.Tracker;
-import io.eiren.vr.trackers.TrackerStatus;
 
 public class WebSocketVRBridge extends WebSocketServer implements Bridge {
 	
@@ -36,7 +36,7 @@ public class WebSocketVRBridge extends WebSocketServer implements Bridge {
 	private final List<? extends ShareableTracker> shareTrackers;
 	private final List<ComputedTracker> internalTrackers;
 	
-	private final HMDTracker internalHMDTracker = new HMDTracker("itnernal://HMD");
+	private final HMDTracker internalHMDTracker = new HMDTracker("internal://HMD");
 	private final AtomicBoolean newHMDData = new AtomicBoolean(false);
 	
 	public WebSocketVRBridge(HMDTracker hmd, List<? extends ShareableTracker> shareTrackers, VRServer server) {
@@ -116,7 +116,7 @@ public class WebSocketVRBridge extends WebSocketServer implements Bridge {
 					parseAction(json, conn);
 					return;
 				case "config": // TODO Ignore it for now, it should only register HMD in our test case with id 0
-					LogManager.log.info("[WebSocket] Config recieved: " + json.toString());
+					LogManager.log.info("[WebSocket] Config received: " + json.toString());
 					return;
 				}
 			}

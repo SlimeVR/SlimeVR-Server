@@ -9,14 +9,14 @@ import com.jme3.math.FastMath;
 import com.jme3.math.Quaternion;
 import com.jme3.math.Vector3f;
 
+import dev.slimevr.VRServer;
 import dev.slimevr.gui.swing.EJBagNoStretch;
+import dev.slimevr.util.ann.VRServerThread;
+import dev.slimevr.vr.processor.TransformNode;
+import dev.slimevr.vr.processor.skeleton.HumanSkeleton;
 import io.eiren.util.StringUtils;
 import io.eiren.util.ann.ThreadSafe;
-import io.eiren.util.ann.VRServerThread;
 import io.eiren.util.collections.FastList;
-import io.eiren.vr.VRServer;
-import io.eiren.vr.processor.HumanSkeleton;
-import io.eiren.vr.processor.TransformNode;
 
 public class SkeletonList extends EJBagNoStretch {
 	
@@ -52,11 +52,11 @@ public class SkeletonList extends EJBagNoStretch {
 			add(new JLabel("Yaw"), c(5, 0, 2));
 			add(new JLabel("Roll"), c(6, 0, 2));
 			
-			newSkeleton.getRootNode().depthFirstTraversal((node) -> {
-				int n = nodes.size();
-				nodes.add(new NodeStatus(node, n + 1));
-			});
-			
+			TransformNode[] allNodes = newSkeleton.getAllNodes();
+
+			for(int i = 0; i < allNodes.length; i++){
+				nodes.add(new NodeStatus(allNodes[i], i + 1));
+			}
 			
 			gui.refresh();
 		});

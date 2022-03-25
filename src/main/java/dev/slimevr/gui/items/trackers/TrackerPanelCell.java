@@ -5,8 +5,8 @@ import com.jme3.math.Quaternion;
 import com.jme3.math.Vector3f;
 import io.eiren.util.StringUtils;
 import io.eiren.util.logging.LogManager;
-import io.eiren.vr.VRServer;
-import io.eiren.vr.trackers.*;
+import dev.slimevr.VRServer;
+import dev.slimevr.vr.trackers.*;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.fxml.FXML;
@@ -251,10 +251,13 @@ public class TrackerPanelCell extends AnchorPane {
 				StringUtils.prettyNumber(angles[1] * FastMath.RAD_TO_DEG, 0),
 				StringUtils.prettyNumber(angles[2] * FastMath.RAD_TO_DEG, 0)));
 		status.setText(t.getStatus().toString().toLowerCase());
+		// TODO: Use missing textures if they can't be found? This used to give a ton of errors per second, flooding the logs @ButterscotchV
 		if (status.getText().equals("ok")) {
-			connectIMG.setImage(new Image(getClass().getResource("/activeSlime.png").toString(), true));
+			URL imageUrl = getClass().getResource("/active_slime.png");
+			connectIMG.setImage(imageUrl != null ? new Image(imageUrl.toString(), true) : null);
 		} else {
-			connectIMG.setImage(new Image(getClass().getResource("/deactivedSlime.png").toString(), true));
+			URL imageUrl = getClass().getResource("/deactived_slime.png");
+			connectIMG.setImage(imageUrl != null ? new Image(imageUrl.toString(), true) : null);
 		}
 
 		if (realTracker instanceof TrackerWithTPS) {
