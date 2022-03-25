@@ -13,10 +13,10 @@ import dev.slimevr.gui.tabs.SettingsTabController;
 import io.eiren.util.StringUtils;
 import io.eiren.util.ann.ThreadSafe;
 import io.eiren.util.collections.FastList;
-import io.eiren.vr.Main;
-import io.eiren.vr.VRServer;
-import io.eiren.vr.processor.HumanSkeleton;
-import io.eiren.vr.processor.TransformNode;
+import dev.slimevr.Main;
+import dev.slimevr.VRServer;
+import dev.slimevr.vr.processor.skeleton.HumanSkeleton;
+import dev.slimevr.vr.processor.TransformNode;
 
 import javafx.application.Platform;
 import javafx.event.ActionEvent;

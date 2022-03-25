@@ -8,7 +8,8 @@ import dev.slimevr.poserecorder.PoseRecorder;
 import io.eiren.util.StringUtils;
 import io.eiren.util.collections.FastList;
 import io.eiren.util.logging.LogManager;
-import io.eiren.vr.VRServer;
+import dev.slimevr.VRServer;
+import dev.slimevr.vr.processor.skeleton.SkeletonConfigValue;
 import javafx.application.Platform;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
@@ -253,12 +254,13 @@ public class AutoConfigurationDialog  extends AnchorPane implements Initializabl
 						LogManager.log.info("[AutoBone] Done processing!");
 						disableViewJavaFxThread(applyButton,false);
 						//#region Stats/Values
-						Float neckLength = autoBone.getConfig("Neck");
-						Float chestDistance = autoBone.getConfig("Chest");
-						Float torsoLength = autoBone.getConfig("Torso");
-						Float hipWidth = autoBone.getConfig("Hips width");
-						Float legsLength = autoBone.getConfig("Legs length");
-						Float kneeHeight = autoBone.getConfig("Knee height");
+						// TODO: Is this up to date with the main branch? Double check this @ButterscotchV
+						Float neckLength = autoBone.getConfig(SkeletonConfigValue.NECK);
+						Float chestDistance = autoBone.getConfig(SkeletonConfigValue.CHEST);
+						Float torsoLength = autoBone.getConfig(SkeletonConfigValue.TORSO);
+						Float hipWidth = autoBone.getConfig(SkeletonConfigValue.HIPS_WIDTH);
+						Float legsLength = autoBone.getConfig(SkeletonConfigValue.LEGS_LENGTH);
+						Float kneeHeight = autoBone.getConfig(SkeletonConfigValue.KNEE_HEIGHT);
 
 						float neckTorso = neckLength != null && torsoLength != null ? neckLength / torsoLength : 0f;
 						float chestTorso = chestDistance != null && torsoLength != null ? chestDistance / torsoLength : 0f;
@@ -343,14 +345,14 @@ public class AutoConfigurationDialog  extends AnchorPane implements Initializabl
 	private String getLengthsString() {
 		boolean first = true;
 		StringBuilder configInfo = new StringBuilder("");
-		for(Map.Entry<String, Float> entry : autoBone.configs.entrySet()) {
+		for(Map.Entry<SkeletonConfigValue, Float> entry : autoBone.configs.entrySet()) {
 			if(!first) {
 				configInfo.append(", ");
 			} else {
 				first = false;
 			}
 
-			configInfo.append(entry.getKey() + ": " + StringUtils.prettyNumber(entry.getValue() * 100f, 2));
+			configInfo.append(entry.getKey().label + ": " + StringUtils.prettyNumber(entry.getValue() * 100f, 2));
 		}
 
 		return configInfo.toString();

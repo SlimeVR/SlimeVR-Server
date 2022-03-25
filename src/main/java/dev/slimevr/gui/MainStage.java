@@ -1,7 +1,7 @@
 package dev.slimevr.gui;
 
 import com.dustinredmond.fxtrayicon.FXTrayIcon;
-import io.eiren.vr.Main;
+import dev.slimevr.Main;
 import javafx.application.Application;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;

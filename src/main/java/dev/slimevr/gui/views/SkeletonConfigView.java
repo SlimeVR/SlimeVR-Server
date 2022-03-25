@@ -2,8 +2,10 @@ package dev.slimevr.gui.views;
 
 import dev.slimevr.gui.items.skeleton.SkeletonConfigItemView;
 import io.eiren.util.logging.LogManager;
-import io.eiren.vr.VRServer;
-import io.eiren.vr.processor.HumanSkeleton;
+import dev.slimevr.VRServer;
+import dev.slimevr.vr.processor.skeleton.HumanSkeleton;
+import dev.slimevr.vr.processor.skeleton.SkeletonConfig;
+import dev.slimevr.vr.processor.skeleton.SkeletonConfigValue;
 import javafx.fxml.Initializable;
 import javafx.scene.layout.VBox;
 
@@ -14,7 +16,7 @@ public class SkeletonConfigView extends VBox implements Initializable {
 
 
 	private final VRServer server;
-	private Map<String, SkeletonConfigItemView> configItems = new HashMap<>();
+	private Map<SkeletonConfigValue, SkeletonConfigItemView> configItems = new HashMap<>();
 
 	public SkeletonConfigView(VRServer server) {
 		/*FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource(
@@ -40,16 +42,12 @@ public class SkeletonConfigView extends VBox implements Initializable {
 	private void populateSkeletonItems() {
 		SkeletonConfigItemView.SkeletonConfigItemListener skeletonConfigItemListener = subscribeToSkeletonItems();
 
-		server.humanPoseProcessor.getSkeleton().getSkeletonConfig().keySet().stream().forEach(joint ->
-				{
-					addSkeletonItem(joint, skeletonConfigItemListener);
-				}
-		);
-
-
+		for (SkeletonConfigValue value : SkeletonConfigValue.values) {
+			addSkeletonItem(value, skeletonConfigItemListener);
+		}
 	}
 
-	private void addSkeletonItem(String joint, SkeletonConfigItemView.SkeletonConfigItemListener skeletonConfigItemListener) {
+	private void addSkeletonItem(SkeletonConfigValue joint, SkeletonConfigItemView.SkeletonConfigItemListener skeletonConfigItemListener) {
 		SkeletonConfigItemView skeletonConfigItemView = new SkeletonConfigItemView(server, joint, skeletonConfigItemListener);
 		configItems.put(joint, skeletonConfigItemView);
 		this.getChildren().add(skeletonConfigItemView);
@@ -63,25 +61,22 @@ public class SkeletonConfigView extends VBox implements Initializable {
 	}
 
 	public void skeletonUpdated(HumanSkeleton newSkeleton) {
-
-		newSkeleton.getSkeletonConfig().entrySet().stream().forEach(skeletonJoint ->
-		{
-			updateSkeletonConfigItem(skeletonJoint.getKey(), skeletonJoint.getValue());
-		});
-
-
+		SkeletonConfig skeletonConfig = newSkeleton.getSkeletonConfig();
+		for (SkeletonConfigValue value : SkeletonConfigValue.values) {
+			updateSkeletonConfigItem(value, skeletonConfig.getConfig(value));
+		}
 	}
 
 	private SkeletonConfigItemView.SkeletonConfigItemListener subscribeToSkeletonItems() {
 		return new SkeletonConfigItemView.SkeletonConfigItemListener() {
 			@Override
-			public void change(String joint, float diff) {
+			public void change(SkeletonConfigValue joint, float diff) {
 				LogManager.log.debug("change " + joint + " " + diff);
 				changeJointValue(joint, diff);
 			}
 
 			@Override
-			public void reset(String joint) {
+			public void reset(SkeletonConfigValue joint) {
 
 				LogManager.log.debug("reset " + joint);
 				resetJoint(joint);
@@ -89,14 +84,14 @@ public class SkeletonConfigView extends VBox implements Initializable {
 		};
 	}
 
-	private void resetJoint(String joint) {
+	private void resetJoint(SkeletonConfigValue joint) {
 		server.humanPoseProcessor.resetSkeletonConfig(joint);
 		server.saveConfig();
 		float current = server.humanPoseProcessor.getSkeletonConfig(joint);
 		updateSkeletonConfigItem(joint, current);
 	}
 
-	private void changeJointValue(String joint, float diff) {
+	private void changeJointValue(SkeletonConfigValue joint, float diff) {
 		float current = server.humanPoseProcessor.getSkeletonConfig(joint);
 		server.humanPoseProcessor.setSkeletonConfig(joint, current + diff);
 		server.saveConfig();
@@ -104,7 +99,7 @@ public class SkeletonConfigView extends VBox implements Initializable {
 	}
 
 
-	private void updateSkeletonConfigItem(String joint, float value) {
+	private void updateSkeletonConfigItem(SkeletonConfigValue joint, float value) {
 		configItems.get(joint).refreshJoint(value);
 	}
 

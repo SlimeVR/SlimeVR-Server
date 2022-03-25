@@ -2,7 +2,8 @@ package dev.slimevr.gui.items.skeleton;
 
 import io.eiren.util.StringUtils;
 import io.eiren.util.logging.LogManager;
-import io.eiren.vr.VRServer;
+import dev.slimevr.VRServer;
+import dev.slimevr.vr.processor.skeleton.SkeletonConfigValue;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.fxml.FXML;
@@ -39,14 +40,14 @@ public class SkeletonConfigItemView extends HBox  implements Initializable{
 	@FXML
 	private Label itemTitle;
 
-	private String joint;
+	private SkeletonConfigValue joint;
 	private float value;
 	private final VRServer server;
 	private final SkeletonConfigItemListener itemListener;
 	private ResourceBundle bundle;
 
 
-	public SkeletonConfigItemView(VRServer server, String joint, SkeletonConfigItemListener itemListener) {
+	public SkeletonConfigItemView(VRServer server, SkeletonConfigValue joint, SkeletonConfigItemListener itemListener) {
 
 		this.server = server;
 		this.itemListener = itemListener;
@@ -68,14 +69,14 @@ public class SkeletonConfigItemView extends HBox  implements Initializable{
 
 	@FXML
 	public void initialize() {
-		LogManager.log.debug("initialize "+joint+" "+bundle.getString(joint)+" "+value);
+		LogManager.log.debug("initialize "+joint+" "+bundle.getString(joint.configKey)+" "+value);
 	}
 
 	@Override
 	public void initialize(URL location, ResourceBundle resources) {
 		bundle = resources;
-		LogManager.log.debug("initialize "+joint+" "+bundle.getString(joint)+" "+value);
-		itemTitle.setText(bundle.getString(joint));
+		LogManager.log.debug("initialize "+joint+" "+bundle.getString(joint.configKey)+" "+value);
+		itemTitle.setText(bundle.getString(joint.configKey));
 		setItemValueText(value);
 		itemResetButton.setOnAction(new EventHandler<ActionEvent>() {
 			@Override
@@ -121,12 +122,12 @@ public class SkeletonConfigItemView extends HBox  implements Initializable{
 
 
 	public interface SkeletonConfigItemListener {
-		void change(String joint, float diff);
+		void change(SkeletonConfigValue joint, float diff);
 
-		void reset(String joint);
+		void reset(SkeletonConfigValue joint);
 	}
 
-	public String getJoint() {
+	public SkeletonConfigValue getJoint() {
 		return joint;
 	}
 

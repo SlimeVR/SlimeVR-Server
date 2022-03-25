@@ -13,9 +13,9 @@ import io.eiren.util.StringUtils;
 import io.eiren.util.ann.AWTThread;
 import io.eiren.util.ann.ThreadSafe;
 import io.eiren.util.collections.FastList;
-import io.eiren.vr.VRServer;
+import dev.slimevr.VRServer;
 
-import io.eiren.vr.trackers.*;
+import dev.slimevr.vr.trackers.*;
 import javafx.scene.control.ComboBox;
 import javafx.scene.control.Label;
 import javafx.scene.layout.GridPane;

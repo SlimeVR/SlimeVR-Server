@@ -2,7 +2,8 @@ package dev.slimevr.gui;
 
 import io.eiren.util.StringUtils;
 import io.eiren.util.ann.ThreadSafe;
-import io.eiren.vr.VRServer;
+import dev.slimevr.VRServer;
+import dev.slimevr.vr.processor.skeleton.SkeletonConfigValue;
 import javafx.animation.KeyFrame;
 import javafx.animation.Timeline;
 import javafx.geometry.Insets;
@@ -20,62 +21,63 @@ import java.util.Map;
 public class BodyProportion {
 	
 	private VRServer server;
-	private Map<String, Label> labels = new HashMap<>();
+	private Map<SkeletonConfigValue, Label> labels = new HashMap<>();
 	private int counter = 0;
 	
 	public BodyProportion(VRServer server) {
 		this.server = server;
 	}
 	
-	public void bodyProportionInit(TextFlow name, TextFlow plus, TextFlow lable, TextFlow minus, TextFlow reset) {
+	public void bodyProportionInit(TextFlow name, TextFlow plus, TextFlow label, TextFlow minus, TextFlow reset) {
 		
 		customizeTextFlow(name, 24.0f, 15);
 		customizeTextFlow(plus, 14.0f, 13);
-		customizeTextFlow(lable, 15.0f, 14);
+		customizeTextFlow(label, 15.0f, 14);
 		customizeTextFlow(minus, 14.0f, 13);
 		customizeTextFlow(reset, 14.0f, 13);
 		
-		addBodyProp(name, plus, lable, minus, reset, "Chest", true);
-		addBodyPropTimedResetBtn(name, plus, lable, minus, reset, "Waist", true);
-		addBodyProp(name, plus, lable, minus, reset, "Hips width", true);
-		addBodyPropTimedResetBtn(name, plus, lable, minus, reset, "Legs length", true);
-		addBodyPropTimedResetBtn(name, plus, lable, minus, reset, "Knee height", true);
-		addBodyProp(name, plus, lable, minus, reset, "Foot length", true);
-		addBodyProp(name, plus, lable, minus, reset, "Head", true);
-		addBodyProp(name, plus, lable, minus, reset, "Neck", true);
-		addBodyProp(name, plus, lable, minus, reset, "Virtual waist", false);
+		// TODO: Get this caught up to the main branch @ButterscotchV
+		addBodyProp(name, plus, label, minus, reset, SkeletonConfigValue.CHEST, true);
+		addBodyPropTimedResetBtn(name, plus, label, minus, reset, SkeletonConfigValue.WAIST, true);
+		addBodyProp(name, plus, label, minus, reset, SkeletonConfigValue.HIPS_WIDTH, true);
+		addBodyPropTimedResetBtn(name, plus, label, minus, reset, SkeletonConfigValue.LEGS_LENGTH, true);
+		addBodyPropTimedResetBtn(name, plus, label, minus, reset, SkeletonConfigValue.KNEE_HEIGHT, true);
+		addBodyProp(name, plus, label, minus, reset, SkeletonConfigValue.FOOT_LENGTH, true);
+		addBodyProp(name, plus, label, minus, reset, SkeletonConfigValue.HEAD, true);
+		addBodyProp(name, plus, label, minus, reset, SkeletonConfigValue.NECK, true);
+		addBodyProp(name, plus, label, minus, reset, SkeletonConfigValue.HIP_OFFSET, false);
 		
 	}
 	
-	private void addBodyProp(TextFlow name, TextFlow plus, TextFlow lable, TextFlow minus, TextFlow reset, String nameStr, boolean lineSeparator) {
+	private void addBodyProp(TextFlow name, TextFlow plus, TextFlow label, TextFlow minus, TextFlow reset, SkeletonConfigValue nameStr, boolean lineSeparator) {
 		if(lineSeparator)
-			name.getChildren().addAll(new Text(nameStr), new Text(System.lineSeparator()));
+			name.getChildren().addAll(new Text(nameStr.label), new Text(System.lineSeparator()));
 		else
-			name.getChildren().add(new Text(nameStr));
+			name.getChildren().add(new Text(nameStr.label));
 		
 		plus.getChildren().add(new ArithmOpBodyButton("+", nameStr, 0.01f));
 		
 		if(lineSeparator)
-			lable.getChildren().addAll(new BodyLabel(nameStr), new Text(System.lineSeparator()));
+			label.getChildren().addAll(new BodyLabel(nameStr), new Text(System.lineSeparator()));
 		else
-			lable.getChildren().add(new BodyLabel(nameStr));
+			label.getChildren().add(new BodyLabel(nameStr));
 		
 		minus.getChildren().add(new ArithmOpBodyButton("-", nameStr, -0.01f));
 		reset.getChildren().add(new ResetBodyButton(nameStr));
 	}
 	
-	private void addBodyPropTimedResetBtn(TextFlow name, TextFlow plus, TextFlow lable, TextFlow minus, TextFlow reset, String nameStr, boolean lineSeparator) {
+	private void addBodyPropTimedResetBtn(TextFlow name, TextFlow plus, TextFlow label, TextFlow minus, TextFlow reset, SkeletonConfigValue nameStr, boolean lineSeparator) {
 		if(lineSeparator)
-			name.getChildren().addAll(new Text(nameStr), new Text(System.lineSeparator()));
+			name.getChildren().addAll(new Text(nameStr.label), new Text(System.lineSeparator()));
 		else
-			name.getChildren().add(new Text(nameStr));
+			name.getChildren().add(new Text(nameStr.label));
 		
 		plus.getChildren().add(new ArithmOpBodyButton("+", nameStr, 0.01f));
 		
 		if(lineSeparator)
-			lable.getChildren().addAll(new BodyLabel(nameStr), new Text(System.lineSeparator()));
+			label.getChildren().addAll(new BodyLabel(nameStr), new Text(System.lineSeparator()));
 		else
-			lable.getChildren().add(new BodyLabel(nameStr));
+			label.getChildren().add(new BodyLabel(nameStr));
 		
 		minus.getChildren().add(new ArithmOpBodyButton("-", nameStr, -0.01f));
 		reset.getChildren().add(new TimedResetBodyButton(nameStr));
@@ -89,7 +91,7 @@ public class BodyProportion {
 	
 	private class BodyLabel extends Label {
 		
-		public BodyLabel(String joint) {
+		public BodyLabel(SkeletonConfigValue joint) {
 			super(StringUtils.prettyNumber(server.humanPoseProcessor.getSkeletonConfig(joint) * 100, 0));
 			setStyle("-fx-text-fill: #f4f4f4;");
 			labels.put(joint, this);
@@ -98,7 +100,7 @@ public class BodyProportion {
 	
 	private class ArithmOpBodyButton extends Button {
 		
-		public ArithmOpBodyButton(String text, String joint, float diff) {
+		public ArithmOpBodyButton(String text, SkeletonConfigValue joint, float diff) {
 			super(text);
 			setPrefSize(31, 31);
 			setStyle("-fx-font-size : 15px;");
@@ -108,7 +110,7 @@ public class BodyProportion {
 	
 	private class ResetBodyButton extends Button {
 		
-		public ResetBodyButton(String joint) {
+		public ResetBodyButton(SkeletonConfigValue joint) {
 			super("Reset");
 			setPrefSize(55, 31);
 			
@@ -118,7 +120,7 @@ public class BodyProportion {
 	
 	private class TimedResetBodyButton extends Button {
 		
-		public TimedResetBodyButton(String joint) {
+		public TimedResetBodyButton(SkeletonConfigValue joint) {
 			super("Reset");
 			setPrefSize(55, 31);
 			
@@ -140,14 +142,14 @@ public class BodyProportion {
 		}
 	}
 	
-	private void change(String joint, float diff) {
+	private void change(SkeletonConfigValue joint, float diff) {
 		float current = server.humanPoseProcessor.getSkeletonConfig(joint);
 		server.humanPoseProcessor.setSkeletonConfig(joint, current + diff);
 		server.saveConfig();
 		labels.get(joint).setText(StringUtils.prettyNumber((current + diff) * 100, 0));
 	}
 	
-	public void reset(String joint) {
+	public void reset(SkeletonConfigValue joint) {
 		server.humanPoseProcessor.resetSkeletonConfig(joint);
 		server.saveConfig();
 		if(!"All".equals(joint)) {

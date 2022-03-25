@@ -1,4 +1,4 @@
-package io.eiren.util;
+package dev.slimevr.util;
 
 import java.util.Arrays;
 
