@@ -6,11 +6,12 @@ build
 
 /bin/
 
+# Ignore .idea
+.idea
+
 # Syncthing ignore file
 .stignore
 
 MagnetoLib.dll
-/.idea/
-*.log
-logs
 vrconfig.yml
+*.log

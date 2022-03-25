@@ -5,18 +5,22 @@ import javax.swing.*;
 import javax.swing.border.EmptyBorder;
 import javax.swing.event.MouseInputAdapter;
 
-import dev.slimevr.bridge.NamedPipeBridge;
+import dev.slimevr.Main;
+import dev.slimevr.VRServer;
+import dev.slimevr.platform.windows.WindowsNamedPipeBridge;
 import dev.slimevr.gui.swing.ButtonTimer;
 import dev.slimevr.gui.swing.EJBagNoStretch;
 import dev.slimevr.gui.swing.EJBox;
 import dev.slimevr.gui.swing.EJBoxNoStretch;
+import dev.slimevr.vr.trackers.TrackerRole;
+import dev.slimevr.posestreamer.BVHFileStream;
+import dev.slimevr.posestreamer.PoseDataStream;
+import dev.slimevr.posestreamer.ServerPoseStreamer;
 import io.eiren.util.MacOSX;
 import io.eiren.util.OperatingSystem;
 import io.eiren.util.StringUtils;
 import io.eiren.util.ann.AWTThread;
-import io.eiren.vr.Main;
-import io.eiren.vr.VRServer;
-import io.eiren.vr.trackers.TrackerRole;
+import io.eiren.util.logging.LogManager;
 
 import java.awt.Component;
 import java.awt.Container;
@@ -29,6 +33,7 @@ import java.awt.event.ActionListener;
 import java.awt.event.ComponentEvent;
 import java.awt.event.MouseEvent;
 import java.awt.image.BufferedImage;
+import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
@@ -45,6 +50,10 @@ public class VRServerGUI extends JFrame {
 	private final SkeletonList skeletonList;
 	private JButton resetButton;
 	private EJBox pane;
+
+	private static File bvhSaveDir = new File("BVH Recordings");
+	private final ServerPoseStreamer poseStreamer;
+	private PoseDataStream poseDataStream = null;
 	
 	private float zoom = 1.5f;
 	private float initZoom = zoom;
@@ -88,7 +97,11 @@ public class VRServerGUI extends JFrame {
 		this.trackersList = new TrackersList(server, this);
 		this.skeletonList = new SkeletonList(server, this);
 		
-		add(new JScrollPane(pane = new EJBox(PAGE_AXIS), ScrollPaneConstants.VERTICAL_SCROLLBAR_AS_NEEDED, ScrollPaneConstants.HORIZONTAL_SCROLLBAR_AS_NEEDED));
+		this.poseStreamer = new ServerPoseStreamer(server);
+
+		JScrollPane scrollPane = (JScrollPane) add(new JScrollPane(pane = new EJBox(PAGE_AXIS), ScrollPaneConstants.VERTICAL_SCROLLBAR_AS_NEEDED, ScrollPaneConstants.HORIZONTAL_SCROLLBAR_AS_NEEDED));
+		scrollPane.getVerticalScrollBar().setUnitIncrement(16);
+
 		GraphicsConfiguration gc = getGraphicsConfiguration();
 		Rectangle screenBounds = gc.getBounds();
 		setMinimumSize(new Dimension(100, 100));
@@ -136,6 +149,22 @@ public class VRServerGUI extends JFrame {
 		});
 	}
 	
+	private File getBvhFile() {
+		if (bvhSaveDir.isDirectory() || bvhSaveDir.mkdirs()) {
+			File saveRecording;
+			int recordingIndex = 1;
+			do {
+				saveRecording = new File(bvhSaveDir, "BVH-Recording" + recordingIndex++ + ".bvh");
+			} while(saveRecording.exists());
+			
+			return saveRecording;
+		} else {
+			LogManager.log.severe("[BVH] Failed to create the recording directory \"" + bvhSaveDir.getPath() + "\".");
+		}
+
+		return null;
+	}
+
 	@AWTThread
 	private void build() {
 		pane.removeAll();
@@ -158,6 +187,37 @@ public class VRServerGUI extends JFrame {
 					@Override
 					public void mouseClicked(MouseEvent e) {
 						resetFast();
+					}
+				});
+			}});
+			add(Box.createHorizontalGlue());
+			add(new JButton("Record BVH") {{
+				addMouseListener(new MouseInputAdapter() {
+					@Override
+					public void mouseClicked(MouseEvent e) {
+						if (poseDataStream == null) {
+							File bvhFile = getBvhFile();
+							if (bvhFile != null) {
+								try {
+									poseDataStream = new BVHFileStream(bvhFile);
+									setText("Stop Recording BVH...");
+									poseStreamer.setOutput(poseDataStream, 1000L / 100L);
+								} catch (IOException e1) {
+									LogManager.log.severe("[BVH] Failed to create the recording file \"" + bvhFile.getPath() + "\".");
+								}
+							} else {
+								LogManager.log.severe("[BVH] Unable to get file to save to");
+							}
+						} else {
+							try {
+								poseStreamer.closeOutput(poseDataStream);
+							} catch (Exception e1) {
+								LogManager.log.severe("[BVH] Exception while closing poseDataStream", e1);
+							} finally {
+								poseDataStream = null;
+								setText("Record BVH");
+							}
+						}
 					}
 				});
 			}});
@@ -198,14 +258,25 @@ public class VRServerGUI extends JFrame {
 
 			add(new EJBoxNoStretch(PAGE_AXIS, false, true) {{
 				setAlignmentY(TOP_ALIGNMENT);
+				
+				JCheckBox debugCb;
+				add(debugCb = new JCheckBox("Show debug information"));
+				debugCb.setSelected(false);
+				debugCb.addActionListener(new ActionListener() {
+					@Override
+					public void actionPerformed(ActionEvent e) {
+						trackersList.setDebug(debugCb.isSelected());
+					}
+				});
+				
 				JLabel l;
 				add(l = new JLabel("Body proportions"));
 				l.setFont(l.getFont().deriveFont(Font.BOLD));
 				l.setAlignmentX(0.5f);
-				add(new SkeletonConfig(server, VRServerGUI.this));
+				add(new SkeletonConfigGUI(server, VRServerGUI.this));
 				add(Box.createVerticalStrut(10));
-				if(server.hasBridge(NamedPipeBridge.class)) {
-					NamedPipeBridge br = server.getVRBridge(NamedPipeBridge.class);
+				if(server.hasBridge(WindowsNamedPipeBridge.class)) {
+					WindowsNamedPipeBridge br = server.getVRBridge(WindowsNamedPipeBridge.class);
 					add(l = new JLabel("SteamVR Trackers"));
 					l.setFont(l.getFont().deriveFont(Font.BOLD));
 					l.setAlignmentX(0.5f);
@@ -260,6 +331,19 @@ public class VRServerGUI extends JFrame {
 								server.queueTask(() -> {
 									br.changeShareSettings(TrackerRole.LEFT_KNEE, kneesCb.isSelected());
 									br.changeShareSettings(TrackerRole.RIGHT_KNEE, kneesCb.isSelected());
+								});
+							}
+						});
+
+						JCheckBox elbowsCb;
+						add(elbowsCb = new JCheckBox("Elbows"), c(1, 3));
+						elbowsCb.setSelected(br.getShareSetting(TrackerRole.LEFT_ELBOW) && br.getShareSetting(TrackerRole.RIGHT_ELBOW));
+						elbowsCb.addActionListener(new ActionListener() {
+							@Override
+							public void actionPerformed(ActionEvent e) {
+								server.queueTask(() -> {
+									br.changeShareSettings(TrackerRole.LEFT_ELBOW, elbowsCb.isSelected());
+									br.changeShareSettings(TrackerRole.RIGHT_ELBOW, elbowsCb.isSelected());
 								});
 							}
 						});

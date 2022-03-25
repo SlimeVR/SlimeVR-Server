@@ -11,9 +11,9 @@ import java.io.FileOutputStream;
 import com.jme3.math.Quaternion;
 import com.jme3.math.Vector3f;
 
+import dev.slimevr.vr.trackers.TrackerPosition;
 import io.eiren.util.collections.FastList;
 import io.eiren.util.logging.LogManager;
-import io.eiren.vr.trackers.TrackerPosition;
 
 public final class PoseFrameIO {
 	
@@ -26,7 +26,6 @@ public final class PoseFrameIO {
 			if(frames != null) {
 				outputStream.writeInt(frames.getTrackerCount());
 				for(PoseFrameTracker tracker : frames.getTrackers()) {
-					
 					outputStream.writeUTF(tracker.name);
 					outputStream.writeInt(tracker.getFrameCount());
 					for(int i = 0; i < tracker.getFrameCount(); i++) {

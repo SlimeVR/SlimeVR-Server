@@ -22,7 +22,7 @@ public class ScalableFont extends Font {
 		super(font);
 		
 		if(font instanceof ScalableFont) {
-			ScalableFont sourceFont = (ScalableFont)font;
+			ScalableFont sourceFont = (ScalableFont) font;
 			
 			this.initSize = sourceFont.getInitSize();
 			this.initPointSize = sourceFont.getInitSize2D();
@@ -39,7 +39,7 @@ public class ScalableFont extends Font {
 		super(font);
 		
 		if(font instanceof ScalableFont) {
-			ScalableFont sourceFont = (ScalableFont)font;
+			ScalableFont sourceFont = (ScalableFont) font;
 			
 			this.initSize = sourceFont.getInitSize();
 			this.initPointSize = sourceFont.getInitSize2D();
@@ -84,8 +84,7 @@ public class ScalableFont extends Font {
 		
 		float newPointSize = initPointSize * scale;
 		
-		this.size = (int)(newPointSize + 0.5);
+		this.size = (int) (newPointSize + 0.5);
 		this.pointSize = newPointSize;
 	}
-	
 }

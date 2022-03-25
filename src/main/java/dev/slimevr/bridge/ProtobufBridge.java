@@ -11,21 +11,21 @@ import java.util.concurrent.LinkedBlockingQueue;
 import com.jme3.math.Quaternion;
 import com.jme3.math.Vector3f;
 
+import dev.slimevr.Main;
 import dev.slimevr.bridge.ProtobufMessages.Position;
 import dev.slimevr.bridge.ProtobufMessages.ProtobufMessage;
 import dev.slimevr.bridge.ProtobufMessages.TrackerAdded;
 import dev.slimevr.bridge.ProtobufMessages.TrackerStatus;
 import dev.slimevr.bridge.ProtobufMessages.UserAction;
+import dev.slimevr.util.ann.VRServerThread;
+import dev.slimevr.vr.trackers.ComputedTracker;
+import dev.slimevr.vr.trackers.HMDTracker;
+import dev.slimevr.vr.trackers.ShareableTracker;
+import dev.slimevr.vr.trackers.TrackerRole;
+import dev.slimevr.vr.trackers.VRTracker;
 import io.eiren.util.ann.Synchronize;
 import io.eiren.util.ann.ThreadSafe;
-import io.eiren.util.ann.VRServerThread;
 import io.eiren.util.collections.FastList;
-import io.eiren.vr.Main;
-import io.eiren.vr.trackers.ComputedTracker;
-import io.eiren.vr.trackers.HMDTracker;
-import io.eiren.vr.trackers.ShareableTracker;
-import io.eiren.vr.trackers.TrackerRole;
-import io.eiren.vr.trackers.VRTracker;
 
 public abstract class ProtobufBridge<T extends VRTracker> implements Bridge {
 
@@ -58,7 +58,7 @@ public abstract class ProtobufBridge<T extends VRTracker> implements Bridge {
 	protected abstract boolean sendMessageReal(ProtobufMessage message);
 
 	@BridgeThread
-	protected void messageRecieved(ProtobufMessage message) {
+	protected void messageReceived(ProtobufMessage message) {
 		inputQueue.add(message);
 	}
 	
@@ -82,7 +82,7 @@ public abstract class ProtobufBridge<T extends VRTracker> implements Bridge {
 		hadNewData = false;
 		ProtobufMessage message = null;
 		while((message = inputQueue.poll()) != null) {
-			processMessageRecieved(message);
+			processMessageReceived(message);
 			hadNewData = true;
 		}
 		if(hadNewData && hmdTracker != null) {
@@ -101,7 +101,7 @@ public abstract class ProtobufBridge<T extends VRTracker> implements Bridge {
 	@VRServerThread
 	@Override
 	public void dataWrite() {
-		if(!hadNewData) // Don't write anything if no message were recieved, we always process at the speed of the other side
+		if(!hadNewData) // Don't write anything if no message were received, we always process at the speed of the other side
 			return;
 		for(int i = 0; i < sharedTrackers.size(); ++i) {
 			writeTrackerUpdate(sharedTrackers.get(i));
@@ -126,22 +126,22 @@ public abstract class ProtobufBridge<T extends VRTracker> implements Bridge {
 	}
 	
 	@VRServerThread
-	protected void processMessageRecieved(ProtobufMessage message) {
+	protected void processMessageReceived(ProtobufMessage message) {
 		//if(!message.hasPosition())
 		//	LogManager.log.info("[" + bridgeName + "] MSG: " + message);
 		if(message.hasPosition()) {
-			positionRecieved(message.getPosition());
+			positionReceived(message.getPosition());
 		} else if(message.hasUserAction()) {
-			userActionRecieved(message.getUserAction());
+			userActionReceived(message.getUserAction());
 		} else if(message.hasTrackerStatus()) {
-			trackerStatusRecieved(message.getTrackerStatus());
+			trackerStatusReceived(message.getTrackerStatus());
 		} else if(message.hasTrackerAdded()) {
-			trackerAddedRecieved(message.getTrackerAdded());
+			trackerAddedReceived(message.getTrackerAdded());
 		}
 	}
 	
 	@VRServerThread
-	protected void positionRecieved(Position positionMessage) {
+	protected void positionReceived(Position positionMessage) {
 		T tracker = getInternalRemoteTrackerById(positionMessage.getTrackerId());
 		if(tracker != null) {
 			if(positionMessage.hasX())
@@ -155,7 +155,7 @@ public abstract class ProtobufBridge<T extends VRTracker> implements Bridge {
 	protected abstract T createNewTracker(TrackerAdded trackerAdded);
 
 	@VRServerThread
-	protected void trackerAddedRecieved(TrackerAdded trackerAdded) {
+	protected void trackerAddedReceived(TrackerAdded trackerAdded) {
 		T tracker = getInternalRemoteTrackerById(trackerAdded.getTrackerId());
 		if(tracker != null) {
 			// TODO reinit?
@@ -176,7 +176,7 @@ public abstract class ProtobufBridge<T extends VRTracker> implements Bridge {
 	}
 
 	@VRServerThread
-	protected void userActionRecieved(UserAction userAction) {
+	protected void userActionReceived(UserAction userAction) {
 		switch(userAction.getName()) {
 		case "calibrate":
 			// TODO : Check pose field
@@ -186,10 +186,10 @@ public abstract class ProtobufBridge<T extends VRTracker> implements Bridge {
 	}
 
 	@VRServerThread
-	protected void trackerStatusRecieved(TrackerStatus trackerStatus) {
+	protected void trackerStatusReceived(TrackerStatus trackerStatus) {
 		T tracker = getInternalRemoteTrackerById(trackerStatus.getTrackerId());
 		if(tracker != null) {
-			tracker.setStatus(io.eiren.vr.trackers.TrackerStatus.getById(trackerStatus.getStatusValue()));
+			tracker.setStatus(dev.slimevr.vr.trackers.TrackerStatus.getById(trackerStatus.getStatusValue()));
 		}
 	}
     
@@ -214,11 +214,11 @@ public abstract class ProtobufBridge<T extends VRTracker> implements Bridge {
 		synchronized(remoteTrackersByTrackerId) {
 			Iterator<Entry<Integer, T>> iterator = remoteTrackersByTrackerId.entrySet().iterator();
 			while(iterator.hasNext()) {
-				iterator.next().getValue().setStatus(io.eiren.vr.trackers.TrackerStatus.DISCONNECTED);
+				iterator.next().getValue().setStatus(dev.slimevr.vr.trackers.TrackerStatus.DISCONNECTED);
 			}
 		}
 		if(hmdTracker != null) {
-			hmd.setStatus(io.eiren.vr.trackers.TrackerStatus.DISCONNECTED);
+			hmd.setStatus(dev.slimevr.vr.trackers.TrackerStatus.DISCONNECTED);
 		}
 	}
 

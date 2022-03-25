@@ -20,5 +20,4 @@ public abstract class AbstractComponentListener implements ComponentListener {
 	@Override
 	public void componentHidden(ComponentEvent e) {
 	}
-	
 }

@@ -15,8 +15,10 @@ import java.util.TimerTask;
 
 import javax.swing.BoxLayout;
 import javax.swing.JButton;
+import javax.swing.JCheckBox;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
+import javax.swing.JPasswordField;
 import javax.swing.JScrollPane;
 import javax.swing.JTextArea;
 import javax.swing.JTextField;
@@ -35,7 +37,7 @@ public class WiFiWindow extends JFrame {
 	private static String savedSSID = "";
 	private static String savedPassword = "";
 	JTextField ssidField;
-	JTextField passwdField;
+	JPasswordField passwdField;
 	SerialPort trackerPort = null;
 	JTextArea log;
 	TimerTask readTask;
@@ -97,13 +99,26 @@ public class WiFiWindow extends JFrame {
 				}});
 				add(new EJBox(BoxLayout.LINE_AXIS) {{
 					add(new JLabel("Network password:"));
-					add(passwdField = new JTextField(savedPassword));
+					passwdField = new JPasswordField(savedPassword);
+					passwdField.setEchoChar('\u25cf');
+					add(passwdField);
+					add(new JCheckBox("Show Password") {{
+						addMouseListener(new MouseInputAdapter() {
+							@Override
+							public void mouseClicked(MouseEvent e) {
+								if(isSelected())
+									passwdField.setEchoChar((char)0);
+									else
+									passwdField.setEchoChar('\u25cf');
+							}
+						});
+					}});
 				}});
 				add(new JButton("Send") {{
 					addMouseListener(new MouseInputAdapter() {
 						@Override
 						public void mouseClicked(MouseEvent e) {
-							send(ssidField.getText(), passwdField.getText());
+							send(ssidField.getText(), new String(passwdField.getPassword()));
 						}
 					});
 				}});
