@@ -3,6 +3,7 @@ package dev.slimevr.gui;
 import com.dustinredmond.fxtrayicon.FXTrayIcon;
 import dev.slimevr.Main;
 import javafx.application.Application;
+import javafx.application.Platform;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Scene;
@@ -39,6 +40,11 @@ public class MainStage extends Application {
 		stage.setResizable(true);
 		stage.centerOnScreen();
 		// stage.initStyle(StageStyle.UNDECORATED);
+
+		stage.setOnCloseRequest(e -> {
+			Platform.exit();
+			System.exit(0);
+		});
 
 		stage.show();
 	}
