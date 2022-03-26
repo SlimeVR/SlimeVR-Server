@@ -75,18 +75,24 @@ public class MountingCalibration {
 		LogManager.log.info("[Mounting Calibration] Calibrated mounting of all " + trackerNumber + " trackers");
 	}
 	public float yawCorrection(Quaternion idle, Quaternion squat, boolean backwards, boolean feet){ // Calculated yaw offset for the mounting orientation
-		if(feet){
-			float correctionYaw = squat.getRoll() - FastMath.PI;
-			if(correctionYaw < -FastMath.PI) correctionYaw += FastMath.PI * 2f;
-			return correctionYaw;
+		
+		if(!feet){
+			Quaternion rot = squat.mult(idle.inverse());
+			squat = squat.slerp(idle, squat, 1f/(FastMath.abs(rot.getX()) + FastMath.abs(rot.getZ())));
+		}
+
+		float correctionYaw = squat.getRoll();
+
+		if(backwards) correctionYaw -= FastMath.PI;
+
+		if(squat.getPitch() > 0){
+			correctionYaw *= -1f;
 		}
 		else{
-			Quaternion rot = squat.mult(idle.inverse());
-			Quaternion nightyDegredQuaternion = new Quaternion().slerp(idle, squat, 1f/(FastMath.abs(rot.getX()) + FastMath.abs(rot.getZ())));
-			float correctionYaw = nightyDegredQuaternion.getRoll() - FastMath.PI;
-			if(backwards) correctionYaw -= FastMath.PI;
-			if(correctionYaw < -FastMath.PI) correctionYaw += FastMath.PI * 2f;
-			return correctionYaw;
+			correctionYaw += FastMath.PI;
+			if(correctionYaw > FastMath.PI) correctionYaw -= FastMath.TWO_PI;
 		}
+
+		return correctionYaw;
 	}
 }
