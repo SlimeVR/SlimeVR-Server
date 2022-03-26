@@ -59,6 +59,10 @@ public class MountingCalibration {
 							break;
 						case LEFT_FOOT:
 						case RIGHT_FOOT:
+						case LEFT_FOREARM:
+						case RIGHT_FOREARM:
+						case LEFT_UPPER_ARM:
+						case RIGHT_UPPER_ARM:
 							SetIMUMountingRotation(yawCorrection(trackerOrientationIdle.get(trackerNumber), imu.rotQuaternion.clone(), false, true), imu, t);
 							break;
 						default:
@@ -74,9 +78,9 @@ public class MountingCalibration {
 		}
 		LogManager.log.info("[Mounting Calibration] Calibrated mounting of all " + trackerNumber + " trackers");
 	}
-	public float yawCorrection(Quaternion idle, Quaternion squat, boolean backwards, boolean feet){ // Calculated yaw offset for the mounting orientation
+	public float yawCorrection(Quaternion idle, Quaternion squat, boolean backwards, boolean endOnly){ // Calculated yaw offset for the mounting orientation
 		
-		if(!feet){
+		if(!endOnly){
 			Quaternion rot = squat.mult(idle.inverse());
 			squat = squat.slerp(idle, squat, 1f/(FastMath.abs(rot.getX()) + FastMath.abs(rot.getZ())));
 		}

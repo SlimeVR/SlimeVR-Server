@@ -151,6 +151,10 @@ public class MountingCalibrationWindow extends JFrame {
 				break;
 			case LEFT_FOOT:
 			case RIGHT_FOOT:
+			case LEFT_FOREARM:
+			case RIGHT_FOREARM:
+			case LEFT_UPPER_ARM:
+			case RIGHT_UPPER_ARM:
 				radian = mountingCalibration.yawCorrection(standingOrientation, imu.rotQuaternion.clone(), false, true);
 				break;
 			default:
