@@ -6,6 +6,7 @@ import dev.slimevr.vr.trackers.IMUTracker;
 import dev.slimevr.vr.trackers.ReferenceAdjustedTracker;
 import dev.slimevr.vr.trackers.Tracker;
 import dev.slimevr.vr.trackers.TrackerConfig;
+import dev.slimevr.vr.trackers.TrackerPosition;
 
 import com.jme3.math.FastMath;
 import com.jme3.math.Quaternion;
@@ -50,7 +51,22 @@ public class MountingCalibration {
 			if(realTracker instanceof IMUTracker){
 				imu = (IMUTracker)realTracker;
 				if(trackerOrientationIdle.size() > trackerNumber){
-					SetIMUMountingRotation(yawCorrection(trackerOrientationIdle.get(trackerNumber), imu.rotQuaternion.clone()), imu, t);
+					switch(imu.bodyPosition){
+						case CHEST:
+						case WAIST:
+						case HIP:
+						case LEFT_ANKLE:
+						case RIGHT_ANKLE:
+							SetIMUMountingRotation(yawCorrection(trackerOrientationIdle.get(trackerNumber), imu.rotQuaternion.clone(), true, false), imu, t);
+							break;
+						case LEFT_FOOT:
+						case RIGHT_FOOT:
+							SetIMUMountingRotation(yawCorrection(trackerOrientationIdle.get(trackerNumber), imu.rotQuaternion.clone(), false, true), imu, t);
+							break;
+						default:
+							SetIMUMountingRotation(yawCorrection(trackerOrientationIdle.get(trackerNumber), imu.rotQuaternion.clone(), false, false), imu, t);
+							break;
+					}
 				}
 				else{
 					SetIMUMountingRotation(imu.getMountingRotation(), imu, t);
@@ -60,11 +76,19 @@ public class MountingCalibration {
 		}
 		LogManager.log.info("[Mounting Calibration] Calibrated all " + trackerNumber + " trackers");
 	}
-	public float yawCorrection(Quaternion idle, Quaternion squat){ // Calculated yaw offset for the mounting orientation
-		Quaternion rot = squat.mult(idle.inverse());
-		Quaternion nightyDegredQuaternion = new Quaternion().slerp(idle, squat, 1f/(FastMath.abs(rot.getX()) + FastMath.abs(rot.getZ())));
-		float correctionYaw = nightyDegredQuaternion.getRoll() - FastMath.PI;
-		if(correctionYaw < -FastMath.PI) correctionYaw += FastMath.PI * 2f;
-		return correctionYaw;
+	public float yawCorrection(Quaternion idle, Quaternion squat, boolean backwards, boolean feet){ // Calculated yaw offset for the mounting orientation
+		if(feet){
+			float correctionYaw = squat.getRoll() - FastMath.PI;
+			if(correctionYaw < -FastMath.PI) correctionYaw += FastMath.PI * 2f;
+			return correctionYaw;
+		}
+		else{
+			Quaternion rot = squat.mult(idle.inverse());
+			Quaternion nightyDegredQuaternion = new Quaternion().slerp(idle, squat, 1f/(FastMath.abs(rot.getX()) + FastMath.abs(rot.getZ())));
+			float correctionYaw = nightyDegredQuaternion.getRoll() - FastMath.PI;
+			if(backwards) correctionYaw -= FastMath.PI;
+			if(correctionYaw < -FastMath.PI) correctionYaw += FastMath.PI * 2f;
+			return correctionYaw;
+		}
 	}
 }

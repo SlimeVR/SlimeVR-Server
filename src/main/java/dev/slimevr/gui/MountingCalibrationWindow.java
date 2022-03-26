@@ -141,7 +141,22 @@ public class MountingCalibrationWindow extends JFrame {
 	}
 	void squated(){
 		float radian = imu.getMountingRotation();
-		radian = mountingCalibration.yawCorrection(standingOrientation, imu.rotQuaternion.clone());
+		switch(imu.bodyPosition){
+			case CHEST:
+			case WAIST:
+			case HIP:
+			case LEFT_ANKLE:
+			case RIGHT_ANKLE:
+				radian = mountingCalibration.yawCorrection(standingOrientation, imu.rotQuaternion.clone(), true, false);
+				break;
+			case LEFT_FOOT:
+			case RIGHT_FOOT:
+				radian = mountingCalibration.yawCorrection(standingOrientation, imu.rotQuaternion.clone(), false, true);
+				break;
+			default:
+				radian = mountingCalibration.yawCorrection(standingOrientation, imu.rotQuaternion.clone(), false, false);
+				break;
+		}
 		mountingValue.setText("Mounting = " +  Math.round(Math.toDegrees(radian)));
 		mountingCalibration.SetIMUMountingRotation(radian, imu, t);
 		calibrating = false;
