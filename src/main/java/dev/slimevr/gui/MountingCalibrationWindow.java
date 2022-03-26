@@ -8,7 +8,6 @@ import javax.swing.ScrollPaneConstants;
 import javax.swing.JButton;
 import javax.swing.border.EmptyBorder;
 import java.awt.event.MouseEvent;
-import io.eiren.util.StringUtils;
 import io.eiren.util.ann.AWTThread;
 import dev.slimevr.VRServer;
 import dev.slimevr.vr.MountingCalibration;
@@ -49,18 +48,15 @@ public class MountingCalibrationWindow extends JFrame {
 	
 	@AWTThread
 	private void build() {
-		pane.add(new EJBox(BoxLayout.LINE_AXIS) { //Tells the user what the mounting orientation is by text
-			{
-				setBorder(new EmptyBorder(8, 115, 8, 115));
-				add(mountingValue = new JLabel("Mounting = " + Math.round(Math.toDegrees(imu.mounting))));
-			}
-		});
-		pane.add(new EJBox(BoxLayout.LINE_AXIS) { //Dynamic calibration using 2 poses; standing straight and squat
-			{
-				setBorder(new EmptyBorder(i(9)));
-				add(new JLabel("Dynamic calibration:"));
-			}
-		});
+
+		pane.add(new EJBox(BoxLayout.LINE_AXIS) {{ setBorder(new EmptyBorder(0, 175, 10, 175)); }});
+
+		pane.add(new EJBox(BoxLayout.LINE_AXIS) {{ add(mountingValue = new JLabel("Mounting = " + Math.round(Math.toDegrees(imu.getMountingRotation())))); }});
+
+		pane.add(new EJBox(BoxLayout.LINE_AXIS) {{ setBorder(new EmptyBorder(i(5))); }});
+
+		pane.add(new EJBox(BoxLayout.LINE_AXIS) {{ add(new JLabel("Dynamic calibration:")); }});
+
 		pane.add(new EJBox(BoxLayout.LINE_AXIS) {
 			{
 				add(dynamicMountingButton = new JButton("Calibrate") {
@@ -68,7 +64,7 @@ public class MountingCalibrationWindow extends JFrame {
 						addMouseListener(new MouseInputAdapter() {
 							@Override
 							public void mouseClicked(MouseEvent e) {
-								if(!calibrating){ //prevents running multiple times at the same time.
+								if(!calibrating){ // Prevents running multiple times at the same time.
 									calibrating = true;
 									dynamicCalibrate();
 								}
@@ -78,13 +74,10 @@ public class MountingCalibrationWindow extends JFrame {
 				});
 			}
 		});
+		pane.add(new EJBox(BoxLayout.LINE_AXIS) {{ setBorder(new EmptyBorder(i(5))); }});
 
-		pane.add(new EJBox(BoxLayout.LINE_AXIS) { //Manual/Legacy calibration
-			{
-				setBorder(new EmptyBorder(i(12)));
-				add(new JLabel("Manual calibration:"));
-			}
-		});
+		pane.add(new EJBox(BoxLayout.LINE_AXIS) {{ add(new JLabel("Manual calibration:")); }});
+
 		pane.add(new EJBox(BoxLayout.LINE_AXIS) {
 			{
 				add(new JButton("Front") {
@@ -133,24 +126,21 @@ public class MountingCalibrationWindow extends JFrame {
 				});
 			}
 		});
-		pane.add(new EJBox(BoxLayout.LINE_AXIS) {
-			{
-				setBorder(new EmptyBorder(i(3)));
-			}
-		});
+
+		pane.add(new EJBox(BoxLayout.LINE_AXIS) {{ setBorder(new EmptyBorder(i(5))); }});
+
 		
 		// Pack and display
 		pack();
 		setLocationRelativeTo(null);
 		setVisible(false);
 	}
-	private void dynamicCalibrate(){ //called when the calibrate button is pressed
+	private void dynamicCalibrate(){ // Called when the calibrate button is pressed for a tracker
 		standingOrientation = imu.rotQuaternion.clone();
 		ButtonTimer.runTimer(dynamicMountingButton, 3, "Calibrate", this::squated);
 	}
 	void squated(){
-		float radian = imu.mounting;
-		// TODO if tracker got added in the 5 seconds timer
+		float radian = imu.getMountingRotation();
 		radian = mountingCalibration.yawCorrection(standingOrientation, imu.rotQuaternion.clone());
 		mountingValue.setText("Mounting = " +  Math.round(Math.toDegrees(radian)));
 		mountingCalibration.SetIMUMountingRotation(radian, imu, t);

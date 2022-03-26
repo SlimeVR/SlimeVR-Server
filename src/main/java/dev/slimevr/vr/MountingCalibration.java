@@ -7,32 +7,27 @@ import dev.slimevr.vr.trackers.ReferenceAdjustedTracker;
 import dev.slimevr.vr.trackers.Tracker;
 import dev.slimevr.vr.trackers.TrackerConfig;
 
-import java.lang.System.Logger;
-import java.util.List;
-
 import com.jme3.math.FastMath;
 import com.jme3.math.Quaternion;
-import com.jme3.math.Vector3f;
-
 
 public class MountingCalibration {
 	private final VRServer server;
-	private List<Quaternion> trackerOrientationIdle = new FastList<>();
-	private List<Tracker> allTrackers = new FastList<>();
+	private FastList<Quaternion> trackerOrientationIdle = new FastList<>();
+	private FastList<Tracker> allTrackers = new FastList<>();
 	private int trackerNumber;
 
 	public MountingCalibration(VRServer server){
 		this.server = server;
 	}
-	public void SetIMUMountingRotation(float rad, IMUTracker imu, Tracker t){ //sets the mounting rotation (rad) of a given imu tracker and saves it.
+	public void SetIMUMountingRotation(float rad, IMUTracker imu, Tracker t){ // Sets the mounting rotation (rad) of a given imu tracker and saves it.
 		LogManager.log.info("[Mounting Calibration] (" + t.getDescriptiveName() + ") mounting orientation orientation set: " + Math.round(rad/Math.PI*180));
 		imu.setMountingRotation(rad);
 		TrackerConfig tc = server.getTrackerConfig(t);
 		imu.saveConfig(tc);
 		server.saveConfig();
 	}
-	public void GetIdle(){ //gets the orientation of the first pose for each tracker one by one.
-		allTrackers = server.getAllTrackers();
+	public void GetIdle(){ // Gets the orientation of the first pose for each tracker one by one.
+		allTrackers = (FastList<Tracker>) server.getAllTrackers();
 		IMUTracker imu;
 		for (Tracker t : allTrackers) {
 			Tracker realTracker = t;
@@ -44,9 +39,9 @@ public class MountingCalibration {
 			}
 		}
 	}
-	public void CalibrateTrackers(){ //called when the CALIBRATE button is pressed and calibrates the trackers one by one.
+	public void CalibrateTrackers(){ // Called when the CALIBRATE button at top is pressed and calibrates the trackers one by one.
 		trackerNumber = 0;
-		allTrackers = server.getAllTrackers();
+		allTrackers = (FastList<Tracker>) server.getAllTrackers();
 		IMUTracker imu;
 		for (Tracker t : allTrackers) {
 			Tracker realTracker = t;
@@ -54,16 +49,20 @@ public class MountingCalibration {
 			realTracker = ((ReferenceAdjustedTracker<? extends Tracker>) t).getTracker();
 			if(realTracker instanceof IMUTracker){
 				imu = (IMUTracker)realTracker;
-				// TODO if tracker got added in the 5 seconds timer
-				SetIMUMountingRotation(yawCorrection(trackerOrientationIdle.get(trackerNumber), imu.rotQuaternion.clone()), imu, t);
+				if(trackerOrientationIdle.size() > trackerNumber){
+					SetIMUMountingRotation(yawCorrection(trackerOrientationIdle.get(trackerNumber), imu.rotQuaternion.clone()), imu, t);
+				}
+				else{
+					SetIMUMountingRotation(imu.getMountingRotation(), imu, t);
+				}
 				trackerNumber++;
 			}
 		}
 		LogManager.log.info("[Mounting Calibration] Calibrated all " + trackerNumber + " trackers");
 	}
 	public float yawCorrection(Quaternion idle, Quaternion squat){ // Calculated yaw offset for the mounting orientation
-		Quaternion rot = idle.mult(squat.inverse());
-		Quaternion nightyDegredQuaternion = new Quaternion().slerp(idle, squat, 0.75f / FastMath.abs(rot.getZ()));
+		Quaternion rot = squat.mult(idle.inverse());
+		Quaternion nightyDegredQuaternion = new Quaternion().slerp(idle, squat, 1f/(FastMath.abs(rot.getX()) + FastMath.abs(rot.getZ())));
 		float correctionYaw = nightyDegredQuaternion.getRoll() - FastMath.PI;
 		if(correctionYaw < -FastMath.PI) correctionYaw += FastMath.PI * 2f;
 		return correctionYaw;

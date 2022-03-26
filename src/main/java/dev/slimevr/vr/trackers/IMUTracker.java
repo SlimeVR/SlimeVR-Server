@@ -120,7 +120,11 @@ public class IMUTracker implements Tracker, TrackerWithTPS, TrackerWithBattery {
 		mountingQuat.fromAngles(0, mounting, 0);
 		rotAdjust.set(mountingQuat);
 	}
-
+	
+	public float getMountingRotation() {
+		return mounting;
+	}
+	
 	@Override
 	public void tick() {
 		if (magentometerCalibrated && hasNewCorrectionData) {
