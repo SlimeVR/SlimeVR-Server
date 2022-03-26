@@ -202,7 +202,7 @@ public class TrackersList extends EJBoxNoStretch {
 				});
 				if(realTracker instanceof IMUTracker) {
 					IMUTracker imu = (IMUTracker) realTracker;
-					add(new JButton("Calibrate") {{
+					add(new JButton("Mounting") {{
 						addMouseListener(new MouseInputAdapter() {
 							@Override
 							public void mouseClicked(MouseEvent e) {

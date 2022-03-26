@@ -176,15 +176,6 @@ public class VRServerGUI extends JFrame {
 			setBorder(new EmptyBorder(i(5)));
 			
 			add(Box.createHorizontalGlue());
-			add(calibrateButton = new JButton("CALIBRATE") {{
-				addMouseListener(new MouseInputAdapter() {
-					@Override
-					public void mouseClicked(MouseEvent e) {
-						calibrateMounting();
-					}
-				});
-			}});
-			add(Box.createHorizontalStrut(21));
 			add(resetButton = new JButton("RESET") {{
 				addMouseListener(new MouseInputAdapter() {
 					@Override
@@ -193,12 +184,21 @@ public class VRServerGUI extends JFrame {
 					}
 				});
 			}});
-			add(Box.createHorizontalStrut(9));
+			add(Box.createHorizontalStrut(10));
 			add(new JButton("Fast Reset") {{
 				addMouseListener(new MouseInputAdapter() {
 					@Override
 					public void mouseClicked(MouseEvent e) {
 						resetFast();
+					}
+				});
+			}});
+			add(Box.createHorizontalGlue());
+			add(calibrateButton = new JButton("CALIBRATE") {{
+				addMouseListener(new MouseInputAdapter() {
+					@Override
+					public void mouseClicked(MouseEvent e) {
+						calibrateMounting();
 					}
 				});
 			}});

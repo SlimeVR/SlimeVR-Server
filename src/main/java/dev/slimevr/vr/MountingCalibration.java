@@ -6,7 +6,6 @@ import dev.slimevr.vr.trackers.IMUTracker;
 import dev.slimevr.vr.trackers.ReferenceAdjustedTracker;
 import dev.slimevr.vr.trackers.Tracker;
 import dev.slimevr.vr.trackers.TrackerConfig;
-import dev.slimevr.vr.trackers.TrackerPosition;
 
 import com.jme3.math.FastMath;
 import com.jme3.math.Quaternion;
@@ -21,7 +20,6 @@ public class MountingCalibration {
 		this.server = server;
 	}
 	public void SetIMUMountingRotation(float rad, IMUTracker imu, Tracker t){ // Sets the mounting rotation (rad) of a given imu tracker and saves it.
-		LogManager.log.info("[Mounting Calibration] (" + t.getDescriptiveName() + ") mounting orientation orientation set: " + Math.round(rad/Math.PI*180));
 		imu.setMountingRotation(rad);
 		TrackerConfig tc = server.getTrackerConfig(t);
 		imu.saveConfig(tc);
@@ -74,7 +72,7 @@ public class MountingCalibration {
 				trackerNumber++;
 			}
 		}
-		LogManager.log.info("[Mounting Calibration] Calibrated all " + trackerNumber + " trackers");
+		LogManager.log.info("[Mounting Calibration] Calibrated mounting of all " + trackerNumber + " trackers");
 	}
 	public float yawCorrection(Quaternion idle, Quaternion squat, boolean backwards, boolean feet){ // Calculated yaw offset for the mounting orientation
 		if(feet){
