@@ -45,10 +45,10 @@ public class BodyProportion {
 			switch (config) {
 			case TORSO:
 			case LEGS_LENGTH:
-				addBodyPropTimedResetBtn(name, plus, label, minus, reset, SkeletonConfigValue.KNEE_HEIGHT, !isLastLine);
+				addBodyPropTimedResetBtn(name, plus, label, minus, reset, config, !isLastLine);
 				break;
 			default:
-				addBodyProp(name, plus, label, minus, reset, SkeletonConfigValue.CHEST, !isLastLine);
+				addBodyProp(name, plus, label, minus, reset, config, !isLastLine);
 				break;
 			}
 		}
