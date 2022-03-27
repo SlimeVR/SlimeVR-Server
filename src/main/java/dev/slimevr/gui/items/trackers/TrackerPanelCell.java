@@ -255,7 +255,7 @@ public class TrackerPanelCell extends AnchorPane {
 				StringUtils.prettyNumber(angles[1] * FastMath.RAD_TO_DEG, 0),
 				StringUtils.prettyNumber(angles[2] * FastMath.RAD_TO_DEG, 0)));
 		status.setText(t.getStatus().toString().toLowerCase());
-		// TODO: Use missing textures if they can't be found? This used to give a ton of errors per second, flooding the logs @ButterscotchV
+
 		if (status.getText().equals("ok")) {
 			connectIMG.setImage(activeImage);
 		} else {
