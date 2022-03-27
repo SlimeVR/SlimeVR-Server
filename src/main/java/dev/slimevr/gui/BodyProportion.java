@@ -36,17 +36,22 @@ public class BodyProportion {
 		customizeTextFlow(minus, 14.0f, 13);
 		customizeTextFlow(reset, 14.0f, 13);
 		
-		// TODO: Get this caught up to the main branch @ButterscotchV
-		addBodyProp(name, plus, label, minus, reset, SkeletonConfigValue.CHEST, true);
-		addBodyPropTimedResetBtn(name, plus, label, minus, reset, SkeletonConfigValue.WAIST, true);
-		addBodyProp(name, plus, label, minus, reset, SkeletonConfigValue.HIPS_WIDTH, true);
-		addBodyPropTimedResetBtn(name, plus, label, minus, reset, SkeletonConfigValue.LEGS_LENGTH, true);
-		addBodyPropTimedResetBtn(name, plus, label, minus, reset, SkeletonConfigValue.KNEE_HEIGHT, true);
-		addBodyProp(name, plus, label, minus, reset, SkeletonConfigValue.FOOT_LENGTH, true);
-		addBodyProp(name, plus, label, minus, reset, SkeletonConfigValue.HEAD, true);
-		addBodyProp(name, plus, label, minus, reset, SkeletonConfigValue.NECK, true);
-		addBodyProp(name, plus, label, minus, reset, SkeletonConfigValue.HIP_OFFSET, false);
-		
+		for (int i = 0; i < SkeletonConfigValue.values.length; i++) {
+			// Get config
+			SkeletonConfigValue config = SkeletonConfigValue.values[i];
+			boolean isLastLine = i >= (SkeletonConfigValue.values.length - 1);
+
+			// Only use a timer on configs that need time to get into position for
+			switch (config) {
+			case TORSO:
+			case LEGS_LENGTH:
+				addBodyPropTimedResetBtn(name, plus, label, minus, reset, SkeletonConfigValue.KNEE_HEIGHT, !isLastLine);
+				break;
+			default:
+				addBodyProp(name, plus, label, minus, reset, SkeletonConfigValue.CHEST, !isLastLine);
+				break;
+			}
+		}
 	}
 	
 	private void addBodyProp(TextFlow name, TextFlow plus, TextFlow label, TextFlow minus, TextFlow reset, SkeletonConfigValue nameStr, boolean lineSeparator) {
