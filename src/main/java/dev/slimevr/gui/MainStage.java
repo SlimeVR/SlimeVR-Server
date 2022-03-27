@@ -2,8 +2,10 @@ package dev.slimevr.gui;
 
 import com.dustinredmond.fxtrayicon.FXTrayIcon;
 import dev.slimevr.Main;
+import dev.slimevr.gui.util.GUIUtils;
 import javafx.application.Application;
 import javafx.application.Platform;
+import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Scene;
@@ -24,32 +26,37 @@ public class MainStage extends Application {
 
 	@Override
 	public void start(Stage stage) throws IOException {
-
-		//if (FXTrayIcon.isSupported()) {
-		icon = new FXTrayIcon(stage, getClass().getResource("/icon256.png"));
-		icon.show();
-
-		FXMLLoader fxmlLoader = new FXMLLoader(MainStage.class.getResource("/main.fxml"));
+		FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("/main.fxml"));
 		MainStageController controller = new MainStageController(stage, icon);
 		fxmlLoader.setController(controller);
 		fxmlLoader.setResources(ResourceBundle.getBundle("localization_files/LangBundle", new Locale("en", "EN")));
 		Scene scene = new Scene(fxmlLoader.load());
 		stage.setTitle("SlimeVR Server (" + Main.VERSION + ")");
-		stage.getIcons().add(new Image(Objects.requireNonNull(getClass().getResourceAsStream("/icon256.png"))));
+		
+		ObservableList<Image> icons = stage.getIcons();
+		icons.add(GUIUtils.getImage("/icon16.png", false));
+		icons.add(GUIUtils.getImage("/icon32.png", false));
+		icons.add(GUIUtils.getImage("/icon48.png", false));
+		icons.add(GUIUtils.getImage("/icon64.png", false));
+		icons.add(GUIUtils.getImage("/icon128.png", false));
+		icons.add(GUIUtils.getImage("/icon256.png", false));
+
 		stage.setScene(scene);
 		stage.setResizable(true);
 		stage.centerOnScreen();
 		// stage.initStyle(StageStyle.UNDECORATED);
 
+		// TODO: Maybe temporary? Needs an option to chose whether to minimize to tray or exit
 		stage.setOnCloseRequest(e -> {
 			Platform.exit();
 			System.exit(0);
 		});
 
 		stage.show();
+
+		// Have this section at the end, it requires information set by the earlier code
+		//if (FXTrayIcon.isSupported()) {
+		icon = new FXTrayIcon(stage, getClass().getResource("/icon256.png"));
+		icon.show();
 	}
-
-
-
-
 }

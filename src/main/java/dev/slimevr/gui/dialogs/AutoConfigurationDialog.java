@@ -253,8 +253,8 @@ public class AutoConfigurationDialog  extends AnchorPane implements Initializabl
 						heightPercentError.add(processFrames(recording.getValue()));
 						LogManager.log.info("[AutoBone] Done processing!");
 						disableViewJavaFxThread(applyButton,false);
+
 						//#region Stats/Values
-						// TODO: Is this up to date with the main branch? Double check this @ButterscotchV
 						Float neckLength = autoBone.getConfig(SkeletonConfigValue.NECK);
 						Float chestDistance = autoBone.getConfig(SkeletonConfigValue.CHEST);
 						Float torsoLength = autoBone.getConfig(SkeletonConfigValue.TORSO);

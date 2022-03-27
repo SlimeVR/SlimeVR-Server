@@ -6,6 +6,7 @@ import com.jme3.math.Vector3f;
 import io.eiren.util.StringUtils;
 import io.eiren.util.logging.LogManager;
 import dev.slimevr.VRServer;
+import dev.slimevr.gui.util.GUIUtils;
 import dev.slimevr.vr.trackers.*;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
@@ -31,6 +32,9 @@ public class TrackerPanelCell extends AnchorPane {
 	Quaternion q = new Quaternion();
 	Vector3f v = new Vector3f();
 	float[] angles = new float[3];
+
+	Image activeImage = GUIUtils.getImage("/active_slime.png");
+	Image deactivatedImage = GUIUtils.getImage("/deactived_slime.png");
 
 	@FXML
 	private ResourceBundle resources;
@@ -174,9 +178,9 @@ public class TrackerPanelCell extends AnchorPane {
 
 		status.setText(t.getStatus().toString().toLowerCase(Locale.ROOT));
 		if (status.getText().equals("ok")) {
-			connectIMG.setImage(new Image(getClass().getResource("/active_slime.png").toString(), true));
+			connectIMG.setImage(activeImage);
 		} else {
-			connectIMG.setImage(new Image(getClass().getResource("/deactived_slime.png").toString(), true));
+			connectIMG.setImage(deactivatedImage);
 		}
 
 		if (realTracker instanceof TrackerWithBattery) {
@@ -251,13 +255,11 @@ public class TrackerPanelCell extends AnchorPane {
 				StringUtils.prettyNumber(angles[1] * FastMath.RAD_TO_DEG, 0),
 				StringUtils.prettyNumber(angles[2] * FastMath.RAD_TO_DEG, 0)));
 		status.setText(t.getStatus().toString().toLowerCase());
-		// TODO: Use missing textures if they can't be found? This used to give a ton of errors per second, flooding the logs @ButterscotchV
+
 		if (status.getText().equals("ok")) {
-			URL imageUrl = getClass().getResource("/active_slime.png");
-			connectIMG.setImage(imageUrl != null ? new Image(imageUrl.toString(), true) : null);
+			connectIMG.setImage(activeImage);
 		} else {
-			URL imageUrl = getClass().getResource("/deactived_slime.png");
-			connectIMG.setImage(imageUrl != null ? new Image(imageUrl.toString(), true) : null);
+			connectIMG.setImage(deactivatedImage);
 		}
 
 		if (realTracker instanceof TrackerWithTPS) {

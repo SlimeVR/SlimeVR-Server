@@ -93,9 +93,11 @@ public class SkeletonConfigView extends VBox implements Initializable {
 
 	private void changeJointValue(SkeletonConfigValue joint, float diff) {
 		float current = server.humanPoseProcessor.getSkeletonConfig(joint);
-		server.humanPoseProcessor.setSkeletonConfig(joint, current + diff);
+		float newVal = current + diff;
+
+		server.humanPoseProcessor.setSkeletonConfig(joint, newVal);
 		server.saveConfig();
-		updateSkeletonConfigItem(joint, current + diff);
+		updateSkeletonConfigItem(joint, newVal);
 	}
 
 
