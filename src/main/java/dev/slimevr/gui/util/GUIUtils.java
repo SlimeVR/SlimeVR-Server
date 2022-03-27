@@ -5,7 +5,7 @@ import javafx.scene.image.Image;
 
 public class GUIUtils {
 	
-	public static final Image MISSING_IMAGE = getImage("/missing.png", null);
+	public static final Image MISSING_IMAGE = getImage("/missing.png", null, false);
 
 	private GUIUtils() {
 		throw new IllegalStateException("Utility class");
