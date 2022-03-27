@@ -46,6 +46,7 @@ public class MainStage extends Application {
 		stage.centerOnScreen();
 		// stage.initStyle(StageStyle.UNDECORATED);
 
+		// TODO: Maybe temporary? Needs an option to chose whether to minimize to tray or exit
 		stage.setOnCloseRequest(e -> {
 			Platform.exit();
 			System.exit(0);
@@ -53,12 +54,9 @@ public class MainStage extends Application {
 
 		stage.show();
 
+		// Have this section at the end, it requires information set by the earlier code
 		//if (FXTrayIcon.isSupported()) {
 		icon = new FXTrayIcon(stage, getClass().getResource("/icon256.png"));
 		icon.show();
 	}
-
-
-
-
 }
