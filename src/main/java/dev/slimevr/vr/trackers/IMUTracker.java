@@ -21,6 +21,7 @@ public class IMUTracker implements Tracker, TrackerWithTPS, TrackerWithBattery {
 	public final Quaternion rotAdjust = new Quaternion();
 	protected final Quaternion correction = new Quaternion();
 	protected LinkedList<Quaternion> previousRots = new LinkedList<Quaternion>();
+	private final Quaternion buffQuat = new Quaternion();
 	public float movementFilterTickCount = 0;
 	public float movementFilterAmount = 1f;
 	protected TrackerMountingRotation mounting = null;
@@ -134,7 +135,7 @@ public class IMUTracker implements Tracker, TrackerWithTPS, TrackerWithBattery {
 			}
 		}
 		if(movementFilterTickCount != 0){
-			previousRots.addLast(new Quaternion(rotQuaternion));
+			previousRots.addLast(rotQuaternion.clone());
 			if(previousRots.size() > movementFilterTickCount){
 				previousRots.removeFirst();
 			}
@@ -155,7 +156,9 @@ public class IMUTracker implements Tracker, TrackerWithTPS, TrackerWithBattery {
 	@Override
 	public boolean getRotation(Quaternion store) {
 		if(movementFilterTickCount > 0 && movementFilterAmount != 1 && previousRots.getFirst() != null){
-			store.set(new Quaternion().slerp(rotQuaternion, previousRots.getFirst(), movementFilterAmount));
+			buffQuat.set(previousRots.getFirst());
+			buffQuat.slerp(rotQuaternion, movementFilterAmount);
+			store.set(buffQuat);
 		}
 		else{
 			store.set(rotQuaternion);
