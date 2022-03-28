@@ -109,7 +109,7 @@ public class IMUTracker implements Tracker, TrackerWithTPS, TrackerWithBattery {
 			movementFilterAmount = 1f;
 			movementFilterTickCount = 0;
 		}
-		previousRots = new CircularArrayList<Quaternion>(movementFilterTickCount);
+		previousRots = new CircularArrayList<Quaternion>(movementFilterTickCount + 1);
 	}
 	public TrackerMountingRotation getMountingRotation() {
 		return mounting;
@@ -136,7 +136,7 @@ public class IMUTracker implements Tracker, TrackerWithTPS, TrackerWithBattery {
 		}
 		if(movementFilterTickCount != 0){
 			previousRots.add(rotQuaternion.clone());
-			if(previousRots.size() > movementFilterTickCount - 1){
+			if(previousRots.size() > movementFilterTickCount){
 				previousRots.remove(0);
 			}
 		}
