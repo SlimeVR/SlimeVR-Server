@@ -2,14 +2,15 @@ package dev.slimevr.vr.trackers;
 
 import java.nio.ByteBuffer;
 
+import dev.slimevr.VRServer;
 import dev.slimevr.vr.trackers.udp.TrackersUDPServer;
 
 public class MPUTracker extends IMUTracker {
 	
 	public ConfigurationData newCalibrationData;
 	
-	public MPUTracker(int trackerId, String name, String descriptiveName, TrackersUDPServer server) {
-		super(trackerId, name, descriptiveName, server);
+	public MPUTracker(int trackerId, String name, String descriptiveName, TrackersUDPServer server, VRServer vrserver) {
+		super(trackerId, name, descriptiveName, server, vrserver);
 	}
 	
 	public static class ConfigurationData {
