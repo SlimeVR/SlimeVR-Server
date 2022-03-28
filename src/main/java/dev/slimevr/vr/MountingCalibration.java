@@ -82,9 +82,8 @@ public class MountingCalibration {
 		
 		if(!endOnly){
 			Quaternion rot = squat.mult(idle.inverse());
-			squat = squat.slerp(idle, squat, 1f/(FastMath.abs(rot.getX()) + FastMath.abs(rot.getZ())));
+			squat = squat.slerp(idle, squat, 1f/(FastMath.abs(rot.getX()) + FastMath.abs(rot.getZ()) + FastMath.abs(idle.getX()) + FastMath.abs(idle.getZ())));
 		}
-
 		float correctionYaw = squat.getRoll();
 
 		if(backwards) correctionYaw -= FastMath.PI;

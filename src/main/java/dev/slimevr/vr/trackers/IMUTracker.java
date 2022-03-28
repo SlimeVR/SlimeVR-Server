@@ -66,18 +66,10 @@ public class IMUTracker implements Tracker, TrackerWithTPS, TrackerWithBattery {
 		// Loading a config is an act of user editing, therefore it shouldn't not be
 		// allowed if editing is not allowed
 		if (userEditable()) {
-			if (config.mountingRotation != 69) {
-				mounting = config.mountingRotation;
-				if (mounting != 69) {
-					Quaternion mountingQuat = new Quaternion();
-					mountingQuat.fromAngles(0, config.mountingRotation, 0);
-					rotAdjust.set(mountingQuat);
-				} else {
-					rotAdjust.loadIdentity();
-				}
-			} else {
-				rotAdjust.loadIdentity();
-			}
+			mounting = config.mountingRotation;
+			Quaternion mountingQuat = new Quaternion();
+			mountingQuat.fromAngles(0, config.mountingRotation, 0);
+			rotAdjust.set(mountingQuat);
 			bodyPosition = TrackerPosition.getByDesignation(config.designation);
 			setFilter(vrserver.config.getString("filters.type"), vrserver.config.getFloat("filters.amount", 0.3f),
 					vrserver.config.getInt("filters.tickCount", 1));
@@ -120,7 +112,7 @@ public class IMUTracker implements Tracker, TrackerWithTPS, TrackerWithBattery {
 		mountingQuat.fromAngles(0, mounting, 0);
 		rotAdjust.set(mountingQuat);
 	}
-	
+
 	public float getMountingRotation() {
 		return mounting;
 	}

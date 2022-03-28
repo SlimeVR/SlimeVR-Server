@@ -53,11 +53,7 @@ public class TrackerConfig {
 		} else {
 			configNode.removeProperty("adj");
 		}
-		if(mountingRotation != 69) {
-			configNode.setProperty("rotation", mountingRotation);
-		} else {
-			configNode.removeProperty("rotation");
-		}
+		configNode.setProperty("rotation", mountingRotation);
 		if(description != null) {
 			configNode.setProperty("description", description);
 		} else {
