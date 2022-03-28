@@ -49,25 +49,30 @@ public class MountingCalibration {
 			if(realTracker instanceof IMUTracker){
 				imu = (IMUTracker)realTracker;
 				if(trackerOrientationIdle.size() > trackerNumber){
-					switch(imu.bodyPosition){
-						case CHEST:
-						case WAIST:
-						case HIP:
-						case LEFT_ANKLE:
-						case RIGHT_ANKLE:
-							SetIMUMountingRotation(yawCorrection(trackerOrientationIdle.get(trackerNumber), imu.rotQuaternion.clone(), true, false), imu, t);
-							break;
-						case LEFT_FOOT:
-						case RIGHT_FOOT:
-						case LEFT_FOREARM:
-						case RIGHT_FOREARM:
-						case LEFT_UPPER_ARM:
-						case RIGHT_UPPER_ARM:
-							SetIMUMountingRotation(yawCorrection(trackerOrientationIdle.get(trackerNumber), imu.rotQuaternion.clone(), false, true), imu, t);
-							break;
-						default:
-							SetIMUMountingRotation(yawCorrection(trackerOrientationIdle.get(trackerNumber), imu.rotQuaternion.clone(), false, false), imu, t);
-							break;
+					if(imu.bodyPosition != null){
+						switch(imu.bodyPosition){
+							case CHEST:
+							case WAIST:
+							case HIP:
+							case LEFT_ANKLE:
+							case RIGHT_ANKLE:
+								SetIMUMountingRotation(yawCorrection(trackerOrientationIdle.get(trackerNumber), imu.rotQuaternion.clone(), true, false), imu, t);
+								break;
+							case LEFT_FOOT:
+							case RIGHT_FOOT:
+							case LEFT_FOREARM:
+							case RIGHT_FOREARM:
+							case LEFT_UPPER_ARM:
+							case RIGHT_UPPER_ARM:
+								SetIMUMountingRotation(yawCorrection(trackerOrientationIdle.get(trackerNumber), imu.rotQuaternion.clone(), false, true), imu, t);
+								break;
+							default:
+								SetIMUMountingRotation(yawCorrection(trackerOrientationIdle.get(trackerNumber), imu.rotQuaternion.clone(), false, false), imu, t);
+								break;
+						}
+					}
+					else{
+						SetIMUMountingRotation(yawCorrection(trackerOrientationIdle.get(trackerNumber), imu.rotQuaternion.clone(), false, false), imu, t);
 					}
 				}
 				else{

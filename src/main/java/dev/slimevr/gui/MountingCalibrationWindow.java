@@ -141,25 +141,30 @@ public class MountingCalibrationWindow extends JFrame {
 	}
 	void squated(){
 		float radian = imu.getMountingRotation();
-		switch(imu.bodyPosition){
-			case CHEST:
-			case WAIST:
-			case HIP:
-			case LEFT_ANKLE:
-			case RIGHT_ANKLE:
-				radian = mountingCalibration.yawCorrection(standingOrientation, imu.rotQuaternion.clone(), true, false);
-				break;
-			case LEFT_FOOT:
-			case RIGHT_FOOT:
-			case LEFT_FOREARM:
-			case RIGHT_FOREARM:
-			case LEFT_UPPER_ARM:
-			case RIGHT_UPPER_ARM:
-				radian = mountingCalibration.yawCorrection(standingOrientation, imu.rotQuaternion.clone(), false, true);
-				break;
-			default:
-				radian = mountingCalibration.yawCorrection(standingOrientation, imu.rotQuaternion.clone(), false, false);
-				break;
+		if(imu.bodyPosition != null){
+			switch(imu.bodyPosition){
+				case CHEST:
+				case WAIST:
+				case HIP:
+				case LEFT_ANKLE:
+				case RIGHT_ANKLE:
+					radian = mountingCalibration.yawCorrection(standingOrientation, imu.rotQuaternion.clone(), true, false);
+					break;
+				case LEFT_FOOT:
+				case RIGHT_FOOT:
+				case LEFT_FOREARM:
+				case RIGHT_FOREARM:
+				case LEFT_UPPER_ARM:
+				case RIGHT_UPPER_ARM:
+					radian = mountingCalibration.yawCorrection(standingOrientation, imu.rotQuaternion.clone(), false, true);
+					break;
+				default:
+					radian = mountingCalibration.yawCorrection(standingOrientation, imu.rotQuaternion.clone(), false, false);
+					break;
+			}
+		}
+		else{
+			radian = mountingCalibration.yawCorrection(standingOrientation, imu.rotQuaternion.clone(), false, false);
 		}
 		mountingValue.setText("Mounting = " +  Math.round(Math.toDegrees(radian)));
 		mountingCalibration.SetIMUMountingRotation(radian, imu, t);
