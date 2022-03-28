@@ -1,6 +1,5 @@
 package dev.slimevr.vr.trackers;
 
-import java.util.LinkedList;
 import com.jme3.math.FastMath;
 import com.jme3.math.Quaternion;
 import com.jme3.math.Vector3f;
@@ -20,9 +19,9 @@ public class IMUTracker implements Tracker, TrackerWithTPS, TrackerWithBattery {
 	public final Quaternion rotMagQuaternion = new Quaternion();
 	public final Quaternion rotAdjust = new Quaternion();
 	protected final Quaternion correction = new Quaternion();
-	protected LinkedList<Quaternion> previousRots = new LinkedList<Quaternion>();
+	protected CircularArrayList<Quaternion> previousRots;
 	private final Quaternion buffQuat = new Quaternion();
-	public float movementFilterTickCount = 0;
+	public int movementFilterTickCount = 0;
 	public float movementFilterAmount = 1f;
 	protected TrackerMountingRotation mounting = null;
 	protected TrackerStatus status = TrackerStatus.OK;
@@ -110,6 +109,7 @@ public class IMUTracker implements Tracker, TrackerWithTPS, TrackerWithBattery {
 			movementFilterAmount = 1f;
 			movementFilterTickCount = 0;
 		}
+		previousRots = new CircularArrayList<Quaternion>(movementFilterTickCount);
 	}
 	public TrackerMountingRotation getMountingRotation() {
 		return mounting;
@@ -135,9 +135,9 @@ public class IMUTracker implements Tracker, TrackerWithTPS, TrackerWithBattery {
 			}
 		}
 		if(movementFilterTickCount != 0){
-			previousRots.addLast(rotQuaternion.clone());
-			if(previousRots.size() > movementFilterTickCount){
-				previousRots.removeFirst();
+			previousRots.add(rotQuaternion.clone());
+			if(previousRots.size() > movementFilterTickCount - 1){
+				previousRots.remove(0);
 			}
 		}
 	}
@@ -155,8 +155,8 @@ public class IMUTracker implements Tracker, TrackerWithTPS, TrackerWithBattery {
 	
 	@Override
 	public boolean getRotation(Quaternion store) {
-		if(movementFilterTickCount > 0 && movementFilterAmount != 1 && previousRots.getFirst() != null){
-			buffQuat.set(previousRots.getFirst());
+		if(movementFilterTickCount > 0 && movementFilterAmount != 1 && previousRots.size() > 0){
+			buffQuat.set(previousRots.get(0));
 			buffQuat.slerp(rotQuaternion, movementFilterAmount);
 			store.set(buffQuat);
 		}
