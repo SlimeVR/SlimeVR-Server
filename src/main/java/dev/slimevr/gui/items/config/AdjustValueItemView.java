@@ -1,9 +1,6 @@
 package dev.slimevr.gui.items.config;
 
 import io.eiren.util.StringUtils;
-import io.eiren.util.logging.LogManager;
-import dev.slimevr.VRServer;
-import dev.slimevr.vr.processor.skeleton.SkeletonConfigValue;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.fxml.FXML;
@@ -17,7 +14,6 @@ import java.io.IOException;
 import java.net.URL;
 import java.util.Locale;
 import java.util.ResourceBundle;
-import java.util.function.Consumer;
 
 public class AdjustValueItemView extends HBox implements Initializable {
 
