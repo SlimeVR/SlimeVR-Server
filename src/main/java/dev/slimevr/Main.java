@@ -11,7 +11,6 @@ import org.apache.commons.lang3.SystemUtils;
 
 import dev.slimevr.gui.MainStage;
 import dev.slimevr.gui.Keybinding;
-import dev.slimevr.gui.VRServerGUI;
 import io.eiren.util.logging.LogManager;
 import io.eiren.gui.jfx.SlimeVRGUIJFX;
 import javafx.application.Application;

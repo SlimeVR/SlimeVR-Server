@@ -1,7 +1,6 @@
 package dev.slimevr.gui.dialogs;
 
 import com.fazecast.jSerialComm.SerialPort;
-import dev.slimevr.gui.WiFiWindow;
 import io.eiren.util.logging.LogManager;
 import dev.slimevr.VRServer;
 import javafx.application.Platform;
