@@ -84,6 +84,7 @@ public class MainTabController {
 	}
 
 	private void openWifiDialog() {
+		LogManager.log.debug("Opening WiFi Settings dialog");
 		FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("/dialogs/trackerConfigurationDialog.fxml"));
 		Stage stage = new Stage();
 		fxmlLoader.setResources(ResourceBundle.getBundle("localization_files/LangBundle", new Locale("en", "EN")));
@@ -98,7 +99,7 @@ public class MainTabController {
 			stage.centerOnScreen();
 			stage.show();
 		} catch (IOException e) {
-			e.printStackTrace();
+			LogManager.log.severe("Exception while opening WiFi Settings dialog", e);
 		}
 	}
 

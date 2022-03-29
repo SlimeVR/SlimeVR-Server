@@ -190,7 +190,7 @@ public class TrackerPanelCell extends AnchorPane {
 		if (t.userEditable()) {
 			TrackerConfig cfg = server.getTrackerConfig(t);
 			for (TrackerPosition p : TrackerPosition.values) {
-				LogManager.log.severe(" " + p.name());
+				LogManager.log.debug(" " + p.name());
 				desSelect.getItems().add(p.name());
 			}
 

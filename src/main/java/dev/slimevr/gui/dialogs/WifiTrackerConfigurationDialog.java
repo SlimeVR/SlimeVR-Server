@@ -163,11 +163,10 @@ public class WifiTrackerConfigurationDialog extends AnchorPane implements Initia
 				while (reader.ready())
 					sb.appendCodePoint(reader.read());
 				if (sb.length() > 0) {
+					String message = sb.toString();
 					Platform.runLater(() -> {
-						String message = sb.toString();
 						LogManager.log.info(message);
-						log.setText(log.getText()+message);
-						//log.appendText(message);
+						log.appendText(message);
 					});
 				}
 				sb.setLength(0);

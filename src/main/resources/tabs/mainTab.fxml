@@ -52,7 +52,7 @@
                         </AnchorPane>
                         <AnchorPane prefHeight="100.0" prefWidth="114.0">
                            <children>
-                              <Button contentDisplay="TOP" layoutX="6.0" layoutY="13.0" mnemonicParsing="false" prefHeight="25.0" prefWidth="94.0" text="Wifi" AnchorPane.bottomAnchor="10.0" AnchorPane.leftAnchor="10.0" AnchorPane.rightAnchor="10.0" AnchorPane.topAnchor="10.0">
+                              <Button contentDisplay="TOP" layoutX="6.0" layoutY="13.0" mnemonicParsing="false" onAction="#wifiClicked" prefHeight="25.0" prefWidth="94.0" text="WiFi" AnchorPane.bottomAnchor="10.0" AnchorPane.leftAnchor="10.0" AnchorPane.rightAnchor="10.0" AnchorPane.topAnchor="10.0">
                                  <graphic>
                                     <ImageView fitHeight="28.0" fitWidth="30.0" pickOnBounds="true" preserveRatio="true">
                                        <image>
