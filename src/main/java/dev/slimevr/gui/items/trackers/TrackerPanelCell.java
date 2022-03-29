@@ -145,7 +145,8 @@ public class TrackerPanelCell extends AnchorPane {
 
 	public TrackerPanelCell build() {
 
-		LogManager.log.severe("TrackerPanelCell build() " + t.getTrackerId());
+		LogManager.log.debug("TrackerPanelCell build() " + t.getTrackerId());
+
 		Tracker realTracker = t;
 		if (t instanceof ReferenceAdjustedTracker)
 			realTracker = ((ReferenceAdjustedTracker<? extends Tracker>) t).getTracker();
