@@ -17,7 +17,6 @@ public class SkeletonDataTitleItemView extends HBox  implements Initializable{
 
 	private ResourceBundle bundle;
 
-
 	public SkeletonDataTitleItemView() {
 
 		FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("/cells/skeleton/skeletonDataTitleItemView.fxml"));
@@ -29,19 +28,14 @@ public class SkeletonDataTitleItemView extends HBox  implements Initializable{
 		} catch (IOException e) {
 			throw new RuntimeException(e);
 		}
-
-
 	}
 
 	@FXML
 	public void initialize() {
-
 	}
 
 	@Override
 	public void initialize(URL location, ResourceBundle resources) {
 		bundle = resources;
-
 	}
-
 }

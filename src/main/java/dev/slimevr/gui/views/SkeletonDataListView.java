@@ -27,12 +27,12 @@ public class SkeletonDataListView extends VBox implements Initializable {
 
 		// server.addSkeletonUpdatedCallback(this::skeletonUpdated);
 		server.addOnTick(this::updateBones);
-
 	}
 
 	private void updateBones() {
 		if (lastUpdate + UPDATE_DELAY > System.currentTimeMillis())
 			return;
+		
 		lastUpdate = System.currentTimeMillis();
 		Platform.runLater(() -> {
 			nodes.forEach((key, value) -> value.update());
@@ -40,15 +40,11 @@ public class SkeletonDataListView extends VBox implements Initializable {
 	}
 
 	private void skeletonUpdated(HumanSkeleton humanSkeleton) {
-
 	}
-
 
 	private void populateSkeletonItems() {
 		this.getChildren().add(new SkeletonDataTitleItemView());
-
 		server.humanPoseProcessor.getSkeleton().getRootNode().depthFirstTraversal(this::addSkeletonDataItem);
-
 	}
 
 	private void addSkeletonDataItem(TransformNode node) {
@@ -57,11 +53,7 @@ public class SkeletonDataListView extends VBox implements Initializable {
 		this.getChildren().add(skeletonDataItemView);
 	}
 
-
 	@Override
 	public void initialize(URL location, ResourceBundle resources) {
-
 	}
-
-
 }

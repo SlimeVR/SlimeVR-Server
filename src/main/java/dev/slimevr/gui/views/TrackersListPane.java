@@ -11,7 +11,6 @@ import javafx.application.Platform;
 import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
 import javafx.geometry.Insets;
-import javafx.geometry.Pos;
 import javafx.scene.layout.ColumnConstraints;
 import javafx.scene.layout.GridPane;
 
@@ -33,8 +32,7 @@ public class TrackersListPane extends GridPane implements Initializable {
 	private long lastUpdate = 0;
 
 	public TrackersListPane() {
-		FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource(
-				"/gui/trackersListPane.fxml"));
+		FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("/gui/trackersListPane.fxml"));
 		fxmlLoader.setRoot(this);
 		fxmlLoader.setController(this);
 
@@ -43,21 +41,17 @@ public class TrackersListPane extends GridPane implements Initializable {
 		} catch (IOException exception) {
 			throw new RuntimeException(exception);
 		}
-
 	}
 
 	public TrackersListPane(VRServer server) {
-
 	}
 
-	public void init(VRServer server)
-	{
+	public void init(VRServer server) {
 		this.server = server;
 		this.trackers = new FastList<>();
 
 		server.addNewTrackerConsumer(this::newTrackerAdded);
 	}
-
 
 	private void build() {
 		getChildren().clear();
@@ -88,8 +82,9 @@ public class TrackersListPane extends GridPane implements Initializable {
 			TrackerPanelCell tr = trackers.get(i);
 			this.add(tr, column, row);
 			column++;
-		/*	if(! this.getChildren().contains(tr))
-			{
+
+			/*
+			if(! this.getChildren().contains(tr)) {
 				this.add(tr, column, row);
 				column++;
 			}*/
@@ -98,9 +93,7 @@ public class TrackersListPane extends GridPane implements Initializable {
 
 			//tr.build();
 		}
-
 	}
-
 
 	public void trackersListInit() {
 		/*trackers.sort(Comparator.comparingInt(tr -> getTrackerSort(tr.tracker)));
@@ -117,13 +110,13 @@ public class TrackersListPane extends GridPane implements Initializable {
 				t = ((ReferenceAdjustedTracker<?>) t).getTracker();
 			
 		}*/
-
 	}
 
 	@ThreadSafe
 	public void updateTrackers() {
 		if (lastUpdate + UPDATE_DELAY > System.currentTimeMillis())
 			return;
+		
 		lastUpdate = System.currentTimeMillis();
 		Platform.runLater(() -> {
 			for (TrackerPanelCell tracker : trackers) tracker.update();
@@ -157,11 +150,9 @@ public class TrackersListPane extends GridPane implements Initializable {
 		Platform.runLater(
 				this::build
 		);
-
 	}
 
 	@Override
 	public void initialize(URL location, ResourceBundle resources) {
-
 	}
 }

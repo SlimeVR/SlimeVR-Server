@@ -1,6 +1,5 @@
 package dev.slimevr.gui.tabs;
 
-import dev.slimevr.gui.MainStage;
 import dev.slimevr.gui.dialogs.AutoConfigurationDialog;
 import dev.slimevr.gui.views.SkeletonConfigView;
 import dev.slimevr.gui.views.SkeletonDataListView;
@@ -10,16 +9,12 @@ import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Scene;
-import javafx.scene.image.Image;
 import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
 
 import java.io.IOException;
 import java.util.Locale;
-import java.util.Objects;
 import java.util.ResourceBundle;
-
-import static com.sun.javafx.scene.control.skin.Utils.getResource;
 
 public class BodyTabController {
 
@@ -42,8 +37,6 @@ public class BodyTabController {
 		initSkeletonDataList();
 	}
 
-
-
 	private void initSkeletonConfigList() {
 		skeletonConfigView = new SkeletonConfigView(server);
 		bodyItems.getChildren().add(skeletonConfigView);
@@ -60,15 +53,15 @@ public class BodyTabController {
 	}
 
 	private void openAutoConfiguration() {
-		FXMLLoader fxmlLoader = new FXMLLoader(getResource("/dialogs/autoConfigurationDialog.fxml"));
+		FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("/dialogs/autoConfigurationDialog.fxml"));
 		Stage stage = new Stage();
 		//AutoConfigurationDialog autoConfigurationDialog = new AutoConfigurationDialog(server,stage);
 		//fxmlLoader.setController(autoConfigurationDialog);
-		// fxmlLoader.setController(autoConfigurationDialog);
+		//fxmlLoader.setController(autoConfigurationDialog);
 		fxmlLoader.setResources(ResourceBundle.getBundle("localization_files/LangBundle", new Locale("en", "EN")));
+
 		Scene scene = null;
 		try {
-
 			scene = new Scene(fxmlLoader.load());
 			AutoConfigurationDialog controller = fxmlLoader.getController();
 			controller.init(server, stage, this::updateSkeletonConfig);
@@ -83,19 +76,17 @@ public class BodyTabController {
 			e.printStackTrace();
 		}
 
-
-	/*	stage.setTitle("AutoBoneWindow");
+		/*
+		stage.setTitle("AutoBoneWindow");
 		stage.getIcons().add(new Image(Objects.requireNonNull(getClass().getResourceAsStream("/icon256.png"))));
 		stage.setScene(scene);
 		stage.setResizable(false);
 		stage.centerOnScreen();
-		stage.show();*/
-
+		stage.show();
+		*/
 	}
 
 	private void updateSkeletonConfig() {
 		skeletonConfigView.refreshAll();
-
 	}
-
 }

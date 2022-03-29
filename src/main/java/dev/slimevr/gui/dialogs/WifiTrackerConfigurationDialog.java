@@ -1,8 +1,8 @@
 package dev.slimevr.gui.dialogs;
 
 import com.fazecast.jSerialComm.SerialPort;
-import io.eiren.util.logging.LogManager;
 import dev.slimevr.VRServer;
+import io.eiren.util.logging.LogManager;
 import javafx.application.Platform;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
@@ -12,7 +12,6 @@ import javafx.scene.control.Label;
 import javafx.scene.control.TextArea;
 import javafx.scene.control.TextField;
 import javafx.scene.layout.AnchorPane;
-import javafx.scene.layout.GridPane;
 import javafx.stage.Stage;
 import javafx.stage.WindowEvent;
 
@@ -23,7 +22,6 @@ import java.util.Timer;
 import java.util.TimerTask;
 
 public class WifiTrackerConfigurationDialog extends AnchorPane implements Initializable {
-
 
 	private VRServer server;
 	private static final Timer timer = new Timer();
@@ -56,9 +54,6 @@ public class WifiTrackerConfigurationDialog extends AnchorPane implements Initia
 	@FXML
 	public Label networkPasswordLabel;
 
-
-
-
 	public void init(VRServer server, Stage stage)
 	{
 		this.server = server;
@@ -77,39 +72,38 @@ public class WifiTrackerConfigurationDialog extends AnchorPane implements Initia
 		}
 		if(trackerPort == null) {
 			trackerStatusLabel.setText("No trackers connected, connect tracker to USB and reopen window");
+
 			timer.schedule(new TimerTask() {
 				@Override
 				public void run() {
 					Platform.runLater(stage::close);
 				}
 			}, 5000);
-
 		} else {
 			initWindowVisibility();
 			trackerStatusLabel.setText("Tracker connected to " + trackerPort.getSystemPortName() + " (" + trackerPort.getDescriptivePortName() + ")");
+
 			if(trackerPort.openPort()) {
 				trackerPort.setBaudRate(115200);
+
 				Platform.runLater(() -> {
 					log.appendText("[OK] Port opened\n");
 				});
+
 				readTask = new ReadTask();
 				timer.schedule(readTask, 500, 500);
 			} else {
 				Platform.runLater(() -> {
-					System.out.println("ERROR: Can't open port");
+					LogManager.log.severe("ERROR: Can't open port");
 					log.appendText("ERROR: Can't open port");
 				});
-
 			}
 		}
 
-
 		//parentView.getScene().getWindow().addEventFilter(WindowEvent.WINDOW_CLOSE_REQUEST, this::closeWindowEvent);
-
 	}
 
-	private void initWindowVisibility()
-	{
+	private void initWindowVisibility() {
 		sendButton.setVisible(true);
 		log.setVisible(true);
 		networkNameLabel.setVisible(true);
@@ -123,10 +117,9 @@ public class WifiTrackerConfigurationDialog extends AnchorPane implements Initia
 			trackerPort.closePort();
 		if(readTask != null)
 			readTask.cancel();
-		System.out.println("Port closed okay");
 
+		LogManager.log.info("Port closed okay");
 	}
-
 
 	@FXML
 	public void onSendButtonClicked(ActionEvent actionEvent) {
@@ -135,17 +128,15 @@ public class WifiTrackerConfigurationDialog extends AnchorPane implements Initia
 
 	@Override
 	public void initialize(URL location, ResourceBundle resources) {
-
 	}
-
-
-
 
 	protected void send(String ssid, String passwd) {
 		savedSSID = ssid;
 		savedPassword = passwd;
+
 		OutputStream os = trackerPort.getOutputStream();
 		OutputStreamWriter writer = new OutputStreamWriter(os);
+
 		try {
 			writer.append("SET WIFI \"" + ssid + "\" \"" + passwd + "\"\n");
 			writer.flush();
@@ -173,9 +164,10 @@ public class WifiTrackerConfigurationDialog extends AnchorPane implements Initia
 					sb.appendCodePoint(reader.read());
 				if (sb.length() > 0) {
 					Platform.runLater(() -> {
-						System.out.println(sb.toString());
-						log.setText(log.getText()+sb.toString());
-						//log.appendText(sb.toString());
+						String message = sb.toString();
+						LogManager.log.info(message);
+						log.setText(log.getText()+message);
+						//log.appendText(message);
 					});
 				}
 				sb.setLength(0);
@@ -183,10 +175,8 @@ public class WifiTrackerConfigurationDialog extends AnchorPane implements Initia
 				Platform.runLater(() -> {
 					log.appendText(e.toString() + "\n");
 				});
-				e.printStackTrace();
+				LogManager.log.severe("Exception while reading from tracker", e);
 			}
 		}
 	}
-
-
 }

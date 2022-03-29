@@ -1,7 +1,6 @@
 package dev.slimevr.gui.tabs;
 
 import com.dustinredmond.fxtrayicon.FXTrayIcon;
-import dev.slimevr.gui.dialogs.AutoConfigurationDialog;
 import dev.slimevr.gui.dialogs.WifiTrackerConfigurationDialog;
 import dev.slimevr.gui.views.TrackersListPane;
 import io.eiren.util.logging.LogManager;
@@ -18,34 +17,24 @@ import java.io.IOException;
 import java.util.Locale;
 import java.util.ResourceBundle;
 
-import static com.sun.javafx.scene.control.skin.Utils.getResource;
-
 public class MainTabController {
-
 
 	@FXML
 	public TrackersListPane trackersListPane;
 	public ComboBox<String> testbox;
 
-
 	private Stage stage;
 	private VRServer server;
 	private FXTrayIcon icon; //required to trigger tray notifications
-
 
 	public MainTabController() {
 		this.server = Main.vrServer;
 	}
 
-
 	@FXML
 	public void initialize() {
-
 		initGui();
-
 		steamVRTrackersSetup();
-
-
 	}
 
 	private void initGui() {
@@ -55,7 +44,8 @@ public class MainTabController {
 		trackersListPane.init(server);
 		server.addOnTick(trackersListPane::updateTrackers);
 
-		/*int currentRow = 0;
+		/*
+		int currentRow = 0;
 		int currentColumn = 0;
 		List<String> testList = new ArrayList<String>();
 		testList.add("akjsjdiajsd");
@@ -82,19 +72,11 @@ public class MainTabController {
 			trackerPanelCells.add(trackerPanelCell);
 			gridPane.add(trackerPanelCell.getTrackerContainer(), currentColumn, currentRow);
 			currentColumn++;
-
-
 		}
 
-
 		trackerPanelCells.get(2).setInfo("2165165");
-*/
-
-
-
+		*/
 	}
-
-
 
 	@FXML
 	void wifiClicked(ActionEvent event) {
@@ -102,7 +84,7 @@ public class MainTabController {
 	}
 
 	private void openWifiDialog() {
-		FXMLLoader fxmlLoader = new FXMLLoader(getResource("/dialogs/trackerConfigurationDialog.fxml"));
+		FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("/dialogs/trackerConfigurationDialog.fxml"));
 		Stage stage = new Stage();
 		fxmlLoader.setResources(ResourceBundle.getBundle("localization_files/LangBundle", new Locale("en", "EN")));
 		Scene scene = null;
@@ -162,5 +144,4 @@ public class MainTabController {
 			server.saveConfig();
 		});*/
 	}
-
 }

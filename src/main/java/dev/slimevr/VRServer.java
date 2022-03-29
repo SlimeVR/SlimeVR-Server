@@ -92,7 +92,6 @@ public class VRServer extends Thread {
 			e.printStackTrace();
 		}
 		
-		
 		registerTracker(hmdTracker);
 		for(int i = 0; i < shareTrackers.size(); ++i)
 			registerTracker(shareTrackers.get(i));

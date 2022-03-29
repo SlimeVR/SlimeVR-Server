@@ -29,7 +29,6 @@ public class SkeletonDataItemView extends HBox  implements Initializable{
 	@FXML
 	private ResourceBundle resources;
 
-
 	@FXML
 	private Label itemJointName;
 
@@ -54,9 +53,7 @@ public class SkeletonDataItemView extends HBox  implements Initializable{
 	private final VRServer server;
 	private ResourceBundle bundle;
 
-
 	public SkeletonDataItemView(VRServer server, TransformNode node) {
-
 		this.server = server;
 		this.node = node;
 
@@ -69,13 +66,10 @@ public class SkeletonDataItemView extends HBox  implements Initializable{
 		} catch (IOException e) {
 			throw new RuntimeException(e);
 		}
-
-
 	}
 
 	@FXML
 	public void initialize() {
-
 	}
 
 	@Override
@@ -84,8 +78,7 @@ public class SkeletonDataItemView extends HBox  implements Initializable{
 		itemJointName.setText(node.getName());
 	}
 
-	public void update()
-	{
+	public void update() {
 		//this.node = node;
 		this.node.worldTransform.getTranslation(v);
 		this.node.worldTransform.getRotation(q);
@@ -93,8 +86,7 @@ public class SkeletonDataItemView extends HBox  implements Initializable{
 		updateUi();
 	}
 
-	private void updateUi()
-	{
+	private void updateUi() {
 		itemXcoord.setText(StringUtils.prettyNumber(v.x, 2));
 		itemYcoord.setText(StringUtils.prettyNumber(v.y, 2));
 		itemZcoord.setText(StringUtils.prettyNumber(v.z, 2));
@@ -102,5 +94,4 @@ public class SkeletonDataItemView extends HBox  implements Initializable{
 		itemYaw.setText(StringUtils.prettyNumber(angles[1] * FastMath.RAD_TO_DEG, 0));
 		itemRoll.setText(StringUtils.prettyNumber(angles[2] * FastMath.RAD_TO_DEG, 0));
 	}
-
 }

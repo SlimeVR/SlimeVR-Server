@@ -19,8 +19,7 @@ public class SkeletonConfigView extends VBox implements Initializable {
 	private Map<SkeletonConfigValue, SkeletonConfigItemView> configItems = new HashMap<>();
 
 	public SkeletonConfigView(VRServer server) {
-		/*FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource(
-				"/gui/skeletonConfigView.fxml"));
+		/*FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("/gui/skeletonConfigView.fxml"));
 		fxmlLoader.setRoot(this);
 		fxmlLoader.setController(this);
 
@@ -29,15 +28,14 @@ public class SkeletonConfigView extends VBox implements Initializable {
 		} catch (IOException exception) {
 			throw new RuntimeException(exception);
 		}
-*/
+		*/
+
 		this.server = server;
 		populateSkeletonItems();
-
 
 		server.humanPoseProcessor.addSkeletonUpdatedCallback(this::skeletonUpdated);
 		//skeletonUpdated(null);
 	}
-
 
 	private void populateSkeletonItems() {
 		SkeletonConfigItemView.SkeletonConfigItemListener skeletonConfigItemListener = subscribeToSkeletonItems();
@@ -52,7 +50,6 @@ public class SkeletonConfigView extends VBox implements Initializable {
 		configItems.put(joint, skeletonConfigItemView);
 		this.getChildren().add(skeletonConfigItemView);
 	}
-
 
 	public void refreshAll() {
 		configItems.forEach((joint, skeletonConfigItemView) ->
@@ -77,7 +74,6 @@ public class SkeletonConfigView extends VBox implements Initializable {
 
 			@Override
 			public void reset(SkeletonConfigValue joint) {
-
 				LogManager.log.debug("reset " + joint);
 				resetJoint(joint);
 			}
@@ -107,8 +103,5 @@ public class SkeletonConfigView extends VBox implements Initializable {
 
 	@Override
 	public void initialize(URL location, ResourceBundle resources) {
-
 	}
-
-
 }

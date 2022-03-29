@@ -139,8 +139,6 @@ public class TrackerPanelCell extends AnchorPane {
 
 	@FXML
 	void initialize() {
-
-
 	}
 
 	public TrackerPanelCell build() {
@@ -209,8 +207,9 @@ public class TrackerPanelCell extends AnchorPane {
 				}
 			});
 
-		} else desSelect.setVisible(false);
-
+		} else {
+			desSelect.setVisible(false);
+		}
 
 		if (realTracker instanceof IMUTracker) {
 			IMUTracker imu = (IMUTracker) realTracker;
@@ -237,7 +236,6 @@ public class TrackerPanelCell extends AnchorPane {
 
 		//raw.setText("0 0 0");
 
-
 		return this;
 	}
 
@@ -245,6 +243,7 @@ public class TrackerPanelCell extends AnchorPane {
 		Tracker realTracker = t;
 		if (t instanceof ReferenceAdjustedTracker)
 			realTracker = ((ReferenceAdjustedTracker<? extends Tracker>) t).getTracker();
+		
 		t.getRotation(q);
 		t.getPosition(v);
 		q.toAngles(angles);
@@ -271,8 +270,8 @@ public class TrackerPanelCell extends AnchorPane {
 			bat.setText(StringUtils.prettyNumber(((TrackerWithBattery) realTracker).getBatteryVoltage(), 1));
 		}
 
-
-	/*	if (t instanceof ReferenceAdjustedTracker) {
+		/*
+		if (t instanceof ReferenceAdjustedTracker) {
 			((ReferenceAdjustedTracker<Tracker>) t).attachmentFix.toAngles(angles);
 			adj.setText(StringUtils.prettyNumber(angles[0] * FastMath.RAD_TO_DEG, 0)
 					+ " " + StringUtils.prettyNumber(angles[1] * FastMath.RAD_TO_DEG, 0)
@@ -281,13 +280,15 @@ public class TrackerPanelCell extends AnchorPane {
 			adjYaw.setText(StringUtils.prettyNumber(angles[0] * FastMath.RAD_TO_DEG, 0)
 					+ " " + StringUtils.prettyNumber(angles[1] * FastMath.RAD_TO_DEG, 0)
 					+ " " + StringUtils.prettyNumber(angles[2] * FastMath.RAD_TO_DEG, 0));
-		}*/
+		}
+		*/
 		if (realTracker instanceof IMUTracker) {
 			ping.setText(String.valueOf(((IMUTracker) realTracker).ping));
 		}
 
 		q.toAngles(angles);
-		/*raw.setText(StringUtils.prettyNumber(angles[0] * FastMath.RAD_TO_DEG, 0)
+		/*
+		raw.setText(StringUtils.prettyNumber(angles[0] * FastMath.RAD_TO_DEG, 0)
 				+ " " + StringUtils.prettyNumber(angles[1] * FastMath.RAD_TO_DEG, 0)
 				+ " " + StringUtils.prettyNumber(angles[2] * FastMath.RAD_TO_DEG, 0));
 		if (realTracker instanceof IMUTracker) {
@@ -302,19 +303,16 @@ public class TrackerPanelCell extends AnchorPane {
 			correction.setText(StringUtils.prettyNumber(angles[0] * FastMath.RAD_TO_DEG, 0)
 					+ " " + StringUtils.prettyNumber(angles[1] * FastMath.RAD_TO_DEG, 0)
 					+ " " + StringUtils.prettyNumber(angles[2] * FastMath.RAD_TO_DEG, 0));
-		}*/
-
+		}
+		*/
 	}
 
-
 	public void setInfo(String testText) {
-
 	}
 
 	public Pane getTrackerContainer() {
 		return trackerContainer;
 	}
-
 
 	private static int getTrackerSort(Tracker t) {
 		if (t instanceof ReferenceAdjustedTracker)
@@ -327,5 +325,4 @@ public class TrackerPanelCell extends AnchorPane {
 			return 200;
 		return 1000;
 	}
-
 }
