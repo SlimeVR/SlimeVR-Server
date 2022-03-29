@@ -1,8 +1,8 @@
 package dev.slimevr.gui.views;
 
-import dev.slimevr.gui.items.skeleton.SkeletonConfigItemView;
 import io.eiren.util.logging.LogManager;
 import dev.slimevr.VRServer;
+import dev.slimevr.gui.items.config.AdjustValueItemView;
 import dev.slimevr.vr.processor.skeleton.HumanSkeleton;
 import dev.slimevr.vr.processor.skeleton.SkeletonConfig;
 import dev.slimevr.vr.processor.skeleton.SkeletonConfigValue;
@@ -14,12 +14,14 @@ import java.util.*;
 
 public class SkeletonConfigView extends VBox implements Initializable {
 
+	private ResourceBundle bundle;
 
 	private final VRServer server;
-	private Map<SkeletonConfigValue, SkeletonConfigItemView> configItems = new HashMap<>();
+	private Map<SkeletonConfigValue, AdjustValueItemView> configItems = new HashMap<>();
 
 	public SkeletonConfigView(VRServer server) {
-		/*FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("/gui/skeletonConfigView.fxml"));
+		/*
+		FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("/gui/skeletonConfigView.fxml"));
 		fxmlLoader.setRoot(this);
 		fxmlLoader.setController(this);
 
@@ -30,6 +32,8 @@ public class SkeletonConfigView extends VBox implements Initializable {
 		}
 		*/
 
+		bundle = ResourceBundle.getBundle("localization_files/LangBundle", new Locale("en", "EN"));
+
 		this.server = server;
 		populateSkeletonItems();
 
@@ -38,22 +42,25 @@ public class SkeletonConfigView extends VBox implements Initializable {
 	}
 
 	private void populateSkeletonItems() {
-		SkeletonConfigItemView.SkeletonConfigItemListener skeletonConfigItemListener = subscribeToSkeletonItems();
-
 		for (SkeletonConfigValue value : SkeletonConfigValue.values) {
-			addSkeletonItem(value, skeletonConfigItemListener);
+			addSkeletonItem(value);
 		}
 	}
 
-	private void addSkeletonItem(SkeletonConfigValue joint, SkeletonConfigItemView.SkeletonConfigItemListener skeletonConfigItemListener) {
-		SkeletonConfigItemView skeletonConfigItemView = new SkeletonConfigItemView(server, joint, skeletonConfigItemListener);
+	private void addSkeletonItem(SkeletonConfigValue joint) {
+		String title = bundle.getString(joint.configKey);
+		float curValue = server.humanPoseProcessor.getSkeletonConfig(joint);
+		AdjustValueItemView.AdjustValueItemListener adjustItemListener = subscribeToAdjustItem(joint);
+		
+		AdjustValueItemView skeletonConfigItemView = new AdjustValueItemView(title, curValue, 0.01f, adjustItemListener);
+
 		configItems.put(joint, skeletonConfigItemView);
 		this.getChildren().add(skeletonConfigItemView);
 	}
 
 	public void refreshAll() {
 		configItems.forEach((joint, skeletonConfigItemView) ->
-				skeletonConfigItemView.refreshJoint(server.humanPoseProcessor.getSkeletonConfig(joint))
+				skeletonConfigItemView.setValue(server.humanPoseProcessor.getSkeletonConfig(joint))
 				);
 	}
 
@@ -64,16 +71,16 @@ public class SkeletonConfigView extends VBox implements Initializable {
 		}
 	}
 
-	private SkeletonConfigItemView.SkeletonConfigItemListener subscribeToSkeletonItems() {
-		return new SkeletonConfigItemView.SkeletonConfigItemListener() {
+	private AdjustValueItemView.AdjustValueItemListener subscribeToAdjustItem(SkeletonConfigValue joint) {
+		return new AdjustValueItemView.AdjustValueItemListener() {
 			@Override
-			public void change(SkeletonConfigValue joint, float diff) {
+			public void change(float diff) {
 				LogManager.log.debug("change " + joint + " " + diff);
 				changeJointValue(joint, diff);
 			}
 
 			@Override
-			public void reset(SkeletonConfigValue joint) {
+			public void reset() {
 				LogManager.log.debug("reset " + joint);
 				resetJoint(joint);
 			}
@@ -98,7 +105,7 @@ public class SkeletonConfigView extends VBox implements Initializable {
 
 
 	private void updateSkeletonConfigItem(SkeletonConfigValue joint, float value) {
-		configItems.get(joint).refreshJoint(value);
+		configItems.get(joint).setValue(value);
 	}
 
 	@Override
