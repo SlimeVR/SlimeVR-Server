@@ -4,12 +4,12 @@ import io.eiren.util.logging.LogManager;
 import javafx.scene.image.Image;
 
 public class GUIUtils {
-	
-	public static final Image MISSING_IMAGE = getImage("/missing.png", null, false);
-
 	private GUIUtils() {
 		throw new IllegalStateException("Utility class");
 	}
+
+	//#region Images
+	public static final Image MISSING_IMAGE = getImage("/missing.png", null, false);
 
 	public static Image getImage(String imageUrl) {
 		return getImage(imageUrl, true);
@@ -32,4 +32,5 @@ public class GUIUtils {
 
 		return defaultImage;
 	}
+	//#endregion
 }

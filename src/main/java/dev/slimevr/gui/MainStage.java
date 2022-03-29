@@ -26,13 +26,9 @@ public class MainStage extends Application {
 
 	@Override
 	public void start(Stage stage) throws IOException {
-		FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("/main.fxml"));
-		MainStageController controller = new MainStageController(stage, icon);
-		fxmlLoader.setController(controller);
-		fxmlLoader.setResources(ResourceBundle.getBundle("localization_files/LangBundle", new Locale("en", "EN")));
-		Scene scene = new Scene(fxmlLoader.load());
+		// Set up the stage
 		stage.setTitle("SlimeVR Server (" + Main.VERSION + ")");
-		
+
 		ObservableList<Image> icons = stage.getIcons();
 		icons.add(GUIUtils.getImage("/icon16.png", false));
 		icons.add(GUIUtils.getImage("/icon32.png", false));
@@ -41,9 +37,23 @@ public class MainStage extends Application {
 		icons.add(GUIUtils.getImage("/icon128.png", false));
 		icons.add(GUIUtils.getImage("/icon256.png", false));
 
+		// Set up the tray icon
+		//if (FXTrayIcon.isSupported()) {
+		icon = new FXTrayIcon(stage, getClass().getResource("/icon256.png"));
+		icon.show();
+
+		// Set up the scene
+		FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("/main.fxml"));
+		MainStageController controller = new MainStageController(stage, icon);
+
+		fxmlLoader.setController(controller);
+		fxmlLoader.setResources(ResourceBundle.getBundle("localization_files/LangBundle", new Locale("en", "EN")));
+
+		Scene scene = new Scene(fxmlLoader.load());
 		stage.setScene(scene);
 		stage.setResizable(true);
 		stage.centerOnScreen();
+
 		// stage.initStyle(StageStyle.UNDECORATED);
 
 		// TODO: Maybe temporary? Needs an option to chose whether to minimize to tray or exit
@@ -53,10 +63,5 @@ public class MainStage extends Application {
 		});
 
 		stage.show();
-
-		// Have this section at the end, it requires information set by the earlier code
-		//if (FXTrayIcon.isSupported()) {
-		icon = new FXTrayIcon(stage, getClass().getResource("/icon256.png"));
-		icon.show();
 	}
 }
