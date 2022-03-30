@@ -194,7 +194,7 @@ public class VRServerGUI extends JFrame {
 				});
 			}});
 			add(Box.createHorizontalGlue());
-			add(calibrateButton = new JButton("CALIBRATE") {{
+			add(calibrateButton = new JButton("Calibrate Mounting") {{
 				addMouseListener(new MouseInputAdapter() {
 					@Override
 					public void mouseClicked(MouseEvent e) {
@@ -456,6 +456,6 @@ public class VRServerGUI extends JFrame {
 	@AWTThread
 	private void calibrateMounting() {
 		server.captureIdleOrientations();
-		ButtonTimer.runTimer(calibrateButton, 3, "CALIBRATE", server::calibrateTrackers);
+		ButtonTimer.runTimer(calibrateButton, 3, "Calibrate Mounting", server::calibrateTrackers);
 	}
 }
