@@ -11,10 +11,12 @@ import com.jme3.math.FastMath;
 import com.jme3.math.Quaternion;
 
 public class MountingCalibration {
+
 	private final VRServer server;
 	private FastList<Quaternion> trackerOrientationIdle = new FastList<>();
 	private FastList<Tracker> allTrackers = new FastList<>();
 	private int trackerNumber;
+	private static float TENTH_OF_THIRD = 0.03333f;
 
 	public MountingCalibration(VRServer server){
 		this.server = server;
@@ -52,6 +54,7 @@ public class MountingCalibration {
 				if(trackerOrientationIdle.size() > trackerNumber){
 					if(imu.bodyPosition != null){
 						switch(imu.bodyPosition){
+							// Trackers that go back
 							case CHEST:
 							case WAIST:
 							case HIP:
@@ -59,6 +62,7 @@ public class MountingCalibration {
 							case RIGHT_ANKLE:
 								SetIMUMountingRotation(yawCorrection(trackerOrientationIdle.get(trackerNumber), imu.rotQuaternion.clone(), true, false), imu, t);
 								break;
+							// Trackers that don't move
 							case LEFT_FOOT:
 							case RIGHT_FOOT:
 							case LEFT_FOREARM:
@@ -67,6 +71,7 @@ public class MountingCalibration {
 							case RIGHT_UPPER_ARM:
 								SetIMUMountingRotation(yawCorrection(trackerOrientationIdle.get(trackerNumber), imu.rotQuaternion.clone(), false, true), imu, t);
 								break;
+							// Remaining trackers (that go forward)
 							default:
 								SetIMUMountingRotation(yawCorrection(trackerOrientationIdle.get(trackerNumber), imu.rotQuaternion.clone(), false, false), imu, t);
 								break;
@@ -86,17 +91,20 @@ public class MountingCalibration {
 	}
 	public float yawCorrection(Quaternion idle, Quaternion squat, boolean backwards, boolean endOnly){ // Calculated yaw offset for the mounting orientation
 
-		if(!endOnly){
+		if(!endOnly){ // Rotates squat Quaternion to 90 degrees.
 			Quaternion rot = squat.mult(idle.inverse());
-			float verticalRot = (verticalOrientation(rot.getX(), rot.getZ()));
-			float verticalSquat = (verticalOrientation(squat.getX(), squat.getZ()));
-			squat = squat.slerp(idle, squat, (0.03333f + verticalRot - verticalSquat) / verticalRot);
+			float verticalRot = (verticalOrientation(rot));
+			float verticalSquat = (verticalOrientation(squat));
+			squat = squat.slerp(idle, squat, (TENTH_OF_THIRD + verticalRot - verticalSquat) / verticalRot);
 		}
 
+		// Gets roll of the quaternion. This is the yaw offset needed.
 		float correctionYaw = squat.getRoll();
 
+		// Spine and ankles go backwards during squat. Needs to be inversed 180 degrees.
 		if(backwards) correctionYaw -= FastMath.PI;
 
+		// Plays around with euler angles being euler angles.
 		if(squat.getPitch() > 0){
 			correctionYaw *= -1f;
 		}
@@ -107,10 +115,19 @@ public class MountingCalibration {
 
 		return correctionYaw;
 	}
-	private static float verticalOrientation(float x, float z)
+	private static float verticalOrientation(Quaternion quat) // Returns from 0 to 0.06666. 0.03333 = 90 degrees.
 	{
-		x = FastMath.abs(x);
-		z = FastMath.abs(z);
-		return ((FastMath.sqrt((0.51f) * (x * x + z * z) + 0.98f * x * z) - 0.7f * (x + z)) / ((0.3f) * FastMath.sqrt(x * x + z * z))) * (x + z);
+		// Computes up to 90 degrees
+		float x = FastMath.abs(quat.getX());
+		float z = FastMath.abs(quat.getZ());
+		float vertical = ((FastMath.sqrt((0.51f) * (x * x + z * z) + 0.98f * x * z) - 0.7f * (x + z)) / ((0.3f) * FastMath.sqrt(x * x + z * z))) * (x + z);
+
+		// If below 90 degrees, return
+		if(vertical < TENTH_OF_THIRD) return vertical;
+		
+		// Computes up to 180 degrees
+		float y = FastMath.abs(quat.getY());
+		float w = FastMath.abs(quat.getW());
+		return TENTH_OF_THIRD - ((((FastMath.sqrt((0.51f) * (y * y + w * w) + 0.98f * y * w) - 0.7f * (y + w)) / ((0.3f) * FastMath.sqrt(y * y + w * w))) * (y + w)) - TENTH_OF_THIRD);
 	}
 }
