@@ -27,6 +27,7 @@ public class MountingCalibration {
 	}
 	public void GetIdle(){ // Gets the orientation of the first pose for each tracker one by one.
 		allTrackers = (FastList<Tracker>) server.getAllTrackers();
+		trackerOrientationIdle = new FastList<>();
 		IMUTracker imu;
 		for (Tracker t : allTrackers) {
 			Tracker realTracker = t;
@@ -84,11 +85,14 @@ public class MountingCalibration {
 		LogManager.log.info("[Mounting Calibration] Calibrated mounting of all " + trackerNumber + " trackers");
 	}
 	public float yawCorrection(Quaternion idle, Quaternion squat, boolean backwards, boolean endOnly){ // Calculated yaw offset for the mounting orientation
-		
+
 		if(!endOnly){
 			Quaternion rot = squat.mult(idle.inverse());
-			squat = squat.slerp(idle, squat, 1f/(FastMath.abs(rot.getX()) + FastMath.abs(rot.getZ()) + FastMath.abs(idle.getX()) + FastMath.abs(idle.getZ())));
+			float verticalRot = (verticalOrientation(rot.getX(), rot.getZ()));
+			float verticalSquat = (verticalOrientation(squat.getX(), squat.getZ()));
+			squat = squat.slerp(idle, squat, (0.03333f + verticalRot - verticalSquat) / verticalRot);
 		}
+
 		float correctionYaw = squat.getRoll();
 
 		if(backwards) correctionYaw -= FastMath.PI;
@@ -102,5 +106,11 @@ public class MountingCalibration {
 		}
 
 		return correctionYaw;
+	}
+	private static float verticalOrientation(float x, float z)
+	{
+		x = FastMath.abs(x);
+		z = FastMath.abs(z);
+		return ((FastMath.sqrt((0.51f) * (x * x + z * z) + 0.98f * x * z) - 0.7f * (x + z)) / ((0.3f) * FastMath.sqrt(x * x + z * z))) * (x + z);
 	}
 }
