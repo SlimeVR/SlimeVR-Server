@@ -1,3 +1,6 @@
 [submodule "slime-java-commons"]
 	path = slime-java-commons
 	url = https://github.com/Eirenliel/slime-java-commons.git
+[submodule "slimevr_protocol"]
+	path = slimevr_protocol
+	url = git@github.com:Futurabeast/slimevr_protocol.git
