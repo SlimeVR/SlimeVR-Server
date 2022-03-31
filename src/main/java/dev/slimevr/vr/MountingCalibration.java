@@ -16,7 +16,7 @@ public class MountingCalibration {
 	private FastList<Quaternion> trackerOrientationIdle = new FastList<>();
 	private FastList<Tracker> allTrackers = new FastList<>();
 	private int trackerNumber;
-	private static float TENTH_THIRD = 0.03333f;
+	private static float TENTH_THIRD = 0.03333f, FIFTH_THIRD = 0.06666f;
 	private static float VERTICAL_OFFSET = 0.7f;
 
 	public MountingCalibration(VRServer server){
@@ -98,16 +98,25 @@ public class MountingCalibration {
 	}
 
 	private float yawCorrection(Quaternion idle, Quaternion squat, boolean backwards, boolean endOnly){ // Calculated yaw offset for the mounting orientation
+		boolean trackerUpsideDown = false;
 
 		if(!endOnly){ // Rotates squat Quaternion to 90 degrees.
 			Quaternion rot = squat.mult(idle.inverse());
 			float verticalRot = (verticalOrientation(rot));
 			float verticalSquat = (verticalOrientation(squat));
+			if(verticalOrientation(idle) > TENTH_THIRD){
+				verticalRot = (verticalRot - FIFTH_THIRD) * -1f;
+				verticalSquat = (verticalSquat - FIFTH_THIRD) * -1f;
+				trackerUpsideDown = true;
+			}
 			squat.slerp(idle, squat, (TENTH_THIRD + verticalRot - verticalSquat) / verticalRot);
 		}
 
 		// Gets roll of the quaternion. This is the yaw offset needed.
 		float correctionYaw = squat.getRoll();
+
+		// If tracker is upside down, needs to be inversed 180 degrees.
+		if(trackerUpsideDown) correctionYaw += FastMath.PI;
 
 		// Spine and ankles go backwards during squat. Needs to be inversed 180 degrees.
 		if(backwards) correctionYaw -= FastMath.PI;
