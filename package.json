@@ -3,6 +3,7 @@
   "version": "0.1.0",
   "private": true,
   "dependencies": {
+    "@tauri-apps/api": "^1.0.0-rc.3",
     "@testing-library/jest-dom": "^5.16.3",
     "@testing-library/react": "^12.1.4",
     "@testing-library/user-event": "^13.5.0",
@@ -10,17 +11,24 @@
     "@types/node": "^16.11.26",
     "@types/react": "^17.0.43",
     "@types/react-dom": "^17.0.14",
+    "add": "^2.0.6",
+    "classnames": "^2.3.1",
+    "dreampact": "^0.1.10",
+    "flatbuffers": "^2.0.6",
     "react": "^18.0.0",
     "react-dom": "^18.0.0",
+    "react-router-dom": "^6.2.2",
     "react-scripts": "5.0.0",
+    "slimevr-protocol": "file:../SlimeVR-Server/slimevr_protocol",
     "typescript": "^4.6.3",
     "web-vitals": "^2.1.4"
   },
   "scripts": {
-    "start": "react-scripts start",
+    "start": "cross-env BROWSER=none react-scripts start",
     "build": "react-scripts build",
     "test": "react-scripts test",
-    "eject": "react-scripts eject"
+    "eject": "react-scripts eject",
+    "tauri": "tauri"
   },
   "eslintConfig": {
     "extends": [
@@ -39,5 +47,12 @@
       "last 1 firefox version",
       "last 1 safari version"
     ]
+  },
+  "devDependencies": {
+    "@tauri-apps/cli": "^1.0.0-rc.8",
+    "autoprefixer": "^10.4.4",
+    "cross-env": "^7.0.3",
+    "postcss": "^8.4.12",
+    "tailwindcss": "^3.0.23"
   }
 }

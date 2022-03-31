@@ -1,25 +1,34 @@
-import React from 'react';
-import logo from './logo.svg';
-import './App.css';
+import { Navbar } from './components/Navbar';
+import { useProvideWebsocketApi, WebSocketApiContext } from './hooks/websocket-api';
+import {
+  BrowserRouter as Router,
+  Routes,
+  Route,
+} from "react-router-dom";
+import { Overview } from './components/Overview';
+import { Manage } from './components/Manage';
+
+
 
 function App() {
+  const websocketAPI = useProvideWebsocketApi();
+
   return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.tsx</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
-    </div>
+    <WebSocketApiContext.Provider value={websocketAPI}>
+        <Router>
+          <div className='bg-primary h-full w-full overflow-hidden'>
+            <div className='flex-col h-full'>
+              <Navbar></Navbar>
+              <div className='flex-grow h-full'>
+                <Routes>
+                  <Route  path="/" element={<Overview/>}/>
+                  <Route path="manage" element={<Manage/>}/>
+                </Routes>
+              </div>
+            </div>
+          </div>
+      </Router>
+    </WebSocketApiContext.Provider>
   );
 }
 
