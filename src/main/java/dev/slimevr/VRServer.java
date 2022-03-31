@@ -280,8 +280,8 @@ public class VRServer extends Thread {
 		mountingCalibration.GetIdle();
 	}
 	
-	public void calibrateTrackers() {
-		mountingCalibration.CalibrateTrackers();
+	public void calibrateAllTrackers() {
+		mountingCalibration.CalibrateAllTrackers();
 	}
 	
 	public void resetTrackersYaw() {

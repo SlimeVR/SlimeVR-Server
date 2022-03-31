@@ -135,39 +135,13 @@ public class MountingCalibrationWindow extends JFrame {
 		setLocationRelativeTo(null);
 		setVisible(false);
 	}
-	private void dynamicCalibrate(){ // Called when the calibrate button is pressed for a tracker
+	private void dynamicCalibrate(){ // Called when the Calibrate button is pressed for a tracker
 		standingOrientation = imu.rotQuaternion.clone();
-		ButtonTimer.runTimer(dynamicMountingButton, 3, "Calibrate", this::squated);
+		ButtonTimer.runTimer(dynamicMountingButton, 3, "Calibrate", this::finishDynamicCalibration);
 	}
-	void squated(){
-		float radian = imu.getMountingRotation();
-		if(imu.bodyPosition != null){
-			switch(imu.bodyPosition){
-				case CHEST:
-				case WAIST:
-				case HIP:
-				case LEFT_ANKLE:
-				case RIGHT_ANKLE:
-					radian = mountingCalibration.yawCorrection(standingOrientation, imu.rotQuaternion.clone(), true, false);
-					break;
-				case LEFT_FOOT:
-				case RIGHT_FOOT:
-				case LEFT_FOREARM:
-				case RIGHT_FOREARM:
-				case LEFT_UPPER_ARM:
-				case RIGHT_UPPER_ARM:
-					radian = mountingCalibration.yawCorrection(standingOrientation, imu.rotQuaternion.clone(), false, true);
-					break;
-				default:
-					radian = mountingCalibration.yawCorrection(standingOrientation, imu.rotQuaternion.clone(), false, false);
-					break;
-			}
-		}
-		else{
-			radian = mountingCalibration.yawCorrection(standingOrientation, imu.rotQuaternion.clone(), false, false);
-		}
-		mountingValue.setText("Mounting = " +  Math.round(Math.toDegrees(radian)));
-		mountingCalibration.SetIMUMountingRotation(radian, imu, t);
+	void finishDynamicCalibration(){
+		mountingCalibration.CalibrateTracker(standingOrientation, imu, t);
+		mountingValue.setText("Mounting = " +  Math.round(Math.toDegrees(imu.getMountingRotation())));
 		calibrating = false;
 	}
 }

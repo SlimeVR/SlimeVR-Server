@@ -456,6 +456,6 @@ public class VRServerGUI extends JFrame {
 	@AWTThread
 	private void calibrateMounting() {
 		server.captureIdleOrientations();
-		ButtonTimer.runTimer(calibrateButton, 3, "Calibrate Mounting", server::calibrateTrackers);
+		ButtonTimer.runTimer(calibrateButton, 3, "Calibrate Mounting", server::calibrateAllTrackers);
 	}
 }
