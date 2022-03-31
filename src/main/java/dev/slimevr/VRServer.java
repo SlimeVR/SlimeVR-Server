@@ -17,7 +17,6 @@ import java.util.function.Consumer;
 
 import dev.slimevr.bridge.Bridge;
 import dev.slimevr.platform.windows.WindowsNamedPipeBridge;
-import dev.slimevr.platform.windows.WindowsSteamVRPipeInputBridge;
 import dev.slimevr.bridge.VMCBridge;
 import dev.slimevr.bridge.WebSocketVRBridge;
 import dev.slimevr.util.ann.VRServerThread;
@@ -75,7 +74,7 @@ public class VRServer extends Thread {
 			WindowsNamedPipeBridge feederBridge = new WindowsNamedPipeBridge(null, "steamvr_feeder", "SteamVR Feeder Bridge", "\\\\.\\pipe\\SlimeVRInput", new FastList<ShareableTracker>());
 			tasks.add(() -> feederBridge.startBridge());
 			bridges.add(feederBridge);
-			
+
 		}
 		
 		// Create WebSocket server
@@ -215,7 +214,7 @@ public class VRServer extends Thread {
 	public void run() {
 		trackersServer.start();
 		while(true) {
-			//final long start = System.currentTimeMillis();
+//			final long start = System.currentTimeMillis();
 			do {
 				Runnable task = tasks.poll();
 				if(task == null)
@@ -232,7 +231,7 @@ public class VRServer extends Thread {
 			humanPoseProcessor.update();
 			for(int i = 0; i < bridges.size(); ++i)
 				bridges.get(i).dataWrite();
-			//final long time = System.currentTimeMillis() - start;
+//			final long time = System.currentTimeMillis() - start;
 			try {
 				Thread.sleep(1); // 1000Hz
 			} catch(InterruptedException e) {
