@@ -18,7 +18,7 @@ import java.util.function.Consumer;
 import dev.slimevr.bridge.Bridge;
 import dev.slimevr.platform.windows.WindowsNamedPipeBridge;
 import dev.slimevr.bridge.VMCBridge;
-import dev.slimevr.bridge.WebSocketVRBridge;
+import dev.slimevr.websocketapi.WebSocketVRBridge;
 import dev.slimevr.util.ann.VRServerThread;
 import dev.slimevr.vr.processor.HumanPoseProcessor;
 import dev.slimevr.vr.processor.skeleton.HumanSkeleton;

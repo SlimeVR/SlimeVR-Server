@@ -1,4 +1,4 @@
-package dev.slimevr.bridge;
+package dev.slimevr.websocketapi;
 
 import java.net.InetSocketAddress;
 import java.nio.ByteBuffer;
@@ -28,7 +28,7 @@ import dev.slimevr.vr.trackers.TrackerStatus;
 import io.eiren.util.collections.FastList;
 import io.eiren.util.logging.LogManager;
 
-public class WebSocketVRBridge extends WebSocketServer implements Bridge {
+public class WebSocketVRBridge extends WebsocketAPI implements Bridge {
 	
 	private final Vector3f vBuffer = new Vector3f();
 	private final Quaternion qBuffer = new Quaternion();
@@ -41,7 +41,7 @@ public class WebSocketVRBridge extends WebSocketServer implements Bridge {
 	private final AtomicBoolean newHMDData = new AtomicBoolean(false);
 	
 	public WebSocketVRBridge(HMDTracker hmd, List<? extends ShareableTracker> shareTrackers, VRServer server) {
-		super(new InetSocketAddress(21110), Collections.<Draft>singletonList(new Draft_6455()));
+		super(server);
 		this.hmd = hmd;
 		this.shareTrackers = new FastList<>(shareTrackers);
 		this.internalTrackers = new FastList<>(shareTrackers.size());
@@ -77,7 +77,7 @@ public class WebSocketVRBridge extends WebSocketServer implements Bridge {
 
 	@Override
 	public void onOpen(WebSocket conn, ClientHandshake handshake) {
-		LogManager.log.info("[WebSocket] New connection from: " + conn.getRemoteSocketAddress().getAddress().getHostAddress());
+		super.onOpen(conn, handshake);
 		// Register trackers
 		for(int i = 0; i < internalTrackers.size(); ++i) {
 			JSONObject message = new JSONObject();
@@ -89,20 +89,6 @@ public class WebSocketVRBridge extends WebSocketServer implements Bridge {
 		}
 	}
 
-	@Override
-	public void onClose(WebSocket conn, int code, String reason, boolean remote) {
-		LogManager.log.info("[WebSocket] Disconnected: " + conn.getRemoteSocketAddress().getAddress().getHostAddress() + ", (" + code + ") " + reason + ". Remote: " + remote);
-	}
-
-	@Override
-	public void onMessage(WebSocket conn, ByteBuffer message) {
-		StringBuilder sb = new StringBuilder(message.limit());
-		while(message.hasRemaining()) {
-			sb.append((char) message.get());
-		}
-		onMessage(conn, sb.toString());
-	}
-	
 	@Override
 	public void onMessage(WebSocket conn, String message) {
 		//LogManager.log.info(message);
@@ -162,18 +148,6 @@ public class WebSocketVRBridge extends WebSocketServer implements Bridge {
 			Main.vrServer.resetTrackersYaw();
 			break;
 		}
-	}
-
-	@Override
-	public void onError(WebSocket conn, Exception ex) {
-		LogManager.log.severe("[WebSocket] Exception on connection " + (conn != null ? conn.getRemoteSocketAddress().getAddress().getHostAddress() : null), ex);
-	}
-
-	@Override
-	public void onStart() {
-		LogManager.log.info("[WebSocket] Web Socket VR Bridge started on port " + getPort());
-		setConnectionLostTimeout(0);
-	    setConnectionLostTimeout(1);
 	}
 
 	@Override

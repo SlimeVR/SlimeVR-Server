@@ -4,6 +4,7 @@ import com.google.flatbuffers.FlatBufferBuilder;
 import com.jme3.math.Quaternion;
 import com.jme3.math.Vector3f;
 import dev.slimevr.VRServer;
+import dev.slimevr.vr.processor.skeleton.SkeletonConfigValue;
 import dev.slimevr.vr.trackers.IMUTracker;
 import dev.slimevr.vr.trackers.ReferenceAdjustedTracker;
 import dev.slimevr.vr.trackers.Tracker;
@@ -32,8 +33,10 @@ public class WebsocketAPI extends WebSocketServer {
 
 	private long lastMillis = 0;
 
+	private int outbountPacketCount = 0;
+
 	public WebsocketAPI(VRServer server) {
-		super(new InetSocketAddress(21111), Collections.<Draft>singletonList(new Draft_6455()));
+		super(new InetSocketAddress(21110), Collections.<Draft>singletonList(new Draft_6455()));
 		this.server = server;
 		this.applications = new HashMap<>();
 		System.out.println("INIT");
@@ -103,16 +106,27 @@ public class WebsocketAPI extends WebSocketServer {
 			tracker.getRotation(quatRot);
 
 			DeviceStatus.startDeviceStatus(fbb);
+			DeviceStatus.addId(fbb, index); // or tacker id ?
 			DeviceStatus.addName(fbb, trackerName);
 			DeviceStatus.addPosition(fbb, Vec3f.createVec3f(fbb, pos3f.x, pos3f.y, pos3f.z));
 			DeviceStatus.addRotation(fbb, Quat.createQuat(fbb, quatRot.getX(), quatRot.getY(), quatRot.getZ(), quatRot.getW()));
+			DeviceStatus.addComputed(fbb, tracker.isComputed());
+
+
+			if (tracker.getBodyPosition() != null && tracker.getBodyPosition().trackerRole != null) {
+				DeviceStatus.addRole(fbb, tracker.getBodyPosition().trackerRole.id);
+
+			}
 
 			if (tracker instanceof IMUTracker) {
 				IMUTracker imu = (IMUTracker) tracker;
+
+				imu.getMountingRotation();
 				// put back to 0 - 256 so we can fit it in a byte instead of float
-				DeviceStatus.addBattery(fbb, (int)(imu.getBatteryLevel() * 256));
+				DeviceStatus.addBattery(fbb, (int)((imu.getBatteryLevel() / 100) * 255));
 				DeviceStatus.addPing(fbb, imu.ping);
-				DeviceStatus.addSignal(fbb, imu.signalStrength);
+				DeviceStatus.addStatus(fbb, imu.getStatus().id + 1);
+				DeviceStatus.addSignal(fbb, (short)imu.signalStrength);
 				DeviceStatus.addTps(fbb, (int)Math.floor(imu.getTPS()));
 			}
 			trackersIds[index] = DeviceStatus.endDeviceStatus(fbb);
@@ -124,15 +138,18 @@ public class WebsocketAPI extends WebSocketServer {
 		TrackersList.addTrackers(fbb, trackers);
 		int list = TrackersList.endTrackersList(fbb);
 
-		int outbound = OutboundPacket.createOutboundPacket(fbb, 0, false, OutboundUnion.TrackersList, list);
-
-
+		int outbound = this.createOutboundPacket(fbb, OutboundUnion.TrackersList, list);
 		fbb.finish(outbound);
 
 		ByteBuffer buf = fbb.dataBuffer();
 		this.sendToApps(buf);
 
 		lastMillis = System.currentTimeMillis();
+	}
+
+
+	public int createOutboundPacket(FlatBufferBuilder fbb, byte packetType, int packetOffset) {
+		return OutboundPacket.createOutboundPacket(fbb, this.outbountPacketCount++, false, packetType, packetOffset);
 	}
 
 
