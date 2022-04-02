@@ -12,7 +12,6 @@ import com.jme3.math.FastMath;
 import com.jme3.math.Quaternion;
 
 public class MountingCalibration {
-	
 	private final VRServer server;
 	private FastList<Quaternion> trackerOrientationIdle = new FastList<>();
 	private static float TENTH_THIRD = 1f / 30f, FIFTH_THIRD = 1f / 15f;

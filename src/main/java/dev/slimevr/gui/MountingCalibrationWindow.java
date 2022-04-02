@@ -48,7 +48,6 @@ public class MountingCalibrationWindow extends JFrame {
 	
 	@AWTThread
 	private void build() {
-		
 		pane.add(new EJBox(BoxLayout.LINE_AXIS) {
 			{
 				setBorder(new EmptyBorder(0, 175, 10, 175));
@@ -90,6 +89,7 @@ public class MountingCalibrationWindow extends JFrame {
 				});
 			}
 		});
+
 		pane.add(new EJBox(BoxLayout.LINE_AXIS) {
 			{
 				setBorder(new EmptyBorder(i(5)));
@@ -168,7 +168,7 @@ public class MountingCalibrationWindow extends JFrame {
 		ButtonTimer.runTimer(dynamicMountingButton, 3, "Calibrate", this::finishDynamicCalibration);
 	}
 	
-	void finishDynamicCalibration() {
+	private void finishDynamicCalibration() {
 		mountingCalibration.CalibrateTracker(standingOrientation, imu, t);
 		mountingValue.setText("Mounting = " + Math.round(Math.toDegrees(imu.getMountingRotation())));
 		calibrating = false;
