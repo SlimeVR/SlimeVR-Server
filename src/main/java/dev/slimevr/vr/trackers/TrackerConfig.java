@@ -1,7 +1,9 @@
 package dev.slimevr.vr.trackers;
 
+import com.jme3.math.FastMath;
 import com.jme3.math.Quaternion;
 
+import io.eiren.math.FloatMath;
 import io.eiren.yaml.YamlNode;
 
 public class TrackerConfig {
@@ -11,7 +13,7 @@ public class TrackerConfig {
 	public String description;
 	public boolean hide;
 	public Quaternion adjustment;
-	public float mountingRotation = 3.141592f;
+	public float mountingRotation = FloatMath.PI;
 	
 	public TrackerConfig(Tracker tracker) {
 		this.trackerName = tracker.getName();
@@ -24,7 +26,7 @@ public class TrackerConfig {
 		this.description = node.getString("description");
 		this.designation = node.getString("designation");
 		this.hide = node.getBoolean("hide", false);
-		this.mountingRotation = node.getFloat("rotation", 3.141592f);
+		this.mountingRotation = node.getFloat("rotation", FloatMath.PI);
 		YamlNode adjNode = node.getNode("adjustment");
 		if(adjNode != null) {
 			adjustment = new Quaternion(adjNode.getFloat("x", 0), adjNode.getFloat("y", 0), adjNode.getFloat("z", 0), adjNode.getFloat("w", 0));

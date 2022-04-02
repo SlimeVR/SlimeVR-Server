@@ -25,7 +25,7 @@ public class MountingCalibrationWindow extends JFrame {
 	private EJBox pane;
 	
 	private final MountingCalibration mountingCalibration;
-
+	
 	private transient IMUTracker imu;
 	private transient Tracker t;
 	private JLabel mountingValue;
@@ -39,7 +39,7 @@ public class MountingCalibrationWindow extends JFrame {
 		mountingCalibration = server.mountingCalibration;
 		imu = imuTracker;
 		t = tracker;
-
+		
 		getContentPane().setLayout(new BoxLayout(getContentPane(), BoxLayout.PAGE_AXIS));
 		add(new JScrollPane(pane = new EJBox(BoxLayout.PAGE_AXIS), ScrollPaneConstants.VERTICAL_SCROLLBAR_AS_NEEDED, ScrollPaneConstants.HORIZONTAL_SCROLLBAR_AS_NEEDED));
 		
@@ -48,15 +48,31 @@ public class MountingCalibrationWindow extends JFrame {
 	
 	@AWTThread
 	private void build() {
-
-		pane.add(new EJBox(BoxLayout.LINE_AXIS) {{ setBorder(new EmptyBorder(0, 175, 10, 175)); }});
-
-		pane.add(new EJBox(BoxLayout.LINE_AXIS) {{ add(mountingValue = new JLabel("Mounting = " + Math.round(Math.toDegrees(imu.getMountingRotation())))); }});
-
-		pane.add(new EJBox(BoxLayout.LINE_AXIS) {{ setBorder(new EmptyBorder(i(5))); }});
-
-		pane.add(new EJBox(BoxLayout.LINE_AXIS) {{ add(new JLabel("Dynamic calibration:")); }});
-
+		
+		pane.add(new EJBox(BoxLayout.LINE_AXIS) {
+			{
+				setBorder(new EmptyBorder(0, 175, 10, 175));
+			}
+		});
+		
+		pane.add(new EJBox(BoxLayout.LINE_AXIS) {
+			{
+				add(mountingValue = new JLabel("Mounting = " + Math.round(Math.toDegrees(imu.getMountingRotation()))));
+			}
+		});
+		
+		pane.add(new EJBox(BoxLayout.LINE_AXIS) {
+			{
+				setBorder(new EmptyBorder(i(5)));
+			}
+		});
+		
+		pane.add(new EJBox(BoxLayout.LINE_AXIS) {
+			{
+				add(new JLabel("Dynamic calibration:"));
+			}
+		});
+		
 		pane.add(new EJBox(BoxLayout.LINE_AXIS) {
 			{
 				add(dynamicMountingButton = new JButton("Calibrate") {
@@ -64,7 +80,7 @@ public class MountingCalibrationWindow extends JFrame {
 						addMouseListener(new MouseInputAdapter() {
 							@Override
 							public void mouseClicked(MouseEvent e) {
-								if(!calibrating){ // Prevents running multiple times at the same time.
+								if(!calibrating) { // Prevents running multiple times at the same time.
 									calibrating = true;
 									dynamicCalibrate();
 								}
@@ -74,10 +90,18 @@ public class MountingCalibrationWindow extends JFrame {
 				});
 			}
 		});
-		pane.add(new EJBox(BoxLayout.LINE_AXIS) {{ setBorder(new EmptyBorder(i(5))); }});
-
-		pane.add(new EJBox(BoxLayout.LINE_AXIS) {{ add(new JLabel("Manual calibration:")); }});
-
+		pane.add(new EJBox(BoxLayout.LINE_AXIS) {
+			{
+				setBorder(new EmptyBorder(i(5)));
+			}
+		});
+		
+		pane.add(new EJBox(BoxLayout.LINE_AXIS) {
+			{
+				add(new JLabel("Manual calibration:"));
+			}
+		});
+		
 		pane.add(new EJBox(BoxLayout.LINE_AXIS) {
 			{
 				add(new JButton("Front") {
@@ -86,7 +110,7 @@ public class MountingCalibrationWindow extends JFrame {
 							@Override
 							public void mouseClicked(MouseEvent e) {
 								mountingValue.setText("Mounting = 180");
-								mountingCalibration.SetIMUMountingRotation((float) (Math.PI), imu, t);
+								mountingCalibration.setIMUMountingRotation((float) (Math.PI), imu, t);
 							}
 						});
 					}
@@ -97,7 +121,7 @@ public class MountingCalibrationWindow extends JFrame {
 							@Override
 							public void mouseClicked(MouseEvent e) {
 								mountingValue.setText("Mounting = 90");
-								mountingCalibration.SetIMUMountingRotation((float) (FastMath.HALF_PI), imu, t);
+								mountingCalibration.setIMUMountingRotation((float) (FastMath.HALF_PI), imu, t);
 							}
 						});
 					}
@@ -108,7 +132,7 @@ public class MountingCalibrationWindow extends JFrame {
 							@Override
 							public void mouseClicked(MouseEvent e) {
 								mountingValue.setText("Mounting = -90");
-								mountingCalibration.SetIMUMountingRotation((float) (-FastMath.HALF_PI), imu, t);
+								mountingCalibration.setIMUMountingRotation((float) (-FastMath.HALF_PI), imu, t);
 							}
 						});
 					}
@@ -119,29 +143,34 @@ public class MountingCalibrationWindow extends JFrame {
 							@Override
 							public void mouseClicked(MouseEvent e) {
 								mountingValue.setText("Mounting = 0");
-								mountingCalibration.SetIMUMountingRotation(0f, imu, t);
+								mountingCalibration.setIMUMountingRotation(0f, imu, t);
 							}
 						});
 					}
 				});
 			}
 		});
-
-		pane.add(new EJBox(BoxLayout.LINE_AXIS) {{ setBorder(new EmptyBorder(i(5))); }});
-
+		
+		pane.add(new EJBox(BoxLayout.LINE_AXIS) {
+			{
+				setBorder(new EmptyBorder(i(5)));
+			}
+		});
 		
 		// Pack and display
 		pack();
 		setLocationRelativeTo(null);
 		setVisible(false);
 	}
-	private void dynamicCalibrate(){ // Called when the Calibrate button is pressed for a tracker
+	
+	private void dynamicCalibrate() { // Called when the Calibrate button is pressed for a tracker
 		standingOrientation = imu.rotQuaternion.clone();
 		ButtonTimer.runTimer(dynamicMountingButton, 3, "Calibrate", this::finishDynamicCalibration);
 	}
-	void finishDynamicCalibration(){
+	
+	void finishDynamicCalibration() {
 		mountingCalibration.CalibrateTracker(standingOrientation, imu, t);
-		mountingValue.setText("Mounting = " +  Math.round(Math.toDegrees(imu.getMountingRotation())));
+		mountingValue.setText("Mounting = " + Math.round(Math.toDegrees(imu.getMountingRotation())));
 		calibrating = false;
 	}
 }

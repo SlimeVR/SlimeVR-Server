@@ -6,6 +6,7 @@ import com.jme3.math.Vector3f;
 
 import dev.slimevr.VRServer;
 import dev.slimevr.vr.trackers.udp.TrackersUDPServer;
+import io.eiren.math.FloatMath;
 import io.eiren.util.BufferedTimer;
 
 public class IMUTracker implements Tracker, TrackerWithTPS, TrackerWithBattery {
@@ -23,7 +24,7 @@ public class IMUTracker implements Tracker, TrackerWithTPS, TrackerWithBattery {
 	private final Quaternion buffQuat = new Quaternion();
 	public int movementFilterTickCount = 0;
 	public float movementFilterAmount = 1f;
-	protected float mounting = FastMath.PI;
+	protected float mounting = FloatMath.PI;
 	protected TrackerStatus status = TrackerStatus.OK;
 	protected final int trackerId;
 
@@ -63,9 +64,8 @@ public class IMUTracker implements Tracker, TrackerWithTPS, TrackerWithBattery {
 
 	@Override
 	public void loadConfig(TrackerConfig config) {
-		// Loading a config is an act of user editing, therefore it shouldn't not be
-		// allowed if editing is not allowed
-		if (userEditable()) {
+		// Loading a config is an act of user editing, therefore it shouldn't not be allowed if editing is not allowed
+		if(userEditable()) {
 			mounting = config.mountingRotation;
 			Quaternion mountingQuat = new Quaternion();
 			mountingQuat.fromAngles(0, config.mountingRotation, 0);
@@ -101,18 +101,14 @@ public class IMUTracker implements Tracker, TrackerWithTPS, TrackerWithBattery {
 		}
 		previousRots = new CircularArrayList<Quaternion>(movementFilterTickCount + 1);
 	}
-
-	public TrackerMountingRotation getMountingRotation() {
-		return mounting;
-	}
-
+	
 	public void setMountingRotation(float angle) {
 		mounting = angle;
 		Quaternion mountingQuat = new Quaternion();
 		mountingQuat.fromAngles(0, mounting, 0);
 		rotAdjust.set(mountingQuat);
 	}
-
+	
 	public float getMountingRotation() {
 		return mounting;
 	}
@@ -158,7 +154,7 @@ public class IMUTracker implements Tracker, TrackerWithTPS, TrackerWithBattery {
 	public void getCorrection(Quaternion store) {
 		store.set(correction);
 	}
-
+	
 	@Override
 	public TrackerStatus getStatus() {
 		return status;
@@ -207,16 +203,16 @@ public class IMUTracker implements Tracker, TrackerWithTPS, TrackerWithBattery {
 	public void setBatteryLevel(float level) {
 		this.batteryLevel = level;
 	}
-
+	
 	public void setBatteryVoltage(float voltage) {
 		this.batteryVoltage = voltage;
 	}
-
+	
 	@Override
 	public void resetFull(Quaternion reference) {
 		resetYaw(reference);
 	}
-
+	
 	/**
 	 * Does not perform actual gyro reset to reference, that's the task of
 	 * reference adjusted tracker. Only aligns gyro with magnetometer if
@@ -240,37 +236,37 @@ public class IMUTracker implements Tracker, TrackerWithTPS, TrackerWithBattery {
 		// TODO Magic, correct only yaw
 		// TODO Print "jump" length when correcting if it's more than 1 degree
 	}
-
+	
 	@Override
 	public TrackerPosition getBodyPosition() {
 		return bodyPosition;
 	}
-
+	
 	@Override
 	public void setBodyPosition(TrackerPosition position) {
 		this.bodyPosition = position;
 	}
-
+	
 	@Override
 	public boolean userEditable() {
 		return true;
 	}
-
+	
 	@Override
 	public boolean hasRotation() {
 		return true;
 	}
-
+	
 	@Override
 	public boolean hasPosition() {
 		return false;
 	}
-
+	
 	@Override
 	public boolean isComputed() {
 		return false;
 	}
-
+	
 	@Override
 	public int getTrackerId() {
 		return this.trackerId;
