@@ -277,7 +277,7 @@ public class VRServer extends Thread {
 		});
 	}
 	public void captureIdleOrientations() {
-		mountingCalibration.GetIdle();
+		mountingCalibration.getIdle();
 	}
 	
 	public void calibrateAllTrackers() {

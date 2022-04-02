@@ -30,7 +30,7 @@ public class MountingCalibration {
 	}
 	
 	// Gets the orientation of the first pose for each tracker one by one.
-	public void GetIdle() {
+	public void getIdle() {
 		trackerOrientationIdle.clear();
 		IMUTracker imu;
 		for(Tracker t : server.getAllTrackers()) {
