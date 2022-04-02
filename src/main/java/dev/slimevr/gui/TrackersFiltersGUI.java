@@ -21,14 +21,14 @@ import dev.slimevr.vr.trackers.Tracker;
 import dev.slimevr.vr.trackers.TrackerFilters;
 import io.eiren.util.StringUtils;
 import io.eiren.util.collections.FastList;
+import slimevr_protocol.server.FilteringType;
 
 public class TrackersFiltersGUI extends EJBagNoStretch {
 	
 	private final VRServer server;
-	String filterType;
+	TrackerFilters filterType;
 	float filterAmount;
 	int filterTicks;
-	private List<Tracker> allTrackers = new FastList<>();
 	private JLabel amountLabel, ticksLabel;
 	
 	public TrackersFiltersGUI(VRServer server, VRServerGUI gui) {
@@ -41,10 +41,7 @@ public class TrackersFiltersGUI extends EJBagNoStretch {
 		setAlignmentY(TOP_ALIGNMENT);
 		add(Box.createVerticalStrut(10));
 
-		filterType = server.config.getString("filters.type");
-		if(filterType == null){
-			filterType = "NONE";
-		}
+		filterType = TrackerFilters.valueOf(server.config.getString("filters.type", "NONE"));
 
 		JComboBox<String> filterSelect;
 		add(filterSelect = new JComboBox<>(), s(c(0, row, 2), 4, 1));
@@ -52,19 +49,13 @@ public class TrackersFiltersGUI extends EJBagNoStretch {
 		for(TrackerFilters f : TrackerFilters.values()) {
 			filterSelect.addItem(f.name());
 		}
-		if(filterType != null) {
-			filterSelect.setSelectedItem(filterType);
-		} else {
-			filterSelect.setSelectedItem(TrackerFilters.NONE);
-		}
+		filterSelect.setSelectedItem(filterType.toString());
 
 		filterSelect.addActionListener(new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent e) {
-				filterType = filterSelect.getSelectedItem().toString();
-				server.config.setProperty("filters.type", filterType);
-				server.saveConfig();
-				updateTrackersFilters();
+				filterType =  TrackerFilters.valueOf(filterSelect.getSelectedItem().toString());
+				server.updateTrackersFilters(filterType, filterAmount, filterTicks);
 			}
 		});
 		add(Box.createVerticalStrut(40));
@@ -87,20 +78,6 @@ public class TrackersFiltersGUI extends EJBagNoStretch {
 
 	}
 
-	void updateTrackersFilters(){
-		allTrackers = server.getAllTrackers();
-		IMUTracker imu;
-		for (Tracker t : allTrackers) {
-			Tracker realTracker = t;
-			if(t instanceof ReferenceAdjustedTracker)
-			realTracker = ((ReferenceAdjustedTracker<? extends Tracker>) t).getTracker();
-			if(realTracker instanceof IMUTracker){
-				imu = (IMUTracker)realTracker;
-				imu.setFilter(filterType, filterAmount, filterTicks);
-			}
-		}
-	}
-
 	void adjustValues(int cat, boolean neg){
 		if(cat == 0){
 			if(neg){
@@ -110,7 +87,6 @@ public class TrackersFiltersGUI extends EJBagNoStretch {
 				filterAmount = (Float) FastMath.clamp(filterAmount + 0.1f, 0, 1);
 			}
 			amountLabel.setText((StringUtils.prettyNumber(filterAmount * 100f)) + "%");
-			server.config.setProperty("filters.amount", filterAmount);
 		}
 		else if(cat == 1){
 			if(neg){
@@ -120,12 +96,11 @@ public class TrackersFiltersGUI extends EJBagNoStretch {
 				filterTicks = (int) FastMath.clamp(filterTicks + 1, 0, 80);
 			}
 			ticksLabel.setText((StringUtils.prettyNumber(filterTicks)));
-			server.config.setProperty("filters.tickCount", filterTicks);
 		}
 		
-		server.saveConfig();
-		updateTrackersFilters();
+		server.updateTrackersFilters(filterType, filterAmount, filterTicks);
 	}
+
 	private class AdjButton extends JButton {
 
 		public AdjButton(String text, int category, boolean neg) {

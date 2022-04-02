@@ -52,7 +52,7 @@ public class Main {
 			vrServer = new VRServer();
 			vrServer.start(); 
 			new Keybinding(vrServer);
-//			new VRServerGUI(vrServer);
+			new VRServerGUI(vrServer);
 		} catch(Throwable e) {
 			e.printStackTrace();
 			try {

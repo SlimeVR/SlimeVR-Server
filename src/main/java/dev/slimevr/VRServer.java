@@ -16,16 +16,14 @@ import java.util.concurrent.LinkedBlockingQueue;
 import java.util.function.Consumer;
 
 import dev.slimevr.bridge.Bridge;
+import dev.slimevr.bridge.ProtobufBridge;
 import dev.slimevr.platform.windows.WindowsNamedPipeBridge;
 import dev.slimevr.bridge.VMCBridge;
+import dev.slimevr.vr.trackers.*;
 import dev.slimevr.websocketapi.WebSocketVRBridge;
 import dev.slimevr.util.ann.VRServerThread;
 import dev.slimevr.vr.processor.HumanPoseProcessor;
 import dev.slimevr.vr.processor.skeleton.HumanSkeleton;
-import dev.slimevr.vr.trackers.HMDTracker;
-import dev.slimevr.vr.trackers.ShareableTracker;
-import dev.slimevr.vr.trackers.Tracker;
-import dev.slimevr.vr.trackers.TrackerConfig;
 import dev.slimevr.vr.trackers.udp.TrackersUDPServer;
 import io.eiren.util.OperatingSystem;
 import io.eiren.util.ann.ThreadSafe;
@@ -259,6 +257,25 @@ public class VRServer extends Thread {
 			for(int i = 0; i < newTrackersConsumers.size(); ++i)
 				newTrackersConsumers.get(i).accept(tracker);
 		});
+	}
+
+
+	public void updateTrackersFilters(TrackerFilters filter, float amount, int ticks) {
+		config.setProperty("filters.type", filter.name());
+		config.setProperty("filters.amount", amount);
+		config.setProperty("filters.tickCount", ticks);
+		saveConfig();
+
+		IMUTracker imu;
+		for (Tracker t : this.getAllTrackers()) {
+			Tracker realTracker = t;
+			if(t instanceof ReferenceAdjustedTracker)
+				realTracker = ((ReferenceAdjustedTracker<? extends Tracker>) t).getTracker();
+			if(realTracker instanceof IMUTracker){
+				imu = (IMUTracker)realTracker;
+				imu.setFilter(filter.name(), amount, ticks);
+			}
+		}
 	}
 	
 	public void resetTrackers() {
