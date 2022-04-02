@@ -6,7 +6,9 @@ import com.jme3.math.Vector3f;
 import dev.slimevr.VRServer;
 import dev.slimevr.bridge.ProtobufBridge;
 import dev.slimevr.platform.windows.WindowsNamedPipeBridge;
+import dev.slimevr.vr.processor.skeleton.SkeletonConfigValue;
 import dev.slimevr.vr.trackers.*;
+import dev.slimevr.vr.trackers.TrackerPosition;
 import dev.slimevr.vr.trackers.TrackerRole;
 import io.eiren.util.ann.ThreadSafe;
 import io.eiren.util.logging.LogManager;
@@ -92,6 +94,16 @@ public class WebsocketAPI extends WebSocketServer {
 					if (req != null) this.onChangeSettingsRequest(conn, req);
 					break;
 				}
+				case InboundUnion.SkeletonConfigRequest: {
+					SkeletonConfigRequest req = (SkeletonConfigRequest) inboundPacket.packet(new SkeletonConfigRequest());
+					if (req != null) this.onSkeletonConfigRequest(conn, req);
+					break;
+				}
+				case InboundUnion.ChangeSkeletonConfigRequest: {
+					ChangeSkeletonConfigRequest req = (ChangeSkeletonConfigRequest) inboundPacket.packet(new ChangeSkeletonConfigRequest());
+					if (req != null) this.onChangeSkeletonConfigRequest(conn, req);
+					break;
+				}
 				default:
 					LogManager.log.warning("[WebSocketAPI] Received unknown packet type: " + inboundPacket.packetType());
 			}
@@ -109,8 +121,37 @@ public class WebsocketAPI extends WebSocketServer {
 		}
 	}
 
+	public void onSkeletonConfigRequest(WebSocket conn, SkeletonConfigRequest req) {
+		FlatBufferBuilder fbb = new FlatBufferBuilder(300);
+
+		int[] partsOffsets = new int[SkeletonConfigValue.values().length];
+
+
+		for (int index = 0; index < SkeletonConfigValue.values().length; index++) {
+			SkeletonConfigValue val = SkeletonConfigValue.values[index];
+			int part  = SkeletonPart.createSkeletonPart(fbb, val.id, this.server.humanPoseProcessor.getSkeletonConfig(val));
+			partsOffsets[index] = part;
+		}
+
+
+		int parts = SkeletonConfigResponse.createSkeletonPartsVector(fbb, partsOffsets);
+		int config = SkeletonConfigResponse.createSkeletonConfigResponse(fbb, parts);
+		int outbound = this.createOutboundPacket(fbb, OutboundUnion.SkeletonConfigResponse, config);
+		fbb.finish(outbound);
+		conn.send(fbb.dataBuffer());
+	}
+
+	public void onChangeSkeletonConfigRequest(WebSocket conn, ChangeSkeletonConfigRequest req) {
+		SkeletonConfigValue joint = SkeletonConfigValue.getById(req.id());
+
+//		float current = server.humanPoseProcessor.getSkeletonConfig(SkeletonConfigValue.getById(req.id()));
+		server.humanPoseProcessor.setSkeletonConfig(joint, req.value());
+		server.humanPoseProcessor.getSkeletonConfig().saveToConfig(server.config);
+		server.saveConfig();
+	}
+
 	public void onSettingsRequest(WebSocket conn, SettingsRequest req) {
-		FlatBufferBuilder fbb = new FlatBufferBuilder(40);
+		FlatBufferBuilder fbb = new FlatBufferBuilder(32);
 
 		WindowsNamedPipeBridge bridge = this.server.getVRBridge(WindowsNamedPipeBridge.class);
 
@@ -170,7 +211,7 @@ public class WebsocketAPI extends WebSocketServer {
 		if (tracker == null)
 			return ;
 
-		tracker.setBodyPosition(TrackerPosition.getByRole(TrackerRole.getById(req.role())));
+		tracker.setBodyPosition(TrackerPosition.getById(req.mountingPosition()));
 		if (tracker instanceof IMUTracker) {
 			IMUTracker imu = (IMUTracker) tracker;
 			TrackerMountingRotation rot = TrackerMountingRotation.fromAngle(req.mountingRotation());
@@ -215,8 +256,8 @@ public class WebsocketAPI extends WebSocketServer {
 			DeviceStatus.addComputed(fbb, tracker.isComputed());
 			DeviceStatus.addEditable(fbb, tracker.userEditable());
 
-			if (tracker.getBodyPosition() != null && tracker.getBodyPosition().trackerRole != null) {
-				DeviceStatus.addRole(fbb, tracker.getBodyPosition().trackerRole.id);
+			if (tracker.getBodyPosition() != null) {
+				DeviceStatus.addMountingPosition(fbb, tracker.getBodyPosition().id);
 			}
 
 			if (tracker instanceof IMUTracker) {
