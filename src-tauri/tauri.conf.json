@@ -54,8 +54,8 @@
     "windows": [
       {
         "title": "Slimevr UI",
-        "width": 1033,
-        "height": 639,
+        "width": 1150,
+        "height": 660,
         "resizable": true,
         "fullscreen": false
       }
