@@ -4,6 +4,8 @@ import java.util.EnumMap;
 import java.util.HashMap;
 import java.util.Map;
 
+import io.eiren.util.logging.LogManager;
+
 public enum TrackerPosition {
 	
 	NONE("", TrackerRole.NONE),
@@ -38,6 +40,12 @@ public enum TrackerPosition {
 	}
 	
 	public static TrackerPosition getByDesignation(String designation) {
+		// Support old configs. leg was renamed to knee.
+		if(designation.equals("body:left_leg"))
+			designation = "body:left_knee";
+		if(designation.equals("body:right_leg"))
+			designation = "body:right_knee";
+		
 		return designation == null ? null : byDesignation.get(designation.toLowerCase());
 	}
 	
