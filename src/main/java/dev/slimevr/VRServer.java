@@ -276,6 +276,7 @@ public class VRServer extends Thread {
 			humanPoseProcessor.resetTrackers();
 		});
 	}
+	
 	public void captureIdleOrientations() {
 		mountingCalibration.getIdle();
 	}

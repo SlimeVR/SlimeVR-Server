@@ -21,7 +21,8 @@ public class MountingCalibration {
 		this.server = server;
 	}
 	
-	public void setIMUMountingRotation(float rad, IMUTracker imu, Tracker t) { // Sets the mounting rotation (rad) of a given imu tracker and saves it.
+	// Sets the mounting rotation (rad) of a given imu tracker and saves it.
+	public void setIMUMountingRotation(float rad, IMUTracker imu, Tracker t) {
 		imu.setMountingRotation(rad);
 		TrackerConfig tc = server.getTrackerConfig(t);
 		imu.saveConfig(tc);

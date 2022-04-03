@@ -163,7 +163,8 @@ public class MountingCalibrationWindow extends JFrame {
 		setVisible(false);
 	}
 	
-	private void dynamicCalibrate() { // Called when the Calibrate button is pressed for a tracker
+	// Called when the Calibrate button is pressed for a tracker
+	private void dynamicCalibrate() {
 		standingOrientation = imu.rotQuaternion.clone();
 		ButtonTimer.runTimer(dynamicMountingButton, 3, "Calibrate", this::finishDynamicCalibration);
 	}
