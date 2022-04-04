@@ -432,4 +432,8 @@ public class TrackersUDPServer extends Thread {
 		sb.append('}');
 		return sb.toString();
 	}
+
+	public List<TrackerUDPConnection> getConnections() {
+		return connections;
+	}
 }

@@ -41,7 +41,7 @@ public class WebSocketVRBridge extends WebsocketAPI implements Bridge {
 	private final AtomicBoolean newHMDData = new AtomicBoolean(false);
 	
 	public WebSocketVRBridge(HMDTracker hmd, List<? extends ShareableTracker> shareTrackers, VRServer server) {
-		super(server);
+		super(server, server.getProtocolAPI());
 		this.hmd = hmd;
 		this.shareTrackers = new FastList<>(shareTrackers);
 		this.internalTrackers = new FastList<>(shareTrackers.size());

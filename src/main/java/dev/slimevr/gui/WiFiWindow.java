@@ -13,113 +13,87 @@ import java.io.Reader;
 import java.util.Timer;
 import java.util.TimerTask;
 
-import javax.swing.BoxLayout;
-import javax.swing.JButton;
-import javax.swing.JCheckBox;
-import javax.swing.JFrame;
-import javax.swing.JLabel;
-import javax.swing.JPasswordField;
-import javax.swing.JScrollPane;
-import javax.swing.JTextArea;
-import javax.swing.JTextField;
-import javax.swing.ScrollPaneConstants;
-import javax.swing.WindowConstants;
+import javax.swing.*;
 import javax.swing.event.MouseInputAdapter;
 
 import com.fazecast.jSerialComm.SerialPort;
 
 import dev.slimevr.gui.swing.EJBox;
+import dev.slimevr.serial.SerialListener;
 import io.eiren.util.ann.AWTThread;
 
-public class WiFiWindow extends JFrame {
-	
-	private static final Timer timer = new Timer();
+public class WiFiWindow extends JFrame implements SerialListener {
+
 	private static String savedSSID = "";
 	private static String savedPassword = "";
 	JTextField ssidField;
 	JPasswordField passwdField;
-	SerialPort trackerPort = null;
 	JTextArea log;
-	TimerTask readTask;
-	
+
+	private final VRServerGUI gui;
+
 	public WiFiWindow(VRServerGUI gui) {
 		super("WiFi Settings");
+		this.gui = gui;
+
 		getContentPane().setLayout(new BoxLayout(getContentPane(), BoxLayout.LINE_AXIS));
-		
+
+		this.gui.server.getSerialHandler().addListener(this);
+
 		build();
 	}
-	
+
 	@AWTThread
 	private void build() {
-		Container pane = getContentPane();
-		
-		
-		SerialPort[] ports = SerialPort.getCommPorts();
-		for(SerialPort port : ports) {
-			if(port.getDescriptivePortName().toLowerCase().contains("ch340") || port.getDescriptivePortName().toLowerCase().contains("cp21") || port.getDescriptivePortName().toLowerCase().contains("ch910")) {
-				trackerPort = port;
-				break;
-			}
+		if (!this.gui.server.getSerialHandler().openSerial()) {
+			JOptionPane.showMessageDialog(null, "Unable to open a serial connection. Check that your drivers are installed and nothing is using the serial port already (like Cura or VScode or another slimeVR server)", "SlimeVR: Serial connection error", JOptionPane.ERROR_MESSAGE);
 		}
+	}
+
+	@Override
+	@AWTThread
+	public void onSerialConnected(SerialPort port) {
+		Container pane = getContentPane();
 		pane.add(new EJBox(BoxLayout.PAGE_AXIS) {{
-			if(trackerPort == null) {
-				add(new JLabel("No trackers connected, connect tracker to USB and reopen window"));
-				timer.schedule(new TimerTask() {
-					@Override
-					public void run() {
-						WiFiWindow.this.dispose();
-					}
-				}, 5000);
-			} else {
-				add(new JLabel("Tracker connected to " + trackerPort.getSystemPortName() + " (" + trackerPort.getDescriptivePortName() + ")"));
-				JScrollPane scroll;
-				add(scroll = new JScrollPane(log = new JTextArea(10, 20), ScrollPaneConstants.VERTICAL_SCROLLBAR_ALWAYS, ScrollPaneConstants.HORIZONTAL_SCROLLBAR_NEVER));
-				log.setLineWrap(true);
-				scroll.setAutoscrolls(true);
-				if(trackerPort.openPort()) {
-					trackerPort.setBaudRate(115200);
-					log.append("[OK] Port opened\n");
-					readTask = new ReadTask();
-					timer.schedule(readTask, 500, 500);
-				} else {
-					log.append("ERROR: Can't open port");
-				}
-				
-				add(new JLabel("Enter WiFi credentials:"));
-				add(new EJBox(BoxLayout.LINE_AXIS) {{
-					add(new JLabel("Network name:"));
-					add(ssidField = new JTextField(savedSSID));
-				}});
-				add(new EJBox(BoxLayout.LINE_AXIS) {{
-					add(new JLabel("Network password:"));
-					passwdField = new JPasswordField(savedPassword);
-					passwdField.setEchoChar('\u25cf');
-					add(passwdField);
-					add(new JCheckBox("Show Password") {{
-						addMouseListener(new MouseInputAdapter() {
-							@Override
-							public void mouseClicked(MouseEvent e) {
-								if(isSelected())
-									passwdField.setEchoChar((char)0);
-									else
-									passwdField.setEchoChar('\u25cf');
-							}
-						});
-					}});
-				}});
-				add(new JButton("Send") {{
+			add(new JLabel("Tracker connected to " + port.getSystemPortName() + " (" + port.getDescriptivePortName() + ")"));
+			JScrollPane scroll;
+			add(scroll = new JScrollPane(log = new JTextArea(10, 20), ScrollPaneConstants.VERTICAL_SCROLLBAR_ALWAYS, ScrollPaneConstants.HORIZONTAL_SCROLLBAR_NEVER));
+			log.setLineWrap(true);
+			scroll.setAutoscrolls(true);
+			add(new JLabel("Enter WiFi credentials:"));
+			add(new EJBox(BoxLayout.LINE_AXIS) {{
+				add(new JLabel("Network name:"));
+				add(ssidField = new JTextField(savedSSID));
+			}});
+			add(new EJBox(BoxLayout.LINE_AXIS) {{
+				add(new JLabel("Network password:"));
+				passwdField = new JPasswordField(savedPassword);
+				passwdField.setEchoChar('\u25cf');
+				add(passwdField);
+				add(new JCheckBox("Show Password") {{
 					addMouseListener(new MouseInputAdapter() {
 						@Override
 						public void mouseClicked(MouseEvent e) {
-							send(ssidField.getText(), new String(passwdField.getPassword()));
+							if (isSelected())
+								passwdField.setEchoChar((char) 0);
+							else
+								passwdField.setEchoChar('\u25cf');
 						}
 					});
 				}});
-			}
+			}});
+			add(new JButton("Send") {{
+				addMouseListener(new MouseInputAdapter() {
+					@Override
+					public void mouseClicked(MouseEvent e) {
+						savedSSID = ssidField.getText();
+						savedPassword = new String(passwdField.getPassword());
+						gui.server.getSerialHandler().setWifi(savedSSID, savedPassword);
+					}
+				});
+			}});
 		}});
-		
-		
-		// Pack and display
+
 		pack();
 		setLocationRelativeTo(null);
 		setVisible(true);
@@ -131,57 +105,26 @@ public class WiFiWindow extends JFrame {
 			}
 		});
 		setDefaultCloseOperation(WindowConstants.DISPOSE_ON_CLOSE);
+		final WiFiWindow window = this;
 		addWindowListener(new WindowAdapter() {
-	        @Override
-	        public void windowClosing(WindowEvent windowEvent) {
-	            if(trackerPort != null)
-	            	trackerPort.closePort();
-	            if(readTask != null)
-	            	readTask.cancel();
-	            System.out.println("Port closed okay");
-	            dispose();
-	        }
-	    });
-	}
-	
-	protected void send(String ssid, String passwd) {
-		savedSSID = ssid;
-		savedPassword = passwd;
-		OutputStream os = trackerPort.getOutputStream();
-		OutputStreamWriter writer = new OutputStreamWriter(os);
-		try {
-			writer.append("SET WIFI \"" + ssid + "\" \"" + passwd + "\"\n");
-			writer.flush();
-		} catch(IOException e) {
-			log.append(e.toString() + "\n");
-			e.printStackTrace();
-		}
-	}
-	
-	private class ReadTask extends TimerTask {
-		
-		final InputStream is;
-		final Reader reader;
-		StringBuffer sb = new StringBuffer();
-		
-		public ReadTask() {
-			is = trackerPort.getInputStreamWithSuppressedTimeoutExceptions();
-			reader = new InputStreamReader(is);
-		}
-
-		@Override
-		public void run() {
-			try {
-				while(reader.ready())
-					sb.appendCodePoint(reader.read());
-				if(sb.length() > 0)
-					log.append(sb.toString());
-				sb.setLength(0);
-			} catch(Exception e) {
-				log.append(e.toString() + "\n");
-				e.printStackTrace();
+			@Override
+			public void windowClosing(WindowEvent windowEvent) {
+				gui.server.getSerialHandler().closeSerial();
+				dispose();
+				gui.server.getSerialHandler().removeListener(window);
 			}
-		}
-		
+		});
+	}
+
+	@Override
+	@AWTThread
+	public void onSerialDisconnected() {
+		log.append("[SERVER] Serial port disconnected");
+	}
+
+	@Override
+	@AWTThread
+	public void onSerialLog(String str) {
+		log.append(str);
 	}
 }

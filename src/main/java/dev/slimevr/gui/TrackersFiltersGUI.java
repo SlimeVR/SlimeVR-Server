@@ -21,7 +21,6 @@ import dev.slimevr.vr.trackers.Tracker;
 import dev.slimevr.vr.trackers.TrackerFilters;
 import io.eiren.util.StringUtils;
 import io.eiren.util.collections.FastList;
-import slimevr_protocol.server.FilteringType;
 
 public class TrackersFiltersGUI extends EJBagNoStretch {
 	

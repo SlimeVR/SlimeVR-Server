@@ -1,0 +1,20 @@
+package dev.slimevr.websocketapi;
+
+public class APIApplication {
+
+	public int applicationType;
+
+	public boolean listeningToSerial;
+
+	public APIApplication() {
+		this.listeningToSerial = false;
+	}
+
+	public void setListeningToSerial(boolean serial) {
+		this.listeningToSerial = serial;
+	}
+
+	public boolean isListeningToSerial() {
+		return listeningToSerial;
+	}
+}

@@ -19,7 +19,10 @@ import dev.slimevr.bridge.Bridge;
 import dev.slimevr.bridge.ProtobufBridge;
 import dev.slimevr.platform.windows.WindowsNamedPipeBridge;
 import dev.slimevr.bridge.VMCBridge;
+import dev.slimevr.poserecorder.BVHRecorder;
+import dev.slimevr.serial.SerialHandler;
 import dev.slimevr.vr.trackers.*;
+import dev.slimevr.websocketapi.ProtocolAPI;
 import dev.slimevr.websocketapi.WebSocketVRBridge;
 import dev.slimevr.util.ann.VRServerThread;
 import dev.slimevr.vr.processor.HumanPoseProcessor;
@@ -46,10 +49,17 @@ public class VRServer extends Thread {
 	private final List<Consumer<Tracker>> newTrackersConsumers = new FastList<>();
 	private final List<Runnable> onTick = new FastList<>();
 	private final List<? extends ShareableTracker> shareTrackers;
-	
+	private final BVHRecorder bvhRecorder;
+	private final SerialHandler serialHandler;
+	private final ProtocolAPI protocolAPI;
+
+
 	public VRServer() {
 		super("VRServer");
 		loadConfig();
+
+		protocolAPI = new ProtocolAPI(this);
+
 		hmdTracker = new HMDTracker("HMD");
 		hmdTracker.position.set(0, 1.8f, 0); // Set starting position for easier debugging
 		// TODO Multiple processors
@@ -74,7 +84,9 @@ public class VRServer extends Thread {
 			bridges.add(feederBridge);
 
 		}
-		
+
+		serialHandler = new SerialHandler();
+
 		// Create WebSocket server
 		WebSocketVRBridge wsBridge = new WebSocketVRBridge(hmdTracker, shareTrackers, this);
 		tasks.add(() -> wsBridge.startBridge());
@@ -88,7 +100,10 @@ public class VRServer extends Thread {
 		} catch(UnknownHostException e) {
 			e.printStackTrace();
 		}
-		
+
+
+		bvhRecorder = new BVHRecorder(this);
+
 		
 		registerTracker(hmdTracker);
 		for(int i = 0; i < shareTrackers.size(); ++i)
@@ -296,5 +311,21 @@ public class VRServer extends Thread {
 
 	public List<Tracker> getAllTrackers() {
 		return new FastList<>(trackers);
+	}
+
+	public BVHRecorder getBvhRecorder() {
+		return this.bvhRecorder;
+	}
+
+	public SerialHandler getSerialHandler() {
+		return this.serialHandler;
+	}
+
+	public ProtocolAPI getProtocolAPI() {
+		return protocolAPI;
+	}
+
+	public TrackersUDPServer getTrackersServer() {
+		return trackersServer;
 	}
 }

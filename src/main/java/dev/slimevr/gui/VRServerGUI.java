@@ -52,10 +52,6 @@ public class VRServerGUI extends JFrame {
 	private JButton resetButton;
 	private EJBox pane;
 
-	private static File bvhSaveDir = new File("BVH Recordings");
-	private final ServerPoseStreamer poseStreamer;
-	private PoseDataStream poseDataStream = null;
-	
 	private float zoom = 1.5f;
 	private float initZoom = zoom;
 	
@@ -99,7 +95,7 @@ public class VRServerGUI extends JFrame {
 		trackersFiltersGUI = new TrackersFiltersGUI(server, this);
 		this.skeletonList = new SkeletonList(server, this);
 		
-		this.poseStreamer = new ServerPoseStreamer(server);
+
 
 		JScrollPane scrollPane = (JScrollPane) add(new JScrollPane(pane = new EJBox(PAGE_AXIS), ScrollPaneConstants.VERTICAL_SCROLLBAR_AS_NEEDED, ScrollPaneConstants.HORIZONTAL_SCROLLBAR_AS_NEEDED));
 		scrollPane.getVerticalScrollBar().setUnitIncrement(16);
@@ -150,22 +146,6 @@ public class VRServerGUI extends JFrame {
 			}
 		});
 	}
-	
-	private File getBvhFile() {
-		if (bvhSaveDir.isDirectory() || bvhSaveDir.mkdirs()) {
-			File saveRecording;
-			int recordingIndex = 1;
-			do {
-				saveRecording = new File(bvhSaveDir, "BVH-Recording" + recordingIndex++ + ".bvh");
-			} while(saveRecording.exists());
-			
-			return saveRecording;
-		} else {
-			LogManager.log.severe("[BVH] Failed to create the recording directory \"" + bvhSaveDir.getPath() + "\".");
-		}
-
-		return null;
-	}
 
 	@AWTThread
 	private void build() {
@@ -197,28 +177,12 @@ public class VRServerGUI extends JFrame {
 				addMouseListener(new MouseInputAdapter() {
 					@Override
 					public void mouseClicked(MouseEvent e) {
-						if (poseDataStream == null) {
-							File bvhFile = getBvhFile();
-							if (bvhFile != null) {
-								try {
-									poseDataStream = new BVHFileStream(bvhFile);
-									setText("Stop Recording BVH...");
-									poseStreamer.setOutput(poseDataStream, 1000L / 100L);
-								} catch (IOException e1) {
-									LogManager.log.severe("[BVH] Failed to create the recording file \"" + bvhFile.getPath() + "\".");
-								}
-							} else {
-								LogManager.log.severe("[BVH] Unable to get file to save to");
-							}
+						if (!server.getBvhRecorder().isRecording()) {
+							setText("Stop Recording BVH...");
+							server.getBvhRecorder().startRecording();
 						} else {
-							try {
-								poseStreamer.closeOutput(poseDataStream);
-							} catch (Exception e1) {
-								LogManager.log.severe("[BVH] Exception while closing poseDataStream", e1);
-							} finally {
-								poseDataStream = null;
-								setText("Record BVH");
-							}
+							server.getBvhRecorder().endRecording();
+							setText("Record BVH");
 						}
 					}
 				});
