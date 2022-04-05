@@ -592,8 +592,8 @@ public class SimpleSkeleton extends HumanSkeleton implements SkeletonConfigCallb
 			trackerRightHandNodeHmd.localTransform.setRotation(rotBuf1);
 		}
 		
-		// Left arm (from controller)
-		if(leftControllerTracker != null) { // Elbow from SteamVR controller
+		// Left elbow
+		if(leftControllerTracker != null) { // From SteamVR controller
 			leftControllerTracker.getPosition(posBuf);
 			leftControllerTracker.getRotation(rotBuf1);
 			leftControllerNodeContrl.localTransform.setTranslation(posBuf);
@@ -601,29 +601,19 @@ public class SimpleSkeleton extends HumanSkeleton implements SkeletonConfigCallb
 			if(leftForearmTracker != null) {
 				leftForearmTracker.getRotation(rotBuf1);
 				leftWristNodeContrl.localTransform.setRotation(rotBuf1);
-				if(leftUpperArmTracker != null) {
-					leftUpperArmTracker.getRotation(rotBuf2);
-					leftElbowNodeContrl.localTransform.setRotation(rotBuf2);
-					leftUpperArmNodeContrl.localTransform.setRotation(rotBuf2);
-					trackerLeftElbowNodeContrl.localTransform.setRotation(rotBuf2);
-				} else {
-					leftElbowNodeContrl.localTransform.setRotation(rotBuf1);
-					rightUpperArmNodeContrl.localTransform.setRotation(rotBuf1);
-					trackerLeftElbowNodeContrl.localTransform.setRotation(rotBuf1);
-				}
+				leftUpperArmTracker.getRotation(rotBuf1);
+				leftElbowNodeContrl.localTransform.setRotation(rotBuf1);
+				leftUpperArmNodeContrl.localTransform.setRotation(rotBuf1);
+				trackerLeftElbowNodeContrl.localTransform.setRotation(rotBuf1);
 			}
-		} else if(leftHandTracker != null) { // Elbow from SlimeVR hand
-			leftHandTracker.getRotation(rotBuf1);
-			leftControllerNodeContrl.localTransform.setRotation(rotBuf1);
-			leftControllerNodeContrl.localTransform.setTranslation(leftHandNodeHmd.worldTransform.getTranslation());
-		} else if(leftUpperArmTracker != null) { // Elbow from SlimeVR shoulders
+		} else if(leftUpperArmTracker != null) { // From SlimeVR arms
 			leftUpperArmTracker.getRotation(rotBuf1);
 			leftControllerNodeContrl.localTransform.setRotation(rotBuf1);
 			leftControllerNodeContrl.localTransform.setTranslation(leftHandNodeHmd.worldTransform.getTranslation());
 		}
 		
-		// Right arm (from controller)
-		if(rightControllerTracker != null) { // Elbow from SteamVR controller
+		// Right elbow
+		if(rightControllerTracker != null) { // From SteamVR controller
 			rightControllerTracker.getPosition(posBuf);
 			rightControllerTracker.getRotation(rotBuf1);
 			rightControllerNodeContrl.localTransform.setTranslation(posBuf);
@@ -631,22 +621,12 @@ public class SimpleSkeleton extends HumanSkeleton implements SkeletonConfigCallb
 			if(rightForearmTracker != null) {
 				rightForearmTracker.getRotation(rotBuf1);
 				rightWristNodeContrl.localTransform.setRotation(rotBuf1);
-				if(rightUpperArmTracker != null) {
-					rightUpperArmTracker.getRotation(rotBuf2);
-					rightElbowNodeContrl.localTransform.setRotation(rotBuf2);
-					rightUpperArmNodeContrl.localTransform.setRotation(rotBuf2);
-					trackerRightElbowNodeContrl.localTransform.setRotation(rotBuf2);
-				} else {
-					rightElbowNodeContrl.localTransform.setRotation(rotBuf1);
-					rightUpperArmNodeContrl.localTransform.setRotation(rotBuf1);
-					trackerRightElbowNodeContrl.localTransform.setRotation(rotBuf1);
-				}
+				rightUpperArmTracker.getRotation(rotBuf1);
+				rightElbowNodeContrl.localTransform.setRotation(rotBuf1);
+				rightUpperArmNodeContrl.localTransform.setRotation(rotBuf1);
+				trackerRightElbowNodeContrl.localTransform.setRotation(rotBuf1);
 			}
-		} else if(rightHandTracker != null) { // Elbow from SlimeVR hand
-			rightHandTracker.getRotation(rotBuf1);
-			rightControllerNodeContrl.localTransform.setRotation(rotBuf1);
-			rightControllerNodeContrl.localTransform.setTranslation(rightHandNodeHmd.worldTransform.getTranslation());
-		} else if(rightUpperArmTracker != null) { // Elbow from SlimeVR shoulders
+		} else if(rightUpperArmTracker != null) { // From SlimeVR arms
 			rightUpperArmTracker.getRotation(rotBuf1);
 			rightControllerNodeContrl.localTransform.setRotation(rotBuf1);
 			rightControllerNodeContrl.localTransform.setTranslation(rightHandNodeHmd.worldTransform.getTranslation());
@@ -1079,7 +1059,15 @@ public class SimpleSkeleton extends HumanSkeleton implements SkeletonConfigCallb
 	}
 	
 	Tracker[] getTrackerToReset() {
-		return new Tracker[]{trackerPreUpdate(this.chestTracker), trackerPreUpdate(this.waistTracker), trackerPreUpdate(this.hipTracker), trackerPreUpdate(this.leftKneeTracker), trackerPreUpdate(this.leftAnkleTracker), trackerPreUpdate(this.leftFootTracker), trackerPreUpdate(this.rightKneeTracker), trackerPreUpdate(this.rightAnkleTracker), trackerPreUpdate(this.rightFootTracker), trackerPreUpdate(this.rightForearmTracker), trackerPreUpdate(this.leftForearmTracker), trackerPreUpdate(this.rightUpperArmTracker), trackerPreUpdate(this.leftUpperArmTracker), trackerPreUpdate(this.leftHandTracker), trackerPreUpdate(this.rightHandTracker)};
+		return new Tracker[]{
+			trackerPreUpdate(this.chestTracker), trackerPreUpdate(this.waistTracker), 
+			trackerPreUpdate(this.hipTracker), trackerPreUpdate(this.leftKneeTracker), 
+			trackerPreUpdate(this.leftAnkleTracker), trackerPreUpdate(this.leftFootTracker), 
+			trackerPreUpdate(this.rightKneeTracker), trackerPreUpdate(this.rightAnkleTracker), 
+			trackerPreUpdate(this.rightFootTracker), trackerPreUpdate(this.rightForearmTracker), 
+			trackerPreUpdate(this.leftForearmTracker), trackerPreUpdate(this.rightUpperArmTracker), 
+			trackerPreUpdate(this.leftUpperArmTracker), trackerPreUpdate(this.leftHandTracker), 
+			trackerPreUpdate(this.rightHandTracker)};
 	}
 	
 	@Override
