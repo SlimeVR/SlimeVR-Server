@@ -252,17 +252,29 @@ public class SkeletonConfig {
 			setNodeOffset(nodeOffset, 0, 0, -getConfig(SkeletonConfigValue.SKELETON_OFFSET));
 			break;
 
-		case HAND:
+		case CONTROLLER:
 			setNodeOffset(nodeOffset, 0, getConfig(SkeletonConfigValue.CONTROLLER_DISTANCE_Y), getConfig(SkeletonConfigValue.CONTROLLER_DISTANCE_Z));
 			break;
-		case ELBOW:
-			setNodeOffset(nodeOffset, 0, getConfig(SkeletonConfigValue.ELBOW_DISTANCE), 0);
+		case HAND:
+			setNodeOffset(nodeOffset, 0, -getConfig(SkeletonConfigValue.CONTROLLER_DISTANCE_Y), -getConfig(SkeletonConfigValue.CONTROLLER_DISTANCE_Z));
 			break;
-		case UPPER_ARM:
+		case FOREARM_CONTRL:
+			setNodeOffset(nodeOffset, 0, getConfig(SkeletonConfigValue.FOREARM_LENGTH), 0);
+			break;
+		case FOREARM_HMD:
+			setNodeOffset(nodeOffset, 0, -getConfig(SkeletonConfigValue.FOREARM_LENGTH), 0);
+			break;
+		case UPPER_ARM_CONTRL:
 			setNodeOffset(nodeOffset, 0, getConfig(SkeletonConfigValue.UPPER_ARM_DISTANCE), 0);
 			break;
-		case ELBOW_TRACKER:
-			setNodeOffset(nodeOffset, 0, 0, 0);
+		case UPPER_ARM_HMD:
+			setNodeOffset(nodeOffset, 0, -getConfig(SkeletonConfigValue.UPPER_ARM_LENGTH), 0);
+			break;
+		case LEFT_SHOULDER:
+			setNodeOffset(nodeOffset, -getConfig(SkeletonConfigValue.SHOULDERS_WIDTH) / 2f, getConfig(SkeletonConfigValue.CHEST) - getConfig(SkeletonConfigValue.SHOULDERS_DISTANCE), 0);
+			break;
+		case RIGHT_SHOULDER:
+			setNodeOffset(nodeOffset, getConfig(SkeletonConfigValue.SHOULDERS_WIDTH) / 2f, getConfig(SkeletonConfigValue.CHEST) - getConfig(SkeletonConfigValue.SHOULDERS_DISTANCE), 0);
 			break;
 		}
 	}

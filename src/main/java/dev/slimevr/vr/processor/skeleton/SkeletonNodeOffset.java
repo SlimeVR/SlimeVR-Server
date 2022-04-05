@@ -16,10 +16,16 @@ public enum SkeletonNodeOffset {
 	ANKLE,
 	FOOT,
 	FOOT_TRACKER,
+	CONTROLLER,
+	FOREARM_CONTRL,
+	FOREARM_HMD,
+	ELBOW_TRACKER,
+	UPPER_ARM_CONTRL,
+	UPPER_ARM_HMD,
+	LEFT_SHOULDER,
+	RIGHT_SHOULDER,
 	HAND,
-	ELBOW,
-	UPPER_ARM,
-	ELBOW_TRACKER
+	HAND_TRACKER
 	;
 	
 	public static final SkeletonNodeOffset[] values = values();
