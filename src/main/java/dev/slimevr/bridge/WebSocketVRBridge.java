@@ -160,7 +160,10 @@ public class WebSocketVRBridge extends WebSocketServer implements Bridge {
 		case "calibrate":
 			Main.vrServer.resetTrackersYaw();
 			break;
-		}
+		case "full_calibrate":
+			Main.vrServer.resetTrackers();	
+			break;
+ 		}
 	}
 
 	@Override
