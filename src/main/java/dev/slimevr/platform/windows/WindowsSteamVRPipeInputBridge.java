@@ -273,8 +273,8 @@ public class WindowsSteamVRPipeInputBridge extends Thread implements Bridge {
 		RIGHT_SHOULDER(TrackerPosition.NONE),
 		LEFT_ELBOW(TrackerPosition.LEFT_FOREARM),
 		RIGHT_ELBOW(TrackerPosition.RIGHT_FOREARM),
-		LEFT_KNEE(TrackerPosition.LEFT_LEG),
-		RIGHT_KNEE(TrackerPosition.RIGHT_LEG),
+		LEFT_KNEE(TrackerPosition.LEFT_KNEE),
+		RIGHT_KNEE(TrackerPosition.RIGHT_KNEE),
 		WAIST(TrackerPosition.WAIST),
 		CHEST(TrackerPosition.CHEST),
 		;

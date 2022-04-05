@@ -72,11 +72,11 @@ public class SimpleSkeleton extends HumanSkeleton implements SkeletonConfigCallb
 	protected Tracker waistTracker;
 	protected Tracker hipTracker;
 	
-	protected Tracker leftLegTracker;
+	protected Tracker leftKneeTracker;
 	protected Tracker leftAnkleTracker;
 	protected Tracker leftFootTracker;
 	
-	protected Tracker rightLegTracker;
+	protected Tracker rightKneeTracker;
 	protected Tracker rightAnkleTracker;
 	protected Tracker rightFootTracker;
 
@@ -220,12 +220,12 @@ public class SimpleSkeleton extends HumanSkeleton implements SkeletonConfigCallb
 		this.waistTracker = TrackerUtils.findTrackerForBodyPositionOrEmpty(trackers, TrackerPosition.WAIST, TrackerPosition.HIP, TrackerPosition.CHEST);
 		this.hipTracker = TrackerUtils.findTrackerForBodyPositionOrEmpty(trackers, TrackerPosition.HIP, TrackerPosition.WAIST, TrackerPosition.CHEST);
 		
-		this.leftLegTracker = TrackerUtils.findTrackerForBodyPositionOrEmpty(trackers, TrackerPosition.LEFT_LEG, TrackerPosition.LEFT_ANKLE, null);
-		this.leftAnkleTracker = TrackerUtils.findTrackerForBodyPositionOrEmpty(trackers, TrackerPosition.LEFT_ANKLE, TrackerPosition.LEFT_LEG, null);
+		this.leftKneeTracker = TrackerUtils.findTrackerForBodyPositionOrEmpty(trackers, TrackerPosition.LEFT_KNEE, TrackerPosition.LEFT_ANKLE, null);
+		this.leftAnkleTracker = TrackerUtils.findTrackerForBodyPositionOrEmpty(trackers, TrackerPosition.LEFT_ANKLE, TrackerPosition.LEFT_KNEE, null);
 		this.leftFootTracker = TrackerUtils.findTrackerForBodyPosition(trackers, TrackerPosition.LEFT_FOOT);
 		
-		this.rightLegTracker = TrackerUtils.findTrackerForBodyPositionOrEmpty(trackers, TrackerPosition.RIGHT_LEG, TrackerPosition.RIGHT_ANKLE, null);
-		this.rightAnkleTracker = TrackerUtils.findTrackerForBodyPositionOrEmpty(trackers, TrackerPosition.RIGHT_ANKLE, TrackerPosition.RIGHT_LEG, null);
+		this.rightKneeTracker = TrackerUtils.findTrackerForBodyPositionOrEmpty(trackers, TrackerPosition.RIGHT_KNEE, TrackerPosition.RIGHT_ANKLE, null);
+		this.rightAnkleTracker = TrackerUtils.findTrackerForBodyPositionOrEmpty(trackers, TrackerPosition.RIGHT_ANKLE, TrackerPosition.RIGHT_KNEE, null);
 		this.rightFootTracker = TrackerUtils.findTrackerForBodyPosition(trackers, TrackerPosition.RIGHT_FOOT);
 
 		this.leftHandTracker = TrackerUtils.findTrackerForBodyPosition(trackers, TrackerPosition.LEFT_CONTROLLER);
@@ -388,11 +388,11 @@ public class SimpleSkeleton extends HumanSkeleton implements SkeletonConfigCallb
 		Tracker waistTracker = trackerPreUpdate(this.waistTracker);
 		Tracker hipTracker = trackerPreUpdate(this.hipTracker);
 		
-		Tracker leftLegTracker = trackerPreUpdate(this.leftLegTracker);
+		Tracker leftKneeTracker = trackerPreUpdate(this.leftKneeTracker);
 		Tracker leftAnkleTracker = trackerPreUpdate(this.leftAnkleTracker);
 		Tracker leftFootTracker = trackerPreUpdate(this.leftFootTracker);
 		
-		Tracker rightLegTracker = trackerPreUpdate(this.rightLegTracker);
+		Tracker rightKneeTracker = trackerPreUpdate(this.rightKneeTracker);
 		Tracker rightAnkleTracker = trackerPreUpdate(this.rightAnkleTracker);
 		Tracker rightFootTracker = trackerPreUpdate(this.rightFootTracker);
 
@@ -447,11 +447,11 @@ public class SimpleSkeleton extends HumanSkeleton implements SkeletonConfigCallb
 		}
 		
 		// Left Leg
-		leftLegTracker.getRotation(rotBuf1);
+		leftKneeTracker.getRotation(rotBuf1);
 		leftAnkleTracker.getRotation(rotBuf2);
 		
 		if(extendedKneeModel)
-			calculateKneeLimits(rotBuf1, rotBuf2, leftLegTracker.getConfidenceLevel(), leftAnkleTracker.getConfidenceLevel());
+			calculateKneeLimits(rotBuf1, rotBuf2, leftKneeTracker.getConfidenceLevel(), leftAnkleTracker.getConfidenceLevel());
 		
 		leftHipNode.localTransform.setRotation(rotBuf1);
 		leftKneeNode.localTransform.setRotation(rotBuf2);
@@ -469,11 +469,11 @@ public class SimpleSkeleton extends HumanSkeleton implements SkeletonConfigCallb
 		}
 		
 		// Right Leg
-		rightLegTracker.getRotation(rotBuf1);
+		rightKneeTracker.getRotation(rotBuf1);
 		rightAnkleTracker.getRotation(rotBuf2);
 		
 		if(extendedKneeModel)
-			calculateKneeLimits(rotBuf1, rotBuf2, rightLegTracker.getConfidenceLevel(), rightAnkleTracker.getConfidenceLevel());
+			calculateKneeLimits(rotBuf1, rotBuf2, rightKneeTracker.getConfidenceLevel(), rightAnkleTracker.getConfidenceLevel());
 		
 		rightHipNode.localTransform.setRotation(rotBuf1);
 		rightKneeNode.localTransform.setRotation(rotBuf2);
@@ -924,9 +924,9 @@ public class SimpleSkeleton extends HumanSkeleton implements SkeletonConfigCallb
 	
 	Tracker[] getTrackerToReset(){
 		return new Tracker[] {trackerPreUpdate(this.chestTracker), trackerPreUpdate(this.waistTracker), 
-			trackerPreUpdate(this.hipTracker), trackerPreUpdate(this.leftLegTracker),
+			trackerPreUpdate(this.hipTracker), trackerPreUpdate(this.leftKneeTracker),
 			trackerPreUpdate(this.leftAnkleTracker), trackerPreUpdate(this.leftFootTracker),
-			trackerPreUpdate(this.rightLegTracker), trackerPreUpdate(this.rightAnkleTracker),
+			trackerPreUpdate(this.rightKneeTracker), trackerPreUpdate(this.rightAnkleTracker),
 			trackerPreUpdate(this.rightFootTracker), trackerPreUpdate(this.rightForearmTracker),
 			trackerPreUpdate(this.leftForearmTracker), trackerPreUpdate(this.rightUpperArmTracker),
 			trackerPreUpdate(this.leftUpperArmTracker)};

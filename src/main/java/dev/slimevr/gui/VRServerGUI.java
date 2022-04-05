@@ -300,7 +300,7 @@ public class VRServerGUI extends JFrame {
 						});
 
 						JCheckBox legsCb;
-						add(legsCb = new JCheckBox("Legs"), c(2, 1));
+						add(legsCb = new JCheckBox("Feet"), c(2, 1));
 						legsCb.setSelected(br.getShareSetting(TrackerRole.LEFT_FOOT) && br.getShareSetting(TrackerRole.RIGHT_FOOT));
 						legsCb.addActionListener(new ActionListener() {
 							@Override

@@ -332,10 +332,9 @@ public class TrackersUDPServer extends Thread {
 				break;
 			UDPPacket10PingPong ping = (UDPPacket10PingPong) packet;
 			if(connection.lastPingPacketId == ping.pingId) {
-				for(int i = 0; i < connection.sensors.size(); ++i) {
-					tracker = connection.sensors.get(i);
-					tracker.ping = (int) (System.currentTimeMillis() - connection.lastPingPacketTime) / 2;
-					tracker.dataTick();
+				for (IMUTracker imuTracker : connection.sensors.values()) {
+					imuTracker.ping = (int) (System.currentTimeMillis() - connection.lastPingPacketTime) / 2;
+					imuTracker.dataTick();
 				}
 			} else {
 				LogManager.log.debug("[TrackerServer] Wrong ping id " + ping.pingId + " != " + connection.lastPingPacketId);
