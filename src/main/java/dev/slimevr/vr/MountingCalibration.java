@@ -49,6 +49,7 @@ public class MountingCalibration {
 		if(imu.bodyPosition != null) {
 			switch(imu.bodyPosition) {
 			// Trackers that go back
+			//NECK
 			case CHEST:
 			case WAIST:
 			case HIP:
@@ -63,6 +64,8 @@ public class MountingCalibration {
 			case RIGHT_FOREARM:
 			case LEFT_UPPER_ARM:
 			case RIGHT_UPPER_ARM:
+				//LEFT_HAND
+				//RIGHT_HAND
 				yawOffset = yawCorrection(idleQuat, imu.rotQuaternion.clone(), false, true);
 				break;
 			// Remaining trackers (that go forward)
@@ -78,7 +81,7 @@ public class MountingCalibration {
 	}
 	
 	// Called when the Calibrate Mounting button at top is pressed and calibrates the trackers one by one.
-	public void CalibrateAllTrackers() { 
+	public void CalibrateAllTrackers() {
 		int trackerNumber = 0;
 		IMUTracker imu;
 		for(Tracker t : server.getAllTrackers()) {
@@ -98,21 +101,25 @@ public class MountingCalibration {
 		LogManager.log.info("[Mounting Calibration] Calibrated mounting of all " + trackerNumber + " trackers");
 	}
 	
-	// Calculated yaw offset for the mounting orientation
-	private float yawCorrection(Quaternion idle, Quaternion squat, boolean backwards, boolean endOnly) { 
+	/* 
+	 * Yaw of IMUs is random (determined when booting up), but pitch and roll is absolute.
+	 * This rotates tracker to exactly 90 degrees and takes the roll. This is indeed the
+	 * equivalent of the yaw we need but absolute.
+	 */
+	private float yawCorrection(Quaternion idle, Quaternion squat, boolean backwards, boolean endOnly) {
 		boolean trackerUpsideDown = false;
-
-		// Rotates squat Quaternion to 90 degrees.
-		if(!endOnly) { 
+		
+		// Rotates squat Quaternion to 90 degrees if it's not already at 90 degrees.
+		if(!endOnly) {
 			Quaternion rot = squat.mult(idle.inverse());
-			float verticalRot = (verticalOrientation(rot));
-			float verticalSquat = (verticalOrientation(squat));
+			float verticalRot = verticalOrientation(rot);
+			float verticalSquat = verticalOrientation(squat);
 			if(verticalOrientation(idle) > TENTH_THIRD) {
 				verticalRot = (verticalRot - FIFTH_THIRD) * -1f;
 				verticalSquat = (verticalSquat - FIFTH_THIRD) * -1f;
 				trackerUpsideDown = true;
 			}
-			squat.slerp(idle, squat, (TENTH_THIRD + verticalRot - verticalSquat) / verticalRot);
+			squat.slerp(idle, squat, (TENTH_THIRD + verticalRot - verticalSquat) / verticalRot);			
 		}
 		
 		// Gets roll of the quaternion. This is the yaw offset needed.
@@ -139,8 +146,7 @@ public class MountingCalibration {
 	}
 	
 	// Returns from 0 to 0.06666. 0.03333 = 90 degrees.
-	private static float verticalOrientation(Quaternion quat) 
-	{
+	private static float verticalOrientation(Quaternion quat) {
 		// Computes up to 90 degrees
 		float x = FastMath.abs(quat.getX());
 		float z = FastMath.abs(quat.getZ());
