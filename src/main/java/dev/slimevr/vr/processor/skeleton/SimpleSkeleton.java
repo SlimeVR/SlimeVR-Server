@@ -81,6 +81,7 @@ public class SimpleSkeleton extends HumanSkeleton implements SkeletonConfigCallb
 	
 	//#region Tracker Input
 	protected Tracker hmdTracker;
+	protected Tracker neckTracker;
 	protected Tracker chestTracker;
 	protected Tracker waistTracker;
 	protected Tracker hipTracker;
@@ -251,6 +252,7 @@ public class SimpleSkeleton extends HumanSkeleton implements SkeletonConfigCallb
 			this.hmdTracker = TrackerUtils.findTrackerForBodyPosition(trackers, TrackerPosition.HMD);
 		}
 		
+		this.neckTracker = TrackerUtils.findTrackerForBodyPositionOrEmpty(trackers, TrackerPosition.NECK, TrackerPosition.HMD, null);
 		this.chestTracker = TrackerUtils.findTrackerForBodyPositionOrEmpty(trackers, TrackerPosition.CHEST, TrackerPosition.WAIST, TrackerPosition.HIP);
 		this.waistTracker = TrackerUtils.findTrackerForBodyPositionOrEmpty(trackers, TrackerPosition.WAIST, TrackerPosition.HIP, TrackerPosition.CHEST);
 		this.hipTracker = TrackerUtils.findTrackerForBodyPositionOrEmpty(trackers, TrackerPosition.HIP, TrackerPosition.WAIST, TrackerPosition.CHEST);
@@ -444,6 +446,7 @@ public class SimpleSkeleton extends HumanSkeleton implements SkeletonConfigCallb
 		//#region Pass all trackers through trackerPreUpdate
 		Tracker hmdTracker = trackerPreUpdate(this.hmdTracker);
 		
+		Tracker neckTracker = trackerPreUpdate(this.neckTracker);
 		Tracker chestTracker = trackerPreUpdate(this.chestTracker);
 		Tracker waistTracker = trackerPreUpdate(this.waistTracker);
 		Tracker hipTracker = trackerPreUpdate(this.hipTracker);
@@ -474,6 +477,7 @@ public class SimpleSkeleton extends HumanSkeleton implements SkeletonConfigCallb
 			}
 			if(hmdTracker.getRotation(rotBuf1)) {
 				hmdNode.localTransform.setRotation(rotBuf1);
+				neckTracker.getRotation(rotBuf1);
 				headNode.localTransform.setRotation(rotBuf1);
 			}
 		} else {
@@ -1059,15 +1063,15 @@ public class SimpleSkeleton extends HumanSkeleton implements SkeletonConfigCallb
 	}
 	
 	Tracker[] getTrackerToReset() {
-		return new Tracker[]{
-			trackerPreUpdate(this.chestTracker), trackerPreUpdate(this.waistTracker), 
-			trackerPreUpdate(this.hipTracker), trackerPreUpdate(this.leftKneeTracker), 
-			trackerPreUpdate(this.leftAnkleTracker), trackerPreUpdate(this.leftFootTracker), 
-			trackerPreUpdate(this.rightKneeTracker), trackerPreUpdate(this.rightAnkleTracker), 
-			trackerPreUpdate(this.rightFootTracker), trackerPreUpdate(this.rightForearmTracker), 
-			trackerPreUpdate(this.leftForearmTracker), trackerPreUpdate(this.rightUpperArmTracker), 
-			trackerPreUpdate(this.leftUpperArmTracker), trackerPreUpdate(this.leftHandTracker), 
-			trackerPreUpdate(this.rightHandTracker)};
+		return new Tracker[] {
+				trackerPreUpdate(this.neckTracker), trackerPreUpdate(this.chestTracker),
+				trackerPreUpdate(this.waistTracker),trackerPreUpdate(this.hipTracker),
+				trackerPreUpdate(this.leftKneeTracker), trackerPreUpdate(this.leftAnkleTracker),
+				trackerPreUpdate(this.leftFootTracker), trackerPreUpdate(this.rightKneeTracker),
+				trackerPreUpdate(this.rightAnkleTracker), trackerPreUpdate(this.rightFootTracker),
+				trackerPreUpdate(this.rightForearmTracker), trackerPreUpdate(this.leftForearmTracker),
+				trackerPreUpdate(this.rightUpperArmTracker), trackerPreUpdate(this.leftUpperArmTracker),
+				trackerPreUpdate(this.leftHandTracker), trackerPreUpdate(this.rightHandTracker) };
 	}
 	
 	@Override
