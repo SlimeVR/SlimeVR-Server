@@ -129,8 +129,8 @@ public class WebSocketVRBridge extends WebSocketServer implements Bridge {
 	private void parsePosition(JSONObject json, WebSocket conn) throws JSONException {
 		if(json.optInt("tracker_id") == 0) {
 			// Read HMD information
-			internalHMDTracker.position.set(json.optFloat("x"), json.optFloat("y") + 0.2f, json.optFloat("z")); // TODO Wtf is this hack? VRWorkout issue?
-			internalHMDTracker.rotation.set(json.optFloat("qx"), json.optFloat("qy"), json.optFloat("qz"), json.optFloat("qw"));
+			internalHMDTracker.position.set((float)json.optDouble("x"), (float)json.optDouble("y") + 0.2f, (float)json.optDouble("z")); // TODO Wtf is this hack? VRWorkout issue?
+			internalHMDTracker.rotation.set((float)json.optDouble("qx"), (float)json.optDouble("qy"), (float)json.optDouble("qz"), (float)json.optDouble("qw"));
 			internalHMDTracker.dataTick();
 			newHMDData.set(true);
 			
@@ -175,7 +175,7 @@ public class WebSocketVRBridge extends WebSocketServer implements Bridge {
 	public void onStart() {
 		LogManager.log.info("[WebSocket] Web Socket VR Bridge started on port " + getPort());
 		setConnectionLostTimeout(0);
-	    setConnectionLostTimeout(1);
+	    setConnectionLostTimeout(1); //This has to be removed for Android (keepalive did not work for me @mgschwan)
 	}
 
 	@Override
