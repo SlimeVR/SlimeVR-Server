@@ -49,9 +49,15 @@ public class VRServer extends Thread {
 	private final List<Consumer<Tracker>> newTrackersConsumers = new FastList<>();
 	private final List<Runnable> onTick = new FastList<>();
 	private final List<? extends ShareableTracker> shareTrackers;
-	
+	private String m_configPath;	
+
 	public VRServer() {
+		this("vrconfig.yml");
+	}
+
+	public VRServer(String configPath) {
 		super("VRServer");
+		m_configPath = configPath;
 		loadConfig();
 		hmdTracker = new HMDTracker("HMD");
 		hmdTracker.position.set(0, 1.8f, 0); // Set starting position for easier debugging
