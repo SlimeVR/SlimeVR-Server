@@ -60,8 +60,6 @@ public class SimpleSkeleton extends HumanSkeleton implements SkeletonConfigCallb
 	protected final TransformNode rightWristNodeContrl = new TransformNode("Right-Wrist-Contrl", false);
 	protected final TransformNode leftElbowNodeContrl = new TransformNode("Left-Elbow-Contrl", false);
 	protected final TransformNode rightElbowNodeContrl = new TransformNode("Right-Elbow-Contrl", false);
-	protected final TransformNode leftUpperArmNodeContrl = new TransformNode("Left-Upper-Arm-Contrl", false);
-	protected final TransformNode rightUpperArmNodeContrl = new TransformNode("Right-Upper-Arm-Contrl", false);
 	protected final TransformNode trackerLeftElbowNodeContrl = new TransformNode("Left-Elbow-Tracker-Contrl", false);
 	protected final TransformNode trackerRightElbowNodeContrl = new TransformNode("Right-Elbow-Tracker-Contrl", false);
 	//#endregion
@@ -71,6 +69,8 @@ public class SimpleSkeleton extends HumanSkeleton implements SkeletonConfigCallb
 	protected final TransformNode rightShoulderNodeHmd = new TransformNode("Right-Shoulder-Hmd", false);
 	protected final TransformNode leftElbowNodeHmd = new TransformNode("Left-Elbow-Hmd", false);
 	protected final TransformNode rightElbowNodeHmd = new TransformNode("Right-Elbow-Hmd", false);
+	protected final TransformNode trackerLeftElbowNodeHmd = new TransformNode("Left-Elbow-Tracker-Hmd", false);
+	protected final TransformNode trackerRightElbowNodeHmd = new TransformNode("Right-Elbow-Tracker-Hmd", false);
 	protected final TransformNode leftWristNodeHmd = new TransformNode("Left-Wrist-Hmd", false);
 	protected final TransformNode rightWristNodeHmd = new TransformNode("Right-Wrist-Hmd", false);
 	protected final TransformNode leftHandNodeHmd = new TransformNode("Left-Hand-Hmd", false);
@@ -169,8 +169,6 @@ public class SimpleSkeleton extends HumanSkeleton implements SkeletonConfigCallb
 		rightControllerNodeContrl.attachChild(rightWristNodeContrl);
 		leftWristNodeContrl.attachChild(leftElbowNodeContrl);
 		rightWristNodeContrl.attachChild(rightElbowNodeContrl);
-		leftElbowNodeContrl.attachChild(leftUpperArmNodeContrl);
-		rightElbowNodeContrl.attachChild(rightUpperArmNodeContrl);
 		//#endregion
 		
 		//#region Assemble skeleton arms from chest
@@ -197,8 +195,11 @@ public class SimpleSkeleton extends HumanSkeleton implements SkeletonConfigCallb
 		leftFootNode.attachChild(trackerLeftFootNode);
 		rightFootNode.attachChild(trackerRightFootNode);
 		
-		leftUpperArmNodeContrl.attachChild(trackerLeftElbowNodeContrl);
-		rightUpperArmNodeContrl.attachChild(trackerRightElbowNodeContrl);
+		leftElbowNodeContrl.attachChild(trackerLeftElbowNodeContrl);
+		rightElbowNodeContrl.attachChild(trackerRightElbowNodeContrl);
+
+		leftElbowNodeHmd.attachChild(trackerLeftElbowNodeHmd);
+		rightElbowNodeHmd.attachChild(trackerRightElbowNodeHmd);
 		
 		leftHandNodeHmd.attachChild(trackerLeftHandNodeHmd);
 		rightHandNodeHmd.attachChild(trackerRightHandNodeHmd);
@@ -568,10 +569,11 @@ public class SimpleSkeleton extends HumanSkeleton implements SkeletonConfigCallb
 			// TODO : Use vectors to add like 50% of waist tracker yaw to waist node to reduce drift and let user take weird poses
 		}
 		
-		// Left arm (from HMD)
+		// Left arm from HMD
 		if(leftUpperArmTracker != null) {
 			leftUpperArmTracker.getRotation(rotBuf1);
 			leftShoulderNodeHmd.localTransform.setRotation(rotBuf1);
+			trackerLeftElbowNodeHmd.localTransform.setRotation(rotBuf1);
 			leftForearmTracker.getRotation(rotBuf1);
 			leftElbowNodeHmd.localTransform.setRotation(rotBuf1);
 		}
@@ -582,10 +584,11 @@ public class SimpleSkeleton extends HumanSkeleton implements SkeletonConfigCallb
 			trackerLeftHandNodeHmd.localTransform.setRotation(rotBuf1);
 		}
 		
-		// Right arm (from HMD)
+		// Right arm from HMD
 		if(rightUpperArmTracker != null) {
 			rightUpperArmTracker.getRotation(rotBuf1);
 			rightShoulderNodeHmd.localTransform.setRotation(rotBuf1);
+			trackerRightElbowNodeHmd.localTransform.setRotation(rotBuf1);
 			rightForearmTracker.getRotation(rotBuf1);
 			rightElbowNodeHmd.localTransform.setRotation(rotBuf1);
 		}
@@ -596,8 +599,8 @@ public class SimpleSkeleton extends HumanSkeleton implements SkeletonConfigCallb
 			trackerRightHandNodeHmd.localTransform.setRotation(rotBuf1);
 		}
 		
-		// Left elbow
-		if(leftControllerTracker != null) { // From SteamVR controller
+		// Left elbow from SteamVR controller
+		if(leftControllerTracker != null) {
 			leftControllerTracker.getPosition(posBuf);
 			leftControllerTracker.getRotation(rotBuf1);
 			leftControllerNodeContrl.localTransform.setTranslation(posBuf);
@@ -607,17 +610,12 @@ public class SimpleSkeleton extends HumanSkeleton implements SkeletonConfigCallb
 				leftWristNodeContrl.localTransform.setRotation(rotBuf1);
 				leftUpperArmTracker.getRotation(rotBuf1);
 				leftElbowNodeContrl.localTransform.setRotation(rotBuf1);
-				leftUpperArmNodeContrl.localTransform.setRotation(rotBuf1);
 				trackerLeftElbowNodeContrl.localTransform.setRotation(rotBuf1);
 			}
-		} else if(leftUpperArmTracker != null) { // From SlimeVR arms
-			leftUpperArmTracker.getRotation(rotBuf1);
-			leftControllerNodeContrl.localTransform.setRotation(rotBuf1);
-			leftControllerNodeContrl.localTransform.setTranslation(leftHandNodeHmd.worldTransform.getTranslation());
 		}
 		
-		// Right elbow
-		if(rightControllerTracker != null) { // From SteamVR controller
+		// Right elbow from SteamVR controller
+		if(rightControllerTracker != null) {
 			rightControllerTracker.getPosition(posBuf);
 			rightControllerTracker.getRotation(rotBuf1);
 			rightControllerNodeContrl.localTransform.setTranslation(posBuf);
@@ -627,13 +625,8 @@ public class SimpleSkeleton extends HumanSkeleton implements SkeletonConfigCallb
 				rightWristNodeContrl.localTransform.setRotation(rotBuf1);
 				rightUpperArmTracker.getRotation(rotBuf1);
 				rightElbowNodeContrl.localTransform.setRotation(rotBuf1);
-				rightUpperArmNodeContrl.localTransform.setRotation(rotBuf1);
 				trackerRightElbowNodeContrl.localTransform.setRotation(rotBuf1);
 			}
-		} else if(rightUpperArmTracker != null) { // From SlimeVR arms
-			rightUpperArmTracker.getRotation(rotBuf1);
-			rightControllerNodeContrl.localTransform.setRotation(rotBuf1);
-			rightControllerNodeContrl.localTransform.setTranslation(rightHandNodeHmd.worldTransform.getTranslation());
 		}
 	}
 	//#endregion
@@ -716,14 +709,24 @@ public class SimpleSkeleton extends HumanSkeleton implements SkeletonConfigCallb
 		}
 		
 		if(computedLeftElbowTracker != null) {
-			computedLeftElbowTracker.position.set(trackerLeftElbowNodeContrl.worldTransform.getTranslation());
-			computedLeftElbowTracker.rotation.set(trackerLeftElbowNodeContrl.worldTransform.getRotation());
+			if(leftControllerTracker != null) { // From controller
+				computedLeftElbowTracker.position.set(trackerLeftElbowNodeContrl.worldTransform.getTranslation());
+				computedLeftElbowTracker.rotation.set(trackerLeftElbowNodeContrl.worldTransform.getRotation());
+			} else { // From shoulders
+				computedLeftElbowTracker.position.set(trackerLeftElbowNodeHmd.worldTransform.getTranslation());
+				computedLeftElbowTracker.rotation.set(trackerLeftElbowNodeHmd.worldTransform.getRotation());
+			}
 			computedLeftElbowTracker.dataTick();
 		}
 		
 		if(computedRightElbowTracker != null) {
-			computedRightElbowTracker.position.set(trackerRightElbowNodeContrl.worldTransform.getTranslation());
-			computedRightElbowTracker.rotation.set(trackerRightElbowNodeContrl.worldTransform.getRotation());
+			if(rightControllerTracker != null) { // From controller
+				computedRightElbowTracker.position.set(trackerRightElbowNodeContrl.worldTransform.getTranslation());
+				computedRightElbowTracker.rotation.set(trackerRightElbowNodeContrl.worldTransform.getRotation());
+			} else { // From shoulders
+				computedRightElbowTracker.position.set(trackerRightElbowNodeHmd.worldTransform.getTranslation());
+				computedRightElbowTracker.rotation.set(trackerRightElbowNodeHmd.worldTransform.getRotation());
+			}
 			computedRightElbowTracker.dataTick();
 		}
 		
@@ -830,9 +833,11 @@ public class SimpleSkeleton extends HumanSkeleton implements SkeletonConfigCallb
 			leftElbowNodeContrl.localTransform.setTranslation(offset);
 			rightElbowNodeContrl.localTransform.setTranslation(offset);
 			break;
-		case UPPER_ARM_CONTRL:
-			leftUpperArmNodeContrl.localTransform.setTranslation(offset);
-			rightUpperArmNodeContrl.localTransform.setTranslation(offset);
+		case ELBOW_TRACKER:
+			trackerLeftElbowNodeContrl.localTransform.setTranslation(offset);
+			trackerRightElbowNodeContrl.localTransform.setTranslation(offset);
+			trackerLeftElbowNodeHmd.localTransform.setTranslation(offset);
+			trackerRightElbowNodeHmd.localTransform.setTranslation(offset);
 			break;
 		case LEFT_SHOULDER:
 			leftShoulderNodeHmd.localTransform.setTranslation(offset);
@@ -844,7 +849,7 @@ public class SimpleSkeleton extends HumanSkeleton implements SkeletonConfigCallb
 			leftHandNodeHmd.localTransform.setTranslation(offset);
 			rightHandNodeHmd.localTransform.setTranslation(offset);
 			break;
-		case UPPER_ARM_HMD:
+		case UPPER_ARM:
 			leftElbowNodeHmd.localTransform.setTranslation(offset);
 			rightElbowNodeHmd.localTransform.setTranslation(offset);
 			break;
@@ -929,9 +934,11 @@ public class SimpleSkeleton extends HumanSkeleton implements SkeletonConfigCallb
 			rightElbowNodeHmd.update();
 			updateComputedTrackers();
 			break;
-		case UPPER_ARM_DISTANCE:
-			leftUpperArmNodeContrl.update();
-			rightUpperArmNodeContrl.update();
+		case ELBOW_OFFSET:
+			trackerLeftElbowNodeContrl.update();
+			trackerRightElbowNodeContrl.update();
+			trackerLeftElbowNodeHmd.update();
+			trackerRightElbowNodeHmd.update();
 			updateComputedTrackers();
 			break;
 		case SHOULDERS_DISTANCE:
@@ -1047,8 +1054,8 @@ public class SimpleSkeleton extends HumanSkeleton implements SkeletonConfigCallb
 		case FOREARM_LENGTH:
 			skeletonConfig.setConfig(SkeletonConfigValue.FOREARM_LENGTH, null);
 			break;
-		case UPPER_ARM_DISTANCE:
-			skeletonConfig.setConfig(SkeletonConfigValue.UPPER_ARM_DISTANCE, null);
+		case ELBOW_OFFSET:
+			skeletonConfig.setConfig(SkeletonConfigValue.ELBOW_OFFSET, null);
 			break;
 		case SHOULDERS_DISTANCE:
 			skeletonConfig.setConfig(SkeletonConfigValue.SHOULDERS_DISTANCE, null);

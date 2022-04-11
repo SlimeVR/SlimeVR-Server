@@ -20,10 +20,10 @@ public enum SkeletonConfigValue {
 	CONTROLLER_DISTANCE_Z("Controller distance z", "controllerDistanceZ", "Controller distance z", 0.15f, new SkeletonNodeOffset[]{SkeletonNodeOffset.CONTROLLER, SkeletonNodeOffset.HAND}),
 	CONTROLLER_DISTANCE_Y("Controller distance y", "controllerDistanceY", "Controller distance y", 0.05f, new SkeletonNodeOffset[]{SkeletonNodeOffset.CONTROLLER, SkeletonNodeOffset.HAND}),
 	FOREARM_LENGTH("Forearm length", "forearmLength", "Forearm length", 0.25f, new SkeletonNodeOffset[]{SkeletonNodeOffset.FOREARM_CONTRL, SkeletonNodeOffset.FOREARM_HMD}),
-	UPPER_ARM_DISTANCE("Upper arm distance", "upperArmDistance", "Upper arm distance", 0f, new SkeletonNodeOffset[]{SkeletonNodeOffset.UPPER_ARM_CONTRL}),
 	SHOULDERS_DISTANCE("Shoulders distance", "shoulersDistance", "Shoulders distance", 0.08f, new SkeletonNodeOffset[]{SkeletonNodeOffset.LEFT_SHOULDER, SkeletonNodeOffset.RIGHT_SHOULDER}),
 	SHOULDERS_WIDTH("Shoulders width", "shoulersWidth", "Shoulders width", 0.36f, new SkeletonNodeOffset[]{SkeletonNodeOffset.LEFT_SHOULDER, SkeletonNodeOffset.RIGHT_SHOULDER}),
-	UPPER_ARM_LENGTH("Upper arm length", "upperArmLength", "Upper arm length", 0.25f, new SkeletonNodeOffset[]{SkeletonNodeOffset.UPPER_ARM_HMD}),
+	UPPER_ARM_LENGTH("Upper arm length", "upperArmLength", "Upper arm length", 0.25f, new SkeletonNodeOffset[]{SkeletonNodeOffset.UPPER_ARM}),
+	ELBOW_OFFSET("Elbow offset", "elbowOffset", "Elbow offset", 0f, new SkeletonNodeOffset[]{SkeletonNodeOffset.ELBOW_TRACKER}),
 	;
 	
 	private static final String CONFIG_PREFIX = "body.";

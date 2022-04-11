@@ -264,10 +264,10 @@ public class SkeletonConfig {
 		case FOREARM_HMD:
 			setNodeOffset(nodeOffset, 0, -getConfig(SkeletonConfigValue.FOREARM_LENGTH), 0);
 			break;
-		case UPPER_ARM_CONTRL:
-			setNodeOffset(nodeOffset, 0, getConfig(SkeletonConfigValue.UPPER_ARM_DISTANCE), 0);
+		case ELBOW_TRACKER:
+			setNodeOffset(nodeOffset, 0, getConfig(SkeletonConfigValue.ELBOW_OFFSET), 0);
 			break;
-		case UPPER_ARM_HMD:
+		case UPPER_ARM:
 			setNodeOffset(nodeOffset, 0, -getConfig(SkeletonConfigValue.UPPER_ARM_LENGTH), 0);
 			break;
 		case LEFT_SHOULDER:
