@@ -8,6 +8,7 @@ public enum TrackerPosition {
 	
 	NONE("", TrackerRole.NONE),
 	HMD("HMD", TrackerRole.HMD),
+	NECK("body:neck", null),
 	CHEST("body:chest", TrackerRole.CHEST),
 	WAIST("body:waist", TrackerRole.WAIST),
 	HIP("body:hip", null),
