@@ -17,9 +17,9 @@ import java.util.function.Consumer;
 
 import dev.slimevr.bridge.Bridge;
 import dev.slimevr.platform.windows.WindowsNamedPipeBridge;
-import dev.slimevr.platform.windows.WindowsSteamVRPipeInputBridge;
 import dev.slimevr.bridge.VMCBridge;
 import dev.slimevr.bridge.WebSocketVRBridge;
+import dev.slimevr.bridge.OverlayBridge;
 import dev.slimevr.util.ann.VRServerThread;
 import dev.slimevr.vr.processor.HumanPoseProcessor;
 import dev.slimevr.vr.processor.skeleton.HumanSkeleton;
@@ -37,7 +37,7 @@ import io.eiren.yaml.YamlFile;
 import io.eiren.yaml.YamlNode;
 
 public class VRServer extends Thread {
-	
+
 	private final List<Tracker> trackers = new FastList<>();
 	public final HumanPoseProcessor humanPoseProcessor;
 	private final TrackersUDPServer trackersServer;
@@ -49,7 +49,7 @@ public class VRServer extends Thread {
 	private final List<Consumer<Tracker>> newTrackersConsumers = new FastList<>();
 	private final List<Runnable> onTick = new FastList<>();
 	private final List<? extends ShareableTracker> shareTrackers;
-	private String m_configPath;	
+	private String m_configPath;
 
 	public VRServer() {
 		this("vrconfig.yml");
@@ -64,31 +64,36 @@ public class VRServer extends Thread {
 		// TODO Multiple processors
 		humanPoseProcessor = new HumanPoseProcessor(this, hmdTracker);
 		shareTrackers = humanPoseProcessor.getComputedTrackers();
-		
+
 		// Start server for SlimeVR trackers
 		trackersServer = new TrackersUDPServer(6969, "Sensors UDP server", this::registerTracker);
-		
+
 		// OpenVR bridge currently only supports Windows
 		if(OperatingSystem.getCurrentPlatform() == OperatingSystem.WINDOWS) {
-			
+
 			// Create named pipe bridge for SteamVR driver
 			WindowsNamedPipeBridge driverBridge = new WindowsNamedPipeBridge(hmdTracker, "steamvr", "SteamVR Driver Bridge", "\\\\.\\pipe\\SlimeVRDriver", shareTrackers);
 			tasks.add(() -> driverBridge.startBridge());
 			bridges.add(driverBridge);
-			
+
 			// Create named pipe bridge for SteamVR input
 			// TODO: how do we want to handle HMD input from the feeder app?
 			WindowsNamedPipeBridge feederBridge = new WindowsNamedPipeBridge(null, "steamvr_feeder", "SteamVR Feeder Bridge", "\\\\.\\pipe\\SlimeVRInput", new FastList<ShareableTracker>());
 			tasks.add(() -> feederBridge.startBridge());
 			bridges.add(feederBridge);
-			
+
 		}
-		
+
 		// Create WebSocket server
 		WebSocketVRBridge wsBridge = new WebSocketVRBridge(hmdTracker, shareTrackers, this);
 		tasks.add(() -> wsBridge.startBridge());
 		bridges.add(wsBridge);
-		
+
+		// Create overlay bridge
+		OverlayBridge overlayBridge = new OverlayBridge();
+		tasks.add(() -> overlayBridge.startBridge());
+		bridges.add(overlayBridge);
+
 		// Create VMCBridge
 		try {
 			VMCBridge vmcBridge = new VMCBridge(39539, 39540, InetAddress.getLocalHost());
@@ -97,13 +102,13 @@ public class VRServer extends Thread {
 		} catch(UnknownHostException e) {
 			e.printStackTrace();
 		}
-		
-		
+
+
 		registerTracker(hmdTracker);
 		for(int i = 0; i < shareTrackers.size(); ++i)
 			registerTracker(shareTrackers.get(i));
 	}
-	
+
 	public boolean hasBridge(Class<? extends Bridge> bridgeClass) {
 		for(int i = 0; i < bridges.size(); ++i) {
 			if(bridgeClass.isAssignableFrom(bridges.get(i).getClass()))
@@ -121,7 +126,7 @@ public class VRServer extends Thread {
 		}
 		return null;
 	}
-	
+
 	@ThreadSafe
 	public TrackerConfig getTrackerConfig(Tracker tracker) {
 		synchronized(configuration) {
@@ -133,7 +138,7 @@ public class VRServer extends Thread {
 			return config;
 		}
 	}
-	
+
 	private void loadConfig() {
 		try {
 			config.load(new FileInputStream(new File("vrconfig.yml")));
@@ -150,11 +155,11 @@ public class VRServer extends Thread {
 			}
 		}
 	}
-	
+
 	public void addOnTick(Runnable runnable) {
 		this.onTick.add(runnable);
 	}
-	
+
 	@ThreadSafe
 	public void addNewTrackerConsumer(Consumer<Tracker> consumer) {
 		queueTask(() -> {
@@ -163,7 +168,7 @@ public class VRServer extends Thread {
 				consumer.accept(trackers.get(i));
 		});
 	}
-	
+
 	@ThreadSafe
 	public void trackerUpdated(Tracker tracker) {
 		queueTask(() -> {
@@ -215,7 +220,7 @@ public class VRServer extends Thread {
 			e.printStackTrace();
 		}
 	}
-	
+
 	@Override
 	@VRServerThread
 	public void run() {
@@ -250,12 +255,12 @@ public class VRServer extends Thread {
 	public void queueTask(Runnable r) {
 		tasks.add(r);
 	}
-	
+
 	@VRServerThread
 	private void trackerAdded(Tracker tracker) {
 		humanPoseProcessor.trackerAdded(tracker);
 	}
-	
+
 	@ThreadSecure
 	public void registerTracker(Tracker tracker) {
 		TrackerConfig config = getTrackerConfig(tracker);
@@ -267,19 +272,19 @@ public class VRServer extends Thread {
 				newTrackersConsumers.get(i).accept(tracker);
 		});
 	}
-	
+
 	public void resetTrackers() {
 		queueTask(() -> {
 			humanPoseProcessor.resetTrackers();
 		});
 	}
-	
+
 	public void resetTrackersYaw() {
 		queueTask(() -> {
 			humanPoseProcessor.resetTrackersYaw();
 		});
 	}
-	
+
 	public int getTrackersCount() {
 		return trackers.size();
 	}

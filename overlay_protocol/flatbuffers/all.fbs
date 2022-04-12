@@ -1,0 +1,45 @@
+namespace overlay_protocol;
+
+enum BoneType: uint8 {
+    Head,
+    Neck,
+    Chest,
+    Waist,
+    Hip,
+    ThighL,
+    ThighR,
+    AnkleL,
+    AnkleR,
+    FootL,
+    FootR,
+    WristL,
+    WristR,
+    ForeArmL,
+    ForeArmR,
+    UpperArmL,
+    UpperArmR,
+}
+
+struct Quat {
+    x: float;
+    y: float;
+    z: float;
+    w: float;
+}
+
+struct Vec3f{
+    x: float;
+    y: float;
+    z: float;
+}
+
+/// Directionality is from perspective of server
+table OutboundPacket {
+    bones: [BonePose];
+}
+
+table BonePose {
+    id: BoneType;
+    quat: Quat;
+    pos: Vec3f;
+}

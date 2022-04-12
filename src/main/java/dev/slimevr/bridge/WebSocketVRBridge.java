@@ -28,17 +28,17 @@ import io.eiren.util.collections.FastList;
 import io.eiren.util.logging.LogManager;
 
 public class WebSocketVRBridge extends WebSocketServer implements Bridge {
-	
+
 	private final Vector3f vBuffer = new Vector3f();
 	private final Quaternion qBuffer = new Quaternion();
-	
+
 	private final HMDTracker hmd;
 	private final List<? extends ShareableTracker> shareTrackers;
 	private final List<ComputedTracker> internalTrackers;
-	
+
 	private final HMDTracker internalHMDTracker = new HMDTracker("internal://HMD");
 	private final AtomicBoolean newHMDData = new AtomicBoolean(false);
-	
+
 	public WebSocketVRBridge(HMDTracker hmd, List<? extends ShareableTracker> shareTrackers, VRServer server) {
 		super(new InetSocketAddress(21110), Collections.<Draft>singletonList(new Draft_6455()));
 		this.hmd = hmd;
@@ -101,7 +101,7 @@ public class WebSocketVRBridge extends WebSocketServer implements Bridge {
 		}
 		onMessage(conn, sb.toString());
 	}
-	
+
 	@Override
 	public void onMessage(WebSocket conn, String message) {
 		//LogManager.log.info(message);
@@ -133,14 +133,14 @@ public class WebSocketVRBridge extends WebSocketServer implements Bridge {
 			internalHMDTracker.rotation.set((float)json.optDouble("qx"), (float)json.optDouble("qy"), (float)json.optDouble("qz"), (float)json.optDouble("qw"));
 			internalHMDTracker.dataTick();
 			newHMDData.set(true);
-			
+
 			// Send tracker info in reply
 			for(int i = 0; i < internalTrackers.size(); ++i) {
 				JSONObject message = new JSONObject();
 				message.put("type", "pos");
 				message.put("src", "full");
 				message.put("tracker_id", "SlimeVR Tracker " + (i + 1));
-				
+
 				ComputedTracker t = internalTrackers.get(i);
 				message.put("x", t.position.x);
 				message.put("y", t.position.y);
@@ -149,7 +149,7 @@ public class WebSocketVRBridge extends WebSocketServer implements Bridge {
 				message.put("qy", t.rotation.getY());
 				message.put("qz", t.rotation.getZ());
 				message.put("qw", t.rotation.getW());
-				
+
 				conn.send(message.toString());
 			}
 		}
@@ -161,7 +161,7 @@ public class WebSocketVRBridge extends WebSocketServer implements Bridge {
 			Main.vrServer.resetTrackersYaw();
 			break;
 		case "full_calibrate":
-			Main.vrServer.resetTrackers();	
+			Main.vrServer.resetTrackers();
 			break;
  		}
 	}
@@ -181,13 +181,13 @@ public class WebSocketVRBridge extends WebSocketServer implements Bridge {
 	@Override
 	public void addSharedTracker(ShareableTracker tracker) {
 		// TODO Auto-generated method stub
-		
+
 	}
 
 	@Override
 	public void removeSharedTracker(ShareableTracker tracker) {
 		// TODO Auto-generated method stub
-		
+
 	}
 
 	@Override

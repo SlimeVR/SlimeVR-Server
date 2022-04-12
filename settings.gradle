@@ -9,3 +9,4 @@
 
 rootProject.name = 'SlimeVR Server'
 include ':slime-java-commons'
+include ':overlay_protocol:java'

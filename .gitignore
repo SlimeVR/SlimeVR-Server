@@ -4,10 +4,11 @@
 # Ignore Gradle build output directory
 build
 
-/bin/
+bin/
 
-# Ignore .idea
+# Ignore IDE folders
 .idea
+.vscode
 
 # Syncthing ignore file
 .stignore

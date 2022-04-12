@@ -12,18 +12,19 @@ import org.apache.commons.lang3.SystemUtils;
 import dev.slimevr.gui.Keybinding;
 import dev.slimevr.gui.VRServerGUI;
 import io.eiren.util.logging.LogManager;
+import dev.slimevr.bridge.OverlayBridge;
 
 public class Main {
-	
+
 	public static String VERSION = "0.1.6";
-	
+
 	public static VRServer vrServer;
-	
+
 	@SuppressWarnings("unused")
 	public static void main(String[] args) {
 		System.setProperty("awt.useSystemAAFontSettings", "on");
 		System.setProperty("swing.aatext", "true");
-		
+
 		File dir = new File("").getAbsoluteFile();
 		try {
 			LogManager.initialize(new File(dir, "logs/"), dir);
@@ -36,11 +37,12 @@ public class Main {
 			JOptionPane.showMessageDialog(null, "SlimeVR start-up error! A minimum of Java 11 is required.", "SlimeVR: Java Runtime Mismatch", JOptionPane.ERROR_MESSAGE);
 			return;
 		}
-		
+
 		try {
 			new ServerSocket(6969).close();
 			new ServerSocket(35903).close();
 			new ServerSocket(21110).close();
+			new ServerSocket(OverlayBridge.PORT).close();
 		} catch (IOException e) {
 			LogManager.log.severe("SlimeVR start-up error! Required ports are busy. Make sure there is no other instance of SlimeVR Server running.");
 			JOptionPane.showMessageDialog(null, "SlimeVR start-up error! Required ports are busy. Make sure there is no other instance of SlimeVR Server running.", "SlimeVR: Ports are busy", JOptionPane.ERROR_MESSAGE);
@@ -49,7 +51,7 @@ public class Main {
 
 		try {
 			vrServer = new VRServer();
-			vrServer.start(); 
+			vrServer.start();
 			new Keybinding(vrServer);
 			new VRServerGUI(vrServer);
 		} catch(Throwable e) {
@@ -68,5 +70,5 @@ public class Main {
 			}
 		}
 	}
-	
+
 }

@@ -1,0 +1,23 @@
+plugins {
+    // Apply the java-library plugin for API and implementation separation.
+    id 'java-library'
+}
+
+sourceCompatibility = 1.11
+targetCompatibility = 1.11
+
+tasks.withType(JavaCompile) {
+	options.encoding = 'UTF-8'
+	if (JavaVersion.current().isJava9Compatible()) {
+		options.release = 8
+	}
+}
+
+repositories {
+    // Use Maven Central for resolving dependencies.
+    mavenCentral()
+}
+
+dependencies {
+    implementation group: 'com.google.flatbuffers', name: 'flatbuffers-java', version: '2.0.3'
+}

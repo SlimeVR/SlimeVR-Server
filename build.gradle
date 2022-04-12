@@ -42,6 +42,7 @@ allprojects {
 
 dependencies {
 	implementation project(':slime-java-commons')
+	implementation project(':overlay_protocol:java')
 
 	// This dependency is used internally, and not exposed to consumers on their own compile classpath.
 	implementation 'org.apache.commons:commons-math3:3.6.1'
