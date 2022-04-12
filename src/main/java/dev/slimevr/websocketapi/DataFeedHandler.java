@@ -1,103 +1,101 @@
 package dev.slimevr.websocketapi;
 
 import com.google.flatbuffers.FlatBufferBuilder;
-import dev.slimevr.vr.trackers.udp.TrackerUDPConnection;
-import slimevr_protocol.InboundPacket;
-import slimevr_protocol.InboundUnion;
+import io.eiren.util.logging.LogManager;
+import slimevr_protocol.MessageBundle;
 import slimevr_protocol.data_feed.*;
-import slimevr_protocol.datatypes.hardware_info.FirmwareInfo;
-import slimevr_protocol.datatypes.hardware_info.FirmwareInfoMaskT;
+import java.util.function.BiConsumer;
 
-import java.nio.ByteBuffer;
-import java.util.List;
-
-public class DataFeedHandler {
+public class DataFeedHandler extends ProtocolHandler<DataFeedMessageHeader> {
 
 	private final ProtocolAPI api;
 
 	public DataFeedHandler(ProtocolAPI api) {
 		this.api = api;
 
-		api.registerPacketListener(InboundUnion.slimevr_protocol_data_feed_DataFeedRequest, this::onDataFeedRequest);
-		api.registerPacketListener(InboundUnion.slimevr_protocol_data_feed_PollDataFeed, this::onPollDataFeedRequest);
+		registerPacketListener(DataFeedMessage.StartDataFeed, this::onStartDataFeed);
+		registerPacketListener(DataFeedMessage.PollDataFeed, this::onPollDataFeedRequest);
+
+		this.api.server.addOnTick(this::sendDataFeedUpdate);
 	}
 
-	private void onDataFeedRequest(GenericConnection conn, InboundPacket inboundPacket) {
-		DataFeedRequest req = (DataFeedRequest) inboundPacket.packet(new DataFeedRequest());
+	private void onStartDataFeed(GenericConnection conn, DataFeedMessageHeader header) {
+		StartDataFeed req = (StartDataFeed) header.message(new StartDataFeed());
 		if (req == null) return;
 		int dataFeeds = req.dataFeedsLength();
 
 		conn.getContext().getDataFeedConfigList().clear();
 		for (int i = 0; i < dataFeeds; i++) {
+			// Using the object api here because we need to copy from the buffer anyway so let's do it from here and send the reference to an arraylist
 			DataFeedConfigT config = req.dataFeeds(i).unpack();
 			conn.getContext().getDataFeedConfigList().add(config);
+			conn.getContext().getDataFeedTimers().add(System.currentTimeMillis());
+			System.out.println("NEW CONFIG");
 		}
 	}
 
-	private void onPollDataFeedRequest(GenericConnection conn, InboundPacket inboundPacket) {
+	private void onPollDataFeedRequest(GenericConnection conn, DataFeedMessageHeader inboundPacket) {
 
 	}
 
-	public ByteBuffer dataFeedBuffer(DataFeedConfigT config) {
+	public int dataFeedBuffer(FlatBufferBuilder fbb, DataFeedConfigT config) {
+		int devicesOffset = DataFeedBuilder.createDevicesData(fbb, config, this.api.server.getTrackersServer().getConnections());
 
-		FlatBufferBuilder fbb = new FlatBufferBuilder(300);
-
-		DataFeedUpdate.startDataFeedUpdate(fbb);
-		if (config.getDataMask() != null) {
-			DeviceStatusMaskT maskT = config.getDataMask();
-			List<TrackerUDPConnection> devicesList = this.api.server.getTrackersServer().getConnections();
-			int[] devicesStatusOffsets = new int[devicesList.size()];
-			for (int i = 0; i < devicesList.size(); i++) {
-
-				TrackerUDPConnection device = devicesList.get(i);
-				FirmwareInfoMaskT firmwareInfoMaskT = maskT.getFirmwareInfo();
-
-				int nameOffset = -1;
-				int versionOffset = -1;
-
-				if (maskT.getCustomName())
-					nameOffset = fbb.createString(device.name);
-				if (firmwareInfoMaskT != null && firmwareInfoMaskT.getFirmwareVersion())
-					versionOffset = fbb.createString(device.firmwareBuild + "");
-
-
-				int firmwareInfoOffset = -1;
-				if (firmwareInfoMaskT != null) {
-					{
-						FirmwareInfo.startFirmwareInfo(fbb);
-						if (firmwareInfoMaskT.getFirmwareVersion())
-							FirmwareInfo.addFirmwareVersion(fbb, versionOffset);
-						if (firmwareInfoMaskT.getDisplayName())
-
-							firmwareInfoOffset = FirmwareInfo.endFirmwareInfo(fbb);
-						DeviceStatus.addFirmwareInfo(fbb, firmwareInfoOffset);
-					}
-				}
-
-				{
-					DeviceStatus.startDeviceStatus(fbb);
-					if (maskT.getCustomName())
-						DeviceStatus.addCustomName(fbb, nameOffset);
-					if (firmwareInfoMaskT != null)
-						DeviceStatus.addFirmwareInfo(fbb, firmwareInfoOffset);
-					devicesStatusOffsets[i] = DeviceStatus.endDeviceStatus(fbb);
-				}
-			}
-
-			int devices = DataFeedUpdate.createDevicesVector(fbb, devicesStatusOffsets);
-			DataFeedUpdate.addDevices(fbb, devices);
-		}
-		return null;
+		return DataFeedUpdate.createDataFeedUpdate(fbb, devicesOffset, -1);
 	}
 
 	public void sendDataFeedUpdate() {
+		long currTime = System.currentTimeMillis();
+
 		this.api.getAPIServers().forEach((server) -> {
 			server.getAPIConnections().values().forEach((conn) -> {
+				FlatBufferBuilder fbb = null;
 
+				int configsCount = conn.getContext().getDataFeedConfigList().size();
 
-//				conn.send(this.dataFeedBuffer(conn.getContext().));
+				int[] data = new int[configsCount];
+
+				for (int index = 0; index < configsCount; index++) {
+					Long lastTimeSent = conn.getContext().getDataFeedTimers().get(index);
+					DataFeedConfigT configT = conn.getContext().getDataFeedConfigList().get(index);
+					if (currTime - lastTimeSent > configT.getMinimumTimeSinceLast()) {
+						if (fbb == null) {
+							// That way we create a buffer only when needed
+							fbb = new FlatBufferBuilder(300);
+						}
+
+						int messageOffset = this.dataFeedBuffer(fbb, configT);
+
+						DataFeedMessageHeader.startDataFeedMessageHeader(fbb);
+						DataFeedMessageHeader.addMessage(fbb, messageOffset);
+						DataFeedMessageHeader.addMessageType(fbb, DataFeedMessage.DataFeedUpdate);
+						data[index] = DataFeedMessageHeader.endDataFeedMessageHeader(fbb);
+
+						conn.getContext().getDataFeedTimers().set(index, currTime);
+					}
+				}
+
+				if (fbb != null) {
+					int messages = MessageBundle.createRpcMsgsVector(fbb, data);
+					int packet = createMessage(fbb, messages, -1);
+					fbb.finish(packet);
+					conn.send(fbb.dataBuffer());
+				}
 			});
 		});
 	}
 
+	@Override
+	public void onMessage(GenericConnection conn, DataFeedMessageHeader message) {
+		BiConsumer<GenericConnection, DataFeedMessageHeader> consumer = this.handlers[message.messageType()];
+		if (consumer != null)
+			consumer.accept(conn, message);
+		else
+			LogManager.log.info("[ProtocolAPI] Unhandled Datafeed packet received id: " + message.messageType());
+	}
+
+	@Override
+	public int messagesCount() {
+		return DataFeedMessage.names.length;
+	}
 }

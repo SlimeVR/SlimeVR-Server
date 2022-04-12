@@ -4,56 +4,58 @@ import com.google.flatbuffers.FlatBufferBuilder;
 import dev.slimevr.platform.windows.WindowsNamedPipeBridge;
 import dev.slimevr.vr.trackers.*;
 import io.eiren.util.logging.LogManager;
-import org.java_websocket.WebSocket;
-import slimevr_protocol.InboundPacket;
-import slimevr_protocol.InboundUnion;
-import slimevr_protocol.OutboundUnion;
+import slimevr_protocol.MessageBundle;
+import slimevr_protocol.datatypes.TransactionId;
 import slimevr_protocol.rpc.*;
 
-public class RPCHandler {
+import java.util.function.BiConsumer;
+
+public class RPCHandler extends ProtocolHandler<RpcMessageHeader> {
 
 	private final ProtocolAPI api;
 
+	private long currTransactionId = 0;
+
 	public RPCHandler(ProtocolAPI api) {
+		super();
 		this.api = api;
 
-		api.registerPacketListener(InboundUnion.slimevr_protocol_rpc_ResetRequest, this::onResetRequest);
-		api.registerPacketListener(InboundUnion.slimevr_protocol_rpc_AssignTrackerRequest, this::onAssignTrackerRequest);
-		api.registerPacketListener(InboundUnion.slimevr_protocol_rpc_SettingsRequest, this::onSettingsRequest);
-		api.registerPacketListener(InboundUnion.slimevr_protocol_rpc_ChangeSettingsRequest, this::onChangeSettingsRequest);
+		registerPacketListener(RpcMessage.ResetRequest, this::onResetRequest);
+		registerPacketListener(RpcMessage.AssignTrackerRequest, this::onAssignTrackerRequest);
+		registerPacketListener(RpcMessage.SettingsRequest, this::onSettingsRequest);
+		registerPacketListener(RpcMessage.ChangeSettingsRequest, this::onChangeSettingsRequest);
 	}
 
-	public void onResetRequest(GenericConnection conn, InboundPacket inboundPacket) {
-		ResetRequest req = (ResetRequest) inboundPacket.packet(new ResetRequest());
+	public void onResetRequest(GenericConnection conn, RpcMessageHeader messageHeader) {
+		ResetRequest req = (ResetRequest) messageHeader.message(new ResetRequest());
 		if (req == null) return;
 
-		if (req.quick()) {
+		if (req.resetType() == ResetType.Quick)
 			this.api.server.resetTrackersYaw();
-		} else {
+		if (req.resetType() == ResetType.Full)
 			this.api.server.resetTrackers();
-		}
 		LogManager.log.severe("[WebSocketAPI] Reset performed");
 	}
 
-	public void onAssignTrackerRequest(GenericConnection conn, InboundPacket inboundPacket) {
-		AssignTrackerRequest req = (AssignTrackerRequest) inboundPacket.packet(new AssignTrackerRequest());
+	public void onAssignTrackerRequest(GenericConnection conn, RpcMessageHeader messageHeader) {
+		AssignTrackerRequest req = (AssignTrackerRequest) messageHeader.message(new AssignTrackerRequest());
 		if (req == null) return;
 
-		Tracker tracker = this.api.server.getAllTrackers().get(req.id());
+		Tracker tracker = this.api.server.getAllTrackers().get(req.trackerId().trackerNum());
 		if (tracker == null)
 			return ;
 
 		tracker.setBodyPosition(TrackerPosition.getById(req.bodyPosition()));
 		if (tracker instanceof IMUTracker) {
 			IMUTracker imu = (IMUTracker) tracker;
-			TrackerMountingRotation rot = TrackerMountingRotation.fromAngle(req.mountingRotation());
-			if (rot != null)
-				imu.setMountingRotation(rot);
+//			TrackerMountingRotation rot = TrackerMountingRotation.fromAngle(req.mountingRotation());
+//			if (rot != null)
+//				imu.setMountingRotation(rot);
 		}
 		this.api.server.trackerUpdated(tracker);
 	}
 
-	public void onSettingsRequest(GenericConnection conn, InboundPacket inboundPacket) {
+	public void onSettingsRequest(GenericConnection conn, RpcMessageHeader messageHeader) {
 		FlatBufferBuilder fbb = new FlatBufferBuilder(32);
 
 		WindowsNamedPipeBridge bridge = this.api.server.getVRBridge(WindowsNamedPipeBridge.class);
@@ -74,14 +76,14 @@ public class RPCHandler {
 		);
 
 		int settings = SettingsResponse.createSettingsResponse(fbb, steamvrTrackerSettings, filterSettings);
-		int outbound = this.api.createOutboundPacket(fbb, OutboundUnion.slimevr_protocol_rpc_SettingsResponse, settings);
+		int outbound = createRPCMessage(fbb, RpcMessage.SettingsResponse, settings);
 		fbb.finish(outbound);
 		conn.send(fbb.dataBuffer());
 	}
 
-	public void onChangeSettingsRequest(GenericConnection conn, InboundPacket inboundPacket) {
+	public void onChangeSettingsRequest(GenericConnection conn, RpcMessageHeader messageHeader) {
 
-		ChangeSettingsRequest req = (ChangeSettingsRequest) inboundPacket.packet(new ChangeSettingsRequest());
+		ChangeSettingsRequest req = (ChangeSettingsRequest) messageHeader.message(new ChangeSettingsRequest());
 		if (req == null) return;
 
 		if (req.steamVrTrackers() != null) {
@@ -102,5 +104,35 @@ public class RPCHandler {
 				this.api.server.updateTrackersFilters(type, (float)req.filtering().intensity() / 100.0f, req.filtering().ticks());
 			}
 		}
+	}
+
+
+	@Override
+	public void onMessage(GenericConnection conn, RpcMessageHeader message) {
+		BiConsumer<GenericConnection, RpcMessageHeader> consumer = this.handlers[message.messageType()];
+		if (consumer != null)
+			consumer.accept(conn, message);
+		else
+			LogManager.log.info("[ProtocolAPI] Unhandled RPC packet received id: " + message.messageType());
+	}
+
+	public int createRPCMessage(FlatBufferBuilder fbb, byte messageType, int messageOffset) {
+		int [] data = new int[1];
+
+		int txId = TransactionId.createTransactionId(fbb, currTransactionId++);
+
+		RpcMessageHeader.startRpcMessageHeader(fbb);
+		RpcMessageHeader.addMessage(fbb, messageOffset);
+		RpcMessageHeader.addMessageType(fbb, messageType);
+		RpcMessageHeader.addTxId(fbb, txId);
+		data[0] = RpcMessageHeader.endRpcMessageHeader(fbb);
+
+		int messages = MessageBundle.createRpcMsgsVector(fbb, data);
+		return createMessage(fbb, -1, messages);
+	}
+
+	@Override
+	public int messagesCount() {
+		return RpcMessage.names.length;
 	}
 }

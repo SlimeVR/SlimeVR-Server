@@ -271,15 +271,7 @@ public class WebsocketAPI extends WebSocketServer implements SerialListener {
 
 	public void onChangeSettingsRequest(WebSocket conn, ChangeSettingsRequest req) {
 		if (req.steamVrTrackers() != null) {
-			WindowsNamedPipeBridge bridge = this.server.getVRBridge(WindowsNamedPipeBridge.class);
-			bridge.changeShareSettings(TrackerRole.WAIST, req.steamVrTrackers().waist());
-			bridge.changeShareSettings(TrackerRole.CHEST, req.steamVrTrackers().chest());
-			bridge.changeShareSettings(TrackerRole.LEFT_FOOT, req.steamVrTrackers().legs());
-			bridge.changeShareSettings(TrackerRole.RIGHT_FOOT, req.steamVrTrackers().legs());
-			bridge.changeShareSettings(TrackerRole.LEFT_KNEE, req.steamVrTrackers().knees());
-			bridge.changeShareSettings(TrackerRole.RIGHT_KNEE, req.steamVrTrackers().knees());
-			bridge.changeShareSettings(TrackerRole.LEFT_ELBOW, req.steamVrTrackers().elbows());
-			bridge.changeShareSettings(TrackerRole.RIGHT_ELBOW, req.steamVrTrackers().elbows());
+			W;lp.
 		}
 
 		if (req.filtering() != null) {
