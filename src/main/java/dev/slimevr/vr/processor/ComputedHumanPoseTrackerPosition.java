@@ -9,5 +9,7 @@ public enum ComputedHumanPoseTrackerPosition {
 	LEFT_KNEE,
 	RIGHT_KNEE,
 	LEFT_ELBOW,
-	RIGHT_ELBOW;
+	RIGHT_ELBOW,
+	LEFT_HAND,
+	RIGHT_HAND;
 }
