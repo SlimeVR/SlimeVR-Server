@@ -35,6 +35,9 @@ import io.eiren.util.collections.FastList;
 import io.eiren.yaml.YamlException;
 import io.eiren.yaml.YamlFile;
 import io.eiren.yaml.YamlNode;
+import slimevr_protocol.datatypes.DeviceId;
+import slimevr_protocol.datatypes.TrackerId;
+import slimevr_protocol.datatypes.TrackerIdT;
 
 public class VRServer extends Thread {
 	
@@ -312,6 +315,22 @@ public class VRServer extends Thread {
 	public List<Tracker> getAllTrackers() {
 		return new FastList<>(trackers);
 	}
+
+	public Tracker getTrackerById(TrackerIdT id) {
+		for (Tracker tracker : trackers) {
+			if (tracker.getTrackerNum() != id.getTrackerNum())
+				continue;
+			if (tracker.getDevice() == null && id.getDeviceId() != null)
+				continue;
+			if (tracker.getDevice() != null && id.getDeviceId() == null)
+				continue;
+			if (tracker.getDevice().getId() != id.getDeviceId().getId())
+				continue;
+			return tracker;
+		}
+		return null;
+	}
+
 
 	public BVHRecorder getBvhRecorder() {
 		return this.bvhRecorder;

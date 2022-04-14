@@ -2,6 +2,7 @@ package dev.slimevr.vr.trackers;
 
 import com.jme3.math.Quaternion;
 import com.jme3.math.Vector3f;
+import dev.slimevr.vr.trackers.udp.Device;
 
 public class ReferenceAdjustedTracker<E extends Tracker> implements Tracker {
 	
@@ -164,9 +165,19 @@ public class ReferenceAdjustedTracker<E extends Tracker> implements Tracker {
 	public int getTrackerId() {
 		return tracker.getTrackerId();
 	}
-	
+
+	@Override
+	public int getTrackerNum() {
+		return tracker.getTrackerNum();
+	}
+
 	@Override
 	public String getDescriptiveName() {
 		return tracker.getDescriptiveName();
+	}
+
+	@Override
+	public Device getDevice() {
+		return tracker.getDevice();
 	}
 }

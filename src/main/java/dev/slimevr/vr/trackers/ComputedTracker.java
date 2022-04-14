@@ -2,6 +2,7 @@ package dev.slimevr.vr.trackers;
 
 import com.jme3.math.Quaternion;
 import com.jme3.math.Vector3f;
+import dev.slimevr.vr.trackers.udp.Device;
 
 public class ComputedTracker implements Tracker, TrackerWithTPS {
 
@@ -130,5 +131,16 @@ public class ComputedTracker implements Tracker, TrackerWithTPS {
 	@Override
 	public int getTrackerId() {
 		return this.trackerId;
+	}
+
+
+	@Override
+	public int getTrackerNum() {
+		return -1;
+	}
+
+	@Override
+	public Device getDevice() {
+		return null;
 	}
 }

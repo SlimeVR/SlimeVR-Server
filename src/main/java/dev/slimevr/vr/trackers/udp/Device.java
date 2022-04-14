@@ -4,12 +4,15 @@ import java.net.InetAddress;
 import java.net.SocketAddress;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.concurrent.atomic.AtomicInteger;
 
 import dev.slimevr.NetworkProtocol;
 import dev.slimevr.vr.trackers.IMUTracker;
 
-public class TrackerUDPConnection {
-	
+public class Device {
+
+	public static final AtomicInteger nextLocalDeviceId = new AtomicInteger();
+
 	public Map<Integer, IMUTracker> sensors = new HashMap<>();
 	public SocketAddress address;
 	public InetAddress ipAddress;
@@ -24,10 +27,12 @@ public class TrackerUDPConnection {
 	public NetworkProtocol protocol = null;
 	public int firmwareBuild = 0;
 	public boolean timedOut = false;
+	public final int id;
 	
-	public TrackerUDPConnection(SocketAddress address, InetAddress ipAddress) {
+	public Device(SocketAddress address, InetAddress ipAddress) {
 		this.address = address;
 		this.ipAddress = ipAddress;
+		this.id = Device.nextLocalDeviceId.incrementAndGet();
 	}
 	
 	public boolean isNextPacket(long packetId) {
@@ -40,5 +45,9 @@ public class TrackerUDPConnection {
 	@Override
 	public String toString() {
 		return "udp:/" + ipAddress;
+	}
+
+	public int getId() {
+		return id;
 	}
 }

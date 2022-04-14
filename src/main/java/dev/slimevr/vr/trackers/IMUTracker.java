@@ -5,6 +5,7 @@ import com.jme3.math.Quaternion;
 import com.jme3.math.Vector3f;
 
 import dev.slimevr.VRServer;
+import dev.slimevr.vr.trackers.udp.Device;
 import dev.slimevr.vr.trackers.udp.TrackersUDPServer;
 import io.eiren.util.BufferedTimer;
 
@@ -44,10 +45,14 @@ public class IMUTracker implements Tracker, TrackerWithTPS, TrackerWithBattery {
 	public int ping = -1;
 	public int signalStrength = -1;
 	public float temperature = 0;
+	public final Device device;
+	public final int trackerNum;
 	
 	public TrackerPosition bodyPosition = null;
 	
-	public IMUTracker(int trackerId, String name, String descriptiveName, TrackersUDPServer server, VRServer vrserver) {
+	public IMUTracker(Device device, int trackerId, int trackerNum, String name, String descriptiveName, TrackersUDPServer server, VRServer vrserver) {
+		this.device = device;
+		this.trackerNum = trackerNum;
 		this.name = name;
 		this.server = server;
 		this.trackerId = trackerId;
@@ -281,7 +286,17 @@ public class IMUTracker implements Tracker, TrackerWithTPS, TrackerWithBattery {
 	public int getTrackerId() {
 		return this.trackerId;
 	}
-	
+
+	@Override
+	public int getTrackerNum() {
+		return this.trackerNum;
+	}
+
+	@Override
+	public Device getDevice() {
+		return this.device;
+	}
+
 	@Override
 	public String getDescriptiveName() {
 		return this.descriptiveName;

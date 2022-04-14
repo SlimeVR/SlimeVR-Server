@@ -4,15 +4,13 @@ import com.google.flatbuffers.FlatBufferBuilder;
 import com.jme3.math.Quaternion;
 import com.jme3.math.Vector3f;
 import dev.slimevr.vr.trackers.IMUTracker;
-import dev.slimevr.vr.trackers.udp.TrackerUDPConnection;
-import slimevr_protocol.data_feed.DataFeedConfigT;
+import dev.slimevr.vr.trackers.Tracker;
+import dev.slimevr.vr.trackers.udp.Device;
 import slimevr_protocol.data_feed.DataFeedUpdate;
 import slimevr_protocol.data_feed.device_data.DeviceData;
 import slimevr_protocol.data_feed.device_data.DeviceDataMaskT;
 import slimevr_protocol.data_feed.tracker.*;
-import slimevr_protocol.datatypes.DeviceId;
-import slimevr_protocol.datatypes.Temperature;
-import slimevr_protocol.datatypes.TrackerId;
+import slimevr_protocol.datatypes.*;
 import slimevr_protocol.datatypes.hardware_info.HardwareInfo;
 import slimevr_protocol.datatypes.hardware_info.HardwareStatus;
 import slimevr_protocol.datatypes.math.Quat;
@@ -23,7 +21,7 @@ import java.util.List;
 
 public class DataFeedBuilder {
 
-	public static int createHardwareInfo(FlatBufferBuilder fbb, TrackerUDPConnection device) {
+	public static int createHardwareInfo(FlatBufferBuilder fbb, Device device) {
 		IMUTracker tracker = device.sensors.get(0);
 
 		HardwareInfo.startHardwareInfo(fbb);
@@ -37,89 +35,115 @@ public class DataFeedBuilder {
 		return HardwareInfo.endHardwareInfo(fbb);
 	}
 
-	public static int createTrackerId(FlatBufferBuilder fbb, int trackerNum, int deviceId) {
+	public static int createTrackerId(FlatBufferBuilder fbb, Tracker tracker) {
 		TrackerId.startTrackerId(fbb);
 
-		TrackerId.addTrackerNum(fbb, trackerNum);
-		TrackerId.addDeviceId(fbb, DeviceId.createDeviceId(fbb, deviceId));
+		TrackerId.addTrackerNum(fbb, tracker.getTrackerNum());
+		if (tracker.getDevice() != null)
+			TrackerId.addDeviceId(fbb, DeviceId.createDeviceId(fbb, tracker.getDevice().getId()));
 
 		return TrackerId.endTrackerId(fbb);
 	}
 
-	public static int createTrackerDataComponents(FlatBufferBuilder fbb, TrackerDataMaskT mask, IMUTracker tracker) {
+	public static int createTrackerInfos(FlatBufferBuilder fbb, boolean infoMask, Tracker tracker) {
 
-		List<Integer> dataOffsets = new ArrayList<>(TrackerDataComponent.names.length);
+		if (!infoMask) return -1;
 
-		for (int index = 0; index < TrackerDataComponent.names.length; index++) {
-			if (index == TrackerDataComponent.info && mask.getInfo()) {
-//				Vector3f pos = new Vector3f();
-//				tracker.getPosition(pos);
-//				dataOffsets[index] = TrackerInfo.;
-			}
+		TrackerInfo.startTrackerInfo(fbb);
+		if (tracker.getBodyPosition() != null)
+			TrackerInfo.addBodyPart(fbb, tracker.getBodyPosition().id);
+		TrackerInfo.addEditable(fbb, tracker.userEditable());
+		TrackerInfo.addComputed(fbb, tracker.isComputed());
+		//TODO need support:  TrackerInfo.addImuType(fbb, tracker.im);
+		//TODO need support:  TrackerInfo.addPollRate(fbb, tracker.);
 
-			if (index == TrackerDataComponent.position && mask.getPosition()) {
-				Vector3f pos = new Vector3f();
-				tracker.getPosition(pos);
-				dataOffsets.add(
-						TrackerDataComponentW.createTrackerDataComponentW(
-								fbb,
-								TrackerDataComponent.position,
-								Vec3f.createVec3f(fbb, pos.x, pos.y, pos.z)
+		if (tracker instanceof IMUTracker) {
+			IMUTracker imuTracker = (IMUTracker) tracker;
+ 			if (imuTracker.getMountingRotation() != null) {
+				Quaternion quaternion = imuTracker.getMountingRotation().quaternion;
+				TrackerInfo.addMountingOrientation(fbb,
+						Quat.createQuat(fbb,
+								quaternion.getX(),
+								quaternion.getY(),
+								quaternion.getZ(),
+								quaternion.getW()
 						)
 				);
-			}
-
-			if (index == TrackerDataComponent.rotation && mask.getRotation()) {
-				Quaternion quaternion = new Quaternion();
-				tracker.getRotation(quaternion);
-				dataOffsets.add(
-						TrackerDataComponentW.createTrackerDataComponentW(
-								fbb,
-								TrackerDataComponent.rotation,
-								Quat.createQuat(fbb,
-										quaternion.getX(),
-										quaternion.getY(),
-										quaternion.getZ(),
-										quaternion.getW()
-								)
-						)
-				);
-			}
-
-			if (index == TrackerDataComponent.temp && mask.getTemp()) {
-				dataOffsets.add(TrackerDataComponentW.createTrackerDataComponentW(fbb, TrackerDataComponent.temp, Temperature.createTemperature(fbb, tracker.temperature)));
 			}
 		}
-
-		TrackerData.startDataVector(fbb, dataOffsets.size());
-		dataOffsets.forEach((offset) -> {
-			TrackerData.addData(fbb, offset);
-		});
-		return fbb.endVector();
+		return TrackerInfo.endTrackerInfo(fbb);
 	}
 
-	public static int createTrackersData(FlatBufferBuilder fbb, DeviceDataMaskT mask, TrackerUDPConnection device, int deviceId) {
+	public static int createTrackerPosition(FlatBufferBuilder fbb, Tracker tracker) {
+		Vector3f pos = new Vector3f();
+		tracker.getPosition(pos);
+
+		return Vec3f.createVec3f(fbb, pos.x, pos.y, pos.z);
+	}
+
+	public static int createTrackerRotation(FlatBufferBuilder fbb, Tracker tracker) {
+		Quaternion quaternion = new Quaternion();
+		tracker.getRotation(quaternion);
+
+		return Quat.createQuat(fbb,
+			quaternion.getX(),
+			quaternion.getY(),
+			quaternion.getZ(),
+			quaternion.getW()
+		);
+	}
+
+	public static int createTrackerTemperature(FlatBufferBuilder fbb, Tracker tracker) {
+		if (!(tracker instanceof IMUTracker))
+			return -1;
+		IMUTracker imuTracker = (IMUTracker)tracker;
+		return Temperature.createTemperature(fbb, imuTracker.temperature);
+	}
+
+	public static int createTrackerData(FlatBufferBuilder fbb, TrackerDataMaskT mask, Tracker tracker) {
+		int trackerInfosOffset = DataFeedBuilder.createTrackerInfos(fbb, mask.getInfo(), tracker);
+		int trackerIdOffset = DataFeedBuilder.createTrackerId(fbb, tracker);
+
+		TrackerData.startTrackerData(fbb);
+
+		TrackerData.addTrackerId(fbb, trackerIdOffset);
+
+		if (trackerInfosOffset != -1)
+			TrackerData.addInfo(fbb, trackerInfosOffset);
+		if (mask.getStatus())
+			TrackerData.addStatus(fbb, tracker.getStatus().id + 1);
+		if (mask.getPosition())
+			TrackerData.addRotation(fbb, DataFeedBuilder.createTrackerPosition(fbb, tracker));
+		if (mask.getRotation())
+			TrackerData.addRotation(fbb, DataFeedBuilder.createTrackerRotation(fbb, tracker));
+		if (mask.getTemp()) {
+			int trackerTemperatureOffset = DataFeedBuilder.createTrackerTemperature(fbb, tracker);
+			if (trackerTemperatureOffset != -1)
+				TrackerData.addTemp(fbb, trackerTemperatureOffset);
+		}
+
+		return TrackerData.endTrackerData(fbb);
+	}
+
+	public static int createTrackersData(FlatBufferBuilder fbb, DeviceDataMaskT mask, Device device) {
 		if (mask.getTrackerData() == null) return -1;
 
-		int[] sensorsOffsets = new int[device.sensors.size()];
+		int[] trackersOffset = new int[device.sensors.size()];
 
 		device.sensors.forEach((key, value) -> {
-			int trackerIdOffset = DataFeedBuilder.createTrackerId(fbb, key, deviceId);
-			int dataOffset = DataFeedBuilder.createTrackerDataComponents(fbb, mask.getTrackerData(), value);
-			sensorsOffsets[key] = TrackerData.createTrackerData(fbb, trackerIdOffset, dataOffset);
+			trackersOffset[key] = DataFeedBuilder.createTrackerData(fbb, mask.getTrackerData(), value);
 		});
 
-		return TrackerData.createDataVector(fbb, sensorsOffsets);
+		return DeviceData.createTrackersVector(fbb, trackersOffset);
 	}
 
-	public static int createDeviceData(FlatBufferBuilder fbb, int id, DeviceDataMaskT mask, TrackerUDPConnection device) {
+	public static int createDeviceData(FlatBufferBuilder fbb, int id, DeviceDataMaskT mask, Device device) {
 		if (!mask.getDeviceData()) return -1;
 
 		IMUTracker tracker = device.sensors.get(0);
 
 		if (tracker == null) return -1;
 
-		int nameOffset = fbb.createString(device.name);
 		int hardwareDataOffset = HardwareStatus.createHardwareStatus(
 				fbb,
 				tracker.getStatus().id,
@@ -132,10 +156,10 @@ public class DataFeedBuilder {
 				-1
 		);
 		int hardwareInfoOffset = DataFeedBuilder.createHardwareInfo(fbb, device);
-		int trackersOffset = DataFeedBuilder.createTrackersData(fbb, mask, device, id);
+		int trackersOffset = DataFeedBuilder.createTrackersData(fbb, mask, device);
 
 		DeviceData.startDeviceData(fbb);
-		DeviceData.addCustomName(fbb, nameOffset);
+		//TODO need support:  DeviceData.addCustomName(fbb, nameOffset);
 		DeviceData.addId(fbb, DeviceId.createDeviceId(fbb, id));
 		DeviceData.addHardwareStatus(fbb, hardwareDataOffset);
 		DeviceData.addHardwareInfo(fbb, hardwareInfoOffset);
@@ -144,13 +168,28 @@ public class DataFeedBuilder {
 		return DeviceData.endDeviceData(fbb);
 	}
 
-	public static int createDevicesData(FlatBufferBuilder fbb, DataFeedConfigT config, List<TrackerUDPConnection> devices) {
-		if (config.getDataMask() == null) return -1;
+	public static int createSyntheticTrackersData(FlatBufferBuilder fbb, TrackerDataMaskT trackerDataMaskT, List<Tracker> trackers) {
+		if (trackerDataMaskT == null) return -1;
 
-		DeviceDataMaskT deviceDataMaskT = config.getDataMask();
+		List<Integer> trackerOffsets = new ArrayList<>();
+
+		trackers.stream().filter(Tracker::isComputed).forEach((tracker) -> {
+			trackerOffsets.add(DataFeedBuilder.createTrackerData(fbb, trackerDataMaskT, tracker));
+		});
+
+		DataFeedUpdate.startSyntheticTrackersVector(fbb, trackerOffsets.size());
+		trackerOffsets.forEach((tracker -> {
+			DataFeedUpdate.addSyntheticTrackers(fbb, tracker);
+		}));
+		return fbb.endVector();
+	}
+
+	public static int createDevicesData(FlatBufferBuilder fbb, DeviceDataMaskT deviceDataMaskT, List<Device> devices) {
+		if (deviceDataMaskT == null) return -1;
+
 		int[] devicesDataOffsets = new int[devices.size()];
 		for (int i = 0; i < devices.size(); i++) {
-			TrackerUDPConnection device = devices.get(i);
+			Device device = devices.get(i);
 			devicesDataOffsets[i] = DataFeedBuilder.createDeviceData(fbb, i, deviceDataMaskT, device);
 		}
 

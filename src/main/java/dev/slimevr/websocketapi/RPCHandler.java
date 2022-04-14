@@ -41,7 +41,7 @@ public class RPCHandler extends ProtocolHandler<RpcMessageHeader> {
 		AssignTrackerRequest req = (AssignTrackerRequest) messageHeader.message(new AssignTrackerRequest());
 		if (req == null) return;
 
-		Tracker tracker = this.api.server.getAllTrackers().get(req.trackerId().trackerNum());
+		Tracker tracker = this.api.server.getTrackerById(req.trackerId().unpack());
 		if (tracker == null)
 			return ;
 

@@ -4,6 +4,7 @@ import com.google.flatbuffers.FlatBufferBuilder;
 import io.eiren.util.logging.LogManager;
 import slimevr_protocol.MessageBundle;
 import slimevr_protocol.data_feed.*;
+
 import java.util.function.BiConsumer;
 
 public class DataFeedHandler extends ProtocolHandler<DataFeedMessageHeader> {
@@ -30,18 +31,37 @@ public class DataFeedHandler extends ProtocolHandler<DataFeedMessageHeader> {
 			DataFeedConfigT config = req.dataFeeds(i).unpack();
 			conn.getContext().getDataFeedConfigList().add(config);
 			conn.getContext().getDataFeedTimers().add(System.currentTimeMillis());
-			System.out.println("NEW CONFIG");
 		}
 	}
 
-	private void onPollDataFeedRequest(GenericConnection conn, DataFeedMessageHeader inboundPacket) {
+	private void onPollDataFeedRequest(GenericConnection conn, DataFeedMessageHeader messageHeader) {
 
+		PollDataFeed req = (PollDataFeed) messageHeader.message(new PollDataFeed());
+		if (req == null) return;
+
+		FlatBufferBuilder fbb = new FlatBufferBuilder(300);
+
+		int messageOffset = this.buildDatafeed(fbb, req.config().unpack());
+
+		DataFeedMessageHeader.startDataFeedMessageHeader(fbb);
+		DataFeedMessageHeader.addMessage(fbb, messageOffset);
+		DataFeedMessageHeader.addMessageType(fbb, DataFeedMessage.DataFeedUpdate);
+		int headerOffset = DataFeedMessageHeader.endDataFeedMessageHeader(fbb);
+
+		MessageBundle.startDataFeedMsgsVector(fbb, 1);
+		MessageBundle.addDataFeedMsgs(fbb, headerOffset);
+		int datafeedMessagesOffset = fbb.endVector();
+
+		int packet = createMessage(fbb, datafeedMessagesOffset, -1);
+		fbb.finish(packet);
+		conn.send(fbb.dataBuffer());
 	}
 
-	public int dataFeedBuffer(FlatBufferBuilder fbb, DataFeedConfigT config) {
-		int devicesOffset = DataFeedBuilder.createDevicesData(fbb, config, this.api.server.getTrackersServer().getConnections());
+	public int buildDatafeed(FlatBufferBuilder fbb, DataFeedConfigT config) {
+		int devicesOffset = DataFeedBuilder.createDevicesData(fbb, config.getDataMask(), this.api.server.getTrackersServer().getConnections());
+		int trackersOffset = DataFeedBuilder.createSyntheticTrackersData(fbb, config.getSyntheticTrackersMask(), this.api.server.getAllTrackers());
 
-		return DataFeedUpdate.createDataFeedUpdate(fbb, devicesOffset, -1);
+		return DataFeedUpdate.createDataFeedUpdate(fbb, devicesOffset, trackersOffset);
 	}
 
 	public void sendDataFeedUpdate() {
@@ -64,7 +84,7 @@ public class DataFeedHandler extends ProtocolHandler<DataFeedMessageHeader> {
 							fbb = new FlatBufferBuilder(300);
 						}
 
-						int messageOffset = this.dataFeedBuffer(fbb, configT);
+						int messageOffset = this.buildDatafeed(fbb, configT);
 
 						DataFeedMessageHeader.startDataFeedMessageHeader(fbb);
 						DataFeedMessageHeader.addMessage(fbb, messageOffset);
