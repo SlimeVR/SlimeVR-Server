@@ -1,16 +1,21 @@
 package dev.slimevr.websocketapi;
 
+import com.fazecast.jSerialComm.SerialPort;
 import com.google.flatbuffers.FlatBufferBuilder;
 import dev.slimevr.platform.windows.WindowsNamedPipeBridge;
+import dev.slimevr.serial.SerialHandler;
+import dev.slimevr.serial.SerialListener;
+import dev.slimevr.vr.processor.skeleton.SkeletonConfigValue;
 import dev.slimevr.vr.trackers.*;
 import io.eiren.util.logging.LogManager;
 import slimevr_protocol.MessageBundle;
 import slimevr_protocol.datatypes.TransactionId;
 import slimevr_protocol.rpc.*;
 
+import java.util.Objects;
 import java.util.function.BiConsumer;
 
-public class RPCHandler extends ProtocolHandler<RpcMessageHeader> {
+public class RPCHandler extends ProtocolHandler<RpcMessageHeader> implements SerialListener {
 
 	private final ProtocolAPI api;
 
@@ -24,6 +29,121 @@ public class RPCHandler extends ProtocolHandler<RpcMessageHeader> {
 		registerPacketListener(RpcMessage.AssignTrackerRequest, this::onAssignTrackerRequest);
 		registerPacketListener(RpcMessage.SettingsRequest, this::onSettingsRequest);
 		registerPacketListener(RpcMessage.ChangeSettingsRequest, this::onChangeSettingsRequest);
+
+		registerPacketListener(RpcMessage.RecordBVHRequest, this::onRecordBVHRequest);
+
+		registerPacketListener(RpcMessage.SkeletonResetAllRequest, this::onSkeletonResetAllRequest);
+		registerPacketListener(RpcMessage.SkeletonConfigRequest, this::onSkeletonConfigRequest);
+		registerPacketListener(RpcMessage.ChangeSkeletonConfigRequest, this::onChangeSkeletonConfigRequest);
+
+		registerPacketListener(RpcMessage.SetWifiRequest, this::onSetWifiRequest);
+		registerPacketListener(RpcMessage.OpenSerialRequest, this::onOpenSerialRequest);
+		registerPacketListener(RpcMessage.CloseSerialRequest, this::onCloseSerialRequest);
+
+		this.api.server.getSerialHandler().addListener(this);
+	}
+
+
+	public void onSetWifiRequest(GenericConnection conn, RpcMessageHeader messageHeader) {
+		SetWifiRequest req = (SetWifiRequest) messageHeader.message(new SetWifiRequest());
+		if (req == null) return;
+
+		if (req.password() == null || req.ssid() == null || !this.api.server.getSerialHandler().isConnected())
+			return;
+		this.api.server.getSerialHandler().setWifi(req.ssid(), req.password());
+	}
+
+	public void onOpenSerialRequest(GenericConnection conn, RpcMessageHeader messageHeader) {
+		OpenSerialRequest req = (OpenSerialRequest) messageHeader.message(new OpenSerialRequest());
+		if (req == null) return;
+
+		conn.getContext().setUseSerial(true);
+
+		this.api.server.getSerialHandler().openSerial();
+
+		FlatBufferBuilder fbb = new FlatBufferBuilder(32);
+		SerialUpdateResponse.startSerialUpdateResponse(fbb);
+		SerialUpdateResponse.addClosed(fbb, false);
+		int update = SerialUpdateResponse.endSerialUpdateResponse(fbb);
+		int outbound = this.createRPCMessage(fbb, RpcMessage.SerialUpdateResponse, update);
+		fbb.finish(outbound);
+		conn.send(fbb.dataBuffer());
+	}
+
+	public void onCloseSerialRequest(GenericConnection conn,  RpcMessageHeader messageHeader) {
+		CloseSerialRequest req = (CloseSerialRequest) messageHeader.message(new CloseSerialRequest());
+		if (req == null) return;
+
+		conn.getContext().setUseSerial(false);
+
+		this.api.server.getSerialHandler().closeSerial();
+
+		FlatBufferBuilder fbb = new FlatBufferBuilder(32);
+		SerialUpdateResponse.startSerialUpdateResponse(fbb);
+		SerialUpdateResponse.addClosed(fbb, false);
+		int update = SerialUpdateResponse.endSerialUpdateResponse(fbb);
+		int outbound = this.createRPCMessage(fbb, RpcMessage.SerialUpdateResponse, update);
+		fbb.finish(outbound);
+		conn.send(fbb.dataBuffer());
+	}
+
+
+	public void onSkeletonResetAllRequest(GenericConnection conn, RpcMessageHeader messageHeader) {
+		SkeletonResetAllRequest req = (SkeletonResetAllRequest) messageHeader.message(new SkeletonResetAllRequest());
+		if (req == null) return;
+
+		this.api.server.humanPoseProcessor.getSkeletonConfig().resetConfigs();
+		this.api.server.saveConfig();
+
+
+		// might not be a good idea maybe let the client ask again
+		FlatBufferBuilder fbb = new FlatBufferBuilder(300);
+		int config = RPCBuilder.createSkeletonConfig(fbb, this.api.server.humanPoseProcessor);
+		int outbound = this.createRPCMessage(fbb, RpcMessage.SkeletonConfigResponse, config);
+		fbb.finish(outbound);
+		conn.send(fbb.dataBuffer());
+	}
+
+
+	public void onSkeletonConfigRequest(GenericConnection conn, RpcMessageHeader messageHeader) {
+		SkeletonConfigRequest req = (SkeletonConfigRequest) messageHeader.message(new SkeletonConfigRequest());
+		if (req == null) return;
+
+		FlatBufferBuilder fbb = new FlatBufferBuilder(300);
+		int config = RPCBuilder.createSkeletonConfig(fbb, this.api.server.humanPoseProcessor);
+		int outbound = this.createRPCMessage(fbb, RpcMessage.SkeletonConfigResponse, config);
+		fbb.finish(outbound);
+		conn.send(fbb.dataBuffer());
+	}
+
+	public void onChangeSkeletonConfigRequest(GenericConnection conn, RpcMessageHeader messageHeader) {
+		ChangeSkeletonConfigRequest req = (ChangeSkeletonConfigRequest) messageHeader.message(new ChangeSkeletonConfigRequest());
+		if (req == null) return;
+
+		SkeletonConfigValue joint = SkeletonConfigValue.getById(req.bone());
+
+		this.api.server.humanPoseProcessor.setSkeletonConfig(joint, req.value());
+		this.api.server.humanPoseProcessor.getSkeletonConfig().saveToConfig(this.api.server.config);
+		this.api.server.saveConfig();
+	}
+
+	public void onRecordBVHRequest(GenericConnection conn, RpcMessageHeader messageHeader) {
+		RecordBVHRequest req = (RecordBVHRequest) messageHeader.message(new RecordBVHRequest());
+		if (req == null) return;
+
+		if (req.stop()) {
+			if (this.api.server.getBvhRecorder().isRecording())
+				this.api.server.getBvhRecorder().endRecording();
+		} else {
+			if (!this.api.server.getBvhRecorder().isRecording())
+				this.api.server.getBvhRecorder().startRecording();
+		}
+
+		FlatBufferBuilder fbb = new FlatBufferBuilder(40);
+		int status = RecordBVHStatus.createRecordBVHStatus(fbb, this.api.server.getBvhRecorder().isRecording());
+		int outbound = this.createRPCMessage(fbb, RpcMessage.RecordBVHStatus, status);
+		fbb.finish(outbound);
+		conn.send(fbb.dataBuffer());
 	}
 
 	public void onResetRequest(GenericConnection conn, RpcMessageHeader messageHeader) {
@@ -107,6 +227,7 @@ public class RPCHandler extends ProtocolHandler<RpcMessageHeader> {
 	}
 
 
+
 	@Override
 	public void onMessage(GenericConnection conn, RpcMessageHeader message) {
 		BiConsumer<GenericConnection, RpcMessageHeader> consumer = this.handlers[message.messageType()];
@@ -119,12 +240,11 @@ public class RPCHandler extends ProtocolHandler<RpcMessageHeader> {
 	public int createRPCMessage(FlatBufferBuilder fbb, byte messageType, int messageOffset) {
 		int [] data = new int[1];
 
-		int txId = TransactionId.createTransactionId(fbb, currTransactionId++);
 
 		RpcMessageHeader.startRpcMessageHeader(fbb);
 		RpcMessageHeader.addMessage(fbb, messageOffset);
 		RpcMessageHeader.addMessageType(fbb, messageType);
-		RpcMessageHeader.addTxId(fbb, txId);
+		RpcMessageHeader.addTxId(fbb, TransactionId.createTransactionId(fbb, currTransactionId++));
 		data[0] = RpcMessageHeader.endRpcMessageHeader(fbb);
 
 		int messages = MessageBundle.createRpcMsgsVector(fbb, data);
@@ -134,5 +254,71 @@ public class RPCHandler extends ProtocolHandler<RpcMessageHeader> {
 	@Override
 	public int messagesCount() {
 		return RpcMessage.names.length;
+	}
+
+	@Override
+	public void onSerialConnected(SerialPort port) {
+
+		this.api.getAPIServers().forEach((server) -> {
+			server.getAPIConnections()
+				.values()
+				.stream()
+				.filter(conn -> conn.getContext().useSerial())
+				.forEach((conn) -> {
+					FlatBufferBuilder fbb = new FlatBufferBuilder(32);
+
+					SerialUpdateResponse.startSerialUpdateResponse(fbb);
+					SerialUpdateResponse.addClosed(fbb, false);
+					int update = SerialUpdateResponse.endSerialUpdateResponse(fbb);
+					int outbound = this.createRPCMessage(fbb, RpcMessage.SerialUpdateResponse, update);
+					fbb.finish(outbound);
+
+					conn.send(fbb.dataBuffer());
+				});
+		});
+	}
+
+	@Override
+	public void onSerialDisconnected() {
+		this.api.getAPIServers().forEach((server) -> {
+			server.getAPIConnections()
+				.values()
+				.stream()
+				.filter(conn -> conn.getContext().useSerial())
+				.forEach((conn) -> {
+					FlatBufferBuilder fbb = new FlatBufferBuilder(32);
+
+					SerialUpdateResponse.startSerialUpdateResponse(fbb);
+					SerialUpdateResponse.addClosed(fbb, true);
+					int update = SerialUpdateResponse.endSerialUpdateResponse(fbb);
+					int outbound = this.createRPCMessage(fbb, RpcMessage.SerialUpdateResponse, update);
+					fbb.finish(outbound);
+					conn.send(fbb.dataBuffer());
+					conn.getContext().setUseSerial(false);
+				});
+		});
+	}
+
+	@Override
+	public void onSerialLog(String str) {
+		this.api.getAPIServers().forEach((server) -> {
+			server.getAPIConnections()
+					.values()
+					.stream()
+					.filter(conn -> conn.getContext().useSerial())
+					.forEach((conn) -> {
+						FlatBufferBuilder fbb = new FlatBufferBuilder(32);
+
+						int logOffset = fbb.createString(str);
+
+						SerialUpdateResponse.startSerialUpdateResponse(fbb);
+						SerialUpdateResponse.addLog(fbb, logOffset);
+						int update = SerialUpdateResponse.endSerialUpdateResponse(fbb);
+						int outbound = this.createRPCMessage(fbb, RpcMessage.SerialUpdateResponse, update);
+						fbb.finish(outbound);
+
+						conn.send(fbb.dataBuffer());
+					});
+		});
 	}
 }

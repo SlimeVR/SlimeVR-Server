@@ -176,29 +176,7 @@ table SteamVRTrackersSetting {
     elbows: bool;
 }
 
-enum FilteringType: uint8 {
-	NONE = 0,
-	INTERPOLATION = 1,
-	EXTRAPOLATION = 2
-}
 
-table FilteringSettings {
-	type: FilteringType;
-	intensity: uint8;
-	ticks: uint8;
-}
-
-table SettingsRequest {}
-table SettingsResponse {
-	steam_vr_trackers: SteamVRTrackersSetting;
-	filtering: FilteringSettings;
-}
-
-
-table ChangeSettingsRequest {
-    steam_vr_trackers: SteamVRTrackersSetting;
-    filtering: FilteringSettings;
-}
 
 enum SkeletonConfigValue: uint8 {
 	NONE = 0,

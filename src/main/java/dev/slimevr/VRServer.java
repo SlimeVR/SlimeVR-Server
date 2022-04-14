@@ -61,6 +61,7 @@ public class VRServer extends Thread {
 		super("VRServer");
 		loadConfig();
 
+		serialHandler = new SerialHandler();
 		protocolAPI = new ProtocolAPI(this);
 
 		hmdTracker = new HMDTracker("HMD");
@@ -88,7 +89,7 @@ public class VRServer extends Thread {
 
 		}
 
-		serialHandler = new SerialHandler();
+
 
 		// Create WebSocket server
 		WebSocketVRBridge wsBridge = new WebSocketVRBridge(hmdTracker, shareTrackers, this);

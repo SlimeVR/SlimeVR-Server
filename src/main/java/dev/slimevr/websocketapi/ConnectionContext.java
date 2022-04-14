@@ -14,6 +14,8 @@ public class ConnectionContext {
 	// Futurabeast
 	private final List<Long> dataFeedTimers = new ArrayList<>();
 
+	private boolean useSerial = false;
+
 	public List<DataFeedConfigT> getDataFeedConfigList() {
 		return dataFeedConfigList;
 	}
@@ -22,5 +24,11 @@ public class ConnectionContext {
 		return dataFeedTimers;
 	}
 
+	public boolean useSerial() {
+		return useSerial;
+	}
 
+	public void setUseSerial(boolean useSerial) {
+		this.useSerial = useSerial;
+	}
 }
