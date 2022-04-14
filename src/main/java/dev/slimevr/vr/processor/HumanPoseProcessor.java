@@ -34,6 +34,8 @@ public class HumanPoseProcessor {
 		computedTrackers.add(new ComputedHumanPoseTracker(Tracker.getNextLocalTrackerId(), ComputedHumanPoseTrackerPosition.RIGHT_KNEE, TrackerRole.RIGHT_KNEE));
 		computedTrackers.add(new ComputedHumanPoseTracker(Tracker.getNextLocalTrackerId(), ComputedHumanPoseTrackerPosition.LEFT_ELBOW, TrackerRole.LEFT_ELBOW));
 		computedTrackers.add(new ComputedHumanPoseTracker(Tracker.getNextLocalTrackerId(), ComputedHumanPoseTrackerPosition.RIGHT_ELBOW, TrackerRole.RIGHT_ELBOW));
+		computedTrackers.add(new ComputedHumanPoseTracker(Tracker.getNextLocalTrackerId(), ComputedHumanPoseTrackerPosition.LEFT_HAND, TrackerRole.LEFT_HAND));
+		computedTrackers.add(new ComputedHumanPoseTracker(Tracker.getNextLocalTrackerId(), ComputedHumanPoseTrackerPosition.RIGHT_HAND, TrackerRole.RIGHT_HAND));
 	}
 	
 	public HumanSkeleton getSkeleton() {

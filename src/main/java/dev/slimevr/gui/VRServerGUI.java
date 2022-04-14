@@ -349,6 +349,19 @@ public class VRServerGUI extends JFrame {
 								});
 							}
 						});
+									
+						JCheckBox handsCb;
+						add(handsCb = new JCheckBox("Hands"), c(2, 3));
+						handsCb.setSelected(br.getShareSetting(TrackerRole.LEFT_HAND) && br.getShareSetting(TrackerRole.RIGHT_HAND));
+						handsCb.addActionListener(new ActionListener() {
+							@Override
+							public void actionPerformed(ActionEvent e) {
+								server.queueTask(() -> {
+									br.changeShareSettings(TrackerRole.LEFT_HAND, handsCb.isSelected());
+									br.changeShareSettings(TrackerRole.RIGHT_HAND, handsCb.isSelected());
+								});
+							}
+						});
 						
 					}});
 					
