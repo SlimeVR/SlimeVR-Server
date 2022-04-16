@@ -16,13 +16,12 @@ import java.util.concurrent.LinkedBlockingQueue;
 import java.util.function.Consumer;
 
 import dev.slimevr.bridge.Bridge;
-import dev.slimevr.bridge.ProtobufBridge;
 import dev.slimevr.platform.windows.WindowsNamedPipeBridge;
 import dev.slimevr.bridge.VMCBridge;
 import dev.slimevr.poserecorder.BVHRecorder;
 import dev.slimevr.serial.SerialHandler;
 import dev.slimevr.vr.trackers.*;
-import dev.slimevr.websocketapi.ProtocolAPI;
+import dev.slimevr.gui.protocol.ProtocolAPI;
 import dev.slimevr.websocketapi.WebSocketVRBridge;
 import dev.slimevr.util.ann.VRServerThread;
 import dev.slimevr.vr.processor.HumanPoseProcessor;
@@ -35,8 +34,6 @@ import io.eiren.util.collections.FastList;
 import io.eiren.yaml.YamlException;
 import io.eiren.yaml.YamlFile;
 import io.eiren.yaml.YamlNode;
-import slimevr_protocol.datatypes.DeviceId;
-import slimevr_protocol.datatypes.TrackerId;
 import slimevr_protocol.datatypes.TrackerIdT;
 
 public class VRServer extends Thread {

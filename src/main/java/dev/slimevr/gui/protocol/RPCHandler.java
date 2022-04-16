@@ -1,9 +1,8 @@
-package dev.slimevr.websocketapi;
+package dev.slimevr.gui.protocol;
 
 import com.fazecast.jSerialComm.SerialPort;
 import com.google.flatbuffers.FlatBufferBuilder;
 import dev.slimevr.platform.windows.WindowsNamedPipeBridge;
-import dev.slimevr.serial.SerialHandler;
 import dev.slimevr.serial.SerialListener;
 import dev.slimevr.vr.processor.skeleton.SkeletonConfigValue;
 import dev.slimevr.vr.trackers.*;
@@ -12,7 +11,6 @@ import slimevr_protocol.MessageBundle;
 import slimevr_protocol.datatypes.TransactionId;
 import slimevr_protocol.rpc.*;
 
-import java.util.Objects;
 import java.util.function.BiConsumer;
 
 public class RPCHandler extends ProtocolHandler<RpcMessageHeader> implements SerialListener {
@@ -63,7 +61,7 @@ public class RPCHandler extends ProtocolHandler<RpcMessageHeader> implements Ser
 
 		FlatBufferBuilder fbb = new FlatBufferBuilder(32);
 		SerialUpdateResponse.startSerialUpdateResponse(fbb);
-		SerialUpdateResponse.addClosed(fbb, false);
+		SerialUpdateResponse.addClosed(fbb, !this.api.server.getSerialHandler().isConnected());
 		int update = SerialUpdateResponse.endSerialUpdateResponse(fbb);
 		int outbound = this.createRPCMessage(fbb, RpcMessage.SerialUpdateResponse, update);
 		fbb.finish(outbound);
@@ -80,7 +78,7 @@ public class RPCHandler extends ProtocolHandler<RpcMessageHeader> implements Ser
 
 		FlatBufferBuilder fbb = new FlatBufferBuilder(32);
 		SerialUpdateResponse.startSerialUpdateResponse(fbb);
-		SerialUpdateResponse.addClosed(fbb, false);
+		SerialUpdateResponse.addClosed(fbb, !this.api.server.getSerialHandler().isConnected());
 		int update = SerialUpdateResponse.endSerialUpdateResponse(fbb);
 		int outbound = this.createRPCMessage(fbb, RpcMessage.SerialUpdateResponse, update);
 		fbb.finish(outbound);

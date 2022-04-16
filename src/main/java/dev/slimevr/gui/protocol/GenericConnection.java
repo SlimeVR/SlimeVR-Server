@@ -1,4 +1,4 @@
-package dev.slimevr.websocketapi;
+package dev.slimevr.gui.protocol;
 
 import java.nio.ByteBuffer;
 import java.util.UUID;

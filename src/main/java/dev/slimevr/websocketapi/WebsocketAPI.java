@@ -1,8 +1,9 @@
 package dev.slimevr.websocketapi;
 
-import com.google.flatbuffers.FlatBufferBuilder;
-import com.google.flatbuffers.Table;
 import dev.slimevr.VRServer;
+import dev.slimevr.gui.protocol.GenericConnection;
+import dev.slimevr.gui.protocol.ProtocolAPI;
+import dev.slimevr.gui.protocol.ProtocolAPIServer;
 import io.eiren.util.logging.LogManager;
 import org.java_websocket.WebSocket;
 import org.java_websocket.drafts.Draft;

@@ -1,4 +1,4 @@
-package dev.slimevr.websocketapi;
+package dev.slimevr.gui.protocol;
 
 import slimevr_protocol.data_feed.DataFeedConfigT;
 

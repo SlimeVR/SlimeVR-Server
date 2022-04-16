@@ -1,4 +1,4 @@
-package dev.slimevr.websocketapi;
+package dev.slimevr.gui.protocol;
 
 import com.google.flatbuffers.FlatBufferBuilder;
 import io.eiren.util.logging.LogManager;

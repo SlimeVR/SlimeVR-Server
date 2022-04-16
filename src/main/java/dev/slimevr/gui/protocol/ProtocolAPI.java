@@ -1,9 +1,7 @@
-package dev.slimevr.websocketapi;
+package dev.slimevr.gui.protocol;
 
-import com.google.flatbuffers.FlatBufferBuilder;
 import dev.slimevr.VRServer;
 import slimevr_protocol.MessageBundle;
-import slimevr_protocol.data_feed.DataFeedMessage;
 import slimevr_protocol.data_feed.DataFeedMessageHeader;
 import slimevr_protocol.rpc.RpcMessageHeader;
 

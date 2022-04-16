@@ -1,4 +1,4 @@
-package dev.slimevr.websocketapi;
+package dev.slimevr.gui.protocol;
 
 import com.google.flatbuffers.FlatBufferBuilder;
 import com.jme3.math.Quaternion;

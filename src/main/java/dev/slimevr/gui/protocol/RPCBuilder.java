@@ -1,7 +1,6 @@
-package dev.slimevr.websocketapi;
+package dev.slimevr.gui.protocol;
 
 import com.google.flatbuffers.FlatBufferBuilder;
-import dev.slimevr.VRServer;
 import dev.slimevr.vr.processor.HumanPoseProcessor;
 import dev.slimevr.vr.processor.skeleton.SkeletonConfigValue;
 import slimevr_protocol.rpc.SkeletonConfigResponse;

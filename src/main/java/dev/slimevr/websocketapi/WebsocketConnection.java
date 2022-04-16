@@ -1,5 +1,7 @@
 package dev.slimevr.websocketapi;
 
+import dev.slimevr.gui.protocol.ConnectionContext;
+import dev.slimevr.gui.protocol.GenericConnection;
 import org.java_websocket.WebSocket;
 
 import java.nio.ByteBuffer;
@@ -24,7 +26,8 @@ public class WebsocketConnection implements GenericConnection {
 
 	@Override
 	public void send(ByteBuffer bytes) {
-		this.conn.send(bytes);
+		if (this.conn.isOpen())
+			this.conn.send(bytes);
 	}
 
 	@Override
