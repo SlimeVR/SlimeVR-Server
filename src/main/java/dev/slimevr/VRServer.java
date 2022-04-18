@@ -49,13 +49,13 @@ public class VRServer extends Thread {
 	private final List<Consumer<Tracker>> newTrackersConsumers = new FastList<>();
 	private final List<Runnable> onTick = new FastList<>();
 	private final List<? extends ShareableTracker> shareTrackers;
-	private String configPath;	
+	private String configPath;
 	public final MountingCalibration mountingCalibration;
-  
+	
 	public VRServer() {
 		this("vrconfig.yml");
 	}
-
+	
 	public VRServer(String configPath) {
 		super("VRServer");
 		this.configPath = configPath;
@@ -65,7 +65,7 @@ public class VRServer extends Thread {
 		// TODO Multiple processors
 		humanPoseProcessor = new HumanPoseProcessor(this, hmdTracker);
 		shareTrackers = humanPoseProcessor.getComputedTrackers();
-
+		
 		mountingCalibration = new MountingCalibration(this);
 		
 		// Start server for SlimeVR trackers
@@ -101,7 +101,6 @@ public class VRServer extends Thread {
 			e.printStackTrace();
 		}
 		
-		
 		registerTracker(hmdTracker);
 		for(int i = 0; i < shareTrackers.size(); ++i)
 			registerTracker(shareTrackers.get(i));
@@ -114,7 +113,7 @@ public class VRServer extends Thread {
 		}
 		return false;
 	}
-
+	
 	@ThreadSafe
 	public <E extends Bridge> E getVRBridge(Class<E> bridgeClass) {
 		for(int i = 0; i < bridges.size(); ++i) {
@@ -176,14 +175,14 @@ public class VRServer extends Thread {
 			saveConfig();
 		});
 	}
-
+	
 	@ThreadSafe
 	public void addSkeletonUpdatedCallback(Consumer<HumanSkeleton> consumer) {
 		queueTask(() -> {
 			humanPoseProcessor.addSkeletonUpdatedCallback(consumer);
 		});
 	}
-
+	
 	@ThreadSafe
 	public synchronized void saveConfig() {
 		List<YamlNode> nodes = config.getNodeList("trackers", null);
@@ -248,7 +247,7 @@ public class VRServer extends Thread {
 			}
 		}
 	}
-
+	
 	@ThreadSafe
 	public void queueTask(Runnable r) {
 		tasks.add(r);
@@ -294,7 +293,7 @@ public class VRServer extends Thread {
 	public int getTrackersCount() {
 		return trackers.size();
 	}
-
+	
 	public List<Tracker> getAllTrackers() {
 		return new FastList<>(trackers);
 	}
