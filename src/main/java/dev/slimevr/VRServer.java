@@ -49,16 +49,16 @@ public class VRServer extends Thread {
 	private final List<Consumer<Tracker>> newTrackersConsumers = new FastList<>();
 	private final List<Runnable> onTick = new FastList<>();
 	private final List<? extends ShareableTracker> shareTrackers;
-	private String m_configPath;	
+	private String configPath;	
 	public final MountingCalibration mountingCalibration;
-	
+  
 	public VRServer() {
 		this("vrconfig.yml");
 	}
 
 	public VRServer(String configPath) {
 		super("VRServer");
-		m_configPath = configPath;
+		this.configPath = configPath;
 		loadConfig();
 		hmdTracker = new HMDTracker("HMD");
 		hmdTracker.position.set(0, 1.8f, 0); // Set starting position for easier debugging
@@ -139,7 +139,7 @@ public class VRServer extends Thread {
 	
 	private void loadConfig() {
 		try {
-			config.load(new FileInputStream(new File("vrconfig.yml")));
+			config.load(new FileInputStream(new File(this.configPath)));
 		} catch(FileNotFoundException e) {
 			// Config file didn't exist, is not an error
 		} catch(YamlException e) {
@@ -211,7 +211,7 @@ public class VRServer extends Thread {
 				tc.saveConfig(new YamlNode(cfg));
 			}
 		}
-		File cfgFile = new File("vrconfig.yml");
+		File cfgFile = new File(this.configPath);
 		try {
 			config.save(new FileOutputStream(cfgFile));
 		} catch(IOException e) {
