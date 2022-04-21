@@ -137,7 +137,7 @@ public class SimpleSkeleton extends HumanSkeleton implements SkeletonConfigCallb
 	
 	protected final Quaternion kneeRotation = new Quaternion();
 	
-	private boolean hasSpineTracker;
+	private boolean hasSpineTracker, hasKneeTracker;
 	//#endregion
 	
 	//#region Constructors
@@ -471,6 +471,7 @@ public class SimpleSkeleton extends HumanSkeleton implements SkeletonConfigCallb
 		//#endregion
 		
 		hasSpineTracker = chestTracker.hasRotation() || waistTracker.hasRotation() || hipTracker.hasRotation();
+		hasKneeTracker = leftKneeTracker.hasRotation() || rightKneeTracker.hasRotation();
 		
 		if(hmdTracker != null) {
 			if(hmdTracker.getPosition(posBuf)) {
@@ -556,13 +557,13 @@ public class SimpleSkeleton extends HumanSkeleton implements SkeletonConfigCallb
 			trackerRightFootNode.localTransform.setRotation(rotBuf2);
 		}
 		
-		if(extendedPelvisModel) {
+		if(extendedPelvisModel && hasKneeTracker) {
 			// Average pelvis between two legs
 			leftHipNode.localTransform.getRotation(rotBuf1);
 			rightHipNode.localTransform.getRotation(rotBuf2);
 			rotBuf2.nlerp(rotBuf1, 0.5f);
 			chestNode.localTransform.getRotation(rotBuf1);
-			rotBuf2.nlerp(rotBuf1, 0.3333333f);
+			rotBuf2.nlerp(rotBuf1, FastMath.ONE_THIRD);
 			hipNode.localTransform.setRotation(rotBuf2);
 			//trackerWaistNode.localTransform.setRotation(rotBuf2); // <== Provides cursed results from my test in VRChat when sitting or laying down -Erimel
 			// TODO : Correct the trackerWaistNode without getting cursed results (only correct yaw?)
@@ -917,8 +918,6 @@ public class SimpleSkeleton extends HumanSkeleton implements SkeletonConfigCallb
 			trackerRightKneeNode.update();
 			trackerLeftFootNode.update();
 			trackerRightFootNode.update();
-			trackerLeftElbowNodeContrl.update();
-			trackerRightElbowNodeContrl.update();
 			updateComputedTrackers();
 			break;
 		case CONTROLLER_DISTANCE_Z:
