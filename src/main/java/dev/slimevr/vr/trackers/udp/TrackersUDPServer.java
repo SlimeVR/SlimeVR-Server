@@ -21,6 +21,10 @@ import java.util.Map;
 import java.util.Random;
 import java.util.function.Consumer;
 
+import dev.slimevr.vr.trackers.IMUTracker;
+import dev.slimevr.vr.trackers.ReferenceAdjustedTracker;
+import dev.slimevr.vr.trackers.Tracker;
+import dev.slimevr.vr.trackers.TrackerStatus;
 import org.apache.commons.lang3.ArrayUtils;
 
 import com.jme3.math.FastMath;
@@ -29,10 +33,6 @@ import com.jme3.math.Vector3f;
 
 import dev.slimevr.Main;
 import dev.slimevr.NetworkProtocol;
-import dev.slimevr.vr.trackers.IMUTracker;
-import dev.slimevr.vr.trackers.ReferenceAdjustedTracker;
-import dev.slimevr.vr.trackers.Tracker;
-import dev.slimevr.vr.trackers.TrackerStatus;
 import io.eiren.util.Util;
 import io.eiren.util.collections.FastList;
 import io.eiren.util.logging.LogManager;

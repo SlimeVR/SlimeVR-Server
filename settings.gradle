@@ -11,5 +11,5 @@ rootProject.name = 'SlimeVR Server'
 include ':slime-java-commons'
 
 
-include ':slimevr-protocol'
-project(':slimevr-protocol').projectDir = new File('slimevr_protocol/protocol/java')
+include ':solarxr-protocol'
+project(':solarxr-protocol').projectDir = new File('solarxr-protocol/protocol/java')

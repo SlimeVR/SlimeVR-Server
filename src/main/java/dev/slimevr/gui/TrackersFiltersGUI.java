@@ -3,7 +3,6 @@ package dev.slimevr.gui;
 import java.awt.event.MouseEvent;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.util.List;
 
 import javax.swing.Box;
 import javax.swing.JButton;
@@ -15,12 +14,8 @@ import com.jme3.math.FastMath;
 
 import dev.slimevr.VRServer;
 import dev.slimevr.gui.swing.EJBagNoStretch;
-import dev.slimevr.vr.trackers.IMUTracker;
-import dev.slimevr.vr.trackers.ReferenceAdjustedTracker;
-import dev.slimevr.vr.trackers.Tracker;
 import dev.slimevr.vr.trackers.TrackerFilters;
 import io.eiren.util.StringUtils;
-import io.eiren.util.collections.FastList;
 
 public class TrackersFiltersGUI extends EJBagNoStretch {
 	
@@ -68,7 +63,7 @@ public class TrackersFiltersGUI extends EJBagNoStretch {
 		add(new AdjButton("-", 0, true), c(3, row, 2));
 		row++;
 
-		filterTicks = (int) FastMath.clamp(server.config.getInt("filters.tickCount", 2), 0, 80);
+		filterTicks = (int) FastMath.clamp(server.config.getInt("filters.tickCount", 1), 0, 80);
 
 		add(new JLabel("Ticks"), c(0, row, 2));
 		add(new AdjButton("+", 1, false), c(1, row, 2));

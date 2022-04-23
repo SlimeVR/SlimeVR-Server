@@ -24,7 +24,7 @@ public class IMUTracker implements Tracker, TrackerWithTPS, TrackerWithBattery {
 	private final Quaternion buffQuat = new Quaternion();
 	public int movementFilterTickCount = 0;
 	public float movementFilterAmount = 1f;
-	protected TrackerMountingRotation mounting = null;
+	protected Quaternion mounting = null;
 	protected TrackerStatus status = TrackerStatus.OK;
 	protected final int trackerId;
 	
@@ -63,7 +63,7 @@ public class IMUTracker implements Tracker, TrackerWithTPS, TrackerWithBattery {
 	@Override
 	public void saveConfig(TrackerConfig config) {
 		config.setDesignation(bodyPosition == null ? null : bodyPosition.designation);
-		config.mountingRotation = mounting != null ? mounting.name() : null;
+		config.mountingRotation = mounting != null ? mounting : null;
 	}
 	
 	@Override
@@ -71,18 +71,8 @@ public class IMUTracker implements Tracker, TrackerWithTPS, TrackerWithBattery {
 		// Loading a config is an act of user editing, therefore it shouldn't not be allowed if editing is not allowed
 		if (userEditable()) {
 			if(config.mountingRotation != null) {
-				try{
-					mounting = TrackerMountingRotation.valueOf(config.mountingRotation);
-				}
-				catch (Exception e){ // FORWARD was renamed to FRONT
-					mounting = TrackerMountingRotation.FRONT;
-					config.mountingRotation = "FRONT";
-				}
-				if(mounting != null) {
-					rotAdjust.set(mounting.quaternion);
-				} else {
-					rotAdjust.loadIdentity();
-				}
+				mounting = config.mountingRotation;
+				rotAdjust.set(config.mountingRotation);
 			} else {
 				rotAdjust.loadIdentity();
 			}
@@ -116,14 +106,14 @@ public class IMUTracker implements Tracker, TrackerWithTPS, TrackerWithBattery {
 		}
 		previousRots = new CircularArrayList<Quaternion>(movementFilterTickCount + 1);
 	}
-	public TrackerMountingRotation getMountingRotation() {
+	public Quaternion getMountingRotation() {
 		return mounting;
 	}
 	
-	public void setMountingRotation(TrackerMountingRotation mr) {
+	public void setMountingRotation(Quaternion mr) {
 		mounting = mr;
 		if(mounting != null) {
-			rotAdjust.set(mounting.quaternion);
+			rotAdjust.set(mounting);
 		} else {
 			rotAdjust.loadIdentity();
 		}

@@ -1,9 +1,9 @@
 package dev.slimevr.websocketapi;
 
 import dev.slimevr.VRServer;
-import dev.slimevr.gui.protocol.GenericConnection;
-import dev.slimevr.gui.protocol.ProtocolAPI;
-import dev.slimevr.gui.protocol.ProtocolAPIServer;
+import dev.slimevr.protocol.GenericConnection;
+import dev.slimevr.protocol.ProtocolAPI;
+import dev.slimevr.protocol.ProtocolAPIServer;
 import io.eiren.util.logging.LogManager;
 import org.java_websocket.WebSocket;
 import org.java_websocket.drafts.Draft;
@@ -64,7 +64,6 @@ public class WebsocketAPI extends WebSocketServer implements ProtocolAPIServer {
 	public void onStart() {
 		LogManager.log.info("[WebSocketAPI] Web Socket API started on port " + getPort());
 		setConnectionLostTimeout(0);
-
 	}
 
 	@Override

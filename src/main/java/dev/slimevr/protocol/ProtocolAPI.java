@@ -1,4 +1,4 @@
-package dev.slimevr.gui.protocol;
+package dev.slimevr.protocol;
 
 import dev.slimevr.VRServer;
 import slimevr_protocol.MessageBundle;

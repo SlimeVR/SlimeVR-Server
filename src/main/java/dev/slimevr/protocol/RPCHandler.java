@@ -1,7 +1,8 @@
-package dev.slimevr.gui.protocol;
+package dev.slimevr.protocol;
 
 import com.fazecast.jSerialComm.SerialPort;
 import com.google.flatbuffers.FlatBufferBuilder;
+import com.jme3.math.Quaternion;
 import dev.slimevr.platform.windows.WindowsNamedPipeBridge;
 import dev.slimevr.serial.SerialListener;
 import dev.slimevr.vr.processor.skeleton.SkeletonConfigValue;
@@ -164,11 +165,18 @@ public class RPCHandler extends ProtocolHandler<RpcMessageHeader> implements Ser
 			return ;
 
 		tracker.setBodyPosition(TrackerPosition.getById(req.bodyPosition()));
-		if (tracker instanceof IMUTracker) {
-			IMUTracker imu = (IMUTracker) tracker;
-//			TrackerMountingRotation rot = TrackerMountingRotation.fromAngle(req.mountingRotation());
-//			if (rot != null)
-//				imu.setMountingRotation(rot);
+
+		if (tracker instanceof ReferenceAdjustedTracker) {
+			ReferenceAdjustedTracker refTracker = (ReferenceAdjustedTracker)tracker;
+			if (refTracker.getTracker() instanceof IMUTracker) {
+				IMUTracker imu = (IMUTracker) refTracker.getTracker();
+				imu.setMountingRotation(new Quaternion(
+						req.mountingRotation().x(),
+						req.mountingRotation().y(),
+						req.mountingRotation().z(),
+						req.mountingRotation().w()
+				));
+			}
 		}
 		this.api.server.trackerUpdated(tracker);
 	}
@@ -190,7 +198,7 @@ public class RPCHandler extends ProtocolHandler<RpcMessageHeader> implements Ser
 				fbb,
 				TrackerFilters.valueOf(this.api.server.config.getString("filters.type", "NONE")).id,
 				(int)(this.api.server.config.getFloat("filters.amount", 0.3f) * 100),
-				this.api.server.config.getInt("filters.tickCount", 2)
+				this.api.server.config.getInt("filters.tickCount", 1)
 		);
 
 		int settings = SettingsResponse.createSettingsResponse(fbb, steamvrTrackerSettings, filterSettings);

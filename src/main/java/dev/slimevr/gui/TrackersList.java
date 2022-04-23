@@ -6,6 +6,7 @@ import java.awt.GridBagConstraints;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.util.List;
+import java.util.Objects;
 
 import javax.swing.BorderFactory;
 import javax.swing.Box;
@@ -199,22 +200,19 @@ public class TrackersList extends EJBoxNoStretch {
 				});
 				if(realTracker instanceof IMUTracker) {
 					IMUTracker imu = (IMUTracker) realTracker;
-					TrackerMountingRotation tr = imu.getMountingRotation();
 					JComboBox<String> mountSelect;
 					add(mountSelect = new JComboBox<>(), s(c(2, row, 2, GridBagConstraints.FIRST_LINE_START), 2, 1));
 					for(TrackerMountingRotation p : TrackerMountingRotation.values) {
 						mountSelect.addItem(p.name());
 					}
-					if(tr != null) {
-						mountSelect.setSelectedItem(tr.name());
-					} else {
-						mountSelect.setSelectedItem(TrackerMountingRotation.BACK.name());
-					}
+
+					TrackerMountingRotation selected = TrackerMountingRotation.fromQuaternion(imu.getMountingRotation());
+					mountSelect.setSelectedItem(Objects.requireNonNullElse(selected, TrackerMountingRotation.BACK).name());
 					mountSelect.addActionListener(new ActionListener() {
 						@Override
 						public void actionPerformed(ActionEvent e) {
 							TrackerMountingRotation tr = TrackerMountingRotation.valueOf(String.valueOf(mountSelect.getSelectedItem()));
-							imu.setMountingRotation(tr);
+							imu.setMountingRotation(tr.quaternion);
 							server.trackerUpdated(t);
 						}
 					});

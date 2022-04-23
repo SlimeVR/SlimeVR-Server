@@ -4,14 +4,6 @@ import java.awt.Container;
 import java.awt.event.MouseEvent;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.InputStreamReader;
-import java.io.OutputStream;
-import java.io.OutputStreamWriter;
-import java.io.Reader;
-import java.util.Timer;
-import java.util.TimerTask;
 
 import javax.swing.*;
 import javax.swing.event.MouseInputAdapter;

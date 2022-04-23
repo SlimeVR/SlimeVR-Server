@@ -1,4 +1,4 @@
-package dev.slimevr.gui.protocol;
+package dev.slimevr.protocol;
 
 import com.google.flatbuffers.FlatBufferBuilder;
 import com.jme3.math.Quaternion;
@@ -60,7 +60,7 @@ public class DataFeedBuilder {
 		if (tracker instanceof IMUTracker) {
 			IMUTracker imuTracker = (IMUTracker) tracker;
  			if (imuTracker.getMountingRotation() != null) {
-				Quaternion quaternion = imuTracker.getMountingRotation().quaternion;
+				Quaternion quaternion = imuTracker.getMountingRotation();
 				TrackerInfo.addMountingOrientation(fbb,
 						Quat.createQuat(fbb,
 								quaternion.getX(),

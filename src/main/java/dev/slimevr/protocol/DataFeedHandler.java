@@ -1,4 +1,4 @@
-package dev.slimevr.gui.protocol;
+package dev.slimevr.protocol;
 
 import com.google.flatbuffers.FlatBufferBuilder;
 import io.eiren.util.logging.LogManager;

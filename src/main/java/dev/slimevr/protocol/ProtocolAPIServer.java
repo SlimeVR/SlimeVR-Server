@@ -1,4 +1,4 @@
-package dev.slimevr.gui.protocol;
+package dev.slimevr.protocol;
 
 import java.util.Map;
 

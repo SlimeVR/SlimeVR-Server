@@ -1,7 +1,7 @@
 package dev.slimevr.websocketapi;
 
-import dev.slimevr.gui.protocol.ConnectionContext;
-import dev.slimevr.gui.protocol.GenericConnection;
+import dev.slimevr.protocol.ConnectionContext;
+import dev.slimevr.protocol.GenericConnection;
 import org.java_websocket.WebSocket;
 
 import java.nio.ByteBuffer;

@@ -4,3 +4,6 @@
 [submodule "slimevr_protocol"]
 	path = slimevr_protocol
 	url = https://github.com/Futurabeast/slimevr_protocol.git
+[submodule "solarxr-protocol"]
+	path = solarxr-protocol
+	url = git@github.com:SlimeVR/SolarXR-Protocol.git
