@@ -1,9 +1,8 @@
 [package]
-name = "app"
+name = "slimevr_ui"
 version = "0.1.0"
-description = "A Tauri App"
-authors = ["you"]
-license = ""
+description = "SlimeVR GUI Application"
+license = "MIT OR Apache-2.0"
 repository = ""
 default-run = "app"
 edition = "2021"
@@ -28,6 +27,3 @@ default = ["custom-protocol"]
 # this feature is used used for production builds where `devPath` points to the filesystem
 # DO NOT remove this
 custom-protocol = ["tauri/custom-protocol"]
-
-[target.'cfg(windows)'.dependencies]
-win32job = "1"
