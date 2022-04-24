@@ -1,7 +1,7 @@
 package dev.slimevr.protocol;
 
 import com.google.flatbuffers.FlatBufferBuilder;
-import slimevr_protocol.MessageBundle;
+import solarxr_protocol.MessageBundle;
 
 import java.util.function.BiConsumer;
 

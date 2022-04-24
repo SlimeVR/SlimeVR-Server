@@ -1,9 +1,9 @@
 package dev.slimevr.protocol;
 
 import dev.slimevr.VRServer;
-import slimevr_protocol.MessageBundle;
-import slimevr_protocol.data_feed.DataFeedMessageHeader;
-import slimevr_protocol.rpc.RpcMessageHeader;
+import solarxr_protocol.MessageBundle;
+import solarxr_protocol.data_feed.DataFeedMessageHeader;
+import solarxr_protocol.rpc.RpcMessageHeader;
 
 import java.nio.ByteBuffer;
 import java.util.ArrayList;

@@ -3,8 +3,8 @@ package dev.slimevr.protocol;
 import com.google.flatbuffers.FlatBufferBuilder;
 import dev.slimevr.vr.processor.HumanPoseProcessor;
 import dev.slimevr.vr.processor.skeleton.SkeletonConfigValue;
-import slimevr_protocol.rpc.SkeletonConfigResponse;
-import slimevr_protocol.rpc.SkeletonPart;
+import solarxr_protocol.rpc.SkeletonConfigResponse;
+import solarxr_protocol.rpc.SkeletonPart;
 
 public class RPCBuilder {
 

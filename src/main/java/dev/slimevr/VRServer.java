@@ -34,7 +34,7 @@ import io.eiren.util.collections.FastList;
 import io.eiren.yaml.YamlException;
 import io.eiren.yaml.YamlFile;
 import io.eiren.yaml.YamlNode;
-import slimevr_protocol.datatypes.TrackerIdT;
+import solarxr_protocol.datatypes.TrackerIdT;
 
 public class VRServer extends Thread {
 	

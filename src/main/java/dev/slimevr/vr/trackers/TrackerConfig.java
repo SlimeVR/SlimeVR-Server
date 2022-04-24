@@ -36,7 +36,7 @@ public class TrackerConfig {
 			);
 		}
 
-		if (mountingRotationNode == null && oldMountingRotation != null) {
+		if (oldMountingRotation != null) {
 			mountingRotation = TrackerMountingRotation.valueOf(oldMountingRotation).quaternion;
 		}
 

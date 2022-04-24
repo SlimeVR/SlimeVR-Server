@@ -8,9 +8,9 @@ import dev.slimevr.serial.SerialListener;
 import dev.slimevr.vr.processor.skeleton.SkeletonConfigValue;
 import dev.slimevr.vr.trackers.*;
 import io.eiren.util.logging.LogManager;
-import slimevr_protocol.MessageBundle;
-import slimevr_protocol.datatypes.TransactionId;
-import slimevr_protocol.rpc.*;
+import solarxr_protocol.MessageBundle;
+import solarxr_protocol.datatypes.TransactionId;
+import solarxr_protocol.rpc.*;
 
 import java.util.function.BiConsumer;
 

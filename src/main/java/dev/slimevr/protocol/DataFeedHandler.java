@@ -2,8 +2,8 @@ package dev.slimevr.protocol;
 
 import com.google.flatbuffers.FlatBufferBuilder;
 import io.eiren.util.logging.LogManager;
-import slimevr_protocol.MessageBundle;
-import slimevr_protocol.data_feed.*;
+import solarxr_protocol.MessageBundle;
+import solarxr_protocol.data_feed.*;
 
 import java.util.function.BiConsumer;
 
