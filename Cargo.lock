@@ -54,19 +54,6 @@ source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "08f9b8508dccb7687a1d6c4ce66b2b0ecef467c94667de27d8d7fe1f8d2a9cdc"
 
 [[package]]
-name = "app"
-version = "0.1.0"
-dependencies = [
- "log",
- "pretty_env_logger",
- "serde",
- "serde_json",
- "tauri",
- "tauri-build",
- "win32job",
-]
-
-[[package]]
 name = "async-broadcast"
 version = "0.3.4"
 source = "registry+https://github.com/rust-lang/crates.io-index"
@@ -2796,6 +2783,19 @@ name = "slab"
 version = "0.4.6"
 source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "eb703cfe953bccee95685111adeedb76fabe4e97549a58d16f03ea7b9367bb32"
+
+[[package]]
+name = "slimevr_ui"
+version = "0.1.0"
+dependencies = [
+ "log",
+ "pretty_env_logger",
+ "serde",
+ "serde_json",
+ "tauri",
+ "tauri-build",
+ "win32job",
+]
 
 [[package]]
 name = "smallvec"
