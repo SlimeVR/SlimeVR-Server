@@ -259,7 +259,7 @@ public class VRServerGUI extends JFrame {
 						});
 
 						JCheckBox legsCb;
-						add(legsCb = new JCheckBox("Legs"), c(2, 1));
+						add(legsCb = new JCheckBox("Feet"), c(2, 1));
 						legsCb.setSelected(br.getShareSetting(TrackerRole.LEFT_FOOT) && br.getShareSetting(TrackerRole.RIGHT_FOOT));
 						legsCb.addActionListener(new ActionListener() {
 							@Override
@@ -305,6 +305,19 @@ public class VRServerGUI extends JFrame {
 								server.queueTask(() -> {
 									br.changeShareSettings(TrackerRole.LEFT_ELBOW, elbowsCb.isSelected());
 									br.changeShareSettings(TrackerRole.RIGHT_ELBOW, elbowsCb.isSelected());
+								});
+							}
+						});
+									
+						JCheckBox handsCb;
+						add(handsCb = new JCheckBox("Hands"), c(2, 3));
+						handsCb.setSelected(br.getShareSetting(TrackerRole.LEFT_HAND) && br.getShareSetting(TrackerRole.RIGHT_HAND));
+						handsCb.addActionListener(new ActionListener() {
+							@Override
+							public void actionPerformed(ActionEvent e) {
+								server.queueTask(() -> {
+									br.changeShareSettings(TrackerRole.LEFT_HAND, handsCb.isSelected());
+									br.changeShareSettings(TrackerRole.RIGHT_HAND, handsCb.isSelected());
 								});
 							}
 						});

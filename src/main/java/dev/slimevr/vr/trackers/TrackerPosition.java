@@ -5,24 +5,27 @@ import java.util.HashMap;
 import java.util.Map;
 
 public enum TrackerPosition {
-	
-	NONE(0,"", TrackerRole.NONE),
-	HMD(1,"HMD", TrackerRole.HMD),
-	CHEST(2,"body:chest", TrackerRole.CHEST),
-	WAIST(3,"body:waist", TrackerRole.WAIST),
-	HIP(4,"body:hip", null),
-	LEFT_LEG(5,"body:left_leg", TrackerRole.LEFT_KNEE),
-	RIGHT_LEG(6,"body:right_leg", TrackerRole.RIGHT_KNEE),
-	LEFT_ANKLE(7,"body:left_ankle", null),
-	RIGHT_ANKLE(8,"body:right_ankle", null),
-	LEFT_FOOT(9,"body:left_foot", TrackerRole.LEFT_FOOT),
-	RIGHT_FOOT(10,"body:right_foot", TrackerRole.RIGHT_FOOT),
-	LEFT_CONTROLLER(11,"body:left_controller", TrackerRole.LEFT_CONTROLLER),
-	RIGHT_CONTROLLER(12,"body:right_controller", TrackerRole.RIGHT_CONTROLLER),
-	LEFT_FOREARM(13,"body:left_forearm", TrackerRole.LEFT_ELBOW),
-	RIGHT_FOREARM(14,"body:right_forearm", TrackerRole.RIGHT_ELBOW),
-	LEFT_UPPER_ARM(15,"body:left_upperarm", null),
-	RIGHT_UPPER_ARM(16,"body:right_upperarm", null),
+
+	NONE(0, "", TrackerRole.NONE),
+	HMD(1, "HMD", TrackerRole.HMD),
+	NECK(2, "body:neck", null),
+	CHEST(3, "body:chest", TrackerRole.CHEST),
+	WAIST(4, "body:waist", TrackerRole.WAIST),
+	HIP(5, "body:hip", null),
+	LEFT_KNEE(6, "body:left_knee", TrackerRole.LEFT_KNEE),
+	RIGHT_KNEE(7, "body:right_knee", TrackerRole.RIGHT_KNEE),
+	LEFT_ANKLE(8, "body:left_ankle", null),
+	RIGHT_ANKLE(9, "body:right_ankle", null),
+	LEFT_FOOT(10, "body:left_foot", TrackerRole.LEFT_FOOT),
+	RIGHT_FOOT(11, "body:right_foot", TrackerRole.RIGHT_FOOT),
+	LEFT_CONTROLLER(12, "body:left_controller", TrackerRole.LEFT_CONTROLLER),
+	RIGHT_CONTROLLER(13, "body:right_controller", TrackerRole.RIGHT_CONTROLLER),
+	LEFT_FOREARM(14, "body:left_forearm", TrackerRole.LEFT_ELBOW),
+	RIGHT_FOREARM(15, "body:right_forearm", TrackerRole.RIGHT_ELBOW),
+	LEFT_UPPER_ARM(16, "body:left_upperarm", null),
+	RIGHT_UPPER_ARM(17, "body:right_upperarm", null),
+	LEFT_HAND(18, "body:left_hand", TrackerRole.LEFT_HAND),
+	RIGHT_HAND(19, "body:right_hand", TrackerRole.RIGHT_HAND),
 	;
 
 	public final int id;
@@ -41,6 +44,14 @@ public enum TrackerPosition {
 	}
 	
 	public static TrackerPosition getByDesignation(String designation) {
+		// Support old configs. leg was renamed to knee.
+		if(designation != null) {
+			if(designation.equals("body:left_leg"))
+				designation = "body:left_knee";
+			if(designation.equals("body:right_leg"))
+				designation = "body:right_knee";	
+		}
+		
 		return designation == null ? null : byDesignation.get(designation.toLowerCase());
 	}
 	

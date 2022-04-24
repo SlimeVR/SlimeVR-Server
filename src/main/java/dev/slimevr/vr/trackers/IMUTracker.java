@@ -77,16 +77,16 @@ public class IMUTracker implements Tracker, TrackerWithTPS, TrackerWithBattery {
 				rotAdjust.loadIdentity();
 			}
 			bodyPosition = TrackerPosition.getByDesignation(config.designation);
-			setFilter(vrserver.config.getString("filters.type"), vrserver.config.getFloat("filters.amount", 0.3f), vrserver.config.getInt("filters.tickCount", 2));
+			setFilter(vrserver.config.getString("filters.type"), vrserver.config.getFloat("filters.amount", 0.3f), vrserver.config.getInt("filters.tickCount", 1));
 		}
 	}
 	public void setFilter(String type, float amount, int ticks){
 		amount = FastMath.clamp(amount, 0, 1f);
-		ticks = (int) FastMath.clamp(ticks, 0, 80);
+		ticks = (int) FastMath.clamp(ticks, 0, 50);
 		if(type != null){
 			switch(type){
 				case "INTERPOLATION":
-					movementFilterAmount = 1f - (amount / 1.75f);
+					movementFilterAmount = 1f - (amount / 1.6f);
 					movementFilterTickCount = ticks;
 					break;
 				case "EXTRAPOLATION":
@@ -127,12 +127,6 @@ public class IMUTracker implements Tracker, TrackerWithTPS, TrackerWithBattery {
 				// Adjust gyro rotation to match magnetometer rotation only if magnetometer
 				// accuracy is within the parameters
 				calculateLiveMagnetometerCorrection();
-			}
-		}
-		if(movementFilterTickCount != 0){
-			previousRots.add(rotQuaternion.clone());
-			if(previousRots.size() > movementFilterTickCount){
-				previousRots.remove(0);
 			}
 		}
 	}
@@ -184,6 +178,13 @@ public class IMUTracker implements Tracker, TrackerWithTPS, TrackerWithBattery {
 	@Override
 	public void dataTick() {
 		timer.update();
+
+		if(movementFilterTickCount != 0) {
+			previousRots.add(rotQuaternion.clone());
+			if(previousRots.size() > movementFilterTickCount) {
+				previousRots.remove(0);
+			}
+		}
 	}
 	
 	@Override
