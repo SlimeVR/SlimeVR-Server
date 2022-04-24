@@ -1,4 +1,4 @@
-import { SkeletonBone } from "slimevr-protocol";
+import { SkeletonBone } from "solarxr-protocol";
 
 
 

@@ -1,5 +1,5 @@
 import { useMemo, useState } from "react";
-import { BodyPart, DataFeedMessage, DataFeedUpdateT, DeviceDataT, TrackerDataT } from "slimevr-protocol";
+import { BodyPart, DataFeedMessage, DataFeedUpdateT, DeviceDataT, TrackerDataT } from "solarxr-protocol";
 import { useWebsocketAPI } from "../hooks/websocket-api";
 import { TrackerCard } from "./tracker/TrackerCard";
 // import { TrackerCard } from "./tracker/TrackerCard";

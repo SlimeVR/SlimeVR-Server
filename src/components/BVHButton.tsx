@@ -1,7 +1,7 @@
 import { useState } from "react";
-import { RpcMessage } from "slimevr-protocol";
-import { RecordBVHRequestT } from "slimevr-protocol/protocol/typescript/dist/slimevr-protocol/rpc/record-bvhrequest";
-import { RecordBVHStatusT } from "slimevr-protocol/protocol/typescript/dist/slimevr-protocol/rpc/record-bvhstatus";
+import { RpcMessage } from "solarxr-protocol";
+import { RecordBVHRequestT } from "solarxr-protocol/protocol/typescript/dist/solarxr-protocol/rpc/record-bvhrequest";
+import { RecordBVHStatusT } from "solarxr-protocol/protocol/typescript/dist/solarxr-protocol/rpc/record-bvhstatus";
 import { useWebsocketAPI } from "../hooks/websocket-api";
 import { BigButton } from "./commons/BigButton";
 import { RecordIcon } from "./commons/icon/RecordIcon";

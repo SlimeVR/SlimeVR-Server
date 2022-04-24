@@ -22,7 +22,7 @@
     "react-modal": "^3.14.4",
     "react-router-dom": "^6.2.2",
     "react-scripts": "5.0.0",
-    "slimevr-protocol": "file:../SolarXR-Protocol",
+    "solarxr-protocol": "file:../SlimeVR-Server/solarxr-protocol",
     "typescript": "^4.6.3",
     "web-vitals": "^2.1.4"
   },

@@ -7,7 +7,7 @@ import { NumberSelector } from "../commons/NumberSelector";
 import { AutomaticCalibration } from "./AutomaticCalibration";
 import { BodyView } from "./BodyView";
 
-import { ChangeSkeletonConfigRequestT, RpcMessage, SkeletonBone, SkeletonConfigRequestT, SkeletonConfigResponseT, SkeletonResetAllRequestT } from 'slimevr-protocol';
+import { ChangeSkeletonConfigRequestT, RpcMessage, SkeletonBone, SkeletonConfigRequestT, SkeletonConfigResponseT, SkeletonResetAllRequestT } from 'solarxr-protocol';
 
 const bodyPartLabels = {
     [SkeletonBone.NONE]: "None",

@@ -1,6 +1,6 @@
 import { createContext, useContext, useEffect, useRef, useState } from "react";
 
-import { DataFeedMessage, DataFeedMessageHeaderT, MessageBundle, MessageBundleT, RpcMessage, RpcMessageHeaderT } from 'slimevr-protocol'
+import { DataFeedMessage, DataFeedMessageHeaderT, MessageBundle, MessageBundleT, RpcMessage, RpcMessageHeaderT } from 'solarxr-protocol'
 
 import { Builder, ByteBuffer } from 'flatbuffers'
 import { useInterval } from "./timeout";

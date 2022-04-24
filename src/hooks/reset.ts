@@ -1,5 +1,5 @@
 import { useRef, useState } from "react";
-import { ResetRequestT, ResetType, RpcMessage } from "slimevr-protocol";
+import { ResetRequestT, ResetType, RpcMessage } from "solarxr-protocol";
 import { useWebsocketAPI } from "./websocket-api";
 
 

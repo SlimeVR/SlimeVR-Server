@@ -2,7 +2,7 @@ import { ReactChild, useEffect, useRef, useState } from "react";
 import { useWebsocketAPI } from "../hooks/websocket-api";
 import { Button } from "./commons/Button";
 import { AppModal } from "./Modal";
-import { CloseSerialRequestT, OpenSerialRequestT, RpcMessage, SerialUpdateResponseT, SetWifiRequestT } from "slimevr-protocol"
+import { CloseSerialRequestT, OpenSerialRequestT, RpcMessage, SerialUpdateResponseT, SetWifiRequestT } from "solarxr-protocol"
 import { Input } from "./commons/Input";
 import { useForm } from "react-hook-form";
 

@@ -1,5 +1,5 @@
 import { Quaternion } from 'math3d';
-import { QuatT } from 'slimevr-protocol';
+import { QuatT } from 'solarxr-protocol';
 
 
 export function QuaternionFromQuatT(q: { x: number, y: number, z: number, w: number }) {

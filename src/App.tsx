@@ -15,7 +15,7 @@ import { BodyProportions } from './components/proportions/BodyProportions';
 import { BVHButton } from './components/BVHButton';
 import { AppContextProvider } from './components/providers/AppContext';
 import { useEffect } from 'react';
-import { DataFeedConfigT, DataFeedMessage, DeviceDataMaskT, ResetType, StartDataFeedT, TrackerDataMaskT } from 'slimevr-protocol';
+import { DataFeedConfigT, DataFeedMessage, DeviceDataMaskT, ResetType, StartDataFeedT, TrackerDataMaskT } from 'solarxr-protocol';
 import { Settings } from './components/Settings';
 
 

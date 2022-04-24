@@ -4,7 +4,7 @@ import { AppModal } from "../Modal";
 import { Select } from "../commons/Select";
 import { useWebsocketAPI } from "../../hooks/websocket-api";
 import { useForm } from "react-hook-form";
-import { AssignTrackerRequestT, BodyPart, DeviceDataT, RpcMessage, TrackerDataT } from "slimevr-protocol";
+import { AssignTrackerRequestT, BodyPart, DeviceDataT, RpcMessage, TrackerDataT } from "solarxr-protocol";
 import { FixEuler, QuaternionFromQuatT, QuaternionToQuatT } from "../../maths/quaternion";
 import { Quaternion } from "math3d";
 

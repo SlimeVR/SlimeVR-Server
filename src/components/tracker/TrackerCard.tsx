@@ -1,6 +1,6 @@
 import classNames from "classnames";
 import { useEffect, useMemo, useRef, useState } from "react";
-import { BodyPart, DeviceDataT, TrackerDataT, TrackerStatus } from "slimevr-protocol";
+import { BodyPart, DeviceDataT, TrackerDataT, TrackerStatus } from "solarxr-protocol";
 import { WifiIcon } from "../commons/icon/WifiIcon";
 import { BatteryIcon } from "../commons/icon/BatteryIcon";
 import { TrackerSettings } from "./TrackerSettings";

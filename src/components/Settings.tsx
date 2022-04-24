@@ -5,7 +5,7 @@ import { useEffect } from "react";
 import { Select } from "./commons/Select";
 import { NumberSelector } from "./commons/NumberSelector";
 import { WIFIButton } from "./WifiButton";
-import { ChangeSettingsRequestT, FilteringSettingsT, RpcMessage, SettingsRequestT, SettingsResponseT, SteamVRTrackersSettingT } from "slimevr-protocol";
+import { ChangeSettingsRequestT, FilteringSettingsT, RpcMessage, SettingsRequestT, SettingsResponseT, SteamVRTrackersSettingT } from "solarxr-protocol";
 
 interface SettingsForm {
     trackers: {
