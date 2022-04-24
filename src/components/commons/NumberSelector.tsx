@@ -5,7 +5,7 @@ import { Button } from "./Button";
 
 
 
-export function NumberSelector({ label, valueLabelFormat, control, name, min, max, step, variant }: { label: string, valueLabelFormat?: (value: number) => string, control: Control<any>, name: string, min: number, max: number, step: number, variant: 'smol' | 'big' }) {
+export function NumberSelector({ label, valueLabelFormat, control, name, min, max, step, variant }: { label: string, valueLabelFormat?: (value: number) => string, control: Control<any>, name: string, min: number, max: number, step: number | ((value: number, add: boolean) => number), variant: 'smol' | 'big' }) {
     
     const variantClass = useMemo(() => {
         const variantsMap = {
@@ -22,6 +22,10 @@ export function NumberSelector({ label, valueLabelFormat, control, name, min, ma
         };
         return variantsMap[variant];
     }, [variant])
+
+
+    const stepFn = typeof step === 'function' ? step : (value: number, add: boolean) => add ? value + step : value - step;
+
     
     return (
         <Controller
@@ -32,11 +36,11 @@ export function NumberSelector({ label, valueLabelFormat, control, name, min, ma
                     <div className={classNames(variantClass.label)}>{label}</div>
                     <div className="flex gap-3">
                         <div className="flex">
-                            <Button variant="primary" onClick={() => onChange(value - step)} disabled={value <= min}>-</Button>
+                            <Button variant="primary" onClick={() => onChange(stepFn(value, false))} disabled={stepFn(value, false) <= min}>-</Button>
                         </div>
                         <div className={classNames(variantClass.value)}>{valueLabelFormat ? valueLabelFormat(value) : value}</div>
                         <div className="flex">
-                            <Button variant="primary" onClick={() => onChange(value + step)} disabled={value >= max}>+</Button>
+                            <Button variant="primary" onClick={() => onChange(stepFn(value, true))} disabled={stepFn(value, true) >= max}>+</Button>
                         </div>
                     </div>
                 </div>

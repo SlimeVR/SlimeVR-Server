@@ -1,28 +1,30 @@
-import { createContext, MutableRefObject, useContext, useEffect, useRef, useState } from "react";
+import { createContext, useContext, useEffect, useRef, useState } from "react";
 
-import { AcknowledgementT, ApplicationType, ConnectionRequestT, InboundPacketT, InboundUnion, OutboundPacket, OutboundPacketT, OutboundUnion } from 'slimevr-protocol/dist/server'
+import { DataFeedMessage, DataFeedMessageHeaderT, MessageBundle, MessageBundleT, RpcMessage, RpcMessageHeaderT } from 'slimevr-protocol'
 
 import { Builder, ByteBuffer } from 'flatbuffers'
 import { useInterval } from "./timeout";
 
 export interface WebSocketApi {
     isConnected: boolean,
-    eventlistenerRef: MutableRefObject<EventTarget>,
-    usePacket: <T>(type: OutboundUnion, callback: (packet: T) => void) => void
-    sendPacket: (type: InboundUnion, data: InboundPacketType, acknowledgeMe?: boolean) => Promise<boolean>
+    useRPCPacket: <T>(type: RpcMessage, callback: (packet: T) => void) => void
+    useDataFeedPacket: <T>(type: DataFeedMessage, callback: (packet: T) => void) => void
+    sendRPCPacket: (type: RpcMessage, data: RPCPacketType) => void
+    sendDataFeedPacket: (type: DataFeedMessage, data: DataFeedPacketType) => void
 }
 
 
 export const WebSocketApiContext = createContext<WebSocketApi>(undefined as any);
 
-export type InboundPacketType = InboundPacketT['packet'];
-export type OutboundPacketType = OutboundPacketT['packet'];
+export type RPCPacketType = RpcMessageHeaderT['message'];
+export type DataFeedPacketType = DataFeedMessageHeaderT['message'];
+// export type OutboundPacketType = OutboundPacketT['packet'];
 
 export function useProvideWebsocketApi(): WebSocketApi {
-    const packetCounterRef = useRef<number>(0);
-    const toAcknoledgePacketsRef = useRef<{ [key: number]: () => void }>([]);
+    const rpcPacketCounterRef = useRef<number>(0);
     const webSocketRef = useRef<WebSocket | null>(null);
-    const eventlistenerRef = useRef<EventTarget>(new EventTarget());
+    const rpclistenerRef = useRef<EventTarget>(new EventTarget());
+    const datafeedlistenerRef = useRef<EventTarget>(new EventTarget());
     const [isConnected, setConnected] = useState(false);
 
 
@@ -38,17 +40,11 @@ export function useProvideWebsocketApi(): WebSocketApi {
         if (!webSocketRef.current) return ;
 
         setConnected(true);
-        const conn = new ConnectionRequestT();
-        conn.applicationType = ApplicationType.UI;
-
-        sendPacket(InboundUnion.ConnectionRequest, conn);
     }
 
     const onConnectionClose = (event: Event) => {
         setConnected(false);
-
-        packetCounterRef.current = 0;
-        toAcknoledgePacketsRef.current = [];
+        rpcPacketCounterRef.current = 0;
     }
 
     const onMessage = async (event: { data: Blob }) => {
@@ -58,64 +54,57 @@ export function useProvideWebsocketApi(): WebSocketApi {
 
         const fbb = new ByteBuffer(new Uint8Array(buffer));
 
-        const outbountPacket = OutboundPacket.getRootAsOutboundPacket(fbb).unpack();
-        eventlistenerRef.current?.dispatchEvent(new CustomEvent(OutboundUnion[outbountPacket.packetType], { detail: outbountPacket }))
+        const message = MessageBundle.getRootAsMessageBundle(fbb).unpack();
 
-        if (outbountPacket.acknowledgeMe && webSocketRef.current) {
-            const fbb = new Builder();
 
-            const acknowledgement = new AcknowledgementT();
-            acknowledgement.packetId = outbountPacket.packetCounter;
-            fbb.finish(acknowledgement.pack(fbb));
-            webSocketRef.current.send(fbb.asUint8Array());
-        }
+        message.rpcMsgs.forEach((rpcHeader) => {
+            rpclistenerRef.current?.dispatchEvent(new CustomEvent(RpcMessage[rpcHeader.messageType], { detail: rpcHeader.message }))
+        })
 
-        if (outbountPacket.packetType === OutboundUnion.slimevr_protocol_misc_Acknowledgement) {
-            const acknowledgement = outbountPacket.packet as AcknowledgementT;
-            const acknoledgePromise = toAcknoledgePacketsRef.current[acknowledgement.packetId];
-            if (!acknoledgePromise)
-                return;
-            delete toAcknoledgePacketsRef.current[acknowledgement.packetId];
-            acknoledgePromise()
-        }
+        message.dataFeedMsgs.forEach((datafeedHeader) => {
+            datafeedlistenerRef.current?.dispatchEvent(new CustomEvent(DataFeedMessage[datafeedHeader.messageType], { detail: datafeedHeader.message }))
+        })
     }
 
-    const sendPacket = async (type: InboundUnion, data: InboundPacketType, acknowledgeMe = false): Promise<boolean> => {
+    const sendRPCPacket = (type: RpcMessage, data: RPCPacketType): void => {
         if (!webSocketRef.current)
             throw new Error('No connection');
 
         const fbb = new Builder(1);
 
-        const inbound = new InboundPacketT();
-        inbound.acknowledgeMe = acknowledgeMe;
-        inbound.packetCounter = packetCounterRef.current;
-        inbound.packet = data;
-        inbound.packetType = type;
+        const message = new MessageBundleT();
 
-        fbb.finish(inbound.pack(fbb));
+
+        const rpcHeader = new RpcMessageHeaderT();
+        rpcHeader.messageType = type;
+        rpcHeader.message = data;
+
+        message.rpcMsgs = [rpcHeader]
+        fbb.finish(message.pack(fbb));
+
         webSocketRef.current.send(fbb.asUint8Array());
 
-        if (acknowledgeMe) {
-            return await new Promise((resolve, reject) => {
-                // TODO implement retry
-                const timeoutId = setTimeout(() => {
-                    reject(false);
-                }, 3000)
 
-                const acknoledged = () => {
-                    clearTimeout(timeoutId);
-                    resolve(true);
-                }
-
-                toAcknoledgePacketsRef.current[inbound.packetCounter] = acknoledged;
-            })
-        }
-
-        packetCounterRef.current++;
-
-        return true;
+        rpcPacketCounterRef.current++;
     }
 
+    const sendDataFeedPacket = (type: DataFeedMessage, data: DataFeedPacketType): void => {
+        if (!webSocketRef.current)
+            throw new Error('No connection');
+
+        const fbb = new Builder(1);
+
+        const message = new MessageBundleT();
+
+        const datafeedHeader = new DataFeedMessageHeaderT();
+        datafeedHeader.messageType = type;
+        datafeedHeader.message = data;
+
+        message.dataFeedMsgs = [datafeedHeader]
+        fbb.finish(message.pack(fbb));
+
+        webSocketRef.current.send(fbb.asUint8Array());
+    }
 
     const connect = () =>  {
         webSocketRef.current = new WebSocket('ws://localhost:21110');
@@ -144,20 +133,32 @@ export function useProvideWebsocketApi(): WebSocketApi {
 
     return {
         isConnected,
-        eventlistenerRef,
-        usePacket: <T>(type: OutboundUnion, callback: (packet: T) => void) => {
+        useDataFeedPacket: <T>(type: DataFeedMessage, callback: (packet: T) => void) => {
             const onEvent = (event: CustomEventInit) => {
-                callback(event.detail.packet)
+                callback(event.detail)
             }
 
             useEffect(() => {
-                eventlistenerRef.current.addEventListener(OutboundUnion[type], onEvent)
+                datafeedlistenerRef.current.addEventListener(DataFeedMessage[type], onEvent)
                 return () => {
-                    eventlistenerRef.current.removeEventListener(OutboundUnion[type], onEvent)
+                    datafeedlistenerRef.current.removeEventListener(DataFeedMessage[type], onEvent)
                 }
             }, [])
         },
-        sendPacket
+        useRPCPacket: <T>(type: RpcMessage, callback: (packet: T) => void) => {
+            const onEvent = (event: CustomEventInit) => {
+                callback(event.detail)
+            }
+
+            useEffect(() => {
+                rpclistenerRef.current.addEventListener(RpcMessage[type], onEvent)
+                return () => {
+                    rpclistenerRef.current.removeEventListener(RpcMessage[type], onEvent)
+                }
+            }, [])
+        },
+        sendRPCPacket,
+        sendDataFeedPacket
     }
 }
 

@@ -17,7 +17,6 @@
     "moduleResolution": "node",
     "resolveJsonModule": true,
     "isolatedModules": true,
-    "strictExportPresence": false,
     "noEmit": true,
     "jsx": "react-jsx"
   },

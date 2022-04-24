@@ -16,11 +16,11 @@ export function NavButton({ to, children, match, icon }: { to: string, children:
     });
 
     return (
-        <NavLink to={to} className={classnames("flex flex-grow flex-row gap-3 py-3 px-8 rounded-t-md  group ", { 'bg-primary-2': doesMatch, 'hover:bg-primary-3': !doesMatch })}>
+        <NavLink to={to} className={classnames("flex flex-grow flex-row gap-3 py-3 px-8 rounded-t-md group font-bold", { 'bg-primary-2 ': doesMatch, 'hover:bg-primary-3': !doesMatch })}>
             <div className="flex align-middle justify-center justify-items-center flex-col">
                 <div className={classnames("fill-primary-3 group-hover:fill-white", { 'fill-misc-3': doesMatch })}>{icon}</div>
             </div>
-            <div className="flex text-white text-md">{children}</div>
+            <div className={classnames("flex text-md ", { 'text-white': doesMatch, 'text-gray-400': !doesMatch })}>{children}</div>
         </NavLink  >
     )
 }

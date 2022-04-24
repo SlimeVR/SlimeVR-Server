@@ -1,18 +1,17 @@
 import classNames from "classnames";
-import { useEffect, useMemo, useState } from "react";
-import { DeviceStatusT, TrackerPosition } from "slimevr-protocol/dist/server";
-import { TrackerStatus } from "slimevr-protocol/dist/slimevr-protocol/server/tracker-status";
-import { IconButton } from "../commons/ButtonIcon";
-import { BatteryIcon } from "../commons/icon/BatteryIcon";
-import { GearIcon } from "../commons/icon/GearIcon";
+import { useEffect, useMemo, useRef, useState } from "react";
+import { BodyPart, DeviceDataT, TrackerDataT, TrackerStatus } from "slimevr-protocol";
 import { WifiIcon } from "../commons/icon/WifiIcon";
+import { BatteryIcon } from "../commons/icon/BatteryIcon";
 import { TrackerSettings } from "./TrackerSettings";
-import { Quaternion } from '../../maths/quaternion';
+import { IconButton } from "../commons/ButtonIcon";
+import { GearIcon } from "../commons/icon/GearIcon";
+import { QuaternionFromQuatT } from "../../maths/quaternion";
 
 
-export function TrackerCard({ status }:  { status: DeviceStatusT }) {
+export function TrackerCard({ tracker, device }:  { tracker: TrackerDataT, device?: DeviceDataT }) {
 
-    const [previousRot, setPreviousRot] = useState<{ x: number, y: number, z: number, w: number }>({ x: 0, y: 0, z: 0, w: 0 })
+    const previousRot = useRef<{ x: number, y: number, z: number, w: number }>(tracker.rotation!)
     const [velocity, setVelocity] = useState<number>(0);
 
     const statusClass = useMemo(() => {
@@ -24,39 +23,53 @@ export function TrackerCard({ status }:  { status: DeviceStatusT }) {
             [TrackerStatus.OCCLUDED]: 'bg-misc-4',
             [TrackerStatus.OK]: 'bg-misc-1'
         }
-        return statusMap[status.status];
-    }, [status]);
+        return statusMap[tracker.status];
+    }, [tracker.status]);
 
     useEffect(() => {
-        if (status.rotation) {
-            const rot = Quaternion.from(status.rotation).mult(Quaternion.from(previousRot).inverse());
-            const dif = Math.min(100, (rot.x**2 + rot.y**2 + rot.z**2) * 2.5)
+        if (tracker.rotation) {
+            const rot = QuaternionFromQuatT(tracker.rotation).mul(QuaternionFromQuatT(previousRot.current).inverse());
+            const dif = Math.min(1, (rot.x**2 + rot.y**2 + rot.z**2) * 2.5)
             setVelocity(dif);
-            setPreviousRot(status.rotation);
+            previousRot.current = tracker.rotation;
         }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-    }, [status])
+    }, [tracker.rotation])
 
+    const trackerName = useMemo(() => {
+        if (device?.customName)
+            return device.customName;
+        if (tracker.info?.bodyPart)
+            return BodyPart[tracker.info?.bodyPart];
+        return device?.hardwareInfo?.displayName || 'NONE';
+
+    }, [tracker.info, device?.customName, device?.hardwareInfo?.displayName])
 
     return (
-        <TrackerSettings status={status} >
+        <TrackerSettings tracker={tracker} device={device} >
             <div  className={classNames("flex rounded-l-md rounded-r-xl", statusClass)}>
                 <div className="flex bg-primary-4 rounded-r-md py-3 ml-1 pr-2 pl-4 w-full gap-3">
                     <div className="flex flex-grow flex-col truncate gap-2">
-                        <div className="flex text-white font-bold">{!status.computed && status.editable ? TrackerPosition[status.mountingPosition] : status.name}</div>
+                        <div className="flex text-white font-bold">{trackerName}</div>
                         <div className="flex flex-row gap-4 ">
-                            <div className="flex gap-2 flex-grow">
-                                <div className="flex flex-col justify-around">
-                                    <WifiIcon value={status.signal} />
-                                </div>
-                                <div className="flex text-gray-400 text-sm  w-10">{status.ping} ms</div>
-                            </div>
-                            <div className="flex  w-1/3 gap-2">
-                                <div className="flex flex-col justify-around">
-                                    <BatteryIcon value={status.battery / 256}/>
-                                </div>
-                                <div className="flex text-gray-400 text-sm">{((status.battery / 255) * 100).toFixed(0)} %</div>
-                            </div>
+                            {device && device.hardwareStatus &&
+                                <>
+                                    <div className="flex gap-2 flex-grow">
+                                        {device.hardwareStatus.rssi && <div className="flex flex-col justify-around">
+                                            <WifiIcon value={device.hardwareStatus?.rssi} />
+                                        </div>}
+                                        {device.hardwareStatus.ping && <div className="flex text-gray-400 text-sm  w-10">{device.hardwareStatus.ping} ms</div>}
+                                    </div>
+                                    {device.hardwareStatus.batteryPctEstimate &&
+                                        <div className="flex w-1/3 gap-2">
+                                            <div className="flex flex-col justify-around">
+                                                <BatteryIcon value={device.hardwareStatus.batteryPctEstimate / 100}/>
+                                            </div>
+                                            <div className="flex text-gray-400 text-sm">{((device.hardwareStatus.batteryPctEstimate)).toFixed(0)} %</div>
+                                        </div>
+                                    }
+                                </>
+                            }
+                          
                             <div className="flex  w-1/3 gap-0.5 justify-around flex-col">
                                 <div className="w-full bg-gray-200 rounded-full h-1 dark:bg-gray-700">
                                     <div className="bg-misc-3 h-1 rounded-full" style={{width: `${velocity * 100}%`}}></div>
@@ -64,7 +77,7 @@ export function TrackerCard({ status }:  { status: DeviceStatusT }) {
                             </div>
                         </div>
                     </div>
-                    {status.editable && 
+                    {tracker.info?.editable && 
                         <div className="flex flex-col flex-shrink justify-around">
                             <IconButton icon={<GearIcon/>}/>
                         </div>

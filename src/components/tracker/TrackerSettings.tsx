@@ -1,46 +1,61 @@
 import { ReactChild, useMemo, useState } from "react";
-import { AssignTrackerRequestT, DeviceStatusT, InboundUnion, TrackerPosition } from "slimevr-protocol/dist/server";
 import { Button } from "../commons/Button";
 import { AppModal } from "../Modal";
 import { Select } from "../commons/Select";
 import { useWebsocketAPI } from "../../hooks/websocket-api";
 import { useForm } from "react-hook-form";
+import { AssignTrackerRequestT, BodyPart, DeviceDataT, RpcMessage, TrackerDataT } from "slimevr-protocol";
+import { FixEuler, QuaternionFromQuatT, QuaternionToQuatT } from "../../maths/quaternion";
+import { Quaternion } from "math3d";
 
 
-export function TrackerSettings({ status, children }: { status: DeviceStatusT, children: ReactChild }) {
+const rotationToQuatMap = {
+    FRONT: 180,
+    LEFT: 90,
+    RIGHT: -90,
+    BACK: 0
+}
 
-    const { sendPacket } = useWebsocketAPI();
-    const { register, handleSubmit, reset } = useForm({ defaultValues: { mountingPosition: 0, mountingRotation: 0 } });
+export function TrackerSettings({ tracker, device, children }: { tracker: TrackerDataT, device?: DeviceDataT, children: ReactChild }) {
+
+    const { sendRPCPacket } = useWebsocketAPI();
+    const { register, handleSubmit, reset } = useForm({ defaultValues: { bodyPosition: 0, mountingRotation: rotationToQuatMap.BACK } });
 
 
     const [open, setOpen] = useState(false);
 
-    const positions = useMemo(() => Object.keys(TrackerPosition).filter((position: string) => isNaN(+position)).map((role, index) =>( { label: role, value: index })), [])
-    const rotations = useMemo(() => [{ label: 'FRONT', value: 180 }, { label: 'LEFT', value: 90 }, { label: 'RIGHT', value: -90 }, { label: 'BACK', value: 0 }], [])
+    const positions = useMemo(() => Object.keys(BodyPart).filter((position: string) => isNaN(+position)).map((role, index) =>( { label: role, value: index })), [])
+    const rotations = useMemo(() => [
+        { label: 'FRONT', value: rotationToQuatMap.FRONT }, 
+        { label: 'LEFT', value: rotationToQuatMap.LEFT }, 
+        { label: 'RIGHT', value: rotationToQuatMap.RIGHT }, 
+        { label: 'BACK', value: rotationToQuatMap.BACK }
+    ], []);
 
 
-    const handleSaveSettings = ({ mountingPosition, mountingRotation }:  { mountingPosition: number, mountingRotation: number }) => {
+    const handleSaveSettings = ({ bodyPosition, mountingRotation }:  { bodyPosition: number, mountingRotation: number }) => {
         const assignreq = new AssignTrackerRequestT();
 
-        assignreq.mountingRotation = mountingRotation;
-        assignreq.mountingPosition = mountingPosition;
-        assignreq.id = status.id;
+        assignreq.bodyPosition = bodyPosition;
 
-        sendPacket(InboundUnion.AssignTrackerRequest, assignreq, true).then((res) => {
-            if (res) setOpen(false);
-        });
+    
+        assignreq.mountingRotation = QuaternionToQuatT(Quaternion.Euler(0, +mountingRotation, 0));
+        assignreq.trackerId = tracker.trackerId;
+
+        sendRPCPacket(RpcMessage.AssignTrackerRequest, assignreq)
+        setOpen(false);
     }
 
 
     const openSettings = () => {
 
-        if (!status.editable)
+        if (!tracker.info?.editable)
             return;
 
         setOpen(true)
         reset({
-            mountingRotation: status.mountingRotation,
-            mountingPosition: status.mountingPosition
+            bodyPosition: tracker.info?.bodyPart,
+            mountingRotation: tracker.info?.mountingOrientation ? FixEuler(QuaternionFromQuatT(tracker.info?.mountingOrientation!).eulerAngles.y) : rotationToQuatMap.BACK
         })
     }
 
@@ -53,11 +68,11 @@ export function TrackerSettings({ status, children }: { status: DeviceStatusT, c
             <AppModal 
                 isOpen={open} 
                 onRequestClose={() => setOpen(false)}
-                name={<>{status.mountingPosition ? `${TrackerPosition[status.mountingPosition]} Settings` : 'Tracker Settings'}</>}
+                name={<>{tracker.info?.bodyPart ? `${BodyPart[tracker.info?.bodyPart]} Settings` : 'Tracker Settings'}</>}
             >
                 <form onSubmit={handleSubmit(handleSaveSettings)} className="flex flex-col gap-5">
                     <div className="flex flex-col gap-5">
-                        <Select {...register("mountingPosition")} label="Tracker role" options={positions}></Select>
+                        <Select {...register("bodyPosition")} label="Tracker role" options={positions}></Select>
                         <Select {...register("mountingRotation")} label="Mounting Rotation" options={rotations}></Select>
                     </div>
                     <div className="flex items-center justify-between">

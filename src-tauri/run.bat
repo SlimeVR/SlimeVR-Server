@@ -1,0 +1,8 @@
+@echo off
+setlocal enableextensions
+cd /d "C:\Program Files (x86)\SlimeVR Server"
+
+jre\bin\java.exe -Xmx512M -jar slimevr.jar --no-gui
+if %errorlevel% NEQ 0 (
+    pause
+)
