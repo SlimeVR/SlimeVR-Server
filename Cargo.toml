@@ -1,3 +1,10 @@
 [workspace]
 resolver = "2"
 members = ["src-tauri"]
+
+
+# This lets us get the webview dev tools even in release mode, so that we can see the
+# console. Just hit F12.
+[profile.release.package.wry]
+debug = true
+debug-assertions = true

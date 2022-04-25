@@ -4,19 +4,26 @@
 )]
 
 use clap::Parser;
+use clap_verbosity_flag::{InfoLevel, Verbosity};
 use std::path::PathBuf;
-use std::process::{Command};
-
-// the payload type must implement `Serialize` and `Clone`.
+use tauri::api::clap;
+use tauri::api::process::Command;
+use tauri::Manager;
 
 #[derive(Parser)]
 #[clap(version, about)]
-struct Args {
+struct Cli {
     #[clap(short, long)]
     display_console: bool,
+    #[clap(long)]
+    launch_from_path: Option<PathBuf>,
+    #[clap(flatten)]
+    verbosity: Verbosity<InfoLevel>,
 }
 
 fn main() {
+    let cli = Cli::parse();
+
     // Set up loggers and global handlers
     {
         if std::env::var_os("RUST_LOG").is_none() {
@@ -24,8 +31,6 @@ fn main() {
         }
         pretty_env_logger::init();
     }
-
-    let args = Args::parse();
 
     // Ensure child processes die when spawned on windows
     #[cfg(target_os = "windows")]
@@ -44,17 +49,41 @@ fn main() {
     }
 
     // Spawn server process
-    let runfile_path = PathBuf::from(env!("CARGO_MANIFEST_DIR")).join("run.bat");
-    if runfile_path.exists() {
-        Command::new("cmd")
-            .args(["/C", runfile_path.to_str().unwrap()])
+    let runfile_path = cli
+        .launch_from_path
+        .unwrap_or_else(|| PathBuf::from(env!("CARGO_MANIFEST_DIR")).join("run.bat"));
+    let stdout_recv = if !runfile_path.exists() {
+        log::warn!("runfile doesn't exist. We will not start the server.");
+        None
+    } else {
+        let (recv, _child) = Command::new(runfile_path.to_str().unwrap())
             .spawn()
             .expect("sh command failed to start");
-    } else {
-        log::warn!("No run.bat found, SKIP");
-    }
+        Some(recv)
+    };
 
     tauri::Builder::default()
+        .setup(|app| {
+            if let Some(mut recv) = stdout_recv {
+                let app_handle = app.app_handle();
+                tauri::async_runtime::spawn(async move {
+                    use tauri::api::process::CommandEvent;
+
+                    while let Some(cmd_event) = recv.recv().await {
+                        let emit_me = match cmd_event {
+                            CommandEvent::Stderr(s) => ("stderr", s),
+                            CommandEvent::Stdout(s) => ("stdout", s),
+                            CommandEvent::Error(s) => ("error", s),
+                            _ => continue,
+                        };
+                        app_handle
+                            .emit_all("server-stdio", emit_me)
+                            .expect("Failed to emit");
+                    }
+                });
+            }
+            Ok(())
+        })
         .run(tauri::generate_context!())
         .expect("error while running tauri application");
 }

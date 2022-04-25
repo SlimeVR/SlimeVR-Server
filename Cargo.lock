@@ -408,6 +408,16 @@ dependencies = [
 ]
 
 [[package]]
+name = "clap-verbosity-flag"
+version = "1.0.0"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "17e437250f23cdd03daf3de763093aa27873a026ef9a156800da9ddd617c51d4"
+dependencies = [
+ "clap",
+ "log",
+]
+
+[[package]]
 name = "clap_derive"
 version = "3.1.7"
 source = "registry+https://github.com/rust-lang/crates.io-index"
@@ -462,9 +472,9 @@ dependencies = [
 
 [[package]]
 name = "combine"
-version = "4.6.3"
+version = "4.6.4"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "50b727aacc797f9fc28e355d21f34709ac4fc9adecfe470ad07b8f4464f53062"
+checksum = "2a604e93b79d1808327a6fca85a6f2d69de66461e7620f5a4cbf5fb4d1d7c948"
 dependencies = [
  "bytes",
  "memchr",
@@ -2849,7 +2859,7 @@ checksum = "eb703cfe953bccee95685111adeedb76fabe4e97549a58d16f03ea7b9367bb32"
 name = "slimevr_ui"
 version = "0.1.0"
 dependencies = [
- "clap",
+ "clap-verbosity-flag",
  "log",
  "pretty_env_logger",
  "serde",
@@ -3116,6 +3126,7 @@ dependencies = [
  "attohttpc",
  "bincode",
  "cfg_aliases",
+ "clap",
  "dirs-next",
  "either",
  "embed_plist",
@@ -3354,9 +3365,9 @@ dependencies = [
 
 [[package]]
 name = "tinyvec"
-version = "1.5.1"
+version = "1.6.0"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "2c1c1d5a42b6245520c249549ec267180beaffcc0615401ac8e31853d4b6d8d2"
+checksum = "87cc5ceb3875bb20c2890005a4e226a4651264a5c75edb2421b52861a0a0cb50"
 dependencies = [
  "tinyvec_macros",
 ]
