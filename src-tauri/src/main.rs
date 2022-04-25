@@ -3,10 +3,18 @@
     windows_subsystem = "windows"
 )]
 
+use clap::Parser;
 use std::path::PathBuf;
 use std::process::{Command};
 
 // the payload type must implement `Serialize` and `Clone`.
+
+#[derive(Parser)]
+#[clap(version, about)]
+struct Args {
+    #[clap(short, long)]
+    display_console: bool,
+}
 
 fn main() {
     // Set up loggers and global handlers
@@ -16,6 +24,8 @@ fn main() {
         }
         pretty_env_logger::init();
     }
+
+    let args = Args::parse();
 
     // Ensure child processes die when spawned on windows
     #[cfg(target_os = "windows")]

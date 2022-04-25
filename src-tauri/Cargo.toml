@@ -19,6 +19,7 @@ serde = { version = "1", features = ["derive"] }
 tauri = { version = "1.0.0-rc.6", features = ["api-all"] }
 pretty_env_logger = "0.4"
 log = "0.4"
+clap = { version = "3", features = ["derive"] }
 
 [features]
 # by default Tauri runs in production mode
