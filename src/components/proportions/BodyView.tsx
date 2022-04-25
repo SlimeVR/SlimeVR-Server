@@ -24,7 +24,7 @@ export function BodyView({ selectedBodyPart }: { selectedBodyPart: number }) {
                         }
                         {selectedBodyPart === SkeletonBone.KNEE_HEIGHT &&
                             <>
-                                <path d="M11.2487 439L11.2487 521.364" stroke="#8E6BA7" stroke-width="2"/>
+                                <path d="M11.2487 439L11.2487 521.364" stroke="#8E6BA7" strokeWidth="2"/>
                                 <path d="M0 522H23M0 439H23" stroke="#8E6BA7" strokeWidth="2"/>
                             
                             </>

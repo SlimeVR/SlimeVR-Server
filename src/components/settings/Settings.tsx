@@ -1,10 +1,10 @@
-import { useWebsocketAPI } from "../hooks/websocket-api";
-import { CheckBox } from "./commons/Checkbox";
+import { useWebsocketAPI } from "../../hooks/websocket-api";
+import { CheckBox } from "../commons/Checkbox";
 import { useForm } from "react-hook-form";
 import { useEffect } from "react";
-import { Select } from "./commons/Select";
-import { NumberSelector } from "./commons/NumberSelector";
-import { WIFIButton } from "./WifiButton";
+import { Select } from "../commons/Select";
+import { NumberSelector } from "../commons/NumberSelector";
+import { WIFIButton } from "../WifiButton";
 import { ChangeSettingsRequestT, FilteringSettingsT, RpcMessage, SettingsRequestT, SettingsResponseT, SteamVRTrackersSettingT } from "solarxr-protocol";
 
 interface SettingsForm {
@@ -37,7 +37,6 @@ export function Settings() {
             trackers.legs = values.trackers.legs;
             trackers.knees = values.trackers.knees;
             trackers.elbows = values.trackers.elbows;
-
             settings.steamVrTrackers = trackers;
         }
 

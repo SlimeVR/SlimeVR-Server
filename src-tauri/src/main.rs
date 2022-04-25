@@ -4,7 +4,7 @@
 )]
 
 use std::path::PathBuf;
-use std::process::Command;
+use std::process::{Command};
 
 // the payload type must implement `Serialize` and `Clone`.
 

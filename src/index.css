@@ -3,13 +3,21 @@
 @tailwind utilities;
 
 body {
-  background-color: theme('colors.primary.1');
   font-variant-numeric: tabular-nums;
   height: 100vh;
   width: 100vw;
   user-select: none;
+  overflow: hidden;
+  border-radius: 15px;
+}
+
+html {
+  overflow: hidden;
+  border-radius: 15px;
 }
 
 #root {
   height: 100%;
 }
+
+

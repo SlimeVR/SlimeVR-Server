@@ -7,6 +7,11 @@ import {
 import { CubeIcon } from './commons/icon/CubeIcon';
 import { GearIcon } from './commons/icon/GearIcon';
 import { SlimeVRIcon } from './commons/icon/SimevrIcon';
+import { appWindow } from '@tauri-apps/api/window'
+import { MinimiseIcon } from './commons/icon/MinimiseIcon';
+import { MaximiseIcon } from './commons/icon/MaximiseIcon';
+import { CloseIcon } from './commons/icon/CloseIcon';
+import { useWebsocketAPI } from '../hooks/websocket-api';
 
 
 export function NavButton({ to, children, match, icon }: { to: string, children: ReactChild, match?: string, icon: ReactChild }) {
@@ -16,31 +21,40 @@ export function NavButton({ to, children, match, icon }: { to: string, children:
     });
 
     return (
-        <NavLink to={to} className={classnames("flex flex-grow flex-row gap-3 py-3 px-8 rounded-t-md group font-bold", { 'bg-primary-2 ': doesMatch, 'hover:bg-primary-3': !doesMatch })}>
+        <NavLink to={to} className={classnames("flex flex-grow flex-row gap-3 py-3 px-8 rounded-t-md group font-bold select-text", { 'bg-primary-2 ': doesMatch, 'hover:bg-primary-3': !doesMatch })}>
             <div className="flex align-middle justify-center justify-items-center flex-col">
                 <div className={classnames("fill-primary-3 group-hover:fill-white", { 'fill-misc-3': doesMatch })}>{icon}</div>
             </div>
             <div className={classnames("flex text-md ", { 'text-white': doesMatch, 'text-gray-400': !doesMatch })}>{children}</div>
-        </NavLink  >
+        </NavLink>
     )
 }
 
 
-export function Navbar() {
+export function Navbar({ children }: { children?: ReactChild }) {
     return (
-        <div className='flex bg-primary-1 gap-2'>
-            <div className="flex px-8 py-2 justify-around">
-                <div className="flex flex-row gap-3">
-                    <div className="flex justify-around flex-col">
-                        <SlimeVRIcon></SlimeVRIcon>
+        <div data-tauri-drag-region className='flex bg-primary-1 gap-2'>
+            <div className="flex px-8 py-2 pt-3 justify-around" data-tauri-drag-region>
+                <div className="flex flex-row gap-3" data-tauri-drag-region>
+                    <div className="flex justify-around flex-col select-all" data-tauri-drag-region>
+                        <SlimeVRIcon drag></SlimeVRIcon>
                     </div>
-                    <div className="flex text-white text-xl justify-around flex-col font-bold">SlimeVR</div>
+                    <div className="flex text-white text-xl justify-around flex-col font-bold" data-tauri-drag-region>SlimeVR</div>
                 </div>
             </div>
-            <div className="flex px-5 gap-2 pt-2">
-                <NavButton to="/" icon={<CubeIcon></CubeIcon>}>Overview</NavButton>
-                <NavButton to="/proportions" icon={<GearIcon></GearIcon>}>Body proportions</NavButton>
-                <NavButton to="/settings" icon={<GearIcon></GearIcon>}>Settings</NavButton>
+            {children && <div className="flex px-5 gap-2 pt-2">
+                {children}
+            </div>}
+            <div className="flex flex-grow justify-end px-2 gap-2" data-tauri-drag-region>
+                <div className='flex flex-col justify-around text-white' onClick={() => appWindow.minimize()}>
+                    <MinimiseIcon className="hover:bg-primary-5 rounded-full"></MinimiseIcon>
+                </div>
+                <div className='flex flex-col justify-around text-white' onClick={() => appWindow.maximize()}>
+                    <MaximiseIcon className="hover:bg-primary-5 rounded-full"></MaximiseIcon>
+                </div>
+                <div className='flex flex-col justify-around text-white' onClick={() => appWindow.close()}>
+                    <CloseIcon className="hover:bg-primary-5 rounded-full"></CloseIcon>
+                </div>
             </div>
         </div>
     )

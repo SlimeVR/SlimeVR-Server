@@ -1,16 +1,19 @@
 import { useRef, useState } from "react";
 import { ResetRequestT, ResetType, RpcMessage } from "solarxr-protocol";
-import { useWebsocketAPI } from "./websocket-api";
+import { useWebsocketAPI } from "../hooks/websocket-api";
+import { BigButton } from "./commons/BigButton";
+import { QuickResetIcon, ResetIcon } from "./commons/icon/ResetIcon";
 
 
 
-export function useReset() {
+export function ResetButton({ type }: { type: ResetType }) {
+
     const timerid = useRef<NodeJS.Timer | null>(null);
     const [reseting, setReseting] = useState(false);
     const [timer, setTimer] = useState(0);
     const { sendRPCPacket } = useWebsocketAPI();
 
-    const reset = (type: ResetType) => {
+    const reset = () => {
         const req = new ResetRequestT();
         req.resetType = type;
         setReseting(true);
@@ -35,9 +38,13 @@ export function useReset() {
         }
     }
 
-    return {
-        reset,
-        timer,
-        reseting
-    }
+    return (
+        <BigButton 
+            text={!reseting ? "Reset" : `${3 - timer}`} icon={type === ResetType.Quick ? <QuickResetIcon /> : <ResetIcon/>} 
+            onClick={reset} 
+            disabled={reseting}>
+        </BigButton>
+    )
+
+
 }

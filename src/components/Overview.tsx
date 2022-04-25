@@ -35,7 +35,7 @@ export function Overview() {
     return (
         <div className="overflow-y-auto flex flex-col gap-8">
             <div className="flex text-white text-2xl px-8 pt-8  font-bold">
-                Tracker Overview
+                Assigned Trackers
             </div>
             <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-5 sm:grid-cols-1 px-8">
                 {asignedTrackers.map(({ tracker, device }, index) => <TrackerCard key={index} tracker={tracker} device={device}/>)}

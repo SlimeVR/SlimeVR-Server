@@ -25,8 +25,11 @@ const bodyPartLabels = {
     [SkeletonBone.SKELETON_OFFSET]: "Skeleton offset",
     [SkeletonBone.CONTROLLER_DISTANCE_Z]: "Controller distance z",
     [SkeletonBone.CONTROLLER_DISTANCE_Y]: "Controller distance y",
-    [SkeletonBone.ELBOW_DISTANCE]: "Elbow distance",
-    [SkeletonBone.UPPER_ARM_DISTANCE]: "Upper arm distance"
+    [SkeletonBone.FOREARM_LENGTH]: "Forearm distance",
+    [SkeletonBone.SHOULDERS_DISTANCE]: "Shoulders distance",
+    [SkeletonBone.SHOULDERS_WIDTH]: "Shoulders width",
+    [SkeletonBone.UPPER_ARM_LENGTH]: "Upper arm length",
+    [SkeletonBone.ELBOW_OFFSET]: "Elbow offset"
 }
 
 type BodyProportionsForm = ({ [key: string]: number });
@@ -102,8 +105,8 @@ export function BodyProportions() {
             <div className="flex  text-2xl px-8 pt-8 text-white font-bold">
                 Body Proportions
             </div>
-            <div className="flex p-5 gap-8 h-full justify-center">
-                <div className="bg-primary-1 rounded-lg w-72 justify-center p-10 hidden sm:flex">
+            <div className="flex p-5 gap-8 justify-center">
+                <div className="bg-primary-1 h-1/2 sticky top-5 rounded-lg w-72 justify-center p-10 hidden sm:flex">
                     <BodyView selectedBodyPart={selectedBodyPart || 0}></BodyView>
                 </div>
                 <div className="flex-col flex gap-4">
