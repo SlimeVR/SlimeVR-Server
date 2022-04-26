@@ -14,7 +14,7 @@ public class RPCBuilder {
 
 		for (int index = 0; index < SkeletonConfigValue.values().length; index++) {
 			SkeletonConfigValue val = SkeletonConfigValue.values[index];
-			int part  = SkeletonPart.createSkeletonPart(fbb, val.id, humanPoseProcessor.getSkeletonConfig(val));
+			int part = SkeletonPart.createSkeletonPart(fbb, val.id, humanPoseProcessor.getSkeletonConfig(val));
 			partsOffsets[index] = part;
 		}
 

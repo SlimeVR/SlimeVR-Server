@@ -14,6 +14,7 @@ public abstract class ProtocolHandler<H> {
 	}
 
 	public abstract void onMessage(GenericConnection conn, H message);
+
 	public abstract int messagesCount();
 
 	public void registerPacketListener(byte packetType, BiConsumer<GenericConnection, H> consumer) {

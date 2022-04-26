@@ -27,12 +27,12 @@ public class ProtocolAPI {
 		MessageBundle messageBundle = MessageBundle.getRootAsMessageBundle(message);
 
 		for (int index = 0; index < messageBundle.dataFeedMsgsLength(); index++) {
-			DataFeedMessageHeader header =  messageBundle.dataFeedMsgsVector().get(index);
+			DataFeedMessageHeader header = messageBundle.dataFeedMsgsVector().get(index);
 			this.dataFeedHandler.onMessage(conn, header);
 		}
 
 		for (int index = 0; index < messageBundle.rpcMsgsLength(); index++) {
-			RpcMessageHeader header =  messageBundle.rpcMsgsVector().get(index);
+			RpcMessageHeader header = messageBundle.rpcMsgsVector().get(index);
 			this.rpcHandler.onMessage(conn, header);
 		}
 	}

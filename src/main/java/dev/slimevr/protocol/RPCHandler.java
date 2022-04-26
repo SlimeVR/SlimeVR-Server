@@ -69,7 +69,7 @@ public class RPCHandler extends ProtocolHandler<RpcMessageHeader> implements Ser
 		conn.send(fbb.dataBuffer());
 	}
 
-	public void onCloseSerialRequest(GenericConnection conn,  RpcMessageHeader messageHeader) {
+	public void onCloseSerialRequest(GenericConnection conn, RpcMessageHeader messageHeader) {
 		CloseSerialRequest req = (CloseSerialRequest) messageHeader.message(new CloseSerialRequest());
 		if (req == null) return;
 
@@ -162,12 +162,12 @@ public class RPCHandler extends ProtocolHandler<RpcMessageHeader> implements Ser
 
 		Tracker tracker = this.api.server.getTrackerById(req.trackerId().unpack());
 		if (tracker == null)
-			return ;
+			return;
 
 		tracker.setBodyPosition(TrackerPosition.getById(req.bodyPosition()));
 
 		if (tracker instanceof ReferenceAdjustedTracker) {
-			ReferenceAdjustedTracker refTracker = (ReferenceAdjustedTracker)tracker;
+			ReferenceAdjustedTracker refTracker = (ReferenceAdjustedTracker) tracker;
 			if (refTracker.getTracker() instanceof IMUTracker) {
 				IMUTracker imu = (IMUTracker) refTracker.getTracker();
 				imu.setMountingRotation(new Quaternion(
@@ -190,14 +190,14 @@ public class RPCHandler extends ProtocolHandler<RpcMessageHeader> implements Ser
 				bridge.getShareSetting(TrackerRole.WAIST),
 				bridge.getShareSetting(TrackerRole.CHEST),
 				bridge.getShareSetting(TrackerRole.LEFT_FOOT) && bridge.getShareSetting(TrackerRole.RIGHT_FOOT),
-				bridge.getShareSetting(TrackerRole.LEFT_KNEE) &&bridge.getShareSetting(TrackerRole.RIGHT_KNEE),
+				bridge.getShareSetting(TrackerRole.LEFT_KNEE) && bridge.getShareSetting(TrackerRole.RIGHT_KNEE),
 				bridge.getShareSetting(TrackerRole.LEFT_ELBOW) && bridge.getShareSetting(TrackerRole.RIGHT_ELBOW)
 		);
 
 		int filterSettings = FilteringSettings.createFilteringSettings(
 				fbb,
 				TrackerFilters.valueOf(this.api.server.config.getString("filters.type", "NONE")).id,
-				(int)(this.api.server.config.getFloat("filters.amount", 0.3f) * 100),
+				(int) (this.api.server.config.getFloat("filters.amount", 0.3f) * 100),
 				this.api.server.config.getInt("filters.tickCount", 1)
 		);
 
@@ -227,11 +227,10 @@ public class RPCHandler extends ProtocolHandler<RpcMessageHeader> implements Ser
 		if (req.filtering() != null) {
 			TrackerFilters type = TrackerFilters.fromId(req.filtering().type());
 			if (type != null) {
-				this.api.server.updateTrackersFilters(type, (float)req.filtering().intensity() / 100.0f, req.filtering().ticks());
+				this.api.server.updateTrackersFilters(type, (float) req.filtering().intensity() / 100.0f, req.filtering().ticks());
 			}
 		}
 	}
-
 
 
 	@Override
@@ -244,7 +243,7 @@ public class RPCHandler extends ProtocolHandler<RpcMessageHeader> implements Ser
 	}
 
 	public int createRPCMessage(FlatBufferBuilder fbb, byte messageType, int messageOffset) {
-		int [] data = new int[1];
+		int[] data = new int[1];
 
 
 		RpcMessageHeader.startRpcMessageHeader(fbb);
@@ -267,20 +266,20 @@ public class RPCHandler extends ProtocolHandler<RpcMessageHeader> implements Ser
 
 		this.api.getAPIServers().forEach((server) -> {
 			server.getAPIConnections()
-				.values()
-				.stream()
-				.filter(conn -> conn.getContext().useSerial())
-				.forEach((conn) -> {
-					FlatBufferBuilder fbb = new FlatBufferBuilder(32);
+					.values()
+					.stream()
+					.filter(conn -> conn.getContext().useSerial())
+					.forEach((conn) -> {
+						FlatBufferBuilder fbb = new FlatBufferBuilder(32);
 
-					SerialUpdateResponse.startSerialUpdateResponse(fbb);
-					SerialUpdateResponse.addClosed(fbb, false);
-					int update = SerialUpdateResponse.endSerialUpdateResponse(fbb);
-					int outbound = this.createRPCMessage(fbb, RpcMessage.SerialUpdateResponse, update);
-					fbb.finish(outbound);
+						SerialUpdateResponse.startSerialUpdateResponse(fbb);
+						SerialUpdateResponse.addClosed(fbb, false);
+						int update = SerialUpdateResponse.endSerialUpdateResponse(fbb);
+						int outbound = this.createRPCMessage(fbb, RpcMessage.SerialUpdateResponse, update);
+						fbb.finish(outbound);
 
-					conn.send(fbb.dataBuffer());
-				});
+						conn.send(fbb.dataBuffer());
+					});
 		});
 	}
 
@@ -288,20 +287,20 @@ public class RPCHandler extends ProtocolHandler<RpcMessageHeader> implements Ser
 	public void onSerialDisconnected() {
 		this.api.getAPIServers().forEach((server) -> {
 			server.getAPIConnections()
-				.values()
-				.stream()
-				.filter(conn -> conn.getContext().useSerial())
-				.forEach((conn) -> {
-					FlatBufferBuilder fbb = new FlatBufferBuilder(32);
+					.values()
+					.stream()
+					.filter(conn -> conn.getContext().useSerial())
+					.forEach((conn) -> {
+						FlatBufferBuilder fbb = new FlatBufferBuilder(32);
 
-					SerialUpdateResponse.startSerialUpdateResponse(fbb);
-					SerialUpdateResponse.addClosed(fbb, true);
-					int update = SerialUpdateResponse.endSerialUpdateResponse(fbb);
-					int outbound = this.createRPCMessage(fbb, RpcMessage.SerialUpdateResponse, update);
-					fbb.finish(outbound);
-					conn.send(fbb.dataBuffer());
-					conn.getContext().setUseSerial(false);
-				});
+						SerialUpdateResponse.startSerialUpdateResponse(fbb);
+						SerialUpdateResponse.addClosed(fbb, true);
+						int update = SerialUpdateResponse.endSerialUpdateResponse(fbb);
+						int outbound = this.createRPCMessage(fbb, RpcMessage.SerialUpdateResponse, update);
+						fbb.finish(outbound);
+						conn.send(fbb.dataBuffer());
+						conn.getContext().setUseSerial(false);
+					});
 		});
 	}
 

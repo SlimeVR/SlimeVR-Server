@@ -59,7 +59,7 @@ public class DataFeedBuilder {
 
 		if (tracker instanceof IMUTracker) {
 			IMUTracker imuTracker = (IMUTracker) tracker;
- 			if (imuTracker.getMountingRotation() != null) {
+			if (imuTracker.getMountingRotation() != null) {
 				Quaternion quaternion = imuTracker.getMountingRotation();
 				TrackerInfo.addMountingOrientation(fbb,
 						Quat.createQuat(fbb,
@@ -86,17 +86,17 @@ public class DataFeedBuilder {
 		tracker.getRotation(quaternion);
 
 		return Quat.createQuat(fbb,
-			quaternion.getX(),
-			quaternion.getY(),
-			quaternion.getZ(),
-			quaternion.getW()
+				quaternion.getX(),
+				quaternion.getY(),
+				quaternion.getZ(),
+				quaternion.getW()
 		);
 	}
 
 	public static int createTrackerTemperature(FlatBufferBuilder fbb, Tracker tracker) {
 		if (!(tracker instanceof IMUTracker))
 			return -1;
-		IMUTracker imuTracker = (IMUTracker)tracker;
+		IMUTracker imuTracker = (IMUTracker) tracker;
 		return Temperature.createTemperature(fbb, imuTracker.temperature);
 	}
 
