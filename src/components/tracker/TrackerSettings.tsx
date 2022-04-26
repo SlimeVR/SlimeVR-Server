@@ -62,7 +62,7 @@ export function TrackerSettings({ tracker, device, children }: { tracker: Tracke
 
     return (
         <>
-            <div onClick={openSettings}>
+            <div onClick={openSettings} className="cursor-pointer">
                 {children}
             </div>
             <AppModal 
@@ -73,7 +73,7 @@ export function TrackerSettings({ tracker, device, children }: { tracker: Tracke
                 <form onSubmit={handleSubmit(handleSaveSettings)} className="flex flex-col gap-5">
                     <div className="flex flex-col gap-5">
                         <Select {...register("bodyPosition")} label="Tracker role" options={positions}></Select>
-                        <Select {...register("mountingRotation")} label="Mounting Rotation" options={rotations}></Select>
+                        <Select {...register("mountingRotation")} label="Mounting rotation" options={rotations}></Select>
                     </div>
                     <div className="flex items-center justify-between">
                         <Button variant="primary" type="submit" >Save</Button>

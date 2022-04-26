@@ -12,7 +12,7 @@ import { ResetButton } from "./ResetButton";
 
 export function MainLayoutRoute({ children }: { children: ReactChild }) {
 
-    const { layoutHeight, ref } = useLayout();
+    const { layoutHeight, ref } = useLayout<HTMLDivElement>();
   
     return (
       <>
@@ -39,7 +39,7 @@ export function MainLayoutRoute({ children }: { children: ReactChild }) {
               </div>
               <div className='flex flex-grow flex-col justify-end'>
                 {/* <Button variant='primary' className='w-full'>Debug</Button> */}
-                <NavLink to="/settings" className="flex gap-5 group cursor-pointer">
+                <NavLink to="/settings/trackers" className="flex gap-5 group cursor-pointer">
                   <div className="flex bg-primary-4 rounded-full p-2 fill-purple-300 group-hover:fill-white"><GearIcon></GearIcon></div>
                   <div className="flex flex-col justify-around text-purple-300 group-hover:text-white font-bold">Settings</div>
                 </NavLink>

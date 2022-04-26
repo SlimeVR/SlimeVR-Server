@@ -36,9 +36,9 @@ export function Navbar({ children }: { children?: ReactChild }) {
         <div data-tauri-drag-region className='flex bg-primary-1 gap-2'>
             <div className="flex px-8 py-2 pt-3 justify-around" data-tauri-drag-region>
                 <div className="flex flex-row gap-3" data-tauri-drag-region>
-                    <div className="flex justify-around flex-col select-all" data-tauri-drag-region>
-                        <SlimeVRIcon drag></SlimeVRIcon>
-                    </div>
+                    <NavLink to="/" className="flex justify-around flex-col select-all" data-tauri-drag-region>
+                        <SlimeVRIcon></SlimeVRIcon>
+                    </NavLink>
                     <div className="flex text-white text-xl justify-around flex-col font-bold" data-tauri-drag-region>SlimeVR</div>
                 </div>
             </div>

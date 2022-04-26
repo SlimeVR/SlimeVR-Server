@@ -3,15 +3,18 @@ import {
   BrowserRouter as Router,
   Routes,
   Route,
+  Outlet,
 } from "react-router-dom";
 import { Overview } from './components/Overview';
 import { BodyProportions } from './components/proportions/BodyProportions';
 import { AppContextProvider } from './components/providers/AppContext';
 import { useEffect } from 'react';
 import { DataFeedConfigT, DataFeedMessage, DeviceDataMaskT, StartDataFeedT, TrackerDataMaskT } from 'solarxr-protocol';
-import { Settings } from './components/settings/Settings';
 import { MainLayoutRoute } from './components/MainLayout';
 import { SettingsLayoutRoute } from './components/settings/SettingsLayout';
+import { TrackersSettings } from './components/settings/pages/TrackersSettings';
+import { Navbar } from './components/Navbar';
+import { Serial } from './components/settings/pages/Serial';
 
 function Layout() {
   const { sendDataFeedPacket } = useWebsocketAPI();
@@ -53,9 +56,13 @@ function Layout() {
         }/>
         <Route path="/settings" element={
             <SettingsLayoutRoute>
-              <Settings/>
+              <Outlet></Outlet>
             </SettingsLayoutRoute>
-        }/>
+        }>
+          <Route path="trackers" element={<TrackersSettings />} />
+          <Route path="serial" element={<Serial />} />
+        </Route>
+        <Route path="*" element={<Navbar></Navbar>}></Route>
       </Routes>
     </>
   )
@@ -70,7 +77,12 @@ function App() {
         <Router>
           <div className='bg-primary-1 h-full w-full overflow-hidden'>
             <div className='flex-col h-full'>
-              {!websocketAPI.isConnected && <div className='flex w-full h-full justify-center items-center text-white p-2'>Connection lost to server</div>}
+              {!websocketAPI.isConnected && (
+                <>
+                  <Navbar></Navbar>
+                  <div className='flex w-full h-full justify-center items-center text-white p-2'>Connection lost to server</div>
+                </>
+              )}
               {websocketAPI.isConnected && <Layout></Layout>}
             </div>
           </div>
