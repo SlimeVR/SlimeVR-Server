@@ -16,6 +16,9 @@ import { TrackersSettings } from './components/settings/pages/TrackersSettings';
 import { Navbar } from './components/Navbar';
 import { Serial } from './components/settings/pages/Serial';
 
+import { listen } from '@tauri-apps/api/event'
+import type { Event } from '@tauri-apps/api/event'
+
 function Layout() {
   const { sendDataFeedPacket } = useWebsocketAPI();
 
@@ -36,7 +39,7 @@ function Layout() {
     config.minimumTimeSinceLast = 100;
     config.syntheticTrackersMask = trackerData
 
-    const startDataFeed = new StartDataFeedT() 
+    const startDataFeed = new StartDataFeedT()
     startDataFeed.dataFeeds = [config]
     sendDataFeedPacket(DataFeedMessage.StartDataFeed, startDataFeed)
   }, [])
@@ -71,6 +74,25 @@ function Layout() {
 
 function App() {
   const websocketAPI = useProvideWebsocketApi();
+
+  useEffect(() => {
+    const unlisten = listen("server-stdio", (event: Event<[string, string]>) => {
+      let [event_type, s] = event.payload;
+      if ("stderr" === event_type) {
+        // This strange invocation is what lets us lose the line information in the console
+        // See more here: https://stackoverflow.com/a/48994308
+        setTimeout(console.log.bind(console, `%c[SERVER] %c${s}`, "color:cyan", "color:red"));
+      } else if ("stdout" === event_type) {
+        setTimeout(console.log.bind(console, `%c[SERVER] %c${s}`, "color:cyan", "color:green"));
+      } else if ("error" === event_type) {
+        console.error("Error: %s", s)
+      }
+      return async () => {
+        await unlisten
+      }
+    });
+  }, [])
+
   return (
     <WebSocketApiContext.Provider value={websocketAPI}>
       <AppContextProvider>
