@@ -53,7 +53,7 @@ public class WindowsNamedPipeVRBridge extends Thread implements Bridge {
 		this.shareTrackers = new FastList<>(shareTrackers);
 		this.trackerPipes = new FastList<>(shareTrackers.size());
 		this.internalTrackers = new FastList<>(shareTrackers.size());
-		for(int i = 0; i < shareTrackers.size(); ++i) {
+		for (int i = 0; i < shareTrackers.size(); ++i) {
 			Tracker t = shareTrackers.get(i);
 			ComputedTracker ct = new ComputedTracker(t.getTrackerId(), "internal://" + t.getName(), true, true);
 			ct.setStatus(TrackerStatus.OK);
@@ -65,26 +65,26 @@ public class WindowsNamedPipeVRBridge extends Thread implements Bridge {
 	public void run() {
 		try {
 			createPipes();
-			while(true) {
+			while (true) {
 				waitForPipesToOpen();
-				if(areAllPipesOpen()) {
+				if (areAllPipesOpen()) {
 					boolean hmdUpdated = updateHMD(); // Update at HMDs frequency
-					for(int i = 0; i < trackerPipes.size(); ++i) {
+					for (int i = 0; i < trackerPipes.size(); ++i) {
 						updateTracker(i, hmdUpdated);
 					}
-					if(!hmdUpdated) {
+					if (!hmdUpdated) {
 						Thread.sleep(5); // Up to 200Hz
 					}
 				}
 			}
-		} catch(Exception e) {
+		} catch (Exception e) {
 			e.printStackTrace();
 		}
 	}
 
 	@Override
 	public void dataRead() {
-		if(newHMDData.compareAndSet(true, false)) {
+		if (newHMDData.compareAndSet(true, false)) {
 			hmd.position.set(internalHMDTracker.position);
 			hmd.rotation.set(internalHMDTracker.rotation);
 			hmd.dataTick();
@@ -93,51 +93,51 @@ public class WindowsNamedPipeVRBridge extends Thread implements Bridge {
 
 	@Override
 	public void dataWrite() {
-		for(int i = 0; i < shareTrackers.size(); ++i) {
+		for (int i = 0; i < shareTrackers.size(); ++i) {
 			Tracker t = shareTrackers.get(i);
 			ComputedTracker it = this.internalTrackers.get(i);
-			if(t.getPosition(vBuffer2))
+			if (t.getPosition(vBuffer2))
 				it.position.set(vBuffer2);
-			if(t.getRotation(qBuffer2))
+			if (t.getRotation(qBuffer2))
 				it.rotation.set(qBuffer2);
 		}
 	}
 
 	private void waitForPipesToOpen() {
-		if(hmdPipe.state == PipeState.CREATED) {
-			if(tryOpeningPipe(hmdPipe))
+		if (hmdPipe.state == PipeState.CREATED) {
+			if (tryOpeningPipe(hmdPipe))
 				initHMDPipe(hmdPipe);
 		}
-		for(int i = 0; i < trackerPipes.size(); ++i) {
+		for (int i = 0; i < trackerPipes.size(); ++i) {
 			WindowsPipe trackerPipe = trackerPipes.get(i);
-			if(trackerPipe.state == PipeState.CREATED) {
-				if(tryOpeningPipe(trackerPipe))
+			if (trackerPipe.state == PipeState.CREATED) {
+				if (tryOpeningPipe(trackerPipe))
 					initTrackerPipe(trackerPipe, i);
 			}
 		}
 	}
 
 	public boolean updateHMD() throws IOException {
-		if(hmdPipe.state == PipeState.OPEN) {
+		if (hmdPipe.state == PipeState.OPEN) {
 			IntByReference bytesAvailable = new IntByReference(0);
-			if(Kernel32.INSTANCE.PeekNamedPipe(hmdPipe.pipeHandle, null, 0, null, bytesAvailable, null)) {
-				if(bytesAvailable.getValue() > 0) {
-					while(Kernel32.INSTANCE.ReadFile(hmdPipe.pipeHandle, buffArray, buffArray.length, bytesAvailable, null)) {
+			if (Kernel32.INSTANCE.PeekNamedPipe(hmdPipe.pipeHandle, null, 0, null, bytesAvailable, null)) {
+				if (bytesAvailable.getValue() > 0) {
+					while (Kernel32.INSTANCE.ReadFile(hmdPipe.pipeHandle, buffArray, buffArray.length, bytesAvailable, null)) {
 						int bytesRead = bytesAvailable.getValue();
-						for(int i = 0; i < bytesRead; ++i) {
+						for (int i = 0; i < bytesRead; ++i) {
 							char c = (char) buffArray[i];
-							if(c == '\n') {
+							if (c == '\n') {
 								executeHMDInput();
 								commandBuilder.setLength(0);
 							} else {
 								commandBuilder.append(c);
-								if(commandBuilder.length() >= MAX_COMMAND_LENGTH) {
+								if (commandBuilder.length() >= MAX_COMMAND_LENGTH) {
 									LogManager.log.severe("[VRBridge] Command from the pipe is too long, flushing buffer");
 									commandBuilder.setLength(0);
 								}
 							}
 						}
-						if(bytesRead < buffArray.length)
+						if (bytesRead < buffArray.length)
 							break; // Don't repeat, we read all available bytes
 					}
 					return true;
@@ -149,7 +149,7 @@ public class WindowsNamedPipeVRBridge extends Thread implements Bridge {
 
 	private void executeHMDInput() throws IOException {
 		String[] split = commandBuilder.toString().split(" ");
-		if(split.length < 7) {
+		if (split.length < 7) {
 			LogManager.log.severe("[VRBridge] Short HMD data received: " + commandBuilder.toString());
 			return;
 		}
@@ -166,16 +166,16 @@ public class WindowsNamedPipeVRBridge extends Thread implements Bridge {
 			internalHMDTracker.rotation.set((float) qx, (float) qy, (float) qz, (float) qw);
 			internalHMDTracker.dataTick();
 			newHMDData.set(true);
-		} catch(NumberFormatException e) {
+		} catch (NumberFormatException e) {
 			e.printStackTrace();
 		}
 	}
 
 	public void updateTracker(int trackerId, boolean hmdUpdated) {
 		Tracker sensor = internalTrackers.get(trackerId);
-		if(sensor.getStatus().sendData) {
+		if (sensor.getStatus().sendData) {
 			WindowsPipe trackerPipe = trackerPipes.get(trackerId);
-			if(hmdUpdated && trackerPipe.state == PipeState.OPEN) {
+			if (hmdUpdated && trackerPipe.state == PipeState.OPEN) {
 				sbBuffer.setLength(0);
 				sensor.getPosition(vBuffer);
 				sensor.getRotation(qBuffer);
@@ -207,7 +207,7 @@ public class WindowsNamedPipeVRBridge extends Thread implements Bridge {
 	}
 
 	private boolean tryOpeningPipe(WindowsPipe pipe) {
-		if(Kernel32.INSTANCE.ConnectNamedPipe(pipe.pipeHandle, null)) {
+		if (Kernel32.INSTANCE.ConnectNamedPipe(pipe.pipeHandle, null)) {
 			pipe.state = PipeState.OPEN;
 			LogManager.log.info("[VRBridge] Pipe " + pipe.name + " is open");
 			return true;
@@ -218,11 +218,11 @@ public class WindowsNamedPipeVRBridge extends Thread implements Bridge {
 	}
 
 	private boolean areAllPipesOpen() {
-		if(hmdPipe == null || hmdPipe.state == PipeState.CREATED) {
+		if (hmdPipe == null || hmdPipe.state == PipeState.CREATED) {
 			return false;
 		}
-		for(int i = 0; i < trackerPipes.size(); ++i) {
-			if(trackerPipes.get(i).state == PipeState.CREATED)
+		for (int i = 0; i < trackerPipes.size(); ++i) {
+			if (trackerPipes.get(i).state == PipeState.CREATED)
 				return false;
 		}
 		return true;
@@ -238,9 +238,9 @@ public class WindowsNamedPipeVRBridge extends Thread implements Bridge {
 					0, // nDefaultTimeOut,
 					null), HMDPipeName); // lpSecurityAttributes
 			LogManager.log.info("[VRBridge] Pipe " + hmdPipe.name + " created");
-			if(WinBase.INVALID_HANDLE_VALUE.equals(hmdPipe.pipeHandle))
+			if (WinBase.INVALID_HANDLE_VALUE.equals(hmdPipe.pipeHandle))
 				throw new IOException("Can't open " + HMDPipeName + " pipe: " + Kernel32.INSTANCE.GetLastError());
-			for(int i = 0; i < this.shareTrackers.size(); ++i) {
+			for (int i = 0; i < this.shareTrackers.size(); ++i) {
 				String pipeName = TrackersPipeName + i;
 				HANDLE pipeHandle = Kernel32.INSTANCE.CreateNamedPipe(pipeName, WinBase.PIPE_ACCESS_DUPLEX, // dwOpenMode
 						WinBase.PIPE_TYPE_BYTE | WinBase.PIPE_READMODE_BYTE | WinBase.PIPE_WAIT, // dwPipeMode
@@ -249,15 +249,15 @@ public class WindowsNamedPipeVRBridge extends Thread implements Bridge {
 						1024 * 16, // nInBufferSize,
 						0, // nDefaultTimeOut,
 						null); // lpSecurityAttributes
-				if(WinBase.INVALID_HANDLE_VALUE.equals(pipeHandle))
+				if (WinBase.INVALID_HANDLE_VALUE.equals(pipeHandle))
 					throw new IOException("Can't open " + pipeName + " pipe: " + Kernel32.INSTANCE.GetLastError());
 				LogManager.log.info("[VRBridge] Pipe " + pipeName + " created");
 				trackerPipes.add(new WindowsPipe(pipeHandle, pipeName));
 			}
 			LogManager.log.info("[VRBridge] Pipes are open");
-		} catch(IOException e) {
+		} catch (IOException e) {
 			safeDisconnect(hmdPipe);
-			for(int i = 0; i < trackerPipes.size(); ++i)
+			for (int i = 0; i < trackerPipes.size(); ++i)
 				safeDisconnect(trackerPipes.get(i));
 			trackerPipes.clear();
 			throw e;
@@ -266,9 +266,9 @@ public class WindowsNamedPipeVRBridge extends Thread implements Bridge {
 
 	public static void safeDisconnect(WindowsPipe pipe) {
 		try {
-			if(pipe != null && pipe.pipeHandle != null)
+			if (pipe != null && pipe.pipeHandle != null)
 				Kernel32.INSTANCE.DisconnectNamedPipe(pipe.pipeHandle);
-		} catch(Exception e) {
+		} catch (Exception e) {
 		}
 	}
 

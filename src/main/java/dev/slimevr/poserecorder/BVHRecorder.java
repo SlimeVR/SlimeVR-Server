@@ -54,7 +54,7 @@ public class BVHRecorder {
 			int recordingIndex = 1;
 			do {
 				saveRecording = new File(bvhSaveDir, "BVH-Recording" + recordingIndex++ + ".bvh");
-			} while(saveRecording.exists());
+			} while (saveRecording.exists());
 
 			return saveRecording;
 		} else {

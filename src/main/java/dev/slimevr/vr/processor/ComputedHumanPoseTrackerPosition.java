@@ -1,7 +1,7 @@
 package dev.slimevr.vr.processor;
 
 public enum ComputedHumanPoseTrackerPosition {
-	
+
 	WAIST,
 	CHEST,
 	LEFT_FOOT,

@@ -46,7 +46,8 @@ public class WebsocketAPI extends WebSocketServer implements ProtocolAPIServer {
 	}
 
 	@Override
-	public void onMessage(WebSocket conn, String message) {}
+	public void onMessage(WebSocket conn, String message) {
+	}
 
 	@Override
 	public void onMessage(WebSocket conn, ByteBuffer message) {

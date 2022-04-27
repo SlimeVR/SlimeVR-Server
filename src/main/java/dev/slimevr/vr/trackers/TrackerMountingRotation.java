@@ -4,7 +4,7 @@ import com.jme3.math.FastMath;
 import com.jme3.math.Quaternion;
 
 public enum TrackerMountingRotation {
-	
+
 	FRONT(180),
 	LEFT(90),
 	BACK(0),
@@ -13,7 +13,7 @@ public enum TrackerMountingRotation {
 	public final Quaternion quaternion;
 
 	public static final TrackerMountingRotation[] values = values();
-	
+
 	TrackerMountingRotation(float angle) {
 		this.quaternion = new Quaternion().fromAngles(0, angle * FastMath.DEG_TO_RAD, 0);
 	}

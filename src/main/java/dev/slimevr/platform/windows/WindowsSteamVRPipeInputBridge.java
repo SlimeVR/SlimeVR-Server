@@ -49,51 +49,51 @@ public class WindowsSteamVRPipeInputBridge extends Thread implements Bridge {
 	public void run() {
 		try {
 			createPipes();
-			while(true) {
+			while (true) {
 				boolean pipesUpdated = false;
-				if(pipe.state == PipeState.CREATED) {
+				if (pipe.state == PipeState.CREATED) {
 					tryOpeningPipe(pipe);
 				}
-				if(pipe.state == PipeState.OPEN) {
+				if (pipe.state == PipeState.OPEN) {
 					pipesUpdated = updatePipes();
 				}
-				if(pipe.state == PipeState.ERROR) {
+				if (pipe.state == PipeState.ERROR) {
 					resetPipe();
 				}
-				if(!pipesUpdated) {
+				if (!pipesUpdated) {
 					try {
 						Thread.sleep(5); // Up to 200Hz
-					} catch(InterruptedException e) {
+					} catch (InterruptedException e) {
 						e.printStackTrace();
 					}
 				}
 			}
-		} catch(Exception e) {
+		} catch (Exception e) {
 			e.printStackTrace();
 		}
 	}
 
 	public boolean updatePipes() throws IOException {
-		if(pipe.state == PipeState.OPEN) {
+		if (pipe.state == PipeState.OPEN) {
 			IntByReference bytesAvailable = new IntByReference(0);
-			if(Kernel32.INSTANCE.PeekNamedPipe(pipe.pipeHandle, null, 0, null, bytesAvailable, null)) {
-				if(bytesAvailable.getValue() > 0) {
-					while(Kernel32.INSTANCE.ReadFile(pipe.pipeHandle, buffArray, buffArray.length, bytesAvailable, null)) {
+			if (Kernel32.INSTANCE.PeekNamedPipe(pipe.pipeHandle, null, 0, null, bytesAvailable, null)) {
+				if (bytesAvailable.getValue() > 0) {
+					while (Kernel32.INSTANCE.ReadFile(pipe.pipeHandle, buffArray, buffArray.length, bytesAvailable, null)) {
 						int bytesRead = bytesAvailable.getValue();
-						for(int i = 0; i < bytesRead; ++i) {
+						for (int i = 0; i < bytesRead; ++i) {
 							char c = (char) buffArray[i];
-							if(c == '\n') {
+							if (c == '\n') {
 								executeInputCommand();
 								commandBuilder.setLength(0);
 							} else {
 								commandBuilder.append(c);
-								if(commandBuilder.length() >= MAX_COMMAND_LENGTH) {
+								if (commandBuilder.length() >= MAX_COMMAND_LENGTH) {
 									LogManager.log.severe("[SteamVRPipeInputBridge] Command from the pipe is too long, flushing buffer");
 									commandBuilder.setLength(0);
 								}
 							}
 						}
-						if(bytesRead < buffArray.length)
+						if (bytesRead < buffArray.length)
 							return true; // All pipe data read
 					}
 				} else {
@@ -109,30 +109,30 @@ public class WindowsSteamVRPipeInputBridge extends Thread implements Bridge {
 
 	private void executeInputCommand() throws IOException {
 		String[] command = commandBuilder.toString().split(" ");
-		switch(command[0]) {
+		switch (command[0]) {
 			case "ADD": // Add new tracker
-				if(command.length < 4) {
+				if (command.length < 4) {
 					LogManager.log.severe("[SteamVRPipeInputBridge] Error in ADD command. Command requires at least 4 arguments. Supplied: " + commandBuilder.toString());
 					return;
 				}
 				VRTracker internalTracker = new VRTracker(Integer.parseInt(command[1]), StringUtils.join(command, " ", 3, command.length), true, true);
 				int roleId = Integer.parseInt(command[2]);
-				if(roleId >= 0 && roleId < SteamVRInputRoles.values.length) {
+				if (roleId >= 0 && roleId < SteamVRInputRoles.values.length) {
 					SteamVRInputRoles svrRole = SteamVRInputRoles.values[roleId];
 					internalTracker.bodyPosition = svrRole.bodyPosition;
 				}
 				VRTracker oldTracker;
-				synchronized(trackersInternal) {
+				synchronized (trackersInternal) {
 					oldTracker = trackersInternal.put(internalTracker.getTrackerId(), internalTracker);
 				}
-				if(oldTracker != null) {
+				if (oldTracker != null) {
 					LogManager.log.severe("[SteamVRPipeInputBridge] New tracker added with the same id. Supplied: " + commandBuilder.toString());
 					return;
 				}
 				newData.set(true);
 				break;
 			case "UPD": // Update tracker data
-				if(command.length < 9) {
+				if (command.length < 9) {
 					LogManager.log.severe("[SteamVRPipeInputBridge] Error in UPD command. Command requires at least 9 arguments. Supplied: " + commandBuilder.toString());
 					return;
 				}
@@ -145,7 +145,7 @@ public class WindowsSteamVRPipeInputBridge extends Thread implements Bridge {
 				double qy = Double.parseDouble(command[7]);
 				double qz = Double.parseDouble(command[8]);
 				internalTracker = trackersInternal.get(id);
-				if(internalTracker != null) {
+				if (internalTracker != null) {
 					internalTracker.position.set((float) x, (float) y, (float) z);
 					internalTracker.rotation.set((float) qx, (float) qy, (float) qz, (float) qw);
 					internalTracker.dataTick();
@@ -153,19 +153,19 @@ public class WindowsSteamVRPipeInputBridge extends Thread implements Bridge {
 				}
 				break;
 			case "STA": // Update tracker status
-				if(command.length < 3) {
+				if (command.length < 3) {
 					LogManager.log.severe("[SteamVRPipeInputBridge] Error in STA command. Command requires at least 3 arguments. Supplied: " + commandBuilder.toString());
 					return;
 				}
 				id = Integer.parseInt(command[1]);
 				int status = Integer.parseInt(command[2]);
 				TrackerStatus st = TrackerStatus.getById(status);
-				if(st == null) {
+				if (st == null) {
 					LogManager.log.severe("[SteamVRPipeInputBridge] Unrecognized status id. Supplied: " + commandBuilder.toString());
 					return;
 				}
 				internalTracker = trackersInternal.get(id);
-				if(internalTracker != null) {
+				if (internalTracker != null) {
 					internalTracker.setStatus(st);
 					newData.set(true);
 				}
@@ -175,16 +175,17 @@ public class WindowsSteamVRPipeInputBridge extends Thread implements Bridge {
 
 	@Override
 	public void dataRead() {
-		if(newData.getAndSet(false)) {
-			if(trackers.size() < trackersInternal.size()) {
+		if (newData.getAndSet(false)) {
+			if (trackers.size() < trackersInternal.size()) {
 				// Add new trackers
-				synchronized(trackersInternal) {
+				synchronized (trackersInternal) {
 					Iterator<VRTracker> iterator = trackersInternal.values().iterator();
-					internal: while(iterator.hasNext()) {
+					internal:
+					while (iterator.hasNext()) {
 						VRTracker internalTracker = iterator.next();
-						for(int i = 0; i < trackers.size(); ++i) {
+						for (int i = 0; i < trackers.size(); ++i) {
 							VRTracker t = trackers.get(i);
-							if(t.getTrackerId() == internalTracker.getTrackerId())
+							if (t.getTrackerId() == internalTracker.getTrackerId())
 								continue internal;
 						}
 						// Tracker is not found in current trackers
@@ -195,14 +196,14 @@ public class WindowsSteamVRPipeInputBridge extends Thread implements Bridge {
 					}
 				}
 			}
-			for(int i = 0; i < trackers.size(); ++i) {
+			for (int i = 0; i < trackers.size(); ++i) {
 				VRTracker tracker = trackers.get(i);
 				VRTracker internal = trackersInternal.get(tracker.getTrackerId());
-				if(internal == null)
+				if (internal == null)
 					throw new NullPointerException("Lost internal tracker somehow: " + tracker.getTrackerId()); // Shouln't really happen even, but better to catch it like this
-				if(internal.getPosition(vBuffer))
+				if (internal.getPosition(vBuffer))
 					tracker.position.set(vBuffer);
-				if(internal.getRotation(qBuffer))
+				if (internal.getRotation(qBuffer))
 					tracker.rotation.set(qBuffer);
 				tracker.setStatus(internal.getStatus());
 				tracker.dataTick();
@@ -222,7 +223,7 @@ public class WindowsSteamVRPipeInputBridge extends Thread implements Bridge {
 	}
 
 	private boolean tryOpeningPipe(WindowsPipe pipe) {
-		if(Kernel32.INSTANCE.ConnectNamedPipe(pipe.pipeHandle, null) || Kernel32.INSTANCE.GetLastError() == WinError.ERROR_PIPE_CONNECTED) {
+		if (Kernel32.INSTANCE.ConnectNamedPipe(pipe.pipeHandle, null) || Kernel32.INSTANCE.GetLastError() == WinError.ERROR_PIPE_CONNECTED) {
 			pipe.state = PipeState.OPEN;
 			LogManager.log.info("[SteamVRPipeInputBridge] Pipe " + pipe.name + " is open");
 			return true;
@@ -242,10 +243,10 @@ public class WindowsSteamVRPipeInputBridge extends Thread implements Bridge {
 					0, // nDefaultTimeOut,
 					null), PipeName); // lpSecurityAttributes
 			LogManager.log.info("[SteamVRPipeInputBridge] Pipe " + pipe.name + " created");
-			if(WinBase.INVALID_HANDLE_VALUE.equals(pipe.pipeHandle))
+			if (WinBase.INVALID_HANDLE_VALUE.equals(pipe.pipeHandle))
 				throw new IOException("Can't open " + PipeName + " pipe: " + Kernel32.INSTANCE.GetLastError());
 			LogManager.log.info("[SteamVRPipeInputBridge] Pipes are open");
-		} catch(IOException e) {
+		} catch (IOException e) {
 			WindowsPipe.safeDisconnect(pipe);
 			throw e;
 		}

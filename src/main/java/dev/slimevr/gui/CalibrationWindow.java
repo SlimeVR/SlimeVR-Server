@@ -18,27 +18,27 @@ import dev.slimevr.vr.trackers.Tracker;
 import io.eiren.util.ann.AWTThread;
 
 public class CalibrationWindow extends JFrame {
-	
+
 	public final Tracker tracker;
 	private JTextArea currentCalibration;
 	private JTextArea newCalibration;
 	private JButton calibrateButton;
-	
+
 	public CalibrationWindow(Tracker t) {
 		super(t.getName() + " calibration");
 		this.tracker = t;
 		getContentPane().setLayout(new BoxLayout(getContentPane(), BoxLayout.LINE_AXIS));
-		
+
 		build();
 	}
-	
+
 	public void currentCalibrationReceived(String str) {
 		java.awt.EventQueue.invokeLater(() -> {
 			currentCalibration.setText(str);
 			pack();
 		});
 	}
-	
+
 	public void newCalibrationReceived(String str) {
 		java.awt.EventQueue.invokeLater(() -> {
 			calibrateButton.setText("Calibrate");
@@ -46,11 +46,11 @@ public class CalibrationWindow extends JFrame {
 			pack();
 		});
 	}
-	
+
 	@AWTThread
 	private void build() {
 		Container pane = getContentPane();
-		
+
 		pane.add(calibrateButton = new JButton("Calibrate") {{
 			addMouseListener(new MouseInputAdapter() {
 				@Override
@@ -65,7 +65,7 @@ public class CalibrationWindow extends JFrame {
 			setBorder(new EmptyBorder(i(5)));
 			add(new JLabel("Current calibration"));
 			add(currentCalibration = new JTextArea(10, 25));
-			
+
 			((CalibratingTracker) tracker).requestCalibrationData(CalibrationWindow.this::currentCalibrationReceived);
 		}});
 		pane.add(new EJBox(BoxLayout.PAGE_AXIS) {{
@@ -73,8 +73,8 @@ public class CalibrationWindow extends JFrame {
 			add(new JLabel("New calibration"));
 			add(newCalibration = new JTextArea(10, 25));
 		}});
-		
-		
+
+
 		// Pack and display
 		pack();
 		setLocationRelativeTo(null);

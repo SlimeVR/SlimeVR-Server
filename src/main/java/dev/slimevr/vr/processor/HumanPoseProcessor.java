@@ -18,12 +18,12 @@ import io.eiren.util.ann.ThreadSafe;
 import io.eiren.util.collections.FastList;
 
 public class HumanPoseProcessor {
-	
+
 	private final VRServer server;
 	private final List<ComputedHumanPoseTracker> computedTrackers = new FastList<>();
 	private final List<Consumer<HumanSkeleton>> onSkeletonUpdated = new FastList<>();
 	private HumanSkeleton skeleton;
-	
+
 	public HumanPoseProcessor(VRServer server, HMDTracker hmd) {
 		this.server = server;
 		computedTrackers.add(new ComputedHumanPoseTracker(Tracker.getNextLocalTrackerId(), ComputedHumanPoseTrackerPosition.WAIST, TrackerRole.WAIST));
@@ -37,94 +37,94 @@ public class HumanPoseProcessor {
 		computedTrackers.add(new ComputedHumanPoseTracker(Tracker.getNextLocalTrackerId(), ComputedHumanPoseTrackerPosition.LEFT_HAND, TrackerRole.LEFT_HAND));
 		computedTrackers.add(new ComputedHumanPoseTracker(Tracker.getNextLocalTrackerId(), ComputedHumanPoseTrackerPosition.RIGHT_HAND, TrackerRole.RIGHT_HAND));
 	}
-	
+
 	public HumanSkeleton getSkeleton() {
 		return skeleton;
 	}
-	
+
 	@VRServerThread
 	public void addSkeletonUpdatedCallback(Consumer<HumanSkeleton> consumer) {
 		onSkeletonUpdated.add(consumer);
-		if(skeleton != null)
+		if (skeleton != null)
 			consumer.accept(skeleton);
 	}
-	
+
 	@ThreadSafe
 	public void setSkeletonConfig(SkeletonConfigValue key, float newLength) {
-		if(skeleton != null)
+		if (skeleton != null)
 			skeleton.getSkeletonConfig().setConfig(key, newLength);
 	}
-	
+
 	@ThreadSafe
 	public void resetSkeletonConfig(SkeletonConfigValue key) {
-		if(skeleton != null)
+		if (skeleton != null)
 			skeleton.resetSkeletonConfig(key);
 	}
-	
+
 	@ThreadSafe
 	public void resetAllSkeletonConfigs() {
-		if(skeleton != null)
+		if (skeleton != null)
 			skeleton.resetAllSkeletonConfigs();
 	}
-	
+
 	@ThreadSafe
 	public SkeletonConfig getSkeletonConfig() {
 		return skeleton.getSkeletonConfig();
 	}
-	
+
 	@ThreadSafe
 	public float getSkeletonConfig(SkeletonConfigValue key) {
-		if(skeleton != null) {
+		if (skeleton != null) {
 			return skeleton.getSkeletonConfig().getConfig(key);
 		}
 		return 0.0f;
 	}
-	
+
 	@ThreadSafe
 	public List<? extends ShareableTracker> getComputedTrackers() {
 		return computedTrackers;
 	}
-	
+
 	@VRServerThread
 	public void trackerAdded(Tracker tracker) {
 		updateSekeltonModel();
 	}
-	
+
 	@VRServerThread
 	public void trackerUpdated(Tracker tracker) {
 		updateSekeltonModel();
 	}
-	
+
 	@VRServerThread
 	private void updateSekeltonModel() {
 		disconnectAllTrackers();
 		skeleton = new SimpleSkeleton(server, computedTrackers);
-		for(int i = 0; i < onSkeletonUpdated.size(); ++i)
+		for (int i = 0; i < onSkeletonUpdated.size(); ++i)
 			onSkeletonUpdated.get(i).accept(skeleton);
 	}
-	
+
 	@VRServerThread
 	private void disconnectAllTrackers() {
-		for(int i = 0; i < computedTrackers.size(); ++i) {
+		for (int i = 0; i < computedTrackers.size(); ++i) {
 			computedTrackers.get(i).setStatus(TrackerStatus.DISCONNECTED);
 		}
 	}
-	
+
 	@VRServerThread
 	public void update() {
-		if(skeleton != null)
+		if (skeleton != null)
 			skeleton.updatePose();
 	}
-	
+
 	@VRServerThread
 	public void resetTrackers() {
-		if(skeleton != null)
+		if (skeleton != null)
 			skeleton.resetTrackersFull();
 	}
-	
+
 	@VRServerThread
 	public void resetTrackersYaw() {
-		if(skeleton != null)
+		if (skeleton != null)
 			skeleton.resetTrackersYaw();
 	}
 }

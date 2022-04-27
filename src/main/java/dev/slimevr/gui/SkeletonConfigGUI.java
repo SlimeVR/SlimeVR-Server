@@ -44,30 +44,29 @@ public class SkeletonConfigGUI extends EJBagNoStretch {
 			int row = 0;
 
 			/**
-			add(new JCheckBox("Extended pelvis model") {{
-				addItemListener(new ItemListener() {
-				    @Override
-				    public void itemStateChanged(ItemEvent e) {
-				        if(e.getStateChange() == ItemEvent.SELECTED) {//checkbox has been selected
-				        	if(newSkeleton != null && newSkeleton instanceof HumanSkeletonWithLegs) {
-				        		HumanSkeletonWithLegs hswl = (HumanSkeletonWithLegs) newSkeleton;
-				        		hswl.setSkeletonConfigBoolean("Extended pelvis model", true);
-				        	}
-				        } else {
-				        	if(newSkeleton != null && newSkeleton instanceof HumanSkeletonWithLegs) {
-				        		HumanSkeletonWithLegs hswl = (HumanSkeletonWithLegs) newSkeleton;
-				        		hswl.setSkeletonConfigBoolean("Extended pelvis model", false);
-				        	}
-				        }
-				    }
-				});
-				if(newSkeleton != null && newSkeleton instanceof HumanSkeletonWithLegs) {
-	        		HumanSkeletonWithLegs hswl = (HumanSkeletonWithLegs) newSkeleton;
-	        		setSelected(hswl.getSkeletonConfigBoolean("Extended pelvis model"));
-				}
-			}}, s(c(0, row, 2), 3, 1));
-			row++;
-			//*/
+			 add(new JCheckBox("Extended pelvis model") {{
+			 addItemListener(new ItemListener() {
+			@Override public void itemStateChanged(ItemEvent e) {
+			if(e.getStateChange() == ItemEvent.SELECTED) {//checkbox has been selected
+			if(newSkeleton != null && newSkeleton instanceof HumanSkeletonWithLegs) {
+			HumanSkeletonWithLegs hswl = (HumanSkeletonWithLegs) newSkeleton;
+			hswl.setSkeletonConfigBoolean("Extended pelvis model", true);
+			}
+			} else {
+			if(newSkeleton != null && newSkeleton instanceof HumanSkeletonWithLegs) {
+			HumanSkeletonWithLegs hswl = (HumanSkeletonWithLegs) newSkeleton;
+			hswl.setSkeletonConfigBoolean("Extended pelvis model", false);
+			}
+			}
+			}
+			});
+			 if(newSkeleton != null && newSkeleton instanceof HumanSkeletonWithLegs) {
+			 HumanSkeletonWithLegs hswl = (HumanSkeletonWithLegs) newSkeleton;
+			 setSelected(hswl.getSkeletonConfigBoolean("Extended pelvis model"));
+			 }
+			 }}, s(c(0, row, 2), 3, 1));
+			 row++;
+			 //*/
 			/*
 			add(new JCheckBox("Extended knee model") {{
 				addItemListener(new ItemListener() {
@@ -105,11 +104,11 @@ public class SkeletonConfigGUI extends EJBagNoStretch {
 				});
 			}}, s(c(4, row, 2), 3, 1));
 
-			add(precisionCb = new JCheckBox("Precision adjust") , c(0, row, 2));
+			add(precisionCb = new JCheckBox("Precision adjust"), c(0, row, 2));
 			precisionCb.setSelected(false);
 
 			row++;
-			
+
 			for (SkeletonConfigValue config : SkeletonConfigValue.values) {
 				add(new JLabel(config.label), c(0, row, 2));
 				add(new AdjButton("+", config, false), c(1, row, 2));
@@ -118,13 +117,13 @@ public class SkeletonConfigGUI extends EJBagNoStretch {
 
 				// Only use a timer on configs that need time to get into position for
 				switch (config) {
-				case TORSO:
-				case LEGS_LENGTH:
-					add(new TimedResetButton("Reset", config), c(4, row, 2));
-					break;
-				default:
-					add(new ResetButton("Reset", config), c(4, row, 2));
-					break;
+					case TORSO:
+					case LEGS_LENGTH:
+						add(new TimedResetButton("Reset", config), c(4, row, 2));
+						break;
+					default:
+						add(new ResetButton("Reset", config), c(4, row, 2));
+						break;
 				}
 
 				row++;
@@ -134,15 +133,15 @@ public class SkeletonConfigGUI extends EJBagNoStretch {
 		});
 	}
 
-	float proportionsIncrement(Boolean negative){
+	float proportionsIncrement(Boolean negative) {
 		float increment = 0.01f;
-		if(negative) increment = -0.01f;
-		if(precisionCb.isSelected()) increment /= 2f;
+		if (negative) increment = -0.01f;
+		if (precisionCb.isSelected()) increment /= 2f;
 		return increment;
 	}
 
-	String getBoneLengthString(SkeletonConfigValue joint){ // Rounded to the nearest 0.5
-		return (StringUtils.prettyNumber(Math.round(server.humanPoseProcessor.getSkeletonConfig(joint) * 200) / 2.0f, 1) );
+	String getBoneLengthString(SkeletonConfigValue joint) { // Rounded to the nearest 0.5
+		return (StringUtils.prettyNumber(Math.round(server.humanPoseProcessor.getSkeletonConfig(joint) * 200) / 2.0f, 1));
 	}
 
 	@ThreadSafe

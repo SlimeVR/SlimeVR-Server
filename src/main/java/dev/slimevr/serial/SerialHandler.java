@@ -29,8 +29,8 @@ public class SerialHandler implements SerialPortMessageListener {
 		}
 
 		SerialPort[] ports = SerialPort.getCommPorts();
-		for(SerialPort port : ports) {
-			if(port.getDescriptivePortName().toLowerCase().contains("ch340") || port.getDescriptivePortName().toLowerCase().contains("cp21") || port.getDescriptivePortName().toLowerCase().contains("ch910")) {
+		for (SerialPort port : ports) {
+			if (port.getDescriptivePortName().toLowerCase().contains("ch340") || port.getDescriptivePortName().toLowerCase().contains("cp21") || port.getDescriptivePortName().toLowerCase().contains("ch910")) {
 				trackerPort = port;
 				break;
 			}
@@ -50,7 +50,7 @@ public class SerialHandler implements SerialPortMessageListener {
 	}
 
 	public void closeSerial() {
-		if(trackerPort != null)
+		if (trackerPort != null)
 			trackerPort.closePort();
 		this.listeners.forEach(SerialListener::onSerialDisconnected);
 		System.out.println("Port closed okay");
@@ -66,7 +66,7 @@ public class SerialHandler implements SerialPortMessageListener {
 		try {
 			writer.append("SET WIFI \"" + ssid + "\" \"" + passwd + "\"\n");
 			writer.flush();
-		} catch(IOException e) {
+		} catch (IOException e) {
 			addLog(e.toString() + "\n");
 			e.printStackTrace();
 		}
@@ -97,9 +97,13 @@ public class SerialHandler implements SerialPortMessageListener {
 	}
 
 	@Override
-	public byte[] getMessageDelimiter() { return new byte[] { (byte)0x0A  }; }
+	public byte[] getMessageDelimiter() {
+		return new byte[]{(byte) 0x0A};
+	}
 
 	@Override
-	public boolean delimiterIndicatesEndOfMessage() { return true; }
+	public boolean delimiterIndicatesEndOfMessage() {
+		return true;
+	}
 }
 

@@ -9,34 +9,34 @@ import java.io.OutputStream;
 import dev.slimevr.vr.processor.skeleton.HumanSkeleton;
 
 public abstract class PoseDataStream implements AutoCloseable {
-	
+
 	protected boolean closed = false;
 	protected final OutputStream outputStream;
-	
+
 	protected PoseDataStream(OutputStream outputStream) {
 		this.outputStream = outputStream;
 	}
-	
+
 	protected PoseDataStream(File file) throws FileNotFoundException {
 		this(new FileOutputStream(file));
 	}
-	
+
 	protected PoseDataStream(String file) throws FileNotFoundException {
 		this(new FileOutputStream(file));
 	}
-	
+
 	public void writeHeader(HumanSkeleton skeleton, PoseStreamer streamer) throws IOException {
 	}
-	
+
 	abstract void writeFrame(HumanSkeleton skeleton) throws IOException;
-	
+
 	public void writeFooter(HumanSkeleton skeleton) throws IOException {
 	}
-	
+
 	public boolean isClosed() {
 		return closed;
 	}
-	
+
 	@Override
 	public void close() throws IOException {
 		outputStream.close();

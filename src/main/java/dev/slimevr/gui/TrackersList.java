@@ -37,15 +37,15 @@ import io.eiren.util.ann.ThreadSafe;
 import io.eiren.util.collections.FastList;
 
 public class TrackersList extends EJBoxNoStretch {
-	
+
 	private static final long UPDATE_DELAY = 50;
-	
+
 	Quaternion q = new Quaternion();
 	Vector3f v = new Vector3f();
 	float[] angles = new float[3];
-	
+
 	private List<TrackerPanel> trackers = new FastList<>();
-	
+
 	private final VRServer server;
 	private final VRServerGUI gui;
 	private long lastUpdate = 0;
@@ -57,7 +57,7 @@ public class TrackersList extends EJBoxNoStretch {
 		this.gui = gui;
 
 		setAlignmentY(TOP_ALIGNMENT);
-		
+
 		server.addNewTrackerConsumer(this::newTrackerAdded);
 	}
 
@@ -70,22 +70,22 @@ public class TrackersList extends EJBoxNoStretch {
 	@AWTThread
 	private void build() {
 		removeAll();
-		
+
 		trackers.sort((tr1, tr2) -> getTrackerSort(tr1.t) - getTrackerSort(tr2.t));
-		
+
 		Class<? extends Tracker> currentClass = null;
-		
+
 		EJBoxNoStretch line = null;
 		boolean first = true;
-		
-		for(int i = 0; i < trackers.size(); ++i) {
+
+		for (int i = 0; i < trackers.size(); ++i) {
 			TrackerPanel tr = trackers.get(i);
 			Tracker t = tr.t;
-			if(t instanceof ReferenceAdjustedTracker)
+			if (t instanceof ReferenceAdjustedTracker)
 				t = ((ReferenceAdjustedTracker<?>) t).getTracker();
-			if(currentClass != t.getClass()) {
+			if (currentClass != t.getClass()) {
 				currentClass = t.getClass();
-				if(line != null)
+				if (line != null)
 					line.add(Box.createHorizontalGlue());
 				line = null;
 				line = new EJBoxNoStretch(BoxLayout.LINE_AXIS, false, true);
@@ -97,8 +97,8 @@ public class TrackersList extends EJBoxNoStretch {
 				add(line);
 				line = null;
 			}
-			
-			if(line == null) {
+
+			if (line == null) {
 				line = new EJBoxNoStretch(BoxLayout.LINE_AXIS, false, true);
 				add(Box.createVerticalStrut(3));
 				add(line);
@@ -109,24 +109,24 @@ public class TrackersList extends EJBoxNoStretch {
 			}
 			tr.build();
 			line.add(tr);
-			if(!first)
+			if (!first)
 				line = null;
 		}
 		validate();
 		gui.refresh();
 	}
-	
+
 	@ThreadSafe
 	public void updateTrackers() {
-		if(lastUpdate + UPDATE_DELAY > System.currentTimeMillis())
+		if (lastUpdate + UPDATE_DELAY > System.currentTimeMillis())
 			return;
 		lastUpdate = System.currentTimeMillis();
 		java.awt.EventQueue.invokeLater(() -> {
-			for(int i = 0; i < trackers.size(); ++i)
+			for (int i = 0; i < trackers.size(); ++i)
 				trackers.get(i).update();
 		});
 	}
-	
+
 	@ThreadSafe
 	public void newTrackerAdded(Tracker t) {
 		java.awt.EventQueue.invokeLater(() -> {
@@ -134,9 +134,9 @@ public class TrackersList extends EJBoxNoStretch {
 			build();
 		});
 	}
-	
+
 	private class TrackerPanel extends EJBagNoStretch {
-		
+
 		final Tracker t;
 		JLabel position;
 		JLabel rotation;
@@ -156,11 +156,11 @@ public class TrackersList extends EJBoxNoStretch {
 		JLabel rotQuat;
 		JLabel rotAdj;
 		JLabel temperature;
-		
+
 		@AWTThread
 		public TrackerPanel(Tracker t) {
 			super(false, true);
-			
+
 			this.t = t;
 		}
 
@@ -168,26 +168,26 @@ public class TrackersList extends EJBoxNoStretch {
 		@AWTThread
 		public TrackerPanel build() {
 			int row = 0;
-			
+
 			Tracker realTracker = t;
-			if(t instanceof ReferenceAdjustedTracker)
+			if (t instanceof ReferenceAdjustedTracker)
 				realTracker = ((ReferenceAdjustedTracker<? extends Tracker>) t).getTracker();
 			removeAll();
 			JLabel nameLabel;
 			add(nameLabel = new JLabel(t.getDescriptiveName()), s(c(0, row, 2, GridBagConstraints.FIRST_LINE_START), 4, 1));
 			nameLabel.setFont(nameLabel.getFont().deriveFont(Font.BOLD));
 			row++;
-			
-			if(t.userEditable()) {
+
+			if (t.userEditable()) {
 				TrackerConfig cfg = server.getTrackerConfig(t);
 				JComboBox<String> desSelect;
 				add(desSelect = new JComboBox<>(), s(c(0, row, 2, GridBagConstraints.FIRST_LINE_START), 2, 1));
-				for(TrackerPosition p : TrackerPosition.values) {
+				for (TrackerPosition p : TrackerPosition.values) {
 					desSelect.addItem(p.name());
 				}
-				if(cfg.designation != null) {
+				if (cfg.designation != null) {
 					TrackerPosition p = TrackerPosition.getByDesignation(cfg.designation);
-					if(p != null)
+					if (p != null)
 						desSelect.setSelectedItem(p.name());
 				}
 				desSelect.addActionListener(new ActionListener() {
@@ -198,11 +198,11 @@ public class TrackersList extends EJBoxNoStretch {
 						server.trackerUpdated(t);
 					}
 				});
-				if(realTracker instanceof IMUTracker) {
+				if (realTracker instanceof IMUTracker) {
 					IMUTracker imu = (IMUTracker) realTracker;
 					JComboBox<String> mountSelect;
 					add(mountSelect = new JComboBox<>(), s(c(2, row, 2, GridBagConstraints.FIRST_LINE_START), 2, 1));
-					for(TrackerMountingRotation p : TrackerMountingRotation.values) {
+					for (TrackerMountingRotation p : TrackerMountingRotation.values) {
 						mountSelect.addItem(p.name());
 					}
 
@@ -219,25 +219,25 @@ public class TrackersList extends EJBoxNoStretch {
 				}
 				row++;
 			}
-			if(t.hasRotation())
+			if (t.hasRotation())
 				add(new JLabel("Rotation"), c(0, row, 2, GridBagConstraints.FIRST_LINE_START));
-			if(t.hasPosition())
+			if (t.hasPosition())
 				add(new JLabel("Position"), c(1, row, 2, GridBagConstraints.FIRST_LINE_START));
 			add(new JLabel("TPS"), c(3, row, 2, GridBagConstraints.FIRST_LINE_START));
-			if(realTracker instanceof IMUTracker) {
+			if (realTracker instanceof IMUTracker) {
 				add(new JLabel("Ping"), c(2, row, 2, GridBagConstraints.FIRST_LINE_START));
 				add(new JLabel("Signal"), c(4, row, 2, GridBagConstraints.FIRST_LINE_START));
 			}
 			row++;
-			if(t.hasRotation())
+			if (t.hasRotation())
 				add(rotation = new JLabel("0 0 0"), c(0, row, 2, GridBagConstraints.FIRST_LINE_START));
-			if(t.hasPosition())
+			if (t.hasPosition())
 				add(position = new JLabel("0 0 0"), c(1, row, 2, GridBagConstraints.FIRST_LINE_START));
-			if(realTracker instanceof IMUTracker) {
+			if (realTracker instanceof IMUTracker) {
 				add(ping = new JLabel(""), c(2, row, 2, GridBagConstraints.FIRST_LINE_START));
 				add(signalStrength = new JLabel(""), c(4, row, 2, GridBagConstraints.FIRST_LINE_START));
 			}
-			if(realTracker instanceof TrackerWithTPS) {
+			if (realTracker instanceof TrackerWithTPS) {
 				add(tps = new JLabel("0"), c(3, row, 2, GridBagConstraints.FIRST_LINE_START));
 			} else {
 				add(new JLabel(""), c(3, row, 2, GridBagConstraints.FIRST_LINE_START));
@@ -245,21 +245,21 @@ public class TrackersList extends EJBoxNoStretch {
 			row++;
 			add(new JLabel("Status:"), c(0, row, 2, GridBagConstraints.FIRST_LINE_START));
 			add(status = new JLabel(t.getStatus().toString().toLowerCase()), c(1, row, 2, GridBagConstraints.FIRST_LINE_START));
-			if(realTracker instanceof TrackerWithBattery) {
+			if (realTracker instanceof TrackerWithBattery) {
 				add(new JLabel("Battery:"), c(2, row, 2, GridBagConstraints.FIRST_LINE_START));
 				add(bat = new JLabel("0"), c(3, row, 2, GridBagConstraints.FIRST_LINE_START));
 			}
 			row++;
 			add(new JLabel("Raw:"), c(0, row, 2, GridBagConstraints.FIRST_LINE_START));
 			add(raw = new JLabel("0 0 0"), s(c(1, row, 2, GridBagConstraints.FIRST_LINE_START), 3, 1));
-			
-			if(debug && realTracker instanceof IMUTracker) {
+
+			if (debug && realTracker instanceof IMUTracker) {
 				add(new JLabel("Quat:"), c(2, row, 2, GridBagConstraints.FIRST_LINE_START));
 				add(rotQuat = new JLabel("0"), c(3, row, 2, GridBagConstraints.FIRST_LINE_START));
 			}
 			row++;
-			
-			if(debug && realTracker instanceof IMUTracker) {
+
+			if (debug && realTracker instanceof IMUTracker) {
 				add(new JLabel("Raw mag:"), c(0, row, 2, GridBagConstraints.FIRST_LINE_START));
 				add(rawMag = new JLabel("0 0 0"), s(c(1, row, 2, GridBagConstraints.FIRST_LINE_START), 3, 1));
 				add(new JLabel("Gyro fix:"), c(2, row, 2, GridBagConstraints.FIRST_LINE_START));
@@ -276,8 +276,8 @@ public class TrackersList extends EJBoxNoStretch {
 				add(rotAdj = new JLabel("0"), c(3, row, 2, GridBagConstraints.FIRST_LINE_START));
 				row++;
 			}
-			
-			if(debug && t instanceof ReferenceAdjustedTracker) {	
+
+			if (debug && t instanceof ReferenceAdjustedTracker) {
 				add(new JLabel("Att fix:"), c(0, row, 2, GridBagConstraints.FIRST_LINE_START));
 				add(adj = new JLabel("0 0 0 0"), c(1, row, 2, GridBagConstraints.FIRST_LINE_START));
 				add(new JLabel("Yaw Fix:"), c(2, row, 2, GridBagConstraints.FIRST_LINE_START));
@@ -297,65 +297,65 @@ public class TrackersList extends EJBoxNoStretch {
 		@SuppressWarnings("unchecked")
 		@AWTThread
 		public void update() {
-			if(position == null && rotation == null)
+			if (position == null && rotation == null)
 				return;
 			Tracker realTracker = t;
-			if(t instanceof ReferenceAdjustedTracker)
+			if (t instanceof ReferenceAdjustedTracker)
 				realTracker = ((ReferenceAdjustedTracker<? extends Tracker>) t).getTracker();
 			t.getRotation(q);
 			t.getPosition(v);
 			q.toAngles(angles);
-			
-			if(position != null)
+
+			if (position != null)
 				position.setText(StringUtils.prettyNumber(v.x, 1)
 						+ " " + StringUtils.prettyNumber(v.y, 1)
 						+ " " + StringUtils.prettyNumber(v.z, 1));
-			if(rotation != null)
+			if (rotation != null)
 				rotation.setText(StringUtils.prettyNumber(angles[0] * FastMath.RAD_TO_DEG, 0)
 						+ " " + StringUtils.prettyNumber(angles[1] * FastMath.RAD_TO_DEG, 0)
 						+ " " + StringUtils.prettyNumber(angles[2] * FastMath.RAD_TO_DEG, 0));
 			status.setText(t.getStatus().toString().toLowerCase());
-			
-			if(realTracker instanceof TrackerWithTPS) {
+
+			if (realTracker instanceof TrackerWithTPS) {
 				tps.setText(StringUtils.prettyNumber(((TrackerWithTPS) realTracker).getTPS(), 1));
 			}
-			if(realTracker instanceof TrackerWithBattery) {
+			if (realTracker instanceof TrackerWithBattery) {
 				TrackerWithBattery twb = (TrackerWithBattery) realTracker;
 				float level = twb.getBatteryLevel();
 				float voltage = twb.getBatteryVoltage();
-				if(level == 0.0f) {
+				if (level == 0.0f) {
 					bat.setText(String.format("%sV", StringUtils.prettyNumber(voltage, 2)));
-				} else if(voltage == 0.0f) {
+				} else if (voltage == 0.0f) {
 					bat.setText(String.format("%d%%", Math.round(level)));
 				} else {
 					bat.setText(String.format("%d%% (%sV)", Math.round(level), StringUtils.prettyNumber(voltage, 2)));
 				}
 			}
-			if(t instanceof ReferenceAdjustedTracker) {
+			if (t instanceof ReferenceAdjustedTracker) {
 				ReferenceAdjustedTracker<Tracker> rat = (ReferenceAdjustedTracker<Tracker>) t;
-				if(adj != null) {
+				if (adj != null) {
 					rat.attachmentFix.toAngles(angles);
 					adj.setText(StringUtils.prettyNumber(angles[0] * FastMath.RAD_TO_DEG, 0)
 							+ " " + StringUtils.prettyNumber(angles[1] * FastMath.RAD_TO_DEG, 0)
 							+ " " + StringUtils.prettyNumber(angles[2] * FastMath.RAD_TO_DEG, 0));
 				}
-				if(adjYaw != null) {
+				if (adjYaw != null) {
 					rat.yawFix.toAngles(angles);
 					adjYaw.setText(StringUtils.prettyNumber(angles[0] * FastMath.RAD_TO_DEG, 0)
 							+ " " + StringUtils.prettyNumber(angles[1] * FastMath.RAD_TO_DEG, 0)
 							+ " " + StringUtils.prettyNumber(angles[2] * FastMath.RAD_TO_DEG, 0));
 				}
-				if(adjGyro != null) {
+				if (adjGyro != null) {
 					rat.gyroFix.toAngles(angles);
 					adjGyro.setText(StringUtils.prettyNumber(angles[0] * FastMath.RAD_TO_DEG, 0)
 							+ " " + StringUtils.prettyNumber(angles[1] * FastMath.RAD_TO_DEG, 0)
 							+ " " + StringUtils.prettyNumber(angles[2] * FastMath.RAD_TO_DEG, 0));
 				}
 			}
-			if(realTracker instanceof IMUTracker) {
-				if(ping != null)
+			if (realTracker instanceof IMUTracker) {
+				if (ping != null)
 					ping.setText(String.valueOf(((IMUTracker) realTracker).ping));
-				if(signalStrength != null) {
+				if (signalStrength != null) {
 					int signal = ((IMUTracker) realTracker).signalStrength;
 					if (signal == -1) {
 						signalStrength.setText("N/A");
@@ -372,39 +372,39 @@ public class TrackersList extends EJBoxNoStretch {
 			raw.setText(StringUtils.prettyNumber(angles[0] * FastMath.RAD_TO_DEG, 0)
 					+ " " + StringUtils.prettyNumber(angles[1] * FastMath.RAD_TO_DEG, 0)
 					+ " " + StringUtils.prettyNumber(angles[2] * FastMath.RAD_TO_DEG, 0));
-			if(realTracker instanceof IMUTracker) {
+			if (realTracker instanceof IMUTracker) {
 				IMUTracker imu = (IMUTracker) realTracker;
-				if(rawMag != null) {
+				if (rawMag != null) {
 					imu.rotMagQuaternion.toAngles(angles);
 					rawMag.setText(StringUtils.prettyNumber(angles[0] * FastMath.RAD_TO_DEG, 0)
 							+ " " + StringUtils.prettyNumber(angles[1] * FastMath.RAD_TO_DEG, 0)
 							+ " " + StringUtils.prettyNumber(angles[2] * FastMath.RAD_TO_DEG, 0));
 				}
-				if(calibration != null)
+				if (calibration != null)
 					calibration.setText(imu.calibrationStatus + " / " + imu.magCalibrationStatus);
-				if(magAccuracy != null)
+				if (magAccuracy != null)
 					magAccuracy.setText(StringUtils.prettyNumber(imu.magnetometerAccuracy * FastMath.RAD_TO_DEG, 1) + "°");
-				if(correction != null) {
+				if (correction != null) {
 					imu.getCorrection(q);
 					q.toAngles(angles);
 					correction.setText(StringUtils.prettyNumber(angles[0] * FastMath.RAD_TO_DEG, 0)
 							+ " " + StringUtils.prettyNumber(angles[1] * FastMath.RAD_TO_DEG, 0)
 							+ " " + StringUtils.prettyNumber(angles[2] * FastMath.RAD_TO_DEG, 0));
 				}
-				if(rotQuat != null) {
+				if (rotQuat != null) {
 					imu.rotQuaternion.toAngles(angles);
 					rotQuat.setText(StringUtils.prettyNumber(angles[0] * FastMath.RAD_TO_DEG, 0)
 							+ " " + StringUtils.prettyNumber(angles[1] * FastMath.RAD_TO_DEG, 0)
 							+ " " + StringUtils.prettyNumber(angles[2] * FastMath.RAD_TO_DEG, 0));
 				}
-				if(rotAdj != null) {
+				if (rotAdj != null) {
 					imu.rotAdjust.toAngles(angles);
 					rotAdj.setText(StringUtils.prettyNumber(angles[0] * FastMath.RAD_TO_DEG, 0)
 							+ " " + StringUtils.prettyNumber(angles[1] * FastMath.RAD_TO_DEG, 0)
 							+ " " + StringUtils.prettyNumber(angles[2] * FastMath.RAD_TO_DEG, 0));
 				}
-				if(temperature != null) {
-					if(imu.temperature == 0.0f) {
+				if (temperature != null) {
+					if (imu.temperature == 0.0f) {
 						// Can't be exact 0, so no info received
 						temperature.setText("?");
 					} else {
@@ -414,15 +414,15 @@ public class TrackersList extends EJBoxNoStretch {
 			}
 		}
 	}
-	
+
 	private static int getTrackerSort(Tracker t) {
-		if(t instanceof ReferenceAdjustedTracker)
+		if (t instanceof ReferenceAdjustedTracker)
 			t = ((ReferenceAdjustedTracker<?>) t).getTracker();
-		if(t instanceof IMUTracker)
+		if (t instanceof IMUTracker)
 			return 0;
-		if(t instanceof HMDTracker)
+		if (t instanceof HMDTracker)
 			return 100;
-		if(t instanceof ComputedTracker)
+		if (t instanceof ComputedTracker)
 			return 200;
 		return 1000;
 	}

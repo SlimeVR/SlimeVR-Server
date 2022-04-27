@@ -37,7 +37,7 @@ import io.eiren.yaml.YamlNode;
 import solarxr_protocol.datatypes.TrackerIdT;
 
 public class VRServer extends Thread {
-	
+
 	private final List<Tracker> trackers = new FastList<>();
 	public final HumanPoseProcessor humanPoseProcessor;
 	private final TrackersUDPServer trackersServer;
@@ -71,18 +71,18 @@ public class VRServer extends Thread {
 		// TODO Multiple processors
 		humanPoseProcessor = new HumanPoseProcessor(this, hmdTracker);
 		shareTrackers = humanPoseProcessor.getComputedTrackers();
-		
+
 		// Start server for SlimeVR trackers
 		trackersServer = new TrackersUDPServer(6969, "Sensors UDP server", this::registerTracker);
-		
+
 		// OpenVR bridge currently only supports Windows
-		if(OperatingSystem.getCurrentPlatform() == OperatingSystem.WINDOWS) {
-			
+		if (OperatingSystem.getCurrentPlatform() == OperatingSystem.WINDOWS) {
+
 			// Create named pipe bridge for SteamVR driver
 			WindowsNamedPipeBridge driverBridge = new WindowsNamedPipeBridge(hmdTracker, "steamvr", "SteamVR Driver Bridge", "\\\\.\\pipe\\SlimeVRDriver", shareTrackers);
 			tasks.add(() -> driverBridge.startBridge());
 			bridges.add(driverBridge);
-			
+
 			// Create named pipe bridge for SteamVR input
 			// TODO: how do we want to handle HMD input from the feeder app?
 			WindowsNamedPipeBridge feederBridge = new WindowsNamedPipeBridge(null, "steamvr_feeder", "SteamVR Feeder Bridge", "\\\\.\\pipe\\SlimeVRInput", new FastList<ShareableTracker>());
@@ -92,33 +92,32 @@ public class VRServer extends Thread {
 		}
 
 
-
 		// Create WebSocket server
 		WebSocketVRBridge wsBridge = new WebSocketVRBridge(hmdTracker, shareTrackers, this);
 		tasks.add(() -> wsBridge.startBridge());
 		bridges.add(wsBridge);
-		
+
 		// Create VMCBridge
 		try {
 			VMCBridge vmcBridge = new VMCBridge(39539, 39540, InetAddress.getLocalHost());
 			tasks.add(() -> vmcBridge.startBridge());
 			bridges.add(vmcBridge);
-		} catch(UnknownHostException e) {
+		} catch (UnknownHostException e) {
 			e.printStackTrace();
 		}
 
 
 		bvhRecorder = new BVHRecorder(this);
 
-		
+
 		registerTracker(hmdTracker);
-		for(int i = 0; i < shareTrackers.size(); ++i)
+		for (int i = 0; i < shareTrackers.size(); ++i)
 			registerTracker(shareTrackers.get(i));
 	}
-	
+
 	public boolean hasBridge(Class<? extends Bridge> bridgeClass) {
-		for(int i = 0; i < bridges.size(); ++i) {
-			if(bridgeClass.isAssignableFrom(bridges.get(i).getClass()))
+		for (int i = 0; i < bridges.size(); ++i) {
+			if (bridgeClass.isAssignableFrom(bridges.get(i).getClass()))
 				return true;
 		}
 		return false;
@@ -126,56 +125,56 @@ public class VRServer extends Thread {
 
 	@ThreadSafe
 	public <E extends Bridge> E getVRBridge(Class<E> bridgeClass) {
-		for(int i = 0; i < bridges.size(); ++i) {
+		for (int i = 0; i < bridges.size(); ++i) {
 			Bridge b = bridges.get(i);
-			if(bridgeClass.isAssignableFrom(b.getClass()))
+			if (bridgeClass.isAssignableFrom(b.getClass()))
 				return bridgeClass.cast(b);
 		}
 		return null;
 	}
-	
+
 	@ThreadSafe
 	public TrackerConfig getTrackerConfig(Tracker tracker) {
-		synchronized(configuration) {
+		synchronized (configuration) {
 			TrackerConfig config = configuration.get(tracker.getName());
-			if(config == null) {
+			if (config == null) {
 				config = new TrackerConfig(tracker);
 				configuration.put(tracker.getName(), config);
 			}
 			return config;
 		}
 	}
-	
+
 	private void loadConfig() {
 		try {
 			config.load(new FileInputStream(new File(this.configPath)));
-		} catch(FileNotFoundException e) {
+		} catch (FileNotFoundException e) {
 			// Config file didn't exist, is not an error
-		} catch(YamlException e) {
+		} catch (YamlException e) {
 			e.printStackTrace();
 		}
 		List<YamlNode> trackersConfig = config.getNodeList("trackers", null);
-		for(int i = 0; i < trackersConfig.size(); ++i) {
+		for (int i = 0; i < trackersConfig.size(); ++i) {
 			TrackerConfig cfg = new TrackerConfig(trackersConfig.get(i));
-			synchronized(configuration) {
+			synchronized (configuration) {
 				configuration.put(cfg.trackerName, cfg);
 			}
 		}
 	}
-	
+
 	public void addOnTick(Runnable runnable) {
 		this.onTick.add(runnable);
 	}
-	
+
 	@ThreadSafe
 	public void addNewTrackerConsumer(Consumer<Tracker> consumer) {
 		queueTask(() -> {
 			newTrackersConsumers.add(consumer);
-			for(int i = 0; i < trackers.size(); ++i)
+			for (int i = 0; i < trackers.size(); ++i)
 				consumer.accept(trackers.get(i));
 		});
 	}
-	
+
 	@ThreadSafe
 	public void trackerUpdated(Tracker tracker) {
 		queueTask(() -> {
@@ -197,23 +196,23 @@ public class VRServer extends Thread {
 	public synchronized void saveConfig() {
 		List<YamlNode> nodes = config.getNodeList("trackers", null);
 		List<Map<String, Object>> trackersConfig = new FastList<>(nodes.size());
-		for(int i = 0; i < nodes.size(); ++i) {
+		for (int i = 0; i < nodes.size(); ++i) {
 			trackersConfig.add(nodes.get(i).root);
 		}
 		config.setProperty("trackers", trackersConfig);
-		synchronized(configuration) {
+		synchronized (configuration) {
 			Iterator<TrackerConfig> iterator = configuration.values().iterator();
-			while(iterator.hasNext()) {
+			while (iterator.hasNext()) {
 				TrackerConfig tc = iterator.next();
 				Map<String, Object> cfg = null;
-				for(int i = 0; i < trackersConfig.size(); ++i) {
+				for (int i = 0; i < trackersConfig.size(); ++i) {
 					Map<String, Object> c = trackersConfig.get(i);
-					if(tc.trackerName.equals(c.get("name"))) {
+					if (tc.trackerName.equals(c.get("name"))) {
 						cfg = c;
 						break;
 					}
 				}
-				if(cfg == null) {
+				if (cfg == null) {
 					cfg = new HashMap<>();
 					trackersConfig.add(cfg);
 				}
@@ -223,37 +222,37 @@ public class VRServer extends Thread {
 		File cfgFile = new File(this.configPath);
 		try {
 			config.save(new FileOutputStream(cfgFile));
-		} catch(IOException e) {
+		} catch (IOException e) {
 			e.printStackTrace();
 		}
 	}
-	
+
 	@Override
 	@VRServerThread
 	public void run() {
 		trackersServer.start();
-		while(true) {
+		while (true) {
 //			final long start = System.currentTimeMillis();
 			do {
 				Runnable task = tasks.poll();
-				if(task == null)
+				if (task == null)
 					break;
 				task.run();
-			} while(true);
-			for(int i = 0; i < onTick.size(); ++i) {
+			} while (true);
+			for (int i = 0; i < onTick.size(); ++i) {
 				this.onTick.get(i).run();
 			}
-			for(int i = 0; i < bridges.size(); ++i)
+			for (int i = 0; i < bridges.size(); ++i)
 				bridges.get(i).dataRead();
-			for(int i = 0; i < trackers.size(); ++i)
+			for (int i = 0; i < trackers.size(); ++i)
 				trackers.get(i).tick();
 			humanPoseProcessor.update();
-			for(int i = 0; i < bridges.size(); ++i)
+			for (int i = 0; i < bridges.size(); ++i)
 				bridges.get(i).dataWrite();
 //			final long time = System.currentTimeMillis() - start;
 			try {
 				Thread.sleep(1); // 1000Hz
-			} catch(InterruptedException e) {
+			} catch (InterruptedException e) {
 			}
 		}
 	}
@@ -262,12 +261,12 @@ public class VRServer extends Thread {
 	public void queueTask(Runnable r) {
 		tasks.add(r);
 	}
-	
+
 	@VRServerThread
 	private void trackerAdded(Tracker tracker) {
 		humanPoseProcessor.trackerAdded(tracker);
 	}
-	
+
 	@ThreadSecure
 	public void registerTracker(Tracker tracker) {
 		TrackerConfig config = getTrackerConfig(tracker);
@@ -275,7 +274,7 @@ public class VRServer extends Thread {
 		queueTask(() -> {
 			trackers.add(tracker);
 			trackerAdded(tracker);
-			for(int i = 0; i < newTrackersConsumers.size(); ++i)
+			for (int i = 0; i < newTrackersConsumers.size(); ++i)
 				newTrackersConsumers.get(i).accept(tracker);
 		});
 	}
@@ -290,27 +289,27 @@ public class VRServer extends Thread {
 		IMUTracker imu;
 		for (Tracker t : this.getAllTrackers()) {
 			Tracker realTracker = t;
-			if(t instanceof ReferenceAdjustedTracker)
+			if (t instanceof ReferenceAdjustedTracker)
 				realTracker = ((ReferenceAdjustedTracker<? extends Tracker>) t).getTracker();
-			if(realTracker instanceof IMUTracker){
-				imu = (IMUTracker)realTracker;
+			if (realTracker instanceof IMUTracker) {
+				imu = (IMUTracker) realTracker;
 				imu.setFilter(filter.name(), amount, ticks);
 			}
 		}
 	}
-	
+
 	public void resetTrackers() {
 		queueTask(() -> {
 			humanPoseProcessor.resetTrackers();
 		});
 	}
-	
+
 	public void resetTrackersYaw() {
 		queueTask(() -> {
 			humanPoseProcessor.resetTrackersYaw();
 		});
 	}
-	
+
 	public int getTrackersCount() {
 		return trackers.size();
 	}

@@ -25,7 +25,7 @@ import io.eiren.util.logging.LogManager;
 
 public class WindowsNamedPipeBridge extends ProtobufBridge<VRTracker> implements Runnable {
 
-	private final TrackerRole[] defaultRoles = new TrackerRole[] {TrackerRole.WAIST, TrackerRole.LEFT_FOOT, TrackerRole.RIGHT_FOOT};
+	private final TrackerRole[] defaultRoles = new TrackerRole[]{TrackerRole.WAIST, TrackerRole.LEFT_FOOT, TrackerRole.RIGHT_FOOT};
 
 	private final byte[] buffArray = new byte[2048];
 
@@ -46,10 +46,10 @@ public class WindowsNamedPipeBridge extends ProtobufBridge<VRTracker> implements
 	@Override
 	@VRServerThread
 	public void startBridge() {
-		for(TrackerRole role : defaultRoles) {
+		for (TrackerRole role : defaultRoles) {
 			changeShareSettings(role, Main.vrServer.config.getBoolean("bridge." + bridgeSettingsKey + ".trackers." + role.name().toLowerCase(), true));
 		}
-		for(int i = 0; i < shareableTrackers.size(); ++i) {
+		for (int i = 0; i < shareableTrackers.size(); ++i) {
 			ShareableTracker tr = shareableTrackers.get(i);
 			TrackerRole role = tr.getTrackerRole();
 			changeShareSettings(role, Main.vrServer.config.getBoolean("bridge." + bridgeSettingsKey + ".trackers." + role.name().toLowerCase(), false));
@@ -59,9 +59,9 @@ public class WindowsNamedPipeBridge extends ProtobufBridge<VRTracker> implements
 
 	@VRServerThread
 	public boolean getShareSetting(TrackerRole role) {
-		for(int i = 0; i < shareableTrackers.size(); ++i) {
+		for (int i = 0; i < shareableTrackers.size(); ++i) {
 			ShareableTracker tr = shareableTrackers.get(i);
-			if(tr.getTrackerRole() == role) {
+			if (tr.getTrackerRole() == role) {
 				return sharedTrackers.contains(tr);
 			}
 		}
@@ -70,12 +70,12 @@ public class WindowsNamedPipeBridge extends ProtobufBridge<VRTracker> implements
 
 	@VRServerThread
 	public void changeShareSettings(TrackerRole role, boolean share) {
-		if(role == null)
+		if (role == null)
 			return;
-		for(int i = 0; i < shareableTrackers.size(); ++i) {
+		for (int i = 0; i < shareableTrackers.size(); ++i) {
 			ShareableTracker tr = shareableTrackers.get(i);
-			if(tr.getTrackerRole() == role) {
-				if(share) {
+			if (tr.getTrackerRole() == role) {
+				if (share) {
 					addSharedTracker(tr);
 				} else {
 					removeSharedTracker(tr);
@@ -91,7 +91,7 @@ public class WindowsNamedPipeBridge extends ProtobufBridge<VRTracker> implements
 	protected VRTracker createNewTracker(TrackerAdded trackerAdded) {
 		VRTracker tracker = new VRTracker(trackerAdded.getTrackerId(), trackerAdded.getTrackerSerial(), trackerAdded.getTrackerName(), true, true);
 		TrackerRole role = TrackerRole.getById(trackerAdded.getTrackerRole());
-		if(role != null) {
+		if (role != null) {
 			tracker.setBodyPosition(TrackerPosition.getByRole(role));
 		}
 		return tracker;
@@ -102,27 +102,27 @@ public class WindowsNamedPipeBridge extends ProtobufBridge<VRTracker> implements
 	public void run() {
 		try {
 			createPipe();
-			while(true) {
+			while (true) {
 				boolean pipesUpdated = false;
-				if(pipe.state == PipeState.CREATED) {
+				if (pipe.state == PipeState.CREATED) {
 					tryOpeningPipe(pipe);
 				}
-				if(pipe.state == PipeState.OPEN) {
+				if (pipe.state == PipeState.OPEN) {
 					pipesUpdated = updatePipe();
 					updateMessageQueue();
 				}
-				if(pipe.state == PipeState.ERROR) {
+				if (pipe.state == PipeState.ERROR) {
 					resetPipe();
 				}
-				if(!pipesUpdated) {
+				if (!pipesUpdated) {
 					try {
 						Thread.sleep(5); // Up to 200Hz
-					} catch(InterruptedException e) {
+					} catch (InterruptedException e) {
 						e.printStackTrace();
 					}
 				}
 			}
-		} catch(IOException e) {
+		} catch (IOException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
@@ -131,7 +131,7 @@ public class WindowsNamedPipeBridge extends ProtobufBridge<VRTracker> implements
 	@Override
 	@BridgeThread
 	protected boolean sendMessageReal(ProtobufMessage message) {
-		if(pipe.state == PipeState.OPEN) {
+		if (pipe.state == PipeState.OPEN) {
 			try {
 				int size = message.getSerializedSize();
 				CodedOutputStream os = CodedOutputStream.newInstance(buffArray, 4, size);
@@ -141,12 +141,12 @@ public class WindowsNamedPipeBridge extends ProtobufBridge<VRTracker> implements
 				buffArray[1] = (byte) ((size >> 8) & 0xFF);
 				buffArray[2] = (byte) ((size >> 16) & 0xFF);
 				buffArray[3] = (byte) ((size >> 24) & 0xFF);
-				if(Kernel32.INSTANCE.WriteFile(pipe.pipeHandle, buffArray, size, null, null)) {
+				if (Kernel32.INSTANCE.WriteFile(pipe.pipeHandle, buffArray, size, null, null)) {
 					return true;
 				}
 				pipe.state = PipeState.ERROR;
 				LogManager.log.severe("[" + bridgeName + "] Pipe error: " + Kernel32.INSTANCE.GetLastError());
-			} catch(IOException e) {
+			} catch (IOException e) {
 				e.printStackTrace();
 			}
 		}
@@ -154,19 +154,19 @@ public class WindowsNamedPipeBridge extends ProtobufBridge<VRTracker> implements
 	}
 
 	private boolean updatePipe() throws IOException {
-		if(pipe.state == PipeState.OPEN) {
+		if (pipe.state == PipeState.OPEN) {
 			boolean readAnything = false;
 			IntByReference bytesAvailable = new IntByReference(0);
-			while(Kernel32.INSTANCE.PeekNamedPipe(pipe.pipeHandle, buffArray, 4, null, bytesAvailable, null)) {
-				if(bytesAvailable.getValue() >= 4) { // Got size
+			while (Kernel32.INSTANCE.PeekNamedPipe(pipe.pipeHandle, buffArray, 4, null, bytesAvailable, null)) {
+				if (bytesAvailable.getValue() >= 4) { // Got size
 					int messageLength = (buffArray[3] << 24) | (buffArray[2] << 16) | (buffArray[1] << 8) | buffArray[0];
-					if(messageLength > 1024) { // Overflow
+					if (messageLength > 1024) { // Overflow
 						LogManager.log.severe("[" + bridgeName + "] Pipe overflow. Message length: " + messageLength);
 						pipe.state = PipeState.ERROR;
 						return readAnything;
 					}
-					if(bytesAvailable.getValue() >= messageLength) {
-						if(Kernel32.INSTANCE.ReadFile(pipe.pipeHandle, buffArray, messageLength, bytesAvailable, null)) {
+					if (bytesAvailable.getValue() >= messageLength) {
+						if (Kernel32.INSTANCE.ReadFile(pipe.pipeHandle, buffArray, messageLength, bytesAvailable, null)) {
 							ProtobufMessage message = ProtobufMessage.parser().parseFrom(buffArray, 4, messageLength - 4);
 							messageReceived(message);
 							readAnything = true;
@@ -204,17 +204,17 @@ public class WindowsNamedPipeBridge extends ProtobufBridge<VRTracker> implements
 					0, // nDefaultTimeOut,
 					null), pipeName); // lpSecurityAttributes
 			LogManager.log.info("[" + bridgeName + "] Pipe " + pipe.name + " created");
-			if(WinBase.INVALID_HANDLE_VALUE.equals(pipe.pipeHandle))
+			if (WinBase.INVALID_HANDLE_VALUE.equals(pipe.pipeHandle))
 				throw new IOException("Can't open " + pipeName + " pipe: " + Kernel32.INSTANCE.GetLastError());
 			LogManager.log.info("[" + bridgeName + "] Pipes are created");
-		} catch(IOException e) {
+		} catch (IOException e) {
 			WindowsPipe.safeDisconnect(pipe);
 			throw e;
 		}
 	}
 
 	private boolean tryOpeningPipe(WindowsPipe pipe) {
-		if(Kernel32.INSTANCE.ConnectNamedPipe(pipe.pipeHandle, null) || Kernel32.INSTANCE.GetLastError() == WinError.ERROR_PIPE_CONNECTED) {
+		if (Kernel32.INSTANCE.ConnectNamedPipe(pipe.pipeHandle, null) || Kernel32.INSTANCE.GetLastError() == WinError.ERROR_PIPE_CONNECTED) {
 			pipe.state = PipeState.OPEN;
 			LogManager.log.info("[" + bridgeName + "] Pipe " + pipe.name + " is open");
 			Main.vrServer.queueTask(this::reconnected);

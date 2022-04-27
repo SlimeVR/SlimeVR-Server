@@ -1,7 +1,7 @@
 package dev.slimevr.vr.processor.skeleton;
 
 public enum SkeletonNodeOffset {
-	
+
 	HEAD,
 	NECK,
 	CHEST,
@@ -24,8 +24,7 @@ public enum SkeletonNodeOffset {
 	LEFT_SHOULDER,
 	RIGHT_SHOULDER,
 	HAND,
-	HAND_TRACKER
-	;
-	
+	HAND_TRACKER;
+
 	public static final SkeletonNodeOffset[] values = values();
 }
