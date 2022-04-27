@@ -8,51 +8,51 @@ import java.util.concurrent.atomic.AtomicInteger;
 
 public interface Tracker {
 
-	AtomicInteger nextLocalTrackerId = new AtomicInteger();
+    AtomicInteger nextLocalTrackerId = new AtomicInteger();
 
-	static int getNextLocalTrackerId() {
-		return nextLocalTrackerId.incrementAndGet();
-	}
+    static int getNextLocalTrackerId() {
+        return nextLocalTrackerId.incrementAndGet();
+    }
 
-	boolean getPosition(Vector3f store);
+    boolean getPosition(Vector3f store);
 
-	boolean getRotation(Quaternion store);
+    boolean getRotation(Quaternion store);
 
-	String getName();
+    String getName();
 
-	TrackerStatus getStatus();
+    TrackerStatus getStatus();
 
-	void loadConfig(TrackerConfig config);
+    void loadConfig(TrackerConfig config);
 
-	void saveConfig(TrackerConfig config);
+    void saveConfig(TrackerConfig config);
 
-	float getConfidenceLevel();
+    float getConfidenceLevel();
 
-	void resetFull(Quaternion reference);
+    void resetFull(Quaternion reference);
 
-	void resetYaw(Quaternion reference);
+    void resetYaw(Quaternion reference);
 
-	void tick();
+    void tick();
 
-	TrackerPosition getBodyPosition();
+    TrackerPosition getBodyPosition();
 
-	void setBodyPosition(TrackerPosition position);
+    void setBodyPosition(TrackerPosition position);
 
-	boolean userEditable();
+    boolean userEditable();
 
-	boolean hasRotation();
+    boolean hasRotation();
 
-	boolean hasPosition();
+    boolean hasPosition();
 
-	boolean isComputed();
+    boolean isComputed();
 
-	int getTrackerId();
+    int getTrackerId();
 
-	int getTrackerNum();
+    int getTrackerNum();
 
-	Device getDevice();
+    Device getDevice();
 
-	default String getDescriptiveName() {
-		return getName();
-	}
+    default String getDescriptiveName() {
+        return getName();
+    }
 }

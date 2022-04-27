@@ -7,72 +7,72 @@ import java.io.IOException;
 
 public class PoseStreamer {
 
-	protected long frameRecordingInterval = 60L;
+    protected long frameRecordingInterval = 60L;
 
-	protected HumanSkeleton skeleton;
-	protected PoseDataStream poseFileStream;
+    protected HumanSkeleton skeleton;
+    protected PoseDataStream poseFileStream;
 
-	public PoseStreamer(HumanSkeleton skeleton) {
-		this.skeleton = skeleton;
-	}
+    public PoseStreamer(HumanSkeleton skeleton) {
+        this.skeleton = skeleton;
+    }
 
-	public synchronized void captureFrame() {
-		// Make sure the stream is open before trying to write
-		if (poseFileStream.isClosed()) {
-			return;
-		}
+    public synchronized void captureFrame() {
+        // Make sure the stream is open before trying to write
+        if (poseFileStream.isClosed()) {
+            return;
+        }
 
-		try {
-			poseFileStream.writeFrame(skeleton);
-		} catch (Exception e) {
-			// Handle any exceptions without crashing the program
-			LogManager.log.severe("[PoseStreamer] Exception while saving frame", e);
-		}
-	}
+        try {
+            poseFileStream.writeFrame(skeleton);
+        } catch (Exception e) {
+            // Handle any exceptions without crashing the program
+            LogManager.log.severe("[PoseStreamer] Exception while saving frame", e);
+        }
+    }
 
-	public synchronized long getFrameInterval() {
-		return frameRecordingInterval;
-	}
+    public synchronized long getFrameInterval() {
+        return frameRecordingInterval;
+    }
 
-	public synchronized void setFrameInterval(long intervalMs) {
-		if (intervalMs < 1) {
-			throw new IllegalArgumentException("intervalMs must at least have a value of 1");
-		}
+    public synchronized void setFrameInterval(long intervalMs) {
+        if (intervalMs < 1) {
+            throw new IllegalArgumentException("intervalMs must at least have a value of 1");
+        }
 
-		this.frameRecordingInterval = intervalMs;
-	}
+        this.frameRecordingInterval = intervalMs;
+    }
 
-	public synchronized HumanSkeleton getSkeleton() {
-		return skeleton;
-	}
+    public synchronized HumanSkeleton getSkeleton() {
+        return skeleton;
+    }
 
-	public synchronized void setOutput(PoseDataStream poseFileStream, long intervalMs) throws IOException {
-		setFrameInterval(intervalMs);
-		setOutput(poseFileStream);
-	}
+    public synchronized void setOutput(PoseDataStream poseFileStream, long intervalMs) throws IOException {
+        setFrameInterval(intervalMs);
+        setOutput(poseFileStream);
+    }
 
-	public synchronized PoseDataStream getOutput() {
-		return poseFileStream;
-	}
+    public synchronized PoseDataStream getOutput() {
+        return poseFileStream;
+    }
 
-	public synchronized void setOutput(PoseDataStream poseFileStream) throws IOException {
-		poseFileStream.writeHeader(skeleton, this);
-		this.poseFileStream = poseFileStream;
-	}
+    public synchronized void setOutput(PoseDataStream poseFileStream) throws IOException {
+        poseFileStream.writeHeader(skeleton, this);
+        this.poseFileStream = poseFileStream;
+    }
 
-	public synchronized void closeOutput() throws IOException {
-		PoseDataStream poseFileStream = this.poseFileStream;
+    public synchronized void closeOutput() throws IOException {
+        PoseDataStream poseFileStream = this.poseFileStream;
 
-		if (poseFileStream != null) {
-			closeOutput(poseFileStream);
-			this.poseFileStream = null;
-		}
-	}
+        if (poseFileStream != null) {
+            closeOutput(poseFileStream);
+            this.poseFileStream = null;
+        }
+    }
 
-	public synchronized void closeOutput(PoseDataStream poseFileStream) throws IOException {
-		if (poseFileStream != null) {
-			poseFileStream.writeFooter(skeleton);
-			poseFileStream.close();
-		}
-	}
+    public synchronized void closeOutput(PoseDataStream poseFileStream) throws IOException {
+        if (poseFileStream != null) {
+            poseFileStream.writeFooter(skeleton);
+            poseFileStream.close();
+        }
+    }
 }

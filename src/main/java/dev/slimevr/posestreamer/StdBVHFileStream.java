@@ -8,40 +8,40 @@ import java.io.OutputStream;
 
 public class StdBVHFileStream extends BVHFileStream {
 
-	public StdBVHFileStream(OutputStream outputStream) {
-		super(outputStream);
-	}
+    public StdBVHFileStream(OutputStream outputStream) {
+        super(outputStream);
+    }
 
-	public StdBVHFileStream(File file) throws FileNotFoundException {
-		super(file);
-	}
+    public StdBVHFileStream(File file) throws FileNotFoundException {
+        super(file);
+    }
 
-	public StdBVHFileStream(String file) throws FileNotFoundException {
-		super(file);
-	}
+    public StdBVHFileStream(String file) throws FileNotFoundException {
+        super(file);
+    }
 
-	@Override
-	protected TransformNodeWrapper wrapSkeletonNodes(TransformNode rootNode) {
-		TransformNode newRoot = getNodeFromHierarchy(rootNode, "Hip");
-		if (newRoot == null) {
-			return null;
-		}
+    @Override
+    protected TransformNodeWrapper wrapSkeletonNodes(TransformNode rootNode) {
+        TransformNode newRoot = getNodeFromHierarchy(rootNode, "Hip");
+        if (newRoot == null) {
+            return null;
+        }
 
-		return TransformNodeWrapper.wrapFullHierarchy(newRoot);
-	}
+        return TransformNodeWrapper.wrapFullHierarchy(newRoot);
+    }
 
-	private TransformNode getNodeFromHierarchy(TransformNode node, String name) {
-		if (node.getName().equalsIgnoreCase(name)) {
-			return node;
-		}
+    private TransformNode getNodeFromHierarchy(TransformNode node, String name) {
+        if (node.getName().equalsIgnoreCase(name)) {
+            return node;
+        }
 
-		for (TransformNode child : node.children) {
-			TransformNode result = getNodeFromHierarchy(child, name);
-			if (result != null) {
-				return result;
-			}
-		}
+        for (TransformNode child : node.children) {
+            TransformNode result = getNodeFromHierarchy(child, name);
+            if (result != null) {
+                return result;
+            }
+        }
 
-		return null;
-	}
+        return null;
+    }
 }

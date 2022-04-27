@@ -18,89 +18,89 @@ import java.util.List;
 
 public class SkeletonList extends EJBagNoStretch {
 
-	private static final long UPDATE_DELAY = 50;
-	private final VRServerGUI gui;
-	private final List<NodeStatus> nodes = new FastList<>();
-	Quaternion q = new Quaternion();
-	Vector3f v = new Vector3f();
-	float[] angles = new float[3];
-	private long lastUpdate = 0;
+    private static final long UPDATE_DELAY = 50;
+    private final VRServerGUI gui;
+    private final List<NodeStatus> nodes = new FastList<>();
+    Quaternion q = new Quaternion();
+    Vector3f v = new Vector3f();
+    float[] angles = new float[3];
+    private long lastUpdate = 0;
 
-	public SkeletonList(VRServer server, VRServerGUI gui) {
-		super(false, true);
-		this.gui = gui;
+    public SkeletonList(VRServer server, VRServerGUI gui) {
+        super(false, true);
+        this.gui = gui;
 
-		setAlignmentY(TOP_ALIGNMENT);
-		server.addSkeletonUpdatedCallback(this::skeletonUpdated);
-	}
+        setAlignmentY(TOP_ALIGNMENT);
+        server.addSkeletonUpdatedCallback(this::skeletonUpdated);
+    }
 
-	@ThreadSafe
-	public void skeletonUpdated(HumanSkeleton newSkeleton) {
-		java.awt.EventQueue.invokeLater(() -> {
-			removeAll();
-			nodes.clear();
+    @ThreadSafe
+    public void skeletonUpdated(HumanSkeleton newSkeleton) {
+        java.awt.EventQueue.invokeLater(() -> {
+            removeAll();
+            nodes.clear();
 
-			add(new JLabel("Joint"), c(0, 0, 2));
-			add(new JLabel("X"), c(1, 0, 2));
-			add(new JLabel("Y"), c(2, 0, 2));
-			add(new JLabel("Z"), c(3, 0, 2));
-			add(new JLabel("Pitch"), c(4, 0, 2));
-			add(new JLabel("Yaw"), c(5, 0, 2));
-			add(new JLabel("Roll"), c(6, 0, 2));
+            add(new JLabel("Joint"), c(0, 0, 2));
+            add(new JLabel("X"), c(1, 0, 2));
+            add(new JLabel("Y"), c(2, 0, 2));
+            add(new JLabel("Z"), c(3, 0, 2));
+            add(new JLabel("Pitch"), c(4, 0, 2));
+            add(new JLabel("Yaw"), c(5, 0, 2));
+            add(new JLabel("Roll"), c(6, 0, 2));
 
-			TransformNode[] allNodes = newSkeleton.getAllNodes();
+            TransformNode[] allNodes = newSkeleton.getAllNodes();
 
-			for (int i = 0; i < allNodes.length; i++) {
-				nodes.add(new NodeStatus(allNodes[i], i + 1));
-			}
+            for (int i = 0; i < allNodes.length; i++) {
+                nodes.add(new NodeStatus(allNodes[i], i + 1));
+            }
 
-			gui.refresh();
-		});
-	}
+            gui.refresh();
+        });
+    }
 
-	@VRServerThread
-	public void updateBones() {
-		if (lastUpdate + UPDATE_DELAY > System.currentTimeMillis())
-			return;
-		lastUpdate = System.currentTimeMillis();
-		java.awt.EventQueue.invokeLater(() -> {
-			for (int i = 0; i < nodes.size(); ++i)
-				nodes.get(i).update();
-		});
-	}
+    @VRServerThread
+    public void updateBones() {
+        if (lastUpdate + UPDATE_DELAY > System.currentTimeMillis())
+            return;
+        lastUpdate = System.currentTimeMillis();
+        java.awt.EventQueue.invokeLater(() -> {
+            for (int i = 0; i < nodes.size(); ++i)
+                nodes.get(i).update();
+        });
+    }
 
-	private class NodeStatus {
+    private class NodeStatus {
 
-		TransformNode n;
-		JLabel x;
-		JLabel y;
-		JLabel z;
-		JLabel a1;
-		JLabel a2;
-		JLabel a3;
+        TransformNode n;
+        JLabel x;
+        JLabel y;
+        JLabel z;
+        JLabel a1;
+        JLabel a2;
+        JLabel a3;
 
-		public NodeStatus(TransformNode node, int n) {
-			this.n = node;
-			add(new JLabel(node.getName()), c(0, n, 2, GridBagConstraints.FIRST_LINE_START));
-			add(x = new JLabel("0"), c(1, n, 2, GridBagConstraints.FIRST_LINE_START));
-			add(y = new JLabel("0"), c(2, n, 2, GridBagConstraints.FIRST_LINE_START));
-			add(z = new JLabel("0"), c(3, n, 2, GridBagConstraints.FIRST_LINE_START));
-			add(a1 = new JLabel("0"), c(4, n, 2, GridBagConstraints.FIRST_LINE_START));
-			add(a2 = new JLabel("0"), c(5, n, 2, GridBagConstraints.FIRST_LINE_START));
-			add(a3 = new JLabel("0"), c(6, n, 2, GridBagConstraints.FIRST_LINE_START));
-		}
+        public NodeStatus(TransformNode node, int n) {
+            this.n = node;
+            add(new JLabel(node.getName()), c(0, n, 2, GridBagConstraints.FIRST_LINE_START));
+            add(x = new JLabel("0"), c(1, n, 2, GridBagConstraints.FIRST_LINE_START));
+            add(y = new JLabel("0"), c(2, n, 2, GridBagConstraints.FIRST_LINE_START));
+            add(z = new JLabel("0"), c(3, n, 2, GridBagConstraints.FIRST_LINE_START));
+            add(a1 = new JLabel("0"), c(4, n, 2, GridBagConstraints.FIRST_LINE_START));
+            add(a2 = new JLabel("0"), c(5, n, 2, GridBagConstraints.FIRST_LINE_START));
+            add(a3 = new JLabel("0"), c(6, n, 2, GridBagConstraints.FIRST_LINE_START));
+        }
 
-		public void update() {
-			n.worldTransform.getTranslation(v);
-			n.worldTransform.getRotation(q);
-			q.toAngles(angles);
+        public void update() {
+            n.worldTransform.getTranslation(v);
+            n.worldTransform.getRotation(q);
+            q.toAngles(angles);
 
-			x.setText(StringUtils.prettyNumber(v.x, 2));
-			y.setText(StringUtils.prettyNumber(v.y, 2));
-			z.setText(StringUtils.prettyNumber(v.z, 2));
-			a1.setText(StringUtils.prettyNumber(angles[0] * FastMath.RAD_TO_DEG, 0));
-			a2.setText(StringUtils.prettyNumber(angles[1] * FastMath.RAD_TO_DEG, 0));
-			a3.setText(StringUtils.prettyNumber(angles[2] * FastMath.RAD_TO_DEG, 0));
-		}
-	}
+            x.setText(StringUtils.prettyNumber(v.x, 2));
+            y.setText(StringUtils.prettyNumber(v.y, 2));
+            z.setText(StringUtils.prettyNumber(v.z, 2));
+            a1.setText(StringUtils.prettyNumber(angles[0] * FastMath.RAD_TO_DEG, 0));
+            a2.setText(StringUtils.prettyNumber(angles[1] * FastMath.RAD_TO_DEG, 0));
+            a3.setText(StringUtils.prettyNumber(angles[2] * FastMath.RAD_TO_DEG, 0));
+        }
+    }
 }

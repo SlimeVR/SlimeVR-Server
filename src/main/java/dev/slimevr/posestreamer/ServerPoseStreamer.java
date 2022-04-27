@@ -6,24 +6,24 @@ import dev.slimevr.vr.processor.skeleton.HumanSkeleton;
 
 public class ServerPoseStreamer extends TickPoseStreamer {
 
-	protected final VRServer server;
+    protected final VRServer server;
 
-	public ServerPoseStreamer(VRServer server) {
-		super(null); // Skeleton is registered later
-		this.server = server;
+    public ServerPoseStreamer(VRServer server) {
+        super(null); // Skeleton is registered later
+        this.server = server;
 
-		// Register callbacks/events
-		server.addSkeletonUpdatedCallback(this::onSkeletonUpdated);
-		server.addOnTick(this::onTick);
-	}
+        // Register callbacks/events
+        server.addSkeletonUpdatedCallback(this::onSkeletonUpdated);
+        server.addOnTick(this::onTick);
+    }
 
-	@VRServerThread
-	public void onSkeletonUpdated(HumanSkeleton skeleton) {
-		this.skeleton = skeleton;
-	}
+    @VRServerThread
+    public void onSkeletonUpdated(HumanSkeleton skeleton) {
+        this.skeleton = skeleton;
+    }
 
-	@VRServerThread
-	public void onTick() {
-		super.doTick();
-	}
+    @VRServerThread
+    public void onTick() {
+        super.doTick();
+    }
 }
