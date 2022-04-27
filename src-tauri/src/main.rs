@@ -79,12 +79,16 @@ fn main() {
                             CommandEvent::Stderr(s) => ("stderr", s),
                             CommandEvent::Stdout(s) => ("stdout", s),
                             CommandEvent::Error(s) => ("error", s),
-                            _ => continue,
+                            CommandEvent::Terminated(s) => ("terminated", format!("{s:?}")),
+                            _ => ("other", "".to_string()),
                         };
                         app_handle
-                            .emit_all("server-stdio", emit_me)
+                            .emit_all("server-status", emit_me)
                             .expect("Failed to emit");
                     }
+                    app_handle
+                        .emit_all("server-status", ("other", "receiver cancelled"))
+                        .expect("Failed to emit");
                 });
             }
             Ok(())
