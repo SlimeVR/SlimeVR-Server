@@ -13,18 +13,18 @@ import org.java_websocket.server.WebSocketServer;
 
 import java.net.InetSocketAddress;
 import java.nio.ByteBuffer;
-import java.util.*;
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.Map;
 
 public class WebsocketAPI extends WebSocketServer implements ProtocolAPIServer {
 
-	private final Map<Integer, GenericConnection> websocketConnections = new HashMap<>();
-
 	public final VRServer server;
 	public final ProtocolAPI protocolAPI;
-
+	private final Map<Integer, GenericConnection> websocketConnections = new HashMap<>();
 
 	public WebsocketAPI(VRServer server, ProtocolAPI protocolAPI) {
-		super(new InetSocketAddress(21110), Collections.<Draft>singletonList(new Draft_6455()));
+		super(new InetSocketAddress(21110), Collections.singletonList(new Draft_6455()));
 		this.server = server;
 		this.protocolAPI = protocolAPI;
 
@@ -36,7 +36,6 @@ public class WebsocketAPI extends WebSocketServer implements ProtocolAPIServer {
 		LogManager.log.info("[WebSocketAPI] New connection from: " + conn.getRemoteSocketAddress().getAddress().getHostAddress());
 
 		this.websocketConnections.put(conn.hashCode(), new WebsocketConnection(conn));
-
 	}
 
 	@Override

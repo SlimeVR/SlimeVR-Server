@@ -1,41 +1,25 @@
 package dev.slimevr.vr.trackers.udp;
 
-import java.io.IOException;
-import java.net.DatagramPacket;
-import java.net.DatagramSocket;
-import java.net.Inet6Address;
-import java.net.InetAddress;
-import java.net.InetSocketAddress;
-import java.net.NetworkInterface;
-import java.net.SocketAddress;
-import java.net.SocketTimeoutException;
-import java.nio.ByteBuffer;
-import java.nio.ByteOrder;
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.Enumeration;
-import java.util.HashMap;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Map;
-import java.util.Random;
-import java.util.function.Consumer;
-
+import com.jme3.math.FastMath;
+import com.jme3.math.Quaternion;
+import com.jme3.math.Vector3f;
+import dev.slimevr.Main;
+import dev.slimevr.NetworkProtocol;
 import dev.slimevr.vr.trackers.IMUTracker;
 import dev.slimevr.vr.trackers.ReferenceAdjustedTracker;
 import dev.slimevr.vr.trackers.Tracker;
 import dev.slimevr.vr.trackers.TrackerStatus;
-import org.apache.commons.lang3.ArrayUtils;
-
-import com.jme3.math.FastMath;
-import com.jme3.math.Quaternion;
-import com.jme3.math.Vector3f;
-
-import dev.slimevr.Main;
-import dev.slimevr.NetworkProtocol;
 import io.eiren.util.Util;
 import io.eiren.util.collections.FastList;
 import io.eiren.util.logging.LogManager;
+import org.apache.commons.lang3.ArrayUtils;
+
+import java.io.IOException;
+import java.net.*;
+import java.nio.ByteBuffer;
+import java.nio.ByteOrder;
+import java.util.*;
+import java.util.function.Consumer;
 
 /**
  * Receives trackers data by UDP using extended owoTrack protocol.
@@ -88,6 +72,19 @@ public class TrackersUDPServer extends Thread {
 		} catch (Exception e) {
 			LogManager.log.severe("[TrackerServer] Can't enumerate network interfaces", e);
 		}
+	}
+
+	private static String packetToString(DatagramPacket packet) {
+		StringBuilder sb = new StringBuilder();
+		sb.append("DatagramPacket{");
+		sb.append(packet.getAddress().toString());
+		sb.append(packet.getPort());
+		sb.append(',');
+		sb.append(packet.getLength());
+		sb.append(',');
+		sb.append(ArrayUtils.toString(packet.getData()));
+		sb.append('}');
+		return sb.toString();
 	}
 
 	private void setUpNewConnection(DatagramPacket handshakePacket, UDPPacket3Handshake handshake) throws IOException {
@@ -239,7 +236,7 @@ public class TrackersUDPServer extends Thread {
 							if (conn.serialBuffer.length() > 0) {
 								if (conn.lastSerialUpdate + 500L < System.currentTimeMillis()) {
 									serialBuffer2.append('[').append(conn.name).append("] ").append(conn.serialBuffer);
-									System.out.println(serialBuffer2.toString());
+									System.out.println(serialBuffer2);
 									serialBuffer2.setLength(0);
 									conn.serialBuffer.setLength(0);
 								}
@@ -417,19 +414,6 @@ public class TrackersUDPServer extends Thread {
 				LogManager.log.warning("[TrackerServer] Skipped packet " + packet);
 				break;
 		}
-	}
-
-	private static String packetToString(DatagramPacket packet) {
-		StringBuilder sb = new StringBuilder();
-		sb.append("DatagramPacket{");
-		sb.append(packet.getAddress().toString());
-		sb.append(packet.getPort());
-		sb.append(',');
-		sb.append(packet.getLength());
-		sb.append(',');
-		sb.append(ArrayUtils.toString(packet.getData()));
-		sb.append('}');
-		return sb.toString();
 	}
 
 	public List<Device> getConnections() {

@@ -1,14 +1,8 @@
 package dev.slimevr.gui;
 
-import java.awt.GridBagConstraints;
-import java.util.List;
-
-import javax.swing.JLabel;
-
 import com.jme3.math.FastMath;
 import com.jme3.math.Quaternion;
 import com.jme3.math.Vector3f;
-
 import dev.slimevr.VRServer;
 import dev.slimevr.gui.swing.EJBagNoStretch;
 import dev.slimevr.util.ann.VRServerThread;
@@ -18,16 +12,18 @@ import io.eiren.util.StringUtils;
 import io.eiren.util.ann.ThreadSafe;
 import io.eiren.util.collections.FastList;
 
+import javax.swing.*;
+import java.awt.*;
+import java.util.List;
+
 public class SkeletonList extends EJBagNoStretch {
 
 	private static final long UPDATE_DELAY = 50;
-
+	private final VRServerGUI gui;
+	private final List<NodeStatus> nodes = new FastList<>();
 	Quaternion q = new Quaternion();
 	Vector3f v = new Vector3f();
 	float[] angles = new float[3];
-
-	private final VRServerGUI gui;
-	private final List<NodeStatus> nodes = new FastList<>();
 	private long lastUpdate = 0;
 
 	public SkeletonList(VRServer server, VRServerGUI gui) {

@@ -1,10 +1,6 @@
 package dev.slimevr.vr.trackers;
 
-import java.util.AbstractList;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
-import java.util.RandomAccess;
+import java.util.*;
 
 /**
  * If you use this code, please consider notifying isak at du-preez dot com
@@ -27,7 +23,7 @@ public class CircularArrayList<E>
 
 	public CircularArrayList(int capacity) {
 		n = capacity + 1;
-		buf = new ArrayList<E>(Collections.nCopies(n, (E) null));
+		buf = new ArrayList<E>(Collections.nCopies(n, null));
 	}
 
 	public int capacity() {

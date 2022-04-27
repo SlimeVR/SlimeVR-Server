@@ -1,10 +1,10 @@
 package dev.slimevr.vr.trackers;
 
-import java.nio.ByteBuffer;
-
 import dev.slimevr.VRServer;
 import dev.slimevr.vr.trackers.udp.Device;
 import dev.slimevr.vr.trackers.udp.TrackersUDPServer;
+
+import java.nio.ByteBuffer;
 
 public class MPUTracker extends IMUTracker {
 

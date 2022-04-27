@@ -38,5 +38,4 @@ public class OpenVRNativeBridge implements Bridge {
 	public void startBridge() {
 
 	}
-
 }

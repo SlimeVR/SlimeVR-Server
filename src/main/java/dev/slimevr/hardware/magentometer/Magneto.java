@@ -9,5 +9,5 @@ public interface Magneto extends Library {
 
 	void calculate(double[] data, int nlines, double nxsrej, double hm, double[] B, double[] A_1);
 
-	double calculateHnorm(double data[], int nlines);
+	double calculateHnorm(double[] data, int nlines);
 }

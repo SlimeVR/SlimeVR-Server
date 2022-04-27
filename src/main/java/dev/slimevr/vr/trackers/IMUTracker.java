@@ -3,7 +3,6 @@ package dev.slimevr.vr.trackers;
 import com.jme3.math.FastMath;
 import com.jme3.math.Quaternion;
 import com.jme3.math.Vector3f;
-
 import dev.slimevr.VRServer;
 import dev.slimevr.vr.trackers.udp.Device;
 import dev.slimevr.vr.trackers.udp.TrackersUDPServer;
@@ -19,36 +18,33 @@ public class IMUTracker implements Tracker, TrackerWithTPS, TrackerWithBattery {
 	public final Quaternion rotQuaternion = new Quaternion();
 	public final Quaternion rotMagQuaternion = new Quaternion();
 	public final Quaternion rotAdjust = new Quaternion();
+	public final Device device;
+	public final int trackerNum;
 	protected final Quaternion correction = new Quaternion();
-	protected CircularArrayList<Quaternion> previousRots;
-	private final Quaternion buffQuat = new Quaternion();
-	public int movementFilterTickCount = 0;
-	public float movementFilterAmount = 1f;
-	protected Quaternion mounting = null;
-	protected TrackerStatus status = TrackerStatus.OK;
 	protected final int trackerId;
-
 	protected final String name;
 	protected final String descriptiveName;
 	protected final TrackersUDPServer server;
 	protected final VRServer vrserver;
-	protected float confidence = 0;
-	protected float batteryVoltage = 0;
-	protected float batteryLevel = 0;
+	private final Quaternion buffQuat = new Quaternion();
+	public int movementFilterTickCount = 0;
+	public float movementFilterAmount = 1f;
 	public int calibrationStatus = 0;
 	public int magCalibrationStatus = 0;
 	public float magnetometerAccuracy = 0;
-	protected boolean magentometerCalibrated = false;
 	public boolean hasNewCorrectionData = false;
-
-	protected BufferedTimer timer = new BufferedTimer(1f);
 	public int ping = -1;
 	public int signalStrength = -1;
 	public float temperature = 0;
-	public final Device device;
-	public final int trackerNum;
-
 	public TrackerPosition bodyPosition = null;
+	protected CircularArrayList<Quaternion> previousRots;
+	protected Quaternion mounting = null;
+	protected TrackerStatus status = TrackerStatus.OK;
+	protected float confidence = 0;
+	protected float batteryVoltage = 0;
+	protected float batteryLevel = 0;
+	protected boolean magentometerCalibrated = false;
+	protected BufferedTimer timer = new BufferedTimer(1f);
 
 	public IMUTracker(Device device, int trackerId, int trackerNum, String name, String descriptiveName, TrackersUDPServer server, VRServer vrserver) {
 		this.device = device;
@@ -201,13 +197,13 @@ public class IMUTracker implements Tracker, TrackerWithTPS, TrackerWithBattery {
 		return batteryLevel;
 	}
 
+	public void setBatteryLevel(float level) {
+		this.batteryLevel = level;
+	}
+
 	@Override
 	public float getBatteryVoltage() {
 		return batteryVoltage;
-	}
-
-	public void setBatteryLevel(float level) {
-		this.batteryLevel = level;
 	}
 
 	public void setBatteryVoltage(float voltage) {
@@ -302,9 +298,15 @@ public class IMUTracker implements Tracker, TrackerWithTPS, TrackerWithBattery {
 		;
 
 		private static final CalibrationAccuracy[] byStatus = new CalibrationAccuracy[4];
+
+		static {
+			for (CalibrationAccuracy ca : values())
+				byStatus[ca.status] = ca;
+		}
+
 		public final int status;
 
-		private CalibrationAccuracy(int status) {
+		CalibrationAccuracy(int status) {
 			this.status = status;
 		}
 
@@ -312,11 +314,6 @@ public class IMUTracker implements Tracker, TrackerWithTPS, TrackerWithBattery {
 			if (status < 0 || status > 3)
 				return null;
 			return byStatus[status];
-		}
-
-		static {
-			for (CalibrationAccuracy ca : values())
-				byStatus[ca.status] = ca;
 		}
 	}
 }

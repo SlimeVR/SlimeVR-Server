@@ -1,26 +1,21 @@
 package dev.slimevr.posestreamer;
 
-import java.util.List;
-
 import com.jme3.math.Quaternion;
 import com.jme3.math.Transform;
-
 import dev.slimevr.vr.processor.TransformNode;
 import io.eiren.util.collections.FastList;
+
+import java.util.List;
 
 public class TransformNodeWrapper {
 
 	public final TransformNode wrappedNode;
-
-	protected String name;
-
 	public final Transform localTransform;
 	public final Transform worldTransform;
-
-	private boolean reversedHierarchy = false;
-
-	protected TransformNodeWrapper parent;
 	public final List<TransformNodeWrapper> children;
+	protected String name;
+	protected TransformNodeWrapper parent;
+	private boolean reversedHierarchy = false;
 
 	public TransformNodeWrapper(TransformNode nodeToWrap, String name, boolean reversedHierarchy, int initialChildCapacity) {
 		this.wrappedNode = nodeToWrap;

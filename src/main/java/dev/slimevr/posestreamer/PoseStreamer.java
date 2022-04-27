@@ -1,9 +1,9 @@
 package dev.slimevr.posestreamer;
 
-import java.io.IOException;
-
 import dev.slimevr.vr.processor.skeleton.HumanSkeleton;
 import io.eiren.util.logging.LogManager;
+
+import java.io.IOException;
 
 public class PoseStreamer {
 
@@ -30,6 +30,10 @@ public class PoseStreamer {
 		}
 	}
 
+	public synchronized long getFrameInterval() {
+		return frameRecordingInterval;
+	}
+
 	public synchronized void setFrameInterval(long intervalMs) {
 		if (intervalMs < 1) {
 			throw new IllegalArgumentException("intervalMs must at least have a value of 1");
@@ -38,17 +42,8 @@ public class PoseStreamer {
 		this.frameRecordingInterval = intervalMs;
 	}
 
-	public synchronized long getFrameInterval() {
-		return frameRecordingInterval;
-	}
-
 	public synchronized HumanSkeleton getSkeleton() {
 		return skeleton;
-	}
-
-	public synchronized void setOutput(PoseDataStream poseFileStream) throws IOException {
-		poseFileStream.writeHeader(skeleton, this);
-		this.poseFileStream = poseFileStream;
 	}
 
 	public synchronized void setOutput(PoseDataStream poseFileStream, long intervalMs) throws IOException {
@@ -58,6 +53,11 @@ public class PoseStreamer {
 
 	public synchronized PoseDataStream getOutput() {
 		return poseFileStream;
+	}
+
+	public synchronized void setOutput(PoseDataStream poseFileStream) throws IOException {
+		poseFileStream.writeHeader(skeleton, this);
+		this.poseFileStream = poseFileStream;
 	}
 
 	public synchronized void closeOutput() throws IOException {

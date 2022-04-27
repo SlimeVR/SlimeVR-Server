@@ -1,10 +1,10 @@
 package dev.slimevr.posestreamer;
 
+import dev.slimevr.vr.processor.TransformNode;
+
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.OutputStream;
-
-import dev.slimevr.vr.processor.TransformNode;
 
 public class StdBVHFileStream extends BVHFileStream {
 

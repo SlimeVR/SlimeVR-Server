@@ -1,32 +1,22 @@
 package dev.slimevr.posestreamer;
 
-import java.io.BufferedWriter;
-import java.io.File;
-import java.io.FileNotFoundException;
-import java.io.FileOutputStream;
-import java.io.IOException;
-import java.io.OutputStream;
-import java.io.OutputStreamWriter;
-
 import com.jme3.math.FastMath;
 import com.jme3.math.Quaternion;
 import com.jme3.math.Transform;
 import com.jme3.math.Vector3f;
-
-import org.apache.commons.lang3.StringUtils;
-
 import dev.slimevr.vr.processor.TransformNode;
 import dev.slimevr.vr.processor.skeleton.HumanSkeleton;
+import org.apache.commons.lang3.StringUtils;
+
+import java.io.*;
 
 public class BVHFileStream extends PoseDataStream {
 
 	private static final int LONG_MAX_VALUE_DIGITS = Long.toString(Long.MAX_VALUE).length();
 	private static final float OFFSET_SCALE = 100f;
 	private static final float POSITION_SCALE = 100f;
-
-	private long frameCount = 0;
 	private final BufferedWriter writer;
-
+	private long frameCount = 0;
 	private long frameCountOffset;
 
 	private float[] angleBuf = new float[3];
@@ -106,7 +96,7 @@ public class BVHFileStream extends PoseDataStream {
 		if (level > 0 && node.wrappedNode.getParent() != null) {
 			Vector3f offset = node.localTransform.getTranslation();
 			float reverseMultiplier = node.hasReversedHierarchy() ? -1 : 1;
-			writer.write(nextIndentLevel + "OFFSET " + Float.toString(offset.getX() * OFFSET_SCALE * reverseMultiplier) + " " + Float.toString(offset.getY() * OFFSET_SCALE * reverseMultiplier) + " " + Float.toString(offset.getZ() * OFFSET_SCALE * reverseMultiplier) + "\n");
+			writer.write(nextIndentLevel + "OFFSET " + offset.getX() * OFFSET_SCALE * reverseMultiplier + " " + offset.getY() * OFFSET_SCALE * reverseMultiplier + " " + offset.getZ() * OFFSET_SCALE * reverseMultiplier + "\n");
 		} else {
 			writer.write(nextIndentLevel + "OFFSET 0.0 0.0 0.0\n");
 		}
@@ -217,7 +207,7 @@ public class BVHFileStream extends PoseDataStream {
 		angleBuf = quatToXyzAngles(rotBuf.normalizeLocal(), angleBuf);
 
 		// Output in order of roll (Z), pitch (X), yaw (Y) (extrinsic)
-		writer.write(Float.toString(angleBuf[0] * FastMath.RAD_TO_DEG) + " " + Float.toString(angleBuf[1] * FastMath.RAD_TO_DEG) + " " + Float.toString(angleBuf[2] * FastMath.RAD_TO_DEG));
+		writer.write(angleBuf[0] * FastMath.RAD_TO_DEG + " " + angleBuf[1] * FastMath.RAD_TO_DEG + " " + angleBuf[2] * FastMath.RAD_TO_DEG);
 
 		// Get inverse rotation for child local rotations
 		if (!node.children.isEmpty()) {
@@ -246,7 +236,7 @@ public class BVHFileStream extends PoseDataStream {
 		Vector3f rootPos = rootNode.worldTransform.getTranslation();
 
 		// Write root position
-		writer.write(Float.toString(rootPos.getX() * POSITION_SCALE) + " " + Float.toString(rootPos.getY() * POSITION_SCALE) + " " + Float.toString(rootPos.getZ() * POSITION_SCALE) + " ");
+		writer.write(rootPos.getX() * POSITION_SCALE + " " + rootPos.getY() * POSITION_SCALE + " " + rootPos.getZ() * POSITION_SCALE + " ");
 		writeNodeHierarchyRotation(rootNode, null);
 
 		writer.newLine();

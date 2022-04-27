@@ -31,5 +31,4 @@ public class UDPPacket20Temperature extends UDPPacket implements SensorSpecificP
 	public int getSensorId() {
 		return sensorId;
 	}
-
 }

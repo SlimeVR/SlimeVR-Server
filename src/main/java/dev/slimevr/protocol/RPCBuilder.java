@@ -8,7 +8,6 @@ import solarxr_protocol.rpc.SkeletonPart;
 
 public class RPCBuilder {
 
-
 	public static int createSkeletonConfig(FlatBufferBuilder fbb, HumanPoseProcessor humanPoseProcessor) {
 		int[] partsOffsets = new int[SkeletonConfigValue.values().length];
 
@@ -18,9 +17,7 @@ public class RPCBuilder {
 			partsOffsets[index] = part;
 		}
 
-
 		int parts = SkeletonConfigResponse.createSkeletonPartsVector(fbb, partsOffsets);
 		return SkeletonConfigResponse.createSkeletonConfigResponse(fbb, parts);
 	}
-
 }

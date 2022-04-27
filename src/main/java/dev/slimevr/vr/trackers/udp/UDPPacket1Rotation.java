@@ -1,9 +1,9 @@
 package dev.slimevr.vr.trackers.udp;
 
+import com.jme3.math.Quaternion;
+
 import java.io.IOException;
 import java.nio.ByteBuffer;
-
-import com.jme3.math.Quaternion;
 
 public class UDPPacket1Rotation extends UDPPacket implements SensorSpecificPacket {
 

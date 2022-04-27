@@ -1,19 +1,12 @@
 package dev.slimevr.poserecorder;
 
-import java.io.BufferedInputStream;
-import java.io.BufferedOutputStream;
-import java.io.DataInputStream;
-import java.io.DataOutputStream;
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileOutputStream;
-
 import com.jme3.math.Quaternion;
 import com.jme3.math.Vector3f;
-
 import dev.slimevr.vr.trackers.TrackerPosition;
 import io.eiren.util.collections.FastList;
 import io.eiren.util.logging.LogManager;
+
+import java.io.*;
 
 public final class PoseFrameIO {
 

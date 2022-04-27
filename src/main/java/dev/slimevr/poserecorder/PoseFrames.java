@@ -1,12 +1,12 @@
 package dev.slimevr.poserecorder;
 
-import java.util.Iterator;
-import java.util.List;
-import java.util.NoSuchElementException;
-
 import dev.slimevr.vr.trackers.TrackerPosition;
 import dev.slimevr.vr.trackers.TrackerUtils;
 import io.eiren.util.collections.FastList;
+
+import java.util.Iterator;
+import java.util.List;
+import java.util.NoSuchElementException;
 
 public final class PoseFrames implements Iterable<TrackerFrame[]> {
 

@@ -30,5 +30,4 @@ public class UDPPacket11Serial extends UDPPacket {
 	public void writeData(ByteBuffer buf) throws IOException {
 		// Never sent back in current protocol
 	}
-
 }

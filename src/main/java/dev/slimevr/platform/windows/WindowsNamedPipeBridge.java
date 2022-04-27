@@ -1,14 +1,10 @@
 package dev.slimevr.platform.windows;
 
-import java.io.IOException;
-import java.util.List;
-
 import com.google.protobuf.CodedOutputStream;
 import com.sun.jna.platform.win32.Kernel32;
 import com.sun.jna.platform.win32.WinBase;
 import com.sun.jna.platform.win32.WinError;
 import com.sun.jna.ptr.IntByReference;
-
 import dev.slimevr.Main;
 import dev.slimevr.bridge.BridgeThread;
 import dev.slimevr.bridge.PipeState;
@@ -16,24 +12,21 @@ import dev.slimevr.bridge.ProtobufBridge;
 import dev.slimevr.bridge.ProtobufMessages.ProtobufMessage;
 import dev.slimevr.bridge.ProtobufMessages.TrackerAdded;
 import dev.slimevr.util.ann.VRServerThread;
-import dev.slimevr.vr.trackers.HMDTracker;
-import dev.slimevr.vr.trackers.ShareableTracker;
-import dev.slimevr.vr.trackers.TrackerPosition;
-import dev.slimevr.vr.trackers.TrackerRole;
-import dev.slimevr.vr.trackers.VRTracker;
+import dev.slimevr.vr.trackers.*;
 import io.eiren.util.logging.LogManager;
+
+import java.io.IOException;
+import java.util.List;
 
 public class WindowsNamedPipeBridge extends ProtobufBridge<VRTracker> implements Runnable {
 
-	private final TrackerRole[] defaultRoles = new TrackerRole[]{TrackerRole.WAIST, TrackerRole.LEFT_FOOT, TrackerRole.RIGHT_FOOT};
-
-	private final byte[] buffArray = new byte[2048];
-
-	protected WindowsPipe pipe;
 	protected final String pipeName;
 	protected final String bridgeSettingsKey;
 	protected final Thread runnerThread;
+	private final TrackerRole[] defaultRoles = new TrackerRole[]{TrackerRole.WAIST, TrackerRole.LEFT_FOOT, TrackerRole.RIGHT_FOOT};
+	private final byte[] buffArray = new byte[2048];
 	private final List<? extends ShareableTracker> shareableTrackers;
+	protected WindowsPipe pipe;
 
 	public WindowsNamedPipeBridge(HMDTracker hmd, String bridgeSettingsKey, String bridgeName, String pipeName, List<? extends ShareableTracker> shareableTrackers) {
 		super(bridgeName, hmd);

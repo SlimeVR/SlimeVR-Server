@@ -1,8 +1,8 @@
 package dev.slimevr.posestreamer;
 
-import java.io.IOException;
-
 import dev.slimevr.vr.processor.skeleton.HumanSkeleton;
+
+import java.io.IOException;
 
 public class TickPoseStreamer extends PoseStreamer {
 

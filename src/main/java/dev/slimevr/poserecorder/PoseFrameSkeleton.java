@@ -1,13 +1,13 @@
 package dev.slimevr.poserecorder;
 
-import java.util.List;
-import java.util.Map;
-
 import dev.slimevr.VRServer;
 import dev.slimevr.vr.processor.ComputedHumanPoseTracker;
 import dev.slimevr.vr.processor.skeleton.SimpleSkeleton;
 import dev.slimevr.vr.processor.skeleton.SkeletonConfigValue;
 import dev.slimevr.vr.trackers.Tracker;
+
+import java.util.List;
+import java.util.Map;
 
 public class PoseFrameSkeleton extends SimpleSkeleton {
 

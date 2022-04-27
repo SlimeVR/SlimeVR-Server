@@ -1,53 +1,33 @@
 package dev.slimevr.gui;
 
-import java.awt.Color;
-import java.awt.Font;
-import java.awt.GridBagConstraints;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
-import java.util.List;
-import java.util.Objects;
-
-import javax.swing.BorderFactory;
-import javax.swing.Box;
-import javax.swing.BoxLayout;
-import javax.swing.JComboBox;
-import javax.swing.JLabel;
-
 import com.jme3.math.FastMath;
 import com.jme3.math.Quaternion;
 import com.jme3.math.Vector3f;
-
 import dev.slimevr.VRServer;
 import dev.slimevr.gui.swing.EJBagNoStretch;
 import dev.slimevr.gui.swing.EJBoxNoStretch;
-import dev.slimevr.vr.trackers.ComputedTracker;
-import dev.slimevr.vr.trackers.HMDTracker;
-import dev.slimevr.vr.trackers.IMUTracker;
-import dev.slimevr.vr.trackers.ReferenceAdjustedTracker;
-import dev.slimevr.vr.trackers.Tracker;
-import dev.slimevr.vr.trackers.TrackerConfig;
-import dev.slimevr.vr.trackers.TrackerMountingRotation;
-import dev.slimevr.vr.trackers.TrackerPosition;
-import dev.slimevr.vr.trackers.TrackerWithBattery;
-import dev.slimevr.vr.trackers.TrackerWithTPS;
+import dev.slimevr.vr.trackers.*;
 import io.eiren.util.StringUtils;
 import io.eiren.util.ann.AWTThread;
 import io.eiren.util.ann.ThreadSafe;
 import io.eiren.util.collections.FastList;
 
+import javax.swing.*;
+import java.awt.*;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+import java.util.List;
+import java.util.Objects;
+
 public class TrackersList extends EJBoxNoStretch {
 
 	private static final long UPDATE_DELAY = 50;
-
+	private final VRServer server;
+	private final VRServerGUI gui;
 	Quaternion q = new Quaternion();
 	Vector3f v = new Vector3f();
 	float[] angles = new float[3];
-
-	private List<TrackerPanel> trackers = new FastList<>();
-
-	private final VRServer server;
-	private final VRServerGUI gui;
+	private final List<TrackerPanel> trackers = new FastList<>();
 	private long lastUpdate = 0;
 	private boolean debug = false;
 
@@ -59,6 +39,18 @@ public class TrackersList extends EJBoxNoStretch {
 		setAlignmentY(TOP_ALIGNMENT);
 
 		server.addNewTrackerConsumer(this::newTrackerAdded);
+	}
+
+	private static int getTrackerSort(Tracker t) {
+		if (t instanceof ReferenceAdjustedTracker)
+			t = ((ReferenceAdjustedTracker<?>) t).getTracker();
+		if (t instanceof IMUTracker)
+			return 0;
+		if (t instanceof HMDTracker)
+			return 100;
+		if (t instanceof ComputedTracker)
+			return 200;
+		return 1000;
 	}
 
 	@AWTThread
@@ -363,7 +355,7 @@ public class TrackersList extends EJBoxNoStretch {
 						// -40 dBm is excellent, -95 dBm is very poor
 						int percentage = (signal - -95) * (100 - 0) / (-40 - -95) + 0;
 						percentage = Math.max(Math.min(percentage, 100), 0);
-						signalStrength.setText(String.valueOf(percentage) + "% " + "(" + String.valueOf(signal) + " dBm" + ")");
+						signalStrength.setText(percentage + "% " + "(" + signal + " dBm" + ")");
 					}
 				}
 			}
@@ -413,17 +405,5 @@ public class TrackersList extends EJBoxNoStretch {
 				}
 			}
 		}
-	}
-
-	private static int getTrackerSort(Tracker t) {
-		if (t instanceof ReferenceAdjustedTracker)
-			t = ((ReferenceAdjustedTracker<?>) t).getTracker();
-		if (t instanceof IMUTracker)
-			return 0;
-		if (t instanceof HMDTracker)
-			return 100;
-		if (t instanceof ComputedTracker)
-			return 200;
-		return 1000;
 	}
 }

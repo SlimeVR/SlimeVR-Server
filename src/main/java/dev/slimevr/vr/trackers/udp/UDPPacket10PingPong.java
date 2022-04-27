@@ -28,5 +28,4 @@ public class UDPPacket10PingPong extends UDPPacket {
 	public void writeData(ByteBuffer buf) throws IOException {
 		buf.putInt(pingId);
 	}
-
 }

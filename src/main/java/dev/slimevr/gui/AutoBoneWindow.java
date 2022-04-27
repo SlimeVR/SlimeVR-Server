@@ -1,43 +1,31 @@
 package dev.slimevr.gui;
 
-import javax.swing.BoxLayout;
-import javax.swing.JFrame;
-import javax.swing.JLabel;
-import javax.swing.JScrollPane;
-import javax.swing.ScrollPaneConstants;
-import javax.swing.JButton;
-import javax.swing.border.EmptyBorder;
-import java.awt.event.MouseEvent;
-import java.io.File;
-import java.util.List;
-import java.util.concurrent.Future;
-
-import io.eiren.util.StringUtils;
-import io.eiren.util.ann.AWTThread;
-import io.eiren.util.collections.FastList;
-import io.eiren.util.logging.LogManager;
-
-import javax.swing.event.MouseInputAdapter;
-
-import org.apache.commons.lang3.tuple.Pair;
-
 import dev.slimevr.VRServer;
 import dev.slimevr.autobone.AutoBone;
 import dev.slimevr.gui.swing.EJBox;
 import dev.slimevr.poserecorder.PoseFrames;
-import dev.slimevr.poserecorder.PoseFrameIO;
 import dev.slimevr.poserecorder.PoseRecorder;
 import dev.slimevr.vr.processor.skeleton.SkeletonConfigValue;
+import io.eiren.util.StringUtils;
+import io.eiren.util.ann.AWTThread;
+import io.eiren.util.collections.FastList;
+import io.eiren.util.logging.LogManager;
+import org.apache.commons.lang3.tuple.Pair;
+
+import javax.swing.*;
+import javax.swing.border.EmptyBorder;
+import javax.swing.event.MouseInputAdapter;
+import java.awt.event.MouseEvent;
+import java.util.List;
+import java.util.concurrent.Future;
 
 public class AutoBoneWindow extends JFrame {
-
-	private EJBox pane;
 
 	private final transient VRServer server;
 	private final transient SkeletonConfigGUI skeletonConfig;
 	private final transient PoseRecorder poseRecorder;
 	private final transient AutoBone autoBone;
-
+	private final EJBox pane;
 	private transient Thread recordingThread = null;
 	private transient Thread saveRecordingThread = null;
 	private transient Thread autoBoneThread = null;
@@ -62,7 +50,6 @@ public class AutoBoneWindow extends JFrame {
 
 		build();
 	}
-
 
 	private float processFrames(PoseFrames frames) {
 		return autoBone.processFrames(frames, autoBone.calcInitError, autoBone.targetHeight, (epoch) -> {

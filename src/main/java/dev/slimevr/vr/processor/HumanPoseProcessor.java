@@ -1,21 +1,17 @@
 package dev.slimevr.vr.processor;
 
-import java.util.List;
-import java.util.function.Consumer;
-
 import dev.slimevr.VRServer;
 import dev.slimevr.util.ann.VRServerThread;
 import dev.slimevr.vr.processor.skeleton.HumanSkeleton;
 import dev.slimevr.vr.processor.skeleton.SimpleSkeleton;
 import dev.slimevr.vr.processor.skeleton.SkeletonConfig;
 import dev.slimevr.vr.processor.skeleton.SkeletonConfigValue;
-import dev.slimevr.vr.trackers.HMDTracker;
-import dev.slimevr.vr.trackers.ShareableTracker;
-import dev.slimevr.vr.trackers.Tracker;
-import dev.slimevr.vr.trackers.TrackerRole;
-import dev.slimevr.vr.trackers.TrackerStatus;
+import dev.slimevr.vr.trackers.*;
 import io.eiren.util.ann.ThreadSafe;
 import io.eiren.util.collections.FastList;
+
+import java.util.List;
+import java.util.function.Consumer;
 
 public class HumanPoseProcessor {
 

@@ -1,9 +1,9 @@
 package dev.slimevr.vr.trackers.udp;
 
+import dev.slimevr.vr.trackers.TrackerStatus;
+
 import java.io.IOException;
 import java.nio.ByteBuffer;
-
-import dev.slimevr.vr.trackers.TrackerStatus;
 
 public class UDPPacket15SensorInfo extends UDPPacket implements SensorSpecificPacket {
 
@@ -12,6 +12,18 @@ public class UDPPacket15SensorInfo extends UDPPacket implements SensorSpecificPa
 	public int sensorType;
 
 	public UDPPacket15SensorInfo() {
+	}
+
+	public static TrackerStatus getStatus(int sensorStatus) {
+		switch (sensorStatus) {
+			case 0:
+				return TrackerStatus.DISCONNECTED;
+			case 1:
+				return TrackerStatus.OK;
+			case 2:
+				return TrackerStatus.ERROR;
+		}
+		return null;
 	}
 
 	@Override
@@ -36,17 +48,4 @@ public class UDPPacket15SensorInfo extends UDPPacket implements SensorSpecificPa
 	public int getSensorId() {
 		return sensorId;
 	}
-
-	public static TrackerStatus getStatus(int sensorStatus) {
-		switch (sensorStatus) {
-			case 0:
-				return TrackerStatus.DISCONNECTED;
-			case 1:
-				return TrackerStatus.OK;
-			case 2:
-				return TrackerStatus.ERROR;
-		}
-		return null;
-	}
-
 }

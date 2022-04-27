@@ -1,29 +1,23 @@
 package dev.slimevr.gui;
 
-import javax.imageio.ImageIO;
-import javax.swing.*;
-import javax.swing.border.EmptyBorder;
-import javax.swing.event.MouseInputAdapter;
-
 import dev.slimevr.Main;
 import dev.slimevr.VRServer;
-import dev.slimevr.platform.windows.WindowsNamedPipeBridge;
 import dev.slimevr.gui.swing.ButtonTimer;
 import dev.slimevr.gui.swing.EJBagNoStretch;
 import dev.slimevr.gui.swing.EJBox;
 import dev.slimevr.gui.swing.EJBoxNoStretch;
+import dev.slimevr.platform.windows.WindowsNamedPipeBridge;
 import dev.slimevr.vr.trackers.TrackerRole;
 import io.eiren.util.MacOSX;
 import io.eiren.util.OperatingSystem;
 import io.eiren.util.StringUtils;
 import io.eiren.util.ann.AWTThread;
 
-import java.awt.Component;
-import java.awt.Container;
-import java.awt.Dimension;
-import java.awt.Font;
-import java.awt.GraphicsConfiguration;
-import java.awt.Rectangle;
+import javax.imageio.ImageIO;
+import javax.swing.*;
+import javax.swing.border.EmptyBorder;
+import javax.swing.event.MouseInputAdapter;
+import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.ComponentEvent;
@@ -33,8 +27,8 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
-import static javax.swing.BoxLayout.PAGE_AXIS;
 import static javax.swing.BoxLayout.LINE_AXIS;
+import static javax.swing.BoxLayout.PAGE_AXIS;
 
 public class VRServerGUI extends JFrame {
 
@@ -45,7 +39,7 @@ public class VRServerGUI extends JFrame {
 	private final TrackersFiltersGUI trackersFiltersGUI;
 	private final SkeletonList skeletonList;
 	private JButton resetButton;
-	private EJBox pane;
+	private final EJBox pane;
 
 	private float zoom = 1.5f;
 	private float initZoom = zoom;
@@ -90,7 +84,6 @@ public class VRServerGUI extends JFrame {
 		trackersFiltersGUI = new TrackersFiltersGUI(server, this);
 		this.skeletonList = new SkeletonList(server, this);
 
-
 		JScrollPane scrollPane = (JScrollPane) add(new JScrollPane(pane = new EJBox(PAGE_AXIS), ScrollPaneConstants.VERTICAL_SCROLLBAR_AS_NEEDED, ScrollPaneConstants.HORIZONTAL_SCROLLBAR_AS_NEEDED));
 		scrollPane.getVerticalScrollBar().setUnitIncrement(16);
 
@@ -114,6 +107,31 @@ public class VRServerGUI extends JFrame {
 		});
 
 		build();
+	}
+
+	private static void processNewZoom(float zoom, Component comp) {
+		if (comp.isFontSet()) {
+			Font newFont = new ScalableFont(comp.getFont(), zoom);
+			comp.setFont(newFont);
+		}
+		if (comp instanceof Container) {
+			Container cont = (Container) comp;
+			for (Component child : cont.getComponents())
+				processNewZoom(zoom, child);
+		}
+	}
+
+	private static void setDefaultFontSize(float zoom) {
+		java.util.Enumeration<Object> keys = UIManager.getDefaults().keys();
+		while (keys.hasMoreElements()) {
+			Object key = keys.nextElement();
+			Object value = UIManager.get(key);
+			if (value instanceof javax.swing.plaf.FontUIResource) {
+				javax.swing.plaf.FontUIResource f = (javax.swing.plaf.FontUIResource) value;
+				javax.swing.plaf.FontUIResource f2 = new javax.swing.plaf.FontUIResource(f.deriveFont(f.getSize() * zoom));
+				UIManager.put(key, f2);
+			}
+		}
 	}
 
 	protected void saveFrameInfo() {
@@ -320,9 +338,7 @@ public class VRServerGUI extends JFrame {
 								});
 							}
 						});
-
 					}});
-
 
 					add(Box.createVerticalStrut(10));
 				}
@@ -364,31 +380,6 @@ public class VRServerGUI extends JFrame {
 		refresh();
 		server.config.setProperty("zoom", zoom);
 		server.saveConfig();
-	}
-
-	private static void processNewZoom(float zoom, Component comp) {
-		if (comp.isFontSet()) {
-			Font newFont = new ScalableFont(comp.getFont(), zoom);
-			comp.setFont(newFont);
-		}
-		if (comp instanceof Container) {
-			Container cont = (Container) comp;
-			for (Component child : cont.getComponents())
-				processNewZoom(zoom, child);
-		}
-	}
-
-	private static void setDefaultFontSize(float zoom) {
-		java.util.Enumeration<Object> keys = UIManager.getDefaults().keys();
-		while (keys.hasMoreElements()) {
-			Object key = keys.nextElement();
-			Object value = UIManager.get(key);
-			if (value instanceof javax.swing.plaf.FontUIResource) {
-				javax.swing.plaf.FontUIResource f = (javax.swing.plaf.FontUIResource) value;
-				javax.swing.plaf.FontUIResource f2 = new javax.swing.plaf.FontUIResource(f.deriveFont(f.getSize() * zoom));
-				UIManager.put(key, f2);
-			}
-		}
 	}
 
 	@AWTThread

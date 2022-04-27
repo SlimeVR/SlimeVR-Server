@@ -1,13 +1,7 @@
 package dev.slimevr.gui.swing;
 
-import java.awt.Component;
-import java.awt.Dimension;
-import java.awt.GridBagConstraints;
-import java.awt.Insets;
-import java.awt.LayoutManager;
-
-import javax.swing.Box;
-import javax.swing.JPanel;
+import javax.swing.*;
+import java.awt.*;
 
 public abstract class EJPanel extends JPanel {
 

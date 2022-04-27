@@ -1,35 +1,30 @@
 package dev.slimevr.platform.windows;
 
-import java.io.IOException;
-import java.nio.charset.Charset;
-import java.util.List;
-import java.util.concurrent.atomic.AtomicBoolean;
-
 import com.jme3.math.Quaternion;
 import com.jme3.math.Vector3f;
 import com.sun.jna.platform.win32.Kernel32;
 import com.sun.jna.platform.win32.WinBase;
 import com.sun.jna.platform.win32.WinNT.HANDLE;
 import com.sun.jna.ptr.IntByReference;
-
 import dev.slimevr.VRServer;
 import dev.slimevr.bridge.Bridge;
 import dev.slimevr.bridge.PipeState;
-import dev.slimevr.vr.trackers.ComputedTracker;
-import dev.slimevr.vr.trackers.HMDTracker;
-import dev.slimevr.vr.trackers.ShareableTracker;
-import dev.slimevr.vr.trackers.Tracker;
-import dev.slimevr.vr.trackers.TrackerStatus;
+import dev.slimevr.vr.trackers.*;
 import io.eiren.util.collections.FastList;
 import io.eiren.util.logging.LogManager;
 
+import java.io.IOException;
+import java.nio.charset.Charset;
+import java.nio.charset.StandardCharsets;
+import java.util.List;
+import java.util.concurrent.atomic.AtomicBoolean;
+
 public class WindowsNamedPipeVRBridge extends Thread implements Bridge {
 
-	private static final int MAX_COMMAND_LENGTH = 2048;
 	public static final String HMDPipeName = "\\\\.\\pipe\\HMDPipe";
 	public static final String TrackersPipeName = "\\\\.\\pipe\\TrackPipe";
-	public static final Charset ASCII = Charset.forName("ASCII");
-
+	public static final Charset ASCII = StandardCharsets.US_ASCII;
+	private static final int MAX_COMMAND_LENGTH = 2048;
 	private final byte[] buffArray = new byte[1024];
 	private final StringBuilder commandBuilder = new StringBuilder(1024);
 	private final StringBuilder sbBuffer = new StringBuilder(1024);
@@ -37,15 +32,13 @@ public class WindowsNamedPipeVRBridge extends Thread implements Bridge {
 	private final Vector3f vBuffer2 = new Vector3f();
 	private final Quaternion qBuffer = new Quaternion();
 	private final Quaternion qBuffer2 = new Quaternion();
-
-	private WindowsPipe hmdPipe;
 	private final HMDTracker hmd;
 	private final List<WindowsPipe> trackerPipes;
 	private final List<? extends Tracker> shareTrackers;
 	private final List<ComputedTracker> internalTrackers;
-
 	private final HMDTracker internalHMDTracker = new HMDTracker("internal://HMD");
 	private final AtomicBoolean newHMDData = new AtomicBoolean(false);
+	private WindowsPipe hmdPipe;
 
 	public WindowsNamedPipeVRBridge(HMDTracker hmd, List<? extends Tracker> shareTrackers, VRServer server) {
 		super("Named Pipe VR Bridge");
@@ -58,6 +51,14 @@ public class WindowsNamedPipeVRBridge extends Thread implements Bridge {
 			ComputedTracker ct = new ComputedTracker(t.getTrackerId(), "internal://" + t.getName(), true, true);
 			ct.setStatus(TrackerStatus.OK);
 			this.internalTrackers.add(ct);
+		}
+	}
+
+	public static void safeDisconnect(WindowsPipe pipe) {
+		try {
+			if (pipe != null && pipe.pipeHandle != null)
+				Kernel32.INSTANCE.DisconnectNamedPipe(pipe.pipeHandle);
+		} catch (Exception e) {
 		}
 	}
 
@@ -150,7 +151,7 @@ public class WindowsNamedPipeVRBridge extends Thread implements Bridge {
 	private void executeHMDInput() throws IOException {
 		String[] split = commandBuilder.toString().split(" ");
 		if (split.length < 7) {
-			LogManager.log.severe("[VRBridge] Short HMD data received: " + commandBuilder.toString());
+			LogManager.log.severe("[VRBridge] Short HMD data received: " + commandBuilder);
 			return;
 		}
 		try {
@@ -261,14 +262,6 @@ public class WindowsNamedPipeVRBridge extends Thread implements Bridge {
 				safeDisconnect(trackerPipes.get(i));
 			trackerPipes.clear();
 			throw e;
-		}
-	}
-
-	public static void safeDisconnect(WindowsPipe pipe) {
-		try {
-			if (pipe != null && pipe.pipeHandle != null)
-				Kernel32.INSTANCE.DisconnectNamedPipe(pipe.pipeHandle);
-		} catch (Exception e) {
 		}
 	}
 

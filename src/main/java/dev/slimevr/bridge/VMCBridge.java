@@ -1,8 +1,8 @@
 package dev.slimevr.bridge;
 
-import java.net.InetAddress;
-
 import dev.slimevr.vr.trackers.ShareableTracker;
+
+import java.net.InetAddress;
 
 public class VMCBridge extends Thread implements Bridge {
 
@@ -47,5 +47,4 @@ public class VMCBridge extends Thread implements Bridge {
 	public void startBridge() {
 		start();
 	}
-
 }

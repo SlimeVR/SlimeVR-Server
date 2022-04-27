@@ -3,6 +3,7 @@ package dev.slimevr.vr.trackers.udp;
 import java.io.IOException;
 import java.io.UnsupportedEncodingException;
 import java.nio.ByteBuffer;
+import java.nio.charset.StandardCharsets;
 
 public class UDPProtocolParser {
 
@@ -31,6 +32,12 @@ public class UDPProtocolParser {
 	public static final int PACKET_PROTOCOL_CHANGE = 200;
 
 	private static final byte[] HANDSHAKE_BUFFER = new byte[64];
+
+	static {
+		HANDSHAKE_BUFFER[0] = 3;
+		byte[] str = "Hey OVR =D 5".getBytes(StandardCharsets.US_ASCII);
+		System.arraycopy(str, 0, HANDSHAKE_BUFFER, 1, str.length);
+	}
 
 	public UDPProtocolParser() {
 	}
@@ -104,15 +111,5 @@ public class UDPProtocolParser {
 				return new UDPPacket200ProtocolChange();
 		}
 		return null;
-	}
-
-	static {
-		try {
-			HANDSHAKE_BUFFER[0] = 3;
-			byte[] str = "Hey OVR =D 5".getBytes("ASCII");
-			System.arraycopy(str, 0, HANDSHAKE_BUFFER, 1, str.length);
-		} catch (UnsupportedEncodingException e) {
-			throw new AssertionError(e);
-		}
 	}
 }

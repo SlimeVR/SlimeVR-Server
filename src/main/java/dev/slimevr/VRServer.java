@@ -1,32 +1,17 @@
 package dev.slimevr;
 
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileNotFoundException;
-import java.io.FileOutputStream;
-import java.io.IOException;
-import java.net.InetAddress;
-import java.net.UnknownHostException;
-import java.util.HashMap;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Map;
-import java.util.Queue;
-import java.util.concurrent.LinkedBlockingQueue;
-import java.util.function.Consumer;
-
 import dev.slimevr.bridge.Bridge;
-import dev.slimevr.platform.windows.WindowsNamedPipeBridge;
 import dev.slimevr.bridge.VMCBridge;
+import dev.slimevr.platform.windows.WindowsNamedPipeBridge;
 import dev.slimevr.poserecorder.BVHRecorder;
-import dev.slimevr.serial.SerialHandler;
 import dev.slimevr.protocol.ProtocolAPI;
-import dev.slimevr.vr.trackers.*;
-import dev.slimevr.websocketapi.WebSocketVRBridge;
+import dev.slimevr.serial.SerialHandler;
 import dev.slimevr.util.ann.VRServerThread;
 import dev.slimevr.vr.processor.HumanPoseProcessor;
 import dev.slimevr.vr.processor.skeleton.HumanSkeleton;
+import dev.slimevr.vr.trackers.*;
 import dev.slimevr.vr.trackers.udp.TrackersUDPServer;
+import dev.slimevr.websocketapi.WebSocketVRBridge;
 import io.eiren.util.OperatingSystem;
 import io.eiren.util.ann.ThreadSafe;
 import io.eiren.util.ann.ThreadSecure;
@@ -36,23 +21,30 @@ import io.eiren.yaml.YamlFile;
 import io.eiren.yaml.YamlNode;
 import solarxr_protocol.datatypes.TrackerIdT;
 
+import java.io.*;
+import java.net.InetAddress;
+import java.net.UnknownHostException;
+import java.util.*;
+import java.util.concurrent.LinkedBlockingQueue;
+import java.util.function.Consumer;
+
 public class VRServer extends Thread {
 
-	private final List<Tracker> trackers = new FastList<>();
 	public final HumanPoseProcessor humanPoseProcessor;
+	public final YamlFile config = new YamlFile();
+	public final HMDTracker hmdTracker;
+	private final List<Tracker> trackers = new FastList<>();
 	private final TrackersUDPServer trackersServer;
 	private final List<Bridge> bridges = new FastList<>();
 	private final Queue<Runnable> tasks = new LinkedBlockingQueue<>();
 	private final Map<String, TrackerConfig> configuration = new HashMap<>();
-	public final YamlFile config = new YamlFile();
-	public final HMDTracker hmdTracker;
 	private final List<Consumer<Tracker>> newTrackersConsumers = new FastList<>();
 	private final List<Runnable> onTick = new FastList<>();
 	private final List<? extends ShareableTracker> shareTrackers;
 	private final BVHRecorder bvhRecorder;
 	private final SerialHandler serialHandler;
 	private final ProtocolAPI protocolAPI;
-	private String configPath;
+	private final String configPath;
 
 	public VRServer() {
 		this("vrconfig.yml");
@@ -88,9 +80,7 @@ public class VRServer extends Thread {
 			WindowsNamedPipeBridge feederBridge = new WindowsNamedPipeBridge(null, "steamvr_feeder", "SteamVR Feeder Bridge", "\\\\.\\pipe\\SlimeVRInput", new FastList<ShareableTracker>());
 			tasks.add(() -> feederBridge.startBridge());
 			bridges.add(feederBridge);
-
 		}
-
 
 		// Create WebSocket server
 		WebSocketVRBridge wsBridge = new WebSocketVRBridge(hmdTracker, shareTrackers, this);
@@ -106,9 +96,7 @@ public class VRServer extends Thread {
 			e.printStackTrace();
 		}
 
-
 		bvhRecorder = new BVHRecorder(this);
-
 
 		registerTracker(hmdTracker);
 		for (int i = 0; i < shareTrackers.size(); ++i)
@@ -279,7 +267,6 @@ public class VRServer extends Thread {
 		});
 	}
 
-
 	public void updateTrackersFilters(TrackerFilters filter, float amount, int ticks) {
 		config.setProperty("filters.type", filter.name());
 		config.setProperty("filters.amount", amount);
@@ -332,7 +319,6 @@ public class VRServer extends Thread {
 		}
 		return null;
 	}
-
 
 	public BVHRecorder getBvhRecorder() {
 		return this.bvhRecorder;

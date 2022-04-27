@@ -1,26 +1,22 @@
 package dev.slimevr.vr.processor.skeleton;
 
-import java.util.List;
-import java.util.Map;
-
 import com.jme3.math.FastMath;
 import com.jme3.math.Quaternion;
 import com.jme3.math.Vector3f;
-
 import dev.slimevr.VRServer;
 import dev.slimevr.util.ann.VRServerThread;
 import dev.slimevr.vr.processor.ComputedHumanPoseTracker;
 import dev.slimevr.vr.processor.ComputedHumanPoseTrackerPosition;
 import dev.slimevr.vr.processor.TransformNode;
-import dev.slimevr.vr.trackers.Tracker;
-import dev.slimevr.vr.trackers.TrackerPosition;
-import dev.slimevr.vr.trackers.TrackerRole;
-import dev.slimevr.vr.trackers.TrackerStatus;
-import dev.slimevr.vr.trackers.TrackerUtils;
+import dev.slimevr.vr.trackers.*;
 import io.eiren.util.collections.FastList;
+
+import java.util.List;
+import java.util.Map;
 
 public class SimpleSkeleton extends HumanSkeleton implements SkeletonConfigCallback {
 
+	public final SkeletonConfig skeletonConfig;
 	//#region Upper body nodes (torso)
 	protected final TransformNode hmdNode = new TransformNode("HMD", false);
 	protected final TransformNode headNode = new TransformNode("Head", false);
@@ -29,9 +25,8 @@ public class SimpleSkeleton extends HumanSkeleton implements SkeletonConfigCallb
 	protected final TransformNode trackerChestNode = new TransformNode("Chest-Tracker", false);
 	protected final TransformNode waistNode = new TransformNode("Waist", false);
 	protected final TransformNode hipNode = new TransformNode("Hip", false);
-	protected final TransformNode trackerWaistNode = new TransformNode("Waist-Tracker", false);
 	//#endregion
-
+	protected final TransformNode trackerWaistNode = new TransformNode("Waist-Tracker", false);
 	//#region Lower body nodes (legs)
 	protected final TransformNode leftHipNode = new TransformNode("Left-Hip", false);
 	protected final TransformNode leftKneeNode = new TransformNode("Left-Knee", false);
@@ -39,34 +34,26 @@ public class SimpleSkeleton extends HumanSkeleton implements SkeletonConfigCallb
 	protected final TransformNode leftAnkleNode = new TransformNode("Left-Ankle", false);
 	protected final TransformNode leftFootNode = new TransformNode("Left-Foot", false);
 	protected final TransformNode trackerLeftFootNode = new TransformNode("Left-Foot-Tracker", false);
-
 	protected final TransformNode rightHipNode = new TransformNode("Right-Hip", false);
 	protected final TransformNode rightKneeNode = new TransformNode("Right-Knee", false);
 	protected final TransformNode trackerRightKneeNode = new TransformNode("Right-Knee-Tracker", false);
 	protected final TransformNode rightAnkleNode = new TransformNode("Right-Ankle", false);
 	protected final TransformNode rightFootNode = new TransformNode("Right-Foot", false);
 	protected final TransformNode trackerRightFootNode = new TransformNode("Right-Foot-Tracker", false);
-
-	protected float minKneePitch = 0f * FastMath.DEG_TO_RAD;
-	protected float maxKneePitch = 90f * FastMath.DEG_TO_RAD;
-
-	protected float kneeLerpFactor = 0.5f;
-	//#endregion
-
 	//#region Arms (from controllers)
 	protected final TransformNode leftControllerNodeContrl = new TransformNode("Left-Controller-Contrl", false);
 	protected final TransformNode rightControllerNodeContrl = new TransformNode("Right-Controller-Contrl", false);
+	//#endregion
 	protected final TransformNode leftWristNodeContrl = new TransformNode("Left-Wrist-Contrl", false);
 	protected final TransformNode rightWristNodeContrl = new TransformNode("Right-Wrist-Contrl", false);
 	protected final TransformNode leftElbowNodeContrl = new TransformNode("Left-Elbow-Contrl", false);
 	protected final TransformNode rightElbowNodeContrl = new TransformNode("Right-Elbow-Contrl", false);
 	protected final TransformNode trackerLeftElbowNodeContrl = new TransformNode("Left-Elbow-Tracker-Contrl", false);
 	protected final TransformNode trackerRightElbowNodeContrl = new TransformNode("Right-Elbow-Tracker-Contrl", false);
-	//#endregion
-
 	//#region Arms (from HMD)
 	protected final TransformNode leftShoulderNodeHmd = new TransformNode("Left-Shoulder-Hmd", false);
 	protected final TransformNode rightShoulderNodeHmd = new TransformNode("Right-Shoulder-Hmd", false);
+	//#endregion
 	protected final TransformNode leftElbowNodeHmd = new TransformNode("Left-Elbow-Hmd", false);
 	protected final TransformNode rightElbowNodeHmd = new TransformNode("Right-Elbow-Hmd", false);
 	protected final TransformNode trackerLeftElbowNodeHmd = new TransformNode("Left-Elbow-Tracker-Hmd", false);
@@ -77,66 +64,52 @@ public class SimpleSkeleton extends HumanSkeleton implements SkeletonConfigCallb
 	protected final TransformNode rightHandNodeHmd = new TransformNode("Right-Hand-Hmd", false);
 	protected final TransformNode trackerLeftHandNodeHmd = new TransformNode("Left-Hand-Tracker-Hmd", false);
 	protected final TransformNode trackerRightHandNodeHmd = new TransformNode("Right-Hand-Tracker-Hmd", false);
+	protected final Vector3f hipVector = new Vector3f();
+	protected final Vector3f ankleVector = new Vector3f();
 	//#endregion
-
+	protected final Quaternion kneeRotation = new Quaternion();
+	protected float minKneePitch = 0f * FastMath.DEG_TO_RAD;
+	protected float maxKneePitch = 90f * FastMath.DEG_TO_RAD;
+	protected float kneeLerpFactor = 0.5f;
 	//#region Tracker Input
 	protected Tracker hmdTracker;
 	protected Tracker neckTracker;
 	protected Tracker chestTracker;
 	protected Tracker waistTracker;
 	protected Tracker hipTracker;
-
 	protected Tracker leftKneeTracker;
 	protected Tracker leftAnkleTracker;
 	protected Tracker leftFootTracker;
-
 	protected Tracker rightKneeTracker;
 	protected Tracker rightAnkleTracker;
 	protected Tracker rightFootTracker;
-
 	protected Tracker leftControllerTracker;
 	protected Tracker rightControllerTracker;
 	protected Tracker leftForearmTracker;
 	protected Tracker rightForearmTracker;
+	//#endregion
 	protected Tracker leftUpperArmTracker;
 	protected Tracker rightUpperArmTracker;
 	protected Tracker leftHandTracker;
 	protected Tracker rightHandTracker;
-	//#endregion
-
 	//#region Tracker Output
 	protected ComputedHumanPoseTracker computedChestTracker;
 	protected ComputedHumanPoseTracker computedWaistTracker;
-
 	protected ComputedHumanPoseTracker computedLeftKneeTracker;
 	protected ComputedHumanPoseTracker computedLeftFootTracker;
-
 	protected ComputedHumanPoseTracker computedRightKneeTracker;
 	protected ComputedHumanPoseTracker computedRightFootTracker;
-
+	//#endregion
 	protected ComputedHumanPoseTracker computedLeftElbowTracker;
 	protected ComputedHumanPoseTracker computedRightElbowTracker;
-
 	protected ComputedHumanPoseTracker computedLeftHandTracker;
 	protected ComputedHumanPoseTracker computedRightHandTracker;
-	//#endregion
-
 	protected boolean extendedPelvisModel = true;
 	protected boolean extendedKneeModel = false;
-
-	public final SkeletonConfig skeletonConfig;
-
 	//#region Buffers
-	private Vector3f posBuf = new Vector3f();
-
+	private final Vector3f posBuf = new Vector3f();
 	private Quaternion rotBuf1 = new Quaternion();
-	private Quaternion rotBuf2 = new Quaternion();
-
-	protected final Vector3f hipVector = new Vector3f();
-	protected final Vector3f ankleVector = new Vector3f();
-
-	protected final Quaternion kneeRotation = new Quaternion();
-
+	private final Quaternion rotBuf2 = new Quaternion();
 	private boolean hasSpineTracker, hasKneeTracker;
 	//#endregion
 
@@ -247,6 +220,23 @@ public class SimpleSkeleton extends HumanSkeleton implements SkeletonConfigCallb
 	}
 	//#endregion
 
+	public static float normalizeRad(float angle) {
+		return FastMath.normalize(angle, -FastMath.PI, FastMath.PI);
+	}
+
+	public static float interpolateRadians(float factor, float start, float end) {
+		float angle = FastMath.abs(end - start);
+		if (angle > FastMath.PI) {
+			if (end > start) {
+				start += FastMath.TWO_PI;
+			} else {
+				end += FastMath.TWO_PI;
+			}
+		}
+		float val = start + (end - start) * factor;
+		return normalizeRad(val);
+	}
+
 	//#region Set Trackers
 	public void setTrackersFromList(List<? extends Tracker> trackers, boolean setHmd) {
 		if (setHmd) {
@@ -329,11 +319,13 @@ public class SimpleSkeleton extends HumanSkeleton implements SkeletonConfigCallb
 			setComputedTracker(trackers.get(i));
 		}
 	}
+	//#endregion
 
 	public void setComputedTrackersAndFillNull(List<? extends ComputedHumanPoseTracker> trackers, boolean onlyFillWaistAndFeet) {
 		setComputedTrackers(trackers);
 		fillNullComputedTrackers(onlyFillWaistAndFeet);
 	}
+	//#endregion
 
 	public void fillNullComputedTrackers(boolean onlyFillWaistAndFeet) {
 		if (computedWaistTracker == null) {
@@ -386,7 +378,6 @@ public class SimpleSkeleton extends HumanSkeleton implements SkeletonConfigCallb
 			}
 		}
 	}
-	//#endregion
 
 	//#region Get Trackers
 	public ComputedHumanPoseTracker getComputedTracker(TrackerRole trackerRole) {
@@ -419,7 +410,6 @@ public class SimpleSkeleton extends HumanSkeleton implements SkeletonConfigCallb
 
 		return null;
 	}
-	//#endregion
 
 	//#region Processing
 	// Useful for sub-classes that need to return a sub-tracker (like PoseFrameTracker -> TrackerFrame)
@@ -435,6 +425,7 @@ public class SimpleSkeleton extends HumanSkeleton implements SkeletonConfigCallb
 		updateRootTrackers();
 		updateComputedTrackers();
 	}
+	//#endregion
 
 	void updateRootTrackers() {
 		hmdNode.update();
@@ -630,7 +621,6 @@ public class SimpleSkeleton extends HumanSkeleton implements SkeletonConfigCallb
 			}
 		}
 	}
-	//#endregion
 
 	//#region Knee Model
 	// Knee basically has only 1 DoF (pitch), average yaw and roll between knee and hip
@@ -651,23 +641,6 @@ public class SimpleSkeleton extends HumanSkeleton implements SkeletonConfigCallb
 
 		// Return knee angle into knee rotation
 		kneeBuf.multLocal(kneeRotation);
-	}
-
-	public static float normalizeRad(float angle) {
-		return FastMath.normalize(angle, -FastMath.PI, FastMath.PI);
-	}
-
-	public static float interpolateRadians(float factor, float start, float end) {
-		float angle = FastMath.abs(end - start);
-		if (angle > FastMath.PI) {
-			if (end > start) {
-				start += FastMath.TWO_PI;
-			} else {
-				end += FastMath.TWO_PI;
-			}
-		}
-		float val = start + (end - start) * factor;
-		return normalizeRad(val);
 	}
 	//#endregion
 

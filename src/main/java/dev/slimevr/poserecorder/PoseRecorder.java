@@ -1,30 +1,26 @@
 package dev.slimevr.poserecorder;
 
-import java.util.List;
-import java.util.concurrent.CompletableFuture;
-import java.util.concurrent.ExecutionException;
-import java.util.concurrent.Future;
-
-import org.apache.commons.lang3.tuple.Pair;
-
 import dev.slimevr.VRServer;
 import dev.slimevr.util.ann.VRServerThread;
 import dev.slimevr.vr.trackers.Tracker;
 import io.eiren.util.collections.FastList;
 import io.eiren.util.logging.LogManager;
+import org.apache.commons.lang3.tuple.Pair;
+
+import java.util.List;
+import java.util.concurrent.CompletableFuture;
+import java.util.concurrent.ExecutionException;
+import java.util.concurrent.Future;
 
 public class PoseRecorder {
 
+	protected final VRServer server;
 	protected PoseFrames poseFrame = null;
-
 	protected int numFrames = -1;
 	protected int frameCursor = 0;
 	protected long frameRecordingInterval = 60L;
 	protected long nextFrameTimeMs = -1L;
-
 	protected CompletableFuture<PoseFrames> currentRecording;
-
-	protected final VRServer server;
 	FastList<Pair<Tracker, PoseFrameTracker>> trackers = new FastList<Pair<Tracker, PoseFrameTracker>>();
 
 	public PoseRecorder(VRServer server) {

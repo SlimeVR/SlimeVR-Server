@@ -25,22 +25,26 @@ public enum SkeletonConfigValue {
 	ELBOW_OFFSET(19, "Elbow offset", "elbowOffset", "Elbow offset", 0f, new SkeletonNodeOffset[]{SkeletonNodeOffset.ELBOW_TRACKER}),
 	;
 
+	public static final SkeletonConfigValue[] values = values();
 	private static final String CONFIG_PREFIX = "body.";
+	private static final Map<String, SkeletonConfigValue> byStringVal = new HashMap<>();
+	private static final Map<Number, SkeletonConfigValue> byIdVal = new HashMap<>();
+
+	static {
+		for (SkeletonConfigValue configVal : values()) {
+			byIdVal.put(configVal.id, configVal);
+			byStringVal.put(configVal.stringVal.toLowerCase(), configVal);
+		}
+	}
 
 	public final int id;
 	public final String stringVal;
 	public final String configKey;
 	public final String label;
-
 	public final float defaultValue;
-
 	public final SkeletonNodeOffset[] affectedOffsets;
 
-	public static final SkeletonConfigValue[] values = values();
-	private static final Map<String, SkeletonConfigValue> byStringVal = new HashMap<>();
-	private static final Map<Number, SkeletonConfigValue> byIdVal = new HashMap<>();
-
-	private SkeletonConfigValue(int id, String stringVal, String configKey, String label, float defaultValue, SkeletonNodeOffset[] affectedOffsets) {
+	SkeletonConfigValue(int id, String stringVal, String configKey, String label, float defaultValue, SkeletonNodeOffset[] affectedOffsets) {
 		this.id = id;
 		this.stringVal = stringVal;
 		this.configKey = CONFIG_PREFIX + configKey;
@@ -57,12 +61,5 @@ public enum SkeletonConfigValue {
 
 	public static SkeletonConfigValue getById(int id) {
 		return byIdVal.get(id);
-	}
-
-	static {
-		for (SkeletonConfigValue configVal : values()) {
-			byIdVal.put(configVal.id, configVal);
-			byStringVal.put(configVal.stringVal.toLowerCase(), configVal);
-		}
 	}
 }

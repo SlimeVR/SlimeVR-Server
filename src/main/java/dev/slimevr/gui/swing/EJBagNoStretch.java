@@ -1,8 +1,6 @@
 package dev.slimevr.gui.swing;
 
-import java.awt.Container;
-import java.awt.Dimension;
-import java.awt.GridBagLayout;
+import java.awt.*;
 
 public class EJBagNoStretch extends EJPanel {
 

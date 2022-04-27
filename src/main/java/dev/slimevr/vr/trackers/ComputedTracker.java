@@ -10,11 +10,11 @@ public class ComputedTracker implements Tracker, TrackerWithTPS {
 	public final Quaternion rotation = new Quaternion();
 	protected final String name;
 	protected final String serial;
-	protected TrackerStatus status = TrackerStatus.DISCONNECTED;
-	public TrackerPosition bodyPosition = null;
 	protected final boolean hasRotation;
 	protected final boolean hasPosition;
 	protected final int trackerId;
+	public TrackerPosition bodyPosition = null;
+	protected TrackerStatus status = TrackerStatus.DISCONNECTED;
 
 	public ComputedTracker(int trackerId, String serial, String name, boolean hasRotation, boolean hasPosition) {
 		this.name = name;
@@ -132,7 +132,6 @@ public class ComputedTracker implements Tracker, TrackerWithTPS {
 	public int getTrackerId() {
 		return this.trackerId;
 	}
-
 
 	@Override
 	public int getTrackerNum() {

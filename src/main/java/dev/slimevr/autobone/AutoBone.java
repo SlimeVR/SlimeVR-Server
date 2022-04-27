@@ -1,15 +1,7 @@
 package dev.slimevr.autobone;
 
-import java.io.File;
-import java.util.EnumMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Map.Entry;
-import java.util.function.Consumer;
-
 import com.jme3.math.FastMath;
 import com.jme3.math.Vector3f;
-
 import dev.slimevr.VRServer;
 import dev.slimevr.poserecorder.*;
 import dev.slimevr.vr.processor.HumanPoseProcessor;
@@ -20,80 +12,58 @@ import dev.slimevr.vr.trackers.TrackerPosition;
 import dev.slimevr.vr.trackers.TrackerRole;
 import dev.slimevr.vr.trackers.TrackerUtils;
 import io.eiren.util.StringUtils;
-import io.eiren.util.logging.LogManager;
 import io.eiren.util.collections.FastList;
+import io.eiren.util.logging.LogManager;
 import org.apache.commons.lang3.tuple.Pair;
+
+import java.io.File;
+import java.util.EnumMap;
+import java.util.List;
+import java.util.Map;
+import java.util.Map.Entry;
+import java.util.function.Consumer;
 
 public class AutoBone {
 
-	public class Epoch {
-
-		public final int epoch;
-		public final float epochError;
-
-		public Epoch(int epoch, float epochError) {
-			this.epoch = epoch;
-			this.epochError = epochError;
-		}
-
-		@Override
-		public String toString() {
-			return "Epoch: " + epoch + ", Epoch Error: " + epochError;
-		}
-	}
-
-
-	private static File saveDir = new File("Recordings");
-	private static File loadDir = new File("LoadRecordings");
-
+	private static final File saveDir = new File("Recordings");
+	private static final File loadDir = new File("LoadRecordings");
+	// This is filled by reloadConfigValues()
+	public final EnumMap<SkeletonConfigValue, Float> configs = new EnumMap<SkeletonConfigValue, Float>(SkeletonConfigValue.class);
+	public final EnumMap<SkeletonConfigValue, Float> staticConfigs = new EnumMap<SkeletonConfigValue, Float>(SkeletonConfigValue.class);
+	public final FastList<SkeletonConfigValue> heightConfigs = new FastList<SkeletonConfigValue>(new SkeletonConfigValue[]{
+			SkeletonConfigValue.NECK, SkeletonConfigValue.TORSO, SkeletonConfigValue.LEGS_LENGTH});
+	public final FastList<SkeletonConfigValue> lengthConfigs = new FastList<SkeletonConfigValue>(new SkeletonConfigValue[]{
+			SkeletonConfigValue.HEAD, SkeletonConfigValue.NECK, SkeletonConfigValue.TORSO, SkeletonConfigValue.HIPS_WIDTH, SkeletonConfigValue.LEGS_LENGTH});
+	protected final VRServer server;
 	public int cursorIncrement = 1;
-
 	public int minDataDistance = 2;
 	public int maxDataDistance = 32;
-
 	public int numEpochs = 5;
-
 	public float initialAdjustRate = 2.5f;
 	public float adjustRateDecay = 1.01f;
-
 	public float slideErrorFactor = 1.0f;
 	public float offsetSlideErrorFactor = 0.0f;
 	public float offsetErrorFactor = 0.0f;
 	public float proportionErrorFactor = 0.2f;
 	public float heightErrorFactor = 0.1f;
-	public float positionErrorFactor = 0.0f;
-	public float positionOffsetErrorFactor = 0.0f;
-
-	public boolean calcInitError = false;
-	public float targetHeight = -1;
 
 	// TODO Needs much more work, probably going to rethink how the errors work to avoid this barely functional workaround @ButterscotchV
 	// For scaling distances, since smaller sizes will cause smaller distances
 	//private float totalLengthBase = 2f;
+	public float positionErrorFactor = 0.0f;
+	public float positionOffsetErrorFactor = 0.0f;
+	public boolean calcInitError = false;
+	public float targetHeight = -1;
 
+	// TODO hip tracker stuff... Hip tracker should be around 3 to 5 centimeters.
 	// Human average is probably 1.1235 (SD 0.07)
 	public float legBodyRatio = 1.1235f;
 	// SD of 0.07, capture 68% within range
 	public float legBodyRatioRange = 0.07f;
-
 	// kneeLegRatio seems to be around 0.54 to 0.6 after asking a few people in the SlimeVR discord.
 	public float kneeLegRatio = 0.55f;
 	// kneeLegRatio seems to be around 0.55 to 0.64 after asking a few people in the SlimeVR discord. TODO : Chest should be a bit shorter (0.54?) if user has an additional hip tracker.
 	public float chestTorsoRatio = 0.57f;
-
-	// TODO hip tracker stuff... Hip tracker should be around 3 to 5 centimeters.
-
-	protected final VRServer server;
-
-	// This is filled by reloadConfigValues()
-	public final EnumMap<SkeletonConfigValue, Float> configs = new EnumMap<SkeletonConfigValue, Float>(SkeletonConfigValue.class);
-	public final EnumMap<SkeletonConfigValue, Float> staticConfigs = new EnumMap<SkeletonConfigValue, Float>(SkeletonConfigValue.class);
-
-	public final FastList<SkeletonConfigValue> heightConfigs = new FastList<SkeletonConfigValue>(new SkeletonConfigValue[]{
-			SkeletonConfigValue.NECK, SkeletonConfigValue.TORSO, SkeletonConfigValue.LEGS_LENGTH});
-	public final FastList<SkeletonConfigValue> lengthConfigs = new FastList<SkeletonConfigValue>(new SkeletonConfigValue[]{
-			SkeletonConfigValue.HEAD, SkeletonConfigValue.NECK, SkeletonConfigValue.TORSO, SkeletonConfigValue.HIPS_WIDTH, SkeletonConfigValue.LEGS_LENGTH});
-
 	public AutoBone(VRServer server) {
 		this.server = server;
 		reloadConfigValues();
@@ -116,6 +86,15 @@ public class AutoBone {
 
 		this.calcInitError = server.config.getBoolean("autobone.calculateInitialError", true);
 		this.targetHeight = server.config.getFloat("autobone.manualTargetHeight", -1f);
+	}
+
+	// Mean square error function
+	protected static float errorFunc(float errorDeriv) {
+		return 0.5f * (errorDeriv * errorDeriv);
+	}
+
+	public static File getLoadDir() {
+		return loadDir;
 	}
 
 	public void reloadConfigValues() {
@@ -611,11 +590,6 @@ public class AutoBone {
 		return sumWeight > 0f ? totalError / sumWeight : 0f;
 	}
 
-	// Mean square error function
-	protected static float errorFunc(float errorDeriv) {
-		return 0.5f * (errorDeriv * errorDeriv);
-	}
-
 	protected void updateSkeletonBoneLength(PoseFrameSkeleton skeleton1, PoseFrameSkeleton skeleton2, SkeletonConfigValue config, float newLength) {
 		skeleton1.skeletonConfig.setConfig(config, newLength);
 		skeleton1.updatePoseAffectedByConfig(config);
@@ -636,7 +610,6 @@ public class AutoBone {
 
 		return configInfo.toString();
 	}
-
 
 	public void saveRecording(PoseFrames frames) {
 		if (saveDir.isDirectory() || saveDir.mkdirs()) {
@@ -680,7 +653,19 @@ public class AutoBone {
 		return recordings;
 	}
 
-	public static File getLoadDir() {
-		return loadDir;
+	public class Epoch {
+
+		public final int epoch;
+		public final float epochError;
+
+		public Epoch(int epoch, float epochError) {
+			this.epoch = epoch;
+			this.epochError = epochError;
+		}
+
+		@Override
+		public String toString() {
+			return "Epoch: " + epoch + ", Epoch Error: " + epochError;
+		}
 	}
 }

@@ -1,18 +1,17 @@
 package dev.slimevr.vr.trackers.udp;
 
+import com.jme3.math.Quaternion;
+
 import java.io.IOException;
 import java.nio.ByteBuffer;
-
-import com.jme3.math.Quaternion;
 
 public class UDPPacket17RotationData extends UDPPacket implements SensorSpecificPacket {
 
 	public static final int DATA_TYPE_NORMAL = 1;
 	public static final int DATA_TYPE_CORRECTION = 2;
-
+	public final Quaternion rotation = new Quaternion();
 	public int sensorId;
 	public int dataType;
-	public final Quaternion rotation = new Quaternion();
 	public int calibrationInfo;
 
 	public UDPPacket17RotationData() {

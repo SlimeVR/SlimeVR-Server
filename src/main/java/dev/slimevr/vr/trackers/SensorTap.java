@@ -16,6 +16,6 @@ public class SensorTap {
 	public enum TapAxis {
 		X,
 		Y,
-		Z;
+		Z
 	}
 }

@@ -27,5 +27,4 @@ public class UDPPacket200ProtocolChange extends UDPPacket {
 		buf.put((byte) targetProtocol);
 		buf.put((byte) targetProtocolVersion);
 	}
-
 }

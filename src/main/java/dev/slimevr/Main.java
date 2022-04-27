@@ -1,19 +1,16 @@
 package dev.slimevr;
 
-import java.io.File;
-import java.io.IOException;
-import java.net.ServerSocket;
-
-import javax.swing.JOptionPane;
-
-import dev.slimevr.websocketapi.WebsocketAPI;
+import dev.slimevr.gui.Keybinding;
+import dev.slimevr.gui.VRServerGUI;
+import io.eiren.util.logging.LogManager;
 import org.apache.commons.cli.*;
 import org.apache.commons.lang3.JavaVersion;
 import org.apache.commons.lang3.SystemUtils;
 
-import dev.slimevr.gui.Keybinding;
-import dev.slimevr.gui.VRServerGUI;
-import io.eiren.util.logging.LogManager;
+import javax.swing.*;
+import java.io.File;
+import java.io.IOException;
+import java.net.ServerSocket;
 
 public class Main {
 
@@ -35,7 +32,6 @@ public class Main {
 		Option noGui = new Option("g", "no-gui", false, "disable swing gui (allow for other gui to be used)");
 		Option help = new Option("h", "help", false, "Show help");
 
-
 		options.addOption(noGui);
 		options.addOption(help);
 		try {
@@ -50,7 +46,6 @@ public class Main {
 			formatter.printHelp("slimevr.jar", options);
 			System.exit(0);
 		}
-
 
 		File dir = new File("").getAbsoluteFile();
 		try {
@@ -97,5 +92,4 @@ public class Main {
 			}
 		}
 	}
-
 }

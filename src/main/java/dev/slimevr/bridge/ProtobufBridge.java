@@ -1,53 +1,38 @@
 package dev.slimevr.bridge;
 
-import java.util.HashMap;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Map;
-import java.util.Map.Entry;
-import java.util.Queue;
-import java.util.concurrent.LinkedBlockingQueue;
-
 import com.jme3.math.Quaternion;
 import com.jme3.math.Vector3f;
-
 import dev.slimevr.Main;
-import dev.slimevr.bridge.ProtobufMessages.Position;
-import dev.slimevr.bridge.ProtobufMessages.ProtobufMessage;
-import dev.slimevr.bridge.ProtobufMessages.TrackerAdded;
 import dev.slimevr.bridge.ProtobufMessages.TrackerStatus;
-import dev.slimevr.bridge.ProtobufMessages.UserAction;
+import dev.slimevr.bridge.ProtobufMessages.*;
 import dev.slimevr.util.ann.VRServerThread;
-import dev.slimevr.vr.trackers.ComputedTracker;
-import dev.slimevr.vr.trackers.HMDTracker;
-import dev.slimevr.vr.trackers.ShareableTracker;
-import dev.slimevr.vr.trackers.TrackerRole;
-import dev.slimevr.vr.trackers.VRTracker;
+import dev.slimevr.vr.trackers.*;
 import io.eiren.util.ann.Synchronize;
 import io.eiren.util.ann.ThreadSafe;
 import io.eiren.util.collections.FastList;
 
+import java.util.*;
+import java.util.Map.Entry;
+import java.util.concurrent.LinkedBlockingQueue;
+
 public abstract class ProtobufBridge<T extends VRTracker> implements Bridge {
 
+	@VRServerThread
+	protected final List<ShareableTracker> sharedTrackers = new FastList<>();
+	protected final String bridgeName;
 	private final Vector3f vec1 = new Vector3f();
 	private final Quaternion quat1 = new Quaternion();
-
 	@ThreadSafe
 	private final Queue<ProtobufMessage> inputQueue = new LinkedBlockingQueue<>();
 	@ThreadSafe
 	private final Queue<ProtobufMessage> outputQueue = new LinkedBlockingQueue<>();
-	@VRServerThread
-	protected final List<ShareableTracker> sharedTrackers = new FastList<>();
 	@Synchronize("self")
 	private final Map<String, T> remoteTrackersBySerial = new HashMap<>();
 	@Synchronize("self")
 	private final Map<Integer, T> remoteTrackersByTrackerId = new HashMap<>();
-
-	private boolean hadNewData = false;
-
-	private T hmdTracker;
 	private final HMDTracker hmd;
-	protected final String bridgeName;
+	private boolean hadNewData = false;
+	private T hmdTracker;
 
 	public ProtobufBridge(String bridgeName, HMDTracker hmd) {
 		this.bridgeName = bridgeName;

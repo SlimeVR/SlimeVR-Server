@@ -1,9 +1,7 @@
 package dev.slimevr.gui.swing;
 
-import java.awt.Container;
-import java.awt.Dimension;
-
-import javax.swing.BoxLayout;
+import javax.swing.*;
+import java.awt.*;
 
 public class EJBoxNoStretch extends EJPanel {
 

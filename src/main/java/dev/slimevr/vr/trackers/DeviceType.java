@@ -5,5 +5,4 @@ public enum DeviceType {
 	CONTROLLER,
 	TRACKER,
 	TRACKING_REFERENCE,
-	;
 }

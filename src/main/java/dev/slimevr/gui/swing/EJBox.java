@@ -1,6 +1,6 @@
 package dev.slimevr.gui.swing;
 
-import javax.swing.BoxLayout;
+import javax.swing.*;
 
 public class EJBox extends EJPanel {
 

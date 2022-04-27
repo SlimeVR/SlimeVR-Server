@@ -31,5 +31,4 @@ public class UDPPacket14Error extends UDPPacket implements SensorSpecificPacket 
 	public int getSensorId() {
 		return sensorId;
 	}
-
 }

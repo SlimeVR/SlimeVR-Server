@@ -9,12 +9,17 @@ public enum TrackerStatus {
 	OCCLUDED(4, false),
 	;
 
-	private static final TrackerStatus byId[] = new TrackerStatus[5];
+	private static final TrackerStatus[] byId = new TrackerStatus[5];
+
+	static {
+		for (TrackerStatus st : values())
+			byId[st.id] = st;
+	}
 
 	public final int id;
 	public final boolean sendData;
 
-	private TrackerStatus(int id, boolean sendData) {
+	TrackerStatus(int id, boolean sendData) {
 		this.sendData = sendData;
 		this.id = id;
 	}
@@ -23,10 +28,5 @@ public enum TrackerStatus {
 		if (id < 0 || id >= byId.length)
 			return null;
 		return byId[id];
-	}
-
-	static {
-		for (TrackerStatus st : values())
-			byId[st.id] = st;
 	}
 }

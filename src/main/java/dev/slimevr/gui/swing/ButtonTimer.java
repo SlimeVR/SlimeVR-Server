@@ -1,13 +1,12 @@
 package dev.slimevr.gui.swing;
 
+import javax.swing.*;
 import java.util.Timer;
 import java.util.TimerTask;
 
-import javax.swing.AbstractButton;
-
 public class ButtonTimer {
 
-	private static Timer timer = new Timer();
+	private static final Timer timer = new Timer();
 
 	public static void runTimer(AbstractButton button, int seconds, String defaultText, Runnable runnable) {
 		if (seconds <= 0) {
@@ -37,6 +36,5 @@ public class ButtonTimer {
 		public void run() {
 			runTimer(button, seconds, defaultText, runnable);
 		}
-
 	}
 }

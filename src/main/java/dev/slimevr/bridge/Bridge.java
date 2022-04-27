@@ -13,10 +13,10 @@ import dev.slimevr.vr.trackers.ShareableTracker;
 public interface Bridge {
 
 	@VRServerThread
-	public void dataRead();
+	void dataRead();
 
 	@VRServerThread
-	public void dataWrite();
+	void dataWrite();
 
 	/**
 	 * Adds shared tracker to the bridge. Bridge should notify the
@@ -26,7 +26,7 @@ public interface Bridge {
 	 * @param tracker
 	 */
 	@VRServerThread
-	public void addSharedTracker(ShareableTracker tracker);
+	void addSharedTracker(ShareableTracker tracker);
 
 	/**
 	 * Removes tracker from a bridge. If the other side supports
@@ -38,8 +38,8 @@ public interface Bridge {
 	 * @param tracker
 	 */
 	@VRServerThread
-	public void removeSharedTracker(ShareableTracker tracker);
+	void removeSharedTracker(ShareableTracker tracker);
 
 	@VRServerThread
-	public void startBridge();
+	void startBridge();
 }

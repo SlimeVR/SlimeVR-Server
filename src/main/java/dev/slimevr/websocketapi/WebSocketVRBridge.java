@@ -1,26 +1,20 @@
 package dev.slimevr.websocketapi;
 
-import java.util.List;
-import java.util.concurrent.atomic.AtomicBoolean;
-
+import com.jme3.math.Quaternion;
+import com.jme3.math.Vector3f;
+import dev.slimevr.Main;
+import dev.slimevr.VRServer;
 import dev.slimevr.bridge.Bridge;
+import dev.slimevr.vr.trackers.*;
+import io.eiren.util.collections.FastList;
+import io.eiren.util.logging.LogManager;
 import org.java_websocket.WebSocket;
 import org.java_websocket.handshake.ClientHandshake;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import com.jme3.math.Quaternion;
-import com.jme3.math.Vector3f;
-
-import dev.slimevr.Main;
-import dev.slimevr.VRServer;
-import dev.slimevr.vr.trackers.ComputedTracker;
-import dev.slimevr.vr.trackers.HMDTracker;
-import dev.slimevr.vr.trackers.ShareableTracker;
-import dev.slimevr.vr.trackers.Tracker;
-import dev.slimevr.vr.trackers.TrackerStatus;
-import io.eiren.util.collections.FastList;
-import io.eiren.util.logging.LogManager;
+import java.util.List;
+import java.util.concurrent.atomic.AtomicBoolean;
 
 public class WebSocketVRBridge extends WebsocketAPI implements Bridge {
 
@@ -97,7 +91,7 @@ public class WebSocketVRBridge extends WebsocketAPI implements Bridge {
 						parseAction(json, conn);
 						return;
 					case "config": // TODO Ignore it for now, it should only register HMD in our test case with id 0
-						LogManager.log.info("[WebSocket] Config received: " + json.toString());
+						LogManager.log.info("[WebSocket] Config received: " + json);
 						return;
 				}
 			}

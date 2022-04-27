@@ -10,9 +10,8 @@ public enum TrackerMountingRotation {
 	BACK(0),
 	RIGHT(-90);
 
-	public final Quaternion quaternion;
-
 	public static final TrackerMountingRotation[] values = values();
+	public final Quaternion quaternion;
 
 	TrackerMountingRotation(float angle) {
 		this.quaternion = new Quaternion().fromAngles(0, angle * FastMath.DEG_TO_RAD, 0);
@@ -25,5 +24,4 @@ public enum TrackerMountingRotation {
 		}
 		return null;
 	}
-
 }

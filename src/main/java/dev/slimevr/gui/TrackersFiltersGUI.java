@@ -1,21 +1,16 @@
 package dev.slimevr.gui;
 
-import java.awt.event.MouseEvent;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
-
-import javax.swing.Box;
-import javax.swing.JButton;
-import javax.swing.JComboBox;
-import javax.swing.JLabel;
-import javax.swing.event.MouseInputAdapter;
-
 import com.jme3.math.FastMath;
-
 import dev.slimevr.VRServer;
 import dev.slimevr.gui.swing.EJBagNoStretch;
 import dev.slimevr.vr.trackers.TrackerFilters;
 import io.eiren.util.StringUtils;
+
+import javax.swing.*;
+import javax.swing.event.MouseInputAdapter;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+import java.awt.event.MouseEvent;
 
 public class TrackersFiltersGUI extends EJBagNoStretch {
 
@@ -23,7 +18,8 @@ public class TrackersFiltersGUI extends EJBagNoStretch {
 	TrackerFilters filterType;
 	float filterAmount;
 	int filterTicks;
-	private JLabel amountLabel, ticksLabel;
+	private final JLabel amountLabel;
+	private final JLabel ticksLabel;
 
 	public TrackersFiltersGUI(VRServer server, VRServerGUI gui) {
 
@@ -54,7 +50,7 @@ public class TrackersFiltersGUI extends EJBagNoStretch {
 		add(Box.createVerticalStrut(40));
 		row++;
 
-		filterAmount = (Float) FastMath.clamp(server.config.getFloat("filters.amount", 0.3f), 0, 1);
+		filterAmount = FastMath.clamp(server.config.getFloat("filters.amount", 0.3f), 0, 1);
 
 		add(new JLabel("Intensity"), c(0, row, 2));
 		add(new AdjButton("+", 0, false), c(1, row, 2));
@@ -67,15 +63,14 @@ public class TrackersFiltersGUI extends EJBagNoStretch {
 		add(new AdjButton("+", 1, false), c(1, row, 2));
 		add(ticksLabel = new JLabel(StringUtils.prettyNumber(filterTicks)), c(2, row, 2));
 		add(new AdjButton("-", 1, true), c(3, row, 2));
-
 	}
 
 	void adjustValues(int cat, boolean neg) {
 		if (cat == 0) {
 			if (neg) {
-				filterAmount = (Float) FastMath.clamp(filterAmount - 0.1f, 0, 1);
+				filterAmount = FastMath.clamp(filterAmount - 0.1f, 0, 1);
 			} else {
-				filterAmount = (Float) FastMath.clamp(filterAmount + 0.1f, 0, 1);
+				filterAmount = FastMath.clamp(filterAmount + 0.1f, 0, 1);
 			}
 			amountLabel.setText((StringUtils.prettyNumber(filterAmount * 100f)) + "%");
 		} else if (cat == 1) {
@@ -101,6 +96,5 @@ public class TrackersFiltersGUI extends EJBagNoStretch {
 				}
 			});
 		}
-
 	}
 }

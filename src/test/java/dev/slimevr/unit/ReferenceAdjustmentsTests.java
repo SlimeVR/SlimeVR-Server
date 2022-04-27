@@ -2,23 +2,22 @@ package dev.slimevr.unit;
 
 import com.jme3.math.FastMath;
 import com.jme3.math.Quaternion;
-
 import dev.slimevr.vr.processor.TransformNode;
 import dev.slimevr.vr.trackers.ComputedTracker;
 import dev.slimevr.vr.trackers.ReferenceAdjustedTracker;
 import dev.slimevr.vr.trackers.Tracker;
 import io.eiren.math.FloatMath;
 import io.eiren.util.StringUtils;
-
-import static org.junit.jupiter.api.Assertions.*;
-import static org.junit.jupiter.api.DynamicTest.dynamicTest;
+import org.junit.jupiter.api.DynamicTest;
+import org.junit.jupiter.api.TestFactory;
 
 import java.util.function.Function;
 import java.util.stream.IntStream;
 import java.util.stream.Stream;
 
-import org.junit.jupiter.api.DynamicTest;
-import org.junit.jupiter.api.TestFactory;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.junit.jupiter.api.DynamicTest.dynamicTest;
 
 /**
  * Tests {@link ReferenceAdjustedTracker#resetFull(Quaternion)}
@@ -37,6 +36,26 @@ public class ReferenceAdjustmentsTests {
 				IntStream.of(pitches).mapToObj((pitch) ->
 						IntStream.of(rolls).mapToObj((roll) -> new AnglesSet(pitch, yaw, roll)
 						))).flatMap(Function.identity()).flatMap(Function.identity());
+	}
+
+	private static String name(int yaw, int pitch, int roll, float[] angles, float[] anglesAdj, float[] anglesDiff) {
+		return "Rot: " + yaw + "/" + pitch + "/" + roll + ". "
+				+ "Angles: " + StringUtils.prettyNumber(angles[0] * FastMath.RAD_TO_DEG, 1) + "/" + StringUtils.prettyNumber(anglesAdj[0] * FastMath.RAD_TO_DEG, 1) + ", "
+				+ StringUtils.prettyNumber(angles[1] * FastMath.RAD_TO_DEG, 1) + "/" + StringUtils.prettyNumber(anglesAdj[1] * FastMath.RAD_TO_DEG, 1) + ", "
+				+ StringUtils.prettyNumber(angles[2] * FastMath.RAD_TO_DEG, 1) + "/" + StringUtils.prettyNumber(anglesAdj[2] * FastMath.RAD_TO_DEG, 1) + ". Diff: "
+				+ StringUtils.prettyNumber(anglesDiff[0] * FastMath.RAD_TO_DEG, 1) + ", "
+				+ StringUtils.prettyNumber(anglesDiff[1] * FastMath.RAD_TO_DEG, 1) + ", "
+				+ StringUtils.prettyNumber(anglesDiff[2] * FastMath.RAD_TO_DEG, 1);
+	}
+
+	public static Quaternion q(float pitch, float yaw, float roll) {
+		return new Quaternion().fromAngles(pitch * FastMath.DEG_TO_RAD, yaw * FastMath.DEG_TO_RAD, roll * FastMath.DEG_TO_RAD);
+	}
+
+	public static String toDegs(Quaternion q) {
+		float[] degs = new float[3];
+		q.toAngles(degs);
+		return StringUtils.prettyNumber(degs[0] * FastMath.RAD_TO_DEG, 0) + "," + StringUtils.prettyNumber(degs[1] * FastMath.RAD_TO_DEG, 0) + "," + StringUtils.prettyNumber(degs[2] * FastMath.RAD_TO_DEG, 0);
 	}
 
 	@TestFactory
@@ -156,26 +175,6 @@ public class ReferenceAdjustmentsTests {
 		}
 		if (PRINT_TEST_RESULTS)
 			System.out.println("Errors: " + errors + ", successes: " + successes);
-	}
-
-	private static String name(int yaw, int pitch, int roll, float[] angles, float[] anglesAdj, float[] anglesDiff) {
-		return "Rot: " + yaw + "/" + pitch + "/" + roll + ". "
-				+ "Angles: " + StringUtils.prettyNumber(angles[0] * FastMath.RAD_TO_DEG, 1) + "/" + StringUtils.prettyNumber(anglesAdj[0] * FastMath.RAD_TO_DEG, 1) + ", "
-				+ StringUtils.prettyNumber(angles[1] * FastMath.RAD_TO_DEG, 1) + "/" + StringUtils.prettyNumber(anglesAdj[1] * FastMath.RAD_TO_DEG, 1) + ", "
-				+ StringUtils.prettyNumber(angles[2] * FastMath.RAD_TO_DEG, 1) + "/" + StringUtils.prettyNumber(anglesAdj[2] * FastMath.RAD_TO_DEG, 1) + ". Diff: "
-				+ StringUtils.prettyNumber(anglesDiff[0] * FastMath.RAD_TO_DEG, 1) + ", "
-				+ StringUtils.prettyNumber(anglesDiff[1] * FastMath.RAD_TO_DEG, 1) + ", "
-				+ StringUtils.prettyNumber(anglesDiff[2] * FastMath.RAD_TO_DEG, 1);
-	}
-
-	public static Quaternion q(float pitch, float yaw, float roll) {
-		return new Quaternion().fromAngles(pitch * FastMath.DEG_TO_RAD, yaw * FastMath.DEG_TO_RAD, roll * FastMath.DEG_TO_RAD);
-	}
-
-	public static String toDegs(Quaternion q) {
-		float[] degs = new float[3];
-		q.toAngles(degs);
-		return StringUtils.prettyNumber(degs[0] * FastMath.RAD_TO_DEG, 0) + "," + StringUtils.prettyNumber(degs[1] * FastMath.RAD_TO_DEG, 0) + "," + StringUtils.prettyNumber(degs[2] * FastMath.RAD_TO_DEG, 0);
 	}
 
 	private static class QuatEqualYawWithEpsilon {

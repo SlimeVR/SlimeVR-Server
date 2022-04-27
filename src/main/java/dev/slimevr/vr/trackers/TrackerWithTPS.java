@@ -2,7 +2,7 @@ package dev.slimevr.vr.trackers;
 
 public interface TrackerWithTPS {
 
-	public float getTPS();
+	float getTPS();
 
-	public void dataTick();
+	void dataTick();
 }

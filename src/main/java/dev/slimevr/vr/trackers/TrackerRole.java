@@ -26,15 +26,23 @@ public enum TrackerRole {
 	GENERIC_CONTROLLER(21, "vive_tracker_handed", "TrackerRole_Handed", DeviceType.CONTROLLER),
 	;
 
+	public static final TrackerRole[] values = values();
+	private static final TrackerRole[] byId = new TrackerRole[22];
+
+	static {
+		for (TrackerRole tr : values) {
+			if (byId[tr.id] != null)
+				throw new AssertionError("Tracker role id " + tr.id + " occupied by " + byId[tr.id] + " when adding " + tr);
+			byId[tr.id] = tr;
+		}
+	}
+
 	public final int id;
 	public final String roleHint;
 	public final String viveRole;
 	public final DeviceType deviceType;
 
-	public static final TrackerRole[] values = values();
-	private static final TrackerRole[] byId = new TrackerRole[22];
-
-	private TrackerRole(int id, String roleHint, String viveRole, DeviceType deviceType) {
+	TrackerRole(int id, String roleHint, String viveRole, DeviceType deviceType) {
 		this.id = id;
 		this.roleHint = roleHint;
 		this.viveRole = viveRole;
@@ -43,13 +51,5 @@ public enum TrackerRole {
 
 	public static TrackerRole getById(int id) {
 		return id < 0 || id >= byId.length ? null : byId[id];
-	}
-
-	static {
-		for (TrackerRole tr : values) {
-			if (byId[tr.id] != null)
-				throw new AssertionError("Tracker role id " + tr.id + " occupied by " + byId[tr.id] + " when adding " + tr);
-			byId[tr.id] = tr;
-		}
 	}
 }

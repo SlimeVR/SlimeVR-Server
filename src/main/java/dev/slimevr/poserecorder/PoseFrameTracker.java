@@ -1,10 +1,7 @@
 package dev.slimevr.poserecorder;
 
-import java.util.Iterator;
-
 import com.jme3.math.Quaternion;
 import com.jme3.math.Vector3f;
-
 import dev.slimevr.vr.trackers.Tracker;
 import dev.slimevr.vr.trackers.TrackerConfig;
 import dev.slimevr.vr.trackers.TrackerPosition;
@@ -12,13 +9,15 @@ import dev.slimevr.vr.trackers.TrackerStatus;
 import dev.slimevr.vr.trackers.udp.Device;
 import io.eiren.util.collections.FastList;
 
+import java.util.Iterator;
+
 public class PoseFrameTracker implements Tracker, Iterable<TrackerFrame> {
 
 	public final String name;
 
 	private final FastList<TrackerFrame> frames;
-	private int frameCursor = 0;
 	private final int trackerId = Tracker.getNextLocalTrackerId();
+	private int frameCursor = 0;
 
 	public PoseFrameTracker(String name, FastList<TrackerFrame> frames) {
 		if (frames == null) {

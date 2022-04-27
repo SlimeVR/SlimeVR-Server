@@ -4,15 +4,18 @@ import com.fazecast.jSerialComm.SerialPort;
 import com.fazecast.jSerialComm.SerialPortEvent;
 import com.fazecast.jSerialComm.SerialPortMessageListener;
 
-import java.io.*;
+import java.io.IOException;
+import java.io.OutputStream;
+import java.io.OutputStreamWriter;
 import java.nio.ByteBuffer;
 import java.nio.charset.StandardCharsets;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.List;
 
 public class SerialHandler implements SerialPortMessageListener {
 
 	private SerialPort trackerPort = null;
-	private List<SerialListener> listeners = new ArrayList<>();
+	private final List<SerialListener> listeners = new ArrayList<>();
 
 	public void addListener(SerialListener channel) {
 		this.listeners.add(channel);
@@ -21,7 +24,6 @@ public class SerialHandler implements SerialPortMessageListener {
 	public void removeListener(SerialListener l) {
 		listeners.removeIf(listener -> l == listener);
 	}
-
 
 	public boolean openSerial() {
 		if (this.isConnected()) {
@@ -57,7 +59,6 @@ public class SerialHandler implements SerialPortMessageListener {
 		trackerPort = null;
 	}
 
-
 	public void setWifi(String ssid, String passwd) {
 		if (trackerPort == null)
 			return;
@@ -67,7 +68,7 @@ public class SerialHandler implements SerialPortMessageListener {
 			writer.append("SET WIFI \"" + ssid + "\" \"" + passwd + "\"\n");
 			writer.flush();
 		} catch (IOException e) {
-			addLog(e.toString() + "\n");
+			addLog(e + "\n");
 			e.printStackTrace();
 		}
 	}

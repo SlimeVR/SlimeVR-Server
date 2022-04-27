@@ -1,21 +1,15 @@
 package dev.slimevr.gui;
 
-
-import java.awt.Container;
-import java.awt.event.MouseEvent;
-
-import javax.swing.BoxLayout;
-import javax.swing.JButton;
-import javax.swing.JFrame;
-import javax.swing.JLabel;
-import javax.swing.JTextArea;
-import javax.swing.border.EmptyBorder;
-import javax.swing.event.MouseInputAdapter;
-
 import dev.slimevr.gui.swing.EJBox;
 import dev.slimevr.vr.trackers.CalibratingTracker;
 import dev.slimevr.vr.trackers.Tracker;
 import io.eiren.util.ann.AWTThread;
+
+import javax.swing.*;
+import javax.swing.border.EmptyBorder;
+import javax.swing.event.MouseInputAdapter;
+import java.awt.*;
+import java.awt.event.MouseEvent;
 
 public class CalibrationWindow extends JFrame {
 
@@ -73,7 +67,6 @@ public class CalibrationWindow extends JFrame {
 			add(new JLabel("New calibration"));
 			add(newCalibration = new JTextArea(10, 25));
 		}});
-
 
 		// Pack and display
 		pack();

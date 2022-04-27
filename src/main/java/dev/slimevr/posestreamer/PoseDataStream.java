@@ -1,17 +1,13 @@
 package dev.slimevr.posestreamer;
 
-import java.io.File;
-import java.io.FileNotFoundException;
-import java.io.FileOutputStream;
-import java.io.IOException;
-import java.io.OutputStream;
-
 import dev.slimevr.vr.processor.skeleton.HumanSkeleton;
+
+import java.io.*;
 
 public abstract class PoseDataStream implements AutoCloseable {
 
-	protected boolean closed = false;
 	protected final OutputStream outputStream;
+	protected boolean closed = false;
 
 	protected PoseDataStream(OutputStream outputStream) {
 		this.outputStream = outputStream;

@@ -1,14 +1,5 @@
 package dev.slimevr.gui;
 
-import java.awt.event.MouseEvent;
-import java.util.HashMap;
-import java.util.Map;
-
-import javax.swing.JButton;
-import javax.swing.JCheckBox;
-import javax.swing.JLabel;
-import javax.swing.event.MouseInputAdapter;
-
 import dev.slimevr.VRServer;
 import dev.slimevr.gui.swing.ButtonTimer;
 import dev.slimevr.gui.swing.EJBagNoStretch;
@@ -17,12 +8,18 @@ import dev.slimevr.vr.processor.skeleton.SkeletonConfigValue;
 import io.eiren.util.StringUtils;
 import io.eiren.util.ann.ThreadSafe;
 
+import javax.swing.*;
+import javax.swing.event.MouseInputAdapter;
+import java.awt.event.MouseEvent;
+import java.util.HashMap;
+import java.util.Map;
+
 public class SkeletonConfigGUI extends EJBagNoStretch {
 
 	private final VRServer server;
 	private final VRServerGUI gui;
 	private final AutoBoneWindow autoBone;
-	private Map<SkeletonConfigValue, SkeletonLabel> labels = new HashMap<>();
+	private final Map<SkeletonConfigValue, SkeletonLabel> labels = new HashMap<>();
 	private JCheckBox precisionCb;
 
 	public SkeletonConfigGUI(VRServer server, VRServerGUI gui) {

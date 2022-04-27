@@ -1,11 +1,10 @@
 package dev.slimevr.vr.processor;
 
+import com.jme3.math.Transform;
+import io.eiren.util.collections.FastList;
+
 import java.util.List;
 import java.util.function.Consumer;
-
-import com.jme3.math.Transform;
-
-import io.eiren.util.collections.FastList;
 
 public class TransformNode {
 

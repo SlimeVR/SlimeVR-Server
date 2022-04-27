@@ -1,12 +1,11 @@
 package dev.slimevr.vr.processor.skeleton;
 
-import java.util.EnumMap;
-import java.util.Map;
-
 import com.jme3.math.Vector3f;
-
 import io.eiren.util.logging.LogManager;
 import io.eiren.yaml.YamlFile;
+
+import java.util.EnumMap;
+import java.util.Map;
 
 public class SkeletonConfig {
 
@@ -61,6 +60,35 @@ public class SkeletonConfig {
 
 	public SkeletonConfig(SkeletonConfig skeletonConfig, boolean autoUpdateOffsets) {
 		this(skeletonConfig, autoUpdateOffsets, null);
+	}
+
+	//#region Cast utilities for config reading
+	private static Float castFloat(Object o) {
+		if (o == null) {
+			return null;
+		} else if (o instanceof Float) {
+			return (Float) o;
+		} else if (o instanceof Double) {
+			return ((Double) o).floatValue();
+		} else if (o instanceof Byte) {
+			return (float) (Byte) o;
+		} else if (o instanceof Integer) {
+			return (float) (Integer) o;
+		} else if (o instanceof Long) {
+			return (float) (Long) o;
+		} else {
+			return null;
+		}
+	}
+
+	private static Boolean castBoolean(Object o) {
+		if (o == null) {
+			return null;
+		} else if (o instanceof Boolean) {
+			return (Boolean) o;
+		} else {
+			return null;
+		}
 	}
 
 	private void callCallbackOnAll(boolean defaultOnly) {
@@ -323,35 +351,6 @@ public class SkeletonConfig {
 
 	public void setConfigs(SkeletonConfig skeletonConfig) {
 		setConfigs(skeletonConfig.configs, skeletonConfig.toggles);
-	}
-
-	//#region Cast utilities for config reading
-	private static Float castFloat(Object o) {
-		if (o == null) {
-			return null;
-		} else if (o instanceof Float) {
-			return (Float) o;
-		} else if (o instanceof Double) {
-			return ((Double) o).floatValue();
-		} else if (o instanceof Byte) {
-			return (float) (Byte) o;
-		} else if (o instanceof Integer) {
-			return (float) (Integer) o;
-		} else if (o instanceof Long) {
-			return (float) (Long) o;
-		} else {
-			return null;
-		}
-	}
-
-	private static Boolean castBoolean(Object o) {
-		if (o == null) {
-			return null;
-		} else if (o instanceof Boolean) {
-			return (Boolean) o;
-		} else {
-			return null;
-		}
 	}
 	//#endregion
 

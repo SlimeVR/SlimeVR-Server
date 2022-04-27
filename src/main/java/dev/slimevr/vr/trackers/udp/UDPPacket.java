@@ -5,26 +5,6 @@ import java.nio.ByteBuffer;
 
 public abstract class UDPPacket {
 
-	public abstract int getPacketId();
-
-	public abstract void readData(ByteBuffer buf) throws IOException;
-
-	public abstract void writeData(ByteBuffer buf) throws IOException;
-
-	@Override
-	public String toString() {
-		StringBuilder sb = new StringBuilder();
-		sb.append(getClass().getSimpleName());
-		sb.append('{');
-		sb.append(getPacketId());
-		if (this instanceof SensorSpecificPacket) {
-			sb.append(",sensor:");
-			sb.append(((SensorSpecificPacket) this).getSensorId());
-		}
-		sb.append('}');
-		return sb.toString();
-	}
-
 	/**
 	 * Naively read null-terminated ASCII string from the byte buffer
 	 *
@@ -69,4 +49,23 @@ public abstract class UDPPacket {
 		buf.put((byte) 0);
 	}
 
+	public abstract int getPacketId();
+
+	public abstract void readData(ByteBuffer buf) throws IOException;
+
+	public abstract void writeData(ByteBuffer buf) throws IOException;
+
+	@Override
+	public String toString() {
+		StringBuilder sb = new StringBuilder();
+		sb.append(getClass().getSimpleName());
+		sb.append('{');
+		sb.append(getPacketId());
+		if (this instanceof SensorSpecificPacket) {
+			sb.append(",sensor:");
+			sb.append(((SensorSpecificPacket) this).getSensorId());
+		}
+		sb.append('}');
+		return sb.toString();
+	}
 }
