@@ -3,4 +3,4 @@
 	url = https://github.com/Eirenliel/slime-java-commons.git
 [submodule "solarxr-protocol"]
 	path = solarxr-protocol
-	url = git@github.com:SlimeVR/SolarXR-Protocol.git
+	url = https://github.com/SlimeVR/SolarXR-Protocol.git
