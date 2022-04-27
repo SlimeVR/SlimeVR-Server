@@ -4,6 +4,7 @@ import dev.slimevr.vr.trackers.ComputedTracker;
 import dev.slimevr.vr.trackers.ShareableTracker;
 import dev.slimevr.vr.trackers.TrackerRole;
 import dev.slimevr.vr.trackers.TrackerWithTPS;
+import dev.slimevr.vr.trackers.udp.Device;
 import io.eiren.util.BufferedTimer;
 
 public class ComputedHumanPoseTracker extends ComputedTracker implements TrackerWithTPS, ShareableTracker {
@@ -31,5 +32,10 @@ public class ComputedHumanPoseTracker extends ComputedTracker implements Tracker
 	@Override
 	public TrackerRole getTrackerRole() {
 		return trackerRole;
+	}
+
+	@Override
+	public Device getDevice() {
+		return null;
 	}
 }

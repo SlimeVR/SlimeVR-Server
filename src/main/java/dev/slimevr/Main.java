@@ -6,6 +6,8 @@ import java.net.ServerSocket;
 
 import javax.swing.JOptionPane;
 
+import dev.slimevr.websocketapi.WebsocketAPI;
+import org.apache.commons.cli.*;
 import org.apache.commons.lang3.JavaVersion;
 import org.apache.commons.lang3.SystemUtils;
 
@@ -23,6 +25,33 @@ public class Main {
 	public static void main(String[] args) {
 		System.setProperty("awt.useSystemAAFontSettings", "on");
 		System.setProperty("swing.aatext", "true");
+
+		CommandLineParser parser = new DefaultParser();
+		HelpFormatter formatter = new HelpFormatter();
+		CommandLine cmd = null;
+
+		Options options = new Options();
+
+		Option noGui = new Option("g", "no-gui", false, "disable swing gui (allow for other gui to be used)");
+		Option help = new Option("h", "help", false, "Show help");
+
+
+		options.addOption(noGui);
+		options.addOption(help);
+		try {
+			cmd = parser.parse(options, args);
+		} catch (ParseException e) {
+			System.out.println(e.getMessage());
+			formatter.printHelp("slimevr.jar", options);
+			System.exit(1);
+		}
+
+		if (cmd.hasOption("help")) {
+			formatter.printHelp("slimevr.jar", options);
+			System.exit(0);
+		}
+
+
 		
 		File dir = new File("").getAbsoluteFile();
 		try {
@@ -51,7 +80,8 @@ public class Main {
 			vrServer = new VRServer();
 			vrServer.start(); 
 			new Keybinding(vrServer);
-			new VRServerGUI(vrServer);
+			if (!cmd.hasOption("no-gui"))
+				new VRServerGUI(vrServer);
 		} catch(Throwable e) {
 			e.printStackTrace();
 			try {

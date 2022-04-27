@@ -4,6 +4,7 @@ import java.util.concurrent.atomic.AtomicInteger;
 
 import com.jme3.math.Quaternion;
 import com.jme3.math.Vector3f;
+import dev.slimevr.vr.trackers.udp.Device;
 
 public interface Tracker {
 	
@@ -42,6 +43,10 @@ public interface Tracker {
 	public boolean isComputed();
 	
 	public int getTrackerId();
+
+	public int getTrackerNum();
+
+	public Device getDevice();
 	
 	public default String getDescriptiveName() {
 		return getName();

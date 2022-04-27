@@ -4,8 +4,6 @@ import java.io.IOException;
 import java.io.UnsupportedEncodingException;
 import java.nio.ByteBuffer;
 
-import io.eiren.util.logging.LogManager;
-
 public class UDPProtocolParser {
 	
 	public static final int PACKET_HEARTBEAT = 0;
@@ -37,7 +35,7 @@ public class UDPProtocolParser {
 	public UDPProtocolParser() {
 	}
 	
-	public UDPPacket parse(ByteBuffer buf, TrackerUDPConnection connection) throws IOException {
+	public UDPPacket parse(ByteBuffer buf, Device connection) throws IOException {
 		int packetId = buf.getInt();
 		long packetNumber = buf.getLong();
 		if(connection != null) {
@@ -56,17 +54,17 @@ public class UDPProtocolParser {
 		return newPacket;
 	}
 	
-	public void write(ByteBuffer buf, TrackerUDPConnection connection, UDPPacket packet) throws IOException {
+	public void write(ByteBuffer buf, Device connection, UDPPacket packet) throws IOException {
 		buf.putInt(packet.getPacketId());
 		buf.putLong(0); // Packet number is always 0 when sending data to trackers
 		packet.writeData(buf);
 	}
 	
-	public void writeHandshakeResponse(ByteBuffer buf, TrackerUDPConnection connection) throws IOException {
+	public void writeHandshakeResponse(ByteBuffer buf, Device connection) throws IOException {
 		buf.put(HANDSHAKE_BUFFER);
 	}
 	
-	public void writeSensorInfoResponse(ByteBuffer buf, TrackerUDPConnection connection, UDPPacket15SensorInfo packet) throws IOException {
+	public void writeSensorInfoResponse(ByteBuffer buf, Device connection, UDPPacket15SensorInfo packet) throws IOException {
 		buf.putInt(packet.getPacketId());
 		buf.put((byte) packet.sensorId);
 		buf.put((byte) packet.sensorStatus);

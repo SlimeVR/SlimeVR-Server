@@ -9,6 +9,7 @@ import dev.slimevr.vr.trackers.Tracker;
 import dev.slimevr.vr.trackers.TrackerConfig;
 import dev.slimevr.vr.trackers.TrackerPosition;
 import dev.slimevr.vr.trackers.TrackerStatus;
+import dev.slimevr.vr.trackers.udp.Device;
 import io.eiren.util.collections.FastList;
 
 public class PoseFrameTracker implements Tracker, Iterable<TrackerFrame> {
@@ -243,5 +244,15 @@ public class PoseFrameTracker implements Tracker, Iterable<TrackerFrame> {
 	@Override
 	public int getTrackerId() {
 		return this.trackerId;
+	}
+
+	@Override
+	public int getTrackerNum() {
+		return -1;
+	}
+
+	@Override
+	public Device getDevice() {
+		return null;
 	}
 }

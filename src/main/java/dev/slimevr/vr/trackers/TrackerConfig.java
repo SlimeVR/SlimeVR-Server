@@ -11,8 +11,9 @@ public class TrackerConfig {
 	public String description;
 	public boolean hide;
 	public Quaternion adjustment;
-	public String mountingRotation;
-	
+	public String oldMountingRotation;
+	public Quaternion mountingRotation;
+
 	public TrackerConfig(Tracker tracker) {
 		this.trackerName = tracker.getName();
 		this.description = tracker.getDescriptiveName();
@@ -24,10 +25,29 @@ public class TrackerConfig {
 		this.description = node.getString("description");
 		this.designation = node.getString("designation");
 		this.hide = node.getBoolean("hide", false);
-		this.mountingRotation = node.getString("rotation");
+		this.oldMountingRotation = node.getString("rotation");
+		YamlNode mountingRotationNode = node.getNode("mountingRotation");
+		if (mountingRotationNode != null) {
+			mountingRotation = new Quaternion(
+					mountingRotationNode.getFloat("x", 0),
+					mountingRotationNode.getFloat("y", 0),
+					mountingRotationNode.getFloat("z", 0),
+					mountingRotationNode.getFloat("w", 1)
+			);
+		}
+
+		if (oldMountingRotation != null) {
+			mountingRotation = TrackerMountingRotation.valueOf(oldMountingRotation).quaternion;
+		}
+
 		YamlNode adjNode = node.getNode("adjustment");
 		if(adjNode != null) {
-			adjustment = new Quaternion(adjNode.getFloat("x", 0), adjNode.getFloat("y", 0), adjNode.getFloat("z", 0), adjNode.getFloat("w", 0));
+			adjustment = new Quaternion(
+					adjNode.getFloat("x", 0),
+					adjNode.getFloat("y", 0),
+					adjNode.getFloat("z", 0),
+					adjNode.getFloat("w", 0)
+			);
 		}
 	}
 	
@@ -53,11 +73,19 @@ public class TrackerConfig {
 		} else {
 			configNode.removeProperty("adj");
 		}
-		if(mountingRotation != null) {
-			configNode.setProperty("rotation", mountingRotation);
-		} else {
+		if(oldMountingRotation != null) {
 			configNode.removeProperty("rotation");
 		}
+
+		if(mountingRotation != null) {
+			configNode.setProperty("mountingRotation.x", mountingRotation.getX());
+			configNode.setProperty("mountingRotation.y", mountingRotation.getY());
+			configNode.setProperty("mountingRotation.z", mountingRotation.getZ());
+			configNode.setProperty("mountingRotation.w", mountingRotation.getW());
+		} else {
+			configNode.removeProperty("mountingRotation");
+		}
+
 		if(description != null) {
 			configNode.setProperty("description", description);
 		} else {

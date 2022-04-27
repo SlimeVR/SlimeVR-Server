@@ -5,6 +5,7 @@ import com.jme3.math.Quaternion;
 import com.jme3.math.Vector3f;
 
 import dev.slimevr.VRServer;
+import dev.slimevr.vr.trackers.udp.Device;
 import dev.slimevr.vr.trackers.udp.TrackersUDPServer;
 import io.eiren.util.BufferedTimer;
 
@@ -23,7 +24,7 @@ public class IMUTracker implements Tracker, TrackerWithTPS, TrackerWithBattery {
 	private final Quaternion buffQuat = new Quaternion();
 	public int movementFilterTickCount = 0;
 	public float movementFilterAmount = 1f;
-	protected TrackerMountingRotation mounting = null;
+	protected Quaternion mounting = null;
 	protected TrackerStatus status = TrackerStatus.OK;
 	protected final int trackerId;
 	
@@ -44,10 +45,14 @@ public class IMUTracker implements Tracker, TrackerWithTPS, TrackerWithBattery {
 	public int ping = -1;
 	public int signalStrength = -1;
 	public float temperature = 0;
+	public final Device device;
+	public final int trackerNum;
 	
 	public TrackerPosition bodyPosition = null;
 	
-	public IMUTracker(int trackerId, String name, String descriptiveName, TrackersUDPServer server, VRServer vrserver) {
+	public IMUTracker(Device device, int trackerId, int trackerNum, String name, String descriptiveName, TrackersUDPServer server, VRServer vrserver) {
+		this.device = device;
+		this.trackerNum = trackerNum;
 		this.name = name;
 		this.server = server;
 		this.trackerId = trackerId;
@@ -58,7 +63,7 @@ public class IMUTracker implements Tracker, TrackerWithTPS, TrackerWithBattery {
 	@Override
 	public void saveConfig(TrackerConfig config) {
 		config.setDesignation(bodyPosition == null ? null : bodyPosition.designation);
-		config.mountingRotation = mounting != null ? mounting.name() : null;
+		config.mountingRotation = mounting != null ? mounting : null;
 	}
 	
 	@Override
@@ -66,18 +71,8 @@ public class IMUTracker implements Tracker, TrackerWithTPS, TrackerWithBattery {
 		// Loading a config is an act of user editing, therefore it shouldn't not be allowed if editing is not allowed
 		if (userEditable()) {
 			if(config.mountingRotation != null) {
-				try{
-					mounting = TrackerMountingRotation.valueOf(config.mountingRotation);
-				}
-				catch (Exception e){ // FORWARD was renamed to FRONT
-					mounting = TrackerMountingRotation.FRONT;
-					config.mountingRotation = "FRONT";
-				}
-				if(mounting != null) {
-					rotAdjust.set(mounting.quaternion);
-				} else {
-					rotAdjust.loadIdentity();
-				}
+				mounting = config.mountingRotation;
+				rotAdjust.set(config.mountingRotation);
 			} else {
 				rotAdjust.loadIdentity();
 			}
@@ -111,14 +106,14 @@ public class IMUTracker implements Tracker, TrackerWithTPS, TrackerWithBattery {
 		}
 		previousRots = new CircularArrayList<Quaternion>(movementFilterTickCount + 1);
 	}
-	public TrackerMountingRotation getMountingRotation() {
+	public Quaternion getMountingRotation() {
 		return mounting;
 	}
 	
-	public void setMountingRotation(TrackerMountingRotation mr) {
+	public void setMountingRotation(Quaternion mr) {
 		mounting = mr;
 		if(mounting != null) {
-			rotAdjust.set(mounting.quaternion);
+			rotAdjust.set(mounting);
 		} else {
 			rotAdjust.loadIdentity();
 		}
@@ -282,7 +277,17 @@ public class IMUTracker implements Tracker, TrackerWithTPS, TrackerWithBattery {
 	public int getTrackerId() {
 		return this.trackerId;
 	}
-	
+
+	@Override
+	public int getTrackerNum() {
+		return this.trackerNum;
+	}
+
+	@Override
+	public Device getDevice() {
+		return this.device;
+	}
+
 	@Override
 	public String getDescriptiveName() {
 		return this.descriptiveName;

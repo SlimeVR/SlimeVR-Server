@@ -3,7 +3,6 @@ package dev.slimevr.bridge;
 import java.net.InetAddress;
 
 import dev.slimevr.vr.trackers.ShareableTracker;
-import dev.slimevr.vr.trackers.Tracker;
 
 public class VMCBridge extends Thread implements Bridge {
 	

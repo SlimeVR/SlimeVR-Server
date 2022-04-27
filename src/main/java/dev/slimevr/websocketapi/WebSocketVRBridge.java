@@ -1,16 +1,11 @@
-package dev.slimevr.bridge;
+package dev.slimevr.websocketapi;
 
-import java.net.InetSocketAddress;
-import java.nio.ByteBuffer;
-import java.util.Collections;
 import java.util.List;
 import java.util.concurrent.atomic.AtomicBoolean;
 
+import dev.slimevr.bridge.Bridge;
 import org.java_websocket.WebSocket;
-import org.java_websocket.drafts.Draft;
-import org.java_websocket.drafts.Draft_6455;
 import org.java_websocket.handshake.ClientHandshake;
-import org.java_websocket.server.WebSocketServer;
 import org.json.JSONException;
 import org.json.JSONObject;
 
@@ -27,7 +22,7 @@ import dev.slimevr.vr.trackers.TrackerStatus;
 import io.eiren.util.collections.FastList;
 import io.eiren.util.logging.LogManager;
 
-public class WebSocketVRBridge extends WebSocketServer implements Bridge {
+public class WebSocketVRBridge extends WebsocketAPI implements Bridge {
 	
 	private final Vector3f vBuffer = new Vector3f();
 	private final Quaternion qBuffer = new Quaternion();
@@ -40,7 +35,7 @@ public class WebSocketVRBridge extends WebSocketServer implements Bridge {
 	private final AtomicBoolean newHMDData = new AtomicBoolean(false);
 	
 	public WebSocketVRBridge(HMDTracker hmd, List<? extends ShareableTracker> shareTrackers, VRServer server) {
-		super(new InetSocketAddress(21110), Collections.<Draft>singletonList(new Draft_6455()));
+		super(server, server.getProtocolAPI());
 		this.hmd = hmd;
 		this.shareTrackers = new FastList<>(shareTrackers);
 		this.internalTrackers = new FastList<>(shareTrackers.size());
@@ -76,7 +71,7 @@ public class WebSocketVRBridge extends WebSocketServer implements Bridge {
 
 	@Override
 	public void onOpen(WebSocket conn, ClientHandshake handshake) {
-		LogManager.log.info("[WebSocket] New connection from: " + conn.getRemoteSocketAddress().getAddress().getHostAddress());
+		super.onOpen(conn, handshake);
 		// Register trackers
 		for(int i = 0; i < internalTrackers.size(); ++i) {
 			JSONObject message = new JSONObject();
@@ -88,20 +83,6 @@ public class WebSocketVRBridge extends WebSocketServer implements Bridge {
 		}
 	}
 
-	@Override
-	public void onClose(WebSocket conn, int code, String reason, boolean remote) {
-		LogManager.log.info("[WebSocket] Disconnected: " + conn.getRemoteSocketAddress().getAddress().getHostAddress() + ", (" + code + ") " + reason + ". Remote: " + remote);
-	}
-
-	@Override
-	public void onMessage(WebSocket conn, ByteBuffer message) {
-		StringBuilder sb = new StringBuilder(message.limit());
-		while(message.hasRemaining()) {
-			sb.append((char) message.get());
-		}
-		onMessage(conn, sb.toString());
-	}
-	
 	@Override
 	public void onMessage(WebSocket conn, String message) {
 		//LogManager.log.info(message);

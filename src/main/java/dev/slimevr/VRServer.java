@@ -17,16 +17,15 @@ import java.util.function.Consumer;
 
 import dev.slimevr.bridge.Bridge;
 import dev.slimevr.platform.windows.WindowsNamedPipeBridge;
-import dev.slimevr.platform.windows.WindowsSteamVRPipeInputBridge;
 import dev.slimevr.bridge.VMCBridge;
-import dev.slimevr.bridge.WebSocketVRBridge;
+import dev.slimevr.poserecorder.BVHRecorder;
+import dev.slimevr.serial.SerialHandler;
+import dev.slimevr.protocol.ProtocolAPI;
+import dev.slimevr.vr.trackers.*;
+import dev.slimevr.websocketapi.WebSocketVRBridge;
 import dev.slimevr.util.ann.VRServerThread;
 import dev.slimevr.vr.processor.HumanPoseProcessor;
 import dev.slimevr.vr.processor.skeleton.HumanSkeleton;
-import dev.slimevr.vr.trackers.HMDTracker;
-import dev.slimevr.vr.trackers.ShareableTracker;
-import dev.slimevr.vr.trackers.Tracker;
-import dev.slimevr.vr.trackers.TrackerConfig;
 import dev.slimevr.vr.trackers.udp.TrackersUDPServer;
 import io.eiren.util.OperatingSystem;
 import io.eiren.util.ann.ThreadSafe;
@@ -35,6 +34,7 @@ import io.eiren.util.collections.FastList;
 import io.eiren.yaml.YamlException;
 import io.eiren.yaml.YamlFile;
 import io.eiren.yaml.YamlNode;
+import solarxr_protocol.datatypes.TrackerIdT;
 
 public class VRServer extends Thread {
 	
@@ -49,8 +49,10 @@ public class VRServer extends Thread {
 	private final List<Consumer<Tracker>> newTrackersConsumers = new FastList<>();
 	private final List<Runnable> onTick = new FastList<>();
 	private final List<? extends ShareableTracker> shareTrackers;
-	private String configPath;	
-	
+	private final BVHRecorder bvhRecorder;
+	private final SerialHandler serialHandler;
+	private final ProtocolAPI protocolAPI;
+	private String configPath;
 
 	public VRServer() {
 		this("vrconfig.yml");
@@ -60,6 +62,10 @@ public class VRServer extends Thread {
 		super("VRServer");
 		this.configPath = configPath;
 		loadConfig();
+
+		serialHandler = new SerialHandler();
+		protocolAPI = new ProtocolAPI(this);
+
 		hmdTracker = new HMDTracker("HMD");
 		hmdTracker.position.set(0, 1.8f, 0); // Set starting position for easier debugging
 		// TODO Multiple processors
@@ -82,9 +88,11 @@ public class VRServer extends Thread {
 			WindowsNamedPipeBridge feederBridge = new WindowsNamedPipeBridge(null, "steamvr_feeder", "SteamVR Feeder Bridge", "\\\\.\\pipe\\SlimeVRInput", new FastList<ShareableTracker>());
 			tasks.add(() -> feederBridge.startBridge());
 			bridges.add(feederBridge);
-			
+
 		}
-		
+
+
+
 		// Create WebSocket server
 		WebSocketVRBridge wsBridge = new WebSocketVRBridge(hmdTracker, shareTrackers, this);
 		tasks.add(() -> wsBridge.startBridge());
@@ -98,7 +106,10 @@ public class VRServer extends Thread {
 		} catch(UnknownHostException e) {
 			e.printStackTrace();
 		}
-		
+
+
+		bvhRecorder = new BVHRecorder(this);
+
 		
 		registerTracker(hmdTracker);
 		for(int i = 0; i < shareTrackers.size(); ++i)
@@ -222,7 +233,7 @@ public class VRServer extends Thread {
 	public void run() {
 		trackersServer.start();
 		while(true) {
-			//final long start = System.currentTimeMillis();
+//			final long start = System.currentTimeMillis();
 			do {
 				Runnable task = tasks.poll();
 				if(task == null)
@@ -239,7 +250,7 @@ public class VRServer extends Thread {
 			humanPoseProcessor.update();
 			for(int i = 0; i < bridges.size(); ++i)
 				bridges.get(i).dataWrite();
-			//final long time = System.currentTimeMillis() - start;
+//			final long time = System.currentTimeMillis() - start;
 			try {
 				Thread.sleep(1); // 1000Hz
 			} catch(InterruptedException e) {
@@ -268,6 +279,25 @@ public class VRServer extends Thread {
 				newTrackersConsumers.get(i).accept(tracker);
 		});
 	}
+
+
+	public void updateTrackersFilters(TrackerFilters filter, float amount, int ticks) {
+		config.setProperty("filters.type", filter.name());
+		config.setProperty("filters.amount", amount);
+		config.setProperty("filters.tickCount", ticks);
+		saveConfig();
+
+		IMUTracker imu;
+		for (Tracker t : this.getAllTrackers()) {
+			Tracker realTracker = t;
+			if(t instanceof ReferenceAdjustedTracker)
+				realTracker = ((ReferenceAdjustedTracker<? extends Tracker>) t).getTracker();
+			if(realTracker instanceof IMUTracker){
+				imu = (IMUTracker)realTracker;
+				imu.setFilter(filter.name(), amount, ticks);
+			}
+		}
+	}
 	
 	public void resetTrackers() {
 		queueTask(() -> {
@@ -287,5 +317,37 @@ public class VRServer extends Thread {
 
 	public List<Tracker> getAllTrackers() {
 		return new FastList<>(trackers);
+	}
+
+	public Tracker getTrackerById(TrackerIdT id) {
+		for (Tracker tracker : trackers) {
+			if (tracker.getTrackerNum() != id.getTrackerNum())
+				continue;
+			if (tracker.getDevice() == null && id.getDeviceId() != null)
+				continue;
+			if (tracker.getDevice() != null && id.getDeviceId() == null)
+				continue;
+			if (tracker.getDevice().getId() != id.getDeviceId().getId())
+				continue;
+			return tracker;
+		}
+		return null;
+	}
+
+
+	public BVHRecorder getBvhRecorder() {
+		return this.bvhRecorder;
+	}
+
+	public SerialHandler getSerialHandler() {
+		return this.serialHandler;
+	}
+
+	public ProtocolAPI getProtocolAPI() {
+		return protocolAPI;
+	}
+
+	public TrackersUDPServer getTrackersServer() {
+		return trackersServer;
 	}
 }

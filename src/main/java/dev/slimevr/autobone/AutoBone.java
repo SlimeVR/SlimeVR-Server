@@ -1,5 +1,6 @@
 package dev.slimevr.autobone;
 
+import java.io.File;
 import java.util.EnumMap;
 import java.util.List;
 import java.util.Map;
@@ -10,11 +11,7 @@ import com.jme3.math.FastMath;
 import com.jme3.math.Vector3f;
 
 import dev.slimevr.VRServer;
-import dev.slimevr.poserecorder.PoseFrameSkeleton;
-import dev.slimevr.poserecorder.PoseFrameTracker;
-import dev.slimevr.poserecorder.PoseFrames;
-import dev.slimevr.poserecorder.TrackerFrame;
-import dev.slimevr.poserecorder.TrackerFrameData;
+import dev.slimevr.poserecorder.*;
 import dev.slimevr.vr.processor.HumanPoseProcessor;
 import dev.slimevr.vr.processor.skeleton.HumanSkeleton;
 import dev.slimevr.vr.processor.skeleton.SkeletonConfig;
@@ -22,8 +19,10 @@ import dev.slimevr.vr.processor.skeleton.SkeletonConfigValue;
 import dev.slimevr.vr.trackers.TrackerPosition;
 import dev.slimevr.vr.trackers.TrackerRole;
 import dev.slimevr.vr.trackers.TrackerUtils;
+import io.eiren.util.StringUtils;
 import io.eiren.util.logging.LogManager;
 import io.eiren.util.collections.FastList;
+import org.apache.commons.lang3.tuple.Pair;
 
 public class AutoBone {
 	
@@ -42,6 +41,10 @@ public class AutoBone {
 			return "Epoch: " + epoch + ", Epoch Error: " + epochError;
 		}
 	}
+
+
+	private static File saveDir = new File("Recordings");
+	private static File loadDir = new File("LoadRecordings");
 	
 	public int cursorIncrement = 1;
 	
@@ -60,6 +63,9 @@ public class AutoBone {
 	public float heightErrorFactor = 0.1f;
 	public float positionErrorFactor = 0.0f;
 	public float positionOffsetErrorFactor = 0.0f;
+
+	public boolean calcInitError = false;
+	public float targetHeight = -1;
 	
 	// TODO Needs much more work, probably going to rethink how the errors work to avoid this barely functional workaround @ButterscotchV
 	// For scaling distances, since smaller sizes will cause smaller distances
@@ -91,6 +97,25 @@ public class AutoBone {
 	public AutoBone(VRServer server) {
 		this.server = server;
 		reloadConfigValues();
+
+		this.minDataDistance = server.config.getInt("autobone.minimumDataDistance", this.minDataDistance);
+		this.maxDataDistance = server.config.getInt("autobone.maximumDataDistance", this.maxDataDistance);
+
+		this.numEpochs = server.config.getInt("autobone.epochCount", this.numEpochs);
+
+		this.initialAdjustRate = server.config.getFloat("autobone.adjustRate", this.initialAdjustRate);
+		this.adjustRateDecay = server.config.getFloat("autobone.adjustRateDecay", this.adjustRateDecay);
+
+		this.slideErrorFactor = server.config.getFloat("autobone.slideErrorFactor", this.slideErrorFactor);
+		this.offsetSlideErrorFactor = server.config.getFloat("autobone.offsetSlideErrorFactor", this.offsetSlideErrorFactor);
+		this.offsetErrorFactor = server.config.getFloat("autobone.offsetErrorFactor", this.offsetErrorFactor);
+		this.proportionErrorFactor = server.config.getFloat("autobone.proportionErrorFactor", this.proportionErrorFactor);
+		this.heightErrorFactor = server.config.getFloat("autobone.heightErrorFactor", this.heightErrorFactor);
+		this.positionErrorFactor = server.config.getFloat("autobone.positionErrorFactor", this.positionErrorFactor);
+		this.positionOffsetErrorFactor = server.config.getFloat("autobone.positionOffsetErrorFactor", this.positionOffsetErrorFactor);
+
+		this.calcInitError = server.config.getBoolean("autobone.calculateInitialError", true);
+		this.targetHeight = server.config.getFloat("autobone.manualTargetHeight", -1f);
 	}
 	
 	public void reloadConfigValues() {
@@ -596,5 +621,65 @@ public class AutoBone {
 		
 		skeleton2.skeletonConfig.setConfig(config, newLength);
 		skeleton2.updatePoseAffectedByConfig(config);
+	}
+
+	public String getLengthsString() {
+		final StringBuilder configInfo = new StringBuilder();
+		this.configs.forEach((key, value) -> {
+			if(configInfo.length() > 0) {
+				configInfo.append(", ");
+			}
+
+			configInfo.append(key.stringVal + ": " + StringUtils.prettyNumber(value * 100f, 2));
+		});
+
+		return configInfo.toString();
+	}
+
+
+	public void saveRecording(PoseFrames frames) {
+		if(saveDir.isDirectory() || saveDir.mkdirs()) {
+			File saveRecording;
+			int recordingIndex = 1;
+			do {
+				saveRecording = new File(saveDir, "ABRecording" + recordingIndex++ + ".pfr");
+			} while(saveRecording.exists());
+
+			LogManager.log.info("[AutoBone] Exporting frames to \"" + saveRecording.getPath() + "\"...");
+			if(PoseFrameIO.writeToFile(saveRecording, frames)) {
+				LogManager.log.info("[AutoBone] Done exporting! Recording can be found at \"" + saveRecording.getPath() + "\".");
+			} else {
+				LogManager.log.severe("[AutoBone] Failed to export the recording to \"" + saveRecording.getPath() + "\".");
+			}
+		} else {
+			LogManager.log.severe("[AutoBone] Failed to create the recording directory \"" + saveDir.getPath() + "\".");
+		}
+	}
+
+	public List<Pair<String, PoseFrames>> loadRecordings() {
+		List<Pair<String, PoseFrames>> recordings = new FastList<Pair<String, PoseFrames>>();
+		if(loadDir.isDirectory()) {
+			File[] files = loadDir.listFiles();
+			if(files != null) {
+				for(File file : files) {
+					if(file.isFile() && org.apache.commons.lang3.StringUtils.endsWithIgnoreCase(file.getName(), ".pfr")) {
+						LogManager.log.info("[AutoBone] Detected recording at \"" + file.getPath() + "\", loading frames...");
+						PoseFrames frames = PoseFrameIO.readFromFile(file);
+
+						if(frames == null) {
+							LogManager.log.severe("Reading frames from \"" + file.getPath() + "\" failed...");
+						} else {
+							recordings.add(Pair.of(file.getName(), frames));
+						}
+					}
+				}
+			}
+		}
+
+		return recordings;
+	}
+
+	public static File getLoadDir() {
+		return loadDir;
 	}
 }

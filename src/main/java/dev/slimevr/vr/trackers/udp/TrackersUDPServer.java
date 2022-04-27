@@ -21,6 +21,10 @@ import java.util.Map;
 import java.util.Random;
 import java.util.function.Consumer;
 
+import dev.slimevr.vr.trackers.IMUTracker;
+import dev.slimevr.vr.trackers.ReferenceAdjustedTracker;
+import dev.slimevr.vr.trackers.Tracker;
+import dev.slimevr.vr.trackers.TrackerStatus;
 import org.apache.commons.lang3.ArrayUtils;
 
 import com.jme3.math.FastMath;
@@ -29,10 +33,6 @@ import com.jme3.math.Vector3f;
 
 import dev.slimevr.Main;
 import dev.slimevr.NetworkProtocol;
-import dev.slimevr.vr.trackers.IMUTracker;
-import dev.slimevr.vr.trackers.ReferenceAdjustedTracker;
-import dev.slimevr.vr.trackers.Tracker;
-import dev.slimevr.vr.trackers.TrackerStatus;
 import io.eiren.util.Util;
 import io.eiren.util.collections.FastList;
 import io.eiren.util.logging.LogManager;
@@ -49,9 +49,9 @@ public class TrackersUDPServer extends Thread {
 	
 	private final Quaternion buf = new Quaternion();
 	private final Random random = new Random();
-	private final List<TrackerUDPConnection> connections = new FastList<>();
-	private final Map<InetAddress, TrackerUDPConnection> connectionsByAddress = new HashMap<>();
-	private final Map<String, TrackerUDPConnection> connectionsByMAC = new HashMap<>();
+	private final List<Device> connections = new FastList<>();
+	private final Map<InetAddress, Device> connectionsByAddress = new HashMap<>();
+	private final Map<String, Device> connectionsByMAC = new HashMap<>();
 	private final Consumer<Tracker> trackersConsumer;
 	private final int port;
 	private final ArrayList<SocketAddress> broadcastAddresses = new ArrayList<>();
@@ -93,12 +93,12 @@ public class TrackersUDPServer extends Thread {
 	private void setUpNewConnection(DatagramPacket handshakePacket, UDPPacket3Handshake handshake) throws IOException {
 		LogManager.log.info("[TrackerServer] Handshake received from " + handshakePacket.getAddress() + ":" + handshakePacket.getPort());
 		InetAddress addr = handshakePacket.getAddress();
-		TrackerUDPConnection connection;
+		Device connection;
 		synchronized(connections) {
 			connection = connectionsByAddress.get(addr);
 		}
 		if(connection == null) {
-			connection = new TrackerUDPConnection(handshakePacket.getSocketAddress(), addr);
+			connection = new Device(handshakePacket.getSocketAddress(), addr);
 			connection.firmwareBuild = handshake.firmwareBuild;
 			if(handshake.firmware == null || handshake.firmware.length() == 0) {
 				// Only old owoTrack doesn't report firmware and have different packet IDs with SlimeVR
@@ -111,7 +111,7 @@ public class TrackersUDPServer extends Thread {
 			int i = 0;
 			synchronized(connections) {
 				if(handshake.macString != null && connectionsByMAC.containsKey(handshake.macString)) {
-					TrackerUDPConnection previousConnection = connectionsByMAC.get(handshake.macString);
+					Device previousConnection = connectionsByMAC.get(handshake.macString);
 					i = connections.indexOf(previousConnection);
 					connectionsByAddress.remove(previousConnection.ipAddress);
 					previousConnection.lastPacketNumber = 0;
@@ -143,11 +143,11 @@ public class TrackersUDPServer extends Thread {
 		socket.send(new DatagramPacket(rcvBuffer, bb.position(), connection.address));
 	}
 	
-	private void setUpSensor(TrackerUDPConnection connection, int trackerId, int sensorType, int sensorStatus) throws IOException {
+	private void setUpSensor(Device connection, int trackerId, int sensorType, int sensorStatus) throws IOException {
 		LogManager.log.info("[TrackerServer] Sensor " + trackerId + " for " + connection.name + " status: " + sensorStatus);
 		IMUTracker imu = connection.sensors.get(trackerId);
 		if(imu == null) {
-			imu = new IMUTracker(Tracker.getNextLocalTrackerId(), connection.name + "/" + trackerId, connection.descriptiveName + "/" + trackerId, this, Main.vrServer);
+			imu = new IMUTracker(connection, Tracker.getNextLocalTrackerId(), trackerId, connection.name + "/" + trackerId, connection.descriptiveName + "/" + trackerId, this, Main.vrServer);
 			connection.sensors.put(trackerId, imu);
 			ReferenceAdjustedTracker<IMUTracker> adjustedTracker = new ReferenceAdjustedTracker<>(imu);
 			trackersConsumer.accept(adjustedTracker);
@@ -170,7 +170,7 @@ public class TrackersUDPServer extends Thread {
 				DatagramPacket received = null;
 				try {
 					boolean hasActiveTrackers = false;
-					for(TrackerUDPConnection tracker : connections) {
+					for(Device tracker : connections) {
 						if(tracker.sensors.size() > 0) {
 							hasActiveTrackers = true;
 							break;
@@ -194,7 +194,7 @@ public class TrackersUDPServer extends Thread {
 					bb.limit(received.getLength());
 					bb.rewind();
 					
-					TrackerUDPConnection connection;
+					Device connection;
 					
 					synchronized(connections) {
 						connection = connectionsByAddress.get(received.getAddress());
@@ -211,7 +211,7 @@ public class TrackersUDPServer extends Thread {
 					lastKeepup = System.currentTimeMillis();
 					synchronized(connections) {
 						for(int i = 0; i < connections.size(); ++i) {
-							TrackerUDPConnection conn = connections.get(i);
+							Device conn = connections.get(i);
 							bb.limit(bb.capacity());
 							bb.rewind();
 							parser.write(bb, conn, new UDPPacket1Heartbeat());
@@ -265,7 +265,7 @@ public class TrackersUDPServer extends Thread {
 		}
 	}
 	
-	protected void processPacket(DatagramPacket received, UDPPacket packet, TrackerUDPConnection connection) throws IOException {
+	protected void processPacket(DatagramPacket received, UDPPacket packet, Device connection) throws IOException {
 		IMUTracker tracker = null;
 		switch(packet.getPacketId()) {
 		case UDPProtocolParser.PACKET_HEARTBEAT:
@@ -430,5 +430,9 @@ public class TrackersUDPServer extends Thread {
 		sb.append(ArrayUtils.toString(packet.getData()));
 		sb.append('}');
 		return sb.toString();
+	}
+
+	public List<Device> getConnections() {
+		return connections;
 	}
 }

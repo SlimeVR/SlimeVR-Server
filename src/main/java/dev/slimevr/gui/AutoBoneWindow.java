@@ -30,10 +30,7 @@ import dev.slimevr.poserecorder.PoseRecorder;
 import dev.slimevr.vr.processor.skeleton.SkeletonConfigValue;
 
 public class AutoBoneWindow extends JFrame {
-	
-	private static File saveDir = new File("Recordings");
-	private static File loadDir = new File("LoadRecordings");
-	
+
 	private EJBox pane;
 	
 	private final transient VRServer server;
@@ -66,83 +63,11 @@ public class AutoBoneWindow extends JFrame {
 		build();
 	}
 	
-	private String getLengthsString() {
-		final StringBuilder configInfo = new StringBuilder();
-		autoBone.configs.forEach((key, value) -> {
-			if(configInfo.length() > 0) {
-				configInfo.append(", ");
-			}
-			
-			configInfo.append(key.stringVal + ": " + StringUtils.prettyNumber(value * 100f, 2));
-		});
-		
-		return configInfo.toString();
-	}
-	
-	private void saveRecording(PoseFrames frames) {
-		if(saveDir.isDirectory() || saveDir.mkdirs()) {
-			File saveRecording;
-			int recordingIndex = 1;
-			do {
-				saveRecording = new File(saveDir, "ABRecording" + recordingIndex++ + ".pfr");
-			} while(saveRecording.exists());
-			
-			LogManager.log.info("[AutoBone] Exporting frames to \"" + saveRecording.getPath() + "\"...");
-			if(PoseFrameIO.writeToFile(saveRecording, frames)) {
-				LogManager.log.info("[AutoBone] Done exporting! Recording can be found at \"" + saveRecording.getPath() + "\".");
-			} else {
-				LogManager.log.severe("[AutoBone] Failed to export the recording to \"" + saveRecording.getPath() + "\".");
-			}
-		} else {
-			LogManager.log.severe("[AutoBone] Failed to create the recording directory \"" + saveDir.getPath() + "\".");
-		}
-	}
-	
-	private List<Pair<String, PoseFrames>> loadRecordings() {
-		List<Pair<String, PoseFrames>> recordings = new FastList<Pair<String, PoseFrames>>();
-		if(loadDir.isDirectory()) {
-			File[] files = loadDir.listFiles();
-			if(files != null) {
-				for(File file : files) {
-					if(file.isFile() && org.apache.commons.lang3.StringUtils.endsWithIgnoreCase(file.getName(), ".pfr")) {
-						LogManager.log.info("[AutoBone] Detected recording at \"" + file.getPath() + "\", loading frames...");
-						PoseFrames frames = PoseFrameIO.readFromFile(file);
-						
-						if(frames == null) {
-							LogManager.log.severe("Reading frames from \"" + file.getPath() + "\" failed...");
-						} else {
-							recordings.add(Pair.of(file.getName(), frames));
-						}
-					}
-				}
-			}
-		}
-		
-		return recordings;
-	}
-	
+
 	private float processFrames(PoseFrames frames) {
-		autoBone.minDataDistance = server.config.getInt("autobone.minimumDataDistance", autoBone.minDataDistance);
-		autoBone.maxDataDistance = server.config.getInt("autobone.maximumDataDistance", autoBone.maxDataDistance);
-		
-		autoBone.numEpochs = server.config.getInt("autobone.epochCount", autoBone.numEpochs);
-		
-		autoBone.initialAdjustRate = server.config.getFloat("autobone.adjustRate", autoBone.initialAdjustRate);
-		autoBone.adjustRateDecay = server.config.getFloat("autobone.adjustRateDecay", autoBone.adjustRateDecay);
-		
-		autoBone.slideErrorFactor = server.config.getFloat("autobone.slideErrorFactor", autoBone.slideErrorFactor);
-		autoBone.offsetSlideErrorFactor = server.config.getFloat("autobone.offsetSlideErrorFactor", autoBone.offsetSlideErrorFactor);
-		autoBone.offsetErrorFactor = server.config.getFloat("autobone.offsetErrorFactor", autoBone.offsetErrorFactor);
-		autoBone.proportionErrorFactor = server.config.getFloat("autobone.proportionErrorFactor", autoBone.proportionErrorFactor);
-		autoBone.heightErrorFactor = server.config.getFloat("autobone.heightErrorFactor", autoBone.heightErrorFactor);
-		autoBone.positionErrorFactor = server.config.getFloat("autobone.positionErrorFactor", autoBone.positionErrorFactor);
-		autoBone.positionOffsetErrorFactor = server.config.getFloat("autobone.positionOffsetErrorFactor", autoBone.positionOffsetErrorFactor);
-		
-		boolean calcInitError = server.config.getBoolean("autobone.calculateInitialError", true);
-		float targetHeight = server.config.getFloat("autobone.manualTargetHeight", -1f);
-		return autoBone.processFrames(frames, calcInitError, targetHeight, (epoch) -> {
+		return autoBone.processFrames(frames, autoBone.calcInitError, autoBone.targetHeight, (epoch) -> {
 			processLabel.setText(epoch.toString());
-			lengthsLabel.setText(getLengthsString());
+			lengthsLabel.setText(autoBone.getLengthsString());
 		});
 	}
 	
@@ -179,7 +104,7 @@ public class AutoBoneWindow extends JFrame {
 												
 												if(server.config.getBoolean("autobone.saveRecordings", false)) {
 													setText("Saving...");
-													saveRecording(frames);
+													autoBone.saveRecording(frames);
 												}
 											} else {
 												setText("Not Ready...");
@@ -238,7 +163,7 @@ public class AutoBoneWindow extends JFrame {
 												}
 												
 												setText("Saving...");
-												saveRecording(frames);
+												autoBone.saveRecording(frames);
 												
 												setText("Recording Saved!");
 												try {
@@ -281,7 +206,7 @@ public class AutoBoneWindow extends JFrame {
 				add(adjustButton = new JButton("Auto-Adjust") {
 					{
 						// If there are files to load, enable the button
-						setEnabled(poseRecorder.hasRecording() || (loadDir.isDirectory() && loadDir.list().length > 0));
+						setEnabled(poseRecorder.hasRecording() || (AutoBone.getLoadDir().isDirectory() && AutoBone.getLoadDir().list().length > 0));
 						addMouseListener(new MouseInputAdapter() {
 							@Override
 							public void mouseClicked(MouseEvent e) {
@@ -295,7 +220,7 @@ public class AutoBoneWindow extends JFrame {
 									public void run() {
 										try {
 											setText("Load...");
-											List<Pair<String, PoseFrames>> frameRecordings = loadRecordings();
+											List<Pair<String, PoseFrames>> frameRecordings = autoBone.loadRecordings();
 											
 											if(!frameRecordings.isEmpty()) {
 												LogManager.log.info("[AutoBone] Done loading frames!");
@@ -316,7 +241,7 @@ public class AutoBoneWindow extends JFrame {
 													frameRecordings.add(Pair.of("<Recording>", frames));
 												} else {
 													setText("No Recordings...");
-													LogManager.log.severe("[AutoBone] No recordings found in \"" + loadDir.getPath() + "\" and no recording was done...");
+													LogManager.log.severe("[AutoBone] No recordings found in \"" + AutoBone.getLoadDir().getPath() + "\" and no recording was done...");
 													try {
 														Thread.sleep(3000); // Wait for 3 seconds
 													} catch(Exception e1) {
@@ -353,7 +278,7 @@ public class AutoBoneWindow extends JFrame {
 												
 												LogManager.log.info("[AutoBone] Ratios: [{Neck-Torso: " + StringUtils.prettyNumber(neckTorso) + "}, {Chest-Torso: " + StringUtils.prettyNumber(chestTorso) + "}, {Torso-Waist: " + StringUtils.prettyNumber(torsoWaist) + "}, {Leg-Torso: " + StringUtils.prettyNumber(legTorso) + "}, {Leg-Body: " + StringUtils.prettyNumber(legBody) + "}, {Knee-Leg: " + StringUtils.prettyNumber(kneeLeg) + "}]");
 												
-												String lengthsString = getLengthsString();
+												String lengthsString = autoBone.getLengthsString();
 												LogManager.log.info("[AutoBone] Length values: " + lengthsString);
 												lengthsLabel.setText(lengthsString);
 											}
@@ -406,7 +331,7 @@ public class AutoBoneWindow extends JFrame {
 								if(!isEnabled()) {
 									return;
 								}
-								
+
 								autoBone.applyConfig();
 								// Update GUI values after applying
 								skeletonConfig.refreshAll();
@@ -427,7 +352,7 @@ public class AutoBoneWindow extends JFrame {
 		pane.add(new EJBox(BoxLayout.LINE_AXIS) {
 			{
 				setBorder(new EmptyBorder(i(5)));
-				add(lengthsLabel = new JLabel(getLengthsString()));
+				add(lengthsLabel = new JLabel(autoBone.getLengthsString()));
 			}
 		});
 		
