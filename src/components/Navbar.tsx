@@ -49,7 +49,7 @@ export function Navbar({ children }: { children?: ReactChild }) {
                 <div className='flex flex-col justify-around text-white' onClick={() => appWindow.minimize()}>
                     <MinimiseIcon className="hover:bg-primary-5 rounded-full"></MinimiseIcon>
                 </div>
-                <div className='flex flex-col justify-around text-white' onClick={() => appWindow.maximize()}>
+                <div className='flex flex-col justify-around text-white' onClick={() => appWindow.toggleMaximize()}>
                     <MaximiseIcon className="hover:bg-primary-5 rounded-full"></MaximiseIcon>
                 </div>
                 <div className='flex flex-col justify-around text-white' onClick={() => appWindow.close()}>

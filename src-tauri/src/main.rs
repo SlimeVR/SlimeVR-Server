@@ -49,14 +49,19 @@ fn main() {
     }
 
     // Spawn server process
-    let runfile_path = cli
+    let run_path = cli
         .launch_from_path
-        .unwrap_or_else(|| PathBuf::from(env!("CARGO_MANIFEST_DIR")).join("run.bat"));
-    let stdout_recv = if !runfile_path.exists() {
+        .unwrap_or_else(|| PathBuf::from(env!("CARGO_MANIFEST_DIR")));
+
+    let java_folder = run_path.join("jre");
+    let server_path = run_path.join("slimevr.jar");
+    let stdout_recv = if !java_folder.exists() || !server_path.exists() {
         log::warn!("runfile doesn't exist. We will not start the server.");
         None
     } else {
-        let (recv, _child) = Command::new(runfile_path.to_str().unwrap())
+        let (recv, _child) = Command::new(java_folder.join("bin/java").to_str().unwrap())
+            .current_dir(run_path)
+            .args(["-Xmx512M", "-jar", "slimevr.jar", "--no-gui"])
             .spawn()
             .expect("sh command failed to start");
         Some(recv)

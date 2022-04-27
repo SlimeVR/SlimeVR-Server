@@ -55,7 +55,8 @@
         "resizable": true,
         "fullscreen": false,
         "decorations": false,
-        "transparent": true
+        "transparent": true,
+        "fileDropEnabled": false
       }
     ],
     "security": {

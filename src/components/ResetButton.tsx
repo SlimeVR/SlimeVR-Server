@@ -40,7 +40,7 @@ export function ResetButton({ type }: { type: ResetType }) {
 
     return (
         <BigButton 
-            text={!reseting ? "Reset" : `${3 - timer}`} icon={type === ResetType.Quick ? <QuickResetIcon /> : <ResetIcon/>} 
+            text={!reseting ? type === ResetType.Quick ? "Quick Reset" : "Reset" : `${3 - timer}`} icon={type === ResetType.Quick ? <QuickResetIcon /> : <ResetIcon/>} 
             onClick={reset} 
             disabled={reseting}>
         </BigButton>
