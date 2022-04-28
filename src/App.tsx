@@ -82,10 +82,14 @@ function App() {
         // This strange invocation is what lets us lose the line information in the console
         // See more here: https://stackoverflow.com/a/48994308
         setTimeout(console.log.bind(console, `%c[SERVER] %c${s}`, "color:cyan", "color:red"));
-      } else if ("stdout" === event_type) {
+      } else if (event_type === "stdout") {
         setTimeout(console.log.bind(console, `%c[SERVER] %c${s}`, "color:cyan", "color:green"));
-      } else if ("error" === event_type) {
+      } else if (event_type === "error") {
         console.error("Error: %s", s)
+      } else if (event_type === "terminated") {
+        console.error("Server Process Terminated: %s", s);
+      } else if (event_type === "other") {
+        console.log("Other process event: %s", s);
       }
       return async () => {
         await unlisten

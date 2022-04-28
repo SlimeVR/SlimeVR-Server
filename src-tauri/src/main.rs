@@ -5,6 +5,7 @@
 
 use clap::Parser;
 use clap_verbosity_flag::{InfoLevel, Verbosity};
+use std::env;
 use std::path::PathBuf;
 use tauri::api::clap;
 use tauri::api::process::Command;
@@ -19,6 +20,33 @@ struct Cli {
     launch_from_path: Option<PathBuf>,
     #[clap(flatten)]
     verbosity: Verbosity<InfoLevel>,
+}
+
+fn is_valid_path(path: &PathBuf) -> bool {
+
+    let java_folder = path.join("jre");
+    let server_path = path.join("slimevr.jar");
+
+    return java_folder.exists() && server_path.exists();
+}
+
+fn get_launch_path(cli: Cli) -> Option<PathBuf> {
+    let mut path = cli.launch_from_path.unwrap_or_default();
+    if path.exists() && is_valid_path(&path) {
+        return Some(path);
+    }
+
+    path = env::current_dir().unwrap();
+    if path.exists() && is_valid_path(&path) {
+        return Some(path);
+    }
+    
+    path = PathBuf::from(env!("CARGO_MANIFEST_DIR"));
+    if path.exists() && is_valid_path(&path) {
+        return Some(path);
+    }
+   
+    None
 }
 
 fn main() {
@@ -49,22 +77,21 @@ fn main() {
     }
 
     // Spawn server process
-    let run_path = cli
-        .launch_from_path
-        .unwrap_or_else(|| PathBuf::from(env!("CARGO_MANIFEST_DIR")));
+    let run_path = get_launch_path(cli);
 
-    let java_folder = run_path.join("jre");
-    let server_path = run_path.join("slimevr.jar");
-    let stdout_recv = if !java_folder.exists() || !server_path.exists() {
-        log::warn!("runfile doesn't exist. We will not start the server.");
-        None
-    } else {
+    let stdout_recv = if let Some(p) = run_path {
+        log::info!("Server found on path: {}", p.to_str().unwrap());
+        
+        let java_folder = p.join("jre");
         let (recv, _child) = Command::new(java_folder.join("bin/java").to_str().unwrap())
-            .current_dir(run_path)
+            .current_dir(p)
             .args(["-Xmx512M", "-jar", "slimevr.jar", "--no-gui"])
             .spawn()
-            .expect("sh command failed to start");
+            .expect("Unable to start the server jar");
         Some(recv)
+    } else {
+        log::warn!("No server found. We will not start the server.");
+        None
     };
 
     tauri::Builder::default()
