@@ -17,8 +17,16 @@ public enum TrackerMountingRotation {
 		this.quaternion = new Quaternion().fromAngles(0, angle * FastMath.DEG_TO_RAD, 0);
 	}
 
+	public static TrackerMountingRotation fromName(String name) {
+		for (TrackerMountingRotation r : values) {
+			if (r.name().equals(name))
+				return r;
+		}
+		return null;
+	}
+
 	public static TrackerMountingRotation fromQuaternion(Quaternion q) {
-		for (TrackerMountingRotation r : values()) {
+		for (TrackerMountingRotation r : values) {
 			if (r.quaternion.equals(q))
 				return r;
 		}

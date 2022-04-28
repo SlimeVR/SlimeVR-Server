@@ -3,6 +3,8 @@ package dev.slimevr.vr.trackers;
 import com.jme3.math.Quaternion;
 import io.eiren.yaml.YamlNode;
 
+import java.util.Objects;
+
 public class TrackerConfig {
 
 	public final String trackerName;
@@ -36,7 +38,8 @@ public class TrackerConfig {
 		}
 
 		if (oldMountingRotation != null) {
-			mountingRotation = TrackerMountingRotation.valueOf(oldMountingRotation).quaternion;
+			TrackerMountingRotation rot = TrackerMountingRotation.fromName(oldMountingRotation);
+			mountingRotation = Objects.requireNonNullElse(rot, TrackerMountingRotation.FRONT).quaternion;
 		}
 
 		YamlNode adjNode = node.getNode("adjustment");
