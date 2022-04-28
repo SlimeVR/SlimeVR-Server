@@ -1,28 +1,25 @@
 package dev.slimevr.gui;
 
-import java.awt.Container;
-import java.awt.event.MouseEvent;
-import java.awt.event.WindowAdapter;
-import java.awt.event.WindowEvent;
-
-import javax.swing.*;
-import javax.swing.event.MouseInputAdapter;
-
 import com.fazecast.jSerialComm.SerialPort;
-
 import dev.slimevr.gui.swing.EJBox;
 import dev.slimevr.serial.SerialListener;
 import io.eiren.util.ann.AWTThread;
+
+import javax.swing.*;
+import javax.swing.event.MouseInputAdapter;
+import java.awt.*;
+import java.awt.event.MouseEvent;
+import java.awt.event.WindowAdapter;
+import java.awt.event.WindowEvent;
 
 public class WiFiWindow extends JFrame implements SerialListener {
 
 	private static String savedSSID = "";
 	private static String savedPassword = "";
+	private final VRServerGUI gui;
 	JTextField ssidField;
 	JPasswordField passwdField;
 	JTextArea log;
-
-	private final VRServerGUI gui;
 
 	public WiFiWindow(VRServerGUI gui) {
 		super("WiFi Settings");

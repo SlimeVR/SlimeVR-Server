@@ -28,51 +28,51 @@ public enum TrackerPosition {
 	RIGHT_HAND(19, "body:right_hand", TrackerRole.RIGHT_HAND),
 	;
 
-	public final int id;
-	public final String designation;
-	public final TrackerRole trackerRole;
-	
 	public static final TrackerPosition[] values = values();
 	private static final Map<Integer, TrackerPosition> byId = new HashMap<>();
 	private static final Map<String, TrackerPosition> byDesignation = new HashMap<>();
 	private static final EnumMap<TrackerRole, TrackerPosition> byRole = new EnumMap<>(TrackerRole.class);
-	
-	private TrackerPosition(int id, String designation, TrackerRole trackerRole) {
+
+	static {
+		for (TrackerPosition tbp : values()) {
+			byDesignation.put(tbp.designation.toLowerCase(), tbp);
+			byId.put(tbp.id, tbp);
+			if (tbp.trackerRole != null) {
+				TrackerPosition old = byRole.get(tbp.trackerRole);
+				if (old != null)
+					throw new AssertionError("Only one tracker position can match tracker role. " + tbp.trackerRole + " is occupied by " + old + " when adding " + tbp);
+				byRole.put(tbp.trackerRole, tbp);
+			}
+		}
+	}
+
+	public final int id;
+	public final String designation;
+	public final TrackerRole trackerRole;
+
+	TrackerPosition(int id, String designation, TrackerRole trackerRole) {
 		this.id = id;
 		this.designation = designation;
 		this.trackerRole = trackerRole;
 	}
-	
+
 	public static TrackerPosition getByDesignation(String designation) {
 		// Support old configs. leg was renamed to knee.
-		if(designation != null) {
-			if(designation.equals("body:left_leg"))
+		if (designation != null) {
+			if (designation.equals("body:left_leg"))
 				designation = "body:left_knee";
-			if(designation.equals("body:right_leg"))
-				designation = "body:right_knee";	
+			if (designation.equals("body:right_leg"))
+				designation = "body:right_knee";
 		}
-		
+
 		return designation == null ? null : byDesignation.get(designation.toLowerCase());
 	}
-	
+
 	public static TrackerPosition getByRole(TrackerRole role) {
 		return byRole.get(role);
 	}
 
 	public static TrackerPosition getById(int id) {
 		return byId.get(id);
-	}
-	
-	static {
-		for(TrackerPosition tbp : values()) {
-			byDesignation.put(tbp.designation.toLowerCase(), tbp);
-			byId.put(tbp.id, tbp);
-			if(tbp.trackerRole != null) {
-				TrackerPosition old = byRole.get(tbp.trackerRole);
-				if(old != null)
-					throw new AssertionError("Only one tracker position can match tracker role. " + tbp.trackerRole + " is occupied by " + old + " when adding " + tbp);
-				byRole.put(tbp.trackerRole, tbp);
-			}
-		}
 	}
 }

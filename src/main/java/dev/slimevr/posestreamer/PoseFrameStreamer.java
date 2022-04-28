@@ -1,14 +1,14 @@
 package dev.slimevr.posestreamer;
 
-import java.io.File;
-
 import dev.slimevr.poserecorder.PoseFrameIO;
 import dev.slimevr.poserecorder.PoseFrameSkeleton;
 import dev.slimevr.poserecorder.PoseFrames;
 
+import java.io.File;
+
 public class PoseFrameStreamer extends PoseStreamer {
 
-	private PoseFrames frames;
+	private final PoseFrames frames;
 
 	public PoseFrameStreamer(String path) {
 		this(new File(path));

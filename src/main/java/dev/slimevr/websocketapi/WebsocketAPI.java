@@ -6,25 +6,24 @@ import dev.slimevr.protocol.ProtocolAPI;
 import dev.slimevr.protocol.ProtocolAPIServer;
 import io.eiren.util.logging.LogManager;
 import org.java_websocket.WebSocket;
-import org.java_websocket.drafts.Draft;
 import org.java_websocket.drafts.Draft_6455;
 import org.java_websocket.handshake.ClientHandshake;
 import org.java_websocket.server.WebSocketServer;
 
 import java.net.InetSocketAddress;
 import java.nio.ByteBuffer;
-import java.util.*;
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.Map;
 
 public class WebsocketAPI extends WebSocketServer implements ProtocolAPIServer {
 
-	private final Map<Integer, GenericConnection> websocketConnections = new HashMap<>();
-
 	public final VRServer server;
 	public final ProtocolAPI protocolAPI;
-
+	private final Map<Integer, GenericConnection> websocketConnections = new HashMap<>();
 
 	public WebsocketAPI(VRServer server, ProtocolAPI protocolAPI) {
-		super(new InetSocketAddress(21110), Collections.<Draft>singletonList(new Draft_6455()));
+		super(new InetSocketAddress(21110), Collections.singletonList(new Draft_6455()));
 		this.server = server;
 		this.protocolAPI = protocolAPI;
 
@@ -36,7 +35,6 @@ public class WebsocketAPI extends WebSocketServer implements ProtocolAPIServer {
 		LogManager.log.info("[WebSocketAPI] New connection from: " + conn.getRemoteSocketAddress().getAddress().getHostAddress());
 
 		this.websocketConnections.put(conn.hashCode(), new WebsocketConnection(conn));
-
 	}
 
 	@Override
@@ -46,7 +44,8 @@ public class WebsocketAPI extends WebSocketServer implements ProtocolAPIServer {
 	}
 
 	@Override
-	public void onMessage(WebSocket conn, String message) {}
+	public void onMessage(WebSocket conn, String message) {
+	}
 
 	@Override
 	public void onMessage(WebSocket conn, ByteBuffer message) {

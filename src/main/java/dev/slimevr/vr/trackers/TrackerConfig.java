@@ -1,7 +1,6 @@
 package dev.slimevr.vr.trackers;
 
 import com.jme3.math.Quaternion;
-
 import io.eiren.yaml.YamlNode;
 
 import java.util.Objects;

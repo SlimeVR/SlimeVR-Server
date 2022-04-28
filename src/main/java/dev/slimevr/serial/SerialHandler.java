@@ -4,15 +4,18 @@ import com.fazecast.jSerialComm.SerialPort;
 import com.fazecast.jSerialComm.SerialPortEvent;
 import com.fazecast.jSerialComm.SerialPortMessageListener;
 
-import java.io.*;
+import java.io.IOException;
+import java.io.OutputStream;
+import java.io.OutputStreamWriter;
 import java.nio.ByteBuffer;
 import java.nio.charset.StandardCharsets;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.List;
 
 public class SerialHandler implements SerialPortMessageListener {
 
+	private final List<SerialListener> listeners = new ArrayList<>();
 	private SerialPort trackerPort = null;
-	private List<SerialListener> listeners = new ArrayList<>();
 
 	public void addListener(SerialListener channel) {
 		this.listeners.add(channel);
@@ -22,15 +25,14 @@ public class SerialHandler implements SerialPortMessageListener {
 		listeners.removeIf(listener -> l == listener);
 	}
 
-
 	public boolean openSerial() {
 		if (this.isConnected()) {
 			return true;
 		}
 
 		SerialPort[] ports = SerialPort.getCommPorts();
-		for(SerialPort port : ports) {
-			if(port.getDescriptivePortName().toLowerCase().contains("ch340") || port.getDescriptivePortName().toLowerCase().contains("cp21") || port.getDescriptivePortName().toLowerCase().contains("ch910")) {
+		for (SerialPort port : ports) {
+			if (port.getDescriptivePortName().toLowerCase().contains("ch340") || port.getDescriptivePortName().toLowerCase().contains("cp21") || port.getDescriptivePortName().toLowerCase().contains("ch910")) {
 				trackerPort = port;
 				break;
 			}
@@ -50,13 +52,12 @@ public class SerialHandler implements SerialPortMessageListener {
 	}
 
 	public void closeSerial() {
-		if(trackerPort != null)
+		if (trackerPort != null)
 			trackerPort.closePort();
 		this.listeners.forEach(SerialListener::onSerialDisconnected);
 		System.out.println("Port closed okay");
 		trackerPort = null;
 	}
-
 
 	public void setWifi(String ssid, String passwd) {
 		if (trackerPort == null)
@@ -66,8 +67,8 @@ public class SerialHandler implements SerialPortMessageListener {
 		try {
 			writer.append("SET WIFI \"" + ssid + "\" \"" + passwd + "\"\n");
 			writer.flush();
-		} catch(IOException e) {
-			addLog(e.toString() + "\n");
+		} catch (IOException e) {
+			addLog(e + "\n");
 			e.printStackTrace();
 		}
 	}
@@ -97,9 +98,13 @@ public class SerialHandler implements SerialPortMessageListener {
 	}
 
 	@Override
-	public byte[] getMessageDelimiter() { return new byte[] { (byte)0x0A  }; }
+	public byte[] getMessageDelimiter() {
+		return new byte[]{(byte) 0x0A};
+	}
 
 	@Override
-	public boolean delimiterIndicatesEndOfMessage() { return true; }
+	public boolean delimiterIndicatesEndOfMessage() {
+		return true;
+	}
 }
 

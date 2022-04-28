@@ -17,9 +17,9 @@ public class WindowsPipe {
 
 	public static void safeDisconnect(WindowsPipe pipe) {
 		try {
-			if(pipe != null && pipe.pipeHandle != null)
+			if (pipe != null && pipe.pipeHandle != null)
 				Kernel32.INSTANCE.DisconnectNamedPipe(pipe.pipeHandle);
-		} catch(Exception e) {
+		} catch (Exception e) {
 		}
 	}
 }

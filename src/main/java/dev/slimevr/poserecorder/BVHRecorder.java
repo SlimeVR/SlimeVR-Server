@@ -11,15 +11,13 @@ import java.io.IOException;
 
 public class BVHRecorder {
 
-	private static File bvhSaveDir = new File("BVH Recordings");
-	private PoseDataStream poseDataStream = null;
-
+	private static final File bvhSaveDir = new File("BVH Recordings");
 	private final ServerPoseStreamer poseStreamer;
+	private PoseDataStream poseDataStream = null;
 
 	public BVHRecorder(VRServer server) {
 		this.poseStreamer = new ServerPoseStreamer(server);
 	}
-
 
 	public void startRecording() {
 		File bvhFile = getBvhFile();
@@ -35,7 +33,6 @@ public class BVHRecorder {
 		}
 	}
 
-
 	public void endRecording() {
 
 		try {
@@ -47,14 +44,13 @@ public class BVHRecorder {
 		}
 	}
 
-
 	private File getBvhFile() {
 		if (bvhSaveDir.isDirectory() || bvhSaveDir.mkdirs()) {
 			File saveRecording;
 			int recordingIndex = 1;
 			do {
 				saveRecording = new File(bvhSaveDir, "BVH-Recording" + recordingIndex++ + ".bvh");
-			} while(saveRecording.exists());
+			} while (saveRecording.exists());
 
 			return saveRecording;
 		} else {
@@ -63,7 +59,6 @@ public class BVHRecorder {
 
 		return null;
 	}
-
 
 	public boolean isRecording() {
 		return poseDataStream != null;

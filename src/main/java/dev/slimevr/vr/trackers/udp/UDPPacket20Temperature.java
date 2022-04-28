@@ -7,21 +7,21 @@ public class UDPPacket20Temperature extends UDPPacket implements SensorSpecificP
 
 	public int sensorId;
 	public float temperature;
-	
+
 	public UDPPacket20Temperature() {
 	}
-	
+
 	@Override
 	public int getPacketId() {
 		return 20;
 	}
-	
+
 	@Override
 	public void readData(ByteBuffer buf) throws IOException {
 		sensorId = buf.get() & 0xFF;
 		temperature = buf.getFloat();
 	}
-	
+
 	@Override
 	public void writeData(ByteBuffer buf) throws IOException {
 		// Never sent back in current protocol
@@ -31,5 +31,4 @@ public class UDPPacket20Temperature extends UDPPacket implements SensorSpecificP
 	public int getSensorId() {
 		return sensorId;
 	}
-	
 }

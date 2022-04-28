@@ -1,26 +1,23 @@
 package dev.slimevr;
 
-import java.io.File;
-import java.io.IOException;
-import java.net.ServerSocket;
-
-import javax.swing.JOptionPane;
-
-import dev.slimevr.websocketapi.WebsocketAPI;
+import dev.slimevr.gui.Keybinding;
+import dev.slimevr.gui.VRServerGUI;
+import io.eiren.util.logging.LogManager;
 import org.apache.commons.cli.*;
 import org.apache.commons.lang3.JavaVersion;
 import org.apache.commons.lang3.SystemUtils;
 
-import dev.slimevr.gui.Keybinding;
-import dev.slimevr.gui.VRServerGUI;
-import io.eiren.util.logging.LogManager;
+import javax.swing.*;
+import java.io.File;
+import java.io.IOException;
+import java.net.ServerSocket;
 
 public class Main {
-	
+
 	public static String VERSION = "0.1.6";
-	
+
 	public static VRServer vrServer;
-	
+
 	@SuppressWarnings("unused")
 	public static void main(String[] args) {
 		System.setProperty("awt.useSystemAAFontSettings", "on");
@@ -34,7 +31,6 @@ public class Main {
 
 		Option noGui = new Option("g", "no-gui", false, "disable swing gui (allow for other gui to be used)");
 		Option help = new Option("h", "help", false, "Show help");
-
 
 		options.addOption(noGui);
 		options.addOption(help);
@@ -51,12 +47,10 @@ public class Main {
 			System.exit(0);
 		}
 
-
-		
 		File dir = new File("").getAbsoluteFile();
 		try {
 			LogManager.initialize(new File(dir, "logs/"), dir);
-		} catch(Exception e1) {
+		} catch (Exception e1) {
 			e1.printStackTrace();
 		}
 
@@ -65,7 +59,7 @@ public class Main {
 			JOptionPane.showMessageDialog(null, "SlimeVR start-up error! A minimum of Java 11 is required.", "SlimeVR: Java Runtime Mismatch", JOptionPane.ERROR_MESSAGE);
 			return;
 		}
-		
+
 		try {
 			new ServerSocket(6969).close();
 			new ServerSocket(35903).close();
@@ -78,25 +72,24 @@ public class Main {
 
 		try {
 			vrServer = new VRServer();
-			vrServer.start(); 
+			vrServer.start();
 			new Keybinding(vrServer);
 			if (!cmd.hasOption("no-gui"))
 				new VRServerGUI(vrServer);
-		} catch(Throwable e) {
+		} catch (Throwable e) {
 			e.printStackTrace();
 			try {
 				Thread.sleep(2000L);
-			} catch(InterruptedException e2) {
+			} catch (InterruptedException e2) {
 				e.printStackTrace();
 			}
 			System.exit(1); // Exit in case error happened on init and window not appeared, but some thread started
 		} finally {
 			try {
 				Thread.sleep(2000L);
-			} catch(InterruptedException e) {
+			} catch (InterruptedException e) {
 				e.printStackTrace();
 			}
 		}
 	}
-	
 }

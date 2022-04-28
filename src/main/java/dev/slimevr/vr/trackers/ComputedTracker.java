@@ -10,12 +10,12 @@ public class ComputedTracker implements Tracker, TrackerWithTPS {
 	public final Quaternion rotation = new Quaternion();
 	protected final String name;
 	protected final String serial;
-	protected TrackerStatus status = TrackerStatus.DISCONNECTED;
-	public TrackerPosition bodyPosition = null;
 	protected final boolean hasRotation;
 	protected final boolean hasPosition;
 	protected final int trackerId;
-	
+	public TrackerPosition bodyPosition = null;
+	protected TrackerStatus status = TrackerStatus.DISCONNECTED;
+
 	public ComputedTracker(int trackerId, String serial, String name, boolean hasRotation, boolean hasPosition) {
 		this.name = name;
 		this.serial = serial;
@@ -23,16 +23,16 @@ public class ComputedTracker implements Tracker, TrackerWithTPS {
 		this.hasPosition = hasPosition;
 		this.trackerId = trackerId;
 	}
-	
+
 	public ComputedTracker(int trackerId, String name, boolean hasRotation, boolean hasPosition) {
 		this(trackerId, name, name, hasRotation, hasPosition);
 	}
-	
+
 	@Override
 	public void saveConfig(TrackerConfig config) {
 		config.setDesignation(bodyPosition == null ? null : bodyPosition.designation);
 	}
-	
+
 	@Override
 	public void loadConfig(TrackerConfig config) {
 		// Loading a config is an act of user editing, therefore it shouldn't not be allowed if editing is not allowed
@@ -40,17 +40,17 @@ public class ComputedTracker implements Tracker, TrackerWithTPS {
 			bodyPosition = TrackerPosition.getByDesignation(config.designation);
 		}
 	}
-	
+
 	@Override
 	public String getName() {
 		return this.serial;
 	}
-	
+
 	@Override
 	public String getDescriptiveName() {
 		return this.name;
 	}
-	
+
 	@Override
 	public boolean getPosition(Vector3f store) {
 		store.set(position);
@@ -67,11 +67,11 @@ public class ComputedTracker implements Tracker, TrackerWithTPS {
 	public TrackerStatus getStatus() {
 		return status;
 	}
-	
+
 	public void setStatus(TrackerStatus status) {
 		this.status = status;
 	}
-	
+
 	@Override
 	public float getConfidenceLevel() {
 		return 1.0f;
@@ -99,7 +99,7 @@ public class ComputedTracker implements Tracker, TrackerWithTPS {
 	public boolean userEditable() {
 		return false;
 	}
-	
+
 	@Override
 	public void dataTick() {
 	}
@@ -132,7 +132,6 @@ public class ComputedTracker implements Tracker, TrackerWithTPS {
 	public int getTrackerId() {
 		return this.trackerId;
 	}
-
 
 	@Override
 	public int getTrackerNum() {

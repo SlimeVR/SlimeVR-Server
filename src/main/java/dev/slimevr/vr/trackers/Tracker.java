@@ -1,58 +1,58 @@
 package dev.slimevr.vr.trackers;
 
-import java.util.concurrent.atomic.AtomicInteger;
-
 import com.jme3.math.Quaternion;
 import com.jme3.math.Vector3f;
 import dev.slimevr.vr.trackers.udp.Device;
 
+import java.util.concurrent.atomic.AtomicInteger;
+
 public interface Tracker {
-	
-	public static final AtomicInteger nextLocalTrackerId = new AtomicInteger();
-	
-	public boolean getPosition(Vector3f store);
-	
-	public boolean getRotation(Quaternion store);
-	
-	public String getName();
-	
-	public TrackerStatus getStatus();
-	
-	public void loadConfig(TrackerConfig config);
-	
-	public void saveConfig(TrackerConfig config);
-	
-	public float getConfidenceLevel();
-	
-	public void resetFull(Quaternion reference);
-	
-	public void resetYaw(Quaternion reference);
-	
-	public void tick();
-	
-	public TrackerPosition getBodyPosition();
-	
-	public void setBodyPosition(TrackerPosition position);
-	
-	public boolean userEditable();
-	
-	public boolean hasRotation();
-	
-	public boolean hasPosition();
 
-	public boolean isComputed();
-	
-	public int getTrackerId();
+	AtomicInteger nextLocalTrackerId = new AtomicInteger();
 
-	public int getTrackerNum();
-
-	public Device getDevice();
-	
-	public default String getDescriptiveName() {
-		return getName();
-	}
-	
-	public static int getNextLocalTrackerId() {
+	static int getNextLocalTrackerId() {
 		return nextLocalTrackerId.incrementAndGet();
+	}
+
+	boolean getPosition(Vector3f store);
+
+	boolean getRotation(Quaternion store);
+
+	String getName();
+
+	TrackerStatus getStatus();
+
+	void loadConfig(TrackerConfig config);
+
+	void saveConfig(TrackerConfig config);
+
+	float getConfidenceLevel();
+
+	void resetFull(Quaternion reference);
+
+	void resetYaw(Quaternion reference);
+
+	void tick();
+
+	TrackerPosition getBodyPosition();
+
+	void setBodyPosition(TrackerPosition position);
+
+	boolean userEditable();
+
+	boolean hasRotation();
+
+	boolean hasPosition();
+
+	boolean isComputed();
+
+	int getTrackerId();
+
+	int getTrackerNum();
+
+	Device getDevice();
+
+	default String getDescriptiveName() {
+		return getName();
 	}
 }

@@ -13,31 +13,33 @@ import dev.slimevr.vr.trackers.ShareableTracker;
 public interface Bridge {
 
 	@VRServerThread
-	public void dataRead();
+	void dataRead();
 
 	@VRServerThread
-	public void dataWrite();
-	
+	void dataWrite();
+
 	/**
 	 * Adds shared tracker to the bridge. Bridge should notify the
 	 * other side of this tracker, if it's the type of tracker
 	 * this bridge serves, and start sending data each update
+	 *
 	 * @param tracker
 	 */
 	@VRServerThread
-	public void addSharedTracker(ShareableTracker tracker);
-	
+	void addSharedTracker(ShareableTracker tracker);
+
 	/**
 	 * Removes tracker from a bridge. If the other side supports
 	 * tracker removal, bridge should notify it and stop sending
 	 * new data. If it doesn't support tracker removal, the bridge
 	 * can either stop sending new data, or keep sending it if it's
 	 * available.
+	 *
 	 * @param tracker
 	 */
 	@VRServerThread
-	public void removeSharedTracker(ShareableTracker tracker);
+	void removeSharedTracker(ShareableTracker tracker);
 
 	@VRServerThread
-	public void startBridge();
+	void startBridge();
 }

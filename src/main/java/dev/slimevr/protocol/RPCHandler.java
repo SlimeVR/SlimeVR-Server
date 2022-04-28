@@ -42,7 +42,6 @@ public class RPCHandler extends ProtocolHandler<RpcMessageHeader> implements Ser
 		this.api.server.getSerialHandler().addListener(this);
 	}
 
-
 	public void onSetWifiRequest(GenericConnection conn, RpcMessageHeader messageHeader) {
 		SetWifiRequest req = (SetWifiRequest) messageHeader.message(new SetWifiRequest());
 		if (req == null) return;
@@ -86,14 +85,12 @@ public class RPCHandler extends ProtocolHandler<RpcMessageHeader> implements Ser
 		conn.send(fbb.dataBuffer());
 	}
 
-
 	public void onSkeletonResetAllRequest(GenericConnection conn, RpcMessageHeader messageHeader) {
 		SkeletonResetAllRequest req = (SkeletonResetAllRequest) messageHeader.message(new SkeletonResetAllRequest());
 		if (req == null) return;
 
 		this.api.server.humanPoseProcessor.getSkeletonConfig().resetConfigs();
 		this.api.server.saveConfig();
-
 
 		// might not be a good idea maybe let the client ask again
 		FlatBufferBuilder fbb = new FlatBufferBuilder(300);
@@ -102,7 +99,6 @@ public class RPCHandler extends ProtocolHandler<RpcMessageHeader> implements Ser
 		fbb.finish(outbound);
 		conn.send(fbb.dataBuffer());
 	}
-
 
 	public void onSkeletonConfigRequest(GenericConnection conn, RpcMessageHeader messageHeader) {
 		SkeletonConfigRequest req = (SkeletonConfigRequest) messageHeader.message(new SkeletonConfigRequest());
@@ -232,7 +228,6 @@ public class RPCHandler extends ProtocolHandler<RpcMessageHeader> implements Ser
 		}
 	}
 
-
 	@Override
 	public void onMessage(GenericConnection conn, RpcMessageHeader message) {
 		BiConsumer<GenericConnection, RpcMessageHeader> consumer = this.handlers[message.messageType()];
@@ -244,7 +239,6 @@ public class RPCHandler extends ProtocolHandler<RpcMessageHeader> implements Ser
 
 	public int createRPCMessage(FlatBufferBuilder fbb, byte messageType, int messageOffset) {
 		int[] data = new int[1];
-
 
 		RpcMessageHeader.startRpcMessageHeader(fbb);
 		RpcMessageHeader.addMessage(fbb, messageOffset);
