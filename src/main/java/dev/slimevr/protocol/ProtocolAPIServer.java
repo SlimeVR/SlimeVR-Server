@@ -4,5 +4,5 @@ import java.util.Map;
 
 public interface ProtocolAPIServer {
 
-    Map<Integer, GenericConnection> getAPIConnections();
+	Map<Integer, GenericConnection> getAPIConnections();
 }

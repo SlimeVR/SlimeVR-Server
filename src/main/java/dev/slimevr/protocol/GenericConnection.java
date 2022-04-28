@@ -5,9 +5,9 @@ import java.util.UUID;
 
 public interface GenericConnection {
 
-    UUID getConnectionId();
+	UUID getConnectionId();
 
-    ConnectionContext getContext();
+	ConnectionContext getContext();
 
-    void send(ByteBuffer bytes);
+	void send(ByteBuffer bytes);
 }

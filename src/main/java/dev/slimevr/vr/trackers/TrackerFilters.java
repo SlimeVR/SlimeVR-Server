@@ -1,21 +1,21 @@
 package dev.slimevr.vr.trackers;
 
 public enum TrackerFilters {
-    NONE(0),
-    INTERPOLATION(1),
-    EXTRAPOLATION(2);
+	NONE(0),
+	INTERPOLATION(1),
+	EXTRAPOLATION(2);
 
-    public final int id;
+	public final int id;
 
-    TrackerFilters(int id) {
-        this.id = id;
-    }
+	TrackerFilters(int id) {
+		this.id = id;
+	}
 
-    public static TrackerFilters fromId(int id) {
-        for (TrackerFilters filter : values()) {
-            if (filter.id == id)
-                return filter;
-        }
-        return null;
-    }
+	public static TrackerFilters fromId(int id) {
+		for (TrackerFilters filter : values()) {
+			if (filter.id == id)
+				return filter;
+		}
+		return null;
+	}
 }

@@ -5,30 +5,30 @@ import java.nio.ByteBuffer;
 
 public class UDPPacket20Temperature extends UDPPacket implements SensorSpecificPacket {
 
-    public int sensorId;
-    public float temperature;
+	public int sensorId;
+	public float temperature;
 
-    public UDPPacket20Temperature() {
-    }
+	public UDPPacket20Temperature() {
+	}
 
-    @Override
-    public int getPacketId() {
-        return 20;
-    }
+	@Override
+	public int getPacketId() {
+		return 20;
+	}
 
-    @Override
-    public void readData(ByteBuffer buf) throws IOException {
-        sensorId = buf.get() & 0xFF;
-        temperature = buf.getFloat();
-    }
+	@Override
+	public void readData(ByteBuffer buf) throws IOException {
+		sensorId = buf.get() & 0xFF;
+		temperature = buf.getFloat();
+	}
 
-    @Override
-    public void writeData(ByteBuffer buf) throws IOException {
-        // Never sent back in current protocol
-    }
+	@Override
+	public void writeData(ByteBuffer buf) throws IOException {
+		// Never sent back in current protocol
+	}
 
-    @Override
-    public int getSensorId() {
-        return sensorId;
-    }
+	@Override
+	public int getSensorId() {
+		return sensorId;
+	}
 }

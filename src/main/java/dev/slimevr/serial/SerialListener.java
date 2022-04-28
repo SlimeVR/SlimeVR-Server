@@ -4,9 +4,9 @@ import com.fazecast.jSerialComm.SerialPort;
 
 public interface SerialListener {
 
-    void onSerialConnected(SerialPort port);
+	void onSerialConnected(SerialPort port);
 
-    void onSerialDisconnected();
+	void onSerialDisconnected();
 
-    void onSerialLog(String str);
+	void onSerialLog(String str);
 }
