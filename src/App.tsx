@@ -76,7 +76,7 @@ function App() {
   const websocketAPI = useProvideWebsocketApi();
 
   useEffect(() => {
-    const unlisten = listen("server-stdio", (event: Event<[string, string]>) => {
+    const unlisten = listen("server-status", (event: Event<[string, string]>) => {
       let [event_type, s] = event.payload;
       if ("stderr" === event_type) {
         // This strange invocation is what lets us lose the line information in the console
