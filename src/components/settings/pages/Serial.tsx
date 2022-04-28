@@ -1,4 +1,4 @@
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
 import { CloseSerialRequestT, OpenSerialRequestT, RpcMessage, SerialUpdateResponseT, SetWifiRequestT } from "solarxr-protocol";
 import { useLayout } from "../../../hooks/layout";
@@ -19,7 +19,7 @@ export function Serial() {
     // const consoleRef = useRef<HTMLPreElement>(null);
     const [consoleContent, setConsole] = useState("");
     const [isSerialOpen, setSerialOpen] = useState(false);
-    const { register, reset, handleSubmit } = useForm<WifiForm>({ defaultValues: {} });
+    const { register, handleSubmit } = useForm<WifiForm>({ defaultValues: {} });
 
 
     useEffect(() => {
@@ -78,7 +78,7 @@ export function Serial() {
 
     return (
         <form className="flex flex-col h-full gap-2" onSubmit={handleSubmit(sendWifiCredentials)}>
-            <div ref={consoleRef}  style={{ height: layoutHeight, width: layoutWidth }} className="overflow-x-auto  overflow-y-auto flex bg-gray-800 text-white select-text">
+            <div ref={consoleRef}  style={{ height: layoutHeight, width: layoutWidth }} className="overflow-x-auto overflow-y-auto flex select-text pl-3">
                 <pre>
                     {isSerialOpen ? consoleContent : 'Connection to serial lost, Reconnecting...'}
                 </pre>

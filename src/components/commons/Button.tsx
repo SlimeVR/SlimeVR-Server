@@ -3,20 +3,13 @@ import { ReactChild, useMemo } from "react";
 
 
 
-export function Button({ children, variant, disabled, ...props }: { children: ReactChild, variant: 'primary' | 'secondary' } & React.ButtonHTMLAttributes<HTMLButtonElement>) {
+export function Button({ children, variant, disabled, ...props }: { children: ReactChild, variant: 'primary' } & React.ButtonHTMLAttributes<HTMLButtonElement>) {
 
     const classes = useMemo(() => {
         const variantsMap  = {
-            primary: 'text-white bg-primary-5 hover:bg-primary-1 focus:ring-4 focus:outline-none focus:ring-primary-2',
-            secondary: 'text-white hover:bg-primary-1 focus:ring-primary-2'
+            primary: classNames('text-field-title focus:ring-4 focus:outline-none focus:ring-primary-2', { 'bg-purple-gray-600 hover:bg-purple-gray-500': !disabled, 'bg-purple-gray-900 hover:bg-purple-gray-900 text-section-indicator': disabled }),
         }
-
-        const variantsMapDisabled  = {
-            primary: 'bg-gray-800 hover:bg-gray-800',
-            secondary: 'bg-gray-800 hover:bg-gray-800'
-        }
-
-        return classNames(variantsMap[variant], 'focus:ring-4 rounded-lg text-sm px-5 py-2.5 text-center font-medium', disabled ? variantsMapDisabled[variant] : false);
+        return classNames(variantsMap[variant], 'focus:ring-4 rounded-lg px-5 py-2.5 text-center font-medium');
 
     }, [variant, disabled])
     return <button type="button" {...props} className={classes} disabled={disabled}>{children}</button>

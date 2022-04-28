@@ -16,12 +16,12 @@ export function TrackerCard({ tracker, device }:  { tracker: TrackerDataT, devic
 
     const statusClass = useMemo(() => {
         const statusMap: { [key: number]: string } = {
-            [TrackerStatus.NONE]: 'bg-cyan-800',
-            [TrackerStatus.BUSY]: 'bg-misc-4',
-            [TrackerStatus.ERROR]: 'bg-misc-2',
-            [TrackerStatus.DISCONNECTED]: 'bg-gray-800',
-            [TrackerStatus.OCCLUDED]: 'bg-misc-4',
-            [TrackerStatus.OK]: 'bg-misc-1'
+            [TrackerStatus.NONE]: 'bg-purple-gray-900',
+            [TrackerStatus.BUSY]: 'bg-status-warning',
+            [TrackerStatus.ERROR]: 'bg-status-error',
+            [TrackerStatus.DISCONNECTED]: 'bg-purple-gray-900',
+            [TrackerStatus.OCCLUDED]: 'bg-status-warning',
+            [TrackerStatus.OK]: 'bg-status-online'
         }
         return statusMap[tracker.status];
     }, [tracker.status]);
@@ -47,39 +47,38 @@ export function TrackerCard({ tracker, device }:  { tracker: TrackerDataT, devic
     return (
         <TrackerSettings tracker={tracker} device={device} >
             <div  className={classNames("flex rounded-l-md rounded-r-xl", statusClass)}>
-                <div className="flex bg-primary-4 rounded-r-md py-3 ml-1 pr-2 pl-4 w-full gap-3">
+                <div className="flex rounded-r-md py-3 ml-[5px] pr-4 pl-4 w-full gap-4 bg-purple-gray-700">
                     <div className="flex flex-grow flex-col truncate gap-2">
-                        <div className="flex text-white font-bold">{trackerName}</div>
-                        <div className="flex flex-row gap-4 ">
+                        <div className="flex text-field-title">{trackerName}</div>
+                        <div className="flex flex-row gap-4 text-default">
                             {device && device.hardwareStatus &&
                                 <>
                                     <div className="flex gap-2 flex-grow">
                                         {device.hardwareStatus.rssi && <div className="flex flex-col justify-around">
                                             <WifiIcon value={device.hardwareStatus?.rssi} />
                                         </div>}
-                                        {device.hardwareStatus.ping && <div className="flex text-gray-400 text-sm  w-10">{device.hardwareStatus.ping} ms</div>}
+                                        {device.hardwareStatus.ping && <div className="flex w-10">{device.hardwareStatus.ping} ms</div>}
                                     </div>
                                     {device.hardwareStatus.batteryPctEstimate &&
                                         <div className="flex w-1/3 gap-2">
                                             <div className="flex flex-col justify-around">
                                                 <BatteryIcon value={device.hardwareStatus.batteryPctEstimate / 100}/>
                                             </div>
-                                            <div className="flex text-gray-400 text-sm">{((device.hardwareStatus.batteryPctEstimate)).toFixed(0)} %</div>
+                                            <div className="flex">{((device.hardwareStatus.batteryPctEstimate)).toFixed(0)} %</div>
                                         </div>
                                     }
                                 </>
                             }
-                          
-                            <div className="flex  w-1/3 gap-0.5 justify-around flex-col">
-                                <div className="w-full bg-gray-200 rounded-full h-1 dark:bg-gray-700">
-                                    <div className="bg-misc-3 h-1 rounded-full" style={{width: `${velocity * 100}%`}}></div>
+                            <div className="flex w-1/3 gap-0.5 justify-around flex-col">
+                                <div className="w-full rounded-full h-1 bg-purple-gray-600">
+                                    <div className="h-1 rounded-full bg-accent-darker" style={{width: `${velocity * 100}%`}}></div>
                                 </div>
                             </div>
                         </div>
                     </div>
                     {tracker.info?.editable && 
                         <div className="flex flex-col flex-shrink justify-around">
-                            <IconButton icon={<GearIcon/>}/>
+                            <IconButton className="fill-purple-gray-300" icon={<GearIcon/>}/>
                         </div>
                     }
                 </div>

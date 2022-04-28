@@ -9,7 +9,7 @@ export const Input = forwardRef<HTMLInputElement, InputProps>(({type, placeholde
     return <input 
         type={type} 
         ref={ref} 
-        className="text-white bg-primary-5 rounded-lg border-primary-4 focus:border-primary-1" 
+        className="rounded-lg bg-purple-gray-500 border-purple-gray-500 focus:border-purple-gray-500 placeholder:text-purple-gray-300 text-field-title" 
         placeholder={placeholder}
         {...props} 
     />;

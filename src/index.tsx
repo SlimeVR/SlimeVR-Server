@@ -1,5 +1,5 @@
-import React from 'react';
 import * as ReactDOMClient from 'react-dom/client';
+import "@fontsource/work-sans/variable.css";
 import './index.css';
 import App from './App';
 import Modal from 'react-modal';

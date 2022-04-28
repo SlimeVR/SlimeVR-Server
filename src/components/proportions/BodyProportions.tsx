@@ -102,29 +102,29 @@ export function BodyProportions() {
 
     return (
         <div className="flex flex-col overflow-y-auto">
-            <div className="flex  text-2xl px-8 pt-8 text-white font-bold">
+            <div className="flex px-8 pt-8 text-secondary-heading">
                 Body Proportions
             </div>
             <div className="flex p-5 gap-8 justify-center">
-                <div className="bg-primary-1 h-1/2 sticky top-5 rounded-lg w-72 justify-center p-10 hidden sm:flex">
+                <div className="h-1/2 sticky top-5 rounded-lg w-72 justify-center p-10 hidden sm:flex bg-purple-gray-900">
                     <BodyView selectedBodyPart={selectedBodyPart || 0}></BodyView>
                 </div>
                 <div className="flex-col flex gap-4">
-                    <div className="flex gap-3">
+                    <div className="flex gap-3 ">
                         <AutomaticCalibration></AutomaticCalibration>
                         <Button variant="primary" onClick={handleResetAll}>Reset all</Button>
                     </div>
-                    <div className="flex flex-col rounded-lg py-2 text-white">
-                        <div className="font-semibold text-xl">Precision</div>
-                        <div className="bg-primary-5 flex text-white  rounded-lg overflow-hidden flex-grow h-10 cursor-pointer">
-                            <div onClick={() => setStep(0.5)} className={classNames("hover:bg-primary-1 flex flex-grow justify-center items-center", { 'bg-primary-3': step === 0.5 })}>0.5</div>
-                            <div onClick={() => setStep(1)} className={classNames("hover:bg-primary-1 flex flex-grow justify-center items-center", { 'bg-primary-3': step === 1 })}>1</div>
-                            <div onClick={() => setStep(5)} className={classNames("hover:bg-primary-1 flex flex-grow justify-center items-center", { 'bg-primary-3': step === 5 })}>5</div>
+                    <div className="flex flex-col rounded-lg py-2">
+                        <div className="text-field-title">Precision</div>
+                        <div className="flex rounded-lg overflow-hidden flex-grow h-10 cursor-pointer bg-purple-gray-600 text-field-title">
+                            <div onClick={() => setStep(0.5)} className={classNames("hover:bg-purple-gray-500 flex flex-grow justify-center items-center ", { 'bg-purple-gray-400': step === 0.5 })}>0.5</div>
+                            <div onClick={() => setStep(1)} className={classNames("hover:bg-purple-gray-500 flex flex-grow justify-center items-center", { 'bg-purple-gray-400': step === 1 })}>1</div>
+                            <div onClick={() => setStep(5)} className={classNames("hover:bg-purple-gray-500 flex flex-grow justify-center items-center", { 'bg-purple-gray-400': step === 5 })}>5</div>
                         </div>
                     </div>
                     <div className="flex flex-col">
                         {bodyParts.map(({label, bone}) => 
-                            <div key={bone} onMouseEnter={() => onMouseEnterSelector(bone)} className={classNames('px-3 rounded-lg py-2', { 'bg-primary-1 ': bone === selectedBodyPart })}>
+                            <div key={bone} onMouseEnter={() => onMouseEnterSelector(bone)} className={classNames('px-3 rounded-lg py-2', { 'bg-purple-gray-700 ': bone === selectedBodyPart })}>
                                 <NumberSelector
                                     variant="big" 
                                     control={control} 

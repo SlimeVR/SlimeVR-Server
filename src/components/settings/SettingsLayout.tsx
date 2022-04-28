@@ -13,14 +13,14 @@ export function SettingsLayoutRoute({ children }: { children: ReactChild }) {
       <>
        <Navbar></Navbar>
         <div ref={ref} className='flex-grow' style={{ height: layoutHeight }}>
-          <div className="flex bg-primary-1 h-full ">
+          <div className="flex h-full">
             <SettingsSidebar></SettingsSidebar>
-            <div className="flex flex-grow gap-10 flex-col bg-primary-2 rounded-tl-3xl overflow-hidden">
+            <div className="flex flex-grow gap-10 flex-col rounded-tl-3xl overflow-hidden bg-purple-gray-800">
                 <div className="relative overflow-y-auto overflow-x-hidden">
                     {children}
                     <div className="absolute top-0 right-0 p-5">
                         <NavLink to="/" className="flex gap-5 group cursor-pointer">
-                          <div className="flex bg-primary-4 rounded-full p-2 fill-purple-300 group-hover:fill-white"><CloseIcon></CloseIcon></div>
+                          <div className="flex rounded-full bg-purple-gray-600  fill-purple-gray-100 group-hover:fill-purple-gray-200"><CloseIcon size={50}></CloseIcon></div>
                         </NavLink>
                     </div>
                 </div>

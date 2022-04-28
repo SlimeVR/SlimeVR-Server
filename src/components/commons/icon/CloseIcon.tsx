@@ -1,9 +1,9 @@
 
 
 
-export function CloseIcon({ className }: { className?: string }) {
+export function CloseIcon({ className, size = 35 }: { className?: string, size?: number }) {
     return (
-        <svg width="35" height="35"  className={className} viewBox="0 0 31 29" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <svg width={size} height={size}  className={className} viewBox="0 0 31 29" fill="none" xmlns="http://www.w3.org/2000/svg">
             <path d="M19.3804 17.8804L12.619 11.119" stroke="#C0A1D8" strokeLinecap="round"/>
             <path d="M12.6196 17.8804L19.381 11.119" stroke="#C0A1D8" strokeLinecap="round"/>
         </svg>

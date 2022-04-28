@@ -11,13 +11,13 @@ export function NumberSelector({ label, valueLabelFormat, control, name, min, ma
         const variantsMap = {
             smol: {
                 container: 'flex flex-col gap-1',
-                label: 'flex text-sm text-white',
-                value: 'flex justify-center items-center w-10 text-white text-lg font-bold'
+                label: 'flex text-field-title',
+                value: 'flex justify-center items-center w-10 text-field-title'
             },
             big: {
-                container: 'flex flex-row gap-5 ',
-                label: 'flex flex-grow text-lg font-bold text-white justify-start items-center',
-                value: 'flex justify-center items-center w-16 text-white text-lg font-bold'
+                container: 'flex flex-row gap-5',
+                label: 'flex flex-grow justify-start items-center text-field-title',
+                value: 'flex justify-center items-center w-16 text-field-title'
             }
         };
         return variantsMap[variant];

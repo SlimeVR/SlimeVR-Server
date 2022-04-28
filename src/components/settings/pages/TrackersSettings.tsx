@@ -89,30 +89,30 @@ export function TrackersSettings() {
     return (
         <form className="px-8 flex flex-col gap-20 py-4" ref={pageRef}>
             <div className="flex flex-col gap-2" id="steamvr">
-                <div className="flex text-white text-3xl font-bold gap-5">
+                <div className="flex gap-5 text-secondary-heading">
                     SteamVR Trackers
                 </div>
-                <div className="flex text-gray-300 flex-col">
+                <div className="flex  flex-col  text-default">
                     <p>Enable or disable specific tracking  parts.</p>
                     <p>Useful if you want more control over what SlimeVR does.</p>
                 </div>
-                <div className="grid grid-cols-2 text-gray-300 text-xl font-bold gap-5 pt-5">
-                    <div className="bg-primary-4 p-3 rounded-md"><CheckBox {...register('trackers.waist')} label="Waist" /></div>
-                        <div className="bg-primary-4 p-3 rounded-md"><CheckBox {...register('trackers.chest')} label="Chest"/></div>
-                        <div className="bg-primary-4 p-3 rounded-md"><CheckBox {...register('trackers.legs')} label="Legs"/></div>
-                        <div className="bg-primary-4 p-3 rounded-md"><CheckBox {...register('trackers.knees')} label="Knees"/></div>
-                        <div className="bg-primary-4 p-3 rounded-md"><CheckBox {...register('trackers.elbows')} label="Elbows"/></div>
+                <div className="grid grid-cols-2  gap-5 pt-5">
+                    <CheckBox outlined {...register('trackers.waist')} label="Waist" />
+                    <CheckBox outlined {...register('trackers.chest')} label="Chest"/>
+                    <CheckBox outlined {...register('trackers.legs')} label="Legs"/>
+                    <CheckBox outlined {...register('trackers.knees')} label="Knees"/>
+                    <CheckBox outlined {...register('trackers.elbows')} label="Elbows"/>
                 </div>
             </div>
             <div className="flex flex-col gap-2" id="filtering">
-                <div className="flex text-white text-3xl font-bold gap-5">
+                <div className="flex gap-5 text-secondary-heading">
                     Filtering
                 </div>
-                <div className="flex text-gray-300 flex-col">
+                <div className="flex flex-col text-default">
                     <p>I don't know what this does, but I'm</p>
                     <p>designing something for it anyway</p>
                 </div>
-                <div className="flex text-gray-300 text-xl font-bold gap-5 pt-5">
+                <div className="flex  gap-5 pt-5">
                     <Select {...register('filtering.type')} label="Filtering Type" options={[{ label: 'None', value: 0 }, { label: 'Interpolation', value: 1 }, {label: 'Extrapolation', value: 2 }]}></Select>
                     <NumberSelector variant="smol" control={control} name="filtering.intensity" label="Intensity" valueLabelFormat={(value) => `${value}%`} min={0} max={100} step={10}></NumberSelector>
                     <NumberSelector variant="smol" control={control} name="filtering.ticks" label="Ticks" min={0} max={80} step={1}></NumberSelector>

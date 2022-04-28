@@ -37,7 +37,6 @@ export function useProvideAppContext(): AppContext {
         state,
         dispatch,
         setDebug: (value: boolean) => dispatch({ type: 'debug', value }),
-
     }
 }
 

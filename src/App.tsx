@@ -8,7 +8,7 @@ import {
 import { Overview } from './components/Overview';
 import { BodyProportions } from './components/proportions/BodyProportions';
 import { AppContextProvider } from './components/providers/AppContext';
-import { useEffect } from 'react';
+import { useEffect, useMemo, useState } from 'react';
 import { DataFeedConfigT, DataFeedMessage, DeviceDataMaskT, StartDataFeedT, TrackerDataMaskT } from 'solarxr-protocol';
 import { MainLayoutRoute } from './components/MainLayout';
 import { SettingsLayoutRoute } from './components/settings/SettingsLayout';
@@ -18,6 +18,8 @@ import { Serial } from './components/settings/pages/Serial';
 
 import { listen } from '@tauri-apps/api/event'
 import type { Event } from '@tauri-apps/api/event'
+import { Button } from './components/commons/Button';
+import { appWindow } from '@tauri-apps/api/window'
 
 function Layout() {
   const { sendDataFeedPacket } = useWebsocketAPI();
@@ -72,6 +74,7 @@ function Layout() {
 }
 
 
+
 function App() {
   const websocketAPI = useProvideWebsocketApi();
 
@@ -97,16 +100,32 @@ function App() {
     });
   }, [])
 
+  const updateCorners = () => {
+    // Check if the window is maximized to remove rounded corners
+    const body = document.getElementsByTagName('body');
+    if (!body) return;
+    appWindow.isMaximized().then((maximized) => {
+      body[0].style.borderRadius = maximized ? '0' : `15px`;
+    })
+  }
+
+  useEffect(() => {
+    window.addEventListener('resize', updateCorners);
+    return () => {
+      window.removeEventListener('resize', updateCorners)
+    }
+  }, [])
+
   return (
     <WebSocketApiContext.Provider value={websocketAPI}>
       <AppContextProvider>
         <Router>
-          <div className='bg-primary-1 h-full w-full overflow-hidden'>
+          <div className='h-full w-full text-default bg-purple-gray-900 '>
             <div className='flex-col h-full'>
               {!websocketAPI.isConnected && (
                 <>
                   <Navbar></Navbar>
-                  <div className='flex w-full h-full justify-center items-center text-white p-2'>Connection lost to server</div>
+                  <div className='flex w-full h-full justify-center items-center p-2'>Connection lost to server</div>
                 </>
               )}
               {websocketAPI.isConnected && <Layout></Layout>}

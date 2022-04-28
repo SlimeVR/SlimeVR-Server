@@ -11,13 +11,13 @@ export function WifiIcon({ value }: { value: number }) {
     const col = useMemo(() => {
 
         const colorsMap: { [key: number]: string } = {
-            0.4: 'fill-misc-1',
-            0.2: 'fill-misc-4',
-            0: 'fill-misc-2',
+            0.4: 'fill-status-online',
+            0.2: 'fill-status-warning',
+            0: 'fill-status-error',
         }
 
         const val = Object.keys(colorsMap).filter(key => +key < percent).sort((a, b) => +b - +a)[0];
-        return colorsMap[+val] || 'fill-gray-800';
+        return colorsMap[+val] || 'fill-primary-gray-600';
     }, [percent])
 
     return (

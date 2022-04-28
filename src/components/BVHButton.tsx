@@ -18,10 +18,9 @@ export function BVHButton() {
 
     useRPCPacket(RpcMessage.RecordBVHStatus, (data: RecordBVHStatusT) => {
         setRecording(data.recording);
-        console.log('receiving', data);
     })
 
     return (
-        <BigButton text={recording ? 'Recording...' : 'Record BVH'} icon={<RecordIcon />} onClick={toggleBVH}></BigButton>
+        <BigButton text={recording ? 'Recording...' : 'Record BVH'} className="fill-purple-100" icon={<RecordIcon />} onClick={toggleBVH}></BigButton>
     )
 }

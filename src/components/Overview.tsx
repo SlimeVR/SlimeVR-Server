@@ -34,7 +34,7 @@ export function Overview() {
 
     return (
         <div className="overflow-y-auto flex flex-col gap-8">
-            <div className="flex text-white text-2xl px-8 pt-8  font-bold">
+            <div className="flex px-8 pt-8 text-secondary-heading">
                 Assigned Trackers
             </div>
             <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-5 sm:grid-cols-1 px-8">
@@ -42,7 +42,7 @@ export function Overview() {
             </div>
             {unasignedTrackers.length > 0 &&
                 <>
-                    <div className="flex text-white text-2xl px-8 pt-8  font-bold">
+                    <div className="flex px-8 pt-8 text-secondary-heading">
                         Unassigned Trackers
                     </div>
                     <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-5 sm:grid-cols-1 px-8">

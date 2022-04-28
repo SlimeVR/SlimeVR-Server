@@ -23,8 +23,8 @@ export function MainLayoutRoute({ children }: { children: ReactChild }) {
          </>
        </Navbar>
         <div ref={ref} className='flex-grow' style={{ height: layoutHeight }}>
-          <div className="flex bg-primary-1 h-full ">
-            <div className="flex flex-grow gap-10 flex-col bg-primary-2  rounded-tr-3xl">
+          <div className="flex h-full ">
+            <div className="flex flex-grow gap-10 flex-col rounded-tr-3xl bg-purple-gray-800">
               {children}
             </div>
             <div className="flex flex-col px-8 w-60 gap-8 pb-5 overflow-y-auto">
@@ -40,8 +40,8 @@ export function MainLayoutRoute({ children }: { children: ReactChild }) {
               <div className='flex flex-grow flex-col justify-end'>
                 {/* <Button variant='primary' className='w-full'>Debug</Button> */}
                 <NavLink to="/settings/trackers" className="flex gap-5 group cursor-pointer">
-                  <div className="flex bg-primary-4 rounded-full p-2 fill-purple-300 group-hover:fill-white"><GearIcon></GearIcon></div>
-                  <div className="flex flex-col justify-around text-purple-300 group-hover:text-white font-bold">Settings</div>
+                  <div className="flex rounded-full p-2 fill-purple-gray-300 bg-purple-gray-700 group-hover:fill-white"><GearIcon></GearIcon></div>
+                  <div className="flex flex-col justify-around text-section-indicator group-hover:text-purple-gray-300">Settings</div>
                 </NavLink>
               </div>
             </div>
