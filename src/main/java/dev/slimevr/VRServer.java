@@ -309,9 +309,11 @@ public class VRServer extends Thread {
 		for (Tracker tracker : trackers) {
 			if (tracker.getTrackerNum() != id.getTrackerNum())
 				continue;
-			if (tracker.getDevice() == null && id.getDeviceId() != null)
-				continue;
-			if (tracker.getDevice() != null && id.getDeviceId() == null)
+			// A tracker id is a combination of two data, the device id (optional) and the tracker num
+			// tracker.getDevice() can be null for synthetic trackers
+			// if device id is null but the tracker id has a device id, the tracker should be skipped
+			// On the other hand if the tracker has a device id but the TrackerId does not have one we should also skip
+			if (tracker.getDevice() == null ^ id.getDeviceId() == null)
 				continue;
 			if (tracker.getDevice().getId() != id.getDeviceId().getId())
 				continue;
