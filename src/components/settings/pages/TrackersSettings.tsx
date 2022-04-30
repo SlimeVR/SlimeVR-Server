@@ -109,8 +109,8 @@ export function TrackersSettings() {
                     Filtering
                 </div>
                 <div className="flex flex-col text-default">
-                    <p>I don't know what this does, but I'm</p>
-                    <p>designing something for it anyway</p>
+                    <p>Choose the filtering type for your trackers.</p>
+                    <p>Extrapolation predicts movement while interpolation smoothens movement.</p>
                 </div>
                 <div className="flex  gap-5 pt-5">
                     <Select {...register('filtering.type')} label="Filtering Type" options={[{ label: 'None', value: 0 }, { label: 'Interpolation', value: 1 }, {label: 'Extrapolation', value: 2 }]}></Select>
