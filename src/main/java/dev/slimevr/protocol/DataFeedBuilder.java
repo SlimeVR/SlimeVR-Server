@@ -132,13 +132,17 @@ public class DataFeedBuilder {
 	public static int createTrackersData(FlatBufferBuilder fbb, DeviceDataMaskT mask, Device device) {
 		if (mask.getTrackerData() == null) return -1;
 
-		int[] trackersOffset = new int[device.sensors.size()];
+		List<Integer> trackersOffsets = new ArrayList<>();
 
 		device.sensors.forEach((key, value) -> {
-			trackersOffset[key] = DataFeedBuilder.createTrackerData(fbb, mask.getTrackerData(), value);
+			trackersOffsets.add(DataFeedBuilder.createTrackerData(fbb, mask.getTrackerData(), value));
 		});
 
-		return DeviceData.createTrackersVector(fbb, trackersOffset);
+		DeviceData.startTrackersVector(fbb, trackersOffsets.size());
+		trackersOffsets.forEach(offset -> {
+			DeviceData.addTrackers(fbb, offset);
+		});
+		return fbb.endVector();
 	}
 
 	public static int createDeviceData(FlatBufferBuilder fbb, int id, DeviceDataMaskT mask, Device device) {
