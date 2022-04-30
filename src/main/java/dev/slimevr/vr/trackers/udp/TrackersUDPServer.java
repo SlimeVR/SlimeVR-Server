@@ -207,8 +207,7 @@ public class TrackersUDPServer extends Thread {
 				if (lastKeepup + 500 < System.currentTimeMillis()) {
 					lastKeepup = System.currentTimeMillis();
 					synchronized (connections) {
-						for (int i = 0; i < connections.size(); ++i) {
-							Device conn = connections.get(i);
+						for (Device conn : connections) {
 							bb.limit(bb.capacity());
 							bb.rewind();
 							parser.write(bb, conn, new UDPPacket1Heartbeat());

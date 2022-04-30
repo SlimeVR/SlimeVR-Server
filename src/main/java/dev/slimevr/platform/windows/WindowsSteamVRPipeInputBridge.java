@@ -180,8 +180,7 @@ public class WindowsSteamVRPipeInputBridge extends Thread implements Bridge {
 					internal:
 					while (iterator.hasNext()) {
 						VRTracker internalTracker = iterator.next();
-						for (int i = 0; i < trackers.size(); ++i) {
-							VRTracker t = trackers.get(i);
+						for (VRTracker t : trackers) {
 							if (t.getTrackerId() == internalTracker.getTrackerId())
 								continue internal;
 						}
@@ -193,8 +192,7 @@ public class WindowsSteamVRPipeInputBridge extends Thread implements Bridge {
 					}
 				}
 			}
-			for (int i = 0; i < trackers.size(); ++i) {
-				VRTracker tracker = trackers.get(i);
+			for (VRTracker tracker : trackers) {
 				VRTracker internal = trackersInternal.get(tracker.getTrackerId());
 				if (internal == null)
 					throw new NullPointerException("Lost internal tracker somehow: " + tracker.getTrackerId()); // Shouln't really happen even, but better to catch it like this

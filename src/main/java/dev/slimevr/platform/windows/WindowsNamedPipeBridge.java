@@ -42,8 +42,7 @@ public class WindowsNamedPipeBridge extends ProtobufBridge<VRTracker> implements
 		for (TrackerRole role : defaultRoles) {
 			changeShareSettings(role, Main.vrServer.config.getBoolean("bridge." + bridgeSettingsKey + ".trackers." + role.name().toLowerCase(), true));
 		}
-		for (int i = 0; i < shareableTrackers.size(); ++i) {
-			ShareableTracker tr = shareableTrackers.get(i);
+		for (ShareableTracker tr : shareableTrackers) {
 			TrackerRole role = tr.getTrackerRole();
 			changeShareSettings(role, Main.vrServer.config.getBoolean("bridge." + bridgeSettingsKey + ".trackers." + role.name().toLowerCase(), false));
 		}
@@ -52,8 +51,7 @@ public class WindowsNamedPipeBridge extends ProtobufBridge<VRTracker> implements
 
 	@VRServerThread
 	public boolean getShareSetting(TrackerRole role) {
-		for (int i = 0; i < shareableTrackers.size(); ++i) {
-			ShareableTracker tr = shareableTrackers.get(i);
+		for (ShareableTracker tr : shareableTrackers) {
 			if (tr.getTrackerRole() == role) {
 				return sharedTrackers.contains(tr);
 			}
@@ -65,8 +63,7 @@ public class WindowsNamedPipeBridge extends ProtobufBridge<VRTracker> implements
 	public void changeShareSettings(TrackerRole role, boolean share) {
 		if (role == null)
 			return;
-		for (int i = 0; i < shareableTrackers.size(); ++i) {
-			ShareableTracker tr = shareableTrackers.get(i);
+		for (ShareableTracker tr : shareableTrackers) {
 			if (tr.getTrackerRole() == role) {
 				if (share) {
 					addSharedTracker(tr);

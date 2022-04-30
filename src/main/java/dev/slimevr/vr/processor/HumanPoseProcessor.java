@@ -95,14 +95,14 @@ public class HumanPoseProcessor {
 	private void updateSekeltonModel() {
 		disconnectAllTrackers();
 		skeleton = new SimpleSkeleton(server, computedTrackers);
-		for (int i = 0; i < onSkeletonUpdated.size(); ++i)
-			onSkeletonUpdated.get(i).accept(skeleton);
+		for (Consumer<HumanSkeleton> sc : onSkeletonUpdated)
+			sc.accept(skeleton);
 	}
 
 	@VRServerThread
 	private void disconnectAllTrackers() {
-		for (int i = 0; i < computedTrackers.size(); ++i) {
-			computedTrackers.get(i).setStatus(TrackerStatus.DISCONNECTED);
+		for (ComputedHumanPoseTracker t : computedTrackers) {
+			t.setStatus(TrackerStatus.DISCONNECTED);
 		}
 	}
 

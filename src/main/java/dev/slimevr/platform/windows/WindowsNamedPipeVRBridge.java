@@ -46,8 +46,7 @@ public class WindowsNamedPipeVRBridge extends Thread implements Bridge {
 		this.shareTrackers = new FastList<>(shareTrackers);
 		this.trackerPipes = new FastList<>(shareTrackers.size());
 		this.internalTrackers = new FastList<>(shareTrackers.size());
-		for (int i = 0; i < shareTrackers.size(); ++i) {
-			Tracker t = shareTrackers.get(i);
+		for (Tracker t : shareTrackers) {
 			ComputedTracker ct = new ComputedTracker(t.getTrackerId(), "internal://" + t.getName(), true, true);
 			ct.setStatus(TrackerStatus.OK);
 			this.internalTrackers.add(ct);
@@ -222,9 +221,10 @@ public class WindowsNamedPipeVRBridge extends Thread implements Bridge {
 		if (hmdPipe == null || hmdPipe.state == PipeState.CREATED) {
 			return false;
 		}
-		for (int i = 0; i < trackerPipes.size(); ++i) {
-			if (trackerPipes.get(i).state == PipeState.CREATED)
+		for (WindowsPipe pipe : trackerPipes) {
+			if (pipe.state == PipeState.CREATED) {
 				return false;
+			}
 		}
 		return true;
 	}
@@ -258,8 +258,9 @@ public class WindowsNamedPipeVRBridge extends Thread implements Bridge {
 			LogManager.log.info("[VRBridge] Pipes are open");
 		} catch (IOException e) {
 			safeDisconnect(hmdPipe);
-			for (int i = 0; i < trackerPipes.size(); ++i)
-				safeDisconnect(trackerPipes.get(i));
+			for (WindowsPipe pipe : trackerPipes) {
+				safeDisconnect(pipe);
+			}
 			trackerPipes.clear();
 			throw e;
 		}

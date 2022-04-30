@@ -64,8 +64,9 @@ public class SkeletonList extends EJBagNoStretch {
 			return;
 		lastUpdate = System.currentTimeMillis();
 		java.awt.EventQueue.invokeLater(() -> {
-			for (int i = 0; i < nodes.size(); ++i)
-				nodes.get(i).update();
+			for (NodeStatus node : nodes) {
+				node.update();
+			}
 		});
 	}
 
