@@ -306,21 +306,18 @@ public class VRServer extends Thread {
 	}
 
 	public Tracker getTrackerById(TrackerIdT id) {
-
 		for (Tracker tracker : trackers) {
 			if (tracker.getTrackerNum() != id.getTrackerNum()) {
 				continue;
 			}
 
 			// Handle synthetic devices
-			if (id.getDeviceId() == null) {
-				if (tracker.getDevice() == null)
-					return tracker;
-				continue;
+			if (id.getDeviceId() == null && tracker.getDevice() == null) {
+				return tracker;
 			}
-			// We now know that the argument is not a synthetic tracker
 
-			if (tracker.getDevice() != null && id.getDeviceId().getId() == tracker.getDevice().getId()) {
+			if (tracker.getDevice() != null && id.getDeviceId() != null && id.getDeviceId().getId() == tracker.getDevice().getId()) {
+				// This is a physical tracker, and both device id and the tracker num match
 				return tracker;
 			}
 		}
