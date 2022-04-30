@@ -306,18 +306,23 @@ public class VRServer extends Thread {
 	}
 
 	public Tracker getTrackerById(TrackerIdT id) {
+
 		for (Tracker tracker : trackers) {
-			if (tracker.getTrackerNum() != id.getTrackerNum())
+			if (tracker.getTrackerNum() != id.getTrackerNum()) {
 				continue;
-			// A tracker id is a combination of two data, the device id (optional) and the tracker num
-			// tracker.getDevice() can be null for synthetic trackers
-			// if device id is null but the tracker id has a device id, the tracker should be skipped
-			// On the other hand if the tracker has a device id but the TrackerId does not have one we should also skip
-			if (tracker.getDevice() == null ^ id.getDeviceId() == null)
+			}
+
+			// Handle synthetic devices
+			if (id.getDeviceId() == null) {
+				if (tracker.getDevice() == null)
+					return tracker;
 				continue;
-			if (tracker.getDevice().getId() != id.getDeviceId().getId())
-				continue;
-			return tracker;
+			}
+			// We now know that the argument is not a synthetic tracker
+
+			if (tracker.getDevice() != null && id.getDeviceId().getId() == tracker.getDevice().getId()) {
+				return tracker;
+			}
 		}
 		return null;
 	}
