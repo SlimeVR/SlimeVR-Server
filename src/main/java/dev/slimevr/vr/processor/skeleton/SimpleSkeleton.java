@@ -315,8 +315,8 @@ public class SimpleSkeleton extends HumanSkeleton implements SkeletonConfigCallb
 	}
 
 	public void setComputedTrackers(List<? extends ComputedHumanPoseTracker> trackers) {
-		for (int i = 0; i < trackers.size(); ++i) {
-			setComputedTracker(trackers.get(i));
+		for (ComputedHumanPoseTracker t : trackers) {
+			setComputedTracker(t);
 		}
 	}
 	//#endregion

@@ -99,24 +99,26 @@ public class VRServer extends Thread {
 		bvhRecorder = new BVHRecorder(this);
 
 		registerTracker(hmdTracker);
-		for (int i = 0; i < shareTrackers.size(); ++i)
-			registerTracker(shareTrackers.get(i));
+		for (Tracker tracker : shareTrackers) {
+			registerTracker(tracker);
+		}
 	}
 
 	public boolean hasBridge(Class<? extends Bridge> bridgeClass) {
-		for (int i = 0; i < bridges.size(); ++i) {
-			if (bridgeClass.isAssignableFrom(bridges.get(i).getClass()))
+		for (Bridge bridge : bridges) {
+			if (bridgeClass.isAssignableFrom(bridge.getClass())) {
 				return true;
+			}
 		}
 		return false;
 	}
 
 	@ThreadSafe
 	public <E extends Bridge> E getVRBridge(Class<E> bridgeClass) {
-		for (int i = 0; i < bridges.size(); ++i) {
-			Bridge b = bridges.get(i);
-			if (bridgeClass.isAssignableFrom(b.getClass()))
-				return bridgeClass.cast(b);
+		for (Bridge bridge : bridges) {
+			if (bridgeClass.isAssignableFrom(bridge.getClass())) {
+				return bridgeClass.cast(bridge);
+			}
 		}
 		return null;
 	}
@@ -142,8 +144,8 @@ public class VRServer extends Thread {
 			e.printStackTrace();
 		}
 		List<YamlNode> trackersConfig = config.getNodeList("trackers", null);
-		for (int i = 0; i < trackersConfig.size(); ++i) {
-			TrackerConfig cfg = new TrackerConfig(trackersConfig.get(i));
+		for (YamlNode node : trackersConfig) {
+			TrackerConfig cfg = new TrackerConfig(node);
 			synchronized (configuration) {
 				configuration.put(cfg.trackerName, cfg);
 			}
@@ -158,8 +160,9 @@ public class VRServer extends Thread {
 	public void addNewTrackerConsumer(Consumer<Tracker> consumer) {
 		queueTask(() -> {
 			newTrackersConsumers.add(consumer);
-			for (int i = 0; i < trackers.size(); ++i)
-				consumer.accept(trackers.get(i));
+			for (Tracker tracker : trackers) {
+				consumer.accept(tracker);
+			}
 		});
 	}
 
@@ -184,8 +187,8 @@ public class VRServer extends Thread {
 	public synchronized void saveConfig() {
 		List<YamlNode> nodes = config.getNodeList("trackers", null);
 		List<Map<String, Object>> trackersConfig = new FastList<>(nodes.size());
-		for (int i = 0; i < nodes.size(); ++i) {
-			trackersConfig.add(nodes.get(i).root);
+		for (YamlNode node : nodes) {
+			trackersConfig.add(node.root);
 		}
 		config.setProperty("trackers", trackersConfig);
 		synchronized (configuration) {
@@ -193,8 +196,7 @@ public class VRServer extends Thread {
 			while (iterator.hasNext()) {
 				TrackerConfig tc = iterator.next();
 				Map<String, Object> cfg = null;
-				for (int i = 0; i < trackersConfig.size(); ++i) {
-					Map<String, Object> c = trackersConfig.get(i);
+				for (Map<String, Object> c : trackersConfig) {
 					if (tc.trackerName.equals(c.get("name"))) {
 						cfg = c;
 						break;
@@ -227,16 +229,19 @@ public class VRServer extends Thread {
 					break;
 				task.run();
 			} while (true);
-			for (int i = 0; i < onTick.size(); ++i) {
-				this.onTick.get(i).run();
+			for (Runnable task : onTick) {
+				task.run();
 			}
-			for (int i = 0; i < bridges.size(); ++i)
-				bridges.get(i).dataRead();
-			for (int i = 0; i < trackers.size(); ++i)
-				trackers.get(i).tick();
+			for (Bridge bridge : bridges) {
+				bridge.dataRead();
+			}
+			for (Tracker tracker : trackers) {
+				tracker.tick();
+			}
 			humanPoseProcessor.update();
-			for (int i = 0; i < bridges.size(); ++i)
-				bridges.get(i).dataWrite();
+			for (Bridge bridge : bridges) {
+				bridge.dataWrite();
+			}
 //			final long time = System.currentTimeMillis() - start;
 			try {
 				Thread.sleep(1); // 1000Hz
@@ -262,8 +267,9 @@ public class VRServer extends Thread {
 		queueTask(() -> {
 			trackers.add(tracker);
 			trackerAdded(tracker);
-			for (int i = 0; i < newTrackersConsumers.size(); ++i)
-				newTrackersConsumers.get(i).accept(tracker);
+			for (Consumer<Tracker> tc : newTrackersConsumers) {
+				tc.accept(tracker);
+			}
 		});
 	}
 

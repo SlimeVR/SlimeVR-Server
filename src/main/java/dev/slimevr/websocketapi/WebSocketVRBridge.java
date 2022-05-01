@@ -33,8 +33,7 @@ public class WebSocketVRBridge extends WebsocketAPI implements Bridge {
 		this.hmd = hmd;
 		this.shareTrackers = new FastList<>(shareTrackers);
 		this.internalTrackers = new FastList<>(shareTrackers.size());
-		for (int i = 0; i < shareTrackers.size(); ++i) {
-			Tracker t = shareTrackers.get(i);
+		for (Tracker t : shareTrackers) {
 			ComputedTracker ct = new ComputedTracker(t.getTrackerId(), "internal://" + t.getName(), true, true);
 			ct.setStatus(TrackerStatus.OK);
 			ct.bodyPosition = t.getBodyPosition();

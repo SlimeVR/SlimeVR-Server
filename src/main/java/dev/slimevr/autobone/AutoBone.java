@@ -484,9 +484,7 @@ public class AutoBone {
 		int offsetCount = 0;
 
 		List<PoseFrameTracker> trackers = frames.getTrackers();
-		for (int i = 0; i < trackers.size(); i++) {
-			PoseFrameTracker tracker = trackers.get(i);
-
+		for (PoseFrameTracker tracker : trackers) {
 			TrackerFrame trackerFrame = tracker.safeGetFrame(cursor);
 			if (trackerFrame == null || !trackerFrame.hasData(TrackerFrameData.POSITION)) {
 				continue;
@@ -508,9 +506,7 @@ public class AutoBone {
 		int offsetCount = 0;
 
 		List<PoseFrameTracker> trackers = frames.getTrackers();
-		for (int i = 0; i < trackers.size(); i++) {
-			PoseFrameTracker tracker = trackers.get(i);
-
+		for (PoseFrameTracker tracker : trackers) {
 			TrackerFrame trackerFrame1 = tracker.safeGetFrame(cursor1);
 			if (trackerFrame1 == null || !trackerFrame1.hasData(TrackerFrameData.POSITION)) {
 				continue;

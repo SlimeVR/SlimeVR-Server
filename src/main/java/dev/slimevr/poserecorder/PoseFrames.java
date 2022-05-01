@@ -148,8 +148,7 @@ public final class PoseFrames implements Iterable<TrackerFrame[]> {
 	public int getMaxFrameCount() {
 		int maxFrames = 0;
 
-		for (int i = 0; i < trackers.size(); i++) {
-			PoseFrameTracker tracker = trackers.get(i);
+		for (PoseFrameTracker tracker : trackers) {
 			if (tracker != null && tracker.getFrameCount() > maxFrames) {
 				maxFrames = tracker.getFrameCount();
 			}
@@ -167,9 +166,7 @@ public final class PoseFrames implements Iterable<TrackerFrame[]> {
 	public int getFrames(int frameIndex, TrackerFrame[] buffer) {
 		int frameCount = 0;
 
-		for (int i = 0; i < trackers.size(); i++) {
-			PoseFrameTracker tracker = trackers.get(i);
-
+		for (PoseFrameTracker tracker : trackers) {
 			if (tracker == null) {
 				continue;
 			}
@@ -195,9 +192,7 @@ public final class PoseFrames implements Iterable<TrackerFrame[]> {
 	public int getFrames(int frameIndex, List<TrackerFrame> buffer) {
 		int frameCount = 0;
 
-		for (int i = 0; i < trackers.size(); i++) {
-			PoseFrameTracker tracker = trackers.get(i);
-
+		for (PoseFrameTracker tracker : trackers) {
 			if (tracker == null) {
 				continue;
 			}
@@ -247,8 +242,7 @@ public final class PoseFrames implements Iterable<TrackerFrame[]> {
 				return false;
 			}
 
-			for (int i = 0; i < trackers.size(); i++) {
-				PoseFrameTracker tracker = trackers.get(i);
+			for (PoseFrameTracker tracker : trackers) {
 				if (tracker != null && cursor < tracker.getFrameCount()) {
 					return true;
 				}

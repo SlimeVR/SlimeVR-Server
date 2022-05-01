@@ -88,8 +88,8 @@ public abstract class ProtobufBridge<T extends VRTracker> implements Bridge {
 	public void dataWrite() {
 		if (!hadNewData) // Don't write anything if no message were received, we always process at the speed of the other side
 			return;
-		for (int i = 0; i < sharedTrackers.size(); ++i) {
-			writeTrackerUpdate(sharedTrackers.get(i));
+		for (ShareableTracker tracker : sharedTrackers) {
+			writeTrackerUpdate(tracker);
 		}
 	}
 
@@ -187,8 +187,7 @@ public abstract class ProtobufBridge<T extends VRTracker> implements Bridge {
 
 	@VRServerThread
 	protected void reconnected() {
-		for (int i = 0; i < sharedTrackers.size(); ++i) {
-			ShareableTracker tracker = sharedTrackers.get(i);
+		for (ShareableTracker tracker : sharedTrackers) {
 			TrackerAdded.Builder builder = TrackerAdded.newBuilder().setTrackerId(tracker.getTrackerId()).setTrackerName(tracker.getDescriptiveName()).setTrackerSerial(tracker.getName()).setTrackerRole(tracker.getTrackerRole().id);
 			sendMessage(ProtobufMessage.newBuilder().setTrackerAdded(builder).build());
 		}

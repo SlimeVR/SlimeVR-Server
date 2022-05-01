@@ -39,8 +39,9 @@ public class TransformNode {
 
 	public void update() {
 		updateWorldTransforms(); // Call update on each frame because we have relatively few nodes
-		for (int i = 0; i < children.size(); ++i)
-			children.get(i).update();
+		for (TransformNode node : children) {
+			node.update();
+		}
 	}
 
 	protected synchronized void updateWorldTransforms() {
@@ -56,8 +57,8 @@ public class TransformNode {
 	}
 
 	public void depthFirstTraversal(Consumer<TransformNode> visitor) {
-		for (int i = 0; i < children.size(); ++i) {
-			children.get(i).depthFirstTraversal(visitor);
+		for (TransformNode node : children) {
+			node.depthFirstTraversal(visitor);
 		}
 		visitor.accept(this);
 	}

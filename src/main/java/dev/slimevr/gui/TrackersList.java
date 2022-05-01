@@ -70,8 +70,7 @@ public class TrackersList extends EJBoxNoStretch {
 		EJBoxNoStretch line = null;
 		boolean first = true;
 
-		for (int i = 0; i < trackers.size(); ++i) {
-			TrackerPanel tr = trackers.get(i);
+		for (TrackerPanel tr : trackers) {
 			Tracker t = tr.t;
 			if (t instanceof ReferenceAdjustedTracker)
 				t = ((ReferenceAdjustedTracker<?>) t).getTracker();
@@ -114,8 +113,9 @@ public class TrackersList extends EJBoxNoStretch {
 			return;
 		lastUpdate = System.currentTimeMillis();
 		java.awt.EventQueue.invokeLater(() -> {
-			for (int i = 0; i < trackers.size(); ++i)
-				trackers.get(i).update();
+			for (TrackerPanel tr : trackers) {
+				tr.update();
+			}
 		});
 	}
 
