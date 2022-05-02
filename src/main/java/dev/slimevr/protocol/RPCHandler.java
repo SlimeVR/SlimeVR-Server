@@ -247,7 +247,7 @@ public class RPCHandler extends ProtocolHandler<RpcMessageHeader> implements Ser
 		data[0] = RpcMessageHeader.endRpcMessageHeader(fbb);
 
 		int messages = MessageBundle.createRpcMsgsVector(fbb, data);
-		return createMessage(fbb, -1, messages);
+		return createMessage(fbb, 0, messages);
 	}
 
 	@Override

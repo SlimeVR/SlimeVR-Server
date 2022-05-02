@@ -51,7 +51,7 @@ public class DataFeedBuilder {
 
 	public static int createTrackerInfos(FlatBufferBuilder fbb, boolean infoMask, Tracker tracker) {
 
-		if (!infoMask) return -1;
+		if (!infoMask) return 0;
 
 		TrackerInfo.startTrackerInfo(fbb);
 		if (tracker.getBodyPosition() != null)
@@ -99,7 +99,7 @@ public class DataFeedBuilder {
 
 	public static int createTrackerTemperature(FlatBufferBuilder fbb, Tracker tracker) {
 		if (!(tracker instanceof IMUTracker))
-			return -1;
+			return 0;
 		IMUTracker imuTracker = (IMUTracker) tracker;
 		return Temperature.createTemperature(fbb, imuTracker.temperature);
 	}
@@ -112,7 +112,7 @@ public class DataFeedBuilder {
 
 		TrackerData.addTrackerId(fbb, trackerIdOffset);
 
-		if (trackerInfosOffset != -1)
+		if (trackerInfosOffset != 0)
 			TrackerData.addInfo(fbb, trackerInfosOffset);
 		if (mask.getStatus())
 			TrackerData.addStatus(fbb, tracker.getStatus().id + 1);
@@ -122,7 +122,7 @@ public class DataFeedBuilder {
 			TrackerData.addRotation(fbb, DataFeedBuilder.createTrackerRotation(fbb, tracker));
 		if (mask.getTemp()) {
 			int trackerTemperatureOffset = DataFeedBuilder.createTrackerTemperature(fbb, tracker);
-			if (trackerTemperatureOffset != -1)
+			if (trackerTemperatureOffset != 0)
 				TrackerData.addTemp(fbb, trackerTemperatureOffset);
 		}
 
@@ -130,7 +130,7 @@ public class DataFeedBuilder {
 	}
 
 	public static int createTrackersData(FlatBufferBuilder fbb, DeviceDataMaskT mask, Device device) {
-		if (mask.getTrackerData() == null) return -1;
+		if (mask.getTrackerData() == null) return 0;
 
 		List<Integer> trackersOffsets = new ArrayList<>();
 
@@ -146,11 +146,11 @@ public class DataFeedBuilder {
 	}
 
 	public static int createDeviceData(FlatBufferBuilder fbb, int id, DeviceDataMaskT mask, Device device) {
-		if (!mask.getDeviceData()) return -1;
+		if (!mask.getDeviceData()) return 0;
 
 		IMUTracker tracker = device.sensors.get(0);
 
-		if (tracker == null) return -1;
+		if (tracker == null) return 0;
 
 		int hardwareDataOffset = HardwareStatus.createHardwareStatus(
 				fbb,
@@ -177,7 +177,7 @@ public class DataFeedBuilder {
 	}
 
 	public static int createSyntheticTrackersData(FlatBufferBuilder fbb, TrackerDataMaskT trackerDataMaskT, List<Tracker> trackers) {
-		if (trackerDataMaskT == null) return -1;
+		if (trackerDataMaskT == null) return 0;
 
 		List<Integer> trackerOffsets = new ArrayList<>();
 
@@ -193,7 +193,7 @@ public class DataFeedBuilder {
 	}
 
 	public static int createDevicesData(FlatBufferBuilder fbb, DeviceDataMaskT deviceDataMaskT, List<Device> devices) {
-		if (deviceDataMaskT == null) return -1;
+		if (deviceDataMaskT == null) return 0;
 
 		int[] devicesDataOffsets = new int[devices.size()];
 		for (int i = 0; i < devices.size(); i++) {

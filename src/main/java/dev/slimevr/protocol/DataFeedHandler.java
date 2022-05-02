@@ -52,7 +52,7 @@ public class DataFeedHandler extends ProtocolHandler<DataFeedMessageHeader> {
 		MessageBundle.addDataFeedMsgs(fbb, headerOffset);
 		int datafeedMessagesOffset = fbb.endVector();
 
-		int packet = createMessage(fbb, datafeedMessagesOffset, -1);
+		int packet = createMessage(fbb, datafeedMessagesOffset, 0);
 		fbb.finish(packet);
 		conn.send(fbb.dataBuffer());
 	}
@@ -96,8 +96,8 @@ public class DataFeedHandler extends ProtocolHandler<DataFeedMessageHeader> {
 				}
 
 				if (fbb != null) {
-					int messages = MessageBundle.createRpcMsgsVector(fbb, data);
-					int packet = createMessage(fbb, messages, -1);
+					int messages = MessageBundle.createDataFeedMsgsVector(fbb, data);
+					int packet = createMessage(fbb, messages, 0);
 					fbb.finish(packet);
 					conn.send(fbb.dataBuffer());
 				}
