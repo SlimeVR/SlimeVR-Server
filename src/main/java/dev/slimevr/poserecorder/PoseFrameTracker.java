@@ -247,7 +247,7 @@ public class PoseFrameTracker implements Tracker, Iterable<TrackerFrame> {
 
 	@Override
 	public int getTrackerNum() {
-		return -1;
+		return this.getTrackerId();
 	}
 
 	@Override
