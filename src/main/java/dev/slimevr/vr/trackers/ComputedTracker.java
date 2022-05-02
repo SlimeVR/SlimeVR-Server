@@ -135,7 +135,7 @@ public class ComputedTracker implements Tracker, TrackerWithTPS {
 
 	@Override
 	public int getTrackerNum() {
-		return -1;
+		return this.getTrackerId();
 	}
 
 	@Override

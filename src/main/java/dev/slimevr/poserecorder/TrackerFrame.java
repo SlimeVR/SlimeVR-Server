@@ -178,7 +178,7 @@ public final class TrackerFrame implements Tracker {
 
 	@Override
 	public int getTrackerNum() {
-		return -1;
+		return this.getTrackerId();
 	}
 
 	@Override
