@@ -19,3 +19,9 @@ vrconfig.yml
 
 BVH Recordings
 Recordings
+
+# Ignore eclipse stuff (other than .settings)
+.project
+.classpath
+.settings/
+!.settings/org.eclipse.jdt.core.prefs
