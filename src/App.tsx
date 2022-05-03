@@ -8,7 +8,7 @@ import {
 import { Overview } from './components/Overview';
 import { BodyProportions } from './components/proportions/BodyProportions';
 import { AppContextProvider } from './components/providers/AppContext';
-import { useEffect, useMemo, useState } from 'react';
+import { useEffect } from 'react';
 import { DataFeedConfigT, DataFeedMessage, DeviceDataMaskT, StartDataFeedT, TrackerDataMaskT } from 'solarxr-protocol';
 import { MainLayoutRoute } from './components/MainLayout';
 import { SettingsLayoutRoute } from './components/settings/SettingsLayout';
@@ -18,7 +18,6 @@ import { Serial } from './components/settings/pages/Serial';
 
 import { listen } from '@tauri-apps/api/event'
 import type { Event } from '@tauri-apps/api/event'
-import { Button } from './components/commons/Button';
 import { appWindow } from '@tauri-apps/api/window'
 
 function Layout() {
@@ -43,8 +42,9 @@ function Layout() {
 
     const startDataFeed = new StartDataFeedT()
     startDataFeed.dataFeeds = [config]
-    sendDataFeedPacket(DataFeedMessage.StartDataFeed, startDataFeed)
+    sendDataFeedPacket(DataFeedMessage.StartDataFeed, startDataFeed);
   }, [])
+  
 
   return (
     <>
