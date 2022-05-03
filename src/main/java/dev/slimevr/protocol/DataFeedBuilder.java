@@ -117,7 +117,7 @@ public class DataFeedBuilder {
 		if (mask.getStatus())
 			TrackerData.addStatus(fbb, tracker.getStatus().id + 1);
 		if (mask.getPosition())
-			TrackerData.addRotation(fbb, DataFeedBuilder.createTrackerPosition(fbb, tracker));
+			TrackerData.addPosition(fbb, DataFeedBuilder.createTrackerPosition(fbb, tracker));
 		if (mask.getRotation())
 			TrackerData.addRotation(fbb, DataFeedBuilder.createTrackerRotation(fbb, tracker));
 		if (mask.getTemp()) {
