@@ -313,15 +313,19 @@ public class VRServer extends Thread {
 
 	public Tracker getTrackerById(TrackerIdT id) {
 		for (Tracker tracker : trackers) {
-			if (tracker.getTrackerNum() != id.getTrackerNum())
+			if (tracker.getTrackerNum() != id.getTrackerNum()) {
 				continue;
-			if (tracker.getDevice() == null && id.getDeviceId() != null)
-				continue;
-			if (tracker.getDevice() != null && id.getDeviceId() == null)
-				continue;
-			if (tracker.getDevice().getId() != id.getDeviceId().getId())
-				continue;
-			return tracker;
+			}
+
+			// Handle synthetic devices
+			if (id.getDeviceId() == null && tracker.getDevice() == null) {
+				return tracker;
+			}
+
+			if (tracker.getDevice() != null && id.getDeviceId() != null && id.getDeviceId().getId() == tracker.getDevice().getId()) {
+				// This is a physical tracker, and both device id and the tracker num match
+				return tracker;
+			}
 		}
 		return null;
 	}
