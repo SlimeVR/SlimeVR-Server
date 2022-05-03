@@ -7,7 +7,7 @@ public enum TrackerFilters {
 	EXTRAPOLATION(2);
 
 	public static final TrackerFilters[] values = values();
-	
+
 	public final int id;
 
 	TrackerFilters(int id) {

@@ -236,7 +236,7 @@ public class VRServer extends Thread {
 	public void run() {
 		trackersServer.start();
 		while (true) {
-//			final long start = System.currentTimeMillis();
+			// final long start = System.currentTimeMillis();
 			do {
 				Runnable task = tasks.poll();
 				if (task == null)
@@ -256,7 +256,7 @@ public class VRServer extends Thread {
 			for (Bridge bridge : bridges) {
 				bridge.dataWrite();
 			}
-//			final long time = System.currentTimeMillis() - start;
+			// final long time = System.currentTimeMillis() - start;
 			try {
 				Thread.sleep(1); // 1000Hz
 			} catch (InterruptedException e) {}

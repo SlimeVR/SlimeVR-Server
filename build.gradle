@@ -9,6 +9,7 @@
 plugins {
 	id 'application'
 	id "com.github.johnrengelman.shadow" version "7.1.2"
+	id "com.diffplug.spotless" version "6.5.1"
 }
 
 sourceCompatibility = 1.11
@@ -50,8 +51,8 @@ dependencies {
 
 	// This dependency is used internally, and not exposed to consumers on their own compile classpath.
 	implementation 'org.apache.commons:commons-math3:3.6.1'
-    implementation 'org.apache.commons:commons-lang3:3.12.0'
-    implementation 'org.yaml:snakeyaml:1.30'
+	implementation 'org.apache.commons:commons-lang3:3.12.0'
+	implementation 'org.yaml:snakeyaml:1.30'
 	implementation 'net.java.dev.jna:jna:5.10.0'
 	implementation 'net.java.dev.jna:jna-platform:5.10.0'
 	implementation 'com.illposed.osc:javaosc-core:0.8'
@@ -76,4 +77,32 @@ shadowJar {
 }
 application {
 	getMainClass().set('dev.slimevr.Main')
+}
+
+spotless {
+	// optional: limit format enforcement to just the files changed by this feature branch
+	// ratchetFrom 'origin/main'
+
+	format 'misc', {
+		// define the files to apply `misc` to
+		target '*.gradle', '*.md', '.gitignore'
+
+		// define the steps to apply to those files
+		trimTrailingWhitespace()
+		endWithNewline()
+		indentWithTabs() // or spaces. Takes an integer argument if you don't like 4
+	}
+	java {
+		removeUnusedImports()
+
+		// Use eclipse JDT
+		eclipse().configFile("spotless.xml")
+
+		// apply a specific flavor of google-java-format
+		// googleJavaFormat('1.8').aosp().reflowLongStrings()
+		// make sure every file has the following copyright header.
+		// optionally, Spotless can set copyright years by digging
+		// through git history (see "license" section below)
+		// licenseHeader '/* (C)$YEAR */'
+	}
 }
