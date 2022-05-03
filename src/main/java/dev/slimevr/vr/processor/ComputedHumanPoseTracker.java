@@ -5,6 +5,7 @@ import dev.slimevr.vr.trackers.ShareableTracker;
 import dev.slimevr.vr.trackers.TrackerRole;
 import dev.slimevr.vr.trackers.TrackerWithTPS;
 import dev.slimevr.vr.trackers.udp.Device;
+import dev.slimevr.vr.trackers.TrackerPosition;
 import io.eiren.util.BufferedTimer;
 
 public class ComputedHumanPoseTracker extends ComputedTracker implements TrackerWithTPS, ShareableTracker {
@@ -17,6 +18,7 @@ public class ComputedHumanPoseTracker extends ComputedTracker implements Tracker
 		super(trackerId, "human://" + skeletonPosition.name(), true, true);
 		this.skeletonPosition = skeletonPosition;
 		this.trackerRole = role;
+		this.bodyPosition = TrackerPosition.getByRole(role);
 	}
 
 	@Override
