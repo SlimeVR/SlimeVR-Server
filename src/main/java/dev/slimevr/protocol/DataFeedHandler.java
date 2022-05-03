@@ -68,7 +68,7 @@ public class DataFeedHandler extends ProtocolHandler<DataFeedMessageHeader> {
 		long currTime = System.currentTimeMillis();
 
 		this.api.getAPIServers().forEach((server) -> {
-			server.getAPIConnections().values().forEach((conn) -> {
+			server.getAPIConnections().forEach((conn) -> {
 				FlatBufferBuilder fbb = null;
 
 				int configsCount = conn.getContext().getDataFeedConfigList().size();

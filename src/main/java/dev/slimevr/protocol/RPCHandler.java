@@ -260,8 +260,6 @@ public class RPCHandler extends ProtocolHandler<RpcMessageHeader> implements Ser
 
 		this.api.getAPIServers().forEach((server) -> {
 			server.getAPIConnections()
-					.values()
-					.stream()
 					.filter(conn -> conn.getContext().useSerial())
 					.forEach((conn) -> {
 						FlatBufferBuilder fbb = new FlatBufferBuilder(32);
@@ -281,8 +279,6 @@ public class RPCHandler extends ProtocolHandler<RpcMessageHeader> implements Ser
 	public void onSerialDisconnected() {
 		this.api.getAPIServers().forEach((server) -> {
 			server.getAPIConnections()
-					.values()
-					.stream()
 					.filter(conn -> conn.getContext().useSerial())
 					.forEach((conn) -> {
 						FlatBufferBuilder fbb = new FlatBufferBuilder(32);
@@ -302,8 +298,6 @@ public class RPCHandler extends ProtocolHandler<RpcMessageHeader> implements Ser
 	public void onSerialLog(String str) {
 		this.api.getAPIServers().forEach((server) -> {
 			server.getAPIConnections()
-					.values()
-					.stream()
 					.filter(conn -> conn.getContext().useSerial())
 					.forEach((conn) -> {
 						FlatBufferBuilder fbb = new FlatBufferBuilder(32);
