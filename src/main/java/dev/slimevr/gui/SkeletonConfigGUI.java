@@ -66,13 +66,13 @@ public class SkeletonConfigGUI extends EJBagNoStretch {
 
 				// Only use a timer on configs that need time to get into position for
 				switch (config) {
-				case TORSO:
-				case LEGS_LENGTH:
-					add(new TimedResetButton("Reset", config), c(4, row, 2));
-					break;
-				default:
-					add(new ResetButton("Reset", config), c(4, row, 2));
-					break;
+					case TORSO:
+					case LEGS_LENGTH:
+						add(new TimedResetButton("Reset", config), c(4, row, 2));
+						break;
+					default:
+						add(new ResetButton("Reset", config), c(4, row, 2));
+						break;
 				}
 
 				row++;

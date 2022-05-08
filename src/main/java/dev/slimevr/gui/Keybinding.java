@@ -51,14 +51,14 @@ public class Keybinding implements HotkeyListener {
 	@Override
 	public void onHotKey(int identifier) {
 		switch (identifier) {
-		case RESET:
-			LogManager.info("[Keybinding] Reset pressed");
-			server.resetTrackers();
-			break;
-		case QUICK_RESET:
-			LogManager.info("[Keybinding] Quick reset pressed");
-			server.resetTrackersYaw();
-			break;
+			case RESET:
+				LogManager.info("[Keybinding] Reset pressed");
+				server.resetTrackers();
+				break;
+			case QUICK_RESET:
+				LogManager.info("[Keybinding] Quick reset pressed");
+				server.resetTrackersYaw();
+				break;
 		}
 	}
 }

@@ -165,10 +165,10 @@ public abstract class ProtobufBridge<T extends VRTracker> implements Bridge {
 	@VRServerThread
 	protected void userActionReceived(UserAction userAction) {
 		switch (userAction.getName()) {
-		case "calibrate":
-			// TODO : Check pose field
-			Main.vrServer.resetTrackers();
-			break;
+			case "calibrate":
+				// TODO : Check pose field
+				Main.vrServer.resetTrackers();
+				break;
 		}
 	}
 

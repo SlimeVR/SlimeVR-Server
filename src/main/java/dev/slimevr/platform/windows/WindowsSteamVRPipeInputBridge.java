@@ -109,74 +109,74 @@ public class WindowsSteamVRPipeInputBridge extends Thread implements Bridge {
 	private void executeInputCommand() throws IOException {
 		String[] command = commandBuilder.toString().split(" ");
 		switch (command[0]) {
-		case "ADD": // Add new tracker
-			if (command.length < 4) {
-				LogManager.severe(
-						"[SteamVRPipeInputBridge] Error in ADD command. Command requires at least 4 arguments. Supplied: "
-								+ commandBuilder);
-				return;
-			}
-			VRTracker internalTracker = new VRTracker(Integer.parseInt(command[1]),
-					StringUtils.join(command, " ", 3, command.length), true, true);
-			int roleId = Integer.parseInt(command[2]);
-			if (roleId >= 0 && roleId < SteamVRInputRoles.values.length) {
-				SteamVRInputRoles svrRole = SteamVRInputRoles.values[roleId];
-				internalTracker.bodyPosition = svrRole.bodyPosition;
-			}
-			VRTracker oldTracker;
-			synchronized (trackersInternal) {
-				oldTracker = trackersInternal.put(internalTracker.getTrackerId(), internalTracker);
-			}
-			if (oldTracker != null) {
-				LogManager.severe(
-						"[SteamVRPipeInputBridge] New tracker added with the same id. Supplied: " + commandBuilder);
-				return;
-			}
-			newData.set(true);
-			break;
-		case "UPD": // Update tracker data
-			if (command.length < 9) {
-				LogManager.severe(
-						"[SteamVRPipeInputBridge] Error in UPD command. Command requires at least 9 arguments. Supplied: "
-								+ commandBuilder);
-				return;
-			}
-			int id = Integer.parseInt(command[1]);
-			double x = Double.parseDouble(command[2]);
-			double y = Double.parseDouble(command[3]);
-			double z = Double.parseDouble(command[4]);
-			double qw = Double.parseDouble(command[5]);
-			double qx = Double.parseDouble(command[6]);
-			double qy = Double.parseDouble(command[7]);
-			double qz = Double.parseDouble(command[8]);
-			internalTracker = trackersInternal.get(id);
-			if (internalTracker != null) {
-				internalTracker.position.set((float) x, (float) y, (float) z);
-				internalTracker.rotation.set((float) qx, (float) qy, (float) qz, (float) qw);
-				internalTracker.dataTick();
+			case "ADD": // Add new tracker
+				if (command.length < 4) {
+					LogManager.severe(
+							"[SteamVRPipeInputBridge] Error in ADD command. Command requires at least 4 arguments. Supplied: "
+									+ commandBuilder);
+					return;
+				}
+				VRTracker internalTracker = new VRTracker(Integer.parseInt(command[1]),
+						StringUtils.join(command, " ", 3, command.length), true, true);
+				int roleId = Integer.parseInt(command[2]);
+				if (roleId >= 0 && roleId < SteamVRInputRoles.values.length) {
+					SteamVRInputRoles svrRole = SteamVRInputRoles.values[roleId];
+					internalTracker.bodyPosition = svrRole.bodyPosition;
+				}
+				VRTracker oldTracker;
+				synchronized (trackersInternal) {
+					oldTracker = trackersInternal.put(internalTracker.getTrackerId(), internalTracker);
+				}
+				if (oldTracker != null) {
+					LogManager.severe(
+							"[SteamVRPipeInputBridge] New tracker added with the same id. Supplied: " + commandBuilder);
+					return;
+				}
 				newData.set(true);
-			}
-			break;
-		case "STA": // Update tracker status
-			if (command.length < 3) {
-				LogManager.severe(
-						"[SteamVRPipeInputBridge] Error in STA command. Command requires at least 3 arguments. Supplied: "
-								+ commandBuilder);
-				return;
-			}
-			id = Integer.parseInt(command[1]);
-			int status = Integer.parseInt(command[2]);
-			TrackerStatus st = TrackerStatus.getById(status);
-			if (st == null) {
-				LogManager.severe("[SteamVRPipeInputBridge] Unrecognized status id. Supplied: " + commandBuilder);
-				return;
-			}
-			internalTracker = trackersInternal.get(id);
-			if (internalTracker != null) {
-				internalTracker.setStatus(st);
-				newData.set(true);
-			}
-			break;
+				break;
+			case "UPD": // Update tracker data
+				if (command.length < 9) {
+					LogManager.severe(
+							"[SteamVRPipeInputBridge] Error in UPD command. Command requires at least 9 arguments. Supplied: "
+									+ commandBuilder);
+					return;
+				}
+				int id = Integer.parseInt(command[1]);
+				double x = Double.parseDouble(command[2]);
+				double y = Double.parseDouble(command[3]);
+				double z = Double.parseDouble(command[4]);
+				double qw = Double.parseDouble(command[5]);
+				double qx = Double.parseDouble(command[6]);
+				double qy = Double.parseDouble(command[7]);
+				double qz = Double.parseDouble(command[8]);
+				internalTracker = trackersInternal.get(id);
+				if (internalTracker != null) {
+					internalTracker.position.set((float) x, (float) y, (float) z);
+					internalTracker.rotation.set((float) qx, (float) qy, (float) qz, (float) qw);
+					internalTracker.dataTick();
+					newData.set(true);
+				}
+				break;
+			case "STA": // Update tracker status
+				if (command.length < 3) {
+					LogManager.severe(
+							"[SteamVRPipeInputBridge] Error in STA command. Command requires at least 3 arguments. Supplied: "
+									+ commandBuilder);
+					return;
+				}
+				id = Integer.parseInt(command[1]);
+				int status = Integer.parseInt(command[2]);
+				TrackerStatus st = TrackerStatus.getById(status);
+				if (st == null) {
+					LogManager.severe("[SteamVRPipeInputBridge] Unrecognized status id. Supplied: " + commandBuilder);
+					return;
+				}
+				internalTracker = trackersInternal.get(id);
+				if (internalTracker != null) {
+					internalTracker.setStatus(st);
+					newData.set(true);
+				}
+				break;
 		}
 	}
 

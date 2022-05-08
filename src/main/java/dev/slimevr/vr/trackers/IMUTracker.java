@@ -85,19 +85,19 @@ public class IMUTracker implements Tracker, TrackerWithTPS, TrackerWithBattery {
 		ticks = (int) FastMath.clamp(ticks, 0, 50);
 		if (type != null) {
 			switch (type) {
-			case "INTERPOLATION":
-				movementFilterAmount = 1f - (amount / 1.6f);
-				movementFilterTickCount = ticks;
-				break;
-			case "EXTRAPOLATION":
-				movementFilterAmount = 1f + (amount * 1.1f);
-				movementFilterTickCount = ticks;
-				break;
-			case "NONE":
-			default:
-				movementFilterAmount = 1f;
-				movementFilterTickCount = 0;
-				break;
+				case "INTERPOLATION":
+					movementFilterAmount = 1f - (amount / 1.6f);
+					movementFilterTickCount = ticks;
+					break;
+				case "EXTRAPOLATION":
+					movementFilterAmount = 1f + (amount * 1.1f);
+					movementFilterTickCount = ticks;
+					break;
+				case "NONE":
+				default:
+					movementFilterAmount = 1f;
+					movementFilterTickCount = 0;
+					break;
 			}
 		} else {
 			movementFilterAmount = 1f;

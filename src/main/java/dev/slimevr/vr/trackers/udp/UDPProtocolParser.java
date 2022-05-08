@@ -83,36 +83,36 @@ public class UDPProtocolParser {
 
 	protected UDPPacket getNewPacket(int packetId) {
 		switch (packetId) {
-		case PACKET_HEARTBEAT:
-			return new UDPPacket0Heartbeat();
-		case PACKET_ROTATION:
-			return new UDPPacket1Rotation();
-		case PACKET_HANDSHAKE:
-			return new UDPPacket3Handshake();
-		case PACKET_PING_PONG:
-			return new UDPPacket10PingPong();
-		case PACKET_SERIAL:
-			return new UDPPacket11Serial();
-		case PACKET_BATTERY_LEVEL:
-			return new UDPPacket12BatteryLevel();
-		case PACKET_TAP:
-			return new UDPPacket13Tap();
-		case PACKET_ERROR:
-			return new UDPPacket14Error();
-		case PACKET_SENSOR_INFO:
-			return new UDPPacket15SensorInfo();
-		case PACKET_ROTATION_2:
-			return new UDPPacket16Rotation2();
-		case PACKET_ROTATION_DATA:
-			return new UDPPacket17RotationData();
-		case PACKET_MAGNETOMETER_ACCURACY:
-			return new UDPPacket18MagnetometerAccuracy();
-		case PACKET_SIGNAL_STRENGTH:
-			return new UDPPacket19SignalStrength();
-		case PACKET_TEMPERATURE:
-			return new UDPPacket20Temperature();
-		case PACKET_PROTOCOL_CHANGE:
-			return new UDPPacket200ProtocolChange();
+			case PACKET_HEARTBEAT:
+				return new UDPPacket0Heartbeat();
+			case PACKET_ROTATION:
+				return new UDPPacket1Rotation();
+			case PACKET_HANDSHAKE:
+				return new UDPPacket3Handshake();
+			case PACKET_PING_PONG:
+				return new UDPPacket10PingPong();
+			case PACKET_SERIAL:
+				return new UDPPacket11Serial();
+			case PACKET_BATTERY_LEVEL:
+				return new UDPPacket12BatteryLevel();
+			case PACKET_TAP:
+				return new UDPPacket13Tap();
+			case PACKET_ERROR:
+				return new UDPPacket14Error();
+			case PACKET_SENSOR_INFO:
+				return new UDPPacket15SensorInfo();
+			case PACKET_ROTATION_2:
+				return new UDPPacket16Rotation2();
+			case PACKET_ROTATION_DATA:
+				return new UDPPacket17RotationData();
+			case PACKET_MAGNETOMETER_ACCURACY:
+				return new UDPPacket18MagnetometerAccuracy();
+			case PACKET_SIGNAL_STRENGTH:
+				return new UDPPacket19SignalStrength();
+			case PACKET_TEMPERATURE:
+				return new UDPPacket20Temperature();
+			case PACKET_PROTOCOL_CHANGE:
+				return new UDPPacket200ProtocolChange();
 		}
 		return null;
 	}
