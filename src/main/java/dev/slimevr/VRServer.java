@@ -71,13 +71,15 @@ public class VRServer extends Thread {
 		if (OperatingSystem.getCurrentPlatform() == OperatingSystem.WINDOWS) {
 
 			// Create named pipe bridge for SteamVR driver
-			WindowsNamedPipeBridge driverBridge = new WindowsNamedPipeBridge(hmdTracker, "steamvr", "SteamVR Driver Bridge", "\\\\.\\pipe\\SlimeVRDriver", shareTrackers);
+			WindowsNamedPipeBridge driverBridge = new WindowsNamedPipeBridge(hmdTracker, "steamvr",
+					"SteamVR Driver Bridge", "\\\\.\\pipe\\SlimeVRDriver", shareTrackers);
 			tasks.add(() -> driverBridge.startBridge());
 			bridges.add(driverBridge);
 
 			// Create named pipe bridge for SteamVR input
 			// TODO: how do we want to handle HMD input from the feeder app?
-			WindowsNamedPipeBridge feederBridge = new WindowsNamedPipeBridge(null, "steamvr_feeder", "SteamVR Feeder Bridge", "\\\\.\\pipe\\SlimeVRInput", new FastList<ShareableTracker>());
+			WindowsNamedPipeBridge feederBridge = new WindowsNamedPipeBridge(null, "steamvr_feeder",
+					"SteamVR Feeder Bridge", "\\\\.\\pipe\\SlimeVRInput", new FastList<ShareableTracker>());
 			tasks.add(() -> feederBridge.startBridge());
 			bridges.add(feederBridge);
 		}
@@ -322,7 +324,8 @@ public class VRServer extends Thread {
 				return tracker;
 			}
 
-			if (tracker.getDevice() != null && id.getDeviceId() != null && id.getDeviceId().getId() == tracker.getDevice().getId()) {
+			if (tracker.getDevice() != null && id.getDeviceId() != null
+					&& id.getDeviceId().getId() == tracker.getDevice().getId()) {
 				// This is a physical tracker, and both device id and the tracker num match
 				return tracker;
 			}

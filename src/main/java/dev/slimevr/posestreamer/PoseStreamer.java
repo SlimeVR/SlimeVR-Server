@@ -26,7 +26,7 @@ public class PoseStreamer {
 			poseFileStream.writeFrame(skeleton);
 		} catch (Exception e) {
 			// Handle any exceptions without crashing the program
-			LogManager.log.severe("[PoseStreamer] Exception while saving frame", e);
+			LogManager.severe("[PoseStreamer] Exception while saving frame", e);
 		}
 	}
 

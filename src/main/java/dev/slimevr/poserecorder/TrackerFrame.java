@@ -39,7 +39,8 @@ public final class TrackerFrame implements Tracker {
 		}
 
 		// If the tracker is not ready
-		if (tracker.getStatus() != TrackerStatus.OK && tracker.getStatus() != TrackerStatus.BUSY && tracker.getStatus() != TrackerStatus.OCCLUDED) {
+		if (tracker.getStatus() != TrackerStatus.OK && tracker.getStatus() != TrackerStatus.BUSY
+				&& tracker.getStatus() != TrackerStatus.OCCLUDED) {
 			return null;
 		}
 
@@ -77,7 +78,7 @@ public final class TrackerFrame implements Tracker {
 		return flag.check(dataFlags);
 	}
 
-	//#region Tracker Interface Implementation
+	// #region Tracker Interface Implementation
 	@Override
 	public boolean getRotation(Quaternion store) {
 		if (hasData(TrackerFrameData.ROTATION)) {
@@ -169,7 +170,7 @@ public final class TrackerFrame implements Tracker {
 	public boolean isComputed() {
 		return true;
 	}
-	//#endregion
+	// #endregion
 
 	@Override
 	public int getTrackerId() {

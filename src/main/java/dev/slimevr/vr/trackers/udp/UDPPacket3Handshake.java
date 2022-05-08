@@ -43,7 +43,8 @@ public class UDPPacket3Handshake extends UDPPacket {
 			firmware = readASCIIString(buf, length);
 			if (buf.remaining() >= mac.length) {
 				buf.get(mac);
-				macString = String.format("%02X:%02X:%02X:%02X:%02X:%02X", mac[0], mac[1], mac[2], mac[3], mac[4], mac[5]);
+				macString = String.format("%02X:%02X:%02X:%02X:%02X:%02X", mac[0], mac[1], mac[2], mac[3], mac[4],
+						mac[5]);
 				if (macString.equals("00:00:00:00:00:00"))
 					macString = null;
 			}
@@ -53,7 +54,8 @@ public class UDPPacket3Handshake extends UDPPacket {
 	@Override
 	public void writeData(ByteBuffer buf) throws IOException {
 		// Never sent back in current protocol
-		// Handshake for RAW SlimeVR and legacy owoTrack has different packet id byte order from normal packets
+		// Handshake for RAW SlimeVR and legacy owoTrack has different packet id byte
+		// order from normal packets
 		// So it's handled by raw protocol call
 	}
 }

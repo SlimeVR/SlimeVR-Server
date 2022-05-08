@@ -3,18 +3,16 @@ package dev.slimevr.vr.trackers;
 import java.util.*;
 
 /**
- * If you use this code, please consider notifying isak at du-preez dot com
- * with a brief description of your application.
+ * If you use this code, please consider notifying isak at du-preez dot com with
+ * a brief description of your application.
  * <p>
  * This is free and unencumbered software released into the public domain.
- * Anyone is free to copy, modify, publish, use, compile, sell, or
- * distribute this software, either in source code form or as a compiled
- * binary, for any purpose, commercial or non-commercial, and by any
- * means.
+ * Anyone is free to copy, modify, publish, use, compile, sell, or distribute
+ * this software, either in source code form or as a compiled binary, for any
+ * purpose, commercial or non-commercial, and by any means.
  */
 
-public class CircularArrayList<E>
-		extends AbstractList<E> implements RandomAccess {
+public class CircularArrayList<E> extends AbstractList<E> implements RandomAccess {
 
 	private final int n; // buffer length
 	private final List<E> buf; // a List implementing RandomAccess
@@ -72,10 +70,8 @@ public class CircularArrayList<E>
 	public void add(int i, E e) {
 		int s = size();
 		if (s == n - 1) {
-			throw new IllegalStateException(
-					"CircularArrayList is filled to capacity. "
-							+ "(You may want to remove from front"
-							+ " before adding more to back.)");
+			throw new IllegalStateException("CircularArrayList is filled to capacity. "
+					+ "(You may want to remove from front" + " before adding more to back.)");
 		}
 		if (i < 0 || i > s) {
 			throw new IndexOutOfBoundsException();

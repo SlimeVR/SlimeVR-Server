@@ -14,7 +14,8 @@ public class ComputedHumanPoseTracker extends ComputedTracker implements Tracker
 	protected final TrackerRole trackerRole;
 	protected BufferedTimer timer = new BufferedTimer(1f);
 
-	public ComputedHumanPoseTracker(int trackerId, ComputedHumanPoseTrackerPosition skeletonPosition, TrackerRole role) {
+	public ComputedHumanPoseTracker(int trackerId, ComputedHumanPoseTrackerPosition skeletonPosition,
+			TrackerRole role) {
 		super(trackerId, "human://" + skeletonPosition.name(), true, true);
 		this.skeletonPosition = skeletonPosition;
 		this.trackerRole = role;

@@ -136,7 +136,7 @@ public class PoseFrameTracker implements Tracker, Iterable<TrackerFrame> {
 		return safeGetFrame(frameCursor);
 	}
 
-	//#region Tracker Interface Implementation
+	// #region Tracker Interface Implementation
 	@Override
 	public boolean getRotation(Quaternion store) {
 		TrackerFrame frame = safeGetFrame();
@@ -233,7 +233,7 @@ public class PoseFrameTracker implements Tracker, Iterable<TrackerFrame> {
 	public boolean isComputed() {
 		return true;
 	}
-	//#endregion
+	// #endregion
 
 	@Override
 	public Iterator<TrackerFrame> iterator() {

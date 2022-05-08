@@ -122,7 +122,8 @@ public class WindowsNamedPipeVRBridge extends Thread implements Bridge {
 			IntByReference bytesAvailable = new IntByReference(0);
 			if (Kernel32.INSTANCE.PeekNamedPipe(hmdPipe.pipeHandle, null, 0, null, bytesAvailable, null)) {
 				if (bytesAvailable.getValue() > 0) {
-					while (Kernel32.INSTANCE.ReadFile(hmdPipe.pipeHandle, buffArray, buffArray.length, bytesAvailable, null)) {
+					while (Kernel32.INSTANCE.ReadFile(hmdPipe.pipeHandle, buffArray, buffArray.length, bytesAvailable,
+							null)) {
 						int bytesRead = bytesAvailable.getValue();
 						for (int i = 0; i < bytesRead; ++i) {
 							char c = (char) buffArray[i];
@@ -132,7 +133,7 @@ public class WindowsNamedPipeVRBridge extends Thread implements Bridge {
 							} else {
 								commandBuilder.append(c);
 								if (commandBuilder.length() >= MAX_COMMAND_LENGTH) {
-									LogManager.log.severe("[VRBridge] Command from the pipe is too long, flushing buffer");
+									LogManager.severe("[VRBridge] Command from the pipe is too long, flushing buffer");
 									commandBuilder.setLength(0);
 								}
 							}
@@ -150,7 +151,7 @@ public class WindowsNamedPipeVRBridge extends Thread implements Bridge {
 	private void executeHMDInput() throws IOException {
 		String[] split = commandBuilder.toString().split(" ");
 		if (split.length < 7) {
-			LogManager.log.severe("[VRBridge] Short HMD data received: " + commandBuilder);
+			LogManager.severe("[VRBridge] Short HMD data received: " + commandBuilder);
 			return;
 		}
 		try {
@@ -180,12 +181,14 @@ public class WindowsNamedPipeVRBridge extends Thread implements Bridge {
 				sensor.getPosition(vBuffer);
 				sensor.getRotation(qBuffer);
 				sbBuffer.append(vBuffer.x).append(' ').append(vBuffer.y).append(' ').append(vBuffer.z).append(' ');
-				sbBuffer.append(qBuffer.getW()).append(' ').append(qBuffer.getX()).append(' ').append(qBuffer.getY()).append(' ').append(qBuffer.getZ()).append('\n');
+				sbBuffer.append(qBuffer.getW()).append(' ').append(qBuffer.getX()).append(' ').append(qBuffer.getY())
+						.append(' ').append(qBuffer.getZ()).append('\n');
 				String str = sbBuffer.toString();
 				System.arraycopy(str.getBytes(ASCII), 0, buffArray, 0, str.length());
 				buffArray[str.length()] = '\0';
 				IntByReference lpNumberOfBytesWritten = new IntByReference(0);
-				Kernel32.INSTANCE.WriteFile(trackerPipe.pipeHandle, buffArray, str.length() + 1, lpNumberOfBytesWritten, null);
+				Kernel32.INSTANCE.WriteFile(trackerPipe.pipeHandle, buffArray, str.length() + 1, lpNumberOfBytesWritten,
+						null);
 			}
 		}
 	}
@@ -199,21 +202,18 @@ public class WindowsNamedPipeVRBridge extends Thread implements Bridge {
 		System.arraycopy(trackerHello.getBytes(ASCII), 0, buffArray, 0, trackerHello.length());
 		buffArray[trackerHello.length()] = '\0';
 		IntByReference lpNumberOfBytesWritten = new IntByReference(0);
-		Kernel32.INSTANCE.WriteFile(pipe.pipeHandle,
-				buffArray,
-				trackerHello.length() + 1,
-				lpNumberOfBytesWritten,
+		Kernel32.INSTANCE.WriteFile(pipe.pipeHandle, buffArray, trackerHello.length() + 1, lpNumberOfBytesWritten,
 				null);
 	}
 
 	private boolean tryOpeningPipe(WindowsPipe pipe) {
 		if (Kernel32.INSTANCE.ConnectNamedPipe(pipe.pipeHandle, null)) {
 			pipe.state = PipeState.OPEN;
-			LogManager.log.info("[VRBridge] Pipe " + pipe.name + " is open");
+			LogManager.info("[VRBridge] Pipe " + pipe.name + " is open");
 			return true;
 		}
 
-		LogManager.log.info("[VRBridge] Error connecting to pipe " + pipe.name + ": " + Kernel32.INSTANCE.GetLastError());
+		LogManager.info("[VRBridge] Error connecting to pipe " + pipe.name + ": " + Kernel32.INSTANCE.GetLastError());
 		return false;
 	}
 
@@ -238,7 +238,7 @@ public class WindowsNamedPipeVRBridge extends Thread implements Bridge {
 					1024 * 16, // nInBufferSize,
 					0, // nDefaultTimeOut,
 					null), HMDPipeName); // lpSecurityAttributes
-			LogManager.log.info("[VRBridge] Pipe " + hmdPipe.name + " created");
+			LogManager.info("[VRBridge] Pipe " + hmdPipe.name + " created");
 			if (WinBase.INVALID_HANDLE_VALUE.equals(hmdPipe.pipeHandle))
 				throw new IOException("Can't open " + HMDPipeName + " pipe: " + Kernel32.INSTANCE.GetLastError());
 			for (int i = 0; i < this.shareTrackers.size(); ++i) {
@@ -252,10 +252,10 @@ public class WindowsNamedPipeVRBridge extends Thread implements Bridge {
 						null); // lpSecurityAttributes
 				if (WinBase.INVALID_HANDLE_VALUE.equals(pipeHandle))
 					throw new IOException("Can't open " + pipeName + " pipe: " + Kernel32.INSTANCE.GetLastError());
-				LogManager.log.info("[VRBridge] Pipe " + pipeName + " created");
+				LogManager.info("[VRBridge] Pipe " + pipeName + " created");
 				trackerPipes.add(new WindowsPipe(pipeHandle, pipeName));
 			}
-			LogManager.log.info("[VRBridge] Pipes are open");
+			LogManager.info("[VRBridge] Pipes are open");
 		} catch (IOException e) {
 			safeDisconnect(hmdPipe);
 			for (WindowsPipe pipe : trackerPipes) {

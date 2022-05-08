@@ -32,7 +32,9 @@ public class SerialHandler implements SerialPortMessageListener {
 
 		SerialPort[] ports = SerialPort.getCommPorts();
 		for (SerialPort port : ports) {
-			if (port.getDescriptivePortName().toLowerCase().contains("ch340") || port.getDescriptivePortName().toLowerCase().contains("cp21") || port.getDescriptivePortName().toLowerCase().contains("ch910")) {
+			if (port.getDescriptivePortName().toLowerCase().contains("ch340")
+					|| port.getDescriptivePortName().toLowerCase().contains("cp21")
+					|| port.getDescriptivePortName().toLowerCase().contains("ch910")) {
 				trackerPort = port;
 				break;
 			}
@@ -99,7 +101,7 @@ public class SerialHandler implements SerialPortMessageListener {
 
 	@Override
 	public byte[] getMessageDelimiter() {
-		return new byte[]{(byte) 0x0A};
+		return new byte[] { (byte) 0x0A };
 	}
 
 	@Override
@@ -107,4 +109,3 @@ public class SerialHandler implements SerialPortMessageListener {
 		return true;
 	}
 }
-

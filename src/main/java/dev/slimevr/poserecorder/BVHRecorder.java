@@ -26,10 +26,10 @@ public class BVHRecorder {
 				poseDataStream = new BVHFileStream(bvhFile);
 				poseStreamer.setOutput(poseDataStream, 1000L / 100L);
 			} catch (IOException e1) {
-				LogManager.log.severe("[BVH] Failed to create the recording file \"" + bvhFile.getPath() + "\".");
+				LogManager.severe("[BVH] Failed to create the recording file \"" + bvhFile.getPath() + "\".");
 			}
 		} else {
-			LogManager.log.severe("[BVH] Unable to get file to save to");
+			LogManager.severe("[BVH] Unable to get file to save to");
 		}
 	}
 
@@ -38,7 +38,7 @@ public class BVHRecorder {
 		try {
 			poseStreamer.closeOutput(poseDataStream);
 		} catch (Exception e1) {
-			LogManager.log.severe("[BVH] Exception while closing poseDataStream", e1);
+			LogManager.severe("[BVH] Exception while closing poseDataStream", e1);
 		} finally {
 			poseDataStream = null;
 		}
@@ -54,7 +54,7 @@ public class BVHRecorder {
 
 			return saveRecording;
 		} else {
-			LogManager.log.severe("[BVH] Failed to create the recording directory \"" + bvhSaveDir.getPath() + "\".");
+			LogManager.severe("[BVH] Failed to create the recording directory \"" + bvhSaveDir.getPath() + "\".");
 		}
 
 		return null;

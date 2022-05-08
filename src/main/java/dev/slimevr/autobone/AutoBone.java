@@ -28,12 +28,16 @@ public class AutoBone {
 	private static final File saveDir = new File("Recordings");
 	private static final File loadDir = new File("LoadRecordings");
 	// This is filled by reloadConfigValues()
-	public final EnumMap<SkeletonConfigValue, Float> configs = new EnumMap<SkeletonConfigValue, Float>(SkeletonConfigValue.class);
-	public final EnumMap<SkeletonConfigValue, Float> staticConfigs = new EnumMap<SkeletonConfigValue, Float>(SkeletonConfigValue.class);
-	public final FastList<SkeletonConfigValue> heightConfigs = new FastList<SkeletonConfigValue>(new SkeletonConfigValue[]{
-			SkeletonConfigValue.NECK, SkeletonConfigValue.TORSO, SkeletonConfigValue.LEGS_LENGTH});
-	public final FastList<SkeletonConfigValue> lengthConfigs = new FastList<SkeletonConfigValue>(new SkeletonConfigValue[]{
-			SkeletonConfigValue.HEAD, SkeletonConfigValue.NECK, SkeletonConfigValue.TORSO, SkeletonConfigValue.HIPS_WIDTH, SkeletonConfigValue.LEGS_LENGTH});
+	public final EnumMap<SkeletonConfigValue, Float> configs = new EnumMap<SkeletonConfigValue, Float>(
+			SkeletonConfigValue.class);
+	public final EnumMap<SkeletonConfigValue, Float> staticConfigs = new EnumMap<SkeletonConfigValue, Float>(
+			SkeletonConfigValue.class);
+	public final FastList<SkeletonConfigValue> heightConfigs = new FastList<SkeletonConfigValue>(
+			new SkeletonConfigValue[] { SkeletonConfigValue.NECK, SkeletonConfigValue.TORSO,
+					SkeletonConfigValue.LEGS_LENGTH });
+	public final FastList<SkeletonConfigValue> lengthConfigs = new FastList<SkeletonConfigValue>(
+			new SkeletonConfigValue[] { SkeletonConfigValue.HEAD, SkeletonConfigValue.NECK, SkeletonConfigValue.TORSO,
+					SkeletonConfigValue.HIPS_WIDTH, SkeletonConfigValue.LEGS_LENGTH });
 	protected final VRServer server;
 	public int cursorIncrement = 1;
 	public int minDataDistance = 2;
@@ -47,9 +51,10 @@ public class AutoBone {
 	public float proportionErrorFactor = 0.2f;
 	public float heightErrorFactor = 0.1f;
 
-	// TODO Needs much more work, probably going to rethink how the errors work to avoid this barely functional workaround @ButterscotchV
+	// TODO Needs much more work, probably going to rethink how the errors work to
+	// avoid this barely functional workaround @ButterscotchV
 	// For scaling distances, since smaller sizes will cause smaller distances
-	//private float totalLengthBase = 2f;
+	// private float totalLengthBase = 2f;
 	public float positionErrorFactor = 0.0f;
 	public float positionOffsetErrorFactor = 0.0f;
 	public boolean calcInitError = false;
@@ -60,9 +65,12 @@ public class AutoBone {
 	public float legBodyRatio = 1.1235f;
 	// SD of 0.07, capture 68% within range
 	public float legBodyRatioRange = 0.07f;
-	// kneeLegRatio seems to be around 0.54 to 0.6 after asking a few people in the SlimeVR discord.
+	// kneeLegRatio seems to be around 0.54 to 0.6 after asking a few people in the
+	// SlimeVR discord.
 	public float kneeLegRatio = 0.55f;
-	// kneeLegRatio seems to be around 0.55 to 0.64 after asking a few people in the SlimeVR discord. TODO : Chest should be a bit shorter (0.54?) if user has an additional hip tracker.
+	// kneeLegRatio seems to be around 0.55 to 0.64 after asking a few people in the
+	// SlimeVR discord. TODO : Chest should be a bit shorter (0.54?) if user has an
+	// additional hip tracker.
 	public float chestTorsoRatio = 0.57f;
 
 	public AutoBone(VRServer server) {
@@ -78,12 +86,15 @@ public class AutoBone {
 		this.adjustRateDecay = server.config.getFloat("autobone.adjustRateDecay", this.adjustRateDecay);
 
 		this.slideErrorFactor = server.config.getFloat("autobone.slideErrorFactor", this.slideErrorFactor);
-		this.offsetSlideErrorFactor = server.config.getFloat("autobone.offsetSlideErrorFactor", this.offsetSlideErrorFactor);
+		this.offsetSlideErrorFactor = server.config.getFloat("autobone.offsetSlideErrorFactor",
+				this.offsetSlideErrorFactor);
 		this.offsetErrorFactor = server.config.getFloat("autobone.offsetErrorFactor", this.offsetErrorFactor);
-		this.proportionErrorFactor = server.config.getFloat("autobone.proportionErrorFactor", this.proportionErrorFactor);
+		this.proportionErrorFactor = server.config.getFloat("autobone.proportionErrorFactor",
+				this.proportionErrorFactor);
 		this.heightErrorFactor = server.config.getFloat("autobone.heightErrorFactor", this.heightErrorFactor);
 		this.positionErrorFactor = server.config.getFloat("autobone.positionErrorFactor", this.positionErrorFactor);
-		this.positionOffsetErrorFactor = server.config.getFloat("autobone.positionOffsetErrorFactor", this.positionOffsetErrorFactor);
+		this.positionOffsetErrorFactor = server.config.getFloat("autobone.positionOffsetErrorFactor",
+				this.positionOffsetErrorFactor);
 
 		this.calcInitError = server.config.getBoolean("autobone.calculateInitialError", true);
 		this.targetHeight = server.config.getFloat("autobone.manualTargetHeight", -1f);
@@ -111,7 +122,8 @@ public class AutoBone {
 		staticConfigs.put(SkeletonConfigValue.HEAD, readFromConfig(SkeletonConfigValue.HEAD));
 		staticConfigs.put(SkeletonConfigValue.NECK, readFromConfig(SkeletonConfigValue.NECK));
 		configs.put(SkeletonConfigValue.TORSO, readFromConfig(SkeletonConfigValue.TORSO));
-		if (server.config.getBoolean("autobone.forceChestTracker", false) || (trackers != null && TrackerUtils.findTrackerForBodyPosition(trackers, TrackerPosition.CHEST) != null)) {
+		if (server.config.getBoolean("autobone.forceChestTracker", false) || (trackers != null
+				&& TrackerUtils.findTrackerForBodyPosition(trackers, TrackerPosition.CHEST) != null)) {
 			// If force enabled or has a chest tracker
 			staticConfigs.remove(SkeletonConfigValue.CHEST);
 			configs.put(SkeletonConfigValue.CHEST, readFromConfig(SkeletonConfigValue.CHEST));
@@ -120,7 +132,9 @@ public class AutoBone {
 			configs.remove(SkeletonConfigValue.CHEST);
 			staticConfigs.put(SkeletonConfigValue.CHEST, readFromConfig(SkeletonConfigValue.CHEST));
 		}
-		if (server.config.getBoolean("autobone.forceHipTracker", false) || (trackers != null && TrackerUtils.findTrackerForBodyPosition(trackers, TrackerPosition.HIP) != null && TrackerUtils.findTrackerForBodyPosition(trackers, TrackerPosition.WAIST) != null)) {
+		if (server.config.getBoolean("autobone.forceHipTracker", false)
+				|| (trackers != null && TrackerUtils.findTrackerForBodyPosition(trackers, TrackerPosition.HIP) != null
+						&& TrackerUtils.findTrackerForBodyPosition(trackers, TrackerPosition.WAIST) != null)) {
 			// If force enabled or has a hip tracker and waist tracker
 			staticConfigs.remove(SkeletonConfigValue.WAIST);
 			configs.put(SkeletonConfigValue.WAIST, readFromConfig(SkeletonConfigValue.WAIST));
@@ -142,9 +156,11 @@ public class AutoBone {
 	}
 
 	/**
-	 * A simple utility method to get the {@link HumanSkeleton} from the {@link VRServer}
+	 * A simple utility method to get the {@link HumanSkeleton} from the
+	 * {@link VRServer}
 	 *
-	 * @return The {@link HumanSkeleton} associated with the {@link VRServer}, or null if there is none available
+	 * @return The {@link HumanSkeleton} associated with the {@link VRServer}, or
+	 *         null if there is none available
 	 * @see {@link VRServer}, {@link HumanSkeleton}
 	 */
 	private HumanSkeleton getSkeleton() {
@@ -169,7 +185,7 @@ public class AutoBone {
 		skeletonConfig.saveToConfig(server.config);
 		server.saveConfig();
 
-		LogManager.log.info("[AutoBone] Configured skeleton bone lengths");
+		LogManager.info("[AutoBone] Configured skeleton bone lengths");
 		return true;
 	}
 
@@ -194,7 +210,8 @@ public class AutoBone {
 		return configVal != null ? configVal : staticConfigs.get(config);
 	}
 
-	public Float getConfig(SkeletonConfigValue config, Map<SkeletonConfigValue, Float> configs, Map<SkeletonConfigValue, Float> configsAlt) {
+	public Float getConfig(SkeletonConfigValue config, Map<SkeletonConfigValue, Float> configs,
+			Map<SkeletonConfigValue, Float> configsAlt) {
 		if (configs == null) {
 			throw new NullPointerException("Argument \"configs\" must not be null");
 		}
@@ -203,7 +220,8 @@ public class AutoBone {
 		return configVal != null || configsAlt == null ? configVal : configsAlt.get(config);
 	}
 
-	public float sumSelectConfigs(List<SkeletonConfigValue> selection, Map<SkeletonConfigValue, Float> configs, Map<SkeletonConfigValue, Float> configsAlt) {
+	public float sumSelectConfigs(List<SkeletonConfigValue> selection, Map<SkeletonConfigValue, Float> configs,
+			Map<SkeletonConfigValue, Float> configsAlt) {
 		float sum = 0f;
 
 		for (SkeletonConfigValue config : selection) {
@@ -257,7 +275,8 @@ public class AutoBone {
 		processFrames(frames, true, targetHeight, epochCallback);
 	}
 
-	public float processFrames(PoseFrames frames, boolean calcInitError, float targetHeight, Consumer<Epoch> epochCallback) {
+	public float processFrames(PoseFrames frames, boolean calcInitError, float targetHeight,
+			Consumer<Epoch> epochCallback) {
 		final int frameCount = frames.getMaxFrameCount();
 
 		List<PoseFrameTracker> trackers = frames.getTrackers();
@@ -271,16 +290,22 @@ public class AutoBone {
 			// Get the current skeleton from the server
 			HumanSkeleton skeleton = getSkeleton();
 			if (skeleton != null) {
-				// If there is a skeleton available, calculate the target height from its configs
+				// If there is a skeleton available, calculate the target height from its
+				// configs
 				targetHeight = sumSelectConfigs(heightConfigs, skeleton.getSkeletonConfig());
-				LogManager.log.warning("[AutoBone] Target height loaded from skeleton (Make sure you reset before running!): " + targetHeight);
+				LogManager
+						.warning("[AutoBone] Target height loaded from skeleton (Make sure you reset before running!): "
+								+ targetHeight);
 			} else {
-				// Otherwise if there is no skeleton available, attempt to get the max HMD height from the recording
+				// Otherwise if there is no skeleton available, attempt to get the max HMD
+				// height from the recording
 				float hmdHeight = frames.getMaxHmdHeight();
 				if (hmdHeight <= 0.50f) {
-					LogManager.log.warning("[AutoBone] Max headset height detected (Value seems too low, did you not stand up straight while measuring?): " + hmdHeight);
+					LogManager.warning(
+							"[AutoBone] Max headset height detected (Value seems too low, did you not stand up straight while measuring?): "
+									+ hmdHeight);
 				} else {
-					LogManager.log.info("[AutoBone] Max headset height detected: " + hmdHeight);
+					LogManager.info("[AutoBone] Max headset height detected: " + hmdHeight);
 				}
 
 				// Estimate target height from HMD height
@@ -295,8 +320,10 @@ public class AutoBone {
 
 			float adjustRate = epoch >= 0 ? (initialAdjustRate / FastMath.pow(adjustRateDecay, epoch)) : 0f;
 
-			// Iterate over the frames using a cursor and an offset for comparing frames a certain number of frames apart
-			for (int cursorOffset = minDataDistance; cursorOffset <= maxDataDistance && cursorOffset < frameCount; cursorOffset++) {
+			// Iterate over the frames using a cursor and an offset for comparing frames a
+			// certain number of frames apart
+			for (int cursorOffset = minDataDistance; cursorOffset <= maxDataDistance
+					&& cursorOffset < frameCount; cursorOffset++) {
 				for (int frameCursor = 0; frameCursor < frameCount - cursorOffset; frameCursor += cursorIncrement) {
 					int frameCursor2 = frameCursor + cursorOffset;
 
@@ -311,14 +338,15 @@ public class AutoBone {
 
 					float totalLength = getLengthSum(configs);
 					float curHeight = sumSelectConfigs(heightConfigs, configs, staticConfigs);
-					//float scaleLength = sumSelectConfigs(lengthConfigs, configs, staticConfigs);
-					float errorDeriv = getErrorDeriv(frames, frameCursor, frameCursor2, skeleton1, skeleton2, targetHeight - curHeight, 1f);
+					// float scaleLength = sumSelectConfigs(lengthConfigs, configs, staticConfigs);
+					float errorDeriv = getErrorDeriv(frames, frameCursor, frameCursor2, skeleton1, skeleton2,
+							targetHeight - curHeight, 1f);
 					float error = errorFunc(errorDeriv);
 
 					// In case of fire
 					if (Float.isNaN(error) || Float.isInfinite(error)) {
 						// Extinguish
-						LogManager.log.warning("[AutoBone] Error value is invalid, resetting variables to recover");
+						LogManager.warning("[AutoBone] Error value is invalid, resetting variables to recover");
 						reloadConfigValues(trackers);
 
 						// Reset error sum values
@@ -350,7 +378,7 @@ public class AutoBone {
 
 						// Try positive and negative adjustments
 						boolean isHeightVar = heightConfigs.contains(entry.getKey());
-						//boolean isLengthVar = lengthConfigs.contains(entry.getKey());
+						// boolean isLengthVar = lengthConfigs.contains(entry.getKey());
 						float minError = errorDeriv;
 						float finalNewLength = -1f;
 						for (int i = 0; i < 2; i++) {
@@ -366,8 +394,10 @@ public class AutoBone {
 							updateSkeletonBoneLength(skeleton1, skeleton2, entry.getKey(), newLength);
 
 							float newHeight = isHeightVar ? curHeight + curAdjustVal : curHeight;
-							//float newScaleLength = isLengthVar ? scaleLength + curAdjustVal : scaleLength;
-							float newErrorDeriv = getErrorDeriv(frames, frameCursor, frameCursor2, skeleton1, skeleton2, targetHeight - newHeight, 1f);
+							// float newScaleLength = isLengthVar ? scaleLength + curAdjustVal :
+							// scaleLength;
+							float newErrorDeriv = getErrorDeriv(frames, frameCursor, frameCursor2, skeleton1, skeleton2,
+									targetHeight - newHeight, 1f);
 
 							if (newErrorDeriv < minError) {
 								minError = newErrorDeriv;
@@ -387,7 +417,7 @@ public class AutoBone {
 
 			// Calculate average error over the epoch
 			float avgError = errorCount > 0 ? sumError / errorCount : -1f;
-			LogManager.log.info("[AutoBone] Epoch " + (epoch + 1) + " average error: " + avgError);
+			LogManager.info("[AutoBone] Epoch " + (epoch + 1) + " average error: " + avgError);
 
 			if (epochCallback != null) {
 				epochCallback.accept(new Epoch(epoch + 1, avgError));
@@ -395,17 +425,20 @@ public class AutoBone {
 		}
 
 		float finalHeight = sumSelectConfigs(heightConfigs, configs, staticConfigs);
-		LogManager.log.info("[AutoBone] Target height: " + targetHeight + " New height: " + finalHeight);
+		LogManager.info("[AutoBone] Target height: " + targetHeight + " New height: " + finalHeight);
 
 		return FastMath.abs(finalHeight - targetHeight);
 	}
 
 	// The change in position of the ankle over time
 	protected float getSlideErrorDeriv(PoseFrameSkeleton skeleton1, PoseFrameSkeleton skeleton2) {
-		float slideLeft = skeleton1.getComputedTracker(TrackerRole.LEFT_FOOT).position.distance(skeleton2.getComputedTracker(TrackerRole.LEFT_FOOT).position);
-		float slideRight = skeleton1.getComputedTracker(TrackerRole.RIGHT_FOOT).position.distance(skeleton2.getComputedTracker(TrackerRole.RIGHT_FOOT).position);
+		float slideLeft = skeleton1.getComputedTracker(TrackerRole.LEFT_FOOT).position
+				.distance(skeleton2.getComputedTracker(TrackerRole.LEFT_FOOT).position);
+		float slideRight = skeleton1.getComputedTracker(TrackerRole.RIGHT_FOOT).position
+				.distance(skeleton2.getComputedTracker(TrackerRole.RIGHT_FOOT).position);
 
-		// Divide by 4 to halve and average, it's halved because you want to approach a midpoint, not the other point
+		// Divide by 4 to halve and average, it's halved because you want to approach a
+		// midpoint, not the other point
 		return (slideLeft + slideRight) / 4f;
 	}
 
@@ -432,7 +465,8 @@ public class AutoBone {
 		float dist5 = FastMath.abs(slideDist2 - slideDist3);
 		float dist6 = FastMath.abs(slideDist2 - slideDist4);
 
-		// Divide by 12 to halve and average, it's halved because you want to approach a midpoint, not the other point
+		// Divide by 12 to halve and average, it's halved because you want to approach a
+		// midpoint, not the other point
 		return (dist1 + dist2 + dist3 + dist4 + dist5 + dist6) / 12f;
 	}
 
@@ -453,7 +487,8 @@ public class AutoBone {
 		float dist5 = FastMath.abs(leftFoot1 - leftFoot2);
 		float dist6 = FastMath.abs(rightFoot1 - rightFoot2);
 
-		// Divide by 12 to halve and average, it's halved because you want to approach a midpoint, not the other point
+		// Divide by 12 to halve and average, it's halved because you want to approach a
+		// midpoint, not the other point
 		return (dist1 + dist2 + dist3 + dist4 + dist5 + dist6) / 12f;
 	}
 
@@ -500,8 +535,10 @@ public class AutoBone {
 		return offsetCount > 0 ? offset / offsetCount : 0f;
 	}
 
-	// The difference between offset of absolute position and the corresponding point over time
-	protected float getPositionOffsetErrorDeriv(PoseFrames frames, int cursor1, int cursor2, PoseFrameSkeleton skeleton1, PoseFrameSkeleton skeleton2) {
+	// The difference between offset of absolute position and the corresponding
+	// point over time
+	protected float getPositionOffsetErrorDeriv(PoseFrames frames, int cursor1, int cursor2,
+			PoseFrameSkeleton skeleton1, PoseFrameSkeleton skeleton2) {
 		float offset = 0f;
 		int offsetCount = 0;
 
@@ -537,18 +574,21 @@ public class AutoBone {
 		return offsetCount > 0 ? offset / offsetCount : 0f;
 	}
 
-	protected float getErrorDeriv(PoseFrames frames, int cursor1, int cursor2, PoseFrameSkeleton skeleton1, PoseFrameSkeleton skeleton2, float heightChange, float distScale) {
+	protected float getErrorDeriv(PoseFrames frames, int cursor1, int cursor2, PoseFrameSkeleton skeleton1,
+			PoseFrameSkeleton skeleton2, float heightChange, float distScale) {
 		float totalError = 0f;
 		float sumWeight = 0f;
 
 		if (slideErrorFactor > 0f) {
-			// This is the main error function, this calculates the distance between the foot positions on both frames
+			// This is the main error function, this calculates the distance between the
+			// foot positions on both frames
 			totalError += getSlideErrorDeriv(skeleton1, skeleton2) * distScale * slideErrorFactor;
 			sumWeight += slideErrorFactor;
 		}
 
 		if (offsetSlideErrorFactor > 0f) {
-			// This error function compares the distance between the feet on each frame and returns the offset between them
+			// This error function compares the distance between the feet on each frame and
+			// returns the offset between them
 			totalError += getOffsetSlideErrorDeriv(skeleton1, skeleton2) * distScale * offsetSlideErrorFactor;
 			sumWeight += offsetSlideErrorFactor;
 		}
@@ -560,34 +600,41 @@ public class AutoBone {
 		}
 
 		if (proportionErrorFactor > 0f) {
-			// This error function compares the current values to general expected proportions to keep measurements in line
+			// This error function compares the current values to general expected
+			// proportions to keep measurements in line
 			// Either skeleton will work fine, skeleton1 is used as a default
 			totalError += getProportionErrorDeriv(skeleton1.skeletonConfig) * proportionErrorFactor;
 			sumWeight += proportionErrorFactor;
 		}
 
 		if (heightErrorFactor > 0f) {
-			// This error function compares the height change to the actual measured height of the headset
+			// This error function compares the height change to the actual measured height
+			// of the headset
 			totalError += FastMath.abs(heightChange) * heightErrorFactor;
 			sumWeight += heightErrorFactor;
 		}
 
 		if (positionErrorFactor > 0f) {
-			// This error function compares the position of an assigned tracker with the position on the skeleton
-			totalError += (getPositionErrorDeriv(frames, cursor1, skeleton1) + getPositionErrorDeriv(frames, cursor2, skeleton2) / 2f) * distScale * positionErrorFactor;
+			// This error function compares the position of an assigned tracker with the
+			// position on the skeleton
+			totalError += (getPositionErrorDeriv(frames, cursor1, skeleton1)
+					+ getPositionErrorDeriv(frames, cursor2, skeleton2) / 2f) * distScale * positionErrorFactor;
 			sumWeight += positionErrorFactor;
 		}
 
 		if (positionOffsetErrorFactor > 0f) {
-			// This error function compares the offset of the position of an assigned tracker with the position on the skeleton
-			totalError += getPositionOffsetErrorDeriv(frames, cursor1, cursor2, skeleton1, skeleton2) * distScale * positionOffsetErrorFactor;
+			// This error function compares the offset of the position of an assigned
+			// tracker with the position on the skeleton
+			totalError += getPositionOffsetErrorDeriv(frames, cursor1, cursor2, skeleton1, skeleton2) * distScale
+					* positionOffsetErrorFactor;
 			sumWeight += positionOffsetErrorFactor;
 		}
 
 		return sumWeight > 0f ? totalError / sumWeight : 0f;
 	}
 
-	protected void updateSkeletonBoneLength(PoseFrameSkeleton skeleton1, PoseFrameSkeleton skeleton2, SkeletonConfigValue config, float newLength) {
+	protected void updateSkeletonBoneLength(PoseFrameSkeleton skeleton1, PoseFrameSkeleton skeleton2,
+			SkeletonConfigValue config, float newLength) {
 		skeleton1.skeletonConfig.setConfig(config, newLength);
 		skeleton1.updatePoseAffectedByConfig(config);
 
@@ -616,14 +663,15 @@ public class AutoBone {
 				saveRecording = new File(saveDir, "ABRecording" + recordingIndex++ + ".pfr");
 			} while (saveRecording.exists());
 
-			LogManager.log.info("[AutoBone] Exporting frames to \"" + saveRecording.getPath() + "\"...");
+			LogManager.info("[AutoBone] Exporting frames to \"" + saveRecording.getPath() + "\"...");
 			if (PoseFrameIO.writeToFile(saveRecording, frames)) {
-				LogManager.log.info("[AutoBone] Done exporting! Recording can be found at \"" + saveRecording.getPath() + "\".");
+				LogManager.info(
+						"[AutoBone] Done exporting! Recording can be found at \"" + saveRecording.getPath() + "\".");
 			} else {
-				LogManager.log.severe("[AutoBone] Failed to export the recording to \"" + saveRecording.getPath() + "\".");
+				LogManager.severe("[AutoBone] Failed to export the recording to \"" + saveRecording.getPath() + "\".");
 			}
 		} else {
-			LogManager.log.severe("[AutoBone] Failed to create the recording directory \"" + saveDir.getPath() + "\".");
+			LogManager.severe("[AutoBone] Failed to create the recording directory \"" + saveDir.getPath() + "\".");
 		}
 	}
 
@@ -633,12 +681,14 @@ public class AutoBone {
 			File[] files = loadDir.listFiles();
 			if (files != null) {
 				for (File file : files) {
-					if (file.isFile() && org.apache.commons.lang3.StringUtils.endsWithIgnoreCase(file.getName(), ".pfr")) {
-						LogManager.log.info("[AutoBone] Detected recording at \"" + file.getPath() + "\", loading frames...");
+					if (file.isFile()
+							&& org.apache.commons.lang3.StringUtils.endsWithIgnoreCase(file.getName(), ".pfr")) {
+						LogManager
+								.info("[AutoBone] Detected recording at \"" + file.getPath() + "\", loading frames...");
 						PoseFrames frames = PoseFrameIO.readFromFile(file);
 
 						if (frames == null) {
-							LogManager.log.severe("Reading frames from \"" + file.getPath() + "\" failed...");
+							LogManager.severe("Reading frames from \"" + file.getPath() + "\" failed...");
 						} else {
 							recordings.add(Pair.of(file.getName(), frames));
 						}

@@ -10,24 +10,26 @@ public class MPUTracker extends IMUTracker {
 
 	public ConfigurationData newCalibrationData;
 
-	public MPUTracker(Device device, int trackerId, int trackerNum, String name, String descriptiveName, TrackersUDPServer server, VRServer vrserver) {
+	public MPUTracker(Device device, int trackerId, int trackerNum, String name, String descriptiveName,
+			TrackersUDPServer server, VRServer vrserver) {
 		super(device, trackerId, trackerNum, name, descriptiveName, server, vrserver);
 	}
 
 	public static class ConfigurationData {
 
-		//accel offsets and correction matrix
+		// accel offsets and correction matrix
 		float[] A_B = new float[3];
 		float[][] A_Ainv = new float[3][3];
 		// mag offsets and correction matrix
 		float[] M_B = new float[3];
 		float[][] M_Ainv = new float[3][3];
-		//raw offsets, determined for gyro at rest
+		// raw offsets, determined for gyro at rest
 		float[] G_off = new float[3];
 		int deviceId = -1;
 		int deviceMode = -1;
 
-		public ConfigurationData(double[] accelBasis, double[] accelAInv, double[] magBasis, double[] magAInv, double[] gyroOffset) {
+		public ConfigurationData(double[] accelBasis, double[] accelAInv, double[] magBasis, double[] magAInv,
+				double[] gyroOffset) {
 			A_B[0] = (float) accelBasis[0];
 			A_B[1] = (float) accelBasis[1];
 			A_B[2] = (float) accelBasis[2];

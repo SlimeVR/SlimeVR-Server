@@ -122,7 +122,7 @@ public class PoseRecorder {
 		frameRecordingInterval = intervalMs;
 		nextFrameTimeMs = -1L;
 
-		LogManager.log.info("[PoseRecorder] Recording " + numFrames + " samples at a " + intervalMs + " ms frame interval");
+		LogManager.info("[PoseRecorder] Recording " + numFrames + " samples at a " + intervalMs + " ms frame interval");
 
 		currentRecording = new CompletableFuture<PoseFrames>();
 		return currentRecording;

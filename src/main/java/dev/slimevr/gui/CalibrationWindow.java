@@ -45,28 +45,35 @@ public class CalibrationWindow extends JFrame {
 	private void build() {
 		Container pane = getContentPane();
 
-		pane.add(calibrateButton = new JButton("Calibrate") {{
-			addMouseListener(new MouseInputAdapter() {
-				@Override
-				public void mouseClicked(MouseEvent e) {
-					calibrateButton.setText("Calibrating...");
-					((CalibratingTracker) tracker).startCalibration(CalibrationWindow.this::newCalibrationReceived);
-				}
-			});
-		}});
+		pane.add(calibrateButton = new JButton("Calibrate") {
+			{
+				addMouseListener(new MouseInputAdapter() {
+					@Override
+					public void mouseClicked(MouseEvent e) {
+						calibrateButton.setText("Calibrating...");
+						((CalibratingTracker) tracker).startCalibration(CalibrationWindow.this::newCalibrationReceived);
+					}
+				});
+			}
+		});
 
-		pane.add(new EJBox(BoxLayout.PAGE_AXIS) {{
-			setBorder(new EmptyBorder(i(5)));
-			add(new JLabel("Current calibration"));
-			add(currentCalibration = new JTextArea(10, 25));
+		pane.add(new EJBox(BoxLayout.PAGE_AXIS) {
+			{
+				setBorder(new EmptyBorder(i(5)));
+				add(new JLabel("Current calibration"));
+				add(currentCalibration = new JTextArea(10, 25));
 
-			((CalibratingTracker) tracker).requestCalibrationData(CalibrationWindow.this::currentCalibrationReceived);
-		}});
-		pane.add(new EJBox(BoxLayout.PAGE_AXIS) {{
-			setBorder(new EmptyBorder(i(5)));
-			add(new JLabel("New calibration"));
-			add(newCalibration = new JTextArea(10, 25));
-		}});
+				((CalibratingTracker) tracker)
+						.requestCalibrationData(CalibrationWindow.this::currentCalibrationReceived);
+			}
+		});
+		pane.add(new EJBox(BoxLayout.PAGE_AXIS) {
+			{
+				setBorder(new EmptyBorder(i(5)));
+				add(new JLabel("New calibration"));
+				add(newCalibration = new JTextArea(10, 25));
+			}
+		});
 
 		// Pack and display
 		pack();

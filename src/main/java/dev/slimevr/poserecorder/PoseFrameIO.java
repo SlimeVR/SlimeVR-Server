@@ -52,7 +52,7 @@ public final class PoseFrameIO {
 				outputStream.writeInt(0);
 			}
 		} catch (Exception e) {
-			LogManager.log.severe("Error writing frame to stream", e);
+			LogManager.severe("Error writing frame to stream", e);
 			return false;
 		}
 
@@ -60,10 +60,11 @@ public final class PoseFrameIO {
 	}
 
 	public static boolean writeToFile(File file, PoseFrames frames) {
-		try (DataOutputStream outputStream = new DataOutputStream(new BufferedOutputStream(new FileOutputStream(file)))) {
+		try (DataOutputStream outputStream = new DataOutputStream(
+				new BufferedOutputStream(new FileOutputStream(file)))) {
 			writeFrames(outputStream, frames);
 		} catch (Exception e) {
-			LogManager.log.severe("Error writing frames to file", e);
+			LogManager.severe("Error writing frames to file", e);
 			return false;
 		}
 
@@ -113,7 +114,7 @@ public final class PoseFrameIO {
 
 			return new PoseFrames(trackers);
 		} catch (Exception e) {
-			LogManager.log.severe("Error reading frame from stream", e);
+			LogManager.severe("Error reading frame from stream", e);
 		}
 
 		return null;
@@ -123,7 +124,7 @@ public final class PoseFrameIO {
 		try {
 			return readFrames(new DataInputStream(new BufferedInputStream(new FileInputStream(file))));
 		} catch (Exception e) {
-			LogManager.log.severe("Error reading frame from file", e);
+			LogManager.severe("Error reading frame from file", e);
 		}
 
 		return null;

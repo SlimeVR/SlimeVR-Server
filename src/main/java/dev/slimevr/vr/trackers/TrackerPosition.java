@@ -6,27 +6,17 @@ import java.util.Map;
 
 public enum TrackerPosition {
 
-	NONE(0, "", TrackerRole.NONE),
-	HMD(1, "HMD", TrackerRole.HMD),
-	NECK(2, "body:neck", null),
-	CHEST(3, "body:chest", TrackerRole.CHEST),
-	WAIST(4, "body:waist", TrackerRole.WAIST),
-	HIP(5, "body:hip", null),
-	LEFT_KNEE(6, "body:left_knee", TrackerRole.LEFT_KNEE),
-	RIGHT_KNEE(7, "body:right_knee", TrackerRole.RIGHT_KNEE),
-	LEFT_ANKLE(8, "body:left_ankle", null),
-	RIGHT_ANKLE(9, "body:right_ankle", null),
-	LEFT_FOOT(10, "body:left_foot", TrackerRole.LEFT_FOOT),
-	RIGHT_FOOT(11, "body:right_foot", TrackerRole.RIGHT_FOOT),
+	NONE(0, "", TrackerRole.NONE), HMD(1, "HMD", TrackerRole.HMD), NECK(2, "body:neck", null),
+	CHEST(3, "body:chest", TrackerRole.CHEST), WAIST(4, "body:waist", TrackerRole.WAIST), HIP(5, "body:hip", null),
+	LEFT_KNEE(6, "body:left_knee", TrackerRole.LEFT_KNEE), RIGHT_KNEE(7, "body:right_knee", TrackerRole.RIGHT_KNEE),
+	LEFT_ANKLE(8, "body:left_ankle", null), RIGHT_ANKLE(9, "body:right_ankle", null),
+	LEFT_FOOT(10, "body:left_foot", TrackerRole.LEFT_FOOT), RIGHT_FOOT(11, "body:right_foot", TrackerRole.RIGHT_FOOT),
 	LEFT_CONTROLLER(12, "body:left_controller", TrackerRole.LEFT_CONTROLLER),
 	RIGHT_CONTROLLER(13, "body:right_controller", TrackerRole.RIGHT_CONTROLLER),
 	LEFT_FOREARM(14, "body:left_forearm", TrackerRole.LEFT_ELBOW),
-	RIGHT_FOREARM(15, "body:right_forearm", TrackerRole.RIGHT_ELBOW),
-	LEFT_UPPER_ARM(16, "body:left_upperarm", null),
-	RIGHT_UPPER_ARM(17, "body:right_upperarm", null),
-	LEFT_HAND(18, "body:left_hand", TrackerRole.LEFT_HAND),
-	RIGHT_HAND(19, "body:right_hand", TrackerRole.RIGHT_HAND),
-	;
+	RIGHT_FOREARM(15, "body:right_forearm", TrackerRole.RIGHT_ELBOW), LEFT_UPPER_ARM(16, "body:left_upperarm", null),
+	RIGHT_UPPER_ARM(17, "body:right_upperarm", null), LEFT_HAND(18, "body:left_hand", TrackerRole.LEFT_HAND),
+	RIGHT_HAND(19, "body:right_hand", TrackerRole.RIGHT_HAND),;
 
 	public static final TrackerPosition[] values = values();
 	private static final Map<Integer, TrackerPosition> byId = new HashMap<>();
@@ -40,7 +30,8 @@ public enum TrackerPosition {
 			if (tbp.trackerRole != null) {
 				TrackerPosition old = byRole.get(tbp.trackerRole);
 				if (old != null)
-					throw new AssertionError("Only one tracker position can match tracker role. " + tbp.trackerRole + " is occupied by " + old + " when adding " + tbp);
+					throw new AssertionError("Only one tracker position can match tracker role. " + tbp.trackerRole
+							+ " is occupied by " + old + " when adding " + tbp);
 				byRole.put(tbp.trackerRole, tbp);
 			}
 		}

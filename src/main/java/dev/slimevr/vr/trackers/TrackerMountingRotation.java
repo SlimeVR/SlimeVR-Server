@@ -5,10 +5,7 @@ import com.jme3.math.Quaternion;
 
 public enum TrackerMountingRotation {
 
-	FRONT(180),
-	LEFT(90),
-	BACK(0),
-	RIGHT(-90);
+	FRONT(180), LEFT(90), BACK(0), RIGHT(-90);
 
 	public static final TrackerMountingRotation[] values = values();
 	public final Quaternion quaternion;

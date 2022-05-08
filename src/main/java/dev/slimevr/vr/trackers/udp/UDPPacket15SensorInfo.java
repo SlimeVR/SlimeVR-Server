@@ -16,12 +16,12 @@ public class UDPPacket15SensorInfo extends UDPPacket implements SensorSpecificPa
 
 	public static TrackerStatus getStatus(int sensorStatus) {
 		switch (sensorStatus) {
-			case 0:
-				return TrackerStatus.DISCONNECTED;
-			case 1:
-				return TrackerStatus.OK;
-			case 2:
-				return TrackerStatus.ERROR;
+		case 0:
+			return TrackerStatus.DISCONNECTED;
+		case 1:
+			return TrackerStatus.OK;
+		case 2:
+			return TrackerStatus.ERROR;
 		}
 		return null;
 	}

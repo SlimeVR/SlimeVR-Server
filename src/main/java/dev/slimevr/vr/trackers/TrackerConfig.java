@@ -29,12 +29,9 @@ public class TrackerConfig {
 		this.oldMountingRotation = node.getString("rotation");
 		YamlNode mountingRotationNode = node.getNode("mountingRotation");
 		if (mountingRotationNode != null) {
-			mountingRotation = new Quaternion(
-					mountingRotationNode.getFloat("x", 0),
-					mountingRotationNode.getFloat("y", 0),
-					mountingRotationNode.getFloat("z", 0),
-					mountingRotationNode.getFloat("w", 1)
-			);
+			mountingRotation = new Quaternion(mountingRotationNode.getFloat("x", 0),
+					mountingRotationNode.getFloat("y", 0), mountingRotationNode.getFloat("z", 0),
+					mountingRotationNode.getFloat("w", 1));
 		}
 
 		if (oldMountingRotation != null) {
@@ -44,12 +41,8 @@ public class TrackerConfig {
 
 		YamlNode adjNode = node.getNode("adjustment");
 		if (adjNode != null) {
-			adjustment = new Quaternion(
-					adjNode.getFloat("x", 0),
-					adjNode.getFloat("y", 0),
-					adjNode.getFloat("z", 0),
-					adjNode.getFloat("w", 0)
-			);
+			adjustment = new Quaternion(adjNode.getFloat("x", 0), adjNode.getFloat("y", 0), adjNode.getFloat("z", 0),
+					adjNode.getFloat("w", 0));
 		}
 	}
 

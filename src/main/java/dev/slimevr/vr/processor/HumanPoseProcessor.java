@@ -22,16 +22,26 @@ public class HumanPoseProcessor {
 
 	public HumanPoseProcessor(VRServer server, HMDTracker hmd) {
 		this.server = server;
-		computedTrackers.add(new ComputedHumanPoseTracker(Tracker.getNextLocalTrackerId(), ComputedHumanPoseTrackerPosition.WAIST, TrackerRole.WAIST));
-		computedTrackers.add(new ComputedHumanPoseTracker(Tracker.getNextLocalTrackerId(), ComputedHumanPoseTrackerPosition.LEFT_FOOT, TrackerRole.LEFT_FOOT));
-		computedTrackers.add(new ComputedHumanPoseTracker(Tracker.getNextLocalTrackerId(), ComputedHumanPoseTrackerPosition.RIGHT_FOOT, TrackerRole.RIGHT_FOOT));
-		computedTrackers.add(new ComputedHumanPoseTracker(Tracker.getNextLocalTrackerId(), ComputedHumanPoseTrackerPosition.CHEST, TrackerRole.CHEST));
-		computedTrackers.add(new ComputedHumanPoseTracker(Tracker.getNextLocalTrackerId(), ComputedHumanPoseTrackerPosition.LEFT_KNEE, TrackerRole.LEFT_KNEE));
-		computedTrackers.add(new ComputedHumanPoseTracker(Tracker.getNextLocalTrackerId(), ComputedHumanPoseTrackerPosition.RIGHT_KNEE, TrackerRole.RIGHT_KNEE));
-		computedTrackers.add(new ComputedHumanPoseTracker(Tracker.getNextLocalTrackerId(), ComputedHumanPoseTrackerPosition.LEFT_ELBOW, TrackerRole.LEFT_ELBOW));
-		computedTrackers.add(new ComputedHumanPoseTracker(Tracker.getNextLocalTrackerId(), ComputedHumanPoseTrackerPosition.RIGHT_ELBOW, TrackerRole.RIGHT_ELBOW));
-		computedTrackers.add(new ComputedHumanPoseTracker(Tracker.getNextLocalTrackerId(), ComputedHumanPoseTrackerPosition.LEFT_HAND, TrackerRole.LEFT_HAND));
-		computedTrackers.add(new ComputedHumanPoseTracker(Tracker.getNextLocalTrackerId(), ComputedHumanPoseTrackerPosition.RIGHT_HAND, TrackerRole.RIGHT_HAND));
+		computedTrackers.add(new ComputedHumanPoseTracker(Tracker.getNextLocalTrackerId(),
+				ComputedHumanPoseTrackerPosition.WAIST, TrackerRole.WAIST));
+		computedTrackers.add(new ComputedHumanPoseTracker(Tracker.getNextLocalTrackerId(),
+				ComputedHumanPoseTrackerPosition.LEFT_FOOT, TrackerRole.LEFT_FOOT));
+		computedTrackers.add(new ComputedHumanPoseTracker(Tracker.getNextLocalTrackerId(),
+				ComputedHumanPoseTrackerPosition.RIGHT_FOOT, TrackerRole.RIGHT_FOOT));
+		computedTrackers.add(new ComputedHumanPoseTracker(Tracker.getNextLocalTrackerId(),
+				ComputedHumanPoseTrackerPosition.CHEST, TrackerRole.CHEST));
+		computedTrackers.add(new ComputedHumanPoseTracker(Tracker.getNextLocalTrackerId(),
+				ComputedHumanPoseTrackerPosition.LEFT_KNEE, TrackerRole.LEFT_KNEE));
+		computedTrackers.add(new ComputedHumanPoseTracker(Tracker.getNextLocalTrackerId(),
+				ComputedHumanPoseTrackerPosition.RIGHT_KNEE, TrackerRole.RIGHT_KNEE));
+		computedTrackers.add(new ComputedHumanPoseTracker(Tracker.getNextLocalTrackerId(),
+				ComputedHumanPoseTrackerPosition.LEFT_ELBOW, TrackerRole.LEFT_ELBOW));
+		computedTrackers.add(new ComputedHumanPoseTracker(Tracker.getNextLocalTrackerId(),
+				ComputedHumanPoseTrackerPosition.RIGHT_ELBOW, TrackerRole.RIGHT_ELBOW));
+		computedTrackers.add(new ComputedHumanPoseTracker(Tracker.getNextLocalTrackerId(),
+				ComputedHumanPoseTrackerPosition.LEFT_HAND, TrackerRole.LEFT_HAND));
+		computedTrackers.add(new ComputedHumanPoseTracker(Tracker.getNextLocalTrackerId(),
+				ComputedHumanPoseTrackerPosition.RIGHT_HAND, TrackerRole.RIGHT_HAND));
 	}
 
 	public HumanSkeleton getSkeleton() {

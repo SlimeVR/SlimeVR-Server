@@ -78,33 +78,38 @@ public class WebSocketVRBridge extends WebsocketAPI implements Bridge {
 
 	@Override
 	public void onMessage(WebSocket conn, String message) {
-		//LogManager.log.info(message);
+		// LogManager.info(message);
 		try {
 			JSONObject json = new JSONObject(message);
 			if (json.has("type")) {
 				switch (json.optString("type")) {
-					case "pos":
-						parsePosition(json, conn);
-						return;
-					case "action":
-						parseAction(json, conn);
-						return;
-					case "config": // TODO Ignore it for now, it should only register HMD in our test case with id 0
-						LogManager.log.info("[WebSocket] Config received: " + json);
-						return;
+				case "pos":
+					parsePosition(json, conn);
+					return;
+				case "action":
+					parseAction(json, conn);
+					return;
+				case "config": // TODO Ignore it for now, it should only register HMD in our test case with id
+					// 0
+					LogManager.info("[WebSocket] Config received: " + json);
+					return;
 				}
 			}
-			LogManager.log.warning("[WebSocket] Unrecognized message from " + conn.getRemoteSocketAddress().getAddress().getHostAddress() + ": " + message);
+			LogManager.warning("[WebSocket] Unrecognized message from "
+					+ conn.getRemoteSocketAddress().getAddress().getHostAddress() + ": " + message);
 		} catch (Exception e) {
-			LogManager.log.severe("[WebSocket] Exception parsing message from " + conn.getRemoteSocketAddress().getAddress().getHostAddress() + ". Message: " + message, e);
+			LogManager.severe("[WebSocket] Exception parsing message from "
+					+ conn.getRemoteSocketAddress().getAddress().getHostAddress() + ". Message: " + message, e);
 		}
 	}
 
 	private void parsePosition(JSONObject json, WebSocket conn) throws JSONException {
 		if (json.optInt("tracker_id") == 0) {
 			// Read HMD information
-			internalHMDTracker.position.set((float) json.optDouble("x"), (float) json.optDouble("y") + 0.2f, (float) json.optDouble("z")); // TODO Wtf is this hack? VRWorkout issue?
-			internalHMDTracker.rotation.set((float) json.optDouble("qx"), (float) json.optDouble("qy"), (float) json.optDouble("qz"), (float) json.optDouble("qw"));
+			internalHMDTracker.position.set((float) json.optDouble("x"), (float) json.optDouble("y") + 0.2f,
+					(float) json.optDouble("z")); // TODO Wtf is this hack? VRWorkout issue?
+			internalHMDTracker.rotation.set((float) json.optDouble("qx"), (float) json.optDouble("qy"),
+					(float) json.optDouble("qz"), (float) json.optDouble("qw"));
 			internalHMDTracker.dataTick();
 			newHMDData.set(true);
 
@@ -131,25 +136,26 @@ public class WebSocketVRBridge extends WebsocketAPI implements Bridge {
 
 	private void parseAction(JSONObject json, WebSocket conn) throws JSONException {
 		switch (json.optString("name")) {
-			case "calibrate":
-				Main.vrServer.resetTrackersYaw();
-				break;
-			case "full_calibrate":
-				Main.vrServer.resetTrackers();
-				break;
+		case "calibrate":
+			Main.vrServer.resetTrackersYaw();
+			break;
+		case "full_calibrate":
+			Main.vrServer.resetTrackers();
+			break;
 		}
 	}
 
 	@Override
 	public void onError(WebSocket conn, Exception ex) {
-		LogManager.log.severe("[WebSocket] Exception on connection " + (conn != null ? conn.getRemoteSocketAddress().getAddress().getHostAddress() : null), ex);
+		LogManager.severe("[WebSocket] Exception on connection "
+				+ (conn != null ? conn.getRemoteSocketAddress().getAddress().getHostAddress() : null), ex);
 	}
 
 	@Override
 	public void onStart() {
-		LogManager.log.info("[WebSocket] Web Socket VR Bridge started on port " + getPort());
+		LogManager.info("[WebSocket] Web Socket VR Bridge started on port " + getPort());
 		setConnectionLostTimeout(0);
-		setConnectionLostTimeout(1); //This has to be removed for Android (keepalive did not work for me @mgschwan)
+		setConnectionLostTimeout(1); // This has to be removed for Android (keepalive did not work for me @mgschwan)
 	}
 
 	@Override

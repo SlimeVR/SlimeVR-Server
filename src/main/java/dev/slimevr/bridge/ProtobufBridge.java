@@ -86,7 +86,8 @@ public abstract class ProtobufBridge<T extends VRTracker> implements Bridge {
 	@VRServerThread
 	@Override
 	public void dataWrite() {
-		if (!hadNewData) // Don't write anything if no message were received, we always process at the speed of the other side
+		if (!hadNewData) // Don't write anything if no message were received, we always process at the
+			// speed of the other side
 			return;
 		for (ShareableTracker tracker : sharedTrackers) {
 			writeTrackerUpdate(tracker);
@@ -112,8 +113,8 @@ public abstract class ProtobufBridge<T extends VRTracker> implements Bridge {
 
 	@VRServerThread
 	protected void processMessageReceived(ProtobufMessage message) {
-		//if(!message.hasPosition())
-		//	LogManager.log.info("[" + bridgeName + "] MSG: " + message);
+		// if(!message.hasPosition())
+		// LogManager.log.info("[" + bridgeName + "] MSG: " + message);
 		if (message.hasPosition()) {
 			positionReceived(message.getPosition());
 		} else if (message.hasUserAction()) {
@@ -131,7 +132,8 @@ public abstract class ProtobufBridge<T extends VRTracker> implements Bridge {
 		if (tracker != null) {
 			if (positionMessage.hasX())
 				tracker.position.set(positionMessage.getX(), positionMessage.getY(), positionMessage.getZ());
-			tracker.rotation.set(positionMessage.getQx(), positionMessage.getQy(), positionMessage.getQz(), positionMessage.getQw());
+			tracker.rotation.set(positionMessage.getQx(), positionMessage.getQy(), positionMessage.getQz(),
+					positionMessage.getQw());
 			tracker.dataTick();
 		}
 	}
@@ -163,10 +165,10 @@ public abstract class ProtobufBridge<T extends VRTracker> implements Bridge {
 	@VRServerThread
 	protected void userActionReceived(UserAction userAction) {
 		switch (userAction.getName()) {
-			case "calibrate":
-				// TODO : Check pose field
-				Main.vrServer.resetTrackers();
-				break;
+		case "calibrate":
+			// TODO : Check pose field
+			Main.vrServer.resetTrackers();
+			break;
 		}
 	}
 
@@ -188,7 +190,9 @@ public abstract class ProtobufBridge<T extends VRTracker> implements Bridge {
 	@VRServerThread
 	protected void reconnected() {
 		for (ShareableTracker tracker : sharedTrackers) {
-			TrackerAdded.Builder builder = TrackerAdded.newBuilder().setTrackerId(tracker.getTrackerId()).setTrackerName(tracker.getDescriptiveName()).setTrackerSerial(tracker.getName()).setTrackerRole(tracker.getTrackerRole().id);
+			TrackerAdded.Builder builder = TrackerAdded.newBuilder().setTrackerId(tracker.getTrackerId())
+					.setTrackerName(tracker.getDescriptiveName()).setTrackerSerial(tracker.getName())
+					.setTrackerRole(tracker.getTrackerRole().id);
 			sendMessage(ProtobufMessage.newBuilder().setTrackerAdded(builder).build());
 		}
 	}
@@ -212,7 +216,9 @@ public abstract class ProtobufBridge<T extends VRTracker> implements Bridge {
 		if (sharedTrackers.contains(tracker))
 			return;
 		sharedTrackers.add(tracker);
-		TrackerAdded.Builder builder = TrackerAdded.newBuilder().setTrackerId(tracker.getTrackerId()).setTrackerName(tracker.getDescriptiveName()).setTrackerSerial(tracker.getName()).setTrackerRole(tracker.getTrackerRole().id);
+		TrackerAdded.Builder builder = TrackerAdded.newBuilder().setTrackerId(tracker.getTrackerId())
+				.setTrackerName(tracker.getDescriptiveName()).setTrackerSerial(tracker.getName())
+				.setTrackerRole(tracker.getTrackerRole().id);
 		sendMessage(ProtobufMessage.newBuilder().setTrackerAdded(builder).build());
 	}
 
@@ -220,6 +226,7 @@ public abstract class ProtobufBridge<T extends VRTracker> implements Bridge {
 	@Override
 	public void removeSharedTracker(ShareableTracker tracker) {
 		sharedTrackers.remove(tracker);
-		// No message can be sent to the remote side, protocol doesn't support tracker removal (yet)
+		// No message can be sent to the remote side, protocol doesn't support tracker
+		// removal (yet)
 	}
 }

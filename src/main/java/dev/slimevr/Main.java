@@ -55,8 +55,9 @@ public class Main {
 		}
 
 		if (!SystemUtils.isJavaVersionAtLeast(JavaVersion.JAVA_11)) {
-			LogManager.log.severe("SlimeVR start-up error! A minimum of Java 11 is required.");
-			JOptionPane.showMessageDialog(null, "SlimeVR start-up error! A minimum of Java 11 is required.", "SlimeVR: Java Runtime Mismatch", JOptionPane.ERROR_MESSAGE);
+			LogManager.severe("SlimeVR start-up error! A minimum of Java 11 is required.");
+			JOptionPane.showMessageDialog(null, "SlimeVR start-up error! A minimum of Java 11 is required.",
+					"SlimeVR: Java Runtime Mismatch", JOptionPane.ERROR_MESSAGE);
 			return;
 		}
 
@@ -65,8 +66,11 @@ public class Main {
 			new ServerSocket(35903).close();
 			new ServerSocket(21110).close();
 		} catch (IOException e) {
-			LogManager.log.severe("SlimeVR start-up error! Required ports are busy. Make sure there is no other instance of SlimeVR Server running.");
-			JOptionPane.showMessageDialog(null, "SlimeVR start-up error! Required ports are busy. Make sure there is no other instance of SlimeVR Server running.", "SlimeVR: Ports are busy", JOptionPane.ERROR_MESSAGE);
+			LogManager.severe(
+					"SlimeVR start-up error! Required ports are busy. Make sure there is no other instance of SlimeVR Server running.");
+			JOptionPane.showMessageDialog(null,
+					"SlimeVR start-up error! Required ports are busy. Make sure there is no other instance of SlimeVR Server running.",
+					"SlimeVR: Ports are busy", JOptionPane.ERROR_MESSAGE);
 			return;
 		}
 
@@ -83,7 +87,8 @@ public class Main {
 			} catch (InterruptedException e2) {
 				e.printStackTrace();
 			}
-			System.exit(1); // Exit in case error happened on init and window not appeared, but some thread started
+			System.exit(1); // Exit in case error happened on init and window not appeared, but some thread
+			// started
 		} finally {
 			try {
 				Thread.sleep(2000L);

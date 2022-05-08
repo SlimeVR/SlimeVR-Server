@@ -12,8 +12,8 @@ public class IMUTracker implements Tracker, TrackerWithTPS, TrackerWithBattery {
 
 	public static final float MAX_MAG_CORRECTION_ACCURACY = 5 * FastMath.RAD_TO_DEG;
 
-	//public final Vector3f gyroVector = new Vector3f();
-	//public final Vector3f accelVector = new Vector3f();
+	// public final Vector3f gyroVector = new Vector3f();
+	// public final Vector3f accelVector = new Vector3f();
 	public final Vector3f magVector = new Vector3f();
 	public final Quaternion rotQuaternion = new Quaternion();
 	public final Quaternion rotMagQuaternion = new Quaternion();
@@ -46,7 +46,8 @@ public class IMUTracker implements Tracker, TrackerWithTPS, TrackerWithBattery {
 	protected boolean magentometerCalibrated = false;
 	protected BufferedTimer timer = new BufferedTimer(1f);
 
-	public IMUTracker(Device device, int trackerId, int trackerNum, String name, String descriptiveName, TrackersUDPServer server, VRServer vrserver) {
+	public IMUTracker(Device device, int trackerId, int trackerNum, String name, String descriptiveName,
+			TrackersUDPServer server, VRServer vrserver) {
 		this.device = device;
 		this.trackerNum = trackerNum;
 		this.name = name;
@@ -64,7 +65,8 @@ public class IMUTracker implements Tracker, TrackerWithTPS, TrackerWithBattery {
 
 	@Override
 	public void loadConfig(TrackerConfig config) {
-		// Loading a config is an act of user editing, therefore it shouldn't not be allowed if editing is not allowed
+		// Loading a config is an act of user editing, therefore it shouldn't not be
+		// allowed if editing is not allowed
 		if (userEditable()) {
 			if (config.mountingRotation != null) {
 				mounting = config.mountingRotation;
@@ -73,7 +75,8 @@ public class IMUTracker implements Tracker, TrackerWithTPS, TrackerWithBattery {
 				rotAdjust.loadIdentity();
 			}
 			bodyPosition = TrackerPosition.getByDesignation(config.designation);
-			setFilter(vrserver.config.getString("filters.type"), vrserver.config.getFloat("filters.amount", 0.3f), vrserver.config.getInt("filters.tickCount", 1));
+			setFilter(vrserver.config.getString("filters.type"), vrserver.config.getFloat("filters.amount", 0.3f),
+					vrserver.config.getInt("filters.tickCount", 1));
 		}
 	}
 
@@ -82,19 +85,19 @@ public class IMUTracker implements Tracker, TrackerWithTPS, TrackerWithBattery {
 		ticks = (int) FastMath.clamp(ticks, 0, 50);
 		if (type != null) {
 			switch (type) {
-				case "INTERPOLATION":
-					movementFilterAmount = 1f - (amount / 1.6f);
-					movementFilterTickCount = ticks;
-					break;
-				case "EXTRAPOLATION":
-					movementFilterAmount = 1f + (amount * 1.1f);
-					movementFilterTickCount = ticks;
-					break;
-				case "NONE":
-				default:
-					movementFilterAmount = 1f;
-					movementFilterTickCount = 0;
-					break;
+			case "INTERPOLATION":
+				movementFilterAmount = 1f - (amount / 1.6f);
+				movementFilterTickCount = ticks;
+				break;
+			case "EXTRAPOLATION":
+				movementFilterAmount = 1f + (amount * 1.1f);
+				movementFilterTickCount = ticks;
+				break;
+			case "NONE":
+			default:
+				movementFilterAmount = 1f;
+				movementFilterTickCount = 0;
+				break;
 			}
 		} else {
 			movementFilterAmount = 1f;
@@ -148,7 +151,8 @@ public class IMUTracker implements Tracker, TrackerWithTPS, TrackerWithBattery {
 		} else {
 			store.set(rotQuaternion);
 		}
-		//correction.mult(store, store); // Correction is not used now to prevent accidental errors while debugging other things
+		// correction.mult(store, store); // Correction is not used now to prevent
+		// accidental errors while debugging other things
 		store.multLocal(rotAdjust);
 		return true;
 	}
@@ -216,9 +220,8 @@ public class IMUTracker implements Tracker, TrackerWithTPS, TrackerWithBattery {
 	}
 
 	/**
-	 * Does not perform actual gyro reset to reference, that's the task of
-	 * reference adjusted tracker. Only aligns gyro with magnetometer if
-	 * it's reliable
+	 * Does not perform actual gyro reset to reference, that's the task of reference
+	 * adjusted tracker. Only aligns gyro with magnetometer if it's reliable
 	 */
 	@Override
 	public void resetYaw(Quaternion reference) {
@@ -231,8 +234,8 @@ public class IMUTracker implements Tracker, TrackerWithTPS, TrackerWithBattery {
 	}
 
 	/**
-	 * Calculate correction between normal and magnetometer
-	 * readings up to accuracy threshold
+	 * Calculate correction between normal and magnetometer readings up to accuracy
+	 * threshold
 	 */
 	protected void calculateLiveMagnetometerCorrection() {
 		// TODO Magic, correct only yaw
@@ -291,11 +294,7 @@ public class IMUTracker implements Tracker, TrackerWithTPS, TrackerWithBattery {
 
 	public enum CalibrationAccuracy {
 
-		UNRELIABLE(0),
-		LOW(1),
-		MEDIUM(2),
-		HIGH(3),
-		;
+		UNRELIABLE(0), LOW(1), MEDIUM(2), HIGH(3),;
 
 		private static final CalibrationAccuracy[] byStatus = new CalibrationAccuracy[4];
 

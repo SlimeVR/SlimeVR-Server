@@ -17,7 +17,8 @@ public class TransformNodeWrapper {
 	protected TransformNodeWrapper parent;
 	private boolean reversedHierarchy = false;
 
-	public TransformNodeWrapper(TransformNode nodeToWrap, String name, boolean reversedHierarchy, int initialChildCapacity) {
+	public TransformNodeWrapper(TransformNode nodeToWrap, String name, boolean reversedHierarchy,
+			int initialChildCapacity) {
 		this.wrappedNode = nodeToWrap;
 
 		this.name = name;
@@ -55,7 +56,8 @@ public class TransformNodeWrapper {
 	}
 
 	public static TransformNodeWrapper wrapFullHierarchyWithFakeRoot(TransformNode root) {
-		// Allocate a "fake" root with appropriate size depending on connections the root has
+		// Allocate a "fake" root with appropriate size depending on connections the
+		// root has
 		TransformNodeWrapper fakeRoot = new TransformNodeWrapper(root, root.getParent() != null ? 2 : 1);
 
 		// Attach downwards hierarchy to the fake root
@@ -98,7 +100,8 @@ public class TransformNodeWrapper {
 		}
 
 		// Flip the offset for these reversed nodes
-		TransformNodeWrapper wrapper = new TransformNodeWrapper(parent, true, (parent.getParent() != null ? 1 : 0) + Math.max(0, parent.children.size() - 1));
+		TransformNodeWrapper wrapper = new TransformNodeWrapper(parent, true,
+				(parent.getParent() != null ? 1 : 0) + Math.max(0, parent.children.size() - 1));
 		target.attachChild(wrapper);
 
 		// Re-attach other children

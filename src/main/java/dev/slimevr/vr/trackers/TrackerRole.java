@@ -2,8 +2,7 @@ package dev.slimevr.vr.trackers;
 
 public enum TrackerRole {
 
-	NONE(0, "", "", null),
-	WAIST(1, "vive_tracker_waist", "TrackerRole_Waist", DeviceType.TRACKER),
+	NONE(0, "", "", null), WAIST(1, "vive_tracker_waist", "TrackerRole_Waist", DeviceType.TRACKER),
 	LEFT_FOOT(2, "vive_tracker_left_foot", "TrackerRole_LeftFoot", DeviceType.TRACKER),
 	RIGHT_FOOT(3, "vive_tracker_right_foot", "TrackerRole_RightFoot", DeviceType.TRACKER),
 	CHEST(4, "vive_tracker_chest", "TrackerRole_Chest", DeviceType.TRACKER),
@@ -17,14 +16,11 @@ public enum TrackerRole {
 	RIGHT_HAND(12, "vive_tracker_handed", "TrackerRole_Handed", DeviceType.TRACKER),
 	LEFT_CONTROLLER(13, "vive_tracker_handed", "TrackerRole_Handed", DeviceType.CONTROLLER),
 	RIGHT_CONTROLLER(14, "vive_tracker_handed", "TrackerRole_Handed", DeviceType.CONTROLLER),
-	HEAD(15, "", "", DeviceType.TRACKER),
-	NECK(16, "", "", DeviceType.TRACKER),
+	HEAD(15, "", "", DeviceType.TRACKER), NECK(16, "", "", DeviceType.TRACKER),
 	CAMERA(17, "vive_tracker_camera", "TrackerRole_Camera", DeviceType.TRACKER),
-	KEYBOARD(18, "vive_tracker_keyboard", "TrackerRole_Keyboard", DeviceType.TRACKER),
-	HMD(19, "", "", DeviceType.HMD),
+	KEYBOARD(18, "vive_tracker_keyboard", "TrackerRole_Keyboard", DeviceType.TRACKER), HMD(19, "", "", DeviceType.HMD),
 	BEACON(20, "", "", DeviceType.TRACKING_REFERENCE),
-	GENERIC_CONTROLLER(21, "vive_tracker_handed", "TrackerRole_Handed", DeviceType.CONTROLLER),
-	;
+	GENERIC_CONTROLLER(21, "vive_tracker_handed", "TrackerRole_Handed", DeviceType.CONTROLLER),;
 
 	public static final TrackerRole[] values = values();
 	private static final TrackerRole[] byId = new TrackerRole[22];
@@ -32,7 +28,8 @@ public enum TrackerRole {
 	static {
 		for (TrackerRole tr : values) {
 			if (byId[tr.id] != null)
-				throw new AssertionError("Tracker role id " + tr.id + " occupied by " + byId[tr.id] + " when adding " + tr);
+				throw new AssertionError(
+						"Tracker role id " + tr.id + " occupied by " + byId[tr.id] + " when adding " + tr);
 			byId[tr.id] = tr;
 		}
 	}

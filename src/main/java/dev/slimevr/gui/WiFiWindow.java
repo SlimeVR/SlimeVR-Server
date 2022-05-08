@@ -35,7 +35,9 @@ public class WiFiWindow extends JFrame implements SerialListener {
 	@AWTThread
 	private void build() {
 		if (!this.gui.server.getSerialHandler().openSerial()) {
-			JOptionPane.showMessageDialog(null, "Unable to open a serial connection. Check that your drivers are installed and nothing is using the serial port already (like Cura or VScode or another slimeVR server)", "SlimeVR: Serial connection error", JOptionPane.ERROR_MESSAGE);
+			JOptionPane.showMessageDialog(null,
+					"Unable to open a serial connection. Check that your drivers are installed and nothing is using the serial port already (like Cura or VScode or another slimeVR server)",
+					"SlimeVR: Serial connection error", JOptionPane.ERROR_MESSAGE);
 		}
 	}
 
@@ -43,45 +45,57 @@ public class WiFiWindow extends JFrame implements SerialListener {
 	@AWTThread
 	public void onSerialConnected(SerialPort port) {
 		Container pane = getContentPane();
-		pane.add(new EJBox(BoxLayout.PAGE_AXIS) {{
-			add(new JLabel("Tracker connected to " + port.getSystemPortName() + " (" + port.getDescriptivePortName() + ")"));
-			JScrollPane scroll;
-			add(scroll = new JScrollPane(log = new JTextArea(10, 20), ScrollPaneConstants.VERTICAL_SCROLLBAR_ALWAYS, ScrollPaneConstants.HORIZONTAL_SCROLLBAR_NEVER));
-			log.setLineWrap(true);
-			scroll.setAutoscrolls(true);
-			add(new JLabel("Enter WiFi credentials:"));
-			add(new EJBox(BoxLayout.LINE_AXIS) {{
-				add(new JLabel("Network name:"));
-				add(ssidField = new JTextField(savedSSID));
-			}});
-			add(new EJBox(BoxLayout.LINE_AXIS) {{
-				add(new JLabel("Network password:"));
-				passwdField = new JPasswordField(savedPassword);
-				passwdField.setEchoChar('\u25cf');
-				add(passwdField);
-				add(new JCheckBox("Show Password") {{
-					addMouseListener(new MouseInputAdapter() {
-						@Override
-						public void mouseClicked(MouseEvent e) {
-							if (isSelected())
-								passwdField.setEchoChar((char) 0);
-							else
-								passwdField.setEchoChar('\u25cf');
-						}
-					});
-				}});
-			}});
-			add(new JButton("Send") {{
-				addMouseListener(new MouseInputAdapter() {
-					@Override
-					public void mouseClicked(MouseEvent e) {
-						savedSSID = ssidField.getText();
-						savedPassword = new String(passwdField.getPassword());
-						gui.server.getSerialHandler().setWifi(savedSSID, savedPassword);
+		pane.add(new EJBox(BoxLayout.PAGE_AXIS) {
+			{
+				add(new JLabel("Tracker connected to " + port.getSystemPortName() + " (" + port.getDescriptivePortName()
+						+ ")"));
+				JScrollPane scroll;
+				add(scroll = new JScrollPane(log = new JTextArea(10, 20), ScrollPaneConstants.VERTICAL_SCROLLBAR_ALWAYS,
+						ScrollPaneConstants.HORIZONTAL_SCROLLBAR_NEVER));
+				log.setLineWrap(true);
+				scroll.setAutoscrolls(true);
+				add(new JLabel("Enter WiFi credentials:"));
+				add(new EJBox(BoxLayout.LINE_AXIS) {
+					{
+						add(new JLabel("Network name:"));
+						add(ssidField = new JTextField(savedSSID));
 					}
 				});
-			}});
-		}});
+				add(new EJBox(BoxLayout.LINE_AXIS) {
+					{
+						add(new JLabel("Network password:"));
+						passwdField = new JPasswordField(savedPassword);
+						passwdField.setEchoChar('\u25cf');
+						add(passwdField);
+						add(new JCheckBox("Show Password") {
+							{
+								addMouseListener(new MouseInputAdapter() {
+									@Override
+									public void mouseClicked(MouseEvent e) {
+										if (isSelected())
+											passwdField.setEchoChar((char) 0);
+										else
+											passwdField.setEchoChar('\u25cf');
+									}
+								});
+							}
+						});
+					}
+				});
+				add(new JButton("Send") {
+					{
+						addMouseListener(new MouseInputAdapter() {
+							@Override
+							public void mouseClicked(MouseEvent e) {
+								savedSSID = ssidField.getText();
+								savedPassword = new String(passwdField.getPassword());
+								gui.server.getSerialHandler().setWifi(savedSSID, savedPassword);
+							}
+						});
+					}
+				});
+			}
+		});
 
 		pack();
 		setLocationRelativeTo(null);
