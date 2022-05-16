@@ -1,17 +1,25 @@
 package dev.slimevr.vr.trackers;
 
 import dev.slimevr.VRServer;
-import dev.slimevr.vr.trackers.udp.Device;
+import dev.slimevr.vr.trackers.udp.UDPDevice;
 import dev.slimevr.vr.trackers.udp.TrackersUDPServer;
 
 import java.nio.ByteBuffer;
+
 
 public class MPUTracker extends IMUTracker {
 
 	public ConfigurationData newCalibrationData;
 
-	public MPUTracker(Device device, int trackerId, int trackerNum, String name, String descriptiveName,
-			TrackersUDPServer server, VRServer vrserver) {
+	public MPUTracker(
+		UDPDevice device,
+		int trackerId,
+		int trackerNum,
+		String name,
+		String descriptiveName,
+		TrackersUDPServer server,
+		VRServer vrserver
+	) {
 		super(device, trackerId, trackerNum, name, descriptiveName, server, vrserver);
 	}
 
@@ -28,8 +36,13 @@ public class MPUTracker extends IMUTracker {
 		int deviceId = -1;
 		int deviceMode = -1;
 
-		public ConfigurationData(double[] accelBasis, double[] accelAInv, double[] magBasis, double[] magAInv,
-				double[] gyroOffset) {
+		public ConfigurationData(
+			double[] accelBasis,
+			double[] accelAInv,
+			double[] magBasis,
+			double[] magAInv,
+			double[] gyroOffset
+		) {
 			A_B[0] = (float) accelBasis[0];
 			A_B[1] = (float) accelBasis[1];
 			A_B[2] = (float) accelBasis[2];
@@ -103,13 +116,47 @@ public class MPUTracker extends IMUTracker {
 		public String toTextMatrix() {
 			StringBuilder sb = new StringBuilder();
 			sb.append(String.format("{%8.2f,%8.2f,%8.2f},\n", A_B[0], A_B[1], A_B[2]));
-			sb.append(String.format("{{%9.5f,%9.5f,%9.5f},\n", A_Ainv[0][0], A_Ainv[0][1], A_Ainv[0][2]));
-			sb.append(String.format(" {%9.5f,%9.5f,%9.5f},\n", A_Ainv[1][0], A_Ainv[1][1], A_Ainv[1][2]));
-			sb.append(String.format(" {%9.5f,%9.5f,%9.5f}},\n", A_Ainv[2][0], A_Ainv[2][1], A_Ainv[2][2]));
+			sb
+				.append(
+					String
+						.format("{{%9.5f,%9.5f,%9.5f},\n", A_Ainv[0][0], A_Ainv[0][1], A_Ainv[0][2])
+				);
+			sb
+				.append(
+					String
+						.format(" {%9.5f,%9.5f,%9.5f},\n", A_Ainv[1][0], A_Ainv[1][1], A_Ainv[1][2])
+				);
+			sb
+				.append(
+					String
+						.format(
+							" {%9.5f,%9.5f,%9.5f}},\n",
+							A_Ainv[2][0],
+							A_Ainv[2][1],
+							A_Ainv[2][2]
+						)
+				);
 			sb.append(String.format("{%8.2f,%8.2f,%8.2f},\n", M_B[0], M_B[1], M_B[2]));
-			sb.append(String.format("{{%9.5f,%9.5f,%9.5f},\n", M_Ainv[0][0], M_Ainv[0][1], M_Ainv[0][2]));
-			sb.append(String.format(" {%9.5f,%9.5f,%9.5f},\n", M_Ainv[1][0], M_Ainv[1][1], M_Ainv[1][2]));
-			sb.append(String.format(" {%9.5f,%9.5f,%9.5f}},\n", M_Ainv[2][0], M_Ainv[2][1], M_Ainv[2][2]));
+			sb
+				.append(
+					String
+						.format("{{%9.5f,%9.5f,%9.5f},\n", M_Ainv[0][0], M_Ainv[0][1], M_Ainv[0][2])
+				);
+			sb
+				.append(
+					String
+						.format(" {%9.5f,%9.5f,%9.5f},\n", M_Ainv[1][0], M_Ainv[1][1], M_Ainv[1][2])
+				);
+			sb
+				.append(
+					String
+						.format(
+							" {%9.5f,%9.5f,%9.5f}},\n",
+							M_Ainv[2][0],
+							M_Ainv[2][1],
+							M_Ainv[2][2]
+						)
+				);
 			sb.append(String.format("{%8.2f, %8.2f, %8.2f}};\n", G_off[0], G_off[1], G_off[2]));
 
 			return sb.toString();

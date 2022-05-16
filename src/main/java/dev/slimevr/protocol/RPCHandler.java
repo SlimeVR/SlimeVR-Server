@@ -14,6 +14,7 @@ import solarxr_protocol.rpc.*;
 
 import java.util.function.BiConsumer;
 
+
 public class RPCHandler extends ProtocolHandler<RpcMessageHeader> implements SerialListener {
 
 	private final ProtocolAPI api;
@@ -33,7 +34,10 @@ public class RPCHandler extends ProtocolHandler<RpcMessageHeader> implements Ser
 
 		registerPacketListener(RpcMessage.SkeletonResetAllRequest, this::onSkeletonResetAllRequest);
 		registerPacketListener(RpcMessage.SkeletonConfigRequest, this::onSkeletonConfigRequest);
-		registerPacketListener(RpcMessage.ChangeSkeletonConfigRequest, this::onChangeSkeletonConfigRequest);
+		registerPacketListener(
+			RpcMessage.ChangeSkeletonConfigRequest,
+			this::onChangeSkeletonConfigRequest
+		);
 
 		registerPacketListener(RpcMessage.SetWifiRequest, this::onSetWifiRequest);
 		registerPacketListener(RpcMessage.OpenSerialRequest, this::onOpenSerialRequest);
@@ -47,7 +51,11 @@ public class RPCHandler extends ProtocolHandler<RpcMessageHeader> implements Ser
 		if (req == null)
 			return;
 
-		if (req.password() == null || req.ssid() == null || !this.api.server.getSerialHandler().isConnected())
+		if (
+			req.password() == null
+				|| req.ssid() == null
+				|| !this.api.server.getSerialHandler().isConnected()
+		)
 			return;
 		this.api.server.getSerialHandler().setWifi(req.ssid(), req.password());
 	}
@@ -71,7 +79,8 @@ public class RPCHandler extends ProtocolHandler<RpcMessageHeader> implements Ser
 	}
 
 	public void onCloseSerialRequest(GenericConnection conn, RpcMessageHeader messageHeader) {
-		CloseSerialRequest req = (CloseSerialRequest) messageHeader.message(new CloseSerialRequest());
+		CloseSerialRequest req = (CloseSerialRequest) messageHeader
+			.message(new CloseSerialRequest());
 		if (req == null)
 			return;
 
@@ -89,7 +98,8 @@ public class RPCHandler extends ProtocolHandler<RpcMessageHeader> implements Ser
 	}
 
 	public void onSkeletonResetAllRequest(GenericConnection conn, RpcMessageHeader messageHeader) {
-		SkeletonResetAllRequest req = (SkeletonResetAllRequest) messageHeader.message(new SkeletonResetAllRequest());
+		SkeletonResetAllRequest req = (SkeletonResetAllRequest) messageHeader
+			.message(new SkeletonResetAllRequest());
 		if (req == null)
 			return;
 
@@ -105,7 +115,8 @@ public class RPCHandler extends ProtocolHandler<RpcMessageHeader> implements Ser
 	}
 
 	public void onSkeletonConfigRequest(GenericConnection conn, RpcMessageHeader messageHeader) {
-		SkeletonConfigRequest req = (SkeletonConfigRequest) messageHeader.message(new SkeletonConfigRequest());
+		SkeletonConfigRequest req = (SkeletonConfigRequest) messageHeader
+			.message(new SkeletonConfigRequest());
 		if (req == null)
 			return;
 
@@ -116,9 +127,12 @@ public class RPCHandler extends ProtocolHandler<RpcMessageHeader> implements Ser
 		conn.send(fbb.dataBuffer());
 	}
 
-	public void onChangeSkeletonConfigRequest(GenericConnection conn, RpcMessageHeader messageHeader) {
+	public void onChangeSkeletonConfigRequest(
+		GenericConnection conn,
+		RpcMessageHeader messageHeader
+	) {
 		ChangeSkeletonConfigRequest req = (ChangeSkeletonConfigRequest) messageHeader
-				.message(new ChangeSkeletonConfigRequest());
+			.message(new ChangeSkeletonConfigRequest());
 		if (req == null)
 			return;
 
@@ -143,7 +157,8 @@ public class RPCHandler extends ProtocolHandler<RpcMessageHeader> implements Ser
 		}
 
 		FlatBufferBuilder fbb = new FlatBufferBuilder(40);
-		int status = RecordBVHStatus.createRecordBVHStatus(fbb, this.api.server.getBvhRecorder().isRecording());
+		int status = RecordBVHStatus
+			.createRecordBVHStatus(fbb, this.api.server.getBvhRecorder().isRecording());
 		int outbound = this.createRPCMessage(fbb, RpcMessage.RecordBVHStatus, status);
 		fbb.finish(outbound);
 		conn.send(fbb.dataBuffer());
@@ -162,7 +177,8 @@ public class RPCHandler extends ProtocolHandler<RpcMessageHeader> implements Ser
 	}
 
 	public void onAssignTrackerRequest(GenericConnection conn, RpcMessageHeader messageHeader) {
-		AssignTrackerRequest req = (AssignTrackerRequest) messageHeader.message(new AssignTrackerRequest());
+		AssignTrackerRequest req = (AssignTrackerRequest) messageHeader
+			.message(new AssignTrackerRequest());
 		if (req == null)
 			return;
 
@@ -176,8 +192,15 @@ public class RPCHandler extends ProtocolHandler<RpcMessageHeader> implements Ser
 			ReferenceAdjustedTracker refTracker = (ReferenceAdjustedTracker) tracker;
 			if (refTracker.getTracker() instanceof IMUTracker) {
 				IMUTracker imu = (IMUTracker) refTracker.getTracker();
-				imu.setMountingRotation(new Quaternion(req.mountingRotation().x(), req.mountingRotation().y(),
-						req.mountingRotation().z(), req.mountingRotation().w()));
+				imu
+					.setMountingRotation(
+						new Quaternion(
+							req.mountingRotation().x(),
+							req.mountingRotation().y(),
+							req.mountingRotation().z(),
+							req.mountingRotation().w()
+						)
+					);
 			}
 		}
 		this.api.server.trackerUpdated(tracker);
@@ -188,18 +211,29 @@ public class RPCHandler extends ProtocolHandler<RpcMessageHeader> implements Ser
 
 		WindowsNamedPipeBridge bridge = this.api.server.getVRBridge(WindowsNamedPipeBridge.class);
 
-		int steamvrTrackerSettings = SteamVRTrackersSetting.createSteamVRTrackersSetting(fbb,
-				bridge.getShareSetting(TrackerRole.WAIST), bridge.getShareSetting(TrackerRole.CHEST),
-				bridge.getShareSetting(TrackerRole.LEFT_FOOT) && bridge.getShareSetting(TrackerRole.RIGHT_FOOT),
-				bridge.getShareSetting(TrackerRole.LEFT_KNEE) && bridge.getShareSetting(TrackerRole.RIGHT_KNEE),
-				bridge.getShareSetting(TrackerRole.LEFT_ELBOW) && bridge.getShareSetting(TrackerRole.RIGHT_ELBOW));
+		int steamvrTrackerSettings = SteamVRTrackersSetting
+			.createSteamVRTrackersSetting(
+				fbb,
+				bridge.getShareSetting(TrackerRole.WAIST),
+				bridge.getShareSetting(TrackerRole.CHEST),
+				bridge.getShareSetting(TrackerRole.LEFT_FOOT)
+					&& bridge.getShareSetting(TrackerRole.RIGHT_FOOT),
+				bridge.getShareSetting(TrackerRole.LEFT_KNEE)
+					&& bridge.getShareSetting(TrackerRole.RIGHT_KNEE),
+				bridge.getShareSetting(TrackerRole.LEFT_ELBOW)
+					&& bridge.getShareSetting(TrackerRole.RIGHT_ELBOW)
+			);
 
-		int filterSettings = FilteringSettings.createFilteringSettings(fbb,
+		int filterSettings = FilteringSettings
+			.createFilteringSettings(
+				fbb,
 				TrackerFilters.valueOf(this.api.server.config.getString("filters.type", "NONE")).id,
 				(int) (this.api.server.config.getFloat("filters.amount", 0.3f) * 100),
-				this.api.server.config.getInt("filters.tickCount", 1));
+				this.api.server.config.getInt("filters.tickCount", 1)
+			);
 
-		int settings = SettingsResponse.createSettingsResponse(fbb, steamvrTrackerSettings, filterSettings);
+		int settings = SettingsResponse
+			.createSettingsResponse(fbb, steamvrTrackerSettings, filterSettings);
 		int outbound = createRPCMessage(fbb, RpcMessage.SettingsResponse, settings);
 		fbb.finish(outbound);
 		conn.send(fbb.dataBuffer());
@@ -207,12 +241,14 @@ public class RPCHandler extends ProtocolHandler<RpcMessageHeader> implements Ser
 
 	public void onChangeSettingsRequest(GenericConnection conn, RpcMessageHeader messageHeader) {
 
-		ChangeSettingsRequest req = (ChangeSettingsRequest) messageHeader.message(new ChangeSettingsRequest());
+		ChangeSettingsRequest req = (ChangeSettingsRequest) messageHeader
+			.message(new ChangeSettingsRequest());
 		if (req == null)
 			return;
 
 		if (req.steamVrTrackers() != null) {
-			WindowsNamedPipeBridge bridge = this.api.server.getVRBridge(WindowsNamedPipeBridge.class);
+			WindowsNamedPipeBridge bridge = this.api.server
+				.getVRBridge(WindowsNamedPipeBridge.class);
 			bridge.changeShareSettings(TrackerRole.WAIST, req.steamVrTrackers().waist());
 			bridge.changeShareSettings(TrackerRole.CHEST, req.steamVrTrackers().chest());
 			bridge.changeShareSettings(TrackerRole.LEFT_FOOT, req.steamVrTrackers().legs());
@@ -226,19 +262,25 @@ public class RPCHandler extends ProtocolHandler<RpcMessageHeader> implements Ser
 		if (req.filtering() != null) {
 			TrackerFilters type = TrackerFilters.fromId(req.filtering().type());
 			if (type != null) {
-				this.api.server.updateTrackersFilters(type, (float) req.filtering().intensity() / 100.0f,
-						req.filtering().ticks());
+				this.api.server
+					.updateTrackersFilters(
+						type,
+						(float) req.filtering().intensity() / 100.0f,
+						req.filtering().ticks()
+					);
 			}
 		}
 	}
 
 	@Override
 	public void onMessage(GenericConnection conn, RpcMessageHeader message) {
-		BiConsumer<GenericConnection, RpcMessageHeader> consumer = this.handlers[message.messageType()];
+		BiConsumer<GenericConnection, RpcMessageHeader> consumer = this.handlers[message
+			.messageType()];
 		if (consumer != null)
 			consumer.accept(conn, message);
 		else
-			LogManager.info("[ProtocolAPI] Unhandled RPC packet received id: " + message.messageType());
+			LogManager
+				.info("[ProtocolAPI] Unhandled RPC packet received id: " + message.messageType());
 	}
 
 	public int createRPCMessage(FlatBufferBuilder fbb, byte messageType, int messageOffset) {
@@ -263,53 +305,65 @@ public class RPCHandler extends ProtocolHandler<RpcMessageHeader> implements Ser
 	public void onSerialConnected(SerialPort port) {
 
 		this.api.getAPIServers().forEach((server) -> {
-			server.getAPIConnections().filter(conn -> conn.getContext().useSerial()).forEach((conn) -> {
-				FlatBufferBuilder fbb = new FlatBufferBuilder(32);
+			server
+				.getAPIConnections()
+				.filter(conn -> conn.getContext().useSerial())
+				.forEach((conn) -> {
+					FlatBufferBuilder fbb = new FlatBufferBuilder(32);
 
-				SerialUpdateResponse.startSerialUpdateResponse(fbb);
-				SerialUpdateResponse.addClosed(fbb, false);
-				int update = SerialUpdateResponse.endSerialUpdateResponse(fbb);
-				int outbound = this.createRPCMessage(fbb, RpcMessage.SerialUpdateResponse, update);
-				fbb.finish(outbound);
+					SerialUpdateResponse.startSerialUpdateResponse(fbb);
+					SerialUpdateResponse.addClosed(fbb, false);
+					int update = SerialUpdateResponse.endSerialUpdateResponse(fbb);
+					int outbound = this
+						.createRPCMessage(fbb, RpcMessage.SerialUpdateResponse, update);
+					fbb.finish(outbound);
 
-				conn.send(fbb.dataBuffer());
-			});
+					conn.send(fbb.dataBuffer());
+				});
 		});
 	}
 
 	@Override
 	public void onSerialDisconnected() {
 		this.api.getAPIServers().forEach((server) -> {
-			server.getAPIConnections().filter(conn -> conn.getContext().useSerial()).forEach((conn) -> {
-				FlatBufferBuilder fbb = new FlatBufferBuilder(32);
+			server
+				.getAPIConnections()
+				.filter(conn -> conn.getContext().useSerial())
+				.forEach((conn) -> {
+					FlatBufferBuilder fbb = new FlatBufferBuilder(32);
 
-				SerialUpdateResponse.startSerialUpdateResponse(fbb);
-				SerialUpdateResponse.addClosed(fbb, true);
-				int update = SerialUpdateResponse.endSerialUpdateResponse(fbb);
-				int outbound = this.createRPCMessage(fbb, RpcMessage.SerialUpdateResponse, update);
-				fbb.finish(outbound);
-				conn.send(fbb.dataBuffer());
-				conn.getContext().setUseSerial(false);
-			});
+					SerialUpdateResponse.startSerialUpdateResponse(fbb);
+					SerialUpdateResponse.addClosed(fbb, true);
+					int update = SerialUpdateResponse.endSerialUpdateResponse(fbb);
+					int outbound = this
+						.createRPCMessage(fbb, RpcMessage.SerialUpdateResponse, update);
+					fbb.finish(outbound);
+					conn.send(fbb.dataBuffer());
+					conn.getContext().setUseSerial(false);
+				});
 		});
 	}
 
 	@Override
 	public void onSerialLog(String str) {
 		this.api.getAPIServers().forEach((server) -> {
-			server.getAPIConnections().filter(conn -> conn.getContext().useSerial()).forEach((conn) -> {
-				FlatBufferBuilder fbb = new FlatBufferBuilder(32);
+			server
+				.getAPIConnections()
+				.filter(conn -> conn.getContext().useSerial())
+				.forEach((conn) -> {
+					FlatBufferBuilder fbb = new FlatBufferBuilder(32);
 
-				int logOffset = fbb.createString(str);
+					int logOffset = fbb.createString(str);
 
-				SerialUpdateResponse.startSerialUpdateResponse(fbb);
-				SerialUpdateResponse.addLog(fbb, logOffset);
-				int update = SerialUpdateResponse.endSerialUpdateResponse(fbb);
-				int outbound = this.createRPCMessage(fbb, RpcMessage.SerialUpdateResponse, update);
-				fbb.finish(outbound);
+					SerialUpdateResponse.startSerialUpdateResponse(fbb);
+					SerialUpdateResponse.addLog(fbb, logOffset);
+					int update = SerialUpdateResponse.endSerialUpdateResponse(fbb);
+					int outbound = this
+						.createRPCMessage(fbb, RpcMessage.SerialUpdateResponse, update);
+					fbb.finish(outbound);
 
-				conn.send(fbb.dataBuffer());
-			});
+					conn.send(fbb.dataBuffer());
+				});
 		});
 	}
 }

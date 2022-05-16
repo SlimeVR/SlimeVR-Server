@@ -4,6 +4,7 @@ import java.io.IOException;
 import java.nio.ByteBuffer;
 import java.nio.charset.StandardCharsets;
 
+
 public class UDPProtocolParser {
 
 	public static final int PACKET_HEARTBEAT = 0;
@@ -43,14 +44,22 @@ public class UDPProtocolParser {
 	public UDPProtocolParser() {
 	}
 
-	public UDPPacket parse(ByteBuffer buf, Device connection) throws IOException {
+	public UDPPacket parse(ByteBuffer buf, UDPDevice connection) throws IOException {
 		int packetId = buf.getInt();
 		long packetNumber = buf.getLong();
 		if (connection != null) {
 			if (!connection.isNextPacket(packetNumber)) {
 				// Skip packet because it's not next
-				throw new IOException("Out of order packet received: id " + packetId + ", number " + packetNumber
-						+ ", last " + connection.lastPacketNumber + ", from " + connection);
+				throw new IOException(
+					"Out of order packet received: id "
+						+ packetId
+						+ ", number "
+						+ packetNumber
+						+ ", last "
+						+ connection.lastPacketNumber
+						+ ", from "
+						+ connection
+				);
 			}
 			connection.lastPacket = System.currentTimeMillis();
 		}
@@ -58,24 +67,29 @@ public class UDPProtocolParser {
 		if (newPacket != null) {
 			newPacket.readData(buf);
 		} else {
-			// LogManager.log.debug("[UDPProtocolParser] Skipped packet id " + packetId + "
+			// LogManager.log.debug("[UDPProtocolParser] Skipped packet id " +
+			// packetId + "
 			// from " + connection);
 		}
 		return newPacket;
 	}
 
-	public void write(ByteBuffer buf, Device connection, UDPPacket packet) throws IOException {
+	public void write(ByteBuffer buf, UDPDevice connection, UDPPacket packet) throws IOException {
 		buf.putInt(packet.getPacketId());
-		buf.putLong(0); // Packet number is always 0 when sending data to trackers
+		buf.putLong(0); // Packet number is always 0 when sending data to
+						// trackers
 		packet.writeData(buf);
 	}
 
-	public void writeHandshakeResponse(ByteBuffer buf, Device connection) throws IOException {
+	public void writeHandshakeResponse(ByteBuffer buf, UDPDevice connection) throws IOException {
 		buf.put(HANDSHAKE_BUFFER);
 	}
 
-	public void writeSensorInfoResponse(ByteBuffer buf, Device connection, UDPPacket15SensorInfo packet)
-			throws IOException {
+	public void writeSensorInfoResponse(
+		ByteBuffer buf,
+		UDPDevice connection,
+		UDPPacket15SensorInfo packet
+	) throws IOException {
 		buf.putInt(packet.getPacketId());
 		buf.put((byte) packet.sensorId);
 		buf.put((byte) packet.sensorStatus);

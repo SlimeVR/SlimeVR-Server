@@ -4,6 +4,7 @@ import com.sun.jna.platform.win32.Kernel32;
 import com.sun.jna.platform.win32.WinNT.HANDLE;
 import dev.slimevr.bridge.PipeState;
 
+
 public class WindowsPipe {
 
 	public final String name;
@@ -19,7 +20,6 @@ public class WindowsPipe {
 		try {
 			if (pipe != null && pipe.pipeHandle != null)
 				Kernel32.INSTANCE.DisconnectNamedPipe(pipe.pipeHandle);
-		} catch (Exception e) {
-		}
+		} catch (Exception e) {}
 	}
 }

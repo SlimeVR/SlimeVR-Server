@@ -2,7 +2,8 @@ package dev.slimevr.vr.trackers;
 
 import com.jme3.math.Quaternion;
 import com.jme3.math.Vector3f;
-import dev.slimevr.vr.trackers.udp.Device;
+import dev.slimevr.vr.trackers.udp.UDPDevice;
+
 
 public class ComputedTracker implements Tracker, TrackerWithTPS {
 
@@ -16,7 +17,13 @@ public class ComputedTracker implements Tracker, TrackerWithTPS {
 	public TrackerPosition bodyPosition = null;
 	protected TrackerStatus status = TrackerStatus.DISCONNECTED;
 
-	public ComputedTracker(int trackerId, String serial, String name, boolean hasRotation, boolean hasPosition) {
+	public ComputedTracker(
+		int trackerId,
+		String serial,
+		String name,
+		boolean hasRotation,
+		boolean hasPosition
+	) {
 		this.name = name;
 		this.serial = serial;
 		this.hasRotation = hasRotation;
@@ -35,7 +42,8 @@ public class ComputedTracker implements Tracker, TrackerWithTPS {
 
 	@Override
 	public void loadConfig(TrackerConfig config) {
-		// Loading a config is an act of user editing, therefore it shouldn't not be
+		// Loading a config is an act of user editing, therefore it shouldn't
+		// not be
 		// allowed if editing is not allowed
 		if (userEditable()) {
 			bodyPosition = TrackerPosition.getByDesignation(config.designation);
@@ -140,7 +148,7 @@ public class ComputedTracker implements Tracker, TrackerWithTPS {
 	}
 
 	@Override
-	public Device getDevice() {
+	public UDPDevice getDevice() {
 		return null;
 	}
 }

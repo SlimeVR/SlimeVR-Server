@@ -30,6 +30,7 @@ import java.util.List;
 import static javax.swing.BoxLayout.LINE_AXIS;
 import static javax.swing.BoxLayout.PAGE_AXIS;
 
+
 public class VRServerGUI extends JFrame {
 
 	public static final String TITLE = "SlimeVR Server (" + Main.VERSION + ")";
@@ -74,7 +75,8 @@ public class VRServerGUI extends JFrame {
 		this.zoom = server.config.getFloat("zoom", zoom);
 		this.initZoom = zoom;
 		setDefaultFontSize(zoom);
-		// All components should be constructed to the current zoom level by default
+		// All components should be constructed to the current zoom level by
+		// default
 
 		setDefaultCloseOperation(EXIT_ON_CLOSE);
 		getContentPane().setLayout(new BoxLayout(getContentPane(), PAGE_AXIS));
@@ -83,19 +85,31 @@ public class VRServerGUI extends JFrame {
 		trackersFiltersGUI = new TrackersFiltersGUI(server, this);
 		this.skeletonList = new SkeletonList(server, this);
 
-		JScrollPane scrollPane = (JScrollPane) add(new JScrollPane(pane = new EJBox(PAGE_AXIS),
-				ScrollPaneConstants.VERTICAL_SCROLLBAR_AS_NEEDED, ScrollPaneConstants.HORIZONTAL_SCROLLBAR_AS_NEEDED));
+		JScrollPane scrollPane = (JScrollPane) add(
+			new JScrollPane(
+				pane = new EJBox(PAGE_AXIS),
+				ScrollPaneConstants.VERTICAL_SCROLLBAR_AS_NEEDED,
+				ScrollPaneConstants.HORIZONTAL_SCROLLBAR_AS_NEEDED
+			)
+		);
 		scrollPane.getVerticalScrollBar().setUnitIncrement(16);
 
 		GraphicsConfiguration gc = getGraphicsConfiguration();
 		Rectangle screenBounds = gc.getBounds();
 		setMinimumSize(new Dimension(100, 100));
-		setSize(Math.min(server.config.getInt("window.width", 800), screenBounds.width),
-				Math.min(server.config.getInt("window.height", 800), screenBounds.height));
-		setLocation(server.config.getInt("window.posx", screenBounds.x + (screenBounds.width - getSize().width) / 2),
-				screenBounds.y + server.config.getInt("window.posy", (screenBounds.height - getSize().height) / 2));
+		setSize(
+			Math.min(server.config.getInt("window.width", 800), screenBounds.width),
+			Math.min(server.config.getInt("window.height", 800), screenBounds.height)
+		);
+		setLocation(
+			server.config
+				.getInt("window.posx", screenBounds.x + (screenBounds.width - getSize().width) / 2),
+			screenBounds.y
+				+ server.config.getInt("window.posy", (screenBounds.height - getSize().height) / 2)
+		);
 
-		// Resize and close listeners to save position and size betwen launcher starts
+		// Resize and close listeners to save position and size betwen launcher
+		// starts
 		addComponentListener(new AbstractComponentListener() {
 			@Override
 			public void componentResized(ComponentEvent e) {
@@ -131,7 +145,8 @@ public class VRServerGUI extends JFrame {
 			if (value instanceof javax.swing.plaf.FontUIResource) {
 				javax.swing.plaf.FontUIResource f = (javax.swing.plaf.FontUIResource) value;
 				javax.swing.plaf.FontUIResource f2 = new javax.swing.plaf.FontUIResource(
-						f.deriveFont(f.getSize() * zoom));
+					f.deriveFont(f.getSize() * zoom)
+				);
 				UIManager.put(key, f2);
 			}
 		}
@@ -273,7 +288,8 @@ public class VRServerGUI extends JFrame {
 						add(new SkeletonConfigGUI(server, VRServerGUI.this));
 						add(Box.createVerticalStrut(10));
 						if (server.hasBridge(WindowsNamedPipeBridge.class)) {
-							WindowsNamedPipeBridge br = server.getVRBridge(WindowsNamedPipeBridge.class);
+							WindowsNamedPipeBridge br = server
+								.getVRBridge(WindowsNamedPipeBridge.class);
 							add(l = new JLabel("SteamVR Trackers"));
 							l.setFont(l.getFont().deriveFont(Font.BOLD));
 							l.setAlignmentX(0.5f);
@@ -290,21 +306,36 @@ public class VRServerGUI extends JFrame {
 										@Override
 										public void actionPerformed(ActionEvent e) {
 											server.queueTask(() -> {
-												br.changeShareSettings(TrackerRole.WAIST, waistCb.isSelected());
+												br
+													.changeShareSettings(
+														TrackerRole.WAIST,
+														waistCb.isSelected()
+													);
 											});
 										}
 									});
 
 									JCheckBox legsCb;
 									add(legsCb = new JCheckBox("Feet"), c(2, 1));
-									legsCb.setSelected(br.getShareSetting(TrackerRole.LEFT_FOOT)
-											&& br.getShareSetting(TrackerRole.RIGHT_FOOT));
+									legsCb
+										.setSelected(
+											br.getShareSetting(TrackerRole.LEFT_FOOT)
+												&& br.getShareSetting(TrackerRole.RIGHT_FOOT)
+										);
 									legsCb.addActionListener(new ActionListener() {
 										@Override
 										public void actionPerformed(ActionEvent e) {
 											server.queueTask(() -> {
-												br.changeShareSettings(TrackerRole.LEFT_FOOT, legsCb.isSelected());
-												br.changeShareSettings(TrackerRole.RIGHT_FOOT, legsCb.isSelected());
+												br
+													.changeShareSettings(
+														TrackerRole.LEFT_FOOT,
+														legsCb.isSelected()
+													);
+												br
+													.changeShareSettings(
+														TrackerRole.RIGHT_FOOT,
+														legsCb.isSelected()
+													);
 											});
 										}
 									});
@@ -316,49 +347,86 @@ public class VRServerGUI extends JFrame {
 										@Override
 										public void actionPerformed(ActionEvent e) {
 											server.queueTask(() -> {
-												br.changeShareSettings(TrackerRole.CHEST, chestCb.isSelected());
+												br
+													.changeShareSettings(
+														TrackerRole.CHEST,
+														chestCb.isSelected()
+													);
 											});
 										}
 									});
 
 									JCheckBox kneesCb;
 									add(kneesCb = new JCheckBox("Knees"), c(2, 2));
-									kneesCb.setSelected(br.getShareSetting(TrackerRole.LEFT_KNEE)
-											&& br.getShareSetting(TrackerRole.RIGHT_KNEE));
+									kneesCb
+										.setSelected(
+											br.getShareSetting(TrackerRole.LEFT_KNEE)
+												&& br.getShareSetting(TrackerRole.RIGHT_KNEE)
+										);
 									kneesCb.addActionListener(new ActionListener() {
 										@Override
 										public void actionPerformed(ActionEvent e) {
 											server.queueTask(() -> {
-												br.changeShareSettings(TrackerRole.LEFT_KNEE, kneesCb.isSelected());
-												br.changeShareSettings(TrackerRole.RIGHT_KNEE, kneesCb.isSelected());
+												br
+													.changeShareSettings(
+														TrackerRole.LEFT_KNEE,
+														kneesCb.isSelected()
+													);
+												br
+													.changeShareSettings(
+														TrackerRole.RIGHT_KNEE,
+														kneesCb.isSelected()
+													);
 											});
 										}
 									});
 
 									JCheckBox elbowsCb;
 									add(elbowsCb = new JCheckBox("Elbows"), c(1, 3));
-									elbowsCb.setSelected(br.getShareSetting(TrackerRole.LEFT_ELBOW)
-											&& br.getShareSetting(TrackerRole.RIGHT_ELBOW));
+									elbowsCb
+										.setSelected(
+											br.getShareSetting(TrackerRole.LEFT_ELBOW)
+												&& br.getShareSetting(TrackerRole.RIGHT_ELBOW)
+										);
 									elbowsCb.addActionListener(new ActionListener() {
 										@Override
 										public void actionPerformed(ActionEvent e) {
 											server.queueTask(() -> {
-												br.changeShareSettings(TrackerRole.LEFT_ELBOW, elbowsCb.isSelected());
-												br.changeShareSettings(TrackerRole.RIGHT_ELBOW, elbowsCb.isSelected());
+												br
+													.changeShareSettings(
+														TrackerRole.LEFT_ELBOW,
+														elbowsCb.isSelected()
+													);
+												br
+													.changeShareSettings(
+														TrackerRole.RIGHT_ELBOW,
+														elbowsCb.isSelected()
+													);
 											});
 										}
 									});
 
 									JCheckBox handsCb;
 									add(handsCb = new JCheckBox("Hands"), c(2, 3));
-									handsCb.setSelected(br.getShareSetting(TrackerRole.LEFT_HAND)
-											&& br.getShareSetting(TrackerRole.RIGHT_HAND));
+									handsCb
+										.setSelected(
+											br.getShareSetting(TrackerRole.LEFT_HAND)
+												&& br.getShareSetting(TrackerRole.RIGHT_HAND)
+										);
 									handsCb.addActionListener(new ActionListener() {
 										@Override
 										public void actionPerformed(ActionEvent e) {
 											server.queueTask(() -> {
-												br.changeShareSettings(TrackerRole.LEFT_HAND, handsCb.isSelected());
-												br.changeShareSettings(TrackerRole.RIGHT_HAND, handsCb.isSelected());
+												br
+													.changeShareSettings(
+														TrackerRole.LEFT_HAND,
+														handsCb.isSelected()
+													);
+												br
+													.changeShareSettings(
+														TrackerRole.RIGHT_HAND,
+														handsCb.isSelected()
+													);
 											});
 										}
 									});
@@ -390,7 +458,8 @@ public class VRServerGUI extends JFrame {
 		server.addOnTick(skeletonList::updateBones);
 	}
 
-	// For now only changes font size, but should change fixed components size in
+	// For now only changes font size, but should change fixed components size
+	// in
 	// the future too
 	private void guiZoom() {
 		if (zoom <= 1.0f) {

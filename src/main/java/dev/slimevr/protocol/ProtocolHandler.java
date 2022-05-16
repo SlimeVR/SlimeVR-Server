@@ -5,6 +5,7 @@ import solarxr_protocol.MessageBundle;
 
 import java.util.function.BiConsumer;
 
+
 public abstract class ProtocolHandler<H> {
 
 	public final BiConsumer<GenericConnection, H>[] handlers;

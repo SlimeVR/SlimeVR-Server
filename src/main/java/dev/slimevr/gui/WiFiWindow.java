@@ -12,6 +12,7 @@ import java.awt.event.MouseEvent;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 
+
 public class WiFiWindow extends JFrame implements SerialListener {
 
 	private static String savedSSID = "";
@@ -35,9 +36,13 @@ public class WiFiWindow extends JFrame implements SerialListener {
 	@AWTThread
 	private void build() {
 		if (!this.gui.server.getSerialHandler().openSerial()) {
-			JOptionPane.showMessageDialog(null,
+			JOptionPane
+				.showMessageDialog(
+					null,
 					"Unable to open a serial connection. Check that your drivers are installed and nothing is using the serial port already (like Cura or VScode or another slimeVR server)",
-					"SlimeVR: Serial connection error", JOptionPane.ERROR_MESSAGE);
+					"SlimeVR: Serial connection error",
+					JOptionPane.ERROR_MESSAGE
+				);
 		}
 	}
 
@@ -47,11 +52,23 @@ public class WiFiWindow extends JFrame implements SerialListener {
 		Container pane = getContentPane();
 		pane.add(new EJBox(BoxLayout.PAGE_AXIS) {
 			{
-				add(new JLabel("Tracker connected to " + port.getSystemPortName() + " (" + port.getDescriptivePortName()
-						+ ")"));
+				add(
+					new JLabel(
+						"Tracker connected to "
+							+ port.getSystemPortName()
+							+ " ("
+							+ port.getDescriptivePortName()
+							+ ")"
+					)
+				);
 				JScrollPane scroll;
-				add(scroll = new JScrollPane(log = new JTextArea(10, 20), ScrollPaneConstants.VERTICAL_SCROLLBAR_ALWAYS,
-						ScrollPaneConstants.HORIZONTAL_SCROLLBAR_NEVER));
+				add(
+					scroll = new JScrollPane(
+						log = new JTextArea(10, 20),
+						ScrollPaneConstants.VERTICAL_SCROLLBAR_ALWAYS,
+						ScrollPaneConstants.HORIZONTAL_SCROLLBAR_NEVER
+					)
+				);
 				log.setLineWrap(true);
 				scroll.setAutoscrolls(true);
 				add(new JLabel("Enter WiFi credentials:"));

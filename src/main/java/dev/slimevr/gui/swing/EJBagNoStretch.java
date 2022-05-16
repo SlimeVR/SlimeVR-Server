@@ -2,6 +2,7 @@ package dev.slimevr.gui.swing;
 
 import java.awt.*;
 
+
 public class EJBagNoStretch extends EJPanel {
 
 	public EJBagNoStretch(boolean stretchVertical, boolean stretchHorizontal) {

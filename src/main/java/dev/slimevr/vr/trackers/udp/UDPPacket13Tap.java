@@ -5,6 +5,7 @@ import dev.slimevr.vr.trackers.SensorTap;
 import java.io.IOException;
 import java.nio.ByteBuffer;
 
+
 public class UDPPacket13Tap extends UDPPacket implements SensorSpecificPacket {
 
 	public int sensorId;

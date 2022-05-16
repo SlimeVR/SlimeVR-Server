@@ -5,6 +5,7 @@ import solarxr_protocol.data_feed.DataFeedConfigT;
 import java.util.ArrayList;
 import java.util.List;
 
+
 public class ConnectionContext {
 
 	private final List<DataFeedConfigT> dataFeedConfigList = new ArrayList<>();

@@ -11,6 +11,7 @@ import javax.swing.event.MouseInputAdapter;
 import java.awt.*;
 import java.awt.event.MouseEvent;
 
+
 public class CalibrationWindow extends JFrame {
 
 	public final Tracker tracker;
@@ -51,7 +52,8 @@ public class CalibrationWindow extends JFrame {
 					@Override
 					public void mouseClicked(MouseEvent e) {
 						calibrateButton.setText("Calibrating...");
-						((CalibratingTracker) tracker).startCalibration(CalibrationWindow.this::newCalibrationReceived);
+						((CalibratingTracker) tracker)
+							.startCalibration(CalibrationWindow.this::newCalibrationReceived);
 					}
 				});
 			}
@@ -64,7 +66,7 @@ public class CalibrationWindow extends JFrame {
 				add(currentCalibration = new JTextArea(10, 25));
 
 				((CalibratingTracker) tracker)
-						.requestCalibrationData(CalibrationWindow.this::currentCalibrationReceived);
+					.requestCalibrationData(CalibrationWindow.this::currentCalibrationReceived);
 			}
 		});
 		pane.add(new EJBox(BoxLayout.PAGE_AXIS) {

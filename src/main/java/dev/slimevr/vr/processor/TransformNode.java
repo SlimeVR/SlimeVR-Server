@@ -6,6 +6,7 @@ import io.eiren.util.collections.FastList;
 import java.util.List;
 import java.util.function.Consumer;
 
+
 public class TransformNode {
 
 	public final Transform localTransform = new Transform();
@@ -38,7 +39,8 @@ public class TransformNode {
 	}
 
 	public void update() {
-		updateWorldTransforms(); // Call update on each frame because we have relatively few nodes
+		updateWorldTransforms(); // Call update on each frame because we have
+									// relatively few nodes
 		for (TransformNode node : children) {
 			node.update();
 		}
@@ -71,6 +73,9 @@ public class TransformNode {
 		worldTransform.getScale().multLocal(parent.getScale());
 		worldTransform.getTranslation().multLocal(parent.getScale());
 
-		parent.getRotation().multLocal(worldTransform.getTranslation()).addLocal(parent.getTranslation());
+		parent
+			.getRotation()
+			.multLocal(worldTransform.getTranslation())
+			.addLocal(parent.getTranslation());
 	}
 }

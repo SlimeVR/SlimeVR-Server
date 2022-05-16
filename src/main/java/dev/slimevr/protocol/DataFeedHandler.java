@@ -7,6 +7,7 @@ import solarxr_protocol.data_feed.*;
 
 import java.util.function.BiConsumer;
 
+
 public class DataFeedHandler extends ProtocolHandler<DataFeedMessageHeader> {
 
 	private final ProtocolAPI api;
@@ -28,7 +29,8 @@ public class DataFeedHandler extends ProtocolHandler<DataFeedMessageHeader> {
 
 		conn.getContext().getDataFeedConfigList().clear();
 		for (int i = 0; i < dataFeeds; i++) {
-			// Using the object api here because we need to copy from the buffer anyway so
+			// Using the object api here because we need to copy from the buffer
+			// anyway so
 			// let's do it from here and send the reference to an arraylist
 			DataFeedConfigT config = req.dataFeeds(i).unpack();
 			conn.getContext().getDataFeedConfigList().add(config);
@@ -36,7 +38,10 @@ public class DataFeedHandler extends ProtocolHandler<DataFeedMessageHeader> {
 		}
 	}
 
-	private void onPollDataFeedRequest(GenericConnection conn, DataFeedMessageHeader messageHeader) {
+	private void onPollDataFeedRequest(
+		GenericConnection conn,
+		DataFeedMessageHeader messageHeader
+	) {
 
 		PollDataFeed req = (PollDataFeed) messageHeader.message(new PollDataFeed());
 		if (req == null)
@@ -61,10 +66,18 @@ public class DataFeedHandler extends ProtocolHandler<DataFeedMessageHeader> {
 	}
 
 	public int buildDatafeed(FlatBufferBuilder fbb, DataFeedConfigT config) {
-		int devicesOffset = DataFeedBuilder.createDevicesData(fbb, config.getDataMask(),
-				this.api.server.getTrackersServer().getConnections());
-		int trackersOffset = DataFeedBuilder.createSyntheticTrackersData(fbb, config.getSyntheticTrackersMask(),
-				this.api.server.getAllTrackers());
+		int devicesOffset = DataFeedBuilder
+			.createDevicesData(
+				fbb,
+				config.getDataMask(),
+				this.api.server.getTrackersServer().getConnections()
+			);
+		int trackersOffset = DataFeedBuilder
+			.createSyntheticTrackersData(
+				fbb,
+				config.getSyntheticTrackersMask(),
+				this.api.server.getAllTrackers()
+			);
 
 		return DataFeedUpdate.createDataFeedUpdate(fbb, devicesOffset, trackersOffset);
 	}
@@ -112,11 +125,15 @@ public class DataFeedHandler extends ProtocolHandler<DataFeedMessageHeader> {
 
 	@Override
 	public void onMessage(GenericConnection conn, DataFeedMessageHeader message) {
-		BiConsumer<GenericConnection, DataFeedMessageHeader> consumer = this.handlers[message.messageType()];
+		BiConsumer<GenericConnection, DataFeedMessageHeader> consumer = this.handlers[message
+			.messageType()];
 		if (consumer != null)
 			consumer.accept(conn, message);
 		else
-			LogManager.info("[ProtocolAPI] Unhandled Datafeed packet received id: " + message.messageType());
+			LogManager
+				.info(
+					"[ProtocolAPI] Unhandled Datafeed packet received id: " + message.messageType()
+				);
 	}
 
 	@Override

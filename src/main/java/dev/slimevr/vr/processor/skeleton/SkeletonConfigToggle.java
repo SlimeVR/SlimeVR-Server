@@ -3,6 +3,7 @@ package dev.slimevr.vr.processor.skeleton;
 import java.util.HashMap;
 import java.util.Map;
 
+
 public enum SkeletonConfigToggle {
 
 	EXTENDED_PELVIS_MODEL("Extended pelvis model", "extendedPelvis", true),

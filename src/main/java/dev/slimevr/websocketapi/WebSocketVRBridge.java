@@ -16,6 +16,7 @@ import org.json.JSONObject;
 import java.util.List;
 import java.util.concurrent.atomic.AtomicBoolean;
 
+
 public class WebSocketVRBridge extends WebsocketAPI implements Bridge {
 
 	private final Vector3f vBuffer = new Vector3f();
@@ -28,13 +29,22 @@ public class WebSocketVRBridge extends WebsocketAPI implements Bridge {
 	private final HMDTracker internalHMDTracker = new HMDTracker("internal://HMD");
 	private final AtomicBoolean newHMDData = new AtomicBoolean(false);
 
-	public WebSocketVRBridge(HMDTracker hmd, List<? extends ShareableTracker> shareTrackers, VRServer server) {
+	public WebSocketVRBridge(
+		HMDTracker hmd,
+		List<? extends ShareableTracker> shareTrackers,
+		VRServer server
+	) {
 		super(server, server.getProtocolAPI());
 		this.hmd = hmd;
 		this.shareTrackers = new FastList<>(shareTrackers);
 		this.internalTrackers = new FastList<>(shareTrackers.size());
 		for (Tracker t : shareTrackers) {
-			ComputedTracker ct = new ComputedTracker(t.getTrackerId(), "internal://" + t.getName(), true, true);
+			ComputedTracker ct = new ComputedTracker(
+				t.getTrackerId(),
+				"internal://" + t.getName(),
+				true,
+				true
+			);
 			ct.setStatus(TrackerStatus.OK);
 			ct.bodyPosition = t.getBodyPosition();
 			this.internalTrackers.add(ct);
@@ -89,27 +99,48 @@ public class WebSocketVRBridge extends WebsocketAPI implements Bridge {
 					case "action":
 						parseAction(json, conn);
 						return;
-					case "config": // TODO Ignore it for now, it should only register HMD in our test case with id
+					case "config": // TODO Ignore it for now, it should only
+									// register HMD in our test case with id
 						// 0
 						LogManager.info("[WebSocket] Config received: " + json);
 						return;
 				}
 			}
-			LogManager.warning("[WebSocket] Unrecognized message from "
-					+ conn.getRemoteSocketAddress().getAddress().getHostAddress() + ": " + message);
+			LogManager
+				.warning(
+					"[WebSocket] Unrecognized message from "
+						+ conn.getRemoteSocketAddress().getAddress().getHostAddress()
+						+ ": "
+						+ message
+				);
 		} catch (Exception e) {
-			LogManager.severe("[WebSocket] Exception parsing message from "
-					+ conn.getRemoteSocketAddress().getAddress().getHostAddress() + ". Message: " + message, e);
+			LogManager
+				.severe(
+					"[WebSocket] Exception parsing message from "
+						+ conn.getRemoteSocketAddress().getAddress().getHostAddress()
+						+ ". Message: "
+						+ message,
+					e
+				);
 		}
 	}
 
 	private void parsePosition(JSONObject json, WebSocket conn) throws JSONException {
 		if (json.optInt("tracker_id") == 0) {
 			// Read HMD information
-			internalHMDTracker.position.set((float) json.optDouble("x"), (float) json.optDouble("y") + 0.2f,
-					(float) json.optDouble("z")); // TODO Wtf is this hack? VRWorkout issue?
-			internalHMDTracker.rotation.set((float) json.optDouble("qx"), (float) json.optDouble("qy"),
-					(float) json.optDouble("qz"), (float) json.optDouble("qw"));
+			internalHMDTracker.position
+				.set(
+					(float) json.optDouble("x"),
+					(float) json.optDouble("y") + 0.2f,
+					(float) json.optDouble("z")
+				); // TODO Wtf is this hack? VRWorkout issue?
+			internalHMDTracker.rotation
+				.set(
+					(float) json.optDouble("qx"),
+					(float) json.optDouble("qy"),
+					(float) json.optDouble("qz"),
+					(float) json.optDouble("qw")
+				);
 			internalHMDTracker.dataTick();
 			newHMDData.set(true);
 
@@ -147,15 +178,26 @@ public class WebSocketVRBridge extends WebsocketAPI implements Bridge {
 
 	@Override
 	public void onError(WebSocket conn, Exception ex) {
-		LogManager.severe("[WebSocket] Exception on connection "
-				+ (conn != null ? conn.getRemoteSocketAddress().getAddress().getHostAddress() : null), ex);
+		LogManager
+			.severe(
+				"[WebSocket] Exception on connection "
+					+ (conn != null
+						? conn
+							.getRemoteSocketAddress()
+							.getAddress()
+							.getHostAddress()
+						: null),
+				ex
+			);
 	}
 
 	@Override
 	public void onStart() {
 		LogManager.info("[WebSocket] Web Socket VR Bridge started on port " + getPort());
 		setConnectionLostTimeout(0);
-		setConnectionLostTimeout(1); // This has to be removed for Android (keepalive did not work for me @mgschwan)
+		setConnectionLostTimeout(1); // This has to be removed for Android
+										// (keepalive did not work for me
+										// @mgschwan)
 	}
 
 	@Override

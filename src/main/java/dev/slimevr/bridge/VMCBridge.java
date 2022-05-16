@@ -4,6 +4,7 @@ import dev.slimevr.vr.trackers.ShareableTracker;
 
 import java.net.InetAddress;
 
+
 public class VMCBridge extends Thread implements Bridge {
 
 	public final int readPort;

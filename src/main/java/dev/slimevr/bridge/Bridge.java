@@ -3,6 +3,7 @@ package dev.slimevr.bridge;
 import dev.slimevr.util.ann.VRServerThread;
 import dev.slimevr.vr.trackers.ShareableTracker;
 
+
 /**
  * Bridge handles sending and receiving tracker data between SlimeVR and other
  * systems like VR APIs (SteamVR, OpenXR, etc), apps and protocols (VMC,
@@ -28,10 +29,10 @@ public interface Bridge {
 	void addSharedTracker(ShareableTracker tracker);
 
 	/**
-	 * Removes tracker from a bridge. If the other side supports tracker removal,
-	 * bridge should notify it and stop sending new data. If it doesn't support
-	 * tracker removal, the bridge can either stop sending new data, or keep sending
-	 * it if it's available.
+	 * Removes tracker from a bridge. If the other side supports tracker
+	 * removal, bridge should notify it and stop sending new data. If it doesn't
+	 * support tracker removal, the bridge can either stop sending new data, or
+	 * keep sending it if it's available.
 	 *
 	 * @param tracker
 	 */

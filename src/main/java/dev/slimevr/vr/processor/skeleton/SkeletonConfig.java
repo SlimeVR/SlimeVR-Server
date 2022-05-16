@@ -7,14 +7,18 @@ import io.eiren.yaml.YamlFile;
 import java.util.EnumMap;
 import java.util.Map;
 
+
 public class SkeletonConfig {
 
 	protected final EnumMap<SkeletonConfigValue, Float> configs = new EnumMap<SkeletonConfigValue, Float>(
-			SkeletonConfigValue.class);
+		SkeletonConfigValue.class
+	);
 	protected final EnumMap<SkeletonConfigToggle, Boolean> toggles = new EnumMap<SkeletonConfigToggle, Boolean>(
-			SkeletonConfigToggle.class);
+		SkeletonConfigToggle.class
+	);
 	protected final EnumMap<SkeletonNodeOffset, Vector3f> nodeOffsets = new EnumMap<SkeletonNodeOffset, Vector3f>(
-			SkeletonNodeOffset.class);
+		SkeletonNodeOffset.class
+	);
 
 	protected final boolean autoUpdateOffsets;
 	protected final SkeletonConfigCallback callback;
@@ -41,8 +45,12 @@ public class SkeletonConfig {
 		}
 	}
 
-	public SkeletonConfig(Map<SkeletonConfigValue, Float> configs, Map<SkeletonConfigToggle, Boolean> toggles,
-			boolean autoUpdateOffsets, SkeletonConfigCallback callback) {
+	public SkeletonConfig(
+		Map<SkeletonConfigValue, Float> configs,
+		Map<SkeletonConfigToggle, Boolean> toggles,
+		boolean autoUpdateOffsets,
+		SkeletonConfigCallback callback
+	) {
 		this.autoUpdateOffsets = autoUpdateOffsets;
 		this.callback = callback;
 		setConfigs(configs, toggles);
@@ -50,12 +58,19 @@ public class SkeletonConfig {
 		callCallbackOnAll(true);
 	}
 
-	public SkeletonConfig(Map<SkeletonConfigValue, Float> configs, Map<SkeletonConfigToggle, Boolean> toggles,
-			boolean autoUpdateOffsets) {
+	public SkeletonConfig(
+		Map<SkeletonConfigValue, Float> configs,
+		Map<SkeletonConfigToggle, Boolean> toggles,
+		boolean autoUpdateOffsets
+	) {
 		this(configs, toggles, autoUpdateOffsets, null);
 	}
 
-	public SkeletonConfig(SkeletonConfig skeletonConfig, boolean autoUpdateOffsets, SkeletonConfigCallback callback) {
+	public SkeletonConfig(
+		SkeletonConfig skeletonConfig,
+		boolean autoUpdateOffsets,
+		SkeletonConfigCallback callback
+	) {
 		this.autoUpdateOffsets = autoUpdateOffsets;
 		this.callback = callback;
 		setConfigs(skeletonConfig);
@@ -136,7 +151,8 @@ public class SkeletonConfig {
 
 		if (callback != null) {
 			try {
-				callback.updateConfigState(config, newValue != null ? newValue : config.defaultValue);
+				callback
+					.updateConfigState(config, newValue != null ? newValue : config.defaultValue);
 			} catch (Exception e) {
 				LogManager.severe("[SkeletonConfig] Exception while calling callback", e);
 			}
@@ -158,7 +174,8 @@ public class SkeletonConfig {
 			return 0f;
 		}
 
-		// IMPORTANT!! This null check is necessary, getOrDefault seems to randomly
+		// IMPORTANT!! This null check is necessary, getOrDefault seems to
+		// randomly
 		// decide to return null at times, so this is a secondary check
 		Float val = configs.getOrDefault(config, config.defaultValue);
 		return val != null ? val : config.defaultValue;
@@ -176,7 +193,8 @@ public class SkeletonConfig {
 
 		if (callback != null) {
 			try {
-				callback.updateToggleState(config, newValue != null ? newValue : config.defaultValue);
+				callback
+					.updateToggleState(config, newValue != null ? newValue : config.defaultValue);
 			} catch (Exception e) {
 				LogManager.severe("[SkeletonConfig] Exception while calling callback", e);
 			}
@@ -194,7 +212,8 @@ public class SkeletonConfig {
 			return false;
 		}
 
-		// IMPORTANT!! This null check is necessary, getOrDefault seems to randomly
+		// IMPORTANT!! This null check is necessary, getOrDefault seems to
+		// randomly
 		// decide to return null at times, so this is a secondary check
 		Boolean val = toggles.getOrDefault(config, config.defaultValue);
 		return val != null ? val : config.defaultValue;
@@ -255,17 +274,25 @@ public class SkeletonConfig {
 				setNodeOffset(nodeOffset, 0, 0, -getConfig(SkeletonConfigValue.SKELETON_OFFSET));
 				break;
 			case WAIST:
-				setNodeOffset(nodeOffset, 0,
-						(getConfig(SkeletonConfigValue.CHEST) - getConfig(SkeletonConfigValue.TORSO)
-								+ getConfig(SkeletonConfigValue.WAIST)),
-						0);
+				setNodeOffset(
+					nodeOffset,
+					0,
+					(getConfig(SkeletonConfigValue.CHEST)
+						- getConfig(SkeletonConfigValue.TORSO)
+						+ getConfig(SkeletonConfigValue.WAIST)),
+					0
+				);
 				break;
 			case HIP:
 				setNodeOffset(nodeOffset, 0, -getConfig(SkeletonConfigValue.WAIST), 0);
 				break;
 			case HIP_TRACKER:
-				setNodeOffset(nodeOffset, 0, getConfig(SkeletonConfigValue.HIP_OFFSET),
-						-getConfig(SkeletonConfigValue.SKELETON_OFFSET));
+				setNodeOffset(
+					nodeOffset,
+					0,
+					getConfig(SkeletonConfigValue.HIP_OFFSET),
+					-getConfig(SkeletonConfigValue.SKELETON_OFFSET)
+				);
 				break;
 
 			case LEFT_HIP:
@@ -276,15 +303,24 @@ public class SkeletonConfig {
 				break;
 
 			case KNEE:
-				setNodeOffset(nodeOffset, 0,
-						-(getConfig(SkeletonConfigValue.LEGS_LENGTH) - getConfig(SkeletonConfigValue.KNEE_HEIGHT)), 0);
+				setNodeOffset(
+					nodeOffset,
+					0,
+					-(getConfig(SkeletonConfigValue.LEGS_LENGTH)
+						- getConfig(SkeletonConfigValue.KNEE_HEIGHT)),
+					0
+				);
 				break;
 			case KNEE_TRACKER:
 				setNodeOffset(nodeOffset, 0, 0, -getConfig(SkeletonConfigValue.SKELETON_OFFSET));
 				break;
 			case ANKLE:
-				setNodeOffset(nodeOffset, 0, -getConfig(SkeletonConfigValue.KNEE_HEIGHT),
-						-getConfig(SkeletonConfigValue.FOOT_OFFSET));
+				setNodeOffset(
+					nodeOffset,
+					0,
+					-getConfig(SkeletonConfigValue.KNEE_HEIGHT),
+					-getConfig(SkeletonConfigValue.FOOT_OFFSET)
+				);
 				break;
 			case FOOT:
 				setNodeOffset(nodeOffset, 0, 0, -getConfig(SkeletonConfigValue.FOOT_LENGTH));
@@ -294,12 +330,20 @@ public class SkeletonConfig {
 				break;
 
 			case CONTROLLER:
-				setNodeOffset(nodeOffset, 0, getConfig(SkeletonConfigValue.CONTROLLER_DISTANCE_Y),
-						getConfig(SkeletonConfigValue.CONTROLLER_DISTANCE_Z));
+				setNodeOffset(
+					nodeOffset,
+					0,
+					getConfig(SkeletonConfigValue.CONTROLLER_DISTANCE_Y),
+					getConfig(SkeletonConfigValue.CONTROLLER_DISTANCE_Z)
+				);
 				break;
 			case HAND:
-				setNodeOffset(nodeOffset, 0, -getConfig(SkeletonConfigValue.CONTROLLER_DISTANCE_Y),
-						-getConfig(SkeletonConfigValue.CONTROLLER_DISTANCE_Z));
+				setNodeOffset(
+					nodeOffset,
+					0,
+					-getConfig(SkeletonConfigValue.CONTROLLER_DISTANCE_Y),
+					-getConfig(SkeletonConfigValue.CONTROLLER_DISTANCE_Z)
+				);
 				break;
 			case FOREARM_CONTRL:
 				setNodeOffset(nodeOffset, 0, getConfig(SkeletonConfigValue.FOREARM_LENGTH), 0);
@@ -314,12 +358,22 @@ public class SkeletonConfig {
 				setNodeOffset(nodeOffset, 0, -getConfig(SkeletonConfigValue.UPPER_ARM_LENGTH), 0);
 				break;
 			case LEFT_SHOULDER:
-				setNodeOffset(nodeOffset, -getConfig(SkeletonConfigValue.SHOULDERS_WIDTH) / 2f,
-						getConfig(SkeletonConfigValue.CHEST) - getConfig(SkeletonConfigValue.SHOULDERS_DISTANCE), 0);
+				setNodeOffset(
+					nodeOffset,
+					-getConfig(SkeletonConfigValue.SHOULDERS_WIDTH) / 2f,
+					getConfig(SkeletonConfigValue.CHEST)
+						- getConfig(SkeletonConfigValue.SHOULDERS_DISTANCE),
+					0
+				);
 				break;
 			case RIGHT_SHOULDER:
-				setNodeOffset(nodeOffset, getConfig(SkeletonConfigValue.SHOULDERS_WIDTH) / 2f,
-						getConfig(SkeletonConfigValue.CHEST) - getConfig(SkeletonConfigValue.SHOULDERS_DISTANCE), 0);
+				setNodeOffset(
+					nodeOffset,
+					getConfig(SkeletonConfigValue.SHOULDERS_WIDTH) / 2f,
+					getConfig(SkeletonConfigValue.CHEST)
+						- getConfig(SkeletonConfigValue.SHOULDERS_DISTANCE),
+					0
+				);
 				break;
 		}
 	}
@@ -330,10 +384,14 @@ public class SkeletonConfig {
 		}
 	}
 
-	public void setConfigs(Map<SkeletonConfigValue, Float> configs, Map<SkeletonConfigToggle, Boolean> toggles) {
+	public void setConfigs(
+		Map<SkeletonConfigValue, Float> configs,
+		Map<SkeletonConfigToggle, Boolean> toggles
+	) {
 		if (configs != null) {
 			configs.forEach((key, value) -> {
-				// Do not recalculate the offsets, these are done in bulk at the end
+				// Do not recalculate the offsets, these are done in bulk at the
+				// end
 				setConfig(key, value, false);
 			});
 		}
@@ -350,7 +408,8 @@ public class SkeletonConfig {
 	public void setStringConfigs(Map<String, Float> configs, Map<String, Boolean> toggles) {
 		if (configs != null) {
 			configs.forEach((key, value) -> {
-				// Do not recalculate the offsets, these are done in bulk at the end
+				// Do not recalculate the offsets, these are done in bulk at the
+				// end
 				setConfig(SkeletonConfigValue.getByStringValue(key), value, false);
 			});
 		}
@@ -375,7 +434,8 @@ public class SkeletonConfig {
 		for (SkeletonConfigValue configValue : SkeletonConfigValue.values) {
 			Float val = castFloat(config.getProperty(configValue.configKey));
 			if (val != null) {
-				// Do not recalculate the offsets, these are done in bulk at the end
+				// Do not recalculate the offsets, these are done in bulk at the
+				// end
 				setConfig(configValue, val, false);
 			}
 		}
@@ -393,7 +453,8 @@ public class SkeletonConfig {
 	}
 
 	public void saveToConfig(YamlFile config) {
-		// Write all possible values, this keeps configs consistent even if defaults
+		// Write all possible values, this keeps configs consistent even if
+		// defaults
 		// were changed
 		for (SkeletonConfigValue value : SkeletonConfigValue.values) {
 			config.setProperty(value.configKey, getConfig(value));

@@ -7,6 +7,7 @@ import io.eiren.util.OperatingSystem;
 import io.eiren.util.ann.AWTThread;
 import io.eiren.util.logging.LogManager;
 
+
 public class Keybinding implements HotkeyListener {
 	private static final int RESET = 1;
 	private static final int QUICK_RESET = 2;
@@ -17,7 +18,10 @@ public class Keybinding implements HotkeyListener {
 		this.server = server;
 
 		if (OperatingSystem.getCurrentPlatform() != OperatingSystem.WINDOWS) {
-			LogManager.info("[Keybinding] Currently only supported on Windows. Keybindings will be disabled.");
+			LogManager
+				.info(
+					"[Keybinding] Currently only supported on Windows. Keybindings will be disabled."
+				);
 			return;
 		}
 
@@ -42,8 +46,10 @@ public class Keybinding implements HotkeyListener {
 				LogManager.info("[Keybinding] Bound quick reset to " + quickResetBinding);
 			}
 		} catch (Throwable e) {
-			LogManager.info(
-					"[Keybinding] JIntellitype initialization failed. Keybindings will be disabled. Try restarting your computer.");
+			LogManager
+				.info(
+					"[Keybinding] JIntellitype initialization failed. Keybindings will be disabled. Try restarting your computer."
+				);
 		}
 	}
 

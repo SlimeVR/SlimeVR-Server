@@ -16,6 +16,7 @@ import javax.swing.*;
 import java.awt.*;
 import java.util.List;
 
+
 public class SkeletonList extends EJBagNoStretch {
 
 	private static final long UPDATE_DELAY = 50;

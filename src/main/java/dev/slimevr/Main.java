@@ -12,6 +12,7 @@ import java.io.File;
 import java.io.IOException;
 import java.net.ServerSocket;
 
+
 public class Main {
 
 	public static String VERSION = "0.1.6";
@@ -29,7 +30,12 @@ public class Main {
 
 		Options options = new Options();
 
-		Option noGui = new Option("g", "no-gui", false, "disable swing gui (allow for other gui to be used)");
+		Option noGui = new Option(
+			"g",
+			"no-gui",
+			false,
+			"disable swing gui (allow for other gui to be used)"
+		);
 		Option help = new Option("h", "help", false, "Show help");
 
 		options.addOption(noGui);
@@ -56,8 +62,13 @@ public class Main {
 
 		if (!SystemUtils.isJavaVersionAtLeast(JavaVersion.JAVA_11)) {
 			LogManager.severe("SlimeVR start-up error! A minimum of Java 11 is required.");
-			JOptionPane.showMessageDialog(null, "SlimeVR start-up error! A minimum of Java 11 is required.",
-					"SlimeVR: Java Runtime Mismatch", JOptionPane.ERROR_MESSAGE);
+			JOptionPane
+				.showMessageDialog(
+					null,
+					"SlimeVR start-up error! A minimum of Java 11 is required.",
+					"SlimeVR: Java Runtime Mismatch",
+					JOptionPane.ERROR_MESSAGE
+				);
 			return;
 		}
 
@@ -66,11 +77,17 @@ public class Main {
 			new ServerSocket(35903).close();
 			new ServerSocket(21110).close();
 		} catch (IOException e) {
-			LogManager.severe(
-					"SlimeVR start-up error! Required ports are busy. Make sure there is no other instance of SlimeVR Server running.");
-			JOptionPane.showMessageDialog(null,
+			LogManager
+				.severe(
+					"SlimeVR start-up error! Required ports are busy. Make sure there is no other instance of SlimeVR Server running."
+				);
+			JOptionPane
+				.showMessageDialog(
+					null,
 					"SlimeVR start-up error! Required ports are busy. Make sure there is no other instance of SlimeVR Server running.",
-					"SlimeVR: Ports are busy", JOptionPane.ERROR_MESSAGE);
+					"SlimeVR: Ports are busy",
+					JOptionPane.ERROR_MESSAGE
+				);
 			return;
 		}
 
@@ -87,7 +104,8 @@ public class Main {
 			} catch (InterruptedException e2) {
 				e.printStackTrace();
 			}
-			System.exit(1); // Exit in case error happened on init and window not appeared, but some thread
+			System.exit(1); // Exit in case error happened on init and window
+							// not appeared, but some thread
 			// started
 		} finally {
 			try {

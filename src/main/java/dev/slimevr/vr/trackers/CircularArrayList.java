@@ -2,6 +2,7 @@ package dev.slimevr.vr.trackers;
 
 import java.util.*;
 
+
 /**
  * If you use this code, please consider notifying isak at du-preez dot com with
  * a brief description of your application.
@@ -70,8 +71,11 @@ public class CircularArrayList<E> extends AbstractList<E> implements RandomAcces
 	public void add(int i, E e) {
 		int s = size();
 		if (s == n - 1) {
-			throw new IllegalStateException("CircularArrayList is filled to capacity. "
-					+ "(You may want to remove from front" + " before adding more to back.)");
+			throw new IllegalStateException(
+				"CircularArrayList is filled to capacity. "
+					+ "(You may want to remove from front"
+					+ " before adding more to back.)"
+			);
 		}
 		if (i < 0 || i > s) {
 			throw new IndexOutOfBoundsException();

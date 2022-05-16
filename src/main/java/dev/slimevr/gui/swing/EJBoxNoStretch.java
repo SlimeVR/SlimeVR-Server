@@ -3,6 +3,7 @@ package dev.slimevr.gui.swing;
 import javax.swing.*;
 import java.awt.*;
 
+
 public class EJBoxNoStretch extends EJPanel {
 
 	public EJBoxNoStretch(int layout, boolean stretchVertical, boolean stretchHorizontal) {
@@ -15,7 +16,12 @@ public class EJBoxNoStretch extends EJPanel {
 		private final boolean stretchVertical;
 		private final boolean stretchHorizontal;
 
-		public BoxLayoutNoStretch(Container target, int axis, boolean stretchVertical, boolean stretchHorizontal) {
+		public BoxLayoutNoStretch(
+			Container target,
+			int axis,
+			boolean stretchVertical,
+			boolean stretchHorizontal
+		) {
 			super(target, axis);
 			this.stretchVertical = stretchVertical;
 			this.stretchHorizontal = stretchHorizontal;

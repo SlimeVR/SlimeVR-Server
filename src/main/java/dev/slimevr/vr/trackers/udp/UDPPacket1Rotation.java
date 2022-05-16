@@ -5,6 +5,7 @@ import com.jme3.math.Quaternion;
 import java.io.IOException;
 import java.nio.ByteBuffer;
 
+
 public class UDPPacket1Rotation extends UDPPacket implements SensorSpecificPacket {
 
 	public final Quaternion rotation = new Quaternion();

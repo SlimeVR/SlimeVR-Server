@@ -4,6 +4,7 @@ import java.awt.*;
 import java.text.AttributedCharacterIterator.Attribute;
 import java.util.Map;
 
+
 public class ScalableFont extends Font {
 
 	protected float scale = 1.0f;

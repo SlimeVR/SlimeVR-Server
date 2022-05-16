@@ -6,10 +6,11 @@ import dev.slimevr.vr.trackers.Tracker;
 import dev.slimevr.vr.trackers.TrackerConfig;
 import dev.slimevr.vr.trackers.TrackerPosition;
 import dev.slimevr.vr.trackers.TrackerStatus;
-import dev.slimevr.vr.trackers.udp.Device;
+import dev.slimevr.vr.trackers.udp.UDPDevice;
 import io.eiren.util.collections.FastList;
 
 import java.util.Iterator;
+
 
 public class PoseFrameTracker implements Tracker, Iterable<TrackerFrame> {
 
@@ -173,12 +174,16 @@ public class PoseFrameTracker implements Tracker, Iterable<TrackerFrame> {
 
 	@Override
 	public void loadConfig(TrackerConfig config) {
-		throw new UnsupportedOperationException("PoseFrameTracker does not implement configuration");
+		throw new UnsupportedOperationException(
+			"PoseFrameTracker does not implement configuration"
+		);
 	}
 
 	@Override
 	public void saveConfig(TrackerConfig config) {
-		throw new UnsupportedOperationException("PoseFrameTracker does not implement configuration");
+		throw new UnsupportedOperationException(
+			"PoseFrameTracker does not implement configuration"
+		);
 	}
 
 	@Override
@@ -209,7 +214,9 @@ public class PoseFrameTracker implements Tracker, Iterable<TrackerFrame> {
 
 	@Override
 	public void setBodyPosition(TrackerPosition position) {
-		throw new UnsupportedOperationException("PoseFrameTracker does not allow setting the body position");
+		throw new UnsupportedOperationException(
+			"PoseFrameTracker does not allow setting the body position"
+		);
 	}
 
 	@Override
@@ -251,7 +258,7 @@ public class PoseFrameTracker implements Tracker, Iterable<TrackerFrame> {
 	}
 
 	@Override
-	public Device getDevice() {
+	public UDPDevice getDevice() {
 		return null;
 	}
 }

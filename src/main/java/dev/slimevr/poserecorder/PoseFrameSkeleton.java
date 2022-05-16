@@ -9,6 +9,7 @@ import dev.slimevr.vr.trackers.Tracker;
 import java.util.List;
 import java.util.Map;
 
+
 public class PoseFrameSkeleton extends SimpleSkeleton {
 
 	private int frameCursor = 0;
@@ -17,23 +18,34 @@ public class PoseFrameSkeleton extends SimpleSkeleton {
 		super(computedTrackers);
 	}
 
-	public PoseFrameSkeleton(VRServer server, List<? extends ComputedHumanPoseTracker> computedTrackers) {
+	public PoseFrameSkeleton(
+		VRServer server,
+		List<? extends ComputedHumanPoseTracker> computedTrackers
+	) {
 		super(server, computedTrackers);
 	}
 
-	public PoseFrameSkeleton(List<? extends Tracker> trackers,
-			List<? extends ComputedHumanPoseTracker> computedTrackers) {
+	public PoseFrameSkeleton(
+		List<? extends Tracker> trackers,
+		List<? extends ComputedHumanPoseTracker> computedTrackers
+	) {
 		super(trackers, computedTrackers);
 	}
 
-	public PoseFrameSkeleton(List<? extends Tracker> trackers,
-			List<? extends ComputedHumanPoseTracker> computedTrackers, Map<SkeletonConfigValue, Float> configs,
-			Map<SkeletonConfigValue, Float> altConfigs) {
+	public PoseFrameSkeleton(
+		List<? extends Tracker> trackers,
+		List<? extends ComputedHumanPoseTracker> computedTrackers,
+		Map<SkeletonConfigValue, Float> configs,
+		Map<SkeletonConfigValue, Float> altConfigs
+	) {
 		super(trackers, computedTrackers, configs, altConfigs);
 	}
 
-	public PoseFrameSkeleton(List<? extends Tracker> trackers,
-			List<? extends ComputedHumanPoseTracker> computedTrackers, Map<SkeletonConfigValue, Float> configs) {
+	public PoseFrameSkeleton(
+		List<? extends Tracker> trackers,
+		List<? extends ComputedHumanPoseTracker> computedTrackers,
+		Map<SkeletonConfigValue, Float> configs
+	) {
 		super(trackers, computedTrackers, configs);
 	}
 

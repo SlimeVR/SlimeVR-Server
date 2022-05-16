@@ -12,6 +12,7 @@ import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.Future;
 
+
 public class PoseRecorder {
 
 	protected final VRServer server;
@@ -53,15 +54,18 @@ public class PoseRecorder {
 
 		nextFrameTimeMs += frameRecordingInterval;
 
-		// To prevent duplicate frames, make sure the frame time is always in the future
+		// To prevent duplicate frames, make sure the frame time is always in
+		// the future
 		if (nextFrameTimeMs <= curTime) {
 			nextFrameTimeMs = curTime + frameRecordingInterval;
 		}
 
-		// Make sure it's synchronized since this is the server thread interacting with
+		// Make sure it's synchronized since this is the server thread
+		// interacting with
 		// an unknown outside thread controlling this class
 		synchronized (this) {
-			// A stopped recording will be accounted for by an empty "trackers" list
+			// A stopped recording will be accounted for by an empty "trackers"
+			// list
 			int cursor = frameCursor++;
 			for (Pair<Tracker, PoseFrameTracker> tracker : trackers) {
 				// Add a frame for each tracker
@@ -79,7 +83,11 @@ public class PoseRecorder {
 		return startFrameRecording(numFrames, intervalMs, server.getAllTrackers());
 	}
 
-	public synchronized Future<PoseFrames> startFrameRecording(int numFrames, long intervalMs, List<Tracker> trackers) {
+	public synchronized Future<PoseFrames> startFrameRecording(
+		int numFrames,
+		long intervalMs,
+		List<Tracker> trackers
+	) {
 		if (numFrames < 1) {
 			throw new IllegalArgumentException("numFrames must at least have a value of 1");
 		}
@@ -122,7 +130,14 @@ public class PoseRecorder {
 		frameRecordingInterval = intervalMs;
 		nextFrameTimeMs = -1L;
 
-		LogManager.info("[PoseRecorder] Recording " + numFrames + " samples at a " + intervalMs + " ms frame interval");
+		LogManager
+			.info(
+				"[PoseRecorder] Recording "
+					+ numFrames
+					+ " samples at a "
+					+ intervalMs
+					+ " ms frame interval"
+			);
 
 		currentRecording = new CompletableFuture<PoseFrames>();
 		return currentRecording;

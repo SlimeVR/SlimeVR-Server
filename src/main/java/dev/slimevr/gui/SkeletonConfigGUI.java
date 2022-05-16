@@ -14,6 +14,7 @@ import java.awt.event.MouseEvent;
 import java.util.HashMap;
 import java.util.Map;
 
+
 public class SkeletonConfigGUI extends EJBagNoStretch {
 
 	private final VRServer server;
@@ -64,7 +65,8 @@ public class SkeletonConfigGUI extends EJBagNoStretch {
 				add(new SkeletonLabel(config), c(2, row, 2));
 				add(new AdjButton("-", config, true), c(3, row, 2));
 
-				// Only use a timer on configs that need time to get into position for
+				// Only use a timer on configs that need time to get into
+				// position for
 				switch (config) {
 					case TORSO:
 					case LEGS_LENGTH:
@@ -91,9 +93,13 @@ public class SkeletonConfigGUI extends EJBagNoStretch {
 		return increment;
 	}
 
-	String getBoneLengthString(SkeletonConfigValue joint) { // Rounded to the nearest 0.5
-		return (StringUtils.prettyNumber(Math.round(server.humanPoseProcessor.getSkeletonConfig(joint) * 200) / 2.0f,
-				1));
+	String getBoneLengthString(SkeletonConfigValue joint) { // Rounded to the
+															// nearest 0.5
+		return (StringUtils
+			.prettyNumber(
+				Math.round(server.humanPoseProcessor.getSkeletonConfig(joint) * 200) / 2.0f,
+				1
+			));
 	}
 
 	@ThreadSafe

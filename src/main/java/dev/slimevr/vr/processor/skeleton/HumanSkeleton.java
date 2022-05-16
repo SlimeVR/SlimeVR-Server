@@ -4,6 +4,7 @@ import dev.slimevr.util.ann.VRServerThread;
 import dev.slimevr.vr.processor.TransformNode;
 import io.eiren.util.ann.ThreadSafe;
 
+
 public abstract class HumanSkeleton {
 
 	@VRServerThread

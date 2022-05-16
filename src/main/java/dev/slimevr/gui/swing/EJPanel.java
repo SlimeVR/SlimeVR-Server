@@ -3,6 +3,7 @@ package dev.slimevr.gui.swing;
 import javax.swing.*;
 import java.awt.*;
 
+
 public abstract class EJPanel extends JPanel {
 
 	public static boolean NEEDS_DOWNSCALE = false;

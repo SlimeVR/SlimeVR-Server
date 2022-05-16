@@ -3,6 +3,7 @@ package dev.slimevr.vr.trackers.udp;
 import java.io.IOException;
 import java.nio.ByteBuffer;
 
+
 public class UDPPacket10PingPong extends UDPPacket {
 
 	public int pingId;

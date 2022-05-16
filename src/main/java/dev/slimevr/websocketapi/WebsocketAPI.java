@@ -15,6 +15,7 @@ import java.nio.ByteBuffer;
 import java.util.Collections;
 import java.util.stream.Stream;
 
+
 public class WebsocketAPI extends WebSocketServer implements ProtocolAPIServer {
 
 	public final VRServer server;
@@ -30,15 +31,27 @@ public class WebsocketAPI extends WebSocketServer implements ProtocolAPIServer {
 
 	@Override
 	public void onOpen(WebSocket conn, ClientHandshake handshake) {
-		LogManager.info(
-				"[WebSocketAPI] New connection from: " + conn.getRemoteSocketAddress().getAddress().getHostAddress());
+		LogManager
+			.info(
+				"[WebSocketAPI] New connection from: "
+					+ conn.getRemoteSocketAddress().getAddress().getHostAddress()
+			);
 		conn.setAttachment(new WebsocketConnection(conn));
 	}
 
 	@Override
 	public void onClose(WebSocket conn, int code, String reason, boolean remote) {
-		LogManager.info("[WebSocketAPI] Disconnected: " + conn.getRemoteSocketAddress().getAddress().getHostAddress()
-				+ ", (" + code + ") " + reason + ". Remote: " + remote);
+		LogManager
+			.info(
+				"[WebSocketAPI] Disconnected: "
+					+ conn.getRemoteSocketAddress().getAddress().getHostAddress()
+					+ ", ("
+					+ code
+					+ ") "
+					+ reason
+					+ ". Remote: "
+					+ remote
+			);
 	}
 
 	@Override

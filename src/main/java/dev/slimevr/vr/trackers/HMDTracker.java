@@ -2,6 +2,7 @@ package dev.slimevr.vr.trackers;
 
 import io.eiren.util.BufferedTimer;
 
+
 public class HMDTracker extends ComputedTracker implements TrackerWithTPS {
 
 	protected BufferedTimer timer = new BufferedTimer(1f);

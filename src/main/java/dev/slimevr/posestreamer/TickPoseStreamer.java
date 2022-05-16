@@ -4,6 +4,7 @@ import dev.slimevr.vr.processor.skeleton.HumanSkeleton;
 
 import java.io.IOException;
 
+
 public class TickPoseStreamer extends PoseStreamer {
 
 	protected long nextFrameTimeMs = -1L;
@@ -30,7 +31,8 @@ public class TickPoseStreamer extends PoseStreamer {
 
 		nextFrameTimeMs += frameRecordingInterval;
 
-		// To prevent duplicate frames, make sure the frame time is always in the future
+		// To prevent duplicate frames, make sure the frame time is always in
+		// the future
 		if (nextFrameTimeMs <= curTime) {
 			nextFrameTimeMs = curTime + frameRecordingInterval;
 		}

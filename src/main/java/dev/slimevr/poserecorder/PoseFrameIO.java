@@ -8,6 +8,7 @@ import io.eiren.util.logging.LogManager;
 
 import java.io.*;
 
+
 public final class PoseFrameIO {
 
 	private PoseFrameIO() {
@@ -60,8 +61,11 @@ public final class PoseFrameIO {
 	}
 
 	public static boolean writeToFile(File file, PoseFrames frames) {
-		try (DataOutputStream outputStream = new DataOutputStream(
-				new BufferedOutputStream(new FileOutputStream(file)))) {
+		try (
+			DataOutputStream outputStream = new DataOutputStream(
+				new BufferedOutputStream(new FileOutputStream(file))
+			)
+		) {
 			writeFrames(outputStream, frames);
 		} catch (Exception e) {
 			LogManager.severe("Error writing frames to file", e);
@@ -80,7 +84,9 @@ public final class PoseFrameIO {
 
 				String name = inputStream.readUTF();
 				int trackerFrameCount = inputStream.readInt();
-				FastList<TrackerFrame> trackerFrames = new FastList<TrackerFrame>(trackerFrameCount);
+				FastList<TrackerFrame> trackerFrames = new FastList<TrackerFrame>(
+					trackerFrameCount
+				);
 				for (int j = 0; j < trackerFrameCount; j++) {
 					int dataFlags = inputStream.readInt();
 
@@ -122,7 +128,9 @@ public final class PoseFrameIO {
 
 	public static PoseFrames readFromFile(File file) {
 		try {
-			return readFrames(new DataInputStream(new BufferedInputStream(new FileInputStream(file))));
+			return readFrames(
+				new DataInputStream(new BufferedInputStream(new FileInputStream(file)))
+			);
 		} catch (Exception e) {
 			LogManager.severe("Error reading frame from file", e);
 		}

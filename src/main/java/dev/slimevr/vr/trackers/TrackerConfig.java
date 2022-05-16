@@ -5,6 +5,7 @@ import io.eiren.yaml.YamlNode;
 
 import java.util.Objects;
 
+
 public class TrackerConfig {
 
 	public final String trackerName;
@@ -18,7 +19,8 @@ public class TrackerConfig {
 	public TrackerConfig(Tracker tracker) {
 		this.trackerName = tracker.getName();
 		this.description = tracker.getDescriptiveName();
-		this.designation = tracker.getBodyPosition() != null ? tracker.getBodyPosition().designation : null;
+		this.designation = tracker.getBodyPosition()
+			!= null ? tracker.getBodyPosition().designation : null;
 	}
 
 	public TrackerConfig(YamlNode node) {
@@ -29,20 +31,28 @@ public class TrackerConfig {
 		this.oldMountingRotation = node.getString("rotation");
 		YamlNode mountingRotationNode = node.getNode("mountingRotation");
 		if (mountingRotationNode != null) {
-			mountingRotation = new Quaternion(mountingRotationNode.getFloat("x", 0),
-					mountingRotationNode.getFloat("y", 0), mountingRotationNode.getFloat("z", 0),
-					mountingRotationNode.getFloat("w", 1));
+			mountingRotation = new Quaternion(
+				mountingRotationNode.getFloat("x", 0),
+				mountingRotationNode.getFloat("y", 0),
+				mountingRotationNode.getFloat("z", 0),
+				mountingRotationNode.getFloat("w", 1)
+			);
 		}
 
 		if (oldMountingRotation != null) {
 			TrackerMountingRotation rot = TrackerMountingRotation.fromName(oldMountingRotation);
-			mountingRotation = Objects.requireNonNullElse(rot, TrackerMountingRotation.FRONT).quaternion;
+			mountingRotation = Objects
+				.requireNonNullElse(rot, TrackerMountingRotation.FRONT).quaternion;
 		}
 
 		YamlNode adjNode = node.getNode("adjustment");
 		if (adjNode != null) {
-			adjustment = new Quaternion(adjNode.getFloat("x", 0), adjNode.getFloat("y", 0), adjNode.getFloat("z", 0),
-					adjNode.getFloat("w", 0));
+			adjustment = new Quaternion(
+				adjNode.getFloat("x", 0),
+				adjNode.getFloat("y", 0),
+				adjNode.getFloat("z", 0),
+				adjNode.getFloat("w", 0)
+			);
 		}
 	}
 

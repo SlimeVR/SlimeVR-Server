@@ -19,6 +19,7 @@ import java.awt.event.MouseEvent;
 import java.util.List;
 import java.util.concurrent.Future;
 
+
 public class AutoBoneWindow extends JFrame {
 
 	private final transient VRServer server;
@@ -46,17 +47,23 @@ public class AutoBoneWindow extends JFrame {
 		this.autoBone = new AutoBone(server);
 
 		getContentPane().setLayout(new BoxLayout(getContentPane(), BoxLayout.PAGE_AXIS));
-		add(new JScrollPane(pane = new EJBox(BoxLayout.PAGE_AXIS), ScrollPaneConstants.VERTICAL_SCROLLBAR_AS_NEEDED,
-				ScrollPaneConstants.HORIZONTAL_SCROLLBAR_AS_NEEDED));
+		add(
+			new JScrollPane(
+				pane = new EJBox(BoxLayout.PAGE_AXIS),
+				ScrollPaneConstants.VERTICAL_SCROLLBAR_AS_NEEDED,
+				ScrollPaneConstants.HORIZONTAL_SCROLLBAR_AS_NEEDED
+			)
+		);
 
 		build();
 	}
 
 	private float processFrames(PoseFrames frames) {
-		return autoBone.processFrames(frames, autoBone.calcInitError, autoBone.targetHeight, (epoch) -> {
-			processLabel.setText(epoch.toString());
-			lengthsLabel.setText(autoBone.getLengthsString());
-		});
+		return autoBone
+			.processFrames(frames, autoBone.calcInitError, autoBone.targetHeight, (epoch) -> {
+				processLabel.setText(epoch.toString());
+				lengthsLabel.setText(autoBone.getLengthsString());
+			});
 	}
 
 	@AWTThread
@@ -80,26 +87,36 @@ public class AutoBoneWindow extends JFrame {
 										try {
 											if (poseRecorder.isReadyToRecord()) {
 												setText("Recording...");
-												// 1000 samples at 20 ms per sample is
+												// 1000 samples at 20 ms per
+												// sample is
 												// 20 seconds
-												int sampleCount = server.config.getInt("autobone.sampleCount", 1000);
-												long sampleRate = server.config.getLong("autobone.sampleRateMs", 20L);
+												int sampleCount = server.config
+													.getInt("autobone.sampleCount", 1000);
+												long sampleRate = server.config
+													.getLong("autobone.sampleRateMs", 20L);
 												Future<PoseFrames> framesFuture = poseRecorder
-														.startFrameRecording(sampleCount, sampleRate);
+													.startFrameRecording(sampleCount, sampleRate);
 												PoseFrames frames = framesFuture.get();
 												LogManager.info("[AutoBone] Done recording!");
 
 												saveRecordingButton.setEnabled(true);
 												adjustButton.setEnabled(true);
 
-												if (server.config.getBoolean("autobone.saveRecordings", false)) {
+												if (
+													server.config
+														.getBoolean(
+															"autobone.saveRecordings",
+															false
+														)
+												) {
 													setText("Saving...");
 													autoBone.saveRecording(frames);
 												}
 											} else {
 												setText("Not Ready...");
 												LogManager.severe("[AutoBone] Unable to record...");
-												Thread.sleep(3000); // Wait for 3
+												Thread.sleep(3000); // Wait for
+																	// 3
 												// seconds
 												return;
 											}
@@ -107,7 +124,8 @@ public class AutoBoneWindow extends JFrame {
 											setText("Recording Failed...");
 											LogManager.severe("[AutoBone] Failed recording!", e);
 											try {
-												Thread.sleep(3000); // Wait for 3
+												Thread.sleep(3000); // Wait for
+																	// 3
 												// seconds
 											} catch (Exception e1) {
 												// Ignore
@@ -141,17 +159,22 @@ public class AutoBoneWindow extends JFrame {
 									@Override
 									public void run() {
 										try {
-											Future<PoseFrames> framesFuture = poseRecorder.getFramesAsync();
+											Future<PoseFrames> framesFuture = poseRecorder
+												.getFramesAsync();
 											if (framesFuture != null) {
 												setText("Waiting for Recording...");
 												PoseFrames frames = framesFuture.get();
 
 												if (frames.getTrackerCount() <= 0) {
-													throw new IllegalStateException("Recording has no trackers");
+													throw new IllegalStateException(
+														"Recording has no trackers"
+													);
 												}
 
 												if (frames.getMaxFrameCount() <= 0) {
-													throw new IllegalStateException("Recording has no frames");
+													throw new IllegalStateException(
+														"Recording has no frames"
+													);
 												}
 
 												setText("Saving...");
@@ -159,7 +182,8 @@ public class AutoBoneWindow extends JFrame {
 
 												setText("Recording Saved!");
 												try {
-													Thread.sleep(3000); // Wait for 3
+													Thread.sleep(3000); // Wait
+																		// for 3
 													// seconds
 												} catch (Exception e1) {
 													// Ignore
@@ -167,9 +191,12 @@ public class AutoBoneWindow extends JFrame {
 											} else {
 												setText("No Recording...");
 												LogManager
-														.severe("[AutoBone] Unable to save, no recording was done...");
+													.severe(
+														"[AutoBone] Unable to save, no recording was done..."
+													);
 												try {
-													Thread.sleep(3000); // Wait for 3
+													Thread.sleep(3000); // Wait
+																		// for 3
 													// seconds
 												} catch (Exception e1) {
 													// Ignore
@@ -178,9 +205,11 @@ public class AutoBoneWindow extends JFrame {
 											}
 										} catch (Exception e) {
 											setText("Saving Failed...");
-											LogManager.severe("[AutoBone] Failed to save recording!", e);
+											LogManager
+												.severe("[AutoBone] Failed to save recording!", e);
 											try {
-												Thread.sleep(3000); // Wait for 3
+												Thread.sleep(3000); // Wait for
+																	// 3
 												// seconds
 											} catch (Exception e1) {
 												// Ignore
@@ -202,8 +231,11 @@ public class AutoBoneWindow extends JFrame {
 				add(adjustButton = new JButton("Auto-Adjust") {
 					{
 						// If there are files to load, enable the button
-						setEnabled(poseRecorder.hasRecording()
-								|| (AutoBone.getLoadDir().isDirectory() && AutoBone.getLoadDir().list().length > 0));
+						setEnabled(
+							poseRecorder.hasRecording()
+								|| (AutoBone.getLoadDir().isDirectory()
+									&& AutoBone.getLoadDir().list().length > 0)
+						);
 						addMouseListener(new MouseInputAdapter() {
 							@Override
 							public void mouseClicked(MouseEvent e) {
@@ -217,30 +249,40 @@ public class AutoBoneWindow extends JFrame {
 									public void run() {
 										try {
 											setText("Load...");
-											List<Pair<String, PoseFrames>> frameRecordings = autoBone.loadRecordings();
+											List<Pair<String, PoseFrames>> frameRecordings = autoBone
+												.loadRecordings();
 
 											if (!frameRecordings.isEmpty()) {
 												LogManager.info("[AutoBone] Done loading frames!");
 											} else {
-												Future<PoseFrames> framesFuture = poseRecorder.getFramesAsync();
+												Future<PoseFrames> framesFuture = poseRecorder
+													.getFramesAsync();
 												if (framesFuture != null) {
 													setText("Waiting for Recording...");
 													PoseFrames frames = framesFuture.get();
 
 													if (frames.getTrackerCount() <= 0) {
-														throw new IllegalStateException("Recording has no trackers");
+														throw new IllegalStateException(
+															"Recording has no trackers"
+														);
 													}
 
 													if (frames.getMaxFrameCount() <= 0) {
-														throw new IllegalStateException("Recording has no frames");
+														throw new IllegalStateException(
+															"Recording has no frames"
+														);
 													}
 
-													frameRecordings.add(Pair.of("<Recording>", frames));
+													frameRecordings
+														.add(Pair.of("<Recording>", frames));
 												} else {
 													setText("No Recordings...");
-													LogManager.severe("[AutoBone] No recordings found in \""
-															+ AutoBone.getLoadDir().getPath()
-															+ "\" and no recording was done...");
+													LogManager
+														.severe(
+															"[AutoBone] No recordings found in \""
+																+ AutoBone.getLoadDir().getPath()
+																+ "\" and no recording was done..."
+														);
 													try {
 														Thread.sleep(3000); // Wait
 														// for 3
@@ -255,52 +297,91 @@ public class AutoBoneWindow extends JFrame {
 											setText("Processing...");
 											LogManager.info("[AutoBone] Processing frames...");
 											FastList<Float> heightPercentError = new FastList<Float>(
-													frameRecordings.size());
-											for (Pair<String, PoseFrames> recording : frameRecordings) {
-												LogManager.info("[AutoBone] Processing frames from \""
-														+ recording.getKey() + "\"...");
+												frameRecordings.size()
+											);
+											for (
+												Pair<String, PoseFrames> recording : frameRecordings
+											) {
+												LogManager
+													.info(
+														"[AutoBone] Processing frames from \""
+															+ recording.getKey()
+															+ "\"..."
+													);
 
-												heightPercentError.add(processFrames(recording.getValue()));
+												heightPercentError
+													.add(processFrames(recording.getValue()));
 												LogManager.info("[AutoBone] Done processing!");
 												applyButton.setEnabled(true);
 
 												// #region Stats/Values
-												Float neckLength = autoBone.getConfig(SkeletonConfigValue.NECK);
-												Float chestDistance = autoBone.getConfig(SkeletonConfigValue.CHEST);
-												Float torsoLength = autoBone.getConfig(SkeletonConfigValue.TORSO);
-												Float hipWidth = autoBone.getConfig(SkeletonConfigValue.HIPS_WIDTH);
-												Float legsLength = autoBone.getConfig(SkeletonConfigValue.LEGS_LENGTH);
-												Float kneeHeight = autoBone.getConfig(SkeletonConfigValue.KNEE_HEIGHT);
+												Float neckLength = autoBone
+													.getConfig(SkeletonConfigValue.NECK);
+												Float chestDistance = autoBone
+													.getConfig(SkeletonConfigValue.CHEST);
+												Float torsoLength = autoBone
+													.getConfig(SkeletonConfigValue.TORSO);
+												Float hipWidth = autoBone
+													.getConfig(SkeletonConfigValue.HIPS_WIDTH);
+												Float legsLength = autoBone
+													.getConfig(SkeletonConfigValue.LEGS_LENGTH);
+												Float kneeHeight = autoBone
+													.getConfig(SkeletonConfigValue.KNEE_HEIGHT);
 
-												float neckTorso = neckLength != null && torsoLength != null
-														? neckLength / torsoLength
+												float neckTorso = neckLength != null
+													&& torsoLength != null
+														? neckLength
+															/ torsoLength
 														: 0f;
-												float chestTorso = chestDistance != null && torsoLength != null
-														? chestDistance / torsoLength
+												float chestTorso = chestDistance != null
+													&& torsoLength != null
+														? chestDistance
+															/ torsoLength
 														: 0f;
-												float torsoWaist = hipWidth != null && torsoLength != null
-														? hipWidth / torsoLength
+												float torsoWaist = hipWidth != null
+													&& torsoLength != null
+														? hipWidth
+															/ torsoLength
 														: 0f;
-												float legTorso = legsLength != null && torsoLength != null
-														? legsLength / torsoLength
+												float legTorso = legsLength != null
+													&& torsoLength != null
+														? legsLength
+															/ torsoLength
 														: 0f;
-												float legBody = legsLength != null && torsoLength != null
-														&& neckLength != null ? legsLength / (torsoLength + neckLength)
-																: 0f;
-												float kneeLeg = kneeHeight != null && legsLength != null
-														? kneeHeight / legsLength
+												float legBody = legsLength != null
+													&& torsoLength != null
+													&& neckLength != null
+														? legsLength
+															/ (torsoLength + neckLength)
+														: 0f;
+												float kneeLeg = kneeHeight != null
+													&& legsLength != null
+														? kneeHeight
+															/ legsLength
 														: 0f;
 
-												LogManager.info("[AutoBone] Ratios: [{Neck-Torso: "
-														+ StringUtils.prettyNumber(neckTorso) + "}, {Chest-Torso: "
-														+ StringUtils.prettyNumber(chestTorso) + "}, {Torso-Waist: "
-														+ StringUtils.prettyNumber(torsoWaist) + "}, {Leg-Torso: "
-														+ StringUtils.prettyNumber(legTorso) + "}, {Leg-Body: "
-														+ StringUtils.prettyNumber(legBody) + "}, {Knee-Leg: "
-														+ StringUtils.prettyNumber(kneeLeg) + "}]");
+												LogManager
+													.info(
+														"[AutoBone] Ratios: [{Neck-Torso: "
+															+ StringUtils.prettyNumber(neckTorso)
+															+ "}, {Chest-Torso: "
+															+ StringUtils.prettyNumber(chestTorso)
+															+ "}, {Torso-Waist: "
+															+ StringUtils.prettyNumber(torsoWaist)
+															+ "}, {Leg-Torso: "
+															+ StringUtils.prettyNumber(legTorso)
+															+ "}, {Leg-Body: "
+															+ StringUtils.prettyNumber(legBody)
+															+ "}, {Knee-Leg: "
+															+ StringUtils.prettyNumber(kneeLeg)
+															+ "}]"
+													);
 
 												String lengthsString = autoBone.getLengthsString();
-												LogManager.info("[AutoBone] Length values: " + lengthsString);
+												LogManager
+													.info(
+														"[AutoBone] Length values: " + lengthsString
+													);
 												lengthsLabel.setText(lengthsString);
 											}
 
@@ -316,18 +397,25 @@ public class AutoBoneWindow extends JFrame {
 													float stdVal = val - mean;
 													std += stdVal * stdVal;
 												}
-												std = (float) Math.sqrt(std / heightPercentError.size());
+												std = (float) Math
+													.sqrt(std / heightPercentError.size());
 
-												LogManager.info("[AutoBone] Average height error: "
-														+ StringUtils.prettyNumber(mean, 6) + " (SD "
-														+ StringUtils.prettyNumber(std, 6) + ")");
+												LogManager
+													.info(
+														"[AutoBone] Average height error: "
+															+ StringUtils.prettyNumber(mean, 6)
+															+ " (SD "
+															+ StringUtils.prettyNumber(std, 6)
+															+ ")"
+													);
 											}
 											// #endregion
 										} catch (Exception e) {
 											setText("Failed...");
 											LogManager.severe("[AutoBone] Failed adjustment!", e);
 											try {
-												Thread.sleep(3000); // Wait for 3
+												Thread.sleep(3000); // Wait for
+																	// 3
 												// seconds
 											} catch (Exception e1) {
 												// Ignore
