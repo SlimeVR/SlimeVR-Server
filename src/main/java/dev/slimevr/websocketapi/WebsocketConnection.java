@@ -7,6 +7,7 @@ import org.java_websocket.WebSocket;
 import java.nio.ByteBuffer;
 import java.util.UUID;
 
+
 public class WebsocketConnection implements GenericConnection {
 
 	public final ConnectionContext context;

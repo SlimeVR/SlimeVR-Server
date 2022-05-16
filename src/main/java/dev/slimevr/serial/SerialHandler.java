@@ -12,6 +12,7 @@ import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.List;
 
+
 public class SerialHandler implements SerialPortMessageListener {
 
 	private final List<SerialListener> listeners = new ArrayList<>();
@@ -32,7 +33,11 @@ public class SerialHandler implements SerialPortMessageListener {
 
 		SerialPort[] ports = SerialPort.getCommPorts();
 		for (SerialPort port : ports) {
-			if (port.getDescriptivePortName().toLowerCase().contains("ch340") || port.getDescriptivePortName().toLowerCase().contains("cp21") || port.getDescriptivePortName().toLowerCase().contains("ch910")) {
+			if (
+				port.getDescriptivePortName().toLowerCase().contains("ch340")
+					|| port.getDescriptivePortName().toLowerCase().contains("cp21")
+					|| port.getDescriptivePortName().toLowerCase().contains("ch910")
+			) {
 				trackerPort = port;
 				break;
 			}
@@ -79,7 +84,8 @@ public class SerialHandler implements SerialPortMessageListener {
 
 	@Override
 	public int getListeningEvents() {
-		return SerialPort.LISTENING_EVENT_PORT_DISCONNECTED | SerialPort.LISTENING_EVENT_DATA_RECEIVED;
+		return SerialPort.LISTENING_EVENT_PORT_DISCONNECTED
+			| SerialPort.LISTENING_EVENT_DATA_RECEIVED;
 	}
 
 	@Override
@@ -99,7 +105,7 @@ public class SerialHandler implements SerialPortMessageListener {
 
 	@Override
 	public byte[] getMessageDelimiter() {
-		return new byte[]{(byte) 0x0A};
+		return new byte[] { (byte) 0x0A };
 	}
 
 	@Override
@@ -107,4 +113,3 @@ public class SerialHandler implements SerialPortMessageListener {
 		return true;
 	}
 }
-

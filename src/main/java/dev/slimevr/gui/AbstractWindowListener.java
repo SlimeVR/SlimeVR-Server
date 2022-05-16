@@ -3,6 +3,7 @@ package dev.slimevr.gui;
 import java.awt.event.WindowEvent;
 import java.awt.event.WindowListener;
 
+
 public abstract class AbstractWindowListener implements WindowListener {
 
 	@Override

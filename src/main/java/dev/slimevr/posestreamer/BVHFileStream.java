@@ -10,6 +10,7 @@ import org.apache.commons.lang3.StringUtils;
 
 import java.io.*;
 
+
 public class BVHFileStream extends PoseDataStream {
 
 	private static final int LONG_MAX_VALUE_DIGITS = Long.toString(Long.MAX_VALUE).length();
@@ -96,7 +97,17 @@ public class BVHFileStream extends PoseDataStream {
 		if (level > 0 && node.wrappedNode.getParent() != null) {
 			Vector3f offset = node.localTransform.getTranslation();
 			float reverseMultiplier = node.hasReversedHierarchy() ? -1 : 1;
-			writer.write(nextIndentLevel + "OFFSET " + offset.getX() * OFFSET_SCALE * reverseMultiplier + " " + offset.getY() * OFFSET_SCALE * reverseMultiplier + " " + offset.getZ() * OFFSET_SCALE * reverseMultiplier + "\n");
+			writer
+				.write(
+					nextIndentLevel
+						+ "OFFSET "
+						+ offset.getX() * OFFSET_SCALE * reverseMultiplier
+						+ " "
+						+ offset.getY() * OFFSET_SCALE * reverseMultiplier
+						+ " "
+						+ offset.getZ() * OFFSET_SCALE * reverseMultiplier
+						+ "\n"
+				);
 		} else {
 			writer.write(nextIndentLevel + "OFFSET 0.0 0.0 0.0\n");
 		}
@@ -107,7 +118,11 @@ public class BVHFileStream extends PoseDataStream {
 			if (level > 0) {
 				writer.write(nextIndentLevel + "CHANNELS 3 Zrotation Xrotation Yrotation\n");
 			} else {
-				writer.write(nextIndentLevel + "CHANNELS 6 Xposition Yposition Zposition Zrotation Xrotation Yrotation\n");
+				writer
+					.write(
+						nextIndentLevel
+							+ "CHANNELS 6 Xposition Yposition Zposition Zrotation Xrotation Yrotation\n"
+					);
 			}
 
 			for (TransformNodeWrapper childNode : node.children) {
@@ -147,7 +162,8 @@ public class BVHFileStream extends PoseDataStream {
 		writer.write("Frame Time: " + (streamer.getFrameInterval() / 1000d) + "\n");
 	}
 
-	// Roughly based off code from https://github.com/TrackLab/ViRe/blob/50a987eff4db31036b2ebaeb5a28983cd473f267/Assets/Scripts/BVH/BVHRecorder.cs
+	// Roughly based off code from
+	// https://github.com/TrackLab/ViRe/blob/50a987eff4db31036b2ebaeb5a28983cd473f267/Assets/Scripts/BVH/BVHRecorder.cs
 	private float[] quatToXyzAngles(Quaternion q, float[] angles) {
 		if (angles == null) {
 			angles = new float[3];
@@ -168,7 +184,10 @@ public class BVHFileStream extends PoseDataStream {
 		// Pitch (Y)
 		float sinp = 2f * (y * z + w * x);
 		// Use 90 degrees if out of range
-		angles[1] = FastMath.abs(sinp) >= 1f ? FastMath.copysign(FastMath.PI / 2f, sinp) : FastMath.asin(sinp);
+		angles[1] = FastMath.abs(sinp) >= 1f
+			? FastMath.copysign(FastMath.PI / 2f, sinp)
+			: FastMath
+				.asin(sinp);
 
 		// Yaw (Z)
 		float sinyCosp = -2f * (x * z - w * y);
@@ -178,20 +197,17 @@ public class BVHFileStream extends PoseDataStream {
 		return angles;
 	}
 
-	private void writeNodeHierarchyRotation(TransformNodeWrapper node, Quaternion inverseRootRot) throws IOException {
+	private void writeNodeHierarchyRotation(TransformNodeWrapper node, Quaternion inverseRootRot)
+		throws IOException {
 		Transform transform = node.worldTransform;
-		
+
 		/*
-		if (node.hasReversedHierarchy()) {
-			for (TransformNodeWrapper childNode : node.children) {
-				// If the hierarchy is fully reversed, set the rotation for the upper bone
-				if (childNode.hasReversedHierarchy()) {
-					transform = childNode.worldTransform;
-					break;
-				}
-			}
-		}
-		*/
+		 * if (node.hasReversedHierarchy()) { for (TransformNodeWrapper
+		 * childNode : node.children) { // If the hierarchy is fully reversed,
+		 * set the rotation for the upper bone if
+		 * (childNode.hasReversedHierarchy()) { transform =
+		 * childNode.worldTransform; break; } } }
+		 */
 
 		rotBuf = transform.getRotation(rotBuf);
 
@@ -207,7 +223,14 @@ public class BVHFileStream extends PoseDataStream {
 		angleBuf = quatToXyzAngles(rotBuf.normalizeLocal(), angleBuf);
 
 		// Output in order of roll (Z), pitch (X), yaw (Y) (extrinsic)
-		writer.write(angleBuf[0] * FastMath.RAD_TO_DEG + " " + angleBuf[1] * FastMath.RAD_TO_DEG + " " + angleBuf[2] * FastMath.RAD_TO_DEG);
+		writer
+			.write(
+				angleBuf[0] * FastMath.RAD_TO_DEG
+					+ " "
+					+ angleBuf[1] * FastMath.RAD_TO_DEG
+					+ " "
+					+ angleBuf[2] * FastMath.RAD_TO_DEG
+			);
 
 		// Get inverse rotation for child local rotations
 		if (!node.children.isEmpty()) {
@@ -236,7 +259,15 @@ public class BVHFileStream extends PoseDataStream {
 		Vector3f rootPos = rootNode.worldTransform.getTranslation();
 
 		// Write root position
-		writer.write(rootPos.getX() * POSITION_SCALE + " " + rootPos.getY() * POSITION_SCALE + " " + rootPos.getZ() * POSITION_SCALE + " ");
+		writer
+			.write(
+				rootPos.getX() * POSITION_SCALE
+					+ " "
+					+ rootPos.getY() * POSITION_SCALE
+					+ " "
+					+ rootPos.getZ() * POSITION_SCALE
+					+ " "
+			);
 		writeNodeHierarchyRotation(rootNode, null);
 
 		writer.newLine();

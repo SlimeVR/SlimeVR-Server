@@ -12,6 +12,7 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.MouseEvent;
 
+
 public class TrackersFiltersGUI extends EJBagNoStretch {
 
 	private final VRServer server;
@@ -54,7 +55,10 @@ public class TrackersFiltersGUI extends EJBagNoStretch {
 
 		add(new JLabel("Intensity"), c(0, row, 2));
 		add(new AdjButton("+", 0, false), c(1, row, 2));
-		add(amountLabel = new JLabel(StringUtils.prettyNumber(filterAmount * 100f) + "%"), c(2, row, 2));
+		add(
+			amountLabel = new JLabel(StringUtils.prettyNumber(filterAmount * 100f) + "%"),
+			c(2, row, 2)
+		);
 		add(new AdjButton("-", 0, true), c(3, row, 2));
 		row++;
 		filterTicks = (int) FastMath.clamp(server.config.getInt("filters.tickCount", 1), 0, 80);

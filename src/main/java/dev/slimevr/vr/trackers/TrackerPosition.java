@@ -4,6 +4,7 @@ import java.util.EnumMap;
 import java.util.HashMap;
 import java.util.Map;
 
+
 public enum TrackerPosition {
 
 	NONE(0, "", TrackerRole.NONE),
@@ -25,13 +26,14 @@ public enum TrackerPosition {
 	LEFT_UPPER_ARM(16, "body:left_upperarm", null),
 	RIGHT_UPPER_ARM(17, "body:right_upperarm", null),
 	LEFT_HAND(18, "body:left_hand", TrackerRole.LEFT_HAND),
-	RIGHT_HAND(19, "body:right_hand", TrackerRole.RIGHT_HAND),
-	;
+	RIGHT_HAND(19, "body:right_hand", TrackerRole.RIGHT_HAND),;
 
 	public static final TrackerPosition[] values = values();
 	private static final Map<Integer, TrackerPosition> byId = new HashMap<>();
 	private static final Map<String, TrackerPosition> byDesignation = new HashMap<>();
-	private static final EnumMap<TrackerRole, TrackerPosition> byRole = new EnumMap<>(TrackerRole.class);
+	private static final EnumMap<TrackerRole, TrackerPosition> byRole = new EnumMap<>(
+		TrackerRole.class
+	);
 
 	static {
 		for (TrackerPosition tbp : values()) {
@@ -40,7 +42,14 @@ public enum TrackerPosition {
 			if (tbp.trackerRole != null) {
 				TrackerPosition old = byRole.get(tbp.trackerRole);
 				if (old != null)
-					throw new AssertionError("Only one tracker position can match tracker role. " + tbp.trackerRole + " is occupied by " + old + " when adding " + tbp);
+					throw new AssertionError(
+						"Only one tracker position can match tracker role. "
+							+ tbp.trackerRole
+							+ " is occupied by "
+							+ old
+							+ " when adding "
+							+ tbp
+					);
 				byRole.put(tbp.trackerRole, tbp);
 			}
 		}

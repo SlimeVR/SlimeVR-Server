@@ -4,6 +4,7 @@ import dev.slimevr.vr.processor.skeleton.HumanSkeleton;
 
 import java.io.*;
 
+
 public abstract class PoseDataStream implements AutoCloseable {
 
 	protected final OutputStream outputStream;

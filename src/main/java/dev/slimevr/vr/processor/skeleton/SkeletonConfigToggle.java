@@ -3,11 +3,11 @@ package dev.slimevr.vr.processor.skeleton;
 import java.util.HashMap;
 import java.util.Map;
 
+
 public enum SkeletonConfigToggle {
 
 	EXTENDED_PELVIS_MODEL("Extended pelvis model", "extendedPelvis", true),
-	EXTENDED_KNEE_MODEL("Extended knee model", "extendedKnee", false),
-	;
+	EXTENDED_KNEE_MODEL("Extended knee model", "extendedKnee", false),;
 
 	public static final SkeletonConfigToggle[] values = values();
 	private static final String CONFIG_PREFIX = "body.model.";

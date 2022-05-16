@@ -6,6 +6,7 @@ import dev.slimevr.poserecorder.PoseFrames;
 
 import java.io.File;
 
+
 public class PoseFrameStreamer extends PoseStreamer {
 
 	private final PoseFrames frames;

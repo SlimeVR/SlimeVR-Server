@@ -4,21 +4,22 @@ import com.jme3.math.FastMath;
 import com.jme3.math.Quaternion;
 import com.jme3.math.Vector3f;
 import dev.slimevr.VRServer;
-import dev.slimevr.vr.trackers.udp.Device;
+import dev.slimevr.vr.trackers.udp.UDPDevice;
 import dev.slimevr.vr.trackers.udp.TrackersUDPServer;
 import io.eiren.util.BufferedTimer;
+
 
 public class IMUTracker implements Tracker, TrackerWithTPS, TrackerWithBattery {
 
 	public static final float MAX_MAG_CORRECTION_ACCURACY = 5 * FastMath.RAD_TO_DEG;
 
-	//public final Vector3f gyroVector = new Vector3f();
-	//public final Vector3f accelVector = new Vector3f();
+	// public final Vector3f gyroVector = new Vector3f();
+	// public final Vector3f accelVector = new Vector3f();
 	public final Vector3f magVector = new Vector3f();
 	public final Quaternion rotQuaternion = new Quaternion();
 	public final Quaternion rotMagQuaternion = new Quaternion();
 	public final Quaternion rotAdjust = new Quaternion();
-	public final Device device;
+	public final UDPDevice device;
 	public final int trackerNum;
 	protected final Quaternion correction = new Quaternion();
 	protected final int trackerId;
@@ -46,7 +47,15 @@ public class IMUTracker implements Tracker, TrackerWithTPS, TrackerWithBattery {
 	protected boolean magentometerCalibrated = false;
 	protected BufferedTimer timer = new BufferedTimer(1f);
 
-	public IMUTracker(Device device, int trackerId, int trackerNum, String name, String descriptiveName, TrackersUDPServer server, VRServer vrserver) {
+	public IMUTracker(
+		UDPDevice device,
+		int trackerId,
+		int trackerNum,
+		String name,
+		String descriptiveName,
+		TrackersUDPServer server,
+		VRServer vrserver
+	) {
 		this.device = device;
 		this.trackerNum = trackerNum;
 		this.name = name;
@@ -64,7 +73,9 @@ public class IMUTracker implements Tracker, TrackerWithTPS, TrackerWithBattery {
 
 	@Override
 	public void loadConfig(TrackerConfig config) {
-		// Loading a config is an act of user editing, therefore it shouldn't not be allowed if editing is not allowed
+		// Loading a config is an act of user editing, therefore it shouldn't
+		// not be
+		// allowed if editing is not allowed
 		if (userEditable()) {
 			if (config.mountingRotation != null) {
 				mounting = config.mountingRotation;
@@ -73,7 +84,11 @@ public class IMUTracker implements Tracker, TrackerWithTPS, TrackerWithBattery {
 				rotAdjust.loadIdentity();
 			}
 			bodyPosition = TrackerPosition.getByDesignation(config.designation);
-			setFilter(vrserver.config.getString("filters.type"), vrserver.config.getFloat("filters.amount", 0.3f), vrserver.config.getInt("filters.tickCount", 1));
+			setFilter(
+				vrserver.config.getString("filters.type"),
+				vrserver.config.getFloat("filters.amount", 0.3f),
+				vrserver.config.getInt("filters.tickCount", 1)
+			);
 		}
 	}
 
@@ -121,7 +136,8 @@ public class IMUTracker implements Tracker, TrackerWithTPS, TrackerWithBattery {
 		if (magentometerCalibrated && hasNewCorrectionData) {
 			hasNewCorrectionData = false;
 			if (magnetometerAccuracy <= MAX_MAG_CORRECTION_ACCURACY) {
-				// Adjust gyro rotation to match magnetometer rotation only if magnetometer
+				// Adjust gyro rotation to match magnetometer rotation only if
+				// magnetometer
 				// accuracy is within the parameters
 				calculateLiveMagnetometerCorrection();
 			}
@@ -148,7 +164,9 @@ public class IMUTracker implements Tracker, TrackerWithTPS, TrackerWithBattery {
 		} else {
 			store.set(rotQuaternion);
 		}
-		//correction.mult(store, store); // Correction is not used now to prevent accidental errors while debugging other things
+		// correction.mult(store, store); // Correction is not used now to
+		// prevent
+		// accidental errors while debugging other things
 		store.multLocal(rotAdjust);
 		return true;
 	}
@@ -217,22 +235,23 @@ public class IMUTracker implements Tracker, TrackerWithTPS, TrackerWithBattery {
 
 	/**
 	 * Does not perform actual gyro reset to reference, that's the task of
-	 * reference adjusted tracker. Only aligns gyro with magnetometer if
-	 * it's reliable
+	 * reference adjusted tracker. Only aligns gyro with magnetometer if it's
+	 * reliable
 	 */
 	@Override
 	public void resetYaw(Quaternion reference) {
 		if (magCalibrationStatus >= CalibrationAccuracy.HIGH.status) {
 			magentometerCalibrated = true;
-			// During calibration set correction to match magnetometer readings exactly
+			// During calibration set correction to match magnetometer readings
+			// exactly
 			// TODO : Correct only yaw
 			correction.set(rotQuaternion).inverseLocal().multLocal(rotMagQuaternion);
 		}
 	}
 
 	/**
-	 * Calculate correction between normal and magnetometer
-	 * readings up to accuracy threshold
+	 * Calculate correction between normal and magnetometer readings up to
+	 * accuracy threshold
 	 */
 	protected void calculateLiveMagnetometerCorrection() {
 		// TODO Magic, correct only yaw
@@ -280,7 +299,7 @@ public class IMUTracker implements Tracker, TrackerWithTPS, TrackerWithBattery {
 	}
 
 	@Override
-	public Device getDevice() {
+	public UDPDevice getDevice() {
 		return this.device;
 	}
 
@@ -291,11 +310,7 @@ public class IMUTracker implements Tracker, TrackerWithTPS, TrackerWithBattery {
 
 	public enum CalibrationAccuracy {
 
-		UNRELIABLE(0),
-		LOW(1),
-		MEDIUM(2),
-		HIGH(3),
-		;
+		UNRELIABLE(0), LOW(1), MEDIUM(2), HIGH(3),;
 
 		private static final CalibrationAccuracy[] byStatus = new CalibrationAccuracy[4];
 

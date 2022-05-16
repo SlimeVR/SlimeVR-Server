@@ -2,6 +2,7 @@ package dev.slimevr.vr.trackers;
 
 import io.eiren.util.BufferedTimer;
 
+
 public class VRTracker extends ComputedTracker {
 
 	protected BufferedTimer timer = new BufferedTimer(1f);

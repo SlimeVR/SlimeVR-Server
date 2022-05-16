@@ -3,6 +3,7 @@ package dev.slimevr.bridge;
 import dev.slimevr.util.ann.VRServerThread;
 import dev.slimevr.vr.trackers.ShareableTracker;
 
+
 public class OpenVRNativeBridge implements Bridge {
 
 	public OpenVRNativeBridge() {

@@ -7,6 +7,7 @@ import io.eiren.util.OperatingSystem;
 import io.eiren.util.ann.AWTThread;
 import io.eiren.util.logging.LogManager;
 
+
 public class Keybinding implements HotkeyListener {
 	private static final int RESET = 1;
 	private static final int QUICK_RESET = 2;
@@ -17,7 +18,10 @@ public class Keybinding implements HotkeyListener {
 		this.server = server;
 
 		if (OperatingSystem.getCurrentPlatform() != OperatingSystem.WINDOWS) {
-			LogManager.log.info("[Keybinding] Currently only supported on Windows. Keybindings will be disabled.");
+			LogManager
+				.info(
+					"[Keybinding] Currently only supported on Windows. Keybindings will be disabled."
+				);
 			return;
 		}
 
@@ -31,7 +35,7 @@ public class Keybinding implements HotkeyListener {
 					this.server.config.setProperty("keybindings.reset", resetBinding);
 				}
 				JIntellitype.getInstance().registerHotKey(RESET, resetBinding);
-				LogManager.log.info("[Keybinding] Bound reset to " + resetBinding);
+				LogManager.info("[Keybinding] Bound reset to " + resetBinding);
 
 				String quickResetBinding = this.server.config.getString("keybindings.quickReset");
 				if (quickResetBinding == null) {
@@ -39,10 +43,13 @@ public class Keybinding implements HotkeyListener {
 					this.server.config.setProperty("keybindings.quickReset", quickResetBinding);
 				}
 				JIntellitype.getInstance().registerHotKey(QUICK_RESET, quickResetBinding);
-				LogManager.log.info("[Keybinding] Bound quick reset to " + quickResetBinding);
+				LogManager.info("[Keybinding] Bound quick reset to " + quickResetBinding);
 			}
 		} catch (Throwable e) {
-			LogManager.log.info("[Keybinding] JIntellitype initialization failed. Keybindings will be disabled. Try restarting your computer.");
+			LogManager
+				.info(
+					"[Keybinding] JIntellitype initialization failed. Keybindings will be disabled. Try restarting your computer."
+				);
 		}
 	}
 
@@ -51,11 +58,11 @@ public class Keybinding implements HotkeyListener {
 	public void onHotKey(int identifier) {
 		switch (identifier) {
 			case RESET:
-				LogManager.log.info("[Keybinding] Reset pressed");
+				LogManager.info("[Keybinding] Reset pressed");
 				server.resetTrackers();
 				break;
 			case QUICK_RESET:
-				LogManager.log.info("[Keybinding] Quick reset pressed");
+				LogManager.info("[Keybinding] Quick reset pressed");
 				server.resetTrackersYaw();
 				break;
 		}

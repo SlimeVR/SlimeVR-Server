@@ -8,12 +8,14 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.NoSuchElementException;
 
+
 public final class PoseFrames implements Iterable<TrackerFrame[]> {
 
 	private final FastList<PoseFrameTracker> trackers;
 
 	/**
-	 * Creates a {@link PoseFrames} object with the provided list of {@link PoseFrameTracker}s as the internal {@link PoseFrameTracker} list
+	 * Creates a {@link PoseFrames} object with the provided list of
+	 * {@link PoseFrameTracker}s as the internal {@link PoseFrameTracker} list
 	 *
 	 * @see {@link FastList}, {@link PoseFrameTracker}
 	 */
@@ -22,7 +24,8 @@ public final class PoseFrames implements Iterable<TrackerFrame[]> {
 	}
 
 	/**
-	 * Creates a {@link PoseFrames} object with the specified initial tracker capacity
+	 * Creates a {@link PoseFrames} object with the specified initial tracker
+	 * capacity
 	 *
 	 * @see {@link #PoseFrames(FastList)}
 	 */
@@ -31,7 +34,8 @@ public final class PoseFrames implements Iterable<TrackerFrame[]> {
 	}
 
 	/**
-	 * Creates a {@link PoseFrames} object with the default initial tracker capacity of {@code 5}
+	 * Creates a {@link PoseFrames} object with the default initial tracker
+	 * capacity of {@code 5}
 	 *
 	 * @see {@link #PoseFrames(int)}
 	 */
@@ -40,7 +44,8 @@ public final class PoseFrames implements Iterable<TrackerFrame[]> {
 	}
 
 	/**
-	 * Adds the provided {@link PoseFrameTracker} into the internal {@link PoseFrameTracker} list
+	 * Adds the provided {@link PoseFrameTracker} into the internal
+	 * {@link PoseFrameTracker} list
 	 *
 	 * @return The {@link PoseFrameTracker} provided
 	 * @see {@link List#add(Object)}, {@link PoseFrameTracker}
@@ -51,7 +56,8 @@ public final class PoseFrames implements Iterable<TrackerFrame[]> {
 	}
 
 	/**
-	 * Removes the {@link PoseFrameTracker} at the specified index from the internal {@link PoseFrameTracker} list
+	 * Removes the {@link PoseFrameTracker} at the specified index from the
+	 * internal {@link PoseFrameTracker} list
 	 *
 	 * @return The {@link PoseFrameTracker} previously at the specified index
 	 * @see {@link List#remove(int)}, {@link PoseFrameTracker}
@@ -61,9 +67,11 @@ public final class PoseFrames implements Iterable<TrackerFrame[]> {
 	}
 
 	/**
-	 * Removes the specified {@link PoseFrameTracker} from the internal {@link PoseFrameTracker} list
+	 * Removes the specified {@link PoseFrameTracker} from the internal
+	 * {@link PoseFrameTracker} list
 	 *
-	 * @return {@code true} if the internal {@link PoseFrameTracker} list contained the specified {@link PoseFrameTracker}
+	 * @return {@code true} if the internal {@link PoseFrameTracker} list
+	 * contained the specified {@link PoseFrameTracker}
 	 * @see {@link List#remove(Object)}, {@link PoseFrameTracker}
 	 */
 	public boolean removeTracker(PoseFrameTracker tracker) {
@@ -80,7 +88,8 @@ public final class PoseFrames implements Iterable<TrackerFrame[]> {
 	}
 
 	/**
-	 * Fake clears the internal {@link PoseFrameTracker} list by setting the size to zero
+	 * Fake clears the internal {@link PoseFrameTracker} list by setting the
+	 * size to zero
 	 *
 	 * @see {@link FastList#fakeClear()}, {@link PoseFrameTracker}
 	 */
@@ -104,12 +113,14 @@ public final class PoseFrames implements Iterable<TrackerFrame[]> {
 		return trackers;
 	}
 
-	//#region Data Utilities
+	// #region Data Utilities
 
 	/**
-	 * A utility function to get the maximum Y value of the tracker associated with the {@link TrackerPosition#HMD} tracker position
+	 * A utility function to get the maximum Y value of the tracker associated
+	 * with the {@link TrackerPosition#HMD} tracker position
 	 *
-	 * @return The maximum Y value of the tracker associated with the {@link TrackerPosition#HMD} tracker position
+	 * @return The maximum Y value of the tracker associated with the
+	 * {@link TrackerPosition#HMD} tracker position
 	 * @see {@link #getMaxHeight(TrackerPosition)}, {@link TrackerPosition#HMD}
 	 */
 	public float getMaxHmdHeight() {
@@ -117,9 +128,11 @@ public final class PoseFrames implements Iterable<TrackerFrame[]> {
 	}
 
 	/**
-	 * A utility function to get the maximum Y value of the tracker associated with the specified {@link TrackerPosition}
+	 * A utility function to get the maximum Y value of the tracker associated
+	 * with the specified {@link TrackerPosition}
 	 *
-	 * @return The maximum Y value of the tracker associated with the specified {@link TrackerPosition}
+	 * @return The maximum Y value of the tracker associated with the specified
+	 * {@link TrackerPosition}
 	 * @see {@link TrackerPosition}
 	 */
 	public float getMaxHeight(TrackerPosition trackerPosition) {
@@ -139,10 +152,11 @@ public final class PoseFrames implements Iterable<TrackerFrame[]> {
 
 		return maxHeight;
 	}
-	//#endregion
+	// #endregion
 
 	/**
-	 * @return The maximum number of {@link TrackerFrame}s contained within each {@link PoseFrameTracker} in the internal {@link PoseFrameTracker} list
+	 * @return The maximum number of {@link TrackerFrame}s contained within each
+	 * {@link PoseFrameTracker} in the internal {@link PoseFrameTracker} list
 	 * @see {@link PoseFrameTracker#getFrameCount()}, {@link PoseFrameTracker}
 	 */
 	public int getMaxFrameCount() {
@@ -158,10 +172,13 @@ public final class PoseFrames implements Iterable<TrackerFrame[]> {
 	}
 
 	/**
-	 * Using the provided array buffer, get the {@link TrackerFrame}s contained within each {@link PoseFrameTracker} in the internal {@link PoseFrameTracker} list at the specified index
+	 * Using the provided array buffer, get the {@link TrackerFrame}s contained
+	 * within each {@link PoseFrameTracker} in the internal
+	 * {@link PoseFrameTracker} list at the specified index
 	 *
 	 * @return The number of frames written to the buffer
-	 * @see {@link PoseFrameTracker#safeGetFrame(int)}, {@link TrackerFrame}, {@link PoseFrameTracker}
+	 * @see {@link PoseFrameTracker#safeGetFrame(int)}, {@link TrackerFrame},
+	 * {@link PoseFrameTracker}
 	 */
 	public int getFrames(int frameIndex, TrackerFrame[] buffer) {
 		int frameCount = 0;
@@ -184,10 +201,14 @@ public final class PoseFrames implements Iterable<TrackerFrame[]> {
 	}
 
 	/**
-	 * Using the provided {@link List} buffer, get the {@link TrackerFrame}s contained within each {@link PoseFrameTracker} in the internal {@link PoseFrameTracker} list at the specified index
+	 * Using the provided {@link List} buffer, get the {@link TrackerFrame}s
+	 * contained within each {@link PoseFrameTracker} in the internal
+	 * {@link PoseFrameTracker} list at the specified index
 	 *
 	 * @return The number of frames written to the buffer
-	 * @see {@link PoseFrameTracker#safeGetFrame(int)}, {@link List#set(int, Object)}, {@link TrackerFrame}, {@link PoseFrameTracker}
+	 * @see {@link PoseFrameTracker#safeGetFrame(int)},
+	 * {@link List#set(int, Object)}, {@link TrackerFrame},
+	 * {@link PoseFrameTracker}
 	 */
 	public int getFrames(int frameIndex, List<TrackerFrame> buffer) {
 		int frameCount = 0;
@@ -210,8 +231,11 @@ public final class PoseFrames implements Iterable<TrackerFrame[]> {
 	}
 
 	/**
-	 * @return The {@link TrackerFrame}s contained within each {@link PoseFrameTracker} in the internal {@link PoseFrameTracker} list at the specified index
-	 * @see {@link PoseFrameTracker#safeGetFrame(int)}, {@link TrackerFrame}, {@link PoseFrameTracker}
+	 * @return The {@link TrackerFrame}s contained within each
+	 * {@link PoseFrameTracker} in the internal {@link PoseFrameTracker} list at
+	 * the specified index
+	 * @see {@link PoseFrameTracker#safeGetFrame(int)}, {@link TrackerFrame},
+	 * {@link PoseFrameTracker}
 	 */
 	public TrackerFrame[] getFrames(int frameIndex) {
 		TrackerFrame[] trackerFrames = new TrackerFrame[trackers.size()];

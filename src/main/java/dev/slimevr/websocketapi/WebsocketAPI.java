@@ -15,56 +15,71 @@ import java.nio.ByteBuffer;
 import java.util.Collections;
 import java.util.stream.Stream;
 
+
 public class WebsocketAPI extends WebSocketServer implements ProtocolAPIServer {
-	
+
 	public final VRServer server;
 	public final ProtocolAPI protocolAPI;
-	
+
 	public WebsocketAPI(VRServer server, ProtocolAPI protocolAPI) {
 		super(new InetSocketAddress(21110), Collections.singletonList(new Draft_6455()));
 		this.server = server;
 		this.protocolAPI = protocolAPI;
-		
+
 		this.protocolAPI.registerAPIServer(this);
 	}
-	
+
 	@Override
 	public void onOpen(WebSocket conn, ClientHandshake handshake) {
-		LogManager.log.info("[WebSocketAPI] New connection from: " + conn.getRemoteSocketAddress().getAddress().getHostAddress());
+		LogManager
+			.info(
+				"[WebSocketAPI] New connection from: "
+					+ conn.getRemoteSocketAddress().getAddress().getHostAddress()
+			);
 		conn.setAttachment(new WebsocketConnection(conn));
 	}
-	
+
 	@Override
 	public void onClose(WebSocket conn, int code, String reason, boolean remote) {
-		LogManager.log.info("[WebSocketAPI] Disconnected: " + conn.getRemoteSocketAddress().getAddress().getHostAddress() + ", (" + code + ") " + reason + ". Remote: " + remote);
+		LogManager
+			.info(
+				"[WebSocketAPI] Disconnected: "
+					+ conn.getRemoteSocketAddress().getAddress().getHostAddress()
+					+ ", ("
+					+ code
+					+ ") "
+					+ reason
+					+ ". Remote: "
+					+ remote
+			);
 	}
-	
+
 	@Override
 	public void onMessage(WebSocket conn, String message) {
 	}
-	
+
 	@Override
 	public void onMessage(WebSocket conn, ByteBuffer message) {
-		var connection = conn.<WebsocketConnection> getAttachment();
-		if(connection != null)
+		var connection = conn.<WebsocketConnection>getAttachment();
+		if (connection != null)
 			this.protocolAPI.onMessage(connection, message);
 	}
-	
+
 	@Override
 	public void onError(WebSocket conn, Exception ex) {
 		ex.printStackTrace();
 	}
-	
+
 	@Override
 	public void onStart() {
-		LogManager.log.info("[WebSocketAPI] Web Socket API started on port " + getPort());
+		LogManager.info("[WebSocketAPI] Web Socket API started on port " + getPort());
 		setConnectionLostTimeout(0);
 	}
-	
+
 	@Override
 	public Stream<GenericConnection> getAPIConnections() {
 		return this.getConnections().stream().map(conn -> {
-			var c = conn.<WebsocketConnection> getAttachment();
+			var c = conn.<WebsocketConnection>getAttachment();
 			return (GenericConnection) c;
 		}).filter(c -> c != null);
 	}

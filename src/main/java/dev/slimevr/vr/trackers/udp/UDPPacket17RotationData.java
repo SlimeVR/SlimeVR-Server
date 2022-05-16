@@ -5,6 +5,7 @@ import com.jme3.math.Quaternion;
 import java.io.IOException;
 import java.nio.ByteBuffer;
 
+
 public class UDPPacket17RotationData extends UDPPacket implements SensorSpecificPacket {
 
 	public static final int DATA_TYPE_NORMAL = 1;

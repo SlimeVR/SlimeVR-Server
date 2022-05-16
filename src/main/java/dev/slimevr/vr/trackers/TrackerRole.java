@@ -12,7 +12,12 @@ public enum TrackerRole {
 	LEFT_ELBOW(7, "vive_tracker_left_elbow", "TrackerRole_LeftElbow", DeviceType.TRACKER),
 	RIGHT_ELBOW(8, "vive_tracker_right_elbow", "TrackerRole_RightElbow", DeviceType.TRACKER),
 	LEFT_SHOULDER(9, "vive_tracker_left_shoulder", "TrackerRole_LeftShoulder", DeviceType.TRACKER),
-	RIGHT_SHOULDER(10, "vive_tracker_right_shoulder", "TrackerRole_RightShoulder", DeviceType.TRACKER),
+	RIGHT_SHOULDER(
+		10,
+		"vive_tracker_right_shoulder",
+		"TrackerRole_RightShoulder",
+		DeviceType.TRACKER
+	),
 	LEFT_HAND(11, "vive_tracker_handed", "TrackerRole_Handed", DeviceType.TRACKER),
 	RIGHT_HAND(12, "vive_tracker_handed", "TrackerRole_Handed", DeviceType.TRACKER),
 	LEFT_CONTROLLER(13, "vive_tracker_handed", "TrackerRole_Handed", DeviceType.CONTROLLER),
@@ -23,8 +28,7 @@ public enum TrackerRole {
 	KEYBOARD(18, "vive_tracker_keyboard", "TrackerRole_Keyboard", DeviceType.TRACKER),
 	HMD(19, "", "", DeviceType.HMD),
 	BEACON(20, "", "", DeviceType.TRACKING_REFERENCE),
-	GENERIC_CONTROLLER(21, "vive_tracker_handed", "TrackerRole_Handed", DeviceType.CONTROLLER),
-	;
+	GENERIC_CONTROLLER(21, "vive_tracker_handed", "TrackerRole_Handed", DeviceType.CONTROLLER);
 
 	public static final TrackerRole[] values = values();
 	private static final TrackerRole[] byId = new TrackerRole[22];
@@ -32,7 +36,14 @@ public enum TrackerRole {
 	static {
 		for (TrackerRole tr : values) {
 			if (byId[tr.id] != null)
-				throw new AssertionError("Tracker role id " + tr.id + " occupied by " + byId[tr.id] + " when adding " + tr);
+				throw new AssertionError(
+					"Tracker role id "
+						+ tr.id
+						+ " occupied by "
+						+ byId[tr.id]
+						+ " when adding "
+						+ tr
+				);
 			byId[tr.id] = tr;
 		}
 	}

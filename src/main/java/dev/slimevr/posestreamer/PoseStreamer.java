@@ -5,6 +5,7 @@ import io.eiren.util.logging.LogManager;
 
 import java.io.IOException;
 
+
 public class PoseStreamer {
 
 	protected long frameRecordingInterval = 60L;
@@ -26,7 +27,7 @@ public class PoseStreamer {
 			poseFileStream.writeFrame(skeleton);
 		} catch (Exception e) {
 			// Handle any exceptions without crashing the program
-			LogManager.log.severe("[PoseStreamer] Exception while saving frame", e);
+			LogManager.severe("[PoseStreamer] Exception while saving frame", e);
 		}
 	}
 
@@ -46,7 +47,8 @@ public class PoseStreamer {
 		return skeleton;
 	}
 
-	public synchronized void setOutput(PoseDataStream poseFileStream, long intervalMs) throws IOException {
+	public synchronized void setOutput(PoseDataStream poseFileStream, long intervalMs)
+		throws IOException {
 		setFrameInterval(intervalMs);
 		setOutput(poseFileStream);
 	}
