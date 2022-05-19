@@ -125,7 +125,7 @@ public enum SkeletonConfigValue {
 		"forearmLength",
 		"Forearm length",
 		0.25f,
-		new SkeletonNodeOffset[] { SkeletonNodeOffset.FOREARM_CONTRL,
+		new SkeletonNodeOffset[] { SkeletonNodeOffset.FOREARM,
 			SkeletonNodeOffset.FOREARM_HMD }
 	),
 	SHOULDERS_DISTANCE(

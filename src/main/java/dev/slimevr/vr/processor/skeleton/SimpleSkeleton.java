@@ -1045,7 +1045,7 @@ public class SimpleSkeleton extends HumanSkeleton implements SkeletonConfigCallb
 				leftWristNodeContrl.localTransform.setTranslation(offset);
 				rightWristNodeContrl.localTransform.setTranslation(offset);
 				break;
-			case FOREARM_CONTRL:
+			case FOREARM:
 				leftElbowNodeContrl.localTransform.setTranslation(offset);
 				rightElbowNodeContrl.localTransform.setTranslation(offset);
 				break;

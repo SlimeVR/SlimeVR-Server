@@ -345,7 +345,7 @@ public class SkeletonConfig {
 					-getConfig(SkeletonConfigValue.CONTROLLER_DISTANCE_Z)
 				);
 				break;
-			case FOREARM_CONTRL:
+			case FOREARM:
 				setNodeOffset(nodeOffset, 0, getConfig(SkeletonConfigValue.FOREARM_LENGTH), 0);
 				break;
 			case FOREARM_HMD:
