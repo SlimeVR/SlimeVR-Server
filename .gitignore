@@ -20,8 +20,10 @@ vrconfig.yml
 BVH Recordings
 Recordings
 
-# Ignore eclipse stuff (other than .settings)
+# Ignore eclipse stuff
 .project
 .classpath
-.settings/
-!.settings/org.eclipse.jdt.core.prefs
+.settings
+
+# VSCode stuff
+/.vscode/settings.json

@@ -17,23 +17,6 @@ It's recommended to download installer from here: https://github.com/SlimeVR/Sli
 
 Latest instructions are [on our site](https://docs.slimevr.dev/server-setup/slimevr-setup.html).
 
-## How to build
-
-You need to execute these commands in the folder where you want this project.
-
-```bash
-# Clone repositories
-git clone --recursive https://github.com/SlimeVR/SlimeVR-Server.git
-
-# Enter the directory and build the runnable server JAR
-cd SlimeVR-Server
-gradlew shadowJar
-```
-
-Open Slime VR Server project in Eclipse or Intellij Idea
-
-run gradle command `shadowJar` to build a runnable server JAR
-
 ## License Clarification
 
 **SlimeVR software** (including server, firmware, drivers, installator, documents, and others - see licence for each case specifically) **is distributed under the [MIT License](https://github.com/SlimeVR/SlimeVR-Server/blob/main/LICENSE) and is copyright of Eiren Rain and SlimeVR.** The MIT Licence is a permissive license giving you rights to modify and distribute the software with little strings attached.
@@ -46,5 +29,6 @@ run gradle command `shadowJar` to build a runnable server JAR
 Please refer to the [LICENSE](https://github.com/SlimeVR/SlimeVR-Server/blob/main/LICENSE) file if you are at any point uncertain what the exact the requirements are.
 
 ## Contributions
-
 By contributing to this project you are placing all your code under MIT or less restricting licenses, and you certify that the code you have used is compatible with those licenses or is authored by you. If you're doing so on your work time, you certify that your employer is okay with this.
+
+For a how-to on contributing, see [CONTRIBUTING.md](CONTRIBUTING.md).
