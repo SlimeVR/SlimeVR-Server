@@ -16,8 +16,8 @@ public class SkeletonConfig {
 	protected final EnumMap<SkeletonConfigToggle, Boolean> toggles = new EnumMap<SkeletonConfigToggle, Boolean>(
 		SkeletonConfigToggle.class
 	);
-	protected final EnumMap<SkeletonNodeOffset, Vector3f> nodeOffsets = new EnumMap<SkeletonNodeOffset, Vector3f>(
-		SkeletonNodeOffset.class
+	protected final EnumMap<BoneType, Vector3f> nodeOffsets = new EnumMap<BoneType, Vector3f>(
+		BoneType.class
 	);
 
 	protected final boolean autoUpdateOffsets;
@@ -144,7 +144,7 @@ public class SkeletonConfig {
 
 		// Re-compute the affected offsets
 		if (computeOffsets && autoUpdateOffsets && config.affectedOffsets != null) {
-			for (SkeletonNodeOffset offset : config.affectedOffsets) {
+			for (BoneType offset : config.affectedOffsets) {
 				computeNodeOffset(offset);
 			}
 		}
@@ -227,7 +227,7 @@ public class SkeletonConfig {
 		return getToggle(SkeletonConfigToggle.getByStringValue(config));
 	}
 
-	protected void setNodeOffset(SkeletonNodeOffset nodeOffset, float x, float y, float z) {
+	protected void setNodeOffset(BoneType nodeOffset, float x, float y, float z) {
 		Vector3f offset = nodeOffsets.get(nodeOffset);
 
 		if (offset == null) {
@@ -246,7 +246,7 @@ public class SkeletonConfig {
 		}
 	}
 
-	protected void setNodeOffset(SkeletonNodeOffset nodeOffset, Vector3f offset) {
+	protected void setNodeOffset(BoneType nodeOffset, Vector3f offset) {
 		if (offset == null) {
 			setNodeOffset(nodeOffset, 0f, 0f, 0f);
 			return;
@@ -255,11 +255,11 @@ public class SkeletonConfig {
 		setNodeOffset(nodeOffset, offset.x, offset.y, offset.z);
 	}
 
-	public Vector3f getNodeOffset(SkeletonNodeOffset nodeOffset) {
+	public Vector3f getNodeOffset(BoneType nodeOffset) {
 		return nodeOffsets.getOrDefault(nodeOffset, Vector3f.ZERO);
 	}
 
-	public void computeNodeOffset(SkeletonNodeOffset nodeOffset) {
+	public void computeNodeOffset(BoneType nodeOffset) {
 		switch (nodeOffset) {
 			case HEAD:
 				setNodeOffset(nodeOffset, 0, 0, getConfig(SkeletonConfigValue.HEAD));
@@ -302,7 +302,7 @@ public class SkeletonConfig {
 				setNodeOffset(nodeOffset, getConfig(SkeletonConfigValue.HIPS_WIDTH) / 2f, 0, 0);
 				break;
 
-			case KNEE:
+			case UPPER_LEG:
 				setNodeOffset(
 					nodeOffset,
 					0,
@@ -314,7 +314,7 @@ public class SkeletonConfig {
 			case KNEE_TRACKER:
 				setNodeOffset(nodeOffset, 0, 0, -getConfig(SkeletonConfigValue.SKELETON_OFFSET));
 				break;
-			case ANKLE:
+			case LOWER_LEG:
 				setNodeOffset(
 					nodeOffset,
 					0,
@@ -345,10 +345,10 @@ public class SkeletonConfig {
 					-getConfig(SkeletonConfigValue.CONTROLLER_DISTANCE_Z)
 				);
 				break;
-			case FOREARM:
+			case LOWER_ARM:
 				setNodeOffset(nodeOffset, 0, getConfig(SkeletonConfigValue.FOREARM_LENGTH), 0);
 				break;
-			case FOREARM_HMD:
+			case LOWER_ARM_HMD:
 				setNodeOffset(nodeOffset, 0, -getConfig(SkeletonConfigValue.FOREARM_LENGTH), 0);
 				break;
 			case ELBOW_TRACKER:
@@ -379,7 +379,7 @@ public class SkeletonConfig {
 	}
 
 	public void computeAllNodeOffsets() {
-		for (SkeletonNodeOffset offset : SkeletonNodeOffset.values) {
+		for (BoneType offset : BoneType.values) {
 			computeNodeOffset(offset);
 		}
 	}

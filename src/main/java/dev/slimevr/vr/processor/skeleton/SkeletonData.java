@@ -9,14 +9,18 @@ import java.util.Map;
 import dev.slimevr.vr.processor.TransformNode;
 
 
+/**
+ * WIP Saved as part of skeleton rework. Is not finished.
+ */
+@Deprecated
 public class SkeletonData {
 
 	public final Joint[] joints;
 	public final List<Bone> bones = new ArrayList<>();
 	private final SkeletonConfig config;
 
-	private Map<SkeletonNodeOffset, List<Bone>> bonesByOffsetKey = new EnumMap<>(
-		SkeletonNodeOffset.class
+	private Map<BoneType, List<Bone>> bonesByOffsetKey = new EnumMap<>(
+		BoneType.class
 	);
 
 	// #region Upper body nodes (torso)
@@ -70,68 +74,68 @@ public class SkeletonData {
 		// Forward is Negative Z, left iz Negative X. See head joint and hip
 		// joints as examples.
 		// #region Assemble skeleton from hmd to hip
-		hmdJoint.attachJoint(headJoint, SkeletonNodeOffset.HEAD);
-		headJoint.attachJoint(neckJoint, SkeletonNodeOffset.NECK);
-		neckJoint.attachJoint(chestJoint, SkeletonNodeOffset.CHEST);
-		chestJoint.attachJoint(waistJoint, SkeletonNodeOffset.WAIST);
-		waistJoint.attachJoint(hipJoint, SkeletonNodeOffset.HIP);
+		hmdJoint.attachJoint(headJoint, BoneType.HEAD);
+		headJoint.attachJoint(neckJoint, BoneType.NECK);
+		neckJoint.attachJoint(chestJoint, BoneType.CHEST);
+		chestJoint.attachJoint(waistJoint, BoneType.WAIST);
+		waistJoint.attachJoint(hipJoint, BoneType.HIP);
 		// #endregion
 
 		// #region Assemble skeleton from hips to feet
-		hipJoint.attachJoint(leftHipJoint, SkeletonNodeOffset.LEFT_HIP);
-		hipJoint.attachJoint(rightHipJoint, SkeletonNodeOffset.RIGHT_HIP);
+		hipJoint.attachJoint(leftHipJoint, BoneType.LEFT_HIP);
+		hipJoint.attachJoint(rightHipJoint, BoneType.RIGHT_HIP);
 
-		leftHipJoint.attachJoint(leftKneeJoint, SkeletonNodeOffset.KNEE);
-		rightHipJoint.attachJoint(rightKneeJoint, SkeletonNodeOffset.KNEE);
+		leftHipJoint.attachJoint(leftKneeJoint, BoneType.UPPER_LEG);
+		rightHipJoint.attachJoint(rightKneeJoint, BoneType.UPPER_LEG);
 
-		leftKneeJoint.attachJoint(leftAnkleJoint, SkeletonNodeOffset.ANKLE);
-		rightKneeJoint.attachJoint(rightAnkleJoint, SkeletonNodeOffset.ANKLE);
+		leftKneeJoint.attachJoint(leftAnkleJoint, BoneType.LOWER_LEG);
+		rightKneeJoint.attachJoint(rightAnkleJoint, BoneType.LOWER_LEG);
 
-		leftAnkleJoint.attachJoint(leftFootJoint, SkeletonNodeOffset.FOOT);
-		rightAnkleJoint.attachJoint(rightFootJoint, SkeletonNodeOffset.FOOT);
+		leftAnkleJoint.attachJoint(leftFootJoint, BoneType.FOOT);
+		rightAnkleJoint.attachJoint(rightFootJoint, BoneType.FOOT);
 		// #endregion
 
 		// #region Assemble skeleton arms from controllers
 		// TODO : Rebuild skeleton depending on if it's from controllers or from
 		// shoulders
 		// if (fromControllers)
-		leftHandJoint.attachJoint(leftWristJoint, SkeletonNodeOffset.HAND);
-		rightHandJoint.attachJoint(rightWristJoint, SkeletonNodeOffset.HAND);
-		rightWristJoint.attachJoint(leftElbowJoint, SkeletonNodeOffset.FOREARM);
-		leftWristJoint.attachJoint(rightElbowJoint, SkeletonNodeOffset.FOREARM);
+		leftHandJoint.attachJoint(leftWristJoint, BoneType.HAND);
+		rightHandJoint.attachJoint(rightWristJoint, BoneType.HAND);
+		rightWristJoint.attachJoint(leftElbowJoint, BoneType.LOWER_ARM);
+		leftWristJoint.attachJoint(rightElbowJoint, BoneType.LOWER_ARM);
 		// } else {
 		// #endregion
 
 		// #region Assemble skeleton arms from chest
-		chestJoint.attachJoint(leftShoulderJoint, SkeletonNodeOffset.LEFT_SHOULDER);
-		chestJoint.attachJoint(rightShoulderJoint, SkeletonNodeOffset.RIGHT_SHOULDER);
+		chestJoint.attachJoint(leftShoulderJoint, BoneType.LEFT_SHOULDER);
+		chestJoint.attachJoint(rightShoulderJoint, BoneType.RIGHT_SHOULDER);
 
-		leftShoulderJoint.attachJoint(leftElbowJoint, SkeletonNodeOffset.FOREARM);
-		rightShoulderJoint.attachJoint(rightElbowJoint, SkeletonNodeOffset.FOREARM);
+		leftShoulderJoint.attachJoint(leftElbowJoint, BoneType.LOWER_ARM);
+		rightShoulderJoint.attachJoint(rightElbowJoint, BoneType.LOWER_ARM);
 
-		leftElbowJoint.attachJoint(leftWristJoint, SkeletonNodeOffset.HAND);
-		rightElbowJoint.attachJoint(rightWristJoint, SkeletonNodeOffset.HAND);
+		leftElbowJoint.attachJoint(leftWristJoint, BoneType.HAND);
+		rightElbowJoint.attachJoint(rightWristJoint, BoneType.HAND);
 
-		leftWristJoint.attachJoint(leftHandJoint, SkeletonNodeOffset.HAND);
-		rightWristJoint.attachJoint(rightHandJoint, SkeletonNodeOffset.HAND);
+		leftWristJoint.attachJoint(leftHandJoint, BoneType.HAND);
+		rightWristJoint.attachJoint(rightHandJoint, BoneType.HAND);
 		// }
 		// #endregion
 
 		// #region Attach tracker nodes for offsets
-		chestJoint.attachJoint(trackerChestJoint, SkeletonNodeOffset.CHEST_TRACKER);
-		hipJoint.attachJoint(trackerWaistJoint, SkeletonNodeOffset.WAIST_TRACKER);
+		chestJoint.attachJoint(trackerChestJoint, BoneType.CHEST_TRACKER);
+		hipJoint.attachJoint(trackerWaistJoint, BoneType.WAIST_TRACKER);
 
-		leftKneeJoint.attachJoint(trackerLeftKneeJoint, SkeletonNodeOffset.KNEE_TRACKER);
-		rightKneeJoint.attachJoint(trackerRightKneeJoint, SkeletonNodeOffset.KNEE_TRACKER);
+		leftKneeJoint.attachJoint(trackerLeftKneeJoint, BoneType.KNEE_TRACKER);
+		rightKneeJoint.attachJoint(trackerRightKneeJoint, BoneType.KNEE_TRACKER);
 
-		leftFootJoint.attachJoint(trackerLeftFootJoint, SkeletonNodeOffset.FOOT_TRACKER);
-		rightFootJoint.attachJoint(trackerRightFootJoint, SkeletonNodeOffset.FOOT_TRACKER);
+		leftFootJoint.attachJoint(trackerLeftFootJoint, BoneType.FOOT_TRACKER);
+		rightFootJoint.attachJoint(trackerRightFootJoint, BoneType.FOOT_TRACKER);
 
-		leftElbowJoint.attachJoint(trackerLeftElbowJoint, SkeletonNodeOffset.ELBOW_TRACKER);
-		rightElbowJoint.attachJoint(trackerRightElbowJoint, SkeletonNodeOffset.ELBOW_TRACKER);
+		leftElbowJoint.attachJoint(trackerLeftElbowJoint, BoneType.ELBOW_TRACKER);
+		rightElbowJoint.attachJoint(trackerRightElbowJoint, BoneType.ELBOW_TRACKER);
 
-		leftHandJoint.attachJoint(trackerLeftHandJoint, SkeletonNodeOffset.HAND_TRACKER);
-		rightHandJoint.attachJoint(trackerRightHandJoint, SkeletonNodeOffset.HAND_TRACKER);
+		leftHandJoint.attachJoint(trackerLeftHandJoint, BoneType.HAND_TRACKER);
+		rightHandJoint.attachJoint(trackerRightHandJoint, BoneType.HAND_TRACKER);
 		// #endregion
 	}
 
@@ -144,7 +148,7 @@ public class SkeletonData {
 			node = new TransformNode(name, false);
 		}
 
-		public Bone attachJoint(Joint childJoint, SkeletonNodeOffset offsetKey) {
+		public Bone attachJoint(Joint childJoint, BoneType offsetKey) {
 			Bone bone = childrenBones.get(childJoint);
 			if (bone == null) {
 				bone = new Bone(
@@ -193,13 +197,13 @@ public class SkeletonData {
 	public class Bone {
 		public final Joint parent;
 		public final Joint child;
-		public SkeletonNodeOffset offsetKey;
+		public BoneType offsetKey;
 
 		public Bone(
 			String name,
 			Joint firstJoint,
 			Joint secondJoint,
-			SkeletonNodeOffset offsetKey
+			BoneType offsetKey
 		) {
 			this.parent = firstJoint;
 			this.child = secondJoint;

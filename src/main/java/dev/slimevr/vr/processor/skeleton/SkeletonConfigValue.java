@@ -11,7 +11,7 @@ public enum SkeletonConfigValue {
 		"headShift",
 		"Head shift",
 		0.1f,
-		new SkeletonNodeOffset[] { SkeletonNodeOffset.HEAD }
+		new BoneType[] { BoneType.HEAD }
 	),
 	NECK(
 		2,
@@ -19,7 +19,7 @@ public enum SkeletonConfigValue {
 		"neckLength",
 		"Neck length",
 		0.1f,
-		new SkeletonNodeOffset[] { SkeletonNodeOffset.NECK }
+		new BoneType[] { BoneType.NECK }
 	),
 	TORSO(
 		3,
@@ -27,7 +27,7 @@ public enum SkeletonConfigValue {
 		"torsoLength",
 		"Torso length",
 		0.56f,
-		new SkeletonNodeOffset[] { SkeletonNodeOffset.WAIST }
+		new BoneType[] { BoneType.WAIST }
 	),
 	CHEST(
 		4,
@@ -35,8 +35,8 @@ public enum SkeletonConfigValue {
 		"chestDistance",
 		"Chest distance",
 		0.32f,
-		new SkeletonNodeOffset[] { SkeletonNodeOffset.CHEST, SkeletonNodeOffset.WAIST,
-			SkeletonNodeOffset.LEFT_SHOULDER, SkeletonNodeOffset.RIGHT_SHOULDER }
+		new BoneType[] { BoneType.CHEST, BoneType.WAIST,
+			BoneType.LEFT_SHOULDER, BoneType.RIGHT_SHOULDER }
 	),
 	WAIST(
 		5,
@@ -44,7 +44,7 @@ public enum SkeletonConfigValue {
 		"waistDistance",
 		"Waist distance",
 		0.04f,
-		new SkeletonNodeOffset[] { SkeletonNodeOffset.WAIST, SkeletonNodeOffset.HIP }
+		new BoneType[] { BoneType.WAIST, BoneType.HIP }
 	),
 	HIP_OFFSET(
 		6,
@@ -52,7 +52,7 @@ public enum SkeletonConfigValue {
 		"hipOffset",
 		"Hip offset",
 		0.0f,
-		new SkeletonNodeOffset[] { SkeletonNodeOffset.HIP_TRACKER }
+		new BoneType[] { BoneType.HIP_TRACKER }
 	),
 	HIPS_WIDTH(
 		7,
@@ -60,7 +60,7 @@ public enum SkeletonConfigValue {
 		"hipsWidth",
 		"Hips width",
 		0.26f,
-		new SkeletonNodeOffset[] { SkeletonNodeOffset.LEFT_HIP, SkeletonNodeOffset.RIGHT_HIP }
+		new BoneType[] { BoneType.LEFT_HIP, BoneType.RIGHT_HIP }
 	),
 	LEGS_LENGTH(
 		8,
@@ -68,7 +68,7 @@ public enum SkeletonConfigValue {
 		"legsLength",
 		"Legs length",
 		0.92f,
-		new SkeletonNodeOffset[] { SkeletonNodeOffset.KNEE }
+		new BoneType[] { BoneType.UPPER_LEG }
 	),
 	KNEE_HEIGHT(
 		9,
@@ -76,7 +76,7 @@ public enum SkeletonConfigValue {
 		"kneeHeight",
 		"Knee height",
 		0.50f,
-		new SkeletonNodeOffset[] { SkeletonNodeOffset.KNEE, SkeletonNodeOffset.ANKLE }
+		new BoneType[] { BoneType.UPPER_LEG, BoneType.LOWER_LEG }
 	),
 	FOOT_LENGTH(
 		10,
@@ -84,7 +84,7 @@ public enum SkeletonConfigValue {
 		"footLength",
 		"Foot length",
 		0.05f,
-		new SkeletonNodeOffset[] { SkeletonNodeOffset.FOOT }
+		new BoneType[] { BoneType.FOOT }
 	),
 	FOOT_OFFSET(
 		11,
@@ -92,7 +92,7 @@ public enum SkeletonConfigValue {
 		"footOffset",
 		"Foot offset",
 		-0.05f,
-		new SkeletonNodeOffset[] { SkeletonNodeOffset.ANKLE }
+		new BoneType[] { BoneType.LOWER_LEG }
 	),
 	SKELETON_OFFSET(
 		12,
@@ -100,8 +100,8 @@ public enum SkeletonConfigValue {
 		"skeletonOffset",
 		"Skeleton offset",
 		0.0f,
-		new SkeletonNodeOffset[] { SkeletonNodeOffset.CHEST_TRACKER, SkeletonNodeOffset.HIP_TRACKER,
-			SkeletonNodeOffset.KNEE_TRACKER, SkeletonNodeOffset.FOOT_TRACKER }
+		new BoneType[] { BoneType.CHEST_TRACKER, BoneType.HIP_TRACKER,
+			BoneType.KNEE_TRACKER, BoneType.FOOT_TRACKER }
 	),
 	CONTROLLER_DISTANCE_Z(
 		13,
@@ -109,7 +109,7 @@ public enum SkeletonConfigValue {
 		"controllerDistanceZ",
 		"Controller distance z",
 		0.15f,
-		new SkeletonNodeOffset[] { SkeletonNodeOffset.CONTROLLER, SkeletonNodeOffset.HAND }
+		new BoneType[] { BoneType.CONTROLLER, BoneType.HAND }
 	),
 	CONTROLLER_DISTANCE_Y(
 		14,
@@ -117,7 +117,7 @@ public enum SkeletonConfigValue {
 		"controllerDistanceY",
 		"Controller distance y",
 		0.05f,
-		new SkeletonNodeOffset[] { SkeletonNodeOffset.CONTROLLER, SkeletonNodeOffset.HAND }
+		new BoneType[] { BoneType.CONTROLLER, BoneType.HAND }
 	),
 	FOREARM_LENGTH(
 		15,
@@ -125,8 +125,8 @@ public enum SkeletonConfigValue {
 		"forearmLength",
 		"Forearm length",
 		0.25f,
-		new SkeletonNodeOffset[] { SkeletonNodeOffset.FOREARM,
-			SkeletonNodeOffset.FOREARM_HMD }
+		new BoneType[] { BoneType.LOWER_ARM,
+			BoneType.LOWER_ARM_HMD }
 	),
 	SHOULDERS_DISTANCE(
 		16,
@@ -134,8 +134,8 @@ public enum SkeletonConfigValue {
 		"shoulersDistance",
 		"Shoulders distance",
 		0.08f,
-		new SkeletonNodeOffset[] { SkeletonNodeOffset.LEFT_SHOULDER,
-			SkeletonNodeOffset.RIGHT_SHOULDER }
+		new BoneType[] { BoneType.LEFT_SHOULDER,
+			BoneType.RIGHT_SHOULDER }
 	),
 	SHOULDERS_WIDTH(
 		17,
@@ -143,8 +143,8 @@ public enum SkeletonConfigValue {
 		"shoulersWidth",
 		"Shoulders width",
 		0.36f,
-		new SkeletonNodeOffset[] { SkeletonNodeOffset.LEFT_SHOULDER,
-			SkeletonNodeOffset.RIGHT_SHOULDER }
+		new BoneType[] { BoneType.LEFT_SHOULDER,
+			BoneType.RIGHT_SHOULDER }
 	),
 	UPPER_ARM_LENGTH(
 		18,
@@ -152,7 +152,7 @@ public enum SkeletonConfigValue {
 		"upperArmLength",
 		"Upper arm length",
 		0.25f,
-		new SkeletonNodeOffset[] { SkeletonNodeOffset.UPPER_ARM }
+		new BoneType[] { BoneType.UPPER_ARM }
 	),
 	ELBOW_OFFSET(
 		19,
@@ -160,7 +160,7 @@ public enum SkeletonConfigValue {
 		"elbowOffset",
 		"Elbow offset",
 		0f,
-		new SkeletonNodeOffset[] { SkeletonNodeOffset.ELBOW_TRACKER }
+		new BoneType[] { BoneType.ELBOW_TRACKER }
 	),;
 
 	public static final SkeletonConfigValue[] values = values();
@@ -180,7 +180,7 @@ public enum SkeletonConfigValue {
 	public final String configKey;
 	public final String label;
 	public final float defaultValue;
-	public final SkeletonNodeOffset[] affectedOffsets;
+	public final BoneType[] affectedOffsets;
 
 	SkeletonConfigValue(
 		int id,
@@ -188,7 +188,7 @@ public enum SkeletonConfigValue {
 		String configKey,
 		String label,
 		float defaultValue,
-		SkeletonNodeOffset[] affectedOffsets
+		BoneType[] affectedOffsets
 	) {
 		this.id = id;
 		this.stringVal = stringVal;
@@ -198,7 +198,7 @@ public enum SkeletonConfigValue {
 		this.defaultValue = defaultValue;
 
 		this.affectedOffsets = affectedOffsets
-			== null ? new SkeletonNodeOffset[0] : affectedOffsets;
+			== null ? new BoneType[0] : affectedOffsets;
 	}
 
 	public static SkeletonConfigValue getByStringValue(String stringVal) {

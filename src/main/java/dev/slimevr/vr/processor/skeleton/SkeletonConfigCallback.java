@@ -9,5 +9,5 @@ public interface SkeletonConfigCallback {
 
 	void updateToggleState(SkeletonConfigToggle configToggle, boolean newValue);
 
-	void updateNodeOffset(SkeletonNodeOffset nodeOffset, Vector3f offset);
+	void updateNodeOffset(BoneType nodeOffset, Vector3f offset);
 }
