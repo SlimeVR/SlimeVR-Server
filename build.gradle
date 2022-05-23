@@ -38,11 +38,13 @@ allprojects {
 		// Use jcenter for resolving dependencies.
 		// You can declare any Maven/Ivy/file repository here.
 		mavenCentral()
+
+		// Lets us depend on git repos directly
+		maven { url 'https://jitpack.io' }
 	}
 }
 
 dependencies {
-	implementation project(':slime-java-commons')
 	implementation project(":solarxr-protocol")
 
 	implementation group: 'com.google.flatbuffers', name: 'flatbuffers-java', version: '2.0.3'
@@ -58,8 +60,9 @@ dependencies {
 	implementation 'com.illposed.osc:javaosc-core:0.8'
 	implementation 'com.fazecast:jSerialComm:2.9.0'
 	implementation 'com.google.protobuf:protobuf-java:3.19.4'
-	implementation "org.java-websocket:Java-WebSocket:1.5.2"
+	implementation 'org.java-websocket:Java-WebSocket:1.5.2'
 	implementation 'com.melloware:jintellitype:1.4.0'
+	implementation 'com.github.TheButlah:slime-java-commons:0858c7d10795574177efd3461c0f1f20fcec7d54'
 
 	// Use JUnit test framework
 	testImplementation platform('org.junit:junit-bom:5.8.2')

@@ -8,8 +8,6 @@
  */
 
 rootProject.name = 'SlimeVR Server'
-include ':slime-java-commons'
-
 
 include ':solarxr-protocol'
 project(':solarxr-protocol').projectDir = new File('solarxr-protocol/protocol/java')
