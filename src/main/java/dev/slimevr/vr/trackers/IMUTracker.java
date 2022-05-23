@@ -102,7 +102,7 @@ public class IMUTracker implements Tracker, TrackerWithTPS, TrackerWithBattery {
 					movementFilterTickCount = ticks;
 					break;
 				case "EXTRAPOLATION":
-					movementFilterAmount = 1f + (amount * 1.1f);
+					movementFilterAmount = 1f + (amount * 1.15f);
 					movementFilterTickCount = ticks;
 					break;
 				case "NONE":
@@ -194,10 +194,10 @@ public class IMUTracker implements Tracker, TrackerWithTPS, TrackerWithBattery {
 		timer.update();
 
 		if (movementFilterTickCount != 0) {
-			previousRots.add(rotQuaternion.clone());
 			if (previousRots.size() > movementFilterTickCount) {
 				previousRots.remove(0);
 			}
+			previousRots.add(rotQuaternion.clone());
 		}
 	}
 
