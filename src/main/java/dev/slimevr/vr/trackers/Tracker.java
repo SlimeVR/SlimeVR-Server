@@ -51,7 +51,7 @@ public interface Tracker {
 
 	int getTrackerNum();
 
-	UDPDevice getDevice();
+	Device getDevice();
 
 	default String getDescriptiveName() {
 		return getName();

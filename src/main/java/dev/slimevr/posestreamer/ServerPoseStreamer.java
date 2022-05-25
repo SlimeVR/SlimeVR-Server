@@ -2,7 +2,7 @@ package dev.slimevr.posestreamer;
 
 import dev.slimevr.VRServer;
 import dev.slimevr.util.ann.VRServerThread;
-import dev.slimevr.vr.processor.skeleton.HumanSkeleton;
+import dev.slimevr.vr.processor.skeleton.Skeleton;
 
 
 public class ServerPoseStreamer extends TickPoseStreamer {
@@ -19,7 +19,7 @@ public class ServerPoseStreamer extends TickPoseStreamer {
 	}
 
 	@VRServerThread
-	public void onSkeletonUpdated(HumanSkeleton skeleton) {
+	public void onSkeletonUpdated(Skeleton skeleton) {
 		this.skeleton = skeleton;
 	}
 
