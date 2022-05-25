@@ -24,7 +24,8 @@ public class ComputedHumanPoseTracker extends ComputedTracker
 		super(trackerId, "human://" + skeletonPosition.name(), true, true);
 		this.skeletonPosition = skeletonPosition;
 		this.trackerRole = role;
-		this.bodyPosition = TrackerPosition.getByRole(role);
+		// TODO: Use `TrackerPosition` instead of `TrackerRole`
+		this.bodyPosition = TrackerPosition.getByTrackerRole(role).get();
 	}
 
 	@Override

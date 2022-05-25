@@ -647,7 +647,7 @@ public class AutoBone {
 			}
 
 			Vector3f nodePos = skeleton
-				.getComputedTracker(trackerFrame.designation.trackerRole).position;
+				.getComputedTracker(trackerFrame.designation.trackerRole.get()).position;
 			if (nodePos != null) {
 				offset += FastMath.abs(nodePos.distance(trackerFrame.position));
 				offsetCount++;
@@ -682,13 +682,13 @@ public class AutoBone {
 			}
 
 			Vector3f nodePos1 = skeleton1
-				.getComputedTracker(trackerFrame1.designation.trackerRole).position;
+				.getComputedTracker(trackerFrame1.designation.trackerRole.get()).position;
 			if (nodePos1 == null) {
 				continue;
 			}
 
 			Vector3f nodePos2 = skeleton2
-				.getComputedTracker(trackerFrame2.designation.trackerRole).position;
+				.getComputedTracker(trackerFrame2.designation.trackerRole.get()).position;
 			if (nodePos2 == null) {
 				continue;
 			}
