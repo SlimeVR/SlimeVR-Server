@@ -15,7 +15,7 @@ import java.util.List;
 import java.util.Map;
 
 
-public class SimpleSkeleton extends HumanSkeleton implements SkeletonConfigCallback {
+public class Skeleton extends HumanSkeleton implements SkeletonConfigCallback {
 
 	public final SkeletonConfig skeletonConfig;
 	// #region Upper body nodes (torso)
@@ -169,7 +169,7 @@ public class SimpleSkeleton extends HumanSkeleton implements SkeletonConfigCallb
 	// #endregion
 
 	// #region Constructors
-	protected SimpleSkeleton(List<? extends ComputedHumanPoseTracker> computedTrackers) {
+	protected Skeleton(List<? extends ComputedHumanPoseTracker> computedTrackers) {
 		// #region Assemble skeleton from hmd to hip
 		hmdNode.attachChild(headNode);
 		headNode.attachChild(neckNode);
@@ -244,7 +244,7 @@ public class SimpleSkeleton extends HumanSkeleton implements SkeletonConfigCallb
 		fillNullComputedTrackers(true);
 	}
 
-	public SimpleSkeleton(
+	public Skeleton(
 		VRServer server,
 		List<? extends ComputedHumanPoseTracker> computedTrackers
 	) {
@@ -253,7 +253,7 @@ public class SimpleSkeleton extends HumanSkeleton implements SkeletonConfigCallb
 		skeletonConfig.loadFromConfig(server.config);
 	}
 
-	public SimpleSkeleton(
+	public Skeleton(
 		List<? extends Tracker> trackers,
 		List<? extends ComputedHumanPoseTracker> computedTrackers
 	) {
@@ -266,7 +266,7 @@ public class SimpleSkeleton extends HumanSkeleton implements SkeletonConfigCallb
 		}
 	}
 
-	public SimpleSkeleton(
+	public Skeleton(
 		List<? extends Tracker> trackers,
 		List<? extends ComputedHumanPoseTracker> computedTrackers,
 		Map<SkeletonConfigValue, Float> configs,
@@ -284,7 +284,7 @@ public class SimpleSkeleton extends HumanSkeleton implements SkeletonConfigCallb
 		skeletonConfig.setConfigs(configs, null);
 	}
 
-	public SimpleSkeleton(
+	public Skeleton(
 		List<? extends Tracker> trackers,
 		List<? extends ComputedHumanPoseTracker> computedTrackers,
 		Map<SkeletonConfigValue, Float> configs

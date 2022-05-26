@@ -3,7 +3,7 @@ package dev.slimevr.vr.processor;
 import dev.slimevr.VRServer;
 import dev.slimevr.util.ann.VRServerThread;
 import dev.slimevr.vr.processor.skeleton.HumanSkeleton;
-import dev.slimevr.vr.processor.skeleton.SimpleSkeleton;
+import dev.slimevr.vr.processor.skeleton.Skeleton;
 import dev.slimevr.vr.processor.skeleton.SkeletonConfig;
 import dev.slimevr.vr.processor.skeleton.SkeletonConfigValue;
 import dev.slimevr.vr.trackers.*;
@@ -165,7 +165,7 @@ public class HumanPoseProcessor {
 	@VRServerThread
 	private void updateSekeltonModel() {
 		disconnectAllTrackers();
-		skeleton = new SimpleSkeleton(server, computedTrackers);
+		skeleton = new Skeleton(server, computedTrackers);
 		for (Consumer<HumanSkeleton> sc : onSkeletonUpdated)
 			sc.accept(skeleton);
 	}
