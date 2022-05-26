@@ -10,7 +10,8 @@ import java.util.List;
 import java.util.Map;
 
 
-public class PoseFrameSkeleton extends Skeleton {
+// TODO: Composition instead of inheritance
+public final class PoseFrameSkeleton extends Skeleton {
 
 	private int frameCursor = 0;
 

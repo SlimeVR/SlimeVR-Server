@@ -2,7 +2,6 @@ package dev.slimevr.vr.processor;
 
 import dev.slimevr.VRServer;
 import dev.slimevr.util.ann.VRServerThread;
-import dev.slimevr.vr.processor.skeleton.HumanSkeleton;
 import dev.slimevr.vr.processor.skeleton.Skeleton;
 import dev.slimevr.vr.processor.skeleton.SkeletonConfig;
 import dev.slimevr.vr.processor.skeleton.SkeletonConfigValue;
@@ -18,8 +17,8 @@ public class HumanPoseProcessor {
 
 	private final VRServer server;
 	private final List<ComputedHumanPoseTracker> computedTrackers = new FastList<>();
-	private final List<Consumer<HumanSkeleton>> onSkeletonUpdated = new FastList<>();
-	private HumanSkeleton skeleton;
+	private final List<Consumer<Skeleton>> onSkeletonUpdated = new FastList<>();
+	private Skeleton skeleton;
 
 	public HumanPoseProcessor(VRServer server, HMDTracker hmd) {
 		this.server = server;
@@ -105,12 +104,12 @@ public class HumanPoseProcessor {
 			);
 	}
 
-	public HumanSkeleton getSkeleton() {
+	public Skeleton getSkeleton() {
 		return skeleton;
 	}
 
 	@VRServerThread
-	public void addSkeletonUpdatedCallback(Consumer<HumanSkeleton> consumer) {
+	public void addSkeletonUpdatedCallback(Consumer<Skeleton> consumer) {
 		onSkeletonUpdated.add(consumer);
 		if (skeleton != null)
 			consumer.accept(skeleton);
@@ -166,7 +165,7 @@ public class HumanPoseProcessor {
 	private void updateSekeltonModel() {
 		disconnectAllTrackers();
 		skeleton = new Skeleton(server, computedTrackers);
-		for (Consumer<HumanSkeleton> sc : onSkeletonUpdated)
+		for (Consumer<Skeleton> sc : onSkeletonUpdated)
 			sc.accept(skeleton);
 	}
 

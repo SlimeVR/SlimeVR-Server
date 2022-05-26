@@ -3,7 +3,7 @@ package dev.slimevr.gui;
 import dev.slimevr.VRServer;
 import dev.slimevr.gui.swing.ButtonTimer;
 import dev.slimevr.gui.swing.EJBagNoStretch;
-import dev.slimevr.vr.processor.skeleton.HumanSkeleton;
+import dev.slimevr.vr.processor.skeleton.Skeleton;
 import dev.slimevr.vr.processor.skeleton.SkeletonConfigValue;
 import io.eiren.util.StringUtils;
 import io.eiren.util.ann.ThreadSafe;
@@ -35,7 +35,7 @@ public class SkeletonConfigGUI extends EJBagNoStretch {
 	}
 
 	@ThreadSafe
-	public void skeletonUpdated(HumanSkeleton newSkeleton) {
+	public void skeletonUpdated(Skeleton newSkeleton) {
 		java.awt.EventQueue.invokeLater(() -> {
 			removeAll();
 

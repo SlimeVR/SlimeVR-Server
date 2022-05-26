@@ -9,13 +9,14 @@ import dev.slimevr.vr.processor.ComputedHumanPoseTracker;
 import dev.slimevr.vr.processor.ComputedHumanPoseTrackerPosition;
 import dev.slimevr.vr.processor.TransformNode;
 import dev.slimevr.vr.trackers.*;
+import io.eiren.util.ann.ThreadSafe;
 import io.eiren.util.collections.FastList;
 
 import java.util.List;
 import java.util.Map;
 
 
-public class Skeleton extends HumanSkeleton implements SkeletonConfigCallback {
+public class Skeleton implements SkeletonConfigCallback {
 
 	public final SkeletonConfig skeletonConfig;
 	// #region Upper body nodes (torso)
@@ -292,6 +293,13 @@ public class Skeleton extends HumanSkeleton implements SkeletonConfigCallback {
 		this(trackers, computedTrackers, configs, null);
 	}
 	// #endregion
+
+	@ThreadSafe
+	public void resetAllSkeletonConfigs() {
+		for (SkeletonConfigValue config : SkeletonConfigValue.values) {
+			this.resetSkeletonConfig(config);
+		}
+	}
 
 	public static float normalizeRad(float angle) {
 		return FastMath.normalize(angle, -FastMath.PI, FastMath.PI);
@@ -615,7 +623,6 @@ public class Skeleton extends HumanSkeleton implements SkeletonConfigCallback {
 
 	// Updates the pose from tracker positions
 	@VRServerThread
-	@Override
 	public void updatePose() {
 		updateLocalTransforms();
 		updateRootTrackers();
@@ -1170,12 +1177,10 @@ public class Skeleton extends HumanSkeleton implements SkeletonConfigCallback {
 	}
 	// #endregion
 
-	@Override
 	public TransformNode getRootNode() {
 		return hmdNode;
 	}
 
-	@Override
 	public TransformNode[] getAllNodes() {
 		List<TransformNode> nodesList = new FastList<>();
 
@@ -1192,12 +1197,10 @@ public class Skeleton extends HumanSkeleton implements SkeletonConfigCallback {
 		return nodesList.toArray(new TransformNode[0]);
 	}
 
-	@Override
 	public SkeletonConfig getSkeletonConfig() {
 		return skeletonConfig;
 	}
 
-	@Override
 	public void resetSkeletonConfig(SkeletonConfigValue config) {
 		if (config == null) {
 			return;
@@ -1321,7 +1324,6 @@ public class Skeleton extends HumanSkeleton implements SkeletonConfigCallback {
 			trackerPreUpdate(this.rightHandTracker) };
 	}
 
-	@Override
 	public void resetTrackersFull() {
 		// #region Pass all trackers through trackerPreUpdate
 		Tracker hmdTracker = trackerPreUpdate(this.hmdTracker);
@@ -1339,7 +1341,6 @@ public class Skeleton extends HumanSkeleton implements SkeletonConfigCallback {
 		}
 	}
 
-	@Override
 	@VRServerThread
 	public void resetTrackersYaw() {
 		// #region Pass all trackers through trackerPreUpdate
