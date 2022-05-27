@@ -13,18 +13,18 @@ public enum TrackerPosition {
 	CHEST(3, "body:chest", TrackerRole.CHEST),
 	WAIST(4, "body:waist", TrackerRole.WAIST),
 	HIP(5, "body:hip", null),
-	LEFT_KNEE(6, "body:left_knee", TrackerRole.LEFT_KNEE),
-	RIGHT_KNEE(7, "body:right_knee", TrackerRole.RIGHT_KNEE),
-	LEFT_ANKLE(8, "body:left_ankle", null),
-	RIGHT_ANKLE(9, "body:right_ankle", null),
+	LEFT_UPPER_LEG(6, "body:left_upper_leg", TrackerRole.LEFT_KNEE),
+	RIGHT_UPPER_LEG(7, "body:right_upper_leg", TrackerRole.RIGHT_KNEE),
+	LEFT_LOWER_LEG(8, "body:left_lower_leg", null),
+	RIGHT_LOWER_LEG(9, "body:right_lower_leg", null),
 	LEFT_FOOT(10, "body:left_foot", TrackerRole.LEFT_FOOT),
 	RIGHT_FOOT(11, "body:right_foot", TrackerRole.RIGHT_FOOT),
 	LEFT_CONTROLLER(12, "body:left_controller", TrackerRole.LEFT_CONTROLLER),
 	RIGHT_CONTROLLER(13, "body:right_controller", TrackerRole.RIGHT_CONTROLLER),
-	LEFT_FOREARM(14, "body:left_forearm", TrackerRole.LEFT_ELBOW),
-	RIGHT_FOREARM(15, "body:right_forearm", TrackerRole.RIGHT_ELBOW),
-	LEFT_UPPER_ARM(16, "body:left_upperarm", null),
-	RIGHT_UPPER_ARM(17, "body:right_upperarm", null),
+	LEFT_LOWER_ARM(14, "body:left_lower_arm", TrackerRole.LEFT_ELBOW),
+	RIGHT_LOWER_ARM(15, "body:right_lower_arm", TrackerRole.RIGHT_ELBOW),
+	LEFT_UPPER_ARM(16, "body:left_upper_arm", TrackerRole.LEFT_SHOULDER),
+	RIGHT_UPPER_ARM(17, "body:right_upper_arm", TrackerRole.RIGHT_SHOULDER),
 	LEFT_HAND(18, "body:left_hand", TrackerRole.LEFT_HAND),
 	RIGHT_HAND(19, "body:right_hand", TrackerRole.RIGHT_HAND),;
 
@@ -66,12 +66,27 @@ public enum TrackerPosition {
 	}
 
 	public static TrackerPosition getByDesignation(String designation) {
-		// Support old configs. leg was renamed to knee.
+		// Support old configs
 		if (designation != null) {
-			if (designation.equals("body:left_leg"))
-				designation = "body:left_knee";
-			if (designation.equals("body:right_leg"))
-				designation = "body:right_knee";
+			if (
+				designation.equalsIgnoreCase("body:left_leg")
+					|| designation.equalsIgnoreCase("body:left_knee")
+			) {
+				designation = "body:left_upper_leg";
+			} else if (
+				designation.equalsIgnoreCase("body:right_leg")
+					|| designation.equalsIgnoreCase("body:right_knee")
+			) {
+				designation = "body:right_upper_leg";
+			} else if (designation.equalsIgnoreCase("body:left_ankle")) {
+				designation = "body:left_lower_leg";
+			} else if (designation.equalsIgnoreCase("body:right_ankle")) {
+				designation = "body:right_lower_leg";
+			} else if (designation.equalsIgnoreCase("body:left_forearm")) {
+				designation = "body:left_lower_arm";
+			} else if (designation.equalsIgnoreCase("body:right_forearm")) {
+				designation = "body:right_lower_arm";
+			}
 		}
 
 		return designation == null ? null : byDesignation.get(designation.toLowerCase());

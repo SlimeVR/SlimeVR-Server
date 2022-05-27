@@ -81,11 +81,11 @@ public class SkeletonData {
 		hipJoint.attachJoint(leftHipJoint, SkeletonNodeOffset.LEFT_HIP);
 		hipJoint.attachJoint(rightHipJoint, SkeletonNodeOffset.RIGHT_HIP);
 
-		leftHipJoint.attachJoint(leftKneeJoint, SkeletonNodeOffset.KNEE);
-		rightHipJoint.attachJoint(rightKneeJoint, SkeletonNodeOffset.KNEE);
+		leftHipJoint.attachJoint(leftKneeJoint, SkeletonNodeOffset.UPPER_LEG);
+		rightHipJoint.attachJoint(rightKneeJoint, SkeletonNodeOffset.UPPER_LEG);
 
-		leftKneeJoint.attachJoint(leftAnkleJoint, SkeletonNodeOffset.ANKLE);
-		rightKneeJoint.attachJoint(rightAnkleJoint, SkeletonNodeOffset.ANKLE);
+		leftKneeJoint.attachJoint(leftAnkleJoint, SkeletonNodeOffset.LOWER_LEG);
+		rightKneeJoint.attachJoint(rightAnkleJoint, SkeletonNodeOffset.LOWER_LEG);
 
 		leftAnkleJoint.attachJoint(leftFootJoint, SkeletonNodeOffset.FOOT);
 		rightAnkleJoint.attachJoint(rightFootJoint, SkeletonNodeOffset.FOOT);
@@ -97,8 +97,8 @@ public class SkeletonData {
 		// if (fromControllers)
 		leftHandJoint.attachJoint(leftWristJoint, SkeletonNodeOffset.HAND);
 		rightHandJoint.attachJoint(rightWristJoint, SkeletonNodeOffset.HAND);
-		rightWristJoint.attachJoint(leftElbowJoint, SkeletonNodeOffset.FOREARM);
-		leftWristJoint.attachJoint(rightElbowJoint, SkeletonNodeOffset.FOREARM);
+		rightWristJoint.attachJoint(leftElbowJoint, SkeletonNodeOffset.LOWER_ARM);
+		leftWristJoint.attachJoint(rightElbowJoint, SkeletonNodeOffset.LOWER_ARM);
 		// } else {
 		// #endregion
 
@@ -106,8 +106,8 @@ public class SkeletonData {
 		chestJoint.attachJoint(leftShoulderJoint, SkeletonNodeOffset.LEFT_SHOULDER);
 		chestJoint.attachJoint(rightShoulderJoint, SkeletonNodeOffset.RIGHT_SHOULDER);
 
-		leftShoulderJoint.attachJoint(leftElbowJoint, SkeletonNodeOffset.FOREARM);
-		rightShoulderJoint.attachJoint(rightElbowJoint, SkeletonNodeOffset.FOREARM);
+		leftShoulderJoint.attachJoint(leftElbowJoint, SkeletonNodeOffset.LOWER_ARM);
+		rightShoulderJoint.attachJoint(rightElbowJoint, SkeletonNodeOffset.LOWER_ARM);
 
 		leftElbowJoint.attachJoint(leftWristJoint, SkeletonNodeOffset.HAND);
 		rightElbowJoint.attachJoint(rightWristJoint, SkeletonNodeOffset.HAND);

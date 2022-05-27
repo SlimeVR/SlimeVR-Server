@@ -344,10 +344,10 @@ public class WindowsSteamVRPipeInputBridge extends Thread implements Bridge {
 	public enum SteamVRInputRoles {
 		HEAD(TrackerPosition.HMD), LEFT_HAND(TrackerPosition.LEFT_CONTROLLER),
 		RIGHT_HAND(TrackerPosition.RIGHT_CONTROLLER), LEFT_FOOT(TrackerPosition.LEFT_FOOT),
-		RIGHT_FOOT(TrackerPosition.RIGHT_FOOT), LEFT_SHOULDER(TrackerPosition.NONE),
-		RIGHT_SHOULDER(TrackerPosition.NONE), LEFT_ELBOW(TrackerPosition.LEFT_FOREARM),
-		RIGHT_ELBOW(TrackerPosition.RIGHT_FOREARM), LEFT_KNEE(TrackerPosition.LEFT_KNEE),
-		RIGHT_KNEE(TrackerPosition.RIGHT_KNEE), WAIST(TrackerPosition.WAIST),
+		RIGHT_FOOT(TrackerPosition.RIGHT_FOOT), LEFT_SHOULDER(TrackerPosition.LEFT_UPPER_ARM),
+		RIGHT_SHOULDER(TrackerPosition.RIGHT_UPPER_ARM), LEFT_ELBOW(TrackerPosition.LEFT_LOWER_ARM),
+		RIGHT_ELBOW(TrackerPosition.RIGHT_LOWER_ARM), LEFT_KNEE(TrackerPosition.LEFT_UPPER_LEG),
+		RIGHT_KNEE(TrackerPosition.RIGHT_UPPER_LEG), WAIST(TrackerPosition.WAIST),
 		CHEST(TrackerPosition.CHEST),;
 
 		private static final SteamVRInputRoles[] values = values();

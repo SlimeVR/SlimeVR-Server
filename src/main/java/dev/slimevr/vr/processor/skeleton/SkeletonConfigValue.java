@@ -68,7 +68,7 @@ public enum SkeletonConfigValue {
 		"legsLength",
 		"Legs length",
 		0.92f,
-		new SkeletonNodeOffset[] { SkeletonNodeOffset.KNEE }
+		new SkeletonNodeOffset[] { SkeletonNodeOffset.UPPER_LEG }
 	),
 	KNEE_HEIGHT(
 		9,
@@ -76,7 +76,7 @@ public enum SkeletonConfigValue {
 		"kneeHeight",
 		"Knee height",
 		0.50f,
-		new SkeletonNodeOffset[] { SkeletonNodeOffset.KNEE, SkeletonNodeOffset.ANKLE }
+		new SkeletonNodeOffset[] { SkeletonNodeOffset.UPPER_LEG, SkeletonNodeOffset.LOWER_LEG }
 	),
 	FOOT_LENGTH(
 		10,
@@ -92,7 +92,7 @@ public enum SkeletonConfigValue {
 		"footOffset",
 		"Foot offset",
 		-0.05f,
-		new SkeletonNodeOffset[] { SkeletonNodeOffset.ANKLE }
+		new SkeletonNodeOffset[] { SkeletonNodeOffset.LOWER_LEG }
 	),
 	SKELETON_OFFSET(
 		12,
@@ -119,14 +119,14 @@ public enum SkeletonConfigValue {
 		0.05f,
 		new SkeletonNodeOffset[] { SkeletonNodeOffset.CONTROLLER, SkeletonNodeOffset.HAND }
 	),
-	FOREARM_LENGTH(
+	LOWER_ARM_LENGTH(
 		15,
 		"Forearm length",
 		"forearmLength",
 		"Forearm length",
 		0.25f,
-		new SkeletonNodeOffset[] { SkeletonNodeOffset.FOREARM,
-			SkeletonNodeOffset.FOREARM_HMD }
+		new SkeletonNodeOffset[] { SkeletonNodeOffset.LOWER_ARM,
+			SkeletonNodeOffset.LOWER_ARM_HMD }
 	),
 	SHOULDERS_DISTANCE(
 		16,
