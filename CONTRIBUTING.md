@@ -48,7 +48,9 @@ If you need to prevent autoformatting for a particular region of code, use
 
 ### Setting up spotless for IntelliJ
 * Install https://plugins.jetbrains.com/plugin/18321-spotless-gradle.
-* Turn on [formatting on save](https://www.jetbrains.com/help/idea/reformat-and-rearrange-code.html#reformat-on-save).
+* Add a keyboard shortcut for `Code` > `Reformat Code with Spotless`
+* They are working on support to do this on save without a keybind
+[here](https://github.com/ragurney/spotless-intellij-gradle/issues/8)
 
 ### Setting up Eclipse autoformatting
 Import the formatting settings defined in `spotless.xml`, like this:
