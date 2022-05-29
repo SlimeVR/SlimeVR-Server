@@ -40,6 +40,11 @@ public class RPCHandler extends ProtocolHandler<RpcMessageHeader> implements Ser
 		);
 
 		registerPacketListener(RpcMessage.SetWifiRequest, this::onSetWifiRequest);
+		registerPacketListener(RpcMessage.SerialSetCtrlRequest, this::onSerialSetCtrlRequest);
+		registerPacketListener(
+			RpcMessage.SerialRestartTrackerRequest,
+			this::SerialRestartTrackerRequest
+		);
 		registerPacketListener(RpcMessage.OpenSerialRequest, this::onOpenSerialRequest);
 		registerPacketListener(RpcMessage.CloseSerialRequest, this::onCloseSerialRequest);
 
@@ -72,6 +77,8 @@ public class RPCHandler extends ProtocolHandler<RpcMessageHeader> implements Ser
 		FlatBufferBuilder fbb = new FlatBufferBuilder(32);
 		SerialUpdateResponse.startSerialUpdateResponse(fbb);
 		SerialUpdateResponse.addClosed(fbb, !this.api.server.getSerialHandler().isConnected());
+		SerialUpdateResponse.addRts(fbb, this.api.server.getSerialHandler().getRts());
+		SerialUpdateResponse.addDtr(fbb, this.api.server.getSerialHandler().getDtr());
 		int update = SerialUpdateResponse.endSerialUpdateResponse(fbb);
 		int outbound = this.createRPCMessage(fbb, RpcMessage.SerialUpdateResponse, update);
 		fbb.finish(outbound);
@@ -91,6 +98,8 @@ public class RPCHandler extends ProtocolHandler<RpcMessageHeader> implements Ser
 		FlatBufferBuilder fbb = new FlatBufferBuilder(32);
 		SerialUpdateResponse.startSerialUpdateResponse(fbb);
 		SerialUpdateResponse.addClosed(fbb, !this.api.server.getSerialHandler().isConnected());
+		SerialUpdateResponse.addRts(fbb, this.api.server.getSerialHandler().getRts());
+		SerialUpdateResponse.addDtr(fbb, this.api.server.getSerialHandler().getDtr());
 		int update = SerialUpdateResponse.endSerialUpdateResponse(fbb);
 		int outbound = this.createRPCMessage(fbb, RpcMessage.SerialUpdateResponse, update);
 		fbb.finish(outbound);
@@ -312,6 +321,8 @@ public class RPCHandler extends ProtocolHandler<RpcMessageHeader> implements Ser
 					FlatBufferBuilder fbb = new FlatBufferBuilder(32);
 
 					SerialUpdateResponse.startSerialUpdateResponse(fbb);
+					SerialUpdateResponse.addRts(fbb, this.api.server.getSerialHandler().getRts());
+					SerialUpdateResponse.addDtr(fbb, this.api.server.getSerialHandler().getDtr());
 					SerialUpdateResponse.addClosed(fbb, false);
 					int update = SerialUpdateResponse.endSerialUpdateResponse(fbb);
 					int outbound = this
@@ -319,6 +330,68 @@ public class RPCHandler extends ProtocolHandler<RpcMessageHeader> implements Ser
 					fbb.finish(outbound);
 
 					conn.send(fbb.dataBuffer());
+				});
+		});
+	}
+
+	public void onSerialSetCtrlRequest(GenericConnection conn, RpcMessageHeader messageHeader) {
+		SerialSetCtrlRequest req = (SerialSetCtrlRequest) messageHeader
+			.message(new SerialSetCtrlRequest());
+		if (req == null)
+			return;
+
+		this.api.server.getSerialHandler().setRts(req.rts());
+		this.api.server.getSerialHandler().setDtr(req.dtr());
+
+		this.api.getAPIServers().forEach((server) -> {
+			server
+				.getAPIConnections()
+				.filter(conn2 -> conn2.getContext().useSerial())
+				.forEach((conn2) -> {
+					FlatBufferBuilder fbb = new FlatBufferBuilder(32);
+
+					SerialUpdateResponse.startSerialUpdateResponse(fbb);
+					SerialUpdateResponse.addRts(fbb, this.api.server.getSerialHandler().getRts());
+					SerialUpdateResponse.addDtr(fbb, this.api.server.getSerialHandler().getDtr());
+					SerialUpdateResponse.addClosed(fbb, false);
+					int update = SerialUpdateResponse.endSerialUpdateResponse(fbb);
+					int outbound = this
+						.createRPCMessage(fbb, RpcMessage.SerialUpdateResponse, update);
+					fbb.finish(outbound);
+
+					conn2.send(fbb.dataBuffer());
+				});
+		});
+	}
+
+	public void SerialRestartTrackerRequest(
+		GenericConnection conn,
+		RpcMessageHeader messageHeader
+	) {
+		SerialRestartTrackerRequest req = (SerialRestartTrackerRequest) messageHeader
+			.message(new SerialRestartTrackerRequest());
+		if (req == null)
+			return;
+
+		this.api.server.getSerialHandler().restartRequest();
+
+		this.api.getAPIServers().forEach((server) -> {
+			server
+				.getAPIConnections()
+				.filter(conn2 -> conn2.getContext().useSerial())
+				.forEach((conn2) -> {
+					FlatBufferBuilder fbb = new FlatBufferBuilder(32);
+
+					SerialUpdateResponse.startSerialUpdateResponse(fbb);
+					SerialUpdateResponse.addRts(fbb, this.api.server.getSerialHandler().getRts());
+					SerialUpdateResponse.addDtr(fbb, this.api.server.getSerialHandler().getDtr());
+					SerialUpdateResponse.addClosed(fbb, false);
+					int update = SerialUpdateResponse.endSerialUpdateResponse(fbb);
+					int outbound = this
+						.createRPCMessage(fbb, RpcMessage.SerialUpdateResponse, update);
+					fbb.finish(outbound);
+
+					conn2.send(fbb.dataBuffer());
 				});
 		});
 	}
@@ -356,6 +429,8 @@ public class RPCHandler extends ProtocolHandler<RpcMessageHeader> implements Ser
 					int logOffset = fbb.createString(str);
 
 					SerialUpdateResponse.startSerialUpdateResponse(fbb);
+					SerialUpdateResponse.addRts(fbb, this.api.server.getSerialHandler().getRts());
+					SerialUpdateResponse.addDtr(fbb, this.api.server.getSerialHandler().getDtr());
 					SerialUpdateResponse.addLog(fbb, logOffset);
 					int update = SerialUpdateResponse.endSerialUpdateResponse(fbb);
 					int outbound = this
