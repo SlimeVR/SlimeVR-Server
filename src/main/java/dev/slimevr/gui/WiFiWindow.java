@@ -18,9 +18,13 @@ public class WiFiWindow extends JFrame implements SerialListener {
 	private static String savedSSID = "";
 	private static String savedPassword = "";
 	private final VRServerGUI gui;
+	private JScrollPane scroll;
 	JTextField ssidField;
 	JPasswordField passwdField;
 	JTextArea log;
+	private boolean OptionAdvanced = false;
+	private JCheckBox JChekboxRts;
+	private JCheckBox JChekboxDtr;
 
 	public WiFiWindow(VRServerGUI gui) {
 		super("WiFi Settings");
@@ -61,7 +65,60 @@ public class WiFiWindow extends JFrame implements SerialListener {
 							+ ")"
 					)
 				);
-				JScrollPane scroll;
+				add(new JButton("Restart Tracker") {
+					{
+						addMouseListener(new MouseInputAdapter() {
+							@Override
+							public void mouseClicked(MouseEvent e) {
+								gui.server.getSerialHandler().restartRequest();
+							}
+						});
+					}
+				});
+				add(new JButton("Advanced") {
+					{
+						addMouseListener(new MouseInputAdapter() {
+							@Override
+							public void mouseClicked(MouseEvent e) {
+								if (OptionAdvanced) {
+									OptionAdvanced = false;
+									JChekboxRts.setVisible(false);
+									JChekboxDtr.setVisible(false);
+								} else {
+									OptionAdvanced = true;
+									JChekboxRts.setVisible(true);
+									JChekboxDtr.setVisible(true);
+								}
+
+							}
+						});
+					}
+				});
+				JChekboxRts = new JCheckBox("RTS", gui.server.getSerialHandler().getRts()) {
+					{
+						addMouseListener(new MouseInputAdapter() {
+							@Override
+							public void mouseClicked(MouseEvent e) {
+								gui.server.getSerialHandler().setRts(isSelected());
+							}
+						});
+					}
+				};
+				JChekboxRts.setVisible(false);
+				add(JChekboxRts);
+				JChekboxDtr = new JCheckBox("DTR", gui.server.getSerialHandler().getDtr()) {
+					{
+						addMouseListener(new MouseInputAdapter() {
+							@Override
+							public void mouseClicked(MouseEvent e) {
+								gui.server.getSerialHandler().setDtr(isSelected());
+							}
+						});
+					}
+				};
+				JChekboxDtr.setVisible(false);
+				add(JChekboxDtr);
+
 				add(
 					scroll = new JScrollPane(
 						log = new JTextArea(10, 20),
@@ -139,12 +196,24 @@ public class WiFiWindow extends JFrame implements SerialListener {
 	@Override
 	@AWTThread
 	public void onSerialDisconnected() {
+		if (this.log == null)
+			return;
 		log.append("[SERVER] Serial port disconnected\n");
 	}
 
 	@Override
 	@AWTThread
 	public void onSerialLog(String str) {
+		if (this.log == null)
+			return;
 		log.append(str);
+		// log.setAutoscrolls(true);
+		if (scroll != null) {
+			JScrollBar vertical = scroll.getVerticalScrollBar();
+			if ((vertical.getValue() + str.length() + 200) > vertical.getMaximum()) {
+				vertical.setValue(vertical.getMaximum());
+			}
+		}
+
 	}
 }

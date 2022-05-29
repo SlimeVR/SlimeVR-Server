@@ -11,12 +11,18 @@ import java.nio.ByteBuffer;
 import java.nio.charset.StandardCharsets;
 import java.util.concurrent.CopyOnWriteArrayList;
 import java.util.List;
+import java.util.concurrent.*;
+import static java.util.concurrent.TimeUnit.*;
 
 
 public class SerialHandler implements SerialPortMessageListener {
 
 	private final List<SerialListener> listeners = new CopyOnWriteArrayList<>();
 	private SerialPort trackerPort = null;
+	private boolean rts;
+	private boolean dtr;
+	private final ScheduledExecutorService scheduler = Executors.newScheduledThreadPool(1);
+	ScheduledFuture<?> nextstephandler;
 
 	public void addListener(SerialListener channel) {
 		this.listeners.add(channel);
@@ -45,15 +51,114 @@ public class SerialHandler implements SerialPortMessageListener {
 		if (trackerPort == null) {
 			return false;
 		}
-
+		trackerPort.setBaudRate(115200);
+		trackerPort.clearRTS();
+		trackerPort.clearDTR();
 		if (!trackerPort.openPort()) {
 			return false;
 		}
+		rts = trackerPort.getRTS();
+		dtr = trackerPort.getDTR();
 
-		trackerPort.setBaudRate(115200);
+
 		trackerPort.addDataListener(this);
 		this.listeners.forEach((listener) -> listener.onSerialConnected(trackerPort));
 		return true;
+	}
+
+	public void setRts(boolean value) {
+		if (trackerPort == null) {
+			return;
+		}
+		if (value) {
+			trackerPort.setRTS();
+		} else {
+			trackerPort.clearRTS();
+		}
+		rts = trackerPort.getRTS();
+	}
+
+	public boolean getRts() {
+		if (trackerPort != null) {
+			rts = trackerPort.getRTS();
+		}
+		return rts;
+	}
+
+	public void setDtr(boolean value) {
+
+		if (value) {
+			trackerPort.setDTR();
+		} else {
+			trackerPort.clearDTR();
+		}
+		dtr = trackerPort.getDTR();
+	}
+
+	public boolean getDtr() {
+		if (trackerPort != null) {
+			dtr = trackerPort.getDTR();
+		}
+		return dtr;
+	}
+
+	private void toggleRts() {
+		if (trackerPort == null) {
+			return;
+		}
+		if (trackerPort.getRTS()) {
+			trackerPort.clearRTS();
+		} else {
+			trackerPort.setRTS();
+		}
+	}
+
+	private void toggleDtr() {
+		if (trackerPort == null) {
+			return;
+		}
+		if (trackerPort.getDTR()) {
+			trackerPort.clearDTR();
+		} else {
+			trackerPort.setDTR();
+		}
+	}
+
+	public void restartRequest() {
+		if (trackerPort == null) {
+			return;
+		}
+		final Runnable nextstep = new Runnable() {
+			private int step = 0;
+
+			public void run() {
+				switch (step) {
+					case 0:
+						toggleRts();
+						break;
+					case 1:
+						toggleRts();
+						break;
+					case 2:
+						toggleDtr();
+						break;
+					case 3:
+						toggleDtr();
+						break;
+					default:
+				}
+				step++;
+				if (step >= 4) {
+					nextstephandler.cancel(true);
+				}
+			};
+		};
+		if (nextstephandler != null) {
+			if ((!nextstephandler.isCancelled()) || (!nextstephandler.isDone())) {
+				return;
+			}
+		}
+		nextstephandler = scheduler.scheduleAtFixedRate(nextstep, 0, 100, MILLISECONDS);
 	}
 
 	public void closeSerial() {
