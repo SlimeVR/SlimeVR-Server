@@ -4,9 +4,9 @@ package dev.slimevr.vr.trackers;
  * The SteamVR tracker role.
  *
  * The tracker role classifies the position and the role of a tracker on user's
- * body or playspace (like CAMERA or BEACON), using SteamVR naming. Tracker roles
- * are hints for interacting programs what the tracker means, and they do not
- * correspond to  body's bones on purpose. Example: virtual vive trackers for
+ * body or playspace (like CAMERA or BEACON), using SteamVR naming. Tracker
+ * roles are hints for interacting programs what the tracker means, and they do
+ * not correspond to body's bones on purpose. Example: virtual vive trackers for
  * SteamVR vs actual SlimeVR trackers.
  */
 public enum TrackerRole {

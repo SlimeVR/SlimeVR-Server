@@ -190,8 +190,8 @@ public class AutoBone {
 	 * A simple utility method to get the {@link Skeleton} from the
 	 * {@link VRServer}
 	 *
-	 * @return The {@link Skeleton} associated with the {@link VRServer},
-	 * or null if there is none available
+	 * @return The {@link Skeleton} associated with the {@link VRServer}, or
+	 * null if there is none available
 	 * @see {@link VRServer}, {@link Skeleton}
 	 */
 	private Skeleton getSkeleton() {

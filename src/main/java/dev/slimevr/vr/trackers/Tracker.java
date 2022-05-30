@@ -2,7 +2,6 @@ package dev.slimevr.vr.trackers;
 
 import com.jme3.math.Quaternion;
 import com.jme3.math.Vector3f;
-import dev.slimevr.vr.trackers.udp.UDPDevice;
 
 import java.util.concurrent.atomic.AtomicInteger;
 

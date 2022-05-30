@@ -386,8 +386,10 @@ public class HumanSkeleton extends Skeleton implements SkeletonConfigCallback {
 				currentBoneInfo.add(new BoneInfo(BoneType.LEFT_FOOT_TRACKER, trackerLeftFootNode));
 			}
 			if (rightAnkleTracker != null || rightKneeTracker != null || rightFootTracker != null) {
-				currentBoneInfo.add(new BoneInfo(BoneType.RIGHT_KNEE_TRACKER, trackerRightKneeNode));
-				currentBoneInfo.add(new BoneInfo(BoneType.RIGHT_FOOT_TRACKER, trackerRightFootNode));
+				currentBoneInfo
+					.add(new BoneInfo(BoneType.RIGHT_KNEE_TRACKER, trackerRightKneeNode));
+				currentBoneInfo
+					.add(new BoneInfo(BoneType.RIGHT_FOOT_TRACKER, trackerRightFootNode));
 			}
 			if (leftControllerTracker != null && leftForearmTracker != null) {
 				currentBoneInfo
@@ -401,17 +403,21 @@ public class HumanSkeleton extends Skeleton implements SkeletonConfigCallback {
 			}
 
 			if (leftControllerTracker == null && leftForearmTracker != null) {
-				currentBoneInfo.add(new BoneInfo(BoneType.LEFT_ELBOW_TRACKER, trackerLeftElbowNodeHmd));
+				currentBoneInfo
+					.add(new BoneInfo(BoneType.LEFT_ELBOW_TRACKER, trackerLeftElbowNodeHmd));
 			}
 			if (rightControllerTracker != null && rightForearmTracker != null) {
-				currentBoneInfo.add(new BoneInfo(BoneType.RIGHT_ELBOW_TRACKER, trackerLeftElbowNodeHmd));
+				currentBoneInfo
+					.add(new BoneInfo(BoneType.RIGHT_ELBOW_TRACKER, trackerLeftElbowNodeHmd));
 			}
 
 			if (leftHandTracker != null) {
-				currentBoneInfo.add(new BoneInfo(BoneType.LEFT_HAND_TRACKER, trackerLeftHandNodeHmd));
+				currentBoneInfo
+					.add(new BoneInfo(BoneType.LEFT_HAND_TRACKER, trackerLeftHandNodeHmd));
 			}
 			if (rightHandTracker != null) {
-				currentBoneInfo.add(new BoneInfo(BoneType.RIGHT_HAND_TRACKER, trackerLeftHandNodeHmd));
+				currentBoneInfo
+					.add(new BoneInfo(BoneType.RIGHT_HAND_TRACKER, trackerLeftHandNodeHmd));
 			}
 		}
 		// #endregion
