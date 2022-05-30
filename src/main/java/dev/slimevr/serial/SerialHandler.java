@@ -57,11 +57,15 @@ public class SerialHandler implements SerialPortMessageListener {
 	}
 
 	public void closeSerial() {
-		if (trackerPort != null)
-			trackerPort.closePort();
-		this.listeners.forEach(SerialListener::onSerialDisconnected);
-		System.out.println("Port closed okay");
-		trackerPort = null;
+		try {
+			if (trackerPort != null)
+				trackerPort.closePort();
+			this.listeners.forEach(SerialListener::onSerialDisconnected);
+			System.out.println("Port closed okay");
+			trackerPort = null;
+		} catch (Exception e) {
+			System.out.println("Error closing port: " + e.getMessage());
+		}
 	}
 
 	public void setWifi(String ssid, String passwd) {

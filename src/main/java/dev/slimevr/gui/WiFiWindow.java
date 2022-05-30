@@ -139,7 +139,7 @@ public class WiFiWindow extends JFrame implements SerialListener {
 	@Override
 	@AWTThread
 	public void onSerialDisconnected() {
-		log.append("[SERVER] Serial port disconnected");
+		log.append("[SERVER] Serial port disconnected\n");
 	}
 
 	@Override
