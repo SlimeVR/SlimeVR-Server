@@ -9,7 +9,7 @@ import { BodyView } from "./BodyView";
 
 import { ChangeSkeletonConfigRequestT, RpcMessage, SkeletonBone, SkeletonConfigRequestT, SkeletonConfigResponseT, SkeletonResetAllRequestT } from 'solarxr-protocol';
 
-const bodyPartLabels = {
+export const bodyPartLabels = {
     [SkeletonBone.NONE]: "None",
     [SkeletonBone.HEAD]: "Head shift",
     [SkeletonBone.NECK]: "Neck length",
