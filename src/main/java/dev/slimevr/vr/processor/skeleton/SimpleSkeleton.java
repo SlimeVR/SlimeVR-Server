@@ -794,10 +794,10 @@ public class SimpleSkeleton extends HumanSkeleton implements SkeletonConfigCallb
 						// upper legs to be
 						rotBuf3.mult(rotBuf4.fromAngles(FastMath.HALF_PI, 0, 0), rotBuf4);
 						if (rotBuf4.dot(rotBuf1) < 0.0f) {
-							rotBuf1.negate();
+							rotBuf1.negateLocal();
 						}
 						if (rotBuf4.dot(rotBuf2) < 0.0f) {
-							rotBuf2.negate();
+							rotBuf2.negateLocal();
 						}
 
 						rotBuf1.nlerp(rotBuf2, 0.5f);
@@ -815,10 +815,10 @@ public class SimpleSkeleton extends HumanSkeleton implements SkeletonConfigCallb
 					// legs to be
 					rotBuf3.mult(rotBuf4.fromAngles(FastMath.HALF_PI, 0, 0), rotBuf4);
 					if (rotBuf4.dot(rotBuf1) < 0.0f) {
-						rotBuf1.negate();
+						rotBuf1.negateLocal();
 					}
 					if (rotBuf4.dot(rotBuf2) < 0.0f) {
-						rotBuf2.negate();
+						rotBuf2.negateLocal();
 					}
 
 					rotBuf1.nlerp(rotBuf2, 0.5f);
@@ -849,10 +849,10 @@ public class SimpleSkeleton extends HumanSkeleton implements SkeletonConfigCallb
 			// Get the rotation relative to where we expect the upper legs to be
 			rotBuf3.mult(rotBuf4.fromAngles(FastMath.HALF_PI, 0, 0), rotBuf4);
 			if (rotBuf4.dot(rotBuf1) < 0.0f) {
-				rotBuf1.negate();
+				rotBuf1.negateLocal();
 			}
 			if (rotBuf4.dot(rotBuf2) < 0.0f) {
-				rotBuf2.negate();
+				rotBuf2.negateLocal();
 			}
 
 			// Get WaiswaistNode's inverse rotation.
