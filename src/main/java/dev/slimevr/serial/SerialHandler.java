@@ -9,13 +9,13 @@ import java.io.OutputStream;
 import java.io.OutputStreamWriter;
 import java.nio.ByteBuffer;
 import java.nio.charset.StandardCharsets;
-import java.util.ArrayList;
+import java.util.concurrent.CopyOnWriteArrayList;
 import java.util.List;
 
 
 public class SerialHandler implements SerialPortMessageListener {
 
-	private final List<SerialListener> listeners = new ArrayList<>();
+	private final List<SerialListener> listeners = new CopyOnWriteArrayList<>();
 	private SerialPort trackerPort = null;
 
 	public void addListener(SerialListener channel) {
