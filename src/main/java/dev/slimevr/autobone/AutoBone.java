@@ -145,7 +145,10 @@ public class AutoBone {
 			server.config.getBoolean("autobone.forceChestTracker", false)
 				|| (trackers != null
 					&& TrackerUtils
-						.findNonComputedHumanPoseTrackerForBodyPosition(trackers, TrackerPosition.CHEST)
+						.findNonComputedHumanPoseTrackerForBodyPosition(
+							trackers,
+							TrackerPosition.CHEST
+						)
 						!= null)
 		) {
 			// If force enabled or has a chest tracker
@@ -160,10 +163,16 @@ public class AutoBone {
 			server.config.getBoolean("autobone.forceHipTracker", false)
 				|| (trackers != null
 					&& TrackerUtils
-						.findNonComputedHumanPoseTrackerForBodyPosition(trackers, TrackerPosition.HIP)
+						.findNonComputedHumanPoseTrackerForBodyPosition(
+							trackers,
+							TrackerPosition.HIP
+						)
 						!= null
 					&& TrackerUtils
-						.findNonComputedHumanPoseTrackerForBodyPosition(trackers, TrackerPosition.WAIST)
+						.findNonComputedHumanPoseTrackerForBodyPosition(
+							trackers,
+							TrackerPosition.WAIST
+						)
 						!= null)
 		) {
 			// If force enabled or has a hip tracker and waist tracker
