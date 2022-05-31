@@ -133,6 +133,8 @@ public class SimpleSkeleton extends HumanSkeleton implements SkeletonConfigCallb
 	protected boolean hasKneeTrackers;
 	protected float minKneePitch = 0f * FastMath.DEG_TO_RAD;
 	protected float maxKneePitch = 90f * FastMath.DEG_TO_RAD;
+	static final Quaternion FORWARD_QUATERNION = new Quaternion()
+		.fromAngles(FastMath.HALF_PI, 0, 0);
 	// #region Tracker Input
 	protected Tracker hmdTracker;
 	protected Tracker neckTracker;
@@ -177,6 +179,7 @@ public class SimpleSkeleton extends HumanSkeleton implements SkeletonConfigCallb
 	protected float waistChestHipFactor = 0.5f;
 	protected float waistChestPelvisFactor = 0.18f;
 	protected float hipSpinePelvisFactor = 0.25f;
+	protected float pelvisHipFactor = FastMath.ONE_THIRD;
 	// Extended Pelvis Model
 	protected float pelvisWaistTrackerFactor = 0.75f;
 	// #endregion
@@ -692,19 +695,25 @@ public class SimpleSkeleton extends HumanSkeleton implements SkeletonConfigCallb
 
 		// Spine
 		if (hasSpineTracker) {
-			getFirstAvailableTracker(chestTracker, waistTracker, hipTracker).getRotation(rotBuf1);
+			TrackerUtils
+				.getFirstAvailableTracker(chestTracker, waistTracker, hipTracker)
+				.getRotation(rotBuf1);
 			neckNode.localTransform.setRotation(rotBuf1);
 
-			getFirstAvailableTracker(waistTracker, hipTracker, chestTracker).getRotation(rotBuf1);
+			TrackerUtils
+				.getFirstAvailableTracker(waistTracker, hipTracker, chestTracker)
+				.getRotation(rotBuf1);
 			chestNode.localTransform.setRotation(rotBuf1);
 			trackerChestNode.localTransform.setRotation(rotBuf1);
 
-			getFirstAvailableTracker(hipTracker, waistTracker, chestTracker).getRotation(rotBuf1);
+			TrackerUtils
+				.getFirstAvailableTracker(hipTracker, waistTracker, chestTracker)
+				.getRotation(rotBuf1);
 			waistNode.localTransform.setRotation(rotBuf1);
 			hipNode.localTransform.setRotation(rotBuf1);
 			trackerWaistNode.localTransform.setRotation(rotBuf1);
 		} else if (hmdTracker != null) {
-			// Allign spine yaw with HMD
+			// Align spine yaw with HMD
 			rotBuf1.fromAngles(0, rotBuf1.getYaw(), 0);
 			neckNode.localTransform.setRotation(rotBuf1);
 			chestNode.localTransform.setRotation(rotBuf1);
@@ -792,7 +801,7 @@ public class SimpleSkeleton extends HumanSkeleton implements SkeletonConfigCallb
 
 						// Get the rotation relative to where we expect the
 						// upper legs to be
-						rotBuf3.mult(rotBuf4.fromAngles(FastMath.HALF_PI, 0, 0), rotBuf4);
+						rotBuf3.mult(FORWARD_QUATERNION, rotBuf4);
 						if (rotBuf4.dot(rotBuf1) < 0.0f) {
 							rotBuf1.negateLocal();
 						}
@@ -809,11 +818,13 @@ public class SimpleSkeleton extends HumanSkeleton implements SkeletonConfigCallb
 					// Calculates hip from (chest or waist) + pelvis
 					leftHipNode.localTransform.getRotation(rotBuf1);
 					rightHipNode.localTransform.getRotation(rotBuf2);
-					getFirstAvailableTracker(waistTracker, chestTracker, null).getRotation(rotBuf3);
+					TrackerUtils
+						.getFirstAvailableTracker(waistTracker, chestTracker, null)
+						.getRotation(rotBuf3);
 
 					// Get the rotation relative to where we expect the upper
 					// legs to be
-					rotBuf3.mult(rotBuf4.fromAngles(FastMath.HALF_PI, 0, 0), rotBuf4);
+					rotBuf3.mult(FORWARD_QUATERNION, rotBuf4);
 					if (rotBuf4.dot(rotBuf1) < 0.0f) {
 						rotBuf1.negateLocal();
 					}
@@ -836,7 +847,7 @@ public class SimpleSkeleton extends HumanSkeleton implements SkeletonConfigCallb
 			rotBuf2.nlerp(rotBuf1, 0.5f);
 			waistNode.localTransform.getRotation(rotBuf1);
 
-			rotBuf2.slerpLocal(rotBuf1, FastMath.ONE_THIRD);
+			rotBuf2.slerpLocal(rotBuf1, pelvisHipFactor);
 			hipNode.localTransform.setRotation(rotBuf2);
 
 			// Averages the trackerWaistNode's rotation with the calculated
@@ -847,7 +858,7 @@ public class SimpleSkeleton extends HumanSkeleton implements SkeletonConfigCallb
 			waistNode.localTransform.getRotation(rotBuf3);
 
 			// Get the rotation relative to where we expect the upper legs to be
-			rotBuf3.mult(rotBuf4.fromAngles(FastMath.HALF_PI, 0, 0), rotBuf4);
+			rotBuf3.mult(FORWARD_QUATERNION, rotBuf4);
 			if (rotBuf4.dot(rotBuf1) < 0.0f) {
 				rotBuf1.negateLocal();
 			}
@@ -871,13 +882,15 @@ public class SimpleSkeleton extends HumanSkeleton implements SkeletonConfigCallb
 
 		// Left arm from HMD
 		if (leftUpperArmTracker != null || leftLowerArmTracker != null) {
-			getFirstAvailableTracker(leftUpperArmTracker, leftLowerArmTracker, null)
+			TrackerUtils
+				.getFirstAvailableTracker(leftUpperArmTracker, leftLowerArmTracker, null)
 				.getRotation(rotBuf1);
 
 			leftShoulderNodeHmd.localTransform.setRotation(rotBuf1);
 			trackerLeftElbowNodeHmd.localTransform.setRotation(rotBuf1);
 
-			getFirstAvailableTracker(leftLowerArmTracker, leftUpperArmTracker, null)
+			TrackerUtils
+				.getFirstAvailableTracker(leftLowerArmTracker, leftUpperArmTracker, null)
 				.getRotation(rotBuf1);
 
 			leftElbowNodeHmd.localTransform.setRotation(rotBuf1);
@@ -891,13 +904,15 @@ public class SimpleSkeleton extends HumanSkeleton implements SkeletonConfigCallb
 
 		// Right arm from HMD
 		if (rightUpperArmTracker != null || rightLowerArmTracker != null) {
-			getFirstAvailableTracker(rightUpperArmTracker, rightLowerArmTracker, null)
+			TrackerUtils
+				.getFirstAvailableTracker(rightUpperArmTracker, rightLowerArmTracker, null)
 				.getRotation(rotBuf1);
 
 			rightShoulderNodeHmd.localTransform.setRotation(rotBuf1);
 			trackerRightElbowNodeHmd.localTransform.setRotation(rotBuf1);
 
-			getFirstAvailableTracker(rightLowerArmTracker, rightUpperArmTracker, null)
+			TrackerUtils
+				.getFirstAvailableTracker(rightLowerArmTracker, rightUpperArmTracker, null)
 				.getRotation(rotBuf1);
 
 			rightElbowNodeHmd.localTransform.setRotation(rotBuf1);
@@ -917,12 +932,14 @@ public class SimpleSkeleton extends HumanSkeleton implements SkeletonConfigCallb
 			leftControllerNodeContrl.localTransform.setRotation(rotBuf1);
 
 			if (leftLowerArmTracker != null || leftUpperArmTracker != null) {
-				getFirstAvailableTracker(leftLowerArmTracker, leftUpperArmTracker, null)
+				TrackerUtils
+					.getFirstAvailableTracker(leftLowerArmTracker, leftUpperArmTracker, null)
 					.getRotation(rotBuf1);
 
 				leftWristNodeContrl.localTransform.setRotation(rotBuf1);
 
-				getFirstAvailableTracker(leftUpperArmTracker, leftLowerArmTracker, null)
+				TrackerUtils
+					.getFirstAvailableTracker(leftUpperArmTracker, leftLowerArmTracker, null)
 					.getRotation(rotBuf1);
 
 				leftElbowNodeContrl.localTransform.setRotation(rotBuf1);
@@ -938,33 +955,20 @@ public class SimpleSkeleton extends HumanSkeleton implements SkeletonConfigCallb
 			rightControllerNodeContrl.localTransform.setRotation(rotBuf1);
 
 			if (rightLowerArmTracker != null || rightUpperArmTracker != null) {
-				getFirstAvailableTracker(rightLowerArmTracker, rightUpperArmTracker, null)
+				TrackerUtils
+					.getFirstAvailableTracker(rightLowerArmTracker, rightUpperArmTracker, null)
 					.getRotation(rotBuf1);
 
 				rightWristNodeContrl.localTransform.setRotation(rotBuf1);
 
-				getFirstAvailableTracker(rightUpperArmTracker, rightLowerArmTracker, null)
+				TrackerUtils
+					.getFirstAvailableTracker(rightUpperArmTracker, rightLowerArmTracker, null)
 					.getRotation(rotBuf1);
 
 				rightElbowNodeContrl.localTransform.setRotation(rotBuf1);
 				trackerRightElbowNodeContrl.localTransform.setRotation(rotBuf1);
 			}
 		}
-	}
-
-	Tracker getFirstAvailableTracker(
-		Tracker firstTracker,
-		Tracker secondTracker,
-		Tracker thirdTracker
-	) {
-		if (firstTracker != null)
-			return firstTracker;
-		if (secondTracker != null)
-			return secondTracker;
-		if (thirdTracker != null)
-			return thirdTracker;
-
-		return null;
 	}
 
 	// #region Knee Model

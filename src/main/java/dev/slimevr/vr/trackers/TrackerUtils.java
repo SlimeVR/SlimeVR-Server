@@ -50,4 +50,26 @@ public class TrackerUtils {
 		}
 		return null;
 	}
+
+	/**
+	 * Returns the first tracker that isn't null out of the 3 trackers maximum
+	 * passed as arguments.
+	 * 
+	 * 
+	 * @return The first non null tracker.
+	 */
+	public static <T extends Tracker> T getFirstAvailableTracker(
+		T firstTracker,
+		T secondTracker,
+		T thirdTracker
+	) {
+		if (firstTracker != null)
+			return firstTracker;
+		if (secondTracker != null)
+			return secondTracker;
+		if (thirdTracker != null)
+			return thirdTracker;
+
+		return null;
+	}
 }
