@@ -190,8 +190,8 @@ public class AutoBone {
 	 * A simple utility method to get the {@link Skeleton} from the
 	 * {@link VRServer}
 	 *
-	 * @return The {@link Skeleton} associated with the {@link VRServer},
-	 * or null if there is none available
+	 * @return The {@link Skeleton} associated with the {@link VRServer}, or
+	 * null if there is none available
 	 * @see {@link VRServer}, {@link Skeleton}
 	 */
 	private Skeleton getSkeleton() {
@@ -530,7 +530,7 @@ public class AutoBone {
 			LogManager.info("[AutoBone] Epoch " + (epoch + 1) + " average error: " + avgError);
 
 			if (epochCallback != null) {
-				epochCallback.accept(new Epoch(epoch + 1, avgError));
+				epochCallback.accept(new Epoch(epoch + 1, numEpochs, avgError, configs));
 			}
 		}
 
@@ -647,7 +647,7 @@ public class AutoBone {
 			}
 
 			Vector3f nodePos = skeleton
-				.getComputedTracker(trackerFrame.designation.trackerRole).position;
+				.getComputedTracker(trackerFrame.designation.trackerRole.get()).position;
 			if (nodePos != null) {
 				offset += FastMath.abs(nodePos.distance(trackerFrame.position));
 				offsetCount++;
@@ -682,13 +682,13 @@ public class AutoBone {
 			}
 
 			Vector3f nodePos1 = skeleton1
-				.getComputedTracker(trackerFrame1.designation.trackerRole).position;
+				.getComputedTracker(trackerFrame1.designation.trackerRole.get()).position;
 			if (nodePos1 == null) {
 				continue;
 			}
 
 			Vector3f nodePos2 = skeleton2
-				.getComputedTracker(trackerFrame2.designation.trackerRole).position;
+				.getComputedTracker(trackerFrame2.designation.trackerRole.get()).position;
 			if (nodePos2 == null) {
 				continue;
 			}
@@ -882,11 +882,20 @@ public class AutoBone {
 	public class Epoch {
 
 		public final int epoch;
+		public final int totalEpochs;
 		public final float epochError;
+		public final EnumMap<SkeletonConfigValue, Float> configValues;
 
-		public Epoch(int epoch, float epochError) {
+		public Epoch(
+			int epoch,
+			int totalEpochs,
+			float epochError,
+			EnumMap<SkeletonConfigValue, Float> configValues
+		) {
 			this.epoch = epoch;
+			this.totalEpochs = totalEpochs;
 			this.epochError = epochError;
+			this.configValues = configValues;
 		}
 
 		@Override

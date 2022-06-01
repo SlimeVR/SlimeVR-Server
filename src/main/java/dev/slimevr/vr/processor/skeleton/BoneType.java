@@ -2,6 +2,7 @@ package dev.slimevr.vr.processor.skeleton;
 
 import solarxr_protocol.datatypes.BodyPart;
 
+
 /**
  * Keys for all bones in the skeleton. TODO: Some bones are deprecated because
  * they are still used as SkeletonNodeOffset, and represent both left and right
@@ -69,13 +70,13 @@ public enum BoneType {
 	RIGHT_HAND_TRACKER;
 
 	public static final BoneType[] values = values();
-	
+
 	public final int bodyPart;
-	
+
 	private BoneType() {
 		this.bodyPart = BodyPart.NONE;
 	}
-	
+
 	private BoneType(int associatedBodyPart) {
 		this.bodyPart = associatedBodyPart;
 	}

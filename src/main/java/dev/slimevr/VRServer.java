@@ -27,6 +27,7 @@ import java.net.UnknownHostException;
 import java.util.*;
 import java.util.concurrent.LinkedBlockingQueue;
 import java.util.function.Consumer;
+import dev.slimevr.autobone.AutoBoneHandler;
 
 
 public class VRServer extends Thread {
@@ -44,6 +45,7 @@ public class VRServer extends Thread {
 	private final List<? extends ShareableTracker> shareTrackers;
 	private final BVHRecorder bvhRecorder;
 	private final SerialHandler serialHandler;
+	private final AutoBoneHandler autoBoneHandler;
 	private final ProtocolAPI protocolAPI;
 	private final String configPath;
 
@@ -57,6 +59,7 @@ public class VRServer extends Thread {
 		loadConfig();
 
 		serialHandler = new SerialHandler();
+		autoBoneHandler = new AutoBoneHandler(this);
 		protocolAPI = new ProtocolAPI(this);
 
 		hmdTracker = new HMDTracker("HMD");
@@ -354,6 +357,10 @@ public class VRServer extends Thread {
 
 	public SerialHandler getSerialHandler() {
 		return this.serialHandler;
+	}
+
+	public AutoBoneHandler getAutoBoneHandler() {
+		return this.autoBoneHandler;
 	}
 
 	public ProtocolAPI getProtocolAPI() {
