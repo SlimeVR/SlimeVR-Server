@@ -59,7 +59,7 @@ public class DataFeedBuilder {
 
 		TrackerInfo.startTrackerInfo(fbb);
 		if (tracker.getBodyPosition() != null)
-			TrackerInfo.addBodyPart(fbb, tracker.getBodyPosition().id);
+			TrackerInfo.addBodyPart(fbb, tracker.getBodyPosition().bodyPart);
 		TrackerInfo.addEditable(fbb, tracker.userEditable());
 		TrackerInfo.addComputed(fbb, tracker.isComputed());
 		// TODO need support: TrackerInfo.addImuType(fbb, tracker.im);

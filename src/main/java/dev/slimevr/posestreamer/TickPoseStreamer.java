@@ -1,6 +1,6 @@
 package dev.slimevr.posestreamer;
 
-import dev.slimevr.vr.processor.skeleton.HumanSkeleton;
+import dev.slimevr.vr.processor.skeleton.Skeleton;
 
 import java.io.IOException;
 
@@ -9,7 +9,7 @@ public class TickPoseStreamer extends PoseStreamer {
 
 	protected long nextFrameTimeMs = -1L;
 
-	public TickPoseStreamer(HumanSkeleton skeleton) {
+	public TickPoseStreamer(Skeleton skeleton) {
 		super(skeleton);
 	}
 
@@ -19,7 +19,7 @@ public class TickPoseStreamer extends PoseStreamer {
 			return;
 		}
 
-		HumanSkeleton skeleton = this.skeleton;
+		Skeleton skeleton = this.skeleton;
 		if (skeleton == null) {
 			return;
 		}

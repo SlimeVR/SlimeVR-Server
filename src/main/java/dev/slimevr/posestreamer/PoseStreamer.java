@@ -1,6 +1,6 @@
 package dev.slimevr.posestreamer;
 
-import dev.slimevr.vr.processor.skeleton.HumanSkeleton;
+import dev.slimevr.vr.processor.skeleton.Skeleton;
 import io.eiren.util.logging.LogManager;
 
 import java.io.IOException;
@@ -10,10 +10,10 @@ public class PoseStreamer {
 
 	protected long frameRecordingInterval = 60L;
 
-	protected HumanSkeleton skeleton;
+	protected Skeleton skeleton;
 	protected PoseDataStream poseFileStream;
 
-	public PoseStreamer(HumanSkeleton skeleton) {
+	public PoseStreamer(Skeleton skeleton) {
 		this.skeleton = skeleton;
 	}
 
@@ -43,7 +43,7 @@ public class PoseStreamer {
 		this.frameRecordingInterval = intervalMs;
 	}
 
-	public synchronized HumanSkeleton getSkeleton() {
+	public synchronized Skeleton getSkeleton() {
 		return skeleton;
 	}
 

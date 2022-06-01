@@ -197,7 +197,7 @@ public class RPCHandler extends ProtocolHandler<RpcMessageHeader>
 		if (tracker == null)
 			return;
 
-		tracker.setBodyPosition(TrackerPosition.getById(req.bodyPosition()));
+		tracker.setBodyPosition(TrackerPosition.getByBodyPart(req.bodyPosition()).get());
 
 		if (tracker instanceof ReferenceAdjustedTracker) {
 			ReferenceAdjustedTracker refTracker = (ReferenceAdjustedTracker) tracker;

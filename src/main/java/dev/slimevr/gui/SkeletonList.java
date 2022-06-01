@@ -7,7 +7,7 @@ import dev.slimevr.VRServer;
 import dev.slimevr.gui.swing.EJBagNoStretch;
 import dev.slimevr.util.ann.VRServerThread;
 import dev.slimevr.vr.processor.TransformNode;
-import dev.slimevr.vr.processor.skeleton.HumanSkeleton;
+import dev.slimevr.vr.processor.skeleton.Skeleton;
 import io.eiren.util.StringUtils;
 import io.eiren.util.ann.ThreadSafe;
 import io.eiren.util.collections.FastList;
@@ -36,7 +36,7 @@ public class SkeletonList extends EJBagNoStretch {
 	}
 
 	@ThreadSafe
-	public void skeletonUpdated(HumanSkeleton newSkeleton) {
+	public void skeletonUpdated(Skeleton newSkeleton) {
 		java.awt.EventQueue.invokeLater(() -> {
 			removeAll();
 			nodes.clear();

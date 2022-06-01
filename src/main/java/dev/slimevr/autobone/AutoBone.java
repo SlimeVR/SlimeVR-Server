@@ -5,7 +5,7 @@ import com.jme3.math.Vector3f;
 import dev.slimevr.VRServer;
 import dev.slimevr.poserecorder.*;
 import dev.slimevr.vr.processor.HumanPoseProcessor;
-import dev.slimevr.vr.processor.skeleton.HumanSkeleton;
+import dev.slimevr.vr.processor.skeleton.Skeleton;
 import dev.slimevr.vr.processor.skeleton.SkeletonConfig;
 import dev.slimevr.vr.processor.skeleton.SkeletonConfigValue;
 import dev.slimevr.vr.trackers.TrackerPosition;
@@ -187,14 +187,14 @@ public class AutoBone {
 	}
 
 	/**
-	 * A simple utility method to get the {@link HumanSkeleton} from the
+	 * A simple utility method to get the {@link Skeleton} from the
 	 * {@link VRServer}
 	 *
-	 * @return The {@link HumanSkeleton} associated with the {@link VRServer},
-	 * or null if there is none available
-	 * @see {@link VRServer}, {@link HumanSkeleton}
+	 * @return The {@link Skeleton} associated with the {@link VRServer}, or
+	 * null if there is none available
+	 * @see {@link VRServer}, {@link Skeleton}
 	 */
-	private HumanSkeleton getSkeleton() {
+	private Skeleton getSkeleton() {
 		HumanPoseProcessor humanPoseProcessor = server != null ? server.humanPoseProcessor : null;
 		return humanPoseProcessor != null ? humanPoseProcessor.getSkeleton() : null;
 	}
@@ -206,7 +206,7 @@ public class AutoBone {
 		}
 	}
 
-	public boolean applyConfigToSkeleton(HumanSkeleton skeleton) {
+	public boolean applyConfigToSkeleton(Skeleton skeleton) {
 		if (skeleton == null) {
 			return false;
 		}
@@ -351,7 +351,7 @@ public class AutoBone {
 		// If target height isn't specified, auto-detect
 		if (targetHeight < 0f) {
 			// Get the current skeleton from the server
-			HumanSkeleton skeleton = getSkeleton();
+			Skeleton skeleton = getSkeleton();
 			if (skeleton != null) {
 				// If there is a skeleton available, calculate the target height
 				// from its
@@ -647,7 +647,7 @@ public class AutoBone {
 			}
 
 			Vector3f nodePos = skeleton
-				.getComputedTracker(trackerFrame.designation.trackerRole).position;
+				.getComputedTracker(trackerFrame.designation.trackerRole.get()).position;
 			if (nodePos != null) {
 				offset += FastMath.abs(nodePos.distance(trackerFrame.position));
 				offsetCount++;
@@ -682,13 +682,13 @@ public class AutoBone {
 			}
 
 			Vector3f nodePos1 = skeleton1
-				.getComputedTracker(trackerFrame1.designation.trackerRole).position;
+				.getComputedTracker(trackerFrame1.designation.trackerRole.get()).position;
 			if (nodePos1 == null) {
 				continue;
 			}
 
 			Vector3f nodePos2 = skeleton2
-				.getComputedTracker(trackerFrame2.designation.trackerRole).position;
+				.getComputedTracker(trackerFrame2.designation.trackerRole.get()).position;
 			if (nodePos2 == null) {
 				continue;
 			}

@@ -185,7 +185,7 @@ public class TrackersList extends EJBoxNoStretch {
 					desSelect.addItem(p.name());
 				}
 				if (cfg.designation != null) {
-					TrackerPosition p = TrackerPosition.getByDesignation(cfg.designation);
+					TrackerPosition p = TrackerPosition.getByDesignation(cfg.designation).get();
 					if (p != null)
 						desSelect.setSelectedItem(p.name());
 				}

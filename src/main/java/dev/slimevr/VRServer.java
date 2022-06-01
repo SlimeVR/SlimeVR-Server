@@ -8,7 +8,7 @@ import dev.slimevr.protocol.ProtocolAPI;
 import dev.slimevr.serial.SerialHandler;
 import dev.slimevr.util.ann.VRServerThread;
 import dev.slimevr.vr.processor.HumanPoseProcessor;
-import dev.slimevr.vr.processor.skeleton.HumanSkeleton;
+import dev.slimevr.vr.processor.skeleton.Skeleton;
 import dev.slimevr.vr.trackers.*;
 import dev.slimevr.vr.trackers.udp.TrackersUDPServer;
 import dev.slimevr.websocketapi.WebSocketVRBridge;
@@ -194,7 +194,7 @@ public class VRServer extends Thread {
 	}
 
 	@ThreadSafe
-	public void addSkeletonUpdatedCallback(Consumer<HumanSkeleton> consumer) {
+	public void addSkeletonUpdatedCallback(Consumer<Skeleton> consumer) {
 		queueTask(() -> {
 			humanPoseProcessor.addSkeletonUpdatedCallback(consumer);
 		});
