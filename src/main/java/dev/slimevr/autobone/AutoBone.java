@@ -530,7 +530,7 @@ public class AutoBone {
 			LogManager.info("[AutoBone] Epoch " + (epoch + 1) + " average error: " + avgError);
 
 			if (epochCallback != null) {
-				epochCallback.accept(new Epoch(epoch + 1, avgError));
+				epochCallback.accept(new Epoch(epoch + 1, numEpochs, avgError, configs));
 			}
 		}
 
@@ -882,11 +882,20 @@ public class AutoBone {
 	public class Epoch {
 
 		public final int epoch;
+		public final int totalEpochs;
 		public final float epochError;
+		public final EnumMap<SkeletonConfigValue, Float> configValues;
 
-		public Epoch(int epoch, float epochError) {
+		public Epoch(
+			int epoch,
+			int totalEpochs,
+			float epochError,
+			EnumMap<SkeletonConfigValue, Float> configValues
+		) {
 			this.epoch = epoch;
+			this.totalEpochs = totalEpochs;
 			this.epochError = epochError;
+			this.configValues = configValues;
 		}
 
 		@Override
