@@ -17,6 +17,7 @@ public class ConnectionContext {
 	private final List<Long> dataFeedTimers = new ArrayList<>();
 
 	private boolean useSerial = false;
+	private boolean useAutoBone = false;
 
 	public List<DataFeedConfigT> getDataFeedConfigList() {
 		return dataFeedConfigList;
@@ -32,5 +33,13 @@ public class ConnectionContext {
 
 	public void setUseSerial(boolean useSerial) {
 		this.useSerial = useSerial;
+	}
+
+	public boolean useAutoBone() {
+		return useAutoBone;
+	}
+
+	public void setUseAutoBone(boolean useAutoBone) {
+		this.useAutoBone = useAutoBone;
 	}
 }
