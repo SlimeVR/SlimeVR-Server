@@ -7,6 +7,7 @@ import java.util.Map;
 public enum SkeletonConfigToggle {
 
 	EXTENDED_PELVIS_MODEL("Extended pelvis model", "extendedPelvis", true),
+	EXTENDED_SPINE_MODEL("Extended spine model", "extendedSpine", true),
 	EXTENDED_KNEE_MODEL("Extended knee model", "extendedKnee", false),;
 
 	public static final SkeletonConfigToggle[] values = values();

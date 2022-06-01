@@ -346,10 +346,10 @@ public class SkeletonConfig {
 				);
 				break;
 			case LOWER_ARM:
-				setNodeOffset(nodeOffset, 0, getConfig(SkeletonConfigValue.FOREARM_LENGTH), 0);
+				setNodeOffset(nodeOffset, 0, getConfig(SkeletonConfigValue.LOWER_ARM_LENGTH), 0);
 				break;
 			case LOWER_ARM_HMD:
-				setNodeOffset(nodeOffset, 0, -getConfig(SkeletonConfigValue.FOREARM_LENGTH), 0);
+				setNodeOffset(nodeOffset, 0, -getConfig(SkeletonConfigValue.LOWER_ARM_LENGTH), 0);
 				break;
 			case ELBOW_TRACKER:
 				setNodeOffset(nodeOffset, 0, getConfig(SkeletonConfigValue.ELBOW_OFFSET), 0);
@@ -361,8 +361,7 @@ public class SkeletonConfig {
 				setNodeOffset(
 					nodeOffset,
 					-getConfig(SkeletonConfigValue.SHOULDERS_WIDTH) / 2f,
-					getConfig(SkeletonConfigValue.CHEST)
-						- getConfig(SkeletonConfigValue.SHOULDERS_DISTANCE),
+					-getConfig(SkeletonConfigValue.SHOULDERS_DISTANCE),
 					0
 				);
 				break;
@@ -370,8 +369,7 @@ public class SkeletonConfig {
 				setNodeOffset(
 					nodeOffset,
 					getConfig(SkeletonConfigValue.SHOULDERS_WIDTH) / 2f,
-					getConfig(SkeletonConfigValue.CHEST)
-						- getConfig(SkeletonConfigValue.SHOULDERS_DISTANCE),
+					-getConfig(SkeletonConfigValue.SHOULDERS_DISTANCE),
 					0
 				);
 				break;
