@@ -23,18 +23,18 @@ public enum TrackerPosition {
 	CHEST("body:chest", TrackerRole.CHEST, BodyPart.CHEST),
 	WAIST("body:waist", Optional.empty(), BodyPart.WAIST),
 	HIP("body:hip", TrackerRole.WAIST, BodyPart.HIP),
-	LEFT_KNEE("body:left_knee", TrackerRole.LEFT_KNEE, BodyPart.LEFT_KNEE),
-	RIGHT_KNEE("body:right_knee", TrackerRole.RIGHT_KNEE, BodyPart.RIGHT_KNEE),
-	LEFT_ANKLE("body:left_ankle", Optional.empty(), BodyPart.LEFT_ANKLE),
-	RIGHT_ANKLE("body:right_ankle", Optional.empty(), BodyPart.RIGHT_ANKLE),
+	LEFT_UPPER_LEG("body:left_upper_leg", TrackerRole.LEFT_KNEE, BodyPart.LEFT_UPPER_LEG),
+	RIGHT_UPPER_LEG("body:right_upper_leg", TrackerRole.RIGHT_KNEE, BodyPart.RIGHT_UPPER_LEG),
+	LEFT_LOWER_LEG("body:left_lower_leg", Optional.empty(), BodyPart.LEFT_LOWER_LEG),
+	RIGHT_LOWER_LEG("body:right_lower_leg", Optional.empty(), BodyPart.RIGHT_LOWER_LEG),
 	LEFT_FOOT("body:left_foot", TrackerRole.LEFT_FOOT, BodyPart.LEFT_FOOT),
 	RIGHT_FOOT("body:right_foot", TrackerRole.RIGHT_FOOT, BodyPart.RIGHT_FOOT),
 	LEFT_CONTROLLER("body:left_controller", TrackerRole.LEFT_CONTROLLER, BodyPart.LEFT_CONTROLLER),
 	RIGHT_CONTROLLER("body:right_controller", TrackerRole.RIGHT_CONTROLLER, BodyPart.RIGHT_CONTROLLER),
-	LEFT_FOREARM("body:left_forearm", TrackerRole.LEFT_ELBOW, BodyPart.LEFT_FOREARM),
-	RIGHT_FOREARM("body:right_forearm", TrackerRole.RIGHT_ELBOW, BodyPart.RIGHT_FOREARM),
-	LEFT_UPPER_ARM("body:left_upperarm", TrackerRole.LEFT_SHOULDER, BodyPart.LEFT_UPPER_ARM),
-	RIGHT_UPPER_ARM("body:right_upperarm", TrackerRole.RIGHT_SHOULDER, BodyPart.RIGHT_UPPER_ARM),
+	LEFT_LOWER_ARM("body:left_lower_arm", TrackerRole.LEFT_ELBOW, BodyPart.LEFT_LOWER_ARM),
+	RIGHT_LOWER_ARM("body:right_lower_arm", TrackerRole.RIGHT_ELBOW, BodyPart.RIGHT_LOWER_ARM),
+	LEFT_UPPER_ARM("body:left_upper_arm", TrackerRole.LEFT_SHOULDER, BodyPart.LEFT_UPPER_ARM),
+	RIGHT_UPPER_ARM("body:right_uppe_rarm", TrackerRole.RIGHT_SHOULDER, BodyPart.RIGHT_UPPER_ARM),
 	LEFT_HAND("body:left_hand", TrackerRole.LEFT_HAND, BodyPart.LEFT_HAND),
 	RIGHT_HAND("body:right_hand", TrackerRole.RIGHT_HAND, BodyPart.RIGHT_HAND),;
 	// @formatter:on
@@ -92,7 +92,6 @@ public enum TrackerPosition {
 		}
 	}
 
-
 	/**
 	 * Gets the `TrackerPosition` by its string designation.
 	 *
@@ -103,12 +102,26 @@ public enum TrackerPosition {
 			return Optional.empty();
 		}
 
-		// Support old configs. leg was renamed to knee.
-		if (designation.equalsIgnoreCase("body:left_leg"))
-			designation = "body:left_knee";
-		if (designation.equalsIgnoreCase("body:right_leg"))
-			designation = "body:right_knee";
-
+		// Support old configs.
+		if (
+			designation.equalsIgnoreCase("body:left_leg")
+				|| designation.equalsIgnoreCase("body:left_knee")
+		) {
+			designation = "body:left_upper_leg";
+		} else if (
+			designation.equalsIgnoreCase("body:right_leg")
+				|| designation.equalsIgnoreCase("body:right_knee")
+		) {
+			designation = "body:right_upper_leg";
+		} else if (designation.equalsIgnoreCase("body:left_ankle")) {
+			designation = "body:left_lower_leg";
+		} else if (designation.equalsIgnoreCase("body:right_ankle")) {
+			designation = "body:right_lower_leg";
+		} else if (designation.equalsIgnoreCase("body:left_forearm")) {
+			designation = "body:left_lower_arm";
+		} else if (designation.equalsIgnoreCase("body:right_forearm")) {
+			designation = "body:right_lower_arm";
+		}
 
 		return Optional.ofNullable(byDesignation.get(designation.toLowerCase()));
 	}

@@ -462,15 +462,15 @@ public class HumanSkeleton extends Skeleton implements SkeletonConfigCallback {
 		this.leftKneeTracker = TrackerUtils
 			.findTrackerForBodyPositionOrEmpty(
 				trackers,
-				TrackerPosition.LEFT_KNEE,
-				TrackerPosition.LEFT_ANKLE,
+				TrackerPosition.LEFT_UPPER_LEG,
+				TrackerPosition.LEFT_LOWER_LEG,
 				null
 			);
 		this.leftAnkleTracker = TrackerUtils
 			.findTrackerForBodyPositionOrEmpty(
 				trackers,
-				TrackerPosition.LEFT_ANKLE,
-				TrackerPosition.LEFT_KNEE,
+				TrackerPosition.LEFT_LOWER_LEG,
+				TrackerPosition.LEFT_UPPER_LEG,
 				null
 			);
 		this.leftFootTracker = TrackerUtils
@@ -479,15 +479,15 @@ public class HumanSkeleton extends Skeleton implements SkeletonConfigCallback {
 		this.rightKneeTracker = TrackerUtils
 			.findTrackerForBodyPositionOrEmpty(
 				trackers,
-				TrackerPosition.RIGHT_KNEE,
-				TrackerPosition.RIGHT_ANKLE,
+				TrackerPosition.RIGHT_UPPER_LEG,
+				TrackerPosition.RIGHT_LOWER_LEG,
 				null
 			);
 		this.rightAnkleTracker = TrackerUtils
 			.findTrackerForBodyPositionOrEmpty(
 				trackers,
-				TrackerPosition.RIGHT_ANKLE,
-				TrackerPosition.RIGHT_KNEE,
+				TrackerPosition.RIGHT_LOWER_LEG,
+				TrackerPosition.RIGHT_UPPER_LEG,
 				null
 			);
 		this.rightFootTracker = TrackerUtils
@@ -500,14 +500,14 @@ public class HumanSkeleton extends Skeleton implements SkeletonConfigCallback {
 		this.leftForearmTracker = TrackerUtils
 			.findTrackerForBodyPositionOrEmpty(
 				trackers,
-				TrackerPosition.LEFT_FOREARM,
+				TrackerPosition.LEFT_LOWER_ARM,
 				TrackerPosition.LEFT_UPPER_ARM,
 				null
 			);
 		this.rightForearmTracker = TrackerUtils
 			.findTrackerForBodyPositionOrEmpty(
 				trackers,
-				TrackerPosition.RIGHT_FOREARM,
+				TrackerPosition.RIGHT_LOWER_ARM,
 				TrackerPosition.RIGHT_UPPER_ARM,
 				null
 			);
@@ -515,14 +515,14 @@ public class HumanSkeleton extends Skeleton implements SkeletonConfigCallback {
 			.findTrackerForBodyPositionOrEmpty(
 				trackers,
 				TrackerPosition.LEFT_UPPER_ARM,
-				TrackerPosition.LEFT_FOREARM,
+				TrackerPosition.LEFT_LOWER_ARM,
 				null
 			);
 		this.rightUpperArmTracker = TrackerUtils
 			.findTrackerForBodyPositionOrEmpty(
 				trackers,
 				TrackerPosition.RIGHT_UPPER_ARM,
-				TrackerPosition.RIGHT_FOREARM,
+				TrackerPosition.RIGHT_LOWER_ARM,
 				null
 			);
 		this.leftHandTracker = TrackerUtils
