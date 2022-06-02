@@ -34,7 +34,7 @@ public enum TrackerPosition {
 	LEFT_LOWER_ARM("body:left_lower_arm", TrackerRole.LEFT_ELBOW, BodyPart.LEFT_LOWER_ARM),
 	RIGHT_LOWER_ARM("body:right_lower_arm", TrackerRole.RIGHT_ELBOW, BodyPart.RIGHT_LOWER_ARM),
 	LEFT_UPPER_ARM("body:left_upper_arm", TrackerRole.LEFT_SHOULDER, BodyPart.LEFT_UPPER_ARM),
-	RIGHT_UPPER_ARM("body:right_uppe_rarm", TrackerRole.RIGHT_SHOULDER, BodyPart.RIGHT_UPPER_ARM),
+	RIGHT_UPPER_ARM("body:right_upper_arm", TrackerRole.RIGHT_SHOULDER, BodyPart.RIGHT_UPPER_ARM),
 	LEFT_HAND("body:left_hand", TrackerRole.LEFT_HAND, BodyPart.LEFT_HAND),
 	RIGHT_HAND("body:right_hand", TrackerRole.RIGHT_HAND, BodyPart.RIGHT_HAND),;
 	// @formatter:on
@@ -121,6 +121,10 @@ public enum TrackerPosition {
 			designation = "body:left_lower_arm";
 		} else if (designation.equalsIgnoreCase("body:right_forearm")) {
 			designation = "body:right_lower_arm";
+		} else if (designation.equalsIgnoreCase("body:left_upperarm")) {
+			designation = "body:left_upper_arm";
+		} else if (designation.equalsIgnoreCase("body:right_upperarm")) {
+			designation = "body:right_upper_arm";
 		}
 
 		return Optional.ofNullable(byDesignation.get(designation.toLowerCase()));
