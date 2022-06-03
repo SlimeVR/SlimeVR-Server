@@ -217,7 +217,7 @@ public class HumanSkeleton extends Skeleton implements SkeletonConfigCallback {
 		rightWristNodeContrl.attachChild(rightElbowNodeContrl);
 		// #endregion
 
-		// #region Assemble skeleton arms from chest
+		// #region Assemble skeleton arms from neck
 		neckNode.attachChild(leftShoulderNodeHmd);
 		neckNode.attachChild(rightShoulderNodeHmd);
 
