@@ -1,6 +1,5 @@
 package dev.slimevr.vr.processor.skeleton;
 
-
 import dev.slimevr.vr.processor.TransformNode;
 
 

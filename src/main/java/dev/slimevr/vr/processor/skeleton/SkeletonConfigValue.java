@@ -119,7 +119,7 @@ public enum SkeletonConfigValue {
 		0.05f,
 		new BoneType[] { BoneType.CONTROLLER, BoneType.HAND }
 	),
-	FOREARM_LENGTH(
+	LOWER_ARM_LENGTH(
 		15,
 		"Forearm length",
 		"forearmLength",

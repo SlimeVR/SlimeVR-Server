@@ -159,7 +159,7 @@ public class IMUTracker implements Tracker, TrackerWithTPS, TrackerWithBattery {
 	public boolean getRotation(Quaternion store) {
 		if (movementFilterTickCount > 0 && movementFilterAmount != 1 && previousRots.size() > 0) {
 			buffQuat.set(previousRots.get(0));
-			buffQuat.slerp(rotQuaternion, movementFilterAmount);
+			buffQuat.slerpLocal(rotQuaternion, movementFilterAmount);
 			store.set(buffQuat);
 		} else {
 			store.set(rotQuaternion);

@@ -138,7 +138,8 @@ public final class PoseFrames implements Iterable<TrackerFrame[]> {
 	public float getMaxHeight(TrackerPosition trackerPosition) {
 		float maxHeight = 0f;
 
-		PoseFrameTracker hmd = TrackerUtils.findTrackerForBodyPosition(trackers, trackerPosition);
+		PoseFrameTracker hmd = TrackerUtils
+			.findNonComputedHumanPoseTrackerForBodyPosition(trackers, trackerPosition);
 
 		if (hmd == null) {
 			return maxHeight;
