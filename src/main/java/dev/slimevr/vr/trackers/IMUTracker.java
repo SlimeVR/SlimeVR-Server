@@ -4,8 +4,8 @@ import com.jme3.math.FastMath;
 import com.jme3.math.Quaternion;
 import com.jme3.math.Vector3f;
 import dev.slimevr.VRServer;
-import dev.slimevr.vr.trackers.udp.UDPDevice;
 import dev.slimevr.vr.trackers.udp.TrackersUDPServer;
+import dev.slimevr.vr.trackers.udp.UDPDevice;
 import io.eiren.util.BufferedTimer;
 
 
@@ -83,7 +83,9 @@ public class IMUTracker implements Tracker, TrackerWithTPS, TrackerWithBattery {
 			} else {
 				rotAdjust.loadIdentity();
 			}
-			bodyPosition = TrackerPosition.getByDesignation(config.designation).get();
+			TrackerPosition
+				.getByDesignation(config.designation)
+				.ifPresent(trackerPosition -> bodyPosition = trackerPosition);
 			setFilter(
 				vrserver.config.getString("filters.type"),
 				vrserver.config.getFloat("filters.amount", 0.3f),
