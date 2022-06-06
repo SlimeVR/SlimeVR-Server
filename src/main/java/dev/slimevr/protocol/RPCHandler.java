@@ -3,10 +3,9 @@ package dev.slimevr.protocol;
 import com.fazecast.jSerialComm.SerialPort;
 import com.google.flatbuffers.FlatBufferBuilder;
 import com.jme3.math.Quaternion;
-
+import dev.slimevr.autobone.AutoBone.Epoch;
 import dev.slimevr.autobone.AutoBoneListener;
 import dev.slimevr.autobone.AutoBoneProcessType;
-import dev.slimevr.autobone.AutoBone.Epoch;
 import dev.slimevr.platform.windows.WindowsNamedPipeBridge;
 import dev.slimevr.poserecorder.PoseFrames;
 import dev.slimevr.serial.SerialListener;
@@ -197,7 +196,7 @@ public class RPCHandler extends ProtocolHandler<RpcMessageHeader>
 		if (tracker == null)
 			return;
 
-		tracker.setBodyPosition(TrackerPosition.getByBodyPart(req.bodyPosition()).get());
+		TrackerPosition.getByBodyPart(req.bodyPosition()).ifPresent(tracker::setBodyPosition);
 
 		if (tracker instanceof ReferenceAdjustedTracker) {
 			ReferenceAdjustedTracker refTracker = (ReferenceAdjustedTracker) tracker;

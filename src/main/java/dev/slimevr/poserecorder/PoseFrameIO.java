@@ -92,7 +92,9 @@ public final class PoseFrameIO {
 
 					TrackerPosition designation = null;
 					if (TrackerFrameData.DESIGNATION.check(dataFlags)) {
-						designation = TrackerPosition.getByDesignation(inputStream.readUTF()).get();
+						designation = TrackerPosition
+							.getByDesignation(inputStream.readUTF())
+							.orElse(null);
 					}
 
 					Quaternion rotation = null;
