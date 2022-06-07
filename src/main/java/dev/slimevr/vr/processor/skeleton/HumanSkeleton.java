@@ -183,7 +183,7 @@ public class HumanSkeleton extends Skeleton implements SkeletonConfigCallback {
 	// Extended Pelvis Model
 	protected float pelvisWaistTrackerAveraging = 0.75f;
 	// Extended Knee Model
-	protected float ankleKneeAveraging = 0.5f;
+	protected float ankleKneeTrackerAveraging = 0.5f;
 	// #endregion
 
 	// #region Constructors
@@ -859,8 +859,8 @@ public class HumanSkeleton extends Skeleton implements SkeletonConfigCallback {
 			leftLowerLegTracker.getRotation(rotBuf2);
 
 		leftHipNode.localTransform.setRotation(rotBuf1);
+		trackerLeftKneeNode.localTransform.setRotation(rotBuf1);
 		leftKneeNode.localTransform.setRotation(rotBuf2);
-		trackerLeftKneeNode.localTransform.setRotation(rotBuf2);
 
 		if (leftFootTracker != null)
 			leftFootTracker.getRotation(rotBuf2);
@@ -872,28 +872,21 @@ public class HumanSkeleton extends Skeleton implements SkeletonConfigCallback {
 		// Extended left knee
 		if (leftUpperLegTracker != null && leftLowerLegTracker != null && extendedKneeModel) {
 			// Averages the knee's rotation with the local ankle's
-			// pitch and roll
+			// pitch and roll and apply to the tracker node.
 			leftKneeNode.localTransform.getRotation(rotBuf1);
-			leftAnkleNode.localTransform.getRotation(rotBuf2);
+			leftHipNode.localTransform.getRotation(rotBuf2);
 
-			// Get the rotation relative to where we expect the ankle to be
-			rotBuf2.mult(FORWARD_QUATERNION, rotBuf3);
-			if (rotBuf3.dot(rotBuf1) < 0.0f) {
-				rotBuf2.negateLocal();
-			}
-
-			// Get the ankle's inverse rotation.
+			// Get the knee's inverse rotation.
 			rotBuf3.set(rotBuf2);
 			rotBuf3.inverseLocal();
 
 			// Only rotate on local yaw and pitch
-			rotBuf3.set(rotBuf3.mult(rotBuf1.add(rotBuf2)));
-			rotBuf2.set(-rotBuf3.getX(), 0, 0, rotBuf3.getW());
-			rotBuf1.set(rotBuf3.mult(rotBuf3).mult(rotBuf2));
+			rotBuf3.multLocal(rotBuf1);
+			rotBuf1.set(-rotBuf3.getX(), 0, 0, rotBuf3.getW());
+			rotBuf1.set(rotBuf2.mult(rotBuf3).mult(rotBuf1));
 
 			rotBuf1.normalizeLocal();
-			rotBuf1.slerpLocal(rotBuf3, ankleKneeAveraging);
-			leftKneeNode.localTransform.setRotation(rotBuf1);
+			rotBuf1.slerpLocal(rotBuf2, ankleKneeTrackerAveraging);
 			trackerLeftKneeNode.localTransform.setRotation(rotBuf1);
 		}
 
@@ -906,8 +899,8 @@ public class HumanSkeleton extends Skeleton implements SkeletonConfigCallback {
 			rightLowerLegTracker.getRotation(rotBuf2);
 
 		rightHipNode.localTransform.setRotation(rotBuf1);
+		trackerRightKneeNode.localTransform.setRotation(rotBuf1);
 		rightKneeNode.localTransform.setRotation(rotBuf2);
-		trackerRightKneeNode.localTransform.setRotation(rotBuf2);
 
 		if (rightFootTracker != null)
 			rightFootTracker.getRotation(rotBuf2);
@@ -919,30 +912,24 @@ public class HumanSkeleton extends Skeleton implements SkeletonConfigCallback {
 		// Extended right knee
 		if (rightUpperLegTracker != null && rightLowerLegTracker != null && extendedKneeModel) {
 			// Averages the knee's rotation with the local ankle's
-			// pitch and roll
+			// pitch and roll and apply to the tracker node.
 			rightKneeNode.localTransform.getRotation(rotBuf1);
-			rightAnkleNode.localTransform.getRotation(rotBuf2);
+			rightHipNode.localTransform.getRotation(rotBuf2);
 
-			// Get the rotation relative to where we expect the ankle to be
-			rotBuf2.mult(FORWARD_QUATERNION, rotBuf3);
-			if (rotBuf3.dot(rotBuf1) < 0.0f) {
-				rotBuf2.negateLocal();
-			}
-
-			// Get the ankle's inverse rotation.
+			// Get the knee's inverse rotation.
 			rotBuf3.set(rotBuf2);
 			rotBuf3.inverseLocal();
 
 			// Only rotate on local yaw and pitch
-			rotBuf3.set(rotBuf3.mult(rotBuf1.add(rotBuf2)));
-			rotBuf2.set(-rotBuf3.getX(), 0, 0, rotBuf3.getW());
-			rotBuf1.set(rotBuf3.mult(rotBuf3).mult(rotBuf2));
+			rotBuf3.multLocal(rotBuf1);
+			rotBuf1.set(-rotBuf3.getX(), 0, 0, rotBuf3.getW());
+			rotBuf1.set(rotBuf2.mult(rotBuf3).mult(rotBuf1));
 
 			rotBuf1.normalizeLocal();
-			rotBuf1.slerpLocal(rotBuf3, ankleKneeAveraging);
-			rightKneeNode.localTransform.setRotation(rotBuf1);
+			rotBuf1.slerpLocal(rotBuf2, ankleKneeTrackerAveraging);
 			trackerRightKneeNode.localTransform.setRotation(rotBuf1);
 		}
+
 
 		// Extended spine
 		if (extendedSpineModel && hasSpineTracker) {
@@ -1032,12 +1019,12 @@ public class HumanSkeleton extends Skeleton implements SkeletonConfigCallback {
 				rotBuf2.negateLocal();
 			}
 
-			// Get WaiswaistNode's inverse rotation.
+			// Get waistNode's inverse rotation.
 			rotBuf4.set(rotBuf3);
 			rotBuf4.inverseLocal();
 
 			// Only rotate on local yaw and pitch
-			rotBuf4.set(rotBuf4.mult(rotBuf1.add(rotBuf2)));
+			rotBuf4.multLocal(rotBuf1.add(rotBuf2));
 			rotBuf2.set(-rotBuf4.getX(), 0, 0, rotBuf4.getW());
 			rotBuf1.set(rotBuf3.mult(rotBuf4).mult(rotBuf2));
 
@@ -1154,7 +1141,7 @@ public class HumanSkeleton extends Skeleton implements SkeletonConfigCallback {
 		if (computedLeftKneeTracker != null) {
 			computedLeftKneeTracker.position
 				.set(trackerLeftKneeNode.worldTransform.getTranslation());
-			computedLeftKneeTracker.rotation.set(leftHipNode.worldTransform.getRotation());
+			computedLeftKneeTracker.rotation.set(trackerLeftKneeNode.worldTransform.getRotation());
 			computedLeftKneeTracker.dataTick();
 		}
 
@@ -1168,7 +1155,8 @@ public class HumanSkeleton extends Skeleton implements SkeletonConfigCallback {
 		if (computedRightKneeTracker != null) {
 			computedRightKneeTracker.position
 				.set(trackerRightKneeNode.worldTransform.getTranslation());
-			computedRightKneeTracker.rotation.set(rightHipNode.worldTransform.getRotation());
+			computedRightKneeTracker.rotation
+				.set(trackerRightKneeNode.worldTransform.getRotation());
 			computedRightKneeTracker.dataTick();
 		}
 
