@@ -881,11 +881,16 @@ public class HumanSkeleton extends Skeleton implements SkeletonConfigCallback {
 			rotBuf3.inverseLocal();
 
 			// Only rotate on local yaw and pitch
+			//
+			// R = InverseKnee * Ankle
+			// C = Quaternion(-R.x, 0, 0, R.w)
+			// Knee = Knee * R * C
+			// normalize(Knee)
 			rotBuf3.multLocal(rotBuf1);
 			rotBuf1.set(-rotBuf3.getX(), 0, 0, rotBuf3.getW());
 			rotBuf1.set(rotBuf2.mult(rotBuf3).mult(rotBuf1));
-
 			rotBuf1.normalizeLocal();
+
 			rotBuf1.slerpLocal(rotBuf2, ankleKneeTrackerAveraging);
 			trackerLeftKneeNode.localTransform.setRotation(rotBuf1);
 		}
@@ -921,11 +926,15 @@ public class HumanSkeleton extends Skeleton implements SkeletonConfigCallback {
 			rotBuf3.inverseLocal();
 
 			// Only rotate on local yaw and pitch
-			rotBuf3.multLocal(rotBuf1);
+			//
+			// R = InverseKnee * Ankle
+			// C = Quaternion(-R.x, 0, 0, R.w)
+			// Knee = Knee * R * C
+			// normalize(Knee)
 			rotBuf1.set(-rotBuf3.getX(), 0, 0, rotBuf3.getW());
 			rotBuf1.set(rotBuf2.mult(rotBuf3).mult(rotBuf1));
-
 			rotBuf1.normalizeLocal();
+
 			rotBuf1.slerpLocal(rotBuf2, ankleKneeTrackerAveraging);
 			trackerRightKneeNode.localTransform.setRotation(rotBuf1);
 		}
@@ -945,6 +954,7 @@ public class HumanSkeleton extends Skeleton implements SkeletonConfigCallback {
 						chestTracker.getRotation(rotBuf1);
 						hipTracker.getRotation(rotBuf2);
 
+						// Interpolate between the chest and the hip
 						rotBuf1.slerpLocal(rotBuf2, waistChestHipAveraging);
 						chestNode.localTransform.setRotation(rotBuf1);
 					} else if (hasKneeTrackers) {
@@ -963,8 +973,12 @@ public class HumanSkeleton extends Skeleton implements SkeletonConfigCallback {
 							rotBuf2.negateLocal();
 						}
 
+						// Average the legs to calculate the pelvis
 						rotBuf1.nlerp(rotBuf2, 0.5f);
+
+						// Interpolate between the pelvis and the chest
 						rotBuf3.pureSlerpLocal(rotBuf1, waistChestPelvisAveraging);
+
 						chestNode.localTransform.setRotation(rotBuf3);
 					}
 				}
@@ -976,8 +990,8 @@ public class HumanSkeleton extends Skeleton implements SkeletonConfigCallback {
 						.getFirstAvailableTracker(waistTracker, chestTracker, null)
 						.getRotation(rotBuf3);
 
-					// Get the rotation relative to where we expect the upper
-					// legs to be
+					// Get the rotation relative to where we expect the
+					// upper legs to be
 					rotBuf3.mult(FORWARD_QUATERNION, rotBuf4);
 					if (rotBuf4.dot(rotBuf1) < 0.0f) {
 						rotBuf1.negateLocal();
@@ -986,8 +1000,12 @@ public class HumanSkeleton extends Skeleton implements SkeletonConfigCallback {
 						rotBuf2.negateLocal();
 					}
 
+					// Average the legs to calculate the pelvis
 					rotBuf1.nlerp(rotBuf2, 0.5f);
+
+					// Interpolate between the pelvis and the chest
 					rotBuf3.pureSlerpLocal(rotBuf1, hipSpinePelvisAveraging);
+
 					waistNode.localTransform.setRotation(rotBuf3);
 				}
 			}
@@ -1024,11 +1042,16 @@ public class HumanSkeleton extends Skeleton implements SkeletonConfigCallback {
 			rotBuf4.inverseLocal();
 
 			// Only rotate on local yaw and pitch
+			//
+			// R = InverseWaist * (LeftLeft + RightLeg)
+			// C = Quaternion(-R.x, 0, 0, R.w)
+			// Pelvis = Waist * R * C
+			// normalize(Pelvis)
 			rotBuf4.multLocal(rotBuf1.add(rotBuf2));
 			rotBuf2.set(-rotBuf4.getX(), 0, 0, rotBuf4.getW());
 			rotBuf1.set(rotBuf3.mult(rotBuf4).mult(rotBuf2));
-
 			rotBuf1.normalizeLocal();
+
 			rotBuf1.slerpLocal(rotBuf3, pelvisWaistTrackerAveraging);
 			trackerWaistNode.localTransform.setRotation(rotBuf1);
 		}
