@@ -931,6 +931,7 @@ public class HumanSkeleton extends Skeleton implements SkeletonConfigCallback {
 			// C = Quaternion(-R.x, 0, 0, R.w)
 			// Knee = Knee * R * C
 			// normalize(Knee)
+			rotBuf3.multLocal(rotBuf1);
 			rotBuf1.set(-rotBuf3.getX(), 0, 0, rotBuf3.getW());
 			rotBuf1.set(rotBuf2.mult(rotBuf3).mult(rotBuf1));
 			rotBuf1.normalizeLocal();
