@@ -183,7 +183,7 @@ public class HumanSkeleton extends Skeleton implements SkeletonConfigCallback {
 	// Extended Pelvis Model
 	protected float pelvisWaistTrackerAveraging = 0.75f;
 	// Extended Knee Model
-	protected float ankleKneeTrackerAveraging = 0.3f;
+	protected float ankleKneeTrackerAveraging = 0.25f;
 	// #endregion
 
 	// #region Constructors
