@@ -654,7 +654,11 @@ public class AutoBone {
 		List<PoseFrameTracker> trackers = frames.getTrackers();
 		for (PoseFrameTracker tracker : trackers) {
 			TrackerFrame trackerFrame = tracker.safeGetFrame(cursor);
-			if (trackerFrame == null || !trackerFrame.hasData(TrackerFrameData.POSITION)) {
+			if (
+				trackerFrame == null
+					|| !trackerFrame.hasData(TrackerFrameData.POSITION)
+					|| trackerFrame.designation.trackerRole.isEmpty()
+			) {
 				continue;
 			}
 
@@ -689,7 +693,11 @@ public class AutoBone {
 			}
 
 			TrackerFrame trackerFrame2 = tracker.safeGetFrame(cursor2);
-			if (trackerFrame2 == null || !trackerFrame2.hasData(TrackerFrameData.POSITION)) {
+			if (
+				trackerFrame2 == null
+					|| !trackerFrame2.hasData(TrackerFrameData.POSITION)
+					|| trackerFrame1.designation.trackerRole.isEmpty()
+			) {
 				continue;
 			}
 
@@ -699,6 +707,10 @@ public class AutoBone {
 				continue;
 			}
 
+
+			if (trackerFrame2.designation.trackerRole.isEmpty()) {
+				continue;
+			}
 			Vector3f nodePos2 = skeleton2
 				.getComputedTracker(trackerFrame2.designation.trackerRole.get()).position;
 			if (nodePos2 == null) {
