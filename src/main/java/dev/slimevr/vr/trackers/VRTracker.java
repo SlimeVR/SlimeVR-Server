@@ -1,28 +1,25 @@
 package dev.slimevr.vr.trackers;
 
+import dev.slimevr.vr.IDevice;
 import io.eiren.util.BufferedTimer;
 
 
-public class VRTracker extends ComputedTracker {
+public class VRTracker extends ComputedTracker
+	implements TrackerWithTPS, TrackerWithDevice, TrackerWithConfig {
 
 	protected BufferedTimer timer = new BufferedTimer(1f);
 
-	public VRTracker(int id, String serial, String name, boolean hasRotation, boolean hasPosition) {
-		super(id, serial, name, hasRotation, hasPosition);
-	}
+	private final IDevice device;
 
-	public VRTracker(int id, String name, boolean hasRotation, boolean hasPosition) {
-		super(id, name, name, hasRotation, hasPosition);
-	}
-
-	@Override
-	public float getTPS() {
-		return timer.getAverageFPS();
-	}
-
-	@Override
-	public void dataTick() {
-		timer.update();
+	public VRTracker(
+		int trackerId,
+		String name,
+		boolean hasRotation,
+		boolean hasPosition,
+		IDevice device
+	) {
+		super(trackerId, name, hasRotation, hasPosition);
+		this.device = device;
 	}
 
 	@Override
@@ -32,6 +29,33 @@ public class VRTracker extends ComputedTracker {
 
 	@Override
 	public boolean isComputed() {
-		return false;
+		return true;
+	}
+
+	public IDevice getDevice() {
+		return this.device;
+	}
+
+	public float getTPS() {
+		return timer.getAverageFPS();
+	}
+
+	public void dataTick() {
+		timer.update();
+	}
+
+	public void saveConfig(TrackerConfig config) {
+		config.setDesignation(bodyPosition == null ? null : bodyPosition.designation);
+	}
+
+	public void loadConfig(TrackerConfig config) {
+		// Loading a config is an act of user editing, therefore it shouldn't
+		// not be
+		// allowed if editing is not allowed
+		if (userEditable()) {
+			TrackerPosition
+				.getByDesignation(config.designation)
+				.ifPresent(trackerPosition -> bodyPosition = trackerPosition);
+		}
 	}
 }

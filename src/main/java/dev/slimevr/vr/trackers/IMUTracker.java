@@ -4,12 +4,14 @@ import com.jme3.math.FastMath;
 import com.jme3.math.Quaternion;
 import com.jme3.math.Vector3f;
 import dev.slimevr.VRServer;
+import dev.slimevr.vr.IDevice;
 import dev.slimevr.vr.trackers.udp.TrackersUDPServer;
-import dev.slimevr.vr.trackers.udp.UDPDevice;
 import io.eiren.util.BufferedTimer;
 
 
-public class IMUTracker implements Tracker, TrackerWithTPS, TrackerWithBattery {
+public class IMUTracker extends AdjustedTracker
+	implements Tracker, TrackerWithTPS, TrackerWithBattery, TrackerWithConfig,
+	TrackerWithDevice, TrackerWithWireless {
 
 	public static final float MAX_MAG_CORRECTION_ACCURACY = 5 * FastMath.RAD_TO_DEG;
 
@@ -19,7 +21,7 @@ public class IMUTracker implements Tracker, TrackerWithTPS, TrackerWithBattery {
 	public final Quaternion rotQuaternion = new Quaternion();
 	public final Quaternion rotMagQuaternion = new Quaternion();
 	public final Quaternion rotAdjust = new Quaternion();
-	public final UDPDevice device;
+	public final IDevice device;
 	public final int trackerNum;
 	protected final Quaternion correction = new Quaternion();
 	protected final int trackerId;
@@ -34,8 +36,8 @@ public class IMUTracker implements Tracker, TrackerWithTPS, TrackerWithBattery {
 	public int magCalibrationStatus = 0;
 	public float magnetometerAccuracy = 0;
 	public boolean hasNewCorrectionData = false;
-	public int ping = -1;
-	public int signalStrength = -1;
+	private int ping = -1;
+	private int signalStrength = -1;
 	public float temperature = 0;
 	public TrackerPosition bodyPosition = null;
 	protected CircularArrayList<Quaternion> previousRots;
@@ -48,7 +50,7 @@ public class IMUTracker implements Tracker, TrackerWithTPS, TrackerWithBattery {
 	protected BufferedTimer timer = new BufferedTimer(1f);
 
 	public IMUTracker(
-		UDPDevice device,
+		IDevice device,
 		int trackerId,
 		int trackerNum,
 		String name,
@@ -170,6 +172,9 @@ public class IMUTracker implements Tracker, TrackerWithTPS, TrackerWithBattery {
 		// prevent
 		// accidental errors while debugging other things
 		store.multLocal(rotAdjust);
+
+		adjustInternal(store);
+
 		return true;
 	}
 
@@ -233,6 +238,7 @@ public class IMUTracker implements Tracker, TrackerWithTPS, TrackerWithBattery {
 	@Override
 	public void resetFull(Quaternion reference) {
 		resetYaw(reference);
+		super.resetFull(reference);
 	}
 
 	/**
@@ -249,6 +255,7 @@ public class IMUTracker implements Tracker, TrackerWithTPS, TrackerWithBattery {
 			// TODO : Correct only yaw
 			correction.set(rotQuaternion).inverseLocal().multLocal(rotMagQuaternion);
 		}
+		super.resetYaw(reference);
 	}
 
 	/**
@@ -301,13 +308,31 @@ public class IMUTracker implements Tracker, TrackerWithTPS, TrackerWithBattery {
 	}
 
 	@Override
-	public UDPDevice getDevice() {
+	public IDevice getDevice() {
 		return this.device;
 	}
 
 	@Override
 	public String getDescriptiveName() {
 		return this.descriptiveName;
+	}
+
+	@Override
+	public int getPing() {
+		return this.ping;
+	}
+
+	@Override
+	public int getSignalStrength() {
+		return this.signalStrength;
+	}
+
+	public void setPing(int ping) {
+		this.ping = ping;
+	}
+
+	public void setSignalStrength(int signalStrength) {
+		this.signalStrength = signalStrength;
 	}
 
 	public enum CalibrationAccuracy {

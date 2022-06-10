@@ -3,10 +3,8 @@ package dev.slimevr.poserecorder;
 import com.jme3.math.Quaternion;
 import com.jme3.math.Vector3f;
 import dev.slimevr.vr.trackers.Tracker;
-import dev.slimevr.vr.trackers.TrackerConfig;
 import dev.slimevr.vr.trackers.TrackerPosition;
 import dev.slimevr.vr.trackers.TrackerStatus;
-import dev.slimevr.vr.trackers.udp.UDPDevice;
 
 
 public final class TrackerFrame implements Tracker {
@@ -116,16 +114,6 @@ public final class TrackerFrame implements Tracker {
 	}
 
 	@Override
-	public void loadConfig(TrackerConfig config) {
-		throw new UnsupportedOperationException("TrackerFrame does not implement configuration");
-	}
-
-	@Override
-	public void saveConfig(TrackerConfig config) {
-		throw new UnsupportedOperationException("TrackerFrame does not implement configuration");
-	}
-
-	@Override
 	public float getConfidenceLevel() {
 		return 1f;
 	}
@@ -186,10 +174,5 @@ public final class TrackerFrame implements Tracker {
 	@Override
 	public int getTrackerNum() {
 		return this.getTrackerId();
-	}
-
-	@Override
-	public UDPDevice getDevice() {
-		return null;
 	}
 }

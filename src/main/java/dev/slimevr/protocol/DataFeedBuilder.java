@@ -3,9 +3,8 @@ package dev.slimevr.protocol;
 import com.google.flatbuffers.FlatBufferBuilder;
 import com.jme3.math.Quaternion;
 import com.jme3.math.Vector3f;
-import dev.slimevr.vr.trackers.IMUTracker;
-import dev.slimevr.vr.trackers.Tracker;
-import dev.slimevr.vr.trackers.udp.UDPDevice;
+import dev.slimevr.vr.IDevice;
+import dev.slimevr.vr.trackers.*;
 import solarxr_protocol.data_feed.DataFeedUpdate;
 import solarxr_protocol.data_feed.device_data.DeviceData;
 import solarxr_protocol.data_feed.device_data.DeviceDataMaskT;
@@ -26,10 +25,15 @@ import java.util.List;
 
 public class DataFeedBuilder {
 
-	public static int createHardwareInfo(FlatBufferBuilder fbb, UDPDevice device) {
-		IMUTracker tracker = device.sensors.get(0);
+	public static int createHardwareInfo(FlatBufferBuilder fbb, IDevice device) {
+		Tracker tracker = device.getTrackers().get(0);
+
+		int nameOffset = device.getFirmwareVersion() != null
+			? fbb.createString(device.getFirmwareVersion())
+			: 0;
 
 		HardwareInfo.startHardwareInfo(fbb);
+		HardwareInfo.addFirmwareVersion(fbb, nameOffset);
 		// BRUH MOMENT
 		// TODO need support: HardwareInfo.addFirmwareVersion(fbb,
 		// firmwareVersionOffset);
@@ -46,8 +50,12 @@ public class DataFeedBuilder {
 		TrackerId.startTrackerId(fbb);
 
 		TrackerId.addTrackerNum(fbb, tracker.getTrackerNum());
-		if (tracker.getDevice() != null)
-			TrackerId.addDeviceId(fbb, DeviceId.createDeviceId(fbb, tracker.getDevice().getId()));
+		if (tracker instanceof TrackerWithDevice)
+			TrackerId
+				.addDeviceId(
+					fbb,
+					DeviceId.createDeviceId(fbb, ((TrackerWithDevice) tracker).getDevice().getId())
+				);
 
 		return TrackerId.endTrackerId(fbb);
 	}
@@ -146,14 +154,14 @@ public class DataFeedBuilder {
 	public static int createTrackersData(
 		FlatBufferBuilder fbb,
 		DeviceDataMaskT mask,
-		UDPDevice device
+		IDevice device
 	) {
 		if (mask.getTrackerData() == null)
 			return 0;
 
 		List<Integer> trackersOffsets = new ArrayList<>();
 
-		device.sensors.forEach((key, value) -> {
+		device.getTrackers().forEach((value) -> {
 			trackersOffsets
 				.add(DataFeedBuilder.createTrackerData(fbb, mask.getTrackerData(), value));
 		});
@@ -169,28 +177,34 @@ public class DataFeedBuilder {
 		FlatBufferBuilder fbb,
 		int id,
 		DeviceDataMaskT mask,
-		UDPDevice device
+		IDevice device
 	) {
 		if (!mask.getDeviceData())
 			return 0;
 
-		IMUTracker tracker = device.sensors.get(0);
-
-		if (tracker == null)
+		if (device.getTrackers().size() <= 0)
 			return 0;
 
-		int hardwareDataOffset = HardwareStatus
-			.createHardwareStatus(
-				fbb,
-				tracker.getStatus().id,
-				(int) tracker.getTPS(),
-				tracker.ping,
-				(short) tracker.signalStrength,
-				tracker.temperature,
-				tracker.getBatteryVoltage(),
-				(int) tracker.getBatteryLevel(),
-				-1
-			);
+		Tracker tracker = device.getTrackers().get(0);
+
+		HardwareStatus.startHardwareStatus(fbb);
+		HardwareStatus.addErrorStatus(fbb, tracker.getStatus().id);
+
+		if (tracker instanceof TrackerWithTPS)
+			HardwareStatus.addTps(fbb, (int) ((TrackerWithTPS) tracker).getTPS());
+		if (tracker instanceof TrackerWithBattery) {
+			TrackerWithBattery twb = (TrackerWithBattery) tracker;
+			HardwareStatus.addBatteryVoltage(fbb, twb.getBatteryVoltage());
+			HardwareStatus.addBatteryPctEstimate(fbb, (int) twb.getBatteryLevel());
+		}
+		if (tracker instanceof TrackerWithWireless) {
+			TrackerWithWireless tww = (TrackerWithWireless) tracker;
+			HardwareStatus.addPing(fbb, tww.getPing());
+			HardwareStatus.addRssi(fbb, (short) tww.getSignalStrength());
+		}
+
+		int hardwareDataOffset = HardwareStatus.endHardwareStatus(fbb);
+
 		int hardwareInfoOffset = DataFeedBuilder.createHardwareInfo(fbb, device);
 		int trackersOffset = DataFeedBuilder.createTrackersData(fbb, mask, device);
 
@@ -214,7 +228,7 @@ public class DataFeedBuilder {
 
 		List<Integer> trackerOffsets = new ArrayList<>();
 
-		trackers.stream().filter(Tracker::isComputed).forEach((tracker) -> {
+		trackers.forEach((tracker) -> {
 			trackerOffsets.add(DataFeedBuilder.createTrackerData(fbb, trackerDataMaskT, tracker));
 		});
 
@@ -228,14 +242,14 @@ public class DataFeedBuilder {
 	public static int createDevicesData(
 		FlatBufferBuilder fbb,
 		DeviceDataMaskT deviceDataMaskT,
-		List<UDPDevice> devices
+		List<IDevice> devices
 	) {
 		if (deviceDataMaskT == null)
 			return 0;
 
 		int[] devicesDataOffsets = new int[devices.size()];
 		for (int i = 0; i < devices.size(); i++) {
-			UDPDevice device = devices.get(i);
+			IDevice device = devices.get(i);
 			devicesDataOffsets[i] = DataFeedBuilder
 				.createDeviceData(fbb, i, deviceDataMaskT, device);
 		}

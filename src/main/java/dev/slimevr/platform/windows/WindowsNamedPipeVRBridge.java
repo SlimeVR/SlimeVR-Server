@@ -33,16 +33,16 @@ public class WindowsNamedPipeVRBridge extends Thread implements Bridge {
 	private final Vector3f vBuffer2 = new Vector3f();
 	private final Quaternion qBuffer = new Quaternion();
 	private final Quaternion qBuffer2 = new Quaternion();
-	private final HMDTracker hmd;
+	private final VRTracker hmd;
 	private final List<WindowsPipe> trackerPipes;
 	private final List<? extends Tracker> shareTrackers;
 	private final List<ComputedTracker> internalTrackers;
-	private final HMDTracker internalHMDTracker = new HMDTracker("internal://HMD");
+	private final VRTracker internalHMDTracker = new HMDTracker("internal://HMD");
 	private final AtomicBoolean newHMDData = new AtomicBoolean(false);
 	private WindowsPipe hmdPipe;
 
 	public WindowsNamedPipeVRBridge(
-		HMDTracker hmd,
+		VRTracker hmd,
 		List<? extends Tracker> shareTrackers,
 		VRServer server
 	) {
@@ -197,7 +197,8 @@ public class WindowsNamedPipeVRBridge extends Thread implements Bridge {
 	}
 
 	public void updateTracker(int trackerId, boolean hmdUpdated) {
-		Tracker sensor = internalTrackers.get(trackerId);
+		ComputedTracker sensor = internalTrackers.get(trackerId);
+
 		if (sensor.getStatus().sendData) {
 			WindowsPipe trackerPipe = trackerPipes.get(trackerId);
 			if (hmdUpdated && trackerPipe.state == PipeState.OPEN) {

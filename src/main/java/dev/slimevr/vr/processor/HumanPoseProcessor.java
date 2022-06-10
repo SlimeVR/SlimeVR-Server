@@ -2,8 +2,8 @@ package dev.slimevr.vr.processor;
 
 import dev.slimevr.VRServer;
 import dev.slimevr.util.ann.VRServerThread;
-import dev.slimevr.vr.processor.skeleton.Skeleton;
 import dev.slimevr.vr.processor.skeleton.HumanSkeleton;
+import dev.slimevr.vr.processor.skeleton.Skeleton;
 import dev.slimevr.vr.processor.skeleton.SkeletonConfig;
 import dev.slimevr.vr.processor.skeleton.SkeletonConfigValue;
 import dev.slimevr.vr.trackers.*;
@@ -21,7 +21,7 @@ public class HumanPoseProcessor {
 	private final List<Consumer<Skeleton>> onSkeletonUpdated = new FastList<>();
 	private Skeleton skeleton;
 
-	public HumanPoseProcessor(VRServer server, HMDTracker hmd) {
+	public HumanPoseProcessor(VRServer server, VRTracker hmd) {
 		this.server = server;
 		computedTrackers
 			.add(

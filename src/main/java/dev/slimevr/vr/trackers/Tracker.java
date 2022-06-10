@@ -22,10 +22,6 @@ public interface Tracker {
 
 	TrackerStatus getStatus();
 
-	void loadConfig(TrackerConfig config);
-
-	void saveConfig(TrackerConfig config);
-
 	float getConfidenceLevel();
 
 	void resetFull(Quaternion reference);
@@ -49,8 +45,6 @@ public interface Tracker {
 	int getTrackerId();
 
 	int getTrackerNum();
-
-	Device getDevice();
 
 	default String getDescriptiveName() {
 		return getName();

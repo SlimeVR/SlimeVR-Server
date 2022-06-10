@@ -12,14 +12,18 @@ import dev.slimevr.bridge.ProtobufBridge;
 import dev.slimevr.bridge.ProtobufMessages.ProtobufMessage;
 import dev.slimevr.bridge.ProtobufMessages.TrackerAdded;
 import dev.slimevr.util.ann.VRServerThread;
-import dev.slimevr.vr.trackers.*;
+import dev.slimevr.vr.Device;
+import dev.slimevr.vr.trackers.ShareableTracker;
+import dev.slimevr.vr.trackers.TrackerPosition;
+import dev.slimevr.vr.trackers.TrackerRole;
+import dev.slimevr.vr.trackers.VRTracker;
 import io.eiren.util.logging.LogManager;
 
 import java.io.IOException;
 import java.util.List;
 
 
-public class WindowsNamedPipeBridge extends ProtobufBridge<VRTracker> implements Runnable {
+public class WindowsNamedPipeBridge extends ProtobufBridge implements Runnable {
 
 	protected final String pipeName;
 	protected final String bridgeSettingsKey;
@@ -31,7 +35,7 @@ public class WindowsNamedPipeBridge extends ProtobufBridge<VRTracker> implements
 	protected WindowsPipe pipe;
 
 	public WindowsNamedPipeBridge(
-		HMDTracker hmd,
+		VRTracker hmd,
 		String bridgeSettingsKey,
 		String bridgeName,
 		String pipeName,
@@ -105,16 +109,27 @@ public class WindowsNamedPipeBridge extends ProtobufBridge<VRTracker> implements
 	@Override
 	@VRServerThread
 	protected VRTracker createNewTracker(TrackerAdded trackerAdded) {
+
+		// Todo: We need the manufacturer
+		Device device = Main.vrServer
+			.getDeviceManager()
+			.createDevice(
+				trackerAdded.getTrackerName(),
+				trackerAdded.getTrackerSerial(),
+				"FeederAPP"
+			);
 		VRTracker tracker = new VRTracker(
 			trackerAdded.getTrackerId(),
-			trackerAdded.getTrackerSerial(),
 			trackerAdded.getTrackerName(),
 			true,
-			true
+			true,
+			device
 		);
+		device.getTrackers().add(tracker);
+		Main.vrServer.getDeviceManager().addDevice(device);
 		TrackerRole role = TrackerRole.getById(trackerAdded.getTrackerRole());
 		if (role != null) {
-			TrackerPosition.getByTrackerRole(role).ifPresent(tracker::setBodyPosition);
+			tracker.setBodyPosition(TrackerPosition.getByTrackerRole(role).orElse(null));
 		}
 		return tracker;
 	}

@@ -1,5 +1,6 @@
 package dev.slimevr;
 
+import dev.slimevr.autobone.AutoBoneHandler;
 import dev.slimevr.bridge.Bridge;
 import dev.slimevr.bridge.VMCBridge;
 import dev.slimevr.platform.windows.WindowsNamedPipeBridge;
@@ -7,6 +8,7 @@ import dev.slimevr.poserecorder.BVHRecorder;
 import dev.slimevr.protocol.ProtocolAPI;
 import dev.slimevr.serial.SerialHandler;
 import dev.slimevr.util.ann.VRServerThread;
+import dev.slimevr.vr.DeviceManager;
 import dev.slimevr.vr.processor.HumanPoseProcessor;
 import dev.slimevr.vr.processor.skeleton.Skeleton;
 import dev.slimevr.vr.trackers.*;
@@ -27,14 +29,13 @@ import java.net.UnknownHostException;
 import java.util.*;
 import java.util.concurrent.LinkedBlockingQueue;
 import java.util.function.Consumer;
-import dev.slimevr.autobone.AutoBoneHandler;
 
 
 public class VRServer extends Thread {
 
 	public final HumanPoseProcessor humanPoseProcessor;
 	public final YamlFile config = new YamlFile();
-	public final HMDTracker hmdTracker;
+	public final VRTracker hmdTracker;
 	private final List<Tracker> trackers = new FastList<>();
 	private final TrackersUDPServer trackersServer;
 	private final List<Bridge> bridges = new FastList<>();
@@ -47,6 +48,7 @@ public class VRServer extends Thread {
 	private final SerialHandler serialHandler;
 	private final AutoBoneHandler autoBoneHandler;
 	private final ProtocolAPI protocolAPI;
+	private final DeviceManager deviceManager;
 	private final String configPath;
 
 	public VRServer() {
@@ -57,6 +59,8 @@ public class VRServer extends Thread {
 		super("VRServer");
 		this.configPath = configPath;
 		loadConfig();
+
+		deviceManager = new DeviceManager(this);
 
 		serialHandler = new SerialHandler();
 		autoBoneHandler = new AutoBoneHandler(this);
@@ -188,7 +192,8 @@ public class VRServer extends Thread {
 		queueTask(() -> {
 			humanPoseProcessor.trackerUpdated(tracker);
 			TrackerConfig tc = getTrackerConfig(tracker);
-			tracker.saveConfig(tc);
+			if (tracker instanceof TrackerWithConfig)
+				((TrackerWithConfig) tracker).saveConfig(tc);
 			saveConfig();
 		});
 	}
@@ -279,7 +284,8 @@ public class VRServer extends Thread {
 	@ThreadSecure
 	public void registerTracker(Tracker tracker) {
 		TrackerConfig config = getTrackerConfig(tracker);
-		tracker.loadConfig(config);
+		if (tracker instanceof TrackerWithConfig)
+			((TrackerWithConfig) tracker).loadConfig(config);
 		queueTask(() -> {
 			trackers.add(tracker);
 			trackerAdded(tracker);
@@ -297,11 +303,8 @@ public class VRServer extends Thread {
 
 		IMUTracker imu;
 		for (Tracker t : this.getAllTrackers()) {
-			Tracker realTracker = t;
-			if (t instanceof ReferenceAdjustedTracker)
-				realTracker = ((ReferenceAdjustedTracker<? extends Tracker>) t).getTracker();
-			if (realTracker instanceof IMUTracker) {
-				imu = (IMUTracker) realTracker;
+			if (t instanceof IMUTracker) {
+				imu = (IMUTracker) t;
 				imu.setFilter(filter.name(), amount, ticks);
 			}
 		}
@@ -334,18 +337,21 @@ public class VRServer extends Thread {
 			}
 
 			// Handle synthetic devices
-			if (id.getDeviceId() == null && tracker.getDevice() == null) {
+			if (id.getDeviceId() == null && !(tracker instanceof TrackerWithDevice)) {
 				return tracker;
 			}
 
-			if (
-				tracker.getDevice() != null
-					&& id.getDeviceId() != null
-					&& id.getDeviceId().getId() == tracker.getDevice().getId()
-			) {
-				// This is a physical tracker, and both device id and the
-				// tracker num match
-				return tracker;
+			if (tracker instanceof TrackerWithDevice) {
+				TrackerWithDevice twd = (TrackerWithDevice) tracker;
+				if (
+					twd.getDevice() != null
+						&& id.getDeviceId() != null
+						&& id.getDeviceId().getId() == twd.getDevice().getId()
+				) {
+					// This is a physical tracker, and both device id and the
+					// tracker num match
+					return tracker;
+				}
 			}
 		}
 		return null;
@@ -369,5 +375,9 @@ public class VRServer extends Thread {
 
 	public TrackersUDPServer getTrackersServer() {
 		return trackersServer;
+	}
+
+	public DeviceManager getDeviceManager() {
+		return deviceManager;
 	}
 }

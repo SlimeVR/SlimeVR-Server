@@ -6,7 +6,6 @@ import com.jme3.math.Vector3f;
 import dev.slimevr.Main;
 import dev.slimevr.NetworkProtocol;
 import dev.slimevr.vr.trackers.IMUTracker;
-import dev.slimevr.vr.trackers.ReferenceAdjustedTracker;
 import dev.slimevr.vr.trackers.Tracker;
 import dev.slimevr.vr.trackers.TrackerStatus;
 import io.eiren.util.Util;
@@ -122,6 +121,7 @@ public class TrackersUDPServer extends Thread {
 		}
 		if (connection == null) {
 			connection = new UDPDevice(handshakePacket.getSocketAddress(), addr);
+			Main.vrServer.getDeviceManager().addDevice(connection);
 			connection.firmwareBuild = handshake.firmwareBuild;
 			if (handshake.firmware == null || handshake.firmware.length() == 0) {
 				// Only old owoTrack doesn't report firmware and have different
@@ -222,7 +222,7 @@ public class TrackersUDPServer extends Thread {
 					+ " status: "
 					+ sensorStatus
 			);
-		IMUTracker imu = connection.sensors.get(trackerId);
+		IMUTracker imu = connection.getTracker(trackerId);
 		if (imu == null) {
 			imu = new IMUTracker(
 				connection,
@@ -233,11 +233,8 @@ public class TrackersUDPServer extends Thread {
 				this,
 				Main.vrServer
 			);
-			connection.sensors.put(trackerId, imu);
-			ReferenceAdjustedTracker<IMUTracker> adjustedTracker = new ReferenceAdjustedTracker<>(
-				imu
-			);
-			trackersConsumer.accept(adjustedTracker);
+			connection.getTrackers().add(imu);
+			trackersConsumer.accept(imu);
 			LogManager
 				.info(
 					"[TrackerServer] Added sensor "
@@ -266,7 +263,7 @@ public class TrackersUDPServer extends Thread {
 				try {
 					boolean hasActiveTrackers = false;
 					for (UDPDevice tracker : connections) {
-						if (tracker.sensors.size() > 0) {
+						if (tracker.getTrackers().size() > 0) {
 							hasActiveTrackers = true;
 							break;
 						}
@@ -314,7 +311,7 @@ public class TrackersUDPServer extends Thread {
 							parser.write(bb, conn, new UDPPacket1Heartbeat());
 							socket.send(new DatagramPacket(rcvBuffer, bb.position(), conn.address));
 							if (conn.lastPacket + 1000 < System.currentTimeMillis()) {
-								Iterator<IMUTracker> iterator = conn.sensors.values().iterator();
+								Iterator<IMUTracker> iterator = conn.getTrackers().iterator();
 								while (iterator.hasNext()) {
 									IMUTracker tracker = iterator.next();
 									if (tracker.getStatus() == TrackerStatus.OK)
@@ -326,7 +323,7 @@ public class TrackersUDPServer extends Thread {
 								}
 							} else {
 								conn.timedOut = false;
-								Iterator<IMUTracker> iterator = conn.sensors.values().iterator();
+								Iterator<IMUTracker> iterator = conn.getTrackers().iterator();
 								while (iterator.hasNext()) {
 									IMUTracker tracker = iterator.next();
 									if (tracker.getStatus() == TrackerStatus.DISCONNECTED)
@@ -385,7 +382,7 @@ public class TrackersUDPServer extends Thread {
 				UDPPacket1Rotation rotationPacket = (UDPPacket1Rotation) packet;
 				buf.set(rotationPacket.rotation);
 				offset.mult(buf, buf);
-				tracker = connection.sensors.get(rotationPacket.getSensorId());
+				tracker = connection.getTracker(rotationPacket.getSensorId());
 				if (tracker == null)
 					break;
 				tracker.rotQuaternion.set(buf);
@@ -395,7 +392,7 @@ public class TrackersUDPServer extends Thread {
 				if (connection == null)
 					break;
 				UDPPacket17RotationData rotationData = (UDPPacket17RotationData) packet;
-				tracker = connection.sensors.get(rotationData.getSensorId());
+				tracker = connection.getTracker(rotationData.getSensorId());
 				if (tracker == null)
 					break;
 				buf.set(rotationData.rotation);
@@ -418,7 +415,7 @@ public class TrackersUDPServer extends Thread {
 				if (connection == null)
 					break;
 				UDPPacket18MagnetometerAccuracy magAccuracy = (UDPPacket18MagnetometerAccuracy) packet;
-				tracker = connection.sensors.get(magAccuracy.getSensorId());
+				tracker = connection.getTracker(magAccuracy.getSensorId());
 				if (tracker == null)
 					break;
 				tracker.magnetometerAccuracy = magAccuracy.accuracyInfo;
@@ -439,9 +436,12 @@ public class TrackersUDPServer extends Thread {
 					break;
 				UDPPacket10PingPong ping = (UDPPacket10PingPong) packet;
 				if (connection.lastPingPacketId == ping.pingId) {
-					for (IMUTracker imuTracker : connection.sensors.values()) {
-						imuTracker.ping = (int) (System.currentTimeMillis()
-							- connection.lastPingPacketTime) / 2;
+					for (IMUTracker imuTracker : connection.getTrackers()) {
+						imuTracker
+							.setPing(
+								(int) (System.currentTimeMillis()
+									- connection.lastPingPacketTime) / 2
+							);
 						imuTracker.dataTick();
 					}
 				} else {
@@ -464,9 +464,8 @@ public class TrackersUDPServer extends Thread {
 				if (connection == null)
 					break;
 				UDPPacket12BatteryLevel battery = (UDPPacket12BatteryLevel) packet;
-				if (connection.sensors.size() > 0) {
-					Collection<IMUTracker> trackers = connection.sensors.values();
-					Iterator<IMUTracker> iterator = trackers.iterator();
+				if (connection.getTrackers().size() > 0) {
+					Iterator<IMUTracker> iterator = connection.getTrackers().iterator();
 					while (iterator.hasNext()) {
 						IMUTracker tr = iterator.next();
 						tr.setBatteryVoltage(battery.voltage);
@@ -478,7 +477,7 @@ public class TrackersUDPServer extends Thread {
 				if (connection == null)
 					break;
 				UDPPacket13Tap tap = (UDPPacket13Tap) packet;
-				tracker = connection.sensors.get(tap.getSensorId());
+				tracker = connection.getTracker(tap.getSensorId());
 				if (tracker == null)
 					break;
 				LogManager
@@ -500,7 +499,7 @@ public class TrackersUDPServer extends Thread {
 					);
 				if (connection == null)
 					break;
-				tracker = connection.sensors.get(error.getSensorId());
+				tracker = connection.getTracker(error.getSensorId());
 				if (tracker == null)
 					break;
 				tracker.setStatus(TrackerStatus.ERROR);
@@ -529,12 +528,11 @@ public class TrackersUDPServer extends Thread {
 				if (connection == null)
 					break;
 				UDPPacket19SignalStrength signalStrength = (UDPPacket19SignalStrength) packet;
-				if (connection.sensors.size() > 0) {
-					Collection<IMUTracker> trackers = connection.sensors.values();
-					Iterator<IMUTracker> iterator = trackers.iterator();
+				if (connection.getTrackers().size() > 0) {
+					Iterator<IMUTracker> iterator = connection.getTrackers().iterator();
 					while (iterator.hasNext()) {
 						IMUTracker tr = iterator.next();
-						tr.signalStrength = signalStrength.signalStrength;
+						tr.setSignalStrength(signalStrength.signalStrength);
 					}
 				}
 				break;
@@ -542,7 +540,7 @@ public class TrackersUDPServer extends Thread {
 				if (connection == null)
 					break;
 				UDPPacket20Temperature temp = (UDPPacket20Temperature) packet;
-				tracker = connection.sensors.get(temp.getSensorId());
+				tracker = connection.getTracker(temp.getSensorId());
 				if (tracker == null)
 					break;
 				tracker.temperature = temp.temperature;

@@ -22,15 +22,15 @@ public class WebSocketVRBridge extends WebsocketAPI implements Bridge {
 	private final Vector3f vBuffer = new Vector3f();
 	private final Quaternion qBuffer = new Quaternion();
 
-	private final HMDTracker hmd;
+	private final VRTracker hmd;
 	private final List<? extends ShareableTracker> shareTrackers;
 	private final List<ComputedTracker> internalTrackers;
 
-	private final HMDTracker internalHMDTracker = new HMDTracker("internal://HMD");
+	private final VRTracker internalHMDTracker = new HMDTracker("internal://HMD");
 	private final AtomicBoolean newHMDData = new AtomicBoolean(false);
 
 	public WebSocketVRBridge(
-		HMDTracker hmd,
+		VRTracker hmd,
 		List<? extends ShareableTracker> shareTrackers,
 		VRServer server
 	) {
