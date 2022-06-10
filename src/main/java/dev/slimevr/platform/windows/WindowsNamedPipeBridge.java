@@ -114,7 +114,7 @@ public class WindowsNamedPipeBridge extends ProtobufBridge<VRTracker> implements
 		);
 		TrackerRole role = TrackerRole.getById(trackerAdded.getTrackerRole());
 		if (role != null) {
-			TrackerPosition.getByTrackerRole(role).ifPresent(tracker::setBodyPosition);
+			tracker.setBodyPosition(TrackerPosition.getByTrackerRole(role).orElse(null));
 		}
 		return tracker;
 	}

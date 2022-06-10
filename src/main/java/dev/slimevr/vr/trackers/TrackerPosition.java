@@ -1,13 +1,13 @@
 package dev.slimevr.vr.trackers;
 
+import solarxr_protocol.datatypes.BodyPart;
+
 import java.lang.reflect.Modifier;
 import java.util.EnumMap;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Optional;
 import java.util.logging.Level;
-
-import solarxr_protocol.datatypes.BodyPart;
 
 
 /**
@@ -135,7 +135,7 @@ public enum TrackerPosition {
 	}
 
 	public static Optional<TrackerPosition> getByBodyPart(int bodyPart) {
-		if (bodyPart < 0 || bodyPart >= TrackerPosition.byBodyPart.length) {
+		if (bodyPart <= 0 || bodyPart >= TrackerPosition.byBodyPart.length) {
 			return Optional.empty();
 		}
 		return Optional.of(TrackerPosition.byBodyPart[bodyPart]);
