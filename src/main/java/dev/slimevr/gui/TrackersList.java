@@ -175,8 +175,9 @@ public class TrackersList extends EJBoxNoStretch {
 					s(c(0, row, 2, GridBagConstraints.FIRST_LINE_START), 2, 1)
 				);
 				desSelect.addItem("NONE");
-				for (TrackerPosition p : TrackerPosition.values)
+				for (TrackerPosition p : TrackerPosition.values) {
 					desSelect.addItem(p.name());
+				}
 				if (cfg.designation != null) {
 					TrackerPosition
 						.getByDesignation(cfg.designation)
@@ -188,11 +189,13 @@ public class TrackersList extends EJBoxNoStretch {
 				desSelect.addActionListener(new ActionListener() {
 					@Override
 					public void actionPerformed(ActionEvent e) {
-						TrackerPosition p = desSelect.getSelectedItem() == "NONE"
-							? null
-							: TrackerPosition
+						if (desSelect.getSelectedItem() == "NONE") {
+							t.setBodyPosition(null);
+						} else {
+							TrackerPosition p = TrackerPosition
 								.valueOf(String.valueOf(desSelect.getSelectedItem()));
-						t.setBodyPosition(p);
+							t.setBodyPosition(p);
+						}
 						server.trackerUpdated(t);
 					}
 				});

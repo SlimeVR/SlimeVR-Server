@@ -195,7 +195,6 @@ public class RPCHandler extends ProtocolHandler<RpcMessageHeader>
 		Tracker tracker = this.api.server.getTrackerById(req.trackerId().unpack());
 		if (tracker == null)
 			return;
-
 		TrackerPosition pos = TrackerPosition.getByBodyPart(req.bodyPosition()).orElse(null);
 		tracker.setBodyPosition(pos);
 

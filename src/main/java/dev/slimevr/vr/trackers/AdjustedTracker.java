@@ -2,6 +2,7 @@ package dev.slimevr.vr.trackers;
 
 import com.jme3.math.Quaternion;
 
+
 public abstract class AdjustedTracker implements Tracker {
 
 	public final Quaternion yawFix = new Quaternion();
