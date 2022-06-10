@@ -11,4 +11,9 @@ public class HMDTracker extends VRTracker {
 	public boolean isComputed() {
 		return false;
 	}
+
+	@Override
+	public boolean userEditable() {
+		return false;
+	}
 }
