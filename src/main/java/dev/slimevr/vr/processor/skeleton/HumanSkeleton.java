@@ -1382,6 +1382,67 @@ public class HumanSkeleton extends Skeleton implements SkeletonConfigCallback {
 		}
 	}
 
+	public TransformNode getNode(BoneType nodeOffset, boolean rightSide) {
+		if (nodeOffset == null) {
+			return null;
+		}
+
+		switch (nodeOffset) {
+			case HEAD:
+				return headNode;
+			case NECK:
+				return neckNode;
+			case CHEST:
+				return chestNode;
+			case CHEST_TRACKER:
+				return trackerChestNode;
+			case WAIST:
+				return waistNode;
+			case HIP:
+				return hipNode;
+			case HIP_TRACKER:
+				return trackerWaistNode;
+
+			case LEFT_HIP:
+				return leftHipNode;
+			case RIGHT_HIP:
+				return rightHipNode;
+
+			case UPPER_LEG:
+				if (rightSide) {
+					return rightKneeNode;
+				} else {
+					return leftKneeNode;
+				}
+			case KNEE_TRACKER:
+				if (rightSide) {
+					return trackerRightKneeNode;
+				} else {
+					return trackerLeftKneeNode;
+				}
+			case LOWER_LEG:
+				if (rightSide) {
+					return rightAnkleNode;
+				} else {
+					return leftAnkleNode;
+				}
+			case FOOT:
+				if (rightSide) {
+					return rightFootNode;
+				} else {
+					return leftFootNode;
+				}
+			case FOOT_TRACKER:
+				if (rightSide) {
+					return trackerRightFootNode;
+				} else {
+					return trackerLeftFootNode;
+				}
+		}
+
+		return null;
+	}
+
 	public void updatePoseAffectedByConfig(SkeletonConfigValue config) {
 		switch (config) {
 			case HEAD:

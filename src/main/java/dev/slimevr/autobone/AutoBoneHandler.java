@@ -8,9 +8,11 @@ import java.util.concurrent.locks.ReentrantLock;
 import org.apache.commons.lang3.tuple.Pair;
 
 import dev.slimevr.VRServer;
+import dev.slimevr.poserecorder.PoseFrameTracker;
 import dev.slimevr.poserecorder.PoseFrames;
 import dev.slimevr.poserecorder.PoseRecorder;
 import dev.slimevr.vr.processor.skeleton.SkeletonConfigValue;
+import dev.slimevr.vr.trackers.TrackerPosition;
 import io.eiren.util.StringUtils;
 import io.eiren.util.collections.FastList;
 import io.eiren.util.logging.LogManager;
@@ -302,16 +304,44 @@ public class AutoBoneHandler {
 				LogManager
 					.info("[AutoBone] Processing frames from \"" + recording.getKey() + "\"...");
 
+				List<PoseFrameTracker> trackers = recording.getValue().getTrackers();
+
+				StringBuilder trackerInfo = new StringBuilder();
+				for (PoseFrameTracker tracker : trackers) {
+					if (tracker == null)
+						continue;
+
+					TrackerPosition position = tracker
+						.getBodyPosition();
+					if (position == null)
+						continue;
+
+					if (trackerInfo.length() > 0) {
+						trackerInfo.append(", ");
+					}
+
+					trackerInfo.append(position.designation);
+				}
+
+				LogManager
+					.info(
+						"[AutoBone] ("
+							+ trackers.size()
+							+ " trackers) ["
+							+ trackerInfo.toString()
+							+ "]"
+					);
+
 				heightPercentError.add(processFrames(recording.getValue()));
 				LogManager.info("[AutoBone] Done processing!");
 
 				// #region Stats/Values
-				Float neckLength = autoBone.getConfig(SkeletonConfigValue.NECK);
-				Float chestDistance = autoBone.getConfig(SkeletonConfigValue.CHEST);
-				Float torsoLength = autoBone.getConfig(SkeletonConfigValue.TORSO);
-				Float hipWidth = autoBone.getConfig(SkeletonConfigValue.HIPS_WIDTH);
-				Float legsLength = autoBone.getConfig(SkeletonConfigValue.LEGS_LENGTH);
-				Float kneeHeight = autoBone.getConfig(SkeletonConfigValue.KNEE_HEIGHT);
+				Float neckLength = autoBone.legacyConfigs.get(SkeletonConfigValue.NECK);
+				Float chestDistance = autoBone.legacyConfigs.get(SkeletonConfigValue.CHEST);
+				Float torsoLength = autoBone.legacyConfigs.get(SkeletonConfigValue.TORSO);
+				Float hipWidth = autoBone.legacyConfigs.get(SkeletonConfigValue.HIPS_WIDTH);
+				Float legsLength = autoBone.legacyConfigs.get(SkeletonConfigValue.LEGS_LENGTH);
+				Float kneeHeight = autoBone.legacyConfigs.get(SkeletonConfigValue.KNEE_HEIGHT);
 
 				float neckTorso = neckLength != null && torsoLength != null
 					? neckLength / torsoLength
@@ -377,7 +407,7 @@ public class AutoBoneHandler {
 			// #endregion
 
 			listeners.forEach(listener -> {
-				listener.onAutoBoneEnd(autoBone.configs);
+				listener.onAutoBoneEnd(autoBone.legacyConfigs);
 			});
 
 			announceProcessStatus(AutoBoneProcessType.PROCESS, "Done processing!", true, true);

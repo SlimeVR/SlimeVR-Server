@@ -227,7 +227,7 @@ public class SkeletonConfig {
 		return getToggle(SkeletonConfigToggle.getByStringValue(config));
 	}
 
-	protected void setNodeOffset(BoneType nodeOffset, float x, float y, float z) {
+	public void setNodeOffset(BoneType nodeOffset, float x, float y, float z) {
 		Vector3f offset = nodeOffsets.get(nodeOffset);
 
 		if (offset == null) {
@@ -246,7 +246,7 @@ public class SkeletonConfig {
 		}
 	}
 
-	protected void setNodeOffset(BoneType nodeOffset, Vector3f offset) {
+	public void setNodeOffset(BoneType nodeOffset, Vector3f offset) {
 		if (offset == null) {
 			setNodeOffset(nodeOffset, 0f, 0f, 0f);
 			return;
