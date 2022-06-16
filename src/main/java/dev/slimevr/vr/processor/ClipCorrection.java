@@ -1,7 +1,6 @@
 package dev.slimevr.vr.processor;
 
 
-import com.jme3.math.FastMath;
 import com.jme3.math.Quaternion;
 import com.jme3.math.Vector3f;
 
@@ -11,7 +10,10 @@ public class ClipCorrection {
 	private float maxDynamicDisplacement = 0.065f;
 	private boolean initialized = true;
 
+	private final Vector3f normal = new Vector3f(0, 0, -1);
+
 	// variables for holding relavant leg data
+	// TODO make these private
 	public Vector3f leftFootPosition = new Vector3f();
 	public Vector3f rightFootPosition = new Vector3f();
 	public Vector3f leftKneePosition = new Vector3f();
@@ -51,9 +53,7 @@ public class ClipCorrection {
 			this.initialized = true;
 		}
 		// calculate how angled down the feet are as a scalar value between 0
-		// and 1
-		// 0 is flat, 1 is fully angled down use this value to calculate the
-		// amount of correction
+		// and 1 (0 = flat, 1 = max angle)
 		float leftOffset = getLeftFootOffset();
 		float rightOffset = getRightFootOffset();
 
@@ -62,6 +62,8 @@ public class ClipCorrection {
 			return false;
 		}
 
+		// calculate the current triangles of waist knees and feet
+
 
 		if (this.leftFootPosition.y < floorLevel + (maxDynamicDisplacement * leftOffset)) {
 			this.leftFootPosition.y = floorLevel + (maxDynamicDisplacement * leftOffset);
@@ -69,11 +71,16 @@ public class ClipCorrection {
 		if (this.rightFootPosition.y < floorLevel + (maxDynamicDisplacement * rightOffset)) {
 			this.rightFootPosition.y = floorLevel + (maxDynamicDisplacement * rightOffset);
 		}
+
+		// calculate the new triangles of waits knees and feet (calculate now
+		// knee position)
+
+
 		return true;
 	}
 
 	private float getLeftFootOffset() {
-		float offset = computeUnitVector(this.leftFootRotation);
+		float offset = computeUnitVector(this.leftFootRotation).y;
 		if (offset > 0) {
 			return 0;
 		}
@@ -81,7 +88,7 @@ public class ClipCorrection {
 	}
 
 	private float getRightFootOffset() {
-		float offset = computeUnitVector(this.rightFootRotation);
+		float offset = computeUnitVector(this.rightFootRotation).y;
 		if (offset > 0) {
 			return 0;
 		}
@@ -89,9 +96,7 @@ public class ClipCorrection {
 	}
 
 	// get the z component of the unit vector of the given quaternion
-	private float computeUnitVector(Quaternion quaternion) {
-		float[] angles = new float[3];
-		quaternion.toAngles(angles);
-		return FastMath.sin(angles[0]);
+	private Vector3f computeUnitVector(Quaternion quaternion) {
+		return quaternion.mult(normal).normalize();
 	}
 }
