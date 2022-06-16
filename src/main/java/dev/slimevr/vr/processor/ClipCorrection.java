@@ -72,7 +72,7 @@ public class ClipCorrection {
 			this.rightFootPosition.y = floorLevel + (maxDynamicDisplacement * rightOffset);
 		}
 
-		// calculate the new triangles of waits knees and feet (calculate now
+		// calculate the new triangles of waist knees and feet (calculate new
 		// knee position)
 
 
