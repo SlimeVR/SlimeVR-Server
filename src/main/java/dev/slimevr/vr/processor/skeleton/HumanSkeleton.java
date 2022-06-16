@@ -10,6 +10,7 @@ import dev.slimevr.vr.processor.ComputedHumanPoseTrackerPosition;
 import dev.slimevr.vr.processor.TransformNode;
 import dev.slimevr.vr.trackers.*;
 import io.eiren.util.collections.FastList;
+import dev.slimevr.vr.processor.ClipCorrection;
 
 import java.util.List;
 import java.util.Map;
@@ -129,6 +130,12 @@ public class HumanSkeleton extends Skeleton implements SkeletonConfigCallback {
 	protected float kneeTrackerAnkleAveraging;
 	// Others
 	protected boolean sendAllBones = false;
+	// #endregion
+
+	// #region Clip Correction
+	// takes the ground plane as input (slightly above the floor makes for a
+	// good ground plane on quest)
+	protected ClipCorrection clipCorrector = new ClipCorrection(0.0f);
 	// #endregion
 
 	// #region Constructors
@@ -787,6 +794,7 @@ public class HumanSkeleton extends Skeleton implements SkeletonConfigCallback {
 		updateLocalTransforms();
 		updateRootTrackers();
 		updateComputedTrackers();
+		handleClipping();
 	}
 	// #endregion
 
@@ -797,6 +805,30 @@ public class HumanSkeleton extends Skeleton implements SkeletonConfigCallback {
 		}
 		if (isTrackingRightArmFromController()) {
 			rightControllerNode.update();
+		}
+	}
+
+	// correct any clipping that is happening to the feet trackers
+	void handleClipping() {
+		// update the class variables
+		computedLeftFootTracker.getPosition(clipCorrector.leftFootPosition);
+		computedRightFootTracker.getPosition(clipCorrector.rightFootPosition);
+		computedLeftKneeTracker.getPosition(clipCorrector.leftKneePosition);
+		computedRightKneeTracker.getPosition(clipCorrector.rightKneePosition);
+		computedWaistTracker.getPosition(clipCorrector.waistPosition);
+		computedLeftFootTracker.getRotation(clipCorrector.leftFootRotation);
+		computedRightFootTracker.getRotation(clipCorrector.rightFootRotation);
+
+		// correct the foot positions returns true if any adjustment was made
+		boolean corrected = clipCorrector.correctClipping();
+
+		// if any correction was made, update the tracker positions
+		if (corrected) {
+			computedLeftFootTracker.position.set(clipCorrector.leftFootPosition);
+			computedRightFootTracker.position.set(clipCorrector.rightFootPosition);
+			computedLeftKneeTracker.position.set(clipCorrector.leftKneePosition);
+			computedRightKneeTracker.position.set(clipCorrector.rightKneePosition);
+			computedWaistTracker.position.set(clipCorrector.waistPosition);
 		}
 	}
 
@@ -1802,6 +1834,10 @@ public class HumanSkeleton extends Skeleton implements SkeletonConfigCallback {
 				tracker.resetFull(referenceRotation);
 			}
 		}
+
+		// tell the clip corrector to reset its floor level on the next update
+		// of the computed trackers
+		this.clipCorrector.resetFloorLevel();
 	}
 
 	@Override
