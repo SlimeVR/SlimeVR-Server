@@ -809,24 +809,26 @@ public class HumanSkeleton extends Skeleton implements SkeletonConfigCallback {
 	// correct any clipping that is happening to the feet trackers
 	void handleClipping() {
 		// update the class variables
-		computedLeftFootTracker.getPosition(clipCorrector.leftFootPosition);
-		computedRightFootTracker.getPosition(clipCorrector.rightFootPosition);
-		computedLeftKneeTracker.getPosition(clipCorrector.leftKneePosition);
-		computedRightKneeTracker.getPosition(clipCorrector.rightKneePosition);
-		computedWaistTracker.getPosition(clipCorrector.waistPosition);
-		computedLeftFootTracker.getRotation(clipCorrector.leftFootRotation);
-		computedRightFootTracker.getRotation(clipCorrector.rightFootRotation);
+		clipCorrector
+			.update(
+				computedLeftFootTracker.position,
+				computedRightFootTracker.position,
+				computedLeftKneeTracker.position,
+				computedRightKneeTracker.position,
+				computedWaistTracker.position,
+				computedLeftFootTracker.rotation,
+				computedRightFootTracker.rotation
+			);
 
 		// correct the foot positions returns true if any adjustment was made
 		boolean corrected = clipCorrector.correctClipping();
 
 		// if any correction was made, update the tracker positions
 		if (corrected) {
-			computedLeftFootTracker.position.set(clipCorrector.leftFootPosition);
-			computedRightFootTracker.position.set(clipCorrector.rightFootPosition);
-			computedLeftKneeTracker.position.set(clipCorrector.leftKneePosition);
-			computedRightKneeTracker.position.set(clipCorrector.rightKneePosition);
-			computedWaistTracker.position.set(clipCorrector.waistPosition);
+			computedLeftFootTracker.position.set(clipCorrector.getLeftFootPosition());
+			computedRightFootTracker.position.set(clipCorrector.getRightFootPosition());
+			computedLeftKneeTracker.position.set(clipCorrector.getLeftKneePosition());
+			computedRightKneeTracker.position.set(clipCorrector.getRightKneePosition());
 		}
 	}
 
