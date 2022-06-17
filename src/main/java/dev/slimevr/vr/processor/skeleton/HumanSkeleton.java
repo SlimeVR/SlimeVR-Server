@@ -133,8 +133,6 @@ public class HumanSkeleton extends Skeleton implements SkeletonConfigCallback {
 	// #endregion
 
 	// #region Clip Correction
-	// takes the ground plane as input (slightly above the floor makes for a
-	// good ground plane on quest)
 	protected ClipCorrection clipCorrector = new ClipCorrection(0.0f);
 	// #endregion
 
