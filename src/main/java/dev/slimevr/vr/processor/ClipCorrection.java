@@ -8,6 +8,7 @@ public class ClipCorrection {
 	// class vars
 	private float floorLevel;
 	private float maxDynamicDisplacement = 0.04f;
+	private float dynamicDisplacementCutoff = 0.75f;
 	private boolean initialized = true;
 	private boolean enabled = true;
 	private final Vector3f normal = new Vector3f(0, 0, -1);
@@ -98,7 +99,7 @@ public class ClipCorrection {
 	public boolean correctClipping() {
 		// if not initialized, we need to initialize the floor level
 		if (!initialized) {
-			floorLevel = (leftFootPosition.y + rightFootPosition.y) / 2f + 0.025f;
+			floorLevel = (leftFootPosition.y + rightFootPosition.y) / 2f;
 			initialized = true;
 		}
 		// calculate how angled down the feet are as a scalar value between 0
@@ -161,6 +162,8 @@ public class ClipCorrection {
 		float offset = computeUnitVector(this.leftFootRotation).y;
 		if (offset > 0) {
 			return 0;
+		} else if (offset < -dynamicDisplacementCutoff) {
+			return dynamicDisplacementCutoff;
 		}
 		return offset * -1;
 	}
@@ -169,11 +172,13 @@ public class ClipCorrection {
 		float offset = computeUnitVector(this.rightFootRotation).y;
 		if (offset > 0) {
 			return 0;
+		} else if (offset < -dynamicDisplacementCutoff) {
+			return dynamicDisplacementCutoff;
 		}
 		return offset * -1;
 	}
 
-	// get the z component of the unit vector of the given quaternion
+	// get the unit vector of the given rotation
 	private Vector3f computeUnitVector(Quaternion quaternion) {
 		return quaternion.mult(normal).normalize();
 	}
