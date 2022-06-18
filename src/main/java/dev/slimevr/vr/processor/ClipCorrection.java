@@ -1,6 +1,5 @@
 package dev.slimevr.vr.processor;
 
-
 import com.jme3.math.Quaternion;
 import com.jme3.math.Vector3f;
 
@@ -22,45 +21,59 @@ public class ClipCorrection {
 	private Quaternion leftFootRotation = new Quaternion();
 	private Quaternion rightFootRotation = new Quaternion();
 
+	private Vector3f leftWaistUpperLegOffset = new Vector3f();
+	private Vector3f rightWaistUpperLegOffset = new Vector3f();
+
 	public ClipCorrection(float floorLevel) {
 		this.floorLevel = floorLevel;
 	}
 
-	public void update(
-		Vector3f leftFootPosition,
-		Vector3f rightFootPosition,
-		Vector3f leftKneePosition,
-		Vector3f rightKneePosition,
-		Vector3f waistPosition,
-		Quaternion leftFootRotation,
-		Quaternion rightFootRotation
-	) {
+	// update the offsets for the waist and upper leg
+	public void updateOffsets(Vector3f upperLeftLeg, Vector3f upperRightLeg, Vector3f waist) {
 		// update the relevant leg data
-		this.leftFootPosition = leftFootPosition.clone();
-		this.rightFootPosition = rightFootPosition.clone();
-		this.leftKneePosition = leftKneePosition.clone();
-		this.rightKneePosition = rightKneePosition.clone();
-		this.waistPosition = waistPosition.clone();
-		this.leftFootRotation = leftFootRotation.clone();
-		this.rightFootRotation = rightFootRotation.clone();
+		this.leftWaistUpperLegOffset = upperLeftLeg.subtract(waist);
+		this.rightWaistUpperLegOffset = upperRightLeg.subtract(waist);
 	}
 
 	public Vector3f getLeftFootPosition() {
 		return leftFootPosition;
 	}
 
+	public void setLeftFootPosition(Vector3f leftFootPosition) {
+		this.leftFootPosition = leftFootPosition.clone();
+	}
+
 	public Vector3f getRightFootPosition() {
 		return rightFootPosition;
+	}
+
+	public void setRightFootPosition(Vector3f rightFootPosition) {
+		this.rightFootPosition = rightFootPosition.clone();
 	}
 
 	public Vector3f getLeftKneePosition() {
 		return leftKneePosition;
 	}
 
+	public void setLeftKneePosition(Vector3f leftKneePosition) {
+		this.leftKneePosition = leftKneePosition.clone();
+	}
+
 	public Vector3f getRightKneePosition() {
 		return rightKneePosition;
 	}
 
+	public void setRightKneePosition(Vector3f rightKneePosition) {
+		this.rightKneePosition = rightKneePosition.clone();
+	}
+
+	public Vector3f getWaistPosition() {
+		return waistPosition;
+	}
+
+	public void setWaistPosition(Vector3f waistPosition) {
+		this.waistPosition = waistPosition.clone();
+	}
 
 	public double getFloorLevel() {
 		return floorLevel;
@@ -93,16 +106,16 @@ public class ClipCorrection {
 		float leftOffset = getLeftFootOffset();
 		float rightOffset = getRightFootOffset();
 
-		// if there is no clipping, return false
-		if (!isClipped(leftOffset, rightOffset)) {
+		// if there is no clipping, or clipping is not enabled, return false
+		if (!isClipped(leftOffset, rightOffset) || !enabled) {
 			return false;
 		}
 
-		// this clipping correction assumes that the waist and the knees
-		// are always suposed to be the same distance apart but this is not true
-		// so this should be fixed
-		float leftKneeWaist = leftKneePosition.distance(waistPosition);
-		float rightKneeWaist = rightKneePosition.distance(waistPosition);
+		Vector3f leftWaist = waistPosition.add(leftWaistUpperLegOffset);
+		Vector3f rightWaist = waistPosition.add(rightWaistUpperLegOffset);
+
+		float leftKneeWaist = leftKneePosition.distance(leftWaist);
+		float rightKneeWaist = rightKneePosition.distance(rightWaist);
 
 		// move the feet to their new positions and push the knees up
 		if (leftFootPosition.y < floorLevel + (maxDynamicDisplacement * leftOffset)) {
@@ -121,18 +134,18 @@ public class ClipCorrection {
 		}
 
 		// calculate the correction for the knees
-		float leftKneeWaistNew = leftKneePosition.distance(waistPosition);
-		float rightKneeWaistNew = rightKneePosition.distance(waistPosition);
+		float leftKneeWaistNew = leftKneePosition.distance(leftWaist);
+		float rightKneeWaistNew = rightKneePosition.distance(rightWaist);
 		float leftKneeOffset = leftKneeWaistNew - leftKneeWaist;
 		float rightKneeOffset = rightKneeWaistNew - rightKneeWaist;
 
 		// get the vector from the waist to the knee
 		Vector3f leftKneeVector = leftKneePosition
-			.subtract(waistPosition)
+			.subtract(leftWaist)
 			.normalize()
 			.mult(leftKneeOffset);
 		Vector3f rightKneeVector = rightKneePosition
-			.subtract(waistPosition)
+			.subtract(rightWaist)
 			.normalize()
 			.mult(rightKneeOffset);
 
