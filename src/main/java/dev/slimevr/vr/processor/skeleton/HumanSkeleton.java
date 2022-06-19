@@ -814,8 +814,8 @@ public class HumanSkeleton extends Skeleton implements SkeletonConfigCallback {
 		Vector3f temp2 = new Vector3f();
 		Vector3f temp3 = new Vector3f();
 
-		leftKneeNode.localTransform.getTranslation(temp1);
-		rightKneeNode.localTransform.getTranslation(temp2);
+		leftHipNode.localTransform.getTranslation(temp1);
+		rightHipNode.localTransform.getTranslation(temp2);
 		waistNode.localTransform.getTranslation(temp3);
 
 		clipCorrector.updateOffsets(temp1, temp2, temp3);
