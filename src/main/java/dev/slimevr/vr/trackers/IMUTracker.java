@@ -5,7 +5,6 @@ import com.jme3.math.Quaternion;
 import com.jme3.math.Vector3f;
 import dev.slimevr.VRServer;
 import dev.slimevr.vr.IDevice;
-import dev.slimevr.vr.trackers.udp.TrackersUDPServer;
 import io.eiren.util.BufferedTimer;
 
 
@@ -27,7 +26,6 @@ public class IMUTracker
 	protected final int trackerId;
 	protected final String name;
 	protected final String descriptiveName;
-	protected final TrackersUDPServer server;
 	protected final VRServer vrserver;
 	private final Quaternion buffQuat = new Quaternion();
 	public int movementFilterTickCount = 0;
@@ -59,13 +57,11 @@ public class IMUTracker
 		int trackerNum,
 		String name,
 		String descriptiveName,
-		TrackersUDPServer server,
 		VRServer vrserver
 	) {
 		this.device = device;
 		this.trackerNum = trackerNum;
 		this.name = name;
-		this.server = server;
 		this.trackerId = trackerId;
 		this.descriptiveName = descriptiveName;
 		this.vrserver = vrserver;

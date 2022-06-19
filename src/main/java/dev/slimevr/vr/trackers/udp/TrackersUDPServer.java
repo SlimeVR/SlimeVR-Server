@@ -230,7 +230,6 @@ public class TrackersUDPServer extends Thread {
 				trackerId,
 				connection.name + "/" + trackerId,
 				connection.descriptiveName + "/" + trackerId,
-				this,
 				Main.vrServer
 			);
 			connection.getTrackers().add(imu);
