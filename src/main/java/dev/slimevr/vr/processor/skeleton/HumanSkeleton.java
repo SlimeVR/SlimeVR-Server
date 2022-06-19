@@ -792,7 +792,7 @@ public class HumanSkeleton extends Skeleton implements SkeletonConfigCallback {
 		updateLocalTransforms();
 		updateRootTrackers();
 		updateComputedTrackers();
-		handleClipping();
+		tweakLegPos();
 	}
 	// #endregion
 
@@ -807,7 +807,7 @@ public class HumanSkeleton extends Skeleton implements SkeletonConfigCallback {
 	}
 
 	// correct any clipping that is happening to the feet trackers
-	void handleClipping() {
+	void tweakLegPos() {
 		// update the class variables
 		// clipCorrector
 		Vector3f temp1 = new Vector3f();
@@ -824,9 +824,11 @@ public class HumanSkeleton extends Skeleton implements SkeletonConfigCallback {
 		clipCorrector.setLeftKneePosition(computedLeftKneeTracker.position);
 		clipCorrector.setRightKneePosition(computedRightKneeTracker.position);
 		clipCorrector.setWaistPosition(computedWaistTracker.position);
+		clipCorrector.setLeftFootRotation(computedLeftFootTracker.rotation);
+		clipCorrector.setRightFootRotation(computedRightFootTracker.rotation);
 
 		// correct the foot positions returns true if any adjustment was made
-		boolean corrected = clipCorrector.correctClipping();
+		boolean corrected = clipCorrector.tweakLegs();
 
 		// if any correction was made, update the tracker positions
 		if (corrected) {
