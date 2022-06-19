@@ -9,9 +9,9 @@ import dev.slimevr.vr.trackers.udp.TrackersUDPServer;
 import io.eiren.util.BufferedTimer;
 
 
-public class IMUTracker extends AdjustedTracker
+public class IMUTracker
 	implements Tracker, TrackerWithTPS, TrackerWithBattery, TrackerWithConfig,
-	TrackerWithDevice, TrackerWithWireless {
+	TrackerWithDevice, TrackerWithWireless, TrackerWithFix {
 
 	public static final float MAX_MAG_CORRECTION_ACCURACY = 5 * FastMath.RAD_TO_DEG;
 
@@ -48,6 +48,10 @@ public class IMUTracker extends AdjustedTracker
 	protected float batteryLevel = 0;
 	protected boolean magentometerCalibrated = false;
 	protected BufferedTimer timer = new BufferedTimer(1f);
+
+	private final Quaternion yawFix = new Quaternion();
+	private final Quaternion gyroFix = new Quaternion();
+	private final Quaternion attachmentFix = new Quaternion();
 
 	public IMUTracker(
 		IDevice device,
@@ -159,8 +163,7 @@ public class IMUTracker extends AdjustedTracker
 		return false;
 	}
 
-	@Override
-	public boolean getRotation(Quaternion store) {
+	private boolean getRotation(Quaternion store, boolean adjust) {
 		if (movementFilterTickCount > 0 && movementFilterAmount != 1 && previousRots.size() > 0) {
 			buffQuat.set(previousRots.get(0));
 			buffQuat.slerpLocal(rotQuaternion, movementFilterAmount);
@@ -173,9 +176,86 @@ public class IMUTracker extends AdjustedTracker
 		// accidental errors while debugging other things
 		store.multLocal(rotAdjust);
 
-		adjustInternal(store);
-
+		if (adjust)
+			adjustInternal(store);
 		return true;
+	}
+
+	@Override
+	public boolean getRotation(Quaternion store) {
+		return getRotation(store, true);
+	}
+
+	@Override
+	public void resetFull(Quaternion reference) {
+		resetYaw(reference, false);
+		fixGyroscope();
+
+		Quaternion sensorRotation = new Quaternion();
+		getRotation(sensorRotation, false);
+		gyroFix.mult(sensorRotation, sensorRotation);
+		attachmentFix.set(sensorRotation).inverseLocal();
+
+		fixYaw(reference);
+	}
+
+
+	private void resetYaw(Quaternion reference, boolean adjust) {
+		if (magCalibrationStatus >= CalibrationAccuracy.HIGH.status) {
+			magentometerCalibrated = true;
+			// During calibration set correction to match magnetometer readings
+			// exactly
+			// TODO : Correct only yaw
+			correction.set(rotQuaternion).inverseLocal().multLocal(rotMagQuaternion);
+		}
+		if (adjust)
+			fixYaw(reference);
+	}
+
+	/**
+	 * Does not perform actual gyro reset to reference, that's the task of
+	 * reference adjusted tracker. Only aligns gyro with magnetometer if it's
+	 * reliable
+	 */
+	@Override
+	public void resetYaw(Quaternion reference) {
+		resetYaw(reference, true);
+	}
+
+	public void fixYaw(Quaternion reference) {
+		// Use only yaw HMD rotation
+		Quaternion targetTrackerRotation = new Quaternion(reference);
+		float[] angles = new float[3];
+		targetTrackerRotation.toAngles(angles);
+		targetTrackerRotation.fromAngles(0, angles[1], 0);
+
+		Quaternion sensorRotation = new Quaternion();
+		getRotation(sensorRotation, false);
+		gyroFix.mult(sensorRotation, sensorRotation);
+		sensorRotation.multLocal(attachmentFix);
+
+		sensorRotation.toAngles(angles);
+		sensorRotation.fromAngles(0, angles[1], 0);
+
+		yawFix.set(sensorRotation).inverseLocal().multLocal(targetTrackerRotation);
+	}
+
+	public void fixGyroscope() {
+		float[] angles = new float[3];
+
+		Quaternion sensorRotation = new Quaternion();
+		getRotation(sensorRotation, false);
+
+		sensorRotation.toAngles(angles);
+		sensorRotation.fromAngles(0, angles[1], 0);
+
+		gyroFix.set(sensorRotation).inverseLocal();
+	}
+
+	protected void adjustInternal(Quaternion store) {
+		gyroFix.mult(store, store);
+		store.multLocal(attachmentFix);
+		yawFix.mult(store, store);
 	}
 
 	public void getCorrection(Quaternion store) {
@@ -235,28 +315,6 @@ public class IMUTracker extends AdjustedTracker
 		this.batteryVoltage = voltage;
 	}
 
-	@Override
-	public void resetFull(Quaternion reference) {
-		resetYaw(reference);
-		super.resetFull(reference);
-	}
-
-	/**
-	 * Does not perform actual gyro reset to reference, that's the task of
-	 * reference adjusted tracker. Only aligns gyro with magnetometer if it's
-	 * reliable
-	 */
-	@Override
-	public void resetYaw(Quaternion reference) {
-		if (magCalibrationStatus >= CalibrationAccuracy.HIGH.status) {
-			magentometerCalibrated = true;
-			// During calibration set correction to match magnetometer readings
-			// exactly
-			// TODO : Correct only yaw
-			correction.set(rotQuaternion).inverseLocal().multLocal(rotMagQuaternion);
-		}
-		super.resetYaw(reference);
-	}
 
 	/**
 	 * Calculate correction between normal and magnetometer readings up to
@@ -333,6 +391,21 @@ public class IMUTracker extends AdjustedTracker
 
 	public void setSignalStrength(int signalStrength) {
 		this.signalStrength = signalStrength;
+	}
+
+	@Override
+	public Quaternion getYawFix() {
+		return yawFix;
+	}
+
+	@Override
+	public Quaternion getGyroFix() {
+		return gyroFix;
+	}
+
+	@Override
+	public Quaternion getAttachmentFix() {
+		return attachmentFix;
 	}
 
 	public enum CalibrationAccuracy {

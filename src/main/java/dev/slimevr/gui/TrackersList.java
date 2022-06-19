@@ -320,7 +320,7 @@ public class TrackersList extends EJBoxNoStretch {
 				row++;
 			}
 
-			if (debug && t instanceof AdjustedTracker) {
+			if (debug && t instanceof TrackerWithFix) {
 				add(new JLabel("Att fix:"), c(0, row, 2, GridBagConstraints.FIRST_LINE_START));
 				add(adj = new JLabel("0 0 0 0"), c(1, row, 2, GridBagConstraints.FIRST_LINE_START));
 				add(new JLabel("Yaw Fix:"), c(2, row, 2, GridBagConstraints.FIRST_LINE_START));
@@ -398,10 +398,10 @@ public class TrackersList extends EJBoxNoStretch {
 						);
 				}
 			}
-			if (t instanceof AdjustedTracker) {
-				AdjustedTracker rat = (AdjustedTracker) t;
+			if (t instanceof TrackerWithFix) {
+				TrackerWithFix rat = (TrackerWithFix) t;
 				if (adj != null) {
-					rat.attachmentFix.toAngles(angles);
+					rat.getAttachmentFix().toAngles(angles);
 					adj
 						.setText(
 							StringUtils.prettyNumber(angles[0] * FastMath.RAD_TO_DEG, 0)
@@ -412,7 +412,7 @@ public class TrackersList extends EJBoxNoStretch {
 						);
 				}
 				if (adjYaw != null) {
-					rat.yawFix.toAngles(angles);
+					rat.getYawFix().toAngles(angles);
 					adjYaw
 						.setText(
 							StringUtils.prettyNumber(angles[0] * FastMath.RAD_TO_DEG, 0)
@@ -423,7 +423,7 @@ public class TrackersList extends EJBoxNoStretch {
 						);
 				}
 				if (adjGyro != null) {
-					rat.gyroFix.toAngles(angles);
+					rat.getGyroFix().toAngles(angles);
 					adjGyro
 						.setText(
 							StringUtils.prettyNumber(angles[0] * FastMath.RAD_TO_DEG, 0)
