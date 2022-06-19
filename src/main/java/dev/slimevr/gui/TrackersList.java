@@ -182,7 +182,7 @@ public class TrackersList extends EJBoxNoStretch {
 					TrackerPosition
 						.getByDesignation(cfg.designation)
 						.ifPresentOrElse(
-							(trackerPosition) -> desSelect.setSelectedItem(trackerPosition.name()),
+							trackerPosition -> desSelect.setSelectedItem(trackerPosition.name()),
 							() -> desSelect.setSelectedItem("NONE")
 						);
 				}
