@@ -8,13 +8,12 @@ import com.jme3.math.FastMath;
 public class ClipCorrection {
 	// class vars
 	private float floorLevel;
-	private float maxDynamicDisplacement = 0.05f;
-	private float dynamicDisplacementCutoff = 0.9f;
+	private float maxDynamicDisplacement = 0.04f;
+	private float dynamicDisplacementCutoff = 0.8f;
 	private boolean initialized = true;
 	private boolean enabled = true;
 	static final Quaternion FORWARD_QUATERNION = new Quaternion()
 		.fromAngles(FastMath.HALF_PI, 0, 0);
-	private final Vector3f normal = FORWARD_QUATERNION.getRotationColumn(2);
 
 	// variables for holding relavant leg data
 	private Vector3f leftFootPosition = new Vector3f();
@@ -165,24 +164,24 @@ public class ClipCorrection {
 		float offset = computeUnitVector(this.leftFootRotation).y;
 		if (offset < 0) {
 			return 0;
-		} else if (offset < dynamicDisplacementCutoff) {
+		} else if (-offset > dynamicDisplacementCutoff) {
 			return dynamicDisplacementCutoff;
 		}
-		return offset;
+		return -offset;
 	}
 
 	private float getRightFootOffset() {
 		float offset = computeUnitVector(this.rightFootRotation).y;
 		if (offset < 0) {
 			return 0;
-		} else if (offset < dynamicDisplacementCutoff) {
+		} else if (-offset > dynamicDisplacementCutoff) {
 			return dynamicDisplacementCutoff;
 		}
-		return offset;
+		return -offset;
 	}
 
 	// get the unit vector of the given rotation
 	private Vector3f computeUnitVector(Quaternion quaternion) {
-		return quaternion.mult(normal).normalize();
+		return quaternion.getRotationColumn(2).normalize();
 	}
 }
