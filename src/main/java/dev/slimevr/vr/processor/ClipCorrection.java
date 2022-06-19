@@ -2,6 +2,8 @@ package dev.slimevr.vr.processor;
 
 import com.jme3.math.Quaternion;
 import com.jme3.math.Vector3f;
+import dev.slimevr.vr.processor.skeleton.LegTweakBuffer;
+
 import com.jme3.math.FastMath;
 
 
@@ -9,7 +11,7 @@ public class ClipCorrection {
 	// class vars
 	private float floorLevel;
 	private float maxDynamicDisplacement = 0.04f;
-	private float dynamicDisplacementCutoff = 0.8f;
+	private float dynamicDisplacementCutoff = 0.7f;
 	private boolean initialized = true;
 	private boolean enabled = true;
 	static final Quaternion FORWARD_QUATERNION = new Quaternion()
@@ -26,6 +28,10 @@ public class ClipCorrection {
 
 	private Vector3f leftWaistUpperLegOffset = new Vector3f();
 	private Vector3f rightWaistUpperLegOffset = new Vector3f();
+
+	// buffer for holding previus frames of data
+	private LegTweakBuffer legBufferHead = new LegTweakBuffer();
+
 
 	public ClipCorrection(float floorLevel) {
 		this.floorLevel = floorLevel;
@@ -46,12 +52,20 @@ public class ClipCorrection {
 		this.leftFootPosition = leftFootPosition.clone();
 	}
 
+	public void setLeftFootRotation(Quaternion leftFootRotation) {
+		this.leftFootRotation = leftFootRotation.clone();
+	}
+
 	public Vector3f getRightFootPosition() {
 		return rightFootPosition;
 	}
 
 	public void setRightFootPosition(Vector3f rightFootPosition) {
 		this.rightFootPosition = rightFootPosition.clone();
+	}
+
+	public void setRightFootRotation(Quaternion rightFootRotation) {
+		this.rightFootRotation = rightFootRotation.clone();
 	}
 
 	public Vector3f getLeftKneePosition() {
@@ -90,6 +104,44 @@ public class ClipCorrection {
 		this.initialized = false;
 	}
 
+	// tweak the position of the legs based on data from the last frames
+	public boolean tweakLegs() {
+		// first populate the buffer with the current data
+		LegTweakBuffer currentFrame = new LegTweakBuffer(
+			this.leftFootPosition,
+			this.rightFootPosition,
+			this.leftKneePosition,
+			this.rightKneePosition,
+			this.waistPosition,
+			this.leftFootRotation,
+			this.rightFootRotation,
+			this.legBufferHead
+		);
+		this.legBufferHead = currentFrame;
+
+		// now correct the position of the legs from the last frames data
+
+
+		// once done run the clip correction
+		boolean corrected = correctClipping();
+
+		// populate the corrected data into the current frame
+		this.legBufferHead
+			.populateCorrectedPositions(
+				leftFootPosition,
+				rightFootPosition,
+				leftKneePosition,
+				rightKneePosition,
+				waistPosition,
+				leftFootRotation,
+				rightFootRotation
+			);
+
+
+		return corrected;
+
+	}
+
 	// returns true if the foot is clipped and false if it is not
 	public boolean isClipped(float leftOffset, float rightOffset) {
 		return (leftFootPosition.y < floorLevel + leftOffset
@@ -122,16 +174,22 @@ public class ClipCorrection {
 
 		// move the feet to their new positions and push the knees up
 		if (leftFootPosition.y < floorLevel + (maxDynamicDisplacement * leftOffset)) {
-			float displacement = floorLevel
-				+ (maxDynamicDisplacement * leftOffset)
-				- leftFootPosition.y;
+			float displacement = Math
+				.abs(
+					floorLevel
+						+ (maxDynamicDisplacement * leftOffset)
+						- leftFootPosition.y
+				);
 			leftFootPosition.y += displacement;
 			leftKneePosition.y += displacement;
 		}
 		if (rightFootPosition.y < floorLevel + (maxDynamicDisplacement * rightOffset)) {
-			float displacement = floorLevel
-				+ (maxDynamicDisplacement * rightOffset)
-				- rightFootPosition.y;
+			float displacement = Math
+				.abs(
+					floorLevel
+						+ (maxDynamicDisplacement * rightOffset)
+						- rightFootPosition.y
+				);
 			rightFootPosition.y += displacement;
 			rightKneePosition.y += displacement;
 		}
@@ -164,20 +222,20 @@ public class ClipCorrection {
 		float offset = computeUnitVector(this.leftFootRotation).y;
 		if (offset < 0) {
 			return 0;
-		} else if (-offset > dynamicDisplacementCutoff) {
+		} else if (offset > dynamicDisplacementCutoff) {
 			return dynamicDisplacementCutoff;
 		}
-		return -offset;
+		return offset;
 	}
 
 	private float getRightFootOffset() {
 		float offset = computeUnitVector(this.rightFootRotation).y;
 		if (offset < 0) {
 			return 0;
-		} else if (-offset > dynamicDisplacementCutoff) {
+		} else if (offset > dynamicDisplacementCutoff) {
 			return dynamicDisplacementCutoff;
 		}
-		return -offset;
+		return offset;
 	}
 
 	// get the unit vector of the given rotation
