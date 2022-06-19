@@ -315,126 +315,46 @@ public class HumanSkeleton extends Skeleton implements SkeletonConfigCallback {
 	}
 	// #endregion
 
+	/**
+	 * Rebuilds the `currentBoneInfo` list
+	 */
 	protected void resetBones() {
 		currentBoneInfo.clear();
 
-		// #region Assemble skeleton from hmd to hip
+		// TODO: Decide which bones should be displayed when only a subset of
+		// trackers are present
+
 		currentBoneInfo.add(new BoneInfo(BoneType.HEAD, headNode));
 		currentBoneInfo.add(new BoneInfo(BoneType.NECK, neckNode));
 		currentBoneInfo.add(new BoneInfo(BoneType.CHEST, chestNode));
 		currentBoneInfo.add(new BoneInfo(BoneType.WAIST, waistNode));
 		currentBoneInfo.add(new BoneInfo(BoneType.HIP, hipNode));
-		// #endregion
 
-		// #region Assemble skeleton from hips to feet
-		if (leftLowerLegTracker != null || leftUpperLegTracker != null || leftFootTracker != null) {
-			currentBoneInfo.add(new BoneInfo(BoneType.LEFT_HIP, leftHipNode));
-			currentBoneInfo.add(new BoneInfo(BoneType.LEFT_UPPER_LEG, leftKneeNode));
-			currentBoneInfo.add(new BoneInfo(BoneType.LEFT_LOWER_LEG, leftKneeNode));
-			currentBoneInfo.add(new BoneInfo(BoneType.LEFT_FOOT, leftKneeNode));
+		currentBoneInfo.add(new BoneInfo(BoneType.LEFT_UPPER_LEG, leftKneeNode));
+		currentBoneInfo.add(new BoneInfo(BoneType.RIGHT_UPPER_LEG, rightKneeNode));
+
+		currentBoneInfo.add(new BoneInfo(BoneType.LEFT_LOWER_LEG, leftAnkleNode));
+		currentBoneInfo.add(new BoneInfo(BoneType.RIGHT_LOWER_LEG, rightAnkleNode));
+
+		if (leftFootTracker != null) {
+			currentBoneInfo.add(new BoneInfo(BoneType.LEFT_FOOT, leftFootNode));
 		}
 
-		if (
-			rightLowerLegTracker != null || rightUpperLegTracker != null || rightFootTracker != null
-		) {
-			currentBoneInfo.add(new BoneInfo(BoneType.RIGHT_HIP, rightHipNode));
-			currentBoneInfo.add(new BoneInfo(BoneType.RIGHT_UPPER_LEG, rightKneeNode));
-			currentBoneInfo.add(new BoneInfo(BoneType.RIGHT_LOWER_LEG, rightKneeNode));
-			currentBoneInfo.add(new BoneInfo(BoneType.RIGHT_FOOT, rightKneeNode));
+		if (rightFootTracker != null) {
+			currentBoneInfo.add(new BoneInfo(BoneType.RIGHT_FOOT, rightFootNode));
 		}
-		// #endregion
 
-		// #region Assemble skeleton arms from controllers
-		if (leftControllerTracker != null) {
-			currentBoneInfo.add(new BoneInfo(BoneType.LEFT_CONTROLLER, leftWristNodeContrl));
-			if (leftLowerArmTracker != null) {
-				currentBoneInfo.add(new BoneInfo(BoneType.LEFT_LOWER_ARM, leftElbowNodeContrl));
-			}
+		// TODO: Handle going from HMD and handle shoulder/upper arm. RN we only
+		// support controller based bones.
+		// TODO: Expose the hand bones while accounting for the z and y offsets.
+
+		if (leftControllerTracker != null && leftLowerArmTracker != null) {
+			currentBoneInfo.add(new BoneInfo(BoneType.LEFT_LOWER_ARM, leftElbowNodeContrl));
 		}
-		if (rightControllerTracker != null) {
-			currentBoneInfo.add(new BoneInfo(BoneType.RIGHT_CONTROLLER, rightWristNodeContrl));
-			if (rightLowerArmTracker != null) {
-				currentBoneInfo.add(new BoneInfo(BoneType.RIGHT_LOWER_ARM, rightElbowNodeContrl));
-			}
+
+		if (rightControllerTracker != null && rightLowerArmTracker != null) {
+			currentBoneInfo.add(new BoneInfo(BoneType.RIGHT_LOWER_ARM, rightElbowNodeContrl));
 		}
-		// #endregion
-
-		// #region Assemble skeleton arms from chest
-		if (rightUpperArmTracker != null) {
-			currentBoneInfo.add(new BoneInfo(BoneType.RIGHT_SHOULDER, rightShoulderNodeHmd));
-			currentBoneInfo.add(new BoneInfo(BoneType.RIGHT_UPPER_ARM, rightElbowNodeHmd));
-			if (rightControllerTracker == null && rightLowerArmTracker != null) {
-				currentBoneInfo.add(new BoneInfo(BoneType.RIGHT_LOWER_ARM, rightWristNodeHmd));
-				if (rightHandTracker != null) {
-					currentBoneInfo.add(new BoneInfo(BoneType.RIGHT_HAND, rightHandNodeHmd));
-				}
-			}
-		}
-		if (leftUpperArmTracker != null) {
-			currentBoneInfo.add(new BoneInfo(BoneType.LEFT_SHOULDER, leftShoulderNodeHmd));
-			currentBoneInfo.add(new BoneInfo(BoneType.LEFT_UPPER_ARM, leftElbowNodeHmd));
-			if (leftControllerTracker == null && leftLowerArmTracker != null) {
-				currentBoneInfo.add(new BoneInfo(BoneType.LEFT_LOWER_ARM, leftWristNodeHmd));
-				if (leftHandTracker != null) {
-					currentBoneInfo.add(new BoneInfo(BoneType.LEFT_HAND, leftHandNodeHmd));
-				}
-			}
-		}
-		// #endregion
-
-		// #region Attach tracker nodes for offsets
-		if (true) { // Set to false to skip tracker bones
-			currentBoneInfo.add(new BoneInfo(BoneType.CHEST_TRACKER, trackerChestNode));
-			currentBoneInfo.add(new BoneInfo(BoneType.HIP_TRACKER, trackerWaistNode));
-
-			if (
-				leftLowerLegTracker != null
-					|| leftUpperLegTracker != null
-					|| leftFootTracker != null
-			) {
-				currentBoneInfo.add(new BoneInfo(BoneType.LEFT_KNEE_TRACKER, trackerLeftKneeNode));
-				currentBoneInfo.add(new BoneInfo(BoneType.LEFT_FOOT_TRACKER, trackerLeftFootNode));
-			}
-			if (
-				rightLowerLegTracker != null
-					|| rightUpperLegTracker != null
-					|| rightFootTracker != null
-			) {
-				currentBoneInfo
-					.add(new BoneInfo(BoneType.RIGHT_KNEE_TRACKER, trackerRightKneeNode));
-				currentBoneInfo
-					.add(new BoneInfo(BoneType.RIGHT_FOOT_TRACKER, trackerRightFootNode));
-			}
-			if (leftControllerTracker != null && leftLowerArmTracker != null) {
-				currentBoneInfo
-					.add(new BoneInfo(BoneType.LEFT_ELBOW_TRACKER, trackerLeftElbowNodeContrl));
-			}
-			if (rightControllerTracker != null && rightLowerArmTracker != null) {
-				currentBoneInfo
-					.add(
-						new BoneInfo(BoneType.RIGHT_ELBOW_TRACKER, trackerRightElbowNodeContrl)
-					);
-			}
-
-			if (leftControllerTracker == null && leftLowerArmTracker != null) {
-				currentBoneInfo
-					.add(new BoneInfo(BoneType.LEFT_ELBOW_TRACKER, trackerLeftElbowNodeHmd));
-			}
-			if (rightControllerTracker != null && rightLowerArmTracker != null) {
-				currentBoneInfo
-					.add(new BoneInfo(BoneType.RIGHT_ELBOW_TRACKER, trackerLeftElbowNodeHmd));
-			}
-
-			if (leftHandTracker != null) {
-				currentBoneInfo
-					.add(new BoneInfo(BoneType.LEFT_HAND_TRACKER, trackerLeftHandNodeHmd));
-			}
-			if (rightHandTracker != null) {
-				currentBoneInfo
-					.add(new BoneInfo(BoneType.RIGHT_HAND_TRACKER, trackerLeftHandNodeHmd));
-			}
-		}
-		// #endregion
 	}
 
 	// #region Set trackers inputs

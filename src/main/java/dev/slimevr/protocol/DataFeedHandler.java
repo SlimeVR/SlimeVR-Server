@@ -1,6 +1,8 @@
 package dev.slimevr.protocol;
 
 import com.google.flatbuffers.FlatBufferBuilder;
+
+import dev.slimevr.vr.processor.skeleton.HumanSkeleton;
 import io.eiren.util.logging.LogManager;
 import solarxr_protocol.MessageBundle;
 import solarxr_protocol.data_feed.*;
@@ -79,7 +81,16 @@ public class DataFeedHandler extends ProtocolHandler<DataFeedMessageHeader> {
 				this.api.server.getAllTrackers()
 			);
 
-		return DataFeedUpdate.createDataFeedUpdate(fbb, devicesOffset, trackersOffset);
+		// TODO: Remove the unecessary `Skeleton` abstraction
+		var s = (HumanSkeleton) this.api.server.humanPoseProcessor.getSkeleton();
+		int bonesOffset = DataFeedBuilder
+			.createBonesData(
+				fbb,
+				config.getBoneMask(),
+				s.currentBoneInfo
+			);
+
+		return DataFeedUpdate.createDataFeedUpdate(fbb, devicesOffset, trackersOffset, bonesOffset);
 	}
 
 	public void sendDataFeedUpdate() {
