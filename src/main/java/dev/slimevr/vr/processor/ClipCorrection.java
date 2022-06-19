@@ -2,16 +2,19 @@ package dev.slimevr.vr.processor;
 
 import com.jme3.math.Quaternion;
 import com.jme3.math.Vector3f;
+import com.jme3.math.FastMath;
 
 
 public class ClipCorrection {
 	// class vars
 	private float floorLevel;
-	private float maxDynamicDisplacement = 0.04f;
-	private float dynamicDisplacementCutoff = 0.75f;
+	private float maxDynamicDisplacement = 0.05f;
+	private float dynamicDisplacementCutoff = 0.9f;
 	private boolean initialized = true;
 	private boolean enabled = true;
-	private final Vector3f normal = new Vector3f(0, 0, -1);
+	static final Quaternion FORWARD_QUATERNION = new Quaternion()
+		.fromAngles(FastMath.HALF_PI, 0, 0);
+	private final Vector3f normal = FORWARD_QUATERNION.getRotationColumn(2);
 
 	// variables for holding relavant leg data
 	private Vector3f leftFootPosition = new Vector3f();
@@ -99,7 +102,7 @@ public class ClipCorrection {
 	public boolean correctClipping() {
 		// if not initialized, we need to initialize the floor level
 		if (!initialized) {
-			floorLevel = (leftFootPosition.y + rightFootPosition.y) / 2f;
+			floorLevel = (leftFootPosition.y + rightFootPosition.y) / 2f + 0.02f;
 			initialized = true;
 		}
 		// calculate how angled down the feet are as a scalar value between 0
@@ -160,22 +163,22 @@ public class ClipCorrection {
 
 	private float getLeftFootOffset() {
 		float offset = computeUnitVector(this.leftFootRotation).y;
-		if (offset > 0) {
+		if (offset < 0) {
 			return 0;
-		} else if (offset < -dynamicDisplacementCutoff) {
+		} else if (offset < dynamicDisplacementCutoff) {
 			return dynamicDisplacementCutoff;
 		}
-		return offset * -1;
+		return offset;
 	}
 
 	private float getRightFootOffset() {
 		float offset = computeUnitVector(this.rightFootRotation).y;
-		if (offset > 0) {
+		if (offset < 0) {
 			return 0;
-		} else if (offset < -dynamicDisplacementCutoff) {
+		} else if (offset < dynamicDisplacementCutoff) {
 			return dynamicDisplacementCutoff;
 		}
-		return offset * -1;
+		return offset;
 	}
 
 	// get the unit vector of the given rotation
