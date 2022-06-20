@@ -41,5 +41,5 @@ public abstract class Skeleton {
 	public abstract void resetTrackersYaw();
 
 	@VRServerThread
-	public abstract void toggleFloorClip();
+	public abstract void setFloorClip(boolean value);
 }

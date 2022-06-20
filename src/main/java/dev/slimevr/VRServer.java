@@ -243,9 +243,9 @@ public class VRServer extends Thread {
 		});
 	}
 
-	public void toggleFloorClip() {
+	public void setFloorClip(boolean value) {
 		queueTask(() -> {
-			humanPoseProcessor.toggleFloorClip();
+			humanPoseProcessor.setFloorClip(value);
 		});
 	}
 

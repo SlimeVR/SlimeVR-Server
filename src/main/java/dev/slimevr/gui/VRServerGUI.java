@@ -214,12 +214,23 @@ public class VRServerGUI extends JFrame {
 					}
 				});
 				add(Box.createHorizontalStrut(10));
-				add(new JButton("Floor Clip") {
+				add(new JButton("Enable Floor Clip") {
 					{
 						addMouseListener(new MouseInputAdapter() {
 							@Override
 							public void mouseClicked(MouseEvent e) {
-								toggleFloorClip();
+								setFloorClip(true);
+							}
+						});
+					}
+				});
+				add(Box.createHorizontalStrut(10));
+				add(new JButton("Disable Floor Clip") {
+					{
+						addMouseListener(new MouseInputAdapter() {
+							@Override
+							public void mouseClicked(MouseEvent e) {
+								setFloorClip(false);
 							}
 						});
 					}
@@ -514,7 +525,7 @@ public class VRServerGUI extends JFrame {
 	}
 
 	@AWTThread
-	private void toggleFloorClip() {
-		server.toggleFloorClip();
+	private void setFloorClip(boolean value) {
+		server.setFloorClip(value);
 	}
 }
