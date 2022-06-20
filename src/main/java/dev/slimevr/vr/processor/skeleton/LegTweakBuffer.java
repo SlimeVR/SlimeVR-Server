@@ -34,21 +34,21 @@ public class LegTweakBuffer {
 	private int rightLegState = STATE_UNKNOWN;
 
 	// positions and rotations
-	private Vector3f leftFootPosition = new Vector3f();
-	private Vector3f rightFootPosition = new Vector3f();
-	private Vector3f leftKneePosition = new Vector3f();
-	private Vector3f rightKneePosition = new Vector3f();
-	private Vector3f waistPosition = new Vector3f();
-	private Quaternion leftFootRotation = new Quaternion();
-	private Quaternion rightFootRotation = new Quaternion();
+	public Vector3f leftFootPosition = new Vector3f();
+	public Vector3f rightFootPosition = new Vector3f();
+	public Vector3f leftKneePosition = new Vector3f();
+	public Vector3f rightKneePosition = new Vector3f();
+	public Vector3f waistPosition = new Vector3f();
+	public Quaternion leftFootRotation = new Quaternion();
+	public Quaternion rightFootRotation = new Quaternion();
 
-	private Vector3f leftFootPositionCorrected = new Vector3f();
-	private Vector3f rightFootPositionCorrected = new Vector3f();
-	private Vector3f leftKneePositionCorrected = new Vector3f();
-	private Vector3f rightKneePositionCorrected = new Vector3f();
-	private Vector3f waistPositionCorrected = new Vector3f();
-	private Quaternion leftFootRotationCorrected = new Quaternion();
-	private Quaternion rightFootRotationCorrected = new Quaternion();
+	public Vector3f leftFootPositionCorrected = new Vector3f();
+	public Vector3f rightFootPositionCorrected = new Vector3f();
+	public Vector3f leftKneePositionCorrected = new Vector3f();
+	public Vector3f rightKneePositionCorrected = new Vector3f();
+	public Vector3f waistPositionCorrected = new Vector3f();
+	public Quaternion leftFootRotationCorrected = new Quaternion();
+	public Quaternion rightFootRotationCorrected = new Quaternion();
 
 	// velocities
 	private Vector3f leftFootVelocity = new Vector3f();
@@ -91,13 +91,13 @@ public class LegTweakBuffer {
 		Quaternion rightFootRotation,
 		LegTweakBuffer parent
 	) {
-		this.leftFootPosition = leftFootPosition;
-		this.rightFootPosition = rightFootPosition;
-		this.leftKneePosition = leftKneePosition;
-		this.rightKneePosition = rightKneePosition;
-		this.waistPosition = waistPosition;
-		this.leftFootRotation = leftFootRotation;
-		this.rightFootRotation = rightFootRotation;
+		this.leftFootPosition = leftFootPosition.clone();
+		this.rightFootPosition = rightFootPosition.clone();
+		this.leftKneePosition = leftKneePosition.clone();
+		this.rightKneePosition = rightKneePosition.clone();
+		this.waistPosition = waistPosition.clone();
+		this.leftFootRotation = leftFootRotation.clone();
+		this.rightFootRotation = rightFootRotation.clone();
 		this.parent = parent;
 		this.parent.setChild(this);
 		updateFrameNumber(0);
