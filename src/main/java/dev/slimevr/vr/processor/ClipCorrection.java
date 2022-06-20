@@ -108,12 +108,12 @@ public class ClipCorrection {
 		this.initialized = false;
 	}
 
-	public void enableFloorCLip() {
-		this.enabled = true;
+	public void setEnabled(boolean enabled) {
+		this.enabled = enabled;
 	}
 
-	public void disableFloorCLip() {
-		this.enabled = false;
+	public boolean getEnabled() {
+		return this.enabled;
 	}
 
 	// tweak the position of the legs based on data from the last frames
