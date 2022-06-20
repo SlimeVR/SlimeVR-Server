@@ -39,4 +39,7 @@ public abstract class Skeleton {
 
 	@VRServerThread
 	public abstract void resetTrackersYaw();
+
+	@VRServerThread
+	public abstract void toggleFloorClip();
 }

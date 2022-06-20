@@ -194,4 +194,8 @@ public class HumanPoseProcessor {
 		if (skeleton != null)
 			skeleton.resetTrackersYaw();
 	}
+
+	@VRServerThread
+	public void toggleFloorClip() {
+	}
 }
