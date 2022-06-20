@@ -1879,8 +1879,10 @@ public class HumanSkeleton extends Skeleton implements SkeletonConfigCallback {
 	@VRServerThread
 	public void toggleFloorClip() {
 		if (this.clipCorrector.getEnabled()) {
+			System.out.println("Floor clip disabled");
 			this.clipCorrector.setEnabled(false);
 		} else {
+			System.out.println("Floor clip enabled");
 			this.clipCorrector.setEnabled(true);
 		}
 	}
