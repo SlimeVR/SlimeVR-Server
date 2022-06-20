@@ -1624,7 +1624,7 @@ public class HumanSkeleton extends Skeleton implements SkeletonConfigCallback {
 			trackerPreUpdate(this.rightUpperLegTracker),
 			trackerPreUpdate(this.rightLowerLegTracker),
 			trackerPreUpdate(this.rightFootTracker), trackerPreUpdate(this.rightLowerArmTracker),
-			trackerPreUpdate(this.leftLowerLegTracker), trackerPreUpdate(this.rightUpperArmTracker),
+			trackerPreUpdate(this.leftLowerArmTracker), trackerPreUpdate(this.rightUpperArmTracker),
 			trackerPreUpdate(this.leftUpperArmTracker), trackerPreUpdate(this.leftHandTracker),
 			trackerPreUpdate(this.rightHandTracker) };
 	}
