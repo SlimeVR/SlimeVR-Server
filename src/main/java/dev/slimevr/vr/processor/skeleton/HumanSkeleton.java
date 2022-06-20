@@ -808,24 +808,40 @@ public class HumanSkeleton extends Skeleton implements SkeletonConfigCallback {
 
 	// correct any clipping that is happening to the feet trackers
 	void tweakLegPos() {
-		// update the class variables
-		// clipCorrector
+		// check for null trackers (if any of the primary 3 are null return)
+		if (
+			computedLeftFootTracker == null
+				|| computedRightFootTracker == null
+				|| computedWaistTracker == null
+		) {
+			return;
+		}
+		boolean hasKnees = true;
+		// check for knee trackers (if null use a placeholder)
+		if (computedLeftKneeTracker == null || computedRightKneeTracker == null) {
+			hasKnees = false;
+			clipCorrector.setLeftKneePosition(new Vector3f());
+			clipCorrector.setRightKneePosition(new Vector3f());
+
+		} else {
+			clipCorrector.setLeftKneePosition(computedLeftKneeTracker.position);
+			clipCorrector.setRightKneePosition(computedRightKneeTracker.position);
+		}
+		clipCorrector.setLeftFootPosition(computedLeftFootTracker.position);
+		clipCorrector.setRightFootPosition(computedRightFootTracker.position);
+		clipCorrector.setWaistPosition(computedWaistTracker.position);
+		clipCorrector.setLeftFootRotation(computedLeftFootTracker.rotation);
+		clipCorrector.setRightFootRotation(computedRightFootTracker.rotation);
+
 		Vector3f temp1 = new Vector3f();
 		Vector3f temp2 = new Vector3f();
 		Vector3f temp3 = new Vector3f();
 
+		// get offsets from the waist to the upper legs
 		leftHipNode.localTransform.getTranslation(temp1);
 		rightHipNode.localTransform.getTranslation(temp2);
 		waistNode.localTransform.getTranslation(temp3);
-
 		clipCorrector.updateOffsets(temp1, temp2, temp3);
-		clipCorrector.setLeftFootPosition(computedLeftFootTracker.position);
-		clipCorrector.setRightFootPosition(computedRightFootTracker.position);
-		clipCorrector.setLeftKneePosition(computedLeftKneeTracker.position);
-		clipCorrector.setRightKneePosition(computedRightKneeTracker.position);
-		clipCorrector.setWaistPosition(computedWaistTracker.position);
-		clipCorrector.setLeftFootRotation(computedLeftFootTracker.rotation);
-		clipCorrector.setRightFootRotation(computedRightFootTracker.rotation);
 
 		// correct the foot positions returns true if any adjustment was made
 		boolean corrected = clipCorrector.tweakLegs();
@@ -834,8 +850,10 @@ public class HumanSkeleton extends Skeleton implements SkeletonConfigCallback {
 		if (corrected) {
 			computedLeftFootTracker.position.set(clipCorrector.getLeftFootPosition());
 			computedRightFootTracker.position.set(clipCorrector.getRightFootPosition());
-			computedLeftKneeTracker.position.set(clipCorrector.getLeftKneePosition());
-			computedRightKneeTracker.position.set(clipCorrector.getRightKneePosition());
+			if (hasKnees) {
+				computedLeftKneeTracker.position.set(clipCorrector.getLeftKneePosition());
+				computedRightKneeTracker.position.set(clipCorrector.getRightKneePosition());
+			}
 		}
 	}
 
