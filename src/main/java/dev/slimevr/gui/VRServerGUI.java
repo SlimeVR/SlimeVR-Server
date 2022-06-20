@@ -41,8 +41,6 @@ public class VRServerGUI extends JFrame {
 	private final SkeletonList skeletonList;
 	private final EJBox pane;
 	private JButton resetButton;
-	private JButton floorClipButton;
-	private JButton skatingCorrectionButton;
 	private float zoom = 1.5f;
 	private float initZoom = zoom;
 
@@ -210,43 +208,16 @@ public class VRServerGUI extends JFrame {
 					}
 				});
 				add(Box.createHorizontalStrut(10));
-				add(floorClipButton = new JButton("Toggle Floor Clip") {
+				add(new JButton("Floor Clip") {
 					{
 						addMouseListener(new MouseInputAdapter() {
 							@Override
 							public void mouseClicked(MouseEvent e) {
-								boolean[] state = server.humanPoseProcessor.getLegTweaksState();
-								setFloorClipEnabled(!state[0]);
+								toggleFloorClip();
 							}
 						});
 					}
 				});
-				setFloorClipEnabled(
-					server.humanPoseProcessor
-						.getSkeletonConfig()
-						.getToggle("Floor Clip")
-				);
-
-
-				add(Box.createHorizontalStrut(10));
-				add(skatingCorrectionButton = new JButton("Toggle Skating Correction") {
-					{
-						addMouseListener(new MouseInputAdapter() {
-							@Override
-							public void mouseClicked(MouseEvent e) {
-								boolean[] state = server.humanPoseProcessor.getLegTweaksState();
-								setSkatingReductionEnabled(!state[1]);
-							}
-						});
-					}
-				});
-				setSkatingReductionEnabled(
-					server.humanPoseProcessor
-						.getSkeletonConfig()
-						.getToggle("Skating Correction")
-				);
-
-
 				add(Box.createHorizontalGlue());
 				add(new JButton("Record BVH") {
 					{
@@ -530,26 +501,7 @@ public class VRServerGUI extends JFrame {
 	}
 
 	@AWTThread
-	private void setSkatingReductionEnabled(boolean value) {
-		if (value) {
-			skatingCorrectionButton.setBackground(Color.GREEN);
-		} else {
-			skatingCorrectionButton.setBackground(Color.RED);
-		}
-		skatingCorrectionButton
-			.setText(value ? "Skating Correction: ON" : "Skating Correction: OFF");
-		server.setSkatingReductionEnabled(value);
-	}
-
-	@AWTThread
-	private void setFloorClipEnabled(boolean value) {
-		if (value) {
-			floorClipButton.setBackground(Color.GREEN);
-		} else {
-			floorClipButton.setBackground(Color.RED);
-		}
-		// update the button
-		floorClipButton.setText(value ? "Floor clip: ON" : "Floor clip: OFF");
-		server.setFloorClipEnabled(value);
+	private void toggleFloorClip() {
+		server.toggleFloorClip();
 	}
 }
