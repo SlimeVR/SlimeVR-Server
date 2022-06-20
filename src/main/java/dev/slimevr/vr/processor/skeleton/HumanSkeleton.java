@@ -818,8 +818,7 @@ public class HumanSkeleton extends Skeleton implements SkeletonConfigCallback {
 			hipNode.localTransform.setRotation(rotBuf1);
 			trackerWaistNode.localTransform.setRotation(rotBuf1);
 		} else if (hmdTracker != null) {
-			// Align spine yaw with HMD
-			hmdTracker.getRotation(rotBuf1);
+			// Align with last tracker's yaw (HMD or neck)
 			rotBuf1.fromAngles(0, rotBuf1.getYaw(), 0);
 
 			neckNode.localTransform.setRotation(rotBuf1);
@@ -836,15 +835,15 @@ public class HumanSkeleton extends Skeleton implements SkeletonConfigCallback {
 		if (leftUpperLegTracker != null) {
 			leftUpperLegTracker.getRotation(rotBuf1);
 		} else {
-			// Align with HMD's yaw
-			hmdTracker.getRotation(rotBuf1);
+			// Align with the hip's yaw
+			hipNode.localTransform.getRotation(rotBuf1);
 			rotBuf1.fromAngles(0, rotBuf1.getYaw(), 0);
 		}
 		if (leftLowerLegTracker != null) {
 			leftLowerLegTracker.getRotation(rotBuf2);
 		} else {
-			// Align with HMD's yaw
-			hmdTracker.getRotation(rotBuf2);
+			// Align with the hip's yaw
+			hipNode.localTransform.getRotation(rotBuf2);
 			rotBuf2.fromAngles(0, rotBuf2.getYaw(), 0);
 		}
 
@@ -891,15 +890,15 @@ public class HumanSkeleton extends Skeleton implements SkeletonConfigCallback {
 		if (rightUpperLegTracker != null) {
 			rightUpperLegTracker.getRotation(rotBuf1);
 		} else {
-			// Align with HMD's yaw
-			hmdTracker.getRotation(rotBuf1);
+			// Align with the hip's yaw
+			hipNode.localTransform.getRotation(rotBuf1);
 			rotBuf1.fromAngles(0, rotBuf1.getYaw(), 0);
 		}
 		if (rightLowerLegTracker != null) {
 			rightLowerLegTracker.getRotation(rotBuf2);
 		} else {
-			// Align with HMD's yaw
-			hmdTracker.getRotation(rotBuf2);
+			// Align with the hip's yaw
+			hipNode.localTransform.getRotation(rotBuf2);
 			rotBuf2.fromAngles(0, rotBuf2.getYaw(), 0);
 		}
 
@@ -1624,10 +1623,10 @@ public class HumanSkeleton extends Skeleton implements SkeletonConfigCallback {
 			trackerPreUpdate(this.rightUpperLegTracker),
 			trackerPreUpdate(this.rightLowerLegTracker),
 			trackerPreUpdate(this.rightFootTracker),
+			trackerPreUpdate(this.leftLowerArmTracker),
 			trackerPreUpdate(this.rightLowerArmTracker),
-			trackerPreUpdate(this.leftLowerLegTracker),
-			trackerPreUpdate(this.rightUpperArmTracker),
 			trackerPreUpdate(this.leftUpperArmTracker),
+			trackerPreUpdate(this.rightUpperArmTracker),
 			trackerPreUpdate(this.leftHandTracker),
 			trackerPreUpdate(this.rightHandTracker) };
 	}
