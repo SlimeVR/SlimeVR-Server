@@ -197,5 +197,7 @@ public class HumanPoseProcessor {
 
 	@VRServerThread
 	public void toggleFloorClip() {
+		if (skeleton != null)
+			skeleton.toggleFloorClip();
 	}
 }
