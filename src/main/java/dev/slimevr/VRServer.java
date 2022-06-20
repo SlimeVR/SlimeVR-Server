@@ -243,6 +243,12 @@ public class VRServer extends Thread {
 		});
 	}
 
+	public void toggleFloorClip() {
+		queueTask(() -> {
+			humanPoseProcessor.toggleFloorClip();
+		});
+	}
+
 	public int getTrackersCount() {
 		return trackers.size();
 	}
