@@ -3,17 +3,23 @@ package dev.slimevr.vr.processor;
 import com.jme3.math.Quaternion;
 import com.jme3.math.Vector3f;
 import dev.slimevr.vr.processor.skeleton.LegTweakBuffer;
-
 import com.jme3.math.FastMath;
 
 
 public class ClipCorrection {
 	// class vars
 	private float floorLevel;
+	private float waistToFloorDist;
+	private float standingCuttoffhorizontal = 0.5f;
+	private float standingCuttoffvertical = 0.35f;
 	private float maxDynamicDisplacement = 0.04f;
 	private float dynamicDisplacementCutoff = 0.7f;
 	private boolean initialized = true;
 	private boolean enabled = true;
+	private boolean windingUp = true;
+	private boolean windingDown = false;
+	private boolean rightLegActive = false;
+	private boolean leftLegActive = false;
 	static final Quaternion FORWARD_QUATERNION = new Quaternion()
 		.fromAngles(FastMath.HALF_PI, 0, 0);
 
@@ -25,13 +31,11 @@ public class ClipCorrection {
 	private Vector3f waistPosition = new Vector3f();
 	private Quaternion leftFootRotation = new Quaternion();
 	private Quaternion rightFootRotation = new Quaternion();
-
 	private Vector3f leftWaistUpperLegOffset = new Vector3f();
 	private Vector3f rightWaistUpperLegOffset = new Vector3f();
 
 	// buffer for holding previus frames of data
 	private LegTweakBuffer legBufferHead = new LegTweakBuffer();
-
 
 	public ClipCorrection(float floorLevel) {
 		this.floorLevel = floorLevel;
@@ -104,8 +108,48 @@ public class ClipCorrection {
 		this.initialized = false;
 	}
 
+	public void enableFloorCLip() {
+		this.enabled = true;
+	}
+
+	public void disableFloorCLip() {
+		this.enabled = false;
+	}
+
 	// tweak the position of the legs based on data from the last frames
 	public boolean tweakLegs() {
+		// if not initialized, we need to initialize floor level and waist to
+		// floor distance (must happen immediately after reset)
+		if (!initialized) {
+			floorLevel = (leftFootPosition.y + rightFootPosition.y) / 2f + 0.02f;
+			waistToFloorDist = waistPosition.y - floorLevel;
+			initialized = true;
+		}
+		// if not enabled do nothing and return false
+		if (!enabled) {
+			return false;
+		}
+		// if the user does not have the majority of their weight on their feet
+		// start checking for a good time to disable the floor clip without
+		// causing skipping
+		if (!isStanding()) {
+			windingDown = true;
+			windingUp = false;
+
+			// if we are winding down and both legs are not active just return
+			// false
+			if (!rightLegActive && !leftLegActive) {
+				return false;
+			}
+		}
+		// if the user has the majority of their weight on their feet
+		// start checking for a good time to enable the floor clip without
+		// causing skipping
+		else {
+			windingDown = false;
+			windingUp = true;
+		}
+
 		// first populate the buffer with the current data
 		LegTweakBuffer currentFrame = new LegTweakBuffer(
 			this.leftFootPosition,
@@ -120,10 +164,36 @@ public class ClipCorrection {
 		this.legBufferHead = currentFrame;
 
 		// now correct the position of the legs from the last frames data
+		// not implemented yet...
 
-
-		// once done run the clip correction
+		// once done run the clip correction (also corrects the position of the
+		// knees)
 		boolean corrected = correctClipping();
+
+		// determine if either leg is in a position to activate or deactivate
+		// (use the buffer to get the positions before corrections)
+		float leftFootDif = legBufferHead.leftFootPosition.subtract(leftFootPosition).length();
+		float rightFootDif = legBufferHead.rightFootPosition.subtract(rightFootPosition).length();
+		if (windingDown && leftFootDif < 0.005f) {
+			leftLegActive = false;
+		} else if (windingUp && leftFootDif < 0.005f) {
+			leftLegActive = true;
+		}
+		if (windingDown && rightFootDif < 0.005f) {
+			rightLegActive = false;
+		} else if (windingUp && rightFootDif < 0.005f) {
+			rightLegActive = true;
+		}
+
+		// restore the positions of inactive legs
+		if (!leftLegActive) {
+			leftFootPosition = legBufferHead.leftFootPosition.clone();
+			leftKneePosition = legBufferHead.leftKneePosition.clone();
+		}
+		if (!rightLegActive) {
+			rightFootPosition = legBufferHead.rightFootPosition.clone();
+			rightKneePosition = legBufferHead.rightKneePosition.clone();
+		}
 
 		// populate the corrected data into the current frame
 		this.legBufferHead
@@ -137,9 +207,7 @@ public class ClipCorrection {
 				rightFootRotation
 			);
 
-
 		return corrected;
-
 	}
 
 	// returns true if the foot is clipped and false if it is not
@@ -151,11 +219,6 @@ public class ClipCorrection {
 	// returns true if the tracker positions should be corrected with the values
 	// stored in the class
 	public boolean correctClipping() {
-		// if not initialized, we need to initialize the floor level
-		if (!initialized) {
-			floorLevel = (leftFootPosition.y + rightFootPosition.y) / 2f + 0.02f;
-			initialized = true;
-		}
 		// calculate how angled down the feet are as a scalar value between 0
 		// and 1 (0 = flat, 1 = max angle)
 		float leftOffset = getLeftFootOffset();
@@ -216,6 +279,27 @@ public class ClipCorrection {
 		rightKneePosition = rightKneePosition.subtract(rightKneeVector);
 
 		return true;
+	}
+
+	// returns true if it is likly the user is standing
+	public boolean isStanding() {
+		// if the waist is below the verticalcutoff, we are not standing
+		if (
+			waistPosition.y
+				< floorLevel + waistToFloorDist - (waistToFloorDist * standingCuttoffvertical)
+		) {
+			return false;
+		}
+		// if the waist is above the verticalcutoff, we are standing as long as
+		// the horizontal cutoff is not exceeded on both feet
+		Vector3f left = leftFootPosition.clone();
+		Vector3f right = leftFootPosition.clone();
+		Vector3f waist = waistPosition.clone();
+		left.y = 0;
+		right.y = 0;
+		waist.y = 0;
+		return !(waist.distance(left) > standingCuttoffhorizontal
+			&& waist.distance(right) > standingCuttoffhorizontal);
 	}
 
 	private float getLeftFootOffset() {
