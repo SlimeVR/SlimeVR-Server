@@ -213,6 +213,17 @@ public class VRServerGUI extends JFrame {
 						});
 					}
 				});
+				add(Box.createHorizontalStrut(10));
+				add(new JButton("Floor Clip") {
+					{
+						addMouseListener(new MouseInputAdapter() {
+							@Override
+							public void mouseClicked(MouseEvent e) {
+								toggleFloorClip();
+							}
+						});
+					}
+				});
 				add(Box.createHorizontalGlue());
 				add(new JButton("Record BVH") {
 					{
@@ -500,5 +511,10 @@ public class VRServerGUI extends JFrame {
 	@AWTThread
 	private void reset() {
 		ButtonTimer.runTimer(resetButton, 3, "RESET", server::resetTrackers);
+	}
+
+	@AWTThread
+	private void toggleFloorClip() {
+		server.toggleFloorClip();
 	}
 }
