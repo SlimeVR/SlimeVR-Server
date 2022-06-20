@@ -1874,4 +1874,14 @@ public class HumanSkeleton extends Skeleton implements SkeletonConfigCallback {
 		this.updateToggleState(SkeletonConfigToggle.SKATING_CORRECTION, value);
 		this.skeletonConfig.setToggle(SkeletonConfigToggle.SKATING_CORRECTION, value);
 	}
+
+	@Override
+	@VRServerThread
+	public void toggleFloorClip() {
+		if (this.clipCorrector.getEnabled()) {
+			this.clipCorrector.setEnabled(false);
+		} else {
+			this.clipCorrector.setEnabled(true);
+		}
+	}
 }
