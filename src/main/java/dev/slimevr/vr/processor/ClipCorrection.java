@@ -10,10 +10,8 @@ public class ClipCorrection {
 	// class vars
 	private float floorLevel;
 	private float waistToFloorDist;
-	private float standingCuttoffhorizontal = 0.5f;
-	private float standingCuttoffvertical = 0.35f;
-	private float maxDynamicDisplacement = 0.04f;
-	private float dynamicDisplacementCutoff = 0.7f;
+	private float currentDisengagementOffset = 0.0f;
+	// state variables
 	private boolean initialized = true;
 	private boolean enabled = true;
 	private boolean windingUp = true;
@@ -23,7 +21,7 @@ public class ClipCorrection {
 	static final Quaternion FORWARD_QUATERNION = new Quaternion()
 		.fromAngles(FastMath.HALF_PI, 0, 0);
 
-	// variables for holding relavant leg data
+	// leg data
 	private Vector3f leftFootPosition = new Vector3f();
 	private Vector3f rightFootPosition = new Vector3f();
 	private Vector3f leftKneePosition = new Vector3f();
@@ -33,6 +31,13 @@ public class ClipCorrection {
 	private Quaternion rightFootRotation = new Quaternion();
 	private Vector3f leftWaistUpperLegOffset = new Vector3f();
 	private Vector3f rightWaistUpperLegOffset = new Vector3f();
+
+	// hyperparameters
+	private float standingCuttoffhorizontal = 0.5f;
+	private float standingCuttoffvertical = 0.35f;
+	private float maxDynamicDisplacement = 0.04f;
+	private float maxDisengagmentOffset = 0.25f;
+	private float dynamicDisplacementCutoff = 0.7f;
 
 	// buffer for holding previus frames of data
 	private LegTweakBuffer legBufferHead = new LegTweakBuffer();
@@ -236,22 +241,30 @@ public class ClipCorrection {
 		float rightKneeWaist = rightKneePosition.distance(rightWaist);
 
 		// move the feet to their new positions and push the knees up
-		if (leftFootPosition.y < floorLevel + (maxDynamicDisplacement * leftOffset)) {
+		if (
+			leftFootPosition.y
+				< (floorLevel + (maxDynamicDisplacement * leftOffset)) - currentDisengagementOffset
+		) {
 			float displacement = Math
 				.abs(
 					floorLevel
 						+ (maxDynamicDisplacement * leftOffset)
 						- leftFootPosition.y
+						- currentDisengagementOffset
 				);
 			leftFootPosition.y += displacement;
 			leftKneePosition.y += displacement;
 		}
-		if (rightFootPosition.y < floorLevel + (maxDynamicDisplacement * rightOffset)) {
+		if (
+			rightFootPosition.y
+				< (floorLevel + (maxDynamicDisplacement * rightOffset)) - currentDisengagementOffset
+		) {
 			float displacement = Math
 				.abs(
 					floorLevel
 						+ (maxDynamicDisplacement * rightOffset)
 						- rightFootPosition.y
+						- currentDisengagementOffset
 				);
 			rightFootPosition.y += displacement;
 			rightKneePosition.y += displacement;
@@ -284,12 +297,13 @@ public class ClipCorrection {
 	// returns true if it is likly the user is standing
 	public boolean isStanding() {
 		// if the waist is below the verticalcutoff, we are not standing
-		if (
-			waistPosition.y
-				< floorLevel + waistToFloorDist - (waistToFloorDist * standingCuttoffvertical)
-		) {
+		float cutoff = floorLevel + waistToFloorDist - (waistToFloorDist * standingCuttoffvertical);
+		if (waistPosition.y < cutoff) {
+			currentDisengagementOffset = (1 - waistPosition.y / cutoff)
+				* maxDisengagmentOffset;
 			return false;
 		}
+		currentDisengagementOffset = 0f;
 		// if the waist is above the verticalcutoff, we are standing as long as
 		// the horizontal cutoff is not exceeded on both feet
 		Vector3f left = leftFootPosition.clone();
