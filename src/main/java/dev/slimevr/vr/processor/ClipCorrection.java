@@ -14,8 +14,7 @@ public class ClipCorrection {
 	// state variables
 	private boolean initialized = true;
 	private boolean enabled = true;
-	private boolean windingUp = true;
-	private boolean windingDown = false;
+	private boolean active = false;
 	private boolean rightLegActive = false;
 	private boolean leftLegActive = false;
 	static final Quaternion FORWARD_QUATERNION = new Quaternion()
@@ -32,12 +31,13 @@ public class ClipCorrection {
 	private Vector3f leftWaistUpperLegOffset = new Vector3f();
 	private Vector3f rightWaistUpperLegOffset = new Vector3f();
 
-	// hyperparameters
-	private float standingCuttoffhorizontal = 0.5f;
-	private float standingCuttoffvertical = 0.35f;
-	private float maxDynamicDisplacement = 0.04f;
-	private float maxDisengagmentOffset = 0.25f;
-	private float dynamicDisplacementCutoff = 0.7f;
+	// hyperparameters (clip correction)
+	private static final float STANDING_CUTOFF_HORIZONTAL = 0.5f;
+	private static final float STANDING_CUTOFF_VERTICAL = 0.35f;
+	private static final float MAX_DYNAMIC_DISPLACEMENT = 0.04f;
+	private static final float MAX_DISENGAGMENT_OFFSET = 0.25f;
+	private static final float DYNAMIC_DISPLACEMENT_CUTOFF = 0.7f;
+
 
 	// buffer for holding previus frames of data
 	private LegTweakBuffer legBufferHead = new LegTweakBuffer();
@@ -138,8 +138,7 @@ public class ClipCorrection {
 		// start checking for a good time to disable the floor clip without
 		// causing skipping
 		if (!isStanding()) {
-			windingDown = true;
-			windingUp = false;
+			active = false;
 
 			// if we are winding down and both legs are not active just return
 			// false
@@ -151,68 +150,79 @@ public class ClipCorrection {
 		// start checking for a good time to enable the floor clip without
 		// causing skipping
 		else {
-			windingDown = false;
-			windingUp = true;
+			active = true;
 		}
 
-		// first populate the buffer with the current data
-		LegTweakBuffer currentFrame = new LegTweakBuffer(
-			this.leftFootPosition,
-			this.rightFootPosition,
-			this.leftKneePosition,
-			this.rightKneePosition,
-			this.waistPosition,
-			this.leftFootRotation,
-			this.rightFootRotation,
-			this.legBufferHead
-		);
+		// first update the buffer
+		LegTweakBuffer currentFrame = new LegTweakBuffer();
+		currentFrame.setLeftFootPosition(leftFootPosition);
+		currentFrame.setLeftFootRotation(leftFootRotation);
+		currentFrame.setLeftKneePosition(leftKneePosition);
+		currentFrame.setRightFootPosition(rightFootPosition);
+		currentFrame.setRightFootRotation(rightFootRotation);
+		currentFrame.setRightKneePosition(rightKneePosition);
+		currentFrame.setWaistPosition(waistPosition);
+
+		// calculate acceleration and velocity of the feet and update the buffer
+		currentFrame.setParent(legBufferHead);
 		this.legBufferHead = currentFrame;
+		currentFrame.calculateFootAttributes(active);
+
 
 		// now correct the position of the legs from the last frames data
-		// not implemented yet...
+		boolean corrected2 = correctSkating();
 
 		// once done run the clip correction (also corrects the position of the
 		// knees)
-		boolean corrected = correctClipping();
+		boolean corrected1 = correctClipping();
 
 		// determine if either leg is in a position to activate or deactivate
 		// (use the buffer to get the positions before corrections)
-		float leftFootDif = legBufferHead.leftFootPosition.subtract(leftFootPosition).length();
-		float rightFootDif = legBufferHead.rightFootPosition.subtract(rightFootPosition).length();
-		if (windingDown && leftFootDif < 0.005f) {
+
+		float leftFootDif = legBufferHead.getLeftFootPosition().subtract(leftFootPosition).length();
+		float rightFootDif = legBufferHead
+			.getRightFootPosition()
+			.subtract(rightFootPosition)
+			.length();
+		if (!active && leftFootDif < 0.005f) {
 			leftLegActive = false;
-		} else if (windingUp && leftFootDif < 0.005f) {
+		} else if (active && leftFootDif < 0.005f) {
 			leftLegActive = true;
 		}
-		if (windingDown && rightFootDif < 0.005f) {
+		if (!active && rightFootDif < 0.005f) {
 			rightLegActive = false;
-		} else if (windingUp && rightFootDif < 0.005f) {
+		} else if (active && rightFootDif < 0.005f) {
 			rightLegActive = true;
 		}
 
 		// restore the positions of inactive legs
 		if (!leftLegActive) {
-			leftFootPosition = legBufferHead.leftFootPosition.clone();
-			leftKneePosition = legBufferHead.leftKneePosition.clone();
+			leftFootPosition = legBufferHead.getLeftFootPosition();
+			leftKneePosition = legBufferHead.getLeftKneePosition();
 		}
 		if (!rightLegActive) {
-			rightFootPosition = legBufferHead.rightFootPosition.clone();
-			rightKneePosition = legBufferHead.rightKneePosition.clone();
+			rightFootPosition = legBufferHead.getRightFootPosition();
+			rightKneePosition = legBufferHead.getRightKneePosition();
 		}
 
 		// populate the corrected data into the current frame
+		this.legBufferHead.setLeftFootPositionCorrected(leftFootPosition);
+		this.legBufferHead.setRightFootPositionCorrected(rightFootPosition);
+		this.legBufferHead.setLeftKneePositionCorrected(leftKneePosition);
+		this.legBufferHead.setRightKneePositionCorrected(rightKneePosition);
+		this.legBufferHead.setWaistPositionCorrected(waistPosition);
 		this.legBufferHead
-			.populateCorrectedPositions(
-				leftFootPosition,
-				rightFootPosition,
-				leftKneePosition,
-				rightKneePosition,
-				waistPosition,
-				leftFootRotation,
-				rightFootRotation
+			.setLeftFloorLevel(
+				(floorLevel + (MAX_DYNAMIC_DISPLACEMENT * getLeftFootOffset()))
+					- currentDisengagementOffset
+			);
+		this.legBufferHead
+			.setRightFloorLevel(
+				(floorLevel + (MAX_DYNAMIC_DISPLACEMENT * getRightFootOffset()))
+					- currentDisengagementOffset
 			);
 
-		return corrected;
+		return corrected1 || corrected2;
 	}
 
 	// returns true if the foot is clipped and false if it is not
@@ -243,12 +253,13 @@ public class ClipCorrection {
 		// move the feet to their new positions and push the knees up
 		if (
 			leftFootPosition.y
-				< (floorLevel + (maxDynamicDisplacement * leftOffset)) - currentDisengagementOffset
+				< (floorLevel + (MAX_DYNAMIC_DISPLACEMENT * leftOffset))
+					- currentDisengagementOffset
 		) {
 			float displacement = Math
 				.abs(
 					floorLevel
-						+ (maxDynamicDisplacement * leftOffset)
+						+ (MAX_DYNAMIC_DISPLACEMENT * leftOffset)
 						- leftFootPosition.y
 						- currentDisengagementOffset
 				);
@@ -257,12 +268,13 @@ public class ClipCorrection {
 		}
 		if (
 			rightFootPosition.y
-				< (floorLevel + (maxDynamicDisplacement * rightOffset)) - currentDisengagementOffset
+				< (floorLevel + (MAX_DYNAMIC_DISPLACEMENT * rightOffset))
+					- currentDisengagementOffset
 		) {
 			float displacement = Math
 				.abs(
 					floorLevel
-						+ (maxDynamicDisplacement * rightOffset)
+						+ (MAX_DYNAMIC_DISPLACEMENT * rightOffset)
 						- rightFootPosition.y
 						- currentDisengagementOffset
 				);
@@ -294,13 +306,40 @@ public class ClipCorrection {
 		return true;
 	}
 
+	// based on the data from the last frame compute a new position that reduces
+	// ice skating
+	public boolean correctSkating() {
+		// for either foot that is locked get its position (x and z only we let
+		// y move freely) and set it to be there
+		if (legBufferHead.getLeftLegState() == LegTweakBuffer.LOCKED) {
+			leftFootPosition.x = legBufferHead.getParent().getLeftFootPositionCorrected().x;
+			leftFootPosition.z = legBufferHead.getParent().getLeftFootPositionCorrected().z;
+		}
+		if (legBufferHead.getRightLegState() == LegTweakBuffer.LOCKED) {
+			rightFootPosition.x = legBufferHead.getParent().getRightFootPositionCorrected().x;
+			rightFootPosition.z = legBufferHead.getParent().getRightFootPositionCorrected().z;
+		}
+
+		// for either foot that is unlocked get its last position and calculate
+		// its position for this frame if its last position was the same as the
+		// input position do nothing
+
+		// the current solution is to just let them snap back this will be
+		// changed!
+
+		return true;
+
+	}
+
 	// returns true if it is likly the user is standing
 	public boolean isStanding() {
 		// if the waist is below the verticalcutoff, we are not standing
-		float cutoff = floorLevel + waistToFloorDist - (waistToFloorDist * standingCuttoffvertical);
+		float cutoff = floorLevel
+			+ waistToFloorDist
+			- (waistToFloorDist * STANDING_CUTOFF_VERTICAL);
 		if (waistPosition.y < cutoff) {
 			currentDisengagementOffset = (1 - waistPosition.y / cutoff)
-				* maxDisengagmentOffset;
+				* MAX_DISENGAGMENT_OFFSET;
 			return false;
 		}
 		currentDisengagementOffset = 0f;
@@ -312,16 +351,16 @@ public class ClipCorrection {
 		left.y = 0;
 		right.y = 0;
 		waist.y = 0;
-		return !(waist.distance(left) > standingCuttoffhorizontal
-			&& waist.distance(right) > standingCuttoffhorizontal);
+		return !(waist.distance(left) > STANDING_CUTOFF_HORIZONTAL
+			&& waist.distance(right) > STANDING_CUTOFF_HORIZONTAL);
 	}
 
 	private float getLeftFootOffset() {
 		float offset = computeUnitVector(this.leftFootRotation).y;
 		if (offset < 0) {
 			return 0;
-		} else if (offset > dynamicDisplacementCutoff) {
-			return dynamicDisplacementCutoff;
+		} else if (offset > DYNAMIC_DISPLACEMENT_CUTOFF) {
+			return DYNAMIC_DISPLACEMENT_CUTOFF;
 		}
 		return offset;
 	}
@@ -330,8 +369,8 @@ public class ClipCorrection {
 		float offset = computeUnitVector(this.rightFootRotation).y;
 		if (offset < 0) {
 			return 0;
-		} else if (offset > dynamicDisplacementCutoff) {
-			return dynamicDisplacementCutoff;
+		} else if (offset > DYNAMIC_DISPLACEMENT_CUTOFF) {
+			return DYNAMIC_DISPLACEMENT_CUTOFF;
 		}
 		return offset;
 	}
