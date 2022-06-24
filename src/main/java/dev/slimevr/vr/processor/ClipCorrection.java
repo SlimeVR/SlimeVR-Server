@@ -113,6 +113,10 @@ public class ClipCorrection {
 		this.initialized = false;
 	}
 
+	public boolean getActive() {
+		return this.active;
+	}
+
 	public void setEnabled(boolean enabled) {
 		this.enabled = enabled;
 	}
@@ -163,7 +167,7 @@ public class ClipCorrection {
 		currentFrame.setRightKneePosition(rightKneePosition);
 		currentFrame.setWaistPosition(waistPosition);
 
-		// calculate acceleration and velocity of the feet and update the buffer
+		// calculate acceleration and velocity of the feet using the buffer
 		currentFrame.setParent(legBufferHead);
 		this.legBufferHead = currentFrame;
 		currentFrame.calculateFootAttributes(active);
@@ -321,12 +325,51 @@ public class ClipCorrection {
 		}
 
 		// for either foot that is unlocked get its last position and calculate
-		// its position for this frame if its last position was the same as the
-		// input position do nothing
-
-		// the current solution is to just let them snap back this will be
-		// changed!
-
+		// its position for this frame. The approch for now is to allow for a
+		// 10% change to the velocity to gradually correct without snapping in
+		// to place
+		if (legBufferHead.getLeftLegState() == LegTweakBuffer.UNLOCKED) {
+			Vector3f leftFootDif = leftFootPosition
+				.subtract(legBufferHead.getParent().getLeftFootPositionCorrected())
+				.setY(0);
+			if (leftFootDif.length() > 0.01f) {
+				Vector3f velocity = legBufferHead.getLeftFootVelocity();
+				// if velocity and dif are pointing in the same direction,
+				// add a small amount of velocity to the dif
+				// else subtract a small amount of velocity from the dif
+				if (velocity.x * leftFootDif.x > 0) {
+					leftFootDif.x += velocity.x * 0.1f;
+				} else {
+					leftFootDif.x -= velocity.x * 0.1f;
+				}
+				if (velocity.z * leftFootDif.z > 0) {
+					leftFootDif.z += velocity.z * 0.1f;
+				} else {
+					leftFootDif.z -= velocity.z * 0.1f;
+				}
+			}
+		}
+		if (legBufferHead.getRightLegState() == LegTweakBuffer.UNLOCKED) {
+			Vector3f rightFootDif = rightFootPosition
+				.subtract(legBufferHead.getParent().getRightFootPositionCorrected())
+				.setY(0);
+			if (rightFootDif.length() > 0.01f) {
+				Vector3f velocity = legBufferHead.getRightFootVelocity();
+				// if velocity and dif are pointing in the same direction,
+				// add a small amount of velocity to the dif
+				// else subtract a small amount of velocity from the dif
+				if (velocity.x * rightFootDif.x > 0) {
+					rightFootDif.x += velocity.x * 0.1f;
+				} else {
+					rightFootDif.x -= velocity.x * 0.1f;
+				}
+				if (velocity.z * rightFootDif.z > 0) {
+					rightFootDif.z += velocity.z * 0.1f;
+				} else {
+					rightFootDif.z -= velocity.z * 0.1f;
+				}
+			}
+		}
 		return true;
 
 	}
