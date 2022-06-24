@@ -122,7 +122,6 @@ public class HumanSkeleton extends Skeleton implements SkeletonConfigCallback {
 		false
 	);
 	// #endregion
-	protected final Quaternion kneeRotation = new Quaternion();
 	// #region Buffers
 	private final Vector3f posBuf = new Vector3f();
 	private final Quaternion rotBuf1 = new Quaternion();
@@ -131,8 +130,6 @@ public class HumanSkeleton extends Skeleton implements SkeletonConfigCallback {
 	private final Quaternion rotBuf4 = new Quaternion();
 	protected boolean hasSpineTracker;
 	protected boolean hasKneeTrackers;
-	protected float minKneePitch = 0f * FastMath.DEG_TO_RAD;
-	protected float maxKneePitch = 90f * FastMath.DEG_TO_RAD;
 	static final Quaternion FORWARD_QUATERNION = new Quaternion()
 		.fromAngles(FastMath.HALF_PI, 0, 0);
 	static final float FLOOR_OFFSET = 0.05f;
@@ -1301,49 +1298,43 @@ public class HumanSkeleton extends Skeleton implements SkeletonConfigCallback {
 			case RIGHT_HIP:
 				rightHipNode.localTransform.setTranslation(offset);
 				break;
-			case UPPER_LEG:
 			case LEFT_UPPER_LEG:
 			case RIGHT_UPPER_LEG:
 				leftKneeNode.localTransform.setTranslation(offset);
 				rightKneeNode.localTransform.setTranslation(offset);
 				break;
-			case KNEE_TRACKER:
 			case LEFT_KNEE_TRACKER:
 			case RIGHT_KNEE_TRACKER:
 				trackerLeftKneeNode.localTransform.setTranslation(offset);
 				trackerRightKneeNode.localTransform.setTranslation(offset);
 				break;
-			case LOWER_LEG:
 			case LEFT_LOWER_LEG:
 			case RIGHT_LOWER_LEG:
 				leftAnkleNode.localTransform.setTranslation(offset);
 				rightAnkleNode.localTransform.setTranslation(offset);
 				break;
-			case FOOT:
 			case LEFT_FOOT:
 			case RIGHT_FOOT:
 				leftFootNode.localTransform.setTranslation(offset);
 				rightFootNode.localTransform.setTranslation(offset);
 				break;
-			case FOOT_TRACKER:
 			case LEFT_FOOT_TRACKER:
 			case RIGHT_FOOT_TRACKER:
 				trackerLeftFootNode.localTransform.setTranslation(offset);
 				trackerRightFootNode.localTransform.setTranslation(offset);
 				break;
-			case CONTROLLER:
 			case LEFT_CONTROLLER:
 			case RIGHT_CONTROLLER:
 				leftWristNodeContrl.localTransform.setTranslation(offset);
 				rightWristNodeContrl.localTransform.setTranslation(offset);
 				break;
-			case LOWER_ARM:
 			case LEFT_LOWER_ARM:
 			case RIGHT_LOWER_ARM:
 				leftElbowNodeContrl.localTransform.setTranslation(offset);
 				rightElbowNodeContrl.localTransform.setTranslation(offset);
+				leftWristNodeHmd.localTransform.setTranslation(offset.negate());
+				rightWristNodeHmd.localTransform.setTranslation(offset.negate());
 				break;
-			case ELBOW_TRACKER:
 			case LEFT_ELBOW_TRACKER:
 			case RIGHT_ELBOW_TRACKER:
 				trackerLeftElbowNodeContrl.localTransform.setTranslation(offset);
@@ -1357,21 +1348,15 @@ public class HumanSkeleton extends Skeleton implements SkeletonConfigCallback {
 			case RIGHT_SHOULDER:
 				rightShoulderNodeHmd.localTransform.setTranslation(offset);
 				break;
-			case HAND:
 			case LEFT_HAND:
 			case RIGHT_HAND:
 				leftHandNodeHmd.localTransform.setTranslation(offset);
 				rightHandNodeHmd.localTransform.setTranslation(offset);
 				break;
-			case UPPER_ARM:
 			case LEFT_UPPER_ARM:
 			case RIGHT_UPPER_ARM:
 				leftElbowNodeHmd.localTransform.setTranslation(offset);
 				rightElbowNodeHmd.localTransform.setTranslation(offset);
-				break;
-			case LOWER_ARM_HMD:
-				leftWristNodeHmd.localTransform.setTranslation(offset);
-				rightWristNodeHmd.localTransform.setTranslation(offset);
 				break;
 			default:
 				break;
@@ -1427,7 +1412,7 @@ public class HumanSkeleton extends Skeleton implements SkeletonConfigCallback {
 				rightFootNode.update();
 				updateComputedTrackers();
 				break;
-			case FOOT_OFFSET:
+			case FOOT_SHIFT:
 				leftAnkleNode.update();
 				rightAnkleNode.update();
 				updateComputedTrackers();
@@ -1554,8 +1539,8 @@ public class HumanSkeleton extends Skeleton implements SkeletonConfigCallback {
 			case FOOT_LENGTH:
 				skeletonConfig.setConfig(SkeletonConfigValue.FOOT_LENGTH, null);
 				break;
-			case FOOT_OFFSET:
-				skeletonConfig.setConfig(SkeletonConfigValue.FOOT_OFFSET, null);
+			case FOOT_SHIFT:
+				skeletonConfig.setConfig(SkeletonConfigValue.FOOT_SHIFT, null);
 				break;
 			case SKELETON_OFFSET:
 				skeletonConfig.setConfig(SkeletonConfigValue.SKELETON_OFFSET, null);
