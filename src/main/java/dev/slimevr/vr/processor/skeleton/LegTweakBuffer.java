@@ -73,10 +73,10 @@ public class LegTweakBuffer {
 	private float rightFloorLevel;
 
 	// hyperparameters (skating correction)
-	private static final float SKATING_CUTOFF_HORIZANTAL = 0.2f;
+	private static final float SKATING_CUTOFF = 0.25f;
 	private static final float SKATING_VELOCITY_CUTOFF = 0.04f;
-	private static final float SKATING_ACCELERATION_CUTOFF = 0.02f;
-	private static final float SKATING_ROTATIONAL_VELOCITY_CUTOFF = 0.005f;
+	private static final float SKATING_ACCELERATION_CUTOFF = 0.04f;
+	private static final float SKATING_ROTATIONAL_VELOCITY_CUTOFF = 0.01f;
 
 	// getters and setters
 	public Vector3f getLeftFootPosition() {
@@ -272,7 +272,7 @@ public class LegTweakBuffer {
 	// check if a locked foot should stay locked or be released
 	private int checkStateLeft() {
 		if (
-			parent.getLeftFootHorizantalDifference() > SKATING_CUTOFF_HORIZANTAL
+			parent.getLeftFootHorizantalDifference() > SKATING_CUTOFF
 				|| leftFootVelocityMagnitude > SKATING_VELOCITY_CUTOFF
 				|| leftFootAccelerationMagnitude > SKATING_ACCELERATION_CUTOFF
 				|| leftFootAngleDiff > SKATING_ROTATIONAL_VELOCITY_CUTOFF
@@ -286,7 +286,7 @@ public class LegTweakBuffer {
 	// check if a locked foot should stay locked or be released
 	private int checkStateRight() {
 		if (
-			parent.getRightFootHorizantalDifference() > SKATING_CUTOFF_HORIZANTAL
+			parent.getRightFootHorizantalDifference() > SKATING_CUTOFF
 				|| rightFootVelocityMagnitude > SKATING_VELOCITY_CUTOFF
 				|| rightFootAccelerationMagnitude > SKATING_ACCELERATION_CUTOFF
 				|| rightFootAngleDiff > SKATING_ROTATIONAL_VELOCITY_CUTOFF
