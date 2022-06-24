@@ -68,13 +68,13 @@ public class LegTweakBuffer {
 
 	// other data
 	private LegTweakBuffer parent = null; // frame before this one
-	private int frameNumber = 0; // frame number of this frame
+	private int frameNumber = 0; // higher number is older frame
 	private float leftFloorLevel;
 	private float rightFloorLevel;
 
 	// hyperparameters (skating correction)
 	private static final float SKATING_CUTOFF_HORIZANTAL = 0.2f;
-	private static final float SKATING_VELOCITY_CUTOFF = 0.05f;
+	private static final float SKATING_VELOCITY_CUTOFF = 0.04f;
 	private static final float SKATING_ACCELERATION_CUTOFF = 0.02f;
 	private static final float SKATING_ROTATIONAL_VELOCITY_CUTOFF = 0.005f;
 
@@ -173,6 +173,14 @@ public class LegTweakBuffer {
 
 	public void setWaistPositionCorrected(Vector3f waistPositionCorrected) {
 		this.waistPositionCorrected = waistPositionCorrected.clone();
+	}
+
+	public Vector3f getLeftFootVelocity() {
+		return leftFootVelocity.clone();
+	}
+
+	public Vector3f getRightFootVelocity() {
+		return rightFootVelocity.clone();
 	}
 
 	public void setLeftFloorLevel(float leftFloorLevel) {
