@@ -368,16 +368,6 @@ public class HumanSkeleton extends Skeleton implements SkeletonConfigCallback {
 		// #endregion
 
 		// #region Assemble skeleton arms from chest
-		if (leftUpperArmTracker != null) {
-			currentBoneInfo.add(new BoneInfo(BoneType.LEFT_SHOULDER, leftShoulderNodeHmd));
-			currentBoneInfo.add(new BoneInfo(BoneType.LEFT_UPPER_ARM, leftElbowNodeHmd));
-			if (leftControllerTracker == null && leftLowerArmTracker != null) {
-				currentBoneInfo.add(new BoneInfo(BoneType.LEFT_LOWER_ARM, leftWristNodeHmd));
-				if (leftHandTracker != null) {
-					currentBoneInfo.add(new BoneInfo(BoneType.LEFT_HAND, leftHandNodeHmd));
-				}
-			}
-		}
 		if (rightUpperArmTracker != null) {
 			currentBoneInfo.add(new BoneInfo(BoneType.RIGHT_SHOULDER, rightShoulderNodeHmd));
 			currentBoneInfo.add(new BoneInfo(BoneType.RIGHT_UPPER_ARM, rightElbowNodeHmd));
@@ -385,6 +375,16 @@ public class HumanSkeleton extends Skeleton implements SkeletonConfigCallback {
 				currentBoneInfo.add(new BoneInfo(BoneType.RIGHT_LOWER_ARM, rightWristNodeHmd));
 				if (rightHandTracker != null) {
 					currentBoneInfo.add(new BoneInfo(BoneType.RIGHT_HAND, rightHandNodeHmd));
+				}
+			}
+		}
+		if (leftUpperArmTracker != null) {
+			currentBoneInfo.add(new BoneInfo(BoneType.LEFT_SHOULDER, leftShoulderNodeHmd));
+			currentBoneInfo.add(new BoneInfo(BoneType.LEFT_UPPER_ARM, leftElbowNodeHmd));
+			if (leftControllerTracker == null && leftLowerArmTracker != null) {
+				currentBoneInfo.add(new BoneInfo(BoneType.LEFT_LOWER_ARM, leftWristNodeHmd));
+				if (leftHandTracker != null) {
+					currentBoneInfo.add(new BoneInfo(BoneType.LEFT_HAND, leftHandNodeHmd));
 				}
 			}
 		}
