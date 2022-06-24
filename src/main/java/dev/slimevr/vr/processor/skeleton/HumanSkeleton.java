@@ -1334,8 +1334,9 @@ public class HumanSkeleton extends Skeleton implements SkeletonConfigCallback {
 				rightElbowNodeContrl.localTransform.setTranslation(offset);
 				// Dirty hack: from HMD goes the opposite way as from
 				// controllers, so we negate the offset.
-				leftWristNodeHmd.localTransform.setTranslation(offset.negate());
-				rightWristNodeHmd.localTransform.setTranslation(offset.negate());
+				Vector3f negatedOffset = offset.negate();
+				leftWristNodeHmd.localTransform.setTranslation(negatedOffset);
+				rightWristNodeHmd.localTransform.setTranslation(negatedOffset);
 				break;
 			case LEFT_ELBOW_TRACKER:
 			case RIGHT_ELBOW_TRACKER:
