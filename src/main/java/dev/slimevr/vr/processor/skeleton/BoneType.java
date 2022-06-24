@@ -4,9 +4,7 @@ import solarxr_protocol.datatypes.BodyPart;
 
 
 /**
- * Keys for all bones in the skeleton. TODO: Some bones are deprecated because
- * they are still used as SkeletonNodeOffset, and represent both left and right
- * offsets, but they should be split into two.
+ * Keys for all bones in the skeleton.
  */
 public enum BoneType {
 

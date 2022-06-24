@@ -125,9 +125,9 @@ public enum SkeletonConfigValue {
 	),
 	LOWER_ARM_LENGTH(
 		15,
-		"Forearm length",
-		"forearmLength",
-		"Forearm length",
+		"Lower arm length",
+		"lowerArmLength",
+		"Lower arm length",
 		0.25f,
 		new BoneType[] { BoneType.LEFT_LOWER_ARM, BoneType.RIGHT_LOWER_ARM }
 	),
