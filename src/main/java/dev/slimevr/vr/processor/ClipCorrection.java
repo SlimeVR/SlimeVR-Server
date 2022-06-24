@@ -38,6 +38,8 @@ public class ClipCorrection {
 	private static final float MAX_DISENGAGMENT_OFFSET = 0.25f;
 	private static final float DYNAMIC_DISPLACEMENT_CUTOFF = 0.7f;
 
+	private float correctionWeight = 0.15f;
+
 
 	// buffer for holding previus frames of data
 	private LegTweakBuffer legBufferHead = new LegTweakBuffer();
@@ -133,6 +135,10 @@ public class ClipCorrection {
 			floorLevel = (leftFootPosition.y + rightFootPosition.y) / 2f + 0.02f;
 			waistToFloorDist = waistPosition.y - floorLevel;
 			initialized = true;
+			// for calibration purposes fill the buffer with the position of the
+			// feet
+			legBufferHead.setLeftFootPositionCorrected(leftFootPosition);
+			legBufferHead.setRightFootPositionCorrected(rightFootPosition);
 		}
 		// if not enabled do nothing and return false
 		if (!enabled) {
@@ -333,19 +339,28 @@ public class ClipCorrection {
 				.subtract(legBufferHead.getParent().getLeftFootPositionCorrected())
 				.setY(0);
 			if (leftFootDif.length() > 0.01f) {
+				leftFootPosition = legBufferHead.getParent().getLeftFootPositionCorrected();
 				Vector3f velocity = legBufferHead.getLeftFootVelocity();
+				// first add the difference from the last frame to this frame
+				leftFootPosition = leftFootPosition
+					.subtract(
+						legBufferHead
+							.getParent()
+							.getLeftFootPosition()
+							.subtract(legBufferHead.getLeftFootPosition())
+					);
 				// if velocity and dif are pointing in the same direction,
 				// add a small amount of velocity to the dif
 				// else subtract a small amount of velocity from the dif
 				if (velocity.x * leftFootDif.x > 0) {
-					leftFootDif.x += velocity.x * 0.1f;
+					leftFootPosition.x += velocity.x * correctionWeight;
 				} else {
-					leftFootDif.x -= velocity.x * 0.1f;
+					leftFootPosition.x -= velocity.x * correctionWeight;
 				}
 				if (velocity.z * leftFootDif.z > 0) {
-					leftFootDif.z += velocity.z * 0.1f;
+					leftFootPosition.z += velocity.z * correctionWeight;
 				} else {
-					leftFootDif.z -= velocity.z * 0.1f;
+					leftFootPosition.z -= velocity.z * correctionWeight;
 				}
 			}
 		}
@@ -354,19 +369,28 @@ public class ClipCorrection {
 				.subtract(legBufferHead.getParent().getRightFootPositionCorrected())
 				.setY(0);
 			if (rightFootDif.length() > 0.01f) {
+				rightFootPosition = legBufferHead.getParent().getRightFootPositionCorrected();
 				Vector3f velocity = legBufferHead.getRightFootVelocity();
+				// first add the difference from the last frame to this frame
+				rightFootPosition = rightFootPosition
+					.subtract(
+						legBufferHead
+							.getParent()
+							.getRightFootPosition()
+							.subtract(legBufferHead.getRightFootPosition())
+					);
 				// if velocity and dif are pointing in the same direction,
 				// add a small amount of velocity to the dif
 				// else subtract a small amount of velocity from the dif
 				if (velocity.x * rightFootDif.x > 0) {
-					rightFootDif.x += velocity.x * 0.1f;
+					rightFootPosition.x += velocity.x * correctionWeight;
 				} else {
-					rightFootDif.x -= velocity.x * 0.1f;
+					rightFootPosition.x -= velocity.x * correctionWeight;
 				}
 				if (velocity.z * rightFootDif.z > 0) {
-					rightFootDif.z += velocity.z * 0.1f;
+					rightFootPosition.z += velocity.z * correctionWeight;
 				} else {
-					rightFootDif.z -= velocity.z * 0.1f;
+					rightFootPosition.z -= velocity.z * correctionWeight;
 				}
 			}
 		}
