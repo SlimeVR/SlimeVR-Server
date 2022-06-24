@@ -21,7 +21,7 @@ export const bodyPartLabels = {
     [SkeletonBone.LEGS_LENGTH]: "Legs length",
     [SkeletonBone.KNEE_HEIGHT]: "Knee height",
     [SkeletonBone.FOOT_LENGTH]: "Foot length",
-    [SkeletonBone.FOOT_OFFSET]: "Foot offset",
+    [SkeletonBone.FOOT_SHIFT]: "Foot shift",
     [SkeletonBone.SKELETON_OFFSET]: "Skeleton offset",
     [SkeletonBone.CONTROLLER_DISTANCE_Z]: "Controller distance z",
     [SkeletonBone.CONTROLLER_DISTANCE_Y]: "Controller distance y",
