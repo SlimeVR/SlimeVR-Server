@@ -1382,7 +1382,7 @@ public class HumanSkeleton extends Skeleton implements SkeletonConfigCallback {
 		}
 	}
 
-	public TransformNode getNode(BoneType nodeOffset, boolean rightSide) {
+	public TransformNode getNode(BoneType nodeOffset) {
 		if (nodeOffset == null) {
 			return null;
 		}
@@ -1408,36 +1408,30 @@ public class HumanSkeleton extends Skeleton implements SkeletonConfigCallback {
 			case RIGHT_HIP:
 				return rightHipNode;
 
-			case UPPER_LEG:
-				if (rightSide) {
-					return rightKneeNode;
-				} else {
-					return leftKneeNode;
-				}
-			case KNEE_TRACKER:
-				if (rightSide) {
-					return trackerRightKneeNode;
-				} else {
-					return trackerLeftKneeNode;
-				}
-			case LOWER_LEG:
-				if (rightSide) {
-					return rightAnkleNode;
-				} else {
-					return leftAnkleNode;
-				}
-			case FOOT:
-				if (rightSide) {
-					return rightFootNode;
-				} else {
-					return leftFootNode;
-				}
-			case FOOT_TRACKER:
-				if (rightSide) {
-					return trackerRightFootNode;
-				} else {
-					return trackerLeftFootNode;
-				}
+			case LEFT_UPPER_LEG:
+				return leftKneeNode;
+			case RIGHT_UPPER_LEG:
+				return rightKneeNode;
+
+			case RIGHT_KNEE_TRACKER:
+				return trackerRightKneeNode;
+			case LEFT_KNEE_TRACKER:
+				return trackerLeftKneeNode;
+
+			case LEFT_LOWER_LEG:
+				return leftAnkleNode;
+			case RIGHT_LOWER_LEG:
+				return rightAnkleNode;
+
+			case LEFT_FOOT:
+				return leftFootNode;
+			case RIGHT_FOOT:
+				return rightFootNode;
+
+			case LEFT_FOOT_TRACKER:
+				return trackerLeftFootNode;
+			case RIGHT_FOOT_TRACKER:
+				return trackerRightFootNode;
 		}
 
 		return null;
