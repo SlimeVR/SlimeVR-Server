@@ -73,10 +73,20 @@ public class LegTweakBuffer {
 	private float rightFloorLevel;
 
 	// hyperparameters (skating correction)
-	private static final float SKATING_CUTOFF = 0.25f;
-	private static final float SKATING_VELOCITY_CUTOFF = 0.04f;
-	private static final float SKATING_ACCELERATION_CUTOFF = 0.04f;
+	public static final float SKATING_CUTOFF = 0.25f;
+	private static final float SKATING_VELOCITY_CUTOFF = 0.02f;
+	private static final float SKATING_ACCELERATION_CUTOFF = 0.02f;
 	private static final float SKATING_ROTATIONAL_VELOCITY_CUTOFF = 0.01f;
+	private static final float SKATING_LOCK_ENGAGE_PERCENT = 0.5f;
+
+	private static final float SKATING_CUTOFF_ENGAGE = SKATING_CUTOFF
+		* SKATING_LOCK_ENGAGE_PERCENT;
+	private static final float SKATING_VELOCITY_CUTOFF_ENGAGE = SKATING_VELOCITY_CUTOFF
+		* SKATING_LOCK_ENGAGE_PERCENT;
+	private static final float SKATING_ACCELERATION_CUTOFF_ENGAGE = SKATING_ACCELERATION_CUTOFF
+		* SKATING_LOCK_ENGAGE_PERCENT;
+	private static final float SKATING_ROTATIONAL_VELOCITY_CUTOFF_ENGAGE = SKATING_ROTATIONAL_VELOCITY_CUTOFF
+		* SKATING_LOCK_ENGAGE_PERCENT;
 
 	// getters and setters
 	public Vector3f getLeftFootPosition() {
@@ -263,7 +273,7 @@ public class LegTweakBuffer {
 	// compute the state of the legs
 	private void computeState() {
 		// based on the last state of the legs compute their state for this
-		// frame
+		// individual frame
 		leftLegState = checkStateLeft();
 
 		rightLegState = checkStateRight();
@@ -271,30 +281,57 @@ public class LegTweakBuffer {
 
 	// check if a locked foot should stay locked or be released
 	private int checkStateLeft() {
-		if (
-			parent.getLeftFootHorizantalDifference() > SKATING_CUTOFF
-				|| leftFootVelocityMagnitude > SKATING_VELOCITY_CUTOFF
-				|| leftFootAccelerationMagnitude > SKATING_ACCELERATION_CUTOFF
-				|| leftFootAngleDiff > SKATING_ROTATIONAL_VELOCITY_CUTOFF
-				|| leftFootPosition.y > leftFloorLevel + 0.1f
-		) {
-			return UNLOCKED;
+		if (parent.leftLegState == UNLOCKED) {
+			if (
+				parent.getLeftFootHorizantalDifference() > SKATING_CUTOFF_ENGAGE
+					|| leftFootVelocityMagnitude > SKATING_VELOCITY_CUTOFF_ENGAGE
+					|| leftFootAccelerationMagnitude > SKATING_ACCELERATION_CUTOFF_ENGAGE
+					|| leftFootAngleDiff > SKATING_ROTATIONAL_VELOCITY_CUTOFF_ENGAGE
+					|| leftFootPosition.y > leftFloorLevel + 0.1f
+			) {
+				return UNLOCKED;
+			}
+			return LOCKED;
+
+		} else {
+			if (
+				parent.getLeftFootHorizantalDifference() > SKATING_CUTOFF
+					|| leftFootVelocityMagnitude > SKATING_VELOCITY_CUTOFF
+					|| leftFootAccelerationMagnitude > SKATING_ACCELERATION_CUTOFF
+					|| leftFootAngleDiff > SKATING_ROTATIONAL_VELOCITY_CUTOFF
+					|| leftFootPosition.y > leftFloorLevel + 0.1f
+			) {
+				return UNLOCKED;
+			}
+			return LOCKED;
 		}
-		return LOCKED;
 	}
 
 	// check if a locked foot should stay locked or be released
 	private int checkStateRight() {
-		if (
-			parent.getRightFootHorizantalDifference() > SKATING_CUTOFF
-				|| rightFootVelocityMagnitude > SKATING_VELOCITY_CUTOFF
-				|| rightFootAccelerationMagnitude > SKATING_ACCELERATION_CUTOFF
-				|| rightFootAngleDiff > SKATING_ROTATIONAL_VELOCITY_CUTOFF
-				|| rightFootPosition.y > rightFloorLevel + 0.1f
-		) {
-			return UNLOCKED;
+		if (parent.rightLegState == UNLOCKED) {
+			if (
+				parent.getRightFootHorizantalDifference() > SKATING_CUTOFF_ENGAGE
+					|| rightFootVelocityMagnitude > SKATING_VELOCITY_CUTOFF_ENGAGE
+					|| rightFootAccelerationMagnitude > SKATING_ACCELERATION_CUTOFF_ENGAGE
+					|| rightFootAngleDiff > SKATING_ROTATIONAL_VELOCITY_CUTOFF_ENGAGE
+					|| rightFootPosition.y > rightFloorLevel + 0.1f
+			) {
+				return UNLOCKED;
+			}
+			return LOCKED;
+		} else {
+			if (
+				parent.getRightFootHorizantalDifference() > SKATING_CUTOFF
+					|| rightFootVelocityMagnitude > SKATING_VELOCITY_CUTOFF
+					|| rightFootAccelerationMagnitude > SKATING_ACCELERATION_CUTOFF
+					|| rightFootAngleDiff > SKATING_ROTATIONAL_VELOCITY_CUTOFF
+					|| rightFootPosition.y > rightFloorLevel + 0.1f
+			) {
+				return UNLOCKED;
+			}
+			return LOCKED;
 		}
-		return LOCKED;
 	}
 
 	// get the difference in feet position between the kinematic and corrected
