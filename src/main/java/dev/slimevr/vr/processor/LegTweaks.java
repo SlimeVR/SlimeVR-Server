@@ -6,7 +6,7 @@ import dev.slimevr.vr.processor.skeleton.LegTweakBuffer;
 import com.jme3.math.FastMath;
 
 
-public class ClipCorrection {
+public class LegTweaks {
 	// class vars
 	private float floorLevel;
 	private float waistToFloorDist;
@@ -38,13 +38,20 @@ public class ClipCorrection {
 	private static final float MAX_DISENGAGMENT_OFFSET = 0.25f;
 	private static final float DYNAMIC_DISPLACEMENT_CUTOFF = 0.7f;
 
-	private float correctionWeight = 0.15f;
+	// hyperparameters (skating correction)
+	private static final float STATIC_CORRECTION = 0.001f;
+	private static final float MIN_ACCEPTABLE_ERROR = 0.1f;
+	private static final float MAX_ACCEPTABLE_ERROR = LegTweakBuffer.SKATING_CUTOFF;
+
+	private static final float CORRECTION_WEIGHT_MIN = 0.3f;
+	private static final float CORRECTION_WEIGHT_MAX = 0.7f;
+	private float correctionWeight = CORRECTION_WEIGHT_MIN;
 
 
 	// buffer for holding previus frames of data
 	private LegTweakBuffer legBufferHead = new LegTweakBuffer();
 
-	public ClipCorrection(float floorLevel) {
+	public LegTweaks(float floorLevel) {
 		this.floorLevel = floorLevel;
 	}
 
@@ -149,12 +156,6 @@ public class ClipCorrection {
 		// causing skipping
 		if (!isStanding()) {
 			active = false;
-
-			// if we are winding down and both legs are not active just return
-			// false
-			if (!rightLegActive && !leftLegActive) {
-				return false;
-			}
 		}
 		// if the user has the majority of their weight on their feet
 		// start checking for a good time to enable the floor clip without
@@ -188,11 +189,17 @@ public class ClipCorrection {
 
 		// determine if either leg is in a position to activate or deactivate
 		// (use the buffer to get the positions before corrections)
-
-		float leftFootDif = legBufferHead.getLeftFootPosition().subtract(leftFootPosition).length();
+		float leftFootDif = legBufferHead
+			.getLeftFootPosition()
+			.subtract(leftFootPosition)
+			.setX(0)
+			.setZ(0)
+			.length();
 		float rightFootDif = legBufferHead
 			.getRightFootPosition()
 			.subtract(rightFootPosition)
+			.setX(0)
+			.setZ(0)
 			.length();
 		if (!active && leftFootDif < 0.005f) {
 			leftLegActive = false;
@@ -205,14 +212,14 @@ public class ClipCorrection {
 			rightLegActive = true;
 		}
 
-		// restore the positions of inactive legs
+		// restore the y positions of inactive legs
 		if (!leftLegActive) {
-			leftFootPosition = legBufferHead.getLeftFootPosition();
-			leftKneePosition = legBufferHead.getLeftKneePosition();
+			leftFootPosition.y = legBufferHead.getLeftFootPosition().y;
+			leftKneePosition.y = legBufferHead.getLeftKneePosition().y;
 		}
 		if (!rightLegActive) {
-			rightFootPosition = legBufferHead.getRightFootPosition();
-			rightKneePosition = legBufferHead.getRightKneePosition();
+			rightFootPosition.y = legBufferHead.getRightFootPosition().y;
+			rightKneePosition.y = legBufferHead.getRightKneePosition().y;
 		}
 
 		// populate the corrected data into the current frame
@@ -352,6 +359,10 @@ public class ClipCorrection {
 				// if velocity and dif are pointing in the same direction,
 				// add a small amount of velocity to the dif
 				// else subtract a small amount of velocity from the dif
+
+				// calculate the correction weight
+
+
 				if (velocity.x * leftFootDif.x > 0) {
 					leftFootPosition.x += velocity.x * correctionWeight;
 				} else {

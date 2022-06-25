@@ -7,10 +7,11 @@ import dev.slimevr.VRServer;
 import dev.slimevr.util.ann.VRServerThread;
 import dev.slimevr.vr.processor.ComputedHumanPoseTracker;
 import dev.slimevr.vr.processor.ComputedHumanPoseTrackerPosition;
+import dev.slimevr.vr.processor.LegTweaks;
 import dev.slimevr.vr.processor.TransformNode;
 import dev.slimevr.vr.trackers.*;
 import io.eiren.util.collections.FastList;
-import dev.slimevr.vr.processor.ClipCorrection;
+import dev.slimevr.vr.processor.LegTweaks;
 
 import java.util.List;
 import java.util.Map;
@@ -133,7 +134,7 @@ public class HumanSkeleton extends Skeleton implements SkeletonConfigCallback {
 	// #endregion
 
 	// #region Clip Correction
-	protected ClipCorrection clipCorrector = new ClipCorrection(0.0f);
+	protected LegTweaks clipCorrector = new LegTweaks(0.0f);
 	// #endregion
 
 	// #region Constructors
