@@ -13,7 +13,9 @@ public class LegTweaks {
 	private float currentDisengagementOffset = 0.0f;
 	// state variables
 	private boolean initialized = true;
-	private boolean enabled = true;
+	private boolean enabled = true; // master switch
+	private boolean floorclipEnabled = true;
+	private boolean skatingCorrectionEnabled = true;
 	private boolean active = false;
 	private boolean rightLegActive = false;
 	private boolean leftLegActive = false;
@@ -39,13 +41,13 @@ public class LegTweaks {
 	private static final float DYNAMIC_DISPLACEMENT_CUTOFF = 0.7f;
 
 	// hyperparameters (skating correction)
-	private static final float STATIC_CORRECTION = 0.001f;
-	private static final float MIN_ACCEPTABLE_ERROR = 0.1f;
+	private static final float STATIC_CORRECTION = 0.005f;
+	private static final float MIN_ACCEPTABLE_ERROR = 0.075f;
 	private static final float MAX_ACCEPTABLE_ERROR = LegTweakBuffer.SKATING_CUTOFF;
-
-	private static final float CORRECTION_WEIGHT_MIN = 0.3f;
+	private static final float CORRECTION_WEIGHT_MIN = 0.2f;
 	private static final float CORRECTION_WEIGHT_MAX = 0.7f;
-	private float correctionWeight = CORRECTION_WEIGHT_MIN;
+	private static final float GROUND_DAMPENING = 0.5f;
+	private static final float GROUND_DAMPENING_CUTOFF = 0.3f;
 
 
 	// buffer for holding previus frames of data
@@ -130,6 +132,14 @@ public class LegTweaks {
 		this.enabled = enabled;
 	}
 
+	public void setFloorclipEnabled(boolean floorclipEnabled) {
+		this.floorclipEnabled = floorclipEnabled;
+	}
+
+	public void setSkatingCorrectionEnabled(boolean skatingCorrectionEnabled) {
+		this.skatingCorrectionEnabled = skatingCorrectionEnabled;
+	}
+
 	public boolean getEnabled() {
 		return this.enabled;
 	}
@@ -181,11 +191,17 @@ public class LegTweaks {
 
 
 		// now correct the position of the legs from the last frames data
-		boolean corrected2 = correctSkating();
+		boolean corrected2 = false;
+		boolean corrected1 = false;
 
-		// once done run the clip correction (also corrects the position of the
-		// knees)
-		boolean corrected1 = correctClipping();
+		// once done run the clip correction
+		if (floorclipEnabled) {
+			corrected1 = correctClipping();
+		}
+		if (skatingCorrectionEnabled) {
+			corrected2 = correctSkating();
+		}
+
 
 		// determine if either leg is in a position to activate or deactivate
 		// (use the buffer to get the positions before corrections)
@@ -361,17 +377,20 @@ public class LegTweaks {
 				// else subtract a small amount of velocity from the dif
 
 				// calculate the correction weight
-
+				float weight = calculateCorrectionWeight(
+					leftFootPosition,
+					legBufferHead.getParent().getLeftFootPositionCorrected()
+				);
 
 				if (velocity.x * leftFootDif.x > 0) {
-					leftFootPosition.x += velocity.x * correctionWeight;
+					leftFootPosition.x += velocity.x * weight;
 				} else {
-					leftFootPosition.x -= velocity.x * correctionWeight;
+					leftFootPosition.x -= velocity.x * weight;
 				}
 				if (velocity.z * leftFootDif.z > 0) {
-					leftFootPosition.z += velocity.z * correctionWeight;
+					leftFootPosition.z += velocity.z * weight;
 				} else {
-					leftFootPosition.z -= velocity.z * correctionWeight;
+					leftFootPosition.z -= velocity.z * weight;
 				}
 			}
 		}
@@ -393,15 +412,22 @@ public class LegTweaks {
 				// if velocity and dif are pointing in the same direction,
 				// add a small amount of velocity to the dif
 				// else subtract a small amount of velocity from the dif
+
+				// calculate the correction weight
+				float weight = calculateCorrectionWeight(
+					rightFootPosition,
+					legBufferHead.getParent().getRightFootPositionCorrected()
+				);
+
 				if (velocity.x * rightFootDif.x > 0) {
-					rightFootPosition.x += velocity.x * correctionWeight;
+					rightFootPosition.x += velocity.x * weight;
 				} else {
-					rightFootPosition.x -= velocity.x * correctionWeight;
+					rightFootPosition.x -= velocity.x * weight;
 				}
 				if (velocity.z * rightFootDif.z > 0) {
-					rightFootPosition.z += velocity.z * correctionWeight;
+					rightFootPosition.z += velocity.z * weight;
 				} else {
-					rightFootPosition.z -= velocity.z * correctionWeight;
+					rightFootPosition.z -= velocity.z * weight;
 				}
 			}
 		}
@@ -451,6 +477,20 @@ public class LegTweaks {
 			return DYNAMIC_DISPLACEMENT_CUTOFF;
 		}
 		return offset;
+	}
+
+	// calculate the weight of foot correction
+	private float calculateCorrectionWeight(Vector3f foot, Vector3f footCorrected) {
+		Vector3f footDif = foot.subtract(footCorrected).setY(0);
+		if (footDif.length() < MIN_ACCEPTABLE_ERROR) {
+			return CORRECTION_WEIGHT_MIN;
+		} else if (footDif.length() > MAX_ACCEPTABLE_ERROR) {
+			return CORRECTION_WEIGHT_MAX;
+		}
+		return CORRECTION_WEIGHT_MIN
+			+ (footDif.length() - MIN_ACCEPTABLE_ERROR)
+				/ (MAX_ACCEPTABLE_ERROR - MIN_ACCEPTABLE_ERROR)
+				* (CORRECTION_WEIGHT_MAX - CORRECTION_WEIGHT_MIN);
 	}
 
 	// get the unit vector of the given rotation
