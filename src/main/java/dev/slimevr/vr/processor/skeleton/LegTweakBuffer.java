@@ -67,6 +67,7 @@ public class LegTweakBuffer {
 	private float rightFootAccelerationMagnitude = 0;
 
 	// other data
+	private float timeOfFrame = System.nanoTime();
 	private LegTweakBuffer parent = null; // frame before this one
 	private int frameNumber = 0; // higher number is older frame
 	private float leftFloorLevel;
@@ -74,10 +75,10 @@ public class LegTweakBuffer {
 
 	// hyperparameters (skating correction)
 	public static final float SKATING_CUTOFF = 0.25f;
-	private static final float SKATING_VELOCITY_CUTOFF = 0.02f;
-	private static final float SKATING_ACCELERATION_CUTOFF = 0.02f;
+	private static final float SKATING_VELOCITY_CUTOFF = 0.015f;
+	private static final float SKATING_ACCELERATION_CUTOFF = 0.015f;
 	private static final float SKATING_ROTATIONAL_VELOCITY_CUTOFF = 0.01f;
-	private static final float SKATING_LOCK_ENGAGE_PERCENT = 0.5f;
+	private static final float SKATING_LOCK_ENGAGE_PERCENT = 0.6f;
 
 	private static final float SKATING_CUTOFF_ENGAGE = SKATING_CUTOFF
 		* SKATING_LOCK_ENGAGE_PERCENT;
