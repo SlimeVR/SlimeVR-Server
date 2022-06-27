@@ -8,9 +8,12 @@ import java.util.concurrent.locks.ReentrantLock;
 import org.apache.commons.lang3.tuple.Pair;
 
 import dev.slimevr.VRServer;
+import dev.slimevr.autobone.AutoBone.AutoBoneResults;
+import dev.slimevr.autobone.errors.AutoBoneException;
 import dev.slimevr.poserecorder.PoseFrameTracker;
 import dev.slimevr.poserecorder.PoseFrames;
 import dev.slimevr.poserecorder.PoseRecorder;
+import dev.slimevr.vr.processor.skeleton.SkeletonConfig;
 import dev.slimevr.vr.processor.skeleton.SkeletonConfigValue;
 import dev.slimevr.vr.trackers.TrackerPosition;
 import io.eiren.util.StringUtils;
@@ -84,7 +87,7 @@ public class AutoBoneHandler {
 		return autoBone.getLengthsString();
 	}
 
-	private float processFrames(PoseFrames frames) {
+	private AutoBoneResults processFrames(PoseFrames frames) throws AutoBoneException {
 		return autoBone
 			.processFrames(frames, autoBone.calcInitError, autoBone.targetHeight, (epoch) -> {
 				listeners.forEach(listener -> {
@@ -300,6 +303,7 @@ public class AutoBoneHandler {
 			announceProcessStatus(AutoBoneProcessType.PROCESS, "Processing recording(s)...");
 			LogManager.info("[AutoBone] Processing frames...");
 			FastList<Float> heightPercentError = new FastList<Float>(frameRecordings.size());
+			SkeletonConfig skeletonConfigBuffer = new SkeletonConfig(false);
 			for (Pair<String, PoseFrames> recording : frameRecordings) {
 				LogManager
 					.info("[AutoBone] Processing frames from \"" + recording.getKey() + "\"...");
@@ -332,35 +336,26 @@ public class AutoBoneHandler {
 							+ "]"
 					);
 
-				heightPercentError.add(processFrames(recording.getValue()));
+				AutoBoneResults autoBoneResults = processFrames(recording.getValue());
+				heightPercentError.add(autoBoneResults.getHeightDifference());
 				LogManager.info("[AutoBone] Done processing!");
 
 				// #region Stats/Values
-				Float neckLength = autoBone.legacyConfigs.get(SkeletonConfigValue.NECK);
-				Float chestDistance = autoBone.legacyConfigs.get(SkeletonConfigValue.CHEST);
-				Float torsoLength = autoBone.legacyConfigs.get(SkeletonConfigValue.TORSO);
-				Float hipWidth = autoBone.legacyConfigs.get(SkeletonConfigValue.HIPS_WIDTH);
-				Float legsLength = autoBone.legacyConfigs.get(SkeletonConfigValue.LEGS_LENGTH);
-				Float kneeHeight = autoBone.legacyConfigs.get(SkeletonConfigValue.KNEE_HEIGHT);
+				skeletonConfigBuffer.setConfigs(autoBoneResults.configValues, null);
 
-				float neckTorso = neckLength != null && torsoLength != null
-					? neckLength / torsoLength
-					: 0f;
-				float chestTorso = chestDistance != null && torsoLength != null
-					? chestDistance / torsoLength
-					: 0f;
-				float torsoWaist = hipWidth != null && torsoLength != null
-					? hipWidth / torsoLength
-					: 0f;
-				float legTorso = legsLength != null && torsoLength != null
-					? legsLength / torsoLength
-					: 0f;
-				float legBody = legsLength != null && torsoLength != null && neckLength != null
-					? legsLength / (torsoLength + neckLength)
-					: 0f;
-				float kneeLeg = kneeHeight != null && legsLength != null
-					? kneeHeight / legsLength
-					: 0f;
+				float neckLength = skeletonConfigBuffer.getConfig(SkeletonConfigValue.NECK);
+				float chestDistance = skeletonConfigBuffer.getConfig(SkeletonConfigValue.CHEST);
+				float torsoLength = skeletonConfigBuffer.getConfig(SkeletonConfigValue.TORSO);
+				float hipWidth = skeletonConfigBuffer.getConfig(SkeletonConfigValue.HIPS_WIDTH);
+				float legsLength = skeletonConfigBuffer.getConfig(SkeletonConfigValue.LEGS_LENGTH);
+				float kneeHeight = skeletonConfigBuffer.getConfig(SkeletonConfigValue.KNEE_HEIGHT);
+
+				float neckTorso = neckLength / torsoLength;
+				float chestTorso = chestDistance / torsoLength;
+				float torsoWaist = hipWidth / torsoLength;
+				float legTorso = legsLength / torsoLength;
+				float legBody = legsLength / (torsoLength + neckLength);
+				float kneeLeg = kneeHeight / legsLength;
 
 				LogManager
 					.info(

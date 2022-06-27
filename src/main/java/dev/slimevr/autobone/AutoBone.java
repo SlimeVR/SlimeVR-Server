@@ -3,6 +3,14 @@ package dev.slimevr.autobone;
 import com.jme3.math.FastMath;
 import com.jme3.math.Vector3f;
 import dev.slimevr.VRServer;
+import dev.slimevr.autobone.errors.AutoBoneException;
+import dev.slimevr.autobone.errors.BodyProportionError;
+import dev.slimevr.autobone.errors.FootHeightOffsetError;
+import dev.slimevr.autobone.errors.HeightError;
+import dev.slimevr.autobone.errors.OffsetSlideError;
+import dev.slimevr.autobone.errors.PositionError;
+import dev.slimevr.autobone.errors.PositionOffsetError;
+import dev.slimevr.autobone.errors.SlideError;
 import dev.slimevr.poserecorder.*;
 import dev.slimevr.vr.processor.HumanPoseProcessor;
 import dev.slimevr.vr.processor.TransformNode;
@@ -88,22 +96,33 @@ public class AutoBone {
 	public int numEpochs = 100;
 	public float initialAdjustRate = 10f;
 	public float adjustRateMultiplier = 0.995f;
+
+	// #region Error functions
+	public SlideError slideError = new SlideError();
 	public float slideErrorFactor = 0.0f;
+
+	public OffsetSlideError offsetSlideError = new OffsetSlideError();
 	public float offsetSlideErrorFactor = 1.0f;
-	public float offsetErrorFactor = 0.0f;
-	public float proportionErrorFactor = 0.2f;
+
+	public FootHeightOffsetError footHeightOffsetError = new FootHeightOffsetError();
+	public float footHeightOffsetErrorFactor = 0.0f;
+
+	public BodyProportionError bodyProportionError = new BodyProportionError();
+	public float bodyProportionErrorFactor = 0.2f;
+
+	public HeightError heightError = new HeightError();
 	public float heightErrorFactor = 0.0f;
+
+	public PositionError positionError = new PositionError();
+	public float positionErrorFactor = 0.0f;
+
+	public PositionOffsetError positionOffsetError = new PositionOffsetError();
+	public float positionOffsetErrorFactor = 0.0f;
+	// #endregion
 
 	public boolean randomizeFrameOrder = true;
 	public boolean scaleEachStep = true;
 
-	// TODO Needs much more work, probably going to rethink how the errors work
-	// to
-	// avoid this barely functional workaround @ButterscotchV
-	// For scaling distances, since smaller sizes will cause smaller distances
-	// private float totalLengthBase = 2f;
-	public float positionErrorFactor = 0.0f;
-	public float positionOffsetErrorFactor = 0.0f;
 	public boolean calcInitError = false;
 	public float targetHeight = -1;
 
@@ -144,10 +163,10 @@ public class AutoBone {
 			.getFloat("autobone.slideErrorFactor", this.slideErrorFactor);
 		this.offsetSlideErrorFactor = server.config
 			.getFloat("autobone.offsetSlideErrorFactor", this.offsetSlideErrorFactor);
-		this.offsetErrorFactor = server.config
-			.getFloat("autobone.offsetErrorFactor", this.offsetErrorFactor);
-		this.proportionErrorFactor = server.config
-			.getFloat("autobone.proportionErrorFactor", this.proportionErrorFactor);
+		this.footHeightOffsetErrorFactor = server.config
+			.getFloat("autobone.offsetErrorFactor", this.footHeightOffsetErrorFactor);
+		this.bodyProportionErrorFactor = server.config
+			.getFloat("autobone.proportionErrorFactor", this.bodyProportionErrorFactor);
 		this.heightErrorFactor = server.config
 			.getFloat("autobone.heightErrorFactor", this.heightErrorFactor);
 		this.positionErrorFactor = server.config
@@ -424,26 +443,27 @@ public class AutoBone {
 		return length;
 	}
 
-	public void processFrames(PoseFrames frames, Consumer<Epoch> epochCallback) {
-		processFrames(frames, -1f, epochCallback);
+	public AutoBoneResults processFrames(PoseFrames frames, Consumer<Epoch> epochCallback)
+		throws AutoBoneException {
+		return processFrames(frames, -1f, epochCallback);
 	}
 
-	public void processFrames(
+	public AutoBoneResults processFrames(
 		PoseFrames frames,
 		float targetHeight,
 		Consumer<Epoch> epochCallback
-	) {
-		processFrames(frames, true, targetHeight, epochCallback);
+	) throws AutoBoneException {
+		return processFrames(frames, true, targetHeight, epochCallback);
 	}
 
 	private Random rand = new Random();
 
-	public float processFrames(
+	public AutoBoneResults processFrames(
 		PoseFrames frames,
 		boolean calcInitError,
 		float targetHeight,
 		Consumer<Epoch> epochCallback
-	) {
+	) throws AutoBoneException {
 		final int frameCount = frames.getMaxFrameCount();
 
 		List<PoseFrameTracker> trackers = frames.getTrackers();
@@ -461,6 +481,14 @@ public class AutoBone {
 
 		EnumMap<BoneType, Float> intermediateOffsets = new EnumMap<BoneType, Float>(
 			offsets
+		);
+
+		AutoBoneTrainingStep trainingStep = new AutoBoneTrainingStep(
+			targetHeight,
+			skeleton1,
+			skeleton2,
+			frames,
+			intermediateOffsets
 		);
 
 		// If target height isn't specified, auto-detect
@@ -544,28 +572,26 @@ public class AutoBone {
 					skeleton2.skeletonConfig.setConfigs(skeleton1.skeletonConfig);
 
 					if (randomizeFrameOrder) {
-						skeleton1.setCursor(randomFrameIndices[frameCursor]);
-						skeleton2.setCursor(randomFrameIndices[frameCursor2]);
+						trainingStep
+							.setCursors(
+								randomFrameIndices[frameCursor],
+								randomFrameIndices[frameCursor2]
+							);
 					} else {
-						skeleton1.setCursor(frameCursor);
-						skeleton2.setCursor(frameCursor2);
+						trainingStep.setCursors(frameCursor, frameCursor2);
 					}
+
+					skeleton1.setCursor(trainingStep.getCursor1());
+					skeleton2.setCursor(trainingStep.getCursor2());
 
 					skeleton1.updatePose();
 					skeleton2.updatePose();
 
 					float totalLength = getLengthSum(offsets);
 					float curHeight = sumSelectConfigs(heightOffsets, offsets);
-					// float scaleLength = sumSelectConfigs(lengthConfigs,
-					// configs, staticConfigs);
-					float errorDeriv = getErrorDeriv(
-						frames,
-						frameCursor,
-						frameCursor2,
-						skeleton1,
-						skeleton2,
-						targetHeight - curHeight
-					);
+					trainingStep.setCurrentHeight(curHeight);
+
+					float errorDeriv = getErrorDeriv(trainingStep);
 					float error = errorFunc(errorDeriv);
 
 					// In case of fire
@@ -659,17 +685,9 @@ public class AutoBone {
 						skeleton2.updatePose();
 
 						float newHeight = isHeightVar ? curHeight + curAdjustVal : curHeight;
-						// float newScaleLength = isLengthVar ? scaleLength
-						// + curAdjustVal :
-						// scaleLength;
-						float newErrorDeriv = getErrorDeriv(
-							frames,
-							frameCursor,
-							frameCursor2,
-							skeleton1,
-							skeleton2,
-							targetHeight - newHeight
-						);
+						trainingStep.setCurrentHeight(newHeight);
+
+						float newErrorDeriv = getErrorDeriv(trainingStep);
 
 						if (newErrorDeriv < errorDeriv) {
 							entry.setValue(newLength);
@@ -725,260 +743,51 @@ public class AutoBone {
 				"[AutoBone] Target height: "
 					+ targetHeight
 					+ " New height: "
-					+
-					finalHeight
+					+ finalHeight
 			);
 
-		return FastMath.abs(finalHeight - targetHeight);
+		return new AutoBoneResults(finalHeight, targetHeight, legacyConfigs);
 	}
 
-	// The change in position of the ankle over time
-	protected float getSlideErrorDeriv(PoseFrameSkeleton skeleton1, PoseFrameSkeleton skeleton2) {
-		float slideLeft = skeleton1.getComputedTracker(TrackerRole.LEFT_FOOT).position
-			.distance(skeleton2.getComputedTracker(TrackerRole.LEFT_FOOT).position);
-		float slideRight = skeleton1.getComputedTracker(TrackerRole.RIGHT_FOOT).position
-			.distance(skeleton2.getComputedTracker(TrackerRole.RIGHT_FOOT).position);
-
-		// Divide by 4 to halve and average, it's halved because you want to
-		// approach a
-		// midpoint, not the other point
-		return (slideLeft + slideRight) / 4f;
-	}
-
-	// The change in distance between both of the ankles over time
-	protected float getOffsetSlideErrorDeriv(
-		PoseFrameSkeleton skeleton1,
-		PoseFrameSkeleton skeleton2
-	) {
-		Vector3f leftFoot1 = skeleton1.getComputedTracker(TrackerRole.LEFT_FOOT).position;
-		Vector3f rightFoot1 = skeleton1.getComputedTracker(TrackerRole.RIGHT_FOOT).position;
-
-		Vector3f leftFoot2 = skeleton2.getComputedTracker(TrackerRole.LEFT_FOOT).position;
-		Vector3f rightFoot2 = skeleton2.getComputedTracker(TrackerRole.RIGHT_FOOT).position;
-
-		float slideDist1 = leftFoot1.distance(rightFoot1);
-		float slideDist2 = leftFoot2.distance(rightFoot2);
-
-		float slideDist3 = leftFoot1.distance(rightFoot2);
-		float slideDist4 = leftFoot2.distance(rightFoot1);
-
-		float dist1 = FastMath.abs(slideDist1 - slideDist2);
-		float dist2 = FastMath.abs(slideDist3 - slideDist4);
-
-		float dist3 = FastMath.abs(slideDist1 - slideDist3);
-		float dist4 = FastMath.abs(slideDist1 - slideDist4);
-
-		float dist5 = FastMath.abs(slideDist2 - slideDist3);
-		float dist6 = FastMath.abs(slideDist2 - slideDist4);
-
-		// Divide by 12 to halve and average, it's halved because you want to
-		// approach a
-		// midpoint, not the other point
-		return (dist1 + dist2 + dist3 + dist4 + dist5 + dist6) / 12f;
-	}
-
-	// The offset between both feet at one instant and over time
-	protected float getOffsetErrorDeriv(PoseFrameSkeleton skeleton1, PoseFrameSkeleton skeleton2) {
-		float leftFoot1 = skeleton1.getComputedTracker(TrackerRole.LEFT_FOOT).position.getY();
-		float rightFoot1 = skeleton1.getComputedTracker(TrackerRole.RIGHT_FOOT).position.getY();
-
-		float leftFoot2 = skeleton2.getComputedTracker(TrackerRole.LEFT_FOOT).position.getY();
-		float rightFoot2 = skeleton2.getComputedTracker(TrackerRole.RIGHT_FOOT).position.getY();
-
-		float dist1 = FastMath.abs(leftFoot1 - rightFoot1);
-		float dist2 = FastMath.abs(leftFoot2 - rightFoot2);
-
-		float dist3 = FastMath.abs(leftFoot1 - rightFoot2);
-		float dist4 = FastMath.abs(leftFoot2 - rightFoot1);
-
-		float dist5 = FastMath.abs(leftFoot1 - leftFoot2);
-		float dist6 = FastMath.abs(rightFoot1 - rightFoot2);
-
-		// Divide by 12 to halve and average, it's halved because you want to
-		// approach a
-		// midpoint, not the other point
-		return (dist1 + dist2 + dist3 + dist4 + dist5 + dist6) / 12f;
-	}
-
-	// The distance from average human proportions
-	protected float getProportionErrorDeriv(SkeletonConfig skeleton) {
-		float neckLength = skeleton.getConfig(SkeletonConfigValue.NECK);
-		float chestLength = skeleton.getConfig(SkeletonConfigValue.CHEST);
-		float torsoLength = skeleton.getConfig(SkeletonConfigValue.TORSO);
-		float legsLength = skeleton.getConfig(SkeletonConfigValue.LEGS_LENGTH);
-		float kneeHeight = skeleton.getConfig(SkeletonConfigValue.KNEE_HEIGHT);
-
-		float chestTorso = FastMath.abs((chestLength / torsoLength) - chestTorsoRatio);
-		float legBody = FastMath.abs((legsLength / (torsoLength + neckLength)) - legBodyRatio);
-		float kneeLeg = FastMath.abs((kneeHeight / legsLength) - kneeLegRatio);
-
-		if (legBody <= legBodyRatioRange) {
-			legBody = 0f;
-		} else {
-			legBody -= legBodyRatioRange;
-		}
-
-		return (chestTorso + legBody + kneeLeg) / 3f;
-	}
-
-	// The distance of any points to the corresponding absolute position
-	protected float getPositionErrorDeriv(
-		PoseFrames frames,
-		int cursor,
-		PoseFrameSkeleton skeleton
-	) {
-		float offset = 0f;
-		int offsetCount = 0;
-
-		List<PoseFrameTracker> trackers = frames.getTrackers();
-		for (PoseFrameTracker tracker : trackers) {
-			TrackerFrame trackerFrame = tracker.safeGetFrame(cursor);
-			if (
-				trackerFrame == null
-					|| !trackerFrame.hasData(TrackerFrameData.POSITION)
-					|| trackerFrame.designation.trackerRole.isEmpty()
-			) {
-				continue;
-			}
-
-			Vector3f nodePos = skeleton
-				.getComputedTracker(trackerFrame.designation.trackerRole.get()).position;
-			if (nodePos != null) {
-				offset += FastMath.abs(nodePos.distance(trackerFrame.position));
-				offsetCount++;
-			}
-		}
-
-		return offsetCount > 0 ? offset / offsetCount : 0f;
-	}
-
-	// The difference between offset of absolute position and the corresponding
-	// point over time
-	protected float getPositionOffsetErrorDeriv(
-		PoseFrames frames,
-		int cursor1,
-		int cursor2,
-		PoseFrameSkeleton skeleton1,
-		PoseFrameSkeleton skeleton2
-	) {
-		float offset = 0f;
-		int offsetCount = 0;
-
-		List<PoseFrameTracker> trackers = frames.getTrackers();
-		for (PoseFrameTracker tracker : trackers) {
-			TrackerFrame trackerFrame1 = tracker.safeGetFrame(cursor1);
-			if (
-				trackerFrame1 == null
-					|| !trackerFrame1.hasData(TrackerFrameData.POSITION)
-					|| trackerFrame1.designation.trackerRole.isEmpty()
-			) {
-				continue;
-			}
-
-			TrackerFrame trackerFrame2 = tracker.safeGetFrame(cursor2);
-			if (
-				trackerFrame2 == null
-					|| !trackerFrame2.hasData(TrackerFrameData.POSITION)
-					|| trackerFrame2.designation.trackerRole.isEmpty()
-			) {
-				continue;
-			}
-
-			Vector3f nodePos1 = skeleton1
-				.getComputedTracker(trackerFrame1.designation.trackerRole.get()).position;
-			if (nodePos1 == null) {
-				continue;
-			}
-
-			Vector3f nodePos2 = skeleton2
-				.getComputedTracker(trackerFrame2.designation.trackerRole.get()).position;
-			if (nodePos2 == null) {
-				continue;
-			}
-
-			float dist1 = FastMath.abs(nodePos1.distance(trackerFrame1.position));
-			float dist2 = FastMath.abs(nodePos2.distance(trackerFrame2.position));
-
-			offset += FastMath.abs(dist2 - dist1);
-			offsetCount++;
-		}
-
-		return offsetCount > 0 ? offset / offsetCount : 0f;
-	}
-
-	protected float getErrorDeriv(
-		PoseFrames frames,
-		int cursor1,
-		int cursor2,
-		PoseFrameSkeleton skeleton1,
-		PoseFrameSkeleton skeleton2,
-		float heightChange
-	) {
+	protected float getErrorDeriv(AutoBoneTrainingStep trainingStep) throws AutoBoneException {
 		float totalError = 0f;
 		float sumWeight = 0f;
 
 		if (slideErrorFactor > 0f) {
-			// This is the main error function, this calculates the distance
-			// between the
-			// foot positions on both frames
-			totalError += getSlideErrorDeriv(skeleton1, skeleton2) * slideErrorFactor;
+			totalError += slideError.getStepError(trainingStep) * slideErrorFactor;
 			sumWeight += slideErrorFactor;
 		}
 
 		if (offsetSlideErrorFactor > 0f) {
-			// This error function compares the distance between the feet on
-			// each frame and
-			// returns the offset between them
-			totalError += getOffsetSlideErrorDeriv(skeleton1, skeleton2)
-				* offsetSlideErrorFactor;
+			totalError += offsetSlideError.getStepError(trainingStep) * offsetSlideErrorFactor;
 			sumWeight += offsetSlideErrorFactor;
 		}
 
-		if (offsetErrorFactor > 0f) {
-			// This error function compares the height of each foot in each
-			// frame
-			totalError += getOffsetErrorDeriv(skeleton1, skeleton2) * offsetErrorFactor;
-			sumWeight += offsetErrorFactor;
+		if (footHeightOffsetErrorFactor > 0f) {
+			totalError += footHeightOffsetError.getStepError(trainingStep)
+				* footHeightOffsetErrorFactor;
+			sumWeight += footHeightOffsetErrorFactor;
 		}
 
-		if (proportionErrorFactor > 0f) {
-			// This error function compares the current values to general
-			// expected
-			// proportions to keep measurements in line
-			// Either skeleton will work fine, skeleton1 is used as a default
-			totalError += getProportionErrorDeriv(skeleton1.skeletonConfig) * proportionErrorFactor;
-			sumWeight += proportionErrorFactor;
+		if (bodyProportionErrorFactor > 0f) {
+			totalError += bodyProportionError.getStepError(trainingStep)
+				* bodyProportionErrorFactor;
+			sumWeight += bodyProportionErrorFactor;
 		}
 
 		if (heightErrorFactor > 0f) {
-			// This error function compares the height change to the actual
-			// measured height
-			// of the headset
-			totalError += FastMath.abs(heightChange) * heightErrorFactor;
+			totalError += heightError.getStepError(trainingStep) * heightErrorFactor;
 			sumWeight += heightErrorFactor;
 		}
 
 		if (positionErrorFactor > 0f) {
-			// This error function compares the position of an assigned tracker
-			// with the
-			// position on the skeleton
-			totalError += (getPositionErrorDeriv(frames, cursor1, skeleton1)
-				+ getPositionErrorDeriv(frames, cursor2, skeleton2) / 2f)
-				* positionErrorFactor;
+			totalError += positionError.getStepError(trainingStep) * positionErrorFactor;
 			sumWeight += positionErrorFactor;
 		}
 
 		if (positionOffsetErrorFactor > 0f) {
-			// This error function compares the offset of the position of an
-			// assigned
-			// tracker with the position on the skeleton
-			totalError += getPositionOffsetErrorDeriv(
-				frames,
-				cursor1,
-				cursor2,
-				skeleton1,
-				skeleton2
-			) * positionOffsetErrorFactor;
+			totalError += positionOffsetError.getStepError(trainingStep)
+				* positionOffsetErrorFactor;
 			sumWeight += positionOffsetErrorFactor;
 		}
 
@@ -1088,6 +897,27 @@ public class AutoBone {
 		@Override
 		public String toString() {
 			return "Epoch: " + epoch + ", Epoch Error: " + epochError;
+		}
+	}
+
+	public class AutoBoneResults {
+
+		public final float finalHeight;
+		public final float targetHeight;
+		public final EnumMap<SkeletonConfigValue, Float> configValues;
+
+		public AutoBoneResults(
+			float finalHeight,
+			float targetHeight,
+			EnumMap<SkeletonConfigValue, Float> configValues
+		) {
+			this.finalHeight = finalHeight;
+			this.targetHeight = targetHeight;
+			this.configValues = configValues;
+		}
+
+		public float getHeightDifference() {
+			return FastMath.abs(targetHeight - finalHeight);
 		}
 	}
 }
