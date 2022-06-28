@@ -192,4 +192,9 @@ public final class TrackerFrame implements Tracker {
 	public UDPDevice getDevice() {
 		return null;
 	}
+
+	@Override
+	public Tracker get() {
+		return null;
+	}
 }

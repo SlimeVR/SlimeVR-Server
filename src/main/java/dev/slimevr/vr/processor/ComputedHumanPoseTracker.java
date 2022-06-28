@@ -43,4 +43,9 @@ public class ComputedHumanPoseTracker extends ComputedTracker
 	public UDPDevice getDevice() {
 		return null;
 	}
+
+	@Override
+	public Tracker get() {
+		return this;
+	}
 }

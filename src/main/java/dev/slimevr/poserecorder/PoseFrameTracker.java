@@ -261,4 +261,9 @@ public class PoseFrameTracker implements Tracker, Iterable<TrackerFrame> {
 	public UDPDevice getDevice() {
 		return null;
 	}
+
+	@Override
+	public Tracker get() {
+		return this;
+	}
 }

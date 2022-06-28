@@ -1,5 +1,6 @@
 package dev.slimevr;
 
+import dev.slimevr.autobone.AutoBoneHandler;
 import dev.slimevr.bridge.Bridge;
 import dev.slimevr.bridge.VMCBridge;
 import dev.slimevr.platform.windows.WindowsNamedPipeBridge;
@@ -27,7 +28,6 @@ import java.net.UnknownHostException;
 import java.util.*;
 import java.util.concurrent.LinkedBlockingQueue;
 import java.util.function.Consumer;
-import dev.slimevr.autobone.AutoBoneHandler;
 
 
 public class VRServer extends Thread {
@@ -297,11 +297,9 @@ public class VRServer extends Thread {
 
 		IMUTracker imu;
 		for (Tracker t : this.getAllTrackers()) {
-			Tracker realTracker = t;
-			if (t instanceof ReferenceAdjustedTracker)
-				realTracker = ((ReferenceAdjustedTracker<? extends Tracker>) t).getTracker();
-			if (realTracker instanceof IMUTracker) {
-				imu = (IMUTracker) realTracker;
+			Tracker tracker = t.get();
+			if (tracker instanceof IMUTracker) {
+				imu = (IMUTracker) tracker;
 				imu.setFilter(filter.name(), amount, ticks);
 			}
 		}
