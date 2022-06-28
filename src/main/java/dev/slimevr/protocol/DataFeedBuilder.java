@@ -3,9 +3,12 @@ package dev.slimevr.protocol;
 import com.google.flatbuffers.FlatBufferBuilder;
 import com.jme3.math.Quaternion;
 import com.jme3.math.Vector3f;
+
+import dev.slimevr.vr.processor.skeleton.BoneInfo;
 import dev.slimevr.vr.trackers.IMUTracker;
 import dev.slimevr.vr.trackers.Tracker;
 import dev.slimevr.vr.trackers.udp.UDPDevice;
+import solarxr_protocol.data_feed.Bone;
 import solarxr_protocol.data_feed.DataFeedUpdate;
 import solarxr_protocol.data_feed.device_data.DeviceData;
 import solarxr_protocol.data_feed.device_data.DeviceDataMaskT;
@@ -241,5 +244,48 @@ public class DataFeedBuilder {
 		}
 
 		return DataFeedUpdate.createDevicesVector(fbb, devicesDataOffsets);
+	}
+
+	public static int createBonesData(
+		FlatBufferBuilder fbb,
+		boolean shouldSend,
+		List<BoneInfo> boneInfos
+	) {
+		if (!shouldSend) {
+			return 0;
+		}
+
+		var boneOffsets = new int[boneInfos.size()];
+		for (var i = 0; i < boneInfos.size(); ++i) {
+			var bi = boneInfos.get(i);
+
+			var headPosG = bi.tailNode.getParent().worldTransform.getTranslation();
+			var rotG = bi.getGlobalRotation();
+
+			// TODO: figure out why this value is stale, so that we don't need
+			// to recalculate it all the time, since thats not performant.
+			bi.updateLength();
+			var length = bi.length;
+
+			Bone.startBone(fbb);
+
+			var rotGOffset = Quat
+				.createQuat(
+					fbb,
+					rotG.getX(),
+					rotG.getY(),
+					rotG.getZ(),
+					rotG.getW()
+				);
+			Bone.addRotationG(fbb, rotGOffset);
+			var headPosGOffset = Vec3f.createVec3f(fbb, headPosG.x, headPosG.y, headPosG.z);
+			Bone.addHeadPositionG(fbb, headPosGOffset);
+			Bone.addBodyPart(fbb, bi.boneType.bodyPart);
+			Bone.addBoneLength(fbb, length);
+
+			boneOffsets[i] = Bone.endBone(fbb);
+		}
+
+		return DataFeedUpdate.createBonesVector(fbb, boneOffsets);
 	}
 }

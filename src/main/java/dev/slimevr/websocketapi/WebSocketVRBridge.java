@@ -177,21 +177,6 @@ public class WebSocketVRBridge extends WebsocketAPI implements Bridge {
 	}
 
 	@Override
-	public void onError(WebSocket conn, Exception ex) {
-		LogManager
-			.severe(
-				"[WebSocket] Exception on connection "
-					+ (conn != null
-						? conn
-							.getRemoteSocketAddress()
-							.getAddress()
-							.getHostAddress()
-						: null),
-				ex
-			);
-	}
-
-	@Override
 	public void onStart() {
 		LogManager.info("[WebSocket] Web Socket VR Bridge started on port " + getPort());
 		setConnectionLostTimeout(0);

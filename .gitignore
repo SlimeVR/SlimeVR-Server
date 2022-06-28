@@ -14,11 +14,16 @@ build
 
 MagnetoLib.dll
 vrconfig.yml
-*.log
-*.log.lck
 
+# BVH
 BVH Recordings
 Recordings
+
+# Logs
+*.log.*
+*.log.lck
+*.log
+logs/
 
 # Ignore eclipse stuff
 .project
