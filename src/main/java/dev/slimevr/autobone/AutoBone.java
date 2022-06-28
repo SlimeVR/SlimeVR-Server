@@ -3,14 +3,23 @@ package dev.slimevr.autobone;
 import com.jme3.math.FastMath;
 import com.jme3.math.Vector3f;
 import dev.slimevr.VRServer;
+import dev.slimevr.autobone.errors.AutoBoneException;
+import dev.slimevr.autobone.errors.BodyProportionError;
+import dev.slimevr.autobone.errors.FootHeightOffsetError;
+import dev.slimevr.autobone.errors.HeightError;
+import dev.slimevr.autobone.errors.OffsetSlideError;
+import dev.slimevr.autobone.errors.PositionError;
+import dev.slimevr.autobone.errors.PositionOffsetError;
+import dev.slimevr.autobone.errors.SlideError;
 import dev.slimevr.poserecorder.*;
 import dev.slimevr.vr.processor.HumanPoseProcessor;
+import dev.slimevr.vr.processor.TransformNode;
+import dev.slimevr.vr.processor.skeleton.BoneType;
 import dev.slimevr.vr.processor.skeleton.Skeleton;
+import dev.slimevr.vr.processor.skeleton.HumanSkeleton;
 import dev.slimevr.vr.processor.skeleton.SkeletonConfig;
 import dev.slimevr.vr.processor.skeleton.SkeletonConfigValue;
-import dev.slimevr.vr.trackers.TrackerPosition;
 import dev.slimevr.vr.trackers.TrackerRole;
-import dev.slimevr.vr.trackers.TrackerUtils;
 import io.eiren.util.StringUtils;
 import io.eiren.util.collections.FastList;
 import io.eiren.util.logging.LogManager;
@@ -20,8 +29,11 @@ import java.io.File;
 import java.util.EnumMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Random;
 import java.util.Map.Entry;
+import java.util.function.BiConsumer;
 import java.util.function.Consumer;
+import java.util.function.Function;
 
 
 public class AutoBone {
@@ -29,41 +41,88 @@ public class AutoBone {
 	private static final File saveDir = new File("Recordings");
 	private static final File loadDir = new File("LoadRecordings");
 	// This is filled by reloadConfigValues()
-	public final EnumMap<SkeletonConfigValue, Float> configs = new EnumMap<SkeletonConfigValue, Float>(
-		SkeletonConfigValue.class
+	public final EnumMap<BoneType, Float> offsets = new EnumMap<BoneType, Float>(
+		BoneType.class
 	);
-	public final EnumMap<SkeletonConfigValue, Float> staticConfigs = new EnumMap<SkeletonConfigValue, Float>(
-		SkeletonConfigValue.class
-	);
-	public final FastList<SkeletonConfigValue> heightConfigs = new FastList<SkeletonConfigValue>(
-		new SkeletonConfigValue[] { SkeletonConfigValue.NECK, SkeletonConfigValue.TORSO,
-			SkeletonConfigValue.LEGS_LENGTH }
-	);
-	public final FastList<SkeletonConfigValue> lengthConfigs = new FastList<SkeletonConfigValue>(
-		new SkeletonConfigValue[] { SkeletonConfigValue.HEAD, SkeletonConfigValue.NECK,
-			SkeletonConfigValue.TORSO, SkeletonConfigValue.HIPS_WIDTH,
-			SkeletonConfigValue.LEGS_LENGTH }
-	);
-	protected final VRServer server;
-	public int cursorIncrement = 1;
-	public int minDataDistance = 2;
-	public int maxDataDistance = 32;
-	public int numEpochs = 5;
-	public float initialAdjustRate = 2.5f;
-	public float adjustRateDecay = 1.01f;
-	public float slideErrorFactor = 1.0f;
-	public float offsetSlideErrorFactor = 0.0f;
-	public float offsetErrorFactor = 0.0f;
-	public float proportionErrorFactor = 0.2f;
-	public float heightErrorFactor = 0.1f;
 
-	// TODO Needs much more work, probably going to rethink how the errors work
-	// to
-	// avoid this barely functional workaround @ButterscotchV
-	// For scaling distances, since smaller sizes will cause smaller distances
-	// private float totalLengthBase = 2f;
+	public final FastList<BoneType> adjustOffsets = new FastList<BoneType>(
+		new BoneType[] {
+			BoneType.HEAD,
+			BoneType.NECK,
+			BoneType.CHEST,
+			BoneType.WAIST,
+			BoneType.HIP,
+
+			// This one doesn't seem to work very well and is generally going to
+			// be similar between users
+			// BoneType.LEFT_HIP,
+
+			BoneType.LEFT_UPPER_LEG,
+			BoneType.LEFT_LOWER_LEG,
+		}
+	);
+
+	public final FastList<BoneType> heightOffsets = new FastList<BoneType>(
+		new BoneType[] {
+			BoneType.NECK,
+			BoneType.CHEST,
+			BoneType.WAIST,
+			BoneType.HIP,
+
+			BoneType.LEFT_UPPER_LEG,
+			BoneType.RIGHT_UPPER_LEG,
+			BoneType.LEFT_LOWER_LEG,
+			BoneType.RIGHT_LOWER_LEG,
+		}
+	);
+
+	public final FastList<SkeletonConfigValue> legacyHeightConfigs = new FastList<SkeletonConfigValue>(
+		new SkeletonConfigValue[] {
+			SkeletonConfigValue.NECK,
+			SkeletonConfigValue.TORSO,
+
+			SkeletonConfigValue.LEGS_LENGTH,
+		}
+	);
+
+	public final EnumMap<SkeletonConfigValue, Float> legacyConfigs = new EnumMap<SkeletonConfigValue, Float>(
+		SkeletonConfigValue.class
+	);
+
+	protected final VRServer server;
+	public int cursorIncrement = 2;
+	public int minDataDistance = 1;
+	public int maxDataDistance = 1;
+	public int numEpochs = 100;
+	public float initialAdjustRate = 10f;
+	public float adjustRateMultiplier = 0.995f;
+
+	// #region Error functions
+	public SlideError slideError = new SlideError();
+	public float slideErrorFactor = 0.0f;
+
+	public OffsetSlideError offsetSlideError = new OffsetSlideError();
+	public float offsetSlideErrorFactor = 1.0f;
+
+	public FootHeightOffsetError footHeightOffsetError = new FootHeightOffsetError();
+	public float footHeightOffsetErrorFactor = 0.0f;
+
+	public BodyProportionError bodyProportionError = new BodyProportionError();
+	public float bodyProportionErrorFactor = 0.2f;
+
+	public HeightError heightError = new HeightError();
+	public float heightErrorFactor = 0.0f;
+
+	public PositionError positionError = new PositionError();
 	public float positionErrorFactor = 0.0f;
+
+	public PositionOffsetError positionOffsetError = new PositionOffsetError();
 	public float positionOffsetErrorFactor = 0.0f;
+	// #endregion
+
+	public boolean randomizeFrameOrder = true;
+	public boolean scaleEachStep = true;
+
 	public boolean calcInitError = false;
 	public float targetHeight = -1;
 
@@ -84,6 +143,8 @@ public class AutoBone {
 	// additional hip tracker.
 	public float chestTorsoRatio = 0.57f;
 
+	private final Random rand = new Random();
+
 	public AutoBone(VRServer server) {
 		this.server = server;
 		reloadConfigValues();
@@ -97,17 +158,17 @@ public class AutoBone {
 
 		this.initialAdjustRate = server.config
 			.getFloat("autobone.adjustRate", this.initialAdjustRate);
-		this.adjustRateDecay = server.config
-			.getFloat("autobone.adjustRateDecay", this.adjustRateDecay);
+		this.adjustRateMultiplier = server.config
+			.getFloat("autobone.adjustRateMultiplier", this.adjustRateMultiplier);
 
 		this.slideErrorFactor = server.config
 			.getFloat("autobone.slideErrorFactor", this.slideErrorFactor);
 		this.offsetSlideErrorFactor = server.config
 			.getFloat("autobone.offsetSlideErrorFactor", this.offsetSlideErrorFactor);
-		this.offsetErrorFactor = server.config
-			.getFloat("autobone.offsetErrorFactor", this.offsetErrorFactor);
-		this.proportionErrorFactor = server.config
-			.getFloat("autobone.proportionErrorFactor", this.proportionErrorFactor);
+		this.footHeightOffsetErrorFactor = server.config
+			.getFloat("autobone.offsetErrorFactor", this.footHeightOffsetErrorFactor);
+		this.bodyProportionErrorFactor = server.config
+			.getFloat("autobone.proportionErrorFactor", this.bodyProportionErrorFactor);
 		this.heightErrorFactor = server.config
 			.getFloat("autobone.heightErrorFactor", this.heightErrorFactor);
 		this.positionErrorFactor = server.config
@@ -132,70 +193,63 @@ public class AutoBone {
 		reloadConfigValues(null);
 	}
 
-	private float readFromConfig(SkeletonConfigValue configValue) {
-		return server.config.getFloat(configValue.configKey, configValue.defaultValue);
+	public void reloadConfigValues(List<PoseFrameTracker> trackers) {
+		for (BoneType offset : adjustOffsets) {
+			offsets.put(offset, 0.4f);
+		}
 	}
 
-	public void reloadConfigValues(List<PoseFrameTracker> trackers) {
-		// Load torso configs
-		staticConfigs.put(SkeletonConfigValue.HEAD, readFromConfig(SkeletonConfigValue.HEAD));
-		staticConfigs.put(SkeletonConfigValue.NECK, readFromConfig(SkeletonConfigValue.NECK));
-		configs.put(SkeletonConfigValue.TORSO, readFromConfig(SkeletonConfigValue.TORSO));
-		if (
-			server.config.getBoolean("autobone.forceChestTracker", false)
-				|| (trackers != null
-					&& TrackerUtils
-						.findNonComputedHumanPoseTrackerForBodyPosition(
-							trackers,
-							TrackerPosition.CHEST
-						)
-						!= null)
-		) {
-			// If force enabled or has a chest tracker
-			staticConfigs.remove(SkeletonConfigValue.CHEST);
-			configs.put(SkeletonConfigValue.CHEST, readFromConfig(SkeletonConfigValue.CHEST));
-		} else {
-			// Otherwise, make sure it's not used
-			configs.remove(SkeletonConfigValue.CHEST);
-			staticConfigs.put(SkeletonConfigValue.CHEST, readFromConfig(SkeletonConfigValue.CHEST));
-		}
-		if (
-			server.config.getBoolean("autobone.forceHipTracker", false)
-				|| (trackers != null
-					&& TrackerUtils
-						.findNonComputedHumanPoseTrackerForBodyPosition(
-							trackers,
-							TrackerPosition.HIP
-						)
-						!= null
-					&& TrackerUtils
-						.findNonComputedHumanPoseTrackerForBodyPosition(
-							trackers,
-							TrackerPosition.WAIST
-						)
-						!= null)
-		) {
-			// If force enabled or has a hip tracker and waist tracker
-			staticConfigs.remove(SkeletonConfigValue.WAIST);
-			configs.put(SkeletonConfigValue.WAIST, readFromConfig(SkeletonConfigValue.WAIST));
-		} else {
-			// Otherwise, make sure it's not used
-			configs.remove(SkeletonConfigValue.WAIST);
-			staticConfigs.put(SkeletonConfigValue.WAIST, readFromConfig(SkeletonConfigValue.WAIST));
+	public Vector3f getBoneDirection(
+		HumanSkeleton skeleton,
+		BoneType node,
+		boolean rightSide,
+		Vector3f buffer
+	) {
+		if (buffer == null) {
+			buffer = new Vector3f();
 		}
 
-		// Load leg configs
-		staticConfigs
-			.put(SkeletonConfigValue.HIPS_WIDTH, readFromConfig(SkeletonConfigValue.HIPS_WIDTH));
-		configs
-			.put(SkeletonConfigValue.LEGS_LENGTH, readFromConfig(SkeletonConfigValue.LEGS_LENGTH));
-		configs
-			.put(SkeletonConfigValue.KNEE_HEIGHT, readFromConfig(SkeletonConfigValue.KNEE_HEIGHT));
+		switch (node) {
+			case LEFT_HIP:
+			case RIGHT_HIP:
+				node = rightSide ? BoneType.RIGHT_HIP : BoneType.LEFT_HIP;
+				break;
 
-		// Keep "feet" at ankles
-		staticConfigs.put(SkeletonConfigValue.FOOT_LENGTH, 0f);
-		staticConfigs.put(SkeletonConfigValue.FOOT_SHIFT, 0f);
-		staticConfigs.put(SkeletonConfigValue.SKELETON_OFFSET, 0f);
+			case LEFT_UPPER_LEG:
+			case RIGHT_UPPER_LEG:
+				node = rightSide ? BoneType.RIGHT_UPPER_LEG : BoneType.LEFT_UPPER_LEG;
+				break;
+
+			case LEFT_LOWER_LEG:
+			case RIGHT_LOWER_LEG:
+				node = rightSide ? BoneType.RIGHT_LOWER_LEG : BoneType.LEFT_LOWER_LEG;
+				break;
+		}
+
+		TransformNode relevantTransform = skeleton.getNode(node);
+		return relevantTransform.worldTransform
+			.getTranslation()
+			.subtract(relevantTransform.getParent().worldTransform.getTranslation(), buffer)
+			.normalizeLocal();
+	}
+
+	public float getDotProductDiff(
+		HumanSkeleton skeleton1,
+		HumanSkeleton skeleton2,
+		BoneType node,
+		boolean rightSide,
+		Vector3f offset
+	) {
+		Vector3f normalizedOffset = offset.normalize();
+
+		Vector3f boneRotation = new Vector3f();
+		getBoneDirection(skeleton1, node, rightSide, boneRotation);
+		float dot1 = normalizedOffset.dot(boneRotation);
+
+		getBoneDirection(skeleton2, node, rightSide, boneRotation);
+		float dot2 = normalizedOffset.dot(boneRotation);
+
+		return dot2 - dot1;
 	}
 
 	/**
@@ -211,20 +265,119 @@ public class AutoBone {
 		return humanPoseProcessor != null ? humanPoseProcessor.getSkeleton() : null;
 	}
 
-	public void applyConfig() {
-		if (!applyConfigToSkeleton(getSkeleton())) {
+	public void applyAndSaveConfig() {
+		if (!applyAndSaveConfig(getSkeleton())) {
 			// Unable to apply to skeleton, save directly
-			saveConfigs();
+			// saveConfigs();
 		}
 	}
 
-	public boolean applyConfigToSkeleton(Skeleton skeleton) {
+	public boolean applyConfig(
+		BiConsumer<SkeletonConfigValue, Float> configConsumer,
+		Map<BoneType, Float> offsets
+	) {
+		if (configConsumer == null || offsets == null) {
+			return false;
+		}
+
+		try {
+			Float headOffset = offsets.get(BoneType.HEAD);
+			if (headOffset != null) {
+				configConsumer.accept(SkeletonConfigValue.HEAD, headOffset);
+			}
+
+			Float neckOffset = offsets.get(BoneType.NECK);
+			if (neckOffset != null) {
+				configConsumer.accept(SkeletonConfigValue.NECK, neckOffset);
+			}
+
+			Float chestOffset = offsets.get(BoneType.CHEST);
+			Float hipOffset = offsets.get(BoneType.HIP);
+			Float waistOffset = offsets.get(BoneType.WAIST);
+			if (chestOffset != null && hipOffset != null && waistOffset != null) {
+				configConsumer
+					.accept(SkeletonConfigValue.TORSO, chestOffset + hipOffset + waistOffset);
+			}
+
+			if (chestOffset != null) {
+				configConsumer.accept(SkeletonConfigValue.CHEST, chestOffset);
+			}
+
+			if (hipOffset != null) {
+				configConsumer.accept(SkeletonConfigValue.WAIST, hipOffset);
+			}
+
+			Float hipWidthOffset = offsets.get(BoneType.LEFT_HIP);
+			if (hipWidthOffset == null) {
+				hipWidthOffset = offsets.get(BoneType.RIGHT_HIP);
+			}
+			if (hipWidthOffset != null) {
+				configConsumer
+					.accept(SkeletonConfigValue.HIPS_WIDTH, hipWidthOffset * 2f);
+			}
+
+			Float upperLegOffset = offsets.get(BoneType.LEFT_UPPER_LEG);
+			if (upperLegOffset == null) {
+				upperLegOffset = offsets.get(BoneType.RIGHT_UPPER_LEG);
+			}
+			Float lowerLegOffset = offsets.get(BoneType.LEFT_LOWER_LEG);
+			if (lowerLegOffset == null) {
+				lowerLegOffset = offsets.get(BoneType.RIGHT_LOWER_LEG);
+			}
+			if (upperLegOffset != null && lowerLegOffset != null) {
+				configConsumer
+					.accept(SkeletonConfigValue.LEGS_LENGTH, upperLegOffset + lowerLegOffset);
+			}
+
+			if (lowerLegOffset != null) {
+				configConsumer.accept(SkeletonConfigValue.KNEE_HEIGHT, lowerLegOffset);
+			}
+			return true;
+		} catch (Exception e) {
+			return false;
+		}
+	}
+
+	public boolean applyConfig(BiConsumer<SkeletonConfigValue, Float> configConsumer) {
+		return applyConfig(configConsumer, offsets);
+	}
+
+	public boolean applyConfig(
+		Map<SkeletonConfigValue, Float> skeletonConfig,
+		Map<BoneType, Float> offsets
+	) {
+		if (skeletonConfig == null) {
+			return false;
+		}
+
+		return applyConfig(skeletonConfig::put, offsets);
+	}
+
+	public boolean applyConfig(Map<SkeletonConfigValue, Float> skeletonConfig) {
+		return applyConfig(skeletonConfig, offsets);
+	}
+
+	public boolean applyConfig(SkeletonConfig skeletonConfig, Map<BoneType, Float> offsets) {
+		if (skeletonConfig == null) {
+			return false;
+		}
+
+		return applyConfig(skeletonConfig::setConfig, offsets);
+	}
+
+	public boolean applyConfig(SkeletonConfig skeletonConfig) {
+		return applyConfig(skeletonConfig, offsets);
+	}
+
+	public boolean applyAndSaveConfig(Skeleton skeleton) {
 		if (skeleton == null) {
 			return false;
 		}
 
 		SkeletonConfig skeletonConfig = skeleton.getSkeletonConfig();
-		skeletonConfig.setConfigs(configs, null);
+		if (!applyConfig(skeletonConfig))
+			return false;
+
 		skeletonConfig.saveToConfig(server.config);
 		server.saveConfig();
 
@@ -232,50 +385,18 @@ public class AutoBone {
 		return true;
 	}
 
-	private void setConfig(SkeletonConfigValue config) {
-		Float value = configs.get(config);
-		if (value != null) {
-			server.config.setProperty(config.configKey, value);
-		}
+	public Float getConfig(BoneType config) {
+		return offsets.get(config);
 	}
 
-	// This doesn't require a skeleton, therefore can be used if skeleton is
-	// null
-	public void saveConfigs() {
-		for (SkeletonConfigValue config : SkeletonConfigValue.values) {
-			setConfig(config);
-		}
-
-		server.saveConfig();
-	}
-
-	public Float getConfig(SkeletonConfigValue config) {
-		Float configVal = configs.get(config);
-		return configVal != null ? configVal : staticConfigs.get(config);
-	}
-
-	public Float getConfig(
-		SkeletonConfigValue config,
-		Map<SkeletonConfigValue, Float> configs,
-		Map<SkeletonConfigValue, Float> configsAlt
-	) {
-		if (configs == null) {
-			throw new NullPointerException("Argument \"configs\" must not be null");
-		}
-
-		Float configVal = configs.get(config);
-		return configVal != null || configsAlt == null ? configVal : configsAlt.get(config);
-	}
-
-	public float sumSelectConfigs(
-		List<SkeletonConfigValue> selection,
-		Map<SkeletonConfigValue, Float> configs,
-		Map<SkeletonConfigValue, Float> configsAlt
+	public <T> float sumSelectConfigs(
+		List<T> selection,
+		Function<T, Float> configs
 	) {
 		float sum = 0f;
 
-		for (SkeletonConfigValue config : selection) {
-			Float length = getConfig(config, configs, configsAlt);
+		for (T config : selection) {
+			Float length = configs.apply(config);
 			if (length != null) {
 				sum += length;
 			}
@@ -284,31 +405,32 @@ public class AutoBone {
 		return sum;
 	}
 
-	public float sumSelectConfigs(
-		List<SkeletonConfigValue> selection,
-		SkeletonConfig skeletonConfig
+	public <T> float sumSelectConfigs(
+		List<T> selection,
+		Map<T, Float> configs
 	) {
-		float sum = 0f;
-
-		for (SkeletonConfigValue config : selection) {
-			sum += skeletonConfig.getConfig(config);
-		}
-
-		return sum;
+		return sumSelectConfigs(selection, configs::get);
 	}
 
-	public float getLengthSum(Map<SkeletonConfigValue, Float> configs) {
+	public float sumSelectConfigs(
+		List<SkeletonConfigValue> selection,
+		SkeletonConfig config
+	) {
+		return sumSelectConfigs(selection, config::getConfig);
+	}
+
+	public float getLengthSum(Map<BoneType, Float> configs) {
 		return getLengthSum(configs, null);
 	}
 
 	public float getLengthSum(
-		Map<SkeletonConfigValue, Float> configs,
-		Map<SkeletonConfigValue, Float> configsAlt
+		Map<BoneType, Float> configs,
+		Map<BoneType, Float> configsAlt
 	) {
 		float length = 0f;
 
 		if (configsAlt != null) {
-			for (Entry<SkeletonConfigValue, Float> config : configsAlt.entrySet()) {
+			for (Entry<BoneType, Float> config : configsAlt.entrySet()) {
 				// If there isn't a duplicate config
 				if (!configs.containsKey(config.getKey())) {
 					length += config.getValue();
@@ -323,24 +445,59 @@ public class AutoBone {
 		return length;
 	}
 
-	public void processFrames(PoseFrames frames, Consumer<Epoch> epochCallback) {
-		processFrames(frames, -1f, epochCallback);
+	public float getTargetHeight(PoseFrames frames) {
+		float targetHeight;
+		// Get the current skeleton from the server
+		Skeleton skeleton = getSkeleton();
+		if (skeleton != null) {
+			// If there is a skeleton available, calculate the target height
+			// from its configs
+			targetHeight = sumSelectConfigs(legacyHeightConfigs, skeleton.getSkeletonConfig());
+			LogManager
+				.warning(
+					"[AutoBone] Target height loaded from skeleton (Make sure you reset before running!): "
+						+ targetHeight
+				);
+		} else {
+			// Otherwise if there is no skeleton available, attempt to get the
+			// max HMD height from the recording
+			float hmdHeight = frames.getMaxHmdHeight();
+			if (hmdHeight <= 0.50f) {
+				LogManager
+					.warning(
+						"[AutoBone] Max headset height detected (Value seems too low, did you not stand up straight while measuring?): "
+							+ hmdHeight
+					);
+			} else {
+				LogManager.info("[AutoBone] Max headset height detected: " + hmdHeight);
+			}
+
+			// Estimate target height from HMD height
+			targetHeight = hmdHeight;
+		}
+
+		return targetHeight;
 	}
 
-	public void processFrames(
+	public AutoBoneResults processFrames(PoseFrames frames, Consumer<Epoch> epochCallback)
+		throws AutoBoneException {
+		return processFrames(frames, -1f, epochCallback);
+	}
+
+	public AutoBoneResults processFrames(
 		PoseFrames frames,
 		float targetHeight,
 		Consumer<Epoch> epochCallback
-	) {
-		processFrames(frames, true, targetHeight, epochCallback);
+	) throws AutoBoneException {
+		return processFrames(frames, true, targetHeight, epochCallback);
 	}
 
-	public float processFrames(
+	public AutoBoneResults processFrames(
 		PoseFrames frames,
 		boolean calcInitError,
 		float targetHeight,
 		Consumer<Epoch> epochCallback
-	) {
+	) throws AutoBoneException {
 		final int frameCount = frames.getMaxFrameCount();
 
 		List<PoseFrameTracker> trackers = frames.getTrackers();
@@ -349,49 +506,28 @@ public class AutoBone {
 
 		final PoseFrameSkeleton skeleton1 = new PoseFrameSkeleton(
 			trackers,
-			null,
-			configs,
-			staticConfigs
+			null
 		);
 		final PoseFrameSkeleton skeleton2 = new PoseFrameSkeleton(
 			trackers,
-			null,
-			configs,
-			staticConfigs
+			null
+		);
+
+		EnumMap<BoneType, Float> intermediateOffsets = new EnumMap<BoneType, Float>(
+			offsets
+		);
+
+		AutoBoneTrainingStep trainingStep = new AutoBoneTrainingStep(
+			targetHeight,
+			skeleton1,
+			skeleton2,
+			frames,
+			intermediateOffsets
 		);
 
 		// If target height isn't specified, auto-detect
 		if (targetHeight < 0f) {
-			// Get the current skeleton from the server
-			Skeleton skeleton = getSkeleton();
-			if (skeleton != null) {
-				// If there is a skeleton available, calculate the target height
-				// from its
-				// configs
-				targetHeight = sumSelectConfigs(heightConfigs, skeleton.getSkeletonConfig());
-				LogManager
-					.warning(
-						"[AutoBone] Target height loaded from skeleton (Make sure you reset before running!): "
-							+ targetHeight
-					);
-			} else {
-				// Otherwise if there is no skeleton available, attempt to get
-				// the max HMD
-				// height from the recording
-				float hmdHeight = frames.getMaxHmdHeight();
-				if (hmdHeight <= 0.50f) {
-					LogManager
-						.warning(
-							"[AutoBone] Max headset height detected (Value seems too low, did you not stand up straight while measuring?): "
-								+ hmdHeight
-						);
-				} else {
-					LogManager.info("[AutoBone] Max headset height detected: " + hmdHeight);
-				}
-
-				// Estimate target height from HMD height
-				targetHeight = hmdHeight;
-			}
+			targetHeight = getTargetHeight(frames);
 		}
 
 		// Epoch loop, each epoch is one full iteration over the full dataset
@@ -399,15 +535,37 @@ public class AutoBone {
 			float sumError = 0f;
 			int errorCount = 0;
 
-			float adjustRate = epoch
-				>= 0 ? (initialAdjustRate / FastMath.pow(adjustRateDecay, epoch)) : 0f;
+			float adjustRate = epoch >= 0
+				? (initialAdjustRate * FastMath.pow(adjustRateMultiplier, epoch))
+				: 0f;
+
+			int[] randomFrameIndices = null;
+			if (randomizeFrameOrder) {
+				randomFrameIndices = new int[frameCount];
+
+				int zeroPos = -1;
+				for (int i = 0; i < frameCount; i++) {
+					int index = rand.nextInt(frameCount);
+
+					if (i > 0) {
+						while (index == zeroPos || randomFrameIndices[index] > 0) {
+							index = rand.nextInt(frameCount);
+						}
+					} else {
+						zeroPos = index;
+					}
+
+					randomFrameIndices[index] = i;
+				}
+			}
 
 			// Iterate over the frames using a cursor and an offset for
 			// comparing frames a
 			// certain number of frames apart
 			for (
-				int cursorOffset = minDataDistance;
-				cursorOffset <= maxDataDistance && cursorOffset < frameCount; cursorOffset++
+				int cursorOffset = minDataDistance; cursorOffset <= maxDataDistance
+					&& cursorOffset < frameCount;
+				cursorOffset++
 			) {
 				for (
 					int frameCursor = 0; frameCursor < frameCount - cursorOffset;
@@ -415,28 +573,30 @@ public class AutoBone {
 				) {
 					int frameCursor2 = frameCursor + cursorOffset;
 
-					skeleton1.skeletonConfig.setConfigs(configs, null);
-					skeleton2.skeletonConfig.setConfigs(configs, null);
+					applyConfig(skeleton1.skeletonConfig);
+					skeleton2.skeletonConfig.setConfigs(skeleton1.skeletonConfig);
 
-					skeleton1.setCursor(frameCursor);
+					if (randomizeFrameOrder) {
+						trainingStep
+							.setCursors(
+								randomFrameIndices[frameCursor],
+								randomFrameIndices[frameCursor2]
+							);
+					} else {
+						trainingStep.setCursors(frameCursor, frameCursor2);
+					}
+
+					skeleton1.setCursor(trainingStep.getCursor1());
+					skeleton2.setCursor(trainingStep.getCursor2());
+
 					skeleton1.updatePose();
-
-					skeleton2.setCursor(frameCursor2);
 					skeleton2.updatePose();
 
-					float totalLength = getLengthSum(configs);
-					float curHeight = sumSelectConfigs(heightConfigs, configs, staticConfigs);
-					// float scaleLength = sumSelectConfigs(lengthConfigs,
-					// configs, staticConfigs);
-					float errorDeriv = getErrorDeriv(
-						frames,
-						frameCursor,
-						frameCursor2,
-						skeleton1,
-						skeleton2,
-						targetHeight - curHeight,
-						1f
-					);
+					float totalLength = getLengthSum(offsets);
+					float curHeight = sumSelectConfigs(heightOffsets, offsets);
+					trainingStep.setCurrentHeight(curHeight);
+
+					float errorDeriv = getErrorDeriv(trainingStep);
 					float error = errorFunc(errorDeriv);
 
 					// In case of fire
@@ -467,7 +627,21 @@ public class AutoBone {
 						continue;
 					}
 
-					for (Entry<SkeletonConfigValue, Float> entry : configs.entrySet()) {
+					Vector3f slideLeft = skeleton2
+						.getComputedTracker(TrackerRole.LEFT_FOOT).position
+							.subtract(
+								skeleton1.getComputedTracker(TrackerRole.LEFT_FOOT).position
+							);
+
+					Vector3f slideRight = skeleton2
+						.getComputedTracker(TrackerRole.RIGHT_FOOT).position
+							.subtract(
+								skeleton1
+									.getComputedTracker(TrackerRole.RIGHT_FOOT).position
+							);
+
+					intermediateOffsets.putAll(offsets);
+					for (Entry<BoneType, Float> entry : offsets.entrySet()) {
 						// Skip adjustment if the epoch is before starting (for
 						// logging only)
 						if (epoch < 0) {
@@ -475,64 +649,85 @@ public class AutoBone {
 						}
 
 						float originalLength = entry.getValue();
+						boolean isHeightVar = heightOffsets.contains(entry.getKey());
 
-						// Try positive and negative adjustments
-						boolean isHeightVar = heightConfigs.contains(entry.getKey());
-						// boolean isLengthVar =
-						// lengthConfigs.contains(entry.getKey());
-						float minError = errorDeriv;
-						float finalNewLength = -1f;
-						for (int i = 0; i < 2; i++) {
-							// Scale by the ratio for smooth adjustment and more
-							// stable results
-							float curAdjustVal = ((i == 0 ? adjustVal : -adjustVal)
-								* originalLength) / totalLength;
-							float newLength = originalLength + curAdjustVal;
+						float leftDotProduct = getDotProductDiff(
+							skeleton1,
+							skeleton2,
+							entry.getKey(),
+							false,
+							slideLeft
+						);
 
-							// No small or negative numbers!!! Bad algorithm!
-							if (newLength < 0.01f) {
-								continue;
-							}
+						float rightDotProduct = getDotProductDiff(
+							skeleton1,
+							skeleton2,
+							entry.getKey(),
+							true,
+							slideRight
+						);
 
-							updateSkeletonBoneLength(
-								skeleton1,
-								skeleton2,
-								entry.getKey(),
-								newLength
-							);
+						float dotLength = originalLength
+							* ((leftDotProduct + rightDotProduct) / 2f);
 
-							float newHeight = isHeightVar ? curHeight + curAdjustVal : curHeight;
-							// float newScaleLength = isLengthVar ? scaleLength
-							// + curAdjustVal :
-							// scaleLength;
-							float newErrorDeriv = getErrorDeriv(
-								frames,
-								frameCursor,
-								frameCursor2,
-								skeleton1,
-								skeleton2,
-								targetHeight - newHeight,
-								1f
-							);
+						// Scale by the ratio for smooth adjustment and more
+						// stable results
+						float curAdjustVal = (adjustVal * -dotLength) / totalLength;
+						float newLength = originalLength + curAdjustVal;
 
-							if (newErrorDeriv < minError) {
-								minError = newErrorDeriv;
-								finalNewLength = newLength;
-							}
+						// No small or negative numbers!!! Bad algorithm!
+						if (newLength < 0.01f) {
+							continue;
 						}
 
-						if (finalNewLength > 0f) {
-							entry.setValue(finalNewLength);
+						// Apply new offset length
+						intermediateOffsets.put(entry.getKey(), newLength);
+						applyConfig(skeleton1.skeletonConfig, intermediateOffsets);
+						skeleton2.skeletonConfig.setConfigs(skeleton1.skeletonConfig);
+
+						// Update the skeleton poses for the new offset length
+						skeleton1.updatePose();
+						skeleton2.updatePose();
+
+						float newHeight = isHeightVar ? curHeight + curAdjustVal : curHeight;
+						trainingStep.setCurrentHeight(newHeight);
+
+						float newErrorDeriv = getErrorDeriv(trainingStep);
+
+						if (newErrorDeriv < errorDeriv) {
+							entry.setValue(newLength);
 						}
 
 						// Reset the length to minimize bias in other variables,
 						// it's applied later
-						updateSkeletonBoneLength(
-							skeleton1,
-							skeleton2,
-							entry.getKey(),
-							originalLength
-						);
+						intermediateOffsets.put(entry.getKey(), originalLength);
+						applyConfig(skeleton1.skeletonConfig, intermediateOffsets);
+						skeleton2.skeletonConfig.setConfigs(skeleton1.skeletonConfig);
+					}
+
+					if (scaleEachStep) {
+						float stepHeight = sumSelectConfigs(heightOffsets, offsets);
+
+						if (stepHeight > 0f) {
+							float stepHeightDiff = targetHeight - stepHeight;
+							for (Entry<BoneType, Float> entry : offsets.entrySet()) {
+								// Only height variables
+								if (
+									entry.getKey() == BoneType.NECK
+										|| !heightOffsets.contains(entry.getKey())
+								)
+									continue;
+
+								float length = entry.getValue();
+
+								// Multiply the diff by the length to height
+								// ratio
+								float adjVal = stepHeightDiff * (length / stepHeight);
+
+								// Scale the length to fit the target height
+								entry.setValue(Math.max(length + (adjVal / 2f), 0.01f));
+							}
+						}
 					}
 				}
 			}
@@ -541,295 +736,77 @@ public class AutoBone {
 			float avgError = errorCount > 0 ? sumError / errorCount : -1f;
 			LogManager.info("[AutoBone] Epoch " + (epoch + 1) + " average error: " + avgError);
 
+			applyConfig(legacyConfigs);
 			if (epochCallback != null) {
-				epochCallback.accept(new Epoch(epoch + 1, numEpochs, avgError, configs));
+				epochCallback.accept(new Epoch(epoch + 1, numEpochs, avgError, legacyConfigs));
 			}
 		}
 
-		float finalHeight = sumSelectConfigs(heightConfigs, configs, staticConfigs);
+		float finalHeight = sumSelectConfigs(heightOffsets, offsets);
 		LogManager
-			.info("[AutoBone] Target height: " + targetHeight + " New height: " + finalHeight);
+			.info(
+				"[AutoBone] Target height: "
+					+ targetHeight
+					+ " New height: "
+					+ finalHeight
+			);
 
-		return FastMath.abs(finalHeight - targetHeight);
+		return new AutoBoneResults(finalHeight, targetHeight, legacyConfigs);
 	}
 
-	// The change in position of the ankle over time
-	protected float getSlideErrorDeriv(PoseFrameSkeleton skeleton1, PoseFrameSkeleton skeleton2) {
-		float slideLeft = skeleton1.getComputedTracker(TrackerRole.LEFT_FOOT).position
-			.distance(skeleton2.getComputedTracker(TrackerRole.LEFT_FOOT).position);
-		float slideRight = skeleton1.getComputedTracker(TrackerRole.RIGHT_FOOT).position
-			.distance(skeleton2.getComputedTracker(TrackerRole.RIGHT_FOOT).position);
-
-		// Divide by 4 to halve and average, it's halved because you want to
-		// approach a
-		// midpoint, not the other point
-		return (slideLeft + slideRight) / 4f;
-	}
-
-	// The change in distance between both of the ankles over time
-	protected float getOffsetSlideErrorDeriv(
-		PoseFrameSkeleton skeleton1,
-		PoseFrameSkeleton skeleton2
-	) {
-		Vector3f leftFoot1 = skeleton1.getComputedTracker(TrackerRole.LEFT_FOOT).position;
-		Vector3f rightFoot1 = skeleton1.getComputedTracker(TrackerRole.RIGHT_FOOT).position;
-
-		Vector3f leftFoot2 = skeleton2.getComputedTracker(TrackerRole.LEFT_FOOT).position;
-		Vector3f rightFoot2 = skeleton2.getComputedTracker(TrackerRole.RIGHT_FOOT).position;
-
-		float slideDist1 = leftFoot1.distance(rightFoot1);
-		float slideDist2 = leftFoot2.distance(rightFoot2);
-
-		float slideDist3 = leftFoot1.distance(rightFoot2);
-		float slideDist4 = leftFoot2.distance(rightFoot1);
-
-		float dist1 = FastMath.abs(slideDist1 - slideDist2);
-		float dist2 = FastMath.abs(slideDist3 - slideDist4);
-
-		float dist3 = FastMath.abs(slideDist1 - slideDist3);
-		float dist4 = FastMath.abs(slideDist1 - slideDist4);
-
-		float dist5 = FastMath.abs(slideDist2 - slideDist3);
-		float dist6 = FastMath.abs(slideDist2 - slideDist4);
-
-		// Divide by 12 to halve and average, it's halved because you want to
-		// approach a
-		// midpoint, not the other point
-		return (dist1 + dist2 + dist3 + dist4 + dist5 + dist6) / 12f;
-	}
-
-	// The offset between both feet at one instant and over time
-	protected float getOffsetErrorDeriv(PoseFrameSkeleton skeleton1, PoseFrameSkeleton skeleton2) {
-		float leftFoot1 = skeleton1.getComputedTracker(TrackerRole.LEFT_FOOT).position.getY();
-		float rightFoot1 = skeleton1.getComputedTracker(TrackerRole.RIGHT_FOOT).position.getY();
-
-		float leftFoot2 = skeleton2.getComputedTracker(TrackerRole.LEFT_FOOT).position.getY();
-		float rightFoot2 = skeleton2.getComputedTracker(TrackerRole.RIGHT_FOOT).position.getY();
-
-		float dist1 = FastMath.abs(leftFoot1 - rightFoot1);
-		float dist2 = FastMath.abs(leftFoot2 - rightFoot2);
-
-		float dist3 = FastMath.abs(leftFoot1 - rightFoot2);
-		float dist4 = FastMath.abs(leftFoot2 - rightFoot1);
-
-		float dist5 = FastMath.abs(leftFoot1 - leftFoot2);
-		float dist6 = FastMath.abs(rightFoot1 - rightFoot2);
-
-		// Divide by 12 to halve and average, it's halved because you want to
-		// approach a
-		// midpoint, not the other point
-		return (dist1 + dist2 + dist3 + dist4 + dist5 + dist6) / 12f;
-	}
-
-	// The distance from average human proportions
-	protected float getProportionErrorDeriv(SkeletonConfig skeleton) {
-		float neckLength = skeleton.getConfig(SkeletonConfigValue.NECK);
-		float chestLength = skeleton.getConfig(SkeletonConfigValue.CHEST);
-		float torsoLength = skeleton.getConfig(SkeletonConfigValue.TORSO);
-		float legsLength = skeleton.getConfig(SkeletonConfigValue.LEGS_LENGTH);
-		float kneeHeight = skeleton.getConfig(SkeletonConfigValue.KNEE_HEIGHT);
-
-		float chestTorso = FastMath.abs((chestLength / torsoLength) - chestTorsoRatio);
-		float legBody = FastMath.abs((legsLength / (torsoLength + neckLength)) - legBodyRatio);
-		float kneeLeg = FastMath.abs((kneeHeight / legsLength) - kneeLegRatio);
-
-		if (legBody <= legBodyRatioRange) {
-			legBody = 0f;
-		} else {
-			legBody -= legBodyRatioRange;
-		}
-
-		return (chestTorso + legBody + kneeLeg) / 3f;
-	}
-
-	// The distance of any points to the corresponding absolute position
-	protected float getPositionErrorDeriv(
-		PoseFrames frames,
-		int cursor,
-		PoseFrameSkeleton skeleton
-	) {
-		float offset = 0f;
-		int offsetCount = 0;
-
-		List<PoseFrameTracker> trackers = frames.getTrackers();
-		for (PoseFrameTracker tracker : trackers) {
-			TrackerFrame trackerFrame = tracker.safeGetFrame(cursor);
-			if (
-				trackerFrame == null
-					|| !trackerFrame.hasData(TrackerFrameData.POSITION)
-					|| trackerFrame.designation.trackerRole.isEmpty()
-			) {
-				continue;
-			}
-
-			Vector3f nodePos = skeleton
-				.getComputedTracker(trackerFrame.designation.trackerRole.get()).position;
-			if (nodePos != null) {
-				offset += FastMath.abs(nodePos.distance(trackerFrame.position));
-				offsetCount++;
-			}
-		}
-
-		return offsetCount > 0 ? offset / offsetCount : 0f;
-	}
-
-	// The difference between offset of absolute position and the corresponding
-	// point over time
-	protected float getPositionOffsetErrorDeriv(
-		PoseFrames frames,
-		int cursor1,
-		int cursor2,
-		PoseFrameSkeleton skeleton1,
-		PoseFrameSkeleton skeleton2
-	) {
-		float offset = 0f;
-		int offsetCount = 0;
-
-		List<PoseFrameTracker> trackers = frames.getTrackers();
-		for (PoseFrameTracker tracker : trackers) {
-			TrackerFrame trackerFrame1 = tracker.safeGetFrame(cursor1);
-			if (trackerFrame1 == null || !trackerFrame1.hasData(TrackerFrameData.POSITION)) {
-				continue;
-			}
-
-			TrackerFrame trackerFrame2 = tracker.safeGetFrame(cursor2);
-			if (
-				trackerFrame2 == null
-					|| !trackerFrame2.hasData(TrackerFrameData.POSITION)
-					|| trackerFrame1.designation.trackerRole.isEmpty()
-			) {
-				continue;
-			}
-
-			Vector3f nodePos1 = skeleton1
-				.getComputedTracker(trackerFrame1.designation.trackerRole.get()).position;
-			if (nodePos1 == null) {
-				continue;
-			}
-
-
-			if (trackerFrame2.designation.trackerRole.isEmpty()) {
-				continue;
-			}
-			Vector3f nodePos2 = skeleton2
-				.getComputedTracker(trackerFrame2.designation.trackerRole.get()).position;
-			if (nodePos2 == null) {
-				continue;
-			}
-
-			float dist1 = FastMath.abs(nodePos1.distance(trackerFrame1.position));
-			float dist2 = FastMath.abs(nodePos2.distance(trackerFrame2.position));
-
-			offset += FastMath.abs(dist2 - dist1);
-			offsetCount++;
-		}
-
-		return offsetCount > 0 ? offset / offsetCount : 0f;
-	}
-
-	protected float getErrorDeriv(
-		PoseFrames frames,
-		int cursor1,
-		int cursor2,
-		PoseFrameSkeleton skeleton1,
-		PoseFrameSkeleton skeleton2,
-		float heightChange,
-		float distScale
-	) {
+	protected float getErrorDeriv(AutoBoneTrainingStep trainingStep) throws AutoBoneException {
 		float totalError = 0f;
 		float sumWeight = 0f;
 
 		if (slideErrorFactor > 0f) {
-			// This is the main error function, this calculates the distance
-			// between the
-			// foot positions on both frames
-			totalError += getSlideErrorDeriv(skeleton1, skeleton2) * distScale * slideErrorFactor;
+			totalError += slideError.getStepError(trainingStep) * slideErrorFactor;
 			sumWeight += slideErrorFactor;
 		}
 
 		if (offsetSlideErrorFactor > 0f) {
-			// This error function compares the distance between the feet on
-			// each frame and
-			// returns the offset between them
-			totalError += getOffsetSlideErrorDeriv(skeleton1, skeleton2)
-				* distScale
-				* offsetSlideErrorFactor;
+			totalError += offsetSlideError.getStepError(trainingStep) * offsetSlideErrorFactor;
 			sumWeight += offsetSlideErrorFactor;
 		}
 
-		if (offsetErrorFactor > 0f) {
-			// This error function compares the height of each foot in each
-			// frame
-			totalError += getOffsetErrorDeriv(skeleton1, skeleton2) * distScale * offsetErrorFactor;
-			sumWeight += offsetErrorFactor;
+		if (footHeightOffsetErrorFactor > 0f) {
+			totalError += footHeightOffsetError.getStepError(trainingStep)
+				* footHeightOffsetErrorFactor;
+			sumWeight += footHeightOffsetErrorFactor;
 		}
 
-		if (proportionErrorFactor > 0f) {
-			// This error function compares the current values to general
-			// expected
-			// proportions to keep measurements in line
-			// Either skeleton will work fine, skeleton1 is used as a default
-			totalError += getProportionErrorDeriv(skeleton1.skeletonConfig) * proportionErrorFactor;
-			sumWeight += proportionErrorFactor;
+		if (bodyProportionErrorFactor > 0f) {
+			totalError += bodyProportionError.getStepError(trainingStep)
+				* bodyProportionErrorFactor;
+			sumWeight += bodyProportionErrorFactor;
 		}
 
 		if (heightErrorFactor > 0f) {
-			// This error function compares the height change to the actual
-			// measured height
-			// of the headset
-			totalError += FastMath.abs(heightChange) * heightErrorFactor;
+			totalError += heightError.getStepError(trainingStep) * heightErrorFactor;
 			sumWeight += heightErrorFactor;
 		}
 
 		if (positionErrorFactor > 0f) {
-			// This error function compares the position of an assigned tracker
-			// with the
-			// position on the skeleton
-			totalError += (getPositionErrorDeriv(frames, cursor1, skeleton1)
-				+ getPositionErrorDeriv(frames, cursor2, skeleton2) / 2f)
-				* distScale
-				* positionErrorFactor;
+			totalError += positionError.getStepError(trainingStep) * positionErrorFactor;
 			sumWeight += positionErrorFactor;
 		}
 
 		if (positionOffsetErrorFactor > 0f) {
-			// This error function compares the offset of the position of an
-			// assigned
-			// tracker with the position on the skeleton
-			totalError += getPositionOffsetErrorDeriv(
-				frames,
-				cursor1,
-				cursor2,
-				skeleton1,
-				skeleton2
-			) * distScale * positionOffsetErrorFactor;
+			totalError += positionOffsetError.getStepError(trainingStep)
+				* positionOffsetErrorFactor;
 			sumWeight += positionOffsetErrorFactor;
 		}
 
 		return sumWeight > 0f ? totalError / sumWeight : 0f;
 	}
 
-	protected void updateSkeletonBoneLength(
-		PoseFrameSkeleton skeleton1,
-		PoseFrameSkeleton skeleton2,
-		SkeletonConfigValue config,
-		float newLength
-	) {
-		skeleton1.skeletonConfig.setConfig(config, newLength);
-		skeleton1.updatePoseAffectedByConfig(config);
-
-		skeleton2.skeletonConfig.setConfig(config, newLength);
-		skeleton2.updatePoseAffectedByConfig(config);
-	}
-
 	public String getLengthsString() {
 		final StringBuilder configInfo = new StringBuilder();
-		this.configs.forEach((key, value) -> {
+		this.offsets.forEach((key, value) -> {
 			if (configInfo.length() > 0) {
 				configInfo.append(", ");
 			}
 
-			configInfo.append(key.stringVal + ": " + StringUtils.prettyNumber(value * 100f, 2));
+			configInfo.append(key.toString() + ": " + StringUtils.prettyNumber(value * 100f, 2));
 		});
 
 		return configInfo.toString();
@@ -925,6 +902,27 @@ public class AutoBone {
 		@Override
 		public String toString() {
 			return "Epoch: " + epoch + ", Epoch Error: " + epochError;
+		}
+	}
+
+	public class AutoBoneResults {
+
+		public final float finalHeight;
+		public final float targetHeight;
+		public final EnumMap<SkeletonConfigValue, Float> configValues;
+
+		public AutoBoneResults(
+			float finalHeight,
+			float targetHeight,
+			EnumMap<SkeletonConfigValue, Float> configValues
+		) {
+			this.finalHeight = finalHeight;
+			this.targetHeight = targetHeight;
+			this.configValues = configValues;
+		}
+
+		public float getHeightDifference() {
+			return FastMath.abs(targetHeight - finalHeight);
 		}
 	}
 }
