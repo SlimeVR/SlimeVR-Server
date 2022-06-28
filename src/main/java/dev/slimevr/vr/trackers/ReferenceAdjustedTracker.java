@@ -16,10 +16,6 @@ public class ReferenceAdjustedTracker<E extends Tracker> implements Tracker {
 		this.tracker = tracker;
 	}
 
-	public E getTracker() {
-		return this.tracker;
-	}
-
 	@Override
 	public boolean userEditable() {
 		return this.tracker.userEditable();
@@ -178,5 +174,10 @@ public class ReferenceAdjustedTracker<E extends Tracker> implements Tracker {
 	@Override
 	public Device getDevice() {
 		return tracker.getDevice();
+	}
+
+	@Override
+	public Tracker get() {
+		return this.tracker;
 	}
 }

@@ -52,6 +52,8 @@ public interface Tracker {
 
 	Device getDevice();
 
+	Tracker get();
+
 	default String getDescriptiveName() {
 		return getName();
 	}

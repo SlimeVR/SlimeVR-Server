@@ -39,12 +39,30 @@ public class WebsocketAPI extends WebSocketServer implements ProtocolAPIServer {
 		conn.setAttachment(new WebsocketConnection(conn));
 	}
 
+	/**
+	 * Helper function to get the string of the `conn` while handling `null`
+	 */
+	protected static String connAddr(WebSocket conn) {
+		if (conn == null) {
+			return "null";
+		}
+		var remote = conn.getRemoteSocketAddress();
+		if (remote == null) {
+			return conn.toString();
+		}
+		var addr = remote.getAddress();
+		if (addr == null) {
+			return remote.toString();
+		}
+		return addr.getHostAddress();
+	}
+
 	@Override
 	public void onClose(WebSocket conn, int code, String reason, boolean remote) {
 		LogManager
 			.info(
 				"[WebSocketAPI] Disconnected: "
-					+ conn.getRemoteSocketAddress().getAddress().getHostAddress()
+					+ connAddr(conn)
 					+ ", ("
 					+ code
 					+ ") "
@@ -67,7 +85,11 @@ public class WebsocketAPI extends WebSocketServer implements ProtocolAPIServer {
 
 	@Override
 	public void onError(WebSocket conn, Exception ex) {
-		ex.printStackTrace();
+		LogManager
+			.severe(
+				"[WebSocket] Exception on connection " + connAddr(conn),
+				ex
+			);
 	}
 
 	@Override

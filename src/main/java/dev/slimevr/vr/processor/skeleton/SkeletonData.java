@@ -85,24 +85,24 @@ public class SkeletonData {
 		hipJoint.attachJoint(leftHipJoint, BoneType.LEFT_HIP);
 		hipJoint.attachJoint(rightHipJoint, BoneType.RIGHT_HIP);
 
-		leftHipJoint.attachJoint(leftKneeJoint, BoneType.UPPER_LEG);
-		rightHipJoint.attachJoint(rightKneeJoint, BoneType.UPPER_LEG);
+		leftHipJoint.attachJoint(leftKneeJoint, BoneType.LEFT_UPPER_LEG);
+		rightHipJoint.attachJoint(rightKneeJoint, BoneType.RIGHT_UPPER_LEG);
 
-		leftKneeJoint.attachJoint(leftAnkleJoint, BoneType.LOWER_LEG);
-		rightKneeJoint.attachJoint(rightAnkleJoint, BoneType.LOWER_LEG);
+		leftKneeJoint.attachJoint(leftAnkleJoint, BoneType.LEFT_LOWER_LEG);
+		rightKneeJoint.attachJoint(rightAnkleJoint, BoneType.RIGHT_LOWER_LEG);
 
-		leftAnkleJoint.attachJoint(leftFootJoint, BoneType.FOOT);
-		rightAnkleJoint.attachJoint(rightFootJoint, BoneType.FOOT);
+		leftAnkleJoint.attachJoint(leftFootJoint, BoneType.LEFT_FOOT);
+		rightAnkleJoint.attachJoint(rightFootJoint, BoneType.RIGHT_FOOT);
 		// #endregion
 
 		// #region Assemble skeleton arms from controllers
 		// TODO : Rebuild skeleton depending on if it's from controllers or from
 		// shoulders
 		// if (fromControllers)
-		leftHandJoint.attachJoint(leftWristJoint, BoneType.HAND);
-		rightHandJoint.attachJoint(rightWristJoint, BoneType.HAND);
-		rightWristJoint.attachJoint(leftElbowJoint, BoneType.LOWER_ARM);
-		leftWristJoint.attachJoint(rightElbowJoint, BoneType.LOWER_ARM);
+		leftHandJoint.attachJoint(leftWristJoint, BoneType.LEFT_HAND);
+		rightHandJoint.attachJoint(rightWristJoint, BoneType.RIGHT_HAND);
+		rightWristJoint.attachJoint(leftElbowJoint, BoneType.LEFT_LOWER_ARM);
+		leftWristJoint.attachJoint(rightElbowJoint, BoneType.RIGHT_LOWER_ARM);
 		// } else {
 		// #endregion
 
@@ -110,14 +110,14 @@ public class SkeletonData {
 		chestJoint.attachJoint(leftShoulderJoint, BoneType.LEFT_SHOULDER);
 		chestJoint.attachJoint(rightShoulderJoint, BoneType.RIGHT_SHOULDER);
 
-		leftShoulderJoint.attachJoint(leftElbowJoint, BoneType.LOWER_ARM);
-		rightShoulderJoint.attachJoint(rightElbowJoint, BoneType.LOWER_ARM);
+		leftShoulderJoint.attachJoint(leftElbowJoint, BoneType.LEFT_LOWER_ARM);
+		rightShoulderJoint.attachJoint(rightElbowJoint, BoneType.RIGHT_LOWER_ARM);
 
-		leftElbowJoint.attachJoint(leftWristJoint, BoneType.HAND);
-		rightElbowJoint.attachJoint(rightWristJoint, BoneType.HAND);
+		leftElbowJoint.attachJoint(leftWristJoint, BoneType.LEFT_HAND);
+		rightElbowJoint.attachJoint(rightWristJoint, BoneType.RIGHT_HAND);
 
-		leftWristJoint.attachJoint(leftHandJoint, BoneType.HAND);
-		rightWristJoint.attachJoint(rightHandJoint, BoneType.HAND);
+		leftWristJoint.attachJoint(leftHandJoint, BoneType.LEFT_HAND);
+		rightWristJoint.attachJoint(rightHandJoint, BoneType.RIGHT_HAND);
 		// }
 		// #endregion
 
@@ -125,17 +125,17 @@ public class SkeletonData {
 		chestJoint.attachJoint(trackerChestJoint, BoneType.CHEST_TRACKER);
 		hipJoint.attachJoint(trackerWaistJoint, BoneType.WAIST_TRACKER);
 
-		leftKneeJoint.attachJoint(trackerLeftKneeJoint, BoneType.KNEE_TRACKER);
-		rightKneeJoint.attachJoint(trackerRightKneeJoint, BoneType.KNEE_TRACKER);
+		leftKneeJoint.attachJoint(trackerLeftKneeJoint, BoneType.LEFT_KNEE_TRACKER);
+		rightKneeJoint.attachJoint(trackerRightKneeJoint, BoneType.RIGHT_KNEE_TRACKER);
 
-		leftFootJoint.attachJoint(trackerLeftFootJoint, BoneType.FOOT_TRACKER);
-		rightFootJoint.attachJoint(trackerRightFootJoint, BoneType.FOOT_TRACKER);
+		leftFootJoint.attachJoint(trackerLeftFootJoint, BoneType.LEFT_FOOT_TRACKER);
+		rightFootJoint.attachJoint(trackerRightFootJoint, BoneType.RIGHT_FOOT_TRACKER);
 
-		leftElbowJoint.attachJoint(trackerLeftElbowJoint, BoneType.ELBOW_TRACKER);
-		rightElbowJoint.attachJoint(trackerRightElbowJoint, BoneType.ELBOW_TRACKER);
+		leftElbowJoint.attachJoint(trackerLeftElbowJoint, BoneType.LEFT_ELBOW_TRACKER);
+		rightElbowJoint.attachJoint(trackerRightElbowJoint, BoneType.RIGHT_ELBOW_TRACKER);
 
-		leftHandJoint.attachJoint(trackerLeftHandJoint, BoneType.HAND_TRACKER);
-		rightHandJoint.attachJoint(trackerRightHandJoint, BoneType.HAND_TRACKER);
+		leftHandJoint.attachJoint(trackerLeftHandJoint, BoneType.LEFT_HAND_TRACKER);
+		rightHandJoint.attachJoint(trackerRightHandJoint, BoneType.RIGHT_HAND_TRACKER);
 		// #endregion
 	}
 

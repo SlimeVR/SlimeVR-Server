@@ -11,7 +11,6 @@ import dev.slimevr.vr.processor.TransformNode;
 import dev.slimevr.vr.trackers.*;
 import io.eiren.util.collections.FastList;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
@@ -19,7 +18,6 @@ import java.util.Map;
 public class HumanSkeleton extends Skeleton implements SkeletonConfigCallback {
 
 	public final SkeletonConfig skeletonConfig;
-	public final List<BoneInfo> currentBoneInfo = new ArrayList<>();
 	// #region Upper body nodes (torso)
 	protected final TransformNode hmdNode = new TransformNode("HMD", false);
 	protected final TransformNode headNode = new TransformNode("Head", false);
@@ -28,8 +26,8 @@ public class HumanSkeleton extends Skeleton implements SkeletonConfigCallback {
 	protected final TransformNode trackerChestNode = new TransformNode("Chest-Tracker", false);
 	protected final TransformNode waistNode = new TransformNode("Waist", false);
 	protected final TransformNode hipNode = new TransformNode("Hip", false);
-	// #endregion
 	protected final TransformNode trackerWaistNode = new TransformNode("Waist-Tracker", false);
+	// #endregion
 	// #region Lower body nodes (legs)
 	protected final TransformNode leftHipNode = new TransformNode("Left-Hip", false);
 	protected final TransformNode leftKneeNode = new TransformNode("Left-Knee", false);
@@ -55,6 +53,7 @@ public class HumanSkeleton extends Skeleton implements SkeletonConfigCallback {
 		"Right-Foot-Tracker",
 		false
 	);
+	// #endregion
 	// #region Arms (from controllers)
 	protected final TransformNode leftControllerNodeContrl = new TransformNode(
 		"Left-Controller-Contrl",
@@ -89,7 +88,10 @@ public class HumanSkeleton extends Skeleton implements SkeletonConfigCallback {
 		"Right-Elbow-Tracker-Contrl",
 		false
 	);
+	// #endregion
 	// #region Arms (from HMD)
+	protected final TransformNode leftNeckNode = new TransformNode("Left-Neck", false);
+	protected final TransformNode rightNeckNode = new TransformNode("Right-Neck", false);
 	protected final TransformNode leftShoulderNodeHmd = new TransformNode(
 		"Left-Shoulder-Hmd",
 		false
@@ -98,7 +100,6 @@ public class HumanSkeleton extends Skeleton implements SkeletonConfigCallback {
 		"Right-Shoulder-Hmd",
 		false
 	);
-	// #endregion
 	protected final TransformNode leftElbowNodeHmd = new TransformNode("Left-Elbow-Hmd", false);
 	protected final TransformNode rightElbowNodeHmd = new TransformNode("Right-Elbow-Hmd", false);
 	protected final TransformNode trackerLeftElbowNodeHmd = new TransformNode(
@@ -122,7 +123,6 @@ public class HumanSkeleton extends Skeleton implements SkeletonConfigCallback {
 		false
 	);
 	// #endregion
-	protected final Quaternion kneeRotation = new Quaternion();
 	// #region Buffers
 	private final Vector3f posBuf = new Vector3f();
 	private final Quaternion rotBuf1 = new Quaternion();
@@ -131,8 +131,6 @@ public class HumanSkeleton extends Skeleton implements SkeletonConfigCallback {
 	private final Quaternion rotBuf4 = new Quaternion();
 	protected boolean hasSpineTracker;
 	protected boolean hasKneeTrackers;
-	protected float minKneePitch = 0f * FastMath.DEG_TO_RAD;
-	protected float maxKneePitch = 90f * FastMath.DEG_TO_RAD;
 	static final Quaternion FORWARD_QUATERNION = new Quaternion()
 		.fromAngles(FastMath.HALF_PI, 0, 0);
 	static final float FLOOR_OFFSET = 0.05f;
@@ -152,11 +150,13 @@ public class HumanSkeleton extends Skeleton implements SkeletonConfigCallback {
 	protected Tracker rightControllerTracker;
 	protected Tracker leftLowerArmTracker;
 	protected Tracker rightLowerArmTracker;
-	// #endregion
 	protected Tracker leftUpperArmTracker;
 	protected Tracker rightUpperArmTracker;
 	protected Tracker leftHandTracker;
 	protected Tracker rightHandTracker;
+	protected Tracker leftShoulderTracker;
+	protected Tracker rightShoulderTracker;
+	// #endregion
 	// #region Tracker Output
 	protected ComputedHumanPoseTracker computedChestTracker;
 	protected ComputedHumanPoseTracker computedWaistTracker;
@@ -222,8 +222,11 @@ public class HumanSkeleton extends Skeleton implements SkeletonConfigCallback {
 		// #endregion
 
 		// #region Assemble skeleton arms from neck
-		neckNode.attachChild(leftShoulderNodeHmd);
-		neckNode.attachChild(rightShoulderNodeHmd);
+		neckNode.attachChild(leftNeckNode);
+		neckNode.attachChild(rightNeckNode);
+
+		leftNeckNode.attachChild(leftShoulderNodeHmd);
+		rightNeckNode.attachChild(rightShoulderNodeHmd);
 
 		leftShoulderNodeHmd.attachChild(leftElbowNodeHmd);
 		rightShoulderNodeHmd.attachChild(rightElbowNodeHmd);
@@ -315,126 +318,50 @@ public class HumanSkeleton extends Skeleton implements SkeletonConfigCallback {
 	}
 	// #endregion
 
+	/**
+	 * Rebuilds the `currentBoneInfo` list
+	 */
 	protected void resetBones() {
 		currentBoneInfo.clear();
 
-		// #region Assemble skeleton from hmd to hip
+		// TODO: Decide which bones should be displayed when only a subset of
+		// trackers are present
+
 		currentBoneInfo.add(new BoneInfo(BoneType.HEAD, headNode));
 		currentBoneInfo.add(new BoneInfo(BoneType.NECK, neckNode));
 		currentBoneInfo.add(new BoneInfo(BoneType.CHEST, chestNode));
 		currentBoneInfo.add(new BoneInfo(BoneType.WAIST, waistNode));
 		currentBoneInfo.add(new BoneInfo(BoneType.HIP, hipNode));
-		// #endregion
 
-		// #region Assemble skeleton from hips to feet
-		if (leftLowerLegTracker != null || leftUpperLegTracker != null || leftFootTracker != null) {
-			currentBoneInfo.add(new BoneInfo(BoneType.LEFT_HIP, leftHipNode));
-			currentBoneInfo.add(new BoneInfo(BoneType.LEFT_UPPER_LEG, leftKneeNode));
-			currentBoneInfo.add(new BoneInfo(BoneType.LEFT_LOWER_LEG, leftKneeNode));
-			currentBoneInfo.add(new BoneInfo(BoneType.LEFT_FOOT, leftKneeNode));
+		currentBoneInfo.add(new BoneInfo(BoneType.LEFT_UPPER_LEG, leftKneeNode));
+		currentBoneInfo.add(new BoneInfo(BoneType.RIGHT_UPPER_LEG, rightKneeNode));
+
+		currentBoneInfo.add(new BoneInfo(BoneType.LEFT_LOWER_LEG, leftAnkleNode));
+		currentBoneInfo.add(new BoneInfo(BoneType.RIGHT_LOWER_LEG, rightAnkleNode));
+
+		if (leftFootTracker != null) {
+			currentBoneInfo.add(new BoneInfo(BoneType.LEFT_FOOT, leftFootNode));
 		}
 
-		if (
-			rightLowerLegTracker != null || rightUpperLegTracker != null || rightFootTracker != null
-		) {
-			currentBoneInfo.add(new BoneInfo(BoneType.RIGHT_HIP, rightHipNode));
-			currentBoneInfo.add(new BoneInfo(BoneType.RIGHT_UPPER_LEG, rightKneeNode));
-			currentBoneInfo.add(new BoneInfo(BoneType.RIGHT_LOWER_LEG, rightKneeNode));
-			currentBoneInfo.add(new BoneInfo(BoneType.RIGHT_FOOT, rightKneeNode));
+		if (rightFootTracker != null) {
+			currentBoneInfo.add(new BoneInfo(BoneType.RIGHT_FOOT, rightFootNode));
 		}
-		// #endregion
 
-		// #region Assemble skeleton arms from controllers
-		if (leftControllerTracker != null) {
-			currentBoneInfo.add(new BoneInfo(BoneType.LEFT_CONTROLLER, leftWristNodeContrl));
-			if (leftLowerArmTracker != null) {
-				currentBoneInfo.add(new BoneInfo(BoneType.LEFT_LOWER_ARM, leftElbowNodeContrl));
-			}
+		// TODO: Handle going from HMD and handle shoulder/upper arm. RN we only
+		// support controller based bones.
+		// TODO: Expose the hand bones while accounting for the z and y offsets.
+
+		if (leftControllerTracker != null && leftLowerArmTracker != null) {
+			currentBoneInfo.add(new BoneInfo(BoneType.LEFT_LOWER_ARM, leftElbowNodeContrl));
 		}
-		if (rightControllerTracker != null) {
-			currentBoneInfo.add(new BoneInfo(BoneType.RIGHT_CONTROLLER, rightWristNodeContrl));
-			if (rightLowerArmTracker != null) {
-				currentBoneInfo.add(new BoneInfo(BoneType.RIGHT_LOWER_ARM, rightElbowNodeContrl));
-			}
+
+		if (rightControllerTracker != null && rightLowerArmTracker != null) {
+			currentBoneInfo.add(new BoneInfo(BoneType.RIGHT_LOWER_ARM, rightElbowNodeContrl));
 		}
-		// #endregion
 
-		// #region Assemble skeleton arms from chest
-		if (rightUpperArmTracker != null) {
-			currentBoneInfo.add(new BoneInfo(BoneType.RIGHT_SHOULDER, rightShoulderNodeHmd));
-			currentBoneInfo.add(new BoneInfo(BoneType.RIGHT_UPPER_ARM, rightElbowNodeHmd));
-			if (rightControllerTracker == null && rightLowerArmTracker != null) {
-				currentBoneInfo.add(new BoneInfo(BoneType.RIGHT_LOWER_ARM, rightWristNodeHmd));
-				if (rightHandTracker != null) {
-					currentBoneInfo.add(new BoneInfo(BoneType.RIGHT_HAND, rightHandNodeHmd));
-				}
-			}
-		}
-		if (leftUpperArmTracker != null) {
-			currentBoneInfo.add(new BoneInfo(BoneType.LEFT_SHOULDER, leftShoulderNodeHmd));
-			currentBoneInfo.add(new BoneInfo(BoneType.LEFT_UPPER_ARM, leftElbowNodeHmd));
-			if (leftControllerTracker == null && leftLowerArmTracker != null) {
-				currentBoneInfo.add(new BoneInfo(BoneType.LEFT_LOWER_ARM, leftWristNodeHmd));
-				if (leftHandTracker != null) {
-					currentBoneInfo.add(new BoneInfo(BoneType.LEFT_HAND, leftHandNodeHmd));
-				}
-			}
-		}
-		// #endregion
-
-		// #region Attach tracker nodes for offsets
-		if (true) { // Set to false to skip tracker bones
-			currentBoneInfo.add(new BoneInfo(BoneType.CHEST_TRACKER, trackerChestNode));
-			currentBoneInfo.add(new BoneInfo(BoneType.HIP_TRACKER, trackerWaistNode));
-
-			if (
-				leftLowerLegTracker != null
-					|| leftUpperLegTracker != null
-					|| leftFootTracker != null
-			) {
-				currentBoneInfo.add(new BoneInfo(BoneType.LEFT_KNEE_TRACKER, trackerLeftKneeNode));
-				currentBoneInfo.add(new BoneInfo(BoneType.LEFT_FOOT_TRACKER, trackerLeftFootNode));
-			}
-			if (
-				rightLowerLegTracker != null
-					|| rightUpperLegTracker != null
-					|| rightFootTracker != null
-			) {
-				currentBoneInfo
-					.add(new BoneInfo(BoneType.RIGHT_KNEE_TRACKER, trackerRightKneeNode));
-				currentBoneInfo
-					.add(new BoneInfo(BoneType.RIGHT_FOOT_TRACKER, trackerRightFootNode));
-			}
-			if (leftControllerTracker != null && leftLowerArmTracker != null) {
-				currentBoneInfo
-					.add(new BoneInfo(BoneType.LEFT_ELBOW_TRACKER, trackerLeftElbowNodeContrl));
-			}
-			if (rightControllerTracker != null && rightLowerArmTracker != null) {
-				currentBoneInfo
-					.add(
-						new BoneInfo(BoneType.RIGHT_ELBOW_TRACKER, trackerRightElbowNodeContrl)
-					);
-			}
-
-			if (leftControllerTracker == null && leftLowerArmTracker != null) {
-				currentBoneInfo
-					.add(new BoneInfo(BoneType.LEFT_ELBOW_TRACKER, trackerLeftElbowNodeHmd));
-			}
-			if (rightControllerTracker != null && rightLowerArmTracker != null) {
-				currentBoneInfo
-					.add(new BoneInfo(BoneType.RIGHT_ELBOW_TRACKER, trackerLeftElbowNodeHmd));
-			}
-
-			if (leftHandTracker != null) {
-				currentBoneInfo
-					.add(new BoneInfo(BoneType.LEFT_HAND_TRACKER, trackerLeftHandNodeHmd));
-			}
-			if (rightHandTracker != null) {
-				currentBoneInfo
-					.add(new BoneInfo(BoneType.RIGHT_HAND_TRACKER, trackerLeftHandNodeHmd));
-			}
-		}
-		// #endregion
+		// TODO : Many bones were removed for preview, add them back
+		// from https://github.com/SlimeVR/SlimeVR-Server/pull/196
+		// (Except tracker bones. We all agreed, they're not needed)
 	}
 
 	// #region Set trackers inputs
@@ -537,6 +464,17 @@ public class HumanSkeleton extends Skeleton implements SkeletonConfigCallback {
 				trackers,
 				TrackerPosition.RIGHT_HAND
 			);
+		this.leftShoulderTracker = TrackerUtils
+			.findNonComputedHumanPoseTrackerForBodyPosition(
+				trackers,
+				TrackerPosition.LEFT_SHOULDER
+			);
+		this.rightShoulderTracker = TrackerUtils
+			.findNonComputedHumanPoseTrackerForBodyPosition(
+				trackers,
+				TrackerPosition.RIGHT_SHOULDER
+			);
+
 		resetBones();
 	}
 
@@ -768,12 +706,14 @@ public class HumanSkeleton extends Skeleton implements SkeletonConfigCallback {
 
 		Tracker leftControllerTracker = trackerPreUpdate(this.leftControllerTracker);
 		Tracker rightControllerTracker = trackerPreUpdate(this.rightControllerTracker);
-		Tracker rightLowerArmTracker = trackerPreUpdate(this.rightLowerArmTracker);
 		Tracker leftLowerArmTracker = trackerPreUpdate(this.leftLowerArmTracker);
-		Tracker rightUpperArmTracker = trackerPreUpdate(this.rightUpperArmTracker);
+		Tracker rightLowerArmTracker = trackerPreUpdate(this.rightLowerArmTracker);
 		Tracker leftUpperArmTracker = trackerPreUpdate(this.leftUpperArmTracker);
+		Tracker rightUpperArmTracker = trackerPreUpdate(this.rightUpperArmTracker);
 		Tracker leftHandTracker = trackerPreUpdate(this.leftHandTracker);
 		Tracker rightHandTracker = trackerPreUpdate(this.rightHandTracker);
+		Tracker leftShoulderTracker = trackerPreUpdate(this.leftShoulderTracker);
+		Tracker rightShoulderTracker = trackerPreUpdate(this.rightShoulderTracker);
 		// #endregion
 
 		// hasSomething booleans
@@ -1056,18 +996,35 @@ public class HumanSkeleton extends Skeleton implements SkeletonConfigCallback {
 		}
 
 		// Left arm from HMD
-		if (leftUpperArmTracker != null || leftLowerArmTracker != null) {
-			TrackerUtils
-				.getFirstAvailableTracker(leftUpperArmTracker, leftLowerArmTracker, null)
-				.getRotation(rotBuf1);
+		if (
+			leftShoulderTracker != null
+				|| leftUpperArmTracker != null
+				|| leftLowerArmTracker != null
+		) {
+			if (leftShoulderTracker != null) {
+				leftShoulderTracker.getRotation(rotBuf1);
+			} else {
+				neckNode.localTransform.getRotation(rotBuf1);
+			}
+			leftNeckNode.localTransform.setRotation(rotBuf1);
 
+			TrackerUtils
+				.getFirstAvailableTracker(
+					leftUpperArmTracker,
+					leftShoulderTracker,
+					leftLowerArmTracker
+				)
+				.getRotation(rotBuf1);
 			leftShoulderNodeHmd.localTransform.setRotation(rotBuf1);
 			trackerLeftElbowNodeHmd.localTransform.setRotation(rotBuf1);
 
 			TrackerUtils
-				.getFirstAvailableTracker(leftLowerArmTracker, leftUpperArmTracker, null)
+				.getFirstAvailableTracker(
+					leftLowerArmTracker,
+					leftUpperArmTracker,
+					leftShoulderTracker
+				)
 				.getRotation(rotBuf1);
-
 			leftElbowNodeHmd.localTransform.setRotation(rotBuf1);
 		}
 		if (leftHandTracker != null) {
@@ -1078,18 +1035,35 @@ public class HumanSkeleton extends Skeleton implements SkeletonConfigCallback {
 		}
 
 		// Right arm from HMD
-		if (rightUpperArmTracker != null || rightLowerArmTracker != null) {
-			TrackerUtils
-				.getFirstAvailableTracker(rightUpperArmTracker, rightLowerArmTracker, null)
-				.getRotation(rotBuf1);
+		if (
+			rightShoulderTracker != null
+				|| rightUpperArmTracker != null
+				|| rightLowerArmTracker != null
+		) {
+			if (rightShoulderTracker != null) {
+				rightShoulderTracker.getRotation(rotBuf1);
+			} else {
+				neckNode.localTransform.getRotation(rotBuf1);
+			}
+			rightNeckNode.localTransform.setRotation(rotBuf1);
 
+			TrackerUtils
+				.getFirstAvailableTracker(
+					rightUpperArmTracker,
+					rightShoulderTracker,
+					rightLowerArmTracker
+				)
+				.getRotation(rotBuf1);
 			rightShoulderNodeHmd.localTransform.setRotation(rotBuf1);
 			trackerRightElbowNodeHmd.localTransform.setRotation(rotBuf1);
 
 			TrackerUtils
-				.getFirstAvailableTracker(rightLowerArmTracker, rightUpperArmTracker, null)
+				.getFirstAvailableTracker(
+					rightLowerArmTracker,
+					rightUpperArmTracker,
+					rightShoulderTracker
+				)
 				.getRotation(rotBuf1);
-
 			rightElbowNodeHmd.localTransform.setRotation(rotBuf1);
 		}
 		if (rightHandTracker != null) {
@@ -1099,7 +1073,7 @@ public class HumanSkeleton extends Skeleton implements SkeletonConfigCallback {
 			trackerRightHandNodeHmd.localTransform.setRotation(rotBuf1);
 		}
 
-		// Left elbow from SteamVR controller
+		// Left elbow from controller
 		if (leftControllerTracker != null) {
 			leftControllerTracker.getPosition(posBuf);
 			leftControllerTracker.getRotation(rotBuf1);
@@ -1122,7 +1096,7 @@ public class HumanSkeleton extends Skeleton implements SkeletonConfigCallback {
 			}
 		}
 
-		// Right elbow from SteamVR controller
+		// Right elbow from controller
 		if (rightControllerTracker != null) {
 			rightControllerTracker.getPosition(posBuf);
 			rightControllerTracker.getRotation(rotBuf1);
@@ -1301,49 +1275,46 @@ public class HumanSkeleton extends Skeleton implements SkeletonConfigCallback {
 			case RIGHT_HIP:
 				rightHipNode.localTransform.setTranslation(offset);
 				break;
-			case UPPER_LEG:
 			case LEFT_UPPER_LEG:
 			case RIGHT_UPPER_LEG:
 				leftKneeNode.localTransform.setTranslation(offset);
 				rightKneeNode.localTransform.setTranslation(offset);
 				break;
-			case KNEE_TRACKER:
 			case LEFT_KNEE_TRACKER:
 			case RIGHT_KNEE_TRACKER:
 				trackerLeftKneeNode.localTransform.setTranslation(offset);
 				trackerRightKneeNode.localTransform.setTranslation(offset);
 				break;
-			case LOWER_LEG:
 			case LEFT_LOWER_LEG:
 			case RIGHT_LOWER_LEG:
 				leftAnkleNode.localTransform.setTranslation(offset);
 				rightAnkleNode.localTransform.setTranslation(offset);
 				break;
-			case FOOT:
 			case LEFT_FOOT:
 			case RIGHT_FOOT:
 				leftFootNode.localTransform.setTranslation(offset);
 				rightFootNode.localTransform.setTranslation(offset);
 				break;
-			case FOOT_TRACKER:
 			case LEFT_FOOT_TRACKER:
 			case RIGHT_FOOT_TRACKER:
 				trackerLeftFootNode.localTransform.setTranslation(offset);
 				trackerRightFootNode.localTransform.setTranslation(offset);
 				break;
-			case CONTROLLER:
 			case LEFT_CONTROLLER:
 			case RIGHT_CONTROLLER:
 				leftWristNodeContrl.localTransform.setTranslation(offset);
 				rightWristNodeContrl.localTransform.setTranslation(offset);
 				break;
-			case LOWER_ARM:
 			case LEFT_LOWER_ARM:
 			case RIGHT_LOWER_ARM:
 				leftElbowNodeContrl.localTransform.setTranslation(offset);
 				rightElbowNodeContrl.localTransform.setTranslation(offset);
+				// Dirty hack: from HMD goes the opposite way as from
+				// controllers, so we negate the offset.
+				Vector3f negatedOffset = offset.negate();
+				leftWristNodeHmd.localTransform.setTranslation(negatedOffset);
+				rightWristNodeHmd.localTransform.setTranslation(negatedOffset);
 				break;
-			case ELBOW_TRACKER:
 			case LEFT_ELBOW_TRACKER:
 			case RIGHT_ELBOW_TRACKER:
 				trackerLeftElbowNodeContrl.localTransform.setTranslation(offset);
@@ -1357,21 +1328,15 @@ public class HumanSkeleton extends Skeleton implements SkeletonConfigCallback {
 			case RIGHT_SHOULDER:
 				rightShoulderNodeHmd.localTransform.setTranslation(offset);
 				break;
-			case HAND:
 			case LEFT_HAND:
 			case RIGHT_HAND:
 				leftHandNodeHmd.localTransform.setTranslation(offset);
 				rightHandNodeHmd.localTransform.setTranslation(offset);
 				break;
-			case UPPER_ARM:
 			case LEFT_UPPER_ARM:
 			case RIGHT_UPPER_ARM:
 				leftElbowNodeHmd.localTransform.setTranslation(offset);
 				rightElbowNodeHmd.localTransform.setTranslation(offset);
-				break;
-			case LOWER_ARM_HMD:
-				leftWristNodeHmd.localTransform.setTranslation(offset);
-				rightWristNodeHmd.localTransform.setTranslation(offset);
 				break;
 			default:
 				break;
@@ -1482,7 +1447,7 @@ public class HumanSkeleton extends Skeleton implements SkeletonConfigCallback {
 				rightFootNode.update();
 				updateComputedTrackers();
 				break;
-			case FOOT_OFFSET:
+			case FOOT_SHIFT:
 				leftAnkleNode.update();
 				rightAnkleNode.update();
 				updateComputedTrackers();
@@ -1609,8 +1574,8 @@ public class HumanSkeleton extends Skeleton implements SkeletonConfigCallback {
 			case FOOT_LENGTH:
 				skeletonConfig.setConfig(SkeletonConfigValue.FOOT_LENGTH, null);
 				break;
-			case FOOT_OFFSET:
-				skeletonConfig.setConfig(SkeletonConfigValue.FOOT_OFFSET, null);
+			case FOOT_SHIFT:
+				skeletonConfig.setConfig(SkeletonConfigValue.FOOT_SHIFT, null);
 				break;
 			case SKELETON_OFFSET:
 				skeletonConfig.setConfig(SkeletonConfigValue.SKELETON_OFFSET, null);
@@ -1683,7 +1648,10 @@ public class HumanSkeleton extends Skeleton implements SkeletonConfigCallback {
 			trackerPreUpdate(this.leftUpperArmTracker),
 			trackerPreUpdate(this.rightUpperArmTracker),
 			trackerPreUpdate(this.leftHandTracker),
-			trackerPreUpdate(this.rightHandTracker) };
+			trackerPreUpdate(this.rightHandTracker),
+			trackerPreUpdate(this.leftShoulderTracker),
+			trackerPreUpdate(this.rightShoulderTracker),
+		};
 	}
 
 	@Override
