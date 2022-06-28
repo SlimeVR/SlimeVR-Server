@@ -26,8 +26,8 @@ public class HumanSkeleton extends Skeleton implements SkeletonConfigCallback {
 	protected final TransformNode trackerChestNode = new TransformNode("Chest-Tracker", false);
 	protected final TransformNode waistNode = new TransformNode("Waist", false);
 	protected final TransformNode hipNode = new TransformNode("Hip", false);
-	// #endregion
 	protected final TransformNode trackerWaistNode = new TransformNode("Waist-Tracker", false);
+	// #endregion
 	// #region Lower body nodes (legs)
 	protected final TransformNode leftHipNode = new TransformNode("Left-Hip", false);
 	protected final TransformNode leftKneeNode = new TransformNode("Left-Knee", false);
@@ -53,6 +53,7 @@ public class HumanSkeleton extends Skeleton implements SkeletonConfigCallback {
 		"Right-Foot-Tracker",
 		false
 	);
+	// #endregion
 	// #region Arms (from controllers)
 	protected final TransformNode leftControllerNodeContrl = new TransformNode(
 		"Left-Controller-Contrl",
@@ -87,7 +88,10 @@ public class HumanSkeleton extends Skeleton implements SkeletonConfigCallback {
 		"Right-Elbow-Tracker-Contrl",
 		false
 	);
+	// #endregion
 	// #region Arms (from HMD)
+	protected final TransformNode leftNeckNode = new TransformNode("Left-Neck", false);
+	protected final TransformNode rightNeckNode = new TransformNode("Right-Neck", false);
 	protected final TransformNode leftShoulderNodeHmd = new TransformNode(
 		"Left-Shoulder-Hmd",
 		false
@@ -96,7 +100,6 @@ public class HumanSkeleton extends Skeleton implements SkeletonConfigCallback {
 		"Right-Shoulder-Hmd",
 		false
 	);
-	// #endregion
 	protected final TransformNode leftElbowNodeHmd = new TransformNode("Left-Elbow-Hmd", false);
 	protected final TransformNode rightElbowNodeHmd = new TransformNode("Right-Elbow-Hmd", false);
 	protected final TransformNode trackerLeftElbowNodeHmd = new TransformNode(
@@ -147,11 +150,13 @@ public class HumanSkeleton extends Skeleton implements SkeletonConfigCallback {
 	protected Tracker rightControllerTracker;
 	protected Tracker leftLowerArmTracker;
 	protected Tracker rightLowerArmTracker;
-	// #endregion
 	protected Tracker leftUpperArmTracker;
 	protected Tracker rightUpperArmTracker;
 	protected Tracker leftHandTracker;
 	protected Tracker rightHandTracker;
+	protected Tracker leftShoulderTracker;
+	protected Tracker rightShoulderTracker;
+	// #endregion
 	// #region Tracker Output
 	protected ComputedHumanPoseTracker computedChestTracker;
 	protected ComputedHumanPoseTracker computedWaistTracker;
@@ -217,8 +222,11 @@ public class HumanSkeleton extends Skeleton implements SkeletonConfigCallback {
 		// #endregion
 
 		// #region Assemble skeleton arms from neck
-		neckNode.attachChild(leftShoulderNodeHmd);
-		neckNode.attachChild(rightShoulderNodeHmd);
+		neckNode.attachChild(leftNeckNode);
+		neckNode.attachChild(rightNeckNode);
+
+		leftNeckNode.attachChild(leftShoulderNodeHmd);
+		rightNeckNode.attachChild(rightShoulderNodeHmd);
 
 		leftShoulderNodeHmd.attachChild(leftElbowNodeHmd);
 		rightShoulderNodeHmd.attachChild(rightElbowNodeHmd);
@@ -456,6 +464,17 @@ public class HumanSkeleton extends Skeleton implements SkeletonConfigCallback {
 				trackers,
 				TrackerPosition.RIGHT_HAND
 			);
+		this.leftShoulderTracker = TrackerUtils
+			.findNonComputedHumanPoseTrackerForBodyPosition(
+				trackers,
+				TrackerPosition.LEFT_SHOULDER
+			);
+		this.rightShoulderTracker = TrackerUtils
+			.findNonComputedHumanPoseTrackerForBodyPosition(
+				trackers,
+				TrackerPosition.RIGHT_SHOULDER
+			);
+
 		resetBones();
 	}
 
@@ -687,12 +706,14 @@ public class HumanSkeleton extends Skeleton implements SkeletonConfigCallback {
 
 		Tracker leftControllerTracker = trackerPreUpdate(this.leftControllerTracker);
 		Tracker rightControllerTracker = trackerPreUpdate(this.rightControllerTracker);
-		Tracker rightLowerArmTracker = trackerPreUpdate(this.rightLowerArmTracker);
 		Tracker leftLowerArmTracker = trackerPreUpdate(this.leftLowerArmTracker);
-		Tracker rightUpperArmTracker = trackerPreUpdate(this.rightUpperArmTracker);
+		Tracker rightLowerArmTracker = trackerPreUpdate(this.rightLowerArmTracker);
 		Tracker leftUpperArmTracker = trackerPreUpdate(this.leftUpperArmTracker);
+		Tracker rightUpperArmTracker = trackerPreUpdate(this.rightUpperArmTracker);
 		Tracker leftHandTracker = trackerPreUpdate(this.leftHandTracker);
 		Tracker rightHandTracker = trackerPreUpdate(this.rightHandTracker);
+		Tracker leftShoulderTracker = trackerPreUpdate(this.leftShoulderTracker);
+		Tracker rightShoulderTracker = trackerPreUpdate(this.rightShoulderTracker);
 		// #endregion
 
 		// hasSomething booleans
@@ -975,18 +996,35 @@ public class HumanSkeleton extends Skeleton implements SkeletonConfigCallback {
 		}
 
 		// Left arm from HMD
-		if (leftUpperArmTracker != null || leftLowerArmTracker != null) {
-			TrackerUtils
-				.getFirstAvailableTracker(leftUpperArmTracker, leftLowerArmTracker, null)
-				.getRotation(rotBuf1);
+		if (
+			leftShoulderTracker != null
+				|| leftUpperArmTracker != null
+				|| leftLowerArmTracker != null
+		) {
+			if (leftShoulderTracker != null) {
+				leftShoulderTracker.getRotation(rotBuf1);
+			} else {
+				neckNode.localTransform.getRotation(rotBuf1);
+			}
+			leftNeckNode.localTransform.setRotation(rotBuf1);
 
+			TrackerUtils
+				.getFirstAvailableTracker(
+					leftUpperArmTracker,
+					leftShoulderTracker,
+					leftLowerArmTracker
+				)
+				.getRotation(rotBuf1);
 			leftShoulderNodeHmd.localTransform.setRotation(rotBuf1);
 			trackerLeftElbowNodeHmd.localTransform.setRotation(rotBuf1);
 
 			TrackerUtils
-				.getFirstAvailableTracker(leftLowerArmTracker, leftUpperArmTracker, null)
+				.getFirstAvailableTracker(
+					leftLowerArmTracker,
+					leftUpperArmTracker,
+					leftShoulderTracker
+				)
 				.getRotation(rotBuf1);
-
 			leftElbowNodeHmd.localTransform.setRotation(rotBuf1);
 		}
 		if (leftHandTracker != null) {
@@ -997,18 +1035,35 @@ public class HumanSkeleton extends Skeleton implements SkeletonConfigCallback {
 		}
 
 		// Right arm from HMD
-		if (rightUpperArmTracker != null || rightLowerArmTracker != null) {
-			TrackerUtils
-				.getFirstAvailableTracker(rightUpperArmTracker, rightLowerArmTracker, null)
-				.getRotation(rotBuf1);
+		if (
+			rightShoulderTracker != null
+				|| rightUpperArmTracker != null
+				|| rightLowerArmTracker != null
+		) {
+			if (rightShoulderTracker != null) {
+				rightShoulderTracker.getRotation(rotBuf1);
+			} else {
+				neckNode.localTransform.getRotation(rotBuf1);
+			}
+			rightNeckNode.localTransform.setRotation(rotBuf1);
 
+			TrackerUtils
+				.getFirstAvailableTracker(
+					rightUpperArmTracker,
+					rightShoulderTracker,
+					rightLowerArmTracker
+				)
+				.getRotation(rotBuf1);
 			rightShoulderNodeHmd.localTransform.setRotation(rotBuf1);
 			trackerRightElbowNodeHmd.localTransform.setRotation(rotBuf1);
 
 			TrackerUtils
-				.getFirstAvailableTracker(rightLowerArmTracker, rightUpperArmTracker, null)
+				.getFirstAvailableTracker(
+					rightLowerArmTracker,
+					rightUpperArmTracker,
+					rightShoulderTracker
+				)
 				.getRotation(rotBuf1);
-
 			rightElbowNodeHmd.localTransform.setRotation(rotBuf1);
 		}
 		if (rightHandTracker != null) {
@@ -1018,7 +1073,7 @@ public class HumanSkeleton extends Skeleton implements SkeletonConfigCallback {
 			trackerRightHandNodeHmd.localTransform.setRotation(rotBuf1);
 		}
 
-		// Left elbow from SteamVR controller
+		// Left elbow from controller
 		if (leftControllerTracker != null) {
 			leftControllerTracker.getPosition(posBuf);
 			leftControllerTracker.getRotation(rotBuf1);
@@ -1041,7 +1096,7 @@ public class HumanSkeleton extends Skeleton implements SkeletonConfigCallback {
 			}
 		}
 
-		// Right elbow from SteamVR controller
+		// Right elbow from controller
 		if (rightControllerTracker != null) {
 			rightControllerTracker.getPosition(posBuf);
 			rightControllerTracker.getRotation(rotBuf1);
@@ -1538,7 +1593,10 @@ public class HumanSkeleton extends Skeleton implements SkeletonConfigCallback {
 			trackerPreUpdate(this.leftUpperArmTracker),
 			trackerPreUpdate(this.rightUpperArmTracker),
 			trackerPreUpdate(this.leftHandTracker),
-			trackerPreUpdate(this.rightHandTracker) };
+			trackerPreUpdate(this.rightHandTracker),
+			trackerPreUpdate(this.leftShoulderTracker),
+			trackerPreUpdate(this.rightShoulderTracker),
+		};
 	}
 
 	@Override
