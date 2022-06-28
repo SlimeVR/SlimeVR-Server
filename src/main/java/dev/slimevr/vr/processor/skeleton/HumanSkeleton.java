@@ -11,7 +11,6 @@ import dev.slimevr.vr.processor.TransformNode;
 import dev.slimevr.vr.trackers.*;
 import io.eiren.util.collections.FastList;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
@@ -19,7 +18,6 @@ import java.util.Map;
 public class HumanSkeleton extends Skeleton implements SkeletonConfigCallback {
 
 	public final SkeletonConfig skeletonConfig;
-	public final List<BoneInfo> currentBoneInfo = new ArrayList<>();
 	// #region Upper body nodes (torso)
 	protected final TransformNode hmdNode = new TransformNode("HMD", false);
 	protected final TransformNode headNode = new TransformNode("Head", false);
@@ -355,6 +353,10 @@ public class HumanSkeleton extends Skeleton implements SkeletonConfigCallback {
 		if (rightControllerTracker != null && rightLowerArmTracker != null) {
 			currentBoneInfo.add(new BoneInfo(BoneType.RIGHT_LOWER_ARM, rightElbowNodeContrl));
 		}
+
+		// TODO : Many bones were removed for preview, add them back
+		// from https://github.com/SlimeVR/SlimeVR-Server/pull/196
+		// (Except tracker bones. We all agreed, they're not needed)
 	}
 
 	// #region Set trackers inputs

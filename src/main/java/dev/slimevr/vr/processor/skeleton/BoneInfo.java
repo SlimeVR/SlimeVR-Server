@@ -37,6 +37,11 @@ public class BoneInfo {
 		this.length = this.tailNode.localTransform.getTranslation().length();
 	}
 
+	// TODO : There shouldn't be edge cases like multiplying
+	// feet by rotation. This is the best solution right now,
+	// or we'd need to store this info on the client, which is
+	// worse. Need to rework the skeleton using new @SkeletonData
+	// system
 	public Quaternion getLocalRotation() {
 		var rot = this.tailNode.getParent().localTransform.getRotation();
 		if (this.boneType == BoneType.LEFT_FOOT || this.boneType == BoneType.RIGHT_FOOT) {
