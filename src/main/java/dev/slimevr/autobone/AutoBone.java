@@ -194,7 +194,7 @@ public class AutoBone {
 
 		// Keep "feet" at ankles
 		staticConfigs.put(SkeletonConfigValue.FOOT_LENGTH, 0f);
-		staticConfigs.put(SkeletonConfigValue.FOOT_OFFSET, 0f);
+		staticConfigs.put(SkeletonConfigValue.FOOT_SHIFT, 0f);
 		staticConfigs.put(SkeletonConfigValue.SKELETON_OFFSET, 0f);
 	}
 
