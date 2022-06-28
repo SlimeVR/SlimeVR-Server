@@ -1,11 +1,16 @@
 package dev.slimevr.vr.processor.skeleton;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import dev.slimevr.util.ann.VRServerThread;
 import dev.slimevr.vr.processor.TransformNode;
 import io.eiren.util.ann.ThreadSafe;
 
 
 public abstract class Skeleton {
+
+	public final List<BoneInfo> currentBoneInfo = new ArrayList<>();
 
 	@VRServerThread
 	public abstract void updatePose();
