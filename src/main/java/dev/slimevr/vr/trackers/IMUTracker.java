@@ -310,6 +310,11 @@ public class IMUTracker implements Tracker, TrackerWithTPS, TrackerWithBattery {
 		return this.descriptiveName;
 	}
 
+	@Override
+	public Tracker get() {
+		return this;
+	}
+
 	public enum CalibrationAccuracy {
 
 		UNRELIABLE(0), LOW(1), MEDIUM(2), HIGH(3),;
