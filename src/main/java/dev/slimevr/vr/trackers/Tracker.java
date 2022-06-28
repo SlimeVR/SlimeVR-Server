@@ -52,6 +52,11 @@ public interface Tracker {
 
 	Device getDevice();
 
+	/**
+	 * Returns the real tracker behind this tracker. In case this tracker
+	 * transforms another tracker like {@link ReferenceAdjustedTracker}, this
+	 * will return the tracker it modifies. Otherwise, it will return itself.
+	 */
 	Tracker get();
 
 	default String getDescriptiveName() {

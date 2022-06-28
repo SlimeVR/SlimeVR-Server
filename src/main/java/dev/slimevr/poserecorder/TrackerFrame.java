@@ -195,6 +195,6 @@ public final class TrackerFrame implements Tracker {
 
 	@Override
 	public Tracker get() {
-		return null;
+		return this;
 	}
 }
