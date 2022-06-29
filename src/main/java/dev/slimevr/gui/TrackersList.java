@@ -237,7 +237,7 @@ public class TrackersList extends EJBoxNoStretch {
 			if (t.hasPosition())
 				add(new JLabel("Position"), c(1, row, 2, GridBagConstraints.FIRST_LINE_START));
 			add(new JLabel("TPS"), c(3, row, 2, GridBagConstraints.FIRST_LINE_START));
-			if (tracker instanceof IMUTracker) {
+			if (tracker instanceof TrackerWithWireless) {
 				add(new JLabel("Ping"), c(2, row, 2, GridBagConstraints.FIRST_LINE_START));
 				add(new JLabel("Signal"), c(4, row, 2, GridBagConstraints.FIRST_LINE_START));
 			}
@@ -252,7 +252,7 @@ public class TrackersList extends EJBoxNoStretch {
 					position = new JLabel("0 0 0"),
 					c(1, row, 2, GridBagConstraints.FIRST_LINE_START)
 				);
-			if (tracker instanceof IMUTracker) {
+			if (tracker instanceof TrackerWithWireless) {
 				add(ping = new JLabel(""), c(2, row, 2, GridBagConstraints.FIRST_LINE_START));
 				add(
 					signalStrength = new JLabel(""),
@@ -435,19 +435,16 @@ public class TrackersList extends EJBoxNoStretch {
 						);
 				}
 			}
-			if (tracker instanceof IMUTracker) {
-				if (ping != null)
-					ping.setText(String.valueOf(((IMUTracker) tracker).ping));
-				if (signalStrength != null) {
-					int signal = ((IMUTracker) tracker).signalStrength;
-					if (signal == -1) {
-						signalStrength.setText("N/A");
-					} else {
-						// -40 dBm is excellent, -95 dBm is very poor
-						int percentage = (signal - -95) * (100 - 0) / (-40 - -95) + 0;
-						percentage = Math.max(Math.min(percentage, 100), 0);
-						signalStrength.setText(percentage + "% " + "(" + signal + " dBm" + ")");
-					}
+			if (tracker instanceof TrackerWithWireless) {
+				ping.setText(String.valueOf(((TrackerWithWireless) tracker).getPing()));
+				int signal = ((TrackerWithWireless) tracker).getSignalStrength();
+				if (signal == -1) {
+					signalStrength.setText("N/A");
+				} else {
+					// -40 dBm is excellent, -95 dBm is very poor
+					int percentage = (signal - -95) * (100 - 0) / (-40 - -95) + 0;
+					percentage = Math.max(Math.min(percentage, 100), 0);
+					signalStrength.setText(percentage + "% " + "(" + signal + " dBm" + ")");
 				}
 			}
 			tracker.getRotation(q);

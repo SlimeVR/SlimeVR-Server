@@ -1,7 +1,7 @@
 package dev.slimevr.vr.processor;
 
+import dev.slimevr.vr.IDevice;
 import dev.slimevr.vr.trackers.*;
-import dev.slimevr.vr.trackers.udp.UDPDevice;
 import io.eiren.util.BufferedTimer;
 
 
@@ -40,7 +40,7 @@ public class ComputedHumanPoseTracker extends ComputedTracker
 	}
 
 	@Override
-	public UDPDevice getDevice() {
+	public IDevice getDevice() {
 		return null;
 	}
 

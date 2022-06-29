@@ -12,6 +12,7 @@ import dev.slimevr.bridge.ProtobufBridge;
 import dev.slimevr.bridge.ProtobufMessages.ProtobufMessage;
 import dev.slimevr.bridge.ProtobufMessages.TrackerAdded;
 import dev.slimevr.util.ann.VRServerThread;
+import dev.slimevr.vr.Device;
 import dev.slimevr.vr.trackers.*;
 import io.eiren.util.logging.LogManager;
 
@@ -105,13 +106,25 @@ public class WindowsNamedPipeBridge extends ProtobufBridge<VRTracker> implements
 	@Override
 	@VRServerThread
 	protected VRTracker createNewTracker(TrackerAdded trackerAdded) {
+		// Todo: We need the manufacturer
+		Device device = Main.vrServer
+			.getDeviceManager()
+			.createDevice(
+				trackerAdded.getTrackerName(),
+				trackerAdded.getTrackerSerial(),
+				"FeederAPP"
+			);
+
 		VRTracker tracker = new VRTracker(
 			trackerAdded.getTrackerId(),
 			trackerAdded.getTrackerSerial(),
 			trackerAdded.getTrackerName(),
 			true,
-			true
+			true,
+			device
 		);
+		device.getTrackers().add(tracker);
+		Main.vrServer.getDeviceManager().addDevice(device);
 		TrackerRole role = TrackerRole.getById(trackerAdded.getTrackerRole());
 		if (role != null) {
 			tracker.setBodyPosition(TrackerPosition.getByTrackerRole(role).orElse(null));
