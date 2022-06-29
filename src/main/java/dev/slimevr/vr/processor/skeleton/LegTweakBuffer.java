@@ -17,23 +17,12 @@ import com.jme3.math.Vector3f;
 
 
 public class LegTweakBuffer {
-	// define different states to be in
-	public static final int STATE_UNKNOWN = 0; // fall back state
-	public static final int WALKING = 1; // one foot locked and the other
-											// unlocked
-	public static final int JUMPING = 2; // Both feet off the ground
-	public static final int STANDING = 3; // both feet locked and both on the
-											// ground
-	public static final int OTHER = 4; // any pose that does not involve the
-										// feet
-										// suporting the user
 
-	// define states for each individual leg
-	public static final int LOCKED = 5;
-	public static final int UNLOCKED = 6;
+	public static final int STATE_UNKNOWN = 0; // fall back state
+	public static final int LOCKED = 1;
+	public static final int UNLOCKED = 2;
 
 	// states for the legs
-	private int state = STATE_UNKNOWN;
 	private int leftLegState = STATE_UNKNOWN;
 	private int rightLegState = STATE_UNKNOWN;
 
@@ -73,10 +62,10 @@ public class LegTweakBuffer {
 	private float leftFloorLevel;
 	private float rightFloorLevel;
 
-	// hyperparameters (skating correction)
+	// hyperparameters
 	public static final float SKATING_CUTOFF = 0.25f;
 	private static final float SKATING_VELOCITY_CUTOFF = 0.015f;
-	private static final float SKATING_ACCELERATION_CUTOFF = 0.015f;
+	private static final float SKATING_ACCELERATION_CUTOFF = 0.01f;
 	private static final float SKATING_ROTATIONAL_VELOCITY_CUTOFF = 0.01f;
 	private static final float SKATING_LOCK_ENGAGE_PERCENT = 0.6f;
 
@@ -210,10 +199,6 @@ public class LegTweakBuffer {
 		return rightLegState;
 	}
 
-	public int getState() {
-		return state;
-	}
-
 	public void setParent(LegTweakBuffer parent) {
 		this.parent = parent;
 	}
@@ -232,7 +217,6 @@ public class LegTweakBuffer {
 
 		// if correction is inactive state is unknown and legs are both unlocked
 		if (!active) {
-			state = STATE_UNKNOWN;
 			leftLegState = UNLOCKED;
 			rightLegState = UNLOCKED;
 		} else {
