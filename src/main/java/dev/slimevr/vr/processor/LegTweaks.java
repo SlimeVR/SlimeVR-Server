@@ -41,13 +41,11 @@ public class LegTweaks {
 	private static final float DYNAMIC_DISPLACEMENT_CUTOFF = 0.7f;
 
 	// hyperparameters (skating correction)
-	private static final float STATIC_CORRECTION = 0.005f;
+	private static final float STATIC_CORRECTION = 0.001f;
 	private static final float MIN_ACCEPTABLE_ERROR = 0.075f;
 	private static final float MAX_ACCEPTABLE_ERROR = LegTweakBuffer.SKATING_CUTOFF;
 	private static final float CORRECTION_WEIGHT_MIN = 0.2f;
 	private static final float CORRECTION_WEIGHT_MAX = 0.7f;
-	private static final float GROUND_DAMPENING = 0.5f;
-	private static final float GROUND_DAMPENING_CUTOFF = 0.3f;
 
 
 	// buffer for holding previus frames of data
@@ -184,21 +182,21 @@ public class LegTweaks {
 		currentFrame.setRightKneePosition(rightKneePosition);
 		currentFrame.setWaistPosition(waistPosition);
 
-		// calculate acceleration and velocity of the feet using the buffer
-		currentFrame.setParent(legBufferHead);
-		this.legBufferHead = currentFrame;
-		currentFrame.calculateFootAttributes(active);
-
-
-		// now correct the position of the legs from the last frames data
-		boolean corrected2 = false;
 		boolean corrected1 = false;
+		boolean corrected2 = false;
+
 
 		// once done run the clip correction
 		if (floorclipEnabled) {
 			corrected1 = correctClipping();
 		}
+
+		// calculate acceleration and velocity of the feet using the buffer
+		// (only needed if skating correction is enabled)
 		if (skatingCorrectionEnabled) {
+			currentFrame.setParent(legBufferHead);
+			this.legBufferHead = currentFrame;
+			currentFrame.calculateFootAttributes(active);
 			corrected2 = correctSkating();
 		}
 
@@ -354,9 +352,9 @@ public class LegTweaks {
 		}
 
 		// for either foot that is unlocked get its last position and calculate
-		// its position for this frame. The approch for now is to allow for a
-		// 10% change to the velocity to gradually correct without snapping in
-		// to place
+		// its position for this frame. the amount of displacement is based on
+		// the distance between the last position and the current position and
+		// the hyperparameters
 		if (legBufferHead.getLeftLegState() == LegTweakBuffer.UNLOCKED) {
 			Vector3f leftFootDif = leftFootPosition
 				.subtract(legBufferHead.getParent().getLeftFootPositionCorrected())
@@ -381,6 +379,20 @@ public class LegTweaks {
 					leftFootPosition,
 					legBufferHead.getParent().getLeftFootPositionCorrected()
 				);
+				// calculate the dirrection if the static correction when
+				// applying the offset and if it would be applied at all
+				float staticCorrectionX;
+				float staticCorrectionZ;
+				if (leftFootDif.length() > MIN_ACCEPTABLE_ERROR) {
+					staticCorrectionX = (STATIC_CORRECTION * (leftFootDif.x > 0 ? 1 : -1));
+					staticCorrectionZ = (STATIC_CORRECTION * (leftFootDif.z > 0 ? 1 : -1));
+				} else {
+					staticCorrectionX = 0;
+					staticCorrectionZ = 0;
+				}
+				// apply the corrections
+				leftFootPosition.x += staticCorrectionX;
+				leftFootPosition.z += staticCorrectionZ;
 
 				if (velocity.x * leftFootDif.x > 0) {
 					leftFootPosition.x += velocity.x * weight;
@@ -419,6 +431,23 @@ public class LegTweaks {
 					legBufferHead.getParent().getRightFootPositionCorrected()
 				);
 
+				// calculate the dirrection if the static correction when
+				// applying the offset and if it would be applied at all
+				float staticCorrectionX;
+				float staticCorrectionZ;
+				if (rightFootDif.length() > MIN_ACCEPTABLE_ERROR) {
+					staticCorrectionX = (STATIC_CORRECTION * (rightFootDif.x > 0 ? 1 : -1));
+					staticCorrectionZ = (STATIC_CORRECTION * (rightFootDif.z > 0 ? 1 : -1));
+				} else {
+					staticCorrectionX = 0;
+					staticCorrectionZ = 0;
+				}
+				// apply the corrections
+				rightFootPosition.x += staticCorrectionX;
+				rightFootPosition.z += staticCorrectionZ;
+
+				// calculate the dirrection if the static correction when
+				// applying the offset
 				if (velocity.x * rightFootDif.x > 0) {
 					rightFootPosition.x += velocity.x * weight;
 				} else {
@@ -480,7 +509,10 @@ public class LegTweaks {
 	}
 
 	// calculate the weight of foot correction
-	private float calculateCorrectionWeight(Vector3f foot, Vector3f footCorrected) {
+	private float calculateCorrectionWeight(
+		Vector3f foot,
+		Vector3f footCorrected
+	) {
 		Vector3f footDif = foot.subtract(footCorrected).setY(0);
 		if (footDif.length() < MIN_ACCEPTABLE_ERROR) {
 			return CORRECTION_WEIGHT_MIN;
