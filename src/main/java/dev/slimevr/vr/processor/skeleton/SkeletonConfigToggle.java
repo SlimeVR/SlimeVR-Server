@@ -6,12 +6,13 @@ import java.util.Map;
 
 public enum SkeletonConfigToggle {
 
-	EXTENDED_SPINE_MODEL("Extended spine model", "spine", true),
-	EXTENDED_PELVIS_MODEL("Extended pelvis model", "pelvis", true),
-	EXTENDED_KNEE_MODEL("Extended knee model", "knee", true),;
+	EXTENDED_SPINE_MODEL("Extended spine model", "extendedSpine", true),
+	EXTENDED_PELVIS_MODEL("Extended pelvis model", "extendedPelvis", true),
+	EXTENDED_KNEE_MODEL("Extended knee model", "extendedKnees", true),
+	FORCE_ARMS_FROM_HMD("Force arms from HMD", "forceArmsFromHMD", false),;
 
 	public static final SkeletonConfigToggle[] values = values();
-	private static final String CONFIG_PREFIX = "body.extendedModel.";
+	private static final String CONFIG_PREFIX = "body.skeletonToggles.";
 	private static final Map<String, SkeletonConfigToggle> byStringVal = new HashMap<>();
 
 	static {
