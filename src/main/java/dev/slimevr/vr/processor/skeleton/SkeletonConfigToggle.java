@@ -8,7 +8,7 @@ public enum SkeletonConfigToggle {
 
 	EXTENDED_SPINE_MODEL("Extended spine model", "extendedSpine", true),
 	EXTENDED_PELVIS_MODEL("Extended pelvis model", "extendedPelvis", true),
-	EXTENDED_KNEE_MODEL("Extended knee model", "extendedKnees", true),
+	EXTENDED_KNEE_MODEL("Extended knee model", "extendedKnee", true),
 	FORCE_ARMS_FROM_HMD("Force arms from HMD", "forceArmsFromHMD", false),;
 
 	public static final SkeletonConfigToggle[] values = values();
