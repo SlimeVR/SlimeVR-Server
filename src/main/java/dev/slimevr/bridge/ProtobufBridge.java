@@ -262,6 +262,6 @@ public abstract class ProtobufBridge<T extends VRTracker> implements Bridge {
 		sendMessage(ProtobufMessage.newBuilder().setPosition(builder).build());
 
 		// No message can be sent to the remote side, protocol doesn't support
-		// tracker removal yet. TODO: mark tracker as disabled on driver
+		// tracker removal yet. TODO: mark tracker as disconnected via driver
 	}
 }
