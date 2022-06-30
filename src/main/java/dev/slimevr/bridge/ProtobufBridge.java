@@ -245,9 +245,23 @@ public abstract class ProtobufBridge<T extends VRTracker> implements Bridge {
 	@VRServerThread
 	@Override
 	public void removeSharedTracker(ShareableTracker tracker) {
+		// Remove shared tracker
 		sharedTrackers.remove(tracker);
+
+		// Place tracker at the uncalibrated universe's origin
+		// TODO: place tracker at the origin of standing universe, as this is
+		// what VRChat expects
+		Position.Builder builder = Position.newBuilder().setTrackerId(tracker.getTrackerId());
+		builder.setX(0);
+		builder.setY(0);
+		builder.setZ(0);
+		builder.setQx(0);
+		builder.setQy(0);
+		builder.setQz(0);
+		builder.setQw(1);
+		sendMessage(ProtobufMessage.newBuilder().setPosition(builder).build());
+
 		// No message can be sent to the remote side, protocol doesn't support
-		// tracker
-		// removal (yet)
+		// tracker removal yet. TODO: mark tracker as disabled on driver
 	}
 }
