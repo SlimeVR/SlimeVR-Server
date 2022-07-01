@@ -447,6 +447,7 @@ public class TrackersUDPServer extends Thread {
 								(int) (System.currentTimeMillis()
 									- connection.lastPingPacketTime) / 2
 							);
+
 						imuTracker.dataTick();
 					}
 				} else {

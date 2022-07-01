@@ -194,6 +194,7 @@ public class DataFeedBuilder {
 
 		if (tracker instanceof TrackerWithTPS)
 			HardwareStatus.addTps(fbb, (int) ((TrackerWithTPS) tracker).getTPS());
+
 		if (tracker instanceof TrackerWithBattery) {
 			TrackerWithBattery twb = (TrackerWithBattery) tracker;
 			HardwareStatus.addBatteryVoltage(fbb, twb.getBatteryVoltage());
