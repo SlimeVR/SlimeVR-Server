@@ -435,6 +435,7 @@ public class TrackersList extends EJBoxNoStretch {
 						);
 				}
 			}
+
 			if (tracker instanceof TrackerWithWireless) {
 				ping.setText(String.valueOf(((TrackerWithWireless) tracker).getPing()));
 				int signal = ((TrackerWithWireless) tracker).getSignalStrength();
