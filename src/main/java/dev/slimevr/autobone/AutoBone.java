@@ -477,6 +477,9 @@ public class AutoBone {
 			frames,
 			intermediateOffsets
 		);
+		skeleton1.setLegTweaksEnabled(false);
+		skeleton2.setLegTweaksEnabled(false);
+
 
 		// If target height isn't specified, auto-detect
 		if (targetHeight < 0f) {
