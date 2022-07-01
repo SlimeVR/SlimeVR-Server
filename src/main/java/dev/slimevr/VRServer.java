@@ -243,9 +243,21 @@ public class VRServer extends Thread {
 		});
 	}
 
-	public void setFloorClip(boolean value) {
+	public void setLegTweaksEnabled(boolean value) {
 		queueTask(() -> {
-			humanPoseProcessor.setFloorClip(value);
+			humanPoseProcessor.setLegTweaksEnabled(value);
+		});
+	}
+
+	public void setSkatingReductionEnabled(boolean value) {
+		queueTask(() -> {
+			humanPoseProcessor.setSkatingReductionEnabled(value);
+		});
+	}
+
+	public void setFloorClipEnabled(boolean value) {
+		queueTask(() -> {
+			humanPoseProcessor.setFloorClipEnabled(value);
 		});
 	}
 

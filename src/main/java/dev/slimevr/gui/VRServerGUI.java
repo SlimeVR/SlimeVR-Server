@@ -219,7 +219,7 @@ public class VRServerGUI extends JFrame {
 						addMouseListener(new MouseInputAdapter() {
 							@Override
 							public void mouseClicked(MouseEvent e) {
-								setFloorClip(true);
+								setFloorClipEnabled(true);
 							}
 						});
 					}
@@ -230,11 +230,36 @@ public class VRServerGUI extends JFrame {
 						addMouseListener(new MouseInputAdapter() {
 							@Override
 							public void mouseClicked(MouseEvent e) {
-								setFloorClip(false);
+								setFloorClipEnabled(false);
 							}
 						});
 					}
 				});
+
+				add(Box.createHorizontalStrut(10));
+				add(new JButton("Enable Skating Correction") {
+					{
+						addMouseListener(new MouseInputAdapter() {
+							@Override
+							public void mouseClicked(MouseEvent e) {
+								setSkatingReductionEnabled(true);
+							}
+						});
+					}
+				});
+				add(Box.createHorizontalStrut(10));
+				add(new JButton("Disable Skating Correction") {
+					{
+						addMouseListener(new MouseInputAdapter() {
+							@Override
+							public void mouseClicked(MouseEvent e) {
+								setSkatingReductionEnabled(false);
+							}
+						});
+					}
+				});
+
+
 				add(Box.createHorizontalGlue());
 				add(new JButton("Record BVH") {
 					{
@@ -525,7 +550,17 @@ public class VRServerGUI extends JFrame {
 	}
 
 	@AWTThread
-	private void setFloorClip(boolean value) {
-		server.setFloorClip(value);
+	private void setLegTweaksEnabled(boolean value) {
+		server.setLegTweaksEnabled(value);
+	}
+
+	@AWTThread
+	private void setSkatingReductionEnabled(boolean value) {
+		server.setSkatingReductionEnabled(value);
+	}
+
+	@AWTThread
+	private void setFloorClipEnabled(boolean value) {
+		server.setFloorClipEnabled(value);
 	}
 }

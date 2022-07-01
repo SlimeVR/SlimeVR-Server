@@ -1884,9 +1884,22 @@ public class HumanSkeleton extends Skeleton implements SkeletonConfigCallback {
 		}
 	}
 
+	// master enable/disable of all leg tweaks
 	@Override
 	@VRServerThread
-	public void setFloorClip(boolean value) {
+	public void setLegTweaksEnabled(boolean value) {
 		this.clipCorrector.setEnabled(value);
+	}
+
+	@Override
+	@VRServerThread
+	public void setFloorclipEnabled(boolean value) {
+		this.clipCorrector.setFloorclipEnabled(value);
+	}
+
+	@Override
+	@VRServerThread
+	public void setSkatingReductionEnabled(boolean value) {
+		this.clipCorrector.setSkatingReductionEnabled(value);
 	}
 }

@@ -196,8 +196,20 @@ public class HumanPoseProcessor {
 	}
 
 	@VRServerThread
-	public void setFloorClip(boolean value) {
+	public void setLegTweaksEnabled(boolean value) {
 		if (skeleton != null)
-			skeleton.setFloorClip(value);
+			skeleton.setLegTweaksEnabled(value);
+	}
+
+	@VRServerThread
+	public void setFloorClipEnabled(boolean value) {
+		if (skeleton != null)
+			skeleton.setFloorclipEnabled(value);
+	}
+
+	@VRServerThread
+	public void setSkatingReductionEnabled(boolean value) {
+		if (skeleton != null)
+			skeleton.setSkatingReductionEnabled(value);
 	}
 }
