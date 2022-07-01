@@ -12,7 +12,7 @@ public enum SkeletonConfigToggle {
 	FORCE_ARMS_FROM_HMD("Force arms from HMD", "forceArmsFromHMD", false),;
 
 	public static final SkeletonConfigToggle[] values = values();
-	private static final String CONFIG_PREFIX = "body.skeletonToggles.";
+	private static final String CONFIG_PREFIX = "skeleton.toggles.";
 	private static final Map<String, SkeletonConfigToggle> byStringVal = new HashMap<>();
 
 	static {
