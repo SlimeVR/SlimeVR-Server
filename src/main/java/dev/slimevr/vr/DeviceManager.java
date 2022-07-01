@@ -25,7 +25,6 @@ public class DeviceManager {
 		device.setFirmwareVersion(version);
 		device.setManufacturer(manufacturer);
 
-
 		return device;
 	}
 

@@ -123,6 +123,7 @@ public class WindowsNamedPipeBridge extends ProtobufBridge<VRTracker> implements
 			true,
 			device
 		);
+
 		device.getTrackers().add(tracker);
 		Main.vrServer.getDeviceManager().addDevice(device);
 		TrackerRole role = TrackerRole.getById(trackerAdded.getTrackerRole());

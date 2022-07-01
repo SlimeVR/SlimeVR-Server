@@ -17,7 +17,6 @@ public class Device implements IDevice {
 		this.id = nextLocalDeviceId.incrementAndGet();
 	}
 
-
 	public int getId() {
 		return id;
 	}

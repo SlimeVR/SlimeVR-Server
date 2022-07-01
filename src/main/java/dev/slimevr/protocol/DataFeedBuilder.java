@@ -36,6 +36,7 @@ public class DataFeedBuilder {
 
 		HardwareInfo.startHardwareInfo(fbb);
 		HardwareInfo.addFirmwareVersion(fbb, nameOffset);
+
 		// BRUH MOMENT
 		// TODO need support: HardwareInfo.addFirmwareVersion(fbb,
 		// firmwareVersionOffset);
@@ -198,6 +199,7 @@ public class DataFeedBuilder {
 			HardwareStatus.addBatteryVoltage(fbb, twb.getBatteryVoltage());
 			HardwareStatus.addBatteryPctEstimate(fbb, (int) twb.getBatteryLevel());
 		}
+
 		if (tracker instanceof TrackerWithWireless) {
 			TrackerWithWireless tww = (TrackerWithWireless) tracker;
 			HardwareStatus.addPing(fbb, tww.getPing());

@@ -237,6 +237,7 @@ public class TrackersUDPServer extends Thread {
 			ReferenceAdjustedTracker<IMUTracker> adjustedTracker = new ReferenceAdjustedTracker<>(
 				imu
 			);
+
 			connection.getTrackers().add(imu);
 			trackersConsumer.accept(adjustedTracker);
 			LogManager
@@ -446,7 +447,6 @@ public class TrackersUDPServer extends Thread {
 								(int) (System.currentTimeMillis()
 									- connection.lastPingPacketTime) / 2
 							);
-						;
 						imuTracker.dataTick();
 					}
 				} else {
@@ -469,8 +469,10 @@ public class TrackersUDPServer extends Thread {
 				if (connection == null)
 					break;
 				UDPPacket12BatteryLevel battery = (UDPPacket12BatteryLevel) packet;
+
 				if (connection.getTrackers().size() > 0) {
 					Iterator<IMUTracker> iterator = connection.getTrackers().iterator();
+
 					while (iterator.hasNext()) {
 						IMUTracker tr = iterator.next();
 						tr.setBatteryVoltage(battery.voltage);
@@ -533,6 +535,7 @@ public class TrackersUDPServer extends Thread {
 				if (connection == null)
 					break;
 				UDPPacket19SignalStrength signalStrength = (UDPPacket19SignalStrength) packet;
+
 				if (connection.getTrackers().size() > 0) {
 					Iterator<IMUTracker> iterator = connection.getTrackers().iterator();
 					while (iterator.hasNext()) {

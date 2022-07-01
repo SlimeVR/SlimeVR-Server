@@ -438,6 +438,7 @@ public class TrackersList extends EJBoxNoStretch {
 			if (tracker instanceof TrackerWithWireless) {
 				ping.setText(String.valueOf(((TrackerWithWireless) tracker).getPing()));
 				int signal = ((TrackerWithWireless) tracker).getSignalStrength();
+
 				if (signal == -1) {
 					signalStrength.setText("N/A");
 				} else {
@@ -447,6 +448,7 @@ public class TrackersList extends EJBoxNoStretch {
 					signalStrength.setText(percentage + "% " + "(" + signal + " dBm" + ")");
 				}
 			}
+
 			tracker.getRotation(q);
 			q.toAngles(angles);
 			raw
