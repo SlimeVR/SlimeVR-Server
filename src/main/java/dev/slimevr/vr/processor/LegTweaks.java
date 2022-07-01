@@ -36,16 +36,15 @@ public class LegTweaks {
 	// hyperparameters (clip correction)
 	private static final float STANDING_CUTOFF_HORIZONTAL = 0.5f;
 	private static final float STANDING_CUTOFF_VERTICAL = 0.35f;
-	private static final float MAX_DYNAMIC_DISPLACEMENT = 0.04f;
+	private static final float MAX_DYNAMIC_DISPLACEMENT = 0.08f;
 	private static final float MAX_DISENGAGMENT_OFFSET = 0.25f;
-	private static final float DYNAMIC_DISPLACEMENT_CUTOFF = 0.7f;
+	private static final float DYNAMIC_DISPLACEMENT_CUTOFF = 0.8f;
 
 	// hyperparameters (skating correction)
-	private static final float STATIC_CORRECTION = 0.001f;
-	private static final float MIN_ACCEPTABLE_ERROR = 0.075f;
+	private static final float MIN_ACCEPTABLE_ERROR = 0.05f;
 	private static final float MAX_ACCEPTABLE_ERROR = LegTweakBuffer.SKATING_CUTOFF;
-	private static final float CORRECTION_WEIGHT_MIN = 0.2f;
-	private static final float CORRECTION_WEIGHT_MAX = 0.7f;
+	private static final float CORRECTION_WEIGHT_MIN = 0.4f;
+	private static final float CORRECTION_WEIGHT_MAX = 0.8f;
 
 
 	// buffer for holding previus frames of data
@@ -134,7 +133,7 @@ public class LegTweaks {
 		this.floorclipEnabled = floorclipEnabled;
 	}
 
-	public void setSkatingCorrectionEnabled(boolean skatingCorrectionEnabled) {
+	public void setSkatingReductionEnabled(boolean skatingCorrectionEnabled) {
 		this.skatingCorrectionEnabled = skatingCorrectionEnabled;
 	}
 
@@ -185,6 +184,11 @@ public class LegTweaks {
 		boolean corrected1 = false;
 		boolean corrected2 = false;
 
+		if (skatingCorrectionEnabled) {
+			currentFrame.setParent(legBufferHead);
+			this.legBufferHead = currentFrame;
+			currentFrame.calculateFootAttributes(active);
+		}
 
 		// once done run the clip correction
 		if (floorclipEnabled) {
@@ -194,12 +198,8 @@ public class LegTweaks {
 		// calculate acceleration and velocity of the feet using the buffer
 		// (only needed if skating correction is enabled)
 		if (skatingCorrectionEnabled) {
-			currentFrame.setParent(legBufferHead);
-			this.legBufferHead = currentFrame;
-			currentFrame.calculateFootAttributes(active);
 			corrected2 = correctSkating();
 		}
-
 
 		// determine if either leg is in a position to activate or deactivate
 		// (use the buffer to get the positions before corrections)
@@ -253,6 +253,33 @@ public class LegTweaks {
 					- currentDisengagementOffset
 			);
 
+		// calculate the correction for the knees
+		Vector3f leftWaist = waistPosition.add(leftWaistUpperLegOffset);
+		Vector3f rightWaist = waistPosition.add(rightWaistUpperLegOffset);
+
+		float leftKneeWaist = leftKneePosition.distance(leftWaist);
+		float rightKneeWaist = rightKneePosition.distance(rightWaist);
+
+		float leftKneeWaistNew = leftKneePosition.distance(leftWaist);
+		float rightKneeWaistNew = rightKneePosition.distance(rightWaist);
+		float leftKneeOffset = leftKneeWaistNew - leftKneeWaist;
+		float rightKneeOffset = rightKneeWaistNew - rightKneeWaist;
+
+		// get the vector from the waist to the knee
+		Vector3f leftKneeVector = leftKneePosition
+			.subtract(leftWaist)
+			.normalize()
+			.mult(leftKneeOffset);
+		Vector3f rightKneeVector = rightKneePosition
+			.subtract(rightWaist)
+			.normalize()
+			.mult(rightKneeOffset);
+
+		// correct the knees (not perfect by any means but very close and
+		// computationally cheap)
+		leftKneePosition = leftKneePosition.subtract(leftKneeVector);
+		rightKneePosition = rightKneePosition.subtract(rightKneeVector);
+
 		return corrected1 || corrected2;
 	}
 
@@ -274,12 +301,6 @@ public class LegTweaks {
 		if (!isClipped(leftOffset, rightOffset) || !enabled) {
 			return false;
 		}
-
-		Vector3f leftWaist = waistPosition.add(leftWaistUpperLegOffset);
-		Vector3f rightWaist = waistPosition.add(rightWaistUpperLegOffset);
-
-		float leftKneeWaist = leftKneePosition.distance(leftWaist);
-		float rightKneeWaist = rightKneePosition.distance(rightWaist);
 
 		// move the feet to their new positions and push the knees up
 		if (
@@ -312,27 +333,6 @@ public class LegTweaks {
 			rightFootPosition.y += displacement;
 			rightKneePosition.y += displacement;
 		}
-
-		// calculate the correction for the knees
-		float leftKneeWaistNew = leftKneePosition.distance(leftWaist);
-		float rightKneeWaistNew = rightKneePosition.distance(rightWaist);
-		float leftKneeOffset = leftKneeWaistNew - leftKneeWaist;
-		float rightKneeOffset = rightKneeWaistNew - rightKneeWaist;
-
-		// get the vector from the waist to the knee
-		Vector3f leftKneeVector = leftKneePosition
-			.subtract(leftWaist)
-			.normalize()
-			.mult(leftKneeOffset);
-		Vector3f rightKneeVector = rightKneePosition
-			.subtract(rightWaist)
-			.normalize()
-			.mult(rightKneeOffset);
-
-		// correct the knees (might not be mathmatically correct but it is
-		// close)
-		leftKneePosition = leftKneePosition.subtract(leftKneeVector);
-		rightKneePosition = rightKneePosition.subtract(rightKneeVector);
 
 		return true;
 	}
@@ -379,20 +379,6 @@ public class LegTweaks {
 					leftFootPosition,
 					legBufferHead.getParent().getLeftFootPositionCorrected()
 				);
-				// calculate the dirrection if the static correction when
-				// applying the offset and if it would be applied at all
-				float staticCorrectionX;
-				float staticCorrectionZ;
-				if (leftFootDif.length() > MIN_ACCEPTABLE_ERROR) {
-					staticCorrectionX = (STATIC_CORRECTION * (leftFootDif.x > 0 ? 1 : -1));
-					staticCorrectionZ = (STATIC_CORRECTION * (leftFootDif.z > 0 ? 1 : -1));
-				} else {
-					staticCorrectionX = 0;
-					staticCorrectionZ = 0;
-				}
-				// apply the corrections
-				leftFootPosition.x += staticCorrectionX;
-				leftFootPosition.z += staticCorrectionZ;
 
 				if (velocity.x * leftFootDif.x > 0) {
 					leftFootPosition.x += velocity.x * weight;
@@ -431,23 +417,6 @@ public class LegTweaks {
 					legBufferHead.getParent().getRightFootPositionCorrected()
 				);
 
-				// calculate the dirrection if the static correction when
-				// applying the offset and if it would be applied at all
-				float staticCorrectionX;
-				float staticCorrectionZ;
-				if (rightFootDif.length() > MIN_ACCEPTABLE_ERROR) {
-					staticCorrectionX = (STATIC_CORRECTION * (rightFootDif.x > 0 ? 1 : -1));
-					staticCorrectionZ = (STATIC_CORRECTION * (rightFootDif.z > 0 ? 1 : -1));
-				} else {
-					staticCorrectionX = 0;
-					staticCorrectionZ = 0;
-				}
-				// apply the corrections
-				rightFootPosition.x += staticCorrectionX;
-				rightFootPosition.z += staticCorrectionZ;
-
-				// calculate the dirrection if the static correction when
-				// applying the offset
 				if (velocity.x * rightFootDif.x > 0) {
 					rightFootPosition.x += velocity.x * weight;
 				} else {
