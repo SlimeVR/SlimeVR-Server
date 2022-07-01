@@ -4,7 +4,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 
-public enum SkeletonConfigValue {
+public enum SkeletonConfigOffsets {
 	HEAD(
 		1,
 		"Head",
@@ -164,13 +164,13 @@ public enum SkeletonConfigValue {
 		new BoneType[] { BoneType.LEFT_ELBOW_TRACKER, BoneType.RIGHT_ELBOW_TRACKER }
 	),;
 
-	public static final SkeletonConfigValue[] values = values();
+	public static final SkeletonConfigOffsets[] values = values();
 	private static final String CONFIG_PREFIX = "body.";
-	private static final Map<String, SkeletonConfigValue> byStringVal = new HashMap<>();
-	private static final Map<Number, SkeletonConfigValue> byIdVal = new HashMap<>();
+	private static final Map<String, SkeletonConfigOffsets> byStringVal = new HashMap<>();
+	private static final Map<Number, SkeletonConfigOffsets> byIdVal = new HashMap<>();
 
 	static {
-		for (SkeletonConfigValue configVal : values()) {
+		for (SkeletonConfigOffsets configVal : values()) {
 			byIdVal.put(configVal.id, configVal);
 			byStringVal.put(configVal.stringVal.toLowerCase(), configVal);
 		}
@@ -183,7 +183,7 @@ public enum SkeletonConfigValue {
 	public final float defaultValue;
 	public final BoneType[] affectedOffsets;
 
-	SkeletonConfigValue(
+	SkeletonConfigOffsets(
 		int id,
 		String stringVal,
 		String configKey,
@@ -202,11 +202,11 @@ public enum SkeletonConfigValue {
 			== null ? new BoneType[0] : affectedOffsets;
 	}
 
-	public static SkeletonConfigValue getByStringValue(String stringVal) {
+	public static SkeletonConfigOffsets getByStringValue(String stringVal) {
 		return stringVal == null ? null : byStringVal.get(stringVal.toLowerCase());
 	}
 
-	public static SkeletonConfigValue getById(int id) {
+	public static SkeletonConfigOffsets getById(int id) {
 		return byIdVal.get(id);
 	}
 }

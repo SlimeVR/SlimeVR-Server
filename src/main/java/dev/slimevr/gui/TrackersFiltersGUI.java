@@ -3,6 +3,7 @@ package dev.slimevr.gui;
 import com.jme3.math.FastMath;
 import dev.slimevr.VRServer;
 import dev.slimevr.gui.swing.EJBagNoStretch;
+import dev.slimevr.vr.trackers.TrackerFiltering;
 import dev.slimevr.vr.trackers.TrackerFilters;
 import io.eiren.util.StringUtils;
 
@@ -51,7 +52,16 @@ public class TrackersFiltersGUI extends EJBagNoStretch {
 		add(Box.createVerticalStrut(40));
 		row++;
 
-		filterAmount = FastMath.clamp(server.config.getFloat("filters.amount", 0.3f), 0, 1);
+		filterAmount = FastMath
+			.clamp(
+				server.config
+					.getFloat(
+						TrackerFiltering.CONFIG_PREFIX + "amount",
+						TrackerFiltering.DEFAULT_INTENSITY
+					),
+				0,
+				1
+			);
 
 		add(new JLabel("Intensity"), c(0, row, 2));
 		add(new AdjButton("+", 0, false), c(1, row, 2));
@@ -61,7 +71,16 @@ public class TrackersFiltersGUI extends EJBagNoStretch {
 		);
 		add(new AdjButton("-", 0, true), c(3, row, 2));
 		row++;
-		filterTicks = (int) FastMath.clamp(server.config.getInt("filters.tickCount", 1), 0, 80);
+		filterTicks = (int) FastMath
+			.clamp(
+				server.config
+					.getInt(
+						TrackerFiltering.CONFIG_PREFIX + "tickCount",
+						TrackerFiltering.DEFAULT_TICK
+					),
+				0,
+				80
+			);
 
 		add(new JLabel("Ticks"), c(0, row, 2));
 		add(new AdjButton("+", 1, false), c(1, row, 2));

@@ -5,7 +5,7 @@ import dev.slimevr.util.ann.VRServerThread;
 import dev.slimevr.vr.processor.skeleton.Skeleton;
 import dev.slimevr.vr.processor.skeleton.HumanSkeleton;
 import dev.slimevr.vr.processor.skeleton.SkeletonConfig;
-import dev.slimevr.vr.processor.skeleton.SkeletonConfigValue;
+import dev.slimevr.vr.processor.skeleton.SkeletonConfigOffsets;
 import dev.slimevr.vr.trackers.*;
 import io.eiren.util.ann.ThreadSafe;
 import io.eiren.util.collections.FastList;
@@ -117,13 +117,13 @@ public class HumanPoseProcessor {
 	}
 
 	@ThreadSafe
-	public void setSkeletonConfig(SkeletonConfigValue key, float newLength) {
+	public void setSkeletonConfig(SkeletonConfigOffsets key, float newLength) {
 		if (skeleton != null)
-			skeleton.getSkeletonConfig().setConfig(key, newLength);
+			skeleton.getSkeletonConfig().setOffset(key, newLength);
 	}
 
 	@ThreadSafe
-	public void resetSkeletonConfig(SkeletonConfigValue key) {
+	public void resetSkeletonConfig(SkeletonConfigOffsets key) {
 		if (skeleton != null)
 			skeleton.resetSkeletonConfig(key);
 	}
@@ -140,9 +140,9 @@ public class HumanPoseProcessor {
 	}
 
 	@ThreadSafe
-	public float getSkeletonConfig(SkeletonConfigValue key) {
+	public float getSkeletonConfig(SkeletonConfigOffsets key) {
 		if (skeleton != null) {
-			return skeleton.getSkeletonConfig().getConfig(key);
+			return skeleton.getSkeletonConfig().getOffset(key);
 		}
 		return 0.0f;
 	}
