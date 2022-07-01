@@ -41,9 +41,9 @@ public class LegTweaks {
 	private static final float DYNAMIC_DISPLACEMENT_CUTOFF = 0.8f;
 
 	// hyperparameters (skating correction)
-	private static final float MIN_ACCEPTABLE_ERROR = 0.05f;
+	private static final float MIN_ACCEPTABLE_ERROR = 0.1f;
 	private static final float MAX_ACCEPTABLE_ERROR = LegTweakBuffer.SKATING_CUTOFF;
-	private static final float CORRECTION_WEIGHT_MIN = 0.4f;
+	private static final float CORRECTION_WEIGHT_MIN = 0.15f;
 	private static final float CORRECTION_WEIGHT_MAX = 0.8f;
 
 
@@ -184,12 +184,6 @@ public class LegTweaks {
 		boolean corrected1 = false;
 		boolean corrected2 = false;
 
-		if (skatingCorrectionEnabled) {
-			currentFrame.setParent(legBufferHead);
-			this.legBufferHead = currentFrame;
-			currentFrame.calculateFootAttributes(active);
-		}
-
 		// once done run the clip correction
 		if (floorclipEnabled) {
 			corrected1 = correctClipping();
@@ -198,6 +192,9 @@ public class LegTweaks {
 		// calculate acceleration and velocity of the feet using the buffer
 		// (only needed if skating correction is enabled)
 		if (skatingCorrectionEnabled) {
+			currentFrame.setParent(legBufferHead);
+			this.legBufferHead = currentFrame;
+			currentFrame.calculateFootAttributes(active);
 			corrected2 = correctSkating();
 		}
 
@@ -215,14 +212,14 @@ public class LegTweaks {
 			.setX(0)
 			.setZ(0)
 			.length();
-		if (!active && leftFootDif < 0.005f) {
+		if (!active && leftFootDif < 0.001f) {
 			leftLegActive = false;
-		} else if (active && leftFootDif < 0.005f) {
+		} else if (active && leftFootDif < 0.001f) {
 			leftLegActive = true;
 		}
-		if (!active && rightFootDif < 0.005f) {
+		if (!active && rightFootDif < 0.001f) {
 			rightLegActive = false;
-		} else if (active && rightFootDif < 0.005f) {
+		} else if (active && rightFootDif < 0.001f) {
 			rightLegActive = true;
 		}
 
@@ -302,7 +299,7 @@ public class LegTweaks {
 			return false;
 		}
 
-		// move the feet to their new positions and push the knees up
+		// move the feet to their new positions
 		if (
 			leftFootPosition.y
 				< (floorLevel + (MAX_DYNAMIC_DISPLACEMENT * leftOffset))
@@ -359,7 +356,7 @@ public class LegTweaks {
 			Vector3f leftFootDif = leftFootPosition
 				.subtract(legBufferHead.getParent().getLeftFootPositionCorrected())
 				.setY(0);
-			if (leftFootDif.length() > 0.01f) {
+			if (leftFootDif.length() > 0.001f) {
 				leftFootPosition = legBufferHead.getParent().getLeftFootPositionCorrected();
 				Vector3f velocity = legBufferHead.getLeftFootVelocity();
 				// first add the difference from the last frame to this frame
@@ -396,7 +393,7 @@ public class LegTweaks {
 			Vector3f rightFootDif = rightFootPosition
 				.subtract(legBufferHead.getParent().getRightFootPositionCorrected())
 				.setY(0);
-			if (rightFootDif.length() > 0.01f) {
+			if (rightFootDif.length() > 0.001f) {
 				rightFootPosition = legBufferHead.getParent().getRightFootPositionCorrected();
 				Vector3f velocity = legBufferHead.getRightFootVelocity();
 				// first add the difference from the last frame to this frame
