@@ -56,7 +56,7 @@ public class LegTweakBuffer {
 	private float rightFootAccelerationMagnitude = 0;
 
 	// other data
-	private float timeOfFrame = System.nanoTime();
+	private long timeOfFrame = System.nanoTime();
 	private LegTweakBuffer parent = null; // frame before this one
 	private int frameNumber = 0; // higher number is older frame
 	private float leftFloorLevel;
@@ -64,10 +64,11 @@ public class LegTweakBuffer {
 
 	// hyperparameters
 	public static final float SKATING_CUTOFF = 0.25f;
-	private static final float SKATING_VELOCITY_CUTOFF = 0.015f;
-	private static final float SKATING_ACCELERATION_CUTOFF = 0.01f;
-	private static final float SKATING_ROTATIONAL_VELOCITY_CUTOFF = 0.01f;
-	private static final float SKATING_LOCK_ENGAGE_PERCENT = 0.6f;
+	private static final float SKATING_VELOCITY_CUTOFF = 4.40f;
+	private static final float SKATING_ACCELERATION_CUTOFF = 5.20f;
+	private static final float SKATING_ROTATIONAL_VELOCITY_CUTOFF = 2.50f;
+	private static final float SKATING_LOCK_ENGAGE_PERCENT = 0.5f;
+	private static final float FLOOR_DIF_CUTOFF = 0.1f;
 
 	private static final float SKATING_CUTOFF_ENGAGE = SKATING_CUTOFF
 		* SKATING_LOCK_ENGAGE_PERCENT;
@@ -266,13 +267,14 @@ public class LegTweakBuffer {
 
 	// check if a locked foot should stay locked or be released
 	private int checkStateLeft() {
+		float timeStep = 1.0f / ((timeOfFrame - parent.timeOfFrame) / 1000000000.0f);
 		if (parent.leftLegState == UNLOCKED) {
 			if (
 				parent.getLeftFootHorizantalDifference() > SKATING_CUTOFF_ENGAGE
-					|| leftFootVelocityMagnitude > SKATING_VELOCITY_CUTOFF_ENGAGE
-					|| leftFootAccelerationMagnitude > SKATING_ACCELERATION_CUTOFF_ENGAGE
-					|| leftFootAngleDiff > SKATING_ROTATIONAL_VELOCITY_CUTOFF_ENGAGE
-					|| leftFootPosition.y > leftFloorLevel + 0.1f
+					|| leftFootVelocityMagnitude * timeStep > SKATING_VELOCITY_CUTOFF_ENGAGE
+					|| leftFootAccelerationMagnitude * timeStep > SKATING_ACCELERATION_CUTOFF_ENGAGE
+					|| leftFootAngleDiff * timeStep > SKATING_ROTATIONAL_VELOCITY_CUTOFF_ENGAGE
+					|| leftFootPosition.y > leftFloorLevel + FLOOR_DIF_CUTOFF
 			) {
 				return UNLOCKED;
 			}
@@ -281,10 +283,10 @@ public class LegTweakBuffer {
 		} else {
 			if (
 				parent.getLeftFootHorizantalDifference() > SKATING_CUTOFF
-					|| leftFootVelocityMagnitude > SKATING_VELOCITY_CUTOFF
-					|| leftFootAccelerationMagnitude > SKATING_ACCELERATION_CUTOFF
-					|| leftFootAngleDiff > SKATING_ROTATIONAL_VELOCITY_CUTOFF
-					|| leftFootPosition.y > leftFloorLevel + 0.1f
+					|| leftFootVelocityMagnitude * timeStep > SKATING_VELOCITY_CUTOFF
+					|| leftFootAccelerationMagnitude * timeStep > SKATING_ACCELERATION_CUTOFF
+					|| leftFootAngleDiff * timeStep > SKATING_ROTATIONAL_VELOCITY_CUTOFF
+					|| leftFootPosition.y > leftFloorLevel + FLOOR_DIF_CUTOFF
 			) {
 				return UNLOCKED;
 			}
@@ -294,13 +296,15 @@ public class LegTweakBuffer {
 
 	// check if a locked foot should stay locked or be released
 	private int checkStateRight() {
+		float timeStep = 1.0f / ((timeOfFrame - parent.timeOfFrame) / 1000000000.0f);
 		if (parent.rightLegState == UNLOCKED) {
 			if (
 				parent.getRightFootHorizantalDifference() > SKATING_CUTOFF_ENGAGE
-					|| rightFootVelocityMagnitude > SKATING_VELOCITY_CUTOFF_ENGAGE
-					|| rightFootAccelerationMagnitude > SKATING_ACCELERATION_CUTOFF_ENGAGE
-					|| rightFootAngleDiff > SKATING_ROTATIONAL_VELOCITY_CUTOFF_ENGAGE
-					|| rightFootPosition.y > rightFloorLevel + 0.1f
+					|| rightFootVelocityMagnitude * timeStep > SKATING_VELOCITY_CUTOFF_ENGAGE
+					|| rightFootAccelerationMagnitude * timeStep
+						> SKATING_ACCELERATION_CUTOFF_ENGAGE
+					|| rightFootAngleDiff * timeStep > SKATING_ROTATIONAL_VELOCITY_CUTOFF_ENGAGE
+					|| rightFootPosition.y > rightFloorLevel + FLOOR_DIF_CUTOFF
 			) {
 				return UNLOCKED;
 			}
@@ -308,10 +312,10 @@ public class LegTweakBuffer {
 		} else {
 			if (
 				parent.getRightFootHorizantalDifference() > SKATING_CUTOFF
-					|| rightFootVelocityMagnitude > SKATING_VELOCITY_CUTOFF
-					|| rightFootAccelerationMagnitude > SKATING_ACCELERATION_CUTOFF
-					|| rightFootAngleDiff > SKATING_ROTATIONAL_VELOCITY_CUTOFF
-					|| rightFootPosition.y > rightFloorLevel + 0.1f
+					|| rightFootVelocityMagnitude * timeStep > SKATING_VELOCITY_CUTOFF
+					|| rightFootAccelerationMagnitude * timeStep > SKATING_ACCELERATION_CUTOFF
+					|| rightFootAngleDiff * timeStep > SKATING_ROTATIONAL_VELOCITY_CUTOFF
+					|| rightFootPosition.y > rightFloorLevel + FLOOR_DIF_CUTOFF
 			) {
 				return UNLOCKED;
 			}
