@@ -2,7 +2,6 @@ package dev.slimevr.vr.processor;
 
 import com.jme3.math.Quaternion;
 import com.jme3.math.Vector3f;
-import dev.slimevr.vr.processor.skeleton.LegTweakBuffer;
 import com.jme3.math.FastMath;
 
 
@@ -139,6 +138,14 @@ public class LegTweaks {
 
 	public boolean getEnabled() {
 		return this.enabled;
+	}
+
+	public boolean getFloorclipEnabled() {
+		return this.floorclipEnabled;
+	}
+
+	public boolean getSkatingReductionEnabled() {
+		return this.skatingCorrectionEnabled;
 	}
 
 	// tweak the position of the legs based on data from the last frames
