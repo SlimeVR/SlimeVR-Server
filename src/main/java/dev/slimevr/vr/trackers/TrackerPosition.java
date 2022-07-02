@@ -18,7 +18,7 @@ import java.util.logging.Level;
  */
 public enum TrackerPosition {
 	// @formatter:off
-	HMD("HMD", TrackerRole.HMD, BodyPart.HMD),
+	HMD("HMD", TrackerRole.HMD, BodyPart.HEAD),
 	NECK("body:neck", TrackerRole.NECK, BodyPart.NECK),
 	CHEST("body:chest", TrackerRole.CHEST, BodyPart.CHEST),
 	WAIST("body:waist", Optional.empty(), BodyPart.WAIST),
