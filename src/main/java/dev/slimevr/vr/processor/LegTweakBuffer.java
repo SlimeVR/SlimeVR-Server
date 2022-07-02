@@ -1,4 +1,4 @@
-package dev.slimevr.vr.processor.skeleton;
+package dev.slimevr.vr.processor;
 
 import com.jme3.math.Quaternion;
 import com.jme3.math.Vector3f;
