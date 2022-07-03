@@ -9,8 +9,8 @@ import java.util.Objects;
 public class TrackerConfig {
 
 	public final String trackerName;
+	public final String customName;
 	public String designation;
-	public String description;
 	public boolean hide;
 	public Quaternion adjustment;
 	public String oldMountingRotation;
@@ -18,14 +18,14 @@ public class TrackerConfig {
 
 	public TrackerConfig(Tracker tracker) {
 		this.trackerName = tracker.getName();
-		this.description = tracker.getDescriptiveName();
 		this.designation = tracker.getBodyPosition()
 			!= null ? tracker.getBodyPosition().designation : null;
+		this.customName = tracker.getCustomName();
 	}
 
 	public TrackerConfig(YamlNode node) {
 		this.trackerName = node.getString("name");
-		this.description = node.getString("description");
+		this.customName = node.getString("customName");
 		this.designation = node.getString("designation");
 		this.hide = node.getBoolean("hide", false);
 		this.oldMountingRotation = node.getString("rotation");
@@ -62,6 +62,9 @@ public class TrackerConfig {
 
 	public void saveConfig(YamlNode configNode) {
 		configNode.setProperty("name", trackerName);
+		if (customName != null) {
+			configNode.setProperty("customName", customName);
+		}
 		if (designation != null)
 			configNode.setProperty("designation", designation);
 		else
@@ -89,12 +92,6 @@ public class TrackerConfig {
 			configNode.setProperty("mountingRotation.w", mountingRotation.getW());
 		} else {
 			configNode.removeProperty("mountingRotation");
-		}
-
-		if (description != null) {
-			configNode.setProperty("description", description);
-		} else {
-			configNode.removeProperty("description");
 		}
 	}
 }

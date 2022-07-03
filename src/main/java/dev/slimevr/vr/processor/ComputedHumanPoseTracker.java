@@ -48,4 +48,14 @@ public class ComputedHumanPoseTracker extends ComputedTracker
 	public Tracker get() {
 		return this;
 	}
+
+	@Override
+	public String getDisplayName() {
+		return getName();
+	}
+
+	@Override
+	public String getCustomName() {
+		return null;
+	}
 }

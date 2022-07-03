@@ -5,6 +5,7 @@ import com.jme3.math.Quaternion;
 import com.jme3.math.Vector3f;
 import dev.slimevr.vr.IDevice;
 import dev.slimevr.vr.processor.skeleton.BoneInfo;
+import dev.slimevr.vr.processor.skeleton.SkeletonConfigToggle;
 import dev.slimevr.vr.trackers.*;
 import solarxr_protocol.data_feed.Bone;
 import solarxr_protocol.data_feed.DataFeedUpdate;
@@ -64,11 +65,21 @@ public class DataFeedBuilder {
 		if (!infoMask)
 			return 0;
 
+		int displayNameOffset = fbb.createString(tracker.getDisplayName());
+
+		int customNameOffset = tracker.getCustomName() != null
+			? fbb.createString(tracker.getCustomName())
+			: 0;
+
+
 		TrackerInfo.startTrackerInfo(fbb);
 		if (tracker.getBodyPosition() != null)
 			TrackerInfo.addBodyPart(fbb, tracker.getBodyPosition().bodyPart);
 		TrackerInfo.addEditable(fbb, tracker.userEditable());
 		TrackerInfo.addComputed(fbb, tracker.isComputed());
+		TrackerInfo.addDisplayName(fbb, displayNameOffset);
+		TrackerInfo.addCustomName(fbb, customNameOffset);
+
 		// TODO need support: TrackerInfo.addImuType(fbb, tracker.im);
 		// TODO need support: TrackerInfo.addPollRate(fbb, tracker.);
 
@@ -169,6 +180,8 @@ public class DataFeedBuilder {
 		trackersOffsets.forEach(offset -> {
 			DeviceData.addTrackers(fbb, offset);
 		});
+
+		int i = SkeletonConfigToggle.values.length;
 		return fbb.endVector();
 	}
 
@@ -211,8 +224,12 @@ public class DataFeedBuilder {
 		int hardwareInfoOffset = DataFeedBuilder.createHardwareInfo(fbb, device);
 		int trackersOffset = DataFeedBuilder.createTrackersData(fbb, mask, device);
 
+		int nameOffset = device.getCustomName() != null
+			? fbb.createString(device.getCustomName())
+			: 0;
+
 		DeviceData.startDeviceData(fbb);
-		// TODO need support: DeviceData.addCustomName(fbb, nameOffset);
+		DeviceData.addCustomName(fbb, nameOffset);
 		DeviceData.addId(fbb, DeviceId.createDeviceId(fbb, id));
 		DeviceData.addHardwareStatus(fbb, hardwareDataOffset);
 		DeviceData.addHardwareInfo(fbb, hardwareInfoOffset);

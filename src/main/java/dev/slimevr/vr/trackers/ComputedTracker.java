@@ -61,10 +61,6 @@ public class ComputedTracker implements Tracker, TrackerWithTPS {
 		return this.serial;
 	}
 
-	@Override
-	public String getDescriptiveName() {
-		return this.name;
-	}
 
 	@Override
 	public boolean getPosition(Vector3f store) {
@@ -161,5 +157,15 @@ public class ComputedTracker implements Tracker, TrackerWithTPS {
 	@Override
 	public Tracker get() {
 		return this;
+	}
+
+	@Override
+	public String getDisplayName() {
+		return getName();
+	}
+
+	@Override
+	public String getCustomName() {
+		return null;
 	}
 }

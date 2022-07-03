@@ -204,7 +204,7 @@ public abstract class ProtobufBridge<T extends VRTracker> implements Bridge {
 			TrackerAdded.Builder builder = TrackerAdded
 				.newBuilder()
 				.setTrackerId(tracker.getTrackerId())
-				.setTrackerName(tracker.getDescriptiveName())
+				.setTrackerName(tracker.getName())
 				.setTrackerSerial(tracker.getName())
 				.setTrackerRole(tracker.getTrackerRole().id);
 			sendMessage(ProtobufMessage.newBuilder().setTrackerAdded(builder).build());
@@ -236,7 +236,7 @@ public abstract class ProtobufBridge<T extends VRTracker> implements Bridge {
 		TrackerAdded.Builder builder = TrackerAdded
 			.newBuilder()
 			.setTrackerId(tracker.getTrackerId())
-			.setTrackerName(tracker.getDescriptiveName())
+			.setTrackerName(tracker.getName())
 			.setTrackerSerial(tracker.getName())
 			.setTrackerRole(tracker.getTrackerRole().id);
 		sendMessage(ProtobufMessage.newBuilder().setTrackerAdded(builder).build());

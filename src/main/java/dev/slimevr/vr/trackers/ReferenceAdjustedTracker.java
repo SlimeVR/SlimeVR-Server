@@ -168,11 +168,6 @@ public class ReferenceAdjustedTracker<E extends Tracker> implements Tracker {
 	}
 
 	@Override
-	public String getDescriptiveName() {
-		return tracker.getDescriptiveName();
-	}
-
-	@Override
 	public IDevice getDevice() {
 		return tracker.getDevice();
 	}
@@ -180,5 +175,15 @@ public class ReferenceAdjustedTracker<E extends Tracker> implements Tracker {
 	@Override
 	public Tracker get() {
 		return this.tracker;
+	}
+
+	@Override
+	public String getDisplayName() {
+		return this.tracker.getDisplayName();
+	}
+
+	@Override
+	public String getCustomName() {
+		return this.tracker.getCustomName();
 	}
 }

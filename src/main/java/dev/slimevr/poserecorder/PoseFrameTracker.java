@@ -266,4 +266,13 @@ public class PoseFrameTracker implements Tracker, Iterable<TrackerFrame> {
 	public Tracker get() {
 		return this;
 	}
+
+	@Override
+	public String getDisplayName() {
+		return getName();
+	}
+	@Override
+	public String getCustomName() {
+		return null;
+	}
 }

@@ -53,6 +53,11 @@ public interface Tracker {
 
 	IDevice getDevice();
 
+	String getDisplayName();
+
+	String getCustomName();
+
+
 	/**
 	 * Returns the real tracker behind this tracker. In case this tracker
 	 * transforms another tracker like {@link ReferenceAdjustedTracker}, this
@@ -60,7 +65,5 @@ public interface Tracker {
 	 */
 	Tracker get();
 
-	default String getDescriptiveName() {
-		return getName();
-	}
+
 }
