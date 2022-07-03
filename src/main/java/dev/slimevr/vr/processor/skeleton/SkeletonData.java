@@ -123,7 +123,7 @@ public class SkeletonData {
 
 		// #region Attach tracker nodes for offsets
 		chestJoint.attachJoint(trackerChestJoint, BoneType.CHEST_TRACKER);
-		hipJoint.attachJoint(trackerWaistJoint, BoneType.WAIST_TRACKER);
+		hipJoint.attachJoint(trackerWaistJoint, BoneType.HIP_TRACKER);
 
 		leftKneeJoint.attachJoint(trackerLeftKneeJoint, BoneType.LEFT_KNEE_TRACKER);
 		rightKneeJoint.attachJoint(trackerRightKneeJoint, BoneType.RIGHT_KNEE_TRACKER);
