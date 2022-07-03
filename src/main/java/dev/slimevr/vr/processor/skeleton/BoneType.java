@@ -8,7 +8,7 @@ import solarxr_protocol.datatypes.BodyPart;
  */
 public enum BoneType {
 
-	HEAD(BodyPart.HMD),
+	HEAD(BodyPart.HEAD),
 	NECK(BodyPart.NECK),
 	CHEST(BodyPart.CHEST),
 	CHEST_TRACKER,
