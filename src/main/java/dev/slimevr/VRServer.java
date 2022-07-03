@@ -8,6 +8,7 @@ import dev.slimevr.poserecorder.BVHRecorder;
 import dev.slimevr.protocol.ProtocolAPI;
 import dev.slimevr.serial.SerialHandler;
 import dev.slimevr.util.ann.VRServerThread;
+import dev.slimevr.vr.DeviceManager;
 import dev.slimevr.vr.processor.HumanPoseProcessor;
 import dev.slimevr.vr.processor.skeleton.Skeleton;
 import dev.slimevr.vr.trackers.*;
@@ -43,6 +44,7 @@ public class VRServer extends Thread {
 	private final List<Consumer<Tracker>> newTrackersConsumers = new FastList<>();
 	private final List<Runnable> onTick = new FastList<>();
 	private final List<? extends ShareableTracker> shareTrackers;
+	private final DeviceManager deviceManager;
 	private final BVHRecorder bvhRecorder;
 	private final SerialHandler serialHandler;
 	private final AutoBoneHandler autoBoneHandler;
@@ -57,6 +59,8 @@ public class VRServer extends Thread {
 		super("VRServer");
 		this.configPath = configPath;
 		loadConfig();
+
+		deviceManager = new DeviceManager(this);
 
 		serialHandler = new SerialHandler();
 		autoBoneHandler = new AutoBoneHandler(this);
@@ -367,5 +371,9 @@ public class VRServer extends Thread {
 
 	public TrackersUDPServer getTrackersServer() {
 		return trackersServer;
+	}
+
+	public DeviceManager getDeviceManager() {
+		return deviceManager;
 	}
 }

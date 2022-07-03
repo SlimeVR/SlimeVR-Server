@@ -1,12 +1,12 @@
 package dev.slimevr.protocol;
 
 import com.google.flatbuffers.FlatBufferBuilder;
-
 import io.eiren.util.logging.LogManager;
 import solarxr_protocol.MessageBundle;
 import solarxr_protocol.data_feed.*;
 
 import java.util.function.BiConsumer;
+import java.util.stream.Collectors;
 
 
 public class DataFeedHandler extends ProtocolHandler<DataFeedMessageHeader> {
@@ -71,13 +71,19 @@ public class DataFeedHandler extends ProtocolHandler<DataFeedMessageHeader> {
 			.createDevicesData(
 				fbb,
 				config.getDataMask(),
-				this.api.server.getTrackersServer().getConnections()
+				this.api.server
+					.getDeviceManager()
+					.getDevices()
 			);
 		int trackersOffset = DataFeedBuilder
 			.createSyntheticTrackersData(
 				fbb,
 				config.getSyntheticTrackersMask(),
-				this.api.server.getAllTrackers()
+				this.api.server
+					.getAllTrackers()
+					.stream()
+					.filter(tracker -> tracker.get().getDevice() == null)
+					.collect(Collectors.toList())
 			);
 
 		var s = this.api.server.humanPoseProcessor.getSkeleton();
