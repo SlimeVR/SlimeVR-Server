@@ -13,10 +13,8 @@
     "bundle": {
       "active": true,
       "targets": "all",
-      "identifier": "com.tauri.dev",
-      "icon": [
-        "icons/icon.ico"
-      ],
+      "identifier": "slimevr.dev",
+      "icon": ["icons/icon.ico"],
       "resources": [],
       "externalBin": [],
       "copyright": "",
@@ -24,12 +22,10 @@
       "shortDescription": "",
       "longDescription": "",
       "deb": {
-        "depends": [],
-        "useBootstrapper": false
+        "depends": []
       },
       "macOS": {
         "frameworks": [],
-        "useBootstrapper": false,
         "exceptionDomain": "",
         "signingIdentity": null,
         "providerShortName": null,
@@ -45,17 +41,39 @@
       "active": false
     },
     "allowlist": {
-      "all": true
+      "shell": {
+        "all": false,
+        "execute": true
+      },
+      "fs": {
+        "scope": ["$APP/*", "$APP"],
+        "all": true
+      },
+      "path": {
+        "all": true
+      },
+      "window": {
+        "setResizable": true,
+        "setTitle": true,
+        "maximize": true,
+        "unmaximize": true,
+        "minimize": true,
+        "unminimize": true,
+        "close": true,
+        "startDragging": true
+      }
     },
     "windows": [
       {
         "title": "Slimevr UI",
-        "width": 1150,
-        "height": 660,
+        "width": 1289,
+        "height": 709,
+        "minWidth": 880,
+        "minHeight": 709,
         "resizable": true,
         "fullscreen": false,
-        "decorations": true,
-        "transparent": true,
+        "decorations": false,
+        "transparent": false,
         "fileDropEnabled": false
       }
     ],
