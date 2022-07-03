@@ -5,7 +5,6 @@ import com.jme3.math.Quaternion;
 import com.jme3.math.Vector3f;
 import dev.slimevr.vr.IDevice;
 import dev.slimevr.vr.processor.skeleton.BoneInfo;
-import dev.slimevr.vr.processor.skeleton.SkeletonConfigToggle;
 import dev.slimevr.vr.trackers.*;
 import solarxr_protocol.data_feed.Bone;
 import solarxr_protocol.data_feed.DataFeedUpdate;
@@ -180,8 +179,6 @@ public class DataFeedBuilder {
 		trackersOffsets.forEach(offset -> {
 			DeviceData.addTrackers(fbb, offset);
 		});
-
-		int i = SkeletonConfigToggle.values.length;
 		return fbb.endVector();
 	}
 
