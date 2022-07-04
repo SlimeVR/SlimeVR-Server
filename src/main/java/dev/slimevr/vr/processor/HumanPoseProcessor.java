@@ -196,7 +196,7 @@ public class HumanPoseProcessor {
 	}
 
 	@ThreadSafe
-	public List<Boolean> getLegTweaksState() {
+	public boolean[] getLegTweaksState() {
 		return skeleton.getLegTweaksState();
 	}
 

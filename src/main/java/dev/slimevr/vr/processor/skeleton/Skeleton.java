@@ -44,7 +44,7 @@ public abstract class Skeleton {
 	public abstract void initializeLegTweaksConfig(boolean floorClipVal, boolean skatingVal);
 
 	@VRServerThread
-	public abstract List<Boolean> getLegTweaksState();
+	public abstract boolean[] getLegTweaksState();
 
 	@VRServerThread
 	public abstract void setLegTweaksEnabled(boolean value);

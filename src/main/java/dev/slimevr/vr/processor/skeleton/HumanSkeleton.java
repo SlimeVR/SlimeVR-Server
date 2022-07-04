@@ -13,7 +13,6 @@ import dev.slimevr.vr.trackers.*;
 import io.eiren.util.collections.FastList;
 
 import java.util.List;
-import java.util.ArrayList;
 import java.util.Map;
 
 
@@ -1864,6 +1863,7 @@ public class HumanSkeleton extends Skeleton implements SkeletonConfigCallback {
 		// tell the clip corrector to reset its floor level on the next update
 		// of the computed trackers
 		this.legTweaks.resetFloorLevel();
+		this.legTweaks.resetBuffer();
 	}
 
 	@Override
@@ -1882,13 +1882,14 @@ public class HumanSkeleton extends Skeleton implements SkeletonConfigCallback {
 				tracker.resetYaw(referenceRotation);
 			}
 		}
+		this.legTweaks.resetBuffer();
 	}
 
 	@Override
-	public List<Boolean> getLegTweaksState() {
-		List<Boolean> state = new ArrayList<>();
-		state.set(0, this.legTweaks.getFloorclipEnabled());
-		state.set(1, this.legTweaks.getSkatingReductionEnabled());
+	public boolean[] getLegTweaksState() {
+		boolean[] state = new boolean[2];
+		state[0] = this.legTweaks.getFloorclipEnabled();
+		state[1] = this.legTweaks.getSkatingReductionEnabled();
 		return state;
 	}
 
