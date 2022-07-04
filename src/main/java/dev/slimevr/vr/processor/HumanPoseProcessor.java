@@ -195,6 +195,21 @@ public class HumanPoseProcessor {
 			skeleton.resetTrackersYaw();
 	}
 
+	@ThreadSafe
+	public List<Boolean> getLegTweaksState() {
+		return skeleton.getLegTweaksState();
+	}
+
+	@VRServerThread
+	public void initializeLegTweaksConfig() {
+		if (skeleton != null)
+			skeleton
+				.initializeLegTweaksConfig(
+					(boolean) server.config.getProperty("legTweaks.skatingCorrection"),
+					(boolean) server.config.getProperty("legTweaks.floorClip")
+				);
+	}
+
 	@VRServerThread
 	public void setLegTweaksEnabled(boolean value) {
 		if (skeleton != null)

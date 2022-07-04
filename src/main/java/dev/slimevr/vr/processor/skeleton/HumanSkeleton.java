@@ -11,9 +11,9 @@ import dev.slimevr.vr.processor.LegTweaks;
 import dev.slimevr.vr.processor.TransformNode;
 import dev.slimevr.vr.trackers.*;
 import io.eiren.util.collections.FastList;
-import dev.slimevr.vr.processor.LegTweaks;
 
 import java.util.List;
+import java.util.ArrayList;
 import java.util.Map;
 
 
@@ -134,7 +134,7 @@ public class HumanSkeleton extends Skeleton implements SkeletonConfigCallback {
 	// #endregion
 
 	// #region Clip Correction
-	protected LegTweaks clipCorrector = new LegTweaks(0.0f);
+	protected LegTweaks legTweaks = new LegTweaks(0.0f);
 	// #endregion
 
 	// #region Constructors
@@ -821,18 +821,18 @@ public class HumanSkeleton extends Skeleton implements SkeletonConfigCallback {
 		// check for knee trackers (if null use a placeholder)
 		if (computedLeftKneeTracker == null || computedRightKneeTracker == null) {
 			hasKnees = false;
-			clipCorrector.setLeftKneePosition(new Vector3f());
-			clipCorrector.setRightKneePosition(new Vector3f());
+			legTweaks.setLeftKneePosition(new Vector3f());
+			legTweaks.setRightKneePosition(new Vector3f());
 
 		} else {
-			clipCorrector.setLeftKneePosition(computedLeftKneeTracker.position);
-			clipCorrector.setRightKneePosition(computedRightKneeTracker.position);
+			legTweaks.setLeftKneePosition(computedLeftKneeTracker.position);
+			legTweaks.setRightKneePosition(computedRightKneeTracker.position);
 		}
-		clipCorrector.setLeftFootPosition(computedLeftFootTracker.position);
-		clipCorrector.setRightFootPosition(computedRightFootTracker.position);
-		clipCorrector.setWaistPosition(computedWaistTracker.position);
-		clipCorrector.setLeftFootRotation(computedLeftFootTracker.rotation);
-		clipCorrector.setRightFootRotation(computedRightFootTracker.rotation);
+		legTweaks.setLeftFootPosition(computedLeftFootTracker.position);
+		legTweaks.setRightFootPosition(computedRightFootTracker.position);
+		legTweaks.setWaistPosition(computedWaistTracker.position);
+		legTweaks.setLeftFootRotation(computedLeftFootTracker.rotation);
+		legTweaks.setRightFootRotation(computedRightFootTracker.rotation);
 
 		Vector3f temp1 = new Vector3f();
 		Vector3f temp2 = new Vector3f();
@@ -842,18 +842,18 @@ public class HumanSkeleton extends Skeleton implements SkeletonConfigCallback {
 		leftHipNode.localTransform.getTranslation(temp1);
 		rightHipNode.localTransform.getTranslation(temp2);
 		waistNode.localTransform.getTranslation(temp3);
-		clipCorrector.updateOffsets(temp1, temp2, temp3);
+		legTweaks.updateOffsets(temp1, temp2, temp3);
 
 		// correct the foot positions returns true if any adjustment was made
-		boolean corrected = clipCorrector.tweakLegs();
+		boolean corrected = legTweaks.tweakLegs();
 
 		// if any correction was made, update the tracker positions
 		if (corrected) {
-			computedLeftFootTracker.position.set(clipCorrector.getLeftFootPosition());
-			computedRightFootTracker.position.set(clipCorrector.getRightFootPosition());
+			computedLeftFootTracker.position.set(legTweaks.getLeftFootPosition());
+			computedRightFootTracker.position.set(legTweaks.getRightFootPosition());
 			if (hasKnees) {
-				computedLeftKneeTracker.position.set(clipCorrector.getLeftKneePosition());
-				computedRightKneeTracker.position.set(clipCorrector.getRightKneePosition());
+				computedLeftKneeTracker.position.set(legTweaks.getLeftKneePosition());
+				computedRightKneeTracker.position.set(legTweaks.getRightKneePosition());
 			}
 		}
 	}
@@ -1863,7 +1863,7 @@ public class HumanSkeleton extends Skeleton implements SkeletonConfigCallback {
 
 		// tell the clip corrector to reset its floor level on the next update
 		// of the computed trackers
-		this.clipCorrector.resetFloorLevel();
+		this.legTweaks.resetFloorLevel();
 	}
 
 	@Override
@@ -1884,22 +1884,36 @@ public class HumanSkeleton extends Skeleton implements SkeletonConfigCallback {
 		}
 	}
 
-	// master enable/disable of all leg tweaks
+	@Override
+	public List<Boolean> getLegTweaksState() {
+		List<Boolean> state = new ArrayList<>();
+		state.set(0, this.legTweaks.getFloorclipEnabled());
+		state.set(1, this.legTweaks.getSkatingReductionEnabled());
+		return state;
+	}
+
+	@Override
+	public void initializeLegTweaksConfig(boolean floorClipVal, boolean skatingVal) {
+		this.legTweaks.setFloorclipEnabled(floorClipVal);
+		this.legTweaks.setSkatingReductionEnabled(skatingVal);
+	}
+
+	// master enable/disable of all leg tweaks (for autobone)
 	@Override
 	@VRServerThread
 	public void setLegTweaksEnabled(boolean value) {
-		this.clipCorrector.setEnabled(value);
+		this.legTweaks.setEnabled(value);
 	}
 
 	@Override
 	@VRServerThread
 	public void setFloorclipEnabled(boolean value) {
-		this.clipCorrector.setFloorclipEnabled(value);
+		this.legTweaks.setFloorclipEnabled(value);
 	}
 
 	@Override
 	@VRServerThread
 	public void setSkatingReductionEnabled(boolean value) {
-		this.clipCorrector.setSkatingReductionEnabled(value);
+		this.legTweaks.setSkatingReductionEnabled(value);
 	}
 }

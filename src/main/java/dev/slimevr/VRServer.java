@@ -72,6 +72,7 @@ public class VRServer extends Thread {
 		// TODO Multiple processors
 		humanPoseProcessor = new HumanPoseProcessor(this, hmdTracker);
 		shareTrackers = humanPoseProcessor.getComputedTrackers();
+		humanPoseProcessor.initializeLegTweaksConfig();
 
 		// Start server for SlimeVR trackers
 		trackersServer = new TrackersUDPServer(6969, "Sensors UDP server", this::registerTracker);
@@ -250,12 +251,16 @@ public class VRServer extends Thread {
 	}
 
 	public void setSkatingReductionEnabled(boolean value) {
+		config.setProperty("legTweaks.skatingCorrection", value);
+		saveConfig();
 		queueTask(() -> {
 			humanPoseProcessor.setSkatingReductionEnabled(value);
 		});
 	}
 
 	public void setFloorClipEnabled(boolean value) {
+		config.setProperty("legTweaks.floorClip", value);
+		saveConfig();
 		queueTask(() -> {
 			humanPoseProcessor.setFloorClipEnabled(value);
 		});
