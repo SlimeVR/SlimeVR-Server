@@ -41,6 +41,8 @@ public class VRServerGUI extends JFrame {
 	private final SkeletonList skeletonList;
 	private final EJBox pane;
 	private JButton resetButton;
+	private JButton floorClipButton;
+	private JButton skatingCorrectionButton;
 	private float zoom = 1.5f;
 	private float initZoom = zoom;
 
@@ -208,50 +210,47 @@ public class VRServerGUI extends JFrame {
 					}
 				});
 				add(Box.createHorizontalStrut(10));
-				add(new JButton("Enable Floor Clip") {
+				add(floorClipButton = new JButton("Toggle Floor Clip") {
 					{
 						addMouseListener(new MouseInputAdapter() {
 							@Override
 							public void mouseClicked(MouseEvent e) {
-								setFloorClipEnabled(true);
+								boolean[] state = server.humanPoseProcessor.getLegTweaksState();
+								setFloorClipEnabled(!state[0]);
 							}
 						});
 					}
 				});
-				add(Box.createHorizontalStrut(10));
-				add(new JButton("Disable Floor Clip") {
-					{
-						addMouseListener(new MouseInputAdapter() {
-							@Override
-							public void mouseClicked(MouseEvent e) {
-								setFloorClipEnabled(false);
-							}
-						});
-					}
-				});
+				// set the floor clip button to the correct state / initialize
+				// config
+				if (server.config.getProperty("legTweaks.floorClip") == null) {
+					server.config.setProperty("legTweaks.floorClip", false);
+					server.saveConfig();
+				}
+				setFloorClipEnabled((boolean) server.config.getProperty("legTweaks.floorClip"));
+
 
 				add(Box.createHorizontalStrut(10));
-				add(new JButton("Enable Skating Correction") {
+				add(skatingCorrectionButton = new JButton("Toggle Skating Correction") {
 					{
 						addMouseListener(new MouseInputAdapter() {
 							@Override
 							public void mouseClicked(MouseEvent e) {
-								setSkatingReductionEnabled(true);
+								boolean[] state = server.humanPoseProcessor.getLegTweaksState();
+								setSkatingReductionEnabled(!state[1]);
 							}
 						});
 					}
 				});
-				add(Box.createHorizontalStrut(10));
-				add(new JButton("Disable Skating Correction") {
-					{
-						addMouseListener(new MouseInputAdapter() {
-							@Override
-							public void mouseClicked(MouseEvent e) {
-								setSkatingReductionEnabled(false);
-							}
-						});
-					}
-				});
+				// set the skating Correction button to the correct state /
+				// initialize config
+				if (server.config.getProperty("legTweaks.skatingCorrection") == null) {
+					server.config.setProperty("legTweaks.skatingCorrection", false);
+					server.saveConfig();
+				}
+				setSkatingReductionEnabled(
+					(boolean) server.config.getProperty("legTweaks.skatingCorrection")
+				);
 
 
 				add(Box.createHorizontalGlue());
@@ -537,17 +536,26 @@ public class VRServerGUI extends JFrame {
 	}
 
 	@AWTThread
-	private void setLegTweaksEnabled(boolean value) {
-		server.setLegTweaksEnabled(value);
-	}
-
-	@AWTThread
 	private void setSkatingReductionEnabled(boolean value) {
+		if (value) {
+			skatingCorrectionButton.setBackground(Color.GREEN);
+		} else {
+			skatingCorrectionButton.setBackground(Color.RED);
+		}
+		skatingCorrectionButton
+			.setText(value ? "Skating Correction: ON" : "Skating Correction: OFF");
 		server.setSkatingReductionEnabled(value);
 	}
 
 	@AWTThread
 	private void setFloorClipEnabled(boolean value) {
+		if (value) {
+			floorClipButton.setBackground(Color.GREEN);
+		} else {
+			floorClipButton.setBackground(Color.RED);
+		}
+		// update the button
+		floorClipButton.setText(value ? "Floor clip: ON" : "Floor clip: OFF");
 		server.setFloorClipEnabled(value);
 	}
 }
