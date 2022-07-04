@@ -64,11 +64,11 @@ public class LegTweakBuffer {
 
 	// hyperparameters
 	public static final float SKATING_CUTOFF = 0.275f;
-	private static final float SKATING_VELOCITY_CUTOFF = 5.40f;
-	private static final float SKATING_ACCELERATION_CUTOFF = 6.20f;
+	private static final float SKATING_VELOCITY_CUTOFF = 3.20f;
+	private static final float SKATING_ACCELERATION_CUTOFF = 5.20f;
 	private static final float SKATING_ROTATIONAL_VELOCITY_CUTOFF = 1.5f;
 	private static final float SKATING_LOCK_ENGAGE_PERCENT = 0.5f;
-	private static final float FLOOR_DIF_CUTOFF = 0.075f;
+	private static final float FLOOR_DIF_CUTOFF = 0.06f;
 
 	private static final float SKATING_CUTOFF_ENGAGE = SKATING_CUTOFF
 		* SKATING_LOCK_ENGAGE_PERCENT;
@@ -223,25 +223,6 @@ public class LegTweakBuffer {
 		} else {
 			computeState();
 		}
-	}
-
-	// record the positions for the feet and the floor level for each
-	public void populateCorrectedPositions(
-		Vector3f leftFootPosition,
-		Vector3f rightFootPosition,
-		Vector3f leftKneePosition,
-		Vector3f rightKneePosition,
-		Vector3f waistPosition,
-		float leftFloorLevel,
-		float rightFloorLevel
-	) {
-		this.leftFootPositionCorrected = leftFootPosition;
-		this.rightFootPositionCorrected = rightFootPosition;
-		this.leftKneePositionCorrected = leftKneePosition;
-		this.rightKneePositionCorrected = rightKneePosition;
-		this.waistPositionCorrected = waistPosition;
-		this.leftFloorLevel = leftFloorLevel;
-		this.rightFloorLevel = rightFloorLevel;
 	}
 
 	// update the frame number of all the frames
