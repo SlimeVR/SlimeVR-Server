@@ -1,56 +1,48 @@
-# Getting Started with Create React App
+# SlimeVR UI
 
-This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
 
-## Available Scripts
+This is the GUI of SlimeVR, it uses the SolarXR protocol to communicate with the server and is completely isolated from the server logic.
 
-In the project directory, you can run:
+This project is written in Typescript + React for the frontend and uses Tauri + Rust as a small backend. This makes the application more lightweight than electron.
 
-### `npm start`
 
-Runs the app in the development mode.\
-Open [http://localhost:3000](http://localhost:3000) to view it in the browser.
 
-The page will reload if you make edits.\
-You will also see any lint errors in the console.
+## Compiling
+### Prerequisites
 
-### `npm test`
+- Node.js 16 (We recommend the use of `nvm` instead of installing Node.js directly)
+- Windows Webview
+- SlimeVR server installed
 
-Launches the test runner in the interactive watch mode.\
-See the section about [running tests](https://facebook.github.io/create-react-app/docs/running-tests) for more information.
 
-### `npm run build`
+```
+npm install
+```
+ Build for production
+```
+npm run tauri build
+```
+Launch in dev mode
+```
+npm run tauri dev
+```
 
-Builds the app for production to the `build` folder.\
-It correctly bundles React in production mode and optimizes the build for the best performance.
-
-The build is minified and the filenames include the hashes.\
-Your app is ready to be deployed!
-
-See the section about [deployment](https://facebook.github.io/create-react-app/docs/deployment) for more information.
-
-### `npm run eject`
-
-**Note: this is a one-way operation. Once you `eject`, you can’t go back!**
-
-If you aren’t satisfied with the build tool and configuration choices, you can `eject` at any time. This command will remove the single build dependency from your project.
-
-Instead, it will copy all the configuration files and the transitive dependencies (webpack, Babel, ESLint, etc) right into your project so you have full control over them. All of the commands except `eject` will still work, but they will point to the copied scripts so you can tweak them. At this point you’re on your own.
-
-You don’t have to ever use `eject`. The curated feature set is suitable for small and middle deployments, and you shouldn’t feel obligated to use this feature. However we understand that this tool wouldn’t be useful if you couldn’t customize it when you are ready for it.
-
-## Learn More
-
-You can learn more in the [Create React App documentation](https://facebook.github.io/create-react-app/docs/getting-started).
-
-To learn React, check out the [React documentation](https://reactjs.org/).
+## Contributing
+By contributing to this project you are placing all your code under MIT or less restricting licenses, and you certify that the code you have used is compatible with those licenses or is authored by you. If you're doing so on your work time, you certify that your employer is okay with this.
 
 ## License
 All code in this repository is dual-licensed under either:
 
-- MIT License ([LICENSE-MIT](docs/LICENSE-MIT) or http://opensource.org/licenses/MIT)
-- Apache License, Version 2.0 ([LICENSE-APACHE](docs/LICENSE-APACHE) or http://www.apache.org/licenses/LICENSE-2.0)
+- MIT License ([LICENSE-MIT](docs/LICENSE-MIT))
+- Apache License, Version 2.0 ([LICENSE-APACHE](docs/LICENSE-APACHE))
 
-at your option. This means you can select the license you prefer! This dual-licensing approach is the de-facto standard in the Rust ecosystem and there are very good reasons to include both.
+at your option. This means you can select the license you prefer!
 
 Unless you explicitly state otherwise, any contribution intentionally submitted for inclusion in the work by you, as defined in the Apache-2.0 license, shall be dual licensed as above, without any additional terms or conditions.
+
+### Complying with the license
+Please note that these licenses are very permissive, but if you wish to distribute software based on this code, you need to be aware of the following limits of these licenses:
+* When distributing any software that uses or is based on SlimeVR, you have to provide to the end-user the original, unmodified `LICENSE-MIT` or `LICENSE-APACHE` file (or both) from SlimeVR. This includes the `Copyright (c) 2022 SlimeVR Contributors` part of the license. It is not sufficient to use a generic MIT/Apache License, it must be the original license file.
+* This applies even if you distribute software without the source code. In this case, one way to provide it to the end-user is to have a menu in your application that lists all the open source licenses used, including SlimeVR's.
+
+Please refer to the original license files if you are at any point uncertain what the exact the requirements are.
