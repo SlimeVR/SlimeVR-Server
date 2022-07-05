@@ -1894,6 +1894,7 @@ public class HumanSkeleton extends Skeleton implements SkeletonConfigCallback {
 	}
 
 	@Override
+	@VRServerThread
 	public void initializeLegTweaksConfig(boolean floorClipVal, boolean skatingVal) {
 		this.legTweaks.setFloorclipEnabled(floorClipVal);
 		this.legTweaks.setSkatingReductionEnabled(skatingVal);

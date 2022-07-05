@@ -13,7 +13,7 @@ public class LegTweaks {
 	// state variables
 	private boolean initialized = true;
 	private boolean enabled = true; // master switch
-	private boolean floorclipEnabled = true;
+	private boolean floorclipEnabled = false;
 	private boolean skatingCorrectionEnabled = false;
 	private boolean active = false;
 	private boolean rightLegActive = false;
@@ -225,14 +225,14 @@ public class LegTweaks {
 			.setX(0)
 			.setZ(0)
 			.length();
-		if (!active && leftFootDif < 0.001f) {
+		if (!active && leftFootDif < 0.005f) {
 			leftLegActive = false;
-		} else if (active && leftFootDif < 0.001f) {
+		} else if (active && leftFootDif < 0.005f) {
 			leftLegActive = true;
 		}
-		if (!active && rightFootDif < 0.001f) {
+		if (!active && rightFootDif < 0.005f) {
 			rightLegActive = false;
-		} else if (active && rightFootDif < 0.001f) {
+		} else if (active && rightFootDif < 0.005f) {
 			rightLegActive = true;
 		}
 
