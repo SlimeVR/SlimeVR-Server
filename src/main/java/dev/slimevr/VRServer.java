@@ -72,7 +72,6 @@ public class VRServer extends Thread {
 		// TODO Multiple processors
 		humanPoseProcessor = new HumanPoseProcessor(this, hmdTracker);
 		shareTrackers = humanPoseProcessor.getComputedTrackers();
-		humanPoseProcessor.initializeLegTweaksConfig();
 
 		// Start server for SlimeVR trackers
 		trackersServer = new TrackersUDPServer(6969, "Sensors UDP server", this::registerTracker);
