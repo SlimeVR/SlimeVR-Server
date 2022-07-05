@@ -221,14 +221,6 @@ public class VRServerGUI extends JFrame {
 						});
 					}
 				});
-				// set the floor clip button to the correct state / initialize
-				// config
-				if (server.config.getProperty("legTweaks.floorClip") == null) {
-					server.config.setProperty("legTweaks.floorClip", false);
-					server.saveConfig();
-				}
-				setFloorClipEnabled((boolean) server.config.getProperty("legTweaks.floorClip"));
-
 
 				add(Box.createHorizontalStrut(10));
 				add(skatingCorrectionButton = new JButton("Toggle Skating Correction") {
@@ -242,16 +234,6 @@ public class VRServerGUI extends JFrame {
 						});
 					}
 				});
-				// set the skating Correction button to the correct state /
-				// initialize config
-				if (server.config.getProperty("legTweaks.skatingCorrection") == null) {
-					server.config.setProperty("legTweaks.skatingCorrection", false);
-					server.saveConfig();
-				}
-				setSkatingReductionEnabled(
-					(boolean) server.config.getProperty("legTweaks.skatingCorrection")
-				);
-
 
 				add(Box.createHorizontalGlue());
 				add(new JButton("Record BVH") {
