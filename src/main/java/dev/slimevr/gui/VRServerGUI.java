@@ -221,6 +221,10 @@ public class VRServerGUI extends JFrame {
 						});
 					}
 				});
+				setFloorClipEnabled(
+					(boolean) server.config.getProperty("legTweaks.floorClip")
+				);
+
 
 				add(Box.createHorizontalStrut(10));
 				add(skatingCorrectionButton = new JButton("Toggle Skating Correction") {
@@ -234,6 +238,10 @@ public class VRServerGUI extends JFrame {
 						});
 					}
 				});
+				setSkatingReductionEnabled(
+					(boolean) server.config.getProperty("legTweaks.skatingCorrection")
+				);
+
 
 				add(Box.createHorizontalGlue());
 				add(new JButton("Record BVH") {
