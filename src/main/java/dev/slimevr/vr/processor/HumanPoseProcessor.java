@@ -166,6 +166,7 @@ public class HumanPoseProcessor {
 	private void updateSekeltonModel() {
 		disconnectAllTrackers();
 		skeleton = new HumanSkeleton(server, computedTrackers);
+		this.initializeLegTweaksConfig();
 		for (Consumer<Skeleton> sc : onSkeletonUpdated)
 			sc.accept(skeleton);
 	}
@@ -205,8 +206,8 @@ public class HumanPoseProcessor {
 		if (skeleton != null)
 			skeleton
 				.initializeLegTweaksConfig(
-					(boolean) server.config.getProperty("legTweaks.skatingCorrection"),
-					(boolean) server.config.getProperty("legTweaks.floorClip")
+					(boolean) server.config.getProperty("legTweaks.floorClip"),
+					(boolean) server.config.getProperty("legTweaks.skatingCorrection")
 				);
 	}
 
