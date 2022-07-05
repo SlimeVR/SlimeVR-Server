@@ -64,7 +64,7 @@ public class LegTweakBuffer {
 
 	// hyperparameters
 	public static final float SKATING_CUTOFF = 0.275f;
-	private static final float SKATING_VELOCITY_CUTOFF = 3.20f;
+	private static final float SKATING_VELOCITY_CUTOFF = 3.80f;
 	private static final float SKATING_ACCELERATION_CUTOFF = 5.20f;
 	private static final float SKATING_ROTATIONAL_VELOCITY_CUTOFF = 1.5f;
 	private static final float SKATING_LOCK_ENGAGE_PERCENT = 0.5f;
@@ -196,8 +196,16 @@ public class LegTweakBuffer {
 		return leftLegState;
 	}
 
+	public void setLeftLegState(int leftLegState) {
+		this.leftLegState = leftLegState;
+	}
+
 	public int getRightLegState() {
 		return rightLegState;
+	}
+
+	public void setRightLegState(int rightLegState) {
+		this.rightLegState = rightLegState;
 	}
 
 	public void setParent(LegTweakBuffer parent) {
@@ -216,7 +224,7 @@ public class LegTweakBuffer {
 		computeVelocity();
 		computeAcceleration();
 
-		// if correction is inactive state is unknown and legs are both unlocked
+		// if correction is inactive state is unknown
 		if (!active) {
 			leftLegState = UNLOCKED;
 			rightLegState = UNLOCKED;
