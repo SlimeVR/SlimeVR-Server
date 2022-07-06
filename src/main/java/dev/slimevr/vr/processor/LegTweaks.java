@@ -43,11 +43,12 @@ public class LegTweaks {
 	private static final float MIN_ACCEPTABLE_ERROR = 0.075f;
 	private static final float MAX_ACCEPTABLE_ERROR = LegTweakBuffer.SKATING_CUTOFF;
 	private static final float CORRECTION_WEIGHT_MIN = 0.15f;
-	private static final float CORRECTION_WEIGHT_MAX = 0.6f;
+	private static final float CORRECTION_WEIGHT_MAX = 0.7f;
 
 
 	// buffer for holding previus frames of data
 	private LegTweakBuffer bufferHead = new LegTweakBuffer();
+	private boolean bufferInvalid = true;
 
 	public LegTweaks(float floorLevel) {
 		this.floorLevel = floorLevel;
@@ -139,6 +140,7 @@ public class LegTweaks {
 		this.skatingCorrectionEnabled = skatingCorrectionEnabled;
 		// reset the buffer
 		this.bufferHead = new LegTweakBuffer();
+		this.bufferInvalid = true;
 	}
 
 	public boolean getEnabled() {
@@ -154,8 +156,7 @@ public class LegTweaks {
 	}
 
 	public void resetBuffer() {
-		this.bufferHead.setLeftFootPositionCorrected(leftFootPosition);
-		this.bufferHead.setRightFootPositionCorrected(rightFootPosition);
+		bufferInvalid = true;
 	}
 
 	// tweak the position of the legs based on data from the last frames
@@ -163,7 +164,7 @@ public class LegTweaks {
 		// if not initialized, we need to initialize floor level and waist to
 		// floor distance (must happen immediately after reset)
 		if (!initialized) {
-			floorLevel = (leftFootPosition.y + rightFootPosition.y) / 2f;
+			floorLevel = (leftFootPosition.y + rightFootPosition.y) / 2f + 0.02f;
 			waistToFloorDist = waistPosition.y - floorLevel;
 			initialized = true;
 		}
@@ -183,6 +184,14 @@ public class LegTweaks {
 		else {
 			active = true;
 		}
+		// if the buffer is invalid set it up
+		if (bufferInvalid) {
+			bufferHead.setLeftFootPositionCorrected(leftFootPosition);
+			bufferHead.setRightFootPositionCorrected(rightFootPosition);
+			bufferHead.setLeftLegState(LegTweakBuffer.UNLOCKED);
+			bufferHead.setRightLegState(LegTweakBuffer.UNLOCKED);
+			bufferInvalid = false;
+		}
 
 		// first update the buffer
 		LegTweakBuffer currentFrame = new LegTweakBuffer();
@@ -198,8 +207,9 @@ public class LegTweaks {
 		boolean corrected2 = false;
 		currentFrame.setParent(bufferHead);
 		this.bufferHead = currentFrame;
+		this.bufferHead.calculateFootAttributes(active);
 
-		// once done run the clip correction
+		// push the feet up if needed
 		if (floorclipEnabled) {
 			corrected1 = correctClipping();
 		}
@@ -207,9 +217,9 @@ public class LegTweaks {
 		// calculate acceleration and velocity of the feet using the buffer
 		// (only needed if skating correction is enabled)
 		if (skatingCorrectionEnabled) {
-			currentFrame.calculateFootAttributes(active);
 			corrected2 = correctSkating();
 		}
+
 
 		// determine if either leg is in a position to activate or deactivate
 		// (use the buffer to get the positions before corrections)
@@ -370,6 +380,7 @@ public class LegTweaks {
 				.subtract(bufferHead.getParent().getLeftFootPositionCorrected())
 				.setY(0);
 			if (leftFootDif.length() > 0.005f) {
+				float leftY = leftFootPosition.y;
 				leftFootPosition = bufferHead.getParent().getLeftFootPositionCorrected();
 				Vector3f velocity = bufferHead.getLeftFootVelocity();
 				// first add the difference from the last frame to this frame
@@ -380,6 +391,7 @@ public class LegTweaks {
 							.getLeftFootPosition()
 							.subtract(bufferHead.getLeftFootPosition())
 					);
+				leftFootPosition.y = leftY;
 				// if velocity and dif are pointing in the same direction,
 				// add a small amount of velocity to the dif
 				// else subtract a small amount of velocity from the dif
@@ -407,6 +419,7 @@ public class LegTweaks {
 				.subtract(bufferHead.getParent().getRightFootPositionCorrected())
 				.setY(0);
 			if (rightFootDif.length() > 0.005f) {
+				float rightY = rightFootPosition.y;
 				rightFootPosition = bufferHead.getParent().getRightFootPositionCorrected();
 				Vector3f velocity = bufferHead.getRightFootVelocity();
 				// first add the difference from the last frame to this frame
@@ -417,6 +430,7 @@ public class LegTweaks {
 							.getRightFootPosition()
 							.subtract(bufferHead.getRightFootPosition())
 					);
+				rightFootPosition.y = rightY;
 				// if velocity and dif are pointing in the same direction,
 				// add a small amount of velocity to the dif
 				// else subtract a small amount of velocity from the dif

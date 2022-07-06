@@ -65,7 +65,7 @@ public class LegTweakBuffer {
 	// hyperparameters
 	public static final float SKATING_CUTOFF = 0.275f;
 	private static final float SKATING_VELOCITY_CUTOFF = 3.80f;
-	private static final float SKATING_ACCELERATION_CUTOFF = 5.20f;
+	private static final float SKATING_ACCELERATION_CUTOFF = 4.20f;
 	private static final float SKATING_ROTATIONAL_VELOCITY_CUTOFF = 1.5f;
 	private static final float SKATING_LOCK_ENGAGE_PERCENT = 0.5f;
 	private static final float FLOOR_DIF_CUTOFF = 0.06f;
