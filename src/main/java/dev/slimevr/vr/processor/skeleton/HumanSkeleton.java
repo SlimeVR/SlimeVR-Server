@@ -235,7 +235,7 @@ public class HumanSkeleton extends Skeleton implements SkeletonConfigCallback {
 		// #endregion
 
 		// Attach arms
-		assembleSkeletonArms(reset);
+		assembleSkeletonArms(false);
 	}
 
 	protected void assembleSkeletonArms(boolean reset) {
