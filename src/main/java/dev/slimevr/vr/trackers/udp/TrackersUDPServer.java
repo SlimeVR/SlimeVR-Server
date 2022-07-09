@@ -316,9 +316,9 @@ public class TrackersUDPServer extends Thread {
 							parser.write(bb, conn, new UDPPacket1Heartbeat());
 							socket.send(new DatagramPacket(rcvBuffer, bb.position(), conn.address));
 							if (conn.lastPacket + 1000 < System.currentTimeMillis()) {
-								Iterator<IMUTracker> iterator = conn.getTrackers().iterator();
+								Iterator<Tracker> iterator = conn.getTrackers().iterator();
 								while (iterator.hasNext()) {
-									IMUTracker tracker = iterator.next();
+									IMUTracker tracker = (IMUTracker) iterator.next();
 									if (tracker.getStatus() == TrackerStatus.OK)
 										tracker.setStatus(TrackerStatus.DISCONNECTED);
 								}
@@ -328,9 +328,9 @@ public class TrackersUDPServer extends Thread {
 								}
 							} else {
 								conn.timedOut = false;
-								Iterator<IMUTracker> iterator = conn.getTrackers().iterator();
+								Iterator<Tracker> iterator = conn.getTrackers().iterator();
 								while (iterator.hasNext()) {
-									IMUTracker tracker = iterator.next();
+									IMUTracker tracker = (IMUTracker) iterator.next();
 									if (tracker.getStatus() == TrackerStatus.DISCONNECTED)
 										tracker.setStatus(TrackerStatus.OK);
 								}
@@ -441,7 +441,8 @@ public class TrackersUDPServer extends Thread {
 					break;
 				UDPPacket10PingPong ping = (UDPPacket10PingPong) packet;
 				if (connection.lastPingPacketId == ping.pingId) {
-					for (IMUTracker imuTracker : connection.getTrackers()) {
+					for (Tracker t : connection.getTrackers()) {
+						IMUTracker imuTracker = (IMUTracker) t;
 						imuTracker
 							.setPing(
 								(int) (System.currentTimeMillis()
@@ -472,10 +473,10 @@ public class TrackersUDPServer extends Thread {
 				UDPPacket12BatteryLevel battery = (UDPPacket12BatteryLevel) packet;
 
 				if (connection.getTrackers().size() > 0) {
-					Iterator<IMUTracker> iterator = connection.getTrackers().iterator();
+					Iterator<Tracker> iterator = connection.getTrackers().iterator();
 
 					while (iterator.hasNext()) {
-						IMUTracker tr = iterator.next();
+						IMUTracker tr = (IMUTracker) iterator.next();
 						tr.setBatteryVoltage(battery.voltage);
 						tr.setBatteryLevel(battery.level * 100);
 					}
@@ -538,9 +539,9 @@ public class TrackersUDPServer extends Thread {
 				UDPPacket19SignalStrength signalStrength = (UDPPacket19SignalStrength) packet;
 
 				if (connection.getTrackers().size() > 0) {
-					Iterator<IMUTracker> iterator = connection.getTrackers().iterator();
+					Iterator<Tracker> iterator = connection.getTrackers().iterator();
 					while (iterator.hasNext()) {
-						IMUTracker tr = iterator.next();
+						IMUTracker tr = (IMUTracker) iterator.next();
 						tr.setSignalStrength(signalStrength.signalStrength);
 					}
 				}

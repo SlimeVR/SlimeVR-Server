@@ -3,7 +3,7 @@ package dev.slimevr.protocol;
 import com.google.flatbuffers.FlatBufferBuilder;
 import com.jme3.math.Quaternion;
 import com.jme3.math.Vector3f;
-import dev.slimevr.vr.IDevice;
+import dev.slimevr.vr.Device;
 import dev.slimevr.vr.processor.skeleton.BoneInfo;
 import dev.slimevr.vr.trackers.*;
 import solarxr_protocol.data_feed.Bone;
@@ -27,7 +27,7 @@ import java.util.List;
 
 public class DataFeedBuilder {
 
-	public static int createHardwareInfo(FlatBufferBuilder fbb, IDevice device) {
+	public static int createHardwareInfo(FlatBufferBuilder fbb, Device device) {
 		Tracker tracker = device.getTrackers().get(0).get();
 
 		int nameOffset = device.getFirmwareVersion() != null
@@ -163,7 +163,7 @@ public class DataFeedBuilder {
 	public static int createTrackersData(
 		FlatBufferBuilder fbb,
 		DeviceDataMaskT mask,
-		IDevice device
+		Device device
 	) {
 		if (mask.getTrackerData() == null)
 			return 0;
@@ -186,7 +186,7 @@ public class DataFeedBuilder {
 		FlatBufferBuilder fbb,
 		int id,
 		DeviceDataMaskT mask,
-		IDevice device
+		Device device
 	) {
 		if (!mask.getDeviceData())
 			return 0;
@@ -259,14 +259,14 @@ public class DataFeedBuilder {
 	public static int createDevicesData(
 		FlatBufferBuilder fbb,
 		DeviceDataMaskT deviceDataMaskT,
-		List<IDevice> devices
+		List<Device> devices
 	) {
 		if (deviceDataMaskT == null)
 			return 0;
 
 		int[] devicesDataOffsets = new int[devices.size()];
 		for (int i = 0; i < devices.size(); i++) {
-			IDevice device = devices.get(i);
+			Device device = devices.get(i);
 			devicesDataOffsets[i] = DataFeedBuilder
 				.createDeviceData(fbb, i, deviceDataMaskT, device);
 		}
