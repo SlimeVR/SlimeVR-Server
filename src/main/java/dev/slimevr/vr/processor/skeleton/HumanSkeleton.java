@@ -7,7 +7,6 @@ import dev.slimevr.VRServer;
 import dev.slimevr.util.ann.VRServerThread;
 import dev.slimevr.vr.processor.ComputedHumanPoseTracker;
 import dev.slimevr.vr.processor.ComputedHumanPoseTrackerPosition;
-import dev.slimevr.vr.processor.LegTweaks;
 import dev.slimevr.vr.processor.TransformNode;
 import dev.slimevr.vr.trackers.*;
 import io.eiren.util.collections.FastList;
@@ -133,7 +132,7 @@ public class HumanSkeleton extends Skeleton implements SkeletonConfigCallback {
 	// #endregion
 
 	// #region Clip Correction
-	protected LegTweaks legTweaks = new LegTweaks(0.0f);
+	protected LegTweaks legTweaks = new LegTweaks(this);
 	// #endregion
 
 	// #region Constructors
@@ -816,45 +815,10 @@ public class HumanSkeleton extends Skeleton implements SkeletonConfigCallback {
 		) {
 			return;
 		}
-		boolean hasKnees = true;
-		// check for knee trackers (if null use a placeholder)
-		if (computedLeftKneeTracker == null || computedRightKneeTracker == null) {
-			hasKnees = false;
-			legTweaks.setLeftKneePosition(new Vector3f());
-			legTweaks.setRightKneePosition(new Vector3f());
 
-		} else {
-			legTweaks.setLeftKneePosition(computedLeftKneeTracker.position);
-			legTweaks.setRightKneePosition(computedRightKneeTracker.position);
-		}
-		legTweaks.setLeftFootPosition(computedLeftFootTracker.position);
-		legTweaks.setRightFootPosition(computedRightFootTracker.position);
-		legTweaks.setWaistPosition(computedWaistTracker.position);
-		legTweaks.setLeftFootRotation(computedLeftFootTracker.rotation);
-		legTweaks.setRightFootRotation(computedRightFootTracker.rotation);
+		// correct the foot positions
+		legTweaks.tweakLegs();
 
-		Vector3f temp1 = new Vector3f();
-		Vector3f temp2 = new Vector3f();
-		Vector3f temp3 = new Vector3f();
-
-		// get offsets from the waist to the upper legs
-		leftHipNode.localTransform.getTranslation(temp1);
-		rightHipNode.localTransform.getTranslation(temp2);
-		waistNode.localTransform.getTranslation(temp3);
-		legTweaks.updateOffsets(temp1, temp2, temp3);
-
-		// correct the foot positions returns true if any adjustment was made
-		boolean corrected = legTweaks.tweakLegs();
-
-		// if any correction was made, update the tracker positions
-		if (corrected) {
-			computedLeftFootTracker.position.set(legTweaks.getLeftFootPosition());
-			computedRightFootTracker.position.set(legTweaks.getRightFootPosition());
-			if (hasKnees) {
-				computedLeftKneeTracker.position.set(legTweaks.getLeftKneePosition());
-				computedRightKneeTracker.position.set(legTweaks.getRightKneePosition());
-			}
-		}
 	}
 
 	// #region Update the node transforms from the trackers
