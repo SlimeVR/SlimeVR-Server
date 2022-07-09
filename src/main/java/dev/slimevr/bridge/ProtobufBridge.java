@@ -245,9 +245,14 @@ public abstract class ProtobufBridge<T extends VRTracker> implements Bridge {
 	@VRServerThread
 	@Override
 	public void removeSharedTracker(ShareableTracker tracker) {
+		// Remove shared tracker
 		sharedTrackers.remove(tracker);
-		// No message can be sent to the remote side, protocol doesn't support
-		// tracker
-		// removal (yet)
+
+		// Set the tracker's status as disconnected
+		TrackerStatus.Builder statusBuilder = TrackerStatus
+			.newBuilder()
+			.setTrackerId(tracker.getTrackerId());
+		statusBuilder.setStatus(TrackerStatus.Status.DISCONNECTED);
+		sendMessage(ProtobufMessage.newBuilder().setTrackerStatus(statusBuilder).build());
 	}
 }
