@@ -17,6 +17,7 @@ public class LegTweaks {
 	private boolean active = false;
 	private boolean rightLegActive = false;
 	private boolean leftLegActive = false;
+	private boolean positionsPopulated = false;
 
 	// skeleton
 	private HumanSkeleton skeleton;
@@ -32,10 +33,15 @@ public class LegTweaks {
 	private Vector3f leftWaistUpperLegOffset = new Vector3f();
 	private Vector3f rightWaistUpperLegOffset = new Vector3f();
 
+	// knee placeholder
+	private Vector3f leftKneePlaceholder = new Vector3f();
+	private Vector3f rightKneePlaceholder = new Vector3f();
+	private boolean kneesActive = false;
+
 	// hyperparameters (clip correction)
 	private static final float STANDING_CUTOFF_HORIZONTAL = 0.5f;
 	private static final float STANDING_CUTOFF_VERTICAL = 0.35f;
-	private static final float MAX_DYNAMIC_DISPLACEMENT = 0.12f;
+	private static final float MAX_DYNAMIC_DISPLACEMENT = 0.08f;
 	private static final float MAX_DISENGAGMENT_OFFSET = 0.25f;
 	private static final float DYNAMIC_DISPLACEMENT_CUTOFF = 0.8f;
 
@@ -159,24 +165,37 @@ public class LegTweaks {
 		bufferInvalid = true;
 	}
 
-	// updates the object with the latest data from the skeleton
-	public boolean preUpdate() {
-		// populate the vectors with the latest data (should really remove them
-		// and use the skeleton directly)
-		// check for knee trackers (if null use a placeholder)
-		if (skeleton.computedLeftKneeTracker == null || skeleton.computedRightKneeTracker == null) {
-			setLeftKneePosition(new Vector3f());
-			setRightKneePosition(new Vector3f());
-
+	// set the vectors in this object to the vectors in the skeleton
+	private void setVectors() {
+		// set the positions of the feet and knees to the skeletons current
+		// positions
+		if (skeleton.computedLeftKneeTracker != null || skeleton.computedRightKneeTracker != null) {
+			kneesActive = true;
+			leftKneePosition = skeleton.computedLeftKneeTracker.position;
+			rightKneePosition = skeleton.computedRightKneeTracker.position;
 		} else {
-			setLeftKneePosition(skeleton.computedLeftKneeTracker.position);
-			setRightKneePosition(skeleton.computedRightKneeTracker.position);
+			kneesActive = false;
+			leftKneePosition = leftKneePlaceholder;
+			rightKneePosition = rightKneePlaceholder;
 		}
-		setLeftFootPosition(skeleton.computedLeftFootTracker.position);
-		setRightFootPosition(skeleton.computedRightFootTracker.position);
-		setWaistPosition(skeleton.computedWaistTracker.position);
-		setLeftFootRotation(skeleton.computedLeftFootTracker.rotation);
-		setRightFootRotation(skeleton.computedRightFootTracker.rotation);
+		if (
+			skeleton.computedLeftFootTracker != null
+				&& skeleton.computedRightFootTracker != null
+				&& skeleton.computedWaistTracker != null
+		) {
+			leftFootPosition = skeleton.computedLeftFootTracker.position;
+			rightFootPosition = skeleton.computedRightFootTracker.position;
+			waistPosition = skeleton.computedWaistTracker.position;
+			leftFootRotation = skeleton.computedLeftFootTracker.rotation;
+			rightFootRotation = skeleton.computedRightFootTracker.rotation;
+			positionsPopulated = true;
+		}
+	}
+
+	// updates the object with the latest data from the skeleton
+	private boolean preUpdate() {
+		// populate the vectors with the latest data
+		setVectors();
 
 		// if not initialized, we need to initialize floor level and waist to
 		// floor distance (must happen immediately after reset)
@@ -211,7 +230,7 @@ public class LegTweaks {
 		}
 
 		// update offsets for knee correction if the knees are not null
-		if (skeleton.computedLeftKneeTracker != null) {
+		if (kneesActive) {
 			Vector3f temp1 = new Vector3f();
 			Vector3f temp2 = new Vector3f();
 			Vector3f temp3 = new Vector3f();
@@ -221,9 +240,8 @@ public class LegTweaks {
 			skeleton.rightHipNode.localTransform.getTranslation(temp2);
 			skeleton.waistNode.localTransform.getTranslation(temp3);
 			updateOffsets(temp1, temp2, temp3);
-
 		}
-		// first update the buffer
+		// update the buffer
 		LegTweakBuffer currentFrame = new LegTweakBuffer();
 		currentFrame.setLeftFootPosition(leftFootPosition);
 		currentFrame.setLeftFootRotation(leftFootRotation);
@@ -240,20 +258,14 @@ public class LegTweaks {
 		return true;
 	}
 
-	// populates the skeleton with the corrected tracker positions
-	public void sendDataToSkeleton() {
-		skeleton.computedLeftFootTracker.position.set(getLeftFootPosition());
-		skeleton.computedRightFootTracker.position.set(getRightFootPosition());
-		if (skeleton.computedLeftKneeTracker != null && skeleton.computedRightKneeTracker != null) {
-			skeleton.computedLeftKneeTracker.position.set(getLeftKneePosition());
-			skeleton.computedRightKneeTracker.position.set(getRightKneePosition());
-		}
-	}
-
 	// tweak the position of the legs based on data from the last frames
 	public void tweakLegs() {
 		// update the class with the latest data from the skeleton
-		preUpdate();
+		// if false is returned something indicated that the legs should not be
+		// tweaked
+		if (!preUpdate()) {
+			return;
+		}
 
 		boolean corrected1 = false;
 		boolean corrected2 = false;
@@ -303,6 +315,11 @@ public class LegTweaks {
 			rightKneePosition.y = bufferHead.getRightKneePosition().y;
 		}
 
+		// calculate the correction for the knees
+		if (kneesActive) {
+			correctKnees();
+		}
+
 		// populate the corrected data into the current frame
 		this.bufferHead.setLeftFootPositionCorrected(leftFootPosition);
 		this.bufferHead.setRightFootPositionCorrected(rightFootPosition);
@@ -319,37 +336,6 @@ public class LegTweaks {
 				(floorLevel + (MAX_DYNAMIC_DISPLACEMENT * getRightFootOffset()))
 					- currentDisengagementOffset
 			);
-
-		// calculate the correction for the knees
-		Vector3f leftWaist = waistPosition.add(leftWaistUpperLegOffset);
-		Vector3f rightWaist = waistPosition.add(rightWaistUpperLegOffset);
-
-		float leftKneeWaist = leftKneePosition.distance(leftWaist);
-		float rightKneeWaist = rightKneePosition.distance(rightWaist);
-
-		float leftKneeWaistNew = leftKneePosition.distance(leftWaist);
-		float rightKneeWaistNew = rightKneePosition.distance(rightWaist);
-		float leftKneeOffset = leftKneeWaistNew - leftKneeWaist;
-		float rightKneeOffset = rightKneeWaistNew - rightKneeWaist;
-
-		// get the vector from the waist to the knee
-		Vector3f leftKneeVector = leftKneePosition
-			.subtract(leftWaist)
-			.normalize()
-			.mult(leftKneeOffset);
-		Vector3f rightKneeVector = rightKneePosition
-			.subtract(rightWaist)
-			.normalize()
-			.mult(rightKneeOffset);
-
-		// correct the knees (not perfect by any means but very close and
-		// computationally cheap)
-		leftKneePosition = leftKneePosition.subtract(leftKneeVector);
-		rightKneePosition = rightKneePosition.subtract(rightKneeVector);
-
-		if (corrected1 || corrected2) {
-			sendDataToSkeleton();
-		}
 	}
 
 	// returns true if the foot is clipped and false if it is not
@@ -431,10 +417,10 @@ public class LegTweaks {
 			if (leftFootDif.length() > 0.005f) {
 				float leftY = leftFootPosition.y;
 
-				leftFootPosition = bufferHead.getParent().getLeftFootPositionCorrected();
+				Vector3f temp = bufferHead.getParent().getLeftFootPositionCorrected();
 				Vector3f velocity = bufferHead.getLeftFootVelocity();
 				// first add the difference from the last frame to this frame
-				leftFootPosition = leftFootPosition
+				temp = temp
 					.subtract(
 						bufferHead
 							.getParent()
@@ -442,10 +428,12 @@ public class LegTweaks {
 							.subtract(bufferHead.getLeftFootPosition())
 					);
 				leftFootPosition.y = leftY;
+				leftFootPosition.x = temp.x;
+				leftFootPosition.z = temp.z;
+
 				// if velocity and dif are pointing in the same direction,
 				// add a small amount of velocity to the dif
 				// else subtract a small amount of velocity from the dif
-
 				// calculate the correction weight
 				float weight = calculateCorrectionWeight(
 					leftFootPosition,
@@ -481,6 +469,7 @@ public class LegTweaks {
 					leftFootPosition.z = bufferHead.getLeftFootPosition().z;
 				}
 
+
 			}
 		}
 		if (bufferHead.getRightLegState() == LegTweakBuffer.UNLOCKED) {
@@ -489,10 +478,10 @@ public class LegTweaks {
 				.setY(0);
 			if (rightFootDif.length() > 0.005f) {
 				float rightY = rightFootPosition.y;
-				rightFootPosition = bufferHead.getParent().getRightFootPositionCorrected();
+				Vector3f temp = bufferHead.getParent().getRightFootPositionCorrected();
 				Vector3f velocity = bufferHead.getRightFootVelocity();
 				// first add the difference from the last frame to this frame
-				rightFootPosition = rightFootPosition
+				temp = temp
 					.subtract(
 						bufferHead
 							.getParent()
@@ -500,10 +489,12 @@ public class LegTweaks {
 							.subtract(bufferHead.getRightFootPosition())
 					);
 				rightFootPosition.y = rightY;
+				rightFootPosition.x = temp.x;
+				rightFootPosition.z = temp.z;
+
 				// if velocity and dif are pointing in the same direction,
 				// add a small amount of velocity to the dif
 				// else subtract a small amount of velocity from the dif
-
 				// calculate the correction weight
 				float weight = calculateCorrectionWeight(
 					rightFootPosition,
@@ -539,6 +530,7 @@ public class LegTweaks {
 				) {
 					rightFootPosition.z = bufferHead.getRightFootPosition().z;
 				}
+
 			}
 		}
 		return true;
@@ -566,6 +558,36 @@ public class LegTweaks {
 		waist.y = 0;
 		return !(waist.distance(left) > STANDING_CUTOFF_HORIZONTAL
 			&& waist.distance(right) > STANDING_CUTOFF_HORIZONTAL);
+	}
+
+	// move the knees in to a position that satisfys the distance between nodes
+	private void correctKnees() {
+		Vector3f leftWaist = waistPosition.add(leftWaistUpperLegOffset);
+		Vector3f rightWaist = waistPosition.add(rightWaistUpperLegOffset);
+
+		float leftKneeWaist = leftKneePosition.distance(leftWaist);
+		float rightKneeWaist = rightKneePosition.distance(rightWaist);
+
+		float leftKneeWaistNew = leftKneePosition.distance(leftWaist);
+		float rightKneeWaistNew = rightKneePosition.distance(rightWaist);
+		float leftKneeOffset = leftKneeWaistNew - leftKneeWaist;
+		float rightKneeOffset = rightKneeWaistNew - rightKneeWaist;
+
+		// get the vector from the waist to the knee
+		Vector3f leftKneeVector = leftKneePosition
+			.subtract(leftWaist)
+			.normalize()
+			.mult(leftKneeOffset);
+		Vector3f rightKneeVector = rightKneePosition
+			.subtract(rightWaist)
+			.normalize()
+			.mult(rightKneeOffset);
+
+		// correct the knees (not perfect by any means but very close and
+		// computationally cheap)
+		leftKneePosition = leftKneePosition.subtract(leftKneeVector);
+		rightKneePosition = rightKneePosition.subtract(rightKneeVector);
+
 	}
 
 	private float getLeftFootOffset() {
