@@ -806,16 +806,7 @@ public class HumanSkeleton extends Skeleton implements SkeletonConfigCallback {
 	}
 
 	// correct any clipping that is happening to the feet trackers
-	void tweakLegPos() {
-		// check for null trackers (if any of the primary 3 are null return)
-		if (
-			computedLeftFootTracker == null
-				|| computedRightFootTracker == null
-				|| computedWaistTracker == null
-		) {
-			return;
-		}
-
+	private void tweakLegPos() {
 		// correct the foot positions
 		legTweaks.tweakLegs();
 
