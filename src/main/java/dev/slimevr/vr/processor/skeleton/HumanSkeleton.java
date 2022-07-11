@@ -13,7 +13,6 @@ import io.eiren.util.collections.FastList;
 
 import java.util.List;
 import java.util.Map;
-import java.util.Objects;
 
 
 public class HumanSkeleton extends Skeleton implements SkeletonConfigCallback {
@@ -164,7 +163,11 @@ public class HumanSkeleton extends Skeleton implements SkeletonConfigCallback {
 	) {
 		this(computedTrackers);
 
-		setTrackersFromList(Objects.requireNonNullElseGet(trackers, () -> new FastList<>(0)));
+		if (trackers != null) {
+			setTrackersFromList(trackers);
+		} else {
+			setTrackersFromList(new FastList<Tracker>(0));
+		}
 	}
 
 	public HumanSkeleton(
@@ -252,7 +255,7 @@ public class HumanSkeleton extends Skeleton implements SkeletonConfigCallback {
 		leftShoulderHeadNode.attachChild(leftShoulderTailNode);
 		rightShoulderHeadNode.attachChild(rightShoulderTailNode);
 
-		if (isTrackingLeftElbowFromController()) {
+		if (isTrackingLeftArmFromController()) {
 			leftWristNode.attachChild(leftElbowNode);
 			leftControllerNode.attachChild(leftWristNode);
 
@@ -262,7 +265,7 @@ public class HumanSkeleton extends Skeleton implements SkeletonConfigCallback {
 			leftWristNode.attachChild(leftHandNode);
 
 		}
-		if (isTrackingRightElbowFromController()) {
+		if (isTrackingRightArmFromController()) {
 			rightWristNode.attachChild(rightElbowNode);
 			rightControllerNode.attachChild(rightWristNode);
 		} else {
@@ -598,18 +601,12 @@ public class HumanSkeleton extends Skeleton implements SkeletonConfigCallback {
 		hasLeftArmTracker = leftLowerArmTracker != null || leftUpperArmTracker != null;
 		hasRightArmTracker = rightLowerArmTracker != null || rightUpperArmTracker != null;
 
-		// Rebuilds the skeleton nodes attachments
+		// Rebuilds the arm skeleton nodes attachments
 		assembleSkeletonArms(true);
 
-		// Refresh node offsets for arms TODO make work
-		updateNodeOffset(
-			BoneType.LEFT_LOWER_ARM,
-			skeletonConfig.getNodeOffset(BoneType.LEFT_LOWER_ARM)
-		);
-		updateNodeOffset(
-			BoneType.RIGHT_LOWER_ARM,
-			skeletonConfig.getNodeOffset(BoneType.RIGHT_LOWER_ARM)
-		);
+		// Refresh node offsets.
+		skeletonConfig.computeNodeOffset(BoneType.LEFT_LOWER_ARM);
+		skeletonConfig.computeNodeOffset(BoneType.RIGHT_LOWER_ARM);
 
 		// Rebuild the bone list
 		resetBones();
@@ -674,7 +671,6 @@ public class HumanSkeleton extends Skeleton implements SkeletonConfigCallback {
 			);
 			computedWaistTracker.setStatus(TrackerStatus.OK);
 		}
-
 		if (computedLeftFootTracker == null) {
 			computedLeftFootTracker = new ComputedHumanPoseTracker(
 				Tracker.getNextLocalTrackerId(),
@@ -683,7 +679,6 @@ public class HumanSkeleton extends Skeleton implements SkeletonConfigCallback {
 			);
 			computedLeftFootTracker.setStatus(TrackerStatus.OK);
 		}
-
 		if (computedRightFootTracker == null) {
 			computedRightFootTracker = new ComputedHumanPoseTracker(
 				Tracker.getNextLocalTrackerId(),
@@ -692,7 +687,6 @@ public class HumanSkeleton extends Skeleton implements SkeletonConfigCallback {
 			);
 			computedRightFootTracker.setStatus(TrackerStatus.OK);
 		}
-
 		if (computedChestTracker == null) {
 			computedChestTracker = new ComputedHumanPoseTracker(
 				Tracker.getNextLocalTrackerId(),
@@ -701,7 +695,6 @@ public class HumanSkeleton extends Skeleton implements SkeletonConfigCallback {
 			);
 			computedChestTracker.setStatus(TrackerStatus.OK);
 		}
-
 		if (computedLeftKneeTracker == null) {
 			computedLeftKneeTracker = new ComputedHumanPoseTracker(
 				Tracker.getNextLocalTrackerId(),
@@ -710,7 +703,6 @@ public class HumanSkeleton extends Skeleton implements SkeletonConfigCallback {
 			);
 			computedLeftKneeTracker.setStatus(TrackerStatus.OK);
 		}
-
 		if (computedRightKneeTracker == null) {
 			computedRightKneeTracker = new ComputedHumanPoseTracker(
 				Tracker.getNextLocalTrackerId(),
@@ -719,7 +711,6 @@ public class HumanSkeleton extends Skeleton implements SkeletonConfigCallback {
 			);
 			computedRightKneeTracker.setStatus(TrackerStatus.OK);
 		}
-
 		if (computedLeftElbowTracker == null) {
 			computedLeftElbowTracker = new ComputedHumanPoseTracker(
 				Tracker.getNextLocalTrackerId(),
@@ -736,7 +727,6 @@ public class HumanSkeleton extends Skeleton implements SkeletonConfigCallback {
 			);
 			computedRightElbowTracker.setStatus(TrackerStatus.OK);
 		}
-
 		if (computedLeftHandTracker == null) {
 			computedLeftHandTracker = new ComputedHumanPoseTracker(
 				Tracker.getNextLocalTrackerId(),
@@ -796,18 +786,18 @@ public class HumanSkeleton extends Skeleton implements SkeletonConfigCallback {
 	@VRServerThread
 	@Override
 	public void updatePose() {
-		updateLocalTransforms();
 		updateRootTrackers();
+		updateLocalTransforms();
 		updateComputedTrackers();
 	}
 	// #endregion
 
 	protected void updateRootTrackers() {
 		hmdNode.update();
-		if (isTrackingLeftElbowFromController()) {
+		if (isTrackingLeftArmFromController()) {
 			leftControllerNode.update();
 		}
-		if (isTrackingRightElbowFromController()) {
+		if (isTrackingRightArmFromController()) {
 			rightControllerNode.update();
 		}
 	}
@@ -1046,7 +1036,7 @@ public class HumanSkeleton extends Skeleton implements SkeletonConfigCallback {
 					leftHipNode.localTransform.getRotation(rotBuf1);
 					rightHipNode.localTransform.getRotation(rotBuf2);
 					TrackerUtils
-						.getFirstAvailableTracker(waistTracker, chestTracker, null)
+						.getFirstAvailableTracker(waistTracker, chestTracker)
 						.getRotation(rotBuf3);
 
 					// Get the rotation relative to where we expect the
@@ -1115,62 +1105,8 @@ public class HumanSkeleton extends Skeleton implements SkeletonConfigCallback {
 			trackerWaistNode.localTransform.setRotation(rotBuf1);
 		}
 
-		// Left arm from HMD
-		if (leftShoulderTracker != null) {
-			leftShoulderTracker.getRotation(rotBuf1);
-			leftShoulderHeadNode.localTransform.setRotation(rotBuf1);
-		} else {
-			neckNode.localTransform.getRotation(rotBuf1);
-			leftShoulderHeadNode.localTransform.setRotation(rotBuf1);
-		}
-		if (leftUpperArmTracker != null || leftLowerArmTracker != null) {
-			TrackerUtils
-				.getFirstAvailableTracker(leftUpperArmTracker, leftLowerArmTracker, null)
-				.getRotation(rotBuf1);
-			leftShoulderTailNode.localTransform.setRotation(rotBuf1);
-			trackerLeftElbowNode.localTransform.setRotation(rotBuf1);
-
-			TrackerUtils
-				.getFirstAvailableTracker(leftLowerArmTracker, leftUpperArmTracker, null)
-				.getRotation(rotBuf1);
-			leftElbowNode.localTransform.setRotation(rotBuf1);
-		}
-		if (leftHandTracker != null) {
-			leftHandTracker.getRotation(rotBuf1);
-			// leftWristNodeHmd.localTransform.setRotation(rotBuf1);
-			leftHandNode.localTransform.setRotation(rotBuf1);
-			trackerLeftHandNode.localTransform.setRotation(rotBuf1);
-		}
-
-		// Right arm from HMD
-		if (rightShoulderTracker != null) {
-			rightShoulderTracker.getRotation(rotBuf1);
-			rightShoulderHeadNode.localTransform.setRotation(rotBuf1);
-		} else {
-			neckNode.localTransform.getRotation(rotBuf1);
-			rightShoulderHeadNode.localTransform.setRotation(rotBuf1);
-		}
-		if (rightUpperArmTracker != null || rightLowerArmTracker != null) {
-			TrackerUtils
-				.getFirstAvailableTracker(rightUpperArmTracker, rightLowerArmTracker, null)
-				.getRotation(rotBuf1);
-			rightShoulderTailNode.localTransform.setRotation(rotBuf1);
-			trackerRightElbowNode.localTransform.setRotation(rotBuf1);
-
-			TrackerUtils
-				.getFirstAvailableTracker(rightLowerArmTracker, rightUpperArmTracker, null)
-				.getRotation(rotBuf1);
-			rightElbowNode.localTransform.setRotation(rotBuf1);
-		}
-		if (rightHandTracker != null) {
-			rightHandTracker.getRotation(rotBuf1);
-			// rightWristNodeHmd.localTransform.setRotation(rotBuf1);
-			rightHandNode.localTransform.setRotation(rotBuf1);
-			trackerRightHandNode.localTransform.setRotation(rotBuf1);
-		}
-
-		// Left elbow from controller
-		if (isTrackingLeftElbowFromController()) {
+		// Left arm
+		if (isTrackingLeftArmFromController()) {
 			leftControllerTracker.getPosition(posBuf);
 			leftControllerTracker.getRotation(rotBuf1);
 			leftControllerNode.localTransform.setTranslation(posBuf);
@@ -1178,22 +1114,49 @@ public class HumanSkeleton extends Skeleton implements SkeletonConfigCallback {
 
 			if (leftLowerArmTracker != null || leftUpperArmTracker != null) {
 				TrackerUtils
-					.getFirstAvailableTracker(leftLowerArmTracker, leftUpperArmTracker, null)
+					.getFirstAvailableTracker(leftLowerArmTracker, leftUpperArmTracker)
 					.getRotation(rotBuf1);
 
 				leftWristNode.localTransform.setRotation(rotBuf1);
 
 				TrackerUtils
-					.getFirstAvailableTracker(leftUpperArmTracker, leftLowerArmTracker, null)
+					.getFirstAvailableTracker(leftUpperArmTracker, leftLowerArmTracker)
 					.getRotation(rotBuf1);
 
-				// leftElbowNodeContrl.localTransform.setRotation(rotBuf1);
-				// trackerLeftElbowNodeContrl.localTransform.setRotation(rotBuf1);
+				leftElbowNode.localTransform.setRotation(rotBuf1);
+				trackerLeftElbowNode.localTransform.setRotation(rotBuf1);
+			}
+		} else {
+			if (leftShoulderTracker != null) {
+				leftShoulderTracker.getRotation(rotBuf1);
+				leftShoulderHeadNode.localTransform.setRotation(rotBuf1);
+			} else {
+				neckNode.localTransform.getRotation(rotBuf1);
+				leftShoulderHeadNode.localTransform.setRotation(rotBuf1);
+			}
+
+			if (leftUpperArmTracker != null || leftLowerArmTracker != null) {
+				TrackerUtils
+					.getFirstAvailableTracker(leftUpperArmTracker, leftLowerArmTracker)
+					.getRotation(rotBuf1);
+				leftShoulderTailNode.localTransform.setRotation(rotBuf1);
+				trackerLeftElbowNode.localTransform.setRotation(rotBuf1);
+
+				TrackerUtils
+					.getFirstAvailableTracker(leftLowerArmTracker, leftUpperArmTracker)
+					.getRotation(rotBuf1);
+				leftElbowNode.localTransform.setRotation(rotBuf1);
+			}
+			if (leftHandTracker != null) {
+				leftHandTracker.getRotation(rotBuf1);
+				leftWristNode.localTransform.setRotation(rotBuf1);
+				leftHandNode.localTransform.setRotation(rotBuf1);
+				trackerLeftHandNode.localTransform.setRotation(rotBuf1);
 			}
 		}
 
-		// Right elbow from controller
-		if (isTrackingRightElbowFromController()) {
+		// Right arm
+		if (isTrackingRightArmFromController()) {
 			rightControllerTracker.getPosition(posBuf);
 			rightControllerTracker.getRotation(rotBuf1);
 			rightControllerNode.localTransform.setTranslation(posBuf);
@@ -1201,17 +1164,43 @@ public class HumanSkeleton extends Skeleton implements SkeletonConfigCallback {
 
 			if (rightLowerArmTracker != null || rightUpperArmTracker != null) {
 				TrackerUtils
-					.getFirstAvailableTracker(rightLowerArmTracker, rightUpperArmTracker, null)
+					.getFirstAvailableTracker(rightLowerArmTracker, rightUpperArmTracker)
 					.getRotation(rotBuf1);
 
 				rightWristNode.localTransform.setRotation(rotBuf1);
 
 				TrackerUtils
-					.getFirstAvailableTracker(rightUpperArmTracker, rightLowerArmTracker, null)
+					.getFirstAvailableTracker(rightUpperArmTracker, rightLowerArmTracker)
 					.getRotation(rotBuf1);
 
-				// rightElbowNodeContrl.localTransform.setRotation(rotBuf1);
-				// trackerRightElbowNodeContrl.localTransform.setRotation(rotBuf1);
+				rightElbowNode.localTransform.setRotation(rotBuf1);
+				trackerRightElbowNode.localTransform.setRotation(rotBuf1);
+			}
+		} else {
+			if (rightShoulderTracker != null) {
+				rightShoulderTracker.getRotation(rotBuf1);
+				rightShoulderHeadNode.localTransform.setRotation(rotBuf1);
+			} else {
+				neckNode.localTransform.getRotation(rotBuf1);
+				rightShoulderHeadNode.localTransform.setRotation(rotBuf1);
+			}
+			if (rightUpperArmTracker != null || rightLowerArmTracker != null) {
+				TrackerUtils
+					.getFirstAvailableTracker(rightUpperArmTracker, rightLowerArmTracker)
+					.getRotation(rotBuf1);
+				rightShoulderTailNode.localTransform.setRotation(rotBuf1);
+				trackerRightElbowNode.localTransform.setRotation(rotBuf1);
+
+				TrackerUtils
+					.getFirstAvailableTracker(rightLowerArmTracker, rightUpperArmTracker)
+					.getRotation(rotBuf1);
+				rightElbowNode.localTransform.setRotation(rotBuf1);
+			}
+			if (rightHandTracker != null) {
+				rightHandTracker.getRotation(rotBuf1);
+				rightWristNode.localTransform.setRotation(rotBuf1);
+				rightHandNode.localTransform.setRotation(rotBuf1);
+				trackerRightHandNode.localTransform.setRotation(rotBuf1);
 			}
 		}
 	}
@@ -1390,21 +1379,25 @@ public class HumanSkeleton extends Skeleton implements SkeletonConfigCallback {
 				rightShoulderTailNode.localTransform.setTranslation(offset);
 				break;
 			case LEFT_UPPER_ARM:
+				if (!isTrackingLeftArmFromController()) {
+					leftElbowNode.localTransform.setTranslation(offset);
+				}
 			case RIGHT_UPPER_ARM:
-				leftElbowNode.localTransform.setTranslation(offset);
-				rightElbowNode.localTransform.setTranslation(offset);
+				if (!isTrackingRightArmFromController()) {
+					rightElbowNode.localTransform.setTranslation(offset);
+				}
 				break;
 			case LEFT_LOWER_ARM:
-				if (isTrackingLeftElbowFromController()) {
+				if (isTrackingLeftArmFromController()) {
 					leftElbowNode.localTransform.setTranslation(offset);
 				} else {
-					leftElbowNode.localTransform.setTranslation(offset.negate());
+					leftWristNode.localTransform.setTranslation(offset.negate());
 				}
 			case RIGHT_LOWER_ARM:
-				if (isTrackingRightElbowFromController()) {
+				if (isTrackingRightArmFromController()) {
 					rightElbowNode.localTransform.setTranslation(offset);
 				} else {
-					rightElbowNode.localTransform.setTranslation(offset.negate());
+					rightWristNode.localTransform.setTranslation(offset.negate());
 				}
 				break;
 			case LEFT_ELBOW_TRACKER:
@@ -1418,9 +1411,13 @@ public class HumanSkeleton extends Skeleton implements SkeletonConfigCallback {
 				rightHandNode.localTransform.setTranslation(offset);
 				break;
 			case LEFT_CONTROLLER:
+				if (isTrackingLeftArmFromController()) {
+					leftWristNode.localTransform.setTranslation(offset);
+				}
 			case RIGHT_CONTROLLER:
-				leftWristNode.localTransform.setTranslation(offset);
-				rightWristNode.localTransform.setTranslation(offset);
+				if (isTrackingRightArmFromController()) {
+					rightWristNode.localTransform.setTranslation(offset);
+				}
 				break;
 			default:
 				break;
@@ -1484,13 +1481,13 @@ public class HumanSkeleton extends Skeleton implements SkeletonConfigCallback {
 			case RIGHT_UPPER_ARM:
 				return rightElbowNode;
 			case LEFT_LOWER_ARM:
-				if (isTrackingLeftElbowFromController()) {
+				if (isTrackingLeftArmFromController()) {
 					return leftElbowNode;
 				} else {
 					return leftWristNode;
 				}
 			case RIGHT_LOWER_ARM:
-				if (isTrackingRightElbowFromController()) {
+				if (isTrackingRightArmFromController()) {
 					return rightElbowNode;
 				} else {
 					return rightWristNode;
@@ -1690,11 +1687,25 @@ public class HumanSkeleton extends Skeleton implements SkeletonConfigCallback {
 		}
 	}
 
-	public boolean isTrackingLeftElbowFromController() {
+	/**
+	 * Runs checks to know if we should (and are) performing the tracking of the
+	 * left arm from the controller.
+	 * 
+	 * @return a bool telling us if we are tracking the left arm from the
+	 * controller or not.
+	 */
+	public boolean isTrackingLeftArmFromController() {
 		return leftControllerTracker != null && !forceArmsFromHMD;
 	}
 
-	public boolean isTrackingRightElbowFromController() {
+	/**
+	 * Runs checks to know if we should (and are) performing the tracking of the
+	 * right arm from the controller.
+	 *
+	 * @return a bool telling us if we are tracking the right arm from the
+	 * controller or not.
+	 */
+	public boolean isTrackingRightArmFromController() {
 		return rightControllerTracker != null && !forceArmsFromHMD;
 	}
 

@@ -84,6 +84,9 @@ public class TransformNode {
 			child.parent = null;
 		}
 		this.children.clear();
+		if (this.parent != null) {
+			this.parent.children.remove(this);
+		}
 		this.parent = null;
 	}
 }
