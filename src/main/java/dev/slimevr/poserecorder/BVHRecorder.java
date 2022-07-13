@@ -20,6 +20,10 @@ public class BVHRecorder {
 		this.poseStreamer = new ServerPoseStreamer(server);
 	}
 
+	public File getRecordingsFolder() {
+		return bvhSaveDir;
+	}
+
 	public void startRecording() {
 		File bvhFile = getBvhFile();
 		if (bvhFile != null) {
