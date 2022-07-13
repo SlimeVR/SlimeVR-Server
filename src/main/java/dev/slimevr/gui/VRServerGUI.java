@@ -230,7 +230,9 @@ public class VRServerGUI extends JFrame {
 							@Override
 							public void mouseClicked(MouseEvent e) {
 								try {
-									Desktop.getDesktop().open(server.getBvhRecorder().getRecordingsFolder());
+									Desktop
+										.getDesktop()
+										.open(server.getBvhRecorder().getRecordingsFolder());
 								} catch (IOException e1) {
 									e1.printStackTrace();
 								}
