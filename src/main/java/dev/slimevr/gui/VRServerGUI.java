@@ -224,6 +224,20 @@ public class VRServerGUI extends JFrame {
 						});
 					}
 				});
+				add(new JButton("...") {
+					{
+						addMouseListener(new MouseInputAdapter() {
+							@Override
+							public void mouseClicked(MouseEvent e) {
+								try {
+									Desktop.getDesktop().open(server.getBvhRecorder().getRecordingsFolder());
+								} catch (IOException e1) {
+									e1.printStackTrace();
+								}
+							}
+						});
+					}
+				});
 				add(Box.createHorizontalGlue());
 				add(new JButton("GUI Zoom (x" + StringUtils.prettyNumber(zoom, 2) + ")") {
 					{
