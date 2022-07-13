@@ -17,7 +17,6 @@ public class LegTweaks {
 	private boolean active = false;
 	private boolean rightLegActive = false;
 	private boolean leftLegActive = false;
-	private boolean positionsPopulated = false;
 
 	// skeleton
 	private HumanSkeleton skeleton;
@@ -39,7 +38,6 @@ public class LegTweaks {
 	private boolean kneesActive = false;
 
 	// hyperparameters (clip correction)
-	private static final float STANDING_CUTOFF_HORIZONTAL = 0.5f;
 	private static final float STANDING_CUTOFF_VERTICAL = 0.35f;
 	private static final float MAX_DYNAMIC_DISPLACEMENT = 0.08f;
 	private static final float MAX_DISENGAGMENT_OFFSET = 0.25f;
@@ -191,7 +189,6 @@ public class LegTweaks {
 			waistPosition = skeleton.computedWaistTracker.position;
 			leftFootRotation = skeleton.computedLeftFootTracker.rotation;
 			rightFootRotation = skeleton.computedRightFootTracker.rotation;
-			positionsPopulated = true;
 		}
 	}
 
@@ -270,17 +267,15 @@ public class LegTweaks {
 			return;
 		}
 
-		boolean corrected1 = false;
-		boolean corrected2 = false;
 		// push the feet up if needed
 		if (floorclipEnabled) {
-			corrected1 = correctClipping();
+			correctClipping();
 		}
 
 		// calculate acceleration and velocity of the feet using the buffer
 		// (only needed if skating correction is enabled)
 		if (skatingCorrectionEnabled) {
-			corrected2 = correctSkating();
+			correctSkating();
 		}
 
 		// determine if either leg is in a position to activate or deactivate
@@ -349,7 +344,7 @@ public class LegTweaks {
 
 	// returns true if the tracker positions should be corrected with the values
 	// stored in the class
-	public boolean correctClipping() {
+	private void correctClipping() {
 		// calculate how angled down the feet are as a scalar value between 0
 		// and 1 (0 = flat, 1 = max angle)
 		float leftOffset = getLeftFootOffset();
@@ -357,7 +352,7 @@ public class LegTweaks {
 
 		// if there is no clipping, or clipping is not enabled, return false
 		if (!isClipped(leftOffset, rightOffset) || !enabled) {
-			return false;
+			return;
 		}
 
 		// move the feet to their new positions
@@ -391,13 +386,11 @@ public class LegTweaks {
 			rightFootPosition.y += displacement;
 			rightKneePosition.y += displacement;
 		}
-
-		return true;
 	}
 
 	// based on the data from the last frame compute a new position that reduces
 	// ice skating
-	public boolean correctSkating() {
+	private void correctSkating() {
 		// for either foot that is locked get its position (x and z only we let
 		// y move freely) and set it to be there
 		if (bufferHead.getLeftLegState() == LegTweakBuffer.LOCKED) {
@@ -536,7 +529,6 @@ public class LegTweaks {
 
 			}
 		}
-		return true;
 	}
 
 	// returns true if it is likly the user is standing
