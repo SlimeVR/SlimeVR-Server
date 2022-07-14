@@ -3,8 +3,12 @@ package dev.slimevr.vr;
 import dev.slimevr.vr.trackers.Tracker;
 import io.eiren.util.collections.FastList;
 
+import java.util.concurrent.atomic.AtomicInteger;
 
-public class Device implements IDevice {
+
+public class Device {
+
+	public static final AtomicInteger nextLocalDeviceId = new AtomicInteger();
 
 	private final int id;
 	private String customName;
@@ -25,7 +29,6 @@ public class Device implements IDevice {
 		this.customName = customName;
 	}
 
-	@Override
 	public String getManufacturer() {
 		return this.manufacturer;
 	}
@@ -34,12 +37,10 @@ public class Device implements IDevice {
 		this.manufacturer = manufacturer;
 	}
 
-	@Override
 	public String getDisplayName() {
 		return null;
 	}
 
-	@Override
 	public String getFirmwareVersion() {
 		return this.firmwareVersion;
 	}
@@ -48,12 +49,10 @@ public class Device implements IDevice {
 		this.firmwareVersion = firmwareVersion;
 	}
 
-	@Override
 	public String getCustomName() {
 		return this.customName;
 	}
 
-	@Override
 	public FastList<Tracker> getTrackers() {
 		return trackers;
 	}

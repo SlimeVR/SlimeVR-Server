@@ -26,4 +26,14 @@ public class HMDTracker extends ComputedTracker implements TrackerWithTPS {
 	public boolean isComputed() {
 		return false;
 	}
+
+	@Override
+	public String getDisplayName() {
+		return getName();
+	}
+
+	@Override
+	public String getCustomName() {
+		return null;
+	}
 }
