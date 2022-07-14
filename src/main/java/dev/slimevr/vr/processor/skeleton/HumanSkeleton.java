@@ -200,7 +200,7 @@ public class HumanSkeleton extends Skeleton implements SkeletonConfigCallback {
 	protected void assembleSkeleton(boolean reset) {
 		if (reset) {
 			for (TransformNode node : getAllNodes()) {
-				node.detachCompletely();
+				node.detachWithChildren();
 			}
 		}
 
@@ -244,7 +244,7 @@ public class HumanSkeleton extends Skeleton implements SkeletonConfigCallback {
 	protected void assembleSkeletonArms(boolean reset) {
 		if (reset) {
 			for (TransformNode node : getArmNodes()) {
-				node.detachCompletely();
+				node.detachWithChildren();
 			}
 		}
 

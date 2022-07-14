@@ -79,7 +79,7 @@ public class TransformNode {
 			.addLocal(parent.getTranslation());
 	}
 
-	public void detachCompletely() {
+	public void detachWithChildren() {
 		for (TransformNode child : children) {
 			child.parent = null;
 		}
