@@ -3,22 +3,14 @@ package dev.slimevr.autobone;
 import com.jme3.math.FastMath;
 import com.jme3.math.Vector3f;
 import dev.slimevr.VRServer;
-import dev.slimevr.autobone.errors.AutoBoneException;
-import dev.slimevr.autobone.errors.BodyProportionError;
-import dev.slimevr.autobone.errors.FootHeightOffsetError;
-import dev.slimevr.autobone.errors.HeightError;
-import dev.slimevr.autobone.errors.OffsetSlideError;
-import dev.slimevr.autobone.errors.PositionError;
-import dev.slimevr.autobone.errors.PositionOffsetError;
-import dev.slimevr.autobone.errors.SlideError;
-import dev.slimevr.poserecorder.*;
+import dev.slimevr.autobone.errors.*;
+import dev.slimevr.poserecorder.PoseFrameIO;
+import dev.slimevr.poserecorder.PoseFrameSkeleton;
+import dev.slimevr.poserecorder.PoseFrameTracker;
+import dev.slimevr.poserecorder.PoseFrames;
 import dev.slimevr.vr.processor.HumanPoseProcessor;
 import dev.slimevr.vr.processor.TransformNode;
-import dev.slimevr.vr.processor.skeleton.BoneType;
-import dev.slimevr.vr.processor.skeleton.Skeleton;
-import dev.slimevr.vr.processor.skeleton.HumanSkeleton;
-import dev.slimevr.vr.processor.skeleton.SkeletonConfig;
-import dev.slimevr.vr.processor.skeleton.SkeletonConfigValue;
+import dev.slimevr.vr.processor.skeleton.*;
 import dev.slimevr.vr.trackers.TrackerRole;
 import io.eiren.util.StringUtils;
 import io.eiren.util.collections.FastList;
@@ -29,8 +21,8 @@ import java.io.File;
 import java.util.EnumMap;
 import java.util.List;
 import java.util.Map;
-import java.util.Random;
 import java.util.Map.Entry;
+import java.util.Random;
 import java.util.function.BiConsumer;
 import java.util.function.Consumer;
 import java.util.function.Function;
@@ -226,7 +218,7 @@ public class AutoBone {
 				break;
 		}
 
-		TransformNode relevantTransform = skeleton.getNode(node);
+		TransformNode relevantTransform = skeleton.getTailNodeOfBone(node);
 		return relevantTransform.worldTransform
 			.getTranslation()
 			.subtract(relevantTransform.getParent().worldTransform.getTranslation(), buffer)

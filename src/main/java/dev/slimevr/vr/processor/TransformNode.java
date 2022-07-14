@@ -78,4 +78,15 @@ public class TransformNode {
 			.multLocal(worldTransform.getTranslation())
 			.addLocal(parent.getTranslation());
 	}
+
+	public void detachWithChildren() {
+		for (TransformNode child : children) {
+			child.parent = null;
+		}
+		this.children.clear();
+		if (this.parent != null) {
+			this.parent.children.remove(this);
+		}
+		this.parent = null;
+	}
 }

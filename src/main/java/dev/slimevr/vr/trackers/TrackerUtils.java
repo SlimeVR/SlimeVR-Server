@@ -1,8 +1,8 @@
 package dev.slimevr.vr.trackers;
 
-import java.util.List;
-
 import dev.slimevr.vr.processor.ComputedHumanPoseTracker;
+
+import java.util.List;
 
 
 public class TrackerUtils {
@@ -52,11 +52,25 @@ public class TrackerUtils {
 	}
 
 	/**
-	 * Returns the first tracker that isn't null out of the 3 trackers maximum
-	 * passed as arguments.
+	 * Returns the first tracker that isn't null out of the 2 trackers passed as
+	 * arguments.
+	 *
+	 * @return The first non-null tracker or null
+	 */
+	public static <T extends Tracker> T getFirstAvailableTracker(
+		T firstTracker,
+		T secondTracker
+	) {
+		if (firstTracker != null)
+			return firstTracker;
+		return secondTracker;
+	}
+
+	/**
+	 * Returns the first tracker that isn't null out of the 3 trackers passed as
+	 * arguments.
 	 * 
-	 * 
-	 * @return The first non null tracker.
+	 * @return The first non-null tracker or null
 	 */
 	public static <T extends Tracker> T getFirstAvailableTracker(
 		T firstTracker,
@@ -67,9 +81,6 @@ public class TrackerUtils {
 			return firstTracker;
 		if (secondTracker != null)
 			return secondTracker;
-		if (thirdTracker != null)
-			return thirdTracker;
-
-		return null;
+		return thirdTracker;
 	}
 }
