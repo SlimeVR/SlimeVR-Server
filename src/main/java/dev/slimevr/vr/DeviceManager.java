@@ -6,9 +6,9 @@ import io.eiren.util.collections.FastList;
 
 public class DeviceManager {
 
-	private final FastList<IDevice> devices = new FastList<>();
+	private final FastList<Device> devices = new FastList<>();
 
-	public FastList<IDevice> getDevices() {
+	public FastList<Device> getDevices() {
 		return devices;
 	}
 
@@ -28,7 +28,7 @@ public class DeviceManager {
 		return device;
 	}
 
-	public void addDevice(IDevice device) {
+	public void addDevice(Device device) {
 		this.server.queueTask(() -> {
 			this.devices.add(device);
 		});

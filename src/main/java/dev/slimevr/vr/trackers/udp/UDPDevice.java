@@ -1,15 +1,16 @@
 package dev.slimevr.vr.trackers.udp;
 
 import dev.slimevr.NetworkProtocol;
-import dev.slimevr.vr.IDevice;
+import dev.slimevr.vr.Device;
 import dev.slimevr.vr.trackers.IMUTracker;
+import dev.slimevr.vr.trackers.Tracker;
 import io.eiren.util.collections.FastList;
 
 import java.net.InetAddress;
 import java.net.SocketAddress;
 
 
-public class UDPDevice implements IDevice {
+public class UDPDevice extends Device {
 
 	public final int id;
 	public SocketAddress address;
@@ -25,7 +26,7 @@ public class UDPDevice implements IDevice {
 	public NetworkProtocol protocol = null;
 	public int firmwareBuild = 0;
 	public boolean timedOut = false;
-	private final FastList<IMUTracker> trackers = new FastList<>();
+	private final FastList<Tracker> trackers = new FastList<>();
 
 	public UDPDevice(SocketAddress address, InetAddress ipAddress) {
 		this.address = address;
@@ -71,13 +72,13 @@ public class UDPDevice implements IDevice {
 	}
 
 	@Override
-	public FastList<IMUTracker> getTrackers() {
+	public FastList<Tracker> getTrackers() {
 		return this.trackers;
 	}
 
 	public IMUTracker getTracker(int id) {
 		if (id >= 0 && id < this.getTrackers().size())
-			return this.getTrackers().get(id);
+			return (IMUTracker) this.getTrackers().get(id);
 		return null;
 	}
 }

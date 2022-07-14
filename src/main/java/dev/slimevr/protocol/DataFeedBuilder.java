@@ -3,7 +3,7 @@ package dev.slimevr.protocol;
 import com.google.flatbuffers.FlatBufferBuilder;
 import com.jme3.math.Quaternion;
 import com.jme3.math.Vector3f;
-import dev.slimevr.vr.IDevice;
+import dev.slimevr.vr.Device;
 import dev.slimevr.vr.processor.skeleton.BoneInfo;
 import dev.slimevr.vr.trackers.*;
 import solarxr_protocol.data_feed.Bone;
@@ -27,7 +27,7 @@ import java.util.List;
 
 public class DataFeedBuilder {
 
-	public static int createHardwareInfo(FlatBufferBuilder fbb, IDevice device) {
+	public static int createHardwareInfo(FlatBufferBuilder fbb, Device device) {
 		Tracker tracker = device.getTrackers().get(0).get();
 
 		int nameOffset = device.getFirmwareVersion() != null
@@ -64,11 +64,21 @@ public class DataFeedBuilder {
 		if (!infoMask)
 			return 0;
 
+		int displayNameOffset = fbb.createString(tracker.getDisplayName());
+
+		int customNameOffset = tracker.getCustomName() != null
+			? fbb.createString(tracker.getCustomName())
+			: 0;
+
+
 		TrackerInfo.startTrackerInfo(fbb);
 		if (tracker.getBodyPosition() != null)
 			TrackerInfo.addBodyPart(fbb, tracker.getBodyPosition().bodyPart);
 		TrackerInfo.addEditable(fbb, tracker.userEditable());
 		TrackerInfo.addComputed(fbb, tracker.isComputed());
+		TrackerInfo.addDisplayName(fbb, displayNameOffset);
+		TrackerInfo.addCustomName(fbb, customNameOffset);
+
 		// TODO need support: TrackerInfo.addImuType(fbb, tracker.im);
 		// TODO need support: TrackerInfo.addPollRate(fbb, tracker.);
 
@@ -153,7 +163,7 @@ public class DataFeedBuilder {
 	public static int createTrackersData(
 		FlatBufferBuilder fbb,
 		DeviceDataMaskT mask,
-		IDevice device
+		Device device
 	) {
 		if (mask.getTrackerData() == null)
 			return 0;
@@ -176,7 +186,7 @@ public class DataFeedBuilder {
 		FlatBufferBuilder fbb,
 		int id,
 		DeviceDataMaskT mask,
-		IDevice device
+		Device device
 	) {
 		if (!mask.getDeviceData())
 			return 0;
@@ -211,8 +221,12 @@ public class DataFeedBuilder {
 		int hardwareInfoOffset = DataFeedBuilder.createHardwareInfo(fbb, device);
 		int trackersOffset = DataFeedBuilder.createTrackersData(fbb, mask, device);
 
+		int nameOffset = device.getCustomName() != null
+			? fbb.createString(device.getCustomName())
+			: 0;
+
 		DeviceData.startDeviceData(fbb);
-		// TODO need support: DeviceData.addCustomName(fbb, nameOffset);
+		DeviceData.addCustomName(fbb, nameOffset);
 		DeviceData.addId(fbb, DeviceId.createDeviceId(fbb, id));
 		DeviceData.addHardwareStatus(fbb, hardwareDataOffset);
 		DeviceData.addHardwareInfo(fbb, hardwareInfoOffset);
@@ -245,14 +259,14 @@ public class DataFeedBuilder {
 	public static int createDevicesData(
 		FlatBufferBuilder fbb,
 		DeviceDataMaskT deviceDataMaskT,
-		List<IDevice> devices
+		List<Device> devices
 	) {
 		if (deviceDataMaskT == null)
 			return 0;
 
 		int[] devicesDataOffsets = new int[devices.size()];
 		for (int i = 0; i < devices.size(); i++) {
-			IDevice device = devices.get(i);
+			Device device = devices.get(i);
 			devicesDataOffsets[i] = DataFeedBuilder
 				.createDeviceData(fbb, i, deviceDataMaskT, device);
 		}

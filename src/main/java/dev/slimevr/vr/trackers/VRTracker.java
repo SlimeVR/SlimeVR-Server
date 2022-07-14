@@ -42,4 +42,9 @@ public class VRTracker extends ComputedTracker {
 	public boolean isComputed() {
 		return false;
 	}
+
+	@Override
+	public String getDisplayName() {
+		return getName();
+	}
 }
