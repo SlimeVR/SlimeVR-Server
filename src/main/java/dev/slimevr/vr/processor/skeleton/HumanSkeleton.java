@@ -786,8 +786,8 @@ public class HumanSkeleton extends Skeleton implements SkeletonConfigCallback {
 	@VRServerThread
 	@Override
 	public void updatePose() {
-		updateRootTrackers();
 		updateLocalTransforms();
+		updateRootTrackers();
 		updateComputedTrackers();
 	}
 	// #endregion
