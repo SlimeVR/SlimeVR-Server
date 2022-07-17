@@ -434,19 +434,8 @@ public class TrackersUDPServer extends Thread {
 				tracker = connection.getTracker(accelPacket.getSensorId());
 				if (tracker == null)
 					break;
-
-				// TODO: check if this is correct
-				Quaternion correction = new Quaternion();
-				tracker.getCorrection(correction);
-				Vector3f acceleration = correction.mult(accelPacket.acceleration);
+				Vector3f acceleration = tracker.rotQuaternion.mult(accelPacket.acceleration);
 				tracker.accelVector.set(acceleration);
-
-				// print the acceleration vector
-				/*
-				 * System.out .println( accelPacket.acceleration.x + "\t " +
-				 * accelPacket.acceleration.y + "\t " +
-				 * accelPacket.acceleration.z );
-				 */
 				break;
 
 			case 2: // PACKET_GYRO
