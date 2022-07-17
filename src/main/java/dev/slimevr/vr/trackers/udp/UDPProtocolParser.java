@@ -11,7 +11,7 @@ public class UDPProtocolParser {
 	public static final int PACKET_ROTATION = 1; // Deprecated
 	// public static final int PACKET_GYRO = 2; // Deprecated
 	public static final int PACKET_HANDSHAKE = 3;
-	// public static final int PACKET_ACCEL = 4; // Not parsed by server
+	public static final int PACKET_ACCEL = 4;
 	// public static final int PACKET_MAG = 5; // Deprecated
 	// public static final int PACKET_RAW_CALIBRATION_DATA = 6; // Not parsed by
 	// server
@@ -105,6 +105,8 @@ public class UDPProtocolParser {
 				return new UDPPacket3Handshake();
 			case PACKET_PING_PONG:
 				return new UDPPacket10PingPong();
+			case PACKET_ACCEL:
+				return new UDPPacket4Acceleration();
 			case PACKET_SERIAL:
 				return new UDPPacket11Serial();
 			case PACKET_BATTERY_LEVEL:
