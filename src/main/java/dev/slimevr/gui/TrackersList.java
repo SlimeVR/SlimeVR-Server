@@ -535,11 +535,11 @@ public class TrackersList extends EJBoxNoStretch {
 				if (accel != null) {
 					accel
 						.setText(
-							StringUtils.prettyNumber(imu.accelVector.x, 2)
+							StringUtils.prettyNumber(imu.accelVector.x, 1)
 								+ " "
-								+ StringUtils.prettyNumber(imu.accelVector.y, 2)
+								+ StringUtils.prettyNumber(imu.accelVector.y, 1)
 								+ " "
-								+ StringUtils.prettyNumber(imu.accelVector.z, 2)
+								+ StringUtils.prettyNumber(imu.accelVector.z, 1)
 						);
 				}
 			}
