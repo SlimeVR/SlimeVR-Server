@@ -32,6 +32,11 @@ public class LegTweaks {
 	private Vector3f leftWaistUpperLegOffset = new Vector3f();
 	private Vector3f rightWaistUpperLegOffset = new Vector3f();
 
+	private Vector3f leftFootAcceleration = new Vector3f();
+	private Vector3f rightFootAcceleration = new Vector3f();
+	private Vector3f leftLowerLegAcceleration = new Vector3f();
+	private Vector3f rightLowerLegAcceleration = new Vector3f();
+
 	// knee placeholder
 	private Vector3f leftKneePlaceholder = new Vector3f();
 	private Vector3f rightKneePlaceholder = new Vector3f();
@@ -50,7 +55,7 @@ public class LegTweaks {
 	private static final float CORRECTION_WEIGHT_MAX = 0.7f;
 
 	// hyperparameters (knee correction)
-	private static final float KNEE_CORRECTION_WEIGHT = 0.5f;
+	private static final float KNEE_CORRECTION_WEIGHT = 0.25f;
 
 
 	// buffer for holding previus frames of data
@@ -190,6 +195,24 @@ public class LegTweaks {
 			leftFootRotation = skeleton.computedLeftFootTracker.rotation;
 			rightFootRotation = skeleton.computedRightFootTracker.rotation;
 		}
+
+		// get the vector for velocity of the feet and knees
+		// (if feet are not available, fallback to 6 tracker mode)
+		if (skeleton.leftFootTracker != null && skeleton.rightFootTracker != null) {
+			skeleton.leftFootTracker.getAcceleration(leftFootAcceleration);
+			skeleton.rightFootTracker.getAcceleration(rightFootAcceleration);
+		} else {
+			leftFootAcceleration.set(0, 0, 0);
+			rightFootAcceleration.set(0, 0, 0);
+		}
+		if (skeleton.leftLowerLegTracker != null && skeleton.rightLowerLegTracker != null) {
+			skeleton.leftLowerLegTracker.getAcceleration(leftLowerLegAcceleration);
+			skeleton.rightLowerLegTracker.getAcceleration(rightLowerLegAcceleration);
+		} else {
+			leftLowerLegAcceleration.set(0, 0, 0);
+			rightLowerLegAcceleration.set(0, 0, 0);
+		}
+
 	}
 
 	// updates the object with the latest data from the skeleton
@@ -250,6 +273,17 @@ public class LegTweaks {
 		currentFrame.setRightFootRotation(rightFootRotation);
 		currentFrame.setRightKneePosition(rightKneePosition);
 		currentFrame.setWaistPosition(waistPosition);
+
+		// put the acceleration vector that is applicable to the tracker
+		// quantity in the the buffer
+		// (if feet are not available, fallback to 6 tracker mode)
+		if (skeleton.leftFootTracker != null && skeleton.rightFootTracker != null) {
+			currentFrame.setLeftFootAcceleration(leftFootAcceleration);
+			currentFrame.setRightFootAcceleration(rightFootAcceleration);
+		} else if (skeleton.leftLowerLegTracker != null && skeleton.rightLowerLegTracker != null) {
+			currentFrame.setLeftFootAcceleration(leftLowerLegAcceleration);
+			currentFrame.setRightFootAcceleration(rightLowerLegAcceleration);
+		}
 
 		currentFrame.setParent(bufferHead);
 		this.bufferHead = currentFrame;

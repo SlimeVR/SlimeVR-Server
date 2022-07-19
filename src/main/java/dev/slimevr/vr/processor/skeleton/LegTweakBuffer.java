@@ -22,53 +22,58 @@ public class LegTweakBuffer {
 	public static final int LOCKED = 1;
 	public static final int UNLOCKED = 2;
 
+	private static final Vector3f placeHolderVec = new Vector3f();
+	private static final Quaternion placeHolderQuat = new Quaternion();
+
 	// states for the legs
 	private int leftLegState = STATE_UNKNOWN;
 	private int rightLegState = STATE_UNKNOWN;
 
 	// positions and rotations
-	private Vector3f leftFootPosition = new Vector3f();
-	private Vector3f rightFootPosition = new Vector3f();
-	private Vector3f leftKneePosition = new Vector3f();
-	private Vector3f rightKneePosition = new Vector3f();
-	private Vector3f waistPosition = new Vector3f();
-	private Quaternion leftFootRotation = new Quaternion();
-	private Quaternion rightFootRotation = new Quaternion();
+	private Vector3f leftFootPosition = placeHolderVec;
+	private Vector3f rightFootPosition = placeHolderVec;
+	private Vector3f leftKneePosition = placeHolderVec;
+	private Vector3f rightKneePosition = placeHolderVec;
+	private Vector3f waistPosition = placeHolderVec;
+	private Quaternion leftFootRotation = placeHolderQuat;
+	private Quaternion rightFootRotation = placeHolderQuat;
 
-	private Vector3f leftFootPositionCorrected = new Vector3f();
-	private Vector3f rightFootPositionCorrected = new Vector3f();
-	private Vector3f leftKneePositionCorrected = new Vector3f();
-	private Vector3f rightKneePositionCorrected = new Vector3f();
-	private Vector3f waistPositionCorrected = new Vector3f();
+	private Vector3f leftFootPositionCorrected = placeHolderVec;
+	private Vector3f rightFootPositionCorrected = placeHolderVec;
+	private Vector3f leftKneePositionCorrected = placeHolderVec;
+	private Vector3f rightKneePositionCorrected = placeHolderVec;
+	private Vector3f waistPositionCorrected = placeHolderVec;
 
 	// velocities
-	private Vector3f leftFootVelocity = new Vector3f();
+	private Vector3f leftFootVelocity;
 	private float leftFootVelocityMagnitude = 0;
-	private Vector3f rightFootVelocity = new Vector3f();
+	private Vector3f rightFootVelocity;
 	private float rightFootVelocityMagnitude = 0;
 	private float leftFootAngleDiff = 0;
 	private float rightFootAngleDiff = 0;
 
 	// acceleration
-	private Vector3f leftFootAcceleration = new Vector3f();
+	private Vector3f leftFootAcceleration = placeHolderVec;
 	private float leftFootAccelerationMagnitude = 0;
-	private Vector3f rightFootAcceleration = new Vector3f();
+	private Vector3f rightFootAcceleration = placeHolderVec;
 	private float rightFootAccelerationMagnitude = 0;
 
 	// other data
 	private long timeOfFrame = System.nanoTime();
 	private LegTweakBuffer parent = null; // frame before this one
 	private int frameNumber = 0; // higher number is older frame
+	private boolean accelerationAboveThresholdLeft = true;
+	private boolean accelerationAboveThresholdRight = true;
 	private float leftFloorLevel;
 	private float rightFloorLevel;
 
 	// hyperparameters
 	public static final float SKATING_CUTOFF = 0.275f;
-	private static final float SKATING_VELOCITY_CUTOFF = 3.80f;
-	private static final float SKATING_ACCELERATION_CUTOFF = 4.20f;
-	private static final float SKATING_ROTATIONAL_VELOCITY_CUTOFF = 1.5f;
-	private static final float SKATING_LOCK_ENGAGE_PERCENT = 0.5f;
-	private static final float FLOOR_DIF_CUTOFF = 0.06f;
+	private static final float SKATING_VELOCITY_CUTOFF = 4.25f;
+	private static final float SKATING_ACCELERATION_CUTOFF = 1.75f;
+	private static final float SKATING_ROTATIONAL_VELOCITY_CUTOFF = 2.8f;
+	private static final float SKATING_LOCK_ENGAGE_PERCENT = 0.7f;
+	private static final float FLOOR_DIF_CUTOFF = 0.075f;
 
 	private static final float SKATING_CUTOFF_ENGAGE = SKATING_CUTOFF
 		* SKATING_LOCK_ENGAGE_PERCENT;
@@ -216,15 +221,27 @@ public class LegTweakBuffer {
 		return parent;
 	}
 
+	public void setLeftFootAcceleration(Vector3f leftFootAcceleration) {
+		this.leftFootAcceleration = leftFootAcceleration.clone();
+	}
+
+	public void setRightFootAcceleration(Vector3f rightFootAcceleration) {
+		this.rightFootAcceleration = rightFootAcceleration.clone();
+	}
+
 	// calculate momvent attributes
 	public void calculateFootAttributes(boolean active) {
 		updateFrameNumber(0);
 
 		// compute attributes of the legs
 		computeVelocity();
-		computeAcceleration();
+		computeAccelerationMagnitude();
 
-		// if correction is inactive state is unknown
+		// calculate acceleration above threashold
+		computeAccelerationAboveThresholdFootTrackers();
+
+
+		// if correction is inactive state is unknown (default to unlocked)
 		if (!active) {
 			leftLegState = UNLOCKED;
 			rightLegState = UNLOCKED;
@@ -261,9 +278,9 @@ public class LegTweakBuffer {
 			if (
 				parent.getLeftFootHorizantalDifference() > SKATING_CUTOFF_ENGAGE
 					|| leftFootVelocityMagnitude * timeStep > SKATING_VELOCITY_CUTOFF_ENGAGE
-					|| leftFootAccelerationMagnitude * timeStep > SKATING_ACCELERATION_CUTOFF_ENGAGE
 					|| leftFootAngleDiff * timeStep > SKATING_ROTATIONAL_VELOCITY_CUTOFF_ENGAGE
 					|| leftFootPosition.y > leftFloorLevel + FLOOR_DIF_CUTOFF
+					|| accelerationAboveThresholdLeft
 			) {
 				return UNLOCKED;
 			}
@@ -273,9 +290,9 @@ public class LegTweakBuffer {
 			if (
 				parent.getLeftFootHorizantalDifference() > SKATING_CUTOFF
 					|| leftFootVelocityMagnitude * timeStep > SKATING_VELOCITY_CUTOFF
-					|| leftFootAccelerationMagnitude * timeStep > SKATING_ACCELERATION_CUTOFF
 					|| leftFootAngleDiff * timeStep > SKATING_ROTATIONAL_VELOCITY_CUTOFF
 					|| leftFootPosition.y > leftFloorLevel + FLOOR_DIF_CUTOFF
+					|| accelerationAboveThresholdLeft
 			) {
 				return UNLOCKED;
 			}
@@ -290,10 +307,9 @@ public class LegTweakBuffer {
 			if (
 				parent.getRightFootHorizantalDifference() > SKATING_CUTOFF_ENGAGE
 					|| rightFootVelocityMagnitude * timeStep > SKATING_VELOCITY_CUTOFF_ENGAGE
-					|| rightFootAccelerationMagnitude * timeStep
-						> SKATING_ACCELERATION_CUTOFF_ENGAGE
 					|| rightFootAngleDiff * timeStep > SKATING_ROTATIONAL_VELOCITY_CUTOFF_ENGAGE
 					|| rightFootPosition.y > rightFloorLevel + FLOOR_DIF_CUTOFF
+					|| accelerationAboveThresholdRight
 			) {
 				return UNLOCKED;
 			}
@@ -302,9 +318,9 @@ public class LegTweakBuffer {
 			if (
 				parent.getRightFootHorizantalDifference() > SKATING_CUTOFF
 					|| rightFootVelocityMagnitude * timeStep > SKATING_VELOCITY_CUTOFF
-					|| rightFootAccelerationMagnitude * timeStep > SKATING_ACCELERATION_CUTOFF
 					|| rightFootAngleDiff * timeStep > SKATING_ROTATIONAL_VELOCITY_CUTOFF
 					|| rightFootPosition.y > rightFloorLevel + FLOOR_DIF_CUTOFF
+					|| accelerationAboveThresholdRight
 			) {
 				return UNLOCKED;
 			}
@@ -338,17 +354,9 @@ public class LegTweakBuffer {
 			.distance(parent.rightFootRotation.getRotationColumn(2));
 	}
 
-	// compute acceleration of the feet from the velocity of the previous frame
-	private void computeAcceleration() {
-		if (parent != null) {
-			leftFootAcceleration = leftFootVelocity.subtract(parent.leftFootVelocity);
-			leftFootAccelerationMagnitude = leftFootAcceleration.length();
-			rightFootAcceleration = rightFootVelocity.subtract(parent.rightFootVelocity);
-			rightFootAccelerationMagnitude = rightFootAcceleration.length();
-		}
-	}
-
 	// compute the velocity of the feet from the position in the last frame
+	// TODO: stabalize the velocity by averaging the last few frames (there is a
+	// studer that this should remove)
 	private void computeVelocity() {
 		if (parent != null) {
 			leftFootVelocity = leftFootPosition.subtract(parent.leftFootPosition);
@@ -358,6 +366,36 @@ public class LegTweakBuffer {
 			leftFootAngleDiff = getLeftFootAngularVelocity();
 			rightFootAngleDiff = getRightFootAngularVelocity();
 		}
+	}
+
+	// get the nth parent of this frame
+	private LegTweakBuffer getNParent(int n) {
+		if (n == 0) {
+			return this;
+		} else {
+			return parent.getNParent(n - 1);
+		}
+	}
+
+	// compute the acceleration magnitude of the feet from the acceleration
+	// given by the imus
+	private void computeAccelerationMagnitude() {
+		leftFootAccelerationMagnitude = leftFootAcceleration.length();
+		rightFootAccelerationMagnitude = rightFootAcceleration.length();
+	}
+
+	// for 8 trackers the data from the imus is enough to determine lock/unlock
+	private void computeAccelerationAboveThresholdFootTrackers() {
+		accelerationAboveThresholdLeft = leftFootAccelerationMagnitude
+			> SKATING_ACCELERATION_CUTOFF_ENGAGE;
+		accelerationAboveThresholdRight = rightFootAccelerationMagnitude
+			> SKATING_ACCELERATION_CUTOFF_ENGAGE;
+	}
+
+	// for any setup without foot trackers the data from the imus is enough to
+	// determine lock/unlock
+	private void computeAccelerationAboveThreshold() {
+		return;
 	}
 
 }
