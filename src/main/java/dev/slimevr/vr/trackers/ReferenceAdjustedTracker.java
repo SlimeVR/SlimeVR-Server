@@ -109,6 +109,11 @@ public class ReferenceAdjustedTracker<E extends Tracker> implements Tracker {
 	}
 
 	@Override
+	public boolean getAcceleration(Vector3f store) {
+		return tracker.getAcceleration(store);
+	}
+
+	@Override
 	public boolean getPosition(Vector3f store) {
 		return tracker.getPosition(store);
 	}

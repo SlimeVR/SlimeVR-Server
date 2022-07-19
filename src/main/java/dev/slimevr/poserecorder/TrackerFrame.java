@@ -106,6 +106,12 @@ public final class TrackerFrame implements Tracker {
 	}
 
 	@Override
+	public boolean getAcceleration(Vector3f store) {
+		store.set(0, 0, 0);
+		return false;
+	}
+
+	@Override
 	public String getName() {
 		return "TrackerFrame:/" + (designation != null ? designation.designation : "null");
 	}

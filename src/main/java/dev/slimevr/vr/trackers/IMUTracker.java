@@ -171,6 +171,12 @@ public class IMUTracker
 	}
 
 	@Override
+	public boolean getAcceleration(Vector3f store) {
+		store.set(accelVector);
+		return true;
+	}
+
+	@Override
 	public boolean getRotation(Quaternion store) {
 		if (movementFilterTickCount > 0 && movementFilterAmount != 1 && previousRots.size() > 0) {
 			buffQuat.set(previousRots.get(0));
