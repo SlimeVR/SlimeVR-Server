@@ -49,10 +49,10 @@ public class LegTweaks {
 	private static final float DYNAMIC_DISPLACEMENT_CUTOFF = 0.8f;
 
 	// hyperparameters (skating correction)
-	private static final float MIN_ACCEPTABLE_ERROR = 0.075f;
+	private static final float MIN_ACCEPTABLE_ERROR = 0.05f;
 	private static final float MAX_ACCEPTABLE_ERROR = LegTweakBuffer.SKATING_CUTOFF;
-	private static final float CORRECTION_WEIGHT_MIN = 0.15f;
-	private static final float CORRECTION_WEIGHT_MAX = 0.7f;
+	private static final float CORRECTION_WEIGHT_MIN = 0.25f;
+	private static final float CORRECTION_WEIGHT_MAX = 0.70f;
 
 	// hyperparameters (knee correction)
 	private static final float KNEE_CORRECTION_WEIGHT = 0.25f;
@@ -280,9 +280,11 @@ public class LegTweaks {
 		if (skeleton.leftFootTracker != null && skeleton.rightFootTracker != null) {
 			currentFrame.setLeftFootAcceleration(leftFootAcceleration);
 			currentFrame.setRightFootAcceleration(rightFootAcceleration);
+			currentFrame.setDetectionMode(LegTweakBuffer.FOOT_ACCEL);
 		} else if (skeleton.leftLowerLegTracker != null && skeleton.rightLowerLegTracker != null) {
 			currentFrame.setLeftFootAcceleration(leftLowerLegAcceleration);
 			currentFrame.setRightFootAcceleration(rightLowerLegAcceleration);
+			currentFrame.setDetectionMode(LegTweakBuffer.ANKLE_ACCEL);
 		}
 
 		currentFrame.setParent(bufferHead);
