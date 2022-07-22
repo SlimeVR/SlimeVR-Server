@@ -21,6 +21,8 @@ public class LegTweakBuffer {
 	public static final int STATE_UNKNOWN = 0; // fall back state
 	public static final int LOCKED = 1;
 	public static final int UNLOCKED = 2;
+	public static final int FOOT_ACCEL = 3;
+	public static final int ANKLE_ACCEL = 4;
 
 	private static final Vector3f placeHolderVec = new Vector3f();
 	private static final Quaternion placeHolderQuat = new Quaternion();
@@ -45,9 +47,9 @@ public class LegTweakBuffer {
 	private Vector3f waistPositionCorrected = placeHolderVec;
 
 	// velocities
-	private Vector3f leftFootVelocity;
+	private Vector3f leftFootVelocity = placeHolderVec;
 	private float leftFootVelocityMagnitude = 0;
-	private Vector3f rightFootVelocity;
+	private Vector3f rightFootVelocity = placeHolderVec;
 	private float rightFootVelocityMagnitude = 0;
 	private float leftFootAngleDiff = 0;
 	private float rightFootAngleDiff = 0;
@@ -62,18 +64,20 @@ public class LegTweakBuffer {
 	private long timeOfFrame = System.nanoTime();
 	private LegTweakBuffer parent = null; // frame before this one
 	private int frameNumber = 0; // higher number is older frame
+	private int detectionMode = ANKLE_ACCEL; // detection mode
 	private boolean accelerationAboveThresholdLeft = true;
 	private boolean accelerationAboveThresholdRight = true;
 	private float leftFloorLevel;
 	private float rightFloorLevel;
 
 	// hyperparameters
-	public static final float SKATING_CUTOFF = 0.275f;
-	private static final float SKATING_VELOCITY_CUTOFF = 4.25f;
-	private static final float SKATING_ACCELERATION_CUTOFF = 1.75f;
+	public static final float SKATING_CUTOFF = 0.325f;
+	private static final float SKATING_VELOCITY_CUTOFF = 5.70f;
+	private static final float SKATING_ACCELERATION_CUTOFF = 1.50f;
 	private static final float SKATING_ROTATIONAL_VELOCITY_CUTOFF = 2.8f;
-	private static final float SKATING_LOCK_ENGAGE_PERCENT = 0.7f;
-	private static final float FLOOR_DIF_CUTOFF = 0.075f;
+	private static final float SKATING_LOCK_ENGAGE_PERCENT = 0.9f;
+	private static final float FLOOR_DIF_CUTOFF = 0.1f;
+	private static final float SIX_TRACKER_TOLLERANCE = 0.25f;
 
 	private static final float SKATING_CUTOFF_ENGAGE = SKATING_CUTOFF
 		* SKATING_LOCK_ENGAGE_PERCENT;
@@ -229,6 +233,10 @@ public class LegTweakBuffer {
 		this.rightFootAcceleration = rightFootAcceleration.clone();
 	}
 
+	public void setDetectionMode(int mode) {
+		this.detectionMode = mode;
+	}
+
 	// calculate momvent attributes
 	public void calculateFootAttributes(boolean active) {
 		updateFrameNumber(0);
@@ -237,9 +245,12 @@ public class LegTweakBuffer {
 		computeVelocity();
 		computeAccelerationMagnitude();
 
-		// calculate acceleration above threashold
-		computeAccelerationAboveThresholdFootTrackers();
-
+		// check if the acceleration triggers forced unlock
+		if (detectionMode == FOOT_ACCEL) {
+			computeAccelerationAboveThresholdFootTrackers();
+		} else {
+			computeAccelerationAboveThreshold();
+		}
 
 		// if correction is inactive state is unknown (default to unlocked)
 		if (!active) {
@@ -253,8 +264,9 @@ public class LegTweakBuffer {
 	// update the frame number of all the frames
 	public void updateFrameNumber(int frameNumber) {
 		this.frameNumber = frameNumber;
-		if (this.frameNumber >= 2) {
-			this.parent = null; // once a frame is 2 frames old, it is no longer
+		if (this.frameNumber >= 10) {
+			this.parent = null; // once a frame is 10 frames old, it is no
+								// longer
 								// needed
 		}
 		if (parent != null) {
@@ -354,9 +366,7 @@ public class LegTweakBuffer {
 			.distance(parent.rightFootRotation.getRotationColumn(2));
 	}
 
-	// compute the velocity of the feet from the position in the last frame
-	// TODO: stabalize the velocity by averaging the last few frames (there is a
-	// studer that this should remove)
+	// compute the velocity of the feet from the position in the last frames
 	private void computeVelocity() {
 		if (parent != null) {
 			leftFootVelocity = leftFootPosition.subtract(parent.leftFootPosition);
@@ -370,7 +380,7 @@ public class LegTweakBuffer {
 
 	// get the nth parent of this frame
 	private LegTweakBuffer getNParent(int n) {
-		if (n == 0) {
+		if (n == 0 || parent == null) {
 			return this;
 		} else {
 			return parent.getNParent(n - 1);
@@ -395,7 +405,10 @@ public class LegTweakBuffer {
 	// for any setup without foot trackers the data from the imus is enough to
 	// determine lock/unlock
 	private void computeAccelerationAboveThreshold() {
-		return;
+		accelerationAboveThresholdLeft = leftFootAccelerationMagnitude
+			> SKATING_ACCELERATION_CUTOFF + SIX_TRACKER_TOLLERANCE;
+		accelerationAboveThresholdRight = rightFootAccelerationMagnitude
+			> SKATING_ACCELERATION_CUTOFF + SIX_TRACKER_TOLLERANCE;
 	}
 
 }
