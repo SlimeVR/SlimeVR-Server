@@ -27,14 +27,19 @@ public class ProtocolAPI {
 	public void onMessage(GenericConnection conn, ByteBuffer message) {
 		MessageBundle messageBundle = MessageBundle.getRootAsMessageBundle(message);
 
-		for (int index = 0; index < messageBundle.dataFeedMsgsLength(); index++) {
-			DataFeedMessageHeader header = messageBundle.dataFeedMsgsVector().get(index);
-			this.dataFeedHandler.onMessage(conn, header);
-		}
+		try {
+			for (int index = 0; index < messageBundle.dataFeedMsgsLength(); index++) {
+				DataFeedMessageHeader header = messageBundle.dataFeedMsgsVector().get(index);
+				this.dataFeedHandler.onMessage(conn, header);
+			}
 
-		for (int index = 0; index < messageBundle.rpcMsgsLength(); index++) {
-			RpcMessageHeader header = messageBundle.rpcMsgsVector().get(index);
-			this.rpcHandler.onMessage(conn, header);
+			for (int index = 0; index < messageBundle.rpcMsgsLength(); index++) {
+				RpcMessageHeader header = messageBundle.rpcMsgsVector().get(index);
+				this.rpcHandler.onMessage(conn, header);
+			}
+		} catch (AssertionError e) {
+			// Catch flatbuffer errors
+			e.printStackTrace();
 		}
 	}
 
