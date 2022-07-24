@@ -72,12 +72,25 @@ public class LegTweakBuffer {
 
 	// hyperparameters
 	public static final float SKATING_CUTOFF = 0.325f;
-	private static final float SKATING_VELOCITY_CUTOFF = 5.70f;
+	private static final float SKATING_VELOCITY_CUTOFF = 5.25f;
 	private static final float SKATING_ACCELERATION_CUTOFF = 1.50f;
 	private static final float SKATING_ROTATIONAL_VELOCITY_CUTOFF = 2.8f;
-	private static final float SKATING_LOCK_ENGAGE_PERCENT = 0.9f;
+	private static final float SKATING_LOCK_ENGAGE_PERCENT = 0.85f;
 	private static final float FLOOR_DIF_CUTOFF = 0.1f;
-	private static final float SIX_TRACKER_TOLLERANCE = 0.25f;
+	private static final float SIX_TRACKER_TOLLERANCE = 0.35f;
+
+	private static final float PARAM_SCALAR_LOW_ACCEL = 2.5f;
+	private static final float ACCEL_MAX_PARAM_SCALAR = 0.3f;
+	private static final float ACCEL_MIN_PARAM_SCALAR = 1.25f;
+
+	private float leftFootSensativity = 1.0f;
+	private float rightFootSensativity = 1.0f;
+
+	// NOTE TO SELF - one posibility to get less false negatives for locks is to
+	// greatly increase all parameters for locking when acceleration is extremly
+	// low (like 0.1)
+	// this would be a good way to keep the foot locked with fast upper body
+	// movement that causes high foot velocity
 
 	private static final float SKATING_CUTOFF_ENGAGE = SKATING_CUTOFF
 		* SKATING_LOCK_ENGAGE_PERCENT;
@@ -249,8 +262,12 @@ public class LegTweakBuffer {
 		if (detectionMode == FOOT_ACCEL) {
 			computeAccelerationAboveThresholdFootTrackers();
 		} else {
-			computeAccelerationAboveThreshold();
+			computeAccelerationAboveThresholdAnkleTrackers();
 		}
+
+		// calculate the scalar for other parameters
+		leftFootSensativity = getLeftFootScalar();
+		rightFootSensativity = getRightFootScalar();
 
 		// if correction is inactive state is unknown (default to unlocked)
 		if (!active) {
@@ -301,8 +318,10 @@ public class LegTweakBuffer {
 		} else {
 			if (
 				parent.getLeftFootHorizantalDifference() > SKATING_CUTOFF
-					|| leftFootVelocityMagnitude * timeStep > SKATING_VELOCITY_CUTOFF
-					|| leftFootAngleDiff * timeStep > SKATING_ROTATIONAL_VELOCITY_CUTOFF
+					|| leftFootVelocityMagnitude * timeStep
+						> SKATING_VELOCITY_CUTOFF * leftFootSensativity
+					|| leftFootAngleDiff * timeStep
+						> SKATING_ROTATIONAL_VELOCITY_CUTOFF * leftFootSensativity
 					|| leftFootPosition.y > leftFloorLevel + FLOOR_DIF_CUTOFF
 					|| accelerationAboveThresholdLeft
 			) {
@@ -318,8 +337,11 @@ public class LegTweakBuffer {
 		if (parent.rightLegState == UNLOCKED) {
 			if (
 				parent.getRightFootHorizantalDifference() > SKATING_CUTOFF_ENGAGE
-					|| rightFootVelocityMagnitude * timeStep > SKATING_VELOCITY_CUTOFF_ENGAGE
-					|| rightFootAngleDiff * timeStep > SKATING_ROTATIONAL_VELOCITY_CUTOFF_ENGAGE
+					|| rightFootVelocityMagnitude * timeStep
+						> SKATING_VELOCITY_CUTOFF_ENGAGE * rightFootSensativity
+					|| rightFootAngleDiff * timeStep
+						> SKATING_ROTATIONAL_VELOCITY_CUTOFF_ENGAGE
+							* rightFootSensativity
 					|| rightFootPosition.y > rightFloorLevel + FLOOR_DIF_CUTOFF
 					|| accelerationAboveThresholdRight
 			) {
@@ -388,10 +410,10 @@ public class LegTweakBuffer {
 	}
 
 	// compute the acceleration magnitude of the feet from the acceleration
-	// given by the imus
+	// given by the imus (exclude y)
 	private void computeAccelerationMagnitude() {
-		leftFootAccelerationMagnitude = leftFootAcceleration.length();
-		rightFootAccelerationMagnitude = rightFootAcceleration.length();
+		leftFootAccelerationMagnitude = leftFootAcceleration.setY(0).length();
+		rightFootAccelerationMagnitude = rightFootAcceleration.setY(0).length();
 	}
 
 	// for 8 trackers the data from the imus is enough to determine lock/unlock
@@ -404,11 +426,39 @@ public class LegTweakBuffer {
 
 	// for any setup without foot trackers the data from the imus is enough to
 	// determine lock/unlock
-	private void computeAccelerationAboveThreshold() {
+	private void computeAccelerationAboveThresholdAnkleTrackers() {
 		accelerationAboveThresholdLeft = leftFootAccelerationMagnitude
 			> SKATING_ACCELERATION_CUTOFF + SIX_TRACKER_TOLLERANCE;
 		accelerationAboveThresholdRight = rightFootAccelerationMagnitude
 			> SKATING_ACCELERATION_CUTOFF + SIX_TRACKER_TOLLERANCE;
+	}
+
+	// calculate the scalar to apply to the non acceleration based lock/unlock
+	// hyperparameters
+	private float getLeftFootScalar() {
+		if (parent.leftLegState == LOCKED) {
+			if (leftFootAccelerationMagnitude < ACCEL_MAX_PARAM_SCALAR) {
+				return PARAM_SCALAR_LOW_ACCEL;
+			} else if (leftFootAccelerationMagnitude > ACCEL_MIN_PARAM_SCALAR) {
+				return PARAM_SCALAR_LOW_ACCEL
+					* (leftFootAccelerationMagnitude - ACCEL_MIN_PARAM_SCALAR)
+					/ (ACCEL_MAX_PARAM_SCALAR - ACCEL_MIN_PARAM_SCALAR);
+			}
+		}
+		return 1.0f;
+	}
+
+	private float getRightFootScalar() {
+		if (parent.rightLegState == LOCKED) {
+			if (rightFootAccelerationMagnitude < ACCEL_MAX_PARAM_SCALAR) {
+				return PARAM_SCALAR_LOW_ACCEL;
+			} else if (rightFootAccelerationMagnitude > ACCEL_MIN_PARAM_SCALAR) {
+				return PARAM_SCALAR_LOW_ACCEL
+					* (rightFootAccelerationMagnitude - ACCEL_MIN_PARAM_SCALAR)
+					/ (ACCEL_MAX_PARAM_SCALAR - ACCEL_MIN_PARAM_SCALAR);
+			}
+		}
+		return 1.0f;
 	}
 
 }
