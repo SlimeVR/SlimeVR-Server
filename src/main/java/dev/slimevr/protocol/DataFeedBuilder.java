@@ -34,15 +34,16 @@ public class DataFeedBuilder {
 			? fbb.createString(device.getFirmwareVersion())
 			: 0;
 
+		int manufacturerOffset = device.getManufacturer() != null
+			? fbb.createString(device.getManufacturer())
+			: 0;
+
 		HardwareInfo.startHardwareInfo(fbb);
 		HardwareInfo.addFirmwareVersion(fbb, nameOffset);
-
+		HardwareInfo.addManufacturer(fbb, manufacturerOffset);
 		// BRUH MOMENT
-		// TODO need support: HardwareInfo.addFirmwareVersion(fbb,
-		// firmwareVersionOffset);
 		// TODO need support: HardwareInfo.addHardwareRevision(fbb,
 		// hardwareRevisionOffset);
-		// TODO need support: HardwareInfo.addManufacturer(fbb, device.m);
 		// TODO need support: HardwareInfo.addDisplayName(fbb, de);
 		// TODO need support: HardwareInfo.addHardwareAddress(fbb, tracker.);
 		// TODO need support: HardwareInfo.addMcuId(device);
