@@ -14,6 +14,7 @@ import com.jme3.math.Vector3f;
 // 3. a large acceleration is applied to the foot
 // 4. angular velocity of the foot goes higher than a threashold
 // The conditions for a lock are the opposite of the above
+// but require a lower value for all of the above conditions
 
 
 public class LegTweakBuffer {
@@ -244,6 +245,30 @@ public class LegTweakBuffer {
 
 	public void setRightFootAcceleration(Vector3f rightFootAcceleration) {
 		this.rightFootAcceleration = rightFootAcceleration.clone();
+	}
+
+	public void getLeftFootAcceleration(Vector3f leftFootAcceleration) {
+		leftFootAcceleration.set(this.leftFootAcceleration);
+	}
+
+	public void getRightFootAcceleration(Vector3f rightFootAcceleration) {
+		rightFootAcceleration.set(this.rightFootAcceleration);
+	}
+
+	public float getLeftFootAccelerationMagnitude() {
+		return this.leftFootAcceleration.length();
+	}
+
+	public float getRightFootAccelerationMagnitude() {
+		return this.rightFootAcceleration.length();
+	}
+
+	public float getLeftFootAccelerationY() {
+		return this.leftFootAcceleration.y;
+	}
+
+	public float getRightFootAccelerationY() {
+		return this.rightFootAcceleration.y;
 	}
 
 	public void setDetectionMode(int mode) {
