@@ -43,7 +43,7 @@ public class LegTweaks {
 	private boolean kneesActive = false;
 
 	// hyperparameters (clip correction)
-	private static final float STANDING_CUTOFF_VERTICAL = 0.35f;
+	private static final float STANDING_CUTOFF_VERTICAL = 0.5f;
 	private static final float MAX_DYNAMIC_DISPLACEMENT = 0.08f;
 	private static final float MAX_DISENGAGMENT_OFFSET = 0.25f;
 	private static final float DYNAMIC_DISPLACEMENT_CUTOFF = 0.8f;
@@ -53,6 +53,11 @@ public class LegTweaks {
 	private static final float MAX_ACCEPTABLE_ERROR = LegTweakBuffer.SKATING_CUTOFF;
 	private static final float CORRECTION_WEIGHT_MIN = 0.25f;
 	private static final float CORRECTION_WEIGHT_MAX = 0.70f;
+
+	// hyperparameters (floating feet correction)
+	private static final float FOOT_Y_CORRECTION_WEIGHT = 0.45f;
+	private static final float FOOT_Y_MAX_ACCELERATION = 0.40f;
+	private static final float FOOT_Y_DIFF_CUTOFF = 0.15f;
 
 	// hyperparameters (knee correction)
 	private static final float KNEE_CORRECTION_WEIGHT = 0.25f;
@@ -196,7 +201,7 @@ public class LegTweaks {
 			rightFootRotation = skeleton.computedRightFootTracker.rotation;
 		}
 
-		// get the vector for velocity of the feet and knees
+		// get the vector for acceleration of the feet and knees
 		// (if feet are not available, fallback to 6 tracker mode)
 		if (skeleton.leftFootTracker != null && skeleton.rightFootTracker != null) {
 			skeleton.leftFootTracker.getAcceleration(leftFootAcceleration);
@@ -247,6 +252,14 @@ public class LegTweaks {
 		if (bufferInvalid) {
 			bufferHead.setLeftFootPositionCorrected(leftFootPosition);
 			bufferHead.setRightFootPositionCorrected(rightFootPosition);
+			bufferHead.setLeftKneePositionCorrected(leftKneePosition);
+			bufferHead.setRightKneePositionCorrected(rightKneePosition);
+			bufferHead.setWaistPositionCorrected(waistPosition);
+			bufferHead.setLeftFootPosition(leftFootPosition);
+			bufferHead.setRightFootPosition(rightFootPosition);
+			bufferHead.setLeftKneePosition(leftKneePosition);
+			bufferHead.setRightKneePosition(rightKneePosition);
+			bufferHead.setWaistPosition(waistPosition);
 			bufferHead.setLeftLegState(LegTweakBuffer.UNLOCKED);
 			bufferHead.setRightLegState(LegTweakBuffer.UNLOCKED);
 			bufferInvalid = false;
@@ -312,6 +325,7 @@ public class LegTweaks {
 		// (only needed if skating correction is enabled)
 		if (skatingCorrectionEnabled) {
 			correctSkating();
+			correctFloat();
 		}
 
 		// determine if either leg is in a position to activate or deactivate
@@ -567,9 +581,127 @@ public class LegTweaks {
 		}
 	}
 
+	// check if the foot is begining to float over the floor when it should not
+	// be if it is move it back down to the floor
+	// note: very small corrections are all that is allowed to prevent momemnt
+	// that looks unrealistic
+	private void correctFloat() {
+		boolean correctLeft = true;
+		boolean correctRight = true;
+		if (bufferHead.getLeftLegState() == LegTweakBuffer.LOCKED) {
+			float lastPositionY = bufferHead.getParent().getLeftFootPositionCorrected().y;
+			if (
+				Math.abs(leftFootPosition.y - lastPositionY) < FOOT_Y_DIFF_CUTOFF
+					&& leftFootPosition.y > lastPositionY
+					&& bufferHead.getLeftFootAccelerationY() < FOOT_Y_MAX_ACCELERATION
+			) {
+				leftFootPosition.y = lastPositionY;
+				correctLeft = false;
+			}
+		}
+		if (bufferHead.getRightLegState() == LegTweakBuffer.LOCKED) {
+			float lastPositionY = bufferHead.getParent().getRightFootPositionCorrected().y;
+			if (
+				Math.abs(rightFootPosition.y - lastPositionY) < FOOT_Y_DIFF_CUTOFF
+					&& rightFootPosition.y > lastPositionY
+					&& bufferHead.getRightFootAccelerationY() < FOOT_Y_MAX_ACCELERATION
+			) {
+				rightFootPosition.y = lastPositionY;
+				correctRight = false;
+			}
+		}
+
+		Vector3f temp;
+		// using the velocity correct the position
+		if (correctLeft) {
+			Vector3f leftFootDif = leftFootPosition
+				.subtract(bufferHead.getParent().getLeftFootPositionCorrected());
+			if (Math.abs(leftFootDif.y) > 0.005f) {
+				temp = bufferHead.getParent().getLeftFootPositionCorrected();
+				temp = temp
+					.subtract(
+						bufferHead
+							.getParent()
+							.getLeftFootPosition()
+							.subtract(bufferHead.getLeftFootPosition())
+					);
+				float leftFloor = (floorLevel + (MAX_DYNAMIC_DISPLACEMENT * getLeftFootOffset()))
+					- currentDisengagementOffset;
+				if (
+					temp.y
+						< leftFloor
+				) {
+					leftFootPosition.y = leftFloor;
+				} else {
+					leftFootPosition.y = temp.y;
+				}
+
+				Vector3f velocity = bufferHead.getLeftFootVelocity();
+				if (velocity.y * leftFootDif.y > 0) {
+					leftFootPosition.y += velocity.y * FOOT_Y_CORRECTION_WEIGHT;
+				} else {
+					leftFootPosition.y -= velocity.y * FOOT_Y_CORRECTION_WEIGHT;
+				}
+				// check for overshoot and correct if necessary
+				if (
+					checkOverShoot(
+						this.bufferHead.getLeftFootPosition().y,
+						this.bufferHead.getParent().getLeftFootPositionCorrected().y,
+						leftFootPosition.y
+					)
+				) {
+					leftFootPosition.y = bufferHead.getLeftFootPosition().y;
+				}
+			}
+		}
+
+		if (correctRight) {
+			Vector3f rightFootDif = rightFootPosition
+				.subtract(bufferHead.getParent().getRightFootPositionCorrected());
+			if (Math.abs(rightFootDif.y) > 0.005f) {
+				temp = bufferHead.getParent().getRightFootPositionCorrected();
+				temp = temp
+					.subtract(
+						bufferHead
+							.getParent()
+							.getRightFootPosition()
+							.subtract(bufferHead.getRightFootPosition())
+					);
+				float rightFloor = (floorLevel + (MAX_DYNAMIC_DISPLACEMENT * getRightFootOffset()))
+					- currentDisengagementOffset;
+				if (
+					temp.y
+						< rightFloor
+				) {
+					rightFootPosition.y = rightFloor;
+				} else {
+					rightFootPosition.y = temp.y;
+				}
+				Vector3f velocity = bufferHead.getRightFootVelocity();
+				if (velocity.y * rightFootDif.y > 0) {
+					rightFootPosition.y += velocity.y * FOOT_Y_CORRECTION_WEIGHT;
+				} else {
+					rightFootPosition.y -= velocity.y * FOOT_Y_CORRECTION_WEIGHT;
+				}
+				// check for overshoot and correct if necessary
+				if (
+					checkOverShoot(
+						this.bufferHead.getRightFootPosition().y,
+						this.bufferHead.getParent().getRightFootPositionCorrected().y,
+						rightFootPosition.y
+					)
+				) {
+					rightFootPosition.y = bufferHead.getRightFootPosition().y;
+				}
+			}
+
+		}
+	}
+
+
 	// returns true if it is likly the user is standing
 	public boolean isStanding() {
-		// if the waist is below the verticalcutoff, we are not standing
+		// if the waist is below the verticalcutoff, user is not standing
 		float cutoff = floorLevel
 			+ waistToFloorDist
 			- (waistToFloorDist * STANDING_CUTOFF_VERTICAL);
@@ -582,7 +714,7 @@ public class LegTweaks {
 		return true;
 	}
 
-	// move the knees in to a position that satisfys the distance between nodes
+	// move the knees in to a position that is closer to the truth
 	private void correctKnees() {
 		// calculate the left and right waist nodes in standing space
 		Vector3f leftWaist = waistPosition.add(leftWaistUpperLegOffset);
@@ -656,10 +788,7 @@ public class LegTweaks {
 
 	// check if the difference between two floats flipped after correction
 	private boolean checkOverShoot(float trueVal, float valBefore, float valAfter) {
-		if ((valAfter - trueVal) * (valBefore - trueVal) < 0) {
-			return true;
-		}
-		return false;
+		return (trueVal - valBefore) * (trueVal - valAfter) < 0;
 	}
 
 	// get the unit vector of the given rotation
