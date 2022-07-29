@@ -72,34 +72,29 @@ public class LegTweakBuffer {
 	private float rightFloorLevel;
 
 	// hyperparameters
-	public static final float SKATING_CUTOFF = 0.325f;
-	private static final float SKATING_VELOCITY_CUTOFF = 5.25f;
-	private static final float SKATING_ACCELERATION_CUTOFF = 1.50f;
-	private static final float SKATING_ROTATIONAL_VELOCITY_CUTOFF = 2.8f;
-	private static final float SKATING_LOCK_ENGAGE_PERCENT = 0.85f;
-	private static final float FLOOR_DIF_CUTOFF = 0.1f;
-	private static final float SIX_TRACKER_TOLLERANCE = 0.35f;
+	public static final float SKATING_DISTANCE_CUTOFF = 0.225f;
+	private static final float SKATING_VELOCITY_THRESHOLD = 4.25f;
+	private static final float SKATING_ACCELERATION_THRESHOLD = 1.15f;
+	private static final float SKATING_ROTVELOCITY_THRESHOLD = 2.8f;
+	private static final float SKATING_LOCK_ENGAGE_PERCENT = 0.9f;
+	private static final float FLOOR_DISTANCE_CUTOFF = 0.1f;
+	private static final float SIX_TRACKER_TOLLERANCE = 0.10f;
 
-	private static final float PARAM_SCALAR_LOW_ACCEL = 2.5f;
-	private static final float ACCEL_MAX_PARAM_SCALAR = 0.3f;
-	private static final float ACCEL_MIN_PARAM_SCALAR = 1.25f;
+	private static final float PARAM_SCALAR_MAX = 1.75f;
+	private static final float MAX_SCALAR_ACCEL = 0.3f;
+	private static final float MIN_SCALAR_ACCEL = 1.25f;
 
-	private float leftFootSensativity = 1.0f;
-	private float rightFootSensativity = 1.0f;
+	private float leftFootSensitivity = 1.0f;
+	private float rightFootSensitivity = 1.0f;
 
-	// NOTE TO SELF - one posibility to get less false negatives for locks is to
-	// greatly increase all parameters for locking when acceleration is extremly
-	// low (like 0.1)
-	// this would be a good way to keep the foot locked with fast upper body
-	// movement that causes high foot velocity
 
-	private static final float SKATING_CUTOFF_ENGAGE = SKATING_CUTOFF
+	private static final float SKATING_CUTOFF_ENGAGE = SKATING_DISTANCE_CUTOFF
 		* SKATING_LOCK_ENGAGE_PERCENT;
-	private static final float SKATING_VELOCITY_CUTOFF_ENGAGE = SKATING_VELOCITY_CUTOFF
+	private static final float SKATING_VELOCITY_CUTOFF_ENGAGE = SKATING_VELOCITY_THRESHOLD
 		* SKATING_LOCK_ENGAGE_PERCENT;
-	private static final float SKATING_ACCELERATION_CUTOFF_ENGAGE = SKATING_ACCELERATION_CUTOFF
+	private static final float SKATING_ACCELERATION_CUTOFF_ENGAGE = SKATING_ACCELERATION_THRESHOLD
 		* SKATING_LOCK_ENGAGE_PERCENT;
-	private static final float SKATING_ROTATIONAL_VELOCITY_CUTOFF_ENGAGE = SKATING_ROTATIONAL_VELOCITY_CUTOFF
+	private static final float SKATING_ROTATIONAL_VELOCITY_CUTOFF_ENGAGE = SKATING_ROTVELOCITY_THRESHOLD
 		* SKATING_LOCK_ENGAGE_PERCENT;
 
 	// getters and setters
@@ -291,8 +286,8 @@ public class LegTweakBuffer {
 		}
 
 		// calculate the scalar for other parameters
-		leftFootSensativity = getLeftFootScalar();
-		rightFootSensativity = getRightFootScalar();
+		leftFootSensitivity = getLeftFootScalar();
+		rightFootSensitivity = getRightFootScalar();
 
 		// if correction is inactive state is unknown (default to unlocked)
 		if (!active) {
@@ -333,7 +328,7 @@ public class LegTweakBuffer {
 				parent.getLeftFootHorizantalDifference() > SKATING_CUTOFF_ENGAGE
 					|| leftFootVelocityMagnitude * timeStep > SKATING_VELOCITY_CUTOFF_ENGAGE
 					|| leftFootAngleDiff * timeStep > SKATING_ROTATIONAL_VELOCITY_CUTOFF_ENGAGE
-					|| leftFootPosition.y > leftFloorLevel + FLOOR_DIF_CUTOFF
+					|| leftFootPosition.y > leftFloorLevel + FLOOR_DISTANCE_CUTOFF
 					|| accelerationAboveThresholdLeft
 			) {
 				return UNLOCKED;
@@ -342,12 +337,12 @@ public class LegTweakBuffer {
 
 		} else {
 			if (
-				parent.getLeftFootHorizantalDifference() > SKATING_CUTOFF
+				parent.getLeftFootHorizantalDifference() > SKATING_DISTANCE_CUTOFF
 					|| leftFootVelocityMagnitude * timeStep
-						> SKATING_VELOCITY_CUTOFF * leftFootSensativity
+						> SKATING_VELOCITY_THRESHOLD * leftFootSensitivity
 					|| leftFootAngleDiff * timeStep
-						> SKATING_ROTATIONAL_VELOCITY_CUTOFF * leftFootSensativity
-					|| leftFootPosition.y > leftFloorLevel + FLOOR_DIF_CUTOFF
+						> SKATING_ROTVELOCITY_THRESHOLD * leftFootSensitivity
+					|| leftFootPosition.y > leftFloorLevel + FLOOR_DISTANCE_CUTOFF
 					|| accelerationAboveThresholdLeft
 			) {
 				return UNLOCKED;
@@ -363,11 +358,11 @@ public class LegTweakBuffer {
 			if (
 				parent.getRightFootHorizantalDifference() > SKATING_CUTOFF_ENGAGE
 					|| rightFootVelocityMagnitude * timeStep
-						> SKATING_VELOCITY_CUTOFF_ENGAGE * rightFootSensativity
+						> SKATING_VELOCITY_CUTOFF_ENGAGE * rightFootSensitivity
 					|| rightFootAngleDiff * timeStep
 						> SKATING_ROTATIONAL_VELOCITY_CUTOFF_ENGAGE
-							* rightFootSensativity
-					|| rightFootPosition.y > rightFloorLevel + FLOOR_DIF_CUTOFF
+							* rightFootSensitivity
+					|| rightFootPosition.y > rightFloorLevel + FLOOR_DISTANCE_CUTOFF
 					|| accelerationAboveThresholdRight
 			) {
 				return UNLOCKED;
@@ -375,10 +370,10 @@ public class LegTweakBuffer {
 			return LOCKED;
 		} else {
 			if (
-				parent.getRightFootHorizantalDifference() > SKATING_CUTOFF
-					|| rightFootVelocityMagnitude * timeStep > SKATING_VELOCITY_CUTOFF
-					|| rightFootAngleDiff * timeStep > SKATING_ROTATIONAL_VELOCITY_CUTOFF
-					|| rightFootPosition.y > rightFloorLevel + FLOOR_DIF_CUTOFF
+				parent.getRightFootHorizantalDifference() > SKATING_DISTANCE_CUTOFF
+					|| rightFootVelocityMagnitude * timeStep > SKATING_VELOCITY_THRESHOLD
+					|| rightFootAngleDiff * timeStep > SKATING_ROTVELOCITY_THRESHOLD
+					|| rightFootPosition.y > rightFloorLevel + FLOOR_DISTANCE_CUTOFF
 					|| accelerationAboveThresholdRight
 			) {
 				return UNLOCKED;
@@ -453,21 +448,21 @@ public class LegTweakBuffer {
 	// determine lock/unlock
 	private void computeAccelerationAboveThresholdAnkleTrackers() {
 		accelerationAboveThresholdLeft = leftFootAccelerationMagnitude
-			> SKATING_ACCELERATION_CUTOFF + SIX_TRACKER_TOLLERANCE;
+			> SKATING_ACCELERATION_THRESHOLD + SIX_TRACKER_TOLLERANCE;
 		accelerationAboveThresholdRight = rightFootAccelerationMagnitude
-			> SKATING_ACCELERATION_CUTOFF + SIX_TRACKER_TOLLERANCE;
+			> SKATING_ACCELERATION_THRESHOLD + SIX_TRACKER_TOLLERANCE;
 	}
 
 	// calculate the scalar to apply to the non acceleration based lock/unlock
 	// hyperparameters
 	private float getLeftFootScalar() {
 		if (parent.leftLegState == LOCKED) {
-			if (leftFootAccelerationMagnitude < ACCEL_MAX_PARAM_SCALAR) {
-				return PARAM_SCALAR_LOW_ACCEL;
-			} else if (leftFootAccelerationMagnitude > ACCEL_MIN_PARAM_SCALAR) {
-				return PARAM_SCALAR_LOW_ACCEL
-					* (leftFootAccelerationMagnitude - ACCEL_MIN_PARAM_SCALAR)
-					/ (ACCEL_MAX_PARAM_SCALAR - ACCEL_MIN_PARAM_SCALAR);
+			if (leftFootAccelerationMagnitude < MAX_SCALAR_ACCEL) {
+				return PARAM_SCALAR_MAX;
+			} else if (leftFootAccelerationMagnitude > MIN_SCALAR_ACCEL) {
+				return PARAM_SCALAR_MAX
+					* (leftFootAccelerationMagnitude - MIN_SCALAR_ACCEL)
+					/ (MAX_SCALAR_ACCEL - MIN_SCALAR_ACCEL);
 			}
 		}
 		return 1.0f;
@@ -475,12 +470,12 @@ public class LegTweakBuffer {
 
 	private float getRightFootScalar() {
 		if (parent.rightLegState == LOCKED) {
-			if (rightFootAccelerationMagnitude < ACCEL_MAX_PARAM_SCALAR) {
-				return PARAM_SCALAR_LOW_ACCEL;
-			} else if (rightFootAccelerationMagnitude > ACCEL_MIN_PARAM_SCALAR) {
-				return PARAM_SCALAR_LOW_ACCEL
-					* (rightFootAccelerationMagnitude - ACCEL_MIN_PARAM_SCALAR)
-					/ (ACCEL_MAX_PARAM_SCALAR - ACCEL_MIN_PARAM_SCALAR);
+			if (rightFootAccelerationMagnitude < MAX_SCALAR_ACCEL) {
+				return PARAM_SCALAR_MAX;
+			} else if (rightFootAccelerationMagnitude > MIN_SCALAR_ACCEL) {
+				return PARAM_SCALAR_MAX
+					* (rightFootAccelerationMagnitude - MIN_SCALAR_ACCEL)
+					/ (MAX_SCALAR_ACCEL - MIN_SCALAR_ACCEL);
 			}
 		}
 		return 1.0f;
