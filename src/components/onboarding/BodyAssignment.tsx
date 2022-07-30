@@ -53,11 +53,11 @@ export function BodyAssignment({
             <div className="flex flex-col gap-3">
               {advanced && (
                 <TrackerPartCard
-                  label="HMD"
+                  label="HEAD"
                   onlyAssigned={onlyAssigned}
-                  td={trackerPartGrouped[BodyPart.HMD]}
-                  role={BodyPart.HMD}
-                  onClick={() => onRoleSelected(BodyPart.HMD)}
+                  td={trackerPartGrouped[BodyPart.HEAD]}
+                  role={BodyPart.HEAD}
+                  onClick={() => onRoleSelected(BodyPart.HEAD)}
                   direction="right"
                 />
               )}

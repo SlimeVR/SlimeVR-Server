@@ -43,7 +43,7 @@ export function PersonFrontIcon({ width }: { width?: number }) {
         cx="82"
         cy="50"
         r={CIRCLE_RADIUS}
-        id={BodyPart[BodyPart.HMD]}
+        id={BodyPart[BodyPart.HEAD]}
       />
       <circle
         className="body-part-circle"
