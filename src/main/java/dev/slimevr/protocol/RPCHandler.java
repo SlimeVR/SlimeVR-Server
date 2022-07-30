@@ -200,18 +200,28 @@ public class RPCHandler extends ProtocolHandler<RpcMessageHeader>
 		TrackerPosition pos = TrackerPosition.getByBodyPart(req.bodyPosition()).orElse(null);
 		tracker.setBodyPosition(pos);
 
-		if (tracker instanceof IMUTracker) {
-			IMUTracker imu = (IMUTracker) tracker;
-			imu
-				.setMountingRotation(
-					new Quaternion(
-						req.mountingRotation().x(),
-						req.mountingRotation().y(),
-						req.mountingRotation().z(),
-						req.mountingRotation().w()
-					)
-				);
+		if (req.mountingRotation() != null) {
+			if (tracker instanceof IMUTracker) {
+				IMUTracker imu = (IMUTracker) tracker;
+				imu
+					.setMountingRotation(
+						new Quaternion(
+							req.mountingRotation().x(),
+							req.mountingRotation().y(),
+							req.mountingRotation().z(),
+							req.mountingRotation().w()
+						)
+					);
+			}
 		}
+
+		if (req.displayName() != null) {
+			if (tracker instanceof IMUTracker) {
+				IMUTracker imu = (IMUTracker) tracker;
+				imu.setCustomName(req.displayName());
+			}
+		}
+
 		this.api.server.trackerUpdated(tracker);
 	}
 
