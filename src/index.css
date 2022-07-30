@@ -2,49 +2,48 @@
 @tailwind components;
 @tailwind utilities;
 
-
 body {
   font-variant-numeric: tabular-nums;
-  font-family: "Work Sans", sans-serif;
+  font-family: 'poppins', sans-serif;
   height: 100vh;
   width: 100vw;
   user-select: none;
-  overflow: hidden;
-  border-radius: 15px;
+  background: theme('colors.background.20');
 }
 
 html {
   overflow: hidden;
-  border-radius: 15px;
+  background: theme('colors.background.20');
 }
 
 #root {
   height: 100%;
 }
 
-
 ::-webkit-scrollbar {
-  width: 10px;
-  height: 10px;
+  width: 4px;
+  height: 4px;
 }
 
 ::-webkit-scrollbar-corner {
-  background-color: theme('colors.purple-gray.900');
+  background-color: transparent;
 }
 
 ::-webkit-scrollbar-track {
-  background: theme('colors.purple-gray.600');
+  background: transparent;
   border-radius: 50px;
-  border-radius: 50px;
-  
 }
 
 ::-webkit-scrollbar-thumb {
-  background: theme('colors.purple-gray.400');
-  border-radius: 50px;
+  background: theme('colors.background.50');
   border-radius: 50px;
 }
 
 ::-webkit-scrollbar-thumb:hover {
-  background: theme('colors.purple-gray.300');
+  background: theme('colors.background.60');
+}
+
+input::-ms-reveal,
+input::-ms-clear {
+  display: none;
 }

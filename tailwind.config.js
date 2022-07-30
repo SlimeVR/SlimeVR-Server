@@ -1,60 +1,89 @@
-const plugin = require('tailwindcss/plugin')
+const plugin = require('tailwindcss/plugin');
 
-const rem = (px) => `${(px / 12).toFixed(4)}rem`
+const rem = (pt) => `${pt / 16}rem`;
+
+const colors = {
+  'blue-gray': {
+    100: '#ffffff',
+    200: '#78A4C6',
+    300: '#608AAB',
+    400: '#3D6381',
+    500: '#1A3D59',
+    600: '#112D43',
+    700: '#081E30',
+    800: '#00101C',
+    900: '#000509',
+  },
+  purple: {
+    100: '#BB8AE5',
+    200: '#9D5CD4',
+    500: '#65459A',
+    700: '#623B83',
+    900: '#2E2145',
+  },
+};
 
 module.exports = {
-  content: ["./src/**/*.{js,jsx,ts,tsx}",],
+  content: ['./src/**/*.{js,jsx,ts,tsx}'],
   theme: {
+    screens: {
+      xs: '800px',
+      sm: '900px',
+      md: '1100px',
+      lg: '1300px',
+      xl: '1600px',
+    },
     extend: {
       colors: {
-        'accent': {
-          darker: '#831ECC',
-          lighter: '#C06FFB'
+        status: {
+          success: '#50E897',
+          warning: '#D8CD37',
+          critical: '#DF6D8C',
+          special: '#A44FED',
         },
-        'status': {
-          online: '#9AFF76',
-          warning: '#FFB257',
-          error: '#FF6464'
-        },
-        'purple-gray': {
-          900: "#160B1D",
-          800: "#261730",
-          700: "#3F2A4F",
-          600: "#593E6C",
-          500: "#6E5084",
-          400: "#8E6BA7",
-          300: "#C0A1D8",
-          200: "#EFE2F9",
-          100: "#FFFFFF"
-        },
+        ...colors,
+        background: Object.keys(colors['blue-gray']).reduce(
+          (curr, colork, index) => ({
+            ...curr,
+            [(index + 1) * 10]: colors['blue-gray'][colork],
+          }),
+          {}
+        ),
+        'accent-background': Object.keys(colors.purple).reduce(
+          (curr, colork, index) => ({
+            ...curr,
+            [(index + 1) * 10]: colors.purple[colork],
+          }),
+          {}
+        ),
       },
       fontSize: {
-        DEFAULT: rem(12),
+        DEFAULT: rem(10),
       },
       fontWeight: {
-        DEFAULT: 400,
-      }
+        DEFAULT: 500,
+      },
+      color: {
+        DEFAULT: '#ffffff',
+      },
     },
   },
   plugins: [
     require('@tailwindcss/forms'),
-    plugin(function({ addUtilities, theme }) {
-
-      const textConfig = (fontSize, fontWeight, color) => ({
-        color,
+    plugin(function ({ addUtilities, theme }) {
+      const textConfig = (fontSize, fontWeight) => ({
         fontSize,
-        fontWeight
-      })
+        fontWeight,
+      });
 
       addUtilities({
-        '.text-heading': textConfig(rem(35), 700, theme('colors.purple-gray.100')),
-        '.text-secondary-heading': textConfig(rem(25), 700, theme('colors.purple-gray.100')),
-        '.text-field-title': textConfig(rem(12), 700, theme('colors.purple-gray.100')),
-        '.text-extra-emphasised': textConfig(rem(12), 600, theme('colors.purple-gray.100')),
-        '.text-emphasised': textConfig(rem(12), 400, theme('colors.purple-gray.100')),
-        '.text-default': textConfig(rem(12), 400, theme('colors.purple-gray.300')),
-        '.text-section-indicator': textConfig(rem(12), 700, theme('colors.purple-gray.400'))
-      })
-    })
+        '.text-main-title': textConfig(rem(25), 700),
+        '.text-section-title': textConfig(rem(12), 700),
+        '.text-standard': textConfig(rem(10), 500),
+        '.text-vr-accesible': textConfig(rem(14), 500),
+        '.text-vr-accesible-bold': textConfig(rem(14), 700),
+        '.text-standard-bold': textConfig(rem(10), 700),
+      });
+    }),
   ],
-}
+};

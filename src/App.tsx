@@ -1,139 +1,169 @@
-import { useProvideWebsocketApi, useWebsocketAPI, WebSocketApiContext } from './hooks/websocket-api';
+import {
+  useProvideWebsocketApi,
+  WebSocketApiContext,
+} from './hooks/websocket-api';
 import {
   BrowserRouter as Router,
   Routes,
   Route,
   Outlet,
-} from "react-router-dom";
-import { Overview } from './components/Overview';
-import { BodyProportions } from './components/proportions/BodyProportions';
+} from 'react-router-dom';
+import { Home } from './components/home/Home';
 import { AppContextProvider } from './components/providers/AppContext';
 import { useEffect } from 'react';
-import { DataFeedConfigT, DataFeedMessage, DeviceDataMaskT, StartDataFeedT, TrackerDataMaskT } from 'solarxr-protocol';
 import { MainLayoutRoute } from './components/MainLayout';
 import { SettingsLayoutRoute } from './components/settings/SettingsLayout';
-import { TrackersSettings } from './components/settings/pages/TrackersSettings';
-import { Navbar } from './components/Navbar';
+import { GeneralSettings } from './components/settings/pages/GeneralSettings';
 import { Serial } from './components/settings/pages/Serial';
 
-import { listen } from '@tauri-apps/api/event'
-import type { Event } from '@tauri-apps/api/event'
-import { appWindow } from '@tauri-apps/api/window'
+import { Event, listen } from '@tauri-apps/api/event';
+import { TopBar } from './components/TopBar';
+import { ConfigContextProvider } from './components/providers/ConfigContext';
+import { OnboardingLayout } from './components/onboarding/OnboardingLayout';
+import { HomePage } from './components/onboarding/pages/Home';
+import { WifiCredsPage } from './components/onboarding/pages/WifiCreds';
+import { ConnectTrackersPage } from './components/onboarding/pages/ConnectTracker';
+import { OnboardingContextProvider } from './components/onboarding/OnboardingContextProvicer';
+import { TrackersAssignPage } from './components/onboarding/pages/trackers-assign/TrackerAssignment';
+import { EnterVRPage } from './components/onboarding/pages/EnterVR';
+import { AutomaticMountingPage } from './components/onboarding/pages/mounting/AutomaticMounting';
+import { ManualMountingPage } from './components/onboarding/pages/mounting/ManualMounting';
+import { ResetTutorialPage } from './components/onboarding/pages/ResetTutorial';
+import { AutomaticProportionsPage } from './components/onboarding/pages/body-proportions/AutomaticProportions';
+import { ManualProportionsPage } from './components/onboarding/pages/body-proportions/ManualProportions';
+import { TrackerSettingsPage } from './components/tracker/TrackerSettings';
+import { DonePage } from './components/onboarding/pages/Done';
 
 function Layout() {
-  const { sendDataFeedPacket } = useWebsocketAPI();
-
-  useEffect(() => {
-    const trackerData = new TrackerDataMaskT();
-    trackerData.position = true;
-    trackerData.rotation = true;
-    trackerData.info = true;
-    trackerData.status = true;
-    trackerData.temp = true;
-
-    const dataMask = new DeviceDataMaskT();
-    dataMask.deviceData = true;
-    dataMask.trackerData = trackerData;
-
-    const config = new DataFeedConfigT();
-    config.dataMask = dataMask;
-    config.minimumTimeSinceLast = 100;
-    config.syntheticTrackersMask = trackerData
-
-    const startDataFeed = new StartDataFeedT()
-    startDataFeed.dataFeeds = [config]
-    sendDataFeedPacket(DataFeedMessage.StartDataFeed, startDataFeed);
-  }, [])
-  
-
   return (
     <>
       <Routes>
-        <Route path="/" element={
+        <Route
+          path="/"
+          element={
             <MainLayoutRoute>
-              <Overview/>
+              <Home />
             </MainLayoutRoute>
-        }/>
-        <Route path="/proportions" element={
-            <MainLayoutRoute>
-              <BodyProportions/>
+          }
+        />
+        <Route
+          path="/tracker/:trackernum/:deviceid"
+          element={
+            <MainLayoutRoute background={false}>
+              <TrackerSettingsPage />
             </MainLayoutRoute>
-        }/>
-        <Route path="/settings" element={
+          }
+        />
+        <Route
+          path="/settings"
+          element={
             <SettingsLayoutRoute>
               <Outlet></Outlet>
             </SettingsLayoutRoute>
-        }>
-          <Route path="trackers" element={<TrackersSettings />} />
+          }
+        >
+          <Route path="trackers" element={<GeneralSettings />} />
           <Route path="serial" element={<Serial />} />
         </Route>
-        <Route path="*" element={<Navbar></Navbar>}></Route>
+        <Route
+          path="/onboarding"
+          element={
+            <OnboardingContextProvider>
+              <OnboardingLayout>
+                <Outlet></Outlet>
+              </OnboardingLayout>
+            </OnboardingContextProvider>
+          }
+        >
+          <Route path="home" element={<HomePage />} />
+          <Route path="wifi-creds" element={<WifiCredsPage />} />
+          <Route path="connect-trackers" element={<ConnectTrackersPage />} />
+          <Route path="trackers-assign" element={<TrackersAssignPage />} />
+          <Route path="enter-vr" element={<EnterVRPage />} />
+          <Route path="mounting/auto" element={<AutomaticMountingPage />} />
+          <Route path="mounting/manual" element={<ManualMountingPage />} />
+          <Route path="reset-tutorial" element={<ResetTutorialPage />} />
+          <Route
+            path="body-proportions/auto"
+            element={<AutomaticProportionsPage />}
+          />
+          <Route
+            path="body-proportions/manual"
+            element={<ManualProportionsPage />}
+          />
+          <Route path="done" element={<DonePage />} />
+        </Route>
+        <Route path="*" element={<TopBar></TopBar>}></Route>
       </Routes>
     </>
-  )
+  );
 }
-
-
 
 function App() {
   const websocketAPI = useProvideWebsocketApi();
 
   useEffect(() => {
-    const unlisten = listen("server-status", (event: Event<[string, string]>) => {
-      let [event_type, s] = event.payload;
-      if ("stderr" === event_type) {
-        // This strange invocation is what lets us lose the line information in the console
-        // See more here: https://stackoverflow.com/a/48994308
-        setTimeout(console.log.bind(console, `%c[SERVER] %c${s}`, "color:cyan", "color:red"));
-      } else if (event_type === "stdout") {
-        setTimeout(console.log.bind(console, `%c[SERVER] %c${s}`, "color:cyan", "color:green"));
-      } else if (event_type === "error") {
-        console.error("Error: %s", s)
-      } else if (event_type === "terminated") {
-        console.error("Server Process Terminated: %s", s);
-      } else if (event_type === "other") {
-        console.log("Other process event: %s", s);
+    const unlisten = listen(
+      'server-status',
+      (event: Event<[string, string]>) => {
+        const [event_type, s] = event.payload;
+        if ('stderr' === event_type) {
+          // This strange invocation is what lets us lose the line information in the console
+          // See more here: https://stackoverflow.com/a/48994308
+          setTimeout(
+            console.log.bind(
+              console,
+              `%c[SERVER] %c${s}`,
+              'color:cyan',
+              'color:red'
+            )
+          );
+        } else if (event_type === 'stdout') {
+          setTimeout(
+            console.log.bind(
+              console,
+              `%c[SERVER] %c${s}`,
+              'color:cyan',
+              'color:green'
+            )
+          );
+        } else if (event_type === 'error') {
+          console.error('Error: %s', s);
+        } else if (event_type === 'terminated') {
+          console.error('Server Process Terminated: %s', s);
+        } else if (event_type === 'other') {
+          console.log('Other process event: %s', s);
+        }
       }
-      return async () => {
-        await unlisten
-      }
-    });
-  }, [])
-
-  const updateCorners = () => {
-    // Check if the window is maximized to remove rounded corners
-    const body = document.getElementsByTagName('body');
-    if (!body) return;
-    appWindow.isMaximized().then((maximized) => {
-      body[0].style.borderRadius = maximized ? '0' : `15px`;
-    })
-  }
-
-  useEffect(() => {
-    window.addEventListener('resize', updateCorners);
+    );
     return () => {
-      window.removeEventListener('resize', updateCorners)
-    }
-  }, [])
+      // eslint-disable-next-line @typescript-eslint/no-empty-function
+      unlisten.then(() => {});
+    };
+  }, []);
 
   return (
-    <WebSocketApiContext.Provider value={websocketAPI}>
-      <AppContextProvider>
-        <Router>
-          <div className='h-full w-full text-default bg-purple-gray-900 '>
-            <div className='flex-col h-full'>
-              {!websocketAPI.isConnected && (
-                <>
-                  <Navbar></Navbar>
-                  <div className='flex w-full h-full justify-center items-center p-2'>Connection lost to server</div>
-                </>
-              )}
-              {websocketAPI.isConnected && <Layout></Layout>}
+    <Router>
+      <ConfigContextProvider>
+        <WebSocketApiContext.Provider value={websocketAPI}>
+          <AppContextProvider>
+            <div className="h-full w-full text-standard bg-background-80 text-background-10">
+              <div className="flex-col h-full">
+                {!websocketAPI.isConnected && (
+                  <>
+                    <TopBar></TopBar>
+                    <div className="flex w-full h-full justify-center items-center p-2">
+                      Connection lost to server
+                    </div>
+                  </>
+                )}
+                {websocketAPI.isConnected && <Layout></Layout>}
+              </div>
             </div>
-          </div>
-        </Router>
-      </AppContextProvider>
-    </WebSocketApiContext.Provider>
+          </AppContextProvider>
+        </WebSocketApiContext.Provider>
+      </ConfigContextProvider>
+    </Router>
   );
 }
 
