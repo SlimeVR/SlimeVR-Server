@@ -9,18 +9,12 @@ import dev.slimevr.autobone.AutoBoneProcessType;
 import dev.slimevr.platform.windows.WindowsNamedPipeBridge;
 import dev.slimevr.poserecorder.PoseFrames;
 import dev.slimevr.serial.SerialListener;
-import dev.slimevr.vr.processor.skeleton.SkeletonConfig;
 import dev.slimevr.vr.processor.skeleton.SkeletonConfigOffsets;
-import dev.slimevr.vr.processor.skeleton.SkeletonConfigToggles;
-import dev.slimevr.vr.processor.skeleton.SkeletonConfigValues;
 import dev.slimevr.vr.trackers.*;
 import io.eiren.util.logging.LogManager;
 import solarxr_protocol.MessageBundle;
 import solarxr_protocol.datatypes.TransactionId;
 import solarxr_protocol.rpc.*;
-import solarxr_protocol.rpc.settings.ModelRatios;
-import solarxr_protocol.rpc.settings.ModelSettings;
-import solarxr_protocol.rpc.settings.ModelToggles;
 
 import java.util.EnumMap;
 import java.util.Map.Entry;
@@ -269,31 +263,10 @@ public class RPCHandler extends ProtocolHandler<RpcMessageHeader>
 					)
 			);
 
-		SkeletonConfig skeletonConfig = this.api.server.humanPoseProcessor.getSkeletonConfig();
-		int toggleVectorOffset = ModelToggles
-			.createModelToggles(
-				fbb,
-				skeletonConfig.getToggle(SkeletonConfigToggles.EXTENDED_SPINE_MODEL),
-				skeletonConfig.getToggle(SkeletonConfigToggles.EXTENDED_PELVIS_MODEL),
-				skeletonConfig.getToggle(SkeletonConfigToggles.EXTENDED_KNEE_MODEL),
-				skeletonConfig.getToggle(SkeletonConfigToggles.FORCE_ARMS_FROM_HMD)
-			);
-		int ratioVectorOffset = ModelRatios
-			.createModelRatios(
-				fbb,
-				skeletonConfig.getValue(SkeletonConfigValues.WAIST_FROM_CHEST_HIP_AVERAGING),
-				skeletonConfig.getValue(SkeletonConfigValues.WAIST_FROM_CHEST_LEGS_AVERAGING),
-				skeletonConfig.getValue(SkeletonConfigValues.HIP_FROM_CHEST_LEGS_AVERAGING),
-				skeletonConfig.getValue(SkeletonConfigValues.HIP_FROM_WAIST_LEGS_AVERAGING),
-				skeletonConfig.getValue(SkeletonConfigValues.HIP_LEGS_AVERAGING),
-				skeletonConfig.getValue(SkeletonConfigValues.KNEE_TRACKER_ANKLE_AVERAGING)
-			);
-
-		int modelSettings = ModelSettings
-			.createModelSettings(fbb, toggleVectorOffset, ratioVectorOffset);
+		// TODO ModelSettings
 
 		int settings = SettingsResponse
-			.createSettingsResponse(fbb, steamvrTrackerSettings, filterSettings, modelSettings);
+			.createSettingsResponse(fbb, steamvrTrackerSettings, filterSettings);
 		int outbound = createRPCMessage(fbb, RpcMessage.SettingsResponse, settings);
 		fbb.finish(outbound);
 		conn.send(fbb.dataBuffer());
@@ -331,26 +304,8 @@ public class RPCHandler extends ProtocolHandler<RpcMessageHeader>
 			}
 		}
 
-//		if (req.modelSettings() != null) {
-//			for (int i = 0; i < req.modelSettings().toggles(); i++) {
-//				ModelToggles t = req.modelSettings().toggles();
-//				SkeletonConfigToggles toggle = SkeletonConfigToggles.getById(t.skeletonToggle());
-//				this.api.server.humanPoseProcessor.getSkeletonConfig().setToggle(toggle, t.value());
-//			}
-//
-//			for (int i = 0; i < req.fkSettings().valuesLength(); i++) {
-//				ModelRatios v = req.fkSettings().values(i);
-//				SkeletonConfigValues value = SkeletonConfigValues.getById(v.skeletonValue());
-//				this.api.server.humanPoseProcessor
-//					.getSkeletonConfig()
-//					.setValue(value, v.value;
-//			}
-//
-//			this.api.server.humanPoseProcessor
-//				.getSkeletonConfig()
-//				.saveToConfig(this.api.server.config);
-//			this.api.server.saveConfig();
-//		}
+		// TODO ModelSettings
+
 	}
 
 	@Override
