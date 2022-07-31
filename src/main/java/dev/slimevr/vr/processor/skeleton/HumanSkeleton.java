@@ -1347,6 +1347,12 @@ public class HumanSkeleton extends Skeleton implements SkeletonConfigCallback {
 			case FORCE_ARMS_FROM_HMD:
 				forceArmsFromHMD = newValue;
 				break;
+			case SKATING_CORRECTION:
+				legTweaks.setSkatingReductionEnabled(newValue);
+				break;
+			case FLOOR_CLIP:
+				legTweaks.setFloorclipEnabled(newValue);
+				break;
 		}
 	}
 
@@ -1848,13 +1854,6 @@ public class HumanSkeleton extends Skeleton implements SkeletonConfigCallback {
 		return state;
 	}
 
-	@Override
-	@VRServerThread
-	public void initializeLegTweaksConfig(boolean floorClipVal, boolean skatingVal) {
-		this.legTweaks.setFloorclipEnabled(floorClipVal);
-		this.legTweaks.setSkatingReductionEnabled(skatingVal);
-	}
-
 	// master enable/disable of all leg tweaks (for autobone)
 	@Override
 	@VRServerThread
@@ -1865,12 +1864,14 @@ public class HumanSkeleton extends Skeleton implements SkeletonConfigCallback {
 	@Override
 	@VRServerThread
 	public void setFloorclipEnabled(boolean value) {
-		this.legTweaks.setFloorclipEnabled(value);
+		this.updateToggleState(SkeletonConfigToggle.FLOOR_CLIP, value);
+		this.skeletonConfig.setToggle(SkeletonConfigToggle.FLOOR_CLIP, value);
 	}
 
 	@Override
 	@VRServerThread
-	public void setSkatingReductionEnabled(boolean value) {
-		this.legTweaks.setSkatingReductionEnabled(value);
+	public void setSkatingCorrectionEnabled(boolean value) {
+		this.updateToggleState(SkeletonConfigToggle.SKATING_CORRECTION, value);
+		this.skeletonConfig.setToggle(SkeletonConfigToggle.SKATING_CORRECTION, value);
 	}
 }

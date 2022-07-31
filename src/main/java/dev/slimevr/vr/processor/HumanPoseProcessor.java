@@ -166,7 +166,6 @@ public class HumanPoseProcessor {
 	private void updateSekeltonModel() {
 		disconnectAllTrackers();
 		skeleton = new HumanSkeleton(server, computedTrackers);
-		this.initializeLegTweaksConfig();
 		for (Consumer<Skeleton> sc : onSkeletonUpdated)
 			sc.accept(skeleton);
 	}
@@ -202,16 +201,6 @@ public class HumanPoseProcessor {
 	}
 
 	@VRServerThread
-	public void initializeLegTweaksConfig() {
-		if (skeleton != null)
-			skeleton
-				.initializeLegTweaksConfig(
-					(boolean) server.config.getProperty("legTweaks.floorClip"),
-					(boolean) server.config.getProperty("legTweaks.skatingCorrection")
-				);
-	}
-
-	@VRServerThread
 	public void setLegTweaksEnabled(boolean value) {
 		if (skeleton != null)
 			skeleton.setLegTweaksEnabled(value);
@@ -219,13 +208,19 @@ public class HumanPoseProcessor {
 
 	@VRServerThread
 	public void setFloorClipEnabled(boolean value) {
-		if (skeleton != null)
+		if (skeleton != null) {
 			skeleton.setFloorclipEnabled(value);
+			this.getSkeletonConfig().saveToConfig(server.config);
+			server.saveConfig();
+		}
 	}
 
 	@VRServerThread
-	public void setSkatingReductionEnabled(boolean value) {
-		if (skeleton != null)
-			skeleton.setSkatingReductionEnabled(value);
+	public void setSkatingCorrectionEnabled(boolean value) {
+		if (skeleton != null) {
+			skeleton.setSkatingCorrectionEnabled(value);
+			this.getSkeletonConfig().saveToConfig(server.config);
+			server.saveConfig();
+		}
 	}
 }

@@ -41,9 +41,6 @@ public abstract class Skeleton {
 	public abstract void resetTrackersYaw();
 
 	@VRServerThread
-	public abstract void initializeLegTweaksConfig(boolean floorClipVal, boolean skatingVal);
-
-	@VRServerThread
 	public abstract boolean[] getLegTweaksState();
 
 	@VRServerThread
@@ -53,5 +50,5 @@ public abstract class Skeleton {
 	public abstract void setFloorclipEnabled(boolean value);
 
 	@VRServerThread
-	public abstract void setSkatingReductionEnabled(boolean value);
+	public abstract void setSkatingCorrectionEnabled(boolean value);
 }
