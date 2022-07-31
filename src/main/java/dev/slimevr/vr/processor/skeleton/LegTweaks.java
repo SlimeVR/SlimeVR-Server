@@ -743,7 +743,7 @@ public class LegTweaks {
 		}
 	}
 
-	// returns true if it is likly the user is standing
+	// returns true if it is likely the user is standing
 	public boolean isStanding() {
 		// if the waist is below the verticalcutoff, user is not standing
 		float cutoff = floorLevel
