@@ -545,7 +545,7 @@ public class VRServerGUI extends JFrame {
 			floorClipButton.setBackground(Color.RED);
 		}
 		// update the button
-		floorClipButton.setText(value ? "Floor clip: ON" : "Floor clip: OFF");
+		floorClipButton.setText("Floor clip: " + (value ? "ON" : "OFF"));
 		server.setFloorClipEnabled(value);
 	}
 }
