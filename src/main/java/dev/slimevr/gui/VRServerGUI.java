@@ -533,7 +533,7 @@ public class VRServerGUI extends JFrame {
 			skatingCorrectionButton.setBackground(Color.RED);
 		}
 		skatingCorrectionButton
-			.setText(value ? "Skating Correction: ON" : "Skating Correction: OFF");
+			.setText("Skating Correction: " + (value ? "ON" : "OFF"));
 		server.setSkatingReductionEnabled(value);
 	}
 
