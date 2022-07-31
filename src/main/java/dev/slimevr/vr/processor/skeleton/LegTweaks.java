@@ -5,11 +5,10 @@ import com.jme3.math.Vector3f;
 
 
 public class LegTweaks {
-	// class vars
+	// state variables
 	private float floorLevel;
 	private float waistToFloorDist;
 	private float currentDisengagementOffset = 0.0f;
-	// state variables
 	private boolean initialized = true;
 	private boolean enabled = true; // master switch
 	private boolean floorclipEnabled = false;
@@ -56,12 +55,14 @@ public class LegTweaks {
 	// CORRECTION_WEIGHT_MIN and CORRECTION_WEIGHT_MAX
 	// are calculating a percent of velocity to correct rather than using the
 	// min or max
+	// FLOOR_CALIBRATION_OFFSET is the amount the floor plane is shifted up.
+	// This can help the feet from floating slightly above the ground
+
 
 	// hyperparameters (clip correction)
-	private static final float STANDING_CUTOFF_VERTICAL = 0.65f;
-	private static final float MAX_DISENGAGMENT_OFFSET = 0.30f;
 	private static final float DYNAMIC_DISPLACEMENT_CUTOFF = 0.8f;
 	private static final float MAX_DYNAMIC_DISPLACEMENT = 0.08f;
+	private static final float FLOOR_CALIBRATION_OFFSET = 0.02f;
 
 	// hyperparameters (skating correction)
 	private static final float MIN_ACCEPTABLE_ERROR = 0.05f;
@@ -76,6 +77,11 @@ public class LegTweaks {
 
 	// hyperparameters (knee correction)
 	private static final float KNEE_CORRECTION_WEIGHT = 0.25f;
+
+	// hyperparameters (misc)
+	private static final float NEARLY_ZERO = 0.005f;
+	private static final float STANDING_CUTOFF_VERTICAL = 0.65f;
+	private static final float MAX_DISENGAGMENT_OFFSET = 0.30f;
 
 	// buffer for holding previus frames of data
 	private LegTweakBuffer bufferHead = new LegTweakBuffer();
@@ -242,7 +248,7 @@ public class LegTweaks {
 		// if not initialized, we need to initialize floor level and waist to
 		// floor distance (must happen immediately after reset)
 		if (!initialized) {
-			floorLevel = (leftFootPosition.y + rightFootPosition.y) / 2f + 0.02f;
+			floorLevel = (leftFootPosition.y + rightFootPosition.y) / 2f + FLOOR_CALIBRATION_OFFSET;
 			waistToFloorDist = waistPosition.y - floorLevel;
 			initialized = true;
 		}
@@ -351,14 +357,14 @@ public class LegTweaks {
 			.setX(0)
 			.setZ(0)
 			.length();
-		if (!active && leftFootDif < 0.005f) {
+		if (!active && leftFootDif < NEARLY_ZERO) {
 			leftLegActive = false;
-		} else if (active && leftFootDif < 0.005f) {
+		} else if (active && leftFootDif < NEARLY_ZERO) {
 			leftLegActive = true;
 		}
-		if (!active && rightFootDif < 0.005f) {
+		if (!active && rightFootDif < NEARLY_ZERO) {
 			rightLegActive = false;
-		} else if (active && rightFootDif < 0.005f) {
+		} else if (active && rightFootDif < NEARLY_ZERO) {
 			rightLegActive = true;
 		}
 
@@ -482,7 +488,7 @@ public class LegTweaks {
 			Vector3f leftFootDif = leftFootPosition
 				.subtract(bufferHead.getParent().getLeftFootPositionCorrected(new Vector3f()))
 				.setY(0);
-			if (leftFootDif.length() > 0.005f) {
+			if (leftFootDif.length() > NEARLY_ZERO) {
 				float leftY = leftFootPosition.y;
 
 				Vector3f temp = bufferHead.getParent().getLeftFootPositionCorrected(new Vector3f());
@@ -547,7 +553,7 @@ public class LegTweaks {
 			Vector3f rightFootDif = rightFootPosition
 				.subtract(bufferHead.getParent().getRightFootPositionCorrected(new Vector3f()))
 				.setY(0);
-			if (rightFootDif.length() > 0.005f) {
+			if (rightFootDif.length() > NEARLY_ZERO) {
 				float rightY = rightFootPosition.y;
 				Vector3f temp = bufferHead
 					.getParent()
@@ -656,7 +662,7 @@ public class LegTweaks {
 		Vector3f temp;
 		Vector3f leftFootDif = leftFootPosition
 			.subtract(bufferHead.getParent().getLeftFootPositionCorrected(new Vector3f()));
-		if (Math.abs(leftFootDif.y) > 0.005f) {
+		if (Math.abs(leftFootDif.y) > NEARLY_ZERO) {
 			temp = bufferHead.getParent().getLeftFootPositionCorrected(new Vector3f());
 			temp = temp
 				.subtract(
@@ -699,7 +705,7 @@ public class LegTweaks {
 		Vector3f temp;
 		Vector3f rightFootDif = rightFootPosition
 			.subtract(bufferHead.getParent().getRightFootPositionCorrected(new Vector3f()));
-		if (Math.abs(rightFootDif.y) > 0.005f) {
+		if (Math.abs(rightFootDif.y) > NEARLY_ZERO) {
 			temp = bufferHead.getParent().getRightFootPositionCorrected(new Vector3f());
 			temp = temp
 				.subtract(

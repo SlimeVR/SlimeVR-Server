@@ -25,6 +25,7 @@ public class LegTweakBuffer {
 	public static final int FOOT_ACCEL = 3;
 	public static final int ANKLE_ACCEL = 4;
 
+	public static final float NS_CONVERT = 1000000000.0f;
 	private static final Vector3f placeHolderVec = new Vector3f();
 	private static final Quaternion placeHolderQuat = new Quaternion();
 
@@ -322,7 +323,7 @@ public class LegTweakBuffer {
 
 	// check if a locked foot should stay locked or be released
 	private int checkStateLeft() {
-		float timeStep = 1.0f / ((timeOfFrame - parent.timeOfFrame) / 1000000000.0f);
+		float timeStep = 1.0f / ((timeOfFrame - parent.timeOfFrame) / NS_CONVERT);
 		if (parent.leftLegState == UNLOCKED) {
 			if (
 				parent.getLeftFootHorizantalDifference() > SKATING_CUTOFF_ENGAGE
@@ -353,7 +354,7 @@ public class LegTweakBuffer {
 
 	// check if a locked foot should stay locked or be released
 	private int checkStateRight() {
-		float timeStep = 1.0f / ((timeOfFrame - parent.timeOfFrame) / 1000000000.0f);
+		float timeStep = 1.0f / ((timeOfFrame - parent.timeOfFrame) / NS_CONVERT);
 		if (parent.rightLegState == UNLOCKED) {
 			if (
 				parent.getRightFootHorizantalDifference() > SKATING_CUTOFF_ENGAGE
