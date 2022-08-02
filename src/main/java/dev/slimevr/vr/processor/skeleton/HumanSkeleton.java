@@ -1864,7 +1864,6 @@ public class HumanSkeleton extends Skeleton implements SkeletonConfigCallback {
 	@Override
 	@VRServerThread
 	public void setFloorclipEnabled(boolean value) {
-		this.updateToggleState(SkeletonConfigToggle.FLOOR_CLIP, value);
 		this.skeletonConfig.setToggle(SkeletonConfigToggle.FLOOR_CLIP, value);
 	}
 
