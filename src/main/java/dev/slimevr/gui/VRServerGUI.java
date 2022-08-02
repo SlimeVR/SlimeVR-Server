@@ -243,7 +243,7 @@ public class VRServerGUI extends JFrame {
 				setSkatingReductionEnabled(
 					server.humanPoseProcessor
 						.getSkeletonConfig()
-						.getToggle("Skating Correction")
+						.getToggle(SkeletonConfigToggle.SKATING_CORRECTION)
 				);
 
 
