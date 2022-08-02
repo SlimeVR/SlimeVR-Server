@@ -222,7 +222,9 @@ public class VRServerGUI extends JFrame {
 					}
 				});
 				setFloorClipEnabled(
-					(boolean) server.config.getProperty("legTweaks.floorClip")
+					server.humanPoseProcessor
+						.getSkeletonConfig()
+						.getToggle(SkeletonConfigToggle.FLOOR_CLIP)
 				);
 
 
@@ -239,7 +241,9 @@ public class VRServerGUI extends JFrame {
 					}
 				});
 				setSkatingReductionEnabled(
-					(boolean) server.config.getProperty("legTweaks.skatingCorrection")
+					server.humanPoseProcessor
+						.getSkeletonConfig()
+						.getToggle("Skating Correction")
 				);
 
 
