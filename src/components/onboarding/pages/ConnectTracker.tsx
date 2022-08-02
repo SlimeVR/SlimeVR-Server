@@ -122,8 +122,8 @@ export function ConnectTrackersPage() {
 
   return (
     <div className="flex flex-col items-center">
-      <div className="flex gap-10 w-full max-w-5xl">
-        <div className="flex flex-col w-96">
+      <div className="flex gap-10 w-full max-w-7xl ">
+        <div className="flex flex-col w-full max-w-sm">
           <ArrowLink to="/onboarding/wifi-creds">
             Go Back to WiFi credentials
           </ArrowLink>
@@ -135,13 +135,13 @@ export function ConnectTrackersPage() {
             Simply connect all that aren't connected yet, through a USB port.
           </Typography>
           <div className="flex flex-col gap-2 py-5">
-            <ArrowLink
+            {/* <ArrowLink
               to="/onboarding/connect"
               direction="right"
               variant="boxed"
             >
               I have other types of trackers
-            </ArrowLink>
+            </ArrowLink> */}
             <ArrowLink to="/settings/serial" direction="right" variant="boxed">
               I'm having trouble connecting!
             </ArrowLink>

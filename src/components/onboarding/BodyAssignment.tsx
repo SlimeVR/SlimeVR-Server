@@ -50,7 +50,7 @@ export function BodyAssignment({
         assignedRoles={assignedRoles}
         leftControls={
           <div className="flex flex-col justify-between h-full">
-            <div className="flex flex-col gap-3">
+            <div className="flex flex-col gap-2">
               {advanced && (
                 <TrackerPartCard
                   label="HEAD"
@@ -73,7 +73,7 @@ export function BodyAssignment({
               )}
             </div>
 
-            <div className="flex flex-col gap-3">
+            <div className="flex flex-col gap-2">
               {advanced && (
                 <TrackerPartCard
                   label="RIGHT SHOULDER"
@@ -93,7 +93,7 @@ export function BodyAssignment({
                 direction="right"
               />
             </div>
-            <div className="flex flex-col gap-3">
+            <div className="flex flex-col gap-2">
               <TrackerPartCard
                 label="RIGHT LOWER ARM"
                 onlyAssigned={onlyAssigned}
@@ -114,9 +114,9 @@ export function BodyAssignment({
                 />
               )}
             </div>
-            <div className="flex flex-col gap-3">
+            <div className="flex flex-col gap-2">
               <TrackerPartCard
-                label="RIGHT_UPPER_LEG"
+                label="RIGHT UPPER LEG"
                 onlyAssigned={onlyAssigned}
                 td={trackerPartGrouped[BodyPart.RIGHT_UPPER_LEG]}
                 role={BodyPart.RIGHT_UPPER_LEG}
@@ -154,7 +154,7 @@ export function BodyAssignment({
               direction="left"
             />
 
-            <div className="flex flex-col gap-3">
+            <div className="flex flex-col gap-2">
               {advanced && (
                 <TrackerPartCard
                   label="LEFT SHOULDER"
@@ -176,7 +176,7 @@ export function BodyAssignment({
               />
             </div>
 
-            <div className="flex flex-col gap-3">
+            <div className="flex flex-col gap-2">
               <TrackerPartCard
                 label="LEFT LOWER ARM"
                 onlyAssigned={onlyAssigned}
@@ -197,7 +197,7 @@ export function BodyAssignment({
               )}
             </div>
 
-            <div className="flex flex-col gap-3">
+            <div className="flex flex-col gap-2">
               <TrackerPartCard
                 label="WAIST"
                 onlyAssigned={onlyAssigned}
@@ -215,7 +215,7 @@ export function BodyAssignment({
                 direction="left"
               />
             </div>
-            <div className="flex flex-col gap-3">
+            <div className="flex flex-col gap-2">
               <TrackerPartCard
                 label="LEFT UPPER LEG"
                 onlyAssigned={onlyAssigned}

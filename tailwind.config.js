@@ -58,7 +58,7 @@ module.exports = {
         ),
       },
       fontSize: {
-        DEFAULT: rem(10),
+        DEFAULT: rem(12),
       },
       fontWeight: {
         DEFAULT: 500,
@@ -78,11 +78,11 @@ module.exports = {
 
       addUtilities({
         '.text-main-title': textConfig(rem(25), 700),
-        '.text-section-title': textConfig(rem(12), 700),
-        '.text-standard': textConfig(rem(10), 500),
+        '.text-section-title': textConfig(rem(14), 700),
+        '.text-standard': textConfig(rem(12), 500),
         '.text-vr-accesible': textConfig(rem(14), 500),
         '.text-vr-accesible-bold': textConfig(rem(14), 700),
-        '.text-standard-bold': textConfig(rem(10), 700),
+        '.text-standard-bold': textConfig(rem(12), 700),
       });
     }),
   ],

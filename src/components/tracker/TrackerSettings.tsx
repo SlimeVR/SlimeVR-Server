@@ -43,7 +43,9 @@ export function TrackerSettingsPage() {
     trackernum: string;
     deviceid: string;
   }>();
-  const { register, watch, reset } = useForm<{ trackerName: string | null }>({
+  const { register, watch, reset, handleSubmit } = useForm<{
+    trackerName: string | null;
+  }>({
     defaultValues: { trackerName: null },
     reValidateMode: 'onSubmit',
   });
@@ -85,15 +87,23 @@ export function TrackerSettingsPage() {
     [tracker?.tracker.info?.mountingOrientation]
   );
 
+  const updateTrackerName = () => {
+    if (!tracker) return;
+    if (trackerName == tracker.tracker.info?.customName) return;
+    const assignreq = new AssignTrackerRequestT();
+    assignreq.bodyPosition = tracker?.tracker.info?.bodyPart || BodyPart.NONE;
+    assignreq.displayName = trackerName;
+    assignreq.trackerId = tracker?.tracker.trackerId;
+    sendRPCPacket(RpcMessage.AssignTrackerRequest, assignreq);
+  };
+
+  const onSettingsSubmit = () => {
+    updateTrackerName();
+  };
+
   useDebouncedEffect(
     () => {
-      if (!tracker) return;
-      if (trackerName == tracker.tracker.info?.customName) return;
-      const assignreq = new AssignTrackerRequestT();
-      assignreq.bodyPosition = tracker?.tracker.info?.bodyPart || BodyPart.NONE;
-      assignreq.displayName = trackerName;
-      assignreq.trackerId = tracker?.tracker.trackerId;
-      sendRPCPacket(RpcMessage.AssignTrackerRequest, assignreq);
+      updateTrackerName();
     },
     [trackerName],
     1000
@@ -113,7 +123,10 @@ export function TrackerSettingsPage() {
   }, [firstLoad]);
 
   return (
-    <form className="h-full overflow-y-auto">
+    <form
+      className="h-full overflow-y-auto"
+      onSubmit={handleSubmit(onSettingsSubmit)}
+    >
       <SingleTrackerBodyAssignmentMenu
         isOpen={selectBodypart}
         onClose={() => setSelectBodypart(false)}
@@ -170,7 +183,7 @@ export function TrackerSettingsPage() {
         </div>
         <div className="flex flex-col flex-grow  bg-background-70 rounded-lg p-5 gap-3">
           <ArrowLink to="/">Go back to trackers list</ArrowLink>
-          <Typography variant="main-title">Tracker settigns</Typography>
+          <Typography variant="main-title">Tracker settings</Typography>
           <div className="flex flex-col gap-2 w-full mt-3">
             <Typography variant="section-title">Assignment</Typography>
             <Typography color="secondary">

@@ -13,13 +13,13 @@ export function PutTrackersOnStep({ nextStep }: { nextStep: () => void }) {
           </Typography>
           <div>
             <Typography color="secondary">
-              To calibrate your proportions, we're gonna use the trackers you
+              To calibrate your proportions, we're gonna use the
             </Typography>
             <Typography color="secondary">
-              just assigned. Put on all your trackers, you can see which are
+              trackers you just assigned. Put on all your trackers,
             </Typography>
             <Typography color="secondary">
-              which in the figure to the right.
+              you can see which are which in the figure to the right.
             </Typography>
           </div>
           <div className="flex">

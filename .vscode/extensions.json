@@ -1,3 +1,9 @@
 {
-    "recommendations": ["dbaeumer.vscode-eslint", "gaborv.flatbuffers", "esbenp.prettier-vscode", "matklad.rust-analyzer", "bradlc.vscode-tailwindcss"]
+  "recommendations": [
+    "dbaeumer.vscode-eslint",
+    "gaborv.flatbuffers",
+    "esbenp.prettier-vscode",
+    "rust-lang.rust-analyzer",
+    "bradlc.vscode-tailwindcss"
+  ]
 }

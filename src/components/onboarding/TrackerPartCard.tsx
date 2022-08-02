@@ -66,7 +66,7 @@ export function TrackerPartCard({
     (showCard && (
       <div
         className={classNames(
-          'flex flex-col gap-1 control w-32 hover:bg-background-50 p-2 rounded-md',
+          'flex flex-col gap-1 control w-32 hover:bg-background-50 px-2 py-1 rounded-md',
           direction === 'left' ? 'items-start' : 'items-end'
         )}
         id={BodyPart[role]}

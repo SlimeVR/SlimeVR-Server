@@ -154,7 +154,7 @@ export function BodyInteractions({
           ref={personRef}
           className="relative w-full flex justify-center mx-10"
         >
-          <PersonFrontIcon width={238}></PersonFrontIcon>
+          <PersonFrontIcon width={228}></PersonFrontIcon>
           {slotsButtonsPos.map(
             ({ top, left, height, width, id, hidden, buttonOffset }) => (
               <div

@@ -141,7 +141,7 @@ export function BodyProportions({
             <div
               className={classNames(
                 'flex gap-2 transition-opacity duration-300',
-                selectedBone != bone && 'opacity-0'
+                selectedBone != bone && 'opacity-0 pointer-events-none'
               )}
             >
               {!precise && (
@@ -183,7 +183,7 @@ export function BodyProportions({
             <div
               className={classNames(
                 'flex gap-2 transition-opacity duration-300',
-                selectedBone != bone && 'opacity-0'
+                selectedBone != bone && 'opacity-0 pointer-events-none'
               )}
             >
               {precise && (

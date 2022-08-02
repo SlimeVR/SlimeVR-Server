@@ -91,6 +91,7 @@ export function Navbar() {
       </div>
       <NavButton
         to="/settings/trackers"
+        match="/settings/*"
         state={{ scrollTo: 'steamvr' }}
         icon={<GearIcon></GearIcon>}
       >
