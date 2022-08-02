@@ -76,14 +76,15 @@ public class LegTweakBuffer {
 	public static final float SKATING_DISTANCE_CUTOFF = 0.225f;
 	private static final float SKATING_VELOCITY_THRESHOLD = 4.25f;
 	private static final float SKATING_ACCELERATION_THRESHOLD = 1.15f;
-	private static final float SKATING_ROTVELOCITY_THRESHOLD = 2.8f;
+	private static final float SKATING_ROTVELOCITY_THRESHOLD = 4.5f;
 	private static final float SKATING_LOCK_ENGAGE_PERCENT = 0.9f;
+	private static final float SKATING_ACCELERATION_Y_USE_PERCENT = 0.25f;
 	private static final float FLOOR_DISTANCE_CUTOFF = 0.1f;
 	private static final float SIX_TRACKER_TOLLERANCE = 0.10f;
 
-	private static final float PARAM_SCALAR_MAX = 1.75f;
+	private static final float PARAM_SCALAR_MAX = 2.0f;
 	private static final float MAX_SCALAR_ACCEL = 0.3f;
-	private static final float MIN_SCALAR_ACCEL = 1.25f;
+	private static final float MIN_SCALAR_ACCEL = 1.0f;
 
 	private float leftFootSensitivity = 1.0f;
 	private float rightFootSensitivity = 1.0f;
@@ -358,11 +359,8 @@ public class LegTweakBuffer {
 		if (parent.rightLegState == UNLOCKED) {
 			if (
 				parent.getRightFootHorizantalDifference() > SKATING_CUTOFF_ENGAGE
-					|| rightFootVelocityMagnitude * timeStep
-						> SKATING_VELOCITY_CUTOFF_ENGAGE * rightFootSensitivity
-					|| rightFootAngleDiff * timeStep
-						> SKATING_ROTATIONAL_VELOCITY_CUTOFF_ENGAGE
-							* rightFootSensitivity
+					|| rightFootVelocityMagnitude * timeStep > SKATING_VELOCITY_CUTOFF_ENGAGE
+					|| rightFootAngleDiff * timeStep > SKATING_ROTATIONAL_VELOCITY_CUTOFF_ENGAGE
 					|| rightFootPosition.y > rightFloorLevel + FLOOR_DISTANCE_CUTOFF
 					|| accelerationAboveThresholdRight
 			) {
@@ -372,8 +370,10 @@ public class LegTweakBuffer {
 		} else {
 			if (
 				parent.getRightFootHorizantalDifference() > SKATING_DISTANCE_CUTOFF
-					|| rightFootVelocityMagnitude * timeStep > SKATING_VELOCITY_THRESHOLD
-					|| rightFootAngleDiff * timeStep > SKATING_ROTVELOCITY_THRESHOLD
+					|| rightFootVelocityMagnitude * timeStep
+						> SKATING_VELOCITY_THRESHOLD * rightFootSensitivity
+					|| rightFootAngleDiff * timeStep
+						> SKATING_ROTVELOCITY_THRESHOLD * rightFootSensitivity
 					|| rightFootPosition.y > rightFloorLevel + FLOOR_DISTANCE_CUTOFF
 					|| accelerationAboveThresholdRight
 			) {
@@ -433,8 +433,12 @@ public class LegTweakBuffer {
 	// compute the acceleration magnitude of the feet from the acceleration
 	// given by the imus (exclude y)
 	private void computeAccelerationMagnitude() {
-		leftFootAccelerationMagnitude = leftFootAcceleration.setY(0).length();
-		rightFootAccelerationMagnitude = rightFootAcceleration.setY(0).length();
+		leftFootAccelerationMagnitude = leftFootAcceleration
+			.setY(leftFootAcceleration.y * SKATING_ACCELERATION_Y_USE_PERCENT)
+			.length();
+		rightFootAccelerationMagnitude = rightFootAcceleration
+			.setY(rightFootAcceleration.y * SKATING_ACCELERATION_Y_USE_PERCENT)
+			.length();
 	}
 
 	// for 8 trackers the data from the imus is enough to determine lock/unlock
