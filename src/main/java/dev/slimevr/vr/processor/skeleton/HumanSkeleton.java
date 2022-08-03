@@ -809,7 +809,6 @@ public class HumanSkeleton extends Skeleton implements SkeletonConfigCallback {
 	private void tweakLegPos() {
 		// correct the foot positions
 		legTweaks.tweakLegs();
-
 	}
 
 	// #region Update the node transforms from the trackers
