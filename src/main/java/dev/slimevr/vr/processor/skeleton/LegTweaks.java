@@ -58,7 +58,6 @@ public class LegTweaks {
 	// FLOOR_CALIBRATION_OFFSET is the amount the floor plane is shifted up.
 	// This can help the feet from floating slightly above the ground
 
-
 	// hyperparameters (clip correction)
 	private static final float DYNAMIC_DISPLACEMENT_CUTOFF = 0.8f;
 	private static final float MAX_DYNAMIC_DISPLACEMENT = 0.08f;
@@ -237,7 +236,6 @@ public class LegTweaks {
 			leftLowerLegAcceleration.set(0, 0, 0);
 			rightLowerLegAcceleration.set(0, 0, 0);
 		}
-
 	}
 
 	// updates the object with the latest data from the skeleton
@@ -330,19 +328,16 @@ public class LegTweaks {
 		if (!preUpdate()) {
 			return;
 		}
-
 		// push the feet up if needed
 		if (floorclipEnabled) {
 			correctClipping();
 		}
-
 		// calculate acceleration and velocity of the feet using the buffer
 		// (only needed if skating correction is enabled)
 		if (skatingCorrectionEnabled) {
 			correctSkating();
 			correctFloat();
 		}
-
 		// determine if either leg is in a position to activate or deactivate
 		// (use the buffer to get the positions before corrections)
 		float leftFootDif = bufferHead
@@ -367,7 +362,6 @@ public class LegTweaks {
 		} else if (active && rightFootDif < NEARLY_ZERO) {
 			rightLegActive = true;
 		}
-
 		// restore the y positions of inactive legs
 		if (!leftLegActive) {
 			leftFootPosition.y = bufferHead.getLeftFootPosition(null).y;
@@ -377,12 +371,10 @@ public class LegTweaks {
 			rightFootPosition.y = bufferHead.getRightFootPosition(null).y;
 			rightKneePosition.y = bufferHead.getRightKneePosition(null).y;
 		}
-
 		// calculate the correction for the knees
 		if (kneesActive) {
 			correctKnees();
 		}
-
 		// populate the corrected data into the current frame
 		this.bufferHead.setLeftFootPositionCorrected(leftFootPosition);
 		this.bufferHead.setRightFootPositionCorrected(rightFootPosition);
@@ -542,8 +534,6 @@ public class LegTweaks {
 				) {
 					leftFootPosition.z = bufferHead.getLeftFootPosition(null).z;
 				}
-
-
 			}
 		}
 	}
@@ -609,7 +599,6 @@ public class LegTweaks {
 				) {
 					rightFootPosition.z = bufferHead.getRightFootPosition(null).z;
 				}
-
 			}
 		}
 	}
