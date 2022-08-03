@@ -53,24 +53,27 @@ export function TopBar({
           )}
         </div>
       </div>
-      <div className="flex justify-end px-2 gap-2 z-50" data-tauri-drag-region>
+      <div
+        className="flex justify-end items-center px-2 gap-2 z-50"
+        data-tauri-drag-region
+      >
         <div
-          className="flex flex-col justify-around"
+          className="flex items-center justify-center hover:bg-background-60 rounded-full w-7 h-7"
           onClick={() => appWindow.minimize()}
         >
-          <MinimiseIcon className="rounded-full"></MinimiseIcon>
+          <MinimiseIcon></MinimiseIcon>
         </div>
         <div
-          className="flex flex-col justify-around"
+          className="flex items-center justify-center hover:bg-background-60 rounded-full w-7 h-7"
           onClick={() => appWindow.toggleMaximize()}
         >
-          <MaximiseIcon className="rounded-full"></MaximiseIcon>
+          <MaximiseIcon></MaximiseIcon>
         </div>
         <div
-          className="flex flex-col justify-around"
+          className="flex items-center justify-center hover:bg-background-60 rounded-full w-7 h-7"
           onClick={() => appWindow.close()}
         >
-          <CloseIcon className="rounded-full"></CloseIcon>
+          <CloseIcon></CloseIcon>
         </div>
       </div>
     </div>

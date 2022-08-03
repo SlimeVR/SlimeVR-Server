@@ -28,6 +28,7 @@ tauri = { version = "1.0.5", features = ["cli", "devtools", "fs-all", "path-all"
 pretty_env_logger = "0.4"
 log = "0.4"
 clap-verbosity-flag = "1"
+tauri-plugin-window-state = "0.1.0"
 
 [target.'cfg(windows)'.dependencies]
 win32job = "1"

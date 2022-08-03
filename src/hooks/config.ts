@@ -8,9 +8,17 @@ import { appDir } from '@tauri-apps/api/path';
 
 import { createContext, useContext, useState } from 'react';
 
+export interface WindowConfig {
+  width: number;
+  height: number;
+  x: number;
+  y: number;
+}
+
 export interface Config {
   debug: boolean;
   doneOnboarding: boolean;
+  window: WindowConfig;
 }
 
 export interface ConfigContext {
