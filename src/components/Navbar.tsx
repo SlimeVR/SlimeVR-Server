@@ -57,7 +57,7 @@ export function NavButton({
 
 export function Navbar() {
   return (
-    <div data-tauri-drag-region className="flex flex-col px-2 pt-2">
+    <div className="flex flex-col px-2 pt-2">
       <div className="flex flex-col flex-grow gap-2">
         <NavButton to="/" icon={<CubeIcon></CubeIcon>}>
           Home

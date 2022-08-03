@@ -247,7 +247,7 @@ export function GeneralSettings() {
               control={control}
               outlined
               name="interface.devmode"
-              label="Developper mode"
+              label="Developer mode"
             />
           </div>
         </>
