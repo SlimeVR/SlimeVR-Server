@@ -4,21 +4,19 @@ import com.jme3.math.Quaternion;
 import com.jme3.math.Vector3f;
 
 
-// class that holds data related to the state and other variuse attributes of the legs
-// such as the position of the foot, knee, and waist, after and before correction,
-// the velocity of the foot and the computed state of the feet at that frame.
-// mainly calculates the state of the legs per frame using these rules:
-// The conditions for an unlock are as follows:
-// 1. the foot is to far from its correct position
-// 2. a velocity higher than a threashold is achived
-// 3. a large acceleration is applied to the foot
-// 4. angular velocity of the foot goes higher than a threashold
-// The conditions for a lock are the opposite of the above
-// but require a lower value for all of the above conditions
-
+/**
+ * class that holds data related to the state and other variuse attributes of
+ * the legs such as the position of the foot, knee, and waist, after and before
+ * correction, the velocity of the foot and the computed state of the feet at
+ * that frame. mainly calculates the state of the legs per frame using these
+ * rules: The conditions for an unlock are as follows: 1. the foot is to far
+ * from its correct position 2. a velocity higher than a threashold is achived
+ * 3. a large acceleration is applied to the foot 4. angular velocity of the
+ * foot goes higher than a threashold The conditions for a lock are the opposite
+ * of the above but require a lower value for all of the above conditions
+ */
 
 public class LegTweakBuffer {
-
 	public static final int STATE_UNKNOWN = 0; // fall back state
 	public static final int LOCKED = 1;
 	public static final int UNLOCKED = 2;
@@ -350,7 +348,6 @@ public class LegTweakBuffer {
 		// based on the last state of the legs compute their state for this
 		// individual frame
 		leftLegState = checkStateLeft();
-
 		rightLegState = checkStateRight();
 	}
 
@@ -368,7 +365,6 @@ public class LegTweakBuffer {
 				return UNLOCKED;
 			}
 			return LOCKED;
-
 		} else {
 			if (
 				parent.getLeftFootHorizantalDifference() > SKATING_DISTANCE_CUTOFF
@@ -517,5 +513,4 @@ public class LegTweakBuffer {
 		}
 		return 1.0f;
 	}
-
 }
