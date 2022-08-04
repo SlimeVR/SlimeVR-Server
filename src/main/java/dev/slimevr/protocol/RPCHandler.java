@@ -10,11 +10,16 @@ import dev.slimevr.platform.windows.WindowsNamedPipeBridge;
 import dev.slimevr.poserecorder.PoseFrames;
 import dev.slimevr.serial.SerialListener;
 import dev.slimevr.vr.processor.skeleton.SkeletonConfigOffsets;
+import dev.slimevr.vr.processor.skeleton.SkeletonConfigToggles;
+import dev.slimevr.vr.processor.skeleton.SkeletonConfigValues;
 import dev.slimevr.vr.trackers.*;
 import io.eiren.util.logging.LogManager;
 import solarxr_protocol.MessageBundle;
 import solarxr_protocol.datatypes.TransactionId;
 import solarxr_protocol.rpc.*;
+import solarxr_protocol.rpc.settings.ModelRatios;
+import solarxr_protocol.rpc.settings.ModelSettings;
+import solarxr_protocol.rpc.settings.ModelToggles;
 
 import java.util.EnumMap;
 import java.util.Map.Entry;
@@ -263,10 +268,32 @@ public class RPCHandler extends ProtocolHandler<RpcMessageHeader>
 					)
 			);
 
-		// TODO ModelSettings
+		int modelSettings;
+		{
+			var config = this.api.server.humanPoseProcessor.getSkeletonConfig();
+			int togglesOffset = ModelToggles
+				.createModelToggles(
+					fbb,
+					config.getToggle(SkeletonConfigToggles.EXTENDED_SPINE_MODEL),
+					config.getToggle(SkeletonConfigToggles.EXTENDED_PELVIS_MODEL),
+					config.getToggle(SkeletonConfigToggles.EXTENDED_KNEE_MODEL),
+					config.getToggle(SkeletonConfigToggles.FORCE_ARMS_FROM_HMD)
+				);
+			int ratiosOffset = ModelRatios
+				.createModelRatios(
+					fbb,
+					config.getValue(SkeletonConfigValues.WAIST_FROM_CHEST_HIP_AVERAGING),
+					config.getValue(SkeletonConfigValues.WAIST_FROM_CHEST_LEGS_AVERAGING),
+					config.getValue(SkeletonConfigValues.HIP_FROM_CHEST_LEGS_AVERAGING),
+					config.getValue(SkeletonConfigValues.HIP_FROM_WAIST_LEGS_AVERAGING),
+					config.getValue(SkeletonConfigValues.HIP_LEGS_AVERAGING),
+					config.getValue(SkeletonConfigValues.KNEE_TRACKER_ANKLE_AVERAGING)
+				);
+			modelSettings = ModelSettings.createModelSettings(fbb, togglesOffset, ratiosOffset);
+		}
 
 		int settings = SettingsResponse
-			.createSettingsResponse(fbb, steamvrTrackerSettings, filterSettings);
+			.createSettingsResponse(fbb, steamvrTrackerSettings, filterSettings, modelSettings);
 		int outbound = createRPCMessage(fbb, RpcMessage.SettingsResponse, settings);
 		fbb.finish(outbound);
 		conn.send(fbb.dataBuffer());
@@ -304,7 +331,91 @@ public class RPCHandler extends ProtocolHandler<RpcMessageHeader>
 			}
 		}
 
-		// TODO ModelSettings
+		var modelSettings = req.modelSettings();
+		if (modelSettings != null) {
+			var cfg = this.api.server.humanPoseProcessor.getSkeletonConfig();
+			var toggles = modelSettings.toggles();
+			var ratios = modelSettings.ratios();
+
+			if (toggles != null) {
+				if (toggles.hasExtendedSpine()) {
+					cfg
+						.setToggle(
+							SkeletonConfigToggles.EXTENDED_SPINE_MODEL,
+							toggles.extendedSpine()
+						);
+				}
+				if (toggles.hasExtendedPelvis()) {
+					cfg
+						.setToggle(
+							SkeletonConfigToggles.EXTENDED_PELVIS_MODEL,
+							toggles.extendedPelvis()
+						);
+				}
+				if (toggles.hasExtendedKnee()) {
+					cfg
+						.setToggle(
+							SkeletonConfigToggles.EXTENDED_KNEE_MODEL,
+							toggles.extendedKnee()
+						);
+				}
+				if (toggles.forceArmsFromHmd()) {
+					cfg
+						.setToggle(
+							SkeletonConfigToggles.FORCE_ARMS_FROM_HMD,
+							toggles.forceArmsFromHmd()
+						);
+				}
+			}
+
+			if (ratios != null) {
+				if (ratios.hasImputeWaistFromChestHip()) {
+					cfg
+						.setValue(
+							SkeletonConfigValues.WAIST_FROM_CHEST_HIP_AVERAGING,
+							ratios.imputeWaistFromChestHip()
+						);
+				}
+				if (ratios.hasImputeWaistFromChestLegs()) {
+					cfg
+						.setValue(
+							SkeletonConfigValues.WAIST_FROM_CHEST_LEGS_AVERAGING,
+							ratios.imputeWaistFromChestLegs()
+						);
+				}
+				if (ratios.hasImputeHipFromChestLegs()) {
+					cfg
+						.setValue(
+							SkeletonConfigValues.HIP_FROM_CHEST_LEGS_AVERAGING,
+							ratios.imputeHipFromChestLegs()
+						);
+				}
+				if (ratios.hasImputeHipFromWaistLegs()) {
+					cfg
+						.setValue(
+							SkeletonConfigValues.HIP_FROM_WAIST_LEGS_AVERAGING,
+							ratios.imputeHipFromWaistLegs()
+						);
+				}
+				if (ratios.hasInterpHipLegs()) {
+					cfg
+						.setValue(
+							SkeletonConfigValues.HIP_LEGS_AVERAGING,
+							ratios.interpHipLegs()
+						);
+				}
+				if (ratios.hasInterpKneeTrackerAnkle()) {
+					cfg
+						.setValue(
+							SkeletonConfigValues.KNEE_TRACKER_ANKLE_AVERAGING,
+							ratios.interpKneeTrackerAnkle()
+						);
+				}
+			}
+
+			cfg.saveToConfig(this.api.server.config);
+			this.api.server.saveConfig();
+		}
 
 	}
 
