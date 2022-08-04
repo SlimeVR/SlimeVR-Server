@@ -56,7 +56,9 @@ export function useProvideAutobone(): AutoboneContext {
   };
 
   const startRecording = () => {
+    setHasCalibration(false);
     setHasRecording(false);
+    setSkeletonParts(null);
     startProcess(AutoBoneProcessType.RECORD);
   };
 

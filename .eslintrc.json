@@ -25,6 +25,7 @@
     "spaced-comment": "error",
     "quotes": ["error", "single"],
     "no-duplicate-imports": "error",
+    "no-inline-styles": "off",
     "@typescript-eslint/no-explicit-any": "off",
     "react/no-unescaped-entities": "off",
     "prettier/prettier": "warn"

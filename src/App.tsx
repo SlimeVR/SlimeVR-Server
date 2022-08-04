@@ -153,7 +153,9 @@ function App() {
                   <>
                     <TopBar></TopBar>
                     <div className="flex w-full h-full justify-center items-center p-2">
-                      Connection lost to server
+                      {websocketAPI.isFistConnection
+                        ? 'Connecting to the server'
+                        : 'Connection lost to the server. Trying to reconnect...'}
                     </div>
                   </>
                 )}

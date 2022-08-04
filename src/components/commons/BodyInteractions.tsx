@@ -14,9 +14,15 @@ export function BodyInteractions({
   leftControls,
   rightControls,
   assignedRoles,
+  width = 228,
+  dotsSize = 20,
+  variant = 'tracker-select',
 }: {
   leftControls?: ReactChild;
   rightControls?: ReactChild;
+  width?: number;
+  dotsSize?: number;
+  variant?: 'dots' | 'tracker-select';
   assignedRoles: BodyPart[];
 }) {
   const personRef = useRef<HTMLDivElement | null>(null);
@@ -101,7 +107,8 @@ export function BodyInteractions({
       return {
         ...slotPosition,
         id: slot.id,
-        hidden: !controlsPosIds.includes(slot.id),
+        hidden:
+          variant === 'tracker-select' && !controlsPosIds.includes(slot.id),
         buttonOffset: {
           left: canvasBox.left - personBox.left,
           top: canvasBox.top - personBox.top,
@@ -109,34 +116,36 @@ export function BodyInteractions({
       };
     });
 
-    slots.forEach((slot) => {
-      const controls = controlsPos.filter(({ id }) => id === slot.id);
-      controls.forEach((control) => {
-        const controlPosition = getOffset(control, canvasBox);
+    if (variant === 'tracker-select') {
+      slots.forEach((slot) => {
+        const controls = controlsPos.filter(({ id }) => id === slot.id);
+        controls.forEach((control) => {
+          const controlPosition = getOffset(control, canvasBox);
 
-        const offsetX =
-          controlPosition.left < slot.left ? controlPosition.width : 0;
+          const offsetX =
+            controlPosition.left < slot.left ? controlPosition.width : 0;
 
-        const constolLeft = controlPosition.left + offsetX;
-        const LINE_BREAK_WIDTH = 40;
-        const leftOffsetX =
-          LINE_BREAK_WIDTH * (controlPosition.left < slot.left ? -1 : 1);
+          const constolLeft = controlPosition.left + offsetX;
+          const LINE_BREAK_WIDTH = 40;
+          const leftOffsetX =
+            LINE_BREAK_WIDTH * (controlPosition.left < slot.left ? -1 : 1);
 
-        ctx.beginPath();
-        ctx.moveTo(
-          constolLeft,
-          controlPosition.top + controlPosition.height / 2
-        );
-        ctx.lineTo(
-          constolLeft - leftOffsetX,
-          controlPosition.top + controlPosition.height / 2
-        );
-        ctx.lineTo(slot.left + slot.width / 2, slot.top + slot.height / 2);
-        ctx.stroke();
+          ctx.beginPath();
+          ctx.moveTo(
+            constolLeft,
+            controlPosition.top + controlPosition.height / 2
+          );
+          ctx.lineTo(
+            constolLeft - leftOffsetX,
+            controlPosition.top + controlPosition.height / 2
+          );
+          ctx.lineTo(slot.left + slot.width / 2, slot.top + slot.height / 2);
+          ctx.stroke();
+        });
       });
-    });
+    }
     setSlotsButtonPos(slots);
-  }, [leftControls, rightControls]);
+  }, [leftControls, rightControls, variant]);
 
   return (
     <div className="relative">
@@ -152,27 +161,31 @@ export function BodyInteractions({
         </div>
         <div
           ref={personRef}
-          className="relative w-full flex justify-center mx-10"
+          className={classNames(
+            'relative w-full flex justify-center',
+            variant === 'tracker-select' && 'mx-10'
+          )}
         >
-          <PersonFrontIcon width={228}></PersonFrontIcon>
+          <PersonFrontIcon width={width}></PersonFrontIcon>
           {slotsButtonsPos.map(
             ({ top, left, height, width, id, hidden, buttonOffset }) => (
               <div
                 key={id}
                 className="absolute z-10"
                 style={{
-                  top: top + height / 2 - 20 / 2 + buttonOffset.top,
-                  left: left + width / 2 - 20 / 2 + buttonOffset.left,
+                  top: top + height / 2 - dotsSize / 2 + buttonOffset.top,
+                  left: left + width / 2 - dotsSize / 2 + buttonOffset.left,
                 }}
               >
                 <div
                   className={classNames(
-                    'w-5 h-5  rounded-full outline outline-2 outline-background-20 transition-opacity',
+                    'rounded-full outline outline-2 outline-background-20 transition-opacity',
                     (assignedRoles.includes((BodyPart as any)[id]) &&
                       'bg-background-70') ||
                       'bg-background-10',
                     (hidden && 'opacity-0') || 'opacity-100'
                   )}
+                  style={{ width: dotsSize, height: dotsSize }}
                 ></div>
               </div>
             )

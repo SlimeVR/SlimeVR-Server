@@ -1,9 +1,14 @@
+import { useTrackers } from '../../../../../hooks/tracker';
+import { BodyDisplay } from '../../../../commons/BodyDisplay';
+import { BodyInteractions } from '../../../../commons/BodyInteractions';
 import { Button } from '../../../../commons/Button';
 import { PersonFrontIcon } from '../../../../commons/PersonFrontIcon';
 import { TipBox } from '../../../../commons/TipBox';
 import { Typography } from '../../../../commons/Typography';
 
 export function PutTrackersOnStep({ nextStep }: { nextStep: () => void }) {
+  const { trackers } = useTrackers();
+
   return (
     <>
       <div className="flex flex-col flex-grow">
@@ -37,7 +42,12 @@ export function PutTrackersOnStep({ nextStep }: { nextStep: () => void }) {
         </div>
       </div>
       <div className="flex flex-col pt-1 items-center fill-background-50 justify-center px-16">
-        <PersonFrontIcon width={150}></PersonFrontIcon>
+        <BodyDisplay
+          trackers={trackers}
+          width={150}
+          dotsSize={15}
+          variant="dots"
+        />
       </div>
     </>
   );

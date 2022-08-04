@@ -3,7 +3,7 @@ import { BodyPart } from 'solarxr-protocol';
 import { FlatDeviceTracker } from '../../hooks/app';
 import { useTrackers } from '../../hooks/tracker';
 import { BodyInteractions } from '../commons/BodyInteractions';
-import { TrackerPartCard } from './TrackerPartCard';
+import { TrackerPartCard } from '../tracker/TrackerPartCard';
 
 export function BodyAssignment({
   advanced,

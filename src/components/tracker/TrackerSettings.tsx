@@ -147,7 +147,7 @@ export function TrackerSettingsPage() {
               shakeHighlight={false}
             ></TrackerCard>
           )}
-          <div className="flex flex-col bg-background-70 p-3 rounded-lg gap-2">
+          {/* <div className="flex flex-col bg-background-70 p-3 rounded-lg gap-2">
             <Typography bold>Firmware version</Typography>
             <div className="flex gap-2">
               <Typography color="secondary">
@@ -161,7 +161,7 @@ export function TrackerSettingsPage() {
             <Button variant="primary" disabled>
               Update now
             </Button>
-          </div>
+          </div> */}
           <div className="flex flex-col bg-background-70 p-3 rounded-lg gap-2">
             <div className="flex justify-between">
               <Typography color="secondary">Manufacturer</Typography>

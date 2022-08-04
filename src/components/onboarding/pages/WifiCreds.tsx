@@ -64,7 +64,7 @@ export function WifiCredsPage() {
               placeholder="Enter SSID"
             />
             <Input
-              {...register('password', { required: true })}
+              {...register('password')}
               type="password"
               label="Password"
               placeholder="Enter password"

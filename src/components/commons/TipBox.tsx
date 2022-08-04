@@ -1,5 +1,6 @@
 import { ReactChild } from 'react';
 import { BulbIcon } from './icon/BulbIcon';
+import { Typography } from './Typography';
 
 export function TipBox({ children }: { children: ReactChild }) {
   return (
@@ -7,7 +8,9 @@ export function TipBox({ children }: { children: ReactChild }) {
       <div className="fill-accent-background-20 flex flex-col justify-center">
         <BulbIcon></BulbIcon>
       </div>
-      <div className="flex flex-col text-accent-background-10">{children}</div>
+      <div className="flex flex-col">
+        <Typography color="text-accent-background-10">{children}</Typography>
+      </div>
     </div>
   );
 }
