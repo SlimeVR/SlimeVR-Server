@@ -1,12 +1,5 @@
 package dev.slimevr.autobone;
 
-import java.util.List;
-import java.util.concurrent.CopyOnWriteArrayList;
-import java.util.concurrent.Future;
-import java.util.concurrent.locks.ReentrantLock;
-
-import org.apache.commons.lang3.tuple.Pair;
-
 import dev.slimevr.VRServer;
 import dev.slimevr.autobone.AutoBone.AutoBoneResults;
 import dev.slimevr.autobone.errors.AutoBoneException;
@@ -14,11 +7,17 @@ import dev.slimevr.poserecorder.PoseFrameTracker;
 import dev.slimevr.poserecorder.PoseFrames;
 import dev.slimevr.poserecorder.PoseRecorder;
 import dev.slimevr.vr.processor.skeleton.SkeletonConfig;
-import dev.slimevr.vr.processor.skeleton.SkeletonConfigValue;
+import dev.slimevr.vr.processor.skeleton.SkeletonConfigOffsets;
 import dev.slimevr.vr.trackers.TrackerPosition;
 import io.eiren.util.StringUtils;
 import io.eiren.util.collections.FastList;
 import io.eiren.util.logging.LogManager;
+import org.apache.commons.lang3.tuple.Pair;
+
+import java.util.List;
+import java.util.concurrent.CopyOnWriteArrayList;
+import java.util.concurrent.Future;
+import java.util.concurrent.locks.ReentrantLock;
 
 
 public class AutoBoneHandler {
@@ -341,14 +340,19 @@ public class AutoBoneHandler {
 				LogManager.info("[AutoBone] Done processing!");
 
 				// #region Stats/Values
-				skeletonConfigBuffer.setConfigs(autoBoneResults.configValues, null);
+				skeletonConfigBuffer.setConfigs(autoBoneResults.configValues, null, null);
 
-				float neckLength = skeletonConfigBuffer.getConfig(SkeletonConfigValue.NECK);
-				float chestDistance = skeletonConfigBuffer.getConfig(SkeletonConfigValue.CHEST);
-				float torsoLength = skeletonConfigBuffer.getConfig(SkeletonConfigValue.TORSO);
-				float hipWidth = skeletonConfigBuffer.getConfig(SkeletonConfigValue.HIPS_WIDTH);
-				float legsLength = skeletonConfigBuffer.getConfig(SkeletonConfigValue.LEGS_LENGTH);
-				float kneeHeight = skeletonConfigBuffer.getConfig(SkeletonConfigValue.KNEE_HEIGHT);
+				float neckLength = skeletonConfigBuffer.getOffset(SkeletonConfigOffsets.NECK);
+				float chestDistance = skeletonConfigBuffer
+					.getOffset(SkeletonConfigOffsets.CHEST);
+				float torsoLength = skeletonConfigBuffer
+					.getOffset(SkeletonConfigOffsets.TORSO);
+				float hipWidth = skeletonConfigBuffer
+					.getOffset(SkeletonConfigOffsets.HIPS_WIDTH);
+				float legsLength = skeletonConfigBuffer
+					.getOffset(SkeletonConfigOffsets.LEGS_LENGTH);
+				float kneeHeight = skeletonConfigBuffer
+					.getOffset(SkeletonConfigOffsets.KNEE_HEIGHT);
 
 				float neckTorso = neckLength / torsoLength;
 				float chestTorso = chestDistance / torsoLength;

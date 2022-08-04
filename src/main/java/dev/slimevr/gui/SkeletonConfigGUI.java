@@ -4,7 +4,7 @@ import dev.slimevr.VRServer;
 import dev.slimevr.gui.swing.ButtonTimer;
 import dev.slimevr.gui.swing.EJBagNoStretch;
 import dev.slimevr.vr.processor.skeleton.Skeleton;
-import dev.slimevr.vr.processor.skeleton.SkeletonConfigValue;
+import dev.slimevr.vr.processor.skeleton.SkeletonConfigOffsets;
 import io.eiren.util.StringUtils;
 import io.eiren.util.ann.ThreadSafe;
 
@@ -20,7 +20,7 @@ public class SkeletonConfigGUI extends EJBagNoStretch {
 	private final VRServer server;
 	private final VRServerGUI gui;
 	private final AutoBoneWindow autoBone;
-	private final Map<SkeletonConfigValue, SkeletonLabel> labels = new HashMap<>();
+	private final Map<SkeletonConfigOffsets, SkeletonLabel> labels = new HashMap<>();
 	private JCheckBox precisionCb;
 
 	public SkeletonConfigGUI(VRServer server, VRServerGUI gui) {
@@ -59,7 +59,7 @@ public class SkeletonConfigGUI extends EJBagNoStretch {
 
 			row++;
 
-			for (SkeletonConfigValue config : SkeletonConfigValue.values) {
+			for (SkeletonConfigOffsets config : SkeletonConfigOffsets.values) {
 				add(new JLabel(config.label), c(0, row, 2));
 				add(new AdjButton("+", config, false), c(1, row, 2));
 				add(new SkeletonLabel(config), c(2, row, 2));
@@ -93,8 +93,9 @@ public class SkeletonConfigGUI extends EJBagNoStretch {
 		return increment;
 	}
 
-	String getBoneLengthString(SkeletonConfigValue joint) { // Rounded to the
-															// nearest 0.5
+	String getBoneLengthString(SkeletonConfigOffsets joint) { // Rounded to
+																// the
+		// nearest 0.5
 		return (StringUtils
 			.prettyNumber(
 				Math.round(server.humanPoseProcessor.getSkeletonConfig(joint) * 200) / 2.0f,
@@ -111,7 +112,7 @@ public class SkeletonConfigGUI extends EJBagNoStretch {
 		});
 	}
 
-	private void change(SkeletonConfigValue joint, float diff) {
+	private void change(SkeletonConfigOffsets joint, float diff) {
 		// Update config value
 		float current = server.humanPoseProcessor.getSkeletonConfig(joint);
 		server.humanPoseProcessor.setSkeletonConfig(joint, current + diff);
@@ -122,7 +123,7 @@ public class SkeletonConfigGUI extends EJBagNoStretch {
 		labels.get(joint).setText(getBoneLengthString(joint));
 	}
 
-	private void reset(SkeletonConfigValue joint) {
+	private void reset(SkeletonConfigOffsets joint) {
 		// Update config value
 		server.humanPoseProcessor.resetSkeletonConfig(joint);
 		server.humanPoseProcessor.getSkeletonConfig().saveToConfig(server.config);
@@ -144,7 +145,7 @@ public class SkeletonConfigGUI extends EJBagNoStretch {
 
 	private class SkeletonLabel extends JLabel {
 
-		public SkeletonLabel(SkeletonConfigValue joint) {
+		public SkeletonLabel(SkeletonConfigOffsets joint) {
 			super(getBoneLengthString(joint));
 			labels.put(joint, this);
 		}
@@ -152,7 +153,7 @@ public class SkeletonConfigGUI extends EJBagNoStretch {
 
 	private class AdjButton extends JButton {
 
-		public AdjButton(String text, SkeletonConfigValue joint, boolean negative) {
+		public AdjButton(String text, SkeletonConfigOffsets joint, boolean negative) {
 			super(text);
 			addMouseListener(new MouseInputAdapter() {
 				@Override
@@ -165,7 +166,7 @@ public class SkeletonConfigGUI extends EJBagNoStretch {
 
 	private class ResetButton extends JButton {
 
-		public ResetButton(String text, SkeletonConfigValue joint) {
+		public ResetButton(String text, SkeletonConfigOffsets joint) {
 			super(text);
 			addMouseListener(new MouseInputAdapter() {
 				@Override
@@ -178,7 +179,7 @@ public class SkeletonConfigGUI extends EJBagNoStretch {
 
 	private class TimedResetButton extends JButton {
 
-		public TimedResetButton(String text, SkeletonConfigValue joint) {
+		public TimedResetButton(String text, SkeletonConfigOffsets joint) {
 			super(text);
 			addMouseListener(new MouseInputAdapter() {
 				@Override

@@ -92,9 +92,17 @@ public class IMUTracker
 				.getByDesignation(config.designation)
 				.ifPresent(trackerPosition -> bodyPosition = trackerPosition);
 			setFilter(
-				vrserver.config.getString("filters.type"),
-				vrserver.config.getFloat("filters.amount", 0.3f),
-				vrserver.config.getInt("filters.tickCount", 1)
+				vrserver.config.getString(TrackerFiltering.CONFIG_PREFIX + "type"),
+				vrserver.config
+					.getFloat(
+						TrackerFiltering.CONFIG_PREFIX + "amount",
+						TrackerFiltering.DEFAULT_INTENSITY
+					),
+				vrserver.config
+					.getInt(
+						TrackerFiltering.CONFIG_PREFIX + "tickCount",
+						TrackerFiltering.DEFAULT_TICK
+					)
 			);
 		}
 	}

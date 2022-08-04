@@ -4,7 +4,7 @@ import java.util.EnumMap;
 
 import dev.slimevr.autobone.AutoBone.Epoch;
 import dev.slimevr.poserecorder.PoseFrames;
-import dev.slimevr.vr.processor.skeleton.SkeletonConfigValue;
+import dev.slimevr.vr.processor.skeleton.SkeletonConfigOffsets;
 
 
 public interface AutoBoneListener {
@@ -22,5 +22,5 @@ public interface AutoBoneListener {
 
 	public void onAutoBoneEpoch(Epoch epoch);
 
-	public void onAutoBoneEnd(EnumMap<SkeletonConfigValue, Float> configValues);
+	public void onAutoBoneEnd(EnumMap<SkeletonConfigOffsets, Float> configValues);
 }

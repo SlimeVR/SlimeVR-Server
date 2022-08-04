@@ -9,7 +9,7 @@ import dev.slimevr.autobone.AutoBoneProcessType;
 import dev.slimevr.platform.windows.WindowsNamedPipeBridge;
 import dev.slimevr.poserecorder.PoseFrames;
 import dev.slimevr.serial.SerialListener;
-import dev.slimevr.vr.processor.skeleton.SkeletonConfigValue;
+import dev.slimevr.vr.processor.skeleton.SkeletonConfigOffsets;
 import dev.slimevr.vr.trackers.*;
 import io.eiren.util.logging.LogManager;
 import solarxr_protocol.MessageBundle;
@@ -146,7 +146,7 @@ public class RPCHandler extends ProtocolHandler<RpcMessageHeader>
 		if (req == null)
 			return;
 
-		SkeletonConfigValue joint = SkeletonConfigValue.getById(req.bone());
+		SkeletonConfigOffsets joint = SkeletonConfigOffsets.getById(req.bone());
 
 		this.api.server.humanPoseProcessor.setSkeletonConfig(joint, req.value());
 		this.api.server.humanPoseProcessor.getSkeletonConfig().saveToConfig(this.api.server.config);
@@ -246,10 +246,24 @@ public class RPCHandler extends ProtocolHandler<RpcMessageHeader>
 		int filterSettings = FilteringSettings
 			.createFilteringSettings(
 				fbb,
-				TrackerFilters.valueOf(this.api.server.config.getString("filters.type", "NONE")).id,
-				(int) (this.api.server.config.getFloat("filters.amount", 0.3f) * 100),
-				this.api.server.config.getInt("filters.tickCount", 1)
+				TrackerFilters
+					.valueOf(
+						this.api.server.config
+							.getString(TrackerFiltering.CONFIG_PREFIX + "type", "NONE")
+					).id,
+				(int) (this.api.server.config
+					.getFloat(
+						TrackerFiltering.CONFIG_PREFIX + "amount",
+						TrackerFiltering.DEFAULT_INTENSITY
+					) * 100),
+				this.api.server.config
+					.getInt(
+						TrackerFiltering.CONFIG_PREFIX + "tickCount",
+						TrackerFiltering.DEFAULT_TICK
+					)
 			);
+
+		// TODO ModelSettings
 
 		int settings = SettingsResponse
 			.createSettingsResponse(fbb, steamvrTrackerSettings, filterSettings);
@@ -284,11 +298,14 @@ public class RPCHandler extends ProtocolHandler<RpcMessageHeader>
 				this.api.server
 					.updateTrackersFilters(
 						type,
-						(float) req.filtering().intensity() / 100.0f,
+						req.filtering().intensity() / 100.0f,
 						req.filtering().ticks()
 					);
 			}
 		}
+
+		// TODO ModelSettings
+
 	}
 
 	@Override
@@ -457,7 +474,7 @@ public class RPCHandler extends ProtocolHandler<RpcMessageHeader>
 					int[] skeletonPartOffsets = new int[epoch.configValues.size()];
 					int i = 0;
 					for (
-						Entry<SkeletonConfigValue, Float> skeletonConfig : epoch.configValues
+						Entry<SkeletonConfigOffsets, Float> skeletonConfig : epoch.configValues
 							.entrySet()
 					) {
 						skeletonPartOffsets[i++] = SkeletonPart
@@ -490,7 +507,7 @@ public class RPCHandler extends ProtocolHandler<RpcMessageHeader>
 
 
 	@Override
-	public void onAutoBoneEnd(EnumMap<SkeletonConfigValue, Float> configValues) {
+	public void onAutoBoneEnd(EnumMap<SkeletonConfigOffsets, Float> configValues) {
 		// Do nothing, the last epoch from "onAutoBoneEpoch" should be all
 		// that's needed
 	}

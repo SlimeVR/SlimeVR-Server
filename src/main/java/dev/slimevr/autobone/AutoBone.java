@@ -68,17 +68,17 @@ public class AutoBone {
 		}
 	);
 
-	public final FastList<SkeletonConfigValue> legacyHeightConfigs = new FastList<SkeletonConfigValue>(
-		new SkeletonConfigValue[] {
-			SkeletonConfigValue.NECK,
-			SkeletonConfigValue.TORSO,
+	public final FastList<SkeletonConfigOffsets> legacyHeightConfigs = new FastList<SkeletonConfigOffsets>(
+		new SkeletonConfigOffsets[] {
+			SkeletonConfigOffsets.NECK,
+			SkeletonConfigOffsets.TORSO,
 
-			SkeletonConfigValue.LEGS_LENGTH,
+			SkeletonConfigOffsets.LEGS_LENGTH,
 		}
 	);
 
-	public final EnumMap<SkeletonConfigValue, Float> legacyConfigs = new EnumMap<SkeletonConfigValue, Float>(
-		SkeletonConfigValue.class
+	public final EnumMap<SkeletonConfigOffsets, Float> legacyConfigs = new EnumMap<SkeletonConfigOffsets, Float>(
+		SkeletonConfigOffsets.class
 	);
 
 	protected final VRServer server;
@@ -265,7 +265,7 @@ public class AutoBone {
 	}
 
 	public boolean applyConfig(
-		BiConsumer<SkeletonConfigValue, Float> configConsumer,
+		BiConsumer<SkeletonConfigOffsets, Float> configConsumer,
 		Map<BoneType, Float> offsets
 	) {
 		if (configConsumer == null || offsets == null) {
@@ -275,12 +275,12 @@ public class AutoBone {
 		try {
 			Float headOffset = offsets.get(BoneType.HEAD);
 			if (headOffset != null) {
-				configConsumer.accept(SkeletonConfigValue.HEAD, headOffset);
+				configConsumer.accept(SkeletonConfigOffsets.HEAD, headOffset);
 			}
 
 			Float neckOffset = offsets.get(BoneType.NECK);
 			if (neckOffset != null) {
-				configConsumer.accept(SkeletonConfigValue.NECK, neckOffset);
+				configConsumer.accept(SkeletonConfigOffsets.NECK, neckOffset);
 			}
 
 			Float chestOffset = offsets.get(BoneType.CHEST);
@@ -288,15 +288,15 @@ public class AutoBone {
 			Float waistOffset = offsets.get(BoneType.WAIST);
 			if (chestOffset != null && hipOffset != null && waistOffset != null) {
 				configConsumer
-					.accept(SkeletonConfigValue.TORSO, chestOffset + hipOffset + waistOffset);
+					.accept(SkeletonConfigOffsets.TORSO, chestOffset + hipOffset + waistOffset);
 			}
 
 			if (chestOffset != null) {
-				configConsumer.accept(SkeletonConfigValue.CHEST, chestOffset);
+				configConsumer.accept(SkeletonConfigOffsets.CHEST, chestOffset);
 			}
 
 			if (hipOffset != null) {
-				configConsumer.accept(SkeletonConfigValue.WAIST, hipOffset);
+				configConsumer.accept(SkeletonConfigOffsets.WAIST, hipOffset);
 			}
 
 			Float hipWidthOffset = offsets.get(BoneType.LEFT_HIP);
@@ -305,7 +305,7 @@ public class AutoBone {
 			}
 			if (hipWidthOffset != null) {
 				configConsumer
-					.accept(SkeletonConfigValue.HIPS_WIDTH, hipWidthOffset * 2f);
+					.accept(SkeletonConfigOffsets.HIPS_WIDTH, hipWidthOffset * 2f);
 			}
 
 			Float upperLegOffset = offsets.get(BoneType.LEFT_UPPER_LEG);
@@ -318,11 +318,11 @@ public class AutoBone {
 			}
 			if (upperLegOffset != null && lowerLegOffset != null) {
 				configConsumer
-					.accept(SkeletonConfigValue.LEGS_LENGTH, upperLegOffset + lowerLegOffset);
+					.accept(SkeletonConfigOffsets.LEGS_LENGTH, upperLegOffset + lowerLegOffset);
 			}
 
 			if (lowerLegOffset != null) {
-				configConsumer.accept(SkeletonConfigValue.KNEE_HEIGHT, lowerLegOffset);
+				configConsumer.accept(SkeletonConfigOffsets.KNEE_HEIGHT, lowerLegOffset);
 			}
 			return true;
 		} catch (Exception e) {
@@ -330,12 +330,12 @@ public class AutoBone {
 		}
 	}
 
-	public boolean applyConfig(BiConsumer<SkeletonConfigValue, Float> configConsumer) {
+	public boolean applyConfig(BiConsumer<SkeletonConfigOffsets, Float> configConsumer) {
 		return applyConfig(configConsumer, offsets);
 	}
 
 	public boolean applyConfig(
-		Map<SkeletonConfigValue, Float> skeletonConfig,
+		Map<SkeletonConfigOffsets, Float> skeletonConfig,
 		Map<BoneType, Float> offsets
 	) {
 		if (skeletonConfig == null) {
@@ -345,7 +345,7 @@ public class AutoBone {
 		return applyConfig(skeletonConfig::put, offsets);
 	}
 
-	public boolean applyConfig(Map<SkeletonConfigValue, Float> skeletonConfig) {
+	public boolean applyConfig(Map<SkeletonConfigOffsets, Float> skeletonConfig) {
 		return applyConfig(skeletonConfig, offsets);
 	}
 
@@ -354,7 +354,7 @@ public class AutoBone {
 			return false;
 		}
 
-		return applyConfig(skeletonConfig::setConfig, offsets);
+		return applyConfig(skeletonConfig::setOffset, offsets);
 	}
 
 	public boolean applyConfig(SkeletonConfig skeletonConfig) {
@@ -405,10 +405,10 @@ public class AutoBone {
 	}
 
 	public float sumSelectConfigs(
-		List<SkeletonConfigValue> selection,
+		List<SkeletonConfigOffsets> selection,
 		SkeletonConfig config
 	) {
-		return sumSelectConfigs(selection, config::getConfig);
+		return sumSelectConfigs(selection, config::getOffset);
 	}
 
 	public float getLengthSum(Map<BoneType, Float> configs) {
@@ -877,13 +877,13 @@ public class AutoBone {
 		public final int epoch;
 		public final int totalEpochs;
 		public final float epochError;
-		public final EnumMap<SkeletonConfigValue, Float> configValues;
+		public final EnumMap<SkeletonConfigOffsets, Float> configValues;
 
 		public Epoch(
 			int epoch,
 			int totalEpochs,
 			float epochError,
-			EnumMap<SkeletonConfigValue, Float> configValues
+			EnumMap<SkeletonConfigOffsets, Float> configValues
 		) {
 			this.epoch = epoch;
 			this.totalEpochs = totalEpochs;
@@ -901,12 +901,12 @@ public class AutoBone {
 
 		public final float finalHeight;
 		public final float targetHeight;
-		public final EnumMap<SkeletonConfigValue, Float> configValues;
+		public final EnumMap<SkeletonConfigOffsets, Float> configValues;
 
 		public AutoBoneResults(
 			float finalHeight,
 			float targetHeight,
-			EnumMap<SkeletonConfigValue, Float> configValues
+			EnumMap<SkeletonConfigOffsets, Float> configValues
 		) {
 			this.finalHeight = finalHeight;
 			this.targetHeight = targetHeight;

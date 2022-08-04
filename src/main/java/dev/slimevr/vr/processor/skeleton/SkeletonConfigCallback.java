@@ -5,9 +5,11 @@ import com.jme3.math.Vector3f;
 
 public interface SkeletonConfigCallback {
 
-	void updateConfigState(SkeletonConfigValue config, float newValue);
+	void updateOffsetsState(SkeletonConfigOffsets offset, float newValue);
 
-	void updateToggleState(SkeletonConfigToggle configToggle, boolean newValue);
+	void updateTogglesState(SkeletonConfigToggles toggle, boolean newValue);
+
+	void updateValuesState(SkeletonConfigValues value, float newValue);
 
 	void updateNodeOffset(BoneType nodeOffset, Vector3f offset);
 }
