@@ -1,7 +1,16 @@
 package dev.slimevr.config;
 
 
+import io.eiren.yaml.YamlNode;
+
+import java.util.HashMap;
+
+
 public class AutoboneConfig {
+
+	public static String CONFIG_ROOT = "autobone";
+
+	private YamlNode rootNode;
 
 	public int minDataDistance = 1;
 	public int maxDataDistance = 1;
@@ -18,7 +27,7 @@ public class AutoboneConfig {
 	public boolean calcInitError = false;
 	public float targetHeight = -1;
 
-	public int sampleCount = 100;
+	public int sampleCount = 1000;
 
 	public long sampleRateMs = 20;
 
@@ -31,71 +40,60 @@ public class AutoboneConfig {
 	}
 
 	public void loadConfig() {
-		this.saveRecordings = this.configManager
-			.getConfig()
-			.getBoolean("autobone.saveRecordings", this.saveRecordings);
+		this.rootNode = this.configManager.getConfig().getNode(CONFIG_ROOT);
+		if (rootNode == null)
+			this.rootNode = new YamlNode(new HashMap<>());
+		configManager.getConfig().setProperty(CONFIG_ROOT, this.rootNode);
 
-		this.sampleCount = this.configManager
-			.getConfig()
-			.getInt("autobone.sampleCount", this.sampleCount);
+		this.saveRecordings = this.rootNode
+			.getBoolean("saveRecordings", this.saveRecordings);
 
-		this.sampleRateMs = this.configManager
-			.getConfig()
-			.getLong("autobone.sampleRateMs", this.sampleRateMs);
+		this.sampleCount = this.rootNode
+			.getInt("sampleCount", this.sampleCount);
 
-		this.minDataDistance = this.configManager
-			.getConfig()
-			.getInt("autobone.minimumDataDistance", this.minDataDistance);
+		this.sampleRateMs = this.rootNode
+			.getLong("sampleRateMs", this.sampleRateMs);
 
-		this.maxDataDistance = this.configManager
-			.getConfig()
-			.getInt("autobone.maximumDataDistance", this.maxDataDistance);
+		this.minDataDistance = this.rootNode
+			.getInt("minimumDataDistance", this.minDataDistance);
 
-		this.numEpochs = this.configManager
-			.getConfig()
-			.getInt("autobone.epochCount", this.numEpochs);
+		this.maxDataDistance = this.rootNode
+			.getInt("maximumDataDistance", this.maxDataDistance);
 
-		this.initialAdjustRate = this.configManager
-			.getConfig()
-			.getFloat("autobone.adjustRate", this.initialAdjustRate);
-		this.adjustRateMultiplier = this.configManager
-			.getConfig()
-			.getFloat("autobone.adjustRateMultiplier", this.adjustRateMultiplier);
+		this.numEpochs = this.rootNode
+			.getInt("epochCount", this.numEpochs);
 
-		this.slideErrorFactor = this.configManager
-			.getConfig()
-			.getFloat("autobone.slideErrorFactor", this.slideErrorFactor);
+		this.initialAdjustRate = this.rootNode
+			.getFloat("adjustRate", this.initialAdjustRate);
 
-		this.offsetSlideErrorFactor = this.configManager
-			.getConfig()
-			.getFloat("autobone.offsetSlideErrorFactor", this.offsetSlideErrorFactor);
+		this.adjustRateMultiplier = this.rootNode
+			.getFloat("adjustRateMultiplier", this.adjustRateMultiplier);
 
-		this.footHeightOffsetErrorFactor = this.configManager
-			.getConfig()
-			.getFloat("autobone.offsetErrorFactor", this.footHeightOffsetErrorFactor);
+		this.slideErrorFactor = this.rootNode
+			.getFloat("slideErrorFactor", this.slideErrorFactor);
 
-		this.bodyProportionErrorFactor = this.configManager
-			.getConfig()
-			.getFloat("autobone.proportionErrorFactor", this.bodyProportionErrorFactor);
+		this.offsetSlideErrorFactor = this.rootNode
+			.getFloat("offsetSlideErrorFactor", this.offsetSlideErrorFactor);
 
-		this.heightErrorFactor = this.configManager
-			.getConfig()
-			.getFloat("autobone.heightErrorFactor", this.heightErrorFactor);
+		this.footHeightOffsetErrorFactor = this.rootNode
+			.getFloat("offsetErrorFactor", this.footHeightOffsetErrorFactor);
 
-		this.positionErrorFactor = this.configManager
-			.getConfig()
-			.getFloat("autobone.positionErrorFactor", this.positionErrorFactor);
+		this.bodyProportionErrorFactor = this.rootNode
+			.getFloat("proportionErrorFactor", this.bodyProportionErrorFactor);
 
-		this.positionOffsetErrorFactor = this.configManager
-			.getConfig()
-			.getFloat("autobone.positionOffsetErrorFactor", this.positionOffsetErrorFactor);
+		this.heightErrorFactor = this.rootNode
+			.getFloat("heightErrorFactor", this.heightErrorFactor);
 
-		this.calcInitError = this.configManager
-			.getConfig()
-			.getBoolean("autobone.calculateInitialError", true);
+		this.positionErrorFactor = this.rootNode
+			.getFloat("positionErrorFactor", this.positionErrorFactor);
 
-		this.targetHeight = this.configManager
-			.getConfig()
-			.getFloat("autobone.manualTargetHeight", -1f);
+		this.positionOffsetErrorFactor = this.rootNode
+			.getFloat("positionOffsetErrorFactor", this.positionOffsetErrorFactor);
+
+		this.calcInitError = this.rootNode
+			.getBoolean("calculateInitialError", true);
+
+		this.targetHeight = this.rootNode
+			.getFloat("manualTargetHeight", -1f);
 	}
 }

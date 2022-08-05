@@ -4,13 +4,16 @@ import dev.slimevr.Main;
 import dev.slimevr.vr.trackers.IMUTracker;
 import dev.slimevr.vr.trackers.Tracker;
 import dev.slimevr.vr.trackers.TrackerFilters;
+import io.eiren.yaml.YamlNode;
+
+import java.util.HashMap;
 
 
 public class FilteringConfig {
 
 	private final ConfigManager configManager;
 
-	public static String CONFIG_PREFIX = "filters.";
+	public static String CONFIG_ROOT = "filters";
 	public static float DEFAULT_INTENSITY = 0.3f;
 	public static int DEFAULT_TICK = 1;
 
@@ -18,21 +21,25 @@ public class FilteringConfig {
 	private float amount;
 	private int ticks;
 
+	private YamlNode rootNode;
+
+
 	public FilteringConfig(ConfigManager configManager) {
 		this.configManager = configManager;
-
 	}
 
 	public void loadConfig() {
-		this.type = this.configManager
-			.getConfig()
-			.getString(CONFIG_PREFIX + "type", TrackerFilters.NONE.name());
-		this.amount = this.configManager
-			.getConfig()
-			.getFloat(CONFIG_PREFIX + "amount", DEFAULT_INTENSITY);
-		this.ticks = this.configManager
-			.getConfig()
-			.getInt(CONFIG_PREFIX + "tickCount", DEFAULT_TICK);
+		this.rootNode = this.configManager.getConfig().getNode(CONFIG_ROOT);
+		if (rootNode == null)
+			this.rootNode = new YamlNode(new HashMap<>());
+		configManager.getConfig().setProperty(CONFIG_ROOT, this.rootNode);
+
+		this.type = this.rootNode
+			.getString("type", TrackerFilters.NONE.name());
+		this.amount = this.rootNode
+			.getFloat("amount", DEFAULT_INTENSITY);
+		this.ticks = this.rootNode
+			.getInt("tickCount", DEFAULT_TICK);
 	}
 
 	public void updateTrackersFilters(TrackerFilters filter, float amount, int ticks) {
@@ -52,7 +59,7 @@ public class FilteringConfig {
 
 	public void setTicks(int ticks) {
 		this.ticks = ticks;
-		this.configManager.getConfig().setProperty(CONFIG_PREFIX + "tickCount", ticks);
+		this.rootNode.setProperty("tickCount", ticks);
 	}
 
 	public int getTicks() {
@@ -61,7 +68,7 @@ public class FilteringConfig {
 
 	public void setAmount(float amount) {
 		this.amount = amount;
-		this.configManager.getConfig().setProperty(CONFIG_PREFIX + "amount", amount);
+		this.rootNode.setProperty("amount", amount);
 	}
 
 	public float getAmount() {
@@ -70,7 +77,7 @@ public class FilteringConfig {
 
 	public void setType(String type) {
 		this.type = type;
-		this.configManager.getConfig().setProperty(CONFIG_PREFIX + "type", type);
+		this.rootNode.setProperty("type", type);
 	}
 
 	public String getType() {
