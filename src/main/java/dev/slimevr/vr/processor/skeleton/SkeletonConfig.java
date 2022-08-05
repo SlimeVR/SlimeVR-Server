@@ -1,8 +1,9 @@
 package dev.slimevr.vr.processor.skeleton;
 
 import com.jme3.math.Vector3f;
+import dev.slimevr.Main;
+import dev.slimevr.config.ConfigManager;
 import io.eiren.util.logging.LogManager;
-import io.eiren.yaml.YamlFile;
 
 import java.util.EnumMap;
 import java.util.Map;
@@ -548,9 +549,10 @@ public class SkeletonConfig {
 	}
 	// #endregion
 
-	public void loadFromConfig(YamlFile config) {
+	public void loadFromConfig(ConfigManager configManager) {
+
 		for (SkeletonConfigOffsets configValue : SkeletonConfigOffsets.values) {
-			Float val = castFloat(config.getProperty(configValue.configKey));
+			Float val = castFloat(configManager.getConfig().getProperty(configValue.configKey));
 			if (val != null) {
 				// Do not recalculate the offsets, these are done in bulk at the
 				// end
@@ -559,14 +561,14 @@ public class SkeletonConfig {
 		}
 
 		for (SkeletonConfigToggles configValue : SkeletonConfigToggles.values) {
-			Boolean val = castBoolean(config.getProperty(configValue.configKey));
+			Boolean val = castBoolean(configManager.getConfig().getProperty(configValue.configKey));
 			if (val != null) {
 				setToggle(configValue, val);
 			}
 		}
 
 		for (SkeletonConfigValues configValue : SkeletonConfigValues.values) {
-			Float val = castFloat(config.getProperty(configValue.configKey));
+			Float val = castFloat(configManager.getConfig().getProperty(configValue.configKey));
 			if (val != null) {
 				setValue(configValue, val);
 			}
@@ -578,19 +580,20 @@ public class SkeletonConfig {
 		}
 	}
 
-	public void saveToConfig(YamlFile config) {
+	public void save() {
+		ConfigManager cm = Main.vrServer.getConfigManager();
 		// Write all possible values, this keeps configs consistent even if
 		// defaults were changed
 		for (SkeletonConfigOffsets value : SkeletonConfigOffsets.values) {
-			config.setProperty(value.configKey, getOffset(value));
+			cm.getConfig().setProperty(value.configKey, getOffset(value));
 		}
 
 		for (SkeletonConfigToggles value : SkeletonConfigToggles.values) {
-			config.setProperty(value.configKey, getToggle(value));
+			cm.getConfig().setProperty(value.configKey, getToggle(value));
 		}
 
 		for (SkeletonConfigValues value : SkeletonConfigValues.values) {
-			config.setProperty(value.configKey, getValue(value));
+			cm.getConfig().setProperty(value.configKey, getValue(value));
 		}
 	}
 

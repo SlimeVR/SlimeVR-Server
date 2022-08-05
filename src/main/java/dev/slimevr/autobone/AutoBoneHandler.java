@@ -88,11 +88,16 @@ public class AutoBoneHandler {
 
 	private AutoBoneResults processFrames(PoseFrames frames) throws AutoBoneException {
 		return autoBone
-			.processFrames(frames, autoBone.calcInitError, autoBone.targetHeight, (epoch) -> {
-				listeners.forEach(listener -> {
-					listener.onAutoBoneEpoch(epoch);
-				});
-			});
+			.processFrames(
+				frames,
+				autoBone.getConfig().calcInitError,
+				autoBone.getConfig().targetHeight,
+				(epoch) -> {
+					listeners.forEach(listener -> {
+						listener.onAutoBoneEpoch(epoch);
+					});
+				}
+			);
 	}
 
 	public boolean startProcessByType(AutoBoneProcessType processType) {
@@ -143,8 +148,8 @@ public class AutoBoneHandler {
 				announceProcessStatus(AutoBoneProcessType.RECORD, "Recording...");
 
 				// 1000 samples at 20 ms per sample is 20 seconds
-				int sampleCount = server.config.getInt("autobone.sampleCount", 1000);
-				long sampleRate = server.config.getLong("autobone.sampleRateMs", 20L);
+				int sampleCount = this.autoBone.getConfig().sampleCount;
+				long sampleRate = this.autoBone.getConfig().sampleRateMs;
 				Future<PoseFrames> framesFuture = poseRecorder
 					.startFrameRecording(sampleCount, sampleRate, progress -> {
 						announceProcessStatus(
@@ -156,7 +161,7 @@ public class AutoBoneHandler {
 				PoseFrames frames = framesFuture.get();
 				LogManager.info("[AutoBone] Done recording!");
 
-				if (server.config.getBoolean("autobone.saveRecordings", false)) {
+				if (this.autoBone.getConfig().saveRecordings) {
 					announceProcessStatus(AutoBoneProcessType.RECORD, "Saving recording...");
 					autoBone.saveRecording(frames);
 				}
@@ -428,4 +433,5 @@ public class AutoBoneHandler {
 		announceProcessStatus(AutoBoneProcessType.APPLY, "Adjusted values applied!", true, true);
 		// TODO Update GUI values after applying? Is that needed here?
 	}
+
 }

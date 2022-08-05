@@ -2,6 +2,7 @@ package dev.slimevr.vr.trackers;
 
 import com.jme3.math.Quaternion;
 import com.jme3.math.Vector3f;
+import dev.slimevr.config.TrackerConfig;
 import dev.slimevr.vr.Device;
 
 

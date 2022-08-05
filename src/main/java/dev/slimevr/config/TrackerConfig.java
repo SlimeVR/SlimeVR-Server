@@ -1,6 +1,8 @@
-package dev.slimevr.vr.trackers;
+package dev.slimevr.config;
 
 import com.jme3.math.Quaternion;
+import dev.slimevr.vr.trackers.Tracker;
+import dev.slimevr.vr.trackers.TrackerMountingRotation;
 import io.eiren.yaml.YamlNode;
 
 import java.util.Objects;

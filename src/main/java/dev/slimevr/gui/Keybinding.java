@@ -3,6 +3,7 @@ package dev.slimevr.gui;
 import com.melloware.jintellitype.HotkeyListener;
 import com.melloware.jintellitype.JIntellitype;
 import dev.slimevr.VRServer;
+import dev.slimevr.config.KeybindingsConfig;
 import io.eiren.util.OperatingSystem;
 import io.eiren.util.ann.AWTThread;
 import io.eiren.util.logging.LogManager;
@@ -13,9 +14,14 @@ public class Keybinding implements HotkeyListener {
 	private static final int QUICK_RESET = 2;
 	public final VRServer server;
 
+
+	public final KeybindingsConfig config;
+
 	@AWTThread
 	public Keybinding(VRServer server) {
 		this.server = server;
+
+		this.config = server.getConfigManager().getKeybindingsConfig();
 
 		if (OperatingSystem.getCurrentPlatform() != OperatingSystem.WINDOWS) {
 			LogManager
@@ -29,19 +35,11 @@ public class Keybinding implements HotkeyListener {
 			if (JIntellitype.getInstance() instanceof JIntellitype) {
 				JIntellitype.getInstance().addHotKeyListener(this);
 
-				String resetBinding = this.server.config.getString("keybindings.reset");
-				if (resetBinding == null) {
-					resetBinding = "CTRL+ALT+SHIFT+Y";
-					this.server.config.setProperty("keybindings.reset", resetBinding);
-				}
+				String resetBinding = this.config.getResetBinding();
 				JIntellitype.getInstance().registerHotKey(RESET, resetBinding);
 				LogManager.info("[Keybinding] Bound reset to " + resetBinding);
 
-				String quickResetBinding = this.server.config.getString("keybindings.quickReset");
-				if (quickResetBinding == null) {
-					quickResetBinding = "CTRL+ALT+SHIFT+U";
-					this.server.config.setProperty("keybindings.quickReset", quickResetBinding);
-				}
+				String quickResetBinding = this.config.getQuickResetBinding();
 				JIntellitype.getInstance().registerHotKey(QUICK_RESET, quickResetBinding);
 				LogManager.info("[Keybinding] Bound quick reset to " + quickResetBinding);
 			}

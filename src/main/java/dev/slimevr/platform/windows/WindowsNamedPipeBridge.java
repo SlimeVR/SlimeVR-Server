@@ -6,11 +6,13 @@ import com.sun.jna.platform.win32.WinBase;
 import com.sun.jna.platform.win32.WinError;
 import com.sun.jna.ptr.IntByReference;
 import dev.slimevr.Main;
+import dev.slimevr.VRServer;
 import dev.slimevr.bridge.BridgeThread;
 import dev.slimevr.bridge.PipeState;
 import dev.slimevr.bridge.ProtobufBridge;
 import dev.slimevr.bridge.ProtobufMessages.ProtobufMessage;
 import dev.slimevr.bridge.ProtobufMessages.TrackerAdded;
+import dev.slimevr.config.BridgeConfig;
 import dev.slimevr.util.ann.VRServerThread;
 import dev.slimevr.vr.Device;
 import dev.slimevr.vr.trackers.*;
@@ -31,7 +33,10 @@ public class WindowsNamedPipeBridge extends ProtobufBridge<VRTracker> implements
 	private final List<? extends ShareableTracker> shareableTrackers;
 	protected WindowsPipe pipe;
 
+	private final BridgeConfig config;
+
 	public WindowsNamedPipeBridge(
+		VRServer server,
 		HMDTracker hmd,
 		String bridgeSettingsKey,
 		String bridgeName,
@@ -43,6 +48,7 @@ public class WindowsNamedPipeBridge extends ProtobufBridge<VRTracker> implements
 		this.bridgeSettingsKey = bridgeSettingsKey;
 		this.runnerThread = new Thread(this, "Named pipe thread");
 		this.shareableTrackers = shareableTrackers;
+		this.config = server.getConfigManager().getBridgeConfig();
 	}
 
 	@Override
@@ -51,22 +57,14 @@ public class WindowsNamedPipeBridge extends ProtobufBridge<VRTracker> implements
 		for (TrackerRole role : defaultRoles) {
 			changeShareSettings(
 				role,
-				Main.vrServer.config
-					.getBoolean(
-						"bridge." + bridgeSettingsKey + ".trackers." + role.name().toLowerCase(),
-						true
-					)
+				this.config.getBridgeTrackerRole(bridgeSettingsKey, role, true)
 			);
 		}
 		for (ShareableTracker tr : shareableTrackers) {
 			TrackerRole role = tr.getTrackerRole();
 			changeShareSettings(
 				role,
-				Main.vrServer.config
-					.getBoolean(
-						"bridge." + bridgeSettingsKey + ".trackers." + role.name().toLowerCase(),
-						false
-					)
+				this.config.getBridgeTrackerRole(bridgeSettingsKey, role, false)
 			);
 		}
 		runnerThread.start();
@@ -93,12 +91,8 @@ public class WindowsNamedPipeBridge extends ProtobufBridge<VRTracker> implements
 				} else {
 					removeSharedTracker(tr);
 				}
-				Main.vrServer.config
-					.setProperty(
-						"bridge." + bridgeSettingsKey + ".trackers." + role.name().toLowerCase(),
-						share
-					);
-				Main.vrServer.saveConfig();
+				config.setBridgeTrackerRole(bridgeSettingsKey, role, share);
+				Main.vrServer.getConfigManager().saveConfig();
 			}
 		}
 	}

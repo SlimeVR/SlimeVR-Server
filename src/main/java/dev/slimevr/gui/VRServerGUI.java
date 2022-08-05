@@ -2,6 +2,7 @@ package dev.slimevr.gui;
 
 import dev.slimevr.Main;
 import dev.slimevr.VRServer;
+import dev.slimevr.config.WindowConfig;
 import dev.slimevr.gui.swing.ButtonTimer;
 import dev.slimevr.gui.swing.EJBagNoStretch;
 import dev.slimevr.gui.swing.EJBox;
@@ -41,12 +42,15 @@ public class VRServerGUI extends JFrame {
 	private final SkeletonList skeletonList;
 	private final EJBox pane;
 	private JButton resetButton;
-	private float zoom = 1.5f;
-	private float initZoom = zoom;
+
+	private WindowConfig config;
 
 	@AWTThread
 	public VRServerGUI(VRServer server) {
 		super(TITLE);
+
+		this.config = server.getConfigManager().getWindowConfig();
+
 		try {
 			UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
 		} catch (Exception e) {
@@ -72,9 +76,7 @@ public class VRServerGUI extends JFrame {
 
 		this.server = server;
 
-		this.zoom = server.config.getFloat("zoom", zoom);
-		this.initZoom = zoom;
-		setDefaultFontSize(zoom);
+		setDefaultFontSize(config.getZoom());
 		// All components should be constructed to the current zoom level by
 		// default
 
@@ -98,15 +100,23 @@ public class VRServerGUI extends JFrame {
 		Rectangle screenBounds = gc.getBounds();
 		setMinimumSize(new Dimension(100, 100));
 		setSize(
-			Math.min(server.config.getInt("window.width", 800), screenBounds.width),
-			Math.min(server.config.getInt("window.height", 800), screenBounds.height)
+			Math.min(config.getWidth(), screenBounds.width),
+			Math.min(config.getHeight(), screenBounds.height)
 		);
-		setLocation(
-			server.config
-				.getInt("window.posx", screenBounds.x + (screenBounds.width - getSize().width) / 2),
-			screenBounds.y
-				+ server.config.getInt("window.posy", (screenBounds.height - getSize().height) / 2)
-		);
+
+		int posx = config.getPosx();
+		if (posx == -1) {
+			posx = screenBounds.x + (screenBounds.width - getSize().width) / 2;
+			config.setPosx(posx);
+		}
+
+		int posy = config.getPosy();
+		if (posy == -1) {
+			posy = (screenBounds.height - getSize().height) / 2;
+			config.setPosy(posy);
+		}
+
+		setLocation(posx, posy);
 
 		// Resize and close listeners to save position and size betwen launcher
 		// starts
@@ -154,15 +164,11 @@ public class VRServerGUI extends JFrame {
 
 	protected void saveFrameInfo() {
 		Rectangle b = getBounds();
-		server.config.setProperty("window.width", b.width);
-		server.config.setProperty("window.height", b.height);
-		server.config.setProperty("window.posx", b.x);
-		server.config.setProperty("window.posy", b.y);
-		server.saveConfig();
-	}
-
-	public float getZoom() {
-		return this.zoom;
+		config.setWidth(b.width);
+		config.setHeight(b.height);
+		config.setPosx(b.x);
+		config.setPosy(b.y);
+		server.getConfigManager().saveConfig();
 	}
 
 	public void refresh() {
@@ -225,17 +231,25 @@ public class VRServerGUI extends JFrame {
 					}
 				});
 				add(Box.createHorizontalGlue());
-				add(new JButton("GUI Zoom (x" + StringUtils.prettyNumber(zoom, 2) + ")") {
-					{
-						addMouseListener(new MouseInputAdapter() {
-							@Override
-							public void mouseClicked(MouseEvent e) {
-								guiZoom();
-								setText("GUI Zoom (x" + StringUtils.prettyNumber(zoom, 2) + ")");
-							}
-						});
+				add(
+					new JButton(
+						"GUI Zoom (x" + StringUtils.prettyNumber(config.getZoom(), 2) + ")"
+					) {
+						{
+							addMouseListener(new MouseInputAdapter() {
+								@Override
+								public void mouseClicked(MouseEvent e) {
+									guiZoom();
+									setText(
+										"GUI Zoom (x"
+											+ StringUtils.prettyNumber(config.getZoom(), 2)
+											+ ")"
+									);
+								}
+							});
+						}
 					}
-				});
+				);
 				add(Box.createHorizontalStrut(10));
 				add(new JButton("WiFi") {
 					{
@@ -462,21 +476,20 @@ public class VRServerGUI extends JFrame {
 	// in
 	// the future too
 	private void guiZoom() {
-		if (zoom <= 1.0f) {
-			zoom = 1.5f;
-		} else if (zoom <= 1.5f) {
-			zoom = 1.75f;
-		} else if (zoom <= 1.75f) {
-			zoom = 2.0f;
-		} else if (zoom <= 2.0f) {
-			zoom = 2.5f;
+		if (config.getZoom() <= 1.0f) {
+			config.setZoom(1.5f);
+		} else if (config.getZoom() <= 1.5f) {
+			config.setZoom(1.75f);
+		} else if (config.getZoom() <= 1.75f) {
+			config.setZoom(2f);
+		} else if (config.getZoom() <= 2.0f) {
+			config.setZoom(2.5f);
 		} else {
-			zoom = 1.0f;
+			config.setZoom(1f);
 		}
-		processNewZoom(zoom / initZoom, pane);
+		processNewZoom(config.getZoom() / config.getInitialZoom(), pane);
 		refresh();
-		server.config.setProperty("zoom", zoom);
-		server.saveConfig();
+		server.getConfigManager().saveConfig();
 	}
 
 	@AWTThread
