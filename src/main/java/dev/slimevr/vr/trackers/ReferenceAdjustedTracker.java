@@ -1,5 +1,6 @@
 package dev.slimevr.vr.trackers;
 
+import com.jme3.math.FastMath;
 import com.jme3.math.Quaternion;
 import com.jme3.math.Vector3f;
 import dev.slimevr.config.TrackerConfig;
@@ -9,9 +10,16 @@ import dev.slimevr.vr.Device;
 public class ReferenceAdjustedTracker<E extends Tracker> implements Tracker {
 
 	public final E tracker;
-	public final Quaternion yawFix = new Quaternion();
+
+	// Two vectors for mounting rotation correction
+	private static final Vector3f upVector = new Vector3f(0f, 1f, 0f);
+	public final Vector3f rotVector = new Vector3f(upVector);
+
 	public final Quaternion gyroFix = new Quaternion();
 	public final Quaternion attachmentFix = new Quaternion();
+	public final Quaternion mountRotFix = new Quaternion();
+	public final Quaternion yawFix = new Quaternion();
+
 	protected float confidenceMultiplier = 1.0f;
 
 	public ReferenceAdjustedTracker(E tracker) {
@@ -34,8 +42,8 @@ public class ReferenceAdjustedTracker<E extends Tracker> implements Tracker {
 	}
 
 	/**
-	 * Reset the tracker so that it's current rotation is counted as (0, <HMD
-	 * Yaw>, 0). This allows tracker to be strapped to body at any pitch and
+	 * Reset the tracker so that its current rotation is counted as (0, <HMD
+	 * Yaw>, 0). This allows the tracker to be strapped to body at any pitch and
 	 * roll.
 	 * <p>
 	 * Performs {@link #resetYaw(Quaternion)} for yaw drift correction.
@@ -43,12 +51,12 @@ public class ReferenceAdjustedTracker<E extends Tracker> implements Tracker {
 	@Override
 	public void resetFull(Quaternion reference) {
 		tracker.resetFull(reference);
-		fixGyroscope();
 
 		Quaternion sensorRotation = new Quaternion();
 		tracker.getRotation(sensorRotation);
-		gyroFix.mult(sensorRotation, sensorRotation);
-		attachmentFix.set(sensorRotation).inverseLocal();
+
+		fixGyroscope(sensorRotation.clone());
+		fixAttachment(sensorRotation.clone());
 
 		fixYaw(reference);
 	}
@@ -65,39 +73,77 @@ public class ReferenceAdjustedTracker<E extends Tracker> implements Tracker {
 		fixYaw(reference);
 	}
 
+	private boolean isApproxZero(float value) {
+		return value < FastMath.ZERO_TOLERANCE && value > -FastMath.ZERO_TOLERANCE;
+	}
+
+	private boolean isApproxEqual(float valueOne, float valueTwo) {
+		return isApproxZero(valueTwo - valueOne);
+	}
+
+	private void fixGyroscope(Quaternion sensorRotation) {
+		sensorRotation.fromAngles(0, sensorRotation.getYaw(), 0);
+		gyroFix.set(sensorRotation).inverseLocal();
+	}
+
+	private void fixAttachment(Quaternion sensorRotation) {
+		gyroFix.mult(sensorRotation, sensorRotation);
+		attachmentFix.set(sensorRotation).inverseLocal();
+	}
+
+	@Override
+	public void resetMountingRotation(boolean reverseYaw) {
+		tracker.resetMountingRotation(reverseYaw);
+
+		// Get the current calibrated rotation
+		Quaternion buffer = new Quaternion();
+		tracker.getRotation(buffer);
+		gyroFix.mult(buffer, buffer);
+		buffer.multLocal(attachmentFix);
+
+		// Reset the vector for the rotation
+		rotVector.set(upVector);
+		// Rotate the vector by the quat, then flatten and normalize the vector
+		buffer.multLocal(rotVector).setY(0f).normalizeLocal();
+
+		// Calculate the yaw angle using tan
+		// Just use an angle offset of zero for unsolvable circumstances
+		float yawAngle = isApproxZero(rotVector.x) && isApproxZero(rotVector.z)
+			? 0f
+			: FastMath.atan2(rotVector.x, rotVector.z);
+
+		// Make an adjustment quaternion from the angle
+		buffer.fromAngles(0f, reverseYaw ? yawAngle : yawAngle - FastMath.PI, 0f);
+
+		Quaternion lastRotAdjust = new Quaternion(mountRotFix);
+		mountRotFix.set(buffer);
+
+		// Get the difference from the last adjustment
+		buffer.multLocal(lastRotAdjust.inverseLocal());
+		// Apply the yaw rotation difference to the yaw fix quaternion
+		yawFix.multLocal(buffer.inverseLocal());
+	}
+
 	private void fixYaw(Quaternion reference) {
 		// Use only yaw HMD rotation
-		Quaternion targetTrackerRotation = new Quaternion(reference);
-		float[] angles = new float[3];
-		targetTrackerRotation.toAngles(angles);
-		targetTrackerRotation.fromAngles(0, angles[1], 0);
+		Quaternion targetRotation = new Quaternion(reference);
+		targetRotation.fromAngles(0, targetRotation.getYaw(), 0);
 
 		Quaternion sensorRotation = new Quaternion();
 		tracker.getRotation(sensorRotation);
 		gyroFix.mult(sensorRotation, sensorRotation);
 		sensorRotation.multLocal(attachmentFix);
+		sensorRotation.multLocal(mountRotFix);
 
-		sensorRotation.toAngles(angles);
-		sensorRotation.fromAngles(0, angles[1], 0);
+		sensorRotation.fromAngles(0, sensorRotation.getYaw(), 0);
 
-		yawFix.set(sensorRotation).inverseLocal().multLocal(targetTrackerRotation);
-	}
-
-	private void fixGyroscope() {
-		float[] angles = new float[3];
-
-		Quaternion sensorRotation = new Quaternion();
-		tracker.getRotation(sensorRotation);
-
-		sensorRotation.toAngles(angles);
-		sensorRotation.fromAngles(0, angles[1], 0);
-
-		gyroFix.set(sensorRotation).inverseLocal();
+		yawFix.set(sensorRotation).inverseLocal().multLocal(targetRotation);
 	}
 
 	protected void adjustInternal(Quaternion store) {
 		gyroFix.mult(store, store);
 		store.multLocal(attachmentFix);
+		store.multLocal(mountRotFix);
 		yawFix.mult(store, store);
 	}
 

@@ -206,6 +206,17 @@ public class VRServerGUI extends JFrame {
 					}
 				});
 				add(Box.createHorizontalStrut(10));
+				add(new JButton("Reset Mounting") {
+					{
+						addMouseListener(new MouseInputAdapter() {
+							@Override
+							public void mouseClicked(MouseEvent e) {
+								resetStepTwo();
+							}
+						});
+					}
+				});
+				add(Box.createHorizontalStrut(10));
 				add(new JButton("Fast Reset") {
 					{
 						addMouseListener(new MouseInputAdapter() {
@@ -547,6 +558,11 @@ public class VRServerGUI extends JFrame {
 	@AWTThread
 	private void reset() {
 		ButtonTimer.runTimer(resetButton, 3, "RESET", server::resetTrackers);
+	}
+
+	@AWTThread
+	private void resetStepTwo() {
+		server.humanPoseProcessor.getSkeleton().resetTrackersFullStepTwo();
 	}
 
 	@AWTThread

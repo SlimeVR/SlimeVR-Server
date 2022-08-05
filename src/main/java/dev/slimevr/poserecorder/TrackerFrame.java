@@ -147,6 +147,11 @@ public final class TrackerFrame implements Tracker {
 	}
 
 	@Override
+	public void resetMountingRotation(boolean reverseYaw) {
+		throw new UnsupportedOperationException("TrackerFrame does not implement calibration");
+	}
+
+	@Override
 	public void tick() {
 		throw new UnsupportedOperationException("TrackerFrame does not implement this method");
 	}

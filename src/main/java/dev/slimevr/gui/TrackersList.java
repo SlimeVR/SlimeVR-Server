@@ -141,7 +141,7 @@ public class TrackersList extends EJBoxNoStretch {
 		JLabel magAccuracy;
 		JLabel adj;
 		JLabel adjYaw;
-		JLabel adjGyro;
+		JLabel adjMounting;
 		JLabel correction;
 		JLabel signalStrength;
 		JLabel rotQuat;
@@ -337,9 +337,9 @@ public class TrackersList extends EJBoxNoStretch {
 					c(3, row, 2, GridBagConstraints.FIRST_LINE_START)
 				);
 				row++;
-				add(new JLabel("Gyro Fix:"), c(0, row, 2, GridBagConstraints.FIRST_LINE_START));
+				add(new JLabel("Mount Fix:"), c(0, row, 2, GridBagConstraints.FIRST_LINE_START));
 				add(
-					adjGyro = new JLabel("0 0 0 0"),
+					adjMounting = new JLabel("0 0 0 0"),
 					c(1, row, 2, GridBagConstraints.FIRST_LINE_START)
 				);
 				add(new JLabel("Temp:"), c(2, row, 2, GridBagConstraints.FIRST_LINE_START));
@@ -431,9 +431,9 @@ public class TrackersList extends EJBoxNoStretch {
 								+ StringUtils.prettyNumber(angles[2] * FastMath.RAD_TO_DEG, 0)
 						);
 				}
-				if (adjGyro != null) {
-					rat.gyroFix.toAngles(angles);
-					adjGyro
+				if (adjMounting != null) {
+					rat.mountRotFix.toAngles(angles);
+					adjMounting
 						.setText(
 							StringUtils.prettyNumber(angles[0] * FastMath.RAD_TO_DEG, 0)
 								+ " "

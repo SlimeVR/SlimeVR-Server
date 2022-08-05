@@ -38,6 +38,9 @@ public abstract class Skeleton {
 	public abstract void resetTrackersFull();
 
 	@VRServerThread
+	public abstract void resetTrackersFullStepTwo();
+
+	@VRServerThread
 	public abstract void resetTrackersYaw();
 
 	@VRServerThread

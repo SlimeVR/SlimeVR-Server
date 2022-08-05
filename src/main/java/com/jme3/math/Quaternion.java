@@ -279,7 +279,7 @@ public final class Quaternion implements Cloneable, java.io.Serializable {
 
 	/**
 	 * <code>toAngles</code> returns this quaternion converted to Euler rotation
-	 * angles (yaw,roll,pitch).<br/>
+	 * angles (pitch, yaw, roll).<br/>
 	 * Note that the result is not always 100% accurate due to the implications
 	 * of euler angles.
 	 * 
@@ -288,7 +288,7 @@ public final class Quaternion implements Cloneable, java.io.Serializable {
 	 * 
 	 * @param angles the float[] in which the angles should be stored, or null
 	 * if you want a new float[] to be created
-	 * @return the float[] in which the angles are stored.
+	 * @return the float[] in which the angles are stored (pitch, yaw, roll).
 	 */
 	public float[] toAngles(float[] angles) {
 		if (angles == null) {
