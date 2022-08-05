@@ -7,7 +7,7 @@ import java.util.HashMap;
 
 public class KeybindingsConfig {
 
-	public static String CONFIG_ROOT = "window";
+	public static String CONFIG_ROOT = "keybindings";
 
 	private YamlNode rootNode;
 	private final ConfigManager configManager;
