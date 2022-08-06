@@ -9,7 +9,7 @@ public enum SkeletonConfigToggles {
 	EXTENDED_SPINE_MODEL(1, "Extended spine model", "extendedSpine", true),
 	EXTENDED_PELVIS_MODEL(2, "Extended pelvis model", "extendedPelvis", true),
 	EXTENDED_KNEE_MODEL(3, "Extended knee model", "extendedKnee", true),
-	FORCE_ARMS_FROM_HMD(4, "Force arms from HMD", "forceArmsFromHMD", false),;
+	FORCE_ARMS_FROM_HMD(4, "Force arms from HMD", "forceArmsFromHMD", true),;
 
 	public static final SkeletonConfigToggles[] values = values();
 	public static final String CONFIG_PREFIX = "skeleton.toggles.";
