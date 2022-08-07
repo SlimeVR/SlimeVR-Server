@@ -49,10 +49,6 @@ public class VRServer extends Thread {
 	private final ConfigManager configManager;
 
 	public VRServer() {
-		this("vrconfig.yml");
-	}
-
-	public VRServer(String configPath) {
 		super("VRServer");
 
 		this.configManager = new ConfigManager();
