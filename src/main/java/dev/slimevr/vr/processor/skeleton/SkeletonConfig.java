@@ -50,35 +50,6 @@ public class SkeletonConfig {
 		}
 	}
 
-	// #region Cast utilities for config reading
-	private static Float castFloat(Object o) {
-		if (o == null) {
-			return null;
-		} else if (o instanceof Float) {
-			return (Float) o;
-		} else if (o instanceof Double) {
-			return ((Double) o).floatValue();
-		} else if (o instanceof Byte) {
-			return (float) (Byte) o;
-		} else if (o instanceof Integer) {
-			return (float) (Integer) o;
-		} else if (o instanceof Long) {
-			return (float) (Long) o;
-		} else {
-			return null;
-		}
-	}
-
-	private static Boolean castBoolean(Object o) {
-		if (o == null) {
-			return null;
-		} else if (o instanceof Boolean) {
-			return (Boolean) o;
-		} else {
-			return null;
-		}
-	}
-
 	private void callCallbackOnAll(boolean defaultOnly) {
 		if (callback == null) {
 			return;
