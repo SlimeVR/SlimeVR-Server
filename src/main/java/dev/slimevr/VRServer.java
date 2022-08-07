@@ -163,7 +163,7 @@ public class VRServer extends Thread {
 	public void trackerUpdated(Tracker tracker) {
 		queueTask(() -> {
 			humanPoseProcessor.trackerUpdated(tracker);
-			this.getConfigManager().getTrackersConfig().saveTrackerConfig(tracker);
+			this.getConfigManager().getVrConfig().saveTrackerConfig(tracker);
 			this.getConfigManager().saveConfig();
 		});
 	}
@@ -219,7 +219,7 @@ public class VRServer extends Thread {
 
 	@ThreadSecure
 	public void registerTracker(Tracker tracker) {
-		this.getConfigManager().getTrackersConfig().loadTrackerConfig(tracker);
+		this.getConfigManager().getVrConfig().loadTrackerConfig(tracker);
 		queueTask(() -> {
 			trackers.add(tracker);
 			trackerAdded(tracker);

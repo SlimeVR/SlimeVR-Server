@@ -49,7 +49,7 @@ public class VRServerGUI extends JFrame {
 	public VRServerGUI(VRServer server) {
 		super(TITLE);
 
-		this.config = server.getConfigManager().getWindowConfig();
+		this.config = server.getConfigManager().getVrConfig().getWindow();
 
 		try {
 			UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
@@ -487,7 +487,7 @@ public class VRServerGUI extends JFrame {
 		} else {
 			config.setZoom(1f);
 		}
-		processNewZoom(config.getZoom() / config.getInitialZoom(), pane);
+		processNewZoom(config.getZoom() / WindowConfig.INITAL_ZOOM, pane);
 		refresh();
 		server.getConfigManager().saveConfig();
 	}

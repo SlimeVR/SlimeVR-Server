@@ -128,10 +128,9 @@ public class AutoBone {
 	private final AutoboneConfig config;
 
 	public AutoBone(VRServer server) {
-		this.config = server.getConfigManager().getAutoboneConfig();
+		this.config = server.getConfigManager().getVrConfig().getAutobone();
 		this.server = server;
 		reloadConfigValues();
-
 	}
 
 	// Mean square error function

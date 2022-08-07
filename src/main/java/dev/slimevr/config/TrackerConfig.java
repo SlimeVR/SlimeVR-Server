@@ -1,99 +1,81 @@
 package dev.slimevr.config;
 
+import com.fasterxml.jackson.databind.JsonNode;
+import com.fasterxml.jackson.databind.node.JsonNodeFactory;
+import com.fasterxml.jackson.databind.node.ObjectNode;
 import com.jme3.math.Quaternion;
 import dev.slimevr.vr.trackers.Tracker;
-import dev.slimevr.vr.trackers.TrackerMountingRotation;
-import io.eiren.yaml.YamlNode;
-
-import java.util.Objects;
-
 
 public class TrackerConfig {
 
-	public final String trackerName;
-	public final String customName;
-	public String designation;
-	public boolean hide;
-	public Quaternion adjustment;
-	public String oldMountingRotation;
-	public Quaternion mountingRotation;
+    private String customName;
+    private String designation;
+    private boolean hide;
 
-	public TrackerConfig(Tracker tracker) {
-		this.trackerName = tracker.getName();
-		this.designation = tracker.getBodyPosition()
-			!= null ? tracker.getBodyPosition().designation : null;
-		this.customName = tracker.getCustomName();
-	}
+    private Quaternion adjustment;
 
-	public TrackerConfig(YamlNode node) {
-		this.trackerName = node.getString("name");
-		this.customName = node.getString("customName");
-		this.designation = node.getString("designation");
-		this.hide = node.getBoolean("hide", false);
-		this.oldMountingRotation = node.getString("rotation");
-		YamlNode mountingRotationNode = node.getNode("mountingRotation");
-		if (mountingRotationNode != null) {
-			mountingRotation = new Quaternion(
-				mountingRotationNode.getFloat("x", 0),
-				mountingRotationNode.getFloat("y", 0),
-				mountingRotationNode.getFloat("z", 0),
-				mountingRotationNode.getFloat("w", 1)
-			);
-		}
+    private Quaternion mountingRotation;
 
-		if (oldMountingRotation != null) {
-			TrackerMountingRotation rot = TrackerMountingRotation.fromName(oldMountingRotation);
-			mountingRotation = Objects
-				.requireNonNullElse(rot, TrackerMountingRotation.FRONT).quaternion;
-		}
+    public TrackerConfig(){}
 
-		YamlNode adjNode = node.getNode("adjustment");
-		if (adjNode != null) {
-			adjustment = new Quaternion(
-				adjNode.getFloat("x", 0),
-				adjNode.getFloat("y", 0),
-				adjNode.getFloat("z", 0),
-				adjNode.getFloat("w", 0)
-			);
-		}
-	}
+    public TrackerConfig(Tracker tracker) {
+        this.designation = tracker.getBodyPosition()
+                != null ? tracker.getBodyPosition().designation : null;
+        this.customName = tracker.getCustomName();
+    }
 
-	public void setDesignation(String newDesignation) {
-		this.designation = newDesignation;
-	}
+    static JsonNode toV2(JsonNode v1, JsonNodeFactory factory) {
+        ObjectNode node = factory.objectNode();
+        if (v1.has("customName"))
+            node.set("customName", v1.get("customName"));
+        if (v1.has("designation"))
+            node.set("designation", v1.get("designation"));
+        if (v1.has("hide"))
+            node.set("hide", v1.get("hide"));
+        if (v1.has("mountingRotation"))
+            node.set("mountingRotation", v1.get("mountingRotation"));
+        if (v1.has("adjustment"))
+            node.set("adjustment", v1.get("adjustment"));
+        return node;
+    }
 
-	public void saveConfig(YamlNode configNode) {
-		configNode.setProperty("name", trackerName);
-		if (customName != null) {
-			configNode.setProperty("customName", customName);
-		}
-		if (designation != null)
-			configNode.setProperty("designation", designation);
-		else
-			configNode.removeProperty("designation");
-		if (hide)
-			configNode.setProperty("hide", hide);
-		else
-			configNode.removeProperty("hide");
-		if (adjustment != null) {
-			configNode.setProperty("adj.x", adjustment.getX());
-			configNode.setProperty("adj.y", adjustment.getY());
-			configNode.setProperty("adj.z", adjustment.getZ());
-			configNode.setProperty("adj.w", adjustment.getW());
-		} else {
-			configNode.removeProperty("adj");
-		}
-		if (oldMountingRotation != null) {
-			configNode.removeProperty("rotation");
-		}
+    public String getCustomName() {
+        return customName;
+    }
 
-		if (mountingRotation != null) {
-			configNode.setProperty("mountingRotation.x", mountingRotation.getX());
-			configNode.setProperty("mountingRotation.y", mountingRotation.getY());
-			configNode.setProperty("mountingRotation.z", mountingRotation.getZ());
-			configNode.setProperty("mountingRotation.w", mountingRotation.getW());
-		} else {
-			configNode.removeProperty("mountingRotation");
-		}
-	}
+    public void setCustomName(String customName) {
+        this.customName = customName;
+    }
+
+    public String getDesignation() {
+        return designation;
+    }
+
+    public void setDesignation(String designation) {
+        this.designation = designation;
+    }
+
+    public boolean isHide() {
+        return hide;
+    }
+
+    public void setHide(boolean hide) {
+        this.hide = hide;
+    }
+
+    public Quaternion getAdjustment() {
+        return adjustment;
+    }
+
+    public void setAdjustment(Quaternion adjustment) {
+        this.adjustment = adjustment;
+    }
+
+    public Quaternion getMountingRotation() {
+        return mountingRotation;
+    }
+
+    public void setMountingRotation(Quaternion mountingRotation) {
+        this.mountingRotation = mountingRotation;
+    }
 }

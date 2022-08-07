@@ -249,7 +249,10 @@ public class RPCHandler extends ProtocolHandler<RpcMessageHeader>
 					&& bridge.getShareSetting(TrackerRole.RIGHT_ELBOW)
 			);
 
-		FilteringConfig filteringConfig = this.api.server.getConfigManager().getFilteringConfig();
+		FilteringConfig filteringConfig = this.api.server
+			.getConfigManager()
+			.getVrConfig()
+			.getFiltering();
 
 		int filterSettings = FilteringSettings
 			.createFilteringSettings(
@@ -318,7 +321,8 @@ public class RPCHandler extends ProtocolHandler<RpcMessageHeader>
 			if (type != null) {
 				this.api.server
 					.getConfigManager()
-					.getFilteringConfig()
+					.getVrConfig()
+					.getFiltering()
 					.updateTrackersFilters(
 						type,
 						req.filtering().intensity() / 100.0f,

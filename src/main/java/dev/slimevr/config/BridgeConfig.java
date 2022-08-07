@@ -1,36 +1,31 @@
 package dev.slimevr.config;
 
+import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
+import com.fasterxml.jackson.databind.annotation.JsonSerialize;
+import com.fasterxml.jackson.databind.ser.std.StdKeySerializers;
+import dev.slimevr.config.serializers.BooleanMapDeserializer;
 import dev.slimevr.vr.trackers.TrackerRole;
-import io.eiren.yaml.YamlNode;
-
 import java.util.HashMap;
+import java.util.Map;
 
 
 public class BridgeConfig {
 
-	public static String CONFIG_ROOT = "bridge";
+	@JsonDeserialize(using = BooleanMapDeserializer.class)
+	@JsonSerialize(keyUsing = StdKeySerializers.StringKeySerializer.class)
+	public Map<String, Boolean> trackers = new HashMap<>();
 
-	private YamlNode rootNode;
+	public BridgeConfig() {}
 
-
-	private final ConfigManager configManager;
-
-	public BridgeConfig(ConfigManager configManager) {
-		this.configManager = configManager;
+	public boolean getBridgeTrackerRole(TrackerRole role, boolean def) {
+		return trackers.getOrDefault(role.name().toLowerCase(), def);
 	}
 
-	public void loadConfig() {
-		this.rootNode = this.configManager.getConfig().getNode(CONFIG_ROOT);
-		if (rootNode == null)
-			this.rootNode = new YamlNode(new HashMap<>());
-		configManager.getConfig().setProperty(CONFIG_ROOT, this.rootNode);
+	public void setBridgeTrackerRole(TrackerRole role, boolean val) {
+		this.trackers.put(role.name().toLowerCase(), val);
 	}
 
-	public boolean getBridgeTrackerRole(String bridge, TrackerRole role, boolean def) {
-		return this.rootNode.getBoolean(bridge + ".trackers." + role.name().toLowerCase(), def);
-	}
-
-	public void setBridgeTrackerRole(String bridge, TrackerRole role, boolean def) {
-		this.rootNode.setProperty(bridge + ".trackers." + role.name().toLowerCase(), def);
+	public Map<String, Boolean> getTrackers() {
+		return trackers;
 	}
 }

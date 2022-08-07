@@ -173,7 +173,7 @@ public class TrackersList extends EJBoxNoStretch {
 			row++;
 
 			if (t.userEditable()) {
-				TrackerConfig cfg = server.getConfigManager().getTrackersConfig().getTracker(t);
+				TrackerConfig cfg = server.getConfigManager().getVrConfig().getTracker(t);
 				JComboBox<String> desSelect;
 				add(
 					desSelect = new JComboBox<>(),
@@ -183,9 +183,9 @@ public class TrackersList extends EJBoxNoStretch {
 				for (TrackerPosition p : TrackerPosition.values) {
 					desSelect.addItem(p.name());
 				}
-				if (cfg.designation != null) {
+				if (cfg.getDesignation() != null) {
 					TrackerPosition
-						.getByDesignation(cfg.designation)
+						.getByDesignation(cfg.getDesignation())
 						.ifPresentOrElse(
 							trackerPosition -> desSelect.setSelectedItem(trackerPosition.name()),
 							() -> desSelect.setSelectedItem("NONE")

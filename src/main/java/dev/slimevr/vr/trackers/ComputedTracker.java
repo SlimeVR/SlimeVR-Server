@@ -51,7 +51,7 @@ public class ComputedTracker implements Tracker, TrackerWithTPS {
 		// allowed if editing is not allowed
 		if (userEditable()) {
 			TrackerPosition
-				.getByDesignation(config.designation)
+				.getByDesignation(config.getDesignation())
 				.ifPresent(trackerPosition -> bodyPosition = trackerPosition);
 		}
 	}

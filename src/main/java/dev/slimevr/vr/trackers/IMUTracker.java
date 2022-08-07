@@ -73,7 +73,7 @@ public class IMUTracker
 	@Override
 	public void saveConfig(TrackerConfig config) {
 		config.setDesignation(bodyPosition == null ? null : bodyPosition.designation);
-		config.mountingRotation = mounting != null ? mounting : null;
+		config.setMountingRotation(mounting != null ? mounting : null);
 	}
 
 	@Override
@@ -82,19 +82,22 @@ public class IMUTracker
 		// not be
 		// allowed if editing is not allowed
 		if (userEditable()) {
-			setCustomName(config.customName);
+			setCustomName(config.getCustomName());
 
-			if (config.mountingRotation != null) {
-				mounting = config.mountingRotation;
-				rotAdjust.set(config.mountingRotation);
+			if (config.getMountingRotation() != null) {
+				mounting = config.getMountingRotation();
+				rotAdjust.set(config.getMountingRotation());
 			} else {
 				rotAdjust.loadIdentity();
 			}
 			TrackerPosition
-				.getByDesignation(config.designation)
+				.getByDesignation(config.getDesignation())
 				.ifPresent(trackerPosition -> bodyPosition = trackerPosition);
 
-			FilteringConfig filteringConfig = this.vrserver.getConfigManager().getFilteringConfig();
+			FilteringConfig filteringConfig = this.vrserver
+				.getConfigManager()
+				.getVrConfig()
+				.getFiltering();
 			setFilter(
 				filteringConfig.getType(),
 				filteringConfig.getAmount(),

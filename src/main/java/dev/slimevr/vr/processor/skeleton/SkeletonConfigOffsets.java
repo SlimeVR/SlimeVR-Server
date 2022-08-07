@@ -165,7 +165,6 @@ public enum SkeletonConfigOffsets {
 	),;
 
 	public static final SkeletonConfigOffsets[] values = values();
-	private static final String CONFIG_PREFIX = "body.";
 	private static final Map<String, SkeletonConfigOffsets> byStringVal = new HashMap<>();
 	private static final Map<Number, SkeletonConfigOffsets> byIdVal = new HashMap<>();
 
@@ -193,7 +192,7 @@ public enum SkeletonConfigOffsets {
 	) {
 		this.id = id;
 		this.stringVal = stringVal;
-		this.configKey = CONFIG_PREFIX + configKey;
+		this.configKey = configKey;
 		this.label = label;
 
 		this.defaultValue = defaultValue;

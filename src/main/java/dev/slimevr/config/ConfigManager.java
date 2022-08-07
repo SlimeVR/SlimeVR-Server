@@ -1,91 +1,63 @@
 package dev.slimevr.config;
 
+import com.fasterxml.jackson.databind.DeserializationFeature;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.module.SimpleModule;
+import com.fasterxml.jackson.dataformat.yaml.YAMLFactory;
+import com.github.jonpeterson.jackson.module.versioning.VersioningModule;
+import com.jme3.math.Quaternion;
+import dev.slimevr.config.serializers.QuaternionDeserializer;
+import dev.slimevr.config.serializers.QuaternionSerializer;
 import io.eiren.util.ann.ThreadSafe;
-import io.eiren.yaml.YamlException;
-import io.eiren.yaml.YamlFile;
 
 import java.io.*;
 
-
 public class ConfigManager {
 
-	private static String CONFIG_PATH = "vrconfig.yml";
+	private static final String CONFIG_PATH = "vrconfig.yml";
 
-	private final YamlFile config = new YamlFile();
+	private final ObjectMapper om;
 
-	private final TrackersConfig trackersConfig;
-
-	private final FilteringConfig filteringConfig;
-
-	private final AutoboneConfig autoboneConfig;
-
-	private final WindowConfig windowConfig;
-
-	private final KeybindingsConfig keybindingsConfig;
-
-	private final BridgeConfig bridgeConfig;
+	private VRConfig vrConfig;
 
 
 	public ConfigManager() {
-		this.trackersConfig = new TrackersConfig(this);
-		this.filteringConfig = new FilteringConfig(this);
-		this.autoboneConfig = new AutoboneConfig(this);
-		this.windowConfig = new WindowConfig(this);
-		this.keybindingsConfig = new KeybindingsConfig(this);
-		this.bridgeConfig = new BridgeConfig(this);
+		om = new ObjectMapper(new YAMLFactory());
+		om.configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false);
+		om.registerModule(new VersioningModule());
+		SimpleModule quaternionModule = new SimpleModule();
+		quaternionModule.addSerializer(Quaternion.class, new QuaternionSerializer());
+		quaternionModule.addDeserializer(Quaternion.class, new QuaternionDeserializer());
+		om.registerModule(quaternionModule);
 	}
 
 	public void loadConfig() {
 		try {
-			config.load(new FileInputStream(new File(CONFIG_PATH)));
+			this.vrConfig = om
+				.readValue(new FileInputStream(new File(CONFIG_PATH)), VRConfig.class);
 		} catch (FileNotFoundException e) {
 			// Config file didn't exist, is not an error
-		} catch (YamlException e) {
-			e.printStackTrace();
+		} catch (IOException e) {
+			throw new RuntimeException(e);
 		}
-		this.trackersConfig.loadConfig();
-		this.autoboneConfig.loadConfig();
-		this.filteringConfig.loadConfig();
-		this.windowConfig.loadConfig();
-		this.bridgeConfig.loadConfig();
+
+		if (this.vrConfig == null) {
+			this.vrConfig = new VRConfig();
+		}
 	}
 
 	@ThreadSafe
 	public synchronized void saveConfig() {
-		this.trackersConfig.saveConfig();
 		File cfgFile = new File(CONFIG_PATH);
+
 		try {
-			config.save(new FileOutputStream(cfgFile));
+			om.writeValue(cfgFile, this.vrConfig);
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
 	}
 
-	public YamlFile getConfig() {
-		return config;
-	}
-
-	public FilteringConfig getFilteringConfig() {
-		return filteringConfig;
-	}
-
-	public TrackersConfig getTrackersConfig() {
-		return trackersConfig;
-	}
-
-	public AutoboneConfig getAutoboneConfig() {
-		return autoboneConfig;
-	}
-
-	public WindowConfig getWindowConfig() {
-		return windowConfig;
-	}
-
-	public KeybindingsConfig getKeybindingsConfig() {
-		return keybindingsConfig;
-	}
-
-	public BridgeConfig getBridgeConfig() {
-		return bridgeConfig;
+	public VRConfig getVrConfig() {
+		return vrConfig;
 	}
 }

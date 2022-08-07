@@ -13,6 +13,7 @@ import dev.slimevr.bridge.ProtobufBridge;
 import dev.slimevr.bridge.ProtobufMessages.ProtobufMessage;
 import dev.slimevr.bridge.ProtobufMessages.TrackerAdded;
 import dev.slimevr.config.BridgeConfig;
+import dev.slimevr.config.VRConfig;
 import dev.slimevr.util.ann.VRServerThread;
 import dev.slimevr.vr.Device;
 import dev.slimevr.vr.trackers.*;
@@ -48,7 +49,7 @@ public class WindowsNamedPipeBridge extends ProtobufBridge<VRTracker> implements
 		this.bridgeSettingsKey = bridgeSettingsKey;
 		this.runnerThread = new Thread(this, "Named pipe thread");
 		this.shareableTrackers = shareableTrackers;
-		this.config = server.getConfigManager().getBridgeConfig();
+		this.config = server.getConfigManager().getVrConfig().getBrige(bridgeSettingsKey);
 	}
 
 	@Override
@@ -57,14 +58,14 @@ public class WindowsNamedPipeBridge extends ProtobufBridge<VRTracker> implements
 		for (TrackerRole role : defaultRoles) {
 			changeShareSettings(
 				role,
-				this.config.getBridgeTrackerRole(bridgeSettingsKey, role, true)
+				this.config.getBridgeTrackerRole(role, true)
 			);
 		}
 		for (ShareableTracker tr : shareableTrackers) {
 			TrackerRole role = tr.getTrackerRole();
 			changeShareSettings(
 				role,
-				this.config.getBridgeTrackerRole(bridgeSettingsKey, role, false)
+				this.config.getBridgeTrackerRole(role, false)
 			);
 		}
 		runnerThread.start();
@@ -91,7 +92,7 @@ public class WindowsNamedPipeBridge extends ProtobufBridge<VRTracker> implements
 				} else {
 					removeSharedTracker(tr);
 				}
-				config.setBridgeTrackerRole(bridgeSettingsKey, role, share);
+				config.setBridgeTrackerRole(role, share);
 				Main.vrServer.getConfigManager().saveConfig();
 			}
 		}
