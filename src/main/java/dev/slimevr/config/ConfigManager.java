@@ -12,6 +12,7 @@ import io.eiren.util.ann.ThreadSafe;
 
 import java.io.*;
 
+
 public class ConfigManager {
 
 	private static final String CONFIG_PATH = "vrconfig.yml";

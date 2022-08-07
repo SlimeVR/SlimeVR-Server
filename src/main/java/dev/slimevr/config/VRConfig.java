@@ -11,7 +11,10 @@ import dev.slimevr.vr.trackers.Tracker;
 import java.util.HashMap;
 import java.util.Map;
 
-@JsonVersionedModel(currentVersion = "2", defaultDeserializeToVersion = "1", toCurrentConverterClass = CurrentVRConfigConverter.class)
+
+@JsonVersionedModel(
+	currentVersion = "2", defaultDeserializeToVersion = "1", toCurrentConverterClass = CurrentVRConfigConverter.class
+)
 public class VRConfig {
 
 	private WindowConfig window = new WindowConfig();
@@ -88,5 +91,4 @@ public class VRConfig {
 		return config;
 	}
 }
-
 

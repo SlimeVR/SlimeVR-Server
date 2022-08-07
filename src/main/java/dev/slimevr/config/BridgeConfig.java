@@ -15,7 +15,8 @@ public class BridgeConfig {
 	@JsonSerialize(keyUsing = StdKeySerializers.StringKeySerializer.class)
 	public Map<String, Boolean> trackers = new HashMap<>();
 
-	public BridgeConfig() {}
+	public BridgeConfig() {
+	}
 
 	public boolean getBridgeTrackerRole(TrackerRole role, boolean def) {
 		return trackers.getOrDefault(role.name().toLowerCase(), def);

@@ -13,7 +13,6 @@ import dev.slimevr.bridge.ProtobufBridge;
 import dev.slimevr.bridge.ProtobufMessages.ProtobufMessage;
 import dev.slimevr.bridge.ProtobufMessages.TrackerAdded;
 import dev.slimevr.config.BridgeConfig;
-import dev.slimevr.config.VRConfig;
 import dev.slimevr.util.ann.VRServerThread;
 import dev.slimevr.vr.Device;
 import dev.slimevr.vr.trackers.*;

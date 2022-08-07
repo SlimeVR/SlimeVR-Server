@@ -6,7 +6,8 @@ public class KeybindingsConfig {
 
 	private String quickResetBinding = "CTRL+ALT+SHIFT+U";
 
-	public KeybindingsConfig() {}
+	public KeybindingsConfig() {
+	}
 
 	public String getResetBinding() {
 		return resetBinding;

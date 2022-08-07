@@ -417,6 +417,7 @@ public class SkeletonConfig {
 			computeAllNodeOffsets();
 		}
 	}
+
 	public void setConfigs(SkeletonConfig skeletonConfig) {
 		setConfigs(
 			skeletonConfig.configOffsets,
@@ -429,7 +430,11 @@ public class SkeletonConfig {
 	public void loadFromConfig(ConfigManager configManager) {
 
 		for (SkeletonConfigOffsets configValue : SkeletonConfigOffsets.values) {
-			Float val = configManager.getVrConfig().getSkeleton().getOffsets().get(configValue.configKey);
+			Float val = configManager
+				.getVrConfig()
+				.getSkeleton()
+				.getOffsets()
+				.get(configValue.configKey);
 			if (val != null) {
 				// Do not recalculate the offsets, these are done in bulk at the
 				// end
@@ -438,14 +443,22 @@ public class SkeletonConfig {
 		}
 
 		for (SkeletonConfigToggles configValue : SkeletonConfigToggles.values) {
-			Boolean val = configManager.getVrConfig().getSkeleton().getToggles().get(configValue.configKey);
+			Boolean val = configManager
+				.getVrConfig()
+				.getSkeleton()
+				.getToggles()
+				.get(configValue.configKey);
 			if (val != null) {
 				setToggle(configValue, val);
 			}
 		}
 
 		for (SkeletonConfigValues configValue : SkeletonConfigValues.values) {
-			Float val = configManager.getVrConfig().getSkeleton().getValues().get(configValue.configKey);
+			Float val = configManager
+				.getVrConfig()
+				.getSkeleton()
+				.getValues()
+				.get(configValue.configKey);
 			if (val != null) {
 				setValue(configValue, val);
 			}

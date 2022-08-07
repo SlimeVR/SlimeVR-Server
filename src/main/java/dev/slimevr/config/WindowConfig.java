@@ -14,7 +14,8 @@ public class WindowConfig {
 	private int posx = -1;
 	private int posy = -1;
 
-	public WindowConfig() {}
+	public WindowConfig() {
+	}
 
 	public float getZoom() {
 		return zoom;

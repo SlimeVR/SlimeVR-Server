@@ -7,58 +7,65 @@ import com.github.jonpeterson.jackson.module.versioning.VersionedModelConverter;
 
 import java.util.Map;
 
+
 public class CurrentVRConfigConverter implements VersionedModelConverter {
 
-    @Override
-    public ObjectNode convert(ObjectNode modelData, String modelVersion, String targetModelVersion, JsonNodeFactory nodeFactory) {
+	@Override
+	public ObjectNode convert(
+		ObjectNode modelData,
+		String modelVersion,
+		String targetModelVersion,
+		JsonNodeFactory nodeFactory
+	) {
 
-        int version = Integer.parseInt(modelVersion);
+		int version = Integer.parseInt(modelVersion);
 
-        // Configs less than version 2 need a migration to the latest config
-        if (version < 2) {
-            //Move zoom to the window config
-            ObjectNode windowNode = (ObjectNode) modelData.get("window");
-            if (windowNode != null) {
-                windowNode.set("zoom", modelData.get("zoom"));
-                modelData.remove("zoom");
-            }
+		// Configs less than version 2 need a migration to the latest config
+		if (version < 2) {
+			// Move zoom to the window config
+			ObjectNode windowNode = (ObjectNode) modelData.get("window");
+			if (windowNode != null) {
+				windowNode.set("zoom", modelData.get("zoom"));
+				modelData.remove("zoom");
+			}
 
-            //Change trackers list to map
-            var trackersIter = modelData.withArray("trackers").iterator();
-            ObjectNode trackersNode = nodeFactory.objectNode();
-            while (trackersIter.hasNext()) {
-                JsonNode node = trackersIter.next();
-                JsonNode resultNode = TrackerConfig.toV2(node, nodeFactory);
-                trackersNode.set(node.get("name").asText(), resultNode);
-            }
-            modelData.set("trackers", trackersNode);
+			// Change trackers list to map
+			var trackersIter = modelData.withArray("trackers").iterator();
+			ObjectNode trackersNode = nodeFactory.objectNode();
+			while (trackersIter.hasNext()) {
+				JsonNode node = trackersIter.next();
+				JsonNode resultNode = TrackerConfig.toV2(node, nodeFactory);
+				trackersNode.set(node.get("name").asText(), resultNode);
+			}
+			modelData.set("trackers", trackersNode);
 
-            // Rename bridge to bridges
-            ObjectNode bridgeNode = (ObjectNode) modelData.get("bridge");
-            if (bridgeNode != null) {
-                modelData.set("bridges", bridgeNode);
-                modelData.remove("bridge");
-            }
+			// Rename bridge to bridges
+			ObjectNode bridgeNode = (ObjectNode) modelData.get("bridge");
+			if (bridgeNode != null) {
+				modelData.set("bridges", bridgeNode);
+				modelData.remove("bridge");
+			}
 
-            // Move body to skeleton (and merge it to current skeleton)
-            var bodyIter = modelData.get("body").fields();
-            ObjectNode skeletonNode = (ObjectNode) modelData.get("skeleton");
-            if (skeletonNode == null) {
-                skeletonNode = nodeFactory.objectNode();
-            }
-            ObjectNode offsetsNode = nodeFactory.objectNode();
-            while (bodyIter.hasNext()) {
-                Map.Entry<String, JsonNode> node = bodyIter.next();
-                // Filter only number values because other types would be stuff that didn't get migrated correctly before
-                if (node.getValue().isNumber()) {
-                    offsetsNode.set(node.getKey(), node.getValue());
-                }
-            }
-            skeletonNode.set("offsets", offsetsNode);
-            modelData.set("skeleton", skeletonNode);
-            modelData.remove("body");
-        }
+			// Move body to skeleton (and merge it to current skeleton)
+			var bodyIter = modelData.get("body").fields();
+			ObjectNode skeletonNode = (ObjectNode) modelData.get("skeleton");
+			if (skeletonNode == null) {
+				skeletonNode = nodeFactory.objectNode();
+			}
+			ObjectNode offsetsNode = nodeFactory.objectNode();
+			while (bodyIter.hasNext()) {
+				Map.Entry<String, JsonNode> node = bodyIter.next();
+				// Filter only number values because other types would be stuff
+				// that didn't get migrated correctly before
+				if (node.getValue().isNumber()) {
+					offsetsNode.set(node.getKey(), node.getValue());
+				}
+			}
+			skeletonNode.set("offsets", offsetsNode);
+			modelData.set("skeleton", skeletonNode);
+			modelData.remove("body");
+		}
 
-        return modelData;
-    }
+		return modelData;
+	}
 }
