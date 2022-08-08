@@ -94,8 +94,8 @@ public class RPCHandler extends ProtocolHandler<RpcMessageHeader>
 		if (req == null)
 			return;
 		OverlayConfig config = this.api.server.getConfigManager().getVrConfig().getOverlay();
-			config.setMirrored(req.isMirrored());
-			config.setVisible(req.isVisible());
+		config.setMirrored(req.isMirrored());
+		config.setVisible(req.isVisible());
 
 		this.api.server.getConfigManager().saveConfig();
 	}
