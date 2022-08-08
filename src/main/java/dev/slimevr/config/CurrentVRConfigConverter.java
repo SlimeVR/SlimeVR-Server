@@ -24,8 +24,9 @@ public class CurrentVRConfigConverter implements VersionedModelConverter {
 		if (version < 2) {
 			// Move zoom to the window config
 			ObjectNode windowNode = (ObjectNode) modelData.get("window");
-			if (windowNode != null) {
-				windowNode.set("zoom", modelData.get("zoom"));
+			ObjectNode zoomNode = (ObjectNode) modelData.get("zoom");
+			if (windowNode != null && zoomNode != null) {
+				windowNode.set("zoom", zoomNode);
 				modelData.remove("zoom");
 			}
 
