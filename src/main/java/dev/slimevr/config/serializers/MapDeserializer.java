@@ -11,7 +11,11 @@ import java.io.IOException;
 import java.lang.reflect.ParameterizedType;
 import java.util.HashMap;
 
-
+/**
+ * This class is an utility class that allows to write Map serializers easily
+ * to be used in the VRConfig (@see {@link dev.slimevr.config.VRConfig})
+ * @see BooleanMapDeserializer to see how it is used
+ */
 public class MapDeserializer<T> extends JsonDeserializer<HashMap<String, T>> {
 
 	public MapDeserializer() {
