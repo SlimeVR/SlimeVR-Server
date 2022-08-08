@@ -36,7 +36,6 @@ public class VRServer extends Thread {
 	private final TrackersUDPServer trackersServer;
 	private final List<Bridge> bridges = new FastList<>();
 	private final Queue<Runnable> tasks = new LinkedBlockingQueue<>();
-
 	private final List<Consumer<Tracker>> newTrackersConsumers = new FastList<>();
 	private final List<Runnable> onTick = new FastList<>();
 	private final List<? extends ShareableTracker> shareTrackers;
@@ -159,7 +158,7 @@ public class VRServer extends Thread {
 	public void trackerUpdated(Tracker tracker) {
 		queueTask(() -> {
 			humanPoseProcessor.trackerUpdated(tracker);
-			this.getConfigManager().getVrConfig().saveTrackerConfig(tracker);
+			this.getConfigManager().getVrConfig().writeTrackerConfig(tracker);
 			this.getConfigManager().saveConfig();
 		});
 	}
@@ -215,7 +214,7 @@ public class VRServer extends Thread {
 
 	@ThreadSecure
 	public void registerTracker(Tracker tracker) {
-		this.getConfigManager().getVrConfig().loadTrackerConfig(tracker);
+		this.getConfigManager().getVrConfig().readTrackerConfig(tracker);
 		queueTask(() -> {
 			trackers.add(tracker);
 			trackerAdded(tracker);

@@ -4,7 +4,7 @@ import com.jme3.math.FastMath;
 import com.jme3.math.Vector3f;
 import dev.slimevr.VRServer;
 import dev.slimevr.autobone.errors.*;
-import dev.slimevr.config.AutoboneConfig;
+import dev.slimevr.config.AutoBoneConfig;
 import dev.slimevr.poserecorder.PoseFrameIO;
 import dev.slimevr.poserecorder.PoseFrameSkeleton;
 import dev.slimevr.poserecorder.PoseFrameTracker;
@@ -125,10 +125,10 @@ public class AutoBone {
 
 	private final Random rand = new Random();
 
-	private final AutoboneConfig config;
+	private final AutoBoneConfig config;
 
 	public AutoBone(VRServer server) {
-		this.config = server.getConfigManager().getVrConfig().getAutobone();
+		this.config = server.getConfigManager().getVrConfig().getAutoBone();
 		this.server = server;
 		reloadConfigValues();
 	}
@@ -838,7 +838,7 @@ public class AutoBone {
 		return recordings;
 	}
 
-	public AutoboneConfig getConfig() {
+	public AutoBoneConfig getConfig() {
 		return config;
 	}
 

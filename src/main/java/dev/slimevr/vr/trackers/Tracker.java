@@ -24,9 +24,9 @@ public interface Tracker {
 
 	TrackerStatus getStatus();
 
-	void loadConfig(TrackerConfig config);
+	void readConfig(TrackerConfig config);
 
-	void saveConfig(TrackerConfig config);
+	void writeConfig(TrackerConfig config);
 
 	float getConfidenceLevel();
 

@@ -71,13 +71,13 @@ public class IMUTracker
 	}
 
 	@Override
-	public void saveConfig(TrackerConfig config) {
+	public void writeConfig(TrackerConfig config) {
 		config.setDesignation(bodyPosition == null ? null : bodyPosition.designation);
 		config.setMountingRotation(mounting != null ? mounting : null);
 	}
 
 	@Override
-	public void loadConfig(TrackerConfig config) {
+	public void readConfig(TrackerConfig config) {
 		// Loading a config is an act of user editing, therefore it shouldn't
 		// not be
 		// allowed if editing is not allowed

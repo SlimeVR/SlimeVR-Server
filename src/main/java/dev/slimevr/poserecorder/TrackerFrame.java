@@ -116,12 +116,12 @@ public final class TrackerFrame implements Tracker {
 	}
 
 	@Override
-	public void loadConfig(TrackerConfig config) {
+	public void readConfig(TrackerConfig config) {
 		throw new UnsupportedOperationException("TrackerFrame does not implement configuration");
 	}
 
 	@Override
-	public void saveConfig(TrackerConfig config) {
+	public void writeConfig(TrackerConfig config) {
 		throw new UnsupportedOperationException("TrackerFrame does not implement configuration");
 	}
 

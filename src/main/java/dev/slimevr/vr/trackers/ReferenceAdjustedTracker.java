@@ -24,13 +24,13 @@ public class ReferenceAdjustedTracker<E extends Tracker> implements Tracker {
 	}
 
 	@Override
-	public void loadConfig(TrackerConfig config) {
-		this.tracker.loadConfig(config);
+	public void readConfig(TrackerConfig config) {
+		this.tracker.readConfig(config);
 	}
 
 	@Override
-	public void saveConfig(TrackerConfig config) {
-		this.tracker.saveConfig(config);
+	public void writeConfig(TrackerConfig config) {
+		this.tracker.writeConfig(config);
 	}
 
 	/**

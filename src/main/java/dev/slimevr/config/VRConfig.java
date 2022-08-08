@@ -21,7 +21,7 @@ public class VRConfig {
 
 	private FilteringConfig filtering = new FilteringConfig();
 
-	private AutoboneConfig autobone = new AutoboneConfig();
+	private AutoBoneConfig autobone = new AutoBoneConfig();
 
 	private KeybindingsConfig keybindings = new KeybindingsConfig();
 
@@ -43,7 +43,7 @@ public class VRConfig {
 		return filtering;
 	}
 
-	public AutoboneConfig getAutobone() {
+	public AutoBoneConfig getAutoBone() {
 		return autobone;
 	}
 
@@ -72,14 +72,14 @@ public class VRConfig {
 		return config;
 	}
 
-	public void loadTrackerConfig(Tracker tracker) {
+	public void readTrackerConfig(Tracker tracker) {
 		TrackerConfig config = getTracker(tracker);
-		tracker.loadConfig(config);
+		tracker.readConfig(config);
 	}
 
-	public void saveTrackerConfig(Tracker tracker) {
+	public void writeTrackerConfig(Tracker tracker) {
 		TrackerConfig tc = getTracker(tracker);
-		tracker.saveConfig(tc);
+		tracker.writeConfig(tc);
 	}
 
 	public BridgeConfig getBrige(String bridgeKey) {

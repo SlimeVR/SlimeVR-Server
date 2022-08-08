@@ -1,6 +1,6 @@
 package dev.slimevr.config;
 
-public class AutoboneConfig {
+public class AutoBoneConfig {
 
 	public int minDataDistance = 1;
 	public int maxDataDistance = 1;
@@ -23,6 +23,6 @@ public class AutoboneConfig {
 
 	public boolean saveRecordings = false;
 
-	public AutoboneConfig() {
+	public AutoBoneConfig() {
 	}
 }
