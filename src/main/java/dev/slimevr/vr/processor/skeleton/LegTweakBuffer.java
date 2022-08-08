@@ -80,7 +80,7 @@ public class LegTweakBuffer {
 	private static final float FLOOR_DISTANCE_CUTOFF = 0.125f;
 	private static final float SIX_TRACKER_TOLLERANCE = 0.10f;
 
-	private static final float PARAM_SCALAR_MAX = 2.0f;
+	private static final float PARAM_SCALAR_MAX = 2.5f;
 	private static final float PARAM_SCALAR_MIN = 0.5f;
 	private static final float PARAM_SCALAR_MID = 1.0f;
 
@@ -88,17 +88,14 @@ public class LegTweakBuffer {
 	private static final float MAX_SCALAR_ACCEL = 0.3f;
 	private static final float MIN_SCALAR_ACCEL = 0.9f;
 
-	// TODO decouple accel scalar from velocity scalar when it comes to double
-	// lock situations
-
 	// the point at which the scalar is at it max or min in a double locked foot
 	// situation
-	private static final float MAX_SCALAR_DORMANT = 0.8f;
+	private static final float MAX_SCALAR_DORMANT = 0.6f;
 	private static final float MIN_SCALAR_DORMANT = 2.0f;
 	// the point at which the scalar is at it max or min in a single locked foot
 	// situation
 	private static final float MIN_SCALAR_ACTIVE = 3.0f;
-	private static final float MAX_SCALAR_ACTIVE = 0.5f;
+	private static final float MAX_SCALAR_ACTIVE = 0.2f;
 
 	private float leftFootSensitivityVel = 1.0f;
 	private float rightFootSensitivityVel = 1.0f;
@@ -591,7 +588,8 @@ public class LegTweakBuffer {
 		}
 		return PARAM_SCALAR_MAX
 			* (velocityDifAbs - MIN_SCALAR_ACTIVE)
-			/ (MAX_SCALAR_ACTIVE - MIN_SCALAR_ACTIVE);
+			/ (MAX_SCALAR_ACTIVE - MIN_SCALAR_ACTIVE)
+			- PARAM_SCALAR_MID;
 	}
 
 	private float getRightFootLockLiklyHood() {
@@ -619,6 +617,7 @@ public class LegTweakBuffer {
 		}
 		return PARAM_SCALAR_MAX
 			* (velocityDifAbs - MIN_SCALAR_ACTIVE)
-			/ (MAX_SCALAR_ACTIVE - MIN_SCALAR_ACTIVE);
+			/ (MAX_SCALAR_ACTIVE - MIN_SCALAR_ACTIVE)
+			- PARAM_SCALAR_MID;
 	}
 }
