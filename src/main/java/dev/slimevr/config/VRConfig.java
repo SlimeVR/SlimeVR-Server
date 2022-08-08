@@ -35,6 +35,8 @@ public class VRConfig {
 	@JsonSerialize(keyUsing = StdKeySerializers.StringKeySerializer.class)
 	private Map<String, BridgeConfig> bridges = new HashMap<>();
 
+	private OverlayConfig overlay = new OverlayConfig();
+
 	public WindowConfig getWindow() {
 		return window;
 	}
@@ -61,6 +63,10 @@ public class VRConfig {
 
 	public SkeletonConfig getSkeleton() {
 		return skeleton;
+	}
+
+	public OverlayConfig getOverlay() {
+		return overlay;
 	}
 
 	public TrackerConfig getTracker(Tracker tracker) {
