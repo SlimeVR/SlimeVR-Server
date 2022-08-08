@@ -75,17 +75,35 @@ public class LegTweakBuffer {
 	private static final float SKATING_VELOCITY_THRESHOLD = 4.25f;
 	private static final float SKATING_ACCELERATION_THRESHOLD = 1.15f;
 	private static final float SKATING_ROTVELOCITY_THRESHOLD = 4.5f;
-	private static final float SKATING_LOCK_ENGAGE_PERCENT = 0.9f;
+	private static final float SKATING_LOCK_ENGAGE_PERCENT = 0.85f;
 	private static final float SKATING_ACCELERATION_Y_USE_PERCENT = 0.25f;
-	private static final float FLOOR_DISTANCE_CUTOFF = 0.1f;
+	private static final float FLOOR_DISTANCE_CUTOFF = 0.125f;
 	private static final float SIX_TRACKER_TOLLERANCE = 0.10f;
 
 	private static final float PARAM_SCALAR_MAX = 2.0f;
-	private static final float MAX_SCALAR_ACCEL = 0.3f;
-	private static final float MIN_SCALAR_ACCEL = 1.0f;
+	private static final float PARAM_SCALAR_MIN = 0.5f;
+	private static final float PARAM_SCALAR_MID = 1.0f;
 
-	private float leftFootSensitivity = 1.0f;
-	private float rightFootSensitivity = 1.0f;
+	// the point at which the scalar is at the max or min depending on accel
+	private static final float MAX_SCALAR_ACCEL = 0.3f;
+	private static final float MIN_SCALAR_ACCEL = 0.9f;
+
+	// TODO decouple accel scalar from velocity scalar when it comes to double
+	// lock situations
+
+	// the point at which the scalar is at it max or min in a double locked foot
+	// situation
+	private static final float MAX_SCALAR_DORMANT = 0.8f;
+	private static final float MIN_SCALAR_DORMANT = 2.0f;
+	// the point at which the scalar is at it max or min in a single locked foot
+	// situation
+	private static final float MIN_SCALAR_ACTIVE = 3.0f;
+	private static final float MAX_SCALAR_ACTIVE = 0.5f;
+
+	private float leftFootSensitivityVel = 1.0f;
+	private float rightFootSensitivityVel = 1.0f;
+	private float leftFootSensitivityAccel = 1.0f;
+	private float rightFootSensitivityAccel = 1.0f;
 
 
 	private static final float SKATING_CUTOFF_ENGAGE = SKATING_DISTANCE_CUTOFF
@@ -318,8 +336,7 @@ public class LegTweakBuffer {
 		}
 
 		// calculate the scalar for other parameters
-		leftFootSensitivity = getLeftFootScalar();
-		rightFootSensitivity = getRightFootScalar();
+		computeScalar();
 
 		// if correction is inactive state is unknown (default to unlocked)
 		if (!active) {
@@ -357,8 +374,10 @@ public class LegTweakBuffer {
 		if (parent.leftLegState == UNLOCKED) {
 			if (
 				parent.getLeftFootHorizantalDifference() > SKATING_CUTOFF_ENGAGE
-					|| leftFootVelocityMagnitude * timeStep > SKATING_VELOCITY_CUTOFF_ENGAGE
-					|| leftFootAngleDiff * timeStep > SKATING_ROTATIONAL_VELOCITY_CUTOFF_ENGAGE
+					|| leftFootVelocityMagnitude * timeStep
+						> SKATING_VELOCITY_CUTOFF_ENGAGE * leftFootSensitivityVel
+					|| leftFootAngleDiff * timeStep
+						> SKATING_ROTATIONAL_VELOCITY_CUTOFF_ENGAGE * leftFootSensitivityVel
 					|| leftFootPosition.y > leftFloorLevel + FLOOR_DISTANCE_CUTOFF
 					|| accelerationAboveThresholdLeft
 			) {
@@ -369,9 +388,9 @@ public class LegTweakBuffer {
 			if (
 				parent.getLeftFootHorizantalDifference() > SKATING_DISTANCE_CUTOFF
 					|| leftFootVelocityMagnitude * timeStep
-						> SKATING_VELOCITY_THRESHOLD * leftFootSensitivity
+						> SKATING_VELOCITY_THRESHOLD * leftFootSensitivityVel
 					|| leftFootAngleDiff * timeStep
-						> SKATING_ROTVELOCITY_THRESHOLD * leftFootSensitivity
+						> SKATING_ROTVELOCITY_THRESHOLD * leftFootSensitivityVel
 					|| leftFootPosition.y > leftFloorLevel + FLOOR_DISTANCE_CUTOFF
 					|| accelerationAboveThresholdLeft
 			) {
@@ -387,8 +406,10 @@ public class LegTweakBuffer {
 		if (parent.rightLegState == UNLOCKED) {
 			if (
 				parent.getRightFootHorizantalDifference() > SKATING_CUTOFF_ENGAGE
-					|| rightFootVelocityMagnitude * timeStep > SKATING_VELOCITY_CUTOFF_ENGAGE
-					|| rightFootAngleDiff * timeStep > SKATING_ROTATIONAL_VELOCITY_CUTOFF_ENGAGE
+					|| rightFootVelocityMagnitude * timeStep
+						> SKATING_VELOCITY_CUTOFF_ENGAGE * leftFootSensitivityVel
+					|| rightFootAngleDiff * timeStep
+						> SKATING_ROTATIONAL_VELOCITY_CUTOFF_ENGAGE * leftFootSensitivityVel
 					|| rightFootPosition.y > rightFloorLevel + FLOOR_DISTANCE_CUTOFF
 					|| accelerationAboveThresholdRight
 			) {
@@ -399,9 +420,9 @@ public class LegTweakBuffer {
 			if (
 				parent.getRightFootHorizantalDifference() > SKATING_DISTANCE_CUTOFF
 					|| rightFootVelocityMagnitude * timeStep
-						> SKATING_VELOCITY_THRESHOLD * rightFootSensitivity
+						> SKATING_VELOCITY_THRESHOLD * rightFootSensitivityVel
 					|| rightFootAngleDiff * timeStep
-						> SKATING_ROTVELOCITY_THRESHOLD * rightFootSensitivity
+						> SKATING_ROTVELOCITY_THRESHOLD * rightFootSensitivityVel
 					|| rightFootPosition.y > rightFloorLevel + FLOOR_DISTANCE_CUTOFF
 					|| accelerationAboveThresholdRight
 			) {
@@ -472,24 +493,51 @@ public class LegTweakBuffer {
 	// for 8 trackers the data from the imus is enough to determine lock/unlock
 	private void computeAccelerationAboveThresholdFootTrackers() {
 		accelerationAboveThresholdLeft = leftFootAccelerationMagnitude
-			> SKATING_ACCELERATION_CUTOFF_ENGAGE;
+			> SKATING_ACCELERATION_CUTOFF_ENGAGE * leftFootSensitivityAccel;
 		accelerationAboveThresholdRight = rightFootAccelerationMagnitude
-			> SKATING_ACCELERATION_CUTOFF_ENGAGE;
+			> SKATING_ACCELERATION_CUTOFF_ENGAGE * rightFootSensitivityAccel;
 	}
 
 	// for any setup without foot trackers the data from the imus is enough to
 	// determine lock/unlock
 	private void computeAccelerationAboveThresholdAnkleTrackers() {
 		accelerationAboveThresholdLeft = leftFootAccelerationMagnitude
-			> SKATING_ACCELERATION_THRESHOLD + SIX_TRACKER_TOLLERANCE;
+			> (SKATING_ACCELERATION_THRESHOLD + SIX_TRACKER_TOLLERANCE) * leftFootSensitivityAccel;
 		accelerationAboveThresholdRight = rightFootAccelerationMagnitude
-			> SKATING_ACCELERATION_THRESHOLD + SIX_TRACKER_TOLLERANCE;
+			> (SKATING_ACCELERATION_THRESHOLD + SIX_TRACKER_TOLLERANCE) * rightFootSensitivityAccel;
 	}
 
-	// calculate the scalar to apply to the non acceleration based lock/unlock
-	// hyperparameters
-	private float getLeftFootScalar() {
-		if (parent.leftLegState == LOCKED) {
+	// using the parent lock/unlock states, velocity, and acceleration,
+	// determine the scalars to apply to the hyperparameters when computing the
+	// lock state
+	private void computeScalar() {
+		// get the first set of scalars that are based on acceleration from the
+		// imus
+		float leftFootScalarAccel = getLeftFootScalarAccel();
+		float rightFootScalarAccel = getRightFootScalarAccel();
+
+		// get the second set of scalars that is based of of how close each foot
+		// is to a lock and dynamically adjusting the scalars
+		// (based off the assumption that if you are standing one foot is likly
+		// planted on the ground unless you are moving fast)
+		float leftFootScalarVel = getLeftFootLockLiklyHood();
+		float rightFootScalarVel = getRightFootLockLiklyHood();
+
+		// combine these two sets of scalars to get the final scalars
+		// ( -1 just makes is so if both scalars are 1.0 the final scalar is 1.0
+		// not 2)
+		leftFootSensitivityVel = leftFootScalarAccel + leftFootScalarVel - 1.0f;
+		rightFootSensitivityVel = rightFootScalarAccel + rightFootScalarVel - 1.0f;
+
+		leftFootSensitivityAccel = leftFootScalarVel;
+		rightFootSensitivityAccel = rightFootScalarVel;
+	}
+
+	// calculate a scalar using acceleration to apply to the non acceleration
+	// based hyperparameters when calculating
+	// lock states
+	private float getLeftFootScalarAccel() {
+		if (leftLegState == LOCKED) {
 			if (leftFootAccelerationMagnitude < MAX_SCALAR_ACCEL) {
 				return PARAM_SCALAR_MAX;
 			} else if (leftFootAccelerationMagnitude > MIN_SCALAR_ACCEL) {
@@ -498,11 +546,11 @@ public class LegTweakBuffer {
 					/ (MAX_SCALAR_ACCEL - MIN_SCALAR_ACCEL);
 			}
 		}
-		return 1.0f;
+		return PARAM_SCALAR_MID;
 	}
 
-	private float getRightFootScalar() {
-		if (parent.rightLegState == LOCKED) {
+	private float getRightFootScalarAccel() {
+		if (rightLegState == LOCKED) {
 			if (rightFootAccelerationMagnitude < MAX_SCALAR_ACCEL) {
 				return PARAM_SCALAR_MAX;
 			} else if (rightFootAccelerationMagnitude > MIN_SCALAR_ACCEL) {
@@ -511,6 +559,66 @@ public class LegTweakBuffer {
 					/ (MAX_SCALAR_ACCEL - MIN_SCALAR_ACCEL);
 			}
 		}
-		return 1.0f;
+		return PARAM_SCALAR_MID;
+	}
+
+	// calculate a scalar using the velocity of the foot trackers and the lock
+	// states to calculate a scalar to apply to the non acceleration based
+	// hyperparameters when calculating
+	// lock states
+	private float getLeftFootLockLiklyHood() {
+		if (leftLegState == LOCKED && rightLegState == LOCKED) {
+			Vector3f velocityDiff = leftFootVelocity.subtract(rightFootVelocity);
+			velocityDiff.setY(0.0f);
+			float velocityDiffMagnitude = velocityDiff.length();
+			if (velocityDiffMagnitude < MAX_SCALAR_DORMANT) {
+				return PARAM_SCALAR_MAX;
+			} else if (velocityDiffMagnitude > MIN_SCALAR_DORMANT) {
+				return PARAM_SCALAR_MAX
+					* (velocityDiffMagnitude - MIN_SCALAR_DORMANT)
+					/ (MAX_SCALAR_DORMANT - MIN_SCALAR_DORMANT);
+			}
+		}
+		// calculate the 'unlockedness factor' and use that to
+		// determine the scalar (go as low as 0.5 as as high as
+		// param_scalar_max)
+		float velocityDifAbs = Math.abs(leftFootVelocityMagnitude)
+			- Math.abs(rightFootVelocityMagnitude);
+		if (velocityDifAbs > MIN_SCALAR_ACTIVE) {
+			return PARAM_SCALAR_MIN;
+		} else if (velocityDifAbs < MAX_SCALAR_ACTIVE) {
+			return PARAM_SCALAR_MAX;
+		}
+		return PARAM_SCALAR_MAX
+			* (velocityDifAbs - MIN_SCALAR_ACTIVE)
+			/ (MAX_SCALAR_ACTIVE - MIN_SCALAR_ACTIVE);
+	}
+
+	private float getRightFootLockLiklyHood() {
+		if (rightLegState == LOCKED && leftLegState == LOCKED) {
+			Vector3f velocityDiff = rightFootVelocity.subtract(leftFootVelocity);
+			velocityDiff.setY(0.0f);
+			float velocityDiffMagnitude = velocityDiff.length();
+			if (velocityDiffMagnitude < MAX_SCALAR_DORMANT) {
+				return PARAM_SCALAR_MAX;
+			} else if (velocityDiffMagnitude > MIN_SCALAR_DORMANT) {
+				return PARAM_SCALAR_MAX
+					* (velocityDiffMagnitude - MIN_SCALAR_DORMANT)
+					/ (MAX_SCALAR_DORMANT - MIN_SCALAR_DORMANT);
+			}
+		}
+		// calculate the 'unlockedness factor' and use that to
+		// determine the scalar (go as low as 0.5 as as high as
+		// param_scalar_max)
+		float velocityDifAbs = Math.abs(rightFootVelocityMagnitude)
+			- Math.abs(leftFootVelocityMagnitude);
+		if (velocityDifAbs > MIN_SCALAR_ACTIVE) {
+			return PARAM_SCALAR_MIN;
+		} else if (velocityDifAbs < MAX_SCALAR_ACTIVE) {
+			return PARAM_SCALAR_MAX;
+		}
+		return PARAM_SCALAR_MAX
+			* (velocityDifAbs - MIN_SCALAR_ACTIVE)
+			/ (MAX_SCALAR_ACTIVE - MIN_SCALAR_ACTIVE);
 	}
 }

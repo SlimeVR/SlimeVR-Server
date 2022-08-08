@@ -312,7 +312,9 @@ public class RPCHandler extends ProtocolHandler<RpcMessageHeader>
 					config.getToggle(SkeletonConfigToggles.EXTENDED_SPINE_MODEL),
 					config.getToggle(SkeletonConfigToggles.EXTENDED_PELVIS_MODEL),
 					config.getToggle(SkeletonConfigToggles.EXTENDED_KNEE_MODEL),
-					config.getToggle(SkeletonConfigToggles.FORCE_ARMS_FROM_HMD)
+					config.getToggle(SkeletonConfigToggles.FORCE_ARMS_FROM_HMD),
+					config.getToggle(SkeletonConfigToggles.SKATING_CORRECTION),
+					config.getToggle(SkeletonConfigToggles.FLOOR_CLIP)
 				);
 			int ratiosOffset = ModelRatios
 				.createModelRatios(
@@ -403,6 +405,20 @@ public class RPCHandler extends ProtocolHandler<RpcMessageHeader>
 						.setToggle(
 							SkeletonConfigToggles.FORCE_ARMS_FROM_HMD,
 							toggles.forceArmsFromHmd()
+						);
+				}
+				if (toggles.floorClip()) {
+					cfg
+						.setToggle(
+							SkeletonConfigToggles.FLOOR_CLIP,
+							toggles.floorClip()
+						);
+				}
+				if (toggles.skatingCorrection()) {
+					cfg
+						.setToggle(
+							SkeletonConfigToggles.SKATING_CORRECTION,
+							toggles.skatingCorrection()
 						);
 				}
 			}
