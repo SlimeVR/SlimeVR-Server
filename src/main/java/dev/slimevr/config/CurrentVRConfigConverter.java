@@ -48,7 +48,8 @@ public class CurrentVRConfigConverter implements VersionedModelConverter {
 			}
 
 			// Move body to skeleton (and merge it to current skeleton)
-			var bodyIter = modelData.get("body").fields();
+			ObjectNode bodyNode = (ObjectNode) modelData.get("body");
+			var bodyIter = bodyNode.fields();
 			ObjectNode skeletonNode = (ObjectNode) modelData.get("skeleton");
 			if (skeletonNode == null) {
 				skeletonNode = nodeFactory.objectNode();
@@ -62,6 +63,12 @@ public class CurrentVRConfigConverter implements VersionedModelConverter {
 					offsetsNode.set(node.getKey(), node.getValue());
 				}
 			}
+			// Fix calibration wolf typos
+			offsetsNode.set("shouldersWidth", bodyNode.get("shoulersWidth"));
+			offsetsNode.set("shouldersDistance", bodyNode.get("shoulersDistance"));
+			offsetsNode.remove("shoulersWidth");
+			offsetsNode.remove("shoulersDistance");
+
 			skeletonNode.set("offsets", offsetsNode);
 			modelData.set("skeleton", skeletonNode);
 			modelData.remove("body");
