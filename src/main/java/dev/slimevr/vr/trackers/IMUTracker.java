@@ -4,7 +4,7 @@ import com.jme3.math.FastMath;
 import com.jme3.math.Quaternion;
 import com.jme3.math.Vector3f;
 import dev.slimevr.VRServer;
-import dev.slimevr.config.FilteringConfig;
+import dev.slimevr.config.FiltersConfig;
 import dev.slimevr.config.TrackerConfig;
 import dev.slimevr.vr.Device;
 import dev.slimevr.vr.trackers.udp.TrackersUDPServer;
@@ -94,14 +94,14 @@ public class IMUTracker
 				.getByDesignation(config.getDesignation())
 				.ifPresent(trackerPosition -> bodyPosition = trackerPosition);
 
-			FilteringConfig filteringConfig = this.vrserver
+			FiltersConfig filtersConfig = this.vrserver
 				.getConfigManager()
 				.getVrConfig()
-				.getFiltering();
+				.getFilters();
 			setFilter(
-				filteringConfig.getType(),
-				filteringConfig.getAmount(),
-				filteringConfig.getTicks()
+				filtersConfig.getType(),
+				filtersConfig.getAmount(),
+				filtersConfig.getTickCount()
 			);
 		}
 	}

@@ -32,7 +32,7 @@ public class TrackersFiltersGUI extends EJBagNoStretch {
 		setAlignmentY(TOP_ALIGNMENT);
 		add(Box.createVerticalStrut(10));
 		filterType = TrackerFilters
-			.valueOf(server.getConfigManager().getVrConfig().getFiltering().getType());
+			.valueOf(server.getConfigManager().getVrConfig().getFilters().getType());
 
 		JComboBox<String> filterSelect;
 		add(filterSelect = new JComboBox<>(), s(c(0, row, 2), 4, 1));
@@ -49,7 +49,7 @@ public class TrackersFiltersGUI extends EJBagNoStretch {
 				server
 					.getConfigManager()
 					.getVrConfig()
-					.getFiltering()
+					.getFilters()
 					.updateTrackersFilters(filterType, filterAmount, filterTicks);
 				server.getConfigManager().saveConfig();
 			}
@@ -59,7 +59,7 @@ public class TrackersFiltersGUI extends EJBagNoStretch {
 
 		filterAmount = FastMath
 			.clamp(
-				server.getConfigManager().getVrConfig().getFiltering().getAmount(),
+				server.getConfigManager().getVrConfig().getFilters().getAmount(),
 				0,
 				1
 			);
@@ -74,7 +74,7 @@ public class TrackersFiltersGUI extends EJBagNoStretch {
 		row++;
 		filterTicks = (int) FastMath
 			.clamp(
-				server.getConfigManager().getVrConfig().getFiltering().getTicks(),
+				server.getConfigManager().getVrConfig().getFilters().getTickCount(),
 				0,
 				80
 			);
@@ -105,7 +105,7 @@ public class TrackersFiltersGUI extends EJBagNoStretch {
 		server
 			.getConfigManager()
 			.getVrConfig()
-			.getFiltering()
+			.getFilters()
 			.updateTrackersFilters(filterType, filterAmount, filterTicks);
 		server.getConfigManager().saveConfig();
 	}

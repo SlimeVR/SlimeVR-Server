@@ -6,20 +6,20 @@ import dev.slimevr.vr.trackers.Tracker;
 import dev.slimevr.vr.trackers.TrackerFilters;
 
 
-public class FilteringConfig {
+public class FiltersConfig {
 
 
 	private String type = "NONE";
 	private float amount = 0.3f;
-	private int ticks = 1;
+	private int tickCount = 1;
 
-	public FilteringConfig() {
+	public FiltersConfig() {
 	}
 
 	public void updateTrackersFilters(TrackerFilters filter, float amount, int ticks) {
 		setType(filter.name());
 		setAmount(amount);
-		setTicks(ticks);
+		setTickCount(ticks);
 
 		IMUTracker imu;
 		for (Tracker t : Main.vrServer.getAllTrackers()) {
@@ -47,12 +47,11 @@ public class FilteringConfig {
 		this.amount = amount;
 	}
 
-	public int getTicks() {
-		return ticks;
+	public int getTickCount() {
+		return tickCount;
 	}
 
-	public void setTicks(int ticks) {
-		this.ticks = ticks;
+	public void setTickCount(int tickCount) {
+		this.tickCount = tickCount;
 	}
-
 }

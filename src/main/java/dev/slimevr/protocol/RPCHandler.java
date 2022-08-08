@@ -6,7 +6,7 @@ import com.jme3.math.Quaternion;
 import dev.slimevr.autobone.AutoBone.Epoch;
 import dev.slimevr.autobone.AutoBoneListener;
 import dev.slimevr.autobone.AutoBoneProcessType;
-import dev.slimevr.config.FilteringConfig;
+import dev.slimevr.config.FiltersConfig;
 import dev.slimevr.platform.windows.WindowsNamedPipeBridge;
 import dev.slimevr.poserecorder.PoseFrames;
 import dev.slimevr.serial.SerialListener;
@@ -249,20 +249,20 @@ public class RPCHandler extends ProtocolHandler<RpcMessageHeader>
 					&& bridge.getShareSetting(TrackerRole.RIGHT_ELBOW)
 			);
 
-		FilteringConfig filteringConfig = this.api.server
+		FiltersConfig filtersConfig = this.api.server
 			.getConfigManager()
 			.getVrConfig()
-			.getFiltering();
+			.getFilters();
 
 		int filterSettings = FilteringSettings
 			.createFilteringSettings(
 				fbb,
 				TrackerFilters
 					.valueOf(
-						filteringConfig.getType()
+						filtersConfig.getType()
 					).id,
-				(int) (filteringConfig.getAmount() * 100),
-				filteringConfig.getTicks()
+				(int) (filtersConfig.getAmount() * 100),
+				filtersConfig.getTickCount()
 			);
 
 		int modelSettings;
@@ -322,7 +322,7 @@ public class RPCHandler extends ProtocolHandler<RpcMessageHeader>
 				this.api.server
 					.getConfigManager()
 					.getVrConfig()
-					.getFiltering()
+					.getFilters()
 					.updateTrackersFilters(
 						type,
 						req.filtering().intensity() / 100.0f,

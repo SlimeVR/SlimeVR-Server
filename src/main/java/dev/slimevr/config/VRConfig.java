@@ -19,7 +19,7 @@ public class VRConfig {
 
 	private WindowConfig window = new WindowConfig();
 
-	private FilteringConfig filtering = new FilteringConfig();
+	private FiltersConfig filters = new FiltersConfig();
 
 	private AutoBoneConfig autobone = new AutoBoneConfig();
 
@@ -39,8 +39,8 @@ public class VRConfig {
 		return window;
 	}
 
-	public FilteringConfig getFiltering() {
-		return filtering;
+	public FiltersConfig getFilters() {
+		return filters;
 	}
 
 	public AutoBoneConfig getAutoBone() {
