@@ -7,7 +7,7 @@ import dev.slimevr.gui.swing.EJBagNoStretch;
 import dev.slimevr.gui.swing.EJBox;
 import dev.slimevr.gui.swing.EJBoxNoStretch;
 import dev.slimevr.platform.windows.WindowsNamedPipeBridge;
-import dev.slimevr.vr.processor.skeleton.SkeletonConfigToggle;
+import dev.slimevr.vr.processor.skeleton.SkeletonConfigToggles;
 import dev.slimevr.vr.trackers.TrackerRole;
 import io.eiren.util.MacOSX;
 import io.eiren.util.OperatingSystem;
@@ -225,7 +225,7 @@ public class VRServerGUI extends JFrame {
 				setFloorClipEnabled(
 					server.humanPoseProcessor
 						.getSkeletonConfig()
-						.getToggle(SkeletonConfigToggle.FLOOR_CLIP)
+						.getToggle(SkeletonConfigToggles.FLOOR_CLIP)
 				);
 
 
@@ -244,7 +244,7 @@ public class VRServerGUI extends JFrame {
 				setSkatingReductionEnabled(
 					server.humanPoseProcessor
 						.getSkeletonConfig()
-						.getToggle(SkeletonConfigToggle.SKATING_CORRECTION)
+						.getToggle(SkeletonConfigToggles.SKATING_CORRECTION)
 				);
 
 
