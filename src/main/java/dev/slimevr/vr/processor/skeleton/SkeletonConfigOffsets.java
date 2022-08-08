@@ -134,7 +134,7 @@ public enum SkeletonConfigOffsets {
 	SHOULDERS_DISTANCE(
 		16,
 		"Shoulders distance",
-		"shoulersDistance",
+		"shouldersDistance",
 		"Shoulders distance",
 		0.08f,
 		new BoneType[] { BoneType.LEFT_SHOULDER, BoneType.RIGHT_SHOULDER }
@@ -142,7 +142,7 @@ public enum SkeletonConfigOffsets {
 	SHOULDERS_WIDTH(
 		17,
 		"Shoulders width",
-		"shoulersWidth",
+		"shouldersWidth",
 		"Shoulders width",
 		0.36f,
 		new BoneType[] { BoneType.LEFT_SHOULDER, BoneType.RIGHT_SHOULDER }
