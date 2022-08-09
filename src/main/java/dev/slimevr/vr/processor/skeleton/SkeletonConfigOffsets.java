@@ -134,7 +134,7 @@ public enum SkeletonConfigOffsets {
 	SHOULDERS_DISTANCE(
 		16,
 		"Shoulders distance",
-		"shoulersDistance",
+		"shouldersDistance",
 		"Shoulders distance",
 		0.08f,
 		new BoneType[] { BoneType.LEFT_SHOULDER, BoneType.RIGHT_SHOULDER }
@@ -142,7 +142,7 @@ public enum SkeletonConfigOffsets {
 	SHOULDERS_WIDTH(
 		17,
 		"Shoulders width",
-		"shoulersWidth",
+		"shouldersWidth",
 		"Shoulders width",
 		0.36f,
 		new BoneType[] { BoneType.LEFT_SHOULDER, BoneType.RIGHT_SHOULDER }
@@ -165,7 +165,6 @@ public enum SkeletonConfigOffsets {
 	),;
 
 	public static final SkeletonConfigOffsets[] values = values();
-	private static final String CONFIG_PREFIX = "body.";
 	private static final Map<String, SkeletonConfigOffsets> byStringVal = new HashMap<>();
 	private static final Map<Number, SkeletonConfigOffsets> byIdVal = new HashMap<>();
 
@@ -193,7 +192,7 @@ public enum SkeletonConfigOffsets {
 	) {
 		this.id = id;
 		this.stringVal = stringVal;
-		this.configKey = CONFIG_PREFIX + configKey;
+		this.configKey = configKey;
 		this.label = label;
 
 		this.defaultValue = defaultValue;

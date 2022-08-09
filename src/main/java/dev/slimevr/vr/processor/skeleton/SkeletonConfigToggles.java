@@ -12,7 +12,6 @@ public enum SkeletonConfigToggles {
 	FORCE_ARMS_FROM_HMD(4, "Force arms from HMD", "forceArmsFromHMD", false),;
 
 	public static final SkeletonConfigToggles[] values = values();
-	public static final String CONFIG_PREFIX = "skeleton.toggles.";
 	private static final Map<String, SkeletonConfigToggles> byStringVal = new HashMap<>();
 
 	private static final Map<Number, SkeletonConfigToggles> byIdVal = new HashMap<>();
@@ -32,7 +31,7 @@ public enum SkeletonConfigToggles {
 	SkeletonConfigToggles(int id, String stringVal, String configKey, boolean defaultValue) {
 		this.id = id;
 		this.stringVal = stringVal;
-		this.configKey = CONFIG_PREFIX + configKey;
+		this.configKey = configKey;
 
 		this.defaultValue = defaultValue;
 	}

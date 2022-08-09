@@ -152,7 +152,7 @@ public class HumanSkeleton extends Skeleton implements SkeletonConfigCallback {
 	) {
 		this(computedTrackers);
 		setTrackersFromServer(server);
-		skeletonConfig.loadFromConfig(server.config);
+		skeletonConfig.loadFromConfig(server.getConfigManager());
 	}
 
 	public HumanSkeleton(
