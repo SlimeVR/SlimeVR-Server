@@ -20,7 +20,7 @@ export function Recording({ nextStep }: { nextStep: () => void }) {
           <Typography color="text-status-critical">REC</Typography>
         </div>
         <Typography variant="section-title">We're recording...</Typography>
-        <Typography color="secondary">Make the moves shown below</Typography>
+        <Typography color="secondary">Make the moves shown below:</Typography>
       </div>
       <Typography color="secondary">
         Bend knees a few times.
