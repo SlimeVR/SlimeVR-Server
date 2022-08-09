@@ -19,7 +19,7 @@ export function PreparationStep({ nextStep, prevStep}: { nextStep: () => void; p
           </div>
         </div>
 
-        <div className="flex">
+        <div className="flex gap-3">
           <Button variant="primary" onClick={prevStep}>
             Previous step
           </Button>
