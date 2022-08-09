@@ -3,11 +3,18 @@ import { Button } from '../../../../commons/Button';
 import { TipBox } from '../../../../commons/TipBox';
 import { Typography } from '../../../../commons/Typography';
 
-export function PreparationStep({ nextStep, prevStep}: { nextStep: () => void; prevStep: () => void;}) {
+export function PreparationStep({
+  nextStep,
+  prevStep,
+}: {
+  nextStep: () => void;
+  prevStep: () => void;
+}) {
   const { startRecording } = useAutobone();
 
   const start = () => {
     nextStep();
+    prevStep();
     startRecording();
   };
 
