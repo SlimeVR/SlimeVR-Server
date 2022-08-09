@@ -75,7 +75,7 @@
         "decorations": false,
         "transparent": false,
         "fileDropEnabled": false,
-        "visible": false
+        "visible": true
       }
     ],
     "security": {
