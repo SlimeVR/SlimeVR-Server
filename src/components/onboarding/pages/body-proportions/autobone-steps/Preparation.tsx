@@ -2,7 +2,7 @@ import { Button } from '../../../../commons/Button';
 import { FromtOfChairIcon } from '../../../../commons/icon/FrontOfChair';
 import { Typography } from '../../../../commons/Typography';
 
-export function PreparationStep({ nextStep }: { nextStep: () => void }) {
+export function PreparationStep({ nextStep, prevStep}: { nextStep: () => void; prevStep: () => void;}) {
   return (
     <>
       <div className="flex flex-col flex-grow">
