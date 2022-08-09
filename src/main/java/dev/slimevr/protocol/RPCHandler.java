@@ -6,6 +6,7 @@ import com.jme3.math.Quaternion;
 import dev.slimevr.autobone.AutoBone.Epoch;
 import dev.slimevr.autobone.AutoBoneListener;
 import dev.slimevr.autobone.AutoBoneProcessType;
+import dev.slimevr.config.FiltersConfig;
 import dev.slimevr.platform.windows.WindowsNamedPipeBridge;
 import dev.slimevr.poserecorder.PoseFrames;
 import dev.slimevr.serial.SerialListener;
@@ -119,7 +120,7 @@ public class RPCHandler extends ProtocolHandler<RpcMessageHeader>
 			return;
 
 		this.api.server.humanPoseProcessor.getSkeletonConfig().resetConfigs();
-		this.api.server.saveConfig();
+		this.api.server.getConfigManager().saveConfig();
 
 		// might not be a good idea maybe let the client ask again
 		FlatBufferBuilder fbb = new FlatBufferBuilder(300);
@@ -154,8 +155,8 @@ public class RPCHandler extends ProtocolHandler<RpcMessageHeader>
 		SkeletonConfigOffsets joint = SkeletonConfigOffsets.getById(req.bone());
 
 		this.api.server.humanPoseProcessor.setSkeletonConfig(joint, req.value());
-		this.api.server.humanPoseProcessor.getSkeletonConfig().saveToConfig(this.api.server.config);
-		this.api.server.saveConfig();
+		this.api.server.humanPoseProcessor.getSkeletonConfig().save();
+		this.api.server.getConfigManager().saveConfig();
 	}
 
 	public void onRecordBVHRequest(GenericConnection conn, RpcMessageHeader messageHeader) {
@@ -248,24 +249,20 @@ public class RPCHandler extends ProtocolHandler<RpcMessageHeader>
 					&& bridge.getShareSetting(TrackerRole.RIGHT_ELBOW)
 			);
 
+		FiltersConfig filtersConfig = this.api.server
+			.getConfigManager()
+			.getVrConfig()
+			.getFilters();
+
 		int filterSettings = FilteringSettings
 			.createFilteringSettings(
 				fbb,
 				TrackerFilters
 					.valueOf(
-						this.api.server.config
-							.getString(TrackerFiltering.CONFIG_PREFIX + "type", "NONE")
+						filtersConfig.getType()
 					).id,
-				(int) (this.api.server.config
-					.getFloat(
-						TrackerFiltering.CONFIG_PREFIX + "amount",
-						TrackerFiltering.DEFAULT_INTENSITY
-					) * 100),
-				this.api.server.config
-					.getInt(
-						TrackerFiltering.CONFIG_PREFIX + "tickCount",
-						TrackerFiltering.DEFAULT_TICK
-					)
+				(int) (filtersConfig.getAmount() * 100),
+				filtersConfig.getTickCount()
 			);
 
 		int modelSettings;
@@ -323,11 +320,15 @@ public class RPCHandler extends ProtocolHandler<RpcMessageHeader>
 			TrackerFilters type = TrackerFilters.fromId(req.filtering().type());
 			if (type != null) {
 				this.api.server
+					.getConfigManager()
+					.getVrConfig()
+					.getFilters()
 					.updateTrackersFilters(
 						type,
 						req.filtering().intensity() / 100.0f,
 						req.filtering().ticks()
 					);
+				this.api.server.getConfigManager().saveConfig();
 			}
 		}
 
@@ -413,8 +414,8 @@ public class RPCHandler extends ProtocolHandler<RpcMessageHeader>
 				}
 			}
 
-			cfg.saveToConfig(this.api.server.config);
-			this.api.server.saveConfig();
+			cfg.save();
+			this.api.server.getConfigManager().saveConfig();
 		}
 
 	}

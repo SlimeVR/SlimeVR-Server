@@ -15,7 +15,6 @@ public enum SkeletonConfigValues {
 	// @formatter:on
 
 	public static final SkeletonConfigValues[] values = values();
-	public static final String CONFIG_PREFIX = "skeleton.values.";
 	private static final Map<String, SkeletonConfigValues> byStringVal = new HashMap<>();
 
 	private static final Map<Number, SkeletonConfigValues> byIdVal = new HashMap<>();
@@ -40,7 +39,7 @@ public enum SkeletonConfigValues {
 	) {
 		this.id = id;
 		this.stringVal = stringVal;
-		this.configKey = CONFIG_PREFIX + configKey;
+		this.configKey = configKey;
 
 		this.defaultValue = defaultValue;
 	}

@@ -3,7 +3,6 @@ package dev.slimevr.gui;
 import com.jme3.math.FastMath;
 import dev.slimevr.VRServer;
 import dev.slimevr.gui.swing.EJBagNoStretch;
-import dev.slimevr.vr.trackers.TrackerFiltering;
 import dev.slimevr.vr.trackers.TrackerFilters;
 import io.eiren.util.StringUtils;
 
@@ -32,7 +31,8 @@ public class TrackersFiltersGUI extends EJBagNoStretch {
 
 		setAlignmentY(TOP_ALIGNMENT);
 		add(Box.createVerticalStrut(10));
-		filterType = TrackerFilters.valueOf(server.config.getString("filters.type", "NONE"));
+		filterType = TrackerFilters
+			.valueOf(server.getConfigManager().getVrConfig().getFilters().getType());
 
 		JComboBox<String> filterSelect;
 		add(filterSelect = new JComboBox<>(), s(c(0, row, 2), 4, 1));
@@ -46,7 +46,12 @@ public class TrackersFiltersGUI extends EJBagNoStretch {
 			@Override
 			public void actionPerformed(ActionEvent e) {
 				filterType = TrackerFilters.valueOf(filterSelect.getSelectedItem().toString());
-				server.updateTrackersFilters(filterType, filterAmount, filterTicks);
+				server
+					.getConfigManager()
+					.getVrConfig()
+					.getFilters()
+					.updateTrackersFilters(filterType, filterAmount, filterTicks);
+				server.getConfigManager().saveConfig();
 			}
 		});
 		add(Box.createVerticalStrut(40));
@@ -54,11 +59,7 @@ public class TrackersFiltersGUI extends EJBagNoStretch {
 
 		filterAmount = FastMath
 			.clamp(
-				server.config
-					.getFloat(
-						TrackerFiltering.CONFIG_PREFIX + "amount",
-						TrackerFiltering.DEFAULT_INTENSITY
-					),
+				server.getConfigManager().getVrConfig().getFilters().getAmount(),
 				0,
 				1
 			);
@@ -73,11 +74,7 @@ public class TrackersFiltersGUI extends EJBagNoStretch {
 		row++;
 		filterTicks = (int) FastMath
 			.clamp(
-				server.config
-					.getInt(
-						TrackerFiltering.CONFIG_PREFIX + "tickCount",
-						TrackerFiltering.DEFAULT_TICK
-					),
+				server.getConfigManager().getVrConfig().getFilters().getTickCount(),
 				0,
 				80
 			);
@@ -105,7 +102,12 @@ public class TrackersFiltersGUI extends EJBagNoStretch {
 			ticksLabel.setText((StringUtils.prettyNumber(filterTicks)));
 		}
 
-		server.updateTrackersFilters(filterType, filterAmount, filterTicks);
+		server
+			.getConfigManager()
+			.getVrConfig()
+			.getFilters()
+			.updateTrackersFilters(filterType, filterAmount, filterTicks);
+		server.getConfigManager().saveConfig();
 	}
 
 	private class AdjButton extends JButton {

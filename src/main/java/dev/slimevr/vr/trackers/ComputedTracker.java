@@ -2,6 +2,7 @@ package dev.slimevr.vr.trackers;
 
 import com.jme3.math.Quaternion;
 import com.jme3.math.Vector3f;
+import dev.slimevr.config.TrackerConfig;
 import dev.slimevr.vr.Device;
 
 
@@ -39,18 +40,18 @@ public class ComputedTracker implements Tracker, TrackerWithTPS {
 	}
 
 	@Override
-	public void saveConfig(TrackerConfig config) {
+	public void writeConfig(TrackerConfig config) {
 		config.setDesignation(bodyPosition == null ? null : bodyPosition.designation);
 	}
 
 	@Override
-	public void loadConfig(TrackerConfig config) {
+	public void readConfig(TrackerConfig config) {
 		// Loading a config is an act of user editing, therefore it shouldn't
 		// not be
 		// allowed if editing is not allowed
 		if (userEditable()) {
 			TrackerPosition
-				.getByDesignation(config.designation)
+				.getByDesignation(config.getDesignation())
 				.ifPresent(trackerPosition -> bodyPosition = trackerPosition);
 		}
 	}

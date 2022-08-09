@@ -3,6 +3,7 @@ package dev.slimevr;
 import dev.slimevr.autobone.AutoBoneHandler;
 import dev.slimevr.bridge.Bridge;
 import dev.slimevr.bridge.VMCBridge;
+import dev.slimevr.config.ConfigManager;
 import dev.slimevr.platform.windows.WindowsNamedPipeBridge;
 import dev.slimevr.poserecorder.BVHRecorder;
 import dev.slimevr.protocol.ProtocolAPI;
@@ -18,12 +19,8 @@ import io.eiren.util.OperatingSystem;
 import io.eiren.util.ann.ThreadSafe;
 import io.eiren.util.ann.ThreadSecure;
 import io.eiren.util.collections.FastList;
-import io.eiren.yaml.YamlException;
-import io.eiren.yaml.YamlFile;
-import io.eiren.yaml.YamlNode;
 import solarxr_protocol.datatypes.TrackerIdT;
 
-import java.io.*;
 import java.net.InetAddress;
 import java.net.UnknownHostException;
 import java.util.*;
@@ -34,13 +31,11 @@ import java.util.function.Consumer;
 public class VRServer extends Thread {
 
 	public final HumanPoseProcessor humanPoseProcessor;
-	public final YamlFile config = new YamlFile();
 	public final HMDTracker hmdTracker;
 	private final List<Tracker> trackers = new FastList<>();
 	private final TrackersUDPServer trackersServer;
 	private final List<Bridge> bridges = new FastList<>();
 	private final Queue<Runnable> tasks = new LinkedBlockingQueue<>();
-	private final Map<String, TrackerConfig> configuration = new HashMap<>();
 	private final List<Consumer<Tracker>> newTrackersConsumers = new FastList<>();
 	private final List<Runnable> onTick = new FastList<>();
 	private final List<? extends ShareableTracker> shareTrackers;
@@ -49,16 +44,21 @@ public class VRServer extends Thread {
 	private final SerialHandler serialHandler;
 	private final AutoBoneHandler autoBoneHandler;
 	private final ProtocolAPI protocolAPI;
-	private final String configPath;
 
+	private final ConfigManager configManager;
+
+	/**
+	 * This function is used by VRWorkout, do not remove!
+	 */
 	public VRServer() {
 		this("vrconfig.yml");
 	}
 
 	public VRServer(String configPath) {
 		super("VRServer");
-		this.configPath = configPath;
-		loadConfig();
+
+		this.configManager = new ConfigManager(configPath);
+		this.configManager.loadConfig();
 
 		deviceManager = new DeviceManager(this);
 
@@ -81,6 +81,7 @@ public class VRServer extends Thread {
 
 			// Create named pipe bridge for SteamVR driver
 			WindowsNamedPipeBridge driverBridge = new WindowsNamedPipeBridge(
+				this,
 				hmdTracker,
 				"steamvr",
 				"SteamVR Driver Bridge",
@@ -93,6 +94,7 @@ public class VRServer extends Thread {
 			// Create named pipe bridge for SteamVR input
 			// TODO: how do we want to handle HMD input from the feeder app?
 			WindowsNamedPipeBridge feederBridge = new WindowsNamedPipeBridge(
+				this,
 				null,
 				"steamvr_feeder",
 				"SteamVR Feeder Bridge",
@@ -144,34 +146,6 @@ public class VRServer extends Thread {
 		return null;
 	}
 
-	@ThreadSafe
-	public TrackerConfig getTrackerConfig(Tracker tracker) {
-		synchronized (configuration) {
-			TrackerConfig config = configuration.get(tracker.getName());
-			if (config == null) {
-				config = new TrackerConfig(tracker);
-				configuration.put(tracker.getName(), config);
-			}
-			return config;
-		}
-	}
-
-	private void loadConfig() {
-		try {
-			config.load(new FileInputStream(new File(this.configPath)));
-		} catch (FileNotFoundException e) {
-			// Config file didn't exist, is not an error
-		} catch (YamlException e) {
-			e.printStackTrace();
-		}
-		List<YamlNode> trackersConfig = config.getNodeList("trackers", null);
-		for (YamlNode node : trackersConfig) {
-			TrackerConfig cfg = new TrackerConfig(node);
-			synchronized (configuration) {
-				configuration.put(cfg.trackerName, cfg);
-			}
-		}
-	}
 
 	public void addOnTick(Runnable runnable) {
 		this.onTick.add(runnable);
@@ -191,9 +165,8 @@ public class VRServer extends Thread {
 	public void trackerUpdated(Tracker tracker) {
 		queueTask(() -> {
 			humanPoseProcessor.trackerUpdated(tracker);
-			TrackerConfig tc = getTrackerConfig(tracker);
-			tracker.saveConfig(tc);
-			saveConfig();
+			this.getConfigManager().getVrConfig().writeTrackerConfig(tracker);
+			this.getConfigManager().saveConfig();
 		});
 	}
 
@@ -202,40 +175,6 @@ public class VRServer extends Thread {
 		queueTask(() -> {
 			humanPoseProcessor.addSkeletonUpdatedCallback(consumer);
 		});
-	}
-
-	@ThreadSafe
-	public synchronized void saveConfig() {
-		List<YamlNode> nodes = config.getNodeList("trackers", null);
-		List<Map<String, Object>> trackersConfig = new FastList<>(nodes.size());
-		for (YamlNode node : nodes) {
-			trackersConfig.add(node.root);
-		}
-		config.setProperty("trackers", trackersConfig);
-		synchronized (configuration) {
-			Iterator<TrackerConfig> iterator = configuration.values().iterator();
-			while (iterator.hasNext()) {
-				TrackerConfig tc = iterator.next();
-				Map<String, Object> cfg = null;
-				for (Map<String, Object> c : trackersConfig) {
-					if (tc.trackerName.equals(c.get("name"))) {
-						cfg = c;
-						break;
-					}
-				}
-				if (cfg == null) {
-					cfg = new HashMap<>();
-					trackersConfig.add(cfg);
-				}
-				tc.saveConfig(new YamlNode(cfg));
-			}
-		}
-		File cfgFile = new File(this.configPath);
-		try {
-			config.save(new FileOutputStream(cfgFile));
-		} catch (IOException e) {
-			e.printStackTrace();
-		}
 	}
 
 	@Override
@@ -282,8 +221,7 @@ public class VRServer extends Thread {
 
 	@ThreadSecure
 	public void registerTracker(Tracker tracker) {
-		TrackerConfig config = getTrackerConfig(tracker);
-		tracker.loadConfig(config);
+		this.getConfigManager().getVrConfig().readTrackerConfig(tracker);
 		queueTask(() -> {
 			trackers.add(tracker);
 			trackerAdded(tracker);
@@ -291,22 +229,6 @@ public class VRServer extends Thread {
 				tc.accept(tracker);
 			}
 		});
-	}
-
-	public void updateTrackersFilters(TrackerFilters filter, float amount, int ticks) {
-		config.setProperty("filters.type", filter.name());
-		config.setProperty("filters.amount", amount);
-		config.setProperty("filters.tickCount", ticks);
-		saveConfig();
-
-		IMUTracker imu;
-		for (Tracker t : this.getAllTrackers()) {
-			Tracker tracker = t.get();
-			if (tracker instanceof IMUTracker) {
-				imu = (IMUTracker) tracker;
-				imu.setFilter(filter.name(), amount, ticks);
-			}
-		}
 	}
 
 	public void resetTrackers() {
@@ -375,5 +297,9 @@ public class VRServer extends Thread {
 
 	public DeviceManager getDeviceManager() {
 		return deviceManager;
+	}
+
+	public ConfigManager getConfigManager() {
+		return configManager;
 	}
 }

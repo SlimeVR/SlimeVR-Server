@@ -2,9 +2,9 @@ package dev.slimevr.poserecorder;
 
 import com.jme3.math.Quaternion;
 import com.jme3.math.Vector3f;
+import dev.slimevr.config.TrackerConfig;
 import dev.slimevr.vr.Device;
 import dev.slimevr.vr.trackers.Tracker;
-import dev.slimevr.vr.trackers.TrackerConfig;
 import dev.slimevr.vr.trackers.TrackerPosition;
 import dev.slimevr.vr.trackers.TrackerStatus;
 import io.eiren.util.collections.FastList;
@@ -173,14 +173,14 @@ public class PoseFrameTracker implements Tracker, Iterable<TrackerFrame> {
 	}
 
 	@Override
-	public void loadConfig(TrackerConfig config) {
+	public void readConfig(TrackerConfig config) {
 		throw new UnsupportedOperationException(
 			"PoseFrameTracker does not implement configuration"
 		);
 	}
 
 	@Override
-	public void saveConfig(TrackerConfig config) {
+	public void writeConfig(TrackerConfig config) {
 		throw new UnsupportedOperationException(
 			"PoseFrameTracker does not implement configuration"
 		);
