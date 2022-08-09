@@ -2,7 +2,7 @@ import { Button } from '../../../../commons/Button';
 import { FromtOfChairIcon } from '../../../../commons/icon/FrontOfChair';
 import { Typography } from '../../../../commons/Typography';
 
-export function PreparationStep({ nextStep, prevStep}: { nextStep: () => void; prevStep: () => void;}) {
+export function PreparationStep({ nextStep, prevStep, variant}: { nextStep: () => void; prevStep: () => void; variant: 'onboarding' | 'alone';}) {
   return (
     <>
       <div className="flex flex-col flex-grow">
@@ -20,7 +20,10 @@ export function PreparationStep({ nextStep, prevStep}: { nextStep: () => void; p
         </div>
 
         <div className="flex gap-3">
-          <Button variant="primary" onClick={prevStep}>
+          <Button 
+			variant={variant === 'onboarding' ? 'secondary' : 'tierciary'} 
+			onClick={prevStep}
+		  >
             Previous step
           </Button>
           <Button variant="primary" onClick={nextStep}>
