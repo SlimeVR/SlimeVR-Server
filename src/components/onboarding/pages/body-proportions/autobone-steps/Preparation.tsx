@@ -20,6 +20,9 @@ export function PreparationStep({ nextStep }: { nextStep: () => void }) {
         </div>
 
         <div className="flex">
+          <Button variant="primary" onClick={prevStep}>
+            Previous step
+          </Button>
           <Button variant="primary" onClick={nextStep}>
             I am in front of a chair
           </Button>
