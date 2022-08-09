@@ -3,7 +3,7 @@ import { Button } from '../../../../commons/Button';
 import { TipBox } from '../../../../commons/TipBox';
 import { Typography } from '../../../../commons/Typography';
 
-export function StartRecording({ nextStep, prevStep }: { nextStep: () => void; prevStep: () => void }) {
+export function StartRecording({ nextStep, prevStep, variant }: { nextStep: () => void; prevStep: () => void; variant: 'onboarding' | 'alone'; }) {
   const { startRecording } = useAutobone();
 
   const start = () => {
@@ -16,7 +16,7 @@ export function StartRecording({ nextStep, prevStep }: { nextStep: () => void; p
       <div className="flex flex-col flex-grow">
         <div className="flex flex-grow flex-col gap-4 max-w-sm">
           <Typography variant="main-title" bold>
-            Make some moves
+            Get ready to move
           </Typography>
           <div>
             <Typography color="secondary">
@@ -38,7 +38,10 @@ export function StartRecording({ nextStep, prevStep }: { nextStep: () => void; p
         </div>
 
         <div className="flex gap-3">
-          <Button variant="primary" onClick={prevStep}>
+          <Button 
+			variant={variant === 'onboarding' ? 'secondary' : 'tierciary'} 
+			onClick={prevStep}
+		  >
             Previous step
           </Button>
           <Button variant="primary" onClick={start}>
