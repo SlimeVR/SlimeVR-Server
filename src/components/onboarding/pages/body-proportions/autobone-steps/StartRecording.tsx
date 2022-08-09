@@ -23,7 +23,10 @@ export function StartRecording({ nextStep }: { nextStep: () => void }) {
               We're now going to record some specific poses and
             </Typography>
             <Typography color="secondary">
-              moves. these will be prompted in the next screen.
+              moves. These will be prompted in the next screen.
+            </Typography>
+            <Typography color="secondary">
+              Be ready to start when the button is pressed!
             </Typography>
           </div>
           <div className="flex">
@@ -35,6 +38,9 @@ export function StartRecording({ nextStep }: { nextStep: () => void }) {
         </div>
 
         <div className="flex">
+          <Button variant="primary" onClick={prevStep}>
+            Previous step
+          </Button>
           <Button variant="primary" onClick={start}>
             Start Recording
           </Button>
