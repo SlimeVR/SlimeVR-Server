@@ -1,6 +1,7 @@
 import { useEffect } from 'react';
 import { useAutobone } from '../../../../../hooks/autobone';
 import { ProgressBar } from '../../../../commons/ProgressBar';
+import { TipBox } from '../../../../commons/TipBox';
 import { Typography } from '../../../../commons/Typography';
 
 export function Recording({ nextStep }: { nextStep: () => void }) {
