@@ -42,7 +42,13 @@ export function ResetButton({ type }: { type: ResetType }) {
             : 'Reset'
           : `${3 - timer}`
       }
-      icon={type === ResetType.Quick ? <QuickResetIcon /> : <ResetIcon />}
+      icon={
+        type === ResetType.Quick ? (
+          <QuickResetIcon width={20} />
+        ) : (
+          <ResetIcon width={20} />
+        )
+      }
       onClick={reset}
       disabled={reseting}
     ></BigButton>

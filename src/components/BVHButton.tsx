@@ -23,7 +23,7 @@ export function BVHButton() {
   return (
     <BigButton
       text={recording ? 'Recording...' : 'Record BVH'}
-      icon={<RecordIcon />}
+      icon={<RecordIcon width={20} />}
       onClick={toggleBVH}
     ></BigButton>
   );

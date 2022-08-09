@@ -19,7 +19,7 @@ export function BigButton({
       {...props}
       type="button"
       className={classNames(
-        'flex w-full justify-center rounded-md py-5 gap-5 px-5 cursor-pointer items-center ',
+        'flex flex-col justify-center rounded-md py-3 gap-1 px-3 cursor-pointer items-center ',
         {
           'bg-background-60 hover:bg-background-60 cursor-not-allowed text-background-40 fill-background-40':
             disabled,

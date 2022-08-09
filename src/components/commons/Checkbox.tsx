@@ -38,7 +38,7 @@ export function CheckBox({
     <Controller
       control={control}
       name={name}
-      render={({ field: { onChange, value, ref } }) => (
+      render={({ field: { onChange, value, ref, onBlur, name } }) => (
         <div
           className={classNames(
             {
@@ -58,6 +58,7 @@ export function CheckBox({
               ref={ref}
               onChange={onChange}
               checked={value}
+              name={name}
               className={classes.checkbox}
               type="checkbox"
               {...props}

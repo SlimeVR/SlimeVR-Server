@@ -6,6 +6,7 @@ import { Navbar } from './Navbar';
 import { ResetButton } from './home/ResetButton';
 import { TopBar } from './TopBar';
 import classNames from 'classnames';
+import { OverlayWidget } from './widgets/OverlayWidget';
 
 export function MainLayoutRoute({
   children,
@@ -39,15 +40,14 @@ export function MainLayoutRoute({
               {children}
             </div>
             {widgets && (
-              <div className="flex flex-col px-4 min-w-[274px] w-[274px] gap-2 pt-4 rounded-xl overflow-y-auto bg-background-70">
-                <div className="flex">
+              <div className="flex flex-col px-2 min-w-[274px] w-[274px] gap-2 pt-2 rounded-xl overflow-y-auto bg-background-70">
+                <div className="grid grid-cols-3 gap-2 w-full">
                   <ResetButton type={ResetType.Quick}></ResetButton>
-                </div>
-                <div className="flex">
                   <ResetButton type={ResetType.Full}></ResetButton>
-                </div>
-                <div className="flex">
                   <BVHButton></BVHButton>
+                </div>
+                <div className="w-full">
+                  <OverlayWidget></OverlayWidget>
                 </div>
               </div>
             )}
