@@ -23,7 +23,11 @@ export function Recording({ nextStep }: { nextStep: () => void }) {
         <Typography color="secondary">Make the moves shown below</Typography>
       </div>
       <Typography color="secondary">
-        Do squads (we probably want illustrations here)
+        Bend knees a few times.
+        Sit on a chair then stand up.
+        Twist upper body left then bend right.
+        Twist upper body right then bend left.
+        Wiggle around until timer ends.
       </Typography>
       <div className="flex flex-col gap-2 items-center w-full max-w-[150px]">
         <ProgressBar progress={progress} height={2}></ProgressBar>
