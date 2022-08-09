@@ -8,7 +8,7 @@ export function DoneStep() {
           Body measured and saved!
         </Typography>
         <Typography color="secondary">
-          Your body proportions calibtation is complete
+          Your body proportions calibration is complete!
         </Typography>
       </div>
       {/* <Button variant="primary">Continue to next step</Button> */}
