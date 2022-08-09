@@ -6,6 +6,7 @@ import dev.slimevr.vr.processor.skeleton.Skeleton;
 import dev.slimevr.vr.processor.skeleton.HumanSkeleton;
 import dev.slimevr.vr.processor.skeleton.SkeletonConfig;
 import dev.slimevr.vr.processor.skeleton.SkeletonConfigOffsets;
+import dev.slimevr.vr.processor.skeleton.SkeletonConfigToggles;
 import dev.slimevr.vr.trackers.*;
 import io.eiren.util.ann.ThreadSafe;
 import io.eiren.util.collections.FastList;
@@ -210,8 +211,12 @@ public class HumanPoseProcessor {
 	public void setFloorClipEnabled(boolean value) {
 		if (skeleton != null) {
 			skeleton.setFloorclipEnabled(value);
-			this.getSkeletonConfig().saveToConfig(server.config);
-			server.saveConfig();
+			server
+				.getConfigManager()
+				.getVrConfig()
+				.getSkeleton()
+				.getToggles()
+				.put(SkeletonConfigToggles.FLOOR_CLIP.stringVal, value);
 		}
 	}
 
@@ -219,8 +224,12 @@ public class HumanPoseProcessor {
 	public void setSkatingCorrectionEnabled(boolean value) {
 		if (skeleton != null) {
 			skeleton.setSkatingCorrectionEnabled(value);
-			this.getSkeletonConfig().saveToConfig(server.config);
-			server.saveConfig();
+			server
+				.getConfigManager()
+				.getVrConfig()
+				.getSkeleton()
+				.getToggles()
+				.put(SkeletonConfigToggles.SKATING_CORRECTION.stringVal, value);
 		}
 	}
 }
