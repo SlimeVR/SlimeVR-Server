@@ -15,14 +15,15 @@ import java.io.*;
 
 public class ConfigManager {
 
-	private static final String CONFIG_PATH = "vrconfig.yml";
+	private final String configPath;
 
 	private final ObjectMapper om;
 
 	private VRConfig vrConfig;
 
 
-	public ConfigManager() {
+	public ConfigManager(String configPath) {
+		this.configPath = configPath;
 		om = new ObjectMapper(new YAMLFactory());
 		om.configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false);
 		om.registerModule(new VersioningModule());
@@ -35,7 +36,7 @@ public class ConfigManager {
 	public void loadConfig() {
 		try {
 			this.vrConfig = om
-				.readValue(new FileInputStream(new File(CONFIG_PATH)), VRConfig.class);
+				.readValue(new FileInputStream(new File(configPath)), VRConfig.class);
 		} catch (FileNotFoundException e) {
 			// Config file didn't exist, is not an error
 		} catch (IOException e) {
@@ -49,7 +50,7 @@ public class ConfigManager {
 
 	@ThreadSafe
 	public synchronized void saveConfig() {
-		File cfgFile = new File(CONFIG_PATH);
+		File cfgFile = new File(configPath);
 
 		try {
 			om.writeValue(cfgFile, this.vrConfig);

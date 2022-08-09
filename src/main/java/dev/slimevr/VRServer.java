@@ -47,10 +47,17 @@ public class VRServer extends Thread {
 
 	private final ConfigManager configManager;
 
+	/**
+	 * This function is used by VRWorkout, do not remove!
+	 */
 	public VRServer() {
+		this("vrconfig.yml");
+	}
+
+	public VRServer(String configPath) {
 		super("VRServer");
 
-		this.configManager = new ConfigManager();
+		this.configManager = new ConfigManager(configPath);
 		this.configManager.loadConfig();
 
 		deviceManager = new DeviceManager(this);
