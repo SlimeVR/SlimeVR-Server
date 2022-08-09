@@ -3,7 +3,15 @@ import { Button } from '../../../../commons/Button';
 import { TipBox } from '../../../../commons/TipBox';
 import { Typography } from '../../../../commons/Typography';
 
-export function StartRecording({ nextStep, prevStep, variant }: { nextStep: () => void; prevStep: () => void; variant: 'onboarding' | 'alone'; }) {
+export function StartRecording({
+  nextStep,
+  prevStep,
+  variant,
+}: {
+  nextStep: () => void;
+  prevStep: () => void;
+  variant: 'onboarding' | 'alone';
+}) {
   const { startRecording } = useAutobone();
 
   const start = () => {
@@ -38,10 +46,10 @@ export function StartRecording({ nextStep, prevStep, variant }: { nextStep: () =
         </div>
 
         <div className="flex gap-3">
-          <Button 
-			variant={variant === 'onboarding' ? 'secondary' : 'tierciary'} 
-			onClick={prevStep}
-		  >
+          <Button
+            variant={variant === 'onboarding' ? 'secondary' : 'tierciary'}
+            onClick={prevStep}
+          >
             Previous step
           </Button>
           <Button variant="primary" onClick={start}>
