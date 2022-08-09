@@ -29,6 +29,11 @@ export function Recording({ nextStep }: { nextStep: () => void }) {
         Twist upper body right then bend left.
         Wiggle around until timer ends.
       </Typography>
+      <div className="flex">
+        <TipBox>
+          Ensure your heels do not move during recording!
+        </TipBox>
+      </div>
       <div className="flex flex-col gap-2 items-center w-full max-w-[150px]">
         <ProgressBar progress={progress} height={2}></ProgressBar>
         <Typography color="secondary">
