@@ -23,13 +23,23 @@ export function Recording({ nextStep }: { nextStep: () => void }) {
         <Typography variant="section-title">Recording in progress...</Typography>
         <Typography color="secondary">Make the moves shown below:</Typography>
       </div>
-      <Typography color="secondary">
-        Bend knees a few times.
-        Sit on a chair then stand up.
-        Twist upper body left then bend right.
-        Twist upper body right then bend left.
-        Wiggle around until timer ends.
-      </Typography>
+	  <div>
+		<Typography color="secondary">
+		Bend knees a few times.
+        </Typography>
+        <Typography color="secondary">
+		Sit on a chair then stand up.
+        </Typography>
+        <Typography color="secondary">
+		Twist upper body left, then bend right.
+		</Typography>
+		<Typography color="secondary">
+		Twist upper body right, then bend left.
+		</Typography>
+		<Typography color="secondary">
+		Wiggle around until timer ends.
+		</Typography>
+      </div>
       <div className="flex">
         <TipBox>
           Ensure your heels do not move during recording!
