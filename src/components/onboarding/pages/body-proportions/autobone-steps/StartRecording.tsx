@@ -3,7 +3,7 @@ import { Button } from '../../../../commons/Button';
 import { TipBox } from '../../../../commons/TipBox';
 import { Typography } from '../../../../commons/Typography';
 
-export function StartRecording({ nextStep }: { nextStep: () => void }) {
+export function StartRecording({ nextStep, prevStep, variant }: { nextStep: () => void; prevStep: () => void; variant: 'onboarding' | 'alone'; }) {
   const { startRecording } = useAutobone();
 
   const start = () => {
@@ -16,14 +16,17 @@ export function StartRecording({ nextStep }: { nextStep: () => void }) {
       <div className="flex flex-col flex-grow">
         <div className="flex flex-grow flex-col gap-4 max-w-sm">
           <Typography variant="main-title" bold>
-            Make some moves
+            Get ready to move
           </Typography>
           <div>
             <Typography color="secondary">
               We're now going to record some specific poses and
             </Typography>
             <Typography color="secondary">
-              moves. these will be prompted in the next screen.
+              moves. These will be prompted in the next screen.
+            </Typography>
+            <Typography color="secondary">
+              Be ready to start when the button is pressed!
             </Typography>
           </div>
           <div className="flex">
@@ -34,7 +37,13 @@ export function StartRecording({ nextStep }: { nextStep: () => void }) {
           </div>
         </div>
 
-        <div className="flex">
+        <div className="flex gap-3">
+          <Button 
+			variant={variant === 'onboarding' ? 'secondary' : 'tierciary'} 
+			onClick={prevStep}
+		  >
+            Previous step
+          </Button>
           <Button variant="primary" onClick={start}>
             Start Recording
           </Button>

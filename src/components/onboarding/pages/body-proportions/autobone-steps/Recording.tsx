@@ -1,6 +1,7 @@
 import { useEffect } from 'react';
 import { useAutobone } from '../../../../../hooks/autobone';
 import { ProgressBar } from '../../../../commons/ProgressBar';
+import { TipBox } from '../../../../commons/TipBox';
 import { Typography } from '../../../../commons/Typography';
 
 export function Recording({ nextStep }: { nextStep: () => void }) {
@@ -19,12 +20,31 @@ export function Recording({ nextStep }: { nextStep: () => void }) {
           <div className="w-2 h-2 rounded-lg bg-status-critical"></div>
           <Typography color="text-status-critical">REC</Typography>
         </div>
-        <Typography variant="section-title">We're recording...</Typography>
-        <Typography color="secondary">Make the moves shown below</Typography>
+        <Typography variant="section-title">Recording in progress...</Typography>
+        <Typography color="secondary">Make the moves shown below:</Typography>
       </div>
-      <Typography color="secondary">
-        Do squads (we probably want illustrations here)
-      </Typography>
+	  <div>
+		<Typography color="secondary">
+		Bend knees a few times.
+        </Typography>
+        <Typography color="secondary">
+		Sit on a chair then stand up.
+        </Typography>
+        <Typography color="secondary">
+		Twist upper body left, then bend right.
+		</Typography>
+		<Typography color="secondary">
+		Twist upper body right, then bend left.
+		</Typography>
+		<Typography color="secondary">
+		Wiggle around until timer ends.
+		</Typography>
+      </div>
+      <div className="flex">
+        <TipBox>
+          Ensure your heels do not move during recording!
+        </TipBox>
+      </div>
       <div className="flex flex-col gap-2 items-center w-full max-w-[150px]">
         <ProgressBar progress={progress} height={2}></ProgressBar>
         <Typography color="secondary">
