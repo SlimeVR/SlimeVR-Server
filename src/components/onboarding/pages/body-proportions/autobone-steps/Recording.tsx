@@ -20,30 +20,26 @@ export function Recording({ nextStep }: { nextStep: () => void }) {
           <div className="w-2 h-2 rounded-lg bg-status-critical"></div>
           <Typography color="text-status-critical">REC</Typography>
         </div>
-        <Typography variant="section-title">Recording in progress...</Typography>
+        <Typography variant="section-title">
+          Recording in progress...
+        </Typography>
         <Typography color="secondary">Make the moves shown below:</Typography>
       </div>
-	  <div>
-		<Typography color="secondary">
-		Bend knees a few times.
+      <div>
+        <Typography color="secondary">Bend knees a few times.</Typography>
+        <Typography color="secondary">Sit on a chair then stand up.</Typography>
+        <Typography color="secondary">
+          Twist upper body left, then bend right.
         </Typography>
         <Typography color="secondary">
-		Sit on a chair then stand up.
+          Twist upper body right, then bend left.
         </Typography>
         <Typography color="secondary">
-		Twist upper body left, then bend right.
-		</Typography>
-		<Typography color="secondary">
-		Twist upper body right, then bend left.
-		</Typography>
-		<Typography color="secondary">
-		Wiggle around until timer ends.
-		</Typography>
+          Wiggle around until timer ends.
+        </Typography>
       </div>
       <div className="flex">
-        <TipBox>
-          Ensure your heels do not move during recording!
-        </TipBox>
+        <TipBox>Ensure your heels do not move during recording!</TipBox>
       </div>
       <div className="flex flex-col gap-2 items-center w-full max-w-[150px]">
         <ProgressBar progress={progress} height={2}></ProgressBar>
