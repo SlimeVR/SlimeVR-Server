@@ -95,6 +95,7 @@ fn main() {
     };
 
     tauri::Builder::default()
+        .plugin(tauri_plugin_window_state::Builder::default().build())
         .setup(|app| {
             if let Some(mut recv) = stdout_recv {
                 let app_handle = app.app_handle();
@@ -120,7 +121,7 @@ fn main() {
             }
             Ok(())
         })
-        .plugin(tauri_plugin_window_state::Builder::default().build())
+        //
         .run(tauri::generate_context!())
         .expect("error while running tauri application");
 }
