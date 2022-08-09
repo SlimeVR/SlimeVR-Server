@@ -7,6 +7,7 @@ import dev.slimevr.autobone.AutoBone.Epoch;
 import dev.slimevr.autobone.AutoBoneListener;
 import dev.slimevr.autobone.AutoBoneProcessType;
 import dev.slimevr.config.FiltersConfig;
+import dev.slimevr.config.OverlayConfig;
 import dev.slimevr.platform.windows.WindowsNamedPipeBridge;
 import dev.slimevr.poserecorder.PoseFrames;
 import dev.slimevr.serial.SerialListener;
@@ -58,8 +59,45 @@ public class RPCHandler extends ProtocolHandler<RpcMessageHeader>
 
 		registerPacketListener(RpcMessage.AutoBoneProcessRequest, this::onAutoBoneProcessRequest);
 
+		registerPacketListener(
+			RpcMessage.OverlayDisplayModeChangeRequest,
+			this::onOverlayDisplayModeChangeRequest
+		);
+		registerPacketListener(
+			RpcMessage.OverlayDisplayModeRequest,
+			this::onOverlayDisplayModeRequest
+		);
+
 		this.api.server.getSerialHandler().addListener(this);
 		this.api.server.getAutoBoneHandler().addListener(this);
+	}
+
+	private void onOverlayDisplayModeRequest(
+		GenericConnection conn,
+		RpcMessageHeader messageHeader
+	) {
+		FlatBufferBuilder fbb = new FlatBufferBuilder(32);
+		OverlayConfig config = this.api.server.getConfigManager().getVrConfig().getOverlay();
+		int response = OverlayDisplayModeResponse
+			.createOverlayDisplayModeResponse(fbb, config.isVisible(), config.isMirrored());
+		int outbound = this.createRPCMessage(fbb, RpcMessage.OverlayDisplayModeResponse, response);
+		fbb.finish(outbound);
+		conn.send(fbb.dataBuffer());
+	}
+
+	private void onOverlayDisplayModeChangeRequest(
+		GenericConnection conn,
+		RpcMessageHeader messageHeader
+	) {
+		OverlayDisplayModeChangeRequest req = (OverlayDisplayModeChangeRequest) messageHeader
+			.message(new OverlayDisplayModeChangeRequest());
+		if (req == null)
+			return;
+		OverlayConfig config = this.api.server.getConfigManager().getVrConfig().getOverlay();
+		config.setMirrored(req.isMirrored());
+		config.setVisible(req.isVisible());
+
+		this.api.server.getConfigManager().saveConfig();
 	}
 
 	public void onSetWifiRequest(GenericConnection conn, RpcMessageHeader messageHeader) {
