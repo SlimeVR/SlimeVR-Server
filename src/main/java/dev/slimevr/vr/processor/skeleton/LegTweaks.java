@@ -41,22 +41,22 @@ public class LegTweaks {
 	private Vector3f rightKneePlaceholder = new Vector3f();
 	private boolean kneesActive = false;
 
-	// here is a explination of each parameter that may need explaining
-	// STANDING_CUTOFF_VERTICAL is the percentage the waist has to be below
-	// its position at calibration to register as the user not standing
-	// MAX_DISENGAGMENT_OFFSET is how much the floor will be shifted to allow an
-	// offset to happen smoothly
-	// DYNAMIC_DISPLACEMENT_CUTOFF is the percent of downwards rotation that can
-	// contribute to dynamic displacment
-	// MAX_DYNAMIC_DISPLACMENT is the max amount the floor will be moved up to
-	// account for the foot rotating downward and
-	// needing to be put higher to avoid clipping in the gameworld
-	// MIN_ACCEPTABLE_ERROR and MAX_ACCEPTABLE_ERROR Defines the disitance where
-	// CORRECTION_WEIGHT_MIN and CORRECTION_WEIGHT_MAX
-	// are calculating a percent of velocity to correct rather than using the
-	// min or max
-	// FLOOR_CALIBRATION_OFFSET is the amount the floor plane is shifted up.
-	// This can help the feet from floating slightly above the ground
+	/**
+	 * here is a explination of each parameter that may need explaining
+	 * STANDING_CUTOFF_VERTICAL is the percentage the waist has to be below its
+	 * position at calibration to register as the user not standing
+	 * MAX_DISENGAGMENT_OFFSET is how much the floor will be shifted to allow an
+	 * offset to happen smoothly DYNAMIC_DISPLACEMENT_CUTOFF is the percent of
+	 * downwards rotation that can contribute to dynamic displacment
+	 * MAX_DYNAMIC_DISPLACMENT is the max amount the floor will be moved up to
+	 * account for the foot rotating downward and needing to be put higher to
+	 * avoid clipping in the gameworld MIN_ACCEPTABLE_ERROR and
+	 * MAX_ACCEPTABLE_ERROR Defines the disitance where CORRECTION_WEIGHT_MIN
+	 * and CORRECTION_WEIGHT_MAX are calculating a percent of velocity to
+	 * correct rather than using the min or max FLOOR_CALIBRATION_OFFSET is the
+	 * amount the floor plane is shifted up. This can help the feet from
+	 * floating slightly above the ground
+	 */
 
 	// hyperparameters (clip correction)
 	private static final float DYNAMIC_DISPLACEMENT_CUTOFF = 0.8f;
