@@ -548,7 +548,9 @@ public class VRServerGUI extends JFrame {
 	}
 
 	@AWTThread
-	private void setSkatingReductionEnabled(boolean value) {
+	private void setSkatingReductionEnabled(Boolean value) {
+		if (value == null)
+			value = false;
 		if (value) {
 			skatingCorrectionButton.setBackground(Color.GREEN);
 		} else {
@@ -560,7 +562,9 @@ public class VRServerGUI extends JFrame {
 	}
 
 	@AWTThread
-	private void setFloorClipEnabled(boolean value) {
+	private void setFloorClipEnabled(Boolean value) {
+		if (value == null)
+			value = false;
 		if (value) {
 			floorClipButton.setBackground(Color.GREEN);
 		} else {
