@@ -217,6 +217,7 @@ public class HumanPoseProcessor {
 				.getSkeleton()
 				.getToggles()
 				.put(SkeletonConfigToggles.FLOOR_CLIP.stringVal, value);
+			server.getConfigManager().saveConfig();
 		}
 	}
 
@@ -230,6 +231,7 @@ public class HumanPoseProcessor {
 				.getSkeleton()
 				.getToggles()
 				.put(SkeletonConfigToggles.SKATING_CORRECTION.stringVal, value);
+			server.getConfigManager().saveConfig();
 		}
 	}
 }
