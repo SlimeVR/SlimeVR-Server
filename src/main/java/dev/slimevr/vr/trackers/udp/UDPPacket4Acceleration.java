@@ -1,6 +1,8 @@
 package dev.slimevr.vr.trackers.udp;
 
 import java.io.IOException;
+import java.nio.BufferOverflowException;
+import java.nio.BufferUnderflowException;
 import java.nio.ByteBuffer;
 
 import com.jme3.math.Vector3f;
@@ -21,8 +23,13 @@ public class UDPPacket4Acceleration extends UDPPacket implements SensorSpecificP
 
 	@Override
 	public void readData(ByteBuffer buf) throws IOException {
-		sensorId = buf.get() & 0xFF;
 		acceleration.set(buf.getFloat(), buf.getFloat(), buf.getFloat());
+		try {
+			sensorId = buf.get() & 0xFF;		
+		} catch (BufferUnderflowException e) {
+			// for owo track app
+			sensorId = 0;
+		}
 	}
 
 	@Override
