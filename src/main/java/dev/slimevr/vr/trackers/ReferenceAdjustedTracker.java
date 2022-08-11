@@ -115,7 +115,7 @@ public class ReferenceAdjustedTracker<E extends Tracker> implements Tracker {
 
 	@Override
 	public String getName() {
-		return tracker.getName() + "/adj";
+		return tracker.getName();
 	}
 
 	@Override
