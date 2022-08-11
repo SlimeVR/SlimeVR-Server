@@ -299,6 +299,16 @@ public class LegTweaks {
 		currentFrame.setRightFootRotation(rightFootRotation);
 		currentFrame.setRightKneePosition(rightKneePosition);
 		currentFrame.setWaistPosition(waistPosition);
+		this.bufferHead
+			.setLeftFloorLevel(
+				(floorLevel + (MAX_DYNAMIC_DISPLACEMENT * getLeftFootOffset()))
+					- currentDisengagementOffset
+			);
+		this.bufferHead
+			.setRightFloorLevel(
+				(floorLevel + (MAX_DYNAMIC_DISPLACEMENT * getRightFootOffset()))
+					- currentDisengagementOffset
+			);
 
 		// put the acceleration vector that is applicable to the tracker
 		// quantity in the the buffer
@@ -381,16 +391,6 @@ public class LegTweaks {
 		this.bufferHead.setLeftKneePositionCorrected(leftKneePosition);
 		this.bufferHead.setRightKneePositionCorrected(rightKneePosition);
 		this.bufferHead.setWaistPositionCorrected(waistPosition);
-		this.bufferHead
-			.setLeftFloorLevel(
-				(floorLevel + (MAX_DYNAMIC_DISPLACEMENT * getLeftFootOffset()))
-					- currentDisengagementOffset
-			);
-		this.bufferHead
-			.setRightFloorLevel(
-				(floorLevel + (MAX_DYNAMIC_DISPLACEMENT * getRightFootOffset()))
-					- currentDisengagementOffset
-			);
 	}
 
 	// returns true if the foot is clipped and false if it is not
