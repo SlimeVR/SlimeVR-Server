@@ -74,6 +74,7 @@ public class IMUTracker
 	public void writeConfig(TrackerConfig config) {
 		config.setDesignation(bodyPosition == null ? null : bodyPosition.designation);
 		config.setMountingRotation(mounting != null ? mounting : null);
+		config.setCustomName(customName);
 	}
 
 	@Override
