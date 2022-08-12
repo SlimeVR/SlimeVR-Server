@@ -177,6 +177,9 @@ public abstract class ProtobufBridge<T extends VRTracker> implements Bridge {
 				// TODO : Check pose field
 				Main.vrServer.resetTrackers();
 				break;
+			case "fast reset":
+				Main.vrServer.resetTrackersYaw();
+				break;
 		}
 	}
 
