@@ -250,16 +250,12 @@ public class VRServer extends Thread {
 	}
 
 	public void setSkatingReductionEnabled(boolean value) {
-		config.setProperty("legTweaks.skatingCorrection", value);
-		saveConfig();
 		queueTask(() -> {
-			humanPoseProcessor.setSkatingReductionEnabled(value);
+			humanPoseProcessor.setSkatingCorrectionEnabled(value);
 		});
 	}
 
 	public void setFloorClipEnabled(boolean value) {
-		config.setProperty("legTweaks.floorClip", value);
-		saveConfig();
 		queueTask(() -> {
 			humanPoseProcessor.setFloorClipEnabled(value);
 		});
