@@ -4,6 +4,7 @@ import com.jme3.math.FastMath;
 import com.jme3.math.Vector3f;
 import dev.slimevr.VRServer;
 import dev.slimevr.autobone.errors.*;
+import dev.slimevr.config.AutoBoneConfig;
 import dev.slimevr.poserecorder.PoseFrameIO;
 import dev.slimevr.poserecorder.PoseFrameSkeleton;
 import dev.slimevr.poserecorder.PoseFrameTracker;
@@ -68,55 +69,42 @@ public class AutoBone {
 		}
 	);
 
-	public final FastList<SkeletonConfigValue> legacyHeightConfigs = new FastList<SkeletonConfigValue>(
-		new SkeletonConfigValue[] {
-			SkeletonConfigValue.NECK,
-			SkeletonConfigValue.TORSO,
+	public final FastList<SkeletonConfigOffsets> legacyHeightConfigs = new FastList<SkeletonConfigOffsets>(
+		new SkeletonConfigOffsets[] {
+			SkeletonConfigOffsets.NECK,
+			SkeletonConfigOffsets.TORSO,
 
-			SkeletonConfigValue.LEGS_LENGTH,
+			SkeletonConfigOffsets.LEGS_LENGTH,
 		}
 	);
 
-	public final EnumMap<SkeletonConfigValue, Float> legacyConfigs = new EnumMap<SkeletonConfigValue, Float>(
-		SkeletonConfigValue.class
+	public final EnumMap<SkeletonConfigOffsets, Float> legacyConfigs = new EnumMap<SkeletonConfigOffsets, Float>(
+		SkeletonConfigOffsets.class
 	);
 
 	protected final VRServer server;
+
 	public int cursorIncrement = 2;
-	public int minDataDistance = 1;
-	public int maxDataDistance = 1;
-	public int numEpochs = 100;
-	public float initialAdjustRate = 10f;
-	public float adjustRateMultiplier = 0.995f;
 
 	// #region Error functions
 	public SlideError slideError = new SlideError();
-	public float slideErrorFactor = 0.0f;
 
 	public OffsetSlideError offsetSlideError = new OffsetSlideError();
-	public float offsetSlideErrorFactor = 1.0f;
 
 	public FootHeightOffsetError footHeightOffsetError = new FootHeightOffsetError();
-	public float footHeightOffsetErrorFactor = 0.0f;
 
 	public BodyProportionError bodyProportionError = new BodyProportionError();
-	public float bodyProportionErrorFactor = 0.2f;
 
 	public HeightError heightError = new HeightError();
-	public float heightErrorFactor = 0.0f;
 
 	public PositionError positionError = new PositionError();
-	public float positionErrorFactor = 0.0f;
 
 	public PositionOffsetError positionOffsetError = new PositionOffsetError();
-	public float positionOffsetErrorFactor = 0.0f;
 	// #endregion
 
 	public boolean randomizeFrameOrder = true;
 	public boolean scaleEachStep = true;
 
-	public boolean calcInitError = false;
-	public float targetHeight = -1;
 
 	// TODO hip tracker stuff... Hip tracker should be around 3 to 5
 	// centimeters.
@@ -137,39 +125,12 @@ public class AutoBone {
 
 	private final Random rand = new Random();
 
+	private final AutoBoneConfig config;
+
 	public AutoBone(VRServer server) {
+		this.config = server.getConfigManager().getVrConfig().getAutoBone();
 		this.server = server;
 		reloadConfigValues();
-
-		this.minDataDistance = server.config
-			.getInt("autobone.minimumDataDistance", this.minDataDistance);
-		this.maxDataDistance = server.config
-			.getInt("autobone.maximumDataDistance", this.maxDataDistance);
-
-		this.numEpochs = server.config.getInt("autobone.epochCount", this.numEpochs);
-
-		this.initialAdjustRate = server.config
-			.getFloat("autobone.adjustRate", this.initialAdjustRate);
-		this.adjustRateMultiplier = server.config
-			.getFloat("autobone.adjustRateMultiplier", this.adjustRateMultiplier);
-
-		this.slideErrorFactor = server.config
-			.getFloat("autobone.slideErrorFactor", this.slideErrorFactor);
-		this.offsetSlideErrorFactor = server.config
-			.getFloat("autobone.offsetSlideErrorFactor", this.offsetSlideErrorFactor);
-		this.footHeightOffsetErrorFactor = server.config
-			.getFloat("autobone.offsetErrorFactor", this.footHeightOffsetErrorFactor);
-		this.bodyProportionErrorFactor = server.config
-			.getFloat("autobone.proportionErrorFactor", this.bodyProportionErrorFactor);
-		this.heightErrorFactor = server.config
-			.getFloat("autobone.heightErrorFactor", this.heightErrorFactor);
-		this.positionErrorFactor = server.config
-			.getFloat("autobone.positionErrorFactor", this.positionErrorFactor);
-		this.positionOffsetErrorFactor = server.config
-			.getFloat("autobone.positionOffsetErrorFactor", this.positionOffsetErrorFactor);
-
-		this.calcInitError = server.config.getBoolean("autobone.calculateInitialError", true);
-		this.targetHeight = server.config.getFloat("autobone.manualTargetHeight", -1f);
 	}
 
 	// Mean square error function
@@ -265,7 +226,7 @@ public class AutoBone {
 	}
 
 	public boolean applyConfig(
-		BiConsumer<SkeletonConfigValue, Float> configConsumer,
+		BiConsumer<SkeletonConfigOffsets, Float> configConsumer,
 		Map<BoneType, Float> offsets
 	) {
 		if (configConsumer == null || offsets == null) {
@@ -275,12 +236,12 @@ public class AutoBone {
 		try {
 			Float headOffset = offsets.get(BoneType.HEAD);
 			if (headOffset != null) {
-				configConsumer.accept(SkeletonConfigValue.HEAD, headOffset);
+				configConsumer.accept(SkeletonConfigOffsets.HEAD, headOffset);
 			}
 
 			Float neckOffset = offsets.get(BoneType.NECK);
 			if (neckOffset != null) {
-				configConsumer.accept(SkeletonConfigValue.NECK, neckOffset);
+				configConsumer.accept(SkeletonConfigOffsets.NECK, neckOffset);
 			}
 
 			Float chestOffset = offsets.get(BoneType.CHEST);
@@ -288,15 +249,15 @@ public class AutoBone {
 			Float waistOffset = offsets.get(BoneType.WAIST);
 			if (chestOffset != null && hipOffset != null && waistOffset != null) {
 				configConsumer
-					.accept(SkeletonConfigValue.TORSO, chestOffset + hipOffset + waistOffset);
+					.accept(SkeletonConfigOffsets.TORSO, chestOffset + hipOffset + waistOffset);
 			}
 
 			if (chestOffset != null) {
-				configConsumer.accept(SkeletonConfigValue.CHEST, chestOffset);
+				configConsumer.accept(SkeletonConfigOffsets.CHEST, chestOffset);
 			}
 
 			if (hipOffset != null) {
-				configConsumer.accept(SkeletonConfigValue.WAIST, hipOffset);
+				configConsumer.accept(SkeletonConfigOffsets.WAIST, hipOffset);
 			}
 
 			Float hipWidthOffset = offsets.get(BoneType.LEFT_HIP);
@@ -305,7 +266,7 @@ public class AutoBone {
 			}
 			if (hipWidthOffset != null) {
 				configConsumer
-					.accept(SkeletonConfigValue.HIPS_WIDTH, hipWidthOffset * 2f);
+					.accept(SkeletonConfigOffsets.HIPS_WIDTH, hipWidthOffset * 2f);
 			}
 
 			Float upperLegOffset = offsets.get(BoneType.LEFT_UPPER_LEG);
@@ -318,11 +279,11 @@ public class AutoBone {
 			}
 			if (upperLegOffset != null && lowerLegOffset != null) {
 				configConsumer
-					.accept(SkeletonConfigValue.LEGS_LENGTH, upperLegOffset + lowerLegOffset);
+					.accept(SkeletonConfigOffsets.LEGS_LENGTH, upperLegOffset + lowerLegOffset);
 			}
 
 			if (lowerLegOffset != null) {
-				configConsumer.accept(SkeletonConfigValue.KNEE_HEIGHT, lowerLegOffset);
+				configConsumer.accept(SkeletonConfigOffsets.KNEE_HEIGHT, lowerLegOffset);
 			}
 			return true;
 		} catch (Exception e) {
@@ -330,12 +291,12 @@ public class AutoBone {
 		}
 	}
 
-	public boolean applyConfig(BiConsumer<SkeletonConfigValue, Float> configConsumer) {
+	public boolean applyConfig(BiConsumer<SkeletonConfigOffsets, Float> configConsumer) {
 		return applyConfig(configConsumer, offsets);
 	}
 
 	public boolean applyConfig(
-		Map<SkeletonConfigValue, Float> skeletonConfig,
+		Map<SkeletonConfigOffsets, Float> skeletonConfig,
 		Map<BoneType, Float> offsets
 	) {
 		if (skeletonConfig == null) {
@@ -345,7 +306,7 @@ public class AutoBone {
 		return applyConfig(skeletonConfig::put, offsets);
 	}
 
-	public boolean applyConfig(Map<SkeletonConfigValue, Float> skeletonConfig) {
+	public boolean applyConfig(Map<SkeletonConfigOffsets, Float> skeletonConfig) {
 		return applyConfig(skeletonConfig, offsets);
 	}
 
@@ -354,7 +315,7 @@ public class AutoBone {
 			return false;
 		}
 
-		return applyConfig(skeletonConfig::setConfig, offsets);
+		return applyConfig(skeletonConfig::setOffset, offsets);
 	}
 
 	public boolean applyConfig(SkeletonConfig skeletonConfig) {
@@ -370,8 +331,8 @@ public class AutoBone {
 		if (!applyConfig(skeletonConfig))
 			return false;
 
-		skeletonConfig.saveToConfig(server.config);
-		server.saveConfig();
+		skeletonConfig.save();
+		server.getConfigManager().saveConfig();
 
 		LogManager.info("[AutoBone] Configured skeleton bone lengths");
 		return true;
@@ -405,10 +366,10 @@ public class AutoBone {
 	}
 
 	public float sumSelectConfigs(
-		List<SkeletonConfigValue> selection,
+		List<SkeletonConfigOffsets> selection,
 		SkeletonConfig config
 	) {
-		return sumSelectConfigs(selection, config::getConfig);
+		return sumSelectConfigs(selection, config::getOffset);
 	}
 
 	public float getLengthSum(Map<BoneType, Float> configs) {
@@ -523,12 +484,13 @@ public class AutoBone {
 		}
 
 		// Epoch loop, each epoch is one full iteration over the full dataset
-		for (int epoch = calcInitError ? -1 : 0; epoch < numEpochs; epoch++) {
+		for (int epoch = calcInitError ? -1 : 0; epoch < this.config.numEpochs; epoch++) {
 			float sumError = 0f;
 			int errorCount = 0;
 
 			float adjustRate = epoch >= 0
-				? (initialAdjustRate * FastMath.pow(adjustRateMultiplier, epoch))
+				? (this.config.initialAdjustRate
+					* FastMath.pow(this.config.adjustRateMultiplier, epoch))
 				: 0f;
 
 			int[] randomFrameIndices = null;
@@ -555,7 +517,8 @@ public class AutoBone {
 			// comparing frames a
 			// certain number of frames apart
 			for (
-				int cursorOffset = minDataDistance; cursorOffset <= maxDataDistance
+				int cursorOffset = this.config.minDataDistance;
+				cursorOffset <= this.config.maxDataDistance
 					&& cursorOffset < frameCount;
 				cursorOffset++
 			) {
@@ -730,7 +693,8 @@ public class AutoBone {
 
 			applyConfig(legacyConfigs);
 			if (epochCallback != null) {
-				epochCallback.accept(new Epoch(epoch + 1, numEpochs, avgError, legacyConfigs));
+				epochCallback
+					.accept(new Epoch(epoch + 1, this.config.numEpochs, avgError, legacyConfigs));
 			}
 		}
 
@@ -750,42 +714,44 @@ public class AutoBone {
 		float totalError = 0f;
 		float sumWeight = 0f;
 
-		if (slideErrorFactor > 0f) {
-			totalError += slideError.getStepError(trainingStep) * slideErrorFactor;
-			sumWeight += slideErrorFactor;
+		if (this.config.slideErrorFactor > 0f) {
+			totalError += slideError.getStepError(trainingStep) * this.config.slideErrorFactor;
+			sumWeight += this.config.slideErrorFactor;
 		}
 
-		if (offsetSlideErrorFactor > 0f) {
-			totalError += offsetSlideError.getStepError(trainingStep) * offsetSlideErrorFactor;
-			sumWeight += offsetSlideErrorFactor;
+		if (this.config.offsetSlideErrorFactor > 0f) {
+			totalError += offsetSlideError.getStepError(trainingStep)
+				* this.config.offsetSlideErrorFactor;
+			sumWeight += this.config.offsetSlideErrorFactor;
 		}
 
-		if (footHeightOffsetErrorFactor > 0f) {
+		if (this.config.footHeightOffsetErrorFactor > 0f) {
 			totalError += footHeightOffsetError.getStepError(trainingStep)
-				* footHeightOffsetErrorFactor;
-			sumWeight += footHeightOffsetErrorFactor;
+				* this.config.footHeightOffsetErrorFactor;
+			sumWeight += this.config.footHeightOffsetErrorFactor;
 		}
 
-		if (bodyProportionErrorFactor > 0f) {
+		if (this.config.bodyProportionErrorFactor > 0f) {
 			totalError += bodyProportionError.getStepError(trainingStep)
-				* bodyProportionErrorFactor;
-			sumWeight += bodyProportionErrorFactor;
+				* this.config.bodyProportionErrorFactor;
+			sumWeight += this.config.bodyProportionErrorFactor;
 		}
 
-		if (heightErrorFactor > 0f) {
-			totalError += heightError.getStepError(trainingStep) * heightErrorFactor;
-			sumWeight += heightErrorFactor;
+		if (this.config.heightErrorFactor > 0f) {
+			totalError += heightError.getStepError(trainingStep) * this.config.heightErrorFactor;
+			sumWeight += this.config.heightErrorFactor;
 		}
 
-		if (positionErrorFactor > 0f) {
-			totalError += positionError.getStepError(trainingStep) * positionErrorFactor;
-			sumWeight += positionErrorFactor;
+		if (this.config.positionErrorFactor > 0f) {
+			totalError += positionError.getStepError(trainingStep)
+				* this.config.positionErrorFactor;
+			sumWeight += this.config.positionErrorFactor;
 		}
 
-		if (positionOffsetErrorFactor > 0f) {
+		if (this.config.positionOffsetErrorFactor > 0f) {
 			totalError += positionOffsetError.getStepError(trainingStep)
-				* positionOffsetErrorFactor;
-			sumWeight += positionOffsetErrorFactor;
+				* this.config.positionOffsetErrorFactor;
+			sumWeight += this.config.positionOffsetErrorFactor;
 		}
 
 		return sumWeight > 0f ? totalError / sumWeight : 0f;
@@ -872,18 +838,22 @@ public class AutoBone {
 		return recordings;
 	}
 
+	public AutoBoneConfig getConfig() {
+		return config;
+	}
+
 	public class Epoch {
 
 		public final int epoch;
 		public final int totalEpochs;
 		public final float epochError;
-		public final EnumMap<SkeletonConfigValue, Float> configValues;
+		public final EnumMap<SkeletonConfigOffsets, Float> configValues;
 
 		public Epoch(
 			int epoch,
 			int totalEpochs,
 			float epochError,
-			EnumMap<SkeletonConfigValue, Float> configValues
+			EnumMap<SkeletonConfigOffsets, Float> configValues
 		) {
 			this.epoch = epoch;
 			this.totalEpochs = totalEpochs;
@@ -901,12 +871,12 @@ public class AutoBone {
 
 		public final float finalHeight;
 		public final float targetHeight;
-		public final EnumMap<SkeletonConfigValue, Float> configValues;
+		public final EnumMap<SkeletonConfigOffsets, Float> configValues;
 
 		public AutoBoneResults(
 			float finalHeight,
 			float targetHeight,
-			EnumMap<SkeletonConfigValue, Float> configValues
+			EnumMap<SkeletonConfigOffsets, Float> configValues
 		) {
 			this.finalHeight = finalHeight;
 			this.targetHeight = targetHeight;

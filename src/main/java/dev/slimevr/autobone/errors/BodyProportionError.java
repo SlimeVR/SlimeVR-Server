@@ -4,7 +4,7 @@ import com.jme3.math.FastMath;
 
 import dev.slimevr.autobone.AutoBoneTrainingStep;
 import dev.slimevr.vr.processor.skeleton.SkeletonConfig;
-import dev.slimevr.vr.processor.skeleton.SkeletonConfigValue;
+import dev.slimevr.vr.processor.skeleton.SkeletonConfigOffsets;
 
 
 // The distance from average human proportions
@@ -32,11 +32,11 @@ public class BodyProportionError implements IAutoBoneError {
 	}
 
 	public float getBodyProportionError(SkeletonConfig config) {
-		float neckLength = config.getConfig(SkeletonConfigValue.NECK);
-		float chestLength = config.getConfig(SkeletonConfigValue.CHEST);
-		float torsoLength = config.getConfig(SkeletonConfigValue.TORSO);
-		float legsLength = config.getConfig(SkeletonConfigValue.LEGS_LENGTH);
-		float kneeHeight = config.getConfig(SkeletonConfigValue.KNEE_HEIGHT);
+		float neckLength = config.getOffset(SkeletonConfigOffsets.NECK);
+		float chestLength = config.getOffset(SkeletonConfigOffsets.CHEST);
+		float torsoLength = config.getOffset(SkeletonConfigOffsets.TORSO);
+		float legsLength = config.getOffset(SkeletonConfigOffsets.LEGS_LENGTH);
+		float kneeHeight = config.getOffset(SkeletonConfigOffsets.KNEE_HEIGHT);
 
 		float chestTorso = FastMath.abs((chestLength / torsoLength) - chestTorsoRatio);
 		float legBody = FastMath.abs((legsLength / (torsoLength + neckLength)) - legBodyRatio);

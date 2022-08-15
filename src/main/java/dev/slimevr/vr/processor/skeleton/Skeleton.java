@@ -25,11 +25,11 @@ public abstract class Skeleton {
 	public abstract SkeletonConfig getSkeletonConfig();
 
 	@ThreadSafe
-	public abstract void resetSkeletonConfig(SkeletonConfigValue config);
+	public abstract void resetSkeletonConfig(SkeletonConfigOffsets config);
 
 	@ThreadSafe
 	public void resetAllSkeletonConfigs() {
-		for (SkeletonConfigValue config : SkeletonConfigValue.values) {
+		for (SkeletonConfigOffsets config : SkeletonConfigOffsets.values) {
 			resetSkeletonConfig(config);
 		}
 	}

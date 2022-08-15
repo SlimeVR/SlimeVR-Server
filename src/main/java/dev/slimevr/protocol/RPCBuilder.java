@@ -2,7 +2,7 @@ package dev.slimevr.protocol;
 
 import com.google.flatbuffers.FlatBufferBuilder;
 import dev.slimevr.vr.processor.HumanPoseProcessor;
-import dev.slimevr.vr.processor.skeleton.SkeletonConfigValue;
+import dev.slimevr.vr.processor.skeleton.SkeletonConfigOffsets;
 import solarxr_protocol.rpc.SkeletonConfigResponse;
 import solarxr_protocol.rpc.SkeletonPart;
 
@@ -13,10 +13,10 @@ public class RPCBuilder {
 		FlatBufferBuilder fbb,
 		HumanPoseProcessor humanPoseProcessor
 	) {
-		int[] partsOffsets = new int[SkeletonConfigValue.values().length];
+		int[] partsOffsets = new int[SkeletonConfigOffsets.values().length];
 
-		for (int index = 0; index < SkeletonConfigValue.values().length; index++) {
-			SkeletonConfigValue val = SkeletonConfigValue.values[index];
+		for (int index = 0; index < SkeletonConfigOffsets.values().length; index++) {
+			SkeletonConfigOffsets val = SkeletonConfigOffsets.values[index];
 			int part = SkeletonPart
 				.createSkeletonPart(fbb, val.id, humanPoseProcessor.getSkeletonConfig(val));
 			partsOffsets[index] = part;

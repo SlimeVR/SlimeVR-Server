@@ -116,21 +116,19 @@ public class HumanSkeleton extends Skeleton implements SkeletonConfigCallback {
 
 	// #region FK Settings
 	// Toggles
-	protected boolean extendedSpineModel = true;
-	protected boolean extendedPelvisModel = true;
-	protected boolean extendedKneeModel = true;
-	protected boolean forceArmsFromHMD = false;
+	protected boolean extendedSpineModel;
+	protected boolean extendedPelvisModel;
+	protected boolean extendedKneeModel;
+	protected boolean forceArmsFromHMD;
+	// Values
+	protected float waistFromChestHipAveraging;
+	protected float waistFromChestLegsAveraging;
+	protected float hipFromChestLegsAveraging;
+	protected float hipFromWaistLegsAveraging;
+	protected float hipLegsAveraging;
+	protected float kneeTrackerAnkleAveraging;
+	// Others
 	protected boolean sendAllBones = false;
-
-	// Extended Spine Model values
-	protected float waistChestHipAveraging = 0.5f;
-	protected float waistChestPelvisAveraging = 0.18f;
-	protected float hipSpinePelvisAveraging = 0.25f;
-	// Extended Pelvis Model values
-	protected float pelvisHipAveraging = 0.33f;
-	protected float pelvisWaistTrackerAveraging = 0.75f;
-	// Extended Knee Model values
-	protected float kneeTrackerAnkleAveraging = 0.75f;
 	// #endregion
 
 	// #region Constructors
@@ -154,7 +152,7 @@ public class HumanSkeleton extends Skeleton implements SkeletonConfigCallback {
 	) {
 		this(computedTrackers);
 		setTrackersFromServer(server);
-		skeletonConfig.loadFromConfig(server.config);
+		skeletonConfig.loadFromConfig(server.getConfigManager());
 	}
 
 	public HumanSkeleton(
@@ -173,8 +171,8 @@ public class HumanSkeleton extends Skeleton implements SkeletonConfigCallback {
 	public HumanSkeleton(
 		List<? extends Tracker> trackers,
 		List<? extends ComputedHumanPoseTracker> computedTrackers,
-		Map<SkeletonConfigValue, Float> configs,
-		Map<SkeletonConfigValue, Float> altConfigs
+		Map<SkeletonConfigOffsets, Float> configs,
+		Map<SkeletonConfigOffsets, Float> altConfigs
 	) {
 		// Initialize
 		this(trackers, computedTrackers);
@@ -183,15 +181,15 @@ public class HumanSkeleton extends Skeleton implements SkeletonConfigCallback {
 		if (altConfigs != null) {
 			// Set alts first, so if there's any overlap it doesn't affect the
 			// values
-			skeletonConfig.setConfigs(altConfigs, null);
+			skeletonConfig.setConfigs(altConfigs, null, null);
 		}
-		skeletonConfig.setConfigs(configs, null);
+		skeletonConfig.setConfigs(configs, null, null);
 	}
 
 	public HumanSkeleton(
 		List<? extends Tracker> trackers,
 		List<? extends ComputedHumanPoseTracker> computedTrackers,
-		Map<SkeletonConfigValue, Float> configs
+		Map<SkeletonConfigOffsets, Float> configs
 	) {
 		this(trackers, computedTrackers, configs, null);
 	}
@@ -859,7 +857,7 @@ public class HumanSkeleton extends Skeleton implements SkeletonConfigCallback {
 			trackerChestNode.localTransform.setRotation(rotBuf1);
 
 			TrackerUtils
-				.getFirstAvailableTracker(waistTracker, hipTracker, chestTracker)
+				.getFirstAvailableTracker(waistTracker, chestTracker, hipTracker)
 				.getRotation(rotBuf1);
 			chestNode.localTransform.setRotation(rotBuf1);
 
@@ -893,9 +891,8 @@ public class HumanSkeleton extends Skeleton implements SkeletonConfigCallback {
 		if (leftLowerLegTracker != null) {
 			leftLowerLegTracker.getRotation(rotBuf2);
 		} else {
-			// Align with the hip's yaw
-			hipNode.localTransform.getRotation(rotBuf2);
-			rotBuf2.fromAngles(0, rotBuf2.getYaw(), 0);
+			// Align with the upper leg's yaw
+			rotBuf2.fromAngles(0, rotBuf1.getYaw(), 0);
 		}
 
 		leftHipNode.localTransform.setRotation(rotBuf1);
@@ -934,9 +931,8 @@ public class HumanSkeleton extends Skeleton implements SkeletonConfigCallback {
 		if (rightLowerLegTracker != null) {
 			rightLowerLegTracker.getRotation(rotBuf2);
 		} else {
-			// Align with the hip's yaw
-			hipNode.localTransform.getRotation(rotBuf2);
-			rotBuf2.fromAngles(0, rotBuf2.getYaw(), 0);
+			// Align with the upper leg's yaw
+			rotBuf2.fromAngles(0, rotBuf1.getYaw(), 0);
 		}
 
 		rightHipNode.localTransform.setRotation(rotBuf1);
@@ -965,53 +961,30 @@ public class HumanSkeleton extends Skeleton implements SkeletonConfigCallback {
 
 		// Extended spine
 		if (extendedSpineModel && hasSpineTracker) {
-			if (
-				(chestTracker != null && (waistTracker == null || hipTracker == null))
-					|| (waistTracker != null && hipTracker == null)
-			) {
-				// Tries to guess missing lower spine trackers by interpolating
-				// rotations
-				if (waistTracker == null) {
-					if (hipTracker != null) {
-						// Calculates waist from chest + hip
-						chestTracker.getRotation(rotBuf1);
-						hipTracker.getRotation(rotBuf2);
+			// Tries to guess missing lower spine trackers by interpolating
+			// rotations
+			if (waistTracker == null) {
+				if (chestTracker != null && hipTracker != null) {
+					// Calculates waist from chest + hip
+					hipTracker.getRotation(rotBuf1);
+					chestTracker.getRotation(rotBuf2);
 
-						// Interpolate between the chest and the hip
-						rotBuf1.slerpLocal(rotBuf2, waistChestHipAveraging);
-						chestNode.localTransform.setRotation(rotBuf1);
-					} else if (hasKneeTrackers) {
-						// Calculates waist from chest + pelvis
-						leftHipNode.localTransform.getRotation(rotBuf1);
-						rightHipNode.localTransform.getRotation(rotBuf2);
-						chestTracker.getRotation(rotBuf3);
-
-						// Get the rotation relative to where we expect the
-						// upper legs to be
-						rotBuf3.mult(FORWARD_QUATERNION, rotBuf4);
-						if (rotBuf4.dot(rotBuf1) < 0.0f) {
-							rotBuf1.negateLocal();
-						}
-						if (rotBuf4.dot(rotBuf2) < 0.0f) {
-							rotBuf2.negateLocal();
-						}
-
-						// Average the legs to calculate the pelvis
-						rotBuf1.nlerp(rotBuf2, 0.5f);
-
-						// Interpolate between the pelvis and the chest
-						rotBuf3.pureSlerpLocal(rotBuf1, waistChestPelvisAveraging);
-
-						chestNode.localTransform.setRotation(rotBuf3);
+					// Get the rotation relative to where we expect the
+					// hip to be
+					rotBuf2.mult(FORWARD_QUATERNION, rotBuf4);
+					if (rotBuf4.dot(rotBuf1) < 0.0f) {
+						rotBuf1.negateLocal();
 					}
-				}
-				if (hipTracker == null && hasKneeTrackers) {
-					// Calculates hip from (chest or waist) + pelvis
+
+					// Interpolate between the chest and the hip
+					rotBuf2.pureSlerpLocal(rotBuf1, waistFromChestHipAveraging);
+
+					chestNode.localTransform.setRotation(rotBuf2);
+				} else if (chestTracker != null && hasKneeTrackers) {
+					// Calculates waist from chest + legs
 					leftHipNode.localTransform.getRotation(rotBuf1);
 					rightHipNode.localTransform.getRotation(rotBuf2);
-					TrackerUtils
-						.getFirstAvailableTracker(waistTracker, chestTracker)
-						.getRotation(rotBuf3);
+					chestTracker.getRotation(rotBuf3);
 
 					// Get the rotation relative to where we expect the
 					// upper legs to be
@@ -1027,32 +1000,77 @@ public class HumanSkeleton extends Skeleton implements SkeletonConfigCallback {
 					rotBuf1.nlerp(rotBuf2, 0.5f);
 
 					// Interpolate between the pelvis and the chest
-					rotBuf3.pureSlerpLocal(rotBuf1, hipSpinePelvisAveraging);
+					rotBuf3.pureSlerpLocal(rotBuf1, waistFromChestLegsAveraging);
+
+					chestNode.localTransform.setRotation(rotBuf3);
+				}
+			}
+			if (hipTracker == null && hasKneeTrackers) {
+				if (waistTracker != null) {
+					// Calculates hip from waist + legs
+					leftHipNode.localTransform.getRotation(rotBuf1);
+					rightHipNode.localTransform.getRotation(rotBuf2);
+					waistTracker.getRotation(rotBuf3);
+
+					// Get the rotation relative to where we expect the
+					// upper legs to be
+					rotBuf3.mult(FORWARD_QUATERNION, rotBuf4);
+					if (rotBuf4.dot(rotBuf1) < 0.0f) {
+						rotBuf1.negateLocal();
+					}
+					if (rotBuf4.dot(rotBuf2) < 0.0f) {
+						rotBuf2.negateLocal();
+					}
+
+					// Average the legs to calculate the pelvis
+					rotBuf1.nlerp(rotBuf2, 0.5f);
+
+					// Interpolate between the pelvis and the chest
+					rotBuf3.pureSlerpLocal(rotBuf1, hipFromWaistLegsAveraging);
 
 					waistNode.localTransform.setRotation(rotBuf3);
+					hipNode.localTransform.setRotation(rotBuf3);
+					trackerWaistNode.localTransform.setRotation(rotBuf3);
+				} else if (chestTracker != null) {
+					// Calculates hip from chest + legs
+					leftHipNode.localTransform.getRotation(rotBuf1);
+					rightHipNode.localTransform.getRotation(rotBuf2);
+					chestTracker.getRotation(rotBuf3);
+
+					// Get the rotation relative to where we expect the
+					// upper legs to be
+					rotBuf3.mult(FORWARD_QUATERNION, rotBuf4);
+					if (rotBuf4.dot(rotBuf1) < 0.0f) {
+						rotBuf1.negateLocal();
+					}
+					if (rotBuf4.dot(rotBuf2) < 0.0f) {
+						rotBuf2.negateLocal();
+					}
+
+					// Average the legs to calculate the pelvis
+					rotBuf1.nlerp(rotBuf2, 0.5f);
+
+					// Interpolate between the pelvis and the chest
+					rotBuf3.pureSlerpLocal(rotBuf1, hipFromChestLegsAveraging);
+
+					waistNode.localTransform.setRotation(rotBuf3);
+					hipNode.localTransform.setRotation(rotBuf3);
+					trackerWaistNode.localTransform.setRotation(rotBuf3);
 				}
 			}
 		}
 
 		// Extended pelvis
-		if (extendedPelvisModel && hasKneeTrackers) {
-			// Average pelvis between two legs
+		if (extendedPelvisModel && hasKneeTrackers && hipTracker == null) {
 			leftHipNode.localTransform.getRotation(rotBuf1);
 			rightHipNode.localTransform.getRotation(rotBuf2);
-			rotBuf2.nlerp(rotBuf1, 0.5f);
-			waistNode.localTransform.getRotation(rotBuf1);
-
-			rotBuf2.slerpLocal(rotBuf1, pelvisHipAveraging);
-			hipNode.localTransform.setRotation(rotBuf2);
-
-			leftHipNode.localTransform.getRotation(rotBuf1);
-			rightHipNode.localTransform.getRotation(rotBuf2);
-			waistNode.localTransform.getRotation(rotBuf3);
+			hipNode.localTransform.getRotation(rotBuf3);
 
 			rotBuf1.set(extendedPelvisYawRoll(rotBuf1.clone(), rotBuf2.clone(), rotBuf3.clone()));
 
-			rotBuf1.slerpLocal(rotBuf3, pelvisWaistTrackerAveraging);
-			trackerWaistNode.localTransform.setRotation(rotBuf1);
+			rotBuf3.slerpLocal(rotBuf1, hipLegsAveraging);
+			hipNode.localTransform.setRotation(rotBuf3);
+			trackerWaistNode.localTransform.setRotation(rotBuf3);
 		}
 
 		// Left arm
@@ -1293,12 +1311,12 @@ public class HumanSkeleton extends Skeleton implements SkeletonConfigCallback {
 
 	// #region Skeleton Config
 	@Override
-	public void updateConfigState(SkeletonConfigValue config, float newValue) {
+	public void updateOffsetsState(SkeletonConfigOffsets configOffset, float newValue) {
 		// Do nothing, the node offset callback handles all that's needed
 	}
 
 	@Override
-	public void updateToggleState(SkeletonConfigToggle configToggle, boolean newValue) {
+	public void updateTogglesState(SkeletonConfigToggles configToggle, boolean newValue) {
 		if (configToggle == null) {
 			return;
 		}
@@ -1316,6 +1334,35 @@ public class HumanSkeleton extends Skeleton implements SkeletonConfigCallback {
 				break;
 			case FORCE_ARMS_FROM_HMD:
 				forceArmsFromHMD = newValue;
+				break;
+		}
+	}
+
+	@Override
+	public void updateValuesState(SkeletonConfigValues configValue, float newValue) {
+		if (configValue == null) {
+			return;
+		}
+
+		// Cache the values of these configs
+		switch (configValue) {
+			case WAIST_FROM_CHEST_HIP_AVERAGING:
+				waistFromChestHipAveraging = newValue;
+				break;
+			case WAIST_FROM_CHEST_LEGS_AVERAGING:
+				waistFromChestLegsAveraging = newValue;
+				break;
+			case HIP_FROM_CHEST_LEGS_AVERAGING:
+				hipFromChestLegsAveraging = newValue;
+				break;
+			case HIP_FROM_WAIST_LEGS_AVERAGING:
+				hipFromWaistLegsAveraging = newValue;
+				break;
+			case HIP_LEGS_AVERAGING:
+				hipLegsAveraging = newValue;
+				break;
+			case KNEE_TRACKER_ANKLE_AVERAGING:
+				kneeTrackerAnkleAveraging = newValue;
 				break;
 		}
 	}
@@ -1587,7 +1634,7 @@ public class HumanSkeleton extends Skeleton implements SkeletonConfigCallback {
 	}
 
 	@Override
-	public void resetSkeletonConfig(SkeletonConfigValue config) {
+	public void resetSkeletonConfig(SkeletonConfigOffsets config) {
 		if (config == null) {
 			return;
 		}
@@ -1596,100 +1643,101 @@ public class HumanSkeleton extends Skeleton implements SkeletonConfigCallback {
 		float height;
 		switch (config) {
 			case HEAD:
-				skeletonConfig.setConfig(SkeletonConfigValue.HEAD, null);
+				skeletonConfig.setOffset(SkeletonConfigOffsets.HEAD, null);
 				break;
 			case NECK:
-				skeletonConfig.setConfig(SkeletonConfigValue.NECK, null);
+				skeletonConfig.setOffset(SkeletonConfigOffsets.NECK, null);
 				break;
 			case TORSO: // Distance from shoulders to hip (full torso length)
 				vec = new Vector3f();
 				hmdTracker.getPosition(vec);
 				height = vec.y;
 				if (height > 0.5f) { // Reset only if floor level seems right,
-										// TODO: read floor level from SteamVR
+					// TODO: read floor level from SteamVR
 					skeletonConfig
-						.setConfig(
-							SkeletonConfigValue.TORSO,
-							((height) * 0.42f) - skeletonConfig.getConfig(SkeletonConfigValue.NECK)
+						.setOffset(
+							SkeletonConfigOffsets.TORSO,
+							((height) * 0.42f)
+								- skeletonConfig.getOffset(SkeletonConfigOffsets.NECK)
 						);
 				} else// if floor level is incorrect
 				{
-					skeletonConfig.setConfig(SkeletonConfigValue.TORSO, null);
+					skeletonConfig.setOffset(SkeletonConfigOffsets.TORSO, null);
 				}
 				break;
 			case CHEST: // Chest is 57% of the upper body by default (shoulders
-						// to chest)
+				// to chest)
 				skeletonConfig
-					.setConfig(
-						SkeletonConfigValue.CHEST,
-						skeletonConfig.getConfig(SkeletonConfigValue.TORSO) * 0.57f
+					.setOffset(
+						SkeletonConfigOffsets.CHEST,
+						skeletonConfig.getOffset(SkeletonConfigOffsets.TORSO) * 0.57f
 					);
 				break;
 			case WAIST: // Waist length is from hip to waist
-				skeletonConfig.setConfig(SkeletonConfigValue.WAIST, null);
+				skeletonConfig.setOffset(SkeletonConfigOffsets.WAIST, null);
 				break;
 			case HIP_OFFSET:
-				skeletonConfig.setConfig(SkeletonConfigValue.HIP_OFFSET, null);
+				skeletonConfig.setOffset(SkeletonConfigOffsets.HIP_OFFSET, null);
 				break;
 			case HIPS_WIDTH:
-				skeletonConfig.setConfig(SkeletonConfigValue.HIPS_WIDTH, null);
+				skeletonConfig.setOffset(SkeletonConfigOffsets.HIPS_WIDTH, null);
 				break;
 			case FOOT_LENGTH:
-				skeletonConfig.setConfig(SkeletonConfigValue.FOOT_LENGTH, null);
+				skeletonConfig.setOffset(SkeletonConfigOffsets.FOOT_LENGTH, null);
 				break;
 			case FOOT_SHIFT:
-				skeletonConfig.setConfig(SkeletonConfigValue.FOOT_SHIFT, null);
+				skeletonConfig.setOffset(SkeletonConfigOffsets.FOOT_SHIFT, null);
 				break;
 			case SKELETON_OFFSET:
-				skeletonConfig.setConfig(SkeletonConfigValue.SKELETON_OFFSET, null);
+				skeletonConfig.setOffset(SkeletonConfigOffsets.SKELETON_OFFSET, null);
 				break;
 			case LEGS_LENGTH: // Set legs length to be 5cm above floor level
 				vec = new Vector3f();
 				hmdTracker.getPosition(vec);
 				height = vec.y;
 				if (height > 0.5f) { // Reset only if floor level seems right,
-										// TODO: read floor level from SteamVR
+					// TODO: read floor level from SteamVR
 					skeletonConfig
-						.setConfig(
-							SkeletonConfigValue.LEGS_LENGTH,
+						.setOffset(
+							SkeletonConfigOffsets.LEGS_LENGTH,
 							height
-								- skeletonConfig.getConfig(SkeletonConfigValue.NECK)
-								- skeletonConfig.getConfig(SkeletonConfigValue.TORSO)
+								- skeletonConfig.getOffset(SkeletonConfigOffsets.NECK)
+								- skeletonConfig.getOffset(SkeletonConfigOffsets.TORSO)
 								- FLOOR_OFFSET
 						);
 				} else // if floor level is incorrect
 				{
-					skeletonConfig.setConfig(SkeletonConfigValue.LEGS_LENGTH, null);
+					skeletonConfig.setOffset(SkeletonConfigOffsets.LEGS_LENGTH, null);
 				}
-				resetSkeletonConfig(SkeletonConfigValue.KNEE_HEIGHT);
+				resetSkeletonConfig(SkeletonConfigOffsets.KNEE_HEIGHT);
 				break;
 			case KNEE_HEIGHT: // Knees are at 55% of the legs by default
 				skeletonConfig
-					.setConfig(
-						SkeletonConfigValue.KNEE_HEIGHT,
-						skeletonConfig.getConfig(SkeletonConfigValue.LEGS_LENGTH) * 0.55f
+					.setOffset(
+						SkeletonConfigOffsets.KNEE_HEIGHT,
+						skeletonConfig.getOffset(SkeletonConfigOffsets.LEGS_LENGTH) * 0.55f
 					);
 				break;
 			case CONTROLLER_DISTANCE_Z:
-				skeletonConfig.setConfig(SkeletonConfigValue.CONTROLLER_DISTANCE_Z, null);
+				skeletonConfig.setOffset(SkeletonConfigOffsets.CONTROLLER_DISTANCE_Z, null);
 				break;
 			case CONTROLLER_DISTANCE_Y:
-				skeletonConfig.setConfig(SkeletonConfigValue.CONTROLLER_DISTANCE_Y, null);
+				skeletonConfig.setOffset(SkeletonConfigOffsets.CONTROLLER_DISTANCE_Y, null);
 				break;
 			case LOWER_ARM_LENGTH:
-				skeletonConfig.setConfig(SkeletonConfigValue.LOWER_ARM_LENGTH, null);
+				skeletonConfig.setOffset(SkeletonConfigOffsets.LOWER_ARM_LENGTH, null);
 				break;
 			case ELBOW_OFFSET:
-				skeletonConfig.setConfig(SkeletonConfigValue.ELBOW_OFFSET, null);
+				skeletonConfig.setOffset(SkeletonConfigOffsets.ELBOW_OFFSET, null);
 				break;
 			case SHOULDERS_DISTANCE:
-				skeletonConfig.setConfig(SkeletonConfigValue.SHOULDERS_DISTANCE, null);
+				skeletonConfig.setOffset(SkeletonConfigOffsets.SHOULDERS_DISTANCE, null);
 				break;
 			case SHOULDERS_WIDTH:
-				skeletonConfig.setConfig(SkeletonConfigValue.SHOULDERS_WIDTH, null);
+				skeletonConfig.setOffset(SkeletonConfigOffsets.SHOULDERS_WIDTH, null);
 				break;
 			case UPPER_ARM_LENGTH:
-				skeletonConfig.setConfig(SkeletonConfigValue.UPPER_ARM_LENGTH, null);
+				skeletonConfig.setOffset(SkeletonConfigOffsets.UPPER_ARM_LENGTH, null);
 				break;
 		}
 	}
@@ -1697,7 +1745,7 @@ public class HumanSkeleton extends Skeleton implements SkeletonConfigCallback {
 	/**
 	 * Runs checks to know if we should (and are) performing the tracking of the
 	 * left arm from the controller.
-	 * 
+	 *
 	 * @return a bool telling us if we are tracking the left arm from the
 	 * controller or not.
 	 */

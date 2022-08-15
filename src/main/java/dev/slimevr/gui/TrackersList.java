@@ -4,6 +4,7 @@ import com.jme3.math.FastMath;
 import com.jme3.math.Quaternion;
 import com.jme3.math.Vector3f;
 import dev.slimevr.VRServer;
+import dev.slimevr.config.TrackerConfig;
 import dev.slimevr.gui.swing.EJBagNoStretch;
 import dev.slimevr.gui.swing.EJBoxNoStretch;
 import dev.slimevr.vr.trackers.*;
@@ -172,7 +173,7 @@ public class TrackersList extends EJBoxNoStretch {
 			row++;
 
 			if (t.userEditable()) {
-				TrackerConfig cfg = server.getTrackerConfig(t);
+				TrackerConfig cfg = server.getConfigManager().getVrConfig().getTracker(t);
 				JComboBox<String> desSelect;
 				add(
 					desSelect = new JComboBox<>(),
@@ -182,9 +183,9 @@ public class TrackersList extends EJBoxNoStretch {
 				for (TrackerPosition p : TrackerPosition.values) {
 					desSelect.addItem(p.name());
 				}
-				if (cfg.designation != null) {
+				if (cfg.getDesignation() != null) {
 					TrackerPosition
-						.getByDesignation(cfg.designation)
+						.getByDesignation(cfg.getDesignation())
 						.ifPresentOrElse(
 							trackerPosition -> desSelect.setSelectedItem(trackerPosition.name()),
 							() -> desSelect.setSelectedItem("NONE")

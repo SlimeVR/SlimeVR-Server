@@ -3,7 +3,7 @@ package dev.slimevr.poserecorder;
 import dev.slimevr.VRServer;
 import dev.slimevr.vr.processor.ComputedHumanPoseTracker;
 import dev.slimevr.vr.processor.skeleton.HumanSkeleton;
-import dev.slimevr.vr.processor.skeleton.SkeletonConfigValue;
+import dev.slimevr.vr.processor.skeleton.SkeletonConfigOffsets;
 import dev.slimevr.vr.trackers.Tracker;
 
 import java.util.List;
@@ -35,8 +35,8 @@ public class PoseFrameSkeleton extends HumanSkeleton {
 	public PoseFrameSkeleton(
 		List<? extends Tracker> trackers,
 		List<? extends ComputedHumanPoseTracker> computedTrackers,
-		Map<SkeletonConfigValue, Float> configs,
-		Map<SkeletonConfigValue, Float> altConfigs
+		Map<SkeletonConfigOffsets, Float> configs,
+		Map<SkeletonConfigOffsets, Float> altConfigs
 	) {
 		super(trackers, computedTrackers, configs, altConfigs);
 	}
@@ -44,7 +44,7 @@ public class PoseFrameSkeleton extends HumanSkeleton {
 	public PoseFrameSkeleton(
 		List<? extends Tracker> trackers,
 		List<? extends ComputedHumanPoseTracker> computedTrackers,
-		Map<SkeletonConfigValue, Float> configs
+		Map<SkeletonConfigOffsets, Float> configs
 	) {
 		super(trackers, computedTrackers, configs);
 	}

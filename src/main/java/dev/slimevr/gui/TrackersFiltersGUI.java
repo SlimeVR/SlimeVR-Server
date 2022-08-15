@@ -31,7 +31,8 @@ public class TrackersFiltersGUI extends EJBagNoStretch {
 
 		setAlignmentY(TOP_ALIGNMENT);
 		add(Box.createVerticalStrut(10));
-		filterType = TrackerFilters.valueOf(server.config.getString("filters.type", "NONE"));
+		filterType = TrackerFilters
+			.valueOf(server.getConfigManager().getVrConfig().getFilters().getType());
 
 		JComboBox<String> filterSelect;
 		add(filterSelect = new JComboBox<>(), s(c(0, row, 2), 4, 1));
@@ -45,13 +46,23 @@ public class TrackersFiltersGUI extends EJBagNoStretch {
 			@Override
 			public void actionPerformed(ActionEvent e) {
 				filterType = TrackerFilters.valueOf(filterSelect.getSelectedItem().toString());
-				server.updateTrackersFilters(filterType, filterAmount, filterTicks);
+				server
+					.getConfigManager()
+					.getVrConfig()
+					.getFilters()
+					.updateTrackersFilters(filterType, filterAmount, filterTicks);
+				server.getConfigManager().saveConfig();
 			}
 		});
 		add(Box.createVerticalStrut(40));
 		row++;
 
-		filterAmount = FastMath.clamp(server.config.getFloat("filters.amount", 0.3f), 0, 1);
+		filterAmount = FastMath
+			.clamp(
+				server.getConfigManager().getVrConfig().getFilters().getAmount(),
+				0,
+				1
+			);
 
 		add(new JLabel("Intensity"), c(0, row, 2));
 		add(new AdjButton("+", 0, false), c(1, row, 2));
@@ -61,7 +72,12 @@ public class TrackersFiltersGUI extends EJBagNoStretch {
 		);
 		add(new AdjButton("-", 0, true), c(3, row, 2));
 		row++;
-		filterTicks = (int) FastMath.clamp(server.config.getInt("filters.tickCount", 1), 0, 80);
+		filterTicks = (int) FastMath
+			.clamp(
+				server.getConfigManager().getVrConfig().getFilters().getTickCount(),
+				0,
+				80
+			);
 
 		add(new JLabel("Ticks"), c(0, row, 2));
 		add(new AdjButton("+", 1, false), c(1, row, 2));
@@ -86,7 +102,12 @@ public class TrackersFiltersGUI extends EJBagNoStretch {
 			ticksLabel.setText((StringUtils.prettyNumber(filterTicks)));
 		}
 
-		server.updateTrackersFilters(filterType, filterAmount, filterTicks);
+		server
+			.getConfigManager()
+			.getVrConfig()
+			.getFilters()
+			.updateTrackersFilters(filterType, filterAmount, filterTicks);
+		server.getConfigManager().saveConfig();
 	}
 
 	private class AdjButton extends JButton {

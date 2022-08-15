@@ -4,6 +4,8 @@ import com.jme3.math.FastMath;
 import com.jme3.math.Quaternion;
 import com.jme3.math.Vector3f;
 import dev.slimevr.VRServer;
+import dev.slimevr.config.FiltersConfig;
+import dev.slimevr.config.TrackerConfig;
 import dev.slimevr.vr.Device;
 import dev.slimevr.vr.trackers.udp.TrackersUDPServer;
 import dev.slimevr.vr.trackers.udp.UDPDevice;
@@ -69,32 +71,38 @@ public class IMUTracker
 	}
 
 	@Override
-	public void saveConfig(TrackerConfig config) {
+	public void writeConfig(TrackerConfig config) {
 		config.setDesignation(bodyPosition == null ? null : bodyPosition.designation);
-		config.mountingRotation = mounting != null ? mounting : null;
+		config.setMountingRotation(mounting != null ? mounting : null);
+		config.setCustomName(customName);
 	}
 
 	@Override
-	public void loadConfig(TrackerConfig config) {
+	public void readConfig(TrackerConfig config) {
 		// Loading a config is an act of user editing, therefore it shouldn't
 		// not be
 		// allowed if editing is not allowed
 		if (userEditable()) {
-			setCustomName(config.customName);
+			setCustomName(config.getCustomName());
 
-			if (config.mountingRotation != null) {
-				mounting = config.mountingRotation;
-				rotAdjust.set(config.mountingRotation);
+			if (config.getMountingRotation() != null) {
+				mounting = config.getMountingRotation();
+				rotAdjust.set(config.getMountingRotation());
 			} else {
 				rotAdjust.loadIdentity();
 			}
 			TrackerPosition
-				.getByDesignation(config.designation)
+				.getByDesignation(config.getDesignation())
 				.ifPresent(trackerPosition -> bodyPosition = trackerPosition);
+
+			FiltersConfig filtersConfig = this.vrserver
+				.getConfigManager()
+				.getVrConfig()
+				.getFilters();
 			setFilter(
-				vrserver.config.getString("filters.type"),
-				vrserver.config.getFloat("filters.amount", 0.3f),
-				vrserver.config.getInt("filters.tickCount", 1)
+				filtersConfig.getType(),
+				filtersConfig.getAmount(),
+				filtersConfig.getTickCount()
 			);
 		}
 	}

@@ -20,7 +20,7 @@ import dev.slimevr.autobone.AutoBoneProcessType;
 import dev.slimevr.autobone.AutoBone.Epoch;
 import dev.slimevr.gui.swing.EJBox;
 import dev.slimevr.poserecorder.PoseFrames;
-import dev.slimevr.vr.processor.skeleton.SkeletonConfigValue;
+import dev.slimevr.vr.processor.skeleton.SkeletonConfigOffsets;
 
 
 public class AutoBoneWindow extends JFrame implements AutoBoneListener {
@@ -213,7 +213,7 @@ public class AutoBoneWindow extends JFrame implements AutoBoneListener {
 	}
 
 	@Override
-	public void onAutoBoneEnd(EnumMap<SkeletonConfigValue, Float> configValues) {
+	public void onAutoBoneEnd(EnumMap<SkeletonConfigOffsets, Float> configValues) {
 		applyButton.setEnabled(true);
 	}
 }

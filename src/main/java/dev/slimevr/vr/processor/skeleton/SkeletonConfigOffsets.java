@@ -4,7 +4,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 
-public enum SkeletonConfigValue {
+public enum SkeletonConfigOffsets {
 	HEAD(
 		1,
 		"Head",
@@ -134,7 +134,7 @@ public enum SkeletonConfigValue {
 	SHOULDERS_DISTANCE(
 		16,
 		"Shoulders distance",
-		"shoulersDistance",
+		"shouldersDistance",
 		"Shoulders distance",
 		0.08f,
 		new BoneType[] { BoneType.LEFT_SHOULDER, BoneType.RIGHT_SHOULDER }
@@ -142,7 +142,7 @@ public enum SkeletonConfigValue {
 	SHOULDERS_WIDTH(
 		17,
 		"Shoulders width",
-		"shoulersWidth",
+		"shouldersWidth",
 		"Shoulders width",
 		0.36f,
 		new BoneType[] { BoneType.LEFT_SHOULDER, BoneType.RIGHT_SHOULDER }
@@ -164,13 +164,12 @@ public enum SkeletonConfigValue {
 		new BoneType[] { BoneType.LEFT_ELBOW_TRACKER, BoneType.RIGHT_ELBOW_TRACKER }
 	),;
 
-	public static final SkeletonConfigValue[] values = values();
-	private static final String CONFIG_PREFIX = "body.";
-	private static final Map<String, SkeletonConfigValue> byStringVal = new HashMap<>();
-	private static final Map<Number, SkeletonConfigValue> byIdVal = new HashMap<>();
+	public static final SkeletonConfigOffsets[] values = values();
+	private static final Map<String, SkeletonConfigOffsets> byStringVal = new HashMap<>();
+	private static final Map<Number, SkeletonConfigOffsets> byIdVal = new HashMap<>();
 
 	static {
-		for (SkeletonConfigValue configVal : values()) {
+		for (SkeletonConfigOffsets configVal : values()) {
 			byIdVal.put(configVal.id, configVal);
 			byStringVal.put(configVal.stringVal.toLowerCase(), configVal);
 		}
@@ -183,7 +182,7 @@ public enum SkeletonConfigValue {
 	public final float defaultValue;
 	public final BoneType[] affectedOffsets;
 
-	SkeletonConfigValue(
+	SkeletonConfigOffsets(
 		int id,
 		String stringVal,
 		String configKey,
@@ -193,7 +192,7 @@ public enum SkeletonConfigValue {
 	) {
 		this.id = id;
 		this.stringVal = stringVal;
-		this.configKey = CONFIG_PREFIX + configKey;
+		this.configKey = configKey;
 		this.label = label;
 
 		this.defaultValue = defaultValue;
@@ -202,11 +201,11 @@ public enum SkeletonConfigValue {
 			== null ? new BoneType[0] : affectedOffsets;
 	}
 
-	public static SkeletonConfigValue getByStringValue(String stringVal) {
+	public static SkeletonConfigOffsets getByStringValue(String stringVal) {
 		return stringVal == null ? null : byStringVal.get(stringVal.toLowerCase());
 	}
 
-	public static SkeletonConfigValue getById(int id) {
+	public static SkeletonConfigOffsets getById(int id) {
 		return byIdVal.get(id);
 	}
 }

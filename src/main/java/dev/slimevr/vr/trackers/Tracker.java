@@ -2,6 +2,7 @@ package dev.slimevr.vr.trackers;
 
 import com.jme3.math.Quaternion;
 import com.jme3.math.Vector3f;
+import dev.slimevr.config.TrackerConfig;
 import dev.slimevr.vr.Device;
 
 import java.util.concurrent.atomic.AtomicInteger;
@@ -23,9 +24,9 @@ public interface Tracker {
 
 	TrackerStatus getStatus();
 
-	void loadConfig(TrackerConfig config);
+	void readConfig(TrackerConfig config);
 
-	void saveConfig(TrackerConfig config);
+	void writeConfig(TrackerConfig config);
 
 	float getConfidenceLevel();
 
