@@ -70,6 +70,7 @@ public class CurrentVRConfigConverter implements VersionedModelConverter {
 						offsetsNode.set(node.getKey(), node.getValue());
 					}
 				}
+
 				// Fix calibration wolf typos
 				offsetsNode.set("shouldersWidth", bodyNode.get("shoulersWidth"));
 				offsetsNode.set("shouldersDistance", bodyNode.get("shoulersDistance"));
