@@ -1,6 +1,7 @@
 package dev.slimevr.config;
 
 import com.fasterxml.jackson.databind.JsonNode;
+import com.fasterxml.jackson.databind.node.ArrayNode;
 import com.fasterxml.jackson.databind.node.JsonNodeFactory;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 import com.github.jonpeterson.jackson.module.versioning.VersionedModelConverter;
@@ -31,14 +32,17 @@ public class CurrentVRConfigConverter implements VersionedModelConverter {
 			}
 
 			// Change trackers list to map
-			var trackersIter = modelData.withArray("trackers").iterator();
-			ObjectNode trackersNode = nodeFactory.objectNode();
-			while (trackersIter.hasNext()) {
-				JsonNode node = trackersIter.next();
-				JsonNode resultNode = TrackerConfig.toV2(node, nodeFactory);
-				trackersNode.set(node.get("name").asText(), resultNode);
+			ArrayNode oldTrackersNode = modelData.withArray("trackers");
+			if (oldTrackersNode != null) {
+				var trackersIter = oldTrackersNode.iterator();
+				ObjectNode trackersNode = nodeFactory.objectNode();
+				while (trackersIter.hasNext()) {
+					JsonNode node = trackersIter.next();
+					JsonNode resultNode = TrackerConfig.toV2(node, nodeFactory);
+					trackersNode.set(node.get("name").asText(), resultNode);
+				}
+				modelData.set("trackers", trackersNode);
 			}
-			modelData.set("trackers", trackersNode);
 
 			// Rename bridge to bridges
 			ObjectNode bridgeNode = (ObjectNode) modelData.get("bridge");
@@ -49,29 +53,33 @@ public class CurrentVRConfigConverter implements VersionedModelConverter {
 
 			// Move body to skeleton (and merge it to current skeleton)
 			ObjectNode bodyNode = (ObjectNode) modelData.get("body");
-			var bodyIter = bodyNode.fields();
-			ObjectNode skeletonNode = (ObjectNode) modelData.get("skeleton");
-			if (skeletonNode == null) {
-				skeletonNode = nodeFactory.objectNode();
-			}
-			ObjectNode offsetsNode = nodeFactory.objectNode();
-			while (bodyIter.hasNext()) {
-				Map.Entry<String, JsonNode> node = bodyIter.next();
-				// Filter only number values because other types would be stuff
-				// that didn't get migrated correctly before
-				if (node.getValue().isNumber()) {
-					offsetsNode.set(node.getKey(), node.getValue());
+			if (bodyNode != null) {
+				var bodyIter = bodyNode.fields();
+				ObjectNode skeletonNode = (ObjectNode) modelData.get("skeleton");
+				if (skeletonNode == null) {
+					skeletonNode = nodeFactory.objectNode();
 				}
-			}
-			// Fix calibration wolf typos
-			offsetsNode.set("shouldersWidth", bodyNode.get("shoulersWidth"));
-			offsetsNode.set("shouldersDistance", bodyNode.get("shoulersDistance"));
-			offsetsNode.remove("shoulersWidth");
-			offsetsNode.remove("shoulersDistance");
 
-			skeletonNode.set("offsets", offsetsNode);
-			modelData.set("skeleton", skeletonNode);
-			modelData.remove("body");
+				ObjectNode offsetsNode = nodeFactory.objectNode();
+				while (bodyIter.hasNext()) {
+					Map.Entry<String, JsonNode> node = bodyIter.next();
+					// Filter only number values because other types would be
+					// stuff
+					// that didn't get migrated correctly before
+					if (node.getValue().isNumber()) {
+						offsetsNode.set(node.getKey(), node.getValue());
+					}
+				}
+
+				// Fix calibration wolf typos
+				offsetsNode.set("shouldersWidth", bodyNode.get("shoulersWidth"));
+				offsetsNode.set("shouldersDistance", bodyNode.get("shoulersDistance"));
+				offsetsNode.remove("shoulersWidth");
+				offsetsNode.remove("shoulersDistance");
+				skeletonNode.set("offsets", offsetsNode);
+				modelData.set("skeleton", skeletonNode);
+				modelData.remove("body");
+			}
 		}
 
 		return modelData;
