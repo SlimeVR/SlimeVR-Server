@@ -59,6 +59,7 @@ public class CurrentVRConfigConverter implements VersionedModelConverter {
 				if (skeletonNode == null) {
 					skeletonNode = nodeFactory.objectNode();
 				}
+
 				ObjectNode offsetsNode = nodeFactory.objectNode();
 				while (bodyIter.hasNext()) {
 					Map.Entry<String, JsonNode> node = bodyIter.next();
