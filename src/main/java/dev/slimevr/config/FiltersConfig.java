@@ -9,24 +9,24 @@ import dev.slimevr.vr.trackers.TrackerFilters;
 public class FiltersConfig {
 
 
-	private String type = "NONE";
+	private String type = "none";
 	private float amount = 0.3f;
-	private int tickCount = 1;
+	private int buffer = 2;
 
 	public FiltersConfig() {
 	}
 
-	public void updateTrackersFilters(TrackerFilters filter, float amount, int ticks) {
+	public void updateTrackersFilters(TrackerFilters filter, float amount, int buffer) {
 		setType(filter.name());
 		setAmount(amount);
-		setTickCount(ticks);
+		setBuffer(buffer);
 
 		IMUTracker imu;
 		for (Tracker t : Main.vrServer.getAllTrackers()) {
 			Tracker tracker = t.get();
 			if (tracker instanceof IMUTracker) {
 				imu = (IMUTracker) tracker;
-				imu.setFilter(filter.name(), amount, ticks);
+				imu.setFilter(filter.name(), amount, buffer);
 			}
 		}
 	}
@@ -47,11 +47,11 @@ public class FiltersConfig {
 		this.amount = amount;
 	}
 
-	public int getTickCount() {
-		return tickCount;
+	public int getBuffer() {
+		return buffer;
 	}
 
-	public void setTickCount(int tickCount) {
-		this.tickCount = tickCount;
+	public void setBuffer(int buffer) {
+		this.buffer = buffer;
 	}
 }

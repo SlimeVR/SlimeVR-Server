@@ -102,7 +102,7 @@ public class IMUTracker
 			setFilter(
 				filtersConfig.getType(),
 				filtersConfig.getAmount(),
-				filtersConfig.getTickCount()
+				filtersConfig.getBuffer()
 			);
 		}
 	}

@@ -299,8 +299,8 @@ public class RPCHandler extends ProtocolHandler<RpcMessageHeader>
 					.valueOf(
 						filtersConfig.getType()
 					).id,
-				(int) (filtersConfig.getAmount() * 100),
-				filtersConfig.getTickCount()
+				filtersConfig.getAmount(),
+				filtersConfig.getBuffer()
 			);
 
 		int modelSettings;
@@ -312,7 +312,9 @@ public class RPCHandler extends ProtocolHandler<RpcMessageHeader>
 					config.getToggle(SkeletonConfigToggles.EXTENDED_SPINE_MODEL),
 					config.getToggle(SkeletonConfigToggles.EXTENDED_PELVIS_MODEL),
 					config.getToggle(SkeletonConfigToggles.EXTENDED_KNEE_MODEL),
-					config.getToggle(SkeletonConfigToggles.FORCE_ARMS_FROM_HMD)
+					config.getToggle(SkeletonConfigToggles.FORCE_ARMS_FROM_HMD),
+					false, // FIXME
+					false // FIXME
 				);
 			int ratiosOffset = ModelRatios
 				.createModelRatios(
@@ -363,8 +365,8 @@ public class RPCHandler extends ProtocolHandler<RpcMessageHeader>
 					.getFilters()
 					.updateTrackersFilters(
 						type,
-						req.filtering().intensity() / 100.0f,
-						req.filtering().ticks()
+						req.filtering().amount(),
+						req.filtering().buffer()
 					);
 				this.api.server.getConfigManager().saveConfig();
 			}

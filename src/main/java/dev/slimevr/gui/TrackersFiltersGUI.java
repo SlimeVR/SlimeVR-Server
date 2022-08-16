@@ -74,7 +74,7 @@ public class TrackersFiltersGUI extends EJBagNoStretch {
 		row++;
 		filterTicks = (int) FastMath
 			.clamp(
-				server.getConfigManager().getVrConfig().getFilters().getTickCount(),
+				server.getConfigManager().getVrConfig().getFilters().getBuffer(),
 				0,
 				80
 			);
