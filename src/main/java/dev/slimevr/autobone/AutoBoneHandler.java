@@ -161,8 +161,15 @@ public class AutoBoneHandler {
 				PoseFrames frames = framesFuture.get();
 				LogManager.info("[AutoBone] Done recording!");
 
+				// Save a recurring recording for users to send as debug info
+				announceProcessStatus(AutoBoneProcessType.RECORD, "Saving recording...");
+				autoBone.saveRecording(frames, "LastABRecording.pfr");
+
 				if (this.autoBone.getConfig().saveRecordings) {
-					announceProcessStatus(AutoBoneProcessType.RECORD, "Saving recording...");
+					announceProcessStatus(
+						AutoBoneProcessType.RECORD,
+						"Saving recording (from config option)..."
+					);
 					autoBone.saveRecording(frames);
 				}
 
