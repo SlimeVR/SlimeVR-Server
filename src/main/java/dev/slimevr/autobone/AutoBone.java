@@ -31,8 +31,8 @@ import java.util.function.Function;
 
 public class AutoBone {
 
-	private static final File saveDir = new File("Recordings");
-	private static final File loadDir = new File("LoadRecordings");
+	private static final File saveDir = new File("AutoBone Recordings");
+	private static final File loadDir = new File("Load AutoBone Recordings");
 	// This is filled by reloadConfigValues()
 	public final EnumMap<BoneType, Float> offsets = new EnumMap<BoneType, Float>(
 		BoneType.class
@@ -770,28 +770,22 @@ public class AutoBone {
 		return configInfo.toString();
 	}
 
-	public void saveRecording(PoseFrames frames) {
+	public void saveRecording(PoseFrames frames, File recordingFile) {
 		if (saveDir.isDirectory() || saveDir.mkdirs()) {
-			File saveRecording;
-			int recordingIndex = 1;
-			do {
-				saveRecording = new File(saveDir, "ABRecording" + recordingIndex++ + ".pfr");
-			} while (saveRecording.exists());
-
 			LogManager
-				.info("[AutoBone] Exporting frames to \"" + saveRecording.getPath() + "\"...");
-			if (PoseFrameIO.writeToFile(saveRecording, frames)) {
+				.info("[AutoBone] Exporting frames to \"" + recordingFile.getPath() + "\"...");
+			if (PoseFrameIO.writeToFile(recordingFile, frames)) {
 				LogManager
 					.info(
 						"[AutoBone] Done exporting! Recording can be found at \""
-							+ saveRecording.getPath()
+							+ recordingFile.getPath()
 							+ "\"."
 					);
 			} else {
 				LogManager
 					.severe(
 						"[AutoBone] Failed to export the recording to \""
-							+ saveRecording.getPath()
+							+ recordingFile.getPath()
 							+ "\"."
 					);
 			}
@@ -803,6 +797,20 @@ public class AutoBone {
 						+ "\"."
 				);
 		}
+	}
+
+	public void saveRecording(PoseFrames frames, String recordingFileName) {
+		saveRecording(frames, new File(saveDir, recordingFileName));
+	}
+
+	public void saveRecording(PoseFrames frames) {
+		File recordingFile;
+		int recordingIndex = 1;
+		do {
+			recordingFile = new File(saveDir, "ABRecording" + recordingIndex++ + ".pfr");
+		} while (recordingFile.exists());
+
+		saveRecording(frames, recordingFile);
 	}
 
 	public List<Pair<String, PoseFrames>> loadRecordings() {

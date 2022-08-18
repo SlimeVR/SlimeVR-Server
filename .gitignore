@@ -17,7 +17,10 @@ vrconfig.yml
 
 # BVH
 BVH Recordings
-Recordings
+
+# AutoBone
+AutoBone Recordings
+Load AutoBone Recordings
 
 # Logs
 *.log.*
