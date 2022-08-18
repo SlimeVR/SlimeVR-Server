@@ -74,8 +74,10 @@ public class LegTweaks {
 	private static final float FOOT_Y_MAX_ACCELERATION = 0.40f;
 	private static final float FOOT_Y_DIFF_CUTOFF = 0.15f;
 
-	// hyperparameters (knee correction)
-	private static final float KNEE_CORRECTION_WEIGHT = 0.25f;
+	// hyperparameters (knee / waist correction)
+	private static final float KNEE_CORRECTION_WEIGHT = 0.0f; // may be usful in future
+	private static final float KNEE_LATERAL_WEIGHT = 0.45f;
+	private static final float WAIST_PUSH_WEIGHT = 0.2f;
 
 	// hyperparameters (misc)
 	private static final float NEARLY_ZERO = 0.005f;
@@ -170,6 +172,7 @@ public class LegTweaks {
 		this.floorclipEnabled = floorclipEnabled;
 		// reset the buffer
 		this.bufferHead = new LegTweakBuffer();
+		this.bufferInvalid = true;
 	}
 
 	public void setSkatingReductionEnabled(boolean skatingCorrectionEnabled) {
@@ -243,13 +246,17 @@ public class LegTweaks {
 		// populate the vectors with the latest data
 		setVectors();
 
-		// if not initialized, we need to initialize floor level and waist to
-		// floor distance (must happen immediately after reset)
+		// if not initialized, we need to calculate some values from this frame
+		// to be used later (must happen immediately after reset)
 		if (!initialized) {
 			floorLevel = (leftFootPosition.y + rightFootPosition.y) / 2f + FLOOR_CALIBRATION_OFFSET;
 			waistToFloorDist = waistPosition.y - floorLevel;
+			// invalidate the buffer since the non initialized output may be
+			// very wrong
+			bufferInvalid = true;
 			initialized = true;
 		}
+
 		// if not enabled do nothing and return false
 		if (!enabled) {
 			return false;
@@ -382,9 +389,12 @@ public class LegTweaks {
 			rightKneePosition.y = bufferHead.getRightKneePosition(null).y;
 		}
 		// calculate the correction for the knees
-		if (kneesActive) {
-			correctKnees();
+		if (kneesActive && initialized) {
+			solveLowerBody();
 		}
+		// push the waist up the floor offset
+		waistPosition.y += FLOOR_CALIBRATION_OFFSET;
+
 		// populate the corrected data into the current frame
 		this.bufferHead.setLeftFootPositionCorrected(leftFootPosition);
 		this.bufferHead.setRightFootPositionCorrected(rightFootPosition);
@@ -399,13 +409,14 @@ public class LegTweaks {
 			|| rightFootPosition.y < floorLevel + rightOffset);
 	}
 
-	// returns true if the tracker positions should be corrected with the values
-	// stored in the class
+	// corrects the foot position to be above the floor level that is calculated
+	// on calibration
 	private void correctClipping() {
 		// calculate how angled down the feet are as a scalar value between 0
 		// and 1 (0 = flat, 1 = max angle)
 		float leftOffset = getLeftFootOffset();
 		float rightOffset = getRightFootOffset();
+		float avgOffset = 0;
 
 		// if there is no clipping, or clipping is not enabled, return false
 		if (!isClipped(leftOffset, rightOffset) || !enabled) {
@@ -427,6 +438,7 @@ public class LegTweaks {
 				);
 			leftFootPosition.y += displacement;
 			leftKneePosition.y += displacement;
+			avgOffset += displacement;
 		}
 		if (
 			rightFootPosition.y
@@ -442,7 +454,10 @@ public class LegTweaks {
 				);
 			rightFootPosition.y += displacement;
 			rightKneePosition.y += displacement;
+			avgOffset += displacement;
+
 		}
+		waistPosition.y += (avgOffset / 2) * WAIST_PUSH_WEIGHT;
 	}
 
 	// based on the data from the last frame compute a new position that reduces
@@ -748,13 +763,25 @@ public class LegTweaks {
 	}
 
 	// move the knees in to a position that is closer to the truth
-	private void correctKnees() {
+	private void solveLowerBody() {
 		// calculate the left and right waist nodes in standing space
-		Vector3f leftWaist = waistPosition.add(leftWaistUpperLegOffset);
-		Vector3f rightWaist = waistPosition.add(rightWaistUpperLegOffset);
+		Vector3f leftWaist = waistPosition;// .add(leftWaistUpperLegOffset);
+		Vector3f rightWaist = waistPosition;// .add(rightWaistUpperLegOffset);
 
 		Vector3f tempLeft;
 		Vector3f tempRight;
+
+		// before moveing the knees back closer to the waist nodes offset them
+		// the same amount the foot trackers where offset
+		float leftXDif = leftFootPosition.x - bufferHead.getLeftFootPosition(null).x;
+		float rightXDif = rightFootPosition.x - bufferHead.getRightFootPosition(null).x;
+		float leftYDif = leftFootPosition.y - bufferHead.getLeftFootPosition(null).y;
+		float rightYDif = rightFootPosition.y - bufferHead.getRightFootPosition(null).y;
+		leftKneePosition.x += leftXDif * KNEE_LATERAL_WEIGHT;
+		leftKneePosition.y += leftYDif * KNEE_LATERAL_WEIGHT;
+		rightKneePosition.x += rightXDif * KNEE_LATERAL_WEIGHT;
+		rightKneePosition.y += rightYDif * KNEE_LATERAL_WEIGHT;
+
 
 		// calculate the bone distances
 		float leftKneeWaist = bufferHead.getLeftKneePosition(null).distance(leftWaist);
