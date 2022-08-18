@@ -4,7 +4,6 @@ import com.jme3.math.FastMath;
 import com.jme3.math.Quaternion;
 import com.jme3.math.Vector3f;
 import dev.slimevr.VRServer;
-import dev.slimevr.config.FiltersConfig;
 import dev.slimevr.config.TrackerConfig;
 import dev.slimevr.vr.Device;
 import dev.slimevr.vr.trackers.udp.TrackersUDPServer;
@@ -32,8 +31,8 @@ public class IMUTracker
 	protected final TrackersUDPServer server;
 	protected final VRServer vrserver;
 	private final Quaternion buffQuat = new Quaternion();
-	public int movementFilterTickCount = 0;
-	public float movementFilterAmount = 1f;
+	public int filterBuffer = 0;
+	public float filterAmount = 1f;
 	public int calibrationStatus = 0;
 	public int magCalibrationStatus = 0;
 	public float magnetometerAccuracy = 0;
@@ -94,43 +93,33 @@ public class IMUTracker
 			TrackerPosition
 				.getByDesignation(config.getDesignation())
 				.ifPresent(trackerPosition -> bodyPosition = trackerPosition);
-
-			FiltersConfig filtersConfig = this.vrserver
-				.getConfigManager()
-				.getVrConfig()
-				.getFilters();
-			setFilter(
-				filtersConfig.getType(),
-				filtersConfig.getAmount(),
-				filtersConfig.getBuffer()
-			);
 		}
 	}
 
-	public void setFilter(String type, float amount, int ticks) {
+	public void setFilter(TrackerFilters type, float amount, int buffer) {
 		amount = FastMath.clamp(amount, 0, 1f);
-		ticks = (int) FastMath.clamp(ticks, 0, 50);
+		buffer = (int) FastMath.clamp(buffer, 0, 50);
 		if (type != null) {
 			switch (type) {
-				case "INTERPOLATION":
-					movementFilterAmount = 1f - (amount / 1.6f);
-					movementFilterTickCount = ticks;
+				case SMOOTHING:
+					filterAmount = 1f - (amount / 1.6f);
+					filterBuffer = buffer;
 					break;
-				case "EXTRAPOLATION":
-					movementFilterAmount = 1f + (amount * 1.15f);
-					movementFilterTickCount = ticks;
+				case PREDICTION:
+					filterAmount = 1f + (amount * 1.15f);
+					filterBuffer = buffer;
 					break;
-				case "NONE":
+				case NONE:
 				default:
-					movementFilterAmount = 1f;
-					movementFilterTickCount = 0;
+					filterAmount = 1f;
+					filterBuffer = 0;
 					break;
 			}
 		} else {
-			movementFilterAmount = 1f;
-			movementFilterTickCount = 0;
+			filterAmount = 1f;
+			filterBuffer = 0;
 		}
-		previousRots = new CircularArrayList<Quaternion>(movementFilterTickCount + 1);
+		previousRots = new CircularArrayList<>(filterBuffer + 1);
 	}
 
 	public Quaternion getMountingRotation() {
@@ -172,9 +161,9 @@ public class IMUTracker
 
 	@Override
 	public boolean getRotation(Quaternion store) {
-		if (movementFilterTickCount > 0 && movementFilterAmount != 1 && previousRots.size() > 0) {
+		if (filterBuffer > 0 && filterAmount != 1 && previousRots.size() > 0) {
 			buffQuat.set(previousRots.get(0));
-			buffQuat.slerpLocal(rotQuaternion, movementFilterAmount);
+			buffQuat.slerpLocal(rotQuaternion, filterAmount);
 			store.set(buffQuat);
 		} else {
 			store.set(rotQuaternion);
@@ -208,8 +197,8 @@ public class IMUTracker
 	public void dataTick() {
 		timer.update();
 
-		if (movementFilterTickCount != 0) {
-			if (previousRots.size() > movementFilterTickCount) {
+		if (filterBuffer != 0) {
+			if (previousRots.size() > filterBuffer) {
 				previousRots.remove(0);
 			}
 			previousRots.add(rotQuaternion.clone());

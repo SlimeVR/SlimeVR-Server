@@ -1,8 +1,6 @@
 package dev.slimevr.config;
 
 import dev.slimevr.Main;
-import dev.slimevr.vr.trackers.IMUTracker;
-import dev.slimevr.vr.trackers.Tracker;
 import dev.slimevr.vr.trackers.TrackerFilters;
 
 
@@ -17,18 +15,15 @@ public class FiltersConfig {
 	}
 
 	public void updateTrackersFilters(TrackerFilters filter, float amount, int buffer) {
-		setType(filter.name());
+		setType(filter.configKey);
 		setAmount(amount);
 		setBuffer(buffer);
 
-		IMUTracker imu;
-		for (Tracker t : Main.vrServer.getAllTrackers()) {
-			Tracker tracker = t.get();
-			if (tracker instanceof IMUTracker) {
-				imu = (IMUTracker) tracker;
-				imu.setFilter(filter.name(), amount, buffer);
-			}
-		}
+		Main.vrServer.getTrackerFiltering().updateTrackersFilters(filter, amount, buffer);
+	}
+
+	public TrackerFilters getEnumType() {
+		return TrackerFilters.getByConfigkey(type);
 	}
 
 	public String getType() {

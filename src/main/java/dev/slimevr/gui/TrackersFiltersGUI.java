@@ -31,8 +31,7 @@ public class TrackersFiltersGUI extends EJBagNoStretch {
 
 		setAlignmentY(TOP_ALIGNMENT);
 		add(Box.createVerticalStrut(10));
-		filterType = TrackerFilters
-			.valueOf(server.getConfigManager().getVrConfig().getFilters().getType());
+		filterType = server.getConfigManager().getVrConfig().getFilters().getEnumType();
 
 		JComboBox<String> filterSelect;
 		add(filterSelect = new JComboBox<>(), s(c(0, row, 2), 4, 1));
@@ -45,7 +44,8 @@ public class TrackersFiltersGUI extends EJBagNoStretch {
 		filterSelect.addActionListener(new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent e) {
-				filterType = TrackerFilters.valueOf(filterSelect.getSelectedItem().toString());
+				filterType = TrackerFilters
+					.getByConfigkey(filterSelect.getSelectedItem().toString());
 				server
 					.getConfigManager()
 					.getVrConfig()
@@ -64,7 +64,7 @@ public class TrackersFiltersGUI extends EJBagNoStretch {
 				1
 			);
 
-		add(new JLabel("Intensity"), c(0, row, 2));
+		add(new JLabel("Amount"), c(0, row, 2));
 		add(new AdjButton("+", 0, false), c(1, row, 2));
 		add(
 			amountLabel = new JLabel(StringUtils.prettyNumber(filterAmount * 100f) + "%"),
@@ -76,10 +76,10 @@ public class TrackersFiltersGUI extends EJBagNoStretch {
 			.clamp(
 				server.getConfigManager().getVrConfig().getFilters().getBuffer(),
 				0,
-				80
+				50
 			);
 
-		add(new JLabel("Ticks"), c(0, row, 2));
+		add(new JLabel("Buffer"), c(0, row, 2));
 		add(new AdjButton("+", 1, false), c(1, row, 2));
 		add(ticksLabel = new JLabel(StringUtils.prettyNumber(filterTicks)), c(2, row, 2));
 		add(new AdjButton("-", 1, true), c(3, row, 2));
@@ -95,9 +95,9 @@ public class TrackersFiltersGUI extends EJBagNoStretch {
 			amountLabel.setText((StringUtils.prettyNumber(filterAmount * 100f)) + "%");
 		} else if (cat == 1) {
 			if (neg) {
-				filterTicks = (int) FastMath.clamp(filterTicks - 1, 0, 80);
+				filterTicks = (int) FastMath.clamp(filterTicks - 1, 0, 50);
 			} else {
-				filterTicks = (int) FastMath.clamp(filterTicks + 1, 0, 80);
+				filterTicks = (int) FastMath.clamp(filterTicks + 1, 0, 50);
 			}
 			ticksLabel.setText((StringUtils.prettyNumber(filterTicks)));
 		}
