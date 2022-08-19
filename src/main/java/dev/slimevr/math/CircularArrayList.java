@@ -1,4 +1,4 @@
-package dev.slimevr.vr.trackers;
+package dev.slimevr.math;
 
 import java.util.*;
 

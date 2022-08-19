@@ -20,12 +20,10 @@ public class TrackerFiltering {
 	}
 
 	public void updateTrackersFilters(TrackerFilters filter, float amount, int buffer) {
-		IMUTracker imu;
 		for (Tracker t : vrserver.getAllTrackers()) {
 			Tracker tracker = t.get();
-			if (tracker instanceof IMUTracker) {
-				imu = (IMUTracker) tracker;
-				imu.setFilter(filter, amount, buffer);
+			if (tracker instanceof TrackerWithFiltering) {
+				((TrackerWithFiltering) tracker).setFiltering(filter, amount, buffer);
 			}
 		}
 
