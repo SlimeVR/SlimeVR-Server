@@ -10,6 +10,7 @@ import dev.slimevr.vr.trackers.*;
 import io.eiren.util.ann.Synchronize;
 import io.eiren.util.ann.ThreadSafe;
 import io.eiren.util.collections.FastList;
+import io.eiren.util.logging.LogManager;
 
 import java.util.*;
 import java.util.Map.Entry;
@@ -174,8 +175,14 @@ public abstract class ProtobufBridge<T extends VRTracker> implements Bridge {
 	protected void userActionReceived(UserAction userAction) {
 		switch (userAction.getName()) {
 			case "calibrate":
+				LogManager
+					.warning("[" + bridgeName + "] Received deprecated user action 'calibrate'!");
+			case "reset":
 				// TODO : Check pose field
 				Main.vrServer.resetTrackers();
+				break;
+			case "fast_reset":
+				Main.vrServer.resetTrackersYaw();
 				break;
 		}
 	}
