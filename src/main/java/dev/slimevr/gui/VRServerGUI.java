@@ -234,7 +234,7 @@ public class VRServerGUI extends JFrame {
 						.getVrConfig()
 						.getSkeleton()
 						.getToggles()
-						.get(SkeletonConfigToggles.FLOOR_CLIP.stringVal)
+						.get(SkeletonConfigToggles.FLOOR_CLIP.configKey)
 				);
 
 
@@ -256,7 +256,7 @@ public class VRServerGUI extends JFrame {
 						.getVrConfig()
 						.getSkeleton()
 						.getToggles()
-						.get(SkeletonConfigToggles.SKATING_CORRECTION.stringVal)
+						.get(SkeletonConfigToggles.SKATING_CORRECTION.configKey)
 				);
 				add(Box.createHorizontalGlue());
 				add(new JButton("Record BVH") {
