@@ -216,7 +216,7 @@ public class HumanPoseProcessor {
 				.getVrConfig()
 				.getSkeleton()
 				.getToggles()
-				.put(SkeletonConfigToggles.FLOOR_CLIP.stringVal, value);
+				.put(SkeletonConfigToggles.FLOOR_CLIP.configKey, value);
 			server.getConfigManager().saveConfig();
 		}
 	}
@@ -230,7 +230,7 @@ public class HumanPoseProcessor {
 				.getVrConfig()
 				.getSkeleton()
 				.getToggles()
-				.put(SkeletonConfigToggles.SKATING_CORRECTION.stringVal, value);
+				.put(SkeletonConfigToggles.SKATING_CORRECTION.configKey, value);
 			server.getConfigManager().saveConfig();
 		}
 	}
