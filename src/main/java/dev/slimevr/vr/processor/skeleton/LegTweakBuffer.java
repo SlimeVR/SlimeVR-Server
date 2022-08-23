@@ -171,6 +171,7 @@ public class LegTweakBuffer {
 	public Quaternion getLeftFootRotation(Quaternion quat) {
 		if (quat == null)
 			quat = new Quaternion();
+
 		return quat.set(leftFootRotation);
 	}
 
