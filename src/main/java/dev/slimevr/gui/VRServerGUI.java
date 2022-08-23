@@ -228,6 +228,7 @@ public class VRServerGUI extends JFrame {
 						});
 					}
 				});
+
 				setFloorClipEnabled(
 					server
 						.getConfigManager()
@@ -250,6 +251,7 @@ public class VRServerGUI extends JFrame {
 						});
 					}
 				});
+
 				setSkatingReductionEnabled(
 					server
 						.getConfigManager()
@@ -551,13 +553,12 @@ public class VRServerGUI extends JFrame {
 	private void setSkatingReductionEnabled(Boolean value) {
 		if (value == null)
 			value = false;
-		if (value) {
-			skatingCorrectionButton.setBackground(Color.GREEN);
-		} else {
-			skatingCorrectionButton.setBackground(Color.RED);
-		}
+
+		skatingCorrectionButton.setBackground(value ? Color.GREEN : Color.RED);
+
 		skatingCorrectionButton
 			.setText("Skating Correction: " + (value ? "ON" : "OFF"));
+
 		server.setSkatingReductionEnabled(value);
 	}
 
@@ -565,11 +566,9 @@ public class VRServerGUI extends JFrame {
 	private void setFloorClipEnabled(Boolean value) {
 		if (value == null)
 			value = false;
-		if (value) {
-			floorClipButton.setBackground(Color.GREEN);
-		} else {
-			floorClipButton.setBackground(Color.RED);
-		}
+
+		floorClipButton.setBackground(value ? Color.GREEN : Color.RED);
+
 		// update the button
 		floorClipButton.setText("Floor clip: " + (value ? "ON" : "OFF"));
 		server.setFloorClipEnabled(value);
