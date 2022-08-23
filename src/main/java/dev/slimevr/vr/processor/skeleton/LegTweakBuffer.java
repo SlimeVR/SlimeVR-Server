@@ -493,6 +493,7 @@ public class LegTweakBuffer {
 		leftFootAccelerationMagnitude = leftFootAcceleration
 			.setY(leftFootAcceleration.y * SKATING_ACCELERATION_Y_USE_PERCENT)
 			.length();
+
 		rightFootAccelerationMagnitude = rightFootAcceleration
 			.setY(rightFootAcceleration.y * SKATING_ACCELERATION_Y_USE_PERCENT)
 			.length();
