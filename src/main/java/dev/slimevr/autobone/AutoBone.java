@@ -477,6 +477,7 @@ public class AutoBone {
 			frames,
 			intermediateOffsets
 		);
+
 		skeleton1.setLegTweaksEnabled(false);
 		skeleton2.setLegTweaksEnabled(false);
 
