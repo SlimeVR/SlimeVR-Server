@@ -170,6 +170,7 @@ public class LegTweaks {
 
 	public void setFloorclipEnabled(boolean floorclipEnabled) {
 		this.floorclipEnabled = floorclipEnabled;
+
 		// reset the buffer
 		this.bufferHead = new LegTweakBuffer();
 		this.bufferInvalid = true;
