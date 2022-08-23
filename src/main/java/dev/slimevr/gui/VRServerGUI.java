@@ -251,6 +251,7 @@ public class VRServerGUI extends JFrame {
 						});
 					}
 				});
+
 				setSkatingReductionEnabled(
 					server
 						.getConfigManager()
