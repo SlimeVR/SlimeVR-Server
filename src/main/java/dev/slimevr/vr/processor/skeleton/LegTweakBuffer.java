@@ -603,6 +603,7 @@ public class LegTweakBuffer {
 			Vector3f velocityDiff = rightFootVelocity.subtract(leftFootVelocity);
 			velocityDiff.setY(0.0f);
 			float velocityDiffMagnitude = velocityDiff.length();
+
 			if (velocityDiffMagnitude < MAX_SCALAR_DORMANT) {
 				return PARAM_SCALAR_MAX;
 			} else if (velocityDiffMagnitude > MIN_SCALAR_DORMANT) {
