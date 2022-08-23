@@ -232,6 +232,7 @@ public class LegTweaks {
 			leftFootAcceleration.set(0, 0, 0);
 			rightFootAcceleration.set(0, 0, 0);
 		}
+
 		if (skeleton.leftLowerLegTracker != null && skeleton.rightLowerLegTracker != null) {
 			skeleton.leftLowerLegTracker.getAcceleration(leftLowerLegAcceleration);
 			skeleton.rightLowerLegTracker.getAcceleration(rightLowerLegAcceleration);
