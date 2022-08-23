@@ -558,6 +558,7 @@ public class VRServerGUI extends JFrame {
 
 		skatingCorrectionButton
 			.setText("Skating Correction: " + (value ? "ON" : "OFF"));
+
 		server.setSkatingReductionEnabled(value);
 	}
 
