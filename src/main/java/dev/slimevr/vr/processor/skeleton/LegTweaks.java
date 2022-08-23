@@ -251,6 +251,7 @@ public class LegTweaks {
 		if (!initialized) {
 			floorLevel = (leftFootPosition.y + rightFootPosition.y) / 2f + FLOOR_CALIBRATION_OFFSET;
 			waistToFloorDist = waistPosition.y - floorLevel;
+
 			// invalidate the buffer since the non initialized output may be
 			// very wrong
 			bufferInvalid = true;
