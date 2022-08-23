@@ -612,6 +612,7 @@ public class LegTweakBuffer {
 					/ (MAX_SCALAR_DORMANT - MIN_SCALAR_DORMANT);
 			}
 		}
+
 		// calculate the 'unlockedness factor' and use that to
 		// determine the scalar (go as low as 0.5 as as high as
 		// param_scalar_max)
