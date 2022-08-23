@@ -75,7 +75,8 @@ public class LegTweaks {
 	private static final float FOOT_Y_DIFF_CUTOFF = 0.15f;
 
 	// hyperparameters (knee / waist correction)
-	private static final float KNEE_CORRECTION_WEIGHT = 0.0f; // may be usful in future
+	private static final float KNEE_CORRECTION_WEIGHT = 0.0f; // may be usful in
+																// future
 	private static final float KNEE_LATERAL_WEIGHT = 0.45f;
 	private static final float WAIST_PUSH_WEIGHT = 0.2f;
 
@@ -644,7 +645,6 @@ public class LegTweaks {
 					rightFootPosition.x = bufferHead.getRightFootPosition(null).x;
 				}
 
-
 				if (
 					checkOverShoot(
 						this.bufferHead.getRightFootPosition(null).z,
@@ -666,7 +666,6 @@ public class LegTweaks {
 		boolean correctLeft = true;
 		boolean correctRight = true;
 
-
 		if (bufferHead.getLeftLegState() == LegTweakBuffer.LOCKED) {
 			float lastPositionY = bufferHead
 				.getParent()
@@ -681,12 +680,10 @@ public class LegTweaks {
 			}
 		}
 
-
 		if (bufferHead.getRightLegState() == LegTweakBuffer.LOCKED) {
 			float lastPositionY = bufferHead
 				.getParent()
 				.getRightFootPositionCorrected(null).y;
-
 
 			if (
 				Math.abs(rightFootPosition.y - lastPositionY) < FOOT_Y_DIFF_CUTOFF
@@ -713,7 +710,9 @@ public class LegTweaks {
 		Vector3f leftFootDif = leftFootPosition
 			.subtract(bufferHead.getParent().getLeftFootPositionCorrected(null));
 		if (Math.abs(leftFootDif.y) > NEARLY_ZERO) {
-			temp = bufferHead.getParent().getLeftFootPositionCorrected(null)
+			temp = bufferHead
+				.getParent()
+				.getLeftFootPositionCorrected(null)
 				.subtract(
 					bufferHead
 						.getParent()
@@ -721,10 +720,8 @@ public class LegTweaks {
 						.subtract(bufferHead.getLeftFootPosition(null))
 				);
 
-
 			float leftFloor = (floorLevel + (MAX_DYNAMIC_DISPLACEMENT * getLeftFootOffset()))
 				- currentDisengagementOffset;
-
 
 			if (
 				temp.y
@@ -737,15 +734,11 @@ public class LegTweaks {
 
 			Vector3f velocity = bufferHead.getLeftFootVelocity(null);
 
-
-
 			if (velocity.y * leftFootDif.y > 0) {
 				leftFootPosition.y += velocity.y * FOOT_Y_CORRECTION_WEIGHT;
 			} else {
 				leftFootPosition.y -= velocity.y * FOOT_Y_CORRECTION_WEIGHT;
 			}
-
-
 
 			// check for overshoot and correct if necessary
 			if (
@@ -765,10 +758,10 @@ public class LegTweaks {
 		Vector3f rightFootDif = rightFootPosition
 			.subtract(bufferHead.getParent().getRightFootPositionCorrected(null));
 
-
-
 		if (Math.abs(rightFootDif.y) > NEARLY_ZERO) {
-			temp = bufferHead.getParent().getRightFootPositionCorrected(null)
+			temp = bufferHead
+				.getParent()
+				.getRightFootPositionCorrected(null)
 				.subtract(
 					bufferHead
 						.getParent()
@@ -776,12 +769,8 @@ public class LegTweaks {
 						.subtract(bufferHead.getRightFootPosition(null))
 				);
 
-
-
 			float rightFloor = (floorLevel + (MAX_DYNAMIC_DISPLACEMENT * getRightFootOffset()))
 				- currentDisengagementOffset;
-
-
 
 			if (
 				temp.y
@@ -792,19 +781,13 @@ public class LegTweaks {
 				rightFootPosition.y = temp.y;
 			}
 
-
-
 			Vector3f velocity = bufferHead.getRightFootVelocity(null);
-
-
 
 			if (velocity.y * rightFootDif.y > 0) {
 				rightFootPosition.y += velocity.y * FOOT_Y_CORRECTION_WEIGHT;
 			} else {
 				rightFootPosition.y -= velocity.y * FOOT_Y_CORRECTION_WEIGHT;
 			}
-
-
 
 			// check for overshoot and correct if necessary
 			if (
@@ -826,19 +809,13 @@ public class LegTweaks {
 			+ waistToFloorDist
 			- (waistToFloorDist * STANDING_CUTOFF_VERTICAL);
 
-
-
 		if (waistPosition.y < cutoff) {
 			currentDisengagementOffset = (1 - waistPosition.y / cutoff)
 				* MAX_DISENGAGMENT_OFFSET;
 			return false;
 		}
 
-
-
 		currentDisengagementOffset = 0f;
-
-
 
 		return true;
 	}
@@ -863,7 +840,6 @@ public class LegTweaks {
 		rightKneePosition.x += rightXDif * KNEE_LATERAL_WEIGHT;
 		rightKneePosition.y += rightYDif * KNEE_LATERAL_WEIGHT;
 
-
 		// calculate the bone distances
 		float leftKneeWaist = bufferHead.getLeftKneePosition(null).distance(leftWaist);
 		float rightKneeWaist = bufferHead.getRightKneePosition(null).distance(rightWaist);
@@ -878,8 +854,6 @@ public class LegTweaks {
 			.subtract(leftWaist)
 			.normalize()
 			.mult(leftKneeOffset * KNEE_CORRECTION_WEIGHT);
-
-
 
 		Vector3f rightKneeVector = rightKneePosition
 			.subtract(rightWaist)
@@ -896,15 +870,11 @@ public class LegTweaks {
 	private float getLeftFootOffset() {
 		float offset = computeUnitVector(this.leftFootRotation).y;
 
-
-
 		if (offset < 0) {
 			return 0;
 		} else if (offset > DYNAMIC_DISPLACEMENT_CUTOFF) {
 			return DYNAMIC_DISPLACEMENT_CUTOFF;
 		}
-
-
 
 		return offset;
 	}
@@ -912,15 +882,11 @@ public class LegTweaks {
 	private float getRightFootOffset() {
 		float offset = computeUnitVector(this.rightFootRotation).y;
 
-
-
 		if (offset < 0) {
 			return 0;
 		} else if (offset > DYNAMIC_DISPLACEMENT_CUTOFF) {
 			return DYNAMIC_DISPLACEMENT_CUTOFF;
 		}
-
-
 
 		return offset;
 	}
@@ -936,8 +902,6 @@ public class LegTweaks {
 		} else if (footDif.length() > MAX_ACCEPTABLE_ERROR) {
 			return CORRECTION_WEIGHT_MAX;
 		}
-
-
 
 		return CORRECTION_WEIGHT_MIN
 			+ (footDif.length() - MIN_ACCEPTABLE_ERROR)
