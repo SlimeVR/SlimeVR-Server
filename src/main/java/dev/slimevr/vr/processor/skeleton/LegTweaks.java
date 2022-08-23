@@ -478,7 +478,6 @@ public class LegTweaks {
 			rightFootPosition.y += displacement;
 			rightKneePosition.y += displacement;
 			avgOffset += displacement;
-
 		}
 
 		waistPosition.y += (avgOffset / 2) * WAIST_PUSH_WEIGHT;
