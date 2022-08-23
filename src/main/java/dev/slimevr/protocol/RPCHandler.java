@@ -407,6 +407,7 @@ public class RPCHandler extends ProtocolHandler<RpcMessageHeader>
 							toggles.forceArmsFromHmd()
 						);
 				}
+
 				if (toggles.floorClip()) {
 					cfg
 						.setToggle(

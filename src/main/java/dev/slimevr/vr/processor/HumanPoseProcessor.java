@@ -232,6 +232,7 @@ public class HumanPoseProcessor {
 				.getSkeleton()
 				.getToggles()
 				.put(SkeletonConfigToggles.SKATING_CORRECTION.configKey, value);
+
 			server.getConfigManager().saveConfig();
 		}
 	}

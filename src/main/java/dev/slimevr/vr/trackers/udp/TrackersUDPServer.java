@@ -430,10 +430,13 @@ public class TrackersUDPServer extends Thread {
 			case UDPProtocolParser.PACKET_ACCEL:
 				if (connection == null)
 					break;
+
 				UDPPacket4Acceleration accelPacket = (UDPPacket4Acceleration) packet;
 				tracker = connection.getTracker(accelPacket.getSensorId());
+
 				if (tracker == null)
 					break;
+
 				Vector3f acceleration = tracker.rotQuaternion.mult(accelPacket.acceleration);
 				tracker.accelVector.set(acceleration);
 				break;
