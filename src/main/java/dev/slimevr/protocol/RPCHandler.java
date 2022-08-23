@@ -414,6 +414,7 @@ public class RPCHandler extends ProtocolHandler<RpcMessageHeader>
 							toggles.floorClip()
 						);
 				}
+
 				if (toggles.skatingCorrection()) {
 					cfg
 						.setToggle(
