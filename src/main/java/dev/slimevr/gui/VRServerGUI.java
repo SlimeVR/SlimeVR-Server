@@ -228,6 +228,7 @@ public class VRServerGUI extends JFrame {
 						});
 					}
 				});
+
 				setFloorClipEnabled(
 					server
 						.getConfigManager()
