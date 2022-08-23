@@ -178,6 +178,7 @@ public class LegTweaks {
 
 	public void setSkatingReductionEnabled(boolean skatingCorrectionEnabled) {
 		this.skatingCorrectionEnabled = skatingCorrectionEnabled;
+
 		// reset the buffer
 		this.bufferHead = new LegTweakBuffer();
 		this.bufferInvalid = true;
