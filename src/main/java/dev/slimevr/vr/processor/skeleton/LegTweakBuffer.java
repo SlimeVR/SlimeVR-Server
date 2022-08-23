@@ -227,6 +227,7 @@ public class LegTweakBuffer {
 		if (vec == null)
 			vec = new Vector3f();
 		return vec.set(rightKneePositionCorrected);
+
 	}
 
 	public void setRightKneePositionCorrected(Vector3f rightKneePositionCorrected) {
