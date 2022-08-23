@@ -586,6 +586,7 @@ public class LegTweakBuffer {
 		// param_scalar_max)
 		float velocityDifAbs = Math.abs(leftFootVelocityMagnitude)
 			- Math.abs(rightFootVelocityMagnitude);
+
 		if (velocityDifAbs > MIN_SCALAR_ACTIVE) {
 			return PARAM_SCALAR_MIN;
 		} else if (velocityDifAbs < MAX_SCALAR_ACTIVE) {
