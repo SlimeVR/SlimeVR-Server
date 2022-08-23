@@ -148,6 +148,7 @@ public class LegTweakBuffer {
 
 	public Vector3f getRightKneePosition(Vector3f vec) {
 		if (vec == null)
+
 			vec = new Vector3f();
 		return vec.set(rightKneePosition);
 	}
