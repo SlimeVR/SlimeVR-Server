@@ -624,6 +624,7 @@ public class LegTweakBuffer {
 		} else if (velocityDifAbs < MAX_SCALAR_ACTIVE) {
 			return PARAM_SCALAR_MAX;
 		}
+
 		return PARAM_SCALAR_MAX
 			* (velocityDifAbs - MIN_SCALAR_ACTIVE)
 			/ (MAX_SCALAR_ACTIVE - MIN_SCALAR_ACTIVE)
