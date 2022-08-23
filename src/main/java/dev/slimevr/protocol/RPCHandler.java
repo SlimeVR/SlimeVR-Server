@@ -407,20 +407,18 @@ public class RPCHandler extends ProtocolHandler<RpcMessageHeader>
 							toggles.forceArmsFromHmd()
 						);
 				}
-				if (toggles.hasFloorClip()) {
-					cfg
-						.setToggle(
-							SkeletonConfigToggles.FLOOR_CLIP,
-							toggles.floorClip()
-						);
-				}
-				if (toggles.hasSkatingCorrection()) {
-					cfg
-						.setToggle(
-							SkeletonConfigToggles.SKATING_CORRECTION,
-							toggles.skatingCorrection()
-						);
-				}
+				// Note: toggles.has____ returns the same as toggles._____ this
+				// seems like a bug
+				cfg
+					.setToggle(
+						SkeletonConfigToggles.FLOOR_CLIP,
+						toggles.floorClip()
+					);
+				cfg
+					.setToggle(
+						SkeletonConfigToggles.SKATING_CORRECTION,
+						toggles.skatingCorrection()
+					);
 			}
 
 			if (ratios != null) {
