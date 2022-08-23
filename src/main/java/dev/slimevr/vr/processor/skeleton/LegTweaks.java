@@ -211,6 +211,7 @@ public class LegTweaks {
 			leftKneePosition = leftKneePlaceholder;
 			rightKneePosition = rightKneePlaceholder;
 		}
+
 		if (
 			skeleton.computedLeftFootTracker != null
 				&& skeleton.computedRightFootTracker != null
