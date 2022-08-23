@@ -738,11 +738,13 @@ public class LegTweaks {
 			Vector3f velocity = bufferHead.getLeftFootVelocity(null);
 
 
+
 			if (velocity.y * leftFootDif.y > 0) {
 				leftFootPosition.y += velocity.y * FOOT_Y_CORRECTION_WEIGHT;
 			} else {
 				leftFootPosition.y -= velocity.y * FOOT_Y_CORRECTION_WEIGHT;
 			}
+
 
 
 			// check for overshoot and correct if necessary
@@ -764,6 +766,7 @@ public class LegTweaks {
 			.subtract(bufferHead.getParent().getRightFootPositionCorrected(null));
 
 
+
 		if (Math.abs(rightFootDif.y) > NEARLY_ZERO) {
 			temp = bufferHead.getParent().getRightFootPositionCorrected(null)
 				.subtract(
@@ -774,8 +777,10 @@ public class LegTweaks {
 				);
 
 
+
 			float rightFloor = (floorLevel + (MAX_DYNAMIC_DISPLACEMENT * getRightFootOffset()))
 				- currentDisengagementOffset;
+
 
 
 			if (
@@ -788,7 +793,9 @@ public class LegTweaks {
 			}
 
 
+
 			Vector3f velocity = bufferHead.getRightFootVelocity(null);
+
 
 
 			if (velocity.y * rightFootDif.y > 0) {
@@ -796,6 +803,7 @@ public class LegTweaks {
 			} else {
 				rightFootPosition.y -= velocity.y * FOOT_Y_CORRECTION_WEIGHT;
 			}
+
 
 
 			// check for overshoot and correct if necessary
@@ -819,6 +827,7 @@ public class LegTweaks {
 			- (waistToFloorDist * STANDING_CUTOFF_VERTICAL);
 
 
+
 		if (waistPosition.y < cutoff) {
 			currentDisengagementOffset = (1 - waistPosition.y / cutoff)
 				* MAX_DISENGAGMENT_OFFSET;
@@ -826,7 +835,9 @@ public class LegTweaks {
 		}
 
 
+
 		currentDisengagementOffset = 0f;
+
 
 
 		return true;
@@ -869,6 +880,7 @@ public class LegTweaks {
 			.mult(leftKneeOffset * KNEE_CORRECTION_WEIGHT);
 
 
+
 		Vector3f rightKneeVector = rightKneePosition
 			.subtract(rightWaist)
 			.normalize()
@@ -885,11 +897,13 @@ public class LegTweaks {
 		float offset = computeUnitVector(this.leftFootRotation).y;
 
 
+
 		if (offset < 0) {
 			return 0;
 		} else if (offset > DYNAMIC_DISPLACEMENT_CUTOFF) {
 			return DYNAMIC_DISPLACEMENT_CUTOFF;
 		}
+
 
 
 		return offset;
@@ -899,11 +913,13 @@ public class LegTweaks {
 		float offset = computeUnitVector(this.rightFootRotation).y;
 
 
+
 		if (offset < 0) {
 			return 0;
 		} else if (offset > DYNAMIC_DISPLACEMENT_CUTOFF) {
 			return DYNAMIC_DISPLACEMENT_CUTOFF;
 		}
+
 
 
 		return offset;
@@ -920,6 +936,7 @@ public class LegTweaks {
 		} else if (footDif.length() > MAX_ACCEPTABLE_ERROR) {
 			return CORRECTION_WEIGHT_MAX;
 		}
+
 
 
 		return CORRECTION_WEIGHT_MIN
