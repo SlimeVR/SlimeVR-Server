@@ -238,6 +238,7 @@ public class LegTweakBuffer {
 		if (vec == null)
 			vec = new Vector3f();
 		return vec.set(waistPositionCorrected);
+
 	}
 
 	public void setWaistPositionCorrected(Vector3f waistPositionCorrected) {
@@ -248,11 +249,13 @@ public class LegTweakBuffer {
 		if (vec == null)
 			vec = new Vector3f();
 		return vec.set(leftFootVelocity);
+
 	}
 
 	public Vector3f getRightFootVelocity(Vector3f vec) {
 		if (vec == null)
 			vec = new Vector3f();
+
 		return vec.set(rightFootVelocity);
 	}
 
@@ -299,12 +302,14 @@ public class LegTweakBuffer {
 	public Vector3f getLeftFootAcceleration(Vector3f vec) {
 		if (vec == null)
 			vec = new Vector3f();
+
 		return vec.set(leftFootAcceleration);
 	}
 
 	public Vector3f getRightFootAcceleration(Vector3f vec) {
 		if (vec == null)
 			vec = new Vector3f();
+
 		return vec.set(rightFootAcceleration);
 	}
 
@@ -358,11 +363,13 @@ public class LegTweakBuffer {
 	// update the frame number of all the frames
 	public void updateFrameNumber(int frameNumber) {
 		this.frameNumber = frameNumber;
+
 		if (this.frameNumber >= 10) {
 			this.parent = null; // once a frame is 10 frames old, it is no
 								// longer
 								// needed
 		}
+
 		if (parent != null) {
 			parent.updateFrameNumber(frameNumber + 1);
 		}
@@ -379,6 +386,7 @@ public class LegTweakBuffer {
 	// check if a locked foot should stay locked or be released
 	private int checkStateLeft() {
 		float timeStep = 1.0f / ((timeOfFrame - parent.timeOfFrame) / NS_CONVERT);
+
 		if (parent.leftLegState == UNLOCKED) {
 			if (
 				parent.getLeftFootHorizantalDifference() > SKATING_CUTOFF_ENGAGE
@@ -391,6 +399,7 @@ public class LegTweakBuffer {
 			) {
 				return UNLOCKED;
 			}
+
 			return LOCKED;
 		} else {
 			if (
@@ -404,6 +413,7 @@ public class LegTweakBuffer {
 			) {
 				return UNLOCKED;
 			}
+
 			return LOCKED;
 		}
 	}
@@ -411,6 +421,7 @@ public class LegTweakBuffer {
 	// check if a locked foot should stay locked or be released
 	private int checkStateRight() {
 		float timeStep = 1.0f / ((timeOfFrame - parent.timeOfFrame) / NS_CONVERT);
+
 		if (parent.rightLegState == UNLOCKED) {
 			if (
 				parent.getRightFootHorizantalDifference() > SKATING_CUTOFF_ENGAGE
@@ -423,6 +434,7 @@ public class LegTweakBuffer {
 			) {
 				return UNLOCKED;
 			}
+
 			return LOCKED;
 		} else {
 			if (
@@ -436,6 +448,7 @@ public class LegTweakBuffer {
 			) {
 				return UNLOCKED;
 			}
+
 			return LOCKED;
 		}
 	}
@@ -555,6 +568,7 @@ public class LegTweakBuffer {
 					/ (MAX_SCALAR_ACCEL - MIN_SCALAR_ACCEL);
 			}
 		}
+
 		return PARAM_SCALAR_MID;
 	}
 
@@ -568,6 +582,7 @@ public class LegTweakBuffer {
 					/ (MAX_SCALAR_ACCEL - MIN_SCALAR_ACCEL);
 			}
 		}
+
 		return PARAM_SCALAR_MID;
 	}
 
@@ -580,6 +595,7 @@ public class LegTweakBuffer {
 			Vector3f velocityDiff = leftFootVelocity.subtract(rightFootVelocity);
 			velocityDiff.setY(0.0f);
 			float velocityDiffMagnitude = velocityDiff.length();
+
 			if (velocityDiffMagnitude < MAX_SCALAR_DORMANT) {
 				return PARAM_SCALAR_MAX;
 			} else if (velocityDiffMagnitude > MIN_SCALAR_DORMANT) {
@@ -588,6 +604,7 @@ public class LegTweakBuffer {
 					/ (MAX_SCALAR_DORMANT - MIN_SCALAR_DORMANT);
 			}
 		}
+
 		// calculate the 'unlockedness factor' and use that to
 		// determine the scalar (go as low as 0.5 as as high as
 		// param_scalar_max)
@@ -599,6 +616,7 @@ public class LegTweakBuffer {
 		} else if (velocityDifAbs < MAX_SCALAR_ACTIVE) {
 			return PARAM_SCALAR_MAX;
 		}
+
 		return PARAM_SCALAR_MAX
 			* (velocityDifAbs - MIN_SCALAR_ACTIVE)
 			/ (MAX_SCALAR_ACTIVE - MIN_SCALAR_ACTIVE)
