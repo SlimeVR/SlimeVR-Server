@@ -407,6 +407,7 @@ public class RPCHandler extends ProtocolHandler<RpcMessageHeader>
 							toggles.forceArmsFromHmd()
 						);
 				}
+
 				// Note: toggles.has____ returns the same as toggles._____ this
 				// seems like a bug
 				cfg
@@ -414,6 +415,7 @@ public class RPCHandler extends ProtocolHandler<RpcMessageHeader>
 						SkeletonConfigToggles.FLOOR_CLIP,
 						toggles.floorClip()
 					);
+
 				cfg
 					.setToggle(
 						SkeletonConfigToggles.SKATING_CORRECTION,
