@@ -42,7 +42,6 @@ allprojects {
 }
 
 dependencies {
-	implementation project(':slime-java-commons')
 	implementation project(":solarxr-protocol")
 
 
