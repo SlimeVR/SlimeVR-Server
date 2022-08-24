@@ -8,7 +8,6 @@ import dev.slimevr.poserecorder.PoseFrames;
 import dev.slimevr.poserecorder.PoseRecorder;
 import dev.slimevr.vr.processor.skeleton.SkeletonConfig;
 import dev.slimevr.vr.processor.skeleton.SkeletonConfigOffsets;
-import dev.slimevr.vr.trackers.TrackerPosition;
 import io.eiren.util.StringUtils;
 import io.eiren.util.collections.FastList;
 import io.eiren.util.logging.LogManager;
@@ -326,16 +325,19 @@ public class AutoBoneHandler {
 					if (tracker == null)
 						continue;
 
-					TrackerPosition position = tracker
-						.getBodyPosition();
-					if (position == null)
+					TrackerFrame frame = tracker.safeGetFrame(0);
+					if (frame == null || !frame.hasData(TrackerFrameData.DESIGNATION))
 						continue;
 
 					if (trackerInfo.length() > 0) {
 						trackerInfo.append(", ");
 					}
 
-					trackerInfo.append(position.designation);
+					trackerInfo.append(frame.designation.designation);
+
+					if (frame.hasData(TrackerFrameData.POSITION)) {
+						trackerInfo.append(" (P)");
+					}
 				}
 
 				LogManager
