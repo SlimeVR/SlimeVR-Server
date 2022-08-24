@@ -6,6 +6,8 @@ import dev.slimevr.autobone.errors.AutoBoneException;
 import dev.slimevr.poserecorder.PoseFrameTracker;
 import dev.slimevr.poserecorder.PoseFrames;
 import dev.slimevr.poserecorder.PoseRecorder;
+import dev.slimevr.poserecorder.TrackerFrame;
+import dev.slimevr.poserecorder.TrackerFrameData;
 import dev.slimevr.vr.processor.skeleton.SkeletonConfig;
 import dev.slimevr.vr.processor.skeleton.SkeletonConfigOffsets;
 import io.eiren.util.StringUtils;
