@@ -43,6 +43,7 @@ public class PositionError implements IAutoBoneError {
 			if (
 				trackerFrame == null
 					|| !trackerFrame.hasData(TrackerFrameData.POSITION)
+					|| !trackerFrame.hasData(TrackerFrameData.DESIGNATION)
 					|| trackerFrame.designation.trackerRole.isEmpty()
 			) {
 				continue;

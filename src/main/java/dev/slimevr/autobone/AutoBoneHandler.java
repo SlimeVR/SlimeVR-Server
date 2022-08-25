@@ -6,9 +6,10 @@ import dev.slimevr.autobone.errors.AutoBoneException;
 import dev.slimevr.poserecorder.PoseFrameTracker;
 import dev.slimevr.poserecorder.PoseFrames;
 import dev.slimevr.poserecorder.PoseRecorder;
+import dev.slimevr.poserecorder.TrackerFrame;
+import dev.slimevr.poserecorder.TrackerFrameData;
 import dev.slimevr.vr.processor.skeleton.SkeletonConfig;
 import dev.slimevr.vr.processor.skeleton.SkeletonConfigOffsets;
-import dev.slimevr.vr.trackers.TrackerPosition;
 import io.eiren.util.StringUtils;
 import io.eiren.util.collections.FastList;
 import io.eiren.util.logging.LogManager;
@@ -161,8 +162,15 @@ public class AutoBoneHandler {
 				PoseFrames frames = framesFuture.get();
 				LogManager.info("[AutoBone] Done recording!");
 
+				// Save a recurring recording for users to send as debug info
+				announceProcessStatus(AutoBoneProcessType.RECORD, "Saving recording...");
+				autoBone.saveRecording(frames, "LastABRecording.pfr");
+
 				if (this.autoBone.getConfig().saveRecordings) {
-					announceProcessStatus(AutoBoneProcessType.RECORD, "Saving recording...");
+					announceProcessStatus(
+						AutoBoneProcessType.RECORD,
+						"Saving recording (from config option)..."
+					);
 					autoBone.saveRecording(frames);
 				}
 
@@ -319,16 +327,19 @@ public class AutoBoneHandler {
 					if (tracker == null)
 						continue;
 
-					TrackerPosition position = tracker
-						.getBodyPosition();
-					if (position == null)
+					TrackerFrame frame = tracker.safeGetFrame(0);
+					if (frame == null || !frame.hasData(TrackerFrameData.DESIGNATION))
 						continue;
 
 					if (trackerInfo.length() > 0) {
 						trackerInfo.append(", ");
 					}
 
-					trackerInfo.append(position.designation);
+					trackerInfo.append(frame.designation.designation);
+
+					if (frame.hasData(TrackerFrameData.POSITION)) {
+						trackerInfo.append(" (P)");
+					}
 				}
 
 				LogManager
