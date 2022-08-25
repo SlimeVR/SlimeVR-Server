@@ -407,6 +407,7 @@ public class LegTweaks {
 			rightFootPosition.y = bufferHead.getRightFootPosition(null).y;
 			rightKneePosition.y = bufferHead.getRightKneePosition(null).y;
 		}
+
 		// calculate the correction for the knees
 		if (kneesActive && initialized) {
 			solveLowerBody();
@@ -708,6 +709,7 @@ public class LegTweaks {
 		Vector3f temp;
 		Vector3f leftFootDif = leftFootPosition
 			.subtract(bufferHead.getParent().getLeftFootPositionCorrected(null));
+
 		if (Math.abs(leftFootDif.y) > NEARLY_ZERO) {
 			temp = bufferHead
 				.getParent()
@@ -797,6 +799,7 @@ public class LegTweaks {
 		if (waistPosition.y < cutoff) {
 			currentDisengagementOffset = (1 - waistPosition.y / cutoff)
 				* MAX_DISENGAGMENT_OFFSET;
+
 			return false;
 		}
 
@@ -820,6 +823,7 @@ public class LegTweaks {
 		float rightXDif = rightFootPosition.x - bufferHead.getRightFootPosition(null).x;
 		float leftYDif = leftFootPosition.y - bufferHead.getLeftFootPosition(null).y;
 		float rightYDif = rightFootPosition.y - bufferHead.getRightFootPosition(null).y;
+
 		leftKneePosition.x += leftXDif * KNEE_LATERAL_WEIGHT;
 		leftKneePosition.y += leftYDif * KNEE_LATERAL_WEIGHT;
 		rightKneePosition.x += rightXDif * KNEE_LATERAL_WEIGHT;
@@ -868,6 +872,7 @@ public class LegTweaks {
 		Vector3f footCorrected
 	) {
 		Vector3f footDif = foot.subtract(footCorrected).setY(0);
+
 		if (footDif.length() < MIN_ACCEPTABLE_ERROR) {
 			return CORRECTION_WEIGHT_MIN;
 		} else if (footDif.length() > MAX_ACCEPTABLE_ERROR) {

@@ -92,6 +92,7 @@ public class LegTweakBuffer {
 	// situation
 	private static final float MAX_SCALAR_DORMANT = 0.6f;
 	private static final float MIN_SCALAR_DORMANT = 2.0f;
+
 	// the point at which the scalar is at it max or min in a single locked foot
 	// situation
 	private static final float MIN_SCALAR_ACTIVE = 3.0f;
@@ -182,8 +183,8 @@ public class LegTweakBuffer {
 	public Quaternion getRightFootRotation(Quaternion quat) {
 		if (quat == null)
 			quat = new Quaternion();
-		return quat.set(rightFootRotation);
 
+		return quat.set(rightFootRotation);
 	}
 
 	public void setRightFootRotation(Quaternion rightFootRotation) {
@@ -204,8 +205,8 @@ public class LegTweakBuffer {
 	public Vector3f getRightFootPositionCorrected(Vector3f vec) {
 		if (vec == null)
 			vec = new Vector3f();
-		return vec.set(rightFootPositionCorrected);
 
+		return vec.set(rightFootPositionCorrected);
 	}
 
 	public void setRightFootPositionCorrected(Vector3f rightFootPositionCorrected) {
@@ -215,8 +216,8 @@ public class LegTweakBuffer {
 	public Vector3f getLeftKneePositionCorrected(Vector3f vec) {
 		if (vec == null)
 			vec = new Vector3f();
-		return vec.set(leftKneePositionCorrected);
 
+		return vec.set(leftKneePositionCorrected);
 	}
 
 	public void setLeftKneePositionCorrected(Vector3f leftKneePositionCorrected) {
@@ -226,8 +227,8 @@ public class LegTweakBuffer {
 	public Vector3f getRightKneePositionCorrected(Vector3f vec) {
 		if (vec == null)
 			vec = new Vector3f();
-		return vec.set(rightKneePositionCorrected);
 
+		return vec.set(rightKneePositionCorrected);
 	}
 
 	public void setRightKneePositionCorrected(Vector3f rightKneePositionCorrected) {
@@ -237,8 +238,8 @@ public class LegTweakBuffer {
 	public Vector3f getWaistPositionCorrected(Vector3f vec) {
 		if (vec == null)
 			vec = new Vector3f();
-		return vec.set(waistPositionCorrected);
 
+		return vec.set(waistPositionCorrected);
 	}
 
 	public void setWaistPositionCorrected(Vector3f waistPositionCorrected) {
@@ -248,8 +249,8 @@ public class LegTweakBuffer {
 	public Vector3f getLeftFootVelocity(Vector3f vec) {
 		if (vec == null)
 			vec = new Vector3f();
-		return vec.set(leftFootVelocity);
 
+		return vec.set(leftFootVelocity);
 	}
 
 	public Vector3f getRightFootVelocity(Vector3f vec) {

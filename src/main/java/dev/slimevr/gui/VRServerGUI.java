@@ -238,7 +238,6 @@ public class VRServerGUI extends JFrame {
 						.get(SkeletonConfigToggles.FLOOR_CLIP.configKey)
 				);
 
-
 				add(Box.createHorizontalStrut(10));
 				add(skatingCorrectionButton = new JButton("Toggle Skating Correction") {
 					{
@@ -260,6 +259,7 @@ public class VRServerGUI extends JFrame {
 						.getToggles()
 						.get(SkeletonConfigToggles.SKATING_CORRECTION.configKey)
 				);
+
 				add(Box.createHorizontalGlue());
 				add(new JButton("Record BVH") {
 					{

@@ -403,9 +403,30 @@ public class RPCHandler extends ProtocolHandler<RpcMessageHeader>
 					);
 				cfg
 					.setToggle(
+						SkeletonConfigToggles.EXTENDED_SPINE_MODEL,
+						toggles.extendedSpine()
+					);
+				cfg
+					.setToggle(
+						SkeletonConfigToggles.EXTENDED_PELVIS_MODEL,
+						toggles.extendedPelvis()
+					);
+				cfg
+					.setToggle(
+						SkeletonConfigToggles.EXTENDED_KNEE_MODEL,
+						toggles.extendedKnee()
+					);
+				cfg
+					.setToggle(
+						SkeletonConfigToggles.FORCE_ARMS_FROM_HMD,
+						toggles.forceArmsFromHmd()
+					);
+				cfg
+					.setToggle(
 						SkeletonConfigToggles.FLOOR_CLIP,
 						toggles.floorClip()
 					);
+
 				cfg
 					.setToggle(
 						SkeletonConfigToggles.SKATING_CORRECTION,
