@@ -481,14 +481,15 @@ public class LegTweakBuffer {
 
 	// compute the velocity of the feet from the position in the last frames
 	private void computeVelocity() {
-		if (parent != null) {
-			leftFootVelocity = leftFootPosition.subtract(parent.leftFootPosition);
-			leftFootVelocityMagnitude = leftFootVelocity.length();
-			rightFootVelocity = rightFootPosition.subtract(parent.rightFootPosition);
-			rightFootVelocityMagnitude = rightFootVelocity.length();
-			leftFootAngleDiff = getLeftFootAngularVelocity();
-			rightFootAngleDiff = getRightFootAngularVelocity();
+		if (parent == null) {
+			return;
 		}
+		leftFootVelocity = leftFootPosition.subtract(parent.leftFootPosition);
+		leftFootVelocityMagnitude = leftFootVelocity.length();
+		rightFootVelocity = rightFootPosition.subtract(parent.rightFootPosition);
+		rightFootVelocityMagnitude = rightFootVelocity.length();
+		leftFootAngleDiff = getLeftFootAngularVelocity();
+		rightFootAngleDiff = getRightFootAngularVelocity();
 	}
 
 	// get the nth parent of this frame
