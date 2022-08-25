@@ -721,15 +721,8 @@ public class LegTweaks {
 
 			float leftFloor = (floorLevel + (MAX_DYNAMIC_DISPLACEMENT * getLeftFootOffset()))
 				- currentDisengagementOffset;
-
-			if (
-				temp.y
-					< leftFloor
-			) {
-				leftFootPosition.y = leftFloor;
-			} else {
-				leftFootPosition.y = temp.y;
-			}
+				
+			leftFootPosition.y = temp.y < leftFloor ? leftFloor : temp.y;
 
 			Vector3f velocity = bufferHead.getLeftFootVelocity(null);
 
@@ -771,14 +764,7 @@ public class LegTweaks {
 			float rightFloor = (floorLevel + (MAX_DYNAMIC_DISPLACEMENT * getRightFootOffset()))
 				- currentDisengagementOffset;
 
-			if (
-				temp.y
-					< rightFloor
-			) {
-				rightFootPosition.y = rightFloor;
-			} else {
-				rightFootPosition.y = temp.y;
-			}
+			rightFootPosition.y = temp.y < rightFloor ? rightFloor : temp.y;
 
 			Vector3f velocity = bufferHead.getRightFootVelocity(null);
 
@@ -868,26 +854,12 @@ public class LegTweaks {
 
 	private float getLeftFootOffset() {
 		float offset = computeUnitVector(this.leftFootRotation).y;
-
-		if (offset < 0) {
-			return 0;
-		} else if (offset > DYNAMIC_DISPLACEMENT_CUTOFF) {
-			return DYNAMIC_DISPLACEMENT_CUTOFF;
-		}
-
-		return offset;
+		return clamp(0, DYNAMIC_DISPLACEMENT_CUTOFF, offset);
 	}
 
 	private float getRightFootOffset() {
 		float offset = computeUnitVector(this.rightFootRotation).y;
-
-		if (offset < 0) {
-			return 0;
-		} else if (offset > DYNAMIC_DISPLACEMENT_CUTOFF) {
-			return DYNAMIC_DISPLACEMENT_CUTOFF;
-		}
-
-		return offset;
+		return clamp(0, DYNAMIC_DISPLACEMENT_CUTOFF, offset);
 	}
 
 	// calculate the weight of foot correction
@@ -916,5 +888,11 @@ public class LegTweaks {
 	// get the unit vector of the given rotation
 	private Vector3f computeUnitVector(Quaternion quaternion) {
 		return quaternion.getRotationColumn(2).normalize();
+	}
+
+	// clamp a float between two values
+	private float clamp(float min, float max, float val) {
+		val = Math.max(min, val);
+		return Math.min(max, val);
 	}
 }
