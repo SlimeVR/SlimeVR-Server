@@ -5,25 +5,25 @@ import dev.slimevr.config.FiltersConfig;
 
 
 public class TrackerFiltering {
-	VRServer vrserver;
-	FiltersConfig filtersConfig;
+
+	private final VRServer vrserver;
+	private final FiltersConfig filtersConfig;
 
 	public TrackerFiltering(VRServer vrserver) {
 		this.vrserver = vrserver;
 		filtersConfig = vrserver.getConfigManager().getVrConfig().getFilters();
-
-		updateTrackersFilters(
-			filtersConfig.getEnumType(),
-			filtersConfig.getAmount(),
-			filtersConfig.getBuffer()
-		);
 	}
 
-	public void updateTrackersFilters(TrackerFilters filter, float amount, int buffer) {
+	public void updateTrackersFilters() {
 		for (Tracker t : vrserver.getAllTrackers()) {
 			Tracker tracker = t.get();
 			if (tracker instanceof TrackerWithFiltering) {
-				((TrackerWithFiltering) tracker).setFiltering(filter, amount, buffer);
+				((TrackerWithFiltering) tracker)
+					.setFiltering(
+						filtersConfig.getEnumType(),
+						filtersConfig.getAmount(),
+						filtersConfig.getBuffer()
+					);
 			}
 		}
 

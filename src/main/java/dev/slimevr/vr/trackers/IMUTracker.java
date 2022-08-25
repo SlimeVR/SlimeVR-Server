@@ -66,6 +66,12 @@ public class IMUTracker
 		this.trackerId = trackerId;
 		this.descriptiveName = descriptiveName;
 		this.vrserver = vrserver;
+
+		setFiltering(
+			vrserver.getConfigManager().getVrConfig().getFilters().getEnumType(),
+			vrserver.getConfigManager().getVrConfig().getFilters().getAmount(),
+			vrserver.getConfigManager().getVrConfig().getFilters().getBuffer()
+		);
 	}
 
 	@Override
@@ -113,10 +119,10 @@ public class IMUTracker
 		if (type != null) {
 			switch (type) {
 				case SMOOTHING:
-					movingAverage = new QuaternionMovingAverage(1 + amount, buffer);
+					movingAverage = new QuaternionMovingAverage(1f - amount, buffer);
 					break;
 				case PREDICTION:
-					movingAverage = new QuaternionMovingAverage(1 - amount, buffer);
+					movingAverage = new QuaternionMovingAverage(1f + amount, buffer);
 					break;
 				case NONE:
 					movingAverage = null;

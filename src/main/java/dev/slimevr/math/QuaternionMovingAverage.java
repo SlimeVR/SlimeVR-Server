@@ -1,24 +1,32 @@
 package dev.slimevr.math;
 
 import com.jme3.math.Quaternion;
+import io.eiren.util.logging.LogManager;
 
 
 public class QuaternionMovingAverage {
-	private float amount;
+
+	private float factor;
 	private int buffer;
 	private CircularArrayList<Quaternion> quatBuffer;
 	private CircularArrayList<Quaternion> rotBuffer;
 	private Quaternion averageRotation;
 	private Quaternion filteredQuaternion;
 
-	public QuaternionMovingAverage(float amount, int buffer) {
-		this.amount = amount;
+	/**
+	 * @param factor <1 = smoothing. >1 = prediction.
+	 * @param buffer How many quaternions are kept for the average.
+	 */
+	public QuaternionMovingAverage(float factor, int buffer) {
+		LogManager.log.debug("createddddddddddddddddddddddd");
+		this.factor = factor;
 		this.buffer = buffer;
 
 		quatBuffer = new CircularArrayList<>(buffer);
 		rotBuffer = new CircularArrayList<>(buffer);
 	}
 
+	// 1000hz
 	public void update() {
 		averageRotation = new Quaternion();
 		filteredQuaternion = new Quaternion();
@@ -31,21 +39,9 @@ public class QuaternionMovingAverage {
 
 	public void addQuaternion(Quaternion q) {
 		if (quatBuffer.size() > buffer) {
-			quatBuffer.remove(0);
+			quatBuffer.remove(quatBuffer.size() + 1);
 		}
 		quatBuffer.add(q);
-
-		if (quatBuffer.size() > 1) {
-			if (rotBuffer.size() > buffer) {
-				rotBuffer.remove(0);
-			}
-			rotBuffer
-				.add(
-					quatBuffer
-						.get(quatBuffer.size() - 1)
-						.mult(quatBuffer.get(quatBuffer.size() - 2))
-				);
-		}
 	}
 
 	public Quaternion getFilteredQuaternion() {

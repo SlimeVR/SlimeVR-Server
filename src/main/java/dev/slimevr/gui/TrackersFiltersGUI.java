@@ -17,10 +17,10 @@ public class TrackersFiltersGUI extends EJBagNoStretch {
 
 	private final VRServer server;
 	private final JLabel amountLabel;
-	private final JLabel ticksLabel;
+	private final JLabel bufferLabel;
 	TrackerFilters filterType;
 	float filterAmount;
-	int filterTicks;
+	int filterBuffer;
 
 	public TrackersFiltersGUI(VRServer server, VRServerGUI gui) {
 
@@ -50,8 +50,10 @@ public class TrackersFiltersGUI extends EJBagNoStretch {
 					.getConfigManager()
 					.getVrConfig()
 					.getFilters()
-					.updateTrackersFilters(filterType, filterAmount, filterTicks);
+					.setType(filterType);
 				server.getConfigManager().saveConfig();
+
+				server.getTrackerFiltering().updateTrackersFilters();
 			}
 		});
 		add(Box.createVerticalStrut(40));
@@ -72,7 +74,7 @@ public class TrackersFiltersGUI extends EJBagNoStretch {
 		);
 		add(new AdjButton("-", 0, true), c(3, row, 2));
 		row++;
-		filterTicks = (int) FastMath
+		filterBuffer = (int) FastMath
 			.clamp(
 				server.getConfigManager().getVrConfig().getFilters().getBuffer(),
 				0,
@@ -81,7 +83,7 @@ public class TrackersFiltersGUI extends EJBagNoStretch {
 
 		add(new JLabel("Buffer"), c(0, row, 2));
 		add(new AdjButton("+", 1, false), c(1, row, 2));
-		add(ticksLabel = new JLabel(StringUtils.prettyNumber(filterTicks)), c(2, row, 2));
+		add(bufferLabel = new JLabel(StringUtils.prettyNumber(filterBuffer)), c(2, row, 2));
 		add(new AdjButton("-", 1, true), c(3, row, 2));
 	}
 
@@ -95,19 +97,26 @@ public class TrackersFiltersGUI extends EJBagNoStretch {
 			amountLabel.setText((StringUtils.prettyNumber(filterAmount * 100f)) + "%");
 		} else if (cat == 1) {
 			if (neg) {
-				filterTicks = (int) FastMath.clamp(filterTicks - 1, 0, 50);
+				filterBuffer = (int) FastMath.clamp(filterBuffer - 1, 0, 50);
 			} else {
-				filterTicks = (int) FastMath.clamp(filterTicks + 1, 0, 50);
+				filterBuffer = (int) FastMath.clamp(filterBuffer + 1, 0, 50);
 			}
-			ticksLabel.setText((StringUtils.prettyNumber(filterTicks)));
+			bufferLabel.setText((StringUtils.prettyNumber(filterBuffer)));
 		}
 
 		server
 			.getConfigManager()
 			.getVrConfig()
 			.getFilters()
-			.updateTrackersFilters(filterType, filterAmount, filterTicks);
+			.setAmount(filterAmount);
+		server
+			.getConfigManager()
+			.getVrConfig()
+			.getFilters()
+			.setBuffer(filterBuffer);
 		server.getConfigManager().saveConfig();
+
+		server.getTrackerFiltering().updateTrackersFilters();
 	}
 
 	private class AdjButton extends JButton {
