@@ -1,6 +1,6 @@
 package dev.slimevr.config;
 
-import dev.slimevr.vr.trackers.TrackerFilters;
+import dev.slimevr.filtering.TrackerFilters;
 
 
 public class FiltersConfig {
@@ -13,7 +13,7 @@ public class FiltersConfig {
 
 	// Size of the quaternion buffer (how many rotations are kept for the
 	// filtering calculations)
-	private int buffer = 2;
+	private int buffer = 3;
 
 	public FiltersConfig() {
 	}

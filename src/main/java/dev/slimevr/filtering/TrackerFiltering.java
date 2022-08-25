@@ -1,7 +1,9 @@
-package dev.slimevr.vr.trackers;
+package dev.slimevr.filtering;
 
 import dev.slimevr.VRServer;
 import dev.slimevr.config.FiltersConfig;
+import dev.slimevr.vr.trackers.Tracker;
+import dev.slimevr.vr.trackers.TrackerWithFiltering;
 
 
 public class TrackerFiltering {

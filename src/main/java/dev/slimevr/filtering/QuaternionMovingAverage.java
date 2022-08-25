@@ -1,4 +1,4 @@
-package dev.slimevr.math;
+package dev.slimevr.filtering;
 
 import com.jme3.math.Quaternion;
 import io.eiren.util.logging.LogManager;

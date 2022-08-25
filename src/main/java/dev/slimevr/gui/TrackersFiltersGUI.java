@@ -2,8 +2,8 @@ package dev.slimevr.gui;
 
 import com.jme3.math.FastMath;
 import dev.slimevr.VRServer;
+import dev.slimevr.filtering.TrackerFilters;
 import dev.slimevr.gui.swing.EJBagNoStretch;
-import dev.slimevr.vr.trackers.TrackerFilters;
 import io.eiren.util.StringUtils;
 
 import javax.swing.*;

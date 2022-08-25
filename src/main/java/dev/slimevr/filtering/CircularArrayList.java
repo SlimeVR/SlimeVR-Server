@@ -1,4 +1,4 @@
-package dev.slimevr.math;
+package dev.slimevr.filtering;
 
 import java.util.*;
 

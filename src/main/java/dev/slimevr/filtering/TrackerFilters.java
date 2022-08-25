@@ -1,4 +1,4 @@
-package dev.slimevr.vr.trackers;
+package dev.slimevr.filtering;
 
 import java.util.HashMap;
 import java.util.Map;
