@@ -295,7 +295,7 @@ public class RPCHandler extends ProtocolHandler<RpcMessageHeader>
 		int filterSettings = FilteringSettings
 			.createFilteringSettings(
 				fbb,
-				filtersConfig.getEnumType().id,
+				filtersConfig.enumGetType().id,
 				filtersConfig.getAmount(),
 				filtersConfig.getBuffer()
 			);
@@ -360,7 +360,7 @@ public class RPCHandler extends ProtocolHandler<RpcMessageHeader>
 					.getConfigManager()
 					.getVrConfig()
 					.getFilters();
-				filtersConfig.setType(type);
+				filtersConfig.enumSetType(type);
 				filtersConfig.setAmount(req.filtering().amount());
 				filtersConfig.setBuffer(req.filtering().buffer());
 

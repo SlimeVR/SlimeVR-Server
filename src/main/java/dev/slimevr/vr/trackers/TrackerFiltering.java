@@ -20,7 +20,7 @@ public class TrackerFiltering {
 			if (tracker instanceof TrackerWithFiltering) {
 				((TrackerWithFiltering) tracker)
 					.setFiltering(
-						filtersConfig.getEnumType(),
+						filtersConfig.enumGetType(),
 						filtersConfig.getAmount(),
 						filtersConfig.getBuffer()
 					);

@@ -68,7 +68,7 @@ public class IMUTracker
 		this.vrserver = vrserver;
 
 		setFiltering(
-			vrserver.getConfigManager().getVrConfig().getFilters().getEnumType(),
+			vrserver.getConfigManager().getVrConfig().getFilters().enumGetType(),
 			vrserver.getConfigManager().getVrConfig().getFilters().getAmount(),
 			vrserver.getConfigManager().getVrConfig().getFilters().getBuffer()
 		);

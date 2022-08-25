@@ -18,16 +18,16 @@ public class FiltersConfig {
 	public FiltersConfig() {
 	}
 
-	public TrackerFilters getEnumType() {
+	public TrackerFilters enumGetType() {
 		return TrackerFilters.getByConfigkey(type);
 	}
 
-	public String getStringType() {
-		return type;
+	public void enumSetType(TrackerFilters type) {
+		this.type = type.configKey;
 	}
 
-	public void setType(TrackerFilters type) {
-		this.type = type.configKey;
+	public String getType() {
+		return type;
 	}
 
 	public void setType(String type) {

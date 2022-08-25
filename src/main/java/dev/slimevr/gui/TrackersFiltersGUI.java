@@ -31,7 +31,7 @@ public class TrackersFiltersGUI extends EJBagNoStretch {
 
 		setAlignmentY(TOP_ALIGNMENT);
 		add(Box.createVerticalStrut(10));
-		filterType = server.getConfigManager().getVrConfig().getFilters().getEnumType();
+		filterType = server.getConfigManager().getVrConfig().getFilters().enumGetType();
 
 		JComboBox<String> filterSelect;
 		add(filterSelect = new JComboBox<>(), s(c(0, row, 2), 4, 1));
@@ -50,7 +50,7 @@ public class TrackersFiltersGUI extends EJBagNoStretch {
 					.getConfigManager()
 					.getVrConfig()
 					.getFilters()
-					.setType(filterType);
+					.enumSetType(filterType);
 				server.getConfigManager().saveConfig();
 
 				server.getTrackerFiltering().updateTrackersFilters();

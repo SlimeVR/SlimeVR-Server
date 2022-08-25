@@ -18,7 +18,12 @@ public class QuaternionMovingAverage {
 	 * @param buffer How many quaternions are kept for the average.
 	 */
 	public QuaternionMovingAverage(float factor, int buffer) {
-		LogManager.log.debug("createddddddddddddddddddddddd");
+		// Sanity checks. GUI should clamp the values.
+		if (factor < 0)
+			factor = 0;
+		if (buffer < 1)
+			buffer = 1;
+
 		this.factor = factor;
 		this.buffer = buffer;
 
@@ -31,17 +36,17 @@ public class QuaternionMovingAverage {
 		averageRotation = new Quaternion();
 		filteredQuaternion = new Quaternion();
 	}
-	// TODO ^
+	// TODO update
 	// TODO synchronized
 	// TODO math
 	// TODO average
-	// TODO circulararraylist stuff
 
 	public void addQuaternion(Quaternion q) {
-		if (quatBuffer.size() > buffer) {
-			quatBuffer.remove(quatBuffer.size() + 1);
+		if (quatBuffer.size() == buffer) {
+			quatBuffer.remove(0);
 		}
 		quatBuffer.add(q);
+		LogManager.log.debug(String.valueOf(quatBuffer.size()));
 	}
 
 	public Quaternion getFilteredQuaternion() {
