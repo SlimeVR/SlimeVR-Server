@@ -53,7 +53,7 @@ public class TrackersFiltersGUI extends EJBagNoStretch {
 					.enumSetType(filterType);
 				server.getConfigManager().saveConfig();
 
-				server.getTrackerFiltering().updateTrackersFilters();
+				server.getTrackerFilteringManager().updateTrackersFilters();
 			}
 		});
 		add(Box.createVerticalStrut(40));
@@ -116,7 +116,7 @@ public class TrackersFiltersGUI extends EJBagNoStretch {
 			.setBuffer(filterBuffer);
 		server.getConfigManager().saveConfig();
 
-		server.getTrackerFiltering().updateTrackersFilters();
+		server.getTrackerFilteringManager().updateTrackersFilters();
 	}
 
 	private class AdjButton extends JButton {

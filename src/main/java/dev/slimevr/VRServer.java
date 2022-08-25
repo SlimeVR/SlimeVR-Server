@@ -4,7 +4,7 @@ import dev.slimevr.autobone.AutoBoneHandler;
 import dev.slimevr.bridge.Bridge;
 import dev.slimevr.bridge.VMCBridge;
 import dev.slimevr.config.ConfigManager;
-import dev.slimevr.filtering.TrackerFiltering;
+import dev.slimevr.filtering.TrackerFilteringManager;
 import dev.slimevr.platform.windows.WindowsNamedPipeBridge;
 import dev.slimevr.poserecorder.BVHRecorder;
 import dev.slimevr.protocol.ProtocolAPI;
@@ -49,7 +49,7 @@ public class VRServer extends Thread {
 	private final AutoBoneHandler autoBoneHandler;
 	private final ProtocolAPI protocolAPI;
 	private final ConfigManager configManager;
-	private final TrackerFiltering trackerFiltering;
+	private final TrackerFilteringManager trackerFilteringManager;
 
 	/**
 	 * This function is used by VRWorkout, do not remove!
@@ -130,7 +130,7 @@ public class VRServer extends Thread {
 			registerTracker(tracker);
 		}
 
-		trackerFiltering = new TrackerFiltering(this);
+		trackerFilteringManager = new TrackerFilteringManager(this);
 	}
 
 	public boolean hasBridge(Class<? extends Bridge> bridgeClass) {
@@ -309,8 +309,8 @@ public class VRServer extends Thread {
 		return configManager;
 	}
 
-	public TrackerFiltering getTrackerFiltering() {
-		return trackerFiltering;
+	public TrackerFilteringManager getTrackerFilteringManager() {
+		return trackerFilteringManager;
 	}
 
 }

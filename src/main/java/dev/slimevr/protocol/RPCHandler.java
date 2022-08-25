@@ -370,7 +370,7 @@ public class RPCHandler extends ProtocolHandler<RpcMessageHeader>
 
 				this.api.server.getConfigManager().saveConfig();
 
-				this.api.server.getTrackerFiltering().updateTrackersFilters();
+				this.api.server.getTrackerFilteringManager().updateTrackersFilters();
 			}
 		}
 

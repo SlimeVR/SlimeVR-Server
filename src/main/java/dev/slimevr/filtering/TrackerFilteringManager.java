@@ -6,12 +6,12 @@ import dev.slimevr.vr.trackers.Tracker;
 import dev.slimevr.vr.trackers.TrackerWithFiltering;
 
 
-public class TrackerFiltering {
+public class TrackerFilteringManager {
 
 	private final VRServer vrserver;
 	private final FiltersConfig filtersConfig;
 
-	public TrackerFiltering(VRServer vrserver) {
+	public TrackerFilteringManager(VRServer vrserver) {
 		this.vrserver = vrserver;
 		filtersConfig = vrserver.getConfigManager().getVrConfig().getFilters();
 	}
