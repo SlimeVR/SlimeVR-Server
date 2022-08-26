@@ -120,10 +120,10 @@ public class IMUTracker
 		if (type != null) {
 			switch (type) {
 				case SMOOTHING:
-					movingAverage = new QuaternionMovingAverage(1f - amount, buffer);
+					movingAverage = new QuaternionMovingAverage(1f - amount, buffer, rotQuaternion);
 					break;
 				case PREDICTION:
-					movingAverage = new QuaternionMovingAverage(1f + amount, buffer);
+					movingAverage = new QuaternionMovingAverage(1f + amount, buffer, rotQuaternion);
 					break;
 				case NONE:
 					movingAverage = null;
