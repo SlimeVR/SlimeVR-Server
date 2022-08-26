@@ -723,7 +723,7 @@ public class LegTweaks {
 
 			float leftFloor = (floorLevel + (MAX_DYNAMIC_DISPLACEMENT * getLeftFootOffset()))
 				- currentDisengagementOffset;
-				
+
 			leftFootPosition.y = temp.y < leftFloor ? leftFloor : temp.y;
 
 			Vector3f velocity = bufferHead.getLeftFootVelocity(null);
