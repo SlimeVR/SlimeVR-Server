@@ -149,7 +149,6 @@ public class LegTweakBuffer {
 
 	public Vector3f getRightKneePosition(Vector3f vec) {
 		if (vec == null)
-
 			vec = new Vector3f();
 		return vec.set(rightKneePosition);
 	}
@@ -194,6 +193,7 @@ public class LegTweakBuffer {
 	public Vector3f getLeftFootPositionCorrected(Vector3f vec) {
 		if (vec == null)
 			vec = new Vector3f();
+
 		return vec.set(leftFootPositionCorrected);
 
 	}
@@ -482,9 +482,9 @@ public class LegTweakBuffer {
 
 	// compute the velocity of the feet from the position in the last frames
 	private void computeVelocity() {
-		if (parent == null) {
+		if (parent == null)
 			return;
-		}
+
 		leftFootVelocity = leftFootPosition.subtract(parent.leftFootPosition);
 		leftFootVelocityMagnitude = leftFootVelocity.length();
 		rightFootVelocity = rightFootPosition.subtract(parent.rightFootPosition);
@@ -495,11 +495,10 @@ public class LegTweakBuffer {
 
 	// get the nth parent of this frame
 	private LegTweakBuffer getNParent(int n) {
-		if (n == 0 || parent == null) {
+		if (n == 0 || parent == null)
 			return this;
-		} else {
-			return parent.getNParent(n - 1);
-		}
+
+		return parent.getNParent(n - 1);
 	}
 
 	// compute the acceleration magnitude of the feet from the acceleration

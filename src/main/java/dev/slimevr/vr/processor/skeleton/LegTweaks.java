@@ -264,17 +264,12 @@ public class LegTweaks {
 		}
 
 		// if not enabled do nothing and return false
-		if (!enabled) {
+		if (!enabled)
 			return false;
-		}
 
 		// if the user is standing start checking for a good time to enable leg
 		// tweaks
-		if (isStanding()) {
-			active = true;
-		} else {
-			active = false;
-		}
+		active = isStanding();
 
 		// if the buffer is invalid set it up
 		if (bufferInvalid) {
@@ -353,14 +348,12 @@ public class LegTweaks {
 		// update the class with the latest data from the skeleton
 		// if false is returned something indicated that the legs should not be
 		// tweaked
-		if (!preUpdate()) {
+		if (!preUpdate())
 			return;
-		}
 
 		// push the feet up if needed
-		if (floorclipEnabled) {
+		if (floorclipEnabled)
 			correctClipping();
-		}
 
 		// calculate acceleration and velocity of the feet using the buffer
 		// (only needed if skating correction is enabled)
@@ -409,9 +402,8 @@ public class LegTweaks {
 		}
 
 		// calculate the correction for the knees
-		if (kneesActive && initialized) {
+		if (kneesActive && initialized)
 			solveLowerBody();
-		}
 
 		// push the waist up the floor offset
 		waistPosition.y += FLOOR_CALIBRATION_OFFSET;
@@ -440,9 +432,8 @@ public class LegTweaks {
 		float avgOffset = 0;
 
 		// if there is no clipping, or clipping is not enabled, return false
-		if (!isClipped(leftOffset, rightOffset) || !enabled) {
+		if (!isClipped(leftOffset, rightOffset) || !enabled)
 			return;
-		}
 
 		// move the feet to their new positions
 		if (
@@ -696,13 +687,11 @@ public class LegTweaks {
 		}
 
 		// using the velocity correct the position
-		if (correctLeft) {
+		if (correctLeft)
 			correctLeftFootTrackerY();
-		}
 
-		if (correctRight) {
+		if (correctRight)
 			correctRightFootTrackerY();
-		}
 	}
 
 	private void correctLeftFootTrackerY() {
@@ -897,7 +886,6 @@ public class LegTweaks {
 
 	// clamp a float between two values
 	private float clamp(float min, float max, float val) {
-		val = Math.max(min, val);
-		return Math.min(max, val);
+		return Math.min(max, Math.max(min, val));
 	}
 }
