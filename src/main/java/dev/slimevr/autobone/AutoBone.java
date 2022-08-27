@@ -114,13 +114,54 @@ public class AutoBone {
 		return loadDir;
 	}
 
+	public float computeBoneOffset(BoneType bone, SkeletonConfig skeletonConfig) {
+		switch (bone) {
+			case HEAD:
+				return skeletonConfig.getOffset(SkeletonConfigOffsets.HEAD);
+			case NECK:
+				return skeletonConfig.getOffset(SkeletonConfigOffsets.NECK);
+			case CHEST:
+				return skeletonConfig.getOffset(SkeletonConfigOffsets.CHEST);
+			case WAIST:
+				return -skeletonConfig.getOffset(SkeletonConfigOffsets.CHEST)
+					+ skeletonConfig.getOffset(SkeletonConfigOffsets.TORSO)
+					- skeletonConfig.getOffset(SkeletonConfigOffsets.WAIST);
+			case HIP:
+				return skeletonConfig.getOffset(SkeletonConfigOffsets.WAIST);
+			case LEFT_HIP:
+			case RIGHT_HIP:
+				return skeletonConfig.getOffset(SkeletonConfigOffsets.HIPS_WIDTH) / 2f;
+			case LEFT_UPPER_LEG:
+			case RIGHT_UPPER_LEG:
+				return skeletonConfig.getOffset(SkeletonConfigOffsets.LEGS_LENGTH)
+					- skeletonConfig.getOffset(SkeletonConfigOffsets.KNEE_HEIGHT);
+			case LEFT_LOWER_LEG:
+			case RIGHT_LOWER_LEG:
+				return skeletonConfig.getOffset(SkeletonConfigOffsets.KNEE_HEIGHT);
+		}
+
+		return -1f;
+	}
+
 	public void reloadConfigValues() {
 		reloadConfigValues(null);
 	}
 
 	public void reloadConfigValues(List<PoseFrameTracker> trackers) {
-		for (BoneType offset : adjustOffsets) {
-			offsets.put(offset, 0.4f);
+		// Remove all previous values
+		offsets.clear();
+
+		// Get current or default skeleton configs
+		Skeleton skeleton = getSkeleton();
+		SkeletonConfig skeletonConfig = skeleton != null
+			? skeleton.getSkeletonConfig()
+			: new SkeletonConfig(false);
+
+		for (BoneType bone : adjustOffsets) {
+			float offset = computeBoneOffset(bone, skeletonConfig);
+			if (offset > 0f) {
+				offsets.put(bone, offset);
+			}
 		}
 	}
 
