@@ -698,16 +698,22 @@ public class AutoBone {
 			}
 
 			// Calculate average error over the epoch
-			LogManager
-				.info(
-					"[AutoBone] Epoch "
-						+ (epoch + 1)
-						+ " average error: "
-						+ errorStats.getMean()
-						+ " (SD "
-						+ errorStats.getStandardDeviation()
-						+ ")"
-				);
+			if (
+				epoch <= 0
+					|| epoch >= (config.numEpochs - 1)
+					|| (epoch + 1) % config.printEveryNumEpochs == 0
+			) {
+				LogManager
+					.info(
+						"[AutoBone] Epoch "
+							+ (epoch + 1)
+							+ " average error: "
+							+ errorStats.getMean()
+							+ " (SD "
+							+ errorStats.getStandardDeviation()
+							+ ")"
+					);
+			}
 
 			applyConfig(legacyConfigs);
 			if (epochCallback != null) {

@@ -8,6 +8,8 @@ public class AutoBoneConfig {
 
 	public int numEpochs = 100;
 
+	public int printEveryNumEpochs = 25;
+
 	public float initialAdjustRate = 10f;
 	public float adjustRateMultiplier = 0.995f;
 

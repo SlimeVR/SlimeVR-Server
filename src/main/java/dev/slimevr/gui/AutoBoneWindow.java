@@ -202,11 +202,12 @@ public class AutoBoneWindow extends JFrame implements AutoBoneListener {
 			.setText(
 				String
 					.format(
-						"PROCESS: Epoch %d/%d (%.2f%%) Error: %.4f",
+						"PROCESS: Epoch %d/%d (%.2f%%) Error: %.4f (SD %.4f)",
 						epoch.epoch,
 						epoch.totalEpochs,
 						(epoch.epoch / (double) epoch.totalEpochs) * 100.0,
-						epoch.epochError.getMean()
+						epoch.epochError.getMean(),
+						epoch.epochError.getStandardDeviation()
 					)
 			);
 		lengthsLabel.setText(server.getAutoBoneHandler().getLengthsString());
