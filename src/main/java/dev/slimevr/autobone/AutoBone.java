@@ -33,6 +33,7 @@ public class AutoBone {
 
 	private static final File saveDir = new File("AutoBone Recordings");
 	private static final File loadDir = new File("Load AutoBone Recordings");
+
 	// This is filled by reloadConfigValues()
 	public final EnumMap<BoneType, Float> offsets = new EnumMap<BoneType, Float>(
 		BoneType.class
@@ -84,44 +85,15 @@ public class AutoBone {
 
 	protected final VRServer server;
 
-	public int cursorIncrement = 2;
-
 	// #region Error functions
 	public SlideError slideError = new SlideError();
-
 	public OffsetSlideError offsetSlideError = new OffsetSlideError();
-
 	public FootHeightOffsetError footHeightOffsetError = new FootHeightOffsetError();
-
 	public BodyProportionError bodyProportionError = new BodyProportionError();
-
 	public HeightError heightError = new HeightError();
-
 	public PositionError positionError = new PositionError();
-
 	public PositionOffsetError positionOffsetError = new PositionOffsetError();
 	// #endregion
-
-	public boolean randomizeFrameOrder = true;
-	public boolean scaleEachStep = true;
-
-
-	// TODO hip tracker stuff... Hip tracker should be around 3 to 5
-	// centimeters.
-	// Human average is probably 1.1235 (SD 0.07)
-	public float legBodyRatio = 1.1235f;
-	// SD of 0.07, capture 68% within range
-	public float legBodyRatioRange = 0.07f;
-	// kneeLegRatio seems to be around 0.54 to 0.6 after asking a few people in
-	// the
-	// SlimeVR discord.
-	public float kneeLegRatio = 0.55f;
-	// kneeLegRatio seems to be around 0.55 to 0.64 after asking a few people in
-	// the
-	// SlimeVR discord. TODO : Chest should be a bit shorter (0.54?) if user has
-	// an
-	// additional hip tracker.
-	public float chestTorsoRatio = 0.57f;
 
 	private final Random rand = new Random();
 
@@ -483,6 +455,8 @@ public class AutoBone {
 			targetHeight = getTargetHeight(frames);
 		}
 
+		float avgError = -1f;
+
 		// Epoch loop, each epoch is one full iteration over the full dataset
 		for (int epoch = calcInitError ? -1 : 0; epoch < this.config.numEpochs; epoch++) {
 			float sumError = 0f;
@@ -494,7 +468,7 @@ public class AutoBone {
 				: 0f;
 
 			int[] randomFrameIndices = null;
-			if (randomizeFrameOrder) {
+			if (config.randomizeFrameOrder) {
 				randomFrameIndices = new int[frameCount];
 
 				int zeroPos = -1;
@@ -524,14 +498,14 @@ public class AutoBone {
 			) {
 				for (
 					int frameCursor = 0; frameCursor < frameCount - cursorOffset;
-					frameCursor += cursorIncrement
+					frameCursor += config.cursorIncrement
 				) {
 					int frameCursor2 = frameCursor + cursorOffset;
 
 					applyConfig(skeleton1.skeletonConfig);
 					skeleton2.skeletonConfig.setConfigs(skeleton1.skeletonConfig);
 
-					if (randomizeFrameOrder) {
+					if (config.randomizeFrameOrder) {
 						trainingStep
 							.setCursors(
 								randomFrameIndices[frameCursor],
@@ -660,7 +634,7 @@ public class AutoBone {
 						skeleton2.skeletonConfig.setConfigs(skeleton1.skeletonConfig);
 					}
 
-					if (scaleEachStep) {
+					if (config.scaleEachStep) {
 						float stepHeight = sumSelectConfigs(heightOffsets, offsets);
 
 						if (stepHeight > 0f) {
@@ -688,7 +662,7 @@ public class AutoBone {
 			}
 
 			// Calculate average error over the epoch
-			float avgError = errorCount > 0 ? sumError / errorCount : -1f;
+			avgError = errorCount > 0 ? sumError / errorCount : -1f;
 			LogManager.info("[AutoBone] Epoch " + (epoch + 1) + " average error: " + avgError);
 
 			applyConfig(legacyConfigs);
@@ -707,7 +681,7 @@ public class AutoBone {
 					+ finalHeight
 			);
 
-		return new AutoBoneResults(finalHeight, targetHeight, legacyConfigs);
+		return new AutoBoneResults(finalHeight, targetHeight, avgError, legacyConfigs);
 	}
 
 	protected float getErrorDeriv(AutoBoneTrainingStep trainingStep) throws AutoBoneException {
@@ -879,15 +853,18 @@ public class AutoBone {
 
 		public final float finalHeight;
 		public final float targetHeight;
+		public final float epochError;
 		public final EnumMap<SkeletonConfigOffsets, Float> configValues;
 
 		public AutoBoneResults(
 			float finalHeight,
 			float targetHeight,
+			float epochError,
 			EnumMap<SkeletonConfigOffsets, Float> configValues
 		) {
 			this.finalHeight = finalHeight;
 			this.targetHeight = targetHeight;
+			this.epochError = epochError;
 			this.configValues = configValues;
 		}
 
