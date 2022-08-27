@@ -206,7 +206,7 @@ public class AutoBoneWindow extends JFrame implements AutoBoneListener {
 						epoch.epoch,
 						epoch.totalEpochs,
 						(epoch.epoch / (double) epoch.totalEpochs) * 100.0,
-						epoch.epochError
+						epoch.epochError.getMean()
 					)
 			);
 		lengthsLabel.setText(server.getAutoBoneHandler().getLengthsString());

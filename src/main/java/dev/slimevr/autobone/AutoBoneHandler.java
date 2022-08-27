@@ -11,7 +11,6 @@ import dev.slimevr.poserecorder.TrackerFrameData;
 import dev.slimevr.vr.processor.skeleton.SkeletonConfig;
 import dev.slimevr.vr.processor.skeleton.SkeletonConfigOffsets;
 import io.eiren.util.StringUtils;
-import io.eiren.util.collections.FastList;
 import io.eiren.util.logging.LogManager;
 import org.apache.commons.lang3.tuple.Pair;
 
@@ -314,7 +313,7 @@ public class AutoBoneHandler {
 
 			announceProcessStatus(AutoBoneProcessType.PROCESS, "Processing recording(s)...");
 			LogManager.info("[AutoBone] Processing frames...");
-			FastList<Float> heightPercentError = new FastList<Float>(frameRecordings.size());
+			StatsCalculator errorStats = new StatsCalculator();
 			SkeletonConfig skeletonConfigBuffer = new SkeletonConfig(false);
 			for (Pair<String, PoseFrames> recording : frameRecordings) {
 				LogManager
@@ -352,7 +351,7 @@ public class AutoBoneHandler {
 					);
 
 				AutoBoneResults autoBoneResults = processFrames(recording.getValue());
-				heightPercentError.add(autoBoneResults.getHeightDifference());
+				errorStats.addValue(autoBoneResults.getHeightDifference());
 				LogManager.info("[AutoBone] Done processing!");
 
 				// #region Stats/Values
@@ -396,29 +395,14 @@ public class AutoBoneHandler {
 				LogManager.info("[AutoBone] Length values: " + autoBone.getLengthsString());
 			}
 
-			if (!heightPercentError.isEmpty()) {
-				float mean = 0f;
-				for (float val : heightPercentError) {
-					mean += val;
-				}
-				mean /= heightPercentError.size();
-
-				float std = 0f;
-				for (float val : heightPercentError) {
-					float stdVal = val - mean;
-					std += stdVal * stdVal;
-				}
-				std = (float) Math.sqrt(std / heightPercentError.size());
-
-				LogManager
-					.info(
-						"[AutoBone] Average height error: "
-							+ StringUtils.prettyNumber(mean, 6)
-							+ " (SD "
-							+ StringUtils.prettyNumber(std, 6)
-							+ ")"
-					);
-			}
+			LogManager
+				.info(
+					"[AutoBone] Average height error: "
+						+ StringUtils.prettyNumber(errorStats.getMean(), 6)
+						+ " (SD "
+						+ StringUtils.prettyNumber(errorStats.getStandardDeviation(), 6)
+						+ ")"
+				);
 			// #endregion
 
 			listeners.forEach(listener -> {

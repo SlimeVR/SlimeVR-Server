@@ -643,7 +643,7 @@ public class RPCHandler extends ProtocolHandler<RpcMessageHeader>
 							fbb,
 							epoch.epoch,
 							epoch.totalEpochs,
-							epoch.epochError,
+							epoch.epochError.getMean(),
 							skeletonPartsOffset
 						);
 					int outbound = this

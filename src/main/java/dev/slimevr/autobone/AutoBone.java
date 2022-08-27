@@ -496,13 +496,10 @@ public class AutoBone {
 			targetHeight = getTargetHeight(frames);
 		}
 
-		float avgError = -1f;
+		StatsCalculator errorStats = new StatsCalculator();
 
 		// Epoch loop, each epoch is one full iteration over the full dataset
 		for (int epoch = calcInitError ? -1 : 0; epoch < this.config.numEpochs; epoch++) {
-			float sumError = 0f;
-			int errorCount = 0;
-
 			float adjustRate = epoch >= 0
 				? (this.config.initialAdjustRate
 					* FastMath.pow(this.config.adjustRateMultiplier, epoch))
@@ -579,16 +576,14 @@ public class AutoBone {
 						reloadConfigValues(trackers);
 
 						// Reset error sum values
-						sumError = 0f;
-						errorCount = 0;
+						errorStats.reset();
 
 						// Continue on new data
 						continue;
 					}
 
 					// Store the error count for logging purposes
-					sumError += errorDeriv;
-					errorCount++;
+					errorStats.addValue(errorDeriv);
 
 					float adjustVal = error * adjustRate;
 
@@ -703,13 +698,21 @@ public class AutoBone {
 			}
 
 			// Calculate average error over the epoch
-			avgError = errorCount > 0 ? sumError / errorCount : -1f;
-			LogManager.info("[AutoBone] Epoch " + (epoch + 1) + " average error: " + avgError);
+			LogManager
+				.info(
+					"[AutoBone] Epoch "
+						+ (epoch + 1)
+						+ " average error: "
+						+ errorStats.getMean()
+						+ " (SD "
+						+ errorStats.getStandardDeviation()
+						+ ")"
+				);
 
 			applyConfig(legacyConfigs);
 			if (epochCallback != null) {
 				epochCallback
-					.accept(new Epoch(epoch + 1, this.config.numEpochs, avgError, legacyConfigs));
+					.accept(new Epoch(epoch + 1, this.config.numEpochs, errorStats, legacyConfigs));
 			}
 		}
 
@@ -722,7 +725,7 @@ public class AutoBone {
 					+ finalHeight
 			);
 
-		return new AutoBoneResults(finalHeight, targetHeight, avgError, legacyConfigs);
+		return new AutoBoneResults(finalHeight, targetHeight, errorStats, legacyConfigs);
 	}
 
 	protected float getErrorDeriv(AutoBoneTrainingStep trainingStep) throws AutoBoneException {
@@ -869,13 +872,13 @@ public class AutoBone {
 
 		public final int epoch;
 		public final int totalEpochs;
-		public final float epochError;
+		public final StatsCalculator epochError;
 		public final EnumMap<SkeletonConfigOffsets, Float> configValues;
 
 		public Epoch(
 			int epoch,
 			int totalEpochs,
-			float epochError,
+			StatsCalculator epochError,
 			EnumMap<SkeletonConfigOffsets, Float> configValues
 		) {
 			this.epoch = epoch;
@@ -894,13 +897,13 @@ public class AutoBone {
 
 		public final float finalHeight;
 		public final float targetHeight;
-		public final float epochError;
+		public final StatsCalculator epochError;
 		public final EnumMap<SkeletonConfigOffsets, Float> configValues;
 
 		public AutoBoneResults(
 			float finalHeight,
 			float targetHeight,
-			float epochError,
+			StatsCalculator epochError,
 			EnumMap<SkeletonConfigOffsets, Float> configValues
 		) {
 			this.finalHeight = finalHeight;
