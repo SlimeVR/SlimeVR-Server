@@ -75,9 +75,8 @@ public class LegTweaks {
 	private static final float FOOT_Y_DIFF_CUTOFF = 0.15f;
 
 	// hyperparameters (knee / waist correction)
-	private static final float KNEE_CORRECTION_WEIGHT = 0.0f; // may be usful in
-																// future
-	private static final float KNEE_LATERAL_WEIGHT = 0.45f;
+	private static final float KNEE_CORRECTION_WEIGHT = 0.00f;
+	private static final float KNEE_LATERAL_WEIGHT = 0.9f;
 	private static final float WAIST_PUSH_WEIGHT = 0.2f;
 
 	// hyperparameters (misc)
@@ -404,9 +403,6 @@ public class LegTweaks {
 		// calculate the correction for the knees
 		if (kneesActive && initialized)
 			solveLowerBody();
-
-		// push the waist up the floor offset
-		waistPosition.y += FLOOR_CALIBRATION_OFFSET;
 
 		// populate the corrected data into the current frame
 		this.bufferHead.setLeftFootPositionCorrected(leftFootPosition);
