@@ -806,13 +806,13 @@ public class LegTweaks {
 		// the same amount the foot trackers where offset
 		float leftXDif = leftFootPosition.x - bufferHead.getLeftFootPosition(null).x;
 		float rightXDif = rightFootPosition.x - bufferHead.getRightFootPosition(null).x;
-		float leftYDif = leftFootPosition.y - bufferHead.getLeftFootPosition(null).y;
-		float rightYDif = rightFootPosition.y - bufferHead.getRightFootPosition(null).y;
+		float leftZDif = leftFootPosition.z - bufferHead.getLeftFootPosition(null).z;
+		float rightZDif = rightFootPosition.z - bufferHead.getRightFootPosition(null).z;
 
 		leftKneePosition.x += leftXDif * KNEE_LATERAL_WEIGHT;
-		leftKneePosition.y += leftYDif * KNEE_LATERAL_WEIGHT;
+		leftKneePosition.z += leftZDif * KNEE_LATERAL_WEIGHT;
 		rightKneePosition.x += rightXDif * KNEE_LATERAL_WEIGHT;
-		rightKneePosition.y += rightYDif * KNEE_LATERAL_WEIGHT;
+		rightKneePosition.z += rightZDif * KNEE_LATERAL_WEIGHT;
 
 		// calculate the bone distances
 		float leftKneeWaist = bufferHead.getLeftKneePosition(null).distance(leftWaist);
