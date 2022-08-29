@@ -400,6 +400,7 @@ public class LegTweakBuffer {
 			}
 
 			return LOCKED;
+		}
 
 		if (
 			parent.getLeftFootHorizantalDifference() > SKATING_DISTANCE_CUTOFF
@@ -434,6 +435,7 @@ public class LegTweakBuffer {
 			}
 
 			return LOCKED;
+		}
 
 		if (
 			parent.getRightFootHorizantalDifference() > SKATING_DISTANCE_CUTOFF
