@@ -2,6 +2,7 @@ package dev.slimevr.gui;
 
 import com.jme3.math.FastMath;
 import dev.slimevr.VRServer;
+import dev.slimevr.config.FiltersConfig;
 import dev.slimevr.filtering.TrackerFilters;
 import dev.slimevr.gui.swing.EJBagNoStretch;
 import io.eiren.util.StringUtils;
@@ -21,11 +22,16 @@ public class TrackersFiltersGUI extends EJBagNoStretch {
 	TrackerFilters filterType;
 	float filterAmount;
 	int filterBuffer;
+	FiltersConfig filtersConfig;
 
 	public TrackersFiltersGUI(VRServer server, VRServerGUI gui) {
 
 		super(false, true);
 		this.server = server;
+		filtersConfig = server
+			.getConfigManager()
+			.getVrConfig()
+			.getFilters();
 
 		int row = 0;
 
@@ -39,21 +45,20 @@ public class TrackersFiltersGUI extends EJBagNoStretch {
 		for (TrackerFilters f : TrackerFilters.values()) {
 			filterSelect.addItem(f.name());
 		}
-		filterSelect.setSelectedItem(filterType.toString());
+		if (filterType != null) {
+			filterSelect.setSelectedItem(filterType.toString());
+		}
 
 		filterSelect.addActionListener(new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent e) {
 				filterType = TrackerFilters
 					.getByConfigkey(filterSelect.getSelectedItem().toString());
-				server
-					.getConfigManager()
-					.getVrConfig()
-					.getFilters()
+				filtersConfig
 					.enumSetType(filterType);
+				filtersConfig
+					.updateTrackersFilters();
 				server.getConfigManager().saveConfig();
-
-				server.getTrackerFilteringManager().updateTrackersFilters();
 			}
 		});
 		add(Box.createVerticalStrut(40));
@@ -62,7 +67,7 @@ public class TrackersFiltersGUI extends EJBagNoStretch {
 		filterAmount = FastMath
 			.clamp(
 				server.getConfigManager().getVrConfig().getFilters().getAmount(),
-				0,
+				0.1f,
 				1
 			);
 
@@ -77,7 +82,7 @@ public class TrackersFiltersGUI extends EJBagNoStretch {
 		filterBuffer = (int) FastMath
 			.clamp(
 				server.getConfigManager().getVrConfig().getFilters().getBuffer(),
-				0,
+				1,
 				50
 			);
 
@@ -90,33 +95,28 @@ public class TrackersFiltersGUI extends EJBagNoStretch {
 	void adjustValues(int cat, boolean neg) {
 		if (cat == 0) {
 			if (neg) {
-				filterAmount = FastMath.clamp(filterAmount - 0.1f, 0, 1);
+				filterAmount = FastMath.clamp(filterAmount - 0.1f, 0.1f, 1);
 			} else {
-				filterAmount = FastMath.clamp(filterAmount + 0.1f, 0, 1);
+				filterAmount = FastMath.clamp(filterAmount + 0.1f, 0.1f, 1);
 			}
 			amountLabel.setText((StringUtils.prettyNumber(filterAmount * 100f)) + "%");
 		} else if (cat == 1) {
 			if (neg) {
-				filterBuffer = (int) FastMath.clamp(filterBuffer - 1, 0, 50);
+				filterBuffer = (int) FastMath.clamp(filterBuffer - 1, 1, 50);
 			} else {
-				filterBuffer = (int) FastMath.clamp(filterBuffer + 1, 0, 50);
+				filterBuffer = (int) FastMath.clamp(filterBuffer + 1, 1, 50);
 			}
 			bufferLabel.setText((StringUtils.prettyNumber(filterBuffer)));
 		}
 
-		server
-			.getConfigManager()
-			.getVrConfig()
-			.getFilters()
+		filtersConfig
 			.setAmount(filterAmount);
-		server
-			.getConfigManager()
-			.getVrConfig()
-			.getFilters()
+		filtersConfig
 			.setBuffer(filterBuffer);
-		server.getConfigManager().saveConfig();
+		filtersConfig
+			.updateTrackersFilters();
 
-		server.getTrackerFilteringManager().updateTrackersFilters();
+		server.getConfigManager().saveConfig();
 	}
 
 	private class AdjButton extends JButton {

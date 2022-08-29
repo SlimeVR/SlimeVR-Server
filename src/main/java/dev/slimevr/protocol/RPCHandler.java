@@ -299,7 +299,7 @@ public class RPCHandler extends ProtocolHandler<RpcMessageHeader>
 		int filterSettings = FilteringSettings
 			.createFilteringSettings(
 				fbb,
-				filtersConfig.enumGetType().id,
+				TrackerFilters.getByConfigkey(filtersConfig.getType()).id,
 				filtersConfig.getAmount(),
 				filtersConfig.getBuffer()
 			);
@@ -364,13 +364,13 @@ public class RPCHandler extends ProtocolHandler<RpcMessageHeader>
 					.getConfigManager()
 					.getVrConfig()
 					.getFilters();
-				filtersConfig.enumSetType(type);
+				filtersConfig.setType(type.configKey);
 				filtersConfig.setAmount(req.filtering().amount());
 				filtersConfig.setBuffer(req.filtering().buffer());
 
 				this.api.server.getConfigManager().saveConfig();
 
-				this.api.server.getTrackerFilteringManager().updateTrackersFilters();
+				filtersConfig.updateTrackersFilters();
 			}
 		}
 

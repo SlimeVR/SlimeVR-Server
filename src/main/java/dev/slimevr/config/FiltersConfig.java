@@ -1,6 +1,9 @@
 package dev.slimevr.config;
 
+import dev.slimevr.Main;
 import dev.slimevr.filtering.TrackerFilters;
+import dev.slimevr.vr.trackers.Tracker;
+import dev.slimevr.vr.trackers.TrackerWithFiltering;
 
 
 public class FiltersConfig {
@@ -16,6 +19,20 @@ public class FiltersConfig {
 	private int buffer = 3;
 
 	public FiltersConfig() {
+	}
+
+	public void updateTrackersFilters() {
+		for (Tracker t : Main.vrServer.getAllTrackers()) {
+			Tracker tracker = t.get();
+			if (tracker instanceof TrackerWithFiltering) {
+				((TrackerWithFiltering) tracker)
+					.setFiltering(
+						enumGetType(),
+						getAmount(),
+						getBuffer()
+					);
+			}
+		}
 	}
 
 	public TrackerFilters enumGetType() {

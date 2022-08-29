@@ -11,20 +11,24 @@ public class QuaternionMovingAverage {
 	private CircularArrayList<Quaternion> rotBuffer;
 	private Quaternion averageRotation;
 	private final Quaternion filteredQuaternion;
+	private static final float SMOOTH_DIVIDER = 1.25f;
+	private static final float PREDICT_DIVIDER = 1.25f;
 
-	/**
-	 * @param factor <1 = smoothing. >1 = prediction.
-	 * @param buffer How many quaternions are kept for the average.
-	 */
-	public QuaternionMovingAverage(float factor, int buffer, Quaternion initialRotation) {
-		// Sanity checks. GUI should clamp the values.
-		if (factor < 0)
-			factor = 0;
-		if (buffer < 1)
-			buffer = 1;
+	public QuaternionMovingAverage(
+		TrackerFilters type,
+		float amount,
+		int buffer,
+		Quaternion initialRotation
+	) {
+		// Dividing to control range.
+		if (type == TrackerFilters.SMOOTHING) {
+			this.factor = 1 - (amount / SMOOTH_DIVIDER);
+		} else { // if prediction
+			this.factor = 1 + (amount / PREDICT_DIVIDER);
+		}
 
-		this.factor = factor;
-		this.buffer = buffer;
+		// Sanity check to prevent crash.
+		this.buffer = Math.max(buffer, 1);
 
 		quatBuffer = new CircularArrayList<>(buffer);
 		rotBuffer = new CircularArrayList<>(buffer);
@@ -37,7 +41,7 @@ public class QuaternionMovingAverage {
 	synchronized public void update() {
 		if (quatBuffer.size() > 0) {
 			filteredQuaternion
-				.slerp(quatBuffer.get(0), quatBuffer.get(quatBuffer.size() - 1), factor);
+				.slerp(filteredQuaternion, quatBuffer.get(quatBuffer.size() - 1), factor);
 		}
 		// TODO
 	}
