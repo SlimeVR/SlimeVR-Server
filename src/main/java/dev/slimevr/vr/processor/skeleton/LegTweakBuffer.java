@@ -103,7 +103,6 @@ public class LegTweakBuffer {
 	private float leftFootSensitivityAccel = 1.0f;
 	private float rightFootSensitivityAccel = 1.0f;
 
-
 	private static final float SKATING_CUTOFF_ENGAGE = SKATING_DISTANCE_CUTOFF
 		* SKATING_LOCK_ENGAGE_PERCENT;
 	private static final float SKATING_VELOCITY_CUTOFF_ENGAGE = SKATING_VELOCITY_THRESHOLD
@@ -195,7 +194,6 @@ public class LegTweakBuffer {
 			vec = new Vector3f();
 
 		return vec.set(leftFootPositionCorrected);
-
 	}
 
 	public void setLeftFootPositionCorrected(Vector3f leftFootPositionCorrected) {
@@ -402,21 +400,20 @@ public class LegTweakBuffer {
 			}
 
 			return LOCKED;
-		} else {
-			if (
-				parent.getLeftFootHorizantalDifference() > SKATING_DISTANCE_CUTOFF
-					|| leftFootVelocityMagnitude * timeStep
-						> SKATING_VELOCITY_THRESHOLD * leftFootSensitivityVel
-					|| leftFootAngleDiff * timeStep
-						> SKATING_ROTVELOCITY_THRESHOLD * leftFootSensitivityVel
-					|| leftFootPosition.y > leftFloorLevel + FLOOR_DISTANCE_CUTOFF
-					|| accelerationAboveThresholdLeft
-			) {
-				return UNLOCKED;
-			}
 
-			return LOCKED;
+		if (
+			parent.getLeftFootHorizantalDifference() > SKATING_DISTANCE_CUTOFF
+				|| leftFootVelocityMagnitude * timeStep
+					> SKATING_VELOCITY_THRESHOLD * leftFootSensitivityVel
+				|| leftFootAngleDiff * timeStep
+					> SKATING_ROTVELOCITY_THRESHOLD * leftFootSensitivityVel
+				|| leftFootPosition.y > leftFloorLevel + FLOOR_DISTANCE_CUTOFF
+				|| accelerationAboveThresholdLeft
+		) {
+			return UNLOCKED;
 		}
+
+		return LOCKED;
 	}
 
 	// check if a locked foot should stay locked or be released
@@ -437,21 +434,20 @@ public class LegTweakBuffer {
 			}
 
 			return LOCKED;
-		} else {
-			if (
-				parent.getRightFootHorizantalDifference() > SKATING_DISTANCE_CUTOFF
-					|| rightFootVelocityMagnitude * timeStep
-						> SKATING_VELOCITY_THRESHOLD * rightFootSensitivityVel
-					|| rightFootAngleDiff * timeStep
-						> SKATING_ROTVELOCITY_THRESHOLD * rightFootSensitivityVel
-					|| rightFootPosition.y > rightFloorLevel + FLOOR_DISTANCE_CUTOFF
-					|| accelerationAboveThresholdRight
-			) {
-				return UNLOCKED;
-			}
 
-			return LOCKED;
+		if (
+			parent.getRightFootHorizantalDifference() > SKATING_DISTANCE_CUTOFF
+				|| rightFootVelocityMagnitude * timeStep
+					> SKATING_VELOCITY_THRESHOLD * rightFootSensitivityVel
+				|| rightFootAngleDiff * timeStep
+					> SKATING_ROTVELOCITY_THRESHOLD * rightFootSensitivityVel
+				|| rightFootPosition.y > rightFloorLevel + FLOOR_DISTANCE_CUTOFF
+				|| accelerationAboveThresholdRight
+		) {
+			return UNLOCKED;
 		}
+
+		return LOCKED;
 	}
 
 	// get the difference in feet position between the kinematic and corrected
