@@ -18,7 +18,7 @@ public class IMUTracker
 	public static final float MAX_MAG_CORRECTION_ACCURACY = 5 * FastMath.RAD_TO_DEG;
 
 	// public final Vector3f gyroVector = new Vector3f();
-	// public final Vector3f accelVector = new Vector3f();
+	public final Vector3f accelVector = new Vector3f();
 	public final Vector3f magVector = new Vector3f();
 	public final Quaternion rotQuaternion = new Quaternion();
 	public final Quaternion rotMagQuaternion = new Quaternion();
@@ -168,6 +168,12 @@ public class IMUTracker
 	public boolean getPosition(Vector3f store) {
 		store.set(0, 0, 0);
 		return false;
+	}
+
+	@Override
+	public boolean getAcceleration(Vector3f store) {
+		store.set(accelVector);
+		return true;
 	}
 
 	@Override

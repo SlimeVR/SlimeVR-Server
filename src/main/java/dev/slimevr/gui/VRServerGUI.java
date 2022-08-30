@@ -8,6 +8,7 @@ import dev.slimevr.gui.swing.EJBagNoStretch;
 import dev.slimevr.gui.swing.EJBox;
 import dev.slimevr.gui.swing.EJBoxNoStretch;
 import dev.slimevr.platform.windows.WindowsNamedPipeBridge;
+import dev.slimevr.vr.processor.skeleton.SkeletonConfigToggles;
 import dev.slimevr.vr.trackers.TrackerRole;
 import io.eiren.util.MacOSX;
 import io.eiren.util.OperatingSystem;
@@ -42,6 +43,8 @@ public class VRServerGUI extends JFrame {
 	private final SkeletonList skeletonList;
 	private final EJBox pane;
 	private JButton resetButton;
+	private JButton floorClipButton;
+	private JButton skatingCorrectionButton;
 
 	private WindowConfig config;
 
@@ -213,6 +216,50 @@ public class VRServerGUI extends JFrame {
 						});
 					}
 				});
+				add(Box.createHorizontalStrut(10));
+				add(floorClipButton = new JButton("Toggle Floor Clip") {
+					{
+						addMouseListener(new MouseInputAdapter() {
+							@Override
+							public void mouseClicked(MouseEvent e) {
+								boolean[] state = server.humanPoseProcessor.getLegTweaksState();
+								setFloorClipEnabled(!state[0]);
+							}
+						});
+					}
+				});
+
+				setFloorClipEnabled(
+					server
+						.getConfigManager()
+						.getVrConfig()
+						.getSkeleton()
+						.getToggles()
+						.get(SkeletonConfigToggles.FLOOR_CLIP.configKey)
+				);
+
+				add(Box.createHorizontalStrut(10));
+				add(skatingCorrectionButton = new JButton("Toggle Skating Correction") {
+					{
+						addMouseListener(new MouseInputAdapter() {
+							@Override
+							public void mouseClicked(MouseEvent e) {
+								boolean[] state = server.humanPoseProcessor.getLegTweaksState();
+								setSkatingReductionEnabled(!state[1]);
+							}
+						});
+					}
+				});
+
+				setSkatingReductionEnabled(
+					server
+						.getConfigManager()
+						.getVrConfig()
+						.getSkeleton()
+						.getToggles()
+						.get(SkeletonConfigToggles.SKATING_CORRECTION.configKey)
+				);
+
 				add(Box.createHorizontalGlue());
 				add(new JButton("Record BVH") {
 					{
@@ -500,5 +547,30 @@ public class VRServerGUI extends JFrame {
 	@AWTThread
 	private void reset() {
 		ButtonTimer.runTimer(resetButton, 3, "RESET", server::resetTrackers);
+	}
+
+	@AWTThread
+	private void setSkatingReductionEnabled(Boolean value) {
+		if (value == null)
+			value = false;
+
+		skatingCorrectionButton.setBackground(value ? Color.GREEN : Color.RED);
+
+		skatingCorrectionButton
+			.setText("Skating Correction: " + (value ? "ON" : "OFF"));
+
+		server.setSkatingReductionEnabled(value);
+	}
+
+	@AWTThread
+	private void setFloorClipEnabled(Boolean value) {
+		if (value == null)
+			value = false;
+
+		floorClipButton.setBackground(value ? Color.GREEN : Color.RED);
+
+		// update the button
+		floorClipButton.setText("Floor clip: " + (value ? "ON" : "OFF"));
+		server.setFloorClipEnabled(value);
 	}
 }

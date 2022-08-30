@@ -39,4 +39,16 @@ public abstract class Skeleton {
 
 	@VRServerThread
 	public abstract void resetTrackersYaw();
+
+	@VRServerThread
+	public abstract boolean[] getLegTweaksState();
+
+	@VRServerThread
+	public abstract void setLegTweaksEnabled(boolean value);
+
+	@VRServerThread
+	public abstract void setFloorclipEnabled(boolean value);
+
+	@VRServerThread
+	public abstract void setSkatingCorrectionEnabled(boolean value);
 }

@@ -312,7 +312,9 @@ public class RPCHandler extends ProtocolHandler<RpcMessageHeader>
 					config.getToggle(SkeletonConfigToggles.EXTENDED_SPINE_MODEL),
 					config.getToggle(SkeletonConfigToggles.EXTENDED_PELVIS_MODEL),
 					config.getToggle(SkeletonConfigToggles.EXTENDED_KNEE_MODEL),
-					config.getToggle(SkeletonConfigToggles.FORCE_ARMS_FROM_HMD)
+					config.getToggle(SkeletonConfigToggles.FORCE_ARMS_FROM_HMD),
+					config.getToggle(SkeletonConfigToggles.SKATING_CORRECTION),
+					config.getToggle(SkeletonConfigToggles.FLOOR_CLIP)
 				);
 			int ratiosOffset = ModelRatios
 				.createModelRatios(
@@ -377,34 +379,59 @@ public class RPCHandler extends ProtocolHandler<RpcMessageHeader>
 			var ratios = modelSettings.ratios();
 
 			if (toggles != null) {
-				if (toggles.hasExtendedSpine()) {
-					cfg
-						.setToggle(
-							SkeletonConfigToggles.EXTENDED_SPINE_MODEL,
-							toggles.extendedSpine()
-						);
-				}
-				if (toggles.hasExtendedPelvis()) {
-					cfg
-						.setToggle(
-							SkeletonConfigToggles.EXTENDED_PELVIS_MODEL,
-							toggles.extendedPelvis()
-						);
-				}
-				if (toggles.hasExtendedKnee()) {
-					cfg
-						.setToggle(
-							SkeletonConfigToggles.EXTENDED_KNEE_MODEL,
-							toggles.extendedKnee()
-						);
-				}
-				if (toggles.forceArmsFromHmd()) {
-					cfg
-						.setToggle(
-							SkeletonConfigToggles.FORCE_ARMS_FROM_HMD,
-							toggles.forceArmsFromHmd()
-						);
-				}
+				// Note: toggles.has____ returns the same as toggles._____ this
+				// seems like a bug
+				cfg
+					.setToggle(
+						SkeletonConfigToggles.EXTENDED_SPINE_MODEL,
+						toggles.extendedSpine()
+					);
+				cfg
+					.setToggle(
+						SkeletonConfigToggles.EXTENDED_PELVIS_MODEL,
+						toggles.extendedPelvis()
+					);
+				cfg
+					.setToggle(
+						SkeletonConfigToggles.EXTENDED_KNEE_MODEL,
+						toggles.extendedKnee()
+					);
+				cfg
+					.setToggle(
+						SkeletonConfigToggles.FORCE_ARMS_FROM_HMD,
+						toggles.forceArmsFromHmd()
+					);
+				cfg
+					.setToggle(
+						SkeletonConfigToggles.EXTENDED_SPINE_MODEL,
+						toggles.extendedSpine()
+					);
+				cfg
+					.setToggle(
+						SkeletonConfigToggles.EXTENDED_PELVIS_MODEL,
+						toggles.extendedPelvis()
+					);
+				cfg
+					.setToggle(
+						SkeletonConfigToggles.EXTENDED_KNEE_MODEL,
+						toggles.extendedKnee()
+					);
+				cfg
+					.setToggle(
+						SkeletonConfigToggles.FORCE_ARMS_FROM_HMD,
+						toggles.forceArmsFromHmd()
+					);
+				cfg
+					.setToggle(
+						SkeletonConfigToggles.FLOOR_CLIP,
+						toggles.floorClip()
+					);
+
+				cfg
+					.setToggle(
+						SkeletonConfigToggles.SKATING_CORRECTION,
+						toggles.skatingCorrection()
+					);
 			}
 
 			if (ratios != null) {
