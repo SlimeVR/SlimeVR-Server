@@ -20,6 +20,8 @@ public interface Tracker {
 
 	boolean getRotation(Quaternion store);
 
+	boolean getAcceleration(Vector3f store);
+
 	String getName();
 
 	TrackerStatus getStatus();

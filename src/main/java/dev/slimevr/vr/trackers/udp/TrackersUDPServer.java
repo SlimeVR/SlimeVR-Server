@@ -12,6 +12,7 @@ import dev.slimevr.vr.trackers.TrackerStatus;
 import io.eiren.util.Util;
 import io.eiren.util.collections.FastList;
 import io.eiren.util.logging.LogManager;
+
 import org.apache.commons.lang3.ArrayUtils;
 
 import java.io.IOException;
@@ -425,8 +426,22 @@ public class TrackersUDPServer extends Thread {
 					break;
 				tracker.magnetometerAccuracy = magAccuracy.accuracyInfo;
 				break;
+
+			case UDPProtocolParser.PACKET_ACCEL:
+				if (connection == null)
+					break;
+
+				UDPPacket4Acceleration accelPacket = (UDPPacket4Acceleration) packet;
+				tracker = connection.getTracker(accelPacket.getSensorId());
+
+				if (tracker == null)
+					break;
+
+				Vector3f acceleration = tracker.rotQuaternion.mult(accelPacket.acceleration);
+				tracker.accelVector.set(acceleration);
+				break;
+
 			case 2: // PACKET_GYRO
-			case 4: // PACKET_ACCEL
 			case 5: // PACKET_MAG
 			case 9: // PACKET_RAW_MAGENTOMETER
 				break; // None of these packets are used by SlimeVR trackers and
