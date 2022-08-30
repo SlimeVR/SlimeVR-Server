@@ -6,6 +6,7 @@ import dev.slimevr.vr.processor.skeleton.Skeleton;
 import dev.slimevr.vr.processor.skeleton.HumanSkeleton;
 import dev.slimevr.vr.processor.skeleton.SkeletonConfig;
 import dev.slimevr.vr.processor.skeleton.SkeletonConfigOffsets;
+import dev.slimevr.vr.processor.skeleton.SkeletonConfigToggles;
 import dev.slimevr.vr.trackers.*;
 import io.eiren.util.ann.ThreadSafe;
 import io.eiren.util.collections.FastList;
@@ -193,5 +194,46 @@ public class HumanPoseProcessor {
 	public void resetTrackersYaw() {
 		if (skeleton != null)
 			skeleton.resetTrackersYaw();
+	}
+
+	@ThreadSafe
+	public boolean[] getLegTweaksState() {
+		return skeleton.getLegTweaksState();
+	}
+
+	@VRServerThread
+	public void setLegTweaksEnabled(boolean value) {
+		if (skeleton != null)
+			skeleton.setLegTweaksEnabled(value);
+	}
+
+	@VRServerThread
+	public void setFloorClipEnabled(boolean value) {
+		if (skeleton != null) {
+			skeleton.setFloorclipEnabled(value);
+			server
+				.getConfigManager()
+				.getVrConfig()
+				.getSkeleton()
+				.getToggles()
+				.put(SkeletonConfigToggles.FLOOR_CLIP.configKey, value);
+
+			server.getConfigManager().saveConfig();
+		}
+	}
+
+	@VRServerThread
+	public void setSkatingCorrectionEnabled(boolean value) {
+		if (skeleton != null) {
+			skeleton.setSkatingCorrectionEnabled(value);
+			server
+				.getConfigManager()
+				.getVrConfig()
+				.getSkeleton()
+				.getToggles()
+				.put(SkeletonConfigToggles.SKATING_CORRECTION.configKey, value);
+
+			server.getConfigManager().saveConfig();
+		}
 	}
 }
