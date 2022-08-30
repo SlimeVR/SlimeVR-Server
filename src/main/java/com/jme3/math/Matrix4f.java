@@ -534,7 +534,7 @@ public final class Matrix4f implements Cloneable, java.io.Serializable {
 	 * <code>set</code> sets the values of this matrix from an array of values.
 	 * 
 	 * @param matrix the matrix to set the value to.
-	 * @throws javax.management.JMException if the array is not of size 16.
+	 * @throws IllegalArgumentException if the array is not of size 16.
 	 */
 	public void set(float[][] matrix) {
 		if (matrix.length != 4 || matrix[0].length != 4) {
@@ -1774,7 +1774,7 @@ public final class Matrix4f implements Cloneable, java.io.Serializable {
 	 * <code>setTranslation</code> will set the matrix's translation values.
 	 * 
 	 * @param translation the new values for the translation.
-	 * @throws javax.management.JMException if translation is not size 3.
+	 * @throws IllegalArgumentException if translation is not size 3.
 	 */
 	public void setTranslation(float[] translation) {
 		if (translation.length != 3) {
@@ -1816,7 +1816,7 @@ public final class Matrix4f implements Cloneable, java.io.Serializable {
 	 * translation values.
 	 * 
 	 * @param translation the new values for the inverse translation.
-	 * @throws javax.management.JMException if translation is not size 3.
+	 * @throws IllegalArgumentException if translation is not size 3.
 	 */
 	public void setInverseTranslation(float[] translation) {
 		if (translation.length != 3) {
@@ -1882,7 +1882,7 @@ public final class Matrix4f implements Cloneable, java.io.Serializable {
 	 * Euler angles that are in radians.
 	 * 
 	 * @param angles the Euler angles in radians.
-	 * @throws javax.management.JMException if angles is not size 3.
+	 * @throws IllegalArgumentException if angles is not size 3.
 	 */
 	public void setInverseRotationRadians(float[] angles) {
 		if (angles.length != 3) {
@@ -1918,7 +1918,7 @@ public final class Matrix4f implements Cloneable, java.io.Serializable {
 	 * Euler angles that are in degrees.
 	 * 
 	 * @param angles the Euler angles in degrees.
-	 * @throws javax.management.JMException if angles is not size 3.
+	 * @throws IllegalArgumentException if angles is not size 3.
 	 */
 	public void setInverseRotationDegrees(float[] angles) {
 		if (angles.length != 3) {
@@ -1939,8 +1939,7 @@ public final class Matrix4f implements Cloneable, java.io.Serializable {
 	 * translation part of this matrix.
 	 * 
 	 * @param vec the Vector3f data to be translated.
-	 * @throws javax.management.JMException if the size of the Vector3f is not
-	 * 3.
+	 * @throws IllegalArgumentException if the size of the Vector3f is not 3.
 	 */
 	public void inverseTranslateVect(float[] vec) {
 		if (vec.length != 3) {
@@ -1960,8 +1959,7 @@ public final class Matrix4f implements Cloneable, java.io.Serializable {
 	 * translation part of this matrix.
 	 * 
 	 * @param data the Vector3f to be translated.
-	 * @throws javax.management.JMException if the size of the Vector3f is not
-	 * 3.
+	 * @throws IllegalArgumentException if the size of the Vector3f is not 3.
 	 */
 	public void inverseTranslateVect(Vector3f data) {
 		data.x -= m03;
@@ -1975,8 +1973,7 @@ public final class Matrix4f implements Cloneable, java.io.Serializable {
 	 * translation part of this matrix.
 	 * 
 	 * @param data the Vector3f to be translated.
-	 * @throws javax.management.JMException if the size of the Vector3f is not
-	 * 3.
+	 * @throws IllegalArgumentException if the size of the Vector3f is not 3.
 	 */
 	public void translateVect(Vector3f data) {
 		data.x += m03;
