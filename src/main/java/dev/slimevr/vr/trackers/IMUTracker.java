@@ -121,7 +121,12 @@ public class IMUTracker
 			switch (type) {
 				case SMOOTHING:
 				case PREDICTION:
-					movingAverage = new QuaternionMovingAverage(type, amount, buffer, rotQuaternion);
+					movingAverage = new QuaternionMovingAverage(
+						type,
+						amount,
+						buffer,
+						rotQuaternion
+					);
 					break;
 				case NONE:
 				default:
