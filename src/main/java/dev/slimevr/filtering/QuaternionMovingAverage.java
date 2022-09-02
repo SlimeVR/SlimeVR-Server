@@ -11,8 +11,8 @@ public class QuaternionMovingAverage {
 	private final CircularArrayList<Quaternion> quatBuffer;
 	private final CircularArrayList<Quaternion> rotBuffer;
 	private final Quaternion filteredQuaternion;
-	private static final float SMOOTH_EXPONENTIAL_DIVIDER = 18f;
-	private static final float SMOOTH_EXPONENTIAL_MIN = 0.013f;
+	private static final float SMOOTH_QUADRATIC_DIVIDER = 18f;
+	private static final float SMOOTH_QUADRATIC_MIN = 0.013f;
 
 	public QuaternionMovingAverage(
 		TrackerFilters type,
