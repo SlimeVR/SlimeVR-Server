@@ -65,59 +65,84 @@ public class WiFiWindow extends JFrame implements SerialListener {
 							+ ")"
 					)
 				);
-				add(new JButton("Restart Tracker") {
+				add(new EJBox(BoxLayout.LINE_AXIS) {
 					{
-						addMouseListener(new MouseInputAdapter() {
-							@Override
-							public void mouseClicked(MouseEvent e) {
-								gui.server.getSerialHandler().restartRequest();
+						add(new JButton("Restart Tracker") {
+							{
+								addMouseListener(new MouseInputAdapter() {
+									@Override
+									public void mouseClicked(MouseEvent e) {
+//										gui.server.getSerialHandler().restartRequest();
+										gui.server.getSerialHandler().resetRequest();
+									}
+								});
 							}
 						});
-					}
-				});
-				add(new JButton("Advanced") {
-					{
-						addMouseListener(new MouseInputAdapter() {
-							@Override
-							public void mouseClicked(MouseEvent e) {
-								if (OptionAdvanced) {
-									OptionAdvanced = false;
-									JChekboxRts.setVisible(false);
-									JChekboxDtr.setVisible(false);
-								} else {
-									OptionAdvanced = true;
-									JChekboxRts.setVisible(true);
-									JChekboxDtr.setVisible(true);
-								}
+						add(new JButton("INFO") {
+							{
+								addMouseListener(new MouseInputAdapter() {
+									@Override
+									public void mouseClicked(MouseEvent e) {
+										gui.server.getSerialHandler().infoRequest();
+									}
+								});
+							}
+						});
+						add(new JButton("Factory Reset") {
+							{
+								addMouseListener(new MouseInputAdapter() {
+									@Override
+									public void mouseClicked(MouseEvent e) {
+										gui.server.getSerialHandler().factoryResetRequest();
+									}
+								});
+							}
+						});
+						add(new JButton("Advanced") {
+							{
+								addMouseListener(new MouseInputAdapter() {
+									@Override
+									public void mouseClicked(MouseEvent e) {
+										if (OptionAdvanced) {
+											OptionAdvanced = false;
+											JChekboxRts.setVisible(false);
+											JChekboxDtr.setVisible(false);
+										} else {
+											OptionAdvanced = true;
+											JChekboxRts.setVisible(true);
+											JChekboxDtr.setVisible(true);
+										}
 
+									}
+								});
 							}
 						});
+						JChekboxRts = new JCheckBox("RTS", gui.server.getSerialHandler().getRts()) {
+							{
+								addMouseListener(new MouseInputAdapter() {
+									@Override
+									public void mouseClicked(MouseEvent e) {
+										gui.server.getSerialHandler().setRts(isSelected());
+									}
+								});
+							}
+						};
+						JChekboxRts.setVisible(false);
+						add(JChekboxRts);
+						JChekboxDtr = new JCheckBox("DTR", gui.server.getSerialHandler().getDtr()) {
+							{
+								addMouseListener(new MouseInputAdapter() {
+									@Override
+									public void mouseClicked(MouseEvent e) {
+										gui.server.getSerialHandler().setDtr(isSelected());
+									}
+								});
+							}
+						};
+						JChekboxDtr.setVisible(false);
+						add(JChekboxDtr);
 					}
 				});
-				JChekboxRts = new JCheckBox("RTS", gui.server.getSerialHandler().getRts()) {
-					{
-						addMouseListener(new MouseInputAdapter() {
-							@Override
-							public void mouseClicked(MouseEvent e) {
-								gui.server.getSerialHandler().setRts(isSelected());
-							}
-						});
-					}
-				};
-				JChekboxRts.setVisible(false);
-				add(JChekboxRts);
-				JChekboxDtr = new JCheckBox("DTR", gui.server.getSerialHandler().getDtr()) {
-					{
-						addMouseListener(new MouseInputAdapter() {
-							@Override
-							public void mouseClicked(MouseEvent e) {
-								gui.server.getSerialHandler().setDtr(isSelected());
-							}
-						});
-					}
-				};
-				JChekboxDtr.setVisible(false);
-				add(JChekboxDtr);
 
 				add(
 					scroll = new JScrollPane(

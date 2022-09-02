@@ -124,6 +124,18 @@ public class SerialHandler implements SerialPortMessageListener {
 		}
 	}
 
+	public void resetRequest() {
+		this.writeSerial("REBOOT");
+	}
+
+	public void factoryResetRequest() {
+		this.writeSerial("FRST");
+	}
+
+	public void infoRequest() {
+		this.writeSerial("GET INFO");
+	}
+
 	public void restartRequest() {
 		if (trackerPort == null) {
 			return;
@@ -173,18 +185,23 @@ public class SerialHandler implements SerialPortMessageListener {
 		}
 	}
 
-	public void setWifi(String ssid, String passwd) {
+	private void writeSerial(String serialText) {
 		if (trackerPort == null)
 			return;
 		OutputStream os = trackerPort.getOutputStream();
 		OutputStreamWriter writer = new OutputStreamWriter(os);
 		try {
-			writer.append("SET WIFI \"" + ssid + "\" \"" + passwd + "\"\n");
+			writer.append(serialText + "\n");
 			writer.flush();
+			this.addLog("-> " + serialText + "\n");
 		} catch (IOException e) {
 			addLog(e + "\n");
 			e.printStackTrace();
 		}
+	}
+
+	public void setWifi(String ssid, String passwd) {
+		this.writeSerial("SET WIFI \"" + ssid + "\" \"" + passwd + "\"");
 	}
 
 	public void addLog(String str) {
