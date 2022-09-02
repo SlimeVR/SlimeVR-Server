@@ -11,13 +11,12 @@ public class QuaternionMovingAverage {
 	private final CircularArrayList<Quaternion> quatBuffer;
 	private final CircularArrayList<Quaternion> rotBuffer;
 	private final Quaternion filteredQuaternion;
-	private static final float SMOOTH_EXPONENTIAL_DIVIDER = 20f;
+	private static final float SMOOTH_EXPONENTIAL_DIVIDER = 18f;
 	private static final float SMOOTH_EXPONENTIAL_MIN = 0.013f;
 
 	public QuaternionMovingAverage(
 		TrackerFilters type,
 		float amount,
-		int buffer,
 		Quaternion initialRotation
 	) {
 		this.type = type;
@@ -27,7 +26,7 @@ public class QuaternionMovingAverage {
 			+ SMOOTH_EXPONENTIAL_MIN;
 		predictFactor = 1 + amount;
 
-		buffer = Math.max(buffer, 1);
+		int buffer = 3;
 
 		quatBuffer = new CircularArrayList<>(buffer);
 		rotBuffer = new CircularArrayList<>(buffer);
@@ -52,7 +51,6 @@ public class QuaternionMovingAverage {
 					.slerpLocal(quatBuffer.get(quatBuffer.size() - 1), predictFactor);
 			}
 		}
-
 		// TODO: prediction
 	}
 

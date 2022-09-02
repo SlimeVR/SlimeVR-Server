@@ -70,8 +70,7 @@ public class IMUTracker
 
 		setFiltering(
 			vrserver.getConfigManager().getVrConfig().getFilters().enumGetType(),
-			vrserver.getConfigManager().getVrConfig().getFilters().getAmount(),
-			vrserver.getConfigManager().getVrConfig().getFilters().getBuffer()
+			vrserver.getConfigManager().getVrConfig().getFilters().getAmount()
 		);
 	}
 
@@ -116,7 +115,7 @@ public class IMUTracker
 	}
 
 	@Override
-	public void setFiltering(TrackerFilters type, float amount, int buffer) {
+	public void setFiltering(TrackerFilters type, float amount) {
 		if (type != null) {
 			switch (type) {
 				case SMOOTHING:
@@ -124,7 +123,6 @@ public class IMUTracker
 					movingAverage = new QuaternionMovingAverage(
 						type,
 						amount,
-						buffer,
 						rotQuaternion
 					);
 					break;

@@ -300,8 +300,7 @@ public class RPCHandler extends ProtocolHandler<RpcMessageHeader>
 			.createFilteringSettings(
 				fbb,
 				TrackerFilters.getByConfigkey(filtersConfig.getType()).id,
-				filtersConfig.getAmount(),
-				filtersConfig.getBuffer()
+				filtersConfig.getAmount()
 			);
 
 		int modelSettings;
@@ -366,7 +365,6 @@ public class RPCHandler extends ProtocolHandler<RpcMessageHeader>
 					.getFilters();
 				filtersConfig.setType(type.configKey);
 				filtersConfig.setAmount(req.filtering().amount());
-				filtersConfig.setBuffer(req.filtering().buffer());
 
 				this.api.server.getConfigManager().saveConfig();
 

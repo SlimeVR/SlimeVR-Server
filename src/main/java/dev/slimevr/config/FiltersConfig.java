@@ -9,14 +9,10 @@ import dev.slimevr.vr.trackers.TrackerWithFiltering;
 public class FiltersConfig {
 
 	// Type of filtering applied (none, smoothing or prediction)
-	private String type = "none";
+	private String type = "smoothing";
 
-	// Amount/Intensity of the filtering (0 to 1)
-	private float amount = 0.3f;
-
-	// Size of the quaternion buffer (how many rotations are kept for the
-	// filtering calculations)
-	private int buffer = 3;
+	// Amount/Intensity of the specified filtering (0 to 1)
+	private float amount = 0.2f;
 
 	public FiltersConfig() {
 	}
@@ -28,8 +24,7 @@ public class FiltersConfig {
 				((TrackerWithFiltering) tracker)
 					.setFiltering(
 						enumGetType(),
-						getAmount(),
-						getBuffer()
+						getAmount()
 					);
 			}
 		}
@@ -57,13 +52,5 @@ public class FiltersConfig {
 
 	public void setAmount(float amount) {
 		this.amount = amount;
-	}
-
-	public int getBuffer() {
-		return buffer;
-	}
-
-	public void setBuffer(int buffer) {
-		this.buffer = buffer;
 	}
 }

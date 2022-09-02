@@ -18,10 +18,8 @@ public class TrackersFiltersGUI extends EJBagNoStretch {
 
 	private final VRServer server;
 	private final JLabel amountLabel;
-	private final JLabel bufferLabel;
 	TrackerFilters filterType;
 	float filterAmount;
-	int filterBuffer;
 	FiltersConfig filtersConfig;
 
 	public TrackersFiltersGUI(VRServer server, VRServerGUI gui) {
@@ -72,47 +70,24 @@ public class TrackersFiltersGUI extends EJBagNoStretch {
 			);
 
 		add(new JLabel("Amount"), c(0, row, 2));
-		add(new AdjButton("+", 0, false), c(1, row, 2));
+		add(new AdjButton("+", false), c(1, row, 2));
 		add(
 			amountLabel = new JLabel(StringUtils.prettyNumber(filterAmount * 100f) + "%"),
 			c(2, row, 2)
 		);
-		add(new AdjButton("-", 0, true), c(3, row, 2));
-		row++;
-		filterBuffer = (int) FastMath
-			.clamp(
-				server.getConfigManager().getVrConfig().getFilters().getBuffer(),
-				1,
-				50
-			);
-
-		add(new JLabel("Buffer"), c(0, row, 2));
-		add(new AdjButton("+", 1, false), c(1, row, 2));
-		add(bufferLabel = new JLabel(StringUtils.prettyNumber(filterBuffer)), c(2, row, 2));
-		add(new AdjButton("-", 1, true), c(3, row, 2));
+		add(new AdjButton("-", true), c(3, row, 2));
 	}
 
-	void adjustValues(int cat, boolean neg) {
-		if (cat == 0) {
-			if (neg) {
-				filterAmount = FastMath.clamp(filterAmount - 0.1f, 0.1f, 1);
-			} else {
-				filterAmount = FastMath.clamp(filterAmount + 0.1f, 0.1f, 1);
-			}
-			amountLabel.setText((StringUtils.prettyNumber(filterAmount * 100f)) + "%");
-		} else if (cat == 1) {
-			if (neg) {
-				filterBuffer = (int) FastMath.clamp(filterBuffer - 1, 1, 50);
-			} else {
-				filterBuffer = (int) FastMath.clamp(filterBuffer + 1, 1, 50);
-			}
-			bufferLabel.setText((StringUtils.prettyNumber(filterBuffer)));
+	void adjustAmount(boolean neg) {
+		if (neg) {
+			filterAmount = FastMath.clamp(filterAmount - 0.1f, 0.1f, 1);
+		} else {
+			filterAmount = FastMath.clamp(filterAmount + 0.1f, 0.1f, 1);
 		}
+		amountLabel.setText((StringUtils.prettyNumber(filterAmount * 100f)) + "%");
 
 		filtersConfig
 			.setAmount(filterAmount);
-		filtersConfig
-			.setBuffer(filterBuffer);
 		filtersConfig
 			.updateTrackersFilters();
 
@@ -121,12 +96,12 @@ public class TrackersFiltersGUI extends EJBagNoStretch {
 
 	private class AdjButton extends JButton {
 
-		public AdjButton(String text, int category, boolean neg) {
+		public AdjButton(String text, boolean neg) {
 			super(text);
 			addMouseListener(new MouseInputAdapter() {
 				@Override
 				public void mouseClicked(MouseEvent e) {
-					adjustValues(category, neg);
+					adjustAmount(neg);
 				}
 			});
 		}
