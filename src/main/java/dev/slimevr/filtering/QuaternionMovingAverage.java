@@ -1,17 +1,18 @@
 package dev.slimevr.filtering;
 
+import com.jme3.math.FastMath;
 import com.jme3.math.Quaternion;
 
 
 public class QuaternionMovingAverage {
 
-	private final float factor;
-	private CircularArrayList<Quaternion> quatBuffer;
-	private CircularArrayList<Quaternion> rotBuffer;
-	private Quaternion averageRotation;
+	private final float smoothFactor, predictFactor;
+	private final TrackerFilters type;
+	private final CircularArrayList<Quaternion> quatBuffer;
+	private final CircularArrayList<Quaternion> rotBuffer;
 	private final Quaternion filteredQuaternion;
-	private static final float SMOOTH_MULTIPLIER = 0.95f;
-	private static final float PREDICT_MULTIPLIER = 2.0f;
+	private static final float SMOOTH_EXPONENTIAL_DIVIDER = 20f;
+	private static final float SMOOTH_EXPONENTIAL_MIN = 0.013f;
 
 	public QuaternionMovingAverage(
 		TrackerFilters type,
@@ -19,14 +20,14 @@ public class QuaternionMovingAverage {
 		int buffer,
 		Quaternion initialRotation
 	) {
-		buffer = Math.max(buffer, 1);
-		int latency = buffer * 2;
+		this.type = type;
 
-		if (type == TrackerFilters.SMOOTHING) {
-			this.factor = (1 - (amount / SMOOTH_MULTIPLIER)) / latency;
-		} else { // if prediction
-			this.factor = (amount / PREDICT_MULTIPLIER / latency) + 1;
-		}
+		amount = Math.max(amount, 0);
+		smoothFactor = (FastMath.pow(1 - amount, 2) / SMOOTH_EXPONENTIAL_DIVIDER)
+			+ SMOOTH_EXPONENTIAL_MIN;
+		predictFactor = 1 + amount;
+
+		buffer = Math.max(buffer, 1);
 
 		quatBuffer = new CircularArrayList<>(buffer);
 		rotBuffer = new CircularArrayList<>(buffer);
@@ -34,14 +35,25 @@ public class QuaternionMovingAverage {
 		filteredQuaternion = new Quaternion(initialRotation);
 		quatBuffer.add(initialRotation);
 	}
-	// TODO Buffer? Latency? Protocol...
 
 	// 1000hz
 	synchronized public void update() {
-		if (quatBuffer.size() > 0) {
-			filteredQuaternion
-				.slerpLocal(quatBuffer.get(quatBuffer.size() - 1), factor);
+		if (type == TrackerFilters.SMOOTHING) {
+			if (quatBuffer.size() > 0) {
+				filteredQuaternion
+					.slerpLocal(
+						quatBuffer.get(quatBuffer.size() - 1),
+						smoothFactor
+					);
+			}
+		} else if (type == TrackerFilters.PREDICTION) {
+			if (quatBuffer.size() > 1) {
+				filteredQuaternion
+					.slerpLocal(quatBuffer.get(quatBuffer.size() - 1), predictFactor);
+			}
 		}
+
+		// TODO: prediction
 	}
 
 	synchronized public void addQuaternion(Quaternion q) {
