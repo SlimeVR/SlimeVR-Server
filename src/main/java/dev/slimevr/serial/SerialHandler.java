@@ -43,6 +43,8 @@ public class SerialHandler implements SerialPortMessageListener {
 				port.getDescriptivePortName().toLowerCase().contains("ch340")
 					|| port.getDescriptivePortName().toLowerCase().contains("cp21")
 					|| port.getDescriptivePortName().toLowerCase().contains("ch910")
+					|| (port.getDescriptivePortName().toLowerCase().contains("usb")
+						&& port.getDescriptivePortName().toLowerCase().contains("seri"))
 			) {
 				trackerPort = port;
 				break;
