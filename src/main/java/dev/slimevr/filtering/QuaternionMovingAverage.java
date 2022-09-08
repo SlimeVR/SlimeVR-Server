@@ -8,8 +8,6 @@ public class QuaternionMovingAverage {
 
 	private final float smoothFactor;
 	private final float predictFactor;
-	private final boolean smooths;
-	private final boolean predicts;
 	private final CircularArrayList<Quaternion> rotBuffer;
 	private final Quaternion quatBuf = new Quaternion();
 	private final Quaternion targetQuat = new Quaternion();
@@ -17,8 +15,8 @@ public class QuaternionMovingAverage {
 	private final Quaternion filteredQuaternion;
 	private static final float SMOOTH_QUADRATIC_DIVIDER = 16f;
 	private static final float SMOOTH_QUADRATIC_MIN = 0.015f;
-	private static final float PREDICT_QUADRATIC_DIVIDER = 4f;
-	private static final float PREDICT_QUADRATIC_MIN = 0.06f;
+	private static final float PREDICT_QUADRATIC_DIVIDER = 3.2f;
+	private static final float PREDICT_QUADRATIC_MIN = 0.1f;
 	private static final int PREDICT_BUFFER = 6;
 
 
@@ -27,19 +25,23 @@ public class QuaternionMovingAverage {
 		float amount,
 		Quaternion initialRotation
 	) {
-		smooths = type == TrackerFilters.SMOOTHING;
-		predicts = type == TrackerFilters.PREDICTION;
-
 		amount = Math.max(amount, 0);
-		smoothFactor = FastMath.pow(1 - amount, 2) / SMOOTH_QUADRATIC_DIVIDER
-			+ SMOOTH_QUADRATIC_MIN;
-		predictFactor = FastMath.pow(amount, 2) / PREDICT_QUADRATIC_DIVIDER
-			+ PREDICT_QUADRATIC_MIN;
 
-		if (predicts) {
+		if (type == TrackerFilters.SMOOTHING) {
+			smoothFactor = FastMath.pow(1 - amount, 2) / SMOOTH_QUADRATIC_DIVIDER
+				+ SMOOTH_QUADRATIC_MIN;
+		} else {
+			// smooths a little to reduce jitter
+			smoothFactor = 0.07f - (amount / 100f);
+		}
+
+		if (type == TrackerFilters.PREDICTION) {
 			rotBuffer = new CircularArrayList<>(PREDICT_BUFFER);
+			predictFactor = FastMath.pow(amount, 2) / PREDICT_QUADRATIC_DIVIDER
+				+ PREDICT_QUADRATIC_MIN;
 		} else {
 			rotBuffer = null;
+			predictFactor = 0;
 		}
 
 		filteredQuaternion = new Quaternion(initialRotation);
@@ -50,7 +52,8 @@ public class QuaternionMovingAverage {
 	synchronized public void update() {
 		targetQuat.set(lastQuaternion);
 
-		if (predicts) {
+		// Prediction
+		if (rotBuffer != null) {
 			if (rotBuffer.size() > 0) {
 				quatBuf.set(targetQuat);
 				rotBuffer.forEach(quatBuf::multLocal);
@@ -58,14 +61,9 @@ public class QuaternionMovingAverage {
 			}
 		}
 
-		if (smooths) {
-			filteredQuaternion.slerpLocal(targetQuat, smoothFactor);
-		} else {
-			filteredQuaternion.set(targetQuat);
-		}
+		// Smoothing
+		filteredQuaternion.slerpLocal(targetQuat, smoothFactor);
 	}
-
-	int i;
 
 	synchronized public void addQuaternion(Quaternion q) {
 		if (rotBuffer != null) {
