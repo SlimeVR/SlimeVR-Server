@@ -1345,6 +1345,9 @@ public class HumanSkeleton extends Skeleton implements SkeletonConfigCallback {
 				break;
 			case FORCE_ARMS_FROM_HMD:
 				forceArmsFromHMD = newValue;
+
+				// Rebuilds the arm skeleton nodes attachments
+				assembleSkeletonArms(true);
 				break;
 			case SKATING_CORRECTION:
 				legTweaks.setSkatingReductionEnabled(newValue);
