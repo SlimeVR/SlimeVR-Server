@@ -11,6 +11,8 @@ import dev.slimevr.vr.trackers.udp.TrackersUDPServer;
 import dev.slimevr.vr.trackers.udp.UDPDevice;
 import io.eiren.util.BufferedTimer;
 
+import java.util.Optional;
+
 
 public class IMUTracker
 	implements Tracker, TrackerWithTPS, TrackerWithBattery, TrackerWithWireless {
@@ -91,9 +93,13 @@ public class IMUTracker
 			} else {
 				rotAdjust.loadIdentity();
 			}
-			TrackerPosition
-				.getByDesignation(config.getDesignation())
-				.ifPresent(trackerPosition -> bodyPosition = trackerPosition);
+			Optional<TrackerPosition> trackerPosition = TrackerPosition
+				.getByDesignation(config.getDesignation());
+			if (trackerPosition.isEmpty()) {
+				bodyPosition = null;
+			} else {
+				bodyPosition = trackerPosition.get();
+			}
 
 			FiltersConfig filtersConfig = this.vrserver
 				.getConfigManager()
