@@ -13,10 +13,10 @@ public class QuaternionMovingAverage {
 	private final Quaternion targetQuat = new Quaternion();
 	private final Quaternion lastQuaternion;
 	private final Quaternion filteredQuaternion;
-	private static final float SMOOTH_QUADRATIC_DIVIDER = 12.6f;
-	private static final float SMOOTH_QUADRATIC_MIN = 0.02f;
-	private static final float PREDICT_QUADRATIC_DIVIDER = 3.2f;
-	private static final float PREDICT_QUADRATIC_MIN = 0.1f;
+	private static final float SMOOTH_QUADRATIC_DIVIDER = 11f;
+	private static final float SMOOTH_QUADRATIC_MIN = 0.022f;
+	private static final float PREDICT_QUADRATIC_DIVIDER = 3.1f;
+	private static final float PREDICT_QUADRATIC_MIN = 0.11f;
 	private static final int PREDICT_BUFFER = 6;
 
 
@@ -32,7 +32,7 @@ public class QuaternionMovingAverage {
 				+ SMOOTH_QUADRATIC_MIN;
 		} else {
 			// smooths a little to reduce jitter
-			smoothFactor = 0.08f - (amount / 100f);
+			smoothFactor = 0.08f - (amount / 90f);
 		}
 
 		if (type == TrackerFilters.PREDICTION) {
