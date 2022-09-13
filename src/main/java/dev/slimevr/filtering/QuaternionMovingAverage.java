@@ -13,10 +13,16 @@ public class QuaternionMovingAverage {
 	private final Quaternion targetQuat = new Quaternion();
 	private final Quaternion lastQuaternion;
 	private final Quaternion filteredQuaternion;
+
+	// influences the range of smoothFactor.
 	private static final float SMOOTH_QUADRATIC_DIVIDER = 11f;
 	private static final float SMOOTH_QUADRATIC_MIN = 0.022f;
+
+	// influences the range of predictFactor
 	private static final float PREDICT_QUADRATIC_DIVIDER = 3.1f;
 	private static final float PREDICT_QUADRATIC_MIN = 0.11f;
+
+	// how many past rotations are used for prediction.
 	private static final int PREDICT_BUFFER = 6;
 
 
@@ -25,6 +31,9 @@ public class QuaternionMovingAverage {
 		float amount,
 		Quaternion initialRotation
 	) {
+		// amount should range from 0 to 1.
+		// GUI should clamp it from 0.01 (1%) or 0.1 (10%)
+		// to 1 (100%).
 		amount = Math.max(amount, 0);
 
 		if (type == TrackerFilters.SMOOTHING) {
@@ -56,7 +65,12 @@ public class QuaternionMovingAverage {
 		if (rotBuffer != null) {
 			if (rotBuffer.size() > 0) {
 				quatBuf.set(targetQuat);
+
+				// Applies the past rotations to the current rotation
 				rotBuffer.forEach(quatBuf::multLocal);
+
+				// slerp from the current rotation to that predicted rotation by
+				// a certain factor.
 				targetQuat.slerpLocal(quatBuf, predictFactor);
 			}
 		}
@@ -70,6 +84,8 @@ public class QuaternionMovingAverage {
 			if (rotBuffer.size() == rotBuffer.capacity()) {
 				rotBuffer.remove(0);
 			}
+
+			// gets and stores the rotation between the last 2 quaternions
 			quatBuf.set(lastQuaternion);
 			quatBuf.inverseLocal();
 			rotBuffer.add(quatBuf.mult(q));
