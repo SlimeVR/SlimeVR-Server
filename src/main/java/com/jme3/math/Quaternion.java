@@ -31,12 +31,12 @@
  */
 package com.jme3.math;
 
+import io.eiren.math.FloatMath;
+
 import java.io.IOException;
 import java.io.ObjectInput;
 import java.io.ObjectOutput;
 import java.util.logging.Logger;
-
-import io.eiren.math.FloatMath;
 
 
 /**
@@ -751,9 +751,9 @@ public final class Quaternion implements Cloneable, java.io.Serializable {
 	 * specified by an angle and a normalized axis of rotation.
 	 *
 	 * @param angle the angle to rotate (in radians).
-	 * @param x
-	 * @param y
-	 * @param z the axis of rotation (already normalized).
+	 * @param ax
+	 * @param ay
+	 * @param az the axis of rotation (already normalized).
 	 */
 	public Quaternion fromAngleNormalAxis(float angle, float ax, float ay, float az) {
 		if (ax == 0 && ay == 0 && az == 0) {
@@ -854,13 +854,6 @@ public final class Quaternion implements Cloneable, java.io.Serializable {
 		// else this == q1, no need to do anything.
 
 		return this;
-	}
-
-	/**
-	 * @deprecated Direct call to {@link #slerpLocal()}.
-	 */
-	public Quaternion slerp(Quaternion q2, float t) {
-		return this.slerpLocal(q2, t);
 	}
 
 	/**
