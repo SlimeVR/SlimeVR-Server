@@ -12,6 +12,8 @@ import dev.slimevr.vr.trackers.udp.TrackersUDPServer;
 import dev.slimevr.vr.trackers.udp.UDPDevice;
 import io.eiren.util.BufferedTimer;
 
+import java.util.Optional;
+
 
 public class IMUTracker
 	implements Tracker, TrackerWithTPS, TrackerWithBattery, TrackerWithWireless,
@@ -95,9 +97,48 @@ public class IMUTracker
 			} else {
 				rotAdjust.loadIdentity();
 			}
-			TrackerPosition
-				.getByDesignation(config.getDesignation())
-				.ifPresent(trackerPosition -> bodyPosition = trackerPosition);
+			Optional<TrackerPosition> trackerPosition = TrackerPosition
+				.getByDesignation(config.getDesignation());
+			if (trackerPosition.isEmpty()) {
+				bodyPosition = null;
+			} else {
+				bodyPosition = trackerPosition.get();
+			}
+
+			FiltersConfig filtersConfig = this.vrserver
+				.getConfigManager()
+				.getVrConfig()
+				.getFilters();
+			setFilter(
+				filtersConfig.getType(),
+				filtersConfig.getAmount(),
+				filtersConfig.getTickCount()
+			);
+		}
+	}
+
+	public void setFilter(String type, float amount, int ticks) {
+		amount = FastMath.clamp(amount, 0, 1f);
+		ticks = (int) FastMath.clamp(ticks, 0, 50);
+		if (type != null) {
+			switch (type) {
+				case "INTERPOLATION":
+					movementFilterAmount = 1f - (amount / 1.6f);
+					movementFilterTickCount = ticks;
+					break;
+				case "EXTRAPOLATION":
+					movementFilterAmount = 1f + (amount * 1.15f);
+					movementFilterTickCount = ticks;
+					break;
+				case "NONE":
+				default:
+					movementFilterAmount = 1f;
+					movementFilterTickCount = 0;
+					break;
+			}
+		} else {
+			movementFilterAmount = 1f;
+			movementFilterTickCount = 0;
 		}
 	}
 

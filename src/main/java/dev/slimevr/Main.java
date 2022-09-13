@@ -19,7 +19,6 @@ public class Main {
 
 	public static VRServer vrServer;
 
-	@SuppressWarnings("unused")
 	public static void main(String[] args) {
 		System.setProperty("awt.useSystemAAFontSettings", "on");
 		System.setProperty("swing.aatext", "true");
