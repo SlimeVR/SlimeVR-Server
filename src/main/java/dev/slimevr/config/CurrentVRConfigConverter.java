@@ -2,6 +2,7 @@ package dev.slimevr.config;
 
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.node.ArrayNode;
+import com.fasterxml.jackson.databind.node.DoubleNode;
 import com.fasterxml.jackson.databind.node.JsonNodeFactory;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 import com.github.jonpeterson.jackson.module.versioning.VersionedModelConverter;
@@ -25,7 +26,7 @@ public class CurrentVRConfigConverter implements VersionedModelConverter {
 		if (version < 2) {
 			// Move zoom to the window config
 			ObjectNode windowNode = (ObjectNode) modelData.get("window");
-			ObjectNode zoomNode = (ObjectNode) modelData.get("zoom");
+			DoubleNode zoomNode = (DoubleNode) modelData.get("zoom");
 			if (windowNode != null && zoomNode != null) {
 				windowNode.set("zoom", zoomNode);
 				modelData.remove("zoom");
