@@ -1,5 +1,6 @@
 package dev.slimevr;
 
+import com.jme3.system.NanoTimer;
 import dev.slimevr.autobone.AutoBoneHandler;
 import dev.slimevr.bridge.Bridge;
 import dev.slimevr.bridge.VMCBridge;
@@ -48,6 +49,7 @@ public class VRServer extends Thread {
 	private final AutoBoneHandler autoBoneHandler;
 	private final ProtocolAPI protocolAPI;
 	private final ConfigManager configManager;
+	private final NanoTimer fpsTimer = new NanoTimer();
 
 	/**
 	 * This function is used by VRWorkout, do not remove!
@@ -184,6 +186,7 @@ public class VRServer extends Thread {
 	public void run() {
 		trackersServer.start();
 		while (true) {
+			fpsTimer.update();
 			// final long start = System.currentTimeMillis();
 			do {
 				Runnable task = tasks.poll();
@@ -321,6 +324,10 @@ public class VRServer extends Thread {
 
 	public ConfigManager getConfigManager() {
 		return configManager;
+	}
+
+	public NanoTimer getFpsTimer() {
+		return fpsTimer;
 	}
 
 }
