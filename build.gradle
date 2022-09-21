@@ -12,8 +12,8 @@ plugins {
 	id "com.diffplug.spotless" version "6.5.1"
 }
 
-sourceCompatibility = 1.11
-targetCompatibility = 1.11
+sourceCompatibility = 1.17
+targetCompatibility = 1.17
 
 // Set compiler to use UTF-8
 compileJava.options.encoding = 'UTF-8'
@@ -55,16 +55,16 @@ dependencies {
 	implementation 'com.github.jonpeterson:jackson-module-model-versioning:1.2.2'
 	implementation 'org.apache.commons:commons-math3:3.6.1'
 	implementation 'org.apache.commons:commons-lang3:3.12.0'
-	implementation 'net.java.dev.jna:jna:5.10.0'
-	implementation 'net.java.dev.jna:jna-platform:5.10.0'
+	implementation 'net.java.dev.jna:jna:5.12.1'
+	implementation 'net.java.dev.jna:jna-platform:5.12.1'
 	implementation 'com.illposed.osc:javaosc-core:0.8'
-	implementation 'com.fazecast:jSerialComm:2.9.0'
-	implementation 'com.google.protobuf:protobuf-java:3.19.4'
-	implementation "org.java-websocket:Java-WebSocket:1.5.2"
-	implementation 'com.melloware:jintellitype:1.4.0'
+	implementation 'com.fazecast:jSerialComm:2.9.2'
+	implementation 'com.google.protobuf:protobuf-java:3.21.5'
+	implementation 'org.java-websocket:Java-WebSocket:1.5.3'
+	implementation 'com.melloware:jintellitype:1.4.1'
 
 	// Use JUnit test framework
-	testImplementation platform('org.junit:junit-bom:5.8.2')
+	testImplementation platform('org.junit:junit-bom:5.9.0')
 	testImplementation 'org.junit.jupiter:junit-jupiter'
 	testImplementation 'org.junit.platform:junit-platform-launcher'
 }
