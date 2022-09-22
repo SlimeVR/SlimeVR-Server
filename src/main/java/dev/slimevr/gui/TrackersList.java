@@ -141,6 +141,7 @@ public class TrackersList extends EJBoxNoStretch {
 		JLabel magAccuracy;
 		JLabel adj;
 		JLabel adjYaw;
+		JLabel adjGyro;
 		JLabel adjMounting;
 		JLabel correction;
 		JLabel signalStrength;
@@ -337,15 +338,20 @@ public class TrackersList extends EJBoxNoStretch {
 					c(3, row, 2, GridBagConstraints.FIRST_LINE_START)
 				);
 				row++;
-				add(new JLabel("Mount Fix:"), c(0, row, 2, GridBagConstraints.FIRST_LINE_START));
+				add(new JLabel("Gyro Fix:"), c(0, row, 2, GridBagConstraints.FIRST_LINE_START));
 				add(
-					adjMounting = new JLabel("0 0 0 0"),
+					adjGyro = new JLabel("0 0 0 0"),
 					c(1, row, 2, GridBagConstraints.FIRST_LINE_START)
 				);
-				add(new JLabel("Temp:"), c(2, row, 2, GridBagConstraints.FIRST_LINE_START));
+				add(new JLabel("Mount Fix:"), c(2, row, 2, GridBagConstraints.FIRST_LINE_START));
+				add(
+					adjMounting = new JLabel("0 0 0 0"),
+					c(3, row, 2, GridBagConstraints.FIRST_LINE_START)
+				);
+				add(new JLabel("Temp:"), c(4, row, 2, GridBagConstraints.FIRST_LINE_START));
 				add(
 					temperature = new JLabel("?"),
-					c(3, row, 2, GridBagConstraints.FIRST_LINE_START)
+					c(5, row, 2, GridBagConstraints.FIRST_LINE_START)
 				);
 			}
 
@@ -423,6 +429,17 @@ public class TrackersList extends EJBoxNoStretch {
 				if (adjYaw != null) {
 					rat.yawFix.toAngles(angles);
 					adjYaw
+						.setText(
+							StringUtils.prettyNumber(angles[0] * FastMath.RAD_TO_DEG, 0)
+								+ " "
+								+ StringUtils.prettyNumber(angles[1] * FastMath.RAD_TO_DEG, 0)
+								+ " "
+								+ StringUtils.prettyNumber(angles[2] * FastMath.RAD_TO_DEG, 0)
+						);
+				}
+				if (adjGyro != null) {
+					rat.gyroFix.toAngles(angles);
+					adjGyro
 						.setText(
 							StringUtils.prettyNumber(angles[0] * FastMath.RAD_TO_DEG, 0)
 								+ " "
