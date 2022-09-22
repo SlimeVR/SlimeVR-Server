@@ -99,7 +99,7 @@ public class VRServer extends Thread {
 				"steamvr_feeder",
 				"SteamVR Feeder Bridge",
 				"\\\\.\\pipe\\SlimeVRInput",
-                    new FastList<>()
+				new FastList<>()
 			);
 			tasks.add(feederBridge::startBridge);
 			bridges.add(feederBridge);

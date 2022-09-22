@@ -1023,11 +1023,11 @@ final public class FastMath {
 			case 0xfc00 -> Float.NEGATIVE_INFINITY;
 			// TODO: Support for NaN?
 			default -> Float
-					.intBitsToFloat(
-							((half & 0x8000) << 16)
-									| (((half & 0x7c00) + 0x1C000) << 13)
-									| ((half & 0x03FF) << 13)
-					);
+				.intBitsToFloat(
+					((half & 0x8000) << 16)
+						| (((half & 0x7c00) + 0x1C000) << 13)
+						| ((half & 0x03FF) << 13)
+				);
 		};
 	}
 

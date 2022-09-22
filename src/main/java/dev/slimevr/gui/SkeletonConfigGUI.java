@@ -68,7 +68,10 @@ public class SkeletonConfigGUI extends EJBagNoStretch {
 				// Only use a timer on configs that need time to get into
 				// position for
 				switch (config) {
-					case TORSO, LEGS_LENGTH -> add(new TimedResetButton("Reset", config), c(4, row, 2));
+					case TORSO, LEGS_LENGTH -> add(
+						new TimedResetButton("Reset", config),
+						c(4, row, 2)
+					);
 					default -> add(new ResetButton("Reset", config), c(4, row, 2));
 				}
 
@@ -100,7 +103,10 @@ public class SkeletonConfigGUI extends EJBagNoStretch {
 
 	@ThreadSafe
 	public void refreshAll() {
-		java.awt.EventQueue.invokeLater(() -> labels.forEach((joint, label) -> label.setText(getBoneLengthString(joint))));
+		java.awt.EventQueue
+			.invokeLater(
+				() -> labels.forEach((joint, label) -> label.setText(getBoneLengthString(joint)))
+			);
 	}
 
 	private void change(SkeletonConfigOffsets joint, float diff) {
@@ -185,7 +191,8 @@ public class SkeletonConfigGUI extends EJBagNoStretch {
 			addMouseListener(new MouseInputAdapter() {
 				@Override
 				public void mouseClicked(MouseEvent e) {
-					ButtonTimer.runTimer(TimedResetButton.this, 3, text, SkeletonConfigGUI.this::resetAll);
+					ButtonTimer
+						.runTimer(TimedResetButton.this, 3, text, SkeletonConfigGUI.this::resetAll);
 				}
 			});
 		}

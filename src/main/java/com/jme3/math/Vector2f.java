@@ -261,8 +261,8 @@ public final class Vector2f implements Cloneable, java.io.Serializable {
 		)
 			return false;
 		return !Float.isInfinite(vector.x)
-				&&
-				!Float.isInfinite(vector.y);
+			&&
+			!Float.isInfinite(vector.y);
 	}
 
 	/**
@@ -657,7 +657,7 @@ public final class Vector2f implements Cloneable, java.io.Serializable {
 			return true;
 		}
 
-        if (Float.compare(x, comp.x) != 0)
+		if (Float.compare(x, comp.x) != 0)
 			return false;
 		return Float.compare(y, comp.y) == 0;
 	}

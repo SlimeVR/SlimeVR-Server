@@ -917,7 +917,9 @@ public final class Vector3f implements Cloneable, java.io.Serializable {
 			return false;
 		if (Float.isNaN(vector.x) || Float.isNaN(vector.y) || Float.isNaN(vector.z))
 			return false;
-		return !Float.isInfinite(vector.x) && !Float.isInfinite(vector.y) && !Float.isInfinite(vector.z);
+		return !Float.isInfinite(vector.x)
+			&& !Float.isInfinite(vector.y)
+			&& !Float.isInfinite(vector.z);
 	}
 
 	public static void generateOrthonormalBasis(Vector3f u, Vector3f v, Vector3f w) {

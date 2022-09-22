@@ -144,7 +144,7 @@ public class VRServerGUI extends JFrame {
 			comp.setFont(newFont);
 		}
 		if (comp instanceof Container cont) {
-            for (Component child : cont.getComponents())
+			for (Component child : cont.getComponents())
 				processNewZoom(zoom, child);
 		}
 	}
@@ -155,7 +155,7 @@ public class VRServerGUI extends JFrame {
 			Object key = keys.nextElement();
 			Object value = UIManager.get(key);
 			if (value instanceof javax.swing.plaf.FontUIResource f) {
-                javax.swing.plaf.FontUIResource f2 = new javax.swing.plaf.FontUIResource(
+				javax.swing.plaf.FontUIResource f2 = new javax.swing.plaf.FontUIResource(
 					f.deriveFont(f.getSize() * zoom)
 				);
 				UIManager.put(key, f2);
@@ -359,12 +359,14 @@ public class VRServerGUI extends JFrame {
 									waistCb.addActionListener(new ActionListener() {
 										@Override
 										public void actionPerformed(ActionEvent e) {
-											server.queueTask(() -> br
-												.changeShareSettings(
-													TrackerRole.WAIST,
-													waistCb.isSelected()
-												)
-											);
+											server
+												.queueTask(
+													() -> br
+														.changeShareSettings(
+															TrackerRole.WAIST,
+															waistCb.isSelected()
+														)
+												);
 										}
 									});
 
@@ -399,12 +401,14 @@ public class VRServerGUI extends JFrame {
 									chestCb.addActionListener(new ActionListener() {
 										@Override
 										public void actionPerformed(ActionEvent e) {
-											server.queueTask(() -> br
-												.changeShareSettings(
-													TrackerRole.CHEST,
-													chestCb.isSelected()
-												)
-											);
+											server
+												.queueTask(
+													() -> br
+														.changeShareSettings(
+															TrackerRole.CHEST,
+															chestCb.isSelected()
+														)
+												);
 										}
 									});
 

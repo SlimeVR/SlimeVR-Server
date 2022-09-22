@@ -24,82 +24,82 @@ public final class ProtobufMessages {
 
 	static {
 		java.lang.String[] descriptorData = {
-				"""
+			"""
 
-\026ProtobufMessages.proto\022\010messages"
+				\026ProtobufMessages.proto\022\010messages"
 
-\010PingPong"\223\002
-\010Position\022\022
+				\010PingPong"\223\002
+				\010Position\022\022
 
-tracker_id\030\001 \001(\005\022\016
-\001x\030\002 \001(\002H\000\210\001\001\022\016
-\001y\030\003 \001(\002H\001\210\001\001\022\016
-\001z\030\004 \001(\002H\002\210\001\001\022
+				tracker_id\030\001 \001(\005\022\016
+				\001x\030\002 \001(\002H\000\210\001\001\022\016
+				\001y\030\003 \001(\002H\001\210\001\001\022\016
+				\001z\030\004 \001(\002H\002\210\001\001\022
 
-\002qx\030\005 \001(\002\022
+				\002qx\030\005 \001(\002\022
 
-\002qy\030\006 \001(\002\022
+				\002qy\030\006 \001(\002\022
 
-\002qz\030\007 \001(\002\022
+				\002qz\030\007 \001(\002\022
 
-\002qw\030\010 \001(\002\0227
-\013data_source\030\t \001(\0162\035.messages.Position.DataSourceH\003\210\001\001"8
+				\002qw\030\010 \001(\002\0227
+				\013data_source\030\t \001(\0162\035.messages.Position.DataSourceH\003\210\001\001"8
 
-DataSource\022\010
-\004NONE\020\000\022\007
-\003IMU\020\001\022\r
-\tPRECISION\020\002\022\010
-\004FULL\020\003B\004
-\002_xB\004
-\002_yB\004
-\002_zB\016
-\014_data_source"\227\001
+				DataSource\022\010
+				\004NONE\020\000\022\007
+				\003IMU\020\001\022\r
+				\tPRECISION\020\002\022\010
+				\004FULL\020\003B\004
+				\002_xB\004
+				\002_yB\004
+				\002_zB\016
+				\014_data_source"\227\001
 
-UserAction\022\014
-\004name\030\001 \001(\t\022C
-\020action_arguments\030\002 \003(\0132).messages.UserAction.ActionArgumentsEntry\0326
-\024ActionArgumentsEntry\022\013
-\003key\030\001 \001(\t\022\r
-\005value\030\002 \001(\t:\0028\001"f
-\014TrackerAdded\022\022
+				UserAction\022\014
+				\004name\030\001 \001(\t\022C
+				\020action_arguments\030\002 \003(\0132).messages.UserAction.ActionArgumentsEntry\0326
+				\024ActionArgumentsEntry\022\013
+				\003key\030\001 \001(\t\022\r
+				\005value\030\002 \001(\t:\0028\001"f
+				\014TrackerAdded\022\022
 
-tracker_id\030\001 \001(\005\022\026
-\016tracker_serial\030\002 \001(\t\022\024
-\014tracker_name\030\003 \001(\t\022\024
-\014tracker_role\030\004 \001(\005"\374\002
-\rTrackerStatus\022\022
+				tracker_id\030\001 \001(\005\022\026
+				\016tracker_serial\030\002 \001(\t\022\024
+				\014tracker_name\030\003 \001(\t\022\024
+				\014tracker_role\030\004 \001(\005"\374\002
+				\rTrackerStatus\022\022
 
-tracker_id\030\001 \001(\005\022.
-\006status\030\002 \001(\0162\036.messages.TrackerStatus.Status\0221
-\005extra\030\003 \003(\0132".messages.TrackerStatus.ExtraEntry\022;
+				tracker_id\030\001 \001(\005\022.
+				\006status\030\002 \001(\0162\036.messages.TrackerStatus.Status\0221
+				\005extra\030\003 \003(\0132".messages.TrackerStatus.ExtraEntry\022;
 
-confidence\030\004 \001(\0162".messages.TrackerStatus.ConfidenceH\000\210\001\001\032,
+				confidence\030\004 \001(\0162".messages.TrackerStatus.ConfidenceH\000\210\001\001\032,
 
-ExtraEntry\022\013
-\003key\030\001 \001(\t\022\r
-\005value\030\002 \001(\t:\0028\001"E
-\006Status\022\020
-\014DISCONNECTED\020\000\022\006
-\002OK\020\001\022\010
-\004BUSY\020\002\022\t
-\005ERROR\020\003\022\014
-\010OCCLUDED\020\004"3
+				ExtraEntry\022\013
+				\003key\030\001 \001(\t\022\r
+				\005value\030\002 \001(\t:\0028\001"E
+				\006Status\022\020
+				\014DISCONNECTED\020\000\022\006
+				\002OK\020\001\022\010
+				\004BUSY\020\002\022\t
+				\005ERROR\020\003\022\014
+				\010OCCLUDED\020\004"3
 
-Confidence\022\006
-\002NO\020\000\022\007
-\003LOW\020\001\022
+				Confidence\022\006
+				\002NO\020\000\022\007
+				\003LOW\020\001\022
 
-\006MEDIUM\020\005\022\010
-\004HIGH\020
-B\r
-\013_confidence"\325\001
-\017ProtobufMessage\022&
-\010position\030\001 \001(\0132\022.messages.PositionH\000\022+
-\013user_action\030\002 \001(\0132\024.messages.UserActionH\000\022/
-\rtracker_added\030\003 \001(\0132\026.messages.TrackerAddedH\000\0221
-\016tracker_status\030\004 \001(\0132\027.messages.TrackerStatusH\000B\t
-\007messageB&
-\022dev.slimevr.bridgeB\020ProtobufMessagesb\006proto3"""
+				\006MEDIUM\020\005\022\010
+				\004HIGH\020
+				B\r
+				\013_confidence"\325\001
+				\017ProtobufMessage\022&
+				\010position\030\001 \001(\0132\022.messages.PositionH\000\022+
+				\013user_action\030\002 \001(\0132\024.messages.UserActionH\000\022/
+				\rtracker_added\030\003 \001(\0132\026.messages.TrackerAddedH\000\0221
+				\016tracker_status\030\004 \001(\0132\027.messages.TrackerStatusH\000B\t
+				\007messageB&
+				\022dev.slimevr.bridgeB\020ProtobufMessagesb\006proto3"""
 		};
 		descriptor = com.google.protobuf.Descriptors.FileDescriptor
 			.internalBuildGeneratedFileFrom(
@@ -577,10 +577,10 @@ B\r
 		private static final com.google.protobuf.Parser<PingPong> PARSER = new com.google.protobuf.AbstractParser<>() {
 			@java.lang.Override
 			public PingPong parsePartialFrom(
-					com.google.protobuf.CodedInputStream input,
-					com.google.protobuf.ExtensionRegistryLite extensionRegistry
+				com.google.protobuf.CodedInputStream input,
+				com.google.protobuf.ExtensionRegistryLite extensionRegistry
 			)
-					throws com.google.protobuf.InvalidProtocolBufferException {
+				throws com.google.protobuf.InvalidProtocolBufferException {
 				return new PingPong(input, extensionRegistry);
 			}
 		};
@@ -1054,10 +1054,10 @@ B\r
 		private static final com.google.protobuf.Parser<Position> PARSER = new com.google.protobuf.AbstractParser<>() {
 			@java.lang.Override
 			public Position parsePartialFrom(
-					com.google.protobuf.CodedInputStream input,
-					com.google.protobuf.ExtensionRegistryLite extensionRegistry
+				com.google.protobuf.CodedInputStream input,
+				com.google.protobuf.ExtensionRegistryLite extensionRegistry
 			)
-					throws com.google.protobuf.InvalidProtocolBufferException {
+				throws com.google.protobuf.InvalidProtocolBufferException {
 				return new Position(input, extensionRegistry);
 			}
 		};
@@ -2492,10 +2492,10 @@ B\r
 		private static final com.google.protobuf.Parser<UserAction> PARSER = new com.google.protobuf.AbstractParser<>() {
 			@java.lang.Override
 			public UserAction parsePartialFrom(
-					com.google.protobuf.CodedInputStream input,
-					com.google.protobuf.ExtensionRegistryLite extensionRegistry
+				com.google.protobuf.CodedInputStream input,
+				com.google.protobuf.ExtensionRegistryLite extensionRegistry
 			)
-					throws com.google.protobuf.InvalidProtocolBufferException {
+				throws com.google.protobuf.InvalidProtocolBufferException {
 				return new UserAction(input, extensionRegistry);
 			}
 		};
@@ -2542,23 +2542,23 @@ B\r
 						case 18 -> {
 							if ((mutable_bitField0_ & 0x00000001) == 0) {
 								actionArguments_ = com.google.protobuf.MapField
-										.newMapField(
-												ActionArgumentsDefaultEntryHolder.defaultEntry
-										);
+									.newMapField(
+										ActionArgumentsDefaultEntryHolder.defaultEntry
+									);
 								mutable_bitField0_ |= 0x00000001;
 							}
 							com.google.protobuf.MapEntry<String, String> actionArguments__ = input
-									.readMessage(
-											ActionArgumentsDefaultEntryHolder.defaultEntry
-													.getParserForType(),
-											extensionRegistry
-									);
+								.readMessage(
+									ActionArgumentsDefaultEntryHolder.defaultEntry
+										.getParserForType(),
+									extensionRegistry
+								);
 							actionArguments_
-									.getMutableMap()
-									.put(
-											actionArguments__.getKey(),
-											actionArguments__.getValue()
-									);
+								.getMutableMap()
+								.put(
+									actionArguments__.getKey(),
+									actionArguments__.getValue()
+								);
 						}
 						default -> {
 							if (!parseUnknownField(input, unknownFields, extensionRegistry, tag)) {
@@ -2714,7 +2714,7 @@ B\r
 			return switch (number) {
 				case 2 -> internalGetActionArguments();
 				default -> throw new RuntimeException(
-						"Invalid map field number: " + number
+					"Invalid map field number: " + number
 				);
 			};
 		}
@@ -3024,7 +3024,7 @@ B\r
 				return switch (number) {
 					case 2 -> internalGetActionArguments();
 					default -> throw new RuntimeException(
-							"Invalid map field number: " + number
+						"Invalid map field number: " + number
 					);
 				};
 			}
@@ -3037,7 +3037,7 @@ B\r
 				return switch (number) {
 					case 2 -> internalGetMutableActionArguments();
 					default -> throw new RuntimeException(
-							"Invalid map field number: " + number
+						"Invalid map field number: " + number
 					);
 				};
 			}
@@ -3474,10 +3474,10 @@ B\r
 		private static final com.google.protobuf.Parser<TrackerAdded> PARSER = new com.google.protobuf.AbstractParser<>() {
 			@java.lang.Override
 			public TrackerAdded parsePartialFrom(
-					com.google.protobuf.CodedInputStream input,
-					com.google.protobuf.ExtensionRegistryLite extensionRegistry
+				com.google.protobuf.CodedInputStream input,
+				com.google.protobuf.ExtensionRegistryLite extensionRegistry
 			)
-					throws com.google.protobuf.InvalidProtocolBufferException {
+				throws com.google.protobuf.InvalidProtocolBufferException {
 				return new TrackerAdded(input, extensionRegistry);
 			}
 		};
@@ -4383,10 +4383,10 @@ B\r
 		private static final com.google.protobuf.Parser<TrackerStatus> PARSER = new com.google.protobuf.AbstractParser<>() {
 			@java.lang.Override
 			public TrackerStatus parsePartialFrom(
-					com.google.protobuf.CodedInputStream input,
-					com.google.protobuf.ExtensionRegistryLite extensionRegistry
+				com.google.protobuf.CodedInputStream input,
+				com.google.protobuf.ExtensionRegistryLite extensionRegistry
 			)
-					throws com.google.protobuf.InvalidProtocolBufferException {
+				throws com.google.protobuf.InvalidProtocolBufferException {
 				return new TrackerStatus(input, extensionRegistry);
 			}
 		};
@@ -4435,22 +4435,22 @@ B\r
 						case 26 -> {
 							if ((mutable_bitField0_ & 0x00000001) == 0) {
 								extra_ = com.google.protobuf.MapField
-										.newMapField(
-												ExtraDefaultEntryHolder.defaultEntry
-										);
+									.newMapField(
+										ExtraDefaultEntryHolder.defaultEntry
+									);
 								mutable_bitField0_ |= 0x00000001;
 							}
 							com.google.protobuf.MapEntry<String, String> extra__ = input
-									.readMessage(
-											ExtraDefaultEntryHolder.defaultEntry.getParserForType(),
-											extensionRegistry
-									);
+								.readMessage(
+									ExtraDefaultEntryHolder.defaultEntry.getParserForType(),
+									extensionRegistry
+								);
 							extra_
-									.getMutableMap()
-									.put(
-											extra__.getKey(),
-											extra__.getValue()
-									);
+								.getMutableMap()
+								.put(
+									extra__.getKey(),
+									extra__.getValue()
+								);
 						}
 						case 32 -> {
 							int rawValue = input.readEnum();
@@ -4613,7 +4613,7 @@ B\r
 			return switch (number) {
 				case 3 -> internalGetExtra();
 				default -> throw new RuntimeException(
-						"Invalid map field number: " + number
+					"Invalid map field number: " + number
 				);
 			};
 		}
@@ -5252,7 +5252,7 @@ B\r
 				return switch (number) {
 					case 3 -> internalGetExtra();
 					default -> throw new RuntimeException(
-							"Invalid map field number: " + number
+						"Invalid map field number: " + number
 					);
 				};
 			}
@@ -5265,7 +5265,7 @@ B\r
 				return switch (number) {
 					case 3 -> internalGetMutableExtra();
 					default -> throw new RuntimeException(
-							"Invalid map field number: " + number
+						"Invalid map field number: " + number
 					);
 				};
 			}
@@ -5812,10 +5812,10 @@ B\r
 		private static final com.google.protobuf.Parser<ProtobufMessage> PARSER = new com.google.protobuf.AbstractParser<>() {
 			@java.lang.Override
 			public ProtobufMessage parsePartialFrom(
-					com.google.protobuf.CodedInputStream input,
-					com.google.protobuf.ExtensionRegistryLite extensionRegistry
+				com.google.protobuf.CodedInputStream input,
+				com.google.protobuf.ExtensionRegistryLite extensionRegistry
 			)
-					throws com.google.protobuf.InvalidProtocolBufferException {
+				throws com.google.protobuf.InvalidProtocolBufferException {
 				return new ProtobufMessage(input, extensionRegistry);
 			}
 		};
@@ -5857,18 +5857,18 @@ B\r
 							Position.Builder subBuilder = null;
 							if (messageCase_ == 1) {
 								subBuilder = ((Position) message_)
-										.toBuilder();
+									.toBuilder();
 							}
 							message_ = input
-									.readMessage(
-											Position.parser(),
-											extensionRegistry
-									);
+								.readMessage(
+									Position.parser(),
+									extensionRegistry
+								);
 							if (subBuilder != null) {
 								subBuilder
-										.mergeFrom(
-												(Position) message_
-										);
+									.mergeFrom(
+										(Position) message_
+									);
 								message_ = subBuilder.buildPartial();
 							}
 							messageCase_ = 1;
@@ -5877,18 +5877,18 @@ B\r
 							UserAction.Builder subBuilder = null;
 							if (messageCase_ == 2) {
 								subBuilder = ((UserAction) message_)
-										.toBuilder();
+									.toBuilder();
 							}
 							message_ = input
-									.readMessage(
-											UserAction.parser(),
-											extensionRegistry
-									);
+								.readMessage(
+									UserAction.parser(),
+									extensionRegistry
+								);
 							if (subBuilder != null) {
 								subBuilder
-										.mergeFrom(
-												(UserAction) message_
-										);
+									.mergeFrom(
+										(UserAction) message_
+									);
 								message_ = subBuilder.buildPartial();
 							}
 							messageCase_ = 2;
@@ -5897,18 +5897,18 @@ B\r
 							TrackerAdded.Builder subBuilder = null;
 							if (messageCase_ == 3) {
 								subBuilder = ((TrackerAdded) message_)
-										.toBuilder();
+									.toBuilder();
 							}
 							message_ = input
-									.readMessage(
-											TrackerAdded.parser(),
-											extensionRegistry
-									);
+								.readMessage(
+									TrackerAdded.parser(),
+									extensionRegistry
+								);
 							if (subBuilder != null) {
 								subBuilder
-										.mergeFrom(
-												(TrackerAdded) message_
-										);
+									.mergeFrom(
+										(TrackerAdded) message_
+									);
 								message_ = subBuilder.buildPartial();
 							}
 							messageCase_ = 3;
@@ -5917,18 +5917,18 @@ B\r
 							TrackerStatus.Builder subBuilder = null;
 							if (messageCase_ == 4) {
 								subBuilder = ((TrackerStatus) message_)
-										.toBuilder();
+									.toBuilder();
 							}
 							message_ = input
-									.readMessage(
-											TrackerStatus.parser(),
-											extensionRegistry
-									);
+								.readMessage(
+									TrackerStatus.parser(),
+									extensionRegistry
+								);
 							if (subBuilder != null) {
 								subBuilder
-										.mergeFrom(
-												(TrackerStatus) message_
-										);
+									.mergeFrom(
+										(TrackerStatus) message_
+									);
 								message_ = subBuilder.buildPartial();
 							}
 							messageCase_ = 4;
@@ -6818,9 +6818,9 @@ B\r
 							.getDefaultInstance();
 					}
 					positionBuilder_ = new com.google.protobuf.SingleFieldBuilderV3<>(
-							(dev.slimevr.bridge.ProtobufMessages.Position) message_,
-							getParentForChildren(),
-							isClean()
+						(dev.slimevr.bridge.ProtobufMessages.Position) message_,
+						getParentForChildren(),
+						isClean()
 					);
 					message_ = null;
 				}
@@ -6974,9 +6974,9 @@ B\r
 							.getDefaultInstance();
 					}
 					userActionBuilder_ = new com.google.protobuf.SingleFieldBuilderV3<>(
-							(dev.slimevr.bridge.ProtobufMessages.UserAction) message_,
-							getParentForChildren(),
-							isClean()
+						(dev.slimevr.bridge.ProtobufMessages.UserAction) message_,
+						getParentForChildren(),
+						isClean()
 					);
 					message_ = null;
 				}
@@ -7132,9 +7132,9 @@ B\r
 							.getDefaultInstance();
 					}
 					trackerAddedBuilder_ = new com.google.protobuf.SingleFieldBuilderV3<>(
-							(dev.slimevr.bridge.ProtobufMessages.TrackerAdded) message_,
-							getParentForChildren(),
-							isClean()
+						(dev.slimevr.bridge.ProtobufMessages.TrackerAdded) message_,
+						getParentForChildren(),
+						isClean()
 					);
 					message_ = null;
 				}
@@ -7294,9 +7294,9 @@ B\r
 							.getDefaultInstance();
 					}
 					trackerStatusBuilder_ = new com.google.protobuf.SingleFieldBuilderV3<>(
-							(dev.slimevr.bridge.ProtobufMessages.TrackerStatus) message_,
-							getParentForChildren(),
-							isClean()
+						(dev.slimevr.bridge.ProtobufMessages.TrackerStatus) message_,
+						getParentForChildren(),
+						isClean()
 					);
 					message_ = null;
 				}

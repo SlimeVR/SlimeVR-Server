@@ -46,7 +46,7 @@ public class ShortConsoleLogFormatter extends Formatter {
 		if (parameters == null || parameters.length == 0)
 			return message;
 		if (
-				message.contains("{0")
+			message.contains("{0")
 				|| message.contains("{1")
 				|| message.contains("{2")
 				|| message.contains("{3")

@@ -378,7 +378,8 @@ public final class Transform implements Cloneable, java.io.Serializable {
 			return false;
 		if (translation == null) {
 			return other.translation == null;
-		} else return translation.equals(other.translation);
+		} else
+			return translation.equals(other.translation);
 	}
 
 	@Override

@@ -31,7 +31,7 @@ public class MacOSX {
 	public static boolean hasRetinaDisplay() {
 		Object obj = Toolkit.getDefaultToolkit().getDesktopProperty("apple.awt.contentScaleFactor");
 		if (obj instanceof Float f) {
-            int scale = f.intValue();
+			int scale = f.intValue();
 			return (scale == 2); // 1 indicates a regular mac display.
 		}
 		return false;

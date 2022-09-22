@@ -36,51 +36,51 @@ public class AutoBone {
 
 	// This is filled by reloadConfigValues()
 	public final EnumMap<BoneType, Float> offsets = new EnumMap<>(
-			BoneType.class
+		BoneType.class
 	);
 
 	public final FastList<BoneType> adjustOffsets = new FastList<>(
-			new BoneType[]{
-					BoneType.HEAD,
-					BoneType.NECK,
-					BoneType.CHEST,
-					BoneType.WAIST,
-					BoneType.HIP,
+		new BoneType[] {
+			BoneType.HEAD,
+			BoneType.NECK,
+			BoneType.CHEST,
+			BoneType.WAIST,
+			BoneType.HIP,
 
-					// This one doesn't seem to work very well and is generally going to
-					// be similar between users
-					// BoneType.LEFT_HIP,
+			// This one doesn't seem to work very well and is generally going to
+			// be similar between users
+			// BoneType.LEFT_HIP,
 
-					BoneType.LEFT_UPPER_LEG,
-					BoneType.LEFT_LOWER_LEG,
-			}
+			BoneType.LEFT_UPPER_LEG,
+			BoneType.LEFT_LOWER_LEG,
+		}
 	);
 
 	public final FastList<BoneType> heightOffsets = new FastList<>(
-			new BoneType[]{
-					BoneType.NECK,
-					BoneType.CHEST,
-					BoneType.WAIST,
-					BoneType.HIP,
+		new BoneType[] {
+			BoneType.NECK,
+			BoneType.CHEST,
+			BoneType.WAIST,
+			BoneType.HIP,
 
-					BoneType.LEFT_UPPER_LEG,
-					BoneType.RIGHT_UPPER_LEG,
-					BoneType.LEFT_LOWER_LEG,
-					BoneType.RIGHT_LOWER_LEG,
-			}
+			BoneType.LEFT_UPPER_LEG,
+			BoneType.RIGHT_UPPER_LEG,
+			BoneType.LEFT_LOWER_LEG,
+			BoneType.RIGHT_LOWER_LEG,
+		}
 	);
 
 	public final FastList<SkeletonConfigOffsets> legacyHeightConfigs = new FastList<>(
-			new SkeletonConfigOffsets[]{
-					SkeletonConfigOffsets.NECK,
-					SkeletonConfigOffsets.TORSO,
+		new SkeletonConfigOffsets[] {
+			SkeletonConfigOffsets.NECK,
+			SkeletonConfigOffsets.TORSO,
 
-					SkeletonConfigOffsets.LEGS_LENGTH,
-			}
+			SkeletonConfigOffsets.LEGS_LENGTH,
+		}
 	);
 
 	public final EnumMap<SkeletonConfigOffsets, Float> legacyConfigs = new EnumMap<>(
-			SkeletonConfigOffsets.class
+		SkeletonConfigOffsets.class
 	);
 
 	protected final VRServer server;
@@ -120,13 +120,16 @@ public class AutoBone {
 			case NECK -> skeletonConfig.getOffset(SkeletonConfigOffsets.NECK);
 			case CHEST -> skeletonConfig.getOffset(SkeletonConfigOffsets.CHEST);
 			case WAIST -> -skeletonConfig.getOffset(SkeletonConfigOffsets.CHEST)
-					+ skeletonConfig.getOffset(SkeletonConfigOffsets.TORSO)
-					- skeletonConfig.getOffset(SkeletonConfigOffsets.WAIST);
+				+ skeletonConfig.getOffset(SkeletonConfigOffsets.TORSO)
+				- skeletonConfig.getOffset(SkeletonConfigOffsets.WAIST);
 			case HIP -> skeletonConfig.getOffset(SkeletonConfigOffsets.WAIST);
-			case LEFT_HIP, RIGHT_HIP -> skeletonConfig.getOffset(SkeletonConfigOffsets.HIPS_WIDTH) / 2f;
-			case LEFT_UPPER_LEG, RIGHT_UPPER_LEG -> skeletonConfig.getOffset(SkeletonConfigOffsets.LEGS_LENGTH)
-					- skeletonConfig.getOffset(SkeletonConfigOffsets.KNEE_HEIGHT);
-			case LEFT_LOWER_LEG, RIGHT_LOWER_LEG -> skeletonConfig.getOffset(SkeletonConfigOffsets.KNEE_HEIGHT);
+			case LEFT_HIP, RIGHT_HIP -> skeletonConfig.getOffset(SkeletonConfigOffsets.HIPS_WIDTH)
+				/ 2f;
+			case LEFT_UPPER_LEG, RIGHT_UPPER_LEG -> skeletonConfig
+				.getOffset(SkeletonConfigOffsets.LEGS_LENGTH)
+				- skeletonConfig.getOffset(SkeletonConfigOffsets.KNEE_HEIGHT);
+			case LEFT_LOWER_LEG, RIGHT_LOWER_LEG -> skeletonConfig
+				.getOffset(SkeletonConfigOffsets.KNEE_HEIGHT);
 			default -> -1f;
 		};
 
@@ -166,10 +169,12 @@ public class AutoBone {
 
 		switch (node) {
 			case LEFT_HIP, RIGHT_HIP -> node = rightSide ? BoneType.RIGHT_HIP : BoneType.LEFT_HIP;
-			case LEFT_UPPER_LEG, RIGHT_UPPER_LEG ->
-					node = rightSide ? BoneType.RIGHT_UPPER_LEG : BoneType.LEFT_UPPER_LEG;
-			case LEFT_LOWER_LEG, RIGHT_LOWER_LEG ->
-					node = rightSide ? BoneType.RIGHT_LOWER_LEG : BoneType.LEFT_LOWER_LEG;
+			case LEFT_UPPER_LEG, RIGHT_UPPER_LEG -> node = rightSide
+				? BoneType.RIGHT_UPPER_LEG
+				: BoneType.LEFT_UPPER_LEG;
+			case LEFT_LOWER_LEG, RIGHT_LOWER_LEG -> node = rightSide
+				? BoneType.RIGHT_LOWER_LEG
+				: BoneType.LEFT_LOWER_LEG;
 		}
 
 		TransformNode relevantTransform = skeleton.getTailNodeOfBone(node);
@@ -460,7 +465,7 @@ public class AutoBone {
 		);
 
 		EnumMap<BoneType, Float> intermediateOffsets = new EnumMap<>(
-				offsets
+			offsets
 		);
 
 		AutoBoneTrainingStep trainingStep = new AutoBoneTrainingStep(
@@ -771,7 +776,10 @@ public class AutoBone {
 				configInfo.append(", ");
 			}
 
-			configInfo.append(key.toString()).append(": ").append(StringUtils.prettyNumber(value * 100f, 2));
+			configInfo
+				.append(key.toString())
+				.append(": ")
+				.append(StringUtils.prettyNumber(value * 100f, 2));
 		});
 
 		return configInfo.toString();

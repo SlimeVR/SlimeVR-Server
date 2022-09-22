@@ -791,12 +791,12 @@ public final class Vector4f implements Cloneable, java.io.Serializable {
 		)
 			return false;
 		return !Float.isInfinite(vector.x)
-				&&
-				!Float.isInfinite(vector.y)
-				&&
-				!Float.isInfinite(vector.z)
-				&&
-				!Float.isInfinite(vector.w);
+			&&
+			!Float.isInfinite(vector.y)
+			&&
+			!Float.isInfinite(vector.z)
+			&&
+			!Float.isInfinite(vector.w);
 	}
 
 	@Override

@@ -342,7 +342,8 @@ public class FastList<E> extends AbstractList<E>
 						array = newArray;
 					} else {
 						System.arraycopy(array, index, array, index + 1, size - index);
-						for (E e : collection) array[index++] = e;
+						for (E e : collection)
+							array[index++] = e;
 					}
 					size += collection.size();
 				}

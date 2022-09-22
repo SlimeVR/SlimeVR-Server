@@ -169,7 +169,12 @@ public class DataFeedBuilder {
 
 		List<Integer> trackersOffsets = new ArrayList<>();
 
-		device.getTrackers().forEach((value) -> trackersOffsets.add(DataFeedBuilder.createTrackerData(fbb, mask.getTrackerData(), value)));
+		device
+			.getTrackers()
+			.forEach(
+				(value) -> trackersOffsets
+					.add(DataFeedBuilder.createTrackerData(fbb, mask.getTrackerData(), value))
+			);
 
 		DeviceData.startTrackersVector(fbb, trackersOffsets.size());
 		trackersOffsets.forEach(offset -> DeviceData.addTrackers(fbb, offset));
@@ -237,7 +242,11 @@ public class DataFeedBuilder {
 
 		List<Integer> trackerOffsets = new ArrayList<>();
 
-		trackers.forEach((tracker) -> trackerOffsets.add(DataFeedBuilder.createTrackerData(fbb, trackerDataMaskT, tracker)));
+		trackers
+			.forEach(
+				(tracker) -> trackerOffsets
+					.add(DataFeedBuilder.createTrackerData(fbb, trackerDataMaskT, tracker))
+			);
 
 		DataFeedUpdate.startSyntheticTrackersVector(fbb, trackerOffsets.size());
 		trackerOffsets.forEach((tracker -> DataFeedUpdate.addSyntheticTrackers(fbb, tracker)));

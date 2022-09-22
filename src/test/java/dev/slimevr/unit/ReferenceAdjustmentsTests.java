@@ -387,5 +387,6 @@ public class ReferenceAdjustmentsTests {
 		}
 	}
 
-	public record AnglesSet(int pitch, int yaw, int roll) {}
+	public record AnglesSet(int pitch, int yaw, int roll) {
+	}
 }

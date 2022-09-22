@@ -118,9 +118,9 @@ public class WiFiWindow extends JFrame implements SerialListener {
 		setLocationRelativeTo(null);
 		setVisible(true);
 		java.awt.EventQueue.invokeLater(() -> {
-            toFront();
-            repaint();
-        });
+			toFront();
+			repaint();
+		});
 		setDefaultCloseOperation(WindowConstants.DISPOSE_ON_CLOSE);
 		final WiFiWindow window = this;
 		addWindowListener(new WindowAdapter() {

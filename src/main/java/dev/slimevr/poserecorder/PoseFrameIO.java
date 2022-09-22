@@ -85,8 +85,8 @@ public final class PoseFrameIO {
 				String name = inputStream.readUTF();
 				int trackerFrameCount = inputStream.readInt();
 				FastList<TrackerFrame> trackerFrames = new FastList<>(
-                        trackerFrameCount
-                );
+					trackerFrameCount
+				);
 				for (int j = 0; j < trackerFrameCount; j++) {
 					int dataFlags = inputStream.readInt();
 

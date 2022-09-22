@@ -59,7 +59,18 @@ public class AutoBoneHandler {
 		boolean completed,
 		boolean success
 	) {
-		listeners.forEach(listener -> listener.onAutoBoneProcessStatus(processType, message, current, total, completed, success));
+		listeners
+			.forEach(
+				listener -> listener
+					.onAutoBoneProcessStatus(
+						processType,
+						message,
+						current,
+						total,
+						completed,
+						success
+					)
+			);
 	}
 
 	private void announceProcessStatus(
@@ -144,11 +155,15 @@ public class AutoBoneHandler {
 				int sampleCount = this.autoBone.getConfig().sampleCount;
 				long sampleRate = this.autoBone.getConfig().sampleRateMs;
 				Future<PoseFrames> framesFuture = poseRecorder
-					.startFrameRecording(sampleCount, sampleRate, progress -> announceProcessStatus(
-						AutoBoneProcessType.RECORD,
-						progress.frame,
-						progress.totalFrames
-					));
+					.startFrameRecording(
+						sampleCount,
+						sampleRate,
+						progress -> announceProcessStatus(
+							AutoBoneProcessType.RECORD,
+							progress.frame,
+							progress.totalFrames
+						)
+					);
 				PoseFrames frames = framesFuture.get();
 				LogManager.info("[AutoBone] Done recording!");
 
