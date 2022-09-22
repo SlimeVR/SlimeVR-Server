@@ -1837,7 +1837,7 @@ public class HumanSkeleton extends Skeleton implements SkeletonConfigCallback {
 
 	@Override
 	@VRServerThread
-	public void resetTrackersFullStepTwo() {
+	public void resetTrackersMountingRotation() {
 		// Pass all trackers through trackerPreUpdate
 		Tracker[] trackersToReset = getTrackersToReset();
 

@@ -211,7 +211,7 @@ public class VRServerGUI extends JFrame {
 						addMouseListener(new MouseInputAdapter() {
 							@Override
 							public void mouseClicked(MouseEvent e) {
-								resetStepTwo();
+								resetMountingRotation();
 							}
 						});
 					}
@@ -561,8 +561,8 @@ public class VRServerGUI extends JFrame {
 	}
 
 	@AWTThread
-	private void resetStepTwo() {
-		server.humanPoseProcessor.getSkeleton().resetTrackersFullStepTwo();
+	private void resetMountingRotation() {
+		server.humanPoseProcessor.getSkeleton().resetTrackersMountingRotation();
 	}
 
 	@AWTThread
