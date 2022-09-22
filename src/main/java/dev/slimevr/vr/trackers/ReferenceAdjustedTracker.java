@@ -73,14 +73,6 @@ public class ReferenceAdjustedTracker<E extends Tracker> implements Tracker {
 		fixYaw(reference);
 	}
 
-	private boolean isApproxZero(float value) {
-		return value < FastMath.ZERO_TOLERANCE && value > -FastMath.ZERO_TOLERANCE;
-	}
-
-	private boolean isApproxEqual(float valueOne, float valueTwo) {
-		return isApproxZero(valueTwo - valueOne);
-	}
-
 	private void fixGyroscope(Quaternion sensorRotation) {
 		sensorRotation.fromAngles(0, sensorRotation.getYaw(), 0);
 		gyroFix.set(sensorRotation).inverseLocal();
@@ -108,7 +100,7 @@ public class ReferenceAdjustedTracker<E extends Tracker> implements Tracker {
 
 		// Calculate the yaw angle using tan
 		// Just use an angle offset of zero for unsolvable circumstances
-		float yawAngle = isApproxZero(rotVector.x) && isApproxZero(rotVector.z)
+		float yawAngle = FastMath.isApproxZero(rotVector.x) && FastMath.isApproxZero(rotVector.z)
 			? 0f
 			: FastMath.atan2(rotVector.x, rotVector.z);
 
