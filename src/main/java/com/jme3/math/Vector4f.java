@@ -694,10 +694,10 @@ public final class Vector4f implements Cloneable, java.io.Serializable {
 	 * @param other
 	 */
 	public Vector4f maxLocal(Vector4f other) {
-		x = other.x > x ? other.x : x;
-		y = other.y > y ? other.y : y;
-		z = other.z > z ? other.z : z;
-		w = other.w > w ? other.w : w;
+		x = Math.max(other.x, x);
+		y = Math.max(other.y, y);
+		z = Math.max(other.z, z);
+		w = Math.max(other.w, w);
 		return this;
 	}
 
@@ -708,10 +708,10 @@ public final class Vector4f implements Cloneable, java.io.Serializable {
 	 * @param other
 	 */
 	public Vector4f minLocal(Vector4f other) {
-		x = other.x < x ? other.x : x;
-		y = other.y < y ? other.y : y;
-		z = other.z < z ? other.z : z;
-		w = other.w < w ? other.w : w;
+		x = Math.min(other.x, x);
+		y = Math.min(other.y, y);
+		z = Math.min(other.z, z);
+		w = Math.min(other.w, w);
 		return this;
 	}
 
@@ -790,17 +790,13 @@ public final class Vector4f implements Cloneable, java.io.Serializable {
 				Float.isNaN(vector.w)
 		)
 			return false;
-		if (
-			Float.isInfinite(vector.x)
-				||
-				Float.isInfinite(vector.y)
-				||
-				Float.isInfinite(vector.z)
-				||
-				Float.isInfinite(vector.w)
-		)
-			return false;
-		return true;
+		return !Float.isInfinite(vector.x)
+				&&
+				!Float.isInfinite(vector.y)
+				&&
+				!Float.isInfinite(vector.z)
+				&&
+				!Float.isInfinite(vector.w);
 	}
 
 	@Override
@@ -839,7 +835,7 @@ public final class Vector4f implements Cloneable, java.io.Serializable {
 	 */
 	@Override
 	public boolean equals(Object o) {
-		if (!(o instanceof Vector4f)) {
+		if (!(o instanceof Vector4f comp)) {
 			return false;
 		}
 
@@ -847,16 +843,13 @@ public final class Vector4f implements Cloneable, java.io.Serializable {
 			return true;
 		}
 
-		Vector4f comp = (Vector4f) o;
 		if (Float.compare(x, comp.x) != 0)
 			return false;
 		if (Float.compare(y, comp.y) != 0)
 			return false;
 		if (Float.compare(z, comp.z) != 0)
 			return false;
-		if (Float.compare(w, comp.w) != 0)
-			return false;
-		return true;
+		return Float.compare(w, comp.w) == 0;
 	}
 
 	/**
@@ -952,20 +945,13 @@ public final class Vector4f implements Cloneable, java.io.Serializable {
 	 */
 	public void set(int index, float value) {
 		switch (index) {
-			case 0:
-				x = value;
-				return;
-			case 1:
-				y = value;
-				return;
-			case 2:
-				z = value;
-				return;
-			case 3:
-				w = value;
-				return;
+			case 0 -> x = value;
+			case 1 -> y = value;
+			case 2 -> z = value;
+			case 3 -> w = value;
+			default -> throw new IllegalArgumentException("index must be either 0, 1, 2 or 3");
 		}
-		throw new IllegalArgumentException("index must be either 0, 1, 2 or 3");
+
 	}
 
 }

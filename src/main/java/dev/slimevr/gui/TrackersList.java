@@ -15,8 +15,7 @@ import io.eiren.util.collections.FastList;
 
 import javax.swing.*;
 import java.awt.*;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
+import java.util.Comparator;
 import java.util.List;
 import java.util.Objects;
 
@@ -64,7 +63,7 @@ public class TrackersList extends EJBoxNoStretch {
 	private void build() {
 		removeAll();
 
-		trackers.sort((tr1, tr2) -> getTrackerSort(tr1.t) - getTrackerSort(tr2.t));
+		trackers.sort(Comparator.comparingInt(tr -> getTrackerSort(tr.t)));
 
 		Class<? extends Tracker> currentClass = null;
 
@@ -192,22 +191,18 @@ public class TrackersList extends EJBoxNoStretch {
 							() -> desSelect.setSelectedItem("NONE")
 						);
 				}
-				desSelect.addActionListener(new ActionListener() {
-					@Override
-					public void actionPerformed(ActionEvent e) {
-						if (desSelect.getSelectedItem() == "NONE") {
-							t.setBodyPosition(null);
-						} else {
-							TrackerPosition p = TrackerPosition
-								.valueOf(String.valueOf(desSelect.getSelectedItem()));
-							t.setBodyPosition(p);
-						}
-						server.trackerUpdated(t);
+				desSelect.addActionListener(e -> {
+					if (desSelect.getSelectedItem() == "NONE") {
+						t.setBodyPosition(null);
+					} else {
+						TrackerPosition p = TrackerPosition
+							.valueOf(String.valueOf(desSelect.getSelectedItem()));
+						t.setBodyPosition(p);
 					}
+					server.trackerUpdated(t);
 				});
-				if (tracker instanceof IMUTracker) {
-					IMUTracker imu = (IMUTracker) tracker;
-					JComboBox<String> mountSelect;
+				if (tracker instanceof IMUTracker imu) {
+                    JComboBox<String> mountSelect;
 					add(
 						mountSelect = new JComboBox<>(),
 						s(c(2, row, 2, GridBagConstraints.FIRST_LINE_START), 2, 1)
@@ -224,14 +219,11 @@ public class TrackersList extends EJBoxNoStretch {
 								.requireNonNullElse(selected, TrackerMountingRotation.BACK)
 								.name()
 						);
-					mountSelect.addActionListener(new ActionListener() {
-						@Override
-						public void actionPerformed(ActionEvent e) {
-							TrackerMountingRotation tr = TrackerMountingRotation
-								.valueOf(String.valueOf(mountSelect.getSelectedItem()));
-							imu.setMountingRotation(tr.quaternion);
-							server.trackerUpdated(t);
-						}
+					mountSelect.addActionListener(e -> {
+						TrackerMountingRotation tr = TrackerMountingRotation
+							.valueOf(String.valueOf(mountSelect.getSelectedItem()));
+						imu.setMountingRotation(tr.quaternion);
+						server.trackerUpdated(t);
 					});
 				}
 				row++;
@@ -387,9 +379,8 @@ public class TrackersList extends EJBoxNoStretch {
 			if (tracker instanceof TrackerWithTPS) {
 				tps.setText(StringUtils.prettyNumber(((TrackerWithTPS) tracker).getTPS(), 1));
 			}
-			if (tracker instanceof TrackerWithBattery) {
-				TrackerWithBattery twb = (TrackerWithBattery) tracker;
-				float level = twb.getBatteryLevel();
+			if (tracker instanceof TrackerWithBattery twb) {
+                float level = twb.getBatteryLevel();
 				float voltage = twb.getBatteryVoltage();
 				if (level == 0.0f) {
 					bat.setText(String.format("%sV", StringUtils.prettyNumber(voltage, 2)));
@@ -468,9 +459,8 @@ public class TrackersList extends EJBoxNoStretch {
 						+ " "
 						+ StringUtils.prettyNumber(angles[2] * FastMath.RAD_TO_DEG, 0)
 				);
-			if (tracker instanceof IMUTracker) {
-				IMUTracker imu = (IMUTracker) tracker;
-				if (rawMag != null) {
+			if (tracker instanceof IMUTracker imu) {
+                if (rawMag != null) {
 					imu.rotMagQuaternion.toAngles(angles);
 					rawMag
 						.setText(

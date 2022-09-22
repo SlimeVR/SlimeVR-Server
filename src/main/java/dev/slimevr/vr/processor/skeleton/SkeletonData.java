@@ -159,11 +159,7 @@ public class SkeletonData {
 				);
 				childrenBones.put(childJoint, bone);
 				bones.add(bone);
-				List<Bone> bonesByOffset = bonesByOffsetKey.get(offsetKey);
-				if (bonesByOffset == null) {
-					bonesByOffset = new ArrayList<>();
-					bonesByOffsetKey.put(offsetKey, bonesByOffset);
-				}
+				List<Bone> bonesByOffset = bonesByOffsetKey.computeIfAbsent(offsetKey, k -> new ArrayList<>());
 				bonesByOffset.add(bone);
 			} else {
 				List<Bone> oldBonesList = bonesByOffsetKey.get(bone.offsetKey);
@@ -171,11 +167,7 @@ public class SkeletonData {
 					oldBonesList.remove(bone);
 				}
 				bone.offsetKey = offsetKey;
-				List<Bone> bonesByOffset = bonesByOffsetKey.get(offsetKey);
-				if (bonesByOffset == null) {
-					bonesByOffset = new ArrayList<>();
-					bonesByOffsetKey.put(offsetKey, bonesByOffset);
-				}
+				List<Bone> bonesByOffset = bonesByOffsetKey.computeIfAbsent(offsetKey, k -> new ArrayList<>());
 				bonesByOffset.add(bone);
 			}
 			return bone;

@@ -146,7 +146,7 @@ public class ReferenceAdjustmentsTests {
 	// @TestFactory
 	Stream<DynamicTest> getTestsForRotation() {
 		return getAnglesSet()
-			.map(
+			.flatMap(
 				(p) -> IntStream
 					.of(yaws)
 					.mapToObj(
@@ -167,8 +167,7 @@ public class ReferenceAdjustmentsTests {
 							)
 						)
 					)
-			)
-			.flatMap(Function.identity());
+			);
 	}
 
 	public void checkReferenceAdjustmentFull(
@@ -323,22 +322,11 @@ public class ReferenceAdjustmentsTests {
 			System.out.println("Errors: " + errors + ", successes: " + successes);
 	}
 
-	private static class QuatEqualYawWithEpsilon {
-
-		private final Quaternion q;
-
-		public QuatEqualYawWithEpsilon(Quaternion q) {
-			this.q = q;
-		}
+	private record QuatEqualYawWithEpsilon(Quaternion q) {
 
 		@Override
 		public String toString() {
 			return String.valueOf(q);
-		}
-
-		@Override
-		public int hashCode() {
-			return q.hashCode();
 		}
 
 		@Override
@@ -399,15 +387,5 @@ public class ReferenceAdjustmentsTests {
 		}
 	}
 
-	public static class AnglesSet {
-		public final int pitch;
-		public final int yaw;
-		public final int roll;
-
-		public AnglesSet(int pitch, int yaw, int roll) {
-			this.pitch = pitch;
-			this.yaw = yaw;
-			this.roll = roll;
-		}
-	}
+	public record AnglesSet(int pitch, int yaw, int roll) {}
 }

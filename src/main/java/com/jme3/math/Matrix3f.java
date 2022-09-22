@@ -216,7 +216,6 @@ public final class Matrix3f implements Cloneable, java.io.Serializable {
 				data[5] = m12;
 				data[6] = m20;
 				data[7] = m21;
-				data[8] = m22;
 			} else {
 				data[0] = m00;
 				data[1] = m10;
@@ -226,8 +225,8 @@ public final class Matrix3f implements Cloneable, java.io.Serializable {
 				data[5] = m21;
 				data[6] = m02;
 				data[7] = m12;
-				data[8] = m22;
 			}
+			data[8] = m22;
 		} else if (data.length == 16) {
 			if (rowMajor) {
 				data[0] = m00;
@@ -238,7 +237,6 @@ public final class Matrix3f implements Cloneable, java.io.Serializable {
 				data[6] = m12;
 				data[8] = m20;
 				data[9] = m21;
-				data[10] = m22;
 			} else {
 				data[0] = m00;
 				data[1] = m10;
@@ -248,8 +246,8 @@ public final class Matrix3f implements Cloneable, java.io.Serializable {
 				data[6] = m21;
 				data[8] = m02;
 				data[9] = m12;
-				data[10] = m22;
 			}
+			data[10] = m22;
 		} else {
 			throw new IndexOutOfBoundsException("Array size must be 9 or 16 in Matrix3f.get().");
 		}
@@ -334,24 +332,25 @@ public final class Matrix3f implements Cloneable, java.io.Serializable {
 			store = new Vector3f();
 		}
 		switch (i) {
-			case 0:
+			case 0 -> {
 				store.x = m00;
 				store.y = m10;
 				store.z = m20;
-				break;
-			case 1:
+			}
+			case 1 -> {
 				store.x = m01;
 				store.y = m11;
 				store.z = m21;
-				break;
-			case 2:
+			}
+			case 2 -> {
 				store.x = m02;
 				store.y = m12;
 				store.z = m22;
-				break;
-			default:
+			}
+			default -> {
 				logger.warning("Invalid column index.");
 				throw new IllegalArgumentException("Invalid column index. " + i);
+			}
 		}
 		return store;
 	}
@@ -381,24 +380,25 @@ public final class Matrix3f implements Cloneable, java.io.Serializable {
 			store = new Vector3f();
 		}
 		switch (i) {
-			case 0:
+			case 0 -> {
 				store.x = m00;
 				store.y = m01;
 				store.z = m02;
-				break;
-			case 1:
+			}
+			case 1 -> {
 				store.x = m10;
 				store.y = m11;
 				store.z = m12;
-				break;
-			case 2:
+			}
+			case 2 -> {
 				store.x = m20;
 				store.y = m21;
 				store.z = m22;
-				break;
-			default:
+			}
+			default -> {
 				logger.warning("Invalid row index.");
 				throw new IllegalArgumentException("Invalid row index. " + i);
+			}
 		}
 		return store;
 	}
@@ -444,7 +444,6 @@ public final class Matrix3f implements Cloneable, java.io.Serializable {
 			f[5] = m21;
 			f[6] = m02;
 			f[7] = m12;
-			f[8] = m22;
 		} else {
 			f[0] = m00;
 			f[1] = m01;
@@ -454,8 +453,8 @@ public final class Matrix3f implements Cloneable, java.io.Serializable {
 			f[5] = m12;
 			f[6] = m20;
 			f[7] = m21;
-			f[8] = m22;
 		}
+		f[8] = m22;
 	}
 
 	/**
@@ -474,24 +473,25 @@ public final class Matrix3f implements Cloneable, java.io.Serializable {
 			return this;
 		}
 		switch (i) {
-			case 0:
+			case 0 -> {
 				m00 = column.x;
 				m10 = column.y;
 				m20 = column.z;
-				break;
-			case 1:
+			}
+			case 1 -> {
 				m01 = column.x;
 				m11 = column.y;
 				m21 = column.z;
-				break;
-			case 2:
+			}
+			case 2 -> {
 				m02 = column.x;
 				m12 = column.y;
 				m22 = column.z;
-				break;
-			default:
+			}
+			default -> {
 				logger.warning("Invalid column index.");
 				throw new IllegalArgumentException("Invalid column index. " + i);
+			}
 		}
 		return this;
 	}
@@ -512,24 +512,25 @@ public final class Matrix3f implements Cloneable, java.io.Serializable {
 			return this;
 		}
 		switch (i) {
-			case 0:
+			case 0 -> {
 				m00 = row.x;
 				m01 = row.y;
 				m02 = row.z;
-				break;
-			case 1:
+			}
+			case 1 -> {
 				m10 = row.x;
 				m11 = row.y;
 				m12 = row.z;
-				break;
-			case 2:
+			}
+			case 2 -> {
 				m20 = row.x;
 				m21 = row.y;
 				m22 = row.z;
-				break;
-			default:
+			}
+			default -> {
 				logger.warning("Invalid row index.");
 				throw new IllegalArgumentException("Invalid row index. " + i);
+			}
 		}
 		return this;
 	}
@@ -549,39 +550,48 @@ public final class Matrix3f implements Cloneable, java.io.Serializable {
 		switch (i) {
 			case 0:
 				switch (j) {
-					case 0:
+					case 0 -> {
 						m00 = value;
 						return this;
-					case 1:
+					}
+					case 1 -> {
 						m01 = value;
 						return this;
-					case 2:
+					}
+					case 2 -> {
 						m02 = value;
 						return this;
+					}
 				}
 			case 1:
 				switch (j) {
-					case 0:
+					case 0 -> {
 						m10 = value;
 						return this;
-					case 1:
+					}
+					case 1 -> {
 						m11 = value;
 						return this;
-					case 2:
+					}
+					case 2 -> {
 						m12 = value;
 						return this;
+					}
 				}
 			case 2:
 				switch (j) {
-					case 0:
+					case 0 -> {
 						m20 = value;
 						return this;
-					case 1:
+					}
+					case 1 -> {
 						m21 = value;
 						return this;
-					case 2:
+					}
+					case 2 -> {
 						m22 = value;
 						return this;
+					}
 				}
 		}
 
@@ -674,7 +684,6 @@ public final class Matrix3f implements Cloneable, java.io.Serializable {
 			m12 = matrix[5];
 			m20 = matrix[6];
 			m21 = matrix[7];
-			m22 = matrix[8];
 		} else {
 			m00 = matrix[0];
 			m01 = matrix[3];
@@ -684,8 +693,8 @@ public final class Matrix3f implements Cloneable, java.io.Serializable {
 			m12 = matrix[7];
 			m20 = matrix[2];
 			m21 = matrix[5];
-			m22 = matrix[8];
 		}
+		m22 = matrix[8];
 		return this;
 	}
 
@@ -1162,7 +1171,7 @@ public final class Matrix3f implements Cloneable, java.io.Serializable {
 	 */
 	@Override
 	public boolean equals(Object o) {
-		if (!(o instanceof Matrix3f) || o == null) {
+		if (!(o instanceof Matrix3f comp) || o == null) {
 			return false;
 		}
 
@@ -1170,7 +1179,6 @@ public final class Matrix3f implements Cloneable, java.io.Serializable {
 			return true;
 		}
 
-		Matrix3f comp = (Matrix3f) o;
 		if (Float.compare(m00, comp.m00) != 0) {
 			return false;
 		}
@@ -1197,11 +1205,7 @@ public final class Matrix3f implements Cloneable, java.io.Serializable {
 		if (Float.compare(m21, comp.m21) != 0) {
 			return false;
 		}
-		if (Float.compare(m22, comp.m22) != 0) {
-			return false;
-		}
-
-		return true;
+		return Float.compare(m22, comp.m22) == 0;
 	}
 
 	/**
@@ -1342,11 +1346,7 @@ public final class Matrix3f implements Cloneable, java.io.Serializable {
 		if (Math.abs(mat.m20) > 1e-4) {
 			return false;
 		}
-		if (Math.abs(mat.m21) > 1e-4) {
-			return false;
-		}
-
-		return true;
+		return !(Math.abs(mat.m21) > 1e-4);
 	}
 
 	@Override

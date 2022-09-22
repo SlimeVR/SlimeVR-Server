@@ -93,17 +93,20 @@ public class WebSocketVRBridge extends WebsocketAPI implements Bridge {
 			JSONObject json = new JSONObject(message);
 			if (json.has("type")) {
 				switch (json.optString("type")) {
-					case "pos":
+					case "pos" -> {
 						parsePosition(json, conn);
 						return;
-					case "action":
+					}
+					case "action" -> {
 						parseAction(json, conn);
 						return;
-					case "config": // TODO Ignore it for now, it should only
-									// register HMD in our test case with id
+					}
+					case "config" -> { // TODO Ignore it for now, it should only
+						// register HMD in our test case with id
 						// 0
 						LogManager.info("[WebSocket] Config received: " + json);
 						return;
+					}
 				}
 			}
 			LogManager
@@ -167,12 +170,8 @@ public class WebSocketVRBridge extends WebsocketAPI implements Bridge {
 
 	private void parseAction(JSONObject json, WebSocket conn) throws JSONException {
 		switch (json.optString("name")) {
-			case "calibrate":
-				Main.vrServer.resetTrackersYaw();
-				break;
-			case "full_calibrate":
-				Main.vrServer.resetTrackers();
-				break;
+			case "calibrate" -> Main.vrServer.resetTrackersYaw();
+			case "full_calibrate" -> Main.vrServer.resetTrackers();
 		}
 	}
 

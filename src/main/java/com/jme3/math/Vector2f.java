@@ -260,13 +260,9 @@ public final class Vector2f implements Cloneable, java.io.Serializable {
 				Float.isNaN(vector.y)
 		)
 			return false;
-		if (
-			Float.isInfinite(vector.x)
-				||
-				Float.isInfinite(vector.y)
-		)
-			return false;
-		return true;
+		return !Float.isInfinite(vector.x)
+				&&
+				!Float.isInfinite(vector.y);
 	}
 
 	/**
@@ -653,7 +649,7 @@ public final class Vector2f implements Cloneable, java.io.Serializable {
 	 */
 	@Override
 	public boolean equals(Object o) {
-		if (!(o instanceof Vector2f)) {
+		if (!(o instanceof Vector2f comp)) {
 			return false;
 		}
 
@@ -661,12 +657,9 @@ public final class Vector2f implements Cloneable, java.io.Serializable {
 			return true;
 		}
 
-		Vector2f comp = (Vector2f) o;
-		if (Float.compare(x, comp.x) != 0)
+        if (Float.compare(x, comp.x) != 0)
 			return false;
-		if (Float.compare(y, comp.y) != 0)
-			return false;
-		return true;
+		return Float.compare(y, comp.y) == 0;
 	}
 
 	/**

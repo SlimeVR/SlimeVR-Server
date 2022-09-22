@@ -20,6 +20,6 @@ public class WindowsPipe {
 		try {
 			if (pipe != null && pipe.pipeHandle != null)
 				Kernel32.INSTANCE.DisconnectNamedPipe(pipe.pipeHandle);
-		} catch (Exception e) {}
+		} catch (Exception ignored) {}
 	}
 }

@@ -62,7 +62,7 @@ public class VRServerGUI extends JFrame {
 		if (OperatingSystem.getCurrentPlatform() == OperatingSystem.OSX)
 			MacOSX.setTitle(TITLE);
 		try {
-			List<BufferedImage> images = new ArrayList<BufferedImage>(6);
+			List<BufferedImage> images = new ArrayList<>(6);
 			images.add(ImageIO.read(VRServerGUI.class.getResource("/icon16.png")));
 			images.add(ImageIO.read(VRServerGUI.class.getResource("/icon32.png")));
 			images.add(ImageIO.read(VRServerGUI.class.getResource("/icon48.png")));
@@ -143,9 +143,8 @@ public class VRServerGUI extends JFrame {
 			Font newFont = new ScalableFont(comp.getFont(), zoom);
 			comp.setFont(newFont);
 		}
-		if (comp instanceof Container) {
-			Container cont = (Container) comp;
-			for (Component child : cont.getComponents())
+		if (comp instanceof Container cont) {
+            for (Component child : cont.getComponents())
 				processNewZoom(zoom, child);
 		}
 	}
@@ -155,9 +154,8 @@ public class VRServerGUI extends JFrame {
 		while (keys.hasMoreElements()) {
 			Object key = keys.nextElement();
 			Object value = UIManager.get(key);
-			if (value instanceof javax.swing.plaf.FontUIResource) {
-				javax.swing.plaf.FontUIResource f = (javax.swing.plaf.FontUIResource) value;
-				javax.swing.plaf.FontUIResource f2 = new javax.swing.plaf.FontUIResource(
+			if (value instanceof javax.swing.plaf.FontUIResource f) {
+                javax.swing.plaf.FontUIResource f2 = new javax.swing.plaf.FontUIResource(
 					f.deriveFont(f.getSize() * zoom)
 				);
 				UIManager.put(key, f2);
@@ -178,12 +176,7 @@ public class VRServerGUI extends JFrame {
 		// Pack and display
 		// pack();
 		setVisible(true);
-		java.awt.EventQueue.invokeLater(new Runnable() {
-			@Override
-			public void run() {
-				repaint();
-			}
-		});
+		java.awt.EventQueue.invokeLater(this::repaint);
 	}
 
 	@AWTThread
@@ -366,13 +359,12 @@ public class VRServerGUI extends JFrame {
 									waistCb.addActionListener(new ActionListener() {
 										@Override
 										public void actionPerformed(ActionEvent e) {
-											server.queueTask(() -> {
-												br
-													.changeShareSettings(
-														TrackerRole.WAIST,
-														waistCb.isSelected()
-													);
-											});
+											server.queueTask(() -> br
+												.changeShareSettings(
+													TrackerRole.WAIST,
+													waistCb.isSelected()
+												)
+											);
 										}
 									});
 
@@ -407,13 +399,12 @@ public class VRServerGUI extends JFrame {
 									chestCb.addActionListener(new ActionListener() {
 										@Override
 										public void actionPerformed(ActionEvent e) {
-											server.queueTask(() -> {
-												br
-													.changeShareSettings(
-														TrackerRole.CHEST,
-														chestCb.isSelected()
-													);
-											});
+											server.queueTask(() -> br
+												.changeShareSettings(
+													TrackerRole.CHEST,
+													chestCb.isSelected()
+												)
+											);
 										}
 									});
 

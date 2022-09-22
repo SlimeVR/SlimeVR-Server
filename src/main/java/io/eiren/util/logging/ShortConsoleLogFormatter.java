@@ -42,14 +42,14 @@ public class ShortConsoleLogFormatter extends Formatter {
 		}
 
 		String message = builder.toString();
-		Object parameters[] = record.getParameters();
+		Object[] parameters = record.getParameters();
 		if (parameters == null || parameters.length == 0)
 			return message;
 		if (
-			message.indexOf("{0") >= 0
-				|| message.indexOf("{1") >= 0
-				|| message.indexOf("{2") >= 0
-				|| message.indexOf("{3") >= 0
+				message.contains("{0")
+				|| message.contains("{1")
+				|| message.contains("{2")
+				|| message.contains("{3")
 		)
 			return java.text.MessageFormat.format(message, parameters);
 		return message;

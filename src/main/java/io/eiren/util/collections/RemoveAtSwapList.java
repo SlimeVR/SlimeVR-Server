@@ -5,7 +5,7 @@ import java.util.List;
 
 public interface RemoveAtSwapList<E> extends List<E> {
 
-	public E removeAtSwap(int i);
+	E removeAtSwap(int i);
 
-	public boolean removeAtSwap(Object object);
+	boolean removeAtSwap(Object object);
 }

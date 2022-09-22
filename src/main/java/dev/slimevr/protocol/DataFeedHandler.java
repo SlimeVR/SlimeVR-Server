@@ -100,42 +100,40 @@ public class DataFeedHandler extends ProtocolHandler<DataFeedMessageHeader> {
 	public void sendDataFeedUpdate() {
 		long currTime = System.currentTimeMillis();
 
-		this.api.getAPIServers().forEach((server) -> {
-			server.getAPIConnections().forEach((conn) -> {
-				FlatBufferBuilder fbb = null;
+		this.api.getAPIServers().forEach((server) -> server.getAPIConnections().forEach((conn) -> {
+			FlatBufferBuilder fbb = null;
 
-				int configsCount = conn.getContext().getDataFeedConfigList().size();
+			int configsCount = conn.getContext().getDataFeedConfigList().size();
 
-				int[] data = new int[configsCount];
+			int[] data = new int[configsCount];
 
-				for (int index = 0; index < configsCount; index++) {
-					Long lastTimeSent = conn.getContext().getDataFeedTimers().get(index);
-					DataFeedConfigT configT = conn.getContext().getDataFeedConfigList().get(index);
-					if (currTime - lastTimeSent > configT.getMinimumTimeSinceLast()) {
-						if (fbb == null) {
-							// That way we create a buffer only when needed
-							fbb = new FlatBufferBuilder(300);
-						}
-
-						int messageOffset = this.buildDatafeed(fbb, configT);
-
-						DataFeedMessageHeader.startDataFeedMessageHeader(fbb);
-						DataFeedMessageHeader.addMessage(fbb, messageOffset);
-						DataFeedMessageHeader.addMessageType(fbb, DataFeedMessage.DataFeedUpdate);
-						data[index] = DataFeedMessageHeader.endDataFeedMessageHeader(fbb);
-
-						conn.getContext().getDataFeedTimers().set(index, currTime);
+			for (int index = 0; index < configsCount; index++) {
+				Long lastTimeSent = conn.getContext().getDataFeedTimers().get(index);
+				DataFeedConfigT configT = conn.getContext().getDataFeedConfigList().get(index);
+				if (currTime - lastTimeSent > configT.getMinimumTimeSinceLast()) {
+					if (fbb == null) {
+						// That way we create a buffer only when needed
+						fbb = new FlatBufferBuilder(300);
 					}
-				}
 
-				if (fbb != null) {
-					int messages = MessageBundle.createDataFeedMsgsVector(fbb, data);
-					int packet = createMessage(fbb, messages, 0);
-					fbb.finish(packet);
-					conn.send(fbb.dataBuffer());
+					int messageOffset = this.buildDatafeed(fbb, configT);
+
+					DataFeedMessageHeader.startDataFeedMessageHeader(fbb);
+					DataFeedMessageHeader.addMessage(fbb, messageOffset);
+					DataFeedMessageHeader.addMessageType(fbb, DataFeedMessage.DataFeedUpdate);
+					data[index] = DataFeedMessageHeader.endDataFeedMessageHeader(fbb);
+
+					conn.getContext().getDataFeedTimers().set(index, currTime);
 				}
-			});
-		});
+			}
+
+			if (fbb != null) {
+				int messages = MessageBundle.createDataFeedMsgsVector(fbb, data);
+				int packet = createMessage(fbb, messages, 0);
+				fbb.finish(packet);
+				conn.send(fbb.dataBuffer());
+			}
+		}));
 	}
 
 	@Override

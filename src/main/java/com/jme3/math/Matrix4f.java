@@ -376,33 +376,34 @@ public final class Matrix4f implements Cloneable, java.io.Serializable {
 			store = new float[4];
 		}
 		switch (i) {
-			case 0:
+			case 0 -> {
 				store[0] = m00;
 				store[1] = m10;
 				store[2] = m20;
 				store[3] = m30;
-				break;
-			case 1:
+			}
+			case 1 -> {
 				store[0] = m01;
 				store[1] = m11;
 				store[2] = m21;
 				store[3] = m31;
-				break;
-			case 2:
+			}
+			case 2 -> {
 				store[0] = m02;
 				store[1] = m12;
 				store[2] = m22;
 				store[3] = m32;
-				break;
-			case 3:
+			}
+			case 3 -> {
 				store[0] = m03;
 				store[1] = m13;
 				store[2] = m23;
 				store[3] = m33;
-				break;
-			default:
+			}
+			default -> {
 				logger.warning("Invalid column index.");
 				throw new IllegalArgumentException("Invalid column index. " + i);
+			}
 		}
 		return store;
 	}
@@ -422,33 +423,34 @@ public final class Matrix4f implements Cloneable, java.io.Serializable {
 			return;
 		}
 		switch (i) {
-			case 0:
+			case 0 -> {
 				m00 = column[0];
 				m10 = column[1];
 				m20 = column[2];
 				m30 = column[3];
-				break;
-			case 1:
+			}
+			case 1 -> {
 				m01 = column[0];
 				m11 = column[1];
 				m21 = column[2];
 				m31 = column[3];
-				break;
-			case 2:
+			}
+			case 2 -> {
 				m02 = column[0];
 				m12 = column[1];
 				m22 = column[2];
 				m32 = column[3];
-				break;
-			case 3:
+			}
+			case 3 -> {
 				m03 = column[0];
 				m13 = column[1];
 				m23 = column[2];
 				m33 = column[3];
-				break;
-			default:
+			}
+			default -> {
 				logger.warning("Invalid column index.");
 				throw new IllegalArgumentException("Invalid column index. " + i);
+			}
 		}
 	}
 
@@ -466,63 +468,79 @@ public final class Matrix4f implements Cloneable, java.io.Serializable {
 		switch (i) {
 			case 0:
 				switch (j) {
-					case 0:
+					case 0 -> {
 						m00 = value;
 						return;
-					case 1:
+					}
+					case 1 -> {
 						m01 = value;
 						return;
-					case 2:
+					}
+					case 2 -> {
 						m02 = value;
 						return;
-					case 3:
+					}
+					case 3 -> {
 						m03 = value;
 						return;
+					}
 				}
 			case 1:
 				switch (j) {
-					case 0:
+					case 0 -> {
 						m10 = value;
 						return;
-					case 1:
+					}
+					case 1 -> {
 						m11 = value;
 						return;
-					case 2:
+					}
+					case 2 -> {
 						m12 = value;
 						return;
-					case 3:
+					}
+					case 3 -> {
 						m13 = value;
 						return;
+					}
 				}
 			case 2:
 				switch (j) {
-					case 0:
+					case 0 -> {
 						m20 = value;
 						return;
-					case 1:
+					}
+					case 1 -> {
 						m21 = value;
 						return;
-					case 2:
+					}
+					case 2 -> {
 						m22 = value;
 						return;
-					case 3:
+					}
+					case 3 -> {
 						m23 = value;
 						return;
+					}
 				}
 			case 3:
 				switch (j) {
-					case 0:
+					case 0 -> {
 						m30 = value;
 						return;
-					case 1:
+					}
+					case 1 -> {
 						m31 = value;
 						return;
-					case 2:
+					}
+					case 2 -> {
 						m32 = value;
 						return;
-					case 3:
+					}
+					case 3 -> {
 						m33 = value;
 						return;
+					}
 				}
 		}
 
@@ -1926,7 +1944,7 @@ public final class Matrix4f implements Cloneable, java.io.Serializable {
 				"Angles must be of size 3."
 			);
 		}
-		float vec[] = new float[3];
+		float[] vec = new float[3];
 		vec[0] = (angles[0] * FastMath.RAD_TO_DEG);
 		vec[1] = (angles[1] * FastMath.RAD_TO_DEG);
 		vec[2] = (angles[2] * FastMath.RAD_TO_DEG);
@@ -2103,7 +2121,7 @@ public final class Matrix4f implements Cloneable, java.io.Serializable {
 	 */
 	@Override
 	public boolean equals(Object o) {
-		if (!(o instanceof Matrix4f) || o == null) {
+		if (!(o instanceof Matrix4f comp) || o == null) {
 			return false;
 		}
 
@@ -2111,7 +2129,6 @@ public final class Matrix4f implements Cloneable, java.io.Serializable {
 			return true;
 		}
 
-		Matrix4f comp = (Matrix4f) o;
 		if (Float.compare(m00, comp.m00) != 0) {
 			return false;
 		}
@@ -2160,11 +2177,7 @@ public final class Matrix4f implements Cloneable, java.io.Serializable {
 		if (Float.compare(m32, comp.m32) != 0) {
 			return false;
 		}
-		if (Float.compare(m33, comp.m33) != 0) {
-			return false;
-		}
-
-		return true;
+		return Float.compare(m33, comp.m33) == 0;
 	}
 
 	/**
@@ -2247,11 +2260,7 @@ public final class Matrix4f implements Cloneable, java.io.Serializable {
 		if (Math.abs(mat.m31) > 1e-4) {
 			return false;
 		}
-		if (Math.abs(mat.m32) > 1e-4) {
-			return false;
-		}
-
-		return true;
+		return !(Math.abs(mat.m32) > 1e-4);
 	}
 
 	// XXX: This tests more solid than converting the q to a matrix and

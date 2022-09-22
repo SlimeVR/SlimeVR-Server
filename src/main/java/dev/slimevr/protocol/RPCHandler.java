@@ -245,9 +245,8 @@ public class RPCHandler extends ProtocolHandler<RpcMessageHeader>
 		tracker.setBodyPosition(pos);
 
 		if (req.mountingRotation() != null) {
-			if (tracker instanceof IMUTracker) {
-				IMUTracker imu = (IMUTracker) tracker;
-				imu
+			if (tracker instanceof IMUTracker imu) {
+                imu
 					.setMountingRotation(
 						new Quaternion(
 							req.mountingRotation().x(),
@@ -260,9 +259,8 @@ public class RPCHandler extends ProtocolHandler<RpcMessageHeader>
 		}
 
 		if (req.displayName() != null) {
-			if (tracker instanceof IMUTracker) {
-				IMUTracker imu = (IMUTracker) tracker;
-				imu.setCustomName(req.displayName());
+			if (tracker instanceof IMUTracker imu) {
+                imu.setCustomName(req.displayName());
 			}
 		}
 
@@ -517,67 +515,61 @@ public class RPCHandler extends ProtocolHandler<RpcMessageHeader>
 	@Override
 	public void onSerialConnected(SerialPort port) {
 
-		this.api.getAPIServers().forEach((server) -> {
-			server
-				.getAPIConnections()
-				.filter(conn -> conn.getContext().useSerial())
-				.forEach((conn) -> {
-					FlatBufferBuilder fbb = new FlatBufferBuilder(32);
+		this.api.getAPIServers().forEach((server) -> server
+			.getAPIConnections()
+			.filter(conn -> conn.getContext().useSerial())
+			.forEach((conn) -> {
+				FlatBufferBuilder fbb = new FlatBufferBuilder(32);
 
-					SerialUpdateResponse.startSerialUpdateResponse(fbb);
-					SerialUpdateResponse.addClosed(fbb, false);
-					int update = SerialUpdateResponse.endSerialUpdateResponse(fbb);
-					int outbound = this
-						.createRPCMessage(fbb, RpcMessage.SerialUpdateResponse, update);
-					fbb.finish(outbound);
+				SerialUpdateResponse.startSerialUpdateResponse(fbb);
+				SerialUpdateResponse.addClosed(fbb, false);
+				int update = SerialUpdateResponse.endSerialUpdateResponse(fbb);
+				int outbound = this
+					.createRPCMessage(fbb, RpcMessage.SerialUpdateResponse, update);
+				fbb.finish(outbound);
 
-					conn.send(fbb.dataBuffer());
-				});
-		});
+				conn.send(fbb.dataBuffer());
+			}));
 	}
 
 	@Override
 	public void onSerialDisconnected() {
-		this.api.getAPIServers().forEach((server) -> {
-			server
-				.getAPIConnections()
-				.filter(conn -> conn.getContext().useSerial())
-				.forEach((conn) -> {
-					FlatBufferBuilder fbb = new FlatBufferBuilder(32);
+		this.api.getAPIServers().forEach((server) -> server
+			.getAPIConnections()
+			.filter(conn -> conn.getContext().useSerial())
+			.forEach((conn) -> {
+				FlatBufferBuilder fbb = new FlatBufferBuilder(32);
 
-					SerialUpdateResponse.startSerialUpdateResponse(fbb);
-					SerialUpdateResponse.addClosed(fbb, true);
-					int update = SerialUpdateResponse.endSerialUpdateResponse(fbb);
-					int outbound = this
-						.createRPCMessage(fbb, RpcMessage.SerialUpdateResponse, update);
-					fbb.finish(outbound);
-					conn.send(fbb.dataBuffer());
-					conn.getContext().setUseSerial(false);
-				});
-		});
+				SerialUpdateResponse.startSerialUpdateResponse(fbb);
+				SerialUpdateResponse.addClosed(fbb, true);
+				int update = SerialUpdateResponse.endSerialUpdateResponse(fbb);
+				int outbound = this
+					.createRPCMessage(fbb, RpcMessage.SerialUpdateResponse, update);
+				fbb.finish(outbound);
+				conn.send(fbb.dataBuffer());
+				conn.getContext().setUseSerial(false);
+			}));
 	}
 
 	@Override
 	public void onSerialLog(String str) {
-		this.api.getAPIServers().forEach((server) -> {
-			server
-				.getAPIConnections()
-				.filter(conn -> conn.getContext().useSerial())
-				.forEach((conn) -> {
-					FlatBufferBuilder fbb = new FlatBufferBuilder(32);
+		this.api.getAPIServers().forEach((server) -> server
+			.getAPIConnections()
+			.filter(conn -> conn.getContext().useSerial())
+			.forEach((conn) -> {
+				FlatBufferBuilder fbb = new FlatBufferBuilder(32);
 
-					int logOffset = fbb.createString(str);
+				int logOffset = fbb.createString(str);
 
-					SerialUpdateResponse.startSerialUpdateResponse(fbb);
-					SerialUpdateResponse.addLog(fbb, logOffset);
-					int update = SerialUpdateResponse.endSerialUpdateResponse(fbb);
-					int outbound = this
-						.createRPCMessage(fbb, RpcMessage.SerialUpdateResponse, update);
-					fbb.finish(outbound);
+				SerialUpdateResponse.startSerialUpdateResponse(fbb);
+				SerialUpdateResponse.addLog(fbb, logOffset);
+				int update = SerialUpdateResponse.endSerialUpdateResponse(fbb);
+				int outbound = this
+					.createRPCMessage(fbb, RpcMessage.SerialUpdateResponse, update);
+				fbb.finish(outbound);
 
-					conn.send(fbb.dataBuffer());
-				});
-		});
+				conn.send(fbb.dataBuffer());
+			}));
 	}
 
 	public void onAutoBoneProcessRequest(GenericConnection conn, RpcMessageHeader messageHeader) {
@@ -601,37 +593,35 @@ public class RPCHandler extends ProtocolHandler<RpcMessageHeader>
 		boolean completed,
 		boolean success
 	) {
-		this.api.getAPIServers().forEach((server) -> {
-			server
-				.getAPIConnections()
-				.filter(conn -> conn.getContext().useAutoBone())
-				.forEach((conn) -> {
-					FlatBufferBuilder fbb = new FlatBufferBuilder(32);
+		this.api.getAPIServers().forEach((server) -> server
+			.getAPIConnections()
+			.filter(conn -> conn.getContext().useAutoBone())
+			.forEach((conn) -> {
+				FlatBufferBuilder fbb = new FlatBufferBuilder(32);
 
-					Integer messageOffset = message != null ? fbb.createString(message) : null;
+				Integer messageOffset = message != null ? fbb.createString(message) : null;
 
-					AutoBoneProcessStatusResponse.startAutoBoneProcessStatusResponse(fbb);
-					AutoBoneProcessStatusResponse.addProcessType(fbb, processType.id);
-					if (messageOffset != null)
-						AutoBoneProcessStatusResponse.addMessage(fbb, messageOffset);
-					if (total > 0 && current >= 0) {
-						AutoBoneProcessStatusResponse.addCurrent(fbb, current);
-						AutoBoneProcessStatusResponse.addTotal(fbb, total);
-					}
-					AutoBoneProcessStatusResponse.addCompleted(fbb, completed);
-					AutoBoneProcessStatusResponse.addSuccess(fbb, success);
-					int update = AutoBoneProcessStatusResponse
-						.endAutoBoneProcessStatusResponse(fbb);
-					int outbound = this
-						.createRPCMessage(fbb, RpcMessage.AutoBoneProcessStatusResponse, update);
-					fbb.finish(outbound);
+				AutoBoneProcessStatusResponse.startAutoBoneProcessStatusResponse(fbb);
+				AutoBoneProcessStatusResponse.addProcessType(fbb, processType.id);
+				if (messageOffset != null)
+					AutoBoneProcessStatusResponse.addMessage(fbb, messageOffset);
+				if (total > 0 && current >= 0) {
+					AutoBoneProcessStatusResponse.addCurrent(fbb, current);
+					AutoBoneProcessStatusResponse.addTotal(fbb, total);
+				}
+				AutoBoneProcessStatusResponse.addCompleted(fbb, completed);
+				AutoBoneProcessStatusResponse.addSuccess(fbb, success);
+				int update = AutoBoneProcessStatusResponse
+					.endAutoBoneProcessStatusResponse(fbb);
+				int outbound = this
+					.createRPCMessage(fbb, RpcMessage.AutoBoneProcessStatusResponse, update);
+				fbb.finish(outbound);
 
-					conn.send(fbb.dataBuffer());
-					if (completed) {
-						conn.getContext().setUseAutoBone(false);
-					}
-				});
-		});
+				conn.send(fbb.dataBuffer());
+				if (completed) {
+					conn.getContext().setUseAutoBone(false);
+				}
+			}));
 	}
 
 	@Override
@@ -641,45 +631,43 @@ public class RPCHandler extends ProtocolHandler<RpcMessageHeader>
 
 	@Override
 	public void onAutoBoneEpoch(Epoch epoch) {
-		this.api.getAPIServers().forEach((server) -> {
-			server
-				.getAPIConnections()
-				.filter(conn -> conn.getContext().useAutoBone())
-				.forEach((conn) -> {
-					FlatBufferBuilder fbb = new FlatBufferBuilder(32);
+		this.api.getAPIServers().forEach((server) -> server
+			.getAPIConnections()
+			.filter(conn -> conn.getContext().useAutoBone())
+			.forEach((conn) -> {
+				FlatBufferBuilder fbb = new FlatBufferBuilder(32);
 
-					int[] skeletonPartOffsets = new int[epoch.configValues.size()];
-					int i = 0;
-					for (
-						Entry<SkeletonConfigOffsets, Float> skeletonConfig : epoch.configValues
-							.entrySet()
-					) {
-						skeletonPartOffsets[i++] = SkeletonPart
-							.createSkeletonPart(
-								fbb,
-								skeletonConfig.getKey().id,
-								skeletonConfig.getValue()
-							);
-					}
-
-					int skeletonPartsOffset = AutoBoneEpochResponse
-						.createAdjustedSkeletonPartsVector(fbb, skeletonPartOffsets);
-
-					int update = AutoBoneEpochResponse
-						.createAutoBoneEpochResponse(
+				int[] skeletonPartOffsets = new int[epoch.configValues.size()];
+				int i = 0;
+				for (
+					Entry<SkeletonConfigOffsets, Float> skeletonConfig : epoch.configValues
+						.entrySet()
+				) {
+					skeletonPartOffsets[i++] = SkeletonPart
+						.createSkeletonPart(
 							fbb,
-							epoch.epoch,
-							epoch.totalEpochs,
-							epoch.epochError.getMean(),
-							skeletonPartsOffset
+							skeletonConfig.getKey().id,
+							skeletonConfig.getValue()
 						);
-					int outbound = this
-						.createRPCMessage(fbb, RpcMessage.AutoBoneEpochResponse, update);
-					fbb.finish(outbound);
+				}
 
-					conn.send(fbb.dataBuffer());
-				});
-		});
+				int skeletonPartsOffset = AutoBoneEpochResponse
+					.createAdjustedSkeletonPartsVector(fbb, skeletonPartOffsets);
+
+				int update = AutoBoneEpochResponse
+					.createAutoBoneEpochResponse(
+						fbb,
+						epoch.epoch,
+						epoch.totalEpochs,
+						epoch.epochError.getMean(),
+						skeletonPartsOffset
+					);
+				int outbound = this
+					.createRPCMessage(fbb, RpcMessage.AutoBoneEpochResponse, update);
+				fbb.finish(outbound);
+
+				conn.send(fbb.dataBuffer());
+			}));
 	}
 
 

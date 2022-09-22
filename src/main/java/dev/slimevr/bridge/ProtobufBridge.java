@@ -221,12 +221,10 @@ public abstract class ProtobufBridge<T extends VRTracker> implements Bridge {
 	@VRServerThread
 	protected void disconnected() {
 		synchronized (remoteTrackersByTrackerId) {
-			Iterator<Entry<Integer, T>> iterator = remoteTrackersByTrackerId.entrySet().iterator();
-			while (iterator.hasNext()) {
-				iterator
-					.next()
-					.getValue()
-					.setStatus(dev.slimevr.vr.trackers.TrackerStatus.DISCONNECTED);
+			for (Entry<Integer, T> integerTEntry : remoteTrackersByTrackerId.entrySet()) {
+				integerTEntry
+						.getValue()
+						.setStatus(dev.slimevr.vr.trackers.TrackerStatus.DISCONNECTED);
 			}
 		}
 		if (hmdTracker != null) {

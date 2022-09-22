@@ -29,8 +29,6 @@ public class DeviceManager {
 	}
 
 	public void addDevice(Device device) {
-		this.server.queueTask(() -> {
-			this.devices.add(device);
-		});
+		this.server.queueTask(() -> this.devices.add(device));
 	}
 }

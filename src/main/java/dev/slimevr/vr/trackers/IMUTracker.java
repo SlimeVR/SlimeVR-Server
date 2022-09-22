@@ -136,7 +136,7 @@ public class IMUTracker
 			movementFilterAmount = 1f;
 			movementFilterTickCount = 0;
 		}
-		previousRots = new CircularArrayList<Quaternion>(movementFilterTickCount + 1);
+		previousRots = new CircularArrayList<>(movementFilterTickCount + 1);
 	}
 
 	public Quaternion getMountingRotation() {

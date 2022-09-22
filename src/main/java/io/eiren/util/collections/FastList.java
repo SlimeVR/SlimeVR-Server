@@ -151,7 +151,7 @@ public class FastList<E> extends AbstractList<E>
 	}
 
 	@Override
-	public <T> T[] toArray(T aobj[]) {
+	public <T> T[] toArray(T[] aobj) {
 		if (aobj.length < size)
 			return (T[]) Arrays.copyOf(array, size, aobj.getClass());
 		System.arraycopy(array, 0, aobj, 0, size);
@@ -342,9 +342,7 @@ public class FastList<E> extends AbstractList<E>
 						array = newArray;
 					} else {
 						System.arraycopy(array, index, array, index + 1, size - index);
-						Iterator<? extends E> iterator = collection.iterator();
-						while (iterator.hasNext())
-							array[index++] = iterator.next();
+						for (E e : collection) array[index++] = e;
 					}
 					size += collection.size();
 				}
@@ -385,7 +383,7 @@ public class FastList<E> extends AbstractList<E>
 
 	@Override
 	public FastList<E> clone() {
-		return new FastList<E>(array, size);
+		return new FastList<>(array, size);
 	}
 
 	@Override

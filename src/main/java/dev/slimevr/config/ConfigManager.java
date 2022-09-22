@@ -36,7 +36,7 @@ public class ConfigManager {
 	public void loadConfig() {
 		try {
 			this.vrConfig = om
-				.readValue(new FileInputStream(new File(configPath)), VRConfig.class);
+				.readValue(new FileInputStream(configPath), VRConfig.class);
 		} catch (FileNotFoundException e) {
 			// Config file didn't exist, is not an error
 		} catch (IOException e) {

@@ -59,10 +59,7 @@ public class AutoBoneHandler {
 		boolean completed,
 		boolean success
 	) {
-		listeners.forEach(listener -> {
-			listener
-				.onAutoBoneProcessStatus(processType, message, current, total, completed, success);
-		});
+		listeners.forEach(listener -> listener.onAutoBoneProcessStatus(processType, message, current, total, completed, success));
 	}
 
 	private void announceProcessStatus(
@@ -92,11 +89,7 @@ public class AutoBoneHandler {
 				frames,
 				autoBone.getConfig().calcInitError,
 				autoBone.getConfig().targetHeight,
-				(epoch) -> {
-					listeners.forEach(listener -> {
-						listener.onAutoBoneEpoch(epoch);
-					});
-				}
+				(epoch) -> listeners.forEach(listener -> listener.onAutoBoneEpoch(epoch))
 			);
 	}
 
@@ -151,13 +144,11 @@ public class AutoBoneHandler {
 				int sampleCount = this.autoBone.getConfig().sampleCount;
 				long sampleRate = this.autoBone.getConfig().sampleRateMs;
 				Future<PoseFrames> framesFuture = poseRecorder
-					.startFrameRecording(sampleCount, sampleRate, progress -> {
-						announceProcessStatus(
-							AutoBoneProcessType.RECORD,
-							progress.frame,
-							progress.totalFrames
-						);
-					});
+					.startFrameRecording(sampleCount, sampleRate, progress -> announceProcessStatus(
+						AutoBoneProcessType.RECORD,
+						progress.frame,
+						progress.totalFrames
+					));
 				PoseFrames frames = framesFuture.get();
 				LogManager.info("[AutoBone] Done recording!");
 
@@ -173,9 +164,7 @@ public class AutoBoneHandler {
 					autoBone.saveRecording(frames);
 				}
 
-				listeners.forEach(listener -> {
-					listener.onAutoBoneRecordingEnd(frames);
-				});
+				listeners.forEach(listener -> listener.onAutoBoneRecordingEnd(frames));
 
 				announceProcessStatus(AutoBoneProcessType.RECORD, "Done recording!", true, true);
 			} else {
@@ -346,7 +335,7 @@ public class AutoBoneHandler {
 						"[AutoBone] ("
 							+ trackers.size()
 							+ " trackers) ["
-							+ trackerInfo.toString()
+							+ trackerInfo
 							+ "]"
 					);
 
@@ -405,9 +394,7 @@ public class AutoBoneHandler {
 				);
 			// #endregion
 
-			listeners.forEach(listener -> {
-				listener.onAutoBoneEnd(autoBone.legacyConfigs);
-			});
+			listeners.forEach(listener -> listener.onAutoBoneEnd(autoBone.legacyConfigs));
 
 			announceProcessStatus(AutoBoneProcessType.PROCESS, "Done processing!", true, true);
 		} catch (Exception e) {

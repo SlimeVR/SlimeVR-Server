@@ -212,11 +212,7 @@ public final class Quaternion implements Cloneable, java.io.Serializable {
 	 * @return true if this Quaternion is {0,0,0,1}
 	 */
 	public boolean isIdentity() {
-		if (x == 0 && y == 0 && z == 0 && w == 1) {
-			return true;
-		} else {
-			return false;
-		}
+		return x == 0 && y == 0 && z == 0 && w == 1;
 	}
 
 	/**
@@ -646,24 +642,25 @@ public final class Quaternion implements Cloneable, java.io.Serializable {
 		float zw = z * w * norm;
 
 		switch (i) {
-			case 0:
+			case 0 -> {
 				store.x = 1 - 2 * (yy + zz);
 				store.y = 2 * (xy + zw);
 				store.z = 2 * (xz - yw);
-				break;
-			case 1:
+			}
+			case 1 -> {
 				store.x = 2 * (xy - zw);
 				store.y = 1 - 2 * (xx + zz);
 				store.z = 2 * (yz + xw);
-				break;
-			case 2:
+			}
+			case 2 -> {
 				store.x = 2 * (xz + yw);
 				store.y = 2 * (yz - xw);
 				store.z = 1 - 2 * (xx + yy);
-				break;
-			default:
+			}
+			default -> {
 				logger.warning("Invalid column index.");
 				throw new IllegalArgumentException("Invalid column index. " + i);
+			}
 		}
 
 		return store;
@@ -1081,7 +1078,7 @@ public final class Quaternion implements Cloneable, java.io.Serializable {
 	 *
 	 * @param axis the array of vectors to be filled.
 	 */
-	public void toAxes(Vector3f axis[]) {
+	public void toAxes(Vector3f[] axis) {
 		Matrix3f tempMat = toRotationMatrix();
 		axis[0] = tempMat.getColumn(0, axis[0]);
 		axis[1] = tempMat.getColumn(1, axis[1]);
@@ -1520,7 +1517,7 @@ public final class Quaternion implements Cloneable, java.io.Serializable {
 	 */
 	@Override
 	public boolean equals(Object o) {
-		if (!(o instanceof Quaternion)) {
+		if (!(o instanceof Quaternion comp)) {
 			return false;
 		}
 
@@ -1528,7 +1525,6 @@ public final class Quaternion implements Cloneable, java.io.Serializable {
 			return true;
 		}
 
-		Quaternion comp = (Quaternion) o;
 		if (Float.compare(x, comp.x) != 0) {
 			return false;
 		}
@@ -1538,10 +1534,7 @@ public final class Quaternion implements Cloneable, java.io.Serializable {
 		if (Float.compare(z, comp.z) != 0) {
 			return false;
 		}
-		if (Float.compare(w, comp.w) != 0) {
-			return false;
-		}
-		return true;
+		return Float.compare(w, comp.w) == 0;
 	}
 
 	/**
@@ -1704,9 +1697,6 @@ public final class Quaternion implements Cloneable, java.io.Serializable {
 		if (Float.compare(q.z, 0) != 0) {
 			return false;
 		}
-		if (Float.compare(q.w, 1) != 0) {
-			return false;
-		}
-		return true;
+		return Float.compare(q.w, 1) == 0;
 	}
 }

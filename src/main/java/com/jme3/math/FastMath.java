@@ -248,7 +248,7 @@ final public class FastMath {
 		c3 = 2 * T * p0 + (T - 3) * p1 + (3 - 2 * T) * p2 + -T * p3;
 		c4 = -T * p0 + (2 - T) * p1 + (T - 2) * p2 + T * p3;
 
-		return (float) (((c4 * u + c3) * u + c2) * u + c1);
+		return ((c4 * u + c3) * u + c2) * u + c1;
 	}
 
 	/**
@@ -695,13 +695,7 @@ final public class FastMath {
 	 * @return The integer's sign.
 	 */
 	public static int sign(int iValue) {
-		if (iValue > 0) {
-			return 1;
-		}
-		if (iValue < 0) {
-			return -1;
-		}
-		return 0;
+		return Integer.compare(iValue, 0);
 	}
 
 	/**
@@ -995,7 +989,7 @@ final public class FastMath {
 	 * @return clamped input
 	 */
 	public static float clamp(float input, float min, float max) {
-		return (input < min) ? min : (input > max) ? max : input;
+		return (input < min) ? min : Math.min(input, max);
 	}
 
 	/**
@@ -1022,24 +1016,19 @@ final public class FastMath {
 	 * @return floating point value of the half.
 	 */
 	public static float convertHalfToFloat(short half) {
-		switch ((int) half) {
-			case 0x0000:
-				return 0f;
-			case 0x8000:
-				return -0f;
-			case 0x7c00:
-				return Float.POSITIVE_INFINITY;
-			case 0xfc00:
-				return Float.NEGATIVE_INFINITY;
+		return switch ((int) half) {
+			case 0x0000 -> 0f;
+			case 0x8000 -> -0f;
+			case 0x7c00 -> Float.POSITIVE_INFINITY;
+			case 0xfc00 -> Float.NEGATIVE_INFINITY;
 			// TODO: Support for NaN?
-			default:
-				return Float
+			default -> Float
 					.intBitsToFloat(
-						((half & 0x8000) << 16)
-							| (((half & 0x7c00) + 0x1C000) << 13)
-							| ((half & 0x03FF) << 13)
+							((half & 0x8000) << 16)
+									| (((half & 0x7c00) + 0x1C000) << 13)
+									| ((half & 0x03FF) << 13)
 					);
-		}
+		};
 	}
 
 	public static short convertFloatToHalf(float flt) {
