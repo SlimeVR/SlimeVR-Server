@@ -70,7 +70,7 @@ final public class FastMath {
 	public static final float DEG_TO_RAD = PI / 180.0f;
 	/** A value to multiply a radian value by, to convert it to degrees. */
 	public static final float RAD_TO_DEG = 180.0f / PI;
-	/** A precreated random object for random numbers. */
+	/** A premade random object for random numbers. */
 	public static final Random rand = new Random(System.currentTimeMillis());
 
 	/**
@@ -149,7 +149,7 @@ final public class FastMath {
 	 * 
 	 * @param scale scale value to use. if 1, use endValue, if 0, use
 	 * startValue.
-	 * @param startValue Begining value. 0% of f
+	 * @param startValue Beginning value. 0% of f
 	 * @param endValue ending value. 100% of f
 	 * @return The interpolated value between startValue and endValue.
 	 */
@@ -172,7 +172,7 @@ final public class FastMath {
 	 *
 	 * @param scale scale value to use. if 1, use endValue, if 0, use
 	 * startValue.
-	 * @param startValue Begining value. 0% of f
+	 * @param startValue Beginning value. 0% of f
 	 * @param endValue ending value. 100% of f
 	 * @param store a vector3f to store the result
 	 * @return The interpolated value between startValue and endValue.
@@ -198,7 +198,7 @@ final public class FastMath {
 	 *
 	 * @param scale scale value to use. if 1, use endValue, if 0, use
 	 * startValue.
-	 * @param startValue Begining value. 0% of f
+	 * @param startValue Beginning value. 0% of f
 	 * @param endValue ending value. 100% of f
 	 * @return The interpolated value between startValue and endValue.
 	 */
@@ -442,7 +442,7 @@ final public class FastMath {
 	}
 
 	/**
-	 * Compute the lenght on a catmull rom spline between control point 1 and 2
+	 * Compute the length on a catmull rom spline between control point 1 and 2
 	 * 
 	 * @param p0 control point 0
 	 * @param p1 control point 1
@@ -487,7 +487,7 @@ final public class FastMath {
 	}
 
 	/**
-	 * Compute the lenght on a bezier spline between control point 1 and 2
+	 * Compute the length on a bezier spline between control point 1 and 2
 	 * 
 	 * @param p0 control point 0
 	 * @param p1 control point 1
@@ -707,7 +707,7 @@ final public class FastMath {
 	/**
 	 * Returns the value squared. fValue ^ 2
 	 * 
-	 * @param fValue The vaule to square.
+	 * @param fValue The value to square.
 	 * @return The square of the given value.
 	 */
 	public static float sqr(float fValue) {
