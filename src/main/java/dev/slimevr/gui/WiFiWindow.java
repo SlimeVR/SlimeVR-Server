@@ -22,9 +22,6 @@ public class WiFiWindow extends JFrame implements SerialListener {
 	JTextField ssidField;
 	JPasswordField passwdField;
 	JTextArea log;
-	private boolean OptionAdvanced = false;
-	private JCheckBox JChekboxRts;
-	private JCheckBox JChekboxDtr;
 
 	public WiFiWindow(VRServerGUI gui) {
 		super("WiFi Settings");
@@ -67,7 +64,7 @@ public class WiFiWindow extends JFrame implements SerialListener {
 				);
 				add(new EJBox(BoxLayout.LINE_AXIS) {
 					{
-						add(new JButton("Restart Tracker") {
+						add(new JButton("Reboot Tracker") {
 							{
 								addMouseListener(new MouseInputAdapter() {
 									@Override

@@ -19,10 +19,6 @@ public class SerialHandler implements SerialPortMessageListener {
 
 	private final List<SerialListener> listeners = new CopyOnWriteArrayList<>();
 	private SerialPort trackerPort = null;
-//	private boolean rts;
-//	private boolean dtr;
-//	private final ScheduledExecutorService scheduler = Executors.newScheduledThreadPool(1);
-//	ScheduledFuture<?> nextstephandler;
 
 	public void addListener(SerialListener channel) {
 		this.listeners.add(channel);
@@ -59,9 +55,6 @@ public class SerialHandler implements SerialPortMessageListener {
 		if (!trackerPort.openPort()) {
 			return false;
 		}
-//		rts = trackerPort.getRTS();
-//		dtr = trackerPort.getDTR();
-
 
 		trackerPort.addDataListener(this);
 		this.listeners.forEach((listener) -> listener.onSerialConnected(trackerPort));
@@ -108,7 +101,18 @@ public class SerialHandler implements SerialPortMessageListener {
 	}
 
 	public void setWifi(String ssid, String passwd) {
-		this.writeSerial("SET WIFI \"" + ssid + "\" \"" + passwd + "\"");
+		if (trackerPort == null)
+			return;
+		OutputStream os = trackerPort.getOutputStream();
+		OutputStreamWriter writer = new OutputStreamWriter(os);
+		try {
+			writer.append("SET WIFI \"" + ssid + "\" \"" + passwd + "\"");
+			writer.flush();
+			this.addLog("-> SET WIFI \"" + ssid + "\" \"" + passwd.replaceAll(".", "*") + "\"\n");
+		} catch (IOException e) {
+			addLog(e + "\n");
+			e.printStackTrace();
+		}
 	}
 
 	public void addLog(String str) {
