@@ -261,9 +261,9 @@ public final class Vector2f implements Cloneable, java.io.Serializable {
 		)
 			return false;
 		if (
-				Float.isInfinite(vector.x)
-						||
-						Float.isInfinite(vector.y)
+			Float.isInfinite(vector.x)
+					||
+					Float.isInfinite(vector.y)
 		)
 			return false;
 		return true;
