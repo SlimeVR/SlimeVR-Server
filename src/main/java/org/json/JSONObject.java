@@ -956,9 +956,8 @@ public class JSONObject {
 		boolean includeSuperClass = klass.getClassLoader() != null;
 
 		Method[] methods = includeSuperClass ? klass.getMethods() : klass.getDeclaredMethods();
-		for (Method value : methods) {
+		for (Method method : methods) {
 			try {
-				Method method = value;
 				if (Modifier.isPublic(method.getModifiers())) {
 					String name = method.getName();
 					String key = "";

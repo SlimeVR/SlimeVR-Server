@@ -479,9 +479,7 @@ public class FloatMath {
 	 * The same as FastMath.clamp
 	 */
 	public static float clamp(float value, float min, float max) {
-		if (value <= min)
-			return min;
-		return Math.min(value, max);
+		return Math.max(min, Math.min(max, value));
 	}
 
 	public static Vector3f int2101010RevToFloats(int packedValue, Vector3f store) {
