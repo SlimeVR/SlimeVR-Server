@@ -695,7 +695,7 @@ final public class FastMath {
 	 * @return The integer's sign.
 	 */
 	public static int sign(int iValue) {
-		return Integer.compare(iValue, 0);
+		return Integer.signum(iValue);
 	}
 
 	/**
