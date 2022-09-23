@@ -62,8 +62,13 @@ public class TempVars {
 	 * thread has a single TempVarsStack that is used only in method calls in
 	 * that thread.
 	 */
-	private static final ThreadLocal<TempVarsStack> varsLocal = ThreadLocal
-		.withInitial(TempVarsStack::new);
+	private static final ThreadLocal<TempVarsStack> varsLocal = new ThreadLocal<TempVarsStack>() {
+
+		@Override
+		public TempVarsStack initialValue() {
+			return new TempVarsStack();
+		}
+	};
 	/**
 	 * This instance of TempVars has been retrieved but not released yet.
 	 */

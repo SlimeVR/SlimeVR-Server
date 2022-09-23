@@ -833,9 +833,9 @@ public final class Vector3f implements Cloneable, java.io.Serializable {
 	 * @param other
 	 */
 	public Vector3f maxLocal(Vector3f other) {
-		x = Math.max(other.x, x);
-		y = Math.max(other.y, y);
-		z = Math.max(other.z, z);
+		x = other.x > x ? other.x : x;
+		y = other.y > y ? other.y : y;
+		z = other.z > z ? other.z : z;
 		return this;
 	}
 
@@ -846,9 +846,9 @@ public final class Vector3f implements Cloneable, java.io.Serializable {
 	 * @param other
 	 */
 	public Vector3f minLocal(Vector3f other) {
-		x = Math.min(other.x, x);
-		y = Math.min(other.y, y);
-		z = Math.min(other.z, z);
+		x = other.x < x ? other.x : x;
+		y = other.y < y ? other.y : y;
+		z = other.z < z ? other.z : z;
 		return this;
 	}
 
@@ -917,9 +917,9 @@ public final class Vector3f implements Cloneable, java.io.Serializable {
 			return false;
 		if (Float.isNaN(vector.x) || Float.isNaN(vector.y) || Float.isNaN(vector.z))
 			return false;
-		return !Float.isInfinite(vector.x)
-			&& !Float.isInfinite(vector.y)
-			&& !Float.isInfinite(vector.z);
+		if (Float.isInfinite(vector.x) || Float.isInfinite(vector.y) || Float.isInfinite(vector.z))
+			return false;
+		return true;
 	}
 
 	public static void generateOrthonormalBasis(Vector3f u, Vector3f v, Vector3f w) {
@@ -986,15 +986,18 @@ public final class Vector3f implements Cloneable, java.io.Serializable {
 	 */
 	@Override
 	public boolean equals(Object o) {
-		if (!(o instanceof Vector3f comp))
+		if (!(o instanceof Vector3f))
 			return false;
 		if (this == o)
 			return true;
+		Vector3f comp = (Vector3f) o;
 		if (Float.compare(x, comp.x) != 0)
 			return false;
 		if (Float.compare(y, comp.y) != 0)
 			return false;
-		return Float.compare(z, comp.z) == 0;
+		if (Float.compare(z, comp.z) != 0)
+			return false;
+		return true;
 	}
 
 	/**
@@ -1078,12 +1081,17 @@ public final class Vector3f implements Cloneable, java.io.Serializable {
 	 */
 	public void set(int index, float value) {
 		switch (index) {
-			case 0 -> x = value;
-			case 1 -> y = value;
-			case 2 -> z = value;
-			default -> throw new IllegalArgumentException("index must be either 0, 1 or 2");
+			case 0:
+				x = value;
+				return;
+			case 1:
+				y = value;
+				return;
+			case 2:
+				z = value;
+				return;
 		}
-
+		throw new IllegalArgumentException("index must be either 0, 1 or 2");
 	}
 
 	public static float angleBetweenVectors(Vector2f vec1, Vector2f vec2) {
