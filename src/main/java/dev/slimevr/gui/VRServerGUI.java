@@ -43,6 +43,7 @@ public class VRServerGUI extends JFrame {
 	private final SkeletonList skeletonList;
 	private final EJBox pane;
 	private JButton resetButton;
+	private JButton resetMountingButton;
 	private JButton floorClipButton;
 	private JButton skatingCorrectionButton;
 
@@ -206,7 +207,7 @@ public class VRServerGUI extends JFrame {
 					}
 				});
 				add(Box.createHorizontalStrut(10));
-				add(new JButton("Reset Mounting") {
+				add(resetMountingButton = new JButton("Reset Mounting") {
 					{
 						addMouseListener(new MouseInputAdapter() {
 							@Override
@@ -562,7 +563,9 @@ public class VRServerGUI extends JFrame {
 
 	@AWTThread
 	private void resetMountingRotation() {
-		server.humanPoseProcessor.getSkeleton().resetTrackersMountingRotation();
+		ButtonTimer.runTimer(resetMountingButton, 3, "Reset Mounting", () -> {
+			server.humanPoseProcessor.getSkeleton().resetTrackersMountingRotation();
+		});
 	}
 
 	@AWTThread

@@ -1829,6 +1829,12 @@ public class HumanSkeleton extends Skeleton implements SkeletonConfigCallback {
 		this.legTweaks.resetBuffer();
 	}
 
+	private boolean shouldResetMounting(TrackerPosition position) {
+		return position != null
+			&& position != TrackerPosition.LEFT_FOOT
+			&& position != TrackerPosition.RIGHT_FOOT;
+	}
+
 	private boolean shouldReverseYaw(TrackerPosition position) {
 		return position != null
 			&& (position == TrackerPosition.LEFT_UPPER_LEG
@@ -1842,7 +1848,7 @@ public class HumanSkeleton extends Skeleton implements SkeletonConfigCallback {
 		Tracker[] trackersToReset = getTrackersToReset();
 
 		for (Tracker tracker : trackersToReset) {
-			if (tracker != null) {
+			if (tracker != null && shouldResetMounting(tracker.getBodyPosition())) {
 				tracker.resetMountingRotation(shouldReverseYaw(tracker.getBodyPosition()));
 			}
 		}
