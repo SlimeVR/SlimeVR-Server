@@ -84,8 +84,8 @@ public class ReferenceAdjustedTracker<E extends Tracker> implements Tracker {
 	}
 
 	@Override
-	public void resetMountingRotation(boolean reverseYaw) {
-		tracker.resetMountingRotation(reverseYaw);
+	public void resetMounting(boolean reverseYaw) {
+		tracker.resetMounting(reverseYaw);
 
 		// Get the current calibrated rotation
 		Quaternion buffer = new Quaternion();

@@ -237,6 +237,12 @@ public class VRServer extends Thread {
 		});
 	}
 
+	public void resetTrackersMounting() {
+		queueTask(() -> {
+			humanPoseProcessor.resetTrackersMounting();
+		});
+	}
+
 	public void resetTrackersYaw() {
 		queueTask(() -> {
 			humanPoseProcessor.resetTrackersYaw();

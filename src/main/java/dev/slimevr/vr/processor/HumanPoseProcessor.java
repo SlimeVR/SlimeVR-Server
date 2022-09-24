@@ -191,6 +191,12 @@ public class HumanPoseProcessor {
 	}
 
 	@VRServerThread
+	public void resetTrackersMounting() {
+		if (skeleton != null)
+			skeleton.resetTrackersMounting();
+	}
+
+	@VRServerThread
 	public void resetTrackersYaw() {
 		if (skeleton != null)
 			skeleton.resetTrackersYaw();

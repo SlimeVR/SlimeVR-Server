@@ -1843,13 +1843,13 @@ public class HumanSkeleton extends Skeleton implements SkeletonConfigCallback {
 
 	@Override
 	@VRServerThread
-	public void resetTrackersMountingRotation() {
+	public void resetTrackersMounting() {
 		// Pass all trackers through trackerPreUpdate
 		Tracker[] trackersToReset = getTrackersToReset();
 
 		for (Tracker tracker : trackersToReset) {
 			if (tracker != null && shouldResetMounting(tracker.getBodyPosition())) {
-				tracker.resetMountingRotation(shouldReverseYaw(tracker.getBodyPosition()));
+				tracker.resetMounting(shouldReverseYaw(tracker.getBodyPosition()));
 			}
 		}
 		this.legTweaks.resetBuffer();
