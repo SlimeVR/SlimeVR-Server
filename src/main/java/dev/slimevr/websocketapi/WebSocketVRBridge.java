@@ -102,8 +102,7 @@ public class WebSocketVRBridge extends WebsocketAPI implements Bridge {
 						return;
 					}
 					case "config" -> { // TODO Ignore it for now, it should only
-						// register HMD in our test case with id
-						// 0
+						// register HMD in our test case with id 0
 						LogManager.info("[WebSocket] Config received: " + json);
 						return;
 					}

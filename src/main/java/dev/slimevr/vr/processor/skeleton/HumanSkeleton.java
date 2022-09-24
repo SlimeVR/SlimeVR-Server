@@ -1637,8 +1637,7 @@ public class HumanSkeleton extends Skeleton implements SkeletonConfigCallback {
 				}
 			}
 			case CHEST -> // Chest is 57% of the upper body by default
-							// (shoulders
-				// to chest)
+				// (shoulders to chest)
 				skeletonConfig
 					.setOffset(
 						SkeletonConfigOffsets.CHEST,

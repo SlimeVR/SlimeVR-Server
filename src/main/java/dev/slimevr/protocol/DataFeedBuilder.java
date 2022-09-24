@@ -190,7 +190,7 @@ public class DataFeedBuilder {
 		if (!mask.getDeviceData())
 			return 0;
 
-		if (device.getTrackers().size() == 0)
+		if (device.getTrackers().size() <= 0)
 			return 0;
 
 		Tracker tracker = device.getTrackers().get(0).get();
