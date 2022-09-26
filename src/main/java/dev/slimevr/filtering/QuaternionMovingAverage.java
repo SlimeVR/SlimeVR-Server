@@ -11,15 +11,17 @@ public class QuaternionMovingAverage {
 	private final float predictFactor;
 	private final CircularArrayList<Quaternion> rotBuffer;
 	private final Quaternion quatBuf = new Quaternion();
-	private final Quaternion lastQuaternion;
+	private final Quaternion latestQuaternion;
+	private final Quaternion smoothingQuaternion;
 	private final Quaternion filteredQuaternion;
 	private final boolean smooths;
 	private final boolean predicts;
 	private final NanoTimer fpsTimer;
+	private int smoothingCounter;
 
 	// influences the range of smoothFactor.
-	private static final float SMOOTH_MULTIPLIER = 60f;
-	private static final float SMOOTH_MIN = 18f;
+	private static final float SMOOTH_MULTIPLIER = 48f;
+	private static final float SMOOTH_MIN = 12f;
 
 	// influences the range of predictFactor
 	private static final float PREDICT_MULTIPLIER = 10f;
@@ -62,15 +64,16 @@ public class QuaternionMovingAverage {
 		}
 
 		filteredQuaternion = new Quaternion(initialRotation);
-		lastQuaternion = new Quaternion(initialRotation);
+		latestQuaternion = new Quaternion(initialRotation);
+		smoothingQuaternion = new Quaternion(initialRotation);
 	}
 
 	// Runs at up to 1000hz. We use a timer to make it framerate-independent
-	// since it runs between 800hz to 900hz in practice.
+	// since it runs between 850hz to 900hz in practice.
 	synchronized public void update() {
 		if (predicts) {
 			if (rotBuffer.size() > 0) {
-				quatBuf.set(lastQuaternion);
+				quatBuf.set(latestQuaternion);
 
 				// Applies the past rotations to the current rotation
 				rotBuffer.forEach(quatBuf::multLocal);
@@ -83,25 +86,38 @@ public class QuaternionMovingAverage {
 		}
 
 		if (smooths) {
+			// Calculate the slerp factor and limit it to 1 max
+			smoothingCounter++;
+			float amt = Math.min(smoothFactor * fpsTimer.getTimePerFrame() * smoothingCounter, 1);
+
 			// Smooth towards the target rotation
 			filteredQuaternion
-				.slerpLocal(lastQuaternion, smoothFactor * fpsTimer.getTimePerFrame());
+				.slerp(
+					smoothingQuaternion,
+					latestQuaternion,
+					amt
+				);
 		}
 	}
 
 	synchronized public void addQuaternion(Quaternion q) {
-		if (rotBuffer != null) {
+		if (predicts) {
 			if (rotBuffer.size() == rotBuffer.capacity()) {
-				rotBuffer.remove(0);
+				rotBuffer.removeLast();
 			}
 
 			// Gets and stores the rotation between the last 2 quaternions
-			quatBuf.set(lastQuaternion);
+			quatBuf.set(latestQuaternion);
 			quatBuf.inverseLocal();
 			rotBuffer.add(quatBuf.mult(q));
 		}
 
-		lastQuaternion.set(q);
+		if (smooths) {
+			smoothingCounter = 0;
+			smoothingQuaternion.set(filteredQuaternion);
+		}
+
+		latestQuaternion.set(q);
 	}
 
 	public Quaternion getFilteredQuaternion() {
