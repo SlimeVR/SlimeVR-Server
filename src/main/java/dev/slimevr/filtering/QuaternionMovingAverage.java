@@ -20,11 +20,11 @@ public class QuaternionMovingAverage {
 	private int smoothingCounter;
 
 	// influences the range of smoothFactor.
-	private static final float SMOOTH_MULTIPLIER = 48f;
-	private static final float SMOOTH_MIN = 12f;
+	private static final float SMOOTH_MULTIPLIER = 42f;
+	private static final float SMOOTH_MIN = 20f;
 
 	// influences the range of predictFactor
-	private static final float PREDICT_MULTIPLIER = 10f;
+	private static final float PREDICT_MULTIPLIER = 14f;
 	private static final float PREDICT_MIN = 10f;
 
 	// how many past rotations are used for prediction.
