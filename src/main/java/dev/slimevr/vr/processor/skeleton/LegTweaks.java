@@ -284,6 +284,15 @@ public class LegTweaks {
 			bufferHead.setWaistPosition(waistPosition);
 			bufferHead.setLeftLegState(LegTweakBuffer.UNLOCKED);
 			bufferHead.setRightLegState(LegTweakBuffer.UNLOCKED);
+
+			// if the system is active propulate the buffer with corrected floor
+			// clip feet positions
+			if (active && isStanding()) {
+				correctClipping();
+				bufferHead.setLeftFootPositionCorrected(leftFootPosition);
+				bufferHead.setRightFootPositionCorrected(rightFootPosition);
+			}
+
 			bufferInvalid = false;
 		}
 
@@ -354,12 +363,12 @@ public class LegTweaks {
 		if (floorclipEnabled)
 			correctClipping();
 
-		// calculate acceleration and velocity of the feet using the buffer
-		// (only needed if skating correction is enabled)
-		if (skatingCorrectionEnabled) {
+		// correct for skating if needed
+		if (skatingCorrectionEnabled)
 			correctSkating();
+
+		if (skatingCorrectionEnabled && floorclipEnabled)
 			correctFloat();
-		}
 
 		// determine if either leg is in a position to activate or deactivate
 		// (use the buffer to get the positions before corrections)
