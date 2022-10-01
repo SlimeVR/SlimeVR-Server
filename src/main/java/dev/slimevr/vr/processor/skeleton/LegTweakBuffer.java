@@ -67,6 +67,7 @@ public class LegTweakBuffer {
 	private int detectionMode = ANKLE_ACCEL; // detection mode
 	private boolean accelerationAboveThresholdLeft = true;
 	private boolean accelerationAboveThresholdRight = true;
+	private Vector3f centerOfMass = placeHolderVec;
 	private float leftFloorLevel;
 	private float rightFloorLevel;
 
@@ -90,13 +91,13 @@ public class LegTweakBuffer {
 
 	// the point at which the scalar is at it max or min in a double locked foot
 	// situation
-	private static final float MAX_SCALAR_DORMANT = 0.6f;
+	private static final float MAX_SCALAR_DORMANT = 0.4f;
 	private static final float MIN_SCALAR_DORMANT = 2.0f;
 
 	// the point at which the scalar is at it max or min in a single locked foot
 	// situation
-	private static final float MIN_SCALAR_ACTIVE = 3.0f;
-	private static final float MAX_SCALAR_ACTIVE = 0.2f;
+	private static final float MIN_SCALAR_ACTIVE = 1.75f;
+	private static final float MAX_SCALAR_ACTIVE = 0.1f;
 
 	private float leftFootSensitivityVel = 1.0f;
 	private float rightFootSensitivityVel = 1.0f;
@@ -256,6 +257,17 @@ public class LegTweakBuffer {
 			vec = new Vector3f();
 
 		return vec.set(rightFootVelocity);
+	}
+
+	public Vector3f getCenterOfMass(Vector3f vec) {
+		if (vec == null)
+			vec = new Vector3f();
+
+		return vec.set(centerOfMass);
+	}
+
+	public void setCenterOfMass(Vector3f centerOfMass) {
+		this.centerOfMass = centerOfMass.clone();
 	}
 
 	public void setLeftFloorLevel(float leftFloorLevel) {
@@ -544,6 +556,9 @@ public class LegTweakBuffer {
 		float leftFootScalarVel = getLeftFootLockLiklyHood();
 		float rightFootScalarVel = getRightFootLockLiklyHood();
 
+		// get the third set of scalars that is based on where the COM is
+
+
 		// combine these two sets of scalars to get the final scalars
 		// ( -1 just makes is so if both scalars are 1.0 the final scalar is 1.0
 		// not 2)
@@ -653,5 +668,35 @@ public class LegTweakBuffer {
 			* (velocityDifAbs - MIN_SCALAR_ACTIVE)
 			/ (MAX_SCALAR_ACTIVE - MIN_SCALAR_ACTIVE)
 			- PARAM_SCALAR_MID;
+	}
+
+	// get the pressure prediction for the feet based of the center of mass
+	private float[] getPressurePrediction() {
+		float leftFootPressure = 0;
+		float rightFootPressure = 0;
+
+		// get the distance from the center of mass to the feet
+		float leftFootDist = leftFootPosition
+			.setY(0)
+			.distance(centerOfMass.setY(0));
+		float rightFootDist = rightFootPosition
+			.setY(0)
+			.distance(centerOfMass.setY(0));
+
+		// use a simple inverse square law to determine the pressure
+		leftFootPressure = 1 / (leftFootDist * leftFootDist);
+		rightFootPressure = 1 / (rightFootDist * rightFootDist);
+
+		// the further from the floor the less pressure (again using the inverse
+		// square law)
+		leftFootPressure *= 1 / Math.abs((leftFootPosition.y - leftFloorLevel));
+		rightFootPressure *= 1 / Math.abs((rightFootPosition.y - rightFloorLevel));
+
+		// normalize the pressure
+		float totalPressure = leftFootPressure + rightFootPressure;
+		leftFootPressure /= totalPressure;
+		rightFootPressure /= totalPressure;
+
+		return new float[] { leftFootPressure, rightFootPressure };
 	}
 }

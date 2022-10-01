@@ -68,6 +68,7 @@ public class LegTweaks {
 	private static final float MAX_ACCEPTABLE_ERROR = LegTweakBuffer.SKATING_DISTANCE_CUTOFF;
 	private static final float CORRECTION_WEIGHT_MIN = 0.25f;
 	private static final float CORRECTION_WEIGHT_MAX = 0.70f;
+	private static final float CONTINUOUS_CORRECTION_DIST = 0.0005f;
 
 	// hyperparameters (floating feet correction)
 	private static final float FOOT_Y_CORRECTION_WEIGHT = 0.45f;
@@ -78,6 +79,17 @@ public class LegTweaks {
 	private static final float KNEE_CORRECTION_WEIGHT = 0.00f;
 	private static final float KNEE_LATERAL_WEIGHT = 0.9f;
 	private static final float WAIST_PUSH_WEIGHT = 0.2f;
+
+	// hyperparameters (COM calculation)
+	// mass percentages of the body
+	private static final float HEAD_MASS = 0.082f;
+	private static final float CHEST_MASS = 0.25f;
+	private static final float WAIST_MASS = 0.209f;
+	private static final float THIGH_MASS = 0.138f;
+	private static final float CALF_MASS = 0.0435f;
+	private static final float UPPER_ARM_MASS = 0.031f;
+	private static final float FOREARM_MASS = 0.017f;
+
 
 	// hyperparameters (misc)
 	private static final float NEARLY_ZERO = 0.005f;
@@ -318,6 +330,7 @@ public class LegTweaks {
 		currentFrame.setRightFootRotation(rightFootRotation);
 		currentFrame.setRightKneePosition(rightKneePosition);
 		currentFrame.setWaistPosition(waistPosition);
+		currentFrame.setCenterOfMass(computeCenterOfMass());
 
 		this.bufferHead
 			.setLeftFloorLevel(
@@ -541,22 +554,28 @@ public class LegTweaks {
 				// if velocity and dif are pointing in the same direction,
 				// add a small amount of velocity to the dif
 				// else subtract a small amount of velocity from the dif
-				// calculate the correction weight
+				// calculate the correction weight.
+				// it is also right here where the constant correction is
+				// applied
 				float weight = calculateCorrectionWeight(
 					leftFootPosition,
 					bufferHead.getParent().getLeftFootPositionCorrected(null)
 				);
 
 				if (velocity.x * leftFootDif.x > 0) {
-					leftFootPosition.x += velocity.x * weight;
+					leftFootPosition.x += (velocity.x * weight)
+						+ (CONTINUOUS_CORRECTION_DIST * (velocity.x > 0 ? 1 : -1));
 				} else {
-					leftFootPosition.x -= velocity.x * weight;
+					leftFootPosition.x -= (velocity.x * weight)
+						+ (CONTINUOUS_CORRECTION_DIST * (velocity.x > 0 ? 1 : -1));
 				}
 
 				if (velocity.z * leftFootDif.z > 0) {
-					leftFootPosition.z += velocity.z * weight;
+					leftFootPosition.z += (velocity.z * weight)
+						+ (CONTINUOUS_CORRECTION_DIST * (velocity.z > 0 ? 1 : -1));
 				} else {
-					leftFootPosition.z -= velocity.z * weight;
+					leftFootPosition.z -= (velocity.z * weight)
+						+ (CONTINUOUS_CORRECTION_DIST * (velocity.z > 0 ? 1 : -1));
 				}
 
 				// if the foot overshot the target, move it back to the target
@@ -619,15 +638,19 @@ public class LegTweaks {
 				);
 
 				if (velocity.x * rightFootDif.x > 0) {
-					rightFootPosition.x += velocity.x * weight;
+					rightFootPosition.x += (velocity.x * weight)
+						+ (CONTINUOUS_CORRECTION_DIST * (velocity.x > 0 ? 1 : -1));
 				} else {
-					rightFootPosition.x -= velocity.x * weight;
+					rightFootPosition.x -= (velocity.x * weight)
+						+ (CONTINUOUS_CORRECTION_DIST * (velocity.x > 0 ? 1 : -1));
 				}
 
 				if (velocity.z * rightFootDif.z > 0) {
-					rightFootPosition.z += velocity.z * weight;
+					rightFootPosition.z += (velocity.z * weight)
+						+ (CONTINUOUS_CORRECTION_DIST * (velocity.z > 0 ? 1 : -1));
 				} else {
-					rightFootPosition.z -= velocity.z * weight;
+					rightFootPosition.z -= (velocity.z * weight)
+						+ (CONTINUOUS_CORRECTION_DIST * (velocity.z > 0 ? 1 : -1));
 				}
 
 				// if the foot overshot the target, move it back to the target
@@ -877,6 +900,98 @@ public class LegTweaks {
 			+ (footDif.length() - MIN_ACCEPTABLE_ERROR)
 				/ (MAX_ACCEPTABLE_ERROR - MIN_ACCEPTABLE_ERROR)
 				* (CORRECTION_WEIGHT_MAX - CORRECTION_WEIGHT_MIN);
+	}
+
+	// calculate the center of mass of the user for the current frame
+	// this is helpful for computing the lock state of the feet
+	// returns a vector in tracker space representing the center of mass
+	private Vector3f computeCenterOfMass() {
+		// preform a check to see if the needed data is available
+		if (
+			skeleton.leftAnkleNode == null
+				|| skeleton.rightAnkleNode == null
+				|| skeleton.leftKneeNode == null
+				|| skeleton.rightKneeNode == null
+				|| skeleton.headNode == null
+				|| skeleton.waistNode == null
+				|| skeleton.chestNode == null
+		) {
+			return null;
+		}
+
+		// check if arm data is available
+		boolean armsAvaliable = true;
+		if (
+			skeleton.leftHandNode == null
+				|| skeleton.rightHandNode == null
+				|| skeleton.leftElbowNode == null
+				|| skeleton.rightElbowNode == null
+				|| skeleton.leftShoulderTailNode == null
+				|| skeleton.rightShoulderTailNode == null
+		) {
+			armsAvaliable = false;
+		}
+
+		Vector3f centerOfMass = new Vector3f();
+
+		// compute the center of mass of smaller body parts and then sum them up
+		// with their respective weights
+		Vector3f head = skeleton.headNode.worldTransform.getTranslation();
+		Vector3f chest = skeleton.chestNode.worldTransform.getTranslation();
+		Vector3f waist = skeleton.waistNode.worldTransform.getTranslation();
+		Vector3f leftCalf = skeleton.leftAnkleNode.worldTransform
+			.getTranslation(null)
+			.add(skeleton.leftKneeNode.worldTransform.getTranslation(null))
+			.mult(0.5f);
+		Vector3f rightCalf = skeleton.rightAnkleNode.worldTransform
+			.getTranslation(null)
+			.add(skeleton.rightKneeNode.worldTransform.getTranslation(null))
+			.mult(0.5f);
+		Vector3f leftThigh = skeleton.leftKneeNode.worldTransform
+			.getTranslation(null)
+			.add(skeleton.leftHipNode.worldTransform.getTranslation(null))
+			.mult(0.5f);
+		Vector3f rightThigh = skeleton.rightKneeNode.worldTransform
+			.getTranslation(null)
+			.add(skeleton.rightHipNode.worldTransform.getTranslation(null))
+			.mult(0.5f);
+		centerOfMass = centerOfMass.add(head.mult(HEAD_MASS));
+		centerOfMass = centerOfMass.add(chest.mult(CHEST_MASS));
+		centerOfMass = centerOfMass.add(waist.mult(WAIST_MASS));
+		centerOfMass = centerOfMass.add(leftCalf.mult(CALF_MASS));
+		centerOfMass = centerOfMass.add(rightCalf.mult(CALF_MASS));
+		centerOfMass = centerOfMass.add(leftThigh.mult(THIGH_MASS));
+		centerOfMass = centerOfMass.add(rightThigh.mult(THIGH_MASS));
+		if (armsAvaliable) {
+			Vector3f leftUpperArm = skeleton.leftElbowNode.worldTransform
+				.getTranslation(null)
+				.add(skeleton.leftShoulderTailNode.worldTransform.getTranslation(null))
+				.mult(0.5f);
+			Vector3f rightUpperArm = skeleton.rightElbowNode.worldTransform
+				.getTranslation(null)
+				.add(skeleton.rightShoulderTailNode.worldTransform.getTranslation(null))
+				.mult(0.5f);
+			Vector3f leftForearm = skeleton.leftElbowNode.worldTransform
+				.getTranslation(null)
+				.add(skeleton.leftHandNode.worldTransform.getTranslation(null))
+				.mult(0.5f);
+			Vector3f rightForearm = skeleton.rightElbowNode.worldTransform
+				.getTranslation(null)
+				.add(skeleton.rightHandNode.worldTransform.getTranslation(null))
+				.mult(0.5f);
+			centerOfMass = centerOfMass.add(leftUpperArm.mult(UPPER_ARM_MASS));
+			centerOfMass = centerOfMass.add(rightUpperArm.mult(UPPER_ARM_MASS));
+			centerOfMass = centerOfMass.add(leftForearm.mult(FOREARM_MASS));
+			centerOfMass = centerOfMass.add(rightForearm.mult(FOREARM_MASS));
+		}
+
+		// finally translate in to tracker space
+		centerOfMass = waistPosition
+			.add(
+				centerOfMass.subtract(skeleton.trackerWaistNode.worldTransform.getTranslation(null))
+			);
+
+		return centerOfMass;
 	}
 
 	// check if the difference between two floats flipped after correction
