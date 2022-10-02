@@ -28,8 +28,6 @@ public class LegTweaks {
 	private Vector3f waistPosition = new Vector3f();
 	private Quaternion leftFootRotation = new Quaternion();
 	private Quaternion rightFootRotation = new Quaternion();
-	private Vector3f leftWaistUpperLegOffset = new Vector3f();
-	private Vector3f rightWaistUpperLegOffset = new Vector3f();
 
 	private Vector3f leftFootAcceleration = new Vector3f();
 	private Vector3f rightFootAcceleration = new Vector3f();
@@ -68,7 +66,7 @@ public class LegTweaks {
 	private static final float MAX_ACCEPTABLE_ERROR = LegTweakBuffer.SKATING_DISTANCE_CUTOFF;
 	private static final float CORRECTION_WEIGHT_MIN = 0.25f;
 	private static final float CORRECTION_WEIGHT_MAX = 0.70f;
-	private static final float CONTINUOUS_CORRECTION_DIST = 0.00005f;
+	private static final float CONTINUOUS_CORRECTION_DIST = 0.000125f;
 
 	// hyperparameters (floating feet correction)
 	private static final float FOOT_Y_CORRECTION_WEIGHT = 0.45f;
@@ -102,14 +100,6 @@ public class LegTweaks {
 
 	public LegTweaks(HumanSkeleton skeleton) {
 		this.skeleton = skeleton;
-	}
-
-	// update the offsets for the waist and upper leg
-	// this is used for correcting the knee tracker position
-	public void updateOffsets(Vector3f upperLeftLeg, Vector3f upperRightLeg, Vector3f waist) {
-		// update the relevant leg data
-		this.leftWaistUpperLegOffset = upperLeftLeg.subtract(waist);
-		this.rightWaistUpperLegOffset = upperRightLeg.subtract(waist);
 	}
 
 	public Vector3f getLeftFootPosition() {
@@ -306,19 +296,6 @@ public class LegTweaks {
 			}
 
 			bufferInvalid = false;
-		}
-
-		// update offsets for knee correction if the knees are not null
-		if (kneesActive) {
-			Vector3f temp1 = new Vector3f();
-			Vector3f temp2 = new Vector3f();
-			Vector3f temp3 = new Vector3f();
-
-			// get offsets from the waist to the upper legs
-			skeleton.leftHipNode.localTransform.getTranslation(temp1);
-			skeleton.rightHipNode.localTransform.getTranslation(temp2);
-			skeleton.trackerWaistNode.localTransform.getTranslation(temp3);
-			updateOffsets(temp1, temp2, temp3);
 		}
 
 		// update the buffer
@@ -828,8 +805,8 @@ public class LegTweaks {
 	// move the knees in to a position that is closer to the truth
 	private void solveLowerBody() {
 		// calculate the left and right waist nodes in standing space
-		Vector3f leftWaist = waistPosition;// .add(leftWaistUpperLegOffset);
-		Vector3f rightWaist = waistPosition;// .add(rightWaistUpperLegOffset);
+		Vector3f leftWaist = waistPosition;
+		Vector3f rightWaist = waistPosition;
 
 		Vector3f tempLeft;
 		Vector3f tempRight;
@@ -986,6 +963,13 @@ public class LegTweaks {
 			centerOfMass = centerOfMass.add(rightUpperArm.mult(UPPER_ARM_MASS));
 			centerOfMass = centerOfMass.add(leftForearm.mult(FOREARM_MASS));
 			centerOfMass = centerOfMass.add(rightForearm.mult(FOREARM_MASS));
+		} else {
+			// if there was no arm data, use the chest and waist as a proxy for
+			// the arms
+			centerOfMass = centerOfMass.add(chest.mult(UPPER_ARM_MASS));
+			centerOfMass = centerOfMass.add(chest.mult(FOREARM_MASS));
+			centerOfMass = centerOfMass.add(waist.mult(UPPER_ARM_MASS));
+			centerOfMass = centerOfMass.add(waist.mult(FOREARM_MASS));
 		}
 
 		// finally translate in to tracker space
