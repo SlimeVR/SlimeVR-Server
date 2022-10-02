@@ -942,11 +942,11 @@ public class LegTweaks {
 		Vector3f head = skeleton.headNode.worldTransform.getTranslation();
 		Vector3f chest = skeleton.chestNode.worldTransform.getTranslation();
 		Vector3f waist = skeleton.waistNode.worldTransform.getTranslation();
-		Vector3f leftCalf = skeleton.leftFootNode.worldTransform
+		Vector3f leftCalf = skeleton.leftAnkleNode.worldTransform
 			.getTranslation(null)
 			.add(skeleton.leftKneeNode.worldTransform.getTranslation(null))
 			.mult(0.5f);
-		Vector3f rightCalf = skeleton.rightFootNode.worldTransform
+		Vector3f rightCalf = skeleton.rightAnkleNode.worldTransform
 			.getTranslation(null)
 			.add(skeleton.rightKneeNode.worldTransform.getTranslation(null))
 			.mult(0.5f);
