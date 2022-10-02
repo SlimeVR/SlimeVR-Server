@@ -674,8 +674,7 @@ public class LegTweakBuffer {
 	}
 
 	// get the pressure prediction for the feet based of the center of mass
-	// TODO make this private
-	public float[] getPressurePrediction() {
+	private float[] getPressurePrediction() {
 		float leftFootPressure = 0;
 		float rightFootPressure = 0;
 
