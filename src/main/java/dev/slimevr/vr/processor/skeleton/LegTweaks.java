@@ -61,14 +61,14 @@ public class LegTweaks {
 	// hyperparameters (clip correction)
 	private static final float DYNAMIC_DISPLACEMENT_CUTOFF = 0.8f;
 	private static final float MAX_DYNAMIC_DISPLACEMENT = 0.08f;
-	private static final float FLOOR_CALIBRATION_OFFSET = 0.02f;
+	private static final float FLOOR_CALIBRATION_OFFSET = 0.015f;
 
 	// hyperparameters (skating correction)
 	private static final float MIN_ACCEPTABLE_ERROR = 0.05f;
 	private static final float MAX_ACCEPTABLE_ERROR = LegTweakBuffer.SKATING_DISTANCE_CUTOFF;
 	private static final float CORRECTION_WEIGHT_MIN = 0.25f;
 	private static final float CORRECTION_WEIGHT_MAX = 0.70f;
-	private static final float CONTINUOUS_CORRECTION_DIST = 0.0005f;
+	private static final float CONTINUOUS_CORRECTION_DIST = 0.00005f;
 
 	// hyperparameters (floating feet correction)
 	private static final float FOOT_Y_CORRECTION_WEIGHT = 0.45f;
@@ -908,13 +908,16 @@ public class LegTweaks {
 	private Vector3f computeCenterOfMass() {
 		// preform a check to see if the needed data is available
 		if (
-			skeleton.leftAnkleNode == null
-				|| skeleton.rightAnkleNode == null
+			skeleton.headNode == null
+				|| skeleton.chestNode == null
+				|| skeleton.waistNode == null
+				|| skeleton.leftFootNode == null
+				|| skeleton.rightFootNode == null
 				|| skeleton.leftKneeNode == null
 				|| skeleton.rightKneeNode == null
-				|| skeleton.headNode == null
-				|| skeleton.waistNode == null
-				|| skeleton.chestNode == null
+				|| skeleton.leftHipNode == null
+				|| skeleton.rightHipNode == null
+
 		) {
 			return null;
 		}
@@ -939,11 +942,11 @@ public class LegTweaks {
 		Vector3f head = skeleton.headNode.worldTransform.getTranslation();
 		Vector3f chest = skeleton.chestNode.worldTransform.getTranslation();
 		Vector3f waist = skeleton.waistNode.worldTransform.getTranslation();
-		Vector3f leftCalf = skeleton.leftAnkleNode.worldTransform
+		Vector3f leftCalf = skeleton.leftFootNode.worldTransform
 			.getTranslation(null)
 			.add(skeleton.leftKneeNode.worldTransform.getTranslation(null))
 			.mult(0.5f);
-		Vector3f rightCalf = skeleton.rightAnkleNode.worldTransform
+		Vector3f rightCalf = skeleton.rightFootNode.worldTransform
 			.getTranslation(null)
 			.add(skeleton.rightKneeNode.worldTransform.getTranslation(null))
 			.mult(0.5f);
