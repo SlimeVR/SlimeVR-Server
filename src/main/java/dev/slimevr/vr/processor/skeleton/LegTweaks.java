@@ -62,11 +62,11 @@ public class LegTweaks {
 	private static final float FLOOR_CALIBRATION_OFFSET = 0.015f;
 
 	// hyperparameters (skating correction)
-	private static final float MIN_ACCEPTABLE_ERROR = 0.05f;
+	private static final float MIN_ACCEPTABLE_ERROR = 0.01f;
 	private static final float MAX_ACCEPTABLE_ERROR = LegTweakBuffer.SKATING_DISTANCE_CUTOFF;
-	private static final float CORRECTION_WEIGHT_MIN = 0.25f;
+	private static final float CORRECTION_WEIGHT_MIN = 0.40f;
 	private static final float CORRECTION_WEIGHT_MAX = 0.70f;
-	private static final float CONTINUOUS_CORRECTION_DIST = 0.000125f;
+	private static final float CONTINUOUS_CORRECTION_DIST = 0.00012f;
 
 	// hyperparameters (floating feet correction)
 	private static final float FOOT_Y_CORRECTION_WEIGHT = 0.45f;
@@ -902,12 +902,8 @@ public class LegTweaks {
 		// check if arm data is available
 		boolean armsAvaliable = true;
 		if (
-			skeleton.leftHandNode == null
-				|| skeleton.rightHandNode == null
-				|| skeleton.leftElbowNode == null
-				|| skeleton.rightElbowNode == null
-				|| skeleton.leftShoulderTailNode == null
-				|| skeleton.rightShoulderTailNode == null
+			!skeleton.hasLeftArmTracker
+				|| !skeleton.hasRightArmTracker
 		) {
 			armsAvaliable = false;
 		}
@@ -963,13 +959,6 @@ public class LegTweaks {
 			centerOfMass = centerOfMass.add(rightUpperArm.mult(UPPER_ARM_MASS));
 			centerOfMass = centerOfMass.add(leftForearm.mult(FOREARM_MASS));
 			centerOfMass = centerOfMass.add(rightForearm.mult(FOREARM_MASS));
-		} else {
-			// if there was no arm data, use the chest and waist as a proxy for
-			// the arms
-			centerOfMass = centerOfMass.add(chest.mult(UPPER_ARM_MASS));
-			centerOfMass = centerOfMass.add(chest.mult(FOREARM_MASS));
-			centerOfMass = centerOfMass.add(waist.mult(UPPER_ARM_MASS));
-			centerOfMass = centerOfMass.add(waist.mult(FOREARM_MASS));
 		}
 
 		// finally translate in to tracker space
