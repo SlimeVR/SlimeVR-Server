@@ -557,13 +557,16 @@ public class LegTweakBuffer {
 		float rightFootScalarVel = getRightFootLockLiklyHood();
 
 		// get the third set of scalars that is based on where the COM is
+		float[] pressureScalars = getPressurePrediction();
 
 
-		// combine these two sets of scalars to get the final scalars
-		// ( -1 just makes is so if both scalars are 1.0 the final scalar is 1.0
-		// not 2)
-		leftFootSensitivityVel = leftFootScalarAccel + leftFootScalarVel - 1.0f;
-		rightFootSensitivityVel = rightFootScalarAccel + rightFootScalarVel - 1.0f;
+		// combine the scalars to get the final scalars
+		leftFootSensitivityVel = (leftFootScalarAccel
+			+ (leftFootScalarVel * pressureScalars[0] * 2))
+			/ 2.0f;
+		rightFootSensitivityVel = (rightFootScalarAccel
+			+ (rightFootScalarVel * pressureScalars[1] * 2))
+			/ 2.0f;
 
 		leftFootSensitivityAccel = leftFootScalarVel;
 		rightFootSensitivityAccel = rightFootScalarVel;
@@ -671,15 +674,18 @@ public class LegTweakBuffer {
 	}
 
 	// get the pressure prediction for the feet based of the center of mass
-	private float[] getPressurePrediction() {
+	// TODO make this private
+	public float[] getPressurePrediction() {
 		float leftFootPressure = 0;
 		float rightFootPressure = 0;
 
 		// get the distance from the center of mass to the feet
 		float leftFootDist = leftFootPosition
+			.clone()
 			.setY(0)
 			.distance(centerOfMass.setY(0));
 		float rightFootDist = rightFootPosition
+			.clone()
 			.setY(0)
 			.distance(centerOfMass.setY(0));
 
@@ -687,10 +693,11 @@ public class LegTweakBuffer {
 		leftFootPressure = 1 / (leftFootDist * leftFootDist);
 		rightFootPressure = 1 / (rightFootDist * rightFootDist);
 
+
 		// the further from the floor the less pressure (again using the inverse
 		// square law)
-		leftFootPressure *= 1 / Math.abs((leftFootPosition.y - leftFloorLevel));
-		rightFootPressure *= 1 / Math.abs((rightFootPosition.y - rightFloorLevel));
+		leftFootPressure *= 1 / Math.abs((leftFootPosition.y - leftFloorLevel + 0.1f));
+		rightFootPressure *= 1 / Math.abs((rightFootPosition.y - rightFloorLevel + 0.1f));
 
 		// normalize the pressure
 		float totalPressure = leftFootPressure + rightFootPressure;
