@@ -9,7 +9,7 @@ import dev.slimevr.vr.trackers.TrackerWithFiltering;
 public class FiltersConfig {
 
 	// Type of filtering applied (none, smoothing or prediction)
-	private String type = "smoothing";
+	private String type = "prediction";
 
 	// Amount/Intensity of the specified filtering (0 to 1)
 	private float amount = 0.2f;
