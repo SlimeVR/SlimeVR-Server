@@ -67,6 +67,7 @@ public class LegTweaks {
 	private static final float CORRECTION_WEIGHT_MIN = 0.40f;
 	private static final float CORRECTION_WEIGHT_MAX = 0.70f;
 	private static final float CONTINUOUS_CORRECTION_DIST = 0.00012f;
+	private static final int CONTINUOUS_CORRECTION_WARMUP = 25;
 
 	// hyperparameters (floating feet correction)
 	private static final float FOOT_Y_CORRECTION_WEIGHT = 0.45f;
@@ -93,6 +94,12 @@ public class LegTweaks {
 	private static final float NEARLY_ZERO = 0.005f;
 	private static final float STANDING_CUTOFF_VERTICAL = 0.65f;
 	private static final float MAX_DISENGAGMENT_OFFSET = 0.30f;
+
+	// counters
+	private int leftframesLocked = 0;
+	private int rightframesLocked = 0;
+	private int leftframesUnlocked = 0;
+	private int rightframesUnlocked = 0;
 
 	// buffer for holding previus frames of data
 	private LegTweakBuffer bufferHead = new LegTweakBuffer();
@@ -334,9 +341,13 @@ public class LegTweaks {
 			currentFrame.setDetectionMode(LegTweakBuffer.ANKLE_ACCEL);
 		}
 
+		// update the buffer head and compute the current state of the legs
 		currentFrame.setParent(bufferHead);
 		this.bufferHead = currentFrame;
 		this.bufferHead.calculateFootAttributes(active);
+
+		// update the lock duration counters
+		updateLockStateCounters();
 
 		return true;
 	}
@@ -541,18 +552,18 @@ public class LegTweaks {
 
 				if (velocity.x * leftFootDif.x > 0) {
 					leftFootPosition.x += (velocity.x * weight)
-						+ (CONTINUOUS_CORRECTION_DIST * (velocity.x > 0 ? 1 : -1));
+						+ (getConstantCorrectionQuantityLeft() * (velocity.x > 0 ? 1 : -1));
 				} else {
 					leftFootPosition.x -= (velocity.x * weight)
-						+ (CONTINUOUS_CORRECTION_DIST * (velocity.x > 0 ? 1 : -1));
+						+ (getConstantCorrectionQuantityLeft() * (velocity.x > 0 ? 1 : -1));
 				}
 
 				if (velocity.z * leftFootDif.z > 0) {
 					leftFootPosition.z += (velocity.z * weight)
-						+ (CONTINUOUS_CORRECTION_DIST * (velocity.z > 0 ? 1 : -1));
+						+ (getConstantCorrectionQuantityLeft() * (velocity.z > 0 ? 1 : -1));
 				} else {
 					leftFootPosition.z -= (velocity.z * weight)
-						+ (CONTINUOUS_CORRECTION_DIST * (velocity.z > 0 ? 1 : -1));
+						+ (getConstantCorrectionQuantityLeft() * (velocity.z > 0 ? 1 : -1));
 				}
 
 				// if the foot overshot the target, move it back to the target
@@ -616,18 +627,18 @@ public class LegTweaks {
 
 				if (velocity.x * rightFootDif.x > 0) {
 					rightFootPosition.x += (velocity.x * weight)
-						+ (CONTINUOUS_CORRECTION_DIST * (velocity.x > 0 ? 1 : -1));
+						+ (getConstantCorrectionQuantityRight() * (velocity.x > 0 ? 1 : -1));
 				} else {
 					rightFootPosition.x -= (velocity.x * weight)
-						+ (CONTINUOUS_CORRECTION_DIST * (velocity.x > 0 ? 1 : -1));
+						+ (getConstantCorrectionQuantityRight() * (velocity.x > 0 ? 1 : -1));
 				}
 
 				if (velocity.z * rightFootDif.z > 0) {
 					rightFootPosition.z += (velocity.z * weight)
-						+ (CONTINUOUS_CORRECTION_DIST * (velocity.z > 0 ? 1 : -1));
+						+ (getConstantCorrectionQuantityRight() * (velocity.z > 0 ? 1 : -1));
 				} else {
 					rightFootPosition.z -= (velocity.z * weight)
-						+ (CONTINUOUS_CORRECTION_DIST * (velocity.z > 0 ? 1 : -1));
+						+ (getConstantCorrectionQuantityRight() * (velocity.z > 0 ? 1 : -1));
 				}
 
 				// if the foot overshot the target, move it back to the target
@@ -968,6 +979,33 @@ public class LegTweaks {
 			);
 
 		return centerOfMass;
+	}
+
+	// get the amount of the constant correction to apply.
+	private float getConstantCorrectionQuantityLeft() {
+		return CONTINUOUS_CORRECTION_DIST * (leftframesUnlocked / CONTINUOUS_CORRECTION_WARMUP);
+	}
+
+	private float getConstantCorrectionQuantityRight() {
+		return CONTINUOUS_CORRECTION_DIST * (rightframesUnlocked / CONTINUOUS_CORRECTION_WARMUP);
+	}
+
+	// update counters for the lock state of the feet
+	private void updateLockStateCounters() {
+		if (bufferHead.getLeftLegState() == LegTweakBuffer.LOCKED) {
+			leftframesUnlocked = 0;
+			leftframesLocked++;
+		} else {
+			leftframesLocked = 0;
+			leftframesUnlocked++;
+		}
+		if (bufferHead.getRightLegState() == LegTweakBuffer.LOCKED) {
+			rightframesUnlocked = 0;
+			rightframesLocked++;
+		} else {
+			rightframesLocked = 0;
+			rightframesUnlocked++;
+		}
 	}
 
 	// check if the difference between two floats flipped after correction
