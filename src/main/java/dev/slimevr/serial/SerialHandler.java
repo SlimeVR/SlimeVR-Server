@@ -11,6 +11,8 @@ import java.nio.ByteBuffer;
 import java.nio.charset.StandardCharsets;
 import java.util.concurrent.CopyOnWriteArrayList;
 import java.util.List;
+import java.util.concurrent.*;
+import static java.util.concurrent.TimeUnit.*;
 
 
 public class SerialHandler implements SerialPortMessageListener {
@@ -37,6 +39,8 @@ public class SerialHandler implements SerialPortMessageListener {
 				port.getDescriptivePortName().toLowerCase().contains("ch340")
 					|| port.getDescriptivePortName().toLowerCase().contains("cp21")
 					|| port.getDescriptivePortName().toLowerCase().contains("ch910")
+					|| (port.getDescriptivePortName().toLowerCase().contains("usb")
+						&& port.getDescriptivePortName().toLowerCase().contains("seri"))
 			) {
 				trackerPort = port;
 				break;
@@ -45,15 +49,28 @@ public class SerialHandler implements SerialPortMessageListener {
 		if (trackerPort == null) {
 			return false;
 		}
-
+		trackerPort.setBaudRate(115200);
+		trackerPort.clearRTS();
+		trackerPort.clearDTR();
 		if (!trackerPort.openPort()) {
 			return false;
 		}
 
-		trackerPort.setBaudRate(115200);
 		trackerPort.addDataListener(this);
 		this.listeners.forEach((listener) -> listener.onSerialConnected(trackerPort));
 		return true;
+	}
+
+	public void rebootRequest() {
+		this.writeSerial("REBOOT");
+	}
+
+	public void factoryResetRequest() {
+		this.writeSerial("FRST");
+	}
+
+	public void infoRequest() {
+		this.writeSerial("GET INFO");
 	}
 
 	public void closeSerial() {
@@ -68,14 +85,30 @@ public class SerialHandler implements SerialPortMessageListener {
 		}
 	}
 
+	private void writeSerial(String serialText) {
+		if (trackerPort == null)
+			return;
+		OutputStream os = trackerPort.getOutputStream();
+		OutputStreamWriter writer = new OutputStreamWriter(os);
+		try {
+			writer.append(serialText + "\n");
+			writer.flush();
+			this.addLog("-> " + serialText + "\n");
+		} catch (IOException e) {
+			addLog(e + "\n");
+			e.printStackTrace();
+		}
+	}
+
 	public void setWifi(String ssid, String passwd) {
 		if (trackerPort == null)
 			return;
 		OutputStream os = trackerPort.getOutputStream();
 		OutputStreamWriter writer = new OutputStreamWriter(os);
 		try {
-			writer.append("SET WIFI \"" + ssid + "\" \"" + passwd + "\"\n");
+			writer.append("SET WIFI \"" + ssid + "\" \"" + passwd + "\"");
 			writer.flush();
+			this.addLog("-> SET WIFI \"" + ssid + "\" \"" + passwd.replaceAll(".", "*") + "\"\n");
 		} catch (IOException e) {
 			addLog(e + "\n");
 			e.printStackTrace();
