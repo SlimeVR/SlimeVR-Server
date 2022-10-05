@@ -72,7 +72,7 @@ public class LegTweaks {
 	// hyperparameters (floating feet correction)
 	private static final float FOOT_Y_CORRECTION_WEIGHT = 0.45f;
 	private static final float FOOT_Y_MAX_ACCELERATION = 0.40f;
-	private static final float FOOT_Y_DIFF_CUTOFF = 0.15f;
+	private static final float FOOT_Y_DIFF_CUTOFF = 0.05f;
 
 	// hyperparameters (knee / waist correction)
 	private static final float KNEE_CORRECTION_WEIGHT = 0.00f;
