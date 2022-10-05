@@ -1831,6 +1831,8 @@ public class HumanSkeleton extends Skeleton implements SkeletonConfigCallback {
 
 	private boolean shouldResetMounting(TrackerPosition position) {
 		return position != null
+			// TODO: Feet can't currently be reset using this method, maybe
+			// they'll need a separate step just for them?
 			&& position != TrackerPosition.LEFT_FOOT
 			&& position != TrackerPosition.RIGHT_FOOT;
 	}
@@ -1838,7 +1840,11 @@ public class HumanSkeleton extends Skeleton implements SkeletonConfigCallback {
 	private boolean shouldReverseYaw(TrackerPosition position) {
 		return position != null
 			&& (position == TrackerPosition.LEFT_UPPER_LEG
-				|| position == TrackerPosition.RIGHT_UPPER_LEG);
+				|| position == TrackerPosition.RIGHT_UPPER_LEG
+				|| position == TrackerPosition.LEFT_LOWER_ARM
+				|| position == TrackerPosition.RIGHT_LOWER_ARM
+				|| position == TrackerPosition.LEFT_HAND
+				|| position == TrackerPosition.RIGHT_HAND);
 	}
 
 	@Override

@@ -11,9 +11,8 @@ public class ReferenceAdjustedTracker<E extends Tracker> implements Tracker {
 
 	public final E tracker;
 
-	// Two vectors for mounting rotation correction
-	private static final Vector3f upVector = new Vector3f(0f, 1f, 0f);
-	public final Vector3f rotVector = new Vector3f(upVector);
+	// Vector for mounting rotation correction (tilt direction)
+	public final Vector3f rotVector = new Vector3f();
 
 	public final Quaternion gyroFix = new Quaternion();
 	public final Quaternion attachmentFix = new Quaternion();
@@ -93,8 +92,8 @@ public class ReferenceAdjustedTracker<E extends Tracker> implements Tracker {
 		gyroFix.mult(buffer, buffer);
 		buffer.multLocal(attachmentFix);
 
-		// Reset the vector for the rotation
-		rotVector.set(upVector);
+		// Reset the vector for the rotation to point straight up
+		rotVector.set(0f, 1f, 0f);
 		// Rotate the vector by the quat, then flatten and normalize the vector
 		buffer.multLocal(rotVector).setY(0f).normalizeLocal();
 
