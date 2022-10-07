@@ -70,9 +70,9 @@ public class LegTweaks {
 	private static final int CONTINUOUS_CORRECTION_WARMUP = 25;
 
 	// hyperparameters (floating feet correction)
-	private static final float FOOT_Y_CORRECTION_WEIGHT = 0.45f;
-	private static final float FOOT_Y_MAX_ACCELERATION = 0.40f;
-	private static final float FOOT_Y_DIFF_CUTOFF = 0.05f;
+	private static final float FOOT_Y_CORRECTION_WEIGHT = 0.75f;
+	private static final float FOOT_Y_MAX_ACCELERATION = 0.20f;
+	private static final float FOOT_Y_DIFF_CUTOFF = 0.02f;
 
 	// hyperparameters (knee / waist correction)
 	private static final float KNEE_CORRECTION_WEIGHT = 0.00f;
@@ -91,7 +91,7 @@ public class LegTweaks {
 
 
 	// hyperparameters (misc)
-	private static final float NEARLY_ZERO = 0.005f;
+	private static final float NEARLY_ZERO = 0.00001f;
 	private static final float STANDING_CUTOFF_VERTICAL = 0.65f;
 	private static final float MAX_DISENGAGMENT_OFFSET = 0.30f;
 
@@ -682,7 +682,9 @@ public class LegTweaks {
 					&& leftFootPosition.y > lastPositionY
 					&& bufferHead.getLeftFootAccelerationY() < FOOT_Y_MAX_ACCELERATION
 			) {
-				leftFootPosition.y = lastPositionY;
+				leftFootPosition.y = (floorLevel
+					+ (MAX_DYNAMIC_DISPLACEMENT * getLeftFootOffset()))
+					- currentDisengagementOffset;
 				correctLeft = false;
 			}
 		}
@@ -697,7 +699,9 @@ public class LegTweaks {
 					&& rightFootPosition.y > lastPositionY
 					&& bufferHead.getRightFootAccelerationY() < FOOT_Y_MAX_ACCELERATION
 			) {
-				rightFootPosition.y = lastPositionY;
+				rightFootPosition.y = (floorLevel
+					+ (MAX_DYNAMIC_DISPLACEMENT * getRightFootOffset()))
+					- currentDisengagementOffset;
 				correctRight = false;
 			}
 		}
@@ -711,28 +715,11 @@ public class LegTweaks {
 	}
 
 	private void correctLeftFootTrackerY() {
-		Vector3f temp;
 		Vector3f leftFootDif = leftFootPosition
 			.subtract(bufferHead.getParent().getLeftFootPositionCorrected(null));
 
 		if (Math.abs(leftFootDif.y) > NEARLY_ZERO) {
-			temp = bufferHead
-				.getParent()
-				.getLeftFootPositionCorrected(null)
-				.subtract(
-					bufferHead
-						.getParent()
-						.getLeftFootPosition(null)
-						.subtract(bufferHead.getLeftFootPosition(null))
-				);
-
-			float leftFloor = (floorLevel + (MAX_DYNAMIC_DISPLACEMENT * getLeftFootOffset()))
-				- currentDisengagementOffset;
-
-			leftFootPosition.y = temp.y < leftFloor ? leftFloor : temp.y;
-
 			Vector3f velocity = bufferHead.getLeftFootVelocity(null);
-
 			if (velocity.y * leftFootDif.y > 0) {
 				leftFootPosition.y += velocity.y * FOOT_Y_CORRECTION_WEIGHT;
 			} else {
@@ -747,34 +734,21 @@ public class LegTweaks {
 					leftFootPosition.y
 				)
 			) {
-				leftFootPosition.y = bufferHead.getLeftFootPosition(null).y;
+				leftFootPosition.y = (floorLevel
+					+ (MAX_DYNAMIC_DISPLACEMENT * getLeftFootOffset()))
+					- currentDisengagementOffset;
+				if (bufferHead.getLeftFootPosition(null).y > leftFootPosition.y)
+					leftFootPosition.y = bufferHead.getLeftFootPosition(null).y;
 			}
 		}
 	}
 
 	private void correctRightFootTrackerY() {
-		Vector3f temp;
 		Vector3f rightFootDif = rightFootPosition
 			.subtract(bufferHead.getParent().getRightFootPositionCorrected(null));
 
 		if (Math.abs(rightFootDif.y) > NEARLY_ZERO) {
-			temp = bufferHead
-				.getParent()
-				.getRightFootPositionCorrected(null)
-				.subtract(
-					bufferHead
-						.getParent()
-						.getRightFootPosition(null)
-						.subtract(bufferHead.getRightFootPosition(null))
-				);
-
-			float rightFloor = (floorLevel + (MAX_DYNAMIC_DISPLACEMENT * getRightFootOffset()))
-				- currentDisengagementOffset;
-
-			rightFootPosition.y = temp.y < rightFloor ? rightFloor : temp.y;
-
 			Vector3f velocity = bufferHead.getRightFootVelocity(null);
-
 			if (velocity.y * rightFootDif.y > 0) {
 				rightFootPosition.y += velocity.y * FOOT_Y_CORRECTION_WEIGHT;
 			} else {
@@ -789,7 +763,11 @@ public class LegTweaks {
 					rightFootPosition.y
 				)
 			) {
-				rightFootPosition.y = bufferHead.getRightFootPosition(null).y;
+				rightFootPosition.y = (floorLevel
+					+ (MAX_DYNAMIC_DISPLACEMENT * getRightFootOffset()))
+					- currentDisengagementOffset;
+				if (bufferHead.getRightFootPosition(null).y > rightFootPosition.y)
+					rightFootPosition.y = bufferHead.getRightFootPosition(null).y;
 			}
 		}
 	}
