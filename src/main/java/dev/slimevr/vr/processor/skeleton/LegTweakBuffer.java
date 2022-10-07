@@ -72,7 +72,7 @@ public class LegTweakBuffer {
 	private float rightFloorLevel;
 
 	// hyperparameters
-	public static final float SKATING_DISTANCE_CUTOFF = 0.225f;
+	public static final float SKATING_DISTANCE_CUTOFF = 1.0f;
 	private static final float SKATING_VELOCITY_THRESHOLD = 4.25f;
 	private static final float SKATING_ACCELERATION_THRESHOLD = 1.15f;
 	private static final float SKATING_ROTVELOCITY_THRESHOLD = 4.5f;
