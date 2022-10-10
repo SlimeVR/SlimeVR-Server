@@ -63,10 +63,10 @@ public class LegTweaks {
 
 	// hyperparameters (skating correction)
 	private static final float MIN_ACCEPTABLE_ERROR = 0.01f;
-	private static final float MAX_ACCEPTABLE_ERROR = LegTweakBuffer.SKATING_DISTANCE_CUTOFF;
+	private static final float MAX_ACCEPTABLE_ERROR = 0.225f;
 	private static final float CORRECTION_WEIGHT_MIN = 0.40f;
 	private static final float CORRECTION_WEIGHT_MAX = 0.70f;
-	private static final float CONTINUOUS_CORRECTION_DIST = 0.075f;
+	private static final float CONTINUOUS_CORRECTION_DIST = 0.15f;
 	private static final int CONTINUOUS_CORRECTION_WARMUP = 30;
 
 	// hyperparameters (floating feet correction)
@@ -368,8 +368,8 @@ public class LegTweaks {
 		if (skatingCorrectionEnabled)
 			correctSkating();
 
-		if (skatingCorrectionEnabled && floorclipEnabled)
-			correctFloat();
+		// if (skatingCorrectionEnabled && floorclipEnabled)
+		// correctFloat();
 
 		// determine if either leg is in a position to activate or deactivate
 		// (use the buffer to get the positions before corrections)
@@ -554,24 +554,24 @@ public class LegTweaks {
 					leftFootPosition.x += (velocity.x * weight)
 						+ (getConstantCorrectionQuantityLeft()
 							* (velocity.x > 0 ? 1 : -1)
-							* bufferHead.getTimeDelta());
+							/ bufferHead.getTimeDelta());
 				} else if (velocity.x * leftFootDif.x < 0) {
 					leftFootPosition.x -= (velocity.x * weight)
 						+ (getConstantCorrectionQuantityLeft()
 							* (velocity.x > 0 ? 1 : -1)
-							* bufferHead.getTimeDelta());
+							/ bufferHead.getTimeDelta());
 				}
 
 				if (velocity.z * leftFootDif.z > 0) {
 					leftFootPosition.z += (velocity.z * weight)
 						+ (getConstantCorrectionQuantityLeft()
 							* (velocity.z > 0 ? 1 : -1)
-							* bufferHead.getTimeDelta());
+							/ bufferHead.getTimeDelta());
 				} else if (velocity.z * leftFootDif.z < 0) {
 					leftFootPosition.z -= (velocity.z * weight)
 						+ (getConstantCorrectionQuantityLeft()
 							* (velocity.z > 0 ? 1 : -1)
-							* bufferHead.getTimeDelta());
+							/ bufferHead.getTimeDelta());
 				}
 
 				// if the foot overshot the target, move it back to the target
@@ -637,24 +637,24 @@ public class LegTweaks {
 					rightFootPosition.x += (velocity.x * weight)
 						+ (getConstantCorrectionQuantityRight()
 							* (velocity.x > 0 ? 1 : -1)
-							* bufferHead.getTimeDelta());
+							/ bufferHead.getTimeDelta());
 				} else if (velocity.x * rightFootDif.x < 0) {
 					rightFootPosition.x -= (velocity.x * weight)
 						+ (getConstantCorrectionQuantityRight()
 							* (velocity.x > 0 ? 1 : -1)
-							* bufferHead.getTimeDelta());
+							/ bufferHead.getTimeDelta());
 				}
 
 				if (velocity.z * rightFootDif.z > 0) {
 					rightFootPosition.z += (velocity.z * weight)
 						+ (getConstantCorrectionQuantityRight()
 							* (velocity.z > 0 ? 1 : -1)
-							* bufferHead.getTimeDelta());
+							/ bufferHead.getTimeDelta());
 				} else if (velocity.z * rightFootDif.z < 0) {
 					rightFootPosition.z -= (velocity.z * weight)
 						+ (getConstantCorrectionQuantityRight()
 							* (velocity.z > 0 ? 1 : -1)
-							* bufferHead.getTimeDelta());
+							/ bufferHead.getTimeDelta());
 				}
 
 				// if the foot overshot the target, move it back to the target
