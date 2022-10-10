@@ -340,6 +340,13 @@ public class LegTweakBuffer {
 		return this.rightFootAcceleration.y;
 	}
 
+	// returns 1 / delta time
+	public float getTimeDelta() {
+		if (parent == null)
+			return 0.0f;
+		return 1.0f / ((timeOfFrame - parent.timeOfFrame) / NS_CONVERT);
+	}
+
 	public void setDetectionMode(int mode) {
 		this.detectionMode = mode;
 	}
@@ -396,8 +403,7 @@ public class LegTweakBuffer {
 
 	// check if a locked foot should stay locked or be released
 	private int checkStateLeft() {
-		float timeStep = 1.0f / ((timeOfFrame - parent.timeOfFrame) / NS_CONVERT);
-
+		float timeStep = getTimeDelta();
 		if (parent.leftLegState == UNLOCKED) {
 			if (
 				parent.getLeftFootHorizantalDifference() > SKATING_CUTOFF_ENGAGE
@@ -431,7 +437,7 @@ public class LegTweakBuffer {
 
 	// check if a locked foot should stay locked or be released
 	private int checkStateRight() {
-		float timeStep = 1.0f / ((timeOfFrame - parent.timeOfFrame) / NS_CONVERT);
+		float timeStep = getTimeDelta();
 
 		if (parent.rightLegState == UNLOCKED) {
 			if (

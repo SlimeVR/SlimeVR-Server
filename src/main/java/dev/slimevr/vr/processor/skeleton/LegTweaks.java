@@ -66,8 +66,8 @@ public class LegTweaks {
 	private static final float MAX_ACCEPTABLE_ERROR = LegTweakBuffer.SKATING_DISTANCE_CUTOFF;
 	private static final float CORRECTION_WEIGHT_MIN = 0.40f;
 	private static final float CORRECTION_WEIGHT_MAX = 0.70f;
-	private static final float CONTINUOUS_CORRECTION_DIST = 0.00012f;
-	private static final int CONTINUOUS_CORRECTION_WARMUP = 25;
+	private static final float CONTINUOUS_CORRECTION_DIST = 0.075f;
+	private static final int CONTINUOUS_CORRECTION_WARMUP = 30;
 
 	// hyperparameters (floating feet correction)
 	private static final float FOOT_Y_CORRECTION_WEIGHT = 0.75f;
@@ -552,18 +552,26 @@ public class LegTweaks {
 
 				if (velocity.x * leftFootDif.x > 0) {
 					leftFootPosition.x += (velocity.x * weight)
-						+ (getConstantCorrectionQuantityLeft() * (velocity.x > 0 ? 1 : -1));
-				} else {
+						+ (getConstantCorrectionQuantityLeft()
+							* (velocity.x > 0 ? 1 : -1)
+							* bufferHead.getTimeDelta());
+				} else if (velocity.x * leftFootDif.x < 0) {
 					leftFootPosition.x -= (velocity.x * weight)
-						+ (getConstantCorrectionQuantityLeft() * (velocity.x > 0 ? 1 : -1));
+						+ (getConstantCorrectionQuantityLeft()
+							* (velocity.x > 0 ? 1 : -1)
+							* bufferHead.getTimeDelta());
 				}
 
 				if (velocity.z * leftFootDif.z > 0) {
 					leftFootPosition.z += (velocity.z * weight)
-						+ (getConstantCorrectionQuantityLeft() * (velocity.z > 0 ? 1 : -1));
-				} else {
+						+ (getConstantCorrectionQuantityLeft()
+							* (velocity.z > 0 ? 1 : -1)
+							* bufferHead.getTimeDelta());
+				} else if (velocity.z * leftFootDif.z < 0) {
 					leftFootPosition.z -= (velocity.z * weight)
-						+ (getConstantCorrectionQuantityLeft() * (velocity.z > 0 ? 1 : -1));
+						+ (getConstantCorrectionQuantityLeft()
+							* (velocity.z > 0 ? 1 : -1)
+							* bufferHead.getTimeDelta());
 				}
 
 				// if the foot overshot the target, move it back to the target
@@ -627,18 +635,26 @@ public class LegTweaks {
 
 				if (velocity.x * rightFootDif.x > 0) {
 					rightFootPosition.x += (velocity.x * weight)
-						+ (getConstantCorrectionQuantityRight() * (velocity.x > 0 ? 1 : -1));
-				} else {
+						+ (getConstantCorrectionQuantityRight()
+							* (velocity.x > 0 ? 1 : -1)
+							* bufferHead.getTimeDelta());
+				} else if (velocity.x * rightFootDif.x < 0) {
 					rightFootPosition.x -= (velocity.x * weight)
-						+ (getConstantCorrectionQuantityRight() * (velocity.x > 0 ? 1 : -1));
+						+ (getConstantCorrectionQuantityRight()
+							* (velocity.x > 0 ? 1 : -1)
+							* bufferHead.getTimeDelta());
 				}
 
 				if (velocity.z * rightFootDif.z > 0) {
 					rightFootPosition.z += (velocity.z * weight)
-						+ (getConstantCorrectionQuantityRight() * (velocity.z > 0 ? 1 : -1));
-				} else {
+						+ (getConstantCorrectionQuantityRight()
+							* (velocity.z > 0 ? 1 : -1)
+							* bufferHead.getTimeDelta());
+				} else if (velocity.z * rightFootDif.z < 0) {
 					rightFootPosition.z -= (velocity.z * weight)
-						+ (getConstantCorrectionQuantityRight() * (velocity.z > 0 ? 1 : -1));
+						+ (getConstantCorrectionQuantityRight()
+							* (velocity.z > 0 ? 1 : -1)
+							* bufferHead.getTimeDelta());
 				}
 
 				// if the foot overshot the target, move it back to the target
@@ -961,11 +977,13 @@ public class LegTweaks {
 
 	// get the amount of the constant correction to apply.
 	private float getConstantCorrectionQuantityLeft() {
-		return CONTINUOUS_CORRECTION_DIST * (leftframesUnlocked / CONTINUOUS_CORRECTION_WARMUP);
+		return CONTINUOUS_CORRECTION_DIST
+			* ((float) leftframesUnlocked / CONTINUOUS_CORRECTION_WARMUP);
 	}
 
 	private float getConstantCorrectionQuantityRight() {
-		return CONTINUOUS_CORRECTION_DIST * (rightframesUnlocked / CONTINUOUS_CORRECTION_WARMUP);
+		return CONTINUOUS_CORRECTION_DIST
+			* ((float) rightframesUnlocked / CONTINUOUS_CORRECTION_WARMUP);
 	}
 
 	// update counters for the lock state of the feet
