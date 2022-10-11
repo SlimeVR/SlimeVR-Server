@@ -66,7 +66,7 @@ public class LegTweaks {
 	private static final float MAX_ACCEPTABLE_ERROR = 0.225f;
 	private static final float CORRECTION_WEIGHT_MIN = 0.40f;
 	private static final float CORRECTION_WEIGHT_MAX = 0.70f;
-	private static final float CONTINUOUS_CORRECTION_DIST = 0.15f;
+	private static final float CONTINUOUS_CORRECTION_DIST = 0.015f;
 	private static final int CONTINUOUS_CORRECTION_WARMUP = 50;
 
 	// hyperparameters (floating feet correction)

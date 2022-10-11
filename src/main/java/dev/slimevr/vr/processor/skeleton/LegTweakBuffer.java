@@ -340,6 +340,14 @@ public class LegTweakBuffer {
 		return this.rightFootAcceleration.y;
 	}
 
+	public float getLeftFloorLevel() {
+		return leftFloorLevel;
+	}
+
+	public float getRightFloorLevel() {
+		return rightFloorLevel;
+	}
+
 	// returns 1 / delta time
 	public float getTimeDelta() {
 		if (parent == null)
@@ -568,11 +576,11 @@ public class LegTweakBuffer {
 
 		// combine the scalars to get the final scalars
 		leftFootSensitivityVel = (leftFootScalarAccel
-			+ (leftFootScalarVel * pressureScalars[0] * 2))
-			/ 2.0f;
+			+ leftFootScalarVel / 2.0f)
+			* clamp(0.1f, 2.0f, pressureScalars[0] * 2);
 		rightFootSensitivityVel = (rightFootScalarAccel
-			+ (rightFootScalarVel * pressureScalars[1] * 2))
-			/ 2.0f;
+			+ rightFootScalarVel / 2.0f)
+			* clamp(0.1f, 2.0f, pressureScalars[1] * 2);
 
 		leftFootSensitivityAccel = leftFootScalarVel;
 		rightFootSensitivityAccel = rightFootScalarVel;
@@ -680,6 +688,8 @@ public class LegTweakBuffer {
 	}
 
 	// get the pressure prediction for the feet based of the center of mass
+	// this can also be used to determine if a foot hovering above the ground
+	// should be locked to the ground
 	private float[] getPressurePrediction() {
 		float leftFootPressure = 0;
 		float rightFootPressure = 0;
@@ -693,14 +703,12 @@ public class LegTweakBuffer {
 			.clone()
 			.setY(0)
 			.distance(centerOfMass.setY(0));
-
-		// use a simple inverse square law to determine the pressure
+		// use the inverse square law for the pressure prediction
 		leftFootPressure = 1 / (leftFootDist * leftFootDist);
 		rightFootPressure = 1 / (rightFootDist * rightFootDist);
 
-
-		// the further from the floor the less pressure (again using the inverse
-		// square law)
+		// the further from the floor the less pressure (again using the
+		// inverse)
 		leftFootPressure *= 1 / Math.abs((leftFootPosition.y - leftFloorLevel + 0.1f));
 		rightFootPressure *= 1 / Math.abs((rightFootPosition.y - rightFloorLevel + 0.1f));
 
@@ -710,5 +718,10 @@ public class LegTweakBuffer {
 		rightFootPressure /= totalPressure;
 
 		return new float[] { leftFootPressure, rightFootPressure };
+	}
+
+	// clamp a float between two values
+	private float clamp(float min, float max, float val) {
+		return Math.min(max, Math.max(min, val));
 	}
 }
