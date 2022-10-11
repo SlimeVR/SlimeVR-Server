@@ -58,6 +58,18 @@ public class RPCHandler extends ProtocolHandler<RpcMessageHeader>
 		);
 
 		registerPacketListener(RpcMessage.SetWifiRequest, this::onSetWifiRequest);
+		registerPacketListener(
+			RpcMessage.SerialTrackerRebootRequest,
+			this::SerialTrackerRebootRequest
+		);
+		registerPacketListener(
+			RpcMessage.SerialTrackerGetInfoRequest,
+			this::SerialTrackerGetInfoRequest
+		);
+		registerPacketListener(
+			RpcMessage.SerialTrackerFactoryResetRequest,
+			this::SerialTrackerFactoryResetRequest
+		);
 		registerPacketListener(RpcMessage.OpenSerialRequest, this::onOpenSerialRequest);
 		registerPacketListener(RpcMessage.CloseSerialRequest, this::onCloseSerialRequest);
 
@@ -532,6 +544,96 @@ public class RPCHandler extends ProtocolHandler<RpcMessageHeader>
 					fbb.finish(outbound);
 
 					conn.send(fbb.dataBuffer());
+				});
+		});
+	}
+
+	public void SerialTrackerRebootRequest(
+		GenericConnection conn,
+		RpcMessageHeader messageHeader
+	) {
+		SerialTrackerRebootRequest req = (SerialTrackerRebootRequest) messageHeader
+			.message(new SerialTrackerRebootRequest());
+		if (req == null)
+			return;
+
+		this.api.server.getSerialHandler().rebootRequest();
+
+		this.api.getAPIServers().forEach((server) -> {
+			server
+				.getAPIConnections()
+				.filter(conn2 -> conn2.getContext().useSerial())
+				.forEach((conn2) -> {
+					FlatBufferBuilder fbb = new FlatBufferBuilder(32);
+
+					SerialUpdateResponse.startSerialUpdateResponse(fbb);
+					SerialUpdateResponse.addClosed(fbb, false);
+					int update = SerialUpdateResponse.endSerialUpdateResponse(fbb);
+					int outbound = this
+						.createRPCMessage(fbb, RpcMessage.SerialUpdateResponse, update);
+					fbb.finish(outbound);
+
+					conn2.send(fbb.dataBuffer());
+				});
+		});
+	}
+
+	public void SerialTrackerGetInfoRequest(
+		GenericConnection conn,
+		RpcMessageHeader messageHeader
+	) {
+		SerialTrackerGetInfoRequest req = (SerialTrackerGetInfoRequest) messageHeader
+			.message(new SerialTrackerGetInfoRequest());
+		if (req == null)
+			return;
+
+		this.api.server.getSerialHandler().infoRequest();
+
+		this.api.getAPIServers().forEach((server) -> {
+			server
+				.getAPIConnections()
+				.filter(conn2 -> conn2.getContext().useSerial())
+				.forEach((conn2) -> {
+					FlatBufferBuilder fbb = new FlatBufferBuilder(32);
+
+					SerialUpdateResponse.startSerialUpdateResponse(fbb);
+					SerialUpdateResponse.addClosed(fbb, false);
+					int update = SerialUpdateResponse.endSerialUpdateResponse(fbb);
+					int outbound = this
+						.createRPCMessage(fbb, RpcMessage.SerialUpdateResponse, update);
+					fbb.finish(outbound);
+
+					conn2.send(fbb.dataBuffer());
+				});
+		});
+	}
+
+	public void SerialTrackerFactoryResetRequest(
+		GenericConnection conn,
+		RpcMessageHeader messageHeader
+	) {
+		SerialTrackerFactoryResetRequest req = (SerialTrackerFactoryResetRequest) messageHeader
+			.message(new SerialTrackerFactoryResetRequest());
+		if (req == null)
+			return;
+
+		this.api.server.getSerialHandler().factoryResetRequest();
+
+		this.api.getAPIServers().forEach((server) -> {
+			server
+				.getAPIConnections()
+				.filter(conn2 -> conn2.getContext().useSerial())
+				.forEach((conn2) -> {
+					FlatBufferBuilder fbb = new FlatBufferBuilder(32);
+
+					SerialUpdateResponse.startSerialUpdateResponse(fbb);
+					SerialUpdateResponse.addClosed(fbb, false);
+					int update = SerialUpdateResponse.endSerialUpdateResponse(fbb);
+					int outbound = this
+						.createRPCMessage(fbb, RpcMessage.SerialUpdateResponse, update);
+					fbb.finish(outbound);
+
+					conn2.send(fbb.dataBuffer());
 				});
 		});
 	}

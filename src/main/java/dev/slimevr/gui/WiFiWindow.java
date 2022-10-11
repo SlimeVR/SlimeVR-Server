@@ -18,6 +18,7 @@ public class WiFiWindow extends JFrame implements SerialListener {
 	private static String savedSSID = "";
 	private static String savedPassword = "";
 	private final VRServerGUI gui;
+	private JScrollPane scroll;
 	JTextField ssidField;
 	JPasswordField passwdField;
 	JTextArea log;
@@ -61,7 +62,41 @@ public class WiFiWindow extends JFrame implements SerialListener {
 							+ ")"
 					)
 				);
-				JScrollPane scroll;
+				add(new EJBox(BoxLayout.LINE_AXIS) {
+					{
+						add(new JButton("Reboot Tracker") {
+							{
+								addMouseListener(new MouseInputAdapter() {
+									@Override
+									public void mouseClicked(MouseEvent e) {
+										gui.server.getSerialHandler().rebootRequest();
+									}
+								});
+							}
+						});
+						add(new JButton("INFO") {
+							{
+								addMouseListener(new MouseInputAdapter() {
+									@Override
+									public void mouseClicked(MouseEvent e) {
+										gui.server.getSerialHandler().infoRequest();
+									}
+								});
+							}
+						});
+						add(new JButton("Factory Reset") {
+							{
+								addMouseListener(new MouseInputAdapter() {
+									@Override
+									public void mouseClicked(MouseEvent e) {
+										gui.server.getSerialHandler().factoryResetRequest();
+									}
+								});
+							}
+						});
+					}
+				});
+
 				add(
 					scroll = new JScrollPane(
 						log = new JTextArea(10, 20),
@@ -139,12 +174,24 @@ public class WiFiWindow extends JFrame implements SerialListener {
 	@Override
 	@AWTThread
 	public void onSerialDisconnected() {
+		if (this.log == null)
+			return;
 		log.append("[SERVER] Serial port disconnected\n");
 	}
 
 	@Override
 	@AWTThread
 	public void onSerialLog(String str) {
+		if (this.log == null)
+			return;
 		log.append(str);
+		// log.setAutoscrolls(true);
+		if (scroll != null) {
+			JScrollBar vertical = scroll.getVerticalScrollBar();
+			if ((vertical.getValue() + str.length() + 200) > vertical.getMaximum()) {
+				vertical.setValue(vertical.getMaximum());
+			}
+		}
+
 	}
 }
