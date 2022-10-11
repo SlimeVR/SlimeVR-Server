@@ -66,17 +66,20 @@ public class LegTweaks {
 	private static final float MAX_ACCEPTABLE_ERROR = 0.225f;
 	private static final float CORRECTION_WEIGHT_MIN = 0.40f;
 	private static final float CORRECTION_WEIGHT_MAX = 0.70f;
-	private static final float CONTINUOUS_CORRECTION_DIST = 0.015f;
+	private static final float CONTINUOUS_CORRECTION_DIST = 0.02f;
 	private static final int CONTINUOUS_CORRECTION_WARMUP = 50;
 
 	// hyperparameters (floating feet correction)
-	private static final float FOOT_Y_CORRECTION_WEIGHT = 0.75f;
-	private static final float FOOT_Y_MAX_ACCELERATION = 0.20f;
-	private static final float FOOT_Y_DIFF_CUTOFF = 0.02f;
+	private static final float Y_CORRECTION_WEIGHT = 0.50f;
+	private static final float Y_MAX_ACCELERATION = 0.15f;
+	private static final float Y_DIFF_CUTOFF = 0.05f;
+	private static final float DIST_PROBABILITY_ZERO = 0.10f;
+	private static final float FOOT_PLANTED_CUTOFF = 0.50f;
+
 
 	// hyperparameters (knee / waist correction)
 	private static final float KNEE_CORRECTION_WEIGHT = 0.00f;
-	private static final float KNEE_LATERAL_WEIGHT = 0.9f;
+	private static final float KNEE_LATERAL_WEIGHT = 0.8f;
 	private static final float WAIST_PUSH_WEIGHT = 0.2f;
 
 	// hyperparameters (COM calculation)
@@ -279,7 +282,18 @@ public class LegTweaks {
 		// tweaks
 		active = isStanding();
 
-		// if the buffer is invalid set it up
+		// update the buffer
+		LegTweakBuffer currentFrame = new LegTweakBuffer();
+		currentFrame.setLeftFootPosition(leftFootPosition);
+		currentFrame.setLeftFootRotation(leftFootRotation);
+		currentFrame.setLeftKneePosition(leftKneePosition);
+		currentFrame.setRightFootPosition(rightFootPosition);
+		currentFrame.setRightFootRotation(rightFootRotation);
+		currentFrame.setRightKneePosition(rightKneePosition);
+		currentFrame.setWaistPosition(waistPosition);
+		currentFrame.setCenterOfMass(computeCenterOfMass());
+
+		// if the buffer is invalid add all the extra info
 		if (bufferInvalid) {
 			bufferHead.setLeftFootPositionCorrected(leftFootPosition);
 			bufferHead.setRightFootPositionCorrected(rightFootPosition);
@@ -304,17 +318,6 @@ public class LegTweaks {
 
 			bufferInvalid = false;
 		}
-
-		// update the buffer
-		LegTweakBuffer currentFrame = new LegTweakBuffer();
-		currentFrame.setLeftFootPosition(leftFootPosition);
-		currentFrame.setLeftFootRotation(leftFootRotation);
-		currentFrame.setLeftKneePosition(leftKneePosition);
-		currentFrame.setRightFootPosition(rightFootPosition);
-		currentFrame.setRightFootRotation(rightFootRotation);
-		currentFrame.setRightKneePosition(rightKneePosition);
-		currentFrame.setWaistPosition(waistPosition);
-		currentFrame.setCenterOfMass(computeCenterOfMass());
 
 		this.bufferHead
 			.setLeftFloorLevel(
@@ -368,8 +371,8 @@ public class LegTweaks {
 		if (skatingCorrectionEnabled)
 			correctSkating();
 
-		// if (skatingCorrectionEnabled && floorclipEnabled)
-		// correctFloat();
+		if (skatingCorrectionEnabled && floorclipEnabled)
+			correctFloat();
 
 		// determine if either leg is in a position to activate or deactivate
 		// (use the buffer to get the positions before corrections)
@@ -681,12 +684,14 @@ public class LegTweaks {
 		}
 	}
 
-	// check if the foot is begining to float over the floor when it should not
-	// be if it is move it back down to the floor
-	// note: very small corrections are all that is allowed to prevent momemnt
-	// that looks unrealistic
+	// try and prevent the foot from hovoring over the ground
+	// this function is essentially a smaller less advanced version of the x z
+	// correction.
+	// it is much easier to do it this way since the y correction needs to have
+	// different attributes
 	private void correctFloat() {
-		// first get the pressure
+		boolean correctLeft = true;
+		boolean correctRight = true;
 		Vector3f centerOfMass = bufferHead.getCenterOfMass(null);
 		float leftFootDist = leftFootPosition
 			.clone()
@@ -696,32 +701,161 @@ public class LegTweaks {
 			.clone()
 			.setY(0)
 			.distance(centerOfMass.setY(0));
+		float leftFootDifY = leftFootPosition.y
+			- bufferHead.getParent().getLeftFootPositionCorrected(null).y;
+		float rightFootDifY = rightFootPosition.y
+			- bufferHead.getParent().getRightFootPositionCorrected(null).y;
 		// use a simple inverse square law to determine the pressure
 		float leftFootPressure = 1 / (leftFootDist * leftFootDist);
 		float rightFootPressure = 1 / (rightFootDist * rightFootDist);
 
+		// nomralize the pressure
+		float totalPressure = leftFootPressure + rightFootPressure;
+		leftFootPressure /= totalPressure;
+		rightFootPressure /= totalPressure;
 
-		// the next step is determining if the foot is actually supporting the
-		// users weight
-		// if it is not, then we do not need to correct for floating
+		// if the foot was previously in contact with the floor see if it should
+		// still be this frame
 		LegTweakBuffer parent = bufferHead.getParent();
-		if (parent.getLeftFootPositionCorrected(null).y == parent.getLeftFloorLevel()) {
+		if (
+			parent.getLeftFootPositionCorrected(null).y == parent.getLeftFloorLevel()
+				&& leftFootDifY < Y_DIFF_CUTOFF
+		) {
+			// if last frame was on the ground calculate
+			// the liklyhood of the foot being on the ground
+			// (graph these equations to see what they are doing)
+			float distanceToGround = leftFootPosition.y - bufferHead.getLeftFloorLevel();
+			float distanceProbability = clamp(
+				0.0f,
+				1.0f,
+				((-(distanceToGround * distanceToGround)
+					* (1.0f / DIST_PROBABILITY_ZERO * DIST_PROBABILITY_ZERO)) + 1.0f)
+			);
+			float pressureProbability = clamp(
+				0.0f,
+				1.0f,
+				(leftFootPressure * leftFootPressure)
+			);
+			// combine the two probabilities
+			float probability = (distanceProbability + pressureProbability) / 2.0f;
 
-		} else {
+			// if the probability is above the threshold, keep the foot on the
+			// ground
+			// if not correct the foot
+			if (
+				probability > FOOT_PLANTED_CUTOFF
+					&& bufferHead.getLeftFootAccelerationY() < Y_MAX_ACCELERATION
+			) {
+				leftFootPosition.y = bufferHead.getLeftFloorLevel();
+				correctLeft = false;
+			}
+		}
+
+		if (
+			parent.getRightFootPositionCorrected(null).y == parent.getRightFloorLevel()
+				&& rightFootDifY < Y_DIFF_CUTOFF
+		) {
+			// if last frame was on the ground calculate
+			// the liklyhood of the foot being on the ground
+			// (graph these equations to see what they are doing)
+			float distanceToGround = rightFootPosition.y - bufferHead.getRightFloorLevel();
+			float distanceProbability = clamp(
+				0.0f,
+				1.0f,
+				((-(distanceToGround * distanceToGround)
+					* (1.0f / DIST_PROBABILITY_ZERO * DIST_PROBABILITY_ZERO)) + 1.0f)
+			);
+			float pressureProbability = clamp(
+				0.0f,
+				1.0f,
+				(rightFootPressure * rightFootPressure)
+			);
+			// combine the two probabilities
+			float probability = (distanceProbability + pressureProbability) / 2.0f;
+
+			// if the probability is above the threshold, keep the foot on the
+			// ground
+			// if not correct the foot
+			if (
+				probability > FOOT_PLANTED_CUTOFF
+					&& bufferHead.getRightFootAccelerationY() < Y_MAX_ACCELERATION
+			) {
+				rightFootPosition.y = bufferHead.getRightFloorLevel();
+				correctRight = false;
+			}
+		}
+
+		// correct if needed
+		if (correctLeft)
 			correctLeftFootTrackerY();
-		}
-		if (parent.getRightFootPositionCorrected(null).y == parent.getRightFloorLevel()) {
-
-		} else {
+		if (correctRight)
 			correctRightFootTrackerY();
-		}
 	}
 
 	private void correctLeftFootTrackerY() {
+		float leftFootDifY = leftFootPosition.y
+			- bufferHead.getParent().getLeftFootPositionCorrected(null).y;
+		// first add the dif of last frame to this frame
+		leftFootPosition.y = bufferHead.getParent().getLeftFootPositionCorrected(null).y
+			- (bufferHead.getParent().getLeftFootPosition(null).y
+				- bufferHead.getLeftFootPosition(null).y);
+		// correct the position
+		Vector3f velocity = bufferHead.getLeftFootVelocity(null);
+		if (velocity.y * leftFootDifY > 0) {
+			leftFootPosition.y += (velocity.y * Y_CORRECTION_WEIGHT)
+				+ (getConstantCorrectionQuantityLeft()
+					* (velocity.y > 0 ? 1 : -1)
+					/ bufferHead.getTimeDelta());
+		} else if (velocity.y * leftFootDifY < 0) {
+			leftFootPosition.y -= (velocity.y * Y_CORRECTION_WEIGHT)
+				+ (getConstantCorrectionQuantityLeft()
+					* (velocity.y > 0 ? 1 : -1)
+					/ bufferHead.getTimeDelta());
+		}
+		// if the foot overshot the target, move it back to the target
+		if (
+			checkOverShoot(
+				this.bufferHead.getLeftFootPosition(null).y,
+				this.bufferHead.getParent().getLeftFootPositionCorrected(null).y,
+				leftFootPosition.y
+			)
+		) {
+			leftFootPosition.y = bufferHead.getLeftFootPosition(null).y;
+		}
 
 	}
 
 	private void correctRightFootTrackerY() {
+		float rightFootDifY = rightFootPosition.y
+			- bufferHead.getParent().getRightFootPositionCorrected(null).y;
+		// first add the dif of last frame to this frame
+		rightFootPosition.y = bufferHead.getParent().getRightFootPositionCorrected(null).y
+			- (bufferHead.getParent().getRightFootPosition(null).y
+				- bufferHead.getRightFootPosition(null).y);
+		// correct the position
+		Vector3f velocity = bufferHead.getRightFootVelocity(null);
+		if (velocity.y * rightFootDifY > 0) {
+			rightFootPosition.y += (velocity.y * Y_CORRECTION_WEIGHT)
+				+ (getConstantCorrectionQuantityRight()
+					* (velocity.y > 0 ? 1 : -1)
+					/ bufferHead.getTimeDelta());
+		} else if (velocity.y * rightFootDifY < 0) {
+			rightFootPosition.y -= (velocity.y * Y_CORRECTION_WEIGHT)
+				+ (getConstantCorrectionQuantityRight()
+					* (velocity.y > 0 ? 1 : -1)
+					/ bufferHead.getTimeDelta());
+		}
+		// if the foot overshot the target, move it back to the target
+		if (
+			checkOverShoot(
+				this.bufferHead.getRightFootPosition(null).y,
+				this.bufferHead.getParent().getRightFootPositionCorrected(null).y,
+				rightFootPosition.y
+			)
+		) {
+			rightFootPosition.y = bufferHead.getRightFootPosition(null).y;
+		}
+
 
 	}
 
