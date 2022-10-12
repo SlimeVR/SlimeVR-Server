@@ -282,7 +282,7 @@ public class LegTweaks {
 		// tweaks
 		active = isStanding();
 
-		// if the buffer is invalid set it up
+		// if the buffer is invalid add all the extra info
 		if (bufferInvalid) {
 			bufferHead.setLeftFootPositionCorrected(leftFootPosition);
 			bufferHead.setRightFootPositionCorrected(rightFootPosition);
