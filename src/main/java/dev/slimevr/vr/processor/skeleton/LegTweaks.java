@@ -58,7 +58,7 @@ public class LegTweaks {
 
 	// hyperparameters (clip correction)
 	private static final float DYNAMIC_DISPLACEMENT_CUTOFF = 1.0f;
-	private static final float MAX_DYNAMIC_DISPLACEMENT = 0.12f;
+	private static final float MAX_DYNAMIC_DISPLACEMENT = 0.10f;
 	private static final float FLOOR_CALIBRATION_OFFSET = 0.015f;
 
 	// hyperparameters (skating correction)
@@ -66,15 +66,15 @@ public class LegTweaks {
 	private static final float MAX_ACCEPTABLE_ERROR = 0.225f;
 	private static final float CORRECTION_WEIGHT_MIN = 0.40f;
 	private static final float CORRECTION_WEIGHT_MAX = 0.70f;
-	private static final float CONTINUOUS_CORRECTION_DIST = 0.02f;
-	private static final int CONTINUOUS_CORRECTION_WARMUP = 50;
+	private static final float CONTINUOUS_CORRECTION_DIST = 0.025f;
+	private static final int CONTINUOUS_CORRECTION_WARMUP = 40;
 
 	// hyperparameters (floating feet correction)
 	private static final float Y_CORRECTION_WEIGHT = 0.90f;
 	private static final float Y_MAX_ACCELERATION = 0.10f;
 	private static final float Y_DIFF_CUTOFF = 0.03f;
-	private static final float DIST_PROBABILITY_ZERO = 0.08f;
-	private static final float FOOT_PLANTED_CUTOFF = 0.60f;
+	private static final float DIST_PROBABILITY_ZERO = 0.10f;
+	private static final float FOOT_PLANTED_CUTOFF = 0.80f;
 
 
 	// hyperparameters (knee / waist correction)
@@ -370,8 +370,9 @@ public class LegTweaks {
 		if (skatingCorrectionEnabled)
 			correctSkating();
 
-		if (skatingCorrectionEnabled && floorclipEnabled)
-			correctFloat();
+		// currently skuffed
+		// if (skatingCorrectionEnabled && floorclipEnabled)
+		// correctFloat();
 
 		// determine if either leg is in a position to activate or deactivate
 		// (use the buffer to get the positions before corrections)
@@ -726,7 +727,7 @@ public class LegTweaks {
 			// if last frame was on the ground calculate
 			// the liklyhood of the foot being on the ground
 			// (graph these equations to see what they are doing)
-			float distanceToGround = leftFootPosition.y - bufferHead.getLeftFloorLevel();
+			float distanceToGround = leftFootPosition.y - floorLevel;
 			float distanceProbability = clamp(
 				0.0f,
 				1.0f,
@@ -760,7 +761,7 @@ public class LegTweaks {
 			// if last frame was on the ground calculate
 			// the liklyhood of the foot being on the ground
 			// (graph these equations to see what they are doing)
-			float distanceToGround = rightFootPosition.y - bufferHead.getRightFloorLevel();
+			float distanceToGround = rightFootPosition.y - floorLevel;
 			float distanceProbability = clamp(
 				0.0f,
 				1.0f,
@@ -825,10 +826,12 @@ public class LegTweaks {
 			leftFootPosition.y = bufferHead.getLeftFootPosition(null).y;
 		}
 
-		// finally if the foot is below the floor level, move it up to the floor
-		if (leftFootPosition.y < bufferHead.getLeftFloorLevel()) {
+		// finally if the foot above the kinematic position, move it down
+		// immediately to the kinematic position or the floor level
+		if (leftFootPosition.y > bufferHead.getLeftFootPosition(null).y)
+			leftFootPosition.y = bufferHead.getLeftFootPosition(null).y;
+		if (leftFootPosition.y < bufferHead.getLeftFloorLevel())
 			leftFootPosition.y = bufferHead.getLeftFloorLevel();
-		}
 	}
 
 	private void correctRightFootTrackerY() {
@@ -862,12 +865,12 @@ public class LegTweaks {
 			rightFootPosition.y = bufferHead.getRightFootPosition(null).y;
 		}
 
-		// finally if the foot is below the floor level, move it up to the floor
-		if (rightFootPosition.y < bufferHead.getRightFloorLevel()) {
+		// finally if the foot above the kinematic position, move it down
+		// immediately to the kinematic position or the floor level
+		if (rightFootPosition.y > bufferHead.getRightFootPosition(null).y)
+			rightFootPosition.y = bufferHead.getRightFootPosition(null).y;
+		if (rightFootPosition.y < bufferHead.getRightFloorLevel())
 			rightFootPosition.y = bufferHead.getRightFloorLevel();
-		}
-
-
 	}
 
 	// returns true if it is likely the user is standing
