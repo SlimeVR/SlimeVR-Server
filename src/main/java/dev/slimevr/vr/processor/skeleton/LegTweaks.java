@@ -57,8 +57,8 @@ public class LegTweaks {
 	 */
 
 	// hyperparameters (clip correction)
-	private static final float DYNAMIC_DISPLACEMENT_CUTOFF = 0.8f;
-	private static final float MAX_DYNAMIC_DISPLACEMENT = 0.08f;
+	private static final float DYNAMIC_DISPLACEMENT_CUTOFF = 1.0f;
+	private static final float MAX_DYNAMIC_DISPLACEMENT = 0.12f;
 	private static final float FLOOR_CALIBRATION_OFFSET = 0.015f;
 
 	// hyperparameters (skating correction)
@@ -70,11 +70,11 @@ public class LegTweaks {
 	private static final int CONTINUOUS_CORRECTION_WARMUP = 50;
 
 	// hyperparameters (floating feet correction)
-	private static final float Y_CORRECTION_WEIGHT = 0.50f;
-	private static final float Y_MAX_ACCELERATION = 0.15f;
-	private static final float Y_DIFF_CUTOFF = 0.05f;
-	private static final float DIST_PROBABILITY_ZERO = 0.10f;
-	private static final float FOOT_PLANTED_CUTOFF = 0.50f;
+	private static final float Y_CORRECTION_WEIGHT = 0.90f;
+	private static final float Y_MAX_ACCELERATION = 0.10f;
+	private static final float Y_DIFF_CUTOFF = 0.03f;
+	private static final float DIST_PROBABILITY_ZERO = 0.08f;
+	private static final float FOOT_PLANTED_CUTOFF = 0.60f;
 
 
 	// hyperparameters (knee / waist correction)
@@ -825,6 +825,10 @@ public class LegTweaks {
 			leftFootPosition.y = bufferHead.getLeftFootPosition(null).y;
 		}
 
+		// finally if the foot is below the floor level, move it up to the floor
+		if (leftFootPosition.y < bufferHead.getLeftFloorLevel()) {
+			leftFootPosition.y = bufferHead.getLeftFloorLevel();
+		}
 	}
 
 	private void correctRightFootTrackerY() {
@@ -856,6 +860,11 @@ public class LegTweaks {
 			)
 		) {
 			rightFootPosition.y = bufferHead.getRightFootPosition(null).y;
+		}
+
+		// finally if the foot is below the floor level, move it up to the floor
+		if (rightFootPosition.y < bufferHead.getRightFloorLevel()) {
+			rightFootPosition.y = bufferHead.getRightFloorLevel();
 		}
 
 
