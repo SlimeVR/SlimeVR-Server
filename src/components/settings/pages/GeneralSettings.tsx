@@ -31,8 +31,7 @@ interface SettingsForm {
   };
   filtering: {
     type: number;
-    intensity: number;
-    ticks: number;
+    amount: number;
   };
   interface: {
     devmode: boolean;
@@ -55,7 +54,7 @@ export function GeneralSettings() {
           knees: false,
           legs: false,
         },
-        filtering: { intensity: 0, ticks: 0 },
+        filtering: { amount: 10, type: FilteringType.NONE },
         interface: { devmode: false },
       },
     });
@@ -75,8 +74,7 @@ export function GeneralSettings() {
 
     const filtering = new FilteringSettingsT();
     filtering.type = values.filtering.type;
-    filtering.intensity = values.filtering.intensity;
-    filtering.ticks = values.filtering.ticks;
+    filtering.amount = values.filtering.amount;
 
     settings.filtering = filtering;
     sendRPCPacket(RpcMessage.ChangeSettingsRequest, settings);
@@ -179,8 +177,7 @@ export function GeneralSettings() {
               Choose the filtering type for your trackers.
             </Typography>
             <Typography color="secondary">
-              Extrapolation predicts movement while interpolation smoothens
-              movement.
+              Prediction predicts movement while smoothing smoothens movement.
             </Typography>
           </div>
           <Typography>Filtering type</Typography>
@@ -189,42 +186,33 @@ export function GeneralSettings() {
               control={control}
               name="filtering.type"
               label="No filtering"
-              desciption="Use measurements as is, will not do any filtering."
+              desciption="Use rotations as is. Will not do any filtering."
               value={FilteringType.NONE}
             ></Radio>
             <Radio
               control={control}
               name="filtering.type"
               label="Smoothing"
-              desciption="Smooths the movements but adds some latency."
-              value={FilteringType.INTERPOLATION}
+              desciption="Smooths movements but adds some latency."
+              value={FilteringType.SMOOTHING}
             ></Radio>
             <Radio
               control={control}
               name="filtering.type"
               label="Prediction"
               desciption="Reduces latency and makes movements more snappy, but may increase jitter."
-              value={FilteringType.EXTRAPOLATION}
+              value={FilteringType.PREDICTION}
             ></Radio>
           </div>
           <div className="flex gap-5 pt-5 md:flex-row flex-col">
             <NumberSelector
               control={control}
-              name="filtering.intensity"
-              label="Intensity"
-              valueLabelFormat={(value) => `${value} %`}
-              min={0}
-              max={100}
-              step={10}
-            />
-            <NumberSelector
-              control={control}
-              name="filtering.ticks"
-              label="Latency"
-              valueLabelFormat={(value) => `${value} ticks`}
-              min={0}
-              max={50}
-              step={1}
+              name="filtering.amount"
+              label="Amount"
+              valueLabelFormat={(value) => `${Math.round(value * 100)} %`}
+              min={0.1}
+              max={1}
+              step={0.1}
             />
           </div>
         </>
