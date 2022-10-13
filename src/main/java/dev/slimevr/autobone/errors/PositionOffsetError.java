@@ -41,6 +41,7 @@ public class PositionOffsetError implements IAutoBoneError {
 			if (
 				trackerFrame1 == null
 					|| !trackerFrame1.hasData(TrackerFrameData.POSITION)
+					|| !trackerFrame1.hasData(TrackerFrameData.DESIGNATION)
 					|| trackerFrame1.designation.trackerRole.isEmpty()
 			) {
 				continue;
@@ -50,6 +51,7 @@ public class PositionOffsetError implements IAutoBoneError {
 			if (
 				trackerFrame2 == null
 					|| !trackerFrame2.hasData(TrackerFrameData.POSITION)
+					|| !trackerFrame2.hasData(TrackerFrameData.DESIGNATION)
 					|| trackerFrame2.designation.trackerRole.isEmpty()
 			) {
 				continue;

@@ -6,11 +6,11 @@ import dev.slimevr.autobone.errors.AutoBoneException;
 import dev.slimevr.poserecorder.PoseFrameTracker;
 import dev.slimevr.poserecorder.PoseFrames;
 import dev.slimevr.poserecorder.PoseRecorder;
+import dev.slimevr.poserecorder.TrackerFrame;
+import dev.slimevr.poserecorder.TrackerFrameData;
 import dev.slimevr.vr.processor.skeleton.SkeletonConfig;
 import dev.slimevr.vr.processor.skeleton.SkeletonConfigOffsets;
-import dev.slimevr.vr.trackers.TrackerPosition;
 import io.eiren.util.StringUtils;
-import io.eiren.util.collections.FastList;
 import io.eiren.util.logging.LogManager;
 import org.apache.commons.lang3.tuple.Pair;
 
@@ -161,8 +161,15 @@ public class AutoBoneHandler {
 				PoseFrames frames = framesFuture.get();
 				LogManager.info("[AutoBone] Done recording!");
 
+				// Save a recurring recording for users to send as debug info
+				announceProcessStatus(AutoBoneProcessType.RECORD, "Saving recording...");
+				autoBone.saveRecording(frames, "LastABRecording.pfr");
+
 				if (this.autoBone.getConfig().saveRecordings) {
-					announceProcessStatus(AutoBoneProcessType.RECORD, "Saving recording...");
+					announceProcessStatus(
+						AutoBoneProcessType.RECORD,
+						"Saving recording (from config option)..."
+					);
 					autoBone.saveRecording(frames);
 				}
 
@@ -306,7 +313,7 @@ public class AutoBoneHandler {
 
 			announceProcessStatus(AutoBoneProcessType.PROCESS, "Processing recording(s)...");
 			LogManager.info("[AutoBone] Processing frames...");
-			FastList<Float> heightPercentError = new FastList<Float>(frameRecordings.size());
+			StatsCalculator errorStats = new StatsCalculator();
 			SkeletonConfig skeletonConfigBuffer = new SkeletonConfig(false);
 			for (Pair<String, PoseFrames> recording : frameRecordings) {
 				LogManager
@@ -319,16 +326,19 @@ public class AutoBoneHandler {
 					if (tracker == null)
 						continue;
 
-					TrackerPosition position = tracker
-						.getBodyPosition();
-					if (position == null)
+					TrackerFrame frame = tracker.safeGetFrame(0);
+					if (frame == null || !frame.hasData(TrackerFrameData.DESIGNATION))
 						continue;
 
 					if (trackerInfo.length() > 0) {
 						trackerInfo.append(", ");
 					}
 
-					trackerInfo.append(position.designation);
+					trackerInfo.append(frame.designation.designation);
+
+					if (frame.hasData(TrackerFrameData.POSITION)) {
+						trackerInfo.append(" (P)");
+					}
 				}
 
 				LogManager
@@ -341,7 +351,7 @@ public class AutoBoneHandler {
 					);
 
 				AutoBoneResults autoBoneResults = processFrames(recording.getValue());
-				heightPercentError.add(autoBoneResults.getHeightDifference());
+				errorStats.addValue(autoBoneResults.getHeightDifference());
 				LogManager.info("[AutoBone] Done processing!");
 
 				// #region Stats/Values
@@ -385,29 +395,14 @@ public class AutoBoneHandler {
 				LogManager.info("[AutoBone] Length values: " + autoBone.getLengthsString());
 			}
 
-			if (!heightPercentError.isEmpty()) {
-				float mean = 0f;
-				for (float val : heightPercentError) {
-					mean += val;
-				}
-				mean /= heightPercentError.size();
-
-				float std = 0f;
-				for (float val : heightPercentError) {
-					float stdVal = val - mean;
-					std += stdVal * stdVal;
-				}
-				std = (float) Math.sqrt(std / heightPercentError.size());
-
-				LogManager
-					.info(
-						"[AutoBone] Average height error: "
-							+ StringUtils.prettyNumber(mean, 6)
-							+ " (SD "
-							+ StringUtils.prettyNumber(std, 6)
-							+ ")"
-					);
-			}
+			LogManager
+				.info(
+					"[AutoBone] Average height error: "
+						+ StringUtils.prettyNumber(errorStats.getMean(), 6)
+						+ " (SD "
+						+ StringUtils.prettyNumber(errorStats.getStandardDeviation(), 6)
+						+ ")"
+				);
 			// #endregion
 
 			listeners.forEach(listener -> {

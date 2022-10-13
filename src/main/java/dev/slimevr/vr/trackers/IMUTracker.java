@@ -4,21 +4,25 @@ import com.jme3.math.FastMath;
 import com.jme3.math.Quaternion;
 import com.jme3.math.Vector3f;
 import dev.slimevr.VRServer;
-import dev.slimevr.config.FiltersConfig;
 import dev.slimevr.config.TrackerConfig;
+import dev.slimevr.filtering.QuaternionMovingAverage;
+import dev.slimevr.filtering.TrackerFilters;
 import dev.slimevr.vr.Device;
 import dev.slimevr.vr.trackers.udp.TrackersUDPServer;
 import dev.slimevr.vr.trackers.udp.UDPDevice;
 import io.eiren.util.BufferedTimer;
 
+import java.util.Optional;
+
 
 public class IMUTracker
-	implements Tracker, TrackerWithTPS, TrackerWithBattery, TrackerWithWireless {
+	implements Tracker, TrackerWithTPS, TrackerWithBattery, TrackerWithWireless,
+	TrackerWithFiltering {
 
 	public static final float MAX_MAG_CORRECTION_ACCURACY = 5 * FastMath.RAD_TO_DEG;
 
 	// public final Vector3f gyroVector = new Vector3f();
-	// public final Vector3f accelVector = new Vector3f();
+	public final Vector3f accelVector = new Vector3f();
 	public final Vector3f magVector = new Vector3f();
 	public final Quaternion rotQuaternion = new Quaternion();
 	public final Quaternion rotMagQuaternion = new Quaternion();
@@ -31,9 +35,6 @@ public class IMUTracker
 	protected final String descriptiveName;
 	protected final TrackersUDPServer server;
 	protected final VRServer vrserver;
-	private final Quaternion buffQuat = new Quaternion();
-	public int movementFilterTickCount = 0;
-	public float movementFilterAmount = 1f;
 	public int calibrationStatus = 0;
 	public int magCalibrationStatus = 0;
 	public float magnetometerAccuracy = 0;
@@ -43,14 +44,14 @@ public class IMUTracker
 	private int signalStrength = -1;
 	public float temperature = 0;
 	public TrackerPosition bodyPosition = null;
-	protected CircularArrayList<Quaternion> previousRots;
 	protected Quaternion mounting = null;
 	protected TrackerStatus status = TrackerStatus.OK;
 	protected float confidence = 0;
 	protected float batteryVoltage = 0;
 	protected float batteryLevel = 0;
-	protected boolean magentometerCalibrated = false;
+	protected boolean magnetometerCalibrated = false;
 	protected BufferedTimer timer = new BufferedTimer(1f);
+	protected QuaternionMovingAverage movingAverage;
 
 	public IMUTracker(
 		UDPDevice device,
@@ -68,6 +69,11 @@ public class IMUTracker
 		this.trackerId = trackerId;
 		this.descriptiveName = descriptiveName;
 		this.vrserver = vrserver;
+
+		setFiltering(
+			vrserver.getConfigManager().getVrConfig().getFilters().enumGetType(),
+			vrserver.getConfigManager().getVrConfig().getFilters().getAmount()
+		);
 	}
 
 	@Override
@@ -91,46 +97,14 @@ public class IMUTracker
 			} else {
 				rotAdjust.loadIdentity();
 			}
-			TrackerPosition
-				.getByDesignation(config.getDesignation())
-				.ifPresent(trackerPosition -> bodyPosition = trackerPosition);
-
-			FiltersConfig filtersConfig = this.vrserver
-				.getConfigManager()
-				.getVrConfig()
-				.getFilters();
-			setFilter(
-				filtersConfig.getType(),
-				filtersConfig.getAmount(),
-				filtersConfig.getTickCount()
-			);
-		}
-	}
-
-	public void setFilter(String type, float amount, int ticks) {
-		amount = FastMath.clamp(amount, 0, 1f);
-		ticks = (int) FastMath.clamp(ticks, 0, 50);
-		if (type != null) {
-			switch (type) {
-				case "INTERPOLATION":
-					movementFilterAmount = 1f - (amount / 1.6f);
-					movementFilterTickCount = ticks;
-					break;
-				case "EXTRAPOLATION":
-					movementFilterAmount = 1f + (amount * 1.15f);
-					movementFilterTickCount = ticks;
-					break;
-				case "NONE":
-				default:
-					movementFilterAmount = 1f;
-					movementFilterTickCount = 0;
-					break;
+			Optional<TrackerPosition> trackerPosition = TrackerPosition
+				.getByDesignation(config.getDesignation());
+			if (trackerPosition.isEmpty()) {
+				bodyPosition = null;
+			} else {
+				bodyPosition = trackerPosition.get();
 			}
-		} else {
-			movementFilterAmount = 1f;
-			movementFilterTickCount = 0;
 		}
-		previousRots = new CircularArrayList<Quaternion>(movementFilterTickCount + 1);
 	}
 
 	public Quaternion getMountingRotation() {
@@ -147,8 +121,30 @@ public class IMUTracker
 	}
 
 	@Override
+	public void setFiltering(TrackerFilters type, float amount) {
+		if (type != null) {
+			switch (type) {
+				case SMOOTHING:
+				case PREDICTION:
+					movingAverage = new QuaternionMovingAverage(
+						type,
+						amount,
+						rotQuaternion
+					);
+					break;
+				case NONE:
+				default:
+					movingAverage = null;
+					break;
+			}
+		} else {
+			movingAverage = null;
+		}
+	}
+
+	@Override
 	public void tick() {
-		if (magentometerCalibrated && hasNewCorrectionData) {
+		if (magnetometerCalibrated && hasNewCorrectionData) {
 			hasNewCorrectionData = false;
 			if (magnetometerAccuracy <= MAX_MAG_CORRECTION_ACCURACY) {
 				// Adjust gyro rotation to match magnetometer rotation only if
@@ -156,6 +152,12 @@ public class IMUTracker
 				// accuracy is within the parameters
 				calculateLiveMagnetometerCorrection();
 			}
+		}
+
+		// Update moving average (that way movement is smooth even if TPS is
+		// stuttering)
+		if (movingAverage != null) {
+			movingAverage.update();
 		}
 	}
 
@@ -171,11 +173,15 @@ public class IMUTracker
 	}
 
 	@Override
+	public boolean getAcceleration(Vector3f store) {
+		store.set(accelVector);
+		return true;
+	}
+
+	@Override
 	public boolean getRotation(Quaternion store) {
-		if (movementFilterTickCount > 0 && movementFilterAmount != 1 && previousRots.size() > 0) {
-			buffQuat.set(previousRots.get(0));
-			buffQuat.slerpLocal(rotQuaternion, movementFilterAmount);
-			store.set(buffQuat);
+		if (movingAverage != null) {
+			store.set(movingAverage.getFilteredQuaternion());
 		} else {
 			store.set(rotQuaternion);
 		}
@@ -208,11 +214,9 @@ public class IMUTracker
 	public void dataTick() {
 		timer.update();
 
-		if (movementFilterTickCount != 0) {
-			if (previousRots.size() > movementFilterTickCount) {
-				previousRots.remove(0);
-			}
-			previousRots.add(rotQuaternion.clone());
+		// Add new rotation to moving average
+		if (movingAverage != null) {
+			movingAverage.addQuaternion(rotQuaternion.clone());
 		}
 	}
 
@@ -256,7 +260,7 @@ public class IMUTracker
 	@Override
 	public void resetYaw(Quaternion reference) {
 		if (magCalibrationStatus >= CalibrationAccuracy.HIGH.status) {
-			magentometerCalibrated = true;
+			magnetometerCalibrated = true;
 			// During calibration set correction to match magnetometer readings
 			// exactly
 			// TODO : Correct only yaw

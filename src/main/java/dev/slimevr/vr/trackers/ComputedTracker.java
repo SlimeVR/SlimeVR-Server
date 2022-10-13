@@ -5,6 +5,8 @@ import com.jme3.math.Vector3f;
 import dev.slimevr.config.TrackerConfig;
 import dev.slimevr.vr.Device;
 
+import java.util.Optional;
+
 
 public class ComputedTracker implements Tracker, TrackerWithTPS {
 
@@ -50,9 +52,13 @@ public class ComputedTracker implements Tracker, TrackerWithTPS {
 		// not be
 		// allowed if editing is not allowed
 		if (userEditable()) {
-			TrackerPosition
-				.getByDesignation(config.getDesignation())
-				.ifPresent(trackerPosition -> bodyPosition = trackerPosition);
+			Optional<TrackerPosition> trackerPosition = TrackerPosition
+				.getByDesignation(config.getDesignation());
+			if (trackerPosition.isEmpty()) {
+				bodyPosition = null;
+			} else {
+				bodyPosition = trackerPosition.get();
+			}
 		}
 	}
 
@@ -72,6 +78,12 @@ public class ComputedTracker implements Tracker, TrackerWithTPS {
 	public boolean getRotation(Quaternion store) {
 		store.set(rotation);
 		return true;
+	}
+
+	@Override
+	public boolean getAcceleration(Vector3f store) {
+		store.set(0, 0, 0);
+		return false;
 	}
 
 	@Override

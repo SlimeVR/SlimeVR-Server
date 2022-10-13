@@ -9,7 +9,9 @@ public enum SkeletonConfigToggles {
 	EXTENDED_SPINE_MODEL(1, "Extended spine model", "extendedSpine", true),
 	EXTENDED_PELVIS_MODEL(2, "Extended pelvis model", "extendedPelvis", true),
 	EXTENDED_KNEE_MODEL(3, "Extended knee model", "extendedKnee", true),
-	FORCE_ARMS_FROM_HMD(4, "Force arms from HMD", "forceArmsFromHMD", true),;
+	FORCE_ARMS_FROM_HMD(4, "Force arms from HMD", "forceArmsFromHMD", true),
+	FLOOR_CLIP(5, "Floor clip", "floorClip", true),
+	SKATING_CORRECTION(6, "Skating correction", "skatingCorrection", true),;
 
 	public static final SkeletonConfigToggles[] values = values();
 	private static final Map<String, SkeletonConfigToggles> byStringVal = new HashMap<>();

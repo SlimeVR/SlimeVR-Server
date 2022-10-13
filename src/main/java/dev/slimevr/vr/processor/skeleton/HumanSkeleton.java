@@ -131,6 +131,10 @@ public class HumanSkeleton extends Skeleton implements SkeletonConfigCallback {
 	protected boolean sendAllBones = false;
 	// #endregion
 
+	// #region Clip Correction
+	protected LegTweaks legTweaks = new LegTweaks(this);
+	// #endregion
+
 	// #region Constructors
 	protected HumanSkeleton(List<? extends ComputedHumanPoseTracker> computedTrackers) {
 		assembleSkeleton(false);
@@ -787,6 +791,7 @@ public class HumanSkeleton extends Skeleton implements SkeletonConfigCallback {
 		updateLocalTransforms();
 		updateRootTrackers();
 		updateComputedTrackers();
+		tweakLegPos();
 	}
 	// #endregion
 
@@ -798,6 +803,12 @@ public class HumanSkeleton extends Skeleton implements SkeletonConfigCallback {
 		if (isTrackingRightArmFromController()) {
 			rightControllerNode.update();
 		}
+	}
+
+	// correct any clipping that is happening to the feet trackers
+	private void tweakLegPos() {
+		// correct the foot positions
+		legTweaks.tweakLegs();
 	}
 
 	// #region Update the node transforms from the trackers
@@ -1334,6 +1345,15 @@ public class HumanSkeleton extends Skeleton implements SkeletonConfigCallback {
 				break;
 			case FORCE_ARMS_FROM_HMD:
 				forceArmsFromHMD = newValue;
+
+				// Rebuilds the arm skeleton nodes attachments
+				assembleSkeletonArms(true);
+				break;
+			case SKATING_CORRECTION:
+				legTweaks.setSkatingReductionEnabled(newValue);
+				break;
+			case FLOOR_CLIP:
+				legTweaks.setFloorclipEnabled(newValue);
 				break;
 		}
 	}
@@ -1802,6 +1822,11 @@ public class HumanSkeleton extends Skeleton implements SkeletonConfigCallback {
 				tracker.resetFull(referenceRotation);
 			}
 		}
+
+		// tell the clip corrector to reset its floor level on the next update
+		// of the computed trackers
+		this.legTweaks.resetFloorLevel();
+		this.legTweaks.resetBuffer();
 	}
 
 	@Override
@@ -1820,5 +1845,33 @@ public class HumanSkeleton extends Skeleton implements SkeletonConfigCallback {
 				tracker.resetYaw(referenceRotation);
 			}
 		}
+		this.legTweaks.resetBuffer();
+	}
+
+	@Override
+	public boolean[] getLegTweaksState() {
+		boolean[] state = new boolean[2];
+		state[0] = this.legTweaks.getFloorclipEnabled();
+		state[1] = this.legTweaks.getSkatingReductionEnabled();
+		return state;
+	}
+
+	// master enable/disable of all leg tweaks (for autobone)
+	@Override
+	@VRServerThread
+	public void setLegTweaksEnabled(boolean value) {
+		this.legTweaks.setEnabled(value);
+	}
+
+	@Override
+	@VRServerThread
+	public void setFloorclipEnabled(boolean value) {
+		this.skeletonConfig.setToggle(SkeletonConfigToggles.FLOOR_CLIP, value);
+	}
+
+	@Override
+	@VRServerThread
+	public void setSkatingCorrectionEnabled(boolean value) {
+		this.skeletonConfig.setToggle(SkeletonConfigToggles.SKATING_CORRECTION, value);
 	}
 }

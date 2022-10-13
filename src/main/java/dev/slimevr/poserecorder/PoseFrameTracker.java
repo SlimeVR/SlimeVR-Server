@@ -163,6 +163,12 @@ public class PoseFrameTracker implements Tracker, Iterable<TrackerFrame> {
 	}
 
 	@Override
+	public boolean getAcceleration(Vector3f store) {
+		store.set(0, 0, 0);
+		return false;
+	}
+
+	@Override
 	public String getName() {
 		return name;
 	}

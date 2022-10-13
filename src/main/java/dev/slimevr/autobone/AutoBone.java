@@ -31,8 +31,9 @@ import java.util.function.Function;
 
 public class AutoBone {
 
-	private static final File saveDir = new File("Recordings");
-	private static final File loadDir = new File("LoadRecordings");
+	private static final File saveDir = new File("AutoBone Recordings");
+	private static final File loadDir = new File("Load AutoBone Recordings");
+
 	// This is filled by reloadConfigValues()
 	public final EnumMap<BoneType, Float> offsets = new EnumMap<BoneType, Float>(
 		BoneType.class
@@ -84,44 +85,15 @@ public class AutoBone {
 
 	protected final VRServer server;
 
-	public int cursorIncrement = 2;
-
 	// #region Error functions
 	public SlideError slideError = new SlideError();
-
 	public OffsetSlideError offsetSlideError = new OffsetSlideError();
-
 	public FootHeightOffsetError footHeightOffsetError = new FootHeightOffsetError();
-
 	public BodyProportionError bodyProportionError = new BodyProportionError();
-
 	public HeightError heightError = new HeightError();
-
 	public PositionError positionError = new PositionError();
-
 	public PositionOffsetError positionOffsetError = new PositionOffsetError();
 	// #endregion
-
-	public boolean randomizeFrameOrder = true;
-	public boolean scaleEachStep = true;
-
-
-	// TODO hip tracker stuff... Hip tracker should be around 3 to 5
-	// centimeters.
-	// Human average is probably 1.1235 (SD 0.07)
-	public float legBodyRatio = 1.1235f;
-	// SD of 0.07, capture 68% within range
-	public float legBodyRatioRange = 0.07f;
-	// kneeLegRatio seems to be around 0.54 to 0.6 after asking a few people in
-	// the
-	// SlimeVR discord.
-	public float kneeLegRatio = 0.55f;
-	// kneeLegRatio seems to be around 0.55 to 0.64 after asking a few people in
-	// the
-	// SlimeVR discord. TODO : Chest should be a bit shorter (0.54?) if user has
-	// an
-	// additional hip tracker.
-	public float chestTorsoRatio = 0.57f;
 
 	private final Random rand = new Random();
 
@@ -142,13 +114,54 @@ public class AutoBone {
 		return loadDir;
 	}
 
+	public float computeBoneOffset(BoneType bone, SkeletonConfig skeletonConfig) {
+		switch (bone) {
+			case HEAD:
+				return skeletonConfig.getOffset(SkeletonConfigOffsets.HEAD);
+			case NECK:
+				return skeletonConfig.getOffset(SkeletonConfigOffsets.NECK);
+			case CHEST:
+				return skeletonConfig.getOffset(SkeletonConfigOffsets.CHEST);
+			case WAIST:
+				return -skeletonConfig.getOffset(SkeletonConfigOffsets.CHEST)
+					+ skeletonConfig.getOffset(SkeletonConfigOffsets.TORSO)
+					- skeletonConfig.getOffset(SkeletonConfigOffsets.WAIST);
+			case HIP:
+				return skeletonConfig.getOffset(SkeletonConfigOffsets.WAIST);
+			case LEFT_HIP:
+			case RIGHT_HIP:
+				return skeletonConfig.getOffset(SkeletonConfigOffsets.HIPS_WIDTH) / 2f;
+			case LEFT_UPPER_LEG:
+			case RIGHT_UPPER_LEG:
+				return skeletonConfig.getOffset(SkeletonConfigOffsets.LEGS_LENGTH)
+					- skeletonConfig.getOffset(SkeletonConfigOffsets.KNEE_HEIGHT);
+			case LEFT_LOWER_LEG:
+			case RIGHT_LOWER_LEG:
+				return skeletonConfig.getOffset(SkeletonConfigOffsets.KNEE_HEIGHT);
+		}
+
+		return -1f;
+	}
+
 	public void reloadConfigValues() {
 		reloadConfigValues(null);
 	}
 
 	public void reloadConfigValues(List<PoseFrameTracker> trackers) {
-		for (BoneType offset : adjustOffsets) {
-			offsets.put(offset, 0.4f);
+		// Remove all previous values
+		offsets.clear();
+
+		// Get current or default skeleton configs
+		Skeleton skeleton = getSkeleton();
+		SkeletonConfig skeletonConfig = skeleton != null
+			? skeleton.getSkeletonConfig()
+			: new SkeletonConfig(false);
+
+		for (BoneType bone : adjustOffsets) {
+			float offset = computeBoneOffset(bone, skeletonConfig);
+			if (offset > 0f) {
+				offsets.put(bone, offset);
+			}
 		}
 	}
 
@@ -478,23 +491,25 @@ public class AutoBone {
 			intermediateOffsets
 		);
 
+		skeleton1.setLegTweaksEnabled(false);
+		skeleton2.setLegTweaksEnabled(false);
+
 		// If target height isn't specified, auto-detect
 		if (targetHeight < 0f) {
 			targetHeight = getTargetHeight(frames);
 		}
 
+		StatsCalculator errorStats = new StatsCalculator();
+
 		// Epoch loop, each epoch is one full iteration over the full dataset
 		for (int epoch = calcInitError ? -1 : 0; epoch < this.config.numEpochs; epoch++) {
-			float sumError = 0f;
-			int errorCount = 0;
-
 			float adjustRate = epoch >= 0
 				? (this.config.initialAdjustRate
 					* FastMath.pow(this.config.adjustRateMultiplier, epoch))
 				: 0f;
 
 			int[] randomFrameIndices = null;
-			if (randomizeFrameOrder) {
+			if (config.randomizeFrameOrder) {
 				randomFrameIndices = new int[frameCount];
 
 				int zeroPos = -1;
@@ -524,14 +539,14 @@ public class AutoBone {
 			) {
 				for (
 					int frameCursor = 0; frameCursor < frameCount - cursorOffset;
-					frameCursor += cursorIncrement
+					frameCursor += config.cursorIncrement
 				) {
 					int frameCursor2 = frameCursor + cursorOffset;
 
 					applyConfig(skeleton1.skeletonConfig);
 					skeleton2.skeletonConfig.setConfigs(skeleton1.skeletonConfig);
 
-					if (randomizeFrameOrder) {
+					if (config.randomizeFrameOrder) {
 						trainingStep
 							.setCursors(
 								randomFrameIndices[frameCursor],
@@ -564,16 +579,14 @@ public class AutoBone {
 						reloadConfigValues(trackers);
 
 						// Reset error sum values
-						sumError = 0f;
-						errorCount = 0;
+						errorStats.reset();
 
 						// Continue on new data
 						continue;
 					}
 
 					// Store the error count for logging purposes
-					sumError += errorDeriv;
-					errorCount++;
+					errorStats.addValue(errorDeriv);
 
 					float adjustVal = error * adjustRate;
 
@@ -660,7 +673,7 @@ public class AutoBone {
 						skeleton2.skeletonConfig.setConfigs(skeleton1.skeletonConfig);
 					}
 
-					if (scaleEachStep) {
+					if (config.scaleEachStep) {
 						float stepHeight = sumSelectConfigs(heightOffsets, offsets);
 
 						if (stepHeight > 0f) {
@@ -688,13 +701,27 @@ public class AutoBone {
 			}
 
 			// Calculate average error over the epoch
-			float avgError = errorCount > 0 ? sumError / errorCount : -1f;
-			LogManager.info("[AutoBone] Epoch " + (epoch + 1) + " average error: " + avgError);
+			if (
+				epoch <= 0
+					|| epoch >= (config.numEpochs - 1)
+					|| (epoch + 1) % config.printEveryNumEpochs == 0
+			) {
+				LogManager
+					.info(
+						"[AutoBone] Epoch "
+							+ (epoch + 1)
+							+ " average error: "
+							+ errorStats.getMean()
+							+ " (SD "
+							+ errorStats.getStandardDeviation()
+							+ ")"
+					);
+			}
 
 			applyConfig(legacyConfigs);
 			if (epochCallback != null) {
 				epochCallback
-					.accept(new Epoch(epoch + 1, this.config.numEpochs, avgError, legacyConfigs));
+					.accept(new Epoch(epoch + 1, this.config.numEpochs, errorStats, legacyConfigs));
 			}
 		}
 
@@ -707,7 +734,7 @@ public class AutoBone {
 					+ finalHeight
 			);
 
-		return new AutoBoneResults(finalHeight, targetHeight, legacyConfigs);
+		return new AutoBoneResults(finalHeight, targetHeight, errorStats, legacyConfigs);
 	}
 
 	protected float getErrorDeriv(AutoBoneTrainingStep trainingStep) throws AutoBoneException {
@@ -770,28 +797,22 @@ public class AutoBone {
 		return configInfo.toString();
 	}
 
-	public void saveRecording(PoseFrames frames) {
+	public void saveRecording(PoseFrames frames, File recordingFile) {
 		if (saveDir.isDirectory() || saveDir.mkdirs()) {
-			File saveRecording;
-			int recordingIndex = 1;
-			do {
-				saveRecording = new File(saveDir, "ABRecording" + recordingIndex++ + ".pfr");
-			} while (saveRecording.exists());
-
 			LogManager
-				.info("[AutoBone] Exporting frames to \"" + saveRecording.getPath() + "\"...");
-			if (PoseFrameIO.writeToFile(saveRecording, frames)) {
+				.info("[AutoBone] Exporting frames to \"" + recordingFile.getPath() + "\"...");
+			if (PoseFrameIO.writeToFile(recordingFile, frames)) {
 				LogManager
 					.info(
 						"[AutoBone] Done exporting! Recording can be found at \""
-							+ saveRecording.getPath()
+							+ recordingFile.getPath()
 							+ "\"."
 					);
 			} else {
 				LogManager
 					.severe(
 						"[AutoBone] Failed to export the recording to \""
-							+ saveRecording.getPath()
+							+ recordingFile.getPath()
 							+ "\"."
 					);
 			}
@@ -803,6 +824,20 @@ public class AutoBone {
 						+ "\"."
 				);
 		}
+	}
+
+	public void saveRecording(PoseFrames frames, String recordingFileName) {
+		saveRecording(frames, new File(saveDir, recordingFileName));
+	}
+
+	public void saveRecording(PoseFrames frames) {
+		File recordingFile;
+		int recordingIndex = 1;
+		do {
+			recordingFile = new File(saveDir, "ABRecording" + recordingIndex++ + ".pfr");
+		} while (recordingFile.exists());
+
+		saveRecording(frames, recordingFile);
 	}
 
 	public List<Pair<String, PoseFrames>> loadRecordings() {
@@ -846,13 +881,13 @@ public class AutoBone {
 
 		public final int epoch;
 		public final int totalEpochs;
-		public final float epochError;
+		public final StatsCalculator epochError;
 		public final EnumMap<SkeletonConfigOffsets, Float> configValues;
 
 		public Epoch(
 			int epoch,
 			int totalEpochs,
-			float epochError,
+			StatsCalculator epochError,
 			EnumMap<SkeletonConfigOffsets, Float> configValues
 		) {
 			this.epoch = epoch;
@@ -871,15 +906,18 @@ public class AutoBone {
 
 		public final float finalHeight;
 		public final float targetHeight;
+		public final StatsCalculator epochError;
 		public final EnumMap<SkeletonConfigOffsets, Float> configValues;
 
 		public AutoBoneResults(
 			float finalHeight,
 			float targetHeight,
+			StatsCalculator epochError,
 			EnumMap<SkeletonConfigOffsets, Float> configValues
 		) {
 			this.finalHeight = finalHeight;
 			this.targetHeight = targetHeight;
+			this.epochError = epochError;
 			this.configValues = configValues;
 		}
 

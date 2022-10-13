@@ -8,13 +8,17 @@ import dev.slimevr.autobone.AutoBoneListener;
 import dev.slimevr.autobone.AutoBoneProcessType;
 import dev.slimevr.config.FiltersConfig;
 import dev.slimevr.config.OverlayConfig;
+import dev.slimevr.filtering.TrackerFilters;
 import dev.slimevr.platform.windows.WindowsNamedPipeBridge;
 import dev.slimevr.poserecorder.PoseFrames;
 import dev.slimevr.serial.SerialListener;
 import dev.slimevr.vr.processor.skeleton.SkeletonConfigOffsets;
 import dev.slimevr.vr.processor.skeleton.SkeletonConfigToggles;
 import dev.slimevr.vr.processor.skeleton.SkeletonConfigValues;
-import dev.slimevr.vr.trackers.*;
+import dev.slimevr.vr.trackers.IMUTracker;
+import dev.slimevr.vr.trackers.Tracker;
+import dev.slimevr.vr.trackers.TrackerPosition;
+import dev.slimevr.vr.trackers.TrackerRole;
 import io.eiren.util.logging.LogManager;
 import solarxr_protocol.MessageBundle;
 import solarxr_protocol.datatypes.TransactionId;
@@ -54,6 +58,18 @@ public class RPCHandler extends ProtocolHandler<RpcMessageHeader>
 		);
 
 		registerPacketListener(RpcMessage.SetWifiRequest, this::onSetWifiRequest);
+		registerPacketListener(
+			RpcMessage.SerialTrackerRebootRequest,
+			this::SerialTrackerRebootRequest
+		);
+		registerPacketListener(
+			RpcMessage.SerialTrackerGetInfoRequest,
+			this::SerialTrackerGetInfoRequest
+		);
+		registerPacketListener(
+			RpcMessage.SerialTrackerFactoryResetRequest,
+			this::SerialTrackerFactoryResetRequest
+		);
 		registerPacketListener(RpcMessage.OpenSerialRequest, this::onOpenSerialRequest);
 		registerPacketListener(RpcMessage.CloseSerialRequest, this::onCloseSerialRequest);
 
@@ -295,12 +311,8 @@ public class RPCHandler extends ProtocolHandler<RpcMessageHeader>
 		int filterSettings = FilteringSettings
 			.createFilteringSettings(
 				fbb,
-				TrackerFilters
-					.valueOf(
-						filtersConfig.getType()
-					).id,
-				(int) (filtersConfig.getAmount() * 100),
-				filtersConfig.getTickCount()
+				TrackerFilters.getByConfigkey(filtersConfig.getType()).id,
+				filtersConfig.getAmount()
 			);
 
 		int modelSettings;
@@ -312,7 +324,9 @@ public class RPCHandler extends ProtocolHandler<RpcMessageHeader>
 					config.getToggle(SkeletonConfigToggles.EXTENDED_SPINE_MODEL),
 					config.getToggle(SkeletonConfigToggles.EXTENDED_PELVIS_MODEL),
 					config.getToggle(SkeletonConfigToggles.EXTENDED_KNEE_MODEL),
-					config.getToggle(SkeletonConfigToggles.FORCE_ARMS_FROM_HMD)
+					config.getToggle(SkeletonConfigToggles.FORCE_ARMS_FROM_HMD),
+					config.getToggle(SkeletonConfigToggles.SKATING_CORRECTION),
+					config.getToggle(SkeletonConfigToggles.FLOOR_CLIP)
 				);
 			int ratiosOffset = ModelRatios
 				.createModelRatios(
@@ -357,16 +371,16 @@ public class RPCHandler extends ProtocolHandler<RpcMessageHeader>
 		if (req.filtering() != null) {
 			TrackerFilters type = TrackerFilters.fromId(req.filtering().type());
 			if (type != null) {
-				this.api.server
+				FiltersConfig filtersConfig = this.api.server
 					.getConfigManager()
 					.getVrConfig()
-					.getFilters()
-					.updateTrackersFilters(
-						type,
-						req.filtering().intensity() / 100.0f,
-						req.filtering().ticks()
-					);
+					.getFilters();
+				filtersConfig.setType(type.configKey);
+				filtersConfig.setAmount(req.filtering().amount());
+
 				this.api.server.getConfigManager().saveConfig();
+
+				filtersConfig.updateTrackersFilters();
 			}
 		}
 
@@ -377,34 +391,59 @@ public class RPCHandler extends ProtocolHandler<RpcMessageHeader>
 			var ratios = modelSettings.ratios();
 
 			if (toggles != null) {
-				if (toggles.hasExtendedSpine()) {
-					cfg
-						.setToggle(
-							SkeletonConfigToggles.EXTENDED_SPINE_MODEL,
-							toggles.extendedSpine()
-						);
-				}
-				if (toggles.hasExtendedPelvis()) {
-					cfg
-						.setToggle(
-							SkeletonConfigToggles.EXTENDED_PELVIS_MODEL,
-							toggles.extendedPelvis()
-						);
-				}
-				if (toggles.hasExtendedKnee()) {
-					cfg
-						.setToggle(
-							SkeletonConfigToggles.EXTENDED_KNEE_MODEL,
-							toggles.extendedKnee()
-						);
-				}
-				if (toggles.forceArmsFromHmd()) {
-					cfg
-						.setToggle(
-							SkeletonConfigToggles.FORCE_ARMS_FROM_HMD,
-							toggles.forceArmsFromHmd()
-						);
-				}
+				// Note: toggles.has____ returns the same as toggles._____ this
+				// seems like a bug
+				cfg
+					.setToggle(
+						SkeletonConfigToggles.EXTENDED_SPINE_MODEL,
+						toggles.extendedSpine()
+					);
+				cfg
+					.setToggle(
+						SkeletonConfigToggles.EXTENDED_PELVIS_MODEL,
+						toggles.extendedPelvis()
+					);
+				cfg
+					.setToggle(
+						SkeletonConfigToggles.EXTENDED_KNEE_MODEL,
+						toggles.extendedKnee()
+					);
+				cfg
+					.setToggle(
+						SkeletonConfigToggles.FORCE_ARMS_FROM_HMD,
+						toggles.forceArmsFromHmd()
+					);
+				cfg
+					.setToggle(
+						SkeletonConfigToggles.EXTENDED_SPINE_MODEL,
+						toggles.extendedSpine()
+					);
+				cfg
+					.setToggle(
+						SkeletonConfigToggles.EXTENDED_PELVIS_MODEL,
+						toggles.extendedPelvis()
+					);
+				cfg
+					.setToggle(
+						SkeletonConfigToggles.EXTENDED_KNEE_MODEL,
+						toggles.extendedKnee()
+					);
+				cfg
+					.setToggle(
+						SkeletonConfigToggles.FORCE_ARMS_FROM_HMD,
+						toggles.forceArmsFromHmd()
+					);
+				cfg
+					.setToggle(
+						SkeletonConfigToggles.FLOOR_CLIP,
+						toggles.floorClip()
+					);
+
+				cfg
+					.setToggle(
+						SkeletonConfigToggles.SKATING_CORRECTION,
+						toggles.skatingCorrection()
+					);
 			}
 
 			if (ratios != null) {
@@ -505,6 +544,96 @@ public class RPCHandler extends ProtocolHandler<RpcMessageHeader>
 					fbb.finish(outbound);
 
 					conn.send(fbb.dataBuffer());
+				});
+		});
+	}
+
+	public void SerialTrackerRebootRequest(
+		GenericConnection conn,
+		RpcMessageHeader messageHeader
+	) {
+		SerialTrackerRebootRequest req = (SerialTrackerRebootRequest) messageHeader
+			.message(new SerialTrackerRebootRequest());
+		if (req == null)
+			return;
+
+		this.api.server.getSerialHandler().rebootRequest();
+
+		this.api.getAPIServers().forEach((server) -> {
+			server
+				.getAPIConnections()
+				.filter(conn2 -> conn2.getContext().useSerial())
+				.forEach((conn2) -> {
+					FlatBufferBuilder fbb = new FlatBufferBuilder(32);
+
+					SerialUpdateResponse.startSerialUpdateResponse(fbb);
+					SerialUpdateResponse.addClosed(fbb, false);
+					int update = SerialUpdateResponse.endSerialUpdateResponse(fbb);
+					int outbound = this
+						.createRPCMessage(fbb, RpcMessage.SerialUpdateResponse, update);
+					fbb.finish(outbound);
+
+					conn2.send(fbb.dataBuffer());
+				});
+		});
+	}
+
+	public void SerialTrackerGetInfoRequest(
+		GenericConnection conn,
+		RpcMessageHeader messageHeader
+	) {
+		SerialTrackerGetInfoRequest req = (SerialTrackerGetInfoRequest) messageHeader
+			.message(new SerialTrackerGetInfoRequest());
+		if (req == null)
+			return;
+
+		this.api.server.getSerialHandler().infoRequest();
+
+		this.api.getAPIServers().forEach((server) -> {
+			server
+				.getAPIConnections()
+				.filter(conn2 -> conn2.getContext().useSerial())
+				.forEach((conn2) -> {
+					FlatBufferBuilder fbb = new FlatBufferBuilder(32);
+
+					SerialUpdateResponse.startSerialUpdateResponse(fbb);
+					SerialUpdateResponse.addClosed(fbb, false);
+					int update = SerialUpdateResponse.endSerialUpdateResponse(fbb);
+					int outbound = this
+						.createRPCMessage(fbb, RpcMessage.SerialUpdateResponse, update);
+					fbb.finish(outbound);
+
+					conn2.send(fbb.dataBuffer());
+				});
+		});
+	}
+
+	public void SerialTrackerFactoryResetRequest(
+		GenericConnection conn,
+		RpcMessageHeader messageHeader
+	) {
+		SerialTrackerFactoryResetRequest req = (SerialTrackerFactoryResetRequest) messageHeader
+			.message(new SerialTrackerFactoryResetRequest());
+		if (req == null)
+			return;
+
+		this.api.server.getSerialHandler().factoryResetRequest();
+
+		this.api.getAPIServers().forEach((server) -> {
+			server
+				.getAPIConnections()
+				.filter(conn2 -> conn2.getContext().useSerial())
+				.forEach((conn2) -> {
+					FlatBufferBuilder fbb = new FlatBufferBuilder(32);
+
+					SerialUpdateResponse.startSerialUpdateResponse(fbb);
+					SerialUpdateResponse.addClosed(fbb, false);
+					int update = SerialUpdateResponse.endSerialUpdateResponse(fbb);
+					int outbound = this
+						.createRPCMessage(fbb, RpcMessage.SerialUpdateResponse, update);
+					fbb.finish(outbound);
+
+					conn2.send(fbb.dataBuffer());
 				});
 		});
 	}
@@ -643,7 +772,7 @@ public class RPCHandler extends ProtocolHandler<RpcMessageHeader>
 							fbb,
 							epoch.epoch,
 							epoch.totalEpochs,
-							epoch.epochError,
+							epoch.epochError.getMean(),
 							skeletonPartsOffset
 						);
 					int outbound = this
