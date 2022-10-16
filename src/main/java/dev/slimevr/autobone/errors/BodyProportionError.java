@@ -11,7 +11,10 @@ import dev.slimevr.vr.processor.skeleton.SkeletonConfigOffsets;
 public class BodyProportionError implements IAutoBoneError {
 
 	// TODO hip tracker stuff... Hip tracker should be around 3 to 5
-	// centimeters. Human average is probably 1.1235 (SD 0.07)
+	// centimeters.
+
+	// 1.3939?
+	// Human average is probably 1.1235 (SD 0.07)
 	public float legBodyRatio = 1.1235f;
 
 	// SD of 0.07, capture 68% within range
@@ -28,10 +31,10 @@ public class BodyProportionError implements IAutoBoneError {
 
 	@Override
 	public float getStepError(AutoBoneTrainingStep trainingStep) throws AutoBoneException {
-		return getBodyProportionError(trainingStep.getSkeleton1().skeletonConfig);
+		return getBodyProportionError(trainingStep.getSkeleton1().skeletonConfig, trainingStep.getCurrentHeight());
 	}
 
-	public float getBodyProportionError(SkeletonConfig config) {
+	public float getBodyProportionError(SkeletonConfig config, float height) {
 		float neckLength = config.getOffset(SkeletonConfigOffsets.NECK);
 		float chestLength = config.getOffset(SkeletonConfigOffsets.CHEST);
 		float torsoLength = config.getOffset(SkeletonConfigOffsets.TORSO);
