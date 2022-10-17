@@ -72,6 +72,11 @@ public class UDPDevice extends Device {
 	}
 
 	@Override
+	public InetAddress getIpAddress() {
+		return this.ipAddress;
+	}
+
+	@Override
 	public FastList<Tracker> getTrackers() {
 		return this.trackers;
 	}
