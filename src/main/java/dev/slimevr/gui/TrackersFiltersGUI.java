@@ -2,8 +2,9 @@ package dev.slimevr.gui;
 
 import com.jme3.math.FastMath;
 import dev.slimevr.VRServer;
+import dev.slimevr.config.FiltersConfig;
+import dev.slimevr.filtering.TrackerFilters;
 import dev.slimevr.gui.swing.EJBagNoStretch;
-import dev.slimevr.vr.trackers.TrackerFilters;
 import io.eiren.util.StringUtils;
 
 import javax.swing.*;
@@ -17,22 +18,24 @@ public class TrackersFiltersGUI extends EJBagNoStretch {
 
 	private final VRServer server;
 	private final JLabel amountLabel;
-	private final JLabel ticksLabel;
 	TrackerFilters filterType;
 	float filterAmount;
-	int filterTicks;
+	FiltersConfig filtersConfig;
 
 	public TrackersFiltersGUI(VRServer server, VRServerGUI gui) {
 
 		super(false, true);
 		this.server = server;
+		filtersConfig = server
+			.getConfigManager()
+			.getVrConfig()
+			.getFilters();
 
 		int row = 0;
 
 		setAlignmentY(TOP_ALIGNMENT);
 		add(Box.createVerticalStrut(10));
-		filterType = TrackerFilters
-			.valueOf(server.getConfigManager().getVrConfig().getFilters().getType());
+		filterType = server.getConfigManager().getVrConfig().getFilters().enumGetType();
 
 		JComboBox<String> filterSelect;
 		add(filterSelect = new JComboBox<>(), s(c(0, row, 2), 4, 1));
@@ -40,17 +43,19 @@ public class TrackersFiltersGUI extends EJBagNoStretch {
 		for (TrackerFilters f : TrackerFilters.values()) {
 			filterSelect.addItem(f.name());
 		}
-		filterSelect.setSelectedItem(filterType.toString());
+		if (filterType != null) {
+			filterSelect.setSelectedItem(filterType.toString());
+		}
 
 		filterSelect.addActionListener(new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent e) {
-				filterType = TrackerFilters.valueOf(filterSelect.getSelectedItem().toString());
-				server
-					.getConfigManager()
-					.getVrConfig()
-					.getFilters()
-					.updateTrackersFilters(filterType, filterAmount, filterTicks);
+				filterType = TrackerFilters
+					.getByConfigkey(filterSelect.getSelectedItem().toString());
+				filtersConfig
+					.enumSetType(filterType);
+				filtersConfig
+					.updateTrackersFilters();
 				server.getConfigManager().saveConfig();
 			}
 		});
@@ -60,64 +65,43 @@ public class TrackersFiltersGUI extends EJBagNoStretch {
 		filterAmount = FastMath
 			.clamp(
 				server.getConfigManager().getVrConfig().getFilters().getAmount(),
-				0,
+				0.1f,
 				1
 			);
 
-		add(new JLabel("Intensity"), c(0, row, 2));
-		add(new AdjButton("+", 0, false), c(1, row, 2));
+		add(new JLabel("Amount"), c(0, row, 2));
+		add(new AdjButton("+", false), c(1, row, 2));
 		add(
 			amountLabel = new JLabel(StringUtils.prettyNumber(filterAmount * 100f) + "%"),
 			c(2, row, 2)
 		);
-		add(new AdjButton("-", 0, true), c(3, row, 2));
-		row++;
-		filterTicks = (int) FastMath
-			.clamp(
-				server.getConfigManager().getVrConfig().getFilters().getTickCount(),
-				0,
-				80
-			);
-
-		add(new JLabel("Ticks"), c(0, row, 2));
-		add(new AdjButton("+", 1, false), c(1, row, 2));
-		add(ticksLabel = new JLabel(StringUtils.prettyNumber(filterTicks)), c(2, row, 2));
-		add(new AdjButton("-", 1, true), c(3, row, 2));
+		add(new AdjButton("-", true), c(3, row, 2));
 	}
 
-	void adjustValues(int cat, boolean neg) {
-		if (cat == 0) {
-			if (neg) {
-				filterAmount = FastMath.clamp(filterAmount - 0.1f, 0, 1);
-			} else {
-				filterAmount = FastMath.clamp(filterAmount + 0.1f, 0, 1);
-			}
-			amountLabel.setText((StringUtils.prettyNumber(filterAmount * 100f)) + "%");
-		} else if (cat == 1) {
-			if (neg) {
-				filterTicks = (int) FastMath.clamp(filterTicks - 1, 0, 80);
-			} else {
-				filterTicks = (int) FastMath.clamp(filterTicks + 1, 0, 80);
-			}
-			ticksLabel.setText((StringUtils.prettyNumber(filterTicks)));
+	void adjustAmount(boolean neg) {
+		if (neg) {
+			filterAmount = FastMath.clamp(filterAmount - 0.1f, 0.1f, 1);
+		} else {
+			filterAmount = FastMath.clamp(filterAmount + 0.1f, 0.1f, 1);
 		}
+		amountLabel.setText((StringUtils.prettyNumber(filterAmount * 100f)) + "%");
 
-		server
-			.getConfigManager()
-			.getVrConfig()
-			.getFilters()
-			.updateTrackersFilters(filterType, filterAmount, filterTicks);
+		filtersConfig
+			.setAmount(filterAmount);
+		filtersConfig
+			.updateTrackersFilters();
+
 		server.getConfigManager().saveConfig();
 	}
 
 	private class AdjButton extends JButton {
 
-		public AdjButton(String text, int category, boolean neg) {
+		public AdjButton(String text, boolean neg) {
 			super(text);
 			addMouseListener(new MouseInputAdapter() {
 				@Override
 				public void mouseClicked(MouseEvent e) {
-					adjustValues(category, neg);
+					adjustAmount(neg);
 				}
 			});
 		}

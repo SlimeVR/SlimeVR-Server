@@ -1,5 +1,6 @@
 package dev.slimevr;
 
+import com.jme3.system.NanoTimer;
 import dev.slimevr.autobone.AutoBoneHandler;
 import dev.slimevr.bridge.Bridge;
 import dev.slimevr.bridge.VMCBridge;
@@ -12,7 +13,9 @@ import dev.slimevr.util.ann.VRServerThread;
 import dev.slimevr.vr.DeviceManager;
 import dev.slimevr.vr.processor.HumanPoseProcessor;
 import dev.slimevr.vr.processor.skeleton.Skeleton;
-import dev.slimevr.vr.trackers.*;
+import dev.slimevr.vr.trackers.HMDTracker;
+import dev.slimevr.vr.trackers.ShareableTracker;
+import dev.slimevr.vr.trackers.Tracker;
 import dev.slimevr.vr.trackers.udp.TrackersUDPServer;
 import dev.slimevr.websocketapi.WebSocketVRBridge;
 import io.eiren.util.OperatingSystem;
@@ -23,7 +26,8 @@ import solarxr_protocol.datatypes.TrackerIdT;
 
 import java.net.InetAddress;
 import java.net.UnknownHostException;
-import java.util.*;
+import java.util.List;
+import java.util.Queue;
 import java.util.concurrent.LinkedBlockingQueue;
 import java.util.function.Consumer;
 
@@ -44,8 +48,8 @@ public class VRServer extends Thread {
 	private final SerialHandler serialHandler;
 	private final AutoBoneHandler autoBoneHandler;
 	private final ProtocolAPI protocolAPI;
-
 	private final ConfigManager configManager;
+	private final NanoTimer fpsTimer = new NanoTimer();
 
 	/**
 	 * This function is used by VRWorkout, do not remove!
@@ -182,6 +186,7 @@ public class VRServer extends Thread {
 	public void run() {
 		trackersServer.start();
 		while (true) {
+			fpsTimer.update();
 			// final long start = System.currentTimeMillis();
 			do {
 				Runnable task = tasks.poll();
@@ -320,4 +325,9 @@ public class VRServer extends Thread {
 	public ConfigManager getConfigManager() {
 		return configManager;
 	}
+
+	public NanoTimer getFpsTimer() {
+		return fpsTimer;
+	}
+
 }
