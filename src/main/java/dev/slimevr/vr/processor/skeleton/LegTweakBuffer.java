@@ -26,6 +26,7 @@ public class LegTweakBuffer {
 	public static final float NS_CONVERT = 1000000000.0f;
 	private static final Vector3f placeHolderVec = new Vector3f();
 	private static final Quaternion placeHolderQuat = new Quaternion();
+	private static final Vector3f gravity = new Vector3f(0, -9.81f, 0);
 
 	// states for the legs
 	private int leftLegState = STATE_UNKNOWN;
@@ -68,6 +69,8 @@ public class LegTweakBuffer {
 	private boolean accelerationAboveThresholdLeft = true;
 	private boolean accelerationAboveThresholdRight = true;
 	private Vector3f centerOfMass = placeHolderVec;
+	private Vector3f centerOfMassVelocity = placeHolderVec;
+	private Vector3f centerOfMassAcceleration = placeHolderVec;
 	private float leftFloorLevel;
 	private float rightFloorLevel;
 
@@ -86,13 +89,13 @@ public class LegTweakBuffer {
 	private static final float PARAM_SCALAR_MID = 1.0f;
 
 	// the point at which the scalar is at the max or min depending on accel
-	private static final float MAX_SCALAR_ACCEL = 0.3f;
+	private static final float MAX_SCALAR_ACCEL = 0.2f;
 	private static final float MIN_SCALAR_ACCEL = 0.9f;
 
 	// the point at which the scalar is at it max or min in a double locked foot
 	// situation
 	private static final float MAX_SCALAR_DORMANT = 0.4f;
-	private static final float MIN_SCALAR_DORMANT = 2.0f;
+	private static final float MIN_SCALAR_DORMANT = 1.75f;
 
 	// the point at which the scalar is at it max or min in a single locked foot
 	// situation
@@ -366,6 +369,7 @@ public class LegTweakBuffer {
 		// compute attributes of the legs
 		computeVelocity();
 		computeAccelerationMagnitude();
+		computeComAtributes();
 
 		// check if the acceleration triggers forced unlock
 		if (detectionMode == FOOT_ACCEL) {
@@ -390,15 +394,11 @@ public class LegTweakBuffer {
 	public void updateFrameNumber(int frameNumber) {
 		this.frameNumber = frameNumber;
 
-		if (this.frameNumber >= 10) {
-			this.parent = null; // once a frame is 10 frames old, it is no
-								// longer
-								// needed
-		}
+		if (this.frameNumber >= 10)
+			this.parent = null;
 
-		if (parent != null) {
+		if (parent != null)
 			parent.updateFrameNumber(frameNumber + 1);
-		}
 	}
 
 	// compute the state of the legs
@@ -537,6 +537,12 @@ public class LegTweakBuffer {
 			.length();
 	}
 
+	// compute the velocity and acceleration of the center of mass
+	private void computeComAtributes() {
+		centerOfMassVelocity = centerOfMass.subtract(parent.centerOfMass);
+		centerOfMassAcceleration = centerOfMassVelocity.subtract(parent.centerOfMassVelocity);
+	}
+
 	// for 8 trackers the data from the imus is enough to determine lock/unlock
 	private void computeAccelerationAboveThresholdFootTrackers() {
 		accelerationAboveThresholdLeft = leftFootAccelerationMagnitude
@@ -577,10 +583,10 @@ public class LegTweakBuffer {
 		// combine the scalars to get the final scalars
 		leftFootSensitivityVel = (leftFootScalarAccel
 			+ leftFootScalarVel / 2.0f)
-			* clamp(0.1f, 2.0f, pressureScalars[0] * 2);
+			* clamp(0.2f, 1.5f, pressureScalars[0] * 2);
 		rightFootSensitivityVel = (rightFootScalarAccel
 			+ rightFootScalarVel / 2.0f)
-			* clamp(0.1f, 2.0f, pressureScalars[1] * 2);
+			* clamp(0.2f, 1.5f, pressureScalars[1] * 2);
 
 		leftFootSensitivityAccel = leftFootScalarVel;
 		rightFootSensitivityAccel = rightFootScalarVel;
@@ -688,34 +694,115 @@ public class LegTweakBuffer {
 	}
 
 	// get the pressure prediction for the feet based of the center of mass
-	// this can also be used to determine if a foot hovering above the ground
-	// should be locked to the ground
+	// (assume mass is 1)
 	private float[] getPressurePrediction() {
 		float leftFootPressure = 0;
 		float rightFootPressure = 0;
 
-		// get the distance from the center of mass to the feet
-		float leftFootDist = leftFootPosition
-			.clone()
-			.setY(0)
-			.distance(centerOfMass.setY(0));
-		float rightFootDist = rightFootPosition
-			.clone()
-			.setY(0)
-			.distance(centerOfMass.setY(0));
-		// use the inverse square law for the pressure prediction
-		leftFootPressure = 1 / (leftFootDist * leftFootDist);
-		rightFootPressure = 1 / (rightFootDist * rightFootDist);
+		// table for the cos and sin of the angle between the com and each foot
+		// cos(a) = lfv.y / lfv.length()
+		// sin(a) = lfv.x / lfv.length()
+		// cos(b) = rfv.y / rfv.length()
+		// sin(b) = rfv.x / rfv.length()
+		// F = ma
+		// gravity = 9.81
+		// m = 1
 
-		// the further from the floor the less pressure (again using the
-		// inverse)
-		leftFootPressure *= 1 / Math.abs((leftFootPosition.y - leftFloorLevel + 0.1f));
-		rightFootPressure *= 1 / Math.abs((rightFootPosition.y - rightFloorLevel + 0.1f));
+		// get the vector's from the com to each foot
+		Vector3f leftFootVector = leftFootPosition.subtract(centerOfMass).normalize();
+		Vector3f rightFootVector = rightFootPosition.subtract(centerOfMass).normalize();
 
-		// normalize the pressure
-		float totalPressure = leftFootPressure + rightFootPressure;
-		leftFootPressure /= totalPressure;
-		rightFootPressure /= totalPressure;
+		// get the magnitude of the force on each foot
+		float leftFootMagnitude = 9.81f * leftFootVector.y / leftFootVector.length();
+		float rightFootMegnitude = 9.81f * rightFootVector.y / rightFootVector.length();
+
+		// get the force vector each foot could apply to the com
+		Vector3f leftFootForce = leftFootVector.mult(leftFootMagnitude / 2.0f);
+		Vector3f rightFootForce = rightFootVector.mult(rightFootMegnitude / 2.0f);
+
+		// based of the acceleration of the com, get the force each foot is
+		// likly applying (the expected force sum should be equal to
+		// centerOfMassAcceleration since the mass is 1)
+		// running a few iterations of gradient descent to gets the force of
+		// each leg
+		int iterations = 20;
+		float stepSize = 0.10f;
+		// setup the temporary variables
+		Vector3f tempLeftFootForce1 = leftFootForce.clone();
+		Vector3f tempLeftFootForce2 = leftFootForce.clone();
+		Vector3f tempRightFootForce1 = rightFootForce.clone();
+		Vector3f tempRightFootForce2 = rightFootForce.clone();
+
+		for (int i = 0; i < iterations; i++) {
+			tempLeftFootForce1.set(leftFootForce);
+			tempLeftFootForce2.set(leftFootForce);
+			tempRightFootForce1.set(rightFootForce);
+			tempRightFootForce2.set(rightFootForce);
+
+			// get the error at the current position
+			Vector3f error = centerOfMassAcceleration
+				.subtract(leftFootForce.add(rightFootForce).add(gravity));
+
+			// add and subtract the error to the force vectors
+			tempLeftFootForce1 = tempLeftFootForce1.mult(1.0f + stepSize);
+			tempLeftFootForce2 = tempLeftFootForce2.mult(1.0f - stepSize);
+			tempRightFootForce1 = tempRightFootForce1.mult(1.0f + stepSize);
+			tempRightFootForce2 = tempRightFootForce2.mult(1.0f - stepSize);
+
+			// get the error at the new position
+			Vector3f error1 = centerOfMassAcceleration
+				.subtract(tempLeftFootForce1.add(rightFootForce).add(gravity));
+			Vector3f error2 = centerOfMassAcceleration
+				.subtract(tempLeftFootForce2.add(rightFootForce).add(gravity));
+			Vector3f error3 = centerOfMassAcceleration
+				.subtract(leftFootForce.add(tempRightFootForce1).add(gravity));
+			Vector3f error4 = centerOfMassAcceleration
+				.subtract(leftFootForce.add(tempRightFootForce2).add(gravity));
+
+			// set the new force vectors
+			if (error1.length() < error.length()) {
+				leftFootForce.set(tempLeftFootForce1);
+			} else if (error2.length() < error.length()) {
+				leftFootForce.set(tempLeftFootForce2);
+			}
+
+			if (error3.length() < error.length()) {
+				rightFootForce.set(tempRightFootForce1);
+			} else if (error4.length() < error.length()) {
+				rightFootForce.set(tempRightFootForce2);
+			}
+		}
+
+		// now get the force on each foot and normalize it to the sum
+		leftFootPressure = leftFootForce.length()
+			/ (leftFootForce.length() + rightFootForce.length());
+		rightFootPressure = rightFootForce.length()
+			/ (leftFootForce.length() + rightFootForce.length());
+
+		// distance from the ground is a factor in the pressure
+		// using the inverse of the distance to the ground scale the
+		// pressure
+		float leftDistance = (leftFootPosition.y > leftFloorLevel)
+			? (leftFootPosition.y - leftFloorLevel)
+			: 0.01f;
+		leftFootPressure *= 1.0f / (leftDistance);
+		float rightDistance = (rightFootPosition.y > rightFloorLevel)
+			? (rightFootPosition.y - rightFloorLevel)
+			: 0.01f;
+		rightFootPressure *= 1.0f / (rightDistance);
+
+		// normalize the pressure values
+		float pressureSum = leftFootPressure + rightFootPressure;
+		leftFootPressure /= pressureSum;
+		rightFootPressure /= pressureSum;
+
+
+		// print the force vectors
+		System.out
+			.println(
+				"leftFootForce: " + leftFootPressure + " rightFootForce: " + rightFootPressure
+			);
+
 
 		return new float[] { leftFootPressure, rightFootPressure };
 	}
