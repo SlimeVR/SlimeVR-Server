@@ -14,6 +14,7 @@ import solarxr_protocol.data_feed.tracker.TrackerData;
 import solarxr_protocol.data_feed.tracker.TrackerDataMaskT;
 import solarxr_protocol.data_feed.tracker.TrackerInfo;
 import solarxr_protocol.datatypes.DeviceId;
+import solarxr_protocol.datatypes.Ipv4Address;
 import solarxr_protocol.datatypes.Temperature;
 import solarxr_protocol.datatypes.TrackerId;
 import solarxr_protocol.datatypes.hardware_info.HardwareInfo;
@@ -43,7 +44,14 @@ public class DataFeedBuilder {
 		HardwareInfo.addFirmwareVersion(fbb, nameOffset);
 		HardwareInfo.addManufacturer(fbb, manufacturerOffset);
 		HardwareInfo
-			.addIpAddress(fbb, ByteBuffer.wrap(device.getIpAddress().getAddress()).getInt());
+			.addIpAddress(
+				fbb,
+				Ipv4Address
+					.createIpv4Address(
+						fbb,
+						ByteBuffer.wrap(device.getIpAddress().getAddress()).getInt()
+					)
+			);
 		// BRUH MOMENT
 		// TODO need support: HardwareInfo.addHardwareRevision(fbb,
 		// hardwareRevisionOffset);
