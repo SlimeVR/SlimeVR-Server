@@ -51,6 +51,9 @@ export function SettingsSidebar() {
           <SettingsLink to="/settings/trackers" scrollTo="mechanics">
             Tracker mechanics
           </SettingsLink>
+          <SettingsLink to="/settings/trackers" scrollTo="fksettings">
+            FK settings
+          </SettingsLink>
           <SettingsLink to="/settings/trackers" scrollTo="interface">
             Interface
           </SettingsLink>

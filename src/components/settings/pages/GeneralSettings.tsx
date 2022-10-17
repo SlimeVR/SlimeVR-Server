@@ -1,10 +1,13 @@
 import { useEffect, useRef } from 'react';
-import { useForm } from 'react-hook-form';
+import { DefaultValues, useForm, UseFormReset } from 'react-hook-form';
 import { useLocation } from 'react-router-dom';
 import {
   ChangeSettingsRequestT,
   FilteringSettingsT,
   FilteringType,
+  ModelSettingsT,
+  ModelTogglesT,
+  ModelRatiosT,
   RpcMessage,
   SettingsRequestT,
   SettingsResponseT,
@@ -33,6 +36,14 @@ interface SettingsForm {
     type: number;
     amount: number;
   };
+  toggles: {
+    extendedSpine: boolean;
+    extendedPelvis: boolean;
+    extendedKnee: boolean;
+    forceArmsFromHmd: boolean;
+    floorClip: boolean;
+    skatingCorrection: boolean;
+  };
   interface: {
     devmode: boolean;
   };
@@ -54,6 +65,14 @@ export function GeneralSettings() {
           knees: false,
           legs: false,
         },
+        toggles: {
+          extendedSpine: true,
+          extendedPelvis: true,
+          extendedKnee: true,
+          forceArmsFromHmd: false,
+          floorClip: false,
+          skatingCorrection: false,
+        },
         filtering: { amount: 10, type: FilteringType.NONE },
         interface: { devmode: false },
       },
@@ -72,6 +91,18 @@ export function GeneralSettings() {
       settings.steamVrTrackers = trackers;
     }
 
+    const modelSettings = new ModelSettingsT();
+    const toggles = new ModelTogglesT();
+    toggles.floorClip = values.toggles.floorClip;
+    toggles.skatingCorrection = values.toggles.skatingCorrection;
+    toggles.extendedKnee = values.toggles.extendedKnee;
+    toggles.extendedPelvis = values.toggles.extendedPelvis;
+    toggles.extendedSpine = values.toggles.extendedSpine;
+    toggles.forceArmsFromHmd = values.toggles.forceArmsFromHmd;
+
+    modelSettings.toggles = toggles;
+    settings.modelSettings = modelSettings;
+
     const filtering = new FilteringSettingsT();
     filtering.type = values.filtering.type;
     filtering.amount = values.filtering.amount;
@@ -80,6 +111,14 @@ export function GeneralSettings() {
     sendRPCPacket(RpcMessage.ChangeSettingsRequest, settings);
 
     setConfig({ debug: values.interface.devmode });
+
+    // if devmode was changed update the page
+    const skeletonSettings = document.getElementById('skeletonSettings');
+    if (skeletonSettings !== null) {
+      skeletonSettings.style.display = values.interface.devmode
+        ? 'block'
+        : 'none';
+    }
   };
 
   useEffect(() => {
@@ -92,15 +131,34 @@ export function GeneralSettings() {
   }, []);
 
   useRPCPacket(RpcMessage.SettingsResponse, (settings: SettingsResponseT) => {
-    reset({
-      ...(settings.steamVrTrackers
-        ? { trackers: settings.steamVrTrackers }
-        : {}),
-      ...(settings.filtering ? { filtering: settings.filtering } : {}),
+    const formData: DefaultValues<SettingsForm> = {
       interface: {
         devmode: config?.debug,
       },
-    });
+    };
+
+    if (settings.filtering) {
+      formData.filtering = settings.filtering;
+    }
+
+    if (settings.steamVrTrackers) {
+      formData.trackers = settings.steamVrTrackers;
+    }
+
+    if (settings.modelSettings?.toggles) {
+      formData.toggles = Object.keys(settings.modelSettings?.toggles).reduce(
+        (curr, key: string) => ({
+          ...curr,
+          [key]:
+            (settings.modelSettings?.toggles &&
+              (settings.modelSettings.toggles as any)[key]) ||
+            false,
+        }),
+        {}
+      );
+    }
+
+    reset(formData);
   });
 
   // Handle scrolling to selected page
@@ -217,6 +275,85 @@ export function GeneralSettings() {
           </div>
         </>
       </SettingsPageLayout>
+      <SettingsPageLayout icon={<WrenchIcon></WrenchIcon>} id="fksettings">
+        <>
+          <Typography variant="main-title">FK settings</Typography>
+          <Typography bold>Leg tweaks</Typography>
+          <div className="flex flex-col pt-2 pb-4">
+            <Typography color="secondary">
+              Floor-clip can Reduce or even eliminates clipping with the floor
+              but may cause problems when on your knees. Skating-correction
+              corrects for ice skating, but can decrease accuracy in certain
+              movement patterns.
+            </Typography>
+          </div>
+          <div className="grid grid-cols-2 gap-3 pb-5">
+            <CheckBox
+              variant="toggle"
+              outlined
+              control={control}
+              name="toggles.floorClip"
+              label="Floor clip"
+            />
+            <CheckBox
+              variant="toggle"
+              outlined
+              control={control}
+              name="toggles.skatingCorrection"
+              label="Skating correction"
+            />
+          </div>
+
+          <Typography bold>Arm FK</Typography>
+          <div className="flex flex-col pt-2 pb-4">
+            <Typography color="secondary">
+              Change the way the arms are tracked.
+            </Typography>
+          </div>
+          <div className="grid grid-cols-2 pb-5">
+            <CheckBox
+              variant="toggle"
+              outlined
+              control={control}
+              name="toggles.forceArmsFromHmd"
+              label="Force arms from HMD"
+            />
+          </div>
+          <div id="skeletonSettings">
+            <Typography bold>Skeleton settings</Typography>
+            <div className="flex flex-col pt-2 pb-4">
+              <Typography color="secondary">
+                Toggle skeleton settings on or off. It is recommended to leave
+                these on.
+              </Typography>
+            </div>
+            <div className="grid grid-cols-2 gap-3 pb-5">
+              <CheckBox
+                variant="toggle"
+                outlined
+                control={control}
+                name="toggles.extendedSpine"
+                label="Extended spine"
+              />
+              <CheckBox
+                variant="toggle"
+                outlined
+                control={control}
+                name="toggles.extendedPelvis"
+                label="Extended pelvis"
+              />
+              <CheckBox
+                variant="toggle"
+                outlined
+                control={control}
+                name="toggles.extendedKnee"
+                label="Extended knee"
+              />
+            </div>
+          </div>
+        </>
+      </SettingsPageLayout>
+
       <SettingsPageLayout icon={<SquaresIcon></SquaresIcon>} id="interface">
         <>
           <Typography variant="main-title">Interface</Typography>
