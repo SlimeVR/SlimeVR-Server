@@ -16,16 +16,27 @@ import solarxr_protocol.data_feed.tracker.TrackerInfo;
 import solarxr_protocol.datatypes.DeviceId;
 import solarxr_protocol.datatypes.Temperature;
 import solarxr_protocol.datatypes.TrackerId;
+import solarxr_protocol.datatypes.hardware_info.HardwareAddress;
 import solarxr_protocol.datatypes.hardware_info.HardwareInfo;
 import solarxr_protocol.datatypes.hardware_info.HardwareStatus;
 import solarxr_protocol.datatypes.math.Quat;
 import solarxr_protocol.datatypes.math.Vec3f;
 
+import java.nio.ByteBuffer;
 import java.util.ArrayList;
 import java.util.List;
 
 
 public class DataFeedBuilder {
+
+	public static int createHardwareAddress(FlatBufferBuilder fbb, byte[] address) {
+		ByteBuffer buff = ByteBuffer.wrap(address);
+
+
+		if (address.length == 4)
+			return HardwareAddress.createHardwareAddress(fbb, buff.getInt());
+		throw new RuntimeException("unimplemented hardware address size");
+	}
 
 	public static int createHardwareInfo(FlatBufferBuilder fbb, Device device) {
 		Tracker tracker = device.getTrackers().get(0).get();
@@ -38,14 +49,18 @@ public class DataFeedBuilder {
 			? fbb.createString(device.getManufacturer())
 			: 0;
 
+		int hardwareAddressOffset = DataFeedBuilder
+			.createHardwareAddress(fbb, device.getIpAddress().getAddress());
+
 		HardwareInfo.startHardwareInfo(fbb);
 		HardwareInfo.addFirmwareVersion(fbb, nameOffset);
 		HardwareInfo.addManufacturer(fbb, manufacturerOffset);
+		HardwareInfo.addHardwareAddress(fbb, hardwareAddressOffset);
 		// BRUH MOMENT
 		// TODO need support: HardwareInfo.addHardwareRevision(fbb,
 		// hardwareRevisionOffset);
 		// TODO need support: HardwareInfo.addDisplayName(fbb, de);
-		// TODO need support: HardwareInfo.addHardwareAddress(fbb, tracker.);
+
 		// TODO need support: HardwareInfo.addMcuId(device);
 		return HardwareInfo.endHardwareInfo(fbb);
 	}
