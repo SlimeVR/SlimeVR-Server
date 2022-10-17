@@ -360,7 +360,6 @@ public class TrackersList extends EJBoxNoStretch {
 				);
 			}
 
-
 			setBorder(BorderFactory.createLineBorder(new Color(0x663399), 2, false));
 			TrackersList.this.add(this);
 			return this;
