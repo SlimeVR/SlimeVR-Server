@@ -12,6 +12,7 @@ import { Typography } from '../commons/Typography';
 import { TrackerBattery } from './TrackerBattery';
 import { TrackerStatus } from './TrackerStatus';
 import { TrackerWifi } from './TrackerWifi';
+import { stringifyIp } from 'ip-bigint';
 
 export function TrackerNameCol({ tracker }: { tracker: TrackerDataT }) {
   const { useName } = useTracker(tracker);
@@ -85,6 +86,8 @@ export function TrackersTable({
   flatTrackers: FlatDeviceTracker[];
 }) {
   const [hoverTracker, setHoverTracker] = useState<TrackerIdT | null>(null);
+
+  console.log(flatTrackers);
 
   const trackerEqual = (id: TrackerIdT | null) =>
     id?.trackerNum == hoverTracker?.trackerNum &&
@@ -205,6 +208,7 @@ export function TrackersTable({
       </div>
       <div className="flex flex-col gap-2 flex-grow">
         <div className="flex px-3">URL</div>
+
         {flatTrackers.map(({ device, tracker }, index) => (
           <RowContainer
             key={index}
@@ -214,7 +218,13 @@ export function TrackersTable({
             onMouseOver={() => setHoverTracker(tracker.trackerId)}
             onMouseOut={() => setHoverTracker(null)}
           >
-            <Typography color="secondary">{device?.customName}</Typography>
+            <Typography color="secondary">
+              udp://
+              {stringifyIp({
+                number: BigInt(device?.hardwareInfo?.ipAddress?.addr || 0),
+                version: 4,
+              })}
+            </Typography>
           </RowContainer>
         ))}
       </div>

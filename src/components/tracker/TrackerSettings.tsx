@@ -1,3 +1,4 @@
+import { stringifyIp } from 'ip-bigint';
 import { Quaternion } from 'math3d';
 import { useCallback, useEffect, useMemo, useState } from 'react';
 import { useForm } from 'react-hook-form';
@@ -177,6 +178,18 @@ export function TrackerSettingsPage() {
               <Typography color="secondary">Custom name</Typography>
               <Typography>
                 {tracker?.tracker.info?.customName || '--'}
+              </Typography>
+            </div>
+            <div className="flex justify-between">
+              <Typography color="secondary">Tracker URL</Typography>
+              <Typography>
+                udp://
+                {stringifyIp({
+                  number: BigInt(
+                    tracker?.device?.hardwareInfo?.ipAddress?.addr || 0
+                  ),
+                  version: 4,
+                })}
               </Typography>
             </div>
           </div>
