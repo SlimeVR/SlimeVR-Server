@@ -76,22 +76,20 @@ public class LegTweakBuffer {
 	private float rightFloorLevel;
 
 	// hyperparameters
-	public static final float SKATING_DISTANCE_CUTOFF = 1.0f;
-	private static final float SKATING_VELOCITY_THRESHOLD = 4.25f;
-	private static final float SKATING_ACCELERATION_THRESHOLD = 1.15f;
+	public static final float SKATING_DISTANCE_CUTOFF = 0.5f;
+	private static final float SKATING_VELOCITY_THRESHOLD = 3.25f;
+	private static final float SKATING_ACCELERATION_THRESHOLD = 1.00f;
 	private static final float SKATING_ROTVELOCITY_THRESHOLD = 4.5f;
 	private static final float SKATING_LOCK_ENGAGE_PERCENT = 0.85f;
 	private static final float SKATING_ACCELERATION_Y_USE_PERCENT = 0.25f;
 	private static final float FLOOR_DISTANCE_CUTOFF = 0.125f;
 	private static final float SIX_TRACKER_TOLLERANCE = -0.10f;
-	private static final Vector3f FORCE_VECTOR_TO_PRESSURE = new Vector3f(0.2f, 1.0f, 0.2f);
+	private static final Vector3f FORCE_VECTOR_TO_PRESSURE = new Vector3f(0.25f, 1.0f, 0.25f);
 	private static final float FORCE_ERROR_TOLLERANCE = 4.0f;
 	private static final float[] FORCE_VECTOR_FALLBACK = new float[] { 0.1f, 0.1f };
-	private static final float PRESSURE_SCALER_MIN = 0.1f;
-	private static final float PRESSURE_SCALER_MAX = 1.4f;
 
-	private static final float PARAM_SCALAR_MAX = 2.5f;
-	private static final float PARAM_SCALAR_MIN = 0.5f;
+	private static final float PARAM_SCALAR_MAX = 3.2f;
+	private static final float PARAM_SCALAR_MIN = 0.25f;
 	private static final float PARAM_SCALAR_MID = 1.0f;
 
 	// the point at which the scalar is at the max or min depending on accel
@@ -100,13 +98,17 @@ public class LegTweakBuffer {
 
 	// the point at which the scalar is at it max or min in a double locked foot
 	// situation
-	private static final float MAX_SCALAR_DORMANT = 0.4f;
-	private static final float MIN_SCALAR_DORMANT = 1.25f;
+	private static final float MAX_SCALAR_DORMANT = 0.2f;
+	private static final float MIN_SCALAR_DORMANT = 1.50f;
 
 	// the point at which the scalar is at it max or min in a single locked foot
 	// situation
-	private static final float MIN_SCALAR_ACTIVE = 1.00f;
+	private static final float MIN_SCALAR_ACTIVE = 1.75f;
 	private static final float MAX_SCALAR_ACTIVE = 0.1f;
+
+	// maximum scalers for the pressure on each foot
+	private static final float PRESSURE_SCALER_MIN = 0.1f;
+	private static final float PRESSURE_SCALER_MAX = 1.9f;
 
 	private float leftFootSensitivityVel = 1.0f;
 	private float rightFootSensitivityVel = 1.0f;
