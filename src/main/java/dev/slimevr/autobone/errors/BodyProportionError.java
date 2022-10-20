@@ -20,21 +20,6 @@ public class BodyProportionError implements IAutoBoneError {
 	// offset from the headset height to the user height
 	public float eyeHeightToHeightRatio = 0.936f;
 
-	// 1.3939?
-	// Human average is probably 1.1235 (SD 0.07)
-	public float legBodyRatio = 1.1235f;
-
-	// SD of 0.07, capture 68% within range
-	public float legBodyRatioRange = 0.07f;
-
-	// kneeLegRatio seems to be around 0.54 to 0.6 after asking a few people in
-	// the SlimeVR discord.
-	public float kneeLegRatio = 0.55f;
-
-	// TODO : Chest should be a bit shorter (0.54?) if user has an additional
-	// hip tracker.
-	public float chestTorsoRatio = 0.57f;
-
 	// Default config
 	// Height: 1.58
 	// Full Height: 1.58 / 0.936 = 1.688034
@@ -46,11 +31,24 @@ public class BodyProportionError implements IAutoBoneError {
 	// "Expected" are values from Drillis and Contini (1966)
 	// "Experimental" are values from experimentation by the SlimeVR community
 	public static final ProportionLimiter[] proportionLimits = new ProportionLimiter[] {
+		// Head
+		// Experimental: 0.059
+		new RangeProportionLimiter(0.059f, config -> {
+			return config.getOffset(SkeletonConfigOffsets.HEAD);
+		}, 0.01f),
+
 		// Neck
 		// Expected: 0.052
-		new RangeProportionLimiter(0.052f, config -> {
+		// Experimental: 0.059
+		new RangeProportionLimiter(0.059f, config -> {
 			return config.getOffset(SkeletonConfigOffsets.NECK);
 		}, 0.0025f),
+
+		// Chest
+		// Experimental: 0.189
+		new RangeProportionLimiter(0.189f, config -> {
+			return config.getOffset(SkeletonConfigOffsets.CHEST);
+		}, 0.02f),
 
 		// Torso
 		// Expected: 0.288 (0.333 including hip, this shouldn't be right...)
