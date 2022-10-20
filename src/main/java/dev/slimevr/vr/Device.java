@@ -3,6 +3,7 @@ package dev.slimevr.vr;
 import dev.slimevr.vr.trackers.Tracker;
 import io.eiren.util.collections.FastList;
 
+import java.net.InetAddress;
 import java.util.concurrent.atomic.AtomicInteger;
 
 
@@ -51,6 +52,10 @@ public class Device {
 
 	public String getCustomName() {
 		return this.customName;
+	}
+
+	public InetAddress getIpAddress() {
+		return null;
 	}
 
 	public FastList<Tracker> getTrackers() {
