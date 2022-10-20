@@ -12,8 +12,9 @@ import com.jme3.math.Vector3f;
  * rules: The conditions for an unlock are as follows: 1. the foot is to far
  * from its correct position 2. a velocity higher than a threashold is achived
  * 3. a large acceleration is applied to the foot 4. angular velocity of the
- * foot goes higher than a threashold The conditions for a lock are the opposite
- * of the above but require a lower value for all of the above conditions
+ * foot goes higher than a threashold. The conditions for a lock are the
+ * opposite of the above but require a lower value for all of the above
+ * conditions
  */
 
 public class LegTweakBuffer {
@@ -82,7 +83,12 @@ public class LegTweakBuffer {
 	private static final float SKATING_LOCK_ENGAGE_PERCENT = 0.85f;
 	private static final float SKATING_ACCELERATION_Y_USE_PERCENT = 0.25f;
 	private static final float FLOOR_DISTANCE_CUTOFF = 0.125f;
-	private static final float SIX_TRACKER_TOLLERANCE = 0.10f;
+	private static final float SIX_TRACKER_TOLLERANCE = -0.10f;
+	private static final Vector3f FORCE_VECTOR_TO_PRESSURE = new Vector3f(0.2f, 1.0f, 0.2f);
+	private static final float FORCE_ERROR_TOLLERANCE = 4.0f;
+	private static final float[] FORCE_VECTOR_FALLBACK = new float[] { 0.1f, 0.1f };
+	private static final float PRESSURE_SCALER_MIN = 0.1f;
+	private static final float PRESSURE_SCALER_MAX = 1.4f;
 
 	private static final float PARAM_SCALAR_MAX = 2.5f;
 	private static final float PARAM_SCALAR_MIN = 0.5f;
@@ -95,11 +101,11 @@ public class LegTweakBuffer {
 	// the point at which the scalar is at it max or min in a double locked foot
 	// situation
 	private static final float MAX_SCALAR_DORMANT = 0.4f;
-	private static final float MIN_SCALAR_DORMANT = 1.75f;
+	private static final float MIN_SCALAR_DORMANT = 1.25f;
 
 	// the point at which the scalar is at it max or min in a single locked foot
 	// situation
-	private static final float MIN_SCALAR_ACTIVE = 1.75f;
+	private static final float MIN_SCALAR_ACTIVE = 1.00f;
 	private static final float MAX_SCALAR_ACTIVE = 0.1f;
 
 	private float leftFootSensitivityVel = 1.0f;
@@ -583,10 +589,10 @@ public class LegTweakBuffer {
 		// combine the scalars to get the final scalars
 		leftFootSensitivityVel = (leftFootScalarAccel
 			+ leftFootScalarVel / 2.0f)
-			* clamp(0.2f, 1.5f, pressureScalars[0] * 2);
+			* clamp(PRESSURE_SCALER_MIN, PRESSURE_SCALER_MAX, pressureScalars[0] * 2.0f);
 		rightFootSensitivityVel = (rightFootScalarAccel
 			+ rightFootScalarVel / 2.0f)
-			* clamp(0.2f, 1.5f, pressureScalars[1] * 2);
+			* clamp(PRESSURE_SCALER_MIN, PRESSURE_SCALER_MAX, pressureScalars[1] * 2.0f);
 
 		leftFootSensitivityAccel = leftFootScalarVel;
 		rightFootSensitivityAccel = rightFootScalarVel;
@@ -695,18 +701,14 @@ public class LegTweakBuffer {
 
 	// get the pressure prediction for the feet based of the center of mass
 	// (assume mass is 1)
+	// for understanding in the future this is assuming that the mass is one and
+	// the force of gravity
+	// is 9.8 m/s^2 this allows for the force sum to map directly to the
+	// acceleration of the center of mass
+	// since F = ma and if m is 1 then F = a
 	private float[] getPressurePrediction() {
 		float leftFootPressure = 0;
 		float rightFootPressure = 0;
-
-		// table for the cos and sin of the angle between the com and each foot
-		// cos(a) = lfv.y / lfv.length()
-		// sin(a) = lfv.x / lfv.length()
-		// cos(b) = rfv.y / rfv.length()
-		// sin(b) = rfv.x / rfv.length()
-		// F = ma
-		// gravity = 9.81
-		// m = 1
 
 		// get the vector's from the com to each foot
 		Vector3f leftFootVector = leftFootPosition.subtract(centerOfMass).normalize();
@@ -714,24 +716,63 @@ public class LegTweakBuffer {
 
 		// get the magnitude of the force on each foot
 		float leftFootMagnitude = 9.81f * leftFootVector.y / leftFootVector.length();
-		float rightFootMegnitude = 9.81f * rightFootVector.y / rightFootVector.length();
+		float rightFootMagnitude = 9.81f * rightFootVector.y / rightFootVector.length();
 
 		// get the force vector each foot could apply to the com
 		Vector3f leftFootForce = leftFootVector.mult(leftFootMagnitude / 2.0f);
-		Vector3f rightFootForce = rightFootVector.mult(rightFootMegnitude / 2.0f);
+		Vector3f rightFootForce = rightFootVector.mult(rightFootMagnitude / 2.0f);
 
 		// based of the acceleration of the com, get the force each foot is
 		// likly applying (the expected force sum should be equal to
 		// centerOfMassAcceleration since the mass is 1)
-		// running a few iterations of gradient descent to gets the force of
-		// each leg
-		int iterations = 20;
-		float stepSize = 0.10f;
+		findForceVectors(leftFootForce, rightFootForce);
+
+		// see if the force vectors found a reasonable solution
+		// if they did not we assume there is another force acting on the com
+		// and fall back to a low pressure prediction
+		if (detectOutsideForces(leftFootForce, rightFootForce))
+			return FORCE_VECTOR_FALLBACK;
+
+		// set the pressure to the force on each foot times the force to
+		// pressure scalar
+		leftFootPressure = leftFootForce.mult(FORCE_VECTOR_TO_PRESSURE).length();
+		rightFootPressure = rightFootForce.mult(FORCE_VECTOR_TO_PRESSURE).length();
+
+		// distance from the ground is a factor in the pressure
+		// using the inverse of the distance to the ground scale the
+		// pressure
+		float leftDistance = (leftFootPosition.y > leftFloorLevel)
+			? (leftFootPosition.y - leftFloorLevel)
+			: LegTweaks.NEARLY_ZERO;
+		leftFootPressure *= 1.0f / (leftDistance);
+		float rightDistance = (rightFootPosition.y > rightFloorLevel)
+			? (rightFootPosition.y - rightFloorLevel)
+			: LegTweaks.NEARLY_ZERO;
+		rightFootPressure *= 1.0f / (rightDistance);
+
+		// normalize the pressure values
+		float pressureSum = leftFootPressure + rightFootPressure;
+		leftFootPressure /= pressureSum;
+		rightFootPressure /= pressureSum;
+
+		return new float[] { leftFootPressure, rightFootPressure };
+	}
+
+	// preform a gradient descent to find the center of mass
+	// populates initial arguments with the updated values
+	private void findForceVectors(Vector3f leftFootForce, Vector3f rightFootForce) {
+		int iterations = 100;
+		float stepSize = 0.01f;
 		// setup the temporary variables
 		Vector3f tempLeftFootForce1 = leftFootForce.clone();
 		Vector3f tempLeftFootForce2 = leftFootForce.clone();
 		Vector3f tempRightFootForce1 = rightFootForce.clone();
 		Vector3f tempRightFootForce2 = rightFootForce.clone();
+		Vector3f error;
+		Vector3f error1;
+		Vector3f error2;
+		Vector3f error3;
+		Vector3f error4;
 
 		for (int i = 0; i < iterations; i++) {
 			tempLeftFootForce1.set(leftFootForce);
@@ -740,7 +781,7 @@ public class LegTweakBuffer {
 			tempRightFootForce2.set(rightFootForce);
 
 			// get the error at the current position
-			Vector3f error = centerOfMassAcceleration
+			error = centerOfMassAcceleration
 				.subtract(leftFootForce.add(rightFootForce).add(gravity));
 
 			// add and subtract the error to the force vectors
@@ -750,13 +791,13 @@ public class LegTweakBuffer {
 			tempRightFootForce2 = tempRightFootForce2.mult(1.0f - stepSize);
 
 			// get the error at the new position
-			Vector3f error1 = centerOfMassAcceleration
+			error1 = centerOfMassAcceleration
 				.subtract(tempLeftFootForce1.add(rightFootForce).add(gravity));
-			Vector3f error2 = centerOfMassAcceleration
+			error2 = centerOfMassAcceleration
 				.subtract(tempLeftFootForce2.add(rightFootForce).add(gravity));
-			Vector3f error3 = centerOfMassAcceleration
+			error3 = centerOfMassAcceleration
 				.subtract(leftFootForce.add(tempRightFootForce1).add(gravity));
-			Vector3f error4 = centerOfMassAcceleration
+			error4 = centerOfMassAcceleration
 				.subtract(leftFootForce.add(tempRightFootForce2).add(gravity));
 
 			// set the new force vectors
@@ -772,39 +813,21 @@ public class LegTweakBuffer {
 				rightFootForce.set(tempRightFootForce2);
 			}
 		}
+	}
 
-		// now get the force on each foot and normalize it to the sum
-		leftFootPressure = leftFootForce.length()
-			/ (leftFootForce.length() + rightFootForce.length());
-		rightFootPressure = rightFootForce.length()
-			/ (leftFootForce.length() + rightFootForce.length());
+	// detect any outside forces on the body such
+	// as a wall or a chair and returns
+	// a approximate force vector for the mysterious force
+	private boolean detectOutsideForces(Vector3f f1, Vector3f f2) {
+		// sum the forces on the com and see how much it differs from the
+		// acceleration
+		Vector3f force = gravity.add(f1).add(f2);
+		Vector3f error = centerOfMassAcceleration.subtract(force);
 
-		// distance from the ground is a factor in the pressure
-		// using the inverse of the distance to the ground scale the
-		// pressure
-		float leftDistance = (leftFootPosition.y > leftFloorLevel)
-			? (leftFootPosition.y - leftFloorLevel)
-			: 0.01f;
-		leftFootPressure *= 1.0f / (leftDistance);
-		float rightDistance = (rightFootPosition.y > rightFloorLevel)
-			? (rightFootPosition.y - rightFloorLevel)
-			: 0.01f;
-		rightFootPressure *= 1.0f / (rightDistance);
-
-		// normalize the pressure values
-		float pressureSum = leftFootPressure + rightFootPressure;
-		leftFootPressure /= pressureSum;
-		rightFootPressure /= pressureSum;
-
-
-		// print the force vectors
-		System.out
-			.println(
-				"leftFootForce: " + leftFootPressure + " rightFootForce: " + rightFootPressure
-			);
-
-
-		return new float[] { leftFootPressure, rightFootPressure };
+		// if the error is large enough there must be another force so the
+		// presure calculations
+		// are not accurate in this case we should return true
+		return error.length() > FORCE_ERROR_TOLLERANCE;
 	}
 
 	// clamp a float between two values
