@@ -66,8 +66,8 @@ public class LegTweaks {
 	private static final float MAX_ACCEPTABLE_ERROR = 0.225f;
 	private static final float CORRECTION_WEIGHT_MIN = 0.40f;
 	private static final float CORRECTION_WEIGHT_MAX = 0.70f;
-	private static final float CONTINUOUS_CORRECTION_DIST = 0.030f;
-	private static final int CONTINUOUS_CORRECTION_WARMUP = 40;
+	private static final float CONTINUOUS_CORRECTION_DIST = 0.5f;
+	private static final int CONTINUOUS_CORRECTION_WARMUP = 175;
 
 	// hyperparameters (knee / waist correction)
 	private static final float KNEE_CORRECTION_WEIGHT = 0.00f;
@@ -91,10 +91,10 @@ public class LegTweaks {
 	private static final float MAX_DISENGAGMENT_OFFSET = 0.30f;
 
 	// counters
-	private int leftframesLocked = 0;
-	private int rightframesLocked = 0;
-	private int leftframesUnlocked = 0;
-	private int rightframesUnlocked = 0;
+	private int leftFramesLocked = 0;
+	private int rightFramesLocked = 0;
+	private int leftFramesUnlocked = 0;
+	private int rightFramesUnlocked = 0;
 
 	// buffer for holding previus frames of data
 	private LegTweakBuffer bufferHead = new LegTweakBuffer();
@@ -865,30 +865,37 @@ public class LegTweaks {
 
 	// get the amount of the constant correction to apply.
 	private float getConstantCorrectionQuantityLeft() {
+		if (leftFramesUnlocked >= CONTINUOUS_CORRECTION_WARMUP)
+			return CONTINUOUS_CORRECTION_DIST;
+
 		return CONTINUOUS_CORRECTION_DIST
-			* ((float) leftframesUnlocked / CONTINUOUS_CORRECTION_WARMUP);
+			* ((float) leftFramesUnlocked / CONTINUOUS_CORRECTION_WARMUP);
 	}
 
 	private float getConstantCorrectionQuantityRight() {
+		if (rightFramesUnlocked >= CONTINUOUS_CORRECTION_WARMUP)
+			return CONTINUOUS_CORRECTION_DIST;
 		return CONTINUOUS_CORRECTION_DIST
-			* ((float) rightframesUnlocked / CONTINUOUS_CORRECTION_WARMUP);
+			* ((float) rightFramesUnlocked / CONTINUOUS_CORRECTION_WARMUP);
 	}
 
-	// update counters for the lock state of the feet
+	// update counters for the lock state of the feet (updates so that frames
+	// unlocked does not reduce
+	// to zero immediately after a lock)
 	private void updateLockStateCounters() {
 		if (bufferHead.getLeftLegState() == LegTweakBuffer.LOCKED) {
-			leftframesUnlocked = 0;
-			leftframesLocked++;
+			leftFramesUnlocked = 0;
+			leftFramesLocked++;
 		} else {
-			leftframesLocked = 0;
-			leftframesUnlocked++;
+			leftFramesLocked = 0;
+			leftFramesUnlocked++;
 		}
 		if (bufferHead.getRightLegState() == LegTweakBuffer.LOCKED) {
-			rightframesUnlocked = 0;
-			rightframesLocked++;
+			rightFramesUnlocked = 0;
+			rightFramesLocked++;
 		} else {
-			rightframesLocked = 0;
-			rightframesUnlocked++;
+			rightFramesLocked = 0;
+			rightFramesUnlocked++;
 		}
 	}
 
