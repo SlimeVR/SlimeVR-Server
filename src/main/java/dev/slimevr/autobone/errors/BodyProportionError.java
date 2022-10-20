@@ -25,6 +25,9 @@ public class BodyProportionError implements IAutoBoneError {
 	// Full Height: 1.58 / 0.936 = 1.688034
 	// Neck: 0.1 / 1.688034 = 0.059241
 	// Torso: 0.56 / 1.688034 = 0.331747
+	// Chest: 0.32 / 1.688034 = 0.18957
+	// Waist: (0.56 - 0.32 - 0.04) / 1.688034 = 0.118481
+	// Hip: 0.04 / 1.688034 = 0.023696
 	// Upper Leg: (0.92 - 0.50) / 1.688034 = 0.24881
 	// Lower Leg: 0.50 / 1.688034 = 0.296203
 
@@ -44,17 +47,31 @@ public class BodyProportionError implements IAutoBoneError {
 			return config.getOffset(SkeletonConfigOffsets.NECK);
 		}, 0.0025f),
 
+		// Torso
+		// Expected: 0.288 (0.333 including hip, this shouldn't be right...)
+		new RangeProportionLimiter(0.333f, config -> {
+			return config.getOffset(SkeletonConfigOffsets.TORSO);
+		}, 0.015f),
+
 		// Chest
 		// Experimental: 0.189
 		new RangeProportionLimiter(0.189f, config -> {
 			return config.getOffset(SkeletonConfigOffsets.CHEST);
 		}, 0.02f),
 
-		// Torso
-		// Expected: 0.288 (0.333 including hip, this shouldn't be right...)
-		new RangeProportionLimiter(0.333f, config -> {
-			return config.getOffset(SkeletonConfigOffsets.TORSO);
-		}, 0.015f),
+		// Waist
+		// Experimental: 0.118
+		new RangeProportionLimiter(0.118f, config -> {
+			return config.getOffset(SkeletonConfigOffsets.TORSO)
+				- config.getOffset(SkeletonConfigOffsets.CHEST)
+				- config.getOffset(SkeletonConfigOffsets.WAIST);
+		}, 0.05f),
+
+		// Hip
+		// Experimental: 0.0237
+		new RangeProportionLimiter(0.0237f, config -> {
+			return config.getOffset(SkeletonConfigOffsets.WAIST);
+		}, 0.01f),
 
 		// Upper Leg
 		// Expected: 0.245
