@@ -51,8 +51,7 @@ public class BodyProportionError implements IAutoBoneError {
 		}, 0.01f),
 
 		// Torso
-		// Expected: 0.288
-		// Experimental: 0.333
+		// Expected: 0.288 (0.333 including hip, this shouldn't be right...)
 		new RangeProportionLimiter(0.333f, config -> {
 			return config.getOffset(SkeletonConfigOffsets.TORSO);
 		}, 0.015f),
