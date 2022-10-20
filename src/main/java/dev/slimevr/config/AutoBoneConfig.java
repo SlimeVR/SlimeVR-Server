@@ -16,7 +16,7 @@ public class AutoBoneConfig {
 	public float slideErrorFactor = 0.0f;
 	public float offsetSlideErrorFactor = 1.0f;
 	public float footHeightOffsetErrorFactor = 0.0f;
-	public float bodyProportionErrorFactor = 0.2f;
+	public float bodyProportionErrorFactor = 1.0f;
 	public float heightErrorFactor = 0.0f;
 	public float positionErrorFactor = 0.0f;
 	public float positionOffsetErrorFactor = 0.0f;

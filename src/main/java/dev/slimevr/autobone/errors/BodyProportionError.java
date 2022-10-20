@@ -50,7 +50,7 @@ public class BodyProportionError implements IAutoBoneError {
 		// Expected: 0.052
 		new RangeProportionLimiter(0.052f, config -> {
 			return config.getOffset(SkeletonConfigOffsets.NECK);
-		}, 0.01f),
+		}, 0.0025f),
 
 		// Torso
 		// Expected: 0.288 (0.333 including hip, this shouldn't be right...)
@@ -85,12 +85,10 @@ public class BodyProportionError implements IAutoBoneError {
 		float fullHeight = height / eyeHeightToHeightRatio;
 
 		float sum = 0f;
-		int count = 0;
 		for (ProportionLimiter limiter : proportionLimits) {
 			sum += FastMath.abs(limiter.getProportionError(config, fullHeight));
-			count++;
 		}
 
-		return count > 0 ? sum / count : 0f;
+		return sum;
 	}
 }
