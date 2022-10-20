@@ -1,6 +1,8 @@
 package dev.slimevr.autobone.errors;
 
 
+import com.jme3.math.FastMath;
+
 import dev.slimevr.autobone.AutoBoneTrainingStep;
 import dev.slimevr.autobone.errors.proportions.ProportionLimiter;
 import dev.slimevr.autobone.errors.proportions.RangeProportionLimiter;
@@ -85,7 +87,7 @@ public class BodyProportionError implements IAutoBoneError {
 		float sum = 0f;
 		int count = 0;
 		for (ProportionLimiter limiter : proportionLimits) {
-			sum += limiter.getProportionError(config, fullHeight);
+			sum += FastMath.abs(limiter.getProportionError(config, fullHeight));
 			count++;
 		}
 
