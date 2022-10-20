@@ -58,7 +58,7 @@ public class LegTweaks {
 
 	// hyperparameters (clip correction)
 	private static final float DYNAMIC_DISPLACEMENT_CUTOFF = 1.0f;
-	private static final float MAX_DYNAMIC_DISPLACEMENT = 0.10f;
+	private static final float MAX_DYNAMIC_DISPLACEMENT = 0.06f;
 	private static final float FLOOR_CALIBRATION_OFFSET = 0.015f;
 
 	// hyperparameters (skating correction)
@@ -66,16 +66,8 @@ public class LegTweaks {
 	private static final float MAX_ACCEPTABLE_ERROR = 0.225f;
 	private static final float CORRECTION_WEIGHT_MIN = 0.40f;
 	private static final float CORRECTION_WEIGHT_MAX = 0.70f;
-	private static final float CONTINUOUS_CORRECTION_DIST = 0.025f;
+	private static final float CONTINUOUS_CORRECTION_DIST = 0.030f;
 	private static final int CONTINUOUS_CORRECTION_WARMUP = 40;
-
-	// hyperparameters (floating feet correction)
-	private static final float Y_CORRECTION_WEIGHT = 0.90f;
-	private static final float Y_MAX_ACCELERATION = 0.10f;
-	private static final float Y_DIFF_CUTOFF = 0.03f;
-	private static final float DIST_PROBABILITY_ZERO = 0.10f;
-	private static final float FOOT_PLANTED_CUTOFF = 0.80f;
-
 
 	// hyperparameters (knee / waist correction)
 	private static final float KNEE_CORRECTION_WEIGHT = 0.00f;
@@ -94,7 +86,7 @@ public class LegTweaks {
 
 
 	// hyperparameters (misc)
-	private static final float NEARLY_ZERO = 0.001f;
+	static final float NEARLY_ZERO = 0.001f;
 	private static final float STANDING_CUTOFF_VERTICAL = 0.65f;
 	private static final float MAX_DISENGAGMENT_OFFSET = 0.30f;
 
