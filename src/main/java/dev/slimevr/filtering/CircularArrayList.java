@@ -1,4 +1,4 @@
-package dev.slimevr.vr.trackers;
+package dev.slimevr.filtering;
 
 import java.util.*;
 
@@ -59,6 +59,10 @@ public class CircularArrayList<E> extends AbstractList<E> implements RandomAcces
 		return buf.get(wrapIndex(head + i));
 	}
 
+	public E getLatest() {
+		return buf.get(wrapIndex(head + size() - 1));
+	}
+
 	@Override
 	public E set(int i, E e) {
 		if (i < 0 || i >= size()) {
@@ -97,6 +101,16 @@ public class CircularArrayList<E> extends AbstractList<E> implements RandomAcces
 		if (i > 0) {
 			shiftBlock(0, i);
 		}
+		head = wrapIndex(head + 1);
+		return e;
+	}
+
+	public E removeLast() {
+		int s = size();
+		if (0 == s) {
+			throw new IndexOutOfBoundsException();
+		}
+		E e = get(0);
 		head = wrapIndex(head + 1);
 		return e;
 	}

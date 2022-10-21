@@ -1,34 +1,41 @@
 package dev.slimevr.config;
 
 import dev.slimevr.Main;
-import dev.slimevr.vr.trackers.IMUTracker;
+import dev.slimevr.filtering.TrackerFilters;
 import dev.slimevr.vr.trackers.Tracker;
-import dev.slimevr.vr.trackers.TrackerFilters;
+import dev.slimevr.vr.trackers.TrackerWithFiltering;
 
 
 public class FiltersConfig {
 
+	// Type of filtering applied (none, smoothing or prediction)
+	private String type = "prediction";
 
-	private String type = "NONE";
-	private float amount = 0.3f;
-	private int tickCount = 1;
+	// Amount/Intensity of the specified filtering (0 to 1)
+	private float amount = 0.2f;
 
 	public FiltersConfig() {
 	}
 
-	public void updateTrackersFilters(TrackerFilters filter, float amount, int ticks) {
-		setType(filter.name());
-		setAmount(amount);
-		setTickCount(ticks);
-
-		IMUTracker imu;
+	public void updateTrackersFilters() {
 		for (Tracker t : Main.vrServer.getAllTrackers()) {
 			Tracker tracker = t.get();
-			if (tracker instanceof IMUTracker) {
-				imu = (IMUTracker) tracker;
-				imu.setFilter(filter.name(), amount, ticks);
+			if (tracker instanceof TrackerWithFiltering) {
+				((TrackerWithFiltering) tracker)
+					.setFiltering(
+						enumGetType(),
+						getAmount()
+					);
 			}
 		}
+	}
+
+	public TrackerFilters enumGetType() {
+		return TrackerFilters.getByConfigkey(type);
+	}
+
+	public void enumSetType(TrackerFilters type) {
+		this.type = type.configKey;
 	}
 
 	public String getType() {
@@ -45,13 +52,5 @@ public class FiltersConfig {
 
 	public void setAmount(float amount) {
 		this.amount = amount;
-	}
-
-	public int getTickCount() {
-		return tickCount;
-	}
-
-	public void setTickCount(int tickCount) {
-		this.tickCount = tickCount;
 	}
 }

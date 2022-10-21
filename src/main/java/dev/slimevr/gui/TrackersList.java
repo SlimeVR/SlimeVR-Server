@@ -132,6 +132,7 @@ public class TrackersList extends EJBoxNoStretch {
 		JLabel position;
 		JLabel rotation;
 		JLabel status;
+		JLabel url;
 		JLabel tps;
 		JLabel bat;
 		JLabel ping;
@@ -237,6 +238,16 @@ public class TrackersList extends EJBoxNoStretch {
 				}
 				row++;
 			}
+
+			if (t.getDevice() != null && t.getDevice().getIpAddress() != null) {
+				add(new JLabel("URL:"), c(0, row, 2, GridBagConstraints.FIRST_LINE_START));
+				add(
+					url = new JLabel(""),
+					c(1, row, 2, GridBagConstraints.FIRST_LINE_START)
+				);
+				row++;
+			}
+
 			if (t.hasRotation())
 				add(new JLabel("Rotation"), c(0, row, 2, GridBagConstraints.FIRST_LINE_START));
 			if (t.hasPosition())
@@ -389,6 +400,8 @@ public class TrackersList extends EJBoxNoStretch {
 							+ StringUtils.prettyNumber(angles[2] * FastMath.RAD_TO_DEG, 0)
 					);
 			status.setText(t.getStatus().toString().toLowerCase());
+			if (t.getDevice() != null && t.getDevice().getIpAddress() != null)
+				url.setText("udp:/" + t.getDevice().getIpAddress());
 
 			if (tracker instanceof TrackerWithTPS) {
 				tps.setText(StringUtils.prettyNumber(((TrackerWithTPS) tracker).getTPS(), 1));
