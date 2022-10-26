@@ -47,9 +47,9 @@ public class AutoBone {
 			BoneType.WAIST,
 			BoneType.HIP,
 
-			// This one doesn't seem to work very well and is generally going to
-			// be similar between users
-			// BoneType.LEFT_HIP,
+			// This now works when using body proportion error! It's not the
+			// best still but it is somewhat functional
+			BoneType.LEFT_HIP,
 
 			BoneType.LEFT_UPPER_LEG,
 			BoneType.LEFT_LOWER_LEG,

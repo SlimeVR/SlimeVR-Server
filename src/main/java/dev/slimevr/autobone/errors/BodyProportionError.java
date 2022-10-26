@@ -28,6 +28,7 @@ public class BodyProportionError implements IAutoBoneError {
 	// Chest: 0.32 / 1.688034 = 0.18957
 	// Waist: (0.56 - 0.32 - 0.04) / 1.688034 = 0.118481
 	// Hip: 0.04 / 1.688034 = 0.023696
+	// Hip Width: 0.26 / 1.688034 = 0.154025
 	// Upper Leg: (0.92 - 0.50) / 1.688034 = 0.24881
 	// Lower Leg: 0.50 / 1.688034 = 0.296203
 
@@ -43,9 +44,9 @@ public class BodyProportionError implements IAutoBoneError {
 		// Neck
 		// Expected: 0.052
 		// Experimental: 0.059
-		new RangeProportionLimiter(0.059f, config -> {
+		new RangeProportionLimiter(0.054f, config -> {
 			return config.getOffset(SkeletonConfigOffsets.NECK);
-		}, 0.0025f),
+		}, 0.0015f),
 
 		// Torso
 		// Expected: 0.288 (0.333 including hip, this shouldn't be right...)
@@ -72,6 +73,13 @@ public class BodyProportionError implements IAutoBoneError {
 		new RangeProportionLimiter(0.0237f, config -> {
 			return config.getOffset(SkeletonConfigOffsets.WAIST);
 		}, 0.01f),
+
+		// Hip Width
+		// Expected: 0.191
+		// Experimental: 0.154
+		new RangeProportionLimiter(0.184f, config -> {
+			return config.getOffset(SkeletonConfigOffsets.HIPS_WIDTH);
+		}, 0.04f),
 
 		// Upper Leg
 		// Expected: 0.245
