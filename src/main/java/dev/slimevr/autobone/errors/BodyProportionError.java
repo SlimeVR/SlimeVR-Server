@@ -1,8 +1,11 @@
 package dev.slimevr.autobone.errors;
 
+
 import com.jme3.math.FastMath;
 
 import dev.slimevr.autobone.AutoBoneTrainingStep;
+import dev.slimevr.autobone.errors.proportions.ProportionLimiter;
+import dev.slimevr.autobone.errors.proportions.RangeProportionLimiter;
 import dev.slimevr.vr.processor.skeleton.SkeletonConfig;
 import dev.slimevr.vr.processor.skeleton.SkeletonConfigOffsets;
 
@@ -11,43 +14,104 @@ import dev.slimevr.vr.processor.skeleton.SkeletonConfigOffsets;
 public class BodyProportionError implements IAutoBoneError {
 
 	// TODO hip tracker stuff... Hip tracker should be around 3 to 5
-	// centimeters. Human average is probably 1.1235 (SD 0.07)
-	public float legBodyRatio = 1.1235f;
+	// centimeters.
 
-	// SD of 0.07, capture 68% within range
-	public float legBodyRatioRange = 0.07f;
+	// The headset height is not the full height! This value compensates for the
+	// offset from the headset height to the user height
+	public float eyeHeightToHeightRatio = 0.936f;
 
-	// kneeLegRatio seems to be around 0.54 to 0.6 after asking a few people in
-	// the SlimeVR discord.
-	public float kneeLegRatio = 0.55f;
+	// Default config
+	// Height: 1.58
+	// Full Height: 1.58 / 0.936 = 1.688034
+	// Neck: 0.1 / 1.688034 = 0.059241
+	// Torso: 0.56 / 1.688034 = 0.331747
+	// Chest: 0.32 / 1.688034 = 0.18957
+	// Waist: (0.56 - 0.32 - 0.04) / 1.688034 = 0.118481
+	// Hip: 0.04 / 1.688034 = 0.023696
+	// Hip Width: 0.26 / 1.688034 = 0.154025
+	// Upper Leg: (0.92 - 0.50) / 1.688034 = 0.24881
+	// Lower Leg: 0.50 / 1.688034 = 0.296203
 
-	// kneeLegRatio seems to be around 0.55 to 0.64 after asking a few people in
-	// the SlimeVR discord. TODO : Chest should be a bit shorter (0.54?) if user
-	// has an additional hip tracker.
-	public float chestTorsoRatio = 0.57f;
+	// "Expected" are values from Drillis and Contini (1966)
+	// "Experimental" are values from experimentation by the SlimeVR community
+	public static final ProportionLimiter[] proportionLimits = new ProportionLimiter[] {
+		// Head
+		// Experimental: 0.059
+		new RangeProportionLimiter(0.059f, config -> {
+			return config.getOffset(SkeletonConfigOffsets.HEAD);
+		}, 0.01f),
+
+		// Neck
+		// Expected: 0.052
+		// Experimental: 0.059
+		new RangeProportionLimiter(0.054f, config -> {
+			return config.getOffset(SkeletonConfigOffsets.NECK);
+		}, 0.0015f),
+
+		// Torso
+		// Expected: 0.288 (0.333 including hip, this shouldn't be right...)
+		new RangeProportionLimiter(0.333f, config -> {
+			return config.getOffset(SkeletonConfigOffsets.TORSO);
+		}, 0.015f),
+
+		// Chest
+		// Experimental: 0.189
+		new RangeProportionLimiter(0.189f, config -> {
+			return config.getOffset(SkeletonConfigOffsets.CHEST);
+		}, 0.02f),
+
+		// Waist
+		// Experimental: 0.118
+		new RangeProportionLimiter(0.118f, config -> {
+			return config.getOffset(SkeletonConfigOffsets.TORSO)
+				- config.getOffset(SkeletonConfigOffsets.CHEST)
+				- config.getOffset(SkeletonConfigOffsets.WAIST);
+		}, 0.05f),
+
+		// Hip
+		// Experimental: 0.0237
+		new RangeProportionLimiter(0.0237f, config -> {
+			return config.getOffset(SkeletonConfigOffsets.WAIST);
+		}, 0.01f),
+
+		// Hip Width
+		// Expected: 0.191
+		// Experimental: 0.154
+		new RangeProportionLimiter(0.184f, config -> {
+			return config.getOffset(SkeletonConfigOffsets.HIPS_WIDTH);
+		}, 0.04f),
+
+		// Upper Leg
+		// Expected: 0.245
+		new RangeProportionLimiter(0.245f, config -> {
+			return config.getOffset(SkeletonConfigOffsets.LEGS_LENGTH)
+				- config.getOffset(SkeletonConfigOffsets.KNEE_HEIGHT);
+		}, 0.015f),
+
+		// Lower Leg
+		// Expected: 0.246 (0.285 including below ankle, could use a separate
+		// offset?)
+		new RangeProportionLimiter(0.285f, config -> {
+			return config.getOffset(SkeletonConfigOffsets.KNEE_HEIGHT);
+		}, 0.02f),
+	};
 
 	@Override
 	public float getStepError(AutoBoneTrainingStep trainingStep) throws AutoBoneException {
-		return getBodyProportionError(trainingStep.getSkeleton1().skeletonConfig);
+		return getBodyProportionError(
+			trainingStep.getSkeleton1().skeletonConfig,
+			trainingStep.getCurrentHeight()
+		);
 	}
 
-	public float getBodyProportionError(SkeletonConfig config) {
-		float neckLength = config.getOffset(SkeletonConfigOffsets.NECK);
-		float chestLength = config.getOffset(SkeletonConfigOffsets.CHEST);
-		float torsoLength = config.getOffset(SkeletonConfigOffsets.TORSO);
-		float legsLength = config.getOffset(SkeletonConfigOffsets.LEGS_LENGTH);
-		float kneeHeight = config.getOffset(SkeletonConfigOffsets.KNEE_HEIGHT);
+	public float getBodyProportionError(SkeletonConfig config, float height) {
+		float fullHeight = height / eyeHeightToHeightRatio;
 
-		float chestTorso = FastMath.abs((chestLength / torsoLength) - chestTorsoRatio);
-		float legBody = FastMath.abs((legsLength / (torsoLength + neckLength)) - legBodyRatio);
-		float kneeLeg = FastMath.abs((kneeHeight / legsLength) - kneeLegRatio);
-
-		if (legBody <= legBodyRatioRange) {
-			legBody = 0f;
-		} else {
-			legBody -= legBodyRatioRange;
+		float sum = 0f;
+		for (ProportionLimiter limiter : proportionLimits) {
+			sum += FastMath.abs(limiter.getProportionError(config, fullHeight));
 		}
 
-		return (chestTorso + legBody + kneeLeg) / 3f;
+		return sum;
 	}
 }
