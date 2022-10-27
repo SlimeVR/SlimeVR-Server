@@ -760,8 +760,8 @@ public class LegTweakBuffer {
 		return new float[] { leftFootPressure, rightFootPressure };
 	}
 
-	// preform a gradient descent to find the center of mass
-	// populates initial arguments with the updated values
+	// preform a gradient descent to find the force vectors that best match the
+	// acceleration of the com
 	private void findForceVectors(Vector3f leftFootForce, Vector3f rightFootForce) {
 		int iterations = 100;
 		float stepSize = 0.01f;
@@ -818,17 +818,10 @@ public class LegTweakBuffer {
 	}
 
 	// detect any outside forces on the body such
-	// as a wall or a chair and returns
-	// a approximate force vector for the mysterious force
+	// as a wall or a chair. returns true if there is a outside force
 	private boolean detectOutsideForces(Vector3f f1, Vector3f f2) {
-		// sum the forces on the com and see how much it differs from the
-		// acceleration
 		Vector3f force = gravity.add(f1).add(f2);
 		Vector3f error = centerOfMassAcceleration.subtract(force);
-
-		// if the error is large enough there must be another force so the
-		// presure calculations
-		// are not accurate in this case we should return true
 		return error.length() > FORCE_ERROR_TOLLERANCE;
 	}
 

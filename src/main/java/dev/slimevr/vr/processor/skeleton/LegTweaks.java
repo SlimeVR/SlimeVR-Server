@@ -773,8 +773,7 @@ public class LegTweaks {
 	}
 
 	// calculate the center of mass of the user for the current frame
-	// this is helpful for computing the lock state of the feet
-	// returns a vector in tracker space representing the center of mass
+	// returns a vector representing the center of mass position
 	private Vector3f computeCenterOfMass() {
 		// preform a check to see if the needed data is available
 		if (
@@ -879,9 +878,7 @@ public class LegTweaks {
 			* ((float) rightFramesUnlocked / CONTINUOUS_CORRECTION_WARMUP);
 	}
 
-	// update counters for the lock state of the feet (updates so that frames
-	// unlocked does not reduce
-	// to zero immediately after a lock)
+	// update counters for the lock state of the feet
 	private void updateLockStateCounters() {
 		if (bufferHead.getLeftLegState() == LegTweakBuffer.LOCKED) {
 			leftFramesUnlocked = 0;
