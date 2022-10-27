@@ -45,9 +45,7 @@ public class TrackersFiltersGUI extends EJBagNoStretch {
 			filterSelect.setSelectedItem(filterType.toString());
 		}
 
-		filterSelect.addActionListener(new ActionListener() {
-			@Override
-			public void actionPerformed(ActionEvent e) {
+		filterSelect.addActionListener((e) ->{
 				filterType = TrackerFilters
 					.getByConfigkey(filterSelect.getSelectedItem().toString());
 				filtersConfig
@@ -55,7 +53,6 @@ public class TrackersFiltersGUI extends EJBagNoStretch {
 				filtersConfig
 					.updateTrackersFilters();
 				server.getConfigManager().saveConfig();
-			}
 		});
 		add(Box.createVerticalStrut(40));
 		row++;
