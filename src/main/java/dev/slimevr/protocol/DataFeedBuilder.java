@@ -14,6 +14,7 @@ import solarxr_protocol.data_feed.tracker.TrackerData;
 import solarxr_protocol.data_feed.tracker.TrackerDataMaskT;
 import solarxr_protocol.data_feed.tracker.TrackerInfo;
 import solarxr_protocol.datatypes.DeviceId;
+import solarxr_protocol.datatypes.Ipv4Address;
 import solarxr_protocol.datatypes.Temperature;
 import solarxr_protocol.datatypes.TrackerId;
 import solarxr_protocol.datatypes.hardware_info.HardwareInfo;
@@ -21,6 +22,7 @@ import solarxr_protocol.datatypes.hardware_info.HardwareStatus;
 import solarxr_protocol.datatypes.math.Quat;
 import solarxr_protocol.datatypes.math.Vec3f;
 
+import java.nio.ByteBuffer;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -41,11 +43,20 @@ public class DataFeedBuilder {
 		HardwareInfo.startHardwareInfo(fbb);
 		HardwareInfo.addFirmwareVersion(fbb, nameOffset);
 		HardwareInfo.addManufacturer(fbb, manufacturerOffset);
+		HardwareInfo
+			.addIpAddress(
+				fbb,
+				Ipv4Address
+					.createIpv4Address(
+						fbb,
+						ByteBuffer.wrap(device.getIpAddress().getAddress()).getInt()
+					)
+			);
 		// BRUH MOMENT
 		// TODO need support: HardwareInfo.addHardwareRevision(fbb,
 		// hardwareRevisionOffset);
 		// TODO need support: HardwareInfo.addDisplayName(fbb, de);
-		// TODO need support: HardwareInfo.addHardwareAddress(fbb, tracker.);
+
 		// TODO need support: HardwareInfo.addMcuId(device);
 		return HardwareInfo.endHardwareInfo(fbb);
 	}

@@ -8,13 +8,17 @@ import dev.slimevr.autobone.AutoBoneListener;
 import dev.slimevr.autobone.AutoBoneProcessType;
 import dev.slimevr.config.FiltersConfig;
 import dev.slimevr.config.OverlayConfig;
+import dev.slimevr.filtering.TrackerFilters;
 import dev.slimevr.platform.windows.WindowsNamedPipeBridge;
 import dev.slimevr.poserecorder.PoseFrames;
 import dev.slimevr.serial.SerialListener;
 import dev.slimevr.vr.processor.skeleton.SkeletonConfigOffsets;
 import dev.slimevr.vr.processor.skeleton.SkeletonConfigToggles;
 import dev.slimevr.vr.processor.skeleton.SkeletonConfigValues;
-import dev.slimevr.vr.trackers.*;
+import dev.slimevr.vr.trackers.IMUTracker;
+import dev.slimevr.vr.trackers.Tracker;
+import dev.slimevr.vr.trackers.TrackerPosition;
+import dev.slimevr.vr.trackers.TrackerRole;
 import io.eiren.util.logging.LogManager;
 import solarxr_protocol.MessageBundle;
 import solarxr_protocol.datatypes.TransactionId;
@@ -305,12 +309,8 @@ public class RPCHandler extends ProtocolHandler<RpcMessageHeader>
 		int filterSettings = FilteringSettings
 			.createFilteringSettings(
 				fbb,
-				TrackerFilters
-					.valueOf(
-						filtersConfig.getType()
-					).id,
-				(int) (filtersConfig.getAmount() * 100),
-				filtersConfig.getTickCount()
+				TrackerFilters.getByConfigkey(filtersConfig.getType()).id,
+				filtersConfig.getAmount()
 			);
 
 		int modelSettings;
@@ -369,16 +369,16 @@ public class RPCHandler extends ProtocolHandler<RpcMessageHeader>
 		if (req.filtering() != null) {
 			TrackerFilters type = TrackerFilters.fromId(req.filtering().type());
 			if (type != null) {
-				this.api.server
+				FiltersConfig filtersConfig = this.api.server
 					.getConfigManager()
 					.getVrConfig()
-					.getFilters()
-					.updateTrackersFilters(
-						type,
-						req.filtering().intensity() / 100.0f,
-						req.filtering().ticks()
-					);
+					.getFilters();
+				filtersConfig.setType(type.configKey);
+				filtersConfig.setAmount(req.filtering().amount());
+
 				this.api.server.getConfigManager().saveConfig();
+
+				filtersConfig.updateTrackersFilters();
 			}
 		}
 
