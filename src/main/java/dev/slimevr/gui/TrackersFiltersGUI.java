@@ -45,14 +45,14 @@ public class TrackersFiltersGUI extends EJBagNoStretch {
 			filterSelect.setSelectedItem(filterType.toString());
 		}
 
-		filterSelect.addActionListener((e) ->{
-				filterType = TrackerFilters
-					.getByConfigkey(filterSelect.getSelectedItem().toString());
-				filtersConfig
-					.enumSetType(filterType);
-				filtersConfig
-					.updateTrackersFilters();
-				server.getConfigManager().saveConfig();
+		filterSelect.addActionListener((e) -> {
+			filterType = TrackerFilters
+				.getByConfigkey(filterSelect.getSelectedItem().toString());
+			filtersConfig
+				.enumSetType(filterType);
+			filtersConfig
+				.updateTrackersFilters();
+			server.getConfigManager().saveConfig();
 		});
 		add(Box.createVerticalStrut(40));
 		row++;
