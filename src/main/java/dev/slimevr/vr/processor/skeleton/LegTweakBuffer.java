@@ -363,6 +363,7 @@ public class LegTweakBuffer {
 	public float getTimeDelta() {
 		if (parent == null)
 			return 0.0f;
+
 		return 1.0f / ((timeOfFrame - parent.timeOfFrame) / NS_CONVERT);
 	}
 
