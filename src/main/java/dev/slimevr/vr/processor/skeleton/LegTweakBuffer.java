@@ -587,7 +587,6 @@ public class LegTweakBuffer {
 		// get the third set of scalars that is based on where the COM is
 		float[] pressureScalars = getPressurePrediction();
 
-
 		// combine the scalars to get the final scalars
 		leftFootSensitivityVel = (leftFootScalarAccel
 			+ leftFootScalarVel / 2.0f)

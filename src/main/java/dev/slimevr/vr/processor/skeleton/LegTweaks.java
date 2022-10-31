@@ -84,7 +84,6 @@ public class LegTweaks {
 	private static final float UPPER_ARM_MASS = 0.031f;
 	private static final float FOREARM_MASS = 0.017f;
 
-
 	// hyperparameters (misc)
 	static final float NEARLY_ZERO = 0.001f;
 	private static final float STANDING_CUTOFF_VERTICAL = 0.65f;
@@ -296,6 +295,7 @@ public class LegTweaks {
 				bufferHead.setLeftFootPositionCorrected(leftFootPosition);
 				bufferHead.setRightFootPositionCorrected(rightFootPosition);
 			}
+
 			bufferInvalid = false;
 		}
 
@@ -887,6 +887,7 @@ public class LegTweaks {
 			leftFramesLocked = 0;
 			leftFramesUnlocked++;
 		}
+
 		if (bufferHead.getRightLegState() == LegTweakBuffer.LOCKED) {
 			rightFramesUnlocked = 0;
 			rightFramesLocked++;
