@@ -47,9 +47,9 @@ public class AutoBone {
 			BoneType.WAIST,
 			BoneType.HIP,
 
-			// This one doesn't seem to work very well and is generally going to
-			// be similar between users
-			// BoneType.LEFT_HIP,
+			// This now works when using body proportion error! It's not the
+			// best still but it is somewhat functional
+			BoneType.LEFT_HIP,
 
 			BoneType.LEFT_UPPER_LEG,
 			BoneType.LEFT_LOWER_LEG,
@@ -738,50 +738,42 @@ public class AutoBone {
 	}
 
 	protected float getErrorDeriv(AutoBoneTrainingStep trainingStep) throws AutoBoneException {
-		float totalError = 0f;
-		float sumWeight = 0f;
+		float sumError = 0f;
 
 		if (this.config.slideErrorFactor > 0f) {
-			totalError += slideError.getStepError(trainingStep) * this.config.slideErrorFactor;
-			sumWeight += this.config.slideErrorFactor;
+			sumError += slideError.getStepError(trainingStep) * this.config.slideErrorFactor;
 		}
 
 		if (this.config.offsetSlideErrorFactor > 0f) {
-			totalError += offsetSlideError.getStepError(trainingStep)
+			sumError += offsetSlideError.getStepError(trainingStep)
 				* this.config.offsetSlideErrorFactor;
-			sumWeight += this.config.offsetSlideErrorFactor;
 		}
 
 		if (this.config.footHeightOffsetErrorFactor > 0f) {
-			totalError += footHeightOffsetError.getStepError(trainingStep)
+			sumError += footHeightOffsetError.getStepError(trainingStep)
 				* this.config.footHeightOffsetErrorFactor;
-			sumWeight += this.config.footHeightOffsetErrorFactor;
 		}
 
 		if (this.config.bodyProportionErrorFactor > 0f) {
-			totalError += bodyProportionError.getStepError(trainingStep)
+			sumError += bodyProportionError.getStepError(trainingStep)
 				* this.config.bodyProportionErrorFactor;
-			sumWeight += this.config.bodyProportionErrorFactor;
 		}
 
 		if (this.config.heightErrorFactor > 0f) {
-			totalError += heightError.getStepError(trainingStep) * this.config.heightErrorFactor;
-			sumWeight += this.config.heightErrorFactor;
+			sumError += heightError.getStepError(trainingStep) * this.config.heightErrorFactor;
 		}
 
 		if (this.config.positionErrorFactor > 0f) {
-			totalError += positionError.getStepError(trainingStep)
+			sumError += positionError.getStepError(trainingStep)
 				* this.config.positionErrorFactor;
-			sumWeight += this.config.positionErrorFactor;
 		}
 
 		if (this.config.positionOffsetErrorFactor > 0f) {
-			totalError += positionOffsetError.getStepError(trainingStep)
+			sumError += positionOffsetError.getStepError(trainingStep)
 				* this.config.positionOffsetErrorFactor;
-			sumWeight += this.config.positionOffsetErrorFactor;
 		}
 
-		return sumWeight > 0f ? totalError / sumWeight : 0f;
+		return sumError;
 	}
 
 	public String getLengthsString() {
