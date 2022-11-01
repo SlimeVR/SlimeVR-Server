@@ -793,14 +793,10 @@ public class LegTweakBuffer {
 			tempRightFootForce2 = tempRightFootForce2.mult(1.0f - stepSize);
 
 			// get the error at the new position
-			error1 = centerOfMassAcceleration
-				.subtract(tempLeftFootForce1.add(rightFootForce).add(gravity));
-			error2 = centerOfMassAcceleration
-				.subtract(tempLeftFootForce2.add(rightFootForce).add(gravity));
-			error3 = centerOfMassAcceleration
-				.subtract(leftFootForce.add(tempRightFootForce1).add(gravity));
-			error4 = centerOfMassAcceleration
-				.subtract(leftFootForce.add(tempRightFootForce2).add(gravity));
+			error1 = getForceVectorError(tempLeftFootForce1, rightFootForce);
+			error2 = getForceVectorError(tempLeftFootForce2, rightFootForce);
+			error3 = getForceVectorError(tempRightFootForce1, leftFootForce);
+			error4 = getForceVectorError(tempRightFootForce2, leftFootForce);
 
 			// set the new force vectors
 			if (error1.length() < error.length()) {
@@ -823,6 +819,12 @@ public class LegTweakBuffer {
 		Vector3f force = gravity.add(f1).add(f2);
 		Vector3f error = centerOfMassAcceleration.subtract(force);
 		return error.length() > FORCE_ERROR_TOLLERANCE;
+	}
+
+	// simple error function for the force vector gradient descent
+	private Vector3f getForceVectorError(Vector3f testForce, Vector3f otherForce) {
+		return centerOfMassAcceleration
+			.subtract(testForce.add(otherForce).add(gravity));
 	}
 
 	// clamp a float between two values

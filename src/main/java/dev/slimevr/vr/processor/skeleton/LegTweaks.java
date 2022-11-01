@@ -3,6 +3,8 @@ package dev.slimevr.vr.processor.skeleton;
 import com.jme3.math.Quaternion;
 import com.jme3.math.Vector3f;
 
+import dev.slimevr.vr.processor.TransformNode;
+
 
 public class LegTweaks {
 	// state variables
@@ -792,13 +794,8 @@ public class LegTweaks {
 		}
 
 		// check if arm data is available
-		boolean armsAvaliable = true;
-		if (
-			!skeleton.hasLeftArmTracker
-				|| !skeleton.hasRightArmTracker
-		) {
-			armsAvaliable = false;
-		}
+		boolean armsAvaliable = skeleton.hasLeftArmTracker
+			&& skeleton.hasRightArmTracker;
 
 		Vector3f centerOfMass = new Vector3f();
 
@@ -807,22 +804,10 @@ public class LegTweaks {
 		Vector3f head = skeleton.headNode.worldTransform.getTranslation();
 		Vector3f chest = skeleton.chestNode.worldTransform.getTranslation();
 		Vector3f waist = skeleton.waistNode.worldTransform.getTranslation();
-		Vector3f leftCalf = skeleton.leftAnkleNode.worldTransform
-			.getTranslation(null)
-			.add(skeleton.leftKneeNode.worldTransform.getTranslation(null))
-			.mult(0.5f);
-		Vector3f rightCalf = skeleton.rightAnkleNode.worldTransform
-			.getTranslation(null)
-			.add(skeleton.rightKneeNode.worldTransform.getTranslation(null))
-			.mult(0.5f);
-		Vector3f leftThigh = skeleton.leftKneeNode.worldTransform
-			.getTranslation(null)
-			.add(skeleton.leftHipNode.worldTransform.getTranslation(null))
-			.mult(0.5f);
-		Vector3f rightThigh = skeleton.rightKneeNode.worldTransform
-			.getTranslation(null)
-			.add(skeleton.rightHipNode.worldTransform.getTranslation(null))
-			.mult(0.5f);
+		Vector3f leftCalf = getCenterOfJoint(skeleton.leftAnkleNode, skeleton.leftKneeNode);
+		Vector3f rightCalf = getCenterOfJoint(skeleton.rightAnkleNode, skeleton.rightKneeNode);
+		Vector3f leftThigh = getCenterOfJoint(skeleton.leftKneeNode, skeleton.leftHipNode);
+		Vector3f rightThigh = getCenterOfJoint(skeleton.rightKneeNode, skeleton.rightHipNode);
 		centerOfMass = centerOfMass.add(head.mult(HEAD_MASS));
 		centerOfMass = centerOfMass.add(chest.mult(CHEST_MASS));
 		centerOfMass = centerOfMass.add(waist.mult(WAIST_MASS));
@@ -831,22 +816,19 @@ public class LegTweaks {
 		centerOfMass = centerOfMass.add(leftThigh.mult(THIGH_MASS));
 		centerOfMass = centerOfMass.add(rightThigh.mult(THIGH_MASS));
 		if (armsAvaliable) {
-			Vector3f leftUpperArm = skeleton.leftElbowNode.worldTransform
-				.getTranslation(null)
-				.add(skeleton.leftShoulderTailNode.worldTransform.getTranslation(null))
-				.mult(0.5f);
-			Vector3f rightUpperArm = skeleton.rightElbowNode.worldTransform
-				.getTranslation(null)
-				.add(skeleton.rightShoulderTailNode.worldTransform.getTranslation(null))
-				.mult(0.5f);
-			Vector3f leftForearm = skeleton.leftElbowNode.worldTransform
-				.getTranslation(null)
-				.add(skeleton.leftHandNode.worldTransform.getTranslation(null))
-				.mult(0.5f);
-			Vector3f rightForearm = skeleton.rightElbowNode.worldTransform
-				.getTranslation(null)
-				.add(skeleton.rightHandNode.worldTransform.getTranslation(null))
-				.mult(0.5f);
+			Vector3f leftUpperArm = getCenterOfJoint(
+				skeleton.leftElbowNode,
+				skeleton.leftShoulderTailNode
+			);
+			Vector3f rightUpperArm = getCenterOfJoint(
+				skeleton.rightElbowNode,
+				skeleton.rightShoulderTailNode
+			);
+			Vector3f leftForearm = getCenterOfJoint(skeleton.leftElbowNode, skeleton.leftHandNode);
+			Vector3f rightForearm = getCenterOfJoint(
+				skeleton.rightElbowNode,
+				skeleton.rightHandNode
+			);
 			centerOfMass = centerOfMass.add(leftUpperArm.mult(UPPER_ARM_MASS));
 			centerOfMass = centerOfMass.add(rightUpperArm.mult(UPPER_ARM_MASS));
 			centerOfMass = centerOfMass.add(leftForearm.mult(FOREARM_MASS));
@@ -860,6 +842,14 @@ public class LegTweaks {
 			);
 
 		return centerOfMass;
+	}
+
+	// get the center of two joints
+	private Vector3f getCenterOfJoint(TransformNode node1, TransformNode node2) {
+		return node1.worldTransform
+			.getTranslation(null)
+			.add(node2.worldTransform.getTranslation(null))
+			.mult(0.5f);
 	}
 
 	// get the amount of the constant correction to apply.
