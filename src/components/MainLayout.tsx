@@ -44,6 +44,7 @@ export function MainLayoutRoute({
                 <div className="grid grid-cols-3 gap-2 w-full">
                   <ResetButton type={ResetType.Quick}></ResetButton>
                   <ResetButton type={ResetType.Full}></ResetButton>
+                  <ResetButton type={ResetType.Mounting}></ResetButton>
                   <BVHButton></BVHButton>
                 </div>
                 <div className="w-full">

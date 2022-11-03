@@ -54,3 +54,29 @@ export function QuickResetIcon({ width = 33 }: { width?: number }) {
     </svg>
   );
 }
+
+export function MountingResetIcon({ width = 33 }: { width?: number }) {
+  return (
+    <svg
+      width={width}
+      viewBox="0 0 33 29"
+      fill="none"
+      xmlns="http://www.w3.org/2000/svg"
+    >
+      <path
+        d="M2.39801 3.061V11.524H10.861"
+        stroke="white"
+        strokeWidth="3"
+        strokeLinecap="round"
+        strokeLinejoin="round"
+      />
+      <path
+        d="M5.93801 18.576C6.85461 21.1713 8.58991 23.3983 10.8824 24.9215C13.1749 26.4447 15.9003 27.1816 18.648 27.021C21.3957 26.8604 24.0168 25.8111 26.1162 24.0312C28.2157 22.2514 29.6797 19.8373 30.2878 17.153C30.8958 14.4686 30.6149 11.6593 29.4874 9.14845C28.3599 6.63762 26.4468 4.56127 24.0365 3.23233C21.6262 1.90339 18.8493 1.39384 16.1242 1.7805C13.3991 2.16715 10.8735 3.42904 8.92801 5.376L2.39301 11.523"
+        stroke="white"
+        strokeWidth="3"
+        strokeLinecap="round"
+        strokeLinejoin="round"
+      />
+    </svg>
+  );
+}
