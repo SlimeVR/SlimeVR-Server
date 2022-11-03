@@ -1,4 +1,4 @@
-import { stringifyIp } from 'ip-bigint';
+import { IPv4 } from 'ip-num/IPNumber';
 import { Quaternion } from 'math3d';
 import { useCallback, useEffect, useMemo, useState } from 'react';
 import { useForm } from 'react-hook-form';
@@ -184,12 +184,9 @@ export function TrackerSettingsPage() {
               <Typography color="secondary">Tracker URL</Typography>
               <Typography>
                 udp://
-                {stringifyIp({
-                  number: BigInt(
-                    tracker?.device?.hardwareInfo?.ipAddress?.addr || 0
-                  ),
-                  version: 4,
-                })}
+                {IPv4.fromNumber(
+                  tracker?.device?.hardwareInfo?.ipAddress?.addr || 0
+                ).toString()}
               </Typography>
             </div>
           </div>

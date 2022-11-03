@@ -12,7 +12,7 @@ import { Typography } from '../commons/Typography';
 import { TrackerBattery } from './TrackerBattery';
 import { TrackerStatus } from './TrackerStatus';
 import { TrackerWifi } from './TrackerWifi';
-import { stringifyIp } from 'ip-bigint';
+import { IPv4 } from 'ip-num/IPNumber';
 
 export function TrackerNameCol({ tracker }: { tracker: TrackerDataT }) {
   const { useName } = useTracker(tracker);
@@ -220,10 +220,9 @@ export function TrackersTable({
           >
             <Typography color="secondary">
               udp://
-              {stringifyIp({
-                number: BigInt(device?.hardwareInfo?.ipAddress?.addr || 0),
-                version: 4,
-              })}
+              {IPv4.fromNumber(
+                device?.hardwareInfo?.ipAddress?.addr || 0
+              ).toString()}
             </Typography>
           </RowContainer>
         ))}
