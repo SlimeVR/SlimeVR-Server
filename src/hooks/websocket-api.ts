@@ -11,6 +11,8 @@ import {
 
 import { Builder, ByteBuffer } from 'flatbuffers';
 import { useInterval } from './timeout';
+import { PubSubUnion } from 'solarxr-protocol/protocol/typescript/dist/solarxr-protocol/pub-sub/pub-sub-union';
+import { PubSubHeaderT } from 'solarxr-protocol/protocol/typescript/dist/solarxr-protocol/pub-sub/pub-sub-header';
 
 export interface WebSocketApi {
   isConnected: boolean;
@@ -22,6 +24,11 @@ export interface WebSocketApi {
   ) => void;
   sendRPCPacket: (type: RpcMessage, data: RPCPacketType) => void;
   sendDataFeedPacket: (type: DataFeedMessage, data: DataFeedPacketType) => void;
+  usePubSubPacket: <T>(
+    type: PubSubUnion,
+    callback: (packet: T) => void
+  ) => void;
+  sendPubSubPacket: (type: PubSubUnion, data: PubSubPacketType) => void;
 }
 
 export const WebSocketApiContext = createContext<WebSocketApi>(
@@ -29,6 +36,7 @@ export const WebSocketApiContext = createContext<WebSocketApi>(
 );
 
 export type RPCPacketType = RpcMessageHeaderT['message'];
+export type PubSubPacketType = PubSubHeaderT['u'];
 export type DataFeedPacketType = DataFeedMessageHeaderT['message'];
 // export type OutboundPacketType = OutboundPacketT['packet'];
 
@@ -36,6 +44,7 @@ export function useProvideWebsocketApi(): WebSocketApi {
   const rpcPacketCounterRef = useRef<number>(0);
   const webSocketRef = useRef<WebSocket | null>(null);
   const rpclistenerRef = useRef<EventTarget>(new EventTarget());
+  const pubsublistenerRef = useRef<EventTarget>(new EventTarget());
   const datafeedlistenerRef = useRef<EventTarget>(new EventTarget());
   const [isFistConnection, setFirstConnection] = useState(true);
   const [isConnected, setConnected] = useState(false);
@@ -82,6 +91,14 @@ export function useProvideWebsocketApi(): WebSocketApi {
         })
       );
     });
+
+    message.pubSubMsgs.forEach((pubSubHeader) => {
+      pubsublistenerRef.current?.dispatchEvent(
+        new CustomEvent(PubSubUnion[pubSubHeader.uType], {
+          detail: pubSubHeader.u,
+        })
+      );
+    });
   };
 
   const sendRPCPacket = (type: RpcMessage, data: RPCPacketType): void => {
@@ -117,6 +134,25 @@ export function useProvideWebsocketApi(): WebSocketApi {
     datafeedHeader.message = data;
 
     message.dataFeedMsgs = [datafeedHeader];
+    fbb.finish(message.pack(fbb));
+
+    webSocketRef.current.send(fbb.asUint8Array());
+  };
+
+  const sendPubSubPacket = (
+    type: PubSubUnion,
+    data: PubSubPacketType
+  ): void => {
+    if (!webSocketRef.current) throw new Error('No connection');
+    const fbb = new Builder(1);
+
+    const message = new MessageBundleT();
+
+    const pubSubHeader = new PubSubHeaderT();
+    pubSubHeader.uType = type;
+    pubSubHeader.u = data;
+
+    message.pubSubMsgs = [pubSubHeader];
     fbb.finish(message.pack(fbb));
 
     webSocketRef.current.send(fbb.asUint8Array());
@@ -180,8 +216,23 @@ export function useProvideWebsocketApi(): WebSocketApi {
         };
       }, [callback, type]);
     },
+    usePubSubPacket: <T>(type: PubSubUnion, callback: (packet: T) => void) => {
+      useEffect(() => {
+        const onEvent = (event: CustomEventInit) => {
+          callback(event.detail);
+        };
+        pubsublistenerRef.current.addEventListener(PubSubUnion[type], onEvent);
+        return () => {
+          pubsublistenerRef.current.removeEventListener(
+            PubSubUnion[type],
+            onEvent
+          );
+        };
+      }, [callback, type]);
+    },
     sendRPCPacket,
     sendDataFeedPacket,
+    sendPubSubPacket,
   };
 }
 

@@ -116,7 +116,6 @@ export function TrackerSettingsPage() {
 
   useEffect(() => {
     if (firstLoad) {
-      console.log('hey');
       reset({
         trackerName: tracker?.tracker.info?.customName as string | null,
       });

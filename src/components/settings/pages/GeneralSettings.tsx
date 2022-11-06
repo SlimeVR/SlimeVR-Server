@@ -1,5 +1,5 @@
 import { useEffect, useRef } from 'react';
-import { DefaultValues, useForm, UseFormReset } from 'react-hook-form';
+import { DefaultValues, useForm } from 'react-hook-form';
 import { useLocation } from 'react-router-dom';
 import {
   ChangeSettingsRequestT,
@@ -7,7 +7,6 @@ import {
   FilteringType,
   ModelSettingsT,
   ModelTogglesT,
-  ModelRatiosT,
   RpcMessage,
   SettingsRequestT,
   SettingsResponseT,
@@ -55,28 +54,27 @@ export function GeneralSettings() {
   const pageRef = useRef<HTMLFormElement | null>(null);
 
   const { sendRPCPacket, useRPCPacket } = useWebsocketAPI();
-  const { register, reset, control, watch, handleSubmit } =
-    useForm<SettingsForm>({
-      defaultValues: {
-        trackers: {
-          waist: false,
-          chest: false,
-          elbows: false,
-          knees: false,
-          legs: false,
-        },
-        toggles: {
-          extendedSpine: true,
-          extendedPelvis: true,
-          extendedKnee: true,
-          forceArmsFromHmd: false,
-          floorClip: false,
-          skatingCorrection: false,
-        },
-        filtering: { amount: 10, type: FilteringType.NONE },
-        interface: { devmode: false },
+  const { reset, control, watch, handleSubmit } = useForm<SettingsForm>({
+    defaultValues: {
+      trackers: {
+        waist: false,
+        chest: false,
+        elbows: false,
+        knees: false,
+        legs: false,
       },
-    });
+      toggles: {
+        extendedSpine: true,
+        extendedPelvis: true,
+        extendedKnee: true,
+        forceArmsFromHmd: false,
+        floorClip: false,
+        skatingCorrection: false,
+      },
+      filtering: { amount: 10, type: FilteringType.NONE },
+      interface: { devmode: false },
+    },
+  });
 
   const onSubmit = (values: SettingsForm) => {
     const settings = new ChangeSettingsRequestT();

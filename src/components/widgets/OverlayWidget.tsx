@@ -1,18 +1,20 @@
-import { useEffect, useState } from 'react';
+import { useEffect } from 'react';
 import { useForm } from 'react-hook-form';
+import { KeyValuesT } from 'solarxr-protocol/protocol/typescript/dist/solarxr-protocol/pub-sub/key-values';
+import { MessageT } from 'solarxr-protocol/protocol/typescript/dist/solarxr-protocol/pub-sub/message';
+import { Payload } from 'solarxr-protocol/protocol/typescript/dist/solarxr-protocol/pub-sub/payload';
+import { Topic } from 'solarxr-protocol/protocol/typescript/dist/solarxr-protocol/pub-sub/topic';
 import {
-  OverlayDisplayModeChangeRequestT,
-  OverlayDisplayModeRequestT,
-  OverlayDisplayModeResponseT,
-  RpcMessage,
-} from 'solarxr-protocol';
-import { useWebsocketAPI } from '../../hooks/websocket-api';
+  OVERLAY_DISPLAY_SETTINGS_TOPIC,
+  PayloadData,
+  usePubSub,
+} from '../../hooks/pubSub';
 import { CheckBox } from '../commons/Checkbox';
 
 export function OverlayWidget() {
-  const { sendRPCPacket, useRPCPacket } = useWebsocketAPI();
+  const { publish, subscribe, keyValues } = usePubSub();
 
-  const { reset, control, handleSubmit, watch, setValue } = useForm<{
+  const { reset, control, handleSubmit, watch } = useForm<{
     isVisible: boolean;
     isMirrored: boolean;
   }>({
@@ -22,21 +24,24 @@ export function OverlayWidget() {
     },
   });
 
-  useRPCPacket(
-    RpcMessage.OverlayDisplayModeResponse,
-    (res: OverlayDisplayModeResponseT) => {
+  subscribe(
+    OVERLAY_DISPLAY_SETTINGS_TOPIC,
+    (payload: PayloadData, type: Payload) => {
+      if (type !== Payload.KeyValues) throw new Error('Invalid payload');
+      const obj = keyValues(payload);
       reset({
-        isMirrored: res.isMirrored,
-        isVisible: res.isVisible,
+        isMirrored: obj['is_mirrored'] === 'true',
+        isVisible: obj['is_visible'] === 'true',
       });
     }
   );
 
   useEffect(() => {
-    sendRPCPacket(
-      RpcMessage.OverlayDisplayModeRequest,
-      new OverlayDisplayModeRequestT()
-    );
+    const message = new MessageT();
+    message.topic = OVERLAY_DISPLAY_SETTINGS_TOPIC;
+    message.topicType = Topic.TopicId;
+    message.payloadType = Payload.NONE;
+    publish(message);
   }, []);
 
   useEffect(() => {
@@ -45,10 +50,18 @@ export function OverlayWidget() {
   }, []);
 
   const onSubmit = (val: { isVisible: boolean; isMirrored: boolean }) => {
-    const req = new OverlayDisplayModeChangeRequestT();
-    req.isMirrored = val.isMirrored;
-    req.isVisible = val.isVisible;
-    sendRPCPacket(RpcMessage.OverlayDisplayModeChangeRequest, req);
+    const message = new MessageT();
+
+    message.topic = OVERLAY_DISPLAY_SETTINGS_TOPIC;
+    message.topicType = Topic.TopicId;
+
+    message.payloadType = Payload.KeyValues;
+    const keyValues = new KeyValuesT();
+    keyValues.keys = ['is_mirrored', 'is_visible'];
+    keyValues.values = [`${val.isMirrored}`, `${val.isVisible}`];
+    message.payload = keyValues;
+
+    publish(message);
   };
 
   return (
