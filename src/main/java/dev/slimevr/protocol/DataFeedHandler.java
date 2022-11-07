@@ -61,7 +61,7 @@ public class DataFeedHandler extends ProtocolHandler<DataFeedMessageHeader> {
 		MessageBundle.addDataFeedMsgs(fbb, headerOffset);
 		int datafeedMessagesOffset = fbb.endVector();
 
-		int packet = createMessage(fbb, datafeedMessagesOffset, 0);
+		int packet = createMessage(fbb, datafeedMessagesOffset);
 		fbb.finish(packet);
 		conn.send(fbb.dataBuffer());
 	}
@@ -130,7 +130,7 @@ public class DataFeedHandler extends ProtocolHandler<DataFeedMessageHeader> {
 
 				if (fbb != null) {
 					int messages = MessageBundle.createDataFeedMsgsVector(fbb, data);
-					int packet = createMessage(fbb, messages, 0);
+					int packet = createMessage(fbb, messages);
 					fbb.finish(packet);
 					conn.send(fbb.dataBuffer());
 				}
@@ -154,5 +154,12 @@ public class DataFeedHandler extends ProtocolHandler<DataFeedMessageHeader> {
 	@Override
 	public int messagesCount() {
 		return DataFeedMessage.names.length;
+	}
+
+	public int createMessage(FlatBufferBuilder fbb, int datafeedMessagesOffset) {
+		MessageBundle.startMessageBundle(fbb);
+		if (datafeedMessagesOffset > -1)
+			MessageBundle.addDataFeedMsgs(fbb, datafeedMessagesOffset);
+		return MessageBundle.endMessageBundle(fbb);
 	}
 }
