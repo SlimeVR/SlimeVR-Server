@@ -50,6 +50,7 @@ export function RowContainer({
   children,
   rounded = 'none',
   hover,
+  tracker,
   onClick,
   onMouseOver,
   onMouseOut,
@@ -57,23 +58,40 @@ export function RowContainer({
   children: ReactChild;
   rounded?: 'left' | 'right' | 'none';
   hover: boolean;
+  tracker: TrackerDataT;
   onClick?: MouseEventHandler<HTMLDivElement>;
   onMouseOver?: MouseEventHandler<HTMLDivElement>;
   onMouseOut?: MouseEventHandler<HTMLDivElement>;
 }) {
+  const { useVelocity } = useTracker(tracker);
+
+  const velocity = useVelocity();
+
   return (
     <div
-      onClick={onClick}
-      onMouseEnter={onMouseOver}
-      onMouseLeave={onMouseOut}
       className={classNames(
-        'min-h-[50px]  flex flex-col justify-center px-3',
-        rounded === 'left' && 'rounded-l-lg',
-        rounded === 'right' && 'rounded-r-lg',
-        hover ? 'bg-background-50' : 'bg-background-60'
+        'py-1',
+        rounded === 'left' && 'pl-3',
+        rounded === 'right' && 'pr-3',
+        'overflow-hidden'
       )}
     >
-      {children}
+      <div
+        onClick={onClick}
+        onMouseEnter={onMouseOver}
+        onMouseLeave={onMouseOut}
+        style={{
+          boxShadow: `0px 0px ${velocity * 8}px ${velocity * 8}px #183951`,
+        }}
+        className={classNames(
+          'min-h-[50px]  flex flex-col justify-center px-3',
+          rounded === 'left' && 'rounded-l-lg',
+          rounded === 'right' && 'rounded-r-lg',
+          hover ? 'bg-background-50' : 'bg-background-60'
+        )}
+      >
+        {children}
+      </div>
     </div>
   );
 }
@@ -93,12 +111,13 @@ export function TrackersTable({
 
   return (
     <div className="flex w-full overflow-x-auto py-2">
-      <div className="flex flex-col gap-2">
+      <div className="flex flex-col gap-1">
         <div className="flex px-3">Tracker</div>
         {flatTrackers.map(({ tracker }, index) => (
           <RowContainer
             key={index}
             rounded="left"
+            tracker={tracker}
             onClick={() => clickedTracker(tracker)}
             hover={trackerEqual(tracker.trackerId)}
             onMouseOver={() => setHoverTracker(tracker.trackerId)}
@@ -108,11 +127,12 @@ export function TrackersTable({
           </RowContainer>
         ))}
       </div>
-      <div className="flex flex-col gap-2">
+      <div className="flex flex-col gap-1">
         <div className="flex px-3">Type</div>
         {flatTrackers.map(({ device, tracker }, index) => (
           <RowContainer
             key={index}
+            tracker={tracker}
             onClick={() => clickedTracker(tracker)}
             hover={trackerEqual(tracker.trackerId)}
             onMouseOver={() => setHoverTracker(tracker.trackerId)}
@@ -124,11 +144,12 @@ export function TrackersTable({
           </RowContainer>
         ))}
       </div>
-      <div className="flex flex-col gap-2">
+      <div className="flex flex-col gap-1">
         <div className="flex px-3">Battery</div>
         {flatTrackers.map(({ device, tracker }, index) => (
           <RowContainer
             key={index}
+            tracker={tracker}
             onClick={() => clickedTracker(tracker)}
             hover={trackerEqual(tracker.trackerId)}
             onMouseOver={() => setHoverTracker(tracker.trackerId)}
@@ -145,11 +166,12 @@ export function TrackersTable({
           </RowContainer>
         ))}
       </div>
-      <div className="flex flex-col gap-2">
+      <div className="flex flex-col gap-1">
         <div className="flex px-3">Ping</div>
         {flatTrackers.map(({ device, tracker }, index) => (
           <RowContainer
             key={index}
+            tracker={tracker}
             onClick={() => clickedTracker(tracker)}
             hover={trackerEqual(tracker.trackerId)}
             onMouseOver={() => setHoverTracker(tracker.trackerId)}
@@ -168,11 +190,12 @@ export function TrackersTable({
           </RowContainer>
         ))}
       </div>
-      <div className="flex flex-col gap-2">
+      <div className="flex flex-col gap-1">
         <div className="flex px-3 whitespace-nowrap">Rotation X/Y/Z</div>
         {flatTrackers.map(({ tracker }, index) => (
           <RowContainer
             key={index}
+            tracker={tracker}
             onClick={() => clickedTracker(tracker)}
             hover={trackerEqual(tracker.trackerId)}
             onMouseOver={() => setHoverTracker(tracker.trackerId)}
@@ -182,11 +205,12 @@ export function TrackersTable({
           </RowContainer>
         ))}
       </div>
-      <div className="flex flex-col gap-2">
+      <div className="flex flex-col gap-1">
         <div className="flex px-3 whitespace-nowrap">Position X/Y/Z</div>
         {flatTrackers.map(({ tracker }, index) => (
           <RowContainer
             key={index}
+            tracker={tracker}
             onClick={() => clickedTracker(tracker)}
             hover={trackerEqual(tracker.trackerId)}
             onMouseOver={() => setHoverTracker(tracker.trackerId)}
@@ -204,13 +228,14 @@ export function TrackersTable({
           </RowContainer>
         ))}
       </div>
-      <div className="flex flex-col gap-2 flex-grow">
+      <div className="flex flex-col gap-1 flex-grow">
         <div className="flex px-3">URL</div>
 
         {flatTrackers.map(({ device, tracker }, index) => (
           <RowContainer
             key={index}
             rounded="right"
+            tracker={tracker}
             onClick={() => clickedTracker(tracker)}
             hover={trackerEqual(tracker.trackerId)}
             onMouseOver={() => setHoverTracker(tracker.trackerId)}
