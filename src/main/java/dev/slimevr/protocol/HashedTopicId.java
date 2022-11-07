@@ -11,9 +11,15 @@ import java.util.Objects;
 public class HashedTopicId {
 
 	private final TopicIdT inner;
+	private final int hashcode;
 
 	public HashedTopicId(TopicIdT topicIdT) {
 		this.inner = topicIdT;
+		this.hashcode = (inner.getAppName()
+			+ "."
+			+ inner.getOrganization()
+			+ "."
+			+ inner.getTopic()).hashCode();
 	}
 
 	public TopicIdT getInner() {
@@ -22,12 +28,7 @@ public class HashedTopicId {
 
 	@Override
 	public int hashCode() {
-		return toString().hashCode();
-	}
-
-	@Override
-	public String toString() {
-		return inner.getAppName() + "." + inner.getOrganization() + "." + inner.getTopic();
+		return hashcode;
 	}
 
 	@Override
