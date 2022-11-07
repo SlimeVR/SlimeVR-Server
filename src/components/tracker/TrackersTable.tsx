@@ -67,7 +67,7 @@ export function RowContainer({
       onMouseEnter={onMouseOver}
       onMouseLeave={onMouseOut}
       className={classNames(
-        'h-14  flex flex-col justify-center px-3',
+        'min-h-[50px]  flex flex-col justify-center px-3',
         rounded === 'left' && 'rounded-l-lg',
         rounded === 'right' && 'rounded-r-lg',
         hover ? 'bg-background-50' : 'bg-background-60'
@@ -86,8 +86,6 @@ export function TrackersTable({
   flatTrackers: FlatDeviceTracker[];
 }) {
   const [hoverTracker, setHoverTracker] = useState<TrackerIdT | null>(null);
-
-  console.log(flatTrackers);
 
   const trackerEqual = (id: TrackerIdT | null) =>
     id?.trackerNum == hoverTracker?.trackerNum &&
