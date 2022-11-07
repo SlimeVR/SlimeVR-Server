@@ -68,11 +68,9 @@ function Layout() {
         <Route
           path="/onboarding"
           element={
-            <OnboardingContextProvider>
-              <OnboardingLayout>
-                <Outlet></Outlet>
-              </OnboardingLayout>
-            </OnboardingContextProvider>
+            <OnboardingLayout>
+              <Outlet></Outlet>
+            </OnboardingLayout>
           }
         >
           <Route path="home" element={<HomePage />} />
@@ -147,21 +145,23 @@ function App() {
       <ConfigContextProvider>
         <WebSocketApiContext.Provider value={websocketAPI}>
           <AppContextProvider>
-            <div className="h-full w-full text-standard bg-background-80 text-background-10">
-              <div className="flex-col h-full">
-                {!websocketAPI.isConnected && (
-                  <>
-                    <TopBar></TopBar>
-                    <div className="flex w-full h-full justify-center items-center p-2">
-                      {websocketAPI.isFistConnection
-                        ? 'Connecting to the server'
-                        : 'Connection lost to the server. Trying to reconnect...'}
-                    </div>
-                  </>
-                )}
-                {websocketAPI.isConnected && <Layout></Layout>}
+            <OnboardingContextProvider>
+              <div className="h-full w-full text-standard bg-background-80 text-background-10">
+                <div className="flex-col h-full">
+                  {!websocketAPI.isConnected && (
+                    <>
+                      <TopBar></TopBar>
+                      <div className="flex w-full h-full justify-center items-center p-2">
+                        {websocketAPI.isFistConnection
+                          ? 'Connecting to the server'
+                          : 'Connection lost to the server. Trying to reconnect...'}
+                      </div>
+                    </>
+                  )}
+                  {websocketAPI.isConnected && <Layout></Layout>}
+                </div>
               </div>
-            </div>
+            </OnboardingContextProvider>
           </AppContextProvider>
         </WebSocketApiContext.Provider>
       </ConfigContextProvider>
