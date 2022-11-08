@@ -1,8 +1,5 @@
 package dev.slimevr.protocol;
 
-import com.google.flatbuffers.FlatBufferBuilder;
-import solarxr_protocol.MessageBundle;
-
 import java.util.function.BiConsumer;
 
 
@@ -25,12 +22,5 @@ public abstract class ProtocolHandler<H> {
 			this.handlers[packetType] = consumer;
 	}
 
-	public int createMessage(FlatBufferBuilder fbb, int datafeedMessagesOffset, int rpcMsgsOffset) {
-		MessageBundle.startMessageBundle(fbb);
-		if (datafeedMessagesOffset > -1)
-			MessageBundle.addDataFeedMsgs(fbb, datafeedMessagesOffset);
-		if (rpcMsgsOffset > -1)
-			MessageBundle.addRpcMsgs(fbb, rpcMsgsOffset);
-		return MessageBundle.endMessageBundle(fbb);
-	}
+
 }
