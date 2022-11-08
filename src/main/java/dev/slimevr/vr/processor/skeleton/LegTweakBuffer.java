@@ -12,9 +12,8 @@ import com.jme3.math.Vector3f;
  * rules: The conditions for an unlock are as follows: 1. the foot is to far
  * from its correct position 2. a velocity higher than a threashold is achived
  * 3. a large acceleration is applied to the foot 4. angular velocity of the
- * foot goes higher than a threshold. The conditions for a lock are the
- * opposite of the above but require a lower value for all of the above
- * conditions
+ * foot goes higher than a threshold. The conditions for a lock are the opposite
+ * of the above but require a lower value for all of the above conditions
  */
 
 public class LegTweakBuffer {
@@ -27,7 +26,9 @@ public class LegTweakBuffer {
 	public static final float NS_CONVERT = 1000000000.0f;
 	private static final Vector3f placeHolderVec = new Vector3f();
 	private static final Quaternion placeHolderQuat = new Quaternion();
-	private static final Vector3f gravity = new Vector3f(0, -9.81f, 0);
+	private static final Vector3f GRAVITY = new Vector3f(0, -9.81f, 0);
+	private static final float GRAVITY_MAGNITUDE = GRAVITY.length();
+	private static final int BUFFER_LEN = 10;
 
 	// states for the legs
 	private int leftLegState = STATE_UNKNOWN;
@@ -278,7 +279,7 @@ public class LegTweakBuffer {
 	}
 
 	public void setCenterOfMass(Vector3f centerOfMass) {
-		this.centerOfMass = centerOfMass.clone();
+		this.centerOfMass.set(centerOfMass);
 	}
 
 	public void setLeftFloorLevel(float leftFloorLevel) {
@@ -399,11 +400,11 @@ public class LegTweakBuffer {
 		}
 	}
 
-	// update the frame number of all the frames
+	// update the frame number and discard frames older than BUFFER_LEN
 	public void updateFrameNumber(int frameNumber) {
 		this.frameNumber = frameNumber;
 
-		if (this.frameNumber >= 10)
+		if (this.frameNumber >= BUFFER_LEN)
 			this.parent = null;
 
 		if (parent != null)
@@ -717,8 +718,8 @@ public class LegTweakBuffer {
 		Vector3f rightFootVector = rightFootPosition.subtract(centerOfMass).normalizeLocal();
 
 		// get the magnitude of the force on each foot
-		float leftFootMagnitude = 9.81f * leftFootVector.y / leftFootVector.length();
-		float rightFootMagnitude = 9.81f * rightFootVector.y / rightFootVector.length();
+		float leftFootMagnitude = GRAVITY_MAGNITUDE * leftFootVector.y / leftFootVector.length();
+		float rightFootMagnitude = GRAVITY_MAGNITUDE * rightFootVector.y / rightFootVector.length();
 
 		// get the force vector each foot could apply to the com
 		Vector3f leftFootForce = leftFootVector.mult(leftFootMagnitude / 2.0f);
@@ -784,7 +785,7 @@ public class LegTweakBuffer {
 
 			// get the error at the current position
 			error = centerOfMassAcceleration
-				.subtract(leftFootForce.add(rightFootForce).add(gravity));
+				.subtract(leftFootForce.add(rightFootForce).add(GRAVITY));
 
 			// add and subtract the error to the force vectors
 			tempLeftFootForce1 = tempLeftFootForce1.mult(1.0f + stepSize);
@@ -816,7 +817,7 @@ public class LegTweakBuffer {
 	// detect any outside forces on the body such
 	// as a wall or a chair. returns true if there is a outside force
 	private boolean detectOutsideForces(Vector3f f1, Vector3f f2) {
-		Vector3f force = gravity.add(f1).add(f2);
+		Vector3f force = GRAVITY.add(f1).add(f2);
 		Vector3f error = centerOfMassAcceleration.subtract(force);
 		return error.length() > FORCE_ERROR_TOLLERANCE;
 	}
@@ -824,7 +825,7 @@ public class LegTweakBuffer {
 	// simple error function for the force vector gradient descent
 	private Vector3f getForceVectorError(Vector3f testForce, Vector3f otherForce) {
 		return centerOfMassAcceleration
-			.subtract(testForce.add(otherForce).add(gravity));
+			.subtract(testForce.add(otherForce).add(GRAVITY));
 	}
 
 	// clamp a float between two values
