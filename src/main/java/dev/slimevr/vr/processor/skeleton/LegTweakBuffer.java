@@ -12,7 +12,7 @@ import com.jme3.math.Vector3f;
  * rules: The conditions for an unlock are as follows: 1. the foot is to far
  * from its correct position 2. a velocity higher than a threashold is achived
  * 3. a large acceleration is applied to the foot 4. angular velocity of the
- * foot goes higher than a threashold. The conditions for a lock are the
+ * foot goes higher than a threshold. The conditions for a lock are the
  * opposite of the above but require a lower value for all of the above
  * conditions
  */
@@ -713,8 +713,8 @@ public class LegTweakBuffer {
 		float rightFootPressure = 0;
 
 		// get the vector's from the com to each foot
-		Vector3f leftFootVector = leftFootPosition.subtract(centerOfMass).normalize();
-		Vector3f rightFootVector = rightFootPosition.subtract(centerOfMass).normalize();
+		Vector3f leftFootVector = leftFootPosition.subtract(centerOfMass).normalizeLocal();
+		Vector3f rightFootVector = rightFootPosition.subtract(centerOfMass).normalizeLocal();
 
 		// get the magnitude of the force on each foot
 		float leftFootMagnitude = 9.81f * leftFootVector.y / leftFootVector.length();
