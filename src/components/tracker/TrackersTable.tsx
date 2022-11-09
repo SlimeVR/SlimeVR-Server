@@ -216,15 +216,17 @@ export function TrackersTable({
             onMouseOver={() => setHoverTracker(tracker.trackerId)}
             onMouseOut={() => setHoverTracker(null)}
           >
-            <Typography color="secondary">
-              <span className="whitespace-nowrap">
-                {`${tracker.position?.x.toFixed(
-                  0
-                )} / ${tracker.position?.y.toFixed(
-                  0
-                )} / ${tracker.position?.z.toFixed(0)}`}
-              </span>
-            </Typography>
+            {(tracker.position && (
+              <Typography color="secondary">
+                <span className="whitespace-nowrap">
+                  {`${tracker.position?.x.toFixed(
+                    0
+                  )} / ${tracker.position?.y.toFixed(
+                    0
+                  )} / ${tracker.position?.z.toFixed(0)}`}
+                </span>
+              </Typography>
+            )) || <></>}
           </RowContainer>
         ))}
       </div>
