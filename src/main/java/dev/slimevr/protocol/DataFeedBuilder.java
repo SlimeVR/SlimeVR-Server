@@ -159,9 +159,9 @@ public class DataFeedBuilder {
 			TrackerData.addInfo(fbb, trackerInfosOffset);
 		if (mask.getStatus())
 			TrackerData.addStatus(fbb, tracker.getStatus().id + 1);
-		if (mask.getPosition())
+		if (mask.getPosition() && tracker.hasPosition())
 			TrackerData.addPosition(fbb, DataFeedBuilder.createTrackerPosition(fbb, tracker));
-		if (mask.getRotation())
+		if (mask.getRotation() && tracker.hasRotation())
 			TrackerData.addRotation(fbb, DataFeedBuilder.createTrackerRotation(fbb, tracker));
 		if (mask.getTemp()) {
 			int trackerTemperatureOffset = DataFeedBuilder.createTrackerTemperature(fbb, tracker);
