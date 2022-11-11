@@ -16,6 +16,9 @@ public class ConnectionContext {
 	// Futurabeast
 	private final List<Long> dataFeedTimers = new ArrayList<>();
 
+	private final List<Integer> subscribedTopics = new ArrayList<>();
+
+
 	private boolean useSerial = false;
 	private boolean useAutoBone = false;
 
@@ -25,6 +28,10 @@ public class ConnectionContext {
 
 	public List<Long> getDataFeedTimers() {
 		return dataFeedTimers;
+	}
+
+	public List<Integer> getSubscribedTopics() {
+		return subscribedTopics;
 	}
 
 	public boolean useSerial() {
@@ -42,4 +49,5 @@ public class ConnectionContext {
 	public void setUseAutoBone(boolean useAutoBone) {
 		this.useAutoBone = useAutoBone;
 	}
+
 }
