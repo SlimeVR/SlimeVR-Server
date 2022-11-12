@@ -81,12 +81,9 @@ public class CalibrationWindow extends JFrame {
 		pack();
 		setLocationRelativeTo(null);
 		setVisible(true);
-		java.awt.EventQueue.invokeLater(new Runnable() {
-			@Override
-			public void run() {
-				toFront();
-				repaint();
-			}
+		java.awt.EventQueue.invokeLater(() -> {
+			toFront();
+			repaint();
 		});
 	}
 }

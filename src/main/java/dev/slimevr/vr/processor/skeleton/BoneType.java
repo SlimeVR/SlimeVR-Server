@@ -47,11 +47,11 @@ public enum BoneType {
 
 	public final int bodyPart;
 
-	private BoneType() {
+	BoneType() {
 		this.bodyPart = BodyPart.NONE;
 	}
 
-	private BoneType(int associatedBodyPart) {
+	BoneType(int associatedBodyPart) {
 		this.bodyPart = associatedBodyPart;
 	}
 }

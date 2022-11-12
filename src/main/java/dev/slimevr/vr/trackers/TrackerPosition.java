@@ -48,11 +48,11 @@ public enum TrackerPosition {
 	/** The associated `BodyPart` */
 	public final int bodyPart;
 
-	private TrackerPosition(String designation, TrackerRole nullableTrackerRole, int bodyPart) {
+	TrackerPosition(String designation, TrackerRole nullableTrackerRole, int bodyPart) {
 		this(designation, Optional.ofNullable(nullableTrackerRole), bodyPart);
 	}
 
-	private TrackerPosition(String designation, Optional<TrackerRole> trackerRole, int bodyPart) {
+	TrackerPosition(String designation, Optional<TrackerRole> trackerRole, int bodyPart) {
 		this.designation = designation;
 		this.trackerRole = trackerRole;
 		this.bodyPart = bodyPart;

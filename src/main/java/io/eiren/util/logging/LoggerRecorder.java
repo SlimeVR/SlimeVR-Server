@@ -8,7 +8,7 @@ import io.eiren.util.logging.DefaultGLog.LogEntry;
 
 public class LoggerRecorder {
 
-	private final List<LogEntry> recorded = new FastList<LogEntry>();
+	private final List<LogEntry> recorded = new FastList<>();
 
 	public LoggerRecorder() {
 	}

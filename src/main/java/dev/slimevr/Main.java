@@ -59,12 +59,12 @@ public class Main {
 			e1.printStackTrace();
 		}
 
-		if (!SystemUtils.isJavaVersionAtLeast(JavaVersion.JAVA_11)) {
-			LogManager.severe("SlimeVR start-up error! A minimum of Java 11 is required.");
+		if (!SystemUtils.isJavaVersionAtLeast(JavaVersion.JAVA_17)) {
+			LogManager.severe("SlimeVR start-up error! A minimum of Java 17 is required.");
 			JOptionPane
 				.showMessageDialog(
 					null,
-					"SlimeVR start-up error! A minimum of Java 11 is required.",
+					"SlimeVR start-up error! A minimum of Java 17 is required.",
 					"SlimeVR: Java Runtime Mismatch",
 					JOptionPane.ERROR_MESSAGE
 				);

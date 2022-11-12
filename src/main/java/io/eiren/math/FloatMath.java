@@ -424,7 +424,7 @@ public class FloatMath {
 	 */
 	@Deprecated
 	public static float abs(float value) {
-		return (float) Math.abs(value);
+		return Math.abs(value);
 	}
 
 	/**
@@ -479,11 +479,7 @@ public class FloatMath {
 	 * The same as FastMath.clamp
 	 */
 	public static float clamp(float value, float min, float max) {
-		if (value <= min)
-			return min;
-		if (value >= max)
-			return max;
-		return value;
+		return Math.max(min, Math.min(max, value));
 	}
 
 	public static Vector3f int2101010RevToFloats(int packedValue, Vector3f store) {

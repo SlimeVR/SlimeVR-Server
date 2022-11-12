@@ -149,8 +149,7 @@ public class BVHFileStream extends PoseDataStream {
 		writer.write("Frames: ");
 
 		// Get frame offset for finishing writing the file
-		if (outputStream instanceof FileOutputStream) {
-			FileOutputStream fileOutputStream = (FileOutputStream) outputStream;
+		if (outputStream instanceof FileOutputStream fileOutputStream) {
 			// Flush buffer to get proper offset
 			writer.flush();
 			frameCountOffset = fileOutputStream.getChannel().position();
@@ -278,8 +277,7 @@ public class BVHFileStream extends PoseDataStream {
 	@Override
 	public void writeFooter(Skeleton skeleton) throws IOException {
 		// Write the final frame count for files
-		if (outputStream instanceof FileOutputStream) {
-			FileOutputStream fileOutputStream = (FileOutputStream) outputStream;
+		if (outputStream instanceof FileOutputStream fileOutputStream) {
 			// Flush before anything else
 			writer.flush();
 			// Seek to the count offset
