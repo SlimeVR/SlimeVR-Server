@@ -304,4 +304,11 @@ public class WindowsNamedPipeBridge extends ProtobufBridge<VRTracker> implements
 			);
 		return false;
 	}
+
+	public PipeState getPipeState() {
+		if (pipe != null) {
+			return pipe.state;
+		}
+		return null;
+	}
 }

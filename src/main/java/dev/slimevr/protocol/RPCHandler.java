@@ -7,8 +7,10 @@ import dev.slimevr.autobone.AutoBone.Epoch;
 import dev.slimevr.autobone.AutoBoneListener;
 import dev.slimevr.autobone.AutoBoneProcessType;
 import dev.slimevr.config.FiltersConfig;
+import dev.slimevr.config.OSCConfig;
 import dev.slimevr.config.OverlayConfig;
 import dev.slimevr.filtering.TrackerFilters;
+import dev.slimevr.osc.VRCOSCHandler;
 import dev.slimevr.platform.windows.WindowsNamedPipeBridge;
 import dev.slimevr.poserecorder.PoseFrames;
 import dev.slimevr.serial.SerialListener;
@@ -21,12 +23,14 @@ import dev.slimevr.vr.trackers.TrackerPosition;
 import dev.slimevr.vr.trackers.TrackerRole;
 import io.eiren.util.logging.LogManager;
 import solarxr_protocol.MessageBundle;
+import solarxr_protocol.datatypes.Ipv4Address;
 import solarxr_protocol.datatypes.TransactionId;
 import solarxr_protocol.rpc.*;
 import solarxr_protocol.rpc.settings.ModelRatios;
 import solarxr_protocol.rpc.settings.ModelSettings;
 import solarxr_protocol.rpc.settings.ModelToggles;
 
+import java.nio.ByteBuffer;
 import java.util.EnumMap;
 import java.util.Map.Entry;
 import java.util.function.BiConsumer;
@@ -313,6 +317,15 @@ public class RPCHandler extends ProtocolHandler<RpcMessageHeader>
 				filtersConfig.getAmount()
 			);
 
+		OSCConfig vrcOSCConfig = this.api.server
+			.getConfigManager()
+			.getVrConfig()
+			.getVrcOSC();
+		int vrcOSCSettings = createOSCSettings(
+			fbb,
+			vrcOSCConfig
+		);
+
 		int modelSettings;
 		{
 			var config = this.api.server.humanPoseProcessor.getSkeletonConfig();
@@ -340,10 +353,52 @@ public class RPCHandler extends ProtocolHandler<RpcMessageHeader>
 		}
 
 		int settings = SettingsResponse
-			.createSettingsResponse(fbb, steamvrTrackerSettings, filterSettings, modelSettings);
+			.createSettingsResponse(
+				fbb,
+				steamvrTrackerSettings,
+				filterSettings,
+				vrcOSCSettings,
+				modelSettings
+			);
 		int outbound = createRPCMessage(fbb, RpcMessage.SettingsResponse, settings);
 		fbb.finish(outbound);
 		conn.send(fbb.dataBuffer());
+	}
+
+	private static int createOSCSettings(
+		FlatBufferBuilder fbb,
+		OSCConfig config
+	) {
+		VRCOSCSettings.startVRCOSCSettings(fbb);
+		VRCOSCSettings.addEnabled(fbb, config.getEnabled());
+		VRCOSCSettings.addPortIn(fbb, config.getPortIn());
+		VRCOSCSettings.addPortOut(fbb, config.getPortOut());
+		VRCOSCSettings
+			.addAddress(
+				fbb,
+				Ipv4Address
+					.createIpv4Address(
+						fbb,
+						ByteBuffer.wrap(config.getAddress().getAddress()).getInt()
+					)
+			);
+		VRCOSCSettings
+			.addTrackers(
+				fbb,
+				OSCTrackersSetting
+					.createOSCTrackersSetting(
+						fbb,
+						config.getOSCTrackerRole(TrackerRole.HEAD, false),
+						config.getOSCTrackerRole(TrackerRole.CHEST, false),
+						config.getOSCTrackerRole(TrackerRole.WAIST, false),
+						config.getOSCTrackerRole(TrackerRole.LEFT_KNEE, false),
+						config.getOSCTrackerRole(TrackerRole.LEFT_FOOT, false),
+						config.getOSCTrackerRole(TrackerRole.LEFT_ELBOW, false),
+						config.getOSCTrackerRole(TrackerRole.LEFT_HAND, false)
+					)
+			);
+
+		return VRCOSCSettings.endVRCOSCSettings(fbb);
 	}
 
 	public void onChangeSettingsRequest(GenericConnection conn, RpcMessageHeader messageHeader) {
@@ -358,8 +413,8 @@ public class RPCHandler extends ProtocolHandler<RpcMessageHeader>
 				.getVRBridge(WindowsNamedPipeBridge.class);
 			bridge.changeShareSettings(TrackerRole.WAIST, req.steamVrTrackers().waist());
 			bridge.changeShareSettings(TrackerRole.CHEST, req.steamVrTrackers().chest());
-			bridge.changeShareSettings(TrackerRole.LEFT_FOOT, req.steamVrTrackers().legs());
-			bridge.changeShareSettings(TrackerRole.RIGHT_FOOT, req.steamVrTrackers().legs());
+			bridge.changeShareSettings(TrackerRole.LEFT_FOOT, req.steamVrTrackers().feet());
+			bridge.changeShareSettings(TrackerRole.RIGHT_FOOT, req.steamVrTrackers().feet());
 			bridge.changeShareSettings(TrackerRole.LEFT_KNEE, req.steamVrTrackers().knees());
 			bridge.changeShareSettings(TrackerRole.RIGHT_KNEE, req.steamVrTrackers().knees());
 			bridge.changeShareSettings(TrackerRole.LEFT_ELBOW, req.steamVrTrackers().elbows());
@@ -380,6 +435,31 @@ public class RPCHandler extends ProtocolHandler<RpcMessageHeader>
 
 				filtersConfig.updateTrackersFilters();
 			}
+		}
+
+		if (req.vrcOsc() != null) {
+			OSCConfig vrcOSCConfig = this.api.server
+				.getConfigManager()
+				.getVrConfig()
+				.getVrcOSC();
+			VRCOSCHandler VRCOSCHandler = this.api.server.getVRCOSCHandler();
+			var trackers = req.vrcOsc().trackers();
+
+			vrcOSCConfig.setEnabled(req.vrcOsc().enabled());
+			vrcOSCConfig.setPortIn(req.vrcOsc().portIn());
+			vrcOSCConfig.setPortOut(req.vrcOsc().portOut());
+			vrcOSCConfig.setAddress(req.vrcOsc().address().toString());
+			vrcOSCConfig.setOSCTrackerRole(TrackerRole.HEAD, trackers.head());
+			vrcOSCConfig.setOSCTrackerRole(TrackerRole.CHEST, trackers.chest());
+			vrcOSCConfig.setOSCTrackerRole(TrackerRole.WAIST, trackers.waist());
+			vrcOSCConfig.setOSCTrackerRole(TrackerRole.LEFT_KNEE, trackers.knees());
+			vrcOSCConfig.setOSCTrackerRole(TrackerRole.RIGHT_KNEE, trackers.knees());
+			vrcOSCConfig.setOSCTrackerRole(TrackerRole.HEAD, trackers.feet());
+			vrcOSCConfig.setOSCTrackerRole(TrackerRole.HEAD, trackers.elbows());
+			vrcOSCConfig.setOSCTrackerRole(TrackerRole.HEAD, trackers.hands());
+
+
+			VRCOSCHandler.refreshSettings();
 		}
 
 		var modelSettings = req.modelSettings();

@@ -22,8 +22,24 @@ public class HumanPoseProcessor {
 	private final List<Consumer<Skeleton>> onSkeletonUpdated = new FastList<>();
 	private Skeleton skeleton;
 
-	public HumanPoseProcessor(VRServer server, HMDTracker hmd) {
+	public HumanPoseProcessor(VRServer server) {
 		this.server = server;
+		computedTrackers
+			.add(
+				new ComputedHumanPoseTracker(
+					Tracker.getNextLocalTrackerId(),
+					ComputedHumanPoseTrackerPosition.HEAD,
+					TrackerRole.HEAD
+				)
+			);
+		computedTrackers
+			.add(
+				new ComputedHumanPoseTracker(
+					Tracker.getNextLocalTrackerId(),
+					ComputedHumanPoseTrackerPosition.CHEST,
+					TrackerRole.CHEST
+				)
+			);
 		computedTrackers
 			.add(
 				new ComputedHumanPoseTracker(
@@ -46,14 +62,6 @@ public class HumanPoseProcessor {
 					Tracker.getNextLocalTrackerId(),
 					ComputedHumanPoseTrackerPosition.RIGHT_FOOT,
 					TrackerRole.RIGHT_FOOT
-				)
-			);
-		computedTrackers
-			.add(
-				new ComputedHumanPoseTracker(
-					Tracker.getNextLocalTrackerId(),
-					ComputedHumanPoseTrackerPosition.CHEST,
-					TrackerRole.CHEST
 				)
 			);
 		computedTrackers
@@ -155,16 +163,16 @@ public class HumanPoseProcessor {
 
 	@VRServerThread
 	public void trackerAdded(Tracker tracker) {
-		updateSekeltonModel();
+		updateSkeletonModel();
 	}
 
 	@VRServerThread
 	public void trackerUpdated(Tracker tracker) {
-		updateSekeltonModel();
+		updateSkeletonModel();
 	}
 
 	@VRServerThread
-	private void updateSekeltonModel() {
+	private void updateSkeletonModel() {
 		disconnectAllTrackers();
 		skeleton = new HumanSkeleton(server, computedTrackers);
 		for (Consumer<Skeleton> sc : onSkeletonUpdated)
@@ -186,8 +194,10 @@ public class HumanPoseProcessor {
 
 	@VRServerThread
 	public void resetTrackers() {
-		if (skeleton != null)
+		if (skeleton != null) {
 			skeleton.resetTrackersFull();
+			server.getVRCOSCHandler().yawAlign();
+		}
 	}
 
 	@VRServerThread
@@ -235,5 +245,12 @@ public class HumanPoseProcessor {
 
 			server.getConfigManager().saveConfig();
 		}
+	}
+
+	@VRServerThread
+	public float getUserHeightFromConfig() {
+		return getSkeletonConfig().getOffset(SkeletonConfigOffsets.NECK)
+				+ getSkeletonConfig().getOffset(SkeletonConfigOffsets.TORSO)
+				+ getSkeletonConfig().getOffset(SkeletonConfigOffsets.LEGS_LENGTH);
 	}
 }
