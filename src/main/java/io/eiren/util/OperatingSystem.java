@@ -16,7 +16,7 @@ public enum OperatingSystem {
 	public final String name;
 	private static OperatingSystem currentPlatform;
 
-	private OperatingSystem(String name, String[] aliases) {
+	OperatingSystem(String name, String[] aliases) {
 		this.aliases = aliases;
 		this.name = name;
 	}

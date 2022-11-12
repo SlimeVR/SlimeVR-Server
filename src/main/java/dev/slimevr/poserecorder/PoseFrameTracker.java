@@ -30,7 +30,7 @@ public class PoseFrameTracker implements Tracker, Iterable<TrackerFrame> {
 	}
 
 	public PoseFrameTracker(String name, int initialCapacity) {
-		this(name, new FastList<TrackerFrame>(initialCapacity));
+		this(name, new FastList<>(initialCapacity));
 	}
 
 	public PoseFrameTracker(Tracker parent, int initialCapacity) {

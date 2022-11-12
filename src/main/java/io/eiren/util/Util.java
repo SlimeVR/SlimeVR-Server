@@ -20,7 +20,7 @@ public class Util {
 				else if (r instanceof AutoCloseable)
 					((AutoCloseable) r).close();
 			}
-		} catch (Exception e) {}
+		} catch (Exception ignored) {}
 	}
 
 	public static void close(Object r1, Object r2) {
@@ -29,31 +29,31 @@ public class Util {
 	}
 
 	public static void close(Object... r) {
-		for (int i = 0; i < r.length; ++i)
+		for (Object o : r)
 			try {
-				if (r[i] != null) {
-					if (r[i] instanceof Closeable)
-						((Closeable) r[i]).close();
-					else if (r[i] instanceof AutoCloseable)
-						((AutoCloseable) r[i]).close();
+				if (o != null) {
+					if (o instanceof Closeable)
+						((Closeable) o).close();
+					else if (o instanceof AutoCloseable)
+						((AutoCloseable) o).close();
 				}
-			} catch (Exception e) {}
+			} catch (Exception ignored) {}
 	}
 
 	public static void close(AutoCloseable... r) {
-		for (int i = 0; i < r.length; ++i)
+		for (AutoCloseable autoCloseable : r)
 			try {
-				if (r[i] != null)
-					r[i].close();
-			} catch (Exception e) {}
+				if (autoCloseable != null)
+					autoCloseable.close();
+			} catch (Exception ignored) {}
 	}
 
 	public static void close(Closeable... r) {
-		for (int i = 0; i < r.length; ++i)
+		for (Closeable closeable : r)
 			try {
-				if (r[i] != null)
-					r[i].close();
-			} catch (Exception e) {}
+				if (closeable != null)
+					closeable.close();
+			} catch (Exception ignored) {}
 	}
 
 	/**
@@ -72,7 +72,7 @@ public class Util {
 		if (object == null)
 			return "null";
 		StringBuilder buf = new StringBuilder();
-		elementToString(object, buf, new HashSet<Object>());
+		elementToString(object, buf, new HashSet<>());
 		return buf.toString();
 	}
 
@@ -167,9 +167,9 @@ public class Util {
 				else if (element instanceof Map)
 					deepToString((Map<Object, Object>) element, buf, dejaVu);
 				else if (element instanceof CharSequence)
-					buf.append('"').append(element.toString()).append('"');
+					buf.append('"').append(element).append('"');
 				else
-					buf.append(element.toString());
+					buf.append(element);
 			}
 		}
 	}

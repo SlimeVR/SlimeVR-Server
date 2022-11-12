@@ -57,7 +57,7 @@ public enum TrackerRole {
 	public final String viveRole;
 	public final DeviceType deviceType;
 
-	private TrackerRole(int id, String roleHint, String viveRole, DeviceType deviceType) {
+	TrackerRole(int id, String roleHint, String viveRole, DeviceType deviceType) {
 		this.id = id;
 		this.roleHint = roleHint;
 		this.viveRole = viveRole;

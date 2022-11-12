@@ -15,7 +15,7 @@ public enum AutoBoneProcessType {
 
 	private static final Map<Integer, AutoBoneProcessType> byId = new HashMap<>();
 
-	private AutoBoneProcessType(int id) {
+	AutoBoneProcessType(int id) {
 		this.id = id;
 	}
 

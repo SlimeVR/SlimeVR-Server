@@ -48,7 +48,7 @@ public class LogManager {
 				logsDir,
 				"log_"
 					+ new SimpleDateFormat("yyyy-MM-dd")
-						.format(Long.valueOf(System.currentTimeMillis()))
+						.format(System.currentTimeMillis())
 					+ ".log"
 			);
 			FileHandler filehandler2 = new FileHandler(currentLog.getPath(), true);

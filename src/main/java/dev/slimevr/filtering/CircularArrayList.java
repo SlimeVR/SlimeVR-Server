@@ -22,7 +22,7 @@ public class CircularArrayList<E> extends AbstractList<E> implements RandomAcces
 
 	public CircularArrayList(int capacity) {
 		n = capacity + 1;
-		buf = new ArrayList<E>(Collections.nCopies(n, null));
+		buf = new ArrayList<>(Collections.nCopies(n, null));
 	}
 
 	public int capacity() {
