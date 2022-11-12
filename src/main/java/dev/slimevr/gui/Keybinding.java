@@ -68,7 +68,7 @@ public class Keybinding implements HotkeyListener {
 				LogManager.info("[Keybinding] Quick reset pressed");
 				server.resetTrackersYaw();
 			}
-			case RESET -> {
+			case RESET_MOUNTING -> {
 				LogManager.info("[Keybinding] Reset mounting pressed");
 				server.resetTrackersMounting();
 			}
