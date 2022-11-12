@@ -60,18 +60,18 @@ public class Keybinding implements HotkeyListener {
 	@Override
 	public void onHotKey(int identifier) {
 		switch (identifier) {
-			case RESET:
+			case RESET -> {
 				LogManager.info("[Keybinding] Reset pressed");
 				server.resetTrackers();
-				break;
-			case QUICK_RESET:
+			}
+			case QUICK_RESET -> {
 				LogManager.info("[Keybinding] Quick reset pressed");
 				server.resetTrackersYaw();
-				break;
-			case RESET_MOUNTING:
+			}
+			case RESET -> {
 				LogManager.info("[Keybinding] Reset mounting pressed");
 				server.resetTrackersMounting();
-				break;
+			}
 		}
 	}
 }

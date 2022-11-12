@@ -9,7 +9,7 @@ import dev.slimevr.vr.processor.skeleton.SkeletonConfigOffsets;
 
 public interface AutoBoneListener {
 
-	public void onAutoBoneProcessStatus(
+	void onAutoBoneProcessStatus(
 		AutoBoneProcessType processType,
 		String message,
 		long current,
@@ -18,9 +18,9 @@ public interface AutoBoneListener {
 		boolean success
 	);
 
-	public void onAutoBoneRecordingEnd(PoseFrames recording);
+	void onAutoBoneRecordingEnd(PoseFrames recording);
 
-	public void onAutoBoneEpoch(Epoch epoch);
+	void onAutoBoneEpoch(Epoch epoch);
 
-	public void onAutoBoneEnd(EnumMap<SkeletonConfigOffsets, Float> configValues);
+	void onAutoBoneEnd(EnumMap<SkeletonConfigOffsets, Float> configValues);
 }

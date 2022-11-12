@@ -92,7 +92,7 @@ public class VRServer extends Thread {
 				"\\\\.\\pipe\\SlimeVRDriver",
 				shareTrackers
 			);
-			tasks.add(() -> driverBridge.startBridge());
+			tasks.add(driverBridge::startBridge);
 			bridges.add(driverBridge);
 
 			// Create named pipe bridge for SteamVR input
@@ -103,21 +103,21 @@ public class VRServer extends Thread {
 				"steamvr_feeder",
 				"SteamVR Feeder Bridge",
 				"\\\\.\\pipe\\SlimeVRInput",
-				new FastList<ShareableTracker>()
+				new FastList<>()
 			);
-			tasks.add(() -> feederBridge.startBridge());
+			tasks.add(feederBridge::startBridge);
 			bridges.add(feederBridge);
 		}
 
 		// Create WebSocket server
 		WebSocketVRBridge wsBridge = new WebSocketVRBridge(hmdTracker, shareTrackers, this);
-		tasks.add(() -> wsBridge.startBridge());
+		tasks.add(wsBridge::startBridge);
 		bridges.add(wsBridge);
 
 		// Create VMCBridge
 		try {
 			VMCBridge vmcBridge = new VMCBridge(39539, 39540, InetAddress.getLocalHost());
-			tasks.add(() -> vmcBridge.startBridge());
+			tasks.add(vmcBridge::startBridge);
 			bridges.add(vmcBridge);
 		} catch (UnknownHostException e) {
 			e.printStackTrace();
@@ -176,9 +176,7 @@ public class VRServer extends Thread {
 
 	@ThreadSafe
 	public void addSkeletonUpdatedCallback(Consumer<Skeleton> consumer) {
-		queueTask(() -> {
-			humanPoseProcessor.addSkeletonUpdatedCallback(consumer);
-		});
+		queueTask(() -> humanPoseProcessor.addSkeletonUpdatedCallback(consumer));
 	}
 
 	@Override
@@ -210,7 +208,7 @@ public class VRServer extends Thread {
 			// final long time = System.currentTimeMillis() - start;
 			try {
 				Thread.sleep(1); // 1000Hz
-			} catch (InterruptedException e) {}
+			} catch (InterruptedException ignored) {}
 		}
 	}
 
@@ -237,9 +235,7 @@ public class VRServer extends Thread {
 	}
 
 	public void resetTrackers() {
-		queueTask(() -> {
-			humanPoseProcessor.resetTrackers();
-		});
+		queueTask(humanPoseProcessor::resetTrackers);
 	}
 
 	public void resetTrackersMounting() {
@@ -249,27 +245,19 @@ public class VRServer extends Thread {
 	}
 
 	public void resetTrackersYaw() {
-		queueTask(() -> {
-			humanPoseProcessor.resetTrackersYaw();
-		});
+		queueTask(humanPoseProcessor::resetTrackersYaw);
 	}
 
 	public void setLegTweaksEnabled(boolean value) {
-		queueTask(() -> {
-			humanPoseProcessor.setLegTweaksEnabled(value);
-		});
+		queueTask(() -> humanPoseProcessor.setLegTweaksEnabled(value));
 	}
 
 	public void setSkatingReductionEnabled(boolean value) {
-		queueTask(() -> {
-			humanPoseProcessor.setSkatingCorrectionEnabled(value);
-		});
+		queueTask(() -> humanPoseProcessor.setSkatingCorrectionEnabled(value));
 	}
 
 	public void setFloorClipEnabled(boolean value) {
-		queueTask(() -> {
-			humanPoseProcessor.setFloorClipEnabled(value);
-		});
+		queueTask(() -> humanPoseProcessor.setFloorClipEnabled(value));
 	}
 
 	public int getTrackersCount() {

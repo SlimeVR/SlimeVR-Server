@@ -35,11 +35,11 @@ public class AutoBone {
 	private static final File loadDir = new File("Load AutoBone Recordings");
 
 	// This is filled by reloadConfigValues()
-	public final EnumMap<BoneType, Float> offsets = new EnumMap<BoneType, Float>(
+	public final EnumMap<BoneType, Float> offsets = new EnumMap<>(
 		BoneType.class
 	);
 
-	public final FastList<BoneType> adjustOffsets = new FastList<BoneType>(
+	public final FastList<BoneType> adjustOffsets = new FastList<>(
 		new BoneType[] {
 			BoneType.HEAD,
 			BoneType.NECK,
@@ -56,7 +56,7 @@ public class AutoBone {
 		}
 	);
 
-	public final FastList<BoneType> heightOffsets = new FastList<BoneType>(
+	public final FastList<BoneType> heightOffsets = new FastList<>(
 		new BoneType[] {
 			BoneType.NECK,
 			BoneType.CHEST,
@@ -70,7 +70,7 @@ public class AutoBone {
 		}
 	);
 
-	public final FastList<SkeletonConfigOffsets> legacyHeightConfigs = new FastList<SkeletonConfigOffsets>(
+	public final FastList<SkeletonConfigOffsets> legacyHeightConfigs = new FastList<>(
 		new SkeletonConfigOffsets[] {
 			SkeletonConfigOffsets.NECK,
 			SkeletonConfigOffsets.TORSO,
@@ -79,7 +79,7 @@ public class AutoBone {
 		}
 	);
 
-	public final EnumMap<SkeletonConfigOffsets, Float> legacyConfigs = new EnumMap<SkeletonConfigOffsets, Float>(
+	public final EnumMap<SkeletonConfigOffsets, Float> legacyConfigs = new EnumMap<>(
 		SkeletonConfigOffsets.class
 	);
 
@@ -115,32 +115,24 @@ public class AutoBone {
 	}
 
 	public float computeBoneOffset(BoneType bone, SkeletonConfig skeletonConfig) {
-		switch (bone) {
-			case HEAD:
-				return skeletonConfig.getOffset(SkeletonConfigOffsets.HEAD);
-			case NECK:
-				return skeletonConfig.getOffset(SkeletonConfigOffsets.NECK);
-			case CHEST:
-				return skeletonConfig.getOffset(SkeletonConfigOffsets.CHEST);
-			case WAIST:
-				return -skeletonConfig.getOffset(SkeletonConfigOffsets.CHEST)
-					+ skeletonConfig.getOffset(SkeletonConfigOffsets.TORSO)
-					- skeletonConfig.getOffset(SkeletonConfigOffsets.WAIST);
-			case HIP:
-				return skeletonConfig.getOffset(SkeletonConfigOffsets.WAIST);
-			case LEFT_HIP:
-			case RIGHT_HIP:
-				return skeletonConfig.getOffset(SkeletonConfigOffsets.HIPS_WIDTH) / 2f;
-			case LEFT_UPPER_LEG:
-			case RIGHT_UPPER_LEG:
-				return skeletonConfig.getOffset(SkeletonConfigOffsets.LEGS_LENGTH)
-					- skeletonConfig.getOffset(SkeletonConfigOffsets.KNEE_HEIGHT);
-			case LEFT_LOWER_LEG:
-			case RIGHT_LOWER_LEG:
-				return skeletonConfig.getOffset(SkeletonConfigOffsets.KNEE_HEIGHT);
-		}
+		return switch (bone) {
+			case HEAD -> skeletonConfig.getOffset(SkeletonConfigOffsets.HEAD);
+			case NECK -> skeletonConfig.getOffset(SkeletonConfigOffsets.NECK);
+			case CHEST -> skeletonConfig.getOffset(SkeletonConfigOffsets.CHEST);
+			case WAIST -> -skeletonConfig.getOffset(SkeletonConfigOffsets.CHEST)
+				+ skeletonConfig.getOffset(SkeletonConfigOffsets.TORSO)
+				- skeletonConfig.getOffset(SkeletonConfigOffsets.WAIST);
+			case HIP -> skeletonConfig.getOffset(SkeletonConfigOffsets.WAIST);
+			case LEFT_HIP, RIGHT_HIP -> skeletonConfig.getOffset(SkeletonConfigOffsets.HIPS_WIDTH)
+				/ 2f;
+			case LEFT_UPPER_LEG, RIGHT_UPPER_LEG -> skeletonConfig
+				.getOffset(SkeletonConfigOffsets.LEGS_LENGTH)
+				- skeletonConfig.getOffset(SkeletonConfigOffsets.KNEE_HEIGHT);
+			case LEFT_LOWER_LEG, RIGHT_LOWER_LEG -> skeletonConfig
+				.getOffset(SkeletonConfigOffsets.KNEE_HEIGHT);
+			default -> -1f;
+		};
 
-		return -1f;
 	}
 
 	public void reloadConfigValues() {
@@ -176,20 +168,13 @@ public class AutoBone {
 		}
 
 		switch (node) {
-			case LEFT_HIP:
-			case RIGHT_HIP:
-				node = rightSide ? BoneType.RIGHT_HIP : BoneType.LEFT_HIP;
-				break;
-
-			case LEFT_UPPER_LEG:
-			case RIGHT_UPPER_LEG:
-				node = rightSide ? BoneType.RIGHT_UPPER_LEG : BoneType.LEFT_UPPER_LEG;
-				break;
-
-			case LEFT_LOWER_LEG:
-			case RIGHT_LOWER_LEG:
-				node = rightSide ? BoneType.RIGHT_LOWER_LEG : BoneType.LEFT_LOWER_LEG;
-				break;
+			case LEFT_HIP, RIGHT_HIP -> node = rightSide ? BoneType.RIGHT_HIP : BoneType.LEFT_HIP;
+			case LEFT_UPPER_LEG, RIGHT_UPPER_LEG -> node = rightSide
+				? BoneType.RIGHT_UPPER_LEG
+				: BoneType.LEFT_UPPER_LEG;
+			case LEFT_LOWER_LEG, RIGHT_LOWER_LEG -> node = rightSide
+				? BoneType.RIGHT_LOWER_LEG
+				: BoneType.LEFT_LOWER_LEG;
 		}
 
 		TransformNode relevantTransform = skeleton.getTailNodeOfBone(node);
@@ -479,7 +464,7 @@ public class AutoBone {
 			null
 		);
 
-		EnumMap<BoneType, Float> intermediateOffsets = new EnumMap<BoneType, Float>(
+		EnumMap<BoneType, Float> intermediateOffsets = new EnumMap<>(
 			offsets
 		);
 
@@ -783,7 +768,10 @@ public class AutoBone {
 				configInfo.append(", ");
 			}
 
-			configInfo.append(key.toString() + ": " + StringUtils.prettyNumber(value * 100f, 2));
+			configInfo
+				.append(key.toString())
+				.append(": ")
+				.append(StringUtils.prettyNumber(value * 100f, 2));
 		});
 
 		return configInfo.toString();
@@ -833,7 +821,7 @@ public class AutoBone {
 	}
 
 	public List<Pair<String, PoseFrames>> loadRecordings() {
-		List<Pair<String, PoseFrames>> recordings = new FastList<Pair<String, PoseFrames>>();
+		List<Pair<String, PoseFrames>> recordings = new FastList<>();
 		if (loadDir.isDirectory()) {
 			File[] files = loadDir.listFiles();
 			if (files != null) {

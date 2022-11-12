@@ -13,6 +13,7 @@ import io.eiren.util.collections.FastList;
 
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 
 
 public class HumanSkeleton extends Skeleton implements SkeletonConfigCallback {
@@ -165,11 +166,7 @@ public class HumanSkeleton extends Skeleton implements SkeletonConfigCallback {
 	) {
 		this(computedTrackers);
 
-		if (trackers != null) {
-			setTrackersFromList(trackers);
-		} else {
-			setTrackersFromList(new FastList<Tracker>(0));
-		}
+		setTrackersFromList(Objects.requireNonNullElseGet(trackers, () -> new FastList<>(0)));
 	}
 
 	public HumanSkeleton(
@@ -621,38 +618,17 @@ public class HumanSkeleton extends Skeleton implements SkeletonConfigCallback {
 
 	public void setComputedTracker(ComputedHumanPoseTracker tracker) {
 		switch (tracker.getTrackerRole()) {
-			case CHEST:
-				computedChestTracker = tracker;
-				break;
-			case WAIST:
-				computedWaistTracker = tracker;
-				break;
-			case LEFT_KNEE:
-				computedLeftKneeTracker = tracker;
-				break;
-			case LEFT_FOOT:
-				computedLeftFootTracker = tracker;
-				break;
-			case RIGHT_KNEE:
-				computedRightKneeTracker = tracker;
-				break;
-			case RIGHT_FOOT:
-				computedRightFootTracker = tracker;
-				break;
-			case LEFT_ELBOW:
-				computedLeftElbowTracker = tracker;
-				break;
-			case RIGHT_ELBOW:
-				computedRightElbowTracker = tracker;
-				break;
-			case LEFT_HAND:
-				computedLeftHandTracker = tracker;
-				break;
-			case RIGHT_HAND:
-				computedRightHandTracker = tracker;
-				break;
-			default:
-				break;
+			case CHEST -> computedChestTracker = tracker;
+			case WAIST -> computedWaistTracker = tracker;
+			case LEFT_KNEE -> computedLeftKneeTracker = tracker;
+			case LEFT_FOOT -> computedLeftFootTracker = tracker;
+			case RIGHT_KNEE -> computedRightKneeTracker = tracker;
+			case RIGHT_FOOT -> computedRightFootTracker = tracker;
+			case LEFT_ELBOW -> computedLeftElbowTracker = tracker;
+			case RIGHT_ELBOW -> computedRightElbowTracker = tracker;
+			case LEFT_HAND -> computedLeftHandTracker = tracker;
+			case RIGHT_HAND -> computedRightHandTracker = tracker;
+			default -> {}
 		}
 	}
 
@@ -1334,27 +1310,17 @@ public class HumanSkeleton extends Skeleton implements SkeletonConfigCallback {
 
 		// Cache the values of these configs
 		switch (configToggle) {
-			case EXTENDED_SPINE_MODEL:
-				extendedSpineModel = newValue;
-				break;
-			case EXTENDED_PELVIS_MODEL:
-				extendedPelvisModel = newValue;
-				break;
-			case EXTENDED_KNEE_MODEL:
-				extendedKneeModel = newValue;
-				break;
-			case FORCE_ARMS_FROM_HMD:
+			case EXTENDED_SPINE_MODEL -> extendedSpineModel = newValue;
+			case EXTENDED_PELVIS_MODEL -> extendedPelvisModel = newValue;
+			case EXTENDED_KNEE_MODEL -> extendedKneeModel = newValue;
+			case FORCE_ARMS_FROM_HMD -> {
 				forceArmsFromHMD = newValue;
 
 				// Rebuilds the arm skeleton nodes attachments
 				assembleSkeletonArms(true);
-				break;
-			case SKATING_CORRECTION:
-				legTweaks.setSkatingReductionEnabled(newValue);
-				break;
-			case FLOOR_CLIP:
-				legTweaks.setFloorclipEnabled(newValue);
-				break;
+			}
+			case SKATING_CORRECTION -> legTweaks.setSkatingReductionEnabled(newValue);
+			case FLOOR_CLIP -> legTweaks.setFloorclipEnabled(newValue);
 		}
 	}
 
@@ -1366,24 +1332,12 @@ public class HumanSkeleton extends Skeleton implements SkeletonConfigCallback {
 
 		// Cache the values of these configs
 		switch (configValue) {
-			case WAIST_FROM_CHEST_HIP_AVERAGING:
-				waistFromChestHipAveraging = newValue;
-				break;
-			case WAIST_FROM_CHEST_LEGS_AVERAGING:
-				waistFromChestLegsAveraging = newValue;
-				break;
-			case HIP_FROM_CHEST_LEGS_AVERAGING:
-				hipFromChestLegsAveraging = newValue;
-				break;
-			case HIP_FROM_WAIST_LEGS_AVERAGING:
-				hipFromWaistLegsAveraging = newValue;
-				break;
-			case HIP_LEGS_AVERAGING:
-				hipLegsAveraging = newValue;
-				break;
-			case KNEE_TRACKER_ANKLE_AVERAGING:
-				kneeTrackerAnkleAveraging = newValue;
-				break;
+			case WAIST_FROM_CHEST_HIP_AVERAGING -> waistFromChestHipAveraging = newValue;
+			case WAIST_FROM_CHEST_LEGS_AVERAGING -> waistFromChestLegsAveraging = newValue;
+			case HIP_FROM_CHEST_LEGS_AVERAGING -> hipFromChestLegsAveraging = newValue;
+			case HIP_FROM_WAIST_LEGS_AVERAGING -> hipFromWaistLegsAveraging = newValue;
+			case HIP_LEGS_AVERAGING -> hipLegsAveraging = newValue;
+			case KNEE_TRACKER_ANKLE_AVERAGING -> kneeTrackerAnkleAveraging = newValue;
 		}
 	}
 
@@ -1662,13 +1616,10 @@ public class HumanSkeleton extends Skeleton implements SkeletonConfigCallback {
 		Vector3f vec;
 		float height;
 		switch (config) {
-			case HEAD:
-				skeletonConfig.setOffset(SkeletonConfigOffsets.HEAD, null);
-				break;
-			case NECK:
-				skeletonConfig.setOffset(SkeletonConfigOffsets.NECK, null);
-				break;
-			case TORSO: // Distance from shoulders to hip (full torso length)
+			case HEAD -> skeletonConfig.setOffset(SkeletonConfigOffsets.HEAD, null);
+			case NECK -> skeletonConfig.setOffset(SkeletonConfigOffsets.NECK, null);
+			case TORSO -> { // Distance from shoulders to hip (full torso
+							// length)
 				vec = new Vector3f();
 				hmdTracker.getPosition(vec);
 				height = vec.y;
@@ -1684,34 +1635,23 @@ public class HumanSkeleton extends Skeleton implements SkeletonConfigCallback {
 				{
 					skeletonConfig.setOffset(SkeletonConfigOffsets.TORSO, null);
 				}
-				break;
-			case CHEST: // Chest is 57% of the upper body by default (shoulders
-				// to chest)
+			}
+			case CHEST -> // Chest is 57% of the upper body by default
+				// (shoulders to chest)
 				skeletonConfig
 					.setOffset(
 						SkeletonConfigOffsets.CHEST,
 						skeletonConfig.getOffset(SkeletonConfigOffsets.TORSO) * 0.57f
 					);
-				break;
-			case WAIST: // Waist length is from hip to waist
+			case WAIST -> // Waist length is from hip to waist
 				skeletonConfig.setOffset(SkeletonConfigOffsets.WAIST, null);
-				break;
-			case HIP_OFFSET:
-				skeletonConfig.setOffset(SkeletonConfigOffsets.HIP_OFFSET, null);
-				break;
-			case HIPS_WIDTH:
-				skeletonConfig.setOffset(SkeletonConfigOffsets.HIPS_WIDTH, null);
-				break;
-			case FOOT_LENGTH:
-				skeletonConfig.setOffset(SkeletonConfigOffsets.FOOT_LENGTH, null);
-				break;
-			case FOOT_SHIFT:
-				skeletonConfig.setOffset(SkeletonConfigOffsets.FOOT_SHIFT, null);
-				break;
-			case SKELETON_OFFSET:
-				skeletonConfig.setOffset(SkeletonConfigOffsets.SKELETON_OFFSET, null);
-				break;
-			case LEGS_LENGTH: // Set legs length to be 5cm above floor level
+			case HIP_OFFSET -> skeletonConfig.setOffset(SkeletonConfigOffsets.HIP_OFFSET, null);
+			case HIPS_WIDTH -> skeletonConfig.setOffset(SkeletonConfigOffsets.HIPS_WIDTH, null);
+			case FOOT_LENGTH -> skeletonConfig.setOffset(SkeletonConfigOffsets.FOOT_LENGTH, null);
+			case FOOT_SHIFT -> skeletonConfig.setOffset(SkeletonConfigOffsets.FOOT_SHIFT, null);
+			case SKELETON_OFFSET -> skeletonConfig
+				.setOffset(SkeletonConfigOffsets.SKELETON_OFFSET, null);
+			case LEGS_LENGTH -> { // Set legs length to be 5cm above floor level
 				vec = new Vector3f();
 				hmdTracker.getPosition(vec);
 				height = vec.y;
@@ -1730,35 +1670,26 @@ public class HumanSkeleton extends Skeleton implements SkeletonConfigCallback {
 					skeletonConfig.setOffset(SkeletonConfigOffsets.LEGS_LENGTH, null);
 				}
 				resetSkeletonConfig(SkeletonConfigOffsets.KNEE_HEIGHT);
-				break;
-			case KNEE_HEIGHT: // Knees are at 55% of the legs by default
+			}
+			case KNEE_HEIGHT -> // Knees are at 55% of the legs by default
 				skeletonConfig
 					.setOffset(
 						SkeletonConfigOffsets.KNEE_HEIGHT,
 						skeletonConfig.getOffset(SkeletonConfigOffsets.LEGS_LENGTH) * 0.55f
 					);
-				break;
-			case CONTROLLER_DISTANCE_Z:
-				skeletonConfig.setOffset(SkeletonConfigOffsets.CONTROLLER_DISTANCE_Z, null);
-				break;
-			case CONTROLLER_DISTANCE_Y:
-				skeletonConfig.setOffset(SkeletonConfigOffsets.CONTROLLER_DISTANCE_Y, null);
-				break;
-			case LOWER_ARM_LENGTH:
-				skeletonConfig.setOffset(SkeletonConfigOffsets.LOWER_ARM_LENGTH, null);
-				break;
-			case ELBOW_OFFSET:
-				skeletonConfig.setOffset(SkeletonConfigOffsets.ELBOW_OFFSET, null);
-				break;
-			case SHOULDERS_DISTANCE:
-				skeletonConfig.setOffset(SkeletonConfigOffsets.SHOULDERS_DISTANCE, null);
-				break;
-			case SHOULDERS_WIDTH:
-				skeletonConfig.setOffset(SkeletonConfigOffsets.SHOULDERS_WIDTH, null);
-				break;
-			case UPPER_ARM_LENGTH:
-				skeletonConfig.setOffset(SkeletonConfigOffsets.UPPER_ARM_LENGTH, null);
-				break;
+			case CONTROLLER_DISTANCE_Z -> skeletonConfig
+				.setOffset(SkeletonConfigOffsets.CONTROLLER_DISTANCE_Z, null);
+			case CONTROLLER_DISTANCE_Y -> skeletonConfig
+				.setOffset(SkeletonConfigOffsets.CONTROLLER_DISTANCE_Y, null);
+			case LOWER_ARM_LENGTH -> skeletonConfig
+				.setOffset(SkeletonConfigOffsets.LOWER_ARM_LENGTH, null);
+			case ELBOW_OFFSET -> skeletonConfig.setOffset(SkeletonConfigOffsets.ELBOW_OFFSET, null);
+			case SHOULDERS_DISTANCE -> skeletonConfig
+				.setOffset(SkeletonConfigOffsets.SHOULDERS_DISTANCE, null);
+			case SHOULDERS_WIDTH -> skeletonConfig
+				.setOffset(SkeletonConfigOffsets.SHOULDERS_WIDTH, null);
+			case UPPER_ARM_LENGTH -> skeletonConfig
+				.setOffset(SkeletonConfigOffsets.UPPER_ARM_LENGTH, null);
 		}
 	}
 

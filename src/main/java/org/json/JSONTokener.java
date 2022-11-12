@@ -241,50 +241,30 @@ public class JSONTokener {
 	 */
 	public String nextString(char quote) throws JSONException {
 		char c;
-		StringBuffer sb = new StringBuffer();
+		StringBuilder sb = new StringBuilder();
 		for (;;) {
 			c = this.next();
 			switch (c) {
-				case 0:
-				case '\n':
-				case '\r':
-					throw this.syntaxError("Unterminated string");
-				case '\\':
+				case 0, '\n', '\r' -> throw this.syntaxError("Unterminated string");
+				case '\\' -> {
 					c = this.next();
 					switch (c) {
-						case 'b':
-							sb.append('\b');
-							break;
-						case 't':
-							sb.append('\t');
-							break;
-						case 'n':
-							sb.append('\n');
-							break;
-						case 'f':
-							sb.append('\f');
-							break;
-						case 'r':
-							sb.append('\r');
-							break;
-						case 'u':
-							sb.append((char) Integer.parseInt(this.next(4), 16));
-							break;
-						case '"':
-						case '\'':
-						case '\\':
-						case '/':
-							sb.append(c);
-							break;
-						default:
-							throw this.syntaxError("Illegal escape.");
+						case 'b' -> sb.append('\b');
+						case 't' -> sb.append('\t');
+						case 'n' -> sb.append('\n');
+						case 'f' -> sb.append('\f');
+						case 'r' -> sb.append('\r');
+						case 'u' -> sb.append((char) Integer.parseInt(this.next(4), 16));
+						case '"', '\'', '\\', '/' -> sb.append(c);
+						default -> throw this.syntaxError("Illegal escape.");
 					}
-					break;
-				default:
+				}
+				default -> {
 					if (c == quote) {
 						return sb.toString();
 					}
 					sb.append(c);
+				}
 			}
 		}
 	}
@@ -297,7 +277,7 @@ public class JSONTokener {
 	 * @return A string.
 	 */
 	public String nextTo(char delimiter) throws JSONException {
-		StringBuffer sb = new StringBuffer();
+		StringBuilder sb = new StringBuilder();
 		for (;;) {
 			char c = this.next();
 			if (c == delimiter || c == 0 || c == '\n' || c == '\r') {
@@ -319,7 +299,7 @@ public class JSONTokener {
 	 */
 	public String nextTo(String delimiters) throws JSONException {
 		char c;
-		StringBuffer sb = new StringBuffer();
+		StringBuilder sb = new StringBuilder();
 		for (;;) {
 			c = this.next();
 			if (delimiters.indexOf(c) >= 0 || c == 0 || c == '\n' || c == '\r') {
@@ -365,7 +345,7 @@ public class JSONTokener {
 		 * formatting character.
 		 */
 
-		StringBuffer sb = new StringBuffer();
+		StringBuilder sb = new StringBuilder();
 		while (c >= ' ' && ",:]}/\\\"[{;=#".indexOf(c) < 0) {
 			sb.append(c);
 			c = this.next();
@@ -419,7 +399,7 @@ public class JSONTokener {
 	 * @return A JSONException object, suitable for throwing
 	 */
 	public JSONException syntaxError(String message) {
-		return new JSONException(message + this.toString());
+		return new JSONException(message + this);
 	}
 
 	/**

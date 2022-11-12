@@ -30,7 +30,7 @@ public class FileLogFormatter extends Formatter {
 		else if (localLevel == Level.SEVERE)
 			sb.append(" [SEVERE] ");
 		else
-			sb.append(" [" + localLevel.getLocalizedName() + "] ");
+			sb.append(" [").append(localLevel.getLocalizedName()).append("] ");
 
 		sb.append(record.getMessage());
 		sb.append('\n');
@@ -39,18 +39,18 @@ public class FileLogFormatter extends Formatter {
 		if (localThrowable != null) {
 			StringWriter localStringWriter = new StringWriter();
 			localThrowable.printStackTrace(new PrintWriter(localStringWriter));
-			sb.append(localStringWriter.toString());
+			sb.append(localStringWriter);
 		}
 
 		String message = sb.toString();
-		Object parameters[] = record.getParameters();
+		Object[] parameters = record.getParameters();
 		if (parameters == null || parameters.length == 0)
 			return message;
 		if (
-			message.indexOf("{0") >= 0
-				|| message.indexOf("{1") >= 0
-				|| message.indexOf("{2") >= 0
-				|| message.indexOf("{3") >= 0
+			message.contains("{0")
+				|| message.contains("{1")
+				|| message.contains("{2")
+				|| message.contains("{3")
 		)
 			return java.text.MessageFormat.format(message, parameters);
 		return message;

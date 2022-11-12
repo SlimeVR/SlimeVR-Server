@@ -301,7 +301,7 @@ public class TrackersUDPServer extends Thread {
 					if (packet != null) {
 						processPacket(received, packet, connection);
 					}
-				} catch (SocketTimeoutException e) {} catch (Exception e) {
+				} catch (SocketTimeoutException ignored) {} catch (Exception e) {
 					LogManager
 						.warning(
 							"[TrackerServer] Error parsing packet " + packetToString(received),
@@ -317,9 +317,8 @@ public class TrackersUDPServer extends Thread {
 							parser.write(bb, conn, new UDPPacket1Heartbeat());
 							socket.send(new DatagramPacket(rcvBuffer, bb.position(), conn.address));
 							if (conn.lastPacket + 1000 < System.currentTimeMillis()) {
-								Iterator<Tracker> iterator = conn.getTrackers().iterator();
-								while (iterator.hasNext()) {
-									IMUTracker tracker = (IMUTracker) iterator.next();
+								for (Tracker value : conn.getTrackers()) {
+									IMUTracker tracker = (IMUTracker) value;
 									if (tracker.getStatus() == TrackerStatus.OK)
 										tracker.setStatus(TrackerStatus.DISCONNECTED);
 								}
@@ -329,9 +328,8 @@ public class TrackersUDPServer extends Thread {
 								}
 							} else {
 								conn.timedOut = false;
-								Iterator<Tracker> iterator = conn.getTrackers().iterator();
-								while (iterator.hasNext()) {
-									IMUTracker tracker = (IMUTracker) iterator.next();
+								for (Tracker value : conn.getTrackers()) {
+									IMUTracker tracker = (IMUTracker) value;
 									if (tracker.getStatus() == TrackerStatus.DISCONNECTED)
 										tracker.setStatus(TrackerStatus.OK);
 								}
@@ -405,16 +403,16 @@ public class TrackersUDPServer extends Thread {
 				offset.mult(buf, buf);
 
 				switch (rotationData.dataType) {
-					case UDPPacket17RotationData.DATA_TYPE_NORMAL:
+					case UDPPacket17RotationData.DATA_TYPE_NORMAL -> {
 						tracker.rotQuaternion.set(buf);
 						tracker.calibrationStatus = rotationData.calibrationInfo;
 						tracker.dataTick();
-						break;
-					case UDPPacket17RotationData.DATA_TYPE_CORRECTION:
+					}
+					case UDPPacket17RotationData.DATA_TYPE_CORRECTION -> {
 						tracker.rotMagQuaternion.set(buf);
 						tracker.magCalibrationStatus = rotationData.calibrationInfo;
 						tracker.hasNewCorrectionData = true;
-						break;
+					}
 				}
 				break;
 			case UDPProtocolParser.PACKET_MAGNETOMETER_ACCURACY:
@@ -488,10 +486,9 @@ public class TrackersUDPServer extends Thread {
 				UDPPacket12BatteryLevel battery = (UDPPacket12BatteryLevel) packet;
 
 				if (connection.getTrackers().size() > 0) {
-					Iterator<Tracker> iterator = connection.getTrackers().iterator();
 
-					while (iterator.hasNext()) {
-						IMUTracker tr = (IMUTracker) iterator.next();
+					for (Tracker value : connection.getTrackers()) {
+						IMUTracker tr = (IMUTracker) value;
 						tr.setBatteryVoltage(battery.voltage);
 						tr.setBatteryLevel(battery.level * 100);
 					}
@@ -554,9 +551,8 @@ public class TrackersUDPServer extends Thread {
 				UDPPacket19SignalStrength signalStrength = (UDPPacket19SignalStrength) packet;
 
 				if (connection.getTrackers().size() > 0) {
-					Iterator<Tracker> iterator = connection.getTrackers().iterator();
-					while (iterator.hasNext()) {
-						IMUTracker tr = (IMUTracker) iterator.next();
+					for (Tracker value : connection.getTrackers()) {
+						IMUTracker tr = (IMUTracker) value;
 						tr.setSignalStrength(signalStrength.signalStrength);
 					}
 				}

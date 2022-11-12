@@ -39,7 +39,7 @@ public class DefaultGLog extends Thread implements IGLog {
 		}
 	}
 
-	private final ArrayBlockingQueue<LogEntry> queue = new ArrayBlockingQueue<LogEntry>(50000);
+	private final ArrayBlockingQueue<LogEntry> queue = new ArrayBlockingQueue<>(50000);
 	private volatile LoggerRecorder recorder;
 
 	@Override
@@ -95,11 +95,11 @@ public class DefaultGLog extends Thread implements IGLog {
 	private void add(LogEntry entry) {
 		try {
 			queue.put(entry);
-		} catch (InterruptedException e) {}
+		} catch (InterruptedException ignored) {}
 		try {
 			if (recorder != null)
 				recorder.addEntry(entry);
-		} catch (NullPointerException e) {}
+		} catch (NullPointerException ignored) {}
 	}
 
 	@Override
@@ -131,7 +131,7 @@ public class DefaultGLog extends Thread implements IGLog {
 					logger.log(log.level, log.message, log.t);
 				else
 					logger.log(log.level, log.message);
-			} catch (InterruptedException e) {}
+			} catch (InterruptedException ignored) {}
 		}
 	}
 }

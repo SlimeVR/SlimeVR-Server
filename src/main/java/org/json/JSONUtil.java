@@ -11,8 +11,7 @@ public class JSONUtil {
 
 	public static JSONObject o(JSONEntry... entries) {
 		JSONObject object = new JSONObject();
-		for (int i = 0; i < entries.length; ++i) {
-			JSONEntry e = entries[i];
+		for (JSONEntry e : entries) {
 			object.put(e.getKey(), e.getValue());
 		}
 		return object;

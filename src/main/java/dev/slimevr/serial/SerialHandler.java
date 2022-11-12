@@ -106,7 +106,7 @@ public class SerialHandler implements SerialPortMessageListener {
 		OutputStream os = trackerPort.getOutputStream();
 		OutputStreamWriter writer = new OutputStreamWriter(os);
 		try {
-			writer.append("SET WIFI \"" + ssid + "\" \"" + passwd + "\"");
+			writer.append("SET WIFI \"").append(ssid).append("\" \"").append(passwd).append("\"\n");
 			writer.flush();
 			this.addLog("-> SET WIFI \"" + ssid + "\" \"" + passwd.replaceAll(".", "*") + "\"\n");
 		} catch (IOException e) {

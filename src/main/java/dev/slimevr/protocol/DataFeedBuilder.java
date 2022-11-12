@@ -94,8 +94,7 @@ public class DataFeedBuilder {
 		// TODO need support: TrackerInfo.addImuType(fbb, tracker.im);
 		// TODO need support: TrackerInfo.addPollRate(fbb, tracker.);
 
-		if (tracker instanceof IMUTracker) {
-			IMUTracker imuTracker = (IMUTracker) tracker;
+		if (tracker instanceof IMUTracker imuTracker) {
 			if (imuTracker.getMountingRotation() != null) {
 				Quaternion quaternion = imuTracker.getMountingRotation();
 				TrackerInfo
@@ -137,9 +136,8 @@ public class DataFeedBuilder {
 	}
 
 	public static int createTrackerTemperature(FlatBufferBuilder fbb, Tracker tracker) {
-		if (!(tracker instanceof IMUTracker))
+		if (!(tracker instanceof IMUTracker imuTracker))
 			return 0;
-		IMUTracker imuTracker = (IMUTracker) tracker;
 		return Temperature.createTemperature(fbb, imuTracker.temperature);
 	}
 
@@ -159,9 +157,9 @@ public class DataFeedBuilder {
 			TrackerData.addInfo(fbb, trackerInfosOffset);
 		if (mask.getStatus())
 			TrackerData.addStatus(fbb, tracker.getStatus().id + 1);
-		if (mask.getPosition())
+		if (mask.getPosition() && tracker.hasPosition())
 			TrackerData.addPosition(fbb, DataFeedBuilder.createTrackerPosition(fbb, tracker));
-		if (mask.getRotation())
+		if (mask.getRotation() && tracker.hasRotation())
 			TrackerData.addRotation(fbb, DataFeedBuilder.createTrackerRotation(fbb, tracker));
 		if (mask.getTemp()) {
 			int trackerTemperatureOffset = DataFeedBuilder.createTrackerTemperature(fbb, tracker);
@@ -182,15 +180,15 @@ public class DataFeedBuilder {
 
 		List<Integer> trackersOffsets = new ArrayList<>();
 
-		device.getTrackers().forEach((value) -> {
-			trackersOffsets
-				.add(DataFeedBuilder.createTrackerData(fbb, mask.getTrackerData(), value));
-		});
+		device
+			.getTrackers()
+			.forEach(
+				(value) -> trackersOffsets
+					.add(DataFeedBuilder.createTrackerData(fbb, mask.getTrackerData(), value))
+			);
 
 		DeviceData.startTrackersVector(fbb, trackersOffsets.size());
-		trackersOffsets.forEach(offset -> {
-			DeviceData.addTrackers(fbb, offset);
-		});
+		trackersOffsets.forEach(offset -> DeviceData.addTrackers(fbb, offset));
 		return fbb.endVector();
 	}
 
@@ -217,14 +215,12 @@ public class DataFeedBuilder {
 		if (tracker instanceof TrackerWithTPS)
 			HardwareStatus.addTps(fbb, (int) ((TrackerWithTPS) tracker).getTPS());
 
-		if (tracker instanceof TrackerWithBattery) {
-			TrackerWithBattery twb = (TrackerWithBattery) tracker;
+		if (tracker instanceof TrackerWithBattery twb) {
 			HardwareStatus.addBatteryVoltage(fbb, twb.getBatteryVoltage());
 			HardwareStatus.addBatteryPctEstimate(fbb, (int) twb.getBatteryLevel());
 		}
 
-		if (tracker instanceof TrackerWithWireless) {
-			TrackerWithWireless tww = (TrackerWithWireless) tracker;
+		if (tracker instanceof TrackerWithWireless tww) {
 			HardwareStatus.addPing(fbb, tww.getPing());
 			HardwareStatus.addRssi(fbb, (short) tww.getSignalStrength());
 		}
@@ -257,14 +253,14 @@ public class DataFeedBuilder {
 
 		List<Integer> trackerOffsets = new ArrayList<>();
 
-		trackers.forEach((tracker) -> {
-			trackerOffsets.add(DataFeedBuilder.createTrackerData(fbb, trackerDataMaskT, tracker));
-		});
+		trackers
+			.forEach(
+				(tracker) -> trackerOffsets
+					.add(DataFeedBuilder.createTrackerData(fbb, trackerDataMaskT, tracker))
+			);
 
 		DataFeedUpdate.startSyntheticTrackersVector(fbb, trackerOffsets.size());
-		trackerOffsets.forEach((tracker -> {
-			DataFeedUpdate.addSyntheticTrackers(fbb, tracker);
-		}));
+		trackerOffsets.forEach((tracker -> DataFeedUpdate.addSyntheticTrackers(fbb, tracker)));
 		return fbb.endVector();
 	}
 

@@ -30,7 +30,7 @@ public final class PoseFrames implements Iterable<TrackerFrame[]> {
 	 * @see {@link #PoseFrames(FastList)}
 	 */
 	public PoseFrames(int initialCapacity) {
-		this.trackers = new FastList<PoseFrameTracker>(initialCapacity);
+		this.trackers = new FastList<>(initialCapacity);
 	}
 
 	/**
