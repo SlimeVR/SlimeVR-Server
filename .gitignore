@@ -1,33 +1,12 @@
 # Ignore Gradle project-specific cache directory
 .gradle
 
-# Ignore Gradle build output directory
-build
-
-/bin/
+# Syncthing ignore file
+.stignore
 
 # Ignore .idea
 .idea
 
-# Syncthing ignore file
-.stignore
-
-MagnetoLib.dll
-vrconfig.yml
-
-# BVH
-BVH Recordings
-
-# AutoBone
-Recordings
-AutoBone Recordings
-Load AutoBone Recordings
-
-# Logs
-*.log.*
-*.log.lck
-*.log
-logs/
 
 # Ignore eclipse stuff
 .project
@@ -36,3 +15,12 @@ logs/
 
 # VSCode stuff
 /.vscode/settings.json
+
+# Ignore eclipse stuff
+.project
+.classpath
+.settings
+
+# Node Stuff
+/node_modules
+.husky
