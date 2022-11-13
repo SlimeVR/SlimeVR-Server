@@ -1,6 +1,14 @@
 name: Build GUI
 
-on: [push, pull_request]
+on: 
+  push:
+    paths:
+      - gui/**
+      - package*.json
+  pull_request:
+    paths:
+      - gui/**
+      - package*.json
 
 jobs:
   build:
@@ -37,4 +45,4 @@ jobs:
           # Artifact name
           name: SlimeVR-GUI
           # A file, directory or wildcard pattern that describes what to upload
-          path: target/release/slimevr-ui.exe
+          path: gui/target/release/slimevr-ui.exe
