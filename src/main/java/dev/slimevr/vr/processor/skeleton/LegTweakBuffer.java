@@ -24,8 +24,6 @@ public class LegTweakBuffer {
 	public static final int ANKLE_ACCEL = 4;
 
 	public static final float NS_CONVERT = 1000000000.0f;
-	private static final Vector3f placeHolderVec = new Vector3f();
-	private static final Quaternion placeHolderQuat = new Quaternion();
 	private static final Vector3f GRAVITY = new Vector3f(0, -9.81f, 0);
 	private static final float GRAVITY_MAGNITUDE = GRAVITY.length();
 	private static final int BUFFER_LEN = 10;
@@ -35,32 +33,32 @@ public class LegTweakBuffer {
 	private int rightLegState = STATE_UNKNOWN;
 
 	// positions and rotations
-	private Vector3f leftFootPosition = placeHolderVec;
-	private Vector3f rightFootPosition = placeHolderVec;
-	private Vector3f leftKneePosition = placeHolderVec;
-	private Vector3f rightKneePosition = placeHolderVec;
-	private Vector3f waistPosition = placeHolderVec;
-	private Quaternion leftFootRotation = placeHolderQuat;
-	private Quaternion rightFootRotation = placeHolderQuat;
+	private Vector3f leftFootPosition = new Vector3f();
+	private Vector3f rightFootPosition = new Vector3f();
+	private Vector3f leftKneePosition = new Vector3f();
+	private Vector3f rightKneePosition = new Vector3f();
+	private Vector3f waistPosition = new Vector3f();
+	private Quaternion leftFootRotation = new Quaternion();
+	private Quaternion rightFootRotation = new Quaternion();
 
-	private Vector3f leftFootPositionCorrected = placeHolderVec;
-	private Vector3f rightFootPositionCorrected = placeHolderVec;
-	private Vector3f leftKneePositionCorrected = placeHolderVec;
-	private Vector3f rightKneePositionCorrected = placeHolderVec;
-	private Vector3f waistPositionCorrected = placeHolderVec;
+	private Vector3f leftFootPositionCorrected = new Vector3f();
+	private Vector3f rightFootPositionCorrected = new Vector3f();
+	private Vector3f leftKneePositionCorrected = new Vector3f();
+	private Vector3f rightKneePositionCorrected = new Vector3f();
+	private Vector3f waistPositionCorrected = new Vector3f();
 
 	// velocities
-	private Vector3f leftFootVelocity = placeHolderVec;
+	private Vector3f leftFootVelocity = new Vector3f();
 	private float leftFootVelocityMagnitude = 0;
-	private Vector3f rightFootVelocity = placeHolderVec;
+	private Vector3f rightFootVelocity = new Vector3f();
 	private float rightFootVelocityMagnitude = 0;
 	private float leftFootAngleDiff = 0;
 	private float rightFootAngleDiff = 0;
 
 	// acceleration
-	private Vector3f leftFootAcceleration = placeHolderVec;
+	private Vector3f leftFootAcceleration = new Vector3f();
 	private float leftFootAccelerationMagnitude = 0;
-	private Vector3f rightFootAcceleration = placeHolderVec;
+	private Vector3f rightFootAcceleration = new Vector3f();
 	private float rightFootAccelerationMagnitude = 0;
 
 	// other data
@@ -70,9 +68,9 @@ public class LegTweakBuffer {
 	private int detectionMode = ANKLE_ACCEL; // detection mode
 	private boolean accelerationAboveThresholdLeft = true;
 	private boolean accelerationAboveThresholdRight = true;
-	private Vector3f centerOfMass = placeHolderVec;
-	private Vector3f centerOfMassVelocity = placeHolderVec;
-	private Vector3f centerOfMassAcceleration = placeHolderVec;
+	private Vector3f centerOfMass = new Vector3f();
+	private Vector3f centerOfMassVelocity = new Vector3f();
+	private Vector3f centerOfMassAcceleration = new Vector3f();
 	private float leftFloorLevel;
 	private float rightFloorLevel;
 
@@ -134,7 +132,7 @@ public class LegTweakBuffer {
 	}
 
 	public void setLeftFootPosition(Vector3f leftFootPosition) {
-		this.leftFootPosition = leftFootPosition.clone();
+		this.leftFootPosition.set(leftFootPosition);
 	}
 
 	public Vector3f getRightFootPosition(Vector3f vec) {
@@ -145,7 +143,7 @@ public class LegTweakBuffer {
 	}
 
 	public void setRightFootPosition(Vector3f rightFootPosition) {
-		this.rightFootPosition = rightFootPosition.clone();
+		this.rightFootPosition.set(rightFootPosition);
 	}
 
 	public Vector3f getLeftKneePosition(Vector3f vec) {
@@ -156,7 +154,7 @@ public class LegTweakBuffer {
 	}
 
 	public void setLeftKneePosition(Vector3f leftKneePosition) {
-		this.leftKneePosition = leftKneePosition.clone();
+		this.leftKneePosition.set(leftKneePosition);
 	}
 
 	public Vector3f getRightKneePosition(Vector3f vec) {
@@ -166,7 +164,7 @@ public class LegTweakBuffer {
 	}
 
 	public void setRightKneePosition(Vector3f rightKneePosition) {
-		this.rightKneePosition = rightKneePosition.clone();
+		this.rightKneePosition.set(rightKneePosition);
 	}
 
 	public Vector3f getWaistPosition(Vector3f vec) {
@@ -177,7 +175,7 @@ public class LegTweakBuffer {
 	}
 
 	public void setWaistPosition(Vector3f waistPosition) {
-		this.waistPosition = waistPosition.clone();
+		this.waistPosition.set(waistPosition);
 	}
 
 	public Quaternion getLeftFootRotation(Quaternion quat) {
@@ -188,7 +186,7 @@ public class LegTweakBuffer {
 	}
 
 	public void setLeftFootRotation(Quaternion leftFootRotation) {
-		this.leftFootRotation = leftFootRotation.clone();
+		this.leftFootRotation.set(leftFootRotation);
 	}
 
 	public Quaternion getRightFootRotation(Quaternion quat) {
@@ -199,7 +197,7 @@ public class LegTweakBuffer {
 	}
 
 	public void setRightFootRotation(Quaternion rightFootRotation) {
-		this.rightFootRotation = rightFootRotation.clone();
+		this.rightFootRotation.set(rightFootRotation);
 	}
 
 	public Vector3f getLeftFootPositionCorrected(Vector3f vec) {
@@ -210,7 +208,7 @@ public class LegTweakBuffer {
 	}
 
 	public void setLeftFootPositionCorrected(Vector3f leftFootPositionCorrected) {
-		this.leftFootPositionCorrected = leftFootPositionCorrected.clone();
+		this.leftFootPositionCorrected.set(leftFootPositionCorrected);
 	}
 
 	public Vector3f getRightFootPositionCorrected(Vector3f vec) {
@@ -221,7 +219,7 @@ public class LegTweakBuffer {
 	}
 
 	public void setRightFootPositionCorrected(Vector3f rightFootPositionCorrected) {
-		this.rightFootPositionCorrected = rightFootPositionCorrected.clone();
+		this.rightFootPositionCorrected.set(rightFootPositionCorrected);
 	}
 
 	public Vector3f getLeftKneePositionCorrected(Vector3f vec) {
@@ -232,7 +230,7 @@ public class LegTweakBuffer {
 	}
 
 	public void setLeftKneePositionCorrected(Vector3f leftKneePositionCorrected) {
-		this.leftKneePositionCorrected = leftKneePositionCorrected.clone();
+		this.leftKneePositionCorrected.set(leftKneePositionCorrected);
 	}
 
 	public Vector3f getRightKneePositionCorrected(Vector3f vec) {
@@ -243,7 +241,7 @@ public class LegTweakBuffer {
 	}
 
 	public void setRightKneePositionCorrected(Vector3f rightKneePositionCorrected) {
-		this.rightKneePositionCorrected = rightKneePositionCorrected.clone();
+		this.rightKneePositionCorrected.set(rightKneePositionCorrected);
 	}
 
 	public Vector3f getWaistPositionCorrected(Vector3f vec) {
@@ -254,7 +252,7 @@ public class LegTweakBuffer {
 	}
 
 	public void setWaistPositionCorrected(Vector3f waistPositionCorrected) {
-		this.waistPositionCorrected = waistPositionCorrected.clone();
+		this.waistPositionCorrected.set(waistPositionCorrected);
 	}
 
 	public Vector3f getLeftFootVelocity(Vector3f vec) {
@@ -315,11 +313,11 @@ public class LegTweakBuffer {
 	}
 
 	public void setLeftFootAcceleration(Vector3f leftFootAcceleration) {
-		this.leftFootAcceleration = leftFootAcceleration.clone();
+		this.leftFootAcceleration.set(leftFootAcceleration);
 	}
 
 	public void setRightFootAcceleration(Vector3f rightFootAcceleration) {
-		this.rightFootAcceleration = rightFootAcceleration.clone();
+		this.rightFootAcceleration.set(rightFootAcceleration);
 	}
 
 	public Vector3f getLeftFootAcceleration(Vector3f vec) {

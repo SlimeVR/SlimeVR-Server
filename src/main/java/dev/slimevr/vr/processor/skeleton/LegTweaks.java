@@ -5,6 +5,7 @@ import com.jme3.math.Vector3f;
 
 import dev.slimevr.vr.processor.TransformNode;
 
+
 public class LegTweaks {
 	// state variables
 	private float floorLevel;
@@ -792,7 +793,7 @@ public class LegTweaks {
 		}
 
 		// check if arm data is available
-		boolean armsAvaliable = skeleton.hasLeftArmTracker
+		boolean armsAvailable = skeleton.hasLeftArmTracker
 			&& skeleton.hasRightArmTracker;
 
 		Vector3f centerOfMass = new Vector3f();
@@ -814,7 +815,7 @@ public class LegTweaks {
 		centerOfMass = centerOfMass.add(leftThigh.mult(THIGH_MASS));
 		centerOfMass = centerOfMass.add(rightThigh.mult(THIGH_MASS));
 
-		if (armsAvaliable) {
+		if (armsAvailable) {
 			Vector3f leftUpperArm = getCenterOfJoint(
 				skeleton.leftElbowNode,
 				skeleton.leftShoulderTailNode
