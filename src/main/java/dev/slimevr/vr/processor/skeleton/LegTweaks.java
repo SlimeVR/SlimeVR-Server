@@ -5,7 +5,6 @@ import com.jme3.math.Vector3f;
 
 import dev.slimevr.vr.processor.TransformNode;
 
-
 public class LegTweaks {
 	// state variables
 	private float floorLevel;
@@ -364,7 +363,7 @@ public class LegTweaks {
 		if (skatingCorrectionEnabled)
 			correctSkating();
 
-		// currently skuffed
+		// currently scuffed
 		// if (skatingCorrectionEnabled && floorclipEnabled)
 		// correctFloat();
 
@@ -788,7 +787,6 @@ public class LegTweaks {
 				|| skeleton.rightKneeNode == null
 				|| skeleton.leftHipNode == null
 				|| skeleton.rightHipNode == null
-
 		) {
 			return null;
 		}
@@ -815,6 +813,7 @@ public class LegTweaks {
 		centerOfMass = centerOfMass.add(rightCalf.mult(CALF_MASS));
 		centerOfMass = centerOfMass.add(leftThigh.mult(THIGH_MASS));
 		centerOfMass = centerOfMass.add(rightThigh.mult(THIGH_MASS));
+
 		if (armsAvaliable) {
 			Vector3f leftUpperArm = getCenterOfJoint(
 				skeleton.leftElbowNode,
@@ -864,6 +863,7 @@ public class LegTweaks {
 	private float getConstantCorrectionQuantityRight() {
 		if (rightFramesUnlocked >= CONTINUOUS_CORRECTION_WARMUP)
 			return CONTINUOUS_CORRECTION_DIST;
+
 		return CONTINUOUS_CORRECTION_DIST
 			* ((float) rightFramesUnlocked / CONTINUOUS_CORRECTION_WARMUP);
 	}
