@@ -224,7 +224,7 @@ public class TrackersUDPServer extends Thread {
 					+ " status: "
 					+ sensorStatus
 			);
-		IMUTracker imu = connection.getTracker(trackerId);
+		IMUTracker imu = connection.setupTrackerByRemoteId(trackerId);
 		if (imu == null) {
 			imu = new IMUTracker(
 				connection,
@@ -386,7 +386,7 @@ public class TrackersUDPServer extends Thread {
 				UDPPacket1Rotation rotationPacket = (UDPPacket1Rotation) packet;
 				buf.set(rotationPacket.rotation);
 				offset.mult(buf, buf);
-				tracker = connection.getTracker(rotationPacket.getSensorId());
+				tracker = connection.getTrackerByRemoteId(rotationPacket.getSensorId());
 				if (tracker == null)
 					break;
 				tracker.rotQuaternion.set(buf);
@@ -396,7 +396,7 @@ public class TrackersUDPServer extends Thread {
 				if (connection == null)
 					break;
 				UDPPacket17RotationData rotationData = (UDPPacket17RotationData) packet;
-				tracker = connection.getTracker(rotationData.getSensorId());
+				tracker = connection.getTrackerByRemoteId(rotationData.getSensorId());
 				if (tracker == null)
 					break;
 				buf.set(rotationData.rotation);
@@ -419,7 +419,7 @@ public class TrackersUDPServer extends Thread {
 				if (connection == null)
 					break;
 				UDPPacket18MagnetometerAccuracy magAccuracy = (UDPPacket18MagnetometerAccuracy) packet;
-				tracker = connection.getTracker(magAccuracy.getSensorId());
+				tracker = connection.getTrackerByRemoteId(magAccuracy.getSensorId());
 				if (tracker == null)
 					break;
 				tracker.magnetometerAccuracy = magAccuracy.accuracyInfo;
@@ -430,7 +430,7 @@ public class TrackersUDPServer extends Thread {
 					break;
 
 				UDPPacket4Acceleration accelPacket = (UDPPacket4Acceleration) packet;
-				tracker = connection.getTracker(accelPacket.getSensorId());
+				tracker = connection.getTrackerByRemoteId(accelPacket.getSensorId());
 
 				if (tracker == null)
 					break;
@@ -498,7 +498,7 @@ public class TrackersUDPServer extends Thread {
 				if (connection == null)
 					break;
 				UDPPacket13Tap tap = (UDPPacket13Tap) packet;
-				tracker = connection.getTracker(tap.getSensorId());
+				tracker = connection.getTrackerByRemoteId(tap.getSensorId());
 				if (tracker == null)
 					break;
 				LogManager
@@ -520,7 +520,7 @@ public class TrackersUDPServer extends Thread {
 					);
 				if (connection == null)
 					break;
-				tracker = connection.getTracker(error.getSensorId());
+				tracker = connection.getTrackerByRemoteId(error.getSensorId());
 				if (tracker == null)
 					break;
 				tracker.setStatus(TrackerStatus.ERROR);
@@ -561,7 +561,7 @@ public class TrackersUDPServer extends Thread {
 				if (connection == null)
 					break;
 				UDPPacket20Temperature temp = (UDPPacket20Temperature) packet;
-				tracker = connection.getTracker(temp.getSensorId());
+				tracker = connection.getTrackerByRemoteId(temp.getSensorId());
 				if (tracker == null)
 					break;
 				tracker.temperature = temp.temperature;
