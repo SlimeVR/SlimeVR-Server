@@ -36,8 +36,8 @@ public class LoggerOutputStream extends ByteArrayOutputStream {
 				if (record.contains(separator)) {
 					String s = buffer.toString();
 					String[] split = s.split(separator);
-					for (int i = 0; i < split.length; ++i)
-						logger.log(level, prefix + split[i]);
+					for (String value : split)
+						logger.log(level, prefix + value);
 					buffer.setLength(0);
 					// buffer.append(split[split.length - 1]);
 				}

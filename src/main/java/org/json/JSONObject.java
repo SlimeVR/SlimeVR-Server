@@ -111,7 +111,7 @@ public class JSONObject {
 		 * @return NULL.
 		 */
 		@Override
-		protected final Object clone() {
+		protected Object clone() {
 			return this;
 		}
 
@@ -160,7 +160,7 @@ public class JSONObject {
 	 * Construct an empty JSONObject.
 	 */
 	public JSONObject() {
-		this.map = new HashMap<String, Object>();
+		this.map = new HashMap<>();
 	}
 
 	/**
@@ -176,9 +176,9 @@ public class JSONObject {
 	 */
 	public JSONObject(JSONObject jo, String[] names) {
 		this();
-		for (int i = 0; i < names.length; i += 1) {
+		for (String name : names) {
 			try {
-				this.putOnce(names[i], jo.opt(names[i]));
+				this.putOnce(name, jo.opt(name));
 			} catch (Exception ignore) {}
 		}
 	}
@@ -253,11 +253,9 @@ public class JSONObject {
 	 * @throws JSONException
 	 */
 	public JSONObject(Map<String, Object> map) {
-		this.map = new HashMap<String, Object>();
+		this.map = new HashMap<>();
 		if (map != null) {
-			Iterator<Entry<String, Object>> i = map.entrySet().iterator();
-			while (i.hasNext()) {
-				Map.Entry<String, Object> e = i.next();
+			for (Entry<String, Object> e : map.entrySet()) {
 				Object value = e.getValue();
 				if (value != null) {
 					this.map.put(e.getKey(), wrap(value));
@@ -303,11 +301,10 @@ public class JSONObject {
 	 * @param names An array of strings, the names of the fields to be obtained
 	 * from the object.
 	 */
-	public JSONObject(Object object, String names[]) {
+	public JSONObject(Object object, String[] names) {
 		this();
 		Class<?> c = object.getClass();
-		for (int i = 0; i < names.length; i += 1) {
-			String name = names[i];
+		for (String name : names) {
 			try {
 				this.putOpt(name, c.getField(name).get(object));
 			} catch (Exception ignore) {}
@@ -344,8 +341,8 @@ public class JSONObject {
 
 		Enumeration<String> keys = bundle.getKeys();
 		while (keys.hasMoreElements()) {
-			Object key = keys.nextElement();
-			if (key instanceof String) {
+			String key = keys.nextElement();
+			if (key != null) {
 
 				// Go through the path, ensuring that there is a nested
 				// JSONObject for each
@@ -353,7 +350,7 @@ public class JSONObject {
 				// segment's name into
 				// the deepest nested JSONObject.
 
-				String[] path = ((String) key).split("\\.");
+				String[] path = key.split("\\.");
 				int last = path.length - 1;
 				JSONObject target = this;
 				for (int i = 0; i < last; i += 1) {
@@ -365,7 +362,7 @@ public class JSONObject {
 					}
 					target = nextTarget;
 				}
-				target.put(path[last], bundle.getString((String) key));
+				target.put(path[last], bundle.getString(key));
 			}
 		}
 	}
@@ -679,13 +676,13 @@ public class JSONObject {
 		if (value == null) {
 			this.put(key, 1);
 		} else if (value instanceof Integer) {
-			this.put(key, ((Integer) value).intValue() + 1);
+			this.put(key, (Integer) value + 1);
 		} else if (value instanceof Long) {
-			this.put(key, ((Long) value).longValue() + 1);
+			this.put(key, (Long) value + 1);
 		} else if (value instanceof Double) {
-			this.put(key, ((Double) value).doubleValue() + 1);
+			this.put(key, (Double) value + 1);
 		} else if (value instanceof Float) {
-			this.put(key, ((Float) value).floatValue() + 1);
+			this.put(key, (Float) value + 1);
 		} else {
 			throw new JSONException("Unable to increment [" + quote(key) + "].");
 		}
@@ -959,9 +956,8 @@ public class JSONObject {
 		boolean includeSuperClass = klass.getClassLoader() != null;
 
 		Method[] methods = includeSuperClass ? klass.getMethods() : klass.getDeclaredMethods();
-		for (int i = 0; i < methods.length; i += 1) {
+		for (Method method : methods) {
 			try {
-				Method method = methods[i];
 				if (Modifier.isPublic(method.getModifiers())) {
 					String name = method.getName();
 					String key = "";
@@ -1031,7 +1027,7 @@ public class JSONObject {
 	 * @throws JSONException If the key is null or if the number is invalid.
 	 */
 	public JSONObject put(String key, double value) {
-		this.put(key, new Double(value));
+		this.put(key, Double.valueOf(value));
 		return this;
 	}
 
@@ -1044,7 +1040,7 @@ public class JSONObject {
 	 * @throws JSONException If the key is null.
 	 */
 	public JSONObject put(String key, int value) {
-		this.put(key, new Integer(value));
+		this.put(key, Integer.valueOf(value));
 		return this;
 	}
 
@@ -1057,7 +1053,7 @@ public class JSONObject {
 	 * @throws JSONException If the key is null.
 	 */
 	public JSONObject put(String key, long value) {
-		this.put(key, new Long(value));
+		this.put(key, Long.valueOf(value));
 		return this;
 	}
 
@@ -1236,7 +1232,7 @@ public class JSONObject {
 	 * @return A simple JSON value.
 	 */
 	public static Object stringToValue(String string) {
-		Double d;
+		double d;
 		if (string.equals("")) {
 			return string;
 		}
@@ -1263,14 +1259,14 @@ public class JSONObject {
 				if (
 					string.indexOf('.') > -1 || string.indexOf('e') > -1 || string.indexOf('E') > -1
 				) {
-					d = Double.valueOf(string);
-					if (!d.isInfinite() && !d.isNaN()) {
+					d = Double.parseDouble(string);
+					if (!Double.isInfinite(d) && !Double.isNaN(d)) {
 						return d;
 					}
 				} else {
-					Long myLong = new Long(string);
-					if (myLong.longValue() == myLong.intValue()) {
-						return new Integer(myLong.intValue());
+					long myLong = Long.parseLong(string);
+					if (myLong == (int) myLong) {
+						return (int) myLong;
 					} else {
 						return myLong;
 					}
@@ -1389,14 +1385,14 @@ public class JSONObject {
 			return "null";
 		}
 		if (value instanceof JSONString) {
-			Object object;
+			String object;
 			try {
 				object = ((JSONString) value).toJSONString();
 			} catch (Exception e) {
 				throw new JSONException(e);
 			}
-			if (object instanceof String) {
-				return (String) object;
+			if (object != null) {
+				return object;
 			}
 			throw new JSONException("Bad value from toJSONString: " + object);
 		}

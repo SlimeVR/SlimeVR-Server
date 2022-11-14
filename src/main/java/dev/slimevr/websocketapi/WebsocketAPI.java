@@ -13,6 +13,7 @@ import org.java_websocket.server.WebSocketServer;
 import java.net.InetSocketAddress;
 import java.nio.ByteBuffer;
 import java.util.Collections;
+import java.util.Objects;
 import java.util.stream.Stream;
 
 
@@ -103,6 +104,6 @@ public class WebsocketAPI extends WebSocketServer implements ProtocolAPIServer {
 		return this.getConnections().stream().map(conn -> {
 			var c = conn.<WebsocketConnection>getAttachment();
 			return (GenericConnection) c;
-		}).filter(c -> c != null);
+		}).filter(Objects::nonNull);
 	}
 }

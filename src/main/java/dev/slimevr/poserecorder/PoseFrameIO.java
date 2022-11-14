@@ -79,12 +79,12 @@ public final class PoseFrameIO {
 		try {
 
 			int trackerCount = inputStream.readInt();
-			FastList<PoseFrameTracker> trackers = new FastList<PoseFrameTracker>(trackerCount);
+			FastList<PoseFrameTracker> trackers = new FastList<>(trackerCount);
 			for (int i = 0; i < trackerCount; i++) {
 
 				String name = inputStream.readUTF();
 				int trackerFrameCount = inputStream.readInt();
-				FastList<TrackerFrame> trackerFrames = new FastList<TrackerFrame>(
+				FastList<TrackerFrame> trackerFrames = new FastList<>(
 					trackerFrameCount
 				);
 				for (int j = 0; j < trackerFrameCount; j++) {

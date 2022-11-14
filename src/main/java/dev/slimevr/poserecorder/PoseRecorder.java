@@ -39,7 +39,7 @@ public class PoseRecorder {
 	protected Consumer<RecordingProgress> currentFrameCallback;
 
 	protected final VRServer server;
-	FastList<Pair<Tracker, PoseFrameTracker>> trackers = new FastList<Pair<Tracker, PoseFrameTracker>>();
+	FastList<Pair<Tracker, PoseFrameTracker>> trackers = new FastList<>();
 
 	public PoseRecorder(VRServer server) {
 		this.server = server;
@@ -178,7 +178,7 @@ public class PoseRecorder {
 			);
 
 		currentFrameCallback = frameCallback;
-		currentRecording = new CompletableFuture<PoseFrames>();
+		currentRecording = new CompletableFuture<>();
 		return currentRecording;
 	}
 

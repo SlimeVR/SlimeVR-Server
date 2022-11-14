@@ -11,17 +11,17 @@ import java.util.Map;
 
 public class SkeletonConfig {
 
-	protected final EnumMap<SkeletonConfigOffsets, Float> configOffsets = new EnumMap<SkeletonConfigOffsets, Float>(
+	protected final EnumMap<SkeletonConfigOffsets, Float> configOffsets = new EnumMap<>(
 		SkeletonConfigOffsets.class
 	);
-	protected final EnumMap<SkeletonConfigToggles, Boolean> configToggles = new EnumMap<SkeletonConfigToggles, Boolean>(
+	protected final EnumMap<SkeletonConfigToggles, Boolean> configToggles = new EnumMap<>(
 		SkeletonConfigToggles.class
 	);
-	protected final EnumMap<SkeletonConfigValues, Float> configValues = new EnumMap<SkeletonConfigValues, Float>(
+	protected final EnumMap<SkeletonConfigValues, Float> configValues = new EnumMap<>(
 		SkeletonConfigValues.class
 	);
 
-	protected final EnumMap<BoneType, Vector3f> nodeOffsets = new EnumMap<BoneType, Vector3f>(
+	protected final EnumMap<BoneType, Vector3f> nodeOffsets = new EnumMap<>(
 		BoneType.class
 	);
 
@@ -203,157 +203,115 @@ public class SkeletonConfig {
 
 	public void computeNodeOffset(BoneType nodeOffset) {
 		switch (nodeOffset) {
-			case HEAD:
-				setNodeOffset(nodeOffset, 0, 0, getOffset(SkeletonConfigOffsets.HEAD));
-				break;
-			case NECK:
-				setNodeOffset(nodeOffset, 0, -getOffset(SkeletonConfigOffsets.NECK), 0);
-				break;
-			case CHEST:
-				setNodeOffset(nodeOffset, 0, -getOffset(SkeletonConfigOffsets.CHEST), 0);
-				break;
-			case CHEST_TRACKER:
-				setNodeOffset(
-					nodeOffset,
-					0,
-					0,
-					-getOffset(SkeletonConfigOffsets.SKELETON_OFFSET)
-				);
-				break;
-			case WAIST:
-				setNodeOffset(
-					nodeOffset,
-					0,
-					(getOffset(SkeletonConfigOffsets.CHEST)
-						- getOffset(SkeletonConfigOffsets.TORSO)
-						+ getOffset(SkeletonConfigOffsets.WAIST)),
-					0
-				);
-				break;
-			case HIP:
-				setNodeOffset(nodeOffset, 0, -getOffset(SkeletonConfigOffsets.WAIST), 0);
-				break;
-			case HIP_TRACKER:
-				setNodeOffset(
-					nodeOffset,
-					0,
-					getOffset(SkeletonConfigOffsets.HIP_OFFSET),
-					-getOffset(SkeletonConfigOffsets.SKELETON_OFFSET)
-				);
-				break;
-			case LEFT_HIP:
-				setNodeOffset(
-					nodeOffset,
-					-getOffset(SkeletonConfigOffsets.HIPS_WIDTH) / 2f,
-					0,
-					0
-				);
-				break;
-			case RIGHT_HIP:
-				setNodeOffset(
-					nodeOffset,
-					getOffset(SkeletonConfigOffsets.HIPS_WIDTH) / 2f,
-					0,
-					0
-				);
-				break;
-			case LEFT_UPPER_LEG:
-			case RIGHT_UPPER_LEG:
-				setNodeOffset(
-					nodeOffset,
-					0,
-					-(getOffset(SkeletonConfigOffsets.LEGS_LENGTH)
-						- getOffset(SkeletonConfigOffsets.KNEE_HEIGHT)),
-					0
-				);
-				break;
-			case LEFT_KNEE_TRACKER:
-			case RIGHT_KNEE_TRACKER:
-				setNodeOffset(
-					nodeOffset,
-					0,
-					0,
-					-getOffset(SkeletonConfigOffsets.SKELETON_OFFSET)
-				);
-				break;
-			case LEFT_LOWER_LEG:
-			case RIGHT_LOWER_LEG:
-				setNodeOffset(
-					nodeOffset,
-					0,
-					-getOffset(SkeletonConfigOffsets.KNEE_HEIGHT),
-					-getOffset(SkeletonConfigOffsets.FOOT_SHIFT)
-				);
-				break;
-			case LEFT_FOOT:
-			case RIGHT_FOOT:
-				setNodeOffset(nodeOffset, 0, 0, -getOffset(SkeletonConfigOffsets.FOOT_LENGTH));
-				break;
-			case LEFT_FOOT_TRACKER:
-			case RIGHT_FOOT_TRACKER:
-				setNodeOffset(
-					nodeOffset,
-					0,
-					0,
-					-getOffset(SkeletonConfigOffsets.SKELETON_OFFSET)
-				);
-				break;
-			case LEFT_CONTROLLER:
-			case RIGHT_CONTROLLER:
-				setNodeOffset(
-					nodeOffset,
-					0,
-					getOffset(SkeletonConfigOffsets.CONTROLLER_DISTANCE_Y),
-					getOffset(SkeletonConfigOffsets.CONTROLLER_DISTANCE_Z)
-				);
-				break;
-			case LEFT_HAND:
-			case RIGHT_HAND:
-				setNodeOffset(
-					nodeOffset,
-					0,
-					-getOffset(SkeletonConfigOffsets.CONTROLLER_DISTANCE_Y),
-					-getOffset(SkeletonConfigOffsets.CONTROLLER_DISTANCE_Z)
-				);
-				break;
-			case LEFT_LOWER_ARM:
-			case RIGHT_LOWER_ARM:
-				setNodeOffset(
-					nodeOffset,
-					0,
-					getOffset(SkeletonConfigOffsets.LOWER_ARM_LENGTH),
-					0
-				);
-				break;
-			case LEFT_ELBOW_TRACKER:
-			case RIGHT_ELBOW_TRACKER:
-				setNodeOffset(nodeOffset, 0, getOffset(SkeletonConfigOffsets.ELBOW_OFFSET), 0);
-				break;
-			case LEFT_UPPER_ARM:
-			case RIGHT_UPPER_ARM:
-				setNodeOffset(
-					nodeOffset,
-					0,
-					-getOffset(SkeletonConfigOffsets.UPPER_ARM_LENGTH),
-					0
-				);
-				break;
-			case LEFT_SHOULDER:
-				setNodeOffset(
-					nodeOffset,
-					-getOffset(SkeletonConfigOffsets.SHOULDERS_WIDTH) / 2f,
-					-getOffset(SkeletonConfigOffsets.SHOULDERS_DISTANCE),
-					0
-				);
-				break;
-			case RIGHT_SHOULDER:
-				setNodeOffset(
-					nodeOffset,
-					getOffset(SkeletonConfigOffsets.SHOULDERS_WIDTH) / 2f,
-					-getOffset(SkeletonConfigOffsets.SHOULDERS_DISTANCE),
-					0
-				);
-				break;
+			case HEAD -> setNodeOffset(nodeOffset, 0, 0, getOffset(SkeletonConfigOffsets.HEAD));
+			case NECK -> setNodeOffset(nodeOffset, 0, -getOffset(SkeletonConfigOffsets.NECK), 0);
+			case CHEST -> setNodeOffset(nodeOffset, 0, -getOffset(SkeletonConfigOffsets.CHEST), 0);
+			case CHEST_TRACKER -> setNodeOffset(
+				nodeOffset,
+				0,
+				0,
+				-getOffset(SkeletonConfigOffsets.SKELETON_OFFSET)
+			);
+			case WAIST -> setNodeOffset(
+				nodeOffset,
+				0,
+				(getOffset(SkeletonConfigOffsets.CHEST)
+					- getOffset(SkeletonConfigOffsets.TORSO)
+					+ getOffset(SkeletonConfigOffsets.WAIST)),
+				0
+			);
+			case HIP -> setNodeOffset(nodeOffset, 0, -getOffset(SkeletonConfigOffsets.WAIST), 0);
+			case HIP_TRACKER -> setNodeOffset(
+				nodeOffset,
+				0,
+				getOffset(SkeletonConfigOffsets.HIP_OFFSET),
+				-getOffset(SkeletonConfigOffsets.SKELETON_OFFSET)
+			);
+			case LEFT_HIP -> setNodeOffset(
+				nodeOffset,
+				-getOffset(SkeletonConfigOffsets.HIPS_WIDTH) / 2f,
+				0,
+				0
+			);
+			case RIGHT_HIP -> setNodeOffset(
+				nodeOffset,
+				getOffset(SkeletonConfigOffsets.HIPS_WIDTH) / 2f,
+				0,
+				0
+			);
+			case LEFT_UPPER_LEG, RIGHT_UPPER_LEG -> setNodeOffset(
+				nodeOffset,
+				0,
+				-(getOffset(SkeletonConfigOffsets.LEGS_LENGTH)
+					- getOffset(SkeletonConfigOffsets.KNEE_HEIGHT)),
+				0
+			);
+			case LEFT_KNEE_TRACKER, RIGHT_KNEE_TRACKER -> setNodeOffset(
+				nodeOffset,
+				0,
+				0,
+				-getOffset(SkeletonConfigOffsets.SKELETON_OFFSET)
+			);
+			case LEFT_LOWER_LEG, RIGHT_LOWER_LEG -> setNodeOffset(
+				nodeOffset,
+				0,
+				-getOffset(SkeletonConfigOffsets.KNEE_HEIGHT),
+				-getOffset(SkeletonConfigOffsets.FOOT_SHIFT)
+			);
+			case LEFT_FOOT, RIGHT_FOOT -> setNodeOffset(
+				nodeOffset,
+				0,
+				0,
+				-getOffset(SkeletonConfigOffsets.FOOT_LENGTH)
+			);
+			case LEFT_FOOT_TRACKER, RIGHT_FOOT_TRACKER -> setNodeOffset(
+				nodeOffset,
+				0,
+				0,
+				-getOffset(SkeletonConfigOffsets.SKELETON_OFFSET)
+			);
+			case LEFT_CONTROLLER, RIGHT_CONTROLLER -> setNodeOffset(
+				nodeOffset,
+				0,
+				getOffset(SkeletonConfigOffsets.CONTROLLER_DISTANCE_Y),
+				getOffset(SkeletonConfigOffsets.CONTROLLER_DISTANCE_Z)
+			);
+			case LEFT_HAND, RIGHT_HAND -> setNodeOffset(
+				nodeOffset,
+				0,
+				-getOffset(SkeletonConfigOffsets.CONTROLLER_DISTANCE_Y),
+				-getOffset(SkeletonConfigOffsets.CONTROLLER_DISTANCE_Z)
+			);
+			case LEFT_LOWER_ARM, RIGHT_LOWER_ARM -> setNodeOffset(
+				nodeOffset,
+				0,
+				getOffset(SkeletonConfigOffsets.LOWER_ARM_LENGTH),
+				0
+			);
+			case LEFT_ELBOW_TRACKER, RIGHT_ELBOW_TRACKER -> setNodeOffset(
+				nodeOffset,
+				0,
+				getOffset(SkeletonConfigOffsets.ELBOW_OFFSET),
+				0
+			);
+			case LEFT_UPPER_ARM, RIGHT_UPPER_ARM -> setNodeOffset(
+				nodeOffset,
+				0,
+				-getOffset(SkeletonConfigOffsets.UPPER_ARM_LENGTH),
+				0
+			);
+			case LEFT_SHOULDER -> setNodeOffset(
+				nodeOffset,
+				-getOffset(SkeletonConfigOffsets.SHOULDERS_WIDTH) / 2f,
+				-getOffset(SkeletonConfigOffsets.SHOULDERS_DISTANCE),
+				0
+			);
+			case RIGHT_SHOULDER -> setNodeOffset(
+				nodeOffset,
+				getOffset(SkeletonConfigOffsets.SHOULDERS_WIDTH) / 2f,
+				-getOffset(SkeletonConfigOffsets.SHOULDERS_DISTANCE),
+				0
+			);
 		}
 	}
 

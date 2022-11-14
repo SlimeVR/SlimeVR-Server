@@ -9,8 +9,6 @@ import io.eiren.util.StringUtils;
 
 import javax.swing.*;
 import javax.swing.event.MouseInputAdapter;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
 import java.awt.event.MouseEvent;
 
 
@@ -47,17 +45,14 @@ public class TrackersFiltersGUI extends EJBagNoStretch {
 			filterSelect.setSelectedItem(filterType.toString());
 		}
 
-		filterSelect.addActionListener(new ActionListener() {
-			@Override
-			public void actionPerformed(ActionEvent e) {
-				filterType = TrackerFilters
-					.getByConfigkey(filterSelect.getSelectedItem().toString());
-				filtersConfig
-					.enumSetType(filterType);
-				filtersConfig
-					.updateTrackersFilters();
-				server.getConfigManager().saveConfig();
-			}
+		filterSelect.addActionListener((e) -> {
+			filterType = TrackerFilters
+				.getByConfigkey(filterSelect.getSelectedItem().toString());
+			filtersConfig
+				.enumSetType(filterType);
+			filtersConfig
+				.updateTrackersFilters();
+			server.getConfigManager().saveConfig();
 		});
 		add(Box.createVerticalStrut(40));
 		row++;
