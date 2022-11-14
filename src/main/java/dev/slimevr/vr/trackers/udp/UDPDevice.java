@@ -28,7 +28,7 @@ public class UDPDevice extends Device {
 	public int firmwareBuild = 0;
 	public boolean timedOut = false;
 	private final FastList<Tracker> trackers = new FastList<>();
-	private final HashMap<Integer, Integer> remote_id_map = new HashMap<>();
+	private final HashMap<Integer, Integer> remoteIdMap = new HashMap<>();
 
 	public UDPDevice(SocketAddress address, InetAddress ipAddress) {
 		this.address = address;
@@ -84,19 +84,19 @@ public class UDPDevice extends Device {
 	}
 
 	public IMUTracker setupTrackerByRemoteId(int id) {
-		if (remote_id_map.get(id) == null) {
+		if (remoteIdMap.get(id) == null) {
 			// New tracker id sent, create a mapping to the future
 			// position of the tracker in the trackers list
-			remote_id_map.put(id, this.trackers.size());
+			remoteIdMap.put(id, this.trackers.size());
 			return null; // There's no tracker set up yet
 		}
 		return getTrackerByRemoteId(id);
 	}
 
 	public IMUTracker getTrackerByRemoteId(int id) {
-		Integer local_id = remote_id_map.get(id);
-		if (local_id != null && local_id < this.getTrackers().size())
-			return (IMUTracker) this.getTrackers().get(local_id);
+		Integer localId = remoteIdMap.get(id);
+		if (localId != null && localId < this.getTrackers().size())
+			return (IMUTracker) this.getTrackers().get(localId);
 		return null;
 	}
 }
