@@ -43,15 +43,18 @@ public class DataFeedBuilder {
 		HardwareInfo.startHardwareInfo(fbb);
 		HardwareInfo.addFirmwareVersion(fbb, nameOffset);
 		HardwareInfo.addManufacturer(fbb, manufacturerOffset);
-		HardwareInfo
-			.addIpAddress(
-				fbb,
-				Ipv4Address
-					.createIpv4Address(
-						fbb,
-						ByteBuffer.wrap(device.getIpAddress().getAddress()).getInt()
-					)
-			);
+		var ipAddr = device.getIpAddress();
+		if (ipAddr != null && ipAddr.getAddress() != null) {
+			HardwareInfo
+				.addIpAddress(
+					fbb,
+					Ipv4Address
+						.createIpv4Address(
+							fbb,
+							ByteBuffer.wrap(ipAddr.getAddress()).getInt()
+						)
+				);
+		}
 		// BRUH MOMENT
 		// TODO need support: HardwareInfo.addHardwareRevision(fbb,
 		// hardwareRevisionOffset);
