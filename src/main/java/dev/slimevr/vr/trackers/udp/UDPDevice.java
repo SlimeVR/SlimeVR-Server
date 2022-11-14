@@ -8,7 +8,7 @@ import io.eiren.util.collections.FastList;
 
 import java.net.InetAddress;
 import java.net.SocketAddress;
-import java.util.concurrent.ConcurrentHashMap;
+import java.util.HashMap;
 
 
 public class UDPDevice extends Device {
@@ -28,7 +28,7 @@ public class UDPDevice extends Device {
 	public int firmwareBuild = 0;
 	public boolean timedOut = false;
 	private final FastList<Tracker> trackers = new FastList<>();
-	private final ConcurrentHashMap<Integer, Integer> remote_id_map = new ConcurrentHashMap<>();
+	private final HashMap<Integer, Integer> remote_id_map = new HashMap<>();
 
 	public UDPDevice(SocketAddress address, InetAddress ipAddress) {
 		this.address = address;
@@ -94,9 +94,9 @@ public class UDPDevice extends Device {
 	}
 
 	public IMUTracker getTrackerByRemoteId(int id) {
-		Integer remote_id = remote_id_map.get(id);
-		if (remote_id != null && remote_id < this.getTrackers().size())
-			return (IMUTracker) this.getTrackers().get(remote_id);
+		Integer local_id = remote_id_map.get(id);
+		if (local_id != null && local_id < this.getTrackers().size())
+			return (IMUTracker) this.getTrackers().get(local_id);
 		return null;
 	}
 }
