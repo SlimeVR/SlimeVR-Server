@@ -131,17 +131,19 @@ public class WebSocketVRBridge extends WebsocketAPI implements Bridge {
 	private void parsePosition(ObjectNode json, WebSocket conn) {
 		if (json.get("tracker_id").asInt() == 0) {
 			// Read HMD information
-			internalHMDTracker.position.set(
+			internalHMDTracker.position
+				.set(
 					(float) json.get("x").asDouble(),
 					(float) json.get("y").asDouble() + 0.2f,
 					(float) json.get("z").asDouble()
-			); // TODO Wtf is this hack? VRWorkout issue?
-			internalHMDTracker.rotation.set(
+				); // TODO Wtf is this hack? VRWorkout issue?
+			internalHMDTracker.rotation
+				.set(
 					(float) json.get("qx").asDouble(),
 					(float) json.get("qy").asDouble(),
 					(float) json.get("qz").asDouble(),
 					(float) json.get("qw").asDouble()
-			);
+				);
 			internalHMDTracker.dataTick();
 			newHMDData.set(true);
 
