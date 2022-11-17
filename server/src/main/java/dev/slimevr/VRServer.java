@@ -6,6 +6,7 @@ import dev.slimevr.bridge.Bridge;
 import dev.slimevr.bridge.VMCBridge;
 import dev.slimevr.config.ConfigManager;
 import dev.slimevr.osc.VRCOSCHandler;
+import dev.slimevr.platform.linux.UnixSocketBridge;
 import dev.slimevr.platform.windows.WindowsNamedPipeBridge;
 import dev.slimevr.poserecorder.BVHRecorder;
 import dev.slimevr.protocol.ProtocolAPI;
@@ -113,6 +114,16 @@ public class VRServer extends Thread {
 			);
 			tasks.add(feederBridge::startBridge);
 			bridges.add(feederBridge);
+		} else if (OperatingSystem.getCurrentPlatform() == OperatingSystem.LINUX) {
+			UnixSocketBridge bridge = new UnixSocketBridge(
+				this,
+				hmdTracker,
+				"steamvr",
+				"SteamVR Socket Bridge",
+				shareTrackers
+			);
+			tasks.add(bridge::startBridge);
+			bridges.add(bridge);
 		}
 
 		// Create WebSocket server

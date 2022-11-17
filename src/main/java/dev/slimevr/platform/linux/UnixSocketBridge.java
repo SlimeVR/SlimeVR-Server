@@ -1,155 +1,175 @@
 package dev.slimevr.platform.linux;
 
-import com.sun.jna.platform.win32.Kernel32;
-import com.sun.jna.platform.win32.WinBase;
+import com.google.protobuf.CodedOutputStream;
 import dev.slimevr.Main;
 import dev.slimevr.VRServer;
 import dev.slimevr.bridge.BridgeThread;
-import dev.slimevr.bridge.PipeState;
-import dev.slimevr.bridge.ProtobufBridge;
 import dev.slimevr.bridge.ProtobufMessages;
-import dev.slimevr.config.BridgeConfig;
-import dev.slimevr.util.ann.VRServerThread;
-import dev.slimevr.vr.Device;
+import dev.slimevr.platform.SteamVRBridge;
 import dev.slimevr.vr.trackers.*;
 import io.eiren.util.logging.LogManager;
 
 import java.io.IOException;
 import java.net.StandardProtocolFamily;
 import java.net.UnixDomainSocketAddress;
+import java.nio.ByteBuffer;
+import java.nio.channels.ServerSocketChannel;
 import java.nio.channels.SocketChannel;
 import java.util.List;
 
-public class UnixSocketBridge extends ProtobufBridge<VRTracker> implements Runnable {
-    public static final String SOCKET_PATH = "/tmp/SlimeVRDriver";
-    public static final UnixDomainSocketAddress SOCKET_ADDRESS = UnixDomainSocketAddress.of(SOCKET_PATH);
 
-    protected final String bridgeSettingsKey;
-    protected final Thread runnerThread;
-    private final TrackerRole[] defaultRoles = new TrackerRole[] { TrackerRole.WAIST,
-            TrackerRole.LEFT_FOOT, TrackerRole.RIGHT_FOOT };
-    private final List<? extends ShareableTracker> shareableTrackers;
-    private final BridgeConfig config;
+public class UnixSocketBridge extends SteamVRBridge implements AutoCloseable {
+	public static final String SOCKET_PATH = "/tmp/SlimeVRDriver";
+	public static final UnixDomainSocketAddress SOCKET_ADDRESS = UnixDomainSocketAddress
+		.of(SOCKET_PATH);
+	private final ByteBuffer dst = ByteBuffer.allocate(2048);
+	private final ByteBuffer src = ByteBuffer.allocate(2048);
 
+	private ServerSocketChannel server;
+	private SocketChannel channel;
+	private boolean socketError = false;
 
-    private SocketChannel channel;
+	public UnixSocketBridge(
+		VRServer server,
+		HMDTracker hmd,
+		String bridgeSettingsKey,
+		String bridgeName,
+		List<? extends ShareableTracker> shareableTrackers
+	) {
+		super(server, hmd, "Named socket thread", bridgeName, bridgeSettingsKey, shareableTrackers);
+	}
 
-    public UnixSocketBridge(VRServer server,
-        HMDTracker hmd,
-        String bridgeSettingsKey,
-        String bridgeName,
-        List<? extends ShareableTracker> shareableTrackers
-    ) {
-        super(bridgeName, hmd);
-        this.bridgeSettingsKey = bridgeSettingsKey;
-        this.runnerThread = new Thread(this, "Named socket thread");
-        this.shareableTrackers = shareableTrackers;
-        this.config = server.getConfigManager().getVrConfig().getBrige(bridgeSettingsKey);
-    }
+	@Override
+	@BridgeThread
+	public void run() {
+		try {
+			this.server = createSocket();
+			while (true) {
+				if (this.channel == null) {
+					this.channel = server.accept();
+					if (this.channel == null)
+						continue;
+					Main.vrServer.queueTask(this::reconnected);
+					LogManager
+						.info(
+							"["
+								+ bridgeName
+								+ "]"
+								+ " Connected to "
+								+ this.channel.getRemoteAddress().toString()
+						);
+				} else {
+					if (this.socketError || !this.channel.isConnected()) {
+						this.resetChannel();
+						continue;
+					}
+					boolean update = this.updateSocket();
+					if (!update) {
+						try {
+							Thread.sleep(5); // Up to 200Hz
+						} catch (InterruptedException e) {
+							e.printStackTrace();
+						}
+					}
+				}
+			}
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+	}
 
-    @Override
-    @VRServerThread
-    public void startBridge() {
-        for (TrackerRole role : defaultRoles) {
-            changeShareSettings(
-                    role,
-                    this.config.getBridgeTrackerRole(role, true)
-            );
-        }
-        for (ShareableTracker tr : shareableTrackers) {
-            TrackerRole role = tr.getTrackerRole();
-            changeShareSettings(
-                    role,
-                    this.config.getBridgeTrackerRole(role, false)
-            );
-        }
-        runnerThread.start();
-    }
+	@Override
+	@BridgeThread
+	protected boolean sendMessageReal(ProtobufMessages.ProtobufMessage message) {
+		if (this.channel != null) {
+			try {
+				int size = message.getSerializedSize() + 4;
+				this.src.putInt(size);
+				CodedOutputStream os = CodedOutputStream.newInstance(this.src);
+				message.writeTo(os);
+				this.src.flip();
 
-    @VRServerThread
-    public boolean getShareSetting(TrackerRole role) {
-        for (ShareableTracker tr : shareableTrackers) {
-            if (tr.getTrackerRole() == role) {
-                return sharedTrackers.contains(tr);
-            }
-        }
-        return false;
-    }
+				while (this.src.hasRemaining()) {
+					channel.write(this.src);
+				}
 
-    @VRServerThread
-    public void changeShareSettings(TrackerRole role, boolean share) {
-        if (role == null)
-            return;
-        for (ShareableTracker tr : shareableTrackers) {
-            if (tr.getTrackerRole() == role) {
-                if (share) {
-                    addSharedTracker(tr);
-                } else {
-                    removeSharedTracker(tr);
-                }
-                config.setBridgeTrackerRole(role, share);
-                Main.vrServer.getConfigManager().saveConfig();
-            }
-        }
-    }
+				this.src.clear();
+			} catch (IOException e) {
+				e.printStackTrace();
+			}
+		}
+		return false;
+	}
 
-    @Override
-    @VRServerThread
-    protected VRTracker createNewTracker(ProtobufMessages.TrackerAdded trackerAdded) {
-        // Todo: We need the manufacturer
-        Device device = Main.vrServer
-                .getDeviceManager()
-                .createDevice(
-                        trackerAdded.getTrackerName(),
-                        trackerAdded.getTrackerSerial(),
-                        "FeederAPP"
-                );
+	private boolean updateSocket() throws IOException {
+		int read = channel.read(dst);
+		boolean readAnything = false;
+		if (read > 0) {
+			if (read >= 4) { // Got size
+				dst.mark();
+				int messageLength = dst.getInt();
+				dst.reset();
+				if (messageLength > 1024) { // Overflow
+					LogManager
+						.severe(
+							"["
+								+ bridgeName
+								+ "] Buffer overflow on socket. Message length: "
+								+ messageLength
+						);
+					socketError = true;
+					return readAnything;
+				}
+				if (read >= messageLength) {
+					ProtobufMessages.ProtobufMessage message = ProtobufMessages.ProtobufMessage
+						.parser()
+						.parseFrom(dst.array(), 4 + dst.position(), messageLength - 4);
+					this.messageReceived(message);
+					readAnything = true;
+					dst.reset();
+				}
+			}
+		} else if (read == -1) {
+			LogManager
+				.info(
+					"["
+						+ bridgeName
+						+ "] Reached end-of-stream on connection of "
+						+ this.channel.getRemoteAddress().toString()
+				);
+			socketError = true;
+		}
+		return readAnything;
+	}
 
-        VRTracker tracker = new VRTracker(
-                trackerAdded.getTrackerId(),
-                trackerAdded.getTrackerSerial(),
-                trackerAdded.getTrackerName(),
-                true,
-                true,
-                device
-        );
+	private void resetChannel() throws IOException {
+		LogManager
+			.info(
+				"["
+					+ bridgeName
+					+ "] Disconnected from "
+					+ this.channel.getRemoteAddress().toString()
+			);
+		this.channel.close();
+		this.channel = null;
+		this.socketError = false;
+		this.dst.clear();
+		Main.vrServer.queueTask(this::disconnected);
+	}
 
-        device.getTrackers().add(tracker);
-        Main.vrServer.getDeviceManager().addDevice(device);
-        TrackerRole role = TrackerRole.getById(trackerAdded.getTrackerRole());
-        if (role != null) {
-            tracker.setBodyPosition(TrackerPosition.getByTrackerRole(role).orElse(null));
-        }
-        return tracker;
-    }
+	private ServerSocketChannel createSocket() throws IOException {
+		ServerSocketChannel server = ServerSocketChannel.open(StandardProtocolFamily.UNIX);
+		server.bind(SOCKET_ADDRESS);
+		LogManager.info("[" + bridgeName + "] Socket " + SOCKET_PATH + " created");
+		return server;
+	}
 
-    @Override
-    @BridgeThread
-    public void run() {
-        try {
-            this.channel = connectChannel();
-
-            while (true) {
-                channel.read()
-            }
-        } catch (IOException e) {
-            // TODO Auto-generated catch block
-            e.printStackTrace();
-        }
-    }
-
-    @Override
-    @BridgeThread
-    protected boolean sendMessageReal(ProtobufMessages.ProtobufMessage message) {
-        return false;
-    }
-
-    private SocketChannel createSocket() throws IOException {
-        channel = SocketChannel.bind(StandardProtocolFamily.UNIX);
-        channel.configureBlocking(true);
-        channel.connect(SOCKET_ADDRESS);
-        LogManager.info("[" + bridgeName + "] Connected to " + SOCKET_PATH);
-        return channel;
-    }
+	@Override
+	public void close() throws Exception {
+		if (this.server != null) {
+			this.server.close();
+		}
+	}
 }
 
