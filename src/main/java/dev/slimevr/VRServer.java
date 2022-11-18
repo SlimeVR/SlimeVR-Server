@@ -83,7 +83,7 @@ public class VRServer extends Thread {
 		trackersServer = new TrackersUDPServer(6969, "Sensors UDP server", this::registerTracker);
 
 		// OpenVR bridge currently only supports Windows
-		WindowsNamedPipeBridge driverBridge;
+		WindowsNamedPipeBridge driverBridge = null;
 		if (OperatingSystem.getCurrentPlatform() == OperatingSystem.WINDOWS) {
 
 			// Create named pipe bridge for SteamVR driver
@@ -110,8 +110,6 @@ public class VRServer extends Thread {
 			);
 			tasks.add(feederBridge::startBridge);
 			bridges.add(feederBridge);
-		} else {
-			driverBridge = null;
 		}
 
 		// Create WebSocket server

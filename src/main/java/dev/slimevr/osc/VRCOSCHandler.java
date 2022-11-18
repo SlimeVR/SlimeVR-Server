@@ -7,11 +7,9 @@ import com.illposed.osc.transport.OSCPortOut;
 import com.jme3.math.FastMath;
 import com.jme3.math.Quaternion;
 import com.jme3.math.Vector3f;
-import dev.slimevr.bridge.PipeState;
 import dev.slimevr.config.OSCConfig;
 import dev.slimevr.platform.windows.WindowsNamedPipeBridge;
 import dev.slimevr.vr.processor.HumanPoseProcessor;
-import dev.slimevr.vr.processor.skeleton.Skeleton;
 import dev.slimevr.vr.trackers.*;
 import io.eiren.util.collections.FastList;
 import io.eiren.util.logging.LogManager;
@@ -131,23 +129,18 @@ public class VRCOSCHandler {
 
 	void handleReceivedMessage(OSCMessageEvent event) {
 		timeAtLastOSCMessageReceived = System.currentTimeMillis();
-		if (
-			steamvrBridge.getPipeState() != null
-				&& steamvrBridge.getPipeState() != PipeState.OPEN
-		) {
+		if (steamvrBridge != null && steamvrBridge.isConnected()) {
 			if (hmd.getStatus() != TrackerStatus.OK) {
 				hmd.setStatus(TrackerStatus.OK);
 			}
 			hmd.position
 				.set(
-					new Vector3f(
-						0f,
-						(float) event
-							.getMessage()
-							.getArguments()
-							.get(0) * humanPoseProcessor.getUserHeightFromConfig(),
-						0f
-					)
+					0f,
+					(float) event
+						.getMessage()
+						.getArguments()
+						.get(0) * humanPoseProcessor.getUserHeightFromConfig(),
+					0f
 				);
 			hmd.rotation.set(Quaternion.IDENTITY);
 			hmd.dataTick();
@@ -158,8 +151,8 @@ public class VRCOSCHandler {
 		// Manage HMD state with timeout
 		if (oscReceiver != null) {
 			if (
-				((steamvrBridge.getPipeState() != null
-					&& steamvrBridge.getPipeState() == PipeState.OPEN)
+				((steamvrBridge != null
+					&& steamvrBridge.isConnected())
 					||
 					System.currentTimeMillis() - timeAtLastOSCMessageReceived > HMD_TIMEOUT
 					||
