@@ -110,7 +110,7 @@ public class VRCOSCHandler {
 				oscSender.connect();
 				LogManager
 					.info(
-						"[VRCOSCHandler] sending to port "
+						"[VRCOSCHandler] Sending to port "
 							+ port
 							+ " at address "
 							+ address.toString()
