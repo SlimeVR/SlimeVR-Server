@@ -250,7 +250,7 @@ public class HumanPoseProcessor {
 	@VRServerThread
 	public float getUserHeightFromConfig() {
 		return getSkeletonConfig().getOffset(SkeletonConfigOffsets.NECK)
-				+ getSkeletonConfig().getOffset(SkeletonConfigOffsets.TORSO)
-				+ getSkeletonConfig().getOffset(SkeletonConfigOffsets.LEGS_LENGTH);
+			+ getSkeletonConfig().getOffset(SkeletonConfigOffsets.TORSO)
+			+ getSkeletonConfig().getOffset(SkeletonConfigOffsets.LEGS_LENGTH);
 	}
 }
