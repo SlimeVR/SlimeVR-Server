@@ -340,7 +340,7 @@ public class RPCHandler extends ProtocolHandler<RpcMessageHeader>
 		}
 
 		int settings = SettingsResponse
-			.createSettingsResponse(fbb, steamvrTrackerSettings, filterSettings, modelSettings);
+			.createSettingsResponse(fbb, steamvrTrackerSettings, filterSettings, 0, modelSettings);
 		int outbound = createRPCMessage(fbb, RpcMessage.SettingsResponse, settings);
 		fbb.finish(outbound);
 		conn.send(fbb.dataBuffer());
@@ -358,8 +358,8 @@ public class RPCHandler extends ProtocolHandler<RpcMessageHeader>
 				.getVRBridge(WindowsNamedPipeBridge.class);
 			bridge.changeShareSettings(TrackerRole.WAIST, req.steamVrTrackers().waist());
 			bridge.changeShareSettings(TrackerRole.CHEST, req.steamVrTrackers().chest());
-			bridge.changeShareSettings(TrackerRole.LEFT_FOOT, req.steamVrTrackers().legs());
-			bridge.changeShareSettings(TrackerRole.RIGHT_FOOT, req.steamVrTrackers().legs());
+			bridge.changeShareSettings(TrackerRole.LEFT_FOOT, req.steamVrTrackers().feet());
+			bridge.changeShareSettings(TrackerRole.RIGHT_FOOT, req.steamVrTrackers().feet());
 			bridge.changeShareSettings(TrackerRole.LEFT_KNEE, req.steamVrTrackers().knees());
 			bridge.changeShareSettings(TrackerRole.RIGHT_KNEE, req.steamVrTrackers().knees());
 			bridge.changeShareSettings(TrackerRole.LEFT_ELBOW, req.steamVrTrackers().elbows());

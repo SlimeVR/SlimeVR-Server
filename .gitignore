@@ -24,3 +24,7 @@
 # Node Stuff
 /node_modules
 .husky
+
+
+# ignore gradle build folder
+build/

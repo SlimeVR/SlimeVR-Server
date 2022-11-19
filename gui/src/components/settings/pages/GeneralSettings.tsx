@@ -27,7 +27,7 @@ interface SettingsForm {
   trackers: {
     waist: boolean;
     chest: boolean;
-    legs: boolean;
+    feet: boolean;
     knees: boolean;
     elbows: boolean;
   };
@@ -61,7 +61,7 @@ export function GeneralSettings() {
         chest: false,
         elbows: false,
         knees: false,
-        legs: false,
+        feet: false,
       },
       toggles: {
         extendedSpine: true,
@@ -83,7 +83,7 @@ export function GeneralSettings() {
       const trackers = new SteamVRTrackersSettingT();
       trackers.waist = values.trackers.waist;
       trackers.chest = values.trackers.chest;
-      trackers.legs = values.trackers.legs;
+      trackers.feet = values.trackers.feet;
       trackers.knees = values.trackers.knees;
       trackers.elbows = values.trackers.elbows;
       settings.steamVrTrackers = trackers;
@@ -204,7 +204,7 @@ export function GeneralSettings() {
               variant="toggle"
               outlined
               control={control}
-              name="trackers.legs"
+              name="trackers.feet"
               label="Feet"
             />
             <CheckBox
