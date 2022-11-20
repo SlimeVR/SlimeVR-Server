@@ -711,7 +711,7 @@ public class LegTweakBuffer {
 		float leftFootPressure = 0;
 		float rightFootPressure = 0;
 
-		// get the vector's from the com to each foot
+		// get the vectors from the com to each foot
 		Vector3f leftFootVector = leftFootPosition.subtract(centerOfMass).normalizeLocal();
 		Vector3f rightFootVector = rightFootPosition.subtract(centerOfMass).normalizeLocal();
 
@@ -723,8 +723,8 @@ public class LegTweakBuffer {
 		Vector3f leftFootForce = leftFootVector.mult(leftFootMagnitude / 2.0f);
 		Vector3f rightFootForce = rightFootVector.mult(rightFootMagnitude / 2.0f);
 
-		// based of the acceleration of the com, get the force each foot is
-		// likly applying (the expected force sum should be equal to
+		// based off the acceleration of the com, get the force each foot is
+		// likely applying (the expected force sum should be equal to
 		// centerOfMassAcceleration since the mass is 1)
 		findForceVectors(leftFootForce, rightFootForce);
 
@@ -759,7 +759,7 @@ public class LegTweakBuffer {
 		return new float[] { leftFootPressure, rightFootPressure };
 	}
 
-	// preform a gradient descent to find the force vectors that best match the
+	// perform a gradient descent to find the force vectors that best match the
 	// acceleration of the com
 	private void findForceVectors(Vector3f leftFootForce, Vector3f rightFootForce) {
 		int iterations = 100;

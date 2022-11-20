@@ -777,7 +777,7 @@ public class LegTweaks {
 	// calculate the center of mass of the user for the current frame
 	// returns a vector representing the center of mass position
 	private Vector3f computeCenterOfMass() {
-		// preform a check to see if the needed data is available
+		// perform a check to see if the needed data is available
 		if (
 			skeleton.headNode == null
 				|| skeleton.chestNode == null
