@@ -818,7 +818,7 @@ public class LegTweakBuffer {
 	private boolean detectOutsideForces(Vector3f f1, Vector3f f2) {
 		Vector3f force = GRAVITY.add(f1).add(f2);
 		Vector3f error = centerOfMassAcceleration.subtract(force);
-		return error.length() > FORCE_ERROR_TOLLERANCE;
+		return error.lengthSquared() > FastMath.sqr(FORCE_ERROR_TOLLERANCE);
 	}
 
 	// simple error function for the force vector gradient descent
