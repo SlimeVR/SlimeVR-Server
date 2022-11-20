@@ -1,6 +1,7 @@
 package dev.slimevr.platform.linux;
 
 import com.google.protobuf.CodedOutputStream;
+import com.google.protobuf.InvalidProtocolBufferException;
 import dev.slimevr.Main;
 import dev.slimevr.VRServer;
 import dev.slimevr.bridge.BridgeThread;
@@ -19,9 +20,8 @@ import java.util.List;
 
 
 public class UnixSocketBridge extends SteamVRBridge implements AutoCloseable {
-	public static final String SOCKET_PATH = "/tmp/SlimeVRDriver";
-	public static final UnixDomainSocketAddress SOCKET_ADDRESS = UnixDomainSocketAddress
-		.of(SOCKET_PATH);
+	public final String socketPath;
+	public final UnixDomainSocketAddress socketAddress;
 	private final ByteBuffer dst = ByteBuffer.allocate(2048);
 	private final ByteBuffer src = ByteBuffer.allocate(2048);
 
@@ -34,9 +34,12 @@ public class UnixSocketBridge extends SteamVRBridge implements AutoCloseable {
 		HMDTracker hmd,
 		String bridgeSettingsKey,
 		String bridgeName,
+		String socketPath,
 		List<? extends ShareableTracker> shareableTrackers
 	) {
 		super(server, hmd, "Named socket thread", bridgeName, bridgeSettingsKey, shareableTrackers);
+		this.socketPath = socketPath;
+		this.socketAddress = UnixDomainSocketAddress.of(socketPath);
 	}
 
 	@Override
@@ -105,30 +108,31 @@ public class UnixSocketBridge extends SteamVRBridge implements AutoCloseable {
 	private boolean updateSocket() throws IOException {
 		int read = channel.read(dst);
 		boolean readAnything = false;
-		if (read > 0) {
-			if (read >= 4) { // Got size
-				dst.mark();
-				int messageLength = dst.getInt();
-				dst.reset();
-				if (messageLength > 1024) { // Overflow
-					LogManager
-						.severe(
-							"["
-								+ bridgeName
-								+ "] Buffer overflow on socket. Message length: "
-								+ messageLength
-						);
-					socketError = true;
-					return readAnything;
-				}
-				if (read >= messageLength) {
-					ProtobufMessages.ProtobufMessage message = ProtobufMessages.ProtobufMessage
-						.parser()
-						.parseFrom(dst.array(), 4 + dst.position(), messageLength - 4);
+		// if buffer has 4 bytes at least, we got the message size!
+		if (read > 0 && dst.remaining() >= 4) {
+			dst.mark();
+			int messageLength = dst.getInt();
+			dst.reset();
+			if (messageLength > 1024) { // Overflow
+				LogManager
+					.severe(
+						"["
+							+ bridgeName
+							+ "] Buffer overflow on socket. Message length: "
+							+ messageLength
+					);
+				socketError = true;
+			} else if (dst.remaining() >= messageLength) {
+				// Parse the message (this reads the array directly from the
+				// dst, so we need to move position ourselves)
+				try {
+					var message = parseMessage(dst.array(), 4 + dst.position(), messageLength - 4);
 					this.messageReceived(message);
-					readAnything = true;
-					dst.reset();
+				} catch (InvalidProtocolBufferException e) {
+					LogManager.severe("Failed to read protocol message", e);
 				}
+				dst.position(messageLength);
+				readAnything = true;
 			}
 		} else if (read == -1) {
 			LogManager
@@ -141,6 +145,16 @@ public class UnixSocketBridge extends SteamVRBridge implements AutoCloseable {
 			socketError = true;
 		}
 		return readAnything;
+	}
+
+	private static ProtobufMessages.ProtobufMessage parseMessage(
+		byte[] data,
+		int offset,
+		int length
+	) throws InvalidProtocolBufferException {
+		return ProtobufMessages.ProtobufMessage
+			.parser()
+			.parseFrom(data, offset, length);
 	}
 
 	private void resetChannel() throws IOException {
@@ -160,8 +174,8 @@ public class UnixSocketBridge extends SteamVRBridge implements AutoCloseable {
 
 	private ServerSocketChannel createSocket() throws IOException {
 		ServerSocketChannel server = ServerSocketChannel.open(StandardProtocolFamily.UNIX);
-		server.bind(SOCKET_ADDRESS);
-		LogManager.info("[" + bridgeName + "] Socket " + SOCKET_PATH + " created");
+		server.bind(this.socketAddress);
+		LogManager.info("[" + bridgeName + "] Socket " + this.socketPath + " created");
 		return server;
 	}
 

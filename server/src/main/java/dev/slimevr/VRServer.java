@@ -119,7 +119,8 @@ public class VRServer extends Thread {
 				this,
 				hmdTracker,
 				"steamvr",
-				"SteamVR Socket Bridge",
+				"SteamVR Driver Bridge",
+				"/tmp/SlimeVRDriver",
 				shareTrackers
 			);
 			tasks.add(bridge::startBridge);
