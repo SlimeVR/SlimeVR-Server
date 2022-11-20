@@ -2,6 +2,7 @@ package dev.slimevr.vr.processor.skeleton;
 
 import com.jme3.math.Quaternion;
 import com.jme3.math.Vector3f;
+import com.jme3.math.FastMath;
 
 
 /**
@@ -590,10 +591,10 @@ public class LegTweakBuffer {
 		// combine the scalars to get the final scalars
 		leftFootSensitivityVel = (leftFootScalarAccel
 			+ leftFootScalarVel / 2.0f)
-			* clamp(PRESSURE_SCALER_MIN, PRESSURE_SCALER_MAX, pressureScalars[0] * 2.0f);
+			* FastMath.clamp(pressureScalars[0] * 2.0f, PRESSURE_SCALER_MIN, PRESSURE_SCALER_MAX);
 		rightFootSensitivityVel = (rightFootScalarAccel
 			+ rightFootScalarVel / 2.0f)
-			* clamp(PRESSURE_SCALER_MIN, PRESSURE_SCALER_MAX, pressureScalars[1] * 2.0f);
+			* FastMath.clamp(pressureScalars[1] * 2.0f, PRESSURE_SCALER_MIN, PRESSURE_SCALER_MAX);
 
 		leftFootSensitivityAccel = leftFootScalarVel;
 		rightFootSensitivityAccel = rightFootScalarVel;
@@ -824,10 +825,5 @@ public class LegTweakBuffer {
 	private Vector3f getForceVectorError(Vector3f testForce, Vector3f otherForce) {
 		return centerOfMassAcceleration
 			.subtract(testForce.add(otherForce).add(GRAVITY));
-	}
-
-	// clamp a float between two values
-	private float clamp(float min, float max, float val) {
-		return Math.min(max, Math.max(min, val));
 	}
 }

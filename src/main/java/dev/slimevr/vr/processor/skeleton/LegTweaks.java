@@ -1,5 +1,6 @@
 package dev.slimevr.vr.processor.skeleton;
 
+import com.jme3.math.FastMath;
 import com.jme3.math.Quaternion;
 import com.jme3.math.Vector3f;
 
@@ -747,12 +748,12 @@ public class LegTweaks {
 
 	private float getLeftFootOffset() {
 		float offset = computeUnitVector(this.leftFootRotation).y;
-		return clamp(0, DYNAMIC_DISPLACEMENT_CUTOFF, offset);
+		return FastMath.clamp(offset, 0, DYNAMIC_DISPLACEMENT_CUTOFF);
 	}
 
 	private float getRightFootOffset() {
 		float offset = computeUnitVector(this.rightFootRotation).y;
-		return clamp(0, DYNAMIC_DISPLACEMENT_CUTOFF, offset);
+		return FastMath.clamp(offset, 0, DYNAMIC_DISPLACEMENT_CUTOFF);
 	}
 
 	// calculate the weight of foot correction
@@ -896,10 +897,5 @@ public class LegTweaks {
 	// get the unit vector of the given rotation
 	private Vector3f computeUnitVector(Quaternion quaternion) {
 		return quaternion.getRotationColumn(2).normalize();
-	}
-
-	// clamp a float between two values
-	private float clamp(float min, float max, float val) {
-		return Math.min(max, Math.max(min, val));
 	}
 }
