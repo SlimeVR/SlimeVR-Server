@@ -28,6 +28,8 @@ import java.net.InetAddress;
 import java.net.UnknownHostException;
 import java.util.List;
 import java.util.Queue;
+import java.util.Timer;
+import java.util.TimerTask;
 import java.util.concurrent.LinkedBlockingQueue;
 import java.util.function.Consumer;
 
@@ -49,6 +51,7 @@ public class VRServer extends Thread {
 	private final AutoBoneHandler autoBoneHandler;
 	private final ProtocolAPI protocolAPI;
 	private final ConfigManager configManager;
+	private final Timer timer = new Timer();
 	private final NanoTimer fpsTimer = new NanoTimer();
 
 	/**
@@ -240,6 +243,28 @@ public class VRServer extends Thread {
 
 	public void resetTrackersYaw() {
 		queueTask(humanPoseProcessor::resetTrackersYaw);
+	}
+
+	public void scheduleResetTrackers(long delay) {
+		TimerTask resetTask = new resetTask();
+		timer.schedule(resetTask, delay);
+	}
+
+	public void scheduleResetTrackersYaw(long delay) {
+		TimerTask yawResetTask = new yawResetTask();
+		timer.schedule(yawResetTask, delay);
+	}
+
+	class resetTask extends TimerTask {
+		public void run() {
+			queueTask(humanPoseProcessor::resetTrackers);
+		}
+	}
+
+	class yawResetTask extends TimerTask {
+		public void run() {
+			queueTask(humanPoseProcessor::resetTrackersYaw);
+		}
 	}
 
 	public void setLegTweaksEnabled(boolean value) {
