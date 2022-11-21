@@ -2,12 +2,11 @@ package dev.slimevr.vr.processor;
 
 import dev.slimevr.VRServer;
 import dev.slimevr.util.ann.VRServerThread;
-import dev.slimevr.vr.processor.skeleton.Skeleton;
-import dev.slimevr.vr.processor.skeleton.HumanSkeleton;
-import dev.slimevr.vr.processor.skeleton.SkeletonConfig;
-import dev.slimevr.vr.processor.skeleton.SkeletonConfigOffsets;
-import dev.slimevr.vr.processor.skeleton.SkeletonConfigToggles;
-import dev.slimevr.vr.trackers.*;
+import dev.slimevr.vr.processor.skeleton.*;
+import dev.slimevr.vr.trackers.ShareableTracker;
+import dev.slimevr.vr.trackers.Tracker;
+import dev.slimevr.vr.trackers.TrackerRole;
+import dev.slimevr.vr.trackers.TrackerStatus;
 import io.eiren.util.ann.ThreadSafe;
 import io.eiren.util.collections.FastList;
 
@@ -249,8 +248,9 @@ public class HumanPoseProcessor {
 
 	@VRServerThread
 	public float getUserHeightFromConfig() {
-		return getSkeletonConfig().getOffset(SkeletonConfigOffsets.NECK)
-			+ getSkeletonConfig().getOffset(SkeletonConfigOffsets.TORSO)
-			+ getSkeletonConfig().getOffset(SkeletonConfigOffsets.LEGS_LENGTH);
+		if (skeleton != null) {
+			return getSkeletonConfig().getUserHeightFromOffsets();
+		}
+		return 0f;
 	}
 }

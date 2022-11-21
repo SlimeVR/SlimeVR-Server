@@ -132,10 +132,15 @@ public class VRCOSCHandler {
 
 	void handleReceivedMessage(OSCMessageEvent event) {
 		timeAtLastOSCMessageReceived = System.currentTimeMillis();
-		if (steamvrBridge != null && steamvrBridge.isConnected()) {
+
+		if (steamvrBridge != null && !steamvrBridge.isConnected()) {
+			// Sets HMD status to OK
 			if (hmd.getStatus() != TrackerStatus.OK) {
 				hmd.setStatus(TrackerStatus.OK);
 			}
+
+			// Sets the HMD y position to
+			// the vrc Upright parameter (0-1) * the user's height
 			hmd.position
 				.set(
 					0f,
@@ -146,6 +151,7 @@ public class VRCOSCHandler {
 					0f
 				);
 			hmd.rotation.set(Quaternion.IDENTITY);
+
 			hmd.dataTick();
 		}
 	}
