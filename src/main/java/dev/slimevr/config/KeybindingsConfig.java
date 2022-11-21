@@ -21,19 +21,19 @@ public class KeybindingsConfig {
 		return quickResetBinding;
 	}
 
-	public long getResetDelay(){
+	public long getResetDelay() {
 		return resetDelay;
 	}
 
-	public void setResetDelay(long time){
+	public void setResetDelay(long time) {
 		resetDelay = time;
 	}
 
-	public long getQuickResetDelay(){
+	public long getQuickResetDelay() {
 		return quickResetDelay;
 	}
 
-	public void setQuickResetDelay(long time){
+	public void setQuickResetDelay(long time) {
 		quickResetDelay = time;
 	}
 }
