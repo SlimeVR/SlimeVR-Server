@@ -10,7 +10,10 @@ import com.jme3.math.Vector3f;
 import dev.slimevr.config.OSCConfig;
 import dev.slimevr.platform.windows.WindowsNamedPipeBridge;
 import dev.slimevr.vr.processor.HumanPoseProcessor;
-import dev.slimevr.vr.trackers.*;
+import dev.slimevr.vr.trackers.HMDTracker;
+import dev.slimevr.vr.trackers.ShareableTracker;
+import dev.slimevr.vr.trackers.TrackerRole;
+import dev.slimevr.vr.trackers.TrackerStatus;
 import io.eiren.util.collections.FastList;
 import io.eiren.util.logging.LogManager;
 
@@ -74,7 +77,7 @@ public class VRCOSCHandler {
 			try {
 				oscSender.close();
 			} catch (IOException e) {
-				LogManager.warning("[VRCOSCHandler] Error closing the OSC sender: " + e);
+				LogManager.severe("[VRCOSCHandler] Error closing the OSC sender: " + e);
 			}
 		}
 
@@ -88,7 +91,7 @@ public class VRCOSCHandler {
 				LogManager.info("[VRCOSCHandler] Listening to port " + port);
 			} catch (IOException e) {
 				LogManager
-					.warning("[VRCOSCHandler] Error listening to the port " + config.getPortIn());
+					.severe("[VRCOSCHandler] Error listening to the port " + config.getPortIn());
 			}
 
 			// Starts listening for the Upright parameter from VRC
@@ -117,7 +120,7 @@ public class VRCOSCHandler {
 					);
 			} catch (IOException e) {
 				LogManager
-					.warning(
+					.severe(
 						"[VRCOSCHandler] Error connecting to port "
 							+ config.getPortOut()
 							+ " at the address "
