@@ -91,6 +91,7 @@ public class LegTweaks {
 	static final float NEARLY_ZERO = 0.001f;
 	private static final float STANDING_CUTOFF_VERTICAL = 0.65f;
 	private static final float MAX_DISENGAGMENT_OFFSET = 0.30f;
+	private static final float DEFAULT_ARM_DISTANCE = 0.15f;
 
 	// counters
 	private int leftFramesLocked = 0;
@@ -834,6 +835,15 @@ public class LegTweaks {
 			centerOfMass = centerOfMass.add(rightUpperArm.mult(UPPER_ARM_MASS));
 			centerOfMass = centerOfMass.add(leftForearm.mult(FOREARM_MASS));
 			centerOfMass = centerOfMass.add(rightForearm.mult(FOREARM_MASS));
+		} else {
+			// if the arms are not avaliable put them slightly in front
+			// of the chest.
+			Vector3f chestUnitVector = computeUnitVector(
+				skeleton.chestNode.worldTransform.getRotation()
+			);
+			Vector3f armLocation = chest.add(chestUnitVector.mult(DEFAULT_ARM_DISTANCE));
+			centerOfMass = centerOfMass.add(armLocation.mult(UPPER_ARM_MASS * 2.0f));
+			centerOfMass = centerOfMass.add(armLocation.mult(FOREARM_MASS * 2.0f));
 		}
 
 		// finally translate in to tracker space
