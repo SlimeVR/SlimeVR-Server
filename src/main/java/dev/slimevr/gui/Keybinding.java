@@ -12,6 +12,7 @@ import io.eiren.util.logging.LogManager;
 public class Keybinding implements HotkeyListener {
 	private static final int RESET = 1;
 	private static final int QUICK_RESET = 2;
+	private static final int RESET_MOUNTING = 3;
 	public final VRServer server;
 	public final KeybindingsConfig config;
 
@@ -40,6 +41,10 @@ public class Keybinding implements HotkeyListener {
 				String quickResetBinding = this.config.getQuickResetBinding();
 				JIntellitype.getInstance().registerHotKey(QUICK_RESET, quickResetBinding);
 				LogManager.info("[Keybinding] Bound quick reset to " + quickResetBinding);
+
+				String resetMountingBinding = this.config.getResetMountingBinding();
+				JIntellitype.getInstance().registerHotKey(RESET_MOUNTING, resetMountingBinding);
+				LogManager.info("[Keybinding] Bound reset mounting to " + resetMountingBinding);
 			}
 		} catch (Throwable e) {
 			LogManager
@@ -60,6 +65,10 @@ public class Keybinding implements HotkeyListener {
 			case QUICK_RESET -> {
 				LogManager.info("[Keybinding] Quick reset pressed");
 				server.scheduleResetTrackersYaw(this.config.getQuickResetDelay());
+			}
+			case RESET_MOUNTING -> {
+				LogManager.info("[Keybinding] Reset mounting pressed");
+				server.resetTrackersMounting();
 			}
 		}
 	}

@@ -5,6 +5,7 @@ import dev.slimevr.autobone.AutoBoneHandler;
 import dev.slimevr.bridge.Bridge;
 import dev.slimevr.bridge.VMCBridge;
 import dev.slimevr.config.ConfigManager;
+import dev.slimevr.osc.VRCOSCHandler;
 import dev.slimevr.platform.windows.WindowsNamedPipeBridge;
 import dev.slimevr.poserecorder.BVHRecorder;
 import dev.slimevr.protocol.ProtocolAPI;
@@ -45,6 +46,7 @@ public class VRServer extends Thread {
 	private final List<Consumer<Tracker>> newTrackersConsumers = new FastList<>();
 	private final List<Runnable> onTick = new FastList<>();
 	private final List<? extends ShareableTracker> shareTrackers;
+	private final VRCOSCHandler VRCOSCHandler;
 	private final DeviceManager deviceManager;
 	private final BVHRecorder bvhRecorder;
 	private final SerialHandler serialHandler;
@@ -77,17 +79,18 @@ public class VRServer extends Thread {
 		hmdTracker.position.set(0, 1.8f, 0); // Set starting position for easier
 												// debugging
 		// TODO Multiple processors
-		humanPoseProcessor = new HumanPoseProcessor(this, hmdTracker);
+		humanPoseProcessor = new HumanPoseProcessor(this);
 		shareTrackers = humanPoseProcessor.getComputedTrackers();
 
 		// Start server for SlimeVR trackers
 		trackersServer = new TrackersUDPServer(6969, "Sensors UDP server", this::registerTracker);
 
 		// OpenVR bridge currently only supports Windows
+		WindowsNamedPipeBridge driverBridge = null;
 		if (OperatingSystem.getCurrentPlatform() == OperatingSystem.WINDOWS) {
 
 			// Create named pipe bridge for SteamVR driver
-			WindowsNamedPipeBridge driverBridge = new WindowsNamedPipeBridge(
+			driverBridge = new WindowsNamedPipeBridge(
 				this,
 				hmdTracker,
 				"steamvr",
@@ -125,6 +128,15 @@ public class VRServer extends Thread {
 		} catch (UnknownHostException e) {
 			e.printStackTrace();
 		}
+
+		// Initialize OSC
+		VRCOSCHandler = new VRCOSCHandler(
+			hmdTracker,
+			humanPoseProcessor,
+			driverBridge,
+			getConfigManager().getVrConfig().getVrcOSC(),
+			shareTrackers
+		);
 
 		bvhRecorder = new BVHRecorder(this);
 
@@ -187,8 +199,8 @@ public class VRServer extends Thread {
 	public void run() {
 		trackersServer.start();
 		while (true) {
-			fpsTimer.update();
 			// final long start = System.currentTimeMillis();
+			fpsTimer.update();
 			do {
 				Runnable task = tasks.poll();
 				if (task == null)
@@ -208,6 +220,7 @@ public class VRServer extends Thread {
 			for (Bridge bridge : bridges) {
 				bridge.dataWrite();
 			}
+			VRCOSCHandler.update();
 			// final long time = System.currentTimeMillis() - start;
 			try {
 				Thread.sleep(1); // 1000Hz
@@ -239,6 +252,12 @@ public class VRServer extends Thread {
 
 	public void resetTrackers() {
 		queueTask(humanPoseProcessor::resetTrackers);
+	}
+
+	public void resetTrackersMounting() {
+		queueTask(() -> {
+			humanPoseProcessor.resetTrackersMounting();
+		});
 	}
 
 	public void resetTrackersYaw() {
@@ -329,6 +348,10 @@ public class VRServer extends Thread {
 
 	public TrackersUDPServer getTrackersServer() {
 		return trackersServer;
+	}
+
+	public VRCOSCHandler getVRCOSCHandler() {
+		return VRCOSCHandler;
 	}
 
 	public DeviceManager getDeviceManager() {

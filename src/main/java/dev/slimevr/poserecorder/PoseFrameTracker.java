@@ -208,6 +208,11 @@ public class PoseFrameTracker implements Tracker, Iterable<TrackerFrame> {
 	}
 
 	@Override
+	public void resetMounting(boolean reverseYaw) {
+		throw new UnsupportedOperationException("PoseFrameTracker does not implement calibration");
+	}
+
+	@Override
 	public void tick() {
 		throw new UnsupportedOperationException("PoseFrameTracker does not implement this method");
 	}
