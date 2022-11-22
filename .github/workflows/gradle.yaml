@@ -58,4 +58,4 @@ jobs:
           # Artifact name
           name: "SlimeVR-Server" # optional, default is artifact
           # A file, directory or wildcard pattern that describes what to upload
-          path: build/libs/*
+          path: server/build/libs/*
