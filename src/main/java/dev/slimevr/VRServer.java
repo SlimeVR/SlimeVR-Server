@@ -254,14 +254,12 @@ public class VRServer extends Thread {
 		queueTask(humanPoseProcessor::resetTrackers);
 	}
 
-	public void resetTrackersMounting() {
-		queueTask(() -> {
-			humanPoseProcessor.resetTrackersMounting();
-		});
-	}
-
 	public void resetTrackersYaw() {
 		queueTask(humanPoseProcessor::resetTrackersYaw);
+	}
+
+	public void resetTrackersMounting() {
+		queueTask(humanPoseProcessor::resetTrackersMounting);
 	}
 
 	public void scheduleResetTrackers(long delay) {
@@ -274,6 +272,11 @@ public class VRServer extends Thread {
 		timer.schedule(yawResetTask, delay);
 	}
 
+	public void scheduleResetTrackersMounting(long delay) {
+		TimerTask resetMountingTask = new resetMountingTask();
+		timer.schedule(resetMountingTask, delay);
+	}
+
 	class resetTask extends TimerTask {
 		public void run() {
 			queueTask(humanPoseProcessor::resetTrackers);
@@ -283,6 +286,12 @@ public class VRServer extends Thread {
 	class yawResetTask extends TimerTask {
 		public void run() {
 			queueTask(humanPoseProcessor::resetTrackersYaw);
+		}
+	}
+
+	class resetMountingTask extends TimerTask {
+		public void run() {
+			queueTask(humanPoseProcessor::resetTrackersMounting);
 		}
 	}
 
