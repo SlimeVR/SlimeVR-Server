@@ -2,12 +2,11 @@ package dev.slimevr.vr.processor;
 
 import dev.slimevr.VRServer;
 import dev.slimevr.util.ann.VRServerThread;
-import dev.slimevr.vr.processor.skeleton.Skeleton;
-import dev.slimevr.vr.processor.skeleton.HumanSkeleton;
-import dev.slimevr.vr.processor.skeleton.SkeletonConfig;
-import dev.slimevr.vr.processor.skeleton.SkeletonConfigOffsets;
-import dev.slimevr.vr.processor.skeleton.SkeletonConfigToggles;
-import dev.slimevr.vr.trackers.*;
+import dev.slimevr.vr.processor.skeleton.*;
+import dev.slimevr.vr.trackers.ShareableTracker;
+import dev.slimevr.vr.trackers.Tracker;
+import dev.slimevr.vr.trackers.TrackerRole;
+import dev.slimevr.vr.trackers.TrackerStatus;
 import io.eiren.util.ann.ThreadSafe;
 import io.eiren.util.collections.FastList;
 
@@ -22,8 +21,24 @@ public class HumanPoseProcessor {
 	private final List<Consumer<Skeleton>> onSkeletonUpdated = new FastList<>();
 	private Skeleton skeleton;
 
-	public HumanPoseProcessor(VRServer server, HMDTracker hmd) {
+	public HumanPoseProcessor(VRServer server) {
 		this.server = server;
+		computedTrackers
+			.add(
+				new ComputedHumanPoseTracker(
+					Tracker.getNextLocalTrackerId(),
+					ComputedHumanPoseTrackerPosition.HEAD,
+					TrackerRole.HEAD
+				)
+			);
+		computedTrackers
+			.add(
+				new ComputedHumanPoseTracker(
+					Tracker.getNextLocalTrackerId(),
+					ComputedHumanPoseTrackerPosition.CHEST,
+					TrackerRole.CHEST
+				)
+			);
 		computedTrackers
 			.add(
 				new ComputedHumanPoseTracker(
@@ -46,14 +61,6 @@ public class HumanPoseProcessor {
 					Tracker.getNextLocalTrackerId(),
 					ComputedHumanPoseTrackerPosition.RIGHT_FOOT,
 					TrackerRole.RIGHT_FOOT
-				)
-			);
-		computedTrackers
-			.add(
-				new ComputedHumanPoseTracker(
-					Tracker.getNextLocalTrackerId(),
-					ComputedHumanPoseTrackerPosition.CHEST,
-					TrackerRole.CHEST
 				)
 			);
 		computedTrackers
@@ -155,16 +162,16 @@ public class HumanPoseProcessor {
 
 	@VRServerThread
 	public void trackerAdded(Tracker tracker) {
-		updateSekeltonModel();
+		updateSkeletonModel();
 	}
 
 	@VRServerThread
 	public void trackerUpdated(Tracker tracker) {
-		updateSekeltonModel();
+		updateSkeletonModel();
 	}
 
 	@VRServerThread
-	private void updateSekeltonModel() {
+	private void updateSkeletonModel() {
 		disconnectAllTrackers();
 		skeleton = new HumanSkeleton(server, computedTrackers);
 		for (Consumer<Skeleton> sc : onSkeletonUpdated)
@@ -186,8 +193,16 @@ public class HumanPoseProcessor {
 
 	@VRServerThread
 	public void resetTrackers() {
-		if (skeleton != null)
+		if (skeleton != null) {
 			skeleton.resetTrackersFull();
+			server.getVRCOSCHandler().yawAlign();
+		}
+	}
+
+	@VRServerThread
+	public void resetTrackersMounting() {
+		if (skeleton != null)
+			skeleton.resetTrackersMounting();
 	}
 
 	@VRServerThread
@@ -235,5 +250,13 @@ public class HumanPoseProcessor {
 
 			server.getConfigManager().saveConfig();
 		}
+	}
+
+	@VRServerThread
+	public float getUserHeightFromConfig() {
+		if (skeleton != null) {
+			return getSkeletonConfig().getUserHeightFromOffsets();
+		}
+		return 0f;
 	}
 }

@@ -304,4 +304,9 @@ public class WindowsNamedPipeBridge extends ProtobufBridge<VRTracker> implements
 			);
 		return false;
 	}
+
+	public boolean isConnected() {
+		return pipe != null
+			&& pipe.state == PipeState.OPEN;
+	}
 }
