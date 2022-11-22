@@ -27,6 +27,7 @@ public class SkeletonConfig {
 
 	protected final boolean autoUpdateOffsets;
 	protected final SkeletonConfigCallback callback;
+	protected float userHeight;
 
 	public SkeletonConfig(boolean autoUpdateOffsets) {
 		this.autoUpdateOffsets = autoUpdateOffsets;
@@ -105,6 +106,7 @@ public class SkeletonConfig {
 			}
 		}
 
+		// Calls callback
 		if (callback != null) {
 			try {
 				callback
@@ -113,6 +115,11 @@ public class SkeletonConfig {
 				LogManager.severe("[SkeletonConfig] Exception while calling callback", e);
 			}
 		}
+
+		// Re-calculate user height
+		userHeight = getOffset(SkeletonConfigOffsets.NECK)
+			+ getOffset(SkeletonConfigOffsets.TORSO)
+			+ getOffset(SkeletonConfigOffsets.LEGS_LENGTH);
 
 		return origVal;
 	}
@@ -128,6 +135,10 @@ public class SkeletonConfig {
 
 		Float val = configOffsets.get(config);
 		return val != null ? val : config.defaultValue;
+	}
+
+	public float getUserHeightFromOffsets() {
+		return userHeight;
 	}
 
 	public Boolean setToggle(SkeletonConfigToggles config, Boolean newValue) {
