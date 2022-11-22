@@ -8,6 +8,13 @@ public class KeybindingsConfig {
 
 	private String resetMountingBinding = "CTRL+ALT+SHIFT+I";
 
+	private long resetDelay = 0L;
+
+	private long quickResetDelay = 0L;
+
+	private long resetMountingDelay = 0L;
+
+
 	public KeybindingsConfig() {
 	}
 
@@ -21,5 +28,29 @@ public class KeybindingsConfig {
 
 	public String getResetMountingBinding() {
 		return resetMountingBinding;
+	}
+
+	public long getResetDelay() {
+		return resetDelay;
+	}
+
+	public void setResetDelay(long delay) {
+		resetDelay = delay;
+	}
+
+	public long getQuickResetDelay() {
+		return quickResetDelay;
+	}
+
+	public void setQuickResetDelay(long delay) {
+		quickResetDelay = delay;
+	}
+
+	public long getResetMountingDelay() {
+		return resetMountingDelay;
+	}
+
+	public void setResetMountingDelay(long delay) {
+		resetMountingDelay = delay;
 	}
 }

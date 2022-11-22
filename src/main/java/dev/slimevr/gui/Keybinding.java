@@ -14,8 +14,6 @@ public class Keybinding implements HotkeyListener {
 	private static final int QUICK_RESET = 2;
 	private static final int RESET_MOUNTING = 3;
 	public final VRServer server;
-
-
 	public final KeybindingsConfig config;
 
 	@AWTThread
@@ -50,7 +48,7 @@ public class Keybinding implements HotkeyListener {
 			}
 		} catch (Throwable e) {
 			LogManager
-				.info(
+				.warning(
 					"[Keybinding] JIntellitype initialization failed. Keybindings will be disabled. Try restarting your computer."
 				);
 		}
@@ -62,15 +60,15 @@ public class Keybinding implements HotkeyListener {
 		switch (identifier) {
 			case RESET -> {
 				LogManager.info("[Keybinding] Reset pressed");
-				server.resetTrackers();
+				server.scheduleResetTrackers(this.config.getResetDelay());
 			}
 			case QUICK_RESET -> {
 				LogManager.info("[Keybinding] Quick reset pressed");
-				server.resetTrackersYaw();
+				server.scheduleResetTrackersYaw(this.config.getQuickResetDelay());
 			}
 			case RESET_MOUNTING -> {
 				LogManager.info("[Keybinding] Reset mounting pressed");
-				server.resetTrackersMounting();
+				server.scheduleResetTrackersMounting(this.config.getResetMountingDelay());
 			}
 		}
 	}
