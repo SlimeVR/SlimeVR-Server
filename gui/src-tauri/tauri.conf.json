@@ -1,0 +1,86 @@
+{
+  "package": {
+    "productName": "slimevr-ui",
+    "version": "0.1.0"
+  },
+  "build": {
+    "distDir": "../build",
+    "devPath": "http://localhost:3000",
+    "beforeDevCommand": "npm run start",
+    "beforeBuildCommand": "npm run build"
+  },
+  "tauri": {
+    "bundle": {
+      "active": true,
+      "targets": "all",
+      "identifier": "slimevr.dev",
+      "icon": ["icons/icon.ico"],
+      "resources": [],
+      "externalBin": [],
+      "copyright": "",
+      "category": "DeveloperTool",
+      "shortDescription": "",
+      "longDescription": "",
+      "deb": {
+        "depends": []
+      },
+      "macOS": {
+        "frameworks": [],
+        "exceptionDomain": "",
+        "signingIdentity": null,
+        "providerShortName": null,
+        "entitlements": null
+      },
+      "windows": {
+        "certificateThumbprint": null,
+        "digestAlgorithm": "sha256",
+        "timestampUrl": ""
+      }
+    },
+    "updater": {
+      "active": false
+    },
+    "allowlist": {
+      "shell": {
+        "all": false,
+        "execute": true
+      },
+      "fs": {
+        "scope": ["$APP/*", "$APP"],
+        "all": true
+      },
+      "path": {
+        "all": true
+      },
+      "window": {
+        "setResizable": true,
+        "setTitle": true,
+        "maximize": true,
+        "unmaximize": true,
+        "minimize": true,
+        "unminimize": true,
+        "close": true,
+        "startDragging": true
+      }
+    },
+    "windows": [
+      {
+        "title": "Slimevr UI",
+        "width": 1289,
+        "height": 709,
+        "minWidth": 880,
+        "minHeight": 740,
+        "resizable": true,
+        "fullscreen": false,
+        "decorations": false,
+        "transparent": false,
+        "fileDropEnabled": false,
+        "visible": true
+      }
+    ],
+    "security": {
+      "csp": null
+    },
+    "cli": {}
+  }
+}

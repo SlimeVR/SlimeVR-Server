@@ -1,0 +1,21 @@
+# Ignore Gradle build output directory
+build
+
+/bin/
+
+MagnetoLib.dll
+vrconfig.yml
+
+# BVH
+BVH Recordings
+
+# AutoBone
+Recordings
+AutoBone Recordings
+Load AutoBone Recordings
+
+# Logs
+*.log.*
+*.log.lck
+*.log
+logs/
