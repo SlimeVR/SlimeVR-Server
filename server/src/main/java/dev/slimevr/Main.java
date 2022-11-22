@@ -1,7 +1,5 @@
 package dev.slimevr;
 
-import dev.slimevr.gui.Keybinding;
-import dev.slimevr.gui.VRServerGUI;
 import io.eiren.util.logging.LogManager;
 import org.apache.commons.cli.*;
 import org.apache.commons.lang3.JavaVersion;
@@ -15,7 +13,7 @@ import java.net.ServerSocket;
 
 public class Main {
 
-	public static String VERSION = "0.3.0";
+	public static String VERSION = "0.3.1";
 
 	public static VRServer vrServer;
 
@@ -29,15 +27,8 @@ public class Main {
 
 		Options options = new Options();
 
-		Option noGui = new Option(
-			"g",
-			"no-gui",
-			false,
-			"disable swing gui (allow for other gui to be used)"
-		);
 		Option help = new Option("h", "help", false, "Show help");
 
-		options.addOption(noGui);
 		options.addOption(help);
 		try {
 			cmd = parser.parse(options, args);
@@ -94,8 +85,6 @@ public class Main {
 			vrServer = new VRServer();
 			vrServer.start();
 			new Keybinding(vrServer);
-			if (!cmd.hasOption("no-gui"))
-				new VRServerGUI(vrServer);
 		} catch (Throwable e) {
 			e.printStackTrace();
 			try {

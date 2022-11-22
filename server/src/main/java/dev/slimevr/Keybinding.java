@@ -1,8 +1,7 @@
-package dev.slimevr.gui;
+package dev.slimevr;
 
 import com.melloware.jintellitype.HotkeyListener;
 import com.melloware.jintellitype.JIntellitype;
-import dev.slimevr.VRServer;
 import dev.slimevr.config.KeybindingsConfig;
 import io.eiren.util.OperatingSystem;
 import io.eiren.util.ann.AWTThread;
