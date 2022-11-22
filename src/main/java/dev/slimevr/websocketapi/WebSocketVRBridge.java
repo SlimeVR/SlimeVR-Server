@@ -1,5 +1,7 @@
 package dev.slimevr.websocketapi;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.node.ObjectNode;
 import com.jme3.math.Quaternion;
 import com.jme3.math.Vector3f;
 import dev.slimevr.Main;
@@ -10,8 +12,6 @@ import io.eiren.util.collections.FastList;
 import io.eiren.util.logging.LogManager;
 import org.java_websocket.WebSocket;
 import org.java_websocket.handshake.ClientHandshake;
-import org.json.JSONException;
-import org.json.JSONObject;
 
 import java.util.List;
 import java.util.concurrent.atomic.AtomicBoolean;
@@ -28,6 +28,7 @@ public class WebSocketVRBridge extends WebsocketAPI implements Bridge {
 
 	private final HMDTracker internalHMDTracker = new HMDTracker("internal://HMD");
 	private final AtomicBoolean newHMDData = new AtomicBoolean(false);
+	private final ObjectMapper mapper = new ObjectMapper();
 
 	public WebSocketVRBridge(
 		HMDTracker hmd,
@@ -77,11 +78,11 @@ public class WebSocketVRBridge extends WebsocketAPI implements Bridge {
 		super.onOpen(conn, handshake);
 		// Register trackers
 		for (int i = 0; i < internalTrackers.size(); ++i) {
-			JSONObject message = new JSONObject();
+			ObjectNode message = mapper.getNodeFactory().objectNode();
 			message.put("type", "config");
 			message.put("tracker_id", "SlimeVR Tracker " + (i + 1));
 			message.put("location", shareTrackers.get(i).getTrackerRole().name().toLowerCase());
-			message.put("tracker_type", message.optString("location"));
+			message.put("tracker_type", message.get("location").asText());
 			conn.send(message.toString());
 		}
 	}
@@ -90,9 +91,9 @@ public class WebSocketVRBridge extends WebsocketAPI implements Bridge {
 	public void onMessage(WebSocket conn, String message) {
 		// LogManager.info(message);
 		try {
-			JSONObject json = new JSONObject(message);
+			ObjectNode json = mapper.getNodeFactory().objectNode();
 			if (json.has("type")) {
-				switch (json.optString("type")) {
+				switch (json.get("type").asText()) {
 					case "pos" -> {
 						parsePosition(json, conn);
 						return;
@@ -127,28 +128,28 @@ public class WebSocketVRBridge extends WebsocketAPI implements Bridge {
 		}
 	}
 
-	private void parsePosition(JSONObject json, WebSocket conn) throws JSONException {
-		if (json.optInt("tracker_id") == 0) {
+	private void parsePosition(ObjectNode json, WebSocket conn) {
+		if (json.get("tracker_id").asInt() == 0) {
 			// Read HMD information
 			internalHMDTracker.position
 				.set(
-					(float) json.optDouble("x"),
-					(float) json.optDouble("y") + 0.2f,
-					(float) json.optDouble("z")
+					(float) json.get("x").asDouble(),
+					(float) json.get("y").asDouble() + 0.2f,
+					(float) json.get("z").asDouble()
 				); // TODO Wtf is this hack? VRWorkout issue?
 			internalHMDTracker.rotation
 				.set(
-					(float) json.optDouble("qx"),
-					(float) json.optDouble("qy"),
-					(float) json.optDouble("qz"),
-					(float) json.optDouble("qw")
+					(float) json.get("qx").asDouble(),
+					(float) json.get("qy").asDouble(),
+					(float) json.get("qz").asDouble(),
+					(float) json.get("qw").asDouble()
 				);
 			internalHMDTracker.dataTick();
 			newHMDData.set(true);
 
 			// Send tracker info in reply
 			for (int i = 0; i < internalTrackers.size(); ++i) {
-				JSONObject message = new JSONObject();
+				ObjectNode message = mapper.getNodeFactory().objectNode();
 				message.put("type", "pos");
 				message.put("src", "full");
 				message.put("tracker_id", "SlimeVR Tracker " + (i + 1));
@@ -167,8 +168,8 @@ public class WebSocketVRBridge extends WebsocketAPI implements Bridge {
 		}
 	}
 
-	private void parseAction(JSONObject json, WebSocket conn) throws JSONException {
-		switch (json.optString("name")) {
+	private void parseAction(ObjectNode json, WebSocket conn) {
+		switch (json.get("name").asText()) {
 			case "calibrate" -> Main.vrServer.resetTrackersYaw();
 			case "full_calibrate" -> Main.vrServer.resetTrackers();
 		}

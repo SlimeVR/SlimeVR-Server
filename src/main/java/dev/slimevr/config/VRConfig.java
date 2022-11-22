@@ -17,25 +17,27 @@ import java.util.Map;
 )
 public class VRConfig {
 
-	private WindowConfig window = new WindowConfig();
+	private final WindowConfig window = new WindowConfig();
 
-	private FiltersConfig filters = new FiltersConfig();
+	private final FiltersConfig filters = new FiltersConfig();
 
-	private AutoBoneConfig autobone = new AutoBoneConfig();
+	private final OSCConfig vrcOSC = new OSCConfig();
 
-	private KeybindingsConfig keybindings = new KeybindingsConfig();
+	private final AutoBoneConfig autobone = new AutoBoneConfig();
 
-	private SkeletonConfig skeleton = new SkeletonConfig();
+	private final KeybindingsConfig keybindings = new KeybindingsConfig();
+
+	private final SkeletonConfig skeleton = new SkeletonConfig();
 
 	@JsonDeserialize(using = TrackerConfigMapDeserializer.class)
 	@JsonSerialize(keyUsing = StdKeySerializers.StringKeySerializer.class)
-	private Map<String, TrackerConfig> trackers = new HashMap<>();
+	private final Map<String, TrackerConfig> trackers = new HashMap<>();
 
 	@JsonDeserialize(using = BridgeConfigMapDeserializer.class)
 	@JsonSerialize(keyUsing = StdKeySerializers.StringKeySerializer.class)
-	private Map<String, BridgeConfig> bridges = new HashMap<>();
+	private final Map<String, BridgeConfig> bridges = new HashMap<>();
 
-	private OverlayConfig overlay = new OverlayConfig();
+	private final OverlayConfig overlay = new OverlayConfig();
 
 	public WindowConfig getWindow() {
 		return window;
@@ -43,6 +45,10 @@ public class VRConfig {
 
 	public FiltersConfig getFilters() {
 		return filters;
+	}
+
+	public OSCConfig getVrcOSC() {
+		return vrcOSC;
 	}
 
 	public AutoBoneConfig getAutoBone() {
