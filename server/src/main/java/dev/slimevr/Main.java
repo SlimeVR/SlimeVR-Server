@@ -1,6 +1,5 @@
 package dev.slimevr;
 
-import dev.slimevr.Keybinding;
 import io.eiren.util.logging.LogManager;
 import org.apache.commons.cli.*;
 import org.apache.commons.lang3.JavaVersion;

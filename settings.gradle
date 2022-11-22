@@ -8,7 +8,6 @@
  */
 
 rootProject.name = 'SlimeVR Server'
-include ':slime-java-commons'
 
 
 include ':solarxr-protocol'
