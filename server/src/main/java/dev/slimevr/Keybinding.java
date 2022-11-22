@@ -1,4 +1,4 @@
-package dev.slimevr.gui;
+package dev.slimevr;
 
 import com.melloware.jintellitype.HotkeyListener;
 import com.melloware.jintellitype.JIntellitype;
