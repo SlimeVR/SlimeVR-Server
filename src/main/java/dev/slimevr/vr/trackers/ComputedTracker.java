@@ -109,6 +109,10 @@ public class ComputedTracker implements Tracker, TrackerWithTPS {
 	}
 
 	@Override
+	public void resetMounting(boolean reverseYaw) {
+	}
+
+	@Override
 	public TrackerPosition getBodyPosition() {
 		return bodyPosition;
 	}

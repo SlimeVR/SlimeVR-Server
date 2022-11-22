@@ -1781,6 +1781,38 @@ public class HumanSkeleton extends Skeleton implements SkeletonConfigCallback {
 		this.legTweaks.resetBuffer();
 	}
 
+	private boolean shouldResetMounting(TrackerPosition position) {
+		return position != null
+			// TODO: Feet can't currently be reset using this method, maybe
+			// they'll need a separate step just for them?
+			&& position != TrackerPosition.LEFT_FOOT
+			&& position != TrackerPosition.RIGHT_FOOT;
+	}
+
+	private boolean shouldReverseYaw(TrackerPosition position) {
+		return position != null
+			&& (position == TrackerPosition.LEFT_UPPER_LEG
+				|| position == TrackerPosition.RIGHT_UPPER_LEG
+				|| position == TrackerPosition.LEFT_LOWER_ARM
+				|| position == TrackerPosition.RIGHT_LOWER_ARM
+				|| position == TrackerPosition.LEFT_HAND
+				|| position == TrackerPosition.RIGHT_HAND);
+	}
+
+	@Override
+	@VRServerThread
+	public void resetTrackersMounting() {
+		// Pass all trackers through trackerPreUpdate
+		Tracker[] trackersToReset = getTrackersToReset();
+
+		for (Tracker tracker : trackersToReset) {
+			if (tracker != null && shouldResetMounting(tracker.getBodyPosition())) {
+				tracker.resetMounting(shouldReverseYaw(tracker.getBodyPosition()));
+			}
+		}
+		this.legTweaks.resetBuffer();
+	}
+
 	@Override
 	@VRServerThread
 	public void resetTrackersYaw() {

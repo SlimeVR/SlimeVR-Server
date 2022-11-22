@@ -278,6 +278,10 @@ public class IMUTracker
 	}
 
 	@Override
+	public void resetMounting(boolean reverseYaw) {
+	}
+
+	@Override
 	public TrackerPosition getBodyPosition() {
 		return bodyPosition;
 	}

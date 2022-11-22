@@ -247,6 +247,8 @@ public class RPCHandler extends ProtocolHandler<RpcMessageHeader>
 			this.api.server.resetTrackersYaw();
 		if (req.resetType() == ResetType.Full)
 			this.api.server.resetTrackers();
+		if (req.resetType() == ResetType.Mounting)
+			this.api.server.resetTrackersMounting();
 		LogManager.severe("[WebSocketAPI] Reset performed");
 	}
 
