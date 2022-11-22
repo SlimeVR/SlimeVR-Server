@@ -63,9 +63,15 @@ public class VRCOSCHandler {
 	public void refreshSettings() {
 		// Sets which trackers are enabled and force HEAD to false
 		for (int i = 0; i < shareableTrackers.size(); i++) {
-			if (shareableTrackers.get(i).getTrackerRole() != TrackerRole.HEAD) {
+			if (
+				shareableTrackers.get(i).getTrackerRole() != TrackerRole.HEAD
+					|| shareableTrackers.get(i).getTrackerRole() != TrackerRole.LEFT_HAND
+					|| shareableTrackers.get(i).getTrackerRole() != TrackerRole.RIGHT_HAND
+			) {
 				trackersEnabled[i] = config
 					.getOSCTrackerRole(shareableTrackers.get(i).getTrackerRole(), false);
+			} else {
+				trackersEnabled[i] = false;
 			}
 		}
 
