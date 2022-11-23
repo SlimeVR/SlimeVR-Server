@@ -19,7 +19,7 @@ export function HomePage() {
           <Typography color="secondary">to everyone</Typography>
         </div>
         <Button variant="primary" to="/onboarding/wifi-creds">
-          Lets get setup!
+          Lets get set up!
         </Button>
         <NavLink to="/" onClick={skipSetup}>
           <Typography color="secondary">Skip setup</Typography>
