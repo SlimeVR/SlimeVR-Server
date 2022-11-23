@@ -177,7 +177,11 @@ export function OSCSettings() {
           <div className="grid gap-3 pb-5">
             <Input
               type="text"
-              {...register('vrchat.address', { required: true })}
+              {...register('vrchat.address', {
+                required: true,
+                pattern:
+                  /^(?!0)(?!.*\.$)((1?\d?\d|25[0-5]|2[0-4]\d)(\.|$)){4}$/i,
+              })}
               placeholder="VRChat ip address"
             ></Input>
           </div>
