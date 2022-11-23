@@ -1,16 +1,12 @@
 import { useEffect, useState } from 'react';
-import { useForm } from 'react-hook-form';
 import {
   CloseSerialRequestT,
   OpenSerialRequestT,
   RpcMessage,
   SerialUpdateResponseT,
-  SetWifiRequestT,
 } from 'solarxr-protocol';
 import { useLayout } from '../../../hooks/layout';
 import { useWebsocketAPI } from '../../../hooks/websocket-api';
-import { Button } from '../../commons/Button';
-import { Input } from '../../commons/Input';
 import { Typography } from '../../commons/Typography';
 
 export interface WifiForm {

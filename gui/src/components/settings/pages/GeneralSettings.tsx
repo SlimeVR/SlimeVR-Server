@@ -71,7 +71,7 @@ export function GeneralSettings() {
         floorClip: false,
         skatingCorrection: false,
       },
-      filtering: { amount: 10, type: FilteringType.NONE },
+      filtering: { amount: 0.1, type: FilteringType.NONE },
       interface: { devmode: false },
     },
   });

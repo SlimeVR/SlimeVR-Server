@@ -110,7 +110,7 @@ public class VRCOSCHandler {
 
 			// Instantiate the OSC sender
 			try {
-				InetAddress address = config.getAddress();
+				InetAddress address = InetAddress.getByName(config.getAddress());
 				int port = config.getPortOut();
 				oscSender = new OSCPortOut(
 					address,
