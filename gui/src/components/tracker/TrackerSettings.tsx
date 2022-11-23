@@ -35,6 +35,9 @@ const rotationsLabels = {
   [rotationToQuatMap.RIGHT]: 'Right',
 };
 
+const bodypartToString = (id: BodyPart) =>
+  BodyPart[id].replace(/_/g, ' ');
+
 export function TrackerSettingsPage() {
   const { sendRPCPacket } = useWebsocketAPI();
   const [firstLoad, setFirstLoad] = useState(false);
@@ -203,7 +206,7 @@ export function TrackerSettingsPage() {
               <div className="flex gap-3 items-center">
                 <FootIcon></FootIcon>
                 <Typography>
-                  {BodyPart[tracker?.tracker.info?.bodyPart || BodyPart.NONE]}
+                  {bodypartToString(tracker?.tracker.info?.bodyPart || BodyPart.NONE)}
                 </Typography>
               </div>
               <div className="flex">
