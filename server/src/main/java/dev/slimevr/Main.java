@@ -31,7 +31,7 @@ public class Main {
 
 		options.addOption(help);
 		try {
-			cmd = parser.parse(options, args);
+			cmd = parser.parse(options, args, true);
 		} catch (ParseException e) {
 			System.out.println(e.getMessage());
 			formatter.printHelp("slimevr.jar", options);
