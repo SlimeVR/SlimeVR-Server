@@ -371,6 +371,19 @@ public class RPCHandler extends ProtocolHandler<RpcMessageHeader>
 		FlatBufferBuilder fbb,
 		OSCConfig config
 	) {
+
+		int trackersSettingOffset = OSCTrackersSetting
+			.createOSCTrackersSetting(
+				fbb,
+				config.getOSCTrackerRole(TrackerRole.HEAD, false),
+				config.getOSCTrackerRole(TrackerRole.CHEST, false),
+				config.getOSCTrackerRole(TrackerRole.WAIST, false),
+				config.getOSCTrackerRole(TrackerRole.LEFT_KNEE, false),
+				config.getOSCTrackerRole(TrackerRole.LEFT_FOOT, false),
+				config.getOSCTrackerRole(TrackerRole.LEFT_ELBOW, false),
+				config.getOSCTrackerRole(TrackerRole.LEFT_HAND, false)
+			);
+
 		VRCOSCSettings.startVRCOSCSettings(fbb);
 		VRCOSCSettings.addEnabled(fbb, config.getEnabled());
 		VRCOSCSettings.addPortIn(fbb, config.getPortIn());
@@ -387,17 +400,7 @@ public class RPCHandler extends ProtocolHandler<RpcMessageHeader>
 		VRCOSCSettings
 			.addTrackers(
 				fbb,
-				OSCTrackersSetting
-					.createOSCTrackersSetting(
-						fbb,
-						config.getOSCTrackerRole(TrackerRole.HEAD, false),
-						config.getOSCTrackerRole(TrackerRole.CHEST, false),
-						config.getOSCTrackerRole(TrackerRole.WAIST, false),
-						config.getOSCTrackerRole(TrackerRole.LEFT_KNEE, false),
-						config.getOSCTrackerRole(TrackerRole.LEFT_FOOT, false),
-						config.getOSCTrackerRole(TrackerRole.LEFT_ELBOW, false),
-						config.getOSCTrackerRole(TrackerRole.LEFT_HAND, false)
-					)
+				trackersSettingOffset
 			);
 
 		return VRCOSCSettings.endVRCOSCSettings(fbb);
