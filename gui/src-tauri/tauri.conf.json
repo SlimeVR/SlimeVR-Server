@@ -14,7 +14,7 @@
       "active": true,
       "targets": "all",
       "identifier": "slimevr.dev",
-      "icon": ["icons/icon.png", "icons/icon.ico"],
+      "icon": ["icons/icon.ico", "icons/icon.png"],
       "resources": [],
       "externalBin": [],
       "copyright": "",
