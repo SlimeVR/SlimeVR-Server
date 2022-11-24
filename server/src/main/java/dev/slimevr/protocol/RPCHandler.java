@@ -455,9 +455,12 @@ public class RPCHandler extends ProtocolHandler<RpcMessageHeader>
 			vrcOSCConfig.setOSCTrackerRole(TrackerRole.WAIST, trackers.waist());
 			vrcOSCConfig.setOSCTrackerRole(TrackerRole.LEFT_KNEE, trackers.knees());
 			vrcOSCConfig.setOSCTrackerRole(TrackerRole.RIGHT_KNEE, trackers.knees());
-			vrcOSCConfig.setOSCTrackerRole(TrackerRole.HEAD, trackers.feet());
-			vrcOSCConfig.setOSCTrackerRole(TrackerRole.HEAD, trackers.elbows());
-			vrcOSCConfig.setOSCTrackerRole(TrackerRole.HEAD, trackers.hands());
+			vrcOSCConfig.setOSCTrackerRole(TrackerRole.LEFT_FOOT, trackers.feet());
+			vrcOSCConfig.setOSCTrackerRole(TrackerRole.RIGHT_FOOT, trackers.feet());
+			vrcOSCConfig.setOSCTrackerRole(TrackerRole.LEFT_ELBOW, trackers.elbows());
+			vrcOSCConfig.setOSCTrackerRole(TrackerRole.RIGHT_ELBOW, trackers.elbows());
+			vrcOSCConfig.setOSCTrackerRole(TrackerRole.LEFT_HAND, trackers.hands());
+			vrcOSCConfig.setOSCTrackerRole(TrackerRole.RIGHT_HAND, trackers.hands());
 
 
 			VRCOSCHandler.refreshSettings();
