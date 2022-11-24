@@ -1,23 +1,26 @@
 name: Build GUI
 
-on: 
+on:
   push:
     paths:
+      - .github/workflows/build-gui.yml
       - gui/**
       - package*.json
   pull_request:
     paths:
+      - .github/workflows/build-gui.yml
       - gui/**
       - package*.json
   workflow_dispatch:
 
 jobs:
   build:
-    runs-on: windows-latest
-
     strategy:
       matrix:
+        os: [ubuntu-latest, windows-latest]
         node-version: [16.x]
+
+    runs-on: ${{ matrix.os }}
 
     env:
       # Don't mark warnings as errors
@@ -27,6 +30,10 @@ jobs:
       - uses: actions/checkout@v3
         with:
           submodules: recursive
+
+      - if: matrix.os == 'ubuntu-latest'
+        name: Set up Linux dependencies
+        run: sudo apt update && sudo apt install -y libgdk-pixbuf-2.0-dev libglib2.0-dev libgtk-3-dev libjavascriptcoregtk-4.0-dev libsoup2.4-dev libwebkit2gtk-4.0-dev
 
       - name: Cache cargo dependencies
         uses: Swatinem/rust-cache@v2
