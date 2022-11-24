@@ -3,9 +3,10 @@ import {
   readTextFile,
   writeFile,
   createDir,
+  renameFile,
 } from '@tauri-apps/api/fs';
 
-import { createContext, useContext, useState } from 'react';
+import { createContext, useContext, useRef, useState } from 'react';
 
 export interface WindowConfig {
   width: number;
@@ -30,6 +31,7 @@ export interface ConfigContext {
 const initialConfig = { doneOnboarding: false };
 
 export function useConfigProvider(): ConfigContext {
+  const debounceTimer = useRef<NodeJS.Timeout | null>(null);
   const [currConfig, set] = useState<Config | null>(null);
   const [loading, setLoading] = useState(false);
 
@@ -42,11 +44,20 @@ export function useConfigProvider(): ConfigContext {
       : null;
     set(newConfig as Config);
 
+    if (!debounceTimer.current) {
+      debounceTimer.current = setTimeout(async () => {
     await createDir('', { dir: BaseDirectory.App, recursive: true });
     await writeFile(
-      { contents: JSON.stringify(newConfig), path: 'config.json' },
+          { contents: JSON.stringify(newConfig), path: 'config.json.tmp' },
       { dir: BaseDirectory.App }
     );
+        await renameFile(
+          'config.json.tmp', 'config.json',
+          { dir: BaseDirectory.App }
+        );
+        debounceTimer.current = null;
+      }, 10);
+    }
   };
 
   return {

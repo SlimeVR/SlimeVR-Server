@@ -34,8 +34,12 @@ import { ManualProportionsPage } from './components/onboarding/pages/body-propor
 import { TrackerSettingsPage } from './components/tracker/TrackerSettings';
 import { DonePage } from './components/onboarding/pages/Done';
 import { OSCSettings } from './components/settings/pages/OSCSettings';
+import { useConfig } from './hooks/config';
 
 function Layout() {
+  const { loading } = useConfig();
+  if (loading) return (<></>);
+
   return (
     <>
       <Routes>
