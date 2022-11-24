@@ -33,6 +33,7 @@ import { AutomaticProportionsPage } from './components/onboarding/pages/body-pro
 import { ManualProportionsPage } from './components/onboarding/pages/body-proportions/ManualProportions';
 import { TrackerSettingsPage } from './components/tracker/TrackerSettings';
 import { DonePage } from './components/onboarding/pages/Done';
+import { OSCSettings } from './components/settings/pages/OSCSettings';
 
 function Layout() {
   return (
@@ -64,6 +65,7 @@ function Layout() {
         >
           <Route path="trackers" element={<GeneralSettings />} />
           <Route path="serial" element={<Serial />} />
+          <Route path="osc/vrchat" element={<OSCSettings />} />
         </Route>
         <Route
           path="/onboarding"

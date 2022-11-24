@@ -60,6 +60,14 @@ export function SettingsSidebar() {
         </div>
       </div>
       <div className="flex flex-col gap-3">
+        <Typography variant="section-title">OSC</Typography>
+        <div className="flex flex-col gap-2">
+          <SettingsLink to="/settings/osc/vrchat" scrollTo="vrchat">
+            VRChat
+          </SettingsLink>
+        </div>
+      </div>
+      <div className="flex flex-col gap-3">
         <Typography variant="section-title">Utilities</Typography>
         <div className="flex flex-col gap-2">
           <SettingsLink to="/settings/serial">Serial Console</SettingsLink>

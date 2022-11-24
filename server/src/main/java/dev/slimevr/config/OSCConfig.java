@@ -7,8 +7,6 @@ import com.fasterxml.jackson.databind.ser.std.StdKeySerializers;
 import dev.slimevr.config.serializers.BooleanMapDeserializer;
 import dev.slimevr.vr.trackers.TrackerRole;
 
-import java.net.InetAddress;
-import java.net.UnknownHostException;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -69,12 +67,8 @@ public class OSCConfig {
 		this.portOut = portOut;
 	}
 
-	public InetAddress getAddress() {
-		try {
-			return InetAddress.getByName(address);
-		} catch (UnknownHostException e) {
-			throw new RuntimeException(e);
-		}
+	public String getAddress() {
+		return address;
 	}
 
 	public void setAddress(String address) {

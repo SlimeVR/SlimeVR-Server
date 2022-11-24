@@ -23,14 +23,12 @@ import dev.slimevr.vr.trackers.TrackerPosition;
 import dev.slimevr.vr.trackers.TrackerRole;
 import io.eiren.util.logging.LogManager;
 import solarxr_protocol.MessageBundle;
-import solarxr_protocol.datatypes.Ipv4Address;
 import solarxr_protocol.datatypes.TransactionId;
 import solarxr_protocol.rpc.*;
 import solarxr_protocol.rpc.settings.ModelRatios;
 import solarxr_protocol.rpc.settings.ModelSettings;
 import solarxr_protocol.rpc.settings.ModelToggles;
 
-import java.nio.ByteBuffer;
 import java.util.EnumMap;
 import java.util.Map.Entry;
 import java.util.function.BiConsumer;
@@ -384,6 +382,7 @@ public class RPCHandler extends ProtocolHandler<RpcMessageHeader>
 				config.getOSCTrackerRole(TrackerRole.LEFT_HAND, false)
 			);
 
+		int addressStringOffset = fbb.createString(config.getAddress());
 		VRCOSCSettings.startVRCOSCSettings(fbb);
 		VRCOSCSettings.addEnabled(fbb, config.getEnabled());
 		VRCOSCSettings.addPortIn(fbb, config.getPortIn());
@@ -391,11 +390,7 @@ public class RPCHandler extends ProtocolHandler<RpcMessageHeader>
 		VRCOSCSettings
 			.addAddress(
 				fbb,
-				Ipv4Address
-					.createIpv4Address(
-						fbb,
-						ByteBuffer.wrap(config.getAddress().getAddress()).getInt()
-					)
+				addressStringOffset
 			);
 		VRCOSCSettings
 			.addTrackers(
@@ -453,15 +448,18 @@ public class RPCHandler extends ProtocolHandler<RpcMessageHeader>
 			vrcOSCConfig.setEnabled(req.vrcOsc().enabled());
 			vrcOSCConfig.setPortIn(req.vrcOsc().portIn());
 			vrcOSCConfig.setPortOut(req.vrcOsc().portOut());
-			vrcOSCConfig.setAddress(req.vrcOsc().address().toString());
+			vrcOSCConfig.setAddress(req.vrcOsc().address());
 			vrcOSCConfig.setOSCTrackerRole(TrackerRole.HEAD, trackers.head());
 			vrcOSCConfig.setOSCTrackerRole(TrackerRole.CHEST, trackers.chest());
 			vrcOSCConfig.setOSCTrackerRole(TrackerRole.WAIST, trackers.waist());
 			vrcOSCConfig.setOSCTrackerRole(TrackerRole.LEFT_KNEE, trackers.knees());
 			vrcOSCConfig.setOSCTrackerRole(TrackerRole.RIGHT_KNEE, trackers.knees());
-			vrcOSCConfig.setOSCTrackerRole(TrackerRole.HEAD, trackers.feet());
-			vrcOSCConfig.setOSCTrackerRole(TrackerRole.HEAD, trackers.elbows());
-			vrcOSCConfig.setOSCTrackerRole(TrackerRole.HEAD, trackers.hands());
+			vrcOSCConfig.setOSCTrackerRole(TrackerRole.LEFT_FOOT, trackers.feet());
+			vrcOSCConfig.setOSCTrackerRole(TrackerRole.RIGHT_FOOT, trackers.feet());
+			vrcOSCConfig.setOSCTrackerRole(TrackerRole.LEFT_ELBOW, trackers.elbows());
+			vrcOSCConfig.setOSCTrackerRole(TrackerRole.RIGHT_ELBOW, trackers.elbows());
+			vrcOSCConfig.setOSCTrackerRole(TrackerRole.LEFT_HAND, trackers.hands());
+			vrcOSCConfig.setOSCTrackerRole(TrackerRole.RIGHT_HAND, trackers.hands());
 
 
 			VRCOSCHandler.refreshSettings();
