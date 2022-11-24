@@ -65,7 +65,7 @@ jobs:
           # Artifact name
           name: SlimeVR-GUI-Deb
           # A file, directory or wildcard pattern that describes what to upload
-          path: gui/target/release/bundle/deb/slimevr-ui_0.1.0_amd64.deb
+          path: gui/target/release/bundle/deb/slimevr-ui*.deb
 
       - if: matrix.os == 'ubuntu-latest'
         name: Upload a Build Artifact
@@ -74,4 +74,4 @@ jobs:
           # Artifact name
           name: SlimeVR-GUI-AppImage
           # A file, directory or wildcard pattern that describes what to upload
-          path: gui/target/release/bundle/appimage/slimevr-ui_0.1.0_amd64.AppImage
+          path: gui/target/release/bundle/appimage/slimevr-ui*.AppImage
