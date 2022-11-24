@@ -9,6 +9,7 @@ on:
     paths:
       - gui/**
       - package*.json
+  workflow_dispatch:
 
 jobs:
   build:

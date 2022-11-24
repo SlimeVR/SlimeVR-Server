@@ -383,7 +383,6 @@ public class RPCHandler extends ProtocolHandler<RpcMessageHeader>
 			);
 
 		int addressStringOffset = fbb.createString(config.getAddress());
-
 		VRCOSCSettings.startVRCOSCSettings(fbb);
 		VRCOSCSettings.addEnabled(fbb, config.getEnabled());
 		VRCOSCSettings.addPortIn(fbb, config.getPortIn());
