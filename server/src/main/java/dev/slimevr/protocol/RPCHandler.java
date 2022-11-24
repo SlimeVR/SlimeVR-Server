@@ -143,6 +143,8 @@ public class RPCHandler extends ProtocolHandler<RpcMessageHeader>
 			this.api.server.getSerialHandler().openSerial();
 		} catch (Exception e) {
 			LogManager.severe("Unable to open serial port", e);
+		} catch (Throwable e) {
+			LogManager.severe("Using serial ports is not supported on this platform", e);
 		}
 
 		FlatBufferBuilder fbb = new FlatBufferBuilder(32);
