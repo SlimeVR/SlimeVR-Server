@@ -11,8 +11,8 @@ if %errorlevel% EQU 0 (
     echo Either use SlimeVR Installer to install the server by following this link:
     echo https://github.com/SlimeVR/SlimeVR-Installer/releases/latest/download/slimevr_web_installer.exe
     echo.
-    echo Or download Java 11 by following this link:
-    echo https://adoptium.net/releases.html?variant=openjdk11^&jvmVariant=hotspot
+    echo Or download Java 17 by following this link:
+    echo https://adoptium.net/temurin/releases/?version=17
 )
 if %errorlevel% NEQ 0 (
     pause
