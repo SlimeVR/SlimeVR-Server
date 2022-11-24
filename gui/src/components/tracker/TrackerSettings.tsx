@@ -29,10 +29,10 @@ const rotationToQuatMap = {
 };
 
 const rotationsLabels = {
-  [rotationToQuatMap.BACK]: 'Back',
-  [rotationToQuatMap.FRONT]: 'Front',
-  [rotationToQuatMap.LEFT]: 'Left',
-  [rotationToQuatMap.RIGHT]: 'Right',
+  [rotationToQuatMap.BACK]: 'BACK',
+  [rotationToQuatMap.FRONT]: 'FRONT',
+  [rotationToQuatMap.LEFT]: 'LEFT',
+  [rotationToQuatMap.RIGHT]: 'RIGHT',
 };
 
 const bodypartToString = (id: BodyPart) =>
