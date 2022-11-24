@@ -292,18 +292,24 @@ public class RPCHandler extends ProtocolHandler<RpcMessageHeader>
 
 		WindowsNamedPipeBridge bridge = this.api.server.getVRBridge(WindowsNamedPipeBridge.class);
 
-		int steamvrTrackerSettings = SteamVRTrackersSetting
-			.createSteamVRTrackersSetting(
-				fbb,
-				bridge.getShareSetting(TrackerRole.WAIST),
-				bridge.getShareSetting(TrackerRole.CHEST),
-				bridge.getShareSetting(TrackerRole.LEFT_FOOT)
-					&& bridge.getShareSetting(TrackerRole.RIGHT_FOOT),
-				bridge.getShareSetting(TrackerRole.LEFT_KNEE)
-					&& bridge.getShareSetting(TrackerRole.RIGHT_KNEE),
-				bridge.getShareSetting(TrackerRole.LEFT_ELBOW)
-					&& bridge.getShareSetting(TrackerRole.RIGHT_ELBOW)
-			);
+		int steamvrTrackerSettings;
+		if (bridge != null) {
+			steamvrTrackerSettings = SteamVRTrackersSetting
+				.createSteamVRTrackersSetting(
+					fbb,
+					bridge.getShareSetting(TrackerRole.WAIST),
+					bridge.getShareSetting(TrackerRole.CHEST),
+					bridge.getShareSetting(TrackerRole.LEFT_FOOT)
+						&& bridge.getShareSetting(TrackerRole.RIGHT_FOOT),
+					bridge.getShareSetting(TrackerRole.LEFT_KNEE)
+						&& bridge.getShareSetting(TrackerRole.RIGHT_KNEE),
+					bridge.getShareSetting(TrackerRole.LEFT_ELBOW)
+						&& bridge.getShareSetting(TrackerRole.RIGHT_ELBOW)
+				);
+		} else {
+			steamvrTrackerSettings = SteamVRTrackersSetting
+				.createSteamVRTrackersSetting(fbb, false, false, false, false, false);
+		}
 
 		FiltersConfig filtersConfig = this.api.server
 			.getConfigManager()
@@ -411,14 +417,17 @@ public class RPCHandler extends ProtocolHandler<RpcMessageHeader>
 		if (req.steamVrTrackers() != null) {
 			WindowsNamedPipeBridge bridge = this.api.server
 				.getVRBridge(WindowsNamedPipeBridge.class);
-			bridge.changeShareSettings(TrackerRole.WAIST, req.steamVrTrackers().waist());
-			bridge.changeShareSettings(TrackerRole.CHEST, req.steamVrTrackers().chest());
-			bridge.changeShareSettings(TrackerRole.LEFT_FOOT, req.steamVrTrackers().feet());
-			bridge.changeShareSettings(TrackerRole.RIGHT_FOOT, req.steamVrTrackers().feet());
-			bridge.changeShareSettings(TrackerRole.LEFT_KNEE, req.steamVrTrackers().knees());
-			bridge.changeShareSettings(TrackerRole.RIGHT_KNEE, req.steamVrTrackers().knees());
-			bridge.changeShareSettings(TrackerRole.LEFT_ELBOW, req.steamVrTrackers().elbows());
-			bridge.changeShareSettings(TrackerRole.RIGHT_ELBOW, req.steamVrTrackers().elbows());
+
+			if (bridge != null) {
+				bridge.changeShareSettings(TrackerRole.WAIST, req.steamVrTrackers().waist());
+				bridge.changeShareSettings(TrackerRole.CHEST, req.steamVrTrackers().chest());
+				bridge.changeShareSettings(TrackerRole.LEFT_FOOT, req.steamVrTrackers().feet());
+				bridge.changeShareSettings(TrackerRole.RIGHT_FOOT, req.steamVrTrackers().feet());
+				bridge.changeShareSettings(TrackerRole.LEFT_KNEE, req.steamVrTrackers().knees());
+				bridge.changeShareSettings(TrackerRole.RIGHT_KNEE, req.steamVrTrackers().knees());
+				bridge.changeShareSettings(TrackerRole.LEFT_ELBOW, req.steamVrTrackers().elbows());
+				bridge.changeShareSettings(TrackerRole.RIGHT_ELBOW, req.steamVrTrackers().elbows());
+			}
 		}
 
 		if (req.filtering() != null) {
@@ -442,27 +451,29 @@ public class RPCHandler extends ProtocolHandler<RpcMessageHeader>
 				.getConfigManager()
 				.getVrConfig()
 				.getVrcOSC();
-			VRCOSCHandler VRCOSCHandler = this.api.server.getVRCOSCHandler();
-			var trackers = req.vrcOsc().trackers();
+			if (vrcOSCConfig != null) {
+				VRCOSCHandler VRCOSCHandler = this.api.server.getVRCOSCHandler();
+				var trackers = req.vrcOsc().trackers();
 
-			vrcOSCConfig.setEnabled(req.vrcOsc().enabled());
-			vrcOSCConfig.setPortIn(req.vrcOsc().portIn());
-			vrcOSCConfig.setPortOut(req.vrcOsc().portOut());
-			vrcOSCConfig.setAddress(req.vrcOsc().address());
-			vrcOSCConfig.setOSCTrackerRole(TrackerRole.HEAD, trackers.head());
-			vrcOSCConfig.setOSCTrackerRole(TrackerRole.CHEST, trackers.chest());
-			vrcOSCConfig.setOSCTrackerRole(TrackerRole.WAIST, trackers.waist());
-			vrcOSCConfig.setOSCTrackerRole(TrackerRole.LEFT_KNEE, trackers.knees());
-			vrcOSCConfig.setOSCTrackerRole(TrackerRole.RIGHT_KNEE, trackers.knees());
-			vrcOSCConfig.setOSCTrackerRole(TrackerRole.LEFT_FOOT, trackers.feet());
-			vrcOSCConfig.setOSCTrackerRole(TrackerRole.RIGHT_FOOT, trackers.feet());
-			vrcOSCConfig.setOSCTrackerRole(TrackerRole.LEFT_ELBOW, trackers.elbows());
-			vrcOSCConfig.setOSCTrackerRole(TrackerRole.RIGHT_ELBOW, trackers.elbows());
-			vrcOSCConfig.setOSCTrackerRole(TrackerRole.LEFT_HAND, trackers.hands());
-			vrcOSCConfig.setOSCTrackerRole(TrackerRole.RIGHT_HAND, trackers.hands());
+				vrcOSCConfig.setEnabled(req.vrcOsc().enabled());
+				vrcOSCConfig.setPortIn(req.vrcOsc().portIn());
+				vrcOSCConfig.setPortOut(req.vrcOsc().portOut());
+				vrcOSCConfig.setAddress(req.vrcOsc().address());
+				vrcOSCConfig.setOSCTrackerRole(TrackerRole.HEAD, trackers.head());
+				vrcOSCConfig.setOSCTrackerRole(TrackerRole.CHEST, trackers.chest());
+				vrcOSCConfig.setOSCTrackerRole(TrackerRole.WAIST, trackers.waist());
+				vrcOSCConfig.setOSCTrackerRole(TrackerRole.LEFT_KNEE, trackers.knees());
+				vrcOSCConfig.setOSCTrackerRole(TrackerRole.RIGHT_KNEE, trackers.knees());
+				vrcOSCConfig.setOSCTrackerRole(TrackerRole.LEFT_FOOT, trackers.feet());
+				vrcOSCConfig.setOSCTrackerRole(TrackerRole.RIGHT_FOOT, trackers.feet());
+				vrcOSCConfig.setOSCTrackerRole(TrackerRole.LEFT_ELBOW, trackers.elbows());
+				vrcOSCConfig.setOSCTrackerRole(TrackerRole.RIGHT_ELBOW, trackers.elbows());
+				vrcOSCConfig.setOSCTrackerRole(TrackerRole.LEFT_HAND, trackers.hands());
+				vrcOSCConfig.setOSCTrackerRole(TrackerRole.RIGHT_HAND, trackers.hands());
 
 
-			VRCOSCHandler.refreshSettings();
+				VRCOSCHandler.refreshSettings();
+			}
 		}
 
 		var modelSettings = req.modelSettings();
