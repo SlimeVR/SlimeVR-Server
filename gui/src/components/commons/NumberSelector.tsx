@@ -22,7 +22,8 @@ export function NumberSelector({
   const stepFn =
     typeof step === 'function'
       ? step
-      : (value: number, add: boolean) => (add ? value + step : value - step);
+      : (value: number, add: boolean) =>
+          +(add ? value + step : value - step).toFixed(2);
 
   return (
     <Controller
