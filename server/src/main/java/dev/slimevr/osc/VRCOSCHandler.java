@@ -41,6 +41,9 @@ public class VRCOSCHandler {
 	private final boolean[] trackersEnabled;
 	private long timeAtLastOSCMessageReceived;
 	private static final long HMD_TIMEOUT = 15000;
+	private int lastPortIn;
+	private int lastPortOut;
+	private InetAddress lastAddress;
 
 	public VRCOSCHandler(
 		HMDTracker hmd,
@@ -76,10 +79,12 @@ public class VRCOSCHandler {
 		}
 
 		// Stops listening and closes OSC port
-		if (oscReceiver != null && oscReceiver.isListening()) {
+		boolean wasListening = oscReceiver != null && oscReceiver.isListening();
+		if (wasListening) {
 			oscReceiver.stopListening();
 		}
-		if (oscSender != null && oscSender.isConnected()) {
+		boolean wasConnected = oscSender != null && oscSender.isConnected();
+		if (wasConnected) {
 			try {
 				oscSender.close();
 			} catch (IOException e) {
@@ -94,7 +99,10 @@ public class VRCOSCHandler {
 				oscReceiver = new OSCPortIn(
 					port
 				);
-				LogManager.info("[VRCOSCHandler] Listening to port " + port);
+				if (lastPortIn != port || !wasListening) {
+					LogManager.info("[VRCOSCHandler] Listening to port " + port);
+				}
+				lastPortIn = port;
 			} catch (IOException e) {
 				LogManager
 					.severe("[VRCOSCHandler] Error listening to the port " + config.getPortIn());
@@ -116,14 +124,19 @@ public class VRCOSCHandler {
 					address,
 					port
 				);
+				if ((lastPortOut != port && lastAddress != address) || !wasConnected) {
+					LogManager
+						.info(
+							"[VRCOSCHandler] Sending to port "
+								+ port
+								+ " at address "
+								+ address.toString()
+						);
+				}
+				lastPortOut = port;
+				lastAddress = address;
+
 				oscSender.connect();
-				LogManager
-					.info(
-						"[VRCOSCHandler] Sending to port "
-							+ port
-							+ " at address "
-							+ address.toString()
-					);
 			} catch (IOException e) {
 				LogManager
 					.severe(

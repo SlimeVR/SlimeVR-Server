@@ -78,7 +78,6 @@ export function OSCSettings() {
 
       settings.vrcOsc = vrcOsc;
     }
-    console.log(settings);
     sendRPCPacket(RpcMessage.ChangeSettingsRequest, settings);
   };
 
@@ -93,7 +92,6 @@ export function OSCSettings() {
 
   useRPCPacket(RpcMessage.SettingsResponse, (settings: SettingsResponseT) => {
     const formData: OSCSettingsForm = defaultValues;
-    console.log(settings);
     if (settings.vrcOsc) {
       formData.vrchat.enabled = settings.vrcOsc.enabled;
       formData.vrchat.portIn =
