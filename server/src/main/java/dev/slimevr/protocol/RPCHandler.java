@@ -430,9 +430,6 @@ public class RPCHandler extends ProtocolHandler<RpcMessageHeader>
 					.getFilters();
 				filtersConfig.setType(type.configKey);
 				filtersConfig.setAmount(req.filtering().amount());
-
-				this.api.server.getConfigManager().saveConfig();
-
 				filtersConfig.updateTrackersFilters();
 			}
 		}
@@ -571,11 +568,10 @@ public class RPCHandler extends ProtocolHandler<RpcMessageHeader>
 						);
 				}
 			}
-
 			cfg.save();
-			this.api.server.getConfigManager().saveConfig();
 		}
 
+		this.api.server.getConfigManager().saveConfig();
 	}
 
 	@Override

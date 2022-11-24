@@ -93,15 +93,17 @@ export function OSCSettings() {
 
   useRPCPacket(RpcMessage.SettingsResponse, (settings: SettingsResponseT) => {
     const formData: OSCSettingsForm = defaultValues;
-    console.log(settings);
     if (settings.vrcOsc) {
-      formData.vrchat.enabled = settings.vrcOsc.enabled;
-      formData.vrchat.portIn =
-        settings.vrcOsc.portIn || defaultValues.vrchat.portIn;
-      formData.vrchat.portOut =
-        settings.vrcOsc.portOut || defaultValues.vrchat.portOut;
-      formData.vrchat.trackers =
-        settings.vrcOsc.trackers || defaultValues.vrchat.trackers;
+      if (settings.vrcOsc.enabled)
+        formData.vrchat.enabled = settings.vrcOsc.enabled;
+      if (settings.vrcOsc.portIn)
+        formData.vrchat.portIn = settings.vrcOsc.portIn;
+      if (settings.vrcOsc.portOut)
+        formData.vrchat.portOut = settings.vrcOsc.portOut;
+      if (settings.vrcOsc.trackers)
+        formData.vrchat.trackers = settings.vrcOsc.trackers;
+      if (settings.vrcOsc.address)
+        formData.vrchat.address = settings.vrcOsc.address.toString();
     }
 
     reset(formData);
