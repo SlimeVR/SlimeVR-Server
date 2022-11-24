@@ -267,7 +267,7 @@ export function GeneralSettings() {
               label="Amount"
               valueLabelFormat={(value) => `${Math.round(value * 100)} %`}
               min={0.1}
-              max={1}
+              max={1.0}
               step={0.1}
             />
           </div>
