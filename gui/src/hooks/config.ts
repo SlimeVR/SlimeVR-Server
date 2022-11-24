@@ -4,7 +4,6 @@ import {
   writeFile,
   createDir,
 } from '@tauri-apps/api/fs';
-import { appDir } from '@tauri-apps/api/path';
 
 import { createContext, useContext, useState } from 'react';
 
@@ -57,8 +56,6 @@ export function useConfigProvider(): ConfigContext {
     loadConfig: async () => {
       setLoading(true);
       try {
-        const appDirPath = await appDir();
-        console.log(appDirPath);
         const json = await readTextFile('config.json', {
           dir: BaseDirectory.App,
         });
