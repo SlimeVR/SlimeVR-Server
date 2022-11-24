@@ -1,8 +1,11 @@
+import { useState } from 'react';
+import { RpcMessage, SkeletonResetAllRequestT } from 'solarxr-protocol';
 import {
   AutoboneContextC,
   useProvideAutobone,
 } from '../../../../hooks/autobone';
 import { useOnboarding } from '../../../../hooks/onboarding';
+import { useWebsocketAPI } from '../../../../hooks/websocket-api';
 import { ArrowLink } from '../../../commons/ArrowLink';
 import { Button } from '../../../commons/Button';
 import { Typography } from '../../../commons/Typography';
@@ -10,9 +13,23 @@ import { AutoboneStepper } from './AutoboneStepper';
 
 export function AutomaticProportionsPage() {
   const { applyProgress, skipSetup, state } = useOnboarding();
+  const { sendRPCPacket } = useWebsocketAPI();
   const context = useProvideAutobone();
+  const [resetDisabled, setResetDisabled] = useState(false);
 
   applyProgress(0.9);
+
+  const resetAll = () => {
+    sendRPCPacket(
+      RpcMessage.SkeletonResetAllRequest,
+      new SkeletonResetAllRequestT()
+    );
+    setResetDisabled(true);
+
+    setTimeout(() => {
+      setResetDisabled(false);
+    }, 3000);
+  };
 
   return (
     <AutoboneContextC.Provider value={context}>
@@ -42,12 +59,19 @@ export function AutomaticProportionsPage() {
           </div>
         </div>
         <div className="w-full pb-4 flex flex-row">
-          <div className="flex flex-grow">
+          <div className="flex flex-grow gap-3">
             {!state.alonePage && (
               <Button variant="secondary" to="/" onClick={skipSetup}>
                 Skip setup
               </Button>
             )}
+            <Button
+              variant="secondary"
+              onClick={resetAll}
+              disabled={resetDisabled}
+            >
+              Reset all proportions
+            </Button>
           </div>
           <div className="flex gap-3">
             <Button
