@@ -59,7 +59,7 @@ export function AutomaticProportionsPage() {
           </div>
         </div>
         <div className="w-full pb-4 flex flex-row">
-          <div className="flex flex-grow">
+          <div className="flex flex-grow gap-3">
             {!state.alonePage && (
               <Button variant="secondary" to="/" onClick={skipSetup}>
                 Skip setup

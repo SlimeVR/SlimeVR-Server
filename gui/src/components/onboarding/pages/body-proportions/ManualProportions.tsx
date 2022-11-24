@@ -60,7 +60,7 @@ export function ManualProportionsPage() {
           </div>
         </div>
         <div className="w-full py-4 flex flex-row">
-          <div className="flex flex-grow">
+          <div className="flex flex-grow gap-3">
             {!state.alonePage && (
               <Button variant="secondary" to="/" onClick={skipSetup}>
                 Skip setup
