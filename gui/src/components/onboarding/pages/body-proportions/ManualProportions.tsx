@@ -1,5 +1,7 @@
 import { useForm } from 'react-hook-form';
+import { RpcMessage, SkeletonResetAllRequestT } from 'solarxr-protocol';
 import { useOnboarding } from '../../../../hooks/onboarding';
+import { useWebsocketAPI } from '../../../../hooks/websocket-api';
 import { ArrowLink } from '../../../commons/ArrowLink';
 import { Button } from '../../../commons/Button';
 import { CheckBox } from '../../../commons/Checkbox';
@@ -9,6 +11,7 @@ import { BodyProportions } from './BodyProportions';
 
 export function ManualProportionsPage() {
   const { applyProgress, skipSetup, state } = useOnboarding();
+  const { sendRPCPacket } = useWebsocketAPI();
 
   applyProgress(0.9);
 
@@ -16,6 +19,13 @@ export function ManualProportionsPage() {
     defaultValues: { precise: false },
   });
   const { precise } = watch();
+
+  const resetAll = () => {
+    sendRPCPacket(
+      RpcMessage.SkeletonResetAllRequest,
+      new SkeletonResetAllRequestT()
+    );
+  };
 
   return (
     <>
@@ -56,6 +66,9 @@ export function ManualProportionsPage() {
                 Skip setup
               </Button>
             )}
+            <Button variant="secondary" onClick={resetAll}>
+              Reset all proportions
+            </Button>
           </div>
           <div className="flex gap-3">
             <Button
