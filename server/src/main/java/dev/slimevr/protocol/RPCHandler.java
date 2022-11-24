@@ -292,7 +292,7 @@ public class RPCHandler extends ProtocolHandler<RpcMessageHeader>
 
 		WindowsNamedPipeBridge bridge = this.api.server.getVRBridge(WindowsNamedPipeBridge.class);
 
-		int steamvrTrackerSettings;
+		int steamvrTrackerSettings = 0;
 		if (bridge != null) {
 			steamvrTrackerSettings = SteamVRTrackersSetting
 				.createSteamVRTrackersSetting(
@@ -306,9 +306,6 @@ public class RPCHandler extends ProtocolHandler<RpcMessageHeader>
 					bridge.getShareSetting(TrackerRole.LEFT_ELBOW)
 						&& bridge.getShareSetting(TrackerRole.RIGHT_ELBOW)
 				);
-		} else {
-			steamvrTrackerSettings = SteamVRTrackersSetting
-				.createSteamVRTrackersSetting(fbb, false, false, false, false, false);
 		}
 
 		FiltersConfig filtersConfig = this.api.server
@@ -332,31 +329,28 @@ public class RPCHandler extends ProtocolHandler<RpcMessageHeader>
 			vrcOSCConfig
 		);
 
-		int modelSettings;
-		{
-			var config = this.api.server.humanPoseProcessor.getSkeletonConfig();
-			int togglesOffset = ModelToggles
-				.createModelToggles(
-					fbb,
-					config.getToggle(SkeletonConfigToggles.EXTENDED_SPINE_MODEL),
-					config.getToggle(SkeletonConfigToggles.EXTENDED_PELVIS_MODEL),
-					config.getToggle(SkeletonConfigToggles.EXTENDED_KNEE_MODEL),
-					config.getToggle(SkeletonConfigToggles.FORCE_ARMS_FROM_HMD),
-					config.getToggle(SkeletonConfigToggles.SKATING_CORRECTION),
-					config.getToggle(SkeletonConfigToggles.FLOOR_CLIP)
-				);
-			int ratiosOffset = ModelRatios
-				.createModelRatios(
-					fbb,
-					config.getValue(SkeletonConfigValues.WAIST_FROM_CHEST_HIP_AVERAGING),
-					config.getValue(SkeletonConfigValues.WAIST_FROM_CHEST_LEGS_AVERAGING),
-					config.getValue(SkeletonConfigValues.HIP_FROM_CHEST_LEGS_AVERAGING),
-					config.getValue(SkeletonConfigValues.HIP_FROM_WAIST_LEGS_AVERAGING),
-					config.getValue(SkeletonConfigValues.HIP_LEGS_AVERAGING),
-					config.getValue(SkeletonConfigValues.KNEE_TRACKER_ANKLE_AVERAGING)
-				);
-			modelSettings = ModelSettings.createModelSettings(fbb, togglesOffset, ratiosOffset);
-		}
+		var config = this.api.server.humanPoseProcessor.getSkeletonConfig();
+		int togglesOffset = ModelToggles
+			.createModelToggles(
+				fbb,
+				config.getToggle(SkeletonConfigToggles.EXTENDED_SPINE_MODEL),
+				config.getToggle(SkeletonConfigToggles.EXTENDED_PELVIS_MODEL),
+				config.getToggle(SkeletonConfigToggles.EXTENDED_KNEE_MODEL),
+				config.getToggle(SkeletonConfigToggles.FORCE_ARMS_FROM_HMD),
+				config.getToggle(SkeletonConfigToggles.SKATING_CORRECTION),
+				config.getToggle(SkeletonConfigToggles.FLOOR_CLIP)
+			);
+		int ratiosOffset = ModelRatios
+			.createModelRatios(
+				fbb,
+				config.getValue(SkeletonConfigValues.WAIST_FROM_CHEST_HIP_AVERAGING),
+				config.getValue(SkeletonConfigValues.WAIST_FROM_CHEST_LEGS_AVERAGING),
+				config.getValue(SkeletonConfigValues.HIP_FROM_CHEST_LEGS_AVERAGING),
+				config.getValue(SkeletonConfigValues.HIP_FROM_WAIST_LEGS_AVERAGING),
+				config.getValue(SkeletonConfigValues.HIP_LEGS_AVERAGING),
+				config.getValue(SkeletonConfigValues.KNEE_TRACKER_ANKLE_AVERAGING)
+			);
+		int modelSettings = ModelSettings.createModelSettings(fbb, togglesOffset, ratiosOffset);
 
 		int settings = SettingsResponse
 			.createSettingsResponse(
