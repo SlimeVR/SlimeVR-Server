@@ -1,6 +1,6 @@
-import {Control, Controller} from 'react-hook-form';
-import {Button} from './Button';
-import {Typography} from './Typography';
+import { Control, Controller } from 'react-hook-form';
+import { Button } from './Button';
+import { Typography } from './Typography';
 
 export function NumberSelector({
   label,
