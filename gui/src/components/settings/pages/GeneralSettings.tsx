@@ -1,6 +1,6 @@
-import { useEffect, useRef } from 'react';
-import { DefaultValues, useForm } from 'react-hook-form';
-import { useLocation } from 'react-router-dom';
+import {useEffect, useRef} from 'react';
+import {DefaultValues, useForm} from 'react-hook-form';
+import {useLocation} from 'react-router-dom';
 import {
   ChangeSettingsRequestT,
   FilteringSettingsT,
@@ -12,16 +12,16 @@ import {
   SettingsResponseT,
   SteamVRTrackersSettingT,
 } from 'solarxr-protocol';
-import { useConfig } from '../../../hooks/config';
-import { useWebsocketAPI } from '../../../hooks/websocket-api';
-import { CheckBox } from '../../commons/Checkbox';
-import { SquaresIcon } from '../../commons/icon/SquaresIcon';
-import { SteamIcon } from '../../commons/icon/SteamIcon';
-import { WrenchIcon } from '../../commons/icon/WrenchIcons';
-import { NumberSelector } from '../../commons/NumberSelector';
-import { Radio } from '../../commons/Radio';
-import { Typography } from '../../commons/Typography';
-import { SettingsPageLayout } from '../SettingsPageLayout';
+import {useConfig} from '../../../hooks/config';
+import {useWebsocketAPI} from '../../../hooks/websocket-api';
+import {CheckBox} from '../../commons/Checkbox';
+import {SquaresIcon} from '../../commons/icon/SquaresIcon';
+import {SteamIcon} from '../../commons/icon/SteamIcon';
+import {WrenchIcon} from '../../commons/icon/WrenchIcons';
+import {NumberSelector} from '../../commons/NumberSelector';
+import {Radio} from '../../commons/Radio';
+import {Typography} from '../../commons/Typography';
+import {SettingsPageLayout} from '../SettingsPageLayout';
 
 interface SettingsForm {
   trackers: {
@@ -267,7 +267,7 @@ export function GeneralSettings() {
               label="Amount"
               valueLabelFormat={(value) => `${Math.round(value * 100)} %`}
               min={0.1}
-              max={1}
+              max={1.0}
               step={0.1}
             />
           </div>

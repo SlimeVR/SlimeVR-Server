@@ -1,6 +1,6 @@
-import { Control, Controller } from 'react-hook-form';
-import { Button } from './Button';
-import { Typography } from './Typography';
+import {Control, Controller} from 'react-hook-form';
+import {Button} from './Button';
+import {Typography} from './Typography';
 
 export function NumberSelector({
   label,
@@ -22,7 +22,8 @@ export function NumberSelector({
   const stepFn =
     typeof step === 'function'
       ? step
-      : (value: number, add: boolean) => (add ? value + step : value - step);
+      : (value: number, add: boolean) =>
+          +(add ? value + step : value - step).toFixed(2);
 
   return (
     <Controller
