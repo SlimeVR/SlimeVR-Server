@@ -38,6 +38,10 @@ jobs:
           sudo apt-get update
           sudo apt-get install -y libgtk-3-dev webkit2gtk-4.0 libappindicator3-dev librsvg2-dev patchelf
 
+      - name: Install rust toolchain & cargo
+        uses: actions-rust-lang/setup-rust-toolchain@v1
+        with:
+          cache: false
       - name: Cache cargo dependencies
         uses: Swatinem/rust-cache@v2
 
@@ -59,7 +63,7 @@ jobs:
           # Artifact name
           name: SlimeVR-GUI
           # A file, directory or wildcard pattern that describes what to upload
-          path: gui/target/release/slimevr-ui.exe
+          path: target/release/slimevr-ui.exe
 
       - if: matrix.os == 'ubuntu-latest'
         name: Upload a Build Artifact
@@ -68,7 +72,7 @@ jobs:
           # Artifact name
           name: SlimeVR-GUI-Deb
           # A file, directory or wildcard pattern that describes what to upload
-          path: gui/target/release/bundle/deb/slimevr-ui*.deb
+          path: target/release/bundle/deb/slimevr-ui*.deb
 
       - if: matrix.os == 'ubuntu-latest'
         name: Upload a Build Artifact
@@ -77,4 +81,4 @@ jobs:
           # Artifact name
           name: SlimeVR-GUI-AppImage
           # A file, directory or wildcard pattern that describes what to upload
-          path: gui/target/release/bundle/appimage/slimevr-ui*.AppImage
+          path: target/release/bundle/appimage/slimevr-ui*.AppImage
