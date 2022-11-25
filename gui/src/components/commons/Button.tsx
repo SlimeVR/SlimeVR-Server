@@ -49,7 +49,7 @@ export function Button({
 }: {
   children: ReactChild;
   icon?: ReactChild;
-  variant: 'primary' | 'secondary' | 'tierciary';
+  variant: 'primary' | 'secondary' | 'tierciary' | 'quaternary';
   to?: string;
   loading?: boolean;
   rounded?: boolean;
@@ -73,6 +73,12 @@ export function Button({
         'bg-background-50 hover:bg-background-40 text-standard text-background-10':
           !disabled,
         'bg-background-50 hover:bg-background-50 cursor-not-allowed text-background-40':
+          disabled,
+      }),
+      quaternary: classNames({
+        'bg-background-70 hover:bg-background-60 text-standard text-background-10':
+          !disabled,
+        'bg-background-70 hover:bg-background-70 cursor-not-allowed text-background-40':
           disabled,
       }),
     };
