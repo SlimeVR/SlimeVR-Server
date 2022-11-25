@@ -1,0 +1,13 @@
+[workspace]
+# Use 2021 edition resolver, better resolves crate features.
+resolver = "2"
+
+# A list of all rust crates in the workspace.
+members = ["gui/src-tauri"]
+
+# These settings can be inherited by workspace members
+[workspace.package]
+edition = "2021"
+license = "MIT OR Apache-2.0"
+rust-version = "1.65" # This version stabilized GATs and let-else
+repository = "https://github.com/SlimeVR/SlimeVR-Server"

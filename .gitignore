@@ -28,3 +28,6 @@
 
 # ignore gradle build folder
 build/
+
+# Rust build artifacts
+/target
