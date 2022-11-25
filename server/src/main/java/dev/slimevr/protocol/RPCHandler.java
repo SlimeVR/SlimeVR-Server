@@ -651,24 +651,6 @@ public class RPCHandler extends ProtocolHandler<RpcMessageHeader>
 			return;
 
 		this.api.server.getSerialHandler().rebootRequest();
-
-		this.api.getAPIServers().forEach((server) -> {
-			server
-				.getAPIConnections()
-				.filter(conn2 -> conn2.getContext().useSerial())
-				.forEach((conn2) -> {
-					FlatBufferBuilder fbb = new FlatBufferBuilder(32);
-
-					SerialUpdateResponse.startSerialUpdateResponse(fbb);
-					SerialUpdateResponse.addClosed(fbb, false);
-					int update = SerialUpdateResponse.endSerialUpdateResponse(fbb);
-					int outbound = this
-						.createRPCMessage(fbb, RpcMessage.SerialUpdateResponse, update);
-					fbb.finish(outbound);
-
-					conn2.send(fbb.dataBuffer());
-				});
-		});
 	}
 
 	public void SerialTrackerGetInfoRequest(
@@ -681,24 +663,6 @@ public class RPCHandler extends ProtocolHandler<RpcMessageHeader>
 			return;
 
 		this.api.server.getSerialHandler().infoRequest();
-
-		this.api.getAPIServers().forEach((server) -> {
-			server
-				.getAPIConnections()
-				.filter(conn2 -> conn2.getContext().useSerial())
-				.forEach((conn2) -> {
-					FlatBufferBuilder fbb = new FlatBufferBuilder(32);
-
-					SerialUpdateResponse.startSerialUpdateResponse(fbb);
-					SerialUpdateResponse.addClosed(fbb, false);
-					int update = SerialUpdateResponse.endSerialUpdateResponse(fbb);
-					int outbound = this
-						.createRPCMessage(fbb, RpcMessage.SerialUpdateResponse, update);
-					fbb.finish(outbound);
-
-					conn2.send(fbb.dataBuffer());
-				});
-		});
 	}
 
 	public void SerialTrackerFactoryResetRequest(
@@ -711,24 +675,6 @@ public class RPCHandler extends ProtocolHandler<RpcMessageHeader>
 			return;
 
 		this.api.server.getSerialHandler().factoryResetRequest();
-
-		this.api.getAPIServers().forEach((server) -> {
-			server
-				.getAPIConnections()
-				.filter(conn2 -> conn2.getContext().useSerial())
-				.forEach((conn2) -> {
-					FlatBufferBuilder fbb = new FlatBufferBuilder(32);
-
-					SerialUpdateResponse.startSerialUpdateResponse(fbb);
-					SerialUpdateResponse.addClosed(fbb, false);
-					int update = SerialUpdateResponse.endSerialUpdateResponse(fbb);
-					int outbound = this
-						.createRPCMessage(fbb, RpcMessage.SerialUpdateResponse, update);
-					fbb.finish(outbound);
-
-					conn2.send(fbb.dataBuffer());
-				});
-		});
 	}
 
 	@Override
