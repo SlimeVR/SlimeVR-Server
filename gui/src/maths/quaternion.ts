@@ -1,4 +1,4 @@
-import { Quaternion } from 'math3d';
+import Quaternion from 'quaternion';
 import { QuatT } from 'solarxr-protocol';
 
 export function QuaternionFromQuatT(q: {

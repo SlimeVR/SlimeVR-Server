@@ -5,14 +5,14 @@ import {
   DataFeedMessageHeaderT,
   MessageBundle,
   MessageBundleT,
+  PubSubHeaderT,
+  PubSubUnion,
   RpcMessage,
   RpcMessageHeaderT,
 } from 'solarxr-protocol';
 
 import { Builder, ByteBuffer } from 'flatbuffers';
 import { useInterval } from './timeout';
-import { PubSubUnion } from 'solarxr-protocol/protocol/typescript/dist/solarxr-protocol/pub-sub/pub-sub-union';
-import { PubSubHeaderT } from 'solarxr-protocol/protocol/typescript/dist/solarxr-protocol/pub-sub/pub-sub-header';
 
 export interface WebSocketApi {
   isConnected: boolean;

@@ -1,4 +1,4 @@
-import { Quaternion } from 'math3d';
+import Quaternion from 'quaternion';
 import { useMemo, useState } from 'react';
 import { AssignTrackerRequestT, BodyPart, RpcMessage } from 'solarxr-protocol';
 import { FlatDeviceTracker } from '../../../../hooks/app';
@@ -45,7 +45,7 @@ export function ManualMountingPage() {
 
       assignreq.bodyPosition = td.tracker.info?.bodyPart || BodyPart.NONE;
       assignreq.mountingRotation = QuaternionToQuatT(
-        Quaternion.Euler(0, +mountingOrientation, 0)
+        Quaternion.fromEuler(0, +mountingOrientation, 0)
       );
       assignreq.trackerId = td.tracker.trackerId;
       sendRPCPacket(RpcMessage.AssignTrackerRequest, assignreq);

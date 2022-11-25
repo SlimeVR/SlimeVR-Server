@@ -1,7 +1,9 @@
 import { useState } from 'react';
-import { RpcMessage } from 'solarxr-protocol';
-import { RecordBVHRequestT } from 'solarxr-protocol/protocol/typescript/dist/solarxr-protocol/rpc/record-bvhrequest';
-import { RecordBVHStatusT } from 'solarxr-protocol/protocol/typescript/dist/solarxr-protocol/rpc/record-bvhstatus';
+import {
+  RecordBVHRequestT,
+  RecordBVHStatusT,
+  RpcMessage,
+} from 'solarxr-protocol';
 import { useWebsocketAPI } from '../hooks/websocket-api';
 import { BigButton } from './commons/BigButton';
 import { RecordIcon } from './commons/icon/RecordIcon';

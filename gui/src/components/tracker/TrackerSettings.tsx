@@ -1,6 +1,6 @@
 import { IPv4 } from 'ip-num/IPNumber';
-import { Quaternion } from 'math3d';
-import { useCallback, useEffect, useMemo, useState } from 'react';
+import Quaternion from 'quaternion';
+import { useEffect, useMemo, useState } from 'react';
 import { useForm } from 'react-hook-form';
 import { useParams } from 'react-router-dom';
 import { AssignTrackerRequestT, BodyPart, RpcMessage } from 'solarxr-protocol';
@@ -59,7 +59,7 @@ export function TrackerSettingsPage() {
 
     const assignreq = new AssignTrackerRequestT();
     assignreq.mountingRotation = QuaternionToQuatT(
-      Quaternion.Euler(0, +mountingOrientation, 0)
+      Quaternion.fromEuler(0, +mountingOrientation, 0)
     );
     assignreq.bodyPosition = tracker?.tracker.info?.bodyPart || BodyPart.NONE;
     assignreq.trackerId = tracker?.tracker.trackerId;
@@ -81,8 +81,9 @@ export function TrackerSettingsPage() {
     () =>
       tracker?.tracker.info?.mountingOrientation
         ? FixEuler(
-            QuaternionFromQuatT(tracker.tracker.info?.mountingOrientation)
-              .eulerAngles.y
+            QuaternionFromQuatT(
+              tracker.tracker.info?.mountingOrientation
+            ).toEuler().roll
           )
         : rotationToQuatMap.BACK,
     [tracker?.tracker.info?.mountingOrientation]
