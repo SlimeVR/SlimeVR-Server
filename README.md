@@ -12,23 +12,47 @@ Integrations:
 * Integrations with other systems will be added later
 
 ## How to use
-
 It's recommended to download installer from here: https://github.com/SlimeVR/SlimeVR-Installer/releases/latest/download/slimevr_web_installer.exe
 
 Latest instructions are [on our site](https://docs.slimevr.dev/server-setup/slimevr-setup.html).
 
 ## License Clarification
+**SlimeVR software** (including server, firmware, drivers, installator, documents, and others - see
+licence for each case specifically) **is distributed under the MIT License ([LICENSE-MIT])
+and in some cases dually licensed under Apache-2.0 License ([LICENSE-APACHE]). These
+licenses are the copyright of Eiren Rain and the SlimeVR contributors.** 
 
-**SlimeVR software** (including server, firmware, drivers, installator, documents, and others - see licence for each case specifically) **is distributed under the [MIT License](https://github.com/SlimeVR/SlimeVR-Server/blob/main/LICENSE) and is copyright of Eiren Rain and SlimeVR.** The MIT Licence is a permissive license giving you rights to modify and distribute the software with little strings attached.
+**However, these Licenses have some limits, and if you wish to distribute software based
+on SlimeVR, you need to be aware of them:**
 
-**However, the MIT License has some limits, and if you wish to distribute software based on SlimeVR, you need to be aware of them:**
+* When distributing any software that uses or is based on SlimeVR, you have to provide
+  to the end-user at least one of the original, unmodified [LICENSE-MIT] or
+  [LICENSE-APACHE] files from SlimeVR. This includes the `Copyright (c) 2022 Eiren Rain
+  and SlimeVR Contributors` part of the license. It is insufficient to use a generic MIT
+  or Apache-2.0 License, **it must be the original license file**.
+* This applies even if you distribute software without the source code. In this case,
+  one way to provide it to the end-user is to have a menu in your application that lists
+  all the open source licenses used, including SlimeVR's.
 
-* When distributing any software that uses or is based on SlimeVR, you have to provide to the end-user the original, unmodified `LICENSE` file from SlimeVR. This file is located [here](https://github.com/SlimeVR/SlimeVR-Server/blob/main/LICENSE). This includes the `Copyright (c) 2021 Eiren Rain, SlimeVR` part of the license. It is not sufficient to use a generic MIT License, it must be the original license file.
-* This applies even if you distribute software without the source code. In this case, one way to provide it to the end-user is to have a menu in your application that lists all the open source licenses used, including SlimeVR's.
-
-Please refer to the [LICENSE](https://github.com/SlimeVR/SlimeVR-Server/blob/main/LICENSE) file if you are at any point uncertain what the exact the requirements are.
+Please refer to the [LICENSE-MIT] and [LICENSE-APACHE] files if you are at any point
+uncertain what the exact the requirements are.
 
 ## Contributions
-By contributing to this project you are placing all your code under MIT or less restricting licenses, and you certify that the code you have used is compatible with those licenses or is authored by you. If you're doing so on your work time, you certify that your employer is okay with this.
+Any contributions submitted for inclusion in this repository will be dual-licensed under
+either:
+
+- MIT License ([LICENSE-MIT])
+- Apache License, Version 2.0 ([LICENSE-APACHE])
+
+Unless you explicitly state otherwise, any contribution intentionally submitted for
+inclusion in the work by you, as defined in the Apache-2.0 license, shall be dual
+licensed as above, without any additional terms or conditions.
+
+You also certify that the code you have used is compatible with those licenses or is
+authored by you. If you're doing so on your work time, you certify that your employer is
+okay with this and that you are authorized to provide the above licenses.
 
 For a how-to on contributing, see [CONTRIBUTING.md](CONTRIBUTING.md).
+
+[LICENSE-MIT]: LICENSE-MIT
+[LICENSE-APACHE]: LICENSE-APACHE
