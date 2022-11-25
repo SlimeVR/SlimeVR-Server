@@ -4,8 +4,8 @@
     "version": "0.0.0"
   },
   "build": {
-    "distDir": "../build",
-    "devPath": "http://localhost:3000",
+    "distDir": "../dist",
+    "devPath": "http://localhost:5173",
     "beforeDevCommand": "npm run start",
     "beforeBuildCommand": "npm run build"
   },

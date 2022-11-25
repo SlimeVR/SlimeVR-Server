@@ -1,9 +1,6 @@
 import { useEffect } from 'react';
 import { useForm } from 'react-hook-form';
-import { KeyValuesT } from 'solarxr-protocol/protocol/typescript/dist/solarxr-protocol/pub-sub/key-values';
-import { MessageT } from 'solarxr-protocol/protocol/typescript/dist/solarxr-protocol/pub-sub/message';
-import { Payload } from 'solarxr-protocol/protocol/typescript/dist/solarxr-protocol/pub-sub/payload';
-import { Topic } from 'solarxr-protocol/protocol/typescript/dist/solarxr-protocol/pub-sub/topic';
+import { KeyValuesT, MessageT, Payload, Topic } from 'solarxr-protocol';
 import {
   OVERLAY_DISPLAY_SETTINGS_TOPIC,
   PayloadData,

@@ -1,15 +1,14 @@
 import { useEffect, useState } from 'react';
 import {
-  KeyValues,
   KeyValuesT,
-} from 'solarxr-protocol/protocol/typescript/dist/solarxr-protocol/pub-sub/key-values';
-import { MessageT } from 'solarxr-protocol/protocol/typescript/dist/solarxr-protocol/pub-sub/message';
-import { PubSubUnion } from 'solarxr-protocol/protocol/typescript/dist/solarxr-protocol/pub-sub/pub-sub-union';
-import { SubscriptionRequestT } from 'solarxr-protocol/protocol/typescript/dist/solarxr-protocol/pub-sub/subscription-request';
-import { Topic } from 'solarxr-protocol/protocol/typescript/dist/solarxr-protocol/pub-sub/topic';
-import { TopicHandleT } from 'solarxr-protocol/protocol/typescript/dist/solarxr-protocol/pub-sub/topic-handle';
-import { TopicIdT } from 'solarxr-protocol/protocol/typescript/dist/solarxr-protocol/pub-sub/topic-id';
-import { TopicMappingT } from 'solarxr-protocol/protocol/typescript/dist/solarxr-protocol/pub-sub/topic-mapping';
+  MessageT,
+  PubSubUnion,
+  SubscriptionRequestT,
+  Topic,
+  TopicHandleT,
+  TopicIdT,
+  TopicMappingT,
+} from 'solarxr-protocol';
 import { useWebsocketAPI } from './websocket-api';
 
 export type PayloadData = MessageT['payload'];
