@@ -1,1 +1,6 @@
-# TODO: make this more consistent with server. For now we are using default rustfmt
+# 88 comes from python's black as inspiration.
+# Note that rust by default treats a tab as having a width of 4 spaces when doing the
+# calculation for line wrapping.
+max_width = 88
+# Tabs allow for enhanced accessibility and the ability to choose indent size.
+hard_tabs = true
