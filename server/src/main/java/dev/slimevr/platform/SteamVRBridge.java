@@ -110,4 +110,6 @@ public abstract class SteamVRBridge extends ProtobufBridge<VRTracker> implements
 		}
 		return tracker;
 	}
+
+	public abstract boolean isConnected();
 }

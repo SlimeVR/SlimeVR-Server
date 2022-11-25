@@ -214,8 +214,8 @@ public class WindowsNamedPipeBridge extends SteamVRBridge {
 		return false;
 	}
 
+	@Override
 	public boolean isConnected() {
-		return pipe != null
-			&& pipe.state == PipeState.OPEN;
+		return pipe != null && pipe.state == PipeState.OPEN;
 	}
 }

@@ -6,6 +6,7 @@ import dev.slimevr.bridge.Bridge;
 import dev.slimevr.bridge.VMCBridge;
 import dev.slimevr.config.ConfigManager;
 import dev.slimevr.osc.VRCOSCHandler;
+import dev.slimevr.platform.SteamVRBridge;
 import dev.slimevr.platform.linux.UnixSocketBridge;
 import dev.slimevr.platform.windows.WindowsNamedPipeBridge;
 import dev.slimevr.poserecorder.BVHRecorder;
@@ -87,7 +88,7 @@ public class VRServer extends Thread {
 		trackersServer = new TrackersUDPServer(6969, "Sensors UDP server", this::registerTracker);
 
 		// OpenVR bridge currently only supports Windows
-		WindowsNamedPipeBridge driverBridge = null;
+		SteamVRBridge driverBridge = null;
 		if (OperatingSystem.getCurrentPlatform() == OperatingSystem.WINDOWS) {
 
 			// Create named pipe bridge for SteamVR driver
@@ -115,7 +116,7 @@ public class VRServer extends Thread {
 			tasks.add(feederBridge::startBridge);
 			bridges.add(feederBridge);
 		} else if (OperatingSystem.getCurrentPlatform() == OperatingSystem.LINUX) {
-			UnixSocketBridge bridge = new UnixSocketBridge(
+			driverBridge = new UnixSocketBridge(
 				this,
 				hmdTracker,
 				"steamvr",
@@ -123,8 +124,8 @@ public class VRServer extends Thread {
 				"/tmp/SlimeVRDriver",
 				shareTrackers
 			);
-			tasks.add(bridge::startBridge);
-			bridges.add(bridge);
+			tasks.add(driverBridge::startBridge);
+			bridges.add(driverBridge);
 		}
 
 		// Create WebSocket server
