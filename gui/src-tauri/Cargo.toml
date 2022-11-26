@@ -31,6 +31,8 @@ pretty_env_logger = "0.4"
 log = "0.4"
 clap-verbosity-flag = "1"
 tauri-plugin-window-state = "0.1.0"
+native-dialog = "0.6.3"
+rand = "0.8.5"
 
 [target.'cfg(windows)'.dependencies]
 win32job = "1"
