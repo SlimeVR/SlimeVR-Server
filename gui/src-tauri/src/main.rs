@@ -2,16 +2,15 @@
 	all(not(debug_assertions), windows),
 	windows_subsystem = "windows"
 )]
-
-use clap::Parser;
-use clap_verbosity_flag::{InfoLevel, Verbosity};
-use native_dialog::MessageDialog;
-use native_dialog::MessageType;
-use rand::seq::SliceRandom;
-use rand::thread_rng;
 use std::env;
 use std::panic;
 use std::path::PathBuf;
+
+use clap::Parser;
+use clap_verbosity_flag::{InfoLevel, Verbosity};
+use native_dialog::{MessageDialog, MessageType};
+use rand::seq::SliceRandom;
+use rand::thread_rng;
 use tauri::api::clap;
 use tauri::api::process::Command;
 use tauri::Manager;
