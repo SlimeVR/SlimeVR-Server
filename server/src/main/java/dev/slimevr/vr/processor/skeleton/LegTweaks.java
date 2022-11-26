@@ -3,6 +3,7 @@ package dev.slimevr.vr.processor.skeleton;
 import com.jme3.math.FastMath;
 import com.jme3.math.Quaternion;
 import com.jme3.math.Vector3f;
+import dev.slimevr.config.LegTweaksConfig;
 
 import dev.slimevr.vr.processor.TransformNode;
 
@@ -20,8 +21,9 @@ public class LegTweaks {
 	private boolean rightLegActive = false;
 	private boolean leftLegActive = false;
 
-	// skeleton
+	// skeleton and config
 	private HumanSkeleton skeleton;
+	private static LegTweaksConfig config;
 
 	// leg data
 	private Vector3f leftFootPosition = new Vector3f();
@@ -60,8 +62,8 @@ public class LegTweaks {
 	 */
 
 	// hyperparameters (clip correction)
-	private static final float DYNAMIC_DISPLACEMENT_CUTOFF = 1.0f;
-	private static final float MAX_DYNAMIC_DISPLACEMENT = 0.06f;
+	static float DYNAMIC_DISPLACEMENT_CUTOFF = 1.0f;
+	static float MAX_DYNAMIC_DISPLACEMENT = 0.06f;
 	private static final float FLOOR_CALIBRATION_OFFSET = 0.015f;
 
 	// hyperparameters (skating correction)
@@ -105,6 +107,13 @@ public class LegTweaks {
 
 	public LegTweaks(HumanSkeleton skeleton) {
 		this.skeleton = skeleton;
+	}
+
+	public static void setConfig(LegTweaksConfig legTweaksConfig) {
+		config = legTweaksConfig;
+
+		// set all the hyperparameters from the config
+		updateHyperParameters();
 	}
 
 	public Vector3f getLeftFootPosition() {
@@ -205,6 +214,29 @@ public class LegTweaks {
 
 	public void resetBuffer() {
 		bufferInvalid = true;
+	}
+
+	// update the hyper parameters with the config
+	public static void updateHyperParameters() {
+		// Buffer parameters
+		LegTweakBuffer.SKATING_VELOCITY_THRESHOLD = getScaledHyperParameter(
+			config.getSkatingVelocityThreshold(),
+			config.getSkatingAccelerationThresholdScale()
+		);
+		LegTweakBuffer.SKATING_ACCELERATION_THRESHOLD = getScaledHyperParameter(
+			config.getSkatingAccelerationThreshold(),
+			config.getSkatingAccelerationThresholdScale()
+		);
+		LegTweakBuffer.PARAM_SCALAR_MAX = config.getParamScalarMax();
+		LegTweakBuffer.PARAM_SCALAR_MIN = config.getParamScalarMin();
+
+		// Correction/clipping parameters
+		LegTweaks.DYNAMIC_DISPLACEMENT_CUTOFF = config.getDynamicDisplacementCutoff();
+		LegTweaks.MAX_DYNAMIC_DISPLACEMENT = config.getMaxDynamicDisplacement();
+	}
+
+	public static float getScaledHyperParameter(float value, float scale) {
+		return value + (config.getCorrectionStrength() * scale);
 	}
 
 	// set the vectors in this object to the vectors in the skeleton

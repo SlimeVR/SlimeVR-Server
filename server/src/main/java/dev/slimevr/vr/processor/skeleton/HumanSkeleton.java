@@ -160,6 +160,9 @@ public class HumanSkeleton extends Skeleton implements SkeletonConfigCallback {
 		this(computedTrackers);
 		setTrackersFromServer(server);
 		skeletonConfig.loadFromConfig(server.getConfigManager());
+
+		// legtweaks config is only loaded when this constructor is used
+		LegTweaks.setConfig(server.getConfigManager().getVrConfig().getLegTweaks());
 	}
 
 	public HumanSkeleton(
