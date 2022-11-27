@@ -33,7 +33,7 @@
     "typescript": "^4.6.3"
   },
   "scripts": {
-    "start": "vite",
+    "start": "vite --force",
     "build": "vite build",
     "dev": "tauri dev",
     "tauri": "tauri",

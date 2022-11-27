@@ -6,7 +6,7 @@ import {
   OpenSerialRequestT,
   RpcMessage,
   SerialUpdateResponseT,
-  SetWifiRequestT,
+  SetWifiRequestT
 } from 'solarxr-protocol';
 import { useLayout } from '../../../hooks/layout';
 import { useOnboarding } from '../../../hooks/onboarding';
@@ -49,12 +49,19 @@ export function ConnectTrackersPage() {
 
   const connectedTrackers = useConnectedTrackers();
 
+  const openSerial = () => {
+    const req = new OpenSerialRequestT();
+    req.auto = true;
+
+    sendRPCPacket(RpcMessage.OpenSerialRequest, req);
+  };
+
   useEffect(() => {
     if (!state.wifi) {
       navigate('/onboarding/wifi-creds');
     }
 
-    sendRPCPacket(RpcMessage.OpenSerialRequest, new OpenSerialRequestT());
+    openSerial();
     return () => {
       sendRPCPacket(RpcMessage.CloseSerialRequest, new CloseSerialRequestT());
     };
@@ -67,7 +74,7 @@ export function ConnectTrackersPage() {
         setSerialOpen(false);
         setConnectionStatus('START-CONNECTING');
         setTimeout(() => {
-          sendRPCPacket(RpcMessage.OpenSerialRequest, new OpenSerialRequestT());
+          openSerial();
         }, 1000);
       }
 
@@ -110,8 +117,7 @@ export function ConnectTrackersPage() {
 
   useEffect(() => {
     const id = setInterval(() => {
-      if (!isSerialOpen)
-        sendRPCPacket(RpcMessage.OpenSerialRequest, new OpenSerialRequestT());
+      if (!isSerialOpen) openSerial();
       else clearInterval(id);
     }, 1000);
 
@@ -124,9 +130,11 @@ export function ConnectTrackersPage() {
     <div className="flex flex-col items-center">
       <div className="flex gap-10 w-full max-w-7xl ">
         <div className="flex flex-col w-full max-w-sm">
-          <ArrowLink to="/onboarding/wifi-creds">
-            Go Back to WiFi credentials
-          </ArrowLink>
+          {!state.alonePage && (
+            <ArrowLink to="/onboarding/wifi-creds">
+              Go Back to WiFi credentials
+            </ArrowLink>
+          )}
           <Typography variant="main-title">Connect trackers</Typography>
           <Typography color="secondary">
             Now onto the fun part, connecting all the trackers!
@@ -142,7 +150,11 @@ export function ConnectTrackersPage() {
             >
               I have other types of trackers
             </ArrowLink> */}
-            <ArrowLink to="/settings/serial" direction="right" variant="boxed">
+            <ArrowLink
+              to="/settings/serial"
+              direction="right"
+              variant={state.alonePage ? 'boxed-2' : 'boxed'}
+            >
               I'm having trouble connecting!
             </ArrowLink>
           </div>
@@ -153,7 +165,8 @@ export function ConnectTrackersPage() {
 
           <div
             className={classNames(
-              'rounded-xl bg-background-70 h-16 flex gap-2 p-3 lg:w-full mt-4',
+              'rounded-xl h-16 flex gap-2 p-3 lg:w-full mt-4',
+              state.alonePage ? 'bg-background-60' : 'bg-background-70',
               connectionStatus === 'ERROR' && 'border-2 border-status-critical'
             )}
           >
@@ -187,7 +200,14 @@ export function ConnectTrackersPage() {
               }).map((tracker, index) => (
                 <div key={index}>
                   {!tracker && (
-                    <div className="rounded-xl bg-background-70 h-16"></div>
+                    <div
+                      className={classNames(
+                        'rounded-xl  h-16',
+                        state.alonePage
+                          ? 'bg-background-80'
+                          : 'bg-background-70'
+                      )}
+                    ></div>
                   )}
                   {tracker && (
                     <TrackerCard
@@ -208,14 +228,23 @@ export function ConnectTrackersPage() {
       >
         <div className="w-full flex">
           <div className="flex flex-grow">
-            <Button variant="secondary" to="/" onClick={skipSetup}>
-              Skip setup
-            </Button>
+            {!state.alonePage && (
+              <Button variant="secondary" to="/" onClick={skipSetup}>
+                Skip setup
+              </Button>
+            )}
           </div>
           <div className="flex gap-3">
-            <Button variant="primary" to="/onboarding/trackers-assign">
-              I connected all my trackers
-            </Button>
+            {!state.alonePage && (
+              <Button variant="primary" to="/onboarding/trackers-assign">
+                I connected all my trackers
+              </Button>
+            )}
+            {state.alonePage && (
+              <Button variant="primary" to="/">
+                I connected all my trackers
+              </Button>
+            )}
           </div>
         </div>
       </div>

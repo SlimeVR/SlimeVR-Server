@@ -1,4 +1,4 @@
-import { viteCommonjs } from '@originjs/vite-plugin-commonjs';
+import { esbuildCommonjs, viteCommonjs } from '@originjs/vite-plugin-commonjs';
 import react from '@vitejs/plugin-react';
 import { defineConfig } from 'vite';
 
@@ -15,6 +15,7 @@ export default defineConfig({
   optimizeDeps: {
     esbuildOptions: {
       target: 'es2020',
+      plugins: [esbuildCommonjs(['solarxr-protocol'])],
     },
     needsInterop: ['solarxr-protocol'],
     include: ['solarxr-protocol'],

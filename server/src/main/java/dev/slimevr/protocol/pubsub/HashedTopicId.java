@@ -1,4 +1,4 @@
-package dev.slimevr.protocol;
+package dev.slimevr.protocol.pubsub;
 
 import solarxr_protocol.pub_sub.TopicIdT;
 

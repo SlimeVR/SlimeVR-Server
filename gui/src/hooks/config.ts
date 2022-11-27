@@ -1,8 +1,8 @@
 import {
   BaseDirectory,
-  readTextFile,
-  writeFile,
   createDir,
+  readTextFile,
+  writeFile
 } from '@tauri-apps/api/fs';
 
 import { createContext, useContext, useState } from 'react';
@@ -17,7 +17,7 @@ export interface WindowConfig {
 export interface Config {
   debug: boolean;
   doneOnboarding: boolean;
-  window: WindowConfig;
+  watchNewDevices: boolean;
 }
 
 export interface ConfigContext {
@@ -27,7 +27,7 @@ export interface ConfigContext {
   loadConfig: () => Promise<Config>;
 }
 
-const initialConfig = { doneOnboarding: false };
+const initialConfig = { doneOnboarding: false, watchNewDevices: true };
 
 export function useConfigProvider(): ConfigContext {
   const [currConfig, set] = useState<Config | null>(null);

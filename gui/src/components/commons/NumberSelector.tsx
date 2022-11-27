@@ -35,7 +35,7 @@ export function NumberSelector({
           <div className="flex gap-2 bg-background-60 p-2 rounded-lg">
             <div className="flex">
               <Button
-                variant="tierciary"
+                variant="tiertiary"
                 rounded
                 onClick={() => onChange(stepFn(value, false))}
                 disabled={stepFn(value, false) < min}
@@ -48,7 +48,7 @@ export function NumberSelector({
             </div>
             <div className="flex">
               <Button
-                variant="tierciary"
+                variant="tiertiary"
                 rounded
                 onClick={() => onChange(stepFn(value, true))}
                 disabled={stepFn(value, true) > max}

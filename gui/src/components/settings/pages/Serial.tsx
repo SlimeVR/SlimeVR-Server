@@ -1,21 +1,26 @@
 import { useEffect, useRef, useState } from 'react';
+import { useForm } from 'react-hook-form';
+import { useLocation } from 'react-router-dom';
 import {
   CloseSerialRequestT,
   OpenSerialRequestT,
   RpcMessage,
+  SerialDevicesRequestT,
+  SerialDevicesResponseT,
+  SerialDeviceT,
   SerialTrackerFactoryResetRequestT,
   SerialTrackerGetInfoRequestT,
   SerialTrackerRebootRequestT,
-  SerialUpdateResponseT,
+  SerialUpdateResponseT
 } from 'solarxr-protocol';
 import { useElemSize, useLayout } from '../../../hooks/layout';
 import { useWebsocketAPI } from '../../../hooks/websocket-api';
 import { Button } from '../../commons/Button';
+import { Dropdown } from '../../commons/Dropdown';
 import { Typography } from '../../commons/Typography';
 
-export interface WifiForm {
-  ssid: string;
-  password: string;
+export interface SerialForm {
+  port: string;
 }
 
 export function Serial() {
@@ -25,16 +30,55 @@ export function Serial() {
     ref: consoleRef,
   } = useLayout<HTMLDivElement>();
 
+  const { state } = useLocation();
+
   const toolbarRef = useRef<HTMLDivElement>(null);
   const { height } = useElemSize(toolbarRef);
 
   const { useRPCPacket, sendRPCPacket } = useWebsocketAPI();
   // const consoleRef = useRef<HTMLPreElement>(null);
   const [consoleContent, setConsole] = useState('');
+
   const [isSerialOpen, setSerialOpen] = useState(false);
+  const [serialDevices, setSerialDevices] = useState<
+    Omit<SerialDeviceT, 'pack'>[]
+  >([]);
+
+  const { control, watch, handleSubmit, reset } = useForm<SerialForm>({
+    defaultValues: { port: 'Auto' },
+  });
+
+  const { port } = watch();
 
   useEffect(() => {
-    sendRPCPacket(RpcMessage.OpenSerialRequest, new OpenSerialRequestT());
+    const subscription = watch(() => handleSubmit(onSubmit)());
+    return () => subscription.unsubscribe();
+  }, []);
+
+  const onSubmit = (value: SerialForm) => {
+    console.log('open', value.port);
+    openSerial(value.port);
+    setConsole('');
+  };
+
+  const openSerial = (port: string) => {
+    sendRPCPacket(RpcMessage.CloseSerialRequest, new CloseSerialRequestT());
+    const req = new OpenSerialRequestT();
+    req.auto = port === 'Auto';
+    req.port = port;
+    console.log('Open with', req);
+    sendRPCPacket(RpcMessage.OpenSerialRequest, req);
+  };
+
+  useEffect(() => {
+    sendRPCPacket(RpcMessage.SerialDevicesRequest, new SerialDevicesRequestT());
+    const typedState: { serialPort: string } = state as any;
+    if (typedState.serialPort) {
+      reset({ port: typedState.serialPort });
+    }
+  }, []);
+
+  useEffect(() => {
     return () => {
       sendRPCPacket(RpcMessage.CloseSerialRequest, new CloseSerialRequestT());
     };
@@ -45,9 +89,6 @@ export function Serial() {
     (data: SerialUpdateResponseT) => {
       if (data.closed) {
         setSerialOpen(false);
-        setTimeout(() => {
-          sendRPCPacket(RpcMessage.OpenSerialRequest, new OpenSerialRequestT());
-        }, 1000);
       }
 
       if (!data.closed) {
@@ -60,6 +101,16 @@ export function Serial() {
     }
   );
 
+  useRPCPacket(
+    RpcMessage.SerialDevicesResponse,
+    (res: SerialDevicesResponseT) => {
+      setSerialDevices([
+        { name: 'Auto', port: 'Auto' },
+        ...(res.devices || []),
+      ]);
+    }
+  );
+
   useEffect(() => {
     if (consoleRef.current)
       consoleRef.current.scrollTo({
@@ -69,15 +120,14 @@ export function Serial() {
 
   useEffect(() => {
     const id = setInterval(() => {
-      if (!isSerialOpen)
-        sendRPCPacket(RpcMessage.OpenSerialRequest, new OpenSerialRequestT());
+      if (!isSerialOpen) openSerial(port);
       else clearInterval(id);
     }, 1000);
 
     return () => {
       clearInterval(id);
     };
-  }, [isSerialOpen, sendRPCPacket]);
+  }, [isSerialOpen]);
 
   const reboot = () => {
     sendRPCPacket(
@@ -128,15 +178,29 @@ export function Serial() {
         </div>
         <div className="" ref={toolbarRef}>
           <div className="border-t-2 pt-2  border-background-60 border-solid m-2 gap-2 flex flex-row">
-            <Button variant="quaternary" onClick={reboot}>
-              Reboot
-            </Button>
-            <Button variant="quaternary" onClick={factoryReset}>
-              Factory Reset
-            </Button>
-            <Button variant="quaternary" onClick={getInfos}>
-              Get Infos
-            </Button>
+            <div className="flex flex-grow gap-2">
+              <Button variant="quaternary" onClick={reboot}>
+                Reboot
+              </Button>
+              <Button variant="quaternary" onClick={factoryReset}>
+                Factory Reset
+              </Button>
+              <Button variant="quaternary" onClick={getInfos}>
+                Get Infos
+              </Button>
+            </div>
+
+            <div className="flex justify-end">
+              <Dropdown
+                control={control}
+                name="port"
+                placeholder="Select a serial port"
+                items={serialDevices.map((device) => ({
+                  label: device.name?.toString() || 'error',
+                  value: device.port?.toString() || 'error',
+                }))}
+              ></Dropdown>
+            </div>
           </div>
         </div>
       </div>
