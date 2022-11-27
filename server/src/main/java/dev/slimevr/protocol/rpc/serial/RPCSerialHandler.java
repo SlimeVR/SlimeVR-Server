@@ -141,11 +141,17 @@ public record RPCSerialHandler(RPCHandler rpcHandler, ProtocolAPI api) implement
 
 
 		List<Integer> devicesOffsets = new ArrayList<>();
-		this.api.server.getSerialHandler().getKnownPorts().forEach((port) -> {
-			int portOffset = fbb.createString(port.getPortLocation());
-			int nameOffset = fbb.createString(port.getDescriptivePortName());
-			devicesOffsets.add(SerialDevice.createSerialDevice(fbb, portOffset, nameOffset));
-		});
+
+		try {
+			this.api.server.getSerialHandler().getKnownPorts().forEach((port) -> {
+				int portOffset = fbb.createString(port.getPortLocation());
+				int nameOffset = fbb.createString(port.getDescriptivePortName());
+				devicesOffsets.add(SerialDevice.createSerialDevice(fbb, portOffset, nameOffset));
+			});
+		} catch (Throwable e) {
+			LogManager.severe("Using serial ports is not supported on this platform", e);
+		}
+
 		SerialDevicesResponse.startDevicesVector(fbb, devicesOffsets.size());
 		devicesOffsets.forEach(offset -> SerialDevicesResponse.addDevices(fbb, offset));
 		int devices = fbb.endVector();
