@@ -18,8 +18,8 @@ public class DoubleTap {
 	private LinkedList<Float> tapTimes = new LinkedList<>();
 
 	// hyperparameters
-	private static final float NEEDED_ACCEL_DELTA = 9.0f;
-	private static final float ALLOWED_BODY_ACCEL = 1.0f;
+	private static final float NEEDED_ACCEL_DELTA = 6.0f;
+	private static final float ALLOWED_BODY_ACCEL = 1.5f;
 	private static final float CLUMP_TIME = 0.02f;
 	private static final float CLUMP_TIME_NS = CLUMP_TIME * 1000000000.0f;
 	private static final float TIME_WINDOW = 0.4f;
@@ -33,6 +33,7 @@ public class DoubleTap {
 	public void update() {
 		if (skeleton == null)
 			return;
+
 		Tracker tracker = getTrackerToWatch();
 		if (tracker == null)
 			return;
@@ -80,8 +81,6 @@ public class DoubleTap {
 			tapTimes.clear();
 			accelList.clear();
 		}
-
-
 	}
 
 	// returns either the chest tracker, hip tracker, or waist tracker depending
