@@ -20,6 +20,7 @@ import { Typography } from '../commons/Typography';
 import { MountingSelectionMenu } from '../onboarding/pages/mounting/MountingSelectionMenu';
 import { SingleTrackerBodyAssignmentMenu } from './SingleTrackerBodyAssignmentMenu';
 import { TrackerCard } from './TrackerCard';
+import { bodypartToString } from '../utils/formatting';
 
 const rotationToQuatMap = {
   FRONT: 180,
@@ -34,9 +35,6 @@ const rotationsLabels = {
   [rotationToQuatMap.LEFT]: 'LEFT',
   [rotationToQuatMap.RIGHT]: 'RIGHT',
 };
-
-const bodypartToString = (id: BodyPart) =>
-  BodyPart[id].replace(/_/g, ' ');
 
 export function TrackerSettingsPage() {
   const { sendRPCPacket } = useWebsocketAPI();
