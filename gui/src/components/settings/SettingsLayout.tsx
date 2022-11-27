@@ -15,7 +15,7 @@ export function SettingsLayoutRoute({ children }: { children: ReactChild }) {
           <Navbar></Navbar>
           <div className="h-full w-full gap-2 flex">
             <SettingsSidebar></SettingsSidebar>
-            <div className="w-full flex flex-col overflow-y-auto pr-2">
+            <div className="w-full flex flex-col overflow-y-auto pr-1 mr-1">
               {children}
             </div>
           </div>
