@@ -135,19 +135,21 @@ fn main() {
 
 		// Check if any Java already installed is compatible
 		let java_paths = valid_java_paths();
+		let jre = p.join("jre/bin/java");
 		let java_bin =
 			java_paths
 				.first()
 				.map(|x| x.0.to_string_lossy())
 				.or_else(|| {
-					let java = p.join("jre/bin/java");
-					if java.exists() {
-						Some(java.to_string_lossy())
+					if jre.exists() {
+						Some(jre.to_string_lossy())
 					} else {
 						None
 					}
 				});
-		if let None = java_bin {
+		if let Some(path) = java_bin {
+			println!("Using java bin: {}", path)
+		} else {
 			show_error(&format!("Couldn't find a compatible Java version, please download Java {} or higher", MINIMUM_JAVA_VERSION));
 			return;
 		}
