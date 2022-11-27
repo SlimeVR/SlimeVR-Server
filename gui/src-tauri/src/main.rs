@@ -147,12 +147,10 @@ fn main() {
 						None
 					}
 				});
-		if let Some(path) = java_bin {
-			println!("Using java bin: {}", path)
-		} else {
+		if let None = java_bin {
 			show_error(&format!("Couldn't find a compatible Java version, please download Java {} or higher", MINIMUM_JAVA_VERSION));
 			return;
-		}
+		};
 
 		let (recv, _child) = Command::new(java_bin.unwrap())
 			.current_dir(p)
@@ -165,7 +163,7 @@ fn main() {
 		None
 	};
 
-	tauri::Builder::default()
+	let res = tauri::Builder::default()
 		.plugin(tauri_plugin_window_state::Builder::default().build())
 		.setup(|app| {
 			if let Some(mut recv) = stdout_recv {
@@ -195,8 +193,12 @@ fn main() {
 			Ok(())
 		})
 		//
-		.run(tauri::generate_context!())
-		.expect("error while running tauri application");
+		.run(tauri::generate_context!());
+	match res {
+		Ok(()) => {},
+		Err(_) => res.expect("error while running tauri application"),
+
+	}
 }
 
 fn valid_java_paths() -> Vec<(OsString, i32)> {

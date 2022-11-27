@@ -2318,7 +2318,6 @@ dependencies = [
 name = "slimevr_ui"
 version = "0.0.0"
 dependencies = [
- "cfg-if",
  "cfg_aliases",
  "clap-verbosity-flag",
  "log",

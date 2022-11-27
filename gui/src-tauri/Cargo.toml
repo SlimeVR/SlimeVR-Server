@@ -22,7 +22,6 @@ custom-protocol = ["tauri/custom-protocol"]
 
 [build-dependencies]
 tauri-build = { version = "1.2", features = [] }
-cfg-if = "1.0"
 cfg_aliases = "0.1"
 
 [dependencies]
