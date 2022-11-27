@@ -8,13 +8,16 @@ export function Radio({
   label,
   value,
   desciption,
+  // input props
+  disabled,
+  ...props
 }: {
   control: Control<any>;
   name: string;
   label: string;
   value: string | number;
   desciption?: string;
-}) {
+} & React.HTMLProps<HTMLInputElement>) {
   return (
     <Controller
       control={control}
@@ -26,6 +29,7 @@ export function Radio({
             {
               'border-accent-background-30': value == checked,
               'border-transparent': value != checked,
+              'cursor-pointer': !disabled,
             }
           )}
         >
@@ -37,6 +41,7 @@ export function Radio({
             onChange={onChange}
             value={value}
             checked={value == checked}
+            {...props}
           ></input>
           <div className="flex flex-col gap-2">
             <Typography bold>{label}</Typography>

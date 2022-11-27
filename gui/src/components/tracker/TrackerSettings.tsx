@@ -20,6 +20,7 @@ import { Typography } from '../commons/Typography';
 import { MountingSelectionMenu } from '../onboarding/pages/mounting/MountingSelectionMenu';
 import { SingleTrackerBodyAssignmentMenu } from './SingleTrackerBodyAssignmentMenu';
 import { TrackerCard } from './TrackerCard';
+import { bodypartToString } from '../utils/formatting';
 
 const rotationToQuatMap = {
   FRONT: 180,
@@ -29,10 +30,10 @@ const rotationToQuatMap = {
 };
 
 const rotationsLabels = {
-  [rotationToQuatMap.BACK]: 'Back',
-  [rotationToQuatMap.FRONT]: 'Front',
-  [rotationToQuatMap.LEFT]: 'Left',
-  [rotationToQuatMap.RIGHT]: 'Right',
+  [rotationToQuatMap.BACK]: 'BACK',
+  [rotationToQuatMap.FRONT]: 'FRONT',
+  [rotationToQuatMap.LEFT]: 'LEFT',
+  [rotationToQuatMap.RIGHT]: 'RIGHT',
 };
 
 export function TrackerSettingsPage() {
@@ -203,7 +204,7 @@ export function TrackerSettingsPage() {
               <div className="flex gap-3 items-center">
                 <FootIcon></FootIcon>
                 <Typography>
-                  {BodyPart[tracker?.tracker.info?.bodyPart || BodyPart.NONE]}
+                  {bodypartToString(tracker?.tracker.info?.bodyPart || BodyPart.NONE)}
                 </Typography>
               </div>
               <div className="flex">

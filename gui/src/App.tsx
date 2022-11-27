@@ -35,8 +35,12 @@ import { SerialDetectionModal } from './components/SerialDetectionModal';
 import { OSCSettings } from './components/settings/pages/OSCSettings';
 import { TopBar } from './components/TopBar';
 import { TrackerSettingsPage } from './components/tracker/TrackerSettings';
+import { useConfig } from './hooks/config';
 
 function Layout() {
+  const { loading } = useConfig();
+  if (loading) return <></>;
+
   return (
     <>
       <SerialDetectionModal></SerialDetectionModal>
@@ -156,7 +160,7 @@ function App() {
                     <>
                       <TopBar></TopBar>
                       <div className="flex w-full h-full justify-center items-center p-2">
-                        {websocketAPI.isFistConnection
+                        {websocketAPI.isFirstConnection
                           ? 'Connecting to the server'
                           : 'Connection lost to the server. Trying to reconnect...'}
                       </div>

@@ -1,15 +1,27 @@
 #![cfg_attr(
-	all(not(debug_assertions), target_os = "windows"),
+	all(not(debug_assertions), windows),
 	windows_subsystem = "windows"
 )]
+use std::env;
+use std::panic;
+use std::path::PathBuf;
 
 use clap::Parser;
 use clap_verbosity_flag::{InfoLevel, Verbosity};
-use std::env;
-use std::path::PathBuf;
+use native_dialog::{MessageDialog, MessageType};
+use rand::seq::SliceRandom;
+use rand::thread_rng;
 use tauri::api::clap;
 use tauri::api::process::Command;
 use tauri::Manager;
+
+static POSSIBLE_TITLES: &[&str] = &[
+	"Panicking situation",
+	"looking for spatula",
+	"never gonna give you up",
+	"never gonna let you down",
+	"uwu sowwy",
+];
 
 #[derive(Parser)]
 #[clap(version, about)]
@@ -48,7 +60,25 @@ fn get_launch_path(cli: Cli) -> Option<PathBuf> {
 	None
 }
 
+fn show_error(text: &str) {
+	MessageDialog::new()
+		.set_title(&format!(
+			"SlimeVR GUI crashed - {}",
+			POSSIBLE_TITLES.choose(&mut thread_rng()).unwrap()
+		))
+		.set_text(text)
+		.set_type(MessageType::Error)
+		.show_alert()
+		.unwrap();
+}
+
 fn main() {
+	// Make an error dialog box when panicking
+	panic::set_hook(Box::new(|panic_info| {
+		eprintln!("{}", panic_info);
+		show_error(&panic_info.to_string());
+	}));
+
 	let cli = Cli::parse();
 
 	// Set up loggers and global handlers
@@ -60,7 +90,7 @@ fn main() {
 	}
 
 	// Ensure child processes die when spawned on windows
-	#[cfg(target_os = "windows")]
+	#[cfg(windows)]
 	{
 		use win32job::{ExtendedLimitInfo, Job};
 
