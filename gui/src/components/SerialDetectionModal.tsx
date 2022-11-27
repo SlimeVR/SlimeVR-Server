@@ -66,7 +66,7 @@ export function SerialDetectionModal() {
     null
   );
   const prevDevices = usePrevious<SerialDeviceT[] | null>(currentDevices);
-  const [isOpen, setOpen] = useState<string | null>(null);
+  const [isOpen, setOpen] = useState<SerialDeviceT | null>(null);
   const [showWifiForm, setShowWifiForm] = useState(false);
 
   const { WifiForm, handleSubmit, submitWifiCreds, formState, hasWifiCreds } =
@@ -82,7 +82,7 @@ export function SerialDetectionModal() {
       (a, b) => a.port == b.port && a.name == b.name
     );
     if (changes.addedItems.length === 1) {
-      setOpen(changes.addedItems[0].port?.toString() || 'error');
+      setOpen(changes.addedItems[0]);
     }
   }, [prevDevices, currentDevices]);
 
@@ -106,7 +106,7 @@ export function SerialDetectionModal() {
   }, [config, sendRPCPacket, pathname]);
 
   const openSerial = () => {
-    nav('/settings/serial', { state: { serialPort: isOpen } });
+    nav('/settings/serial', { state: { serialPort: isOpen?.port } });
     setOpen(null);
   };
 
@@ -139,15 +139,17 @@ export function SerialDetectionModal() {
           <>
             <div className="flex flex-col items-center gap-3 fill-accent-background-20">
               <USBIcon></USBIcon>
-              <Typography variant="main-title">
-                New serial device detected!
-              </Typography>
-              <Typography variant="standard">
-                A new serial device got detected.
-              </Typography>
-              <Typography variant="standard">
-                Please select what you want to do with it
-              </Typography>
+              <div className="flex flex-col items-center gap-2">
+                <Typography variant="main-title">
+                  New serial device detected!
+                </Typography>
+                <Typography variant="section-title">
+                  {isOpen?.name || 'unknown'}
+                </Typography>
+                <Typography variant="standard">
+                  Please select what you want to do with it
+                </Typography>
+              </div>
             </div>
 
             <Button variant="primary" onClick={openWifi}>
