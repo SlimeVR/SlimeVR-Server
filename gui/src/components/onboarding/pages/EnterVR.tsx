@@ -1,8 +1,4 @@
-import { useState } from 'react';
-import { useForm } from 'react-hook-form';
-import { BodyPart } from 'solarxr-protocol';
 import { useOnboarding } from '../../../hooks/onboarding';
-import { useTrackers } from '../../../hooks/tracker';
 import { ArrowLink } from '../../commons/ArrowLink';
 import { Button } from '../../commons/Button';
 import { Typography } from '../../commons/Typography';

@@ -1,6 +1,9 @@
-package dev.slimevr.protocol;
+package dev.slimevr.protocol.datafeed;
 
 import com.google.flatbuffers.FlatBufferBuilder;
+import dev.slimevr.protocol.GenericConnection;
+import dev.slimevr.protocol.ProtocolAPI;
+import dev.slimevr.protocol.ProtocolHandler;
 import io.eiren.util.logging.LogManager;
 import solarxr_protocol.MessageBundle;
 import solarxr_protocol.data_feed.*;
@@ -124,12 +127,10 @@ public class DataFeedHandler extends ProtocolHandler<DataFeedMessageHeader> {
 					data[index] = DataFeedMessageHeader.endDataFeedMessageHeader(fbb);
 
 					conn.getContext().getDataFeedTimers().set(index, currTime);
-					if (fbb != null) {
-						int messages = MessageBundle.createDataFeedMsgsVector(fbb, data);
-						int packet = createMessage(fbb, messages);
-						fbb.finish(packet);
-						conn.send(fbb.dataBuffer());
-					}
+					int messages = MessageBundle.createDataFeedMsgsVector(fbb, data);
+					int packet = createMessage(fbb, messages);
+					fbb.finish(packet);
+					conn.send(fbb.dataBuffer());
 				}
 			}
 		}));

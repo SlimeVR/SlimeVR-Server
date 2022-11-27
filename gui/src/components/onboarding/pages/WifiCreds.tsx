@@ -1,41 +1,13 @@
-import { useEffect } from 'react';
-import { useForm } from 'react-hook-form';
-import { useNavigate } from 'react-router-dom';
 import { useOnboarding } from '../../../hooks/onboarding';
+import { useWifiForm } from '../../../hooks/wifi-form';
 import { ArrowLink } from '../../commons/ArrowLink';
 import { Button } from '../../commons/Button';
-import { Input } from '../../commons/Input';
 import { Typography } from '../../commons/Typography';
 
-export interface WifiForm {
-  ssid: string;
-  password: string;
-}
-
 export function WifiCredsPage() {
-  const navigate = useNavigate();
-  const { applyProgress, state, setWifiCredentials, skipSetup } =
-    useOnboarding();
-  const { register, reset, handleSubmit, formState } = useForm<WifiForm>({
-    defaultValues: {},
-    mode: 'onChange',
-  });
-
+  const { applyProgress, skipSetup } = useOnboarding();
+  const { WifiForm, handleSubmit, submitWifiCreds, formState } = useWifiForm();
   applyProgress(0.2);
-
-  useEffect(() => {
-    if (state.wifi) {
-      reset({
-        ssid: state.wifi.ssid,
-        password: state.wifi.password,
-      });
-    }
-  }, []);
-
-  const submitWifiCreds = (value: WifiForm) => {
-    setWifiCredentials(value.ssid, value.password);
-    navigate('/onboarding/connect-trackers');
-  };
 
   return (
     <form
@@ -57,18 +29,7 @@ export function WifiCredsPage() {
             </Typography>
           </div>
           <div className="flex flex-col bg-background-70 gap-3 p-10 rounded-xl max-w-sm">
-            <Input
-              {...register('ssid', { required: true })}
-              type="text"
-              label="SSID"
-              placeholder="Enter SSID"
-            />
-            <Input
-              {...register('password')}
-              type="password"
-              label="Password"
-              placeholder="Enter password"
-            />
+            <WifiForm></WifiForm>
           </div>
         </div>
       </div>

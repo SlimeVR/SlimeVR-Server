@@ -3,7 +3,8 @@ import {
   forwardRef,
   HTMLInputTypeAttribute,
   MouseEvent,
-  useState,
+  useMemo,
+  useState
 } from 'react';
 import { EyeIcon } from './icon/EyeIcon';
 
@@ -12,10 +13,11 @@ export interface InputProps {
   placeholder?: string;
   label?: string;
   autocomplete?: boolean;
+  variant?: 'primary' | 'secondary';
 }
 
 export const Input = forwardRef<HTMLInputElement, InputProps>(function AppInput(
-  { type, placeholder, label, autocomplete, ...props },
+  { type, placeholder, label, autocomplete, variant = 'primary', ...props },
   ref
 ) {
   const [forceText, setForceText] = useState(false);
@@ -25,6 +27,18 @@ export const Input = forwardRef<HTMLInputElement, InputProps>(function AppInput(
     setForceText(!forceText);
   };
 
+  const classes = useMemo(() => {
+    const variantsMap = {
+      primary: classNames('bg-background-60 border-background-60'),
+      secondary: classNames('bg-background-50 border-background-50'),
+    };
+
+    return classNames(
+      variantsMap[variant],
+      'w-full focus:ring-transparent focus:ring-offset-transparent focus:outline-transparent rounded-md bg-background-60 border-background-60 focus:border-accent-background-40 placeholder:text-background-30 text-standard relative'
+    );
+  }, [variant]);
+
   return (
     <label className="flex flex-col gap-1">
       {label}
@@ -32,10 +46,7 @@ export const Input = forwardRef<HTMLInputElement, InputProps>(function AppInput(
         <input
           type={forceText ? 'text' : type}
           ref={ref}
-          className={classNames(
-            'w-full focus:ring-transparent focus:ring-offset-transparent focus:outline-transparent rounded-md bg-background-60 border-background-60 focus:border-accent-background-40 placeholder:text-background-30 text-standard relative',
-            { 'pr-10': type === 'password' }
-          )}
+          className={classNames(classes, { 'pr-10': type === 'password' })}
           placeholder={placeholder}
           autoComplete={autocomplete ? 'off' : 'on'}
           {...props}

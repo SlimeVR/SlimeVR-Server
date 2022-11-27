@@ -9,10 +9,10 @@ import java.io.OutputStream;
 import java.io.OutputStreamWriter;
 import java.nio.ByteBuffer;
 import java.nio.charset.StandardCharsets;
+import java.util.Arrays;
 import java.util.concurrent.CopyOnWriteArrayList;
 import java.util.List;
-import java.util.concurrent.*;
-import static java.util.concurrent.TimeUnit.*;
+import java.util.stream.Stream;
 
 
 public class SerialHandler implements SerialPortMessageListener {
@@ -28,20 +28,22 @@ public class SerialHandler implements SerialPortMessageListener {
 		listeners.removeIf(listener -> l == listener);
 	}
 
-	public boolean openSerial() {
+	public boolean openSerial(String portLocation, boolean auto) {
 		if (this.isConnected()) {
-			return true;
+			if (trackerPort != null)
+				trackerPort.closePort();
 		}
+
+		System.out.println("Trying to open:" + portLocation + "  auto: " + auto);
 
 		SerialPort[] ports = SerialPort.getCommPorts();
 		for (SerialPort port : ports) {
-			if (
-				port.getDescriptivePortName().toLowerCase().contains("ch340")
-					|| port.getDescriptivePortName().toLowerCase().contains("cp21")
-					|| port.getDescriptivePortName().toLowerCase().contains("ch910")
-					|| (port.getDescriptivePortName().toLowerCase().contains("usb")
-						&& port.getDescriptivePortName().toLowerCase().contains("seri"))
-			) {
+			if (!auto && port.getPortLocation().equals(portLocation)) {
+				trackerPort = port;
+				break;
+			}
+
+			if (auto && isKnownBoard(port.getDescriptivePortName())) {
 				trackerPort = port;
 				break;
 			}
@@ -49,6 +51,7 @@ public class SerialHandler implements SerialPortMessageListener {
 		if (trackerPort == null) {
 			return false;
 		}
+
 		trackerPort.setBaudRate(115200);
 		trackerPort.clearRTS();
 		trackerPort.clearDTR();
@@ -91,7 +94,7 @@ public class SerialHandler implements SerialPortMessageListener {
 		OutputStream os = trackerPort.getOutputStream();
 		OutputStreamWriter writer = new OutputStreamWriter(os);
 		try {
-			writer.append(serialText + "\n");
+			writer.append(serialText).append("\n");
 			writer.flush();
 			this.addLog("-> " + serialText + "\n");
 		} catch (IOException e) {
@@ -148,5 +151,22 @@ public class SerialHandler implements SerialPortMessageListener {
 	@Override
 	public boolean delimiterIndicatesEndOfMessage() {
 		return true;
+	}
+
+	public Stream<SerialPort> getKnownPorts() {
+		return Arrays
+			.stream(SerialPort.getCommPorts())
+			.filter((port) -> isKnownBoard(port.getDescriptivePortName()));
+
+	}
+
+	private boolean isKnownBoard(String com) {
+		String lowerCom = com.toLowerCase();
+
+		return lowerCom.contains("ch340")
+			|| lowerCom.contains("cp21")
+			|| lowerCom.contains("ch910")
+			|| (lowerCom.contains("usb")
+				&& lowerCom.contains("seri"));
 	}
 }

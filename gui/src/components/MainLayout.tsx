@@ -1,11 +1,11 @@
+import classNames from 'classnames';
 import { ReactNode } from 'react';
 import { ResetType } from 'solarxr-protocol';
 import { useLayout } from '../hooks/layout';
 import { BVHButton } from './BVHButton';
-import { Navbar } from './Navbar';
 import { ResetButton } from './home/ResetButton';
+import { Navbar } from './Navbar';
 import { TopBar } from './TopBar';
-import classNames from 'classnames';
 import { OverlayWidget } from './widgets/OverlayWidget';
 
 export function MainLayoutRoute({

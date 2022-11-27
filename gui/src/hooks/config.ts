@@ -1,9 +1,9 @@
 import {
   BaseDirectory,
-  readTextFile,
-  writeFile,
   createDir,
+  readTextFile,
   renameFile,
+  writeFile
 } from '@tauri-apps/api/fs';
 
 import { createContext, useContext, useRef, useState } from 'react';
@@ -18,7 +18,7 @@ export interface WindowConfig {
 export interface Config {
   debug: boolean;
   doneOnboarding: boolean;
-  window: WindowConfig;
+  watchNewDevices: boolean;
 }
 
 export interface ConfigContext {
@@ -28,7 +28,7 @@ export interface ConfigContext {
   loadConfig: () => Promise<Config>;
 }
 
-const initialConfig = { doneOnboarding: false };
+const initialConfig = { doneOnboarding: false, watchNewDevices: true };
 
 export function useConfigProvider(): ConfigContext {
   const debounceTimer = useRef<NodeJS.Timeout | null>(null);
@@ -51,10 +51,9 @@ export function useConfigProvider(): ConfigContext {
           { contents: JSON.stringify(newConfig), path: 'config.json.tmp' },
           { dir: BaseDirectory.App }
         );
-        await renameFile(
-          'config.json.tmp', 'config.json',
-          { dir: BaseDirectory.App }
-        );
+        await renameFile('config.json.tmp', 'config.json', {
+          dir: BaseDirectory.App,
+        });
         debounceTimer.current = null;
       }, 10);
     }

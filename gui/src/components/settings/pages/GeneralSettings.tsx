@@ -10,7 +10,7 @@ import {
   RpcMessage,
   SettingsRequestT,
   SettingsResponseT,
-  SteamVRTrackersSettingT,
+  SteamVRTrackersSettingT
 } from 'solarxr-protocol';
 import { useConfig } from '../../../hooks/config';
 import { useWebsocketAPI } from '../../../hooks/websocket-api';
@@ -45,6 +45,7 @@ interface SettingsForm {
   };
   interface: {
     devmode: boolean;
+    watchNewDevices: boolean;
   };
 }
 
@@ -72,7 +73,7 @@ export function GeneralSettings() {
         skatingCorrection: false,
       },
       filtering: { amount: 0.1, type: FilteringType.NONE },
-      interface: { devmode: false },
+      interface: { devmode: false, watchNewDevices: true },
     },
   });
 
@@ -104,11 +105,14 @@ export function GeneralSettings() {
     const filtering = new FilteringSettingsT();
     filtering.type = values.filtering.type;
     filtering.amount = values.filtering.amount;
-
     settings.filtering = filtering;
+
     sendRPCPacket(RpcMessage.ChangeSettingsRequest, settings);
 
-    setConfig({ debug: values.interface.devmode });
+    setConfig({
+      debug: values.interface.devmode,
+      watchNewDevices: values.interface.watchNewDevices,
+    });
 
     // if devmode was changed update the page
     const skeletonSettings = document.getElementById('skeletonSettings');
@@ -132,6 +136,7 @@ export function GeneralSettings() {
     const formData: DefaultValues<SettingsForm> = {
       interface: {
         devmode: config?.debug,
+        watchNewDevices: config?.watchNewDevices,
       },
     };
 
@@ -285,7 +290,7 @@ export function GeneralSettings() {
               movement patterns.
             </Typography>
           </div>
-          <div className="grid grid-cols-2 gap-3 pb-5">
+          <div className="grid sm:grid-cols-2 gap-3 pb-5">
             <CheckBox
               variant="toggle"
               outlined
@@ -308,7 +313,7 @@ export function GeneralSettings() {
               Change the way the arms are tracked.
             </Typography>
           </div>
-          <div className="grid grid-cols-2 pb-5">
+          <div className="grid sm:grid-cols-2 pb-5">
             <CheckBox
               variant="toggle"
               outlined
@@ -325,7 +330,7 @@ export function GeneralSettings() {
                 these on.
               </Typography>
             </div>
-            <div className="grid grid-cols-2 gap-3 pb-5">
+            <div className="grid sm:grid-cols-2 gap-3 pb-5">
               <CheckBox
                 variant="toggle"
                 outlined
@@ -355,23 +360,48 @@ export function GeneralSettings() {
       <SettingsPageLayout icon={<SquaresIcon></SquaresIcon>} id="interface">
         <>
           <Typography variant="main-title">Interface</Typography>
-          <Typography bold>Developer Mode</Typography>
-          <div className="flex flex-col pt-2">
-            <Typography color="secondary">
-              This mode can be useful if you need in-depth data or to interact
-            </Typography>
-            <Typography color="secondary">
-              with connected trackers on a more advanced level
-            </Typography>
-          </div>
-          <div className="grid sm:grid-cols-2 gap-3 pt-3">
-            <CheckBox
-              variant="toggle"
-              control={control}
-              outlined
-              name="interface.devmode"
-              label="Developer mode"
-            />
+          <div className="gap-4 grid">
+            <div className="grid sm:grid-cols-2">
+              <div>
+                <Typography bold>Developer Mode</Typography>
+                <div className="flex flex-col">
+                  <Typography color="secondary">
+                    This mode can be useful if you need in-depth data or to
+                    interact with connected trackers on a more advanced level
+                  </Typography>
+                </div>
+                <div className="pt-2">
+                  <CheckBox
+                    variant="toggle"
+                    control={control}
+                    outlined
+                    name="interface.devmode"
+                    label="Developer mode"
+                  />
+                </div>
+              </div>
+            </div>
+            <div className="grid sm:grid-cols-2">
+              <div>
+                <Typography bold>Serial device detection</Typography>
+                <div className="flex flex-col">
+                  <Typography color="secondary">
+                    This option will show a pop-up every time you plug a new
+                    serial device that could be a tracker. It helps improving
+                    the setup process of a tracker
+                  </Typography>
+                </div>
+                <div className="pt-2">
+                  <CheckBox
+                    variant="toggle"
+                    control={control}
+                    outlined
+                    name="interface.watchNewDevices"
+                    label="Serial device detection"
+                  />
+                </div>
+              </div>
+            </div>
           </div>
         </>
       </SettingsPageLayout>

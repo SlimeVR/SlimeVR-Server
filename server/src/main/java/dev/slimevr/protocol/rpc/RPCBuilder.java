@@ -1,4 +1,4 @@
-package dev.slimevr.protocol;
+package dev.slimevr.protocol.rpc;
 
 import com.google.flatbuffers.FlatBufferBuilder;
 import dev.slimevr.vr.processor.HumanPoseProcessor;

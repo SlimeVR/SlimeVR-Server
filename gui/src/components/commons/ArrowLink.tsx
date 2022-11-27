@@ -12,13 +12,16 @@ export function ArrowLink({
   to: string;
   children: ReactChild;
   direction?: 'left' | 'right';
-  variant?: 'flat' | 'boxed';
+  variant?: 'flat' | 'boxed' | 'boxed-2';
 }) {
   const classes = useMemo(() => {
     const variantsMap = {
       flat: classNames('justify-start'),
       boxed: classNames(
         'justify-between bg-background-70 rounded-md hover:bg-background-60 p-3'
+      ),
+      'boxed-2': classNames(
+        'justify-between bg-background-60 rounded-md hover:bg-background-50 p-3'
       ),
     };
     return classNames(
