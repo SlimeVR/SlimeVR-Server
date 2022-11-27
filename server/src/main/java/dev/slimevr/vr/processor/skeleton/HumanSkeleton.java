@@ -138,6 +138,10 @@ public class HumanSkeleton extends Skeleton implements SkeletonConfigCallback {
 	protected LegTweaks legTweaks = new LegTweaks(this);
 	// #endregion
 
+	// #region tap detection
+	protected DoubleTap doubleTap = new DoubleTap(this);
+	// #endregion
+
 	// #region Constructors
 	protected HumanSkeleton(List<? extends ComputedHumanPoseTracker> computedTrackers) {
 		assembleSkeleton(false);
@@ -778,6 +782,7 @@ public class HumanSkeleton extends Skeleton implements SkeletonConfigCallback {
 	@VRServerThread
 	@Override
 	public void updatePose() {
+		doubleTap.update();
 		updateLocalTransforms();
 		updateRootTrackers();
 		updateComputedTrackers();
