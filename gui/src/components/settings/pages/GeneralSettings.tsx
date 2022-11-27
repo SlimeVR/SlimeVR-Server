@@ -356,7 +356,7 @@ export function GeneralSettings() {
         <>
           <Typography variant="main-title">Interface</Typography>
           <Typography bold>Developer Mode</Typography>
-          <div className="flex flex-col">
+          <div className="flex flex-col pt-2">
             <Typography color="secondary">
               This mode can be useful if you need in-depth data or to interact
             </Typography>

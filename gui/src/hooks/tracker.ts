@@ -1,5 +1,6 @@
 import { useEffect, useMemo, useRef, useState } from 'react';
 import { BodyPart, TrackerDataT, TrackerStatus } from 'solarxr-protocol';
+import { bodypartToString } from '../components/utils/formatting';
 import { QuaternionFromQuatT } from '../maths/quaternion';
 import { useAppContext } from './app';
 
@@ -40,7 +41,7 @@ export function useTracker(tracker: TrackerDataT) {
     useName: () =>
       useMemo(() => {
         if (tracker.info?.customName) return tracker.info?.customName;
-        if (tracker.info?.bodyPart) return BodyPart[tracker.info?.bodyPart];
+        if (tracker.info?.bodyPart) return bodypartToString(tracker.info?.bodyPart);
         return tracker.info?.displayName || 'NONE';
       }, [tracker.info]),
     useRotation: () =>
