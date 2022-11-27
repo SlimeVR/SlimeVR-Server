@@ -46,11 +46,11 @@ export function useConfigProvider(): ConfigContext {
 
     if (!debounceTimer.current) {
       debounceTimer.current = setTimeout(async () => {
-    await createDir('', { dir: BaseDirectory.App, recursive: true });
-    await writeFile(
+        await createDir('', { dir: BaseDirectory.App, recursive: true });
+        await writeFile(
           { contents: JSON.stringify(newConfig), path: 'config.json.tmp' },
-      { dir: BaseDirectory.App }
-    );
+          { dir: BaseDirectory.App }
+        );
         await renameFile(
           'config.json.tmp', 'config.json',
           { dir: BaseDirectory.App }
