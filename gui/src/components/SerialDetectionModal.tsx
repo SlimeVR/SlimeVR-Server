@@ -13,6 +13,7 @@ import { useWifiForm, WifiFormData } from '../hooks/wifi-form';
 import { BaseModal } from './commons/BaseModal';
 import { Button } from './commons/Button';
 import { BulbIcon } from './commons/icon/BulbIcon';
+import { USBIcon } from './commons/icon/UsbIcon';
 import { Typography } from './commons/Typography';
 
 const mapItems = <T,>(items: T[], getKey: (item: T) => string) => {
@@ -136,8 +137,8 @@ export function SerialDetectionModal() {
       <div className="flex flex-col gap-3">
         {!showWifiForm && (
           <>
-            <div className="flex flex-col items-center gap-3">
-              <BulbIcon></BulbIcon>
+            <div className="flex flex-col items-center gap-3 fill-accent-background-20">
+              <USBIcon></USBIcon>
               <Typography variant="main-title">
                 New serial device detected!
               </Typography>
