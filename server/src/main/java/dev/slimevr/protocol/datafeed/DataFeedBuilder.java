@@ -1,4 +1,4 @@
-package dev.slimevr.protocol;
+package dev.slimevr.protocol.datafeed;
 
 import com.google.flatbuffers.FlatBufferBuilder;
 import com.jme3.math.Quaternion;

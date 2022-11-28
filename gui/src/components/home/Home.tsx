@@ -9,16 +9,8 @@ import { TrackersTable } from '../tracker/TrackersTable';
 
 export function Home() {
   const { config } = useConfig();
-  const { useAssignedTrackers, useUnassignedTrackers } = useTrackers();
+  const { trackers } = useTrackers();
   const navigate = useNavigate();
-
-  const assignedTrackers = useAssignedTrackers();
-  const unasignedTrackers = useUnassignedTrackers();
-
-  const trackers = useMemo(
-    () => [...assignedTrackers, ...unasignedTrackers],
-    [assignedTrackers, unasignedTrackers]
-  );
 
   const sendToSettings = (tracker: TrackerDataT) => {
     navigate(

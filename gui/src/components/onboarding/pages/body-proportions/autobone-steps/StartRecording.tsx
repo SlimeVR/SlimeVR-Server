@@ -47,7 +47,7 @@ export function StartRecording({
 
         <div className="flex gap-3">
           <Button
-            variant={variant === 'onboarding' ? 'secondary' : 'tierciary'}
+            variant={variant === 'onboarding' ? 'secondary' : 'tiertiary'}
             onClick={prevStep}
           >
             Previous step

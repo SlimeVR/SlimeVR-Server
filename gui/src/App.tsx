@@ -1,43 +1,49 @@
-import {
-  useProvideWebsocketApi,
-  WebSocketApiContext,
-} from './hooks/websocket-api';
+import { useEffect } from 'react';
 import {
   BrowserRouter as Router,
-  Routes,
-  Route,
   Outlet,
+  Route,
+  Routes
 } from 'react-router-dom';
 import { Home } from './components/home/Home';
-import { AppContextProvider } from './components/providers/AppContext';
-import { useEffect } from 'react';
 import { MainLayoutRoute } from './components/MainLayout';
-import { SettingsLayoutRoute } from './components/settings/SettingsLayout';
+import { AppContextProvider } from './components/providers/AppContext';
 import { GeneralSettings } from './components/settings/pages/GeneralSettings';
 import { Serial } from './components/settings/pages/Serial';
+import { SettingsLayoutRoute } from './components/settings/SettingsLayout';
+import {
+  useProvideWebsocketApi,
+  WebSocketApiContext
+} from './hooks/websocket-api';
 
 import { Event, listen } from '@tauri-apps/api/event';
-import { TopBar } from './components/TopBar';
-import { ConfigContextProvider } from './components/providers/ConfigContext';
-import { OnboardingLayout } from './components/onboarding/OnboardingLayout';
-import { HomePage } from './components/onboarding/pages/Home';
-import { WifiCredsPage } from './components/onboarding/pages/WifiCreds';
-import { ConnectTrackersPage } from './components/onboarding/pages/ConnectTracker';
 import { OnboardingContextProvider } from './components/onboarding/OnboardingContextProvicer';
-import { TrackersAssignPage } from './components/onboarding/pages/trackers-assign/TrackerAssignment';
+import { OnboardingLayout } from './components/onboarding/OnboardingLayout';
+import { AutomaticProportionsPage } from './components/onboarding/pages/body-proportions/AutomaticProportions';
+import { ManualProportionsPage } from './components/onboarding/pages/body-proportions/ManualProportions';
+import { ConnectTrackersPage } from './components/onboarding/pages/ConnectTracker';
+import { DonePage } from './components/onboarding/pages/Done';
 import { EnterVRPage } from './components/onboarding/pages/EnterVR';
+import { HomePage } from './components/onboarding/pages/Home';
 import { AutomaticMountingPage } from './components/onboarding/pages/mounting/AutomaticMounting';
 import { ManualMountingPage } from './components/onboarding/pages/mounting/ManualMounting';
 import { ResetTutorialPage } from './components/onboarding/pages/ResetTutorial';
-import { AutomaticProportionsPage } from './components/onboarding/pages/body-proportions/AutomaticProportions';
-import { ManualProportionsPage } from './components/onboarding/pages/body-proportions/ManualProportions';
-import { TrackerSettingsPage } from './components/tracker/TrackerSettings';
-import { DonePage } from './components/onboarding/pages/Done';
+import { TrackersAssignPage } from './components/onboarding/pages/trackers-assign/TrackerAssignment';
+import { WifiCredsPage } from './components/onboarding/pages/WifiCreds';
+import { ConfigContextProvider } from './components/providers/ConfigContext';
+import { SerialDetectionModal } from './components/SerialDetectionModal';
 import { OSCSettings } from './components/settings/pages/OSCSettings';
+import { TopBar } from './components/TopBar';
+import { TrackerSettingsPage } from './components/tracker/TrackerSettings';
+import { useConfig } from './hooks/config';
 
 function Layout() {
+  const { loading } = useConfig();
+  if (loading) return <></>;
+
   return (
     <>
+      <SerialDetectionModal></SerialDetectionModal>
       <Routes>
         <Route
           path="/"
@@ -154,7 +160,7 @@ function App() {
                     <>
                       <TopBar></TopBar>
                       <div className="flex w-full h-full justify-center items-center p-2">
-                        {websocketAPI.isFistConnection
+                        {websocketAPI.isFirstConnection
                           ? 'Connecting to the server'
                           : 'Connection lost to the server. Trying to reconnect...'}
                       </div>
