@@ -38,3 +38,4 @@ which = "4.3.0"
 
 [target.'cfg(windows)'.dependencies]
 win32job = "1"
+winreg = "0.10.1"

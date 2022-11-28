@@ -115,6 +115,8 @@ fn main() {
 	#[cfg(windows)]
 	{
 		use win32job::{ExtendedLimitInfo, Job};
+		use winreg::enums::*;
+		use winreg::RegKey;
 
 		let mut info = ExtendedLimitInfo::new();
 		info.limit_kill_on_job_close();
@@ -125,6 +127,10 @@ fn main() {
 		// We don't do anything with the job anymore, but we shouldn't drop it because that would
 		// terminate our process tree. So we intentionally leak it instead.
 		std::mem::forget(job);
+
+		// Check if WebView2 exists
+		let local = RegKey::predef(HKEY_LOCAL_MACHINE)
+			.open_subkey(r"SOFTWARE\WOW6432Node\Microsoft\EdgeUpdate\Clients\{F3017226-FE2A-4295-8BDF-00C3A9A7E4C5}");
 	}
 
 	// Spawn server process
