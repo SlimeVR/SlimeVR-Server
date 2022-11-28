@@ -146,22 +146,26 @@ public class DoubleTap {
 			if (accel.length() > ALLOWED_BODY_ACCEL)
 				return false;
 		}
-		if (
-			skeleton.leftUpperLegTracker != null
-				&& !skeleton.leftFootTracker.equals(trackerToExclude)
-		) {
+		if (skeleton.leftUpperLegTracker != null && !skeleton.leftUpperLegTracker.equals(trackerToExclude)) {
 			skeleton.leftUpperLegTracker.getAcceleration(accel);
 			if (accel.length() > ALLOWED_BODY_ACCEL)
 				return false;
 		}
-		if (
-			skeleton.rightUpperLegTracker != null
-				&& !skeleton.rightFootTracker.equals(trackerToExclude)
-		) {
+		if (skeleton.rightUpperLegTracker != null && !skeleton.rightUpperLegTracker.equals(trackerToExclude)) {
 			skeleton.rightUpperLegTracker.getAcceleration(accel);
 			if (accel.length() > ALLOWED_BODY_ACCEL)
 				return false;
 		}
-		return true;
+		if (skeleton.leftFootTracker != null && !skeleton.leftFootTracker.equals(trackerToExclude)) {
+			skeleton.leftFootTracker.getAcceleration(accel);
+			if (accel.length() > ALLOWED_BODY_ACCEL)
+				return false;
+		}
+		if (skeleton.rightFootTracker != null && !skeleton.rightFootTracker.equals(trackerToExclude)) {
+			skeleton.rightFootTracker.getAcceleration(accel);
+			if (accel.length() > ALLOWED_BODY_ACCEL)
+				return false;
+		}
+		return true; 
 	}
 }
