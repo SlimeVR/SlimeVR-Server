@@ -2,6 +2,8 @@ package dev.slimevr.vr.processor.skeleton;
 
 import java.util.LinkedList;
 import com.jme3.math.Vector3f;
+
+import dev.slimevr.osc.VRCOSCHandler;
 import dev.slimevr.vr.trackers.Tracker;
 
 
@@ -10,8 +12,10 @@ import dev.slimevr.vr.trackers.Tracker;
 // to many false positives)
 public class DoubleTap {
 
-	// server
+	// server and related classes
 	private HumanSkeleton skeleton;
+	private VRCOSCHandler oscHandler;
+
 
 	// tap detection
 	private LinkedList<float[]> accelList = new LinkedList<>();
@@ -20,13 +24,19 @@ public class DoubleTap {
 	// hyperparameters
 	private static final float NEEDED_ACCEL_DELTA = 6.0f;
 	private static final float ALLOWED_BODY_ACCEL = 1.5f;
-	private static final float CLUMP_TIME = 0.02f;
-	private static final float CLUMP_TIME_NS = CLUMP_TIME * 1000000000.0f;
-	private static final float TIME_WINDOW = 0.4f;
-	private static final float TIME_WINDOW_NS = TIME_WINDOW * 1000000000.0f;
+	private static final float CLUMP_TIME_NS = 0.03f * 1000000000.0f;
+	private static final float TIME_WINDOW_NS = 0.5f * 1000000000.0f;
+	private static final float RESET_DELAY_NS = 0.25f * 1000000000.0f;
+
+	// state
+	private float resetRequestTime = -1.0f;
 
 	public DoubleTap(HumanSkeleton skeleton) {
 		this.skeleton = skeleton;
+	}
+
+	public void setVRCOSCHandler(VRCOSCHandler oscHandler) {
+		this.oscHandler = oscHandler;
 	}
 
 	// main function for tap detection
@@ -37,6 +47,16 @@ public class DoubleTap {
 		Tracker tracker = getTrackerToWatch();
 		if (tracker == null)
 			return;
+
+		// check if we should reset
+		if (resetRequestTime != -1.0f) {
+			if (System.nanoTime() - resetRequestTime > RESET_DELAY_NS && oscHandler != null) {
+				oscHandler.yawAlign();
+				skeleton.resetTrackersYaw();
+				resetRequestTime = -1.0f;
+			}
+			return;
+		}
 
 		// get the acceleration of the tracker and add it to the list
 		Vector3f accel = new Vector3f();
@@ -76,7 +96,7 @@ public class DoubleTap {
 		// if there are two tap events and the user is moving relatively slowly,
 		// reset the skeleton
 		if (tapEvents == 2) {
-			skeleton.resetTrackersYaw();
+			resetRequestTime = System.nanoTime();
 			// reset the list
 			tapTimes.clear();
 			accelList.clear();
