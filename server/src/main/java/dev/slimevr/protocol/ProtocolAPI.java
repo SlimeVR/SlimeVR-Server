@@ -1,6 +1,9 @@
 package dev.slimevr.protocol;
 
 import dev.slimevr.VRServer;
+import dev.slimevr.protocol.datafeed.DataFeedHandler;
+import dev.slimevr.protocol.pubsub.PubSubHandler;
+import dev.slimevr.protocol.rpc.RPCHandler;
 import solarxr_protocol.MessageBundle;
 import solarxr_protocol.data_feed.DataFeedMessageHeader;
 import solarxr_protocol.pub_sub.PubSubHeader;

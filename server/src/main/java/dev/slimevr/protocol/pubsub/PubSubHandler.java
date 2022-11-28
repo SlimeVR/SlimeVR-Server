@@ -1,6 +1,9 @@
-package dev.slimevr.protocol;
+package dev.slimevr.protocol.pubsub;
 
 import com.google.flatbuffers.FlatBufferBuilder;
+import dev.slimevr.protocol.GenericConnection;
+import dev.slimevr.protocol.ProtocolAPI;
+import dev.slimevr.protocol.ProtocolHandler;
 import io.eiren.util.logging.LogManager;
 import solarxr_protocol.MessageBundle;
 import solarxr_protocol.pub_sub.*;

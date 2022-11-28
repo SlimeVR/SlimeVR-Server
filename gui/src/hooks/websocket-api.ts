@@ -16,7 +16,7 @@ import { useInterval } from './timeout';
 
 export interface WebSocketApi {
   isConnected: boolean;
-  isFistConnection: boolean;
+  isFirstConnection: boolean;
   useRPCPacket: <T>(type: RpcMessage, callback: (packet: T) => void) => void;
   useDataFeedPacket: <T>(
     type: DataFeedMessage,
@@ -46,7 +46,7 @@ export function useProvideWebsocketApi(): WebSocketApi {
   const rpclistenerRef = useRef<EventTarget>(new EventTarget());
   const pubsublistenerRef = useRef<EventTarget>(new EventTarget());
   const datafeedlistenerRef = useRef<EventTarget>(new EventTarget());
-  const [isFistConnection, setFirstConnection] = useState(true);
+  const [isFirstConnection, setFirstConnection] = useState(true);
   const [isConnected, setConnected] = useState(false);
 
   useInterval(() => {
@@ -184,7 +184,7 @@ export function useProvideWebsocketApi(): WebSocketApi {
 
   return {
     isConnected,
-    isFistConnection,
+    isFirstConnection,
     useDataFeedPacket: <T>(
       type: DataFeedMessage,
       callback: (packet: T) => void
