@@ -21,6 +21,9 @@ public class SkeletonConfig {
 		SkeletonConfigValues.class
 	);
 
+	protected boolean[] changedToggles = new boolean[SkeletonConfigToggles.values().length];
+	protected boolean[] changedValues = new boolean[SkeletonConfigValues.values().length];
+
 	protected final EnumMap<BoneType, Vector3f> nodeOffsets = new EnumMap<>(
 		BoneType.class
 	);
@@ -90,14 +93,16 @@ public class SkeletonConfig {
 		}
 	}
 
-	public Float setOffset(
+	public void setOffset(
 		SkeletonConfigOffsets config,
 		Float newValue,
 		boolean computeOffsets
 	) {
-		Float origVal = newValue != null
-			? configOffsets.put(config, newValue)
-			: configOffsets.remove(config);
+		if (newValue != null) {
+			configOffsets.put(config, newValue);
+		} else {
+			configOffsets.remove(config);
+		}
 
 		// Re-compute the affected offsets
 		if (computeOffsets && autoUpdateOffsets && config.affectedOffsets != null) {
@@ -120,12 +125,10 @@ public class SkeletonConfig {
 		userHeight = getOffset(SkeletonConfigOffsets.NECK)
 			+ getOffset(SkeletonConfigOffsets.TORSO)
 			+ getOffset(SkeletonConfigOffsets.LEGS_LENGTH);
-
-		return origVal;
 	}
 
-	public Float setOffset(SkeletonConfigOffsets config, Float newValue) {
-		return setOffset(config, newValue, true);
+	public void setOffset(SkeletonConfigOffsets config, Float newValue) {
+		setOffset(config, newValue, true);
 	}
 
 	public float getOffset(SkeletonConfigOffsets config) {
@@ -141,10 +144,15 @@ public class SkeletonConfig {
 		return userHeight;
 	}
 
-	public Boolean setToggle(SkeletonConfigToggles config, Boolean newValue) {
-		Boolean origVal = newValue != null
-			? configToggles.put(config, newValue)
-			: configToggles.remove(config);
+	public void setToggle(SkeletonConfigToggles config, Boolean newValue) {
+		if (newValue != null) {
+			if (configToggles.get(config) != null && (newValue != configToggles.get(config))) {
+				changedToggles[config.id - 1] = true;
+			}
+			configToggles.put(config, newValue);
+		} else {
+			configToggles.remove(config);
+		}
 
 		if (callback != null) {
 			try {
@@ -154,8 +162,6 @@ public class SkeletonConfig {
 				LogManager.severe("[SkeletonConfig] Exception while calling callback", e);
 			}
 		}
-
-		return origVal;
 	}
 
 	public boolean getToggle(SkeletonConfigToggles config) {
@@ -167,10 +173,15 @@ public class SkeletonConfig {
 		return val != null ? val : config.defaultValue;
 	}
 
-	public Float setValue(SkeletonConfigValues config, Float newValue) {
-		Float origVal = newValue != null
-			? configValues.put(config, newValue)
-			: configValues.remove(config);
+	public void setValue(SkeletonConfigValues config, Float newValue) {
+		if (newValue != null) {
+			if (configValues.get(config) != null && (!newValue.equals(configValues.get(config)))) {
+				changedValues[config.id - 1] = true;
+			}
+			configValues.put(config, newValue);
+		} else {
+			configValues.remove(config);
+		}
 
 		if (callback != null) {
 			try {
@@ -180,8 +191,6 @@ public class SkeletonConfig {
 				LogManager.severe("[SkeletonConfig] Exception while calling callback", e);
 			}
 		}
-
-		return origVal;
 	}
 
 	public float getValue(SkeletonConfigValues config) {
@@ -332,10 +341,8 @@ public class SkeletonConfig {
 		}
 	}
 
-	public void setConfigs(
-		Map<SkeletonConfigOffsets, Float> configOffsets,
-		Map<SkeletonConfigToggles, Boolean> configToggles,
-		Map<SkeletonConfigValues, Float> configValues
+	public void setOffsets(
+		Map<SkeletonConfigOffsets, Float> configOffsets
 	) {
 		if (configOffsets != null) {
 			configOffsets.forEach((key, value) -> {
@@ -345,24 +352,14 @@ public class SkeletonConfig {
 			});
 		}
 
-		if (configToggles != null) {
-			configToggles.forEach(this::setToggle);
-		}
-
-		if (configValues != null) {
-			configValues.forEach(this::setValue);
-		}
-
 		if (autoUpdateOffsets) {
 			computeAllNodeOffsets();
 		}
 	}
 
-	public void setConfigs(SkeletonConfig skeletonConfig) {
-		setConfigs(
-			skeletonConfig.configOffsets,
-			skeletonConfig.configToggles,
-			skeletonConfig.configValues
+	public void setOffsets(SkeletonConfig skeletonConfig) {
+		setOffsets(
+			skeletonConfig.configOffsets
 		);
 	}
 	// #endregion
@@ -411,19 +408,26 @@ public class SkeletonConfig {
 	}
 
 	public void save() {
-		ConfigManager cm = Main.vrServer.getConfigManager();
-		// Write all possible values, this keeps configs consistent even if
-		// defaults were changed
+		dev.slimevr.config.SkeletonConfig skeletonConfig = Main.vrServer
+			.getConfigManager()
+			.getVrConfig()
+			.getSkeleton();
+
+		// Write all possible values to keep consistent even if defaults changed
 		for (SkeletonConfigOffsets value : SkeletonConfigOffsets.values) {
-			cm.getVrConfig().getSkeleton().getOffsets().put(value.configKey, getOffset(value));
+			skeletonConfig.getOffsets().put(value.configKey, getOffset(value));
 		}
 
+		// Only write changed values to keep using defaults if not changed
 		for (SkeletonConfigToggles value : SkeletonConfigToggles.values) {
-			cm.getVrConfig().getSkeleton().getToggles().put(value.configKey, getToggle(value));
+			if (changedToggles[value.id - 1])
+				skeletonConfig.getToggles().put(value.configKey, getToggle(value));
 		}
 
+		// Only write changed values to keep using defaults if not changed
 		for (SkeletonConfigValues value : SkeletonConfigValues.values) {
-			cm.getVrConfig().getSkeleton().getValues().put(value.configKey, getValue(value));
+			if (changedValues[value.id - 1])
+				skeletonConfig.getValues().put(value.configKey, getValue(value));
 		}
 	}
 
