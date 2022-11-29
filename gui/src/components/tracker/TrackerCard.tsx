@@ -132,7 +132,7 @@ export function TrackerCard({
       onClick={onClick}
       className={classNames(
         'rounded-lg',
-        interactable && 'hover:bg-background-50',
+        interactable && 'hover:bg-background-50 cursor-pointer',
         outlined && 'outline outline-2 outline-accent-background-40',
         bg
       )}

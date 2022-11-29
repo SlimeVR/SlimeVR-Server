@@ -1,5 +1,4 @@
 import classNames from 'classnames';
-import { useEffect } from 'react';
 import { useAutobone } from '../../../../../hooks/autobone';
 import { Button } from '../../../../commons/Button';
 import { Typography } from '../../../../commons/Typography';
@@ -68,7 +67,7 @@ export function VerifyResultsStep({
         </div>
         <div className="flex gap-2">
           <Button
-            variant={variant === 'onboarding' ? 'secondary' : 'tierciary'}
+            variant={variant === 'onboarding' ? 'secondary' : 'tiertiary'}
             onClick={redo}
           >
             Redo recording

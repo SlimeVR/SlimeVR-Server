@@ -1,5 +1,5 @@
 import classNames from 'classnames';
-import React, { ReactChild, useMemo } from 'react';
+import React, { ReactChild, ReactNode, useMemo } from 'react';
 import { NavLink } from 'react-router-dom';
 import { LoaderIcon } from './icon/LoaderIcon';
 
@@ -47,9 +47,9 @@ export function Button({
   rounded = false,
   ...props
 }: {
-  children: ReactChild;
-  icon?: ReactChild;
-  variant: 'primary' | 'secondary' | 'tierciary' | 'quaternary';
+  children: ReactNode;
+  icon?: ReactNode;
+  variant: 'primary' | 'secondary' | 'tiertiary' | 'quaternary';
   to?: string;
   loading?: boolean;
   rounded?: boolean;
@@ -69,7 +69,7 @@ export function Button({
         'bg-background-60 hover:bg-background-60 cursor-not-allowed text-background-40':
           disabled,
       }),
-      tierciary: classNames({
+      tiertiary: classNames({
         'bg-background-50 hover:bg-background-40 text-standard text-background-10':
           !disabled,
         'bg-background-50 hover:bg-background-50 cursor-not-allowed text-background-40':

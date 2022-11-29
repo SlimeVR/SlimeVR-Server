@@ -8,6 +8,8 @@ export function CheckBox({
   control,
   outlined,
   name,
+  // input props
+  disabled,
   ...props
 }: {
   label: string | ReactChild;
@@ -15,7 +17,7 @@ export function CheckBox({
   name: string;
   variant?: 'checkbox' | 'toggle';
   outlined?: boolean;
-}) {
+} & React.HTMLProps<HTMLInputElement>) {
   const classes = useMemo(() => {
     const vriantsMap = {
       checkbox: {
@@ -51,7 +53,10 @@ export function CheckBox({
           <label
             className={classNames(
               'w-full py-3 flex gap-2 items-center text-standard-bold',
-              { 'px-3': outlined }
+              {
+                'px-3': outlined,
+                'cursor-pointer': !disabled,
+              }
             )}
           >
             <input

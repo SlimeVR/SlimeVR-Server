@@ -1,4 +1,4 @@
-import { useRef, useState } from 'react';
+import { useState } from 'react';
 import { ResetRequestT, ResetType, RpcMessage } from 'solarxr-protocol';
 import { useWebsocketAPI } from '../../hooks/websocket-api';
 import { BigButton } from '../commons/BigButton';
@@ -9,9 +9,8 @@ import {
 } from '../commons/icon/ResetIcon';
 
 export function ResetButton({ type }: { type: ResetType }) {
-  const timerid = useRef<NodeJS.Timer | null>(null);
-  const [reseting, setReseting] = useState(false);
-  const [timer, setTimer] = useState(0);
+  const [resetting, setResetting] = useState(false);
+  const [timer, setDisplayTimer] = useState(0);
   const { sendRPCPacket } = useWebsocketAPI();
 
   const getText = () => {
@@ -34,46 +33,33 @@ export function ResetButton({ type }: { type: ResetType }) {
     return <ResetIcon width={20} />;
   };
 
-  const reset = () => {
+  const TIMER_DURATION = 3;
+  const resetStart = () => {
+    setResetting(true);
+    setDisplayTimer(TIMER_DURATION);
+    if (type !== ResetType.Quick) {
+      for (let i = 1; i < TIMER_DURATION; i++) {
+        setTimeout(() => setDisplayTimer(TIMER_DURATION - i), i * 1000);
+      }
+      setTimeout(resetEnd, TIMER_DURATION * 1000);
+    } else {
+      resetEnd();
+    }
+  };
+
+  const resetEnd = () => {
     const req = new ResetRequestT();
     req.resetType = type;
-    setReseting(true);
-    setTimer(0);
-    if (type !== ResetType.Quick) {
-      if (timerid.current) clearInterval(timerid.current);
-      timerid.current = setInterval(() => {
-        setTimer((timer) => {
-          const newTimer = timer + 1;
-          if (newTimer >= 3) {
-            // Stop the current interval
-            if (timerid.current) clearInterval(timerid.current);
-
-            // Only actually reset on exactly 0 so it doesn't repeatedly reset if bugged
-            if (newTimer === 3) sendRPCPacket(RpcMessage.ResetRequest, req);
-            else
-              console.warn(
-                `Reset timer is still running after 3 seconds (newTimer = ${newTimer})`
-              );
-
-            // Reset the state
-            // Don't reset the timer in-case the interval keeps running
-            setReseting(false);
-          }
-          return newTimer;
-        });
-      }, 1000);
-    } else {
-      sendRPCPacket(RpcMessage.ResetRequest, req);
-      setReseting(false);
-    }
+    sendRPCPacket(RpcMessage.ResetRequest, req);
+    setResetting(false);
   };
 
   return (
     <BigButton
-      text={!reseting || timer >= 3 ? getText() : `${3 - timer}`}
+      text={!resetting ? getText() : String(timer)}
       icon={getIcon()}
-      onClick={reset}
-      disabled={reseting}
+      onClick={resetStart}
+      disabled={resetting}
     ></BigButton>
   );
 }

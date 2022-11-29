@@ -207,8 +207,10 @@ public class HumanPoseProcessor {
 
 	@VRServerThread
 	public void resetTrackersYaw() {
-		if (skeleton != null)
+		if (skeleton != null) {
 			skeleton.resetTrackersYaw();
+			server.getVRCOSCHandler().yawAlign();
+		}
 	}
 
 	@ThreadSafe
