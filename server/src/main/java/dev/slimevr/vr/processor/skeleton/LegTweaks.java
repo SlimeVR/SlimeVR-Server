@@ -13,6 +13,7 @@ public class LegTweaks {
 	private float floorLevel;
 	private float waistToFloorDist;
 	private float currentDisengagementOffset = 0.0f;
+	private static float currentCorrectionStrength = 0.3f; // default value
 	private boolean initialized = true;
 	private boolean enabled = true; // master switch
 	private boolean floorclipEnabled = false;
@@ -94,6 +95,7 @@ public class LegTweaks {
 	private static final float STANDING_CUTOFF_VERTICAL = 0.65f;
 	private static final float MAX_DISENGAGMENT_OFFSET = 0.30f;
 	private static final float DEFAULT_ARM_DISTANCE = 0.15f;
+	private static final float MAX_CORRECTION_STRENGTH_DELTA = 1.0f;
 
 	// counters
 	private int leftFramesLocked = 0;
@@ -218,25 +220,21 @@ public class LegTweaks {
 
 	// update the hyper parameters with the config
 	public static void updateHyperParameters() {
-		// Buffer parameters
+		float newStrength = config.getCorrectionStrength();
 		LegTweakBuffer.SKATING_VELOCITY_THRESHOLD = getScaledHyperParameter(
-			config.getSkatingVelocityThreshold(),
-			config.getSkatingAccelerationThresholdScale()
+			newStrength,
+			LegTweakBuffer.SKATING_VELOCITY_THRESHOLD
 		);
 		LegTweakBuffer.SKATING_ACCELERATION_THRESHOLD = getScaledHyperParameter(
-			config.getSkatingAccelerationThreshold(),
-			config.getSkatingAccelerationThresholdScale()
+			newStrength,
+			LegTweakBuffer.SKATING_ACCELERATION_THRESHOLD
 		);
-		LegTweakBuffer.PARAM_SCALAR_MAX = config.getParamScalarMax();
-		LegTweakBuffer.PARAM_SCALAR_MIN = config.getParamScalarMin();
-
-		// Correction/clipping parameters
-		LegTweaks.DYNAMIC_DISPLACEMENT_CUTOFF = config.getDynamicDisplacementCutoff();
-		LegTweaks.MAX_DYNAMIC_DISPLACEMENT = config.getMaxDynamicDisplacement();
+		currentCorrectionStrength = newStrength;
 	}
 
-	public static float getScaledHyperParameter(float value, float scale) {
-		return value + (config.getCorrectionStrength() * scale);
+	public static float getScaledHyperParameter(float newStrength, float currentValue) {
+		return (currentValue - (currentCorrectionStrength * MAX_CORRECTION_STRENGTH_DELTA))
+			+ (newStrength * MAX_CORRECTION_STRENGTH_DELTA);
 	}
 
 	// set the vectors in this object to the vectors in the skeleton
