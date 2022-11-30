@@ -139,7 +139,7 @@ public class HumanSkeleton extends Skeleton implements SkeletonConfigCallback {
 	// #endregion
 
 	// #region tap detection
-	protected DoubleTap doubleTap = new DoubleTap(this);
+	protected TapDetection tapDetection = new TapDetection(this);
 	// #endregion
 
 	// #region Constructors
@@ -165,8 +165,12 @@ public class HumanSkeleton extends Skeleton implements SkeletonConfigCallback {
 		setTrackersFromServer(server);
 		skeletonConfig.loadFromConfig(server.getConfigManager());
 
-		doubleTap.setVRCOSCHandler(server.getVRCOSCHandler());
-		LegTweaks.setConfig(server.getConfigManager().getVrConfig().getLegTweaks());
+		tapDetection = new TapDetection(
+			this,
+			server.getVRCOSCHandler(),
+			server.getConfigManager().getVrConfig().getTapDetection()
+		);
+		legTweaks = new LegTweaks(this, server.getConfigManager().getVrConfig().getLegTweaks());
 	}
 
 	public HumanSkeleton(
@@ -785,7 +789,7 @@ public class HumanSkeleton extends Skeleton implements SkeletonConfigCallback {
 	@VRServerThread
 	@Override
 	public void updatePose() {
-		doubleTap.update();
+		tapDetection.update();
 		updateLocalTransforms();
 		updateRootTrackers();
 		updateComputedTrackers();
@@ -1838,6 +1842,14 @@ public class HumanSkeleton extends Skeleton implements SkeletonConfigCallback {
 			}
 		}
 		this.legTweaks.resetBuffer();
+	}
+
+	public void updateTapDetectionConfig() {
+		tapDetection.updateConfig();
+	}
+
+	public void updateLegTweaksConfig() {
+		legTweaks.updateConfig();
 	}
 
 	@Override

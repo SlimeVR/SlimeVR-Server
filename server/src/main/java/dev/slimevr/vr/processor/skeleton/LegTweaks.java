@@ -24,7 +24,7 @@ public class LegTweaks {
 
 	// skeleton and config
 	private HumanSkeleton skeleton;
-	private static LegTweaksConfig config;
+	private LegTweaksConfig config;
 
 	// leg data
 	private Vector3f leftFootPosition = new Vector3f();
@@ -111,11 +111,11 @@ public class LegTweaks {
 		this.skeleton = skeleton;
 	}
 
-	public static void setConfig(LegTweaksConfig legTweaksConfig) {
-		config = legTweaksConfig;
-
+	public LegTweaks(HumanSkeleton skeleton, LegTweaksConfig config) {
+		this.skeleton = skeleton;
 		// set all the hyperparameters from the config
-		updateHyperParameters();
+		this.config = config;
+		updateConfig();
 	}
 
 	public Vector3f getLeftFootPosition() {
@@ -218,9 +218,12 @@ public class LegTweaks {
 		bufferInvalid = true;
 	}
 
+	public void updateConfig() {
+		LegTweaks.updateHyperParameters(config.getCorrectionStrength());
+	}
+
 	// update the hyper parameters with the config
-	public static void updateHyperParameters() {
-		float newStrength = config.getCorrectionStrength();
+	public static void updateHyperParameters(float newStrength) {
 		LegTweakBuffer.SKATING_VELOCITY_THRESHOLD = getScaledHyperParameter(
 			newStrength,
 			LegTweakBuffer.SKATING_VELOCITY_THRESHOLD

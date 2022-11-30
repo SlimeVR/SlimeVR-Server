@@ -142,6 +142,8 @@ public record RPCSettingsHandler(RPCHandler rpcHandler, ProtocolAPI api) {
 				if (tapDetectionSettings.hasTapResetDelay()) {
 					tapDetectionConfig.setDelay(tapDetectionSettings.tapResetDelay());
 				}
+
+				this.api.server.humanPoseProcessor.getSkeleton().updateTapDetectionConfig();
 			}
 		}
 
@@ -234,6 +236,7 @@ public record RPCSettingsHandler(RPCHandler rpcHandler, ProtocolAPI api) {
 				if (legTweaks.hasCorrectionStrength()) {
 					legTweaksConfig.setCorrectionStrength(legTweaks.correctionStrength());
 				}
+				this.api.server.humanPoseProcessor.getSkeleton().updateLegTweaksConfig();
 			}
 
 			cfg.save();
