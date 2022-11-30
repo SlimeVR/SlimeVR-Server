@@ -5,6 +5,7 @@ import dev.slimevr.Main;
 import dev.slimevr.config.ConfigManager;
 import io.eiren.util.logging.LogManager;
 
+import java.util.Arrays;
 import java.util.EnumMap;
 import java.util.Map;
 
@@ -435,6 +436,9 @@ public class SkeletonConfig {
 		configOffsets.clear();
 		configToggles.clear();
 		configValues.clear();
+
+		Arrays.fill(changedValues, false);
+		Arrays.fill(changedToggles, false);
 
 		callCallbackOnAll(false);
 
