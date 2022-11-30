@@ -23,7 +23,7 @@ export function AutomaticMountingPage() {
                 Go Back to Enter VR
               </ArrowLink>
             )}
-            <Typography variant="main-title">Mounting calibration</Typography>
+            <Typography variant="main-title">Mounting Calibration</Typography>
             <Typography color="secondary">
               For SlimeVR trackers to work, we need to assign a mounting
               rotation to your trackers to align them with your physical tracker
