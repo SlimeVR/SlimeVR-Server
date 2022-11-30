@@ -47,11 +47,7 @@ export function PreparationStep({
         </div>
       </div>
       <div className="flex flex-col pt-1 items-center fill-background-50 justify-center px-12">
-        <img
-          src={require('../../../../commons/icon/ResetPoseIcon.png')}
-          alt="img"
-          width={180}
-        />
+        <img src="/images/reset-pose.png" width={180} />
       </div>
     </>
   );
