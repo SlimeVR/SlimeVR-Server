@@ -130,7 +130,7 @@ fn main() {
 
 		if !webview2_exists() {
 			show_error("Couldn't find WebView 2 installed. You can install it from Microsoft's site or try reinstalling it from the SlimeVR installer");
-			return
+			return;
 		}
 	}
 
@@ -143,8 +143,10 @@ fn main() {
 		// Check if any Java already installed is compatible
 		let java_paths = valid_java_paths();
 		let jre = p.join("jre/bin/java");
-		let java_bin = jre.exists().then(|| jre.to_string_lossy())
-		.or_else(|| java_paths.first().map(|x| x.0.to_string_lossy()));
+		let java_bin = jre
+			.exists()
+			.then(|| jre.to_string_lossy())
+			.or_else(|| java_paths.first().map(|x| x.0.to_string_lossy()));
 		if let None = java_bin {
 			show_error(&format!("Couldn't find a compatible Java version, please download Java {} or higher", MINIMUM_JAVA_VERSION));
 			return;
@@ -215,8 +217,12 @@ fn webview2_exists() -> bool {
 	// Then in the current user
 	if !exists {
 		let user: Option<String> = RegKey::predef(HKEY_CURRENT_USER)
-		.open_subkey(r"Software\Microsoft\EdgeUpdate\Clients\{F3017226-FE2A-4295-8BDF-00C3A9A7E4C5}")
-		.map(|r| r.get_value("pv").ok()).ok().flatten();
+			.open_subkey(
+				r"Software\Microsoft\EdgeUpdate\Clients\{F3017226-FE2A-4295-8BDF-00C3A9A7E4C5}",
+			)
+			.map(|r| r.get_value("pv").ok())
+			.ok()
+			.flatten();
 		if let Some(version) = user {
 			exists = version.split('.').any(|x| x != "0");
 		}
