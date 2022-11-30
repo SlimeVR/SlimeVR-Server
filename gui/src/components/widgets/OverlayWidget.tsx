@@ -67,13 +67,13 @@ export function OverlayWidget() {
         control={control}
         name="isVisible"
         variant="toggle"
-        label="Show overlay in SteamVR"
+        label="Show Overlay in SteamVR"
       ></CheckBox>
       <CheckBox
         control={control}
         name="isMirrored"
         variant="toggle"
-        label="display overlay as mirror"
+        label="Display Overlay as Mirror"
       ></CheckBox>
     </form>
   );
