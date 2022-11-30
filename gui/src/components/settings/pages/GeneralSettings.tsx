@@ -7,6 +7,8 @@ import {
   FilteringType,
   ModelSettingsT,
   ModelTogglesT,
+  TapDetectionSettingsT,
+  LegTweaksSettingsT,
   RpcMessage,
   SettingsRequestT,
   SettingsResponseT,
@@ -43,6 +45,13 @@ interface SettingsForm {
     floorClip: boolean;
     skatingCorrection: boolean;
   };
+  tapDetection: {
+    enabled: boolean;
+    delay: number;
+  };
+  legTweaks: {
+    amount: number;
+  };
   interface: {
     devmode: boolean;
     watchNewDevices: boolean;
@@ -73,6 +82,8 @@ export function GeneralSettings() {
         skatingCorrection: false,
       },
       filtering: { amount: 0.1, type: FilteringType.NONE },
+      tapDetection: { enabled: false, delay: 0.2 },
+      legTweaks: { amount: 0.3 },
       interface: { devmode: false, watchNewDevices: true },
     },
   });
@@ -92,6 +103,7 @@ export function GeneralSettings() {
 
     const modelSettings = new ModelSettingsT();
     const toggles = new ModelTogglesT();
+    const legTweaks = new LegTweaksSettingsT();
     toggles.floorClip = values.toggles.floorClip;
     toggles.skatingCorrection = values.toggles.skatingCorrection;
     toggles.extendedKnee = values.toggles.extendedKnee;
@@ -100,7 +112,13 @@ export function GeneralSettings() {
     toggles.forceArmsFromHmd = values.toggles.forceArmsFromHmd;
 
     modelSettings.toggles = toggles;
+    modelSettings.legTweaks = legTweaks;
     settings.modelSettings = modelSettings;
+
+    const tapDetection = new TapDetectionSettingsT();
+    tapDetection.enabled = values.tapDetection.enabled;
+    tapDetection.delay = values.tapDetection.delay;
+    settings.tapDetection = tapDetection;
 
     const filtering = new FilteringSettingsT();
     filtering.type = values.filtering.type;
@@ -159,6 +177,14 @@ export function GeneralSettings() {
         }),
         {}
       );
+    }
+
+    if (settings.tapDetection) {
+      formData.tapDetection = settings.tapDetection;
+    }
+
+    if (settings.modelSettings?.legTweaks) {
+      formData.legTweaks = settings.modelSettings.legTweaks;
     }
 
     reset(formData);
