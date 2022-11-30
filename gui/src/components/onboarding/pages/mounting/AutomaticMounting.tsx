@@ -19,12 +19,7 @@ export function AutomaticMountingPage() {
                 Go Back to Enter VR
               </ArrowLink>
             )}
-            <Typography variant="main-title">
-              Mounting calibration!{' '}
-              <span className="p-1 bg-accent-background-30 text-standard rounded-md">
-                Work in progress
-              </span>
-            </Typography>
+            <Typography variant="main-title">Mounting calibration</Typography>
             <Typography color="secondary">
               For SlimeVR trackers to work, we need to assign a mounting
               rotation to your trackers to align them with your physical tracker
