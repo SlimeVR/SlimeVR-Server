@@ -15,6 +15,7 @@ use tauri::Manager;
 use tempfile::Builder;
 use which::which_all;
 
+/// It's an i32 because we check it through exit codes of the process
 const MINIMUM_JAVA_VERSION: i32 = 17;
 static POSSIBLE_TITLES: &[&str] = &[
 	"Panicking situation",
@@ -142,17 +143,12 @@ fn main() {
 		// Check if any Java already installed is compatible
 		let java_paths = valid_java_paths();
 		let jre = p.join("jre/bin/java");
-		let java_bin =
-			java_paths
-				.first()
-				.map(|x| x.0.to_string_lossy())
-				.or_else(|| {
-					if jre.exists() {
-						Some(jre.to_string_lossy())
-					} else {
-						None
-					}
-				});
+		let java_bin = if jre.exists() {
+			Some(jre.to_string_lossy())
+		} else {
+			None
+		}
+		.or_else(|| java_paths.first().map(|x| x.0.to_string_lossy()));
 		if let None = java_bin {
 			show_error(&format!("Couldn't find a compatible Java version, please download Java {} or higher", MINIMUM_JAVA_VERSION));
 			return;
@@ -201,19 +197,18 @@ fn main() {
 		//
 		.run(tauri::generate_context!());
 	match res {
-		Ok(()) => {},
+		Ok(()) => {}
 		Err(_) => res.expect("error while running tauri application"),
-
 	}
 }
 
 fn valid_java_paths() -> Vec<(OsString, i32)> {
 	let mut file = Builder::new()
-		.suffix(".java")
+		.suffix(".class")
 		.tempfile()
-		.expect("Couldn't generate .java file");
-	file.write_all(include_bytes!("JavaVersion.java"))
-		.expect("Couldn't write to .java file");
+		.expect("Couldn't generate .class file");
+	file.write_all(include_bytes!("JavaVersion.class"))
+		.expect("Couldn't write to .class file");
 	let java_version = file.into_temp_path();
 
 	// Check if main Java is a supported version
