@@ -163,7 +163,7 @@ fn main() {
 		None
 	};
 
-	let res = tauri::Builder::default()
+	tauri::Builder::default()
 		.plugin(tauri_plugin_window_state::Builder::default().build())
 		.setup(|app| {
 			if let Some(mut recv) = stdout_recv {
@@ -193,11 +193,8 @@ fn main() {
 			Ok(())
 		})
 		//
-		.run(tauri::generate_context!());
-	match res {
-		Ok(()) => {}
-		Err(_) => res.expect("error while running tauri application"),
-	}
+		.run(tauri::generate_context!())
+		.expect("error while running tauri application");
 }
 
 #[cfg(windows)]
