@@ -41,7 +41,8 @@ export function useTracker(tracker: TrackerDataT) {
     useName: () =>
       useMemo(() => {
         if (tracker.info?.customName) return tracker.info?.customName;
-        if (tracker.info?.bodyPart) return bodypartToString(tracker.info?.bodyPart);
+        if (tracker.info?.bodyPart)
+          return bodypartToString(tracker.info?.bodyPart);
         return tracker.info?.displayName || 'NONE';
       }, [tracker.info]),
     useRotation: () =>
@@ -52,7 +53,7 @@ export function useTracker(tracker: TrackerDataT) {
             y: tracker.rotation?.y || 0,
             z: tracker.rotation?.z || 0,
             w: tracker.rotation?.w || 1,
-          }).eulerAngles,
+          }).toEuler(),
         [tracker.rotation]
       ),
     useVelocity: () => {
