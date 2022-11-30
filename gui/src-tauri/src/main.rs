@@ -45,17 +45,17 @@ fn is_valid_path(path: &PathBuf) -> bool {
 
 fn get_launch_path(cli: Cli) -> Option<PathBuf> {
 	let mut path = cli.launch_from_path.unwrap_or_default();
-	if path.exists() && is_valid_path(&path) {
+	if is_valid_path(&path) {
 		return Some(path);
 	}
 
 	path = env::current_dir().unwrap();
-	if path.exists() && is_valid_path(&path) {
+	if is_valid_path(&path) {
 		return Some(path);
 	}
 
 	path = PathBuf::from(env!("CARGO_MANIFEST_DIR"));
-	if path.exists() && is_valid_path(&path) {
+	if is_valid_path(&path) {
 		return Some(path);
 	}
 
@@ -113,11 +113,10 @@ fn main() {
 	}
 
 	// Ensure child processes die when spawned on windows
+	// and then check for WebView2's existence
 	#[cfg(windows)]
 	{
 		use win32job::{ExtendedLimitInfo, Job};
-		use winreg::enums::*;
-		use winreg::RegKey;
 
 		let mut info = ExtendedLimitInfo::new();
 		info.limit_kill_on_job_close();
@@ -129,25 +128,7 @@ fn main() {
 		// terminate our process tree. So we intentionally leak it instead.
 		std::mem::forget(job);
 
-		// Check if WebView2 exists
-		// First on the machine itself
-		let machine: Option<String> = RegKey::predef(HKEY_LOCAL_MACHINE)
-			.open_subkey(r"SOFTWARE\WOW6432Node\Microsoft\EdgeUpdate\Clients\{F3017226-FE2A-4295-8BDF-00C3A9A7E4C5}")
-			.map(|r| r.get_value("pv").ok()).ok().flatten();
-		let mut exists = false;
-		if let Some(version) = machine {
-			exists = version.split('.').any(|x| x != "0");
-		}
-		// Then in the current user
-		if !exists {
-			let user: Option<String> = RegKey::predef(HKEY_CURRENT_USER)
-			.open_subkey(r"Software\Microsoft\EdgeUpdate\Clients\{F3017226-FE2A-4295-8BDF-00C3A9A7E4C5}")
-			.map(|r| r.get_value("pv").ok()).ok().flatten();
-			if let Some(version) = user {
-				exists = version.split('.').any(|x| x != "0");
-			}
-		}
-		if !exists {
+		if !webview2_exists() {
 			show_error("Couldn't find WebView 2 installed. You can install it from Microsoft's site or try reinstalling it from the SlimeVR installer");
 			return
 		}
@@ -162,11 +143,7 @@ fn main() {
 		// Check if any Java already installed is compatible
 		let java_paths = valid_java_paths();
 		let jre = p.join("jre/bin/java");
-		let java_bin = if jre.exists() {
-			Some(jre.to_string_lossy())
-		} else {
-			None
-		}
+		let java_bin = jre.exists().then(|| jre.to_string_lossy())
 		.or_else(|| java_paths.first().map(|x| x.0.to_string_lossy()));
 		if let None = java_bin {
 			show_error(&format!("Couldn't find a compatible Java version, please download Java {} or higher", MINIMUM_JAVA_VERSION));
@@ -221,6 +198,32 @@ fn main() {
 	}
 }
 
+#[cfg(windows)]
+/// Check if WebView2 exists
+fn webview2_exists() -> bool {
+	use winreg::enums::*;
+	use winreg::RegKey;
+
+	// First on the machine itself
+	let machine: Option<String> = RegKey::predef(HKEY_LOCAL_MACHINE)
+		.open_subkey(r"SOFTWARE\WOW6432Node\Microsoft\EdgeUpdate\Clients\{F3017226-FE2A-4295-8BDF-00C3A9A7E4C5}")
+		.map(|r| r.get_value("pv").ok()).ok().flatten();
+	let mut exists = false;
+	if let Some(version) = machine {
+		exists = version.split('.').any(|x| x != "0");
+	}
+	// Then in the current user
+	if !exists {
+		let user: Option<String> = RegKey::predef(HKEY_CURRENT_USER)
+		.open_subkey(r"Software\Microsoft\EdgeUpdate\Clients\{F3017226-FE2A-4295-8BDF-00C3A9A7E4C5}")
+		.map(|r| r.get_value("pv").ok()).ok().flatten();
+		if let Some(version) = user {
+			exists = version.split('.').any(|x| x != "0");
+		}
+	}
+	exists
+}
+
 fn valid_java_paths() -> Vec<(OsString, i32)> {
 	let mut file = Builder::new()
 		.suffix(".class")
@@ -254,7 +257,7 @@ fn valid_java_paths() -> Vec<(OsString, i32)> {
 
 		match res {
 			Ok(child) => childs.push((java.into_os_string(), child)),
-			Err(e) => eprintln!("Error on trying to spawn a Java executable: {}", e),
+			Err(e) => println!("Error on trying to spawn a Java executable: {}", e),
 		}
 	}
 
