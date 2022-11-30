@@ -2,7 +2,9 @@ package dev.slimevr.protocol.rpc.settings;
 
 import com.google.flatbuffers.FlatBufferBuilder;
 import dev.slimevr.config.FiltersConfig;
+import dev.slimevr.config.LegTweaksConfig;
 import dev.slimevr.config.OSCConfig;
+import dev.slimevr.config.TapDetectionConfig;
 import dev.slimevr.filtering.TrackerFilters;
 import dev.slimevr.platform.windows.WindowsNamedPipeBridge;
 import dev.slimevr.vr.processor.skeleton.SkeletonConfig;
@@ -13,6 +15,7 @@ import solarxr_protocol.rpc.*;
 import solarxr_protocol.rpc.settings.ModelRatios;
 import solarxr_protocol.rpc.settings.ModelSettings;
 import solarxr_protocol.rpc.settings.ModelToggles;
+import solarxr_protocol.rpc.settings.LegTweaksSettings;
 
 
 public class RPCSettingsBuilder {
@@ -65,6 +68,18 @@ public class RPCSettingsBuilder {
 			);
 	}
 
+	public static int createTapDetectionSettings(
+		FlatBufferBuilder fbb,
+		TapDetectionConfig tapDetectionConfig
+	) {
+		return TapDetectionSettings
+			.createTapDetectionSettings(
+				fbb,
+				tapDetectionConfig.getDelay(),
+				tapDetectionConfig.getEnabled()
+			);
+	}
+
 	public static int createSteamVRSettings(FlatBufferBuilder fbb, WindowsNamedPipeBridge bridge) {
 		int steamvrTrackerSettings = 0;
 		if (bridge != null) {
@@ -84,7 +99,11 @@ public class RPCSettingsBuilder {
 		return steamvrTrackerSettings;
 	}
 
-	public static int createModelSettings(FlatBufferBuilder fbb, SkeletonConfig config) {
+	public static int createModelSettings(
+		FlatBufferBuilder fbb,
+		SkeletonConfig config,
+		LegTweaksConfig legTweaksConfig
+	) {
 		int togglesOffset = ModelToggles
 			.createModelToggles(
 				fbb,
@@ -105,6 +124,11 @@ public class RPCSettingsBuilder {
 				config.getValue(SkeletonConfigValues.HIP_LEGS_AVERAGING),
 				config.getValue(SkeletonConfigValues.KNEE_TRACKER_ANKLE_AVERAGING)
 			);
-		return ModelSettings.createModelSettings(fbb, togglesOffset, ratiosOffset);
+		int legTweaksOffset = LegTweaksSettings
+			.createLegTweaksSettings(
+				fbb,
+				legTweaksConfig.getCorrectionStrength()
+			);
+		return ModelSettings.createModelSettings(fbb, togglesOffset, ratiosOffset, legTweaksOffset);
 	}
 }

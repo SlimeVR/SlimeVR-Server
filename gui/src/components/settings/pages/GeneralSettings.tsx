@@ -46,11 +46,11 @@ interface SettingsForm {
     skatingCorrection: boolean;
   };
   tapDetection: {
-    enabled: boolean;
-    delay: number;
+    tapResetEnabled: boolean;
+    tapResetDelay: number;
   };
   legTweaks: {
-    amount: number;
+    correctionStrength: number;
   };
   interface: {
     devmode: boolean;
@@ -82,8 +82,8 @@ export function GeneralSettings() {
         skatingCorrection: false,
       },
       filtering: { amount: 0.1, type: FilteringType.NONE },
-      tapDetection: { enabled: false, delay: 0.2 },
-      legTweaks: { amount: 0.3 },
+      tapDetection: { tapResetEnabled: false, tapResetDelay: 0.2 },
+      legTweaks: { correctionStrength: 0.3 },
       interface: { devmode: false, watchNewDevices: true },
     },
   });
@@ -110,15 +110,16 @@ export function GeneralSettings() {
     toggles.extendedPelvis = values.toggles.extendedPelvis;
     toggles.extendedSpine = values.toggles.extendedSpine;
     toggles.forceArmsFromHmd = values.toggles.forceArmsFromHmd;
+    legTweaks.correctionStrength = values.legTweaks.correctionStrength;
 
     modelSettings.toggles = toggles;
     modelSettings.legTweaks = legTweaks;
     settings.modelSettings = modelSettings;
 
     const tapDetection = new TapDetectionSettingsT();
-    tapDetection.enabled = values.tapDetection.enabled;
-    tapDetection.delay = values.tapDetection.delay;
-    settings.tapDetection = tapDetection;
+    tapDetection.tapResetEnabled = values.tapDetection.tapResetEnabled;
+    tapDetection.tapResetDelay = values.tapDetection.tapResetDelay;
+    settings.tapDetectionSettings = tapDetection;
 
     const filtering = new FilteringSettingsT();
     filtering.type = values.filtering.type;
@@ -179,8 +180,8 @@ export function GeneralSettings() {
       );
     }
 
-    if (settings.tapDetection) {
-      formData.tapDetection = settings.tapDetection;
+    if (settings.tapDetectionSettings) {
+      formData.tapDetection = settings.tapDetectionSettings;
     }
 
     if (settings.modelSettings?.legTweaks) {
@@ -313,7 +314,8 @@ export function GeneralSettings() {
               Floor-clip can Reduce or even eliminates clipping with the floor
               but may cause problems when on your knees. Skating-correction
               corrects for ice skating, but can decrease accuracy in certain
-              movement patterns.
+              movement patterns. Increasing amount will increase the bite of
+              correction.
             </Typography>
           </div>
           <div className="grid sm:grid-cols-2 gap-3 pb-5">
@@ -330,6 +332,17 @@ export function GeneralSettings() {
               control={control}
               name="toggles.skatingCorrection"
               label="Skating correction"
+            />
+          </div>
+          <div className="flex sm:grid cols-1 gap3 pb-5">
+            <NumberSelector
+              control={control}
+              name="legTweaks.correctionStrength"
+              label="Amount"
+              valueLabelFormat={(value) => `${Math.round(value * 100)} %`}
+              min={0.1}
+              max={1.0}
+              step={0.1}
             />
           </div>
 
@@ -379,6 +392,38 @@ export function GeneralSettings() {
                 label="Extended knee"
               />
             </div>
+          </div>
+        </>
+      </SettingsPageLayout>
+
+      <SettingsPageLayout icon={<WrenchIcon></WrenchIcon>} id="gestureControl">
+        <>
+          <Typography variant="main-title">Gesture Control</Typography>
+          <Typography bold>Double Tap quick reset</Typography>
+          <div className="flex flex-col pt-2 pb-4">
+            <Typography color="secondary">
+              Enable or disable double tap quick reset. When enabled double
+              tapping anywhere on highest up torso tracker will activate quick
+              reset. Delay is the time between registering a tap and reseting.
+            </Typography>
+          </div>
+          <div className="grid sm:grid-cols-1 gap-3 pb-5">
+            <CheckBox
+              variant="toggle"
+              outlined
+              control={control}
+              name="tapDetection.tapResetEnabled"
+              label="Double tap quick reset"
+            />
+            <NumberSelector
+              control={control}
+              name="tapDetection.tapResetDelay"
+              label="Delay"
+              valueLabelFormat={(value) => `${Math.round(value * 10) / 10} s`}
+              min={0.2}
+              max={3.0}
+              step={0.2}
+            />
           </div>
         </>
       </SettingsPageLayout>
