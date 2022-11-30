@@ -3,6 +3,7 @@ package dev.slimevr.vr.processor.skeleton;
 import java.util.LinkedList;
 import com.jme3.math.Vector3f;
 
+import dev.slimevr.config.TapDetectionConfig;
 import dev.slimevr.osc.VRCOSCHandler;
 import dev.slimevr.vr.trackers.Tracker;
 
@@ -10,11 +11,13 @@ import dev.slimevr.vr.trackers.Tracker;
 // class that monitors the acceleration of the waist, hip, or chest trackers to detect taps
 // and use this to trigger a quick reset (if your wondering why no single tap class exists, it's because 
 // to many false positives)
-public class DoubleTap {
+public class TapDetection {
 
 	// server and related classes
 	private HumanSkeleton skeleton;
 	private VRCOSCHandler oscHandler;
+	private TapDetectionConfig config;
+	private boolean enabled = false;
 
 
 	// tap detection
@@ -31,17 +34,36 @@ public class DoubleTap {
 	// state
 	private float resetRequestTime = -1.0f;
 
-	public DoubleTap(HumanSkeleton skeleton) {
+	public TapDetection(HumanSkeleton skeleton) {
 		this.skeleton = skeleton;
 	}
 
-	public void setVRCOSCHandler(VRCOSCHandler oscHandler) {
+	public TapDetection(
+		HumanSkeleton skeleton,
+		VRCOSCHandler oscHandler,
+		TapDetectionConfig config
+	) {
+		this.skeleton = skeleton;
 		this.oscHandler = oscHandler;
+		this.config = config;
+		this.enabled = config.getEnabled();
+	}
+
+	public void updateConfig() {
+		this.enabled = config.getEnabled();
+	}
+
+	public void setEnabled(boolean enabled) {
+		this.enabled = enabled;
+	}
+
+	public boolean getEnabled() {
+		return enabled;
 	}
 
 	// main function for tap detection
 	public void update() {
-		if (skeleton == null)
+		if (skeleton == null || !enabled)
 			return;
 
 		Tracker tracker = getTrackerToWatch();
