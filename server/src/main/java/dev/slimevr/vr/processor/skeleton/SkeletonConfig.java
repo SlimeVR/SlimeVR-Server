@@ -21,8 +21,8 @@ public class SkeletonConfig {
 		SkeletonConfigValues.class
 	);
 
-	protected boolean[] changedToggles = new boolean[SkeletonConfigToggles.values().length];
-	protected boolean[] changedValues = new boolean[SkeletonConfigValues.values().length];
+	protected boolean[] changedToggles = new boolean[SkeletonConfigToggles.values.length];
+	protected boolean[] changedValues = new boolean[SkeletonConfigValues.values.length];
 
 	protected final EnumMap<BoneType, Vector3f> nodeOffsets = new EnumMap<>(
 		BoneType.class
