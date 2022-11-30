@@ -1,8 +1,6 @@
 import { useTrackers } from '../../../../../hooks/tracker';
 import { BodyDisplay } from '../../../../commons/BodyDisplay';
-import { BodyInteractions } from '../../../../commons/BodyInteractions';
 import { Button } from '../../../../commons/Button';
-import { PersonFrontIcon } from '../../../../commons/PersonFrontIcon';
 import { TipBox } from '../../../../commons/TipBox';
 import { Typography } from '../../../../commons/Typography';
 

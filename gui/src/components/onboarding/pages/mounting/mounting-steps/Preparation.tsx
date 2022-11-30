@@ -15,7 +15,7 @@ export function PreparationStep({
   return (
     <>
       <div className="flex flex-col flex-grow">
-        <div className="flex flex-grow flex-col gap-4 max-w-sm">
+        <div className="flex flex-col gap-4 max-w-sm">
           <Typography variant="main-title" bold>
             Preparation
           </Typography>
@@ -30,10 +30,7 @@ export function PreparationStep({
           </div>
         </div>
 
-        <div className="flex gap-3 pb-3">
-          <ResetButton type={ResetType.Full}></ResetButton>
-        </div>
-        
+        <div className="flex flex-grow items-center"></div>
         <div className="flex gap-3">
           <Button
             variant={variant === 'onboarding' ? 'secondary' : 'tiertiary'}
@@ -41,9 +38,11 @@ export function PreparationStep({
           >
             Previous step
           </Button>
-          <Button variant="primary" onClick={nextStep}>
-            I have reset my trackers
-          </Button>
+          <ResetButton
+            variant="small"
+            type={ResetType.Full}
+            onReseted={nextStep}
+          ></ResetButton>
         </div>
       </div>
       <div className="flex flex-col pt-1 items-center fill-background-50 justify-center px-12">

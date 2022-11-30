@@ -2,7 +2,11 @@ import { useOnboarding } from '../../../../hooks/onboarding';
 import { ArrowLink } from '../../../commons/ArrowLink';
 import { Button } from '../../../commons/Button';
 import { Typography } from '../../../commons/Typography';
-import { MountingStepper } from './MountingStepper';
+import { StepperSlider } from '../../StepperSlider';
+import { DoneStep } from './mounting-steps/Done';
+import { MountingResetStep } from './mounting-steps/MountingReset';
+import { PreparationStep } from './mounting-steps/Preparation';
+import { PutTrackersOnStep } from './mounting-steps/PutTrackersOn';
 
 export function AutomaticMountingPage() {
   const { applyProgress, skipSetup, state } = useOnboarding();
@@ -27,9 +31,15 @@ export function AutomaticMountingPage() {
             </Typography>
           </div>
           <div className="flex">
-            <MountingStepper
+            <StepperSlider
               variant={state.alonePage ? 'alone' : 'onboarding'}
-            ></MountingStepper>
+              steps={[
+                { type: 'numbered', component: PutTrackersOnStep },
+                { type: 'numbered', component: PreparationStep },
+                { type: 'numbered', component: MountingResetStep },
+                { type: 'fullsize', component: DoneStep },
+              ]}
+            ></StepperSlider>
           </div>
         </div>
         <div className="w-full pb-4 flex flex-row">

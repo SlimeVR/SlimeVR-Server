@@ -2,44 +2,22 @@ import classNames from 'classnames';
 import {
   FC,
   MouseEventHandler,
-  ReactChild,
+  ReactNode,
   useEffect,
   useRef,
-  useState,
+  useState
 } from 'react';
-import { useElemSize } from '../../../../hooks/layout';
-import { CheckIcon } from '../../../commons/icon/CheckIcon';
-import { CrossIcon } from '../../../commons/icon/CrossIcon';
-import { Typography } from '../../../commons/Typography';
-import { DoneStep } from './mounting-steps/Done';
-import { MountingResetStep } from './mounting-steps/MountingReset';
-import { PreparationStep } from './mounting-steps/Preparation';
-import { PutTrackersOnStep } from './mounting-steps/PutTrackersOn';
+import { useElemSize } from '../../hooks/layout';
+import { CheckIcon } from '../commons/icon/CheckIcon';
+import { Typography } from '../commons/Typography';
 
-export function StepDot({
-  active,
-  done,
-  onClick,
-}: {
-  active?: boolean;
-  done?: boolean;
-  onClick?: MouseEventHandler<HTMLDivElement>;
-}) {
-  return (
-    <div
-      className={classNames(
-        'flex h-4 w-4 rounded-full justify-center items-center fill-background-10 transition-all',
-        active || done ? 'bg-accent-background-20 ' : 'bg-background-60'
-      )}
-      onClick={onClick}
-    >
-      {active && (
-        <div className="flex h-2 w-2 rounded-full bg-background-10"></div>
-      )}
-      {done && <CheckIcon />}
-    </div>
-  );
-}
+type StepComponentType = FC<{
+  nextStep: () => void;
+  prevStep: () => void;
+  resetSteps: () => void;
+  variant: 'alone' | 'onboarding';
+}>;
+type Step = { type: 'numbered' | 'fullsize'; component: StepComponentType };
 
 export function StepContainer({
   children,
@@ -51,7 +29,7 @@ export function StepContainer({
 }: {
   type: 'numbered' | 'fullsize';
   variant: 'alone' | 'onboarding';
-  children: ReactChild;
+  children: ReactNode;
   width: number;
   active: boolean;
   step: number;
@@ -83,39 +61,52 @@ export function StepContainer({
   );
 }
 
-type StepComponentType = FC<{
-  nextStep: () => void;
-  prevStep: () => void;
-  resetSteps: () => void;
-  variant: 'alone' | 'onboarding';
-}>;
-type Step = { type: 'numbered' | 'fullsize'; component: StepComponentType };
+export function StepDot({
+  active,
+  done,
+  onClick,
+}: {
+  active?: boolean;
+  done?: boolean;
+  onClick?: MouseEventHandler<HTMLDivElement>;
+}) {
+  return (
+    <div
+      className={classNames(
+        'flex h-4 w-4 rounded-full justify-center items-center fill-background-10 transition-all',
+        active || done ? 'bg-accent-background-20 ' : 'bg-background-60'
+      )}
+      onClick={onClick}
+    >
+      {active && (
+        <div className="flex h-2 w-2 rounded-full bg-background-10"></div>
+      )}
+      {done && <CheckIcon />}
+    </div>
+  );
+}
 
-export function MountingStepper({
+export function StepperSlider({
   variant,
+  steps,
 }: {
   variant: 'alone' | 'onboarding';
+  steps: Step[];
 }) {
   const ref = useRef<HTMLDivElement | null>(null);
   const { width } = useElemSize(ref);
-  const [steps, setSteps] = useState(0);
+  const [stepsContainers, setSteps] = useState(0);
   const [step, setStep] = useState(0);
 
   useEffect(() => {
     if (!ref.current) return;
-    const steps = ref.current.getElementsByClassName('step-container');
-    setSteps(steps.length);
+    const stepsContainers =
+      ref.current.getElementsByClassName('step-container');
+    setSteps(stepsContainers.length);
   }, [ref]);
 
-  const stepsComponents: Step[] = [
-    { type: 'numbered', component: PutTrackersOnStep },
-    { type: 'numbered', component: PreparationStep },
-    { type: 'numbered', component: MountingResetStep },
-    { type: 'fullsize', component: DoneStep },
-  ];
-
   const nextStep = () => {
-    if (step + 1 === steps) return;
+    if (step + 1 === stepsContainers) return;
     setStep(step + 1);
   };
 
@@ -135,7 +126,7 @@ export function MountingStepper({
           className="transition-transform duration-500 flex gap-8"
           style={{ transform: `translateX(-${(width + 32) * step}px)` }}
         >
-          {stepsComponents.map(({ type, component: StepComponent }, index) => (
+          {steps.map(({ type, component: StepComponent }, index) => (
             <StepContainer
               variant={variant}
               key={index}
@@ -155,7 +146,7 @@ export function MountingStepper({
         </div>
       </div>
       <div className="flex justify-center items-center gap-2">
-        {Array.from({ length: steps }).map((_, index) => (
+        {Array.from({ length: stepsContainers }).map((_, index) => (
           <div key={index} className="flex items-center gap-2">
             {index !== 0 && (
               <div className="w-5 h-1 bg-background-50 rounded-full"></div>

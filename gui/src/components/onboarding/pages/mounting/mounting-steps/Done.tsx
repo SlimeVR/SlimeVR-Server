@@ -25,13 +25,13 @@ export function DoneStep({
       {/* <Button variant="primary">Continue to next step</Button> */}
 
       <div className="flex gap-3">
-          <Button
-            variant={variant === 'onboarding' ? 'secondary' : 'tiertiary'}
-            onClick={resetSteps}
-          >
-            Return to start
-          </Button>
-        </div>
+        <Button
+          variant={variant === 'onboarding' ? 'secondary' : 'tiertiary'}
+          onClick={resetSteps}
+        >
+          Return to start
+        </Button>
+      </div>
     </div>
   );
 }

@@ -31,10 +31,6 @@ export function MountingResetStep({
           </div>
         </div>
 
-        <div className="flex gap-3 pb-3">
-          <ResetButton type={ResetType.Mounting}></ResetButton>
-        </div>
-
         <div className="flex gap-3">
           <Button
             variant={variant === 'onboarding' ? 'secondary' : 'tiertiary'}
@@ -42,9 +38,11 @@ export function MountingResetStep({
           >
             Previous step
           </Button>
-          <Button variant="primary" onClick={nextStep}>
-            I have reset my mounting
-          </Button>
+          <ResetButton
+            variant="small"
+            type={ResetType.Mounting}
+            onReseted={nextStep}
+          ></ResetButton>
         </div>
       </div>
       <div className="flex flex-col pt-1 items-center fill-background-50 justify-center px-12">
