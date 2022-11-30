@@ -164,7 +164,9 @@ public class HumanSkeleton extends Skeleton implements SkeletonConfigCallback {
 		this(computedTrackers);
 		setTrackersFromServer(server);
 		skeletonConfig.loadFromConfig(server.getConfigManager());
+
 		doubleTap.setVRCOSCHandler(server.getVRCOSCHandler());
+		LegTweaks.setConfig(server.getConfigManager().getVrConfig().getLegTweaks());
 	}
 
 	public HumanSkeleton(
