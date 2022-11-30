@@ -68,14 +68,14 @@ export function Navbar() {
           state={{ alonePage: true }}
           icon={<GearIcon></GearIcon>}
         >
-          Body proportions
+          Body Proportions
         </NavButton>
         <NavButton
           to="/onboarding/trackers-assign"
           state={{ alonePage: true }}
           icon={<GearIcon></GearIcon>}
         >
-          Tracker assignment
+          Tracker Assignment
         </NavButton>
         <NavButton
           to="/onboarding/mounting/auto"
