@@ -130,8 +130,27 @@ fn main() {
 		std::mem::forget(job);
 
 		// Check if WebView2 exists
-		let local = RegKey::predef(HKEY_LOCAL_MACHINE)
-			.open_subkey(r"SOFTWARE\WOW6432Node\Microsoft\EdgeUpdate\Clients\{F3017226-FE2A-4295-8BDF-00C3A9A7E4C5}");
+		// First on the machine itself
+		let machine: Option<String> = RegKey::predef(HKEY_LOCAL_MACHINE)
+			.open_subkey(r"SOFTWARE\WOW6432Node\Microsoft\EdgeUpdate\Clients\{F3017226-FE2A-4295-8BDF-00C3A9A7E4C5}")
+			.map(|r| r.get_value("pv").ok()).ok().flatten();
+		let mut exists = false;
+		if let Some(version) = machine {
+			exists = version.split('.').any(|x| x != "0");
+		}
+		// Then in the current user
+		if !exists {
+			let user: Option<String> = RegKey::predef(HKEY_CURRENT_USER)
+			.open_subkey(r"Software\Microsoft\EdgeUpdate\Clients\{F3017226-FE2A-4295-8BDF-00C3A9A7E4C5}")
+			.map(|r| r.get_value("pv").ok()).ok().flatten();
+			if let Some(version) = user {
+				exists = version.split('.').any(|x| x != "0");
+			}
+		}
+		if !exists {
+			show_error("Couldn't find WebView 2 installed. You can install it from Microsoft's site or try reinstalling it from the SlimeVR installer");
+			return
+		}
 	}
 
 	// Spawn server process
