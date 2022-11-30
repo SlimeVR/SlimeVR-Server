@@ -48,7 +48,7 @@ export function MountingResetStep({
         </div>
       </div>
       <div className="flex flex-col pt-1 items-center fill-background-50 justify-center px-12">
-        <img src="/images/mounting-reset-pose.png" width={130} />
+        <img src="/images/mounting-reset-pose.png" width={105} />
       </div>
     </>
   );
