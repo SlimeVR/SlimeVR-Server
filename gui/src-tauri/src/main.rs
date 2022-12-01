@@ -98,7 +98,7 @@ fn show_error(text: &str) -> bool {
 fn main() {
 	// Make an error dialog box when panicking
 	panic::set_hook(Box::new(|panic_info| {
-		eprintln!("{}", panic_info);
+		println!("{}", panic_info);
 		show_error(&panic_info.to_string());
 	}));
 
