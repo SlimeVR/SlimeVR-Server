@@ -314,7 +314,7 @@ export function GeneralSettings() {
               Floor-clip can Reduce or even eliminates clipping with the floor
               but may cause problems when on your knees. Skating-correction
               corrects for ice skating, but can decrease accuracy in certain
-              movement patterns. Increasing amount will increase the bite of
+              movement patterns. Increasing the amount will increase the bit of
               correction.
             </Typography>
           </div>
@@ -403,8 +403,9 @@ export function GeneralSettings() {
           <div className="flex flex-col pt-2 pb-4">
             <Typography color="secondary">
               Enable or disable double tap quick reset. When enabled double
-              tapping anywhere on highest up torso tracker will activate quick
-              reset. Delay is the time between registering a tap and reseting.
+              tapping anywhere on the highest torso tracker will activate a
+              quick reset. Delay is the time between registering a tap and
+              resetting.
             </Typography>
           </div>
           <div className="grid sm:grid-cols-1 gap-3 pb-5">
