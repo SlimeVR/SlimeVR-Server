@@ -95,12 +95,6 @@ fn show_error(text: &str) -> bool {
 	false
 }
 
-#[cfg(mobile)]
-fn show_error(text: &str) -> bool {
-	// needs to do native stuff on mobile
-	false
-}
-
 fn main() {
 	// Make an error dialog box when panicking
 	panic::set_hook(Box::new(|panic_info| {
