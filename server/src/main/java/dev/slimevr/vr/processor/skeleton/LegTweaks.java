@@ -218,6 +218,11 @@ public class LegTweaks {
 		bufferInvalid = true;
 	}
 
+	public void setConfig(LegTweaksConfig config) {
+		this.config = config;
+		updateConfig();
+	}
+
 	public void updateConfig() {
 		LegTweaks.updateHyperParameters(config.getCorrectionStrength());
 	}
@@ -398,10 +403,6 @@ public class LegTweaks {
 		// correct for skating if needed
 		if (skatingCorrectionEnabled)
 			correctSkating();
-
-		// currently scuffed
-		// if (skatingCorrectionEnabled && floorclipEnabled)
-		// correctFloat();
 
 		// determine if either leg is in a position to activate or deactivate
 		// (use the buffer to get the positions before corrections)

@@ -170,7 +170,8 @@ public class HumanSkeleton extends Skeleton implements SkeletonConfigCallback {
 			server.getVRCOSCHandler(),
 			server.getConfigManager().getVrConfig().getTapDetection()
 		);
-		legTweaks = new LegTweaks(this, server.getConfigManager().getVrConfig().getLegTweaks());
+		legTweaks.setConfig(server.getConfigManager().getVrConfig().getLegTweaks());
+
 	}
 
 	public HumanSkeleton(

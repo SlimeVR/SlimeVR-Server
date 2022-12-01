@@ -17,19 +17,19 @@ public class TapDetection {
 	private HumanSkeleton skeleton;
 	private VRCOSCHandler oscHandler;
 	private TapDetectionConfig config;
-	private boolean enabled = false;
 
 
 	// tap detection
+	private boolean enabled = false;
 	private LinkedList<float[]> accelList = new LinkedList<>();
 	private LinkedList<Float> tapTimes = new LinkedList<>();
+	private float resetDelayNs = 0.20f * 1000000000.0f;
 
 	// hyperparameters
 	private static final float NEEDED_ACCEL_DELTA = 6.0f;
 	private static final float ALLOWED_BODY_ACCEL = 1.5f;
 	private static final float CLUMP_TIME_NS = 0.03f * 1000000000.0f;
 	private static final float TIME_WINDOW_NS = 0.5f * 1000000000.0f;
-	private static final float RESET_DELAY_NS = 0.25f * 1000000000.0f;
 
 	// state
 	private float resetRequestTime = -1.0f;
@@ -46,11 +46,12 @@ public class TapDetection {
 		this.skeleton = skeleton;
 		this.oscHandler = oscHandler;
 		this.config = config;
-		this.enabled = config.getEnabled();
+		updateConfig();
 	}
 
 	public void updateConfig() {
 		this.enabled = config.getEnabled();
+		this.resetDelayNs = config.getDelay() * 1000000000.0f;
 	}
 
 	public void setEnabled(boolean enabled) {
@@ -72,7 +73,7 @@ public class TapDetection {
 
 		// check if we should reset
 		if (resetRequestTime != -1.0f) {
-			if (System.nanoTime() - resetRequestTime > RESET_DELAY_NS && oscHandler != null) {
+			if (System.nanoTime() - resetRequestTime > resetDelayNs && oscHandler != null) {
 				oscHandler.yawAlign();
 				skeleton.resetTrackersYaw();
 				resetRequestTime = -1.0f;
