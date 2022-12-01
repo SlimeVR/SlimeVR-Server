@@ -1,14 +1,12 @@
 package dev.slimevr.vr.processor.skeleton;
 
-import java.util.Arrays;
-import java.util.EnumMap;
-import java.util.Map;
-
 import com.jme3.math.Vector3f;
-
 import dev.slimevr.Main;
 import dev.slimevr.config.ConfigManager;
 import io.eiren.util.logging.LogManager;
+
+import java.util.EnumMap;
+import java.util.Map;
 
 
 public class SkeletonConfig {
@@ -378,7 +376,26 @@ public class SkeletonConfig {
 			setNodeOffset(key, value.x, value.y, value.z);
 		});
 	}
-	// #endregion
+
+	public void resetOffsets() {
+		configOffsets.clear();
+
+		if (autoUpdateOffsets) {
+			computeAllNodeOffsets();
+		}
+
+		// Calls offset callback
+		if (callback != null) {
+			for (SkeletonConfigOffsets config : SkeletonConfigOffsets.values) {
+				try {
+					callback
+						.updateOffsetsState(config, config.defaultValue);
+				} catch (Exception e) {
+					LogManager.severe("[SkeletonConfig] Exception while calling callback", e);
+				}
+			}
+		}
+	}
 
 	public void loadFromConfig(ConfigManager configManager) {
 
@@ -444,21 +461,6 @@ public class SkeletonConfig {
 		for (SkeletonConfigValues value : SkeletonConfigValues.values) {
 			if (changedValues[value.id - 1])
 				skeletonConfig.getValues().put(value.configKey, getValue(value));
-		}
-	}
-
-	public void resetConfigs() {
-		configOffsets.clear();
-		configToggles.clear();
-		configValues.clear();
-
-		Arrays.fill(changedValues, false);
-		Arrays.fill(changedToggles, false);
-
-		callCallbackOnAll(false);
-
-		if (autoUpdateOffsets) {
-			computeAllNodeOffsets();
 		}
 	}
 }
