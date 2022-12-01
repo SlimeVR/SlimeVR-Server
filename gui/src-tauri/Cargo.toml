@@ -35,6 +35,7 @@ tauri-plugin-window-state = "0.1.0"
 rand = "0.8.5"
 tempfile = "3"
 which = "4.3.0"
+open = "3"
 
 [target.'cfg(windows)'.dependencies]
 win32job = "1"

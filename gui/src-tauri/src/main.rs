@@ -95,6 +95,12 @@ fn show_error(text: &str) -> bool {
 	false
 }
 
+#[cfg(mobile)]
+fn show_error(text: &str) -> bool {
+	// needs to do native stuff on mobile
+	false
+}
+
 fn main() {
 	// Make an error dialog box when panicking
 	panic::set_hook(Box::new(|panic_info| {
@@ -129,7 +135,13 @@ fn main() {
 		std::mem::forget(job);
 
 		if !webview2_exists() {
-			show_error("Couldn't find WebView 2 installed. You can install it from Microsoft's site or try reinstalling it from the SlimeVR installer");
+			// This makes a dialog appear which let's you press Ok or Cancel
+			// If you press Ok it will open the SlimeVR installer documentation
+			use tauri::api::dialog::blocking::confirm;
+			let confirm = confirm(None, "SlimeVR", "Couldn't find WebView2 installed. You can install it with the SlimeVR installer");
+			if confirm {
+				open::that("https://docs.slimevr.dev/server-setup/installing-and-connecting.html#install-the-latest-slimevr-installer").unwrap();
+			}
 			return;
 		}
 	}
