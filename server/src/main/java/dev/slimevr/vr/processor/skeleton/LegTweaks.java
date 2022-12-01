@@ -95,7 +95,7 @@ public class LegTweaks {
 	private static final float STANDING_CUTOFF_VERTICAL = 0.65f;
 	private static final float MAX_DISENGAGMENT_OFFSET = 0.30f;
 	private static final float DEFAULT_ARM_DISTANCE = 0.15f;
-	private static final float MAX_CORRECTION_STRENGTH_DELTA = 1.0f;
+	private static final float MAX_CORRECTION_STRENGTH_DELTA = 0.7f;
 
 	// counters
 	private int leftFramesLocked = 0;
