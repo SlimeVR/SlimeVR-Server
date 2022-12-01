@@ -102,6 +102,7 @@ public class RPCHandler extends ProtocolHandler<RpcMessageHeader>
 			return;
 
 		this.api.server.humanPoseProcessor.getSkeletonConfig().resetOffsets();
+		this.api.server.humanPoseProcessor.getSkeletonConfig().save();
 		this.api.server.getConfigManager().saveConfig();
 
 		// might not be a good idea maybe let the client ask again

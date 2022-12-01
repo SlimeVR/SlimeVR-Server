@@ -144,7 +144,7 @@ public class HumanSkeleton extends Skeleton implements SkeletonConfigCallback {
 
 		// Set default skeleton configuration (callback automatically sets
 		// initial offsets)
-		skeletonConfig = new SkeletonConfig(true, this);
+		skeletonConfig = new SkeletonConfig(true, this, this);
 
 		if (computedTrackers != null) {
 			setComputedTrackers(computedTrackers);

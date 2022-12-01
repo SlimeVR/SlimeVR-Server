@@ -5,6 +5,7 @@ import dev.slimevr.Main;
 import dev.slimevr.config.ConfigManager;
 import io.eiren.util.logging.LogManager;
 
+import java.util.Arrays;
 import java.util.EnumMap;
 import java.util.Map;
 
@@ -30,6 +31,7 @@ public class SkeletonConfig {
 
 	protected final boolean autoUpdateOffsets;
 	protected final SkeletonConfigCallback callback;
+	protected Skeleton skeleton;
 	protected float userHeight;
 
 	public SkeletonConfig(boolean autoUpdateOffsets) {
@@ -43,9 +45,14 @@ public class SkeletonConfig {
 		}
 	}
 
-	public SkeletonConfig(boolean autoUpdateOffsets, SkeletonConfigCallback callback) {
+	public SkeletonConfig(
+		boolean autoUpdateOffsets,
+		SkeletonConfigCallback callback,
+		Skeleton skeleton
+	) {
 		this.autoUpdateOffsets = autoUpdateOffsets;
 		this.callback = callback;
+		this.skeleton = skeleton;
 
 		callCallbackOnAll(true);
 
@@ -378,7 +385,56 @@ public class SkeletonConfig {
 	}
 
 	public void resetOffsets() {
-		configOffsets.clear();
+		for (SkeletonConfigOffsets config : SkeletonConfigOffsets.values) {
+			skeleton.resetSkeletonConfig(config);
+		}
+
+		// Calls offset callback
+		if (callback != null) {
+			for (SkeletonConfigOffsets config : SkeletonConfigOffsets.values) {
+				try {
+					callback
+						.updateOffsetsState(config, config.defaultValue);
+				} catch (Exception e) {
+					LogManager.severe("[SkeletonConfig] Exception while calling callback", e);
+				}
+			}
+		}
+
+		save();
+	}
+
+	public void resetValues() {
+		configValues.clear();
+
+		// Calls offset callback
+		if (callback != null) {
+			for (SkeletonConfigValues config : SkeletonConfigValues.values) {
+				try {
+					callback
+						.updateValuesState(config, config.defaultValue);
+				} catch (Exception e) {
+					LogManager.severe("[SkeletonConfig] Exception while calling callback", e);
+				}
+			}
+		}
+
+		// Remove from config to use default if they change in the future.
+		Arrays.fill(changedValues, false);
+		for (SkeletonConfigValues value : SkeletonConfigValues.values) {
+			Main.vrServer
+				.getConfigManager()
+				.getVrConfig()
+				.getSkeleton()
+				.getValues()
+				.remove(value.configKey);
+		}
+
+		save();
+	}
+
+	public void resetToggles() {
+		configToggles.clear();
 
 		if (autoUpdateOffsets) {
 			computeAllNodeOffsets();
@@ -395,6 +451,18 @@ public class SkeletonConfig {
 				}
 			}
 		}
+
+		Arrays.fill(changedToggles, false);
+		for (SkeletonConfigToggles value : SkeletonConfigToggles.values) {
+			Main.vrServer
+				.getConfigManager()
+				.getVrConfig()
+				.getSkeleton()
+				.getToggles()
+				.remove(value.configKey);
+		}
+
+		save();
 	}
 
 	public void loadFromConfig(ConfigManager configManager) {
