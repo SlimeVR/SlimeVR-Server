@@ -40,7 +40,7 @@ export function TrackerRotCol({ tracker }: { tracker: TrackerDataT }) {
   return (
     <Typography color="secondary">
       <span className="whitespace-nowrap">
-        {`${rot.pitch.toFixed(0)} / ${rot.yaww.toFixed(0)} / ${rot.roll.toFixed(
+        {`${rot.pitch.toFixed(0)} / ${rot.yaw.toFixed(0)} / ${rot.roll.toFixed(
           0
         )}`}
       </span>
