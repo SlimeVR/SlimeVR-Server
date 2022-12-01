@@ -528,8 +528,8 @@ public class AutoBone {
 				) {
 					int frameCursor2 = frameCursor + cursorOffset;
 
-					applyConfig(skeleton1.skeletonConfig);
-					skeleton2.skeletonConfig.setConfigs(skeleton1.skeletonConfig);
+					applyConfig(skeleton1.getSkeletonConfig());
+					skeleton2.getSkeletonConfig().setConfigs(skeleton1.getSkeletonConfig());
 
 					if (config.randomizeFrameOrder) {
 						trainingStep
@@ -635,8 +635,8 @@ public class AutoBone {
 
 						// Apply new offset length
 						intermediateOffsets.put(entry.getKey(), newLength);
-						applyConfig(skeleton1.skeletonConfig, intermediateOffsets);
-						skeleton2.skeletonConfig.setConfigs(skeleton1.skeletonConfig);
+						applyConfig(skeleton1.getSkeletonConfig(), intermediateOffsets);
+						skeleton2.getSkeletonConfig().setConfigs(skeleton1.getSkeletonConfig());
 
 						// Update the skeleton poses for the new offset length
 						skeleton1.updatePose();
@@ -654,8 +654,8 @@ public class AutoBone {
 						// Reset the length to minimize bias in other variables,
 						// it's applied later
 						intermediateOffsets.put(entry.getKey(), originalLength);
-						applyConfig(skeleton1.skeletonConfig, intermediateOffsets);
-						skeleton2.skeletonConfig.setConfigs(skeleton1.skeletonConfig);
+						applyConfig(skeleton1.getSkeletonConfig(), intermediateOffsets);
+						skeleton2.getSkeletonConfig().setConfigs(skeleton1.getSkeletonConfig());
 					}
 
 					if (config.scaleEachStep) {

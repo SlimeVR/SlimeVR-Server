@@ -1,11 +1,11 @@
 package dev.slimevr.vr.processor.skeleton;
 
-import java.util.ArrayList;
-import java.util.List;
-
 import dev.slimevr.util.ann.VRServerThread;
 import dev.slimevr.vr.processor.TransformNode;
 import io.eiren.util.ann.ThreadSafe;
+
+import java.util.ArrayList;
+import java.util.List;
 
 
 public abstract class Skeleton {
@@ -19,7 +19,7 @@ public abstract class Skeleton {
 	public abstract TransformNode getRootNode();
 
 	@ThreadSafe
-	public abstract TransformNode[] getAllNodes();
+	protected abstract TransformNode[] getAllNodes();
 
 	@ThreadSafe
 	public abstract SkeletonConfig getSkeletonConfig();

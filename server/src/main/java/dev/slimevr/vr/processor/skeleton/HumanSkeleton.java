@@ -18,7 +18,7 @@ import java.util.Objects;
 
 public class HumanSkeleton extends Skeleton implements SkeletonConfigCallback {
 
-	public final SkeletonConfig skeletonConfig;
+	protected final SkeletonConfig skeletonConfig;
 	// #region Upper body nodes (torso)
 	// @formatter:off
 	protected final TransformNode hmdNode = new TransformNode("HMD", false);
@@ -140,7 +140,7 @@ public class HumanSkeleton extends Skeleton implements SkeletonConfigCallback {
 
 	// #region Constructors
 	protected HumanSkeleton(List<? extends ComputedHumanPoseTracker> computedTrackers) {
-		assembleSkeleton(false);
+		assembleSkeleton();
 
 		// Set default skeleton configuration (callback automatically sets
 		// initial offsets)
@@ -198,13 +198,7 @@ public class HumanSkeleton extends Skeleton implements SkeletonConfigCallback {
 	}
 	// #endregion
 
-	protected void assembleSkeleton(boolean reset) {
-		if (reset) {
-			for (TransformNode node : getAllNodes()) {
-				node.detachWithChildren();
-			}
-		}
-
+	protected void assembleSkeleton() {
 		// #region Assemble skeleton from hmd to hip
 		hmdNode.attachChild(headNode);
 		headNode.attachChild(neckNode);
@@ -484,7 +478,7 @@ public class HumanSkeleton extends Skeleton implements SkeletonConfigCallback {
 
 
 	// #region Set trackers inputs
-	public void setTrackersFromList(List<? extends Tracker> trackers) {
+	protected void setTrackersFromList(List<? extends Tracker> trackers) {
 		this.hmdTracker = TrackerUtils
 			.findNonComputedHumanPoseTrackerForBodyPosition(
 				trackers,
@@ -614,12 +608,12 @@ public class HumanSkeleton extends Skeleton implements SkeletonConfigCallback {
 		resetBones();
 	}
 
-	public void setTrackersFromServer(VRServer server) {
+	protected void setTrackersFromServer(VRServer server) {
 		this.hmdTracker = server.hmdTracker;
 		setTrackersFromList(server.getAllTrackers());
 	}
 
-	public void setComputedTracker(ComputedHumanPoseTracker tracker) {
+	protected void setComputedTracker(ComputedHumanPoseTracker tracker) {
 		switch (tracker.getTrackerRole()) {
 			case HEAD -> computedHeadTracker = tracker;
 			case CHEST -> computedChestTracker = tracker;
@@ -636,7 +630,7 @@ public class HumanSkeleton extends Skeleton implements SkeletonConfigCallback {
 		}
 	}
 
-	public void setComputedTrackers(List<? extends ComputedHumanPoseTracker> trackers) {
+	protected void setComputedTrackers(List<? extends ComputedHumanPoseTracker> trackers) {
 		for (ComputedHumanPoseTracker t : trackers) {
 			setComputedTracker(t);
 		}
@@ -644,7 +638,7 @@ public class HumanSkeleton extends Skeleton implements SkeletonConfigCallback {
 	// #endregion
 	// #endregion
 
-	public void fillNullComputedTrackers() {
+	protected void fillNullComputedTrackers() {
 		if (computedHeadTracker == null) {
 			computedHeadTracker = new ComputedHumanPoseTracker(
 				Tracker.getNextLocalTrackerId(),
@@ -735,7 +729,7 @@ public class HumanSkeleton extends Skeleton implements SkeletonConfigCallback {
 		}
 	}
 
-	// #region Get Trackers
+	// #region Get trackers
 	public ComputedHumanPoseTracker getComputedTracker(TrackerRole trackerRole) {
 		switch (trackerRole) {
 			case HEAD:
@@ -768,7 +762,7 @@ public class HumanSkeleton extends Skeleton implements SkeletonConfigCallback {
 	}
 
 	// #region Processing
-	// Useful for sub-classes that need to return a sub-tracker (like
+	// Useful for subclasses that need to return a sub-tracker (like
 	// PoseFrameTracker -> TrackerFrame)
 	protected Tracker trackerPreUpdate(Tracker tracker) {
 		return tracker;
@@ -1562,7 +1556,7 @@ public class HumanSkeleton extends Skeleton implements SkeletonConfigCallback {
 	}
 
 	@Override
-	public TransformNode[] getAllNodes() {
+	protected TransformNode[] getAllNodes() {
 		return new TransformNode[] {
 			hmdNode,
 			headNode,
@@ -1604,7 +1598,7 @@ public class HumanSkeleton extends Skeleton implements SkeletonConfigCallback {
 		};
 	}
 
-	public TransformNode[] getArmNodes() {
+	protected TransformNode[] getArmNodes() {
 		return new TransformNode[] {
 			leftShoulderHeadNode,
 			rightShoulderHeadNode,
@@ -1790,13 +1784,12 @@ public class HumanSkeleton extends Skeleton implements SkeletonConfigCallback {
 	}
 
 	private boolean shouldReverseYaw(TrackerPosition position) {
-		return position != null
-			&& (position == TrackerPosition.LEFT_UPPER_LEG
-				|| position == TrackerPosition.RIGHT_UPPER_LEG
-				|| position == TrackerPosition.LEFT_LOWER_ARM
-				|| position == TrackerPosition.RIGHT_LOWER_ARM
-				|| position == TrackerPosition.LEFT_HAND
-				|| position == TrackerPosition.RIGHT_HAND);
+		return position == TrackerPosition.LEFT_UPPER_LEG
+			|| position == TrackerPosition.RIGHT_UPPER_LEG
+			|| position == TrackerPosition.LEFT_LOWER_ARM
+			|| position == TrackerPosition.RIGHT_LOWER_ARM
+			|| position == TrackerPosition.LEFT_HAND
+			|| position == TrackerPosition.RIGHT_HAND;
 	}
 
 	@Override

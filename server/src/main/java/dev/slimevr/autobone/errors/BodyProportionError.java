@@ -2,7 +2,6 @@ package dev.slimevr.autobone.errors;
 
 
 import com.jme3.math.FastMath;
-
 import dev.slimevr.autobone.AutoBoneTrainingStep;
 import dev.slimevr.autobone.errors.proportions.ProportionLimiter;
 import dev.slimevr.autobone.errors.proportions.RangeProportionLimiter;
@@ -99,7 +98,7 @@ public class BodyProportionError implements IAutoBoneError {
 	@Override
 	public float getStepError(AutoBoneTrainingStep trainingStep) throws AutoBoneException {
 		return getBodyProportionError(
-			trainingStep.getSkeleton1().skeletonConfig,
+			trainingStep.getSkeleton1().getSkeletonConfig(),
 			trainingStep.getCurrentHeight()
 		);
 	}
