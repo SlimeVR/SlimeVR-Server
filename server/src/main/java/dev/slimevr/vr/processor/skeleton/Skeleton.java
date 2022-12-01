@@ -22,6 +22,9 @@ public abstract class Skeleton {
 	protected abstract TransformNode[] getAllNodes();
 
 	@ThreadSafe
+	protected abstract TransformNode[] getArmNodes();
+
+	@ThreadSafe
 	public abstract SkeletonConfig getSkeletonConfig();
 
 	@ThreadSafe

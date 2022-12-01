@@ -117,7 +117,7 @@ public class HumanSkeleton extends Skeleton implements SkeletonConfigCallback {
 	protected ComputedHumanPoseTracker computedRightHandTracker;
 	// #endregion
 
-	// #region FK Settings
+	// #region Settings
 	// Toggles
 	protected boolean extendedSpineModel;
 	protected boolean extendedPelvisModel;
@@ -1598,6 +1598,7 @@ public class HumanSkeleton extends Skeleton implements SkeletonConfigCallback {
 		};
 	}
 
+	@Override
 	protected TransformNode[] getArmNodes() {
 		return new TransformNode[] {
 			leftShoulderHeadNode,
