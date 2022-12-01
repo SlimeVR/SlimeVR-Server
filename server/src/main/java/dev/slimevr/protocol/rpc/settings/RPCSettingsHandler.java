@@ -5,7 +5,7 @@ import dev.slimevr.config.FiltersConfig;
 import dev.slimevr.config.OSCConfig;
 import dev.slimevr.filtering.TrackerFilters;
 import dev.slimevr.osc.VRCOSCHandler;
-import dev.slimevr.platform.windows.WindowsNamedPipeBridge;
+import dev.slimevr.platform.SteamVRBridge;
 import dev.slimevr.protocol.GenericConnection;
 import dev.slimevr.protocol.ProtocolAPI;
 import dev.slimevr.protocol.rpc.RPCHandler;
@@ -33,7 +33,7 @@ public record RPCSettingsHandler(RPCHandler rpcHandler, ProtocolAPI api) {
 	public void onSettingsRequest(GenericConnection conn, RpcMessageHeader messageHeader) {
 		FlatBufferBuilder fbb = new FlatBufferBuilder(32);
 
-		WindowsNamedPipeBridge bridge = this.api.server.getVRBridge(WindowsNamedPipeBridge.class);
+		SteamVRBridge bridge = this.api.server.getVRBridge(SteamVRBridge.class);
 
 		int settings = SettingsResponse
 			.createSettingsResponse(
@@ -68,8 +68,8 @@ public record RPCSettingsHandler(RPCHandler rpcHandler, ProtocolAPI api) {
 			return;
 
 		if (req.steamVrTrackers() != null) {
-			WindowsNamedPipeBridge bridge = this.api.server
-				.getVRBridge(WindowsNamedPipeBridge.class);
+			SteamVRBridge bridge = this.api.server
+				.getVRBridge(SteamVRBridge.class);
 
 			if (bridge != null) {
 				bridge.changeShareSettings(TrackerRole.WAIST, req.steamVrTrackers().waist());

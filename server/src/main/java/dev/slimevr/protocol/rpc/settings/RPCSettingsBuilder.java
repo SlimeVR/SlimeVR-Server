@@ -4,7 +4,7 @@ import com.google.flatbuffers.FlatBufferBuilder;
 import dev.slimevr.config.FiltersConfig;
 import dev.slimevr.config.OSCConfig;
 import dev.slimevr.filtering.TrackerFilters;
-import dev.slimevr.platform.windows.WindowsNamedPipeBridge;
+import dev.slimevr.platform.SteamVRBridge;
 import dev.slimevr.vr.processor.skeleton.SkeletonConfig;
 import dev.slimevr.vr.processor.skeleton.SkeletonConfigToggles;
 import dev.slimevr.vr.processor.skeleton.SkeletonConfigValues;
@@ -65,7 +65,7 @@ public class RPCSettingsBuilder {
 			);
 	}
 
-	public static int createSteamVRSettings(FlatBufferBuilder fbb, WindowsNamedPipeBridge bridge) {
+	public static int createSteamVRSettings(FlatBufferBuilder fbb, SteamVRBridge bridge) {
 		int steamvrTrackerSettings = 0;
 		if (bridge != null) {
 			steamvrTrackerSettings = SteamVRTrackersSetting
