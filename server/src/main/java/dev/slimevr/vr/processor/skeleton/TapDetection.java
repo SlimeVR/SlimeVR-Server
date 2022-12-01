@@ -28,6 +28,7 @@ public class TapDetection {
 	// hyperparameters
 	private static final float NEEDED_ACCEL_DELTA = 6.0f;
 	private static final float ALLOWED_BODY_ACCEL = 1.5f;
+	private static final float ALLOWED_BODY_ACCEL_SQUARED = ALLOWED_BODY_ACCEL * ALLOWED_BODY_ACCEL;
 	private static final float CLUMP_TIME_NS = 0.03f * 1000000000.0f;
 	private static final float TIME_WINDOW_NS = 0.5f * 1000000000.0f;
 
@@ -176,17 +177,17 @@ public class TapDetection {
 		Vector3f accel = new Vector3f();
 		if (skeleton.chestTracker != null && !skeleton.chestTracker.equals(trackerToExclude)) {
 			skeleton.chestTracker.getAcceleration(accel);
-			if (accel.length() > ALLOWED_BODY_ACCEL)
+			if (accel.lengthSquared() > ALLOWED_BODY_ACCEL_SQUARED)
 				return false;
 		}
 		if (skeleton.hipTracker != null && !skeleton.hipTracker.equals(trackerToExclude)) {
 			skeleton.hipTracker.getAcceleration(accel);
-			if (accel.length() > ALLOWED_BODY_ACCEL)
+			if (accel.lengthSquared() > ALLOWED_BODY_ACCEL_SQUARED)
 				return false;
 		}
 		if (skeleton.waistTracker != null && !skeleton.waistTracker.equals(trackerToExclude)) {
 			skeleton.waistTracker.getAcceleration(accel);
-			if (accel.length() > ALLOWED_BODY_ACCEL)
+			if (accel.lengthSquared() > ALLOWED_BODY_ACCEL_SQUARED)
 				return false;
 		}
 		if (
@@ -194,7 +195,7 @@ public class TapDetection {
 				&& !skeleton.leftUpperLegTracker.equals(trackerToExclude)
 		) {
 			skeleton.leftUpperLegTracker.getAcceleration(accel);
-			if (accel.length() > ALLOWED_BODY_ACCEL)
+			if (accel.lengthSquared() > ALLOWED_BODY_ACCEL_SQUARED)
 				return false;
 		}
 		if (
@@ -202,21 +203,21 @@ public class TapDetection {
 				&& !skeleton.rightUpperLegTracker.equals(trackerToExclude)
 		) {
 			skeleton.rightUpperLegTracker.getAcceleration(accel);
-			if (accel.length() > ALLOWED_BODY_ACCEL)
+			if (accel.lengthSquared() > ALLOWED_BODY_ACCEL_SQUARED)
 				return false;
 		}
 		if (
 			skeleton.leftFootTracker != null && !skeleton.leftFootTracker.equals(trackerToExclude)
 		) {
 			skeleton.leftFootTracker.getAcceleration(accel);
-			if (accel.length() > ALLOWED_BODY_ACCEL)
+			if (accel.lengthSquared() > ALLOWED_BODY_ACCEL_SQUARED)
 				return false;
 		}
 		if (
 			skeleton.rightFootTracker != null && !skeleton.rightFootTracker.equals(trackerToExclude)
 		) {
 			skeleton.rightFootTracker.getAcceleration(accel);
-			if (accel.length() > ALLOWED_BODY_ACCEL)
+			if (accel.lengthSquared() > ALLOWED_BODY_ACCEL_SQUARED)
 				return false;
 		}
 		return true;
