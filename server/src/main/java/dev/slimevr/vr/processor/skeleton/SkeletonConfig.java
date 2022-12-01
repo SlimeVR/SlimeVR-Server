@@ -1,13 +1,14 @@
 package dev.slimevr.vr.processor.skeleton;
 
-import com.jme3.math.Vector3f;
-import dev.slimevr.Main;
-import dev.slimevr.config.ConfigManager;
-import io.eiren.util.logging.LogManager;
-
 import java.util.Arrays;
 import java.util.EnumMap;
 import java.util.Map;
+
+import com.jme3.math.Vector3f;
+
+import dev.slimevr.Main;
+import dev.slimevr.config.ConfigManager;
+import io.eiren.util.logging.LogManager;
 
 
 public class SkeletonConfig {
@@ -343,7 +344,8 @@ public class SkeletonConfig {
 	}
 
 	public void setOffsets(
-		Map<SkeletonConfigOffsets, Float> configOffsets
+		Map<SkeletonConfigOffsets, Float> configOffsets,
+		boolean computeOffsets
 	) {
 		if (configOffsets != null) {
 			configOffsets.forEach((key, value) -> {
@@ -353,15 +355,28 @@ public class SkeletonConfig {
 			});
 		}
 
-		if (autoUpdateOffsets) {
+		if (computeOffsets && autoUpdateOffsets) {
 			computeAllNodeOffsets();
 		}
 	}
 
+	public void setOffsets(
+		Map<SkeletonConfigOffsets, Float> configOffsets
+	) {
+		setOffsets(configOffsets, true);
+	}
+
 	public void setOffsets(SkeletonConfig skeletonConfig) {
+		// Don't recalculate node offsets, just re-use them from skeletonConfig
 		setOffsets(
-			skeletonConfig.configOffsets
+			skeletonConfig.configOffsets,
+			false
 		);
+
+		// Copy skeletonConfig's nodeOffsets as the configs are all the same
+		skeletonConfig.nodeOffsets.forEach((key, value) -> {
+			setNodeOffset(key, value.x, value.y, value.z);
+		});
 	}
 	// #endregion
 
