@@ -131,8 +131,14 @@ fn main() {
 		if !webview2_exists() {
 			// This makes a dialog appear which let's you press Ok or Cancel
 			// If you press Ok it will open the SlimeVR installer documentation
-			use tauri::api::dialog::blocking::confirm;
-			let confirm = confirm(None, "SlimeVR", "Couldn't find WebView2 installed. You can install it with the SlimeVR installer");
+			use tauri::api::dialog::{
+				blocking::MessageDialogBuilder, MessageDialogButtons, MessageDialogKind,
+			};
+
+			let confirm = MessageDialogBuilder::new("SlimeVR", "Couldn't find WebView2 installed. You can install it with the SlimeVR installer")
+				.buttons(MessageDialogButtons::OkCancel)
+				.kind(MessageDialogKind::Error)
+				.show();
 			if confirm {
 				open::that("https://docs.slimevr.dev/server-setup/installing-and-connecting.html#install-the-latest-slimevr-installer").unwrap();
 			}
