@@ -12,7 +12,10 @@ import dev.slimevr.protocol.rpc.RPCHandler;
 import dev.slimevr.vr.processor.skeleton.SkeletonConfigToggles;
 import dev.slimevr.vr.processor.skeleton.SkeletonConfigValues;
 import dev.slimevr.vr.trackers.TrackerRole;
-import solarxr_protocol.rpc.*;
+import solarxr_protocol.rpc.ChangeSettingsRequest;
+import solarxr_protocol.rpc.RpcMessage;
+import solarxr_protocol.rpc.RpcMessageHeader;
+import solarxr_protocol.rpc.SettingsResponse;
 
 
 public record RPCSettingsHandler(RPCHandler rpcHandler, ProtocolAPI api) {
@@ -80,6 +83,8 @@ public record RPCSettingsHandler(RPCHandler rpcHandler, ProtocolAPI api) {
 				bridge.changeShareSettings(TrackerRole.RIGHT_KNEE, req.steamVrTrackers().knees());
 				bridge.changeShareSettings(TrackerRole.LEFT_ELBOW, req.steamVrTrackers().elbows());
 				bridge.changeShareSettings(TrackerRole.RIGHT_ELBOW, req.steamVrTrackers().elbows());
+				bridge.changeShareSettings(TrackerRole.LEFT_HAND, req.steamVrTrackers().hands());
+				bridge.changeShareSettings(TrackerRole.RIGHT_HAND, req.steamVrTrackers().hands());
 			}
 		}
 
