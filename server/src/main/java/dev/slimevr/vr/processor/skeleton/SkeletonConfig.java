@@ -385,8 +385,15 @@ public class SkeletonConfig {
 	}
 
 	public void resetOffsets() {
-		for (SkeletonConfigOffsets config : SkeletonConfigOffsets.values) {
-			skeleton.resetSkeletonConfig(config);
+		if (skeleton != null) {
+			for (SkeletonConfigOffsets config : SkeletonConfigOffsets.values) {
+				skeleton.resetSkeletonConfig(config);
+			}
+		} else {
+			configOffsets.clear();
+			if (autoUpdateOffsets) {
+				computeAllNodeOffsets();
+			}
 		}
 
 		// Calls offset callback
@@ -400,14 +407,12 @@ public class SkeletonConfig {
 				}
 			}
 		}
-
-		save();
 	}
 
 	public void resetValues() {
 		configValues.clear();
 
-		// Calls offset callback
+		// Calls values callback
 		if (callback != null) {
 			for (SkeletonConfigValues config : SkeletonConfigValues.values) {
 				try {
@@ -429,18 +434,12 @@ public class SkeletonConfig {
 				.getValues()
 				.remove(value.configKey);
 		}
-
-		save();
 	}
 
 	public void resetToggles() {
 		configToggles.clear();
 
-		if (autoUpdateOffsets) {
-			computeAllNodeOffsets();
-		}
-
-		// Calls offset callback
+		// Calls toggles callback
 		if (callback != null) {
 			for (SkeletonConfigOffsets config : SkeletonConfigOffsets.values) {
 				try {
@@ -452,6 +451,7 @@ public class SkeletonConfig {
 			}
 		}
 
+		// Remove from config to use default if they change in the future.
 		Arrays.fill(changedToggles, false);
 		for (SkeletonConfigToggles value : SkeletonConfigToggles.values) {
 			Main.vrServer
@@ -461,8 +461,6 @@ public class SkeletonConfig {
 				.getToggles()
 				.remove(value.configKey);
 		}
-
-		save();
 	}
 
 	public void loadFromConfig(ConfigManager configManager) {
