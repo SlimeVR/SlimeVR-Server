@@ -224,11 +224,12 @@ public class VRCOSCHandler {
 
 					// Send regular trackers' rotations
 					shareableTrackers.get(i).getRotation(quatBuf);
-					quatBuf.negateLocal();
+					// Convert between OpenGl/OpenVR to Unity
+					quatBuf.set(quatBuf.getX(), -quatBuf.getY(), -quatBuf.getZ(), -quatBuf.getW());
 					quatBuf.toAngles(floatBuf);
 					oscArgs.clear();
-					oscArgs.add(-floatBuf[0] * FastMath.RAD_TO_DEG);
-					oscArgs.add(-floatBuf[1] * FastMath.RAD_TO_DEG);
+					oscArgs.add(floatBuf[0] * FastMath.RAD_TO_DEG);
+					oscArgs.add(floatBuf[1] * FastMath.RAD_TO_DEG);
 					oscArgs.add(floatBuf[2] * FastMath.RAD_TO_DEG);
 					oscMessage = new OSCMessage(
 						"/tracking/trackers/" + (i + 1) + "/rotation",
