@@ -7,7 +7,7 @@ export function QuaternionFromQuatT(q: {
   z: number;
   w: number;
 }) {
-  return new Quaternion(q.x, q.y, q.z, q.w);
+  return new Quaternion(q.w, q.x, q.y, q.z);
 }
 
 export function QuaternionToQuatT(q: {

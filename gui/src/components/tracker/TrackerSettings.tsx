@@ -10,7 +10,7 @@ import { useWebsocketAPI } from '../../hooks/websocket-api';
 import {
   FixEuler,
   QuaternionFromQuatT,
-  QuaternionToQuatT,
+  QuaternionToQuatT
 } from '../../maths/quaternion';
 import { ArrowLink } from '../commons/ArrowLink';
 import { Button } from '../commons/Button';
@@ -18,11 +18,11 @@ import { FootIcon } from '../commons/icon/FootIcon';
 import { Input } from '../commons/Input';
 import { Typography } from '../commons/Typography';
 import { MountingSelectionMenu } from '../onboarding/pages/mounting/MountingSelectionMenu';
+import { bodypartToString } from '../utils/formatting';
 import { SingleTrackerBodyAssignmentMenu } from './SingleTrackerBodyAssignmentMenu';
 import { TrackerCard } from './TrackerCard';
-import { bodypartToString } from '../utils/formatting';
 
-const rotationToQuatMap = {
+export const rotationToQuatMap = {
   FRONT: 180,
   LEFT: 90,
   RIGHT: -90,
@@ -59,8 +59,15 @@ export function TrackerSettingsPage() {
     if (!tracker) return;
 
     const assignreq = new AssignTrackerRequestT();
+
+    console.log('send', Quaternion.fromEuler(0, mountingOrientation, 0));
+
     assignreq.mountingRotation = QuaternionToQuatT(
-      Quaternion.fromEuler(0, +mountingOrientation, 0)
+      Quaternion.fromEuler(
+        0,
+        FixEuler(+mountingOrientation) * (Math.PI / 180),
+        0
+      )
     );
     assignreq.bodyPosition = tracker?.tracker.info?.bodyPart || BodyPart.NONE;
     assignreq.trackerId = tracker?.tracker.trackerId;
@@ -78,17 +85,16 @@ export function TrackerSettingsPage() {
     setSelectBodypart(false);
   };
 
-  const currRotation = useMemo(
-    () =>
-      tracker?.tracker.info?.mountingOrientation
-        ? FixEuler(
-            QuaternionFromQuatT(
-              tracker.tracker.info?.mountingOrientation
-            ).toEuler().roll
-          )
-        : rotationToQuatMap.BACK,
-    [tracker?.tracker.info?.mountingOrientation]
-  );
+  const currRotation = useMemo(() => {
+    return tracker?.tracker.info?.mountingOrientation
+      ? FixEuler(
+          QuaternionFromQuatT(
+            tracker.tracker.info?.mountingOrientation
+          ).toEuler().roll *
+            (180 / Math.PI)
+        )
+      : rotationToQuatMap.BACK;
+  }, [tracker?.tracker.info?.mountingOrientation]);
 
   const updateTrackerName = () => {
     if (!tracker) return;
@@ -204,7 +210,9 @@ export function TrackerSettingsPage() {
               <div className="flex gap-3 items-center">
                 <FootIcon></FootIcon>
                 <Typography>
-                  {bodypartToString(tracker?.tracker.info?.bodyPart || BodyPart.NONE)}
+                  {bodypartToString(
+                    tracker?.tracker.info?.bodyPart || BodyPart.NONE
+                  )}
                 </Typography>
               </div>
               <div className="flex">
