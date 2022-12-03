@@ -7,11 +7,8 @@ import { AssignTrackerRequestT, BodyPart, RpcMessage } from 'solarxr-protocol';
 import { useDebouncedEffect } from '../../hooks/timeout';
 import { useTrackerFromId } from '../../hooks/tracker';
 import { useWebsocketAPI } from '../../hooks/websocket-api';
-import {
-  FixEuler,
-  QuaternionFromQuatT,
-  QuaternionToQuatT
-} from '../../maths/quaternion';
+import { DEG_TO_RAD, RAD_TO_DEG } from '../../maths/angle';
+import { FixEuler, GetYaw, QuaternionToQuatT } from '../../maths/quaternion';
 import { ArrowLink } from '../commons/ArrowLink';
 import { Button } from '../commons/Button';
 import { FootIcon } from '../commons/icon/FootIcon';
@@ -63,8 +60,9 @@ export function TrackerSettingsPage() {
     assignreq.mountingRotation = QuaternionToQuatT(
       Quaternion.fromEuler(
         0,
-        FixEuler(+mountingOrientation) * (Math.PI / 180),
-        0
+        0,
+        FixEuler(+mountingOrientation) * DEG_TO_RAD,
+        'XZY'
       )
     );
     assignreq.bodyPosition = tracker?.tracker.info?.bodyPart || BodyPart.NONE;
@@ -85,12 +83,7 @@ export function TrackerSettingsPage() {
 
   const currRotation = useMemo(() => {
     return tracker?.tracker.info?.mountingOrientation
-      ? FixEuler(
-          QuaternionFromQuatT(
-            tracker.tracker.info?.mountingOrientation
-          ).toEuler().roll *
-            (180 / Math.PI)
-        )
+      ? FixEuler(GetYaw(tracker.tracker.info?.mountingOrientation) * RAD_TO_DEG)
       : rotationToQuatMap.BACK;
   }, [tracker?.tracker.info?.mountingOrientation]);
 
