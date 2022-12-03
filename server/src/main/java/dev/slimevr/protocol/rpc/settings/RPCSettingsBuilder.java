@@ -31,10 +31,14 @@ public class RPCSettingsBuilder {
 				config.getOSCTrackerRole(TrackerRole.HEAD, false),
 				config.getOSCTrackerRole(TrackerRole.CHEST, false),
 				config.getOSCTrackerRole(TrackerRole.WAIST, false),
-				config.getOSCTrackerRole(TrackerRole.LEFT_KNEE, false),
-				config.getOSCTrackerRole(TrackerRole.LEFT_FOOT, false),
-				config.getOSCTrackerRole(TrackerRole.LEFT_ELBOW, false),
+				config.getOSCTrackerRole(TrackerRole.LEFT_KNEE, false)
+					&& config.getOSCTrackerRole(TrackerRole.RIGHT_KNEE, false),
+				config.getOSCTrackerRole(TrackerRole.LEFT_FOOT, false)
+					&& config.getOSCTrackerRole(TrackerRole.RIGHT_FOOT, false),
+				config.getOSCTrackerRole(TrackerRole.LEFT_ELBOW, false)
+					&& config.getOSCTrackerRole(TrackerRole.RIGHT_ELBOW, false),
 				config.getOSCTrackerRole(TrackerRole.LEFT_HAND, false)
+					&& config.getOSCTrackerRole(TrackerRole.RIGHT_HAND, false)
 			);
 
 		int addressStringOffset = fbb.createString(config.getAddress());
@@ -81,7 +85,9 @@ public class RPCSettingsBuilder {
 					bridge.getShareSetting(TrackerRole.LEFT_KNEE)
 						&& bridge.getShareSetting(TrackerRole.RIGHT_KNEE),
 					bridge.getShareSetting(TrackerRole.LEFT_ELBOW)
-						&& bridge.getShareSetting(TrackerRole.RIGHT_ELBOW)
+						&& bridge.getShareSetting(TrackerRole.RIGHT_ELBOW),
+					bridge.getShareSetting(TrackerRole.LEFT_HAND)
+						&& bridge.getShareSetting(TrackerRole.RIGHT_HAND)
 				);
 		}
 		return steamvrTrackerSettings;
@@ -108,6 +114,7 @@ public class RPCSettingsBuilder {
 				config.getValue(SkeletonConfigValues.HIP_LEGS_AVERAGING),
 				config.getValue(SkeletonConfigValues.KNEE_TRACKER_ANKLE_AVERAGING)
 			);
-		return ModelSettings.createModelSettings(fbb, togglesOffset, ratiosOffset);
+		// TODO: legtweaks amount in protocol
+		return ModelSettings.createModelSettings(fbb, togglesOffset, ratiosOffset, 0);
 	}
 }

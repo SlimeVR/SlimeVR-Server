@@ -83,6 +83,8 @@ public record RPCSettingsHandler(RPCHandler rpcHandler, ProtocolAPI api) {
 				bridge.changeShareSettings(TrackerRole.RIGHT_KNEE, req.steamVrTrackers().knees());
 				bridge.changeShareSettings(TrackerRole.LEFT_ELBOW, req.steamVrTrackers().elbows());
 				bridge.changeShareSettings(TrackerRole.RIGHT_ELBOW, req.steamVrTrackers().elbows());
+				bridge.changeShareSettings(TrackerRole.LEFT_HAND, req.steamVrTrackers().hands());
+				bridge.changeShareSettings(TrackerRole.RIGHT_HAND, req.steamVrTrackers().hands());
 			}
 		}
 
