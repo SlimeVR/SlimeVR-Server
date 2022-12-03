@@ -74,8 +74,9 @@ public class TapDetection {
 
 		// check if we should reset
 		if (resetRequestTime != -1.0f) {
-			if (System.nanoTime() - resetRequestTime > resetDelayNs && oscHandler != null) {
-				oscHandler.yawAlign();
+			if (System.nanoTime() - resetRequestTime > resetDelayNs) {
+				if (oscHandler != null)
+					oscHandler.yawAlign();
 				skeleton.resetTrackersYaw();
 				resetRequestTime = -1.0f;
 			}
