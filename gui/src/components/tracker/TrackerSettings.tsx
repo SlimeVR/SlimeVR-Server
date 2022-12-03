@@ -60,8 +60,6 @@ export function TrackerSettingsPage() {
 
     const assignreq = new AssignTrackerRequestT();
 
-    console.log('send', Quaternion.fromEuler(0, mountingOrientation, 0));
-
     assignreq.mountingRotation = QuaternionToQuatT(
       Quaternion.fromEuler(
         0,
