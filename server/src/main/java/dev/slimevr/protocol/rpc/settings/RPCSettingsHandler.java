@@ -12,7 +12,10 @@ import dev.slimevr.protocol.rpc.RPCHandler;
 import dev.slimevr.vr.processor.skeleton.SkeletonConfigToggles;
 import dev.slimevr.vr.processor.skeleton.SkeletonConfigValues;
 import dev.slimevr.vr.trackers.TrackerRole;
-import solarxr_protocol.rpc.*;
+import solarxr_protocol.rpc.ChangeSettingsRequest;
+import solarxr_protocol.rpc.RpcMessage;
+import solarxr_protocol.rpc.RpcMessageHeader;
+import solarxr_protocol.rpc.SettingsResponse;
 
 
 public record RPCSettingsHandler(RPCHandler rpcHandler, ProtocolAPI api) {
@@ -157,7 +160,6 @@ public record RPCSettingsHandler(RPCHandler rpcHandler, ProtocolAPI api) {
 						toggles.forceArmsFromHmd()
 					);
 				cfg.setToggle(SkeletonConfigToggles.FLOOR_CLIP, toggles.floorClip());
-
 				cfg
 					.setToggle(
 						SkeletonConfigToggles.SKATING_CORRECTION,

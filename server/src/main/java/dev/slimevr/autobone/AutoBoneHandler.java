@@ -3,11 +3,7 @@ package dev.slimevr.autobone;
 import dev.slimevr.VRServer;
 import dev.slimevr.autobone.AutoBone.AutoBoneResults;
 import dev.slimevr.autobone.errors.AutoBoneException;
-import dev.slimevr.poserecorder.PoseFrameTracker;
-import dev.slimevr.poserecorder.PoseFrames;
-import dev.slimevr.poserecorder.PoseRecorder;
-import dev.slimevr.poserecorder.TrackerFrame;
-import dev.slimevr.poserecorder.TrackerFrameData;
+import dev.slimevr.poserecorder.*;
 import dev.slimevr.vr.processor.skeleton.SkeletonConfig;
 import dev.slimevr.vr.processor.skeleton.SkeletonConfigOffsets;
 import io.eiren.util.StringUtils;
@@ -359,7 +355,7 @@ public class AutoBoneHandler {
 				LogManager.info("[AutoBone] Done processing!");
 
 				// #region Stats/Values
-				skeletonConfigBuffer.setConfigs(autoBoneResults.configValues, null, null);
+				skeletonConfigBuffer.setOffsets(autoBoneResults.configValues);
 
 				float neckLength = skeletonConfigBuffer.getOffset(SkeletonConfigOffsets.NECK);
 				float chestDistance = skeletonConfigBuffer
