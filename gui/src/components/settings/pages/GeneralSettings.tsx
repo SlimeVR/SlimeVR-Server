@@ -314,8 +314,8 @@ export function GeneralSettings() {
               Floor-clip can Reduce or even eliminates clipping with the floor
               but may cause problems when on your knees. Skating-correction
               corrects for ice skating, but can decrease accuracy in certain
-              movement patterns. Increasing the amount will increase the bit of
-              correction.
+              movement patterns. Increasing the amount of skating correction
+              will make the correction more aggressive.
             </Typography>
           </div>
           <div className="grid sm:grid-cols-2 gap-3 pb-5">
@@ -338,7 +338,7 @@ export function GeneralSettings() {
             <NumberSelector
               control={control}
               name="legTweaks.correctionStrength"
-              label="Amount"
+              label="Skating correction amount"
               valueLabelFormat={(value) => `${Math.round(value * 100)} %`}
               min={0.1}
               max={1.0}
