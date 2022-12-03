@@ -8,7 +8,7 @@ import com.jme3.math.FastMath;
 import com.jme3.math.Quaternion;
 import com.jme3.math.Vector3f;
 import dev.slimevr.config.OSCConfig;
-import dev.slimevr.platform.windows.WindowsNamedPipeBridge;
+import dev.slimevr.platform.SteamVRBridge;
 import dev.slimevr.vr.processor.HumanPoseProcessor;
 import dev.slimevr.vr.trackers.HMDTracker;
 import dev.slimevr.vr.trackers.ShareableTracker;
@@ -31,7 +31,7 @@ public class VRCOSCHandler {
 	private OSCMessage oscMessage;
 	private final OSCConfig config;
 	private final HMDTracker hmd;
-	private final WindowsNamedPipeBridge steamvrBridge;
+	private final SteamVRBridge steamvrBridge;
 	private final HumanPoseProcessor humanPoseProcessor;
 	private final List<? extends ShareableTracker> shareableTrackers;
 	private final FastList<Float> oscArgs = new FastList<>(3);
@@ -48,7 +48,7 @@ public class VRCOSCHandler {
 	public VRCOSCHandler(
 		HMDTracker hmd,
 		HumanPoseProcessor humanPoseProcessor,
-		WindowsNamedPipeBridge steamvrBridge,
+		SteamVRBridge steamvrBridge,
 		OSCConfig oscConfig,
 		List<? extends ShareableTracker> shareableTrackers
 	) {
