@@ -40,7 +40,8 @@
     "lint": "eslint src/**/*.{js,jsx,ts,tsx,json}",
     "lint:fix": "eslint --fix src/**/*.{js,jsx,ts,tsx,json}",
     "format": "prettier --write src/**/*.{js,jsx,ts,tsx,css,md,json} --config ./.prettierrc",
-    "preview-vite": "vite preview"
+    "preview-vite": "vite preview",
+    "javaversion-build": "javac src-tauri/src/JavaVersion.java"
   },
   "eslintConfig": {
     "extends": [
