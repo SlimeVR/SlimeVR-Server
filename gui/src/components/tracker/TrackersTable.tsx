@@ -1,9 +1,10 @@
 import classNames from 'classnames';
+import { IPv4 } from 'ip-num/IPNumber';
 import { MouseEventHandler, ReactChild, useState } from 'react';
 import {
   TrackerDataT,
   TrackerIdT,
-  TrackerStatus as TrackerStatusEnum,
+  TrackerStatus as TrackerStatusEnum
 } from 'solarxr-protocol';
 import { FlatDeviceTracker } from '../../hooks/app';
 import { useTracker } from '../../hooks/tracker';
@@ -12,7 +13,6 @@ import { Typography } from '../commons/Typography';
 import { TrackerBattery } from './TrackerBattery';
 import { TrackerStatus } from './TrackerStatus';
 import { TrackerWifi } from './TrackerWifi';
-import { IPv4 } from 'ip-num/IPNumber';
 
 export function TrackerNameCol({ tracker }: { tracker: TrackerDataT }) {
   const { useName } = useTracker(tracker);
@@ -33,9 +33,9 @@ export function TrackerNameCol({ tracker }: { tracker: TrackerDataT }) {
 }
 
 export function TrackerRotCol({ tracker }: { tracker: TrackerDataT }) {
-  const { useRotation } = useTracker(tracker);
+  const { useRotationDegrees } = useTracker(tracker);
 
-  const rot = useRotation();
+  const rot = useRotationDegrees();
 
   return (
     <Typography color="secondary">
