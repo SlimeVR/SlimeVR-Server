@@ -40,7 +40,7 @@ export function ResetButton({
       case ResetType.Mounting:
         return 'Reset Mounting';
       case ResetType.Full:
-        return 'Reset all proportions';
+        return 'Reset';
     }
     return 'Reset';
   };
