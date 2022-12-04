@@ -148,7 +148,7 @@ public class HumanSkeleton extends Skeleton implements SkeletonConfigCallback {
 
 		// Set default skeleton configuration (callback automatically sets
 		// initial offsets)
-		skeletonConfig = new SkeletonConfig(true, this);
+		skeletonConfig = new SkeletonConfig(true, this, this);
 
 		if (computedTrackers != null) {
 			setComputedTrackers(computedTrackers);
@@ -196,9 +196,9 @@ public class HumanSkeleton extends Skeleton implements SkeletonConfigCallback {
 		if (altConfigs != null) {
 			// Set alts first, so if there's any overlap it doesn't affect the
 			// values
-			skeletonConfig.setConfigs(altConfigs, null, null);
+			skeletonConfig.setOffsets(altConfigs);
 		}
-		skeletonConfig.setConfigs(configs, null, null);
+		skeletonConfig.setOffsets(configs);
 	}
 
 	public HumanSkeleton(

@@ -2,14 +2,20 @@ import { useState } from 'react';
 import { RpcMessage, SkeletonResetAllRequestT } from 'solarxr-protocol';
 import {
   AutoboneContextC,
-  useProvideAutobone,
+  useProvideAutobone
 } from '../../../../hooks/autobone';
 import { useOnboarding } from '../../../../hooks/onboarding';
 import { useWebsocketAPI } from '../../../../hooks/websocket-api';
 import { ArrowLink } from '../../../commons/ArrowLink';
 import { Button } from '../../../commons/Button';
 import { Typography } from '../../../commons/Typography';
-import { AutoboneStepper } from './AutoboneStepper';
+import { StepperSlider } from '../../StepperSlider';
+import { DoneStep } from './autobone-steps/Done';
+import { PreparationStep } from './autobone-steps/Preparation';
+import { PutTrackersOnStep } from './autobone-steps/PutTrackersOn';
+import { Recording } from './autobone-steps/Recording';
+import { StartRecording } from './autobone-steps/StartRecording';
+import { VerifyResultsStep } from './autobone-steps/VerifyResults';
 
 export function AutomaticProportionsPage() {
   const { applyProgress, skipSetup, state } = useOnboarding();
@@ -53,9 +59,17 @@ export function AutomaticProportionsPage() {
             </div>
           </div>
           <div className="flex">
-            <AutoboneStepper
+            <StepperSlider
               variant={state.alonePage ? 'alone' : 'onboarding'}
-            ></AutoboneStepper>
+              steps={[
+                { type: 'numbered', component: PutTrackersOnStep },
+                { type: 'numbered', component: PreparationStep },
+                { type: 'numbered', component: StartRecording },
+                { type: 'fullsize', component: Recording },
+                { type: 'numbered', component: VerifyResultsStep },
+                { type: 'fullsize', component: DoneStep },
+              ]}
+            ></StepperSlider>
           </div>
         </div>
         <div className="w-full pb-4 flex flex-row">

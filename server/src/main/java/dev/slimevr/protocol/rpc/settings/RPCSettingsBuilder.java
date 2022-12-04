@@ -6,12 +6,16 @@ import dev.slimevr.config.LegTweaksConfig;
 import dev.slimevr.config.OSCConfig;
 import dev.slimevr.config.TapDetectionConfig;
 import dev.slimevr.filtering.TrackerFilters;
-import dev.slimevr.platform.windows.WindowsNamedPipeBridge;
+import dev.slimevr.platform.SteamVRBridge;
 import dev.slimevr.vr.processor.skeleton.SkeletonConfig;
 import dev.slimevr.vr.processor.skeleton.SkeletonConfigToggles;
 import dev.slimevr.vr.processor.skeleton.SkeletonConfigValues;
 import dev.slimevr.vr.trackers.TrackerRole;
-import solarxr_protocol.rpc.*;
+import solarxr_protocol.rpc.FilteringSettings;
+import solarxr_protocol.rpc.OSCTrackersSetting;
+import solarxr_protocol.rpc.SteamVRTrackersSetting;
+import solarxr_protocol.rpc.TapDetectionSettings;
+import solarxr_protocol.rpc.VRCOSCSettings;
 import solarxr_protocol.rpc.settings.ModelRatios;
 import solarxr_protocol.rpc.settings.ModelSettings;
 import solarxr_protocol.rpc.settings.ModelToggles;
@@ -31,10 +35,14 @@ public class RPCSettingsBuilder {
 				config.getOSCTrackerRole(TrackerRole.HEAD, false),
 				config.getOSCTrackerRole(TrackerRole.CHEST, false),
 				config.getOSCTrackerRole(TrackerRole.WAIST, false),
-				config.getOSCTrackerRole(TrackerRole.LEFT_KNEE, false),
-				config.getOSCTrackerRole(TrackerRole.LEFT_FOOT, false),
-				config.getOSCTrackerRole(TrackerRole.LEFT_ELBOW, false),
+				config.getOSCTrackerRole(TrackerRole.LEFT_KNEE, false)
+					&& config.getOSCTrackerRole(TrackerRole.RIGHT_KNEE, false),
+				config.getOSCTrackerRole(TrackerRole.LEFT_FOOT, false)
+					&& config.getOSCTrackerRole(TrackerRole.RIGHT_FOOT, false),
+				config.getOSCTrackerRole(TrackerRole.LEFT_ELBOW, false)
+					&& config.getOSCTrackerRole(TrackerRole.RIGHT_ELBOW, false),
 				config.getOSCTrackerRole(TrackerRole.LEFT_HAND, false)
+					&& config.getOSCTrackerRole(TrackerRole.RIGHT_HAND, false)
 			);
 
 		int addressStringOffset = fbb.createString(config.getAddress());
@@ -80,7 +88,7 @@ public class RPCSettingsBuilder {
 			);
 	}
 
-	public static int createSteamVRSettings(FlatBufferBuilder fbb, WindowsNamedPipeBridge bridge) {
+	public static int createSteamVRSettings(FlatBufferBuilder fbb, SteamVRBridge bridge) {
 		int steamvrTrackerSettings = 0;
 		if (bridge != null) {
 			steamvrTrackerSettings = SteamVRTrackersSetting
@@ -93,7 +101,9 @@ public class RPCSettingsBuilder {
 					bridge.getShareSetting(TrackerRole.LEFT_KNEE)
 						&& bridge.getShareSetting(TrackerRole.RIGHT_KNEE),
 					bridge.getShareSetting(TrackerRole.LEFT_ELBOW)
-						&& bridge.getShareSetting(TrackerRole.RIGHT_ELBOW)
+						&& bridge.getShareSetting(TrackerRole.RIGHT_ELBOW),
+					bridge.getShareSetting(TrackerRole.LEFT_HAND)
+						&& bridge.getShareSetting(TrackerRole.RIGHT_HAND)
 				);
 		}
 		return steamvrTrackerSettings;
@@ -111,8 +121,8 @@ public class RPCSettingsBuilder {
 				config.getToggle(SkeletonConfigToggles.EXTENDED_PELVIS_MODEL),
 				config.getToggle(SkeletonConfigToggles.EXTENDED_KNEE_MODEL),
 				config.getToggle(SkeletonConfigToggles.FORCE_ARMS_FROM_HMD),
-				config.getToggle(SkeletonConfigToggles.SKATING_CORRECTION),
-				config.getToggle(SkeletonConfigToggles.FLOOR_CLIP)
+				config.getToggle(SkeletonConfigToggles.FLOOR_CLIP),
+				config.getToggle(SkeletonConfigToggles.SKATING_CORRECTION)
 			);
 		int ratiosOffset = ModelRatios
 			.createModelRatios(
