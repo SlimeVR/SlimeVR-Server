@@ -1,11 +1,14 @@
 #![cfg_attr(all(not(debug_assertions), windows), windows_subsystem = "windows")]
+use std::borrow::Cow;
 use std::env;
 use std::ffi::{OsStr, OsString};
+use std::fs;
 use std::io::Write;
 use std::panic;
 use std::path::PathBuf;
 use std::process::{Child, Stdio};
-use std::str::FromStr;
+#[cfg(windows)]
+use std::os::windows::process::CommandExt;
 
 use clap::Parser;
 use clap_verbosity_flag::{InfoLevel, Verbosity};
@@ -15,6 +18,10 @@ use tauri::Manager;
 use tempfile::Builder;
 use which::which_all;
 
+
+#[cfg(windows)]
+/// For Commands on Windows so they dont create terminals
+const CREATE_NO_WINDOW: u32 = 0x0800_0000;
 /// It's an i32 because we check it through exit codes of the process
 const MINIMUM_JAVA_VERSION: i32 = 17;
 static POSSIBLE_TITLES: &[&str] = &[
@@ -63,12 +70,15 @@ fn get_launch_path(cli: Cli) -> Option<PathBuf> {
 }
 
 fn spawn_java(java: &OsStr, java_version: &OsStr) -> std::io::Result<Child> {
-	std::process::Command::new(java)
+	let cmd = std::process::Command::new(java)
+		.arg("-jar")
 		.arg(java_version)
 		.stdin(Stdio::null())
 		.stderr(Stdio::null())
-		.stdout(Stdio::null())
-		.spawn()
+		.stdout(Stdio::null());
+	#[cfg(windows)]
+	cmd.creation_flags(CREATE_NO_WINDOW);
+	cmd.spawn()
 }
 
 #[cfg(desktop)]
@@ -153,10 +163,10 @@ fn main() {
 		log::info!("Server found on path: {}", p.to_str().unwrap());
 
 		// Check if any Java already installed is compatible
-		let jre = p.join("jre/bin");
+		let jre = p.join("jre/bin").join(executable("java"));
 		let java_bin = jre
 			.exists()
-			.then(|| jre.join("java").into_os_string())
+			.then(|| fs::canonicalize(jre).unwrap().into_os_string())
 			.or_else(|| valid_java_paths().first().map(|x| x.0.to_owned()));
 		if let None = java_bin {
 			show_error(&format!("Couldn't find a compatible Java version, please download Java {} or higher", MINIMUM_JAVA_VERSION));
@@ -240,18 +250,18 @@ fn webview2_exists() -> bool {
 
 fn valid_java_paths() -> Vec<(OsString, i32)> {
 	let mut file = Builder::new()
-		.suffix(".class")
+		.suffix(".jar")
 		.tempfile()
-		.expect("Couldn't generate .class file");
-	file.write_all(include_bytes!("JavaVersion.class"))
-		.expect("Couldn't write to .class file");
+		.expect("Couldn't generate .jar file");
+	file.write_all(include_bytes!("JavaVersion.jar"))
+		.expect("Couldn't write to .jar file");
 	let java_version = file.into_temp_path();
 
 	// Check if main Java is a supported version
 	let main_java = if let Ok(java_home) = std::env::var("JAVA_HOME") {
-		PathBuf::from(java_home).join("bin/java").into_os_string()
+		PathBuf::from(java_home).join("bin").join(executable("java")).into_os_string()
 	} else {
-		OsString::from_str("java").unwrap()
+		executable("java").to_os_string()
 	};
 	if let Some(main_child) = spawn_java(&main_java, java_version.as_os_str())
 		.expect("Couldn't spawn the main Java binary")
@@ -266,7 +276,7 @@ fn valid_java_paths() -> Vec<(OsString, i32)> {
 
 	// Otherwise check if anything else is a supported version
 	let mut childs = vec![];
-	for java in which_all("java").unwrap() {
+	for java in which_all(executable("java")).unwrap() {
 		let res = spawn_java(java.as_os_str(), java_version.as_os_str());
 
 		match res {
@@ -282,7 +292,19 @@ fn valid_java_paths() -> Vec<(OsString, i32)> {
 				.expect("Failed on executing a Java executable")
 				.code()
 				.map(|code| (p, code))
-				.filter(|(_p, code)| *code >= MINIMUM_JAVA_VERSION)
+				.filter(|(_p, code)| {println!("{}", code); *code >= MINIMUM_JAVA_VERSION})
 		})
 		.collect()
+}
+
+fn executable<W: AsRef<OsStr> + ?Sized>(bin: &W) -> Cow<OsStr> {
+	let bin = bin.as_ref();
+	if cfg!(windows) {
+		let mut new = OsString::with_capacity(bin.len() + 4);
+		new.push(bin);
+		new.push(".exe");
+		Cow::Owned(new)
+	} else {
+		Cow::Borrowed(bin)
+	}
 }
