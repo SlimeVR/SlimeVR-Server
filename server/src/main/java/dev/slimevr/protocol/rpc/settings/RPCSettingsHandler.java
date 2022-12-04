@@ -6,14 +6,17 @@ import dev.slimevr.config.OSCConfig;
 import dev.slimevr.config.TapDetectionConfig;
 import dev.slimevr.filtering.TrackerFilters;
 import dev.slimevr.osc.VRCOSCHandler;
-import dev.slimevr.platform.windows.WindowsNamedPipeBridge;
+import dev.slimevr.platform.SteamVRBridge;
 import dev.slimevr.protocol.GenericConnection;
 import dev.slimevr.protocol.ProtocolAPI;
 import dev.slimevr.protocol.rpc.RPCHandler;
 import dev.slimevr.vr.processor.skeleton.SkeletonConfigToggles;
 import dev.slimevr.vr.processor.skeleton.SkeletonConfigValues;
 import dev.slimevr.vr.trackers.TrackerRole;
-import solarxr_protocol.rpc.*;
+import solarxr_protocol.rpc.ChangeSettingsRequest;
+import solarxr_protocol.rpc.RpcMessage;
+import solarxr_protocol.rpc.RpcMessageHeader;
+import solarxr_protocol.rpc.SettingsResponse;
 
 
 public record RPCSettingsHandler(RPCHandler rpcHandler, ProtocolAPI api) {
@@ -34,7 +37,7 @@ public record RPCSettingsHandler(RPCHandler rpcHandler, ProtocolAPI api) {
 	public void onSettingsRequest(GenericConnection conn, RpcMessageHeader messageHeader) {
 		FlatBufferBuilder fbb = new FlatBufferBuilder(32);
 
-		WindowsNamedPipeBridge bridge = this.api.server.getVRBridge(WindowsNamedPipeBridge.class);
+		SteamVRBridge bridge = this.api.server.getVRBridge(SteamVRBridge.class);
 
 		int settings = SettingsResponse
 			.createSettingsResponse(
@@ -74,8 +77,8 @@ public record RPCSettingsHandler(RPCHandler rpcHandler, ProtocolAPI api) {
 			return;
 
 		if (req.steamVrTrackers() != null) {
-			WindowsNamedPipeBridge bridge = this.api.server
-				.getVRBridge(WindowsNamedPipeBridge.class);
+			SteamVRBridge bridge = this.api.server
+				.getVRBridge(SteamVRBridge.class);
 
 			if (bridge != null) {
 				bridge.changeShareSettings(TrackerRole.WAIST, req.steamVrTrackers().waist());
@@ -86,6 +89,8 @@ public record RPCSettingsHandler(RPCHandler rpcHandler, ProtocolAPI api) {
 				bridge.changeShareSettings(TrackerRole.RIGHT_KNEE, req.steamVrTrackers().knees());
 				bridge.changeShareSettings(TrackerRole.LEFT_ELBOW, req.steamVrTrackers().elbows());
 				bridge.changeShareSettings(TrackerRole.RIGHT_ELBOW, req.steamVrTrackers().elbows());
+				bridge.changeShareSettings(TrackerRole.LEFT_HAND, req.steamVrTrackers().hands());
+				bridge.changeShareSettings(TrackerRole.RIGHT_HAND, req.steamVrTrackers().hands());
 			}
 		}
 
@@ -183,7 +188,6 @@ public record RPCSettingsHandler(RPCHandler rpcHandler, ProtocolAPI api) {
 						toggles.forceArmsFromHmd()
 					);
 				cfg.setToggle(SkeletonConfigToggles.FLOOR_CLIP, toggles.floorClip());
-
 				cfg
 					.setToggle(
 						SkeletonConfigToggles.SKATING_CORRECTION,

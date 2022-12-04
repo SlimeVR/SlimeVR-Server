@@ -32,6 +32,7 @@ interface SettingsForm {
     feet: boolean;
     knees: boolean;
     elbows: boolean;
+    hands: boolean;
   };
   filtering: {
     type: number;
@@ -72,6 +73,7 @@ export function GeneralSettings() {
         elbows: false,
         knees: false,
         feet: false,
+        hands: false,
       },
       toggles: {
         extendedSpine: true,
@@ -98,6 +100,7 @@ export function GeneralSettings() {
       trackers.feet = values.trackers.feet;
       trackers.knees = values.trackers.knees;
       trackers.elbows = values.trackers.elbows;
+      trackers.hands = values.trackers.hands;
       settings.steamVrTrackers = trackers;
     }
 
@@ -252,6 +255,13 @@ export function GeneralSettings() {
               control={control}
               name="trackers.elbows"
               label="Elbows"
+            />
+            <CheckBox
+              variant="toggle"
+              outlined
+              control={control}
+              name="trackers.hands"
+              label="Hands"
             />
           </div>
         </>
