@@ -10,6 +10,7 @@ plugins {
 	id 'application'
 	id "com.github.johnrengelman.shadow" version "7.1.2"
 	id "com.diffplug.spotless" version "6.5.1"
+	id "com.github.gmazzo.buildconfig" version "3.1.0"
 }
 
 sourceCompatibility = JavaVersion.VERSION_17
@@ -79,6 +80,12 @@ shadowJar {
 }
 application {
 	getMainClass().set('dev.slimevr.Main')
+}
+
+def gitCommitHash = 'git rev-parse --verify --short HEAD'.execute().text.trim()
+buildConfig {
+	packageName("dev.slimevr")
+	buildConfigField("String", "GIT_COMMIT_HASH", "\"${gitCommitHash}\"")
 }
 
 spotless {
