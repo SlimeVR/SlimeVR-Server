@@ -28,8 +28,10 @@ public class Main {
 		Options options = new Options();
 
 		Option help = new Option("h", "help", false, "Show help");
+		Option version = new Option("V", "version", false, "Show version");
 
 		options.addOption(help);
+		options.addOption(version);
 		try {
 			cmd = parser.parse(options, args, true);
 		} catch (ParseException e) {
@@ -40,6 +42,10 @@ public class Main {
 
 		if (cmd.hasOption("help")) {
 			formatter.printHelp("slimevr.jar", options);
+			System.exit(0);
+		}
+		if (cmd.hasOption("version")) {
+			System.out.println("SlimeVR Server " + VERSION + "-" + BuildConfig.GIT_COMMIT_HASH);
 			System.exit(0);
 		}
 
