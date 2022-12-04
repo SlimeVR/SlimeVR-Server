@@ -153,17 +153,17 @@ fn main() {
 		log::info!("Server found on path: {}", p.to_str().unwrap());
 
 		// Check if any Java already installed is compatible
-		let jre = p.join("jre");
+		let jre = p.join("jre/bin");
 		let java_bin = jre
 			.exists()
-			.then(|| jre.join("bin/java").into_os_string())
+			.then(|| jre.join("java").into_os_string())
 			.or_else(|| valid_java_paths().first().map(|x| x.0.to_owned()));
 		if let None = java_bin {
 			show_error(&format!("Couldn't find a compatible Java version, please download Java {} or higher", MINIMUM_JAVA_VERSION));
 			return;
 		};
 
-		let (recv, _child) = Command::new(java_bin.unwrap().to_string_lossy())
+		let (recv, _child) = Command::new(java_bin.unwrap().to_str().unwrap())
 			.current_dir(p)
 			.args(["-Xmx512M", "-jar", "slimevr.jar", "--no-gui"])
 			.spawn()
