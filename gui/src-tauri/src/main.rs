@@ -2,7 +2,6 @@
 use std::borrow::Cow;
 use std::env;
 use std::ffi::{OsStr, OsString};
-use std::fs;
 use std::io::Write;
 use std::panic;
 use std::path::PathBuf;
@@ -70,15 +69,17 @@ fn get_launch_path(cli: Cli) -> Option<PathBuf> {
 }
 
 fn spawn_java(java: &OsStr, java_version: &OsStr) -> std::io::Result<Child> {
-	let cmd = std::process::Command::new(java)
-		.arg("-jar")
+	let mut cmd = std::process::Command::new(java);
+
+	#[cfg(windows)]
+	cmd.creation_flags(CREATE_NO_WINDOW);
+
+	cmd.arg("-jar")
 		.arg(java_version)
 		.stdin(Stdio::null())
 		.stderr(Stdio::null())
-		.stdout(Stdio::null());
-	#[cfg(windows)]
-	cmd.creation_flags(CREATE_NO_WINDOW);
-	cmd.spawn()
+		.stdout(Stdio::null())
+		.spawn()
 }
 
 #[cfg(desktop)]
