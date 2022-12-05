@@ -5,6 +5,7 @@ import dev.slimevr.autobone.AutoBoneHandler;
 import dev.slimevr.bridge.Bridge;
 import dev.slimevr.bridge.VMCBridge;
 import dev.slimevr.config.ConfigManager;
+import dev.slimevr.osc.OSCRouter;
 import dev.slimevr.osc.VRCOSCHandler;
 import dev.slimevr.platform.SteamVRBridge;
 import dev.slimevr.platform.linux.UnixSocketBridge;
@@ -48,6 +49,7 @@ public class VRServer extends Thread {
 	private final List<Consumer<Tracker>> newTrackersConsumers = new FastList<>();
 	private final List<Runnable> onTick = new FastList<>();
 	private final List<? extends ShareableTracker> shareTrackers;
+	private final OSCRouter oscRouter;
 	private final VRCOSCHandler VRCOSCHandler;
 	private final DeviceManager deviceManager;
 	private final BVHRecorder bvhRecorder;
@@ -143,6 +145,7 @@ public class VRServer extends Thread {
 		}
 
 		// Initialize OSC
+		oscRouter = new OSCRouter(getConfigManager().getVrConfig().getOscRouter());
 		VRCOSCHandler = new VRCOSCHandler(
 			hmdTracker,
 			humanPoseProcessor,
@@ -370,6 +373,10 @@ public class VRServer extends Thread {
 
 	public TrackersUDPServer getTrackersServer() {
 		return trackersServer;
+	}
+
+	public OSCRouter getOSCRouter() {
+		return oscRouter;
 	}
 
 	public VRCOSCHandler getVRCOSCHandler() {

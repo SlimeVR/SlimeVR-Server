@@ -2,7 +2,7 @@ package dev.slimevr.protocol.rpc.settings;
 
 import com.google.flatbuffers.FlatBufferBuilder;
 import dev.slimevr.config.FiltersConfig;
-import dev.slimevr.config.OSCConfig;
+import dev.slimevr.config.VRCOSCConfig;
 import dev.slimevr.filtering.TrackerFilters;
 import dev.slimevr.osc.VRCOSCHandler;
 import dev.slimevr.platform.SteamVRBridge;
@@ -102,7 +102,7 @@ public record RPCSettingsHandler(RPCHandler rpcHandler, ProtocolAPI api) {
 		}
 
 		if (req.vrcOsc() != null) {
-			OSCConfig vrcOSCConfig = this.api.server.getConfigManager().getVrConfig().getVrcOSC();
+			VRCOSCConfig vrcOSCConfig = this.api.server.getConfigManager().getVrConfig().getVrcOSC();
 			if (vrcOSCConfig != null) {
 				VRCOSCHandler VRCOSCHandler = this.api.server.getVRCOSCHandler();
 				var trackers = req.vrcOsc().trackers();

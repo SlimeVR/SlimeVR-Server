@@ -21,7 +21,9 @@ public class VRConfig {
 
 	private final FiltersConfig filters = new FiltersConfig();
 
-	private final OSCConfig vrcOSC = new OSCConfig();
+	private final OSCRouterConfig oscRouter = new OSCRouterConfig();
+
+	private final VRCOSCConfig vrcOSC = new VRCOSCConfig();
 
 	private final AutoBoneConfig autobone = new AutoBoneConfig();
 
@@ -47,7 +49,11 @@ public class VRConfig {
 		return filters;
 	}
 
-	public OSCConfig getVrcOSC() {
+	public OSCRouterConfig getOscRouter() {
+		return oscRouter;
+	}
+
+	public VRCOSCConfig getVrcOSC() {
 		return vrcOSC;
 	}
 

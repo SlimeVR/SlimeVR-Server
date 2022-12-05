@@ -7,7 +7,7 @@ import com.illposed.osc.transport.OSCPortOut;
 import com.jme3.math.FastMath;
 import com.jme3.math.Quaternion;
 import com.jme3.math.Vector3f;
-import dev.slimevr.config.OSCConfig;
+import dev.slimevr.config.VRCOSCConfig;
 import dev.slimevr.platform.SteamVRBridge;
 import dev.slimevr.vr.processor.HumanPoseProcessor;
 import dev.slimevr.vr.trackers.HMDTracker;
@@ -29,7 +29,7 @@ public class VRCOSCHandler {
 	private OSCPortIn oscReceiver;
 	private OSCPortOut oscSender;
 	private OSCMessage oscMessage;
-	private final OSCConfig config;
+	private final VRCOSCConfig config;
 	private final HMDTracker hmd;
 	private final SteamVRBridge steamvrBridge;
 	private final HumanPoseProcessor humanPoseProcessor;
@@ -49,7 +49,7 @@ public class VRCOSCHandler {
 		HMDTracker hmd,
 		HumanPoseProcessor humanPoseProcessor,
 		SteamVRBridge steamvrBridge,
-		OSCConfig oscConfig,
+		VRCOSCConfig oscConfig,
 		List<? extends ShareableTracker> shareableTrackers
 	) {
 		this.hmd = hmd;
@@ -105,16 +105,23 @@ public class VRCOSCHandler {
 				lastPortIn = port;
 			} catch (IOException e) {
 				LogManager
-					.severe("[VRCOSCHandler] Error listening to the port " + config.getPortIn());
+					.severe(
+						"[VRCOSCHandler] Error listening to the port "
+							+ config.getPortIn()
+							+ ": "
+							+ e
+					);
 			}
 
 			// Starts listening for the Upright parameter from VRC
-			OSCMessageListener listener = this::handleReceivedMessage;
-			MessageSelector selector = new OSCPatternAddressMessageSelector(
-				"/avatar/parameters/Upright"
-			);
-			oscReceiver.getDispatcher().addListener(selector, listener);
-			oscReceiver.startListening();
+			if (oscReceiver != null) {
+				OSCMessageListener listener = this::handleReceivedMessage;
+				MessageSelector selector = new OSCPatternAddressMessageSelector(
+					"/avatar/parameters/Upright"
+				);
+				oscReceiver.getDispatcher().addListener(selector, listener);
+				oscReceiver.startListening();
+			}
 
 			// Instantiate the OSC sender
 			try {
@@ -144,6 +151,8 @@ public class VRCOSCHandler {
 							+ config.getPortOut()
 							+ " at the address "
 							+ config.getAddress()
+							+ ": "
+							+ e
 					);
 			}
 		}

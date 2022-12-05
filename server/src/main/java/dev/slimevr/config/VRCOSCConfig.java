@@ -11,9 +11,9 @@ import java.util.HashMap;
 import java.util.Map;
 
 
-public class OSCConfig {
+public class VRCOSCConfig {
 
-	// Is OSC enabled for the app
+	// Are the OSC receiver and sender enabled?
 	private boolean enabled = false;
 
 	// Port to receive OSC messages from
@@ -32,7 +32,7 @@ public class OSCConfig {
 	private final TrackerRole[] defaultRoles = new TrackerRole[] { TrackerRole.WAIST,
 		TrackerRole.LEFT_FOOT, TrackerRole.RIGHT_FOOT };
 
-	public OSCConfig() {
+	public VRCOSCConfig() {
 		// Initialize default tracker role settings
 		for (TrackerRole role : defaultRoles) {
 			setOSCTrackerRole(
@@ -40,7 +40,6 @@ public class OSCConfig {
 				getOSCTrackerRole(role, true)
 			);
 		}
-
 	}
 
 	public boolean getEnabled() {

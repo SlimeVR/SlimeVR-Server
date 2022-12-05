@@ -2,7 +2,7 @@ package dev.slimevr.protocol.rpc.settings;
 
 import com.google.flatbuffers.FlatBufferBuilder;
 import dev.slimevr.config.FiltersConfig;
-import dev.slimevr.config.OSCConfig;
+import dev.slimevr.config.VRCOSCConfig;
 import dev.slimevr.filtering.TrackerFilters;
 import dev.slimevr.platform.SteamVRBridge;
 import dev.slimevr.vr.processor.skeleton.SkeletonConfig;
@@ -22,7 +22,7 @@ public class RPCSettingsBuilder {
 
 	public static int createOSCSettings(
 		FlatBufferBuilder fbb,
-		OSCConfig config
+		VRCOSCConfig config
 	) {
 
 		int trackersSettingOffset = OSCTrackersSetting
