@@ -5,6 +5,7 @@ import { useElemSize, useLayout } from '../../../../hooks/layout';
 import { Button } from '../../../commons/Button';
 import { FootIcon } from '../../../commons/icon/FootIcon';
 import { Typography } from '../../../commons/Typography';
+import { rotationToQuatMap } from '../../../tracker/TrackerSettings';
 
 function MoutingOrientationCard({
   orientation,
@@ -67,19 +68,19 @@ export function MountingSelectionMenu({
           <div className="grid grid-cols-2 grid-rows-2 gap-6 w-full">
             <MoutingOrientationCard
               orientation="LEFT"
-              onClick={() => onDirectionSelected(90)}
+              onClick={() => onDirectionSelected(rotationToQuatMap.LEFT)}
             />
             <MoutingOrientationCard
               orientation="RIGHT"
-              onClick={() => onDirectionSelected(-90)}
+              onClick={() => onDirectionSelected(rotationToQuatMap.RIGHT)}
             />
             <MoutingOrientationCard
               orientation="FRONT"
-              onClick={() => onDirectionSelected(180)}
+              onClick={() => onDirectionSelected(rotationToQuatMap.FRONT)}
             />
             <MoutingOrientationCard
               orientation="BACK"
-              onClick={() => onDirectionSelected(0)}
+              onClick={() => onDirectionSelected(rotationToQuatMap.BACK)}
             />
           </div>
         </div>
