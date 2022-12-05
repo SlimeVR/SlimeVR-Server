@@ -1,5 +1,5 @@
 import classNames from 'classnames';
-import { ReactChild, useMemo } from 'react';
+import { useMemo } from 'react';
 import { Control, Controller } from 'react-hook-form';
 
 export function CheckBox({
@@ -12,7 +12,7 @@ export function CheckBox({
   disabled,
   ...props
 }: {
-  label: string | ReactChild;
+  label: string;
   control: Control<any>;
   name: string;
   variant?: 'checkbox' | 'toggle';
@@ -40,7 +40,7 @@ export function CheckBox({
     <Controller
       control={control}
       name={name}
-      render={({ field: { onChange, value, ref, onBlur, name } }) => (
+      render={({ field: { onChange, value, ref, name } }) => (
         <div
           className={classNames(
             {

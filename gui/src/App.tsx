@@ -17,6 +17,7 @@ import {
 } from './hooks/websocket-api';
 
 import { Event, listen } from '@tauri-apps/api/event';
+import { useTranslation, withTranslation } from 'react-i18next';
 import { OnboardingContextProvider } from './components/onboarding/OnboardingContextProvicer';
 import { OnboardingLayout } from './components/onboarding/OnboardingLayout';
 import { AutomaticProportionsPage } from './components/onboarding/pages/body-proportions/AutomaticProportions';
@@ -107,6 +108,7 @@ function Layout() {
 
 function App() {
   const websocketAPI = useProvideWebsocketApi();
+  const { t } = useTranslation();
 
   useEffect(() => {
     const unlisten = listen(
@@ -161,8 +163,8 @@ function App() {
                       <TopBar></TopBar>
                       <div className="flex w-full h-full justify-center items-center p-2">
                         {websocketAPI.isFirstConnection
-                          ? 'Connecting to the server'
-                          : 'Connection lost to the server. Trying to reconnect...'}
+                          ? t('websocket.connecting')
+                          : t('websocket.connection-lost')}
                       </div>
                     </>
                   )}
@@ -177,4 +179,4 @@ function App() {
   );
 }
 
-export default App;
+export default withTranslation()(App);

@@ -7,6 +7,8 @@ export interface DropdownItem {
   value: string;
 }
 
+export type DropdownDirection = 'up' | 'down';
+
 export function Dropdown({
   direction = 'up',
   variant = 'primary',
@@ -15,7 +17,7 @@ export function Dropdown({
   name,
   items = [],
 }: {
-  direction?: 'up' | 'down';
+  direction?: DropdownDirection;
   variant?: 'primary' | 'secondary';
   placeholder: string;
   control: Control<any>;
@@ -29,7 +31,7 @@ export function Dropdown({
       control={control}
       name={name}
       render={({ field: { onChange, value } }) => (
-        <div className="w-full">
+        <>
           {isOpen && (
             <div
               className="absolute top-0 left-0 w-full h-full bg-transparent"
@@ -105,7 +107,7 @@ export function Dropdown({
               </div>
             )}
           </div>
-        </div>
+        </>
       )}
     />
   );
