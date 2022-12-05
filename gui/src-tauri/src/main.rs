@@ -51,7 +51,8 @@ fn is_valid_path(path: &PathBuf) -> bool {
 
 fn get_launch_path(cli: Cli) -> Option<PathBuf> {
 	let mut path = cli.launch_from_path.unwrap_or_default();
-	if is_valid_path(&path) {
+	// The reason from all our problems was path being ""
+	if path.exists() && is_valid_path(&path) {
 		return Some(path);
 	}
 
@@ -169,12 +170,12 @@ fn main() {
 			.exists()
 			.then(|| fs::canonicalize(jre).unwrap().into_os_string())
 			.or_else(|| valid_java_paths().first().map(|x| x.0.to_owned()));
-		if let None = java_bin {
+		let Some(java_bin) = java_bin else {
 			show_error(&format!("Couldn't find a compatible Java version, please download Java {} or higher", MINIMUM_JAVA_VERSION));
 			return;
 		};
 
-		let (recv, _child) = Command::new(java_bin.unwrap().to_str().unwrap())
+		let (recv, _child) = Command::new(java_bin.to_str().unwrap())
 			.current_dir(p)
 			.args(["-Xmx512M", "-jar", "slimevr.jar", "--no-gui"])
 			.spawn()
