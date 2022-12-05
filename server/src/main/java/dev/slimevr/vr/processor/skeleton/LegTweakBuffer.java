@@ -14,7 +14,10 @@ import com.jme3.math.FastMath;
  * from its correct position 2. a velocity higher than a threashold is achived
  * 3. a large acceleration is applied to the foot 4. angular velocity of the
  * foot goes higher than a threshold. The conditions for a lock are the opposite
- * of the above but require a lower value for all of the above conditions
+ * of the above but require a lower value for all of the above conditions. The
+ * afformentioned thresholds are computed by applying scalers to a base
+ * threshold value. This allows one set of initial values to be applicable to a
+ * large range of actions and body types.
  */
 
 public class LegTweakBuffer {
@@ -77,8 +80,8 @@ public class LegTweakBuffer {
 
 	// hyperparameters
 	public static final float SKATING_DISTANCE_CUTOFF = 0.5f;
-	private static final float SKATING_VELOCITY_THRESHOLD = 3.25f;
-	private static final float SKATING_ACCELERATION_THRESHOLD = 1.00f;
+	static float SKATING_VELOCITY_THRESHOLD = 2.6f;
+	static float SKATING_ACCELERATION_THRESHOLD = 0.8f;
 	private static final float SKATING_ROTVELOCITY_THRESHOLD = 4.5f;
 	private static final float SKATING_LOCK_ENGAGE_PERCENT = 0.85f;
 	private static final float SKATING_ACCELERATION_Y_USE_PERCENT = 0.25f;
@@ -88,8 +91,8 @@ public class LegTweakBuffer {
 	private static final float FORCE_ERROR_TOLLERANCE = 4.0f;
 	private static final float[] FORCE_VECTOR_FALLBACK = new float[] { 0.1f, 0.1f };
 
-	private static final float PARAM_SCALAR_MAX = 3.2f;
-	private static final float PARAM_SCALAR_MIN = 0.25f;
+	static float PARAM_SCALAR_MAX = 3.2f;
+	static float PARAM_SCALAR_MIN = 0.25f;
 	private static final float PARAM_SCALAR_MID = 1.0f;
 
 	// the point at which the scalar is at the max or min depending on accel
