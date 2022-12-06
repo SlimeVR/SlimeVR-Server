@@ -10,7 +10,10 @@ import dev.slimevr.vr.processor.skeleton.SkeletonConfig;
 import dev.slimevr.vr.processor.skeleton.SkeletonConfigToggles;
 import dev.slimevr.vr.processor.skeleton.SkeletonConfigValues;
 import dev.slimevr.vr.trackers.TrackerRole;
-import solarxr_protocol.rpc.*;
+import solarxr_protocol.rpc.FilteringSettings;
+import solarxr_protocol.rpc.OSCSettings;
+import solarxr_protocol.rpc.OSCTrackersSetting;
+import solarxr_protocol.rpc.SteamVRTrackersSetting;
 import solarxr_protocol.rpc.settings.ModelRatios;
 import solarxr_protocol.rpc.settings.ModelSettings;
 import solarxr_protocol.rpc.settings.ModelToggles;
@@ -23,17 +26,17 @@ public class RPCSettingsBuilder {
 		OSCRouterConfig config
 	) {
 		int addressStringOffset = fbb.createString(config.getAddress());
-		OSCRouterSettings.startOSCRouterSettings(fbb);
-		OSCRouterSettings.addEnabled(fbb, config.getEnabled());
-		OSCRouterSettings.addPortIn(fbb, config.getPortIn());
-		OSCRouterSettings.addPortOut(fbb, config.getPortOut());
-		OSCRouterSettings
+		OSCSettings.startOSCSettings(fbb);
+		OSCSettings.addEnabled(fbb, config.getEnabled());
+		OSCSettings.addPortIn(fbb, config.getPortIn());
+		OSCSettings.addPortOut(fbb, config.getPortOut());
+		OSCSettings
 			.addAddress(
 				fbb,
 				addressStringOffset
 			);
 
-		return VRCOSCSettings.endVRCOSCSettings(fbb);
+		return OSCSettings.endOSCSettings(fbb);
 	}
 
 	public static int createVRCOSCSettings(
@@ -58,22 +61,22 @@ public class RPCSettingsBuilder {
 			);
 
 		int addressStringOffset = fbb.createString(config.getAddress());
-		VRCOSCSettings.startVRCOSCSettings(fbb);
-		VRCOSCSettings.addEnabled(fbb, config.getEnabled());
-		VRCOSCSettings.addPortIn(fbb, config.getPortIn());
-		VRCOSCSettings.addPortOut(fbb, config.getPortOut());
-		VRCOSCSettings
+		OSCSettings.startOSCSettings(fbb);
+		OSCSettings.addEnabled(fbb, config.getEnabled());
+		OSCSettings.addPortIn(fbb, config.getPortIn());
+		OSCSettings.addPortOut(fbb, config.getPortOut());
+		OSCSettings
 			.addAddress(
 				fbb,
 				addressStringOffset
 			);
-		VRCOSCSettings
+		OSCSettings
 			.addTrackers(
 				fbb,
 				trackersSettingOffset
 			);
 
-		return VRCOSCSettings.endVRCOSCSettings(fbb);
+		return OSCSettings.endOSCSettings(fbb);
 	}
 
 	public static int createFilterSettings(
