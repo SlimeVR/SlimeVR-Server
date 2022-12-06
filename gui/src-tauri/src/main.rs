@@ -166,7 +166,7 @@ fn main() {
 		let jre = p.join("jre/bin").join(executable("java"));
 		let java_bin = jre
 			.exists()
-			.then(|| fs::canonicalize(jre).unwrap().into_os_string())
+			.then(|| jre.into_os_string())
 			.or_else(|| valid_java_paths().first().map(|x| x.0.to_owned()));
 		let Some(java_bin) = java_bin else {
 			show_error(&format!("Couldn't find a compatible Java version, please download Java {} or higher", MINIMUM_JAVA_VERSION));
@@ -206,6 +206,7 @@ fn main() {
 							.emit_all("server-status", emit_me)
 							.expect("Failed to emit");
 					}
+					println!("Java server receiver died");
 					app_handle
 						.emit_all("server-status", ("other", "receiver cancelled"))
 						.expect("Failed to emit");
