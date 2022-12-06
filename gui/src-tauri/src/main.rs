@@ -1,5 +1,4 @@
 #![cfg_attr(all(not(debug_assertions), windows), windows_subsystem = "windows")]
-use std::borrow::Cow;
 use std::ffi::{OsStr, OsString};
 use std::io::Write;
 #[cfg(windows)]
