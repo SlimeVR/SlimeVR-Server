@@ -4,7 +4,7 @@ import com.illposed.osc.*;
 import com.illposed.osc.messageselector.OSCPatternAddressMessageSelector;
 import com.illposed.osc.transport.OSCPortIn;
 import com.illposed.osc.transport.OSCPortOut;
-import dev.slimevr.config.OSCRouterConfig;
+import dev.slimevr.config.OSCConfig;
 import io.eiren.util.logging.LogManager;
 
 import java.io.IOException;
@@ -14,14 +14,14 @@ import java.net.InetAddress;
 public class OSCRouter {
 	private OSCPortIn oscReceiver;
 	private OSCPortOut oscSender;
-	private final OSCRouterConfig config;
+	private final OSCConfig config;
 	private int lastPortIn;
 	private int lastPortOut;
 	private InetAddress lastAddress;
 	private float timeAtLastError;
 
 	public OSCRouter(
-		OSCRouterConfig oscConfig
+		OSCConfig oscConfig
 	) {
 		this.config = oscConfig;
 
@@ -62,6 +62,7 @@ public class OSCRouter {
 			}
 
 			// Instantiate the OSC sender
+			// TODO check ports and match with existing OSCSender
 			try {
 				InetAddress address = InetAddress.getByName(config.getAddress());
 				int port = config.getPortOut();

@@ -2,8 +2,9 @@ package dev.slimevr.protocol.rpc.settings;
 
 import com.google.flatbuffers.FlatBufferBuilder;
 import dev.slimevr.config.FiltersConfig;
-import dev.slimevr.config.VRCOSCConfig;
+import dev.slimevr.config.OSCConfig;
 import dev.slimevr.filtering.TrackerFilters;
+import dev.slimevr.osc.OSCRouter;
 import dev.slimevr.osc.VRCOSCHandler;
 import dev.slimevr.platform.SteamVRBridge;
 import dev.slimevr.protocol.GenericConnection;
@@ -48,14 +49,16 @@ public record RPCSettingsHandler(RPCHandler rpcHandler, ProtocolAPI api) {
 						this.api.server.getConfigManager().getVrConfig().getFilters()
 					),
 				RPCSettingsBuilder
-					.createOSCRouterSettings(
+					.createOSCSettings(
 						fbb,
-						this.api.server.getConfigManager().getVrConfig().getOscRouter()
+						this.api.server.getConfigManager().getVrConfig().getOscRouter(),
+						false
 					),
 				RPCSettingsBuilder
-					.createVRCOSCSettings(
+					.createOSCSettings(
 						fbb,
-						this.api.server.getConfigManager().getVrConfig().getVrcOSC()
+						this.api.server.getConfigManager().getVrConfig().getVrcOSC(),
+						true
 					),
 				RPCSettingsBuilder
 					.createModelSettings(
@@ -107,8 +110,25 @@ public record RPCSettingsHandler(RPCHandler rpcHandler, ProtocolAPI api) {
 			}
 		}
 
+		if (req.oscRouter() != null) {
+			OSCConfig oscRouterConfig = this.api.server
+				.getConfigManager()
+				.getVrConfig()
+				.getOscRouter();
+			if (oscRouterConfig != null) {
+				OSCRouter oscRouter = this.api.server.getOSCRouter();
+
+				oscRouterConfig.setEnabled(req.vrcOsc().enabled());
+				oscRouterConfig.setPortIn(req.vrcOsc().portIn());
+				oscRouterConfig.setPortOut(req.vrcOsc().portOut());
+				oscRouterConfig.setAddress(req.vrcOsc().address());
+
+				oscRouter.refreshSettings();
+			}
+		}
+
 		if (req.vrcOsc() != null) {
-			VRCOSCConfig vrcOSCConfig = this.api.server
+			OSCConfig vrcOSCConfig = this.api.server
 				.getConfigManager()
 				.getVrConfig()
 				.getVrcOSC();

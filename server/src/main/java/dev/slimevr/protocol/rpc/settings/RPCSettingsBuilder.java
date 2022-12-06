@@ -2,8 +2,7 @@ package dev.slimevr.protocol.rpc.settings;
 
 import com.google.flatbuffers.FlatBufferBuilder;
 import dev.slimevr.config.FiltersConfig;
-import dev.slimevr.config.OSCRouterConfig;
-import dev.slimevr.config.VRCOSCConfig;
+import dev.slimevr.config.OSCConfig;
 import dev.slimevr.filtering.TrackerFilters;
 import dev.slimevr.platform.SteamVRBridge;
 import dev.slimevr.vr.processor.skeleton.SkeletonConfig;
@@ -21,9 +20,10 @@ import solarxr_protocol.rpc.settings.ModelToggles;
 
 public class RPCSettingsBuilder {
 
-	public static int createOSCRouterSettings(
+	public static int createOSCSettings(
 		FlatBufferBuilder fbb,
-		OSCRouterConfig config
+		OSCConfig config,
+		boolean trackers
 	) {
 		int addressStringOffset = fbb.createString(config.getAddress());
 		OSCSettings.startOSCSettings(fbb);
@@ -35,46 +35,28 @@ public class RPCSettingsBuilder {
 				fbb,
 				addressStringOffset
 			);
-
-		return OSCSettings.endOSCSettings(fbb);
-	}
-
-	public static int createVRCOSCSettings(
-		FlatBufferBuilder fbb,
-		VRCOSCConfig config
-	) {
-
-		int trackersSettingOffset = OSCTrackersSetting
-			.createOSCTrackersSetting(
-				fbb,
-				config.getOSCTrackerRole(TrackerRole.HEAD, false),
-				config.getOSCTrackerRole(TrackerRole.CHEST, false),
-				config.getOSCTrackerRole(TrackerRole.WAIST, false),
-				config.getOSCTrackerRole(TrackerRole.LEFT_KNEE, false)
-					&& config.getOSCTrackerRole(TrackerRole.RIGHT_KNEE, false),
-				config.getOSCTrackerRole(TrackerRole.LEFT_FOOT, false)
-					&& config.getOSCTrackerRole(TrackerRole.RIGHT_FOOT, false),
-				config.getOSCTrackerRole(TrackerRole.LEFT_ELBOW, false)
-					&& config.getOSCTrackerRole(TrackerRole.RIGHT_ELBOW, false),
-				config.getOSCTrackerRole(TrackerRole.LEFT_HAND, false)
-					&& config.getOSCTrackerRole(TrackerRole.RIGHT_HAND, false)
-			);
-
-		int addressStringOffset = fbb.createString(config.getAddress());
-		OSCSettings.startOSCSettings(fbb);
-		OSCSettings.addEnabled(fbb, config.getEnabled());
-		OSCSettings.addPortIn(fbb, config.getPortIn());
-		OSCSettings.addPortOut(fbb, config.getPortOut());
-		OSCSettings
-			.addAddress(
-				fbb,
-				addressStringOffset
-			);
-		OSCSettings
-			.addTrackers(
-				fbb,
-				trackersSettingOffset
-			);
+		if (trackers) {
+			int trackersSettingOffset = OSCTrackersSetting
+				.createOSCTrackersSetting(
+					fbb,
+					config.getOSCTrackerRole(TrackerRole.HEAD, false),
+					config.getOSCTrackerRole(TrackerRole.CHEST, false),
+					config.getOSCTrackerRole(TrackerRole.WAIST, false),
+					config.getOSCTrackerRole(TrackerRole.LEFT_KNEE, false)
+						&& config.getOSCTrackerRole(TrackerRole.RIGHT_KNEE, false),
+					config.getOSCTrackerRole(TrackerRole.LEFT_FOOT, false)
+						&& config.getOSCTrackerRole(TrackerRole.RIGHT_FOOT, false),
+					config.getOSCTrackerRole(TrackerRole.LEFT_ELBOW, false)
+						&& config.getOSCTrackerRole(TrackerRole.RIGHT_ELBOW, false),
+					config.getOSCTrackerRole(TrackerRole.LEFT_HAND, false)
+						&& config.getOSCTrackerRole(TrackerRole.RIGHT_HAND, false)
+				);
+			OSCSettings
+				.addTrackers(
+					fbb,
+					trackersSettingOffset
+				);
+		}
 
 		return OSCSettings.endOSCSettings(fbb);
 	}
