@@ -97,10 +97,8 @@ public class OSCRouter {
 			// Starts listening to messages
 			if (oscReceiver != null) {
 				OSCMessageListener listener = this::handleReceivedMessage;
-				MessageSelector selector = new OSCPatternAddressMessageSelector(
-					"/tracking/trackers/1/position"
-				);
-				// TODO doesn't work lol
+				// Listens for any message ("//" is a wildcard)
+				MessageSelector selector = new OSCPatternAddressMessageSelector("//");
 				oscReceiver.getDispatcher().addListener(selector, listener);
 				oscReceiver.startListening();
 			}
@@ -108,7 +106,6 @@ public class OSCRouter {
 	}
 
 	void handleReceivedMessage(OSCMessageEvent event) {
-		LogManager.debug("received message" + event.getMessage().getAddress());
 		if (oscSender != null && oscSender.isConnected()) {
 			OSCMessage oscMessage = new OSCMessage(
 				event.getMessage().getAddress(),
