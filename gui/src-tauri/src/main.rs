@@ -50,13 +50,13 @@ fn is_valid_path(path: &PathBuf) -> bool {
 }
 
 fn get_launch_path(cli: Cli) -> Option<PathBuf> {
-	let mut path = cli.launch_from_path.unwrap_or_default();
-	// The reason from all our problems was path being ""
-	if path.exists() && is_valid_path(&path) {
-		return Some(path);
+	if let Some(path) = cli.launch_from_path { 
+		if path.exists() && is_valid_path(&path) {
+			return Some(path);
+		}
 	}
 
-	path = env::current_dir().unwrap();
+	let mut path = env::current_dir().unwrap();
 	if is_valid_path(&path) {
 		return Some(path);
 	}
@@ -294,19 +294,19 @@ fn valid_java_paths() -> Vec<(OsString, i32)> {
 				.expect("Failed on executing a Java executable")
 				.code()
 				.map(|code| (p, code))
-				.filter(|(_p, code)| {println!("{}", code); *code >= MINIMUM_JAVA_VERSION})
+				.filter(|(_p, code)| *code >= MINIMUM_JAVA_VERSION)
 		})
 		.collect()
 }
 
-fn executable<W: AsRef<OsStr> + ?Sized>(bin: &W) -> Cow<OsStr> {
+fn executable<W: AsRef<OsStr> + ?Sized>(bin: &W) -> OsString {
 	let bin = bin.as_ref();
 	if cfg!(windows) {
 		let mut new = OsString::with_capacity(bin.len() + 4);
 		new.push(bin);
 		new.push(".exe");
-		Cow::Owned(new)
+		new
 	} else {
-		Cow::Borrowed(bin)
+		bin.to_owned()
 	}
 }
