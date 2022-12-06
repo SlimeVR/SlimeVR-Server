@@ -48,7 +48,12 @@ public record RPCSettingsHandler(RPCHandler rpcHandler, ProtocolAPI api) {
 						this.api.server.getConfigManager().getVrConfig().getFilters()
 					),
 				RPCSettingsBuilder
-					.createOSCSettings(
+					.createOSCRouterSettings(
+						fbb,
+						this.api.server.getConfigManager().getVrConfig().getOscRouter()
+					),
+				RPCSettingsBuilder
+					.createVRCOSCSettings(
 						fbb,
 						this.api.server.getConfigManager().getVrConfig().getVrcOSC()
 					),
@@ -56,7 +61,8 @@ public record RPCSettingsHandler(RPCHandler rpcHandler, ProtocolAPI api) {
 					.createModelSettings(
 						fbb,
 						this.api.server.humanPoseProcessor.getSkeletonConfig()
-					)
+					),
+				0 // TODO tap settings
 			);
 		int outbound = rpcHandler.createRPCMessage(fbb, RpcMessage.SettingsResponse, settings);
 		fbb.finish(outbound);
@@ -102,7 +108,10 @@ public record RPCSettingsHandler(RPCHandler rpcHandler, ProtocolAPI api) {
 		}
 
 		if (req.vrcOsc() != null) {
-			VRCOSCConfig vrcOSCConfig = this.api.server.getConfigManager().getVrConfig().getVrcOSC();
+			VRCOSCConfig vrcOSCConfig = this.api.server
+				.getConfigManager()
+				.getVrConfig()
+				.getVrcOSC();
 			if (vrcOSCConfig != null) {
 				VRCOSCHandler VRCOSCHandler = this.api.server.getVRCOSCHandler();
 				var trackers = req.vrcOsc().trackers();

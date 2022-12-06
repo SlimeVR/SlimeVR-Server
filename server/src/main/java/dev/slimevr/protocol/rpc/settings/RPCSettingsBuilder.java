@@ -2,6 +2,7 @@ package dev.slimevr.protocol.rpc.settings;
 
 import com.google.flatbuffers.FlatBufferBuilder;
 import dev.slimevr.config.FiltersConfig;
+import dev.slimevr.config.OSCRouterConfig;
 import dev.slimevr.config.VRCOSCConfig;
 import dev.slimevr.filtering.TrackerFilters;
 import dev.slimevr.platform.SteamVRBridge;
@@ -9,10 +10,7 @@ import dev.slimevr.vr.processor.skeleton.SkeletonConfig;
 import dev.slimevr.vr.processor.skeleton.SkeletonConfigToggles;
 import dev.slimevr.vr.processor.skeleton.SkeletonConfigValues;
 import dev.slimevr.vr.trackers.TrackerRole;
-import solarxr_protocol.rpc.FilteringSettings;
-import solarxr_protocol.rpc.OSCTrackersSetting;
-import solarxr_protocol.rpc.SteamVRTrackersSetting;
-import solarxr_protocol.rpc.VRCOSCSettings;
+import solarxr_protocol.rpc.*;
 import solarxr_protocol.rpc.settings.ModelRatios;
 import solarxr_protocol.rpc.settings.ModelSettings;
 import solarxr_protocol.rpc.settings.ModelToggles;
@@ -20,7 +18,25 @@ import solarxr_protocol.rpc.settings.ModelToggles;
 
 public class RPCSettingsBuilder {
 
-	public static int createOSCSettings(
+	public static int createOSCRouterSettings(
+		FlatBufferBuilder fbb,
+		OSCRouterConfig config
+	) {
+		int addressStringOffset = fbb.createString(config.getAddress());
+		OSCRouterSettings.startOSCRouterSettings(fbb);
+		OSCRouterSettings.addEnabled(fbb, config.getEnabled());
+		OSCRouterSettings.addPortIn(fbb, config.getPortIn());
+		OSCRouterSettings.addPortOut(fbb, config.getPortOut());
+		OSCRouterSettings
+			.addAddress(
+				fbb,
+				addressStringOffset
+			);
+
+		return VRCOSCSettings.endVRCOSCSettings(fbb);
+	}
+
+	public static int createVRCOSCSettings(
 		FlatBufferBuilder fbb,
 		VRCOSCConfig config
 	) {
@@ -114,7 +130,7 @@ public class RPCSettingsBuilder {
 				config.getValue(SkeletonConfigValues.HIP_LEGS_AVERAGING),
 				config.getValue(SkeletonConfigValues.KNEE_TRACKER_ANKLE_AVERAGING)
 			);
-		// TODO: legtweaks amount in protocol
+		// TODO legtweaks amount offset
 		return ModelSettings.createModelSettings(fbb, togglesOffset, ratiosOffset, 0);
 	}
 }
