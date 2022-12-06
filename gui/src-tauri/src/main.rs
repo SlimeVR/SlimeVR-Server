@@ -1,13 +1,13 @@
 #![cfg_attr(all(not(debug_assertions), windows), windows_subsystem = "windows")]
 use std::borrow::Cow;
-use std::{env, fs};
 use std::ffi::{OsStr, OsString};
 use std::io::Write;
+#[cfg(windows)]
+use std::os::windows::process::CommandExt;
 use std::panic;
 use std::path::PathBuf;
 use std::process::{Child, Stdio};
-#[cfg(windows)]
-use std::os::windows::process::CommandExt;
+use std::{env, fs};
 
 use clap::Parser;
 use clap_verbosity_flag::{InfoLevel, Verbosity};
@@ -16,7 +16,6 @@ use tauri::api::{clap, process::Command};
 use tauri::Manager;
 use tempfile::Builder;
 use which::which_all;
-
 
 #[cfg(windows)]
 /// For Commands on Windows so they dont create terminals
@@ -50,7 +49,7 @@ fn is_valid_path(path: &PathBuf) -> bool {
 }
 
 fn get_launch_path(cli: Cli) -> Option<PathBuf> {
-	if let Some(path) = cli.launch_from_path { 
+	if let Some(path) = cli.launch_from_path {
 		if path.exists() && is_valid_path(&path) {
 			return Some(path);
 		}
@@ -261,7 +260,10 @@ fn valid_java_paths() -> Vec<(OsString, i32)> {
 
 	// Check if main Java is a supported version
 	let main_java = if let Ok(java_home) = std::env::var("JAVA_HOME") {
-		PathBuf::from(java_home).join("bin").join(executable("java")).into_os_string()
+		PathBuf::from(java_home)
+			.join("bin")
+			.join(executable("java"))
+			.into_os_string()
 	} else {
 		executable("java").to_os_string()
 	};
