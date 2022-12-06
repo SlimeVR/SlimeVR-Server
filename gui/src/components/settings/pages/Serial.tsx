@@ -105,7 +105,7 @@ export function Serial() {
     RpcMessage.SerialDevicesResponse,
     (res: SerialDevicesResponseT) => {
       setSerialDevices([
-        { name: 'Auto', port: 'Auto' },
+        { name: t('settings.serial.auto-dropdown-item'), port: 'Auto' },
         ...(res.devices || []),
       ]);
     }

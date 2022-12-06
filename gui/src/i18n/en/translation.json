@@ -258,7 +258,8 @@
       "reboot": "Reboot",
       "factory-reset": "Factory Reset",
       "get-infos": "Get Infos",
-      "serial-select": "Select a serial port"
+      "serial-select": "Select a serial port",
+      "auto-dropdown-item": "Auto"
     },
     "osc": {
       "vrchat": {

@@ -251,7 +251,8 @@
       "reboot": "Redémarrer",
       "factory-reset": "Retour aux paramètres d'usine",
       "get-infos": "Obtenir des informations",
-      "serial-select": "Sélectionnez un port série"
+      "serial-select": "Sélectionnez un port série",
+      "auto-dropdown-item": "Automatique"
     },
     "osc": {
       "vrchat": {
