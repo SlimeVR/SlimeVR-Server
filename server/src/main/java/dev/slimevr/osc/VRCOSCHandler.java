@@ -21,6 +21,10 @@ import java.io.IOException;
 import java.net.InetAddress;
 import java.util.List;
 
+import org.apache.commons.math3.geometry.euclidean.threed.Rotation;
+import org.apache.commons.math3.geometry.euclidean.threed.RotationConvention;
+import org.apache.commons.math3.geometry.euclidean.threed.RotationOrder;
+
 
 /**
  * VRChat OSCTracker documentation: https://docs.vrchat.com/docs/osc-trackers
@@ -224,13 +228,25 @@ public class VRCOSCHandler {
 
 					// Send regular trackers' rotations
 					shareableTrackers.get(i).getRotation(quatBuf);
-					// Convert between OpenGl/OpenVR to Unity
-					quatBuf.set(-quatBuf.getX(), -quatBuf.getY(), quatBuf.getZ(), quatBuf.getW());
-					quatBuf.toAngles(floatBuf);
+
 					oscArgs.clear();
-					oscArgs.add(floatBuf[0] * FastMath.RAD_TO_DEG);
-					oscArgs.add(floatBuf[1] * FastMath.RAD_TO_DEG);
-					oscArgs.add(floatBuf[2] * FastMath.RAD_TO_DEG);
+					try {
+						// 0 = roll, 1 = pitch, 2 = yaw
+						Rotation apacheRot = new Rotation(quatBuf.getW(), quatBuf.getX(), quatBuf.getY(), quatBuf.getZ(), false);
+						// X = pitch, Y = yaw, Z = roll
+						double[] apacheEuler = apacheRot.getAngles(RotationOrder.ZXY, RotationConvention.VECTOR_OPERATOR);
+						
+						// Order of application is ZXY (but sent in XYZ order)
+						// pitch (+X is forward), yaw (+Y is clockwise), roll (+Z is left)
+						oscArgs.add((float)(apacheEuler[1] * FastMath.RAD_TO_DEG));
+						oscArgs.add((float)(apacheEuler[2] * FastMath.RAD_TO_DEG));
+						oscArgs.add((float)(-apacheEuler[0] * FastMath.RAD_TO_DEG));
+					} catch (Exception e) {
+						oscArgs.add(0f);
+						oscArgs.add(0f);
+						oscArgs.add(0f);
+					}
+
 					oscMessage = new OSCMessage(
 						"/tracking/trackers/" + (i + 1) + "/rotation",
 						oscArgs
