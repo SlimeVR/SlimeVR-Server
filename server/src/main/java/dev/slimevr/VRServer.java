@@ -5,6 +5,7 @@ import dev.slimevr.autobone.AutoBoneHandler;
 import dev.slimevr.bridge.Bridge;
 import dev.slimevr.bridge.VMCBridge;
 import dev.slimevr.config.ConfigManager;
+import dev.slimevr.osc.OSCHandler;
 import dev.slimevr.osc.OSCRouter;
 import dev.slimevr.osc.VRCOSCHandler;
 import dev.slimevr.platform.SteamVRBridge;
@@ -50,7 +51,7 @@ public class VRServer extends Thread {
 	private final List<Runnable> onTick = new FastList<>();
 	private final List<? extends ShareableTracker> shareTrackers;
 	private final OSCRouter oscRouter;
-	private final VRCOSCHandler VRCOSCHandler;
+	private final VRCOSCHandler vrcOSCHandler;
 	private final DeviceManager deviceManager;
 	private final BVHRecorder bvhRecorder;
 	private final SerialHandler serialHandler;
@@ -144,15 +145,19 @@ public class VRServer extends Thread {
 			e.printStackTrace();
 		}
 
-		// Initialize OSC
-		oscRouter = new OSCRouter(getConfigManager().getVrConfig().getOscRouter());
-		VRCOSCHandler = new VRCOSCHandler(
+		// Initialize OSC handlers
+		vrcOSCHandler = new VRCOSCHandler(
 			hmdTracker,
 			humanPoseProcessor,
 			driverBridge,
 			getConfigManager().getVrConfig().getVrcOSC(),
 			shareTrackers
 		);
+
+		// Initialize OSC router
+		FastList<OSCHandler> oscHandlers = new FastList<>();
+		oscHandlers.add(vrcOSCHandler);
+		oscRouter = new OSCRouter(getConfigManager().getVrConfig().getOscRouter(), oscHandlers);
 
 		bvhRecorder = new BVHRecorder(this);
 
@@ -236,7 +241,7 @@ public class VRServer extends Thread {
 			for (Bridge bridge : bridges) {
 				bridge.dataWrite();
 			}
-			VRCOSCHandler.update();
+			vrcOSCHandler.update();
 			// final long time = System.currentTimeMillis() - start;
 			try {
 				Thread.sleep(1); // 1000Hz
@@ -379,8 +384,8 @@ public class VRServer extends Thread {
 		return oscRouter;
 	}
 
-	public VRCOSCHandler getVRCOSCHandler() {
-		return VRCOSCHandler;
+	public VRCOSCHandler getVrcOSCHandler() {
+		return vrcOSCHandler;
 	}
 
 	public DeviceManager getDeviceManager() {

@@ -25,7 +25,7 @@ import java.util.List;
 /**
  * VRChat OSCTracker documentation: https://docs.vrchat.com/docs/osc-trackers
  */
-public class VRCOSCHandler {
+public class VRCOSCHandler implements OSCHandler {
 	private OSCPortIn oscReceiver;
 	private OSCPortOut oscSender;
 	private OSCMessage oscMessage;
@@ -63,6 +63,7 @@ public class VRCOSCHandler {
 		refreshSettings();
 	}
 
+	@Override
 	public void refreshSettings() {
 		// Sets which trackers are enabled and force HEAD to false
 		for (int i = 0; i < shareableTrackers.size(); i++) {
@@ -184,6 +185,7 @@ public class VRCOSCHandler {
 		}
 	}
 
+	@Override
 	public void update() {
 		// Manage HMD state with timeout
 		if (oscReceiver != null) {
@@ -285,5 +287,30 @@ public class VRCOSCHandler {
 				LogManager.warning("[VRCOSCHandler] Error sending HMD rotation to VRChat: " + e);
 			}
 		}
+	}
+
+	@Override
+	public OSCPortOut getOscSender() {
+		return oscSender;
+	}
+
+	@Override
+	public int getPortOut() {
+		return lastPortOut;
+	}
+
+	@Override
+	public InetAddress getAddress() {
+		return lastAddress;
+	}
+
+	@Override
+	public OSCPortIn getOscReceiver() {
+		return oscReceiver;
+	}
+
+	@Override
+	public int getPortIn() {
+		return lastPortIn;
 	}
 }

@@ -110,30 +110,13 @@ public record RPCSettingsHandler(RPCHandler rpcHandler, ProtocolAPI api) {
 			}
 		}
 
-		if (req.oscRouter() != null) {
-			OSCConfig oscRouterConfig = this.api.server
-				.getConfigManager()
-				.getVrConfig()
-				.getOscRouter();
-			if (oscRouterConfig != null) {
-				OSCRouter oscRouter = this.api.server.getOSCRouter();
-
-				oscRouterConfig.setEnabled(req.vrcOsc().enabled());
-				oscRouterConfig.setPortIn(req.vrcOsc().portIn());
-				oscRouterConfig.setPortOut(req.vrcOsc().portOut());
-				oscRouterConfig.setAddress(req.vrcOsc().address());
-
-				oscRouter.refreshSettings();
-			}
-		}
-
 		if (req.vrcOsc() != null) {
 			OSCConfig vrcOSCConfig = this.api.server
 				.getConfigManager()
 				.getVrConfig()
 				.getVrcOSC();
 			if (vrcOSCConfig != null) {
-				VRCOSCHandler VRCOSCHandler = this.api.server.getVRCOSCHandler();
+				VRCOSCHandler VRCOSCHandler = this.api.server.getVrcOSCHandler();
 				var trackers = req.vrcOsc().trackers();
 
 				vrcOSCConfig.setEnabled(req.vrcOsc().enabled());
@@ -152,8 +135,25 @@ public record RPCSettingsHandler(RPCHandler rpcHandler, ProtocolAPI api) {
 				vrcOSCConfig.setOSCTrackerRole(TrackerRole.LEFT_HAND, trackers.hands());
 				vrcOSCConfig.setOSCTrackerRole(TrackerRole.RIGHT_HAND, trackers.hands());
 
-
 				VRCOSCHandler.refreshSettings();
+				this.api.server.getOSCRouter().refreshSettings();
+			}
+		}
+
+		if (req.oscRouter() != null) {
+			OSCConfig oscRouterConfig = this.api.server
+				.getConfigManager()
+				.getVrConfig()
+				.getOscRouter();
+			if (oscRouterConfig != null) {
+				OSCRouter oscRouter = this.api.server.getOSCRouter();
+
+				oscRouterConfig.setEnabled(req.vrcOsc().enabled());
+				oscRouterConfig.setPortIn(req.vrcOsc().portIn());
+				oscRouterConfig.setPortOut(req.vrcOsc().portOut());
+				oscRouterConfig.setAddress(req.vrcOsc().address());
+
+				oscRouter.refreshSettings();
 			}
 		}
 
