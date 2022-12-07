@@ -4,36 +4,34 @@ import java.util.LinkedList;
 import com.jme3.math.Vector3f;
 
 import dev.slimevr.config.TapDetectionConfig;
-import dev.slimevr.osc.VRCOSCHandler;
 import dev.slimevr.vr.trackers.Tracker;
 
 
 // class that monitors the acceleration of the waist, hip, or chest trackers to detect taps
-// and use this to trigger a quick reset (if your wondering why no single tap class exists, it's because 
+// and use this to trigger a varaity of resets (if your wondering why no single tap class exists, it's because 
 // to many false positives)
 public class TapDetection {
 
 	// server and related classes
 	private HumanSkeleton skeleton;
-	private VRCOSCHandler oscHandler;
-	private TapDetectionConfig config;
-
 
 	// tap detection
 	private boolean enabled = false;
 	private LinkedList<float[]> accelList = new LinkedList<>();
 	private LinkedList<Float> tapTimes = new LinkedList<>();
-	private float resetDelayNs = 0.20f * 1000000000.0f;
+	private Tracker trackerToWatch = null;
 
 	// hyperparameters
 	private static final float NEEDED_ACCEL_DELTA = 6.0f;
 	private static final float ALLOWED_BODY_ACCEL = 1.5f;
 	private static final float ALLOWED_BODY_ACCEL_SQUARED = ALLOWED_BODY_ACCEL * ALLOWED_BODY_ACCEL;
 	private static final float CLUMP_TIME_NS = 0.03f * 1000000000.0f;
-	private static final float TIME_WINDOW_NS = 0.5f * 1000000000.0f;
+	private static final float TIME_WINDOW_NS = 0.6f * 1000000000.0f;
 
 	// state
-	private float resetRequestTime = -1.0f;
+	private float detectionTime = -1.0f;
+	private boolean doubleTaped = false;
+	private boolean tripleTaped = false; // TODO maybe get rid of this
 
 	public TapDetection(HumanSkeleton skeleton) {
 		this.skeleton = skeleton;
@@ -41,18 +39,10 @@ public class TapDetection {
 
 	public TapDetection(
 		HumanSkeleton skeleton,
-		VRCOSCHandler oscHandler,
-		TapDetectionConfig config
+		Tracker trackerToWatch
 	) {
 		this.skeleton = skeleton;
-		this.oscHandler = oscHandler;
-		this.config = config;
-		updateConfig();
-	}
-
-	public void updateConfig() {
-		this.enabled = config.getEnabled();
-		this.resetDelayNs = config.getDelay() * 1000000000.0f;
+		this.trackerToWatch = trackerToWatch;
 	}
 
 	public void setEnabled(boolean enabled) {
@@ -63,29 +53,42 @@ public class TapDetection {
 		return enabled;
 	}
 
+	// set the tracker to watch and detect taps on
+	public void setTrackerToWatch(Tracker tracker) {
+		trackerToWatch = tracker;
+	}
+
+	public boolean getDoubleTapped() {
+		return doubleTaped;
+	}
+
+	public boolean getTripleTapped() {
+		return tripleTaped;
+	}
+
+	public float getDetectionTime() {
+		return detectionTime;
+	}
+
+	// reset the lists for detecting taps
+	public void resetDetector() {
+		tapTimes.clear();
+		accelList.clear();
+		doubleTaped = false;
+		tripleTaped = false;
+	}
+
 	// main function for tap detection
 	public void update() {
 		if (skeleton == null || !enabled)
 			return;
 
-		Tracker tracker = getTrackerToWatch();
-		if (tracker == null)
+		if (trackerToWatch == null)
 			return;
-
-		// check if we should reset
-		if (resetRequestTime != -1.0f) {
-			if (System.nanoTime() - resetRequestTime > resetDelayNs) {
-				if (oscHandler != null)
-					oscHandler.yawAlign();
-				skeleton.resetTrackersYaw();
-				resetRequestTime = -1.0f;
-			}
-			return;
-		}
 
 		// get the acceleration of the tracker and add it to the list
 		Vector3f accel = new Vector3f();
-		tracker.getAcceleration(accel);
+		trackerToWatch.getAcceleration(accel);
 		float time = System.nanoTime();
 		float[] listval = { accel.length(), time };
 		accelList.add(listval);
@@ -110,7 +113,7 @@ public class TapDetection {
 		}
 
 		// if the user is moving their body too much, reset the tap list
-		if (!isUserStatic(tracker)) {
+		if (!isUserStatic(trackerToWatch)) {
 			tapTimes.clear();
 			accelList.clear();
 		}
@@ -119,27 +122,13 @@ public class TapDetection {
 		int tapEvents = getTapEvents();
 
 		// if there are two tap events and the user is moving relatively slowly,
-		// reset the skeleton
+		// quick reset
 		if (tapEvents == 2) {
-			resetRequestTime = System.nanoTime();
-			// reset the list
-			tapTimes.clear();
-			accelList.clear();
+			doubleTaped = true;
+		} else if (tapEvents >= 3) {
+			tripleTaped = true;
+			doubleTaped = false;
 		}
-	}
-
-	// returns either the chest tracker, hip tracker, or waist tracker depending
-	// on which one is available
-	// if none are available, returns null
-	public Tracker getTrackerToWatch() {
-		if (skeleton.chestTracker != null)
-			return skeleton.chestTracker;
-		else if (skeleton.hipTracker != null)
-			return skeleton.hipTracker;
-		else if (skeleton.waistTracker != null)
-			return skeleton.waistTracker;
-		else
-			return null;
 	}
 
 	private float getAccelDelta() {
