@@ -10,8 +10,8 @@ import { EyeIcon } from './icon/EyeIcon';
 
 export interface InputProps {
   type: HTMLInputTypeAttribute;
-  placeholder?: string;
-  label?: string;
+  placeholder?: string | null;
+  label?: string | null;
   autocomplete?: boolean;
   variant?: 'primary' | 'secondary';
 }
@@ -47,7 +47,7 @@ export const Input = forwardRef<HTMLInputElement, InputProps>(function AppInput(
           type={forceText ? 'text' : type}
           ref={ref}
           className={classNames(classes, { 'pr-10': type === 'password' })}
-          placeholder={placeholder}
+          placeholder={placeholder || undefined}
           autoComplete={autocomplete ? 'off' : 'on'}
           {...props}
         ></input>

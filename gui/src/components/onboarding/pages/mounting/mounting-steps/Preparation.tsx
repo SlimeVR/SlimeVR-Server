@@ -1,3 +1,4 @@
+import { useTranslation } from 'react-i18next';
 import { ResetType } from 'solarxr-protocol';
 import { Button } from '../../../../commons/Button';
 import { Typography } from '../../../../commons/Typography';
@@ -12,20 +13,21 @@ export function PreparationStep({
   prevStep: () => void;
   variant: 'onboarding' | 'alone';
 }) {
+  const { t } = useTranslation();
+
   return (
     <>
       <div className="flex flex-col flex-grow">
         <div className="flex flex-col gap-4 max-w-sm">
           <Typography variant="main-title" bold>
-            Preparation
+            {t('onboarding.automatic-mounting.preparation.title')}
           </Typography>
           <div>
             <Typography color="secondary">
-              1. Stand upright with your arms to your sides.
+              {t('onboarding.automatic-mounting.preparation.step.0')}
             </Typography>
             <Typography color="secondary">
-              2. Press the "Reset" button and wait for 3 seconds before the
-              trackers will reset.
+              {t('onboarding.automatic-mounting.preparation.step.1')}
             </Typography>
           </div>
         </div>
@@ -36,7 +38,7 @@ export function PreparationStep({
             variant={variant === 'onboarding' ? 'secondary' : 'tiertiary'}
             onClick={prevStep}
           >
-            Previous step
+            {t('onboarding.automatic-mounting.prev-step')}
           </Button>
           <ResetButton
             variant="small"

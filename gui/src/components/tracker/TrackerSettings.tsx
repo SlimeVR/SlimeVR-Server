@@ -2,6 +2,7 @@ import { IPv4 } from 'ip-num/IPNumber';
 import Quaternion from 'quaternion';
 import { useEffect, useMemo, useState } from 'react';
 import { useForm } from 'react-hook-form';
+import { useTranslation } from 'react-i18next';
 import { useParams } from 'react-router-dom';
 import { AssignTrackerRequestT, BodyPart, RpcMessage } from 'solarxr-protocol';
 import { useDebouncedEffect } from '../../hooks/timeout';
@@ -15,7 +16,6 @@ import { FootIcon } from '../commons/icon/FootIcon';
 import { Input } from '../commons/Input';
 import { Typography } from '../commons/Typography';
 import { MountingSelectionMenu } from '../onboarding/pages/mounting/MountingSelectionMenu';
-import { bodypartToString } from '../utils/formatting';
 import { SingleTrackerBodyAssignmentMenu } from './SingleTrackerBodyAssignmentMenu';
 import { TrackerCard } from './TrackerCard';
 
@@ -27,13 +27,15 @@ export const rotationToQuatMap = {
 };
 
 const rotationsLabels = {
-  [rotationToQuatMap.BACK]: 'BACK',
-  [rotationToQuatMap.FRONT]: 'FRONT',
-  [rotationToQuatMap.LEFT]: 'LEFT',
-  [rotationToQuatMap.RIGHT]: 'RIGHT',
+  [rotationToQuatMap.BACK]: 'tracker.rotation.back',
+  [rotationToQuatMap.FRONT]: 'tracker.rotation.front',
+  [rotationToQuatMap.LEFT]: 'tracker.rotation.left',
+  [rotationToQuatMap.RIGHT]: 'tracker.rotation.right',
 };
 
 export function TrackerSettingsPage() {
+  const { t } = useTranslation();
+
   const { sendRPCPacket } = useWebsocketAPI();
   const [firstLoad, setFirstLoad] = useState(false);
   const [selectRotation, setSelectRotation] = useState<boolean>(false);
@@ -163,23 +165,31 @@ export function TrackerSettingsPage() {
           </div> */}
           <div className="flex flex-col bg-background-70 p-3 rounded-lg gap-2">
             <div className="flex justify-between">
-              <Typography color="secondary">Manufacturer</Typography>
+              <Typography color="secondary">
+                {t('tracker.infos.manufacturer')}
+              </Typography>
               <Typography>
                 {tracker?.device?.hardwareInfo?.manufacturer}
               </Typography>
             </div>
             <div className="flex justify-between">
-              <Typography color="secondary">Display name</Typography>
+              <Typography color="secondary">
+                {t('tracker.infos.display-name')}
+              </Typography>
               <Typography>{tracker?.tracker.info?.displayName}</Typography>
             </div>
             <div className="flex justify-between">
-              <Typography color="secondary">Custom name</Typography>
+              <Typography color="secondary">
+                {t('tracker.infos.custom-name')}
+              </Typography>
               <Typography>
                 {tracker?.tracker.info?.customName || '--'}
               </Typography>
             </div>
             <div className="flex justify-between">
-              <Typography color="secondary">Tracker URL</Typography>
+              <Typography color="secondary">
+                {t('tracker.infos.url')}
+              </Typography>
               <Typography>
                 udp://
                 {IPv4.fromNumber(
@@ -190,19 +200,24 @@ export function TrackerSettingsPage() {
           </div>
         </div>
         <div className="flex flex-col flex-grow  bg-background-70 rounded-lg p-5 gap-3">
-          <ArrowLink to="/">Go back to trackers list</ArrowLink>
-          <Typography variant="main-title">Tracker settings</Typography>
+          <ArrowLink to="/">{t('tracker.settings.back')}</ArrowLink>
+          <Typography variant="main-title">
+            {t('tracker.settings.title')}
+          </Typography>
           <div className="flex flex-col gap-2 w-full mt-3">
-            <Typography variant="section-title">Assignment</Typography>
+            <Typography variant="section-title">
+              {t('tracker.settings.assignment-section.title')}
+            </Typography>
             <Typography color="secondary">
-              What part of the body the tracker is assigned to.
+              {t('tracker.settings.assignment-section.description')}
             </Typography>
             <div className="flex justify-between bg-background-80 w-full p-3 rounded-lg">
               <div className="flex gap-3 items-center">
                 <FootIcon></FootIcon>
                 <Typography>
-                  {bodypartToString(
-                    tracker?.tracker.info?.bodyPart || BodyPart.NONE
+                  {t(
+                    'body-part.' +
+                      BodyPart[tracker?.tracker.info?.bodyPart || BodyPart.NONE]
                   )}
                 </Typography>
               </div>
@@ -211,38 +226,42 @@ export function TrackerSettingsPage() {
                   variant="secondary"
                   onClick={() => setSelectBodypart(true)}
                 >
-                  Edit assignment
+                  {t('tracker.settings.assignment-section.edit')}
                 </Button>
               </div>
             </div>
           </div>
           <div className="flex flex-col gap-2 w-full mt-3">
-            <Typography variant="section-title">Mounting position</Typography>
+            <Typography variant="section-title">
+              {t('tracker.settings.mounting-section.title')}
+            </Typography>
             <Typography color="secondary">
-              Where is the tracker mounted?
+              {t('tracker.settings.mounting-section.description')}
             </Typography>
             <div className="flex justify-between bg-background-80 w-full p-3 rounded-lg">
               <div className="flex gap-3 items-center">
                 <FootIcon></FootIcon>
-                <Typography>{rotationsLabels[currRotation]}</Typography>
+                <Typography>{t(rotationsLabels[currRotation])}</Typography>
               </div>
               <div className="flex">
                 <Button
                   variant="secondary"
                   onClick={() => setSelectRotation(true)}
                 >
-                  Edit mounting
+                  {t('tracker.settings.mounting-section.edit')}
                 </Button>
               </div>
             </div>
           </div>
           <div className="flex flex-col gap-2 w-full mt-3">
-            <Typography variant="section-title">Tracker name</Typography>
+            <Typography variant="section-title">
+              {t('tracker.settings.name-section.title')}
+            </Typography>
             <Typography color="secondary">
-              {'Give it a cute nickname :)'}
+              {t('tracker.settings.name-section.description')}
             </Typography>
             <Input
-              placeholder="NightyBeast's left leg"
+              placeholder={t('tracker.settings.name-section.input-placeholder')}
               type="text"
               autocomplete={false}
               {...register('trackerName')}

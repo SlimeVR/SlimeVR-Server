@@ -1,6 +1,7 @@
 import classnames from 'classnames';
-import { ReactChild } from 'react';
-import { useMatch, NavLink } from 'react-router-dom';
+import { ReactNode } from 'react';
+import { useTranslation } from 'react-i18next';
+import { NavLink, useMatch } from 'react-router-dom';
 import { CubeIcon } from './commons/icon/CubeIcon';
 import { GearIcon } from './commons/icon/GearIcon';
 
@@ -12,10 +13,10 @@ export function NavButton({
   icon,
 }: {
   to: string;
-  children: ReactChild;
+  children: ReactNode;
   match?: string;
   state?: any;
-  icon: ReactChild;
+  icon: ReactNode;
 }) {
   const doesMatch = useMatch({
     path: match || to,
@@ -56,11 +57,13 @@ export function NavButton({
 }
 
 export function Navbar() {
+  const { t } = useTranslation();
+
   return (
     <div className="flex flex-col px-2 pt-2">
       <div className="flex flex-col flex-grow gap-2">
         <NavButton to="/" icon={<CubeIcon></CubeIcon>}>
-          Home
+          {t('navbar.home')}
         </NavButton>
         <NavButton
           to="/onboarding/body-proportions/auto"
@@ -68,14 +71,14 @@ export function Navbar() {
           state={{ alonePage: true }}
           icon={<GearIcon></GearIcon>}
         >
-          Body Proportions
+          {t('navbar.body-proportions')}
         </NavButton>
         <NavButton
           to="/onboarding/trackers-assign"
           state={{ alonePage: true }}
           icon={<GearIcon></GearIcon>}
         >
-          Tracker Assignment
+          {t('navbar.trackers-assign')}
         </NavButton>
         <NavButton
           to="/onboarding/mounting/auto"
@@ -83,10 +86,10 @@ export function Navbar() {
           state={{ alonePage: true }}
           icon={<GearIcon></GearIcon>}
         >
-          Mounting Calibration
+          {t('navbar.mounting')}
         </NavButton>
         <NavButton to="/onboarding/home" icon={<GearIcon></GearIcon>}>
-          Setup Wizard
+          {t('navbar.onboarding')}
         </NavButton>
       </div>
       <NavButton
@@ -95,7 +98,7 @@ export function Navbar() {
         state={{ scrollTo: 'steamvr' }}
         icon={<GearIcon></GearIcon>}
       >
-        Settings
+        {t('navbar.settings')}
       </NavButton>
     </div>
   );

@@ -1,3 +1,5 @@
+import { useMemo } from 'react';
+import { useTranslation } from 'react-i18next';
 import { ResetRequestT, ResetType, RpcMessage } from 'solarxr-protocol';
 import { useCountdown } from '../../hooks/countdown';
 import { useWebsocketAPI } from '../../hooks/websocket-api';
@@ -18,6 +20,7 @@ export function ResetButton({
   variant: 'big' | 'small';
   onReseted?: () => void;
 }) {
+  const { t } = useTranslation();
   const { sendRPCPacket } = useWebsocketAPI();
 
   const reset = () => {
@@ -33,17 +36,17 @@ export function ResetButton({
     },
   });
 
-  const getText = () => {
+  const text = useMemo(() => {
     switch (type) {
       case ResetType.Quick:
-        return 'Quick Reset';
+        return t('reset.quick');
       case ResetType.Mounting:
-        return 'Reset Mounting';
+        return t('reset.mounting');
       case ResetType.Full:
-        return 'Reset';
+        return t('reset.full');
     }
-    return 'Reset';
-  };
+    return t('reset.full');
+  }, [type]);
 
   const getIcon = () => {
     switch (type) {
@@ -59,7 +62,7 @@ export function ResetButton({
     small:
       type == ResetType.Quick ? (
         <Button icon={getIcon()} onClick={reset} variant="primary">
-          {getText()}
+          {text}
         </Button>
       ) : (
         <Button
@@ -69,21 +72,17 @@ export function ResetButton({
           disabled={isCounting}
         >
           <div className="relative">
-            <div className="opacity-0 h-0">{getText()}</div>
-            {!isCounting ? getText() : String(timer)}
+            <div className="opacity-0 h-0">{text}</div>
+            {!isCounting ? text : String(timer)}
           </div>
         </Button>
       ),
     big:
       type == ResetType.Quick ? (
-        <BigButton
-          text={getText()}
-          icon={getIcon()}
-          onClick={reset}
-        ></BigButton>
+        <BigButton text={text} icon={getIcon()} onClick={reset}></BigButton>
       ) : (
         <BigButton
-          text={!isCounting ? getText() : String(timer)}
+          text={!isCounting ? text : String(timer)}
           icon={getIcon()}
           onClick={startCountdown}
           disabled={isCounting}
