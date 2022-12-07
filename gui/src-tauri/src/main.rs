@@ -1,4 +1,5 @@
 #![cfg_attr(all(not(debug_assertions), windows), windows_subsystem = "windows")]
+use std::env;
 use std::ffi::{OsStr, OsString};
 use std::io::Write;
 #[cfg(windows)]
@@ -6,7 +7,6 @@ use std::os::windows::process::CommandExt;
 use std::panic;
 use std::path::PathBuf;
 use std::process::{Child, Stdio};
-use std::{env, fs};
 
 use clap::Parser;
 use clap_verbosity_flag::{InfoLevel, Verbosity};
@@ -21,6 +21,11 @@ use which::which_all;
 const CREATE_NO_WINDOW: u32 = 0x0800_0000;
 /// It's an i32 because we check it through exit codes of the process
 const MINIMUM_JAVA_VERSION: i32 = 17;
+const JAVA_BIN: &OsStr = if cfg!(windows) {
+	"java.exe".as_ref()
+} else {
+	"java".as_ref()
+};
 static POSSIBLE_TITLES: &[&str] = &[
 	"Panicking situation",
 	"looking for spatula",
@@ -163,7 +168,7 @@ fn main() {
 		log::info!("Server found on path: {}", p.to_str().unwrap());
 
 		// Check if any Java already installed is compatible
-		let jre = p.join("jre/bin").join(executable("java"));
+		let jre = p.join("jre/bin").join(JAVA_BIN);
 		let java_bin = jre
 			.exists()
 			.then(|| jre.into_os_string())
@@ -206,7 +211,7 @@ fn main() {
 							.emit_all("server-status", emit_me)
 							.expect("Failed to emit");
 					}
-					println!("Java server receiver died");
+					log::error!("Java server receiver died");
 					app_handle
 						.emit_all("server-status", ("other", "receiver cancelled"))
 						.expect("Failed to emit");
@@ -262,10 +267,10 @@ fn valid_java_paths() -> Vec<(OsString, i32)> {
 	let main_java = if let Ok(java_home) = std::env::var("JAVA_HOME") {
 		PathBuf::from(java_home)
 			.join("bin")
-			.join(executable("java"))
+			.join(JAVA_BIN)
 			.into_os_string()
 	} else {
-		executable("java").to_os_string()
+		JAVA_BIN.to_os_string()
 	};
 	if let Some(main_child) = spawn_java(&main_java, java_version.as_os_str())
 		.expect("Couldn't spawn the main Java binary")
@@ -280,7 +285,7 @@ fn valid_java_paths() -> Vec<(OsString, i32)> {
 
 	// Otherwise check if anything else is a supported version
 	let mut childs = vec![];
-	for java in which_all(executable("java")).unwrap() {
+	for java in which_all(JAVA_BIN).unwrap() {
 		let res = spawn_java(java.as_os_str(), java_version.as_os_str());
 
 		match res {
@@ -299,16 +304,4 @@ fn valid_java_paths() -> Vec<(OsString, i32)> {
 				.filter(|(_p, code)| *code >= MINIMUM_JAVA_VERSION)
 		})
 		.collect()
-}
-
-fn executable<W: AsRef<OsStr> + ?Sized>(bin: &W) -> OsString {
-	let bin = bin.as_ref();
-	if cfg!(windows) {
-		let mut new = OsString::with_capacity(bin.len() + 4);
-		new.push(bin);
-		new.push(".exe");
-		new
-	} else {
-		bin.to_owned()
-	}
 }
