@@ -1,16 +1,17 @@
 import { useEffect } from 'react';
 import { useForm } from 'react-hook-form';
+import { useTranslation } from 'react-i18next';
 import { KeyValuesT, MessageT, Payload, Topic } from 'solarxr-protocol';
 import {
   OVERLAY_DISPLAY_SETTINGS_TOPIC,
   PayloadData,
-  usePubSub,
+  usePubSub
 } from '../../hooks/pubSub';
 import { CheckBox } from '../commons/Checkbox';
 
 export function OverlayWidget() {
+  const { t } = useTranslation();
   const { publish, subscribe, keyValues } = usePubSub();
-
   const { reset, control, handleSubmit, watch } = useForm<{
     isVisible: boolean;
     isMirrored: boolean;
@@ -67,13 +68,13 @@ export function OverlayWidget() {
         control={control}
         name="isVisible"
         variant="toggle"
-        label="Show Overlay in SteamVR"
+        label={t('overlay.is-visible-label')}
       ></CheckBox>
       <CheckBox
         control={control}
         name="isMirrored"
         variant="toggle"
-        label="Display Overlay as Mirror"
+        label={t('overlay.is-mirrored-label')}
       ></CheckBox>
     </form>
   );

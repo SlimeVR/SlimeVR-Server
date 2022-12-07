@@ -1,3 +1,4 @@
+import { useTranslation } from 'react-i18next';
 import { useOnboarding } from '../../../hooks/onboarding';
 import { useWifiForm } from '../../../hooks/wifi-form';
 import { ArrowLink } from '../../commons/ArrowLink';
@@ -5,6 +6,7 @@ import { Button } from '../../commons/Button';
 import { Typography } from '../../commons/Typography';
 
 export function WifiCredsPage() {
+  const { t } = useTranslation();
   const { applyProgress, skipSetup } = useOnboarding();
   const { WifiForm, handleSubmit, submitWifiCreds, formState } = useWifiForm();
   applyProgress(0.2);
@@ -18,14 +20,16 @@ export function WifiCredsPage() {
         <div className="flex gap-10">
           <div className="flex flex-col max-w-sm">
             <ArrowLink to="/onboarding/home" direction="left">
-              Go Back to introduction
+              {t('onboarding.wifi-creds.back')}
             </ArrowLink>
-            <Typography variant="main-title">Input WiFi credentials</Typography>
-            <Typography color="secondary">
-              The Trackers will use these credentials to connect wirelessly
+            <Typography variant="main-title">
+              {t('onboarding.wifi-creds.title')}
             </Typography>
             <Typography color="secondary">
-              please use the credentials that you are currently connected to
+              {t('onboarding.wifi-creds.description.p0')}
+            </Typography>
+            <Typography color="secondary">
+              {t('onboarding.wifi-creds.description.p1')}
             </Typography>
           </div>
           <div className="flex flex-col bg-background-70 gap-3 p-10 rounded-xl max-w-sm">
@@ -36,15 +40,15 @@ export function WifiCredsPage() {
       <div className="w-full py-4 flex flex-row">
         <div className="flex flex-grow">
           <Button variant="secondary" to="/" onClick={skipSetup}>
-            Skip setup
+            {t('onboarding.skip')}
           </Button>
         </div>
         <div className="flex gap-3">
           <Button variant="secondary" to="/onboarding/trackers-assign">
-            Skip wifi settings
+            {t('onboarding.wifi-creds.skip')}
           </Button>
           <Button type="submit" variant="primary" disabled={!formState.isValid}>
-            Submit!
+            {t('onboarding.wifi-creds.submit')}
           </Button>
         </div>
       </div>

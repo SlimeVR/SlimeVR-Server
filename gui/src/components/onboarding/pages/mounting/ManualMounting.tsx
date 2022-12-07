@@ -1,3 +1,4 @@
+import { t } from 'i18next';
 import Quaternion from 'quaternion';
 import { useMemo, useState } from 'react';
 import { AssignTrackerRequestT, BodyPart, RpcMessage } from 'solarxr-protocol';
@@ -67,17 +68,16 @@ export function ManualMountingPage() {
             <div className="flex flex-col w-full max-w-md gap-3">
               {!state.alonePage && (
                 <ArrowLink to="/onboarding/enter-vr" direction="left">
-                  Go Back to Enter VR
+                  {t('onboarding.manual-mounting.back')}
                 </ArrowLink>
               )}
-              <Typography variant="main-title">Manual Mounting</Typography>
-              <Typography color="secondary">
-                Click on every tracker and select which way they are mounted
+              <Typography variant="main-title">
+                {t('onboarding.manual-mounting.title')}
               </Typography>
-              <TipBox>
-                Not sure which tracker is which? Shake a tracker and it will
-                highlight the corresponding item.
-              </TipBox>
+              <Typography color="secondary">
+                {t('onboarding.manual-mounting.description')}
+              </Typography>
+              <TipBox>{t('tips.find-tracker')}</TipBox>
             </div>
             <div className="flex flex-col flex-grow gap-3 rounded-xl fill-background-50">
               <BodyAssignment
@@ -92,7 +92,7 @@ export function ManualMountingPage() {
           <div className="flex flex-grow">
             {!state.alonePage && (
               <Button variant="secondary" to="/" onClick={skipSetup}>
-                Skip setup
+                {t('onboarding.skip')}
               </Button>
             )}
           </div>
@@ -102,11 +102,11 @@ export function ManualMountingPage() {
               state={{ alonePage: state.alonePage }}
               to="/onboarding/mounting/auto"
             >
-              Automatic mounting
+              {t('onboarding.manual-mounting.auto-mounting')}
             </Button>
             {!state.alonePage && (
               <Button variant="primary" to="/onboarding/reset-tutorial">
-                Next step
+                {t('onboarding.manual-mounting.next')}
               </Button>
             )}
           </div>

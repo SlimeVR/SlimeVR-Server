@@ -1,3 +1,4 @@
+import { useTranslation } from 'react-i18next';
 import { ResetType } from 'solarxr-protocol';
 import { Button } from '../../../../commons/Button';
 import { Typography } from '../../../../commons/Typography';
@@ -12,21 +13,21 @@ export function MountingResetStep({
   prevStep: () => void;
   variant: 'onboarding' | 'alone';
 }) {
+  const { t } = useTranslation();
+
   return (
     <>
       <div className="flex flex-col flex-grow">
         <div className="flex flex-grow flex-col gap-4 max-w-sm">
           <Typography variant="main-title" bold>
-            Mounting Reset
+            {t('onboarding.automatic-mounting.mounting-reset.title')}
           </Typography>
-          <div>
+          <div className="flex flex-col gap-2">
             <Typography color="secondary">
-              1. Squat in a "skiing" pose with your legs bent, your upper body
-              tilted forwards, and your arms bent.
+              {t('onboarding.automatic-mounting.mounting-reset.step.0')}
             </Typography>
             <Typography color="secondary">
-              2. Press the "Reset Mounting" button and wait for 3 seconds before
-              the trackers' mounting rotations will reset.
+              {t('onboarding.automatic-mounting.mounting-reset.step.1')}
             </Typography>
           </div>
         </div>
@@ -36,7 +37,7 @@ export function MountingResetStep({
             variant={variant === 'onboarding' ? 'secondary' : 'tiertiary'}
             onClick={prevStep}
           >
-            Previous step
+            {t('onboarding.automatic-mounting.prev-step')}
           </Button>
           <ResetButton
             variant="small"

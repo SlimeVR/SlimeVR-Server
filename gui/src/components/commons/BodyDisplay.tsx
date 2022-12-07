@@ -1,17 +1,16 @@
 import classNames from 'classnames';
 import {
-  ReactChild,
+  ReactNode,
   useEffect,
   useLayoutEffect,
   useMemo,
   useRef,
-  useState,
+  useState
 } from 'react';
 import { BodyPart, TrackerDataT } from 'solarxr-protocol';
 import { FlatDeviceTracker } from '../../hooks/app';
 import { useTracker } from '../../hooks/tracker';
 import { PersonFrontIcon } from './PersonFrontIcon';
-import { Typography } from './Typography';
 
 interface SlotDot {
   id: string;
@@ -111,8 +110,8 @@ export function BodyDisplay({
   dotsSize = 20,
   variant = 'tracker-select',
 }: {
-  leftControls?: ReactChild;
-  rightControls?: ReactChild;
+  leftControls?: ReactNode;
+  rightControls?: ReactNode;
   width?: number;
   dotsSize?: number;
   variant?: 'dots' | 'tracker-select';

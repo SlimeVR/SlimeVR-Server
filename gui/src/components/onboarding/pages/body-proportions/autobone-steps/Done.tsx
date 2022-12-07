@@ -1,3 +1,4 @@
+import { t } from 'i18next';
 import { Typography } from '../../../../commons/Typography';
 
 export function DoneStep() {
@@ -5,13 +6,12 @@ export function DoneStep() {
     <div className="flex flex-col items-center w-full justify-center gap-5">
       <div className="flex gap-1 flex-col justify-center items-center">
         <Typography variant="section-title">
-          Body measured and saved.
+          {t('onboarding.automatic-proportions.done.title')}
         </Typography>
         <Typography color="secondary">
-          Your body proportions calibration is complete!
+          {t('onboarding.automatic-proportions.done.description')}
         </Typography>
       </div>
-      {/* <Button variant="primary">Continue to next step</Button> */}
     </div>
   );
 }

@@ -1,11 +1,11 @@
 import classNames from 'classnames';
-import { ReactChild } from 'react';
+import { ReactNode } from 'react';
 import ReactModal from 'react-modal';
 
 export function EmptyModal({
   children,
   ...props
-}: { children?: ReactChild } & ReactModal.Props) {
+}: { children?: ReactNode } & ReactModal.Props) {
   return (
     <ReactModal
       {...props}

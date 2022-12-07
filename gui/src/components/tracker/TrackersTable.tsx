@@ -1,6 +1,7 @@
 import classNames from 'classnames';
 import { IPv4 } from 'ip-num/IPNumber';
-import { MouseEventHandler, ReactChild, useState } from 'react';
+import { MouseEventHandler, ReactNode, useState } from 'react';
+import { useTranslation } from 'react-i18next';
 import {
   TrackerDataT,
   TrackerIdT,
@@ -57,7 +58,7 @@ export function RowContainer({
   onMouseOver,
   onMouseOut,
 }: {
-  children: ReactChild;
+  children: ReactNode;
   rounded?: 'left' | 'right' | 'none';
   hover: boolean;
   tracker: TrackerDataT;
@@ -105,6 +106,7 @@ export function TrackersTable({
   clickedTracker: (tracker: TrackerDataT) => void;
   flatTrackers: FlatDeviceTracker[];
 }) {
+  const { t } = useTranslation();
   const [hoverTracker, setHoverTracker] = useState<TrackerIdT | null>(null);
 
   const trackerEqual = (id: TrackerIdT | null) =>
@@ -114,7 +116,7 @@ export function TrackersTable({
   return (
     <div className="flex w-full overflow-x-auto py-2">
       <div className="flex flex-col gap-1">
-        <div className="flex px-3">Tracker</div>
+        <div className="flex px-3">{t('tracker.table.column.name')}</div>
         {flatTrackers.map(({ tracker }, index) => (
           <RowContainer
             key={index}
@@ -130,7 +132,7 @@ export function TrackersTable({
         ))}
       </div>
       <div className="flex flex-col gap-1">
-        <div className="flex px-3">Type</div>
+        <div className="flex px-3">{t('tracker.table.column.type')}</div>
         {flatTrackers.map(({ device, tracker }, index) => (
           <RowContainer
             key={index}
@@ -147,7 +149,7 @@ export function TrackersTable({
         ))}
       </div>
       <div className="flex flex-col gap-1">
-        <div className="flex px-3">Battery</div>
+        <div className="flex px-3">{t('tracker.table.column.battery')}</div>
         {flatTrackers.map(({ device, tracker }, index) => (
           <RowContainer
             key={index}
@@ -169,7 +171,7 @@ export function TrackersTable({
         ))}
       </div>
       <div className="flex flex-col gap-1">
-        <div className="flex px-3">Ping</div>
+        <div className="flex px-3">{t('tracker.table.column.ping')}</div>
         {flatTrackers.map(({ device, tracker }, index) => (
           <RowContainer
             key={index}
@@ -193,7 +195,9 @@ export function TrackersTable({
         ))}
       </div>
       <div className="flex flex-col gap-1">
-        <div className="flex px-3 whitespace-nowrap">Rotation X/Y/Z</div>
+        <div className="flex px-3 whitespace-nowrap">
+          {t('tracker.table.column.rotation')}
+        </div>
         {flatTrackers.map(({ tracker }, index) => (
           <RowContainer
             key={index}
@@ -208,7 +212,9 @@ export function TrackersTable({
         ))}
       </div>
       <div className="flex flex-col gap-1">
-        <div className="flex px-3 whitespace-nowrap">Position X/Y/Z</div>
+        <div className="flex px-3 whitespace-nowrap">
+          {t('tracker.table.column.position')}
+        </div>
         {flatTrackers.map(({ tracker }, index) => (
           <RowContainer
             key={index}
@@ -233,7 +239,7 @@ export function TrackersTable({
         ))}
       </div>
       <div className="flex flex-col gap-1 flex-grow">
-        <div className="flex px-3">URL</div>
+        <div className="flex px-3">{t('tracker.table.column.url')}</div>
 
         {flatTrackers.map(({ device, tracker }, index) => (
           <RowContainer
