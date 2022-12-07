@@ -1,5 +1,5 @@
 import classNames from 'classnames';
-import React, { ReactChild } from 'react';
+import React, { ReactNode } from 'react';
 
 export function BigButton({
   text,
@@ -10,7 +10,7 @@ export function BigButton({
 }: {
   text: string;
   disabled?: boolean;
-  icon: ReactChild;
+  icon: ReactNode;
 } & React.HTMLAttributes<HTMLButtonElement>) {
   return (
     <button

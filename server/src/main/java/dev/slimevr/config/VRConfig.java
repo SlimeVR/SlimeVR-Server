@@ -32,6 +32,10 @@ public class VRConfig {
 
 	private final SkeletonConfig skeleton = new SkeletonConfig();
 
+	private final LegTweaksConfig legTweaks = new LegTweaksConfig();
+
+	private final TapDetectionConfig tapDetection = new TapDetectionConfig();
+
 	@JsonDeserialize(using = TrackerConfigMapDeserializer.class)
 	@JsonSerialize(keyUsing = StdKeySerializers.StringKeySerializer.class)
 	private final Map<String, TrackerConfig> trackers = new HashMap<>();
@@ -103,6 +107,14 @@ public class VRConfig {
 
 	public SkeletonConfig getSkeleton() {
 		return skeleton;
+	}
+
+	public LegTweaksConfig getLegTweaks() {
+		return legTweaks;
+	}
+
+	public TapDetectionConfig getTapDetection() {
+		return tapDetection;
 	}
 
 	public OverlayConfig getOverlay() {

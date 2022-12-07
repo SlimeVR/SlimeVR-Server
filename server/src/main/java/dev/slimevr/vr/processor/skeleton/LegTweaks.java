@@ -3,6 +3,7 @@ package dev.slimevr.vr.processor.skeleton;
 import com.jme3.math.FastMath;
 import com.jme3.math.Quaternion;
 import com.jme3.math.Vector3f;
+import dev.slimevr.config.LegTweaksConfig;
 
 import dev.slimevr.vr.processor.TransformNode;
 
@@ -12,6 +13,7 @@ public class LegTweaks {
 	private float floorLevel;
 	private float waistToFloorDist;
 	private float currentDisengagementOffset = 0.0f;
+	private static float currentCorrectionStrength = 0.3f; // default value
 	private boolean initialized = true;
 	private boolean enabled = true; // master switch
 	private boolean floorclipEnabled = false;
@@ -20,8 +22,9 @@ public class LegTweaks {
 	private boolean rightLegActive = false;
 	private boolean leftLegActive = false;
 
-	// skeleton
+	// skeleton and config
 	private HumanSkeleton skeleton;
+	private LegTweaksConfig config;
 
 	// leg data
 	private Vector3f leftFootPosition = new Vector3f();
@@ -60,8 +63,8 @@ public class LegTweaks {
 	 */
 
 	// hyperparameters (clip correction)
-	private static final float DYNAMIC_DISPLACEMENT_CUTOFF = 1.0f;
-	private static final float MAX_DYNAMIC_DISPLACEMENT = 0.06f;
+	static float DYNAMIC_DISPLACEMENT_CUTOFF = 1.0f;
+	static float MAX_DYNAMIC_DISPLACEMENT = 0.06f;
 	private static final float FLOOR_CALIBRATION_OFFSET = 0.015f;
 
 	// hyperparameters (skating correction)
@@ -92,6 +95,7 @@ public class LegTweaks {
 	private static final float STANDING_CUTOFF_VERTICAL = 0.65f;
 	private static final float MAX_DISENGAGMENT_OFFSET = 0.30f;
 	private static final float DEFAULT_ARM_DISTANCE = 0.15f;
+	private static final float MAX_CORRECTION_STRENGTH_DELTA = 1.0f;
 
 	// counters
 	private int leftFramesLocked = 0;
@@ -105,6 +109,13 @@ public class LegTweaks {
 
 	public LegTweaks(HumanSkeleton skeleton) {
 		this.skeleton = skeleton;
+	}
+
+	public LegTweaks(HumanSkeleton skeleton, LegTweaksConfig config) {
+		this.skeleton = skeleton;
+		// set all the hyperparameters from the config
+		this.config = config;
+		updateConfig();
 	}
 
 	public Vector3f getLeftFootPosition() {
@@ -205,6 +216,33 @@ public class LegTweaks {
 
 	public void resetBuffer() {
 		bufferInvalid = true;
+	}
+
+	public void setConfig(LegTweaksConfig config) {
+		this.config = config;
+		updateConfig();
+	}
+
+	public void updateConfig() {
+		LegTweaks.updateHyperParameters(config.getCorrectionStrength());
+	}
+
+	// update the hyper parameters with the config
+	public static void updateHyperParameters(float newStrength) {
+		LegTweakBuffer.SKATING_VELOCITY_THRESHOLD = getScaledHyperParameter(
+			newStrength,
+			LegTweakBuffer.SKATING_VELOCITY_THRESHOLD
+		);
+		LegTweakBuffer.SKATING_ACCELERATION_THRESHOLD = getScaledHyperParameter(
+			newStrength,
+			LegTweakBuffer.SKATING_ACCELERATION_THRESHOLD
+		);
+		currentCorrectionStrength = newStrength;
+	}
+
+	public static float getScaledHyperParameter(float newStrength, float currentValue) {
+		return (currentValue - (currentCorrectionStrength * MAX_CORRECTION_STRENGTH_DELTA))
+			+ (newStrength * MAX_CORRECTION_STRENGTH_DELTA);
 	}
 
 	// set the vectors in this object to the vectors in the skeleton
@@ -365,10 +403,6 @@ public class LegTweaks {
 		// correct for skating if needed
 		if (skatingCorrectionEnabled)
 			correctSkating();
-
-		// currently scuffed
-		// if (skatingCorrectionEnabled && floorclipEnabled)
-		// correctFloat();
 
 		// determine if either leg is in a position to activate or deactivate
 		// (use the buffer to get the positions before corrections)

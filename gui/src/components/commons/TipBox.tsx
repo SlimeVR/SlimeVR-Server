@@ -1,8 +1,8 @@
-import { ReactChild } from 'react';
+import { ReactNode } from 'react';
 import { BulbIcon } from './icon/BulbIcon';
 import { Typography } from './Typography';
 
-export function TipBox({ children }: { children: ReactChild }) {
+export function TipBox({ children }: { children: ReactNode }) {
   return (
     <div className="flex flex-row gap-4 bg-accent-background-50 p-4 rounded-md">
       <div className="fill-accent-background-20 flex flex-col justify-center">

@@ -1,5 +1,5 @@
 import classNames from 'classnames';
-import React, { ReactChild, ReactNode, useMemo } from 'react';
+import React, { ReactNode, useMemo } from 'react';
 import { NavLink } from 'react-router-dom';
 import { LoaderIcon } from './icon/LoaderIcon';
 
@@ -9,8 +9,8 @@ function ButtonContent({
   children,
 }: {
   loading: boolean;
-  icon?: ReactChild;
-  children: ReactChild;
+  icon?: ReactNode;
+  children: ReactNode;
 }) {
   return (
     <>

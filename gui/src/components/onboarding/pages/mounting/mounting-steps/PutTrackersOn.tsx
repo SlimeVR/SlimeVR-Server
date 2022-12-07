@@ -1,3 +1,4 @@
+import { useTranslation } from 'react-i18next';
 import { useTrackers } from '../../../../../hooks/tracker';
 import { BodyDisplay } from '../../../../commons/BodyDisplay';
 import { Button } from '../../../../commons/Button';
@@ -6,36 +7,28 @@ import { Typography } from '../../../../commons/Typography';
 
 export function PutTrackersOnStep({ nextStep }: { nextStep: () => void }) {
   const { trackers } = useTrackers();
+  const { t } = useTranslation();
 
   return (
     <>
       <div className="flex flex-col flex-grow">
         <div className="flex flex-grow flex-col gap-4 max-w-sm">
           <Typography variant="main-title" bold>
-            Put on your trackers
+            {t('onboarding.automatic-mounting.put-trackers-on.title')}
           </Typography>
           <div>
             <Typography color="secondary">
-              To calibrate mounting rotations, we're gonna use the
-            </Typography>
-            <Typography color="secondary">
-              trackers you just assigned. Put on all your trackers,
-            </Typography>
-            <Typography color="secondary">
-              you can see which are which in the figure to the right.
+              {t('onboarding.automatic-mounting.put-trackers-on.description')}
             </Typography>
           </div>
           <div className="flex">
-            <TipBox>
-              Not sure which tracker is which? Shake a tracker and it will
-              highlight the corresponding item.
-            </TipBox>
+            <TipBox>{t('tips.find-tracker')}</TipBox>
           </div>
         </div>
 
         <div className="flex">
           <Button variant="primary" onClick={nextStep}>
-            I have all my trackers on
+            {t('onboarding.automatic-mounting.put-trackers-on.next')}
           </Button>
         </div>
       </div>

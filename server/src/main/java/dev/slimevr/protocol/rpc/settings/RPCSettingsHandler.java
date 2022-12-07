@@ -3,6 +3,7 @@ package dev.slimevr.protocol.rpc.settings;
 import com.google.flatbuffers.FlatBufferBuilder;
 import dev.slimevr.config.FiltersConfig;
 import dev.slimevr.config.OSCConfig;
+import dev.slimevr.config.TapDetectionConfig;
 import dev.slimevr.filtering.TrackerFilters;
 import dev.slimevr.osc.OSCRouter;
 import dev.slimevr.osc.VRCOSCHandler;
@@ -63,9 +64,14 @@ public record RPCSettingsHandler(RPCHandler rpcHandler, ProtocolAPI api) {
 				RPCSettingsBuilder
 					.createModelSettings(
 						fbb,
-						this.api.server.humanPoseProcessor.getSkeletonConfig()
+						this.api.server.humanPoseProcessor.getSkeletonConfig(),
+						this.api.server.getConfigManager().getVrConfig().getLegTweaks()
 					),
-				0 // TODO tap settings
+				RPCSettingsBuilder
+					.createTapDetectionSettings(
+						fbb,
+						this.api.server.getConfigManager().getVrConfig().getTapDetection()
+					)
 			);
 		int outbound = rpcHandler.createRPCMessage(fbb, RpcMessage.SettingsResponse, settings);
 		fbb.finish(outbound);
@@ -73,7 +79,6 @@ public record RPCSettingsHandler(RPCHandler rpcHandler, ProtocolAPI api) {
 	}
 
 	public void onChangeSettingsRequest(GenericConnection conn, RpcMessageHeader messageHeader) {
-
 		ChangeSettingsRequest req = (ChangeSettingsRequest) messageHeader
 			.message(new ChangeSettingsRequest());
 		if (req == null)
@@ -157,11 +162,31 @@ public record RPCSettingsHandler(RPCHandler rpcHandler, ProtocolAPI api) {
 			}
 		}
 
+		if (req.tapDetectionSettings() != null) {
+			TapDetectionConfig tapDetectionConfig = this.api.server
+				.getConfigManager()
+				.getVrConfig()
+				.getTapDetection();
+			var tapDetectionSettings = req.tapDetectionSettings();
+
+			if (tapDetectionSettings != null) {
+				tapDetectionConfig.setEnabled(tapDetectionSettings.tapResetEnabled());
+
+				if (tapDetectionSettings.hasTapResetDelay()) {
+					tapDetectionConfig.setDelay(tapDetectionSettings.tapResetDelay());
+				}
+
+				this.api.server.humanPoseProcessor.getSkeleton().updateTapDetectionConfig();
+			}
+		}
+
 		var modelSettings = req.modelSettings();
 		if (modelSettings != null) {
 			var cfg = this.api.server.humanPoseProcessor.getSkeletonConfig();
+			var legTweaksConfig = this.api.server.getConfigManager().getVrConfig().getLegTweaks();
 			var toggles = modelSettings.toggles();
 			var ratios = modelSettings.ratios();
+			var legTweaks = modelSettings.legTweaks();
 
 			if (toggles != null) {
 				// Note: toggles.has____ returns the same as toggles._____ this
@@ -238,7 +263,16 @@ public record RPCSettingsHandler(RPCHandler rpcHandler, ProtocolAPI api) {
 						);
 				}
 			}
+
+			if (legTweaks != null) {
+				if (legTweaks.hasCorrectionStrength()) {
+					legTweaksConfig.setCorrectionStrength(legTweaks.correctionStrength());
+				}
+				this.api.server.humanPoseProcessor.getSkeleton().updateLegTweaksConfig();
+			}
+
 			cfg.save();
+
 		}
 
 		this.api.server.getConfigManager().saveConfig();

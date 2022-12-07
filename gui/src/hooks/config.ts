@@ -17,6 +17,7 @@ export interface WindowConfig {
 
 export interface Config {
   debug: boolean;
+  lang: string;
   doneOnboarding: boolean;
   watchNewDevices: boolean;
 }
@@ -28,7 +29,11 @@ export interface ConfigContext {
   loadConfig: () => Promise<Config>;
 }
 
-const initialConfig = { doneOnboarding: false, watchNewDevices: true };
+const initialConfig = {
+  doneOnboarding: false,
+  watchNewDevices: true,
+  lang: 'en',
+};
 
 export function useConfigProvider(): ConfigContext {
   const debounceTimer = useRef<NodeJS.Timeout | null>(null);

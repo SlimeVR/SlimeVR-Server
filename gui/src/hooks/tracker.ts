@@ -1,6 +1,6 @@
 import { useEffect, useMemo, useRef, useState } from 'react';
+import { useTranslation } from 'react-i18next';
 import { BodyPart, TrackerDataT, TrackerStatus } from 'solarxr-protocol';
-import { bodypartToString } from '../components/utils/formatting';
 import { RAD_TO_DEG } from '../maths/angle';
 import { QuaternionFromQuatT } from '../maths/quaternion';
 import { useAppContext } from './app';
@@ -38,6 +38,7 @@ export function useTrackers() {
 }
 
 export function useTracker(tracker: TrackerDataT) {
+  const { t } = useTranslation();
   const computeRot = (rot: { x: number; y: number; z: number; w: number }) =>
     QuaternionFromQuatT({
       x: rot.x || 0,
@@ -51,7 +52,7 @@ export function useTracker(tracker: TrackerDataT) {
       useMemo(() => {
         if (tracker.info?.customName) return tracker.info?.customName;
         if (tracker.info?.bodyPart)
-          return bodypartToString(tracker.info?.bodyPart);
+          return t('body-part.' + BodyPart[tracker.info?.bodyPart]);
         return tracker.info?.displayName || 'NONE';
       }, [tracker.info]),
     useRotation: () =>
