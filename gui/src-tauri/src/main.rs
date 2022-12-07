@@ -21,10 +21,10 @@ use which::which_all;
 const CREATE_NO_WINDOW: u32 = 0x0800_0000;
 /// It's an i32 because we check it through exit codes of the process
 const MINIMUM_JAVA_VERSION: i32 = 17;
-const JAVA_BIN: &OsStr = if cfg!(windows) {
-	"java.exe".as_ref()
+const JAVA_BIN: &str = if cfg!(windows) {
+	"java.exe"
 } else {
-	"java".as_ref()
+	"java"
 };
 static POSSIBLE_TITLES: &[&str] = &[
 	"Panicking situation",
@@ -270,7 +270,7 @@ fn valid_java_paths() -> Vec<(OsString, i32)> {
 			.join(JAVA_BIN)
 			.into_os_string()
 	} else {
-		JAVA_BIN.to_os_string()
+		JAVA_BIN.into()
 	};
 	if let Some(main_child) = spawn_java(&main_java, java_version.as_os_str())
 		.expect("Couldn't spawn the main Java binary")
