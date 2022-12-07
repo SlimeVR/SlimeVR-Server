@@ -107,23 +107,28 @@ export function SerialDetectionModal() {
     };
   }, [config, sendRPCPacket, pathname]);
 
+  const closeModal = () => {
+    setOpen(null);
+    setShowWifiForm(false);
+  };
+
   const openSerial = () => {
     nav('/settings/serial', { state: { serialPort: isOpen?.port } });
-    setOpen(null);
+    closeModal();
   };
 
   const openWifi = () => {
     if (!hasWifiCreds) {
       setShowWifiForm(true);
     } else {
-      setOpen(null);
+      closeModal();
       nav('/onboarding/connect-trackers', { state: { alonePage: true } });
     }
   };
 
   const modalWifiSubmit = (form: WifiFormData) => {
     submitWifiCreds(form);
-    setOpen(null);
+    closeModal();
     nav('/onboarding/connect-trackers', { state: { alonePage: true } });
   };
 
@@ -135,7 +140,7 @@ export function SerialDetectionModal() {
   );
 
   return (
-    <BaseModal isOpen={!!isOpen} onRequestClose={() => setOpen(null)}>
+    <BaseModal isOpen={!!isOpen} onRequestClose={closeModal}>
       <div className="flex flex-col gap-3">
         {!showWifiForm && (
           <>
@@ -160,7 +165,7 @@ export function SerialDetectionModal() {
             <Button variant="tiertiary" onClick={openSerial}>
               {t('serial-detection.open-serial')}
             </Button>
-            <Button variant="secondary" onClick={() => setOpen(null)}>
+            <Button variant="secondary" onClick={closeModal}>
               {t('serial-detection.close')}
             </Button>
           </>
@@ -190,7 +195,7 @@ export function SerialDetectionModal() {
             >
               {t('serial-detection.submit')}
             </Button>
-            <Button variant="secondary" onClick={() => setOpen(null)}>
+            <Button variant="secondary" onClick={closeModal}>
               {t('serial-detection.close')}
             </Button>
           </form>
