@@ -169,8 +169,8 @@
       "steamvr": {
         "title": "SteamVR",
         "subtitle": "SteamVR trackers",
-        "description.p0": "Enable or disable specific tracking parts.",
-        "description.p1": "Useful if you want more control over what SlimeVR does.",
+        "description.p0": "Enable or disable specific SteamVR trackers.",
+        "description.p1": "Useful for games or apps that only support certain trackers.",
         "trackers": {
           "waist": "Waist",
           "chest": "Chest",
