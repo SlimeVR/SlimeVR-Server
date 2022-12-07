@@ -69,8 +69,8 @@ public class TapDetectionManager {
 				oscHandler.yawAlign();
 			skeleton.resetTrackersYaw();
 			quickResetDetector.resetDetector();
-            // print
-            System.out.println("quick reset");
+			// print
+			System.out.println("quick reset");
 
 		}
 	}
@@ -84,8 +84,8 @@ public class TapDetectionManager {
 				oscHandler.yawAlign();
 			skeleton.resetTrackersFull();
 			resetDetector.resetDetector();
-            // print
-            System.out.println("reset");
+			// print
+			System.out.println("reset");
 		}
 	}
 
@@ -96,12 +96,12 @@ public class TapDetectionManager {
 		) {
 			skeleton.resetTrackersMounting();
 			mountingResetDetector.resetDetector();
-            // print
-            System.out.println("mounting reset");
+			// print
+			System.out.println("mounting reset");
 		}
 	}
 
-    // returns either the chest tracker, hip tracker, or waist tracker depending
+	// returns either the chest tracker, hip tracker, or waist tracker depending
 	// on which one is available
 	// if none are available, returns null
 	private Tracker getTrackerToWatchQuickReset() {
@@ -115,17 +115,17 @@ public class TapDetectionManager {
 			return null;
 	}
 
-    private Tracker getTrackerToWatchReset() {
-        if (skeleton.leftUpperLegTracker != null)
-            return skeleton.leftUpperLegTracker;
-        return null;
-    }
+	private Tracker getTrackerToWatchReset() {
+		if (skeleton.leftUpperLegTracker != null)
+			return skeleton.leftUpperLegTracker;
+		return null;
+	}
 
-    private Tracker getTrackerToWatchMountingReset() {
-        if (skeleton.rightUpperLegTracker != null)
-            return skeleton.rightUpperLegTracker;
-        return null;
+	private Tracker getTrackerToWatchMountingReset() {
+		if (skeleton.rightUpperLegTracker != null)
+			return skeleton.rightUpperLegTracker;
+		return null;
 
-    }
+	}
 
 }

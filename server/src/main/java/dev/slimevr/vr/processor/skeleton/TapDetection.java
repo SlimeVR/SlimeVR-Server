@@ -3,7 +3,6 @@ package dev.slimevr.vr.processor.skeleton;
 import java.util.LinkedList;
 import com.jme3.math.Vector3f;
 
-import dev.slimevr.config.TapDetectionConfig;
 import dev.slimevr.vr.trackers.Tracker;
 
 
