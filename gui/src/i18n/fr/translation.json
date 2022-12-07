@@ -4,13 +4,13 @@
     "connection-lost": "Connexion avec le serveur perdu. Reconnexion..."
   },
   "tips": {
-    "find-tracker": "Tu n'arrive pas à identifier quel capteur est quoi? Bouge le capteur pour qu'il s'affiche",
+    "find-tracker": "Tu n'arrives pas à identifier quel capteur est lequel? Bouge le capteur pour qu'il s'affiche",
     "do-not-move-heels": "Faites attention à ne pas bouger vos pieds pendant la calibration !"
   },
   "body-part": {
     "NONE": "Non assigné",
     "HEAD": "Tête",
-    "NECK": "cou",
+    "NECK": "Cou",
     "RIGHT_SHOULDER": "Épaule droite",
     "RIGHT_UPPER_ARM": "Épaule gauche",
     "RIGHT_LOWER_ARM": "Avant-bras droit",
@@ -31,20 +31,20 @@
   },
   "skeleton-bone": {
     "NONE": "Aucun",
-    "HEAD": "Decalage de tête",
+    "HEAD": "Décalage de la tête",
     "NECK": "Longueur du cou",
     "TORSO": "Longueur du torse",
     "CHEST": "Distance poitrine",
     "WAIST": "Distance de la taille",
-    "HIP_OFFSET": "Ecart de la hanche",
+    "HIP_OFFSET": "Écart de la hanche",
     "HIPS_WIDTH": "Largeur aux hanches",
     "LEGS_LENGTH": "Longueur des jambes",
     "KNEE_HEIGHT": "Hauteur du genou",
     "FOOT_LENGTH": "Longueur du pied",
-    "FOOT_SHIFT": "Decalage de pied",
+    "FOOT_SHIFT": "Décalage du pied",
     "SKELETON_OFFSET": "Decalage du squelette",
-    "CONTROLLER_DISTANCE_Z": "Contrôleur Distance Z",
-    "CONTROLLER_DISTANCE_Y": "Distance du contrôleur Y",
+    "CONTROLLER_DISTANCE_Z": "Distance Z du contrôleur",
+    "CONTROLLER_DISTANCE_Y": "Distance Y du contrôleur",
     "FOREARM_LENGTH": "Distance avant-bras",
     "SHOULDERS_DISTANCE": "Distance des épaules",
     "SHOULDERS_WIDTH": "Largeur des épaules",
@@ -58,8 +58,8 @@
     "quick": "Réinitialisation rapide"
   },
   "serial-detection": {
-    "new-device.p0": "Nouveau périphérique détecté !",
-    "new-device.p1": "Entrez vos identifiants wifi !",
+    "new-device.p0": "Nouveau périphérique détecté!",
+    "new-device.p1": "Entrez vos identifiants wifi!",
     "new-device.p2": "Veuillez sélectionner ce que vous voulez en faire",
     "open-wifi": "Connectez-vous au Wi-Fi",
     "open-serial": "Ouvrir la console série",
@@ -146,13 +146,13 @@
     "unassign-tracker": "Ne pas attribuer"
   },
   "tracker-selection-menu": {
-    "title": "Quel capteur attribuer au {{bodyPart}}?",
+    "title": "Quel capteur attribuer à {{bodyPart}}?",
     "unassigned": "capteurs non attribués",
     "assigned": "capteurs assignés",
     "dont-assign": "Ne pas attribuer"
   },
   "mounting-selection-menu": {
-    "title": "Où voulez-vous que ce capteur soit ?",
+    "title": "Où voulez-vous que ce capteur soit?",
     "close": "Fermer"
   },
   "settings": {
@@ -170,7 +170,7 @@
         "title": "SteamVR",
         "subtitle": "capteurs SteamVR",
         "description.p0": "Activez ou désactivez des capteurs",
-        "description.p1": "Utile si vous voulez plus de contrôle sur ce que fait SlimeVR.",
+        "description.p1": "Utile pour les jeux qui supportent plus ou moins de capteurs.",
         "trackers": {
           "waist": "Taille",
           "chest": "Poitrine",
@@ -188,7 +188,7 @@
           "title": "Type de filtrage",
           "none": {
             "label": "Pas de filtrage",
-            "description": "Utilisez les rotations telles quelles. "
+            "description": "Utilisez les rotations telles quelles."
           },
           "smoothing": {
             "label": "Lissage",
@@ -207,8 +207,8 @@
         "title": "Paramètres FK",
         "leg-tweak": {
           "title": "Jambes",
-          "description": "Les limites au sol peut réduire ou même éliminer les accrocs avec le sol, mais peut causer des problèmes lorsque vous êtes à genoux. ",
-          "floor-clip": "limites au sol",
+          "description": "Le limitage au sol peut réduire ou même éliminer les accrocs avec le sol, mais peut causer des problèmes lorsque vous êtes à genoux. ",
+          "floor-clip": "Limitage au sol",
           "skating-correction": "Correction du patinage"
         },
         "arm-fk": {
@@ -219,7 +219,7 @@
         "skeleton-settings": {
           "title": "Paramètres du squelette",
           "description": "Activez ou désactivez les paramètres de squelette.",
-          "extended-spine": "Colone vertebrale avancée",
+          "extended-spine": "Colone vertébrale avancée",
           "extended-pelvis": "Bassin avancé",
           "extended-knees": "Genou avancé"
         }
@@ -260,7 +260,7 @@
         "description.p1": "données de suivi pour FBT (fonctionne sur Quest autonome).",
         "enable": {
           "title": "Activer",
-          "description": "Basculer l'envoi et la réception de données",
+          "description": "Activer/désactiver l'envoi et la réception de données",
           "label": "Activer"
         },
         "network": {
@@ -277,7 +277,7 @@
           "address": {
             "title": "Adresse réseau",
             "description": "Choisissez l'adresse à laquelle envoyer les données à VRChat (vérifiez vos paramètres wifi sur votre appareil)",
-            "placeholder": "Adresse IP VRCchat"
+            "placeholder": "Adresse IP VRChat"
           },
           "trackers": {
             "title": "capteurs",
@@ -311,19 +311,19 @@
     },
     "home": {
       "title": "Bienvenue sur SlimeVR",
-      "description.p0": "Rendre le suivi du corps",
+      "description.p0": "Rendre le capturage des mouvements",
       "description.p1": "accessible à tous!",
       "start": "Commencer!"
     },
     "enter-vr": {
-      "back": "Revenir a Attribuer des capteurs",
+      "back": "Revenir à Attribuer des capteurs",
       "title": "Il est temps d'entrer en VR !",
       "description": "Mettez tous vos capteurs puis entrez en VR !",
       "ready": "je suis prêt!"
     },
     "done": {
       "title": "Vous êtes prêt !",
-      "description": "Amusez vous bien :)",
+      "description": "Amusez-vous bien :)",
       "close": "Fermer le guide"
     },
     "connect-tracker": {
@@ -342,7 +342,7 @@
         "start-connecting": "Recherche de capteurs",
         "handshake": "Connecté au serveur"
       },
-      "connected-trackers": "{{amount}} capteurs connectées",
+      "connected-trackers": "{{amount}} capteurs connectés",
       "next": "J'ai connecté tous mes capteurs"
     },
     "assign-trackers": {
@@ -354,14 +354,14 @@
       "next": "J'ai assigné tous les capteurs"
     },
     "manual-mounting": {
-      "back": "Retournez a entrer dans la réalité virtuelle",
+      "back": "Retournez à entrer dans la réalité virtuelle",
       "title": "Rotation manuelle",
       "description": "Cliquez sur chaque capteur et sélectionnez la manière dont ils sont tournés",
       "auto-mounting": "Detecton automatique",
       "next": "Prochaine etape"
     },
     "automatic-mounting": {
-      "back": "Retournez a entrer dans la réalité virtuelle",
+      "back": "Retournez à entrer dans la réalité virtuelle",
       "title": "Detecton de la rotation automatique",
       "description": "Pour que les capteurs SlimeVR fonctionnent, nous devons attribuer une rotation à vos capteurs pour les aligner avec la rotation réelle de votre capteur.",
       "manual-mounting": "Rotation manuelle",
@@ -439,15 +439,15 @@
         "results": "Enregistrement des résultats",
         "processing": "Traitement du résultat",
         "redo": "Refaire l'enregistrement",
-        "confirm": "Les resultas sont bons"
+        "confirm": "Les resultats sont bons"
       },
       "done": {
         "title": "Calibration terminée",
-        "description": "Votre calibration est terminee !"
+        "description": "Votre calibration est terminée!"
       }
     }
   },
   "home": {
-    "no-trackers": "Aucun traceur détecté ou attribué"
+    "no-trackers": "Aucun capteur détecté ou attribué"
   }
 }
