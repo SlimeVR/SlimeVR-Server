@@ -178,7 +178,7 @@ fn main() {
 			return;
 		};
 
-		log::info!("Using Java binary: {:?}", jre);
+		log::info!("Using Java binary: {:?}", java_bin);
 		let (recv, _child) = Command::new(java_bin.to_str().unwrap())
 			.current_dir(p)
 			.args(["-Xmx512M", "-jar", "slimevr.jar", "--no-gui"])
