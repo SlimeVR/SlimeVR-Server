@@ -19,7 +19,6 @@ jobs:
       fail-fast: false
       matrix:
         os: [ubuntu-latest, windows-latest]
-        node-version: [16.x]
 
     runs-on: ${{ matrix.os }}
 
@@ -44,7 +43,7 @@ jobs:
       - name: Use Node.js ${{ matrix.node-version }}
         uses: actions/setup-node@v3
         with:
-          node-version: ${{ matrix.node-version }}
+          node-version-file: '.node-version'
           cache: 'npm'
 
       - name: Build
