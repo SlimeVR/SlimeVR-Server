@@ -50,81 +50,90 @@ public class OSCRouter {
 
 		if (config.getEnabled()) {
 			// Instantiates the OSC receiver
-			try {
-				int port = config.getPortIn();
-				oscReceiver = new OSCPortIn(
-					port
-				);
-				if (lastPortIn != port || !wasListening) {
-					LogManager.info("[OSCRouter] Listening to port " + port);
+			int portIn = config.getPortIn();
+			// Check if another OSC receiver with same port exists
+			for (OSCHandler oscHandler : oscHandlers) {
+				if (oscHandler.getPortIn() == portIn) {
+					oscReceiver = oscHandler.getOscReceiver();
 				}
-				lastPortIn = port;
-			} catch (IOException e) {
-				LogManager
-					.severe(
-						"[OSCRouter] Error listening to the port " + config.getPortIn() + ": " + e
-					);
+			}
+			// Else, create our own OSC receiver
+			if (oscReceiver == null) {
+				try {
+					oscReceiver = new OSCPortIn(portIn);
+					if (lastPortIn != portIn || !wasListening) {
+						LogManager.info("[OSCRouter] Listening to port " + portIn);
+					}
+					lastPortIn = portIn;
+				} catch (IOException e) {
+					LogManager
+						.severe(
+							"[OSCRouter] Error listening to the port "
+								+ config.getPortIn()
+								+ ": "
+								+ e
+						);
+				}
 			}
 
 			// Instantiate the OSC sender
-			int port = config.getPortOut();
+			int portOut = config.getPortOut();
 			InetAddress address;
 			try {
 				address = InetAddress.getByName(config.getAddress());
 			} catch (UnknownHostException e) {
 				throw new RuntimeException(e);
 			}
-			// Check if another OSC sender with same ports and address exists
+			// Check if another OSC sender with same port and address exists
 			for (OSCHandler oscHandler : oscHandlers) {
-				if (oscHandler.getPortIn() == port && oscHandler.getAddress() == address) {
+				if (oscHandler.getPortOut() == portOut && oscHandler.getAddress() == address) {
 					oscSender = oscHandler.getOscSender();
 				}
 			}
 			// Else, create our own OSC sender
 			if (oscSender == null) {
-				{
-					try {
-						oscSender = new OSCPortOut(
-							address,
-							port
-						);
-						if ((lastPortOut != port && lastAddress != address) || !wasConnected) {
-							LogManager
-								.info(
-									"[OSCRouter] Sending to port "
-										+ port
-										+ " at address "
-										+ address.toString()
-								);
-						}
-						lastPortOut = port;
-						lastAddress = address;
-
-						oscSender.connect();
-					} catch (IOException e) {
+				try {
+					oscSender = new OSCPortOut(
+						address,
+						portOut
+					);
+					if ((lastPortOut != portOut && lastAddress != address) || !wasConnected) {
 						LogManager
-							.severe(
-								"[OSCRouter] Error connecting to port "
-									+ config.getPortOut()
-									+ " at the address "
-									+ config.getAddress()
-									+ ": "
-									+ e
+							.info(
+								"[OSCRouter] Sending to port "
+									+ portOut
+									+ " at address "
+									+ address.toString()
 							);
 					}
-				}
+					lastPortOut = portOut;
+					lastAddress = address;
 
-				// Starts listening to messages
-				if (oscReceiver != null) {
-					OSCMessageListener listener = this::handleReceivedMessage;
-					// Listens for any message ("//" is a wildcard)
-					MessageSelector selector = new OSCPatternAddressMessageSelector("//");
-					oscReceiver.getDispatcher().addListener(selector, listener);
-					oscReceiver.startListening();
+					oscSender.connect();
+				} catch (IOException e) {
+					LogManager
+						.severe(
+							"[OSCRouter] Error connecting to port "
+								+ config.getPortOut()
+								+ " at the address "
+								+ config.getAddress()
+								+ ": "
+								+ e
+						);
 				}
+			}
+
+			// Starts listening to messages
+			if (oscReceiver != null) {
+				OSCMessageListener listener = this::handleReceivedMessage;
+				// Listens for any message ("//" is a wildcard)
+				MessageSelector selector = new OSCPatternAddressMessageSelector("//");
+				oscReceiver.getDispatcher().addListener(selector, listener);
+				oscReceiver.startListening();
 			}
 		}
 	}
+
 
 	void handleReceivedMessage(OSCMessageEvent event) {
 		if (oscSender != null && oscSender.isConnected()) {
