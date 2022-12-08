@@ -209,7 +209,8 @@
           "title": "Leg tweaks",
           "description": "Floor-clip can Reduce or even eliminates clipping with the floor but may cause problems when on your knees. Skating-correction corrects for ice skating, but can decrease accuracy in certain movement patterns.",
           "floor-clip": "Floor clip",
-          "skating-correction": "Skating correction"
+          "skating-correction": "Skating correction",
+          "skating-correction-amount": "Skating correction amount"
         },
         "arm-fk": {
           "title": "Arm FK",
