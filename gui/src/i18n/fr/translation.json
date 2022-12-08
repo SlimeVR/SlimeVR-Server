@@ -161,6 +161,7 @@
       "general": "Général",
       "tracker-mechanics": "Fonctionnement du capteur",
       "fk-settings": "Paramètres du squelette",
+      "gesture-control": "Contrôle gestuel",
       "interface": "Interface",
       "utils": "Utilitaires",
       "serial": "Console série"
@@ -210,7 +211,7 @@
           "description": "Le limitage au sol peut réduire ou même éliminer les accrocs avec le sol, mais peut causer des problèmes lorsque vous êtes à genoux. ",
           "floor-clip": "Limitage au sol",
           "skating-correction": "Correction du patinage",
-          "skating-correction-amount": "example amount"
+          "skating-correction-amount": "Force de la correction du patinage"
         },
         "arm-fk": {
           "title": "Bras",
@@ -226,11 +227,11 @@
         }
       },
       "gesture-control": {
-        "title": "Sample title",
-        "subtitle": "Sample subtitle",
-        "description": "Sample description",
-        "enable": "Sample enable",
-        "delay": "Sample delay"
+        "title": "Contrôle gestuel",
+        "subtitle": "Double tape pour réinitialisation rapide",
+        "description": "Active ou désactive le double tape pour réinitialisation rapide. Si activée, double taper sur le capteur le plus haut sur le torse déclenchera une réinitialisation rapide. Le délai est le temps entre la deuxième tape et la réinitialisation rapide.",
+        "enable": "Double tape pour réinitialisation rapide",
+        "delay": "Délai"
       },
       "interface": {
         "title": "Interface",

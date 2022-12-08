@@ -13,7 +13,7 @@ import {
   SettingsRequestT,
   SettingsResponseT,
   SteamVRTrackersSettingT,
-  TapDetectionSettingsT
+  TapDetectionSettingsT,
 } from 'solarxr-protocol';
 import { useConfig } from '../../../hooks/config';
 import { useWebsocketAPI } from '../../../hooks/websocket-api';
