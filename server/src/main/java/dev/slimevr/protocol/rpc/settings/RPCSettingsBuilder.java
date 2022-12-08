@@ -11,15 +11,11 @@ import dev.slimevr.vr.processor.skeleton.SkeletonConfig;
 import dev.slimevr.vr.processor.skeleton.SkeletonConfigToggles;
 import dev.slimevr.vr.processor.skeleton.SkeletonConfigValues;
 import dev.slimevr.vr.trackers.TrackerRole;
-import solarxr_protocol.rpc.FilteringSettings;
-import solarxr_protocol.rpc.OSCSettings;
-import solarxr_protocol.rpc.OSCTrackersSetting;
-import solarxr_protocol.rpc.SteamVRTrackersSetting;
-import solarxr_protocol.rpc.TapDetectionSettings;
+import solarxr_protocol.rpc.*;
+import solarxr_protocol.rpc.settings.LegTweaksSettings;
 import solarxr_protocol.rpc.settings.ModelRatios;
 import solarxr_protocol.rpc.settings.ModelSettings;
 import solarxr_protocol.rpc.settings.ModelToggles;
-import solarxr_protocol.rpc.settings.LegTweaksSettings;
 
 
 public class RPCSettingsBuilder {
@@ -29,18 +25,9 @@ public class RPCSettingsBuilder {
 		OSCConfig config,
 		boolean trackers
 	) {
-		int addressStringOffset = fbb.createString(config.getAddress());
-		OSCSettings.startOSCSettings(fbb);
-		OSCSettings.addEnabled(fbb, config.getEnabled());
-		OSCSettings.addPortIn(fbb, config.getPortIn());
-		OSCSettings.addPortOut(fbb, config.getPortOut());
-		OSCSettings
-			.addAddress(
-				fbb,
-				addressStringOffset
-			);
+		int trackersSettingOffset = 0;
 		if (trackers) {
-			int trackersSettingOffset = OSCTrackersSetting
+			trackersSettingOffset = OSCTrackersSetting
 				.createOSCTrackersSetting(
 					fbb,
 					config.getOSCTrackerRole(TrackerRole.HEAD, false),
@@ -55,11 +42,15 @@ public class RPCSettingsBuilder {
 					config.getOSCTrackerRole(TrackerRole.LEFT_HAND, false)
 						&& config.getOSCTrackerRole(TrackerRole.RIGHT_HAND, false)
 				);
-			OSCSettings
-				.addTrackers(
-					fbb,
-					trackersSettingOffset
-				);
+		}
+		int addressStringOffset = fbb.createString(config.getAddress());
+		OSCSettings.startOSCSettings(fbb);
+		OSCSettings.addEnabled(fbb, config.getEnabled());
+		OSCSettings.addPortIn(fbb, config.getPortIn());
+		OSCSettings.addPortOut(fbb, config.getPortOut());
+		OSCSettings.addAddress(fbb, addressStringOffset);
+		if (trackers) {
+			OSCSettings.addTrackers(fbb, trackersSettingOffset);
 		}
 
 		return OSCSettings.endOSCSettings(fbb);

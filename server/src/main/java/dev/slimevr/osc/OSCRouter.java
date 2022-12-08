@@ -134,7 +134,6 @@ public class OSCRouter {
 		}
 	}
 
-
 	void handleReceivedMessage(OSCMessageEvent event) {
 		if (oscSender != null && oscSender.isConnected()) {
 			OSCMessage oscMessage = new OSCMessage(

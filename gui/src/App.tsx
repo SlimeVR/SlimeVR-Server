@@ -33,7 +33,7 @@ import { TrackersAssignPage } from './components/onboarding/pages/trackers-assig
 import { WifiCredsPage } from './components/onboarding/pages/WifiCreds';
 import { ConfigContextProvider } from './components/providers/ConfigContext';
 import { SerialDetectionModal } from './components/SerialDetectionModal';
-import { OSCSettings } from './components/settings/pages/OSCSettings';
+import { VRCOSCSettings } from './components/settings/pages/VRCOSCSettings';
 import { TopBar } from './components/TopBar';
 import { TrackerSettingsPage } from './components/tracker/TrackerSettings';
 import { useConfig } from './hooks/config';
@@ -72,7 +72,7 @@ function Layout() {
         >
           <Route path="trackers" element={<GeneralSettings />} />
           <Route path="serial" element={<Serial />} />
-          <Route path="osc/vrchat" element={<OSCSettings />} />
+          <Route path="osc/vrchat" element={<VRCOSCSettings />} />
         </Route>
         <Route
           path="/onboarding"

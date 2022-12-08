@@ -8,7 +8,7 @@ import {
   RpcMessage,
   SettingsRequestT,
   SettingsResponseT,
-  VRCOSCSettingsT
+  OSCSettingsT,
 } from 'solarxr-protocol';
 import { useWebsocketAPI } from '../../../hooks/websocket-api';
 import { CheckBox } from '../../commons/Checkbox';
@@ -53,7 +53,7 @@ const defaultValues = {
   },
 };
 
-export function OSCSettings() {
+export function VRCOSCSettings() {
   const { t } = useTranslation();
   const { sendRPCPacket, useRPCPacket } = useWebsocketAPI();
   const { state } = useLocation();
@@ -68,7 +68,7 @@ export function OSCSettings() {
     const settings = new ChangeSettingsRequestT();
 
     if (values.vrchat) {
-      const vrcOsc = new VRCOSCSettingsT();
+      const vrcOsc = new OSCSettingsT();
       vrcOsc.enabled = values.vrchat.enabled;
       vrcOsc.portIn = values.vrchat.portIn;
       vrcOsc.portOut = values.vrchat.portOut;
@@ -95,8 +95,7 @@ export function OSCSettings() {
   useRPCPacket(RpcMessage.SettingsResponse, (settings: SettingsResponseT) => {
     const formData: OSCSettingsForm = defaultValues;
     if (settings.vrcOsc) {
-      if (settings.vrcOsc.enabled)
-        formData.vrchat.enabled = settings.vrcOsc.enabled;
+      formData.vrchat.enabled = settings.vrcOsc.enabled;
       if (settings.vrcOsc.portIn)
         formData.vrchat.portIn = settings.vrcOsc.portIn;
       if (settings.vrcOsc.portOut)
@@ -126,7 +125,7 @@ export function OSCSettings() {
     <form className="flex flex-col gap-2 w-full" ref={pageRef}>
       <SettingsPageLayout icon={<VRCIcon></VRCIcon>} id="vrchat">
         <>
-          <Typography variant="main-title">VRChat</Typography>
+          <Typography variant="main-title">VRChat OSC Trackers</Typography>
           <div className="flex flex-col pt-2 pb-4">
             <Typography color="secondary">
               {t('settings.osc.vrchat.description.p0')}
