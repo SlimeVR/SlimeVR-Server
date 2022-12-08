@@ -153,10 +153,10 @@ public record RPCSettingsHandler(RPCHandler rpcHandler, ProtocolAPI api) {
 			if (oscRouterConfig != null) {
 				OSCRouter oscRouter = this.api.server.getOSCRouter();
 
-				oscRouterConfig.setEnabled(req.vrcOsc().enabled());
-				oscRouterConfig.setPortIn(req.vrcOsc().portIn());
-				oscRouterConfig.setPortOut(req.vrcOsc().portOut());
-				oscRouterConfig.setAddress(req.vrcOsc().address());
+				oscRouterConfig.setEnabled(req.oscRouter().enabled());
+				oscRouterConfig.setPortIn(req.oscRouter().portIn());
+				oscRouterConfig.setPortOut(req.oscRouter().portOut());
+				oscRouterConfig.setAddress(req.oscRouter().address());
 
 				oscRouter.refreshSettings();
 			}

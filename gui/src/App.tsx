@@ -37,6 +37,7 @@ import { VRCOSCSettings } from './components/settings/pages/VRCOSCSettings';
 import { TopBar } from './components/TopBar';
 import { TrackerSettingsPage } from './components/tracker/TrackerSettings';
 import { useConfig } from './hooks/config';
+import { OSCRouterSettings } from './components/settings/pages/OSCRouterSettings';
 
 function Layout() {
   const { loading } = useConfig();
@@ -72,6 +73,7 @@ function Layout() {
         >
           <Route path="trackers" element={<GeneralSettings />} />
           <Route path="serial" element={<Serial />} />
+          <Route path="osc/router" element={<OSCRouterSettings />} />
           <Route path="osc/vrchat" element={<VRCOSCSettings />} />
         </Route>
         <Route
