@@ -224,6 +224,13 @@
           "extended-knees": "ewtended neey"
         }
       },
+      "gesture-control": {
+        "title": "gestauw cantwol",
+        "subtitle": "dubble bap qwick weset",
+        "description": "enawbwe owr disawbwe dubble bap qwick weset. when enawbwed dubble bapping enywhewe on teh hyighest towso twackaw wil activate a qwick weset. deway is teh time between wowgistewing a bap and wowstting.",
+        "enable": "dubble bap qwick weset",
+        "delay": "deway"
+      },
       "interface": {
         "title": "intewface",
         "dev-mode": {
@@ -251,7 +258,8 @@
       "reboot": "weboot",
       "factory-reset": "fawctowy reset",
       "get-infos": "get infows",
-      "serial-select": "sewect a shewyaw pawt"
+      "serial-select": "sewect a shewyaw pawt",
+      "auto-dropdown-item": "awto"
     },
     "osc": {
       "vrchat": {

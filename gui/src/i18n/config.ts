@@ -16,7 +16,7 @@ export const langs = [
     key: 'fr',
   },
   {
-    name: 'English? (OwO)',
+    name: 'Engwish~ (OwO)',
     key: 'owo',
   },
 ];
