@@ -49,6 +49,8 @@ interface SettingsForm {
     skatingCorrection: boolean;
   };
   tapDetection: {
+    tapMountingResetEnabled: boolean;
+    tapQuickResetEnabled: boolean;
     tapResetEnabled: boolean;
     tapResetDelay: number;
   };
@@ -79,7 +81,12 @@ const defaultValues = {
     skatingCorrection: false,
   },
   filtering: { amount: 0.1, type: FilteringType.NONE },
-  tapDetection: { tapResetEnabled: false, tapResetDelay: 0.2 },
+  tapDetection: {
+    tapMountingResetEnabled: false,
+    tapQuickResetEnabled: false,
+    tapResetEnabled: false,
+    tapResetDelay: 0.2,
+  },
   legTweaks: { correctionStrength: 0.3 },
   interface: { devmode: false, watchNewDevices: true },
 };
@@ -125,6 +132,8 @@ export function GeneralSettings() {
     settings.modelSettings = modelSettings;
 
     const tapDetection = new TapDetectionSettingsT();
+    tapDetection.tapMountingResetEnabled = values.tapDetection.tapMountingResetEnabled;
+    tapDetection.tapQuickResetEnabled = values.tapDetection.tapQuickResetEnabled;
     tapDetection.tapResetEnabled = values.tapDetection.tapResetEnabled;
     tapDetection.tapResetDelay = values.tapDetection.tapResetDelay;
     settings.tapDetectionSettings = tapDetection;
@@ -188,6 +197,12 @@ export function GeneralSettings() {
         tapResetEnabled:
           settings.tapDetectionSettings.tapResetEnabled ||
           defaultValues.tapDetection.tapResetEnabled,
+        tapQuickResetEnabled:
+          settings.tapDetectionSettings.tapQuickResetEnabled ||
+          defaultValues.tapDetection.tapQuickResetEnabled,
+        tapMountingResetEnabled:
+          settings.tapDetectionSettings.tapMountingResetEnabled ||
+          defaultValues.tapDetection.tapMountingResetEnabled,
       };
     }
 
