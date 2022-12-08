@@ -1,10 +1,10 @@
-import { ReactChild } from 'react';
+import { ReactNode } from 'react';
 import { useLayout } from '../../hooks/layout';
 import { useOnboarding } from '../../hooks/onboarding';
 import { MainLayoutRoute } from '../MainLayout';
 import { TopBar } from '../TopBar';
 
-export function OnboardingLayout({ children }: { children: ReactChild }) {
+export function OnboardingLayout({ children }: { children: ReactNode }) {
   const { layoutHeight, ref } = useLayout<HTMLDivElement>();
   const { state } = useOnboarding();
 

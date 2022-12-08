@@ -1,7 +1,7 @@
-import { ReactChild } from 'react';
+import { ReactNode } from 'react';
 import { AppContextC, useProvideAppContext } from '../../hooks/app';
 
-export function AppContextProvider({ children }: { children: ReactChild }) {
+export function AppContextProvider({ children }: { children: ReactNode }) {
   const context = useProvideAppContext();
 
   return (

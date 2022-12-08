@@ -1,3 +1,4 @@
+import { useTranslation } from 'react-i18next';
 import { useAutobone } from '../../../../../hooks/autobone';
 import { Button } from '../../../../commons/Button';
 import { TipBox } from '../../../../commons/TipBox';
@@ -12,6 +13,7 @@ export function StartRecording({
   prevStep: () => void;
   variant: 'onboarding' | 'alone';
 }) {
+  const { t } = useTranslation();
   const { startRecording } = useAutobone();
 
   const start = () => {
@@ -24,24 +26,17 @@ export function StartRecording({
       <div className="flex flex-col flex-grow">
         <div className="flex flex-grow flex-col gap-4 max-w-sm">
           <Typography variant="main-title" bold>
-            Get ready to move
+            {t('onboarding.automatic-proportions.start-recording.title')}
           </Typography>
           <div>
             <Typography color="secondary">
-              We're now going to record some specific poses and
-            </Typography>
-            <Typography color="secondary">
-              moves. These will be prompted in the next screen.
-            </Typography>
-            <Typography color="secondary">
-              Be ready to start when the button is pressed!
+              {t(
+                'onboarding.automatic-proportions.start-recording.description'
+              )}
             </Typography>
           </div>
           <div className="flex">
-            <TipBox>
-              Make sure you do not move your heels, they must stay at the same
-              place while recording.
-            </TipBox>
+            <TipBox>{t('tips.find-tracker')}</TipBox>
           </div>
         </div>
 
@@ -50,10 +45,10 @@ export function StartRecording({
             variant={variant === 'onboarding' ? 'secondary' : 'tiertiary'}
             onClick={prevStep}
           >
-            Previous step
+            {t('onboarding.automatic-proportions.prev-step')}
           </Button>
           <Button variant="primary" onClick={start}>
-            Start Recording
+            {t('onboarding.automatic-proportions.start-recording.next')}
           </Button>
         </div>
       </div>

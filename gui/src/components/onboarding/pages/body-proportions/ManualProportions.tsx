@@ -1,4 +1,5 @@
 import { useForm } from 'react-hook-form';
+import { useTranslation } from 'react-i18next';
 import { RpcMessage, SkeletonResetAllRequestT } from 'solarxr-protocol';
 import { useOnboarding } from '../../../../hooks/onboarding';
 import { useWebsocketAPI } from '../../../../hooks/websocket-api';
@@ -10,6 +11,7 @@ import { Typography } from '../../../commons/Typography';
 import { BodyProportions } from './BodyProportions';
 
 export function ManualProportionsPage() {
+  const { t } = useTranslation();
   const { applyProgress, skipSetup, state } = useOnboarding();
   const { sendRPCPacket } = useWebsocketAPI();
 
@@ -36,15 +38,15 @@ export function ManualProportionsPage() {
               <div className="flex flex-col">
                 {!state.alonePage && (
                   <ArrowLink to="/onboarding/reset-tutorial" direction="left">
-                    Go Back to Reset tutorial
+                    {t('onboarding.manual-proportions.back')}
                   </ArrowLink>
                 )}
                 <Typography variant="main-title">
-                  Manual Body Proportions
+                  {t('onboarding.manual-proportions.title')}
                 </Typography>
                 <CheckBox
                   control={control}
-                  label="Precision adjust"
+                  label={t('onboarding.manual-proportions.precision')}
                   name="precise"
                   variant="toggle"
                 ></CheckBox>
@@ -63,11 +65,11 @@ export function ManualProportionsPage() {
           <div className="flex flex-grow gap-3">
             {!state.alonePage && (
               <Button variant="secondary" to="/" onClick={skipSetup}>
-                Skip setup
+                {t('onboarding.skip')}
               </Button>
             )}
             <Button variant="secondary" onClick={resetAll}>
-              Reset all proportions
+              {t('reset.reset-all')}
             </Button>
           </div>
           <div className="flex gap-3">
@@ -76,11 +78,11 @@ export function ManualProportionsPage() {
               state={{ alonePage: state.alonePage }}
               to="/onboarding/body-proportions/auto"
             >
-              Automatic calibration
+              {t('onboarding.manual-proportions.auto')}
             </Button>
             {!state.alonePage && (
               <Button variant="primary" to="/onboarding/done">
-                Continue
+                {t('onboarding.continue')}
               </Button>
             )}
           </div>

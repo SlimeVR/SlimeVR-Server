@@ -1,5 +1,6 @@
 import classNames from 'classnames';
-import { ReactChild, useMemo } from 'react';
+import { ReactNode, useMemo } from 'react';
+import { useTranslation } from 'react-i18next';
 import { NavLink, useLocation, useMatch } from 'react-router-dom';
 import { Typography } from '../commons/Typography';
 
@@ -10,7 +11,7 @@ export function SettingsLink({
 }: {
   to: string;
   scrollTo?: string;
-  children: ReactChild;
+  children: ReactNode;
 }) {
   const { state } = useLocation();
   const doesMatch = useMatch({
@@ -39,23 +40,31 @@ export function SettingsLink({
 }
 
 export function SettingsSidebar() {
+  const { t } = useTranslation();
   return (
     <div className="flex flex-col px-5 w-[280px] min-w-[280px] py-5 gap-3 overflow-y-auto bg-background-70 rounded-lg">
-      <Typography variant="main-title">Settings</Typography>
+      <Typography variant="main-title">
+        {t('settings.sidebar.title')}
+      </Typography>
       <div className="flex flex-col gap-3">
-        <Typography variant="section-title">General</Typography>
+        <Typography variant="section-title">
+          {t('settings.sidebar.general')}
+        </Typography>
         <div className="flex flex-col gap-2">
           <SettingsLink to="/settings/trackers" scrollTo="steamvr">
             SteamVR
           </SettingsLink>
           <SettingsLink to="/settings/trackers" scrollTo="mechanics">
-            Tracker mechanics
+            {t('settings.sidebar.tracker-mechanics')}
           </SettingsLink>
           <SettingsLink to="/settings/trackers" scrollTo="fksettings">
-            FK settings
+            {t('settings.sidebar.fk-settings')}
+          </SettingsLink>
+          <SettingsLink to="/settings/trackers" scrollTo="gestureControl">
+            Gesture control
           </SettingsLink>
           <SettingsLink to="/settings/trackers" scrollTo="interface">
-            Interface
+            {t('settings.sidebar.interface')}
           </SettingsLink>
         </div>
       </div>
@@ -68,9 +77,13 @@ export function SettingsSidebar() {
         </div>
       </div>
       <div className="flex flex-col gap-3">
-        <Typography variant="section-title">Utilities</Typography>
+        <Typography variant="section-title">
+          {t('settings.sidebar.utils')}
+        </Typography>
         <div className="flex flex-col gap-2">
-          <SettingsLink to="/settings/serial">Serial Console</SettingsLink>
+          <SettingsLink to="/settings/serial">
+            {t('settings.sidebar.serial')}
+          </SettingsLink>
         </div>
       </div>
     </div>
