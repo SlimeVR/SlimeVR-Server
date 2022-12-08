@@ -1,6 +1,6 @@
 {
   "name": "slimevr-ui",
-  "version": "0.4.0",
+  "version": "0.5.0",
   "private": true,
   "dependencies": {
     "@fontsource/poppins": "^4.5.8",
