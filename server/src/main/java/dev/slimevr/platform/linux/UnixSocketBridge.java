@@ -113,10 +113,7 @@ public class UnixSocketBridge extends SteamVRBridge implements AutoCloseable {
 		boolean readAnything = false;
 		// if buffer has 4 bytes at least, we got the message size!
 		if (read > 0 && dst.remaining() >= 4) {
-			int messageLength = dst.get(0);
-			messageLength += dst.get(1) << 8;
-			messageLength += dst.get(2) << 16;
-			messageLength += dst.get(3) << 24;
+			int messageLength = dst.get(0) | dst.get(1) << 8 | dst.get(2) << 16 | dst.get(3) << 24;
 			if (messageLength > 1024) { // Overflow
 				LogManager
 					.severe(
