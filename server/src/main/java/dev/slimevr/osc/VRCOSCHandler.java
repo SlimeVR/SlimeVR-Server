@@ -231,16 +231,26 @@ public class VRCOSCHandler {
 
 					oscArgs.clear();
 					try {
-						// 0 = roll, 1 = pitch, 2 = yaw
-						Rotation apacheRot = new Rotation(quatBuf.getW(), quatBuf.getX(), quatBuf.getY(), quatBuf.getZ(), false);
+						// Make an Apache Math rotation, this has better
+						// utilities for conversion
+						Rotation apacheRot = new Rotation(
+							quatBuf.getW(),
+							quatBuf.getX(),
+							quatBuf.getY(),
+							quatBuf.getZ(),
+							false
+						);
+
 						// X = pitch, Y = yaw, Z = roll
-						double[] apacheEuler = apacheRot.getAngles(RotationOrder.ZXY, RotationConvention.VECTOR_OPERATOR);
-						
+						double[] apacheEuler = apacheRot
+							.getAngles(RotationOrder.ZXY, RotationConvention.VECTOR_OPERATOR);
+
 						// Order of application is ZXY (but sent in XYZ order)
-						// pitch (+X is forward), yaw (+Y is clockwise), roll (+Z is left)
-						oscArgs.add((float)(apacheEuler[1] * FastMath.RAD_TO_DEG));
-						oscArgs.add((float)(apacheEuler[2] * FastMath.RAD_TO_DEG));
-						oscArgs.add((float)(-apacheEuler[0] * FastMath.RAD_TO_DEG));
+						// pitch (+X is forward), yaw (+Y is clockwise), roll
+						// (+Z is left)
+						oscArgs.add((float) (apacheEuler[1] * FastMath.RAD_TO_DEG));
+						oscArgs.add((float) (apacheEuler[2] * FastMath.RAD_TO_DEG));
+						oscArgs.add((float) (-apacheEuler[0] * FastMath.RAD_TO_DEG));
 					} catch (Exception e) {
 						oscArgs.add(0f);
 						oscArgs.add(0f);
