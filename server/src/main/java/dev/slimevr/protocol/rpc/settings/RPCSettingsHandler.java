@@ -143,8 +143,10 @@ public record RPCSettingsHandler(RPCHandler rpcHandler, ProtocolAPI api) {
 
 			if (tapDetectionSettings != null) {
 				tapDetectionConfig.setResetEnabled(tapDetectionSettings.tapResetEnabled());
-				tapDetectionConfig.setQuickResetEnabled(tapDetectionSettings.tapQuickResetEnabled());
-				tapDetectionConfig.setMountingResetEnabled(tapDetectionSettings.tapMountingResetEnabled());
+				tapDetectionConfig
+					.setQuickResetEnabled(tapDetectionSettings.tapQuickResetEnabled());
+				tapDetectionConfig
+					.setMountingResetEnabled(tapDetectionSettings.tapMountingResetEnabled());
 
 				if (tapDetectionSettings.hasTapResetDelay()) {
 					tapDetectionConfig.setDelay(tapDetectionSettings.tapResetDelay());
