@@ -1,10 +1,10 @@
-import { ReactChild } from 'react';
+import { ReactNode } from 'react';
 import { useLayout } from '../../hooks/layout';
 import { Navbar } from '../Navbar';
 import { TopBar } from '../TopBar';
 import { SettingsSidebar } from './SettingsSidebar';
 
-export function SettingsLayoutRoute({ children }: { children: ReactChild }) {
+export function SettingsLayoutRoute({ children }: { children: ReactNode }) {
   const { layoutHeight, ref } = useLayout<HTMLDivElement>();
 
   return (

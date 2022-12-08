@@ -47,6 +47,12 @@ public abstract class Skeleton {
 	public abstract void resetTrackersYaw();
 
 	@VRServerThread
+	public abstract void updateLegTweaksConfig();
+
+	@VRServerThread
+	public abstract void updateTapDetectionConfig();
+
+	@VRServerThread
 	public abstract boolean[] getLegTweaksState();
 
 	@VRServerThread

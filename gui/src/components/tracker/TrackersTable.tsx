@@ -1,9 +1,11 @@
 import classNames from 'classnames';
-import { MouseEventHandler, ReactChild, useState } from 'react';
+import { IPv4 } from 'ip-num/IPNumber';
+import { MouseEventHandler, ReactNode, useState } from 'react';
+import { useTranslation } from 'react-i18next';
 import {
   TrackerDataT,
   TrackerIdT,
-  TrackerStatus as TrackerStatusEnum,
+  TrackerStatus as TrackerStatusEnum
 } from 'solarxr-protocol';
 import { FlatDeviceTracker } from '../../hooks/app';
 import { useTracker } from '../../hooks/tracker';
@@ -12,7 +14,6 @@ import { Typography } from '../commons/Typography';
 import { TrackerBattery } from './TrackerBattery';
 import { TrackerStatus } from './TrackerStatus';
 import { TrackerWifi } from './TrackerWifi';
-import { IPv4 } from 'ip-num/IPNumber';
 
 export function TrackerNameCol({ tracker }: { tracker: TrackerDataT }) {
   const { useName } = useTracker(tracker);
@@ -33,14 +34,16 @@ export function TrackerNameCol({ tracker }: { tracker: TrackerDataT }) {
 }
 
 export function TrackerRotCol({ tracker }: { tracker: TrackerDataT }) {
-  const { useRotation } = useTracker(tracker);
+  const { useRotationDegrees } = useTracker(tracker);
 
-  const rot = useRotation();
+  const rot = useRotationDegrees();
 
   return (
     <Typography color="secondary">
       <span className="whitespace-nowrap">
-        {`${rot.x.toFixed(0)} / ${rot.y.toFixed(0)} / ${rot.z.toFixed(0)}`}
+        {`${rot.pitch.toFixed(0)} / ${rot.yaw.toFixed(0)} / ${rot.roll.toFixed(
+          0
+        )}`}
       </span>
     </Typography>
   );
@@ -55,7 +58,7 @@ export function RowContainer({
   onMouseOver,
   onMouseOut,
 }: {
-  children: ReactChild;
+  children: ReactNode;
   rounded?: 'left' | 'right' | 'none';
   hover: boolean;
   tracker: TrackerDataT;
@@ -103,6 +106,7 @@ export function TrackersTable({
   clickedTracker: (tracker: TrackerDataT) => void;
   flatTrackers: FlatDeviceTracker[];
 }) {
+  const { t } = useTranslation();
   const [hoverTracker, setHoverTracker] = useState<TrackerIdT | null>(null);
 
   const trackerEqual = (id: TrackerIdT | null) =>
@@ -112,7 +116,7 @@ export function TrackersTable({
   return (
     <div className="flex w-full overflow-x-auto py-2">
       <div className="flex flex-col gap-1">
-        <div className="flex px-3">Tracker</div>
+        <div className="flex px-3">{t('tracker.table.column.name')}</div>
         {flatTrackers.map(({ tracker }, index) => (
           <RowContainer
             key={index}
@@ -128,7 +132,7 @@ export function TrackersTable({
         ))}
       </div>
       <div className="flex flex-col gap-1">
-        <div className="flex px-3">Type</div>
+        <div className="flex px-3">{t('tracker.table.column.type')}</div>
         {flatTrackers.map(({ device, tracker }, index) => (
           <RowContainer
             key={index}
@@ -145,7 +149,7 @@ export function TrackersTable({
         ))}
       </div>
       <div className="flex flex-col gap-1">
-        <div className="flex px-3">Battery</div>
+        <div className="flex px-3">{t('tracker.table.column.battery')}</div>
         {flatTrackers.map(({ device, tracker }, index) => (
           <RowContainer
             key={index}
@@ -167,7 +171,7 @@ export function TrackersTable({
         ))}
       </div>
       <div className="flex flex-col gap-1">
-        <div className="flex px-3">Ping</div>
+        <div className="flex px-3">{t('tracker.table.column.ping')}</div>
         {flatTrackers.map(({ device, tracker }, index) => (
           <RowContainer
             key={index}
@@ -191,7 +195,9 @@ export function TrackersTable({
         ))}
       </div>
       <div className="flex flex-col gap-1">
-        <div className="flex px-3 whitespace-nowrap">Rotation X/Y/Z</div>
+        <div className="flex px-3 whitespace-nowrap">
+          {t('tracker.table.column.rotation')}
+        </div>
         {flatTrackers.map(({ tracker }, index) => (
           <RowContainer
             key={index}
@@ -206,7 +212,9 @@ export function TrackersTable({
         ))}
       </div>
       <div className="flex flex-col gap-1">
-        <div className="flex px-3 whitespace-nowrap">Position X/Y/Z</div>
+        <div className="flex px-3 whitespace-nowrap">
+          {t('tracker.table.column.position')}
+        </div>
         {flatTrackers.map(({ tracker }, index) => (
           <RowContainer
             key={index}
@@ -231,7 +239,7 @@ export function TrackersTable({
         ))}
       </div>
       <div className="flex flex-col gap-1 flex-grow">
-        <div className="flex px-3">URL</div>
+        <div className="flex px-3">{t('tracker.table.column.url')}</div>
 
         {flatTrackers.map(({ device, tracker }, index) => (
           <RowContainer

@@ -1,6 +1,6 @@
 {
   "name": "slimevr-ui",
-  "version": "0.4.0",
+  "version": "0.5.0",
   "private": true,
   "dependencies": {
     "@fontsource/poppins": "^4.5.8",
@@ -15,6 +15,7 @@
     "file-loader": "^6.2.0",
     "flatbuffers": "^22.10.26",
     "fs-extra": "^10.0.0",
+    "i18next": "^22.0.6",
     "identity-obj-proxy": "^3.0.0",
     "ip-num": "^1.4.1",
     "postcss-flexbugs-fixes": "^5.0.2",
@@ -26,6 +27,7 @@
     "react-dev-utils": "^12.0.0",
     "react-dom": "^18.0.0",
     "react-hook-form": "^7.29.0",
+    "react-i18next": "^12.0.0",
     "react-modal": "3.15.1",
     "react-router-dom": "^6.2.2",
     "semver": "^7.3.5",
@@ -40,7 +42,8 @@
     "lint": "eslint src/**/*.{js,jsx,ts,tsx,json}",
     "lint:fix": "eslint --fix src/**/*.{js,jsx,ts,tsx,json}",
     "format": "prettier --write src/**/*.{js,jsx,ts,tsx,css,md,json} --config ./.prettierrc",
-    "preview-vite": "vite preview"
+    "preview-vite": "vite preview",
+    "javaversion-build": "cd src-tauri/src/ && javac JavaVersion.java && jar cvfe JavaVersion.jar JavaVersion JavaVersion.class"
   },
   "eslintConfig": {
     "extends": [

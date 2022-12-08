@@ -1,27 +1,52 @@
-import { useState } from 'react';
+import { useMemo } from 'react';
+import { useTranslation } from 'react-i18next';
 import { ResetRequestT, ResetType, RpcMessage } from 'solarxr-protocol';
+import { useCountdown } from '../../hooks/countdown';
 import { useWebsocketAPI } from '../../hooks/websocket-api';
 import { BigButton } from '../commons/BigButton';
+import { Button } from '../commons/Button';
 import {
   MountingResetIcon,
   QuickResetIcon,
-  ResetIcon,
+  ResetIcon
 } from '../commons/icon/ResetIcon';
 
-export function ResetButton({ type }: { type: ResetType }) {
-  const [resetting, setResetting] = useState(false);
-  const [timer, setDisplayTimer] = useState(0);
+export function ResetButton({
+  type,
+  variant = 'big',
+  onReseted,
+}: {
+  type: ResetType;
+  variant: 'big' | 'small';
+  onReseted?: () => void;
+}) {
+  const { t } = useTranslation();
   const { sendRPCPacket } = useWebsocketAPI();
 
-  const getText = () => {
+  const reset = () => {
+    const req = new ResetRequestT();
+    req.resetType = type;
+    sendRPCPacket(RpcMessage.ResetRequest, req);
+  };
+
+  const { isCounting, startCountdown, timer } = useCountdown({
+    onCountdownEnd: () => {
+      reset();
+      if (onReseted) onReseted();
+    },
+  });
+
+  const text = useMemo(() => {
     switch (type) {
       case ResetType.Quick:
-        return 'Quick Reset';
+        return t('reset.quick');
       case ResetType.Mounting:
-        return 'Reset Mounting';
+        return t('reset.mounting');
+      case ResetType.Full:
+        return t('reset.full');
     }
-    return 'Reset';
-  };
+    return t('reset.full');
+  }, [type]);
 
   const getIcon = () => {
     switch (type) {
@@ -33,33 +58,37 @@ export function ResetButton({ type }: { type: ResetType }) {
     return <ResetIcon width={20} />;
   };
 
-  const TIMER_DURATION = 3;
-  const resetStart = () => {
-    setResetting(true);
-    setDisplayTimer(TIMER_DURATION);
-    if (type !== ResetType.Quick) {
-      for (let i = 1; i < TIMER_DURATION; i++) {
-        setTimeout(() => setDisplayTimer(TIMER_DURATION - i), i * 1000);
-      }
-      setTimeout(resetEnd, TIMER_DURATION * 1000);
-    } else {
-      resetEnd();
-    }
+  const variantsMap = {
+    small:
+      type == ResetType.Quick ? (
+        <Button icon={getIcon()} onClick={reset} variant="primary">
+          {text}
+        </Button>
+      ) : (
+        <Button
+          icon={getIcon()}
+          onClick={startCountdown}
+          variant="primary"
+          disabled={isCounting}
+        >
+          <div className="relative">
+            <div className="opacity-0 h-0">{text}</div>
+            {!isCounting ? text : String(timer)}
+          </div>
+        </Button>
+      ),
+    big:
+      type == ResetType.Quick ? (
+        <BigButton text={text} icon={getIcon()} onClick={reset}></BigButton>
+      ) : (
+        <BigButton
+          text={!isCounting ? text : String(timer)}
+          icon={getIcon()}
+          onClick={startCountdown}
+          disabled={isCounting}
+        ></BigButton>
+      ),
   };
 
-  const resetEnd = () => {
-    const req = new ResetRequestT();
-    req.resetType = type;
-    sendRPCPacket(RpcMessage.ResetRequest, req);
-    setResetting(false);
-  };
-
-  return (
-    <BigButton
-      text={!resetting ? getText() : String(timer)}
-      icon={getIcon()}
-      onClick={resetStart}
-      disabled={resetting}
-    ></BigButton>
-  );
+  return variantsMap[variant];
 }

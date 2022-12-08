@@ -1,4 +1,5 @@
 import classNames from 'classnames';
+import { useTranslation } from 'react-i18next';
 import { useAutobone } from '../../../../../hooks/autobone';
 import { Button } from '../../../../commons/Button';
 import { Typography } from '../../../../commons/Typography';
@@ -12,6 +13,7 @@ export function VerifyResultsStep({
   prevStep: () => void;
   variant: 'onboarding' | 'alone';
 }) {
+  const { t } = useTranslation();
   const {
     startRecording,
     hasCalibration,
@@ -32,20 +34,22 @@ export function VerifyResultsStep({
 
   return (
     <>
-      <div className="flex flex-col flex-grow justify-between">
-        <div className="flex flex-col gap-4 max-w-sm">
+      <div className="flex flex-col flex-grow justify-between gap-1">
+        <div className="flex flex-col gap-1 max-w-sm">
           <Typography variant="main-title" bold>
-            Verify results
+            {t('onboarding.automatic-proportions.verify-results.title')}
           </Typography>
           <div>
             <Typography color="secondary">
-              Check the results below, do they look correct?
+              {t('onboarding.automatic-proportions.verify-results.description')}
             </Typography>
           </div>
         </div>
         <div className="flex w-full items-center flex-col">
           <div className="flex flex-col pt-1 gap-2 justify-center w-full max-w-xs">
-            <Typography bold>Recording results</Typography>
+            <Typography bold>
+              {t('onboarding.automatic-proportions.verify-results.results')}
+            </Typography>
             <div
               className={classNames(
                 'flex flex-col  w-full p-4 rounded-md gap-2',
@@ -60,7 +64,11 @@ export function VerifyResultsStep({
                 </div>
               ))}
               {!hasCalibration && hasRecording && (
-                <Typography>Processing recording...</Typography>
+                <Typography>
+                  {t(
+                    'onboarding.automatic-proportions.verify-results.processing'
+                  )}
+                </Typography>
               )}
             </div>
           </div>
@@ -70,10 +78,10 @@ export function VerifyResultsStep({
             variant={variant === 'onboarding' ? 'secondary' : 'tiertiary'}
             onClick={redo}
           >
-            Redo recording
+            {t('onboarding.automatic-proportions.verify-results.redo')}
           </Button>
           <Button variant="primary" onClick={apply}>
-            They're correct
+            {t('onboarding.automatic-proportions.verify-results.confirm')}
           </Button>
         </div>
       </div>

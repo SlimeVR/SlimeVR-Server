@@ -1,17 +1,25 @@
 import { useState } from 'react';
+import { useTranslation } from 'react-i18next';
 import { RpcMessage, SkeletonResetAllRequestT } from 'solarxr-protocol';
 import {
   AutoboneContextC,
-  useProvideAutobone,
+  useProvideAutobone
 } from '../../../../hooks/autobone';
 import { useOnboarding } from '../../../../hooks/onboarding';
 import { useWebsocketAPI } from '../../../../hooks/websocket-api';
 import { ArrowLink } from '../../../commons/ArrowLink';
 import { Button } from '../../../commons/Button';
 import { Typography } from '../../../commons/Typography';
-import { AutoboneStepper } from './AutoboneStepper';
+import { StepperSlider } from '../../StepperSlider';
+import { DoneStep } from './autobone-steps/Done';
+import { PreparationStep } from './autobone-steps/Preparation';
+import { PutTrackersOnStep } from './autobone-steps/PutTrackersOn';
+import { Recording } from './autobone-steps/Recording';
+import { StartRecording } from './autobone-steps/StartRecording';
+import { VerifyResultsStep } from './autobone-steps/VerifyResults';
 
 export function AutomaticProportionsPage() {
+  const { t } = useTranslation();
   const { applyProgress, skipSetup, state } = useOnboarding();
   const { sendRPCPacket } = useWebsocketAPI();
   const context = useProvideAutobone();
@@ -38,31 +46,37 @@ export function AutomaticProportionsPage() {
           <div className="flex flex-col max-w-lg gap-3">
             {!state.alonePage && (
               <ArrowLink to="/onboarding/reset-tutorial" direction="left">
-                Go Back to Reset tutorial
+                {t('onboarding.automatic-proportions.back')}
               </ArrowLink>
             )}
-            <Typography variant="main-title">Measure your body</Typography>
+            <Typography variant="main-title">
+              {t('onboarding.automatic-proportions.title')}
+            </Typography>
             <div>
               <Typography color="secondary">
-                For SlimeVR trackers to work, we need to know the length of your
-                bones.
-              </Typography>
-              <Typography color="secondary">
-                This short calibration will measure it for you.
+                {t('onboarding.automatic-proportions.description')}
               </Typography>
             </div>
           </div>
           <div className="flex">
-            <AutoboneStepper
+            <StepperSlider
               variant={state.alonePage ? 'alone' : 'onboarding'}
-            ></AutoboneStepper>
+              steps={[
+                { type: 'numbered', component: PutTrackersOnStep },
+                { type: 'numbered', component: PreparationStep },
+                { type: 'numbered', component: StartRecording },
+                { type: 'fullsize', component: Recording },
+                { type: 'numbered', component: VerifyResultsStep },
+                { type: 'fullsize', component: DoneStep },
+              ]}
+            ></StepperSlider>
           </div>
         </div>
         <div className="w-full pb-4 flex flex-row">
           <div className="flex flex-grow gap-3">
             {!state.alonePage && (
               <Button variant="secondary" to="/" onClick={skipSetup}>
-                Skip setup
+                {t('onboarding.skip')}
               </Button>
             )}
             <Button
@@ -70,7 +84,7 @@ export function AutomaticProportionsPage() {
               onClick={resetAll}
               disabled={resetDisabled}
             >
-              Reset all proportions
+              {t('reset.reset-all')}
             </Button>
           </div>
           <div className="flex gap-3">
@@ -79,11 +93,11 @@ export function AutomaticProportionsPage() {
               state={{ alonePage: state.alonePage }}
               to="/onboarding/body-proportions/manual"
             >
-              Manual calibration
+              {t('onboarding.automatic-proportions.manual')}
             </Button>
             {!state.alonePage && (
               <Button variant="primary" to="/onboarding/done">
-                Continue
+                {t('onboarding.continue')}
               </Button>
             )}
           </div>

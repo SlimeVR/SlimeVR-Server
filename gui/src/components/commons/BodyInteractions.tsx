@@ -1,12 +1,5 @@
 import classNames from 'classnames';
-import {
-  ReactChild,
-  useEffect,
-  useLayoutEffect,
-  useMemo,
-  useRef,
-  useState,
-} from 'react';
+import { ReactNode, useLayoutEffect, useRef, useState } from 'react';
 import { BodyPart } from 'solarxr-protocol';
 import { PersonFrontIcon } from './PersonFrontIcon';
 
@@ -18,8 +11,8 @@ export function BodyInteractions({
   dotsSize = 20,
   variant = 'tracker-select',
 }: {
-  leftControls?: ReactChild;
-  rightControls?: ReactChild;
+  leftControls?: ReactNode;
+  rightControls?: ReactNode;
   width?: number;
   dotsSize?: number;
   variant?: 'dots' | 'tracker-select';

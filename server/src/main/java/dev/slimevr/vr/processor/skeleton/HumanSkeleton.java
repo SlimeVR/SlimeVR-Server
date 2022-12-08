@@ -138,13 +138,17 @@ public class HumanSkeleton extends Skeleton implements SkeletonConfigCallback {
 	protected LegTweaks legTweaks = new LegTweaks(this);
 	// #endregion
 
+	// #region tap detection
+	protected TapDetection tapDetection = new TapDetection(this);
+	// #endregion
+
 	// #region Constructors
 	protected HumanSkeleton(List<? extends ComputedHumanPoseTracker> computedTrackers) {
 		assembleSkeleton();
 
 		// Set default skeleton configuration (callback automatically sets
 		// initial offsets)
-		skeletonConfig = new SkeletonConfig(true, this);
+		skeletonConfig = new SkeletonConfig(true, this, this);
 
 		if (computedTrackers != null) {
 			setComputedTrackers(computedTrackers);
@@ -160,6 +164,14 @@ public class HumanSkeleton extends Skeleton implements SkeletonConfigCallback {
 		this(computedTrackers);
 		setTrackersFromServer(server);
 		skeletonConfig.loadFromConfig(server.getConfigManager());
+
+		tapDetection = new TapDetection(
+			this,
+			server.getVRCOSCHandler(),
+			server.getConfigManager().getVrConfig().getTapDetection()
+		);
+		legTweaks.setConfig(server.getConfigManager().getVrConfig().getLegTweaks());
+
 	}
 
 	public HumanSkeleton(
@@ -184,9 +196,9 @@ public class HumanSkeleton extends Skeleton implements SkeletonConfigCallback {
 		if (altConfigs != null) {
 			// Set alts first, so if there's any overlap it doesn't affect the
 			// values
-			skeletonConfig.setConfigs(altConfigs, null, null);
+			skeletonConfig.setOffsets(altConfigs);
 		}
-		skeletonConfig.setConfigs(configs, null, null);
+		skeletonConfig.setOffsets(configs);
 	}
 
 	public HumanSkeleton(
@@ -772,6 +784,7 @@ public class HumanSkeleton extends Skeleton implements SkeletonConfigCallback {
 	@VRServerThread
 	@Override
 	public void updatePose() {
+		tapDetection.update();
 		updateLocalTransforms();
 		updateRootTrackers();
 		updateComputedTrackers();
@@ -1824,6 +1837,14 @@ public class HumanSkeleton extends Skeleton implements SkeletonConfigCallback {
 			}
 		}
 		this.legTweaks.resetBuffer();
+	}
+
+	public void updateTapDetectionConfig() {
+		tapDetection.updateConfig();
+	}
+
+	public void updateLegTweaksConfig() {
+		legTweaks.updateConfig();
 	}
 
 	@Override

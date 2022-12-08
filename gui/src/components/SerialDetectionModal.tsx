@@ -1,4 +1,5 @@
 import { useEffect, useState } from 'react';
+import { useTranslation } from 'react-i18next';
 import { useLocation, useNavigate } from 'react-router-dom';
 import {
   RpcMessage,
@@ -58,6 +59,7 @@ const detectChanges = <T,>(
 };
 
 export function SerialDetectionModal() {
+  const { t } = useTranslation();
   const { config } = useConfig();
   const nav = useNavigate();
   const { pathname } = useLocation();
@@ -105,23 +107,28 @@ export function SerialDetectionModal() {
     };
   }, [config, sendRPCPacket, pathname]);
 
+  const closeModal = () => {
+    setOpen(null);
+    setShowWifiForm(false);
+  };
+
   const openSerial = () => {
     nav('/settings/serial', { state: { serialPort: isOpen?.port } });
-    setOpen(null);
+    closeModal();
   };
 
   const openWifi = () => {
     if (!hasWifiCreds) {
       setShowWifiForm(true);
     } else {
-      setOpen(null);
+      closeModal();
       nav('/onboarding/connect-trackers', { state: { alonePage: true } });
     }
   };
 
   const modalWifiSubmit = (form: WifiFormData) => {
     submitWifiCreds(form);
-    setOpen(null);
+    closeModal();
     nav('/onboarding/connect-trackers', { state: { alonePage: true } });
   };
 
@@ -133,7 +140,7 @@ export function SerialDetectionModal() {
   );
 
   return (
-    <BaseModal isOpen={!!isOpen} onRequestClose={() => setOpen(null)}>
+    <BaseModal isOpen={!!isOpen} onRequestClose={closeModal}>
       <div className="flex flex-col gap-3">
         {!showWifiForm && (
           <>
@@ -141,25 +148,25 @@ export function SerialDetectionModal() {
               <USBIcon></USBIcon>
               <div className="flex flex-col items-center gap-2">
                 <Typography variant="main-title">
-                  New serial device detected!
+                  {t('serial-detection.new-device.p0')}
                 </Typography>
                 <Typography variant="section-title">
                   {isOpen?.name || 'unknown'}
                 </Typography>
                 <Typography variant="standard">
-                  Please select what you want to do with it
+                  {t('serial-detection.new-device.p2')}
                 </Typography>
               </div>
             </div>
 
             <Button variant="primary" onClick={openWifi}>
-              Connect to WiFi
+              {t('serial-detection.open-wifi')}
             </Button>
             <Button variant="tiertiary" onClick={openSerial}>
-              Open Serial Console
+              {t('serial-detection.open-serial')}
             </Button>
-            <Button variant="secondary" onClick={() => setOpen(null)}>
-              Close
+            <Button variant="secondary" onClick={closeModal}>
+              {t('serial-detection.close')}
             </Button>
           </>
         )}
@@ -171,10 +178,10 @@ export function SerialDetectionModal() {
             <div className="flex flex-col items-center gap-3">
               <BulbIcon></BulbIcon>
               <Typography variant="main-title">
-                New serial device detected!
+                {t('serial-detection.new-device.p0')}
               </Typography>
               <Typography variant="standard">
-                Enter your wifi credentials!
+                {t('serial-detection.new-device.p1')}
               </Typography>
             </div>
             <div className="flex flex-col gap-3 rounded-xl max-w-sm">
@@ -186,10 +193,10 @@ export function SerialDetectionModal() {
               variant="primary"
               disabled={!formState.isValid}
             >
-              Submit!
+              {t('serial-detection.submit')}
             </Button>
-            <Button variant="secondary" onClick={() => setOpen(null)}>
-              Close
+            <Button variant="secondary" onClick={closeModal}>
+              {t('serial-detection.close')}
             </Button>
           </form>
         )}

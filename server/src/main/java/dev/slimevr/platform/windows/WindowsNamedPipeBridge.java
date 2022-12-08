@@ -9,12 +9,8 @@ import dev.slimevr.Main;
 import dev.slimevr.VRServer;
 import dev.slimevr.bridge.BridgeThread;
 import dev.slimevr.bridge.PipeState;
-import dev.slimevr.bridge.ProtobufBridge;
 import dev.slimevr.bridge.ProtobufMessages.ProtobufMessage;
-import dev.slimevr.bridge.ProtobufMessages.TrackerAdded;
-import dev.slimevr.config.BridgeConfig;
-import dev.slimevr.util.ann.VRServerThread;
-import dev.slimevr.vr.Device;
+import dev.slimevr.platform.SteamVRBridge;
 import dev.slimevr.vr.trackers.*;
 import io.eiren.util.logging.LogManager;
 
@@ -22,18 +18,11 @@ import java.io.IOException;
 import java.util.List;
 
 
-public class WindowsNamedPipeBridge extends ProtobufBridge<VRTracker> implements Runnable {
+public class WindowsNamedPipeBridge extends SteamVRBridge {
 
 	protected final String pipeName;
-	protected final String bridgeSettingsKey;
-	protected final Thread runnerThread;
-	private final TrackerRole[] defaultRoles = new TrackerRole[] { TrackerRole.WAIST,
-		TrackerRole.LEFT_FOOT, TrackerRole.RIGHT_FOOT };
 	private final byte[] buffArray = new byte[2048];
-	private final List<? extends ShareableTracker> shareableTrackers;
 	protected WindowsPipe pipe;
-
-	private final BridgeConfig config;
 
 	public WindowsNamedPipeBridge(
 		VRServer server,
@@ -43,88 +32,8 @@ public class WindowsNamedPipeBridge extends ProtobufBridge<VRTracker> implements
 		String pipeName,
 		List<? extends ShareableTracker> shareableTrackers
 	) {
-		super(bridgeName, hmd);
+		super(server, hmd, "Named pipe thread", bridgeName, bridgeSettingsKey, shareableTrackers);
 		this.pipeName = pipeName;
-		this.bridgeSettingsKey = bridgeSettingsKey;
-		this.runnerThread = new Thread(this, "Named pipe thread");
-		this.shareableTrackers = shareableTrackers;
-		this.config = server.getConfigManager().getVrConfig().getBrige(bridgeSettingsKey);
-	}
-
-	@Override
-	@VRServerThread
-	public void startBridge() {
-		for (TrackerRole role : defaultRoles) {
-			changeShareSettings(
-				role,
-				this.config.getBridgeTrackerRole(role, true)
-			);
-		}
-		for (ShareableTracker tr : shareableTrackers) {
-			TrackerRole role = tr.getTrackerRole();
-			changeShareSettings(
-				role,
-				this.config.getBridgeTrackerRole(role, false)
-			);
-		}
-		runnerThread.start();
-	}
-
-	@VRServerThread
-	public boolean getShareSetting(TrackerRole role) {
-		for (ShareableTracker tr : shareableTrackers) {
-			if (tr.getTrackerRole() == role) {
-				return sharedTrackers.contains(tr);
-			}
-		}
-		return false;
-	}
-
-	@VRServerThread
-	public void changeShareSettings(TrackerRole role, boolean share) {
-		if (role == null)
-			return;
-		for (ShareableTracker tr : shareableTrackers) {
-			if (tr.getTrackerRole() == role) {
-				if (share) {
-					addSharedTracker(tr);
-				} else {
-					removeSharedTracker(tr);
-				}
-				config.setBridgeTrackerRole(role, share);
-				Main.vrServer.getConfigManager().saveConfig();
-			}
-		}
-	}
-
-	@Override
-	@VRServerThread
-	protected VRTracker createNewTracker(TrackerAdded trackerAdded) {
-		// Todo: We need the manufacturer
-		Device device = Main.vrServer
-			.getDeviceManager()
-			.createDevice(
-				trackerAdded.getTrackerName(),
-				trackerAdded.getTrackerSerial(),
-				"FeederAPP"
-			);
-
-		VRTracker tracker = new VRTracker(
-			trackerAdded.getTrackerId(),
-			trackerAdded.getTrackerSerial(),
-			trackerAdded.getTrackerName(),
-			true,
-			true,
-			device
-		);
-
-		device.getTrackers().add(tracker);
-		Main.vrServer.getDeviceManager().addDevice(device);
-		TrackerRole role = TrackerRole.getById(trackerAdded.getTrackerRole());
-		if (role != null) {
-			tracker.setBodyPosition(TrackerPosition.getByTrackerRole(role).orElse(null));
-		}
-		return tracker;
 	}
 
 	@Override
@@ -305,8 +214,8 @@ public class WindowsNamedPipeBridge extends ProtobufBridge<VRTracker> implements
 		return false;
 	}
 
+	@Override
 	public boolean isConnected() {
-		return pipe != null
-			&& pipe.state == PipeState.OPEN;
+		return pipe != null && pipe.state == PipeState.OPEN;
 	}
 }

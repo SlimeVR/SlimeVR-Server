@@ -1,49 +1,27 @@
 import classNames from 'classnames';
 import {
   MouseEventHandler,
-  ReactChild,
+  ReactNode,
   useEffect,
   useMemo,
-  useState,
+  useState
 } from 'react';
+import { useTranslation } from 'react-i18next';
 import {
   ChangeSkeletonConfigRequestT,
   RpcMessage,
   SkeletonBone,
   SkeletonConfigRequestT,
-  SkeletonConfigResponseT,
+  SkeletonConfigResponseT
 } from 'solarxr-protocol';
 import { useWebsocketAPI } from '../../../../hooks/websocket-api';
 import { Typography } from '../../../commons/Typography';
-
-export const skeletonBoneLabels = {
-  [SkeletonBone.NONE]: 'None',
-  [SkeletonBone.HEAD]: 'Head Shift',
-  [SkeletonBone.NECK]: 'Neck Length',
-  [SkeletonBone.TORSO]: 'Torso Length',
-  [SkeletonBone.CHEST]: 'Chest Distance',
-  [SkeletonBone.WAIST]: 'Waist Distance',
-  [SkeletonBone.HIP_OFFSET]: 'Hip Offset',
-  [SkeletonBone.HIPS_WIDTH]: 'Hips Width',
-  [SkeletonBone.LEGS_LENGTH]: 'Legs Length',
-  [SkeletonBone.KNEE_HEIGHT]: 'Knee Height',
-  [SkeletonBone.FOOT_LENGTH]: 'Foot Length',
-  [SkeletonBone.FOOT_SHIFT]: 'Foot Shift',
-  [SkeletonBone.SKELETON_OFFSET]: 'Skeleton Offset',
-  [SkeletonBone.CONTROLLER_DISTANCE_Z]: 'Controller Distance Z',
-  [SkeletonBone.CONTROLLER_DISTANCE_Y]: 'Controller Distance Y',
-  [SkeletonBone.FOREARM_LENGTH]: 'Forearm Distance',
-  [SkeletonBone.SHOULDERS_DISTANCE]: 'Shoulders Distance',
-  [SkeletonBone.SHOULDERS_WIDTH]: 'Shoulders Width',
-  [SkeletonBone.UPPER_ARM_LENGTH]: 'Upper Arm Length',
-  [SkeletonBone.ELBOW_OFFSET]: 'Elbow Offset',
-};
 
 function IncrementButton({
   children,
   onClick,
 }: {
-  children: ReactChild;
+  children: ReactNode;
   onClick?: MouseEventHandler<HTMLDivElement>;
 }) {
   return (
@@ -67,6 +45,7 @@ export function BodyProportions({
   precise: boolean;
   variant: 'onboarding' | 'alone';
 }) {
+  const { t } = useTranslation();
   const { useRPCPacket, sendRPCPacket } = useWebsocketAPI();
   const [config, setConfig] = useState<Omit<
     SkeletonConfigResponseT,
@@ -77,7 +56,7 @@ export function BodyProportions({
     return (
       config?.skeletonParts.map(({ bone, value }) => ({
         bone,
-        label: skeletonBoneLabels[bone],
+        label: t('skeleton-bone.' + SkeletonBone[bone]),
         value,
       })) || []
     );
