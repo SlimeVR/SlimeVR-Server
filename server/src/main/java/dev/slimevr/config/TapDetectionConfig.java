@@ -3,7 +3,9 @@ package dev.slimevr.config;
 public class TapDetectionConfig {
 
 	private float delay = 0.2f;
-	private boolean enabled = true;
+	private boolean quickResetEnabled = true;
+	private boolean resetEnabled = true;
+	private boolean mountingResetEnabled = true;
 
 	public float getDelay() {
 		return delay;
@@ -13,11 +15,29 @@ public class TapDetectionConfig {
 		this.delay = delay;
 	}
 
-	public boolean getEnabled() {
-		return enabled;
+	public boolean getQuickResetEnabled() {
+		return quickResetEnabled;
 	}
 
-	public void setEnabled(boolean enabled) {
-		this.enabled = enabled;
+	public void setQuickResetEnabled(boolean quickResetEnabled) {
+		this.quickResetEnabled = quickResetEnabled;
 	}
+
+	public boolean getResetEnabled() {
+		return resetEnabled;
+	}
+
+	public void setResetEnabled(boolean resetEnabled) {
+		this.resetEnabled = resetEnabled;
+	}
+
+	public boolean getMountingResetEnabled() {
+		return mountingResetEnabled;
+	}
+
+	public void setMountingResetEnabled(boolean mountingResetEnabled) {
+		this.mountingResetEnabled = mountingResetEnabled;
+	}
+
+
 }
