@@ -2,8 +2,9 @@ import i18next from 'i18next';
 import { initReactI18next } from 'react-i18next';
 import en from './en/translation.json';
 import fr from './fr/translation.json';
-import owo from './owo/translation.json';
-import vi from "./vi/translation.json"
+import vi from './vi/translation.json';
+import owo from './owo/translation.json'
+
 
 export const defaultNS = 'translations';
 
