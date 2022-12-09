@@ -18,12 +18,12 @@ export const langs = [
     key: 'fr',
   },
   {
-    name: 'Engwish~ (OwO)',
-    key: 'owo',
-  },
-  {
     name: 'Tiếng Việt',
     key: 'vi',
+  },
+  {
+    name: 'Engwish~ (OwO)',
+    key: 'owo',
   },
 ];
 
@@ -34,11 +34,11 @@ export const resources = {
   fr: {
     translation: fr,
   },
-  owo: {
-    translation: owo,
-  },
   vi: {
     translation: vi,
+  },
+  owo: {
+    translation: owo,
   },
 };
 
