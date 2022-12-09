@@ -37,6 +37,8 @@ public class VRCOSCHandler {
 	private final FastList<Float> oscArgs = new FastList<>(3);
 	private final Vector3f vec = new Vector3f();
 	private final Quaternion quatBuf = new Quaternion();
+	private final Vector3f vecBuf1 = new Vector3f();
+	private final Vector3f vecBuf2 = new Vector3f();
 	private final boolean[] trackersEnabled;
 	private long timeAtLastOSCMessageReceived;
 	private static final long HMD_TIMEOUT = 15000;
@@ -291,39 +293,46 @@ public class VRCOSCHandler {
 		}
 	}
 
+	/*
+	 * Apache Commons Math Copyright 2001-2022 The Apache Software Foundation
+	 * 
+	 * The code below includes code developed at The Apache Software Foundation
+	 * (http://www.apache.org/).
+	 */
+
 	// Code from Apache's Rotation class
 	public float[] quatToUnityAngles(Quaternion q) {
 		// X = pitch, Y = yaw, Z = roll
-		Vector3f v1 = applyTo(Vector3f.UNIT_Y, q);
-		Vector3f v2 = applyInverseTo(Vector3f.UNIT_Z, q);
+		applyTo(Vector3f.UNIT_Y, q, vecBuf1);
+		applyInverseTo(Vector3f.UNIT_Z, q, vecBuf2);
 		// Order of application is ZXY (but sent in XYZ order)
 		// pitch (+X is forward), yaw (+Y is clockwise), roll
 		// (+Z is left)
 		return new float[] {
-			FastMath.asin(v2.getY()),
-			FastMath.atan2(-(v2.getX()), v2.getZ()),
-			-FastMath.atan2(-(v1.getX()), v1.getY())
+			FastMath.asin(vecBuf2.getY()),
+			FastMath.atan2(-(vecBuf2.getX()), vecBuf2.getZ()),
+			-FastMath.atan2(-(vecBuf1.getX()), vecBuf1.getY())
 		};
 	}
 
 	// Code from Apache's Rotation class
-	public Vector3f applyTo(Vector3f u, Quaternion q) {
+	public void applyTo(Vector3f u, Quaternion q, Vector3f store) {
 		float x = u.getX();
 		float y = u.getY();
 		float z = u.getZ();
 
 		float s = q.getX() * x + q.getY() * y + q.getZ() * z;
 
-		return new Vector3f(
-			2f * (q.getW() * (x * q.getW() - (q.getY() * z - q.getZ() * y)) + s * q.getX()) - x,
-			2f * (q.getW() * (y * q.getW() - (q.getZ() * x - q.getX() * z)) + s * q.getY()) - y,
-			2f * (q.getW() * (z * q.getW() - (q.getX() * y - q.getY() * x)) + s * q.getZ()) - z
-		);
-
+		store
+			.set(
+				2f * (q.getW() * (x * q.getW() - (q.getY() * z - q.getZ() * y)) + s * q.getX()) - x,
+				2f * (q.getW() * (y * q.getW() - (q.getZ() * x - q.getX() * z)) + s * q.getY()) - y,
+				2f * (q.getW() * (z * q.getW() - (q.getX() * y - q.getY() * x)) + s * q.getZ()) - z
+			);
 	}
 
 	// Code from Apache's Rotation class
-	public Vector3f applyInverseTo(Vector3f u, Quaternion q) {
+	public void applyInverseTo(Vector3f u, Quaternion q, Vector3f store) {
 		float x = u.getX();
 		float y = u.getY();
 		float z = u.getZ();
@@ -331,11 +340,11 @@ public class VRCOSCHandler {
 		float s = q.getX() * x + q.getY() * y + q.getZ() * z;
 		float m0 = -q.getW();
 
-		return new Vector3f(
-			2f * (m0 * (x * m0 - (q.getY() * z - q.getZ() * y)) + s * q.getX()) - x,
-			2f * (m0 * (y * m0 - (q.getZ() * x - q.getX() * z)) + s * q.getY()) - y,
-			2f * (m0 * (z * m0 - (q.getX() * y - q.getY() * x)) + s * q.getZ()) - z
-		);
-
+		store
+			.set(
+				2f * (m0 * (x * m0 - (q.getY() * z - q.getZ() * y)) + s * q.getX()) - x,
+				2f * (m0 * (y * m0 - (q.getZ() * x - q.getX() * z)) + s * q.getY()) - y,
+				2f * (m0 * (z * m0 - (q.getX() * y - q.getY() * x)) + s * q.getZ()) - z
+			);
 	}
 }
