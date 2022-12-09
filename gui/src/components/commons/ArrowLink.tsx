@@ -1,5 +1,5 @@
 import classNames from 'classnames';
-import { ReactChild, useMemo } from 'react';
+import { ReactNode, useMemo } from 'react';
 import { NavLink } from 'react-router-dom';
 import { ArrowLeftIcon, ArrowRightIcon } from './icon/ArrowIcons';
 
@@ -10,7 +10,7 @@ export function ArrowLink({
   variant = 'flat',
 }: {
   to: string;
-  children: ReactChild;
+  children: ReactNode;
   direction?: 'left' | 'right';
   variant?: 'flat' | 'boxed' | 'boxed-2';
 }) {

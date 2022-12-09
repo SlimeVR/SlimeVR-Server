@@ -1,6 +1,7 @@
 import { useEffect, useMemo, useRef, useState } from 'react';
+import { useTranslation } from 'react-i18next';
 import { BodyPart, TrackerDataT, TrackerStatus } from 'solarxr-protocol';
-import { bodypartToString } from '../components/utils/formatting';
+import { RAD_TO_DEG } from '../maths/angle';
 import { QuaternionFromQuatT } from '../maths/quaternion';
 import { useAppContext } from './app';
 
@@ -37,24 +38,39 @@ export function useTrackers() {
 }
 
 export function useTracker(tracker: TrackerDataT) {
+  const { t } = useTranslation();
+  const computeRot = (rot: { x: number; y: number; z: number; w: number }) =>
+    QuaternionFromQuatT({
+      x: rot.x || 0,
+      y: rot.y || 0,
+      z: rot.z || 0,
+      w: rot.w || 1,
+    }).toEuler();
+
   return {
     useName: () =>
       useMemo(() => {
         if (tracker.info?.customName) return tracker.info?.customName;
-        if (tracker.info?.bodyPart) return bodypartToString(tracker.info?.bodyPart);
+        if (tracker.info?.bodyPart)
+          return t('body-part.' + BodyPart[tracker.info?.bodyPart]);
         return tracker.info?.displayName || 'NONE';
       }, [tracker.info]),
     useRotation: () =>
       useMemo(
-        () =>
-          QuaternionFromQuatT({
-            x: tracker.rotation?.x || 0,
-            y: tracker.rotation?.y || 0,
-            z: tracker.rotation?.z || 0,
-            w: tracker.rotation?.w || 1,
-          }).eulerAngles,
+        () => computeRot(tracker.rotation || { x: 0, y: 0, z: 0, w: 1 }),
         [tracker.rotation]
       ),
+    useRotationDegrees: () =>
+      useMemo(() => {
+        const { yaw, pitch, roll } = computeRot(
+          tracker.rotation || { x: 0, y: 0, z: 0, w: 1 }
+        );
+        return {
+          yaw: yaw * RAD_TO_DEG,
+          pitch: pitch * RAD_TO_DEG,
+          roll: roll * RAD_TO_DEG,
+        };
+      }, [tracker.rotation]),
     useVelocity: () => {
       const previousRot = useRef<{
         x: number;

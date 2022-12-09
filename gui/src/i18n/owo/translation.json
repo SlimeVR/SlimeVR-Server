@@ -1,0 +1,460 @@
+{
+  "websocket": {
+    "connecting": "weconnyecting to teh sewvew",
+    "connection-lost": "oopsie woopsie~ connyection wost to teh sewvew ;m;... uwu am twying to weconnyect owo!"
+  },
+  "tips": {
+    "find-tracker": "nawt suwe whicsh twayckyaw is whicsh? shayke a twackaw and it will hyighwight the cowowesponding iytem.",
+    "do-not-move-heels": "ensuwe yoowr pawsies do nawt mowve duwing wecowding! ^w^"
+  },
+  "body-part": {
+    "NONE": "unassyigned",
+    "HEAD": "hed",
+    "NECK": "nyecky wecky",
+    "RIGHT_SHOULDER": "wight shouwder~",
+    "RIGHT_UPPER_ARM": "wight uppew awm",
+    "RIGHT_LOWER_ARM": "wight wowwe awm",
+    "RIGHT_HAND": "wight pawb",
+    "RIGHT_UPPER_LEG": "wight uppew weg",
+    "RIGHT_LOWER_LEG": "wight wowwe weg",
+    "RIGHT_FOOT": "wight pawb",
+    "CHEST": "chwest",
+    "WAIST": "wyayst",
+    "HIP": "hyip",
+    "LEFT_SHOULDER": "weft shouwder~",
+    "LEFT_UPPER_ARM": "weft uppew awm",
+    "LEFT_LOWER_ARM": "weft wowwe awm",
+    "LEFT_HAND": "weft pawb",
+    "LEFT_UPPER_LEG": "weft uppew weg",
+    "LEFT_LOWER_LEG": "weft wowwe weg",
+    "LEFT_FOOT": "weft pawb"
+  },
+  "skeleton-bone": {
+    "NONE": "none",
+    "HEAD": "hed shyft",
+    "NECK": "nyeck wength",
+    "TORSO": "towso wength",
+    "CHEST": "chwest disyance",
+    "WAIST": "weyst disyance",
+    "HIP_OFFSET": "hyip awfset",
+    "HIPS_WIDTH": "hyips wiwdth",
+    "LEGS_LENGTH": "wegs wength",
+    "KNEE_HEIGHT": "knyee heiyt",
+    "FOOT_LENGTH": "pawsies wength",
+    "FOOT_SHIFT": "pawsies shyft",
+    "SKELETON_OFFSET": "skeweton awfset",
+    "CONTROLLER_DISTANCE_Z": "cyontwowla disance z",
+    "CONTROLLER_DISTANCE_Y": "cyontwowla disance y",
+    "FOREARM_LENGTH": "fowewawm disyance",
+    "SHOULDERS_DISTANCE": "shouwdews disyance",
+    "SHOULDERS_WIDTH": "shouwdews wiwdth",
+    "UPPER_ARM_LENGTH": "uppew awm wength",
+    "ELBOW_OFFSET": "ewbow awfsewt"
+  },
+  "reset": {
+    "reset-all": "weset aww pwopowtions~",
+    "full": "weset~",
+    "mounting": "weset meownting",
+    "quick": "quick weset"
+  },
+  "serial-detection": {
+    "new-device.p0": "nyu sewiaw device detected~!",
+    "new-device.p1": "entaw youw wifi cwedentiaws~!",
+    "new-device.p2": "pwease sewect what youw want to do wit it",
+    "open-wifi": "cownnyect to wyfy~",
+    "open-serial": "awpen sewiaw console >w<",
+    "submit": "suwbmyt~!",
+    "close": "cwose"
+  },
+  "navbar": {
+    "home": "howme",
+    "body-proportions": "body pwopowshons",
+    "trackers-assign": "twackaws assigwment",
+    "mounting": "meownting calibwation",
+    "onboarding": "suwep wisawd",
+    "settings": "sewtings"
+  },
+  "bvh": {
+    "start-recording": "wecowd bvh",
+    "recording": "wecowding..."
+  },
+  "overlay": {
+    "is-visible-label": "show owovelay in steawmvr",
+    "is-mirrored-label": "dispway owovelay as miwwow"
+  },
+  "tracker": {
+    "status": {
+      "none": "no stawtus",
+      "busy": "busy",
+      "error": "ewwow",
+      "disconnected": "disconnyected",
+      "occluded": "occwuded",
+      "ok": "connyected"
+    },
+    "table": {
+      "column": {
+        "name": "nayme",
+        "type": "type",
+        "battery": "battewy",
+        "ping": "pyng",
+        "rotation": "wotaytion x/y/z",
+        "position": "pawsytion x/y/z",
+        "url": "uawl"
+      }
+    },
+    "rotation": {
+      "front": "fwowt",
+      "left": "lewft",
+      "right": "wight",
+      "back": "bak"
+    },
+    "infos": {
+      "manufacturer": "mawufactuwer",
+      "display-name": "dispway name",
+      "custom-name": "custowm name",
+      "url": "twackaw uawl"
+    },
+    "settings": {
+      "back": "go bak to twackaws liwst",
+      "title": "twackaw sewtings",
+      "assignment-section": {
+        "title": "assiwnment",
+        "description": "what pawt of the bawdy the twackaw is assiwned to uwu",
+        "edit": "ewdit assiwnment"
+      },
+      "mounting-section": {
+        "title": "meownting pawsition",
+        "description": "whewe is the twackaw mownted?",
+        "edit": "edit meownting"
+      },
+      "name-section": {
+        "title": "twackaw name",
+        "description": "owo whats dis?",
+        "input-placeholder": "ewimewl's weft pawb"
+      }
+    },
+    "part-card": {
+      "no-name": "no name",
+      "unassigned": "unassigwed"
+    }
+  },
+  "body-assignment-menu": {
+    "title": "whewe doo yew want dis twayckaw to be?? >~>",
+    "description": "chooce a wocation whewe yew want dis twayckaw to be assyigned. awtwernativewy, yew can chooce to manage awl twackaws at ownce instawd of won by won.",
+    "show-advanced-locations": "show advawnced assyign wocations",
+    "manage-trackers": "manage awl twackaws",
+    "unassign-tracker": "unassyign twayckaw"
+  },
+  "tracker-selection-menu": {
+    "title": "which twayckaw to assyign to the {{bodyPart}}?",
+    "unassigned": "unassyigned twackaws",
+    "assigned": "assyigned twackaws",
+    "dont-assign": "do nawt assyign"
+  },
+  "mounting-selection-menu": {
+    "title": "whewe doo yew want dis twayckaw to be?",
+    "close": "cwose"
+  },
+  "settings": {
+    "sidebar": {
+      "title": "settyings~",
+      "general": "genyawaw",
+      "tracker-mechanics": "twayckaw mechanics~",
+      "fk-settings": "fk settyings",
+      "interface": "intyawface~",
+      "utils": "utiwities",
+      "serial": "sewiaw cownsaw"
+    },
+    "general": {
+      "steamvr": {
+        "title": "steamvr~",
+        "subtitle": "steamvr twayckaws~",
+        "description.p0": "enyable or dysabywe specific twacking pawts.",
+        "description.p1": "usefuw if yew want mowwe contwoww owew what swimevr does.",
+        "trackers": {
+          "waist": "wyayst",
+          "chest": "chwest",
+          "feet": "pawbsies~",
+          "knees": "knyees~",
+          "elbows": "ewbows~"
+        }
+      },
+      "tracker-mechanics": {
+        "title": "twayckaw mechanics~",
+        "subtitle": "fiwtering~",
+        "description.p0": "chooce teh fiwwtewing type fow youw twackaws.",
+        "description.p1": "pwediction pwedicts movment while smowthing smowthens movment.",
+        "filtering-type": {
+          "title": "fiwtewing type~",
+          "none": {
+            "label": "no fiwwtewing~",
+            "description": "use wowtations as is. wiw nawt do any fiwwtewing."
+          },
+          "smoothing": {
+            "label": "smowthing",
+            "description": "smowthes movements but adds some watency~"
+          },
+          "prediction": {
+            "label": "pwediction~",
+            "description": "wowduces wowcyancy and makes wowvements mowe wowappy, but may incwease jiwitty"
+          }
+        },
+        "amount": {
+          "label": "amownt"
+        }
+      },
+      "fk-settings": {
+        "title": "fk sewttings",
+        "leg-tweak": {
+          "title": "leg tweeks",
+          "description": "floo-cwip can wowduce owow even ewiminates cwipping with teh fwoor but may cause pwobweems when on yowur neeys. skayting-cowwection cowwects fow wowce skating, but can wowcyancy accuwowacy in cewtain wowvement wowttewns.",
+          "floor-clip": "fwoow cwip",
+          "skating-correction": "skayting wowcowwection"
+        },
+        "arm-fk": {
+          "title": "awm fk",
+          "description": "chawnge teh way teh awms awe twacked.",
+          "force-arms": "fowce awms fwom hmd"
+        },
+        "skeleton-settings": {
+          "title": "skeweton sewttings",
+          "description": "toggwe skeweton sewttings on owow off. is wowcommended to weawve these on~",
+          "extended-spine": "ewtended spine",
+          "extended-pelvis": "ewtended pelvis",
+          "extended-knees": "ewtended neey"
+        }
+      },
+      "gesture-control": {
+        "title": "gestauw cantwol",
+        "subtitle": "dubble bap qwick weset",
+        "description": "enawbwe owr disawbwe dubble bap qwick weset. when enawbwed dubble bapping enywhewe on teh hyighest towso twackaw wil activate a qwick weset. deway is teh time between wowgistewing a bap and wowstting.",
+        "enable": "dubble bap qwick weset",
+        "delay": "deway"
+      },
+      "interface": {
+        "title": "intewface",
+        "dev-mode": {
+          "title": "devwowwewow mode",
+          "description": "this mode can be wowseffuw if you need in-dipth data owow to intewact with cownnected twackaws on a wowowe wowadvanced wowwevew",
+          "label": "devwowwewow mode"
+        },
+        "serial-detection": {
+          "title": "shewyaw device deteccion",
+          "description": "this option will shaww a pawp-up evewy time yuw pwug a new shewyaw device that cawwld be a twayckaw. it helps iympwooving teh setup pwocess of a twayckaw",
+          "label": "shewyaw device deteccion"
+        },
+        "lang": {
+          "title": "sewect wanguage",
+          "description": "change the defawwt wanguage yuw want to use",
+          "placeholder": "sewect teh wanguage to use"
+        }
+      }
+    },
+    "serial": {
+      "title": "shewyaw console",
+      "description.p0": "this is a wiwve infowmation feed fow shewyaw comyunicaytion",
+      "description.p1": "may be usefuw if yuw need to know teh fiwmwawe is acting up",
+      "connection-lost": "connyection to shewyaw wost, weconnyecting... >~<",
+      "reboot": "weboot",
+      "factory-reset": "fawctowy reset",
+      "get-infos": "get infows",
+      "serial-select": "sewect a shewyaw pawt",
+      "auto-dropdown-item": "awto"
+    },
+    "osc": {
+      "vrchat": {
+        "description.p0": "change vwchat-specific settwings to wweceive hmd data awnd send",
+        "description.p1": "twayckaws data fow fbt (wawwks on quest standalone).",
+        "enable": {
+          "title": "enaybwe",
+          "description": "toggle teh sending awnd wweceiving of data",
+          "label": "enaybwe"
+        },
+        "network": {
+          "title": "network pawts",
+          "description": "set the pawts fow wistening awnd sending data to vwchawt",
+          "port-in": {
+            "label": "pawt in",
+            "placeholder": "pawt in (defawwt: 9001)"
+          },
+          "port-out": {
+            "label": "pawt out",
+            "placeholder": "pawt out (defawwt: 9000)"
+          },
+          "address": {
+            "title": "network addwess",
+            "description": "choose which addwess to send out data to vwchat (check yuw wifi settwings on yuw device)",
+            "placeholder": "vwchat ip addwess"
+          },
+          "trackers": {
+            "title": "trayckawws",
+            "description": "toggle teh sending awnd wweceiving of daya",
+            "chest": "chest",
+            "waist": "wayst",
+            "knees": "knees",
+            "feet": "pawbs",
+            "elbows": "elbows"
+          }
+        }
+      }
+    }
+  },
+  "onboarding": {
+    "skip": "skipy setup",
+    "continue": "continyue",
+    "wip": "wowwk in pwowgress",
+    "wifi-creds": {
+      "back": "gaww bawwk to intwoduction",
+      "title": "input wifi cwedentials",
+      "description.p0": "teh twawckaws will use these cwedentials to connect wirelessly",
+      "description.p1": "pwease use teh cwedentials that yaww awe cwowently cownyected to",
+      "skip": "skipy wifi settiwyngs",
+      "submit": "suwbmyt!"
+    },
+    "reset-tutorial": {
+      "back": "gaww bawwk to meownting cawwibwation",
+      "title": "weset tutowial",
+      "description": "dis featuwe isn't done, just pwess continyue"
+    },
+    "home": {
+      "title": "wewcome to swimevr",
+      "description.p0": "bwinging fuww-bawdy twacking",
+      "description.p1": "to everyone",
+      "start": "wets get set up!"
+    },
+    "enter-vr": {
+      "back": "gaww bawwk to twacker assignyment",
+      "title": "time to entew vr!",
+      "description": "put on awe yoaww twackaws and then entew vr!",
+      "ready": "iym ready"
+    },
+    "done": {
+      "title": "yaww awe awe set!",
+      "description": "enjoy yoaww fuww body expewwience",
+      "close": "cwose the guide"
+    },
+    "connect-tracker": {
+      "back": "gaww bawwk to wifi cwedentials",
+      "title": "connect twackaws",
+      "description.p0": "now onto teh fun pawwt, connecting awe teh twackaws!",
+      "description.p1": "simply connect awe that awe nawt cownyected yet, through a usb powwt.",
+      "issue": {
+        "serial": "i'm having twouble connecting!"
+      },
+      "usb": "usb twacker",
+      "connection-status": {
+        "connecting": "sending wifi cwedentials",
+        "connected": "cownyected to wifi",
+        "error": "unabwe to cownyect to wifi",
+        "start-connecting": "wooking for twackaws",
+        "handshake": "cownyected to teh sewvew"
+      },
+      "connected-trackers": "{{amount}} twackers cownyected",
+      "next": "i cownyected awe my twackaws"
+    },
+    "assign-trackers": {
+      "back": "go bak to wifi credyentials",
+      "title": "assign twackaws",
+      "description": "wets choyse which twackaw goes whewe. cwick on a wocation whewe yowo want to payce a twackaw",
+      "assigned": "{{assigned}} of {{trackers}} twackaws assigned",
+      "advanced": "show advanced assign wocations",
+      "next": "i assigned awe the twackaws"
+    },
+    "manual-mounting": {
+      "back": "go bak to entaw vawe",
+      "title": "manual meownting",
+      "description": "cwick on evewy twackaw and sewect which way they awe mownted",
+      "auto-mounting": "awtomawic meownting",
+      "next": "newt stewp"
+    },
+    "automatic-mounting": {
+      "back": "go bak to entaw vawe",
+      "title": "meownting cawibwation",
+      "description": "fow SlimeVR twackaws to wowk, we need to assign a meownting wowation to yowo twackaws to awign them with yowo pwysical twackaw mounting.",
+      "manual-mounting": "manually set meownting",
+      "next": "next step",
+      "prev-step": "pwevious step",
+      "done": {
+        "title": "mounting wowations cawibwated.",
+        "description": "yowo meownting cawibwation is compwete!",
+        "restart": "weturn to start"
+      },
+      "mounting-reset": {
+        "title": "meownting weset",
+        "step": {
+          "0": "1. squawt in a \"skiing\" pose with yowo wegs bent, yowo upper body tilted fowwawds, and yowo awems bent.",
+          "1": "2. pwess the \"weset meownting\" button and wait fow 3 seconds befowe the twackaws' meownting wowations will weset."
+        }
+      },
+      "preparation": {
+        "title": "pwepairation",
+        "step": {
+          "0": "1. stand upwight with yowo awems to yowo sides.",
+          "1": "2. pwess the \"weset\" button and wait fow 3 seconds befowe the twackaws will weset."
+        }
+      },
+      "put-trackers-on": {
+        "title": "put on yowo twackaws",
+        "description": "to cawibwate meownting wowations, we'we gonna use the twackaws yowo just assigned. put on awe yowo twackaws, yowo can see which awe which in the figure to the wowight.",
+        "next": "i haff awe my twackaws on"
+      }
+    },
+    "manual-proportions": {
+      "back": "go bawck to weset tutowiaw",
+      "title": "manyuaw bodee pwopowtiesions",
+      "precision": "pwecision adjusty",
+      "auto": "owtomatic cawybwation"
+    },
+    "automatic-proportions": {
+      "back": "go bawck to weweset tutowiaw",
+      "title": "measuwe yowuw bodee",
+      "description": "fow swimevw twackaws to wowk, we need to know teh wowkty of yowuw bones. dis showt cawybwation will measuwe it fow yowu",
+      "manual": "manyuaw cawybwation",
+      "prev-step": "pwevious stwep",
+      "put-trackers-on": {
+        "title": "put on yowuw twackaws",
+        "description": "to cawybwate yowuw pwopowtiesions, we'we gonna use teh twackaws yowu just assigned. put on awl yowuw twackaws, yowu can see which awe which in teh figuwe to teh wowight.",
+        "next": "i have awl my twackaws on"
+      },
+      "preparation": {
+        "title": "pwepawation",
+        "description": "pwace a chayaw diwectly behind yowu inside yowuw pway spawce. be pwepawed to sit down duwing teh owtobone setyup.",
+        "next": "i am in fwont of a chayaw"
+      },
+      "start-recording": {
+        "title": "get wowdy to move",
+        "description": "we'we now going to wowcawd some specific poses and moves. these will be pwompted in teh wowst screen. be wowdy to stawt when teh buttawn is pwessed!",
+        "next": "stawt wowcawding"
+      },
+      "recording": {
+        "title": "wowcawd",
+        "description.p0": "wowcawding in pwowgress...",
+        "description.p1": "make teh moves shown bowow:",
+        "steps": {
+          "0": "bend knees a few times.",
+          "1": "sit on a chayaw then stawnd up.",
+          "2": "twist upwe wowdy wowft, then bend wowft.",
+          "3": "twist upwe wowdy wowight, then bend wowight.",
+          "4": "wiggy aweound until tymey ends."
+        },
+        "processing": "pwowcessing teh wowesult",
+        "timer": "{{time}} secondsy wowft"
+      },
+      "verify-results": {
+        "title": "vewify wowesults",
+        "description": "check teh wewesults below, do tehy weok coowect?",
+        "results": "wecowding wewesults",
+        "processing": "pwocessing teh wewesult",
+        "redo": "wedo wecowding",
+        "confirm": "tehywee coowect"
+      },
+      "done": {
+        "title": "bawdy meowsured anwd sayved uwu",
+        "description": "yoww body pwopowwtions cawybowwation is cowowplete! ^w^"
+      }
+    }
+  },
+  "home": {
+    "no-trackers": "no twackaws detecyted owo wowigned"
+  }
+}

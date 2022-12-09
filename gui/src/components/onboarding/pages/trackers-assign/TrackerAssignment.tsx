@@ -1,11 +1,12 @@
 import { useMemo, useState } from 'react';
 import { useForm } from 'react-hook-form';
+import { useTranslation } from 'react-i18next';
 import {
   AssignTrackerRequestT,
   BodyPart,
   QuatT,
   RpcMessage,
-  TrackerIdT,
+  TrackerIdT
 } from 'solarxr-protocol';
 import { FlatDeviceTracker } from '../../../../hooks/app';
 import { useOnboarding } from '../../../../hooks/onboarding';
@@ -20,6 +21,7 @@ import { BodyAssignment } from '../../BodyAssignment';
 import { TrackerSelectionMenu } from './TrackerSelectionMenu';
 
 export function TrackersAssignPage() {
+  const { t } = useTranslation();
   const { useAssignedTrackers, trackers } = useTrackers();
   const { applyProgress, skipSetup, state } = useOnboarding();
   const { sendRPCPacket } = useWebsocketAPI();
@@ -97,27 +99,27 @@ export function TrackersAssignPage() {
             <div className="flex flex-col max-w-sm gap-3">
               {!state.alonePage && (
                 <ArrowLink to="/onboarding/wifi-creds" direction="left">
-                  Go Back to Wifi Credentials
+                  {t('onboarding.assign-trackers.back')}
                 </ArrowLink>
               )}
-              <Typography variant="main-title">Assign trackers</Typography>
+              <Typography variant="main-title">
+                {t('onboarding.assign-trackers.title')}
+              </Typography>
               <Typography color="secondary">
-                Let's choose which tracker goes where. Click on a location where
-                you want to place a tracker
+                {t('onboarding.assign-trackers.description')}
               </Typography>
               <div className="flex gap-1">
-                <Typography>{assignedTrackers.length}</Typography>
                 <Typography color="secondary">
-                  of {trackers.length} trackers assigned
+                  {t('onboarding.assign-trackers.assigned', {
+                    assigned: assignedTrackers.length,
+                    trackers: trackers.length,
+                  })}
                 </Typography>
               </div>
-              <TipBox>
-                Not sure which tracker is which? Shake a tracker and it will
-                highlight the corresponding item.
-              </TipBox>
+              <TipBox>{t('tips.find-tracker')}</TipBox>
               <CheckBox
                 control={control}
-                label="Show advanced assign locations"
+                label={t('onboarding.assign-trackers.advanced')}
                 name="advanced"
                 variant="toggle"
               ></CheckBox>
@@ -135,14 +137,14 @@ export function TrackersAssignPage() {
           <div className="flex flex-grow">
             {!state.alonePage && (
               <Button variant="secondary" to="/" onClick={skipSetup}>
-                Skip setup
+                {t('onboarding.skip')}
               </Button>
             )}
           </div>
           <div className="flex gap-3">
             {!state.alonePage && (
               <Button variant="primary" to="/onboarding/enter-vr">
-                I Assigned all the trackers
+                {t('onboarding.assign-trackers.next')}
               </Button>
             )}
           </div>

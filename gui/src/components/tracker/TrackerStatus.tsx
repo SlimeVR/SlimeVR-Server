@@ -1,15 +1,16 @@
 import classNames from 'classnames';
 import { useMemo } from 'react';
-import { Typography } from '../commons/Typography';
+import { useTranslation } from 'react-i18next';
 import { TrackerStatus as TrackerStatusEnum } from 'solarxr-protocol';
+import { Typography } from '../commons/Typography';
 
 const statusLabelMap: { [key: number]: string } = {
-  [TrackerStatusEnum.NONE]: 'No Status',
-  [TrackerStatusEnum.BUSY]: 'Busy',
-  [TrackerStatusEnum.ERROR]: 'Error',
-  [TrackerStatusEnum.DISCONNECTED]: 'Disconnected',
-  [TrackerStatusEnum.OCCLUDED]: 'Occluded',
-  [TrackerStatusEnum.OK]: 'Connected',
+  [TrackerStatusEnum.NONE]: 'tracker.status.none',
+  [TrackerStatusEnum.BUSY]: 'tracker.status.busy',
+  [TrackerStatusEnum.ERROR]: 'tracker.status.error',
+  [TrackerStatusEnum.DISCONNECTED]: 'tracker.status.disconnected',
+  [TrackerStatusEnum.OCCLUDED]: 'tracker.status.occluded',
+  [TrackerStatusEnum.OK]: 'tracker.status.ok',
 };
 
 const statusClassMap: { [key: number]: string } = {
@@ -22,6 +23,8 @@ const statusClassMap: { [key: number]: string } = {
 };
 
 export function TrackerStatus({ status }: { status: number }) {
+  const { t } = useTranslation();
+
   const statusClass = useMemo(() => statusClassMap[status], [status]);
   const statusLabel = useMemo(() => statusLabelMap[status], [status]);
 
@@ -30,7 +33,7 @@ export function TrackerStatus({ status }: { status: number }) {
       <div className="flex flex-col justify-center">
         <div className={classNames('w-2 h-2 rounded-full', statusClass)}></div>
       </div>
-      <Typography color="secondary">{statusLabel}</Typography>
+      <Typography color="secondary">{t(statusLabel)}</Typography>
     </div>
   );
 }

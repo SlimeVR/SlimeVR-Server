@@ -16,7 +16,7 @@ export function Radio({
   name: string;
   label: string;
   value: string | number;
-  desciption?: string;
+  desciption?: string | null;
 } & React.HTMLProps<HTMLInputElement>) {
   return (
     <Controller

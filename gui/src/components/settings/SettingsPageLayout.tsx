@@ -1,5 +1,5 @@
 import classNames from 'classnames';
-import { ReactChild } from 'react';
+import { ReactNode } from 'react';
 
 export function SettingsPageLayout({
   children,
@@ -7,8 +7,8 @@ export function SettingsPageLayout({
   icon,
   ...props
 }: {
-  children: ReactChild;
-  icon: ReactChild;
+  children: ReactNode;
+  icon: ReactNode;
 } & React.HTMLAttributes<HTMLDivElement>) {
   return (
     <div
