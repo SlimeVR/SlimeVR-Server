@@ -140,8 +140,7 @@ public record RPCSettingsHandler(RPCHandler rpcHandler, ProtocolAPI api) {
 				vrcOSCConfig.setOSCTrackerRole(TrackerRole.LEFT_HAND, trackers.hands());
 				vrcOSCConfig.setOSCTrackerRole(TrackerRole.RIGHT_HAND, trackers.hands());
 
-				VRCOSCHandler.refreshSettings();
-				this.api.server.getOSCRouter().refreshSettings();
+				VRCOSCHandler.refreshSettings(true);
 			}
 		}
 
@@ -158,7 +157,7 @@ public record RPCSettingsHandler(RPCHandler rpcHandler, ProtocolAPI api) {
 				oscRouterConfig.setPortOut(req.oscRouter().portOut());
 				oscRouterConfig.setAddress(req.oscRouter().address());
 
-				oscRouter.refreshSettings();
+				oscRouter.refreshSettings(true);
 			}
 		}
 

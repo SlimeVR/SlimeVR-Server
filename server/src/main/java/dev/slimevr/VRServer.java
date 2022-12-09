@@ -147,6 +147,7 @@ public class VRServer extends Thread {
 
 		// Initialize OSC handlers
 		vrcOSCHandler = new VRCOSCHandler(
+			this,
 			hmdTracker,
 			humanPoseProcessor,
 			driverBridge,

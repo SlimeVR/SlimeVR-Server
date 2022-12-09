@@ -8,7 +8,7 @@ import java.net.InetAddress;
 
 public interface OSCHandler {
 
-	public void refreshSettings();
+	public void refreshSettings(boolean refreshRouterSettings);
 
 	public void update();
 

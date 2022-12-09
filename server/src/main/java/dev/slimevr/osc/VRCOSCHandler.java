@@ -7,6 +7,7 @@ import com.illposed.osc.transport.OSCPortOut;
 import com.jme3.math.FastMath;
 import com.jme3.math.Quaternion;
 import com.jme3.math.Vector3f;
+import dev.slimevr.VRServer;
 import dev.slimevr.config.OSCConfig;
 import dev.slimevr.platform.SteamVRBridge;
 import dev.slimevr.vr.processor.HumanPoseProcessor;
@@ -30,6 +31,7 @@ public class VRCOSCHandler implements OSCHandler {
 	private OSCPortOut oscSender;
 	private OSCMessage oscMessage;
 	private final OSCConfig config;
+	private final VRServer server;
 	private final HMDTracker hmd;
 	private final SteamVRBridge steamvrBridge;
 	private final HumanPoseProcessor humanPoseProcessor;
@@ -46,12 +48,14 @@ public class VRCOSCHandler implements OSCHandler {
 	private InetAddress lastAddress;
 
 	public VRCOSCHandler(
+		VRServer server,
 		HMDTracker hmd,
 		HumanPoseProcessor humanPoseProcessor,
 		SteamVRBridge steamvrBridge,
 		OSCConfig oscConfig,
 		List<? extends ShareableTracker> shareableTrackers
 	) {
+		this.server = server;
 		this.hmd = hmd;
 		this.humanPoseProcessor = humanPoseProcessor;
 		this.steamvrBridge = steamvrBridge;
@@ -60,11 +64,11 @@ public class VRCOSCHandler implements OSCHandler {
 
 		trackersEnabled = new boolean[shareableTrackers.size()];
 
-		refreshSettings();
+		refreshSettings(false);
 	}
 
 	@Override
-	public void refreshSettings() {
+	public void refreshSettings(boolean refreshRouterSettings) {
 		// Sets which trackers are enabled and force HEAD to false
 		for (int i = 0; i < shareableTrackers.size(); i++) {
 			if (
@@ -157,6 +161,9 @@ public class VRCOSCHandler implements OSCHandler {
 					);
 			}
 		}
+
+		if (refreshRouterSettings && server.getOSCRouter() != null)
+			server.getOSCRouter().refreshSettings(false);
 	}
 
 	void handleReceivedMessage(OSCMessageEvent event) {

@@ -30,10 +30,16 @@ public class OSCRouter {
 		this.config = oscConfig;
 		this.oscHandlers = oscHandlers;
 
-		refreshSettings();
+		refreshSettings(false);
 	}
 
-	public void refreshSettings() {
+	public void refreshSettings(boolean refreshHandlersSettings) {
+		if (refreshHandlersSettings) {
+			for (OSCHandler oscHandler : oscHandlers) {
+				oscHandler.refreshSettings(false);
+			}
+		}
+
 		// Stops listening and closes OSC port
 		boolean wasListening = oscReceiver != null && oscReceiver.isListening();
 		if (wasListening) {
@@ -139,7 +145,8 @@ public class OSCRouter {
 				// Listens for any message ("//" is a wildcard)
 				MessageSelector selector = new OSCPatternAddressMessageSelector("//");
 				oscReceiver.getDispatcher().addListener(selector, listener);
-				oscReceiver.startListening();
+				if (!oscReceiver.isListening())
+					oscReceiver.startListening();
 			}
 		}
 	}
