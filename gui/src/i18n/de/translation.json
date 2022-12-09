@@ -15,8 +15,8 @@
     "RIGHT_UPPER_ARM": "Rechter Oberarm",
     "RIGHT_LOWER_ARM": "Rechter Unterarm",
     "RIGHT_HAND": "Rechte Hand",
-    "RIGHT_UPPER_LEG": "Rechtes Oberschenkel",
-    "RIGHT_LOWER_LEG": "Rechter Unterschenkel",
+    "RIGHT_UPPER_LEG": "Rechtes oberes Bein",
+    "RIGHT_LOWER_LEG": "Rechter unteres Bein",
     "RIGHT_FOOT": "Rechter Fuß",
     "CHEST": "Brust",
     "WAIST": "Taille",
@@ -25,8 +25,8 @@
     "LEFT_UPPER_ARM": "Linker Oberarm",
     "LEFT_LOWER_ARM": "Linker Unterarm",
     "LEFT_HAND": "Linke Hand",
-    "LEFT_UPPER_LEG": "Linkes Oberschenkel",
-    "LEFT_LOWER_LEG": "Linker Unterschenkel",
+    "LEFT_UPPER_LEG": "Linkes oberes Bein",
+    "LEFT_LOWER_LEG": "Linkes unteres Bein",
     "LEFT_FOOT": "Linker Fuß"
   },
   "skeleton-bone": {
@@ -68,7 +68,7 @@
   },
   "navbar": {
     "home": "Start",
-    "body-proportions": "Körperproportionen",
+    "body-proportions": "Körper-proportionen",
     "trackers-assign": "Tracker-Positionen",
     "mounting": "Befestigungs-Kalibrierung",
     "onboarding": "Setup-Assistent",
