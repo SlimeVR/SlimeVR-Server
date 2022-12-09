@@ -120,14 +120,14 @@ public record RPCSettingsHandler(RPCHandler rpcHandler, ProtocolAPI api) {
 				.getVrcOSC();
 			if (vrcOSCConfig != null) {
 				VRCOSCHandler VRCOSCHandler = this.api.server.getVrcOSCHandler();
-				var general = req.vrcOsc().generalSettings();
+				var osc = req.vrcOsc().oscSettings();
 				var trackers = req.vrcOsc().trackers();
 
-				if (general != null) {
-					vrcOSCConfig.setEnabled(general.enabled());
-					vrcOSCConfig.setPortIn(general.portIn());
-					vrcOSCConfig.setPortOut(general.portOut());
-					vrcOSCConfig.setAddress(general.address());
+				if (osc != null) {
+					vrcOSCConfig.setEnabled(osc.enabled());
+					vrcOSCConfig.setPortIn(osc.portIn());
+					vrcOSCConfig.setPortOut(osc.portOut());
+					vrcOSCConfig.setAddress(osc.address());
 				}
 				if (trackers != null) {
 					vrcOSCConfig.setOSCTrackerRole(TrackerRole.HEAD, trackers.head());
@@ -154,12 +154,12 @@ public record RPCSettingsHandler(RPCHandler rpcHandler, ProtocolAPI api) {
 				.getOscRouter();
 			if (oscRouterConfig != null) {
 				OSCRouter oscRouter = this.api.server.getOSCRouter();
-				var general = req.oscRouter().generalSettings();
-				if (general != null) {
-					oscRouterConfig.setEnabled(general.enabled());
-					oscRouterConfig.setPortIn(general.portIn());
-					oscRouterConfig.setPortOut(general.portOut());
-					oscRouterConfig.setAddress(general.address());
+				var osc = req.oscRouter().oscSettings();
+				if (osc != null) {
+					oscRouterConfig.setEnabled(osc.enabled());
+					oscRouterConfig.setPortIn(osc.portIn());
+					oscRouterConfig.setPortOut(osc.portOut());
+					oscRouterConfig.setAddress(osc.address());
 				}
 
 				oscRouter.refreshSettings(true);

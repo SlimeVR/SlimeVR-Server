@@ -19,7 +19,7 @@ import { SettingsPageLayout } from '../SettingsPageLayout';
 
 interface OSCRouterSettingsForm {
   router: {
-    generalSettings: {
+    oscSettings: {
       enabled: boolean;
       portIn: number;
       portOut: number;
@@ -30,7 +30,7 @@ interface OSCRouterSettingsForm {
 
 const defaultValues = {
   router: {
-    generalSettings: {
+    oscSettings: {
       enabled: false,
       portIn: 9002,
       portOut: 9000,
@@ -56,9 +56,9 @@ export function OSCRouterSettings() {
     if (values.router) {
       const router = new OSCRouterSettingsT();
 
-      router.generalSettings = Object.assign(
+      router.oscSettings = Object.assign(
         new OSCSettingsT(),
-        values.router.generalSettings
+        values.router.oscSettings
       );
 
       settings.oscRouter = router;
@@ -78,18 +78,18 @@ export function OSCRouterSettings() {
   useRPCPacket(RpcMessage.SettingsResponse, (settings: SettingsResponseT) => {
     const formData: OSCRouterSettingsForm = defaultValues;
     if (settings.oscRouter) {
-      if (settings.oscRouter.generalSettings) {
-        formData.router.generalSettings.enabled =
-          settings.oscRouter.generalSettings.enabled;
-        if (settings.oscRouter.generalSettings.portIn)
-          formData.router.generalSettings.portIn =
-            settings.oscRouter.generalSettings.portIn;
-        if (settings.oscRouter.generalSettings.portOut)
-          formData.router.generalSettings.portOut =
-            settings.oscRouter.generalSettings.portOut;
-        if (settings.oscRouter.generalSettings.address)
-          formData.router.generalSettings.address =
-            settings.oscRouter.generalSettings.address.toString();
+      if (settings.oscRouter.oscSettings) {
+        formData.router.oscSettings.enabled =
+          settings.oscRouter.oscSettings.enabled;
+        if (settings.oscRouter.oscSettings.portIn)
+          formData.router.oscSettings.portIn =
+            settings.oscRouter.oscSettings.portIn;
+        if (settings.oscRouter.oscSettings.portOut)
+          formData.router.oscSettings.portOut =
+            settings.oscRouter.oscSettings.portOut;
+        if (settings.oscRouter.oscSettings.address)
+          formData.router.oscSettings.address =
+            settings.oscRouter.oscSettings.address.toString();
       }
     }
 
@@ -134,7 +134,7 @@ export function OSCRouterSettings() {
               variant="toggle"
               outlined
               control={control}
-              name="router.generalSettings.enabled"
+              name="router.oscSettings.enabled"
               label={t('settings.osc.router.enable.label')}
             />
           </div>
@@ -150,13 +150,13 @@ export function OSCRouterSettings() {
           <div className="grid grid-cols-2 gap-3 pb-5">
             <Input
               type="number"
-              {...register('router.generalSettings.portIn', { required: true })}
+              {...register('router.oscSettings.portIn', { required: true })}
               placeholder={t('settings.osc.router.network.port-in.placeholder')}
               label={t('settings.osc.router.network.port-in.label')}
             ></Input>
             <Input
               type="number"
-              {...register('router.generalSettings.portOut', {
+              {...register('router.oscSettings.portOut', {
                 required: true,
               })}
               placeholder={t(
@@ -176,7 +176,7 @@ export function OSCRouterSettings() {
           <div className="grid gap-3 pb-5">
             <Input
               type="text"
-              {...register('router.generalSettings.address', {
+              {...register('router.oscSettings.address', {
                 required: true,
                 pattern:
                   /^(?!0)(?!.*\.$)((1?\d?\d|25[0-5]|2[0-4]\d)(\.|$)){4}$/i,

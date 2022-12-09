@@ -26,7 +26,7 @@ public class RPCSettingsBuilder {
 	) {
 		int addressStringOffset = fbb.createString(config.getAddress());
 
-		int generalSettingOffset = OSCSettings
+		int oscSettingOffset = OSCSettings
 			.createOSCSettings(
 				fbb,
 				config.getEnabled(),
@@ -36,7 +36,7 @@ public class RPCSettingsBuilder {
 			);
 
 		OSCRouterSettings.startOSCRouterSettings(fbb);
-		OSCRouterSettings.addGeneralSettings(fbb, generalSettingOffset);
+		OSCRouterSettings.addOscSettings(fbb, oscSettingOffset);
 
 		return OSCRouterSettings.endOSCRouterSettings(fbb);
 	}
@@ -54,7 +54,7 @@ public class RPCSettingsBuilder {
 				config.getPortOut(),
 				addressStringOffset
 			);
-		int trackersSettingOffset = OSCTrackersSetting
+		int oscSettingOffset = OSCTrackersSetting
 			.createOSCTrackersSetting(
 				fbb,
 				config.getOSCTrackerRole(TrackerRole.HEAD, false),
@@ -70,9 +70,9 @@ public class RPCSettingsBuilder {
 					&& config.getOSCTrackerRole(TrackerRole.RIGHT_HAND, false)
 			);
 		VRCOSCSettings.startVRCOSCSettings(fbb);
-		VRCOSCSettings.addGeneralSettings(fbb, generalSettingOffset);
-		VRCOSCSettings.addTrackers(fbb, trackersSettingOffset);
-		VRCOSCSettings.addTrackers(fbb, trackersSettingOffset);
+		VRCOSCSettings.addOscSettings(fbb, generalSettingOffset);
+		VRCOSCSettings.addTrackers(fbb, oscSettingOffset);
+		VRCOSCSettings.addTrackers(fbb, oscSettingOffset);
 
 		return VRCOSCSettings.endVRCOSCSettings(fbb);
 	}

@@ -20,7 +20,7 @@ import { SettingsPageLayout } from '../SettingsPageLayout';
 
 interface VRCOSCSettingsForm {
   vrchat: {
-    generalSettings: {
+    oscSettings: {
       enabled: boolean;
       portIn: number;
       portOut: number;
@@ -40,7 +40,7 @@ interface VRCOSCSettingsForm {
 
 const defaultValues = {
   vrchat: {
-    generalSettings: {
+    oscSettings: {
       enabled: false,
       portIn: 9001,
       portOut: 9000,
@@ -75,9 +75,9 @@ export function VRCOSCSettings() {
     if (values.vrchat) {
       const vrcOsc = new VRCOSCSettingsT();
 
-      vrcOsc.generalSettings = Object.assign(
+      vrcOsc.oscSettings = Object.assign(
         new OSCSettingsT(),
-        values.vrchat.generalSettings
+        values.vrchat.oscSettings
       );
       vrcOsc.trackers = Object.assign(
         new OSCTrackersSettingT(),
@@ -101,18 +101,18 @@ export function VRCOSCSettings() {
   useRPCPacket(RpcMessage.SettingsResponse, (settings: SettingsResponseT) => {
     const formData: VRCOSCSettingsForm = defaultValues;
     if (settings.vrcOsc) {
-      if (settings.vrcOsc.generalSettings) {
-        formData.vrchat.generalSettings.enabled =
-          settings.vrcOsc.generalSettings.enabled;
-        if (settings.vrcOsc.generalSettings.portIn)
-          formData.vrchat.generalSettings.portIn =
-            settings.vrcOsc.generalSettings.portIn;
-        if (settings.vrcOsc.generalSettings.portOut)
-          formData.vrchat.generalSettings.portOut =
-            settings.vrcOsc.generalSettings.portOut;
-        if (settings.vrcOsc.generalSettings.address)
-          formData.vrchat.generalSettings.address =
-            settings.vrcOsc.generalSettings.address.toString();
+      if (settings.vrcOsc.oscSettings) {
+        formData.vrchat.oscSettings.enabled =
+          settings.vrcOsc.oscSettings.enabled;
+        if (settings.vrcOsc.oscSettings.portIn)
+          formData.vrchat.oscSettings.portIn =
+            settings.vrcOsc.oscSettings.portIn;
+        if (settings.vrcOsc.oscSettings.portOut)
+          formData.vrchat.oscSettings.portOut =
+            settings.vrcOsc.oscSettings.portOut;
+        if (settings.vrcOsc.oscSettings.address)
+          formData.vrchat.oscSettings.address =
+            settings.vrcOsc.oscSettings.address.toString();
       }
       if (settings.vrcOsc.trackers)
         formData.vrchat.trackers = settings.vrcOsc.trackers;
@@ -157,7 +157,7 @@ export function VRCOSCSettings() {
               variant="toggle"
               outlined
               control={control}
-              name="vrchat.generalSettings.enabled"
+              name="vrchat.oscSettings.enabled"
               label={t('settings.osc.vrchat.enable.label')}
             />
           </div>
@@ -170,13 +170,13 @@ export function VRCOSCSettings() {
           <div className="grid grid-cols-2 gap-3 pb-5">
             <Input
               type="number"
-              {...register('vrchat.generalSettings.portIn', { required: true })}
+              {...register('vrchat.oscSettings.portIn', { required: true })}
               placeholder={t('settings.osc.vrchat.network.port-in.placeholder')}
               label={t('settings.osc.vrchat.network.port-in.label')}
             ></Input>
             <Input
               type="number"
-              {...register('vrchat.generalSettings.portOut', {
+              {...register('vrchat.oscSettings.portOut', {
                 required: true,
               })}
               placeholder={t(
@@ -196,7 +196,7 @@ export function VRCOSCSettings() {
           <div className="grid gap-3 pb-5">
             <Input
               type="text"
-              {...register('vrchat.generalSettings.address', {
+              {...register('vrchat.oscSettings.address', {
                 required: true,
                 pattern:
                   /^(?!0)(?!.*\.$)((1?\d?\d|25[0-5]|2[0-4]\d)(\.|$)){4}$/i,
