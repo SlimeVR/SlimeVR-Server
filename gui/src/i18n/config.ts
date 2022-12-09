@@ -3,8 +3,9 @@ import { initReactI18next } from 'react-i18next';
 import en from './en/translation.json';
 import fr from './fr/translation.json';
 import owo from './owo/translation.json';
+import vi from "./vi/translation.json"
 
-export const defaultNS = 'tanslations';
+export const defaultNS = 'translations';
 
 export const langs = [
   {
@@ -19,17 +20,24 @@ export const langs = [
     name: 'Engwish~ (OwO)',
     key: 'owo',
   },
+  {
+    name: 'Tiếng Việt',
+    key: 'vi',
+  },
 ];
 
 export const resources = {
   en: {
-    tanslations: en,
+    translation: en,
   },
   fr: {
-    tanslations: fr,
+    translation: fr,
   },
   owo: {
-    tanslations: owo,
+    translation: owo,
+  },
+  vi: {
+    translation: vi,
   },
 };
 
