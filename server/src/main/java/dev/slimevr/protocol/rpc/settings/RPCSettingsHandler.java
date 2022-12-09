@@ -50,16 +50,14 @@ public record RPCSettingsHandler(RPCHandler rpcHandler, ProtocolAPI api) {
 						this.api.server.getConfigManager().getVrConfig().getFilters()
 					),
 				RPCSettingsBuilder
-					.createOSCSettings(
+					.createOSCRouterSettings(
 						fbb,
-						this.api.server.getConfigManager().getVrConfig().getOscRouter(),
-						false
+						this.api.server.getConfigManager().getVrConfig().getOscRouter()
 					),
 				RPCSettingsBuilder
-					.createOSCSettings(
+					.createVRCOSCSettings(
 						fbb,
-						this.api.server.getConfigManager().getVrConfig().getVrcOSC(),
-						true
+						this.api.server.getConfigManager().getVrConfig().getVrcOSC()
 					),
 				RPCSettingsBuilder
 					.createModelSettings(
@@ -122,23 +120,28 @@ public record RPCSettingsHandler(RPCHandler rpcHandler, ProtocolAPI api) {
 				.getVrcOSC();
 			if (vrcOSCConfig != null) {
 				VRCOSCHandler VRCOSCHandler = this.api.server.getVrcOSCHandler();
+				var general = req.vrcOsc().generalSettings();
 				var trackers = req.vrcOsc().trackers();
 
-				vrcOSCConfig.setEnabled(req.vrcOsc().enabled());
-				vrcOSCConfig.setPortIn(req.vrcOsc().portIn());
-				vrcOSCConfig.setPortOut(req.vrcOsc().portOut());
-				vrcOSCConfig.setAddress(req.vrcOsc().address());
-				vrcOSCConfig.setOSCTrackerRole(TrackerRole.HEAD, trackers.head());
-				vrcOSCConfig.setOSCTrackerRole(TrackerRole.CHEST, trackers.chest());
-				vrcOSCConfig.setOSCTrackerRole(TrackerRole.WAIST, trackers.waist());
-				vrcOSCConfig.setOSCTrackerRole(TrackerRole.LEFT_KNEE, trackers.knees());
-				vrcOSCConfig.setOSCTrackerRole(TrackerRole.RIGHT_KNEE, trackers.knees());
-				vrcOSCConfig.setOSCTrackerRole(TrackerRole.LEFT_FOOT, trackers.feet());
-				vrcOSCConfig.setOSCTrackerRole(TrackerRole.RIGHT_FOOT, trackers.feet());
-				vrcOSCConfig.setOSCTrackerRole(TrackerRole.LEFT_ELBOW, trackers.elbows());
-				vrcOSCConfig.setOSCTrackerRole(TrackerRole.RIGHT_ELBOW, trackers.elbows());
-				vrcOSCConfig.setOSCTrackerRole(TrackerRole.LEFT_HAND, trackers.hands());
-				vrcOSCConfig.setOSCTrackerRole(TrackerRole.RIGHT_HAND, trackers.hands());
+				if (general != null) {
+					vrcOSCConfig.setEnabled(general.enabled());
+					vrcOSCConfig.setPortIn(general.portIn());
+					vrcOSCConfig.setPortOut(general.portOut());
+					vrcOSCConfig.setAddress(general.address());
+				}
+				if (trackers != null) {
+					vrcOSCConfig.setOSCTrackerRole(TrackerRole.HEAD, trackers.head());
+					vrcOSCConfig.setOSCTrackerRole(TrackerRole.CHEST, trackers.chest());
+					vrcOSCConfig.setOSCTrackerRole(TrackerRole.WAIST, trackers.waist());
+					vrcOSCConfig.setOSCTrackerRole(TrackerRole.LEFT_KNEE, trackers.knees());
+					vrcOSCConfig.setOSCTrackerRole(TrackerRole.RIGHT_KNEE, trackers.knees());
+					vrcOSCConfig.setOSCTrackerRole(TrackerRole.LEFT_FOOT, trackers.feet());
+					vrcOSCConfig.setOSCTrackerRole(TrackerRole.RIGHT_FOOT, trackers.feet());
+					vrcOSCConfig.setOSCTrackerRole(TrackerRole.LEFT_ELBOW, trackers.elbows());
+					vrcOSCConfig.setOSCTrackerRole(TrackerRole.RIGHT_ELBOW, trackers.elbows());
+					vrcOSCConfig.setOSCTrackerRole(TrackerRole.LEFT_HAND, trackers.hands());
+					vrcOSCConfig.setOSCTrackerRole(TrackerRole.RIGHT_HAND, trackers.hands());
+				}
 
 				VRCOSCHandler.refreshSettings(true);
 			}
@@ -151,11 +154,13 @@ public record RPCSettingsHandler(RPCHandler rpcHandler, ProtocolAPI api) {
 				.getOscRouter();
 			if (oscRouterConfig != null) {
 				OSCRouter oscRouter = this.api.server.getOSCRouter();
-
-				oscRouterConfig.setEnabled(req.oscRouter().enabled());
-				oscRouterConfig.setPortIn(req.oscRouter().portIn());
-				oscRouterConfig.setPortOut(req.oscRouter().portOut());
-				oscRouterConfig.setAddress(req.oscRouter().address());
+				var general = req.oscRouter().generalSettings();
+				if (general != null) {
+					oscRouterConfig.setEnabled(general.enabled());
+					oscRouterConfig.setPortIn(general.portIn());
+					oscRouterConfig.setPortOut(general.portOut());
+					oscRouterConfig.setAddress(general.address());
+				}
 
 				oscRouter.refreshSettings(true);
 			}

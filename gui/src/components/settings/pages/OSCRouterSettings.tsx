@@ -7,6 +7,7 @@ import {
   RpcMessage,
   SettingsRequestT,
   SettingsResponseT,
+  OSCRouterSettingsT,
   OSCSettingsT,
 } from 'solarxr-protocol';
 import { useWebsocketAPI } from '../../../hooks/websocket-api';
@@ -16,21 +17,25 @@ import { Input } from '../../commons/Input';
 import { Typography } from '../../commons/Typography';
 import { SettingsPageLayout } from '../SettingsPageLayout';
 
-interface OSCSettingsForm {
+interface OSCRouterSettingsForm {
   router: {
-    enabled: boolean;
-    portIn: number;
-    portOut: number;
-    address: string;
+    generalSettings: {
+      enabled: boolean;
+      portIn: number;
+      portOut: number;
+      address: string;
+    };
   };
 }
 
 const defaultValues = {
   router: {
-    enabled: false,
-    portIn: 9002,
-    portOut: 9000,
-    address: '127.0.0.1',
+    generalSettings: {
+      enabled: false,
+      portIn: 9002,
+      portOut: 9000,
+      address: '127.0.0.1',
+    },
   },
 };
 
@@ -41,19 +46,20 @@ export function OSCRouterSettings() {
   const pageRef = useRef<HTMLFormElement | null>(null);
 
   const { reset, control, watch, handleSubmit, register } =
-    useForm<OSCSettingsForm>({
+    useForm<OSCRouterSettingsForm>({
       defaultValues: defaultValues,
     });
 
-  const onSubmit = (values: OSCSettingsForm) => {
+  const onSubmit = (values: OSCRouterSettingsForm) => {
     const settings = new ChangeSettingsRequestT();
 
     if (values.router) {
-      const router = new OSCSettingsT();
-      router.enabled = values.router.enabled;
-      router.portIn = values.router.portIn;
-      router.portOut = values.router.portOut;
-      router.address = values.router.address;
+      const router = new OSCRouterSettingsT();
+
+      router.generalSettings = Object.assign(
+        new OSCSettingsT(),
+        values.router.generalSettings
+      );
 
       settings.oscRouter = router;
     }
@@ -70,15 +76,21 @@ export function OSCRouterSettings() {
   }, []);
 
   useRPCPacket(RpcMessage.SettingsResponse, (settings: SettingsResponseT) => {
-    const formData: OSCSettingsForm = defaultValues;
+    const formData: OSCRouterSettingsForm = defaultValues;
     if (settings.oscRouter) {
-      formData.router.enabled = settings.oscRouter.enabled;
-      if (settings.oscRouter.portIn)
-        formData.router.portIn = settings.oscRouter.portIn;
-      if (settings.oscRouter.portOut)
-        formData.router.portOut = settings.oscRouter.portOut;
-      if (settings.oscRouter.address)
-        formData.router.address = settings.oscRouter.address.toString();
+      if (settings.oscRouter.generalSettings) {
+        formData.router.generalSettings.enabled =
+          settings.oscRouter.generalSettings.enabled;
+        if (settings.oscRouter.generalSettings.portIn)
+          formData.router.generalSettings.portIn =
+            settings.oscRouter.generalSettings.portIn;
+        if (settings.oscRouter.generalSettings.portOut)
+          formData.router.generalSettings.portOut =
+            settings.oscRouter.generalSettings.portOut;
+        if (settings.oscRouter.generalSettings.address)
+          formData.router.generalSettings.address =
+            settings.oscRouter.generalSettings.address.toString();
+      }
     }
 
     reset(formData);
@@ -122,7 +134,7 @@ export function OSCRouterSettings() {
               variant="toggle"
               outlined
               control={control}
-              name="router.enabled"
+              name="router.generalSettings.enabled"
               label={t('settings.osc.router.enable.label')}
             />
           </div>
@@ -138,13 +150,15 @@ export function OSCRouterSettings() {
           <div className="grid grid-cols-2 gap-3 pb-5">
             <Input
               type="number"
-              {...register('router.portIn', { required: true })}
+              {...register('router.generalSettings.portIn', { required: true })}
               placeholder={t('settings.osc.router.network.port-in.placeholder')}
               label={t('settings.osc.router.network.port-in.label')}
             ></Input>
             <Input
               type="number"
-              {...register('router.portOut', { required: true })}
+              {...register('router.generalSettings.portOut', {
+                required: true,
+              })}
               placeholder={t(
                 'settings.osc.router.network.port-out.placeholder'
               )}
@@ -162,7 +176,7 @@ export function OSCRouterSettings() {
           <div className="grid gap-3 pb-5">
             <Input
               type="text"
-              {...register('router.address', {
+              {...register('router.generalSettings.address', {
                 required: true,
                 pattern:
                   /^(?!0)(?!.*\.$)((1?\d?\d|25[0-5]|2[0-4]\d)(\.|$)){4}$/i,

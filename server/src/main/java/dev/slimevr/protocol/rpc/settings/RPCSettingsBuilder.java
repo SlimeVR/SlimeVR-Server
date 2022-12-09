@@ -20,40 +20,61 @@ import solarxr_protocol.rpc.settings.ModelToggles;
 
 public class RPCSettingsBuilder {
 
-	public static int createOSCSettings(
+	public static int createOSCRouterSettings(
 		FlatBufferBuilder fbb,
-		OSCConfig config,
-		boolean trackers
+		OSCConfig config
 	) {
-		int trackersSettingOffset = 0;
-		if (trackers) {
-			trackersSettingOffset = OSCTrackersSetting
-				.createOSCTrackersSetting(
-					fbb,
-					config.getOSCTrackerRole(TrackerRole.HEAD, false),
-					config.getOSCTrackerRole(TrackerRole.CHEST, false),
-					config.getOSCTrackerRole(TrackerRole.WAIST, false),
-					config.getOSCTrackerRole(TrackerRole.LEFT_KNEE, false)
-						&& config.getOSCTrackerRole(TrackerRole.RIGHT_KNEE, false),
-					config.getOSCTrackerRole(TrackerRole.LEFT_FOOT, false)
-						&& config.getOSCTrackerRole(TrackerRole.RIGHT_FOOT, false),
-					config.getOSCTrackerRole(TrackerRole.LEFT_ELBOW, false)
-						&& config.getOSCTrackerRole(TrackerRole.RIGHT_ELBOW, false),
-					config.getOSCTrackerRole(TrackerRole.LEFT_HAND, false)
-						&& config.getOSCTrackerRole(TrackerRole.RIGHT_HAND, false)
-				);
-		}
 		int addressStringOffset = fbb.createString(config.getAddress());
-		OSCSettings.startOSCSettings(fbb);
-		OSCSettings.addEnabled(fbb, config.getEnabled());
-		OSCSettings.addPortIn(fbb, config.getPortIn());
-		OSCSettings.addPortOut(fbb, config.getPortOut());
-		OSCSettings.addAddress(fbb, addressStringOffset);
-		if (trackers) {
-			OSCSettings.addTrackers(fbb, trackersSettingOffset);
-		}
 
-		return OSCSettings.endOSCSettings(fbb);
+		int generalSettingOffset = OSCSettings
+			.createOSCSettings(
+				fbb,
+				config.getEnabled(),
+				config.getPortIn(),
+				config.getPortOut(),
+				addressStringOffset
+			);
+
+		OSCRouterSettings.startOSCRouterSettings(fbb);
+		OSCRouterSettings.addGeneralSettings(fbb, generalSettingOffset);
+
+		return OSCRouterSettings.endOSCRouterSettings(fbb);
+	}
+
+	public static int createVRCOSCSettings(
+		FlatBufferBuilder fbb,
+		OSCConfig config
+	) {
+		int addressStringOffset = fbb.createString(config.getAddress());
+		int generalSettingOffset = OSCSettings
+			.createOSCSettings(
+				fbb,
+				config.getEnabled(),
+				config.getPortIn(),
+				config.getPortOut(),
+				addressStringOffset
+			);
+		int trackersSettingOffset = OSCTrackersSetting
+			.createOSCTrackersSetting(
+				fbb,
+				config.getOSCTrackerRole(TrackerRole.HEAD, false),
+				config.getOSCTrackerRole(TrackerRole.CHEST, false),
+				config.getOSCTrackerRole(TrackerRole.WAIST, false),
+				config.getOSCTrackerRole(TrackerRole.LEFT_KNEE, false)
+					&& config.getOSCTrackerRole(TrackerRole.RIGHT_KNEE, false),
+				config.getOSCTrackerRole(TrackerRole.LEFT_FOOT, false)
+					&& config.getOSCTrackerRole(TrackerRole.RIGHT_FOOT, false),
+				config.getOSCTrackerRole(TrackerRole.LEFT_ELBOW, false)
+					&& config.getOSCTrackerRole(TrackerRole.RIGHT_ELBOW, false),
+				config.getOSCTrackerRole(TrackerRole.LEFT_HAND, false)
+					&& config.getOSCTrackerRole(TrackerRole.RIGHT_HAND, false)
+			);
+		VRCOSCSettings.startVRCOSCSettings(fbb);
+		VRCOSCSettings.addGeneralSettings(fbb, generalSettingOffset);
+		VRCOSCSettings.addTrackers(fbb, trackersSettingOffset);
+		VRCOSCSettings.addTrackers(fbb, trackersSettingOffset);
+
+		return VRCOSCSettings.endVRCOSCSettings(fbb);
 	}
 
 	public static int createFilterSettings(

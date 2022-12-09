@@ -44,17 +44,17 @@ public class OSCRouter {
 		boolean wasListening = oscReceiver != null && oscReceiver.isListening();
 		if (wasListening) {
 			oscReceiver.stopListening();
-			oscReceiver = null;
 		}
+		oscReceiver = null;
 		boolean wasConnected = oscSender != null && oscSender.isConnected();
 		if (wasConnected) {
 			try {
 				oscSender.close();
-				oscSender = null;
 			} catch (IOException e) {
 				LogManager.severe("[OSCRouter] Error closing the OSC sender: " + e);
 			}
 		}
+		oscSender = null;
 
 		if (config.getEnabled()) {
 			// Instantiates the OSC receiver
@@ -62,8 +62,10 @@ public class OSCRouter {
 			// Check if another OSC receiver with same port exists
 			for (OSCHandler oscHandler : oscHandlers) {
 				if (oscHandler.getPortIn() == portIn) {
-					oscReceiver = oscHandler.getOscReceiver();
-					LogManager.info("[OSCRouter] Listening to port " + portIn);
+					if (oscHandler.getOscReceiver().isListening()) {
+						oscReceiver = oscHandler.getOscReceiver();
+						LogManager.info("[OSCRouter] Listening to port " + portIn);
+					}
 				}
 			}
 			// Else, create our own OSC receiver
@@ -96,14 +98,16 @@ public class OSCRouter {
 			// Check if another OSC sender with same port and address exists
 			for (OSCHandler oscHandler : oscHandlers) {
 				if (oscHandler.getPortOut() == portOut && oscHandler.getAddress() == address) {
-					oscSender = oscHandler.getOscSender();
-					LogManager
-						.info(
-							"[OSCRouter] Sending to port "
-								+ portOut
-								+ " at address "
-								+ address.toString()
-						);
+					if (oscHandler.getOscSender().isConnected()) {
+						oscSender = oscHandler.getOscSender();
+						LogManager
+							.info(
+								"[OSCRouter] Sending to port "
+									+ portOut
+									+ " at address "
+									+ address.toString()
+							);
+					}
 				}
 			}
 			// Else, create our own OSC sender
