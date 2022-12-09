@@ -80,7 +80,6 @@
     ],
     "security": {
       "csp": null
-    },
-    "cli": {}
+    }
   }
 }

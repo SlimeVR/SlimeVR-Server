@@ -9,9 +9,10 @@ use std::path::PathBuf;
 use std::process::{Child, Stdio};
 
 use clap::Parser;
-use clap_verbosity_flag::{InfoLevel, Verbosity};
+use const_format::formatcp;
 use rand::{seq::SliceRandom, thread_rng};
-use tauri::api::{clap, process::Command};
+use shadow_rs::shadow;
+use tauri::api::process::Command;
 use tauri::Manager;
 use tempfile::Builder;
 use which::which_all;
@@ -33,16 +34,21 @@ static POSSIBLE_TITLES: &[&str] = &[
 	"never gonna let you down",
 	"uwu sowwy",
 ];
+shadow!(build);
+const VERSION: &str = formatcp!("{}-{}", build::PKG_VERSION, build::SHORT_COMMIT);
 
-#[derive(Parser)]
-#[clap(version, about)]
+#[derive(Debug, Parser)]
+#[clap(
+	version = VERSION,
+	about
+)]
 struct Cli {
 	#[clap(short, long)]
 	display_console: bool,
 	#[clap(long)]
 	launch_from_path: Option<PathBuf>,
 	#[clap(flatten)]
-	verbosity: Verbosity<InfoLevel>,
+	verbose: clap_verbosity_flag::Verbosity,
 }
 
 fn is_valid_path(path: &PathBuf) -> bool {
