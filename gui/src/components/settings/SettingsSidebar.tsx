@@ -72,7 +72,7 @@ export function SettingsSidebar() {
         <Typography variant="section-title">OSC</Typography>
         <div className="flex flex-col gap-2">
           <SettingsLink to="/settings/osc/router" scrollTo="router">
-            {t('settings.sidebar.osc.router')}
+            {t('settings.sidebar.osc-router')}
           </SettingsLink>
         </div>
         <div className="flex flex-col gap-2">

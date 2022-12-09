@@ -11,7 +11,7 @@ import {
 } from 'solarxr-protocol';
 import { useWebsocketAPI } from '../../../hooks/websocket-api';
 import { CheckBox } from '../../commons/Checkbox';
-import { VRCIcon } from '../../commons/icon/VRCIcon';
+import { RouterIcon } from '../../commons/icon/RouterIcon';
 import { Input } from '../../commons/Input';
 import { Typography } from '../../commons/Typography';
 import { SettingsPageLayout } from '../SettingsPageLayout';
@@ -98,10 +98,10 @@ export function OSCRouterSettings() {
 
   return (
     <form className="flex flex-col gap-2 w-full" ref={pageRef}>
-      <SettingsPageLayout icon={<VRCIcon></VRCIcon>} id="vrchat">
+      <SettingsPageLayout icon={<RouterIcon></RouterIcon>} id="router">
         <>
           <Typography variant="main-title">
-            {t('settings.osc.router.main.title')}
+            {t('settings.osc.router.title')}
           </Typography>
           <div className="flex flex-col pt-2 pb-4">
             <Typography color="secondary">
@@ -129,7 +129,10 @@ export function OSCRouterSettings() {
           <Typography bold>{t('settings.osc.router.network.title')}</Typography>
           <div className="flex flex-col pb-2">
             <Typography color="secondary">
-              {t('settings.osc.router.network.description')}
+              {t('settings.osc.router.network.description.p0')}
+            </Typography>
+            <Typography color="secondary">
+              {t('settings.osc.router.network.description.p1')}
             </Typography>
           </div>
           <div className="grid grid-cols-2 gap-3 pb-5">

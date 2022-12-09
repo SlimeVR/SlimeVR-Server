@@ -162,6 +162,7 @@
       "tracker-mechanics": "Fonctionnement des capteurs",
       "fk-settings": "Paramètres du squelette",
       "interface": "Interface",
+      "osc-router": "Routeur OSC",
       "utils": "Utilitaires",
       "serial": "Console série"
     },
@@ -255,6 +256,34 @@
       "auto-dropdown-item": "Automatique"
     },
     "osc": {
+      "router": {
+        "title": "Routeur OSC",
+        "description.p0": "Transférez les messages OSC provenant d'un autre programme",
+        "description.p1": "Utile pour utiliser un autre programme OSC avec VRChat par exemple",
+        "enable": {
+          "title": "Activer",
+          "description": "Activer/désactiver le transfert de messages",
+          "label": "Activer"
+        },
+        "network": {
+          "title": "Network ports",
+          "description.p0": "Définissez les ports pour écouter et envoyer des données",
+          "description.p1": "Ces ports peuvent être les mêmes que les autres utilisés dans le Serveur SlimeVR",
+          "port-in": {
+            "label": "Port d'entrée",
+            "placeholder": "Port d'entrée (par défault: 9002)"
+          },
+          "port-out": {
+            "label": "Port de sortie",
+            "placeholder": "Port de sortie (par défault: 9000)"
+          },
+          "address": {
+            "title": "Adresse réseau",
+            "description": "Choisissez l'adresse à laquelle envoyer les données",
+            "placeholder": "Adresse IPV4"
+          }
+        }
+      },
       "vrchat": {
         "description.p0": "Modifiez les paramètres spécifiques à VRChat pour recevoir et envoyer des données HMD",
         "description.p1": "données de suivi pour FBT (fonctionne sur Quest autonome).",
@@ -265,7 +294,7 @@
         },
         "network": {
           "title": "Connexions réseau",
-          "description": "Définir les ports pour écouter et envoyer des données à VRChat",
+          "description": "Définissez les ports pour écouter et envoyer des données à VRChat",
           "port-in": {
             "label": "Port d'entrée",
             "placeholder": "Port d'entrée (par défaut : 9001)"
