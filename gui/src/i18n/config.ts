@@ -6,7 +6,7 @@ import vi from './vi/translation.json';
 import owo from './owo/translation.json'
 
 
-export const defaultNS = 'translations';
+export const defaultNS = 'translation';
 
 export const langs = [
   {
