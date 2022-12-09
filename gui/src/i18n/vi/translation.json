@@ -67,7 +67,7 @@
     "close": "Đóng"
   },
   "navbar": {
-    "home": "Home",
+    "home": "Giao diện chính",
     "body-proportions": "Bộ phận cơ thể",
     "trackers-assign": "Giao bộ phận tracker",
     "mounting": "Đo vị trí đặt",
@@ -112,7 +112,7 @@
       "manufacturer": "Nhà sản xuất",
       "display-name": "Tên gọi",
       "custom-name": "Tên tự chọn",
-      "url": "Tacker URL"
+      "url": " URL"
     },
     "settings": {
       "back": "Quay lại danh sách tracker",
@@ -130,7 +130,7 @@
       "name-section": {
         "title": "Tên tracker",
         "description": "Hãy cho một tên đẹp :)",
-        "input-placeholder": "NightyBeast's left leg"
+        "input-placeholder": "Menaced's left leg"
       }
     },
     "part-card": {
