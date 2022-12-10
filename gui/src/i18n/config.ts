@@ -21,7 +21,7 @@ export const langs = [
     key: 'owo',
   },
   {
-    name: 'Deutsch',
+    name: '🇩🇪Deutsch',
     key: 'de',
   },
 ];
