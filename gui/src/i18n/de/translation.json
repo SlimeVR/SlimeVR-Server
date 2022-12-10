@@ -16,7 +16,7 @@
     "RIGHT_LOWER_ARM": "Rechter Unterarm",
     "RIGHT_HAND": "Rechte Hand",
     "RIGHT_UPPER_LEG": "Rechtes oberes Bein",
-    "RIGHT_LOWER_LEG": "Rechter unteres Bein",
+    "RIGHT_LOWER_LEG": "Rechtes unteres Bein",
     "RIGHT_FOOT": "Rechter Fuß",
     "CHEST": "Brust",
     "WAIST": "Taille",
@@ -80,7 +80,7 @@
   },
   "overlay": {
     "is-visible-label": "Visualisierungs-Overlay in SteamVR anzeigen",
-    "is-mirrored-label": "Visualisierung als Spiegel anzeigen"
+    "is-mirrored-label": "Visualisierung spiegeln"
   },
   "tracker": {
     "status": {
@@ -130,7 +130,7 @@
       "name-section": {
         "title": "Trackername",
         "description": "Geben Sie ihm einen süßen Spitznamen :)",
-        "input-placeholder": "NightyBeast's linke Bein"
+        "input-placeholder": "NightyBeast's linkes Bein"
       }
     },
     "part-card": {
@@ -139,7 +139,7 @@
     }
   },
   "body-assignment-menu": {
-    "title": "Wo möchtest du diesen Tracker haben?",
+    "title": "Wo trägst du diesen Tracker?",
     "description": "Wählen Sie die Position aus, an dem Sie diesen Tracker befestigt haben. Alternativ können Sie auch alle Tracker auf einmal verwalten statt einzeln.",
     "show-advanced-locations": "Zeige erweiterte Tracker-Positionen",
     "manage-trackers": "Verwalte alle Tracker",
@@ -208,7 +208,7 @@
         "title": "FK-Einstellungen",
         "leg-tweak": {
           "title": "Bein-Optimierungen",
-          "description": "Floor-Clip kann das Durchdringen mit dem Boden reduzieren oder sogar beseitigen, kann aber bei Knien Probleme verursachen. Rutsch-Korrektur korrigiert das verrutschen, kann aber bei bestimmten Bewegungsmustern die Genauigkeit verringern.",
+          "description": "Floor-Clip kann das Durchdringen mit dem Boden reduzieren oder sogar beseitigen, kann aber bei Knien Probleme verursachen. Rutsch-Korrektur korrigiert das Verrutschen, kann aber bei bestimmten Bewegungsmustern die Genauigkeit verringern.",
           "floor-clip": "Bodenclip",
           "skating-correction": "Rutsch-Korrektur",
           "skating-correction-amount": "Rutsch-Korrekturstärke"
@@ -223,7 +223,7 @@
           "description": "Schalten Sie Skeletteinstellungen ein oder aus. Es wird empfohlen, diese eingeschaltet zu lassen.",
           "extended-spine": "Erweiterte Wirbelsäule",
           "extended-pelvis": "Erweiterter Beckenbereich",
-          "extended-knees": "Erweitertes Knie"
+          "extended-knees": "Erweiterte Knie"
         }
       },
       "gesture-control": {
@@ -256,7 +256,7 @@
       "title": "Serielle Konsole",
       "description.p0": "Dies ist ein Live-Informationen-Feed für die serielle Kommunikation.",
       "description.p1": "Kann nützlich sein, wenn Sie wissen müssen, dass die Firmware ausfällt.",
-      "connection-lost": "Verbindung zu seriell verloren, Verbindung wird wiederhergestellt...",
+      "connection-lost": "Serielle Verbindung verloren, Verbindung wird wiederhergestelt...",
       "reboot": "Neustart",
       "factory-reset": "Werkseinstellungen zurücksetzen",
       "get-infos": "Informationen abrufen",
@@ -365,12 +365,12 @@
     "manual-mounting": {
       "back": "Zurück zum Eintritt in die VR",
       "title": "Manuelles Befestigen",
-      "description": "Klicken Sie auf jeden Tracker und wählen Sie aus, in welche Richtung sie montiert sind",
+      "description": "Klicken Sie auf jeden Tracker und wählen Sie aus, in welche Richtung diese montiert sind",
       "auto-mounting": "Automatisches Befestigen",
       "next": "Nächster Schritt"
     },
     "automatic-mounting": {
-      "back": "Zurück zum Eintritt in die VR",
+      "back": "Zurück zum Eintritt in VR",
       "title": "Kalibrierung der Befestigung",
       "description": "Damit die SlimeVR-Tracker funktionieren, müssen wir eine Befestigungsdrehung für Ihre Tracker zuweisen, um sie mit der physischen Tracker-Befestigung auszurichten.",
       "manual-mounting": "Befestigung manuell einstellen",
@@ -384,7 +384,7 @@
       "mounting-reset": {
         "title": "Befestigung zurücksetzen",
         "step": {
-          "0": "1. Beugen Sie sich im \"Skifahren\"-Pose mit gebeugten Beinen, geneigtem Oberkörper und gebeugten Armen.",
+          "0": "1. Beugen Sie sich in die \"Skifahren\"-Pose mit gebeugten Beinen, geneigtem Oberkörper und gebeugten Armen.",
           "1": "2. Drücken Sie die Schaltfläche \"Mounting zurücksetzen\" und warten Sie 3 Sekunden, bevor die Befestigungsdrehungen der Tracker zurückgesetzt werden."
         }
       },
@@ -396,7 +396,7 @@
         }
       },
       "put-trackers-on": {
-        "title": "Ziehen sie ihre Tracker an",
+        "title": "Ziehen Sie ihre Tracker an",
         "description": "Um die Befestigungsdrehung zu kalibrieren, werden wir die Tracker verwenden, die Sie gerade zugewiesen haben. Ziehen Sie alle Ihre Tracker an, Sie können sehen, welche welche sind in der Abbildung rechts.",
         "next": "Ich habe alle meine Tracker an"
       }
@@ -410,7 +410,7 @@
     "automatic-proportions": {
       "back": "Gehen Sie zurück zum Reset-Tutorial",
       "title": "Messen Sie Ihre Proportionen",
-      "description": "Damit die SlimeVR-Tracker funktionieren, müssen wir ihre Proportionen kennen. Diese kurze Kalibrierung wird sie für Sie messen.",
+      "description": "Damit die SlimeVR-Tracker funktionieren, müssen wir Ihre Proportionen kennen. Diese kurze Kalibrierung wird sie für Sie messen.",
       "manual": "Manuelle Kalibrierung",
       "prev-step": "Vorheriger Schritt",
       "put-trackers-on": {
