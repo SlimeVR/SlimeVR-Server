@@ -334,6 +334,7 @@ public class VRCOSCHandler implements OSCHandler {
 	@Override
 	public int getPortIn() {
 		return lastPortIn;
+	}
     
 	/*
 	 * Apache Commons Math Copyright 2001-2022 The Apache Software Foundation
