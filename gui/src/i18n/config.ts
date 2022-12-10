@@ -17,12 +17,12 @@ export const langs = [
     key: 'fr',
   },
   {
-    name: '🥺 Engwish~ OwO',
-    key: 'owo',
+    name: '🇩🇪 Deutsch',
+    key: 'de',
   },
   {
-    name: '🇩🇪Deutsch',
-    key: 'de',
+    name: '🥺 Engwish~ OwO',
+    key: 'owo',
   },
 ];
 
@@ -33,11 +33,11 @@ export const resources = {
   fr: {
     tanslations: fr,
   },
-  owo: {
-    tanslations: owo,
-  },
   de: {
     tanslations: de,
+  },
+  owo: {
+    tanslations: owo,
   },
 };
 
