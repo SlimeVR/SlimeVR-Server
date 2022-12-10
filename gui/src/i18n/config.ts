@@ -19,6 +19,10 @@ export const langs = [
     name: 'Engwish~ (OwO)',
     key: 'owo',
   },
+  {
+    name: '日本語',
+    key: 'ja',
+  },
 ];
 
 export const resources = {
@@ -30,6 +34,9 @@ export const resources = {
   },
   owo: {
     tanslations: owo,
+  },
+  ja: {
+    tanslations: ja,
   },
 };
 
