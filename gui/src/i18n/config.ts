@@ -9,11 +9,11 @@ export const defaultNS = 'tanslations';
 
 export const langs = [
   {
-    name: 'English',
+    name: '🇺🇸 English',
     key: 'en',
   },
   {
-    name: 'Français',
+    name: '🇫🇷 Français',
     key: 'fr',
   },
   {
@@ -21,7 +21,7 @@ export const langs = [
     key: 'pl',
   },
   {
-    name: 'Engwish~ (OwO)',
+    name: '🥺 Engwish~ OwO',
     key: 'owo',
   },
 ];
