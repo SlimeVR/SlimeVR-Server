@@ -1,61 +1,61 @@
 {
   "websocket": {
-    "connecting": "Connecting to the server",
-    "connection-lost": "Connection lost to the server. Trying to reconnect..."
+    "connecting": "サーバー接続中",
+    "connection-lost": "サーバーへの接続が失われました。再接続を試みています..."
   },
   "tips": {
-    "find-tracker": "Not sure which tracker is which? Shake a tracker and it will highlight the corresponding item.",
-    "do-not-move-heels": "Ensure your heels do not move during recording!"
+    "find-tracker": "どのトラッカーがどれだかわからない？トラッカーを振ると、該当する項目がハイライトされます。",
+    "do-not-move-heels": "レコーディング中にかかとが動かないように注意しましょう!"
   },
   "body-part": {
-    "NONE": "Unassigned",
-    "HEAD": "Head",
-    "NECK": "Neck",
-    "RIGHT_SHOULDER": "Right shoulder",
-    "RIGHT_UPPER_ARM": "Right upper arm",
-    "RIGHT_LOWER_ARM": "Right lower arm",
-    "RIGHT_HAND": "Right hand",
-    "RIGHT_UPPER_LEG": "Right upper leg",
-    "RIGHT_LOWER_LEG": "Right lower leg",
-    "RIGHT_FOOT": "Right foot",
-    "CHEST": "Chest",
-    "WAIST": "Waist",
-    "HIP": "Hip",
-    "LEFT_SHOULDER": "Left shoulder",
-    "LEFT_UPPER_ARM": "Left upper arm",
-    "LEFT_LOWER_ARM": "Left lower arm",
-    "LEFT_HAND": "Left hand",
-    "LEFT_UPPER_LEG": "Left upper leg",
-    "LEFT_LOWER_LEG": "Left lower leg",
-    "LEFT_FOOT": "Left foot"
+    "NONE": "未設定",
+    "HEAD": "頭",
+    "NECK": "首",
+    "RIGHT_SHOULDER": "右肩",
+    "RIGHT_UPPER_ARM": "右上腕",
+    "RIGHT_LOWER_ARM": "右前腕",
+    "RIGHT_HAND": "右手",
+    "RIGHT_UPPER_LEG": "右膝",
+    "RIGHT_LOWER_LEG": "右足",
+    "RIGHT_FOOT": "右足先",
+    "CHEST": "胸",
+    "WAIST": "腰",
+    "HIP": "ヒップ",
+    "LEFT_SHOULDER": "左肩",
+    "LEFT_UPPER_ARM": "左上腕",
+    "LEFT_LOWER_ARM": "左前腕",
+    "LEFT_HAND": "左手",
+    "LEFT_UPPER_LEG": "左膝",
+    "LEFT_LOWER_LEG": "左足",
+    "LEFT_FOOT": "左足先"
   },
   "skeleton-bone": {
-    "NONE": "None",
-    "HEAD": "Head Shift",
-    "NECK": "Neck Length",
-    "TORSO": "Torso Length",
-    "CHEST": "Chest Distance",
-    "WAIST": "Waist Distance",
-    "HIP_OFFSET": "Hip Offset",
-    "HIPS_WIDTH": "Hips Width",
-    "LEGS_LENGTH": "Legs Length",
-    "KNEE_HEIGHT": "Knee Height",
-    "FOOT_LENGTH": "Foot Length",
-    "FOOT_SHIFT": "Foot Shift",
-    "SKELETON_OFFSET": "Skeleton Offset",
-    "CONTROLLER_DISTANCE_Z": "Controller Distance Z",
-    "CONTROLLER_DISTANCE_Y": "Controller Distance Y",
-    "FOREARM_LENGTH": "Forearm Distance",
-    "SHOULDERS_DISTANCE": "Shoulders Distance",
-    "SHOULDERS_WIDTH": "Shoulders Width",
-    "UPPER_ARM_LENGTH": "Upper Arm Length",
-    "ELBOW_OFFSET": "Elbow Offset"
+    "NONE": "無し",
+    "HEAD": "ヘッドシフト",
+    "NECK": "首長さ",
+    "TORSO": "胴長さ",
+    "CHEST": "胸部の距離",
+    "WAIST": "腰部の距離",
+    "HIP_OFFSET": "ヒップオフセット",
+    "HIPS_WIDTH": "ヒップ幅",
+    "LEGS_LENGTH": "脚長さ",
+    "KNEE_HEIGHT": "膝高さ",
+    "FOOT_LENGTH": "足先長さ",
+    "FOOT_SHIFT": "足先シフト",
+    "SKELETON_OFFSET": "スケルトンオフセット",
+    "CONTROLLER_DISTANCE_Z": "コントローラ距離 Z",
+    "CONTROLLER_DISTANCE_Y": "コントローラ距離 Y",
+    "FOREARM_LENGTH": "前腕長さ",
+    "SHOULDERS_DISTANCE": "肩の距離",
+    "SHOULDERS_WIDTH": "肩幅",
+    "UPPER_ARM_LENGTH": "上腕長さ",
+    "ELBOW_OFFSET": "肘オフセット"
   },
   "reset": {
-    "reset-all": "Reset all proportions",
-    "full": "Reset",
-    "mounting": "Reset Mounting",
-    "quick": "Quick Reset"
+    "reset-all": "すべてのプロポーションをリセット",
+    "full": "リセット",
+    "mounting": "リセットマウンティング",
+    "quick": "クイックリセット"
   },
   "serial-detection": {
     "new-device.p0": "New serial device detected!" ,
@@ -67,16 +67,16 @@
     "close": "Close"
   },
   "navbar": {
-    "home": "Home",
-    "body-proportions": "Body Proportions",
-    "trackers-assign": "Tracker Assignment",
-    "mounting": "Mounting Calibration",
-    "onboarding": "Setup Wizard",
-    "settings": "Settings"
+    "home": "ホーム",
+    "body-proportions": "ボディ プロポーション",
+    "trackers-assign": "トラッカー 割り当て",
+    "mounting": "マウント キャリブレーション",
+    "onboarding": "セットアップ ウィザード",
+    "settings": "設定"
   },
   "bvh": {
-    "start-recording": "Record BVH",
-    "recording": "Recording..."
+    "start-recording": "BVH レコーディング",
+    "recording": "レコーディング中..."
   },
   "overlay": {
     "is-visible-label": "Show Overlay in SteamVR",
