@@ -13,7 +13,7 @@ import {
   SettingsRequestT,
   SettingsResponseT,
   SteamVRTrackersSettingT,
-  TapDetectionSettingsT
+  TapDetectionSettingsT,
 } from 'solarxr-protocol';
 import { useConfig } from '../../../hooks/config';
 import { useWebsocketAPI } from '../../../hooks/websocket-api';
@@ -378,7 +378,9 @@ export function GeneralSettings() {
             <NumberSelector
               control={control}
               name="legTweaks.correctionStrength"
-              label="Skating correction amount"
+              label={t(
+                'settings.general.fk-settings.leg-tweak.skating-correction-amount'
+              )}
               valueLabelFormat={(value) => `${Math.round(value * 100)} %`}
               min={0.1}
               max={1.0}
