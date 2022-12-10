@@ -2,6 +2,7 @@ import i18next from 'i18next';
 import { initReactI18next } from 'react-i18next';
 import en from './en/translation.json';
 import fr from './fr/translation.json';
+import pt-BR from './pt-BR/translation.json';
 import owo from './owo/translation.json';
 
 export const defaultNS = 'tanslations';
@@ -16,6 +17,10 @@ export const langs = [
     key: 'fr',
   },
   {
+    name: '🇧🇷 Português Brasileiro',
+    key: 'pt-BR',
+  },
+  {
     name: '🥺 Engwish~ OwO',
     key: 'owo',
   },
@@ -27,6 +32,9 @@ export const resources = {
   },
   fr: {
     tanslations: fr,
+  },
+  pt-BR: {
+    tanslations: pt-BR,
   },
   owo: {
     tanslations: owo,
