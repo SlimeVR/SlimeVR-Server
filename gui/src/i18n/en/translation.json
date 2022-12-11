@@ -228,10 +228,14 @@
       },
       "gesture-control": {
         "title": "Gesture control",
-        "subtitle": "Double Tap quick reset",
-        "description": "Enable or disable double tap quick reset. When enabled double tapping anywhere on the highest torso tracker will activate a quick reset. Delay is the time between registering a tap and resetting.",
-        "enable": "Double tap quick reset",
-        "delay": "Delay"
+        "subtitle": "Tap to reset",
+        "description": "Allows for resets to be triggered by tapping a tracker. the tracker highest up on your torso is used for Quick Reset, the tracker highest up on your left leg is used for Reset, and the tracker highest up on your right leg is used for Mounting Reset.",
+        "numberOfTaps": "Number of taps",
+        "taps": "taps",
+        "delay": "Delay",
+        "quickResetEnabled": "Quick reset enabled",
+        "resetEnabled": "Reset enabled",
+        "mountingResetEnabled": "Mounting reset enabled"
       },
       "interface": {
         "title": "Interface",

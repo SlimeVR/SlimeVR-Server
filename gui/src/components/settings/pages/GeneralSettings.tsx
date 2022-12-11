@@ -521,7 +521,7 @@ export function GeneralSettings() {
             <NumberSelector
               control={control}
               name="tapDetection.quickResetDelay"
-              label={t('settings.general.gesture-control.quickResetDelay')}
+              label={t('settings.general.gesture-control.delay')}
               valueLabelFormat={(value) => `${Math.round(value * 10) / 10} s`}
               min={0.2}
               max={3.0}
@@ -530,8 +530,74 @@ export function GeneralSettings() {
             <NumberSelector
               control={control}
               name="tapDetection.quickResetTaps"
-              label={t('settings.general.gesture-control.quickResetTaps')}
-              valueLabelFormat={(value) => `${Math.round(value)} ${t('settings.general.gesture-control.taps')}`}
+              label={t('settings.general.gesture-control.numberOfTaps')}
+              valueLabelFormat={(value) =>
+                `${Math.round(value)} ${t(
+                  'settings.general.gesture-control.taps'
+                )}`
+              }
+              min={2}
+              max={3}
+              step={1}
+            />
+          </div>
+          <div className="grid sm:grid-cols-3 gap-3 pb-5">
+            <CheckBox
+              variant="toggle"
+              outlined
+              control={control}
+              name="tapDetection.resetEnabled"
+              label={t('settings.general.gesture-control.resetEnabled')}
+            />
+            <NumberSelector
+              control={control}
+              name="tapDetection.resetDelay"
+              label={t('settings.general.gesture-control.delay')}
+              valueLabelFormat={(value) => `${Math.round(value * 10) / 10} s`}
+              min={0.2}
+              max={3.0}
+              step={0.2}
+            />
+            <NumberSelector
+              control={control}
+              name="tapDetection.resetTaps"
+              label={t('settings.general.gesture-control.numberOfTaps')}
+              valueLabelFormat={(value) =>
+                `${Math.round(value)} ${t(
+                  'settings.general.gesture-control.taps'
+                )}`
+              }
+              min={2}
+              max={3}
+              step={1}
+            />
+          </div>
+          <div className="grid sm:grid-cols-3 gap-3 pb-5">
+            <CheckBox
+              variant="toggle"
+              outlined 
+              control={control}
+              name="tapDetection.mountingResetEnabled"
+              label={t('settings.general.gesture-control.mountingResetEnabled')}
+            />
+            <NumberSelector
+              control={control}
+              name="tapDetection.mountingResetDelay"
+              label={t('settings.general.gesture-control.delay')}
+              valueLabelFormat={(value) => `${Math.round(value * 10) / 10} s`}
+              min={0.2}
+              max={3.0}
+              step={0.2}
+            />
+            <NumberSelector
+              control={control}
+              name="tapDetection.mountingResetTaps"
+              label={t('settings.general.gesture-control.numberOfTaps')}
+              valueLabelFormat={(value) =>
+                `${Math.round(value)} ${t(
+                  'settings.general.gesture-control.taps'
+                )}`
+              }
               min={2}
               max={3}
               step={1}
