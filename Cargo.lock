@@ -2331,7 +2331,7 @@ dependencies = [
 ]
 
 [[package]]
-name = "slimevr_ui"
+name = "slimevr"
 version = "0.0.0"
 dependencies = [
  "cfg_aliases",
