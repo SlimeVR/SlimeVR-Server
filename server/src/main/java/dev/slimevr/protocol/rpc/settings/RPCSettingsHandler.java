@@ -145,7 +145,8 @@ public record RPCSettingsHandler(RPCHandler rpcHandler, ProtocolAPI api) {
 				// enable/disable tap detection
 				tapDetectionConfig.setQuickResetEnabled(tapDetectionSettings.quickResetEnabled());
 				tapDetectionConfig.setResetEnabled(tapDetectionSettings.resetEnabled());
-				tapDetectionConfig.setMountingResetEnabled(tapDetectionSettings.mountingResetEnabled());
+				tapDetectionConfig
+					.setMountingResetEnabled(tapDetectionSettings.mountingResetEnabled());
 
 				// set tap detection delays
 				if (tapDetectionSettings.hasQuickResetDelay()) {
@@ -155,7 +156,8 @@ public record RPCSettingsHandler(RPCHandler rpcHandler, ProtocolAPI api) {
 					tapDetectionConfig.setResetDelay(tapDetectionSettings.resetDelay());
 				}
 				if (tapDetectionSettings.hasMountingResetDelay()) {
-					tapDetectionConfig.setMountingResetDelay(tapDetectionSettings.mountingResetDelay());
+					tapDetectionConfig
+						.setMountingResetDelay(tapDetectionSettings.mountingResetDelay());
 				}
 
 				// set the number of taps required for each action
@@ -166,7 +168,8 @@ public record RPCSettingsHandler(RPCHandler rpcHandler, ProtocolAPI api) {
 					tapDetectionConfig.setResetTaps(tapDetectionSettings.resetTaps());
 				}
 				if (tapDetectionSettings.hasMountingResetTaps()) {
-					tapDetectionConfig.setMountingResetTaps(tapDetectionSettings.mountingResetTaps());
+					tapDetectionConfig
+						.setMountingResetTaps(tapDetectionSettings.mountingResetTaps());
 				}
 
 				this.api.server.humanPoseProcessor.getSkeleton().updateTapDetectionConfig();

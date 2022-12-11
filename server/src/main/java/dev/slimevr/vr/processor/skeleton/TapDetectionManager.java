@@ -113,7 +113,9 @@ public class TapDetectionManager {
 			? mountingResetDetector.getDoubleTapped()
 			: mountingResetDetector.getTripleTapped();
 		if (
-			tapped && System.nanoTime() - mountingResetDetector.getDetectionTime() > mountingResetDelayNs
+			tapped
+				&& System.nanoTime() - mountingResetDetector.getDetectionTime()
+					> mountingResetDelayNs
 		) {
 			skeleton.resetTrackersMounting();
 			mountingResetDetector.resetDetector();

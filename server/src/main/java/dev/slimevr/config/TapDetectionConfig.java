@@ -2,6 +2,7 @@ package dev.slimevr.config;
 
 import com.jme3.math.FastMath;
 
+
 // handles the tap detection config
 // this involves the number of taps, the delay, and whether or not the feature is enabled
 // for each reset type
