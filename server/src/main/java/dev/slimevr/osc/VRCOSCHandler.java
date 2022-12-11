@@ -7,6 +7,7 @@ import com.illposed.osc.transport.OSCPortOut;
 import com.jme3.math.FastMath;
 import com.jme3.math.Quaternion;
 import com.jme3.math.Vector3f;
+import dev.slimevr.VRServer;
 import dev.slimevr.config.OSCConfig;
 import dev.slimevr.platform.SteamVRBridge;
 import dev.slimevr.vr.processor.HumanPoseProcessor;
@@ -25,11 +26,12 @@ import java.util.List;
 /**
  * VRChat OSCTracker documentation: https://docs.vrchat.com/docs/osc-trackers
  */
-public class VRCOSCHandler {
+public class VRCOSCHandler implements OSCHandler {
 	private OSCPortIn oscReceiver;
 	private OSCPortOut oscSender;
 	private OSCMessage oscMessage;
 	private final OSCConfig config;
+	private final VRServer server;
 	private final HMDTracker hmd;
 	private final SteamVRBridge steamvrBridge;
 	private final HumanPoseProcessor humanPoseProcessor;
@@ -48,12 +50,14 @@ public class VRCOSCHandler {
 	private float timeAtLastError;
 
 	public VRCOSCHandler(
+		VRServer server,
 		HMDTracker hmd,
 		HumanPoseProcessor humanPoseProcessor,
 		SteamVRBridge steamvrBridge,
 		OSCConfig oscConfig,
 		List<? extends ShareableTracker> shareableTrackers
 	) {
+		this.server = server;
 		this.hmd = hmd;
 		this.humanPoseProcessor = humanPoseProcessor;
 		this.steamvrBridge = steamvrBridge;
@@ -62,10 +66,11 @@ public class VRCOSCHandler {
 
 		trackersEnabled = new boolean[shareableTrackers.size()];
 
-		refreshSettings();
+		refreshSettings(false);
 	}
 
-	public void refreshSettings() {
+	@Override
+	public void refreshSettings(boolean refreshRouterSettings) {
 		// Sets which trackers are enabled and force HEAD to false
 		for (int i = 0; i < shareableTrackers.size(); i++) {
 			if (
@@ -107,16 +112,23 @@ public class VRCOSCHandler {
 				lastPortIn = port;
 			} catch (IOException e) {
 				LogManager
-					.severe("[VRCOSCHandler] Error listening to the port " + config.getPortIn());
+					.severe(
+						"[VRCOSCHandler] Error listening to the port "
+							+ config.getPortIn()
+							+ ": "
+							+ e
+					);
 			}
 
 			// Starts listening for the Upright parameter from VRC
-			OSCMessageListener listener = this::handleReceivedMessage;
-			MessageSelector selector = new OSCPatternAddressMessageSelector(
-				"/avatar/parameters/Upright"
-			);
-			oscReceiver.getDispatcher().addListener(selector, listener);
-			oscReceiver.startListening();
+			if (oscReceiver != null) {
+				OSCMessageListener listener = this::handleReceivedMessage;
+				MessageSelector selector = new OSCPatternAddressMessageSelector(
+					"/avatar/parameters/Upright"
+				);
+				oscReceiver.getDispatcher().addListener(selector, listener);
+				oscReceiver.startListening();
+			}
 
 			// Instantiate the OSC sender
 			try {
@@ -146,9 +158,14 @@ public class VRCOSCHandler {
 							+ config.getPortOut()
 							+ " at the address "
 							+ config.getAddress()
+							+ ": "
+							+ e
 					);
 			}
 		}
+
+		if (refreshRouterSettings && server.getOSCRouter() != null)
+			server.getOSCRouter().refreshSettings(false);
 	}
 
 	void handleReceivedMessage(OSCMessageEvent event) {
@@ -177,6 +194,7 @@ public class VRCOSCHandler {
 		}
 	}
 
+	@Override
 	public void update() {
 		float currentTime = System.currentTimeMillis();
 		// Manage HMD state with timeout
@@ -291,6 +309,31 @@ public class VRCOSCHandler {
 				}
 			}
 		}
+	}
+
+	@Override
+	public OSCPortOut getOscSender() {
+		return oscSender;
+	}
+
+	@Override
+	public int getPortOut() {
+		return lastPortOut;
+	}
+
+	@Override
+	public InetAddress getAddress() {
+		return lastAddress;
+	}
+
+	@Override
+	public OSCPortIn getOscReceiver() {
+		return oscReceiver;
+	}
+
+	@Override
+	public int getPortIn() {
+		return lastPortIn;
 	}
 
 	/*

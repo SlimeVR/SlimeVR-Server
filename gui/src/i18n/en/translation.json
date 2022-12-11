@@ -163,6 +163,7 @@
       "fk-settings": "FK settings",
       "gesture-control": "Gesture control",
       "interface": "Interface",
+      "osc-router": "OSC router",
       "utils": "Utilities",
       "serial": "Serial console"
     },
@@ -170,8 +171,8 @@
       "steamvr": {
         "title": "SteamVR",
         "subtitle": "SteamVR trackers",
-        "description.p0": "Enable or disable specific tracking parts.",
-        "description.p1": "Useful if you want more control over what SlimeVR does.",
+        "description.p0": "Enable or disable specific SteamVR trackers.",
+        "description.p1": "Useful for games or apps that only support certain trackers.",
         "trackers": {
           "waist": "Waist",
           "chest": "Chest",
@@ -264,6 +265,34 @@
       "auto-dropdown-item": "Auto"
     },
     "osc": {
+      "router": {
+        "title": "OSC router",
+        "description.p0": "Forward OSC messages from another program.",
+        "description.p1": "Useful for using another OSC program with VRChat for example.",
+        "enable": {
+          "title": "Enable",
+          "description": "Toggle the forwarding of messages",
+          "label": "Enable"
+        },
+        "network": {
+          "title": "Network ports",
+          "description.p0": "Set the ports for listening and sending data",
+          "description.p1": "These can be the same as other ports used in the SlimeVR server",
+          "port-in": {
+            "label": "Port In",
+            "placeholder": "Port in (default: 9002)"
+          },
+          "port-out": {
+            "label": "Port Out",
+            "placeholder": "Port out (default: 9000)"
+          },
+          "address": {
+            "title": "Network address",
+            "description": "Set the address to send out data at",
+            "placeholder": "IPV4 address"
+          }
+        }
+      },
       "vrchat": {
         "description.p0": "Change VRChat-specific settings to receive HMD data and send",
         "description.p1": "trackers data for FBT (works on Quest standalone).",

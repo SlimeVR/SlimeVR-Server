@@ -159,10 +159,11 @@
     "sidebar": {
       "title": "Réglages",
       "general": "Général",
-      "tracker-mechanics": "Fonctionnement du capteur",
+      "tracker-mechanics": "Fonctionnement des capteurs",
       "fk-settings": "Paramètres du squelette",
       "gesture-control": "Contrôle gestuel",
       "interface": "Interface",
+      "osc-router": "Routeur OSC",
       "utils": "Utilitaires",
       "serial": "Console série"
     },
@@ -170,8 +171,8 @@
       "steamvr": {
         "title": "SteamVR",
         "subtitle": "capteurs SteamVR",
-        "description.p0": "Activez ou désactivez des capteurs",
-        "description.p1": "Utile pour les jeux qui supportent plus ou moins de capteurs.",
+        "description.p0": "Activez ou désactivez des capteurs SteamVR.",
+        "description.p1": "Utile pour les jeux ou applications qui ne supportent que certains capteurs.",
         "trackers": {
           "waist": "Taille",
           "chest": "Poitrine",
@@ -181,7 +182,7 @@
         }
       },
       "tracker-mechanics": {
-        "title": "Fonctionnement du capteur",
+        "title": "Fonctionnement des capteurs",
         "subtitle": "Filtrage",
         "description.p0": "Choisissez le type de filtrage pour vos capteurs.",
         "description.p1": "La prédiction prédit le mouvement tandis que le lissage lisse le mouvement.",
@@ -264,6 +265,34 @@
       "auto-dropdown-item": "Automatique"
     },
     "osc": {
+      "router": {
+        "title": "Routeur OSC",
+        "description.p0": "Transférez les messages OSC provenant d'un autre programme",
+        "description.p1": "Utile pour utiliser un autre programme OSC avec VRChat par exemple",
+        "enable": {
+          "title": "Activer",
+          "description": "Activer/désactiver le transfert de messages",
+          "label": "Activer"
+        },
+        "network": {
+          "title": "Network ports",
+          "description.p0": "Définissez les ports pour écouter et envoyer des données",
+          "description.p1": "Ces ports peuvent être les mêmes que les autres utilisés dans le Serveur SlimeVR",
+          "port-in": {
+            "label": "Port d'entrée",
+            "placeholder": "Port d'entrée (par défault: 9002)"
+          },
+          "port-out": {
+            "label": "Port de sortie",
+            "placeholder": "Port de sortie (par défault: 9000)"
+          },
+          "address": {
+            "title": "Adresse réseau",
+            "description": "Choisissez l'adresse à laquelle envoyer les données",
+            "placeholder": "Adresse IPV4"
+          }
+        }
+      },
       "vrchat": {
         "description.p0": "Modifiez les paramètres spécifiques à VRChat pour recevoir et envoyer des données HMD",
         "description.p1": "données de suivi pour FBT (fonctionne sur Quest autonome).",
@@ -274,7 +303,7 @@
         },
         "network": {
           "title": "Connexions réseau",
-          "description": "Définir les ports pour écouter et envoyer des données à VRChat",
+          "description": "Définissez les ports pour écouter et envoyer des données à VRChat",
           "port-in": {
             "label": "Port d'entrée",
             "placeholder": "Port d'entrée (par défaut : 9001)"
@@ -320,7 +349,7 @@
     },
     "home": {
       "title": "Bienvenue sur SlimeVR",
-      "description.p0": "Rendre le capturage des mouvements",
+      "description.p0": "Rendre la capture des mouvements",
       "description.p1": "accessible à tous!",
       "start": "Commencer!"
     },

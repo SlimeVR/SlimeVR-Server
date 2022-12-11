@@ -162,6 +162,7 @@
       "tracker-mechanics": "twayckaw mechanics~",
       "fk-settings": "fk settyings",
       "interface": "intyawface~",
+      "osc-router": "OSC wouwter",
       "utils": "utiwities",
       "serial": "sewiaw cownsaw"
     },
@@ -262,6 +263,34 @@
       "auto-dropdown-item": "awto"
     },
     "osc": {
+      "router": {
+        "title": "OSC wouwter",
+        "description.p0": "fowwawd osc messages fwom anothew pwogwam",
+        "description.p1": "usefuww fow uwsing anothew osc pwogwam with VRChat fow exampwe",
+        "enable": {
+          "title": "enaybwe",
+          "description": "toggle teh fowwawding of data",
+          "label": "enaybwe"
+        },
+        "network": {
+          "title": "network pawts",
+          "description.p0": "set the pawts fow wistening awnd sending data",
+          "description.p1": "these can be the same as othew powts uwsed in the swimevr sewvew",
+          "port-in": {
+            "label": "pawt in",
+            "placeholder": "pawt in (defawwt: 9002)"
+          },
+          "port-out": {
+            "label": "pawt out",
+            "placeholder": "pawt out (defawwt: 9000)"
+          },
+          "address": {
+            "title": "network addwess",
+            "description": "choose which addwess to send out data at",
+            "placeholder": "IPV4 addwess"
+          }
+        }
+      },
       "vrchat": {
         "description.p0": "change vwchat-specific settwings to wweceive hmd data awnd send",
         "description.p1": "twayckaws data fow fbt (wawwks on quest standalone).",

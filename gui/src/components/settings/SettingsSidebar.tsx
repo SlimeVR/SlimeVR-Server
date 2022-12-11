@@ -71,6 +71,11 @@ export function SettingsSidebar() {
       <div className="flex flex-col gap-3">
         <Typography variant="section-title">OSC</Typography>
         <div className="flex flex-col gap-2">
+          <SettingsLink to="/settings/osc/router" scrollTo="router">
+            {t('settings.sidebar.osc-router')}
+          </SettingsLink>
+        </div>
+        <div className="flex flex-col gap-2">
           <SettingsLink to="/settings/osc/vrchat" scrollTo="vrchat">
             VRChat
           </SettingsLink>
