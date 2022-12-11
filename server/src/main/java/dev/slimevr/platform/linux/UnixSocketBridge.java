@@ -14,6 +14,7 @@ import java.io.IOException;
 import java.net.StandardProtocolFamily;
 import java.net.UnixDomainSocketAddress;
 import java.nio.ByteBuffer;
+import java.nio.ByteOrder;
 import java.nio.channels.ServerSocketChannel;
 import java.nio.channels.SocketChannel;
 import java.util.List;
@@ -23,7 +24,7 @@ public class UnixSocketBridge extends SteamVRBridge implements AutoCloseable {
 	public final String socketPath;
 	public final UnixDomainSocketAddress socketAddress;
 	private final ByteBuffer dst = ByteBuffer.allocate(2048);
-	private final ByteBuffer src = ByteBuffer.allocate(2048);
+	private final ByteBuffer src = ByteBuffer.allocate(2048).order(ByteOrder.LITTLE_ENDIAN);
 
 	private ServerSocketChannel server;
 	private SocketChannel channel;
@@ -85,6 +86,7 @@ public class UnixSocketBridge extends SteamVRBridge implements AutoCloseable {
 	@Override
 	@BridgeThread
 	protected boolean sendMessageReal(ProtobufMessages.ProtobufMessage message) {
+		LogManager.debug("Sending msg: " + message.toString());
 		if (this.channel != null) {
 			try {
 				int size = message.getSerializedSize() + 4;
@@ -98,6 +100,7 @@ public class UnixSocketBridge extends SteamVRBridge implements AutoCloseable {
 				}
 
 				this.src.clear();
+				return true;
 			} catch (IOException e) {
 				e.printStackTrace();
 			}
@@ -110,9 +113,7 @@ public class UnixSocketBridge extends SteamVRBridge implements AutoCloseable {
 		boolean readAnything = false;
 		// if buffer has 4 bytes at least, we got the message size!
 		if (read > 0 && dst.remaining() >= 4) {
-			dst.mark();
-			int messageLength = dst.getInt();
-			dst.reset();
+			int messageLength = dst.get(0) | dst.get(1) << 8 | dst.get(2) << 16 | dst.get(3) << 24;
 			if (messageLength > 1024) { // Overflow
 				LogManager
 					.severe(
@@ -126,12 +127,14 @@ public class UnixSocketBridge extends SteamVRBridge implements AutoCloseable {
 				// Parse the message (this reads the array directly from the
 				// dst, so we need to move position ourselves)
 				try {
-					var message = parseMessage(dst.array(), 4 + dst.position(), messageLength - 4);
+					var message = parseMessage(dst.array(), 4, messageLength - 4);
+					LogManager.debug("Receiving msg " + message.toString());
 					this.messageReceived(message);
 				} catch (InvalidProtocolBufferException e) {
 					LogManager.severe("Failed to read protocol message", e);
 				}
 				dst.position(messageLength);
+				dst.compact();
 				readAnything = true;
 			}
 		} else if (read == -1) {
