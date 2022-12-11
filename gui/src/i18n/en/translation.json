@@ -112,7 +112,7 @@
       "manufacturer": "Manufacturer",
       "display-name": "Display Name",
       "custom-name": "Custom Name",
-      "url": "Tacker URL"
+      "url": "Tracker URL"
     },
     "settings": {
       "back": "Go back to trackers list",
@@ -161,9 +161,10 @@
       "general": "General",
       "tracker-mechanics": "Tracker mechanics",
       "fk-settings": "FK settings",
+      "gesture-control": "Gesture control",
       "interface": "Interface",
       "utils": "Utilities",
-      "serial": "Serial Console"
+      "serial": "Serial console"
     },
     "general": {
       "steamvr": {
@@ -209,7 +210,8 @@
           "title": "Leg tweaks",
           "description": "Floor-clip can Reduce or even eliminates clipping with the floor but may cause problems when on your knees. Skating-correction corrects for ice skating, but can decrease accuracy in certain movement patterns.",
           "floor-clip": "Floor clip",
-          "skating-correction": "Skating correction"
+          "skating-correction": "Skating correction",
+          "skating-correction-amount": "Skating correction strength"
         },
         "arm-fk": {
           "title": "Arm FK",
@@ -225,7 +227,7 @@
         }
       },
       "gesture-control": {
-        "title": "Gesture Control",
+        "title": "Gesture control",
         "subtitle": "Double Tap quick reset",
         "description": "Enable or disable double tap quick reset. When enabled double tapping anywhere on the highest torso tracker will activate a quick reset. Delay is the time between registering a tap and resetting.",
         "enable": "Double tap quick reset",
@@ -349,7 +351,7 @@
         "start-connecting": "Looking for trackers",
         "handshake": "Connected to the Server"
       },
-      "connected-trackers": "{{amount}} tackers connected",
+      "connected-trackers": "{{amount}} trackers connected",
       "next": "I connected all my trackers"
     },
     "assign-trackers": {

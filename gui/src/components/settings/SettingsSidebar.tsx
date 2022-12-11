@@ -61,7 +61,7 @@ export function SettingsSidebar() {
             {t('settings.sidebar.fk-settings')}
           </SettingsLink>
           <SettingsLink to="/settings/trackers" scrollTo="gestureControl">
-            Gesture control
+            {t('settings.sidebar.gesture-control')}
           </SettingsLink>
           <SettingsLink to="/settings/trackers" scrollTo="interface">
             {t('settings.sidebar.interface')}
