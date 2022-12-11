@@ -58,16 +58,16 @@ export const resources = {
     translation: vi,
   },
   pl: {
-    tanslations: pl,
+    translation: pl,
   },
   zh: {
-    tanslations: zh,
+    translation: zh,
   },
   ptBR: {
-    tanslations: ptBR,
+    translation: ptBR,
   },
   de: {
-    tanslations: de,
+    translation: de,
   },
   owo: {
     translation: owo,
