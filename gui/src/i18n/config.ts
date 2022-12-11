@@ -2,7 +2,7 @@ import i18next from 'i18next';
 import { initReactI18next } from 'react-i18next';
 import en from './en/translation.json';
 import fr from './fr/translation.json';
-import pt-BR from './pt-BR/translation.json';
+import ptBR from './pt-BR/translation.json';
 import zh from './zh/translation.json';
 import pl from './pl/translation.json';
 import vi from './vi/translation.json';
@@ -22,7 +22,7 @@ export const langs = [
   },
   {
     name: '🇧🇷 Português Brasileiro',
-    key: 'pt-BR',
+    key: 'ptBR',
   },
   {
     name: '🇨🇳 简体中文',
@@ -58,8 +58,8 @@ export const resources = {
   zh: {
     tanslations: zh,
   },
-  pt-BR: {
-    tanslations: pt-BR,
+  ptBR: {
+    tanslations: ptBR,
   },
   owo: {
     translation: owo,
