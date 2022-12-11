@@ -178,7 +178,7 @@
                     "feet": "脚部",
                     "knees": "膝盖",
                     "elbows": "肘部"
-                },
+                }
             },
             "tracker-mechanics": {
                 "title": "追踪器设置",
@@ -202,7 +202,7 @@
                 },
                 "amount": {
                     "label": "滤波数值"
-                },
+                }
             },
             "fk-settings": {
                 "title": "FK 设置",
@@ -261,7 +261,7 @@
             "factory-reset": "恢复出厂设置",
             "get-infos": "获取信息",
             "serial-select": "选择串行端口",
-            "auto-dropdown-item": "自动",
+            "auto-dropdown-item": "自动"
         },
         "osc": {
             "vrchat": {
@@ -297,7 +297,7 @@
                         "feet": "脚部",
                         "elbows": "肘部"
                     }
-                },
+                }
             }
         }
     },
@@ -311,7 +311,7 @@
             "description.p0": "追踪器将使用这些凭据连接到 WiFi",
             "description.p1": "请使用当前连接到 WiFi 的凭据",
             "skip": "跳过 WiFi 设置",
-            "submit": "提交！",
+            "submit": "提交！"
         },
         "reset-tutorial": {
             "back": "返回到佩戴校准",
@@ -322,7 +322,7 @@
             "title": "欢迎来到 SlimeVR",
             "description.p0": "将全身追踪",
             "description.p1": "带给每一个人",
-            "start": "我准备好了！",
+            "start": "我准备好了！"
         },
         "enter-vr": {
             "back": "返回到追踪器分配",
@@ -352,7 +352,7 @@
                 "handshake": "已连接到服务器"
             },
             "connected-trackers": "{{Amount}} 个追踪器已连接",
-            "next": "所有的追踪器都连接好了",
+            "next": "所有的追踪器都连接好了"
         },
         "assign-trackers": {
             "back": "返回 WiFi 凭据设置",
