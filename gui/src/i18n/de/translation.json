@@ -5,7 +5,7 @@
   },
   "tips": {
     "find-tracker": "Sie sind sich nicht sicher, welcher Tracker welcher ist? Schütteln Sie einen Tracker, um das zugehörige Element hervorzuheben.",
-    "do-not-move-heels": "Stellen Sie sicher, dass Ihre Absätze während der Aufnahme nicht bewegt werden!"
+    "do-not-move-heels": "Stellen Sie sicher, dass Ihre Fersen während der Aufnahme nicht bewegt werden!"
   },
   "body-part": {
     "NONE": "Nicht zugewiesen",
@@ -47,9 +47,9 @@
     "CONTROLLER_DISTANCE_Y": "Controller Entfernung Y",
     "FOREARM_LENGTH": "Unterarm Entfernung",
     "SHOULDERS_DISTANCE": "Schulter Entfernung",
-    "SHOULDERS_WIDTH": "Schulter Breite",
-    "UPPER_ARM_LENGTH": "Oberarm Länge",
-    "ELBOW_OFFSET": "Ellbogen Versatz"
+    "SHOULDERS_WIDTH": "Schulterbreite",
+    "UPPER_ARM_LENGTH": "Oberarmlänge",
+    "ELBOW_OFFSET": "Ellbogenversatz"
   },
   "reset": {
     "reset-all": "Alle Proportionen zurücksetzen",
@@ -68,7 +68,7 @@
   },
   "navbar": {
     "home": "Start",
-    "body-proportions": "Körper-Proportionen",
+    "body-proportions": "Körpermaße",
     "trackers-assign": "Tracker-Positionen",
     "mounting": "Befestigungs-Kalibrierung",
     "onboarding": "Setup-Assistent",
@@ -146,7 +146,7 @@
     "unassign-tracker": "Zugewiesene Position des Trackers aufheben"
   },
   "tracker-selection-menu": {
-    "title": "Welchen Tracker soll dem {{bodyPart}} zugewiesen werden?",
+    "title": "Welcher Tracker soll dem {{bodyPart}} zugewiesen werden?",
     "unassigned": "Nicht zugewiesene Tracker",
     "assigned": "Zugewiesene Tracker",
     "dont-assign": "Nicht zuweisen"
