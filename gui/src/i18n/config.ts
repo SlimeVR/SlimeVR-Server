@@ -53,13 +53,13 @@ export const resources = {
     translation: vi,
   },
   pl: {
-    tanslations: pl,
+    translation: pl,
   },
   zh: {
-    tanslations: zh,
+    translation: zh,
   },
   ptBR: {
-    tanslations: ptBR,
+    translation: ptBR,
   },
   owo: {
     translation: owo,
