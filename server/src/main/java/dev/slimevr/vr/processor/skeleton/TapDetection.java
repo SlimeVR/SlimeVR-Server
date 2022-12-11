@@ -30,7 +30,7 @@ public class TapDetection {
 	// state
 	private float detectionTime = -1.0f;
 	private boolean doubleTaped = false;
-	private boolean tripleTaped = false; // TODO maybe get rid of this
+	private boolean tripleTaped = false;
 
 	public TapDetection(HumanSkeleton skeleton) {
 		this.skeleton = skeleton;

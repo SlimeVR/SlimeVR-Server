@@ -83,10 +83,15 @@ public class RPCSettingsBuilder {
 		return TapDetectionSettings
 			.createTapDetectionSettings(
 				fbb,
-				tapDetectionConfig.getDelay(),
-				tapDetectionConfig.getResetEnabled(),
+				tapDetectionConfig.getQuickResetDelay(),
+				tapDetectionConfig.getResetDelay(),
+				tapDetectionConfig.getMountingResetDelay(),
 				tapDetectionConfig.getQuickResetEnabled(),
-				tapDetectionConfig.getMountingResetEnabled()
+				tapDetectionConfig.getResetEnabled(),
+				tapDetectionConfig.getMountingResetEnabled(),
+				tapDetectionConfig.getQuickResetTaps(),
+				tapDetectionConfig.getResetTaps(),
+				tapDetectionConfig.getMountingResetTaps()
 			);
 	}
 

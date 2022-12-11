@@ -18,8 +18,16 @@ public class TapDetectionManager {
 	private TapDetection resetDetector;
 	private TapDetection mountingResetDetector;
 
+	// number of taps to detect
+	private int quickResetTaps = 2;
+	private int resetTaps = 3;
+	private int mountingResetTaps = 3;
+
 	// delay
-	private float resetDelayNs = 0.20f * 1000000000.0f;
+	private static final float NS_CONVERTER = 1000000000.0f;
+	private float resetDelayNs = 0.20f * NS_CONVERTER;
+	private float quickResetDelayNs = 1.00f * NS_CONVERTER;
+	private float mountingResetDelayNs = 1.00f * NS_CONVERTER;
 
 	public TapDetectionManager(HumanSkeleton skeleton) {
 		this.skeleton = skeleton;
@@ -37,13 +45,20 @@ public class TapDetectionManager {
 		quickResetDetector = new TapDetection(skeleton, getTrackerToWatchQuickReset());
 		resetDetector = new TapDetection(skeleton, getTrackerToWatchReset());
 		mountingResetDetector = new TapDetection(skeleton, getTrackerToWatchMountingReset());
-		// TODO add config values
+
 		updateConfig();
 	}
 
-	// TODO finish this
 	public void updateConfig() {
-		this.resetDelayNs = config.getDelay() * 1000000000.0f;
+		this.quickResetDelayNs = config.getQuickResetDelay() * NS_CONVERTER;
+		this.resetDelayNs = config.getResetDelay() * NS_CONVERTER;
+		this.mountingResetDelayNs = config.getMountingResetDelay() * NS_CONVERTER;
+		quickResetDetector.setEnabled(config.getQuickResetEnabled());
+		resetDetector.setEnabled(config.getResetEnabled());
+		mountingResetDetector.setEnabled(config.getMountingResetEnabled());
+		quickResetTaps = config.getQuickResetTaps();
+		resetTaps = config.getResetTaps();
+		mountingResetTaps = config.getMountingResetTaps();
 	}
 
 	public void update() {
@@ -61,9 +76,11 @@ public class TapDetectionManager {
 	}
 
 	private void checkQuickReset() {
+		boolean tapped = (quickResetTaps == 2)
+			? quickResetDetector.getDoubleTapped()
+			: quickResetDetector.getTripleTapped();
 		if (
-			quickResetDetector.getDoubleTapped()
-				&& System.nanoTime() - quickResetDetector.getDetectionTime() > resetDelayNs
+			tapped && System.nanoTime() - quickResetDetector.getDetectionTime() > quickResetDelayNs
 		) {
 			if (oscHandler != null)
 				oscHandler.yawAlign();
@@ -76,9 +93,11 @@ public class TapDetectionManager {
 	}
 
 	private void checkReset() {
+		boolean tapped = (resetTaps == 2)
+			? resetDetector.getDoubleTapped()
+			: resetDetector.getTripleTapped();
 		if (
-			resetDetector.getDoubleTapped()
-				&& System.nanoTime() - resetDetector.getDetectionTime() > resetDelayNs
+			tapped && System.nanoTime() - resetDetector.getDetectionTime() > resetDelayNs
 		) {
 			if (oscHandler != null)
 				oscHandler.yawAlign();
@@ -90,9 +109,11 @@ public class TapDetectionManager {
 	}
 
 	private void checkMountingReset() {
+		boolean tapped = (mountingResetTaps == 2)
+			? mountingResetDetector.getDoubleTapped()
+			: mountingResetDetector.getTripleTapped();
 		if (
-			mountingResetDetector.getDoubleTapped()
-				&& System.nanoTime() - resetDelayNs > resetDelayNs
+			tapped && System.nanoTime() - mountingResetDetector.getDetectionTime() > mountingResetDelayNs
 		) {
 			skeleton.resetTrackersMounting();
 			mountingResetDetector.resetDetector();
@@ -118,14 +139,17 @@ public class TapDetectionManager {
 	private Tracker getTrackerToWatchReset() {
 		if (skeleton.leftUpperLegTracker != null)
 			return skeleton.leftUpperLegTracker;
+		else if (skeleton.leftLowerLegTracker != null)
+			return skeleton.leftLowerLegTracker;
 		return null;
 	}
 
 	private Tracker getTrackerToWatchMountingReset() {
 		if (skeleton.rightUpperLegTracker != null)
 			return skeleton.rightUpperLegTracker;
+		else if (skeleton.rightLowerLegTracker != null)
+			return skeleton.rightLowerLegTracker;
 		return null;
-
 	}
 
 }
