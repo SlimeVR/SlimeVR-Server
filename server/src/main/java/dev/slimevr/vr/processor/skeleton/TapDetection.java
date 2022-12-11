@@ -124,7 +124,9 @@ public class TapDetection {
 		// quick reset
 		if (tapEvents == 2) {
 			doubleTaped = true;
+			detectionTime = time;
 		} else if (tapEvents >= 3) {
+			detectionTime = time;
 			tripleTaped = true;
 			doubleTaped = false;
 		}
