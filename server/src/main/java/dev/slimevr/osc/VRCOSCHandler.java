@@ -37,13 +37,15 @@ public class VRCOSCHandler {
 	private final FastList<Float> oscArgs = new FastList<>(3);
 	private final Vector3f vec = new Vector3f();
 	private final Quaternion quatBuf = new Quaternion();
-	private final float[] floatBuf = new float[3];
+	private final Vector3f vecBuf1 = new Vector3f();
+	private final Vector3f vecBuf2 = new Vector3f();
 	private final boolean[] trackersEnabled;
 	private long timeAtLastOSCMessageReceived;
 	private static final long HMD_TIMEOUT = 15000;
 	private int lastPortIn;
 	private int lastPortOut;
 	private InetAddress lastAddress;
+	private float timeAtLastError;
 
 	public VRCOSCHandler(
 		HMDTracker hmd,
@@ -176,13 +178,14 @@ public class VRCOSCHandler {
 	}
 
 	public void update() {
+		float currentTime = System.currentTimeMillis();
 		// Manage HMD state with timeout
 		if (oscReceiver != null) {
 			if (
 				((steamvrBridge != null
 					&& steamvrBridge.isConnected())
 					||
-					System.currentTimeMillis() - timeAtLastOSCMessageReceived > HMD_TIMEOUT
+					currentTime - timeAtLastOSCMessageReceived > HMD_TIMEOUT
 					||
 					!oscReceiver.isListening())
 					&& hmd.getStatus() == TrackerStatus.OK
@@ -198,9 +201,9 @@ public class VRCOSCHandler {
 					// Send regular trackers' positions
 					shareableTrackers.get(i).getPosition(vec);
 					oscArgs.clear();
-					oscArgs.add(-vec.x);
+					oscArgs.add(vec.x);
 					oscArgs.add(vec.y);
-					oscArgs.add(vec.z);
+					oscArgs.add(-vec.z);
 					oscMessage = new OSCMessage(
 						"/tracking/trackers/" + (i + 1) + "/position",
 						oscArgs
@@ -208,19 +211,26 @@ public class VRCOSCHandler {
 					try {
 						oscSender.send(oscMessage);
 					} catch (IOException | OSCSerializeException e) {
-						LogManager
-							.warning(
-								"[VRCOSCHandler] Error sending tracker positions to VRChat: " + e
-							);
+						// Avoid spamming AsynchronousCloseException too many
+						// times per second
+						if (currentTime - timeAtLastError > 100) {
+							timeAtLastError = System.currentTimeMillis();
+							LogManager
+								.warning(
+									"[VRCOSCHandler] Error sending OSC message to VRChat: "
+										+ e
+								);
+						}
 					}
 
 					// Send regular trackers' rotations
 					shareableTrackers.get(i).getRotation(quatBuf);
-					quatBuf.toAngles(floatBuf);
+					float[] floatBuf = quatToUnityAngles(quatBuf);
 					oscArgs.clear();
 					oscArgs.add(floatBuf[0] * FastMath.RAD_TO_DEG);
-					oscArgs.add(-floatBuf[1] * FastMath.RAD_TO_DEG);
-					oscArgs.add(-floatBuf[2] * FastMath.RAD_TO_DEG);
+					oscArgs.add(floatBuf[1] * FastMath.RAD_TO_DEG);
+					oscArgs.add(floatBuf[2] * FastMath.RAD_TO_DEG);
+
 					oscMessage = new OSCMessage(
 						"/tracking/trackers/" + (i + 1) + "/rotation",
 						oscArgs
@@ -228,10 +238,8 @@ public class VRCOSCHandler {
 					try {
 						oscSender.send(oscMessage);
 					} catch (IOException | OSCSerializeException e) {
-						LogManager
-							.warning(
-								"[VRCOSCHandler] Error sending tracker rotations to VRChat: " + e
-							);
+						// Don't do anything.
+						// Previous code already logs the exception.
 					}
 				}
 
@@ -239,9 +247,9 @@ public class VRCOSCHandler {
 					// Send HMD position
 					shareableTrackers.get(i).getPosition(vec);
 					oscArgs.clear();
-					oscArgs.add(-vec.x);
+					oscArgs.add(vec.x);
 					oscArgs.add(vec.y);
-					oscArgs.add(vec.z);
+					oscArgs.add(-vec.z);
 					oscMessage = new OSCMessage(
 						"/tracking/trackers/head/position",
 						oscArgs
@@ -249,8 +257,8 @@ public class VRCOSCHandler {
 					try {
 						oscSender.send(oscMessage);
 					} catch (IOException | OSCSerializeException e) {
-						LogManager
-							.warning("[VRCOSCHandler] Error sending head position to VRChat: " + e);
+						// Don't do anything.
+						// Previous code already logs the exception.
 					}
 				}
 			}
@@ -262,19 +270,81 @@ public class VRCOSCHandler {
 	 */
 	public void yawAlign() {
 		if (oscSender != null && oscSender.isConnected()) {
-			oscArgs.clear();
-			oscArgs.add(0f);
-			oscArgs.add(180f);
-			oscArgs.add(0f);
-			oscMessage = new OSCMessage(
-				"/tracking/trackers/head/rotation",
-				oscArgs
-			);
-			try {
-				oscSender.send(oscMessage);
-			} catch (IOException | OSCSerializeException e) {
-				LogManager.warning("[VRCOSCHandler] Error sending HMD rotation to VRChat: " + e);
+			for (ShareableTracker shareableTracker : shareableTrackers) {
+				if (shareableTracker.getTrackerRole() == TrackerRole.HEAD) {
+					Quaternion hmdYawQuatBuf = new Quaternion();
+					shareableTracker.getRotation(hmdYawQuatBuf);
+					oscArgs.clear();
+					oscArgs.add(0f);
+					oscArgs.add(-hmdYawQuatBuf.getYaw() * FastMath.RAD_TO_DEG);
+					oscArgs.add(0f);
+					oscMessage = new OSCMessage(
+						"/tracking/trackers/head/rotation",
+						oscArgs
+					);
+					try {
+						oscSender.send(oscMessage);
+					} catch (IOException | OSCSerializeException e) {
+						LogManager
+							.warning("[VRCOSCHandler] Error sending OSC message to VRChat: " + e);
+					}
+				}
 			}
 		}
+	}
+
+	/*
+	 * Apache Commons Math Copyright 2001-2022 The Apache Software Foundation
+	 * 
+	 * The code below includes code developed at The Apache Software Foundation
+	 * (http://www.apache.org/).
+	 */
+
+	// Code from Apache's Rotation class
+	public float[] quatToUnityAngles(Quaternion q) {
+		// X = pitch, Y = yaw, Z = roll
+		applyTo(Vector3f.UNIT_Y, q, vecBuf1);
+		applyInverseTo(Vector3f.UNIT_Z, q, vecBuf2);
+		// Order of application is ZXY (but sent in XYZ order)
+		// pitch (+X is forward), yaw (+Y is clockwise), roll
+		// (+Z is left)
+		return new float[] {
+			FastMath.asin(vecBuf2.getY()),
+			FastMath.atan2(-(vecBuf2.getX()), vecBuf2.getZ()),
+			-FastMath.atan2(-(vecBuf1.getX()), vecBuf1.getY())
+		};
+	}
+
+	// Code from Apache's Rotation class
+	public void applyTo(Vector3f u, Quaternion q, Vector3f store) {
+		float x = u.getX();
+		float y = u.getY();
+		float z = u.getZ();
+
+		float s = q.getX() * x + q.getY() * y + q.getZ() * z;
+
+		store
+			.set(
+				2f * (q.getW() * (x * q.getW() - (q.getY() * z - q.getZ() * y)) + s * q.getX()) - x,
+				2f * (q.getW() * (y * q.getW() - (q.getZ() * x - q.getX() * z)) + s * q.getY()) - y,
+				2f * (q.getW() * (z * q.getW() - (q.getX() * y - q.getY() * x)) + s * q.getZ()) - z
+			);
+	}
+
+	// Code from Apache's Rotation class
+	public void applyInverseTo(Vector3f u, Quaternion q, Vector3f store) {
+		float x = u.getX();
+		float y = u.getY();
+		float z = u.getZ();
+
+		float s = q.getX() * x + q.getY() * y + q.getZ() * z;
+		float m0 = -q.getW();
+
+		store
+			.set(
+				2f * (m0 * (x * m0 - (q.getY() * z - q.getZ() * y)) + s * q.getX()) - x,
+				2f * (m0 * (y * m0 - (q.getZ() * x - q.getX() * z)) + s * q.getY()) - y,
+				2f * (m0 * (z * m0 - (q.getX() * y - q.getY() * x)) + s * q.getZ()) - z
+			);
 	}
 }

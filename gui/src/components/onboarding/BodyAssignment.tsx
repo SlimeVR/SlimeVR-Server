@@ -51,7 +51,7 @@ export function BodyAssignment({
       <BodyInteractions
         assignedRoles={assignedRoles}
         leftControls={
-          <div className="flex flex-col justify-between h-full">
+          <div className="flex flex-col justify-between h-full text-right">
             <div className="flex flex-col gap-2">
               {advanced && (
                 <TrackerPartCard
