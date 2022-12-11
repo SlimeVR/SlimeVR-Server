@@ -5,7 +5,7 @@
   },
   "tips": {
     "find-tracker": "どのトラッカーがどれだかわからない？トラッカーを振ると、該当する項目がハイライトされます。",
-    "do-not-move-heels": "レコーディング中にかかとが動かないように注意しましょう!"
+    "do-not-move-heels": "レコーディング中にかかとが動かないように注意しましょう！"
   },
   "body-part": {
     "NONE": "未設定",
@@ -63,8 +63,8 @@
     "new-device.p2": "Please select what you want to do with it",
     "open-wifi": "Connect to WiFi",
     "open-serial": "Open Serial Console",
-    "submit": "Submit!",
-    "close": "Close"
+    "submit": "実行！",
+    "close": "閉じる"
   },
   "navbar": {
     "home": "ホーム",
@@ -79,17 +79,17 @@
     "recording": "レコーディング中..."
   },
   "overlay": {
-    "is-visible-label": "Show Overlay in SteamVR",
-    "is-mirrored-label": "Display Overlay as Mirror"
+    "is-visible-label": "SteamVRでオーバーレイを表示する",
+    "is-mirrored-label": "オーバーレイをミラーとして表示する"
   },
   "tracker": {
     "status": {
-      "none": "No Status",
+      "none": "ステータスなし",
       "busy": "Busy",
-      "error": "Error",
-      "disconnected": "Disconnected",
+      "error": "エラー",
+      "disconnected": "切断",
       "occluded": "Occluded",
-      "ok": "Connected"
+      "ok": "接続中"
     },
     "table": {
       "column": {
@@ -103,358 +103,358 @@
       }
     },
     "rotation": {
-      "front": "Front",
-      "left": "Left",
-      "right": "Right",
-      "back": "Back" 
+      "front": "前",
+      "left": "左",
+      "right": "右",
+      "back": "後" 
     },
     "infos": {
-      "manufacturer": "Manufacturer",
-      "display-name": "Display Name",
-      "custom-name": "Custom Name",
-      "url": "Tracker URL"
+      "manufacturer": "メーカ－",
+      "display-name": "表示名",
+      "custom-name": "カスタム名称",
+      "url": "トラッカーURL"
     },
     "settings": {
-      "back": "Go back to trackers list",
-      "title": "Tracker settings",
+      "back": "トラッカーリストへ戻る",
+      "title": "トラッカー設定",
       "assignment-section": {
-        "title": "Assignment",
-        "description": "What part of the body the tracker is assigned to.",
-        "edit": "Edit assignment"
+        "title": "割り当て",
+        "description": "トラッカーが体のどの部位に装着されているか",
+        "edit": "割り当ての編集"
       },
       "mounting-section": {
-        "title": "Mounting position",
-        "description": "Where is the tracker mounted?",
-        "edit": "Edit mounting"
+        "title": "装着方向",
+        "description": "トラッカーをどの方向に装着していますか?",
+        "edit": "装着向きの編集"
       },
       "name-section": {
-        "title": "Tracker name",
-        "description": "Give it a cute nickname :)",
+        "title": "トラッカー名称",
+        "description": "自由に名称をつけてください",
         "input-placeholder": "NightyBeast's left leg"
       }
     },
     "part-card": {
-      "no-name": "No name",
-      "unassigned": "Unassigned"
+      "no-name": "名称無し",
+      "unassigned": "未割り当て"
     }
   },
   "body-assignment-menu": {
-    "title": "Where do you want this tracker to be?",
-    "description": "Choose a location where you want this tracker to be assigned. Alternatively you can choose to manage all trackers at once instead of one by one.",
-    "show-advanced-locations": "Show advanced assign locations",
-    "manage-trackers": "Manage all trackers",
-    "unassign-tracker": "Unassign tracker"
+    "title": "このトラッカーをどこに配置しますか？",
+    "description": "このトラッカーを割り当てる場所を選択します。また、トラッカーを一つずつ管理するのではなく、すべてのトラッカーを一括して管理することもできます。",
+    "show-advanced-locations": "高度な割り当て位置の表示",
+    "manage-trackers": "すべてのトラッカーの管理",
+    "unassign-tracker": "トラッカーの割り当て解除"
   },
   "tracker-selection-menu": {
-    "title": "Which tracker to assign to the {{bodyPart}}?",
-    "unassigned": "Unassigned Trackers",
-    "assigned": "Assigned Trackers",
-    "dont-assign": "Do not assign"
+    "title": "{{bodyPart}}どのトラッカーを割り当てますか？",
+    "unassigned": "未割り当てのトラッカー",
+    "assigned": "割り当て済みのトラッカー",
+    "dont-assign": "割り当てない"
   },
   "mounting-selection-menu": {
-    "title": "Where do you want this tracker to be?",
-    "close": "Close"
+    "title": "このトラッカーをどこに配置しますか？",
+    "close": "閉じる"
   },
   "settings": {
     "sidebar": {
-      "title": "Settings",
-      "general": "General",
-      "tracker-mechanics": "Tracker mechanics",
-      "fk-settings": "FK settings",
-      "interface": "Interface",
-      "utils": "Utilities",
-      "serial": "Serial Console"
+      "title": "設定",
+      "general": "一般",
+      "tracker-mechanics": "トラッカーメカニズム",
+      "fk-settings": "FK設定",
+      "interface": "インターフェース",
+      "utils": "ユーティリティ",
+      "serial": "シリアルコンソール"
     },
     "general": {
       "steamvr": {
         "title": "SteamVR",
-        "subtitle": "SteamVR trackers",
-        "description.p0": "Enable or disable specific tracking parts.",
-        "description.p1": "Useful if you want more control over what SlimeVR does.",
+        "subtitle": "SteamVRのトラッカー",
+        "description.p0": "有効化したい部位にチャックを入れてください。",
+        "description.p1": "SlimeVRが行うことをよりコントロールしたい場合に便利です。",
         "trackers": {
-          "waist": "Waist",
-          "chest": "Chest",
-          "feet": "Feet",
-          "knees": "Knees",
-          "elbows": "Elbows"
+          "waist": "腰",
+          "chest": "胸",
+          "feet": "足",
+          "knees": "膝",
+          "elbows": "肘"
         }
       },
       "tracker-mechanics": {
-        "title": "Tracker mechanics",
-        "subtitle": "Filtering",
-        "description.p0": "Choose the filtering type for your trackers.",
-        "description.p1": "Prediction predicts movement while smoothing smoothens movement.",
+        "title": "トラッカーメカニズム",
+        "subtitle": "フィルター機能",
+        "description.p0": "トラッカーのフィルタリングの種類を選択します。",
+        "description.p1": "Predictionは動きを予測し、Smoothingは動きを滑らかにする。",
         "filtering-type": {
-          "title": "Filtering type",
+          "title": "フィルタータイプ",
           "none": {
             "label": "No filtering",
-            "description":"Use rotations as is. Will not do any filtering."
+            "description":"トラッカーの値をそのまま使用します。フィルタリングは行いません。"
           },
           "smoothing": {
             "label": "Smoothing",
-            "description":"Smooths movements but adds some latency."
+            "description":"動きを滑らかにしますが、若干の遅れが発生します"
           },
           "prediction": {
             "label": "Prediction",
-            "description":"Reduces latency and makes movements more snappy, but may increase jitter."
+            "description":"レイテンシーを減らし、動きをよりキビキビさせますが、ジッターが増加する場合があります。"
           }
         },
         "amount": {
-          "label": "Amount"
+          "label": "数値"
         }
       },
       "fk-settings": {
-        "title": "FK settings",
+        "title": "FK設定",
         "leg-tweak": {
-          "title": "Leg tweaks",
-          "description": "Floor-clip can Reduce or even eliminates clipping with the floor but may cause problems when on your knees. Skating-correction corrects for ice skating, but can decrease accuracy in certain movement patterns.",
-          "floor-clip": "Floor clip",
-          "skating-correction": "Skating correction"
+          "title": "脚の微調整",
+          "description": "フロアクリップは、床とのクリッピングを減らす、あるいはなくすことができますが、膝をついたときに問題が発生する可能性があります。スケーティング補正は足の滑りを補正できるが、特定の動作パターンでは精度が落ちることがあります。",
+          "floor-clip": "フロアクリップ",
+          "skating-correction": "スケーティング補正"
         },
         "arm-fk": {
-          "title": "Arm FK",
-          "description": "Change the way the arms are tracked.",
+          "title": "アームFK",
+          "description": "腕の追従方法を変更する。",
           "force-arms": "Force arms from HMD"
         },
         "skeleton-settings": {
-          "title": "Skeleton settings",
-          "description": "Toggle skeleton settings on or off. It is recommended to leave these on.",
+          "title": "スケルトン設定",
+          "description": "スケルトン設定のオン/オフを切り替えます。これらはオンのままにしておくことをお勧めします。",
           "extended-spine": "Extended spine",
           "extended-pelvis": "Extended pelvis",
           "extended-knees": "Extended knee"
         }
       },
       "gesture-control": {
-        "title": "Gesture Control",
-        "subtitle": "Double Tap quick reset",
-        "description": "Enable or disable double tap quick reset. When enabled double tapping anywhere on the highest torso tracker will activate a quick reset. Delay is the time between registering a tap and resetting.",
-        "enable": "Double tap quick reset",
-        "delay": "Delay"
+        "title": "ジェスチャーコントロール",
+        "subtitle": "ダブルタップクイックリセット",
+        "description": "ダブルタップクイックリセットの有効・無効を設定します。有効にすると、最も高い胴体トラッカー上の任意の場所をダブルタップすると、クイックリセットが起動します。ディレイは、タップされてからリセットされるまでの時間です。",
+        "enable": "ダブルタップクイックリセット",
+        "delay": "ディレイ"
       },
       "interface": {
-        "title": "Interface",
+        "title": "インターフェース",
         "dev-mode": {
-          "title": "Developer Mode",
-          "description": "This mode can be useful if you need in-depth data or to interact with connected trackers on a more advanced level",
-          "label": "Developer Mode"
+          "title": "開発者モード",
+          "description": "このモードは、詳細なデータが必要な場合や、接続されたトラッカーをより高度なレベルで操作する場合に役立ちます。",
+          "label": "開発者モード"
         },
         "serial-detection": {
-          "title": "Serial device detection",
-          "description": "This option will show a pop-up every time you plug a new serial device that could be a tracker. It helps improving the setup process of a tracker",
-          "label": "Serial device detection"
+          "title": "シリアルデバイスの検出",
+          "description": "このオプションは、トラッカーとなり得る新しいシリアルデバイスを接続するたびにポップアップを表示します。これはトラッカーの設定プロセスを改善するのに役立ちます。",
+          "label": "シリアルデバイスの検出"
         },
         "lang": {
-          "title": "Select language",
-          "description": "Change the default language you want to use",
-          "placeholder": "Select the language to use"
+          "title": "言語を選択",
+          "description": "使用したいデフォルトの言語を変更する",
+          "placeholder": "使用する言語を選択する"
         }
       }
     },
     "serial": {
-      "title": "Serial Console",
-      "description.p0": "This is a live information feed for serial communication.",
-      "description.p1": "May be useful if you need to know the firmware is acting up.",
-      "connection-lost": "Connection to serial lost, Reconnecting...",
-      "reboot": "Reboot",
-      "factory-reset": "Factory Reset",
-      "get-infos": "Get Infos",
-      "serial-select": "Select a serial port",
-      "auto-dropdown-item": "Auto"
+      "title": "シリアルコンソール",
+      "description.p0": "シリアル通信のライブ情報フィードです。",
+      "description.p1": "ファームウェアの動作を知る必要がある場合に有用かもしれません。",
+      "connection-lost": "シリアルへの接続が失われました、再接続中...",
+      "reboot": "リブート",
+      "factory-reset": "ファクトリーリセット",
+      "get-infos": "情報取得",
+      "serial-select": "シリアルポートを選択",
+      "auto-dropdown-item": "自動"
     },
     "osc": {
       "vrchat": {
-        "description.p0": "Change VRChat-specific settings to receive HMD data and send",
-        "description.p1": "trackers data for FBT (works on Quest standalone).",
+        "description.p0": "HMDのデータを受信して送信するためにVRChat固有の設定を変更する。",
+        "description.p1": "FBT用のトラッカーデータ（Questスタンドアロンで動作します）",
         "enable": {
-          "title": "Enable",
-          "description": "Toggle the sending and receiving of data",
-          "label": "Enable"
+          "title": "有効",
+          "description": "データの送受信を切り替える。",
+          "label": "有効"
         },
         "network": {
-          "title": "Network ports",
-          "description": "Set the ports for listening and sending data to VRChat",
+          "title": "ネットワークポート",
+          "description": "VRChatへのデータを送受信するためのポートを設定します。",
           "port-in": {
-            "label": "Port In",
-            "placeholder": "Port in (default: 9001)"
+            "label": "ポートイン",
+            "placeholder": "ポートイン (デフォルト: 9001)"
           },
           "port-out": {
-            "label": "Port Out",
-            "placeholder": "Port out (default: 9000)"
+            "label": "ポートアウト",
+            "placeholder": "ポートアウト (デフォルト: 9000)"
           },
           "address": {
-            "title": "Network address",
-            "description": "Choose which address to send out data to VRChat (check your wifi settings on your device)",
-            "placeholder": "VRChat ip address"
+            "title": "ネットワークアドレス",
+            "description": "VRChatにデータを送信するアドレスを選択してください（デバイスのwifi設定を確認してください）",
+            "placeholder": "VRChatのIPアドレス"
           },
           "trackers": {
-            "title": "Trackers",
-            "description": "Toggle the sending and receiving of data",
-            "chest": "Chest",
-            "waist": "Waist",
-            "knees": "Knees",
-            "feet": "Feet",
-            "elbows": "Elbows"
+            "title": "トラッカー",
+            "description": "データの送受信を切り替える。",
+            "chest": "胸",
+            "waist": "腰",
+            "knees": "膝",
+            "feet": "足",
+            "elbows": "肘"
           }
         }
       }
     }
   },
   "onboarding": {
-    "skip": "Skip setup",
-    "continue": "Continue",
-    "wip": "Work in progress",
+    "skip": "設定をスキップする",
+    "continue": "続ける",
+    "wip": "実行中",
     "wifi-creds": {
-      "back": "Go Back to introduction",
-      "title": "Input WiFi credentials",
-      "description.p0": "The Trackers will use these credentials to connect wirelessly",
-      "description.p1": "please use the credentials that you are currently connected to",
-      "skip": "Skip wifi settings",
-      "submit": "Submit!"
+      "back": "戻る",
+      "title": "WiFiの認証情報の入力",
+      "description.p0": "トラッカーはこれらの認証情報を使ってワイヤレスで接続します。",
+      "description.p1": "現在接続している認証情報を使用してください。",
+      "skip": "wifi設定をスキップする",
+      "submit": "実行!"
     },
     "reset-tutorial": {
-      "back": "Go Back to Mounting calibration",
-      "title": "Reset tutorial",
-      "description": "This feature isn't done, just press continue"
+      "back": "マウントキャリブレーションに戻る",
+      "title": "リセットチュートリアル",
+      "description": "この機能は終了していません。続けるを押してください。"
     },
     "home": {
       "title": "Welcome to SlimeVR",
       "description.p0": "Bringing full-body tracking",
       "description.p1": "to everyone",
-      "start": "Lets get set up!"
+      "start": "セットアップ開始！"
     },
     "enter-vr": {
-      "back": "Go Back to Tracker assignent",
-      "title": "Time to enter VR!",
-      "description": "Put on all your trackers and then enter VR!",
-      "ready": "I'm ready"
+      "back": "トラッカー割り当てに戻る",
+      "title": "VRに入る時間だ！",
+      "description": "トラッカーを全部つけて、VRに突入せよ！",
+      "ready": "準備完了"
     },
     "done": {
-      "title": "You're all set!",
-      "description": "Enjoy your full body experience",
-      "close": "Close the guide"
+      "title": "準備完了です！",
+      "description": "フルトラをお楽しみください",
+      "close": "ガイドを閉じる"
     },
     "connect-tracker": {
-      "back": "Go Back to WiFi credentials",
-      "title": "Connect trackers",
-      "description.p0": "Now onto the fun part, connecting all the trackers!",
-      "description.p1": "Simply connect all that aren't connected yet, through a USB port.",
+      "back": "WiFi認証に戻る",
+      "title": "接続中のトラッカー",
+      "description.p0": "さあ、楽しい部分に移りましょう。すべてのトラッカーを接続します!",
+      "description.p1": "まだ接続されていないトラッカーたちをUSBポートを通して接続するだけです。",
       "issue": {
-        "serial": "I'm having trouble connecting!"
+        "serial": "接続に問題があります！"
       },
-      "usb": "USB Tracker",
+      "usb": "USBトラッカー",
       "connection-status": {
-        "connecting": "Sending wifi credentials",
-        "connected": "Connected to WiFi",
-        "error": "Unable to connect to Wifi",
-        "start-connecting": "Looking for trackers",
-        "handshake": "Connected to the Server"
+        "connecting": "wifiの認証情報を送信中",
+        "connected": "WiFiに接続されました",
+        "error": "Wifiに接続できません",
+        "start-connecting": "トラッカーを探しています",
+        "handshake": "サーバーに接続されました"
       },
-      "connected-trackers": "{{amount}} trackers connected",
-      "next": "I connected all my trackers"
+      "connected-trackers": "{{amount}} トラッカーが接続されました",
+      "next": "すべてのトラッカーを接続しました"
     },
     "assign-trackers": {
-      "back": "Go Back to Wifi Credentials",
-      "title": "Assign trackers",
-      "description": "Let's choose which tracker goes where. Click on a location where you want to place a tracker",
+      "back": "Wifi認証に戻る",
+      "title": "トラッカーを割り当てる",
+      "description": "どのトラッカーをどこに置くか選んでみましょう。トラッカーを配置したい場所をクリックしてください。",
       "assigned": "{{assigned}} of {{trackers}} trackers assigned",
-      "advanced": "Show advanced assign locations",
-      "next": "I assigned all the trackers"
+      "advanced": "高度な割り当て位置の表示",
+      "next": "すべてのトラッカーを割り当てました"
     },
     "manual-mounting": {
-      "back": "Go Back to Enter VR",
-      "title": "Manual Mounting",
-      "description": "Click on every tracker and select which way they are mounted",
-      "auto-mounting": "Automatic mounting",
-      "next": "Next step"
+      "back": "VRの入力に戻る",
+      "title": "マニュアルマウント",
+      "description": "すべてのトラッカーをクリックし、どの方向にマウントするかを選択",
+      "auto-mounting": "自動マウント",
+      "next": "次のステップ"
     },
     "automatic-mounting": {
-      "back": "Go Back to Enter VR",
-      "title": "Mounting Calibration",
-      "description": "For SlimeVR trackers to work, we need to assign a mounting rotation to your trackers to align them with your physical tracker mounting.",
-      "manual-mounting": "Manually set mounting",
-      "next": "Next step",
-      "prev-step": "Previous step",
+      "back": "VRの入力に戻る",
+      "title": "マウントキャリブレーション",
+      "description": "SlimeVRのトラッカーを動作させるためには、物理的なトラッカーの取り付け位置と合わせるために、トラッカーの取り付け方向を割り当てる必要があります。",
+      "manual-mounting": "自動マウント",
+      "next": "次のステップ",
+      "prev-step": "前のステップ",
       "done": {
-        "title": "Mounting rotations calibrated.",
-        "description": "Your mounting calibration is complete!",
-        "restart": "Return to start"
+        "title": "取り付け方向の較正を行いました。",
+        "description": "マウントのキャリブレーションが完了しました！",
+        "restart": "最初に戻る"
       },
       "mounting-reset": {
-        "title": "Mounting Reset",
+        "title": "マウントリセット",
         "step": {
-          "0": "1. Squat in a \"skiing\" pose with your legs bent, your upper body tilted forwards, and your arms bent.",
-          "1": "2. Press the \"Reset Mounting\" button and wait for 3 seconds before the trackers' mounting rotations will reset."
+          "0": "1. 足を曲げ、上体を前に倒し、腕を曲げた状態で、スキーのポーズでしゃがむ。",
+          "1": "2. マウントリセットボタンを押し、3秒待つと装着方向がリセットされます。"
         }
       },
       "preparation": {
-        "title": "Preparation",
+        "title": "準備",
         "step": {
-          "0": "1. Stand upright with your arms to your sides.",
-          "1": "2. Press the \"Reset\" button and wait for 3 seconds before the trackers will reset."
+          "0": "1. 両手を横に広げて直立します。",
+          "1": "2. リセットボタンを押し、3秒待つとリセットされます。"
         }
       },
       "put-trackers-on": {
-        "title": "Put on your trackers",
-        "description": "To calibrate mounting rotations, we're gonna use the trackers you just assigned. Put on all your trackers, you can see which are which in the figure to the right.",
-        "next": "I have all my trackers on"
+        "title": "トラッカーを装着する",
+        "description": "マウントの方向を較正するために、先ほど割り当てたトラッカーを使用します。右の図でどれがどれだかわかると思います。",
+        "next": "すべてのトラッカーを装着しました"
       }
     },
     "manual-proportions": {
-      "back": "Go Back to Reset tutorial",
-      "title": "Manual Body Proportions",
-      "precision": "Precision adjust",
-      "auto": "Automatic calibration"
+      "back": "チュートリアルをリセットする",
+      "title": "マニュアルボディプロポーション",
+      "precision": "精度を調整する",
+      "auto": "自動キャリブレーション"
     },
     "automatic-proportions": {
-      "back": "Go Back to Reset tutorial",
-      "title": "Measure your body",
-      "description": "For SlimeVR trackers to work, we need to know the length of your bones. This short calibration will measure it for you.",
-      "manual": "Manual calibration",
-      "prev-step": "Previous step",
+      "back": "チュートリアルをリセットする",
+      "title": "自分の体の測定",
+      "description": "SlimeVRのトラッカーが動作するためには、あなたの骨の長さを知る必要があります。この短いキャリブレーションでそれを測定します。",
+      "manual": "手動キャリブレーション",
+      "prev-step": "前のステップ",
       "put-trackers-on": {
-        "title": "Put on your trackers",
-        "description": "To calibrate your proportions, we're gonna use the trackers you just assigned. Put on all your trackers, you can see which are which in the figure to the right.",
-        "next": "I have all my trackers on"
+        "title": "トラッカーを装着する",
+        "description": "プロポーションを調整するために、先ほど割り当てたトラッカーを使用します。右の図で、どれがどのトラッカーかわかると思います。",
+        "next": "すべてのトラッカーを装着しました"
       },
       "preparation": {
-        "title": "Preparation",
-        "description": "Place a chair directly behind you inside your play space. Be prepared to sit down during the autobone setup.",
-        "next": "I am in front of a chair"
+        "title": "準備",
+        "description": "プレイスペース内のあなたの真後ろに椅子を置いてください。オートボーンセットアップの間、座れるように準備してください。",
+        "next": "椅子の前にいます"
       },
       "start-recording": {
-        "title": "Get ready to move",
-        "description": "We're now going to record some specific poses and moves. These will be prompted in the next screen. Be ready to start when the button is pressed!",
-        "next": "Start Recording"
+        "title": "移動の準備をする",
+        "description": "これから具体的なポーズや動きを記録します。これらは次の画面に表示されます。ボタンが押されたらすぐに始められるように準備しておいてください！",
+        "next": "レコーディングスタート"
       },
       "recording": {
         "title": "REC",
-        "description.p0": "Recording in progress...",
-        "description.p1": "Make the moves shown below:",
+        "description.p0": "レコーディング中...",
+        "description.p1": "以下に示すような動きをします。",
         "steps": {
-          "0": "Bend knees a few times.",
-          "1": "Sit on a chair then stand up.",
-          "2": "Twist upper body left, then bend right.",
-          "3": "Twist upper body right, then bend left.",
-          "4": "Wiggle around until timer ends."
+          "0": "膝を数回曲げてください",
+          "1": "椅子に座り、立ち上がる",
+          "2": "上半身を左にひねり、右に曲げる",
+          "3": "上半身を右にひねり、左に曲げる",
+          "4": "タイマーが終わるまで体をくねらせる"
         },
-        "processing": "Processing the result",
-        "timer": "{{time}} seconds left"
+        "processing": "結果を処理中",
+        "timer": "あと {{time}} 秒"
       },
       "verify-results": {
-        "title": "Verify results",
-        "description": "Check the results below, do they look correct?",
-        "results": "Recording results",
-        "processing": "Processing the result",
-        "redo": "Redo recording",
-        "confirm": "They're correct"
+        "title": "結果を確認",
+        "description": "以下の結果を確認してください。正しく表示されていますか？",
+        "results": "記録結果",
+        "processing": "結果の処理",
+        "redo": "レコーディングやり直し",
+        "confirm": "正確です"
       },
       "done": {
-        "title": "Body measured and saved.",
-        "description": "Your body proportions calibration is complete!"
+        "title": "体を測定して保存",
+        "description": "ボディプロポーションのキャリブレーションが完了しました！"
       }
     }
   },
   "home": {
-    "no-trackers": "No trackers detected or assigned"
+    "no-trackers": "トラッカーが検出されない、または割り当てられていない。"
   }
 }
