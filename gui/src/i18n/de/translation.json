@@ -4,7 +4,7 @@
     "connection-lost": "Verbindung zum Server verloren. Versuche Verbindung wiederherzustellen ..."
   },
   "tips": {
-    "find-tracker": "Sie sind sich nicht sicher, welcher Tracker welcher ist? Schütteln Sie einen Tracker, um das zugehörige Element hervorzuheben.",
+    "find-tracker": "Sie sind sich nicht sicher, welcher Tracker welcher ist? Schütteln Sie einen Tracker, um den zugehörigen Eintrag hervorzuheben.",
     "do-not-move-heels": "Stellen Sie sicher, dass Ihre Fersen während der Aufnahme nicht bewegt werden!"
   },
   "body-part": {
@@ -302,16 +302,16 @@
     }
   },
   "onboarding": {
-    "skip": "Setup überspringen",
+    "skip": "Einrichtung überspringen",
     "continue": "Fortsetzen",
     "wip": "Noch in Bearbeitung",
     "wifi-creds": {
       "back": "Zurück zur Einführung",
       "title": "WLAN-Zugangsdaten eingeben",
-      "description.p0": "Die Tracker nutzen diese Zugangsdaten, um sich drahtlos zu verbinden",
-      "description.p1": "Bitte verwenden Sie die Zugangsdaten, mit denen Sie gerade verbunden sind",
-      "skip": "WLAN-Einstellungen überspringen",
-      "submit": "Einreichen!"
+      "description.p0": "Die Tracker nutzen diese Zugangsdaten, um sich mit dem WLAN zu verbinden",
+      "description.p1": "Bitte verwenden Sie die Zugangsdaten, mit denen ihr PC gerade verbunden sind",
+      "skip": "WLAN-Zugangsdaten überspringen",
+      "submit": "Weiter!"
     },
     "reset-tutorial": {
       "back": "Zurück zur Montagekalibrierung",
@@ -319,9 +319,9 @@
       "description": "Diese Funktion ist noch nicht fertig, drücken Sie einfach auf Fortsetzen"
     },
     "home": {
-      "title": "Willkommen bei SlimeVR",
-      "description.p0": "Wir bringen VR-Fullbody Tracking",
-      "description.p1": "für alle",
+      "title": "Willkommen zu SlimeVR",
+      "description.p0": "VR-Fullbody Tracking",
+      "description.p1": "für jeden",
       "start": "Lass uns loslegen!"
     },
     "enter-vr": {
@@ -332,16 +332,16 @@
     },
     "done": {
       "title": "Alles eingerichtet!",
-      "description": "Genießen Sie Ihre Ganzkörper-Erfahrung",
-      "close": "Schließen Sie die Anleitung"
+      "description": "Genießen Sie Ihre Fullbody-Erfahrung",
+      "close": "Schließen Sie die Einrichtung"
     },
     "connect-tracker": {
       "back": "Zurück zu WLAN-Zugangsdaten",
       "title": "Verbinde Tracker",
-      "description.p0": "Jetzt zum Spaßteil, verbinde alle Tracker!",
-      "description.p1": "Verbinden Sie einfach alle, die noch nicht verbunden sind, über einen USB-Anschluss.",
+      "description.p0": "Nun zum unterhaltsamen Teil, verbinde alle Tracker!",
+      "description.p1": "Verbinden Sie einfach alle Tracker, die noch nicht verbunden sind, über einen USB-Anschluss.",
       "issue": {
-        "serial": "Ich habe Schwierigkeiten, mich zu verbinden!"
+        "serial": "Ich habe Schwierigkeiten die Tracker verbinden!"
       },
       "usb": "USB Tracker",
       "connection-status": {
@@ -357,9 +357,9 @@
     "assign-trackers": {
       "back": "Zurück zu den WLAN-Anmeldedaten",
       "title": "Tracker zuweisen",
-      "description": "Lassen Sie uns auswählen, welcher Tracker wo hin geht. Klicken Sie auf einen Ort, an dem Sie einen Tracker platzieren möchten",
+      "description": "Wählen sie nun aus, welcher Tracker wo hin geht. Klicken Sie auf einen Ort, an dem Sie einen Tracker platzieren möchten",
       "assigned": "{{assigned}} von {{trackers}} Trackern zugewiesen",
-      "advanced": "Erweiterte Zuweisungsorte anzeigen",
+      "advanced": "Erweiterte Zuweisungspositionen anzeigen",
       "next": "Ich habe alle Tracker zugewiesen"
     },
     "manual-mounting": {
@@ -371,33 +371,33 @@
     },
     "automatic-mounting": {
       "back": "Zurück zum Eintritt in VR",
-      "title": "Kalibrierung der Befestigung",
-      "description": "Damit die SlimeVR-Tracker funktionieren, müssen wir eine Befestigungsdrehung für Ihre Tracker zuweisen, um sie mit der physischen Tracker-Befestigung auszurichten.",
-      "manual-mounting": "Befestigung manuell einstellen",
+      "title": "Kalibrierung der Tracker-Befestigung/Rotation",
+      "description": "Damit die SlimeVR-Tracker korrekt funktionieren, müssen wir ihnen eine Drehung zuweisen, welche der Drehung entspricht wie sie befestigt sind.",
+      "manual-mounting": "Drehung manuell einstellen",
       "next": "Nächster Schritt",
       "prev-step": "Vorheriger Schritt",
       "done": {
-        "title": "Befestigungsdrehungen kalibriert.",
-        "description": "Ihre Befestigungskalibrierung ist abgeschlossen!",
+        "title": "Tracker Rotation kalibriert.",
+        "description": "Ihre Rotations-Kalibrierung ist abgeschlossen!",
         "restart": "Zurück zum Start"
       },
       "mounting-reset": {
-        "title": "Befestigung zurücksetzen",
+        "title": "Drehung Reset",
         "step": {
           "0": "1. Beugen Sie sich in die \"Skifahren\"-Pose mit gebeugten Beinen, geneigtem Oberkörper und gebeugten Armen.",
-          "1": "2. Drücken Sie die Schaltfläche \"Mounting zurücksetzen\" und warten Sie 3 Sekunden, bevor die Befestigungsdrehungen der Tracker zurückgesetzt werden."
+          "1": "2. Drücken Sie die Schaltfläche \"Befestigungs-Reset\" und warten Sie 3 Sekunden, bevor die Drehungen der Tracker gesetzt werden."
         }
       },
       "preparation": {
         "title": "Vorbereitung",
         "step": {
           "0": "1. Stehen Sie aufrecht mit Ihren Armen an den Seiten.",
-          "1": "2. Drücken Sie die Schaltfläche \"Zurücksetzen\" und warten Sie 3 Sekunden, bevor die Tracker zurückgesetzt werden."
+          "1": "2. Drücken Sie die Schaltfläche \"Reset\" und warten Sie 3 Sekunden, bevor die Tracker zurückgesetzt werden."
         }
       },
       "put-trackers-on": {
         "title": "Ziehen Sie ihre Tracker an",
-        "description": "Um die Befestigungsdrehung zu kalibrieren, werden wir die Tracker verwenden, die Sie gerade zugewiesen haben. Ziehen Sie alle Ihre Tracker an, Sie können sehen, welche welche sind in der Abbildung rechts.",
+        "description": "Um die Drehung der Tracker zu kalibrieren, werden die Tracker verwendet, welche Sie gerade zugewiesen haben. Ziehen Sie alle Ihre Tracker an, in der Abbildung rechts können sie sehen um welchen Tracker es sich handelt.",
         "next": "Ich habe alle meine Tracker an"
       }
     },
