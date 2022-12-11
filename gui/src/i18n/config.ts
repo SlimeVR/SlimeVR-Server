@@ -2,6 +2,7 @@ import i18next from 'i18next';
 import { initReactI18next } from 'react-i18next';
 import en from './en/translation.json';
 import fr from './fr/translation.json';
+import zh from './zh/translation.json';
 import pl from './pl/translation.json';
 import vi from './vi/translation.json';
 import owo from './owo/translation.json';
@@ -17,6 +18,10 @@ export const langs = [
   {
     name: '🇫🇷 Français',
     key: 'fr',
+  },
+  {
+    name: '🇨🇳 简体中文',
+    key: 'zh',
   },
   {
     name: 'Polski',
@@ -44,6 +49,9 @@ export const resources = {
   },
   pl: {
     tanslations: pl,
+  },
+  zh: {
+    tanslations: zh,
   },
   owo: {
     translation: owo,
