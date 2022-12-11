@@ -1,0 +1,460 @@
+{
+  "websocket": {
+    "connecting": "Đang kết nối với máy chủ",
+    "connection-lost": "Kết nối với máy chủ đã mất. Đang kết nối lại..."
+  },
+  "tips": {
+    "find-tracker": "Không rõ tracker nào? Lắc tracker và trong menu sẽ sáng lên.",
+    "do-not-move-heels": "Hãy đảm bảo gót chân không cử động trong khi đo ghi!"
+  },
+  "body-part": {
+    "NONE": "Chưa liên kết",
+    "HEAD": "Đầu",
+    "NECK": "Cổ",
+    "RIGHT_SHOULDER": "Vai phải",
+    "RIGHT_UPPER_ARM": "Tay phải trên",
+    "RIGHT_LOWER_ARM": "Tay phải dưới",
+    "RIGHT_HAND": "Tay phải",
+    "RIGHT_UPPER_LEG": "Chân phải trên",
+    "RIGHT_LOWER_LEG": "chân phải dưới",
+    "RIGHT_FOOT": "Bàn chân phải",
+    "CHEST": "Ngực",
+    "WAIST": "Eo",
+    "HIP": "Hông",
+    "LEFT_SHOULDER": "Vai trái",
+    "LEFT_UPPER_ARM": "Tay trái trên",
+    "LEFT_LOWER_ARM": "tay trái dưới",
+    "LEFT_HAND": "Tay trái",
+    "LEFT_UPPER_LEG": "Chân trái trên",
+    "LEFT_LOWER_LEG": "Chân trái dưới",
+    "LEFT_FOOT": "Bàn chân trái"
+  },
+  "skeleton-bone": {
+    "NONE": "Chưa liên kết",
+    "HEAD": "Đầu ca",
+    "NECK": "Cổ dài",
+    "TORSO": "Chiều dài thân",
+    "CHEST": "Khoảng cách ngực",
+    "WAIST": "Khoảng cách eo",
+    "HIP_OFFSET": "Lệc đo hông",
+    "HIPS_WIDTH": "Chiều rộng hông",
+    "LEGS_LENGTH": "Chiều dài chân",
+    "KNEE_HEIGHT": "Chiều cao đầu gối",
+    "FOOT_LENGTH": "CHiều dài bàn chân",
+    "FOOT_SHIFT": "Lệch đo bàn chân",
+    "SKELETON_OFFSET": "Lệch đo thân",
+    "CONTROLLER_DISTANCE_Z": "Khoảng cách tay cầm Z",
+    "CONTROLLER_DISTANCE_Y": "Khoảng cách tay cầm Y",
+    "FOREARM_LENGTH": "khoảng cách cánh tay",
+    "SHOULDERS_DISTANCE": "Khoảng cách vai",
+    "SHOULDERS_WIDTH": "Chiều rộng vai",
+    "UPPER_ARM_LENGTH": "Chiều dài tay trên",
+    "ELBOW_OFFSET": "Lệch đo khuỷu tay"
+  },
+  "reset": {
+    "reset-all": "Reset tất cả bộ phận",
+    "full": "Reset",
+    "mounting": "Reset vị trí cài",
+    "quick": "Reset nhanh"
+  },
+  "serial-detection": {
+    "new-device.p0": "New serial device detected!" ,
+    "new-device.p1": "Vui lòng nhập thông tin Wi-Fi!",
+    "new-device.p2": "Vui lòng chọn những gì làm với nó",
+    "open-wifi": "Kết nối Wi-Fi",
+    "open-serial": "Mở Serial Console",
+    "submit": "Đăng lên!",
+    "close": "Đóng"
+  },
+  "navbar": {
+    "home": "Giao diện chính",
+    "body-proportions": "Bộ phận cơ thể",
+    "trackers-assign": "Giao bộ phận tracker",
+    "mounting": "Đo vị trí đặt",
+    "onboarding": "Trình hướng dẫn cài đặt",
+    "settings": "Cài đặt"
+  },
+  "bvh": {
+    "start-recording": "Ghi BVH",
+    "recording": "Đang ghi..."
+  },
+  "overlay": {
+    "is-visible-label": "Xem overlay trên SteamVR",
+    "is-mirrored-label": "Xem overlay trong gương"
+  },
+  "tracker": {
+    "status": {
+      "none": "Không có tình trạng",
+      "busy": "Bận",
+      "error": "Lỗi",
+      "disconnected": "Đã ngắt kết nối",
+      "occluded": "Bị tắc",
+      "ok": "Đã kết nối"
+    },
+    "table": {
+      "column": {
+        "name": "Tên",
+        "type": "Loại",
+        "battery": "Pin",
+        "ping": "Ping",
+        "rotation": "Chiều chuyển X/Y/Z",
+        "position": "Vị trí X/Y/Z",
+        "url": "URL"
+      }
+    },
+    "rotation": {
+      "front": "Đằng trước",
+      "left": "Bên trái",
+      "right": "Bên phải",
+      "back": "Đằng sau" 
+    },
+    "infos": {
+      "manufacturer": "Nhà sản xuất",
+      "display-name": "Tên gọi",
+      "custom-name": "Tên tự chọn",
+      "url": " URL"
+    },
+    "settings": {
+      "back": "Quay lại danh sách tracker",
+      "title": "Cài đặt tracker",
+      "assignment-section": {
+        "title": "Giao bộ phận",
+        "description": "Thiết bị này được giao cho bộ phận nào.",
+        "edit": "Chỉnh lại giao bộ phận"
+      },
+      "mounting-section": {
+        "title": "Vị trí đặt bộ phận",
+        "description": "Tracker đặt ở đâu?",
+        "edit": "Chỉnh lại chỗ đặt"
+      },
+      "name-section": {
+        "title": "Tên tracker",
+        "description": "Hãy cho một tên đẹp :)",
+        "input-placeholder": "Menaced's left leg"
+      }
+    },
+    "part-card": {
+      "no-name": "Không tên",
+      "unassigned": "Chưa giao vị trí"
+    }
+  },
+  "body-assignment-menu": {
+    "title": "Bạn muốn giao tracker này cho bộ phận nào?",
+    "description": "Chọn vị trí bạn muốn giao tracker cho. Ngoài ra, bạn có thể quản lí tất cả tracker cùng một lúc thay vì từng cái một.",
+    "show-advanced-locations": "Xem thêm vị trí đặt",
+    "manage-trackers": "Quản lí tất cả tracker",
+    "unassign-tracker": "Tracker chưa giao vị trí"
+  },
+  "tracker-selection-menu": {
+    "title": "Tracker nào để giao cho {{bodyPart}}?",
+    "unassigned": "Chưa giao vị trí",
+    "assigned": "Đã giao vị trí",
+    "dont-assign": "Thoát và không giao"
+  },
+  "mounting-selection-menu": {
+    "title": "Bạn muốn giao tracker này ở đâu?",
+    "close": "Đóng"
+  },
+  "settings": {
+    "sidebar": {
+      "title": "Cài đặt",
+      "general": "Cài đặt chung",
+      "tracker-mechanics": "Cơ khí tracker",
+      "fk-settings": "Cài đặt FK",
+      "interface": "Giao diện",
+      "utils": "Hữu dụng",
+      "serial": "Bảng điều khiển Serial"
+    },
+    "general": {
+      "steamvr": {
+        "title": "SteamVR",
+        "subtitle": "SteamVR trackers",
+        "description.p0": "Bặt hoặc tắt tracker SteamVR.",
+        "description.p1": "Hữu dụng nếu bạn muốn điều khiển cách SlimeVR hoạt động.",
+        "trackers": {
+          "waist": "Eo",
+          "chest": "Ngực",
+          "feet": "Bàn chân",
+          "knees": "Đầu gối (Chân)",
+          "elbows": "Khuỷu tay"
+        }
+      },
+      "tracker-mechanics": {
+        "title": "Cơ khí tracker",
+        "subtitle": "Lọc rung",
+        "description.p0": "Chọn kiểu lọc rung cho tracker.",
+        "description.p1": "Dự đoán đoán cử động trong khi lọc rung cử động.",
+        "filtering-type": {
+          "title": "Kiểu lọc",
+          "none": {
+            "label": "Không lọc",
+            "description":"Để đo chiều chuyển y nguyên. Không sử dụlọclọc."
+          },
+          "smoothing": {
+            "label": "Làm mượt",
+            "description":"Lọc cử động mượt nhưng tạo ít chậm rễ."
+          },
+          "prediction": {
+            "label": "Dự đoán",
+            "description":"Giảm chậm trê và để cử động gọn hơn, nhưng có thể tăng độ rung."
+          }
+        },
+        "amount": {
+          "Ghi chú": "Số luọng"
+        }
+      },
+      "fk-settings": {
+        "title": "Cài đặt FK",
+        "leg-tweak": {
+          "title": "Chỉnh chân",
+          "description": "Chỉnh chân có thể giảm hoặc loại bỏ chân đi xuyên sàn nhà nhưng có thể ảnh hưởng đầu gối. Sửa trượt sửa khi lướt, nhưng giảm độ chính xác ở một số cử động.",
+          "floor-clip": "Xuyên sàn",
+          "skating-correction": "Sửa trượt"
+        },
+        "arm-fk": {
+          "title": "Tay FK",
+          "description": "Chỉnh cách tay được đo.",
+          "force-arms": "Bắt tay từ kính thực tế ảo"
+        },
+        "skeleton-settings": {
+          "title": "Cài đặt cơ thể",
+          "description": "Bật hoặc tắt hình cơ thể. Khuyên nên luôn để bật lựa chọn này.",
+          "extended-spine": "Xương sống mở rộng",
+          "extended-pelvis": "Xuong chậu mở rộng",
+          "extended-knees": "Đầu gối mở rộng"
+        }
+      },
+      "gesture-control": {
+        "title": "Điều khiển cử chỉ",
+        "subtitle": "Bấm hai lần để reset nhanh",
+        "description": "Bật hoặc tắt reset nhanh. Khi bật bấm hai lần bất cứ đâu trên điểm cao nhất ở thân sẽ kích hoạt reset nhanh. Delay is the time between registering a tap and resetting.",
+        "enable": "Bấm hai lần để reset nhanh",
+        "delay": "Chậm trễ"
+      },
+      "interface": {
+        "title": "Giao diện",
+        "dev-mode": {
+          "title": "Chế độ nhà phát triển",
+          "description": "Chế độ này có thể hữu dụng nếu như bạn cần thông tin sâu hơn hoặc giao tiếp với tracker nâng cao",
+          "label": "Chế độ nhà phát triển"
+        },
+        "serial-detection": {
+          "title": "Phát hiện thiết bị Serial",
+          "description": "Lựa chọn này sẽ hiển thị thông báo mỗi lần thiết bị Serial mà có thể là tracker.Lựa chọn này có thể giúp quá trình cài đạt tracker",
+          "label": "Phát hiện thiết bị Serial"
+        },
+        "lang": {
+          "title": "Chọn ngôn ngữ (Change language)",
+          "description": "Đổi ngôn ngữ cố định (Change the default language you want to use)",
+          "placeholder": "Chọn ngôn ngữ để sử dụng (Select the language to use)"
+        }
+      }
+    },
+    "serial": {
+      "title": "Bảng điều khiển serial",
+      "description.p0": "Đâu là thông tin trực tiếp về giao tiếp với Serial.",
+      "description.p1": "Hữu dụng nếu muốn biết phần mềm firmware có vấn đề không.",
+      "connection-lost": "Kết nối đến Serial đã mất, đang kết nối lại...",
+      "reboot": "Khởi động lại",
+      "factory-reset": "Khôi phục cài đặt gối",
+      "get-infos": "Lấy thông tin",
+      "serial-select": "Chọn cổng Serial",
+      "auto-dropdown-item": "Tự động"
+    },
+    "osc": {
+      "vrchat": {
+        "description.p0": "Đổi cài đặt dành riêng cho VRChat để nhận thông tin từ kính thực tế ảo và gửi",
+        "description.p1": "thông tin tracker để track toàn thân (Hoạt động trên Quest một mình standalone).",
+        "enable": {
+          "title": "Bật",
+          "description": "Chình gửi và nhận thông tin",
+          "label": "Bật"
+        },
+        "network": {
+          "title": "Cổng mạng",
+          "description": "Chọn cổng mạng để nghe và gửi thông tin lên VRChat",
+          "port-in": {
+            "label": "Cổng vào",
+            "placeholder": "Cổng vào (Cố định: 9001)"
+          },
+          "port-out": {
+            "label": "Cổng ra",
+            "placeholder": "Cổng ra (Cố định: 9000)"
+          },
+          "address": {
+            "title": "Địa chỉ mạng",
+            "description": "Chọn địa chỉ mạng nào để gứi lên VRChat (Hãy kiểm tra cài đặt Wi-Fi trên thiết bị để tìm cái này)",
+            "placeholder": "Địa chỉ IP cho VRChat"
+          },
+          "trackers": {
+            "title": "Trackers",
+            "description": "Chỉnh gửi và nhận thông tin",
+            "chest": "Ngực",
+            "waist": "Eo",
+            "knees": "Đầu gối",
+            "feet": "Bàn chân",
+            "elbows": "Khuỷu tay"
+          }
+        }
+      }
+    }
+  },
+  "onboarding": {
+    "skip": "Bỏ qua cài đặt",
+    "continue": "Tiếp tục",
+    "wip": "Đang làm dở (vui lòng quay lại sau update)",
+    "wifi-creds": {
+      "back": "Quay lại đoạn giới thiệuthiệu",
+      "title": "Bỏ thông tin Wi-Fi ở đây",
+      "description.p0": "Tracker sẽ sử dụng thông tin sau để kết nối không dây",
+      "description.p1": "vui lòng bỏ thông tin bạn muốn kết nối",
+      "skip": "Bỏ qua cài đặt Wi-Fi",
+      "submit": "Thiết lập!"
+    },
+    "reset-tutorial": {
+      "back": "Quay lại đo đạt vị trí",
+      "title": "Làm lại hướng dẫn",
+      "description": "Tính năng này chưa hoàn thiện, vui lòng bấm tiếp tục và quay lại sau update"
+    },
+    "home": {
+      "title": "Chào mừng đến với SlimeVR!",
+      "description.p0": "Đem đến đo toàn thân",
+      "description.p1": "tới tất cả",
+      "start": "Hãy bắt đầu cài đặt!"
+    },
+    "enter-vr": {
+      "back": "Quay lại giao bộ phận tracker",
+      "title": "Đến giờ lên VR!",
+      "description": "Đeo tất cả tracker và lên VR!",
+      "ready": "Sẵn sàng!"
+    },
+    "done": {
+      "title": "Bạn đã hoàn thành cài đặt!",
+      "description": "Hãy tận hưởng đo toàn thân",
+      "close": "Đóng hướng dẫn"
+    },
+    "connect-tracker": {
+      "back": "Quay lại tra thông tin Wi-Fi",
+      "title": "Kết nối tracker",
+      "description.p0": "Đến giờ đoạn hay nhất, kết nối tất cả tracker!",
+      "description.p1": "Đơn thuần kết nối tất cả tracker chưa kết nối, qua cổng USB",
+      "issue": {
+        "serial": "Mình có vấn đề kết nối!"
+      },
+      "usb": "USB Tracker",
+      "connection-status": {
+        "connecting": "Đang gửi thông tin Wi-Fi",
+        "connected": "Đã kết nối Wi-Fi",
+        "error": "Không thể kết nối Wi-Fi",
+        "start-connecting": "Đang tìm tracker",
+        "handshake": "Đã kết nối với máy chủ"
+      },
+      "connected-trackers": "{{amount}} tracker đã kết nối",
+      "next": "Tôi đã kết nối tất cả tracker"
+    },
+    "assign-trackers": {
+      "back": "Quay lại tra thông tin Wi-Fi",
+      "title": "Giao tracker",
+      "description": "Hãy chọn tracker nào nằm ở đâu. Chọn vị trí bạn muốn giao tracker cho",
+      "assigned": "{{assigned}} trong {{trackers}} tracker đã được giao",
+      "advanced": "Xem vị trí mở rộng",
+      "next": "Hoàn thành"
+    },
+    "manual-mounting": {
+      "back": "Quay lại đến vào VR",
+      "title": "Đặt thủ công",
+      "description": "Bấm từng tracker một và chọn xem nó được gắn theo chiều nào",
+      "auto-mounting": "Gắn tự động",
+      "next": "Bước tiếp theo"
+    },
+    "automatic-mounting": {
+      "back": "Quay lại đến vào VR",
+      "title": "Đo vị trí đặt",
+      "description": "Để SlimeVR hoạt động, bạn cần đạt chiều hướng quay của tracker để khớp với điểm đặt tracker trên cơ thể",
+      "manual-mounting": "Đặt vị trí thủ công",
+      "next": "Bước tiếp theo",
+      "prev-step": "Bước trước",
+      "done": {
+        "title": "Hướng quay đã được đo.",
+        "description": "Cài đặt vị trí đã hoàn thành!",
+        "restart": "Quay lại bắt đầu"
+      },
+      "mounting-reset": {
+        "title": "Reset vị trí",
+        "step": {
+          "0": "1. Ngồi xổm trong tư thế \"skiing\" với hai chân cong, thân trên nghiêng về phía trước và hai cánh tay cong.",
+          "1": "2. Nhấn nút \"Reset Mounting\" và đợi trong 3 giây trước khi các vòng quay giá đỡ của thiết bị theo dõi sẽ được đặt lại."
+        }
+      },
+      "preparation": {
+        "title": "Chuẩn bị",
+        "step": {
+          "0": "1. Đứng thẳng với hai cánh tay sang hai bên.",
+          "1": "2. Nhấn nút \"Reset\" và đợi trong 3 giây trước khi trình theo dõi sẽ đặt lại."
+        }
+      },
+      "put-trackers-on": {
+        "title": "Hãy đeo tracker lên người",
+        "description": "Để đo chiều quay của tracker, phần mềm sẽ sử dụng tracker mà bạn đã giao cho. Hãy đeo lên tất cả tracker, và xem cái nào là cái nào trên hình bên phải",
+        "next": "Hoàn thành (Gắn xong)"
+      }
+    },
+    "manual-proportions": {
+      "back": "Quay lại hướng dẫn reset",
+      "title": "Cài bộ phận cơ thể thủ công",
+      "precision": "Chỉnh độ chính xác",
+      "auto": "Đo cơ thể tự động"
+    },
+    "automatic-proportions": {
+      "back": "Quay lại hướng dẫn reset",
+      "title": "Đo cơ thể",
+      "description": "Để SlimeVR hoạt động, phần mềm cần biết chiều dài của thân. Bước đo tự động này sẽ giúp bạn.",
+      "manual": "Đo thủ công",
+      "prev-step": "Bước trước",
+      "put-trackers-on": {
+        "title": "Đeo tất cả",
+        "description": "Để đo bộ phận, phần mềm sẽ sử dụng tracker mà bạn đã giao cho. Hãy đeo lên tất cả tracker, và xem cái nào là cái nào trên hình bên phải.",
+        "next": "Hoàn thành (Gắn xong)"
+      },
+      "preparation": {
+        "title": "Chuẩn bị",
+        "description": "Đặt ghế đằng sau bạn thẳng trong khu vực chơi VR. Hãy chuẩn bị ngồi trong khi cài đặt đo thân tự động.",
+        "next": "Tôi đang đứng trước ghế ngồi"
+      },
+      "start-recording": {
+        "title": "Chuẩn bị cử động",
+        "description": "Phần mềm sẽ ghi một số củ động cử chỉ. Bước này sẽ bắt đầu ở màn hình tiếp theo. Hãy chuẩn bị khi bấm bắt đầu",
+        "next": "Bắt đầu quay"
+      },
+      "recording": {
+        "title": "Quay",
+        "description.p0": "Đang quay...",
+        "description.p1": "Hãy cử động theo hướng dẫn sau:",
+        "steps": {
+          "0": "Cong đầu gối vài lần.",
+          "1": "Ngồi lên ghế rồi đứng lên.",
+          "2": "Vặn thân trên sang trái, sau đó uốn cong sang phải.",
+          "3": "Vặn thân trên sang phải, sau đó uốn cong sang trái.",
+          "4": "Đảo xung quanh cho đến khi bộ đếm thời gian kết thúc."
+        },
+        "processing": "Đang xử lí kết quả",
+        "timer": "Còn {{time}} giây"
+      },
+      "verify-results": {
+        "title": "Xác nhận kết quả",
+        "description": "Kiểm tra kết quả dưới đây, nó có chính xác không?",
+        "results": "Đang ghi kết quả",
+        "processing": "Đang xử lí kết quả",
+        "redo": "Ghi lại",
+        "confirm": "Kết quả này chính xác!"
+      },
+      "done": {
+        "title": "Thân đã được đo và lưu.",
+        "description": "Quá trình đo thân đã hoàn thành!"
+      }
+    }
+  },
+  "home": {
+    "no-trackers": "Không tracker nào được phát hiện hoặc giao vị trí"
+  }
+}
