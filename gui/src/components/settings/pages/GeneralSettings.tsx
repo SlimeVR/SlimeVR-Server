@@ -49,15 +49,15 @@ interface SettingsForm {
     skatingCorrection: boolean;
   };
   tapDetection: {
-    mountingResetEnabled: boolean;
-    quickResetEnabled: boolean;
-    resetEnabled: boolean;
-    quickResetDelay: number;
-    resetDelay: number;
-    mountingResetDelay: number;
-    quickResetTaps: number;
-    resetTaps: number;
-    mountingResetTaps: number;
+    tapMountingResetEnabled: boolean;
+    tapQuickResetEnabled: boolean;
+    tapResetEnabled: boolean;
+    tapQuickResetDelay: number;
+    tapResetDelay: number;
+    tapMountingResetDelay: number;
+    tapQuickResetTaps: number;
+    tapResetTaps: number;
+    tapMountingResetTaps: number;
   };
   legTweaks: {
     correctionStrength: number;
@@ -87,15 +87,15 @@ const defaultValues = {
   },
   filtering: { amount: 0.1, type: FilteringType.NONE },
   tapDetection: {
-    mountingResetEnabled: false,
-    quickResetEnabled: false,
-    resetEnabled: false,
-    quickResetDelay: 0.2,
-    resetDelay: 1.0,
-    mountingResetDelay: 1.0,
-    quickResetTaps: 2,
-    resetTaps: 3,
-    mountingResetTaps: 3,
+    tapMountingResetEnabled: false,
+    tapQuickResetEnabled: false,
+    tapResetEnabled: false,
+    tapQuickResetDelay: 0.2,
+    tapResetDelay: 1.0,
+    tapMountingResetDelay: 1.0,
+    tapQuickResetTaps: 2,
+    tapResetTaps: 3,
+    tapMountingResetTaps: 3,
   },
   legTweaks: { correctionStrength: 0.3 },
   interface: { devmode: false, watchNewDevices: true },
@@ -142,16 +142,15 @@ export function GeneralSettings() {
     settings.modelSettings = modelSettings;
 
     const tapDetection = new TapDetectionSettingsT();
-    tapDetection.quickResetEnabled = values.tapDetection.quickResetEnabled;
-    tapDetection.resetEnabled = values.tapDetection.resetEnabled;
-    tapDetection.mountingResetEnabled = values.tapDetection.mountingResetEnabled;
-    tapDetection.quickResetDelay = values.tapDetection.quickResetDelay;
-    tapDetection.resetDelay = values.tapDetection.resetDelay;
-    tapDetection.mountingResetDelay = values.tapDetection.mountingResetDelay;
-    tapDetection.quickResetTaps = values.tapDetection.quickResetTaps;
-    tapDetection.resetTaps = values.tapDetection.resetTaps;
-    tapDetection.mountingResetTaps = values.tapDetection.mountingResetTaps;
-    tapDetection.resetDelay = values.tapDetection.resetDelay;
+    tapDetection.tapResetDelay = values.tapDetection.tapResetDelay;
+    tapDetection.tapResetEnabled = values.tapDetection.tapResetEnabled;
+    tapDetection.tapResetTaps = values.tapDetection.tapResetTaps;
+    tapDetection.tapQuickResetDelay = values.tapDetection.tapQuickResetDelay;
+    tapDetection.tapQuickResetEnabled = values.tapDetection.tapQuickResetEnabled;
+    tapDetection.tapQuickResetTaps = values.tapDetection.tapQuickResetTaps;
+    tapDetection.tapMountingResetEnabled = values.tapDetection.tapMountingResetEnabled;
+    tapDetection.tapMountingResetDelay = values.tapDetection.tapMountingResetDelay;
+    tapDetection.tapMountingResetTaps = values.tapDetection.tapMountingResetTaps;
     settings.tapDetectionSettings = tapDetection;
 
     const filtering = new FilteringSettingsT();
@@ -207,33 +206,33 @@ export function GeneralSettings() {
 
     if (settings.tapDetectionSettings) {
       formData.tapDetection = {
-        quickResetEnabled:
-          settings.tapDetectionSettings.quickResetEnabled ||
-          defaultValues.tapDetection.quickResetEnabled,
-        resetEnabled:
-          settings.tapDetectionSettings.resetEnabled ||
-          defaultValues.tapDetection.resetEnabled,
-        mountingResetEnabled:
-          settings.tapDetectionSettings.mountingResetEnabled ||
-          defaultValues.tapDetection.mountingResetEnabled,
-        quickResetDelay:
-          settings.tapDetectionSettings.quickResetDelay ||
-          defaultValues.tapDetection.quickResetDelay,
-        resetDelay:
-          settings.tapDetectionSettings.resetDelay ||
-          defaultValues.tapDetection.resetDelay,
-        mountingResetDelay:
-          settings.tapDetectionSettings.mountingResetDelay ||
-          defaultValues.tapDetection.mountingResetDelay,
-        quickResetTaps:
-          settings.tapDetectionSettings.quickResetTaps ||
-          defaultValues.tapDetection.quickResetTaps,
-        resetTaps:
-          settings.tapDetectionSettings.resetTaps ||
-          defaultValues.tapDetection.resetTaps,
-        mountingResetTaps:
-          settings.tapDetectionSettings.mountingResetTaps ||
-          defaultValues.tapDetection.mountingResetTaps,
+        tapQuickResetEnabled:
+          settings.tapDetectionSettings.tapQuickResetEnabled ||
+          defaultValues.tapDetection.tapQuickResetEnabled,
+        tapResetEnabled:
+          settings.tapDetectionSettings.tapResetEnabled ||
+          defaultValues.tapDetection.tapResetEnabled,
+        tapMountingResetEnabled:
+          settings.tapDetectionSettings.tapMountingResetEnabled ||
+          defaultValues.tapDetection.tapMountingResetEnabled,
+        tapQuickResetDelay:
+          settings.tapDetectionSettings.tapQuickResetDelay ||
+          defaultValues.tapDetection.tapQuickResetDelay,
+        tapResetDelay:
+          settings.tapDetectionSettings.tapResetDelay ||
+          defaultValues.tapDetection.tapResetDelay,
+        tapMountingResetDelay:
+          settings.tapDetectionSettings.tapMountingResetDelay ||
+          defaultValues.tapDetection.tapMountingResetDelay,
+        tapQuickResetTaps:
+          settings.tapDetectionSettings.tapQuickResetTaps ||
+          defaultValues.tapDetection.tapQuickResetTaps,
+        tapResetTaps:
+          settings.tapDetectionSettings.tapResetTaps ||
+          defaultValues.tapDetection.tapResetTaps,
+        tapMountingResetTaps:
+          settings.tapDetectionSettings.tapMountingResetTaps ||
+          defaultValues.tapDetection.tapMountingResetTaps,
       };
     }
 
@@ -515,28 +514,28 @@ export function GeneralSettings() {
               variant="toggle"
               outlined
               control={control}
-              name="tapDetection.quickResetEnabled"
+              name="tapDetection.tapQuickResetEnabled"
               label={t('settings.general.gesture-control.quickResetEnabled')}
             />
             <CheckBox
               variant="toggle"
               outlined
               control={control}
-              name="tapDetection.resetEnabled"
+              name="tapDetection.tapResetEnabled"
               label={t('settings.general.gesture-control.resetEnabled')}
             />
             <CheckBox
               variant="toggle"
               outlined 
               control={control}
-              name="tapDetection.mountingResetEnabled"
+              name="tapDetection.tapMountingResetEnabled"
               label={t('settings.general.gesture-control.mountingResetEnabled')}
             />
           </div>
           <div className="grid sm:grid-cols-3 gap-5 pb-2">
             <NumberSelector
               control={control}
-              name="tapDetection.quickResetDelay"
+              name="tapDetection.tapQuickResetDelay"
               label={t('settings.general.gesture-control.quickResetDelay')}
               valueLabelFormat={(value) => `${Math.round(value * 10) / 10} s`}
               min={0.2}
@@ -545,7 +544,7 @@ export function GeneralSettings() {
             />
             <NumberSelector
               control={control}
-              name="tapDetection.resetDelay"
+              name="tapDetection.tapResetDelay"
               label={t('settings.general.gesture-control.resetDelay')}
               valueLabelFormat={(value) => `${Math.round(value * 10) / 10} s`}
               min={0.2}
@@ -554,7 +553,7 @@ export function GeneralSettings() {
             />
             <NumberSelector
               control={control}
-              name="tapDetection.mountingResetDelay"
+              name="tapDetection.tapMountingResetDelay"
               label={t('settings.general.gesture-control.mountingResetDelay')}
               valueLabelFormat={(value) => `${Math.round(value * 10) / 10} s`}
               min={0.2}
@@ -565,7 +564,7 @@ export function GeneralSettings() {
           <div className="grid sm:grid-cols-3 gap-5 pb-2">
             <NumberSelector
               control={control}
-              name="tapDetection.quickResetTaps"
+              name="tapDetection.tapQuickResetTaps"
               label={t('settings.general.gesture-control.quickResetTaps')}
               valueLabelFormat={(value) =>
                 `${Math.round(value)} ${t(
@@ -578,7 +577,7 @@ export function GeneralSettings() {
             />
             <NumberSelector
               control={control}
-              name="tapDetection.resetTaps"
+              name="tapDetection.tapResetTaps"
               label={t('settings.general.gesture-control.resetTaps')}
               valueLabelFormat={(value) =>
                 `${Math.round(value)} ${t(
@@ -591,7 +590,7 @@ export function GeneralSettings() {
             />
             <NumberSelector
               control={control}
-              name="tapDetection.mountingResetTaps"
+              name="tapDetection.tapMountingResetTaps"
               label={t('settings.general.gesture-control.mountingResetTaps')}
               valueLabelFormat={(value) =>
                 `${Math.round(value)} ${t(

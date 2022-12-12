@@ -143,33 +143,39 @@ public record RPCSettingsHandler(RPCHandler rpcHandler, ProtocolAPI api) {
 
 			if (tapDetectionSettings != null) {
 				// enable/disable tap detection
-				tapDetectionConfig.setQuickResetEnabled(tapDetectionSettings.quickResetEnabled());
-				tapDetectionConfig.setResetEnabled(tapDetectionSettings.resetEnabled());
 				tapDetectionConfig
-					.setMountingResetEnabled(tapDetectionSettings.mountingResetEnabled());
+					.setQuickResetEnabled(tapDetectionSettings.tapQuickResetEnabled());
+				tapDetectionConfig
+					.setResetEnabled(tapDetectionSettings.tapResetEnabled());
+				tapDetectionConfig
+					.setMountingResetEnabled(tapDetectionSettings.tapMountingResetEnabled());
 
 				// set tap detection delays
-				if (tapDetectionSettings.hasQuickResetDelay()) {
-					tapDetectionConfig.setQuickResetDelay(tapDetectionSettings.quickResetDelay());
-				}
-				if (tapDetectionSettings.hasResetDelay()) {
-					tapDetectionConfig.setResetDelay(tapDetectionSettings.resetDelay());
-				}
-				if (tapDetectionSettings.hasMountingResetDelay()) {
+				if (tapDetectionSettings.hasTapQuickResetDelay()) {
 					tapDetectionConfig
-						.setMountingResetDelay(tapDetectionSettings.mountingResetDelay());
+						.setQuickResetDelay(tapDetectionSettings.tapQuickResetDelay());
+				}
+				if (tapDetectionSettings.hasTapResetDelay()) {
+					tapDetectionConfig
+						.setResetDelay(tapDetectionSettings.tapResetDelay());
+				}
+				if (tapDetectionSettings.hasTapMountingResetDelay()) {
+					tapDetectionConfig
+						.setMountingResetDelay(tapDetectionSettings.tapMountingResetDelay());
 				}
 
 				// set the number of taps required for each action
-				if (tapDetectionSettings.hasQuickResetTaps()) {
-					tapDetectionConfig.setQuickResetTaps(tapDetectionSettings.quickResetTaps());
-				}
-				if (tapDetectionSettings.hasResetTaps()) {
-					tapDetectionConfig.setResetTaps(tapDetectionSettings.resetTaps());
-				}
-				if (tapDetectionSettings.hasMountingResetTaps()) {
+				if (tapDetectionSettings.hasTapQuickResetTaps()) {
 					tapDetectionConfig
-						.setMountingResetTaps(tapDetectionSettings.mountingResetTaps());
+						.setQuickResetTaps(tapDetectionSettings.tapQuickResetTaps());
+				}
+				if (tapDetectionSettings.hasTapResetTaps()) {
+					tapDetectionConfig
+						.setResetTaps(tapDetectionSettings.tapResetTaps());
+				}
+				if (tapDetectionSettings.hasTapMountingResetTaps()) {
+					tapDetectionConfig
+						.setMountingResetTaps(tapDetectionSettings.tapMountingResetTaps());
 				}
 
 				this.api.server.humanPoseProcessor.getSkeleton().updateTapDetectionConfig();
