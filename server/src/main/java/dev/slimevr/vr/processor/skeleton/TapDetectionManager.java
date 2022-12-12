@@ -86,9 +86,6 @@ public class TapDetectionManager {
 				oscHandler.yawAlign();
 			skeleton.resetTrackersYaw();
 			quickResetDetector.resetDetector();
-			// print
-			System.out.println("quick reset");
-
 		}
 	}
 
@@ -103,8 +100,6 @@ public class TapDetectionManager {
 				oscHandler.yawAlign();
 			skeleton.resetTrackersFull();
 			resetDetector.resetDetector();
-			// print
-			System.out.println("reset");
 		}
 	}
 
@@ -119,8 +114,6 @@ public class TapDetectionManager {
 		) {
 			skeleton.resetTrackersMounting();
 			mountingResetDetector.resetDetector();
-			// print
-			System.out.println("mounting reset");
 		}
 	}
 
