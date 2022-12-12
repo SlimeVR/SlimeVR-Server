@@ -68,14 +68,14 @@
   },
   "navbar": {
     "home": "ホーム",
-    "body-proportions": "ボディ    プロポーション",
-    "trackers-assign": "トラッカー  割り当て",
-    "mounting": "マウント   キャリブレーション",
+    "body-proportions": "ボディプロポーション",
+    "trackers-assign": "トラッカー割り当て",
+    "mounting": "マウントキャリブレーション",
     "onboarding": "セットアップ ウィザード",
     "settings": "設定"
   },
   "bvh": {
-    "start-recording": "BVH       レコーディング",
+    "start-recording": "BVHレコーディング",
     "recording": "レコーディング中..."
   },
   "overlay": {
