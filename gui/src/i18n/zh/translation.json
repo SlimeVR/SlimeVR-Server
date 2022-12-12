@@ -163,6 +163,7 @@
             "fk-settings": "FK 设置",
             "gesture-control": "手势控制",
             "interface": "交互界面",
+            "osc-router": "OSC 路由",
             "utils": "工具",
             "serial": "串行控制器"
         },
@@ -264,6 +265,34 @@
             "auto-dropdown-item": "自动"
         },
         "osc": {
+            "router": {
+                "title": "OSC 路由",
+                "description.p0": "从另一个程序转发 OSC 信息。",
+                "description.p1": "在使用另一个 VRChat 的 OSC 程序时会很有用。",
+                "enable": {
+                    "title": "启用",
+                    "description": "控制信息转发功能的开关。",
+                    "label": "启用"
+                },
+                "network": {
+                    "title": "网络端口",
+                    "description.p0": "设置用于监听和向 VRChat 发送数据的端口",
+                    "description.p1": "这些端口可以与 SlimeVR 服务器中使用的其他端口相同。",
+                    "port-in": {
+                        "label": "输入端口",
+                        "placeholder": "输入端口（默认 9002）"
+                    },
+                    "port-out": {
+                        "label": "输出端口",
+                        "placeholder": "输出端口（默认 9000）"
+                    },
+                    "address": {
+                        "title": "网络地址",
+                        "description": "设置用来发送数据的地址。",
+                        "placeholder": "IPV4 地址"
+                    }
+                }
+            },
             "vrchat": {
                 "description.p0": "改变 VRChat 的特定设置以接收和发送头显数据。",
                 "description.p1": "用于全身追踪的追踪器数据（在 Quest 端生效）。",
@@ -358,7 +387,7 @@
             "back": "返回 WiFi 凭据设置",
             "title": "分配追踪器",
             "description": "让我们选择哪个追踪器在哪里。单击要放置追踪器的部位",
-            "assigned": "{{assigned} / {{trackers} 个已分配的追踪器",
+            "assigned": "{{assigned}} / {{trackers}} 个已分配的追踪器",
             "advanced": "显示高级分配部位",
             "next": "所有的追踪器都分配好了"
         },
