@@ -1,178 +1,178 @@
 {
   "websocket": {
-    "connecting": "Connecting to the server",
-    "connection-lost": "Connection lost to the server. Trying to reconnect..."
+    "connecting": "서버에 연결 중...",
+    "connection-lost": "서버와의 연결이 끊어졌어요. 다시 연결하는 중..."
   },
   "tips": {
-    "find-tracker": "Not sure which tracker is which? Shake a tracker and it will highlight the corresponding item.",
-    "do-not-move-heels": "Ensure your heels do not move during recording!"
+    "find-tracker": "내 트래커가 어떤 트래커인지 모르시겠다구요? 트래커를 흔들면 해당 항목이 빛날 거에요.",
+    "do-not-move-heels": "기록하는 동안 발뒤꿈치가 움직이지 않도록 조심하세요!"
   },
   "body-part": {
-    "NONE": "Unassigned",
-    "HEAD": "Head",
-    "NECK": "Neck",
-    "RIGHT_SHOULDER": "Right shoulder",
-    "RIGHT_UPPER_ARM": "Right upper arm",
-    "RIGHT_LOWER_ARM": "Right lower arm",
-    "RIGHT_HAND": "Right hand",
-    "RIGHT_UPPER_LEG": "Right upper leg",
-    "RIGHT_LOWER_LEG": "Right lower leg",
-    "RIGHT_FOOT": "Right foot",
-    "CHEST": "Chest",
-    "WAIST": "Waist",
-    "HIP": "Hip",
-    "LEFT_SHOULDER": "Left shoulder",
-    "LEFT_UPPER_ARM": "Left upper arm",
-    "LEFT_LOWER_ARM": "Left lower arm",
-    "LEFT_HAND": "Left hand",
-    "LEFT_UPPER_LEG": "Left upper leg",
-    "LEFT_LOWER_LEG": "Left lower leg",
-    "LEFT_FOOT": "Left foot"
+    "NONE": "할당되지 않음",
+    "HEAD": "머리",
+    "NECK": "목",
+    "RIGHT_SHOULDER": "오른쪽 어께",
+    "RIGHT_UPPER_ARM": "오른쪽 위팔",
+    "RIGHT_LOWER_ARM": "오른쪽 아래팔",
+    "RIGHT_HAND": "오른손",
+    "RIGHT_UPPER_LEG": "오른쪽 허벅지",
+    "RIGHT_LOWER_LEG": "오른쪽 종아리",
+    "RIGHT_FOOT": "오른발",
+    "CHEST": "가슴",
+    "WAIST": "허리",
+    "HIP": "엉덩이",
+    "LEFT_SHOULDER": "오른쪽 어께",
+    "LEFT_UPPER_ARM": "왼쪽 위팔",
+    "LEFT_LOWER_ARM": "왼쪽 아래팔",
+    "LEFT_HAND": "왼손",
+    "LEFT_UPPER_LEG": "왼쪽 허벅지",
+    "LEFT_LOWER_LEG": "왼쪽 종아리",
+    "LEFT_FOOT": "왼발"
   },
   "skeleton-bone": {
     "NONE": "None",
-    "HEAD": "Head Shift",
-    "NECK": "Neck Length",
-    "TORSO": "Torso Length",
-    "CHEST": "Chest Distance",
-    "WAIST": "Waist Distance",
-    "HIP_OFFSET": "Hip Offset",
-    "HIPS_WIDTH": "Hips Width",
-    "LEGS_LENGTH": "Legs Length",
-    "KNEE_HEIGHT": "Knee Height",
-    "FOOT_LENGTH": "Foot Length",
-    "FOOT_SHIFT": "Foot Shift",
-    "SKELETON_OFFSET": "Skeleton Offset",
-    "CONTROLLER_DISTANCE_Z": "Controller Distance Z",
-    "CONTROLLER_DISTANCE_Y": "Controller Distance Y",
-    "FOREARM_LENGTH": "Forearm Distance",
-    "SHOULDERS_DISTANCE": "Shoulders Distance",
-    "SHOULDERS_WIDTH": "Shoulders Width",
-    "UPPER_ARM_LENGTH": "Upper Arm Length",
-    "ELBOW_OFFSET": "Elbow Offset"
+    "HEAD": "머리 밀림",
+    "NECK": "목 길이",
+    "TORSO": "몸통 길이",
+    "CHEST": "가슴 거리",
+    "WAIST": "허리 거리",
+    "HIP_OFFSET": "엉덩이 오프셋",
+    "HIPS_WIDTH": "엉덩이 너비",
+    "LEGS_LENGTH": "다리 길이",
+    "KNEE_HEIGHT": "무릎 높이",
+    "FOOT_LENGTH": "발 크기",
+    "FOOT_SHIFT": "발 밀림",
+    "SKELETON_OFFSET": "골격 오프셋",
+    "CONTROLLER_DISTANCE_Z": "컨트롤러 Z축 거리",
+    "CONTROLLER_DISTANCE_Y": "컨트롤러 Y축 거리",
+    "FOREARM_LENGTH": "아래팔 거리",
+    "SHOULDERS_DISTANCE": "어께 거리",
+    "SHOULDERS_WIDTH": "어깨 너비",
+    "UPPER_ARM_LENGTH": "위팔 거리",
+    "ELBOW_OFFSET": "팔꿈치 오프셋"
   },
   "reset": {
-    "reset-all": "Reset all proportions",
-    "full": "Reset",
-    "mounting": "Reset Mounting",
-    "quick": "Quick Reset"
+    "reset-all": "모든 신체 비율 리셋",
+    "full": "리셋",
+    "mounting": "마운팅 재설정",
+    "quick": "퀵 리셋"
   },
   "serial-detection": {
-    "new-device.p0": "New serial device detected!" ,
-    "new-device.p1": "Enter your wifi credentials!",
-    "new-device.p2": "Please select what you want to do with it",
-    "open-wifi": "Connect to WiFi",
-    "open-serial": "Open Serial Console",
-    "submit": "Submit!",
-    "close": "Close"
+    "new-device.p0": "새로운 시리얼 디바이스를 찾았어요!" ,
+    "new-device.p1": "WiFi 자격 증명을 입력해주세요!",
+    "new-device.p2": "원하는 작업을 선택하세요",
+    "open-wifi": "WiFi 연결",
+    "open-serial": "시리얼 콘솔 열기",
+    "submit": "저장!",
+    "close": "닫기"
   },
   "navbar": {
-    "home": "Home",
-    "body-proportions": "Body Proportions",
-    "trackers-assign": "Tracker Assignment",
-    "mounting": "Mounting Calibration",
-    "onboarding": "Setup Wizard",
-    "settings": "Settings"
+    "home": "홈",
+    "body-proportions": "신체 비율",
+    "trackers-assign": "트래커 위치",
+    "mounting": "마운팅 재설정",
+    "onboarding": "설정 마법사",
+    "settings": "설정"
   },
   "bvh": {
-    "start-recording": "Record BVH",
-    "recording": "Recording..."
+    "start-recording": "BVH 기록",
+    "recording": "기록중..."
   },
   "overlay": {
-    "is-visible-label": "Show Overlay in SteamVR",
-    "is-mirrored-label": "Display Overlay as Mirror"
+    "is-visible-label": "SteamVR에서 오버레이 표시",
+    "is-mirrored-label": "오버레이 반전"
   },
   "tracker": {
     "status": {
       "none": "No Status",
-      "busy": "Busy",
-      "error": "Error",
-      "disconnected": "Disconnected",
-      "occluded": "Occluded",
-      "ok": "Connected"
+      "busy": "바쁨",
+      "error": "오류",
+      "disconnected": "연결되지 않음",
+      "occluded": "사용할 수 없음",
+      "ok": "연결됨"
     },
     "table": {
       "column": {
-        "name": "Name",
-        "type": "Type",
-        "battery": "Battery",
+        "name": "이름",
+        "type": "타입",
+        "battery": "배터리",
         "ping": "Ping",
-        "rotation": "Rotation X/Y/Z",
-        "position": "Position X/Y/Z",
+        "rotation": "X/Y/Z 회전",
+        "position": "X/Y/Z 위치",
         "url": "URL"
       }
     },
     "rotation": {
-      "front": "Front",
-      "left": "Left",
-      "right": "Right",
-      "back": "Back" 
+      "front": "앞쪽",
+      "left": "왼쪽",
+      "right": "오른쪽",
+      "back": "뒤쪽" 
     },
     "infos": {
-      "manufacturer": "Manufacturer",
-      "display-name": "Display Name",
-      "custom-name": "Custom Name",
-      "url": "Tracker URL"
+      "manufacturer": "제조사",
+      "display-name": "표시되는 이름",
+      "custom-name": "사용자 정의 이름",
+      "url": "트래커 URL"
     },
     "settings": {
-      "back": "Go back to trackers list",
-      "title": "Tracker settings",
+      "back": "트래커 목록으로 돌아가기",
+      "title": "트래커 설정",
       "assignment-section": {
-        "title": "Assignment",
-        "description": "What part of the body the tracker is assigned to.",
-        "edit": "Edit assignment"
+        "title": "트래커 위치 지정",
+        "description": "트래커가 위치한 신체 부위",
+        "edit": "위치 수정"
       },
       "mounting-section": {
-        "title": "Mounting position",
-        "description": "Where is the tracker mounted?",
-        "edit": "Edit mounting"
+        "title": "착용 방향",
+        "description": "트래커는 어디에 착용하나요?",
+        "edit": "방향 수정"
       },
       "name-section": {
-        "title": "Tracker name",
-        "description": "Give it a cute nickname :)",
+        "title": "트래커 이름",
+        "description": "귀여운 이름을 지어주세요! >_<",
         "input-placeholder": "NightyBeast's left leg"
       }
     },
     "part-card": {
-      "no-name": "No name",
-      "unassigned": "Unassigned"
+      "no-name": "이름 없음",
+      "unassigned": "할당되지 않음"
     }
   },
   "body-assignment-menu": {
-    "title": "Where do you want this tracker to be?",
-    "description": "Choose a location where you want this tracker to be assigned. Alternatively you can choose to manage all trackers at once instead of one by one.",
-    "show-advanced-locations": "Show advanced assign locations",
-    "manage-trackers": "Manage all trackers",
-    "unassign-tracker": "Unassign tracker"
+    "title": "트래커가 어디에 있나요?",
+    "description": "이 트래커를 할당할 위치를 선택하세요. 또는, 모든 트래커를 한 번에 설정할 수도 있어요.",
+    "show-advanced-locations": "고급 할당 위치 표시",
+    "manage-trackers": "모든 트래커 설정",
+    "unassign-tracker": "할당하지 않기"
   },
   "tracker-selection-menu": {
-    "title": "Which tracker to assign to the {{bodyPart}}?",
-    "unassigned": "Unassigned Trackers",
-    "assigned": "Assigned Trackers",
-    "dont-assign": "Do not assign"
+    "title": "{{bodyPart}}에 어떤 트래커를 할당할까요?",
+    "unassigned": "할당되지 않은 트래커",
+    "assigned": "할당된 트래커",
+    "dont-assign": "할당하지 않기"
   },
   "mounting-selection-menu": {
-    "title": "Where do you want this tracker to be?",
-    "close": "Close"
+    "title": "트래커가 어디에 있나요?",
+    "close": "닫기"
   },
   "settings": {
     "sidebar": {
-      "title": "Settings",
-      "general": "General",
-      "tracker-mechanics": "Tracker mechanics",
-      "fk-settings": "FK settings",
-      "gesture-control": "Gesture control",
-      "interface": "Interface",
-      "osc-router": "OSC router",
-      "utils": "Utilities",
-      "serial": "Serial console"
+      "title": "설정",
+      "general": "일반",
+      "tracker-mechanics": "트래커 역학",
+      "fk-settings": "FK 설정",
+      "gesture-control": "제스처 제어",
+      "interface": "인터페이스",
+      "osc-router": "OSC 라우터",
+      "utils": "유틸리티",
+      "serial": "시리얼 콘솔"
     },
     "general": {
       "steamvr": {
         "title": "SteamVR",
-        "subtitle": "SteamVR trackers",
-        "description.p0": "Enable or disable specific SteamVR trackers.",
-        "description.p1": "Useful for games or apps that only support certain trackers.",
+        "subtitle": "SteamVR 트래커",
+        "description.p0": "SteamVR 트래커를 켜거나 끄세요",
+        "description.p1": "특정 트래커 구성만 허용하는 게임 또는 앱에서 유용해요.",
         "trackers": {
           "waist": "Waist",
           "chest": "Chest",
@@ -182,144 +182,144 @@
         }
       },
       "tracker-mechanics": {
-        "title": "Tracker mechanics",
-        "subtitle": "Filtering",
-        "description.p0": "Choose the filtering type for your trackers.",
-        "description.p1": "Prediction predicts movement while smoothing smoothens movement.",
+        "title": "트래커 역학",
+        "subtitle": "필터링",
+        "description.p0": "트래커의 필터링 유형을 선택하세요.",
+        "description.p1": "Prediction은 움직임을 예측하고 Smoothing은 움직임을 부드럽게 해요.",
         "filtering-type": {
-          "title": "Filtering type",
+          "title": "필터링 타입",
           "none": {
-            "label": "No filtering",
-            "description":"Use rotations as is. Will not do any filtering."
+            "label": "필터링 없음",
+            "description":"어떠한 필터링도 사용하지 않아요. 있는 그대로의 회전값을 사용해요."
           },
           "smoothing": {
             "label": "Smoothing",
-            "description":"Smooths movements but adds some latency."
+            "description":"움직임을 부드럽게 하지만 약간의 대기 시간이 추가돼요."
           },
           "prediction": {
             "label": "Prediction",
-            "description":"Reduces latency and makes movements more snappy, but may increase jitter."
+            "description":"대기 시간이 줄어들고 움직임이 더 빨라지지만 지터가 증가할 수 있어요."
           }
         },
         "amount": {
-          "label": "Amount"
+          "label": "강도"
         }
       },
       "fk-settings": {
-        "title": "FK settings",
+        "title": "FK 설정",
         "leg-tweak": {
-          "title": "Leg tweaks",
-          "description": "Floor-clip can Reduce or even eliminates clipping with the floor but may cause problems when on your knees. Skating-correction corrects for ice skating, but can decrease accuracy in certain movement patterns.",
-          "floor-clip": "Floor clip",
-          "skating-correction": "Skating correction",
-          "skating-correction-amount": "Skating correction strength"
+          "title": "다리 보정",
+          "description": "플로어 클립은 바닥과의 클리핑을 줄이거나 제거할 수 있지만 무릎을 꿇을 때 문제를 일으킬 수 있어요. 스케이팅 보정은 아이스 스케이팅을 보정하지만 특정 움직임 패턴에서 정확도를 저하시킬 수 있어요.",
+          "floor-clip": "플로어 클립",
+          "skating-correction": "스케이팅 보정",
+          "skating-correction-amount": "스케이팅 보정 강도"
         },
         "arm-fk": {
-          "title": "Arm FK",
-          "description": "Change the way the arms are tracked.",
-          "force-arms": "Force arms from HMD"
+          "title": "팔 운동학",
+          "description": "팔이 추적되는 방식을 변경할 수 있어요.",
+          "force-arms": "팔을 HMD에서만 받아오기"
         },
         "skeleton-settings": {
-          "title": "Skeleton settings",
-          "description": "Toggle skeleton settings on or off. It is recommended to leave these on.",
-          "extended-spine": "Extended spine",
-          "extended-pelvis": "Extended pelvis",
-          "extended-knees": "Extended knee"
+          "title": "골격 설정",
+          "description": "골격 설정을 설정하거나 해제해요. 이것들은 켜두는 게 좋아요.",
+          "extended-spine": "척추 확장",
+          "extended-pelvis": "골반 확장",
+          "extended-knees": "무릎 확장"
         }
       },
       "gesture-control": {
-        "title": "Gesture control",
-        "subtitle": "Double Tap quick reset",
-        "description": "Enable or disable double tap quick reset. When enabled double tapping anywhere on the highest torso tracker will activate a quick reset. Delay is the time between registering a tap and resetting.",
-        "enable": "Double tap quick reset",
-        "delay": "Delay"
+        "title": "제스처 제어",
+        "subtitle": "두번 탭해서 퀵 리셋하기",
+        "description": "활성화하면 가장 높이 있는 추적기의 아무 곳이나 두 번 탭해서 퀵 리셋을 활성화할 수 있어요. 두번 탭하는 간격은 딜레이로 조절할 수 있어요.",
+        "enable": "두번 탭해서 퀵 리셋",
+        "delay": "딜레이"
       },
       "interface": {
-        "title": "Interface",
+        "title": "인터페이스",
         "dev-mode": {
-          "title": "Developer Mode",
-          "description": "This mode can be useful if you need in-depth data or to interact with connected trackers on a more advanced level",
-          "label": "Developer Mode"
+          "title": "개발자 모드",
+          "description": "이 모드는 더 많은 데이터가 필요하거나 고급 수준에서 연결된 추적기와 상호 작용하는 경우에 유용할 수 있어요.",
+          "label": "개발자 모드"
         },
         "serial-detection": {
-          "title": "Serial device detection",
-          "description": "This option will show a pop-up every time you plug a new serial device that could be a tracker. It helps improving the setup process of a tracker",
-          "label": "Serial device detection"
+          "title": "시리얼 디바이스 감지",
+          "description": "이 옵션은 트래커일 수도 있는 새로운 시리얼 디바이스를 연결할 때마다 팝업을 표시해요. 트래커 설정 프로세스를 개선하는 데 도움이 될 거에요.",
+          "label": "시리얼 디바이스 감지"
         },
         "lang": {
-          "title": "Select language",
-          "description": "Change the default language you want to use",
-          "placeholder": "Select the language to use"
+          "title": "언어 선택",
+          "description": "사용하고 싶은 기본 언어를 선택하세요.",
+          "placeholder": "사용할 언어를 선택하세요"
         }
       }
     },
     "serial": {
-      "title": "Serial Console",
-      "description.p0": "This is a live information feed for serial communication.",
-      "description.p1": "May be useful if you need to know the firmware is acting up.",
-      "connection-lost": "Connection to serial lost, Reconnecting...",
-      "reboot": "Reboot",
-      "factory-reset": "Factory Reset",
-      "get-infos": "Get Infos",
-      "serial-select": "Select a serial port",
-      "auto-dropdown-item": "Auto"
+      "title": "시리얼 콘솔",
+      "description.p0": "이 라이브 피드에서 시리얼 디바이스와 통신할 수 있어요.",
+      "description.p1": "펌웨어가 제대로 작동하는지 알아야 할 때 유용할 거에요.",
+      "connection-lost": "시리얼 연결 끊김, 다시 연결 중...",
+      "reboot": "재부팅",
+      "factory-reset": "공장 초기화",
+      "get-infos": "정보 가져오기",
+      "serial-select": "시리얼 포트 선택",
+      "auto-dropdown-item": "자동"
     },
     "osc": {
       "router": {
-        "title": "OSC router",
-        "description.p0": "Forward OSC messages from another program.",
-        "description.p1": "Useful for using another OSC program with VRChat for example.",
+        "title": "OSC 라우터",
+        "description.p0": "다른 프로그램으로 OSC 메시지를 전달해요.",
+        "description.p1": "예를 들어 VRChat과 함께 다른 OSC 프로그램을 사용하는 데 유용할 거에요.",
         "enable": {
-          "title": "Enable",
-          "description": "Toggle the forwarding of messages",
-          "label": "Enable"
+          "title": "활성화",
+          "description": "활성화해서 메세지 전달 켜기",
+          "label": "활성화"
         },
         "network": {
-          "title": "Network ports",
-          "description.p0": "Set the ports for listening and sending data",
-          "description.p1": "These can be the same as other ports used in the SlimeVR server",
+          "title": "네트워크 포트",
+          "description.p0": "데이터 수신 및 전송을 위한 포트 설정",
+          "description.p1": "이들은 SlimeVR 서버에서 사용되는 다른 포트와 동일할 수 있어요.",
           "port-in": {
-            "label": "Port In",
-            "placeholder": "Port in (default: 9002)"
+            "label": "들어오는 포트",
+            "placeholder": "Port in (기본값: 9002)"
           },
           "port-out": {
-            "label": "Port Out",
-            "placeholder": "Port out (default: 9000)"
+            "label": "나가는 포트",
+            "placeholder": "Port out (기본값: 9000)"
           },
           "address": {
-            "title": "Network address",
-            "description": "Set the address to send out data at",
-            "placeholder": "IPV4 address"
+            "title": "네트워크 주소",
+            "description": "데이터를 보낼 주소를 설정하세요.",
+            "placeholder": "IPV4 주소"
           }
         }
       },
       "vrchat": {
-        "description.p0": "Change VRChat-specific settings to receive HMD data and send",
-        "description.p1": "trackers data for FBT (works on Quest standalone).",
+        "description.p0": "HMD 데이터 수신 및 전송을 위한 VRChat 관련 설정 변경",
+        "description.p1": "FBT용 트래커 데이터(Quest 단독에서 작동)",
         "enable": {
-          "title": "Enable",
-          "description": "Toggle the sending and receiving of data",
-          "label": "Enable"
+          "title": "활성화",
+          "description": "활성화해서 데이터 송수신 전환",
+          "label": "활성화"
         },
         "network": {
-          "title": "Network ports",
-          "description": "Set the ports for listening and sending data to VRChat",
+          "title": "네트워크 포트",
+          "description": "VRChat과 데이터를 주고받는 포트 설정",
           "port-in": {
-            "label": "Port In",
-            "placeholder": "Port in (default: 9001)"
+            "label": "들어오는 포트",
+            "placeholder": "Port in (기본값: 9001)"
           },
           "port-out": {
-            "label": "Port Out",
-            "placeholder": "Port out (default: 9000)"
+            "label": "나가는 포트",
+            "placeholder": "Port out (기본값: 9000)"
           },
           "address": {
-            "title": "Network address",
-            "description": "Choose which address to send out data to VRChat (check your wifi settings on your device)",
-            "placeholder": "VRChat ip address"
+            "title": "네트워크 주소",
+            "description": "VRChat으로 데이터를 보낼 주소를 선택하십시오(장치의 Wi-Fi 설정 확인).",
+            "placeholder": "VRChat IP 주소"
           },
           "trackers": {
-            "title": "Trackers",
-            "description": "Toggle the sending and receiving of data",
+            "title": "트래커",
+            "description": "활성화해서 데이터 송수신 전환",
             "chest": "Chest",
             "waist": "Waist",
             "knees": "Knees",
@@ -331,16 +331,16 @@
     }
   },
   "onboarding": {
-    "skip": "Skip setup",
-    "continue": "Continue",
-    "wip": "Work in progress",
+    "skip": "설정 건너뛰기",
+    "continue": "계속하기",
+    "wip": "아직 공사중이에요",
     "wifi-creds": {
       "back": "Go Back to introduction",
-      "title": "Input WiFi credentials",
-      "description.p0": "The Trackers will use these credentials to connect wirelessly",
-      "description.p1": "please use the credentials that you are currently connected to",
-      "skip": "Skip wifi settings",
-      "submit": "Submit!"
+      "title": "WiFi 자격 증명을 입력하세요",
+      "description.p0": "트래커는 이 자격 증명을 사용하여 무선으로 연결해요",
+      "description.p1": "지금 연결되어 있는 자격 증명을 사용해주세요",
+      "skip": "WiFi 설정 건너뛰기",
+      "submit": "저장!"
     },
     "reset-tutorial": {
       "back": "Go Back to Mounting calibration",
@@ -348,144 +348,144 @@
       "description": "This feature isn't done, just press continue"
     },
     "home": {
-      "title": "Welcome to SlimeVR",
+      "title": "SlimeVR에 어서오세요!",
       "description.p0": "Bringing full-body tracking",
       "description.p1": "to everyone",
-      "start": "Lets get set up!"
+      "start": "설정하러 가보죠!"
     },
     "enter-vr": {
-      "back": "Go Back to Tracker assignent",
-      "title": "Time to enter VR!",
-      "description": "Put on all your trackers and then enter VR!",
-      "ready": "I'm ready"
+      "back": "트래커 위치 지정으로 돌아가기",
+      "title": "VR에 들어갈 시간이에요!",
+      "description": "모든 트래커를 착용하고 VR에 입장하세요!",
+      "ready": "준비됐어요!"
     },
     "done": {
-      "title": "You're all set!",
-      "description": "Enjoy your full body experience",
-      "close": "Close the guide"
+      "title": "모든 설정을 마쳤어요!",
+      "description": "풀바디 트래킹을 즐기세요!",
+      "close": "마법사 닫기"
     },
     "connect-tracker": {
-      "back": "Go Back to WiFi credentials",
-      "title": "Connect trackers",
-      "description.p0": "Now onto the fun part, connecting all the trackers!",
-      "description.p1": "Simply connect all that aren't connected yet, through a USB port.",
+      "back": "WiFi 자격 증명으로 돌아가기",
+      "title": "트래커 연결",
+      "description.p0": "이제 모든 추적기를 연결하는 재미있는 부분으로 가봐요!",
+      "description.p1": "그냥 모든 트래커를 USB 포트에 연결하기만 하면 돼요",
       "issue": {
-        "serial": "I'm having trouble connecting!"
+        "serial": "연결하는 데 문제가 생겼어요!"
       },
-      "usb": "USB Tracker",
+      "usb": "USB 트래커",
       "connection-status": {
-        "connecting": "Sending wifi credentials",
-        "connected": "Connected to WiFi",
-        "error": "Unable to connect to Wifi",
-        "start-connecting": "Looking for trackers",
-        "handshake": "Connected to the Server"
+        "connecting": "WiFi 자격증명 전송중",
+        "connected": "WiFi 연결됨",
+        "error": "Wifi에 연결할 수 없음",
+        "start-connecting": "트래커 찾는 중",
+        "handshake": "서버에 연결됨"
       },
-      "connected-trackers": "{{amount}} trackers connected",
-      "next": "I connected all my trackers"
+      "connected-trackers": "트래커 {{amount}}개 연결됨",
+      "next": "모든 트래커를 잘 연결했어요"
     },
     "assign-trackers": {
-      "back": "Go Back to Wifi Credentials",
-      "title": "Assign trackers",
-      "description": "Let's choose which tracker goes where. Click on a location where you want to place a tracker",
-      "assigned": "{{assigned}} of {{trackers}} trackers assigned",
-      "advanced": "Show advanced assign locations",
-      "next": "I assigned all the trackers"
+      "back": "WiFi 자격 증명으로 돌아가기",
+      "title": "트래커 위치 지정",
+      "description": "이제, 어떤 트래커가 어디에 있는지 선택할 시간이에요. 트래커를 배치할 위치를 클릭해보세요",
+      "assigned": "{{assigned}}/{{trackers}} 트래커 할당됨",
+      "advanced": "고급 할당 위치 보기",
+      "next": "모든 트래커를 배치했어요"
     },
     "manual-mounting": {
-      "back": "Go Back to Enter VR",
-      "title": "Manual Mounting",
+      "back": "VR 입장 페이지로 돌아가기",
+      "title": "수동 마운팅",
       "description": "Click on every tracker and select which way they are mounted",
-      "auto-mounting": "Automatic mounting",
-      "next": "Next step"
+      "auto-mounting": "자동으로 마운팅 설정",
+      "next": "다음 단계"
     },
     "automatic-mounting": {
-      "back": "Go Back to Enter VR",
-      "title": "Mounting Calibration",
-      "description": "For SlimeVR trackers to work, we need to assign a mounting rotation to your trackers to align them with your physical tracker mounting.",
-      "manual-mounting": "Manually set mounting",
-      "next": "Next step",
-      "prev-step": "Previous step",
+      "back": "VR 입장 페이지로 돌아가기",
+      "title": "마운팅 재설정",
+      "description": "SlimeVR 트래커가 작동하려면, 마운팅 방향을 정해야 해요. 이 단계에서는 실제 트래커의 회전과 맞게 마운팅 방향을 정렬할 거에요.",
+      "manual-mounting": "수동으로 마운팅 설정",
+      "next": "다음 단계",
+      "prev-step": "이전 단계",
       "done": {
         "title": "Mounting rotations calibrated.",
         "description": "Your mounting calibration is complete!",
         "restart": "Return to start"
       },
       "mounting-reset": {
-        "title": "Mounting Reset",
+        "title": "마운팅 리셋",
         "step": {
-          "0": "1. Squat in a \"skiing\" pose with your legs bent, your upper body tilted forwards, and your arms bent.",
-          "1": "2. Press the \"Reset Mounting\" button and wait for 3 seconds before the trackers' mounting rotations will reset."
+          "0": "1. 다리를 구부리고 상체를 앞으로 기울이고 팔을 구부린 상태에서 \"스키\" 자세로 쪼그리고 앉으세요.",
+          "1": "2. \"마운팅 재설정\" 버튼을 누르고 추적기의 마운팅 회전이 재설정되기 전에 3초 동안 기다리세요."
         }
       },
       "preparation": {
-        "title": "Preparation",
+        "title": "준비",
         "step": {
-          "0": "1. Stand upright with your arms to your sides.",
-          "1": "2. Press the \"Reset\" button and wait for 3 seconds before the trackers will reset."
+          "0": "1. 팔을 몸에 붙이고 똑바로 서 주세요",
+          "1": "2. \"리셋\" 버튼을 누르고 트래커가 리셋될 때까지 3초 동안 기다려주세요"
         }
       },
       "put-trackers-on": {
-        "title": "Put on your trackers",
-        "description": "To calibrate mounting rotations, we're gonna use the trackers you just assigned. Put on all your trackers, you can see which are which in the figure to the right.",
-        "next": "I have all my trackers on"
+        "title": "트래커를 착용해주세요",
+        "description": "마운팅 회전을 보정하기 위해 방금 할당한 트래커를 사용할 거에요. 모든 트래커를 착용하면 오른쪽 그림에서 어떤 트래커인지 확인할 수 있어요.",
+        "next": "모든 트래커를 착용했어요"
       }
     },
     "manual-proportions": {
-      "back": "Go Back to Reset tutorial",
-      "title": "Manual Body Proportions",
+      "back": "리셋 튜토리얼로 돌아가기",
+      "title": "수동 신체 비율 설정",
       "precision": "Precision adjust",
-      "auto": "Automatic calibration"
+      "auto": "자동 신체 비율 설정"
     },
     "automatic-proportions": {
-      "back": "Go Back to Reset tutorial",
-      "title": "Measure your body",
-      "description": "For SlimeVR trackers to work, we need to know the length of your bones. This short calibration will measure it for you.",
-      "manual": "Manual calibration",
-      "prev-step": "Previous step",
+      "back": "리셋 튜토리얼로 돌아가기",
+      "title": "신체 비율을 측정해보세요",
+      "description": "SlimeVR 트래커가 작동하려면 뼈의 길이를 알아야 하는데, 이 짧은 보정을 통해 측정할 수 있어요.",
+      "manual": "수동 신체 비율 설정",
+      "prev-step": "뒤로",
       "put-trackers-on": {
-        "title": "Put on your trackers",
-        "description": "To calibrate your proportions, we're gonna use the trackers you just assigned. Put on all your trackers, you can see which are which in the figure to the right.",
-        "next": "I have all my trackers on"
+        "title": "트래커를 착용하세요",
+        "description": "비율을 조정하기 위해 방금 할당한 트래커를 사용할 거에요. 모든 트래커를 착용하면 오른쪽 그림에서 어떤 것이 있는지 알 수 있어요.",
+        "next": "트래커를 다 착용했어요"
       },
       "preparation": {
-        "title": "Preparation",
-        "description": "Place a chair directly behind you inside your play space. Be prepared to sit down during the autobone setup.",
-        "next": "I am in front of a chair"
+        "title": "준비하기",
+        "description": "여러분의 놀이 공간 안에 여러분의 바로 뒤에 의자를 놓으세요. 오토본 설정 중에 앉을 수 있도록 준비해주세요.",
+        "next": "의자 앞에 섰어요"
       },
       "start-recording": {
-        "title": "Get ready to move",
-        "description": "We're now going to record some specific poses and moves. These will be prompted in the next screen. Be ready to start when the button is pressed!",
-        "next": "Start Recording"
+        "title": "움직일 준비",
+        "description": "이제 몇 가지 특정 포즈와 동작을 기록할 거에요. 다음 화면에서 메시지가 표시되면 버튼을 눌러서 시작하세요!",
+        "next": "기록 시작하기"
       },
       "recording": {
         "title": "REC",
-        "description.p0": "Recording in progress...",
-        "description.p1": "Make the moves shown below:",
+        "description.p0": "기록하는 중...",
+        "description.p1": "아래에 표시된 동작을 따라하세요",
         "steps": {
-          "0": "Bend knees a few times.",
-          "1": "Sit on a chair then stand up.",
-          "2": "Twist upper body left, then bend right.",
-          "3": "Twist upper body right, then bend left.",
-          "4": "Wiggle around until timer ends."
+          "0": "무릎을 몇 번 구부리세요",
+          "1": "의자에 앉았다가 일어서세요.",
+          "2": "상체를 왼쪽으로 비틀고 오른쪽으로 구부리세요.",
+          "3": "상체를 오른쪽으로 비틀고 왼쪽으로 구부리세요.",
+          "4": "타이머가 종료될 때까지 이리저리 움직여 보세요."
         },
-        "processing": "Processing the result",
-        "timer": "{{time}} seconds left"
+        "processing": "결과 처리중",
+        "timer": "{{time}} 초 남음"
       },
       "verify-results": {
-        "title": "Verify results",
-        "description": "Check the results below, do they look correct?",
-        "results": "Recording results",
-        "processing": "Processing the result",
-        "redo": "Redo recording",
-        "confirm": "They're correct"
+        "title": "결과를 확인하세요",
+        "description": "아래 결과를 한번 보세요, 어때요?",
+        "results": "기록 결과",
+        "processing": "결과 처리중",
+        "redo": "다시 기록하기",
+        "confirm": "정확해요!"
       },
       "done": {
-        "title": "Body measured and saved.",
-        "description": "Your body proportions calibration is complete!"
+        "title": "몸을 측정하고 저장했어요",
+        "description": "신체 비율 보정이 완료되었어요!"
       }
     }
   },
   "home": {
-    "no-trackers": "No trackers detected or assigned"
+    "no-trackers": "감지되거나 할당된 추적기가 없어요."
   }
 }
