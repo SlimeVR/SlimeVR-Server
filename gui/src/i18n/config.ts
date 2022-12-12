@@ -3,6 +3,7 @@ import { initReactI18next } from 'react-i18next';
 import en from './en/translation.json';
 import fr from './fr/translation.json';
 import owo from './owo/translation.json';
+import ja from './ja/translation.json';
 
 export const defaultNS = 'tanslations';
 

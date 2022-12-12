@@ -58,24 +58,24 @@
     "quick": "クイックリセット"
   },
   "serial-detection": {
-    "new-device.p0": "New serial device detected!" ,
-    "new-device.p1": "Enter your wifi credentials!",
-    "new-device.p2": "Please select what you want to do with it",
-    "open-wifi": "Connect to WiFi",
-    "open-serial": "Open Serial Console",
+    "new-device.p0": "新しいシリアルデバイスを検出しました！" ,
+    "new-device.p1": "wifiの認証情報を入力してください！",
+    "new-device.p2": "何をするか選択してください",
+    "open-wifi": "WiFiに接続",
+    "open-serial": "シリアルコンソールを開く",
     "submit": "実行！",
     "close": "閉じる"
   },
   "navbar": {
     "home": "ホーム",
-    "body-proportions": "ボディ プロポーション",
-    "trackers-assign": "トラッカー 割り当て",
-    "mounting": "マウント キャリブレーション",
+    "body-proportions": "ボディ    プロポーション",
+    "trackers-assign": "トラッカー  割り当て",
+    "mounting": "マウント   キャリブレーション",
     "onboarding": "セットアップ ウィザード",
     "settings": "設定"
   },
   "bvh": {
-    "start-recording": "BVH レコーディング",
+    "start-recording": "BVH       レコーディング",
     "recording": "レコーディング中..."
   },
   "overlay": {
@@ -141,7 +141,7 @@
   "body-assignment-menu": {
     "title": "このトラッカーをどこに配置しますか？",
     "description": "このトラッカーを割り当てる場所を選択します。また、トラッカーを一つずつ管理するのではなく、すべてのトラッカーを一括して管理することもできます。",
-    "show-advanced-locations": "高度な割り当て位置の表示",
+    "show-advanced-locations": "高度な割り当て場所の表示",
     "manage-trackers": "すべてのトラッカーの管理",
     "unassign-tracker": "トラッカーの割り当て解除"
   },
@@ -207,7 +207,7 @@
         "title": "FK設定",
         "leg-tweak": {
           "title": "脚の微調整",
-          "description": "フロアクリップは、床とのクリッピングを減らす、あるいはなくすことができますが、膝をついたときに問題が発生する可能性があります。スケーティング補正は足の滑りを補正できるが、特定の動作パターンでは精度が落ちることがあります。",
+          "description": "フロアクリップは、床とのクリッピングを減らす、あるいはなくすことができますが、膝をついたときに問題が発生する可能性があります。スケーティング補正は足の滑りを補正できますが、特定の動作パターンでは精度が落ちることがあります。",
           "floor-clip": "フロアクリップ",
           "skating-correction": "スケーティング補正"
         },
@@ -306,10 +306,10 @@
     "wifi-creds": {
       "back": "戻る",
       "title": "WiFiの認証情報の入力",
-      "description.p0": "トラッカーはこれらの認証情報を使ってワイヤレスで接続します。",
+      "description.p0": "トラッカーはこれらの認証情報を使ってwifiに接続します。",
       "description.p1": "現在接続している認証情報を使用してください。",
       "skip": "wifi設定をスキップする",
-      "submit": "実行!"
+      "submit": "実行！"
     },
     "reset-tutorial": {
       "back": "マウントキャリブレーションに戻る",
@@ -336,7 +336,7 @@
     "connect-tracker": {
       "back": "WiFi認証に戻る",
       "title": "接続中のトラッカー",
-      "description.p0": "さあ、楽しい部分に移りましょう。すべてのトラッカーを接続します!",
+      "description.p0": "さあ、楽しい部分に移りましょう。すべてのトラッカーを接続します！",
       "description.p1": "まだ接続されていないトラッカーたちをUSBポートを通して接続するだけです。",
       "issue": {
         "serial": "接続に問題があります！"
@@ -357,7 +357,7 @@
       "title": "トラッカーを割り当てる",
       "description": "どのトラッカーをどこに置くか選んでみましょう。トラッカーを配置したい場所をクリックしてください。",
       "assigned": "{{assigned}} of {{trackers}} trackers assigned",
-      "advanced": "高度な割り当て位置の表示",
+      "advanced": "高度な割り当て場所の表示",
       "next": "すべてのトラッカーを割り当てました"
     },
     "manual-mounting": {
@@ -370,8 +370,8 @@
     "automatic-mounting": {
       "back": "VRの入力に戻る",
       "title": "マウントキャリブレーション",
-      "description": "SlimeVRのトラッカーを動作させるためには、物理的なトラッカーの取り付け位置と合わせるために、トラッカーの取り付け方向を割り当てる必要があります。",
-      "manual-mounting": "自動マウント",
+      "description": "SlimeVRのトラッカーを動作させるためには、物理的なトラッカーの取り付け位置と合わせるために、トラッカーの取り付け方向を合わせる必要があります。",
+      "manual-mounting": "マニュアルマウント",
       "next": "次のステップ",
       "prev-step": "前のステップ",
       "done": {
@@ -383,7 +383,7 @@
         "title": "マウントリセット",
         "step": {
           "0": "1. 足を曲げ、上体を前に倒し、腕を曲げた状態で、スキーのポーズでしゃがむ。",
-          "1": "2. マウントリセットボタンを押し、3秒待つと装着方向がリセットされます。"
+          "1": "2. リセットマウンティングボタンを押し、3秒待つと装着方向がリセットされます。"
         }
       },
       "preparation": {
@@ -409,7 +409,7 @@
       "back": "チュートリアルをリセットする",
       "title": "自分の体の測定",
       "description": "SlimeVRのトラッカーが動作するためには、あなたの骨の長さを知る必要があります。この短いキャリブレーションでそれを測定します。",
-      "manual": "手動キャリブレーション",
+      "manual": "手動調整",
       "prev-step": "前のステップ",
       "put-trackers-on": {
         "title": "トラッカーを装着する",
@@ -422,7 +422,7 @@
         "next": "椅子の前にいます"
       },
       "start-recording": {
-        "title": "移動の準備をする",
+        "title": "測定の準備をする",
         "description": "これから具体的なポーズや動きを記録します。これらは次の画面に表示されます。ボタンが押されたらすぐに始められるように準備しておいてください！",
         "next": "レコーディングスタート"
       },
@@ -455,6 +455,6 @@
     }
   },
   "home": {
-    "no-trackers": "トラッカーが検出されない、または割り当てられていない。"
+    "no-trackers": "トラッカーが検出されません。もしくは割り当てられていません。"
   }
 }
