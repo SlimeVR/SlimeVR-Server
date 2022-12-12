@@ -228,14 +228,18 @@
       },
       "gesture-control": {
         "title": "Gesture control",
-        "subtitle": "Tap to reset",
-        "description": "Allows for resets to be triggered by tapping a tracker. the tracker highest up on your torso is used for Quick Reset, the tracker highest up on your left leg is used for Reset, and the tracker highest up on your right leg is used for Mounting Reset.",
-        "numberOfTaps": "Number of taps",
+        "subtitle": "Tap based resets",
+        "description": "Allows for resets to be triggered by tapping a tracker. The tracker highest up on your torso is used for Quick Reset, the tracker highest up on your left leg is used for Reset, and the tracker highest up on your right leg is used for Mounting Reset.",
         "taps": "taps",
-        "delay": "Delay",
-        "quickResetEnabled": "Quick reset enabled",
-        "resetEnabled": "Reset enabled",
-        "mountingResetEnabled": "Mounting reset enabled"
+        "quickResetEnabled": "Enable tap to quick reset",
+        "quickResetDelay": "Quick reset delay",
+        "quickResetTaps": "Taps for quick reset",
+        "resetEnabled": "Enable tap to reset",
+        "resetDelay": "Reset delay",
+        "resetTaps": "Taps for reset",
+        "mountingResetEnabled": "Enable tap to reset mounting",
+        "mountingResetDelay": "Mounting reset delay",
+        "mountingResetTaps": "Taps for mounting reset"
       },
       "interface": {
         "title": "Interface",
