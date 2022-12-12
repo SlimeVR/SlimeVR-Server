@@ -9,7 +9,6 @@ import vi from './vi/translation.json';
 import zh from './zh/translation.json';
 import owo from './owo/translation.json';
 
-
 export const defaultNS = 'translation';
 
 export const langs = [
@@ -58,16 +57,16 @@ export const resources = {
     translation: ko,
   },
   pl: {
-    tanslations: pl,
+    translation: pl,
   },
   ptBR: {
-    tanslations: ptBR,
+    translation: ptBR,
   },
   vi: {
     translation: vi,
   },
   zh: {
-    tanslations: zh,
+    translation: zh,
   },
   owo: {
     translation: owo,

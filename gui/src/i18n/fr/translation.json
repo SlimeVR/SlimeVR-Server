@@ -178,7 +178,8 @@
           "chest": "Poitrine",
           "feet": "Pieds",
           "knees": "Genoux",
-          "elbows": "Coudes"
+          "elbows": "Coudes",
+          "hands": "Mains"
         }
       },
       "tracker-mechanics": {
