@@ -24,7 +24,7 @@ public class TapDetectionManager {
 	private int mountingResetTaps = 3;
 
 	// delay
-	private static final float NS_CONVERTER = 1000000000.0f;
+	private static final float NS_CONVERTER = 1.0e9f;
 	private float resetDelayNs = 0.20f * NS_CONVERTER;
 	private float quickResetDelayNs = 1.00f * NS_CONVERTER;
 	private float mountingResetDelayNs = 1.00f * NS_CONVERTER;

@@ -21,11 +21,12 @@ public class TapDetection {
 	private Tracker trackerToWatch = null;
 
 	// hyperparameters
+	private static final float NS_CONVERTER = 1.0e9f;
 	private static final float NEEDED_ACCEL_DELTA = 6.0f;
 	private static final float ALLOWED_BODY_ACCEL = 1.5f;
 	private static final float ALLOWED_BODY_ACCEL_SQUARED = ALLOWED_BODY_ACCEL * ALLOWED_BODY_ACCEL;
-	private static final float CLUMP_TIME_NS = 0.03f * 1000000000.0f;
-	private static final float TIME_WINDOW_NS = 0.6f * 1000000000.0f;
+	private static final float CLUMP_TIME_NS = 0.03f * NS_CONVERTER;
+	private static final float TIME_WINDOW_NS = 0.6f * NS_CONVERTER;
 
 	// state
 	private float detectionTime = -1.0f;
