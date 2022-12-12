@@ -8,7 +8,6 @@ import pl from './pl/translation.json';
 import vi from './vi/translation.json';
 import owo from './owo/translation.json';
 
-
 export const defaultNS = 'translation';
 
 export const langs = [
