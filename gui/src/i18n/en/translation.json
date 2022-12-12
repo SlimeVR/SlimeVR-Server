@@ -15,8 +15,8 @@
     "RIGHT_UPPER_ARM": "Right upper arm",
     "RIGHT_LOWER_ARM": "Right lower arm",
     "RIGHT_HAND": "Right hand",
-    "RIGHT_UPPER_LEG": "Right upper leg",
-    "RIGHT_LOWER_LEG": "Right lower leg",
+    "RIGHT_UPPER_LEG": "Right thigh",
+    "RIGHT_LOWER_LEG": "Right ankle",
     "RIGHT_FOOT": "Right foot",
     "CHEST": "Chest",
     "WAIST": "Waist",
@@ -25,8 +25,8 @@
     "LEFT_UPPER_ARM": "Left upper arm",
     "LEFT_LOWER_ARM": "Left lower arm",
     "LEFT_HAND": "Left hand",
-    "LEFT_UPPER_LEG": "Left upper leg",
-    "LEFT_LOWER_LEG": "Left lower leg",
+    "LEFT_UPPER_LEG": "Left thigh",
+    "LEFT_LOWER_LEG": "Left ankle",
     "LEFT_FOOT": "Left foot"
   },
   "skeleton-bone": {
