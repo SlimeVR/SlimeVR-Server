@@ -5,6 +5,7 @@ import dev.slimevr.config.FiltersConfig;
 import dev.slimevr.config.OSCConfig;
 import dev.slimevr.config.TapDetectionConfig;
 import dev.slimevr.filtering.TrackerFilters;
+import dev.slimevr.osc.OSCRouter;
 import dev.slimevr.osc.VRCOSCHandler;
 import dev.slimevr.platform.SteamVRBridge;
 import dev.slimevr.protocol.GenericConnection;
@@ -49,7 +50,12 @@ public record RPCSettingsHandler(RPCHandler rpcHandler, ProtocolAPI api) {
 						this.api.server.getConfigManager().getVrConfig().getFilters()
 					),
 				RPCSettingsBuilder
-					.createOSCSettings(
+					.createOSCRouterSettings(
+						fbb,
+						this.api.server.getConfigManager().getVrConfig().getOscRouter()
+					),
+				RPCSettingsBuilder
+					.createVRCOSCSettings(
 						fbb,
 						this.api.server.getConfigManager().getVrConfig().getVrcOSC()
 					),
@@ -108,29 +114,55 @@ public record RPCSettingsHandler(RPCHandler rpcHandler, ProtocolAPI api) {
 		}
 
 		if (req.vrcOsc() != null) {
-			OSCConfig vrcOSCConfig = this.api.server.getConfigManager().getVrConfig().getVrcOSC();
+			OSCConfig vrcOSCConfig = this.api.server
+				.getConfigManager()
+				.getVrConfig()
+				.getVrcOSC();
 			if (vrcOSCConfig != null) {
-				VRCOSCHandler VRCOSCHandler = this.api.server.getVRCOSCHandler();
+				VRCOSCHandler VRCOSCHandler = this.api.server.getVrcOSCHandler();
+				var osc = req.vrcOsc().oscSettings();
 				var trackers = req.vrcOsc().trackers();
 
-				vrcOSCConfig.setEnabled(req.vrcOsc().enabled());
-				vrcOSCConfig.setPortIn(req.vrcOsc().portIn());
-				vrcOSCConfig.setPortOut(req.vrcOsc().portOut());
-				vrcOSCConfig.setAddress(req.vrcOsc().address());
-				vrcOSCConfig.setOSCTrackerRole(TrackerRole.HEAD, trackers.head());
-				vrcOSCConfig.setOSCTrackerRole(TrackerRole.CHEST, trackers.chest());
-				vrcOSCConfig.setOSCTrackerRole(TrackerRole.WAIST, trackers.waist());
-				vrcOSCConfig.setOSCTrackerRole(TrackerRole.LEFT_KNEE, trackers.knees());
-				vrcOSCConfig.setOSCTrackerRole(TrackerRole.RIGHT_KNEE, trackers.knees());
-				vrcOSCConfig.setOSCTrackerRole(TrackerRole.LEFT_FOOT, trackers.feet());
-				vrcOSCConfig.setOSCTrackerRole(TrackerRole.RIGHT_FOOT, trackers.feet());
-				vrcOSCConfig.setOSCTrackerRole(TrackerRole.LEFT_ELBOW, trackers.elbows());
-				vrcOSCConfig.setOSCTrackerRole(TrackerRole.RIGHT_ELBOW, trackers.elbows());
-				vrcOSCConfig.setOSCTrackerRole(TrackerRole.LEFT_HAND, trackers.hands());
-				vrcOSCConfig.setOSCTrackerRole(TrackerRole.RIGHT_HAND, trackers.hands());
+				if (osc != null) {
+					vrcOSCConfig.setEnabled(osc.enabled());
+					vrcOSCConfig.setPortIn(osc.portIn());
+					vrcOSCConfig.setPortOut(osc.portOut());
+					vrcOSCConfig.setAddress(osc.address());
+				}
+				if (trackers != null) {
+					vrcOSCConfig.setOSCTrackerRole(TrackerRole.HEAD, trackers.head());
+					vrcOSCConfig.setOSCTrackerRole(TrackerRole.CHEST, trackers.chest());
+					vrcOSCConfig.setOSCTrackerRole(TrackerRole.WAIST, trackers.waist());
+					vrcOSCConfig.setOSCTrackerRole(TrackerRole.LEFT_KNEE, trackers.knees());
+					vrcOSCConfig.setOSCTrackerRole(TrackerRole.RIGHT_KNEE, trackers.knees());
+					vrcOSCConfig.setOSCTrackerRole(TrackerRole.LEFT_FOOT, trackers.feet());
+					vrcOSCConfig.setOSCTrackerRole(TrackerRole.RIGHT_FOOT, trackers.feet());
+					vrcOSCConfig.setOSCTrackerRole(TrackerRole.LEFT_ELBOW, trackers.elbows());
+					vrcOSCConfig.setOSCTrackerRole(TrackerRole.RIGHT_ELBOW, trackers.elbows());
+					vrcOSCConfig.setOSCTrackerRole(TrackerRole.LEFT_HAND, trackers.hands());
+					vrcOSCConfig.setOSCTrackerRole(TrackerRole.RIGHT_HAND, trackers.hands());
+				}
 
+				VRCOSCHandler.refreshSettings(true);
+			}
+		}
 
-				VRCOSCHandler.refreshSettings();
+		if (req.oscRouter() != null) {
+			OSCConfig oscRouterConfig = this.api.server
+				.getConfigManager()
+				.getVrConfig()
+				.getOscRouter();
+			if (oscRouterConfig != null) {
+				OSCRouter oscRouter = this.api.server.getOSCRouter();
+				var osc = req.oscRouter().oscSettings();
+				if (osc != null) {
+					oscRouterConfig.setEnabled(osc.enabled());
+					oscRouterConfig.setPortIn(osc.portIn());
+					oscRouterConfig.setPortOut(osc.portOut());
+					oscRouterConfig.setAddress(osc.address());
+				}
+
+				oscRouter.refreshSettings(true);
 			}
 		}
 

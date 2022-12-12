@@ -7,6 +7,7 @@ import com.github.jonpeterson.jackson.module.versioning.JsonVersionedModel;
 import dev.slimevr.config.serializers.BridgeConfigMapDeserializer;
 import dev.slimevr.config.serializers.TrackerConfigMapDeserializer;
 import dev.slimevr.vr.trackers.Tracker;
+import dev.slimevr.vr.trackers.TrackerRole;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -20,6 +21,8 @@ public class VRConfig {
 	private final WindowConfig window = new WindowConfig();
 
 	private final FiltersConfig filters = new FiltersConfig();
+
+	private final OSCConfig oscRouter = new OSCConfig();
 
 	private final OSCConfig vrcOSC = new OSCConfig();
 
@@ -43,12 +46,43 @@ public class VRConfig {
 
 	private final OverlayConfig overlay = new OverlayConfig();
 
+	public VRConfig() {
+		// Initialize default settings for OSC Router
+		oscRouter.setPortIn(9002);
+		oscRouter.setPortOut(9000);
+
+		// Initialize default settings for VRC OSC
+		vrcOSC.setPortIn(9001);
+		vrcOSC.setPortOut(9000);
+		// Initialize default tracker role settings
+		vrcOSC
+			.setOSCTrackerRole(
+				TrackerRole.WAIST,
+				vrcOSC.getOSCTrackerRole(TrackerRole.WAIST, true)
+			);
+		vrcOSC
+			.setOSCTrackerRole(
+				TrackerRole.LEFT_FOOT,
+				vrcOSC.getOSCTrackerRole(TrackerRole.WAIST, true)
+			);
+		vrcOSC
+			.setOSCTrackerRole(
+				TrackerRole.RIGHT_FOOT,
+				vrcOSC.getOSCTrackerRole(TrackerRole.WAIST, true)
+			);
+	}
+
+
 	public WindowConfig getWindow() {
 		return window;
 	}
 
 	public FiltersConfig getFilters() {
 		return filters;
+	}
+
+	public OSCConfig getOscRouter() {
+		return oscRouter;
 	}
 
 	public OSCConfig getVrcOSC() {

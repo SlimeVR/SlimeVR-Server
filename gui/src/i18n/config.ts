@@ -2,9 +2,14 @@ import i18next from 'i18next';
 import { initReactI18next } from 'react-i18next';
 import en from './en/translation.json';
 import fr from './fr/translation.json';
+import ko from './ko/translation.json';
+import pl from './pl/translation.json';
+import ptBR from './pt-BR/translation.json';
+import vi from './vi/translation.json';
+import zh from './zh/translation.json';
 import owo from './owo/translation.json';
 
-export const defaultNS = 'tanslations';
+export const defaultNS = 'translation';
 
 export const langs = [
   {
@@ -16,6 +21,26 @@ export const langs = [
     key: 'fr',
   },
   {
+    name: '🇰🇷 한국어',
+    key: 'ko',
+  },
+  {
+    name: 'Polski',
+    key: 'pl',
+  },
+  {
+    name: '🇧🇷 Português Brasileiro',
+    key: 'ptBR',
+  },
+  {
+    name: 'Tiếng Việt',
+    key: 'vi',
+  },
+  {
+    name: '🇨🇳 简体中文',
+    key: 'zh',
+  },
+  {
     name: '🥺 Engwish~ OwO',
     key: 'owo',
   },
@@ -23,13 +48,28 @@ export const langs = [
 
 export const resources = {
   en: {
-    tanslations: en,
+    translation: en,
   },
   fr: {
-    tanslations: fr,
+    translation: fr,
+  },
+  ko: {
+    translation: ko,
+  },
+  pl: {
+    translation: pl,
+  },
+  ptBR: {
+    translation: ptBR,
+  },
+  vi: {
+    translation: vi,
+  },
+  zh: {
+    translation: zh,
   },
   owo: {
-    tanslations: owo,
+    translation: owo,
   },
 };
 

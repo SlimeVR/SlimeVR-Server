@@ -316,7 +316,7 @@ export function GeneralSettings() {
               outlined
               control={control}
               name="trackers.hands"
-              label="Hands"
+              label={t('settings.general.steamvr.trackers.hands')}
             />
           </div>
         </>

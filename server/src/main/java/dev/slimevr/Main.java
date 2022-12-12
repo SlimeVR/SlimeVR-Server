@@ -13,7 +13,7 @@ import java.net.ServerSocket;
 
 public class Main {
 
-	public static String VERSION = "0.5.0";
+	public static String VERSION = "0.5.1";
 
 	public static VRServer vrServer;
 
