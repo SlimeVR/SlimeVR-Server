@@ -178,7 +178,8 @@
           "chest": "Chest",
           "feet": "Feet",
           "knees": "Knees",
-          "elbows": "Elbows"
+          "elbows": "Elbows",
+          "hands": "Hands"
         }
       },
       "tracker-mechanics": {
