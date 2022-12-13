@@ -6,11 +6,13 @@ import { ArrowLeftIcon, ArrowRightIcon } from './icon/ArrowIcons';
 export function ArrowLink({
   to,
   children,
+  state,
   direction = 'left',
   variant = 'flat',
 }: {
   to: string;
   children: ReactNode;
+  state?: { SerialPort?: string };
   direction?: 'left' | 'right';
   variant?: 'flat' | 'boxed' | 'boxed-2';
 }) {
@@ -31,7 +33,7 @@ export function ArrowLink({
   }, [variant]);
 
   return (
-    <NavLink to={to} className={classes}>
+    <NavLink to={to} state={state} className={classes}>
       {direction === 'left' && (
         <div className="flex flex-col justify-center">
           <ArrowLeftIcon></ArrowLeftIcon>
