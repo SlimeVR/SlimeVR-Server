@@ -80,7 +80,7 @@
   },
   "overlay": {
     "is-visible-label": "Mostra Overlay in SteamVR",
-    "is-mirrored-label": "Mostra Overlay speculare"
+    "is-mirrored-label": "Includi uno specchio nel Overlay"
   },
   "tracker": {
     "status": {
