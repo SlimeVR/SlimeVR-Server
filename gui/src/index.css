@@ -4,7 +4,7 @@
 
 body {
   font-variant-numeric: tabular-nums;
-  font-family: 'poppins', sans-serif;
+  font-family: "Twemoji Country Flags", 'poppins', sans-serif;
   height: 100vh;
   width: 100vw;
   user-select: none;
@@ -17,10 +17,6 @@ body {
     U+E006C, U+E006E, U+E0073-E0074, U+E0077, U+E007F;
   src: url('/fonts/TwemojiCountryFlags.woff2') format('woff2');
   font-display: swap;
-}
-
-.win_flags {
-  font-family: "Twemoji Country Flags", 'poppins', sans-serif;
 }
 
 html {

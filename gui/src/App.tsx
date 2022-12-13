@@ -38,7 +38,6 @@ import { TopBar } from './components/TopBar';
 import { TrackerSettingsPage } from './components/tracker/TrackerSettings';
 import { useConfig } from './hooks/config';
 import { OSCRouterSettings } from './components/settings/pages/OSCRouterSettings';
-import classNames from 'classnames';
 
 function Layout() {
   const { loading } = useConfig();
@@ -153,7 +152,6 @@ function App() {
     };
   }, []);
 
-  const winClass = !/windows/i.test(navigator.userAgent) ? 'win_flags' : '';
   return (
     <Router>
       <ConfigContextProvider>
@@ -161,7 +159,7 @@ function App() {
           <AppContextProvider>
             <OnboardingContextProvider>
               <div className="h-full w-full text-standard bg-background-80 text-background-10">
-                <div className={classNames('flex-col', 'h-full', winClass)}>
+                <div className="flex-col h-full">
                   {!websocketAPI.isConnected && (
                     <>
                       <TopBar></TopBar>
