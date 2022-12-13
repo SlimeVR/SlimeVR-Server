@@ -119,7 +119,7 @@
       "title": "Impostazioni dispositivo",
       "assignment-section": {
         "title": "Assegnazione",
-        "description": "Definisce a che pasrte del corpo é il dispositivo assegnato.",
+        "description": "Definisce a che paste del corpo é assegnato il dispositivo.",
         "edit": "Cambia assegnazione"
       },
       "mounting-section": {
@@ -210,37 +210,37 @@
         "title": "Impostazioni FK",
         "leg-tweak": {
           "title": "Impostazioni Gambe",
-          "description": "Floor-clip can Reduce or even eliminates clipping with the floor but may cause problems when on your knees. Skating-correction corrects for ice skating, but can decrease accuracy in certain movement patterns.",
-          "floor-clip": "Floor clip",
-          "skating-correction": "Skating correction",
-          "skating-correction-amount": "Skating correction strength"
+          "description": "\"Compenetrazione pavimento\" puó ridurre o anche eliminare completamente la compenetrazione con il pavimento, ma puó causare problemi quando in ginocchio. \"Correzione pattinaggio\" corregge l'effetto che fa sembrare che pattini sul ghiaccio, ma poú peggiorare la precisione di certi movimenti.",
+          "floor-clip": "Compenetrazione pavimento",
+          "skating-correction": "Correzione pattinaggio",
+          "skating-correction-amount": "Forza fattore di correzione pattinaggio"
         },
         "arm-fk": {
           "title": "FK Braccia",
-          "description": "Change the way the arms are tracked.",
-          "force-arms": "Force arms from HMD"
+          "description": "Cambia la modalitá di tracciamento delle braccia.",
+          "force-arms": "Forza il calcolo della posizione delle braccia a utilizzare il HMD"
         },
         "skeleton-settings": {
           "title": "Impostazioni scheletro",
-          "description": "Toggle skeleton settings on or off. It is recommended to leave these on.",
-          "extended-spine": "Extended spine",
-          "extended-pelvis": "Extended pelvis",
-          "extended-knees": "Extended knee"
+          "description": "Apilita o disabilita le impostazioni dello scheletro. É raccomandato lasciare queste impostazioni attive.",
+          "extended-spine": "Estensione colonna vertebrale",
+          "extended-pelvis": "Estensione bacino",
+          "extended-knees": "Estensione ginocchia"
         }
       },
       "gesture-control": {
-        "title": "Gesture control",
-        "subtitle": "Double Tap quick reset",
-        "description": "Enable or disable double tap quick reset. When enabled double tapping anywhere on the highest torso tracker will activate a quick reset. Delay is the time between registering a tap and resetting.",
-        "enable": "Double tap quick reset",
-        "delay": "Delay"
+        "title": "Controllo dei gesti",
+        "subtitle": "Reset veloce con il doppio tocco",
+        "description": "Abilita o disabilitá il reset veloce con il doppio tocco. Quando attivato, un doppio tocco su una qualsiasi parte del dispositivo posizionato piú in altro lungo il torso abiliterá il reset veloce. \"Rirado\" é il ritado dal momento in cui il gesto é eseguito e il reset.",
+        "enable": "Reset veloce con il doppio tocco",
+        "delay": "Ritardo"
       },
       "interface": {
-        "title": "Interface",
+        "title": "Interfaccia",
         "dev-mode": {
-          "title": "Developer Mode",
-          "description": "This mode can be useful if you need in-depth data or to interact with connected trackers on a more advanced level",
-          "label": "Developer Mode"
+          "title": "Modalitá sviluppatore",
+          "description": "Questa modalita é utile se hai bisogno di dati approifonditio o devi interagire in maniera piú avanzata con i dispositivi connessi.",
+          "label": "Modalitá sviluppatore"
         },
         "serial-detection": {
           "title": "Serial device detection",
