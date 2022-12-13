@@ -143,7 +143,7 @@
     "description": "Wählen Sie die Position aus, an dem Sie diesen Tracker befestigt haben. Alternativ können Sie auch alle Tracker auf einmal verwalten statt einzeln.",
     "show-advanced-locations": "Zeige erweiterte Tracker-Positionen",
     "manage-trackers": "Verwalte alle Tracker",
-    "unassign-tracker": "Zugewiesene Position des Trackers aufheben"
+    "unassign-tracker": "Zuweisung des Trackers aufheben"
   },
   "tracker-selection-menu": {
     "title": "Welcher Tracker soll dem {{bodyPart}} zugewiesen werden?",
