@@ -4,7 +4,7 @@
     "connection-lost": "Connessione con il server persa. Tentativo di riconnessione in corso..."
   },
   "tips": {
-    "find-tracker": "Non sei sicur- quale tracker é quale? Agitalo e l'oggetto corrispondente sará evidenziato.",
+    "find-tracker": "Non sei sicur* quale tracker è quale? Agitalo e l'oggetto corrispondente sarà evidenziato.",
     "do-not-move-heels": "Assicurati di non muovere i tuoi talloni durante la registrazione!"
   },
   "body-part": {
@@ -27,7 +27,7 @@
     "LEFT_HAND": "Mano sinistra",
     "LEFT_UPPER_LEG": "Coscia sinistra",
     "LEFT_LOWER_LEG": "Caviglia sinistra",
-    "LEFT_FOOT": "Piede sisnistro"
+    "LEFT_FOOT": "Piede sinistro"
   },
   "skeleton-bone": {
     "NONE": "Non assegnato",
@@ -45,7 +45,7 @@
     "SKELETON_OFFSET": "Compensazione scheletro",
     "CONTROLLER_DISTANCE_Z": "Distanza Z Controller",
     "CONTROLLER_DISTANCE_Y": "Distanza Y Controller",
-    "FOREARM_LENGTH": "Distanza Avambraccia",
+    "FOREARM_LENGTH": "Distanza Avambracci",
     "SHOULDERS_DISTANCE": "Distanza Spalle",
     "SHOULDERS_WIDTH": "Larghezza Spalle",
     "UPPER_ARM_LENGTH": "Lunghezza Braccia",
@@ -59,7 +59,7 @@
   },
   "serial-detection": {
     "new-device.p0": "Nuovo dispositivo seriale rilevato!" ,
-    "new-device.p1": "Iserisci le tue credenziali WiFi!",
+    "new-device.p1": "Inserisci le tue credenziali WiFi!",
     "new-device.p2": "Seleziona come utilizzare il tracker, per piacere",
     "open-wifi": "Connetti al WiFi",
     "open-serial": "Apri la Serial Console",
@@ -93,7 +93,7 @@
     },
     "table": {
       "column": {
-        "name": "Nope",
+        "name": "Nome",
         "type": "Tipologia",
         "battery": "Batteria",
         "ping": "Ping",
@@ -119,12 +119,12 @@
       "title": "Impostazioni del tracker",
       "assignment-section": {
         "title": "Assegnazione",
-        "description": "Definisce a che paste del corpo é assegnato il tracker.",
+        "description": "Definisce a che paste del corpo è assegnato il tracker.",
         "edit": "Cambia assegnazione"
       },
       "mounting-section": {
         "title": "Posizioni",
-        "description": "Dove é posizionato il tracker?",
+        "description": "Dove è posizionato il tracker?",
         "edit": "Cambia posizioni"
       },
       "name-section": {
@@ -139,7 +139,7 @@
     }
   },
   "body-assignment-menu": {
-    "title": "Con che poarte del corpo vuoi utilizzare il tracker?",
+    "title": "Con che parte del corpo vuoi utilizzare il tracker?",
     "description": "Scegli una parte del corpo a cui assegnare questo tracker. Alternativamente puoi scegliere di gestire tutti i tracker in una schermata unica invece che singolarmente.",
     "show-advanced-locations": "Mostra impostazioni avanzate di Assegnazione",
     "manage-trackers": "Gestisci tutti i tracker",
@@ -148,11 +148,11 @@
   "tracker-selection-menu": {
     "title": "Assegna il tracker a: {{bodyPart}}?",
     "unassigned": "Tracker non assegnato",
-    "assigned": "Dispositvo assegnato",
+    "assigned": "Dispositivo assegnato",
     "dont-assign": "Non assegnare"
   },
   "mounting-selection-menu": {
-    "title": "Come é posizionato il tracker?",
+    "title": "Come è posizionato il tracker?",
     "close": "Chiudi"
   },
   "settings": {
@@ -186,43 +186,43 @@
         "title": "Comportamento del tracker",
         "subtitle": "Filtro movimenti",
         "description.p0": "Scegli la tipologia di filtraggio movimenti per il tuo tracker.",
-        "description.p1": "Predizione anticipa i movimenti, mentre Attenuazione attenua muovimenti eccessivi.",
+        "description.p1": "Predizione anticipa i movimenti, mentre Attenuazione attenua movimenti eccessivi.",
         "filtering-type": {
-          "title": "Filtering type",
+          "title": "Tipologia di filtraggio",
           "none": {
-            "label": "No filtering",
-            "description":"Use rotations as is. Will not do any filtering."
+            "label": "Non usare alcun filtraggio",
+            "description": "Usa le rotazioni così come sono. Non eseguirà alcun filtro."
           },
           "smoothing": {
             "label": "Attenuazione",
             "description":"Attenua movimenti eccessivi ma aggiunge ritardo."
           },
           "prediction": {
-            "label": "Predizionme",
-            "description":"Riduce ritardo e rende movimenti piú istantanei, ma puó introdurre tremolio."
+            "label": "Predizione",
+            "description":"Riduce ritardo e rende movimenti più istantanei, ma può introdurre tremolio."
           }
         },
         "amount": {
-          "label": "Quantitá"
+          "label": "Quantità"
         }
       },
       "fk-settings": {
         "title": "Impostazioni FK",
         "leg-tweak": {
           "title": "Impostazioni Gambe",
-          "description": "\"Compenetrazione pavimento\" puó ridurre o anche eliminare completamente la compenetrazione con il pavimento, ma puó causare problemi quando in ginocchio. \"Correzione pattinaggio\" corregge l'effetto che fa sembrare che pattini sul ghiaccio, ma poú peggiorare la precisione di certi movimenti.",
+          "description": "\"Compenetrazione pavimento\" può ridurre o anche eliminare completamente la compenetrazione con il pavimento, ma può causare problemi quando in ginocchio. \"Correzione pattinaggio\" corregge l'effetto che fa sembrare che pattini sul ghiaccio, ma può peggiorare la precisione di certi movimenti.",
           "floor-clip": "Compenetrazione pavimento",
           "skating-correction": "Correzione pattinaggio",
           "skating-correction-amount": "Forza fattore di correzione pattinaggio"
         },
         "arm-fk": {
           "title": "FK Braccia",
-          "description": "Cambia la modalitá di tracciamento delle braccia.",
+          "description": "Cambia la modalità di tracciamento delle braccia.",
           "force-arms": "Forza il calcolo della posizione delle braccia a utilizzare il HMD"
         },
         "skeleton-settings": {
           "title": "Impostazioni scheletro",
-          "description": "Apilita o disabilita le impostazioni dello scheletro. É raccomandato lasciare queste impostazioni attive.",
+          "description": "Abilita o disabilita le impostazioni dello scheletro. É raccomandato lasciare queste impostazioni attive.",
           "extended-spine": "Estensione colonna vertebrale",
           "extended-pelvis": "Estensione bacino",
           "extended-knees": "Estensione ginocchia"
@@ -231,16 +231,16 @@
       "gesture-control": {
         "title": "Controllo dei gesti",
         "subtitle": "Reset veloce con il doppio tocco",
-        "description": "Abilita o disabilitá il reset veloce con il doppio tocco. Quando attivato, un doppio tocco su una qualsiasi parte del tracker posizionato piú in altro lungo il torso abiliterá il reset veloce. \"Rirado\" é il ritado dal momento in cui il gesto é eseguito e il reset.",
+        "description": "Abilita o disabilita il reset veloce con il doppio tocco. Quando attivato, un doppio tocco su una qualsiasi parte del tracker posizionato più in altro lungo il torso abiliterà il reset veloce. \"Ritardo\" è il ritardo dal momento in cui il gesto è eseguito e il Reset.",
         "enable": "Reset veloce con il doppio tocco",
         "delay": "Ritardo"
       },
       "interface": {
         "title": "Interfaccia",
         "dev-mode": {
-          "title": "Modalitá sviluppatore",
-          "description": "Questa modalita é utile se hai bisogno di dati approifonditio o devi interagire in maniera piú avanzata con i tracker connessi.",
-          "label": "Modalitá sviluppatore"
+          "title": "Modalità sviluppatore",
+          "description": "Questa modalità è utile se hai bisogno di dati approfonditi o devi interagire in maniera più avanzata con i tracker connessi.",
+          "label": "Modalità sviluppatore"
         },
         "serial-detection": {
           "title": "Rilevazione nuovi dispositivi seriali",
@@ -257,8 +257,8 @@
     "serial": {
       "title": "Serial Console",
       "description.p0": "Questo è un feed di informazioni in tempo reale per la comunicazione seriale.",
-      "description.p1": "Puó essere utile se ti serve capire se il firmware sta avendo problemi.",
-      "connection-lost": "Connezione seriale persa. Riconnessione in corso...",
+      "description.p1": "Può essere utile se ti serve capire se il firmware sta avendo problemi.",
+      "connection-lost": "Connessione seriale persa. Riconnessione in corso...",
       "reboot": "Riavvia",
       "factory-reset": "Ripristino delle impostazioni di fabbrica",
       "get-infos": "Ottieni informazioni",
@@ -345,20 +345,20 @@
     },
     "reset-tutorial": {
       "back": "Torna alla calibrazione della posizione",
-      "title": "Riplistina tutorial",
-      "description": "Questa funzionalitá non é completa, premi continua"
+      "title": "Tutorial di ripristino",
+      "description": "Questa funzionalità non è completa, premi continua"
     },
     "home": {
-      "title": "Benvenut- a SlimeVR",
-      "description.p0": "Protiamo full-body tracking",
-      "description.p1": "a tutti",
+      "title": "Benvenuti a SlimeVR",
+      "description.p0": "Portiamo full-body tracking",
+      "description.p1": "a tutt*",
       "start": "Prepariamoci!"
     },
     "enter-vr": {
       "back": "Torna all'assegnazione dei tracker",
       "title": "È ora di entrare in VR!",
       "description": "Indossa tutti i tuoi tracker e entra in VR!",
-      "ready": "Sono pront-!"
+      "ready": "Sono pront*!"
     },
     "done": {
       "title": "È tutto pronto!",
@@ -421,7 +421,7 @@
       "preparation": {
         "title": "Preparazione",
         "step": {
-          "0": "1. Stai in piedi dritt- con le braccia lungo i fianchi.",
+          "0": "1. Stai in piedi dritt* con le braccia lungo i fianchi.",
           "1": "2. Premi il pulsante \"Reset\" e attendi 3 secondi prima che i tracker vengano ripristinati."
         }
       },
@@ -450,7 +450,7 @@
       },
       "preparation": {
         "title": "Preparazione",
-        "description": "Posiziona una sedia direttamente dietro di te all'interno dela tua area di gioco. Ti verrá richiesto di sederti durante certi passaggi della calibrazione delle proporzioni.",
+        "description": "Posiziona una sedia direttamente dietro di te all'interno della tua area di gioco. Ti verrà richiesto di sederti durante certi passaggi della calibrazione delle proporzioni.",
         "next": "Sono davanti a una sedia"
       },
       "start-recording": {
