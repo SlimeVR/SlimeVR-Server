@@ -22,6 +22,10 @@ export const langs = [
     key: 'fr',
   },
   {
+    name: '🇮🇹 Italiano',
+    key: 'it',
+  },
+  {
     name: '🇰🇷 한국어',
     key: 'ko',
   },
@@ -45,10 +49,6 @@ export const langs = [
     name: '🥺 Engwish~ OwO',
     key: 'owo',
   },
-  {
-    name: '🇮🇹 Italiano',
-    key: 'it',
-  },
 ];
 
 export const resources = {
@@ -57,6 +57,9 @@ export const resources = {
   },
   fr: {
     translation: fr,
+  },
+  it: {
+    translation: it,
   },
   ko: {
     translation: ko,
@@ -75,9 +78,6 @@ export const resources = {
   },
   owo: {
     translation: owo,
-  },
-  it: {
-    translation: it,
   },
 };
 

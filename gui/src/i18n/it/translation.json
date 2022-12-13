@@ -9,7 +9,7 @@
   },
   "body-part": {
     "NONE": "Non assegnato",
-    "HEAD": "Head",
+    "HEAD": "Testa",
     "NECK": "Collo",
     "RIGHT_SHOULDER": "Spalla destra",
     "RIGHT_UPPER_ARM": "Braccio destro",
@@ -30,7 +30,7 @@
     "LEFT_FOOT": "Piede sisnistro"
   },
   "skeleton-bone": {
-    "NONE": "Niente",
+    "NONE": "Non assegnato",
     "HEAD": "Correzione Testa",
     "NECK": "Lunghezza Collo",
     "TORSO": "Torso Lunghezza",
@@ -60,133 +60,133 @@
   "serial-detection": {
     "new-device.p0": "Nuovo dispositivo rilevato!" ,
     "new-device.p1": "Iserisci le tue credenziali WiFi!",
-    "new-device.p2": "Please select what you want to do with it",
-    "open-wifi": "Connect to WiFi",
-    "open-serial": "Open Serial Console",
-    "submit": "Submit!",
-    "close": "Close"
+    "new-device.p2": "Seleziona come utilizzare il dispositivo, per piacere",
+    "open-wifi": "Connetti al WiFi",
+    "open-serial": "Apri la Serial Console",
+    "submit": "Conferma!",
+    "close": "Chiudi"
   },
   "navbar": {
     "home": "Home",
-    "body-proportions": "Body Proportions",
-    "trackers-assign": "Tracker Assignment",
-    "mounting": "Mounting Calibration",
-    "onboarding": "Setup Wizard",
-    "settings": "Settings"
+    "body-proportions": "Proportioni Corpo",
+    "trackers-assign": "Assegnazione dei dispositivi",
+    "mounting": "Calibratione Posizioni",
+    "onboarding": "Installazione guidata",
+    "settings": "Impostazioni"
   },
   "bvh": {
-    "start-recording": "Record BVH",
-    "recording": "Recording..."
+    "start-recording": "Registra BVH",
+    "recording": "Registrazione in corso..."
   },
   "overlay": {
-    "is-visible-label": "Show Overlay in SteamVR",
-    "is-mirrored-label": "Display Overlay as Mirror"
+    "is-visible-label": "Mostra Overlay in SteamVR",
+    "is-mirrored-label": "Mostra Overlay speculare"
   },
   "tracker": {
     "status": {
-      "none": "No Status",
-      "busy": "Busy",
-      "error": "Error",
-      "disconnected": "Disconnected",
-      "occluded": "Occluded",
-      "ok": "Connected"
+      "none": "Nessuno Stato",
+      "busy": "Occupato",
+      "error": "Errore",
+      "disconnected": "Disconnesso",
+      "occluded": "Ostruito",
+      "ok": "Connesso"
     },
     "table": {
       "column": {
-        "name": "Name",
-        "type": "Type",
-        "battery": "Battery",
+        "name": "Nope",
+        "type": "Tipologia",
+        "battery": "Batteria",
         "ping": "Ping",
-        "rotation": "Rotation X/Y/Z",
-        "position": "Position X/Y/Z",
+        "rotation": "Rotazione X/Y/Z",
+        "position": "Rotazione X/Y/Z",
         "url": "URL"
       }
     },
     "rotation": {
-      "front": "Front",
-      "left": "Left",
-      "right": "Right",
-      "back": "Back" 
+      "front": "Davanti",
+      "left": "Sinistra",
+      "right": "Destra",
+      "back": "Dietro" 
     },
     "infos": {
-      "manufacturer": "Manufacturer",
-      "display-name": "Display Name",
-      "custom-name": "Custom Name",
-      "url": "Tracker URL"
+      "manufacturer": "Produttore",
+      "display-name": "Nome da visualizzare",
+      "custom-name": "Nome Personalizzato",
+      "url": "URL Dispositivo"
     },
     "settings": {
-      "back": "Go back to trackers list",
-      "title": "Tracker settings",
+      "back": "Torna alla lista di dispositivi",
+      "title": "Impostazioni dispositivo",
       "assignment-section": {
-        "title": "Assignment",
-        "description": "What part of the body the tracker is assigned to.",
-        "edit": "Edit assignment"
+        "title": "Assegnazione",
+        "description": "Definisce a che pasrte del corpo é il dispositivo assegnato.",
+        "edit": "Cambia assegnazione"
       },
       "mounting-section": {
-        "title": "Mounting position",
-        "description": "Where is the tracker mounted?",
-        "edit": "Edit mounting"
+        "title": "Posizioni",
+        "description": "Dove é posizionato il dispositivo?",
+        "edit": "Cambia posizioni"
       },
       "name-section": {
-        "title": "Tracker name",
-        "description": "Give it a cute nickname :)",
-        "input-placeholder": "NightyBeast's left leg"
+        "title": "Nome del dispositivo",
+        "description": "Scegli un nomignolo carino :)",
+        "input-placeholder": "Gamba destra di Namakeingo"
       }
     },
     "part-card": {
-      "no-name": "No name",
-      "unassigned": "Unassigned"
+      "no-name": "Nessun nome",
+      "unassigned": "Non assegnato"
     }
   },
   "body-assignment-menu": {
-    "title": "Where do you want this tracker to be?",
-    "description": "Choose a location where you want this tracker to be assigned. Alternatively you can choose to manage all trackers at once instead of one by one.",
-    "show-advanced-locations": "Show advanced assign locations",
-    "manage-trackers": "Manage all trackers",
-    "unassign-tracker": "Unassign tracker"
+    "title": "Con che poarte del corpo vuoi utilizzare il dispositivo?",
+    "description": "Scegli una parte del corpo a cui assegnare questo dispositivo. Alternativamente puoi scegliere di gestire tutti i dispositivi in una schermata unica invece che singolarmente.",
+    "show-advanced-locations": "Mostra impostazioni avanzate di Assegnazione",
+    "manage-trackers": "Gestisci tutti i dispositivi",
+    "unassign-tracker": "Rimuovi assegnazione dispositivo"
   },
   "tracker-selection-menu": {
-    "title": "Which tracker to assign to the {{bodyPart}}?",
-    "unassigned": "Unassigned Trackers",
-    "assigned": "Assigned Trackers",
-    "dont-assign": "Do not assign"
+    "title": "Assegna dispositivo a: {{bodyPart}}?",
+    "unassigned": "Dispositivo non assegnato",
+    "assigned": "Dispositvo assegnato",
+    "dont-assign": "Non assegnare"
   },
   "mounting-selection-menu": {
-    "title": "Where do you want this tracker to be?",
-    "close": "Close"
+    "title": "Come é posizionato il dispositivo?",
+    "close": "Chiudi"
   },
   "settings": {
     "sidebar": {
-      "title": "Settings",
-      "general": "General",
-      "tracker-mechanics": "Tracker mechanics",
-      "fk-settings": "FK settings",
-      "gesture-control": "Gesture control",
-      "interface": "Interface",
+      "title": "Impostazioni",
+      "general": "Generali",
+      "tracker-mechanics": "Comportamento dispositivo",
+      "fk-settings": "Impostazioni FK",
+      "gesture-control": "Controllo dei gesti",
+      "interface": "Interfaccia",
       "osc-router": "OSC router",
-      "utils": "Utilities",
+      "utils": "Strumenti",
       "serial": "Serial console"
     },
     "general": {
       "steamvr": {
         "title": "SteamVR",
         "subtitle": "SteamVR trackers",
-        "description.p0": "Enable or disable specific SteamVR trackers.",
-        "description.p1": "Useful for games or apps that only support certain trackers.",
+        "description.p0": "Abilita o disabilita specifici SteamVR trackers.",
+        "description.p1": "Utile per alcuni giochi che utilizzano solo alcuni SteamVR trackers.",
         "trackers": {
-          "waist": "Waist",
-          "chest": "Chest",
-          "feet": "Feet",
-          "knees": "Knees",
-          "elbows": "Elbows",
-          "hands": "Hands"
+          "waist": "Girovita",
+          "chest": "Petto",
+          "feet": "Piedi",
+          "knees": "Ginocchia",
+          "elbows": "Gomiti",
+          "hands": "Mani"
         }
       },
       "tracker-mechanics": {
-        "title": "Tracker mechanics",
-        "subtitle": "Filtering",
-        "description.p0": "Choose the filtering type for your trackers.",
-        "description.p1": "Prediction predicts movement while smoothing smoothens movement.",
+        "title": "Comportamento dispositivo",
+        "subtitle": "Filtro movimenti",
+        "description.p0": "Scegli la tipologia di filtraggio movimenti per il tuo dispositivo.",
+        "description.p1": "Predizione anticipa i movimenti, mentre Attenuazione attenua muovimenti eccessivi.",
         "filtering-type": {
           "title": "Filtering type",
           "none": {
@@ -194,34 +194,34 @@
             "description":"Use rotations as is. Will not do any filtering."
           },
           "smoothing": {
-            "label": "Smoothing",
-            "description":"Smooths movements but adds some latency."
+            "label": "Attenuazione",
+            "description":"Attenua movimenti eccessivi ma aggiunge ritardo."
           },
           "prediction": {
-            "label": "Prediction",
-            "description":"Reduces latency and makes movements more snappy, but may increase jitter."
+            "label": "Predizionme",
+            "description":"Riduce ritardo e rende movimenti piú istantanei, ma puó introdurre tremolio."
           }
         },
         "amount": {
-          "label": "Amount"
+          "label": "Quantitá"
         }
       },
       "fk-settings": {
-        "title": "FK settings",
+        "title": "Impostazioni FK",
         "leg-tweak": {
-          "title": "Leg tweaks",
+          "title": "Impostazioni Gambe",
           "description": "Floor-clip can Reduce or even eliminates clipping with the floor but may cause problems when on your knees. Skating-correction corrects for ice skating, but can decrease accuracy in certain movement patterns.",
           "floor-clip": "Floor clip",
           "skating-correction": "Skating correction",
           "skating-correction-amount": "Skating correction strength"
         },
         "arm-fk": {
-          "title": "Arm FK",
+          "title": "FK Braccia",
           "description": "Change the way the arms are tracked.",
           "force-arms": "Force arms from HMD"
         },
         "skeleton-settings": {
-          "title": "Skeleton settings",
+          "title": "Impostazioni scheletro",
           "description": "Toggle skeleton settings on or off. It is recommended to leave these on.",
           "extended-spine": "Extended spine",
           "extended-pelvis": "Extended pelvis",
@@ -363,7 +363,7 @@
     "done": {
       "title": "You're all set!",
       "description": "Enjoy your full body experience",
-      "close": "Close the guide"
+      "close": "Chiudi the guide"
     },
     "connect-tracker": {
       "back": "Go Back to WiFi credentials",
