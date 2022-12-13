@@ -59,18 +59,18 @@
   },
   "serial-detection": {
     "new-device.p0": "Neues serielles Gerät erkannt!",
-    "new-device.p1": "Geben Sie Ihre WLAN-Anmeldeinformationen ein!",
+    "new-device.p1": "Geben Sie Ihre WLAN-Zugangsdaten ein!",
     "new-device.p2": "Bitte wählen Sie, was Sie damit machen möchten",
     "open-wifi": "Mit WLAN verbinden",
-    "open-serial": "Seriellen Konsole öffnen",
+    "open-serial": "Serielle Konsole öffnen",
     "submit": "Absenden!",
     "close": "Schließen"
   },
   "navbar": {
     "home": "Start",
     "body-proportions": "Körpermaße",
-    "trackers-assign": "Tracker-Positionen",
-    "mounting": "Befestigungs-Kalibrierung",
+    "trackers-assign": "Tracker-Zuordnung",
+    "mounting": "Tracker-Ausrichtung",
     "onboarding": "Setup-Assistent",
     "settings": "Einstellungen"
   },
@@ -162,7 +162,7 @@
       "tracker-mechanics": "Tracker-Mechanik",
       "fk-settings": "FK-Einstellungen",
       "gesture-control": "Gesten-Steuerung",
-      "interface": "Schnittstelle",
+      "interface": "Bedienoberfläche",
       "utils": "Wekzeuge",
       "serial": "Serielle Konsole"
     },
@@ -170,8 +170,8 @@
       "steamvr": {
         "title": "SteamVR",
         "subtitle": "SteamVR Tracker",
-        "description.p0": "Aktivieren oder deaktivieren Sie bestimmte Tracker.",
-        "description.p1": "Nützlich, wenn Sie mehr Kontrolle über das Verhalten von SlimeVR haben möchten.",
+        "description.p0": "Aktivieren oder deaktivieren Sie bestimmte SteamVR-Tracker.",
+        "description.p1": "Nützlich für Spiele oder Apps, die nur bestimmte Tracker unterstützen.",
         "tracker": {
           "waist": "Taille",
           "chest": "Brust",
@@ -184,7 +184,7 @@
         "title": "Tracker-Verhalten",
         "subtitle": "Filtern",
         "description.p0": "Wählen Sie den Filter-Typ für Ihre Tracker aus.",
-        "description.p1": "Vorhersage prognostiziert Bewegung, während Glättung Bewegung glättet.",
+        "description.p1": "Vorhersage: prognostiziert Bewegung. Glättung: Bewegung werden geglättet.",
         "filtering-type": {
           "title": "Filter-Typ",
           "none": {
@@ -193,7 +193,7 @@
           },
           "smoothing": {
             "label": "Glättung",
-            "description": "Glättet Bewegungen, fügt aber etwas Latenz hinzu."
+            "description": "Glättet Bewegungen, fügt aber etwas Verzögerung hinzu."
           },
           "prediction": {
             "label": "Vorhersage",
@@ -201,14 +201,14 @@
           }
         },
         "amount": {
-          "label": "Menge"
+          "label": "Stärke"
         }
       },
       "fk-settings": {
         "title": "FK-Einstellungen",
         "leg-tweak": {
           "title": "Bein-Optimierungen",
-          "description": "Floor-Clip kann das Durchdringen mit dem Boden reduzieren oder sogar beseitigen, kann aber bei Knien Probleme verursachen. Rutsch-Korrektur korrigiert das Verrutschen, kann aber bei bestimmten Bewegungsmustern die Genauigkeit verringern.",
+          "description": "Floor-Clip kann das einsinken in den Boden reduzieren oder sogar beseitigen, kann aber beim Knien Probleme verursachen. Die Rutsch-Korrektur verringert das Rutschen auf dem Boden, kann aber bei bestimmten Bewegungsmustern die Genauigkeit verringern.",
           "floor-clip": "Bodenclip",
           "skating-correction": "Rutsch-Korrektur",
           "skating-correction-amount": "Rutsch-Korrekturstärke"
@@ -229,12 +229,12 @@
       "gesture-control": {
         "title": "Gestensteuerung",
         "subtitle": "Double Tap Quick Reset",
-        "description": "Aktivieren oder deaktivieren Sie Double Tap Quick Reset. Wenn es aktiviert ist, wird das Doppeltippen irgendwo auf dem höchsten Brusttracker einen schnellen Reset auslösen. Die Verzögerung ist die Zeit zwischen dem Registrieren eines Taps und dem Zurücksetzen.",
+        "description": "Aktivieren oder deaktivieren Sie Double Tap \"Quick Reset\". Wenn aktiviert, wird das Zweifache Antippen(Double Tap) des zuoberst befindlichen Brusttracker einen \"Quick Reset\" auslösen. Die Verzögerung ist die Zeit zwischen dem Registrieren eines Taps und dem Zurücksetzen.",
         "enable": "Double tap quick reset",
         "delay": "Verzögerung"
       },
       "interface": {
-        "title": "Schnittstelle",
+        "title": "Bedienoberfläche",
         "dev-mode": {
           "title": "Entwicklermodus",
           "description": "Dieser Modus kann nützlich sein, wenn Sie tiefgreifende Daten benötigen oder auf einer fortgeschrittenen Ebene mit verbundenen Trackern interagieren möchten",
@@ -246,7 +246,7 @@
           "label": "Serielle Geräteerkennung"
         },
         "lang": {
-          "title": "Wählen Sie eine Sprache",
+          "title": "Sprachauswahl",
           "description": "Ändern Sie die Standard-Sprache, die Sie verwenden möchten",
           "placeholder": "Wählen Sie die zu verwendende Sprache aus"
         }
@@ -254,9 +254,9 @@
     },
     "serial": {
       "title": "Serielle Konsole",
-      "description.p0": "Dies ist ein Live-Informationen-Feed für die serielle Kommunikation.",
-      "description.p1": "Kann nützlich sein, wenn Sie wissen müssen, dass die Firmware ausfällt.",
-      "connection-lost": "Serielle Verbindung verloren, Verbindung wird wiederhergestelt...",
+      "description.p0": "Dies ist ein Live-Ansicht der seriellen Kommunikation.",
+      "description.p1": "Diese ist zur Unterstützung bei der Problemsuche mit Trackern.",
+      "connection-lost": "Verbindung zur Seriellen-Schnittstelle verloren, Verbindung wird wiederhergestelt...",
       "reboot": "Neustart",
       "factory-reset": "Werkseinstellungen zurücksetzen",
       "get-infos": "Informationen abrufen",
@@ -314,7 +314,7 @@
       "submit": "Weiter!"
     },
     "reset-tutorial": {
-      "back": "Zurück zur Montagekalibrierung",
+      "back": "Zurück zur Trackerausrichtung",
       "title": "Tutorial zurücksetzen",
       "description": "Diese Funktion ist noch nicht fertig, drücken Sie einfach auf Fortsetzen"
     },
@@ -325,7 +325,7 @@
       "start": "Lass uns loslegen!"
     },
     "enter-vr": {
-      "back": "Zurück zur Trackerzuweisung",
+      "back": "Zurück zur Tracker zuweisung",
       "title": "Zeit für VR!",
       "description": "Ziehen Sie alle Tracker an und betreten Sie dann VR!",
       "ready": "Ich bin bereit"
@@ -355,7 +355,7 @@
       "next": "Ich habe alle meine Tracker verbunden."
     },
     "assign-trackers": {
-      "back": "Zurück zu den WLAN-Anmeldedaten",
+      "back": "Zurück zu den WLAN-Zugangsdaten",
       "title": "Tracker zuweisen",
       "description": "Wählen sie nun aus, welcher Tracker wo hin geht. Klicken Sie auf einen Ort, an dem Sie einen Tracker platzieren möchten",
       "assigned": "{{assigned}} von {{trackers}} Trackern zugewiesen",
