@@ -56,7 +56,7 @@ public class Main {
 			e1.printStackTrace();
 		}
 
-		LogManager.info("Running version " + VERSION);
+		LogManager.info("Running version " + VERSION + "-" + BuildConfig.GIT_COMMIT_HASH);
 
 		if (!SystemUtils.isJavaVersionAtLeast(JavaVersion.JAVA_17)) {
 			LogManager.severe("SlimeVR start-up error! A minimum of Java 17 is required.");
