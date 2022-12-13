@@ -70,7 +70,7 @@
     "home": "Home",
     "body-proportions": "Proportioni Corpo",
     "trackers-assign": "Assegnazione dei tracker",
-    "mounting": "Calibratione Posizioni",
+    "mounting": "Calibrazione Posizione",
     "onboarding": "Installazione guidata",
     "settings": "Impostazioni"
   },
@@ -116,7 +116,7 @@
     },
     "settings": {
       "back": "Torna alla lista dei tracker",
-      "title": "Impostazioni tracker",
+      "title": "Impostazioni del tracker",
       "assignment-section": {
         "title": "Assegnazione",
         "description": "Definisce a che paste del corpo é assegnato il tracker.",
@@ -268,106 +268,106 @@
     "osc": {
       "router": {
         "title": "OSC router",
-        "description.p0": "Forward OSC messages from another program.",
-        "description.p1": "Useful for using another OSC program with VRChat for example.",
+        "description.p0": "Inoltra messaggi OSC da un altro programma.",
+        "description.p1": "Utile per utilizzare un altro programma OSC con VRChat, per esempio.",
         "enable": {
-          "title": "Enable",
-          "description": "Toggle the forwarding of messages",
-          "label": "Enable"
+          "title": "Attiva",
+          "description": "Attiva o disattiva l'inoltro dei messaggi",
+          "label": "Attiva"
         },
         "network": {
-          "title": "Network ports",
-          "description.p0": "Set the ports for listening and sending data",
-          "description.p1": "These can be the same as other ports used in the SlimeVR server",
+          "title": "Porte di rete",
+          "description.p0": "Impostare le porte di rete per l'ascolto e l'invio dei dati",
+          "description.p1": "Queste possono essere le stesse porte di rete di altre porte utilizzate nel server di SlimeVR",
           "port-in": {
-            "label": "Port In",
-            "placeholder": "Port in (default: 9002)"
+            "label": "Porta in ingresso",
+            "placeholder": "Porta in ingresso (predefinito: 9002)"
           },
           "port-out": {
-            "label": "Port Out",
-            "placeholder": "Port out (default: 9000)"
+            "label": "Porta in uscita",
+            "placeholder": "Porta in uscita (predefinito: 9000)"
           },
           "address": {
-            "title": "Network address",
-            "description": "Set the address to send out data at",
-            "placeholder": "IPV4 address"
+            "title": "Indirizzo di rete",
+            "description": "Impostare l'indirizzo di rete a cui inviare i dati",
+            "placeholder": "Indirizzo IPV4"
           }
         }
       },
       "vrchat": {
-        "description.p0": "Change VRChat-specific settings to receive HMD data and send",
-        "description.p1": "trackers data for FBT (works on Quest standalone).",
+        "description.p0": "Modifica le impostazioni specifiche a VRChat per ricevere e inviare dati del HMD",
+        "description.p1": "Dati dei tracker per FBT (funziona su Quest standalone).",
         "enable": {
-          "title": "Enable",
-          "description": "Toggle the sending and receiving of data",
-          "label": "Enable"
+          "title": "Attiva",
+          "description": "Attiva o disattiva l'invio e la ricezione dei dati",
+          "label": "Attiva"
         },
         "network": {
-          "title": "Network ports",
-          "description": "Set the ports for listening and sending data to VRChat",
+          "title": "Porte di rete",
+          "description": "Impostare le porte di rete per ascoltare e inviare dati a VRChat",
           "port-in": {
-            "label": "Port In",
-            "placeholder": "Port in (default: 9001)"
+            "label": "Porta in ingresso",
+            "placeholder": "Porta in ingresso (predefinito: 9002)"
           },
           "port-out": {
-            "label": "Port Out",
-            "placeholder": "Port out (default: 9000)"
+            "label": "Porta in uscita",
+            "placeholder": "Porta in uscita (predefinito: 9000)"
           },
           "address": {
-            "title": "Network address",
-            "description": "Choose which address to send out data to VRChat (check your wifi settings on your device)",
-            "placeholder": "VRChat ip address"
+            "title": "Indirizzo di rete",
+            "description": "Scegli a quale indirizzo di rete inviare i dati di VRChat (controlla le impostazioni Wi-Fi sul tuo dispositivo)",
+            "placeholder": "Indirizzo IP di VRChat"
           },
           "trackers": {
-            "title": "Trackers",
-            "description": "Toggle the sending and receiving of data",
-            "chest": "Chest",
-            "waist": "Waist",
-            "knees": "Knees",
-            "feet": "Feet",
-            "elbows": "Elbows"
+            "title": "Tracker",
+            "description": "Attiva o disattiva l'invio e la ricezione dei dati",
+            "chest": "Petto",
+            "waist": "Girovita",
+            "knees": "Ginocchia",
+            "feet": "Piedi",
+            "elbows": "Gomiti"
           }
         }
       }
     }
   },
   "onboarding": {
-    "skip": "Skip setup",
-    "continue": "Continue",
-    "wip": "Work in progress",
+    "skip": "Salta la configurazione",
+    "continue": "Continua",
+    "wip": "Lavori in corso",
     "wifi-creds": {
-      "back": "Go Back to introduction",
-      "title": "Input WiFi credentials",
-      "description.p0": "The Trackers will use these credentials to connect wirelessly",
-      "description.p1": "please use the credentials that you are currently connected to",
-      "skip": "Skip wifi settings",
-      "submit": "Submit!"
+      "back": "Torna all'introduzione",
+      "title": "Inserisci credenziali WiFi",
+      "description.p0": "I tracker utilizzeranno queste credenziali per connettersi in modalità wireless",
+      "description.p1": "Si prega di utilizzare le stesse credenziali con cui si è attualmente connessi",
+      "skip": "Salta impostazioni WiFi",
+      "submit": "Conferma!"
     },
     "reset-tutorial": {
-      "back": "Go Back to Mounting calibration",
-      "title": "Reset tutorial",
-      "description": "This feature isn't done, just press continue"
+      "back": "Torna alla calibrazione posizione",
+      "title": "Riplistina tutorial",
+      "description": "Questa funzionalitá non é completa, premi continua"
     },
     "home": {
-      "title": "Welcome to SlimeVR",
-      "description.p0": "Bringing full-body tracking",
-      "description.p1": "to everyone",
-      "start": "Lets get set up!"
+      "title": "Benvenut- a SlimeVR",
+      "description.p0": "Protiamo full-body tracking",
+      "description.p1": "a tutti",
+      "start": "Prepariamoci!"
     },
     "enter-vr": {
-      "back": "Go Back to Tracker assignent",
-      "title": "Time to enter VR!",
-      "description": "Put on all your trackers and then enter VR!",
-      "ready": "I'm ready"
+      "back": "Torna all'assegnazione Tracker",
+      "title": "È ora di entrare in VR!",
+      "description": "Indossa tutti i tuoi tracker e entra in VR!",
+      "ready": "Sono pront-!"
     },
     "done": {
-      "title": "You're all set!",
-      "description": "Enjoy your full body experience",
-      "close": "Chiudi the guide"
+      "title": "È tutto pronto!",
+      "description": "Goditi la tua esperienza di full-body tracking",
+      "close": "Chiudi la guida"
     },
     "connect-tracker": {
-      "back": "Go Back to WiFi credentials",
-      "title": "Connect trackers",
+      "back": "Torna alle credenziali WiFi",
+      "title": "Connetti i tracker",
       "description.p0": "Now onto the fun part, connecting all the trackers!",
       "description.p1": "Simply connect all that aren't connected yet, through a USB port.",
       "issue": {
