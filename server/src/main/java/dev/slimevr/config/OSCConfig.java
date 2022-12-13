@@ -13,14 +13,14 @@ import java.util.Map;
 
 public class OSCConfig {
 
-	// Is OSC enabled for the app
+	// Are the OSC receiver and sender enabled?
 	private boolean enabled = false;
 
 	// Port to receive OSC messages from
-	private int portIn = 9001;
+	private int portIn;
 
 	// Port to send out OSC messages at
-	private int portOut = 9000;
+	private int portOut;
 
 	// Address to send out OSC messages at
 	private String address = "127.0.0.1";
@@ -29,18 +29,8 @@ public class OSCConfig {
 	@JsonDeserialize(using = BooleanMapDeserializer.class)
 	@JsonSerialize(keyUsing = StdKeySerializers.StringKeySerializer.class)
 	public Map<String, Boolean> trackers = new HashMap<>();
-	private final TrackerRole[] defaultRoles = new TrackerRole[] { TrackerRole.WAIST,
-		TrackerRole.LEFT_FOOT, TrackerRole.RIGHT_FOOT };
 
 	public OSCConfig() {
-		// Initialize default tracker role settings
-		for (TrackerRole role : defaultRoles) {
-			setOSCTrackerRole(
-				role,
-				getOSCTrackerRole(role, true)
-			);
-		}
-
 	}
 
 	public boolean getEnabled() {

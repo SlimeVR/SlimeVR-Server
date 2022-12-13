@@ -61,7 +61,7 @@ export function SettingsSidebar() {
             {t('settings.sidebar.fk-settings')}
           </SettingsLink>
           <SettingsLink to="/settings/trackers" scrollTo="gestureControl">
-            Gesture control
+            {t('settings.sidebar.gesture-control')}
           </SettingsLink>
           <SettingsLink to="/settings/trackers" scrollTo="interface">
             {t('settings.sidebar.interface')}
@@ -70,6 +70,11 @@ export function SettingsSidebar() {
       </div>
       <div className="flex flex-col gap-3">
         <Typography variant="section-title">OSC</Typography>
+        <div className="flex flex-col gap-2">
+          <SettingsLink to="/settings/osc/router" scrollTo="router">
+            {t('settings.sidebar.osc-router')}
+          </SettingsLink>
+        </div>
         <div className="flex flex-col gap-2">
           <SettingsLink to="/settings/osc/vrchat" scrollTo="vrchat">
             VRChat

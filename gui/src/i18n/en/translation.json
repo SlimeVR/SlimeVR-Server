@@ -15,8 +15,8 @@
     "RIGHT_UPPER_ARM": "Right upper arm",
     "RIGHT_LOWER_ARM": "Right lower arm",
     "RIGHT_HAND": "Right hand",
-    "RIGHT_UPPER_LEG": "Right upper leg",
-    "RIGHT_LOWER_LEG": "Right lower leg",
+    "RIGHT_UPPER_LEG": "Right thigh",
+    "RIGHT_LOWER_LEG": "Right ankle",
     "RIGHT_FOOT": "Right foot",
     "CHEST": "Chest",
     "WAIST": "Waist",
@@ -25,8 +25,8 @@
     "LEFT_UPPER_ARM": "Left upper arm",
     "LEFT_LOWER_ARM": "Left lower arm",
     "LEFT_HAND": "Left hand",
-    "LEFT_UPPER_LEG": "Left upper leg",
-    "LEFT_LOWER_LEG": "Left lower leg",
+    "LEFT_UPPER_LEG": "Left thigh",
+    "LEFT_LOWER_LEG": "Left ankle",
     "LEFT_FOOT": "Left foot"
   },
   "skeleton-bone": {
@@ -161,22 +161,25 @@
       "general": "General",
       "tracker-mechanics": "Tracker mechanics",
       "fk-settings": "FK settings",
+      "gesture-control": "Gesture control",
       "interface": "Interface",
+      "osc-router": "OSC router",
       "utils": "Utilities",
-      "serial": "Serial Console"
+      "serial": "Serial console"
     },
     "general": {
       "steamvr": {
         "title": "SteamVR",
         "subtitle": "SteamVR trackers",
-        "description.p0": "Enable or disable specific tracking parts.",
-        "description.p1": "Useful if you want more control over what SlimeVR does.",
+        "description.p0": "Enable or disable specific SteamVR trackers.",
+        "description.p1": "Useful for games or apps that only support certain trackers.",
         "trackers": {
           "waist": "Waist",
           "chest": "Chest",
           "feet": "Feet",
           "knees": "Knees",
-          "elbows": "Elbows"
+          "elbows": "Elbows",
+          "hands": "Hands"
         }
       },
       "tracker-mechanics": {
@@ -209,7 +212,8 @@
           "title": "Leg tweaks",
           "description": "Floor-clip can Reduce or even eliminates clipping with the floor but may cause problems when on your knees. Skating-correction corrects for ice skating, but can decrease accuracy in certain movement patterns.",
           "floor-clip": "Floor clip",
-          "skating-correction": "Skating correction"
+          "skating-correction": "Skating correction",
+          "skating-correction-amount": "Skating correction strength"
         },
         "arm-fk": {
           "title": "Arm FK",
@@ -225,7 +229,7 @@
         }
       },
       "gesture-control": {
-        "title": "Gesture Control",
+        "title": "Gesture control",
         "subtitle": "Double Tap quick reset",
         "description": "Enable or disable double tap quick reset. When enabled double tapping anywhere on the highest torso tracker will activate a quick reset. Delay is the time between registering a tap and resetting.",
         "enable": "Double tap quick reset",
@@ -262,6 +266,34 @@
       "auto-dropdown-item": "Auto"
     },
     "osc": {
+      "router": {
+        "title": "OSC router",
+        "description.p0": "Forward OSC messages from another program.",
+        "description.p1": "Useful for using another OSC program with VRChat for example.",
+        "enable": {
+          "title": "Enable",
+          "description": "Toggle the forwarding of messages",
+          "label": "Enable"
+        },
+        "network": {
+          "title": "Network ports",
+          "description.p0": "Set the ports for listening and sending data",
+          "description.p1": "These can be the same as other ports used in the SlimeVR server",
+          "port-in": {
+            "label": "Port In",
+            "placeholder": "Port in (default: 9002)"
+          },
+          "port-out": {
+            "label": "Port Out",
+            "placeholder": "Port out (default: 9000)"
+          },
+          "address": {
+            "title": "Network address",
+            "description": "Set the address to send out data at",
+            "placeholder": "IPV4 address"
+          }
+        }
+      },
       "vrchat": {
         "description.p0": "Change VRChat-specific settings to receive HMD data and send",
         "description.p1": "trackers data for FBT (works on Quest standalone).",
