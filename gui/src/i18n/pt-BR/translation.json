@@ -34,8 +34,8 @@
     "HEAD": "Deslocamento da Cabeça",
     "NECK": "Tamanho do Pescoço",
     "TORSO": "Tamanho do Torso",
-    "CHEST": "Distancia do Peito",
-    "WAIST": "Distancia da Cintura",
+    "CHEST": "Distância do Peito",
+    "WAIST": "Distância da Cintura",
     "HIP_OFFSET": "Compensação do Quadril",
     "HIPS_WIDTH": "Largura do Quadril",
     "LEGS_LENGTH": "Tamanho das Perna",
@@ -43,10 +43,10 @@
     "FOOT_LENGTH": "Tamanho do Pé",
     "FOOT_SHIFT": "Compensação do Pé",
     "SKELETON_OFFSET": "Compensação do Esqueleto",
-    "CONTROLLER_DISTANCE_Z": "Distancia do Controle Z",
-    "CONTROLLER_DISTANCE_Y": "Distancia do Controle Y",
-    "FOREARM_LENGTH": "Distancia do Antebraço",
-    "SHOULDERS_DISTANCE": "Distancia dos Ombros",
+    "CONTROLLER_DISTANCE_Z": "Distância do Controle Z",
+    "CONTROLLER_DISTANCE_Y": "Distância do Controle Y",
+    "FOREARM_LENGTH": "Distância do Antebraço",
+    "SHOULDERS_DISTANCE": "Distância dos Ombros",
     "SHOULDERS_WIDTH": "Largura dos Ombros",
     "UPPER_ARM_LENGTH": "Tamanho do Braço Superior",
     "ELBOW_OFFSET": "Compensação do Cotovelo"
@@ -58,7 +58,7 @@
     "quick": "Reset Rápido"
   },
   "serial-detection": {
-    "new-device.p0": "Novo despositivo de serial detectado!" ,
+    "new-device.p0": "Novo dispositivo de serial detectado!" ,
     "new-device.p1": "Insira suas credenciais de wifi!",
     "new-device.p2": "Selecione o que quer fazer com ele",
     "open-wifi": "Conectar ao WiFi",
@@ -161,7 +161,9 @@
       "general": "Geral",
       "tracker-mechanics": "Mecânicas do Tracker",
       "fk-settings": "Opções de FK",
+      "gesture-control": "Controle de Gestos",
       "interface": "Interface",
+      "osc-router": "Roteador OSC",
       "utils": "Utilidades",
       "serial": "Console Serial"
     },
@@ -170,13 +172,14 @@
         "title": "SteamVR",
         "subtitle": "Trackers do SteamVR",
         "description.p0": "Ativar ou desativar partes específicas do tracking.",
-        "description.p1": "Útil se você quer mais controle do oque o SlimeVR faz.",
+        "description.p1": "Útil se você quer mais controle do que o SlimeVR faz.",
         "trackers": {
           "waist": "Cintura",
           "chest": "Peito",
           "feet": "Pés",
           "knees": "Joelhos",
-          "elbows": "Cotovelos"
+          "elbows": "Cotovelos",
+          "hands": "Mãos"
         }
       },
       "tracker-mechanics": {
@@ -188,7 +191,7 @@
           "title": "Tipo de filtro",
           "none": {
             "label": "Sem filtro",
-            "description":"Usa a rotação como está. Não haverá filtração."
+            "description":"Utiliza as rotações como registradas. Sem qualquer tipo de filtro."
           },
           "smoothing": {
             "label": "Suavização",
@@ -196,7 +199,7 @@
           },
           "prediction": {
             "label": "Predição",
-            "description":"Reduz latência e faz os movimentos ficarem mais responsivos, porém aumenta tremulação(Jitter)."
+            "description":"Reduz latência e torna os movimentos mais responsivos, porém aumenta tremulação (Jitter)."
           }
         },
         "amount": {
@@ -209,7 +212,8 @@
           "title": "Ajustes de perna",
           "description": "Atravessar o chão pode reduzir ou até eliminar o clipping(atravessar) com o chão porém pode causar problemas quando ajoelhado. Correção de Deslize corrige o ice skating(deslize dos trackers no chão), porém pode diminuir a precisão de certos padrões de movimento.",
           "floor-clip": "Atravessar o chão",
-          "skating-correction": "Correção de Deslize"
+          "skating-correction": "Correção de deslize",
+          "skating-correction-amount": "Força da correção de deslize"
         },
         "arm-fk": {
           "title": "FK do Braço",
@@ -227,15 +231,15 @@
       "gesture-control": {
         "title": "Controle de gestos",
         "subtitle": "Dois toques para o reset rápido",
-        "description": "Ativa ou desativa os dois toques para o reset rápido. Quando ativado dois toques em qualquer lugar no tracker mais alto do torso irá ativar o reset rápido. Delay é o tempo entre registrando o toque e resetando.",
+        "description": "Ativa ou desativa os dois toques para o reset rápido. Quando ativado dois toques em qualquer lugar no tracker mais alto do torso irá ativar o reset rápido. Delay é o tempo entre o registro o toque e reset.",
         "enable": "Dois toques para o reset rápido",
         "delay": "Delay"
       },
       "interface": {
         "title": "Interface",
         "dev-mode": {
-          "title": "Modo de desenvolverdor",
-          "description": "Este modo pode ser útil se precisar de dados em profundidade ou para interagir com trackers conectados a um nível mais avançado",
+          "title": "Modo de desenvolvedor",
+          "description": "Este modo pode ser útil se precisar de dados específicos ou para interagir com trackers conectados a um nível mais avançado",
           "label": "Modo de desenvolvedor"
         },
         "serial-detection": {
@@ -244,16 +248,16 @@
           "label": "Detecção de dispositivo serial"
         },
         "lang": {
-          "title": "Selecione a linguagem",
-          "description": "Alterar a língua padrão que pretende utilizar",
-          "placeholder": "Selecione a linguagem qual vai usar"
+          "title": "Selecione o idioma",
+          "description": "Alterar o idioma padrão que pretende utilizar",
+          "placeholder": "Selecione o idioma que vai usar"
         }
       }
     },
     "serial": {
       "title": "Console Serial",
       "description.p0": "Este é um feed de informações ao vivo para comunicação serial.",
-      "description.p1": "Pode ser útil se você precisar saber se o firmware está dando problema.",
+      "description.p1": "Pode ser útil se você precisar saber se o firmware está tendo problemas.",
       "connection-lost": "Conexão com o serial perdida, Reconectando...",
       "reboot": "Reiniciar",
       "factory-reset": "Restaurar para o padrão de fábrica",
@@ -262,17 +266,45 @@
       "auto-dropdown-item": "Auto"
     },
     "osc": {
-      "vrchat": {
-        "description.p0": "Mudar opções específicas do VRChat para receber e enviar dados do HMD",
-        "description.p1": "dados do tracker para FBT (funciona no Quest standalone).",
+      "router": {
+        "title": "Roteador OSC",
+        "description.p0": "Encaminhar mensagens OSC de outro programa.",
+        "description.p1": "Útil para usar outro programa OSC com VRChat, por exemplo.",
         "enable": {
           "title": "Ativar",
-          "description": "Ligar ou desligar o envio e a recepção de dados",
+          "description": "Ligar ou desligar o encaminhamento de mensagens",
           "label": "Ativar"
         },
         "network": {
           "title": "Portas de rede",
-          "description": "Defina as portas para ouvir e enviar dados para o VRChat",
+          "description.p0": "Defina as portas para receber e enviar dados",
+          "description.p1": "Esses podem ser as mesmas portas usadas no servidor do SlimeVR",
+          "port-in": {
+            "label": "Porta de entrada",
+            "placeholder": "Porta de entrada (padrão: 9002)"
+          },
+          "port-out": {
+            "label": "Porta de saída",
+            "placeholder": "Porta de saída (padrão: 9000)"
+          },
+          "address": {
+            "title": "Endereço de rede",
+            "description": "Defina o endereço para mandar dados",
+            "placeholder": "Endereço IPV4"
+          }
+        }
+      },
+      "vrchat": {
+        "description.p0": "Mudar opções específicas do VRChat para receber e mandar dados do HMD",
+        "description.p1": "dados de trackers para FBT (funciona no Quest standalone).",
+        "enable": {
+          "title": "Ativar",
+          "description": "Ligar ou desligar o envio e recebimento de dados",
+          "label": "Ativar"
+        },
+        "network": {
+          "title": "Portas de rede",
+          "description": "Defina as portas para receber e enviar dados para o VRChat",
           "port-in": {
             "label": "Porta de entrada",
             "placeholder": "Porta de entrada (padrão: 9001)"
@@ -306,15 +338,15 @@
     "wifi-creds": {
       "back": "Voltar para introdução",
       "title": "Insira as credenciais de WiFi",
-      "description.p0": "Os Trackers vão usar essas credenciais para conectar a rede sem fio",
-      "description.p1": "Use as credenciais do que você está atualmente conectado",
+      "description.p0": "Os Trackers vão usar essas credenciais para conectar à rede sem fio",
+      "description.p1": "Use as credenciais da rede em que você está atualmente conectado",
       "skip": "Pular as configurações de WiFi",
       "submit": "Enviar!"
     },
     "reset-tutorial": {
       "back": "Voltar para a Calibração de Montagem",
       "title": "Resetar Tutorial",
-      "description": "This feature isn't done, just press continue"
+      "description": "Esse recurso não está concluído, apenas aperte continue"
     },
     "home": {
       "title": "Bem vindo ao SlimeVR",
@@ -325,7 +357,7 @@
     "enter-vr": {
       "back": "Voltar para atribuição de Trackers",
       "title": "Hora de entrar no VR!",
-      "description": "Coloque todos os seus tracker e entre no VR!",
+      "description": "Coloque todos os seus trackers e entre no VR!",
       "ready": "Estou pronto"
     },
     "done": {
@@ -336,10 +368,10 @@
     "connect-tracker": {
       "back": "Voltar para as credenciais de WiFi",
       "title": "Conectar os trackers",
-      "description.p0": "Agora para a parte divertida, conectando todos seus trackers!",
+      "description.p0": "Agora para a parte divertida, conectando todos os seus trackers!",
       "description.p1": "Simplesmente conecte todos que ainda não estão conectados, via porta USB.",
       "issue": {
-        "serial": "Estou tendo problemas a conectar!"
+        "serial": "Estou tendo problemas para conectar!"
       },
       "usb": "Tracker USB",
       "connection-status": {
@@ -349,8 +381,8 @@
         "start-connecting": "Procurando por trackers",
         "handshake": "Conectado ao servidor"
       },
-      "connected-trackers": "{{amount}} trackers conectado",
-      "next": "Eu conectei todos meus trackers"
+      "connected-trackers": "{{amount}} tracker(s) conectado(s)",
+      "next": "Eu conectei todos os meus trackers"
     },
     "assign-trackers": {
       "back": "Voltar para as credenciais de WiFi",
@@ -363,7 +395,7 @@
     "manual-mounting": {
       "back": "Voltar para entrar no VR",
       "title": "Montagem Manual",
-      "description": "Clique em cada tracker e selecione qual o jeito que eles estão montados",
+      "description": "Clique em cada tracker e selecione de que maneira estão montados",
       "auto-mounting": "Montagem automática",
       "next": "Próximo passo"
     },
@@ -395,8 +427,8 @@
       },
       "put-trackers-on": {
         "title": "Coloque seus trackers",
-        "description": "Para calibrar as rotações de montagem, usaremos os trackers que você atribuiu. Coloque todos seus trackers, você pode ver qual é qual na figura na direita.",
-        "next": "Coloquei todos meus trackers"
+        "description": "Para calibrar as rotações de montagem, usaremos os trackers que você atribuiu. Coloque todos os seus trackers, você pode ver qual é qual na figura na direita.",
+        "next": "Coloquei todos os meus trackers"
       }
     },
     "manual-proportions": {
@@ -413,8 +445,8 @@
       "prev-step": "Passo anterior",
       "put-trackers-on": {
         "title": "Coloque seus trackers",
-        "description": "Para calibrar suas proporções, usaremos os trackers que você atribuiu. Coloque todos seus trackers, você pode ver quais são quais na figura à direita.",
-        "next": "Coloquei todos meus trackers"
+        "description": "Para calibrar suas proporções, usaremos os trackers que você atribuiu. Coloque todos os seus trackers, você pode ver quais são quais na figura à direita.",
+        "next": "Coloquei todos os meus trackers"
       },
       "preparation": {
         "title": "Preparação",
@@ -423,7 +455,7 @@
       },
       "start-recording": {
         "title": "Esteja preparado para se mexer",
-        "description": "Começaremos a gravar algumas poses e movimentos específicas. Estes serão solicitados na próxima tela. Esteja preparado para começar quando o botão for pressionado!",
+        "description": "Começaremos a gravar algumas poses e movimentos específicos. Estes serão solicitados na próxima tela. Esteja preparado para começar quando o botão for pressionado!",
         "next": "Começar Gravação"
       },
       "recording": {
@@ -433,12 +465,12 @@
         "steps": {
           "0": "Dobre os joelhos algumas vezes.",
           "1": "Sente-se na cadeira e se levante.",
-          "2": "Gire seu tronco para esquerda, e dobre para direita.",
-          "3": "Gire seu tronco para direita, e dobre para esquerda.",
-          "4": "Mexa-se até que o tempo termine."
+          "2": "Gire seu tronco para esquerda, e incline para direita.",
+          "3": "Gire seu tronco para direita, e incline para esquerda.",
+          "4": "Mexa-se até o tempo terminar."
         },
         "processing": "Processando o resultado",
-        "timer": "{{time}} segundos restantes"
+        "timer": "{{time}} segundo(s) restante(s)"
       },
       "verify-results": {
         "title": "Verificar os resultados",
@@ -446,7 +478,7 @@
         "results": "Gravando os resultados",
         "processing": "Processando o resultado",
         "redo": "Refazer a gravação",
-        "confirm": "Eles estão correto"
+        "confirm": "Eles estão corretos"
       },
       "done": {
         "title": "Corpo medido e salvo.",
