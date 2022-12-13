@@ -4,7 +4,7 @@
     "connection-lost": "Connessione con il server persa. Tentativo di riconnessione in corso..."
   },
   "tips": {
-    "find-tracker": "Non sei sicur- quale dispositivo é quale? Agitalo e l'oggetto corrispondente sará evidenziato.",
+    "find-tracker": "Non sei sicur- quale tracker é quale? Agitalo e l'oggetto corrispondente sará evidenziato.",
     "do-not-move-heels": "Assicurati di non muovere i tuoi talloni durante la registrazione!"
   },
   "body-part": {
@@ -58,9 +58,9 @@
     "quick": "Reset veloce"
   },
   "serial-detection": {
-    "new-device.p0": "Nuovo dispositivo rilevato!" ,
+    "new-device.p0": "Nuovo dispositivo seriale rilevato!" ,
     "new-device.p1": "Iserisci le tue credenziali WiFi!",
-    "new-device.p2": "Seleziona come utilizzare il dispositivo, per piacere",
+    "new-device.p2": "Seleziona come utilizzare il tracker, per piacere",
     "open-wifi": "Connetti al WiFi",
     "open-serial": "Apri la Serial Console",
     "submit": "Conferma!",
@@ -69,7 +69,7 @@
   "navbar": {
     "home": "Home",
     "body-proportions": "Proportioni Corpo",
-    "trackers-assign": "Assegnazione dei dispositivi",
+    "trackers-assign": "Assegnazione dei tracker",
     "mounting": "Calibratione Posizioni",
     "onboarding": "Installazione guidata",
     "settings": "Impostazioni"
@@ -112,23 +112,23 @@
       "manufacturer": "Produttore",
       "display-name": "Nome da visualizzare",
       "custom-name": "Nome Personalizzato",
-      "url": "URL Dispositivo"
+      "url": "URL tracker"
     },
     "settings": {
-      "back": "Torna alla lista di dispositivi",
-      "title": "Impostazioni dispositivo",
+      "back": "Torna alla lista dei tracker",
+      "title": "Impostazioni tracker",
       "assignment-section": {
         "title": "Assegnazione",
-        "description": "Definisce a che paste del corpo é assegnato il dispositivo.",
+        "description": "Definisce a che paste del corpo é assegnato il tracker.",
         "edit": "Cambia assegnazione"
       },
       "mounting-section": {
         "title": "Posizioni",
-        "description": "Dove é posizionato il dispositivo?",
+        "description": "Dove é posizionato il tracker?",
         "edit": "Cambia posizioni"
       },
       "name-section": {
-        "title": "Nome del dispositivo",
+        "title": "Nome del tracker",
         "description": "Scegli un nomignolo carino :)",
         "input-placeholder": "Gamba destra di Namakeingo"
       }
@@ -139,27 +139,27 @@
     }
   },
   "body-assignment-menu": {
-    "title": "Con che poarte del corpo vuoi utilizzare il dispositivo?",
-    "description": "Scegli una parte del corpo a cui assegnare questo dispositivo. Alternativamente puoi scegliere di gestire tutti i dispositivi in una schermata unica invece che singolarmente.",
+    "title": "Con che poarte del corpo vuoi utilizzare il tracker?",
+    "description": "Scegli una parte del corpo a cui assegnare questo tracker. Alternativamente puoi scegliere di gestire tutti i tracker in una schermata unica invece che singolarmente.",
     "show-advanced-locations": "Mostra impostazioni avanzate di Assegnazione",
-    "manage-trackers": "Gestisci tutti i dispositivi",
-    "unassign-tracker": "Rimuovi assegnazione dispositivo"
+    "manage-trackers": "Gestisci tutti i tracker",
+    "unassign-tracker": "Rimuovi assegnazione tracker"
   },
   "tracker-selection-menu": {
-    "title": "Assegna dispositivo a: {{bodyPart}}?",
-    "unassigned": "Dispositivo non assegnato",
+    "title": "Assegna il tracker a: {{bodyPart}}?",
+    "unassigned": "Tracker non assegnato",
     "assigned": "Dispositvo assegnato",
     "dont-assign": "Non assegnare"
   },
   "mounting-selection-menu": {
-    "title": "Come é posizionato il dispositivo?",
+    "title": "Come é posizionato il tracker?",
     "close": "Chiudi"
   },
   "settings": {
     "sidebar": {
       "title": "Impostazioni",
       "general": "Generali",
-      "tracker-mechanics": "Comportamento dispositivo",
+      "tracker-mechanics": "Comportamento tracker",
       "fk-settings": "Impostazioni FK",
       "gesture-control": "Controllo dei gesti",
       "interface": "Interfaccia",
@@ -183,9 +183,9 @@
         }
       },
       "tracker-mechanics": {
-        "title": "Comportamento dispositivo",
+        "title": "Comportamento tracker",
         "subtitle": "Filtro movimenti",
-        "description.p0": "Scegli la tipologia di filtraggio movimenti per il tuo dispositivo.",
+        "description.p0": "Scegli la tipologia di filtraggio movimenti per il tuo tracker.",
         "description.p1": "Predizione anticipa i movimenti, mentre Attenuazione attenua muovimenti eccessivi.",
         "filtering-type": {
           "title": "Filtering type",
@@ -231,7 +231,7 @@
       "gesture-control": {
         "title": "Controllo dei gesti",
         "subtitle": "Reset veloce con il doppio tocco",
-        "description": "Abilita o disabilitá il reset veloce con il doppio tocco. Quando attivato, un doppio tocco su una qualsiasi parte del dispositivo posizionato piú in altro lungo il torso abiliterá il reset veloce. \"Rirado\" é il ritado dal momento in cui il gesto é eseguito e il reset.",
+        "description": "Abilita o disabilitá il reset veloce con il doppio tocco. Quando attivato, un doppio tocco su una qualsiasi parte del tracker posizionato piú in altro lungo il torso abiliterá il reset veloce. \"Rirado\" é il ritado dal momento in cui il gesto é eseguito e il reset.",
         "enable": "Reset veloce con il doppio tocco",
         "delay": "Ritardo"
       },
@@ -239,31 +239,31 @@
         "title": "Interfaccia",
         "dev-mode": {
           "title": "Modalitá sviluppatore",
-          "description": "Questa modalita é utile se hai bisogno di dati approifonditio o devi interagire in maniera piú avanzata con i dispositivi connessi.",
+          "description": "Questa modalita é utile se hai bisogno di dati approifonditio o devi interagire in maniera piú avanzata con i tracker connessi.",
           "label": "Modalitá sviluppatore"
         },
         "serial-detection": {
-          "title": "Serial device detection",
-          "description": "This option will show a pop-up every time you plug a new serial device that could be a tracker. It helps improving the setup process of a tracker",
-          "label": "Serial device detection"
+          "title": "Rilevazione nuovi dispositivi seriali",
+          "description": "Questa opzione mostrerà un pop-up ogni volta che colleghi un nuovo dispositivo seriale che potrebbe essere un tracker. Aiuta a facilitare la configurazione iniziale di un tracker",
+          "label": "Rilevazione nuovi dispositivi seriali"
         },
         "lang": {
-          "title": "Select language",
-          "description": "Change the default language you want to use",
-          "placeholder": "Select the language to use"
+          "title": "Seleziona la lingua",
+          "description": "Seleziona la lingua che vuoi utilizzare",
+          "placeholder": "Seleziona la lingua da utilizzare"
         }
       }
     },
     "serial": {
       "title": "Serial Console",
-      "description.p0": "This is a live information feed for serial communication.",
-      "description.p1": "May be useful if you need to know the firmware is acting up.",
-      "connection-lost": "Connection to serial lost, Reconnecting...",
-      "reboot": "Reboot",
-      "factory-reset": "Factory Reset",
-      "get-infos": "Get Infos",
-      "serial-select": "Select a serial port",
-      "auto-dropdown-item": "Auto"
+      "description.p0": "Questo è un feed di informazioni in tempo reale per la comunicazione seriale.",
+      "description.p1": "Puó essere utile se ti serve capire se il firmware sta avendo problemi.",
+      "connection-lost": "Connezione seriale persa. Riconnessione in corso...",
+      "reboot": "Riavvia",
+      "factory-reset": "Ripristino delle impostazioni di fabbrica",
+      "get-infos": "Ottieni informazioni",
+      "serial-select": "Seleziona una porta seriale",
+      "auto-dropdown-item": "Automatico"
     },
     "osc": {
       "router": {
