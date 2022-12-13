@@ -63,7 +63,8 @@ public class Main {
 		}
 
 		try {
-			new ServerSocket(6969).close();
+			// This is disabled because the config can't be read at this point
+			// new ServerSocket(6969).close();
 			new ServerSocket(35903).close();
 			new ServerSocket(21110).close();
 		} catch (IOException e) {
