@@ -54,7 +54,7 @@
   "reset": {
     "reset-all": "Ripristina tutte le proporzioni",
     "full": "Ripristina",
-    "mounting": "Ripristina posizioni",
+    "mounting": "Ripristina posizionamento",
     "quick": "Reset veloce"
   },
   "serial-detection": {
@@ -70,7 +70,7 @@
     "home": "Home",
     "body-proportions": "Proporzioni del corpo",
     "trackers-assign": "Assegnazione dei tracker",
-    "mounting": "Calibrazione della posizione",
+    "mounting": "Calibrazione della posizionamento",
     "onboarding": "Installazione guidata",
     "settings": "Impostazioni"
   },
@@ -123,9 +123,9 @@
         "edit": "Cambia assegnazione"
       },
       "mounting-section": {
-        "title": "Posizioni",
-        "description": "Dove è posizionato il tracker?",
-        "edit": "Cambia posizioni"
+        "title": "posizionamento di montaggio",
+        "description": " Come è posizionato il tracker?",
+        "edit": "Cambia posizionamento"
       },
       "name-section": {
         "title": "Nome del tracker",
@@ -344,7 +344,7 @@
       "submit": "Conferma!"
     },
     "reset-tutorial": {
-      "back": "Torna alla calibrazione della posizione",
+      "back": "Torna alla calibrazione posizionamento",
       "title": "Tutorial di ripristino",
       "description": "Questa funzionalità non è completa, premi continua"
     },
@@ -387,7 +387,7 @@
     "assign-trackers": {
       "back": "Torna alle credenziali WiFi",
       "title": "Assegna i tracker",
-      "description": "Scegliamo quale tracker va dove. Fare clic su una parte del corpo in cui si desidera posizionare un tracker",
+      "description": "Scegliamo quale tracker va dove. Fare clic su una parte del corpo in cui si desidera assegnare un tracker",
       "assigned": "{{assigned}} di {{trackers}} tracker assegnati",
       "advanced": "Mostra impostazioni avanzate di assegnazione",
       "next": "Ho assegnato tutti i miei tracker"
@@ -401,7 +401,7 @@
     },
     "automatic-mounting": {
       "back": "Torna indietro per entrare in VR",
-      "title": "Calibrazione della posizione",
+      "title": "Calibrazione posizionamento",
       "description": "Affinché i tracker di SlimeVR funzionino, dobbiamo configurare una rotazione di posizione di montaggio ai tuoi tracker per allinearli con la posizione di montaggio del tuo tracker fisico.",
       "manual-mounting": "Imposta posizione manualmente",
       "next": "Passo successivo",
@@ -412,10 +412,10 @@
         "restart": "Torna all'inizio"
       },
       "mounting-reset": {
-        "title": "Ripristina posizioni",
+        "title": "Ripristina posizionamento",
         "step": {
           "0": "1. Piegati come per sciare: con le gambe leggermente piegate e unite, la parte superiore del corpo inclinata in avanti e le braccia piegate.",
-          "1": "2. Premere il pulsante \"Ripristina posizioni\" e attendere 3 secondi prima che le rotazioni delle posizioni di montaggio dei tracker vengano ripristinate."
+          "1": "2. Premere il pulsante \"Ripristina posizionamento\" e attendere 3 secondi prima che le rotazioni delle posizioni di montaggio dei tracker vengano ripristinate."
         }
       },
       "preparation": {
