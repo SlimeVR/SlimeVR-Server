@@ -195,7 +195,7 @@ public class HumanPoseProcessor {
 	public void resetTrackers() {
 		if (skeleton != null) {
 			skeleton.resetTrackersFull();
-			server.getVRCOSCHandler().yawAlign();
+			server.getVrcOSCHandler().yawAlign();
 		}
 	}
 
@@ -209,7 +209,7 @@ public class HumanPoseProcessor {
 	public void resetTrackersYaw() {
 		if (skeleton != null) {
 			skeleton.resetTrackersYaw();
-			server.getVRCOSCHandler().yawAlign();
+			server.getVrcOSCHandler().yawAlign();
 		}
 	}
 

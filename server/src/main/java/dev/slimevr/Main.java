@@ -13,7 +13,7 @@ import java.net.ServerSocket;
 
 public class Main {
 
-	public static String VERSION = "0.4.0";
+	public static String VERSION = "0.5.1";
 
 	public static VRServer vrServer;
 
@@ -55,6 +55,8 @@ public class Main {
 		} catch (Exception e1) {
 			e1.printStackTrace();
 		}
+
+		LogManager.info("Running version " + VERSION + "-" + BuildConfig.GIT_COMMIT_HASH);
 
 		if (!SystemUtils.isJavaVersionAtLeast(JavaVersion.JAVA_17)) {
 			LogManager.severe("SlimeVR start-up error! A minimum of Java 17 is required.");
@@ -99,7 +101,7 @@ public class Main {
 				e.printStackTrace();
 			}
 			System.exit(1); // Exit in case error happened on init and window
-							// not appeared, but some thread
+			// not appeared, but some thread
 			// started
 		} finally {
 			try {

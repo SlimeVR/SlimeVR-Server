@@ -109,6 +109,9 @@ spotless {
 	// 	indentWithSpaces(2)  // YAML cannot contain tabs: https://yaml.org/faq.html
 	// }
 	java {
+		target(fileTree("src/**/*.java") {
+			exclude '**/BuildConfig.java'
+		})
 		removeUnusedImports()
 		// Use eclipse JDT formatter
 		eclipse().configFile("spotless.xml")

@@ -1,8 +1,10 @@
 import { useEffect, useRef } from 'react';
 import { useForm } from 'react-hook-form';
+import { useTranslation } from 'react-i18next';
 import { useLocation } from 'react-router-dom';
 import {
   ChangeSettingsRequestT,
+  OSCSettingsT,
   OSCTrackersSettingT,
   RpcMessage,
   SettingsRequestT,
@@ -16,12 +18,14 @@ import { Input } from '../../commons/Input';
 import { Typography } from '../../commons/Typography';
 import { SettingsPageLayout } from '../SettingsPageLayout';
 
-interface OSCSettingsForm {
+interface VRCOSCSettingsForm {
   vrchat: {
-    enabled: boolean;
-    portIn: number;
-    portOut: number;
-    address: string;
+    oscSettings: {
+      enabled: boolean;
+      portIn: number;
+      portOut: number;
+      address: string;
+    };
     trackers: {
       head: boolean;
       chest: boolean;
@@ -36,10 +40,12 @@ interface OSCSettingsForm {
 
 const defaultValues = {
   vrchat: {
-    enabled: false,
-    portIn: 9001,
-    portOut: 9000,
-    address: '127.0.0.1',
+    oscSettings: {
+      enabled: false,
+      portIn: 9001,
+      portOut: 9000,
+      address: '127.0.0.1',
+    },
     trackers: {
       head: false,
       chest: false,
@@ -52,25 +58,27 @@ const defaultValues = {
   },
 };
 
-export function OSCSettings() {
+export function VRCOSCSettings() {
+  const { t } = useTranslation();
   const { sendRPCPacket, useRPCPacket } = useWebsocketAPI();
   const { state } = useLocation();
   const pageRef = useRef<HTMLFormElement | null>(null);
 
   const { reset, control, watch, handleSubmit, register } =
-    useForm<OSCSettingsForm>({
+    useForm<VRCOSCSettingsForm>({
       defaultValues: defaultValues,
     });
 
-  const onSubmit = (values: OSCSettingsForm) => {
+  const onSubmit = (values: VRCOSCSettingsForm) => {
     const settings = new ChangeSettingsRequestT();
 
     if (values.vrchat) {
       const vrcOsc = new VRCOSCSettingsT();
-      vrcOsc.enabled = values.vrchat.enabled;
-      vrcOsc.portIn = values.vrchat.portIn;
-      vrcOsc.portOut = values.vrchat.portOut;
-      vrcOsc.address = values.vrchat.address;
+
+      vrcOsc.oscSettings = Object.assign(
+        new OSCSettingsT(),
+        values.vrchat.oscSettings
+      );
       vrcOsc.trackers = Object.assign(
         new OSCTrackersSettingT(),
         values.vrchat.trackers
@@ -91,18 +99,23 @@ export function OSCSettings() {
   }, []);
 
   useRPCPacket(RpcMessage.SettingsResponse, (settings: SettingsResponseT) => {
-    const formData: OSCSettingsForm = defaultValues;
+    const formData: VRCOSCSettingsForm = defaultValues;
     if (settings.vrcOsc) {
-      if (settings.vrcOsc.enabled)
-        formData.vrchat.enabled = settings.vrcOsc.enabled;
-      if (settings.vrcOsc.portIn)
-        formData.vrchat.portIn = settings.vrcOsc.portIn;
-      if (settings.vrcOsc.portOut)
-        formData.vrchat.portOut = settings.vrcOsc.portOut;
+      if (settings.vrcOsc.oscSettings) {
+        formData.vrchat.oscSettings.enabled =
+          settings.vrcOsc.oscSettings.enabled;
+        if (settings.vrcOsc.oscSettings.portIn)
+          formData.vrchat.oscSettings.portIn =
+            settings.vrcOsc.oscSettings.portIn;
+        if (settings.vrcOsc.oscSettings.portOut)
+          formData.vrchat.oscSettings.portOut =
+            settings.vrcOsc.oscSettings.portOut;
+        if (settings.vrcOsc.oscSettings.address)
+          formData.vrchat.oscSettings.address =
+            settings.vrcOsc.oscSettings.address.toString();
+      }
       if (settings.vrcOsc.trackers)
         formData.vrchat.trackers = settings.vrcOsc.trackers;
-      if (settings.vrcOsc.address)
-        formData.vrchat.address = settings.vrcOsc.address.toString();
     }
 
     reset(formData);
@@ -124,19 +137,19 @@ export function OSCSettings() {
     <form className="flex flex-col gap-2 w-full" ref={pageRef}>
       <SettingsPageLayout icon={<VRCIcon></VRCIcon>} id="vrchat">
         <>
-          <Typography variant="main-title">VRChat</Typography>
+          <Typography variant="main-title">VRChat OSC Trackers</Typography>
           <div className="flex flex-col pt-2 pb-4">
             <Typography color="secondary">
-              Change VRChat-specific settings to receive HMD data and send
+              {t('settings.osc.vrchat.description.p0')}
             </Typography>
             <Typography color="secondary">
-              trackers data for FBT (works on Quest standalone).
+              {t('settings.osc.vrchat.description.p1')}
             </Typography>
           </div>
-          <Typography bold>Enable</Typography>
+          <Typography bold>{t('settings.osc.vrchat.enable.title')}</Typography>
           <div className="flex flex-col pb-2">
             <Typography color="secondary">
-              Toggle the sending and receiving of data
+              {t('settings.osc.vrchat.enable.description')}
             </Typography>
           </div>
           <div className="grid grid-cols-2 gap-3 pb-5">
@@ -144,52 +157,59 @@ export function OSCSettings() {
               variant="toggle"
               outlined
               control={control}
-              name="vrchat.enabled"
-              label="Enable"
+              name="vrchat.oscSettings.enabled"
+              label={t('settings.osc.vrchat.enable.label')}
             />
           </div>
-          <Typography bold>Network ports</Typography>
+          <Typography bold>{t('settings.osc.vrchat.network.title')}</Typography>
           <div className="flex flex-col pb-2">
             <Typography color="secondary">
-              Set the ports for listening and sending data to VRChat
+              {t('settings.osc.vrchat.network.description')}
             </Typography>
           </div>
           <div className="grid grid-cols-2 gap-3 pb-5">
             <Input
               type="number"
-              {...register('vrchat.portIn', { required: true })}
-              placeholder="Port in (default: 9001)"
-              label="Port In"
+              {...register('vrchat.oscSettings.portIn', { required: true })}
+              placeholder={t('settings.osc.vrchat.network.port-in.placeholder')}
+              label={t('settings.osc.vrchat.network.port-in.label')}
             ></Input>
             <Input
               type="number"
-              {...register('vrchat.portOut', { required: true })}
-              placeholder="Port out (default: 9000)"
-              label="Port Out"
+              {...register('vrchat.oscSettings.portOut', {
+                required: true,
+              })}
+              placeholder={t(
+                'settings.osc.vrchat.network.port-out.placeholder'
+              )}
+              label={t('settings.osc.vrchat.network.port-out.label')}
             ></Input>
           </div>
-          <Typography bold>Network address</Typography>
+          <Typography bold>
+            {t('settings.osc.vrchat.network.address.title')}
+          </Typography>
           <div className="flex flex-col pb-2">
             <Typography color="secondary">
-              Choose which address to send out data to VRChat (check your wifi
-              settings on your device)
+              {t('settings.osc.vrchat.network.address.description')}
             </Typography>
           </div>
           <div className="grid gap-3 pb-5">
             <Input
               type="text"
-              {...register('vrchat.address', {
+              {...register('vrchat.oscSettings.address', {
                 required: true,
                 pattern:
                   /^(?!0)(?!.*\.$)((1?\d?\d|25[0-5]|2[0-4]\d)(\.|$)){4}$/i,
               })}
-              placeholder="VRChat ip address"
+              placeholder={t('settings.osc.vrchat.network.address.placeholder')}
             ></Input>
           </div>
-          <Typography bold>Trackers</Typography>
+          <Typography bold>
+            {t('settings.osc.vrchat.network.trackers.title')}
+          </Typography>
           <div className="flex flex-col pb-2">
             <Typography color="secondary">
-              Toggle the sending and receiving of data
+              {t('settings.osc.vrchat.network.trackers.description')}
             </Typography>
           </div>
           <div className="grid grid-cols-2 gap-3 pb-5">
@@ -198,35 +218,35 @@ export function OSCSettings() {
               outlined
               control={control}
               name="vrchat.trackers.chest"
-              label="Chest"
+              label={t('settings.osc.vrchat.network.trackers.chest')}
             />
             <CheckBox
               variant="toggle"
               outlined
               control={control}
               name="vrchat.trackers.waist"
-              label="Waist"
+              label={t('settings.osc.vrchat.network.trackers.waist')}
             />
             <CheckBox
               variant="toggle"
               outlined
               control={control}
               name="vrchat.trackers.knees"
-              label="Knees"
+              label={t('settings.osc.vrchat.network.trackers.knees')}
             />
             <CheckBox
               variant="toggle"
               outlined
               control={control}
               name="vrchat.trackers.feet"
-              label="Feet"
+              label={t('settings.osc.vrchat.network.trackers.feet')}
             />
             <CheckBox
               variant="toggle"
               outlined
               control={control}
               name="vrchat.trackers.elbows"
-              label="Elbows"
+              label={t('settings.osc.vrchat.network.trackers.elbows')}
             />
           </div>
         </>

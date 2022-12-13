@@ -2,21 +2,31 @@
 use std::env;
 use std::ffi::{OsStr, OsString};
 use std::io::Write;
+#[cfg(windows)]
+use std::os::windows::process::CommandExt;
 use std::panic;
 use std::path::PathBuf;
 use std::process::{Child, Stdio};
-use std::str::FromStr;
 
 use clap::Parser;
-use clap_verbosity_flag::{InfoLevel, Verbosity};
+use const_format::formatcp;
 use rand::{seq::SliceRandom, thread_rng};
-use tauri::api::{clap, process::Command};
+use shadow_rs::shadow;
+use tauri::api::process::Command;
 use tauri::Manager;
 use tempfile::Builder;
 use which::which_all;
 
+#[cfg(windows)]
+/// For Commands on Windows so they dont create terminals
+const CREATE_NO_WINDOW: u32 = 0x0800_0000;
 /// It's an i32 because we check it through exit codes of the process
 const MINIMUM_JAVA_VERSION: i32 = 17;
+const JAVA_BIN: &str = if cfg!(windows) {
+	"java.exe"
+} else {
+	"java"
+};
 static POSSIBLE_TITLES: &[&str] = &[
 	"Panicking situation",
 	"looking for spatula",
@@ -24,16 +34,21 @@ static POSSIBLE_TITLES: &[&str] = &[
 	"never gonna let you down",
 	"uwu sowwy",
 ];
+shadow!(build);
+const VERSION: &str = formatcp!("{}-{}", build::PKG_VERSION, build::SHORT_COMMIT);
 
-#[derive(Parser)]
-#[clap(version, about)]
+#[derive(Debug, Parser)]
+#[clap(
+	version = VERSION,
+	about
+)]
 struct Cli {
 	#[clap(short, long)]
 	display_console: bool,
 	#[clap(long)]
 	launch_from_path: Option<PathBuf>,
 	#[clap(flatten)]
-	verbosity: Verbosity<InfoLevel>,
+	verbose: clap_verbosity_flag::Verbosity,
 }
 
 fn is_valid_path(path: &PathBuf) -> bool {
@@ -44,12 +59,13 @@ fn is_valid_path(path: &PathBuf) -> bool {
 }
 
 fn get_launch_path(cli: Cli) -> Option<PathBuf> {
-	let mut path = cli.launch_from_path.unwrap_or_default();
-	if is_valid_path(&path) {
-		return Some(path);
+	if let Some(path) = cli.launch_from_path {
+		if path.exists() && is_valid_path(&path) {
+			return Some(path);
+		}
 	}
 
-	path = env::current_dir().unwrap();
+	let mut path = env::current_dir().unwrap();
 	if is_valid_path(&path) {
 		return Some(path);
 	}
@@ -63,7 +79,12 @@ fn get_launch_path(cli: Cli) -> Option<PathBuf> {
 }
 
 fn spawn_java(java: &OsStr, java_version: &OsStr) -> std::io::Result<Child> {
-	std::process::Command::new(java)
+	let mut cmd = std::process::Command::new(java);
+
+	#[cfg(windows)]
+	cmd.creation_flags(CREATE_NO_WINDOW);
+
+	cmd.arg("-jar")
 		.arg(java_version)
 		.stdin(Stdio::null())
 		.stderr(Stdio::null())
@@ -153,17 +174,18 @@ fn main() {
 		log::info!("Server found on path: {}", p.to_str().unwrap());
 
 		// Check if any Java already installed is compatible
-		let jre = p.join("jre/bin/java");
+		let jre = p.join("jre/bin").join(JAVA_BIN);
 		let java_bin = jre
 			.exists()
 			.then(|| jre.into_os_string())
 			.or_else(|| valid_java_paths().first().map(|x| x.0.to_owned()));
-		if let None = java_bin {
+		let Some(java_bin) = java_bin else {
 			show_error(&format!("Couldn't find a compatible Java version, please download Java {} or higher", MINIMUM_JAVA_VERSION));
 			return;
 		};
 
-		let (recv, _child) = Command::new(java_bin.unwrap().to_string_lossy())
+		log::info!("Using Java binary: {:?}", java_bin);
+		let (recv, _child) = Command::new(java_bin.to_str().unwrap())
 			.current_dir(p)
 			.args(["-Xmx512M", "-jar", "slimevr.jar", "--no-gui"])
 			.spawn()
@@ -196,6 +218,7 @@ fn main() {
 							.emit_all("server-status", emit_me)
 							.expect("Failed to emit");
 					}
+					log::error!("Java server receiver died");
 					app_handle
 						.emit_all("server-status", ("other", "receiver cancelled"))
 						.expect("Failed to emit");
@@ -240,18 +263,21 @@ fn webview2_exists() -> bool {
 
 fn valid_java_paths() -> Vec<(OsString, i32)> {
 	let mut file = Builder::new()
-		.suffix(".class")
+		.suffix(".jar")
 		.tempfile()
-		.expect("Couldn't generate .class file");
-	file.write_all(include_bytes!("JavaVersion.class"))
-		.expect("Couldn't write to .class file");
+		.expect("Couldn't generate .jar file");
+	file.write_all(include_bytes!("JavaVersion.jar"))
+		.expect("Couldn't write to .jar file");
 	let java_version = file.into_temp_path();
 
 	// Check if main Java is a supported version
 	let main_java = if let Ok(java_home) = std::env::var("JAVA_HOME") {
-		PathBuf::from(java_home).join("bin/java").into_os_string()
+		PathBuf::from(java_home)
+			.join("bin")
+			.join(JAVA_BIN)
+			.into_os_string()
 	} else {
-		OsString::from_str("java").unwrap()
+		JAVA_BIN.into()
 	};
 	if let Some(main_child) = spawn_java(&main_java, java_version.as_os_str())
 		.expect("Couldn't spawn the main Java binary")
@@ -266,7 +292,7 @@ fn valid_java_paths() -> Vec<(OsString, i32)> {
 
 	// Otherwise check if anything else is a supported version
 	let mut childs = vec![];
-	for java in which_all("java").unwrap() {
+	for java in which_all(JAVA_BIN).unwrap() {
 		let res = spawn_java(java.as_os_str(), java_version.as_os_str());
 
 		match res {

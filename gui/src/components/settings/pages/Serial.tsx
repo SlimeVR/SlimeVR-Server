@@ -1,5 +1,6 @@
 import { useEffect, useRef, useState } from 'react';
 import { useForm } from 'react-hook-form';
+import { useTranslation } from 'react-i18next';
 import { useLocation } from 'react-router-dom';
 import {
   CloseSerialRequestT,
@@ -29,6 +30,7 @@ export function Serial() {
     layoutWidth,
     ref: consoleRef,
   } = useLayout<HTMLDivElement>();
+  const { t } = useTranslation();
 
   const { state } = useLocation();
 
@@ -56,7 +58,6 @@ export function Serial() {
   }, []);
 
   const onSubmit = (value: SerialForm) => {
-    console.log('open', value.port);
     openSerial(value.port);
     setConsole('');
   };
@@ -66,14 +67,13 @@ export function Serial() {
     const req = new OpenSerialRequestT();
     req.auto = port === 'Auto';
     req.port = port;
-    console.log('Open with', req);
     sendRPCPacket(RpcMessage.OpenSerialRequest, req);
   };
 
   useEffect(() => {
     sendRPCPacket(RpcMessage.SerialDevicesRequest, new SerialDevicesRequestT());
     const typedState: { serialPort: string } = state as any;
-    if (typedState.serialPort) {
+    if (typedState?.serialPort) {
       reset({ port: typedState.serialPort });
     }
   }, []);
@@ -105,7 +105,7 @@ export function Serial() {
     RpcMessage.SerialDevicesResponse,
     (res: SerialDevicesResponseT) => {
       setSerialDevices([
-        { name: 'Auto', port: 'Auto' },
+        { name: t('settings.serial.auto-dropdown-item'), port: 'Auto' },
         ...(res.devices || []),
       ]);
     }
@@ -151,12 +151,14 @@ export function Serial() {
   return (
     <div className="flex flex-col bg-background-70 h-full p-5 rounded-md">
       <div className="flex flex-col pb-2">
-        <Typography variant="main-title">Serial Console</Typography>
-        <Typography color="secondary">
-          This is a live information feed for serial communication.
+        <Typography variant="main-title">
+          {t('settings.serial.title')}
         </Typography>
         <Typography color="secondary">
-          May be useful if you need to know the firmware is acting up.
+          {t('settings.serial.description.p0')}
+        </Typography>
+        <Typography color="secondary">
+          {t('settings.serial.description.p1')}
         </Typography>
       </div>
       <div className="bg-background-80 rounded-lg flex flex-col p-2">
@@ -172,7 +174,7 @@ export function Serial() {
             <pre>
               {isSerialOpen
                 ? consoleContent
-                : 'Connection to serial lost, Reconnecting...'}
+                : t('settings.serial.connection-lost')}
             </pre>
           </div>
         </div>
@@ -180,13 +182,13 @@ export function Serial() {
           <div className="border-t-2 pt-2  border-background-60 border-solid m-2 gap-2 flex flex-row">
             <div className="flex flex-grow gap-2">
               <Button variant="quaternary" onClick={reboot}>
-                Reboot
+                {t('settings.serial.reboot')}
               </Button>
               <Button variant="quaternary" onClick={factoryReset}>
-                Factory Reset
+                {t('settings.serial.factory-reset')}
               </Button>
               <Button variant="quaternary" onClick={getInfos}>
-                Get Infos
+                {t('settings.serial.get-infos')}
               </Button>
             </div>
 
@@ -194,7 +196,7 @@ export function Serial() {
               <Dropdown
                 control={control}
                 name="port"
-                placeholder="Select a serial port"
+                placeholder={t('settings.serial.serial-select')}
                 items={serialDevices.map((device) => ({
                   label: device.name?.toString() || 'error',
                   value: device.port?.toString() || 'error',

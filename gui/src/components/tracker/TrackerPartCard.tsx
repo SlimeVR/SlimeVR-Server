@@ -1,5 +1,6 @@
 import classNames from 'classnames';
 import { MouseEventHandler, useEffect, useMemo, useState } from 'react';
+import { useTranslation } from 'react-i18next';
 import { BodyPart, TrackerDataT } from 'solarxr-protocol';
 import { FlatDeviceTracker } from '../../hooks/app';
 import { useTracker } from '../../hooks/tracker';
@@ -12,6 +13,7 @@ function Tracker({
   tracker: TrackerDataT;
   updateVelocity: (velocity: number) => void;
 }) {
+  const { t } = useTranslation();
   const { useVelocity } = useTracker(tracker);
 
   const velocity = useVelocity();
@@ -22,26 +24,26 @@ function Tracker({
 
   return (
     <Typography>
-      {`${tracker.info?.customName || tracker.info?.displayName}` || 'no name'}
+      {`${tracker.info?.customName || tracker.info?.displayName}` ||
+        t('tracker.part-card.unassigned')}
     </Typography>
   );
 }
 
 export function TrackerPartCard({
   td,
-  label,
   role,
   direction,
   onlyAssigned,
   onClick,
 }: {
   td: FlatDeviceTracker[];
-  label: string;
   role: BodyPart;
   onlyAssigned: boolean;
   direction: 'left' | 'right';
   onClick?: MouseEventHandler<HTMLDivElement>;
 }) {
+  const { t } = useTranslation();
   const [velocities, setVelocities] = useState<number[]>([]);
 
   const updateVelocity = (vel: number) => {
@@ -77,7 +79,9 @@ export function TrackerPartCard({
           }px #183951`,
         }}
       >
-        <Typography color="secondary">{label}</Typography>
+        <Typography color="secondary">
+          {t('body-part.' + BodyPart[role])}
+        </Typography>
         {td?.map(({ tracker }, index) => (
           <Tracker
             tracker={tracker}
@@ -85,7 +89,7 @@ export function TrackerPartCard({
             updateVelocity={(vel) => updateVelocity(vel)}
           />
         ))}
-        {!td && <Typography>Unassigned</Typography>}
+        {!td && <Typography>{t('tracker.part-card.unassigned')}</Typography>}
       </div>
     )) || <></>
   );

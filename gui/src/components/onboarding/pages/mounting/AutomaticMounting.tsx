@@ -1,3 +1,4 @@
+import { useTranslation } from 'react-i18next';
 import { useOnboarding } from '../../../../hooks/onboarding';
 import { ArrowLink } from '../../../commons/ArrowLink';
 import { Button } from '../../../commons/Button';
@@ -9,6 +10,7 @@ import { PreparationStep } from './mounting-steps/Preparation';
 import { PutTrackersOnStep } from './mounting-steps/PutTrackersOn';
 
 export function AutomaticMountingPage() {
+  const { t } = useTranslation();
   const { applyProgress, skipSetup, state } = useOnboarding();
 
   applyProgress(0.7);
@@ -20,14 +22,14 @@ export function AutomaticMountingPage() {
           <div className="flex flex-col max-w-lg gap-3">
             {!state.alonePage && (
               <ArrowLink to="/onboarding/enter-vr" direction="left">
-                Go Back to Enter VR
+                {t('onboarding.automatic-mounting.back')}
               </ArrowLink>
             )}
-            <Typography variant="main-title">Mounting Calibration</Typography>
+            <Typography variant="main-title">
+              {t('onboarding.automatic-mounting.title')}
+            </Typography>
             <Typography color="secondary">
-              For SlimeVR trackers to work, we need to assign a mounting
-              rotation to your trackers to align them with your physical tracker
-              mounting.
+              {t('onboarding.automatic-mounting.description')}
             </Typography>
           </div>
           <div className="flex">
@@ -46,7 +48,7 @@ export function AutomaticMountingPage() {
           <div className="flex flex-grow gap-3">
             {!state.alonePage && (
               <Button variant="secondary" to="/" onClick={skipSetup}>
-                Skip setup
+                {t('onboarding.skip')}
               </Button>
             )}
           </div>
@@ -56,11 +58,11 @@ export function AutomaticMountingPage() {
               state={{ alonePage: state.alonePage }}
               to="/onboarding/mounting/manual"
             >
-              Manually set mounting
+              {t('onboarding.automatic-mounting.manual-mounting')}
             </Button>
             {!state.alonePage && (
               <Button variant="primary" to="/onboarding/reset-tutorial">
-                Next step
+                {t('onboarding.automatic-mounting.next')}
               </Button>
             )}
           </div>

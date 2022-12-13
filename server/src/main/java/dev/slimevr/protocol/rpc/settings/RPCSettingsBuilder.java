@@ -2,17 +2,17 @@ package dev.slimevr.protocol.rpc.settings;
 
 import com.google.flatbuffers.FlatBufferBuilder;
 import dev.slimevr.config.FiltersConfig;
+import dev.slimevr.config.LegTweaksConfig;
 import dev.slimevr.config.OSCConfig;
+import dev.slimevr.config.TapDetectionConfig;
 import dev.slimevr.filtering.TrackerFilters;
 import dev.slimevr.platform.SteamVRBridge;
 import dev.slimevr.vr.processor.skeleton.SkeletonConfig;
 import dev.slimevr.vr.processor.skeleton.SkeletonConfigToggles;
 import dev.slimevr.vr.processor.skeleton.SkeletonConfigValues;
 import dev.slimevr.vr.trackers.TrackerRole;
-import solarxr_protocol.rpc.FilteringSettings;
-import solarxr_protocol.rpc.OSCTrackersSetting;
-import solarxr_protocol.rpc.SteamVRTrackersSetting;
-import solarxr_protocol.rpc.VRCOSCSettings;
+import solarxr_protocol.rpc.*;
+import solarxr_protocol.rpc.settings.LegTweaksSettings;
 import solarxr_protocol.rpc.settings.ModelRatios;
 import solarxr_protocol.rpc.settings.ModelSettings;
 import solarxr_protocol.rpc.settings.ModelToggles;
@@ -20,12 +20,41 @@ import solarxr_protocol.rpc.settings.ModelToggles;
 
 public class RPCSettingsBuilder {
 
-	public static int createOSCSettings(
+	public static int createOSCRouterSettings(
 		FlatBufferBuilder fbb,
 		OSCConfig config
 	) {
+		int addressStringOffset = fbb.createString(config.getAddress());
 
-		int trackersSettingOffset = OSCTrackersSetting
+		int oscSettingOffset = OSCSettings
+			.createOSCSettings(
+				fbb,
+				config.getEnabled(),
+				config.getPortIn(),
+				config.getPortOut(),
+				addressStringOffset
+			);
+
+		OSCRouterSettings.startOSCRouterSettings(fbb);
+		OSCRouterSettings.addOscSettings(fbb, oscSettingOffset);
+
+		return OSCRouterSettings.endOSCRouterSettings(fbb);
+	}
+
+	public static int createVRCOSCSettings(
+		FlatBufferBuilder fbb,
+		OSCConfig config
+	) {
+		int addressStringOffset = fbb.createString(config.getAddress());
+		int generalSettingOffset = OSCSettings
+			.createOSCSettings(
+				fbb,
+				config.getEnabled(),
+				config.getPortIn(),
+				config.getPortOut(),
+				addressStringOffset
+			);
+		int oscSettingOffset = OSCTrackersSetting
 			.createOSCTrackersSetting(
 				fbb,
 				config.getOSCTrackerRole(TrackerRole.HEAD, false),
@@ -40,22 +69,10 @@ public class RPCSettingsBuilder {
 				config.getOSCTrackerRole(TrackerRole.LEFT_HAND, false)
 					&& config.getOSCTrackerRole(TrackerRole.RIGHT_HAND, false)
 			);
-
-		int addressStringOffset = fbb.createString(config.getAddress());
 		VRCOSCSettings.startVRCOSCSettings(fbb);
-		VRCOSCSettings.addEnabled(fbb, config.getEnabled());
-		VRCOSCSettings.addPortIn(fbb, config.getPortIn());
-		VRCOSCSettings.addPortOut(fbb, config.getPortOut());
-		VRCOSCSettings
-			.addAddress(
-				fbb,
-				addressStringOffset
-			);
-		VRCOSCSettings
-			.addTrackers(
-				fbb,
-				trackersSettingOffset
-			);
+		VRCOSCSettings.addOscSettings(fbb, generalSettingOffset);
+		VRCOSCSettings.addTrackers(fbb, oscSettingOffset);
+		VRCOSCSettings.addTrackers(fbb, oscSettingOffset);
 
 		return VRCOSCSettings.endVRCOSCSettings(fbb);
 	}
@@ -69,6 +86,18 @@ public class RPCSettingsBuilder {
 				fbb,
 				TrackerFilters.getByConfigkey(filtersConfig.getType()).id,
 				filtersConfig.getAmount()
+			);
+	}
+
+	public static int createTapDetectionSettings(
+		FlatBufferBuilder fbb,
+		TapDetectionConfig tapDetectionConfig
+	) {
+		return TapDetectionSettings
+			.createTapDetectionSettings(
+				fbb,
+				tapDetectionConfig.getDelay(),
+				tapDetectionConfig.getEnabled()
 			);
 	}
 
@@ -93,7 +122,11 @@ public class RPCSettingsBuilder {
 		return steamvrTrackerSettings;
 	}
 
-	public static int createModelSettings(FlatBufferBuilder fbb, SkeletonConfig config) {
+	public static int createModelSettings(
+		FlatBufferBuilder fbb,
+		SkeletonConfig config,
+		LegTweaksConfig legTweaksConfig
+	) {
 		int togglesOffset = ModelToggles
 			.createModelToggles(
 				fbb,
@@ -114,7 +147,11 @@ public class RPCSettingsBuilder {
 				config.getValue(SkeletonConfigValues.HIP_LEGS_AVERAGING),
 				config.getValue(SkeletonConfigValues.KNEE_TRACKER_ANKLE_AVERAGING)
 			);
-		// TODO: legtweaks amount in protocol
-		return ModelSettings.createModelSettings(fbb, togglesOffset, ratiosOffset, 0);
+		int legTweaksOffset = LegTweaksSettings
+			.createLegTweaksSettings(
+				fbb,
+				legTweaksConfig.getCorrectionStrength()
+			);
+		return ModelSettings.createModelSettings(fbb, togglesOffset, ratiosOffset, legTweaksOffset);
 	}
 }

@@ -1,18 +1,18 @@
-import { ReactChild } from 'react';
+import { appWindow } from '@tauri-apps/api/window';
+import { ReactNode } from 'react';
 import { NavLink } from 'react-router-dom';
+import packagejson from '../../package.json';
 import { CloseIcon } from './commons/icon/CloseIcon';
 import { MaximiseIcon } from './commons/icon/MaximiseIcon';
 import { MinimiseIcon } from './commons/icon/MinimiseIcon';
 import { SlimeVRIcon } from './commons/icon/SimevrIcon';
-import { appWindow } from '@tauri-apps/api/window';
 import { ProgressBar } from './commons/ProgressBar';
 import { Typography } from './commons/Typography';
-import packagejson from '../../package.json';
 
 export function TopBar({
   progress,
 }: {
-  children?: ReactChild;
+  children?: ReactNode;
   progress?: number;
 }) {
   return (
@@ -36,7 +36,7 @@ export function TopBar({
             className="mx-2 flex justify-around flex-col text-standard-bold text-status-success bg-status-success bg-opacity-20 rounded-lg px-3"
             data-tauri-drag-region
           >
-            v{packagejson.version}
+            v{packagejson.version}-{window.__COMMIT_HASH__}
           </div>
         </div>
       </div>

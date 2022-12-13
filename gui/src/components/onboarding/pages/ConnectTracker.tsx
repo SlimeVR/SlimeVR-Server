@@ -1,5 +1,6 @@
 import classNames from 'classnames';
 import { useEffect, useState } from 'react';
+import { useTranslation } from 'react-i18next';
 import { useNavigate } from 'react-router-dom';
 import {
   CloseSerialRequestT,
@@ -28,14 +29,16 @@ type ConnectionStatus =
   | 'START-CONNECTING';
 
 const statusLabelMap = {
-  ['CONNECTING']: 'Sending wifi credentials',
-  ['CONNECTED']: 'Connected to WiFi',
-  ['ERROR']: 'Unable to connect to Wifi',
-  ['START-CONNECTING']: 'Looking for trackers',
-  ['HANDSHAKE']: 'Connected to the Server',
+  ['CONNECTING']: 'onboarding.connect-tracker.connection-status.connecting',
+  ['CONNECTED']: 'onboarding.connect-tracker.connection-status.connected',
+  ['ERROR']: 'onboarding.connect-tracker.connection-status.error',
+  ['START-CONNECTING']:
+    'onboarding.connect-tracker.connection-status.start-connecting',
+  ['HANDSHAKE']: 'onboarding.connect-tracker.connection-status.start-handshake',
 };
 
 export function ConnectTrackersPage() {
+  const { t } = useTranslation();
   const { layoutHeight, ref } = useLayout<HTMLDivElement>();
   const { trackers, useConnectedTrackers } = useTrackers();
   const { applyProgress, state, skipSetup } = useOnboarding();
@@ -132,15 +135,17 @@ export function ConnectTrackersPage() {
         <div className="flex flex-col w-full max-w-sm">
           {!state.alonePage && (
             <ArrowLink to="/onboarding/wifi-creds">
-              Go Back to WiFi credentials
+              {t('onboarding.connect-tracker.back')}
             </ArrowLink>
           )}
-          <Typography variant="main-title">Connect trackers</Typography>
-          <Typography color="secondary">
-            Now onto the fun part, connecting all the trackers!
+          <Typography variant="main-title">
+            {t('onboarding.connect-tracker.title')}
           </Typography>
           <Typography color="secondary">
-            Simply connect all that aren't connected yet, through a USB port.
+            {t('onboarding.connect-tracker.description.p0')}
+          </Typography>
+          <Typography color="secondary">
+            {t('onboarding.connect-tracker.description.p1')}
           </Typography>
           <div className="flex flex-col gap-2 py-5">
             {/* <ArrowLink
@@ -152,16 +157,14 @@ export function ConnectTrackersPage() {
             </ArrowLink> */}
             <ArrowLink
               to="/settings/serial"
+              state={{ SerialPort: 'Auto' }}
               direction="right"
               variant={state.alonePage ? 'boxed-2' : 'boxed'}
             >
-              I'm having trouble connecting!
+              {t('onboarding.connect-tracker.issue.serial')}
             </ArrowLink>
           </div>
-          <TipBox>
-            Not sure which tracker is which? Shake a tracker and it will
-            highlight the corresponding item.
-          </TipBox>
+          <TipBox>{t('tips.find-tracker')}</TipBox>
 
           <div
             className={classNames(
@@ -176,16 +179,20 @@ export function ConnectTrackersPage() {
               ></LoaderIcon>
             </div>
             <div className="flex flex-col">
-              <Typography bold>USB Tracker</Typography>
+              <Typography bold>
+                {t('onboarding.connect-tracker.usb')}
+              </Typography>
               <Typography color="secondary">
-                {statusLabelMap[connectionStatus]}
+                {t(statusLabelMap[connectionStatus])}
               </Typography>
             </div>
           </div>
         </div>
         <div className="flex flex-col flex-grow">
           <Typography color="secondary" bold>
-            {connectedTrackers.length} trackers connected
+            {t('onboarding.connect-tracker.connected-trackers', {
+              amount: connectedTrackers.length,
+            })}
           </Typography>
 
           <div
@@ -230,19 +237,19 @@ export function ConnectTrackersPage() {
           <div className="flex flex-grow">
             {!state.alonePage && (
               <Button variant="secondary" to="/" onClick={skipSetup}>
-                Skip setup
+                {t('onboarding.skip')}
               </Button>
             )}
           </div>
           <div className="flex gap-3">
             {!state.alonePage && (
               <Button variant="primary" to="/onboarding/trackers-assign">
-                I connected all my trackers
+                {t('onboarding.connect-tracker.next')}
               </Button>
             )}
             {state.alonePage && (
               <Button variant="primary" to="/">
-                I connected all my trackers
+                {t('onboarding.connect-tracker.next')}
               </Button>
             )}
           </div>
