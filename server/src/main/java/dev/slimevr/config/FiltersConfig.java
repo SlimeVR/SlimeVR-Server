@@ -47,12 +47,6 @@ public class FiltersConfig {
 	}
 
 	public float getAmount() {
-		// Check for out of bound amount
-		// Note: allow up to 2 for power users or something
-		if (amount > 2f) {
-			setAmount(0.2f);
-		}
-
 		return amount;
 	}
 
