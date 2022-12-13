@@ -4,7 +4,7 @@
     "connection-lost": "Connessione con il server persa. Tentativo di riconnessione in corso..."
   },
   "tips": {
-    "find-tracker": "Non sei sicur* quale tracker è quale? Agitalo e l'oggetto corrispondente sarà evidenziato.",
+    "find-tracker": "Non sei sicurə quale tracker è quale? Agitalo e l'oggetto corrispondente sarà evidenziato.",
     "do-not-move-heels": "Assicurati di non muovere i tuoi talloni durante la registrazione!"
   },
   "body-part": {
@@ -351,14 +351,14 @@
     "home": {
       "title": "Benvenuti a SlimeVR",
       "description.p0": "Portiamo full-body tracking",
-      "description.p1": "a tutt*",
+      "description.p1": "a tuttə",
       "start": "Prepariamoci!"
     },
     "enter-vr": {
       "back": "Torna all'assegnazione dei tracker",
       "title": "È ora di entrare in VR!",
       "description": "Indossa tutti i tuoi tracker e entra in VR!",
-      "ready": "Sono pront*!"
+      "ready": "Sono prontə!"
     },
     "done": {
       "title": "È tutto pronto!",
@@ -421,7 +421,7 @@
       "preparation": {
         "title": "Preparazione",
         "step": {
-          "0": "1. Stai in piedi dritt* con le braccia lungo i fianchi.",
+          "0": "1. Stai in piedi drittə con le braccia lungo i fianchi.",
           "1": "2. Premi il pulsante \"Reset\" e attendi 3 secondi prima che i tracker vengano ripristinati."
         }
       },
