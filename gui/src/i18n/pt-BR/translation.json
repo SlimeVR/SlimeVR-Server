@@ -163,7 +163,7 @@
       "fk-settings": "Opções de FK",
       "gesture-control": "Controle de Gestos",
       "interface": "Interface",
-      "osc-router": "Rota do OSC",
+      "osc-router": "Roteador OSC",
       "utils": "Utilidades",
       "serial": "Console Serial"
     },
@@ -267,7 +267,7 @@
     },
     "osc": {
       "router": {
-        "title": "Rota do OSC",
+        "title": "Roteador OSC",
         "description.p0": "Encaminhar mensagens OSC de outro programa.",
         "description.p1": "Útil para usar outro programa OSC com VRChat, por exemplo.",
         "enable": {
