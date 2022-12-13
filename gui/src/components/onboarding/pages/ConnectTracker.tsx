@@ -157,6 +157,7 @@ export function ConnectTrackersPage() {
             </ArrowLink> */}
             <ArrowLink
               to="/settings/serial"
+              state={{ SerialPort: 'Auto' }}
               direction="right"
               variant={state.alonePage ? 'boxed-2' : 'boxed'}
             >

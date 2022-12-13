@@ -280,13 +280,6 @@ export function GeneralSettings() {
               variant="toggle"
               outlined
               control={control}
-              name="trackers.waist"
-              label={t('settings.general.steamvr.trackers.waist')}
-            />
-            <CheckBox
-              variant="toggle"
-              outlined
-              control={control}
               name="trackers.chest"
               label={t('settings.general.steamvr.trackers.chest')}
             />
@@ -294,8 +287,8 @@ export function GeneralSettings() {
               variant="toggle"
               outlined
               control={control}
-              name="trackers.feet"
-              label={t('settings.general.steamvr.trackers.feet')}
+              name="trackers.waist"
+              label={t('settings.general.steamvr.trackers.waist')}
             />
             <CheckBox
               variant="toggle"
@@ -303,6 +296,13 @@ export function GeneralSettings() {
               control={control}
               name="trackers.knees"
               label={t('settings.general.steamvr.trackers.knees')}
+            />
+            <CheckBox
+              variant="toggle"
+              outlined
+              control={control}
+              name="trackers.feet"
+              label={t('settings.general.steamvr.trackers.feet')}
             />
             <CheckBox
               variant="toggle"
