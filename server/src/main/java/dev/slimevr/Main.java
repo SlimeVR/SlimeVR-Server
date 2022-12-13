@@ -50,6 +50,8 @@ public class Main {
 			e1.printStackTrace();
 		}
 
+		LogManager.info("Running version " + VERSION);
+
 		if (!SystemUtils.isJavaVersionAtLeast(JavaVersion.JAVA_17)) {
 			LogManager.severe("SlimeVR start-up error! A minimum of Java 17 is required.");
 			JOptionPane
@@ -93,7 +95,7 @@ public class Main {
 				e.printStackTrace();
 			}
 			System.exit(1); // Exit in case error happened on init and window
-							// not appeared, but some thread
+			// not appeared, but some thread
 			// started
 		} finally {
 			try {
