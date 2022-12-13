@@ -52,9 +52,9 @@
     "ELBOW_OFFSET": "Correzione Gomito"
   },
   "reset": {
-    "reset-all": "Resetta tutte le proporzioni",
-    "full": "Resetta",
-    "mounting": "Resetta posizioni",
+    "reset-all": "Ripristina tutte le proporzioni",
+    "full": "Ripristina",
+    "mounting": "Ripristina posizioni",
     "quick": "Reset veloce"
   },
   "serial-detection": {
@@ -68,9 +68,9 @@
   },
   "navbar": {
     "home": "Home",
-    "body-proportions": "Proportioni Corpo",
+    "body-proportions": "Proporzioni del corpo",
     "trackers-assign": "Assegnazione dei tracker",
-    "mounting": "Calibrazione Posizione",
+    "mounting": "Calibrazione della posizione",
     "onboarding": "Installazione guidata",
     "settings": "Impostazioni"
   },
@@ -112,7 +112,7 @@
       "manufacturer": "Produttore",
       "display-name": "Nome da visualizzare",
       "custom-name": "Nome Personalizzato",
-      "url": "URL tracker"
+      "url": "URL del tracker"
     },
     "settings": {
       "back": "Torna alla lista dei tracker",
@@ -143,7 +143,7 @@
     "description": "Scegli una parte del corpo a cui assegnare questo tracker. Alternativamente puoi scegliere di gestire tutti i tracker in una schermata unica invece che singolarmente.",
     "show-advanced-locations": "Mostra impostazioni avanzate di Assegnazione",
     "manage-trackers": "Gestisci tutti i tracker",
-    "unassign-tracker": "Rimuovi assegnazione tracker"
+    "unassign-tracker": "Rimuovi assegnazione del tracker"
   },
   "tracker-selection-menu": {
     "title": "Assegna il tracker a: {{bodyPart}}?",
@@ -159,7 +159,7 @@
     "sidebar": {
       "title": "Impostazioni",
       "general": "Generali",
-      "tracker-mechanics": "Comportamento tracker",
+      "tracker-mechanics": "Comportamento del tracker",
       "fk-settings": "Impostazioni FK",
       "gesture-control": "Controllo dei gesti",
       "interface": "Interfaccia",
@@ -170,9 +170,9 @@
     "general": {
       "steamvr": {
         "title": "SteamVR",
-        "subtitle": "SteamVR trackers",
-        "description.p0": "Abilita o disabilita specifici SteamVR trackers.",
-        "description.p1": "Utile per alcuni giochi che utilizzano solo alcuni SteamVR trackers.",
+        "subtitle": "Tracker di SteamVR",
+        "description.p0": "Abilita o disabilita specifici tracker di SteamVR.",
+        "description.p1": "Utile per alcuni giochi che utilizzano solo alcuni tracker di SteamVR.",
         "trackers": {
           "waist": "Girovita",
           "chest": "Petto",
@@ -183,7 +183,7 @@
         }
       },
       "tracker-mechanics": {
-        "title": "Comportamento tracker",
+        "title": "Comportamento del tracker",
         "subtitle": "Filtro movimenti",
         "description.p0": "Scegli la tipologia di filtraggio movimenti per il tuo tracker.",
         "description.p1": "Predizione anticipa i movimenti, mentre Attenuazione attenua muovimenti eccessivi.",
@@ -315,7 +315,7 @@
           },
           "address": {
             "title": "Indirizzo di rete",
-            "description": "Scegli a quale indirizzo di rete inviare i dati di VRChat (controlla le impostazioni Wi-Fi sul tuo dispositivo)",
+            "description": "Scegli a quale indirizzo di rete inviare i dati di VRChat (controlla le impostazioni WiFi sul tuo dispositivo)",
             "placeholder": "Indirizzo IP di VRChat"
           },
           "trackers": {
@@ -344,7 +344,7 @@
       "submit": "Conferma!"
     },
     "reset-tutorial": {
-      "back": "Torna alla calibrazione posizione",
+      "back": "Torna alla calibrazione della posizione",
       "title": "Riplistina tutorial",
       "description": "Questa funzionalitá non é completa, premi continua"
     },
@@ -355,7 +355,7 @@
       "start": "Prepariamoci!"
     },
     "enter-vr": {
-      "back": "Torna all'assegnazione Tracker",
+      "back": "Torna all'assegnazione dei tracker",
       "title": "È ora di entrare in VR!",
       "description": "Indossa tutti i tuoi tracker e entra in VR!",
       "ready": "Sono pront-!"
@@ -368,125 +368,125 @@
     "connect-tracker": {
       "back": "Torna alle credenziali WiFi",
       "title": "Connetti i tracker",
-      "description.p0": "Now onto the fun part, connecting all the trackers!",
-      "description.p1": "Simply connect all that aren't connected yet, through a USB port.",
+      "description.p0": "Ora passiamo alla parte divertente, colleghiamo tutti i tracker!",
+      "description.p1": "Collega semplicemente tutti i tracker che non sono ancora collegati tramite una porta USB.",
       "issue": {
-        "serial": "I'm having trouble connecting!"
+        "serial": "Ho problemi con la connessione!"
       },
-      "usb": "USB Tracker",
+      "usb": "Tracker USB",
       "connection-status": {
-        "connecting": "Sending wifi credentials",
-        "connected": "Connected to WiFi",
-        "error": "Unable to connect to Wifi",
-        "start-connecting": "Looking for trackers",
-        "handshake": "Connected to the Server"
+        "connecting": "Invio credenziali WiFi in corso.",
+        "connected": "Connesso al WiFi",
+        "error": "Impossibile connettersi al WiFi",
+        "start-connecting": "Ricerca dei tracker in corso",
+        "handshake": "Connesso al Server"
       },
-      "connected-trackers": "{{amount}} trackers connected",
-      "next": "I connected all my trackers"
+      "connected-trackers": "{{amount}} di tracker connessi",
+      "next": "Ho collegato tutti i miei tracker"
     },
     "assign-trackers": {
-      "back": "Go Back to Wifi Credentials",
-      "title": "Assign trackers",
-      "description": "Let's choose which tracker goes where. Click on a location where you want to place a tracker",
-      "assigned": "{{assigned}} of {{trackers}} trackers assigned",
-      "advanced": "Show advanced assign locations",
-      "next": "I assigned all the trackers"
+      "back": "Torna alle credenziali WiFi",
+      "title": "Assegna i tracker",
+      "description": "Scegliamo quale tracker va dove. Fare clic su una parte del corpo in cui si desidera posizionare un tracker",
+      "assigned": "{{assigned}} di {{trackers}} tracker assegnati",
+      "advanced": "Mostra impostazioni avanzate di assegnazione",
+      "next": "Ho assegnato tutti i miei tracker"
     },
     "manual-mounting": {
-      "back": "Go Back to Enter VR",
-      "title": "Manual Mounting",
-      "description": "Click on every tracker and select which way they are mounted",
-      "auto-mounting": "Automatic mounting",
-      "next": "Next step"
+      "back": "Torna indietro per entrare in VR",
+      "title": "Posizionamento manuale",
+      "description": "Fare clic su ogni tracker e selezionare in che direzione sono montati",
+      "auto-mounting": "Posizionamento automatico",
+      "next": "Passo successivo"
     },
     "automatic-mounting": {
-      "back": "Go Back to Enter VR",
-      "title": "Mounting Calibration",
-      "description": "For SlimeVR trackers to work, we need to assign a mounting rotation to your trackers to align them with your physical tracker mounting.",
-      "manual-mounting": "Manually set mounting",
-      "next": "Next step",
-      "prev-step": "Previous step",
+      "back": "Torna indietro per entrare in VR",
+      "title": "Calibrazione della posizione",
+      "description": "Affinché i tracker di SlimeVR funzionino, dobbiamo configurare una rotazione di posizione di montaggio ai tuoi tracker per allinearli con la posizione di montaggio del tuo tracker fisico.",
+      "manual-mounting": "Imposta posizione manualmente",
+      "next": "Passo successivo",
+      "prev-step": "Passaggio precedente",
       "done": {
-        "title": "Mounting rotations calibrated.",
-        "description": "Your mounting calibration is complete!",
-        "restart": "Return to start"
+        "title": "Rotazione delle posizioni di montaggio calibrate.",
+        "description": "La calibrazione della posizione é completa!",
+        "restart": "Torna all'inizio"
       },
       "mounting-reset": {
-        "title": "Mounting Reset",
+        "title": "Ripristina posizioni",
         "step": {
-          "0": "1. Squat in a \"skiing\" pose with your legs bent, your upper body tilted forwards, and your arms bent.",
-          "1": "2. Press the \"Reset Mounting\" button and wait for 3 seconds before the trackers' mounting rotations will reset."
+          "0": "1. Piegati come per sciare: con le gambe leggermente piegate e unite, la parte superiore del corpo inclinata in avanti e le braccia piegate.",
+          "1": "2. Premere il pulsante \"Ripristina posizioni\" e attendere 3 secondi prima che le rotazioni delle posizioni di montaggio dei tracker vengano ripristinate."
         }
       },
       "preparation": {
-        "title": "Preparation",
+        "title": "Preparazione",
         "step": {
-          "0": "1. Stand upright with your arms to your sides.",
-          "1": "2. Press the \"Reset\" button and wait for 3 seconds before the trackers will reset."
+          "0": "1. Stai in piedi dritt- con le braccia lungo i fianchi.",
+          "1": "2. Premi il pulsante \"Reset\" e attendi 3 secondi prima che i tracker vengano ripristinati."
         }
       },
       "put-trackers-on": {
-        "title": "Put on your trackers",
-        "description": "To calibrate mounting rotations, we're gonna use the trackers you just assigned. Put on all your trackers, you can see which are which in the figure to the right.",
-        "next": "I have all my trackers on"
+        "title": "Indossa i tuoi tracker",
+        "description": "Per calibrare le rotazioni delle posizioni montaggio useremo i tracker che hai appena assegnato. Indossa tutti i tuoi tracker, puoi vedere quali sono quali nella figura a destra.",
+        "next": "Sto indossando tutti i miei tracker"
       }
     },
     "manual-proportions": {
-      "back": "Go Back to Reset tutorial",
-      "title": "Manual Body Proportions",
-      "precision": "Precision adjust",
-      "auto": "Automatic calibration"
+      "back": "Torna al tutorial di reset",
+      "title": "Impostazione manuale delle proporzioni del corpo",
+      "precision": "Regolazione di precisione",
+      "auto": "Calibrazione automatica"
     },
     "automatic-proportions": {
-      "back": "Go Back to Reset tutorial",
-      "title": "Measure your body",
-      "description": "For SlimeVR trackers to work, we need to know the length of your bones. This short calibration will measure it for you.",
-      "manual": "Manual calibration",
-      "prev-step": "Previous step",
+      "back": "Torna al tutorial di reset",
+      "title": "Misura il tuo corpo",
+      "description": "Affinché i tracker di SlimeVR funzionino dobbiamo conoscere la lunghezza dei tuoi arti. Questa breve calibrazione le misurerà per te.",
+      "manual": "Calibrazione manuale",
+      "prev-step": "Passaggio precedente",
       "put-trackers-on": {
-        "title": "Put on your trackers",
-        "description": "To calibrate your proportions, we're gonna use the trackers you just assigned. Put on all your trackers, you can see which are which in the figure to the right.",
-        "next": "I have all my trackers on"
+        "title": "Indossa i tuoi tracker",
+        "description": "Per calibrare le tue proporzioni useremo i tracker che hai appena assegnato. Indossa tutti i tuoi tracker, puoi vedere quali sono quali nella figura a destra.",
+        "next": "Sto indossando tutti i miei tracker"
       },
       "preparation": {
-        "title": "Preparation",
-        "description": "Place a chair directly behind you inside your play space. Be prepared to sit down during the autobone setup.",
-        "next": "I am in front of a chair"
+        "title": "Preparazione",
+        "description": "Posiziona una sedia direttamente dietro di te all'interno dela tua area di gioco. Ti verrá richiesto di sederti durante certi passaggi della calibrazione delle proporzioni.",
+        "next": "Sono davanti a una sedia"
       },
       "start-recording": {
-        "title": "Get ready to move",
-        "description": "We're now going to record some specific poses and moves. These will be prompted in the next screen. Be ready to start when the button is pressed!",
-        "next": "Start Recording"
+        "title": "Preparati a muoverti",
+        "description": "Ora registreremo alcune pose e movimenti specifici. Questi verranno descritte nelle schermate successive. Preparati a iniziare quando premi il pulsante!",
+        "next": "Inizia registrazione"
       },
       "recording": {
         "title": "REC",
-        "description.p0": "Recording in progress...",
-        "description.p1": "Make the moves shown below:",
+        "description.p0": "Registrazione in corso...",
+        "description.p1": "Fai i movimenti mostrati di seguito:",
         "steps": {
-          "0": "Bend knees a few times.",
-          "1": "Sit on a chair then stand up.",
-          "2": "Twist upper body left, then bend right.",
-          "3": "Twist upper body right, then bend left.",
-          "4": "Wiggle around until timer ends."
+          "0": "Piega le ginocchia un paio di volte.",
+          "1": "Siediti su una sedia e poi alzati.",
+          "2": "Ruota la parte superiore del corpo a sinistra, poi piegati a destra.",
+          "3": "Ruota la parte superiore del corpo a destra, poi piegati a sinistra.",
+          "4": "Muoviti un poco fino allo scadere del timer."
         },
-        "processing": "Processing the result",
-        "timer": "{{time}} seconds left"
+        "processing": "Elaborazione del risultato",
+        "timer": "{{time}} secondi rimanenti"
       },
       "verify-results": {
-        "title": "Verify results",
-        "description": "Check the results below, do they look correct?",
-        "results": "Recording results",
-        "processing": "Processing the result",
-        "redo": "Redo recording",
-        "confirm": "They're correct"
+        "title": "Verifica i risultati",
+        "description": "Controlla i risultati qui sotto, sembrano corretti?",
+        "results": "Salvataggio dei risultati",
+        "processing": "Elaborazione del risultato",
+        "redo": "Rifai registrazione",
+        "confirm": "Sono corretti"
       },
       "done": {
-        "title": "Body measured and saved.",
-        "description": "Your body proportions calibration is complete!"
+        "title": "Corpo misurato e salvato.",
+        "description": "La calibrazione delle proporzioni del tuo corpo è completa!"
       }
     }
   },
   "home": {
-    "no-trackers": "No trackers detected or assigned"
+    "no-trackers": "Nessun tracker rilevato o assegnato"
   }
 }
