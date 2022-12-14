@@ -36,7 +36,11 @@ static POSSIBLE_TITLES: &[&str] = &[
 ];
 shadow!(build);
 // Tauri has a way to return the package.json version, but it's not a constant...
-const VERSION: &str = formatcp!("{}-{}", build::PKG_VERSION, build::SHORT_COMMIT);
+const VERSION: &str = if build::TAG.is_empty() {
+	formatcp!("git-{}", build::SHORT_COMMIT)
+} else {
+	build::TAG
+};
 
 #[derive(Debug, Parser)]
 #[clap(
