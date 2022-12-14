@@ -64,6 +64,11 @@ Import the formatting settings defined in `spotless.xml`, like this:
 Eclipse will only do a subset of the checks in `spotless`, so you may still want to do
 `./gradlew spotlessApply` if you ever see an error from spotless.
 
+### Version bumping
+There are multiple files that need their version changed:
+* The server needs to be changed in ``dev.slimevr.Main.VERSION``
+* The GUI needs to be changed in the ``gui/package.json`` file at the ``version`` field
+
 ## Code Licensing
 SlimeVR uses an MIT license, and some parts of the project use a dual MIT/Apache 2.0
 license. Be sure that any code that you reference, or dependencies you add, are

@@ -35,6 +35,7 @@ static POSSIBLE_TITLES: &[&str] = &[
 	"uwu sowwy",
 ];
 shadow!(build);
+// Tauri has a way to return the package.json version, but it's not a constant...
 const VERSION: &str = formatcp!("{}-{}", build::PKG_VERSION, build::SHORT_COMMIT);
 
 #[derive(Debug, Parser)]

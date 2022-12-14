@@ -1,6 +1,6 @@
 [package]
 name = "slimevr"
-version = "0.5.0"
+version = "0.0.0"
 
 description = "SlimeVR GUI Application"
 license = "MIT OR Apache-2.0"
