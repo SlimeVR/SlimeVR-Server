@@ -1,6 +1,6 @@
 {
   "websocket": {
-    "connecting": "서버에 연결 중...",
+    "connecting": "서버에 연결하는 중...",
     "connection-lost": "서버와의 연결이 끊어졌어요. 다시 연결하는 중..."
   },
   "tips": {
@@ -230,7 +230,7 @@
       "gesture-control": {
         "title": "제스처 제어",
         "subtitle": "두번 탭해서 퀵 리셋하기",
-        "description": "활성화하면 가장 높이 있는 추적기의 아무 곳이나 두 번 탭해서 퀵 리셋을 활성화할 수 있어요. 두번 탭하는 간격은 딜레이로 조절할 수 있어요.",
+        "description": "활성화하면 가장 높이 있는 트래커의 아무 곳이나 두 번 탭해서 퀵 리셋을 활성화할 수 있어요. 두번 탭하는 간격은 딜레이로 조절할 수 있어요.",
         "enable": "두번 탭해서 퀵 리셋",
         "delay": "딜레이"
       },
@@ -238,7 +238,7 @@
         "title": "인터페이스",
         "dev-mode": {
           "title": "개발자 모드",
-          "description": "이 모드는 더 많은 데이터가 필요하거나 고급 수준에서 연결된 추적기와 상호 작용하는 경우에 유용할 수 있어요.",
+          "description": "이 모드는 더 많은 데이터가 필요하거나 고급 수준에서 연결된 트래커와 상호 작용하는 경우에 유용할 수 있어요.",
           "label": "개발자 모드"
         },
         "serial-detection": {
@@ -267,7 +267,7 @@
     "osc": {
       "router": {
         "title": "OSC 라우터",
-        "description.p0": "다른 프로그램으로 OSC 메시지를 전달해요.",
+        "description.p0": "다른 프로그램에서 오는 OSC 메시지를 전달해요.",
         "description.p1": "예를 들어 VRChat과 함께 다른 OSC 프로그램을 사용하는 데 유용할 거에요.",
         "enable": {
           "title": "활성화",
@@ -314,7 +314,7 @@
           },
           "address": {
             "title": "네트워크 주소",
-            "description": "VRChat으로 데이터를 보낼 주소를 선택하십시오(장치의 Wi-Fi 설정 확인).",
+            "description": "VRChat으로 데이터를 보낼 주소를 선택하세요(장치의 Wi-Fi 설정 확인).",
             "placeholder": "VRChat IP 주소"
           },
           "trackers": {
@@ -335,7 +335,7 @@
     "continue": "계속하기",
     "wip": "아직 공사중이에요",
     "wifi-creds": {
-      "back": "Go Back to introduction",
+      "back": "처음으로 돌아가기",
       "title": "WiFi 자격 증명을 입력하세요",
       "description.p0": "트래커는 이 자격 증명을 사용하여 무선으로 연결해요",
       "description.p1": "지금 연결되어 있는 자격 증명을 사용해주세요",
@@ -343,9 +343,9 @@
       "submit": "저장!"
     },
     "reset-tutorial": {
-      "back": "Go Back to Mounting calibration",
-      "title": "Reset tutorial",
-      "description": "This feature isn't done, just press continue"
+      "back": "착용 방향 정렬로 돌아가기",
+      "title": "리셋 튜토리얼",
+      "description": "이 기능은 아직 완성되지 않았어요, 지금은 일단 계속하기를 눌러주세요!"
     },
     "home": {
       "title": "SlimeVR에 어서오세요!",
@@ -367,7 +367,7 @@
     "connect-tracker": {
       "back": "WiFi 자격 증명으로 돌아가기",
       "title": "트래커 연결",
-      "description.p0": "이제 모든 추적기를 연결하는 재미있는 부분으로 가봐요!",
+      "description.p0": "이제 모든 트래커를 연결하는 재미있는 부분으로 가봐요!",
       "description.p1": "그냥 모든 트래커를 USB 포트에 연결하기만 하면 돼요",
       "issue": {
         "serial": "연결하는 데 문제가 생겼어요!"
@@ -394,7 +394,7 @@
     "manual-mounting": {
       "back": "VR 입장 페이지로 돌아가기",
       "title": "수동 마운팅",
-      "description": "Click on every tracker and select which way they are mounted",
+      "description": "트래커를 클릭한 다음, 트래커가 바라보는 방향을 선택해주세요",
       "auto-mounting": "자동으로 마운팅 설정",
       "next": "다음 단계"
     },
@@ -433,7 +433,7 @@
     "manual-proportions": {
       "back": "리셋 튜토리얼로 돌아가기",
       "title": "수동 신체 비율 설정",
-      "precision": "Precision adjust",
+      "precision": "자세히 조절하기",
       "auto": "자동 신체 비율 설정"
     },
     "automatic-proportions": {
@@ -450,7 +450,7 @@
       "preparation": {
         "title": "준비하기",
         "description": "여러분의 놀이 공간 안에 여러분의 바로 뒤에 의자를 놓으세요. 오토본 설정 중에 앉을 수 있도록 준비해주세요.",
-        "next": "의자 앞에 섰어요"
+        "next": "의자 앞에 서 있어요"
       },
       "start-recording": {
         "title": "움직일 준비",
@@ -486,6 +486,6 @@
     }
   },
   "home": {
-    "no-trackers": "감지되거나 할당된 추적기가 없어요."
+    "no-trackers": "감지되거나 할당된 트래커가 없어요."
   }
 }
