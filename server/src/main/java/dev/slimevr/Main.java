@@ -14,8 +14,8 @@ import java.net.ServerSocket;
 public class Main {
 
 	public static final String VERSION = BuildConfig.GIT_VERSION_TAG.isEmpty()
-		? BuildConfig.GIT_VERSION_TAG
-		: BuildConfig.GIT_COMMIT_HASH;
+		? BuildConfig.GIT_COMMIT_HASH
+		: BuildConfig.GIT_VERSION_TAG;
 
 	public static VRServer vrServer;
 
