@@ -84,10 +84,12 @@ application {
 
 def gitCommitHash = 'git rev-parse --verify --short HEAD'.execute().text.trim()
 def gitVersionTag = 'git --no-pager tag --points-at HEAD'.execute().text.trim()
+def gitClean = 'git status --porcelain'.execute().text.isEmpty()
 buildConfig {
 	packageName("dev.slimevr")
 	buildConfigField("String", "GIT_COMMIT_HASH", "\"${gitCommitHash}\"")
 	buildConfigField("String", "GIT_VERSION_TAG", "\"${gitVersionTag}\"")
+	buildConfigField("boolean", "GIT_CLEAN", "${gitClean}")
 }
 
 spotless {
