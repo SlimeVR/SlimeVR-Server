@@ -54,7 +54,7 @@
   "reset": {
     "reset-all": "모든 신체 비율 리셋",
     "full": "리셋",
-    "mounting": "마운팅 재설정",
+    "mounting": "착용 방향 리셋",
     "quick": "퀵 리셋"
   },
   "serial-detection": {
@@ -70,7 +70,7 @@
     "home": "홈",
     "body-proportions": "신체 비율",
     "trackers-assign": "트래커 위치",
-    "mounting": "마운팅 재설정",
+    "mounting": "착용 방향 정렬",
     "onboarding": "설정 마법사",
     "settings": "설정"
   },
@@ -393,28 +393,28 @@
     },
     "manual-mounting": {
       "back": "VR 입장 페이지로 돌아가기",
-      "title": "수동 마운팅",
+      "title": "수동으로 착용 방향 설정",
       "description": "트래커를 클릭한 다음, 트래커가 바라보는 방향을 선택해주세요",
-      "auto-mounting": "자동으로 마운팅 설정",
+      "auto-mounting": "자동으로 착용 방향 설정",
       "next": "다음 단계"
     },
     "automatic-mounting": {
       "back": "VR 입장 페이지로 돌아가기",
-      "title": "마운팅 재설정",
-      "description": "SlimeVR 트래커가 작동하려면, 마운팅 방향을 정해야 해요. 이 단계에서는 실제 트래커의 회전과 맞게 마운팅 방향을 정렬할 거에요.",
-      "manual-mounting": "수동으로 마운팅 설정",
+      "title": "착용 방향 정렬",
+      "description": "SlimeVR 트래커가 작동하려면, 착용 방향을 정해야 해요. 이 단계에서는 실제 트래커의 회전과 맞게 착용 방향을 정렬할 거에요.",
+      "manual-mounting": "수동으로 착용 방향 설정",
       "next": "다음 단계",
       "prev-step": "이전 단계",
       "done": {
-        "title": "Mounting rotations calibrated.",
-        "description": "Your mounting calibration is complete!",
-        "restart": "Return to start"
+        "title": "착용 방향이 정렬되었어요",
+        "description": "트래커의 착용 방향이 잘 설정되었어요!",
+        "restart": "다시 처음으로 돌아가기"
       },
       "mounting-reset": {
-        "title": "마운팅 리셋",
+        "title": "착용 방향 정렬",
         "step": {
-          "0": "1. 다리를 구부리고 상체를 앞으로 기울이고 팔을 구부린 상태에서 \"스키\" 자세로 쪼그리고 앉으세요.",
-          "1": "2. \"마운팅 재설정\" 버튼을 누르고 추적기의 마운팅 회전이 재설정되기 전에 3초 동안 기다리세요."
+          "0": "1. 팔, 다리를 구부린 다음 상체를 앞으로 기울여서 마치 스키를 타는 것처럼 쪼그리고 앉으세요.",
+          "1": "2. \"착용 방향 재설정\" 버튼을 누르고 착용 방향이 재설정될 때 까지 3초간 기다려주세요."
         }
       },
       "preparation": {
@@ -426,7 +426,7 @@
       },
       "put-trackers-on": {
         "title": "트래커를 착용해주세요",
-        "description": "마운팅 회전을 보정하기 위해 방금 할당한 트래커를 사용할 거에요. 모든 트래커를 착용하면 오른쪽 그림에서 어떤 트래커인지 확인할 수 있어요.",
+        "description": "트래커의 착용 방향이 돌아가는 것을 보정하기 위해 방금 할당한 트래커를 사용할 거에요. 모든 트래커를 착용했다면 오른쪽 그림에서 어떤 트래커인지 확인할 수 있어요.",
         "next": "모든 트래커를 착용했어요"
       }
     },
