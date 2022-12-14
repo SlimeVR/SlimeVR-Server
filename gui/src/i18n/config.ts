@@ -46,7 +46,7 @@ export const langs = [
     key: 'owo',
   },
   {
-    name: '日本語',
+    name: '🇯🇵 日本語',
     key: 'ja',
   },
 ];
