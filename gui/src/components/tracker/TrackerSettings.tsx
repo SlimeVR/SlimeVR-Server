@@ -86,7 +86,7 @@ export function TrackerSettingsPage() {
   const currRotation = useMemo(() => {
     return tracker?.tracker.info?.mountingOrientation
       ? FixEuler(GetYaw(tracker.tracker.info?.mountingOrientation) * RAD_TO_DEG)
-      : rotationToQuatMap.BACK;
+      : rotationToQuatMap.FRONT;
   }, [tracker?.tracker.info?.mountingOrientation]);
 
   const updateTrackerName = () => {
