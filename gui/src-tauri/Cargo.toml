@@ -38,7 +38,7 @@ rand = "0.8.5"
 tempfile = "3"
 which = "4.3.0"
 open = "3"
-shadow-rs = "0.18"
+shadow-rs = { version = "0.18", default-features = false }
 const_format = "0.2.30"
 
 [target.'cfg(windows)'.dependencies]

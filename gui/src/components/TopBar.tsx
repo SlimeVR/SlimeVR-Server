@@ -1,7 +1,6 @@
 import { appWindow } from '@tauri-apps/api/window';
 import { ReactNode } from 'react';
 import { NavLink } from 'react-router-dom';
-import packagejson from '../../package.json';
 import { CloseIcon } from './commons/icon/CloseIcon';
 import { MaximiseIcon } from './commons/icon/MaximiseIcon';
 import { MinimiseIcon } from './commons/icon/MinimiseIcon';
@@ -36,7 +35,8 @@ export function TopBar({
             className="mx-2 flex justify-around flex-col text-standard-bold text-status-success bg-status-success bg-opacity-20 rounded-lg px-3"
             data-tauri-drag-region
           >
-            {window.__VERSION_TAG__ || `git-${window.__COMMIT_HASH__}`}
+            {(window.__VERSION_TAG__ || window.__COMMIT_HASH__) +
+              (window.__GIT_CLEAN__ ? '' : '-dirty')}
           </div>
         </div>
       </div>

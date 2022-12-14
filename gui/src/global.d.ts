@@ -6,6 +6,7 @@ declare global {
   interface Window {
     __COMMIT_HASH__: string;
     __VERSION_TAG__: string;
+    __GIT_CLEAN__: boolean;
   }
 }
 

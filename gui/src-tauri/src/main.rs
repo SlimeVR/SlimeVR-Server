@@ -9,7 +9,7 @@ use std::path::PathBuf;
 use std::process::{Child, Stdio};
 
 use clap::Parser;
-use const_format::formatcp;
+use const_format::concatcp;
 use rand::{seq::SliceRandom, thread_rng};
 use shadow_rs::shadow;
 use tauri::api::process::Command;
@@ -22,11 +22,7 @@ use which::which_all;
 const CREATE_NO_WINDOW: u32 = 0x0800_0000;
 /// It's an i32 because we check it through exit codes of the process
 const MINIMUM_JAVA_VERSION: i32 = 17;
-const JAVA_BIN: &str = if cfg!(windows) {
-	"java.exe"
-} else {
-	"java"
-};
+const JAVA_BIN: &str = if cfg!(windows) { "java.exe" } else { "java" };
 static POSSIBLE_TITLES: &[&str] = &[
 	"Panicking situation",
 	"looking for spatula",
@@ -37,14 +33,15 @@ static POSSIBLE_TITLES: &[&str] = &[
 shadow!(build);
 // Tauri has a way to return the package.json version, but it's not a constant...
 const VERSION: &str = if build::TAG.is_empty() {
-	formatcp!("git-{}", build::SHORT_COMMIT)
+	build::SHORT_COMMIT
 } else {
 	build::TAG
 };
+const MODIFIED: &str = if build::GIT_CLEAN { "" } else { "-dirty" };
 
 #[derive(Debug, Parser)]
 #[clap(
-	version = VERSION,
+	version = concatcp!(VERSION, MODIFIED),
 	about
 )]
 struct Cli {
