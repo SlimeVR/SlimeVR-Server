@@ -11,22 +11,22 @@
     "NONE": "할당되지 않음",
     "HEAD": "머리",
     "NECK": "목",
-    "RIGHT_SHOULDER": "오른쪽 어께",
-    "RIGHT_UPPER_ARM": "오른쪽 위팔",
-    "RIGHT_LOWER_ARM": "오른쪽 아래팔",
+    "RIGHT_SHOULDER": "오른쪽 어깨",
+    "RIGHT_UPPER_ARM": "오른쪽 팔 위",
+    "RIGHT_LOWER_ARM": "오른쪽 팔 아래",
     "RIGHT_HAND": "오른손",
-    "RIGHT_UPPER_LEG": "오른쪽 허벅지",
-    "RIGHT_LOWER_LEG": "오른쪽 종아리",
+    "RIGHT_UPPER_LEG": "오른쪽 다리 위",
+    "RIGHT_LOWER_LEG": "오른쪽 다리 아래",
     "RIGHT_FOOT": "오른발",
     "CHEST": "가슴",
     "WAIST": "허리",
     "HIP": "엉덩이",
-    "LEFT_SHOULDER": "오른쪽 어께",
-    "LEFT_UPPER_ARM": "왼쪽 위팔",
-    "LEFT_LOWER_ARM": "왼쪽 아래팔",
+    "LEFT_SHOULDER": "오른쪽 어깨",
+    "LEFT_UPPER_ARM": "왼쪽 팔 위",
+    "LEFT_LOWER_ARM": "왼쪽 팔 아래",
     "LEFT_HAND": "왼손",
-    "LEFT_UPPER_LEG": "왼쪽 허벅지",
-    "LEFT_LOWER_LEG": "왼쪽 종아리",
+    "LEFT_UPPER_LEG": "왼쪽 다리 위",
+    "LEFT_LOWER_LEG": "왼쪽 다리 아래",
     "LEFT_FOOT": "왼발"
   },
   "skeleton-bone": {
@@ -45,8 +45,8 @@
     "SKELETON_OFFSET": "골격 오프셋",
     "CONTROLLER_DISTANCE_Z": "컨트롤러 Z축 거리",
     "CONTROLLER_DISTANCE_Y": "컨트롤러 Y축 거리",
-    "FOREARM_LENGTH": "아래팔 거리",
-    "SHOULDERS_DISTANCE": "어께 거리",
+    "FOREARM_LENGTH": "전완 길이",
+    "SHOULDERS_DISTANCE": "어깨 거리",
     "SHOULDERS_WIDTH": "어깨 너비",
     "UPPER_ARM_LENGTH": "위팔 거리",
     "ELBOW_OFFSET": "팔꿈치 오프셋"
@@ -190,7 +190,7 @@
           "title": "필터링 타입",
           "none": {
             "label": "필터링 없음",
-            "description":"어떠한 필터링도 사용하지 않아요. 있는 그대로의 회전값을 사용해요."
+            "description":"어떠한 필터링도 사용하지 않아요. 있는 그대로의 회전 값을 사용해요."
           },
           "smoothing": {
             "label": "Smoothing",
@@ -209,7 +209,7 @@
         "title": "FK 설정",
         "leg-tweak": {
           "title": "다리 보정",
-          "description": "플로어 클립은 바닥과의 클리핑을 줄이거나 제거할 수 있지만 무릎을 꿇을 때 문제를 일으킬 수 있어요. 스케이팅 보정은 아이스 스케이팅을 보정하지만 특정 움직임 패턴에서 정확도를 저하시킬 수 있어요.",
+          "description": "플로어 클립은 바닥과의 클리핑을 줄이거나 제거할 수 있지만 무릎을 꿇을 때 문제를 일으킬 수 있어요. 스케이팅 보정은 아이스 스케이팅을 보정하지만, 특정 움직임 패턴에서 정확도를 저하시킬 수 있어요.",
           "floor-clip": "플로어 클립",
           "skating-correction": "스케이팅 보정",
           "skating-correction-amount": "스케이팅 보정 강도"
@@ -229,7 +229,7 @@
       },
       "gesture-control": {
         "title": "제스처 제어",
-        "subtitle": "두번 탭해서 퀵 리셋하기",
+        "subtitle": "두 번 탭해서 퀵 리셋하기",
         "description": "활성화하면 가장 높이 있는 트래커의 아무 곳이나 두 번 탭해서 퀵 리셋을 활성화할 수 있어요. 두번 탭하는 간격은 딜레이로 조절할 수 있어요.",
         "enable": "두번 탭해서 퀵 리셋",
         "delay": "딜레이"
@@ -333,7 +333,7 @@
   "onboarding": {
     "skip": "설정 건너뛰기",
     "continue": "계속하기",
-    "wip": "아직 공사중이에요",
+    "wip": "아직 공사 중이에요",
     "wifi-creds": {
       "back": "처음으로 돌아가기",
       "title": "WiFi 자격 증명을 입력하세요",
@@ -374,7 +374,7 @@
       },
       "usb": "USB 트래커",
       "connection-status": {
-        "connecting": "WiFi 자격증명 전송중",
+        "connecting": "WiFi 자격증명 전송 중",
         "connected": "WiFi 연결됨",
         "error": "Wifi에 연결할 수 없음",
         "start-connecting": "트래커 찾는 중",
@@ -460,7 +460,7 @@
       "recording": {
         "title": "REC",
         "description.p0": "기록하는 중...",
-        "description.p1": "아래에 표시된 동작을 따라하세요",
+        "description.p1": "아래에 표시된 동작을 따라 하세요",
         "steps": {
           "0": "무릎을 몇 번 구부리세요",
           "1": "의자에 앉았다가 일어서세요.",
@@ -468,7 +468,7 @@
           "3": "상체를 오른쪽으로 비틀고 왼쪽으로 구부리세요.",
           "4": "타이머가 종료될 때까지 이리저리 움직여 보세요."
         },
-        "processing": "결과 처리중",
+        "processing": "결과 처리 중",
         "timer": "{{time}} 초 남음"
       },
       "verify-results": {
