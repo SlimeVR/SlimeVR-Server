@@ -65,9 +65,13 @@ Eclipse will only do a subset of the checks in `spotless`, so you may still want
 `./gradlew spotlessApply` if you ever see an error from spotless.
 
 ### Version bumping
-There are multiple files that need their version changed:
-* The server needs to be changed in ``dev.slimevr.Main.VERSION``
-* The GUI needs to be changed in the ``gui/package.json`` file at the ``version`` field
+* Create the git tag instead of making it from releases, you can do it by just ``git tag VERSION``,
+  example ``git tag v0.5.0``
+* You need to push this change with ``git push origin VERSION`` or ``git push origin --tags``
+(will push all tags you made).
+
+We recommend committing first and then making the tag, that tag will point to the commit you are currently
+on.
 
 ## Code Licensing
 SlimeVR uses an MIT license, and some parts of the project use a dual MIT/Apache 2.0
