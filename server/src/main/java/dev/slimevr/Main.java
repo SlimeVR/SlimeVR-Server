@@ -13,7 +13,9 @@ import java.net.ServerSocket;
 
 public class Main {
 
-	public static final String VERSION = "0.5.1";
+	public static final String VERSION = BuildConfig.GIT_VERSION_TAG.isEmpty()
+		? BuildConfig.GIT_VERSION_TAG
+		: BuildConfig.GIT_COMMIT_HASH;
 
 	public static VRServer vrServer;
 
@@ -45,7 +47,7 @@ public class Main {
 			System.exit(0);
 		}
 		if (cmd.hasOption("version")) {
-			System.out.println("SlimeVR Server " + VERSION + "-" + BuildConfig.GIT_COMMIT_HASH);
+			System.out.println("SlimeVR Server " + VERSION);
 			System.exit(0);
 		}
 
@@ -56,7 +58,7 @@ public class Main {
 			e1.printStackTrace();
 		}
 
-		LogManager.info("Running version " + VERSION + "-" + BuildConfig.GIT_COMMIT_HASH);
+		LogManager.info("Running version " + VERSION);
 
 		if (!SystemUtils.isJavaVersionAtLeast(JavaVersion.JAVA_17)) {
 			LogManager.severe("SlimeVR start-up error! A minimum of Java 17 is required.");

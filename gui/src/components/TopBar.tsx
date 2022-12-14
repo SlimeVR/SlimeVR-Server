@@ -36,7 +36,7 @@ export function TopBar({
             className="mx-2 flex justify-around flex-col text-standard-bold text-status-success bg-status-success bg-opacity-20 rounded-lg px-3"
             data-tauri-drag-region
           >
-            v{packagejson.version}-{window.__COMMIT_HASH__}
+            {window.__VERSION_TAG__ || `git-${window.__COMMIT_HASH__}`}
           </div>
         </div>
       </div>
