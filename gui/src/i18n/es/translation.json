@@ -139,7 +139,7 @@
     }
   },
   "body-assignment-menu": {
-    "title": "Where do you want this tracker to be?",
+    "title": "¿Donde quieres colocar este rastreador?",
     "description": "Choose a location where you want this tracker to be assigned. Alternatively you can choose to manage all trackers at once instead of one by one.",
     "show-advanced-locations": "Show advanced assign locations",
     "manage-trackers": "Manage all trackers",
