@@ -242,7 +242,7 @@
         },
         "serial-detection": {
           "title": "Serielle Geräteerkennung",
-          "description": "Diese Option zeigt jedes Mal ein Pop-up-Fenster an, wenn ein neues serielles Gerät angeschlossen wird, dass ein Tracker sein könnte. Dies hilft beim Einrichtungsprozesses der Trackers",
+          "description": "Diese Option zeigt jedes Mal ein Pop-up-Fenster an, wenn ein neues serielles Gerät angeschlossen wird, das ein Tracker sein könnte. Dies hilft beim Einrichtungsprozesses der Trackers",
           "label": "Serielle Geräteerkennung"
         },
         "lang": {
