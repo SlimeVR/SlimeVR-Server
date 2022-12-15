@@ -15,8 +15,8 @@
     "RIGHT_UPPER_ARM": "Rechter Oberarm",
     "RIGHT_LOWER_ARM": "Rechter Unterarm",
     "RIGHT_HAND": "Rechte Hand",
-    "RIGHT_UPPER_LEG": "Rechtes oberes Bein",
-    "RIGHT_LOWER_LEG": "Rechtes unteres Bein",
+    "RIGHT_UPPER_LEG": "Rechter Oberschenkel",
+    "RIGHT_LOWER_LEG": "Rechter Unterschenkel",
     "RIGHT_FOOT": "Rechter Fuß",
     "CHEST": "Brust",
     "WAIST": "Taille",
@@ -25,8 +25,8 @@
     "LEFT_UPPER_ARM": "Linker Oberarm",
     "LEFT_LOWER_ARM": "Linker Unterarm",
     "LEFT_HAND": "Linke Hand",
-    "LEFT_UPPER_LEG": "Linkes oberes Bein",
-    "LEFT_LOWER_LEG": "Linkes unteres Bein",
+    "LEFT_UPPER_LEG": "Linker Oberschenkel",
+    "LEFT_LOWER_LEG": "Linker Unterschenkel",
     "LEFT_FOOT": "Linker Fuß"
   },
   "skeleton-bone": {
@@ -71,7 +71,7 @@
     "body-proportions": "Körpermaße",
     "trackers-assign": "Tracker-Zuordnung",
     "mounting": "Tracker-Ausrichtung",
-    "onboarding": "Setup-Assistent",
+    "onboarding": "Einrichtungs-Assistent",
     "settings": "Einstellungen"
   },
   "bvh": {
@@ -237,12 +237,12 @@
         "title": "Bedienoberfläche",
         "dev-mode": {
           "title": "Entwicklermodus",
-          "description": "Dieser Modus kann nützlich sein, wenn Sie tiefgreifende Daten benötigen oder auf einer fortgeschrittenen Ebene mit verbundenen Trackern interagieren möchten",
+          "description": "Der Entwicklermodus stellt mehr Daten dar und erlaubt auch erweiterte Einstellungen, so wie erweiterte Optionen bei verbundenen Trackern.",
           "label": "Entwicklermodus"
         },
         "serial-detection": {
           "title": "Serielle Geräteerkennung",
-          "description": "Diese Option zeigt jedes Mal, wenn Sie ein neues serielles Gerät anschließen, das ein Tracker sein könnte, ein Pop-up-Fenster an. Es hilft bei der Verbesserung des Einrichtungsprozesses eines Trackers",
+          "description": "Diese Option zeigt jedes Mal ein Pop-up-Fenster an, wenn ein neues serielles Gerät angeschlossen wird, dass ein Tracker sein könnte. Dies hilft beim Einrichtungsprozesses der Trackers",
           "label": "Serielle Geräteerkennung"
         },
         "lang": {
