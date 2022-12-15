@@ -10,6 +10,7 @@ import dev.slimevr.platform.SteamVRBridge;
 import dev.slimevr.vr.trackers.*;
 import io.eiren.util.logging.LogManager;
 
+import java.io.File;
 import java.io.IOException;
 import java.net.StandardProtocolFamily;
 import java.net.UnixDomainSocketAddress;
@@ -41,6 +42,12 @@ public class UnixSocketBridge extends SteamVRBridge implements AutoCloseable {
 		super(server, hmd, "Named socket thread", bridgeName, bridgeSettingsKey, shareableTrackers);
 		this.socketPath = socketPath;
 		this.socketAddress = UnixDomainSocketAddress.of(socketPath);
+
+		File socketFile = new File(socketPath);
+		if (socketFile.exists()) {
+			throw new RuntimeException(socketPath + " socket already exists.");
+		}
+		socketFile.deleteOnExit();
 	}
 
 	@Override
