@@ -300,7 +300,7 @@ public class IMUTracker
 		yawFix.mult(store, store);
 	}
 
-	private Quaternion getMountedAdjustedRotation(){
+	private Quaternion getMountedAdjustedRotation() {
 		return rotQuaternion.mult(mountAdjust);
 	}
 
