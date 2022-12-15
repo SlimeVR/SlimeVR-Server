@@ -6,13 +6,11 @@ import com.jme3.math.Vector3f;
 import dev.slimevr.Main;
 import dev.slimevr.NetworkProtocol;
 import dev.slimevr.vr.trackers.IMUTracker;
-import dev.slimevr.vr.trackers.ReferenceAdjustedTracker;
 import dev.slimevr.vr.trackers.Tracker;
 import dev.slimevr.vr.trackers.TrackerStatus;
 import io.eiren.util.Util;
 import io.eiren.util.collections.FastList;
 import io.eiren.util.logging.LogManager;
-
 import org.apache.commons.lang3.ArrayUtils;
 
 import java.io.IOException;
@@ -235,12 +233,9 @@ public class TrackersUDPServer extends Thread {
 				this,
 				Main.vrServer
 			);
-			ReferenceAdjustedTracker<IMUTracker> adjustedTracker = new ReferenceAdjustedTracker<>(
-				imu
-			);
 
 			connection.getTrackers().add(imu);
-			trackersConsumer.accept(adjustedTracker);
+			trackersConsumer.accept(imu);
 			LogManager
 				.info(
 					"[TrackerServer] Added sensor "

@@ -23,12 +23,17 @@ public class IMUTracker
 
 	// public final Vector3f gyroVector = new Vector3f();
 	public final Vector3f accelVector = new Vector3f();
-	public final Vector3f magVector = new Vector3f();
+	// public final Vector3f magVector = new Vector3f();
 	public final Quaternion rotQuaternion = new Quaternion();
 	public final Quaternion rotMagQuaternion = new Quaternion();
-	public final Quaternion rotAdjust = new Quaternion();
+	public final Quaternion mountAdjust = new Quaternion();
 	public final UDPDevice device;
 	public final int trackerNum;
+	public final Vector3f rotVector = new Vector3f();
+	public final Quaternion gyroFix = new Quaternion();
+	public final Quaternion attachmentFix = new Quaternion();
+	public final Quaternion mountRotFix = new Quaternion();
+	public final Quaternion yawFix = new Quaternion();
 	protected final Quaternion correction = new Quaternion();
 	protected final int trackerId;
 	protected final String name;
@@ -70,10 +75,12 @@ public class IMUTracker
 		this.descriptiveName = descriptiveName;
 		this.vrserver = vrserver;
 
-		setFiltering(
-			vrserver.getConfigManager().getVrConfig().getFilters().enumGetType(),
-			vrserver.getConfigManager().getVrConfig().getFilters().getAmount()
-		);
+		if (vrserver != null) {
+			setFiltering(
+				vrserver.getConfigManager().getVrConfig().getFilters().enumGetType(),
+				vrserver.getConfigManager().getVrConfig().getFilters().getAmount()
+			);
+		}
 	}
 
 	@Override
@@ -86,16 +93,15 @@ public class IMUTracker
 	@Override
 	public void readConfig(TrackerConfig config) {
 		// Loading a config is an act of user editing, therefore it shouldn't
-		// not be
-		// allowed if editing is not allowed
+		// be allowed if editing is not allowed
 		if (userEditable()) {
 			setCustomName(config.getCustomName());
 
 			if (config.getMountingRotation() != null) {
 				mounting = config.getMountingRotation();
-				rotAdjust.set(config.getMountingRotation());
+				mountAdjust.set(config.getMountingRotation());
 			} else {
-				rotAdjust.loadIdentity();
+				mountAdjust.loadIdentity();
 			}
 			Optional<TrackerPosition> trackerPosition = TrackerPosition
 				.getByDesignation(config.getDesignation());
@@ -114,9 +120,9 @@ public class IMUTracker
 	public void setMountingRotation(Quaternion mr) {
 		mounting = mr;
 		if (mounting != null) {
-			rotAdjust.set(mounting);
+			mountAdjust.set(mounting);
 		} else {
-			rotAdjust.loadIdentity();
+			mountAdjust.loadIdentity();
 		}
 	}
 
@@ -186,9 +192,15 @@ public class IMUTracker
 			store.set(rotQuaternion);
 		}
 		// correction.mult(store, store); // Correction is not used now to
-		// prevent
-		// accidental errors while debugging other things
-		store.multLocal(rotAdjust);
+		// prevent accidental errors while debugging other things
+		store.multLocal(mountAdjust);
+		adjustInternal(store);
+		return true;
+	}
+
+	@Override
+	public boolean getRawRotation(Quaternion store) {
+		store.set(rotQuaternion);
 		return true;
 	}
 
@@ -247,25 +259,104 @@ public class IMUTracker
 		this.batteryVoltage = voltage;
 	}
 
+	/**
+	 * Reset the tracker so that its current rotation is counted as (0, <HMD
+	 * Yaw>, 0). This allows the tracker to be strapped to body at any pitch and
+	 * roll.
+	 * <p>
+	 * Performs {@link #resetYaw(Quaternion)} for yaw drift correction.
+	 */
 	@Override
 	public void resetFull(Quaternion reference) {
+		fixGyroscope(getMountedAdjustedRotation());
+		fixAttachment(getMountedAdjustedRotation());
+
 		resetYaw(reference);
 	}
 
 	/**
-	 * Does not perform actual gyro reset to reference, that's the task of
-	 * reference adjusted tracker. Only aligns gyro with magnetometer if it's
-	 * reliable
+	 * Reset the tracker so that it's current yaw rotation is counted as <HMD
+	 * Yaw>. This allows the tracker to have yaw independent of the HMD. Tracker
+	 * should still report yaw as if it was mounted facing HMD, mounting
+	 * position should be corrected in the source. Also aligns gyro magnetometer
+	 * if it's reliable.
 	 */
 	@Override
 	public void resetYaw(Quaternion reference) {
+		fixYaw(reference);
+
 		if (magCalibrationStatus >= CalibrationAccuracy.HIGH.status) {
 			magnetometerCalibrated = true;
 			// During calibration set correction to match magnetometer readings
-			// exactly
 			// TODO : Correct only yaw
 			correction.set(rotQuaternion).inverseLocal().multLocal(rotMagQuaternion);
 		}
+	}
+
+	protected void adjustInternal(Quaternion store) {
+		gyroFix.mult(store, store);
+		store.multLocal(attachmentFix);
+		store.multLocal(mountRotFix);
+		yawFix.mult(store, store);
+	}
+
+	private Quaternion getMountedAdjustedRotation(){
+		return rotQuaternion.mult(mountAdjust);
+	}
+
+	private void fixGyroscope(Quaternion sensorRotation) {
+		sensorRotation.fromAngles(0, sensorRotation.getYaw(), 0);
+		gyroFix.set(sensorRotation).inverseLocal();
+	}
+
+	private void fixAttachment(Quaternion sensorRotation) {
+		gyroFix.mult(sensorRotation, sensorRotation);
+		attachmentFix.set(sensorRotation).inverseLocal();
+	}
+
+	@Override
+	public void resetMounting(boolean reverseYaw) {
+		// Get the current calibrated rotation
+		Quaternion buffer = getMountedAdjustedRotation();
+		gyroFix.mult(buffer, buffer);
+		buffer.multLocal(attachmentFix);
+
+		// Reset the vector for the rotation to point straight up
+		rotVector.set(0f, 1f, 0f);
+		// Rotate the vector by the quat, then flatten and normalize the vector
+		buffer.multLocal(rotVector).setY(0f).normalizeLocal();
+
+		// Calculate the yaw angle using tan
+		// Just use an angle offset of zero for unsolvable circumstances
+		float yawAngle = FastMath.isApproxZero(rotVector.x) && FastMath.isApproxZero(rotVector.z)
+			? 0f
+			: FastMath.atan2(rotVector.x, rotVector.z);
+
+		// Make an adjustment quaternion from the angle
+		buffer.fromAngles(0f, reverseYaw ? yawAngle : yawAngle - FastMath.PI, 0f);
+
+		Quaternion lastRotAdjust = mountRotFix.clone();
+		mountRotFix.set(buffer);
+
+		// Get the difference from the last adjustment
+		buffer.multLocal(lastRotAdjust.inverseLocal());
+		// Apply the yaw rotation difference to the yaw fix quaternion
+		yawFix.multLocal(buffer.inverseLocal());
+	}
+
+	private void fixYaw(Quaternion reference) {
+		// Use only yaw HMD rotation
+		Quaternion targetRotation = reference.clone();
+		targetRotation.fromAngles(0, targetRotation.getYaw(), 0);
+
+		Quaternion sensorRotation = getMountedAdjustedRotation();
+		gyroFix.mult(sensorRotation, sensorRotation);
+		sensorRotation.multLocal(attachmentFix);
+		sensorRotation.multLocal(mountRotFix);
+
+		sensorRotation.fromAngles(0, sensorRotation.getYaw(), 0);
+
+		yawFix.set(sensorRotation).inverseLocal().multLocal(targetRotation);
 	}
 
 	/**
@@ -275,10 +366,6 @@ public class IMUTracker
 	protected void calculateLiveMagnetometerCorrection() {
 		// TODO Magic, correct only yaw
 		// TODO Print "jump" length when correcting if it's more than 1 degree
-	}
-
-	@Override
-	public void resetMounting(boolean reverseYaw) {
 	}
 
 	@Override
