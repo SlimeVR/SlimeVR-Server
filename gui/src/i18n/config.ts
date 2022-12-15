@@ -1,6 +1,7 @@
 import i18next from 'i18next';
 import { initReactI18next } from 'react-i18next';
 import en from './en/translation.json';
+import es from './es/translation.json';
 import fr from './fr/translation.json';
 import ko from './ko/translation.json';
 import pl from './pl/translation.json';
@@ -15,6 +16,10 @@ export const langs = [
   {
     name: '🇺🇸 English',
     key: 'en',
+  },
+  {
+    name: 'Español',
+    key: 'es'
   },
   {
     name: '🇫🇷 Français',
@@ -49,6 +54,9 @@ export const langs = [
 export const resources = {
   en: {
     translation: en,
+  },
+  es: {
+    translation: es,
   },
   fr: {
     translation: fr,
