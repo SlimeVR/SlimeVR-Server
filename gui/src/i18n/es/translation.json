@@ -119,7 +119,7 @@
       "title": "Ajustes de rastreadores",
       "assignment-section": {
         "title": "Asignación",
-        "description": "What part of the body the tracker is assigned to. A que parte del cuerpo está asignado el rastreador",
+        "description": "¿A que parte del cuerpo está asignado el rastreador",
         "edit": "Editar asignación"
       },
       "mounting-section": {
@@ -140,70 +140,70 @@
   },
   "body-assignment-menu": {
     "title": "¿Donde quieres colocar este rastreador?",
-    "description": "Choose a location where you want this tracker to be assigned. Alternatively you can choose to manage all trackers at once instead of one by one.",
-    "show-advanced-locations": "Show advanced assign locations",
-    "manage-trackers": "Manage all trackers",
-    "unassign-tracker": "Unassign tracker"
+    "description": "Escoge una ubicación donde quieres que el rastreador se asigne. Alternativamente puedes escoger manejar todos los rastreadores a la vez, en vez de uno en uno.",
+    "show-advanced-locations": "Mostrar ubicaciones de asignación avanzadas",
+    "manage-trackers": "Administrar todos los rastreadores",
+    "unassign-tracker": "Desasignar rastreador"
   },
   "tracker-selection-menu": {
-    "title": "Which tracker to assign to the {{bodyPart}}?",
-    "unassigned": "Unassigned Trackers",
-    "assigned": "Assigned Trackers",
-    "dont-assign": "Do not assign"
+    "title": "¿Que rastreador esta asignado en {{bodyPart}}?",
+    "unassigned": "Rastreadores sin asignar",
+    "assigned": "Rastreadores asignados",
+    "dont-assign": "No asignar"
   },
   "mounting-selection-menu": {
-    "title": "Where do you want this tracker to be?",
-    "close": "Close"
+    "title": "¿Donde quieres que este el rastreador?",
+    "close": "Cerrar"
   },
   "settings": {
     "sidebar": {
-      "title": "Settings",
+      "title": "Ajustes",
       "general": "General",
       "tracker-mechanics": "Tracker mechanics",
       "fk-settings": "FK settings",
-      "gesture-control": "Gesture control",
-      "interface": "Interface",
-      "osc-router": "OSC router",
-      "utils": "Utilities",
+      "gesture-control": "Control de gestos",
+      "interface": "Interfaz",
+      "osc-router": "Router OSC",
+      "utils": "Utilidades",
       "serial": "Serial console"
     },
     "general": {
       "steamvr": {
         "title": "SteamVR",
-        "subtitle": "SteamVR trackers",
-        "description.p0": "Enable or disable specific SteamVR trackers.",
-        "description.p1": "Useful for games or apps that only support certain trackers.",
+        "subtitle": "Rastreadores de SteamVR",
+        "description.p0": "Activa o desactiva rastreadores de SteamVR específicos.",
+        "description.p1": "Útil para juegos o aplicaciones que solo soportan ciertos rastreadores.",
         "trackers": {
-          "waist": "Waist",
-          "chest": "Chest",
-          "feet": "Feet",
-          "knees": "Knees",
-          "elbows": "Elbows",
-          "hands": "Hands"
+          "waist": "Cadera",
+          "chest": "Pecho",
+          "feet": "Pies",
+          "knees": "Rodillas",
+          "elbows": "Codos",
+          "hands": "Manos"
         }
       },
       "tracker-mechanics": {
         "title": "Tracker mechanics",
-        "subtitle": "Filtering",
-        "description.p0": "Choose the filtering type for your trackers.",
-        "description.p1": "Prediction predicts movement while smoothing smoothens movement.",
+        "subtitle": "Filtro",
+        "description.p0": "Escoge el tipo de filtro para tus rastreadores.",
+        "description.p1": "Predicción predice el movimiento mientras que suavizado suaviza el movimiento.",
         "filtering-type": {
-          "title": "Filtering type",
+          "title": "Tipo de filtro",
           "none": {
-            "label": "No filtering",
-            "description":"Use rotations as is. Will not do any filtering."
+            "label": "Sin filtro",
+            "description":"Usa rotaciones como son. No se utilizará ningún filtro."
           },
           "smoothing": {
-            "label": "Smoothing",
-            "description":"Smooths movements but adds some latency."
+            "label": "Suavizado",
+            "description":"Suaviza el movimiento, pero añade latencia."
           },
           "prediction": {
-            "label": "Prediction",
-            "description":"Reduces latency and makes movements more snappy, but may increase jitter."
+            "label": "Predicción",
+            "description":"Reduce la latencia y hace los movimientos mas responsivos, pero puede aumentar su inestabilidad."
           }
         },
         "amount": {
-          "label": "Amount"
+          "label": "Cantidad"
         }
       },
       "fk-settings": {
@@ -221,36 +221,36 @@
           "force-arms": "Force arms from HMD"
         },
         "skeleton-settings": {
-          "title": "Skeleton settings",
-          "description": "Toggle skeleton settings on or off. It is recommended to leave these on.",
-          "extended-spine": "Extended spine",
-          "extended-pelvis": "Extended pelvis",
-          "extended-knees": "Extended knee"
+          "title": "Ajustes del esqueleto",
+          "description": "Activa o desactiva los ajustes del esqueleto. Se recomienda dejar estos ajustes activados.",
+          "extended-spine": "Columna extendida",
+          "extended-pelvis": "Pelvis extendida",
+          "extended-knees": "Rodillas extendidas"
         }
       },
       "gesture-control": {
-        "title": "Gesture control",
-        "subtitle": "Double Tap quick reset",
-        "description": "Enable or disable double tap quick reset. When enabled double tapping anywhere on the highest torso tracker will activate a quick reset. Delay is the time between registering a tap and resetting.",
-        "enable": "Double tap quick reset",
-        "delay": "Delay"
+        "title": "Control de gestos",
+        "subtitle": "Reinicio rápido con toque doble",
+        "description": "Activa o desactiva el reinicio rapido con toque doble. Cuando se activa, al tocar dos veces en cualquier lugar en el rastreador mas alto del torso, este activará un reinicio rápido. Retraso es el tiempo que se demora en registrar un toque y el reinicio.",
+        "enable": "Reinicio rápido con toque doble",
+        "delay": "Retraso"
       },
       "interface": {
-        "title": "Interface",
+        "title": "Interfaz",
         "dev-mode": {
-          "title": "Developer Mode",
-          "description": "This mode can be useful if you need in-depth data or to interact with connected trackers on a more advanced level",
-          "label": "Developer Mode"
+          "title": "Modo de desarrollador",
+          "description": "Este modo puede ser útil si necesitas datos en profundidad o para interactuar con rastreadores conectados en un nivel mas avanzado.",
+          "label": "Modo de desarrollador"
         },
         "serial-detection": {
-          "title": "Serial device detection",
-          "description": "This option will show a pop-up every time you plug a new serial device that could be a tracker. It helps improving the setup process of a tracker",
-          "label": "Serial device detection"
+          "title": "Detección de dispositivo serial",
+          "description": "Esta opción mostrará una notificación cada vez que conectas un dispositivo serial que podría ser un rastreador. Ayuda a mejorar el proceso de ajuste de un rastreador.",
+          "label": "Detección de dispositivo serial"
         },
         "lang": {
-          "title": "Select language",
-          "description": "Change the default language you want to use",
-          "placeholder": "Select the language to use"
+          "title": "Selecciona el idioma",
+          "description": "Cambia el idioma por defecto que quieres usar",
+          "placeholder": "Selecciona el idioma a usar"
         }
       }
     },
@@ -267,51 +267,51 @@
     },
     "osc": {
       "router": {
-        "title": "OSC router",
-        "description.p0": "Forward OSC messages from another program.",
-        "description.p1": "Useful for using another OSC program with VRChat for example.",
+        "title": "Router OSC",
+        "description.p0": "Reenvia mensajes OSC desde otro programa.",
+        "description.p1": "Útil para usar otro programa OSC con VRChat por ejemplo.",
         "enable": {
-          "title": "Enable",
-          "description": "Toggle the forwarding of messages",
-          "label": "Enable"
+          "title": "Activar",
+          "description": "Activa el reenvío de mensajes",
+          "label": "Activar"
         },
         "network": {
-          "title": "Network ports",
-          "description.p0": "Set the ports for listening and sending data",
-          "description.p1": "These can be the same as other ports used in the SlimeVR server",
+          "title": "Puertos de conexión",
+          "description.p0": "Establece los puertos para recibir y enviar datos",
+          "description.p1": "Estos pueden ser los mismos que otros puertos utilizados en el servidor de SlimeVR",
           "port-in": {
-            "label": "Port In",
-            "placeholder": "Port in (default: 9002)"
+            "label": "Puerto de entrada",
+            "placeholder": "Puerto de entrada (Por defecto: 9002)"
           },
           "port-out": {
-            "label": "Port Out",
-            "placeholder": "Port out (default: 9000)"
+            "label": "Puerto de salida",
+            "placeholder": "Puerto de salida (Por defecto: 9000)"
           },
           "address": {
-            "title": "Network address",
-            "description": "Set the address to send out data at",
-            "placeholder": "IPV4 address"
+            "title": "Dirección de conexión",
+            "description": "Establece la dirección a la cuál enviar datos",
+            "placeholder": "Dirección IPv4"
           }
         }
       },
       "vrchat": {
-        "description.p0": "Change VRChat-specific settings to receive HMD data and send",
-        "description.p1": "trackers data for FBT (works on Quest standalone).",
+        "description.p0": "Cambia ajustes especificos de VRChat para enviar y recibir datos del HMD",
+        "description.p1": "Datos de los rastreadores para FBT (Funciona de manera independiente en Quest).",
         "enable": {
-          "title": "Enable",
-          "description": "Toggle the sending and receiving of data",
-          "label": "Enable"
+          "title": "Activar",
+          "description": "Activa el envío y recepción de datos",
+          "label": "Activar"
         },
         "network": {
-          "title": "Network ports",
-          "description": "Set the ports for listening and sending data to VRChat",
+          "title": "Puertos de conexión",
+          "description": "Establece los puertos para recibir y enviar datos a VRChat",
           "port-in": {
-            "label": "Port In",
-            "placeholder": "Port in (default: 9001)"
+            "label": "Puerto de entrada",
+            "placeholder": "Puerto de entrada (Por defecto: 9001)"
           },
           "port-out": {
-            "label": "Port Out",
-            "placeholder": "Port out (default: 9000)"
+            "label": "Puerto de salida",
+            "placeholder": "Puerto de salida (Por defecto: 9000)"
           },
           "address": {
             "title": "Network address",
