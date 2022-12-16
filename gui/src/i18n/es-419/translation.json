@@ -4,7 +4,7 @@
     "connection-lost": "Conexión con el servidor perdida. Intentando reconectar..."
   },
   "tips": {
-    "find-tracker": "¿No sabes cuál sensor tracker es cual? Agita un tracker y se resaltará donde está asignado.",
+    "find-tracker": "¿No sabes cuál sensor es cual? Agita un sensor y se resaltará donde está asignado.",
     "do-not-move-heels": "¡Asegura no mover los talones durante la grabación!"
   },
   "body-part": {
@@ -60,7 +60,7 @@
   "serial-detection": {
     "new-device.p0": "¡Nuevo dispositivo detectado!" ,
     "new-device.p1": "Ingresa tus credenciales de wifi",
-    "new-device.p2": "Por favor seleciona que quieres hacer con el",
+    "new-device.p2": "Por favor selecciona que quieres hacer con el",
     "open-wifi": "Conectarse a wifi",
     "open-serial": "Abrir consola serial",
     "submit": "Enviar!",
@@ -141,7 +141,7 @@
   "body-assignment-menu": {
     "title": "¿Dónde quieres que esté este sensor?",
     "description": "Selecciona la posición donde quieres asignar este sensor. Alternativamente, puedes escoger administrar todos los sensores al mismo tiempo en vez de uno por uno.",
-    "show-advanced-locations": "Mostrar posiciones de asignación avanzados",
+    "show-advanced-locations": "Mostrar posiciones de asignación avanzadas",
     "manage-trackers": "Administrar todos los sensores",
     "unassign-tracker": "Desasignar sensor"
   },
@@ -199,11 +199,11 @@
           },
           "prediction": {
             "label": "Predicción",
-            "description":"Reduce la latencia y los movimientos serán más *snappy*, pero puedo incrementar *jitter*."
+            "description":"Reduce la latencia y los movimientos serán más responsivos, pero puedo incrementar la inestabilidad."
           }
         },
         "amount": {
-          "label": "Cantidad de filtro"
+          "label": "Cantidad"
         }
       },
       "fk-settings": {
@@ -221,7 +221,7 @@
           "force-arms": "Forzar brazos desde el HMD"
         },
         "skeleton-settings": {
-          "title": "Ajustes de esquelto",
+          "title": "Ajustes de esqueleto",
           "description": "Habilita o deshabilita los ajustes de esqueleto. Es recomendado dejar habilitados estos ajustes.",
           "extended-spine": "Extención de columna",
           "extended-pelvis": "Extención de pelvis",
@@ -229,10 +229,10 @@
         }
       },
       "gesture-control": {
-        "title": "Gesture control",
-        "subtitle": "Double Tap quick reset",
-        "description": "Enable or disable double tap quick reset. When enabled double tapping anywhere on the highest torso tracker will activate a quick reset. Delay is the time between registering a tap and resetting.",
-        "enable": "Reinicio rápido Double tap quick reset",
+        "title": "Control de gestos",
+        "subtitle": "Reinicio rápido al tocar dos veces",
+        "description": "Habilita o deshabilita el reinicio rápido al tocar dos veces. Al estar habilitado, tocar dos veces el sensor más alto del torso activará el reinicio rápido. El retraso es el tiempo entre el tocar el sensor y el reinicio.",
+        "enable": "Reinicio rápido al tocar dos veces",
         "delay": "Retraso"
       },
       "interface": {
@@ -244,11 +244,11 @@
         },
         "serial-detection": {
           "title": "Detección de dispositivo serial",
-          "description": "Esta opción mostrará un mensaje emergente cada vez que conectes un nuevo dispositivo serial que pueda ser un sensor. Ayuda a mejorar el proceso de configuración de sensores",
+          "description": "Esta opción mostrará un notificación cada vez que conectes un nuevo dispositivo serial que pueda ser un sensor. Ayuda a mejorar el proceso de configuración de un sensor",
           "label": "Detección de dispositivo serial"
         },
         "lang": {
-          "title": "Seleciona un lenguaje",
+          "title": "Selecciona un lenguaje",
           "description": "Cambia el lenguaje por defecto que deseas utilizar",
           "placeholder": "Selecciona el lenguaje a utilizar"
         }
@@ -256,8 +256,8 @@
     },
     "serial": {
       "title": "Consola serial",
-      "description.p0": "Esta es información en vivo para la comunicación serial.",
-      "description.p1": "Puede ser util para saber si el Firmware tiene problemas.",
+      "description.p0": "Esta es la comunicación serial actualizada en vivo.",
+      "description.p1": "Puede ser util para saber si el firmware tiene problemas.",
       "connection-lost": "Conexión serial perdida, Reconectado...",
       "reboot": "Reinciar",
       "factory-reset": "Reestablecimiento de fábrica",
@@ -267,7 +267,7 @@
     },
     "osc": {
       "router": {
-        "title": "Enrutador OSC",
+        "title": "Router OSC",
         "description.p0": "Reenvia mensajes OSC desde otro programa.",
         "description.p1": "Útil para usar otro programa OSC con VRChat por ejemplo.",
         "enable": {
@@ -338,56 +338,56 @@
     "wifi-creds": {
       "back": "Volver a la introducción",
       "title": "Ingresar credenciales de wifi",
-      "description.p0": "Los sensores usaran estas credenciales para conectarse inalambricamente",
-      "description.p1": "porfavor usa las credenciales a las cuales estas conectado actualmente",
+      "description.p0": "Los sensores usaran estas credenciales para conectarse inalámbricamente",
+      "description.p1": "porfavor usa las credenciales a las cuales estás conectado actualmente",
       "skip": "Saltar ajustes de wifi",
       "submit": "¡Enviar!"
     },
     "reset-tutorial": {
       "back": "Volver a la calibración de montura",
       "title": "Reiniciar tutorial",
-      "description": "Esta característica no está finalizada, por favor presiona continuar"
+      "description": "Esta característica no está finalizada, porfavor presiona continuar"
     },
     "home": {
       "title": "Bienvenido a Slime VR",
-      "description.p0": "Acercando el seguimiento de cuerpo completo",
-      "description.p1": "a todos",
+      "description.p0": "Acercando el seguimiento",
+      "description.p1": "de cuerpo completo a todos",
       "start": "¡Comencemos!"
     },
     "enter-vr": {
       "back": "Volver a la asignación de sensores",
       "title": "¡Es hora de entrar a la RV!",
-      "description": "¡Ponete todos tus sensores y luego entra a la RV!",
+      "description": "¡Ponte todos tus sensores y luego entra a la RV!",
       "ready": "Estoy listo"
     },
     "done": {
       "title": "¡Estás listo!",
-      "description": "Disfruta tu experiencia de seguimiento de cuerpo completo",
-      "close": "Cierra la guía"
+      "description": "Disfruta moverteen la realidad virtual",
+      "close": "Cerrar la guía"
     },
     "connect-tracker": {
       "back": "Volver a las credenciales wifi",
       "title": "Conecta tus sensores",
-      "description.p0": "Ahora a lo divertido, ¡Conecta todos tus sensores!",
+      "description.p0": "Ahora la parte divertida, ¡Conectar todos tus sensores!",
       "description.p1": "Simplemente conecta todos los que aún no están conectados, por medio de un puerto USB.",
       "issue": {
-        "serial": "¡Tengo problemas conectandolos!"
+        "serial": "¡Tengo problemas conectándolos!"
       },
       "usb": "Sensor USB",
       "connection-status": {
         "connecting": "Enviando credenciales wifi",
         "connected": "Conectado al wifi",
         "error": "Incapaz de conectar al wifi",
-        "start-connecting": "Buscando otros sensores",
-        "handshake": "Conectad con el servidor"
+        "start-connecting": "Buscando sensores",
+        "handshake": "Conectado con el servidor"
       },
-      "connected-trackers": "Sensores conectados {{amount}}",
+      "connected-trackers": "Sensores conectados: {{amount}}",
       "next": "He conectado todos mis sensores"
     },
     "assign-trackers": {
       "back": "Volver a las credenciales wifi",
       "title": "Asignación de sensores",
-      "description": "Debes escoger que sensores van donde. Haz clic en la ubicación donde quieres colocar un sensor",
+      "description": "Debes escoger que dónde van los sensores. Has clic en la ubicación donde quieres colocar un sensor",
       "assigned": "Sensores asignados: {{assigned}} de {{trackers}}",
       "advanced": "Mostrar ubicación de asignaciones avanzados.",
       "next": "He asignado todos los sensores"
@@ -412,9 +412,9 @@
         "restart": "Volver para empezar"
       },
       "mounting-reset": {
-        "title": "Mounting Reset",
+        "title": "Reinicio de montura",
         "step": {
-          "0": "1. Arodillate como una posición de \"esquiar\" con tus piernas flectadas, la parte superior de tu cuerpo inclinada hacia adelante, y tus brazos flectados, and your arms bent.",
+          "0": "1. Arrodíllate como una posición de \"esquiar\" con tus piernas flectadas, la parte superior de tu cuerpo inclinada hacia adelante, y tus brazos flectados",
           "1": "2. Presiona el botón de \"Reinicio de montura\" y espera por 3 segundos, la ubicación de montura de tus sensores serán reiniciadas."
         }
       },
