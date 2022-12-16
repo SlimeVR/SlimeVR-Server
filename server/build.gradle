@@ -10,6 +10,7 @@ plugins {
 	id 'application'
 	id "com.github.johnrengelman.shadow" version "7.1.2"
 	id "com.diffplug.spotless" version "6.5.1"
+	id "com.github.gmazzo.buildconfig" version "3.1.0"
 }
 
 sourceCompatibility = JavaVersion.VERSION_17
@@ -81,6 +82,16 @@ application {
 	getMainClass().set('dev.slimevr.Main')
 }
 
+def gitCommitHash = 'git rev-parse --verify --short HEAD'.execute().text.trim()
+def gitVersionTag = 'git --no-pager tag --points-at HEAD'.execute().text.trim()
+def gitClean = 'git status --porcelain'.execute().text.isEmpty()
+buildConfig {
+	packageName("dev.slimevr")
+	buildConfigField("String", "GIT_COMMIT_HASH", "\"${gitCommitHash}\"")
+	buildConfigField("String", "GIT_VERSION_TAG", "\"${gitVersionTag}\"")
+	buildConfigField("boolean", "GIT_CLEAN", "${gitClean}")
+}
+
 spotless {
 	// optional: limit format enforcement to just the files changed by this feature branch
 	// ratchetFrom 'origin/main'
@@ -102,6 +113,8 @@ spotless {
 	// 	indentWithSpaces(2)  // YAML cannot contain tabs: https://yaml.org/faq.html
 	// }
 	java {
+		targetExclude '**/BuildConfig.java'
+
 		removeUnusedImports()
 		// Use eclipse JDT formatter
 		eclipse().configFile("spotless.xml")
