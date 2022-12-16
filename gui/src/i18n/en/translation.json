@@ -231,7 +231,7 @@
       "gesture-control": {
         "title": "Gesture control",
         "subtitle": "Tap based resets",
-        "description": "Allows for resets to be triggered by tapping a tracker. The tracker highest up on your torso is used for Quick Reset, the tracker highest up on your left leg is used for Reset, and the tracker highest up on your right leg is used for Mounting Reset. It should be mentioned that taps must happen within 0.6 seconds to be registered",
+        "description": "Allows for resets to be triggered by tapping a tracker. The tracker highest up on your torso is used for Quick Reset, the tracker highest up on your left leg is used for Reset, and the tracker highest up on your right leg is used for Mounting Reset. It should be mentioned that taps must happen within 0.6 seconds to be registered.",
         "taps": "taps",
         "quickResetEnabled": "Enable tap to quick reset",
         "quickResetDelay": "Quick reset delay",
@@ -247,17 +247,17 @@
         "title": "Interface",
         "dev-mode": {
           "title": "Developer Mode",
-          "description": "This mode can be useful if you need in-depth data or to interact with connected trackers on a more advanced level",
+          "description": "This mode can be useful if you need in-depth data or to interact with connected trackers on a more advanced level.",
           "label": "Developer Mode"
         },
         "serial-detection": {
           "title": "Serial device detection",
-          "description": "This option will show a pop-up every time you plug a new serial device that could be a tracker. It helps improving the setup process of a tracker",
+          "description": "This option will show a pop-up every time you plug a new serial device that could be a tracker. It helps improving the setup process of a tracker.",
           "label": "Serial device detection"
         },
         "lang": {
           "title": "Select language",
-          "description": "Change the default language you want to use",
+          "description": "Change the default language you want to use.",
           "placeholder": "Select the language to use"
         }
       }
@@ -280,13 +280,13 @@
         "description.p1": "Useful for using another OSC program with VRChat for example.",
         "enable": {
           "title": "Enable",
-          "description": "Toggle the forwarding of messages",
+          "description": "Toggle the forwarding of messages.",
           "label": "Enable"
         },
         "network": {
           "title": "Network ports",
-          "description.p0": "Set the ports for listening and sending data",
-          "description.p1": "These can be the same as other ports used in the SlimeVR server",
+          "description.p0": "Set the ports for listening and sending data.",
+          "description.p1": "These can be the same as other ports used in the SlimeVR server.",
           "port-in": {
             "label": "Port In",
             "placeholder": "Port in (default: 9002)"
@@ -297,7 +297,7 @@
           },
           "address": {
             "title": "Network address",
-            "description": "Set the address to send out data at",
+            "description": "Set the address to send out data at.",
             "placeholder": "IPV4 address"
           }
         }
@@ -307,12 +307,12 @@
         "description.p1": "trackers data for FBT (works on Quest standalone).",
         "enable": {
           "title": "Enable",
-          "description": "Toggle the sending and receiving of data",
+          "description": "Toggle the sending and receiving of data.",
           "label": "Enable"
         },
         "network": {
           "title": "Network ports",
-          "description": "Set the ports for listening and sending data to VRChat",
+          "description": "Set the ports for listening and sending data to VRChat.",
           "port-in": {
             "label": "Port In",
             "placeholder": "Port in (default: 9001)"
@@ -323,12 +323,12 @@
           },
           "address": {
             "title": "Network address",
-            "description": "Choose which address to send out data to VRChat (check your wifi settings on your device)",
+            "description": "Choose which address to send out data to VRChat (check your wifi settings on your device).",
             "placeholder": "VRChat ip address"
           },
           "trackers": {
             "title": "Trackers",
-            "description": "Toggle the sending and receiving of data",
+            "description": "Toggle the sending of specific trackers via OSC.",
             "chest": "Chest",
             "waist": "Waist",
             "knees": "Knees",
