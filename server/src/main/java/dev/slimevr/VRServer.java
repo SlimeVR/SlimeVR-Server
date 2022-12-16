@@ -27,6 +27,7 @@ import io.eiren.util.OperatingSystem;
 import io.eiren.util.ann.ThreadSafe;
 import io.eiren.util.ann.ThreadSecure;
 import io.eiren.util.collections.FastList;
+import io.eiren.util.logging.LogManager;
 import solarxr_protocol.datatypes.TrackerIdT;
 
 import java.net.InetAddress;
@@ -91,7 +92,7 @@ public class VRServer extends Thread {
 		trackersServer = new TrackersUDPServer(6969, "Sensors UDP server", this::registerTracker);
 
 		// OpenVR bridge currently only supports Windows
-		SteamVRBridge driverBridge = null;
+		final SteamVRBridge driverBridge;
 		if (OperatingSystem.getCurrentPlatform() == OperatingSystem.WINDOWS) {
 
 			// Create named pipe bridge for SteamVR driver
@@ -119,17 +120,39 @@ public class VRServer extends Thread {
 			tasks.add(feederBridge::startBridge);
 			bridges.add(feederBridge);
 		} else if (OperatingSystem.getCurrentPlatform() == OperatingSystem.LINUX) {
-			driverBridge = new UnixSocketBridge(
-				this,
-				hmdTracker,
-				"steamvr",
-				"SteamVR Driver Bridge",
-				"/tmp/SlimeVRDriver",
-				shareTrackers
-			);
-			tasks.add(driverBridge::startBridge);
-			bridges.add(driverBridge);
+			SteamVRBridge linuxBridge = null;
+			try {
+				linuxBridge = new UnixSocketBridge(
+					this,
+					hmdTracker,
+					"steamvr",
+					"SteamVR Driver Bridge",
+					"/tmp/SlimeVRDriver",
+					shareTrackers
+				);
+			} catch (Exception ex) {
+				LogManager.severe("Failed to initiate Unix socket, disabling driver bridge...", ex);
+			}
+			driverBridge = linuxBridge;
+			if (driverBridge != null) {
+				tasks.add(driverBridge::startBridge);
+				bridges.add(driverBridge);
+			}
+		} else {
+			driverBridge = null;
 		}
+
+		// Add shutdown hook
+		Runtime.getRuntime().addShutdownHook(new Thread(() -> {
+			try {
+				if (driverBridge instanceof UnixSocketBridge linuxBridge) {
+					// Auto-close Linux SteamVR bridge on JVM shutdown
+					linuxBridge.close();
+				}
+			} catch (Exception e) {
+				throw new RuntimeException(e);
+			}
+		}));
 
 		// Create WebSocket server
 		WebSocketVRBridge wsBridge = new WebSocketVRBridge(hmdTracker, shareTrackers, this);
