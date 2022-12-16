@@ -89,7 +89,13 @@ public class VRServer extends Thread {
 		shareTrackers = humanPoseProcessor.getComputedTrackers();
 
 		// Start server for SlimeVR trackers
-		trackersServer = new TrackersUDPServer(6969, "Sensors UDP server", this::registerTracker);
+		int trackerPort = configManager.getVrConfig().getServer().getTrackerPort();
+		LogManager.info("Starting the tracker server on port " + trackerPort + "...");
+		trackersServer = new TrackersUDPServer(
+			trackerPort,
+			"Sensors UDP server",
+			this::registerTracker
+		);
 
 		// OpenVR bridge currently only supports Windows
 		final SteamVRBridge driverBridge;
