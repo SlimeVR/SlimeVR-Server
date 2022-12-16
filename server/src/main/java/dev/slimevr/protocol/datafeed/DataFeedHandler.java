@@ -31,7 +31,7 @@ public class DataFeedHandler extends ProtocolHandler<DataFeedMessageHeader> {
 			return;
 		int dataFeeds = req.dataFeedsLength();
 
-		conn.getContext().getDataFeedConfigList().clear();
+		conn.getContext().clearDataFeeds();
 		for (int i = 0; i < dataFeeds; i++) {
 			// Using the object api here because we need to copy from the buffer
 			// anyway so
