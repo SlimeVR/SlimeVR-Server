@@ -35,7 +35,7 @@ export const langs = [
     key: 'ko',
   },
   {
-    name: 'Polski',
+    name: '🇵🇱 Polski',
     key: 'pl',
   },
   {
@@ -43,7 +43,7 @@ export const langs = [
     key: 'ptBR',
   },
   {
-    name: 'Tiếng Việt',
+    name: '🇻🇳 Tiếng Việt',
     key: 'vi',
   },
   {
