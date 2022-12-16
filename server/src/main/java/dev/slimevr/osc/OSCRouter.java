@@ -170,7 +170,7 @@ public class OSCRouter {
 					timeAtLastError = System.currentTimeMillis();
 					LogManager
 						.warning(
-							"[OSCRouter] Error sending OSC message: "
+							"[OSCRouter] Error sending OSC packet: "
 								+ e
 						);
 				}

@@ -43,6 +43,26 @@ public class TrackerUtils {
 				t != null
 					&& t.getBodyPosition() == position
 					&& !(t instanceof ComputedHumanPoseTracker)
+					&& !(t instanceof HMDTracker)
+			)
+				return t;
+		}
+		return null;
+	}
+
+	/**
+	 * Finds the first non ComputedHumanPoseTracker tracker from allTrackers
+	 * matching the position
+	 *
+	 * @return The non ComputedHumanPoseTracker as a Tracker
+	 */
+	public static <T extends Tracker> T getHMDTracker(
+		List<T> allTrackers
+	) {
+		for (T t : allTrackers) {
+			if (
+				t != null
+					&& (t instanceof HMDTracker)
 			)
 				return t;
 		}

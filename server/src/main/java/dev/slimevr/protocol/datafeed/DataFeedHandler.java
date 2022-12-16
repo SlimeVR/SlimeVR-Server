@@ -89,12 +89,12 @@ public class DataFeedHandler extends ProtocolHandler<DataFeedMessageHeader> {
 					.collect(Collectors.toList())
 			);
 
-		var h = this.api.server.humanPoseManager;
+		var s = this.api.server.humanPoseProcessor.getSkeleton();
 		int bonesOffset = DataFeedBuilder
 			.createBonesData(
 				fbb,
 				config.getBoneMask(),
-				h.getCurrentBoneInfo()
+				s.shareableBoneInfo
 			);
 
 		return DataFeedUpdate.createDataFeedUpdate(fbb, devicesOffset, trackersOffset, bonesOffset);

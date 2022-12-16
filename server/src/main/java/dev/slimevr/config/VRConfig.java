@@ -26,7 +26,9 @@ public class VRConfig {
 
 	private final OSCConfig oscRouter = new OSCConfig();
 
-	private final OSCConfig vrcOSC = new OSCConfig();
+	private final VRCOSCConfig vrcOSC = new VRCOSCConfig();
+
+	private final VMCConfig vmc = new VMCConfig();
 
 	private final AutoBoneConfig autobone = new AutoBoneConfig();
 
@@ -56,7 +58,6 @@ public class VRConfig {
 		// Initialize default settings for VRC OSC
 		vrcOSC.setPortIn(9001);
 		vrcOSC.setPortOut(9000);
-		// Initialize default tracker role settings
 		vrcOSC
 			.setOSCTrackerRole(
 				TrackerRole.WAIST,
@@ -72,6 +73,10 @@ public class VRConfig {
 				TrackerRole.RIGHT_FOOT,
 				vrcOSC.getOSCTrackerRole(TrackerRole.WAIST, true)
 			);
+
+		// Initialize default settings for VMC
+		vmc.setPortIn(39540);
+		vmc.setPortOut(39539);
 	}
 
 
@@ -91,8 +96,12 @@ public class VRConfig {
 		return oscRouter;
 	}
 
-	public OSCConfig getVrcOSC() {
+	public VRCOSCConfig getVrcOSC() {
 		return vrcOSC;
+	}
+
+	public VMCConfig getVMC() {
+		return vmc;
 	}
 
 	public AutoBoneConfig getAutoBone() {

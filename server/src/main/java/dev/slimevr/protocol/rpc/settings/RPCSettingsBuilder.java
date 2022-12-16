@@ -40,7 +40,7 @@ public class RPCSettingsBuilder {
 
 	public static int createVRCOSCSettings(
 		FlatBufferBuilder fbb,
-		OSCConfig config
+		VRCOSCConfig config
 	) {
 		int addressStringOffset = fbb.createString(config.getAddress());
 		int generalSettingOffset = OSCSettings
