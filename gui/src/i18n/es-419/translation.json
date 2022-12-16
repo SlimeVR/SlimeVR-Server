@@ -4,7 +4,7 @@
     "connection-lost": "Conexión con el servidor perdida. Intentando reconectar..."
   },
   "tips": {
-    "find-tracker": "¿No sabes cuál tracker es cual? Agita un tracker y se resaltará donde está asignado.",
+    "find-tracker": "¿No sabes cuál sensor tracker es cual? Agita un tracker y se resaltará donde está asignado.",
     "do-not-move-heels": "¡Asegura no mover los talones durante la grabación!"
   },
   "body-part": {
@@ -30,26 +30,26 @@
     "LEFT_FOOT": "Pie izquierdo"
   },
   "skeleton-bone": {
-    "NONE": "None",
-    "HEAD": "Head Shift",
-    "NECK": "Neck Length",
-    "TORSO": "Torso Length",
-    "CHEST": "Chest Distance",
-    "WAIST": "Waist Distance",
-    "HIP_OFFSET": "Hip Offset",
+    "NONE": "Ninguno",
+    "HEAD": "Inclinación de cabeza",
+    "NECK": "Largo de cuello",
+    "TORSO": "Largo del torso",
+    "CHEST": "Distancia del pecho",
+    "WAIST": "Distancia de la cadera",
+    "HIP_OFFSET": "Desplazamiento de caderas",
     "HIPS_WIDTH": "Ancho de caderas",
     "LEGS_LENGTH": "Largo de piernas",
     "KNEE_HEIGHT": "Altura de rodillas",
     "FOOT_LENGTH": "Largo de pies",
-    "FOOT_SHIFT": "Foot Shift",
-    "SKELETON_OFFSET": "Skeleton Offset",
-    "CONTROLLER_DISTANCE_Z": "Controller Distance Z",
-    "CONTROLLER_DISTANCE_Y": "Controller Distance Y",
-    "FOREARM_LENGTH": "Forearm Distance",
-    "SHOULDERS_DISTANCE": "Shoulders Distance",
-    "SHOULDERS_WIDTH": "Shoulders Width",
-    "UPPER_ARM_LENGTH": "Upper Arm Length",
-    "ELBOW_OFFSET": "Elbow Offset"
+    "FOOT_SHIFT": "Desplazamiento de pies",
+    "SKELETON_OFFSET": "Desplazamiento del esqueleto",
+    "CONTROLLER_DISTANCE_Z": "Distancia Z del mando",
+    "CONTROLLER_DISTANCE_Y": "Distancia Y del mando",
+    "FOREARM_LENGTH": "Distancia del antebrazo",
+    "SHOULDERS_DISTANCE": "Distancia de hombros",
+    "SHOULDERS_WIDTH": "Ancho de los hombros",
+    "UPPER_ARM_LENGTH": "Largo del brazo superior",
+    "ELBOW_OFFSET": "Desplazamiento del codo"
   },
   "reset": {
     "reset-all": "Reiniciar todas las proporciones",
@@ -59,18 +59,18 @@
   },
   "serial-detection": {
     "new-device.p0": "¡Nuevo dispositivo detectado!" ,
-    "new-device.p1": "Ingresa tus credenciales de WiFi",
-    "new-device.p2": "Por favor seleciona que quieres hacer con él",
+    "new-device.p1": "Ingresa tus credenciales de wifi",
+    "new-device.p2": "Por favor seleciona que quieres hacer con el",
     "open-wifi": "Conectarse a wifi",
-    "open-serial": "Abrir consola",
+    "open-serial": "Abrir consola serial",
     "submit": "Enviar!",
     "close": "Cerrar"
   },
   "navbar": {
     "home": "Inicio",
     "body-proportions": "Proporciones de cuerpo",
-    "trackers-assign": "Asignación de trackers",
-    "mounting": "Mounting Calibration",
+    "trackers-assign": "Asignación de sensores",
+    "mounting": "Calibración de montura",
     "onboarding": "Asistente de configuración",
     "settings": "Ajustes"
   },
@@ -79,8 +79,8 @@
     "recording": "Grabando..."
   },
   "overlay": {
-    "is-visible-label": "Mostrar overlay en SteamVR",
-    "is-mirrored-label": "Mostrar overlay as Mirror"
+    "is-visible-label": "Mostrar interfaz en SteamVR",
+    "is-mirrored-label": "Mostrar interfaz reflejada"
   },
   "tracker": {
     "status": {
@@ -112,67 +112,67 @@
       "manufacturer": "Fabricante",
       "display-name": "Nombre",
       "custom-name": "Nombre personalizado",
-      "url": "Tracker URL"
+      "url": "URL del sensor"
     },
     "settings": {
-      "back": "Volver a la lista de trackers",
-      "title": "Ajustes de trackers",
+      "back": "Volver a la lista de sensores",
+      "title": "Ajustes de los sensores",
       "assignment-section": {
         "title": "Asignación",
-        "description": "Parte del cuerpo asignado al tracker.",
+        "description": "Parte del cuerpo asignado al sensor.",
         "edit": "Editar asignación"
       },
       "mounting-section": {
         "title": "Posición de montura",
-        "description": "¿Dónde está el Tracker montado?",
+        "description": "¿Dónde está el sensor montado?",
         "edit": "Editar montura"
       },
       "name-section": {
-        "title": "Nombre del tracker",
+        "title": "Nombre del sensor",
         "description": "Dale un apodo bonito :)",
         "input-placeholder": "Pierna izquierda de NightyBeast"
       }
     },
     "part-card": {
       "no-name": "Sin nombre",
-      "unassigned": "No asignado"
+      "unassigned": "Sin asignar"
     }
   },
   "body-assignment-menu": {
-    "title": "¿Dónde quieres que esté este Tracker?",
-    "description": "Selecciona la posición donde quieres asignar este Tracker. Alternativamente, puedes escoger administrar todos los Trackers al mismo tiempo en vez de uno por uno.",
+    "title": "¿Dónde quieres que esté este sensor?",
+    "description": "Selecciona la posición donde quieres asignar este sensor. Alternativamente, puedes escoger administrar todos los sensores al mismo tiempo en vez de uno por uno.",
     "show-advanced-locations": "Mostrar posiciones de asignación avanzados",
-    "manage-trackers": "Administrar todos los Trackers",
-    "unassign-tracker": "Tracker no asignado"
+    "manage-trackers": "Administrar todos los sensores",
+    "unassign-tracker": "Desasignar sensor"
   },
   "tracker-selection-menu": {
-    "title": "¿Asignar {{bodyPart}} a qué tracker?",
-    "unassigned": "Trackers sin asignar",
-    "assigned": "Trackers asignados",
+    "title": "¿Asignar {{bodyPart}} a qué sensor?",
+    "unassigned": "Sensores sin asignar",
+    "assigned": "Sensores asignados",
     "dont-assign": "No asignar"
   },
   "mounting-selection-menu": {
-    "title": "¿Dónde estará ubicado el tracker?",
+    "title": "¿Dónde estará ubicado el sensor?",
     "close": "Cerrar"
   },
   "settings": {
     "sidebar": {
       "title": "Ajustes",
       "general": "General",
-      "tracker-mechanics": "Mecánicas de Trackeo",
-      "fk-settings": "Ajustes FK",
+      "tracker-mechanics": "Mecánicas del sensor",
+      "fk-settings": "Ajustes de FK",
       "gesture-control": "Gesture control",
-      "interface": "Interfase",
-      "osc-router": "***OSC router",
+      "interface": "Interfaz",
+      "osc-router": "Enrutador OSC",
       "utils": "Utilidades",
       "serial": "Consola Serial"
     },
     "general": {
       "steamvr": {
         "title": "SteamVR",
-        "subtitle": "Trackers en SteamVR",
-        "description.p0": "Habilita o deshabilita trackers de SteamVR en específico.",
-        "description.p1": "Useful for games or apps that only support certain trackers.",
+        "subtitle": "Sensores en SteamVR",
+        "description.p0": "Habilita o deshabilita sensores de SteamVR en específico.",
+        "description.p1": "Útil para juegos y aplicaciones que solo soportan ciertos sensores.",
         "trackers": {
           "waist": "Cintura",
           "chest": "Pecho",
@@ -183,306 +183,306 @@
         }
       },
       "tracker-mechanics": {
-        "title": "Tracker mechanics",
-        "subtitle": "Filtering",
-        "description.p0": "Choose the filtering type for your trackers.",
-        "description.p1": "Prediction predicts movement while smoothing smoothens movement.",
+        "title": "Mecánicas del sensor",
+        "subtitle": "Filtrado",
+        "description.p0": "Selecciona un tipo de filtro para tus sensores.",
+        "description.p1": "Predicción predice el movimiento mientras que Suavizado suavisa el movimiento.",
         "filtering-type": {
-          "title": "Filtering type",
+          "title": "Tipos de filtros",
           "none": {
-            "label": "No filtering",
-            "description":"Use rotations as is. Will not do any filtering."
+            "label": "Sin filtro",
+            "description":"Usa las rotaciones como son. No realizará ningun filtrado."
           },
           "smoothing": {
-            "label": "Smoothing",
-            "description":"Smooths movements but adds some latency."
+            "label": "Suavizado",
+            "description":"Suaviza los movimientos pero añade algo de latencia."
           },
           "prediction": {
-            "label": "Prediction",
-            "description":"Reduces latency and makes movements more snappy, but may increase jitter."
+            "label": "Predicción",
+            "description":"Reduce la latencia y los movimientos serán más *snappy*, pero puedo incrementar *jitter*."
           }
         },
         "amount": {
-          "label": "Amount"
+          "label": "Cantidad de filtro"
         }
       },
       "fk-settings": {
-        "title": "FK settings",
+        "title": "Ajustes de FK",
         "leg-tweak": {
-          "title": "Leg tweaks",
-          "description": "Floor-clip can Reduce or even eliminates clipping with the floor but may cause problems when on your knees. Skating-correction corrects for ice skating, but can decrease accuracy in certain movement patterns.",
-          "floor-clip": "Floor clip",
-          "skating-correction": "Skating correction",
-          "skating-correction-amount": "Skating correction strength"
+          "title": "Corrección de piernas",
+          "description": "Traspaso de suelo  puede reducir o incluso eliminar el traspasar el piso pero puede causar problemas cuando te arrodilles. Corrección de patinaje corrije *ice skating*, pero puede disminuir la presición de ciertos movimientos.",
+          "floor-clip": "Traspaso de suelo",
+          "skating-correction": "Corrección de patinaje",
+          "skating-correction-amount": "Cantiad de corrección de patinaje"
         },
         "arm-fk": {
-          "title": "Arm FK",
-          "description": "Change the way the arms are tracked.",
-          "force-arms": "Force arms from HMD"
+          "title": "FK de brazos",
+          "description": "Cambia cómo los movimientos de los brazos son detectados.",
+          "force-arms": "Forzar brazos desde el HMD"
         },
         "skeleton-settings": {
-          "title": "Skeleton settings",
-          "description": "Toggle skeleton settings on or off. It is recommended to leave these on.",
-          "extended-spine": "Extended spine",
-          "extended-pelvis": "Extended pelvis",
-          "extended-knees": "Extended knee"
+          "title": "Ajustes de esquelto",
+          "description": "Habilita o deshabilita los ajustes de esqueleto. Es recomendado dejar habilitados estos ajustes.",
+          "extended-spine": "Extención de columna",
+          "extended-pelvis": "Extención de pelvis",
+          "extended-knees": "Extención de rodillas"
         }
       },
       "gesture-control": {
         "title": "Gesture control",
         "subtitle": "Double Tap quick reset",
         "description": "Enable or disable double tap quick reset. When enabled double tapping anywhere on the highest torso tracker will activate a quick reset. Delay is the time between registering a tap and resetting.",
-        "enable": "Double tap quick reset",
-        "delay": "Delay"
+        "enable": "Reinicio rápido Double tap quick reset",
+        "delay": "Retraso"
       },
       "interface": {
-        "title": "Interface",
+        "title": "Interfaz",
         "dev-mode": {
-          "title": "Developer Mode",
-          "description": "This mode can be useful if you need in-depth data or to interact with connected trackers on a more advanced level",
-          "label": "Developer Mode"
+          "title": "Modo desarrollador",
+          "description": "Este modo puede ser útil si es que necesitas información a fondo o para un nivel de interacción más avanzado con los sensores conectados",
+          "label": "Modo desarrollador"
         },
         "serial-detection": {
-          "title": "Serial device detection",
-          "description": "This option will show a pop-up every time you plug a new serial device that could be a tracker. It helps improving the setup process of a tracker",
-          "label": "Serial device detection"
+          "title": "Detección de dispositivo serial",
+          "description": "Esta opción mostrará un mensaje emergente cada vez que conectes un nuevo dispositivo serial que pueda ser un sensor. Ayuda a mejorar el proceso de configuración de sensores",
+          "label": "Detección de dispositivo serial"
         },
         "lang": {
-          "title": "Select language",
-          "description": "Change the default language you want to use",
-          "placeholder": "Select the language to use"
+          "title": "Seleciona un lenguaje",
+          "description": "Cambia el lenguaje por defecto que deseas utilizar",
+          "placeholder": "Selecciona el lenguaje a utilizar"
         }
       }
     },
     "serial": {
-      "title": "Serial Console",
-      "description.p0": "This is a live information feed for serial communication.",
-      "description.p1": "May be useful if you need to know the firmware is acting up.",
-      "connection-lost": "Connection to serial lost, Reconnecting...",
-      "reboot": "Reboot",
-      "factory-reset": "Factory Reset",
-      "get-infos": "Get Infos",
-      "serial-select": "Select a serial port",
+      "title": "Consola serial",
+      "description.p0": "Esta es información en vivo para la comunicación serial.",
+      "description.p1": "Puede ser util para saber si el Firmware tiene problemas.",
+      "connection-lost": "Conexión serial perdida, Reconectado...",
+      "reboot": "Reinciar",
+      "factory-reset": "Reestablecimiento de fábrica",
+      "get-infos": "Obtener informaciones",
+      "serial-select": "Selecciona un puerto serial",
       "auto-dropdown-item": "Auto"
     },
     "osc": {
       "router": {
-        "title": "OSC router",
-        "description.p0": "Forward OSC messages from another program.",
-        "description.p1": "Useful for using another OSC program with VRChat for example.",
+        "title": "Enrutador OSC",
+        "description.p0": "Reenvia mensajes OSC desde otro programa.",
+        "description.p1": "Útil para usar otro programa OSC con VRChat por ejemplo.",
         "enable": {
-          "title": "Enable",
-          "description": "Toggle the forwarding of messages",
-          "label": "Enable"
+          "title": "Habilitar",
+          "description": "Habilita el reenvío de mensajes",
+          "label": "Habilitar"
         },
         "network": {
-          "title": "Network ports",
-          "description.p0": "Set the ports for listening and sending data",
-          "description.p1": "These can be the same as other ports used in the SlimeVR server",
+          "title": "Puertos de conexión",
+          "description.p0": "Establece los puertos de entrada y salida de datos",
+          "description.p1": "Estos pueden ser lo mismos puertos usados en el SlimeVR Server",
           "port-in": {
-            "label": "Port In",
-            "placeholder": "Port in (default: 9002)"
+            "label": "Puerto de entrada",
+            "placeholder": "Puerto de entrada (por defecto: 9002)"
           },
           "port-out": {
-            "label": "Port Out",
-            "placeholder": "Port out (default: 9000)"
+            "label": "Puerto de salida",
+            "placeholder": "Puerto de salida (por defecto: 9000)"
           },
           "address": {
-            "title": "Network address",
-            "description": "Set the address to send out data at",
-            "placeholder": "IPV4 address"
+            "title": "Dirección de conexión",
+            "description": "Establece la direción a la cuál se enviará la datos",
+            "placeholder": "Dirección IPV4"
           }
         }
       },
       "vrchat": {
-        "description.p0": "Change VRChat-specific settings to receive HMD data and send",
-        "description.p1": "trackers data for FBT (works on Quest standalone).",
+        "description.p0": "Cambiar ajustes específicos de VRChat para recibir datos del HMD y enviar",
+        "description.p1": "datos de los sensores para seguimiento de cuerpo completo (funciona en Quest nativo).",
         "enable": {
-          "title": "Enable",
-          "description": "Toggle the sending and receiving of data",
-          "label": "Enable"
+          "title": "Habilitar",
+          "description": "Habilita el envio y recibimiento de datos",
+          "label": "Habilitar"
         },
         "network": {
-          "title": "Network ports",
-          "description": "Set the ports for listening and sending data to VRChat",
+          "title": "Puertos de conexión",
+          "description": "Establece los puertos de entrada y salida de datos a VRChat",
           "port-in": {
-            "label": "Port In",
-            "placeholder": "Port in (default: 9001)"
+            "label": "Puerto de entrada",
+            "placeholder": "Puerto de entrada (por defecto: 9001)"
           },
           "port-out": {
-            "label": "Port Out",
-            "placeholder": "Port out (default: 9000)"
+            "label": "Puerto de salida",
+            "placeholder": "Puerto de salida (por defecto: 9000)"
           },
           "address": {
-            "title": "Network address",
-            "description": "Choose which address to send out data to VRChat (check your wifi settings on your device)",
-            "placeholder": "VRChat ip address"
+            "title": "Dirección de conexión",
+            "description": "Establece la direción a la cuál se enviará la datos a VRChat (revisa los ajustes de wifi de tu dispositivo)",
+            "placeholder": "Dirección de conexión de VRChat"
           },
           "trackers": {
-            "title": "Trackers",
-            "description": "Toggle the sending and receiving of data",
-            "chest": "Chest",
-            "waist": "Waist",
-            "knees": "Knees",
-            "feet": "Feet",
-            "elbows": "Elbows"
+            "title": "Sensores",
+            "description": "Habilita el envio y recibimiento de datos",
+            "chest": "Pecho",
+            "waist": "Cintura",
+            "knees": "Rodillas",
+            "feet": "Pies",
+            "elbows": "Codos"
           }
         }
       }
     }
   },
   "onboarding": {
-    "skip": "Skip setup",
-    "continue": "Continue",
-    "wip": "Work in progress",
+    "skip": "Saltar configuración",
+    "continue": "Continuar",
+    "wip": "Trabajo en progreso",
     "wifi-creds": {
-      "back": "Go Back to introduction",
-      "title": "Input WiFi credentials",
-      "description.p0": "The Trackers will use these credentials to connect wirelessly",
-      "description.p1": "please use the credentials that you are currently connected to",
-      "skip": "Skip wifi settings",
-      "submit": "Submit!"
+      "back": "Volver a la introducción",
+      "title": "Ingresar credenciales de wifi",
+      "description.p0": "Los sensores usaran estas credenciales para conectarse inalambricamente",
+      "description.p1": "porfavor usa las credenciales a las cuales estas conectado actualmente",
+      "skip": "Saltar ajustes de wifi",
+      "submit": "¡Enviar!"
     },
     "reset-tutorial": {
-      "back": "Go Back to Mounting calibration",
-      "title": "Reset tutorial",
-      "description": "This feature isn't done, just press continue"
+      "back": "Volver a la calibración de montura",
+      "title": "Reiniciar tutorial",
+      "description": "Esta característica no está finalizada, por favor presiona continuar"
     },
     "home": {
-      "title": "Welcome to SlimeVR",
-      "description.p0": "Bringing full-body tracking",
-      "description.p1": "to everyone",
-      "start": "Lets get set up!"
+      "title": "Bienvenido a Slime VR",
+      "description.p0": "Acercando el seguimiento de cuerpo completo",
+      "description.p1": "a todos",
+      "start": "¡Comencemos!"
     },
     "enter-vr": {
-      "back": "Go Back to Tracker assignent",
-      "title": "Time to enter VR!",
-      "description": "Put on all your trackers and then enter VR!",
-      "ready": "I'm ready"
+      "back": "Volver a la asignación de sensores",
+      "title": "¡Es hora de entrar a la RV!",
+      "description": "¡Ponete todos tus sensores y luego entra a la RV!",
+      "ready": "Estoy listo"
     },
     "done": {
-      "title": "You're all set!",
-      "description": "Enjoy your full body experience",
-      "close": "Close the guide"
+      "title": "¡Estás listo!",
+      "description": "Disfruta tu experiencia de seguimiento de cuerpo completo",
+      "close": "Cierra la guía"
     },
     "connect-tracker": {
-      "back": "Go Back to WiFi credentials",
-      "title": "Connect trackers",
-      "description.p0": "Now onto the fun part, connecting all the trackers!",
-      "description.p1": "Simply connect all that aren't connected yet, through a USB port.",
+      "back": "Volver a las credenciales wifi",
+      "title": "Conecta tus sensores",
+      "description.p0": "Ahora a lo divertido, ¡Conecta todos tus sensores!",
+      "description.p1": "Simplemente conecta todos los que aún no están conectados, por medio de un puerto USB.",
       "issue": {
-        "serial": "I'm having trouble connecting!"
+        "serial": "¡Tengo problemas conectandolos!"
       },
-      "usb": "USB Tracker",
+      "usb": "Sensor USB",
       "connection-status": {
-        "connecting": "Sending wifi credentials",
-        "connected": "Connected to WiFi",
-        "error": "Unable to connect to Wifi",
-        "start-connecting": "Looking for trackers",
-        "handshake": "Connected to the Server"
+        "connecting": "Enviando credenciales wifi",
+        "connected": "Conectado al wifi",
+        "error": "Incapaz de conectar al wifi",
+        "start-connecting": "Buscando otros sensores",
+        "handshake": "Conectad con el servidor"
       },
-      "connected-trackers": "{{amount}} trackers connected",
-      "next": "I connected all my trackers"
+      "connected-trackers": "Sensores conectados {{amount}}",
+      "next": "He conectado todos mis sensores"
     },
     "assign-trackers": {
-      "back": "Go Back to Wifi Credentials",
-      "title": "Assign trackers",
-      "description": "Let's choose which tracker goes where. Click on a location where you want to place a tracker",
-      "assigned": "{{assigned}} of {{trackers}} trackers assigned",
-      "advanced": "Show advanced assign locations",
-      "next": "I assigned all the trackers"
+      "back": "Volver a las credenciales wifi",
+      "title": "Asignación de sensores",
+      "description": "Debes escoger que sensores van donde. Haz clic en la ubicación donde quieres colocar un sensor",
+      "assigned": "Sensores asignados: {{assigned}} de {{trackers}}",
+      "advanced": "Mostrar ubicación de asignaciones avanzados.",
+      "next": "He asignado todos los sensores"
     },
     "manual-mounting": {
-      "back": "Go Back to Enter VR",
-      "title": "Manual Mounting",
-      "description": "Click on every tracker and select which way they are mounted",
-      "auto-mounting": "Automatic mounting",
-      "next": "Next step"
+      "back": "Volver para entrar a la RV",
+      "title": "Montura manual",
+      "description": "Has clic en cada sensor y selecciona donde están montados",
+      "auto-mounting": "Montura automática",
+      "next": "Siguiente paso"
     },
     "automatic-mounting": {
-      "back": "Go Back to Enter VR",
-      "title": "Mounting Calibration",
-      "description": "For SlimeVR trackers to work, we need to assign a mounting rotation to your trackers to align them with your physical tracker mounting.",
-      "manual-mounting": "Manually set mounting",
-      "next": "Next step",
-      "prev-step": "Previous step",
+      "back": "Volver para entrar a la RV",
+      "title": "Calibración de montura",
+      "description": "Para que los sensores SlimeVR funcionen, necesitamos asignar una posición de montura a tus sensores para que se alinien con la montura física de tu sensor.",
+      "manual-mounting": "Establecer montura manualmente",
+      "next": "Próximo paso",
+      "prev-step": "Paso anterior",
       "done": {
-        "title": "Mounting rotations calibrated.",
-        "description": "Your mounting calibration is complete!",
-        "restart": "Return to start"
+        "title": "Ubicación de monturas calibradas.",
+        "description": "¡Tu calibración de monturas está completa!",
+        "restart": "Volver para empezar"
       },
       "mounting-reset": {
         "title": "Mounting Reset",
         "step": {
-          "0": "1. Squat in a \"skiing\" pose with your legs bent, your upper body tilted forwards, and your arms bent.",
-          "1": "2. Press the \"Reset Mounting\" button and wait for 3 seconds before the trackers' mounting rotations will reset."
+          "0": "1. Arodillate como una posición de \"esquiar\" con tus piernas flectadas, la parte superior de tu cuerpo inclinada hacia adelante, y tus brazos flectados, and your arms bent.",
+          "1": "2. Presiona el botón de \"Reinicio de montura\" y espera por 3 segundos, la ubicación de montura de tus sensores serán reiniciadas."
         }
       },
       "preparation": {
-        "title": "Preparation",
+        "title": "Preparación",
         "step": {
-          "0": "1. Stand upright with your arms to your sides.",
-          "1": "2. Press the \"Reset\" button and wait for 3 seconds before the trackers will reset."
+          "0": "1. Párate derecho con tus brazo a los costados.",
+          "1": "2. Presiona el botón de  \"Reset\" y espera por 3 segundos, los sensores se reiniciarán."
         }
       },
       "put-trackers-on": {
-        "title": "Put on your trackers",
-        "description": "To calibrate mounting rotations, we're gonna use the trackers you just assigned. Put on all your trackers, you can see which are which in the figure to the right.",
-        "next": "I have all my trackers on"
+        "title": "Ponete tus sensores",
+        "description": "Para calibrar la ubicación de tus monturas, usaremos los sensores que has asignado. Ponte todos tus sensores,puedes ver cuál es cual en la figura de la derecha.",
+        "next": "Tengo puestos todos mis sensores"
       }
     },
     "manual-proportions": {
-      "back": "Go Back to Reset tutorial",
-      "title": "Manual Body Proportions",
-      "precision": "Precision adjust",
-      "auto": "Automatic calibration"
+      "back": "Volver al reiniciar el tutorial",
+      "title": "Proporciones de cuerpo manual",
+      "precision": "Ajuste con presición",
+      "auto": "Calibración automática"
     },
     "automatic-proportions": {
-      "back": "Go Back to Reset tutorial",
-      "title": "Measure your body",
-      "description": "For SlimeVR trackers to work, we need to know the length of your bones. This short calibration will measure it for you.",
-      "manual": "Manual calibration",
-      "prev-step": "Previous step",
+      "back": "Volver atrás para reiniciar tutorial",
+      "title": "Mide tu cuerpo",
+      "description": "Para que los sensores de SlimeVR funcionen, necesitamos saber el largo de tus huesos. Esta breve calibración los medirá por ti.",
+      "manual": "Calibración manual",
+      "prev-step": "Paso previo",
       "put-trackers-on": {
-        "title": "Put on your trackers",
-        "description": "To calibrate your proportions, we're gonna use the trackers you just assigned. Put on all your trackers, you can see which are which in the figure to the right.",
-        "next": "I have all my trackers on"
+        "title": "Ponte tus sensores",
+        "description": "Para calibrar tus proporciones, usaremos los sensores que acabas de asignar. Ponte todos tus sensores, peudes ver cuál es cual en la figura de la derecha.",
+        "next": "Tengo puestos todos mis sensores"
       },
       "preparation": {
-        "title": "Preparation",
-        "description": "Place a chair directly behind you inside your play space. Be prepared to sit down during the autobone setup.",
-        "next": "I am in front of a chair"
+        "title": "Preparación",
+        "description": "Coloca una silla directamente detrás de ti en tu area de juego. Prepárate para sentarte durante el la configuración de autobone.",
+        "next": "Estoy al frente de una silla"
       },
       "start-recording": {
-        "title": "Get ready to move",
-        "description": "We're now going to record some specific poses and moves. These will be prompted in the next screen. Be ready to start when the button is pressed!",
-        "next": "Start Recording"
+        "title": "Prepárate para moverte",
+        "description": "Vamos a grabar poses y movimientos en específico. Estas serán mostradas en la siguiente ventana. ¡Prepárate para empezar cuando presiones el botón!",
+        "next": "Empezar grabación"
       },
       "recording": {
         "title": "REC",
-        "description.p0": "Recording in progress...",
-        "description.p1": "Make the moves shown below:",
+        "description.p0": "Grabación en proceso...",
+        "description.p1": "Realiza los siguientes movimientos:",
         "steps": {
-          "0": "Bend knees a few times.",
-          "1": "Sit on a chair then stand up.",
-          "2": "Twist upper body left, then bend right.",
-          "3": "Twist upper body right, then bend left.",
-          "4": "Wiggle around until timer ends."
+          "0": "Flecta tus rodillas un par de veces.",
+          "1": "Sientate en una silla y parate.",
+          "2": "Dobla tu torso hacia la izquierda, luego inclinate hacia la derecha.",
+          "3": "Dobla tu torso hacia la derecha, luego inclinate hacia la izquierda.",
+          "4": "Menea tu cuerpo hasta que el tiempo se acabe."
         },
-        "processing": "Processing the result",
-        "timer": "{{time}} seconds left"
+        "processing": "Procesando el resultado",
+        "timer": "Quedan {{time}} segundos"
       },
       "verify-results": {
-        "title": "Verify results",
-        "description": "Check the results below, do they look correct?",
-        "results": "Recording results",
-        "processing": "Processing the result",
-        "redo": "Redo recording",
-        "confirm": "They're correct"
+        "title": "Verificando resultados",
+        "description": "Comprueba abajo los resultados, ¿Parecen correctos?",
+        "results": "Grabando resultados",
+        "processing": "Procesando resultados",
+        "redo": "Rehacer grabación",
+        "confirm": "Son correctos"
       },
       "done": {
-        "title": "Body measured and saved.",
-        "description": "Your body proportions calibration is complete!"
+        "title": "Cuerpo medido y guardado.",
+        "description": "¡La calibración de tus proporciones de cuerpo fue completada!"
       }
     }
   },
