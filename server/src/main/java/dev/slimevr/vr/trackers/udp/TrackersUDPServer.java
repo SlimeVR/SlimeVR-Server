@@ -25,7 +25,6 @@ import java.util.function.Consumer;
  * Receives trackers data by UDP using extended owoTrack protocol.
  */
 public class TrackersUDPServer extends Thread {
-
 	/**
 	 * Change between IMU axes and OpenGL/SteamVR axes
 	 */
