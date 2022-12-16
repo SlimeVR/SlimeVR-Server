@@ -124,7 +124,7 @@ public class TrackersUDPServer extends Thread {
 		}
 		if (connection == null) {
 			connection = new UDPDevice(handshakePacket.getSocketAddress(), addr);
-			Main.vrServer.getDeviceManager().addDevice(connection);
+			Main.getVrServer().getDeviceManager().addDevice(connection);
 			connection.firmwareBuild = handshake.firmwareBuild;
 			if (handshake.firmware == null || handshake.firmware.length() == 0) {
 				// Only old owoTrack doesn't report firmware and have different
@@ -234,7 +234,7 @@ public class TrackersUDPServer extends Thread {
 				connection.name + "/" + trackerId,
 				connection.descriptiveName + "/" + trackerId,
 				this,
-				Main.vrServer
+				Main.getVrServer()
 			);
 
 			connection.getTrackers().add(imu);

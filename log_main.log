@@ -1,0 +1,19 @@
+2022-12-14 20:50:45 [SEVERE] Failed to initiate Unix socket, disabling driver bridge...
+java.lang.RuntimeException: /tmp/SlimeVRDriver socket already exists.
+	at dev.slimevr.platform.linux.UnixSocketBridge.<init>(UnixSocketBridge.java:47)
+	at dev.slimevr.VRServer.<init>(VRServer.java:125)
+	at dev.slimevr.VRServer.<init>(VRServer.java:69)
+	at dev.slimevr.dev.slimevr.Main.main(dev.slimevr.Main.java:85)
+2022-12-14 20:50:45 [INFO] [Keybinding] Currently only supported on Windows. Keybindings will be disabled.
+2022-12-14 20:50:45 [INFO] [WebSocket] Web Socket VR Bridge started on port 21110
+2022-12-14 20:51:44 [SEVERE] Failed to initiate Unix socket, disabling driver bridge...
+java.lang.RuntimeException: /tmp/SlimeVRDriver socket already exists.
+	at dev.slimevr.platform.linux.UnixSocketBridge.<init>(UnixSocketBridge.java:47)
+	at dev.slimevr.VRServer.<init>(VRServer.java:125)
+	at dev.slimevr.VRServer.<init>(VRServer.java:69)
+	at dev.slimevr.dev.slimevr.Main.main(dev.slimevr.Main.java:85)
+2022-12-14 20:51:44 [INFO] [Keybinding] Currently only supported on Windows. Keybindings will be disabled.
+2022-12-14 20:51:44 [INFO] [WebSocket] Web Socket VR Bridge started on port 21110
+2022-12-14 20:51:51 [INFO] [Keybinding] Currently only supported on Windows. Keybindings will be disabled.
+2022-12-14 20:51:51 [INFO] [SteamVR Driver Bridge] Socket /tmp/SlimeVRDriver created
+2022-12-14 20:51:51 [INFO] [WebSocket] Web Socket VR Bridge started on port 21110
