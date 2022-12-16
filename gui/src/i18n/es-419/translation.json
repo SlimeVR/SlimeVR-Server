@@ -1,0 +1,492 @@
+{
+  "websocket": {
+    "connecting": "Intentando conectar con el servidor",
+    "connection-lost": "Conexión con el servidor perdida. Intentando reconectar..."
+  },
+  "tips": {
+    "find-tracker": "¿No sabes cuál tracker es cual? Agita un tracker y se resaltará donde está asignado.",
+    "do-not-move-heels": "¡Asegura no mover los talones durante la grabación!"
+  },
+  "body-part": {
+    "NONE": "Sin asignar",
+    "HEAD": "Cabeza",
+    "NECK": "Cuello",
+    "RIGHT_SHOULDER": "Hombro derecho",
+    "RIGHT_UPPER_ARM": "Brazo superior derecho",
+    "RIGHT_LOWER_ARM": "Antebrazo derecho",
+    "RIGHT_HAND": "Mano derecha",
+    "RIGHT_UPPER_LEG": "Muslo derecho",
+    "RIGHT_LOWER_LEG": "Pantorrilla derecha",
+    "RIGHT_FOOT": "Pie derecho",
+    "CHEST": "Pecho",
+    "WAIST": "Cintura",
+    "HIP": "Cadera",
+    "LEFT_SHOULDER": "Hombro izquierdo",
+    "LEFT_UPPER_ARM": "Brazo superior izquierdo",
+    "LEFT_LOWER_ARM": "Antebrazo izquierdo",
+    "LEFT_HAND": "Mano izquierda",
+    "LEFT_UPPER_LEG": "Muslo izquierdo",
+    "LEFT_LOWER_LEG": "Pantorrilla izquierdo",
+    "LEFT_FOOT": "Pie izquierdo"
+  },
+  "skeleton-bone": {
+    "NONE": "None",
+    "HEAD": "Head Shift",
+    "NECK": "Neck Length",
+    "TORSO": "Torso Length",
+    "CHEST": "Chest Distance",
+    "WAIST": "Waist Distance",
+    "HIP_OFFSET": "Hip Offset",
+    "HIPS_WIDTH": "Ancho de caderas",
+    "LEGS_LENGTH": "Largo de piernas",
+    "KNEE_HEIGHT": "Altura de rodillas",
+    "FOOT_LENGTH": "Largo de pies",
+    "FOOT_SHIFT": "Foot Shift",
+    "SKELETON_OFFSET": "Skeleton Offset",
+    "CONTROLLER_DISTANCE_Z": "Controller Distance Z",
+    "CONTROLLER_DISTANCE_Y": "Controller Distance Y",
+    "FOREARM_LENGTH": "Forearm Distance",
+    "SHOULDERS_DISTANCE": "Shoulders Distance",
+    "SHOULDERS_WIDTH": "Shoulders Width",
+    "UPPER_ARM_LENGTH": "Upper Arm Length",
+    "ELBOW_OFFSET": "Elbow Offset"
+  },
+  "reset": {
+    "reset-all": "Reiniciar todas las proporciones",
+    "full": "Reinicio",
+    "mounting": "Reiniciar montura",
+    "quick": "Reinicio rápido"
+  },
+  "serial-detection": {
+    "new-device.p0": "¡Nuevo dispositivo detectado!" ,
+    "new-device.p1": "Ingresa tus credenciales de WiFi",
+    "new-device.p2": "Por favor seleciona que quieres hacer con él",
+    "open-wifi": "Conectarse a wifi",
+    "open-serial": "Abrir consola",
+    "submit": "Enviar!",
+    "close": "Cerrar"
+  },
+  "navbar": {
+    "home": "Inicio",
+    "body-proportions": "Proporciones de cuerpo",
+    "trackers-assign": "Asignación de trackers",
+    "mounting": "Mounting Calibration",
+    "onboarding": "Asistente de configuración",
+    "settings": "Ajustes"
+  },
+  "bvh": {
+    "start-recording": "Grabar BVH",
+    "recording": "Grabando..."
+  },
+  "overlay": {
+    "is-visible-label": "Mostrar overlay en SteamVR",
+    "is-mirrored-label": "Mostrar overlay as Mirror"
+  },
+  "tracker": {
+    "status": {
+      "none": "Sin estado",
+      "busy": "Ocupado",
+      "error": "Error",
+      "disconnected": "Desconectado",
+      "occluded": "Ocluido",
+      "ok": "Conectado"
+    },
+    "table": {
+      "column": {
+        "name": "Nombre",
+        "type": "Tipo",
+        "battery": "Bateria",
+        "ping": "Ping",
+        "rotation": "Rotación X/Y/Z",
+        "position": "Posición X/Y/Z",
+        "url": "URL"
+      }
+    },
+    "rotation": {
+      "front": "Frente",
+      "left": "Izquierda",
+      "right": "Derecha",
+      "back": "Atrás" 
+    },
+    "infos": {
+      "manufacturer": "Fabricante",
+      "display-name": "Nombre",
+      "custom-name": "Nombre personalizado",
+      "url": "Tracker URL"
+    },
+    "settings": {
+      "back": "Volver a la lista de trackers",
+      "title": "Ajustes de trackers",
+      "assignment-section": {
+        "title": "Asignación",
+        "description": "Parte del cuerpo asignado al tracker.",
+        "edit": "Editar asignación"
+      },
+      "mounting-section": {
+        "title": "Posición de montura",
+        "description": "¿Dónde está el Tracker montado?",
+        "edit": "Editar montura"
+      },
+      "name-section": {
+        "title": "Nombre del tracker",
+        "description": "Dale un apodo bonito :)",
+        "input-placeholder": "Pierna izquierda de NightyBeast"
+      }
+    },
+    "part-card": {
+      "no-name": "Sin nombre",
+      "unassigned": "No asignado"
+    }
+  },
+  "body-assignment-menu": {
+    "title": "¿Dónde quieres que esté este Tracker?",
+    "description": "Selecciona la posición donde quieres asignar este Tracker. Alternativamente, puedes escoger administrar todos los Trackers al mismo tiempo en vez de uno por uno.",
+    "show-advanced-locations": "Mostrar posiciones de asignación avanzados",
+    "manage-trackers": "Administrar todos los Trackers",
+    "unassign-tracker": "Tracker no asignado"
+  },
+  "tracker-selection-menu": {
+    "title": "¿Asignar {{bodyPart}} a qué tracker?",
+    "unassigned": "Trackers sin asignar",
+    "assigned": "Trackers asignados",
+    "dont-assign": "No asignar"
+  },
+  "mounting-selection-menu": {
+    "title": "¿Dónde estará ubicado el tracker?",
+    "close": "Cerrar"
+  },
+  "settings": {
+    "sidebar": {
+      "title": "Ajustes",
+      "general": "General",
+      "tracker-mechanics": "Mecánicas de Trackeo",
+      "fk-settings": "Ajustes FK",
+      "gesture-control": "Gesture control",
+      "interface": "Interfase",
+      "osc-router": "***OSC router",
+      "utils": "Utilidades",
+      "serial": "Consola Serial"
+    },
+    "general": {
+      "steamvr": {
+        "title": "SteamVR",
+        "subtitle": "Trackers en SteamVR",
+        "description.p0": "Habilita o deshabilita trackers de SteamVR en específico.",
+        "description.p1": "Useful for games or apps that only support certain trackers.",
+        "trackers": {
+          "waist": "Cintura",
+          "chest": "Pecho",
+          "feet": "Pie",
+          "knees": "Rodillas",
+          "elbows": "Codos",
+          "hands": "Manos"
+        }
+      },
+      "tracker-mechanics": {
+        "title": "Tracker mechanics",
+        "subtitle": "Filtering",
+        "description.p0": "Choose the filtering type for your trackers.",
+        "description.p1": "Prediction predicts movement while smoothing smoothens movement.",
+        "filtering-type": {
+          "title": "Filtering type",
+          "none": {
+            "label": "No filtering",
+            "description":"Use rotations as is. Will not do any filtering."
+          },
+          "smoothing": {
+            "label": "Smoothing",
+            "description":"Smooths movements but adds some latency."
+          },
+          "prediction": {
+            "label": "Prediction",
+            "description":"Reduces latency and makes movements more snappy, but may increase jitter."
+          }
+        },
+        "amount": {
+          "label": "Amount"
+        }
+      },
+      "fk-settings": {
+        "title": "FK settings",
+        "leg-tweak": {
+          "title": "Leg tweaks",
+          "description": "Floor-clip can Reduce or even eliminates clipping with the floor but may cause problems when on your knees. Skating-correction corrects for ice skating, but can decrease accuracy in certain movement patterns.",
+          "floor-clip": "Floor clip",
+          "skating-correction": "Skating correction",
+          "skating-correction-amount": "Skating correction strength"
+        },
+        "arm-fk": {
+          "title": "Arm FK",
+          "description": "Change the way the arms are tracked.",
+          "force-arms": "Force arms from HMD"
+        },
+        "skeleton-settings": {
+          "title": "Skeleton settings",
+          "description": "Toggle skeleton settings on or off. It is recommended to leave these on.",
+          "extended-spine": "Extended spine",
+          "extended-pelvis": "Extended pelvis",
+          "extended-knees": "Extended knee"
+        }
+      },
+      "gesture-control": {
+        "title": "Gesture control",
+        "subtitle": "Double Tap quick reset",
+        "description": "Enable or disable double tap quick reset. When enabled double tapping anywhere on the highest torso tracker will activate a quick reset. Delay is the time between registering a tap and resetting.",
+        "enable": "Double tap quick reset",
+        "delay": "Delay"
+      },
+      "interface": {
+        "title": "Interface",
+        "dev-mode": {
+          "title": "Developer Mode",
+          "description": "This mode can be useful if you need in-depth data or to interact with connected trackers on a more advanced level",
+          "label": "Developer Mode"
+        },
+        "serial-detection": {
+          "title": "Serial device detection",
+          "description": "This option will show a pop-up every time you plug a new serial device that could be a tracker. It helps improving the setup process of a tracker",
+          "label": "Serial device detection"
+        },
+        "lang": {
+          "title": "Select language",
+          "description": "Change the default language you want to use",
+          "placeholder": "Select the language to use"
+        }
+      }
+    },
+    "serial": {
+      "title": "Serial Console",
+      "description.p0": "This is a live information feed for serial communication.",
+      "description.p1": "May be useful if you need to know the firmware is acting up.",
+      "connection-lost": "Connection to serial lost, Reconnecting...",
+      "reboot": "Reboot",
+      "factory-reset": "Factory Reset",
+      "get-infos": "Get Infos",
+      "serial-select": "Select a serial port",
+      "auto-dropdown-item": "Auto"
+    },
+    "osc": {
+      "router": {
+        "title": "OSC router",
+        "description.p0": "Forward OSC messages from another program.",
+        "description.p1": "Useful for using another OSC program with VRChat for example.",
+        "enable": {
+          "title": "Enable",
+          "description": "Toggle the forwarding of messages",
+          "label": "Enable"
+        },
+        "network": {
+          "title": "Network ports",
+          "description.p0": "Set the ports for listening and sending data",
+          "description.p1": "These can be the same as other ports used in the SlimeVR server",
+          "port-in": {
+            "label": "Port In",
+            "placeholder": "Port in (default: 9002)"
+          },
+          "port-out": {
+            "label": "Port Out",
+            "placeholder": "Port out (default: 9000)"
+          },
+          "address": {
+            "title": "Network address",
+            "description": "Set the address to send out data at",
+            "placeholder": "IPV4 address"
+          }
+        }
+      },
+      "vrchat": {
+        "description.p0": "Change VRChat-specific settings to receive HMD data and send",
+        "description.p1": "trackers data for FBT (works on Quest standalone).",
+        "enable": {
+          "title": "Enable",
+          "description": "Toggle the sending and receiving of data",
+          "label": "Enable"
+        },
+        "network": {
+          "title": "Network ports",
+          "description": "Set the ports for listening and sending data to VRChat",
+          "port-in": {
+            "label": "Port In",
+            "placeholder": "Port in (default: 9001)"
+          },
+          "port-out": {
+            "label": "Port Out",
+            "placeholder": "Port out (default: 9000)"
+          },
+          "address": {
+            "title": "Network address",
+            "description": "Choose which address to send out data to VRChat (check your wifi settings on your device)",
+            "placeholder": "VRChat ip address"
+          },
+          "trackers": {
+            "title": "Trackers",
+            "description": "Toggle the sending and receiving of data",
+            "chest": "Chest",
+            "waist": "Waist",
+            "knees": "Knees",
+            "feet": "Feet",
+            "elbows": "Elbows"
+          }
+        }
+      }
+    }
+  },
+  "onboarding": {
+    "skip": "Skip setup",
+    "continue": "Continue",
+    "wip": "Work in progress",
+    "wifi-creds": {
+      "back": "Go Back to introduction",
+      "title": "Input WiFi credentials",
+      "description.p0": "The Trackers will use these credentials to connect wirelessly",
+      "description.p1": "please use the credentials that you are currently connected to",
+      "skip": "Skip wifi settings",
+      "submit": "Submit!"
+    },
+    "reset-tutorial": {
+      "back": "Go Back to Mounting calibration",
+      "title": "Reset tutorial",
+      "description": "This feature isn't done, just press continue"
+    },
+    "home": {
+      "title": "Welcome to SlimeVR",
+      "description.p0": "Bringing full-body tracking",
+      "description.p1": "to everyone",
+      "start": "Lets get set up!"
+    },
+    "enter-vr": {
+      "back": "Go Back to Tracker assignent",
+      "title": "Time to enter VR!",
+      "description": "Put on all your trackers and then enter VR!",
+      "ready": "I'm ready"
+    },
+    "done": {
+      "title": "You're all set!",
+      "description": "Enjoy your full body experience",
+      "close": "Close the guide"
+    },
+    "connect-tracker": {
+      "back": "Go Back to WiFi credentials",
+      "title": "Connect trackers",
+      "description.p0": "Now onto the fun part, connecting all the trackers!",
+      "description.p1": "Simply connect all that aren't connected yet, through a USB port.",
+      "issue": {
+        "serial": "I'm having trouble connecting!"
+      },
+      "usb": "USB Tracker",
+      "connection-status": {
+        "connecting": "Sending wifi credentials",
+        "connected": "Connected to WiFi",
+        "error": "Unable to connect to Wifi",
+        "start-connecting": "Looking for trackers",
+        "handshake": "Connected to the Server"
+      },
+      "connected-trackers": "{{amount}} trackers connected",
+      "next": "I connected all my trackers"
+    },
+    "assign-trackers": {
+      "back": "Go Back to Wifi Credentials",
+      "title": "Assign trackers",
+      "description": "Let's choose which tracker goes where. Click on a location where you want to place a tracker",
+      "assigned": "{{assigned}} of {{trackers}} trackers assigned",
+      "advanced": "Show advanced assign locations",
+      "next": "I assigned all the trackers"
+    },
+    "manual-mounting": {
+      "back": "Go Back to Enter VR",
+      "title": "Manual Mounting",
+      "description": "Click on every tracker and select which way they are mounted",
+      "auto-mounting": "Automatic mounting",
+      "next": "Next step"
+    },
+    "automatic-mounting": {
+      "back": "Go Back to Enter VR",
+      "title": "Mounting Calibration",
+      "description": "For SlimeVR trackers to work, we need to assign a mounting rotation to your trackers to align them with your physical tracker mounting.",
+      "manual-mounting": "Manually set mounting",
+      "next": "Next step",
+      "prev-step": "Previous step",
+      "done": {
+        "title": "Mounting rotations calibrated.",
+        "description": "Your mounting calibration is complete!",
+        "restart": "Return to start"
+      },
+      "mounting-reset": {
+        "title": "Mounting Reset",
+        "step": {
+          "0": "1. Squat in a \"skiing\" pose with your legs bent, your upper body tilted forwards, and your arms bent.",
+          "1": "2. Press the \"Reset Mounting\" button and wait for 3 seconds before the trackers' mounting rotations will reset."
+        }
+      },
+      "preparation": {
+        "title": "Preparation",
+        "step": {
+          "0": "1. Stand upright with your arms to your sides.",
+          "1": "2. Press the \"Reset\" button and wait for 3 seconds before the trackers will reset."
+        }
+      },
+      "put-trackers-on": {
+        "title": "Put on your trackers",
+        "description": "To calibrate mounting rotations, we're gonna use the trackers you just assigned. Put on all your trackers, you can see which are which in the figure to the right.",
+        "next": "I have all my trackers on"
+      }
+    },
+    "manual-proportions": {
+      "back": "Go Back to Reset tutorial",
+      "title": "Manual Body Proportions",
+      "precision": "Precision adjust",
+      "auto": "Automatic calibration"
+    },
+    "automatic-proportions": {
+      "back": "Go Back to Reset tutorial",
+      "title": "Measure your body",
+      "description": "For SlimeVR trackers to work, we need to know the length of your bones. This short calibration will measure it for you.",
+      "manual": "Manual calibration",
+      "prev-step": "Previous step",
+      "put-trackers-on": {
+        "title": "Put on your trackers",
+        "description": "To calibrate your proportions, we're gonna use the trackers you just assigned. Put on all your trackers, you can see which are which in the figure to the right.",
+        "next": "I have all my trackers on"
+      },
+      "preparation": {
+        "title": "Preparation",
+        "description": "Place a chair directly behind you inside your play space. Be prepared to sit down during the autobone setup.",
+        "next": "I am in front of a chair"
+      },
+      "start-recording": {
+        "title": "Get ready to move",
+        "description": "We're now going to record some specific poses and moves. These will be prompted in the next screen. Be ready to start when the button is pressed!",
+        "next": "Start Recording"
+      },
+      "recording": {
+        "title": "REC",
+        "description.p0": "Recording in progress...",
+        "description.p1": "Make the moves shown below:",
+        "steps": {
+          "0": "Bend knees a few times.",
+          "1": "Sit on a chair then stand up.",
+          "2": "Twist upper body left, then bend right.",
+          "3": "Twist upper body right, then bend left.",
+          "4": "Wiggle around until timer ends."
+        },
+        "processing": "Processing the result",
+        "timer": "{{time}} seconds left"
+      },
+      "verify-results": {
+        "title": "Verify results",
+        "description": "Check the results below, do they look correct?",
+        "results": "Recording results",
+        "processing": "Processing the result",
+        "redo": "Redo recording",
+        "confirm": "They're correct"
+      },
+      "done": {
+        "title": "Body measured and saved.",
+        "description": "Your body proportions calibration is complete!"
+      }
+    }
+  },
+  "home": {
+    "no-trackers": "No hay trackers detectados o asignados"
+  }
+}
