@@ -1,0 +1,460 @@
+{
+  "websocket": {
+    "connecting": "サーバー接続中",
+    "connection-lost": "サーバーへの接続が失われました。再接続を試みています..."
+  },
+  "tips": {
+    "find-tracker": "どのトラッカーがどれだかわからない？トラッカーを振ると、該当する項目がハイライトされます。",
+    "do-not-move-heels": "レコーディング中にかかとが動かないように注意しましょう！"
+  },
+  "body-part": {
+    "NONE": "未設定",
+    "HEAD": "頭",
+    "NECK": "首",
+    "RIGHT_SHOULDER": "右肩",
+    "RIGHT_UPPER_ARM": "右上腕",
+    "RIGHT_LOWER_ARM": "右前腕",
+    "RIGHT_HAND": "右手",
+    "RIGHT_UPPER_LEG": "右膝",
+    "RIGHT_LOWER_LEG": "右足",
+    "RIGHT_FOOT": "右足先",
+    "CHEST": "胸",
+    "WAIST": "腰",
+    "HIP": "ヒップ",
+    "LEFT_SHOULDER": "左肩",
+    "LEFT_UPPER_ARM": "左上腕",
+    "LEFT_LOWER_ARM": "左前腕",
+    "LEFT_HAND": "左手",
+    "LEFT_UPPER_LEG": "左膝",
+    "LEFT_LOWER_LEG": "左足",
+    "LEFT_FOOT": "左足先"
+  },
+  "skeleton-bone": {
+    "NONE": "無し",
+    "HEAD": "ヘッドシフト",
+    "NECK": "首長さ",
+    "TORSO": "胴長さ",
+    "CHEST": "胸部の距離",
+    "WAIST": "腰部の距離",
+    "HIP_OFFSET": "ヒップオフセット",
+    "HIPS_WIDTH": "ヒップ幅",
+    "LEGS_LENGTH": "脚長さ",
+    "KNEE_HEIGHT": "膝高さ",
+    "FOOT_LENGTH": "足先長さ",
+    "FOOT_SHIFT": "足先シフト",
+    "SKELETON_OFFSET": "スケルトンオフセット",
+    "CONTROLLER_DISTANCE_Z": "コントローラ距離 Z",
+    "CONTROLLER_DISTANCE_Y": "コントローラ距離 Y",
+    "FOREARM_LENGTH": "前腕長さ",
+    "SHOULDERS_DISTANCE": "肩の距離",
+    "SHOULDERS_WIDTH": "肩幅",
+    "UPPER_ARM_LENGTH": "上腕長さ",
+    "ELBOW_OFFSET": "肘オフセット"
+  },
+  "reset": {
+    "reset-all": "すべてのプロポーションをリセット",
+    "full": "リセット",
+    "mounting": "リセットマウンティング",
+    "quick": "クイックリセット"
+  },
+  "serial-detection": {
+    "new-device.p0": "新しいシリアルデバイスを検出しました！" ,
+    "new-device.p1": "wifiの認証情報を入力してください！",
+    "new-device.p2": "何をするか選択してください",
+    "open-wifi": "WiFiに接続",
+    "open-serial": "シリアルコンソールを開く",
+    "submit": "実行！",
+    "close": "閉じる"
+  },
+  "navbar": {
+    "home": "ホーム",
+    "body-proportions": "ボディプロポーション",
+    "trackers-assign": "トラッカー割り当て",
+    "mounting": "マウントキャリブレーション",
+    "onboarding": "セットアップ ウィザード",
+    "settings": "設定"
+  },
+  "bvh": {
+    "start-recording": "BVHレコーディング",
+    "recording": "レコーディング中..."
+  },
+  "overlay": {
+    "is-visible-label": "SteamVRでオーバーレイを表示する",
+    "is-mirrored-label": "オーバーレイをミラーとして表示する"
+  },
+  "tracker": {
+    "status": {
+      "none": "ステータスなし",
+      "busy": "Busy",
+      "error": "エラー",
+      "disconnected": "切断",
+      "occluded": "Occluded",
+      "ok": "接続中"
+    },
+    "table": {
+      "column": {
+        "name": "Name",
+        "type": "Type",
+        "battery": "Battery",
+        "ping": "Ping",
+        "rotation": "Rotation X/Y/Z",
+        "position": "Position X/Y/Z",
+        "url": "URL"
+      }
+    },
+    "rotation": {
+      "front": "前",
+      "left": "左",
+      "right": "右",
+      "back": "後" 
+    },
+    "infos": {
+      "manufacturer": "メーカ－",
+      "display-name": "表示名",
+      "custom-name": "カスタム名称",
+      "url": "トラッカーURL"
+    },
+    "settings": {
+      "back": "トラッカーリストへ戻る",
+      "title": "トラッカー設定",
+      "assignment-section": {
+        "title": "割り当て",
+        "description": "トラッカーが体のどの部位に装着されているか",
+        "edit": "割り当ての編集"
+      },
+      "mounting-section": {
+        "title": "装着方向",
+        "description": "トラッカーをどの方向に装着していますか?",
+        "edit": "装着向きの編集"
+      },
+      "name-section": {
+        "title": "トラッカー名称",
+        "description": "自由に名称をつけてください",
+        "input-placeholder": "NightyBeast's left leg"
+      }
+    },
+    "part-card": {
+      "no-name": "名称無し",
+      "unassigned": "未割り当て"
+    }
+  },
+  "body-assignment-menu": {
+    "title": "このトラッカーをどこに配置しますか？",
+    "description": "このトラッカーを割り当てる場所を選択します。また、トラッカーを一つずつ管理するのではなく、すべてのトラッカーを一括して管理することもできます。",
+    "show-advanced-locations": "高度な割り当て場所の表示",
+    "manage-trackers": "すべてのトラッカーの管理",
+    "unassign-tracker": "トラッカーの割り当て解除"
+  },
+  "tracker-selection-menu": {
+    "title": "{{bodyPart}}どのトラッカーを割り当てますか？",
+    "unassigned": "未割り当てのトラッカー",
+    "assigned": "割り当て済みのトラッカー",
+    "dont-assign": "割り当てない"
+  },
+  "mounting-selection-menu": {
+    "title": "このトラッカーをどこに配置しますか？",
+    "close": "閉じる"
+  },
+  "settings": {
+    "sidebar": {
+      "title": "設定",
+      "general": "一般",
+      "tracker-mechanics": "トラッカーメカニズム",
+      "fk-settings": "FK設定",
+      "interface": "インターフェース",
+      "utils": "ユーティリティ",
+      "serial": "シリアルコンソール"
+    },
+    "general": {
+      "steamvr": {
+        "title": "SteamVR",
+        "subtitle": "SteamVRのトラッカー",
+        "description.p0": "有効化したい部位にチャックを入れてください。",
+        "description.p1": "SlimeVRが行うことをよりコントロールしたい場合に便利です。",
+        "trackers": {
+          "waist": "腰",
+          "chest": "胸",
+          "feet": "足",
+          "knees": "膝",
+          "elbows": "肘"
+        }
+      },
+      "tracker-mechanics": {
+        "title": "トラッカーメカニズム",
+        "subtitle": "フィルター機能",
+        "description.p0": "トラッカーのフィルタリングの種類を選択します。",
+        "description.p1": "Predictionは動きを予測し、Smoothingは動きを滑らかにする。",
+        "filtering-type": {
+          "title": "フィルタータイプ",
+          "none": {
+            "label": "No filtering",
+            "description":"トラッカーの値をそのまま使用します。フィルタリングは行いません。"
+          },
+          "smoothing": {
+            "label": "Smoothing",
+            "description":"動きを滑らかにしますが、若干の遅れが発生します"
+          },
+          "prediction": {
+            "label": "Prediction",
+            "description":"レイテンシーを減らし、動きをよりキビキビさせますが、ジッターが増加する場合があります。"
+          }
+        },
+        "amount": {
+          "label": "数値"
+        }
+      },
+      "fk-settings": {
+        "title": "FK設定",
+        "leg-tweak": {
+          "title": "脚の微調整",
+          "description": "フロアクリップは、床とのクリッピングを減らす、あるいはなくすことができますが、膝をついたときに問題が発生する可能性があります。スケーティング補正は足の滑りを補正できますが、特定の動作パターンでは精度が落ちることがあります。",
+          "floor-clip": "フロアクリップ",
+          "skating-correction": "スケーティング補正"
+        },
+        "arm-fk": {
+          "title": "アームFK",
+          "description": "腕の追従方法を変更する。",
+          "force-arms": "Force arms from HMD"
+        },
+        "skeleton-settings": {
+          "title": "スケルトン設定",
+          "description": "スケルトン設定のオン/オフを切り替えます。これらはオンのままにしておくことをお勧めします。",
+          "extended-spine": "Extended spine",
+          "extended-pelvis": "Extended pelvis",
+          "extended-knees": "Extended knee"
+        }
+      },
+      "gesture-control": {
+        "title": "ジェスチャーコントロール",
+        "subtitle": "ダブルタップクイックリセット",
+        "description": "ダブルタップクイックリセットの有効・無効を設定します。有効にすると、最も高い胴体トラッカー上の任意の場所をダブルタップすると、クイックリセットが起動します。ディレイは、タップされてからリセットされるまでの時間です。",
+        "enable": "ダブルタップクイックリセット",
+        "delay": "ディレイ"
+      },
+      "interface": {
+        "title": "インターフェース",
+        "dev-mode": {
+          "title": "開発者モード",
+          "description": "このモードは、詳細なデータが必要な場合や、接続されたトラッカーをより高度なレベルで操作する場合に役立ちます。",
+          "label": "開発者モード"
+        },
+        "serial-detection": {
+          "title": "シリアルデバイスの検出",
+          "description": "このオプションは、トラッカーとなり得る新しいシリアルデバイスを接続するたびにポップアップを表示します。これはトラッカーの設定プロセスを改善するのに役立ちます。",
+          "label": "シリアルデバイスの検出"
+        },
+        "lang": {
+          "title": "言語を選択",
+          "description": "使用したいデフォルトの言語を変更する",
+          "placeholder": "使用する言語を選択する"
+        }
+      }
+    },
+    "serial": {
+      "title": "シリアルコンソール",
+      "description.p0": "シリアル通信のライブ情報フィードです。",
+      "description.p1": "ファームウェアの動作を知る必要がある場合に有用かもしれません。",
+      "connection-lost": "シリアルへの接続が失われました、再接続中...",
+      "reboot": "リブート",
+      "factory-reset": "ファクトリーリセット",
+      "get-infos": "情報取得",
+      "serial-select": "シリアルポートを選択",
+      "auto-dropdown-item": "自動"
+    },
+    "osc": {
+      "vrchat": {
+        "description.p0": "HMDのデータを受信して送信するためにVRChat固有の設定を変更する。",
+        "description.p1": "FBT用のトラッカーデータ（Questスタンドアロンで動作します）",
+        "enable": {
+          "title": "有効",
+          "description": "データの送受信を切り替える。",
+          "label": "有効"
+        },
+        "network": {
+          "title": "ネットワークポート",
+          "description": "VRChatへのデータを送受信するためのポートを設定します。",
+          "port-in": {
+            "label": "ポートイン",
+            "placeholder": "ポートイン (デフォルト: 9001)"
+          },
+          "port-out": {
+            "label": "ポートアウト",
+            "placeholder": "ポートアウト (デフォルト: 9000)"
+          },
+          "address": {
+            "title": "ネットワークアドレス",
+            "description": "VRChatにデータを送信するアドレスを選択してください（デバイスのwifi設定を確認してください）",
+            "placeholder": "VRChatのIPアドレス"
+          },
+          "trackers": {
+            "title": "トラッカー",
+            "description": "データの送受信を切り替える。",
+            "chest": "胸",
+            "waist": "腰",
+            "knees": "膝",
+            "feet": "足",
+            "elbows": "肘"
+          }
+        }
+      }
+    }
+  },
+  "onboarding": {
+    "skip": "設定をスキップする",
+    "continue": "続ける",
+    "wip": "実行中",
+    "wifi-creds": {
+      "back": "戻る",
+      "title": "WiFiの認証情報の入力",
+      "description.p0": "トラッカーはこれらの認証情報を使ってwifiに接続します。",
+      "description.p1": "現在接続している認証情報を使用してください。",
+      "skip": "wifi設定をスキップする",
+      "submit": "実行！"
+    },
+    "reset-tutorial": {
+      "back": "マウントキャリブレーションに戻る",
+      "title": "リセットチュートリアル",
+      "description": "この機能は終了していません。続けるを押してください。"
+    },
+    "home": {
+      "title": "Welcome to SlimeVR",
+      "description.p0": "Bringing full-body tracking",
+      "description.p1": "to everyone",
+      "start": "セットアップ開始！"
+    },
+    "enter-vr": {
+      "back": "トラッカー割り当てに戻る",
+      "title": "VRに入る時間だ！",
+      "description": "トラッカーを全部つけて、VRに突入せよ！",
+      "ready": "準備完了"
+    },
+    "done": {
+      "title": "準備完了です！",
+      "description": "フルトラをお楽しみください",
+      "close": "ガイドを閉じる"
+    },
+    "connect-tracker": {
+      "back": "WiFi認証に戻る",
+      "title": "接続中のトラッカー",
+      "description.p0": "さあ、楽しい部分に移りましょう。すべてのトラッカーを接続します！",
+      "description.p1": "まだ接続されていないトラッカーたちをUSBポートを通して接続するだけです。",
+      "issue": {
+        "serial": "接続に問題があります！"
+      },
+      "usb": "USBトラッカー",
+      "connection-status": {
+        "connecting": "wifiの認証情報を送信中",
+        "connected": "WiFiに接続されました",
+        "error": "Wifiに接続できません",
+        "start-connecting": "トラッカーを探しています",
+        "handshake": "サーバーに接続されました"
+      },
+      "connected-trackers": "{{amount}} トラッカーが接続されました",
+      "next": "すべてのトラッカーを接続しました"
+    },
+    "assign-trackers": {
+      "back": "Wifi認証に戻る",
+      "title": "トラッカーを割り当てる",
+      "description": "どのトラッカーをどこに置くか選んでみましょう。トラッカーを配置したい場所をクリックしてください。",
+      "assigned": "{{assigned}} of {{trackers}} trackers assigned",
+      "advanced": "高度な割り当て場所の表示",
+      "next": "すべてのトラッカーを割り当てました"
+    },
+    "manual-mounting": {
+      "back": "VRの入力に戻る",
+      "title": "マニュアルマウント",
+      "description": "すべてのトラッカーをクリックし、どの方向にマウントするかを選択",
+      "auto-mounting": "自動マウント",
+      "next": "次のステップ"
+    },
+    "automatic-mounting": {
+      "back": "VRの入力に戻る",
+      "title": "マウントキャリブレーション",
+      "description": "SlimeVRのトラッカーを動作させるためには、物理的なトラッカーの取り付け位置と合わせるために、トラッカーの取り付け方向を合わせる必要があります。",
+      "manual-mounting": "マニュアルマウント",
+      "next": "次のステップ",
+      "prev-step": "前のステップ",
+      "done": {
+        "title": "取り付け方向の較正を行いました。",
+        "description": "マウントのキャリブレーションが完了しました！",
+        "restart": "最初に戻る"
+      },
+      "mounting-reset": {
+        "title": "マウントリセット",
+        "step": {
+          "0": "1. 足を曲げ、上体を前に倒し、腕を曲げた状態で、スキーのポーズでしゃがむ。",
+          "1": "2. リセットマウンティングボタンを押し、3秒待つと装着方向がリセットされます。"
+        }
+      },
+      "preparation": {
+        "title": "準備",
+        "step": {
+          "0": "1. 両手を横に広げて直立します。",
+          "1": "2. リセットボタンを押し、3秒待つとリセットされます。"
+        }
+      },
+      "put-trackers-on": {
+        "title": "トラッカーを装着する",
+        "description": "マウントの方向を較正するために、先ほど割り当てたトラッカーを使用します。右の図でどれがどれだかわかると思います。",
+        "next": "すべてのトラッカーを装着しました"
+      }
+    },
+    "manual-proportions": {
+      "back": "チュートリアルをリセットする",
+      "title": "マニュアルボディプロポーション",
+      "precision": "精度を調整する",
+      "auto": "自動キャリブレーション"
+    },
+    "automatic-proportions": {
+      "back": "チュートリアルをリセットする",
+      "title": "自分の体の測定",
+      "description": "SlimeVRのトラッカーが動作するためには、あなたの骨の長さを知る必要があります。この短いキャリブレーションでそれを測定します。",
+      "manual": "手動調整",
+      "prev-step": "前のステップ",
+      "put-trackers-on": {
+        "title": "トラッカーを装着する",
+        "description": "プロポーションを調整するために、先ほど割り当てたトラッカーを使用します。右の図で、どれがどのトラッカーかわかると思います。",
+        "next": "すべてのトラッカーを装着しました"
+      },
+      "preparation": {
+        "title": "準備",
+        "description": "プレイスペース内のあなたの真後ろに椅子を置いてください。オートボーンセットアップの間、座れるように準備してください。",
+        "next": "椅子の前にいます"
+      },
+      "start-recording": {
+        "title": "測定の準備をする",
+        "description": "これから具体的なポーズや動きを記録します。これらは次の画面に表示されます。ボタンが押されたらすぐに始められるように準備しておいてください！",
+        "next": "レコーディングスタート"
+      },
+      "recording": {
+        "title": "REC",
+        "description.p0": "レコーディング中...",
+        "description.p1": "以下に示すような動きをします。",
+        "steps": {
+          "0": "膝を数回曲げてください",
+          "1": "椅子に座り、立ち上がる",
+          "2": "上半身を左にひねり、右に曲げる",
+          "3": "上半身を右にひねり、左に曲げる",
+          "4": "タイマーが終わるまで体をくねらせる"
+        },
+        "processing": "結果を処理中",
+        "timer": "あと {{time}} 秒"
+      },
+      "verify-results": {
+        "title": "結果を確認",
+        "description": "以下の結果を確認してください。正しく表示されていますか？",
+        "results": "記録結果",
+        "processing": "結果の処理",
+        "redo": "レコーディングやり直し",
+        "confirm": "正確です"
+      },
+      "done": {
+        "title": "体を測定して保存",
+        "description": "ボディプロポーションのキャリブレーションが完了しました！"
+      }
+    }
+  },
+  "home": {
+    "no-trackers": "トラッカーを検出できません。もしくは割り当てられていません。"
+  }
+}

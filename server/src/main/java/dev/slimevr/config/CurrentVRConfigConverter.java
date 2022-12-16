@@ -1,10 +1,7 @@
 package dev.slimevr.config;
 
 import com.fasterxml.jackson.databind.JsonNode;
-import com.fasterxml.jackson.databind.node.ArrayNode;
-import com.fasterxml.jackson.databind.node.DoubleNode;
-import com.fasterxml.jackson.databind.node.JsonNodeFactory;
-import com.fasterxml.jackson.databind.node.ObjectNode;
+import com.fasterxml.jackson.databind.node.*;
 import com.github.jonpeterson.jackson.module.versioning.VersionedModelConverter;
 
 import java.util.Map;
@@ -19,11 +16,16 @@ public class CurrentVRConfigConverter implements VersionedModelConverter {
 		String targetModelVersion,
 		JsonNodeFactory nodeFactory
 	) {
-
 		int version = Integer.parseInt(modelVersion);
 
-		// Configs less than version 2 need a migration to the latest config
-		if (version < 2) {
+		// Configs with old versions need a migration to the latest config
+		if (version == 2) {
+			// Check for out-of-bound filtering amount
+			ObjectNode filtersNode = (ObjectNode) modelData.get("filters");
+			if (filtersNode != null && filtersNode.get("amount").floatValue() > 2f) {
+				filtersNode.set("amount", new FloatNode(0.2f));
+			}
+		} else if (version < 2) {
 			// Move zoom to the window config
 			ObjectNode windowNode = (ObjectNode) modelData.get("window");
 			DoubleNode zoomNode = (DoubleNode) modelData.get("zoom");
@@ -65,8 +67,7 @@ public class CurrentVRConfigConverter implements VersionedModelConverter {
 				while (bodyIter.hasNext()) {
 					Map.Entry<String, JsonNode> node = bodyIter.next();
 					// Filter only number values because other types would be
-					// stuff
-					// that didn't get migrated correctly before
+					// stuff that didn't get migrated correctly before
 					if (node.getValue().isNumber()) {
 						offsetsNode.set(node.getKey(), node.getValue());
 					}

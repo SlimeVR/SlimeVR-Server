@@ -8,6 +8,8 @@ import ptBR from './pt-BR/translation.json';
 import vi from './vi/translation.json';
 import zh from './zh/translation.json';
 import owo from './owo/translation.json';
+import it from './it/translation.json';
+import ja from './ja/translation.json';
 
 export const defaultNS = 'translation';
 
@@ -19,6 +21,10 @@ export const langs = [
   {
     name: '🇫🇷 Français',
     key: 'fr',
+  },
+  {
+    name: '🇮🇹 Italiano',
+    key: 'it',
   },
   {
     name: '🇰🇷 한국어',
@@ -44,6 +50,10 @@ export const langs = [
     name: '🥺 Engwish~ OwO',
     key: 'owo',
   },
+  {
+    name: '🇯🇵 日本語',
+    key: 'ja',
+  },
 ];
 
 export const resources = {
@@ -52,6 +62,9 @@ export const resources = {
   },
   fr: {
     translation: fr,
+  },
+  it: {
+    translation: it,
   },
   ko: {
     translation: ko,
@@ -70,6 +83,9 @@ export const resources = {
   },
   owo: {
     translation: owo,
+  },
+  ja: {
+    tanslations: ja,
   },
 };
 
