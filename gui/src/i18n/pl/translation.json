@@ -5,10 +5,10 @@
   },
   "tips": {
     "find-tracker": "Nie wiesz który tracker to który? Obracaj Trackerem , podczas obracania będzie sie on podświetlał w serwerze.",
-    "do-not-move-heels": "Ensure your heels do not move during recording!"
+    "do-not-move-heels": "Upewnij się aby pięty pozostały w bezruchu podczas nagrywania."
   },
   "body-part": {
-    "NONE": "Nieprzyznaczony",
+    "NONE": "Nie Przypisano",
     "HEAD": "Głowa",
     "NECK": "Szyja",
     "RIGHT_SHOULDER": "Prawe Ramie",
