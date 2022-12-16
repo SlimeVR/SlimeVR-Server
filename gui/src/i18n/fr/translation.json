@@ -396,7 +396,7 @@
       "back": "Revenir aux identifiants Wi-Fi",
       "title": "Attribuer des capteurs",
       "description": "Choisissons où mettre chaque capteur.",
-      "assigned": "{{assigned}} capteur(s) sur {{trackers}} attribués",
+      "assigned": "{{assigned}} capteur(s) sur {{trackers}} attribué(s)",
       "advanced": "Afficher les emplacements d'attribution avancés",
       "next": "J'ai assigné tous mes capteurs"
     },
