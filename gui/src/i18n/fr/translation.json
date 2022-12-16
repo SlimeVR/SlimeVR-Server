@@ -4,8 +4,8 @@
     "connection-lost": "Connexion avec le serveur perdue. Reconnexion..."
   },
   "tips": {
-    "find-tracker": "Impossible de différencier vos capteurs ? Secouez-en un pour qu'il soit mis en avant.",
-    "do-not-move-heels": "Assurez-vous de ne pas bouger vos pieds pendant la calibration !"
+    "find-tracker": "Impossible de différencier vos capteurs? Secouez-en un pour qu'il soit mis en avant.",
+    "do-not-move-heels": "Assurez-vous de ne pas bouger vos pieds pendant la calibration!"
   },
   "body-part": {
     "NONE": "Non-assigné",
@@ -58,12 +58,12 @@
     "quick": "Réinitialisation rapide"
   },
   "serial-detection": {
-    "new-device.p0": "Nouveau périphérique détecté !",
-    "new-device.p1": "Entrez vos identifiants Wi-Fi !",
+    "new-device.p0": "Nouveau périphérique détecté!",
+    "new-device.p1": "Entrez vos identifiants Wi-Fi!",
     "new-device.p2": "Veuillez sélectionner quoi en faire",
     "open-wifi": "Connecter au Wi-Fi",
     "open-serial": "Ouvrir la console série",
-    "submit": "Soumettre !",
+    "submit": "Soumettre!",
     "close": "Fermer"
   },
   "navbar": {
@@ -139,20 +139,20 @@
     }
   },
   "body-assignment-menu": {
-    "title": "Où assigner ce capteur ?",
+    "title": "Où assigner ce capteur?",
     "description": "Choisissez l'endroit où assigner ce capteur. Vous pouvez également gérer tous les capteurs à la fois.",
     "show-advanced-locations": "Afficher les emplacements d'attribution avancés",
     "manage-trackers": "Gérer tous les capteurs",
     "unassign-tracker": "Désassigner"
   },
   "tracker-selection-menu": {
-    "title": "Quel capteur attribuer à {{bodyPart}} ?",
+    "title": "Quel capteur attribuer à {{bodyPart}}?",
     "unassigned": "Capteurs non assignés",
     "assigned": "Capteurs assignés",
     "dont-assign": "Ne pas attribuer"
   },
   "mounting-selection-menu": {
-    "title": "Dans quelle direction pointe ce capteur ?",
+    "title": "Dans quelle direction pointe ce capteur?",
     "close": "Fermer"
   },
   "settings": {
@@ -359,8 +359,8 @@
     "home": {
       "title": "Bienvenue sur SlimeVR",
       "description.p0": "Rendre la capture des mouvements",
-      "description.p1": "accessible à toutes et tous !",
-      "start": "Commencer !"
+      "description.p1": "accessible à toutes et tous!",
+      "start": "Commencer!"
     },
     "enter-vr": {
       "back": "Revenir à l'attribution des capteurs",
@@ -376,7 +376,7 @@
     "connect-tracker": {
       "back": "Revenir aux informations d'identification Wi-Fi",
       "title": "Connecter les capteurs",
-      "description.p0": "Passons maintenant à la partie amusante, en connectant tous les capteurs !",
+      "description.p0": "Passons maintenant à la partie amusante, en connectant tous les capteurs!",
       "description.p1": "Connectez chaque capteur qui n'est pas encore connecté via un port USB.",
       "issue": {
         "serial": "J'ai du mal à me connecter!"
@@ -415,8 +415,8 @@
       "next": "Prochaine étape",
       "prev-step": "Étape précédente",
       "done": {
-        "title": "C'est terminé !",
-        "description": "L'alignement des capteurs est calibré !",
+        "title": "C'est terminé!",
+        "description": "L'alignement des capteurs est calibré!",
         "restart": "Retourner au début"
       },
       "mounting-reset": {
@@ -482,7 +482,7 @@
       },
       "verify-results": {
         "title": "Vérifier les résultats",
-        "description": "Les résultats ci-dessous vous semblent-ils corrects ?",
+        "description": "Les résultats ci-dessous vous semblent-ils corrects?",
         "results": "Enregistrement des résultats",
         "processing": "Traitement du résultat",
         "redo": "Refaire l'enregistrement",
@@ -490,7 +490,7 @@
       },
       "done": {
         "title": "Calibration terminée",
-        "description": "Votre calibration est terminée !"
+        "description": "Votre calibration est terminée!"
       }
     }
   },
