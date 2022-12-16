@@ -97,12 +97,16 @@ public class TrackersUDPServer extends Thread {
 	private static String packetToString(DatagramPacket packet) {
 		StringBuilder sb = new StringBuilder();
 		sb.append("DatagramPacket{");
-		sb.append(packet.getAddress().toString());
-		sb.append(packet.getPort());
-		sb.append(',');
-		sb.append(packet.getLength());
-		sb.append(',');
-		sb.append(ArrayUtils.toString(packet.getData()));
+		if (packet == null) {
+			sb.append("null");
+		} else {
+			sb.append(packet.getAddress().toString());
+			sb.append(packet.getPort());
+			sb.append(',');
+			sb.append(packet.getLength());
+			sb.append(',');
+			sb.append(ArrayUtils.toString(packet.getData()));
+		}
 		sb.append('}');
 		return sb.toString();
 	}
@@ -443,7 +447,7 @@ public class TrackersUDPServer extends Thread {
 			case 5: // PACKET_MAG
 			case 9: // PACKET_RAW_MAGENTOMETER
 				break; // None of these packets are used by SlimeVR trackers and
-						// are deprecated, use
+			// are deprecated, use
 			// more generic PACKET_ROTATION_DATA
 			case 8: // PACKET_CONFIG
 				if (connection == null)
