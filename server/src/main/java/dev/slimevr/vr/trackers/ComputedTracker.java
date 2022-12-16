@@ -81,6 +81,12 @@ public class ComputedTracker implements Tracker, TrackerWithTPS {
 	}
 
 	@Override
+	public boolean getRawRotation(Quaternion store) {
+		store.set(rotation);
+		return true;
+	}
+
+	@Override
 	public boolean getAcceleration(Vector3f store) {
 		store.set(0, 0, 0);
 		return false;

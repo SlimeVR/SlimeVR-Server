@@ -1436,8 +1436,8 @@ public final class Quaternion implements Cloneable, java.io.Serializable {
 			float invNorm = 1.0f / norm;
 			return new Quaternion(-x * invNorm, -y * invNorm, -z * invNorm, w * invNorm);
 		}
-		// return an invalid result to flag the error
-		return null;
+		// return itself since it has no inverse
+		return this;
 	}
 
 	/**
