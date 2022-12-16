@@ -59,7 +59,7 @@
   },
   "serial-detection": {
     "new-device.p0": "New serial device detected!" ,
-    "new-device.p1": "Enter your wifi credentials!",
+    "new-device.p1": "Enter your WiFi credentials!",
     "new-device.p2": "Please select what you want to do with it",
     "open-wifi": "Connect to WiFi",
     "open-serial": "Open Serial Console",
@@ -207,7 +207,7 @@
         }
       },
       "fk-settings": {
-        "title": "FK settings",
+        "title": "Tracking settings",
         "leg-tweak": {
           "title": "Leg tweaks",
           "description": "Floor-clip can Reduce or even eliminates clipping with the floor but may cause problems when on your knees. Skating-correction corrects for ice skating, but can decrease accuracy in certain movement patterns.",
@@ -216,7 +216,7 @@
           "skating-correction-amount": "Skating correction strength"
         },
         "arm-fk": {
-          "title": "Arm FK",
+          "title": "Arm tracking",
           "description": "Change the way the arms are tracked.",
           "force-arms": "Force arms from HMD"
         },

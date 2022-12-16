@@ -53,7 +53,11 @@ export function SingleTrackerBodyAssignmentMenu({
                 variant="toggle"
               ></CheckBox>
               <div className="flex">
-                <Button variant="secondary" to="/onboarding/trackers-assign">
+                <Button
+                  variant="secondary"
+                  to="/onboarding/trackers-assign"
+                  state={{ alonePage: true }}
+                >
                   {t('body-assignment-menu.manage-trackers')}
                 </Button>
               </div>
