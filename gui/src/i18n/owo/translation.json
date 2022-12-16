@@ -227,10 +227,18 @@
       },
       "gesture-control": {
         "title": "gestauw cantwol",
-        "subtitle": "dubble bap qwick weset",
-        "description": "enawbwe owr disawbwe dubble bap qwick weset. when enawbwed dubble bapping enywhewe on teh hyighest towso twackaw wil activate a qwick weset. deway is teh time between wowgistewing a bap and wowstting.",
-        "enable": "dubble bap qwick weset",
-        "delay": "deway"
+        "subtitle": "bap bwased wesets",
+        "description": "allaws owr wesets wo be twiggered by wapping a twackaw. The twackaw hyighest wup on youwur twursuu is uwued for qwick weset, wa twackaw hyighest up on youwur weft weg is uwused for weset, and teh twackaw hyighest up on youwur wight weg is used for mmountwing weset. It showold we wentioned what waps muwst happen within 0.6 seconds wo be wegistered",
+        "taps": "baps",
+        "quickResetEnabled": "enable wap to quwuick weset",
+        "quickResetDelay": "quwuick weset deway",
+        "quickResetTaps": "baps for quwuick weset",
+        "resetEnabled": "enable wap to weset",
+        "resetDelay": "weset deway",
+        "resetTaps": "baps for weset",
+        "mountingResetEnabled": "enable wap to weset mountwing",
+        "mountingResetDelay": "mountwing weset deway",
+        "mountingResetTaps": "baps for mountwing weset"
       },
       "interface": {
         "title": "intewface",
