@@ -4,35 +4,35 @@
     "connection-lost": "Conexión al servidor perdida, intentando reconectar..."
   },
   "tips": {
-    "find-tracker": "¿No sabes cuál rastreador es cuál? Agita un rastreador para destacar el rastreador correspondiente",
+    "find-tracker": "¿No sabes cuál sensor es cuál? Agita un sensor para destacar el sensor correspondiente",
     "do-not-move-heels": "¡Asegurate de no mover tus talones durante la grabación!"
   },
   "body-part": {
     "NONE": "Sin asignar",
     "HEAD": "Cabeza",
-    "NECK": "Nuca",
+    "NECK": "Cuello",
     "RIGHT_SHOULDER": "Hombro derecho",
-    "RIGHT_UPPER_ARM": "Parte superior del brazo derecho",
-    "RIGHT_LOWER_ARM": "Parte inferior del brazo derecho",
+    "RIGHT_UPPER_ARM": "Brazo superior derecho",
+    "RIGHT_LOWER_ARM": "Antebrazo derecho",
     "RIGHT_HAND": "Mano derecha",
     "RIGHT_UPPER_LEG": "Muslo derecho",
-    "RIGHT_LOWER_LEG": "Tobillo derecho",
+    "RIGHT_LOWER_LEG": "Pantorrilla derecha",
     "RIGHT_FOOT": "Pie derecho",
     "CHEST": "Pecho",
     "WAIST": "Cintura",
     "HIP": "Cadera",
     "LEFT_SHOULDER": "Hombro izquierdo",
-    "LEFT_UPPER_ARM": "Parte superior del brazo izquierdo",
-    "LEFT_LOWER_ARM": "Parte inferior del brazo izquierdo",
+    "LEFT_UPPER_ARM": "Brazo superior izquierdo",
+    "LEFT_LOWER_ARM": "Antebrazo izquierdo",
     "LEFT_HAND": "Mano izquierda",
     "LEFT_UPPER_LEG": "Muslo izquierdo",
-    "LEFT_LOWER_LEG": "Tobillo izquierdo",
+    "LEFT_LOWER_LEG": "Pantorilla izquierda",
     "LEFT_FOOT": "Pie izquierdo"
   },
   "skeleton-bone": {
-    "NONE": "Nada",
+    "NONE": "Sin asignar",
     "HEAD": "Head Shift",
-    "NECK": "Largo de la nuca",
+    "NECK": "Largo del cuello",
     "TORSO": "Largo del torso",
     "CHEST": "Distancia del pecho",
     "WAIST": "Distancia de la cadera",
@@ -54,7 +54,7 @@
   "reset": {
     "reset-all": "Reiniciar todas las proporciones",
     "full": "Reiniciar",
-    "mounting": "Reiniciar montura",
+    "mounting": "Reiniciar sensores",
     "quick": "Reinicio rápido"
   },
   "serial-detection": {
@@ -69,8 +69,8 @@
   "navbar": {
     "home": "Hogar",
     "body-proportions": "Proporciones corporales",
-    "trackers-assign": "Asignación de rastreadores",
-    "mounting": "Calibración de montura",
+    "trackers-assign": "Asignación de sensores",
+    "mounting": "Calibración de sensores",
     "onboarding": "Setup Wizard",
     "settings": "Ajustes"
   },
@@ -112,23 +112,23 @@
       "manufacturer": "Manufacturador",
       "display-name": "Nombre",
       "custom-name": "Nombre personalizado",
-      "url": "URL del rastreador"
+      "url": "URL del sensor"
     },
     "settings": {
-      "back": "Volver a la lista de rastreadores",
-      "title": "Ajustes de rastreadores",
+      "back": "Volver a la lista de sensores",
+      "title": "Ajustes de sensores",
       "assignment-section": {
         "title": "Asignación",
-        "description": "¿A que parte del cuerpo está asignado el rastreador",
+        "description": "¿A que parte del cuerpo está asignado el sensor?",
         "edit": "Editar asignación"
       },
       "mounting-section": {
-        "title": "Posición de montura",
-        "description": "¿Donde esta montado el rastreador?",
-        "edit": "Editar montura"
+        "title": "Posición de sensores",
+        "description": "¿Donde esta montado el sensor?",
+        "edit": "Editar sensor"
       },
       "name-section": {
-        "title": "Nombre del rastreador",
+        "title": "Nombre del sensor",
         "description": "Dale un apodo adorable :)",
         "input-placeholder": "Pierna izquierda de NightyBeast"
       }
@@ -139,20 +139,20 @@
     }
   },
   "body-assignment-menu": {
-    "title": "¿Donde quieres colocar este rastreador?",
-    "description": "Escoge una ubicación donde quieres que el rastreador se asigne. Alternativamente puedes escoger manejar todos los rastreadores a la vez, en vez de uno en uno.",
+    "title": "¿Donde quieres colocar este sensor?",
+    "description": "Escoge una ubicación donde quieres que se asigne el sensor. Alternativamente puedes escoger administrar todos los sensores a la vez, en vez de uno en uno.",
     "show-advanced-locations": "Mostrar ubicaciones de asignación avanzadas",
-    "manage-trackers": "Administrar todos los rastreadores",
-    "unassign-tracker": "Desasignar rastreador"
+    "manage-trackers": "Administrar todos los sensores",
+    "unassign-tracker": "Desasignar sensor"
   },
   "tracker-selection-menu": {
-    "title": "¿Que rastreador esta asignado en {{bodyPart}}?",
-    "unassigned": "Rastreadores sin asignar",
-    "assigned": "Rastreadores asignados",
+    "title": "¿Que sensor esta asignado en {{bodyPart}}?",
+    "unassigned": "Sensores sin asignar",
+    "assigned": "Sensores asignados",
     "dont-assign": "No asignar"
   },
   "mounting-selection-menu": {
-    "title": "¿Donde quieres que este el rastreador?",
+    "title": "¿Donde quieres que este el sensor?",
     "close": "Cerrar"
   },
   "settings": {
@@ -170,9 +170,9 @@
     "general": {
       "steamvr": {
         "title": "SteamVR",
-        "subtitle": "Rastreadores de SteamVR",
-        "description.p0": "Activa o desactiva rastreadores de SteamVR específicos.",
-        "description.p1": "Útil para juegos o aplicaciones que solo soportan ciertos rastreadores.",
+        "subtitle": "Sensores de SteamVR",
+        "description.p0": "Activa o desactiva sensores de SteamVR específicos.",
+        "description.p1": "Útil para juegos o aplicaciones que solo soportan ciertos sensores.",
         "trackers": {
           "waist": "Cadera",
           "chest": "Pecho",
@@ -185,13 +185,13 @@
       "tracker-mechanics": {
         "title": "Tracker mechanics",
         "subtitle": "Filtro",
-        "description.p0": "Escoge el tipo de filtro para tus rastreadores.",
+        "description.p0": "Escoge el tipo de filtro para tus sensores.",
         "description.p1": "Predicción predice el movimiento mientras que suavizado suaviza el movimiento.",
         "filtering-type": {
           "title": "Tipo de filtro",
           "none": {
             "label": "Sin filtro",
-            "description":"Usa rotaciones como son. No se utilizará ningún filtro."
+            "description":"Usa las rotaciones como son. No se utilizará ningún filtro."
           },
           "smoothing": {
             "label": "Suavizado",
@@ -231,7 +231,7 @@
       "gesture-control": {
         "title": "Control de gestos",
         "subtitle": "Reinicio rápido con toque doble",
-        "description": "Activa o desactiva el reinicio rapido con toque doble. Cuando se activa, al tocar dos veces en cualquier lugar en el rastreador mas alto del torso, este activará un reinicio rápido. Retraso es el tiempo que se demora en registrar un toque y el reinicio.",
+        "description": "Activa o desactiva el reinicio rapido con toque doble. Cuando se activa, al tocar dos veces en cualquier lugar en el sensor mas alto del torso, este activará un reinicio rápido. Retraso es el tiempo que se demora en registrar un toque y el reinicio.",
         "enable": "Reinicio rápido con toque doble",
         "delay": "Retraso"
       },
@@ -239,12 +239,12 @@
         "title": "Interfaz",
         "dev-mode": {
           "title": "Modo de desarrollador",
-          "description": "Este modo puede ser útil si necesitas datos en profundidad o para interactuar con rastreadores conectados en un nivel mas avanzado.",
+          "description": "Este modo puede ser útil si necesitas datos en profundidad o para interactuar con los sensores conectados en un nivel mas avanzado.",
           "label": "Modo de desarrollador"
         },
         "serial-detection": {
           "title": "Detección de dispositivo serial",
-          "description": "Esta opción mostrará una notificación cada vez que conectas un dispositivo serial que podría ser un rastreador. Ayuda a mejorar el proceso de ajuste de un rastreador.",
+          "description": "Esta opción mostrará una notificación cada vez que conectas un dispositivo serial que podría ser un sensor. Ayuda a mejorar el proceso de ajuste de un sensor.",
           "label": "Detección de dispositivo serial"
         },
         "lang": {
@@ -296,7 +296,7 @@
       },
       "vrchat": {
         "description.p0": "Cambia ajustes especificos de VRChat para enviar y recibir datos del HMD",
-        "description.p1": "Datos de los rastreadores para FBT (Funciona de manera independiente en Quest).",
+        "description.p1": "Datos de los sensores para FBT (Funciona de manera independiente en Quest).",
         "enable": {
           "title": "Activar",
           "description": "Activa el envío y recepción de datos",
