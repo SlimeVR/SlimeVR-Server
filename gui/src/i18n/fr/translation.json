@@ -4,7 +4,7 @@
     "connection-lost": "Connexion avec le serveur perdue. Reconnexion..."
   },
   "tips": {
-    "find-tracker": "Impossible de différencier vos capteurs? Bougez-les pour qu'ils brillent à l'écran.",
+    "find-tracker": "Impossible de différencier vos capteurs? Secouez-en un pour qu'il soit mis en évidence.",
     "do-not-move-heels": "Assurez-vous de ne pas bouger vos pieds pendant la calibration!"
   },
   "body-part": {
@@ -12,7 +12,7 @@
     "HEAD": "Tête",
     "NECK": "Cou",
     "RIGHT_SHOULDER": "Épaule droite",
-    "RIGHT_UPPER_ARM": "Bras supérieur droit",
+    "RIGHT_UPPER_ARM": "Bras droit",
     "RIGHT_LOWER_ARM": "Avant-bras droit",
     "RIGHT_HAND": "Main droite",
     "RIGHT_UPPER_LEG": "Cuisse droite",
@@ -22,7 +22,7 @@
     "WAIST": "Taille",
     "HIP": "Hanche",
     "LEFT_SHOULDER": "Épaule gauche",
-    "LEFT_UPPER_ARM": "Bras supérieur gauche",
+    "LEFT_UPPER_ARM": "Bras gauche",
     "LEFT_LOWER_ARM": "Avant-bras gauche",
     "LEFT_HAND": "Main gauche",
     "LEFT_UPPER_LEG": "Cuisse gauche",
@@ -42,14 +42,14 @@
     "KNEE_HEIGHT": "Hauteur des genoux",
     "FOOT_LENGTH": "Longueur des pieds",
     "FOOT_SHIFT": "Décalage des pieds",
-    "SKELETON_OFFSET": "Décalage du squelette",
+    "SKELETON_OFFSET": "Écart du squelette",
     "CONTROLLER_DISTANCE_Z": "Distance Z des contrôleurs",
     "CONTROLLER_DISTANCE_Y": "Distance Y des contrôleurs",
     "FOREARM_LENGTH": "Longueur des avant-bras",
     "SHOULDERS_DISTANCE": "Distance des épaules",
     "SHOULDERS_WIDTH": "Largeur des épaules",
     "UPPER_ARM_LENGTH": "Longueur des bras supérieurs",
-    "ELBOW_OFFSET": "Décalage des coudes"
+    "ELBOW_OFFSET": "Écart des coudes"
   },
   "reset": {
     "reset-all": "Réinitialiser toutes les proportions",
@@ -59,10 +59,10 @@
   },
   "serial-detection": {
     "new-device.p0": "Nouveau périphérique détecté!",
-    "new-device.p1": "Entrez vos identifiants WiFi!",
+    "new-device.p1": "Entrez vos identifiants Wi-Fi!",
     "new-device.p2": "Veuillez sélectionner quoi en faire",
-    "open-wifi": "Connectez-vous au WiFi",
-    "open-serial": "Ouvrir la console de série",
+    "open-wifi": "Connecter au Wi-Fi",
+    "open-serial": "Ouvrir la console série",
     "submit": "Soumettre!",
     "close": "Fermer"
   },
@@ -80,7 +80,7 @@
   },
   "overlay": {
     "is-visible-label": "Superposer le squelette dans SteamVR",
-    "is-mirrored-label": "Afficher le squelette en miroir"
+    "is-mirrored-label": "Afficher le squelette en tant que miroir"
   },
   "tracker": {
     "status": {
@@ -88,8 +88,8 @@
       "busy": "Occupé",
       "error": "Erreur",
       "disconnected": "Déconnecté",
-      "occluded": "Occulté",
-      "ok": "Ok"
+      "occluded": "Obstrué",
+      "ok": "OK"
     },
     "table": {
       "column": {
@@ -111,7 +111,7 @@
     "infos": {
       "manufacturer": "Fabricant",
       "display-name": "Nom",
-      "custom-name": "Nom personalisé",
+      "custom-name": "Nom personnalisé",
       "url": "URL"
     },
     "settings": {
@@ -120,12 +120,12 @@
       "assignment-section": {
         "title": "Assignement du capteur",
         "description": "À quelle partie du corps le capteur est assigné.",
-        "edit": "Changer l'assignement"
+        "edit": "Ré-assigner"
       },
       "mounting-section": {
-        "title": "Direction du capteur",
+        "title": "Orientation du capteur",
         "description": "Dans quelle direction pointe le capteur?",
-        "edit": "Changer la direction"
+        "edit": "Changer l'orientation"
       },
       "name-section": {
         "title": "Nom personalisé",
@@ -135,24 +135,24 @@
     },
     "part-card": {
       "no-name": "Sans nom",
-      "unassigned": "Non-attribué"
+      "unassigned": "Non attribué"
     }
   },
   "body-assignment-menu": {
-    "title": "Où est-ce que ce capteur devrait être assigné?",
-    "description": "Choisissez où assigner le capteur",
+    "title": "Où assigner ce capteur?",
+    "description": "Choisissez l'endroit où assigner ce capteur. Vous pouvez également gérer tous les capteurs à la fois.",
     "show-advanced-locations": "Afficher les emplacements d'attribution avancés",
     "manage-trackers": "Gérer tous les capteurs",
-    "unassign-tracker": "Ne pas attribuer"
+    "unassign-tracker": "Désassigner"
   },
   "tracker-selection-menu": {
     "title": "Quel capteur attribuer à {{bodyPart}}?",
-    "unassigned": "capteurs non-attribués",
-    "assigned": "capteurs assignés",
+    "unassigned": "Capteurs non assignés",
+    "assigned": "Capteurs assignés",
     "dont-assign": "Ne pas attribuer"
   },
   "mounting-selection-menu": {
-    "title": "Dans quelle direction pointe capteur?",
+    "title": "Dans quelle direction pointe ce capteur?",
     "close": "Fermer"
   },
   "settings": {
@@ -165,7 +165,7 @@
       "interface": "Interface",
       "osc-router": "Routeur OSC",
       "utils": "Utilitaires",
-      "serial": "Console de série"
+      "serial": "Console série"
     },
     "general": {
       "steamvr": {
@@ -203,14 +203,14 @@
           }
         },
         "amount": {
-          "label": "Force du filtrage"
+          "label": "Intensité du filtrage"
         }
       },
       "fk-settings": {
         "title": "Paramètres de la capture",
         "leg-tweak": {
           "title": "Ajustement des jambes",
-          "description": "Le limitage au sol empêche vos pied de passer à travers le sol, mais peut causer des problèmes lorsque vous êtes à genoux. La correction du glissement réduit le glissement, mais peut réduire la précision de certains mouvements.",
+          "description": "Le limitage au sol empêche vos pieds de traverser le sol, mais peut causer des problèmes lorsque vous êtes à genoux. La correction du glissement réduit le glissement, mais peut réduire la précision de certains mouvements.",
           "floor-clip": "Limitage au sol",
           "skating-correction": "Correction du glissement",
           "skating-correction-amount": "Force de la correction du glissement"
@@ -218,7 +218,7 @@
         "arm-fk": {
           "title": "Capture des bras",
           "description": "Changez la façon dont les bras sont captés.",
-          "force-arms": "Forcer les bras à partir du casque VR"
+          "force-arms": "Forcer les bras en provenance du casque VR"
         },
         "skeleton-settings": {
           "title": "Paramètres du squelette",
@@ -231,7 +231,7 @@
       "gesture-control": {
         "title": "Contrôle gestuel",
         "subtitle": "Double tape pour réinitialisation rapide",
-        "description": "Permet de déclencher des réinitialisations en tapant un capteur. Le capteur le plus haut sur votre torse est utilisé pour la réinitialisation rapide, le capteur le plus haut sur votre jambe gauche est utilisé pour la réinitialisation, et le capteur le plus haut sur votre jambe droite est utilisé pour la réinitialisation de l'alignement. Les tapes doivent être enchainées en moins de 0,6 seconde pour compter.",
+        "description": "Permet de déclencher des réinitialisations en tapant un capteur. Le capteur le plus haut sur votre torse est utilisé pour la réinitialisation rapide, le capteur le plus haut sur votre jambe gauche est utilisé pour la réinitialisation, et le capteur le plus haut sur votre jambe droite est utilisé pour la réinitialisation de l'alignement. Les tapes doivent être enchainées en moins de 0,6 seconde pour être pris en compte.",
         "taps": "tapes",
         "quickResetEnabled": "Taper pour réinitialisation rapide",
         "quickResetDelay": "Délai de réinitialisation rapide",
@@ -251,9 +251,9 @@
           "label": "Mode développeur"
         },
         "serial-detection": {
-          "title": "Détection de périphérique de série",
-          "description": "Cette option affichera une fenêtre chaque fois qu'un nouveau périphérique de série qui pourrait être un capteur est connecté.",
-          "label": "Détection de périphérique de série"
+          "title": "Détection de périphérique série",
+          "description": "Cette option affichera une fenêtre chaque fois qu'un nouveau périphérique série qui pourrait être un capteur est connecté.",
+          "label": "Détection de périphérique série"
         },
         "lang": {
           "title": "Sélectionner la langue",
@@ -263,14 +263,14 @@
       }
     },
     "serial": {
-      "title": "Console de série",
-      "description.p0": "Il s'agit d'un flux d'informations en direct pour la communication de série.",
+      "title": "Console série",
+      "description.p0": "Il s'agit d'un flux d'informations en direct pour la communication en série.",
       "description.p1": "Peut être utile pour savoir si un capteur fonctionne correctement.",
       "connection-lost": "Connexion à l'appareil perdue, reconnexion...",
       "reboot": "Redémarrer",
       "factory-reset": "Remise à zéro",
       "get-infos": "Obtenir des informations",
-      "serial-select": "Sélectionnez un port de série",
+      "serial-select": "Sélectionnez un port série",
       "auto-dropdown-item": "Automatique"
     },
     "osc": {
@@ -284,21 +284,21 @@
           "label": "Activer"
         },
         "network": {
-          "title": "Network ports",
+          "title": "Ports réseau",
           "description.p0": "Définissez les ports pour écouter et envoyer des données.",
           "description.p1": "Ces ports peuvent être les mêmes que les autres utilisés dans le serveur SlimeVR.",
           "port-in": {
-            "label": "Port d'entrée",
-            "placeholder": "Port d'entrée (par défaut: 9002)"
+            "label": "Port de réception",
+            "placeholder": "Port de réception (par défaut: 9002)"
           },
           "port-out": {
-            "label": "Port de sortie",
-            "placeholder": "Port de sortie (par défaut: 9000)"
+            "label": "Port d'envoi",
+            "placeholder": "Port d'envoi (par défaut: 9000)"
           },
           "address": {
             "title": "Adresse réseau",
-            "description": "Choisissez l'adresse à laquelle envoyer les données.",
-            "placeholder": "Adresse IPV4"
+            "description": "Choisissez l'adresse vers laquelle envoyer les données.",
+            "placeholder": "Adresse IPv4"
           }
         }
       },
@@ -315,20 +315,20 @@
           "description": "Définissez les ports pour écouter et envoyer des données à VRChat.",
           "port-in": {
             "label": "Port d'entrée",
-            "placeholder": "Port d'entrée (par défaut : 9001)"
+            "placeholder": "Port de réception (par défaut : 9001)"
           },
           "port-out": {
             "label": "Port de sortie",
-            "placeholder": "Port de sortie (par défaut : 9000)"
+            "placeholder": "Port d'envoi (par défaut : 9000)"
           },
           "address": {
             "title": "Adresse réseau",
-            "description": "Choisissez l'adresse à laquelle envoyer les données à VRChat (vérifiez les réseaux WiFi de votre appareil).",
+            "description": "Choisissez l'adresse à laquelle envoyer les données à VRChat (vérifiez les réseaux Wi-Fi de votre appareil).",
             "placeholder": "Adresse IP VRChat"
           },
           "trackers": {
             "title": "capteurs",
-            "description": "Sélectionner quels capteurs à envoyer via OSC.",
+            "description": "Sélectionner quels capteurs envoyer via OSC.",
             "chest": "Poitrine",
             "waist": "Taille",
             "knees": "Genoux",
@@ -345,21 +345,21 @@
     "wip": "Pas encore implémenté",
     "wifi-creds": {
       "back": "Retour à l'introduction",
-      "title": "Saisir les identifiants WiFi",
-      "description.p0": "Les capteurs utiliseront ces informations d'identification pour se connecter au WiFi",
-      "description.p1": "Veuillez utiliser les identifiants auxquels vous êtes actuellement connecté",
-      "skip": "Passer la configuration WiFi",
+      "title": "Saisir les identifiants Wi-Fi",
+      "description.p0": "Les capteurs utiliseront ces informations d'identification pour se connecter au réseau.",
+      "description.p1": "Veuillez utiliser les identifiants avec lesquels vous êtes actuellement connecté.",
+      "skip": "Passer la configuration Wi-Fi",
       "submit": "Valider"
     },
     "reset-tutorial": {
       "back": "Retourner à l'alignement des capteurs",
       "title": "Didacticiel de réinitialisation",
-      "description": "Cette fonctionnalité n'est pas terminée, appuyez simplement sur continuer"
+      "description": "Cette fonctionnalité n'est pas encore terminée, appuyez simplement sur continuer"
     },
     "home": {
       "title": "Bienvenue sur SlimeVR",
       "description.p0": "Rendre la capture des mouvements",
-      "description.p1": "accessible à tous!",
+      "description.p1": "accessible à toutes et tous!",
       "start": "Commencer!"
     },
     "enter-vr": {
@@ -374,7 +374,7 @@
       "close": "Fermer le guide"
     },
     "connect-tracker": {
-      "back": "Revenir aux informations d'identification WiFi",
+      "back": "Revenir aux informations d'identification Wi-Fi",
       "title": "Connecter les capteurs",
       "description.p0": "Passons maintenant à la partie amusante, en connectant tous les capteurs!",
       "description.p1": "Connectez chaque capteur qui n'est pas encore connecté via un port USB.",
@@ -383,9 +383,9 @@
       },
       "usb": "Capteur USB",
       "connection-status": {
-        "connecting": "Envoi d'identifiants WiFi",
-        "connected": "Connecté au WiFi",
-        "error": "Impossible de se connecter au WiFi",
+        "connecting": "Envoi d'identifiants Wi-Fi",
+        "connected": "Connecté au Wi-Fi",
+        "error": "Impossible de se connecter au réseau",
         "start-connecting": "Recherche de capteurs",
         "handshake": "Connecté au serveur"
       },
@@ -393,17 +393,17 @@
       "next": "J'ai connecté tous mes capteurs"
     },
     "assign-trackers": {
-      "back": "Revenir aux identifiants Wifi",
+      "back": "Revenir aux identifiants Wi-Fi",
       "title": "Attribuer des capteurs",
-      "description": "Choisissons quel capteur va où.",
-      "assigned": "{{assigned}} de {{trackers}} capteurs attribués",
+      "description": "Choisissons où mettre chaque capteur.",
+      "assigned": "{{assigned}} capteur(s) sur {{trackers}} attribué(s)",
       "advanced": "Afficher les emplacements d'attribution avancés",
       "next": "J'ai assigné tous mes capteurs"
     },
     "manual-mounting": {
       "back": "Retournez à entrer dans la réalité virtuelle",
-      "title": "Alignement manuelle",
-      "description": "Cliquez sur chaque capteur et sélectionnez la manière dont ils sont tournés",
+      "title": "Alignement manuel",
+      "description": "Cliquez sur chaque capteur et sélectionnez la manière dont ils sont orientés",
       "auto-mounting": "Détection automatique",
       "next": "Prochaine étape"
     },
@@ -411,12 +411,12 @@
       "back": "Retournez à entrer dans la réalité virtuelle",
       "title": "Calibration de l'alignement des capteurs",
       "description": "Pour que vos capteurs SlimeVR fonctionnent, nous devons attribuer une rotation à vos capteurs pour les aligner avec la rotation réelle de ces derniers.",
-      "manual-mounting": "Alignement manuelle",
+      "manual-mounting": "Alignement manuel",
       "next": "Prochaine étape",
       "prev-step": "Étape précédente",
       "done": {
         "title": "C'est terminé!",
-        "description": "L'alignement des capteurs est calibrée!",
+        "description": "L'alignement des capteurs est calibré!",
         "restart": "Retourner au début"
       },
       "mounting-reset": {
@@ -482,7 +482,7 @@
       },
       "verify-results": {
         "title": "Vérifier les résultats",
-        "description": "Les résultats ci-dessous semblent-ils corrects?",
+        "description": "Les résultats ci-dessous vous semblent-ils corrects?",
         "results": "Enregistrement des résultats",
         "processing": "Traitement du résultat",
         "redo": "Refaire l'enregistrement",
