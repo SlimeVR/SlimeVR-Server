@@ -4,7 +4,7 @@
     "connection-lost": "Connexion avec le serveur perdue. Reconnexion..."
   },
   "tips": {
-    "find-tracker": "Impossible de différencier vos capteurs? Secouez-en un pour qu'il soit mis en avant.",
+    "find-tracker": "Impossible de différencier vos capteurs? Secouez-en un pour qu'il soit mis en évidence.",
     "do-not-move-heels": "Assurez-vous de ne pas bouger vos pieds pendant la calibration!"
   },
   "body-part": {
