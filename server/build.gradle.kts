@@ -100,14 +100,14 @@ fun String.runCommand(currentWorkingDir: File = file("./")): String {
 
 val gitCommitHash = "git rev-parse --verify --short HEAD".runCommand().trim()
 val gitVersionTag = "git --no-pager tag --points-at HEAD".runCommand().trim()
-val gitClean = "git status --porcelain".runCommand().trim()
+val gitClean = "git status --porcelain".runCommand().trim().isEmpty()
 buildConfig {
 	useKotlinOutput { topLevelConstants = true }
 	packageName("dev.slimevr")
 
 	buildConfigField("String", "GIT_COMMIT_HASH", "\"${gitCommitHash}\"")
 	buildConfigField("String", "GIT_VERSION_TAG", "\"${gitVersionTag}\"")
-	buildConfigField("boolean", "GIT_CLEAN", gitClean.isEmpty().toString())
+	buildConfigField("boolean", "GIT_CLEAN", gitClean.toString())
 }
 
 spotless {
