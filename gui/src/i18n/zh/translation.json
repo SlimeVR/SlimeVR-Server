@@ -1,7 +1,7 @@
 {
     "websocket": {
         "connecting": "正在连接到服务器",
-        "connection-lost": "与服务器的链接丢失，正在尝试重新链接..."
+        "connection-lost": "与服务器的连接丢失，正在尝试重新连接..."
     },
     "tips": {
         "find-tracker": "不确定哪个追踪器是哪个？在现实中摇动一个追踪器，对应的那个将在屏幕上高亮显示。",
@@ -119,12 +119,12 @@
             "title": "追踪器设置",
             "assignment-section": {
                 "title": "分配追踪器",
-                "description": "追踪器要分配到身体哪个部位？",
+                "description": "该追踪器要被分配到身体的哪个部位？",
                 "edit": "编辑分配"
             },
             "mounting-section": {
                 "title": "佩戴位置",
-                "description": "追踪器佩戴在哪里?",
+                "description": "该追踪器被佩戴在哪里？",
                 "edit": "编辑佩戴"
             },
             "name-section": {
@@ -171,14 +171,15 @@
             "steamvr": {
                 "title": "SteamVR",
                 "subtitle": "SteamVR 追踪器",
-                "description.p0": "启用或禁用特定的追踪部分.",
-                "description.p1": "如果你想对 SlimeVR 做更多的控制将会很有用。",
+                "description.p0": "启用或禁用特定的追踪器",
+                "description.p1": "对于只支持特定追踪器的应用会很有用。",
                 "trackers": {
                     "waist": "腰部",
                     "chest": "胸部",
                     "feet": "脚部",
                     "knees": "膝盖",
-                    "elbows": "肘部"
+                    "elbows": "肘部",
+                    "hands": "手部"
                 }
             },
             "tracker-mechanics": {
@@ -202,14 +203,14 @@
                     }
                 },
                 "amount": {
-                    "label": "滤波数值"
+                    "label": "滤波强度"
                 }
             },
             "fk-settings": {
                 "title": "FK 设置",
                 "leg-tweak": {
                     "title": "腿部调整",
-                    "description": "本设置可以减少甚至消除与地板的摩擦情况，但是当你跪在地上的时候可能产生一些问题. 脚滑矫正可以矫正一些脚滑溜冰的问题, 但是可能会降低某些运动动作的准确性。",
+                    "description": "本设置可以减少甚至消除脚部穿入地板的情况，但是当你跪在地上的时候可能产生一些问题. 脚滑矫正可以矫正一些脚滑溜冰的问题, 但是可能会降低某些动作的准确性。",
                     "floor-clip": "地板限制",
                     "skating-correction": "脚滑矫正",
                     "skating-correction-amount": "脚滑矫正数值"
@@ -230,7 +231,7 @@
             "gesture-control": {
                 "title": "手势控制",
                 "subtitle": "双击快速重置",
-                "description": "启用或禁用双击快速重置。启用时，双击身上佩戴的最高的追踪器上的任何位置将激活快速重置。延迟是指记录敲击和重置之间的时间。",
+                "description": "启用或禁用双击快速重置。启用时，双击身上佩戴的最高的追踪器上的任何位置将激活快速重置。延迟是指记录到敲击和重置之间的时间。",
                 "enable": "双击快速重置",
                 "delay": "延迟"
             },
@@ -242,9 +243,9 @@
                     "label": "开发者模式"
                 },
                 "serial-detection": {
-                    "title": "串行设备检测",
-                    "description": "每次插入可能是追踪器的新串行设备时，此选项都会显示一个弹出窗口。这有助于改进追踪器的设置过程。",
-                    "label": "串行设备检测"
+                    "title": "串口设备检测",
+                    "description": "每次插入可能是追踪器的新串口设备时，此选项都会显示一个弹出窗口。这有助于改进追踪器的设置过程。",
+                    "label": "串口设备检测"
                 },
                 "lang": {
                     "title": "选择语言",
@@ -254,10 +255,10 @@
             }
         },
         "serial": {
-            "title": "串行控制台",
-            "description.p0": "这是用于串行通信的实时信息馈送。",
+            "title": "串口控制台",
+            "description.p0": "这是用于串口通信的实时信息馈送。",
             "description.p1": "如果你需要了解固件是否出现问题，这将会很有用。",
-            "connection-lost": "串行连接丢失，正在重新连接..",
+            "connection-lost": "串口连接丢失，正在重新连接..",
             "reboot": "重新启动",
             "factory-reset": "恢复出厂设置",
             "get-infos": "获取信息",
@@ -449,18 +450,18 @@
             },
             "preparation": {
                 "title": "准备",
-                "description": "在你的游戏空间里，在你的正后方放一把椅子。随时准备好在接下来的设置过程中坐下。",
+                "description": "在你的正后方放一把椅子，并准备好在接下来的设置过程中坐下。",
                 "next": "我在椅子前面啦"
             },
             "start-recording": {
-                "title": "准备移动",
+                "title": "准备录制运动",
                 "description": "我们现在要记录一些特定的姿势和动作。这些将在下一个屏幕中提示。当按钮被按下时，准备好开始！",
                 "next": "开始录制"
             },
             "recording": {
                 "title": "REC",
                 "description.p0": "录制中...",
-                "description.p1": "做下面的动作:",
+                "description.p1": "依次做出以下动作:",
                 "steps": {
                     "0": "弯曲几次膝盖。",
                     "1": "坐在椅子上，然后站起来。",
