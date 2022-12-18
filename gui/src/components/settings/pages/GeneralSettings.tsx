@@ -47,6 +47,7 @@ interface SettingsForm {
     forceArmsFromHmd: boolean;
     floorClip: boolean;
     skatingCorrection: boolean;
+    viveEmulation: boolean;
   };
   tapDetection: {
     tapMountingResetEnabled: boolean;
@@ -84,6 +85,7 @@ const defaultValues = {
     forceArmsFromHmd: false,
     floorClip: false,
     skatingCorrection: false,
+    viveEmulation: false,
   },
   filtering: { amount: 0.1, type: FilteringType.NONE },
   tapDetection: {
@@ -135,6 +137,7 @@ export function GeneralSettings() {
     toggles.extendedPelvis = values.toggles.extendedPelvis;
     toggles.extendedSpine = values.toggles.extendedSpine;
     toggles.forceArmsFromHmd = values.toggles.forceArmsFromHmd;
+    toggles.viveEmulation = values.toggles.viveEmulation;
     legTweaks.correctionStrength = values.legTweaks.correctionStrength;
 
     modelSettings.toggles = toggles;
@@ -489,6 +492,23 @@ export function GeneralSettings() {
                   label={t(
                     'settings.general.fk-settings.skeleton-settings.extended-knees'
                   )}
+                />
+              </div>
+              <Typography bold>
+                {t('settings.general.fk-settings.viveEmulation.title')}
+              </Typography>
+              <div className="flex flex-col pt-2 pb-4">
+                <Typography color="secondary">
+                  {t('settings.general.fk-settings.viveEmulation.description')}
+                </Typography>
+              </div>
+              <div className="grid sm:grid-cols-2 gap-3 pb-5">
+                <CheckBox
+                  variant="toggle"
+                  outlined
+                  control={control}
+                  name="toggles.viveEmulation"
+                  label={t('settings.general.fk-settings.viveEmulation.label')}
                 />
               </div>
             </>

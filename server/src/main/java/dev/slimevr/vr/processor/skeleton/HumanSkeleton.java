@@ -1361,6 +1361,7 @@ public class HumanSkeleton extends Skeleton implements SkeletonConfigCallback {
 			}
 			case SKATING_CORRECTION -> legTweaks.setSkatingReductionEnabled(newValue);
 			case FLOOR_CLIP -> legTweaks.setFloorclipEnabled(newValue);
+			case VIVE_EMULATION -> viveEmulation.setEnabled(newValue);
 		}
 	}
 

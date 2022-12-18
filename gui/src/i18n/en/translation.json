@@ -226,6 +226,11 @@
           "extended-spine": "Extended spine",
           "extended-pelvis": "Extended pelvis",
           "extended-knees": "Extended knee"
+        },
+        "viveEmulation": {
+          "title": "Vive emulation",
+          "description": "Emulate the waist tracker problems that Vive trackers have. This is a joke and makes tracking worse.",
+          "label": "Enable Vive emulation"
         }
       },
       "gesture-control": {

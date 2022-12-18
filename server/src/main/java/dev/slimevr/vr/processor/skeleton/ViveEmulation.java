@@ -54,6 +54,14 @@ public class ViveEmulation {
 			this.lastPosition = skeleton.computedWaistTracker.position.clone();
 	}
 
+	public boolean getEnabled() {
+		return enabled;
+	}
+
+	public void setEnabled(boolean enabled) {
+		this.enabled = enabled;
+	}
+
 	// this method is called every frame
 	// it will randomly make the waist tracker fly away
 	public void update() {
