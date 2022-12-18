@@ -142,6 +142,10 @@ public class HumanSkeleton extends Skeleton implements SkeletonConfigCallback {
 	protected TapDetectionManager tapDetectionManager = new TapDetectionManager(this);
 	// #endregion
 
+	// #region Vive emulation
+	protected ViveEmulation viveEmulation = new ViveEmulation(this);
+	// #endregion
+
 	// #region Constructors
 	protected HumanSkeleton(List<? extends ComputedHumanPoseTracker> computedTrackers) {
 		assembleSkeleton(false);
@@ -795,6 +799,7 @@ public class HumanSkeleton extends Skeleton implements SkeletonConfigCallback {
 		updateRootTrackers();
 		updateComputedTrackers();
 		tweakLegPos();
+		viveEmulation.update();
 	}
 	// #endregion
 
