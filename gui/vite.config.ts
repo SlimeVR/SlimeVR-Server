@@ -10,7 +10,9 @@ const versionTag = execSync('git --no-pager tag --points-at HEAD')
   .toString()
   .trim();
 // If not empty then it's not clean
-const gitClean = execSync('git status --porcelain').toString() ? false : true;
+const gitClean = !execSync('git status --porcelain').toString();
+
+console.log(commitHash);
 
 // https://vitejs.dev/config/
 export default defineConfig({
