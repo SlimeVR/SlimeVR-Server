@@ -16,7 +16,7 @@ public class ViveEmulation {
 	private Random random = new Random();
 
 	// hyperparameters
-	private static final int CHANCE = (int) 1e4;
+	private static final int CHANCE = (int) 1e5;
 	private static final float MAX_FLY_TIME = 3.5f;
 	private static final float MIN_FLY_TIME = 0.5f;
 	private static final float FLY_SPEED = 0.5f;
