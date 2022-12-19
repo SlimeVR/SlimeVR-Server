@@ -11,6 +11,7 @@ import dev.slimevr.vr.Device;
 import dev.slimevr.vr.trackers.udp.TrackersUDPServer;
 import dev.slimevr.vr.trackers.udp.UDPDevice;
 import io.eiren.util.BufferedTimer;
+import io.eiren.util.collections.FastList;
 
 import java.util.Optional;
 
@@ -40,7 +41,6 @@ public class IMUTracker
 	protected final String descriptiveName;
 	protected final TrackersUDPServer server;
 	protected final VRServer vrserver;
-	protected final Quaternion driftQuat = new Quaternion();
 	public int calibrationStatus = 0;
 	public int magCalibrationStatus = 0;
 	public float magnetometerAccuracy = 0;
@@ -60,9 +60,11 @@ public class IMUTracker
 	protected QuaternionMovingAverage movingAverage;
 	protected boolean compensateDrift = false;
 	protected float driftAmount;
-	protected static long DRIFT_COOLDOWN_MS = 15000;
-	protected final Quaternion lastDriftedQuat = new Quaternion();
-	protected long driftTime;
+	protected static long DRIFT_COOLDOWN_MS = 150;
+	protected FastList<Quaternion> driftQuats = new FastList<>();
+	protected FastList<Long> driftTimes = new FastList<>();
+	FastList<Float> driftWeights = new FastList<>();
+	protected long totalDriftTime;
 	protected long driftSince;
 	protected long timeAtLastReset;
 
@@ -215,13 +217,13 @@ public class IMUTracker
 		// prevent accidental errors while debugging other things
 		store.multLocal(mountAdjust);
 		adjustInternal(store);
-		if (compensateDrift) {
+		if (compensateDrift && totalDriftTime > 0) {
 			store
 				.slerpLocal(
-					store.mult(driftQuat),
+					store.mult(new Quaternion().fromAveragedQuaternions(driftQuats, driftWeights)),
 					driftAmount
 						* ((float) (System.currentTimeMillis() - driftSince)
-							/ driftTime)
+							/ totalDriftTime)
 				);
 		}
 		return true;
@@ -415,12 +417,26 @@ public class IMUTracker
 		// TODO add way to ignore repeated resets and just use most recent
 		// within a time window.
 		if (driftSince > 0 && System.currentTimeMillis() - timeAtLastReset > DRIFT_COOLDOWN_MS) {
-			lastDriftedQuat.set(beforeResetQuat);
-			driftQuat
-				.fromAngles(0f, beforeResetQuat.mult(afterResetQuat.inverse()).getYaw(), 0f)
-				.inverseLocal();
+			driftQuats
+				.add(
+					new Quaternion()
+						.fromAngles(0f, beforeResetQuat.mult(afterResetQuat.inverse()).getYaw(), 0f)
+						.inverseLocal()
+				);
 
-			driftTime = System.currentTimeMillis() - timeAtLastReset;
+			long driftTime;
+			if (timeAtLastReset > 0)
+				driftTime = System.currentTimeMillis() - timeAtLastReset;
+			else
+				driftTime = System.currentTimeMillis() - driftSince;
+
+			driftTimes.add(driftTime);
+			totalDriftTime += driftTime;
+			driftWeights.clear();
+			for (Long time : driftTimes) {
+				driftWeights.add(((float) time) / ((float) totalDriftTime));
+			}
+
 			timeAtLastReset = System.currentTimeMillis();
 		}
 
