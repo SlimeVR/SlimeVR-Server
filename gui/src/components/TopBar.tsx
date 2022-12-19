@@ -35,8 +35,8 @@ export function TopBar({
             className="mx-2 flex justify-around flex-col text-standard-bold text-status-success bg-status-success bg-opacity-20 rounded-lg px-3"
             data-tauri-drag-region
           >
-            {(window.__VERSION_TAG__ || window.__COMMIT_HASH__) +
-              (window.__GIT_CLEAN__ ? '' : '-dirty')}
+            {(__VERSION_TAG__ || __COMMIT_HASH__) +
+              (__GIT_CLEAN__ ? '' : '-dirty')}
           </div>
         </div>
       </div>
