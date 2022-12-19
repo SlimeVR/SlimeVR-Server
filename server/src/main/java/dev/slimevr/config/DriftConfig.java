@@ -13,6 +13,9 @@ public class DriftConfig {
 	// Amount of drift compensation applied
 	private float amount = 0.7f;
 
+	// Max resets for the calculated average drift
+	private int maxResets = 5;
+
 	public DriftConfig() {
 	}
 
@@ -23,7 +26,8 @@ public class DriftConfig {
 				((IMUTracker) tracker)
 					.setDriftSettings(
 						getEnabled(),
-						getAmount()
+						getAmount(),
+						getMaxResets()
 					);
 			}
 		}
@@ -44,5 +48,13 @@ public class DriftConfig {
 
 	public void setAmount(float amount) {
 		this.amount = amount;
+	}
+
+	public int getMaxResets() {
+		return maxResets;
+	}
+
+	public void setMaxResets(int maxResets) {
+		this.maxResets = maxResets;
 	}
 }

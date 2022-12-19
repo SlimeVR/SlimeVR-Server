@@ -32,11 +32,11 @@
 package com.jme3.math;
 
 import io.eiren.math.FloatMath;
-import io.eiren.util.collections.FastList;
 
 import java.io.IOException;
 import java.io.ObjectInput;
 import java.io.ObjectOutput;
+import java.util.AbstractList;
 import java.util.logging.Logger;
 
 
@@ -932,7 +932,7 @@ public final class Quaternion implements Cloneable, java.io.Serializable {
 	 * @return a new Quaternion resulting from the average of the given
 	 * Quaternions
 	 */
-	public Quaternion fromAveragedQuaternions(FastList<Quaternion> qn) {
+	public Quaternion fromAveragedQuaternions(AbstractList<Quaternion> qn) {
 		float sumX = 0f;
 		float sumY = 0f;
 		float sumZ = 0f;
@@ -961,7 +961,7 @@ public final class Quaternion implements Cloneable, java.io.Serializable {
 	 * @return a new Quaternion resulting from the weighted average of the given
 	 * Quaternions
 	 */
-	public Quaternion fromAveragedQuaternions(FastList<Quaternion> qn, FastList<Float> tn) {
+	public Quaternion fromAveragedQuaternions(AbstractList<Quaternion> qn, AbstractList<Float> tn) {
 		if (qn.size() != tn.size()) {
 			throw new IllegalArgumentException("qn and tn must have the same length");
 		}

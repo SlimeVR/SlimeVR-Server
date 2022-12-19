@@ -5,6 +5,7 @@ import com.jme3.math.Quaternion;
 import com.jme3.math.Vector3f;
 import dev.slimevr.VRServer;
 import dev.slimevr.config.TrackerConfig;
+import dev.slimevr.filtering.CircularArrayList;
 import dev.slimevr.filtering.QuaternionMovingAverage;
 import dev.slimevr.filtering.TrackerFilters;
 import dev.slimevr.vr.Device;
@@ -12,6 +13,7 @@ import dev.slimevr.vr.trackers.udp.TrackersUDPServer;
 import dev.slimevr.vr.trackers.udp.UDPDevice;
 import io.eiren.util.BufferedTimer;
 import io.eiren.util.collections.FastList;
+import io.eiren.util.logging.LogManager;
 
 import java.util.Optional;
 
@@ -60,10 +62,11 @@ public class IMUTracker
 	protected QuaternionMovingAverage movingAverage;
 	protected boolean compensateDrift = false;
 	protected float driftAmount;
-	protected static long DRIFT_COOLDOWN_MS = 150;
-	protected FastList<Quaternion> driftQuats = new FastList<>();
-	protected FastList<Long> driftTimes = new FastList<>();
-	FastList<Float> driftWeights = new FastList<>();
+	protected static long DRIFT_COOLDOWN_MS = 15000;
+	protected final Quaternion averagedDriftQuat = new Quaternion();
+	protected CircularArrayList<Quaternion> driftQuats;
+	protected CircularArrayList<Long> driftTimes;
+	protected FastList<Float> driftWeights = new FastList<>();
 	protected long totalDriftTime;
 	protected long driftSince;
 	protected long timeAtLastReset;
@@ -92,7 +95,8 @@ public class IMUTracker
 			);
 			setDriftSettings(
 				vrserver.getConfigManager().getVrConfig().getDrift().getEnabled(),
-				vrserver.getConfigManager().getVrConfig().getDrift().getAmount()
+				vrserver.getConfigManager().getVrConfig().getDrift().getAmount(),
+				vrserver.getConfigManager().getVrConfig().getDrift().getMaxResets()
 			);
 		}
 	}
@@ -165,9 +169,11 @@ public class IMUTracker
 		}
 	}
 
-	public void setDriftSettings(boolean enabled, float amount) {
+	public void setDriftSettings(boolean enabled, float amount, int maxResets) {
 		compensateDrift = enabled;
 		driftAmount = amount;
+		driftQuats = new CircularArrayList<>(maxResets);
+		driftTimes = new CircularArrayList<>(maxResets);
 	}
 
 	@Override
@@ -220,7 +226,7 @@ public class IMUTracker
 		if (compensateDrift && totalDriftTime > 0) {
 			store
 				.slerpLocal(
-					store.mult(new Quaternion().fromAveragedQuaternions(driftQuats, driftWeights)),
+					store.mult(averagedDriftQuat),
 					driftAmount
 						* ((float) (System.currentTimeMillis() - driftSince)
 							/ totalDriftTime)
@@ -413,10 +419,18 @@ public class IMUTracker
 	 * Calculates 1 since last reset and store the data related to it in
 	 * driftQuat, timeAtLastReset and timeForLastReset
 	 */
-	public void calculateDrift(Quaternion beforeResetQuat, Quaternion afterResetQuat) {
+	synchronized public void calculateDrift(Quaternion beforeResetQuat, Quaternion afterResetQuat) {
 		// TODO add way to ignore repeated resets and just use most recent
 		// within a time window.
+
 		if (driftSince > 0 && System.currentTimeMillis() - timeAtLastReset > DRIFT_COOLDOWN_MS) {
+			// Check and remove from lists to keep them under the reset limit
+			if (driftQuats.size() == driftQuats.capacity()) {
+				driftQuats.removeLast();
+				driftTimes.removeLast();
+			}
+
+			// Add new drift quaternion
 			driftQuats
 				.add(
 					new Quaternion()
@@ -424,18 +438,29 @@ public class IMUTracker
 						.inverseLocal()
 				);
 
+			// Set how much time it has been since last drift reset
 			long driftTime;
 			if (timeAtLastReset > 0)
 				driftTime = System.currentTimeMillis() - timeAtLastReset;
 			else
 				driftTime = System.currentTimeMillis() - driftSince;
 
+			// Add to total drift time
 			driftTimes.add(driftTime);
-			totalDriftTime += driftTime;
+			totalDriftTime = 0;
+			for (Long time : driftTimes) {
+				totalDriftTime += time;
+				LogManager.debug("" + time);
+			}
+
+			// Calculate drift Quaternions' weights
 			driftWeights.clear();
 			for (Long time : driftTimes) {
 				driftWeights.add(((float) time) / ((float) totalDriftTime));
 			}
+
+			// Set final averaged drift Quaternion
+			averagedDriftQuat.fromAveragedQuaternions(driftQuats, driftWeights);
 
 			timeAtLastReset = System.currentTimeMillis();
 		}
