@@ -13,7 +13,6 @@ import dev.slimevr.vr.trackers.udp.TrackersUDPServer;
 import dev.slimevr.vr.trackers.udp.UDPDevice;
 import io.eiren.util.BufferedTimer;
 import io.eiren.util.collections.FastList;
-import io.eiren.util.logging.LogManager;
 
 import java.util.Optional;
 
@@ -450,7 +449,6 @@ public class IMUTracker
 			totalDriftTime = 0;
 			for (Long time : driftTimes) {
 				totalDriftTime += time;
-				LogManager.debug("" + time);
 			}
 
 			// Calculate drift Quaternions' weights
