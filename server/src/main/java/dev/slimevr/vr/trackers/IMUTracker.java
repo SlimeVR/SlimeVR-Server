@@ -40,6 +40,7 @@ public class IMUTracker
 	protected final String descriptiveName;
 	protected final TrackersUDPServer server;
 	protected final VRServer vrserver;
+	protected final Quaternion driftQuat = new Quaternion();
 	public int calibrationStatus = 0;
 	public int magCalibrationStatus = 0;
 	public float magnetometerAccuracy = 0;
@@ -57,6 +58,13 @@ public class IMUTracker
 	protected boolean magnetometerCalibrated = false;
 	protected BufferedTimer timer = new BufferedTimer(1f);
 	protected QuaternionMovingAverage movingAverage;
+	protected boolean compensateDrift = false;
+	protected float driftAmount;
+	protected static long DRIFT_COOLDOWN_MS = 15000;
+	protected final Quaternion lastDriftedQuat = new Quaternion();
+	protected long driftTime;
+	protected long driftSince;
+	protected long timeAtLastReset;
 
 	public IMUTracker(
 		UDPDevice device,
@@ -79,6 +87,10 @@ public class IMUTracker
 			setFiltering(
 				vrserver.getConfigManager().getVrConfig().getFilters().enumGetType(),
 				vrserver.getConfigManager().getVrConfig().getFilters().getAmount()
+			);
+			setDriftSettings(
+				vrserver.getConfigManager().getVrConfig().getDrift().getEnabled(),
+				vrserver.getConfigManager().getVrConfig().getDrift().getAmount()
 			);
 		}
 	}
@@ -151,6 +163,11 @@ public class IMUTracker
 		}
 	}
 
+	public void setDriftSettings(boolean enabled, float amount) {
+		compensateDrift = enabled;
+		driftAmount = amount;
+	}
+
 	@Override
 	public void tick() {
 		if (magnetometerCalibrated && hasNewCorrectionData) {
@@ -198,12 +215,30 @@ public class IMUTracker
 		// prevent accidental errors while debugging other things
 		store.multLocal(mountAdjust);
 		adjustInternal(store);
+		if (compensateDrift) {
+			store
+				.slerpLocal(
+					store.mult(driftQuat),
+					driftAmount
+						* ((float) (System.currentTimeMillis() - driftSince)
+							/ driftTime)
+				);
+		}
 		return true;
 	}
 
 	@Override
 	public boolean getRawRotation(Quaternion store) {
 		store.set(rotQuaternion);
+		return true;
+	}
+
+	public boolean getUnfilteredRotation(Quaternion store) {
+		store.set(rotQuaternion);
+		// correction.mult(store, store); // Correction is not used now to
+		// prevent accidental errors while debugging other things
+		store.multLocal(mountAdjust);
+		adjustInternal(store);
 		return true;
 	}
 
@@ -286,7 +321,17 @@ public class IMUTracker
 	 */
 	@Override
 	public void resetYaw(Quaternion reference) {
+		// Get rotation before fixing yaw
+		Quaternion beforeReset = new Quaternion();
+		getUnfilteredRotation(beforeReset);
+
 		fixYaw(reference);
+
+		// Get rotation after fixing yaw
+		Quaternion afterReset = new Quaternion();
+		getUnfilteredRotation(afterReset);
+		// Calculate amount of drift
+		calculateDrift(beforeReset, afterReset);
 
 		if (magCalibrationStatus >= CalibrationAccuracy.HIGH.status) {
 			magnetometerCalibrated = true;
@@ -360,6 +405,26 @@ public class IMUTracker
 		sensorRotation.fromAngles(0, sensorRotation.getYaw(), 0);
 
 		yawFix.set(sensorRotation).inverseLocal().multLocal(targetRotation);
+	}
+
+	/**
+	 * Calculates 1 since last reset and store the data related to it in
+	 * driftQuat, timeAtLastReset and timeForLastReset
+	 */
+	public void calculateDrift(Quaternion beforeResetQuat, Quaternion afterResetQuat) {
+		// TODO add way to ignore repeated resets and just use most recent
+		// within a time window.
+		if (driftSince > 0 && System.currentTimeMillis() - timeAtLastReset > DRIFT_COOLDOWN_MS) {
+			lastDriftedQuat.set(beforeResetQuat);
+			driftQuat
+				.fromAngles(0f, beforeResetQuat.mult(afterResetQuat.inverse()).getYaw(), 0f)
+				.inverseLocal();
+
+			driftTime = System.currentTimeMillis() - timeAtLastReset;
+			timeAtLastReset = System.currentTimeMillis();
+		}
+
+		driftSince = System.currentTimeMillis();
 	}
 
 	/**
