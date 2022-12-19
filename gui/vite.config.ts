@@ -17,8 +17,8 @@ console.log(`version is ${versionTag || commitHash}${gitClean ? "" : "-dirty"}`)
 // https://vitejs.dev/config/
 export default defineConfig({
   define: {
-    __COMMIT_HASH__: commitHash,
-    __VERSION_TAG__: versionTag,
+    __COMMIT_HASH__: JSON.stringify(commitHash),
+    __VERSION_TAG__: JSON.stringify(versionTag),
     __GIT_CLEAN__: gitClean,
   },
   plugins: [viteCommonjs(), react()],
