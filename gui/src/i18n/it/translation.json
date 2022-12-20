@@ -146,7 +146,7 @@
     "unassign-tracker": "Rimuovi assegnazione del tracker"
   },
   "tracker-selection-menu": {
-    "title": "Assegna il tracker a: {{bodyPart}}?",
+    "title": "Quale tracker vuoi assegnare a: {{bodyPart}}?",
     "unassigned": "Tracker non assegnato",
     "assigned": "Dispositivo assegnato",
     "dont-assign": "Non assegnare"
