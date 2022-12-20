@@ -98,10 +98,10 @@ fun String.runCommand(currentWorkingDir: File = file("./")): String {
 	return String(byteOut.toByteArray()).trim()
 }
 
-val gitCommitHash = "git rev-parse --verify --short HEAD".runCommand().trim()
-val gitVersionTag = "git --no-pager tag --points-at HEAD".runCommand().trim()
-val gitClean = "git status --porcelain".runCommand().trim().isEmpty()
 buildConfig {
+	val gitCommitHash = "git rev-parse --verify --short HEAD".runCommand().trim()
+	val gitVersionTag = "git --no-pager tag --points-at HEAD".runCommand().trim()
+	val gitClean = "git status --porcelain".runCommand().trim().isEmpty()
 	useKotlinOutput { topLevelConstants = true }
 	packageName("dev.slimevr")
 
