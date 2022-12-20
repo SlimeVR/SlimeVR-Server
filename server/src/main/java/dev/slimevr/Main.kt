@@ -17,7 +17,7 @@ import java.net.ServerSocket
 import javax.swing.JOptionPane
 import kotlin.system.exitProcess
 
-val VERSION: String = (if (GIT_VERSION_TAG.isEmpty()) GIT_COMMIT_HASH else GIT_VERSION_TAG) + if (GIT_CLEAN) "" else "-dirty"
+val VERSION: String = (GIT_VERSION_TAG.ifEmpty { GIT_COMMIT_HASH }) + if (GIT_CLEAN) "" else "-dirty"
 var vrServer: VRServer? = null
 
 fun main(args: Array<String>) {
