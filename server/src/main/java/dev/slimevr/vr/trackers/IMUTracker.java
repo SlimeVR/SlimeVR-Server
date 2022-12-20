@@ -419,8 +419,8 @@ public class IMUTracker
 	 * driftQuat, timeAtLastReset and timeForLastReset
 	 */
 	synchronized public void calculateDrift(Quaternion beforeResetQuat, Quaternion afterResetQuat) {
-		// TODO add way to ignore repeated resets and just use most recent
-		// within a time window.
+		// TODO Only use most recent reset within a time period
+		// TODO Increase averaging weight of recent Quaternions (exponential?)
 
 		if (driftSince > 0 && System.currentTimeMillis() - timeAtLastReset > DRIFT_COOLDOWN_MS) {
 			// Check and remove from lists to keep them under the reset limit
