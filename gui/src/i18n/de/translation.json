@@ -146,7 +146,7 @@
     "unassign-tracker": "Zuweisung des Trackers aufheben"
   },
   "tracker-selection-menu": {
-    "title": "Welcher Tracker soll dem {{bodyPart}} zugewiesen werden?",
+    "title": "Auf welchen Tracker soll {{bodyPart}} zugewiesen werden?",
     "unassigned": "Nicht zugewiesene Tracker",
     "assigned": "Zugewiesene Tracker",
     "dont-assign": "Nicht zuweisen"
@@ -189,7 +189,7 @@
           "title": "Filter-Typ",
           "none": {
             "label": "Kein Filter",
-            "description": "Verwenden Sie Rotationen unverändert. Kein Filter wird durchgeführt."
+            "description": "Verwenden Sie Rotationsdaten unverändert. Kein Filter wird angewendet."
           },
           "smoothing": {
             "label": "Glättung",
@@ -207,7 +207,7 @@
       "fk-settings": {
         "title": "FK-Einstellungen",
         "leg-tweak": {
-          "title": "Bein-Optimierungen",
+          "title": "Optimierungen für die Beine",
           "description": "Floor-Clip kann das einsinken in den Boden reduzieren oder sogar beseitigen, kann aber beim Knien Probleme verursachen. Die Rutsch-Korrektur verringert das Rutschen auf dem Boden, kann aber bei bestimmten Bewegungsmustern die Genauigkeit verringern.",
           "floor-clip": "Bodenclip",
           "skating-correction": "Rutsch-Korrektur",
@@ -341,7 +341,7 @@
       "description.p0": "Nun zum unterhaltsamen Teil, verbinde alle Tracker!",
       "description.p1": "Verbinden Sie einfach alle Tracker, die noch nicht verbunden sind, über einen USB-Anschluss.",
       "issue": {
-        "serial": "Ich habe Schwierigkeiten die Tracker verbinden!"
+        "serial": "Ich habe Schwierigkeiten die Tracker zu verbinden!"
       },
       "usb": "USB Tracker",
       "connection-status": {
@@ -364,9 +364,9 @@
     },
     "manual-mounting": {
       "back": "Zurück zum Eintritt in die VR",
-      "title": "Manuelles Befestigen",
+      "title": "Manuelle definiton der Befestigungsposition",
       "description": "Klicken Sie auf jeden Tracker und wählen Sie aus, in welche Richtung diese montiert sind",
-      "auto-mounting": "Automatisches Befestigen",
+      "auto-mounting": "Drehung automatisch ermitteln",
       "next": "Nächster Schritt"
     },
     "automatic-mounting": {
@@ -435,8 +435,8 @@
         "steps": {
           "0": "Beuge ein paar Mal die Knie.",
           "1": "Setze dich auf einen Stuhl und steh wieder auf.",
-          "2": "Drehe den oberen Körper nach links, dann beuge nach rechts.",
-          "3": "Drehe den oberen Körper nach rechts, dann beuge nach links.",
+          "2": "Drehe den oberen Körper nach links, dann beuge dich nach rechts.",
+          "3": "Drehe den oberen Körper nach rechts, dann beuge dich nach links.",
           "4": "Bewege dich, bis die Zeit abgelaufen ist."
         },
         "processing": "Ergebnis wird bearbeitet",
