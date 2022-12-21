@@ -1,9 +1,9 @@
 import i18next from 'i18next';
-import {initReactI18next} from 'react-i18next';
+import { initReactI18next } from 'react-i18next';
 import en from './en/translation.json';
 import fr from './fr/translation.json';
-import de from './de/translation.json';
 import it from './it/translation.json';
+import de from './de/translation.json';
 import ja from './ja/translation.json';
 import ko from './ko/translation.json';
 import pl from './pl/translation.json';
@@ -22,10 +22,6 @@ export const langs = [
   {
     name: '🇫🇷 Français',
     key: 'fr',
-  },
-  {
-    name: '🇩🇪 Deutsch',
-    key: 'de',
   },
   {
     name: '🇮🇹 Italiano',
@@ -54,6 +50,10 @@ export const langs = [
   {
     name: '🇨🇳 简体中文',
     key: 'zh',
+  },
+  {
+    name: '🇩🇪 Deutsch',
+    key: 'de',
   },
   {
     name: '🥺 Engwish~ OwO',
@@ -86,18 +86,11 @@ export const resources = {
   vi: {
     translation: vi,
   },
-  pl: {
-    translation: pl,
-  },
   zh: {
     translation: zh,
   },
-  ptBR: {
-    translation: ptBR,
-  },
-  de: {
-    translation: de,
-    translation: zh,
+  de:{
+    translation:de,
   },
   owo: {
     translation: owo,
