@@ -14,21 +14,21 @@ export function PutTrackersOnStep({ nextStep }: { nextStep: () => void }) {
       <div className="flex flex-col flex-grow">
         <div className="flex flex-grow flex-col gap-4 max-w-sm">
           <Typography variant="main-title" bold>
-            {t('onboarding.automatic-mounting.put-trackers-on.title')}
+            {t('onboarding-automatic_mounting-put_trackers_on-title')}
           </Typography>
           <div>
             <Typography color="secondary">
-              {t('onboarding.automatic-mounting.put-trackers-on.description')}
+              {t('onboarding-automatic_mounting-put_trackers_on-description')}
             </Typography>
           </div>
           <div className="flex">
-            <TipBox>{t('tips.find-tracker')}</TipBox>
+            <TipBox>{t('tips-find_tracker')}</TipBox>
           </div>
         </div>
 
         <div className="flex">
           <Button variant="primary" onClick={nextStep}>
-            {t('onboarding.automatic-mounting.put-trackers-on.next')}
+            {t('onboarding-automatic_mounting-put_trackers_on-next')}
           </Button>
         </div>
       </div>

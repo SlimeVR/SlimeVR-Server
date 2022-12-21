@@ -38,15 +38,15 @@ export function ManualProportionsPage() {
               <div className="flex flex-col">
                 {!state.alonePage && (
                   <ArrowLink to="/onboarding/reset-tutorial" direction="left">
-                    {t('onboarding.manual-proportions.back')}
+                    {t('onboarding-manual_proportions-back')}
                   </ArrowLink>
                 )}
                 <Typography variant="main-title">
-                  {t('onboarding.manual-proportions.title')}
+                  {t('onboarding-manual_proportions-title')}
                 </Typography>
                 <CheckBox
                   control={control}
-                  label={t('onboarding.manual-proportions.precision')}
+                  label={t('onboarding-manual_proportions-precision')}
                   name="precise"
                   variant="toggle"
                 ></CheckBox>
@@ -65,11 +65,11 @@ export function ManualProportionsPage() {
           <div className="flex flex-grow gap-3">
             {!state.alonePage && (
               <Button variant="secondary" to="/" onClick={skipSetup}>
-                {t('onboarding.skip')}
+                {t('onboarding-skip')}
               </Button>
             )}
             <Button variant="secondary" onClick={resetAll}>
-              {t('reset.reset-all')}
+              {t('reset-reset_all')}
             </Button>
           </div>
           <div className="flex gap-3">
@@ -78,11 +78,11 @@ export function ManualProportionsPage() {
               state={{ alonePage: state.alonePage }}
               to="/onboarding/body-proportions/auto"
             >
-              {t('onboarding.manual-proportions.auto')}
+              {t('onboarding-manual_proportions-auto')}
             </Button>
             {!state.alonePage && (
               <Button variant="primary" to="/onboarding/done">
-                {t('onboarding.continue')}
+                {t('onboarding-continue')}
               </Button>
             )}
           </div>

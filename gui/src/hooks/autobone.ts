@@ -36,7 +36,7 @@ export function useProvideAutobone(): AutoboneContext {
     return (
       skeletonParts?.map(({ bone, value }) => ({
         bone,
-        label: t('skeleton-bone.' + SkeletonBone[bone]),
+        label: t('skeleton_bone-' + SkeletonBone[bone]),
         value,
       })) || []
     );

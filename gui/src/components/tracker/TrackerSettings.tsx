@@ -27,10 +27,10 @@ export const rotationToQuatMap = {
 };
 
 const rotationsLabels = {
-  [rotationToQuatMap.BACK]: 'tracker.rotation.back',
-  [rotationToQuatMap.FRONT]: 'tracker.rotation.front',
-  [rotationToQuatMap.LEFT]: 'tracker.rotation.left',
-  [rotationToQuatMap.RIGHT]: 'tracker.rotation.right',
+  [rotationToQuatMap.BACK]: 'tracker-rotation-back',
+  [rotationToQuatMap.FRONT]: 'tracker-rotation-front',
+  [rotationToQuatMap.LEFT]: 'tracker-rotation-left',
+  [rotationToQuatMap.RIGHT]: 'tracker-rotation-right',
 };
 
 export function TrackerSettingsPage() {
@@ -166,7 +166,7 @@ export function TrackerSettingsPage() {
           <div className="flex flex-col bg-background-70 p-3 rounded-lg gap-2">
             <div className="flex justify-between">
               <Typography color="secondary">
-                {t('tracker.infos.manufacturer')}
+                {t('tracker-infos-manufacturer')}
               </Typography>
               <Typography>
                 {tracker?.device?.hardwareInfo?.manufacturer}
@@ -174,13 +174,13 @@ export function TrackerSettingsPage() {
             </div>
             <div className="flex justify-between">
               <Typography color="secondary">
-                {t('tracker.infos.display-name')}
+                {t('tracker-infos-display_name')}
               </Typography>
               <Typography>{tracker?.tracker.info?.displayName}</Typography>
             </div>
             <div className="flex justify-between">
               <Typography color="secondary">
-                {t('tracker.infos.custom-name')}
+                {t('tracker-infos-custom_name')}
               </Typography>
               <Typography>
                 {tracker?.tracker.info?.customName || '--'}
@@ -188,7 +188,7 @@ export function TrackerSettingsPage() {
             </div>
             <div className="flex justify-between">
               <Typography color="secondary">
-                {t('tracker.infos.url')}
+                {t('tracker-infos-url')}
               </Typography>
               <Typography>
                 udp://
@@ -200,23 +200,23 @@ export function TrackerSettingsPage() {
           </div>
         </div>
         <div className="flex flex-col flex-grow  bg-background-70 rounded-lg p-5 gap-3">
-          <ArrowLink to="/">{t('tracker.settings.back')}</ArrowLink>
+          <ArrowLink to="/">{t('tracker-settings-back')}</ArrowLink>
           <Typography variant="main-title">
-            {t('tracker.settings.title')}
+            {t('tracker-settings-title')}
           </Typography>
           <div className="flex flex-col gap-2 w-full mt-3">
             <Typography variant="section-title">
-              {t('tracker.settings.assignment-section.title')}
+              {t('tracker-settings-assignment_section-title')}
             </Typography>
             <Typography color="secondary">
-              {t('tracker.settings.assignment-section.description')}
+              {t('tracker-settings-assignment_section-description')}
             </Typography>
             <div className="flex justify-between bg-background-80 w-full p-3 rounded-lg">
               <div className="flex gap-3 items-center">
                 <FootIcon></FootIcon>
                 <Typography>
                   {t(
-                    'body-part.' +
+                    'body-part-' +
                       BodyPart[tracker?.tracker.info?.bodyPart || BodyPart.NONE]
                   )}
                 </Typography>
@@ -226,17 +226,17 @@ export function TrackerSettingsPage() {
                   variant="secondary"
                   onClick={() => setSelectBodypart(true)}
                 >
-                  {t('tracker.settings.assignment-section.edit')}
+                  {t('tracker-settings-assignment_section-edit')}
                 </Button>
               </div>
             </div>
           </div>
           <div className="flex flex-col gap-2 w-full mt-3">
             <Typography variant="section-title">
-              {t('tracker.settings.mounting-section.title')}
+              {t('tracker-settings-mounting_section-title')}
             </Typography>
             <Typography color="secondary">
-              {t('tracker.settings.mounting-section.description')}
+              {t('tracker-settings-mounting_section-description')}
             </Typography>
             <div className="flex justify-between bg-background-80 w-full p-3 rounded-lg">
               <div className="flex gap-3 items-center">
@@ -248,20 +248,20 @@ export function TrackerSettingsPage() {
                   variant="secondary"
                   onClick={() => setSelectRotation(true)}
                 >
-                  {t('tracker.settings.mounting-section.edit')}
+                  {t('tracker-settings-mounting_section-edit')}
                 </Button>
               </div>
             </div>
           </div>
           <div className="flex flex-col gap-2 w-full mt-3">
             <Typography variant="section-title">
-              {t('tracker.settings.name-section.title')}
+              {t('tracker-settings-name_section-title')}
             </Typography>
             <Typography color="secondary">
-              {t('tracker.settings.name-section.description')}
+              {t('tracker-settings-name_section-description')}
             </Typography>
             <Input
-              placeholder={t('tracker.settings.name-section.input-placeholder')}
+              placeholder={t('tracker-settings-name_section-input_placeholder')}
               type="text"
               autocomplete={false}
               {...register('trackerName')}

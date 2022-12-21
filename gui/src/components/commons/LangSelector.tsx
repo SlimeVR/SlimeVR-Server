@@ -35,7 +35,7 @@ export function LangSelector({
     <Dropdown
       control={control}
       name="lang"
-      placeholder={t('settings.interface.lang.placeholder')}
+      placeholder={t('settings-interface-lang-placeholder')}
       items={languagesItems}
       direction={direction}
     ></Dropdown>
