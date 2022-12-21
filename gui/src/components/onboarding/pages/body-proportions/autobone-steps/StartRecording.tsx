@@ -31,7 +31,7 @@ export function StartRecording({
           <div>
             <Typography color="secondary">
               {t(
-                'onboarding-automatic-proportions-start-recording-description'
+                'onboarding-automatic_proportions-start_recording-description'
               )}
             </Typography>
           </div>

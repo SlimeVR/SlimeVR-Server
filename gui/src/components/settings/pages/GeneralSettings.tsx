@@ -428,7 +428,7 @@ export function GeneralSettings() {
               control={control}
               name="legTweaks.correctionStrength"
               label={t(
-                'settings-general-fk_settings-leg_tweak-skating_correction-amount'
+                'settings-general-fk_settings-leg_tweak-skating_correction_amount'
               )}
               valueLabelFormat={(value) => `${Math.round(value * 100)} %`}
               min={0.1}
