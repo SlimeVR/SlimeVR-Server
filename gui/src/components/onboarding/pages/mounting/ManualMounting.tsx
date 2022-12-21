@@ -68,16 +68,16 @@ export function ManualMountingPage() {
             <div className="flex flex-col w-full max-w-md gap-3">
               {!state.alonePage && (
                 <ArrowLink to="/onboarding/enter-vr" direction="left">
-                  {t('onboarding.manual-mounting.back')}
+                  {t('onboarding-manual_mounting-back')}
                 </ArrowLink>
               )}
               <Typography variant="main-title">
-                {t('onboarding.manual-mounting.title')}
+                {t('onboarding-manual_mounting-title')}
               </Typography>
               <Typography color="secondary">
-                {t('onboarding.manual-mounting.description')}
+                {t('onboarding-manual_mounting-description')}
               </Typography>
-              <TipBox>{t('tips.find-tracker')}</TipBox>
+              <TipBox>{t('tips-find_tracker')}</TipBox>
             </div>
             <div className="flex flex-col flex-grow gap-3 rounded-xl fill-background-50">
               <BodyAssignment
@@ -92,7 +92,7 @@ export function ManualMountingPage() {
           <div className="flex flex-grow">
             {!state.alonePage && (
               <Button variant="secondary" to="/" onClick={skipSetup}>
-                {t('onboarding.skip')}
+                {t('onboarding-skip')}
               </Button>
             )}
           </div>
@@ -102,11 +102,11 @@ export function ManualMountingPage() {
               state={{ alonePage: state.alonePage }}
               to="/onboarding/mounting/auto"
             >
-              {t('onboarding.manual-mounting.auto-mounting')}
+              {t('onboarding-manual_mounting-auto_mounting')}
             </Button>
             {!state.alonePage && (
               <Button variant="primary" to="/onboarding/reset-tutorial">
-                {t('onboarding.manual-mounting.next')}
+                {t('onboarding-manual_mounting-next')}
               </Button>
             )}
           </div>

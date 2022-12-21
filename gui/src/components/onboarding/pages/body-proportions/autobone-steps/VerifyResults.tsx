@@ -37,18 +37,18 @@ export function VerifyResultsStep({
       <div className="flex flex-col flex-grow justify-between gap-1">
         <div className="flex flex-col gap-1 max-w-sm">
           <Typography variant="main-title" bold>
-            {t('onboarding.automatic-proportions.verify-results.title')}
+            {t('onboarding-automatic_proportions-verify_results-title')}
           </Typography>
           <div>
             <Typography color="secondary">
-              {t('onboarding.automatic-proportions.verify-results.description')}
+              {t('onboarding-automatic_proportions-verify_results-description')}
             </Typography>
           </div>
         </div>
         <div className="flex w-full items-center flex-col">
           <div className="flex flex-col pt-1 gap-2 justify-center w-full max-w-xs">
             <Typography bold>
-              {t('onboarding.automatic-proportions.verify-results.results')}
+              {t('onboarding-automatic_proportions-verify_results-results')}
             </Typography>
             <div
               className={classNames(
@@ -66,7 +66,7 @@ export function VerifyResultsStep({
               {!hasCalibration && hasRecording && (
                 <Typography>
                   {t(
-                    'onboarding.automatic-proportions.verify-results.processing'
+                    'onboarding-automatic-proportions-verify-results-processing'
                   )}
                 </Typography>
               )}
@@ -78,10 +78,10 @@ export function VerifyResultsStep({
             variant={variant === 'onboarding' ? 'secondary' : 'tiertiary'}
             onClick={redo}
           >
-            {t('onboarding.automatic-proportions.verify-results.redo')}
+            {t('onboarding-automatic_proportions-verify_results-redo')}
           </Button>
           <Button variant="primary" onClick={apply}>
-            {t('onboarding.automatic-proportions.verify-results.confirm')}
+            {t('onboarding-automatic_proportions-verify_results-confirm')}
           </Button>
         </div>
       </div>

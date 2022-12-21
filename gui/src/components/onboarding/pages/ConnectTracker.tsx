@@ -7,7 +7,7 @@ import {
   OpenSerialRequestT,
   RpcMessage,
   SerialUpdateResponseT,
-  SetWifiRequestT
+  SetWifiRequestT,
 } from 'solarxr-protocol';
 import { useLayout } from '../../../hooks/layout';
 import { useOnboarding } from '../../../hooks/onboarding';
@@ -29,12 +29,12 @@ type ConnectionStatus =
   | 'START-CONNECTING';
 
 const statusLabelMap = {
-  ['CONNECTING']: 'onboarding.connect-tracker.connection-status.connecting',
-  ['CONNECTED']: 'onboarding.connect-tracker.connection-status.connected',
-  ['ERROR']: 'onboarding.connect-tracker.connection-status.error',
+  ['CONNECTING']: 'onboarding-connect_tracker-connection_status-connecting',
+  ['CONNECTED']: 'onboarding-connect_tracker-connection_status-connected',
+  ['ERROR']: 'onboarding-connect_tracker-connection_status-error',
   ['START-CONNECTING']:
-    'onboarding.connect-tracker.connection-status.start-connecting',
-  ['HANDSHAKE']: 'onboarding.connect-tracker.connection-status.start-handshake',
+    'onboarding-connect_tracker-connection_status-start_connecting',
+  ['HANDSHAKE']: 'onboarding-connect_tracker-connection_status-start_handshake',
 };
 
 export function ConnectTrackersPage() {
@@ -135,17 +135,17 @@ export function ConnectTrackersPage() {
         <div className="flex flex-col w-full max-w-sm">
           {!state.alonePage && (
             <ArrowLink to="/onboarding/wifi-creds">
-              {t('onboarding.connect-tracker.back')}
+              {t('onboarding-connect_tracker-back')}
             </ArrowLink>
           )}
           <Typography variant="main-title">
-            {t('onboarding.connect-tracker.title')}
+            {t('onboarding-connect_tracker-title')}
           </Typography>
           <Typography color="secondary">
-            {t('onboarding.connect-tracker.description.p0')}
+            {t('onboarding-connect_tracker-description-p0')}
           </Typography>
           <Typography color="secondary">
-            {t('onboarding.connect-tracker.description.p1')}
+            {t('onboarding-connect_tracker-description-p1')}
           </Typography>
           <div className="flex flex-col gap-2 py-5">
             {/* <ArrowLink
@@ -161,10 +161,10 @@ export function ConnectTrackersPage() {
               direction="right"
               variant={state.alonePage ? 'boxed-2' : 'boxed'}
             >
-              {t('onboarding.connect-tracker.issue.serial')}
+              {t('onboarding-connect_tracker-issue-serial')}
             </ArrowLink>
           </div>
-          <TipBox>{t('tips.find-tracker')}</TipBox>
+          <TipBox>{t('tips-find_tracker')}</TipBox>
 
           <div
             className={classNames(
@@ -180,7 +180,7 @@ export function ConnectTrackersPage() {
             </div>
             <div className="flex flex-col">
               <Typography bold>
-                {t('onboarding.connect-tracker.usb')}
+                {t('onboarding-connect_tracker-usb')}
               </Typography>
               <Typography color="secondary">
                 {t(statusLabelMap[connectionStatus])}
@@ -190,7 +190,7 @@ export function ConnectTrackersPage() {
         </div>
         <div className="flex flex-col flex-grow">
           <Typography color="secondary" bold>
-            {t('onboarding.connect-tracker.connected-trackers', {
+            {t('onboarding-connect_tracker-connected_trackers', {
               amount: connectedTrackers.length,
             })}
           </Typography>
@@ -237,19 +237,19 @@ export function ConnectTrackersPage() {
           <div className="flex flex-grow">
             {!state.alonePage && (
               <Button variant="secondary" to="/" onClick={skipSetup}>
-                {t('onboarding.skip')}
+                {t('onboarding-skip')}
               </Button>
             )}
           </div>
           <div className="flex gap-3">
             {!state.alonePage && (
               <Button variant="primary" to="/onboarding/trackers-assign">
-                {t('onboarding.connect-tracker.next')}
+                {t('onboarding-connect_tracker-next')}
               </Button>
             )}
             {state.alonePage && (
               <Button variant="primary" to="/">
-                {t('onboarding.connect-tracker.next')}
+                {t('onboarding-connect_tracker-next')}
               </Button>
             )}
           </div>

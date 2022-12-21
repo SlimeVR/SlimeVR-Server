@@ -22,7 +22,7 @@ export function Home() {
     <div className="overflow-y-auto flex flex-col gap-2">
       {trackers.length === 0 && (
         <div className="flex px-5 pt-5 justify-center">
-          <Typography variant="standard">{t('home.no-trackers')}</Typography>
+          <Typography variant="standard">{t('home-no_trackers')}</Typography>
         </div>
       )}
 
