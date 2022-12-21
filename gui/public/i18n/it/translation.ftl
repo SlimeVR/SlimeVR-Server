@@ -135,7 +135,7 @@ body_assignment_menu-manage_trackers = Gestisci tutti i tracker
 body_assignment_menu-unassign_tracker = Rimuovi assegnazione del tracker
 
 ## Tracker assignment menu
-tracker_selection_menu-title = Assegna il tracker a: { $bodyPart }?
+tracker_selection_menu-title = Quale tracker vuoi assegnare a: { $bodyPart }?
 tracker_selection_menu-unassigned = Tracker non assegnato
 tracker_selection_menu-assigned = Dispositivo assegnato
 tracker_selection_menu-dont_assign = Non assegnare
