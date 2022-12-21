@@ -3,12 +3,14 @@ import {initReactI18next} from 'react-i18next';
 import en from './en/translation.json';
 import fr from './fr/translation.json';
 import de from './de/translation.json';
-import ptBR from './pt-BR/translation.json';
-import zh from './zh/translation.json';
+import it from './it/translation.json';
+import ja from './ja/translation.json';
+import ko from './ko/translation.json';
 import pl from './pl/translation.json';
+import ptBR from './pt-BR/translation.json';
 import vi from './vi/translation.json';
+import zh from './zh/translation.json';
 import owo from './owo/translation.json';
-
 
 export const defaultNS = 'translation';
 
@@ -26,20 +28,32 @@ export const langs = [
     key: 'de',
   },
   {
+    name: '🇮🇹 Italiano',
+    key: 'it',
+  },
+  {
+    name: '🇯🇵 日本語',
+    key: 'ja',
+  },
+  {
+    name: '🇰🇷 한국어',
+    key: 'ko',
+  },
+  {
+    name: '🇵🇱 Polski',
+    key: 'pl',
+  },
+  {
     name: '🇧🇷 Português Brasileiro',
     key: 'ptBR',
   },
   {
+    name: '🇻🇳 Tiếng Việt',
+    key: 'vi',
+  },
+  {
     name: '🇨🇳 简体中文',
     key: 'zh',
-  },
-  {
-    name: 'Polski',
-    key: 'pl',
-  },
-  {
-    name: 'Tiếng Việt',
-    key: 'vi',
   },
   {
     name: '🥺 Engwish~ OwO',
@@ -53,6 +67,21 @@ export const resources = {
   },
   fr: {
     translation: fr,
+  },
+  it: {
+    translation: it,
+  },
+  ja: {
+    translations: ja,
+  },
+  ko: {
+    translation: ko,
+  },
+  pl: {
+    translation: pl,
+  },
+  ptBR: {
+    translation: ptBR,
   },
   vi: {
     translation: vi,
@@ -68,6 +97,7 @@ export const resources = {
   },
   de: {
     translation: de,
+    translation: zh,
   },
   owo: {
     translation: owo,

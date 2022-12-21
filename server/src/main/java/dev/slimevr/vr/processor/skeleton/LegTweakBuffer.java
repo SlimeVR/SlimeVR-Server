@@ -27,7 +27,7 @@ public class LegTweakBuffer {
 	public static final int FOOT_ACCEL = 3;
 	public static final int ANKLE_ACCEL = 4;
 
-	public static final float NS_CONVERT = 1000000000.0f;
+	public static final float NS_CONVERT = 1.0e9f;
 	private static final Vector3f GRAVITY = new Vector3f(0, -9.81f, 0);
 	private static final float GRAVITY_MAGNITUDE = GRAVITY.length();
 	private static final int BUFFER_LEN = 10;

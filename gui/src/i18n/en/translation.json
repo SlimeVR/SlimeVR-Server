@@ -15,8 +15,8 @@
     "RIGHT_UPPER_ARM": "Right upper arm",
     "RIGHT_LOWER_ARM": "Right lower arm",
     "RIGHT_HAND": "Right hand",
-    "RIGHT_UPPER_LEG": "Right upper leg",
-    "RIGHT_LOWER_LEG": "Right lower leg",
+    "RIGHT_UPPER_LEG": "Right thigh",
+    "RIGHT_LOWER_LEG": "Right ankle",
     "RIGHT_FOOT": "Right foot",
     "CHEST": "Chest",
     "WAIST": "Waist",
@@ -25,8 +25,8 @@
     "LEFT_UPPER_ARM": "Left upper arm",
     "LEFT_LOWER_ARM": "Left lower arm",
     "LEFT_HAND": "Left hand",
-    "LEFT_UPPER_LEG": "Left upper leg",
-    "LEFT_LOWER_LEG": "Left lower leg",
+    "LEFT_UPPER_LEG": "Left thigh",
+    "LEFT_LOWER_LEG": "Left ankle",
     "LEFT_FOOT": "Left foot"
   },
   "skeleton-bone": {
@@ -59,7 +59,7 @@
   },
   "serial-detection": {
     "new-device.p0": "New serial device detected!" ,
-    "new-device.p1": "Enter your wifi credentials!",
+    "new-device.p1": "Enter your WiFi credentials!",
     "new-device.p2": "Please select what you want to do with it",
     "open-wifi": "Connect to WiFi",
     "open-serial": "Open Serial Console",
@@ -89,7 +89,7 @@
       "error": "Error",
       "disconnected": "Disconnected",
       "occluded": "Occluded",
-      "ok": "Connected"
+      "ok": "OK"
     },
     "table": {
       "column": {
@@ -178,7 +178,8 @@
           "chest": "Chest",
           "feet": "Feet",
           "knees": "Knees",
-          "elbows": "Elbows"
+          "elbows": "Elbows",
+          "hands": "Hands"
         }
       },
       "tracker-mechanics": {
@@ -206,7 +207,7 @@
         }
       },
       "fk-settings": {
-        "title": "FK settings",
+        "title": "Tracking settings",
         "leg-tweak": {
           "title": "Leg tweaks",
           "description": "Floor-clip can Reduce or even eliminates clipping with the floor but may cause problems when on your knees. Skating-correction corrects for ice skating, but can decrease accuracy in certain movement patterns.",
@@ -215,7 +216,7 @@
           "skating-correction-amount": "Skating correction strength"
         },
         "arm-fk": {
-          "title": "Arm FK",
+          "title": "Arm tracking",
           "description": "Change the way the arms are tracked.",
           "force-arms": "Force arms from HMD"
         },
@@ -229,26 +230,34 @@
       },
       "gesture-control": {
         "title": "Gesture control",
-        "subtitle": "Double Tap quick reset",
-        "description": "Enable or disable double tap quick reset. When enabled double tapping anywhere on the highest torso tracker will activate a quick reset. Delay is the time between registering a tap and resetting.",
-        "enable": "Double tap quick reset",
-        "delay": "Delay"
+        "subtitle": "Tap based resets",
+        "description": "Allows for resets to be triggered by tapping a tracker. The tracker highest up on your torso is used for Quick Reset, the tracker highest up on your left leg is used for Reset, and the tracker highest up on your right leg is used for Mounting Reset. It should be mentioned that taps must happen within 0.6 seconds to be registered.",
+        "taps": "taps",
+        "quickResetEnabled": "Enable tap to quick reset",
+        "quickResetDelay": "Quick reset delay",
+        "quickResetTaps": "Taps for quick reset",
+        "resetEnabled": "Enable tap to reset",
+        "resetDelay": "Reset delay",
+        "resetTaps": "Taps for reset",
+        "mountingResetEnabled": "Enable tap to reset mounting",
+        "mountingResetDelay": "Mounting reset delay",
+        "mountingResetTaps": "Taps for mounting reset"
       },
       "interface": {
         "title": "Interface",
         "dev-mode": {
           "title": "Developer Mode",
-          "description": "This mode can be useful if you need in-depth data or to interact with connected trackers on a more advanced level",
+          "description": "This mode can be useful if you need in-depth data or to interact with connected trackers on a more advanced level.",
           "label": "Developer Mode"
         },
         "serial-detection": {
           "title": "Serial device detection",
-          "description": "This option will show a pop-up every time you plug a new serial device that could be a tracker. It helps improving the setup process of a tracker",
+          "description": "This option will show a pop-up every time you plug a new serial device that could be a tracker. It helps improving the setup process of a tracker.",
           "label": "Serial device detection"
         },
         "lang": {
           "title": "Select language",
-          "description": "Change the default language you want to use",
+          "description": "Change the default language you want to use.",
           "placeholder": "Select the language to use"
         }
       }
@@ -271,13 +280,13 @@
         "description.p1": "Useful for using another OSC program with VRChat for example.",
         "enable": {
           "title": "Enable",
-          "description": "Toggle the forwarding of messages",
+          "description": "Toggle the forwarding of messages.",
           "label": "Enable"
         },
         "network": {
           "title": "Network ports",
-          "description.p0": "Set the ports for listening and sending data",
-          "description.p1": "These can be the same as other ports used in the SlimeVR server",
+          "description.p0": "Set the ports for listening and sending data.",
+          "description.p1": "These can be the same as other ports used in the SlimeVR server.",
           "port-in": {
             "label": "Port In",
             "placeholder": "Port in (default: 9002)"
@@ -288,7 +297,7 @@
           },
           "address": {
             "title": "Network address",
-            "description": "Set the address to send out data at",
+            "description": "Set the address to send out data at.",
             "placeholder": "IPV4 address"
           }
         }
@@ -298,12 +307,12 @@
         "description.p1": "trackers data for FBT (works on Quest standalone).",
         "enable": {
           "title": "Enable",
-          "description": "Toggle the sending and receiving of data",
+          "description": "Toggle the sending and receiving of data.",
           "label": "Enable"
         },
         "network": {
           "title": "Network ports",
-          "description": "Set the ports for listening and sending data to VRChat",
+          "description": "Set the ports for listening and sending data to VRChat.",
           "port-in": {
             "label": "Port In",
             "placeholder": "Port in (default: 9001)"
@@ -314,12 +323,12 @@
           },
           "address": {
             "title": "Network address",
-            "description": "Choose which address to send out data to VRChat (check your wifi settings on your device)",
+            "description": "Choose which address to send out data to VRChat (check your wifi settings on your device).",
             "placeholder": "VRChat ip address"
           },
           "trackers": {
             "title": "Trackers",
-            "description": "Toggle the sending and receiving of data",
+            "description": "Toggle the sending of specific trackers via OSC.",
             "chest": "Chest",
             "waist": "Waist",
             "knees": "Knees",

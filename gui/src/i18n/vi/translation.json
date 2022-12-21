@@ -200,7 +200,7 @@
           }
         },
         "amount": {
-          "Ghi chú": "Số luọng"
+          "label": "Số luọng"
         }
       },
       "fk-settings": {
