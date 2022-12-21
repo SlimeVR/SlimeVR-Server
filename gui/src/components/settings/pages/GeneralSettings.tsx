@@ -349,10 +349,10 @@ export function GeneralSettings() {
               control={control}
               name="filtering.type"
               label={t(
-                'settings-general-tracker-mechanics-filtering-type-none-label'
+                'settings-general-tracker_mechanics-filtering_type-none-label'
               )}
               desciption={t(
-                'settings-general-tracker-mechanics-filtering-type-none-description'
+                'settings-general-tracker_mechanics-filtering_type-none-description'
               )}
               value={FilteringType.NONE}
             ></Radio>
@@ -360,10 +360,10 @@ export function GeneralSettings() {
               control={control}
               name="filtering.type"
               label={t(
-                'settings-general-tracker-mechanics-filtering-type-smoothing-label'
+                'settings-general-tracker_mechanics-filtering_type-smoothing-label'
               )}
               desciption={t(
-                'settings-general-tracker-mechanics-filtering-type-smoothing-description'
+                'settings-general-tracker_mechanics-filtering_type-smoothing-description'
               )}
               value={FilteringType.SMOOTHING}
             ></Radio>
@@ -371,10 +371,10 @@ export function GeneralSettings() {
               control={control}
               name="filtering.type"
               label={t(
-                'settings-general-tracker-mechanics-filtering-type-prediction-label'
+                'settings-general-tracker_mechanics-filtering_type-prediction-label'
               )}
               desciption={t(
-                'settings-general-tracker-mechanics-filtering-type-prediction-description'
+                'settings-general-tracker_mechanics-filtering_type-prediction-description'
               )}
               value={FilteringType.PREDICTION}
             ></Radio>
@@ -419,7 +419,7 @@ export function GeneralSettings() {
               control={control}
               name="toggles.skatingCorrection"
               label={t(
-                'settings-general-fk-settings-leg-tweak-skating-correction'
+                'settings-general-fk_settings-leg_tweak-skating_correction'
               )}
             />
           </div>
@@ -428,7 +428,7 @@ export function GeneralSettings() {
               control={control}
               name="legTweaks.correctionStrength"
               label={t(
-                'settings-general-fk-settings-leg-tweak-skating-correction-amount'
+                'settings-general-fk_settings-leg_tweak-skating_correction-amount'
               )}
               valueLabelFormat={(value) => `${Math.round(value * 100)} %`}
               min={0.1}
@@ -462,7 +462,7 @@ export function GeneralSettings() {
               <div className="flex flex-col pt-2 pb-4">
                 <Typography color="secondary">
                   {t(
-                    'settings-general-fk-settings-skeleton-settings-description'
+                    'settings-general-fk_settings-skeleton_settings-description'
                   )}
                 </Typography>
               </div>
@@ -473,7 +473,7 @@ export function GeneralSettings() {
                   control={control}
                   name="toggles.extendedSpine"
                   label={t(
-                    'settings-general-fk-settings-skeleton-settings-extended-spine'
+                    'settings-general-fk_settings-skeleton_settings-extended_spine'
                   )}
                 />
                 <CheckBox
@@ -482,7 +482,7 @@ export function GeneralSettings() {
                   control={control}
                   name="toggles.extendedPelvis"
                   label={t(
-                    'settings-general-fk-settings-skeleton-settings-extended-pelvis'
+                    'settings-general-fk_settings-skeleton_settings-extended_pelvis'
                   )}
                 />
                 <CheckBox
@@ -491,7 +491,7 @@ export function GeneralSettings() {
                   control={control}
                   name="toggles.extendedKnee"
                   label={t(
-                    'settings-general-fk-settings-skeleton-settings-extended-knees'
+                    'settings-general-fk_settings-skeleton_settings-extended_knees'
                   )}
                 />
               </div>
@@ -572,7 +572,7 @@ export function GeneralSettings() {
               label={t('settings-general-gesture_control-quickResetTaps')}
               valueLabelFormat={(value) =>
                 `${Math.round(value)} ${t(
-                  'settings-general-gesture-control-taps'
+                  'settings-general-gesture_control-taps'
                 )}`
               }
               min={2}
@@ -585,7 +585,7 @@ export function GeneralSettings() {
               label={t('settings-general-gesture_control-resetTaps')}
               valueLabelFormat={(value) =>
                 `${Math.round(value)} ${t(
-                  'settings-general-gesture-control-taps'
+                  'settings-general-gesture_control-taps'
                 )}`
               }
               min={2}
@@ -598,7 +598,7 @@ export function GeneralSettings() {
               label={t('settings-general-gesture_control-mountingResetTaps')}
               valueLabelFormat={(value) =>
                 `${Math.round(value)} ${t(
-                  'settings-general-gesture-control-taps'
+                  'settings-general-gesture_control-taps'
                 )}`
               }
               min={2}
@@ -644,7 +644,7 @@ export function GeneralSettings() {
                 <div className="flex flex-col">
                   <Typography color="secondary">
                     {t(
-                      'settings-general-interface-serial-detection-description'
+                      'settings-general-interface-serial_detection-description'
                     )}
                   </Typography>
                 </div>
@@ -655,7 +655,7 @@ export function GeneralSettings() {
                     outlined
                     name="interface.watchNewDevices"
                     label={t(
-                      'settings-general-interface-serial-detection-label'
+                      'settings-general-interface-serial_detection-label'
                     )}
                   />
                 </div>
