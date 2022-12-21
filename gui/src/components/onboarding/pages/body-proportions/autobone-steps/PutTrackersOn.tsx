@@ -19,7 +19,7 @@ export function PutTrackersOnStep({ nextStep }: { nextStep: () => void }) {
           <div>
             <Typography color="secondary">
               {t(
-                'onboarding.automatic-proportions.put-trackers-on.description'
+                'onboarding-automatic_proportions-put_trackers_on-description'
               )}
             </Typography>
           </div>
