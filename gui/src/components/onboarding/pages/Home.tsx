@@ -17,21 +17,21 @@ export function HomePage() {
       <div className="flex flex-col gap-5 items-center z-10">
         <SlimeVRIcon></SlimeVRIcon>
         <Typography variant="main-title">
-          {t('onboarding.home.title')}
+          {t('onboarding-home-title')}
         </Typography>
         <div className="flex flex-col items-center">
           <Typography color="secondary">
-            {t('onboarding.home.description.p0')}
+            {t('onboarding-home-description-p0')}
           </Typography>
           <Typography color="secondary">
-            {t('onboarding.home.description.p1')}
+            {t('onboarding-home-description-p1')}
           </Typography>
         </div>
         <Button variant="primary" to="/onboarding/wifi-creds">
-          {t('onboarding.home.start')}
+          {t('onboarding-home-start')}
         </Button>
         <NavLink to="/" onClick={skipSetup}>
-          <Typography color="secondary">{t('onboarding.skip')}</Typography>
+          <Typography color="secondary">{t('onboarding-skip')}</Typography>
         </NavLink>
       </div>
       <div className="absolute right-4 bottom-4 z-50">

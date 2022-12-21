@@ -12,7 +12,7 @@ import {
   SerialTrackerFactoryResetRequestT,
   SerialTrackerGetInfoRequestT,
   SerialTrackerRebootRequestT,
-  SerialUpdateResponseT
+  SerialUpdateResponseT,
 } from 'solarxr-protocol';
 import { useElemSize, useLayout } from '../../../hooks/layout';
 import { useWebsocketAPI } from '../../../hooks/websocket-api';
@@ -105,7 +105,7 @@ export function Serial() {
     RpcMessage.SerialDevicesResponse,
     (res: SerialDevicesResponseT) => {
       setSerialDevices([
-        { name: t('settings.serial.auto-dropdown-item'), port: 'Auto' },
+        { name: t('settings-serial-auto_dropdown_item'), port: 'Auto' },
         ...(res.devices || []),
       ]);
     }
@@ -152,13 +152,13 @@ export function Serial() {
     <div className="flex flex-col bg-background-70 h-full p-5 rounded-md">
       <div className="flex flex-col pb-2">
         <Typography variant="main-title">
-          {t('settings.serial.title')}
+          {t('settings-serial-title')}
         </Typography>
         <Typography color="secondary">
-          {t('settings.serial.description.p0')}
+          {t('settings-serial-description-p0')}
         </Typography>
         <Typography color="secondary">
-          {t('settings.serial.description.p1')}
+          {t('settings-serial-description-p1')}
         </Typography>
       </div>
       <div className="bg-background-80 rounded-lg flex flex-col p-2">
@@ -174,7 +174,7 @@ export function Serial() {
             <pre>
               {isSerialOpen
                 ? consoleContent
-                : t('settings.serial.connection-lost')}
+                : t('settings-serial-connection_lost')}
             </pre>
           </div>
         </div>
@@ -182,13 +182,13 @@ export function Serial() {
           <div className="border-t-2 pt-2  border-background-60 border-solid m-2 gap-2 flex flex-row">
             <div className="flex flex-grow gap-2">
               <Button variant="quaternary" onClick={reboot}>
-                {t('settings.serial.reboot')}
+                {t('settings-serial-reboot')}
               </Button>
               <Button variant="quaternary" onClick={factoryReset}>
-                {t('settings.serial.factory-reset')}
+                {t('settings-serial-factory_reset')}
               </Button>
               <Button variant="quaternary" onClick={getInfos}>
-                {t('settings.serial.get-infos')}
+                {t('settings-serial-get_infos')}
               </Button>
             </div>
 
@@ -196,7 +196,7 @@ export function Serial() {
               <Dropdown
                 control={control}
                 name="port"
-                placeholder={t('settings.serial.serial-select')}
+                placeholder={t('settings-serial-serial_select')}
                 items={serialDevices.map((device) => ({
                   label: device.name?.toString() || 'error',
                   value: device.port?.toString() || 'error',

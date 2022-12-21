@@ -16,6 +16,8 @@
     "flatbuffers": "^22.10.26",
     "fs-extra": "^10.0.0",
     "i18next": "^22.0.6",
+    "i18next-browser-languagedetector": "^7.0.1",
+    "i18next-fluent": "^2.0.0",
     "identity-obj-proxy": "^3.0.0",
     "ip-num": "^1.4.1",
     "postcss-flexbugs-fixes": "^5.0.2",

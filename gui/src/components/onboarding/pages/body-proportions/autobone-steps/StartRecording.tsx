@@ -26,17 +26,17 @@ export function StartRecording({
       <div className="flex flex-col flex-grow">
         <div className="flex flex-grow flex-col gap-4 max-w-sm">
           <Typography variant="main-title" bold>
-            {t('onboarding.automatic-proportions.start-recording.title')}
+            {t('onboarding-automatic_proportions-start_recording-title')}
           </Typography>
           <div>
             <Typography color="secondary">
               {t(
-                'onboarding.automatic-proportions.start-recording.description'
+                'onboarding-automatic-proportions-start-recording-description'
               )}
             </Typography>
           </div>
           <div className="flex">
-            <TipBox>{t('tips.find-tracker')}</TipBox>
+            <TipBox>{t('tips-find_tracker')}</TipBox>
           </div>
         </div>
 
@@ -45,10 +45,10 @@ export function StartRecording({
             variant={variant === 'onboarding' ? 'secondary' : 'tiertiary'}
             onClick={prevStep}
           >
-            {t('onboarding.automatic-proportions.prev-step')}
+            {t('onboarding-automatic_proportions-prev_step')}
           </Button>
           <Button variant="primary" onClick={start}>
-            {t('onboarding.automatic-proportions.start-recording.next')}
+            {t('onboarding-automatic_proportions-start_recording-next')}
           </Button>
         </div>
       </div>

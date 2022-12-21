@@ -17,5 +17,8 @@
     "@typescript-eslint/parser": "^5.43.0",
     "husky": "^8.0.2",
     "typescript": "^4.9.3"
+  },
+  "dependencies": {
+    "i18next-fluent-backend": "^0.0.3"
   }
 }
