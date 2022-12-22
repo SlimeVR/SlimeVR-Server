@@ -44,27 +44,27 @@ export function SettingsSidebar() {
   return (
     <div className="flex flex-col px-5 w-[280px] min-w-[280px] py-5 gap-3 overflow-y-auto bg-background-70 rounded-lg">
       <Typography variant="main-title">
-        {t('settings.sidebar.title')}
+        {t('settings-sidebar-title')}
       </Typography>
       <div className="flex flex-col gap-3">
         <Typography variant="section-title">
-          {t('settings.sidebar.general')}
+          {t('settings-sidebar-general')}
         </Typography>
         <div className="flex flex-col gap-2">
           <SettingsLink to="/settings/trackers" scrollTo="steamvr">
             SteamVR
           </SettingsLink>
           <SettingsLink to="/settings/trackers" scrollTo="mechanics">
-            {t('settings.sidebar.tracker-mechanics')}
+            {t('settings-sidebar-tracker_mechanics')}
           </SettingsLink>
           <SettingsLink to="/settings/trackers" scrollTo="fksettings">
-            {t('settings.sidebar.fk-settings')}
+            {t('settings-sidebar-fk_settings')}
           </SettingsLink>
           <SettingsLink to="/settings/trackers" scrollTo="gestureControl">
-            {t('settings.sidebar.gesture-control')}
+            {t('settings-sidebar-gesture_control')}
           </SettingsLink>
           <SettingsLink to="/settings/trackers" scrollTo="interface">
-            {t('settings.sidebar.interface')}
+            {t('settings-sidebar-interface')}
           </SettingsLink>
         </div>
       </div>
@@ -72,7 +72,7 @@ export function SettingsSidebar() {
         <Typography variant="section-title">OSC</Typography>
         <div className="flex flex-col gap-2">
           <SettingsLink to="/settings/osc/router" scrollTo="router">
-            {t('settings.sidebar.osc-router')}
+            {t('settings-sidebar-osc_router')}
           </SettingsLink>
         </div>
         <div className="flex flex-col gap-2">
@@ -83,11 +83,11 @@ export function SettingsSidebar() {
       </div>
       <div className="flex flex-col gap-3">
         <Typography variant="section-title">
-          {t('settings.sidebar.utils')}
+          {t('settings-sidebar-utils')}
         </Typography>
         <div className="flex flex-col gap-2">
           <SettingsLink to="/settings/serial">
-            {t('settings.sidebar.serial')}
+            {t('settings-sidebar-serial')}
           </SettingsLink>
         </div>
       </div>

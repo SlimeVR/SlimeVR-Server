@@ -26,7 +26,7 @@ export function BVHButton() {
 
   return (
     <BigButton
-      text={t(recording ? 'bvh.recording' : 'bvh.start-recording')}
+      text={t(recording ? 'bvh-recording' : 'bvh-start_recording')}
       icon={<RecordIcon width={20} />}
       onClick={toggleBVH}
     ></BigButton>

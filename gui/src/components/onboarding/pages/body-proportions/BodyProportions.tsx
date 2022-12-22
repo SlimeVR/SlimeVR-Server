@@ -4,7 +4,7 @@ import {
   ReactNode,
   useEffect,
   useMemo,
-  useState
+  useState,
 } from 'react';
 import { useTranslation } from 'react-i18next';
 import {
@@ -12,7 +12,7 @@ import {
   RpcMessage,
   SkeletonBone,
   SkeletonConfigRequestT,
-  SkeletonConfigResponseT
+  SkeletonConfigResponseT,
 } from 'solarxr-protocol';
 import { useWebsocketAPI } from '../../../../hooks/websocket-api';
 import { Typography } from '../../../commons/Typography';
@@ -56,7 +56,7 @@ export function BodyProportions({
     return (
       config?.skeletonParts.map(({ bone, value }) => ({
         bone,
-        label: t('skeleton-bone.' + SkeletonBone[bone]),
+        label: t('skeleton_bone-' + SkeletonBone[bone]),
         value,
       })) || []
     );

@@ -198,7 +198,7 @@ public class UnixSocketBridge extends SteamVRBridge implements AutoCloseable {
 
 	@Override
 	public boolean isConnected() {
-		return channel.isConnected();
+		return channel != null && channel.isConnected();
 	}
 }
 

@@ -1,0 +1,13 @@
+diff --git a/node_modules/i18next-fluent-backend/dist/es/index.js b/node_modules/i18next-fluent-backend/dist/es/index.js
+index 70a582a..477986a 100644
+--- a/node_modules/i18next-fluent-backend/dist/es/index.js
++++ b/node_modules/i18next-fluent-backend/dist/es/index.js
+@@ -6,7 +6,7 @@ function _createClass(Constructor, protoProps, staticProps) { if (protoProps) _d
+ 
+ import * as utils from './utils.js';
+ import ajax from './ajax.js';
+-import ftl2js from 'fluent_conv/lib/ftl2js';
++import ftl2js from 'fluent_conv/esm/ftl2js';
+ 
+ function getDefaults() {
+   return {

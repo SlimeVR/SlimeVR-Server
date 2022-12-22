@@ -17,13 +17,13 @@ export function EnterVRPage() {
           <div className="flex gap-8">
             <div className="flex flex-col max-w-md gap-3">
               <ArrowLink to="/onboarding/trackers-assign" direction="left">
-                {t('onboarding.enter-vr.back')}
+                {t('onboarding-enter_vr-back')}
               </ArrowLink>
               <Typography variant="main-title">
-                {t('onboarding.enter-vr.title')}
+                {t('onboarding-enter_vr-title')}
               </Typography>
               <Typography color="secondary">
-                {t('onboarding.enter-vr.description')}
+                {t('onboarding-enter_vr-description')}
               </Typography>
             </div>
             {/* <div className="flex flex-col flex-grow gap-3 rounded-xl fill-background-50">
@@ -34,12 +34,12 @@ export function EnterVRPage() {
         <div className="w-full py-4 flex flex-row">
           <div className="flex flex-grow">
             <Button variant="secondary" to="/" onClick={skipSetup}>
-              {t('onboarding.skip')}
+              {t('onboarding-skip')}
             </Button>
           </div>
           <div className="flex gap-3">
             <Button variant="primary" to="/onboarding/mounting/auto">
-              {t('onboarding.enter-vr.ready')}
+              {t('onboarding-enter_vr-ready')}
             </Button>
           </div>
         </div>

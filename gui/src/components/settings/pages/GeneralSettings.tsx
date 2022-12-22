@@ -149,11 +149,15 @@ export function GeneralSettings() {
     tapDetection.tapResetEnabled = values.tapDetection.tapResetEnabled;
     tapDetection.tapResetTaps = values.tapDetection.tapResetTaps;
     tapDetection.tapQuickResetDelay = values.tapDetection.tapQuickResetDelay;
-    tapDetection.tapQuickResetEnabled = values.tapDetection.tapQuickResetEnabled;
+    tapDetection.tapQuickResetEnabled =
+      values.tapDetection.tapQuickResetEnabled;
     tapDetection.tapQuickResetTaps = values.tapDetection.tapQuickResetTaps;
-    tapDetection.tapMountingResetEnabled = values.tapDetection.tapMountingResetEnabled;
-    tapDetection.tapMountingResetDelay = values.tapDetection.tapMountingResetDelay;
-    tapDetection.tapMountingResetTaps = values.tapDetection.tapMountingResetTaps;
+    tapDetection.tapMountingResetEnabled =
+      values.tapDetection.tapMountingResetEnabled;
+    tapDetection.tapMountingResetDelay =
+      values.tapDetection.tapMountingResetDelay;
+    tapDetection.tapMountingResetTaps =
+      values.tapDetection.tapMountingResetTaps;
     settings.tapDetectionSettings = tapDetection;
 
     const filtering = new FilteringSettingsT();
@@ -267,15 +271,15 @@ export function GeneralSettings() {
       <SettingsPageLayout icon={<SteamIcon></SteamIcon>} id="steamvr">
         <>
           <Typography variant="main-title">
-            {t('settings.general.steamvr.title')}
+            {t('settings-general-steamvr-title')}
           </Typography>
-          <Typography bold>{t('settings.general.steamvr.subtitle')}</Typography>
+          <Typography bold>{t('settings-general-steamvr-subtitle')}</Typography>
           <div className="flex flex-col py-2">
             <Typography color="secondary">
-              {t('settings.general.steamvr.description.p0')}
+              {t('settings-general-steamvr-description-p0')}
             </Typography>
             <Typography color="secondary">
-              {t('settings.general.steamvr.description.p1')}
+              {t('settings-general-steamvr-description-p1')}
             </Typography>
           </div>
           <div className="grid grid-cols-2 gap-3 pt-3">
@@ -284,42 +288,42 @@ export function GeneralSettings() {
               outlined
               control={control}
               name="trackers.chest"
-              label={t('settings.general.steamvr.trackers.chest')}
+              label={t('settings-general-steamvr-trackers-chest')}
             />
             <CheckBox
               variant="toggle"
               outlined
               control={control}
               name="trackers.waist"
-              label={t('settings.general.steamvr.trackers.waist')}
+              label={t('settings-general-steamvr-trackers-waist')}
             />
             <CheckBox
               variant="toggle"
               outlined
               control={control}
               name="trackers.knees"
-              label={t('settings.general.steamvr.trackers.knees')}
+              label={t('settings-general-steamvr-trackers-knees')}
             />
             <CheckBox
               variant="toggle"
               outlined
               control={control}
               name="trackers.feet"
-              label={t('settings.general.steamvr.trackers.feet')}
+              label={t('settings-general-steamvr-trackers-feet')}
             />
             <CheckBox
               variant="toggle"
               outlined
               control={control}
               name="trackers.elbows"
-              label={t('settings.general.steamvr.trackers.elbows')}
+              label={t('settings-general-steamvr-trackers-elbows')}
             />
             <CheckBox
               variant="toggle"
               outlined
               control={control}
               name="trackers.hands"
-              label={t('settings.general.steamvr.trackers.hands')}
+              label={t('settings-general-steamvr-trackers-hands')}
             />
           </div>
         </>
@@ -327,31 +331,31 @@ export function GeneralSettings() {
       <SettingsPageLayout icon={<WrenchIcon></WrenchIcon>} id="mechanics">
         <>
           <Typography variant="main-title">
-            {t('settings.general.tracker-mechanics.title')}
+            {t('settings-general-tracker_mechanics-title')}
           </Typography>
           <Typography bold>
-            {t('settings.general.tracker-mechanics.subtitle')}
+            {t('settings-general-tracker_mechanics-subtitle')}
           </Typography>
           <div className="flex flex-col pt-2 pb-4">
             <Typography color="secondary">
-              {t('settings.general.tracker-mechanics.description.p0')}
+              {t('settings-general-tracker_mechanics-description-p0')}
             </Typography>
             <Typography color="secondary">
-              {t('settings.general.tracker-mechanics.description.p1')}
+              {t('settings-general-tracker_mechanics-description-p1')}
             </Typography>
           </div>
           <Typography>
-            {t('settings.general.tracker-mechanics.filtering-type.title')}
+            {t('settings-general-tracker_mechanics-filtering_type-title')}
           </Typography>
           <div className="flex md:flex-row flex-col gap-3 pt-2">
             <Radio
               control={control}
               name="filtering.type"
               label={t(
-                'settings.general.tracker-mechanics.filtering-type.none.label'
+                'settings-general-tracker_mechanics-filtering_type-none-label'
               )}
               desciption={t(
-                'settings.general.tracker-mechanics.filtering-type.none.description'
+                'settings-general-tracker_mechanics-filtering_type-none-description'
               )}
               value={FilteringType.NONE}
             ></Radio>
@@ -359,10 +363,10 @@ export function GeneralSettings() {
               control={control}
               name="filtering.type"
               label={t(
-                'settings.general.tracker-mechanics.filtering-type.smoothing.label'
+                'settings-general-tracker_mechanics-filtering_type-smoothing-label'
               )}
               desciption={t(
-                'settings.general.tracker-mechanics.filtering-type.smoothing.description'
+                'settings-general-tracker_mechanics-filtering_type-smoothing-description'
               )}
               value={FilteringType.SMOOTHING}
             ></Radio>
@@ -370,10 +374,10 @@ export function GeneralSettings() {
               control={control}
               name="filtering.type"
               label={t(
-                'settings.general.tracker-mechanics.filtering-type.prediction.label'
+                'settings-general-tracker_mechanics-filtering_type-prediction-label'
               )}
               desciption={t(
-                'settings.general.tracker-mechanics.filtering-type.prediction.description'
+                'settings-general-tracker_mechanics-filtering_type-prediction-description'
               )}
               value={FilteringType.PREDICTION}
             ></Radio>
@@ -382,7 +386,7 @@ export function GeneralSettings() {
             <NumberSelector
               control={control}
               name="filtering.amount"
-              label={t('settings.general.tracker-mechanics.amount.label')}
+              label={t('settings-general-tracker_mechanics-amount-label')}
               valueLabelFormat={(value) => `${Math.round(value * 100)} %`}
               min={0.1}
               max={1.0}
@@ -394,14 +398,14 @@ export function GeneralSettings() {
       <SettingsPageLayout icon={<WrenchIcon></WrenchIcon>} id="fksettings">
         <>
           <Typography variant="main-title">
-            {t('settings.general.fk-settings.title')}
+            {t('settings-general-fk_settings-title')}
           </Typography>
           <Typography bold>
-            {t('settings.general.fk-settings.leg-tweak.title')}
+            {t('settings-general-fk_settings-leg_tweak-title')}
           </Typography>
           <div className="flex flex-col pt-2 pb-4">
             <Typography color="secondary">
-              {t('settings.general.fk-settings.leg-tweak.description')}
+              {t('settings-general-fk_settings-leg_tweak-description')}
             </Typography>
           </div>
           <div className="grid sm:grid-cols-2 gap-3 pb-5">
@@ -410,7 +414,7 @@ export function GeneralSettings() {
               outlined
               control={control}
               name="toggles.floorClip"
-              label={t('settings.general.fk-settings.leg-tweak.floor-clip')}
+              label={t('settings-general-fk_settings-leg_tweak-floor_clip')}
             />
             <CheckBox
               variant="toggle"
@@ -418,7 +422,7 @@ export function GeneralSettings() {
               control={control}
               name="toggles.skatingCorrection"
               label={t(
-                'settings.general.fk-settings.leg-tweak.skating-correction'
+                'settings-general-fk_settings-leg_tweak-skating_correction'
               )}
             />
           </div>
@@ -427,7 +431,7 @@ export function GeneralSettings() {
               control={control}
               name="legTweaks.correctionStrength"
               label={t(
-                'settings.general.fk-settings.leg-tweak.skating-correction-amount'
+                'settings-general-fk_settings-leg_tweak-skating_correction_amount'
               )}
               valueLabelFormat={(value) => `${Math.round(value * 100)} %`}
               min={0.1}
@@ -437,11 +441,11 @@ export function GeneralSettings() {
           </div>
 
           <Typography bold>
-            {t('settings.general.fk-settings.arm-fk.title')}
+            {t('settings-general-fk_settings-arm_fk-title')}
           </Typography>
           <div className="flex flex-col pt-2 pb-4">
             <Typography color="secondary">
-              {t('settings.general.fk-settings.arm-fk.description')}
+              {t('settings-general-fk_settings-arm_fk-description')}
             </Typography>
           </div>
           <div className="grid sm:grid-cols-2 pb-5">
@@ -450,18 +454,18 @@ export function GeneralSettings() {
               outlined
               control={control}
               name="toggles.forceArmsFromHmd"
-              label={t('settings.general.fk-settings.arm-fk.force-arms')}
+              label={t('settings-general-fk_settings-arm_fk-force_arms')}
             />
           </div>
           {config?.debug && (
             <>
               <Typography bold>
-                {t('settings.general.fk-settings.skeleton-settings.title')}
+                {t('settings-general-fk_settings-skeleton_settings-title')}
               </Typography>
               <div className="flex flex-col pt-2 pb-4">
                 <Typography color="secondary">
                   {t(
-                    'settings.general.fk-settings.skeleton-settings.description'
+                    'settings-general-fk_settings-skeleton_settings-description'
                   )}
                 </Typography>
               </div>
@@ -472,7 +476,7 @@ export function GeneralSettings() {
                   control={control}
                   name="toggles.extendedSpine"
                   label={t(
-                    'settings.general.fk-settings.skeleton-settings.extended-spine'
+                    'settings-general-fk_settings-skeleton_settings-extended_spine'
                   )}
                 />
                 <CheckBox
@@ -481,7 +485,7 @@ export function GeneralSettings() {
                   control={control}
                   name="toggles.extendedPelvis"
                   label={t(
-                    'settings.general.fk-settings.skeleton-settings.extended-pelvis'
+                    'settings-general-fk_settings-skeleton_settings-extended_pelvis'
                   )}
                 />
                 <CheckBox
@@ -490,16 +494,16 @@ export function GeneralSettings() {
                   control={control}
                   name="toggles.extendedKnee"
                   label={t(
-                    'settings.general.fk-settings.skeleton-settings.extended-knees'
+                    'settings-general-fk_settings-skeleton_settings-extended_knees'
                   )}
                 />
               </div>
               <Typography bold>
-                {t('settings.general.fk-settings.viveEmulation.title')}
+                {t('settings-general-fk_settings-vive_emulation-title')}
               </Typography>
               <div className="flex flex-col pt-2 pb-4">
                 <Typography color="secondary">
-                  {t('settings.general.fk-settings.viveEmulation.description')}
+                  {t('settings-general-fk_settings-vive_emulation-description')}
                 </Typography>
               </div>
               <div className="grid sm:grid-cols-2 gap-3 pb-5">
@@ -507,8 +511,8 @@ export function GeneralSettings() {
                   variant="toggle"
                   outlined
                   control={control}
-                  name="toggles.viveEmulation"
-                  label={t('settings.general.fk-settings.viveEmulation.label')}
+                  name="toggles-viveEmulation"
+                  label={t('settings-general-fk_settings-vive_emulation-label')}
                 />
               </div>
             </>
@@ -519,14 +523,14 @@ export function GeneralSettings() {
       <SettingsPageLayout icon={<WrenchIcon></WrenchIcon>} id="gestureControl">
         <>
           <Typography variant="main-title">
-            {t('settings.general.gesture-control.title')}
+            {t('settings-general-gesture_control-title')}
           </Typography>
           <Typography bold>
-            {t('settings.general.gesture-control.subtitle')}
+            {t('settings-general-gesture_control-subtitle')}
           </Typography>
           <div className="flex flex-col pt-2 pb-4">
             <Typography color="secondary">
-              {t('settings.general.gesture-control.description')}
+              {t('settings-general-gesture_control-description')}
             </Typography>
           </div>
           <div className="grid sm:grid-cols-3 gap-5 pb-2">
@@ -535,28 +539,28 @@ export function GeneralSettings() {
               outlined
               control={control}
               name="tapDetection.tapQuickResetEnabled"
-              label={t('settings.general.gesture-control.quickResetEnabled')}
+              label={t('settings-general-gesture_control-quickResetEnabled')}
             />
             <CheckBox
               variant="toggle"
               outlined
               control={control}
               name="tapDetection.tapResetEnabled"
-              label={t('settings.general.gesture-control.resetEnabled')}
+              label={t('settings-general-gesture_control-resetEnabled')}
             />
             <CheckBox
               variant="toggle"
-              outlined 
+              outlined
               control={control}
               name="tapDetection.tapMountingResetEnabled"
-              label={t('settings.general.gesture-control.mountingResetEnabled')}
+              label={t('settings-general-gesture_control-mountingResetEnabled')}
             />
           </div>
           <div className="grid sm:grid-cols-3 gap-5 pb-2">
             <NumberSelector
               control={control}
               name="tapDetection.tapQuickResetDelay"
-              label={t('settings.general.gesture-control.quickResetDelay')}
+              label={t('settings-general-gesture_control-quickResetDelay')}
               valueLabelFormat={(value) => `${Math.round(value * 10) / 10} s`}
               min={0.2}
               max={3.0}
@@ -565,7 +569,7 @@ export function GeneralSettings() {
             <NumberSelector
               control={control}
               name="tapDetection.tapResetDelay"
-              label={t('settings.general.gesture-control.resetDelay')}
+              label={t('settings-general-gesture_control-resetDelay')}
               valueLabelFormat={(value) => `${Math.round(value * 10) / 10} s`}
               min={0.2}
               max={3.0}
@@ -574,7 +578,7 @@ export function GeneralSettings() {
             <NumberSelector
               control={control}
               name="tapDetection.tapMountingResetDelay"
-              label={t('settings.general.gesture-control.mountingResetDelay')}
+              label={t('settings-general-gesture_control-mountingResetDelay')}
               valueLabelFormat={(value) => `${Math.round(value * 10) / 10} s`}
               min={0.2}
               max={3.0}
@@ -585,10 +589,10 @@ export function GeneralSettings() {
             <NumberSelector
               control={control}
               name="tapDetection.tapQuickResetTaps"
-              label={t('settings.general.gesture-control.quickResetTaps')}
+              label={t('settings-general-gesture_control-quickResetTaps')}
               valueLabelFormat={(value) =>
                 `${Math.round(value)} ${t(
-                  'settings.general.gesture-control.taps'
+                  'settings-general-gesture_control-taps'
                 )}`
               }
               min={2}
@@ -598,10 +602,10 @@ export function GeneralSettings() {
             <NumberSelector
               control={control}
               name="tapDetection.tapResetTaps"
-              label={t('settings.general.gesture-control.resetTaps')}
+              label={t('settings-general-gesture_control-resetTaps')}
               valueLabelFormat={(value) =>
                 `${Math.round(value)} ${t(
-                  'settings.general.gesture-control.taps'
+                  'settings-general-gesture_control-taps'
                 )}`
               }
               min={2}
@@ -611,10 +615,10 @@ export function GeneralSettings() {
             <NumberSelector
               control={control}
               name="tapDetection.tapMountingResetTaps"
-              label={t('settings.general.gesture-control.mountingResetTaps')}
+              label={t('settings-general-gesture_control-mountingResetTaps')}
               valueLabelFormat={(value) =>
                 `${Math.round(value)} ${t(
-                  'settings.general.gesture-control.taps'
+                  'settings-general-gesture_control-taps'
                 )}`
               }
               min={2}
@@ -628,17 +632,17 @@ export function GeneralSettings() {
       <SettingsPageLayout icon={<SquaresIcon></SquaresIcon>} id="interface">
         <>
           <Typography variant="main-title">
-            {t('settings.general.interface.title')}
+            {t('settings-general-interface-title')}
           </Typography>
           <div className="gap-4 grid">
             <div className="grid sm:grid-cols-2">
               <div>
                 <Typography bold>
-                  {t('settings.general.interface.dev-mode.title')}
+                  {t('settings-general-interface-dev_mode-title')}
                 </Typography>
                 <div className="flex flex-col">
                   <Typography color="secondary">
-                    {t('settings.general.interface.dev-mode.description')}
+                    {t('settings-general-interface-dev_mode-description')}
                   </Typography>
                 </div>
                 <div className="pt-2">
@@ -647,7 +651,7 @@ export function GeneralSettings() {
                     control={control}
                     outlined
                     name="interface.devmode"
-                    label={t('settings.general.interface.dev-mode.label')}
+                    label={t('settings-general-interface-dev_mode-label')}
                   />
                 </div>
               </div>
@@ -655,12 +659,12 @@ export function GeneralSettings() {
             <div className="grid sm:grid-cols-2">
               <div>
                 <Typography bold>
-                  {t('settings.general.interface.serial-detection.title')}
+                  {t('settings-general-interface-serial_detection-title')}
                 </Typography>
                 <div className="flex flex-col">
                   <Typography color="secondary">
                     {t(
-                      'settings.general.interface.serial-detection.description'
+                      'settings-general-interface-serial_detection-description'
                     )}
                   </Typography>
                 </div>
@@ -671,7 +675,7 @@ export function GeneralSettings() {
                     outlined
                     name="interface.watchNewDevices"
                     label={t(
-                      'settings.general.interface.serial-detection.label'
+                      'settings-general-interface-serial_detection-label'
                     )}
                   />
                 </div>
@@ -680,11 +684,11 @@ export function GeneralSettings() {
             <div className="grid sm:grid-cols-2">
               <div>
                 <Typography bold>
-                  {t('settings.general.interface.lang.title')}
+                  {t('settings-general-interface-lang-title')}
                 </Typography>
                 <div className="flex flex-col">
                   <Typography color="secondary">
-                    {t('settings.general.interface.lang.description')}
+                    {t('settings-general-interface-lang-description')}
                   </Typography>
                 </div>
                 <div className="pt-2">
