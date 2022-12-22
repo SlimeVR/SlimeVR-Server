@@ -181,7 +181,7 @@ settings-general-tracker_mechanics-filtering-type-prediction-label = Predizione
 settings-general-tracker_mechanics-filtering-type-prediction-description = Riduce ritardo e rende movimenti più istantanei, ma può introdurre tremolio.
 settings-general-tracker_mechanics-filtering-amount-label = Quantità
 
-## FK settings
+## Tracking settings
 settings-general-fk_settings-title = Impostazioni FK
 settings-general-fk_settings-leg_tweak-title = Impostazioni Gambe
 settings-general-fk_settings-leg_tweak-description = "Compenetrazione pavimento" può ridurre o anche eliminare completamente la compenetrazione con il pavimento, ma può causare problemi quando in ginocchio. "Correzione pattinaggio" corregge l'effetto che fa sembrare che pattini sul ghiaccio, ma può peggiorare la precisione di certi movimenti.

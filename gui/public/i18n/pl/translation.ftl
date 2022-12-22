@@ -179,7 +179,7 @@ settings-general-tracker_mechanics-filtering-type-prediction-label = Przewidywan
 settings-general-tracker_mechanics-filtering-type-prediction-description = Zmniejsza opóźnienie i robi ruchy trochę ostrzejszymi, ale może dodać trochę drgań.
 settings-general-tracker_mechanics-filtering-amount-label = Ilość
 
-## FK settings
+## Tracking settings
 settings-general-fk_settings-title = FK settings
 settings-general-fk_settings-leg_tweak-title = Leg tweaks
 settings-general-fk_settings-leg_tweak-description = Floor-clip can Reduce or even eliminates clipping with the floor but may cause problems when on your knees. Skating-correction corrects for ice skating, but can decrease accuracy in certain movement patterns.

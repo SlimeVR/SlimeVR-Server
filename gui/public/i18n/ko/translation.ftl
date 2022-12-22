@@ -180,7 +180,7 @@ settings-general-tracker_mechanics-filtering-type-prediction-label = Prediction
 settings-general-tracker_mechanics-filtering-type-prediction-description = 대기 시간이 줄어들고 움직임이 더 빨라지지만 지터가 증가할 수 있어요.
 settings-general-tracker_mechanics-filtering-amount-label = 강도
 
-## FK settings
+## Tracking settings
 settings-general-fk_settings-title = FK 설정
 settings-general-fk_settings-leg_tweak-title = 다리 보정
 settings-general-fk_settings-leg_tweak-description = 플로어 클립은 바닥과의 클리핑을 줄이거나 제거할 수 있지만 무릎을 꿇을 때 문제를 일으킬 수 있어요. 스케이팅 보정은 아이스 스케이팅을 보정하지만, 특정 움직임 패턴에서 정확도를 저하시킬 수 있어요.

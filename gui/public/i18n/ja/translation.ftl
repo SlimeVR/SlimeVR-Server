@@ -178,7 +178,7 @@ settings-general-tracker_mechanics-filtering-type-prediction-label = Prediction
 settings-general-tracker_mechanics-filtering-type-prediction-description = レイテンシーを減らし、動きをよりキビキビさせますが、ジッターが増加する場合があります。
 settings-general-tracker_mechanics-filtering-amount-label = 数値
 
-## FK settings
+## Tracking settings
 settings-general-fk_settings-title = FK設定
 settings-general-fk_settings-leg_tweak-title = 脚の微調整
 settings-general-fk_settings-leg_tweak-description = フロアクリップは、床とのクリッピングを減らす、あるいはなくすことができますが、膝をついたときに問題が発生する可能性があります。スケーティング補正は足の滑りを補正できますが、特定の動作パターンでは精度が落ちることがあります。

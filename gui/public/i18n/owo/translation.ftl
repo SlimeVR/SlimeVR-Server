@@ -178,9 +178,15 @@ settings-general-tracker_mechanics-filtering-type-smoothing-description = smowth
 settings-general-tracker_mechanics-filtering-type-prediction-label = pwediction~
 settings-general-tracker_mechanics-filtering-type-prediction-description = wowduces wowcyancy and makes wowvements mowe wowappy, but may incwease jiwitty
 settings-general-tracker_mechanics-filtering-amount-label = amownt
+settings-general-tracker_mechanics-drift_compensation-title = dwift compensation
+settings-general-tracker_mechanics-drift_compensation-description-p0 = compensates imu yaw dwift by appwying an invewse wotation.
+settings-general-tracker_mechanics-drift_compensation-description-p1 = change amownt of compensation and how many wesets awe taken into accouwnt.
+settings-general-tracker_mechanics-drift_compensation-enabled-label = dwift compensation
+settings-general-tracker_mechanics-drift_compensation-amount-label = compensation amownt
+settings-general-tracker_mechanics-drift_compensation-max_resets-label = nuwmbew of wesets uwsed
 
-## FK settings
-settings-general-fk_settings-title = fk sewttings
+## Tracking settings
+settings-general-fk_settings-title = twacking sewttings
 settings-general-fk_settings-leg_tweak-title = leg tweeks
 settings-general-fk_settings-leg_tweak-description = floo-cwip can wowduce owow even ewiminates cwipping with teh fwoor but may cause pwobweems when on yowur neeys. skayting-cowwection cowwects fow wowce skating, but can wowcyancy accuwowacy in cewtain wowvement wowttewns.
 settings-general-fk_settings-leg_tweak-floor_clip = fwoow cwip

@@ -181,7 +181,7 @@ settings-general-tracker_mechanics-filtering-type-prediction-label = 预测型
 settings-general-tracker_mechanics-filtering-type-prediction-description = 减少延迟并使移动更敏捷，但可能会增加一些抖动。
 settings-general-tracker_mechanics-filtering-amount-label = 滤波强度
 
-## FK settings
+## Tracking settings
 settings-general-fk_settings-title = FK 设置
 settings-general-fk_settings-leg_tweak-title = 腿部调整
 settings-general-fk_settings-leg_tweak-description = 本设置可以减少甚至消除脚部穿入地板的情况，但是当你跪在地上的时候可能产生一些问题. 脚滑矫正可以矫正一些脚滑溜冰的问题, 但是可能会降低某些动作的准确性。

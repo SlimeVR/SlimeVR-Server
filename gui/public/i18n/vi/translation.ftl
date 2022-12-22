@@ -178,7 +178,7 @@ settings-general-tracker_mechanics-filtering-type-prediction-label = Dự đoán
 settings-general-tracker_mechanics-filtering-type-prediction-description = Giảm chậm trê và để cử động gọn hơn, nhưng có thể tăng độ rung.
 settings-general-tracker_mechanics-filtering-amount-label = Số luọng
 
-## FK settings
+## Tracking settings
 settings-general-fk_settings-title = Cài đặt FK
 settings-general-fk_settings-leg_tweak-title = Chỉnh chân
 settings-general-fk_settings-leg_tweak-description = Chỉnh chân có thể giảm hoặc loại bỏ chân đi xuyên sàn nhà nhưng có thể ảnh hưởng đầu gối. Sửa trượt sửa khi lướt, nhưng giảm độ chính xác ở một số cử động.

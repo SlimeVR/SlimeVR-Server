@@ -8,7 +8,7 @@ import dev.slimevr.vr.trackers.Tracker;
 public class DriftCompensationConfig {
 
 	// Is drift compensation enabled
-	private boolean enabled = true; // TODO set to false
+	private boolean enabled = false;
 
 	// Amount of drift compensation applied
 	private float amount = 0.7f;

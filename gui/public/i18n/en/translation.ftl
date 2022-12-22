@@ -148,7 +148,7 @@ mounting_selection_menu-close = Close
 settings-sidebar-title = Settings
 settings-sidebar-general = General
 settings-sidebar-tracker_mechanics = Tracker mechanics
-settings-sidebar-fk_settings = FK settings
+settings-sidebar-fk_settings = Tracking settings
 settings-sidebar-gesture_control = Gesture control
 settings-sidebar-interface = Interface
 settings-sidebar-osc_router = OSC router
@@ -180,8 +180,14 @@ settings-general-tracker_mechanics-filtering-type-smoothing-description = Smooth
 settings-general-tracker_mechanics-filtering-type-prediction-label = Prediction
 settings-general-tracker_mechanics-filtering-type-prediction-description = Reduces latency and makes movements more snappy, but may increase jitter.
 settings-general-tracker_mechanics-filtering-amount-label = Amount
+settings-general-tracker_mechanics-drift_compensation-title = Drift compensation
+settings-general-tracker_mechanics-drift_compensation-description-p0 = Compensates IMU yaw drift by applying an inverse rotation.
+settings-general-tracker_mechanics-drift_compensation-description-p1 = Change amount of compensation and how many resets are taken into account.
+settings-general-tracker_mechanics-drift_compensation-enabled-label = Drift compensation
+settings-general-tracker_mechanics-drift_compensation-amount-label = Compensation amount
+settings-general-tracker_mechanics-drift_compensation-max_resets-label = Number of resets used
 
-## FK settings
+## Tracking settings
 settings-general-fk_settings-title = Tracking settings
 settings-general-fk_settings-leg_tweak-title = Leg tweaks
 settings-general-fk_settings-leg_tweak-description = Floor-clip can Reduce or even eliminates clipping with the floor but may cause problems when on your knees. Skating-correction corrects for ice skating, but can decrease accuracy in certain movement patterns.

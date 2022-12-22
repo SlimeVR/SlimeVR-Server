@@ -413,6 +413,56 @@ export function GeneralSettings() {
               step={0.1}
             />
           </div>
+          <div className="flex flex-col pt-4 pb-4"></div>
+          <Typography bold>
+            {t('settings-general-tracker_mechanics-drift_compensation-title')}
+          </Typography>
+          <div className="flex flex-col pt-2 pb-4">
+            <Typography color="secondary">
+              {t(
+                'settings-general-tracker_mechanics-drift_compensation-description-p0'
+              )}
+            </Typography>
+            <Typography color="secondary">
+              {t(
+                'settings-general-tracker_mechanics-drift_compensation-description-p1'
+              )}
+            </Typography>
+          </div>
+          <CheckBox
+            variant="toggle"
+            outlined
+            control={control}
+            name="driftCompensation.enabled"
+            label={t(
+              'settings-general-tracker_mechanics-drift_compensation-enabled-label'
+            )}
+          />
+          <div className="flex gap-5 pt-5 md:flex-row flex-col">
+            <NumberSelector
+              control={control}
+              name="driftCompensation.amount"
+              label={t(
+                'settings-general-tracker_mechanics-drift_compensation-amount-label'
+              )}
+              valueLabelFormat={(value) => `${Math.round(value * 100)} %`}
+              min={0.1}
+              max={1.0}
+              step={0.1}
+            />
+          </div>
+          <div className="flex gap-5 pt-5 md:flex-row flex-col">
+            <NumberSelector
+              control={control}
+              name="driftCompensation.maxResets"
+              label={t(
+                'settings-general-tracker_mechanics-drift_compensation-max_resets-label'
+              )}
+              min={1}
+              max={25}
+              step={1}
+            />
+          </div>
         </>
       </SettingsPageLayout>
       <SettingsPageLayout icon={<WrenchIcon></WrenchIcon>} id="fksettings">

@@ -181,7 +181,7 @@ settings-general-tracker_mechanics-filtering-type-prediction-label = Predição
 settings-general-tracker_mechanics-filtering-type-prediction-description = Reduz latência e torna os movimentos mais responsivos, porém aumenta tremulação (Jitter).
 settings-general-tracker_mechanics-filtering-amount-label = Quantidade
 
-## FK settings
+## Tracking settings
 settings-general-fk_settings-title = Opções de FK
 settings-general-fk_settings-leg_tweak-title = Ajustes de perna
 settings-general-fk_settings-leg_tweak-description = Atravessar o chão pode reduzir ou até eliminar o clipping(atravessar) com o chão porém pode causar problemas quando ajoelhado. Correção de Deslize corrige o ice skating(deslize dos trackers no chão), porém pode diminuir a precisão de certos padrões de movimento.

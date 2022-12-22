@@ -180,8 +180,14 @@ settings-general-tracker_mechanics-filtering-type-smoothing-description = Fluidi
 settings-general-tracker_mechanics-filtering-type-prediction-label = Prédiction
 settings-general-tracker_mechanics-filtering-type-prediction-description = Réduit la latence et rend les mouvements plus vifs, mais moins fluides.
 settings-general-tracker_mechanics-filtering-amount-label = Intensité du filtrage
+settings-general-tracker_mechanics-drift_compensation-title = Compensation de la dérive
+settings-general-tracker_mechanics-drift_compensation-description-p0 = Compense la dérive des gyroscopes en appliquant une rotation inverse.
+settings-general-tracker_mechanics-drift_compensation-description-p1 = Modifier la force de la compensation et le nombre de réinitialisations prises en compte.
+settings-general-tracker_mechanics-drift_compensation-enabled-label = Compensation de la dérive
+settings-general-tracker_mechanics-drift_compensation-amount-label = Force de la compensation
+settings-general-tracker_mechanics-drift_compensation-max_resets-label = Nombre de réinitialisations prises en compte
 
-## FK settings
+## Tracking settings
 settings-general-fk_settings-title = Paramètres de la capture
 settings-general-fk_settings-leg_tweak-title = Ajustement des jambes
 settings-general-fk_settings-leg_tweak-description = Le limitage au sol empêche vos pieds de traverser le sol, mais peut causer des problèmes lorsque vous êtes à genoux. La correction du glissement réduit le glissement, mais peut réduire la précision de certains mouvements.

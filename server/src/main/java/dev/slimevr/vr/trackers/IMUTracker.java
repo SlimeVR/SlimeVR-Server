@@ -61,7 +61,7 @@ public class IMUTracker
 	protected QuaternionMovingAverage movingAverage;
 	protected boolean compensateDrift = false;
 	protected float driftAmount;
-	protected static long DRIFT_COOLDOWN_MS = 15000;
+	protected static long DRIFT_COOLDOWN_MS = 150;
 	protected final Quaternion averagedDriftQuat = new Quaternion();
 	protected CircularArrayList<Quaternion> driftQuats;
 	protected CircularArrayList<Long> driftTimes;
@@ -171,7 +171,7 @@ public class IMUTracker
 	public void setDriftCompensationSettings(boolean enabled, float amount, int maxResets) {
 		compensateDrift = enabled;
 		driftAmount = amount;
-		if (maxResets != driftQuats.capacity()) {
+		if (driftQuats == null || maxResets != driftQuats.capacity()) {
 			driftQuats = new CircularArrayList<>(maxResets);
 			driftTimes = new CircularArrayList<>(maxResets);
 		}
@@ -423,49 +423,60 @@ public class IMUTracker
 	synchronized public void calculateDrift(Quaternion beforeResetQuat, Quaternion afterResetQuat) {
 		// TODO Only use most recent reset within a time period
 		// TODO Increase averaging weight of recent Quaternions (exponential?)
+		// TODO reset drift when spamming reset
 
-		if (driftSince > 0 && System.currentTimeMillis() - timeAtLastReset > DRIFT_COOLDOWN_MS) {
-			// Check and remove from lists to keep them under the reset limit
-			if (driftQuats.size() == driftQuats.capacity()) {
-				driftQuats.removeLast();
-				driftTimes.removeLast();
+		if (compensateDrift) {
+			if (
+				driftSince > 0
+					&& System.currentTimeMillis() - timeAtLastReset > DRIFT_COOLDOWN_MS
+			) {
+				// Check and remove from lists to keep them under the reset
+				// limit
+				if (driftQuats.size() == driftQuats.capacity()) {
+					driftQuats.removeLast();
+					driftTimes.removeLast();
+				}
+
+				// Add new drift quaternion
+				driftQuats
+					.add(
+						new Quaternion()
+							.fromAngles(
+								0f,
+								beforeResetQuat.mult(afterResetQuat.inverse()).getYaw(),
+								0f
+							)
+							.inverseLocal()
+					);
+
+				// Set how much time it has been since last drift reset
+				long driftTime;
+				if (timeAtLastReset > 0)
+					driftTime = System.currentTimeMillis() - timeAtLastReset;
+				else
+					driftTime = System.currentTimeMillis() - driftSince;
+
+				// Add to total drift time
+				driftTimes.add(driftTime);
+				totalDriftTime = 0;
+				for (Long time : driftTimes) {
+					totalDriftTime += time;
+				}
+
+				// Calculate drift Quaternions' weights
+				driftWeights.clear();
+				for (Long time : driftTimes) {
+					driftWeights.add(((float) time) / ((float) totalDriftTime));
+				}
+
+				// Set final averaged drift Quaternion
+				averagedDriftQuat.fromAveragedQuaternions(driftQuats, driftWeights);
+
+				timeAtLastReset = System.currentTimeMillis();
 			}
 
-			// Add new drift quaternion
-			driftQuats
-				.add(
-					new Quaternion()
-						.fromAngles(0f, beforeResetQuat.mult(afterResetQuat.inverse()).getYaw(), 0f)
-						.inverseLocal()
-				);
-
-			// Set how much time it has been since last drift reset
-			long driftTime;
-			if (timeAtLastReset > 0)
-				driftTime = System.currentTimeMillis() - timeAtLastReset;
-			else
-				driftTime = System.currentTimeMillis() - driftSince;
-
-			// Add to total drift time
-			driftTimes.add(driftTime);
-			totalDriftTime = 0;
-			for (Long time : driftTimes) {
-				totalDriftTime += time;
-			}
-
-			// Calculate drift Quaternions' weights
-			driftWeights.clear();
-			for (Long time : driftTimes) {
-				driftWeights.add(((float) time) / ((float) totalDriftTime));
-			}
-
-			// Set final averaged drift Quaternion
-			averagedDriftQuat.fromAveragedQuaternions(driftQuats, driftWeights);
-
-			timeAtLastReset = System.currentTimeMillis();
+			driftSince = System.currentTimeMillis();
 		}
-
-		driftSince = System.currentTimeMillis();
 	}
 
 	/**
