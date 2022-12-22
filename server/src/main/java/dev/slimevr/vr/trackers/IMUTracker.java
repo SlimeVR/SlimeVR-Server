@@ -61,15 +61,15 @@ public class IMUTracker
 	protected QuaternionMovingAverage movingAverage;
 	protected boolean compensateDrift = false;
 	protected float driftAmount;
-	protected final static Quaternion rotationSinceReset = new Quaternion();
 	protected static long DRIFT_COOLDOWN_MS = 30000;
 	protected final Quaternion averagedDriftQuat = new Quaternion();
-	protected CircularArrayList<Quaternion> driftQuats;
-	protected CircularArrayList<Long> driftTimes;
-	protected FastList<Float> driftWeights = new FastList<>();
-	protected long totalDriftTime;
-	protected long driftSince;
-	protected long timeAtLastReset;
+	private final FastList<Float> driftWeights = new FastList<>();
+	private final static Quaternion rotationSinceReset = new Quaternion();
+	private CircularArrayList<Quaternion> driftQuats;
+	private CircularArrayList<Long> driftTimes;
+	private long totalDriftTime;
+	private long driftSince;
+	private long timeAtLastReset;
 
 	public IMUTracker(
 		UDPDevice device,
@@ -533,7 +533,7 @@ public class IMUTracker
 
 				// Set final averaged drift Quaternion
 				averagedDriftQuat.fromAveragedQuaternions(driftQuats, driftWeights);
-			} else if (driftSince == 0) {
+			} else {
 				timeAtLastReset = System.currentTimeMillis();
 			}
 

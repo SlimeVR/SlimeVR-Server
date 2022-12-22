@@ -11,10 +11,10 @@ public class DriftCompensationConfig {
 	private boolean enabled = false;
 
 	// Amount of drift compensation applied
-	private float amount = 0.7f;
+	private float amount = 0.8f;
 
 	// Max resets for the calculated average drift
-	private int maxResets = 5;
+	private int maxResets = 6;
 
 	public DriftCompensationConfig() {
 	}
