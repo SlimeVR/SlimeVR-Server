@@ -167,17 +167,17 @@ settings-general-steamvr-trackers-hands = Ręce
 
 ## Tracker mechanics
 settings-general-tracker_mechanics-title = Tracker mechanics
-settings-general-tracker_mechanics-subtitle = Filtrowanie
-settings-general-tracker_mechanics-description-p0 = Wybierz Filtry dla twoich trackerów.
-settings-general-tracker_mechanics-description-p1 = Przewidywanie przewiduje ruchy a Wygładzanie stara się wygładzić ruchy.
-settings-general-tracker_mechanics-filtering_type-title = Filtry
-settings-general-tracker_mechanics-filtering_type-none-label = Brak Filtrów
-settings-general-tracker_mechanics-filtering_type-none-description = Używa rotacji takimi jakimi są.
-settings-general-tracker_mechanics-filtering_type-smoothing-label = Wygładzanie
-settings-general-tracker_mechanics-filtering_type-smoothing-description = Wygładza ruchy lecz dodaje trochę opóźnienia.
-settings-general-tracker_mechanics-filtering_type-prediction-label = Przewidywanie
-settings-general-tracker_mechanics-filtering_type-prediction-description = Zmniejsza opóźnienie i robi ruchy trochę ostrzejszymi, ale może dodać trochę drgań.
-settings-general-tracker_mechanics-amount-label = Ilość
+settings-general-tracker_mechanics-filtering-title = Filtrowanie
+settings-general-tracker_mechanics-filtering-description-p0 = Wybierz Filtry dla twoich trackerów.
+settings-general-tracker_mechanics-filtering-description-p1 = Przewidywanie przewiduje ruchy a Wygładzanie stara się wygładzić ruchy.
+settings-general-tracker_mechanics-filtering-type-title = Filtry
+settings-general-tracker_mechanics-filtering-type-none-label = Brak Filtrów
+settings-general-tracker_mechanics-filtering-type-none-description = Używa rotacji takimi jakimi są.
+settings-general-tracker_mechanics-filtering-type-smoothing-label = Wygładzanie
+settings-general-tracker_mechanics-filtering-type-smoothing-description = Wygładza ruchy lecz dodaje trochę opóźnienia.
+settings-general-tracker_mechanics-filtering-type-prediction-label = Przewidywanie
+settings-general-tracker_mechanics-filtering-type-prediction-description = Zmniejsza opóźnienie i robi ruchy trochę ostrzejszymi, ale może dodać trochę drgań.
+settings-general-tracker_mechanics-filtering-amount-label = Ilość
 
 ## FK settings
 settings-general-fk_settings-title = FK settings

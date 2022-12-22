@@ -166,17 +166,17 @@ settings-general-steamvr-trackers-elbows = 肘
 
 ## Tracker mechanics
 settings-general-tracker_mechanics-title = トラッカーメカニズム
-settings-general-tracker_mechanics-subtitle = フィルター機能
-settings-general-tracker_mechanics-description-p0 = トラッカーのフィルタリングの種類を選択します。
-settings-general-tracker_mechanics-description-p1 = Predictionは動きを予測し、Smoothingは動きを滑らかにする。
-settings-general-tracker_mechanics-filtering_type-title = フィルタータイプ
-settings-general-tracker_mechanics-filtering_type-none-label = No filtering
-settings-general-tracker_mechanics-filtering_type-none-description = トラッカーの値をそのまま使用します。フィルタリングは行いません。
-settings-general-tracker_mechanics-filtering_type-smoothing-label = Smoothing
-settings-general-tracker_mechanics-filtering_type-smoothing-description = 動きを滑らかにしますが、若干の遅れが発生します
-settings-general-tracker_mechanics-filtering_type-prediction-label = Prediction
-settings-general-tracker_mechanics-filtering_type-prediction-description = レイテンシーを減らし、動きをよりキビキビさせますが、ジッターが増加する場合があります。
-settings-general-tracker_mechanics-amount-label = 数値
+settings-general-tracker_mechanics-filtering-title = フィルター機能
+settings-general-tracker_mechanics-filtering-description-p0 = トラッカーのフィルタリングの種類を選択します。
+settings-general-tracker_mechanics-filtering-description-p1 = Predictionは動きを予測し、Smoothingは動きを滑らかにする。
+settings-general-tracker_mechanics-filtering-type-title = フィルタータイプ
+settings-general-tracker_mechanics-filtering-type-none-label = No filtering
+settings-general-tracker_mechanics-filtering-type-none-description = トラッカーの値をそのまま使用します。フィルタリングは行いません。
+settings-general-tracker_mechanics-filtering-type-smoothing-label = Smoothing
+settings-general-tracker_mechanics-filtering-type-smoothing-description = 動きを滑らかにしますが、若干の遅れが発生します
+settings-general-tracker_mechanics-filtering-type-prediction-label = Prediction
+settings-general-tracker_mechanics-filtering-type-prediction-description = レイテンシーを減らし、動きをよりキビキビさせますが、ジッターが増加する場合があります。
+settings-general-tracker_mechanics-filtering-amount-label = 数値
 
 ## FK settings
 settings-general-fk_settings-title = FK設定

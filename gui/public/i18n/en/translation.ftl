@@ -169,17 +169,17 @@ settings-general-steamvr-trackers-hands = Hands
 
 ## Tracker mechanics
 settings-general-tracker_mechanics-title = Tracker mechanics
-settings-general-tracker_mechanics-subtitle = Filtering
-settings-general-tracker_mechanics-description-p0 = Choose the filtering type for your trackers.
-settings-general-tracker_mechanics-description-p1 = Prediction predicts movement while smoothing smoothens movement.
-settings-general-tracker_mechanics-filtering_type-title = Filtering type
-settings-general-tracker_mechanics-filtering_type-none-label = No filtering
-settings-general-tracker_mechanics-filtering_type-none-description = Use rotations as is. Will not do any filtering.
-settings-general-tracker_mechanics-filtering_type-smoothing-label = Smoothing
-settings-general-tracker_mechanics-filtering_type-smoothing-description = Smooths movements but adds some latency.
-settings-general-tracker_mechanics-filtering_type-prediction-label = Prediction
-settings-general-tracker_mechanics-filtering_type-prediction-description = Reduces latency and makes movements more snappy, but may increase jitter.
-settings-general-tracker_mechanics-amount-label = Amount
+settings-general-tracker_mechanics-filtering-title = Filtering
+settings-general-tracker_mechanics-filtering-description-p0 = Choose the filtering type for your trackers.
+settings-general-tracker_mechanics-filtering-description-p1 = Prediction predicts movement while smoothing smoothens movement.
+settings-general-tracker_mechanics-filtering-type-title = Filtering type
+settings-general-tracker_mechanics-filtering-type-none-label = No filtering
+settings-general-tracker_mechanics-filtering-type-none-description = Use rotations as is. Will not do any filtering.
+settings-general-tracker_mechanics-filtering-type-smoothing-label = Smoothing
+settings-general-tracker_mechanics-filtering-type-smoothing-description = Smooths movements but adds some latency.
+settings-general-tracker_mechanics-filtering-type-prediction-label = Prediction
+settings-general-tracker_mechanics-filtering-type-prediction-description = Reduces latency and makes movements more snappy, but may increase jitter.
+settings-general-tracker_mechanics-filtering-amount-label = Amount
 
 ## FK settings
 settings-general-fk_settings-title = Tracking settings

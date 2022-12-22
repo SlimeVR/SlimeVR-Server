@@ -166,17 +166,17 @@ settings-general-steamvr-trackers-elbows = Khuỷu tay
 
 ## Tracker mechanics
 settings-general-tracker_mechanics-title = Cơ khí tracker
-settings-general-tracker_mechanics-subtitle = Lọc rung
-settings-general-tracker_mechanics-description-p0 = Chọn kiểu lọc rung cho tracker.
-settings-general-tracker_mechanics-description-p1 = Dự đoán đoán cử động trong khi lọc rung cử động.
-settings-general-tracker_mechanics-filtering_type-title = Kiểu lọc
-settings-general-tracker_mechanics-filtering_type-none-label = Không lọc
-settings-general-tracker_mechanics-filtering_type-none-description = Để đo chiều chuyển y nguyên. Không sử dụlọclọc.
-settings-general-tracker_mechanics-filtering_type-smoothing-label = Làm mượt
-settings-general-tracker_mechanics-filtering_type-smoothing-description = Lọc cử động mượt nhưng tạo ít chậm rễ.
-settings-general-tracker_mechanics-filtering_type-prediction-label = Dự đoán
-settings-general-tracker_mechanics-filtering_type-prediction-description = Giảm chậm trê và để cử động gọn hơn, nhưng có thể tăng độ rung.
-settings-general-tracker_mechanics-amount-label = Số luọng
+settings-general-tracker_mechanics-filtering-title = Lọc rung
+settings-general-tracker_mechanics-filtering-description-p0 = Chọn kiểu lọc rung cho tracker.
+settings-general-tracker_mechanics-filtering-description-p1 = Dự đoán đoán cử động trong khi lọc rung cử động.
+settings-general-tracker_mechanics-filtering-type-title = Kiểu lọc
+settings-general-tracker_mechanics-filtering-type-none-label = Không lọc
+settings-general-tracker_mechanics-filtering-type-none-description = Để đo chiều chuyển y nguyên. Không sử dụlọclọc.
+settings-general-tracker_mechanics-filtering-type-smoothing-label = Làm mượt
+settings-general-tracker_mechanics-filtering-type-smoothing-description = Lọc cử động mượt nhưng tạo ít chậm rễ.
+settings-general-tracker_mechanics-filtering-type-prediction-label = Dự đoán
+settings-general-tracker_mechanics-filtering-type-prediction-description = Giảm chậm trê và để cử động gọn hơn, nhưng có thể tăng độ rung.
+settings-general-tracker_mechanics-filtering-amount-label = Số luọng
 
 ## FK settings
 settings-general-fk_settings-title = Cài đặt FK

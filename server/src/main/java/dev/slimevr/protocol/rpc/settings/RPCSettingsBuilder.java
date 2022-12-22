@@ -1,10 +1,7 @@
 package dev.slimevr.protocol.rpc.settings;
 
 import com.google.flatbuffers.FlatBufferBuilder;
-import dev.slimevr.config.FiltersConfig;
-import dev.slimevr.config.LegTweaksConfig;
-import dev.slimevr.config.OSCConfig;
-import dev.slimevr.config.TapDetectionConfig;
+import dev.slimevr.config.*;
 import dev.slimevr.filtering.TrackerFilters;
 import dev.slimevr.platform.SteamVRBridge;
 import dev.slimevr.vr.processor.skeleton.SkeletonConfig;
@@ -86,6 +83,19 @@ public class RPCSettingsBuilder {
 				fbb,
 				TrackerFilters.getByConfigkey(filtersConfig.getType()).id,
 				filtersConfig.getAmount()
+			);
+	}
+
+	public static int createDriftCompensationSettings(
+		FlatBufferBuilder fbb,
+		DriftCompensationConfig driftCompensationConfig
+	) {
+		return DriftCompensationSettings
+			.createDriftCompensationSettings(
+				fbb,
+				driftCompensationConfig.getEnabled(),
+				driftCompensationConfig.getAmount(),
+				driftCompensationConfig.getMaxResets()
 			);
 	}
 

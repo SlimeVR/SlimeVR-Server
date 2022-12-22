@@ -168,17 +168,17 @@ settings-general-steamvr-trackers-elbows = Elbows
 
 ## Tracker mechanics
 settings-general-tracker_mechanics-title = 트래커 역학
-settings-general-tracker_mechanics-subtitle = 필터링
-settings-general-tracker_mechanics-description-p0 = 트래커의 필터링 유형을 선택하세요.
-settings-general-tracker_mechanics-description-p1 = Prediction은 움직임을 예측하고 Smoothing은 움직임을 부드럽게 해요.
-settings-general-tracker_mechanics-filtering_type-title = 필터링 타입
-settings-general-tracker_mechanics-filtering_type-none-label = 필터링 없음
-settings-general-tracker_mechanics-filtering_type-none-description = 어떠한 필터링도 사용하지 않아요. 있는 그대로의 회전 값을 사용해요.
-settings-general-tracker_mechanics-filtering_type-smoothing-label = Smoothing
-settings-general-tracker_mechanics-filtering_type-smoothing-description = 움직임을 부드럽게 하지만 약간의 대기 시간이 추가돼요.
-settings-general-tracker_mechanics-filtering_type-prediction-label = Prediction
-settings-general-tracker_mechanics-filtering_type-prediction-description = 대기 시간이 줄어들고 움직임이 더 빨라지지만 지터가 증가할 수 있어요.
-settings-general-tracker_mechanics-amount-label = 강도
+settings-general-tracker_mechanics-filtering-title = 필터링
+settings-general-tracker_mechanics-filtering-description-p0 = 트래커의 필터링 유형을 선택하세요.
+settings-general-tracker_mechanics-filtering-description-p1 = Prediction은 움직임을 예측하고 Smoothing은 움직임을 부드럽게 해요.
+settings-general-tracker_mechanics-filtering-type-title = 필터링 타입
+settings-general-tracker_mechanics-filtering-type-none-label = 필터링 없음
+settings-general-tracker_mechanics-filtering-type-none-description = 어떠한 필터링도 사용하지 않아요. 있는 그대로의 회전 값을 사용해요.
+settings-general-tracker_mechanics-filtering-type-smoothing-label = Smoothing
+settings-general-tracker_mechanics-filtering-type-smoothing-description = 움직임을 부드럽게 하지만 약간의 대기 시간이 추가돼요.
+settings-general-tracker_mechanics-filtering-type-prediction-label = Prediction
+settings-general-tracker_mechanics-filtering-type-prediction-description = 대기 시간이 줄어들고 움직임이 더 빨라지지만 지터가 증가할 수 있어요.
+settings-general-tracker_mechanics-filtering-amount-label = 강도
 
 ## FK settings
 settings-general-fk_settings-title = FK 설정

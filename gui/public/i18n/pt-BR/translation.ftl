@@ -169,17 +169,17 @@ settings-general-steamvr-trackers-hands = Mãos
 
 ## Tracker mechanics
 settings-general-tracker_mechanics-title = Mecânicas do Tracker
-settings-general-tracker_mechanics-subtitle = Filtros
-settings-general-tracker_mechanics-description-p0 = Escolha o tipo de filtro para seus trackers.
-settings-general-tracker_mechanics-description-p1 = Predição prediz movimentação enquanto suavização suaviza o movimento.
-settings-general-tracker_mechanics-filtering_type-title = Tipo de filtro
-settings-general-tracker_mechanics-filtering_type-none-label = Sem filtro
-settings-general-tracker_mechanics-filtering_type-none-description = Utiliza as rotações como registradas. Sem qualquer tipo de filtro.
-settings-general-tracker_mechanics-filtering_type-smoothing-label = Suavização
-settings-general-tracker_mechanics-filtering_type-smoothing-description = Suaviza o movimento porém introduz um pouco de latência.
-settings-general-tracker_mechanics-filtering_type-prediction-label = Predição
-settings-general-tracker_mechanics-filtering_type-prediction-description = Reduz latência e torna os movimentos mais responsivos, porém aumenta tremulação (Jitter).
-settings-general-tracker_mechanics-amount-label = Quantidade
+settings-general-tracker_mechanics-filtering-title = Filtros
+settings-general-tracker_mechanics-filtering-description-p0 = Escolha o tipo de filtro para seus trackers.
+settings-general-tracker_mechanics-filtering-description-p1 = Predição prediz movimentação enquanto suavização suaviza o movimento.
+settings-general-tracker_mechanics-filtering-type-title = Tipo de filtro
+settings-general-tracker_mechanics-filtering-type-none-label = Sem filtro
+settings-general-tracker_mechanics-filtering-type-none-description = Utiliza as rotações como registradas. Sem qualquer tipo de filtro.
+settings-general-tracker_mechanics-filtering-type-smoothing-label = Suavização
+settings-general-tracker_mechanics-filtering-type-smoothing-description = Suaviza o movimento porém introduz um pouco de latência.
+settings-general-tracker_mechanics-filtering-type-prediction-label = Predição
+settings-general-tracker_mechanics-filtering-type-prediction-description = Reduz latência e torna os movimentos mais responsivos, porém aumenta tremulação (Jitter).
+settings-general-tracker_mechanics-filtering-amount-label = Quantidade
 
 ## FK settings
 settings-general-fk_settings-title = Opções de FK

@@ -169,17 +169,17 @@ settings-general-steamvr-trackers-hands = 手部
 
 ## Tracker mechanics
 settings-general-tracker_mechanics-title = 追踪器设置
-settings-general-tracker_mechanics-subtitle = 滤波
-settings-general-tracker_mechanics-description-p0 = 选择追踪器的滤波类型。
-settings-general-tracker_mechanics-description-p1 = 预测型将会对你的运动加以预测，而平滑型将会让你的运动更加平滑。
-settings-general-tracker_mechanics-filtering_type-title = 滤波类型
-settings-general-tracker_mechanics-filtering_type-none-label = 无滤波
-settings-general-tracker_mechanics-filtering_type-none-description = 使用原始数据，不会进行任何过滤。
-settings-general-tracker_mechanics-filtering_type-smoothing-label = 平滑型
-settings-general-tracker_mechanics-filtering_type-smoothing-description = 让运动更加平滑，但会增加一些延迟。
-settings-general-tracker_mechanics-filtering_type-prediction-label = 预测型
-settings-general-tracker_mechanics-filtering_type-prediction-description = 减少延迟并使移动更敏捷，但可能会增加一些抖动。
-settings-general-tracker_mechanics-amount-label = 滤波强度
+settings-general-tracker_mechanics-filtering-title = 滤波
+settings-general-tracker_mechanics-filtering-description-p0 = 选择追踪器的滤波类型。
+settings-general-tracker_mechanics-filtering-description-p1 = 预测型将会对你的运动加以预测，而平滑型将会让你的运动更加平滑。
+settings-general-tracker_mechanics-filtering-type-title = 滤波类型
+settings-general-tracker_mechanics-filtering-type-none-label = 无滤波
+settings-general-tracker_mechanics-filtering-type-none-description = 使用原始数据，不会进行任何过滤。
+settings-general-tracker_mechanics-filtering-type-smoothing-label = 平滑型
+settings-general-tracker_mechanics-filtering-type-smoothing-description = 让运动更加平滑，但会增加一些延迟。
+settings-general-tracker_mechanics-filtering-type-prediction-label = 预测型
+settings-general-tracker_mechanics-filtering-type-prediction-description = 减少延迟并使移动更敏捷，但可能会增加一些抖动。
+settings-general-tracker_mechanics-filtering-amount-label = 滤波强度
 
 ## FK settings
 settings-general-fk_settings-title = FK 设置

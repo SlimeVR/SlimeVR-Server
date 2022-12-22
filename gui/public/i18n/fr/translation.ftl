@@ -169,17 +169,17 @@ settings-general-steamvr-trackers-hands = Mains
 
 ## Tracker mechanics
 settings-general-tracker_mechanics-title = Paramètres des capteurs
-settings-general-tracker_mechanics-subtitle = Filtrage
-settings-general-tracker_mechanics-description-p0 = Choisissez le type de filtrage pour vos capteurs.
-settings-general-tracker_mechanics-description-p1 = La prédiction prédit les mouvements tandis que la fluidification rend les mouvements plus fluides.
-settings-general-tracker_mechanics-filtering_type-title = Type de filtrage
-settings-general-tracker_mechanics-filtering_type-none-label = Pas de filtrage
-settings-general-tracker_mechanics-filtering_type-none-description = Utilisez les rotations telles quelles.
-settings-general-tracker_mechanics-filtering_type-smoothing-label = Fluidification
-settings-general-tracker_mechanics-filtering_type-smoothing-description = Fluidifie les mouvements mais ajoute un peu de latence.
-settings-general-tracker_mechanics-filtering_type-prediction-label = Prédiction
-settings-general-tracker_mechanics-filtering_type-prediction-description = Réduit la latence et rend les mouvements plus vifs, mais moins fluides.
-settings-general-tracker_mechanics-amount-label = Intensité du filtrage
+settings-general-tracker_mechanics-filtering-title = Filtrage
+settings-general-tracker_mechanics-filtering-description-p0 = Choisissez le type de filtrage pour vos capteurs.
+settings-general-tracker_mechanics-filtering-description-p1 = La prédiction prédit les mouvements tandis que la fluidification rend les mouvements plus fluides.
+settings-general-tracker_mechanics-filtering-type-title = Type de filtrage
+settings-general-tracker_mechanics-filtering-type-none-label = Pas de filtrage
+settings-general-tracker_mechanics-filtering-type-none-description = Utilisez les rotations telles quelles.
+settings-general-tracker_mechanics-filtering-type-smoothing-label = Fluidification
+settings-general-tracker_mechanics-filtering-type-smoothing-description = Fluidifie les mouvements mais ajoute un peu de latence.
+settings-general-tracker_mechanics-filtering-type-prediction-label = Prédiction
+settings-general-tracker_mechanics-filtering-type-prediction-description = Réduit la latence et rend les mouvements plus vifs, mais moins fluides.
+settings-general-tracker_mechanics-filtering-amount-label = Intensité du filtrage
 
 ## FK settings
 settings-general-fk_settings-title = Paramètres de la capture

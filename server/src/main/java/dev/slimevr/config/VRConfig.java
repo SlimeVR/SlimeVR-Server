@@ -24,7 +24,7 @@ public class VRConfig {
 
 	private final FiltersConfig filters = new FiltersConfig();
 
-	private final DriftConfig drift = new DriftConfig();
+	private final DriftCompensationConfig driftCompensation = new DriftCompensationConfig();
 
 	private final OSCConfig oscRouter = new OSCConfig();
 
@@ -89,8 +89,8 @@ public class VRConfig {
 		return filters;
 	}
 
-	public DriftConfig getDrift() {
-		return drift;
+	public DriftCompensationConfig getDriftCompensation() {
+		return driftCompensation;
 	}
 
 	public OSCConfig getOscRouter() {

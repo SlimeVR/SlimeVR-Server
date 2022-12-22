@@ -92,10 +92,10 @@ public class IMUTracker
 				vrserver.getConfigManager().getVrConfig().getFilters().enumGetType(),
 				vrserver.getConfigManager().getVrConfig().getFilters().getAmount()
 			);
-			setDriftSettings(
-				vrserver.getConfigManager().getVrConfig().getDrift().getEnabled(),
-				vrserver.getConfigManager().getVrConfig().getDrift().getAmount(),
-				vrserver.getConfigManager().getVrConfig().getDrift().getMaxResets()
+			setDriftCompensationSettings(
+				vrserver.getConfigManager().getVrConfig().getDriftCompensation().getEnabled(),
+				vrserver.getConfigManager().getVrConfig().getDriftCompensation().getAmount(),
+				vrserver.getConfigManager().getVrConfig().getDriftCompensation().getMaxResets()
 			);
 		}
 	}
@@ -168,11 +168,13 @@ public class IMUTracker
 		}
 	}
 
-	public void setDriftSettings(boolean enabled, float amount, int maxResets) {
+	public void setDriftCompensationSettings(boolean enabled, float amount, int maxResets) {
 		compensateDrift = enabled;
 		driftAmount = amount;
-		driftQuats = new CircularArrayList<>(maxResets);
-		driftTimes = new CircularArrayList<>(maxResets);
+		if (maxResets != driftQuats.capacity()) {
+			driftQuats = new CircularArrayList<>(maxResets);
+			driftTimes = new CircularArrayList<>(maxResets);
+		}
 	}
 
 	@Override

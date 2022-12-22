@@ -14,6 +14,7 @@ import {
   SettingsResponseT,
   SteamVRTrackersSettingT,
   TapDetectionSettingsT,
+  DriftCompensationSettingsT,
 } from 'solarxr-protocol';
 import { useConfig } from '../../../hooks/config';
 import { useWebsocketAPI } from '../../../hooks/websocket-api';
@@ -39,6 +40,11 @@ interface SettingsForm {
   filtering: {
     type: number;
     amount: number;
+  };
+  driftCompensation: {
+    enabled: boolean;
+    amount: number;
+    maxResets: number;
   };
   toggles: {
     extendedSpine: boolean;
@@ -86,6 +92,11 @@ const defaultValues = {
     skatingCorrection: false,
   },
   filtering: { amount: 0.1, type: FilteringType.NONE },
+  driftCompensation: {
+    enabled: false,
+    amount: 0.1,
+    maxResets: 1,
+  },
   tapDetection: {
     tapMountingResetEnabled: false,
     tapQuickResetEnabled: false,
@@ -162,6 +173,12 @@ export function GeneralSettings() {
     filtering.amount = values.filtering.amount;
     settings.filtering = filtering;
 
+    const driftCompensation = new DriftCompensationSettingsT();
+    driftCompensation.enabled = values.driftCompensation.enabled;
+    driftCompensation.amount = values.driftCompensation.amount;
+    driftCompensation.maxResets = values.driftCompensation.maxResets;
+    settings.driftCompensation = driftCompensation;
+
     sendRPCPacket(RpcMessage.ChangeSettingsRequest, settings);
 
     setConfig({
@@ -189,6 +206,10 @@ export function GeneralSettings() {
 
     if (settings.filtering) {
       formData.filtering = settings.filtering;
+    }
+
+    if (settings.driftCompensation) {
+      formData.driftCompensation = settings.driftCompensation;
     }
 
     if (settings.steamVrTrackers) {
@@ -331,28 +352,28 @@ export function GeneralSettings() {
             {t('settings-general-tracker_mechanics-title')}
           </Typography>
           <Typography bold>
-            {t('settings-general-tracker_mechanics-subtitle')}
+            {t('settings-general-tracker_mechanics-filtering-title')}
           </Typography>
           <div className="flex flex-col pt-2 pb-4">
             <Typography color="secondary">
-              {t('settings-general-tracker_mechanics-description-p0')}
+              {t('settings-general-tracker_mechanics-filtering-description-p0')}
             </Typography>
             <Typography color="secondary">
-              {t('settings-general-tracker_mechanics-description-p1')}
+              {t('settings-general-tracker_mechanics-filtering-description-p1')}
             </Typography>
           </div>
           <Typography>
-            {t('settings-general-tracker_mechanics-filtering_type-title')}
+            {t('settings-general-tracker_mechanics-filtering-type-title')}
           </Typography>
           <div className="flex md:flex-row flex-col gap-3 pt-2">
             <Radio
               control={control}
               name="filtering.type"
               label={t(
-                'settings-general-tracker_mechanics-filtering_type-none-label'
+                'settings-general-tracker_mechanics-filtering-type-none-label'
               )}
               desciption={t(
-                'settings-general-tracker_mechanics-filtering_type-none-description'
+                'settings-general-tracker_mechanics-filtering-type-none-description'
               )}
               value={FilteringType.NONE}
             ></Radio>
@@ -360,10 +381,10 @@ export function GeneralSettings() {
               control={control}
               name="filtering.type"
               label={t(
-                'settings-general-tracker_mechanics-filtering_type-smoothing-label'
+                'settings-general-tracker_mechanics-filtering-type-smoothing-label'
               )}
               desciption={t(
-                'settings-general-tracker_mechanics-filtering_type-smoothing-description'
+                'settings-general-tracker_mechanics-filtering-type-smoothing-description'
               )}
               value={FilteringType.SMOOTHING}
             ></Radio>
@@ -371,10 +392,10 @@ export function GeneralSettings() {
               control={control}
               name="filtering.type"
               label={t(
-                'settings-general-tracker_mechanics-filtering_type-prediction-label'
+                'settings-general-tracker_mechanics-filtering-type-prediction-label'
               )}
               desciption={t(
-                'settings-general-tracker_mechanics-filtering_type-prediction-description'
+                'settings-general-tracker_mechanics-filtering-type-prediction-description'
               )}
               value={FilteringType.PREDICTION}
             ></Radio>
@@ -383,7 +404,9 @@ export function GeneralSettings() {
             <NumberSelector
               control={control}
               name="filtering.amount"
-              label={t('settings-general-tracker_mechanics-amount-label')}
+              label={t(
+                'settings-general-tracker_mechanics-filtering-amount-label'
+              )}
               valueLabelFormat={(value) => `${Math.round(value * 100)} %`}
               min={0.1}
               max={1.0}
@@ -436,7 +459,6 @@ export function GeneralSettings() {
               step={0.1}
             />
           </div>
-
           <Typography bold>
             {t('settings-general-fk_settings-arm_fk-title')}
           </Typography>

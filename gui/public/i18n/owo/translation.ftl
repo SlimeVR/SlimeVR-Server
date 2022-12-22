@@ -167,17 +167,17 @@ settings-general-steamvr-trackers-elbows = ewbows~
 
 ## Tracker mechanics
 settings-general-tracker_mechanics-title = twayckaw mechanics~
-settings-general-tracker_mechanics-subtitle = fiwtering~
-settings-general-tracker_mechanics-description-p0 = chooce teh fiwwtewing type fow youw twackaws.
-settings-general-tracker_mechanics-description-p1 = pwediction pwedicts movment while smowthing smowthens movment.
-settings-general-tracker_mechanics-filtering_type-title = fiwtewing type~
-settings-general-tracker_mechanics-filtering_type-none-label = no fiwwtewing~
-settings-general-tracker_mechanics-filtering_type-none-description = use wowtations as is. wiw nawt do any fiwwtewing.
-settings-general-tracker_mechanics-filtering_type-smoothing-label = smowthing
-settings-general-tracker_mechanics-filtering_type-smoothing-description = smowthes movements but adds some watency~
-settings-general-tracker_mechanics-filtering_type-prediction-label = pwediction~
-settings-general-tracker_mechanics-filtering_type-prediction-description = wowduces wowcyancy and makes wowvements mowe wowappy, but may incwease jiwitty
-settings-general-tracker_mechanics-amount-label = amownt
+settings-general-tracker_mechanics-filtering-title = fiwtering~
+settings-general-tracker_mechanics-filtering-description-p0 = chooce teh fiwwtewing type fow youw twackaws.
+settings-general-tracker_mechanics-filtering-description-p1 = pwediction pwedicts movment while smowthing smowthens movment.
+settings-general-tracker_mechanics-filtering-type-title = fiwtewing type~
+settings-general-tracker_mechanics-filtering-type-none-label = no fiwwtewing~
+settings-general-tracker_mechanics-filtering-type-none-description = use wowtations as is. wiw nawt do any fiwwtewing.
+settings-general-tracker_mechanics-filtering-type-smoothing-label = smowthing
+settings-general-tracker_mechanics-filtering-type-smoothing-description = smowthes movements but adds some watency~
+settings-general-tracker_mechanics-filtering-type-prediction-label = pwediction~
+settings-general-tracker_mechanics-filtering-type-prediction-description = wowduces wowcyancy and makes wowvements mowe wowappy, but may incwease jiwitty
+settings-general-tracker_mechanics-filtering-amount-label = amownt
 
 ## FK settings
 settings-general-fk_settings-title = fk sewttings

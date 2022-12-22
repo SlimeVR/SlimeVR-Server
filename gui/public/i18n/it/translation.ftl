@@ -169,17 +169,17 @@ settings-general-steamvr-trackers-hands = Mani
 
 ## Tracker mechanics
 settings-general-tracker_mechanics-title = Comportamento del tracker
-settings-general-tracker_mechanics-subtitle = Filtro movimenti
-settings-general-tracker_mechanics-description-p0 = Scegli la tipologia di filtraggio movimenti per il tuo tracker.
-settings-general-tracker_mechanics-description-p1 = Predizione anticipa i movimenti, mentre Attenuazione attenua movimenti eccessivi.
-settings-general-tracker_mechanics-filtering_type-title = Tipologia di filtraggio
-settings-general-tracker_mechanics-filtering_type-none-label = Non usare alcun filtraggio
-settings-general-tracker_mechanics-filtering_type-none-description = Usa le rotazioni così come sono. Non eseguirà alcun filtro.
-settings-general-tracker_mechanics-filtering_type-smoothing-label = Attenuazione
-settings-general-tracker_mechanics-filtering_type-smoothing-description = Attenua movimenti eccessivi ma aggiunge ritardo.
-settings-general-tracker_mechanics-filtering_type-prediction-label = Predizione
-settings-general-tracker_mechanics-filtering_type-prediction-description = Riduce ritardo e rende movimenti più istantanei, ma può introdurre tremolio.
-settings-general-tracker_mechanics-amount-label = Quantità
+settings-general-tracker_mechanics-filtering-title = Filtro movimenti
+settings-general-tracker_mechanics-filtering-description-p0 = Scegli la tipologia di filtraggio movimenti per il tuo tracker.
+settings-general-tracker_mechanics-filtering-description-p1 = Predizione anticipa i movimenti, mentre Attenuazione attenua movimenti eccessivi.
+settings-general-tracker_mechanics-filtering-type-title = Tipologia di filtraggio
+settings-general-tracker_mechanics-filtering-type-none-label = Non usare alcun filtraggio
+settings-general-tracker_mechanics-filtering-type-none-description = Usa le rotazioni così come sono. Non eseguirà alcun filtro.
+settings-general-tracker_mechanics-filtering-type-smoothing-label = Attenuazione
+settings-general-tracker_mechanics-filtering-type-smoothing-description = Attenua movimenti eccessivi ma aggiunge ritardo.
+settings-general-tracker_mechanics-filtering-type-prediction-label = Predizione
+settings-general-tracker_mechanics-filtering-type-prediction-description = Riduce ritardo e rende movimenti più istantanei, ma può introdurre tremolio.
+settings-general-tracker_mechanics-filtering-amount-label = Quantità
 
 ## FK settings
 settings-general-fk_settings-title = Impostazioni FK
