@@ -13,8 +13,8 @@ export const langs = [
     key: 'en',
   },
   {
-    name: '🇨🇱 Español Latinoamericano',
-    key: 'es-CL'
+    name: 'Español Latinoamericano',
+    key: 'es-419'
   },
   {
     name: '🇫🇷 Français',

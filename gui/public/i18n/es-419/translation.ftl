@@ -58,9 +58,9 @@ reset-quick = Reinicio rápido
 
 ## Serial detection stuff
 serial_detection-new_device-p0 = ¡Nuevo dispositivo serial detectado!
-serial_detection-new_device-p1 = ¡Ingresa tus credenciales de WiFi!
-serial_detection-new_device-p2 = Porfavor selecciona que quieres hacer con el
-serial_detection-open_wifi = Conectarse a WiFi
+serial_detection-new_device-p1 = ¡Ingresa tus credenciales del WiFi!
+serial_detection-new_device-p2 = Por favor selecciona que quieres hacer con el
+serial_detection-open_wifi = Conectarse al WiFi
 serial_detection-open_serial = Abrir consola serial
 serial_detection-submit = ¡Enviar!
 serial_detection-close = Cerrar
@@ -79,7 +79,7 @@ bvh-recording = Grabando...
 
 ## Overlay settings
 overlay-is_visible_label = Mostrar interfaz en SteamVR
-overlay-is_mirrored_label = Mostrar interfaz refjelada
+overlay-is_mirrored_label = Mostrar interfaz reflejada
 
 ## Tracker status
 tracker-status-none = Sin estado
@@ -93,7 +93,7 @@ tracker-status-ok = Conectado
 tracker-table-column-name = Nombre
 tracker-table-column-type = Tipo
 tracker-table-column-battery = Batería
-tracker-table-column-ping = Ping
+tracker-table-column-ping = Latencia
 tracker-table-column-rotation = Rotación X/Y/Z
 tracker-table-column-position = Posición X/Y/Z
 tracker-table-column-url = URL
@@ -129,19 +129,19 @@ tracker-part_card-unassigned = Sin asignar
 
 ## Body assignment menu
 body_assignment_menu-title = ¿Dónde quieres que esté este sensor?
-body_assignment_menu-description = Selecciona la posición donde quieres asignar este sensor. Alternativamente, puedes escoger administrar todos los sensores al mismo tiempo en vez de uno por uno.
+body_assignment_menu-description = Selecciona la posición donde quieres asignar este sensor. También puedes escoger administrar todos los sensores al mismo tiempo en vez de uno por uno.
 body_assignment_menu-show_advanced_locations = Mostrar posiciones de asignación avanzadas
 body_assignment_menu-manage_trackers = Administrar todos los sensores
 body_assignment_menu-unassign_tracker = Desasignar sensor
 
 ## Tracker assignment menu
-tracker_selection_menu-title = ¿Asignar {{bodyPart}} a qué sensor??
+tracker_selection_menu-title = ¿Asignar { $bodyPart } a qué sensor?
 tracker_selection_menu-unassigned = Sensores sin asignar
 tracker_selection_menu-assigned = Sensores asignados
 tracker_selection_menu-dont_assign = No asignar
 
 ## Mounting menu
-mounting_selection_menu-title = ¿Dónde estará ubicado el sensor?
+mounting_selection_menu-title = ¿Dónde quieres colocar el sensor?
 mounting_selection_menu-close = Cerrar
 
 ## Sidebar settings
@@ -171,23 +171,23 @@ settings-general-steamvr-trackers-hands = Manos
 settings-general-tracker_mechanics-title = Mecánicas del sensor
 settings-general-tracker_mechanics-subtitle = Filtrado
 settings-general-tracker_mechanics-description-p0 = Selecciona un tipo de filtro para tus sensores.
-settings-general-tracker_mechanics-description-p1 = Predicción predice el movimiento mientras que Suavizado suavisa el movimiento.
-settings-general-tracker_mechanics-filtering_type-title = Tipos de filtros
+settings-general-tracker_mechanics-description-p1 = Predicción predice el movimiento mientras que el suavizado suaviza el movimiento.
+settings-general-tracker_mechanics-filtering_type-title = Tipos de filtro
 settings-general-tracker_mechanics-filtering_type-none-label = Sin filtro
-settings-general-tracker_mechanics-filtering_type-none-description = Usa las rotaciones como son. No realizará ningun filtrado.
+settings-general-tracker_mechanics-filtering_type-none-description = Usa las rotaciones como son. No realizará ningún filtrado.
 settings-general-tracker_mechanics-filtering_type-smoothing-label = Suavizado
 settings-general-tracker_mechanics-filtering_type-smoothing-description = Suaviza los movimientos pero añade algo de latencia.
 settings-general-tracker_mechanics-filtering_type-prediction-label = Predicción
-settings-general-tracker_mechanics-filtering_type-prediction-description = Reduce la latencia y los movimientos serán más responsivos, pero puede incrementar la inestabilidad.
+settings-general-tracker_mechanics-filtering_type-prediction-description = Reduce la latencia y los movimientos serán más inmediatos, pero puede incrementar la inestabilidad.
 settings-general-tracker_mechanics-amount-label = Cantidad
 
 ## FK settings
 settings-general-fk_settings-title = Ajustes de sensores
 settings-general-fk_settings-leg_tweak-title = Corrección de piernas
-settings-general-fk_settings-leg_tweak-description = El traspaso de suelo puede reducir o incluso eliminar el traspasar del piso pero puede causar problemas cuando te arrodilles. Corrección de patinaje corrige el patinaje, pero puede disminuir la presición de ciertos movimientos.
+settings-general-fk_settings-leg_tweak-description = El traspaso de suelo puede reducir o incluso eliminar el traspasar del piso pero puede causar problemas cuando te arrodilles. Corrección de patinaje corrige el patinaje, pero puede disminuir la precisión de ciertos movimientos.
 settings-general-fk_settings-leg_tweak-floor_clip = Traspaso de suelo
-settings-general-fk_settings-leg_tweak-skating_correction = Corrección de patinaje
-settings-general-fk_settings-leg_tweak-skating_correction_amount = Cantiad de corrección de patinaje
+settings-general-fk_settings-leg_tweak-skating_correction = Corrección del patinaje
+settings-general-fk_settings-leg_tweak-skating_correction_amount = Cantidad de corrección del patinaje
 settings-general-fk_settings-arm_fk-title = Trackeo de brazos
 settings-general-fk_settings-arm_fk-description = Cambia cómo el movimiento de los brazos es detectado.
 settings-general-fk_settings-arm_fk-force_arms = Forzar brazos desde el HMD
@@ -202,13 +202,13 @@ settings-general-gesture_control-title = Control de gestos
 settings-general-gesture_control-subtitle = Reinicio basado en toques
 settings-general-gesture_control-description = Permite la ejecución de un reinicio al tocar un sensor. El sensor más alto en el torso es utilizado para el reinicio rápido, el sensor más alto en tu pierna izquierda es utilizado para el reinicio, y el sensor más alto en tu pierna derecha es utilizado para reiniciar la montura. Cabe destacar que los toques deben suceder dentro de 0.6 segundos para ser registrados.
 settings-general-gesture_control-taps = toques
-settings-general-gesture_control-quickResetEnabled = Activa toques para reinicio rápido
+settings-general-gesture_control-quickResetEnabled = Activar toques para reinicio rápido
 settings-general-gesture_control-quickResetDelay = Retraso de reinicio rápido
 settings-general-gesture_control-quickResetTaps = Toques para reinicio rápido
-settings-general-gesture_control-resetEnabled = Activa toques para reinicio
+settings-general-gesture_control-resetEnabled = Activar toques para reinicio
 settings-general-gesture_control-resetDelay = Retraso de reinicio
 settings-general-gesture_control-resetTaps = Toques para reinicio
-settings-general-gesture_control-mountingResetEnabled = Activa toques para reinicio de montura
+settings-general-gesture_control-mountingResetEnabled = Activar toques para reinicio de montura
 settings-general-gesture_control-mountingResetDelay = Retraso de reinicio de montura
 settings-general-gesture_control-mountingResetTaps = Toques para reinicio de montura
 
@@ -222,22 +222,22 @@ settings-general-interface-serial_detection-description = Esta opción mostrará
 settings-general-interface-serial_detection-label = Detección de dispositivo serial
 settings-general-interface-lang-title = Selecciona un lenguaje
 settings-general-interface-lang-description = Cambia el lenguaje por defecto que deseas utilizar.
-settings-general-interface-lang-placeholder = Selecciona el lenguaje a utilizar
+settings-general-interface-lang-placeholder = Selecciona el idioma a utilizar
 
 ## Serial settings
 settings-serial-title = Consola serial
 settings-serial-description-p0 = Esta es la comunicación serial actualizada en vivo.
 settings-serial-description-p1 = Puede ser util para saber si el firmware tiene problemas.
-settings-serial-connection_lost = Conexión serial perdida, Reconectando...
+settings-serial-connection_lost = Conexión serial perdida, reconectando...
 settings-serial-reboot = Reinciar
-settings-serial-factory_reset = Reestablecimiento de fábrica
-settings-serial-get_infos = Obtener informaciones
+settings-serial-factory_reset = Restauración de fábrica
+settings-serial-get_infos = Obtener información
 settings-serial-serial_select = Selecciona un puerto serial
 settings-serial-auto_dropdown_item = Auto
 
 ## OSC router settings
 settings-osc-router-title = Router OSC
-settings-osc-router-description-p0 = Reenvia mensajes OSC desde otro programa.
+settings-osc-router-description-p0 = Reenvia mensajes OSC hacia otro programa.
 settings-osc-router-description-p1 = Útil para usar otro programa OSC con VRChat por ejemplo.
 settings-osc-router-enable-title = Habilitar
 settings-osc-router-enable-description = Habilita el reenvío de mensajes.
@@ -249,15 +249,15 @@ settings-osc-router-network-port_in-label = Puerto de entrada
 settings-osc-router-network-port_in-placeholder = Puerto de entrada (por defecto: 9002)
 settings-osc-router-network-port_out-label = Puerto de salida
 settings-osc-router-network-port_out-placeholder = Puerto de salida (por defecto: 9000)
-settings-osc-router-network-address-title = Dirección de conexión
-settings-osc-router-network-address-description = Establece la direción a la cuál se enviará la datos.
-settings-osc-router-network-address-placeholder = Dirección IPV4
+settings-osc-router-network-address-title = Dirección de red
+settings-osc-router-network-address-description = Establece la direción a la cuál se enviarán la datos.
+settings-osc-router-network-address-placeholder = Dirección IPv4
 
 ## OSC VRChat settings
 settings-osc-vrchat-description-p0 = Cambiar ajustes específicos de VRChat para recibir datos del HMD y enviar
 settings-osc-vrchat-description-p1 = datos de los sensores para seguimiento de cuerpo completo (funciona en Quest nativo).
 settings-osc-vrchat-enable-title = Habilitar
-settings-osc-vrchat-enable-description = Habilita el envio y recibimiento de datos.
+settings-osc-vrchat-enable-description = Habilita el envio y recibo de datos.
 settings-osc-vrchat-enable-label = Habilitar
 settings-osc-vrchat-network-title = Puertos de conexión
 settings-osc-vrchat-network-description = Establece los puertos de entrada y salida de datos a VRChat.
@@ -265,8 +265,8 @@ settings-osc-vrchat-network-port_in-label = Puerto de entrada
 settings-osc-vrchat-network-port_in-placeholder = Puerto de entrada (por defecto: 9001)
 settings-osc-vrchat-network-port_out-label = Puerto de salida
 settings-osc-vrchat-network-port_out-placeholder = Puerto de salida (por defecto: 9000)
-settings-osc-vrchat-network-address-title = Dirección de conexión
-settings-osc-vrchat-network-address-description = Establece la direción a la cuál se enviará la datos a VRChat (revisa los ajustes de wifi de tu dispositivo).
+settings-osc-vrchat-network-address-title = Dirección de red
+settings-osc-vrchat-network-address-description = Establece la direción dondew se enviarán los datos de VRChat (revisa los ajustes de WiFi de tu dispositivo que tenga el juego).
 settings-osc-vrchat-network-address-placeholder = Dirección IP de VRChat
 settings-osc-vrchat-network-trackers-title = Sensores
 settings-osc-vrchat-network-trackers-description = Habilita el envío de sensores específicos mediante OSC.
@@ -283,19 +283,19 @@ onboarding-wip = Trabajo en progreso
 
 ## WiFi setup
 onboarding-wifi_creds-back = Volver a la introducción
-onboarding-wifi_creds-title = Ingresar credenciales de WiFi
+onboarding-wifi_creds-title = Ingresar credenciales del WiFi
 onboarding-wifi_creds-description-p0 = Los sensores utilizarán estas credenciales para conectarse inalámbricamente
-onboarding-wifi_creds-description-p1 = porfavor usa las credenciales a las cuales estás conectado actualmente
+onboarding-wifi_creds-description-p1 = por favor usa las credenciales del WiFi al cuál estás conectado actualmente
 onboarding-wifi_creds-skip = Saltar ajustes de WiFi
 onboarding-wifi_creds-submit = ¡Enviar!
 
 ## Mounting setup
 onboarding-reset_tutorial-back = Volver a la calibración de montura
 onboarding-reset_tutorial-title = Reiniciar tutorial
-onboarding-reset_tutorial-description = Esta característica no está finalizada, porfavor presiona continuar
+onboarding-reset_tutorial-description = Esta aún parte no está finalizada, por favor presione continuar
 
 ## Setup start
-onboarding-home-title = Bienvenido a Slime VR
+onboarding-home-title = Bienvenido a SlimeVR
 onboarding-home-description-p0 = ¡Acercando el seguimiento
 onboarding-home-description-p1 = de cuerpo completo a todos!
 onboarding-home-start = ¡Comencemos!
@@ -342,7 +342,7 @@ onboarding-manual_mounting-auto_mounting = Montura automática
 onboarding-manual_mounting-next = Siguiente paso
 
 ## Tracker automatic mounting setup
-onboarding-automatic_mounting-back = Volver para entrar a la RV"
+onboarding-automatic_mounting-back = Volver para entrar a la RV
 onboarding-automatic_mounting-title = Calibración de montura
 onboarding-automatic_mounting-description = Para que los sensores SlimeVR funcionen, necesitamos asignar una posición de montura a tus sensores para que se alinien con la montura física de tu sensor.
 onboarding-automatic_mounting-manual_mounting = Establecer montura manualmente
@@ -352,10 +352,10 @@ onboarding-automatic_mounting-done-title = Ubicación de monturas calibradas.
 onboarding-automatic_mounting-done-description = ¡Tu calibración de monturas está completa!
 onboarding-automatic_mounting-done-restart = Volver al inicio
 onboarding-automatic_mounting-mounting_reset-title = Reinicio de montura
-onboarding-automatic_mounting-mounting_reset-step-0 = 1. Arrodíllate en una posición de "esquiar" con tus piernas flectadas, la parte superior de tu cuerpo inclinada hacia adelante, y tus brazos flectados.
+onboarding-automatic_mounting-mounting_reset-step-0 = 1. Arrodíllate en una posición de "esquiar" con tus piernas dobladas, la parte superior de tu cuerpo inclinada hacia adelante, y tus brazos doblados.
 onboarding-automatic_mounting-mounting_reset-step-1 = 2. Presiona el botón "Reinicio de montura" y espera 3 segundos hasta que se reinicie la montura.
 onboarding-automatic_mounting-preparation-title = Preparación
-onboarding-automatic_mounting-preparation-step-0 = 1. Párate derecho con tus brazo a los costados.
+onboarding-automatic_mounting-preparation-step-0 = 1. Párate derecho con tus brazos a los costados.
 onboarding-automatic_mounting-preparation-step-1 = 2. Presiona el botón "Reiniciar" y espera 3 segundos hasta que se reinicien los sensores.
 onboarding-automatic_mounting-put_trackers_on-title = Ponte tus sensores
 onboarding-automatic_mounting-put_trackers_on-description = Para calibrar la ubicación de tus monturas, usaremos los sensores que has asignado. Ponte todos tus sensores, puedes ver cuál es cual en la figura de la derecha.
@@ -363,7 +363,7 @@ onboarding-automatic_mounting-put_trackers_on-next = Tengo puestos todos mis sen
 
 ## Tracker manual proportions setup
 onboarding-manual_proportions-back = Volver al tutorial de reinicio
-onboarding-manual_proportions-title = Proporciones de cuerpo manual
+onboarding-manual_proportions-title = Proporciones de cuerpo manuales
 onboarding-manual_proportions-precision = Ajuste con precisión
 onboarding-manual_proportions-auto = Calibración automática
 
@@ -377,7 +377,7 @@ onboarding-automatic_proportions-put_trackers_on-title = Ponte tus sensores
 onboarding-automatic_proportions-put_trackers_on-description = Para calibrar tus proporciones, usaremos los sensores que acabas de asignar. Ponte todos tus sensores, puedes ver cuál es cual en la figura de la derecha.
 onboarding-automatic_proportions-put_trackers_on-next = Tengo puestos todos mis sensores
 onboarding-automatic_proportions-preparation-title = Preparación
-onboarding-automatic_proportions-preparation-description = Coloca una silla directamente detrás de ti en tu area de juego. Prepárate para sentarte durante la configuración de autobone.
+onboarding-automatic_proportions-preparation-description = Coloca una silla directamente detrás de ti en tu area de juego. Prepárate para sentarte durante la configuración del autobone.
 onboarding-automatic_proportions-preparation-next = Estoy al frente de una silla
 onboarding-automatic_proportions-start_recording-title = Prepárate para moverte
 onboarding-automatic_proportions-start_recording-description = Ahora vamos a grabar poses y movimientos en específico. Estas serán mostradas en la siguiente ventana. ¡Prepárate para empezar cuando presiones el botón!
@@ -385,10 +385,10 @@ onboarding-automatic_proportions-start_recording-next = Empezar grabación
 onboarding-automatic_proportions-recording-title = REC
 onboarding-automatic_proportions-recording-description-p0 = Grabación en proceso...
 onboarding-automatic_proportions-recording-description-p1 = Realiza los siguientes movimientos:
-onboarding-automatic_proportions-recording-steps-0 = Flecta tus rodillas unas cuantas veces.
+onboarding-automatic_proportions-recording-steps-0 = Dobla tus rodillas unas cuantas veces.
 onboarding-automatic_proportions-recording-steps-1 = Sientate en una silla y párate.
-onboarding-automatic_proportions-recording-steps-2 = Dobla tu torso hacia la izquierda, luego inclínate hacia la derecha.
-onboarding-automatic_proportions-recording-steps-3 = Dobla tu torso hacia la derecha, luego inclínate hacia la izquierda.
+onboarding-automatic_proportions-recording-steps-2 = Gira tu torso hacia la izquierda, luego inclínate hacia la derecha.
+onboarding-automatic_proportions-recording-steps-3 = Gira tu torso hacia la derecha, luego inclínate hacia la izquierda.
 onboarding-automatic_proportions-recording-steps-4 = Menea tu cuerpo hasta que el tiempo se acabe.
 onboarding-automatic_proportions-recording-processing = Procesando el resultado
 onboarding-automatic_proportions-recording-timer = Quedan { $time } segundos
