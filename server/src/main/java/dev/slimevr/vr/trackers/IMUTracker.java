@@ -13,7 +13,6 @@ import dev.slimevr.vr.trackers.udp.TrackersUDPServer;
 import dev.slimevr.vr.trackers.udp.UDPDevice;
 import io.eiren.util.BufferedTimer;
 import io.eiren.util.collections.FastList;
-import io.eiren.util.logging.LogManager;
 
 import java.util.Optional;
 
@@ -500,8 +499,6 @@ public class IMUTracker
 								0f
 							)
 					);
-
-				LogManager.debug(String.valueOf(rotationSinceReset.getYaw()));
 
 				// Replace how much time it has been since last drift reset
 				long driftTime = System.currentTimeMillis() - driftSince;
