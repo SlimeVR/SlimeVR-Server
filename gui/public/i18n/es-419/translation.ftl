@@ -284,8 +284,8 @@ onboarding-wip = Trabajo en progreso
 ## WiFi setup
 onboarding-wifi_creds-back = Volver a la introducción
 onboarding-wifi_creds-title = Ingresar credenciales del WiFi
-onboarding-wifi_creds-description-p0 = Los sensores utilizarán estas credenciales para conectarse inalámbricamente
-onboarding-wifi_creds-description-p1 = por favor usa las credenciales del WiFi al cuál estás conectado actualmente
+onboarding-wifi_creds-description-p0 = Los sensores utilizarán estas credenciales para conectarse inalámbricamente. 
+onboarding-wifi_creds-description-p1 = Por favor usa las credenciales del WiFi al cuál estás conectado actualmente.
 onboarding-wifi_creds-skip = Saltar ajustes de WiFi
 onboarding-wifi_creds-submit = ¡Enviar!
 
