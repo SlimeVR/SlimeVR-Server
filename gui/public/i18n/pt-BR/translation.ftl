@@ -17,6 +17,7 @@ body_part-RIGHT_HAND = Mão Direita
 body_part-RIGHT_UPPER_LEG = Coxa direita
 body_part-RIGHT_LOWER_LEG = Canela direita
 body_part-RIGHT_FOOT = Pé direito
+body_part-RIGHT_CONTROLLER = Right controller
 body_part-CHEST = Peito
 body_part-WAIST = Cintura
 body_part-HIP = Quadril
@@ -27,6 +28,7 @@ body_part-LEFT_HAND = Mão esquerda
 body_part-LEFT_UPPER_LEG = Coxa esquerda
 body_part-LEFT_LOWER_LEG = Canela esquerda
 body_part-LEFT_FOOT = Pé esquerdo
+body_part-LEFT_CONTROLLER = Left controller
 
 ## Skeleton stuff
 skeleton_bone-NONE = Nada

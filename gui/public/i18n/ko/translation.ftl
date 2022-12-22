@@ -17,6 +17,7 @@ body_part-RIGHT_HAND = 오른손
 body_part-RIGHT_UPPER_LEG = 오른쪽 다리 위
 body_part-RIGHT_LOWER_LEG = 오른쪽 다리 아래
 body_part-RIGHT_FOOT = 오른발
+body_part-RIGHT_CONTROLLER = Right controller
 body_part-CHEST = 가슴
 body_part-WAIST = 허리
 body_part-HIP = 골반
@@ -27,6 +28,7 @@ body_part-LEFT_HAND = 왼손
 body_part-LEFT_UPPER_LEG = 왼쪽 다리 위
 body_part-LEFT_LOWER_LEG = 왼쪽 다리 아래
 body_part-LEFT_FOOT = 왼발
+body_part-LEFT_CONTROLLER = Left controller
 
 ## Skeleton stuff
 skeleton_bone-NONE = None
