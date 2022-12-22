@@ -174,7 +174,7 @@ settings-general-tracker_mechanics-description-p0 = Selecciona un tipo de filtro
 settings-general-tracker_mechanics-description-p1 = Predicción predice el movimiento mientras que el suavizado suaviza el movimiento.
 settings-general-tracker_mechanics-filtering_type-title = Tipos de filtro
 settings-general-tracker_mechanics-filtering_type-none-label = Sin filtro
-settings-general-tracker_mechanics-filtering_type-none-description = Usa las rotaciones como son. No realizará ningún filtrado.
+settings-general-tracker_mechanics-filtering_type-none-description = Usa las rotaciones como son. No se realizará ningún filtrado.
 settings-general-tracker_mechanics-filtering_type-smoothing-label = Suavizado
 settings-general-tracker_mechanics-filtering_type-smoothing-description = Suaviza los movimientos pero añade algo de latencia.
 settings-general-tracker_mechanics-filtering_type-prediction-label = Predicción
@@ -184,10 +184,10 @@ settings-general-tracker_mechanics-amount-label = Cantidad
 ## FK settings
 settings-general-fk_settings-title = Ajustes de sensores
 settings-general-fk_settings-leg_tweak-title = Corrección de piernas
-settings-general-fk_settings-leg_tweak-description = El traspaso de suelo puede reducir o incluso eliminar el traspasar del piso pero puede causar problemas cuando te arrodilles. Corrección de patinaje corrige el patinaje, pero puede disminuir la precisión de ciertos movimientos.
-settings-general-fk_settings-leg_tweak-floor_clip = Traspaso de suelo
+settings-general-fk_settings-leg_tweak-description = El clip del suelo puede reducir o incluso eliminar el traspaso del piso pero puede causar problemas cuando te arrodilles. Corrección del patinaje corrige el patinaje, pero puede disminuir la precisión de ciertos movimientos.
+settings-general-fk_settings-leg_tweak-floor_clip = Clip del suelo
 settings-general-fk_settings-leg_tweak-skating_correction = Corrección del patinaje
-settings-general-fk_settings-leg_tweak-skating_correction_amount = Cantidad de corrección del patinaje
+settings-general-fk_settings-leg_tweak-skating_correction_amount = Agresividad de la corrección del patinaje
 settings-general-fk_settings-arm_fk-title = Trackeo de brazos
 settings-general-fk_settings-arm_fk-description = Cambia cómo el movimiento de los brazos es detectado.
 settings-general-fk_settings-arm_fk-force_arms = Forzar brazos desde el HMD
@@ -220,8 +220,8 @@ settings-general-interface-dev_mode-label = Modo desarrollador
 settings-general-interface-serial_detection-title = Detección de dispositivo serial
 settings-general-interface-serial_detection-description = Esta opción mostrará un notificación cada vez que conectes un nuevo dispositivo serial que pueda ser un sensor. Ayuda a mejorar el proceso de configuración de un sensor.
 settings-general-interface-serial_detection-label = Detección de dispositivo serial
-settings-general-interface-lang-title = Selecciona un lenguaje
-settings-general-interface-lang-description = Cambia el lenguaje por defecto que deseas utilizar.
+settings-general-interface-lang-title = Selecciona un idioma
+settings-general-interface-lang-description = Cambia el idioma que quieras usar.
 settings-general-interface-lang-placeholder = Selecciona el idioma a utilizar
 
 ## Serial settings
@@ -237,7 +237,7 @@ settings-serial-auto_dropdown_item = Auto
 
 ## OSC router settings
 settings-osc-router-title = Router OSC
-settings-osc-router-description-p0 = Reenvia mensajes OSC hacia otro programa.
+settings-osc-router-description-p0 = Redirecciona mensajes OSC recibidos de otro programa.
 settings-osc-router-description-p1 = Útil para usar otro programa OSC con VRChat por ejemplo.
 settings-osc-router-enable-title = Habilitar
 settings-osc-router-enable-description = Habilita el reenvío de mensajes.
@@ -352,11 +352,11 @@ onboarding-automatic_mounting-done-title = Ubicación de monturas calibradas.
 onboarding-automatic_mounting-done-description = ¡Tu calibración de monturas está completa!
 onboarding-automatic_mounting-done-restart = Volver al inicio
 onboarding-automatic_mounting-mounting_reset-title = Reinicio de montura
-onboarding-automatic_mounting-mounting_reset-step-0 = 1. Arrodíllate en una posición de "esquiar" con tus piernas dobladas, la parte superior de tu cuerpo inclinada hacia adelante, y tus brazos doblados.
-onboarding-automatic_mounting-mounting_reset-step-1 = 2. Presiona el botón "Reinicio de montura" y espera 3 segundos hasta que se reinicie la montura.
+onboarding-automatic_mounting-mounting_reset-step-0 = 1. Arrodíllate en una posición de «esquiar» con tus piernas dobladas, la parte superior de tu cuerpo inclinada hacia adelante, y tus brazos doblados.
+onboarding-automatic_mounting-mounting_reset-step-1 = 2. Presiona el botón «Reinicio de montura» y espera 3 segundos hasta que se reinicie la montura.
 onboarding-automatic_mounting-preparation-title = Preparación
 onboarding-automatic_mounting-preparation-step-0 = 1. Párate derecho con tus brazos a los costados.
-onboarding-automatic_mounting-preparation-step-1 = 2. Presiona el botón "Reiniciar" y espera 3 segundos hasta que se reinicien los sensores.
+onboarding-automatic_mounting-preparation-step-1 = 2. Presiona el botón «Reiniciar» y espera 3 segundos hasta que se reinicien los sensores.
 onboarding-automatic_mounting-put_trackers_on-title = Ponte tus sensores
 onboarding-automatic_mounting-put_trackers_on-description = Para calibrar la ubicación de tus monturas, usaremos los sensores que has asignado. Ponte todos tus sensores, puedes ver cuál es cual en la figura de la derecha.
 onboarding-automatic_mounting-put_trackers_on-next = Tengo puestos todos mis sensores
