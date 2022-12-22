@@ -250,7 +250,7 @@ settings-osc-router-network-port_in-placeholder = Puerto de entrada (por defecto
 settings-osc-router-network-port_out-label = Puerto de salida
 settings-osc-router-network-port_out-placeholder = Puerto de salida (por defecto: 9000)
 settings-osc-router-network-address-title = Dirección de red
-settings-osc-router-network-address-description = Establece la direción a la cuál se enviarán la datos.
+settings-osc-router-network-address-description = Establece la direción a la cuál se enviarán los datos.
 settings-osc-router-network-address-placeholder = Dirección IPv4
 
 ## OSC VRChat settings
@@ -266,7 +266,7 @@ settings-osc-vrchat-network-port_in-placeholder = Puerto de entrada (por defecto
 settings-osc-vrchat-network-port_out-label = Puerto de salida
 settings-osc-vrchat-network-port_out-placeholder = Puerto de salida (por defecto: 9000)
 settings-osc-vrchat-network-address-title = Dirección de red
-settings-osc-vrchat-network-address-description = Establece la direción dondew se enviarán los datos de VRChat (revisa los ajustes de WiFi de tu dispositivo que tenga el juego).
+settings-osc-vrchat-network-address-description = Establece la direción donde se enviarán los datos de VRChat (revisa los ajustes de WiFi de tu dispositivo que tenga el juego).
 settings-osc-vrchat-network-address-placeholder = Dirección IP de VRChat
 settings-osc-vrchat-network-trackers-title = Sensores
 settings-osc-vrchat-network-trackers-description = Habilita el envío de sensores específicos mediante OSC.
