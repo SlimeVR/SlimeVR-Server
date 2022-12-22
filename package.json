@@ -11,11 +11,12 @@
     "tauri": "cd gui && npm run tauri",
     "build": "npm run tauri build",
     "update-solarxr": "cd solarxr-protocol && npm run build",
-    "prepare": "husky install && npm run update-solarxr"
+    "prepare": "husky install && npm run update-solarxr && patch-package"
   },
   "devDependencies": {
     "@typescript-eslint/parser": "^5.43.0",
     "husky": "^8.0.2",
+    "patch-package": "^6.5.0",
     "typescript": "^4.9.3"
   }
 }

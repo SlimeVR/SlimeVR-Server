@@ -6,7 +6,7 @@ import {
   BodyPart,
   QuatT,
   RpcMessage,
-  TrackerIdT
+  TrackerIdT,
 } from 'solarxr-protocol';
 import { FlatDeviceTracker } from '../../../../hooks/app';
 import { useOnboarding } from '../../../../hooks/onboarding';
@@ -99,27 +99,27 @@ export function TrackersAssignPage() {
             <div className="flex flex-col max-w-sm gap-3">
               {!state.alonePage && (
                 <ArrowLink to="/onboarding/wifi-creds" direction="left">
-                  {t('onboarding.assign-trackers.back')}
+                  {t('onboarding-assign_trackers-back')}
                 </ArrowLink>
               )}
               <Typography variant="main-title">
-                {t('onboarding.assign-trackers.title')}
+                {t('onboarding-assign_trackers-title')}
               </Typography>
               <Typography color="secondary">
-                {t('onboarding.assign-trackers.description')}
+                {t('onboarding-assign_trackers-description')}
               </Typography>
               <div className="flex gap-1">
                 <Typography color="secondary">
-                  {t('onboarding.assign-trackers.assigned', {
+                  {t('onboarding-assign_trackers-assigned', {
                     assigned: assignedTrackers.length,
                     trackers: trackers.length,
                   })}
                 </Typography>
               </div>
-              <TipBox>{t('tips.find-tracker')}</TipBox>
+              <TipBox>{t('tips-find_tracker')}</TipBox>
               <CheckBox
                 control={control}
-                label={t('onboarding.assign-trackers.advanced')}
+                label={t('onboarding-assign_trackers-advanced')}
                 name="advanced"
                 variant="toggle"
               ></CheckBox>
@@ -137,14 +137,14 @@ export function TrackersAssignPage() {
           <div className="flex flex-grow">
             {!state.alonePage && (
               <Button variant="secondary" to="/" onClick={skipSetup}>
-                {t('onboarding.skip')}
+                {t('onboarding-skip')}
               </Button>
             )}
           </div>
           <div className="flex gap-3">
             {!state.alonePage && (
               <Button variant="primary" to="/onboarding/enter-vr">
-                {t('onboarding.assign-trackers.next')}
+                {t('onboarding-assign_trackers-next')}
               </Button>
             )}
           </div>

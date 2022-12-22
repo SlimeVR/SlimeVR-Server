@@ -60,7 +60,7 @@ export function MountingSelectionMenu({
     >
       <div className="flex w-full h-full flex-col ">
         <Typography variant="main-title" bold>
-          {t('mounting-selection-menu.title')}
+          {t('mounting_selection_menu-title')}
         </Typography>
         <div
           className="flex w-full flex-col flex-grow items-center gap-3 justify-center"
@@ -69,19 +69,19 @@ export function MountingSelectionMenu({
         >
           <div className="grid grid-cols-2 grid-rows-2 gap-6 w-full">
             <MoutingOrientationCard
-              orientation={t('tracker.rotation.left')}
+              orientation={t('tracker-rotation-left')}
               onClick={() => onDirectionSelected(rotationToQuatMap.LEFT)}
             />
             <MoutingOrientationCard
-              orientation={t('tracker.rotation.right')}
+              orientation={t('tracker-rotation-right')}
               onClick={() => onDirectionSelected(rotationToQuatMap.RIGHT)}
             />
             <MoutingOrientationCard
-              orientation={t('tracker.rotation.front')}
+              orientation={t('tracker-rotation-front')}
               onClick={() => onDirectionSelected(rotationToQuatMap.FRONT)}
             />
             <MoutingOrientationCard
-              orientation={t('tracker.rotation.back')}
+              orientation={t('tracker-rotation-back')}
               onClick={() => onDirectionSelected(rotationToQuatMap.BACK)}
             />
           </div>
@@ -94,7 +94,7 @@ export function MountingSelectionMenu({
       >
         <div className="flex flex-col justify-end pointer-events-auto">
           <Button variant="primary" onClick={onClose}>
-            {t('mounting-selection-menu.close')}
+            {t('mounting_selection_menu-close')}
           </Button>
         </div>
       </div>

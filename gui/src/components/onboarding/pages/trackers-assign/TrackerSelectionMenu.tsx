@@ -48,8 +48,8 @@ export function TrackerSelectionMenu({
       <div className="flex w-full h-full flex-col ">
         <div className="flex w-full flex-col flex-grow items-center gap-3">
           <Typography variant="main-title" bold>
-            {t('tracker-selection-menu.title', {
-              bodyPart: t('body-part.' + BodyPart[bodyPart]),
+            {t('tracker_selection_menu-title', {
+              bodyPart: t('body_part-' + BodyPart[bodyPart]),
             })}
           </Typography>
           <div className="relative">
@@ -62,7 +62,7 @@ export function TrackerSelectionMenu({
                 {unassignedTrackers.length && (
                   <div className="flex flex-col gap-3">
                     <Typography>
-                      {t('tracker-selection-menu.unassigned')}
+                      {t('tracker_selection_menu-unassigned')}
                     </Typography>
                     <div className="grid grid-cols-2 gap-3">
                       {unassignedTrackers.map((fd, index) => (
@@ -82,7 +82,7 @@ export function TrackerSelectionMenu({
                     </div>
                   </div>
                 )}
-                <Typography>{t('tracker-selection-menu.assigned')}</Typography>
+                <Typography>{t('tracker_selection_menu-assigned')}</Typography>
                 <div className=" grid grid-cols-2 gap-3">
                   {assignedTrackers.map((fd, index) => (
                     <TrackerCard
@@ -113,11 +113,11 @@ export function TrackerSelectionMenu({
         ref={refOptions}
       >
         <div className="w-full max-w-sm">
-          <TipBox>{t('tips.find-tracker')}</TipBox>
+          <TipBox>{t('tips-find_tracker')}</TipBox>
         </div>
         <div className="flex flex-col justify-end pointer-events-auto">
           <Button variant="primary" onClick={() => onTrackerSelected(null)}>
-            {t('tracker-selection-menu.dont-assign')}
+            {t('tracker_selection_menu-dont_assign')}
           </Button>
         </div>
       </div>

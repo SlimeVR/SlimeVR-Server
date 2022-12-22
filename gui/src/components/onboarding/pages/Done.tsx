@@ -15,15 +15,15 @@ export function DonePage() {
       <div className="flex flex-col gap-5 items-center z-10">
         <SlimeVRIcon></SlimeVRIcon>
         <Typography variant="main-title">
-          {t('onboarding.done.title')}
+          {t('onboarding-done-title')}
         </Typography>
         <div className="flex flex-col items-center">
           <Typography color="secondary">
-            {t('onboarding.done.description')}
+            {t('onboarding-done-description')}
           </Typography>
         </div>
         <Button variant="primary" to="/" onClick={skipSetup}>
-          {t('onboarding.done.close')}
+          {t('onboarding-done-close')}
         </Button>
       </div>
     </div>

@@ -68,13 +68,13 @@ export function OverlayWidget() {
         control={control}
         name="isVisible"
         variant="toggle"
-        label={t('overlay.is-visible-label')}
+        label={t('overlay-is_visible_label')}
       ></CheckBox>
       <CheckBox
         control={control}
         name="isMirrored"
         variant="toggle"
-        label={t('overlay.is-mirrored-label')}
+        label={t('overlay-is_mirrored_label')}
       ></CheckBox>
     </form>
   );

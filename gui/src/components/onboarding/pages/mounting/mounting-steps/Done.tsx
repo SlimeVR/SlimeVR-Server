@@ -17,10 +17,10 @@ export function DoneStep({
     <div className="flex flex-col items-center w-full justify-center gap-5">
       <div className="flex gap-1 flex-col justify-center items-center">
         <Typography variant="section-title">
-          {t('onboarding.automatic-mounting.done.title')}
+          {t('onboarding-automatic_mounting-done-title')}
         </Typography>
         <Typography color="secondary">
-          {t('onboarding.automatic-mounting.done.description')}
+          {t('onboarding-automatic_mounting-done-description')}
         </Typography>
       </div>
       {/* <Button variant="primary">Continue to next step</Button> */}
@@ -30,7 +30,7 @@ export function DoneStep({
           variant={variant === 'onboarding' ? 'secondary' : 'tiertiary'}
           onClick={resetSteps}
         >
-          {t('onboarding.automatic-mounting.done.restart')}
+          {t('onboarding-automatic_mounting-done-restart')}
         </Button>
       </div>
     </div>

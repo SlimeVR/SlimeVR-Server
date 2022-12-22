@@ -39,13 +39,13 @@ export function ResetButton({
   const text = useMemo(() => {
     switch (type) {
       case ResetType.Quick:
-        return t('reset.quick');
+        return t('reset-quick');
       case ResetType.Mounting:
-        return t('reset.mounting');
+        return t('reset-mounting');
       case ResetType.Full:
-        return t('reset.full');
+        return t('reset-full');
     }
-    return t('reset.full');
+    return t('reset-full');
   }, [type]);
 
   const getIcon = () => {

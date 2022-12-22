@@ -52,7 +52,7 @@ export function useTracker(tracker: TrackerDataT) {
       useMemo(() => {
         if (tracker.info?.customName) return tracker.info?.customName;
         if (tracker.info?.bodyPart)
-          return t('body-part.' + BodyPart[tracker.info?.bodyPart]);
+          return t('body_part-' + BodyPart[tracker.info?.bodyPart]);
         return tracker.info?.displayName || 'NONE';
       }, [tracker.info]),
     useRotation: () =>

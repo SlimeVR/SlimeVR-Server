@@ -20,14 +20,14 @@ export function PreparationStep({
       <div className="flex flex-col flex-grow">
         <div className="flex flex-col gap-4 max-w-sm">
           <Typography variant="main-title" bold>
-            {t('onboarding.automatic-mounting.preparation.title')}
+            {t('onboarding-automatic_mounting-preparation-title')}
           </Typography>
           <div>
             <Typography color="secondary">
-              {t('onboarding.automatic-mounting.preparation.step.0')}
+              {t('onboarding-automatic_mounting-preparation-step-0')}
             </Typography>
             <Typography color="secondary">
-              {t('onboarding.automatic-mounting.preparation.step.1')}
+              {t('onboarding-automatic_mounting-preparation-step-1')}
             </Typography>
           </div>
         </div>
@@ -38,7 +38,7 @@ export function PreparationStep({
             variant={variant === 'onboarding' ? 'secondary' : 'tiertiary'}
             onClick={prevStep}
           >
-            {t('onboarding.automatic-mounting.prev-step')}
+            {t('onboarding-automatic_mounting-prev_step')}
           </Button>
           <ResetButton
             variant="small"

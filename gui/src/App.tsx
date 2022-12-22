@@ -165,8 +165,8 @@ function App() {
                       <TopBar></TopBar>
                       <div className="flex w-full h-full justify-center items-center p-2">
                         {websocketAPI.isFirstConnection
-                          ? t('websocket.connecting')
-                          : t('websocket.connection-lost')}
+                          ? t('websocket-connecting')
+                          : t('websocket-connection_lost')}
                       </div>
                     </>
                   )}
