@@ -35,7 +35,7 @@ on SlimeVR, you need to be aware of them:**
   all the open source licenses used, including SlimeVR's.
 
 Please refer to the [LICENSE-MIT] and [LICENSE-APACHE] files if you are at any point
-uncertain what the exact the requirements are.
+uncertain what the exact requirements are.
 
 ## Contributions
 Any contributions submitted for inclusion in this repository will be dual-licensed under

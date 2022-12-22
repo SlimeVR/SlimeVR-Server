@@ -41,20 +41,24 @@ export function SingleTrackerBodyAssignmentMenu({
           <div className="flex gap-8">
             <div className="flex flex-col max-w-sm gap-3">
               <Typography variant="main-title" bold>
-                {t('body-assignment-menu.title')}
+                {t('body_assignment_menu-title')}
               </Typography>
               <Typography color="secondary">
-                {t('body-assignment-menu.description')}
+                {t('body_assignment_menu-description')}
               </Typography>
               <CheckBox
                 control={control}
-                label={t('body-assignment-menu.show-advanced-locations')}
+                label={t('body_assignment_menu-show_advanced_locations')}
                 name="advanced"
                 variant="toggle"
               ></CheckBox>
               <div className="flex">
-                <Button variant="secondary" to="/onboarding/trackers-assign">
-                  {t('body-assignment-menu.manage-trackers')}
+                <Button
+                  variant="secondary"
+                  to="/onboarding/trackers-assign"
+                  state={{ alonePage: true }}
+                >
+                  {t('body_assignment_menu-manage_trackers')}
                 </Button>
               </div>
             </div>
@@ -69,7 +73,7 @@ export function SingleTrackerBodyAssignmentMenu({
                   variant="secondary"
                   onClick={() => onRoleSelected(BodyPart.NONE)}
                 >
-                  {t('body-assignment-menu.unassign-tracker')}
+                  {t('body_assignment_menu-unassign_tracker')}
                 </Button>
               </div>
             </div>

@@ -20,6 +20,8 @@ public interface Tracker {
 
 	boolean getRotation(Quaternion store);
 
+	boolean getRawRotation(Quaternion store);
+
 	boolean getAcceleration(Vector3f store);
 
 	String getName();
@@ -64,9 +66,7 @@ public interface Tracker {
 
 
 	/**
-	 * Returns the real tracker behind this tracker. In case this tracker
-	 * transforms another tracker like {@link ReferenceAdjustedTracker}, this
-	 * will return the tracker it modifies. Otherwise, it will return itself.
+	 * Returns the real tracker behind this tracker.
 	 */
 	Tracker get();
 

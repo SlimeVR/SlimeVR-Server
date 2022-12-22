@@ -13,7 +13,9 @@ import java.net.ServerSocket;
 
 public class Main {
 
-	public static String VERSION = "0.5.0";
+	public static final String VERSION = (BuildConfig.GIT_VERSION_TAG.isEmpty()
+		? BuildConfig.GIT_COMMIT_HASH
+		: BuildConfig.GIT_VERSION_TAG) + (BuildConfig.GIT_CLEAN ? "" : "-dirty");
 
 	public static VRServer vrServer;
 
@@ -28,8 +30,10 @@ public class Main {
 		Options options = new Options();
 
 		Option help = new Option("h", "help", false, "Show help");
+		Option version = new Option("V", "version", false, "Show version");
 
 		options.addOption(help);
+		options.addOption(version);
 		try {
 			cmd = parser.parse(options, args, true);
 		} catch (ParseException e) {
@@ -42,6 +46,10 @@ public class Main {
 			formatter.printHelp("slimevr.jar", options);
 			System.exit(0);
 		}
+		if (cmd.hasOption("version")) {
+			System.out.println("SlimeVR Server " + VERSION);
+			System.exit(0);
+		}
 
 		File dir = new File("").getAbsoluteFile();
 		try {
@@ -49,6 +57,8 @@ public class Main {
 		} catch (Exception e1) {
 			e1.printStackTrace();
 		}
+
+		LogManager.info("Running version " + VERSION);
 
 		if (!SystemUtils.isJavaVersionAtLeast(JavaVersion.JAVA_17)) {
 			LogManager.severe("SlimeVR start-up error! A minimum of Java 17 is required.");
@@ -63,7 +73,8 @@ public class Main {
 		}
 
 		try {
-			new ServerSocket(6969).close();
+			// This is disabled because the config can't be read at this point
+			// new ServerSocket(6969).close();
 			new ServerSocket(35903).close();
 			new ServerSocket(21110).close();
 		} catch (IOException e) {
@@ -93,7 +104,7 @@ public class Main {
 				e.printStackTrace();
 			}
 			System.exit(1); // Exit in case error happened on init and window
-							// not appeared, but some thread
+			// not appeared, but some thread
 			// started
 		} finally {
 			try {
