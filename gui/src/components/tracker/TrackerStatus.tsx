@@ -5,12 +5,12 @@ import { TrackerStatus as TrackerStatusEnum } from 'solarxr-protocol';
 import { Typography } from '../commons/Typography';
 
 const statusLabelMap: { [key: number]: string } = {
-  [TrackerStatusEnum.NONE]: 'tracker.status.none',
-  [TrackerStatusEnum.BUSY]: 'tracker.status.busy',
-  [TrackerStatusEnum.ERROR]: 'tracker.status.error',
-  [TrackerStatusEnum.DISCONNECTED]: 'tracker.status.disconnected',
-  [TrackerStatusEnum.OCCLUDED]: 'tracker.status.occluded',
-  [TrackerStatusEnum.OK]: 'tracker.status.ok',
+  [TrackerStatusEnum.NONE]: 'tracker-status-none',
+  [TrackerStatusEnum.BUSY]: 'tracker-status-busy',
+  [TrackerStatusEnum.ERROR]: 'tracker-status-error',
+  [TrackerStatusEnum.DISCONNECTED]: 'tracker-status-disconnected',
+  [TrackerStatusEnum.OCCLUDED]: 'tracker-status-occluded',
+  [TrackerStatusEnum.OK]: 'tracker-status-ok',
 };
 
 const statusClassMap: { [key: number]: string } = {

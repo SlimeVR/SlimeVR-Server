@@ -148,25 +148,25 @@ export function SerialDetectionModal() {
               <USBIcon></USBIcon>
               <div className="flex flex-col items-center gap-2">
                 <Typography variant="main-title">
-                  {t('serial-detection.new-device.p0')}
+                  {t('serial_detection-new_device-p0')}
                 </Typography>
                 <Typography variant="section-title">
                   {isOpen?.name || 'unknown'}
                 </Typography>
                 <Typography variant="standard">
-                  {t('serial-detection.new-device.p2')}
+                  {t('serial_detection-new_device-p2')}
                 </Typography>
               </div>
             </div>
 
             <Button variant="primary" onClick={openWifi}>
-              {t('serial-detection.open-wifi')}
+              {t('serial_detection-open_wifi')}
             </Button>
             <Button variant="tiertiary" onClick={openSerial}>
-              {t('serial-detection.open-serial')}
+              {t('serial_detection-open_serial')}
             </Button>
             <Button variant="secondary" onClick={closeModal}>
-              {t('serial-detection.close')}
+              {t('serial_detection-close')}
             </Button>
           </>
         )}
@@ -178,10 +178,10 @@ export function SerialDetectionModal() {
             <div className="flex flex-col items-center gap-3">
               <BulbIcon></BulbIcon>
               <Typography variant="main-title">
-                {t('serial-detection.new-device.p0')}
+                {t('serial_detection-new_device-p0')}
               </Typography>
               <Typography variant="standard">
-                {t('serial-detection.new-device.p1')}
+                {t('serial_detection-new_device-p1')}
               </Typography>
             </div>
             <div className="flex flex-col gap-3 rounded-xl max-w-sm">
@@ -193,10 +193,10 @@ export function SerialDetectionModal() {
               variant="primary"
               disabled={!formState.isValid}
             >
-              {t('serial-detection.submit')}
+              {t('serial_detection-submit')}
             </Button>
             <Button variant="secondary" onClick={closeModal}>
-              {t('serial-detection.close')}
+              {t('serial_detection-close')}
             </Button>
           </form>
         )}

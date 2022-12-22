@@ -12,7 +12,9 @@ const versionTag = execSync('git --no-pager tag --points-at HEAD')
 // If not empty then it's not clean
 const gitClean = execSync('git status --porcelain').toString() ? false : true;
 
-console.log(`version is ${versionTag || commitHash}${gitClean ? "" : "-dirty"}`);
+console.log(
+  `version is ${versionTag || commitHash}${gitClean ? '' : '-dirty'}`
+);
 
 // https://vitejs.dev/config/
 export default defineConfig({

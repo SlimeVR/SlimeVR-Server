@@ -3,7 +3,7 @@ import { useTranslation } from 'react-i18next';
 import { RpcMessage, SkeletonResetAllRequestT } from 'solarxr-protocol';
 import {
   AutoboneContextC,
-  useProvideAutobone
+  useProvideAutobone,
 } from '../../../../hooks/autobone';
 import { useOnboarding } from '../../../../hooks/onboarding';
 import { useWebsocketAPI } from '../../../../hooks/websocket-api';
@@ -46,15 +46,15 @@ export function AutomaticProportionsPage() {
           <div className="flex flex-col max-w-lg gap-3">
             {!state.alonePage && (
               <ArrowLink to="/onboarding/reset-tutorial" direction="left">
-                {t('onboarding.automatic-proportions.back')}
+                {t('onboarding-automatic_proportions-back')}
               </ArrowLink>
             )}
             <Typography variant="main-title">
-              {t('onboarding.automatic-proportions.title')}
+              {t('onboarding-automatic_proportions-title')}
             </Typography>
             <div>
               <Typography color="secondary">
-                {t('onboarding.automatic-proportions.description')}
+                {t('onboarding-automatic_proportions-description')}
               </Typography>
             </div>
           </div>
@@ -76,7 +76,7 @@ export function AutomaticProportionsPage() {
           <div className="flex flex-grow gap-3">
             {!state.alonePage && (
               <Button variant="secondary" to="/" onClick={skipSetup}>
-                {t('onboarding.skip')}
+                {t('onboarding-skip')}
               </Button>
             )}
             <Button
@@ -84,7 +84,7 @@ export function AutomaticProportionsPage() {
               onClick={resetAll}
               disabled={resetDisabled}
             >
-              {t('reset.reset-all')}
+              {t('reset-reset_all')}
             </Button>
           </div>
           <div className="flex gap-3">
@@ -93,11 +93,11 @@ export function AutomaticProportionsPage() {
               state={{ alonePage: state.alonePage }}
               to="/onboarding/body-proportions/manual"
             >
-              {t('onboarding.automatic-proportions.manual')}
+              {t('onboarding-automatic_proportions-manual')}
             </Button>
             {!state.alonePage && (
               <Button variant="primary" to="/onboarding/done">
-                {t('onboarding.continue')}
+                {t('onboarding-continue')}
               </Button>
             )}
           </div>

@@ -1,15 +1,9 @@
 import i18next from 'i18next';
+import Fluent from 'i18next-fluent';
+// @ts-expect-error - this package doesn't contain typings but we dont need it
+import Backend from 'i18next-fluent-backend';
+import LanguageDetector from 'i18next-browser-languagedetector';
 import { initReactI18next } from 'react-i18next';
-import en from './en/translation.json';
-import fr from './fr/translation.json';
-import it from './it/translation.json';
-import ja from './ja/translation.json';
-import ko from './ko/translation.json';
-import pl from './pl/translation.json';
-import ptBR from './pt-BR/translation.json';
-import vi from './vi/translation.json';
-import zh from './zh/translation.json';
-import owo from './owo/translation.json';
 
 export const defaultNS = 'translation';
 
@@ -40,7 +34,7 @@ export const langs = [
   },
   {
     name: '🇧🇷 Português Brasileiro',
-    key: 'ptBR',
+    key: 'pt-BR',
   },
   {
     name: '🇻🇳 Tiếng Việt',
@@ -56,44 +50,17 @@ export const langs = [
   },
 ];
 
-export const resources = {
-  en: {
-    translation: en,
-  },
-  fr: {
-    translation: fr,
-  },
-  it: {
-    translation: it,
-  },
-  ja: {
-    translations: ja,
-  },
-  ko: {
-    translation: ko,
-  },
-  pl: {
-    translation: pl,
-  },
-  ptBR: {
-    translation: ptBR,
-  },
-  vi: {
-    translation: vi,
-  },
-  zh: {
-    translation: zh,
-  },
-  owo: {
-    translation: owo,
-  },
-};
-
-i18next.use(initReactI18next).init({
-  lng: 'en', // if you're using a language detector, do not define the lng option
-  resources,
-  fallbackLng: 'en',
-  defaultNS,
-});
+i18next
+  .use(Fluent)
+  .use(Backend)
+  .use(LanguageDetector)
+  .use(initReactI18next)
+  .init({
+    fallbackLng: 'en',
+    defaultNS,
+    backend: {
+      loadPath: '/i18n/{{lng}}/{{ns}}.ftl',
+    },
+  });
 
 export default i18next;

@@ -25,7 +25,7 @@ function Tracker({
   return (
     <Typography>
       {`${tracker.info?.customName || tracker.info?.displayName}` ||
-        t('tracker.part-card.unassigned')}
+        t('tracker-part_card-unassigned')}
     </Typography>
   );
 }
@@ -80,7 +80,7 @@ export function TrackerPartCard({
         }}
       >
         <Typography color="secondary">
-          {t('body-part.' + BodyPart[role])}
+          {t('body_part-' + BodyPart[role])}
         </Typography>
         {td?.map(({ tracker }, index) => (
           <Tracker
@@ -89,7 +89,7 @@ export function TrackerPartCard({
             updateVelocity={(vel) => updateVelocity(vel)}
           />
         ))}
-        {!td && <Typography>{t('tracker.part-card.unassigned')}</Typography>}
+        {!td && <Typography>{t('tracker-part_card-unassigned')}</Typography>}
       </div>
     )) || <></>
   );

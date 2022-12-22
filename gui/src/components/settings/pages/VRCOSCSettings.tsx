@@ -140,16 +140,16 @@ export function VRCOSCSettings() {
           <Typography variant="main-title">VRChat OSC Trackers</Typography>
           <div className="flex flex-col pt-2 pb-4">
             <Typography color="secondary">
-              {t('settings.osc.vrchat.description.p0')}
+              {t('settings-osc-vrchat-description-p0')}
             </Typography>
             <Typography color="secondary">
-              {t('settings.osc.vrchat.description.p1')}
+              {t('settings-osc-vrchat-description-p1')}
             </Typography>
           </div>
-          <Typography bold>{t('settings.osc.vrchat.enable.title')}</Typography>
+          <Typography bold>{t('settings-osc-vrchat-enable-title')}</Typography>
           <div className="flex flex-col pb-2">
             <Typography color="secondary">
-              {t('settings.osc.vrchat.enable.description')}
+              {t('settings-osc-vrchat-enable-description')}
             </Typography>
           </div>
           <div className="grid grid-cols-2 gap-3 pb-5">
@@ -158,21 +158,21 @@ export function VRCOSCSettings() {
               outlined
               control={control}
               name="vrchat.oscSettings.enabled"
-              label={t('settings.osc.vrchat.enable.label')}
+              label={t('settings-osc-vrchat-enable-label')}
             />
           </div>
-          <Typography bold>{t('settings.osc.vrchat.network.title')}</Typography>
+          <Typography bold>{t('settings-osc-vrchat-network-title')}</Typography>
           <div className="flex flex-col pb-2">
             <Typography color="secondary">
-              {t('settings.osc.vrchat.network.description')}
+              {t('settings-osc-vrchat-network-description')}
             </Typography>
           </div>
           <div className="grid grid-cols-2 gap-3 pb-5">
             <Input
               type="number"
               {...register('vrchat.oscSettings.portIn', { required: true })}
-              placeholder={t('settings.osc.vrchat.network.port-in.placeholder')}
-              label={t('settings.osc.vrchat.network.port-in.label')}
+              placeholder={t('settings-osc-vrchat-network-port_in-placeholder')}
+              label={t('settings-osc-vrchat-network-port_in-label')}
             ></Input>
             <Input
               type="number"
@@ -180,17 +180,17 @@ export function VRCOSCSettings() {
                 required: true,
               })}
               placeholder={t(
-                'settings.osc.vrchat.network.port-out.placeholder'
+                'settings-osc-vrchat-network-port-out-placeholder'
               )}
-              label={t('settings.osc.vrchat.network.port-out.label')}
+              label={t('settings-osc-vrchat-network-port_out-label')}
             ></Input>
           </div>
           <Typography bold>
-            {t('settings.osc.vrchat.network.address.title')}
+            {t('settings-osc-vrchat-network-address-title')}
           </Typography>
           <div className="flex flex-col pb-2">
             <Typography color="secondary">
-              {t('settings.osc.vrchat.network.address.description')}
+              {t('settings-osc-vrchat-network-address-description')}
             </Typography>
           </div>
           <div className="grid gap-3 pb-5">
@@ -201,15 +201,15 @@ export function VRCOSCSettings() {
                 pattern:
                   /^(?!0)(?!.*\.$)((1?\d?\d|25[0-5]|2[0-4]\d)(\.|$)){4}$/i,
               })}
-              placeholder={t('settings.osc.vrchat.network.address.placeholder')}
+              placeholder={t('settings-osc-vrchat-network-address-placeholder')}
             ></Input>
           </div>
           <Typography bold>
-            {t('settings.osc.vrchat.network.trackers.title')}
+            {t('settings-osc-vrchat-network-trackers-title')}
           </Typography>
           <div className="flex flex-col pb-2">
             <Typography color="secondary">
-              {t('settings.osc.vrchat.network.trackers.description')}
+              {t('settings-osc-vrchat-network-trackers-description')}
             </Typography>
           </div>
           <div className="grid grid-cols-2 gap-3 pb-5">
@@ -218,35 +218,35 @@ export function VRCOSCSettings() {
               outlined
               control={control}
               name="vrchat.trackers.chest"
-              label={t('settings.osc.vrchat.network.trackers.chest')}
+              label={t('settings-osc-vrchat-network-trackers-chest')}
             />
             <CheckBox
               variant="toggle"
               outlined
               control={control}
               name="vrchat.trackers.waist"
-              label={t('settings.osc.vrchat.network.trackers.waist')}
+              label={t('settings-osc-vrchat-network-trackers-waist')}
             />
             <CheckBox
               variant="toggle"
               outlined
               control={control}
               name="vrchat.trackers.knees"
-              label={t('settings.osc.vrchat.network.trackers.knees')}
+              label={t('settings-osc-vrchat-network-trackers-knees')}
             />
             <CheckBox
               variant="toggle"
               outlined
               control={control}
               name="vrchat.trackers.feet"
-              label={t('settings.osc.vrchat.network.trackers.feet')}
+              label={t('settings-osc-vrchat-network-trackers-feet')}
             />
             <CheckBox
               variant="toggle"
               outlined
               control={control}
               name="vrchat.trackers.elbows"
-              label={t('settings.osc.vrchat.network.trackers.elbows')}
+              label={t('settings-osc-vrchat-network-trackers-elbows')}
             />
           </div>
         </>

@@ -113,20 +113,20 @@ export function OSCRouterSettings() {
       <SettingsPageLayout icon={<RouterIcon></RouterIcon>} id="router">
         <>
           <Typography variant="main-title">
-            {t('settings.osc.router.title')}
+            {t('settings-osc-router-title')}
           </Typography>
           <div className="flex flex-col pt-2 pb-4">
             <Typography color="secondary">
-              {t('settings.osc.router.description.p0')}
+              {t('settings-osc-router-description-p0')}
             </Typography>
             <Typography color="secondary">
-              {t('settings.osc.router.description.p1')}
+              {t('settings-osc-router-description-p1')}
             </Typography>
           </div>
-          <Typography bold>{t('settings.osc.router.enable.title')}</Typography>
+          <Typography bold>{t('settings-osc-router-enable-title')}</Typography>
           <div className="flex flex-col pb-2">
             <Typography color="secondary">
-              {t('settings.osc.router.enable.description')}
+              {t('settings-osc-router-enable-description')}
             </Typography>
           </div>
           <div className="grid grid-cols-2 gap-3 pb-5">
@@ -135,24 +135,24 @@ export function OSCRouterSettings() {
               outlined
               control={control}
               name="router.oscSettings.enabled"
-              label={t('settings.osc.router.enable.label')}
+              label={t('settings-osc-router-enable-label')}
             />
           </div>
-          <Typography bold>{t('settings.osc.router.network.title')}</Typography>
+          <Typography bold>{t('settings-osc-router-network-title')}</Typography>
           <div className="flex flex-col pb-2">
             <Typography color="secondary">
-              {t('settings.osc.router.network.description.p0')}
+              {t('settings-osc-router-network-description-p0')}
             </Typography>
             <Typography color="secondary">
-              {t('settings.osc.router.network.description.p1')}
+              {t('settings-osc-router-network-description-p1')}
             </Typography>
           </div>
           <div className="grid grid-cols-2 gap-3 pb-5">
             <Input
               type="number"
               {...register('router.oscSettings.portIn', { required: true })}
-              placeholder={t('settings.osc.router.network.port-in.placeholder')}
-              label={t('settings.osc.router.network.port-in.label')}
+              placeholder={t('settings-osc-router-network-port_in-placeholder')}
+              label={t('settings-osc-router-network-port_in-label')}
             ></Input>
             <Input
               type="number"
@@ -160,17 +160,17 @@ export function OSCRouterSettings() {
                 required: true,
               })}
               placeholder={t(
-                'settings.osc.router.network.port-out.placeholder'
+                'settings-osc-router-network-port-out-placeholder'
               )}
-              label={t('settings.osc.router.network.port-out.label')}
+              label={t('settings-osc-router-network-port_out-label')}
             ></Input>
           </div>
           <Typography bold>
-            {t('settings.osc.router.network.address.title')}
+            {t('settings-osc-router-network-address-title')}
           </Typography>
           <div className="flex flex-col pb-2">
             <Typography color="secondary">
-              {t('settings.osc.router.network.address.description')}
+              {t('settings-osc-router-network-address-description')}
             </Typography>
           </div>
           <div className="grid gap-3 pb-5">
@@ -181,7 +181,7 @@ export function OSCRouterSettings() {
                 pattern:
                   /^(?!0)(?!.*\.$)((1?\d?\d|25[0-5]|2[0-4]\d)(\.|$)){4}$/i,
               })}
-              placeholder={t('settings.osc.router.network.address.placeholder')}
+              placeholder={t('settings-osc-router-network-address-placeholder')}
             ></Input>
           </div>
         </>

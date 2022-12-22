@@ -20,14 +20,14 @@ export function MountingResetStep({
       <div className="flex flex-col flex-grow">
         <div className="flex flex-grow flex-col gap-4 max-w-sm">
           <Typography variant="main-title" bold>
-            {t('onboarding.automatic-mounting.mounting-reset.title')}
+            {t('onboarding-automatic_mounting-mounting_reset-title')}
           </Typography>
           <div className="flex flex-col gap-2">
             <Typography color="secondary">
-              {t('onboarding.automatic-mounting.mounting-reset.step.0')}
+              {t('onboarding-automatic_mounting-mounting_reset-step-0')}
             </Typography>
             <Typography color="secondary">
-              {t('onboarding.automatic-mounting.mounting-reset.step.1')}
+              {t('onboarding-automatic_mounting-mounting_reset-step-1')}
             </Typography>
           </div>
         </div>
@@ -37,7 +37,7 @@ export function MountingResetStep({
             variant={variant === 'onboarding' ? 'secondary' : 'tiertiary'}
             onClick={prevStep}
           >
-            {t('onboarding.automatic-mounting.prev-step')}
+            {t('onboarding-automatic_mounting-prev_step')}
           </Button>
           <ResetButton
             variant="small"
