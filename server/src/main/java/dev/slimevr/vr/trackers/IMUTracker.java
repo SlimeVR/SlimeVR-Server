@@ -13,6 +13,7 @@ import dev.slimevr.vr.trackers.udp.TrackersUDPServer;
 import dev.slimevr.vr.trackers.udp.UDPDevice;
 import io.eiren.util.BufferedTimer;
 import io.eiren.util.collections.FastList;
+import io.eiren.util.logging.LogManager;
 
 import java.util.Optional;
 
@@ -61,7 +62,8 @@ public class IMUTracker
 	protected QuaternionMovingAverage movingAverage;
 	protected boolean compensateDrift = false;
 	protected float driftAmount;
-	protected static long DRIFT_COOLDOWN_MS = 150;
+	protected final static Quaternion rotationSinceReset = new Quaternion();
+	protected static long DRIFT_COOLDOWN_MS = 30000;
 	protected final Quaternion averagedDriftQuat = new Quaternion();
 	protected CircularArrayList<Quaternion> driftQuats;
 	protected CircularArrayList<Long> driftTimes;
@@ -307,18 +309,18 @@ public class IMUTracker
 	}
 
 	/**
-	 * Reset the tracker so that its current rotation is counted as (0, <HMD
-	 * Yaw>, 0). This allows the tracker to be strapped to body at any pitch and
-	 * roll.
-	 * <p>
-	 * Performs {@link #resetYaw(Quaternion)} for yaw drift correction.
+	 * Reset the tracker so that its current rotation is counted as (0, HMD Yaw,
+	 * 0). This allows the tracker to be strapped to body at any pitch and roll.
 	 */
 	@Override
 	public void resetFull(Quaternion reference) {
+		Quaternion rot = new Quaternion();
+		getUnfilteredRotation(rot);
 		fixGyroscope(getMountedAdjustedRotation());
 		fixAttachment(getMountedAdjustedRotation());
-
-		resetYaw(reference);
+		fixYaw(reference);
+		calibrateMag();
+		calculateDrift(rot);
 	}
 
 	/**
@@ -330,24 +332,11 @@ public class IMUTracker
 	 */
 	@Override
 	public void resetYaw(Quaternion reference) {
-		// Get rotation before fixing yaw
-		Quaternion beforeReset = new Quaternion();
-		getUnfilteredRotation(beforeReset);
-
+		Quaternion rot = new Quaternion();
+		getUnfilteredRotation(rot);
 		fixYaw(reference);
-
-		// Get rotation after fixing yaw
-		Quaternion afterReset = new Quaternion();
-		getUnfilteredRotation(afterReset);
-		// Calculate amount of drift
-		calculateDrift(beforeReset, afterReset);
-
-		if (magCalibrationStatus >= CalibrationAccuracy.HIGH.status) {
-			magnetometerCalibrated = true;
-			// During calibration set correction to match magnetometer readings
-			// TODO : Correct only yaw
-			correction.set(rotQuaternion).inverseLocal().multLocal(rotMagQuaternion);
-		}
+		calibrateMag();
+		calculateDrift(rot);
 	}
 
 	protected void adjustInternal(Quaternion store) {
@@ -416,16 +405,23 @@ public class IMUTracker
 		yawFix.set(sensorRotation).inverseLocal().multLocal(targetRotation);
 	}
 
+	private void calibrateMag() {
+		if (magCalibrationStatus >= CalibrationAccuracy.HIGH.status) {
+			magnetometerCalibrated = true;
+			// During calibration set correction to match magnetometer readings
+			// TODO : Correct only yaw
+			correction.set(rotQuaternion).inverseLocal().multLocal(rotMagQuaternion);
+		}
+	}
+
 	/**
 	 * Calculates 1 since last reset and store the data related to it in
 	 * driftQuat, timeAtLastReset and timeForLastReset
 	 */
-	synchronized public void calculateDrift(Quaternion beforeResetQuat, Quaternion afterResetQuat) {
-		// TODO Only use most recent reset within a time period
-		// TODO Increase averaging weight of recent Quaternions (exponential?)
-		// TODO reset drift when spamming reset
-
+	synchronized public void calculateDrift(Quaternion beforeQuat) {
 		if (compensateDrift) {
+			Quaternion rotQuat = new Quaternion();
+			getUnfilteredRotation(rotQuat);
 			if (
 				driftSince > 0
 					&& System.currentTimeMillis() - timeAtLastReset > DRIFT_COOLDOWN_MS
@@ -443,10 +439,9 @@ public class IMUTracker
 						new Quaternion()
 							.fromAngles(
 								0f,
-								beforeResetQuat.mult(afterResetQuat.inverse()).getYaw(),
+								rotQuat.mult(beforeQuat.inverse()).getYaw(),
 								0f
 							)
-							.inverseLocal()
 					);
 
 				// Set how much time it has been since last drift reset
@@ -468,10 +463,80 @@ public class IMUTracker
 				for (Long time : driftTimes) {
 					driftWeights.add(((float) time) / ((float) totalDriftTime));
 				}
+				// Make it so recent Quaternions weight more
+				for (int i = driftWeights.size() - 1; i > 0; i--) {
+					driftWeights
+						.set(
+							i,
+							driftWeights.get(i) + (driftWeights.get(i - 1) / driftWeights.size())
+						);
+					driftWeights
+						.set(
+							i - 1,
+							driftWeights.get(i - 1)
+								- (driftWeights.get(i - 1) / driftWeights.size())
+						);
+				}
 
 				// Set final averaged drift Quaternion
 				averagedDriftQuat.fromAveragedQuaternions(driftQuats, driftWeights);
 
+				// Save tracker rotation and current time
+				rotationSinceReset.set(rotQuat.mult(beforeQuat.inverse()));
+				timeAtLastReset = System.currentTimeMillis();
+			} else if (
+				System.currentTimeMillis() - timeAtLastReset < DRIFT_COOLDOWN_MS
+					&& driftQuats.size() > 0
+			) {
+				// Replace latest drift quaternion
+				rotationSinceReset.multLocal(beforeQuat.mult(rotQuat.inverse()));
+				driftQuats
+					.set(
+						driftQuats.size() - 1,
+						new Quaternion()
+							.fromAngles(
+								0f,
+								rotationSinceReset.inverse().getYaw(),
+								0f
+							)
+					);
+
+				LogManager.debug(String.valueOf(rotationSinceReset.getYaw()));
+
+				// Replace how much time it has been since last drift reset
+				long driftTime = System.currentTimeMillis() - driftSince;
+
+				// Add to total drift time
+				driftTimes
+					.set(driftTimes.size() - 1, driftTimes.get(driftTimes.size() - 1) + driftTime);
+				totalDriftTime = 0;
+				for (Long time : driftTimes) {
+					totalDriftTime += time;
+				}
+
+				// Calculate drift Quaternions' weights
+				driftWeights.clear();
+				for (Long time : driftTimes) {
+					driftWeights.add(((float) time) / ((float) totalDriftTime));
+				}
+				// Make it so recent Quaternions weight more
+				for (int i = driftWeights.size() - 1; i > 0; i--) {
+					driftWeights
+						.set(
+							i,
+							driftWeights.get(i) + (driftWeights.get(i - 1) / driftWeights.size())
+						);
+					driftWeights
+						.set(
+							i - 1,
+							driftWeights.get(i - 1)
+								- (driftWeights.get(i - 1) / driftWeights.size())
+						);
+				}
+
+				// Set final averaged drift Quaternion
+				averagedDriftQuat.fromAveragedQuaternions(driftQuats, driftWeights);
+			} else if (driftSince == 0) {
 				timeAtLastReset = System.currentTimeMillis();
 			}
 

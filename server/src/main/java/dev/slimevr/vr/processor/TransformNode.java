@@ -42,7 +42,8 @@ public class TransformNode {
 		updateWorldTransforms(); // Call update on each frame because we have
 									// relatively few nodes
 		for (TransformNode node : children) {
-			node.update();
+			if (node != null)
+				node.update();
 		}
 	}
 
