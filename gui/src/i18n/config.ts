@@ -42,11 +42,11 @@ export const langs = [
   },
   {
     name: '🇨🇳 简体中文',
-    key: 'zh',
+    key: 'zh-Hans',
   },
   {
     name: '🥺 Engwish~ OwO',
-    key: 'owo',
+    key: 'en-OwO',
   },
 ];
 
