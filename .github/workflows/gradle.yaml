@@ -61,7 +61,7 @@ jobs:
           path: server/build/libs/*
 
   bundle:
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-20.04
     needs: build
     steps:
       - uses: actions/checkout@v3
