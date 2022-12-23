@@ -1,16 +1,19 @@
-package dev.slimevr.vr.processor.skeleton;
+package dev.slimevr.vr.processor;
 
 import com.jme3.math.Vector3f;
 import dev.slimevr.Main;
 import dev.slimevr.config.ConfigManager;
-import io.eiren.util.logging.LogManager;
+import dev.slimevr.vr.processor.skeleton.SkeletonConfigOffsets;
+import dev.slimevr.vr.processor.skeletonParts.BoneType;
+import dev.slimevr.vr.processor.skeletonParts.SkeletonConfigToggles;
+import dev.slimevr.vr.processor.skeletonParts.SkeletonConfigValues;
 
 import java.util.Arrays;
 import java.util.EnumMap;
 import java.util.Map;
 
 
-public class SkeletonConfig {
+public class SkeletonConfigManager {
 
 	protected final EnumMap<SkeletonConfigOffsets, Float> configOffsets = new EnumMap<>(
 		SkeletonConfigOffsets.class
@@ -30,73 +33,46 @@ public class SkeletonConfig {
 	);
 
 	protected final boolean autoUpdateOffsets;
-	protected final SkeletonConfigCallback callback;
-	protected Skeleton skeleton;
+	protected HumanPoseManager humanPoseManager;
 	protected float userHeight;
+	static final float FLOOR_OFFSET = 0.05f;
 
-	public SkeletonConfig(boolean autoUpdateOffsets) {
+	public SkeletonConfigManager(boolean autoUpdateOffsets) {
 		this.autoUpdateOffsets = autoUpdateOffsets;
-		this.callback = null;
 
-		callCallbackOnAll(true);
+		updateSettingsInSkeleton();
 
 		if (autoUpdateOffsets) {
 			computeAllNodeOffsets();
 		}
 	}
 
-	public SkeletonConfig(
+	public SkeletonConfigManager(
 		boolean autoUpdateOffsets,
-		SkeletonConfigCallback callback,
-		Skeleton skeleton
+		HumanPoseManager humanPoseManager
 	) {
 		this.autoUpdateOffsets = autoUpdateOffsets;
-		this.callback = callback;
-		this.skeleton = skeleton;
+		this.humanPoseManager = humanPoseManager;
 
-		callCallbackOnAll(true);
+		updateSettingsInSkeleton();
 
 		if (autoUpdateOffsets) {
 			computeAllNodeOffsets();
 		}
 	}
 
-	private void callCallbackOnAll(boolean defaultOnly) {
-		if (callback == null) {
+	public void updateSettingsInSkeleton() {
+		if (humanPoseManager == null)
 			return;
-		}
-
-		for (SkeletonConfigOffsets config : SkeletonConfigOffsets.values) {
-			try {
-				Float val = configOffsets.get(config);
-				if (!defaultOnly || val == null) {
-					callback.updateOffsetsState(config, val == null ? config.defaultValue : val);
-				}
-			} catch (Exception e) {
-				LogManager.severe("[SkeletonConfig] Exception while calling callback", e);
-			}
-		}
 
 		for (SkeletonConfigToggles config : SkeletonConfigToggles.values) {
-			try {
-				Boolean val = configToggles.get(config);
-				if (!defaultOnly || val == null) {
-					callback.updateTogglesState(config, val == null ? config.defaultValue : val);
-				}
-			} catch (Exception e) {
-				LogManager.severe("[SkeletonConfig] Exception while calling callback", e);
-			}
+			Boolean val = configToggles.get(config);
+			humanPoseManager.updateToggleState(config, val == null ? config.defaultValue : val);
 		}
 
 		for (SkeletonConfigValues config : SkeletonConfigValues.values) {
-			try {
-				Float val = configValues.get(config);
-				if (!defaultOnly || val == null) {
-					callback.updateValuesState(config, val == null ? config.defaultValue : val);
-				}
-			} catch (Exception e) {
-				LogManager.severe("[SkeletonConfig] Exception while calling callback", e);
-			}
+			Float val = configValues.get(config);
+			humanPoseManager.updateValueState(config, val == null ? config.defaultValue : val);
 		}
 	}
 
@@ -115,16 +91,6 @@ public class SkeletonConfig {
 		if (computeOffsets && autoUpdateOffsets && config.affectedOffsets != null) {
 			for (BoneType offset : config.affectedOffsets) {
 				computeNodeOffset(offset);
-			}
-		}
-
-		// Calls callback
-		if (callback != null) {
-			try {
-				callback
-					.updateOffsetsState(config, newValue != null ? newValue : config.defaultValue);
-			} catch (Exception e) {
-				LogManager.severe("[SkeletonConfig] Exception while calling callback", e);
 			}
 		}
 
@@ -161,13 +127,10 @@ public class SkeletonConfig {
 			configToggles.remove(config);
 		}
 
-		if (callback != null) {
-			try {
-				callback
-					.updateTogglesState(config, newValue != null ? newValue : config.defaultValue);
-			} catch (Exception e) {
-				LogManager.severe("[SkeletonConfig] Exception while calling callback", e);
-			}
+		// Updates in skeleton
+		if (humanPoseManager != null) {
+			humanPoseManager
+				.updateToggleState(config, newValue != null ? newValue : config.defaultValue);
 		}
 	}
 
@@ -190,13 +153,10 @@ public class SkeletonConfig {
 			configValues.remove(config);
 		}
 
-		if (callback != null) {
-			try {
-				callback
-					.updateValuesState(config, newValue != null ? newValue : config.defaultValue);
-			} catch (Exception e) {
-				LogManager.severe("[SkeletonConfig] Exception while calling callback", e);
-			}
+		// Updates in skeleton
+		if (humanPoseManager != null) {
+			humanPoseManager
+				.updateValueState(config, newValue != null ? newValue : config.defaultValue);
 		}
 	}
 
@@ -219,12 +179,9 @@ public class SkeletonConfig {
 			offset.set(x, y, z);
 		}
 
-		if (callback != null) {
-			try {
-				callback.updateNodeOffset(nodeOffset, offset);
-			} catch (Exception e) {
-				LogManager.severe("[SkeletonConfig] Exception while calling callback", e);
-			}
+		// Updates in skeleton
+		if (humanPoseManager != null) {
+			humanPoseManager.updateNodeOffset(nodeOffset, offset);
 		}
 	}
 
@@ -371,23 +328,23 @@ public class SkeletonConfig {
 		setOffsets(configOffsets, true);
 	}
 
-	public void setOffsets(SkeletonConfig skeletonConfig) {
+	public void setOffsets(SkeletonConfigManager skeletonConfigManager) {
 		// Don't recalculate node offsets, just re-use them from skeletonConfig
 		setOffsets(
-			skeletonConfig.configOffsets,
+			skeletonConfigManager.configOffsets,
 			false
 		);
 
 		// Copy skeletonConfig's nodeOffsets as the configs are all the same
-		skeletonConfig.nodeOffsets.forEach((key, value) -> {
+		skeletonConfigManager.nodeOffsets.forEach((key, value) -> {
 			setNodeOffset(key, value.x, value.y, value.z);
 		});
 	}
 
 	public void resetOffsets() {
-		if (skeleton != null) {
+		if (humanPoseManager != null) {
 			for (SkeletonConfigOffsets config : SkeletonConfigOffsets.values) {
-				skeleton.resetSkeletonConfig(config);
+				resetOffset(config);
 			}
 		} else {
 			configOffsets.clear();
@@ -395,32 +352,32 @@ public class SkeletonConfig {
 				computeAllNodeOffsets();
 			}
 		}
+	}
 
-		// Calls offset callback
-		if (callback != null) {
-			for (SkeletonConfigOffsets config : SkeletonConfigOffsets.values) {
-				try {
-					callback
-						.updateOffsetsState(config, config.defaultValue);
-				} catch (Exception e) {
-					LogManager.severe("[SkeletonConfig] Exception while calling callback", e);
-				}
-			}
+	public void resetToggles() {
+		configToggles.clear();
+
+		// Remove from config to use default if they change in the future.
+		Arrays.fill(changedToggles, false);
+		for (SkeletonConfigToggles value : SkeletonConfigToggles.values) {
+			Main.vrServer
+				.getConfigManager()
+				.getVrConfig()
+				.getSkeleton()
+				.getToggles()
+				.remove(value.configKey);
+			// Set default in skeleton
+			humanPoseManager.setToggle(value, value.defaultValue);
 		}
 	}
 
 	public void resetValues() {
 		configValues.clear();
 
-		// Calls values callback
-		if (callback != null) {
+		// Updates in skeleton
+		if (humanPoseManager != null) {
 			for (SkeletonConfigValues config : SkeletonConfigValues.values) {
-				try {
-					callback
-						.updateValuesState(config, config.defaultValue);
-				} catch (Exception e) {
-					LogManager.severe("[SkeletonConfig] Exception while calling callback", e);
-				}
+				humanPoseManager.updateValueState(config, config.defaultValue);
 			}
 		}
 
@@ -433,38 +390,102 @@ public class SkeletonConfig {
 				.getSkeleton()
 				.getValues()
 				.remove(value.configKey);
+			// Set default in skeleton
+			humanPoseManager.setValue(value, value.defaultValue);
 		}
 	}
 
-	public void resetToggles() {
-		configToggles.clear();
+	public void resetAllConfigs() {
+		resetOffsets();
+		resetToggles();
+		resetValues();
+	}
 
-		// Calls toggles callback
-		if (callback != null) {
-			for (SkeletonConfigOffsets config : SkeletonConfigOffsets.values) {
-				try {
-					callback
-						.updateOffsetsState(config, config.defaultValue);
-				} catch (Exception e) {
-					LogManager.severe("[SkeletonConfig] Exception while calling callback", e);
+	public void resetOffset(SkeletonConfigOffsets config) {
+		if (config == null)
+			return;
+
+		switch (config) {
+			case HEAD -> humanPoseManager.setOffset(SkeletonConfigOffsets.HEAD, null);
+			case NECK -> humanPoseManager.setOffset(SkeletonConfigOffsets.NECK, null);
+			case TORSO -> {
+				// Distance from shoulders to hip (full torso length)
+				float height = humanPoseManager.getHmdHeight();
+				if (height > 0.5f) { // Reset only if floor level seems right,
+					humanPoseManager
+						.setOffset(
+							SkeletonConfigOffsets.TORSO,
+							((height) * 0.42f)
+								- humanPoseManager.getOffset(SkeletonConfigOffsets.NECK)
+						);
+				} else // if floor level is incorrect
+				{
+					humanPoseManager.setOffset(SkeletonConfigOffsets.TORSO, null);
 				}
 			}
-		}
-
-		// Remove from config to use default if they change in the future.
-		Arrays.fill(changedToggles, false);
-		for (SkeletonConfigToggles value : SkeletonConfigToggles.values) {
-			Main.vrServer
-				.getConfigManager()
-				.getVrConfig()
-				.getSkeleton()
-				.getToggles()
-				.remove(value.configKey);
+			case CHEST ->
+				// Chest is 57% of the upper body by default
+				// (shoulders to chest)
+				humanPoseManager
+					.setOffset(
+						SkeletonConfigOffsets.CHEST,
+						humanPoseManager.getOffset(SkeletonConfigOffsets.TORSO) * 0.57f
+					);
+			case WAIST -> // Waist length is from hip to waist
+				humanPoseManager.setOffset(SkeletonConfigOffsets.WAIST, null);
+			case HIP_OFFSET -> humanPoseManager
+				.setOffset(SkeletonConfigOffsets.HIP_OFFSET, null);
+			case HIPS_WIDTH -> humanPoseManager
+				.setOffset(SkeletonConfigOffsets.HIPS_WIDTH, null);
+			case FOOT_LENGTH -> humanPoseManager
+				.setOffset(SkeletonConfigOffsets.FOOT_LENGTH, null);
+			case FOOT_SHIFT -> humanPoseManager
+				.setOffset(SkeletonConfigOffsets.FOOT_SHIFT, null);
+			case SKELETON_OFFSET -> humanPoseManager
+				.setOffset(SkeletonConfigOffsets.SKELETON_OFFSET, null);
+			case LEGS_LENGTH -> {
+				// Set legs length to be 5cm above floor level
+				float height = humanPoseManager.getHmdHeight();
+				if (height > 0.5f) { // Reset only if floor level seems right,
+					humanPoseManager
+						.setOffset(
+							SkeletonConfigOffsets.LEGS_LENGTH,
+							height
+								- humanPoseManager.getOffset(SkeletonConfigOffsets.NECK)
+								- humanPoseManager.getOffset(SkeletonConfigOffsets.TORSO)
+								- FLOOR_OFFSET
+						);
+				} else // if floor level is incorrect
+				{
+					humanPoseManager.setOffset(SkeletonConfigOffsets.LEGS_LENGTH, null);
+				}
+				resetOffset(SkeletonConfigOffsets.KNEE_HEIGHT);
+			}
+			case KNEE_HEIGHT -> // Knees are at 55% of the legs by default
+				humanPoseManager
+					.setOffset(
+						SkeletonConfigOffsets.KNEE_HEIGHT,
+						humanPoseManager.getOffset(SkeletonConfigOffsets.LEGS_LENGTH) * 0.55f
+					);
+			case CONTROLLER_DISTANCE_Z -> humanPoseManager
+				.setOffset(SkeletonConfigOffsets.CONTROLLER_DISTANCE_Z, null);
+			case CONTROLLER_DISTANCE_Y -> humanPoseManager
+				.setOffset(SkeletonConfigOffsets.CONTROLLER_DISTANCE_Y, null);
+			case LOWER_ARM_LENGTH -> humanPoseManager
+				.setOffset(SkeletonConfigOffsets.LOWER_ARM_LENGTH, null);
+			case ELBOW_OFFSET -> humanPoseManager
+				.setOffset(SkeletonConfigOffsets.ELBOW_OFFSET, null);
+			case SHOULDERS_DISTANCE -> humanPoseManager
+				.setOffset(SkeletonConfigOffsets.SHOULDERS_DISTANCE, null);
+			case SHOULDERS_WIDTH -> humanPoseManager
+				.setOffset(SkeletonConfigOffsets.SHOULDERS_WIDTH, null);
+			case UPPER_ARM_LENGTH -> humanPoseManager
+				.setOffset(SkeletonConfigOffsets.UPPER_ARM_LENGTH, null);
 		}
 	}
 
 	public void loadFromConfig(ConfigManager configManager) {
-
+		// Load offsets
 		for (SkeletonConfigOffsets configValue : SkeletonConfigOffsets.values) {
 			Float val = configManager
 				.getVrConfig()
@@ -478,6 +499,7 @@ public class SkeletonConfig {
 			}
 		}
 
+		// Load toggles
 		for (SkeletonConfigToggles configValue : SkeletonConfigToggles.values) {
 			Boolean val = configManager
 				.getVrConfig()
@@ -489,6 +511,7 @@ public class SkeletonConfig {
 			}
 		}
 
+		// Load values
 		for (SkeletonConfigValues configValue : SkeletonConfigValues.values) {
 			Float val = configManager
 				.getVrConfig()
@@ -500,7 +523,7 @@ public class SkeletonConfig {
 			}
 		}
 
-
+		// Updates all offsets
 		if (autoUpdateOffsets) {
 			computeAllNodeOffsets();
 		}

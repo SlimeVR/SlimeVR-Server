@@ -4,7 +4,7 @@ import com.google.flatbuffers.FlatBufferBuilder;
 import com.jme3.math.Quaternion;
 import com.jme3.math.Vector3f;
 import dev.slimevr.vr.Device;
-import dev.slimevr.vr.processor.skeleton.BoneInfo;
+import dev.slimevr.vr.processor.skeletonParts.BoneInfo;
 import dev.slimevr.vr.trackers.*;
 import solarxr_protocol.data_feed.Bone;
 import solarxr_protocol.data_feed.DataFeedUpdate;

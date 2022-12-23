@@ -7,9 +7,9 @@ import dev.slimevr.config.OSCConfig;
 import dev.slimevr.config.TapDetectionConfig;
 import dev.slimevr.filtering.TrackerFilters;
 import dev.slimevr.platform.SteamVRBridge;
-import dev.slimevr.vr.processor.skeleton.SkeletonConfig;
-import dev.slimevr.vr.processor.skeleton.SkeletonConfigToggles;
-import dev.slimevr.vr.processor.skeleton.SkeletonConfigValues;
+import dev.slimevr.vr.processor.HumanPoseManager;
+import dev.slimevr.vr.processor.skeletonParts.SkeletonConfigToggles;
+import dev.slimevr.vr.processor.skeletonParts.SkeletonConfigValues;
 import dev.slimevr.vr.trackers.TrackerRole;
 import solarxr_protocol.rpc.*;
 import solarxr_protocol.rpc.settings.LegTweaksSettings;
@@ -131,28 +131,28 @@ public class RPCSettingsBuilder {
 
 	public static int createModelSettings(
 		FlatBufferBuilder fbb,
-		SkeletonConfig config,
+		HumanPoseManager humanPoseManager,
 		LegTweaksConfig legTweaksConfig
 	) {
 		int togglesOffset = ModelToggles
 			.createModelToggles(
 				fbb,
-				config.getToggle(SkeletonConfigToggles.EXTENDED_SPINE_MODEL),
-				config.getToggle(SkeletonConfigToggles.EXTENDED_PELVIS_MODEL),
-				config.getToggle(SkeletonConfigToggles.EXTENDED_KNEE_MODEL),
-				config.getToggle(SkeletonConfigToggles.FORCE_ARMS_FROM_HMD),
-				config.getToggle(SkeletonConfigToggles.FLOOR_CLIP),
-				config.getToggle(SkeletonConfigToggles.SKATING_CORRECTION)
+				humanPoseManager.getToggle(SkeletonConfigToggles.EXTENDED_SPINE_MODEL),
+				humanPoseManager.getToggle(SkeletonConfigToggles.EXTENDED_PELVIS_MODEL),
+				humanPoseManager.getToggle(SkeletonConfigToggles.EXTENDED_KNEE_MODEL),
+				humanPoseManager.getToggle(SkeletonConfigToggles.FORCE_ARMS_FROM_HMD),
+				humanPoseManager.getToggle(SkeletonConfigToggles.FLOOR_CLIP),
+				humanPoseManager.getToggle(SkeletonConfigToggles.SKATING_CORRECTION)
 			);
 		int ratiosOffset = ModelRatios
 			.createModelRatios(
 				fbb,
-				config.getValue(SkeletonConfigValues.WAIST_FROM_CHEST_HIP_AVERAGING),
-				config.getValue(SkeletonConfigValues.WAIST_FROM_CHEST_LEGS_AVERAGING),
-				config.getValue(SkeletonConfigValues.HIP_FROM_CHEST_LEGS_AVERAGING),
-				config.getValue(SkeletonConfigValues.HIP_FROM_WAIST_LEGS_AVERAGING),
-				config.getValue(SkeletonConfigValues.HIP_LEGS_AVERAGING),
-				config.getValue(SkeletonConfigValues.KNEE_TRACKER_ANKLE_AVERAGING)
+				humanPoseManager.getValue(SkeletonConfigValues.WAIST_FROM_CHEST_HIP_AVERAGING),
+				humanPoseManager.getValue(SkeletonConfigValues.WAIST_FROM_CHEST_LEGS_AVERAGING),
+				humanPoseManager.getValue(SkeletonConfigValues.HIP_FROM_CHEST_LEGS_AVERAGING),
+				humanPoseManager.getValue(SkeletonConfigValues.HIP_FROM_WAIST_LEGS_AVERAGING),
+				humanPoseManager.getValue(SkeletonConfigValues.HIP_LEGS_AVERAGING),
+				humanPoseManager.getValue(SkeletonConfigValues.KNEE_TRACKER_ANKLE_AVERAGING)
 			);
 		int legTweaksOffset = LegTweaksSettings
 			.createLegTweaksSettings(

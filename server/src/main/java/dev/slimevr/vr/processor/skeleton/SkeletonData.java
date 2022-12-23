@@ -1,12 +1,10 @@
 package dev.slimevr.vr.processor.skeleton;
 
-import java.util.ArrayList;
-import java.util.EnumMap;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-
+import dev.slimevr.vr.processor.SkeletonConfigManager;
 import dev.slimevr.vr.processor.TransformNode;
+import dev.slimevr.vr.processor.skeletonParts.BoneType;
+
+import java.util.*;
 
 
 /**
@@ -17,7 +15,7 @@ public class SkeletonData {
 
 	public final Joint[] joints;
 	public final List<Bone> bones = new ArrayList<>();
-	private final SkeletonConfig config;
+	private final SkeletonConfigManager config;
 
 	private Map<BoneType, List<Bone>> bonesByOffsetKey = new EnumMap<>(
 		BoneType.class
@@ -60,7 +58,7 @@ public class SkeletonData {
 	protected final Joint trackerRightHandJoint = new Joint("Right-Hand-Tracker");
 	// #endregion
 
-	public SkeletonData(SkeletonConfig config) {
+	public SkeletonData(SkeletonConfigManager config) {
 		this.config = config;
 		List<Joint> jointsList = new ArrayList<>();
 

@@ -1,6 +1,6 @@
 package dev.slimevr.vr.trackers;
 
-import dev.slimevr.vr.processor.ComputedHumanPoseTracker;
+import dev.slimevr.vr.processor.skeletonParts.ComputedHumanPoseTracker;
 
 import java.util.List;
 

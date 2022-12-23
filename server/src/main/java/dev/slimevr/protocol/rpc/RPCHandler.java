@@ -101,13 +101,13 @@ public class RPCHandler extends ProtocolHandler<RpcMessageHeader>
 		if (req == null)
 			return;
 
-		this.api.server.humanPoseProcessor.getSkeletonConfig().resetOffsets();
-		this.api.server.humanPoseProcessor.getSkeletonConfig().save();
+		this.api.server.humanPoseManager.resetOffsets();
+		this.api.server.humanPoseManager.saveConfig();
 		this.api.server.getConfigManager().saveConfig();
 
 		// might not be a good idea maybe let the client ask again
 		FlatBufferBuilder fbb = new FlatBufferBuilder(300);
-		int config = RPCBuilder.createSkeletonConfig(fbb, this.api.server.humanPoseProcessor);
+		int config = RPCBuilder.createSkeletonConfig(fbb, this.api.server.humanPoseManager);
 		int outbound = this.createRPCMessage(fbb, RpcMessage.SkeletonConfigResponse, config);
 		fbb.finish(outbound);
 		conn.send(fbb.dataBuffer());
@@ -120,7 +120,7 @@ public class RPCHandler extends ProtocolHandler<RpcMessageHeader>
 			return;
 
 		FlatBufferBuilder fbb = new FlatBufferBuilder(300);
-		int config = RPCBuilder.createSkeletonConfig(fbb, this.api.server.humanPoseProcessor);
+		int config = RPCBuilder.createSkeletonConfig(fbb, this.api.server.humanPoseManager);
 		int outbound = this.createRPCMessage(fbb, RpcMessage.SkeletonConfigResponse, config);
 		fbb.finish(outbound);
 		conn.send(fbb.dataBuffer());
@@ -137,8 +137,8 @@ public class RPCHandler extends ProtocolHandler<RpcMessageHeader>
 
 		SkeletonConfigOffsets joint = SkeletonConfigOffsets.getById(req.bone());
 
-		this.api.server.humanPoseProcessor.setSkeletonConfig(joint, req.value());
-		this.api.server.humanPoseProcessor.getSkeletonConfig().save();
+		this.api.server.humanPoseManager.setOffset(joint, req.value());
+		this.api.server.humanPoseManager.saveConfig();
 		this.api.server.getConfigManager().saveConfig();
 	}
 

@@ -1,5 +1,7 @@
 package dev.slimevr.vr.processor.skeleton;
 
+import dev.slimevr.vr.processor.skeletonParts.BoneType;
+
 import java.util.HashMap;
 import java.util.Map;
 

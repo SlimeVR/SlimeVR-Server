@@ -4,7 +4,7 @@ import dev.slimevr.VRServer;
 import dev.slimevr.autobone.AutoBone.AutoBoneResults;
 import dev.slimevr.autobone.errors.AutoBoneException;
 import dev.slimevr.poserecorder.*;
-import dev.slimevr.vr.processor.skeleton.SkeletonConfig;
+import dev.slimevr.vr.processor.SkeletonConfigManager;
 import dev.slimevr.vr.processor.skeleton.SkeletonConfigOffsets;
 import io.eiren.util.StringUtils;
 import io.eiren.util.logging.LogManager;
@@ -314,7 +314,7 @@ public class AutoBoneHandler {
 			announceProcessStatus(AutoBoneProcessType.PROCESS, "Processing recording(s)...");
 			LogManager.info("[AutoBone] Processing frames...");
 			StatsCalculator errorStats = new StatsCalculator();
-			SkeletonConfig skeletonConfigBuffer = new SkeletonConfig(false);
+			SkeletonConfigManager skeletonConfigManagerBuffer = new SkeletonConfigManager(false);
 			for (Pair<String, PoseFrames> recording : frameRecordings) {
 				LogManager
 					.info("[AutoBone] Processing frames from \"" + recording.getKey() + "\"...");
@@ -355,18 +355,19 @@ public class AutoBoneHandler {
 				LogManager.info("[AutoBone] Done processing!");
 
 				// #region Stats/Values
-				skeletonConfigBuffer.setOffsets(autoBoneResults.configValues);
+				skeletonConfigManagerBuffer.setOffsets(autoBoneResults.configValues);
 
-				float neckLength = skeletonConfigBuffer.getOffset(SkeletonConfigOffsets.NECK);
-				float chestDistance = skeletonConfigBuffer
+				float neckLength = skeletonConfigManagerBuffer
+					.getOffset(SkeletonConfigOffsets.NECK);
+				float chestDistance = skeletonConfigManagerBuffer
 					.getOffset(SkeletonConfigOffsets.CHEST);
-				float torsoLength = skeletonConfigBuffer
+				float torsoLength = skeletonConfigManagerBuffer
 					.getOffset(SkeletonConfigOffsets.TORSO);
-				float hipWidth = skeletonConfigBuffer
+				float hipWidth = skeletonConfigManagerBuffer
 					.getOffset(SkeletonConfigOffsets.HIPS_WIDTH);
-				float legsLength = skeletonConfigBuffer
+				float legsLength = skeletonConfigManagerBuffer
 					.getOffset(SkeletonConfigOffsets.LEGS_LENGTH);
-				float kneeHeight = skeletonConfigBuffer
+				float kneeHeight = skeletonConfigManagerBuffer
 					.getOffset(SkeletonConfigOffsets.KNEE_HEIGHT);
 
 				float neckTorso = neckLength / torsoLength;

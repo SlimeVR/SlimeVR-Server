@@ -5,7 +5,7 @@ import com.jme3.math.Quaternion;
 import com.jme3.math.Transform;
 import com.jme3.math.Vector3f;
 import dev.slimevr.vr.processor.TransformNode;
-import dev.slimevr.vr.processor.skeleton.Skeleton;
+import dev.slimevr.vr.processor.skeleton.HumanSkeleton;
 import org.apache.commons.lang3.StringUtils;
 
 import java.io.*;
@@ -23,7 +23,7 @@ public class BVHFileStream extends PoseDataStream {
 	private float[] angleBuf = new float[3];
 	private Quaternion rotBuf = new Quaternion();
 
-	private Skeleton wrappedSkeleton;
+	private HumanSkeleton wrappedSkeleton;
 	private TransformNodeWrapper rootNode;
 
 	public BVHFileStream(OutputStream outputStream) {
@@ -48,7 +48,7 @@ public class BVHFileStream extends PoseDataStream {
 		return bufferCount > 0 ? frameString + StringUtils.repeat(' ', bufferCount) : frameString;
 	}
 
-	private TransformNodeWrapper wrapSkeletonIfNew(Skeleton skeleton) {
+	private TransformNodeWrapper wrapSkeletonIfNew(HumanSkeleton skeleton) {
 		TransformNodeWrapper wrapper = rootNode;
 
 		// If the wrapped skeleton is missing or the skeleton is updated
@@ -59,7 +59,7 @@ public class BVHFileStream extends PoseDataStream {
 		return wrapper;
 	}
 
-	private TransformNodeWrapper wrapSkeleton(Skeleton skeleton) {
+	private TransformNodeWrapper wrapSkeleton(HumanSkeleton skeleton) {
 		TransformNodeWrapper wrapper = wrapSkeletonNodes(skeleton.getRootNode());
 
 		wrappedSkeleton = skeleton;
@@ -134,7 +134,7 @@ public class BVHFileStream extends PoseDataStream {
 	}
 
 	@Override
-	public void writeHeader(Skeleton skeleton, PoseStreamer streamer) throws IOException {
+	public void writeHeader(HumanSkeleton skeleton, PoseStreamer streamer) throws IOException {
 		if (skeleton == null) {
 			throw new NullPointerException("skeleton must not be null");
 		}
@@ -248,7 +248,7 @@ public class BVHFileStream extends PoseDataStream {
 	}
 
 	@Override
-	public void writeFrame(Skeleton skeleton) throws IOException {
+	public void writeFrame(HumanSkeleton skeleton) throws IOException {
 		if (skeleton == null) {
 			throw new NullPointerException("skeleton must not be null");
 		}
@@ -275,7 +275,7 @@ public class BVHFileStream extends PoseDataStream {
 	}
 
 	@Override
-	public void writeFooter(Skeleton skeleton) throws IOException {
+	public void writeFooter(HumanSkeleton skeleton) throws IOException {
 		// Write the final frame count for files
 		if (outputStream instanceof FileOutputStream fileOutputStream) {
 			// Flush before anything else

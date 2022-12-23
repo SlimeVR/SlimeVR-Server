@@ -1,6 +1,6 @@
 package dev.slimevr.posestreamer;
 
-import dev.slimevr.vr.processor.skeleton.Skeleton;
+import dev.slimevr.vr.processor.skeleton.HumanSkeleton;
 
 import java.io.*;
 
@@ -22,12 +22,12 @@ public abstract class PoseDataStream implements AutoCloseable {
 		this(new FileOutputStream(file));
 	}
 
-	public void writeHeader(Skeleton skeleton, PoseStreamer streamer) throws IOException {
+	public void writeHeader(HumanSkeleton skeleton, PoseStreamer streamer) throws IOException {
 	}
 
-	abstract void writeFrame(Skeleton skeleton) throws IOException;
+	abstract void writeFrame(HumanSkeleton skeleton) throws IOException;
 
-	public void writeFooter(Skeleton skeleton) throws IOException {
+	public void writeFooter(HumanSkeleton skeleton) throws IOException {
 	}
 
 	public boolean isClosed() {

@@ -1,7 +1,7 @@
 package dev.slimevr.poserecorder;
 
 import dev.slimevr.VRServer;
-import dev.slimevr.vr.processor.ComputedHumanPoseTracker;
+import dev.slimevr.vr.processor.skeletonParts.ComputedHumanPoseTracker;
 import dev.slimevr.vr.processor.skeleton.HumanSkeleton;
 import dev.slimevr.vr.processor.skeleton.SkeletonConfigOffsets;
 import dev.slimevr.vr.trackers.Tracker;

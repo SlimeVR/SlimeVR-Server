@@ -1,4 +1,4 @@
-package dev.slimevr.vr.processor;
+package dev.slimevr.vr.processor.skeletonParts;
 
 public enum ComputedHumanPoseTrackerPosition {
 

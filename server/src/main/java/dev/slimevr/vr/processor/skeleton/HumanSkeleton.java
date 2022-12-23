@@ -5,20 +5,19 @@ import com.jme3.math.Quaternion;
 import com.jme3.math.Vector3f;
 import dev.slimevr.VRServer;
 import dev.slimevr.util.ann.VRServerThread;
-import dev.slimevr.vr.processor.ComputedHumanPoseTracker;
-import dev.slimevr.vr.processor.ComputedHumanPoseTrackerPosition;
+import dev.slimevr.vr.processor.HumanPoseManager;
 import dev.slimevr.vr.processor.TransformNode;
+import dev.slimevr.vr.processor.skeletonParts.*;
 import dev.slimevr.vr.trackers.*;
 import io.eiren.util.collections.FastList;
 
+import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
 import java.util.Objects;
 
 
-public class HumanSkeleton extends Skeleton implements SkeletonConfigCallback {
-
-	protected final SkeletonConfig skeletonConfig;
+public class HumanSkeleton {
+	protected final HumanPoseManager humanPoseManager;
 	// #region Upper body nodes (torso)
 	// @formatter:off
 	protected final TransformNode hmdNode = new TransformNode("HMD", false);
@@ -63,6 +62,7 @@ public class HumanSkeleton extends Skeleton implements SkeletonConfigCallback {
 	protected final TransformNode leftControllerNode = new TransformNode("Left-Controller", false);
 	protected final TransformNode rightControllerNode = new TransformNode("Right-Controller", false);
 	// @formatter:on
+	public final List<BoneInfo> currentBoneInfo = new ArrayList<>();
 	// #endregion
 	// #region Buffers
 	private final Vector3f posBuf = new Vector3f();
@@ -78,7 +78,6 @@ public class HumanSkeleton extends Skeleton implements SkeletonConfigCallback {
 	protected boolean hasRightArmTracker;
 	static final Quaternion FORWARD_QUATERNION = new Quaternion()
 		.fromAngles(FastMath.HALF_PI, 0, 0);
-	static final float FLOOR_OFFSET = 0.05f;
 	// #region Tracker Input
 	protected Tracker hmdTracker;
 	protected Tracker neckTracker;
@@ -143,27 +142,27 @@ public class HumanSkeleton extends Skeleton implements SkeletonConfigCallback {
 	// #endregion
 
 	// #region Constructors
-	protected HumanSkeleton(List<? extends ComputedHumanPoseTracker> computedTrackers) {
+	protected HumanSkeleton(
+		HumanPoseManager humanPoseManager
+	) {
+		this.humanPoseManager = humanPoseManager;
+
 		assembleSkeleton();
 
-		// Set default skeleton configuration (callback automatically sets
-		// initial offsets)
-		skeletonConfig = new SkeletonConfig(true, this, this);
-
-		if (computedTrackers != null) {
-			setComputedTrackers(computedTrackers);
+		if (humanPoseManager.getComputedTracker() != null) {
+			setComputedTrackers(humanPoseManager.getComputedTracker());
 		}
 		fillNullComputedTrackers();
 		resetBones();
 	}
 
 	public HumanSkeleton(
-		VRServer server,
-		List<? extends ComputedHumanPoseTracker> computedTrackers
+		HumanPoseManager humanPoseManager,
+		VRServer server
 	) {
-		this(computedTrackers);
+		this(humanPoseManager);
+
 		setTrackersFromServer(server);
-		skeletonConfig.loadFromConfig(server.getConfigManager());
 
 		tapDetectionManager = new TapDetectionManager(
 			this,
@@ -171,42 +170,15 @@ public class HumanSkeleton extends Skeleton implements SkeletonConfigCallback {
 			server.getConfigManager().getVrConfig().getTapDetection()
 		);
 		legTweaks.setConfig(server.getConfigManager().getVrConfig().getLegTweaks());
-
 	}
 
 	public HumanSkeleton(
-		List<? extends Tracker> trackers,
-		List<? extends ComputedHumanPoseTracker> computedTrackers
+		HumanPoseManager humanPoseManager,
+		List<? extends Tracker> trackers
 	) {
-		this(computedTrackers);
+		this(humanPoseManager);
 
 		setTrackersFromList(Objects.requireNonNullElseGet(trackers, () -> new FastList<>(0)));
-	}
-
-	public HumanSkeleton(
-		List<? extends Tracker> trackers,
-		List<? extends ComputedHumanPoseTracker> computedTrackers,
-		Map<SkeletonConfigOffsets, Float> configs,
-		Map<SkeletonConfigOffsets, Float> altConfigs
-	) {
-		// Initialize
-		this(trackers, computedTrackers);
-
-		// Set configs
-		if (altConfigs != null) {
-			// Set alts first, so if there's any overlap it doesn't affect the
-			// values
-			skeletonConfig.setOffsets(altConfigs);
-		}
-		skeletonConfig.setOffsets(configs);
-	}
-
-	public HumanSkeleton(
-		List<? extends Tracker> trackers,
-		List<? extends ComputedHumanPoseTracker> computedTrackers,
-		Map<SkeletonConfigOffsets, Float> configs
-	) {
-		this(trackers, computedTrackers, configs, null);
 	}
 	// #endregion
 
@@ -613,8 +585,8 @@ public class HumanSkeleton extends Skeleton implements SkeletonConfigCallback {
 		assembleSkeletonArms(true);
 
 		// Refresh node offsets for arms
-		skeletonConfig.computeNodeOffset(BoneType.LEFT_LOWER_ARM);
-		skeletonConfig.computeNodeOffset(BoneType.RIGHT_LOWER_ARM);
+		humanPoseManager.computeNodeOffset(BoneType.LEFT_LOWER_ARM);
+		humanPoseManager.computeNodeOffset(BoneType.RIGHT_LOWER_ARM);
 
 		// Rebuild the bone list
 		resetBones();
@@ -782,7 +754,6 @@ public class HumanSkeleton extends Skeleton implements SkeletonConfigCallback {
 
 	// Updates the pose from tracker positions
 	@VRServerThread
-	@Override
 	public void updatePose() {
 		tapDetectionManager.update();
 		updateLocalTransforms();
@@ -1326,13 +1297,7 @@ public class HumanSkeleton extends Skeleton implements SkeletonConfigCallback {
 	// #endregion
 
 	// #region Skeleton Config
-	@Override
-	public void updateOffsetsState(SkeletonConfigOffsets configOffset, float newValue) {
-		// Do nothing, the node offset callback handles all that's needed
-	}
-
-	@Override
-	public void updateTogglesState(SkeletonConfigToggles configToggle, boolean newValue) {
+	public void updateToggleState(SkeletonConfigToggles configToggle, boolean newValue) {
 		if (configToggle == null) {
 			return;
 		}
@@ -1353,8 +1318,7 @@ public class HumanSkeleton extends Skeleton implements SkeletonConfigCallback {
 		}
 	}
 
-	@Override
-	public void updateValuesState(SkeletonConfigValues configValue, float newValue) {
+	public void updateValueState(SkeletonConfigValues configValue, float newValue) {
 		if (configValue == null) {
 			return;
 		}
@@ -1370,7 +1334,6 @@ public class HumanSkeleton extends Skeleton implements SkeletonConfigCallback {
 		}
 	}
 
-	@Override
 	public void updateNodeOffset(BoneType nodeOffset, Vector3f offset) {
 		if (nodeOffset == null) {
 			return;
@@ -1563,12 +1526,10 @@ public class HumanSkeleton extends Skeleton implements SkeletonConfigCallback {
 	}
 	// #endregion
 
-	@Override
 	public TransformNode getRootNode() {
 		return hmdNode;
 	}
 
-	@Override
 	protected TransformNode[] getAllNodes() {
 		return new TransformNode[] {
 			hmdNode,
@@ -1611,7 +1572,6 @@ public class HumanSkeleton extends Skeleton implements SkeletonConfigCallback {
 		};
 	}
 
-	@Override
 	protected TransformNode[] getArmNodes() {
 		return new TransformNode[] {
 			leftShoulderHeadNode,
@@ -1633,93 +1593,10 @@ public class HumanSkeleton extends Skeleton implements SkeletonConfigCallback {
 		};
 	}
 
-	@Override
-	public SkeletonConfig getSkeletonConfig() {
-		return skeletonConfig;
-	}
-
-	@Override
-	public void resetSkeletonConfig(SkeletonConfigOffsets config) {
-		if (config == null) {
-			return;
-		}
-
-		Vector3f vec;
-		float height;
-		switch (config) {
-			case HEAD -> skeletonConfig.setOffset(SkeletonConfigOffsets.HEAD, null);
-			case NECK -> skeletonConfig.setOffset(SkeletonConfigOffsets.NECK, null);
-			case TORSO -> { // Distance from shoulders to hip (full torso
-							// length)
-				vec = new Vector3f();
-				hmdTracker.getPosition(vec);
-				height = vec.y;
-				if (height > 0.5f) { // Reset only if floor level seems right,
-					skeletonConfig
-						.setOffset(
-							SkeletonConfigOffsets.TORSO,
-							((height) * 0.42f)
-								- skeletonConfig.getOffset(SkeletonConfigOffsets.NECK)
-						);
-				} else// if floor level is incorrect
-				{
-					skeletonConfig.setOffset(SkeletonConfigOffsets.TORSO, null);
-				}
-			}
-			case CHEST -> // Chest is 57% of the upper body by default
-				// (shoulders to chest)
-				skeletonConfig
-					.setOffset(
-						SkeletonConfigOffsets.CHEST,
-						skeletonConfig.getOffset(SkeletonConfigOffsets.TORSO) * 0.57f
-					);
-			case WAIST -> // Waist length is from hip to waist
-				skeletonConfig.setOffset(SkeletonConfigOffsets.WAIST, null);
-			case HIP_OFFSET -> skeletonConfig.setOffset(SkeletonConfigOffsets.HIP_OFFSET, null);
-			case HIPS_WIDTH -> skeletonConfig.setOffset(SkeletonConfigOffsets.HIPS_WIDTH, null);
-			case FOOT_LENGTH -> skeletonConfig.setOffset(SkeletonConfigOffsets.FOOT_LENGTH, null);
-			case FOOT_SHIFT -> skeletonConfig.setOffset(SkeletonConfigOffsets.FOOT_SHIFT, null);
-			case SKELETON_OFFSET -> skeletonConfig
-				.setOffset(SkeletonConfigOffsets.SKELETON_OFFSET, null);
-			case LEGS_LENGTH -> { // Set legs length to be 5cm above floor level
-				vec = new Vector3f();
-				hmdTracker.getPosition(vec);
-				height = vec.y;
-				if (height > 0.5f) { // Reset only if floor level seems right,
-					skeletonConfig
-						.setOffset(
-							SkeletonConfigOffsets.LEGS_LENGTH,
-							height
-								- skeletonConfig.getOffset(SkeletonConfigOffsets.NECK)
-								- skeletonConfig.getOffset(SkeletonConfigOffsets.TORSO)
-								- FLOOR_OFFSET
-						);
-				} else // if floor level is incorrect
-				{
-					skeletonConfig.setOffset(SkeletonConfigOffsets.LEGS_LENGTH, null);
-				}
-				resetSkeletonConfig(SkeletonConfigOffsets.KNEE_HEIGHT);
-			}
-			case KNEE_HEIGHT -> // Knees are at 55% of the legs by default
-				skeletonConfig
-					.setOffset(
-						SkeletonConfigOffsets.KNEE_HEIGHT,
-						skeletonConfig.getOffset(SkeletonConfigOffsets.LEGS_LENGTH) * 0.55f
-					);
-			case CONTROLLER_DISTANCE_Z -> skeletonConfig
-				.setOffset(SkeletonConfigOffsets.CONTROLLER_DISTANCE_Z, null);
-			case CONTROLLER_DISTANCE_Y -> skeletonConfig
-				.setOffset(SkeletonConfigOffsets.CONTROLLER_DISTANCE_Y, null);
-			case LOWER_ARM_LENGTH -> skeletonConfig
-				.setOffset(SkeletonConfigOffsets.LOWER_ARM_LENGTH, null);
-			case ELBOW_OFFSET -> skeletonConfig.setOffset(SkeletonConfigOffsets.ELBOW_OFFSET, null);
-			case SHOULDERS_DISTANCE -> skeletonConfig
-				.setOffset(SkeletonConfigOffsets.SHOULDERS_DISTANCE, null);
-			case SHOULDERS_WIDTH -> skeletonConfig
-				.setOffset(SkeletonConfigOffsets.SHOULDERS_WIDTH, null);
-			case UPPER_ARM_LENGTH -> skeletonConfig
-				.setOffset(SkeletonConfigOffsets.UPPER_ARM_LENGTH, null);
-		}
+	public float getHmdHeight() {
+		Vector3f hmdVec = new Vector3f();
+		hmdTracker.getPosition(hmdVec);
+		return hmdVec.y;
 	}
 
 	/**
@@ -1767,7 +1644,6 @@ public class HumanSkeleton extends Skeleton implements SkeletonConfigCallback {
 		};
 	}
 
-	@Override
 	public void resetTrackersFull() {
 		// Pass all trackers through trackerPreUpdate
 		Tracker hmdTracker = trackerPreUpdate(this.hmdTracker);
@@ -1806,7 +1682,6 @@ public class HumanSkeleton extends Skeleton implements SkeletonConfigCallback {
 			|| position == TrackerPosition.RIGHT_HAND;
 	}
 
-	@Override
 	@VRServerThread
 	public void resetTrackersMounting() {
 		// Pass all trackers through trackerPreUpdate
@@ -1820,7 +1695,6 @@ public class HumanSkeleton extends Skeleton implements SkeletonConfigCallback {
 		this.legTweaks.resetBuffer();
 	}
 
-	@Override
 	@VRServerThread
 	public void resetTrackersYaw() {
 		// Pass all trackers through trackerPreUpdate
@@ -1847,7 +1721,6 @@ public class HumanSkeleton extends Skeleton implements SkeletonConfigCallback {
 		legTweaks.updateConfig();
 	}
 
-	@Override
 	public boolean[] getLegTweaksState() {
 		boolean[] state = new boolean[2];
 		state[0] = this.legTweaks.getFloorclipEnabled();
@@ -1856,21 +1729,18 @@ public class HumanSkeleton extends Skeleton implements SkeletonConfigCallback {
 	}
 
 	// master enable/disable of all leg tweaks (for autobone)
-	@Override
 	@VRServerThread
 	public void setLegTweaksEnabled(boolean value) {
 		this.legTweaks.setEnabled(value);
 	}
 
-	@Override
 	@VRServerThread
 	public void setFloorclipEnabled(boolean value) {
-		this.skeletonConfig.setToggle(SkeletonConfigToggles.FLOOR_CLIP, value);
+		humanPoseManager.setToggle(SkeletonConfigToggles.FLOOR_CLIP, value);
 	}
 
-	@Override
 	@VRServerThread
 	public void setSkatingCorrectionEnabled(boolean value) {
-		this.skeletonConfig.setToggle(SkeletonConfigToggles.SKATING_CORRECTION, value);
+		humanPoseManager.setToggle(SkeletonConfigToggles.SKATING_CORRECTION, value);
 	}
 }
