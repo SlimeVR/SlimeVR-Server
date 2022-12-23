@@ -1,8 +1,8 @@
 package dev.slimevr.protocol.rpc;
 
 import com.google.flatbuffers.FlatBufferBuilder;
-import dev.slimevr.vr.processor.HumanPoseManager;
-import dev.slimevr.vr.processor.skeleton.SkeletonConfigOffsets;
+import dev.slimevr.tracking.processor.HumanPoseManager;
+import dev.slimevr.tracking.processor.config.SkeletonConfigOffsets;
 import solarxr_protocol.rpc.SkeletonConfigResponse;
 import solarxr_protocol.rpc.SkeletonPart;
 

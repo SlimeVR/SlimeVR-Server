@@ -3,9 +3,9 @@ package dev.slimevr.autobone.errors;
 import com.jme3.math.FastMath;
 
 import dev.slimevr.autobone.AutoBoneTrainingStep;
-import dev.slimevr.vr.processor.skeleton.HumanSkeleton;
-import dev.slimevr.vr.trackers.ComputedTracker;
-import dev.slimevr.vr.trackers.TrackerRole;
+import dev.slimevr.tracking.processor.skeleton.HumanSkeleton;
+import dev.slimevr.tracking.trackers.ComputedTracker;
+import dev.slimevr.tracking.trackers.TrackerRole;
 
 
 // The offset between the height both feet at one instant and over time

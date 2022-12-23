@@ -2,7 +2,7 @@ package dev.slimevr.posestreamer;
 
 import dev.slimevr.VRServer;
 import dev.slimevr.util.ann.VRServerThread;
-import dev.slimevr.vr.processor.skeleton.HumanSkeleton;
+import dev.slimevr.tracking.processor.skeleton.HumanSkeleton;
 
 
 public class ServerPoseStreamer extends TickPoseStreamer {

@@ -1,6 +1,6 @@
 package dev.slimevr.autobone.errors.proportions;
 
-import dev.slimevr.vr.processor.HumanPoseManager;
+import dev.slimevr.tracking.processor.HumanPoseManager;
 
 import java.util.function.Function;
 

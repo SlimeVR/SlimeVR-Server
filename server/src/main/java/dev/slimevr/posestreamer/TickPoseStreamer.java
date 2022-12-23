@@ -1,6 +1,6 @@
 package dev.slimevr.posestreamer;
 
-import dev.slimevr.vr.processor.skeleton.HumanSkeleton;
+import dev.slimevr.tracking.processor.skeleton.HumanSkeleton;
 
 import java.io.IOException;
 

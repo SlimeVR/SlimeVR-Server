@@ -4,8 +4,8 @@ import com.jme3.math.FastMath;
 import com.jme3.math.Quaternion;
 import com.jme3.math.Transform;
 import com.jme3.math.Vector3f;
-import dev.slimevr.vr.processor.TransformNode;
-import dev.slimevr.vr.processor.skeleton.HumanSkeleton;
+import dev.slimevr.tracking.processor.TransformNode;
+import dev.slimevr.tracking.processor.skeleton.HumanSkeleton;
 import org.apache.commons.lang3.StringUtils;
 
 import java.io.*;

@@ -1,10 +1,10 @@
 package dev.slimevr.poserecorder;
 
 import dev.slimevr.VRServer;
-import dev.slimevr.vr.processor.skeletonParts.ComputedHumanPoseTracker;
-import dev.slimevr.vr.processor.skeleton.HumanSkeleton;
-import dev.slimevr.vr.processor.skeleton.SkeletonConfigOffsets;
-import dev.slimevr.vr.trackers.Tracker;
+import dev.slimevr.tracking.processor.config.SkeletonConfigOffsets;
+import dev.slimevr.tracking.processor.skeleton.HumanSkeleton;
+import dev.slimevr.tracking.trackers.ComputedHumanPoseTracker;
+import dev.slimevr.tracking.trackers.Tracker;
 
 import java.util.List;
 import java.util.Map;

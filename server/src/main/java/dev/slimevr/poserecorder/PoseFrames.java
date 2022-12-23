@@ -1,7 +1,7 @@
 package dev.slimevr.poserecorder;
 
-import dev.slimevr.vr.trackers.TrackerPosition;
-import dev.slimevr.vr.trackers.TrackerUtils;
+import dev.slimevr.tracking.trackers.TrackerPosition;
+import dev.slimevr.tracking.trackers.TrackerUtils;
 import io.eiren.util.collections.FastList;
 
 import java.util.Iterator;

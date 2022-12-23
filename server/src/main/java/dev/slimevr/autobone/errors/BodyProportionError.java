@@ -5,8 +5,8 @@ import com.jme3.math.FastMath;
 import dev.slimevr.autobone.AutoBoneTrainingStep;
 import dev.slimevr.autobone.errors.proportions.ProportionLimiter;
 import dev.slimevr.autobone.errors.proportions.RangeProportionLimiter;
-import dev.slimevr.vr.processor.HumanPoseManager;
-import dev.slimevr.vr.processor.skeleton.SkeletonConfigOffsets;
+import dev.slimevr.tracking.processor.HumanPoseManager;
+import dev.slimevr.tracking.processor.config.SkeletonConfigOffsets;
 
 
 // The distance from average human proportions

@@ -1,10 +1,10 @@
 package dev.slimevr.autobone;
 
-import java.util.Map;
-
 import dev.slimevr.poserecorder.PoseFrameSkeleton;
 import dev.slimevr.poserecorder.PoseFrames;
-import dev.slimevr.vr.processor.skeletonParts.BoneType;
+import dev.slimevr.tracking.processor.BoneType;
+
+import java.util.Map;
 
 
 public class AutoBoneTrainingStep {
