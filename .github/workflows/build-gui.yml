@@ -31,7 +31,7 @@ jobs:
         with:
           submodules: recursive
 
-      - if: matrix.os == 'ubuntu-latest'
+      - if: matrix.os == 'ubuntu-20.04'
         name: Set up Linux dependencies
         run: |
           sudo apt-get update
