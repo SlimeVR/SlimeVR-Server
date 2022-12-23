@@ -137,7 +137,34 @@ body_assignment_menu-manage_trackers = Manage all trackers
 body_assignment_menu-unassign_tracker = Unassign tracker
 
 ## Tracker assignment menu
-tracker_selection_menu-title = Which tracker to assign to the { $bodyPart }?
+
+# A -translation_key (with a dash in the front) means that it's a label.
+# It can only be used in the translation file, it's nice for reusing names and that kind of stuff.
+# 
+# We are using it here because english doesn't require changing the text in each case but
+# maybe your language does.
+-tracker_selection-part = Which tracker to assign to your
+tracker_selection_menu-title-NONE = { -tracker_selection-part } unassigned
+tracker_selection_menu-title-HEAD = { -tracker_selection-part } head
+tracker_selection_menu-title-NECK = { -tracker_selection-part } neck
+tracker_selection_menu-title-RIGHT_SHOULDER = { -tracker_selection-part } right shoulder
+tracker_selection_menu-title-RIGHT_UPPER_ARM = { -tracker_selection-part } right upper arm
+tracker_selection_menu-title-RIGHT_LOWER_ARM = { -tracker_selection-part } right lower arm
+tracker_selection_menu-title-RIGHT_HAND = { -tracker_selection-part } right hand
+tracker_selection_menu-title-RIGHT_UPPER_LEG = { -tracker_selection-part } right thigh
+tracker_selection_menu-title-RIGHT_LOWER_LEG = { -tracker_selection-part } right ankle
+tracker_selection_menu-title-RIGHT_FOOT = { -tracker_selection-part } right foot
+tracker_selection_menu-title-CHEST = { -tracker_selection-part } chest
+tracker_selection_menu-title-WAIST = { -tracker_selection-part } waist
+tracker_selection_menu-title-HIP = { -tracker_selection-part } hip
+tracker_selection_menu-title-LEFT_SHOULDER = { -tracker_selection-part } left shoulder
+tracker_selection_menu-title-LEFT_UPPER_ARM = { -tracker_selection-part } left upper arm
+tracker_selection_menu-title-LEFT_LOWER_ARM = { -tracker_selection-part } left lower arm
+tracker_selection_menu-title-LEFT_HAND = { -tracker_selection-part } left hand
+tracker_selection_menu-title-LEFT_UPPER_LEG = { -tracker_selection-part } left thigh
+tracker_selection_menu-title-LEFT_LOWER_LEG = { -tracker_selection-part } left ankle
+tracker_selection_menu-title-LEFT_FOOT = { -tracker_selection-part } left foot
+
 tracker_selection_menu-unassigned = Unassigned Trackers
 tracker_selection_menu-assigned = Assigned Trackers
 tracker_selection_menu-dont_assign = Do not assign
@@ -187,7 +214,14 @@ settings-general-tracker_mechanics-amount-label = Amount
 settings-general-fk_settings-title = Tracking settings
 settings-general-fk_settings-leg_tweak-title = Leg tweaks
 settings-general-fk_settings-leg_tweak-description = Floor-clip can Reduce or even eliminates clipping with the floor but may cause problems when on your knees. Skating-correction corrects for ice skating, but can decrease accuracy in certain movement patterns.
+# Floor clip: 
+# why the name - came from the idea of noclip in video games, but is the opposite where clipping to the floor is a desired feature
+# definition - Prevents the foot trackers from going lower than they where when a reset was performed
 settings-general-fk_settings-leg_tweak-floor_clip = Floor clip
+# Skating correction: 
+# why the name - without this enabled the feet will often slide across the ground as if your skating across the ground,
+# since this largely prevents this it corrects for it hence skating correction (note this may be renamed to sliding correction)
+# definition - Guesses when each foot is in contact with the ground and uses that information to improve tracking
 settings-general-fk_settings-leg_tweak-skating_correction = Skating correction
 settings-general-fk_settings-leg_tweak-skating_correction_amount = Skating correction strength
 settings-general-fk_settings-arm_fk-title = Arm tracking
@@ -329,14 +363,27 @@ onboarding-connect_tracker-connection_status-connected = Connected to WiFi
 onboarding-connect_tracker-connection_status-error = Unable to connect to Wifi
 onboarding-connect_tracker-connection_status-start_connecting = Looking for trackers
 onboarding-connect_tracker-connection_status-handshake = Connected to the Server
-onboarding-connect_tracker-connected_trackers = { $amount } trackers connected
+# $amount (Number) - Amount of trackers connected (this is a number, but you can use CLDR plural rules for your language)
+# More info on https://www.unicode.org/cldr/cldr-aux/charts/22/supplemental/language_plural_rules.html
+# English in this case only has 2 plural rules, which are "one" and "other",
+# we use 0 in an explicit way because there is no plural rule in english for 0, so we directly say if
+# $amount is 0 then we say "No trackers connected"
+onboarding-connect_tracker-connected_trackers = { $amount ->
+    [0] No trackers
+    [one] 1 tracker
+    *[other] { $amount } trackers
+} connected
 onboarding-connect_tracker-next = I connected all my trackers
 
 ## Tracker assignment setup
 onboarding-assign_trackers-back = Go Back to Wifi Credentials
 onboarding-assign_trackers-title = Assign trackers
 onboarding-assign_trackers-description = Let's choose which tracker goes where. Click on a location where you want to place a tracker
-onboarding-assign_trackers-assigned = { $assigned } of { $trackers } trackers assigned
+# Look at translation of onboarding-connect_tracker-connected_trackers on how to use plurals
+onboarding-assign_trackers-assigned = { $assigned } of { $trackers ->
+    [one] 1 tracker
+    *[other] { $trackers } trackers
+} assigned
 onboarding-assign_trackers-advanced = Show advanced assign locations
 onboarding-assign_trackers-next = I assigned all the trackers
 
@@ -397,7 +444,10 @@ onboarding-automatic_proportions-recording-steps-2 = Twist upper body left, then
 onboarding-automatic_proportions-recording-steps-3 = Twist upper body right, then bend left.
 onboarding-automatic_proportions-recording-steps-4 = Wiggle around until timer ends.
 onboarding-automatic_proportions-recording-processing = Processing the result
-onboarding-automatic_proportions-recording-timer = { $time } seconds left
+onboarding-automatic_proportions-recording-timer = { $time ->
+    [one] 1 second left
+    *[other] { $time } seconds left
+}
 onboarding-automatic_proportions-verify_results-title = Verify results
 onboarding-automatic_proportions-verify_results-description = Check the results below, do they look correct?
 onboarding-automatic_proportions-verify_results-results = Recording results
