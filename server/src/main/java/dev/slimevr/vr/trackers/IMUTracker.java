@@ -13,6 +13,7 @@ import dev.slimevr.vr.trackers.udp.TrackersUDPServer;
 import dev.slimevr.vr.trackers.udp.UDPDevice;
 import io.eiren.util.BufferedTimer;
 import io.eiren.util.collections.FastList;
+import io.eiren.util.logging.LogManager;
 
 import java.util.Optional;
 
@@ -61,7 +62,7 @@ public class IMUTracker
 	protected QuaternionMovingAverage movingAverage;
 	protected boolean compensateDrift = false;
 	protected float driftAmount;
-	protected static long DRIFT_COOLDOWN_MS = 30000;
+	protected static long DRIFT_COOLDOWN_MS = 3000;
 	protected final Quaternion averagedDriftQuat = new Quaternion();
 	private final FastList<Float> driftWeights = new FastList<>();
 	private final static Quaternion rotationSinceReset = new Quaternion();
@@ -172,9 +173,14 @@ public class IMUTracker
 	public void setDriftCompensationSettings(boolean enabled, float amount, int maxResets) {
 		compensateDrift = enabled;
 		driftAmount = amount;
-		if (driftQuats == null || maxResets != driftQuats.capacity()) {
-			driftQuats = new CircularArrayList<>(maxResets);
-			driftTimes = new CircularArrayList<>(maxResets);
+		if (enabled) {
+			if (driftQuats == null || maxResets != driftQuats.capacity()) {
+				driftQuats = new CircularArrayList<>(maxResets);
+				driftTimes = new CircularArrayList<>(maxResets);
+			}
+		} else {
+			driftQuats = null;
+			driftTimes = null;
 		}
 	}
 
@@ -221,6 +227,7 @@ public class IMUTracker
 		} else {
 			store.set(rotQuaternion);
 		}
+		LogManager.debug(String.valueOf(totalDriftTime));
 		// correction.mult(store, store); // Correction is not used now to
 		// prevent accidental errors while debugging other things
 		store.multLocal(mountAdjust);
@@ -443,15 +450,8 @@ public class IMUTracker
 							)
 					);
 
-				// Set how much time it has been since last drift reset
-				long driftTime;
-				if (timeAtLastReset > 0)
-					driftTime = System.currentTimeMillis() - timeAtLastReset;
-				else
-					driftTime = System.currentTimeMillis() - driftSince;
-
-				// Add to total drift time
-				driftTimes.add(driftTime);
+				// Add drift time to total
+				driftTimes.add(System.currentTimeMillis() - driftSince);
 				totalDriftTime = 0;
 				for (Long time : driftTimes) {
 					totalDriftTime += time;
@@ -500,12 +500,12 @@ public class IMUTracker
 							)
 					);
 
-				// Replace how much time it has been since last drift reset
-				long driftTime = System.currentTimeMillis() - driftSince;
-
-				// Add to total drift time
+				// Add drift time to total
 				driftTimes
-					.set(driftTimes.size() - 1, driftTimes.get(driftTimes.size() - 1) + driftTime);
+					.set(
+						driftTimes.size() - 1,
+						driftTimes.getLatest() + System.currentTimeMillis() - driftSince
+					);
 				totalDriftTime = 0;
 				for (Long time : driftTimes) {
 					totalDriftTime += time;
