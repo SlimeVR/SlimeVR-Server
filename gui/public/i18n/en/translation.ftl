@@ -380,6 +380,8 @@ onboarding-assign_trackers-back = Go Back to Wifi Credentials
 onboarding-assign_trackers-title = Assign trackers
 onboarding-assign_trackers-description = Let's choose which tracker goes where. Click on a location where you want to place a tracker
 # Look at translation of onboarding-connect_tracker-connected_trackers on how to use plurals
+# $assigned (Number) - Trackers that have been assigned a body part
+# $trackers (Number) - Trackers connected to the server
 onboarding-assign_trackers-assigned = { $assigned } of { $trackers ->
     [one] 1 tracker
     *[other] { $trackers } trackers
@@ -444,6 +446,7 @@ onboarding-automatic_proportions-recording-steps-2 = Twist upper body left, then
 onboarding-automatic_proportions-recording-steps-3 = Twist upper body right, then bend left.
 onboarding-automatic_proportions-recording-steps-4 = Wiggle around until timer ends.
 onboarding-automatic_proportions-recording-processing = Processing the result
+# $time (Number) - Seconds left for the automatic calibration recording to finish
 onboarding-automatic_proportions-recording-timer = { $time ->
     [one] 1 second left
     *[other] { $time } seconds left
