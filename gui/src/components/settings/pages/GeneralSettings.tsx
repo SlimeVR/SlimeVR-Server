@@ -400,14 +400,14 @@ export function GeneralSettings() {
       <SettingsPageLayout icon={<WrenchIcon></WrenchIcon>} id="fksettings">
         <>
           <Typography variant="main-title">
-            {t('settings-general-fk_settings-title')}
+            {t('settings-general-fk_settings')}
           </Typography>
           <Typography bold>
-            {t('settings-general-fk_settings-leg_tweak-title')}
+            {t('settings-general-fk_settings-leg_tweak')}
           </Typography>
           <div className="flex flex-col pt-2 pb-4">
             <Typography color="secondary">
-              {t('settings-general-fk_settings-leg_tweak-description')}
+              {t('settings-general-fk_settings-leg_tweak.description')}
             </Typography>
           </div>
           <div className="grid sm:grid-cols-2 gap-3 pb-5">
@@ -433,7 +433,7 @@ export function GeneralSettings() {
               control={control}
               name="legTweaks.correctionStrength"
               label={t(
-                'settings-general-fk_settings-leg_tweak-skating_correction_amount'
+                'settings-general-fk_settings-leg_tweak-skating_correction.amount'
               )}
               valueLabelFormat={(value) => `${Math.round(value * 100)} %`}
               min={0.1}
@@ -443,11 +443,11 @@ export function GeneralSettings() {
           </div>
 
           <Typography bold>
-            {t('settings-general-fk_settings-arm_fk-title')}
+            {t('settings-general-fk_settings-arm_fk')}
           </Typography>
           <div className="flex flex-col pt-2 pb-4">
             <Typography color="secondary">
-              {t('settings-general-fk_settings-arm_fk-description')}
+              {t('settings-general-fk_settings-arm_fk.description')}
             </Typography>
           </div>
           <div className="grid sm:grid-cols-2 pb-5">
@@ -462,12 +462,12 @@ export function GeneralSettings() {
           {config?.debug && (
             <>
               <Typography bold>
-                {t('settings-general-fk_settings-skeleton_settings-title')}
+                {t('settings-general-fk_settings-skeleton_settings')}
               </Typography>
               <div className="flex flex-col pt-2 pb-4">
                 <Typography color="secondary">
                   {t(
-                    'settings-general-fk_settings-skeleton_settings-description'
+                    'settings-general-fk_settings-skeleton_settings.description'
                   )}
                 </Typography>
               </div>
@@ -525,14 +525,14 @@ export function GeneralSettings() {
       <SettingsPageLayout icon={<WrenchIcon></WrenchIcon>} id="gestureControl">
         <>
           <Typography variant="main-title">
-            {t('settings-general-gesture_control-title')}
+            {t('settings-general-gesture_control')}
           </Typography>
           <Typography bold>
-            {t('settings-general-gesture_control-subtitle')}
+            {t('settings-general-gesture_control.subtitle')}
           </Typography>
           <div className="flex flex-col pt-2 pb-4">
             <Typography color="secondary">
-              {t('settings-general-gesture_control-description')}
+              {t('settings-general-gesture_control.description')}
             </Typography>
           </div>
           <div className="grid sm:grid-cols-3 gap-5 pb-2">
@@ -593,9 +593,9 @@ export function GeneralSettings() {
               name="tapDetection.tapQuickResetTaps"
               label={t('settings-general-gesture_control-quickResetTaps')}
               valueLabelFormat={(value) =>
-                `${Math.round(value)} ${t(
-                  'settings-general-gesture_control-taps'
-                )}`
+                t('settings-general-gesture_control-taps', {
+                  amount: Math.round(value),
+                })
               }
               min={2}
               max={3}
@@ -606,9 +606,9 @@ export function GeneralSettings() {
               name="tapDetection.tapResetTaps"
               label={t('settings-general-gesture_control-resetTaps')}
               valueLabelFormat={(value) =>
-                `${Math.round(value)} ${t(
-                  'settings-general-gesture_control-taps'
-                )}`
+                t('settings-general-gesture_control-taps', {
+                  amount: Math.round(value),
+                })
               }
               min={2}
               max={3}
@@ -619,9 +619,9 @@ export function GeneralSettings() {
               name="tapDetection.tapMountingResetTaps"
               label={t('settings-general-gesture_control-mountingResetTaps')}
               valueLabelFormat={(value) =>
-                `${Math.round(value)} ${t(
-                  'settings-general-gesture_control-taps'
-                )}`
+                t('settings-general-gesture_control-taps', {
+                  amount: Math.round(value),
+                })
               }
               min={2}
               max={3}
@@ -634,17 +634,17 @@ export function GeneralSettings() {
       <SettingsPageLayout icon={<SquaresIcon></SquaresIcon>} id="interface">
         <>
           <Typography variant="main-title">
-            {t('settings-general-interface-title')}
+            {t('settings-general-interface')}
           </Typography>
           <div className="gap-4 grid">
             <div className="grid sm:grid-cols-2">
               <div>
                 <Typography bold>
-                  {t('settings-general-interface-dev_mode-title')}
+                  {t('settings-general-interface-dev_mode')}
                 </Typography>
                 <div className="flex flex-col">
                   <Typography color="secondary">
-                    {t('settings-general-interface-dev_mode-description')}
+                    {t('settings-general-interface-dev_mode.description')}
                   </Typography>
                 </div>
                 <div className="pt-2">
@@ -653,7 +653,7 @@ export function GeneralSettings() {
                     control={control}
                     outlined
                     name="interface.devmode"
-                    label={t('settings-general-interface-dev_mode-label')}
+                    label={t('settings-general-interface-dev_mode.label')}
                   />
                 </div>
               </div>
@@ -661,12 +661,12 @@ export function GeneralSettings() {
             <div className="grid sm:grid-cols-2">
               <div>
                 <Typography bold>
-                  {t('settings-general-interface-serial_detection-title')}
+                  {t('settings-general-interface-serial_detection')}
                 </Typography>
                 <div className="flex flex-col">
                   <Typography color="secondary">
                     {t(
-                      'settings-general-interface-serial_detection-description'
+                      'settings-general-interface-serial_detection.description'
                     )}
                   </Typography>
                 </div>
@@ -677,7 +677,7 @@ export function GeneralSettings() {
                     outlined
                     name="interface.watchNewDevices"
                     label={t(
-                      'settings-general-interface-serial_detection-label'
+                      'settings-general-interface-serial_detection.label'
                     )}
                   />
                 </div>
@@ -686,11 +686,11 @@ export function GeneralSettings() {
             <div className="grid sm:grid-cols-2">
               <div>
                 <Typography bold>
-                  {t('settings-general-interface-lang-title')}
+                  {t('settings-general-interface-lang')}
                 </Typography>
                 <div className="flex flex-col">
                   <Typography color="secondary">
-                    {t('settings-general-interface-lang-description')}
+                    {t('settings-general-interface-lang.description')}
                   </Typography>
                 </div>
                 <div className="pt-2">

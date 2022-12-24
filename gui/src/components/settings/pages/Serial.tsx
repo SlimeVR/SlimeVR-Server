@@ -151,15 +151,14 @@ export function Serial() {
   return (
     <div className="flex flex-col bg-background-70 h-full p-5 rounded-md">
       <div className="flex flex-col pb-2">
-        <Typography variant="main-title">
-          {t('settings-serial-title')}
-        </Typography>
-        <Typography color="secondary">
-          {t('settings-serial-description-p0')}
-        </Typography>
-        <Typography color="secondary">
-          {t('settings-serial-description-p1')}
-        </Typography>
+        <Typography variant="main-title">{t('settings-serial')}</Typography>
+        <>
+          {t('settings-serial.description')
+            .split('\n')
+            .map((line) => (
+              <Typography color="secondary">{line}</Typography>
+            ))}
+        </>
       </div>
       <div className="bg-background-80 rounded-lg flex flex-col p-2">
         <div

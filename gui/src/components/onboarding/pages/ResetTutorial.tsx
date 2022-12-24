@@ -20,13 +20,13 @@ export function ResetTutorialPage() {
                 {t('onboarding-reset_tutorial-back')}
               </ArrowLink>
               <Typography variant="main-title">
-                {t('onboarding-reset_tutorial-title')}
+                {t('onboarding-reset_tutorial')}
                 <span className="mx-2 p-1 bg-accent-background-30 text-standard rounded-md">
                   {t('onboarding-wip')}
                 </span>
               </Typography>
               <Typography color="secondary">
-                {t('onboarding-reset_tutorial-description')}
+                {t('onboarding-reset_tutorial.description')}
               </Typography>
             </div>
           </div>

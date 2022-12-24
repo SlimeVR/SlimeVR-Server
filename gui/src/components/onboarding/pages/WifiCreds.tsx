@@ -23,14 +23,15 @@ export function WifiCredsPage() {
               {t('onboarding-wifi_creds-back')}
             </ArrowLink>
             <Typography variant="main-title">
-              {t('onboarding-wifi_creds-title')}
+              {t('onboarding-wifi_creds')}
             </Typography>
-            <Typography color="secondary">
-              {t('onboarding-wifi_creds-description-p0')}
-            </Typography>
-            <Typography color="secondary">
-              {t('onboarding-wifi_creds-description-p1')}
-            </Typography>
+            <>
+              {t('onboarding-wifi_creds.description')
+                .split('\n')
+                .map((line) => (
+                  <Typography color="secondary">{line}</Typography>
+                ))}
+            </>
           </div>
           <div className="flex flex-col bg-background-70 gap-3 p-10 rounded-xl max-w-sm">
             <WifiForm></WifiForm>
@@ -45,10 +46,10 @@ export function WifiCredsPage() {
         </div>
         <div className="flex gap-3">
           <Button variant="secondary" to="/onboarding/trackers-assign">
-            {t('onboarding-wifi_creds-skip')}
+            {t('onboarding-wifi_creds.skip')}
           </Button>
           <Button type="submit" variant="primary" disabled={!formState.isValid}>
-            {t('onboarding-wifi_creds-submit')}
+            {t('onboarding-wifi_creds.submit')}
           </Button>
         </div>
       </div>
