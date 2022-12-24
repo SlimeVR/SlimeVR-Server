@@ -1,4 +1,4 @@
-## Websocket status
+## Websocket (server) status
 websocket-connecting = Connecting to the server
 websocket-connection_lost = Connection lost to the server. Trying to reconnect...
 
@@ -115,23 +115,25 @@ tracker-infos-url = Tracker URL
 ## Tracker settings
 tracker-settings-back = Go back to trackers list
 tracker-settings-title = Tracker settings
-tracker-settings-assignment_section-title = Assignment
-tracker-settings-assignment_section-description = What part of the body the tracker is assigned to.
-tracker-settings-assignment_section-edit = Edit assignment
-tracker-settings-mounting_section-title = Mounting position
-tracker-settings-mounting_section-description = Where is the tracker mounted?
-tracker-settings-mounting_section-edit = Edit mounting
-tracker-settings-name_section-title = Tracker name
-tracker-settings-name_section-description = Give it a cute nickname :)
-tracker-settings-name_section-input_placeholder = NightyBeast's left leg
+# The .<name> means it's an attribute and it's related to the top key.
+# In this case that is the settings for the assignment section.
+tracker-settings-assignment_section = Assignment
+    .description = What part of the body the tracker is assigned to.
+    .edit = Edit assignment
+tracker-settings-mounting_section = Mounting position
+    .description = Where is the tracker mounted?
+    .edit = Edit mounting
+tracker-settings-name_section = Tracker name
+    .description = Give it a cute nickname :)
+    .placeholder = NightyBeast's left leg
 
 ## Tracker part card info
 tracker-part_card-no_name = No name
 tracker-part_card-unassigned = Unassigned
 
 ## Body assignment menu
-body_assignment_menu-title = Where do you want this tracker to be?
-body_assignment_menu-description = Choose a location where you want this tracker to be assigned. Alternatively you can choose to manage all trackers at once instead of one by one.
+body_assignment_menu = Where do you want this tracker to be?
+    .description = Choose a location where you want this tracker to be assigned. Alternatively you can choose to manage all trackers at once instead of one by one.
 body_assignment_menu-show_advanced_locations = Show advanced assign locations
 body_assignment_menu-manage_trackers = Manage all trackers
 body_assignment_menu-unassign_tracker = Unassign tracker
@@ -144,34 +146,34 @@ body_assignment_menu-unassign_tracker = Unassign tracker
 # We are using it here because english doesn't require changing the text in each case but
 # maybe your language does.
 -tracker_selection-part = Which tracker to assign to your
-tracker_selection_menu-title-NONE = Which tracker do you want to be unassigned?
-tracker_selection_menu-title-HEAD = { -tracker_selection-part } head?
-tracker_selection_menu-title-NECK = { -tracker_selection-part } neck?
-tracker_selection_menu-title-RIGHT_SHOULDER = { -tracker_selection-part } right shoulder?
-tracker_selection_menu-title-RIGHT_UPPER_ARM = { -tracker_selection-part } right upper arm?
-tracker_selection_menu-title-RIGHT_LOWER_ARM = { -tracker_selection-part } right lower arm?
-tracker_selection_menu-title-RIGHT_HAND = { -tracker_selection-part } right hand?
-tracker_selection_menu-title-RIGHT_UPPER_LEG = { -tracker_selection-part } right thigh?
-tracker_selection_menu-title-RIGHT_LOWER_LEG = { -tracker_selection-part } right ankle?
-tracker_selection_menu-title-RIGHT_FOOT = { -tracker_selection-part } right foot?
-tracker_selection_menu-title-CHEST = { -tracker_selection-part } chest?
-tracker_selection_menu-title-WAIST = { -tracker_selection-part } waist?
-tracker_selection_menu-title-HIP = { -tracker_selection-part } hip?
-tracker_selection_menu-title-LEFT_SHOULDER = { -tracker_selection-part } left shoulder?
-tracker_selection_menu-title-LEFT_UPPER_ARM = { -tracker_selection-part } left upper arm?
-tracker_selection_menu-title-LEFT_LOWER_ARM = { -tracker_selection-part } left lower arm?
-tracker_selection_menu-title-LEFT_HAND = { -tracker_selection-part } left hand?
-tracker_selection_menu-title-LEFT_UPPER_LEG = { -tracker_selection-part } left thigh?
-tracker_selection_menu-title-LEFT_LOWER_LEG = { -tracker_selection-part } left ankle?
-tracker_selection_menu-title-LEFT_FOOT = { -tracker_selection-part } left foot?
+tracker_selection_menu-NONE = Which tracker do you want to be unassigned?
+tracker_selection_menu-HEAD = { -tracker_selection-part } head?
+tracker_selection_menu-NECK = { -tracker_selection-part } neck?
+tracker_selection_menu-RIGHT_SHOULDER = { -tracker_selection-part } right shoulder?
+tracker_selection_menu-RIGHT_UPPER_ARM = { -tracker_selection-part } right upper arm?
+tracker_selection_menu-RIGHT_LOWER_ARM = { -tracker_selection-part } right lower arm?
+tracker_selection_menu-RIGHT_HAND = { -tracker_selection-part } right hand?
+tracker_selection_menu-RIGHT_UPPER_LEG = { -tracker_selection-part } right thigh?
+tracker_selection_menu-RIGHT_LOWER_LEG = { -tracker_selection-part } right ankle?
+tracker_selection_menu-RIGHT_FOOT = { -tracker_selection-part } right foot?
+tracker_selection_menu-CHEST = { -tracker_selection-part } chest?
+tracker_selection_menu-WAIST = { -tracker_selection-part } waist?
+tracker_selection_menu-HIP = { -tracker_selection-part } hip?
+tracker_selection_menu-LEFT_SHOULDER = { -tracker_selection-part } left shoulder?
+tracker_selection_menu-LEFT_UPPER_ARM = { -tracker_selection-part } left upper arm?
+tracker_selection_menu-LEFT_LOWER_ARM = { -tracker_selection-part } left lower arm?
+tracker_selection_menu-LEFT_HAND = { -tracker_selection-part } left hand?
+tracker_selection_menu-LEFT_UPPER_LEG = { -tracker_selection-part } left thigh?
+tracker_selection_menu-LEFT_LOWER_LEG = { -tracker_selection-part } left ankle?
+tracker_selection_menu-LEFT_FOOT = { -tracker_selection-part } left foot?
 
 tracker_selection_menu-unassigned = Unassigned Trackers
 tracker_selection_menu-assigned = Assigned Trackers
 tracker_selection_menu-dont_assign = Do not assign
 
 ## Mounting menu
-mounting_selection_menu-title = Where do you want this tracker to be?
-mounting_selection_menu-close = Close
+mounting_selection_menu = Where do you want this tracker to be?
+    .close = Close
 
 ## Sidebar settings
 settings-sidebar-title = Settings
@@ -185,10 +187,16 @@ settings-sidebar-utils = Utilities
 settings-sidebar-serial = Serial console
 
 ## SteamVR settings
-settings-general-steamvr-title = SteamVR
-settings-general-steamvr-subtitle = SteamVR trackers
-settings-general-steamvr-description-p0 = Enable or disable specific SteamVR trackers.
-settings-general-steamvr-description-p1 = Useful for games or apps that only support certain trackers.
+
+# Not all translation keys support multiline, only the ones that specify it will actually
+# split it in lines (that also means you can split in lines however you want in those).
+# The 4 first spaces (relative) for indentation will be ignored, just to make the file look nice when writing.
+# This one is one of this cases (the .description attribute)
+settings-general-steamvr = SteamVR
+    .subtitle = SteamVR trackers
+    .description =
+        Enable or disable specific SteamVR trackers.
+        Useful for games or apps that only support certain trackers.
 settings-general-steamvr-trackers-waist = Waist
 settings-general-steamvr-trackers-chest = Chest
 settings-general-steamvr-trackers-feet = Feet
@@ -197,20 +205,22 @@ settings-general-steamvr-trackers-elbows = Elbows
 settings-general-steamvr-trackers-hands = Hands
 
 ## Tracker mechanics
-settings-general-tracker_mechanics-title = Tracker mechanics
-settings-general-tracker_mechanics-subtitle = Filtering
-settings-general-tracker_mechanics-description-p0 = Choose the filtering type for your trackers.
-settings-general-tracker_mechanics-description-p1 = Prediction predicts movement while smoothing smoothens movement.
-settings-general-tracker_mechanics-filtering_type-title = Filtering type
-settings-general-tracker_mechanics-filtering_type-none-label = No filtering
-settings-general-tracker_mechanics-filtering_type-none-description = Use rotations as is. Will not do any filtering.
-settings-general-tracker_mechanics-filtering_type-smoothing-label = Smoothing
-settings-general-tracker_mechanics-filtering_type-smoothing-description = Smooths movements but adds some latency.
-settings-general-tracker_mechanics-filtering_type-prediction-label = Prediction
-settings-general-tracker_mechanics-filtering_type-prediction-description = Reduces latency and makes movements more snappy, but may increase jitter.
-settings-general-tracker_mechanics-amount-label = Amount
+# This .description also cares about multilines
+settings-general-tracker_mechanics = Tracker mechanics
+    .subtitle = Filtering
+    .description =
+        Choose the filtering type for your trackers.
+        Prediction predicts movement while smoothing smoothens movement.
+settings-general-tracker_mechanics-filtering_type = Filtering type
+settings-general-tracker_mechanics-filtering_type-none = No filtering
+    .description = Use rotations as is. Will not do any filtering.
+settings-general-tracker_mechanics-filtering_type-smoothing = Smoothing
+    .description = Smooths movements but adds some latency.
+settings-general-tracker_mechanics-filtering_type-prediction = Prediction
+    .description = Reduces latency and makes movements more snappy, but may increase jitter.
+settings-general-tracker_mechanics-amount = Amount
 
-## FK settings
+## FK/Tracking settings
 settings-general-fk_settings-title = Tracking settings
 settings-general-fk_settings-leg_tweak-title = Leg tweaks
 settings-general-fk_settings-leg_tweak-description = Floor-clip can Reduce or even eliminates clipping with the floor but may cause problems when on your knees. Skating-correction corrects for ice skating, but can decrease accuracy in certain movement patterns.

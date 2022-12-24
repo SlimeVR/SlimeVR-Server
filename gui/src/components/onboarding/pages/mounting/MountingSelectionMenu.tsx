@@ -60,7 +60,7 @@ export function MountingSelectionMenu({
     >
       <div className="flex w-full h-full flex-col ">
         <Typography variant="main-title" bold>
-          {t('mounting_selection_menu-title')}
+          {t('mounting_selection_menu')}
         </Typography>
         <div
           className="flex w-full flex-col flex-grow items-center gap-3 justify-center"
@@ -94,7 +94,7 @@ export function MountingSelectionMenu({
       >
         <div className="flex flex-col justify-end pointer-events-auto">
           <Button variant="primary" onClick={onClose}>
-            {t('mounting_selection_menu-close')}
+            {t('mounting_selection_menu.close')}
           </Button>
         </div>
       </div>

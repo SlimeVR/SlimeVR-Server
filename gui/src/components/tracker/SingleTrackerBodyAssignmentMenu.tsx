@@ -41,10 +41,10 @@ export function SingleTrackerBodyAssignmentMenu({
           <div className="flex gap-8">
             <div className="flex flex-col max-w-sm gap-3">
               <Typography variant="main-title" bold>
-                {t('body_assignment_menu-title')}
+                {t('body_assignment_menu')}
               </Typography>
               <Typography color="secondary">
-                {t('body_assignment_menu-description')}
+                {t('body_assignment_menu.description')}
               </Typography>
               <CheckBox
                 control={control}

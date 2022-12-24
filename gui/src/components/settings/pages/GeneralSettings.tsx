@@ -271,16 +271,17 @@ export function GeneralSettings() {
       <SettingsPageLayout icon={<SteamIcon></SteamIcon>} id="steamvr">
         <>
           <Typography variant="main-title">
-            {t('settings-general-steamvr-title')}
+            {t('settings-general-steamvr')}
           </Typography>
-          <Typography bold>{t('settings-general-steamvr-subtitle')}</Typography>
+          <Typography bold>{t('settings-general-steamvr.subtitle')}</Typography>
           <div className="flex flex-col py-2">
-            <Typography color="secondary">
-              {t('settings-general-steamvr-description-p0')}
-            </Typography>
-            <Typography color="secondary">
-              {t('settings-general-steamvr-description-p1')}
-            </Typography>
+            <>
+              {t('settings-general-steamvr.description')
+                .split('\n')
+                .map((line) => (
+                  <Typography color="secondary">{line}</Typography>
+                ))}
+            </>
           </div>
           <div className="grid grid-cols-2 gap-3 pt-3">
             <CheckBox
@@ -331,31 +332,32 @@ export function GeneralSettings() {
       <SettingsPageLayout icon={<WrenchIcon></WrenchIcon>} id="mechanics">
         <>
           <Typography variant="main-title">
-            {t('settings-general-tracker_mechanics-title')}
+            {t('settings-general-tracker_mechanics')}
           </Typography>
           <Typography bold>
-            {t('settings-general-tracker_mechanics-subtitle')}
+            {t('settings-general-tracker_mechanics.subtitle')}
           </Typography>
           <div className="flex flex-col pt-2 pb-4">
-            <Typography color="secondary">
-              {t('settings-general-tracker_mechanics-description-p0')}
-            </Typography>
-            <Typography color="secondary">
-              {t('settings-general-tracker_mechanics-description-p1')}
-            </Typography>
+            <>
+              {t('settings-general-tracker_mechanics.description')
+                .split('\n')
+                .map((line) => (
+                  <Typography color="secondary">{line}</Typography>
+                ))}
+            </>
           </div>
           <Typography>
-            {t('settings-general-tracker_mechanics-filtering_type-title')}
+            {t('settings-general-tracker_mechanics-filtering_type')}
           </Typography>
           <div className="flex md:flex-row flex-col gap-3 pt-2">
             <Radio
               control={control}
               name="filtering.type"
               label={t(
-                'settings-general-tracker_mechanics-filtering_type-none-label'
+                'settings-general-tracker_mechanics-filtering_type-none'
               )}
               desciption={t(
-                'settings-general-tracker_mechanics-filtering_type-none-description'
+                'settings-general-tracker_mechanics-filtering_type-none.description'
               )}
               value={FilteringType.NONE}
             ></Radio>
@@ -363,10 +365,10 @@ export function GeneralSettings() {
               control={control}
               name="filtering.type"
               label={t(
-                'settings-general-tracker_mechanics-filtering_type-smoothing-label'
+                'settings-general-tracker_mechanics-filtering_type-smoothing'
               )}
               desciption={t(
-                'settings-general-tracker_mechanics-filtering_type-smoothing-description'
+                'settings-general-tracker_mechanics-filtering_type-smoothing.description'
               )}
               value={FilteringType.SMOOTHING}
             ></Radio>
@@ -374,10 +376,10 @@ export function GeneralSettings() {
               control={control}
               name="filtering.type"
               label={t(
-                'settings-general-tracker_mechanics-filtering_type-prediction-label'
+                'settings-general-tracker_mechanics-filtering_type-prediction'
               )}
               desciption={t(
-                'settings-general-tracker_mechanics-filtering_type-prediction-description'
+                'settings-general-tracker_mechanics-filtering_type-prediction.description'
               )}
               value={FilteringType.PREDICTION}
             ></Radio>
@@ -386,7 +388,7 @@ export function GeneralSettings() {
             <NumberSelector
               control={control}
               name="filtering.amount"
-              label={t('settings-general-tracker_mechanics-amount-label')}
+              label={t('settings-general-tracker_mechanics-amount')}
               valueLabelFormat={(value) => `${Math.round(value * 100)} %`}
               min={0.1}
               max={1.0}
