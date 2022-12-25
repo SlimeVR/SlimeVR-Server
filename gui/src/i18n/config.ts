@@ -67,4 +67,12 @@ i18next
     },
   });
 
+if (import.meta.hot) {
+  // detect hot reload translation file changes
+  import.meta.hot.on('locales-update', async () => {
+    await i18next.reloadResources();
+    await i18next.changeLanguage(i18next.language);
+  });
+}
+
 export default i18next;
