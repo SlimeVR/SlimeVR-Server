@@ -17,6 +17,7 @@ body_part-RIGHT_HAND = 右手
 body_part-RIGHT_UPPER_LEG = 右膝
 body_part-RIGHT_LOWER_LEG = 右足
 body_part-RIGHT_FOOT = 右足先
+body_part-RIGHT_CONTROLLER = Right controller
 body_part-CHEST = 胸
 body_part-WAIST = 腰
 body_part-HIP = ヒップ
@@ -27,6 +28,7 @@ body_part-LEFT_HAND = 左手
 body_part-LEFT_UPPER_LEG = 左膝
 body_part-LEFT_LOWER_LEG = 左足
 body_part-LEFT_FOOT = 左足先
+body_part-LEFT_CONTROLLER = Left controller
 
 ## Skeleton stuff
 skeleton_bone-NONE = 無し

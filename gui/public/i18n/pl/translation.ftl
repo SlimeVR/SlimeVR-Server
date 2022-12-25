@@ -17,6 +17,7 @@ body_part-RIGHT_HAND = Prawa Dłoń
 body_part-RIGHT_UPPER_LEG = Prawe Udo
 body_part-RIGHT_LOWER_LEG = Prawy Podudzie
 body_part-RIGHT_FOOT = Prawa Stopa
+body_part-RIGHT_CONTROLLER = Right controller
 body_part-CHEST = Klatka Piersiowa
 body_part-WAIST = Pas
 body_part-HIP = Biodra
@@ -27,6 +28,7 @@ body_part-LEFT_HAND = Lewa Dłoń
 body_part-LEFT_UPPER_LEG = Lewe Udo
 body_part-LEFT_LOWER_LEG = Lewe Podudzie
 body_part-LEFT_FOOT = Lewa Stopa
+body_part-LEFT_CONTROLLER = Left controller
 
 ## Skeleton stuff
 skeleton_bone-NONE = Brak
