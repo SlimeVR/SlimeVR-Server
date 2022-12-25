@@ -72,10 +72,10 @@ export function ManualMountingPage() {
                 </ArrowLink>
               )}
               <Typography variant="main-title">
-                {t('onboarding-manual_mounting-title')}
+                {t('onboarding-manual_mounting')}
               </Typography>
               <Typography color="secondary">
-                {t('onboarding-manual_mounting-description')}
+                {t('onboarding-manual_mounting.description')}
               </Typography>
               <TipBox>{t('tips-find_tracker')}</TipBox>
             </div>

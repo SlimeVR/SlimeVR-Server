@@ -405,8 +405,8 @@ onboarding-connect_tracker-connection_status-handshake = Connected to the Server
 # $amount (Number) - Amount of trackers connected (this is a number, but you can use CLDR plural rules for your language)
 # More info on https://www.unicode.org/cldr/cldr-aux/charts/22/supplemental/language_plural_rules.html
 # English in this case only has 2 plural rules, which are "one" and "other",
-# we use 0 in an explicit way because there is no plural rule in english for 0, so we directly say if
-# $amount is 0 then we say "No trackers connected"
+# we use 0 in an explicit way because there is no plural rule in english for 0, so we directly say
+# if $amount is 0 then we say "No trackers connected"
 onboarding-connect_tracker-connected_trackers = { $amount ->
     [0] No trackers
     [one] 1 tracker
@@ -430,8 +430,8 @@ onboarding-assign_trackers-next = I assigned all the trackers
 
 ## Tracker manual mounting setup
 onboarding-manual_mounting-back = Go Back to Enter VR
-onboarding-manual_mounting-title = Manual Mounting
-onboarding-manual_mounting-description = Click on every tracker and select which way they are mounted
+onboarding-manual_mounting = Manual Mounting
+    .description = Click on every tracker and select which way they are mounted
 onboarding-manual_mounting-auto_mounting = Automatic mounting
 onboarding-manual_mounting-next = Next step
 
