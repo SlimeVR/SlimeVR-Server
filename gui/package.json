@@ -41,6 +41,7 @@
     "start": "vite --force",
     "build": "vite build",
     "dev": "tauri dev",
+    "skipbundler": "tauri build -b none",
     "tauri": "tauri",
     "lint": "eslint src/**/*.{js,jsx,ts,tsx,json}",
     "lint:fix": "eslint --fix src/**/*.{js,jsx,ts,tsx,json}",

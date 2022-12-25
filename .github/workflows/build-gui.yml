@@ -18,7 +18,7 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        os: [ubuntu-latest, windows-latest]
+        os: [ubuntu-20.04, windows-latest]
 
     runs-on: ${{ matrix.os }}
 
@@ -31,7 +31,7 @@ jobs:
         with:
           submodules: recursive
 
-      - if: matrix.os == 'ubuntu-latest'
+      - if: matrix.os == 'ubuntu-20.04'
         name: Set up Linux dependencies
         run: |
           sudo apt-get update
@@ -39,6 +39,8 @@ jobs:
 
       - name: Cache cargo dependencies
         uses: Swatinem/rust-cache@v2
+        with:
+          shared-key: "tauri"
 
       - name: Use Node.js ${{ matrix.node-version }}
         uses: actions/setup-node@v3
@@ -49,7 +51,7 @@ jobs:
       - name: Build
         run: |
           npm ci
-          npm run tauri build
+          npm run skipbundler
 
       - if: matrix.os == 'windows-latest'
         name: Upload a Build Artifact
@@ -65,15 +67,6 @@ jobs:
         uses: actions/upload-artifact@v3.1.0
         with:
           # Artifact name
-          name: SlimeVR-GUI-Deb
+          name: SlimeVR-GUI-Linux
           # A file, directory or wildcard pattern that describes what to upload
-          path: target/release/bundle/deb/slimevr*.deb
-
-      - if: matrix.os == 'ubuntu-latest'
-        name: Upload a Build Artifact
-        uses: actions/upload-artifact@v3.1.0
-        with:
-          # Artifact name
-          name: SlimeVR-GUI-AppImage
-          # A file, directory or wildcard pattern that describes what to upload
-          path: target/release/bundle/appimage/slimevr*.AppImage
+          path: target/release/slimevr
