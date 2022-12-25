@@ -17,6 +17,7 @@ body_part-RIGHT_HAND = Mano derecha
 body_part-RIGHT_UPPER_LEG = Muslo derecho
 body_part-RIGHT_LOWER_LEG = Tobillo derecho
 body_part-RIGHT_FOOT = Pie derecho
+body_part-RIGHT_CONTROLLER = Control derecho
 body_part-CHEST = Pecho
 body_part-WAIST = Cintura
 body_part-HIP = Cadera
@@ -27,6 +28,7 @@ body_part-LEFT_HAND = Mano izquierda
 body_part-LEFT_UPPER_LEG = Muslo izquierdo
 body_part-LEFT_LOWER_LEG = Tobillo izquierdo
 body_part-LEFT_FOOT = Pie izquierdo
+body_part-LEFT_CONTROLLER = Control izquierdo
 
 ## Skeleton stuff
 skeleton_bone-NONE = Nada

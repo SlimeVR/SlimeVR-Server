@@ -17,7 +17,7 @@ body_part-RIGHT_HAND = wight pawb
 body_part-RIGHT_UPPER_LEG = wight uppew weg
 body_part-RIGHT_LOWER_LEG = wight wowwe weg
 body_part-RIGHT_FOOT = wight pawb
-body_part-RIGHT_CONTROLLER = Right controller
+body_part-RIGHT_CONTROLLER = wight wontwolew
 body_part-CHEST = chwest
 body_part-WAIST = wyayst
 body_part-HIP = hyip
@@ -28,7 +28,7 @@ body_part-LEFT_HAND = weft pawb
 body_part-LEFT_UPPER_LEG = weft uppew weg
 body_part-LEFT_LOWER_LEG = weft wowwe weg
 body_part-LEFT_FOOT = weft pawb
-body_part-LEFT_CONTROLLER = Left controller
+body_part-LEFT_CONTROLLER = weft wontwolew
 
 ## Skeleton stuff
 skeleton_bone-NONE = none
