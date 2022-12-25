@@ -13,6 +13,10 @@ export const langs = [
     key: 'en',
   },
   {
+    name: '🧉 Español Latinoamericano',
+    key: 'es-419'
+  },
+  {
     name: '🇫🇷 Français',
     key: 'fr',
   },
@@ -42,7 +46,7 @@ export const langs = [
   },
   {
     name: '🇨🇳 简体中文',
-    key: 'zh',
+    key: 'zh-Hans',
   },
   {
     name: '🇩🇪 Deutsch',
@@ -50,7 +54,7 @@ export const langs = [
   },
   {
     name: '🥺 Engwish~ OwO',
-    key: 'owo',
+    key: 'en-OwO',
   },
 ];
 
