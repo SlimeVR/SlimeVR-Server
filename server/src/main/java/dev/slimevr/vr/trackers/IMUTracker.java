@@ -13,7 +13,6 @@ import dev.slimevr.vr.trackers.udp.TrackersUDPServer;
 import dev.slimevr.vr.trackers.udp.UDPDevice;
 import io.eiren.util.BufferedTimer;
 import io.eiren.util.collections.FastList;
-import io.eiren.util.logging.LogManager;
 
 import java.util.Optional;
 
@@ -62,7 +61,7 @@ public class IMUTracker
 	protected QuaternionMovingAverage movingAverage;
 	protected boolean compensateDrift = false;
 	protected float driftAmount;
-	protected static long DRIFT_COOLDOWN_MS = 3000;
+	protected static long DRIFT_COOLDOWN_MS = 30000;
 	protected final Quaternion averagedDriftQuat = new Quaternion();
 	private final FastList<Float> driftWeights = new FastList<>();
 	private final static Quaternion rotationSinceReset = new Quaternion();
@@ -227,7 +226,6 @@ public class IMUTracker
 		} else {
 			store.set(rotQuaternion);
 		}
-		LogManager.debug(String.valueOf(totalDriftTime));
 		// correction.mult(store, store); // Correction is not used now to
 		// prevent accidental errors while debugging other things
 		store.multLocal(mountAdjust);
