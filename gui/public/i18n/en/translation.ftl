@@ -196,6 +196,10 @@ settings-general-fk_settings-skeleton_settings-description = Toggle skeleton set
 settings-general-fk_settings-skeleton_settings-extended_spine = Extended spine
 settings-general-fk_settings-skeleton_settings-extended_pelvis = Extended pelvis
 settings-general-fk_settings-skeleton_settings-extended_knees = Extended knee
+settings-general-fk_settings-vive_emulation-title = Vive emulation
+settings-general-fk_settings-vive_emulation-description = Emulate the waist tracker problems that Vive trackers have. This is a joke and makes tracking worse.
+settings-general-fk_settings-vive_emulation-label = Enable Vive emulation
+
 
 ## Gesture control settings (tracker tapping)
 settings-general-gesture_control-title = Gesture control
