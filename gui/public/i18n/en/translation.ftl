@@ -163,6 +163,7 @@ tracker_selection_menu-RIGHT_HAND = { -tracker_selection-part } right hand?
 tracker_selection_menu-RIGHT_UPPER_LEG = { -tracker_selection-part } right thigh?
 tracker_selection_menu-RIGHT_LOWER_LEG = { -tracker_selection-part } right ankle?
 tracker_selection_menu-RIGHT_FOOT = { -tracker_selection-part } right foot?
+tracker_selection_menu-RIGHT_CONTROLLER = { -tracker_selection-part } right controller?
 tracker_selection_menu-CHEST = { -tracker_selection-part } chest?
 tracker_selection_menu-WAIST = { -tracker_selection-part } waist?
 tracker_selection_menu-HIP = { -tracker_selection-part } hip?
@@ -173,6 +174,7 @@ tracker_selection_menu-LEFT_HAND = { -tracker_selection-part } left hand?
 tracker_selection_menu-LEFT_UPPER_LEG = { -tracker_selection-part } left thigh?
 tracker_selection_menu-LEFT_LOWER_LEG = { -tracker_selection-part } left ankle?
 tracker_selection_menu-LEFT_FOOT = { -tracker_selection-part } left foot?
+tracker_selection_menu-LEFT_CONTROLLER = { -tracker_selection-part } left controller?
 
 tracker_selection_menu-unassigned = Unassigned Trackers
 tracker_selection_menu-assigned = Assigned Trackers
