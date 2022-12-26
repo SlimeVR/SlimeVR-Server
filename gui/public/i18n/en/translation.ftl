@@ -315,9 +315,11 @@ settings-osc-router-network = Network ports
 settings-osc-router-network-description =
     Set the ports for listening and sending data.
     These can be the same as other ports used in the SlimeVR server.
-settings-osc-router-network-port_in = Port In
+settings-osc-router-network-port_in =
+    .label = Port In
     .placeholder = Port in (default: 9002)
-settings-osc-router-network-port_out = Port Out
+settings-osc-router-network-port_out =
+    .label = Port Out
     .placeholder = Port out (default: 9000)
 settings-osc-router-network-address = Network address
     .placeholder = IPV4 address
@@ -334,9 +336,11 @@ settings-osc-vrchat-enable = Enable
 settings-osc-vrchat-enable-description = Toggle the sending and receiving of data.
 settings-osc-vrchat-network = Network ports
 settings-osc-vrchat-network-description = Set the ports for listening and sending data to VRChat.
-settings-osc-vrchat-network-port_in = Port In
+settings-osc-vrchat-network-port_in =
+    .label = Port In
     .placeholder = Port in (default: 9001)
-settings-osc-vrchat-network-port_out = Port Out
+settings-osc-vrchat-network-port_out =
+    .label = Port Out
     .placeholder = Port out (default: 9000)
 settings-osc-vrchat-network-address = Network address
     .placeholder = VRChat ip address
@@ -363,9 +367,11 @@ onboarding-wifi_creds-description =
     Please use the credentials that you are currently connected to.
 onboarding-wifi_creds-skip = Skip wifi settings
 onboarding-wifi_creds-submit = Submit!
-onboarding-wifi_creds-ssid = SSID
+onboarding-wifi_creds-ssid =
+    .label = SSID
     .placeholder = Enter SSID
-onboarding-wifi_creds-password = Password
+onboarding-wifi_creds-password =
+    .label = Password
     .placeholder = Enter password
 
 ## Mounting setup

@@ -154,7 +154,7 @@ export function OSCRouterSettings() {
               type="number"
               {...register('router.oscSettings.portIn', { required: true })}
               placeholder={t('settings-osc-router-network-port_in.placeholder')}
-              label={t('settings-osc-router-network-port_in')}
+              label={t('settings-osc-router-network-port_in.label')}
             ></Input>
             <Input
               type="number"
@@ -164,7 +164,7 @@ export function OSCRouterSettings() {
               placeholder={t(
                 'settings-osc-router-network-port-out.placeholder'
               )}
-              label={t('settings-osc-router-network-port_out')}
+              label={t('settings-osc-router-network-port_out.label')}
             ></Input>
           </div>
           <Typography bold>

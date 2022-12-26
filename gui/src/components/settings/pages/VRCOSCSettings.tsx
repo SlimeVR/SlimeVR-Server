@@ -175,7 +175,7 @@ export function VRCOSCSettings() {
               type="number"
               {...register('vrchat.oscSettings.portIn', { required: true })}
               placeholder={t('settings-osc-vrchat-network-port_in.placeholder')}
-              label={t('settings-osc-vrchat-network-port_in')}
+              label={t('settings-osc-vrchat-network-port_in.label')}
             ></Input>
             <Input
               type="number"
@@ -185,7 +185,7 @@ export function VRCOSCSettings() {
               placeholder={t(
                 'settings-osc-vrchat-network-port-out.placeholder'
               )}
-              label={t('settings-osc-vrchat-network-port_out')}
+              label={t('settings-osc-vrchat-network-port_out.label')}
             ></Input>
           </div>
           <Typography bold>

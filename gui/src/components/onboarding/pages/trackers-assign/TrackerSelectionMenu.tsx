@@ -48,7 +48,7 @@ export function TrackerSelectionMenu({
       <div className="flex w-full h-full flex-col ">
         <div className="flex w-full flex-col flex-grow items-center gap-3">
           <Typography variant="main-title" bold>
-            {t('tracker_selection_menu' + BodyPart[bodyPart])}
+            {t('tracker_selection_menu-' + BodyPart[bodyPart])}
           </Typography>
           <div className="relative">
             <div

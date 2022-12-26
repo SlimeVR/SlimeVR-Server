@@ -46,14 +46,14 @@ export function useWifiForm() {
         <Input
           {...register('ssid', { required: true })}
           type="text"
-          label={t('onboarding-wifi_creds-ssid')}
+          label={t('onboarding-wifi_creds-ssid.label')}
           placeholder={t('onboarding-wifi_creds-ssid.placeholder')}
           variant="secondary"
         />
         <Input
           {...register('password')}
           type="password"
-          label={t('onboarding-wifi_creds-password')}
+          label={t('onboarding-wifi_creds-password.label')}
           placeholder={t('onboarding-wifi_creds-password.placeholder')}
           variant="secondary"
         />
