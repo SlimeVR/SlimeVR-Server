@@ -113,6 +113,8 @@ public class DataFeedBuilder {
 							)
 					);
 			}
+
+			TrackerInfo.addAllowDriftCompensation(fbb, true); // TODO
 		}
 		return TrackerInfo.endTrackerInfo(fbb);
 	}
