@@ -146,7 +146,6 @@ body_assignment_menu-manage_trackers = Manage all trackers
 body_assignment_menu-unassign_tracker = Unassign tracker
 
 ## Tracker assignment menu
-
 # A -translation_key (with a dash in the front) means that it's a label.
 # It can only be used in the translation file, it's nice for reusing names and that kind of stuff.
 # 
@@ -196,7 +195,6 @@ settings-sidebar-utils = Utilities
 settings-sidebar-serial = Serial console
 
 ## SteamVR settings
-
 settings-general-steamvr = SteamVR
 settings-general-steamvr-subtitle = SteamVR trackers
 # Not all translation keys support multiline, only the ones that specify it will actually
@@ -254,7 +252,6 @@ settings-general-fk_settings-skeleton_settings-extended_knees = Extended knee
 settings-general-fk_settings-vive_emulation-title = Vive emulation
 settings-general-fk_settings-vive_emulation-description = Emulate the waist tracker problems that Vive trackers have. This is a joke and makes tracking worse.
 settings-general-fk_settings-vive_emulation-label = Enable Vive emulation
-
 
 ## Gesture control settings (tracker tapping)
 settings-general-gesture_control = Gesture control
@@ -493,7 +490,7 @@ onboarding-automatic_proportions-recording-steps-2 = Twist upper body left, then
 onboarding-automatic_proportions-recording-steps-3 = Twist upper body right, then bend left.
 onboarding-automatic_proportions-recording-steps-4 = Wiggle around until timer ends.
 onboarding-automatic_proportions-recording-processing = Processing the result
-# $time (Number) - Seconds left for the automatic calibration recording to finish
+# $time (Number) - Seconds left for the automatic calibration recording to finish (max 15)
 onboarding-automatic_proportions-recording-timer = { $time ->
     [one] 1 second left
     *[other] { $time } seconds left
