@@ -122,10 +122,10 @@ tracker-infos-url = トラッカーURL
 ## Tracker settings
 tracker-settings-back = トラッカーリストへ戻る
 tracker-settings-title = トラッカー設定
-tracker-settings-assignment_section-title = 割り当て
+tracker-settings-assignment_section = 割り当て
 tracker-settings-assignment_section-description = トラッカーが体のどの部位に装着されているか
 tracker-settings-assignment_section-edit = 割り当ての編集
-tracker-settings-mounting_section-title = 装着方向
+tracker-settings-mounting_section = 装着方向
 tracker-settings-mounting_section-description = トラッカーをどの方向に装着していますか?
 tracker-settings-mounting_section-edit = 装着向きの編集
 # The .<name> means it's an attribute and it's related to the top key.
@@ -180,7 +180,7 @@ tracker_selection_menu-assigned = 割り当て済みのトラッカー
 tracker_selection_menu-dont_assign = 割り当てない
 
 ## Mounting menu
-mounting_selection_menu-title = このトラッカーをどこに配置しますか？
+mounting_selection_menu = このトラッカーをどこに配置しますか？
 mounting_selection_menu-close = 閉じる
 
 ## Sidebar settings
@@ -195,7 +195,7 @@ settings-sidebar-utils = ユーティリティ
 settings-sidebar-serial = シリアルコンソール
 
 ## SteamVR settings
-settings-general-steamvr-title = SteamVR
+settings-general-steamvr = SteamVR
 settings-general-steamvr-subtitle = SteamVRのトラッカー
 # Not all translation keys support multiline, only the ones that specify it will actually
 # split it in lines (that also means you can split in lines however you want in those).
@@ -244,7 +244,7 @@ settings-general-fk_settings-leg_tweak-skating_correction = スケーティン�
 settings-general-fk_settings-arm_fk = アームFK
 settings-general-fk_settings-arm_fk-description = 腕の追従方法を変更する。
 settings-general-fk_settings-arm_fk-force_arms = Force arms from HMD
-settings-general-fk_settings-skeleton_settings-title = スケルトン設定
+settings-general-fk_settings-skeleton_settings = スケルトン設定
 settings-general-fk_settings-skeleton_settings-description = スケルトン設定のオン/オフを切り替えます。これらはオンのままにしておくことをお勧めします。
 settings-general-fk_settings-skeleton_settings-extended_spine = Extended spine
 settings-general-fk_settings-skeleton_settings-extended_pelvis = Extended pelvis

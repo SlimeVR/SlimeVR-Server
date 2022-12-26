@@ -490,7 +490,7 @@ onboarding-automatic_proportions-recording-steps-2 = twist upwe wowdy wowft, the
 onboarding-automatic_proportions-recording-steps-3 = twist upwe wowdy wowight, then bend wowight.
 onboarding-automatic_proportions-recording-steps-4 = wiggy aweound until tymey ends.
 onboarding-automatic_proportions-recording-processing = pwowcessing teh wowesult
-# $time (Number) - Seconds left for the automatic calibration recording to finish
+# $time (Number) - Seconds left for the automatic calibration recording to finish (max 15)
 onboarding-automatic_proportions-recording-timer = { $time ->
     [one] 1 second wowft
     *[other] { $time } secondsy wowft

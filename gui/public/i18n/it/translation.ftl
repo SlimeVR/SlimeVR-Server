@@ -299,7 +299,7 @@ settings-serial-serial_select = Seleziona una porta seriale
 settings-serial-auto_dropdown_item = Automatico
 
 ## OSC router settings
-settings-osc-router-title = OSC router
+settings-osc-router = OSC router
 # This cares about multilines
 settings-osc-router-description =
     Inoltra messaggi OSC da un altro programma.

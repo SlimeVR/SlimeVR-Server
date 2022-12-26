@@ -122,10 +122,10 @@ tracker-infos-url = URL
 ## Tracker settings
 tracker-settings-back = Retour à la liste des capteurs
 tracker-settings-title = Paramètres du capteur
-tracker-settings-assignment_section-title = Assignement du capteur
+tracker-settings-assignment_section = Assignement du capteur
 tracker-settings-assignment_section-description = À quelle partie du corps le capteur est assigné.
 tracker-settings-assignment_section-edit = Ré-assigner
-tracker-settings-mounting_section-title = Orientation du capteur
+tracker-settings-mounting_section = Orientation du capteur
 tracker-settings-mounting_section-description = Dans quelle direction pointe le capteur?
 tracker-settings-mounting_section-edit = Changer l'orientation
 # The .<name> means it's an attribute and it's related to the top key.
@@ -490,7 +490,7 @@ onboarding-automatic_proportions-recording-steps-2 = Tournez le haut du corps ve
 onboarding-automatic_proportions-recording-steps-3 = Tournez le haut du corps vers la droite, puis panchez vers la gauche.
 onboarding-automatic_proportions-recording-steps-4 = Remuez jusqu'à ce que la minuterie se termine.
 onboarding-automatic_proportions-recording-processing = Traitement du résultat
-# $time (Number) - Seconds left for the automatic calibration recording to finish
+# $time (Number) - Seconds left for the automatic calibration recording to finish (max 15)
 onboarding-automatic_proportions-recording-timer = { $time ->
     [one] 1 second left
     *[other] { $time } seconds left
