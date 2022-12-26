@@ -19,7 +19,7 @@ export function HomePage() {
         <Typography variant="main-title">{t('onboarding-home')}</Typography>
         <div className="flex flex-col items-center">
           <>
-            {t('onboarding-home.description')
+            {t('onboarding-home-description')
               .split('\n')
               .map((line) => (
                 <Typography color="secondary">{line}</Typography>
@@ -27,7 +27,7 @@ export function HomePage() {
           </>
         </div>
         <Button variant="primary" to="/onboarding/wifi-creds">
-          {t('onboarding-home.start')}
+          {t('onboarding-home-start')}
         </Button>
         <NavLink to="/" onClick={skipSetup}>
           <Typography color="secondary">{t('onboarding-skip')}</Typography>

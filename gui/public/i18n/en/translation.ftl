@@ -122,17 +122,17 @@ tracker-infos-url = Tracker URL
 ## Tracker settings
 tracker-settings-back = Go back to trackers list
 tracker-settings-title = Tracker settings
+tracker-settings-assignment_section = Assignment
+tracker-settings-assignment_section-description = What part of the body the tracker is assigned to.
+tracker-settings-assignment_section-edit = Edit assignment
+tracker-settings-mounting_section = Mounting position
+tracker-settings-mounting_section-description = Where is the tracker mounted?
+tracker-settings-mounting_section-edit = Edit mounting
 # The .<name> means it's an attribute and it's related to the top key.
 # In this case that is the settings for the assignment section.
-tracker-settings-assignment_section = Assignment
-    .description = What part of the body the tracker is assigned to.
-    .edit = Edit assignment
-tracker-settings-mounting_section = Mounting position
-    .description = Where is the tracker mounted?
-    .edit = Edit mounting
 tracker-settings-name_section = Tracker name
-    .description = Give it a cute nickname :)
     .placeholder = NightyBeast's left leg
+tracker-settings-name_section-description = Give it a cute nickname :)
 
 ## Tracker part card info
 tracker-part_card-no_name = No name
@@ -140,7 +140,7 @@ tracker-part_card-unassigned = Unassigned
 
 ## Body assignment menu
 body_assignment_menu = Where do you want this tracker to be?
-    .description = Choose a location where you want this tracker to be assigned. Alternatively you can choose to manage all trackers at once instead of one by one.
+body_assignment_menu-description = Choose a location where you want this tracker to be assigned. Alternatively you can choose to manage all trackers at once instead of one by one.
 body_assignment_menu-show_advanced_locations = Show advanced assign locations
 body_assignment_menu-manage_trackers = Manage all trackers
 body_assignment_menu-unassign_tracker = Unassign tracker
@@ -182,7 +182,7 @@ tracker_selection_menu-dont_assign = Do not assign
 
 ## Mounting menu
 mounting_selection_menu = Where do you want this tracker to be?
-    .close = Close
+mounting_selection_menu-close = Close
 
 ## Sidebar settings
 settings-sidebar-title = Settings
@@ -197,15 +197,15 @@ settings-sidebar-serial = Serial console
 
 ## SteamVR settings
 
+settings-general-steamvr = SteamVR
+settings-general-steamvr-subtitle = SteamVR trackers
 # Not all translation keys support multiline, only the ones that specify it will actually
 # split it in lines (that also means you can split in lines however you want in those).
 # The first spaces (not tabs) for indentation will be ignored, just to make the file look nice when writing.
-# This one is one of this cases that cares about multilines (the .description attribute)
-settings-general-steamvr = SteamVR
-    .subtitle = SteamVR trackers
-    .description =
-        Enable or disable specific SteamVR trackers.
-        Useful for games or apps that only support certain trackers.
+# This one is one of this cases that cares about multilines
+settings-general-steamvr-description =
+    Enable or disable specific SteamVR trackers.
+    Useful for games or apps that only support certain trackers.
 settings-general-steamvr-trackers-waist = Waist
 settings-general-steamvr-trackers-chest = Chest
 settings-general-steamvr-trackers-feet = Feet
@@ -214,25 +214,25 @@ settings-general-steamvr-trackers-elbows = Elbows
 settings-general-steamvr-trackers-hands = Hands
 
 ## Tracker mechanics
-# This .description also cares about multilines
 settings-general-tracker_mechanics = Tracker mechanics
-    .subtitle = Filtering
-    .description =
-        Choose the filtering type for your trackers.
-        Prediction predicts movement while smoothing smoothens movement.
+settings-general-tracker_mechanics-subtitle = Filtering
+# This also cares about multilines
+settings-general-tracker_mechanics-description =
+    Choose the filtering type for your trackers.
+    Prediction predicts movement while smoothing smoothens movement.
 settings-general-tracker_mechanics-filtering_type = Filtering type
 settings-general-tracker_mechanics-filtering_type-none = No filtering
-    .description = Use rotations as is. Will not do any filtering.
+settings-general-tracker_mechanics-filtering_type-none-description = Use rotations as is. Will not do any filtering.
 settings-general-tracker_mechanics-filtering_type-smoothing = Smoothing
-    .description = Smooths movements but adds some latency.
+settings-general-tracker_mechanics-filtering_type-smoothing-description = Smooths movements but adds some latency.
 settings-general-tracker_mechanics-filtering_type-prediction = Prediction
-    .description = Reduces latency and makes movements more snappy, but may increase jitter.
+settings-general-tracker_mechanics-filtering_type-prediction-description = Reduces latency and makes movements more snappy, but may increase jitter.
 settings-general-tracker_mechanics-amount = Amount
 
 ## FK/Tracking settings
 settings-general-fk_settings = Tracking settings
 settings-general-fk_settings-leg_tweak = Leg tweaks
-    .description = Floor-clip can Reduce or even eliminates clipping with the floor but may cause problems when on your knees. Skating-correction corrects for ice skating, but can decrease accuracy in certain movement patterns.
+settings-general-fk_settings-leg_tweak-description = Floor-clip can Reduce or even eliminates clipping with the floor but may cause problems when on your knees. Skating-correction corrects for ice skating, but can decrease accuracy in certain movement patterns.
 # Floor clip: 
 # why the name - came from the idea of noclip in video games, but is the opposite where clipping to the floor is a desired feature
 # definition - Prevents the foot trackers from going lower than they where when a reset was performed
@@ -244,10 +244,10 @@ settings-general-fk_settings-leg_tweak-floor_clip = Floor clip
 settings-general-fk_settings-leg_tweak-skating_correction = Skating correction
     .amount = Skating correction strength
 settings-general-fk_settings-arm_fk = Arm tracking
-    .description = Change the way the arms are tracked.
+settings-general-fk_settings-arm_fk-description = Change the way the arms are tracked.
 settings-general-fk_settings-arm_fk-force_arms = Force arms from HMD
 settings-general-fk_settings-skeleton_settings = Skeleton settings
-    .description = Toggle skeleton settings on or off. It is recommended to leave these on.
+settings-general-fk_settings-skeleton_settings-description = Toggle skeleton settings on or off. It is recommended to leave these on.
 settings-general-fk_settings-skeleton_settings-extended_spine = Extended spine
 settings-general-fk_settings-skeleton_settings-extended_pelvis = Extended pelvis
 settings-general-fk_settings-skeleton_settings-extended_knees = Extended knee
@@ -258,8 +258,8 @@ settings-general-fk_settings-vive_emulation-label = Enable Vive emulation
 
 ## Gesture control settings (tracker tapping)
 settings-general-gesture_control = Gesture control
-    .subtitle = Tap based resets
-    .description = Allows for resets to be triggered by tapping a tracker. The tracker highest up on your torso is used for Quick Reset, the tracker highest up on your left leg is used for Reset, and the tracker highest up on your right leg is used for Mounting Reset. It should be mentioned that taps must happen within 0.6 seconds to be registered.
+settings-general-gesture_control-subtitle = Tap based resets
+settings-general-gesture_control-description = Allows for resets to be triggered by tapping a tracker. The tracker highest up on your torso is used for Quick Reset, the tracker highest up on your left leg is used for Reset, and the tracker highest up on your right leg is used for Mounting Reset. It should be mentioned that taps must happen within 0.6 seconds to be registered.
 # This is a unit: 3 taps, 2 taps, 1 tap
 # $amount (Number) - Amount of taps (touches to the tracker's case)
 settings-general-gesture_control-taps = { $amount ->
@@ -279,21 +279,21 @@ settings-general-gesture_control-mountingResetTaps = Taps for mounting reset
 ## Interface settings
 settings-general-interface = Interface
 settings-general-interface-dev_mode = Developer Mode
-    .description = This mode can be useful if you need in-depth data or to interact with connected trackers on a more advanced level.
     .label = Developer Mode
+settings-general-interface-dev_mode-description = This mode can be useful if you need in-depth data or to interact with connected trackers on a more advanced level.
 settings-general-interface-serial_detection = Serial device detection
-    .description = This option will show a pop-up every time you plug a new serial device that could be a tracker. It helps improving the setup process of a tracker.
     .label = Serial device detection
+settings-general-interface-serial_detection-description = This option will show a pop-up every time you plug a new serial device that could be a tracker. It helps improving the setup process of a tracker.
 settings-general-interface-lang = Select language
-    .description = Change the default language you want to use.
     .placeholder = Select the language to use
+settings-general-interface-lang-description = Change the default language you want to use.
 
 ## Serial settings
-# This .description cares about multilines
 settings-serial = Serial Console
-    .description =
-        This is a live information feed for serial communication.
-        May be useful if you need to know the firmware is acting up.
+# This cares about multilines
+settings-serial-description =
+    This is a live information feed for serial communication.
+    May be useful if you need to know the firmware is acting up.
 settings-serial-connection_lost = Connection to serial lost, Reconnecting...
 settings-serial-reboot = Reboot
 settings-serial-factory_reset = Factory Reset
@@ -302,47 +302,47 @@ settings-serial-serial_select = Select a serial port
 settings-serial-auto_dropdown_item = Auto
 
 ## OSC router settings
-# This .description cares about multilines
 settings-osc-router = OSC router
-    .description =
-        Forward OSC messages from another program.
-        Useful for using another OSC program with VRChat for example.
+# This cares about multilines
+settings-osc-router-description =
+    Forward OSC messages from another program.
+    Useful for using another OSC program with VRChat for example.
 settings-osc-router-enable = Enable
-    .description = Toggle the forwarding of messages.
     .label = Enable
-# This .description cares about multilines
+settings-osc-router-enable-description = Toggle the forwarding of messages.
 settings-osc-router-network = Network ports
-    .description =
-        Set the ports for listening and sending data.
-        These can be the same as other ports used in the SlimeVR server.
+# This cares about multilines
+settings-osc-router-network-description =
+    Set the ports for listening and sending data.
+    These can be the same as other ports used in the SlimeVR server.
 settings-osc-router-network-port_in = Port In
     .placeholder = Port in (default: 9002)
 settings-osc-router-network-port_out = Port Out
     .placeholder = Port out (default: 9000)
 settings-osc-router-network-address = Network address
-    .description = Set the address to send out data at.
     .placeholder = IPV4 address
+settings-osc-router-network-address-description = Set the address to send out data at.
 
 ## OSC VRChat settings
-# This .description cares about multilines
 settings-osc-vrchat = VRChat OSC Trackers
-    .description =
-        Change VRChat-specific settings to receive HMD data and send
-        trackers data for FBT (works on Quest standalone).
+# This cares about multilines
+settings-osc-vrchat-description =
+    Change VRChat-specific settings to receive HMD data and send
+    trackers data for FBT (works on Quest standalone).
 settings-osc-vrchat-enable = Enable
-    .description = Toggle the sending and receiving of data.
     .label = Enable
+settings-osc-vrchat-enable-description = Toggle the sending and receiving of data.
 settings-osc-vrchat-network = Network ports
-    .description = Set the ports for listening and sending data to VRChat.
+settings-osc-vrchat-network-description = Set the ports for listening and sending data to VRChat.
 settings-osc-vrchat-network-port_in = Port In
     .placeholder = Port in (default: 9001)
 settings-osc-vrchat-network-port_out = Port Out
     .placeholder = Port out (default: 9000)
 settings-osc-vrchat-network-address = Network address
-    .description = Choose which address to send out data to VRChat (check your wifi settings on your device).
     .placeholder = VRChat ip address
+settings-osc-vrchat-network-address-description = Choose which address to send out data to VRChat (check your wifi settings on your device).
 settings-osc-vrchat-network-trackers = Trackers
-    .description = Toggle the sending of specific trackers via OSC.
+settings-osc-vrchat-network-trackers-description = Toggle the sending of specific trackers via OSC.
 settings-osc-vrchat-network-trackers-chest = Chest
 settings-osc-vrchat-network-trackers-waist = Waist
 settings-osc-vrchat-network-trackers-knees = Knees
@@ -356,13 +356,13 @@ onboarding-wip = Work in progress
 
 ## WiFi setup
 onboarding-wifi_creds-back = Go Back to introduction
-# This .description cares about multilines
 onboarding-wifi_creds = Input WiFi credentials
-    .description =
-        The Trackers will use these credentials to connect wirelessly.
-        Please use the credentials that you are currently connected to.
-    .skip = Skip wifi settings
-    .submit = Submit!
+# This cares about multilines
+onboarding-wifi_creds-description =
+    The Trackers will use these credentials to connect wirelessly.
+    Please use the credentials that you are currently connected to.
+onboarding-wifi_creds-skip = Skip wifi settings
+onboarding-wifi_creds-submit = Submit!
 onboarding-wifi_creds-ssid = SSID
     .placeholder = Enter SSID
 onboarding-wifi_creds-password = Password
@@ -371,15 +371,15 @@ onboarding-wifi_creds-password = Password
 ## Mounting setup
 onboarding-reset_tutorial-back = Go Back to Mounting calibration
 onboarding-reset_tutorial = Reset tutorial
-    .description = This feature isn't done, just press continue
+onboarding-reset_tutorial-description = This feature isn't done, just press continue
 
 ## Setup start
-# This .description cares about multilines and it's centered!!
 onboarding-home = Welcome to SlimeVR
-    .description =
-        Bringing full-body tracking
-        to everyone
-    .start = Lets get set up!
+# This cares about multilines and it's centered!!
+onboarding-home-description =
+    Bringing full-body tracking
+    to everyone
+onboarding-home-start = Lets get set up!
 
 ## Enter VR part of setup
 onboarding-enter_vr-back = Go Back to Tracker assignent
@@ -433,7 +433,7 @@ onboarding-assign_trackers-next = I assigned all the trackers
 ## Tracker manual mounting setup
 onboarding-manual_mounting-back = Go Back to Enter VR
 onboarding-manual_mounting = Manual Mounting
-    .description = Click on every tracker and select which way they are mounted
+onboarding-manual_mounting-description = Click on every tracker and select which way they are mounted
 onboarding-manual_mounting-auto_mounting = Automatic mounting
 onboarding-manual_mounting-next = Next step
 

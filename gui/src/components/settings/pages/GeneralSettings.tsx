@@ -273,10 +273,10 @@ export function GeneralSettings() {
           <Typography variant="main-title">
             {t('settings-general-steamvr')}
           </Typography>
-          <Typography bold>{t('settings-general-steamvr.subtitle')}</Typography>
+          <Typography bold>{t('settings-general-steamvr-subtitle')}</Typography>
           <div className="flex flex-col py-2">
             <>
-              {t('settings-general-steamvr.description')
+              {t('settings-general-steamvr-description')
                 .split('\n')
                 .map((line) => (
                   <Typography color="secondary">{line}</Typography>
@@ -335,11 +335,11 @@ export function GeneralSettings() {
             {t('settings-general-tracker_mechanics')}
           </Typography>
           <Typography bold>
-            {t('settings-general-tracker_mechanics.subtitle')}
+            {t('settings-general-tracker_mechanics-subtitle')}
           </Typography>
           <div className="flex flex-col pt-2 pb-4">
             <>
-              {t('settings-general-tracker_mechanics.description')
+              {t('settings-general-tracker_mechanics-description')
                 .split('\n')
                 .map((line) => (
                   <Typography color="secondary">{line}</Typography>
@@ -357,7 +357,7 @@ export function GeneralSettings() {
                 'settings-general-tracker_mechanics-filtering_type-none'
               )}
               desciption={t(
-                'settings-general-tracker_mechanics-filtering_type-none.description'
+                'settings-general-tracker_mechanics-filtering_type-none-description'
               )}
               value={FilteringType.NONE}
             ></Radio>
@@ -368,7 +368,7 @@ export function GeneralSettings() {
                 'settings-general-tracker_mechanics-filtering_type-smoothing'
               )}
               desciption={t(
-                'settings-general-tracker_mechanics-filtering_type-smoothing.description'
+                'settings-general-tracker_mechanics-filtering_type-smoothing-description'
               )}
               value={FilteringType.SMOOTHING}
             ></Radio>
@@ -379,7 +379,7 @@ export function GeneralSettings() {
                 'settings-general-tracker_mechanics-filtering_type-prediction'
               )}
               desciption={t(
-                'settings-general-tracker_mechanics-filtering_type-prediction.description'
+                'settings-general-tracker_mechanics-filtering_type-prediction-description'
               )}
               value={FilteringType.PREDICTION}
             ></Radio>
@@ -407,7 +407,7 @@ export function GeneralSettings() {
           </Typography>
           <div className="flex flex-col pt-2 pb-4">
             <Typography color="secondary">
-              {t('settings-general-fk_settings-leg_tweak.description')}
+              {t('settings-general-fk_settings-leg_tweak-description')}
             </Typography>
           </div>
           <div className="grid sm:grid-cols-2 gap-3 pb-5">
@@ -447,7 +447,7 @@ export function GeneralSettings() {
           </Typography>
           <div className="flex flex-col pt-2 pb-4">
             <Typography color="secondary">
-              {t('settings-general-fk_settings-arm_fk.description')}
+              {t('settings-general-fk_settings-arm_fk-description')}
             </Typography>
           </div>
           <div className="grid sm:grid-cols-2 pb-5">
@@ -467,7 +467,7 @@ export function GeneralSettings() {
               <div className="flex flex-col pt-2 pb-4">
                 <Typography color="secondary">
                   {t(
-                    'settings-general-fk_settings-skeleton_settings.description'
+                    'settings-general-fk_settings-skeleton_settings-description'
                   )}
                 </Typography>
               </div>
@@ -528,11 +528,11 @@ export function GeneralSettings() {
             {t('settings-general-gesture_control')}
           </Typography>
           <Typography bold>
-            {t('settings-general-gesture_control.subtitle')}
+            {t('settings-general-gesture_control-subtitle')}
           </Typography>
           <div className="flex flex-col pt-2 pb-4">
             <Typography color="secondary">
-              {t('settings-general-gesture_control.description')}
+              {t('settings-general-gesture_control-description')}
             </Typography>
           </div>
           <div className="grid sm:grid-cols-3 gap-5 pb-2">
@@ -644,7 +644,7 @@ export function GeneralSettings() {
                 </Typography>
                 <div className="flex flex-col">
                   <Typography color="secondary">
-                    {t('settings-general-interface-dev_mode.description')}
+                    {t('settings-general-interface-dev_mode-description')}
                   </Typography>
                 </div>
                 <div className="pt-2">
@@ -666,7 +666,7 @@ export function GeneralSettings() {
                 <div className="flex flex-col">
                   <Typography color="secondary">
                     {t(
-                      'settings-general-interface-serial_detection.description'
+                      'settings-general-interface-serial_detection-description'
                     )}
                   </Typography>
                 </div>
@@ -690,7 +690,7 @@ export function GeneralSettings() {
                 </Typography>
                 <div className="flex flex-col">
                   <Typography color="secondary">
-                    {t('settings-general-interface-lang.description')}
+                    {t('settings-general-interface-lang-description')}
                   </Typography>
                 </div>
                 <div className="pt-2">

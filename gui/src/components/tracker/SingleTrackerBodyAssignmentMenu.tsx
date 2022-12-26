@@ -44,7 +44,7 @@ export function SingleTrackerBodyAssignmentMenu({
                 {t('body_assignment_menu')}
               </Typography>
               <Typography color="secondary">
-                {t('body_assignment_menu.description')}
+                {t('body_assignment_menu-description')}
               </Typography>
               <CheckBox
                 control={control}

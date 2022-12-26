@@ -117,7 +117,7 @@ export function OSCRouterSettings() {
           </Typography>
           <div className="flex flex-col pt-2 pb-4">
             <>
-              {t('settings-osc-router.description')
+              {t('settings-osc-router-description')
                 .split('\n')
                 .map((line) => (
                   <Typography color="secondary">{line}</Typography>
@@ -127,7 +127,7 @@ export function OSCRouterSettings() {
           <Typography bold>{t('settings-osc-router-enable')}</Typography>
           <div className="flex flex-col pb-2">
             <Typography color="secondary">
-              {t('settings-osc-router-enable.description')}
+              {t('settings-osc-router-enable-description')}
             </Typography>
           </div>
           <div className="grid grid-cols-2 gap-3 pb-5">
@@ -142,7 +142,7 @@ export function OSCRouterSettings() {
           <Typography bold>{t('settings-osc-router-network')}</Typography>
           <div className="flex flex-col pb-2">
             <>
-              {t('settings-osc-router-network.description')
+              {t('settings-osc-router-network-description')
                 .split('\n')
                 .map((line) => (
                   <Typography color="secondary">{line}</Typography>
@@ -172,7 +172,7 @@ export function OSCRouterSettings() {
           </Typography>
           <div className="flex flex-col pb-2">
             <Typography color="secondary">
-              {t('settings-osc-router-network-address.description')}
+              {t('settings-osc-router-network-address-description')}
             </Typography>
           </div>
           <div className="grid gap-3 pb-5">

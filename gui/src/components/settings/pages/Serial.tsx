@@ -153,7 +153,7 @@ export function Serial() {
       <div className="flex flex-col pb-2">
         <Typography variant="main-title">{t('settings-serial')}</Typography>
         <>
-          {t('settings-serial.description')
+          {t('settings-serial-description')
             .split('\n')
             .map((line) => (
               <Typography color="secondary">{line}</Typography>

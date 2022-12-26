@@ -94,7 +94,7 @@ export function MountingSelectionMenu({
       >
         <div className="flex flex-col justify-end pointer-events-auto">
           <Button variant="primary" onClick={onClose}>
-            {t('mounting_selection_menu.close')}
+            {t('mounting_selection_menu-close')}
           </Button>
         </div>
       </div>

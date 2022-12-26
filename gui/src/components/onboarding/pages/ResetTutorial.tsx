@@ -26,7 +26,7 @@ export function ResetTutorialPage() {
                 </span>
               </Typography>
               <Typography color="secondary">
-                {t('onboarding-reset_tutorial.description')}
+                {t('onboarding-reset_tutorial-description')}
               </Typography>
             </div>
           </div>

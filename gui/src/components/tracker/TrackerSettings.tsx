@@ -209,7 +209,7 @@ export function TrackerSettingsPage() {
               {t('tracker-settings-assignment_section')}
             </Typography>
             <Typography color="secondary">
-              {t('tracker-settings-assignment_section.description')}
+              {t('tracker-settings-assignment_section-description')}
             </Typography>
             <div className="flex justify-between bg-background-80 w-full p-3 rounded-lg">
               <div className="flex gap-3 items-center">
@@ -226,7 +226,7 @@ export function TrackerSettingsPage() {
                   variant="secondary"
                   onClick={() => setSelectBodypart(true)}
                 >
-                  {t('tracker-settings-assignment_section.edit')}
+                  {t('tracker-settings-assignment_section-edit')}
                 </Button>
               </div>
             </div>
@@ -236,7 +236,7 @@ export function TrackerSettingsPage() {
               {t('tracker-settings-mounting_section')}
             </Typography>
             <Typography color="secondary">
-              {t('tracker-settings-mounting_section.description')}
+              {t('tracker-settings-mounting_section-description')}
             </Typography>
             <div className="flex justify-between bg-background-80 w-full p-3 rounded-lg">
               <div className="flex gap-3 items-center">
@@ -248,7 +248,7 @@ export function TrackerSettingsPage() {
                   variant="secondary"
                   onClick={() => setSelectRotation(true)}
                 >
-                  {t('tracker-settings-mounting_section.edit')}
+                  {t('tracker-settings-mounting_section-edit')}
                 </Button>
               </div>
             </div>
@@ -258,7 +258,7 @@ export function TrackerSettingsPage() {
               {t('tracker-settings-name_section')}
             </Typography>
             <Typography color="secondary">
-              {t('tracker-settings-name_section.description')}
+              {t('tracker-settings-name_section-description')}
             </Typography>
             <Input
               placeholder={t('tracker-settings-name_section.placeholder')}

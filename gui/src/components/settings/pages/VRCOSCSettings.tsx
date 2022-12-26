@@ -142,7 +142,7 @@ export function VRCOSCSettings() {
           </Typography>
           <div className="flex flex-col pt-2 pb-4">
             <>
-              {t('settings-osc-vrchat.description')
+              {t('settings-osc-vrchat-description')
                 .split('\n')
                 .map((line) => (
                   <Typography color="secondary">{line}</Typography>
@@ -152,7 +152,7 @@ export function VRCOSCSettings() {
           <Typography bold>{t('settings-osc-vrchat-enable')}</Typography>
           <div className="flex flex-col pb-2">
             <Typography color="secondary">
-              {t('settings-osc-vrchat-enable.description')}
+              {t('settings-osc-vrchat-enable-description')}
             </Typography>
           </div>
           <div className="grid grid-cols-2 gap-3 pb-5">
@@ -167,7 +167,7 @@ export function VRCOSCSettings() {
           <Typography bold>{t('settings-osc-vrchat-network')}</Typography>
           <div className="flex flex-col pb-2">
             <Typography color="secondary">
-              {t('settings-osc-vrchat-network.description')}
+              {t('settings-osc-vrchat-network-description')}
             </Typography>
           </div>
           <div className="grid grid-cols-2 gap-3 pb-5">
@@ -193,7 +193,7 @@ export function VRCOSCSettings() {
           </Typography>
           <div className="flex flex-col pb-2">
             <Typography color="secondary">
-              {t('settings-osc-vrchat-network-address.description')}
+              {t('settings-osc-vrchat-network-address-description')}
             </Typography>
           </div>
           <div className="grid gap-3 pb-5">
@@ -212,7 +212,7 @@ export function VRCOSCSettings() {
           </Typography>
           <div className="flex flex-col pb-2">
             <Typography color="secondary">
-              {t('settings-osc-vrchat-network-trackers.description')}
+              {t('settings-osc-vrchat-network-trackers-description')}
             </Typography>
           </div>
           <div className="grid grid-cols-2 gap-3 pb-5">
