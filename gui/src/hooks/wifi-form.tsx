@@ -1,9 +1,9 @@
 import { useEffect } from 'react';
 import { useForm } from 'react-hook-form';
-import { useTranslation } from 'react-i18next';
 import { useNavigate } from 'react-router-dom';
 import { Input } from '../components/commons/Input';
 import { useOnboarding } from './onboarding';
+import { Localized } from '@fluent/react';
 
 export interface WifiFormData {
   ssid: string;
@@ -11,7 +11,6 @@ export interface WifiFormData {
 }
 
 export function useWifiForm() {
-  const { t } = useTranslation();
   const navigate = useNavigate();
   const { state, setWifiCredentials } = useOnboarding();
   const { register, reset, handleSubmit, formState } = useForm<WifiFormData>({
@@ -43,20 +42,30 @@ export function useWifiForm() {
     hasWifiCreds: !!state.wifi,
     WifiForm: () => (
       <>
-        <Input
-          {...register('ssid', { required: true })}
-          type="text"
-          label={t('onboarding-wifi_creds-ssid.label')}
-          placeholder={t('onboarding-wifi_creds-ssid.placeholder')}
-          variant="secondary"
-        />
-        <Input
-          {...register('password')}
-          type="password"
-          label={t('onboarding-wifi_creds-password.label')}
-          placeholder={t('onboarding-wifi_creds-password.placeholder')}
-          variant="secondary"
-        />
+        <Localized
+          id="onboarding-wifi_creds-ssid"
+          attrs={{ placeholder: true, label: true }}
+        >
+          <Input
+            {...register('ssid', { required: true })}
+            type="text"
+            label="SSID"
+            placeholder="ssid"
+            variant="secondary"
+          />
+        </Localized>
+        <Localized
+          id="onboarding-wifi_creds-password"
+          attrs={{ placeholder: true, label: true }}
+        >
+          <Input
+            {...register('password')}
+            type="password"
+            label="Password"
+            placeholder="password"
+            variant="secondary"
+          />
+        </Localized>
       </>
     ),
   };

@@ -1,5 +1,4 @@
 import classNames from 'classnames';
-import { useTranslation } from 'react-i18next';
 import ReactModal from 'react-modal';
 import { BodyPart } from 'solarxr-protocol';
 import { FlatDeviceTracker } from '../../../../hooks/app';
@@ -9,6 +8,7 @@ import { Button } from '../../../commons/Button';
 import { TipBox } from '../../../commons/TipBox';
 import { Typography } from '../../../commons/Typography';
 import { TrackerCard } from '../../../tracker/TrackerCard';
+import { useLocalization } from '@fluent/react';
 
 export function TrackerSelectionMenu({
   isOpen = true,
@@ -21,7 +21,7 @@ export function TrackerSelectionMenu({
   onClose: () => void;
   onTrackerSelected: (tracker: FlatDeviceTracker | null) => void;
 }) {
-  const { t } = useTranslation();
+  const { l10n } = useLocalization();
   const { ref: refTrackers, layoutHeight: trackersHeight } =
     useLayout<HTMLDivElement>();
   const { ref: refOptions, height: optionsHeight } =
@@ -48,7 +48,7 @@ export function TrackerSelectionMenu({
       <div className="flex w-full h-full flex-col ">
         <div className="flex w-full flex-col flex-grow items-center gap-3">
           <Typography variant="main-title" bold>
-            {t('tracker_selection_menu-' + BodyPart[bodyPart])}
+            {l10n.getString('tracker_selection_menu-' + BodyPart[bodyPart])}
           </Typography>
           <div className="relative">
             <div
@@ -60,7 +60,7 @@ export function TrackerSelectionMenu({
                 {unassignedTrackers.length && (
                   <div className="flex flex-col gap-3">
                     <Typography>
-                      {t('tracker_selection_menu-unassigned')}
+                      {l10n.getString('tracker_selection_menu-unassigned')}
                     </Typography>
                     <div className="grid grid-cols-2 gap-3">
                       {unassignedTrackers.map((fd, index) => (
@@ -80,7 +80,9 @@ export function TrackerSelectionMenu({
                     </div>
                   </div>
                 )}
-                <Typography>{t('tracker_selection_menu-assigned')}</Typography>
+                <Typography>
+                  {l10n.getString('tracker_selection_menu-assigned')}
+                </Typography>
                 <div className=" grid grid-cols-2 gap-3">
                   {assignedTrackers.map((fd, index) => (
                     <TrackerCard
@@ -111,11 +113,11 @@ export function TrackerSelectionMenu({
         ref={refOptions}
       >
         <div className="w-full max-w-sm">
-          <TipBox>{t('tips-find_tracker')}</TipBox>
+          <TipBox>{l10n.getString('tips-find_tracker')}</TipBox>
         </div>
         <div className="flex flex-col justify-end pointer-events-auto">
           <Button variant="primary" onClick={() => onTrackerSelected(null)}>
-            {t('tracker_selection_menu-dont_assign')}
+            {l10n.getString('tracker_selection_menu-dont_assign')}
           </Button>
         </div>
       </div>

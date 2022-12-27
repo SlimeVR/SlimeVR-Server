@@ -131,7 +131,7 @@ tracker-settings-mounting_section-edit = Changer l'orientation
 # The .<name> means it's an attribute and it's related to the top key.
 # In this case that is the settings for the assignment section.
 tracker-settings-name_section = Nom personalisé
-    .placeholder = Patte gauche d'Erimel
+tracker-settings-name_section-placeholder = Patte gauche d'Erimel
 tracker-settings-name_section-description = Donnez-lui un joli surnom :3
 
 ## Tracker part card info
@@ -240,7 +240,7 @@ settings-general-fk_settings-leg_tweak-floor_clip = Limitage au sol
 # since this largely prevents this it corrects for it hence skating correction (note this may be renamed to sliding correction)
 # definition - Guesses when each foot is in contact with the ground and uses that information to improve tracking
 settings-general-fk_settings-leg_tweak-skating_correction = Correction du glissement
-    .amount = Force de la correction du glissement
+settings-general-fk_settings-leg_tweak-skating_correction-amount = Force de la correction du glissement
 settings-general-fk_settings-arm_fk = Capture des bras
 settings-general-fk_settings-arm_fk-description = Changez la façon dont les bras sont captés.
 settings-general-fk_settings-arm_fk-force_arms = Forcer les bras en provenance du casque VR
@@ -276,13 +276,13 @@ settings-general-gesture_control-mountingResetTaps = Tapes pour la réinitialisa
 ## Interface settings
 settings-general-interface = Interface
 settings-general-interface-dev_mode = Mode développeur
-    .label = Mode développeur
+settings-general-interface-dev_mode-label = Mode développeur
 settings-general-interface-dev_mode-description = Ce mode peut être utile pour avoir des données approfondies ou pour interagir avec des capteurs connectés à un niveau plus avancé.
 settings-general-interface-serial_detection = Détection de périphérique série
-    .label = Détection de périphérique série
+settings-general-interface-serial_detection-label = Détection de périphérique série
 settings-general-interface-serial_detection-description = Cette option affichera une fenêtre chaque fois qu'un nouveau périphérique série qui pourrait être un capteur est connecté.
 settings-general-interface-lang = Sélectionner la langue
-    .placeholder = Choisissez la langue
+settings-general-interface-lang-placeholder = Choisissez la langue
 settings-general-interface-lang-description = Choisir la langue par défaut.
 
 ## Serial settings
@@ -305,7 +305,7 @@ settings-osc-router-description =
     Transférez les messages OSC provenant d'un autre programme
     Utile pour utiliser un autre programme OSC avec VRChat par exemple.
 settings-osc-router-enable = Activer
-    .label = Activer
+settings-osc-router-enable-label = Activer
 settings-osc-router-enable-description = Activer/désactiver le transfert de messages.
 settings-osc-router-network = Ports réseau
 # This cares about multilines
@@ -319,7 +319,7 @@ settings-osc-router-network-port_out =
     .label = Port d'envoi
     .placeholder = Port d'envoi (par défaut: 9000)
 settings-osc-router-network-address = Adresse réseau
-    .placeholder = Adresse IPv4
+settings-osc-router-network-address-placeholder = Adresse IPv4
 settings-osc-router-network-address-description = Choisissez l'adresse vers laquelle envoyer les données.
 
 ## OSC VRChat settings
@@ -329,7 +329,7 @@ settings-osc-vrchat-description =
     Modifiez les paramètres spécifiques à VRChat pour recevoir et envoyer
     des capteurs par OSC (fonctionne sur Quest sans PC).
 settings-osc-vrchat-enable = Activer
-    .label = Activer
+settings-osc-vrchat-enable-label = Activer
 settings-osc-vrchat-enable-description = Activer/désactiver l'envoi et la réception de données.
 settings-osc-vrchat-network = Connexions réseau
 settings-osc-vrchat-network-description = Définissez les ports pour écouter et envoyer des données à VRChat.
@@ -340,7 +340,7 @@ settings-osc-vrchat-network-port_out =
     .label = Port de sortie
     .placeholder = Port d'envoi (par défaut : 9000)
 settings-osc-vrchat-network-address = Adresse réseau
-    .placeholder = Adresse IP VRChat
+settings-osc-vrchat-network-address-placeholder = Adresse IP VRChat
 settings-osc-vrchat-network-address-description = Choisissez l'adresse à laquelle envoyer les données à VRChat (vérifiez les réseaux Wi-Fi de votre appareil).
 settings-osc-vrchat-network-trackers = capteurs
 settings-osc-vrchat-network-trackers-description = Sélectionner quels capteurs envoyer via OSC.

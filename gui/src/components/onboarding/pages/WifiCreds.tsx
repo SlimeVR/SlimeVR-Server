@@ -1,4 +1,4 @@
-import { useTranslation } from 'react-i18next';
+import { useLocalization } from '@fluent/react';
 import { useOnboarding } from '../../../hooks/onboarding';
 import { useWifiForm } from '../../../hooks/wifi-form';
 import { ArrowLink } from '../../commons/ArrowLink';
@@ -6,7 +6,7 @@ import { Button } from '../../commons/Button';
 import { Typography } from '../../commons/Typography';
 
 export function WifiCredsPage() {
-  const { t } = useTranslation();
+  const { l10n } = useLocalization();
   const { applyProgress, skipSetup } = useOnboarding();
   const { WifiForm, handleSubmit, submitWifiCreds, formState } = useWifiForm();
   applyProgress(0.2);
@@ -20,16 +20,19 @@ export function WifiCredsPage() {
         <div className="flex gap-10">
           <div className="flex flex-col max-w-sm">
             <ArrowLink to="/onboarding/home" direction="left">
-              {t('onboarding-wifi_creds-back')}
+              {l10n.getString('onboarding-wifi_creds-back')}
             </ArrowLink>
             <Typography variant="main-title">
-              {t('onboarding-wifi_creds')}
+              {l10n.getString('onboarding-wifi_creds')}
             </Typography>
             <>
-              {t('onboarding-wifi_creds-description')
+              {l10n
+                .getString('onboarding-wifi_creds-description')
                 .split('\n')
-                .map((line) => (
-                  <Typography color="secondary">{line}</Typography>
+                .map((line, i) => (
+                  <Typography color="secondary" key={i}>
+                    {line}
+                  </Typography>
                 ))}
             </>
           </div>
@@ -41,15 +44,15 @@ export function WifiCredsPage() {
       <div className="w-full py-4 flex flex-row">
         <div className="flex flex-grow">
           <Button variant="secondary" to="/" onClick={skipSetup}>
-            {t('onboarding-skip')}
+            {l10n.getString('onboarding-skip')}
           </Button>
         </div>
         <div className="flex gap-3">
           <Button variant="secondary" to="/onboarding/trackers-assign">
-            {t('onboarding-wifi_creds-skip')}
+            {l10n.getString('onboarding-wifi_creds-skip')}
           </Button>
           <Button type="submit" variant="primary" disabled={!formState.isValid}>
-            {t('onboarding-wifi_creds-submit')}
+            {l10n.getString('onboarding-wifi_creds-submit')}
           </Button>
         </div>
       </div>

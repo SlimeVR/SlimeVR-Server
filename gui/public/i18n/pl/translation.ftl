@@ -131,7 +131,7 @@ tracker-settings-mounting_section-edit = Edytuj
 # The .<name> means it's an attribute and it's related to the top key.
 # In this case that is the settings for the assignment section.
 tracker-settings-name_section = Nazwa Trackera
-    .placeholder = Lewa noga Yexo
+tracker-settings-name_section-placeholder = Lewa noga Yexo
 tracker-settings-name_section-description = Daj mu słodką nazwę :)
 
 ## Tracker part card info
@@ -240,7 +240,7 @@ settings-general-fk_settings-leg_tweak-floor_clip = Floor clip
 # since this largely prevents this it corrects for it hence skating correction (note this may be renamed to sliding correction)
 # definition - Guesses when each foot is in contact with the ground and uses that information to improve tracking
 settings-general-fk_settings-leg_tweak-skating_correction = Skating correction
-    .amount = Skating correction strength
+settings-general-fk_settings-leg_tweak-skating_correction-amount = Skating correction strength
 settings-general-fk_settings-arm_fk = Arm tracking
 settings-general-fk_settings-arm_fk-description = Change the way the arms are tracked.
 settings-general-fk_settings-arm_fk-force_arms = Force arms from HMD
@@ -276,13 +276,13 @@ settings-general-gesture_control-mountingResetTaps = Taps for mounting reset
 ## Interface settings
 settings-general-interface = Interfejs
 settings-general-interface-dev_mode = Tryb Dewelopera
-    .label = Tryb Dewelopera
+settings-general-interface-dev_mode-label = Tryb Dewelopera
 settings-general-interface-dev_mode-description = Ten tryb przydaje się do sprawdzania większej ilości danych.
 settings-general-interface-serial_detection = Wykrywanie urządzeń
-    .label = Wykrywanie urządzeń
+settings-general-interface-serial_detection-label = Wykrywanie urządzeń
 settings-general-interface-serial_detection-description = Ta opcja daje powiadomienia jeżeli serwer wykryje urządzenie które może być trackerem
 settings-general-interface-lang = Wybierz Język
-    .placeholder = Wybierz Język który będziesz używać
+settings-general-interface-lang-placeholder = Wybierz Język który będziesz używać
 settings-general-interface-lang-description = Zmień podstawowy język jaki chcesz używać
 
 ## Serial settings
@@ -305,7 +305,7 @@ settings-osc-router-description =
     Forward OSC messages from another program.
     Useful for using another OSC program with VRChat for example.
 settings-osc-router-enable = Enable
-    .label = Enable
+settings-osc-router-enable-label = Enable
 settings-osc-router-enable-description = Toggle the forwarding of messages.
 settings-osc-router-network = Network ports
 # This cares about multilines
@@ -319,7 +319,7 @@ settings-osc-router-network-port_out =
     .label = Port Out
     .placeholder = Port out (default: 9000)
 settings-osc-router-network-address = Network address
-    .placeholder = IPV4 address
+settings-osc-router-network-address-placeholder = IPV4 address
 settings-osc-router-network-address-description = Set the address to send out data at.
 
 ## OSC VRChat settings
@@ -329,7 +329,7 @@ settings-osc-vrchat-description =
     Change VRChat-specific settings to receive HMD data and send
     trackers data for FBT (works on Quest standalone).
 settings-osc-vrchat-enable = Enable
-    .label = Enable
+settings-osc-vrchat-enable-label = Enable
 settings-osc-vrchat-enable-description = Toggle the sending and receiving of data.
 settings-osc-vrchat-network = Network ports
 settings-osc-vrchat-network-description = Set the ports for listening and sending data to VRChat.
@@ -340,7 +340,7 @@ settings-osc-vrchat-network-port_out =
     .label = Port Out
     .placeholder = Port out (default: 9000)
 settings-osc-vrchat-network-address = Network address
-    .placeholder = VRChat ip address
+settings-osc-vrchat-network-address-placeholder = VRChat ip address
 settings-osc-vrchat-network-address-description = Choose which address to send out data to VRChat (check your wifi settings on your device).
 settings-osc-vrchat-network-trackers = Trackers
 settings-osc-vrchat-network-trackers-description = Toggle the sending of specific trackers via OSC.

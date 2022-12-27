@@ -131,7 +131,7 @@ tracker-settings-mounting_section-edit = 装着向きの編集
 # The .<name> means it's an attribute and it's related to the top key.
 # In this case that is the settings for the assignment section.
 tracker-settings-name_section = トラッカー名称
-    .placeholder = NightyBeast's left leg
+tracker-settings-name_section-placeholder = NightyBeast's left leg
 tracker-settings-name_section-description = 自由に名称をつけてください
 
 ## Tracker part card info
@@ -240,7 +240,7 @@ settings-general-fk_settings-leg_tweak-floor_clip = フロアクリップ
 # since this largely prevents this it corrects for it hence skating correction (note this may be renamed to sliding correction)
 # definition - Guesses when each foot is in contact with the ground and uses that information to improve tracking
 settings-general-fk_settings-leg_tweak-skating_correction = スケーティング補正
-    .amount = Skating correction strength
+settings-general-fk_settings-leg_tweak-skating_correction-amount = Skating correction strength
 settings-general-fk_settings-arm_fk = アームFK
 settings-general-fk_settings-arm_fk-description = 腕の追従方法を変更する。
 settings-general-fk_settings-arm_fk-force_arms = Force arms from HMD
@@ -276,13 +276,13 @@ settings-general-gesture_control-mountingResetTaps = Taps for mounting reset
 ## Interface settings
 settings-general-interface = インターフェース
 settings-general-interface-dev_mode = 開発者モード
-    .label = 開発者モード
+settings-general-interface-dev_mode-label = 開発者モード
 settings-general-interface-dev_mode-description = このモードは、詳細なデータが必要な場合や、接続されたトラッカーをより高度なレベルで操作する場合に役立ちます。
 settings-general-interface-serial_detection = シリアルデバイスの検出
-    .label = シリアルデバイスの検出
+settings-general-interface-serial_detection-label = シリアルデバイスの検出
 settings-general-interface-serial_detection-description = このオプションは、トラッカーとなり得る新しいシリアルデバイスを接続するたびにポップアップを表示します。これはトラッカーの設定プロセスを改善するのに役立ちます。
 settings-general-interface-lang = 言語を選択
-    .placeholder = 使用する言語を選択する
+settings-general-interface-lang-placeholder = 使用する言語を選択する
 settings-general-interface-lang-description = 使用したいデフォルトの言語を変更する
 
 ## Serial settings
@@ -305,7 +305,7 @@ settings-osc-router-description =
     Forward OSC messages from another program.
     Useful for using another OSC program with VRChat for example.
 settings-osc-router-enable = Enable
-    .label = Enable
+settings-osc-router-enable-label = Enable
 settings-osc-router-enable-description = Toggle the forwarding of messages.
 settings-osc-router-network = Network ports
 # This cares about multilines
@@ -319,7 +319,7 @@ settings-osc-router-network-port_out =
     .label = Port Out
     .placeholder = Port out (default: 9000)
 settings-osc-router-network-address = Network address
-    .placeholder = IPV4 address
+settings-osc-router-network-address-placeholder = IPV4 address
 settings-osc-router-network-address-description = Set the address to send out data at.
 
 ## OSC VRChat settings
@@ -329,7 +329,7 @@ settings-osc-vrchat-description =
     HMDのデータを受信して送信するためにVRChat固有の設定を変更する。
     FBT用のトラッカーデータ（Questスタンドアロンで動作します）
 settings-osc-vrchat-enable = 有効
-    .label = 有効
+settings-osc-vrchat-enable-label = 有効
 settings-osc-vrchat-enable-description = データの送受信を切り替える。
 settings-osc-vrchat-network = ネットワークポート
 settings-osc-vrchat-network-description = VRChatへのデータを送受信するためのポートを設定します。
@@ -340,7 +340,7 @@ settings-osc-vrchat-network-port_out =
     .label = ポートアウト
     .placeholder = ポートアウト (デフォルト: 9000)
 settings-osc-vrchat-network-address = ネットワークアドレス
-    .placeholder = VRChatのIPアドレス
+settings-osc-vrchat-network-address-placeholder = VRChatのIPアドレス
 settings-osc-vrchat-network-address-description = VRChatにデータを送信するアドレスを選択してください（デバイスのwifi設定を確認してください）
 settings-osc-vrchat-network-trackers = トラッカー
 settings-osc-vrchat-network-trackers-description = データの送受信を切り替える。

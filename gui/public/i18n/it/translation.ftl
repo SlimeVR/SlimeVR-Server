@@ -131,7 +131,7 @@ tracker-settings-mounting_section-edit = Cambia posizionamento
 # The .<name> means it's an attribute and it's related to the top key.
 # In this case that is the settings for the assignment section.
 tracker-settings-name_section = Nome del tracker
-    .placeholder = Gamba destra di NightyQueer
+tracker-settings-name_section-placeholder = Gamba destra di NightyQueer
 tracker-settings-name_section-description = Scegli un nomignolo carino :)
 
 ## Tracker part card info
@@ -240,7 +240,7 @@ settings-general-fk_settings-leg_tweak-floor_clip = Compenetrazione pavimento
 # since this largely prevents this it corrects for it hence skating correction (note this may be renamed to sliding correction)
 # definition - Guesses when each foot is in contact with the ground and uses that information to improve tracking
 settings-general-fk_settings-leg_tweak-skating_correction = Correzione pattinaggio
-    .amount = Forza fattore di correzione pattinaggio
+settings-general-fk_settings-leg_tweak-skating_correction-amount = Forza fattore di correzione pattinaggio
 settings-general-fk_settings-arm_fk = FK Braccia
 settings-general-fk_settings-arm_fk-description = Cambia la modalità di tracciamento delle braccia.
 settings-general-fk_settings-arm_fk-force_arms = Forza il calcolo della posizione delle braccia a utilizzare il HMD
@@ -276,13 +276,13 @@ settings-general-gesture_control-mountingResetTaps = Taps for mounting reset
 ## Interface settings
 settings-general-interface = Interfaccia
 settings-general-interface-dev_mode = Modalità sviluppatore
-    .label = Modalità sviluppatore
+settings-general-interface-dev_mode-label = Modalità sviluppatore
 settings-general-interface-dev_mode-description = Questa modalità è utile se hai bisogno di dati approfonditi o devi interagire in maniera più avanzata con i tracker connessi.
 settings-general-interface-serial_detection = Rilevazione nuovi dispositivi seriali
-    .label = Rilevazione nuovi dispositivi seriali
+settings-general-interface-serial_detection-label = Rilevazione nuovi dispositivi seriali
 settings-general-interface-serial_detection-description = Questa opzione mostrerà un pop-up ogni volta che colleghi un nuovo dispositivo seriale che potrebbe essere un tracker. Aiuta a facilitare la configurazione iniziale di un tracker
 settings-general-interface-lang = Seleziona la lingua
-    .placeholder = Seleziona la lingua da utilizzare
+settings-general-interface-lang-placeholder = Seleziona la lingua da utilizzare
 settings-general-interface-lang-description = Seleziona la lingua che vuoi utilizzare
 
 ## Serial settings
@@ -305,7 +305,7 @@ settings-osc-router-description =
     Inoltra messaggi OSC da un altro programma.
     Utile per utilizzare un altro programma OSC con VRChat, per esempio.
 settings-osc-router-enable = Attiva
-    .label = Attiva
+settings-osc-router-enable-label = Attiva
 settings-osc-router-enable-description = Attiva o disattiva l'inoltro dei messaggi
 settings-osc-router-network = Porte di rete
 # This cares about multilines
@@ -319,7 +319,7 @@ settings-osc-router-network-port_out =
     .label = Porta in uscita
     .placeholder = Porta in uscita (predefinito: 9000)
 settings-osc-router-network-address = Indirizzo di rete
-    .placeholder = Indirizzo IPV4
+settings-osc-router-network-address-placeholder = Indirizzo IPV4
 settings-osc-router-network-address-description = Impostare l'indirizzo di rete a cui inviare i dati
 
 ## OSC VRChat settings
@@ -329,7 +329,7 @@ settings-osc-vrchat-description =
     Modifica le impostazioni specifiche a VRChat per ricevere e inviare dati del HMD
     Dati dei tracker per FBT (funziona su Quest standalone).
 settings-osc-vrchat-enable = Attiva
-    .label = Attiva
+settings-osc-vrchat-enable-label = Attiva
 settings-osc-vrchat-enable-description = Attiva o disattiva l'invio e la ricezione dei dati
 settings-osc-vrchat-network = Porte di rete
 settings-osc-vrchat-network-description = Impostare le porte di rete per ascoltare e inviare dati a VRChat
@@ -340,7 +340,7 @@ settings-osc-vrchat-network-port_out =
     .label = Porta in uscita
     .placeholder = Porta in uscita (predefinito: 9000)
 settings-osc-vrchat-network-address = Indirizzo di rete
-    .placeholder = Indirizzo IP di VRChat
+settings-osc-vrchat-network-address-placeholder = Indirizzo IP di VRChat
 settings-osc-vrchat-network-address-description = Scegli a quale indirizzo di rete inviare i dati di VRChat (controlla le impostazioni WiFi sul tuo dispositivo)
 settings-osc-vrchat-network-trackers = Tracker
 settings-osc-vrchat-network-trackers-description = Attiva o disattiva l'invio e la ricezione dei dati

@@ -131,7 +131,7 @@ tracker-settings-mounting_section-edit = 编辑佩戴
 # The .<name> means it's an attribute and it's related to the top key.
 # In this case that is the settings for the assignment section.
 tracker-settings-name_section = 追踪器名称
-    .placeholder = CC 封印着漆黑之力的漆黑左臂
+tracker-settings-name_section-placeholder = CC 封印着漆黑之力的漆黑左臂
 tracker-settings-name_section-description = 给它起一个可爱的名字吧=w=~
 
 ## Tracker part card info
@@ -240,7 +240,7 @@ settings-general-fk_settings-leg_tweak-floor_clip = 地板限制
 # since this largely prevents this it corrects for it hence skating correction (note this may be renamed to sliding correction)
 # definition - Guesses when each foot is in contact with the ground and uses that information to improve tracking
 settings-general-fk_settings-leg_tweak-skating_correction = 脚滑矫正
-    .amount = 脚滑矫正数值
+settings-general-fk_settings-leg_tweak-skating_correction-amount = 脚滑矫正数值
 settings-general-fk_settings-arm_fk = 手臂 FK
 settings-general-fk_settings-arm_fk-description = 更改手臂的追踪方式。
 settings-general-fk_settings-arm_fk-force_arms = 强制从头显获得数据
@@ -276,13 +276,13 @@ settings-general-gesture_control-mountingResetTaps = Taps for mounting reset
 ## Interface settings
 settings-general-interface = 交互界面
 settings-general-interface-dev_mode = 开发者模式
-    .label = 开发者模式
+settings-general-interface-dev_mode-label = 开发者模式
 settings-general-interface-dev_mode-description = 如果你需要深入的数据或更深入地与连接的追踪器进行交互，打开此模式将会非常有用。
 settings-general-interface-serial_detection = 串口设备检测
-    .label = 串口设备检测
+settings-general-interface-serial_detection-label = 串口设备检测
 settings-general-interface-serial_detection-description = 每次插入可能是追踪器的新串口设备时，此选项都会显示一个弹出窗口。这有助于改进追踪器的设置过程。
 settings-general-interface-lang = 选择语言
-    .placeholder = 选择要使用的语言
+settings-general-interface-lang-placeholder = 选择要使用的语言
 settings-general-interface-lang-description = 更改要使用的默认语言
 
 ## Serial settings
@@ -305,7 +305,7 @@ settings-osc-router-description =
     从另一个程序转发 OSC 信息。
     在使用另一个 VRChat 的 OSC 程序时会很有用。
 settings-osc-router-enable = 启用
-    .label = 启用
+settings-osc-router-enable-label = 启用
 settings-osc-router-enable-description = 控制信息转发功能的开关。
 settings-osc-router-network = 网络端口
 # This cares about multilines
@@ -319,7 +319,7 @@ settings-osc-router-network-port_out =
     .label = 输出端口
     .placeholder = 输出端口（默认 9000）
 settings-osc-router-network-address = 网络地址
-    .placeholder = IPV4 地址
+settings-osc-router-network-address-placeholder = IPV4 地址
 settings-osc-router-network-address-description = 设置用来发送数据的地址。
 
 ## OSC VRChat settings
@@ -329,7 +329,7 @@ settings-osc-vrchat-description =
     改变 VRChat 的特定设置以接收和发送头显数据。
     用于全身追踪的追踪器数据（在 Quest 端生效）。
 settings-osc-vrchat-enable = 启用
-    .label = 启用
+settings-osc-vrchat-enable-label = 启用
 settings-osc-vrchat-enable-description = 切换数据的发送和接收
 settings-osc-vrchat-network = 网络端口
 settings-osc-vrchat-network-description = 设置用于监听和向 VRChat 发送数据的端口
@@ -340,7 +340,7 @@ settings-osc-vrchat-network-port_out =
     .label = 输出端口
     .placeholder = 输出端口（默认 9000）
 settings-osc-vrchat-network-address = 网络地址
-    .placeholder = VRChat IP 地址
+settings-osc-vrchat-network-address-placeholder = VRChat IP 地址
 settings-osc-vrchat-network-address-description = 选择将数据发送到 VRChat 的地址（检查设备上的 WiFi 设置）
 settings-osc-vrchat-network-trackers = 追踪器
 settings-osc-vrchat-network-trackers-description = 切换数据的发送和接收
