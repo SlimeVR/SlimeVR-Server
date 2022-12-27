@@ -276,14 +276,14 @@ settings-general-gesture_control-mountingResetTaps = Taps for mounting reset
 ## Interface settings
 settings-general-interface = Interface
 settings-general-interface-dev_mode = Developer Mode
-settings-general-interface-dev_mode-label = Developer Mode
 settings-general-interface-dev_mode-description = This mode can be useful if you need in-depth data or to interact with connected trackers on a more advanced level.
+settings-general-interface-dev_mode-label = Developer Mode
 settings-general-interface-serial_detection = Serial device detection
-settings-general-interface-serial_detection-label = Serial device detection
 settings-general-interface-serial_detection-description = This option will show a pop-up every time you plug a new serial device that could be a tracker. It helps improving the setup process of a tracker.
+settings-general-interface-serial_detection-label = Serial device detection
 settings-general-interface-lang = Select language
-settings-general-interface-lang-placeholder = Select the language to use
 settings-general-interface-lang-description = Change the default language you want to use.
+settings-general-interface-lang-placeholder = Select the language to use
 
 ## Serial settings
 settings-serial = Serial Console
@@ -305,8 +305,8 @@ settings-osc-router-description =
     Forward OSC messages from another program.
     Useful for using another OSC program with VRChat for example.
 settings-osc-router-enable = Enable
-settings-osc-router-enable-label = Enable
 settings-osc-router-enable-description = Toggle the forwarding of messages.
+settings-osc-router-enable-label = Enable
 settings-osc-router-network = Network ports
 # This cares about multilines
 settings-osc-router-network-description =
@@ -319,8 +319,8 @@ settings-osc-router-network-port_out =
     .label = Port Out
     .placeholder = Port out (default: 9000)
 settings-osc-router-network-address = Network address
-settings-osc-router-network-address-placeholder = IPV4 address
 settings-osc-router-network-address-description = Set the address to send out data at.
+settings-osc-router-network-address-placeholder = IPV4 address
 
 ## OSC VRChat settings
 settings-osc-vrchat = VRChat OSC Trackers
@@ -329,8 +329,8 @@ settings-osc-vrchat-description =
     Change VRChat-specific settings to receive HMD data and send
     trackers data for FBT (works on Quest standalone).
 settings-osc-vrchat-enable = Enable
-settings-osc-vrchat-enable-label = Enable
 settings-osc-vrchat-enable-description = Toggle the sending and receiving of data.
+settings-osc-vrchat-enable-label = Enable
 settings-osc-vrchat-network = Network ports
 settings-osc-vrchat-network-description = Set the ports for listening and sending data to VRChat.
 settings-osc-vrchat-network-port_in =
@@ -340,8 +340,8 @@ settings-osc-vrchat-network-port_out =
     .label = Port Out
     .placeholder = Port out (default: 9000)
 settings-osc-vrchat-network-address = Network address
-settings-osc-vrchat-network-address-placeholder = VRChat ip address
 settings-osc-vrchat-network-address-description = Choose which address to send out data to VRChat (check your wifi settings on your device).
+settings-osc-vrchat-network-address-placeholder = VRChat ip address
 settings-osc-vrchat-network-trackers = Trackers
 settings-osc-vrchat-network-trackers-description = Toggle the sending of specific trackers via OSC.
 settings-osc-vrchat-network-trackers-chest = Chest

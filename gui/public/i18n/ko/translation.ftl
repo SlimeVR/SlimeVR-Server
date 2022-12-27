@@ -276,14 +276,14 @@ settings-general-gesture_control-mountingResetTaps = Taps for mounting reset
 ## Interface settings
 settings-general-interface = 인터페이스
 settings-general-interface-dev_mode = 개발자 모드
-settings-general-interface-dev_mode-label = 개발자 모드
 settings-general-interface-dev_mode-description = 이 모드는 더 많은 데이터가 필요하거나 고급 수준에서 연결된 트래커와 상호 작용하는 경우에 유용할 수 있어요.
+settings-general-interface-dev_mode-label = 개발자 모드
 settings-general-interface-serial_detection = 시리얼 디바이스 감지
-settings-general-interface-serial_detection-label = 시리얼 디바이스 감지
 settings-general-interface-serial_detection-description = 이 옵션은 트래커일 수도 있는 새로운 시리얼 디바이스를 연결할 때마다 팝업을 표시해요. 트래커 설정 프로세스를 개선하는 데 도움이 될 거에요.
+settings-general-interface-serial_detection-label = 시리얼 디바이스 감지
 settings-general-interface-lang = 언어 선택
-settings-general-interface-lang-placeholder = 사용할 언어를 선택하세요
 settings-general-interface-lang-description = 사용하고 싶은 기본 언어를 선택하세요.
+settings-general-interface-lang-placeholder = 사용할 언어를 선택하세요
 
 ## Serial settings
 settings-serial = 시리얼 콘솔
@@ -305,8 +305,8 @@ settings-osc-router-description =
     다른 프로그램에서 오는 OSC 메시지를 전달해요.
     예를 들어 VRChat과 함께 다른 OSC 프로그램을 사용하는 데 유용할 거에요.
 settings-osc-router-enable = 활성화
-settings-osc-router-enable-label = 활성화
 settings-osc-router-enable-description = 활성화해서 메세지 전달 켜기
+settings-osc-router-enable-label = 활성화
 settings-osc-router-network = 네트워크 포트
 # This cares about multilines
 settings-osc-router-network-description =
@@ -319,8 +319,8 @@ settings-osc-router-network-port_out =
     .label = 나가는 포트
     .placeholder = Port out (기본값: 9000)
 settings-osc-router-network-address = 네트워크 주소
-settings-osc-router-network-address-placeholder = IPV4 주소
 settings-osc-router-network-address-description = 데이터를 보낼 주소를 설정하세요.
+settings-osc-router-network-address-placeholder = IPV4 주소
 
 ## OSC VRChat settings
 settings-osc-vrchat = VRChat OSC Trackers
@@ -329,8 +329,8 @@ settings-osc-vrchat-description =
     HMD 데이터 수신 및 전송을 위한 VRChat 관련 설정 변경
     FBT용 트래커 데이터(Quest 단독에서 작동)
 settings-osc-vrchat-enable = 활성화
-settings-osc-vrchat-enable-label = 활성화
 settings-osc-vrchat-enable-description = 활성화해서 데이터 송수신 전환
+settings-osc-vrchat-enable-label = 활성화
 settings-osc-vrchat-network = 네트워크 포트
 settings-osc-vrchat-network-description = VRChat과 데이터를 주고받는 포트 설정
 settings-osc-vrchat-network-port_in =
@@ -340,8 +340,8 @@ settings-osc-vrchat-network-port_out =
     .label = 나가는 포트
     .placeholder = Port out (기본값: 9000)
 settings-osc-vrchat-network-address = 네트워크 주소
-settings-osc-vrchat-network-address-placeholder = VRChat IP 주소
 settings-osc-vrchat-network-address-description = VRChat으로 데이터를 보낼 주소를 선택하세요(장치의 Wi-Fi 설정 확인).
+settings-osc-vrchat-network-address-placeholder = VRChat IP 주소
 settings-osc-vrchat-network-trackers = 트래커
 settings-osc-vrchat-network-trackers-description = 활성화해서 데이터 송수신 전환
 settings-osc-vrchat-network-trackers-chest = Chest

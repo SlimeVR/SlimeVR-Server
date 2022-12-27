@@ -276,14 +276,14 @@ settings-general-gesture_control-mountingResetTaps = baps for mountwing weset
 ## Interface settings
 settings-general-interface = intewface
 settings-general-interface-dev_mode = devwowwewow mode
-settings-general-interface-dev_mode-label = devwowwewow mode
 settings-general-interface-dev_mode-description = this mode can be wowseffuw if you need in-dipth data owow to intewact with cownnected twackaws on a wowowe wowadvanced wowwevew
+settings-general-interface-dev_mode-label = devwowwewow mode
 settings-general-interface-serial_detection = shewyaw device deteccion
-settings-general-interface-serial_detection-label = shewyaw device deteccion
 settings-general-interface-serial_detection-description = this option will shaww a pawp-up evewy time yuw pwug a new shewyaw device that cawwld be a twayckaw. it helps iympwooving teh setup pwocess of a twayckaw
+settings-general-interface-serial_detection-label = shewyaw device deteccion
 settings-general-interface-lang = sewect wanguage
-settings-general-interface-lang-placeholder = sewect teh wanguage to use
 settings-general-interface-lang-description = change the defawwt wanguage yuw want to use
+settings-general-interface-lang-placeholder = sewect teh wanguage to use
 
 ## Serial settings
 settings-serial = shewyaw console
@@ -305,8 +305,8 @@ settings-osc-router-description =
     fowwawd osc messages fwom anothew pwogwam
     usefuww fow uwsing anothew osc pwogwam with VRChat fow exampwe
 settings-osc-router-enable = enaybwe
-settings-osc-router-enable-label = enaybwe
 settings-osc-router-enable-description = toggle teh fowwawding of data
+settings-osc-router-enable-label = enaybwe
 settings-osc-router-network = network pawts
 # This cares about multilines
 settings-osc-router-network-description =
@@ -319,8 +319,8 @@ settings-osc-router-network-port_out =
     .label = pawt out
     .placeholder = pawt out (defawwt: 9000)
 settings-osc-router-network-address = network addwess
-settings-osc-router-network-address-placeholder = IPV4 addwess
 settings-osc-router-network-address-description = choose which addwess to send out data at
+settings-osc-router-network-address-placeholder = IPV4 addwess
 
 ## OSC VRChat settings
 settings-osc-vrchat = VRChat OSC Trackers
@@ -329,8 +329,8 @@ settings-osc-vrchat-description =
     change vwchat-specific settwings to wweceive hmd data awnd send
     twayckaws data fow fbt (wawwks on quest standalone).
 settings-osc-vrchat-enable = enaybwe
-settings-osc-vrchat-enable-label = enaybwe
 settings-osc-vrchat-enable-description = toggle teh sending awnd wweceiving of data
+settings-osc-vrchat-enable-label = enaybwe
 settings-osc-vrchat-network = network pawts
 settings-osc-vrchat-network-description = set the pawts fow wistening awnd sending data to vwchawt
 settings-osc-vrchat-network-port_in =
@@ -340,8 +340,8 @@ settings-osc-vrchat-network-port_out =
     .label = pawt out
     .placeholder = pawt out (defawwt: 9000)
 settings-osc-vrchat-network-address = network addwess
-settings-osc-vrchat-network-address-placeholder = vwchat ip addwess
 settings-osc-vrchat-network-address-description = choose which addwess to send out data to vwchat (check yuw wifi settwings on yuw device)
+settings-osc-vrchat-network-address-placeholder = vwchat ip addwess
 settings-osc-vrchat-network-trackers = trayckawws
 settings-osc-vrchat-network-trackers-description = toggle teh sending of spweciwic twackers viwa OSC
 settings-osc-vrchat-network-trackers-chest = chest

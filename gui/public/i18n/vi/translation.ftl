@@ -276,14 +276,14 @@ settings-general-gesture_control-mountingResetTaps = Taps for mounting reset
 ## Interface settings
 settings-general-interface = Giao diện
 settings-general-interface-dev_mode = Chế độ nhà phát triển
-settings-general-interface-dev_mode-label = Chế độ nhà phát triển
 settings-general-interface-dev_mode-description = Chế độ này có thể hữu dụng nếu như bạn cần thông tin sâu hơn hoặc giao tiếp với tracker nâng cao
+settings-general-interface-dev_mode-label = Chế độ nhà phát triển
 settings-general-interface-serial_detection = Phát hiện thiết bị Serial
-settings-general-interface-serial_detection-label = Phát hiện thiết bị Serial
 settings-general-interface-serial_detection-description = Lựa chọn này sẽ hiển thị thông báo mỗi lần thiết bị Serial mà có thể là tracker.Lựa chọn này có thể giúp quá trình cài đạt tracker
+settings-general-interface-serial_detection-label = Phát hiện thiết bị Serial
 settings-general-interface-lang = Chọn ngôn ngữ (Change language)
-settings-general-interface-lang-placeholder = Chọn ngôn ngữ để sử dụng (Select the language to use)
 settings-general-interface-lang-description = Đổi ngôn ngữ cố định (Change the default language you want to use)
+settings-general-interface-lang-placeholder = Chọn ngôn ngữ để sử dụng (Select the language to use)
 
 ## Serial settings
 settings-serial = Bảng điều khiển serial
@@ -305,8 +305,8 @@ settings-osc-router-description =
     Forward OSC messages from another program.
     Useful for using another OSC program with VRChat for example.
 settings-osc-router-enable = Enable
-settings-osc-router-enable-label = Enable
 settings-osc-router-enable-description = Toggle the forwarding of messages.
+settings-osc-router-enable-label = Enable
 settings-osc-router-network = Network ports
 # This cares about multilines
 settings-osc-router-network-description =
@@ -319,8 +319,8 @@ settings-osc-router-network-port_out =
     .label = Port Out
     .placeholder = Port out (default: 9000)
 settings-osc-router-network-address = Network address
-settings-osc-router-network-address-placeholder = IPV4 address
 settings-osc-router-network-address-description = Set the address to send out data at.
+settings-osc-router-network-address-placeholder = IPV4 address
 
 ## OSC VRChat settings
 settings-osc-vrchat = VRChat OSC Trackers
@@ -329,8 +329,8 @@ settings-osc-vrchat-description =
     Đổi cài đặt dành riêng cho VRChat để nhận thông tin từ kính thực tế ảo và gửi
     thông tin tracker để track toàn thân (Hoạt động trên Quest một mình standalone).
 settings-osc-vrchat-enable = Bật
-settings-osc-vrchat-enable-label = Bật
 settings-osc-vrchat-enable-description = Chình gửi và nhận thông tin
+settings-osc-vrchat-enable-label = Bật
 settings-osc-vrchat-network = Cổng mạng
 settings-osc-vrchat-network-description = Chọn cổng mạng để nghe và gửi thông tin lên VRChat
 settings-osc-vrchat-network-port_in =
@@ -340,8 +340,8 @@ settings-osc-vrchat-network-port_out =
     .label = Cổng ra
     .placeholder = Cổng ra (Cố định: 9000)
 settings-osc-vrchat-network-address = Địa chỉ mạng
-settings-osc-vrchat-network-address-placeholder = Địa chỉ IP cho VRChat
 settings-osc-vrchat-network-address-description = Chọn địa chỉ mạng nào để gứi lên VRChat (Hãy kiểm tra cài đặt Wi-Fi trên thiết bị để tìm cái này)
+settings-osc-vrchat-network-address-placeholder = Địa chỉ IP cho VRChat
 settings-osc-vrchat-network-trackers = Trackers
 settings-osc-vrchat-network-trackers-description = Chỉnh gửi và nhận thông tin
 settings-osc-vrchat-network-trackers-chest = Ngực
