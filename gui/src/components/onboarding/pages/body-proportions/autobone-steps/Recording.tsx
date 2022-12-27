@@ -15,10 +15,6 @@ export function Recording({ nextStep }: { nextStep: () => void }) {
     }
   }, [progress, hasCalibration]);
 
-  console.log(
-    l10n.getString('onboarding-automatic_proportions-recording-steps')
-  );
-
   return (
     <div className="flex flex-col items-center w-full justify-between">
       <div className="flex gap-1 flex-col justify-center items-center">
