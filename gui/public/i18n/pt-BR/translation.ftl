@@ -125,7 +125,7 @@ tracker-settings-title = Opções dos trackers
 tracker-settings-assignment_section = Atribuição
 tracker-settings-assignment_section-description = Qual parte do seu corpo o tracker está atribuído para.
 tracker-settings-assignment_section-edit = Editar atribuição
-tracker-settings-mounting_section-title = Posicionamento
+tracker-settings-mounting_section = Posicionamento
 tracker-settings-mounting_section-description = Aonde o tracker está posicionado?
 tracker-settings-mounting_section-edit = Editar posição
 # The .<name> means it's an attribute and it's related to the top key.
@@ -228,8 +228,8 @@ settings-general-tracker_mechanics-filtering_type-prediction-description = Reduz
 settings-general-tracker_mechanics-amount = Quantidade
 
 ## FK/Tracking settings
-settings-general-fk_settings-title = Opções de Tracker
-settings-general-fk_settings-leg_tweak-title = Ajustes de perna
+settings-general-fk_settings = Opções de Tracker
+settings-general-fk_settings-leg_tweak = Ajustes de perna
 settings-general-fk_settings-leg_tweak-description = Atravessar o chão pode reduzir ou até eliminar o clipping(atravessar) com o chão porém pode causar problemas quando ajoelhado. Correção de Deslize corrige o ice skating(deslize dos trackers no chão), porém pode diminuir a precisão de certos padrões de movimento.
 # Floor clip: 
 # why the name - came from the idea of noclip in video games, but is the opposite where clipping to the floor is a desired feature
