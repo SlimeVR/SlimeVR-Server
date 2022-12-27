@@ -255,23 +255,23 @@ settings-general-fk_settings-vive_emulation-label = Ativar emulação de Vive
 
 ## Gesture control settings (tracker tapping)
 settings-general-gesture_control = Controle de gestos
-settings-general-gesture_control-subtitle = Dois toques para o reset rápido
-settings-general-gesture_control-description = Ativa ou desativa os dois toques para o reset rápido. Quando ativado dois toques em qualquer lugar no tracker mais alto do torso irá ativar o reset rápido. Delay é o tempo entre o registro o toque e reset.
+settings-general-gesture_control-subtitle = Resets baseados em toques
+settings-general-gesture_control-description = Faz com oque os resets sejam ativados tocando um tracker. O Tracker mais alto no seu torso é usado para o Reset Rápido, o tracker mais alto na sua perna esquerda é usado para o Reset, e o tracker mais alto na sua perna direita é usado para o Reset de Posição. Os toques devem ocorrer dentro de 0.6 segundos para serem registrados.
 # This is a unit: 3 taps, 2 taps, 1 tap
 # $amount (Number) - Amount of taps (touches to the tracker's case)
 settings-general-gesture_control-taps = { $amount ->
     [one] 1 tap
     *[other] { $amount } taps
 }
-settings-general-gesture_control-quickResetEnabled = Enable tap to quick reset
-settings-general-gesture_control-quickResetDelay = Quick reset delay
-settings-general-gesture_control-quickResetTaps = Taps for quick reset
-settings-general-gesture_control-resetEnabled = Enable tap to reset
-settings-general-gesture_control-resetDelay = Reset delay
-settings-general-gesture_control-resetTaps = Taps for reset
-settings-general-gesture_control-mountingResetEnabled = Enable tap to reset mounting
-settings-general-gesture_control-mountingResetDelay = Mounting reset delay
-settings-general-gesture_control-mountingResetTaps = Taps for mounting reset
+settings-general-gesture_control-quickResetEnabled = Ativar toque para reset rápido
+settings-general-gesture_control-quickResetDelay = Delay do reset rápido
+settings-general-gesture_control-quickResetTaps = Toques para o reset rápido
+settings-general-gesture_control-resetEnabled = Ativar toque para reset
+settings-general-gesture_control-resetDelay = Delay do reset
+settings-general-gesture_control-resetTaps = Toques para o reset
+settings-general-gesture_control-mountingResetEnabled = Toques para o reset de posição
+settings-general-gesture_control-mountingResetDelay = Delay do reset de posição
+settings-general-gesture_control-mountingResetTaps = Toques para o reset de posição
 
 ## Interface settings
 settings-general-interface = Interface
