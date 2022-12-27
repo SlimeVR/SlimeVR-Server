@@ -1,5 +1,6 @@
 package dev.slimevr.vr.processor.skeleton;
 
+
 import dev.slimevr.config.TapDetectionConfig;
 import dev.slimevr.osc.VRCOSCHandler;
 import dev.slimevr.vr.trackers.Tracker;
@@ -56,6 +57,18 @@ public class TapDetectionManager {
 		quickResetDetector.setEnabled(config.getQuickResetEnabled());
 		resetDetector.setEnabled(config.getResetEnabled());
 		mountingResetDetector.setEnabled(config.getMountingResetEnabled());
+		quickResetDetector
+			.setNumberTrackersOverThreshold(
+				config.getNumberTrackersOverThreshold()
+			);
+		resetDetector
+			.setNumberTrackersOverThreshold(
+				config.getNumberTrackersOverThreshold()
+			);
+		mountingResetDetector
+			.setNumberTrackersOverThreshold(
+				config.getNumberTrackersOverThreshold()
+			);
 		quickResetTaps = config.getQuickResetTaps();
 		resetTaps = config.getResetTaps();
 		mountingResetTaps = config.getMountingResetTaps();

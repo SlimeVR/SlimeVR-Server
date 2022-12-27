@@ -17,6 +17,7 @@ public class TapDetectionConfig {
 	private int quickResetTaps = 2;
 	private int resetTaps = 3;
 	private int mountingResetTaps = 3;
+	private int numberTrackersOverThreshold = 1;
 
 	public float getQuickResetDelay() {
 		return quickResetDelay;
@@ -95,5 +96,13 @@ public class TapDetectionConfig {
 		if (mountingResetTaps > 3 || mountingResetTaps < 2)
 			FastMath.clamp(mountingResetTaps, 2, 3);
 		this.mountingResetTaps = mountingResetTaps;
+	}
+
+	public int getNumberTrackersOverThreshold() {
+		return numberTrackersOverThreshold;
+	}
+
+	public void setNumberTrackersOverThreshold(int numberTrackersOverThreshold) {
+		this.numberTrackersOverThreshold = numberTrackersOverThreshold;
 	}
 }
