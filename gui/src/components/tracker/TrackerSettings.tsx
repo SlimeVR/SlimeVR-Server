@@ -110,7 +110,6 @@ export function TrackerSettingsPage() {
     assignreq.displayName = trackerName;
     assignreq.trackerId = tracker?.tracker.trackerId;
     assignreq.allowDriftCompensation = allowDriftCompensation;
-    console.log('' + tracker?.tracker.info?.allowDriftCompensation);
     sendRPCPacket(RpcMessage.AssignTrackerRequest, assignreq);
   };
 
