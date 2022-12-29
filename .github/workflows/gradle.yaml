@@ -59,3 +59,62 @@ jobs:
           name: "SlimeVR-Server" # optional, default is artifact
           # A file, directory or wildcard pattern that describes what to upload
           path: server/build/libs/*
+
+  bundle:
+    runs-on: ubuntu-20.04
+    needs: build
+    steps:
+      - uses: actions/checkout@v3
+        with:
+          submodules: recursive
+
+      - uses: actions/download-artifact@v3
+        with:
+          name: "SlimeVR-Server"
+          path: server/build/libs/
+
+      - name: Set up Linux dependencies
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y libgtk-3-dev webkit2gtk-4.0 libappindicator3-dev librsvg2-dev patchelf libfuse2
+
+      - name: Cache cargo dependencies
+        uses: Swatinem/rust-cache@v2
+        with:
+          shared-key: "tauri"
+
+      - name: Use Node.js
+        uses: actions/setup-node@v3
+        with:
+          node-version-file: '.node-version'
+          cache: 'npm'
+
+      - name: Build
+        run: |
+          npm ci
+          npm run tauri build
+
+      - uses: actions/upload-artifact@v3.1.0
+        with:
+          name: SlimeVR-GUI-Deb
+          path: target/release/bundle/deb/slimevr*.deb
+
+      - name: Install appimage-builder
+        run: |
+          wget "https://github.com/AppImage/AppImageKit/releases/download/continuous/appimagetool-x86_64.AppImage"
+          chmod a+x appimagetool-x86_64.AppImage
+          sudo mv appimagetool-x86_64.AppImage /usr/local/bin/appimagetool
+
+      - name: Modify and Build AppImage
+        run: |
+          cd target/release/bundle/appimage
+          chmod a+x slimevr*.AppImage
+          ./slimevr*.AppImage --appimage-extract
+          cp $( git rev-parse --show-toplevel )/server/build/libs/slimevr.jar squashfs-root/slimevr.jar
+          chmod 644 squashfs-root/slimevr.jar
+          appimagetool squashfs-root slimevr*.AppImage
+
+      - uses: actions/upload-artifact@v3.1.0
+        with:
+          name: SlimeVR-GUI-AppImage
+          path: target/release/bundle/appimage/slimevr*.AppImage

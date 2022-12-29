@@ -17,6 +17,7 @@ body_part-RIGHT_HAND = Mão Direita
 body_part-RIGHT_UPPER_LEG = Coxa direita
 body_part-RIGHT_LOWER_LEG = Canela direita
 body_part-RIGHT_FOOT = Pé direito
+body_part-RIGHT_CONTROLLER = Controle direito
 body_part-CHEST = Peito
 body_part-WAIST = Cintura
 body_part-HIP = Quadril
@@ -27,6 +28,7 @@ body_part-LEFT_HAND = Mão esquerda
 body_part-LEFT_UPPER_LEG = Coxa esquerda
 body_part-LEFT_LOWER_LEG = Canela esquerda
 body_part-LEFT_FOOT = Pé esquerdo
+body_part-LEFT_CONTROLLER = Controle esquerdo
 
 ## Skeleton stuff
 skeleton_bone-NONE = Nada
@@ -53,7 +55,7 @@ skeleton_bone-ELBOW_OFFSET = Compensação do Cotovelo
 ## Tracker reset buttons
 reset-reset_all = Redefinir todas as proporções
 reset-full = Reset
-reset-mounting = Redefinir Mounting
+reset-mounting = Reset de Posição
 reset-quick = Reset Rápido
 
 ## Serial detection stuff
@@ -69,7 +71,7 @@ serial_detection-close = Fechar
 navbar-home = Início
 navbar-body_proportions = Proporções do corpo
 navbar-trackers_assign = Atribuição de Tracker
-navbar-mounting = Calibração de Montagem
+navbar-mounting = Calibragem de Posição
 navbar-onboarding = Assistente de Configuração
 navbar-settings = Opções
 
@@ -116,9 +118,9 @@ tracker-settings-title = Opções dos trackers
 tracker-settings-assignment_section-title = Atribuição
 tracker-settings-assignment_section-description = Qual parte do seu corpo o tracker está atribuído para.
 tracker-settings-assignment_section-edit = Editar atribuição
-tracker-settings-mounting_section-title = Posição de montagem
-tracker-settings-mounting_section-description = Aonde o tracker está montado?
-tracker-settings-mounting_section-edit = Editar montagem
+tracker-settings-mounting_section-title = Posicionamento
+tracker-settings-mounting_section-description = Aonde o tracker está posicionado?
+tracker-settings-mounting_section-edit = Editar posição
 tracker-settings-name_section-title = Nome do tracker
 tracker-settings-name_section-description = Dê um apelido fofo :)
 tracker-settings-name_section-input_placeholder = Coxa esquerda de NightyBeast
@@ -148,7 +150,7 @@ mounting_selection_menu-close = Fechar
 settings-sidebar-title = Opções
 settings-sidebar-general = Geral
 settings-sidebar-tracker_mechanics = Mecânicas do Tracker
-settings-sidebar-fk_settings = Opções de FK
+settings-sidebar-fk_settings = Opções de Tracker
 settings-sidebar-gesture_control = Controle de Gestos
 settings-sidebar-interface = Interface
 settings-sidebar-osc_router = Roteador OSC
@@ -182,13 +184,13 @@ settings-general-tracker_mechanics-filtering-type-prediction-description = Reduz
 settings-general-tracker_mechanics-filtering-amount-label = Quantidade
 
 ## Tracking settings
-settings-general-fk_settings-title = Opções de FK
+settings-general-fk_settings-title = Opções de Tracker
 settings-general-fk_settings-leg_tweak-title = Ajustes de perna
 settings-general-fk_settings-leg_tweak-description = Atravessar o chão pode reduzir ou até eliminar o clipping(atravessar) com o chão porém pode causar problemas quando ajoelhado. Correção de Deslize corrige o ice skating(deslize dos trackers no chão), porém pode diminuir a precisão de certos padrões de movimento.
 settings-general-fk_settings-leg_tweak-floor_clip = Atravessar o chão
 settings-general-fk_settings-leg_tweak-skating_correction = Correção de deslize
 settings-general-fk_settings-leg_tweak-skating_correction_amount = Força da correção de deslize
-settings-general-fk_settings-arm_fk-title = FK do Braço
+settings-general-fk_settings-arm_fk-title = Opções do Braço
 settings-general-fk_settings-arm_fk-description = Muda o jeito que os braços são rastreados.
 settings-general-fk_settings-arm_fk-force_arms = Forçar braços do HMD
 settings-general-fk_settings-skeleton_settings-title = Opções do esqueleto
@@ -196,13 +198,25 @@ settings-general-fk_settings-skeleton_settings-description = Ligar ou desligar o
 settings-general-fk_settings-skeleton_settings-extended_spine = Estender coluna
 settings-general-fk_settings-skeleton_settings-extended_pelvis = Estender pélvis
 settings-general-fk_settings-skeleton_settings-extended_knees = Estender joelho
+settings-general-fk_settings-vive_emulation-title = Emulação de Vive
+settings-general-fk_settings-vive_emulation-description = Emule o problema de tracker da cintura que o Vive tracker tem. Isso é uma piada e faz o tracking ficar pior.
+settings-general-fk_settings-vive_emulation-label = Ativar emulação de Vive
+
 
 ## Gesture control settings (tracker tapping)
 settings-general-gesture_control-title = Controle de gestos
-settings-general-gesture_control-subtitle = Dois toques para o reset rápido
-settings-general-gesture_control-description = Ativa ou desativa os dois toques para o reset rápido. Quando ativado dois toques em qualquer lugar no tracker mais alto do torso irá ativar o reset rápido. Delay é o tempo entre o registro o toque e reset.
-settings-general-gesture_control-enable = Dois toques para o reset rápido
-settings-general-gesture_control-delay = Delay
+settings-general-gesture_control-subtitle = Resets baseados em toques
+settings-general-gesture_control-description = Faz com oque os resets sejam ativados tocando um tracker. O Tracker mais alto no seu torso é usado para o Reset Rápido, o tracker mais alto na sua perna esquerda é usado para o Reset, e o tracker mais alto na sua perna direita é usado para o Reset de Posição. Os toques devem ocorrer dentro de 0.6 segundos para serem registrados.
+settings-general-gesture_control-taps = toques
+settings-general-gesture_control-quickResetEnabled = Ativar toque para reset rápido
+settings-general-gesture_control-quickResetDelay = Delay do reset rápido
+settings-general-gesture_control-quickResetTaps = Toques para o reset rápido
+settings-general-gesture_control-resetEnabled = Ativar toque para reset
+settings-general-gesture_control-resetDelay = Delay do reset
+settings-general-gesture_control-resetTaps = Toques para o reset
+settings-general-gesture_control-mountingResetEnabled = Toques para o reset de posição
+settings-general-gesture_control-mountingResetDelay = Delay do reset de posição
+settings-general-gesture_control-mountingResetTaps = Toques para o reset de posição
 
 ## Interface settings
 settings-general-interface-title = Interface
@@ -282,7 +296,7 @@ onboarding-wifi_creds-skip = Pular as configurações de WiFi
 onboarding-wifi_creds-submit = Enviar!
 
 ## Mounting setup
-onboarding-reset_tutorial-back = Voltar para a Calibração de Montagem
+onboarding-reset_tutorial-back = Voltar para a Calibragem de Posição
 onboarding-reset_tutorial-title = Resetar Tutorial
 onboarding-reset_tutorial-description = Esse recurso não está concluído, apenas aperte continue
 
@@ -328,42 +342,42 @@ onboarding-assign_trackers-next = Atribui todos os trackers
 
 ## Tracker manual mounting setup
 onboarding-manual_mounting-back = Voltar para entrar no VR
-onboarding-manual_mounting-title = Montagem Manual
-onboarding-manual_mounting-description = Clique em cada tracker e selecione de que maneira estão montados
-onboarding-manual_mounting-auto_mounting = Montagem automática
+onboarding-manual_mounting-title = Posicionamento Manual
+onboarding-manual_mounting-description = Clique em cada tracker e selecione de que maneira estão posicionados
+onboarding-manual_mounting-auto_mounting = Posicionamento automática
 onboarding-manual_mounting-next = Próximo passo
 
 ## Tracker automatic mounting setup
 onboarding-automatic_mounting-back = Voltar para entrar no VR
-onboarding-automatic_mounting-title = Calibração de Montagem
-onboarding-automatic_mounting-description = Para os trackers do SlimeVR funcionar, nós precisamos atribuir a rotação de montagem dos seus trackers para alinhar com a montagem física de seus trackers.
-onboarding-automatic_mounting-manual_mounting = Definir manualmente a montagem
+onboarding-automatic_mounting-title = Calibragem de Posicionamento
+onboarding-automatic_mounting-description = Para os trackers do SlimeVR funcionar, nós precisamos atribuir a rotação de posicionamento dos seus trackers para alinhar com a posição física de seus trackers.
+onboarding-automatic_mounting-manual_mounting = Definir manualmente a posição
 onboarding-automatic_mounting-next = Próximo passo
 onboarding-automatic_mounting-prev_step = Passo anterior
-onboarding-automatic_mounting-done-title = Rotações de montagens calibradas.
-onboarding-automatic_mounting-done-description = Sua calibração de montagem está completa!
+onboarding-automatic_mounting-done-title = Rotações de posição calibradas.
+onboarding-automatic_mounting-done-description = Sua calibragem de posicionamento está completa!
 onboarding-automatic_mounting-done-restart = Voltar ao início
-onboarding-automatic_mounting-mounting_reset-title = Reset de Montagem
+onboarding-automatic_mounting-mounting_reset-title = Reset de Posição
 onboarding-automatic_mounting-mounting_reset-step-0 = 1. Agache-se em uma pose de "esqui" com as pernas dobradas, a parte superior do corpo inclinada para a frente e os braços dobrados.
-onboarding-automatic_mounting-mounting_reset-step-1 = 2. Pressione o botão "Resetar Montagem" e aguarde 3 segundos antes que as rotações de montagem dos rastreadores sejam redefinidas.
+onboarding-automatic_mounting-mounting_reset-step-1 = 2. Pressione o botão "Resetar Posição" e aguarde 3 segundos antes que as rotações de posição dos trackers sejam redefinidas.
 onboarding-automatic_mounting-preparation-title = Preparação
 onboarding-automatic_mounting-preparation-step-0 = 1. Fique de pé com os braços ao lado do corpo.
 onboarding-automatic_mounting-preparation-step-1 = 2. Pressione o botão "Reset" e aguarde 3 segundos antes que os rastreadores sejam reiniciados.
 onboarding-automatic_mounting-put_trackers_on-title = Coloque seus trackers
-onboarding-automatic_mounting-put_trackers_on-description = Para calibrar as rotações de montagem, usaremos os trackers que você atribuiu. Coloque todos os seus trackers, você pode ver qual é qual na figura na direita.
+onboarding-automatic_mounting-put_trackers_on-description = Para calibrar as rotações de posicionamento, usaremos os trackers que você atribuiu. Coloque todos os seus trackers, você pode ver qual é qual na figura na direita.
 onboarding-automatic_mounting-put_trackers_on-next = Coloquei todos os meus trackers
 
 ## Tracker manual proportions setup
 onboarding-manual_proportions-back = Voltar para o tutorial de reset
 onboarding-manual_proportions-title = Proporções de corpo manuais
 onboarding-manual_proportions-precision = Ajuste de precisão
-onboarding-manual_proportions-auto = Calibração Automática
+onboarding-manual_proportions-auto = Calibragem Automática
 
 ## Tracker automatic proportions setup
 onboarding-automatic_proportions-back = Voltar para o tutorial de reset
 onboarding-automatic_proportions-title = Meça seu corpo
-onboarding-automatic_proportions-description = Para os trackers SlimeVR funcionarem, precisamos saber o tamanho dos seus ossos. Essa curta calibração vai medir isso para você.
-onboarding-automatic_proportions-manual = Calibração manual
+onboarding-automatic_proportions-description = Para os trackers SlimeVR funcionarem, precisamos saber o tamanho dos seus ossos. Essa curta calibragem vai medir isso para você.
+onboarding-automatic_proportions-manual = Calibragem manual
 onboarding-automatic_proportions-prev_step = Passo anterior
 onboarding-automatic_proportions-put_trackers_on-title = Coloque seus trackers
 onboarding-automatic_proportions-put_trackers_on-description = Para calibrar suas proporções, usaremos os trackers que você atribuiu. Coloque todos os seus trackers, você pode ver quais são quais na figura à direita.
@@ -391,7 +405,7 @@ onboarding-automatic_proportions-verify_results-processing = Processando o resul
 onboarding-automatic_proportions-verify_results-redo = Refazer a gravação
 onboarding-automatic_proportions-verify_results-confirm = Eles estão corretos
 onboarding-automatic_proportions-done-title = Corpo medido e salvo.
-onboarding-automatic_proportions-done-description = Sua calibração de proporção de corpo está completa!
+onboarding-automatic_proportions-done-description = Sua calibragem de proporção de corpo está completa!
 
 ## Home
 home-no_trackers = Nenhum tracker detectado ou atribuído

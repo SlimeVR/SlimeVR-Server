@@ -9,6 +9,7 @@
   "scripts": {
     "gui": "npm run update-solarxr && cd gui && npm run tauri dev",
     "tauri": "cd gui && npm run tauri",
+    "skipbundler": "cd gui && npm run skipbundler",
     "build": "npm run tauri build",
     "update-solarxr": "cd solarxr-protocol && npm run build",
     "prepare": "husky install && npm run update-solarxr && patch-package"

@@ -104,5 +104,5 @@ function recurseObject(obj, prefix = '') {
 
 fs.writeFileSync(
   './translation.ftl',
-  recurseObject(translation).join('\n').trim()
+  recurseObject(translation).join('\n').trim() + '\n'
 );

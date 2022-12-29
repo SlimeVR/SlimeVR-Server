@@ -34,7 +34,7 @@ const statusLabelMap = {
   ['ERROR']: 'onboarding-connect_tracker-connection_status-error',
   ['START-CONNECTING']:
     'onboarding-connect_tracker-connection_status-start_connecting',
-  ['HANDSHAKE']: 'onboarding-connect_tracker-connection_status-start_handshake',
+  ['HANDSHAKE']: 'onboarding-connect_tracker-connection_status-handshake',
 };
 
 export function ConnectTrackersPage() {
