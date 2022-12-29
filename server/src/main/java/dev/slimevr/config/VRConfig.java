@@ -20,8 +20,6 @@ public class VRConfig {
 
 	private final ServerConfig server = new ServerConfig();
 
-	private final WindowConfig window = new WindowConfig();
-
 	private final FiltersConfig filters = new FiltersConfig();
 
 	private final OSCConfig oscRouter = new OSCConfig();
@@ -77,10 +75,6 @@ public class VRConfig {
 
 	public ServerConfig getServer() {
 		return server;
-	}
-
-	public WindowConfig getWindow() {
-		return window;
 	}
 
 	public FiltersConfig getFilters() {
