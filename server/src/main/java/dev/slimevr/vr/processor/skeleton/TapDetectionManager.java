@@ -122,6 +122,7 @@ public class TapDetectionManager {
 
 	private void checkMountingReset() {
 		boolean tapped = (mountingResetTaps <= mountingResetDetector.getTaps());
+
 		if (
 			tapped
 				&& System.nanoTime() - mountingResetDetector.getDetectionTime()

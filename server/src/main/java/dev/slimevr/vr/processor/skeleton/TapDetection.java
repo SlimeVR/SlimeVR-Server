@@ -133,8 +133,11 @@ public class TapDetection {
 
 		// get the amount of taps in the list
 		// and set the detection time
-		taps = getTapEvents();
-		detectionTime = time;
+		int newTaps = getTapEvents();
+		if (newTaps > taps) {
+			taps = newTaps;
+			detectionTime = time;
+		}
 
 	}
 
