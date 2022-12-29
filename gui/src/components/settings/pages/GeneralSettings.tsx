@@ -511,7 +511,7 @@ export function GeneralSettings() {
                   variant="toggle"
                   outlined
                   control={control}
-                  name="toggles-viveEmulation"
+                  name="toggles.viveEmulation"
                   label={t('settings-general-fk_settings-vive_emulation-label')}
                 />
               </div>
