@@ -121,6 +121,9 @@ tracker-settings-assignment_section-edit = Edit assignment
 tracker-settings-mounting_section-title = Mounting position
 tracker-settings-mounting_section-description = Where is the tracker mounted?
 tracker-settings-mounting_section-edit = Edit mounting
+tracker-settings-drift_compensation_section-title = Allow drift compensation
+tracker-settings-drift_compensation_section-description = Should this tracker compensate for its drift when drift compensation is enabled?
+tracker-settings-drift_compensation_section-edit = Allow drift compensation
 tracker-settings-name_section-title = Tracker name
 tracker-settings-name_section-description = Give it a cute nickname :)
 tracker-settings-name_section-input_placeholder = NightyBeast's left leg
@@ -184,10 +187,10 @@ settings-general-tracker_mechanics-filtering-type-prediction-description = Reduc
 settings-general-tracker_mechanics-filtering-amount-label = Amount
 settings-general-tracker_mechanics-drift_compensation-title = Drift compensation
 settings-general-tracker_mechanics-drift_compensation-description-p0 = Compensates IMU yaw drift by applying an inverse rotation.
-settings-general-tracker_mechanics-drift_compensation-description-p1 = Change amount of compensation and how many resets are taken into account.
+settings-general-tracker_mechanics-drift_compensation-description-p1 = Change amount of compensation and up to how many resets are taken into account.
 settings-general-tracker_mechanics-drift_compensation-enabled-label = Drift compensation
 settings-general-tracker_mechanics-drift_compensation-amount-label = Compensation amount
-settings-general-tracker_mechanics-drift_compensation-max_resets-label = Number of resets used
+settings-general-tracker_mechanics-drift_compensation-max_resets-label = Use up to x last resets
 
 ## Tracking settings
 settings-general-fk_settings-title = Tracking settings

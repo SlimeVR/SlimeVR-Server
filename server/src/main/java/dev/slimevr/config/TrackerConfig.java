@@ -4,6 +4,7 @@ import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.node.JsonNodeFactory;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 import com.jme3.math.Quaternion;
+import dev.slimevr.vr.trackers.IMUTracker;
 import dev.slimevr.vr.trackers.Tracker;
 
 
@@ -12,10 +13,10 @@ public class TrackerConfig {
 	private String customName;
 	private String designation;
 	private boolean hide;
-
 	private Quaternion adjustment;
-
 	private Quaternion mountingRotation;
+	private boolean allowDriftCompensation;
+
 
 	public TrackerConfig() {
 	}
@@ -24,6 +25,7 @@ public class TrackerConfig {
 		this.designation = tracker.getBodyPosition()
 			!= null ? tracker.getBodyPosition().designation : null;
 		this.customName = tracker.getCustomName();
+		allowDriftCompensation = tracker instanceof IMUTracker;
 	}
 
 	static JsonNode toV2(JsonNode v1, JsonNodeFactory factory) {
@@ -79,5 +81,13 @@ public class TrackerConfig {
 
 	public void setMountingRotation(Quaternion mountingRotation) {
 		this.mountingRotation = mountingRotation;
+	}
+
+	public boolean getAllowDriftCompensation() {
+		return allowDriftCompensation;
+	}
+
+	public void setAllowDriftCompensation(boolean allowDriftCompensation) {
+		this.allowDriftCompensation = allowDriftCompensation;
 	}
 }

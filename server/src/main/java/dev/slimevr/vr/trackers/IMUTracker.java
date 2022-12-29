@@ -59,6 +59,7 @@ public class IMUTracker
 	protected boolean magnetometerCalibrated = false;
 	protected BufferedTimer timer = new BufferedTimer(1f);
 	protected QuaternionMovingAverage movingAverage;
+	protected boolean allowDriftCompensation = true;
 	protected boolean compensateDrift = false;
 	protected float driftAmount;
 	protected static long DRIFT_COOLDOWN_MS = 30000;
@@ -109,6 +110,7 @@ public class IMUTracker
 				mounting != null ? mounting : new Quaternion().fromAngles(0, FastMath.PI, 0)
 			);
 		config.setCustomName(customName);
+		config.setAllowDriftCompensation(allowDriftCompensation);
 	}
 
 	@Override
@@ -131,6 +133,7 @@ public class IMUTracker
 			} else {
 				bodyPosition = trackerPosition.get();
 			}
+			allowDriftCompensation = config.getAllowDriftCompensation();
 		}
 	}
 
@@ -145,6 +148,14 @@ public class IMUTracker
 		} else {
 			mountAdjust.loadIdentity();
 		}
+	}
+
+	public boolean getAllowDriftCompensation() {
+		return allowDriftCompensation;
+	}
+
+	public void setAllowDriftCompensation(boolean allowDriftCompensation) {
+		this.allowDriftCompensation = allowDriftCompensation;
 	}
 
 	@Override
@@ -230,7 +241,7 @@ public class IMUTracker
 		// prevent accidental errors while debugging other things
 		store.multLocal(mountAdjust);
 		adjustInternal(store);
-		if (compensateDrift && totalDriftTime > 0) {
+		if ((compensateDrift && allowDriftCompensation) && totalDriftTime > 0) {
 			store
 				.slerpLocal(
 					store.mult(averagedDriftQuat),
@@ -423,7 +434,7 @@ public class IMUTracker
 	 * driftQuat, timeAtLastReset and timeForLastReset
 	 */
 	synchronized public void calculateDrift(Quaternion beforeQuat) {
-		if (compensateDrift) {
+		if (compensateDrift && allowDriftCompensation) {
 			Quaternion rotQuat = new Quaternion();
 			getUnfilteredRotation(rotQuat);
 			if (

@@ -90,7 +90,7 @@ public class DataFeedBuilder {
 		if (tracker.getBodyPosition() != null)
 			TrackerInfo.addBodyPart(fbb, tracker.getBodyPosition().bodyPart);
 		TrackerInfo.addEditable(fbb, tracker.userEditable());
-		TrackerInfo.addComputed(fbb, tracker.isComputed());
+		TrackerInfo.addIsComputed(fbb, tracker.isComputed());
 		TrackerInfo.addDisplayName(fbb, displayNameOffset);
 		TrackerInfo.addCustomName(fbb, customNameOffset);
 
@@ -98,6 +98,8 @@ public class DataFeedBuilder {
 		// TODO need support: TrackerInfo.addPollRate(fbb, tracker.);
 
 		if (tracker instanceof IMUTracker imuTracker) {
+			TrackerInfo.addIsImu(fbb, true);
+
 			if (imuTracker.getMountingRotation() != null) {
 				Quaternion quaternion = imuTracker.getMountingRotation();
 				TrackerInfo
@@ -114,8 +116,11 @@ public class DataFeedBuilder {
 					);
 			}
 
-			TrackerInfo.addAllowDriftCompensation(fbb, true); // TODO
+			TrackerInfo.addAllowDriftCompensation(fbb, imuTracker.getAllowDriftCompensation());
+		} else {
+			TrackerInfo.addIsImu(fbb, false);
 		}
+
 		return TrackerInfo.endTrackerInfo(fbb);
 	}
 

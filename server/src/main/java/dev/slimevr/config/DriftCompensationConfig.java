@@ -20,7 +20,7 @@ public class DriftCompensationConfig {
 	}
 
 	public void updateTrackersDriftCompensation() {
-		for (Tracker t : Main.vrServer.getAllTrackers()) {
+		for (Tracker t : Main.getVrServer().getAllTrackers()) {
 			Tracker tracker = t.get();
 			if (tracker instanceof IMUTracker) {
 				((IMUTracker) tracker)

@@ -18,6 +18,7 @@ import { Typography } from '../commons/Typography';
 import { MountingSelectionMenu } from '../onboarding/pages/mounting/MountingSelectionMenu';
 import { SingleTrackerBodyAssignmentMenu } from './SingleTrackerBodyAssignmentMenu';
 import { TrackerCard } from './TrackerCard';
+import { CheckBox } from '../commons/Checkbox';
 
 export const rotationToQuatMap = {
   FRONT: 180,
@@ -44,13 +45,17 @@ export function TrackerSettingsPage() {
     trackernum: string;
     deviceid: string;
   }>();
-  const { register, watch, reset, handleSubmit } = useForm<{
+  const { control, register, watch, reset, handleSubmit } = useForm<{
     trackerName: string | null;
+    allowDriftCompensation: boolean | null;
   }>({
-    defaultValues: { trackerName: null },
+    defaultValues: {
+      trackerName: null,
+      allowDriftCompensation: null,
+    },
     reValidateMode: 'onSubmit',
   });
-  const { trackerName } = watch();
+  const { trackerName, allowDriftCompensation } = watch();
 
   const tracker = useTrackerFromId(trackernum, deviceid);
 
@@ -89,27 +94,41 @@ export function TrackerSettingsPage() {
       : rotationToQuatMap.FRONT;
   }, [tracker?.tracker.info?.mountingOrientation]);
 
-  const updateTrackerName = () => {
+  const updateTrackerSettings = () => {
     if (!tracker) return;
-    if (trackerName == tracker.tracker.info?.customName) return;
+    if (allowDriftCompensation == null) return;
+    if (
+      trackerName == tracker.tracker.info?.customName &&
+      allowDriftCompensation == tracker.tracker.info?.allowDriftCompensation
+    )
+      return;
     const assignreq = new AssignTrackerRequestT();
     assignreq.bodyPosition = tracker?.tracker.info?.bodyPart || BodyPart.NONE;
+    assignreq.mountingRotation = assignreq.mountingRotation = QuaternionToQuatT(
+      Quaternion.fromEuler(0, 0, FixEuler(+currRotation) * DEG_TO_RAD, 'XZY')
+    );
     assignreq.displayName = trackerName;
     assignreq.trackerId = tracker?.tracker.trackerId;
+    assignreq.allowDriftCompensation = allowDriftCompensation;
+    console.log('' + tracker?.tracker.info?.allowDriftCompensation);
     sendRPCPacket(RpcMessage.AssignTrackerRequest, assignreq);
   };
 
   const onSettingsSubmit = () => {
-    updateTrackerName();
+    updateTrackerSettings();
   };
 
   useDebouncedEffect(
     () => {
-      updateTrackerName();
+      updateTrackerSettings();
     },
     [trackerName],
     1000
   );
+
+  useEffect(() => {
+    updateTrackerSettings();
+  }, [allowDriftCompensation]);
 
   useEffect(() => {
     if (tracker && !firstLoad) setFirstLoad(true);
@@ -119,6 +138,7 @@ export function TrackerSettingsPage() {
     if (firstLoad) {
       reset({
         trackerName: tracker?.tracker.info?.customName as string | null,
+        allowDriftCompensation: tracker?.tracker.info?.allowDriftCompensation,
       });
     }
   }, [firstLoad]);
@@ -253,6 +273,29 @@ export function TrackerSettingsPage() {
               </div>
             </div>
           </div>
+          {tracker?.tracker.info?.isImu && (
+            <>
+              <div className="flex flex-col gap-2 w-full mt-3">
+                <Typography variant="section-title">
+                  {t('tracker-settings-drift_compensation_section-title')}
+                </Typography>
+                <Typography color="secondary">
+                  {t('tracker-settings-drift_compensation_section-description')}
+                </Typography>
+                <div className="flex">
+                  <CheckBox
+                    variant="toggle"
+                    outlined
+                    name="allowDriftCompensation"
+                    control={control}
+                    label={t(
+                      'tracker-settings-drift_compensation_section-edit'
+                    )}
+                  />
+                </div>
+              </div>
+            </>
+          )}
           <div className="flex flex-col gap-2 w-full mt-3">
             <Typography variant="section-title">
               {t('tracker-settings-name_section-title')}
