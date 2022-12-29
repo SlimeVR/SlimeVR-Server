@@ -15,7 +15,7 @@ public class TrackerConfig {
 	private boolean hide;
 	private Quaternion adjustment;
 	private Quaternion mountingRotation;
-	private boolean allowDriftCompensation;
+	private boolean allowDriftCompensation = true;
 
 
 	public TrackerConfig() {
