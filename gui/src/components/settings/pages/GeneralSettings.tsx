@@ -596,7 +596,7 @@ export function GeneralSettings() {
                 )}`
               }
               min={2}
-              max={3}
+              max={10}
               step={1}
             />
             <NumberSelector
@@ -609,7 +609,7 @@ export function GeneralSettings() {
                 )}`
               }
               min={2}
-              max={3}
+              max={10}
               step={1}
             />
             <NumberSelector
@@ -622,7 +622,7 @@ export function GeneralSettings() {
                 )}`
               }
               min={2}
-              max={3}
+              max={10}
               step={1}
             />
           </div>

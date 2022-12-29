@@ -27,12 +27,11 @@ public class TapDetection {
 	private static final float ALLOWED_BODY_ACCEL = 1.5f;
 	private static final float ALLOWED_BODY_ACCEL_SQUARED = ALLOWED_BODY_ACCEL * ALLOWED_BODY_ACCEL;
 	private static final float CLUMP_TIME_NS = 0.08f * NS_CONVERTER;
-	private static final float TIME_WINDOW_NS = 0.6f * NS_CONVERTER;
+	private float timeWindowNS = 0.6f * NS_CONVERTER;
 
 	// state
 	private float detectionTime = -1.0f;
-	private boolean doubleTaped = false;
-	private boolean tripleTaped = false;
+	private int taps = 0;
 	private boolean waitForLowAccel = false;
 
 	public TapDetection(HumanSkeleton skeleton) {
@@ -60,12 +59,8 @@ public class TapDetection {
 		trackerToWatch = tracker;
 	}
 
-	public boolean getDoubleTapped() {
-		return doubleTaped;
-	}
-
-	public boolean getTripleTapped() {
-		return tripleTaped;
+	public int getTaps() {
+		return taps;
 	}
 
 	public float getDetectionTime() {
@@ -80,8 +75,12 @@ public class TapDetection {
 	public void resetDetector() {
 		tapTimes.clear();
 		accelList.clear();
-		doubleTaped = false;
-		tripleTaped = false;
+		taps = 0;
+	}
+
+	// set the max taps this detector is configured to detect
+	public void setMaxTaps(int maxTaps) {
+		timeWindowNS = 0.3f * maxTaps * NS_CONVERTER;
 	}
 
 	// main function for tap detection
@@ -119,7 +118,7 @@ public class TapDetection {
 
 		// remove old taps from the list (if they are too old)
 		if (!tapTimes.isEmpty()) {
-			while (time - tapTimes.getFirst() > TIME_WINDOW_NS) {
+			while (time - tapTimes.getFirst() > timeWindowNS) {
 				tapTimes.removeFirst();
 				if (tapTimes.isEmpty())
 					return;
@@ -133,17 +132,10 @@ public class TapDetection {
 		}
 
 		// get the amount of taps in the list
-		int tapEvents = getTapEvents();
+		// and set the detection time
+		taps = getTapEvents();
+		detectionTime = time;
 
-		// if there are two tap events and the user is moving relatively slowly,
-		// quick reset
-		if (tapEvents == 2) {
-			doubleTaped = true;
-			detectionTime = time;
-		} else if (tapEvents >= 3) {
-			detectionTime = time;
-			tripleTaped = true;
-		}
 	}
 
 	private float getAccelDelta() {

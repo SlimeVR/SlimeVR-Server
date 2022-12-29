@@ -47,16 +47,8 @@ public class TapDetectionManager {
 		resetDetector = new TapDetection(skeleton, getTrackerToWatchReset());
 		mountingResetDetector = new TapDetection(skeleton, getTrackerToWatchMountingReset());
 
-		updateConfig();
-	}
-
-	public void updateConfig() {
-		this.quickResetDelayNs = config.getQuickResetDelay() * NS_CONVERTER;
-		this.resetDelayNs = config.getResetDelay() * NS_CONVERTER;
-		this.mountingResetDelayNs = config.getMountingResetDelay() * NS_CONVERTER;
-		quickResetDetector.setEnabled(config.getQuickResetEnabled());
-		resetDetector.setEnabled(config.getResetEnabled());
-		mountingResetDetector.setEnabled(config.getMountingResetEnabled());
+		// since this config value is only modified by editing the config file,
+		// we can set it here
 		quickResetDetector
 			.setNumberTrackersOverThreshold(
 				config.getNumberTrackersOverThreshold()
@@ -69,9 +61,23 @@ public class TapDetectionManager {
 			.setNumberTrackersOverThreshold(
 				config.getNumberTrackersOverThreshold()
 			);
+
+		updateConfig();
+	}
+
+	public void updateConfig() {
+		this.quickResetDelayNs = config.getQuickResetDelay() * NS_CONVERTER;
+		this.resetDelayNs = config.getResetDelay() * NS_CONVERTER;
+		this.mountingResetDelayNs = config.getMountingResetDelay() * NS_CONVERTER;
+		quickResetDetector.setEnabled(config.getQuickResetEnabled());
+		resetDetector.setEnabled(config.getResetEnabled());
+		mountingResetDetector.setEnabled(config.getMountingResetEnabled());
 		quickResetTaps = config.getQuickResetTaps();
 		resetTaps = config.getResetTaps();
 		mountingResetTaps = config.getMountingResetTaps();
+		quickResetDetector.setMaxTaps(quickResetTaps);
+		resetDetector.setMaxTaps(resetTaps);
+		mountingResetDetector.setMaxTaps(mountingResetTaps);
 	}
 
 	public void update() {
@@ -89,9 +95,8 @@ public class TapDetectionManager {
 	}
 
 	private void checkQuickReset() {
-		boolean tapped = (quickResetTaps == 2)
-			? quickResetDetector.getDoubleTapped()
-			: quickResetDetector.getTripleTapped();
+		boolean tapped = (quickResetTaps <= quickResetDetector.getTaps());
+
 		if (
 			tapped && System.nanoTime() - quickResetDetector.getDetectionTime() > quickResetDelayNs
 		) {
@@ -103,9 +108,8 @@ public class TapDetectionManager {
 	}
 
 	private void checkReset() {
-		boolean tapped = (resetTaps == 2)
-			? resetDetector.getDoubleTapped()
-			: resetDetector.getTripleTapped();
+		boolean tapped = (resetTaps <= resetDetector.getTaps());
+
 		if (
 			tapped && System.nanoTime() - resetDetector.getDetectionTime() > resetDelayNs
 		) {
@@ -117,9 +121,7 @@ public class TapDetectionManager {
 	}
 
 	private void checkMountingReset() {
-		boolean tapped = (mountingResetTaps == 2)
-			? mountingResetDetector.getDoubleTapped()
-			: mountingResetDetector.getTripleTapped();
+		boolean tapped = (mountingResetTaps <= mountingResetDetector.getTaps());
 		if (
 			tapped
 				&& System.nanoTime() - mountingResetDetector.getDetectionTime()
