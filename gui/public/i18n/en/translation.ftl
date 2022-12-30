@@ -17,6 +17,7 @@ body_part-RIGHT_HAND = Right hand
 body_part-RIGHT_UPPER_LEG = Right thigh
 body_part-RIGHT_LOWER_LEG = Right ankle
 body_part-RIGHT_FOOT = Right foot
+body_part-RIGHT_CONTROLLER = Right controller
 body_part-CHEST = Chest
 body_part-WAIST = Waist
 body_part-HIP = Hip
@@ -27,6 +28,7 @@ body_part-LEFT_HAND = Left hand
 body_part-LEFT_UPPER_LEG = Left thigh
 body_part-LEFT_LOWER_LEG = Left ankle
 body_part-LEFT_FOOT = Left foot
+body_part-LEFT_CONTROLLER = Left controller
 
 ## Skeleton stuff
 skeleton_bone-NONE = None

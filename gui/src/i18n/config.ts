@@ -13,7 +13,7 @@ export const langs = [
     key: 'en',
   },
   {
-    name: '🧉 Español Latinoamericano',
+    name: '🌎 Español Latinoamericano',
     key: 'es-419'
   },
   {
@@ -70,5 +70,13 @@ i18next
       loadPath: '/i18n/{{lng}}/{{ns}}.ftl',
     },
   });
+
+if (import.meta.hot) {
+  // detect hot reload translation file changes
+  import.meta.hot.on('locales-update', async () => {
+    await i18next.reloadResources();
+    await i18next.changeLanguage(i18next.language);
+  });
+}
 
 export default i18next;

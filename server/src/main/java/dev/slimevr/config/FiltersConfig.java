@@ -18,7 +18,7 @@ public class FiltersConfig {
 	}
 
 	public void updateTrackersFilters() {
-		for (Tracker t : Main.vrServer.getAllTrackers()) {
+		for (Tracker t : Main.getVrServer().getAllTrackers()) {
 			Tracker tracker = t.get();
 			if (tracker instanceof TrackerWithFiltering) {
 				((TrackerWithFiltering) tracker)
