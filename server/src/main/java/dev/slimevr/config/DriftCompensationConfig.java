@@ -14,7 +14,7 @@ public class DriftCompensationConfig {
 	private float amount = 0.8f;
 
 	// Max resets for the calculated average drift
-	private int maxResets = 5;
+	private int maxResets = 6;
 
 	public DriftCompensationConfig() {
 	}
@@ -22,8 +22,8 @@ public class DriftCompensationConfig {
 	public void updateTrackersDriftCompensation() {
 		for (Tracker t : Main.getVrServer().getAllTrackers()) {
 			Tracker tracker = t.get();
-			if (tracker instanceof IMUTracker) {
-				((IMUTracker) tracker)
+			if (tracker instanceof IMUTracker imuTracker) {
+				imuTracker
 					.setDriftCompensationSettings(
 						getEnabled(),
 						getAmount(),

@@ -133,7 +133,18 @@ public class IMUTracker
 			} else {
 				bodyPosition = trackerPosition.get();
 			}
-			allowDriftCompensation = config.getAllowDriftCompensation();
+			if (config.getAllowDriftCompensation() == null) {
+				// If value didn't exist, default to true and save
+				allowDriftCompensation = true;
+				vrserver
+					.getConfigManager()
+					.getVrConfig()
+					.getTracker(this.get())
+					.setAllowDriftCompensation(true);
+				vrserver.getConfigManager().saveConfig();
+			} else {
+				allowDriftCompensation = config.getAllowDriftCompensation();
+			}
 		}
 	}
 

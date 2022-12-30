@@ -74,6 +74,8 @@ export function TrackerSettingsPage() {
     );
     assignreq.bodyPosition = tracker?.tracker.info?.bodyPart || BodyPart.NONE;
     assignreq.trackerId = tracker?.tracker.trackerId;
+    if (allowDriftCompensation != null)
+      assignreq.allowDriftCompensation = allowDriftCompensation;
     sendRPCPacket(RpcMessage.AssignTrackerRequest, assignreq);
     setSelectRotation(false);
   };
@@ -84,6 +86,8 @@ export function TrackerSettingsPage() {
     const assignreq = new AssignTrackerRequestT();
     assignreq.bodyPosition = role;
     assignreq.trackerId = tracker?.tracker.trackerId;
+    if (allowDriftCompensation != null)
+      assignreq.allowDriftCompensation = allowDriftCompensation;
     sendRPCPacket(RpcMessage.AssignTrackerRequest, assignreq);
     setSelectBodypart(false);
   };
