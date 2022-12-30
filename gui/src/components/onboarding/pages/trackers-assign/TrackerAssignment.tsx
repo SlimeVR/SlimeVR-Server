@@ -57,7 +57,7 @@ export function TrackersAssignPage() {
       const assignreq = new AssignTrackerRequestT();
 
       assignreq.bodyPosition = role;
-      assignreq.mountingRotation = rotation;
+      assignreq.mountingOrientation = rotation;
       assignreq.trackerId = trackerId;
       sendRPCPacket(RpcMessage.AssignTrackerRequest, assignreq);
     };
