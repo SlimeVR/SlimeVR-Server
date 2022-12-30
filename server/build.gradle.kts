@@ -130,6 +130,9 @@ configure<com.diffplug.gradle.spotless.SpotlessExtension> {
 	// 	endWithNewline()
 	// 	indentWithSpaces(2)  // YAML cannot contain tabs: https://yaml.org/faq.html
 	// }
+
+	// .editorconfig doesn't work so, manual override
+	// https://github.com/diffplug/spotless/issues/142
 	val editorConfig =
 		mapOf(
 			"indent_size" to 4,
@@ -144,8 +147,6 @@ configure<com.diffplug.gradle.spotless.SpotlessExtension> {
 	kotlin {
 		target("**/*.kt")
 		targetExclude("**/build/**.kts")
-		// .editorconfig doesn't work so, manual override
-		// https://github.com/diffplug/spotless/issues/142
 		ktlint()
 			.setUseExperimental(true)
 			.editorConfigOverride(editorConfig)
