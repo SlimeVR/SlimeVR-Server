@@ -17,7 +17,9 @@ import java.net.ServerSocket
 import javax.swing.JOptionPane
 import kotlin.system.exitProcess
 
-val VERSION: String = (GIT_VERSION_TAG.ifEmpty { GIT_COMMIT_HASH }) + if (GIT_CLEAN) "" else "-dirty"
+val VERSION =
+	(GIT_VERSION_TAG.ifEmpty { GIT_COMMIT_HASH }) +
+		if (GIT_CLEAN) "" else "-dirty"
 var vrServer: VRServer? = null
 
 fun main(args: Array<String>) {
@@ -71,12 +73,14 @@ fun main(args: Array<String>) {
 	} catch (e: IOException) {
 		LogManager
 			.severe(
-				"SlimeVR start-up error! Required ports are busy. Make sure there is no other instance of SlimeVR Server running."
+				"SlimeVR start-up error! Required ports are busy. " +
+					"Make sure there is no other instance of SlimeVR Server running."
 			)
 		JOptionPane
 			.showMessageDialog(
 				null,
-				"SlimeVR start-up error! Required ports are busy. Make sure there is no other instance of SlimeVR Server running.",
+				"SlimeVR start-up error! Required ports are busy. " +
+					"Make sure there is no other instance of SlimeVR Server running.",
 				"SlimeVR: Ports are busy",
 				JOptionPane.ERROR_MESSAGE
 			)
