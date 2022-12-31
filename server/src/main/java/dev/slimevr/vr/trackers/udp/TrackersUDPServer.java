@@ -6,13 +6,11 @@ import com.jme3.math.Vector3f;
 import dev.slimevr.Main;
 import dev.slimevr.NetworkProtocol;
 import dev.slimevr.vr.trackers.IMUTracker;
-import dev.slimevr.vr.trackers.ReferenceAdjustedTracker;
 import dev.slimevr.vr.trackers.Tracker;
 import dev.slimevr.vr.trackers.TrackerStatus;
 import io.eiren.util.Util;
 import io.eiren.util.collections.FastList;
 import io.eiren.util.logging.LogManager;
-
 import org.apache.commons.lang3.ArrayUtils;
 
 import java.io.IOException;
@@ -27,7 +25,6 @@ import java.util.function.Consumer;
  * Receives trackers data by UDP using extended owoTrack protocol.
  */
 public class TrackersUDPServer extends Thread {
-
 	/**
 	 * Change between IMU axes and OpenGL/SteamVR axes
 	 */
@@ -97,12 +94,16 @@ public class TrackersUDPServer extends Thread {
 	private static String packetToString(DatagramPacket packet) {
 		StringBuilder sb = new StringBuilder();
 		sb.append("DatagramPacket{");
-		sb.append(packet.getAddress().toString());
-		sb.append(packet.getPort());
-		sb.append(',');
-		sb.append(packet.getLength());
-		sb.append(',');
-		sb.append(ArrayUtils.toString(packet.getData()));
+		if (packet == null) {
+			sb.append("null");
+		} else {
+			sb.append(packet.getAddress().toString());
+			sb.append(packet.getPort());
+			sb.append(',');
+			sb.append(packet.getLength());
+			sb.append(',');
+			sb.append(ArrayUtils.toString(packet.getData()));
+		}
 		sb.append('}');
 		return sb.toString();
 	}
@@ -123,7 +124,7 @@ public class TrackersUDPServer extends Thread {
 		}
 		if (connection == null) {
 			connection = new UDPDevice(handshakePacket.getSocketAddress(), addr);
-			Main.vrServer.getDeviceManager().addDevice(connection);
+			Main.getVrServer().getDeviceManager().addDevice(connection);
 			connection.firmwareBuild = handshake.firmwareBuild;
 			if (handshake.firmware == null || handshake.firmware.length() == 0) {
 				// Only old owoTrack doesn't report firmware and have different
@@ -233,14 +234,11 @@ public class TrackersUDPServer extends Thread {
 				connection.name + "/" + trackerId,
 				connection.descriptiveName + "/" + trackerId,
 				this,
-				Main.vrServer
-			);
-			ReferenceAdjustedTracker<IMUTracker> adjustedTracker = new ReferenceAdjustedTracker<>(
-				imu
+				Main.getVrServer()
 			);
 
 			connection.getTrackers().add(imu);
-			trackersConsumer.accept(adjustedTracker);
+			trackersConsumer.accept(imu);
 			LogManager
 				.info(
 					"[TrackerServer] Added sensor "
@@ -443,7 +441,7 @@ public class TrackersUDPServer extends Thread {
 			case 5: // PACKET_MAG
 			case 9: // PACKET_RAW_MAGENTOMETER
 				break; // None of these packets are used by SlimeVR trackers and
-						// are deprecated, use
+			// are deprecated, use
 			// more generic PACKET_ROTATION_DATA
 			case 8: // PACKET_CONFIG
 				if (connection == null)

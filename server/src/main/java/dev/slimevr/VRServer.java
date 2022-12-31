@@ -5,6 +5,8 @@ import dev.slimevr.autobone.AutoBoneHandler;
 import dev.slimevr.bridge.Bridge;
 import dev.slimevr.bridge.VMCBridge;
 import dev.slimevr.config.ConfigManager;
+import dev.slimevr.osc.OSCHandler;
+import dev.slimevr.osc.OSCRouter;
 import dev.slimevr.osc.VRCOSCHandler;
 import dev.slimevr.platform.SteamVRBridge;
 import dev.slimevr.platform.linux.UnixSocketBridge;
@@ -25,6 +27,7 @@ import io.eiren.util.OperatingSystem;
 import io.eiren.util.ann.ThreadSafe;
 import io.eiren.util.ann.ThreadSecure;
 import io.eiren.util.collections.FastList;
+import io.eiren.util.logging.LogManager;
 import solarxr_protocol.datatypes.TrackerIdT;
 
 import java.net.InetAddress;
@@ -48,7 +51,8 @@ public class VRServer extends Thread {
 	private final List<Consumer<Tracker>> newTrackersConsumers = new FastList<>();
 	private final List<Runnable> onTick = new FastList<>();
 	private final List<? extends ShareableTracker> shareTrackers;
-	private final VRCOSCHandler VRCOSCHandler;
+	private final OSCRouter oscRouter;
+	private final VRCOSCHandler vrcOSCHandler;
 	private final DeviceManager deviceManager;
 	private final BVHRecorder bvhRecorder;
 	private final SerialHandler serialHandler;
@@ -85,10 +89,16 @@ public class VRServer extends Thread {
 		shareTrackers = humanPoseProcessor.getComputedTrackers();
 
 		// Start server for SlimeVR trackers
-		trackersServer = new TrackersUDPServer(6969, "Sensors UDP server", this::registerTracker);
+		int trackerPort = configManager.getVrConfig().getServer().getTrackerPort();
+		LogManager.info("Starting the tracker server on port " + trackerPort + "...");
+		trackersServer = new TrackersUDPServer(
+			trackerPort,
+			"Sensors UDP server",
+			this::registerTracker
+		);
 
 		// OpenVR bridge currently only supports Windows
-		SteamVRBridge driverBridge = null;
+		final SteamVRBridge driverBridge;
 		if (OperatingSystem.getCurrentPlatform() == OperatingSystem.WINDOWS) {
 
 			// Create named pipe bridge for SteamVR driver
@@ -116,17 +126,39 @@ public class VRServer extends Thread {
 			tasks.add(feederBridge::startBridge);
 			bridges.add(feederBridge);
 		} else if (OperatingSystem.getCurrentPlatform() == OperatingSystem.LINUX) {
-			driverBridge = new UnixSocketBridge(
-				this,
-				hmdTracker,
-				"steamvr",
-				"SteamVR Driver Bridge",
-				"/tmp/SlimeVRDriver",
-				shareTrackers
-			);
-			tasks.add(driverBridge::startBridge);
-			bridges.add(driverBridge);
+			SteamVRBridge linuxBridge = null;
+			try {
+				linuxBridge = new UnixSocketBridge(
+					this,
+					hmdTracker,
+					"steamvr",
+					"SteamVR Driver Bridge",
+					"/tmp/SlimeVRDriver",
+					shareTrackers
+				);
+			} catch (Exception ex) {
+				LogManager.severe("Failed to initiate Unix socket, disabling driver bridge...", ex);
+			}
+			driverBridge = linuxBridge;
+			if (driverBridge != null) {
+				tasks.add(driverBridge::startBridge);
+				bridges.add(driverBridge);
+			}
+		} else {
+			driverBridge = null;
 		}
+
+		// Add shutdown hook
+		Runtime.getRuntime().addShutdownHook(new Thread(() -> {
+			try {
+				if (driverBridge instanceof UnixSocketBridge linuxBridge) {
+					// Auto-close Linux SteamVR bridge on JVM shutdown
+					linuxBridge.close();
+				}
+			} catch (Exception e) {
+				throw new RuntimeException(e);
+			}
+		}));
 
 		// Create WebSocket server
 		WebSocketVRBridge wsBridge = new WebSocketVRBridge(hmdTracker, shareTrackers, this);
@@ -142,14 +174,20 @@ public class VRServer extends Thread {
 			e.printStackTrace();
 		}
 
-		// Initialize OSC
-		VRCOSCHandler = new VRCOSCHandler(
+		// Initialize OSC handlers
+		vrcOSCHandler = new VRCOSCHandler(
+			this,
 			hmdTracker,
 			humanPoseProcessor,
 			driverBridge,
 			getConfigManager().getVrConfig().getVrcOSC(),
 			shareTrackers
 		);
+
+		// Initialize OSC router
+		FastList<OSCHandler> oscHandlers = new FastList<>();
+		oscHandlers.add(vrcOSCHandler);
+		oscRouter = new OSCRouter(getConfigManager().getVrConfig().getOscRouter(), oscHandlers);
 
 		bvhRecorder = new BVHRecorder(this);
 
@@ -233,7 +271,7 @@ public class VRServer extends Thread {
 			for (Bridge bridge : bridges) {
 				bridge.dataWrite();
 			}
-			VRCOSCHandler.update();
+			vrcOSCHandler.update();
 			// final long time = System.currentTimeMillis() - start;
 			try {
 				Thread.sleep(1); // 1000Hz
@@ -372,8 +410,12 @@ public class VRServer extends Thread {
 		return trackersServer;
 	}
 
-	public VRCOSCHandler getVRCOSCHandler() {
-		return VRCOSCHandler;
+	public OSCRouter getOSCRouter() {
+		return oscRouter;
+	}
+
+	public VRCOSCHandler getVrcOSCHandler() {
+		return vrcOSCHandler;
 	}
 
 	public DeviceManager getDeviceManager() {

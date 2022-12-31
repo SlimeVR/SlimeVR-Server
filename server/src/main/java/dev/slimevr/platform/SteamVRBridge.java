@@ -76,7 +76,7 @@ public abstract class SteamVRBridge extends ProtobufBridge<VRTracker> implements
 					removeSharedTracker(tr);
 				}
 				config.setBridgeTrackerRole(role, share);
-				Main.vrServer.getConfigManager().saveConfig();
+				Main.getVrServer().getConfigManager().saveConfig();
 			}
 		}
 	}
@@ -85,7 +85,8 @@ public abstract class SteamVRBridge extends ProtobufBridge<VRTracker> implements
 	@VRServerThread
 	protected VRTracker createNewTracker(ProtobufMessages.TrackerAdded trackerAdded) {
 		// Todo: We need the manufacturer
-		Device device = Main.vrServer
+		Device device = Main
+			.getVrServer()
 			.getDeviceManager()
 			.createDevice(
 				trackerAdded.getTrackerName(),
@@ -103,7 +104,7 @@ public abstract class SteamVRBridge extends ProtobufBridge<VRTracker> implements
 		);
 
 		device.getTrackers().add(tracker);
-		Main.vrServer.getDeviceManager().addDevice(device);
+		Main.getVrServer().getDeviceManager().addDevice(device);
 		TrackerRole role = TrackerRole.getById(trackerAdded.getTrackerRole());
 		if (role != null) {
 			tracker.setBodyPosition(TrackerPosition.getByTrackerRole(role).orElse(null));

@@ -1,43 +1,78 @@
 import i18next from 'i18next';
+import Fluent from 'i18next-fluent';
+// @ts-expect-error - this package doesn't contain typings but we dont need it
+import Backend from 'i18next-fluent-backend';
+import LanguageDetector from 'i18next-browser-languagedetector';
 import { initReactI18next } from 'react-i18next';
-import en from './en/translation.json';
-import fr from './fr/translation.json';
-import owo from './owo/translation.json';
 
-export const defaultNS = 'tanslations';
+export const defaultNS = 'translation';
 
 export const langs = [
   {
-    name: 'English',
+    name: '🇺🇸 English',
     key: 'en',
   },
   {
-    name: 'Français',
+    name: '🌎 Español Latinoamericano',
+    key: 'es-419'
+  },
+  {
+    name: '🇫🇷 Français',
     key: 'fr',
   },
   {
-    name: 'Engwish~ (OwO)',
-    key: 'owo',
+    name: '🇮🇹 Italiano',
+    key: 'it',
+  },
+  {
+    name: '🇯🇵 日本語',
+    key: 'ja',
+  },
+  {
+    name: '🇰🇷 한국어',
+    key: 'ko',
+  },
+  {
+    name: '🇵🇱 Polski',
+    key: 'pl',
+  },
+  {
+    name: '🇧🇷 Português Brasileiro',
+    key: 'pt-BR',
+  },
+  {
+    name: '🇻🇳 Tiếng Việt',
+    key: 'vi',
+  },
+  {
+    name: '🇨🇳 简体中文',
+    key: 'zh-Hans',
+  },
+  {
+    name: '🥺 Engwish~ OwO',
+    key: 'en-OwO',
   },
 ];
 
-export const resources = {
-  en: {
-    tanslations: en,
-  },
-  fr: {
-    tanslations: fr,
-  },
-  owo: {
-    tanslations: owo,
-  },
-};
+i18next
+  .use(Fluent)
+  .use(Backend)
+  .use(LanguageDetector)
+  .use(initReactI18next)
+  .init({
+    fallbackLng: 'en',
+    defaultNS,
+    backend: {
+      loadPath: '/i18n/{{lng}}/{{ns}}.ftl',
+    },
+  });
 
-i18next.use(initReactI18next).init({
-  lng: 'en', // if you're using a language detector, do not define the lng option
-  resources,
-  fallbackLng: 'en',
-  defaultNS,
-});
+if (import.meta.hot) {
+  // detect hot reload translation file changes
+  import.meta.hot.on('locales-update', async () => {
+    await i18next.reloadResources();
+    await i18next.changeLanguage(i18next.language);
+  });
+}
 
 export default i18next;

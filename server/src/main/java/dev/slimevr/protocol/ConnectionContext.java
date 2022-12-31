@@ -18,7 +18,6 @@ public class ConnectionContext {
 
 	private final List<Integer> subscribedTopics = new ArrayList<>();
 
-
 	private boolean useSerial = false;
 	private boolean useAutoBone = false;
 
@@ -28,6 +27,11 @@ public class ConnectionContext {
 
 	public List<Long> getDataFeedTimers() {
 		return dataFeedTimers;
+	}
+
+	public void clearDataFeeds() {
+		this.dataFeedConfigList.clear();
+		this.dataFeedTimers.clear();
 	}
 
 	public List<Integer> getSubscribedTopics() {

@@ -63,7 +63,7 @@ export function Navbar() {
     <div className="flex flex-col px-2 pt-2">
       <div className="flex flex-col flex-grow gap-2">
         <NavButton to="/" icon={<CubeIcon></CubeIcon>}>
-          {t('navbar.home')}
+          {t('navbar-home')}
         </NavButton>
         <NavButton
           to="/onboarding/body-proportions/auto"
@@ -71,14 +71,14 @@ export function Navbar() {
           state={{ alonePage: true }}
           icon={<GearIcon></GearIcon>}
         >
-          {t('navbar.body-proportions')}
+          {t('navbar-body_proportions')}
         </NavButton>
         <NavButton
           to="/onboarding/trackers-assign"
           state={{ alonePage: true }}
           icon={<GearIcon></GearIcon>}
         >
-          {t('navbar.trackers-assign')}
+          {t('navbar-trackers_assign')}
         </NavButton>
         <NavButton
           to="/onboarding/mounting/auto"
@@ -86,10 +86,10 @@ export function Navbar() {
           state={{ alonePage: true }}
           icon={<GearIcon></GearIcon>}
         >
-          {t('navbar.mounting')}
+          {t('navbar-mounting')}
         </NavButton>
         <NavButton to="/onboarding/home" icon={<GearIcon></GearIcon>}>
-          {t('navbar.onboarding')}
+          {t('navbar-onboarding')}
         </NavButton>
       </div>
       <NavButton
@@ -98,7 +98,7 @@ export function Navbar() {
         state={{ scrollTo: 'steamvr' }}
         icon={<GearIcon></GearIcon>}
       >
-        {t('navbar.settings')}
+        {t('navbar-settings')}
       </NavButton>
     </div>
   );

@@ -9,9 +9,10 @@ use std::path::PathBuf;
 use std::process::{Child, Stdio};
 
 use clap::Parser;
-use clap_verbosity_flag::{InfoLevel, Verbosity};
+use const_format::concatcp;
 use rand::{seq::SliceRandom, thread_rng};
-use tauri::api::{clap, process::Command};
+use shadow_rs::shadow;
+use tauri::api::process::Command;
 use tauri::Manager;
 use tempfile::Builder;
 use which::which_all;
@@ -21,11 +22,7 @@ use which::which_all;
 const CREATE_NO_WINDOW: u32 = 0x0800_0000;
 /// It's an i32 because we check it through exit codes of the process
 const MINIMUM_JAVA_VERSION: i32 = 17;
-const JAVA_BIN: &str = if cfg!(windows) {
-	"java.exe"
-} else {
-	"java"
-};
+const JAVA_BIN: &str = if cfg!(windows) { "java.exe" } else { "java" };
 static POSSIBLE_TITLES: &[&str] = &[
 	"Panicking situation",
 	"looking for spatula",
@@ -33,23 +30,31 @@ static POSSIBLE_TITLES: &[&str] = &[
 	"never gonna let you down",
 	"uwu sowwy",
 ];
+shadow!(build);
+// Tauri has a way to return the package.json version, but it's not a constant...
+const VERSION: &str = if build::TAG.is_empty() {
+	build::SHORT_COMMIT
+} else {
+	build::TAG
+};
+const MODIFIED: &str = if build::GIT_CLEAN { "" } else { "-dirty" };
 
-#[derive(Parser)]
-#[clap(version, about)]
+#[derive(Debug, Parser)]
+#[clap(
+	version = concatcp!(VERSION, MODIFIED),
+	about
+)]
 struct Cli {
 	#[clap(short, long)]
 	display_console: bool,
 	#[clap(long)]
 	launch_from_path: Option<PathBuf>,
 	#[clap(flatten)]
-	verbosity: Verbosity<InfoLevel>,
+	verbose: clap_verbosity_flag::Verbosity,
 }
 
 fn is_valid_path(path: &PathBuf) -> bool {
-	// Might need to be changed in the future, at least for linux
-	let server_path = path.join("slimevr.jar");
-
-	return server_path.exists();
+	path.join("slimevr.jar").exists()
 }
 
 fn get_launch_path(cli: Cli) -> Option<PathBuf> {
@@ -59,15 +64,28 @@ fn get_launch_path(cli: Cli) -> Option<PathBuf> {
 		}
 	}
 
-	let mut path = env::current_dir().unwrap();
+	let path = env::current_dir().unwrap();
 	if is_valid_path(&path) {
 		return Some(path);
 	}
 
-	path = PathBuf::from(env!("CARGO_MANIFEST_DIR"));
+	let path = PathBuf::from(env!("CARGO_MANIFEST_DIR"));
 	if is_valid_path(&path) {
 		return Some(path);
 	}
+
+    let path = PathBuf::from("/usr/share/slimevr/");
+    if is_valid_path(&path) {
+        return Some(path);
+    }
+
+    // This is only for AppImage
+    if let Some(appimage) = env::var_os("APPDIR") {
+        let path = PathBuf::from(appimage);
+        if is_valid_path(&path) {
+            return Some(path);
+        }
+    }
 
 	None
 }

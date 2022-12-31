@@ -11,25 +11,50 @@ import dev.slimevr.vr.processor.skeleton.SkeletonConfig;
 import dev.slimevr.vr.processor.skeleton.SkeletonConfigToggles;
 import dev.slimevr.vr.processor.skeleton.SkeletonConfigValues;
 import dev.slimevr.vr.trackers.TrackerRole;
-import solarxr_protocol.rpc.FilteringSettings;
-import solarxr_protocol.rpc.OSCTrackersSetting;
-import solarxr_protocol.rpc.SteamVRTrackersSetting;
-import solarxr_protocol.rpc.TapDetectionSettings;
-import solarxr_protocol.rpc.VRCOSCSettings;
+import solarxr_protocol.rpc.*;
+import solarxr_protocol.rpc.settings.LegTweaksSettings;
 import solarxr_protocol.rpc.settings.ModelRatios;
 import solarxr_protocol.rpc.settings.ModelSettings;
 import solarxr_protocol.rpc.settings.ModelToggles;
-import solarxr_protocol.rpc.settings.LegTweaksSettings;
 
 
 public class RPCSettingsBuilder {
 
-	public static int createOSCSettings(
+	public static int createOSCRouterSettings(
 		FlatBufferBuilder fbb,
 		OSCConfig config
 	) {
+		int addressStringOffset = fbb.createString(config.getAddress());
 
-		int trackersSettingOffset = OSCTrackersSetting
+		int oscSettingOffset = OSCSettings
+			.createOSCSettings(
+				fbb,
+				config.getEnabled(),
+				config.getPortIn(),
+				config.getPortOut(),
+				addressStringOffset
+			);
+
+		OSCRouterSettings.startOSCRouterSettings(fbb);
+		OSCRouterSettings.addOscSettings(fbb, oscSettingOffset);
+
+		return OSCRouterSettings.endOSCRouterSettings(fbb);
+	}
+
+	public static int createVRCOSCSettings(
+		FlatBufferBuilder fbb,
+		OSCConfig config
+	) {
+		int addressStringOffset = fbb.createString(config.getAddress());
+		int generalSettingOffset = OSCSettings
+			.createOSCSettings(
+				fbb,
+				config.getEnabled(),
+				config.getPortIn(),
+				config.getPortOut(),
+				addressStringOffset
+			);
+		int oscSettingOffset = OSCTrackersSetting
 			.createOSCTrackersSetting(
 				fbb,
 				config.getOSCTrackerRole(TrackerRole.HEAD, false),
@@ -44,22 +69,10 @@ public class RPCSettingsBuilder {
 				config.getOSCTrackerRole(TrackerRole.LEFT_HAND, false)
 					&& config.getOSCTrackerRole(TrackerRole.RIGHT_HAND, false)
 			);
-
-		int addressStringOffset = fbb.createString(config.getAddress());
 		VRCOSCSettings.startVRCOSCSettings(fbb);
-		VRCOSCSettings.addEnabled(fbb, config.getEnabled());
-		VRCOSCSettings.addPortIn(fbb, config.getPortIn());
-		VRCOSCSettings.addPortOut(fbb, config.getPortOut());
-		VRCOSCSettings
-			.addAddress(
-				fbb,
-				addressStringOffset
-			);
-		VRCOSCSettings
-			.addTrackers(
-				fbb,
-				trackersSettingOffset
-			);
+		VRCOSCSettings.addOscSettings(fbb, generalSettingOffset);
+		VRCOSCSettings.addTrackers(fbb, oscSettingOffset);
+		VRCOSCSettings.addTrackers(fbb, oscSettingOffset);
 
 		return VRCOSCSettings.endVRCOSCSettings(fbb);
 	}
@@ -83,8 +96,15 @@ public class RPCSettingsBuilder {
 		return TapDetectionSettings
 			.createTapDetectionSettings(
 				fbb,
-				tapDetectionConfig.getDelay(),
-				tapDetectionConfig.getEnabled()
+				tapDetectionConfig.getResetDelay(),
+				tapDetectionConfig.getResetEnabled(),
+				tapDetectionConfig.getResetTaps(),
+				tapDetectionConfig.getQuickResetDelay(),
+				tapDetectionConfig.getQuickResetEnabled(),
+				tapDetectionConfig.getQuickResetTaps(),
+				tapDetectionConfig.getMountingResetDelay(),
+				tapDetectionConfig.getMountingResetEnabled(),
+				tapDetectionConfig.getMountingResetTaps()
 			);
 	}
 
@@ -122,7 +142,8 @@ public class RPCSettingsBuilder {
 				config.getToggle(SkeletonConfigToggles.EXTENDED_KNEE_MODEL),
 				config.getToggle(SkeletonConfigToggles.FORCE_ARMS_FROM_HMD),
 				config.getToggle(SkeletonConfigToggles.FLOOR_CLIP),
-				config.getToggle(SkeletonConfigToggles.SKATING_CORRECTION)
+				config.getToggle(SkeletonConfigToggles.SKATING_CORRECTION),
+				config.getToggle(SkeletonConfigToggles.VIVE_EMULATION)
 			);
 		int ratiosOffset = ModelRatios
 			.createModelRatios(
