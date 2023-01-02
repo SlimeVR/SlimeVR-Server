@@ -493,11 +493,13 @@ public class IMUTracker
 				}
 				// Make it so recent Quaternions weigh more
 				for (int i = driftWeights.size() - 1; i > 0; i--) {
+					// Add some of i-1's value to i
 					driftWeights
 						.set(
 							i,
 							driftWeights.get(i) + (driftWeights.get(i - 1) / driftWeights.size())
 						);
+					// Remove the value that was added to i from i-1
 					driftWeights
 						.set(
 							i - 1,
