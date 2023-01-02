@@ -1,7 +1,8 @@
-package dev.slimevr.vr.processor.skeleton;
+package dev.slimevr.tracking.processor.skeleton;
 
 import com.jme3.math.Quaternion;
 import com.jme3.math.Vector3f;
+
 import java.util.Random;
 
 
@@ -10,10 +11,10 @@ import java.util.Random;
 public class ViveEmulation {
 
 	// skeleton
-	private HumanSkeleton skeleton;
+	private final HumanSkeleton skeleton;
 
 	// random number generator
-	private Random random = new Random();
+	private final Random random = new Random();
 
 	// hyperparameters
 	private static final int CHANCE = (int) 1e5;

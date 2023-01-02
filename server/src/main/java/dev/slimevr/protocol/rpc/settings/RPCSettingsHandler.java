@@ -255,7 +255,7 @@ public record RPCSettingsHandler(RPCHandler rpcHandler, ProtocolAPI api) {
 						SkeletonConfigToggles.SKATING_CORRECTION,
 						toggles.skatingCorrection()
 					);
-				cfg.setToggle(SkeletonConfigToggles.VIVE_EMULATION, toggles.viveEmulation());
+				hpm.setToggle(SkeletonConfigToggles.VIVE_EMULATION, toggles.viveEmulation());
 			}
 
 			if (ratios != null) {
