@@ -41,23 +41,17 @@ body_part-LEFT_CONTROLLER = Control izquierdo
 skeleton_bone-NONE = Nada
 skeleton_bone-HEAD = Inclinación de cabeza
 skeleton_bone-NECK = Largo del cuello
-skeleton_bone-TORSO = Largo del torso
-skeleton_bone-CHEST = Distancia del pecho
-skeleton_bone-WAIST = Distancia de la cintura
 skeleton_bone-HIP_OFFSET = Desplazamiento de la cadera
 skeleton_bone-HIPS_WIDTH = Ancho de la cadera
-skeleton_bone-LEGS_LENGTH = Largo de las piernas
-skeleton_bone-KNEE_HEIGHT = Altura de las rodillas
 skeleton_bone-FOOT_LENGTH = Largo de pies
 skeleton_bone-FOOT_SHIFT = Desplazamiento de pies
 skeleton_bone-SKELETON_OFFSET = Desplazamiento del esqueleto
-skeleton_bone-CONTROLLER_DISTANCE_Z = Distancia Z del mando
-skeleton_bone-CONTROLLER_DISTANCE_Y = Distancia Y del mando
-skeleton_bone-FOREARM_LENGTH = Distancia del antebrazo
 skeleton_bone-SHOULDERS_DISTANCE = Distancia de los hombros
 skeleton_bone-SHOULDERS_WIDTH = Ancho de los hombros
 skeleton_bone-UPPER_ARM_LENGTH = Largo del brazo superior
-skeleton_bone-ELBOW_OFFSET = Desplazamiento del codo
+skeleton_bone-LOWER_ARM_LENGTH = Distancia del antebrazo
+skeleton_bone-CONTROLLER_Y = Distancia Y del mando
+skeleton_bone-CONTROLLER_Z = Distancia Z del mando
 
 ## Tracker reset buttons
 reset-reset_all = Reiniciar todas las proporciones

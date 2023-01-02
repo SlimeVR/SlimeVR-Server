@@ -41,23 +41,17 @@ body_part-LEFT_CONTROLLER = Left controller
 skeleton_bone-NONE = None
 skeleton_bone-HEAD = 머리 밀림
 skeleton_bone-NECK = 목 길이
-skeleton_bone-TORSO = 몸통 길이
-skeleton_bone-CHEST = 가슴 거리
-skeleton_bone-WAIST = 허리 거리
 skeleton_bone-HIP_OFFSET = 골반 오프셋
 skeleton_bone-HIPS_WIDTH = 골반 너비
-skeleton_bone-LEGS_LENGTH = 다리 길이
-skeleton_bone-KNEE_HEIGHT = 무릎 높이
 skeleton_bone-FOOT_LENGTH = 발 크기
 skeleton_bone-FOOT_SHIFT = 발 밀림
 skeleton_bone-SKELETON_OFFSET = 골격 오프셋
-skeleton_bone-CONTROLLER_DISTANCE_Z = 컨트롤러 Z축 거리
-skeleton_bone-CONTROLLER_DISTANCE_Y = 컨트롤러 Y축 거리
-skeleton_bone-FOREARM_LENGTH = 전완 길이
 skeleton_bone-SHOULDERS_DISTANCE = 어깨 거리
 skeleton_bone-SHOULDERS_WIDTH = 어깨 너비
 skeleton_bone-UPPER_ARM_LENGTH = 위팔 거리
-skeleton_bone-ELBOW_OFFSET = 팔꿈치 오프셋
+skeleton_bone-LOWER_ARM_LENGTH = 전완 길이
+skeleton_bone-CONTROLLER_Y = 컨트롤러 Y축 거리
+skeleton_bone-CONTROLLER_Z = 컨트롤러 Z축 거리
 
 ## Tracker reset buttons
 reset-reset_all = 모든 신체 비율 리셋

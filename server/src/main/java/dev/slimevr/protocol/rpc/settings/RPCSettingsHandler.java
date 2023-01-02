@@ -49,6 +49,7 @@ public record RPCSettingsHandler(RPCHandler rpcHandler, ProtocolAPI api) {
 						fbb,
 						this.api.server.getConfigManager().getVrConfig().getFilters()
 					),
+				0,
 				RPCSettingsBuilder
 					.createOSCRouterSettings(
 						fbb,

@@ -90,7 +90,7 @@ public class DataFeedBuilder {
 		if (tracker.getBodyPosition() != null)
 			TrackerInfo.addBodyPart(fbb, tracker.getBodyPosition().bodyPart);
 		TrackerInfo.addEditable(fbb, tracker.userEditable());
-		TrackerInfo.addComputed(fbb, tracker.isComputed());
+		TrackerInfo.addIsComputed(fbb, tracker.isComputed());
 		TrackerInfo.addDisplayName(fbb, displayNameOffset);
 		TrackerInfo.addCustomName(fbb, customNameOffset);
 

@@ -41,23 +41,17 @@ body_part-LEFT_CONTROLLER = 左コントローラ
 skeleton_bone-NONE = 無し
 skeleton_bone-HEAD = ヘッドシフト
 skeleton_bone-NECK = 首長さ
-skeleton_bone-TORSO = 胴長さ
-skeleton_bone-CHEST = 胸部の距離
-skeleton_bone-WAIST = 腰部の距離
 skeleton_bone-HIP_OFFSET = ヒップオフセット
 skeleton_bone-HIPS_WIDTH = ヒップ幅
-skeleton_bone-LEGS_LENGTH = 脚長さ
-skeleton_bone-KNEE_HEIGHT = 膝高さ
 skeleton_bone-FOOT_LENGTH = 足先長さ
 skeleton_bone-FOOT_SHIFT = 足先シフト
 skeleton_bone-SKELETON_OFFSET = スケルトンオフセット
-skeleton_bone-CONTROLLER_DISTANCE_Z = コントローラ距離 Z
-skeleton_bone-CONTROLLER_DISTANCE_Y = コントローラ距離 Y
-skeleton_bone-FOREARM_LENGTH = 前腕長さ
 skeleton_bone-SHOULDERS_DISTANCE = 肩の距離
 skeleton_bone-SHOULDERS_WIDTH = 肩幅
 skeleton_bone-UPPER_ARM_LENGTH = 上腕長さ
-skeleton_bone-ELBOW_OFFSET = 肘オフセット
+skeleton_bone-LOWER_ARM_LENGTH = 前腕長さ
+skeleton_bone-CONTROLLER_Y = コントローラ距離 Y
+skeleton_bone-CONTROLLER_Z = コントローラ距離 Z
 
 ## Tracker reset buttons
 reset-reset_all = すべてのプロポーションをリセット

@@ -41,23 +41,17 @@ body_part-LEFT_CONTROLLER = Left controller
 skeleton_bone-NONE = Non assegnato
 skeleton_bone-HEAD = Correzione Testa
 skeleton_bone-NECK = Lunghezza Collo
-skeleton_bone-TORSO = Torso Lunghezza
-skeleton_bone-CHEST = Distanza Petto
-skeleton_bone-WAIST = Distanza Girovita
 skeleton_bone-HIP_OFFSET = Correzione Fianchi
 skeleton_bone-HIPS_WIDTH = Larghezza Fianchi
-skeleton_bone-LEGS_LENGTH = Lunghezza Gambe
-skeleton_bone-KNEE_HEIGHT = Altezza Ginocchia
 skeleton_bone-FOOT_LENGTH = Lunghezza Piedi
 skeleton_bone-FOOT_SHIFT = Correzione Piedi
 skeleton_bone-SKELETON_OFFSET = Compensazione scheletro
-skeleton_bone-CONTROLLER_DISTANCE_Z = Distanza Z Controller
-skeleton_bone-CONTROLLER_DISTANCE_Y = Distanza Y Controller
-skeleton_bone-FOREARM_LENGTH = Distanza Avambracci
 skeleton_bone-SHOULDERS_DISTANCE = Distanza Spalle
 skeleton_bone-SHOULDERS_WIDTH = Larghezza Spalle
 skeleton_bone-UPPER_ARM_LENGTH = Lunghezza Braccia
-skeleton_bone-ELBOW_OFFSET = Correzione Gomito
+skeleton_bone-LOWER_ARM_LENGTH = Distanza Avambracci
+skeleton_bone-CONTROLLER_Y = Distanza Y Controller
+skeleton_bone-CONTROLLER_Z = Distanza Z Controller
 
 ## Tracker reset buttons
 reset-reset_all = Ripristina tutte le proporzioni

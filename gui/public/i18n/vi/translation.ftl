@@ -41,23 +41,17 @@ body_part-LEFT_CONTROLLER = Left controller
 skeleton_bone-NONE = Chưa liên kết
 skeleton_bone-HEAD = Đầu ca
 skeleton_bone-NECK = Cổ dài
-skeleton_bone-TORSO = Chiều dài thân
-skeleton_bone-CHEST = Khoảng cách ngực
-skeleton_bone-WAIST = Khoảng cách eo
 skeleton_bone-HIP_OFFSET = Lệc đo hông
 skeleton_bone-HIPS_WIDTH = Chiều rộng hông
-skeleton_bone-LEGS_LENGTH = Chiều dài chân
-skeleton_bone-KNEE_HEIGHT = Chiều cao đầu gối
 skeleton_bone-FOOT_LENGTH = CHiều dài bàn chân
 skeleton_bone-FOOT_SHIFT = Lệch đo bàn chân
 skeleton_bone-SKELETON_OFFSET = Lệch đo thân
-skeleton_bone-CONTROLLER_DISTANCE_Z = Khoảng cách tay cầm Z
-skeleton_bone-CONTROLLER_DISTANCE_Y = Khoảng cách tay cầm Y
-skeleton_bone-FOREARM_LENGTH = khoảng cách cánh tay
 skeleton_bone-SHOULDERS_DISTANCE = Khoảng cách vai
 skeleton_bone-SHOULDERS_WIDTH = Chiều rộng vai
 skeleton_bone-UPPER_ARM_LENGTH = Chiều dài tay trên
-skeleton_bone-ELBOW_OFFSET = Lệch đo khuỷu tay
+skeleton_bone-LOWER_ARM_LENGTH = khoảng cách cánh tay
+skeleton_bone-CONTROLLER_Y = Khoảng cách tay cầm Y
+skeleton_bone-CONTROLLER_Z = Khoảng cách tay cầm Z
 
 ## Tracker reset buttons
 reset-reset_all = Reset tất cả bộ phận

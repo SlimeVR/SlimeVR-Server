@@ -77,6 +77,7 @@ export function VerifyResultsStep({
                 </Typography>
               )}
             </div>
+            <div></div>
           </div>
         </div>
         <div className="flex gap-2">
