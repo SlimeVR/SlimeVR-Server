@@ -270,13 +270,28 @@ public class IMUTracker
 		return true;
 	}
 
-	public boolean getUnfilteredRotation(Quaternion store) {
-		store.set(rotQuaternion);
+	public Quaternion getAdjustedRawRotation() {
+		Quaternion rot = new Quaternion(rotQuaternion);
 		// correction.mult(store, store); // Correction is not used now to
 		// prevent accidental errors while debugging other things
-		store.multLocal(mountAdjust);
-		adjustInternal(store);
-		return true;
+		rot.multLocal(mountAdjust);
+		adjustInternal(rot);
+		return rot;
+	}
+
+	private Quaternion getMountedAdjustedRotation() {
+		Quaternion rot = new Quaternion(rotQuaternion);
+		rot.multLocal(mountAdjust);
+		if ((compensateDrift && allowDriftCompensation) && totalDriftTime > 0) {
+			rot
+				.slerpLocal(
+					rot.mult(averagedDriftQuat),
+					driftAmount
+						* ((float) (System.currentTimeMillis() - driftSince)
+							/ totalDriftTime)
+				);
+		}
+		return rot;
 	}
 
 	public void getCorrection(Quaternion store) {
@@ -340,8 +355,7 @@ public class IMUTracker
 	 */
 	@Override
 	public void resetFull(Quaternion reference) {
-		Quaternion rot = new Quaternion();
-		getUnfilteredRotation(rot);
+		Quaternion rot = getAdjustedRawRotation();
 		fixGyroscope(getMountedAdjustedRotation());
 		fixAttachment(getMountedAdjustedRotation());
 		fixYaw(reference);
@@ -358,8 +372,7 @@ public class IMUTracker
 	 */
 	@Override
 	public void resetYaw(Quaternion reference) {
-		Quaternion rot = new Quaternion();
-		getUnfilteredRotation(rot);
+		Quaternion rot = getAdjustedRawRotation();
 		fixYaw(reference);
 		calibrateMag();
 		calculateDrift(rot);
@@ -370,10 +383,6 @@ public class IMUTracker
 		store.multLocal(attachmentFix);
 		store.multLocal(mountRotFix);
 		yawFix.mult(store, store);
-	}
-
-	private Quaternion getMountedAdjustedRotation() {
-		return rotQuaternion.mult(mountAdjust);
 	}
 
 	private void fixGyroscope(Quaternion sensorRotation) {
@@ -446,8 +455,8 @@ public class IMUTracker
 	 */
 	synchronized public void calculateDrift(Quaternion beforeQuat) {
 		if (compensateDrift && allowDriftCompensation) {
-			Quaternion rotQuat = new Quaternion();
-			getUnfilteredRotation(rotQuat);
+			Quaternion rotQuat = getAdjustedRawRotation();
+
 			if (
 				driftSince > 0
 					&& System.currentTimeMillis() - timeAtLastReset > DRIFT_COOLDOWN_MS
