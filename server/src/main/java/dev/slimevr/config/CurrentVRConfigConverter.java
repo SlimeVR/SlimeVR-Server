@@ -96,6 +96,7 @@ public class CurrentVRConfigConverter implements VersionedModelConverter {
 					ObjectNode node = (ObjectNode) trackersIter.next();
 					fieldName = fieldNamesIter.next();
 					node.set("mountingOrientation", node.get("mountingRotation"));
+					node.remove("mountingRotation");
 					trackersNode.set(fieldName, node);
 				}
 				modelData.set("trackers", trackersNode);
