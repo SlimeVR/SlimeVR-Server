@@ -1,6 +1,6 @@
 {
   "package": {
-    "productName": "SlimeVR",
+    "productName": "slimevr",
     "version": "../package.json"
   },
   "build": {
