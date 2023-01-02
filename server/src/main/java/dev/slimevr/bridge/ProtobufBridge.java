@@ -167,7 +167,7 @@ public abstract class ProtobufBridge<T extends VRTracker> implements Bridge {
 		if (trackerAdded.getTrackerRole() == TrackerRole.HMD.id) {
 			hmdTracker = tracker;
 		} else {
-			Main.vrServer.registerTracker(tracker);
+			Main.getVrServer().registerTracker(tracker);
 		}
 	}
 
@@ -179,10 +179,10 @@ public abstract class ProtobufBridge<T extends VRTracker> implements Bridge {
 					.warning("[" + bridgeName + "] Received deprecated user action 'calibrate'!");
 			case "reset":
 				// TODO : Check pose field
-				Main.vrServer.resetTrackers();
+				Main.getVrServer().resetTrackers();
 				break;
 			case "fast_reset":
-				Main.vrServer.resetTrackersYaw();
+				Main.getVrServer().resetTrackersYaw();
 				break;
 		}
 	}

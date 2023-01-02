@@ -17,6 +17,7 @@ body_part-RIGHT_HAND = Tay phải
 body_part-RIGHT_UPPER_LEG = Chân phải trên
 body_part-RIGHT_LOWER_LEG = chân phải dưới
 body_part-RIGHT_FOOT = Bàn chân phải
+body_part-RIGHT_CONTROLLER = Right controller
 body_part-CHEST = Ngực
 body_part-WAIST = Eo
 body_part-HIP = Hông
@@ -27,6 +28,7 @@ body_part-LEFT_HAND = Tay trái
 body_part-LEFT_UPPER_LEG = Chân trái trên
 body_part-LEFT_LOWER_LEG = Chân trái dưới
 body_part-LEFT_FOOT = Bàn chân trái
+body_part-LEFT_CONTROLLER = Left controller
 
 ## Skeleton stuff
 skeleton_bone-NONE = Chưa liên kết

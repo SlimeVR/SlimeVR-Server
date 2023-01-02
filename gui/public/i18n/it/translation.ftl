@@ -17,6 +17,7 @@ body_part-RIGHT_HAND = Mano destra
 body_part-RIGHT_UPPER_LEG = Coscia destra
 body_part-RIGHT_LOWER_LEG = Caviglia destra
 body_part-RIGHT_FOOT = Piede destro
+body_part-RIGHT_CONTROLLER = Right controller
 body_part-CHEST = Petto
 body_part-WAIST = Girovita
 body_part-HIP = Fianchi
@@ -27,6 +28,7 @@ body_part-LEFT_HAND = Mano sinistra
 body_part-LEFT_UPPER_LEG = Coscia sinistra
 body_part-LEFT_LOWER_LEG = Caviglia sinistra
 body_part-LEFT_FOOT = Piede sinistro
+body_part-LEFT_CONTROLLER = Left controller
 
 ## Skeleton stuff
 skeleton_bone-NONE = Non assegnato

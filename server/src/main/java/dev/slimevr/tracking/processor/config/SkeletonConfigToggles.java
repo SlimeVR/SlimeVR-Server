@@ -11,7 +11,8 @@ public enum SkeletonConfigToggles {
 	EXTENDED_KNEE_MODEL(3, "Extended knee model", "extendedKnee", true),
 	FORCE_ARMS_FROM_HMD(4, "Force arms from HMD", "forceArmsFromHMD", true),
 	FLOOR_CLIP(5, "Floor clip", "floorClip", true),
-	SKATING_CORRECTION(6, "Skating correction", "skatingCorrection", true),;
+	SKATING_CORRECTION(6, "Skating correction", "skatingCorrection", true),
+	VIVE_EMULATION(7, "Vive emulation", "viveEmulation", false),;
 
 	public static final SkeletonConfigToggles[] values = values();
 	private static final Map<String, SkeletonConfigToggles> byStringVal = new HashMap<>();

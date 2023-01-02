@@ -17,6 +17,7 @@ body_part-RIGHT_HAND = Main droite
 body_part-RIGHT_UPPER_LEG = Cuisse droite
 body_part-RIGHT_LOWER_LEG = Cheville droite
 body_part-RIGHT_FOOT = Pied droit
+body_part-RIGHT_CONTROLLER = Right controller
 body_part-CHEST = Poitrine
 body_part-WAIST = Taille
 body_part-HIP = Hanche
@@ -27,6 +28,7 @@ body_part-LEFT_HAND = Main gauche
 body_part-LEFT_UPPER_LEG = Cuisse gauche
 body_part-LEFT_LOWER_LEG = Cheville gauche
 body_part-LEFT_FOOT = Pied gauche
+body_part-LEFT_CONTROLLER = Left controller
 
 ## Skeleton stuff
 skeleton_bone-NONE = Aucun

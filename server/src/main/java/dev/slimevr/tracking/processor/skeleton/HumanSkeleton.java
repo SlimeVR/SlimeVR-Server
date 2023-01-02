@@ -144,6 +144,10 @@ public class HumanSkeleton {
 	protected TapDetectionManager tapDetectionManager = new TapDetectionManager(this);
 	// #endregion
 
+	// #region Vive emulation
+	protected ViveEmulation viveEmulation = new ViveEmulation(this);
+	// #endregion
+
 	// #region Constructors
 	protected HumanSkeleton(
 		HumanPoseManager humanPoseManager
@@ -763,6 +767,7 @@ public class HumanSkeleton {
 		updateRootTrackers();
 		updateComputedTrackers();
 		tweakLegPos();
+		viveEmulation.update();
 	}
 	// #endregion
 
@@ -1318,6 +1323,7 @@ public class HumanSkeleton {
 			}
 			case SKATING_CORRECTION -> legTweaks.setSkatingReductionEnabled(newValue);
 			case FLOOR_CLIP -> legTweaks.setFloorclipEnabled(newValue);
+			case VIVE_EMULATION -> viveEmulation.setEnabled(newValue);
 		}
 	}
 

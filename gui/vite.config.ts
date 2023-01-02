@@ -1,6 +1,6 @@
 import { esbuildCommonjs, viteCommonjs } from '@originjs/vite-plugin-commonjs';
 import react from '@vitejs/plugin-react';
-import { defineConfig } from 'vite';
+import { defineConfig, PluginOption } from 'vite';
 import { execSync } from 'child_process';
 
 const commitHash = execSync('git rev-parse --verify --short HEAD')
@@ -16,6 +16,22 @@ console.log(
   `version is ${versionTag || commitHash}${gitClean ? '' : '-dirty'}`
 );
 
+// Detect fluent file changes
+export function i18nHotReload(): PluginOption {
+  return {
+    name: 'i18n-hot-reload',
+    handleHotUpdate({ file, server }) {
+      if (file.endsWith('.ftl')) {
+        console.log('Fluent files updated');
+        server.ws.send({
+          type: 'custom',
+          event: 'locales-update',
+        });
+      }
+    },
+  };
+}
+
 // https://vitejs.dev/config/
 export default defineConfig({
   define: {
@@ -23,7 +39,7 @@ export default defineConfig({
     __VERSION_TAG__: JSON.stringify(versionTag),
     __GIT_CLEAN__: gitClean,
   },
-  plugins: [viteCommonjs(), react()],
+  plugins: [viteCommonjs(), react(), i18nHotReload()],
   build: {
     target: 'es2020',
     emptyOutDir: true,

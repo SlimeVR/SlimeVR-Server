@@ -366,6 +366,18 @@ public class SkeletonConfigManager {
 				.remove(value.configKey);
 			// Set default in skeleton
 			humanPoseManager.setToggle(value, value.defaultValue);
+					
+			// Remove from config to use default if they change in the future.
+			Arrays.fill(changedToggles, false);
+			for (SkeletonConfigToggles value : SkeletonConfigToggles.values) {
+				Main
+					.getVrServer()
+					.getConfigManager()
+					.getVrConfig()
+					.getSkeleton()
+					.getToggles()
+					.remove(value.configKey);
+				}
 		}
 	}
 
@@ -382,7 +394,8 @@ public class SkeletonConfigManager {
 		// Remove from config to use default if they change in the future.
 		Arrays.fill(changedValues, false);
 		for (SkeletonConfigValues value : SkeletonConfigValues.values) {
-			Main.vrServer
+			Main
+				.getVrServer()
 				.getConfigManager()
 				.getVrConfig()
 				.getSkeleton()
@@ -528,7 +541,8 @@ public class SkeletonConfigManager {
 	}
 
 	public void save() {
-		dev.slimevr.config.SkeletonConfig skeletonConfig = Main.vrServer
+		dev.slimevr.config.SkeletonConfig skeletonConfig = Main
+			.getVrServer()
 			.getConfigManager()
 			.getVrConfig()
 			.getSkeleton();
