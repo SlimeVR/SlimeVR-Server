@@ -482,7 +482,7 @@ public class IMUTracker
 				for (Long time : driftTimes) {
 					driftWeights.add(((float) time) / ((float) totalDriftTime));
 				}
-				// Make it so recent Quaternions weight more
+				// Make it so recent Quaternions weigh more
 				for (int i = driftWeights.size() - 1; i > 0; i--) {
 					driftWeights
 						.set(
@@ -536,7 +536,7 @@ public class IMUTracker
 				for (Long time : driftTimes) {
 					driftWeights.add(((float) time) / ((float) totalDriftTime));
 				}
-				// Make it so recent Quaternions weight more
+				// Make it so recent Quaternions weigh more
 				for (int i = driftWeights.size() - 1; i > 0; i--) {
 					driftWeights
 						.set(
