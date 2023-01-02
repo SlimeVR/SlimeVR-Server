@@ -64,7 +64,7 @@ export function TrackerSettingsPage() {
 
     const assignreq = new AssignTrackerRequestT();
 
-    assignreq.mountingRotation = QuaternionToQuatT(
+    assignreq.mountingOrientation = QuaternionToQuatT(
       Quaternion.fromEuler(
         0,
         0,
@@ -108,9 +108,10 @@ export function TrackerSettingsPage() {
       return;
     const assignreq = new AssignTrackerRequestT();
     assignreq.bodyPosition = tracker?.tracker.info?.bodyPart || BodyPart.NONE;
-    assignreq.mountingRotation = assignreq.mountingRotation = QuaternionToQuatT(
-      Quaternion.fromEuler(0, 0, FixEuler(+currRotation) * DEG_TO_RAD, 'XZY')
-    );
+    assignreq.mountingOrientation = assignreq.mountingOrientation =
+      QuaternionToQuatT(
+        Quaternion.fromEuler(0, 0, FixEuler(+currRotation) * DEG_TO_RAD, 'XZY')
+      );
     assignreq.displayName = trackerName;
     assignreq.trackerId = tracker?.tracker.trackerId;
     assignreq.allowDriftCompensation = allowDriftCompensation;
