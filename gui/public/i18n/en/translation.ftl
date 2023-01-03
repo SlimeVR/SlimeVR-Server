@@ -230,7 +230,8 @@ settings-general-tracker_mechanics-filtering-type-prediction = Prediction
 settings-general-tracker_mechanics-filtering-type-prediction-description = Reduces latency and makes movements more snappy, but may increase jitter.
 settings-general-tracker_mechanics-filtering-amount = Amount
 settings-general-tracker_mechanics-drift_compensation = Drift compensation
-settings-general-tracker_mechanics-drift_compensation-description = 
+# This cares about multilines
+settings-general-tracker_mechanics-drift_compensation-description =
     Compensates IMU yaw drift by applying an inverse rotation.
     Change amount of compensation and up to how many resets are taken into account.
 settings-general-tracker_mechanics-drift_compensation-enabled-label = Drift compensation

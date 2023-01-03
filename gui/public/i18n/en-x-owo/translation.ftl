@@ -230,6 +230,7 @@ settings-general-tracker_mechanics-filtering-type-prediction = pwediction~
 settings-general-tracker_mechanics-filtering-type-prediction-description = wowduces wowcyancy and makes wowvements mowe wowappy, but may incwease jiwitty
 settings-general-tracker_mechanics-filtering-amount = amownt
 settings-general-tracker_mechanics-drift_compensation = dwift compensation
+# This cares about multilines
 settings-general-tracker_mechanics-drift_compensation-description =
     compensates imu yaw dwift by appwying an invewse wotation.
     change amownt of compensation and how many wesets awe taken into accouwnt.

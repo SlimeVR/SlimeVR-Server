@@ -230,6 +230,7 @@ settings-general-tracker_mechanics-filtering-type-prediction = Prédiction
 settings-general-tracker_mechanics-filtering-type-prediction-description = Réduit la latence et rend les mouvements plus vifs, mais moins fluides.
 settings-general-tracker_mechanics-filtering-amount = Intensité du filtrage
 settings-general-tracker_mechanics-drift_compensation = Compensation de la dérive
+# This cares about multilines
 settings-general-tracker_mechanics-drift_compensation-description =
     Compense la dérive des gyroscopes en appliquant une rotation inverse.
     Modifier la force de la compensation et le nombre de réinitialisations prises en compte.

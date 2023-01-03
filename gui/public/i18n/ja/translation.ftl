@@ -128,6 +128,9 @@ tracker-settings-assignment_section-edit = 割り当ての編集
 tracker-settings-mounting_section = 装着方向
 tracker-settings-mounting_section-description = トラッカーをどの方向に装着していますか?
 tracker-settings-mounting_section-edit = 装着向きの編集
+tracker-settings-drift_compensation_section = Allow drift compensation
+tracker-settings-drift_compensation_section-description = Should this tracker compensate for its drift when drift compensation is enabled?
+tracker-settings-drift_compensation_section-edit = Allow drift compensation
 # The .<name> means it's an attribute and it's related to the top key.
 # In this case that is the settings for the assignment section.
 tracker-settings-name_section = トラッカー名称
@@ -226,6 +229,14 @@ settings-general-tracker_mechanics-filtering-type-smoothing-description = 動き
 settings-general-tracker_mechanics-filtering-type-prediction = Prediction
 settings-general-tracker_mechanics-filtering-type-prediction-description = レイテンシーを減らし、動きをよりキビキビさせますが、ジッターが増加する場合があります。
 settings-general-tracker_mechanics-filtering-amount = 数値
+settings-general-tracker_mechanics-drift_compensation = Drift compensation
+# This cares about multilines
+settings-general-tracker_mechanics-drift_compensation-description =
+    Compensates IMU yaw drift by applying an inverse rotation.
+    Change amount of compensation and up to how many resets are taken into account.
+settings-general-tracker_mechanics-drift_compensation-enabled-label = Drift compensation
+settings-general-tracker_mechanics-drift_compensation-amount-label = Compensation amount
+settings-general-tracker_mechanics-drift_compensation-max_resets-label = Use up to x last resets
 
 ## FK settings
 settings-general-fk_settings = FK設定

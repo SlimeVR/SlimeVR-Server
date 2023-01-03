@@ -128,6 +128,9 @@ tracker-settings-assignment_section-edit = Chỉnh lại giao bộ phận
 tracker-settings-mounting_section = Vị trí đặt bộ phận
 tracker-settings-mounting_section-description = Tracker đặt ở đâu?
 tracker-settings-mounting_section-edit = Chỉnh lại chỗ đặt
+tracker-settings-drift_compensation_section = Allow drift compensation
+tracker-settings-drift_compensation_section-description = Should this tracker compensate for its drift when drift compensation is enabled?
+tracker-settings-drift_compensation_section-edit = Allow drift compensation
 # The .<name> means it's an attribute and it's related to the top key.
 # In this case that is the settings for the assignment section.
 tracker-settings-name_section = Tên tracker
@@ -226,6 +229,14 @@ settings-general-tracker_mechanics-filtering-type-smoothing-description = Lọc 
 settings-general-tracker_mechanics-filtering-type-prediction = Dự đoán
 settings-general-tracker_mechanics-filtering-type-prediction-description = Giảm chậm trê và để cử động gọn hơn, nhưng có thể tăng độ rung.
 settings-general-tracker_mechanics-filtering-amount = Số luọng
+settings-general-tracker_mechanics-drift_compensation = Drift compensation
+# This cares about multilines
+settings-general-tracker_mechanics-drift_compensation-description =
+    Compensates IMU yaw drift by applying an inverse rotation.
+    Change amount of compensation and up to how many resets are taken into account.
+settings-general-tracker_mechanics-drift_compensation-enabled-label = Drift compensation
+settings-general-tracker_mechanics-drift_compensation-amount-label = Compensation amount
+settings-general-tracker_mechanics-drift_compensation-max_resets-label = Use up to x last resets
 
 ## FK/Tracking settings
 settings-general-fk_settings = Cài đặt FK

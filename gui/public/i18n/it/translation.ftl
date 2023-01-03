@@ -128,6 +128,9 @@ tracker-settings-assignment_section-edit = Cambia assegnazione
 tracker-settings-mounting_section = posizionamento di montaggio
 tracker-settings-mounting_section-description =  Come è posizionato il tracker?
 tracker-settings-mounting_section-edit = Cambia posizionamento
+tracker-settings-drift_compensation_section = Allow drift compensation
+tracker-settings-drift_compensation_section-description = Should this tracker compensate for its drift when drift compensation is enabled?
+tracker-settings-drift_compensation_section-edit = Allow drift compensation
 # The .<name> means it's an attribute and it's related to the top key.
 # In this case that is the settings for the assignment section.
 tracker-settings-name_section = Nome del tracker
@@ -226,6 +229,14 @@ settings-general-tracker_mechanics-filtering-type-smoothing-description = Attenu
 settings-general-tracker_mechanics-filtering-type-prediction = Predizione
 settings-general-tracker_mechanics-filtering-type-prediction-description = Riduce ritardo e rende movimenti più istantanei, ma può introdurre tremolio.
 settings-general-tracker_mechanics-filtering-amount = Quantità
+settings-general-tracker_mechanics-drift_compensation = Drift compensation
+# This cares about multilines
+settings-general-tracker_mechanics-drift_compensation-description =
+    Compensates IMU yaw drift by applying an inverse rotation.
+    Change amount of compensation and up to how many resets are taken into account.
+settings-general-tracker_mechanics-drift_compensation-enabled-label = Drift compensation
+settings-general-tracker_mechanics-drift_compensation-amount-label = Compensation amount
+settings-general-tracker_mechanics-drift_compensation-max_resets-label = Use up to x last resets
 
 ## FK/Tracking settings
 settings-general-fk_settings = Impostazioni FK
