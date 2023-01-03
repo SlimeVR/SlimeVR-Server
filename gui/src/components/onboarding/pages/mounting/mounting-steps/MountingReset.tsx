@@ -1,8 +1,8 @@
-import { useTranslation } from 'react-i18next';
 import { ResetType } from 'solarxr-protocol';
 import { Button } from '../../../../commons/Button';
 import { Typography } from '../../../../commons/Typography';
 import { ResetButton } from '../../../../home/ResetButton';
+import { useLocalization } from '@fluent/react';
 
 export function MountingResetStep({
   nextStep,
@@ -13,21 +13,27 @@ export function MountingResetStep({
   prevStep: () => void;
   variant: 'onboarding' | 'alone';
 }) {
-  const { t } = useTranslation();
+  const { l10n } = useLocalization();
 
   return (
     <>
       <div className="flex flex-col flex-grow">
         <div className="flex flex-grow flex-col gap-4 max-w-sm">
           <Typography variant="main-title" bold>
-            {t('onboarding-automatic_mounting-mounting_reset-title')}
+            {l10n.getString(
+              'onboarding-automatic_mounting-mounting_reset-title'
+            )}
           </Typography>
           <div className="flex flex-col gap-2">
             <Typography color="secondary">
-              {t('onboarding-automatic_mounting-mounting_reset-step-0')}
+              {l10n.getString(
+                'onboarding-automatic_mounting-mounting_reset-step-0'
+              )}
             </Typography>
             <Typography color="secondary">
-              {t('onboarding-automatic_mounting-mounting_reset-step-1')}
+              {l10n.getString(
+                'onboarding-automatic_mounting-mounting_reset-step-1'
+              )}
             </Typography>
           </div>
         </div>
@@ -37,7 +43,7 @@ export function MountingResetStep({
             variant={variant === 'onboarding' ? 'secondary' : 'tiertiary'}
             onClick={prevStep}
           >
-            {t('onboarding-automatic_mounting-prev_step')}
+            {l10n.getString('onboarding-automatic_mounting-prev_step')}
           </Button>
           <ResetButton
             variant="small"

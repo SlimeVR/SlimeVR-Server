@@ -1,5 +1,4 @@
 import { createContext, useContext, useMemo, useState } from 'react';
-import { useTranslation } from 'react-i18next';
 import {
   AutoBoneEpochResponseT,
   AutoBoneProcessRequestT,
@@ -8,9 +7,10 @@ import {
   RpcMessage,
   SkeletonBone,
   SkeletonConfigRequestT,
-  SkeletonPartT
+  SkeletonPartT,
 } from 'solarxr-protocol';
 import { useWebsocketAPI } from './websocket-api';
+import { useLocalization } from '@fluent/react';
 
 export interface AutoboneContext {
   hasRecording: boolean;
@@ -23,7 +23,7 @@ export interface AutoboneContext {
 }
 
 export function useProvideAutobone(): AutoboneContext {
-  const { t } = useTranslation();
+  const { l10n } = useLocalization();
   const { useRPCPacket, sendRPCPacket } = useWebsocketAPI();
   const [hasRecording, setHasRecording] = useState(false);
   const [hasCalibration, setHasCalibration] = useState(false);
@@ -36,7 +36,7 @@ export function useProvideAutobone(): AutoboneContext {
     return (
       skeletonParts?.map(({ bone, value }) => ({
         bone,
-        label: t('skeleton_bone-' + SkeletonBone[bone]),
+        label: l10n.getString('skeleton_bone-' + SkeletonBone[bone]),
         value,
       })) || []
     );

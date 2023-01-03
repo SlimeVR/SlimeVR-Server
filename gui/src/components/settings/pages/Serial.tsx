@@ -1,6 +1,5 @@
 import { useEffect, useRef, useState } from 'react';
 import { useForm } from 'react-hook-form';
-import { useTranslation } from 'react-i18next';
 import { useLocation } from 'react-router-dom';
 import {
   CloseSerialRequestT,
@@ -19,6 +18,7 @@ import { useWebsocketAPI } from '../../../hooks/websocket-api';
 import { Button } from '../../commons/Button';
 import { Dropdown } from '../../commons/Dropdown';
 import { Typography } from '../../commons/Typography';
+import { useLocalization } from '@fluent/react';
 
 export interface SerialForm {
   port: string;
@@ -30,7 +30,7 @@ export function Serial() {
     layoutWidth,
     ref: consoleRef,
   } = useLayout<HTMLDivElement>();
-  const { t } = useTranslation();
+  const { l10n } = useLocalization();
 
   const { state } = useLocation();
 
@@ -105,7 +105,10 @@ export function Serial() {
     RpcMessage.SerialDevicesResponse,
     (res: SerialDevicesResponseT) => {
       setSerialDevices([
-        { name: t('settings-serial-auto_dropdown_item'), port: 'Auto' },
+        {
+          name: l10n.getString('settings-serial-auto_dropdown_item'),
+          port: 'Auto',
+        },
         ...(res.devices || []),
       ]);
     }
@@ -152,14 +155,18 @@ export function Serial() {
     <div className="flex flex-col bg-background-70 h-full p-5 rounded-md">
       <div className="flex flex-col pb-2">
         <Typography variant="main-title">
-          {t('settings-serial-title')}
+          {l10n.getString('settings-serial')}
         </Typography>
-        <Typography color="secondary">
-          {t('settings-serial-description-p0')}
-        </Typography>
-        <Typography color="secondary">
-          {t('settings-serial-description-p1')}
-        </Typography>
+        <>
+          {l10n
+            .getString('settings-serial-description')
+            .split('\n')
+            .map((line, i) => (
+              <Typography color="secondary" key={i}>
+                {line}
+              </Typography>
+            ))}
+        </>
       </div>
       <div className="bg-background-80 rounded-lg flex flex-col p-2">
         <div
@@ -174,7 +181,7 @@ export function Serial() {
             <pre>
               {isSerialOpen
                 ? consoleContent
-                : t('settings-serial-connection_lost')}
+                : l10n.getString('settings-serial-connection_lost')}
             </pre>
           </div>
         </div>
@@ -182,13 +189,13 @@ export function Serial() {
           <div className="border-t-2 pt-2  border-background-60 border-solid m-2 gap-2 flex flex-row">
             <div className="flex flex-grow gap-2">
               <Button variant="quaternary" onClick={reboot}>
-                {t('settings-serial-reboot')}
+                {l10n.getString('settings-serial-reboot')}
               </Button>
               <Button variant="quaternary" onClick={factoryReset}>
-                {t('settings-serial-factory_reset')}
+                {l10n.getString('settings-serial-factory_reset')}
               </Button>
               <Button variant="quaternary" onClick={getInfos}>
-                {t('settings-serial-get_infos')}
+                {l10n.getString('settings-serial-get_infos')}
               </Button>
             </div>
 
@@ -196,7 +203,7 @@ export function Serial() {
               <Dropdown
                 control={control}
                 name="port"
-                placeholder={t('settings-serial-serial_select')}
+                placeholder={l10n.getString('settings-serial-serial_select')}
                 items={serialDevices.map((device) => ({
                   label: device.name?.toString() || 'error',
                   value: device.port?.toString() || 'error',

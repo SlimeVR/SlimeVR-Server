@@ -1,12 +1,12 @@
 import classNames from 'classnames';
 import { useForm } from 'react-hook-form';
-import { useTranslation } from 'react-i18next';
 import ReactModal from 'react-modal';
 import { BodyPart } from 'solarxr-protocol';
 import { Button } from '../commons/Button';
 import { CheckBox } from '../commons/Checkbox';
 import { Typography } from '../commons/Typography';
 import { BodyAssignment } from '../onboarding/BodyAssignment';
+import { useLocalization } from '@fluent/react';
 
 export function SingleTrackerBodyAssignmentMenu({
   isOpen = true,
@@ -17,7 +17,7 @@ export function SingleTrackerBodyAssignmentMenu({
   onClose: () => void;
   onRoleSelected: (role: BodyPart) => void;
 }) {
-  const { t } = useTranslation();
+  const { l10n } = useLocalization();
   const { control, watch } = useForm<{ advanced: boolean }>({
     defaultValues: { advanced: false },
   });
@@ -41,14 +41,16 @@ export function SingleTrackerBodyAssignmentMenu({
           <div className="flex gap-8">
             <div className="flex flex-col max-w-sm gap-3">
               <Typography variant="main-title" bold>
-                {t('body_assignment_menu-title')}
+                {l10n.getString('body_assignment_menu')}
               </Typography>
               <Typography color="secondary">
-                {t('body_assignment_menu-description')}
+                {l10n.getString('body_assignment_menu-description')}
               </Typography>
               <CheckBox
                 control={control}
-                label={t('body_assignment_menu-show_advanced_locations')}
+                label={l10n.getString(
+                  'body_assignment_menu-show_advanced_locations'
+                )}
                 name="advanced"
                 variant="toggle"
               ></CheckBox>
@@ -58,7 +60,7 @@ export function SingleTrackerBodyAssignmentMenu({
                   to="/onboarding/trackers-assign"
                   state={{ alonePage: true }}
                 >
-                  {t('body_assignment_menu-manage_trackers')}
+                  {l10n.getString('body_assignment_menu-manage_trackers')}
                 </Button>
               </div>
             </div>
@@ -73,7 +75,7 @@ export function SingleTrackerBodyAssignmentMenu({
                   variant="secondary"
                   onClick={() => onRoleSelected(BodyPart.NONE)}
                 >
-                  {t('body_assignment_menu-unassign_tracker')}
+                  {l10n.getString('body_assignment_menu-unassign_tracker')}
                 </Button>
               </div>
             </div>

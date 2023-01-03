@@ -1,5 +1,5 @@
+import { useLocalization } from '@fluent/react';
 import { useMemo } from 'react';
-import { useTranslation } from 'react-i18next';
 import { BodyPart } from 'solarxr-protocol';
 import { FlatDeviceTracker } from '../../hooks/app';
 import { useTrackers } from '../../hooks/tracker';
@@ -15,7 +15,7 @@ export function BodyAssignment({
   onlyAssigned: boolean;
   onRoleSelected: (role: BodyPart) => void;
 }) {
-  const { t } = useTranslation();
+  const { l10n } = useLocalization();
   const { useAssignedTrackers } = useTrackers();
 
   const assignedTrackers = useAssignedTrackers();
