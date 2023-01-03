@@ -934,7 +934,7 @@ public final class Quaternion implements Cloneable, java.io.Serializable {
 	 */
 	public Quaternion fromAveragedQuaternions(AbstractList<Quaternion> qn) {
 		if (qn.size() == 0) {
-			throw new IllegalArgumentException("qn's length can't be 0'");
+			throw new IllegalArgumentException("qn's length can't be 0");
 		}
 
 		float sumX = 0f;
@@ -967,7 +967,7 @@ public final class Quaternion implements Cloneable, java.io.Serializable {
 	 */
 	public Quaternion fromAveragedQuaternions(AbstractList<Quaternion> qn, AbstractList<Float> tn) {
 		if (qn.size() == 0) {
-			throw new IllegalArgumentException("qn's length can't be 0'");
+			throw new IllegalArgumentException("qn's length can't be 0");
 		}
 		if (qn.size() != tn.size()) {
 			throw new IllegalArgumentException("qn and tn must have the same length");
