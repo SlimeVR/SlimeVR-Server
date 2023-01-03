@@ -73,8 +73,7 @@ public class TapDetectionConfig {
 
 	// clamp to 2-3 to prevent errors
 	public void setQuickResetTaps(int quickResetTaps) {
-		if (quickResetTaps > 10 || quickResetTaps < 2)
-			FastMath.clamp(quickResetTaps, 2, 10);
+		this.quickResetTaps = FastMath.clamp(quickResetTaps, 2, 10);
 		this.quickResetTaps = quickResetTaps;
 	}
 
@@ -83,8 +82,7 @@ public class TapDetectionConfig {
 	}
 
 	public void setResetTaps(int resetTaps) {
-		if (resetTaps > 10 || resetTaps < 2)
-			FastMath.clamp(resetTaps, 2, 10);
+		this.resetTaps = FastMath.clamp(resetTaps, 2, 10);
 		this.resetTaps = resetTaps;
 	}
 
@@ -93,8 +91,7 @@ public class TapDetectionConfig {
 	}
 
 	public void setMountingResetTaps(int mountingResetTaps) {
-		if (mountingResetTaps > 10 || mountingResetTaps < 2)
-			FastMath.clamp(mountingResetTaps, 2, 10);
+		this.mountingResetTaps = FastMath.clamp(mountingResetTaps, 2, 10);
 		this.mountingResetTaps = mountingResetTaps;
 	}
 
