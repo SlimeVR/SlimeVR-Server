@@ -2,6 +2,8 @@ name: Build GUI
 
 on:
   push:
+    branches:
+      - main
     paths:
       - .github/workflows/build-gui.yml
       - gui/**
