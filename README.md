@@ -19,7 +19,7 @@ Latest instructions are [on our site](https://docs.slimevr.dev/server-setup/slim
 ## License Clarification
 **SlimeVR software** (including server, firmware, drivers, installer, documents, and others - see
 licence for each case specifically) **is distributed under a dual MIT/Apache 2.0 License
-([LICENSE-MIT] and [LICENSE-APACHE]). These licenses are the copyright of the SlimeVR
+([LICENSE-MIT] and [LICENSE-APACHE]). The software is the copyright of the SlimeVR
 contributors.** 
 
 **However, these licenses have some limits, and if you wish to distribute software based
