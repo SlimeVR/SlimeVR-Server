@@ -3,7 +3,7 @@ import {
   BrowserRouter as Router,
   Outlet,
   Route,
-  Routes
+  Routes,
 } from 'react-router-dom';
 import { Home } from './components/home/Home';
 import { MainLayoutRoute } from './components/MainLayout';
@@ -13,11 +13,10 @@ import { Serial } from './components/settings/pages/Serial';
 import { SettingsLayoutRoute } from './components/settings/SettingsLayout';
 import {
   useProvideWebsocketApi,
-  WebSocketApiContext
+  WebSocketApiContext,
 } from './hooks/websocket-api';
 
 import { Event, listen } from '@tauri-apps/api/event';
-import { useTranslation, withTranslation } from 'react-i18next';
 import { OnboardingContextProvider } from './components/onboarding/OnboardingContextProvicer';
 import { OnboardingLayout } from './components/onboarding/OnboardingLayout';
 import { AutomaticProportionsPage } from './components/onboarding/pages/body-proportions/AutomaticProportions';
@@ -38,6 +37,7 @@ import { TopBar } from './components/TopBar';
 import { TrackerSettingsPage } from './components/tracker/TrackerSettings';
 import { useConfig } from './hooks/config';
 import { OSCRouterSettings } from './components/settings/pages/OSCRouterSettings';
+import { useLocalization } from '@fluent/react';
 
 function Layout() {
   const { loading } = useConfig();
@@ -108,9 +108,9 @@ function Layout() {
   );
 }
 
-function App() {
+export default function App() {
   const websocketAPI = useProvideWebsocketApi();
-  const { t } = useTranslation();
+  const { l10n } = useLocalization();
 
   useEffect(() => {
     const unlisten = listen(
@@ -165,8 +165,8 @@ function App() {
                       <TopBar></TopBar>
                       <div className="flex w-full h-full justify-center items-center p-2">
                         {websocketAPI.isFirstConnection
-                          ? t('websocket-connecting')
-                          : t('websocket-connection_lost')}
+                          ? l10n.getString('websocket-connecting')
+                          : l10n.getString('websocket-connection_lost')}
                       </div>
                     </>
                   )}
@@ -180,5 +180,3 @@ function App() {
     </Router>
   );
 }
-
-export default withTranslation()(App);

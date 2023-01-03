@@ -1,4 +1,3 @@
-import { t } from 'i18next';
 import Quaternion from 'quaternion';
 import { useMemo, useState } from 'react';
 import { AssignTrackerRequestT, BodyPart, RpcMessage } from 'solarxr-protocol';
@@ -13,8 +12,10 @@ import { TipBox } from '../../../commons/TipBox';
 import { Typography } from '../../../commons/Typography';
 import { BodyAssignment } from '../../BodyAssignment';
 import { MountingSelectionMenu } from './MountingSelectionMenu';
+import { useLocalization } from '@fluent/react';
 
 export function ManualMountingPage() {
+  const { l10n } = useLocalization();
   const { applyProgress, skipSetup, state } = useOnboarding();
   const { sendRPCPacket } = useWebsocketAPI();
 
@@ -68,16 +69,16 @@ export function ManualMountingPage() {
             <div className="flex flex-col w-full max-w-md gap-3">
               {!state.alonePage && (
                 <ArrowLink to="/onboarding/enter-vr" direction="left">
-                  {t('onboarding-manual_mounting-back')}
+                  {l10n.getString('onboarding-manual_mounting-back')}
                 </ArrowLink>
               )}
               <Typography variant="main-title">
-                {t('onboarding-manual_mounting-title')}
+                {l10n.getString('onboarding-manual_mounting')}
               </Typography>
               <Typography color="secondary">
-                {t('onboarding-manual_mounting-description')}
+                {l10n.getString('onboarding-manual_mounting-description')}
               </Typography>
-              <TipBox>{t('tips-find_tracker')}</TipBox>
+              <TipBox>{l10n.getString('tips-find_tracker')}</TipBox>
             </div>
             <div className="flex flex-col flex-grow gap-3 rounded-xl fill-background-50">
               <BodyAssignment
@@ -92,7 +93,7 @@ export function ManualMountingPage() {
           <div className="flex flex-grow">
             {!state.alonePage && (
               <Button variant="secondary" to="/" onClick={skipSetup}>
-                {t('onboarding-skip')}
+                {l10n.getString('onboarding-skip')}
               </Button>
             )}
           </div>
@@ -102,11 +103,11 @@ export function ManualMountingPage() {
               state={{ alonePage: state.alonePage }}
               to="/onboarding/mounting/auto"
             >
-              {t('onboarding-manual_mounting-auto_mounting')}
+              {l10n.getString('onboarding-manual_mounting-auto_mounting')}
             </Button>
             {!state.alonePage && (
               <Button variant="primary" to="/onboarding/reset-tutorial">
-                {t('onboarding-manual_mounting-next')}
+                {l10n.getString('onboarding-manual_mounting-next')}
               </Button>
             )}
           </div>

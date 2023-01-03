@@ -1,4 +1,3 @@
-import { useTranslation } from 'react-i18next';
 import { useOnboarding } from '../../../../hooks/onboarding';
 import { ArrowLink } from '../../../commons/ArrowLink';
 import { Button } from '../../../commons/Button';
@@ -8,9 +7,10 @@ import { DoneStep } from './mounting-steps/Done';
 import { MountingResetStep } from './mounting-steps/MountingReset';
 import { PreparationStep } from './mounting-steps/Preparation';
 import { PutTrackersOnStep } from './mounting-steps/PutTrackersOn';
+import { useLocalization } from '@fluent/react';
 
 export function AutomaticMountingPage() {
-  const { t } = useTranslation();
+  const { l10n } = useLocalization();
   const { applyProgress, skipSetup, state } = useOnboarding();
 
   applyProgress(0.7);
@@ -22,14 +22,14 @@ export function AutomaticMountingPage() {
           <div className="flex flex-col max-w-lg gap-3">
             {!state.alonePage && (
               <ArrowLink to="/onboarding/enter-vr" direction="left">
-                {t('onboarding-automatic_mounting-back')}
+                {l10n.getString('onboarding-automatic_mounting-back')}
               </ArrowLink>
             )}
             <Typography variant="main-title">
-              {t('onboarding-automatic_mounting-title')}
+              {l10n.getString('onboarding-automatic_mounting-title')}
             </Typography>
             <Typography color="secondary">
-              {t('onboarding-automatic_mounting-description')}
+              {l10n.getString('onboarding-automatic_mounting-description')}
             </Typography>
           </div>
           <div className="flex">
@@ -48,7 +48,7 @@ export function AutomaticMountingPage() {
           <div className="flex flex-grow gap-3">
             {!state.alonePage && (
               <Button variant="secondary" to="/" onClick={skipSetup}>
-                {t('onboarding-skip')}
+                {l10n.getString('onboarding-skip')}
               </Button>
             )}
           </div>
@@ -58,11 +58,11 @@ export function AutomaticMountingPage() {
               state={{ alonePage: state.alonePage }}
               to="/onboarding/mounting/manual"
             >
-              {t('onboarding-automatic_mounting-manual_mounting')}
+              {l10n.getString('onboarding-automatic_mounting-manual_mounting')}
             </Button>
             {!state.alonePage && (
               <Button variant="primary" to="/onboarding/reset-tutorial">
-                {t('onboarding-automatic_mounting-next')}
+                {l10n.getString('onboarding-automatic_mounting-next')}
               </Button>
             )}
           </div>
