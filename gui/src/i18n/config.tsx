@@ -102,9 +102,12 @@ export function AppLocalizationProvider(props: AppLocalizationProviderProps) {
     );
     setCurrentLocales([currentLocale]);
 
-    const fetchedMessages = await fetchMessages(currentLocale);
+    const fetchedMessages = [
+      await fetchMessages(currentLocale),
+      await fetchMessages(DEFAULT_LOCALE),
+    ];
 
-    const bundles = lazilyParsedBundles([fetchedMessages]);
+    const bundles = lazilyParsedBundles(fetchedMessages);
     localStorage.setItem('i18nextLng', currentLocale);
     setL10n(new ReactLocalization(bundles));
   }
