@@ -7,11 +7,11 @@
  * in the user manual at https://docs.gradle.org/6.3/userguide/multi_project_builds.html
  */
 
-rootProject.name = 'SlimeVR Server'
+rootProject.name = "SlimeVR Server"
 
 
-include ':solarxr-protocol'
-project(':solarxr-protocol').projectDir = new File('solarxr-protocol/protocol/java')
+include(":solarxr-protocol")
+project(":solarxr-protocol").projectDir = File("solarxr-protocol/protocol/java")
 
-include ':server'
-project(':server').projectDir = new File('server')
+include(":server")
+project(":server").projectDir = File("server")

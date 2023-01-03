@@ -1,16 +1,16 @@
+import { useLocalization } from '@fluent/react';
 import { useState } from 'react';
-import { useTranslation } from 'react-i18next';
 import {
   RecordBVHRequestT,
   RecordBVHStatusT,
-  RpcMessage
+  RpcMessage,
 } from 'solarxr-protocol';
 import { useWebsocketAPI } from '../hooks/websocket-api';
 import { BigButton } from './commons/BigButton';
 import { RecordIcon } from './commons/icon/RecordIcon';
 
 export function BVHButton() {
-  const { t } = useTranslation();
+  const { l10n } = useLocalization();
   const { useRPCPacket, sendRPCPacket } = useWebsocketAPI();
   const [recording, setRecording] = useState(false);
 
@@ -26,7 +26,7 @@ export function BVHButton() {
 
   return (
     <BigButton
-      text={t(recording ? 'bvh-recording' : 'bvh-start_recording')}
+      text={l10n.getString(recording ? 'bvh-recording' : 'bvh-start_recording')}
       icon={<RecordIcon width={20} />}
       onClick={toggleBVH}
     ></BigButton>

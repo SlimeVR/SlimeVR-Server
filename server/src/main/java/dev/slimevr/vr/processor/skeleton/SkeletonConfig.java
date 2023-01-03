@@ -427,7 +427,8 @@ public class SkeletonConfig {
 		// Remove from config to use default if they change in the future.
 		Arrays.fill(changedValues, false);
 		for (SkeletonConfigValues value : SkeletonConfigValues.values) {
-			Main.vrServer
+			Main
+				.getVrServer()
 				.getConfigManager()
 				.getVrConfig()
 				.getSkeleton()
@@ -454,7 +455,8 @@ public class SkeletonConfig {
 		// Remove from config to use default if they change in the future.
 		Arrays.fill(changedToggles, false);
 		for (SkeletonConfigToggles value : SkeletonConfigToggles.values) {
-			Main.vrServer
+			Main
+				.getVrServer()
 				.getConfigManager()
 				.getVrConfig()
 				.getSkeleton()
@@ -507,7 +509,8 @@ public class SkeletonConfig {
 	}
 
 	public void save() {
-		dev.slimevr.config.SkeletonConfig skeletonConfig = Main.vrServer
+		dev.slimevr.config.SkeletonConfig skeletonConfig = Main
+			.getVrServer()
 			.getConfigManager()
 			.getVrConfig()
 			.getSkeleton();

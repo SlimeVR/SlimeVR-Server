@@ -1,6 +1,6 @@
+import { useLocalization } from '@fluent/react';
 import classnames from 'classnames';
 import { ReactNode } from 'react';
-import { useTranslation } from 'react-i18next';
 import { NavLink, useMatch } from 'react-router-dom';
 import { CubeIcon } from './commons/icon/CubeIcon';
 import { GearIcon } from './commons/icon/GearIcon';
@@ -57,13 +57,13 @@ export function NavButton({
 }
 
 export function Navbar() {
-  const { t } = useTranslation();
+  const { l10n } = useLocalization();
 
   return (
     <div className="flex flex-col px-2 pt-2">
       <div className="flex flex-col flex-grow gap-2">
         <NavButton to="/" icon={<CubeIcon></CubeIcon>}>
-          {t('navbar-home')}
+          {l10n.getString('navbar-home')}
         </NavButton>
         <NavButton
           to="/onboarding/body-proportions/auto"
@@ -71,14 +71,14 @@ export function Navbar() {
           state={{ alonePage: true }}
           icon={<GearIcon></GearIcon>}
         >
-          {t('navbar-body_proportions')}
+          {l10n.getString('navbar-body_proportions')}
         </NavButton>
         <NavButton
           to="/onboarding/trackers-assign"
           state={{ alonePage: true }}
           icon={<GearIcon></GearIcon>}
         >
-          {t('navbar-trackers_assign')}
+          {l10n.getString('navbar-trackers_assign')}
         </NavButton>
         <NavButton
           to="/onboarding/mounting/auto"
@@ -86,10 +86,10 @@ export function Navbar() {
           state={{ alonePage: true }}
           icon={<GearIcon></GearIcon>}
         >
-          {t('navbar-mounting')}
+          {l10n.getString('navbar-mounting')}
         </NavButton>
         <NavButton to="/onboarding/home" icon={<GearIcon></GearIcon>}>
-          {t('navbar-onboarding')}
+          {l10n.getString('navbar-onboarding')}
         </NavButton>
       </div>
       <NavButton
@@ -98,7 +98,7 @@ export function Navbar() {
         state={{ scrollTo: 'steamvr' }}
         icon={<GearIcon></GearIcon>}
       >
-        {t('navbar-settings')}
+        {l10n.getString('navbar-settings')}
       </NavButton>
     </div>
   );
