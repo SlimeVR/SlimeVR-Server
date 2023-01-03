@@ -15,7 +15,7 @@ public class TrackerConfig {
 
 	private Quaternion adjustment;
 
-	private Quaternion mountingRotation;
+	private Quaternion mountingOrientation;
 
 	public TrackerConfig() {
 	}
@@ -73,11 +73,11 @@ public class TrackerConfig {
 		this.adjustment = adjustment;
 	}
 
-	public Quaternion getMountingRotation() {
-		return mountingRotation;
+	public Quaternion getMountingOrientation() {
+		return mountingOrientation;
 	}
 
-	public void setMountingRotation(Quaternion mountingRotation) {
-		this.mountingRotation = mountingRotation;
+	public void setMountingOrientation(Quaternion mountingOrientation) {
+		this.mountingOrientation = mountingOrientation;
 	}
 }

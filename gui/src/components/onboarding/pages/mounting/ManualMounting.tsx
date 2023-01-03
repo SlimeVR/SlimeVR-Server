@@ -45,7 +45,7 @@ export function ManualMountingPage() {
       const assignreq = new AssignTrackerRequestT();
 
       assignreq.bodyPosition = td.tracker.info?.bodyPart || BodyPart.NONE;
-      assignreq.mountingRotation = QuaternionToQuatT(
+      assignreq.mountingOrientation = QuaternionToQuatT(
         Quaternion.fromEuler(0, +mountingOrientation, 0)
       );
       assignreq.trackerId = td.tracker.trackerId;
