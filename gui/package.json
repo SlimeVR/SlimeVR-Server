@@ -7,7 +7,7 @@
     "@fluent/react": "^0.14.1",
     "@fontsource/poppins": "^4.5.8",
     "@formatjs/intl-localematcher": "^0.2.32",
-    "@tauri-apps/api": "^1.0.2",
+    "@tauri-apps/api": "^1.2.0",
     "@vitejs/plugin-react": "^2.2.0",
     "browserslist": "^4.18.1",
     "camelcase": "^6.2.1",
@@ -68,7 +68,7 @@
   "devDependencies": {
     "@originjs/vite-plugin-commonjs": "^1.0.3",
     "@tailwindcss/forms": "^0.5.0",
-    "@tauri-apps/cli": "^1.2.0",
+    "@tauri-apps/cli": "^1.2.2",
     "@types/react": "18.0.25",
     "@types/react-dom": "^18.0.5",
     "@types/react-modal": "3.13.1",

@@ -7,7 +7,7 @@
     "gui"
   ],
   "scripts": {
-    "gui": "npm run update-solarxr && cd gui && npm run tauri dev",
+    "gui": "npm run update-solarxr && cd gui && npm run dev",
     "tauri": "cd gui && npm run tauri",
     "skipbundler": "cd gui && npm run skipbundler",
     "build": "npm run tauri build",

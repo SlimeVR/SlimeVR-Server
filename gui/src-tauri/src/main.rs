@@ -74,18 +74,18 @@ fn get_launch_path(cli: Cli) -> Option<PathBuf> {
 		return Some(path);
 	}
 
-    let path = PathBuf::from("/usr/share/slimevr/");
-    if is_valid_path(&path) {
-        return Some(path);
-    }
+	let path = PathBuf::from("/usr/share/slimevr/");
+	if is_valid_path(&path) {
+		return Some(path);
+	}
 
-    // This is only for AppImage
-    if let Some(appimage) = env::var_os("APPDIR") {
-        let path = PathBuf::from(appimage);
-        if is_valid_path(&path) {
-            return Some(path);
-        }
-    }
+	// This is only for AppImage
+	if let Some(appimage) = env::var_os("APPDIR") {
+		let path = PathBuf::from(appimage);
+		if is_valid_path(&path) {
+			return Some(path);
+		}
+	}
 
 	None
 }
@@ -208,8 +208,10 @@ fn main() {
 		None
 	};
 
-	tauri::Builder::default()
-		.plugin(tauri_plugin_window_state::Builder::default().build())
+	let builder = tauri::Builder::default();
+	#[cfg(not(target_os = "macos"))]
+	let builder = builder.plugin(tauri_plugin_window_state::Builder::default().build());
+	builder
 		.setup(|app| {
 			if let Some(mut recv) = stdout_recv {
 				let app_handle = app.app_handle();
