@@ -1,13 +1,14 @@
-import { ReactNode, useEffect } from 'react';
+import { ReactNode, useEffect, useContext } from 'react';
 import { ConfigContextC, useConfigProvider } from '../../hooks/config';
-import i18next from '../../i18n/config';
+import { DEFAULT_LOCALE, LangContext } from '../../i18n/config';
 
 export function ConfigContextProvider({ children }: { children: ReactNode }) {
   const context = useConfigProvider();
+  const { changeLocales } = useContext(LangContext);
 
   useEffect(() => {
     context.loadConfig().then((config) => {
-      i18next.changeLanguage(config?.lang || 'en');
+      changeLocales([config?.lang || DEFAULT_LOCALE]);
     });
   }, []);
 

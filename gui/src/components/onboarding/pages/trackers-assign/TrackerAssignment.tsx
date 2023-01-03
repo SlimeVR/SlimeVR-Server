@@ -1,6 +1,5 @@
 import { useMemo, useState } from 'react';
 import { useForm } from 'react-hook-form';
-import { useTranslation } from 'react-i18next';
 import {
   AssignTrackerRequestT,
   BodyPart,
@@ -19,9 +18,10 @@ import { TipBox } from '../../../commons/TipBox';
 import { Typography } from '../../../commons/Typography';
 import { BodyAssignment } from '../../BodyAssignment';
 import { TrackerSelectionMenu } from './TrackerSelectionMenu';
+import { useLocalization } from '@fluent/react';
 
 export function TrackersAssignPage() {
-  const { t } = useTranslation();
+  const { l10n } = useLocalization();
   const { useAssignedTrackers, trackers } = useTrackers();
   const { applyProgress, skipSetup, state } = useOnboarding();
   const { sendRPCPacket } = useWebsocketAPI();
@@ -57,7 +57,7 @@ export function TrackersAssignPage() {
       const assignreq = new AssignTrackerRequestT();
 
       assignreq.bodyPosition = role;
-      assignreq.mountingRotation = rotation;
+      assignreq.mountingOrientation = rotation;
       assignreq.trackerId = trackerId;
       sendRPCPacket(RpcMessage.AssignTrackerRequest, assignreq);
     };
@@ -99,27 +99,27 @@ export function TrackersAssignPage() {
             <div className="flex flex-col max-w-sm gap-3">
               {!state.alonePage && (
                 <ArrowLink to="/onboarding/wifi-creds" direction="left">
-                  {t('onboarding-assign_trackers-back')}
+                  {l10n.getString('onboarding-assign_trackers-back')}
                 </ArrowLink>
               )}
               <Typography variant="main-title">
-                {t('onboarding-assign_trackers-title')}
+                {l10n.getString('onboarding-assign_trackers-title')}
               </Typography>
               <Typography color="secondary">
-                {t('onboarding-assign_trackers-description')}
+                {l10n.getString('onboarding-assign_trackers-description')}
               </Typography>
               <div className="flex gap-1">
                 <Typography color="secondary">
-                  {t('onboarding-assign_trackers-assigned', {
+                  {l10n.getString('onboarding-assign_trackers-assigned', {
                     assigned: assignedTrackers.length,
                     trackers: trackers.length,
                   })}
                 </Typography>
               </div>
-              <TipBox>{t('tips-find_tracker')}</TipBox>
+              <TipBox>{l10n.getString('tips-find_tracker')}</TipBox>
               <CheckBox
                 control={control}
-                label={t('onboarding-assign_trackers-advanced')}
+                label={l10n.getString('onboarding-assign_trackers-advanced')}
                 name="advanced"
                 variant="toggle"
               ></CheckBox>
@@ -137,14 +137,14 @@ export function TrackersAssignPage() {
           <div className="flex flex-grow">
             {!state.alonePage && (
               <Button variant="secondary" to="/" onClick={skipSetup}>
-                {t('onboarding-skip')}
+                {l10n.getString('onboarding-skip')}
               </Button>
             )}
           </div>
           <div className="flex gap-3">
             {!state.alonePage && (
               <Button variant="primary" to="/onboarding/enter-vr">
-                {t('onboarding-assign_trackers-next')}
+                {l10n.getString('onboarding-assign_trackers-next')}
               </Button>
             )}
           </div>

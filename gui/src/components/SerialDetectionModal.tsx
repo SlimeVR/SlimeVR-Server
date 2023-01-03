@@ -1,11 +1,11 @@
+import { useLocalization } from '@fluent/react';
 import { useEffect, useState } from 'react';
-import { useTranslation } from 'react-i18next';
 import { useLocation, useNavigate } from 'react-router-dom';
 import {
   RpcMessage,
   SerialDevicesRequestT,
   SerialDevicesResponseT,
-  SerialDeviceT
+  SerialDeviceT,
 } from 'solarxr-protocol';
 import { useConfig } from '../hooks/config';
 import { usePrevious } from '../hooks/previous';
@@ -59,7 +59,7 @@ const detectChanges = <T,>(
 };
 
 export function SerialDetectionModal() {
-  const { t } = useTranslation();
+  const { l10n } = useLocalization();
   const { config } = useConfig();
   const nav = useNavigate();
   const { pathname } = useLocation();
@@ -148,25 +148,25 @@ export function SerialDetectionModal() {
               <USBIcon></USBIcon>
               <div className="flex flex-col items-center gap-2">
                 <Typography variant="main-title">
-                  {t('serial_detection-new_device-p0')}
+                  {l10n.getString('serial_detection-new_device-p0')}
                 </Typography>
                 <Typography variant="section-title">
                   {isOpen?.name || 'unknown'}
                 </Typography>
                 <Typography variant="standard">
-                  {t('serial_detection-new_device-p2')}
+                  {l10n.getString('serial_detection-new_device-p2')}
                 </Typography>
               </div>
             </div>
 
             <Button variant="primary" onClick={openWifi}>
-              {t('serial_detection-open_wifi')}
+              {l10n.getString('serial_detection-open_wifi')}
             </Button>
             <Button variant="tiertiary" onClick={openSerial}>
-              {t('serial_detection-open_serial')}
+              {l10n.getString('serial_detection-open_serial')}
             </Button>
             <Button variant="secondary" onClick={closeModal}>
-              {t('serial_detection-close')}
+              {l10n.getString('serial_detection-close')}
             </Button>
           </>
         )}
@@ -178,10 +178,10 @@ export function SerialDetectionModal() {
             <div className="flex flex-col items-center gap-3">
               <BulbIcon></BulbIcon>
               <Typography variant="main-title">
-                {t('serial_detection-new_device-p0')}
+                {l10n.getString('serial_detection-new_device-p0')}
               </Typography>
               <Typography variant="standard">
-                {t('serial_detection-new_device-p1')}
+                {l10n.getString('serial_detection-new_device-p1')}
               </Typography>
             </div>
             <div className="flex flex-col gap-3 rounded-xl max-w-sm">
@@ -193,10 +193,10 @@ export function SerialDetectionModal() {
               variant="primary"
               disabled={!formState.isValid}
             >
-              {t('serial_detection-submit')}
+              {l10n.getString('serial_detection-submit')}
             </Button>
             <Button variant="secondary" onClick={closeModal}>
-              {t('serial_detection-close')}
+              {l10n.getString('serial_detection-close')}
             </Button>
           </form>
         )}

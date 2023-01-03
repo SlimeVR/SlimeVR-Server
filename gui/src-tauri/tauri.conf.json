@@ -29,10 +29,11 @@
       },
       "macOS": {
         "frameworks": [],
-        "exceptionDomain": "",
+        "exceptionDomain": "localhost",
         "signingIdentity": null,
         "providerShortName": null,
-        "entitlements": null
+        "entitlements": null,
+        "license": "../../LICENSE-MIT"
       },
       "windows": {
         "certificateThumbprint": null,
@@ -68,7 +69,7 @@
     },
     "windows": [
       {
-        "title": "Slimevr UI",
+        "title": "SlimeVR",
         "width": 1289,
         "height": 709,
         "minWidth": 880,
@@ -78,7 +79,9 @@
         "decorations": false,
         "transparent": false,
         "fileDropEnabled": false,
-        "visible": true
+        "visible": true,
+        "hiddenTitle": true,
+        "tabbingIdentifier": "slimevr"
       }
     ],
     "security": {

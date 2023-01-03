@@ -1,4 +1,11 @@
-## Websocket status
+### SlimeVR complete GUI translations
+# Please developers (not translators) don't reuse a key inside another key
+# or concat text with a translation string in the code, use the appropiate 
+# features like variables and selectors in each appropiate case!
+# And also comment the string if it's something not easy to translate so you help
+# translators on what it means
+
+## Websocket (server) status
 websocket-connecting = weconnyecting to teh sewvew
 websocket-connection_lost = oopsie woopsie~ connyection wost to teh sewvew ;m;... uwu am twying to weconnyect owo!
 
@@ -115,38 +122,68 @@ tracker-infos-url = twackaw uawl
 ## Tracker settings
 tracker-settings-back = go bak to twackaws liwst
 tracker-settings-title = twackaw sewtings
-tracker-settings-assignment_section-title = assiwnment
+tracker-settings-assignment_section = assiwnment
 tracker-settings-assignment_section-description = what pawt of the bawdy the twackaw is assiwned to uwu
 tracker-settings-assignment_section-edit = ewdit assiwnment
-tracker-settings-mounting_section-title = meownting pawsition
+tracker-settings-mounting_section = meownting pawsition
 tracker-settings-mounting_section-description = whewe is the twackaw mownted?
 tracker-settings-mounting_section-edit = edit meownting
 tracker-settings-drift_compensation_section-title = awwow dwift compensation
 tracker-settings-drift_compensation_section-description = shouwd this twackew compensate fow its dwift when dwift compensation is enabwed?
 tracker-settings-drift_compensation_section-edit = awwow dwift compensation
-tracker-settings-name_section-title = twackaw name
+# The .<name> means it's an attribute and it's related to the top key.
+# In this case that is the settings for the assignment section.
+tracker-settings-name_section = twackaw name
+tracker-settings-name_section-placeholder = ewimewl's weft pawb
 tracker-settings-name_section-description = owo whats dis?
-tracker-settings-name_section-input_placeholder = ewimewl's weft pawb
 
 ## Tracker part card info
 tracker-part_card-no_name = no name
 tracker-part_card-unassigned = unassigwed
 
 ## Body assignment menu
-body_assignment_menu-title = whewe doo yew want dis twayckaw to be?? >~>
+body_assignment_menu = whewe doo yew want dis twayckaw to be?? >~>
 body_assignment_menu-description = chooce a wocation whewe yew want dis twayckaw to be assyigned. awtwernativewy, yew can chooce to manage awl twackaws at ownce instawd of won by won.
 body_assignment_menu-show_advanced_locations = show advawnced assyign wocations
 body_assignment_menu-manage_trackers = manage awl twackaws
 body_assignment_menu-unassign_tracker = unassyign twayckaw
 
 ## Tracker assignment menu
-tracker_selection_menu-title = which twayckaw to assyign to the { $bodyPart }?
+# A -translation_key (with a dash in the front) means that it's a label.
+# It can only be used in the translation file, it's nice for reusing names and that kind of stuff.
+# 
+# We are using it here because english doesn't require changing the text in each case but
+# maybe your language does.
+-tracker_selection-part = Which tracker to assign to your
+tracker_selection_menu-NONE = Which tracker do you want to be unassigned?
+tracker_selection_menu-HEAD = { -tracker_selection-part } head?
+tracker_selection_menu-NECK = { -tracker_selection-part } neck?
+tracker_selection_menu-RIGHT_SHOULDER = { -tracker_selection-part } right shoulder?
+tracker_selection_menu-RIGHT_UPPER_ARM = { -tracker_selection-part } right upper arm?
+tracker_selection_menu-RIGHT_LOWER_ARM = { -tracker_selection-part } right lower arm?
+tracker_selection_menu-RIGHT_HAND = { -tracker_selection-part } right hand?
+tracker_selection_menu-RIGHT_UPPER_LEG = { -tracker_selection-part } right thigh?
+tracker_selection_menu-RIGHT_LOWER_LEG = { -tracker_selection-part } right ankle?
+tracker_selection_menu-RIGHT_FOOT = { -tracker_selection-part } right foot?
+tracker_selection_menu-RIGHT_CONTROLLER = { -tracker_selection-part } right controller?
+tracker_selection_menu-CHEST = { -tracker_selection-part } chest?
+tracker_selection_menu-WAIST = { -tracker_selection-part } waist?
+tracker_selection_menu-HIP = { -tracker_selection-part } hip?
+tracker_selection_menu-LEFT_SHOULDER = { -tracker_selection-part } left shoulder?
+tracker_selection_menu-LEFT_UPPER_ARM = { -tracker_selection-part } left upper arm?
+tracker_selection_menu-LEFT_LOWER_ARM = { -tracker_selection-part } left lower arm?
+tracker_selection_menu-LEFT_HAND = { -tracker_selection-part } left hand?
+tracker_selection_menu-LEFT_UPPER_LEG = { -tracker_selection-part } left thigh?
+tracker_selection_menu-LEFT_LOWER_LEG = { -tracker_selection-part } left ankle?
+tracker_selection_menu-LEFT_FOOT = { -tracker_selection-part } left foot?
+tracker_selection_menu-LEFT_CONTROLLER = { -tracker_selection-part } left controller?
+
 tracker_selection_menu-unassigned = unassyigned twackaws
 tracker_selection_menu-assigned = assyigned twackaws
 tracker_selection_menu-dont_assign = do nawt assyign
 
 ## Mounting menu
-mounting_selection_menu-title = whewe doo yew want dis twayckaw to be?
+mounting_selection_menu = whewe doo yew want dis twayckaw to be?
 mounting_selection_menu-close = cwose
 
 ## Sidebar settings
@@ -154,62 +191,87 @@ settings-sidebar-title = settyings~
 settings-sidebar-general = genyawaw
 settings-sidebar-tracker_mechanics = twayckaw mechanics~
 settings-sidebar-fk_settings = fk settyings
+settings-sidebar-gesture_control = Gesture control
 settings-sidebar-interface = intyawface~
 settings-sidebar-osc_router = OSC wouwter
 settings-sidebar-utils = utiwities
 settings-sidebar-serial = sewiaw cownsaw
 
 ## SteamVR settings
-settings-general-steamvr-title = steamvr~
+settings-general-steamvr = steamvr~
 settings-general-steamvr-subtitle = steamvr twayckaws~
-settings-general-steamvr-description-p0 = enyable or dysabywe specific twacking pawts.
-settings-general-steamvr-description-p1 = usefuw if yew want mowwe contwoww owew what swimevr does.
+# Not all translation keys support multiline, only the ones that specify it will actually
+# split it in lines (that also means you can split in lines however you want in those).
+# The first spaces (not tabs) for indentation will be ignored, just to make the file look nice when writing.
+# This one is one of this cases that cares about multilines
+settings-general-steamvr-description =
+    enyable or dysabywe specific twacking pawts.
+    usefuw if yew want mowwe contwoww owew what swimevr does.
 settings-general-steamvr-trackers-waist = wyayst
 settings-general-steamvr-trackers-chest = chwest
 settings-general-steamvr-trackers-feet = pawbsies~
 settings-general-steamvr-trackers-knees = knyees~
 settings-general-steamvr-trackers-elbows = ewbows~
+settings-general-steamvr-trackers-hands = Hands
 
 ## Tracker mechanics
-settings-general-tracker_mechanics-title = twayckaw mechanics~
-settings-general-tracker_mechanics-filtering-title = fiwtering~
-settings-general-tracker_mechanics-filtering-description-p0 = chooce teh fiwwtewing type fow youw twackaws.
-settings-general-tracker_mechanics-filtering-description-p1 = pwediction pwedicts movment while smowthing smowthens movment.
-settings-general-tracker_mechanics-filtering-type-title = fiwtewing type~
-settings-general-tracker_mechanics-filtering-type-none-label = no fiwwtewing~
+settings-general-tracker_mechanics = twayckaw mechanics~
+settings-general-tracker_mechanics-filtering_type = fiwtering~
+# This also cares about multilines
+settings-general-tracker_mechanics-filtering-description =
+    chooce teh fiwwtewing type fow youw twackaws.
+    pwediction pwedicts movment while smowthing smowthens movment.
+settings-general-tracker_mechanics-filtering-type = fiwtewing type~
+settings-general-tracker_mechanics-filtering-type-none = no fiwwtewing~
 settings-general-tracker_mechanics-filtering-type-none-description = use wowtations as is. wiw nawt do any fiwwtewing.
-settings-general-tracker_mechanics-filtering-type-smoothing-label = smowthing
+settings-general-tracker_mechanics-filtering-type-smoothing = smowthing
 settings-general-tracker_mechanics-filtering-type-smoothing-description = smowthes movements but adds some watency~
-settings-general-tracker_mechanics-filtering-type-prediction-label = pwediction~
+settings-general-tracker_mechanics-filtering-type-prediction = pwediction~
 settings-general-tracker_mechanics-filtering-type-prediction-description = wowduces wowcyancy and makes wowvements mowe wowappy, but may incwease jiwitty
-settings-general-tracker_mechanics-filtering-amount-label = amownt
-settings-general-tracker_mechanics-drift_compensation-title = dwift compensation
+settings-general-tracker_mechanics-filtering-amount = amownt
+settings-general-tracker_mechanics-drift_compensation = dwift compensation
 settings-general-tracker_mechanics-drift_compensation-description-p0 = compensates imu yaw dwift by appwying an invewse wotation.
 settings-general-tracker_mechanics-drift_compensation-description-p1 = change amownt of compensation and how many wesets awe taken into accouwnt.
 settings-general-tracker_mechanics-drift_compensation-enabled-label = dwift compensation
 settings-general-tracker_mechanics-drift_compensation-amount-label = compensation amownt
 settings-general-tracker_mechanics-drift_compensation-max_resets-label = nuwmbew of wesets uwsed
 
-## Tracking settings
-settings-general-fk_settings-title = twacking sewttings
-settings-general-fk_settings-leg_tweak-title = leg tweeks
+## FK/Tracking settings
+settings-general-fk_settings = fk sewttings
+settings-general-fk_settings-leg_tweak = leg tweeks
 settings-general-fk_settings-leg_tweak-description = floo-cwip can wowduce owow even ewiminates cwipping with teh fwoor but may cause pwobweems when on yowur neeys. skayting-cowwection cowwects fow wowce skating, but can wowcyancy accuwowacy in cewtain wowvement wowttewns.
+# Floor clip: 
+# why the name - came from the idea of noclip in video games, but is the opposite where clipping to the floor is a desired feature
+# definition - Prevents the foot trackers from going lower than they where when a reset was performed
 settings-general-fk_settings-leg_tweak-floor_clip = fwoow cwip
+# Skating correction: 
+# why the name - without this enabled the feet will often slide across the ground as if your skating across the ground,
+# since this largely prevents this it corrects for it hence skating correction (note this may be renamed to sliding correction)
+# definition - Guesses when each foot is in contact with the ground and uses that information to improve tracking
 settings-general-fk_settings-leg_tweak-skating_correction = skayting wowcowwection
-settings-general-fk_settings-arm_fk-title = awm fk
+settings-general-fk_settings-leg_tweak-skating_correction-amount = Skating correction strength
+settings-general-fk_settings-arm_fk = awm fk
 settings-general-fk_settings-arm_fk-description = chawnge teh way teh awms awe twacked.
 settings-general-fk_settings-arm_fk-force_arms = fowce awms fwom hmd
-settings-general-fk_settings-skeleton_settings-title = skeweton sewttings
+settings-general-fk_settings-skeleton_settings = skeweton sewttings
 settings-general-fk_settings-skeleton_settings-description = toggwe skeweton sewttings on owow off. is wowcommended to weawve these on~
 settings-general-fk_settings-skeleton_settings-extended_spine = ewtended spine
 settings-general-fk_settings-skeleton_settings-extended_pelvis = ewtended pelvis
 settings-general-fk_settings-skeleton_settings-extended_knees = ewtended neey
+settings-general-fk_settings-vive_emulation-title = Vive emulation
+settings-general-fk_settings-vive_emulation-description = Emulate the waist tracker problems that Vive trackers have. This is a joke and makes tracking worse.
+settings-general-fk_settings-vive_emulation-label = Enable Vive emulation
 
 ## Gesture control settings (tracker tapping)
-settings-general-gesture_control-title = gestauw cantwol
+settings-general-gesture_control = gestauw cantwol
 settings-general-gesture_control-subtitle = bap bwased wesets
 settings-general-gesture_control-description = allaws owr wesets wo be twiggered by wapping a twackaw. The twackaw hyighest wup on youwur twursuu is uwued for qwick weset, wa twackaw hyighest up on youwur weft weg is uwused for weset, and teh twackaw hyighest up on youwur wight weg is used for mmountwing weset. It showold we wentioned what waps muwst happen within 0.6 seconds wo be wegistered
-settings-general-gesture_control-taps = baps
+# This is a unit: 3 taps, 2 taps, 1 tap
+# $amount (Number) - Amount of taps (touches to the tracker's case)
+settings-general-gesture_control-taps = { $amount ->
+    [one] 1 bap
+    *[other] { $amount } baps
+}
 settings-general-gesture_control-quickResetEnabled = enable wap to quwuick weset
 settings-general-gesture_control-quickResetDelay = quwuick weset deway
 settings-general-gesture_control-quickResetTaps = baps for quwuick weset
@@ -221,21 +283,23 @@ settings-general-gesture_control-mountingResetDelay = mountwing weset deway
 settings-general-gesture_control-mountingResetTaps = baps for mountwing weset
 
 ## Interface settings
-settings-general-interface-title = intewface
-settings-general-interface-dev_mode-title = devwowwewow mode
+settings-general-interface = intewface
+settings-general-interface-dev_mode = devwowwewow mode
 settings-general-interface-dev_mode-description = this mode can be wowseffuw if you need in-dipth data owow to intewact with cownnected twackaws on a wowowe wowadvanced wowwevew
 settings-general-interface-dev_mode-label = devwowwewow mode
-settings-general-interface-serial_detection-title = shewyaw device deteccion
+settings-general-interface-serial_detection = shewyaw device deteccion
 settings-general-interface-serial_detection-description = this option will shaww a pawp-up evewy time yuw pwug a new shewyaw device that cawwld be a twayckaw. it helps iympwooving teh setup pwocess of a twayckaw
 settings-general-interface-serial_detection-label = shewyaw device deteccion
-settings-general-interface-lang-title = sewect wanguage
+settings-general-interface-lang = sewect wanguage
 settings-general-interface-lang-description = change the defawwt wanguage yuw want to use
 settings-general-interface-lang-placeholder = sewect teh wanguage to use
 
 ## Serial settings
-settings-serial-title = shewyaw console
-settings-serial-description-p0 = this is a wiwve infowmation feed fow shewyaw comyunicaytion
-settings-serial-description-p1 = may be usefuw if yuw need to know teh fiwmwawe is acting up
+settings-serial = shewyaw console
+# This cares about multilines
+settings-serial-description =
+    this is a wiwve infowmation feed fow shewyaw comyunicaytion
+    may be usefuw if yuw need to know teh fiwmwawe is acting up
 settings-serial-connection_lost = connyection to shewyaw wost, weconnyecting... >~<
 settings-serial-reboot = weboot
 settings-serial-factory_reset = fawctowy reset
@@ -244,39 +308,50 @@ settings-serial-serial_select = sewect a shewyaw pawt
 settings-serial-auto_dropdown_item = awto
 
 ## OSC router settings
-settings-osc-router-title = OSC wouwter
-settings-osc-router-description-p0 = fowwawd osc messages fwom anothew pwogwam
-settings-osc-router-description-p1 = usefuww fow uwsing anothew osc pwogwam with VRChat fow exampwe
-settings-osc-router-enable-title = enaybwe
+settings-osc-router = OSC wouwter
+# This cares about multilines
+settings-osc-router-description = 
+    fowwawd osc messages fwom anothew pwogwam
+    usefuww fow uwsing anothew osc pwogwam with VRChat fow exampwe
+settings-osc-router-enable = enaybwe
 settings-osc-router-enable-description = toggle teh fowwawding of data
 settings-osc-router-enable-label = enaybwe
-settings-osc-router-network-title = network pawts
-settings-osc-router-network-description-p0 = set the pawts fow wistening awnd sending data
-settings-osc-router-network-description-p1 = these can be the same as othew powts uwsed in the swimevr sewvew
-settings-osc-router-network-port_in-label = pawt in
-settings-osc-router-network-port_in-placeholder = pawt in (defawwt: 9002)
-settings-osc-router-network-port_out-label = pawt out
-settings-osc-router-network-port_out-placeholder = pawt out (defawwt: 9000)
-settings-osc-router-network-address-title = network addwess
+settings-osc-router-network = network pawts
+# This cares about multilines
+settings-osc-router-network-description =
+    set the pawts fow wistening awnd sending data
+    these can be the same as othew powts uwsed in the swimevr sewvew
+settings-osc-router-network-port_in =
+    .label = pawt in
+    .placeholder = pawt in (defawwt: 9002)
+settings-osc-router-network-port_out =
+    .label = pawt out
+    .placeholder = pawt out (defawwt: 9000)
+settings-osc-router-network-address = network addwess
 settings-osc-router-network-address-description = choose which addwess to send out data at
 settings-osc-router-network-address-placeholder = IPV4 addwess
 
 ## OSC VRChat settings
-settings-osc-vrchat-description-p0 = change vwchat-specific settwings to wweceive hmd data awnd send
-settings-osc-vrchat-description-p1 = twayckaws data fow fbt (wawwks on quest standalone).
-settings-osc-vrchat-enable-title = enaybwe
+settings-osc-vrchat = VRChat OSC Trackers
+# This cares about multilines
+settings-osc-vrchat-description =
+    change vwchat-specific settwings to wweceive hmd data awnd send
+    twayckaws data fow fbt (wawwks on quest standalone).
+settings-osc-vrchat-enable = enaybwe
 settings-osc-vrchat-enable-description = toggle teh sending awnd wweceiving of data
 settings-osc-vrchat-enable-label = enaybwe
-settings-osc-vrchat-network-title = network pawts
+settings-osc-vrchat-network = network pawts
 settings-osc-vrchat-network-description = set the pawts fow wistening awnd sending data to vwchawt
-settings-osc-vrchat-network-port_in-label = pawt in
-settings-osc-vrchat-network-port_in-placeholder = pawt in (defawwt: 9001)
-settings-osc-vrchat-network-port_out-label = pawt out
-settings-osc-vrchat-network-port_out-placeholder = pawt out (defawwt: 9000)
-settings-osc-vrchat-network-address-title = network addwess
+settings-osc-vrchat-network-port_in =
+    .label = pawt in
+    .placeholder = pawt in (defawwt: 9001)
+settings-osc-vrchat-network-port_out =
+    .label = pawt out
+    .placeholder = pawt out (defawwt: 9000)
+settings-osc-vrchat-network-address = network addwess
 settings-osc-vrchat-network-address-description = choose which addwess to send out data to vwchat (check yuw wifi settwings on yuw device)
 settings-osc-vrchat-network-address-placeholder = vwchat ip addwess
-settings-osc-vrchat-network-trackers-title = trayckawws
+settings-osc-vrchat-network-trackers = trayckawws
 settings-osc-vrchat-network-trackers-description = toggle teh sending of spweciwic twackers viwa OSC
 settings-osc-vrchat-network-trackers-chest = chest
 settings-osc-vrchat-network-trackers-waist = wayst
@@ -291,21 +366,31 @@ onboarding-wip = wowwk in pwowgress
 
 ## WiFi setup
 onboarding-wifi_creds-back = gaww bawwk to intwoduction
-onboarding-wifi_creds-title = input wifi cwedentials
-onboarding-wifi_creds-description-p0 = teh twawckaws will use these cwedentials to connect wirelessly
-onboarding-wifi_creds-description-p1 = pwease use teh cwedentials that yaww awe cwowently cownyected to
+onboarding-wifi_creds = input wifi cwedentials
+# This cares about multilines
+onboarding-wifi_creds-description =
+    teh twawckaws will use these cwedentials to connect wirelessly
+    pwease use teh cwedentials that yaww awe cwowently cownyected to
 onboarding-wifi_creds-skip = skipy wifi settiwyngs
 onboarding-wifi_creds-submit = suwbmyt!
+onboarding-wifi_creds-ssid =
+    .label = SSID
+    .placeholder = Enter SSID
+onboarding-wifi_creds-password =
+    .label = Password
+    .placeholder = Enter password
 
 ## Mounting setup
 onboarding-reset_tutorial-back = gaww bawwk to meownting cawwibwation
-onboarding-reset_tutorial-title = weset tutowial
+onboarding-reset_tutorial = weset tutowial
 onboarding-reset_tutorial-description = dis featuwe isn't done, just pwess continyue
 
 ## Setup start
-onboarding-home-title = wewcome to swimevr
-onboarding-home-description-p0 = bwinging fuww-bawdy twacking
-onboarding-home-description-p1 = to everyone
+onboarding-home = wewcome to swimevr
+# This cares about multilines and it's centered!!
+onboarding-home-description =
+    bwinging fuww-bawdy twacking
+    to everyone
 onboarding-home-start = wets get set up!
 
 ## Enter VR part of setup
@@ -331,20 +416,35 @@ onboarding-connect_tracker-connection_status-connected = cownyected to wifi
 onboarding-connect_tracker-connection_status-error = unabwe to cownyect to wifi
 onboarding-connect_tracker-connection_status-start_connecting = wooking for twackaws
 onboarding-connect_tracker-connection_status-handshake = cownyected to teh sewvew
-onboarding-connect_tracker-connected_trackers = { $amount } twackers cownyected
+# $amount (Number) - Amount of trackers connected (this is a number, but you can use CLDR plural rules for your language)
+# More info on https://www.unicode.org/cldr/cldr-aux/charts/22/supplemental/language_plural_rules.html
+# English in this case only has 2 plural rules, which are "one" and "other",
+# we use 0 in an explicit way because there is no plural rule in english for 0, so we directly say
+# if $amount is 0 then we say "No trackers connected"
+onboarding-connect_tracker-connected_trackers = { $amount ->
+    [0] no twackers
+    [one] 1 twackers
+    *[other] { $amount } twackers
+} cownyected
 onboarding-connect_tracker-next = i cownyected awe my twackaws
 
 ## Tracker assignment setup
 onboarding-assign_trackers-back = go bak to wifi credyentials
 onboarding-assign_trackers-title = assign twackaws
 onboarding-assign_trackers-description = wets choyse which twackaw goes whewe. cwick on a wocation whewe yowo want to payce a twackaw
-onboarding-assign_trackers-assigned = { $assigned } of { $trackers } twackaws assigned
+# Look at translation of onboarding-connect_tracker-connected_trackers on how to use plurals
+# $assigned (Number) - Trackers that have been assigned a body part
+# $trackers (Number) - Trackers connected to the server
+onboarding-assign_trackers-assigned = { $assigned } of { $trackers ->
+    [one] 1 twackaws
+    *[other] { $trackers } twackaws
+} assigned
 onboarding-assign_trackers-advanced = show advanced assign wocations
 onboarding-assign_trackers-next = i assigned awe the twackaws
 
 ## Tracker manual mounting setup
 onboarding-manual_mounting-back = go bak to entaw vawe
-onboarding-manual_mounting-title = manual meownting
+onboarding-manual_mounting = manual meownting
 onboarding-manual_mounting-description = cwick on evewy twackaw and sewect which way they awe mownted
 onboarding-manual_mounting-auto_mounting = awtomawic meownting
 onboarding-manual_mounting-next = newt stewp
@@ -399,7 +499,11 @@ onboarding-automatic_proportions-recording-steps-2 = twist upwe wowdy wowft, the
 onboarding-automatic_proportions-recording-steps-3 = twist upwe wowdy wowight, then bend wowight.
 onboarding-automatic_proportions-recording-steps-4 = wiggy aweound until tymey ends.
 onboarding-automatic_proportions-recording-processing = pwowcessing teh wowesult
-onboarding-automatic_proportions-recording-timer = { $time } secondsy wowft
+# $time (Number) - Seconds left for the automatic calibration recording to finish (max 15)
+onboarding-automatic_proportions-recording-timer = { $time ->
+    [one] 1 second wowft
+    *[other] { $time } secondsy wowft
+}
 onboarding-automatic_proportions-verify_results-title = vewify wowesults
 onboarding-automatic_proportions-verify_results-description = check teh wewesults below, do tehy weok coowect?
 onboarding-automatic_proportions-verify_results-results = wecowding wewesults

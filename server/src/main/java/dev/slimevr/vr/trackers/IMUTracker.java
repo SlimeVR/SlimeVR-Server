@@ -106,7 +106,7 @@ public class IMUTracker
 	public void writeConfig(TrackerConfig config) {
 		config.setDesignation(bodyPosition == null ? null : bodyPosition.designation);
 		config
-			.setMountingRotation(
+			.setMountingOrientation(
 				mounting != null ? mounting : new Quaternion().fromAngles(0, FastMath.PI, 0)
 			);
 		config.setCustomName(customName);
@@ -120,9 +120,9 @@ public class IMUTracker
 		if (userEditable()) {
 			setCustomName(config.getCustomName());
 
-			if (config.getMountingRotation() != null) {
-				mounting = config.getMountingRotation();
-				mountAdjust.set(config.getMountingRotation());
+			if (config.getMountingOrientation() != null) {
+				mounting = config.getMountingOrientation();
+				mountAdjust.set(config.getMountingOrientation());
 			} else {
 				mountAdjust.loadIdentity();
 			}
@@ -148,11 +148,11 @@ public class IMUTracker
 		}
 	}
 
-	public Quaternion getMountingRotation() {
+	public Quaternion getMountingOrientation() {
 		return mounting;
 	}
 
-	public void setMountingRotation(Quaternion mr) {
+	public void setMountingOrientation(Quaternion mr) {
 		mounting = mr;
 		if (mounting != null) {
 			mountAdjust.set(mounting);

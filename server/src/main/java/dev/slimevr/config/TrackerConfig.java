@@ -14,7 +14,7 @@ public class TrackerConfig {
 	private String designation;
 	private boolean hide;
 	private Quaternion adjustment;
-	private Quaternion mountingRotation;
+	private Quaternion mountingOrientation;
 	private Boolean allowDriftCompensation;
 
 
@@ -75,12 +75,12 @@ public class TrackerConfig {
 		this.adjustment = adjustment;
 	}
 
-	public Quaternion getMountingRotation() {
-		return mountingRotation;
+	public Quaternion getMountingOrientation() {
+		return mountingOrientation;
 	}
 
-	public void setMountingRotation(Quaternion mountingRotation) {
-		this.mountingRotation = mountingRotation;
+	public void setMountingOrientation(Quaternion mountingOrientation) {
+		this.mountingOrientation = mountingOrientation;
 	}
 
 	public Boolean getAllowDriftCompensation() {

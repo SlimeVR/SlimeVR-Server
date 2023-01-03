@@ -194,7 +194,7 @@ public class RPCHandler extends ProtocolHandler<RpcMessageHeader>
 		if (req.mountingOrientation() != null) {
 			if (tracker instanceof IMUTracker imu) {
 				imu
-					.setMountingRotation(
+					.setMountingOrientation(
 						new Quaternion(
 							req.mountingOrientation().x(),
 							req.mountingOrientation().y(),

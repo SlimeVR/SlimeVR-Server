@@ -1,8 +1,8 @@
 import classNames from 'classnames';
-import { useTranslation } from 'react-i18next';
 import { useAutobone } from '../../../../../hooks/autobone';
 import { Button } from '../../../../commons/Button';
 import { Typography } from '../../../../commons/Typography';
+import { useLocalization } from '@fluent/react';
 
 export function VerifyResultsStep({
   nextStep,
@@ -13,7 +13,7 @@ export function VerifyResultsStep({
   prevStep: () => void;
   variant: 'onboarding' | 'alone';
 }) {
-  const { t } = useTranslation();
+  const { l10n } = useLocalization();
   const {
     startRecording,
     hasCalibration,
@@ -37,18 +37,24 @@ export function VerifyResultsStep({
       <div className="flex flex-col flex-grow justify-between gap-1">
         <div className="flex flex-col gap-1 max-w-sm">
           <Typography variant="main-title" bold>
-            {t('onboarding-automatic_proportions-verify_results-title')}
+            {l10n.getString(
+              'onboarding-automatic_proportions-verify_results-title'
+            )}
           </Typography>
           <div>
             <Typography color="secondary">
-              {t('onboarding-automatic_proportions-verify_results-description')}
+              {l10n.getString(
+                'onboarding-automatic_proportions-verify_results-description'
+              )}
             </Typography>
           </div>
         </div>
         <div className="flex w-full items-center flex-col">
           <div className="flex flex-col pt-1 gap-2 justify-center w-full max-w-xs">
             <Typography bold>
-              {t('onboarding-automatic_proportions-verify_results-results')}
+              {l10n.getString(
+                'onboarding-automatic_proportions-verify_results-results'
+              )}
             </Typography>
             <div
               className={classNames(
@@ -65,7 +71,7 @@ export function VerifyResultsStep({
               ))}
               {!hasCalibration && hasRecording && (
                 <Typography>
-                  {t(
+                  {l10n.getString(
                     'onboarding-automatic-proportions-verify-results-processing'
                   )}
                 </Typography>
@@ -78,10 +84,14 @@ export function VerifyResultsStep({
             variant={variant === 'onboarding' ? 'secondary' : 'tiertiary'}
             onClick={redo}
           >
-            {t('onboarding-automatic_proportions-verify_results-redo')}
+            {l10n.getString(
+              'onboarding-automatic_proportions-verify_results-redo'
+            )}
           </Button>
           <Button variant="primary" onClick={apply}>
-            {t('onboarding-automatic_proportions-verify_results-confirm')}
+            {l10n.getString(
+              'onboarding-automatic_proportions-verify_results-confirm'
+            )}
           </Button>
         </div>
       </div>

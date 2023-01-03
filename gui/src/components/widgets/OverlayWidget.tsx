@@ -1,16 +1,16 @@
 import { useEffect } from 'react';
 import { useForm } from 'react-hook-form';
-import { useTranslation } from 'react-i18next';
 import { KeyValuesT, MessageT, Payload, Topic } from 'solarxr-protocol';
 import {
   OVERLAY_DISPLAY_SETTINGS_TOPIC,
   PayloadData,
-  usePubSub
+  usePubSub,
 } from '../../hooks/pubSub';
 import { CheckBox } from '../commons/Checkbox';
+import { useLocalization } from '@fluent/react';
 
 export function OverlayWidget() {
-  const { t } = useTranslation();
+  const { l10n } = useLocalization();
   const { publish, subscribe, keyValues } = usePubSub();
   const { reset, control, handleSubmit, watch } = useForm<{
     isVisible: boolean;
@@ -68,13 +68,13 @@ export function OverlayWidget() {
         control={control}
         name="isVisible"
         variant="toggle"
-        label={t('overlay-is_visible_label')}
+        label={l10n.getString('overlay-is_visible_label')}
       ></CheckBox>
       <CheckBox
         control={control}
         name="isMirrored"
         variant="toggle"
-        label={t('overlay-is_mirrored_label')}
+        label={l10n.getString('overlay-is_mirrored_label')}
       ></CheckBox>
     </form>
   );
