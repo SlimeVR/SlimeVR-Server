@@ -91,7 +91,7 @@ export function AppLocalizationProvider(props: AppLocalizationProviderProps) {
     );
     setCurrentLocales([currentLocale]);
 
-    const fetchedMessages = await fetchMessages(currentLocales);
+    const fetchedMessages = await fetchMessages(currentLocale);
 
     const bundles = lazilyParsedBundles([fetchedMessages]);
     localStorage.setItem('i18nextLng', currentLocale);
