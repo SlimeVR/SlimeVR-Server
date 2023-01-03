@@ -96,7 +96,7 @@ export function AppLocalizationProvider(props: AppLocalizationProviderProps) {
 
   async function changeLocales(userLocales: string[]) {
     const currentLocale = match(
-      userLocales,
+      userLocales.filter((x) => verifyLocale(x) !== null),
       langs.map((x) => x.key),
       DEFAULT_LOCALE
     );
