@@ -101,7 +101,7 @@ public class CurrentVRConfigConverter implements VersionedModelConverter {
 				}
 				modelData.set("trackers", trackersNode);
 			}
-			
+
 			// Migrate old skeleton offsets to new ones
 			ObjectNode skeletonNode = (ObjectNode) modelData.get("skeleton");
 			if (skeletonNode != null) {
