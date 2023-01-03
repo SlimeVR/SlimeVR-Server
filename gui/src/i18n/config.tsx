@@ -1,4 +1,4 @@
-import { negotiateLanguages } from '@fluent/langneg';
+import { match } from '@formatjs/intl-localematcher';
 import { FluentBundle, FluentResource } from '@fluent/bundle';
 import { LocalizationProvider, ReactLocalization } from '@fluent/react';
 import { Children, ReactNode, useEffect, useState, createContext } from 'react';
@@ -49,7 +49,7 @@ export const langs = [
   },
   {
     name: '🥺 Engwish~ OwO',
-    key: 'en-OwO',
+    key: 'en-x-owo',
   },
 ];
 
@@ -75,7 +75,7 @@ interface AppLocalizationProviderProps {
 }
 interface i18n {
   currentLocales: string[];
-  changeLocales: (userLocales: readonly string[]) => Promise<void>;
+  changeLocales: (userLocales: string[]) => Promise<void>;
 }
 
 export const LangContext = createContext<i18n>(undefined as never);
@@ -83,20 +83,18 @@ export function AppLocalizationProvider(props: AppLocalizationProviderProps) {
   const [currentLocales, setCurrentLocales] = useState([DEFAULT_LOCALE]);
   const [l10n, setL10n] = useState<ReactLocalization | null>(null);
 
-  async function changeLocales(userLocales: readonly string[]) {
-    const currentLocales = negotiateLanguages(
+  async function changeLocales(userLocales: string[]) {
+    const currentLocale = match(
       userLocales,
       langs.map((x) => x.key),
-      { defaultLocale: DEFAULT_LOCALE }
+      DEFAULT_LOCALE
     );
-    setCurrentLocales(currentLocales);
+    setCurrentLocales([currentLocale]);
 
-    const fetchedMessages = await Promise.all(
-      currentLocales.map(fetchMessages)
-    );
+    const fetchedMessages = await fetchMessages(currentLocales);
 
-    const bundles = lazilyParsedBundles(fetchedMessages);
-    localStorage.setItem('i18nextLng', currentLocales[0]);
+    const bundles = lazilyParsedBundles([fetchedMessages]);
+    localStorage.setItem('i18nextLng', currentLocale);
     setL10n(new ReactLocalization(bundles));
   }
 
