@@ -70,6 +70,17 @@ function* lazilyParsedBundles(fetchedMessages: [string, string][]) {
   }
 }
 
+function verifyLocale(locale: string | null): string | null {
+  if (!locale) return null;
+  try {
+    new Intl.Locale(locale);
+    return locale;
+  } catch (e) {
+    console.error(e);
+    return null;
+  }
+}
+
 interface AppLocalizationProviderProps {
   children: ReactNode;
 }
@@ -99,7 +110,7 @@ export function AppLocalizationProvider(props: AppLocalizationProviderProps) {
   }
 
   useEffect(() => {
-    const lang = localStorage.getItem('i18nextLng');
+    const lang = verifyLocale(localStorage.getItem('i18nextLng'));
     const array = [];
     if (lang) array.push(lang);
     changeLocales([...array, ...navigator.languages]);
