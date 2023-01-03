@@ -4,7 +4,7 @@ import React from 'react';
 import * as ReactDOMClient from 'react-dom/client';
 import Modal from 'react-modal';
 import App from './App';
-import './i18n/config';
+import { AppLocalizationProvider } from './i18n/config';
 import './index.css';
 
 Modal.setAppElement('#root');
@@ -15,7 +15,9 @@ if (container) {
   const root = ReactDOMClient.createRoot(container);
   root.render(
     <React.StrictMode>
-      <App />
+      <AppLocalizationProvider>
+        <App />
+      </AppLocalizationProvider>
     </React.StrictMode>
   );
 }

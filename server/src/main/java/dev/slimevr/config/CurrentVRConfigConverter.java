@@ -19,13 +19,7 @@ public class CurrentVRConfigConverter implements VersionedModelConverter {
 		int version = Integer.parseInt(modelVersion);
 
 		// Configs with old versions need a migration to the latest config
-		if (version == 2) {
-			// Check for out-of-bound filtering amount
-			ObjectNode filtersNode = (ObjectNode) modelData.get("filters");
-			if (filtersNode != null && filtersNode.get("amount").floatValue() > 2f) {
-				filtersNode.set("amount", new FloatNode(0.2f));
-			}
-		} else if (version < 2) {
+		if (version < 2) {
 			// Move zoom to the window config
 			ObjectNode windowNode = (ObjectNode) modelData.get("window");
 			DoubleNode zoomNode = (DoubleNode) modelData.get("zoom");
@@ -81,6 +75,31 @@ public class CurrentVRConfigConverter implements VersionedModelConverter {
 				skeletonNode.set("offsets", offsetsNode);
 				modelData.set("skeleton", skeletonNode);
 				modelData.remove("body");
+			}
+		}
+		if (version < 3) {
+			// Check for out-of-bound filtering amount
+			ObjectNode filtersNode = (ObjectNode) modelData.get("filters");
+			if (filtersNode != null && filtersNode.get("amount").floatValue() > 2f) {
+				filtersNode.set("amount", new FloatNode(0.2f));
+			}
+		}
+		if (version < 4) {
+			// Change mountingRotation to mountingOrientation
+			ObjectNode oldTrackersNode = (ObjectNode) modelData.get("trackers");
+			if (oldTrackersNode != null) {
+				var trackersIter = oldTrackersNode.iterator();
+				var fieldNamesIter = oldTrackersNode.fieldNames();
+				ObjectNode trackersNode = nodeFactory.objectNode();
+				String fieldName;
+				while (trackersIter.hasNext()) {
+					ObjectNode node = (ObjectNode) trackersIter.next();
+					fieldName = fieldNamesIter.next();
+					node.set("mountingOrientation", node.get("mountingRotation"));
+					node.remove("mountingRotation");
+					trackersNode.set(fieldName, node);
+				}
+				modelData.set("trackers", trackersNode);
 			}
 		}
 

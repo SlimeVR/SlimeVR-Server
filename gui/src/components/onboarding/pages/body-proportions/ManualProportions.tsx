@@ -1,5 +1,4 @@
 import { useForm } from 'react-hook-form';
-import { useTranslation } from 'react-i18next';
 import { RpcMessage, SkeletonResetAllRequestT } from 'solarxr-protocol';
 import { useOnboarding } from '../../../../hooks/onboarding';
 import { useWebsocketAPI } from '../../../../hooks/websocket-api';
@@ -9,9 +8,10 @@ import { CheckBox } from '../../../commons/Checkbox';
 import { PersonFrontIcon } from '../../../commons/PersonFrontIcon';
 import { Typography } from '../../../commons/Typography';
 import { BodyProportions } from './BodyProportions';
+import { useLocalization } from '@fluent/react';
 
 export function ManualProportionsPage() {
-  const { t } = useTranslation();
+  const { l10n } = useLocalization();
   const { applyProgress, skipSetup, state } = useOnboarding();
   const { sendRPCPacket } = useWebsocketAPI();
 
@@ -38,15 +38,17 @@ export function ManualProportionsPage() {
               <div className="flex flex-col">
                 {!state.alonePage && (
                   <ArrowLink to="/onboarding/reset-tutorial" direction="left">
-                    {t('onboarding-manual_proportions-back')}
+                    {l10n.getString('onboarding-manual_proportions-back')}
                   </ArrowLink>
                 )}
                 <Typography variant="main-title">
-                  {t('onboarding-manual_proportions-title')}
+                  {l10n.getString('onboarding-manual_proportions-title')}
                 </Typography>
                 <CheckBox
                   control={control}
-                  label={t('onboarding-manual_proportions-precision')}
+                  label={l10n.getString(
+                    'onboarding-manual_proportions-precision'
+                  )}
                   name="precise"
                   variant="toggle"
                 ></CheckBox>
@@ -65,11 +67,11 @@ export function ManualProportionsPage() {
           <div className="flex flex-grow gap-3">
             {!state.alonePage && (
               <Button variant="secondary" to="/" onClick={skipSetup}>
-                {t('onboarding-skip')}
+                {l10n.getString('onboarding-skip')}
               </Button>
             )}
             <Button variant="secondary" onClick={resetAll}>
-              {t('reset-reset_all')}
+              {l10n.getString('reset-reset_all')}
             </Button>
           </div>
           <div className="flex gap-3">
@@ -78,11 +80,11 @@ export function ManualProportionsPage() {
               state={{ alonePage: state.alonePage }}
               to="/onboarding/body-proportions/auto"
             >
-              {t('onboarding-manual_proportions-auto')}
+              {l10n.getString('onboarding-manual_proportions-auto')}
             </Button>
             {!state.alonePage && (
               <Button variant="primary" to="/onboarding/done">
-                {t('onboarding-continue')}
+                {l10n.getString('onboarding-continue')}
               </Button>
             )}
           </div>

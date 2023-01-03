@@ -23,7 +23,7 @@ custom-protocol = ["tauri/custom-protocol"]
 [build-dependencies]
 tauri-build = { version = "1.2", features = [] }
 cfg_aliases = "0.1"
-shadow-rs = "0.18"
+shadow-rs = "0.19"
 
 [dependencies]
 serde_json = "1"
@@ -33,12 +33,12 @@ pretty_env_logger = "0.4"
 log = "0.4"
 clap = { version = "4.0.29", features = ["derive"] }
 clap-verbosity-flag = "2"
-tauri-plugin-window-state = "0.1.0"
+tauri-plugin-window-state = { git = "https://github.com/tauri-apps/tauri-plugin-window-state", rev = "refs/pull/52/head" }
 rand = "0.8.5"
 tempfile = "3"
 which = "4.3.0"
 open = "3"
-shadow-rs = { version = "0.18", default-features = false }
+shadow-rs = { version = "0.19", default-features = false }
 const_format = "0.2.30"
 
 [target.'cfg(windows)'.dependencies]

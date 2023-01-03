@@ -1,3 +1,4 @@
+import { useLocalization } from '@fluent/react';
 import classNames from 'classnames';
 import {
   MouseEventHandler,
@@ -6,7 +7,6 @@ import {
   useMemo,
   useState,
 } from 'react';
-import { useTranslation } from 'react-i18next';
 import {
   ChangeSkeletonConfigRequestT,
   RpcMessage,
@@ -45,7 +45,7 @@ export function BodyProportions({
   precise: boolean;
   variant: 'onboarding' | 'alone';
 }) {
-  const { t } = useTranslation();
+  const { l10n } = useLocalization();
   const { useRPCPacket, sendRPCPacket } = useWebsocketAPI();
   const [config, setConfig] = useState<Omit<
     SkeletonConfigResponseT,
@@ -56,7 +56,7 @@ export function BodyProportions({
     return (
       config?.skeletonParts.map(({ bone, value }) => ({
         bone,
-        label: t('skeleton_bone-' + SkeletonBone[bone]),
+        label: l10n.getString('skeleton_bone-' + SkeletonBone[bone]),
         value,
       })) || []
     );

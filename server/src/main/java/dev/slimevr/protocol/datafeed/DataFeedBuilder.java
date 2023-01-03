@@ -98,8 +98,8 @@ public class DataFeedBuilder {
 		// TODO need support: TrackerInfo.addPollRate(fbb, tracker.);
 
 		if (tracker instanceof IMUTracker imuTracker) {
-			if (imuTracker.getMountingRotation() != null) {
-				Quaternion quaternion = imuTracker.getMountingRotation();
+			if (imuTracker.getMountingOrientation() != null) {
+				Quaternion quaternion = imuTracker.getMountingOrientation();
 				TrackerInfo
 					.addMountingOrientation(
 						fbb,

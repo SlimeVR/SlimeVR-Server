@@ -12,7 +12,7 @@ plugins {
 	kotlin("jvm") version "1.7.21"
 	application
 	id("com.github.johnrengelman.shadow") version "7.1.2"
-	id("com.diffplug.spotless") version "6.11.0"
+	id("com.diffplug.spotless") version "6.12.0"
 	id("com.github.gmazzo.buildconfig") version "3.1.0"
 }
 
@@ -110,7 +110,7 @@ buildConfig {
 	buildConfigField("boolean", "GIT_CLEAN", gitClean.toString())
 }
 
-spotless {
+configure<com.diffplug.gradle.spotless.SpotlessExtension> {
 	// optional: limit format enforcement to just the files changed by this feature branch
 	// ratchetFrom "origin/main"
 
@@ -130,14 +130,28 @@ spotless {
 	// 	endWithNewline()
 	// 	indentWithSpaces(2)  // YAML cannot contain tabs: https://yaml.org/faq.html
 	// }
-	format("kts") {
-		target("**/*.kts")
-		targetExclude("**/build/**/*.kts")
+
+	// .editorconfig doesn't work so, manual override
+	// https://github.com/diffplug/spotless/issues/142
+	val editorConfig =
+		mapOf(
+			"indent_size" to 4,
+			"indent_style" to "tab",
+			"max_line_length" to 88,
+			"ktlint_experimental" to "enabled"
+		)
+	val ktlintVersion = "0.47.1"
+	kotlinGradle {
+		target("*.gradle.kts") // default target for kotlinGradle
+		ktlint(ktlintVersion)
+			.setUseExperimental(true)
+			.editorConfigOverride(editorConfig)
 	}
 	kotlin {
-		target("**/*.kt")
-		targetExclude("**/build/**.kts")
-		ktlint("0.47.1")
+		targetExclude("build/**/**.kt")
+		ktlint(ktlintVersion)
+			.setUseExperimental(true)
+			.editorConfigOverride(editorConfig)
 	}
 	java {
 		targetExclude("**/BuildConfig.java")

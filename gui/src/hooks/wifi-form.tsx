@@ -3,6 +3,7 @@ import { useForm } from 'react-hook-form';
 import { useNavigate } from 'react-router-dom';
 import { Input } from '../components/commons/Input';
 import { useOnboarding } from './onboarding';
+import { Localized } from '@fluent/react';
 
 export interface WifiFormData {
   ssid: string;
@@ -41,20 +42,30 @@ export function useWifiForm() {
     hasWifiCreds: !!state.wifi,
     WifiForm: () => (
       <>
-        <Input
-          {...register('ssid', { required: true })}
-          type="text"
-          label="SSID"
-          placeholder="Enter SSID"
-          variant="secondary"
-        />
-        <Input
-          {...register('password')}
-          type="password"
-          label="Password"
-          placeholder="Enter password"
-          variant="secondary"
-        />
+        <Localized
+          id="onboarding-wifi_creds-ssid"
+          attrs={{ placeholder: true, label: true }}
+        >
+          <Input
+            {...register('ssid', { required: true })}
+            type="text"
+            label="SSID"
+            placeholder="ssid"
+            variant="secondary"
+          />
+        </Localized>
+        <Localized
+          id="onboarding-wifi_creds-password"
+          attrs={{ placeholder: true, label: true }}
+        >
+          <Input
+            {...register('password')}
+            type="password"
+            label="Password"
+            placeholder="password"
+            variant="secondary"
+          />
+        </Localized>
       </>
     ),
   };

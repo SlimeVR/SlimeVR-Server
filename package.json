@@ -7,17 +7,16 @@
     "gui"
   ],
   "scripts": {
-    "gui": "npm run update-solarxr && cd gui && npm run tauri dev",
+    "gui": "npm run update-solarxr && cd gui && npm run dev",
     "tauri": "cd gui && npm run tauri",
     "skipbundler": "cd gui && npm run skipbundler",
     "build": "npm run tauri build",
     "update-solarxr": "cd solarxr-protocol && npm run build",
-    "prepare": "husky install && npm run update-solarxr && patch-package"
+    "prepare": "husky install && npm run update-solarxr"
   },
   "devDependencies": {
     "@typescript-eslint/parser": "^5.43.0",
     "husky": "^8.0.2",
-    "patch-package": "^6.5.0",
     "typescript": "^4.9.3"
   }
 }
