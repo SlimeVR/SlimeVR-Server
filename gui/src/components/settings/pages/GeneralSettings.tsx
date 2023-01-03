@@ -361,9 +361,7 @@ export function GeneralSettings() {
             {l10n.getString('settings-general-tracker_mechanics')}
           </Typography>
           <Typography bold>
-            {l10n.getString(
-              'settings-general-tracker_mechanics-filtering-title'
-            )}
+            {l10n.getString('settings-general-tracker_mechanics-filtering')}
           </Typography>
           <div className="flex flex-col pt-2 pb-4">
             <>
@@ -381,7 +379,7 @@ export function GeneralSettings() {
           </div>
           <Typography>
             {l10n.getString(
-              'settings-general-tracker_mechanics-filtering-type-title'
+              'settings-general-tracker_mechanics-filtering-type'
             )}
           </Typography>
           <div className="flex md:flex-row flex-col gap-3 pt-2">
@@ -435,19 +433,21 @@ export function GeneralSettings() {
           <div className="flex flex-col pt-4 pb-4"></div>
           <Typography bold>
             {l10n.getString(
-              'settings-general-tracker_mechanics-drift_compensation-title'
+              'settings-general-tracker_mechanics-drift_compensation'
             )}
           </Typography>
           <div className="flex flex-col pt-2 pb-4">
             <Typography color="secondary">
-              {l10n.getString(
-                'settings-general-tracker_mechanics-drift_compensation-description-p0'
-              )}
-            </Typography>
-            <Typography color="secondary">
-              {l10n.getString(
-                'settings-general-tracker_mechanics-drift_compensation-description-p1'
-              )}
+              {l10n
+                .getString(
+                  'settings-general-tracker_mechanics-drift_compensation-description'
+                )
+                .split('\n')
+                .map((line, i) => (
+                  <Typography color="secondary" key={i}>
+                    {line}
+                  </Typography>
+                ))}
             </Typography>
           </div>
           <CheckBox

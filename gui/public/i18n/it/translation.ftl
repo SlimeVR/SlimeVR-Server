@@ -131,8 +131,8 @@ tracker-settings-mounting_section-edit = Cambia posizionamento
 # The .<name> means it's an attribute and it's related to the top key.
 # In this case that is the settings for the assignment section.
 tracker-settings-name_section = Nome del tracker
-tracker-settings-name_section-placeholder = Gamba destra di NightyQueer
 tracker-settings-name_section-description = Scegli un nomignolo carino :)
+tracker-settings-name_section-placeholder = Gamba destra di NightyQueer
 
 ## Tracker part card info
 tracker-part_card-no_name = Nessun nome
@@ -213,7 +213,7 @@ settings-general-steamvr-trackers-hands = Mani
 
 ## Tracker mechanics
 settings-general-tracker_mechanics = Comportamento del tracker
-settings-general-tracker_mechanics-filtering-title = Filtro movimenti
+settings-general-tracker_mechanics-filtering = Filtro movimenti
 # This also cares about multilines
 settings-general-tracker_mechanics-filtering-description =
     Scegli la tipologia di filtraggio movimenti per il tuo tracker.

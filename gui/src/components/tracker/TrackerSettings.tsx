@@ -288,7 +288,7 @@ export function TrackerSettingsPage() {
               <div className="flex flex-col gap-2 w-full mt-3">
                 <Typography variant="section-title">
                   {l10n.getString(
-                    'tracker-settings-drift_compensation_section-title'
+                    'tracker-settings-drift_compensation_section'
                   )}
                 </Typography>
                 <Typography color="secondary">

@@ -100,7 +100,7 @@ public class DataFeedBuilder {
 		if (tracker instanceof IMUTracker imuTracker) {
 			TrackerInfo.addIsImu(fbb, true);
 
-			if (imuTracker.getMountingRotation() != null) {
+			if (imuTracker.getMountingOrientation() != null) {
 				Quaternion quaternion = imuTracker.getMountingOrientation();
 				TrackerInfo
 					.addMountingOrientation(

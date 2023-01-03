@@ -131,8 +131,8 @@ tracker-settings-mounting_section-edit = 编辑佩戴
 # The .<name> means it's an attribute and it's related to the top key.
 # In this case that is the settings for the assignment section.
 tracker-settings-name_section = 追踪器名称
-tracker-settings-name_section-placeholder = CC 封印着漆黑之力的漆黑左臂
 tracker-settings-name_section-description = 给它起一个可爱的名字吧=w=~
+tracker-settings-name_section-placeholder = CC 封印着漆黑之力的漆黑左臂
 
 ## Tracker part card info
 tracker-part_card-no_name = 未命名
@@ -213,7 +213,7 @@ settings-general-steamvr-trackers-hands = 手部
 
 ## Tracker mechanics
 settings-general-tracker_mechanics = 追踪器设置
-settings-general-tracker_mechanics-filtering-title = 滤波
+settings-general-tracker_mechanics-filtering = 滤波
 # This also cares about multilines
 settings-general-tracker_mechanics-filtering-description =
     选择追踪器的滤波类型。

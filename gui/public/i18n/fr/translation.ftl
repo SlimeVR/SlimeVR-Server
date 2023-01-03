@@ -128,8 +128,8 @@ tracker-settings-assignment_section-edit = Ré-assigner
 tracker-settings-mounting_section = Orientation du capteur
 tracker-settings-mounting_section-description = Dans quelle direction pointe le capteur?
 tracker-settings-mounting_section-edit = Changer l'orientation
-tracker-settings-drift_compensation_section-title = Permettre la compensation de la dérive
-tracker-settings-drift_compensation_section-description = Ce tracker doit-il compenser pour sa dérive lorsque la compensation de la dérive est activée?
+tracker-settings-drift_compensation_section = Permettre la compensation de la dérive
+tracker-settings-drift_compensation_section-description = Ce capteur devrait-il compenser pour sa dérive si l'option est activée?
 tracker-settings-drift_compensation_section-edit = Permettre la compensation de la dérive
 # The .<name> means it's an attribute and it's related to the top key.
 # In this case that is the settings for the assignment section.
@@ -229,9 +229,10 @@ settings-general-tracker_mechanics-filtering-type-smoothing-description = Fluidi
 settings-general-tracker_mechanics-filtering-type-prediction = Prédiction
 settings-general-tracker_mechanics-filtering-type-prediction-description = Réduit la latence et rend les mouvements plus vifs, mais moins fluides.
 settings-general-tracker_mechanics-filtering-amount = Intensité du filtrage
-settings-general-tracker_mechanics-drift_compensation-title = Compensation de la dérive
-settings-general-tracker_mechanics-drift_compensation-description-p0 = Compense la dérive des gyroscopes en appliquant une rotation inverse.
-settings-general-tracker_mechanics-drift_compensation-description-p1 = Modifier la force de la compensation et le nombre de réinitialisations prises en compte.
+settings-general-tracker_mechanics-drift_compensation = Compensation de la dérive
+settings-general-tracker_mechanics-drift_compensation-description =
+    Compense la dérive des gyroscopes en appliquant une rotation inverse.
+    Modifier la force de la compensation et le nombre de réinitialisations prises en compte.
 settings-general-tracker_mechanics-drift_compensation-enabled-label = Compensation de la dérive
 settings-general-tracker_mechanics-drift_compensation-amount-label = Force de la compensation
 settings-general-tracker_mechanics-drift_compensation-max_resets-label = Nombre de réinitialisations prises en compte

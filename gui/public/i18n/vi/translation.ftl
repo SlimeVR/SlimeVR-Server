@@ -131,8 +131,8 @@ tracker-settings-mounting_section-edit = Chỉnh lại chỗ đặt
 # The .<name> means it's an attribute and it's related to the top key.
 # In this case that is the settings for the assignment section.
 tracker-settings-name_section = Tên tracker
-tracker-settings-name_section-placeholder = Menaced's left leg
 tracker-settings-name_section-description = Hãy cho một tên đẹp :)
+tracker-settings-name_section-placeholder = Menaced's left leg
 
 ## Tracker part card info
 tracker-part_card-no_name = Không tên

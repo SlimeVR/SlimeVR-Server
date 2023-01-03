@@ -128,14 +128,14 @@ tracker-settings-assignment_section-edit = Edit assignment
 tracker-settings-mounting_section = Mounting position
 tracker-settings-mounting_section-description = Where is the tracker mounted?
 tracker-settings-mounting_section-edit = Edit mounting
-tracker-settings-drift_compensation_section-title = Allow drift compensation
+tracker-settings-drift_compensation_section = Allow drift compensation
 tracker-settings-drift_compensation_section-description = Should this tracker compensate for its drift when drift compensation is enabled?
 tracker-settings-drift_compensation_section-edit = Allow drift compensation
 # The .<name> means it's an attribute and it's related to the top key.
 # In this case that is the settings for the assignment section.
 tracker-settings-name_section = Tracker name
-tracker-settings-name_section-placeholder = NightyBeast's left leg
 tracker-settings-name_section-description = Give it a cute nickname :)
+tracker-settings-name_section-placeholder = NightyBeast's left leg
 
 ## Tracker part card info
 tracker-part_card-no_name = No name

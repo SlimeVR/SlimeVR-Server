@@ -131,8 +131,8 @@ tracker-settings-mounting_section-edit = 装着向きの編集
 # The .<name> means it's an attribute and it's related to the top key.
 # In this case that is the settings for the assignment section.
 tracker-settings-name_section = トラッカー名称
-tracker-settings-name_section-placeholder = NightyBeast's left leg
 tracker-settings-name_section-description = 自由に名称をつけてください
+tracker-settings-name_section-placeholder = NightyBeast's left leg
 
 ## Tracker part card info
 tracker-part_card-no_name = 名称無し

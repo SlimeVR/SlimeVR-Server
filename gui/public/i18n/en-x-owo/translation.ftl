@@ -128,14 +128,14 @@ tracker-settings-assignment_section-edit = ewdit assiwnment
 tracker-settings-mounting_section = meownting pawsition
 tracker-settings-mounting_section-description = whewe is the twackaw mownted?
 tracker-settings-mounting_section-edit = edit meownting
-tracker-settings-drift_compensation_section-title = awwow dwift compensation
+tracker-settings-drift_compensation_section = awwow dwift compensation
 tracker-settings-drift_compensation_section-description = shouwd this twackew compensate fow its dwift when dwift compensation is enabwed?
 tracker-settings-drift_compensation_section-edit = awwow dwift compensation
 # The .<name> means it's an attribute and it's related to the top key.
 # In this case that is the settings for the assignment section.
 tracker-settings-name_section = twackaw name
-tracker-settings-name_section-placeholder = ewimewl's weft pawb
 tracker-settings-name_section-description = owo whats dis?
+tracker-settings-name_section-placeholder = ewimewl's weft pawb
 
 ## Tracker part card info
 tracker-part_card-no_name = no name
@@ -216,7 +216,7 @@ settings-general-steamvr-trackers-hands = Hands
 
 ## Tracker mechanics
 settings-general-tracker_mechanics = twayckaw mechanics~
-settings-general-tracker_mechanics-filtering_type = fiwtering~
+settings-general-tracker_mechanics-filtering = fiwtering~
 # This also cares about multilines
 settings-general-tracker_mechanics-filtering-description =
     chooce teh fiwwtewing type fow youw twackaws.
@@ -230,8 +230,9 @@ settings-general-tracker_mechanics-filtering-type-prediction = pwediction~
 settings-general-tracker_mechanics-filtering-type-prediction-description = wowduces wowcyancy and makes wowvements mowe wowappy, but may incwease jiwitty
 settings-general-tracker_mechanics-filtering-amount = amownt
 settings-general-tracker_mechanics-drift_compensation = dwift compensation
-settings-general-tracker_mechanics-drift_compensation-description-p0 = compensates imu yaw dwift by appwying an invewse wotation.
-settings-general-tracker_mechanics-drift_compensation-description-p1 = change amownt of compensation and how many wesets awe taken into accouwnt.
+settings-general-tracker_mechanics-drift_compensation-description =
+    compensates imu yaw dwift by appwying an invewse wotation.
+    change amownt of compensation and how many wesets awe taken into accouwnt.
 settings-general-tracker_mechanics-drift_compensation-enabled-label = dwift compensation
 settings-general-tracker_mechanics-drift_compensation-amount-label = compensation amownt
 settings-general-tracker_mechanics-drift_compensation-max_resets-label = nuwmbew of wesets uwsed

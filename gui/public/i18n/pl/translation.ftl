@@ -131,8 +131,8 @@ tracker-settings-mounting_section-edit = Edytuj
 # The .<name> means it's an attribute and it's related to the top key.
 # In this case that is the settings for the assignment section.
 tracker-settings-name_section = Nazwa Trackera
-tracker-settings-name_section-placeholder = Lewa noga Yexo
 tracker-settings-name_section-description = Daj mu słodką nazwę :)
+tracker-settings-name_section-placeholder = Lewa noga Yexo
 
 ## Tracker part card info
 tracker-part_card-no_name = Brak Nazwy
