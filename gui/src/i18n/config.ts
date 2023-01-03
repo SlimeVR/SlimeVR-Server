@@ -50,7 +50,7 @@ export const langs = [
   },
   {
     name: '🥺 Engwish~ OwO',
-    key: 'en-OwO',
+    key: 'en-OWO',
   },
 ];
 
