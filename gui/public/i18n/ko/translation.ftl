@@ -87,9 +87,25 @@ navbar-settings = 설정
 bvh-start_recording = BVH 기록
 bvh-recording = 기록중...
 
-## Overlay settings
-overlay-is_visible_label = SteamVR에서 오버레이 표시
-overlay-is_mirrored_label = 오버레이 반전
+## Widget: Overlay settings
+widget-overlay = 오버레이
+widget-overlay-is_visible_label = SteamVR에서 오버레이 표시
+widget-overlay-is_mirrored_label = 오버레이 반전
+
+## Widget: Developer settings
+widget-developer_mode = 개발자 모드
+widget-developer_mode-high_contrast = High contrast
+widget-developer_mode-precise_rotation = Precise rotation
+widget-developer_mode-fast_data_feed = Fast data feed
+widget-developer_mode-filter_slimes_and_hmd = Filter slimes and HMD
+widget-developer_mode-sort_by_name = Sort by name
+widget-developer_mode-raw_slime_rotation = Raw rotation
+widget-developer_mode-more_info = More info
+
+## Widget: IMU Visualizer
+widget-imu_visualizer = Rotation
+widget-imu_visualizer-rotation_raw = Raw
+widget-imu_visualizer-rotation_adjusted = Adjusted
 
 ## Tracker status
 tracker-status-none = No Status
@@ -104,6 +120,9 @@ tracker-table-column-name = 이름
 tracker-table-column-type = 타입
 tracker-table-column-battery = 배터리
 tracker-table-column-ping = Ping
+tracker-table-column-tps = TPS
+tracker-table-column-temperature = Temp. °C
+tracker-table-column-linear-acceleration = Accel. X/Y/Z
 tracker-table-column-rotation = X/Y/Z 회전
 tracker-table-column-position = X/Y/Z 위치
 tracker-table-column-url = URL

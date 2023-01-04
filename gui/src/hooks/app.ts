@@ -60,6 +60,9 @@ export function useProvideAppContext(): AppContext {
     }
   );
 
+  const fastDataFeed = config?.debug && config?.devSettings?.fastDataFeed;
+  const feedMaxTps = fastDataFeed ? 40 : 10;
+
   useEffect(() => {
     if (isConnected) {
       const trackerData = new TrackerDataMaskT();
@@ -68,6 +71,9 @@ export function useProvideAppContext(): AppContext {
       trackerData.info = true;
       trackerData.status = true;
       trackerData.temp = true;
+      trackerData.linearAcceleration = true;
+      trackerData.rotationReferenceAdjusted = true;
+      trackerData.rotationReferenceAdjustedDebug = true;
 
       const dataMask = new DeviceDataMaskT();
       dataMask.deviceData = true;
@@ -75,7 +81,7 @@ export function useProvideAppContext(): AppContext {
 
       const config = new DataFeedConfigT();
       config.dataMask = dataMask;
-      config.minimumTimeSinceLast = 100;
+      config.minimumTimeSinceLast = 1000 / feedMaxTps;
       config.syntheticTrackersMask = trackerData;
 
       const startDataFeed = new StartDataFeedT();

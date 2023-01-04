@@ -1,7 +1,9 @@
 import { useEffect, useMemo, useRef, useState } from 'react';
 import { BodyPart, TrackerDataT, TrackerStatus } from 'solarxr-protocol';
-import { RAD_TO_DEG } from '../maths/angle';
-import { QuaternionFromQuatT } from '../maths/quaternion';
+import {
+  QuaternionFromQuatT,
+  QuaternionToEulerDegrees,
+} from '../maths/quaternion';
 import { useAppContext } from './app';
 import { useLocalization } from '@fluent/react';
 
@@ -39,13 +41,6 @@ export function useTrackers() {
 
 export function useTracker(tracker: TrackerDataT) {
   const { l10n } = useLocalization();
-  const computeRot = (rot: { x: number; y: number; z: number; w: number }) =>
-    QuaternionFromQuatT({
-      x: rot.x || 0,
-      y: rot.y || 0,
-      z: rot.z || 0,
-      w: rot.w || 1,
-    }).toEuler();
 
   return {
     useName: () =>
@@ -57,22 +52,21 @@ export function useTracker(tracker: TrackerDataT) {
           );
         return tracker.info?.displayName || 'NONE';
       }, [tracker.info]),
-    useRotation: () =>
+    useRawRotationEulerDegrees: () =>
       useMemo(
-        () => computeRot(tracker.rotation || { x: 0, y: 0, z: 0, w: 1 }),
+        () => QuaternionToEulerDegrees(tracker?.rotation),
         [tracker.rotation]
       ),
-    useRotationDegrees: () =>
-      useMemo(() => {
-        const { yaw, pitch, roll } = computeRot(
-          tracker.rotation || { x: 0, y: 0, z: 0, w: 1 }
-        );
-        return {
-          yaw: yaw * RAD_TO_DEG,
-          pitch: pitch * RAD_TO_DEG,
-          roll: roll * RAD_TO_DEG,
-        };
-      }, [tracker.rotation]),
+    useRefAdjRotationEulerDegrees: () =>
+      useMemo(
+        () => QuaternionToEulerDegrees(tracker?.rotationReferenceAdjusted),
+        [tracker.rotationReferenceAdjusted]
+      ),
+    useRefAdjRotationDebugEulerDegrees: () =>
+      useMemo(
+        () => QuaternionToEulerDegrees(tracker?.rotationReferenceAdjustedDebug),
+        [tracker.rotationReferenceAdjustedDebug]
+      ),
     useVelocity: () => {
       const previousRot = useRef<{
         x: number;
@@ -85,8 +79,8 @@ export function useTracker(tracker: TrackerDataT) {
 
       useEffect(() => {
         if (tracker.rotation) {
-          const rot = QuaternionFromQuatT(tracker.rotation).mul(
-            QuaternionFromQuatT(previousRot.current).inverse()
+          const rot = QuaternionFromQuatT(tracker.rotation).multiply(
+            QuaternionFromQuatT(previousRot.current).invert()
           );
           const dif = Math.min(1, (rot.x ** 2 + rot.y ** 2 + rot.z ** 2) * 2.5);
           // Use sum of rotation of last 3 frames (0.3sec) for smoother movement and better detection of slow movement.

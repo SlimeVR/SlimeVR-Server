@@ -87,9 +87,25 @@ navbar-settings = 设置
 bvh-start_recording = 录制 BVH 文件
 bvh-recording = 录制中...
 
-## Overlay settings
-overlay-is_visible_label = 在 SteamVR 中显示覆盖层
-overlay-is_mirrored_label = 镜像显示覆盖层
+## Widget: Overlay settings
+widget-overlay = 覆盖层
+widget-overlay-is_visible_label = 在 SteamVR 中显示覆盖层
+widget-overlay-is_mirrored_label = 镜像显示覆盖层
+
+## Widget: Developer settings
+widget-developer_mode = 开发者模式
+widget-developer_mode-high_contrast = High contrast
+widget-developer_mode-precise_rotation = Precise rotation
+widget-developer_mode-fast_data_feed = Fast data feed
+widget-developer_mode-filter_slimes_and_hmd = Filter slimes and HMD
+widget-developer_mode-sort_by_name = Sort by name
+widget-developer_mode-raw_slime_rotation = Raw rotation
+widget-developer_mode-more_info = More info
+
+## Widget: IMU Visualizer
+widget-imu_visualizer = Rotation
+widget-imu_visualizer-rotation_raw = Raw
+widget-imu_visualizer-rotation_adjusted = Adjusted
 
 ## Tracker status
 tracker-status-none = 无状态
@@ -104,6 +120,9 @@ tracker-table-column-name = 名字
 tracker-table-column-type = 类型
 tracker-table-column-battery = 电量
 tracker-table-column-ping = 延迟
+tracker-table-column-tps = TPS
+tracker-table-column-temperature = Temp. °C
+tracker-table-column-linear-acceleration = Accel. X/Y/Z
 tracker-table-column-rotation = 旋转 X/Y/Z
 tracker-table-column-position = 位置 X/Y/Z
 tracker-table-column-url = 地址

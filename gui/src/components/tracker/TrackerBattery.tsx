@@ -3,21 +3,28 @@ import { Typography } from '../commons/Typography';
 
 export function TrackerBattery({
   value,
+  voltage,
   disabled,
+  textColor = 'secondary',
 }: {
   value: number;
+  voltage?: number | null;
   disabled?: boolean;
+  textColor?: string;
 }) {
+  const percent = value * 100;
+
   return (
     <div className="flex gap-2">
       <div className="flex flex-col justify-around">
-        <BatteryIcon value={value} disabled={disabled} />
+        <BatteryIcon value={percent} disabled={disabled} />
       </div>
       {!disabled && (
         <div className="w-10">
-          <Typography color="secondary">
-            {(value * 100).toFixed(0)} %
-          </Typography>
+          <Typography color={textColor}>{percent.toFixed(0)} %</Typography>
+          {voltage && (
+            <Typography color={textColor}>{voltage.toFixed(2)} V</Typography>
+          )}
         </div>
       )}
       {disabled && (
