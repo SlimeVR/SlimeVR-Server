@@ -74,6 +74,17 @@ public class DataFeedBuilder {
 		return TrackerId.endTrackerId(fbb);
 	}
 
+	public static int createQuat(FlatBufferBuilder fbb, Quaternion quaternion) {
+		return Quat
+			.createQuat(
+				fbb,
+				quaternion.getX(),
+				quaternion.getY(),
+				quaternion.getZ(),
+				quaternion.getW()
+			);
+	}
+
 	public static int createTrackerInfos(FlatBufferBuilder fbb, boolean infoMask, Tracker tracker) {
 
 		if (!infoMask)
@@ -102,18 +113,7 @@ public class DataFeedBuilder {
 
 			if (imuTracker.getMountingOrientation() != null) {
 				Quaternion quaternion = imuTracker.getMountingOrientation();
-				TrackerInfo
-					.addMountingOrientation(
-						fbb,
-						Quat
-							.createQuat(
-								fbb,
-								quaternion.getX(),
-								quaternion.getY(),
-								quaternion.getZ(),
-								quaternion.getW()
-							)
-					);
+				TrackerInfo.addMountingOrientation(fbb, createQuat(fbb, quaternion));
 			}
 
 			TrackerInfo.addAllowDriftCompensation(fbb, imuTracker.getAllowDriftCompensation());
@@ -133,16 +133,20 @@ public class DataFeedBuilder {
 
 	public static int createTrackerRotation(FlatBufferBuilder fbb, Tracker tracker) {
 		Quaternion quaternion = new Quaternion();
-		tracker.getRotation(quaternion);
+		if (tracker instanceof IMUTracker imuTracker) {
+			imuTracker.getRawRotation(quaternion);
+		} else {
+			tracker.getRotation(quaternion);
+		}
 
-		return Quat
-			.createQuat(
-				fbb,
-				quaternion.getX(),
-				quaternion.getY(),
-				quaternion.getZ(),
-				quaternion.getW()
-			);
+		return createQuat(fbb, quaternion);
+	}
+
+	public static int createTrackerAcceleration(FlatBufferBuilder fbb, Tracker tracker) {
+		Vector3f accel = new Vector3f();
+		tracker.getAcceleration(accel);
+
+		return Vec3f.createVec3f(fbb, accel.x, accel.y, accel.z);
 	}
 
 	public static int createTrackerTemperature(FlatBufferBuilder fbb, Tracker tracker) {
@@ -171,10 +175,27 @@ public class DataFeedBuilder {
 			TrackerData.addPosition(fbb, DataFeedBuilder.createTrackerPosition(fbb, tracker));
 		if (mask.getRotation() && tracker.hasRotation())
 			TrackerData.addRotation(fbb, DataFeedBuilder.createTrackerRotation(fbb, tracker));
+		if (mask.getLinearAcceleration() && tracker.hasAcceleration())
+			TrackerData
+				.addLinearAcceleration(
+					fbb,
+					DataFeedBuilder.createTrackerAcceleration(fbb, tracker)
+				);
 		if (mask.getTemp()) {
 			int trackerTemperatureOffset = DataFeedBuilder.createTrackerTemperature(fbb, tracker);
 			if (trackerTemperatureOffset != 0)
 				TrackerData.addTemp(fbb, trackerTemperatureOffset);
+		}
+		if (tracker instanceof IMUTracker imuTracker) {
+			Quaternion quaternion = new Quaternion();
+			if (mask.getRotationReferenceAdjusted() && tracker.hasRotation()) {
+				imuTracker.getRotation(quaternion);
+				TrackerData.addRotationReferenceAdjusted(fbb, createQuat(fbb, quaternion));
+			}
+			if (mask.getRotationIdentityAdjusted() && tracker.hasRotation()) {
+				imuTracker.getIdentityAdjustedRotation(quaternion);
+				TrackerData.addRotationIdentityAdjusted(fbb, createQuat(fbb, quaternion));
+			}
 		}
 
 		return TrackerData.endTrackerData(fbb);
@@ -315,14 +336,7 @@ public class DataFeedBuilder {
 
 			Bone.startBone(fbb);
 
-			var rotGOffset = Quat
-				.createQuat(
-					fbb,
-					rotG.getX(),
-					rotG.getY(),
-					rotG.getZ(),
-					rotG.getW()
-				);
+			var rotGOffset = createQuat(fbb, rotG);
 			Bone.addRotationG(fbb, rotGOffset);
 			var headPosGOffset = Vec3f.createVec3f(fbb, headPosG.x, headPosG.y, headPosG.z);
 			Bone.addHeadPositionG(fbb, headPosGOffset);
