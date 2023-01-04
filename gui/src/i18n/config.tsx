@@ -70,6 +70,17 @@ function* lazilyParsedBundles(fetchedMessages: [string, string][]) {
   }
 }
 
+function verifyLocale(locale: string | null): string | null {
+  if (!locale) return null;
+  try {
+    new Intl.Locale(locale);
+    return locale;
+  } catch (e) {
+    console.error(e);
+    return null;
+  }
+}
+
 interface AppLocalizationProviderProps {
   children: ReactNode;
 }
@@ -85,21 +96,24 @@ export function AppLocalizationProvider(props: AppLocalizationProviderProps) {
 
   async function changeLocales(userLocales: string[]) {
     const currentLocale = match(
-      userLocales,
+      userLocales.filter((x) => verifyLocale(x) !== null),
       langs.map((x) => x.key),
       DEFAULT_LOCALE
     );
     setCurrentLocales([currentLocale]);
 
-    const fetchedMessages = await fetchMessages(currentLocale);
+    const fetchedMessages = [
+      await fetchMessages(currentLocale),
+      await fetchMessages(DEFAULT_LOCALE),
+    ];
 
-    const bundles = lazilyParsedBundles([fetchedMessages]);
+    const bundles = lazilyParsedBundles(fetchedMessages);
     localStorage.setItem('i18nextLng', currentLocale);
     setL10n(new ReactLocalization(bundles));
   }
 
   useEffect(() => {
-    const lang = localStorage.getItem('i18nextLng');
+    const lang = verifyLocale(localStorage.getItem('i18nextLng'));
     const array = [];
     if (lang) array.push(lang);
     changeLocales([...array, ...navigator.languages]);
