@@ -1,5 +1,6 @@
 package dev.slimevr.vr.processor.skeleton;
 
+
 import dev.slimevr.config.TapDetectionConfig;
 import dev.slimevr.osc.VRCOSCHandler;
 import dev.slimevr.vr.trackers.Tracker;
@@ -46,6 +47,21 @@ public class TapDetectionManager {
 		resetDetector = new TapDetection(skeleton, getTrackerToWatchReset());
 		mountingResetDetector = new TapDetection(skeleton, getTrackerToWatchMountingReset());
 
+		// since this config value is only modified by editing the config file,
+		// we can set it here
+		quickResetDetector
+			.setNumberTrackersOverThreshold(
+				config.getNumberTrackersOverThreshold()
+			);
+		resetDetector
+			.setNumberTrackersOverThreshold(
+				config.getNumberTrackersOverThreshold()
+			);
+		mountingResetDetector
+			.setNumberTrackersOverThreshold(
+				config.getNumberTrackersOverThreshold()
+			);
+
 		updateConfig();
 	}
 
@@ -59,6 +75,9 @@ public class TapDetectionManager {
 		quickResetTaps = config.getQuickResetTaps();
 		resetTaps = config.getResetTaps();
 		mountingResetTaps = config.getMountingResetTaps();
+		quickResetDetector.setMaxTaps(quickResetTaps);
+		resetDetector.setMaxTaps(resetTaps);
+		mountingResetDetector.setMaxTaps(mountingResetTaps);
 	}
 
 	public void update() {
@@ -76,9 +95,8 @@ public class TapDetectionManager {
 	}
 
 	private void checkQuickReset() {
-		boolean tapped = (quickResetTaps == 2)
-			? quickResetDetector.getDoubleTapped()
-			: quickResetDetector.getTripleTapped();
+		boolean tapped = (quickResetTaps <= quickResetDetector.getTaps());
+
 		if (
 			tapped && System.nanoTime() - quickResetDetector.getDetectionTime() > quickResetDelayNs
 		) {
@@ -90,9 +108,8 @@ public class TapDetectionManager {
 	}
 
 	private void checkReset() {
-		boolean tapped = (resetTaps == 2)
-			? resetDetector.getDoubleTapped()
-			: resetDetector.getTripleTapped();
+		boolean tapped = (resetTaps <= resetDetector.getTaps());
+
 		if (
 			tapped && System.nanoTime() - resetDetector.getDetectionTime() > resetDelayNs
 		) {
@@ -104,9 +121,8 @@ public class TapDetectionManager {
 	}
 
 	private void checkMountingReset() {
-		boolean tapped = (mountingResetTaps == 2)
-			? mountingResetDetector.getDoubleTapped()
-			: mountingResetDetector.getTripleTapped();
+		boolean tapped = (mountingResetTaps <= mountingResetDetector.getTaps());
+
 		if (
 			tapped
 				&& System.nanoTime() - mountingResetDetector.getDetectionTime()

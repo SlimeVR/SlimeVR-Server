@@ -12,16 +12,25 @@
 // eslint-disable-next-line @typescript-eslint/no-var-requires
 const fs = require('fs');
 // eslint-disable-next-line @typescript-eslint/no-var-requires
+const path = require('path');
+// eslint-disable-next-line @typescript-eslint/no-var-requires
 const process = require('process');
+// eslint-disable-next-line @typescript-eslint/no-var-requires
+const { execSync } = require('child_process');
 // eslint-disable-next-line @typescript-eslint/no-var-requires
 const { FluentBundle, FluentResource } = require('@fluent/bundle');
 
-const PATH = '../public/i18n';
+const PATH = path.join(
+  execSync('git rev-parse --show-toplevel', { encoding: 'utf-8' }).trim(),
+  'gui/public/i18n'
+);
 
 const langs = fs.readdirSync(PATH).filter((x) => x !== 'en');
 const en = new FluentBundle('en');
 const enErrors = en.addResource(
-  new FluentResource(fs.readFileSync(`${PATH}/en/translation.ftl`, 'utf-8'))
+  new FluentResource(
+    fs.readFileSync(path.join(PATH, 'en/translation.ftl'), 'utf-8')
+  )
 );
 if (enErrors.length) {
   for (const error of enErrors) {
@@ -34,7 +43,7 @@ const requiredMessages = [...en._messages.keys()];
 process.exitCode = 0;
 for (const lang of langs) {
   const resource = new FluentResource(
-    fs.readFileSync(`${PATH}/${lang}/translation.ftl`, 'utf-8')
+    fs.readFileSync(path.join(PATH, lang, 'translation.ftl'), 'utf-8')
   );
   const bundle = new FluentBundle(lang);
   const errors = bundle.addResource(resource);

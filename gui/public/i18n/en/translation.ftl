@@ -1,8 +1,8 @@
 ### SlimeVR complete GUI translations
 # Please developers (not translators) don't reuse a key inside another key
-# or concat text with a translation string in the code, use the appropiate 
-# features like variables and selectors in each appropiate case!
-# And also comment the string if it's something not easy to translate so you help
+# or concat text with a translation string in the code, use the appropriate
+# features like variables and selectors in each appropriate case!
+# And also comment the string if it's something not easy to translate, so you help
 # translators on what it means
 
 ## Websocket (server) status
@@ -128,11 +128,14 @@ tracker-settings-assignment_section-edit = Edit assignment
 tracker-settings-mounting_section = Mounting position
 tracker-settings-mounting_section-description = Where is the tracker mounted?
 tracker-settings-mounting_section-edit = Edit mounting
+tracker-settings-drift_compensation_section = Allow drift compensation
+tracker-settings-drift_compensation_section-description = Should this tracker compensate for its drift when drift compensation is enabled?
+tracker-settings-drift_compensation_section-edit = Allow drift compensation
 # The .<name> means it's an attribute and it's related to the top key.
 # In this case that is the settings for the assignment section.
 tracker-settings-name_section = Tracker name
-tracker-settings-name_section-placeholder = NightyBeast's left leg
 tracker-settings-name_section-description = Give it a cute nickname :)
+tracker-settings-name_section-placeholder = NightyBeast's left leg
 
 ## Tracker part card info
 tracker-part_card-no_name = No name
@@ -187,7 +190,7 @@ mounting_selection_menu-close = Close
 settings-sidebar-title = Settings
 settings-sidebar-general = General
 settings-sidebar-tracker_mechanics = Tracker mechanics
-settings-sidebar-fk_settings = FK settings
+settings-sidebar-fk_settings = Tracking settings
 settings-sidebar-gesture_control = Gesture control
 settings-sidebar-interface = Interface
 settings-sidebar-osc_router = OSC router
@@ -213,19 +216,27 @@ settings-general-steamvr-trackers-hands = Hands
 
 ## Tracker mechanics
 settings-general-tracker_mechanics = Tracker mechanics
-settings-general-tracker_mechanics-subtitle = Filtering
+settings-general-tracker_mechanics-filtering = Filtering
 # This also cares about multilines
-settings-general-tracker_mechanics-description =
+settings-general-tracker_mechanics-filtering-description =
     Choose the filtering type for your trackers.
     Prediction predicts movement while smoothing smoothens movement.
-settings-general-tracker_mechanics-filtering_type = Filtering type
-settings-general-tracker_mechanics-filtering_type-none = No filtering
-settings-general-tracker_mechanics-filtering_type-none-description = Use rotations as is. Will not do any filtering.
-settings-general-tracker_mechanics-filtering_type-smoothing = Smoothing
-settings-general-tracker_mechanics-filtering_type-smoothing-description = Smooths movements but adds some latency.
-settings-general-tracker_mechanics-filtering_type-prediction = Prediction
-settings-general-tracker_mechanics-filtering_type-prediction-description = Reduces latency and makes movements more snappy, but may increase jitter.
-settings-general-tracker_mechanics-amount = Amount
+settings-general-tracker_mechanics-filtering-type = Filtering type
+settings-general-tracker_mechanics-filtering-type-none = No filtering
+settings-general-tracker_mechanics-filtering-type-none-description = Use rotations as is. Will not do any filtering.
+settings-general-tracker_mechanics-filtering-type-smoothing = Smoothing
+settings-general-tracker_mechanics-filtering-type-smoothing-description = Smooths movements but adds some latency.
+settings-general-tracker_mechanics-filtering-type-prediction = Prediction
+settings-general-tracker_mechanics-filtering-type-prediction-description = Reduces latency and makes movements more snappy, but may increase jitter.
+settings-general-tracker_mechanics-filtering-amount = Amount
+settings-general-tracker_mechanics-drift_compensation = Drift compensation
+# This cares about multilines
+settings-general-tracker_mechanics-drift_compensation-description =
+    Compensates IMU yaw drift by applying an inverse rotation.
+    Change amount of compensation and up to how many resets are taken into account.
+settings-general-tracker_mechanics-drift_compensation-enabled-label = Drift compensation
+settings-general-tracker_mechanics-drift_compensation-amount-label = Compensation amount
+settings-general-tracker_mechanics-drift_compensation-max_resets-label = Use up to x last resets
 
 ## FK/Tracking settings
 settings-general-fk_settings = Tracking settings

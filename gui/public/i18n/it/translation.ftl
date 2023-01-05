@@ -1,8 +1,8 @@
 ### SlimeVR complete GUI translations
 # Please developers (not translators) don't reuse a key inside another key
-# or concat text with a translation string in the code, use the appropiate 
-# features like variables and selectors in each appropiate case!
-# And also comment the string if it's something not easy to translate so you help
+# or concat text with a translation string in the code, use the appropriate
+# features like variables and selectors in each appropriate case!
+# And also comment the string if it's something not easy to translate, so you help
 # translators on what it means
 
 ## Websocket (server) status
@@ -122,11 +122,14 @@ tracker-settings-assignment_section-edit = Cambia assegnazione
 tracker-settings-mounting_section = posizionamento di montaggio
 tracker-settings-mounting_section-description =  Come è posizionato il tracker?
 tracker-settings-mounting_section-edit = Cambia posizionamento
+tracker-settings-drift_compensation_section = Allow drift compensation
+tracker-settings-drift_compensation_section-description = Should this tracker compensate for its drift when drift compensation is enabled?
+tracker-settings-drift_compensation_section-edit = Allow drift compensation
 # The .<name> means it's an attribute and it's related to the top key.
 # In this case that is the settings for the assignment section.
 tracker-settings-name_section = Nome del tracker
-tracker-settings-name_section-placeholder = Gamba destra di NightyQueer
 tracker-settings-name_section-description = Scegli un nomignolo carino :)
+tracker-settings-name_section-placeholder = Gamba destra di NightyQueer
 
 ## Tracker part card info
 tracker-part_card-no_name = Nessun nome
@@ -207,19 +210,27 @@ settings-general-steamvr-trackers-hands = Mani
 
 ## Tracker mechanics
 settings-general-tracker_mechanics = Comportamento del tracker
-settings-general-tracker_mechanics-subtitle = Filtro movimenti
+settings-general-tracker_mechanics-filtering = Filtro movimenti
 # This also cares about multilines
-settings-general-tracker_mechanics-description =
+settings-general-tracker_mechanics-filtering-description =
     Scegli la tipologia di filtraggio movimenti per il tuo tracker.
     Predizione anticipa i movimenti, mentre Attenuazione attenua movimenti eccessivi.
-settings-general-tracker_mechanics-filtering_type = Tipologia di filtraggio
-settings-general-tracker_mechanics-filtering_type-none = Non usare alcun filtraggio
-settings-general-tracker_mechanics-filtering_type-none-description = Usa le rotazioni così come sono. Non eseguirà alcun filtro.
-settings-general-tracker_mechanics-filtering_type-smoothing = Attenuazione
-settings-general-tracker_mechanics-filtering_type-smoothing-description = Attenua movimenti eccessivi ma aggiunge ritardo.
-settings-general-tracker_mechanics-filtering_type-prediction = Predizione
-settings-general-tracker_mechanics-filtering_type-prediction-description = Riduce ritardo e rende movimenti più istantanei, ma può introdurre tremolio.
-settings-general-tracker_mechanics-amount = Quantità
+settings-general-tracker_mechanics-filtering-type = Tipologia di filtraggio
+settings-general-tracker_mechanics-filtering-type-none = Non usare alcun filtraggio
+settings-general-tracker_mechanics-filtering-type-none-description = Usa le rotazioni così come sono. Non eseguirà alcun filtro.
+settings-general-tracker_mechanics-filtering-type-smoothing = Attenuazione
+settings-general-tracker_mechanics-filtering-type-smoothing-description = Attenua movimenti eccessivi ma aggiunge ritardo.
+settings-general-tracker_mechanics-filtering-type-prediction = Predizione
+settings-general-tracker_mechanics-filtering-type-prediction-description = Riduce ritardo e rende movimenti più istantanei, ma può introdurre tremolio.
+settings-general-tracker_mechanics-filtering-amount = Quantità
+settings-general-tracker_mechanics-drift_compensation = Drift compensation
+# This cares about multilines
+settings-general-tracker_mechanics-drift_compensation-description =
+    Compensates IMU yaw drift by applying an inverse rotation.
+    Change amount of compensation and up to how many resets are taken into account.
+settings-general-tracker_mechanics-drift_compensation-enabled-label = Drift compensation
+settings-general-tracker_mechanics-drift_compensation-amount-label = Compensation amount
+settings-general-tracker_mechanics-drift_compensation-max_resets-label = Use up to x last resets
 
 ## FK/Tracking settings
 settings-general-fk_settings = Impostazioni FK
