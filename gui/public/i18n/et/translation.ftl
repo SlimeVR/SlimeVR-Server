@@ -41,23 +41,23 @@ body_part-LEFT_CONTROLLER = Vasak kontroller
 skeleton_bone-NONE = Mitte midagi
 skeleton_bone-HEAD = Pea Nihe
 skeleton_bone-NECK = Kaela Pikkus
-skeleton_bone-TORSO = Torso Pikkus
-skeleton_bone-CHEST = Rinna Vahemaa
-skeleton_bone-WAIST = Vöökoha Vahemaa
+skeleton_bone-CHEST = Chest Length
+skeleton_bone-CHEST_OFFSET = Chest Offset
+skeleton_bone-WAIST = Waist Length
+skeleton_bone-HIP = Hip Lengthskeleton_bone-CHEST = Rinna Vahemaa
 skeleton_bone-HIP_OFFSET = Puusa Nihe
 skeleton_bone-HIPS_WIDTH = Puusa Laius
-skeleton_bone-LEGS_LENGTH = Jalgade Pikkus
-skeleton_bone-KNEE_HEIGHT = Põlve Kõrgus
+skeleton_bone-UPPER_LEG = Upper Leg Length
+skeleton_bone-LOWER_LEG = Lower Leg Length
 skeleton_bone-FOOT_LENGTH = Jala Pikkus
 skeleton_bone-FOOT_SHIFT = Jala Nihe
 skeleton_bone-SKELETON_OFFSET = Skeletti Nihe
-skeleton_bone-CONTROLLER_DISTANCE_Z = Kontrolleri Kaugus Z
-skeleton_bone-CONTROLLER_DISTANCE_Y = Kontrolleri Kaugus Y
-skeleton_bone-FOREARM_LENGTH = Käsivarre Kaugus
 skeleton_bone-SHOULDERS_DISTANCE = Õlgade Kaugus
 skeleton_bone-SHOULDERS_WIDTH = Õlgade Laius
-skeleton_bone-UPPER_ARM_LENGTH = Õlavarre Pikkus
-skeleton_bone-ELBOW_OFFSET = Küünarnuki Nihe
+skeleton_bone-UPPER_ARM = Õlavarre Pikkus
+skeleton_bone-LOWER_ARM = Käsivarre Kaugus
+skeleton_bone-CONTROLLER_Y = Kontrolleri Kaugus Y
+skeleton_bone-CONTROLLER_Z = Kontrolleri Kaugus Z
 
 ## Tracker reset buttons
 reset-reset_all = Lähtesta kõik proportsioonid
