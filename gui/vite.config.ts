@@ -1,4 +1,3 @@
-import { esbuildCommonjs, viteCommonjs } from '@originjs/vite-plugin-commonjs';
 import react from '@vitejs/plugin-react';
 import { defineConfig, PluginOption } from 'vite';
 import { execSync } from 'child_process';
@@ -39,7 +38,7 @@ export default defineConfig({
     __VERSION_TAG__: JSON.stringify(versionTag),
     __GIT_CLEAN__: gitClean,
   },
-  plugins: [viteCommonjs(), react(), i18nHotReload()],
+  plugins: [react(), i18nHotReload()],
   build: {
     target: 'es2020',
     emptyOutDir: true,
@@ -50,7 +49,6 @@ export default defineConfig({
   optimizeDeps: {
     esbuildOptions: {
       target: 'es2020',
-      plugins: [esbuildCommonjs(['solarxr-protocol'])],
     },
     needsInterop: ['solarxr-protocol'],
     include: ['solarxr-protocol'],
