@@ -1,8 +1,8 @@
 ### SlimeVR complete GUI translations
 # Please developers (not translators) don't reuse a key inside another key
-# or concat text with a translation string in the code, use the appropiate 
-# features like variables and selectors in each appropiate case!
-# And also comment the string if it's something not easy to translate so you help
+# or concat text with a translation string in the code, use the appropriate
+# features like variables and selectors in each appropriate case!
+# And also comment the string if it's something not easy to translate, so you help
 # translators on what it means
 
 ## Websocket (server) status

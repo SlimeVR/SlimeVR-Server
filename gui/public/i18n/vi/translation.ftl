@@ -1,8 +1,8 @@
 ### SlimeVR complete GUI translations
 # Please developers (not translators) don't reuse a key inside another key
-# or concat text with a translation string in the code, use the appropiate 
-# features like variables and selectors in each appropiate case!
-# And also comment the string if it's something not easy to translate so you help
+# or concat text with a translation string in the code, use the appropriate
+# features like variables and selectors in each appropriate case!
+# And also comment the string if it's something not easy to translate, so you help
 # translators on what it means
 
 ## Websocket (server) status
@@ -24,7 +24,7 @@ body_part-RIGHT_HAND = Tay phải
 body_part-RIGHT_UPPER_LEG = Chân phải trên
 body_part-RIGHT_LOWER_LEG = chân phải dưới
 body_part-RIGHT_FOOT = Bàn chân phải
-body_part-RIGHT_CONTROLLER = Right controller
+body_part-RIGHT_CONTROLLER = Tay cầm phải
 body_part-CHEST = Ngực
 body_part-WAIST = Eo
 body_part-HIP = Hông
@@ -35,7 +35,7 @@ body_part-LEFT_HAND = Tay trái
 body_part-LEFT_UPPER_LEG = Chân trái trên
 body_part-LEFT_LOWER_LEG = Chân trái dưới
 body_part-LEFT_FOOT = Bàn chân trái
-body_part-LEFT_CONTROLLER = Left controller
+body_part-LEFT_CONTROLLER = Tay cầm trái
 
 ## Skeleton stuff
 skeleton_bone-NONE = Chưa liên kết
@@ -154,29 +154,29 @@ body_assignment_menu-unassign_tracker = Tracker chưa giao vị trí
 # 
 # We are using it here because english doesn't require changing the text in each case but
 # maybe your language does.
--tracker_selection-part = Which tracker to assign to your
-tracker_selection_menu-NONE = Which tracker do you want to be unassigned?
-tracker_selection_menu-HEAD = { -tracker_selection-part } head?
-tracker_selection_menu-NECK = { -tracker_selection-part } neck?
-tracker_selection_menu-RIGHT_SHOULDER = { -tracker_selection-part } right shoulder?
-tracker_selection_menu-RIGHT_UPPER_ARM = { -tracker_selection-part } right upper arm?
-tracker_selection_menu-RIGHT_LOWER_ARM = { -tracker_selection-part } right lower arm?
-tracker_selection_menu-RIGHT_HAND = { -tracker_selection-part } right hand?
-tracker_selection_menu-RIGHT_UPPER_LEG = { -tracker_selection-part } right thigh?
-tracker_selection_menu-RIGHT_LOWER_LEG = { -tracker_selection-part } right ankle?
-tracker_selection_menu-RIGHT_FOOT = { -tracker_selection-part } right foot?
-tracker_selection_menu-RIGHT_CONTROLLER = { -tracker_selection-part } right controller?
-tracker_selection_menu-CHEST = { -tracker_selection-part } chest?
-tracker_selection_menu-WAIST = { -tracker_selection-part } waist?
-tracker_selection_menu-HIP = { -tracker_selection-part } hip?
-tracker_selection_menu-LEFT_SHOULDER = { -tracker_selection-part } left shoulder?
-tracker_selection_menu-LEFT_UPPER_ARM = { -tracker_selection-part } left upper arm?
-tracker_selection_menu-LEFT_LOWER_ARM = { -tracker_selection-part } left lower arm?
-tracker_selection_menu-LEFT_HAND = { -tracker_selection-part } left hand?
-tracker_selection_menu-LEFT_UPPER_LEG = { -tracker_selection-part } left thigh?
-tracker_selection_menu-LEFT_LOWER_LEG = { -tracker_selection-part } left ankle?
-tracker_selection_menu-LEFT_FOOT = { -tracker_selection-part } left foot?
-tracker_selection_menu-LEFT_CONTROLLER = { -tracker_selection-part } left controller?
+-tracker_selection-part = Tracker nào để giao cho vị trí
+tracker_selection_menu-NONE = Bạn muốn giao cho tracker nào mà chua giao?
+tracker_selection_menu-HEAD = { -tracker_selection-part } đầu?
+tracker_selection_menu-NECK = { -tracker_selection-part } cổ?
+tracker_selection_menu-RIGHT_SHOULDER = { -tracker_selection-part } vai phải?
+tracker_selection_menu-RIGHT_UPPER_ARM = { -tracker_selection-part } tay phải trên?
+tracker_selection_menu-RIGHT_LOWER_ARM = { -tracker_selection-part } tay phải dưới?
+tracker_selection_menu-RIGHT_HAND = { -tracker_selection-part } tay phải?
+tracker_selection_menu-RIGHT_UPPER_LEG = { -tracker_selection-part } chân phải trên?
+tracker_selection_menu-RIGHT_LOWER_LEG = { -tracker_selection-part } chân phải dưới?
+tracker_selection_menu-RIGHT_FOOT = { -tracker_selection-part } bàn chân phải?
+tracker_selection_menu-RIGHT_CONTROLLER = { -tracker_selection-part } tay cầm phải?
+tracker_selection_menu-CHEST = { -tracker_selection-part } ngực?
+tracker_selection_menu-WAIST = { -tracker_selection-part } eo?
+tracker_selection_menu-HIP = { -tracker_selection-part } hông?
+tracker_selection_menu-LEFT_SHOULDER = { -tracker_selection-part } vai trái?
+tracker_selection_menu-LEFT_UPPER_ARM = { -tracker_selection-part } tay trái trên?
+tracker_selection_menu-LEFT_LOWER_ARM = { -tracker_selection-part } tay trái dưới?
+tracker_selection_menu-LEFT_HAND = { -tracker_selection-part } tay trái?
+tracker_selection_menu-LEFT_UPPER_LEG = { -tracker_selection-part } chân trái trên?
+tracker_selection_menu-LEFT_LOWER_LEG = { -tracker_selection-part } chân trái dưới?
+tracker_selection_menu-LEFT_FOOT = { -tracker_selection-part } bàn chân trái?
+tracker_selection_menu-LEFT_CONTROLLER = { -tracker_selection-part } tay tráitrái?
 
 tracker_selection_menu-unassigned = Chưa giao vị trí
 tracker_selection_menu-assigned = Đã giao vị trí
@@ -272,7 +272,7 @@ settings-general-gesture_control-description = Bật hoặc tắt reset nhanh. K
 # $amount (Number) - Amount of taps (touches to the tracker's case)
 settings-general-gesture_control-taps = { $amount ->
     [one] 1 tap
-    *[other] { $amount } taps
+    *[other] { $amount } lần 
 }
 settings-general-gesture_control-quickResetEnabled = Enable tap to quick reset
 settings-general-gesture_control-quickResetDelay = Quick reset delay
@@ -424,10 +424,10 @@ onboarding-connect_tracker-connection_status-handshake = Đã kết nối với 
 # we use 0 in an explicit way because there is no plural rule in english for 0, so we directly say
 # if $amount is 0 then we say "No trackers connected"
 onboarding-connect_tracker-connected_trackers = { $amount ->
-    [0] No trackers
+    [0] Không trackers
     [one] 1 tracker
     *[other] { $amount } trackers
-} connected
+} đã giao
 onboarding-connect_tracker-next = Tôi đã kết nối tất cả tracker
 
 ## Tracker assignment setup
@@ -440,7 +440,7 @@ onboarding-assign_trackers-description = Hãy chọn tracker nào nằm ở đâ
 onboarding-assign_trackers-assigned = { $assigned } of { $trackers ->
     [one] 1 tracker
     *[other] { $trackers } trackers
-} assigned
+} đã giao
 onboarding-assign_trackers-advanced = Xem vị trí mở rộng
 onboarding-assign_trackers-next = Hoàn thành
 
@@ -503,8 +503,8 @@ onboarding-automatic_proportions-recording-steps-4 = Đảo xung quanh cho đế
 onboarding-automatic_proportions-recording-processing = Đang xử lí kết quả
 # $time (Number) - Seconds left for the automatic calibration recording to finish (max 15)
 onboarding-automatic_proportions-recording-timer = { $time ->
-    [one] 1 second left
-    *[other] { $time } seconds left
+    [one] 1 giây còn lại
+    *[other] { $time } giây còn 
 }
 onboarding-automatic_proportions-verify_results-title = Xác nhận kết quả
 onboarding-automatic_proportions-verify_results-description = Kiểm tra kết quả dưới đây, nó có chính xác không?
