@@ -229,14 +229,14 @@ settings-general-tracker_mechanics-filtering-type-smoothing-description = Glätt
 settings-general-tracker_mechanics-filtering-type-prediction = Vorhersage
 settings-general-tracker_mechanics-filtering-type-prediction-description = Verringert die Latenz und macht die Bewegungen schneller, kann aber Zittern erhöhen.
 settings-general-tracker_mechanics-filtering-amount = Stärke
-settings-general-tracker_mechanics-drift_compensation = Drift compensation
+settings-general-tracker_mechanics-drift_compensation = Drift Kompensation
 # This cares about multilines
 settings-general-tracker_mechanics-drift_compensation-description =
-    Compensates IMU yaw drift by applying an inverse rotation.
-    Change amount of compensation and up to how many resets are taken into account.
-settings-general-tracker_mechanics-drift_compensation-enabled-label = Drift compensation
-settings-general-tracker_mechanics-drift_compensation-amount-label = Compensation amount
-settings-general-tracker_mechanics-drift_compensation-max_resets-label = Use up to x last resets
+    Kompensiert IMU Drift auf der Gier Achse durch anwenden einer invertierten Rotation.
+    Ändern sie die Menge der Kompensierung und die Anzahl der Resets welche für die Berechnung genutzt werden.
+settings-general-tracker_mechanics-drift_compensation-enabled-label = Drift Kompensierung
+settings-general-tracker_mechanics-drift_compensation-amount-label = Menge der Kompensierung
+settings-general-tracker_mechanics-drift_compensation-max_resets-label = Benutze die letzten x Resets
 
 ## FK/Tracking settings
 settings-general-fk_settings = FK-Einstellungen
@@ -260,29 +260,29 @@ settings-general-fk_settings-skeleton_settings-description = Schalten Sie Skelet
 settings-general-fk_settings-skeleton_settings-extended_spine = Erweiterte Wirbelsäule
 settings-general-fk_settings-skeleton_settings-extended_pelvis = Erweiterter Beckenbereich
 settings-general-fk_settings-skeleton_settings-extended_knees = Erweiterte Knie
-settings-general-fk_settings-vive_emulation-title = Vive emulation
-settings-general-fk_settings-vive_emulation-description = Emulate the waist tracker problems that Vive trackers have. This is a joke and makes tracking worse.
-settings-general-fk_settings-vive_emulation-label = Enable Vive emulation
+settings-general-fk_settings-vive_emulation-title = Vive Simulierung
+settings-general-fk_settings-vive_emulation-description = Simuliere die Tracking Probleme, welche bei Vive Trackern auftreten. Dies ist ein Scherz und verschlechtert das Tracking
+settings-general-fk_settings-vive_emulation-label = Aktiviere Vive Simulierung
 
 ## Gesture control settings (tracker tapping)
-settings-general-gesture_control = Gesture control
-settings-general-gesture_control-subtitle = Tap based resets
-settings-general-gesture_control-description = Allows for resets to be triggered by tapping a tracker. The tracker highest up on your torso is used for Quick Reset, the tracker highest up on your left leg is used for Reset, and the tracker highest up on your right leg is used for Mounting Reset. It should be mentioned that taps must happen within 0.6 seconds to be registered.
+settings-general-gesture_control = Gestensteuerung
+settings-general-gesture_control-subtitle = Tippen basierte Resets
+settings-general-gesture_control-description = Erlaubt Reset durch das antippen eines Trackers auszulösen. Der höchste Tracker auf dem Oberkörper wird für Schnelle Resets genutzt, der höchste Tracker auf dem linken Bein wird für Reset genutzt und der höchste Tracker auf dem rechten Bein wird für Befestigungs-Reset genutzt. Das antippen muss innerhalb von 0.5 Sekunden erfolgen um erkannt zu werden.
 # This is a unit: 3 taps, 2 taps, 1 tap
 # $amount (Number) - Amount of taps (touches to the tracker's case)
 settings-general-gesture_control-taps = { $amount ->
-    [one] 1 tap
-    *[other] { $amount } taps
+    [one] 1 x antippen
+    *[other] { $amount } x antippen
 }
-settings-general-gesture_control-quickResetEnabled = Enable tap to quick reset
-settings-general-gesture_control-quickResetDelay = Quick reset delay
-settings-general-gesture_control-quickResetTaps = Taps for quick reset
-settings-general-gesture_control-resetEnabled = Enable tap to reset
-settings-general-gesture_control-resetDelay = Reset delay
-settings-general-gesture_control-resetTaps = Taps for reset
-settings-general-gesture_control-mountingResetEnabled = Enable tap to reset mounting
-settings-general-gesture_control-mountingResetDelay = Mounting reset delay
-settings-general-gesture_control-mountingResetTaps = Taps for mounting reset
+settings-general-gesture_control-quickResetEnabled = Aktiviere antippen für Schnellen Reset
+settings-general-gesture_control-quickResetDelay = Schneller Reset Verzögerung
+settings-general-gesture_control-quickResetTaps = Anzahl für Schneller Reset
+settings-general-gesture_control-resetEnabled = Aktiviere antippen für Reset
+settings-general-gesture_control-resetDelay = Reset Verzögerung
+settings-general-gesture_control-resetTaps = Anzahl für Reset
+settings-general-gesture_control-mountingResetEnabled = Aktiviere antippen für Befestigungs Reset
+settings-general-gesture_control-mountingResetDelay = Befestigungs Reset Verzügerung
+settings-general-gesture_control-mountingResetTaps = Anzahl für Befestigungs Reset
 
 ## Interface settings
 settings-general-interface = Bedienoberfläche
