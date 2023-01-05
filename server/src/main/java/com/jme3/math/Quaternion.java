@@ -36,6 +36,7 @@ import io.eiren.math.FloatMath;
 import java.io.IOException;
 import java.io.ObjectInput;
 import java.io.ObjectOutput;
+import java.util.AbstractList;
 import java.util.logging.Logger;
 
 
@@ -351,7 +352,7 @@ public final class Quaternion implements Cloneable, java.io.Serializable {
 
 	/**
 	 * Returns Euler rotation angle around y axis (yaw).
-	 * 
+	 *
 	 * @return
 	 * @see #toAngles(float[])
 	 */
@@ -921,6 +922,74 @@ public final class Quaternion implements Cloneable, java.io.Serializable {
 			w = blendI * w + blend * q2.w;
 		}
 		normalizeLocal();
+	}
+
+	/**
+	 * Sets the values of this quaternion to the unit average of the given
+	 * Quaternions and return itself
+	 *
+	 * @param qn list of all the Quaternions to average
+	 * @return a new Quaternion resulting from the average of the given
+	 * Quaternions
+	 */
+	public Quaternion fromAveragedQuaternions(AbstractList<Quaternion> qn) {
+		if (qn.size() == 0) {
+			throw new IllegalArgumentException("qn's length can't be 0");
+		}
+
+		float sumX = 0f;
+		float sumY = 0f;
+		float sumZ = 0f;
+		float sumW = 0f;
+		for (Quaternion q : qn) {
+			sumX += q.x;
+			sumY += q.y;
+			sumZ += q.z;
+			sumW += q.w;
+		}
+
+		x = sumX / qn.size();
+		y = sumY / qn.size();
+		z = sumZ / qn.size();
+		w = sumW / qn.size();
+
+		return this;
+	}
+
+	/**
+	 * Sets the values of this quaternion to the unit average of the given
+	 * Quaternions and return itself
+	 *
+	 * @param qn list of all the Quaternions to average
+	 * @param tn 0-1, averaging weight for Quaternions (sum = 1)
+	 * @return a new Quaternion resulting from the weighted average of the given
+	 * Quaternions
+	 */
+	public Quaternion fromAveragedQuaternions(AbstractList<Quaternion> qn, AbstractList<Float> tn) {
+		if (qn.size() == 0) {
+			throw new IllegalArgumentException("qn's length can't be 0");
+		}
+		if (qn.size() != tn.size()) {
+			throw new IllegalArgumentException("qn and tn must have the same length");
+		}
+
+		float averagedX = 0f;
+		float averagedY = 0f;
+		float averagedZ = 0f;
+		float averagedW = 0f;
+		for (int i = 0; i < qn.size(); i++) {
+			averagedX += qn.get(i).x * tn.get(i);
+			averagedY += qn.get(i).y * tn.get(i);
+			averagedZ += qn.get(i).z * tn.get(i);
+			averagedW += qn.get(i).w * tn.get(i);
+		}
+
+		x = averagedX;
+		y = averagedY;
+		z = averagedZ;
+		w = averagedW;
+
+		return this;
 	}
 
 	/**

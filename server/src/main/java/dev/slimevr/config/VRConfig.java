@@ -14,15 +14,15 @@ import java.util.Map;
 
 
 @JsonVersionedModel(
-	currentVersion = "3", defaultDeserializeToVersion = "3", toCurrentConverterClass = CurrentVRConfigConverter.class
+	currentVersion = "4", defaultDeserializeToVersion = "4", toCurrentConverterClass = CurrentVRConfigConverter.class
 )
 public class VRConfig {
 
 	private final ServerConfig server = new ServerConfig();
 
-	private final WindowConfig window = new WindowConfig();
-
 	private final FiltersConfig filters = new FiltersConfig();
+
+	private final DriftCompensationConfig driftCompensation = new DriftCompensationConfig();
 
 	private final OSCConfig oscRouter = new OSCConfig();
 
@@ -79,12 +79,12 @@ public class VRConfig {
 		return server;
 	}
 
-	public WindowConfig getWindow() {
-		return window;
-	}
-
 	public FiltersConfig getFilters() {
 		return filters;
+	}
+
+	public DriftCompensationConfig getDriftCompensation() {
+		return driftCompensation;
 	}
 
 	public OSCConfig getOscRouter() {

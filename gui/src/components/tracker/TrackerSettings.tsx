@@ -2,7 +2,6 @@ import { IPv4 } from 'ip-num/IPNumber';
 import Quaternion from 'quaternion';
 import { useEffect, useMemo, useState } from 'react';
 import { useForm } from 'react-hook-form';
-import { useTranslation } from 'react-i18next';
 import { useParams } from 'react-router-dom';
 import { AssignTrackerRequestT, BodyPart, RpcMessage } from 'solarxr-protocol';
 import { useDebouncedEffect } from '../../hooks/timeout';
@@ -18,6 +17,8 @@ import { Typography } from '../commons/Typography';
 import { MountingSelectionMenu } from '../onboarding/pages/mounting/MountingSelectionMenu';
 import { SingleTrackerBodyAssignmentMenu } from './SingleTrackerBodyAssignmentMenu';
 import { TrackerCard } from './TrackerCard';
+import { CheckBox } from '../commons/Checkbox';
+import { useLocalization } from '@fluent/react';
 
 export const rotationToQuatMap = {
   FRONT: 180,
@@ -34,7 +35,7 @@ const rotationsLabels = {
 };
 
 export function TrackerSettingsPage() {
-  const { t } = useTranslation();
+  const { l10n } = useLocalization();
 
   const { sendRPCPacket } = useWebsocketAPI();
   const [firstLoad, setFirstLoad] = useState(false);
@@ -44,13 +45,17 @@ export function TrackerSettingsPage() {
     trackernum: string;
     deviceid: string;
   }>();
-  const { register, watch, reset, handleSubmit } = useForm<{
+  const { control, register, watch, reset, handleSubmit } = useForm<{
     trackerName: string | null;
+    allowDriftCompensation: boolean | null;
   }>({
-    defaultValues: { trackerName: null },
+    defaultValues: {
+      trackerName: null,
+      allowDriftCompensation: null,
+    },
     reValidateMode: 'onSubmit',
   });
-  const { trackerName } = watch();
+  const { trackerName, allowDriftCompensation } = watch();
 
   const tracker = useTrackerFromId(trackernum, deviceid);
 
@@ -59,7 +64,7 @@ export function TrackerSettingsPage() {
 
     const assignreq = new AssignTrackerRequestT();
 
-    assignreq.mountingRotation = QuaternionToQuatT(
+    assignreq.mountingOrientation = QuaternionToQuatT(
       Quaternion.fromEuler(
         0,
         0,
@@ -69,6 +74,8 @@ export function TrackerSettingsPage() {
     );
     assignreq.bodyPosition = tracker?.tracker.info?.bodyPart || BodyPart.NONE;
     assignreq.trackerId = tracker?.tracker.trackerId;
+    if (allowDriftCompensation != null)
+      assignreq.allowDriftCompensation = allowDriftCompensation;
     sendRPCPacket(RpcMessage.AssignTrackerRequest, assignreq);
     setSelectRotation(false);
   };
@@ -79,6 +86,8 @@ export function TrackerSettingsPage() {
     const assignreq = new AssignTrackerRequestT();
     assignreq.bodyPosition = role;
     assignreq.trackerId = tracker?.tracker.trackerId;
+    if (allowDriftCompensation != null)
+      assignreq.allowDriftCompensation = allowDriftCompensation;
     sendRPCPacket(RpcMessage.AssignTrackerRequest, assignreq);
     setSelectBodypart(false);
   };
@@ -89,27 +98,41 @@ export function TrackerSettingsPage() {
       : rotationToQuatMap.FRONT;
   }, [tracker?.tracker.info?.mountingOrientation]);
 
-  const updateTrackerName = () => {
+  const updateTrackerSettings = () => {
     if (!tracker) return;
-    if (trackerName == tracker.tracker.info?.customName) return;
+    if (allowDriftCompensation == null) return;
+    if (
+      trackerName == tracker.tracker.info?.customName &&
+      allowDriftCompensation == tracker.tracker.info?.allowDriftCompensation
+    )
+      return;
     const assignreq = new AssignTrackerRequestT();
     assignreq.bodyPosition = tracker?.tracker.info?.bodyPart || BodyPart.NONE;
+    assignreq.mountingOrientation = assignreq.mountingOrientation =
+      QuaternionToQuatT(
+        Quaternion.fromEuler(0, 0, FixEuler(+currRotation) * DEG_TO_RAD, 'XZY')
+      );
     assignreq.displayName = trackerName;
     assignreq.trackerId = tracker?.tracker.trackerId;
+    assignreq.allowDriftCompensation = allowDriftCompensation;
     sendRPCPacket(RpcMessage.AssignTrackerRequest, assignreq);
   };
 
   const onSettingsSubmit = () => {
-    updateTrackerName();
+    updateTrackerSettings();
   };
 
   useDebouncedEffect(
     () => {
-      updateTrackerName();
+      updateTrackerSettings();
     },
     [trackerName],
     1000
   );
+
+  useEffect(() => {
+    updateTrackerSettings();
+  }, [allowDriftCompensation]);
 
   useEffect(() => {
     if (tracker && !firstLoad) setFirstLoad(true);
@@ -119,6 +142,7 @@ export function TrackerSettingsPage() {
     if (firstLoad) {
       reset({
         trackerName: tracker?.tracker.info?.customName as string | null,
+        allowDriftCompensation: tracker?.tracker.info?.allowDriftCompensation,
       });
     }
   }, [firstLoad]);
@@ -166,7 +190,7 @@ export function TrackerSettingsPage() {
           <div className="flex flex-col bg-background-70 p-3 rounded-lg gap-2">
             <div className="flex justify-between">
               <Typography color="secondary">
-                {t('tracker-infos-manufacturer')}
+                {l10n.getString('tracker-infos-manufacturer')}
               </Typography>
               <Typography>
                 {tracker?.device?.hardwareInfo?.manufacturer}
@@ -174,13 +198,13 @@ export function TrackerSettingsPage() {
             </div>
             <div className="flex justify-between">
               <Typography color="secondary">
-                {t('tracker-infos-display_name')}
+                {l10n.getString('tracker-infos-display_name')}
               </Typography>
               <Typography>{tracker?.tracker.info?.displayName}</Typography>
             </div>
             <div className="flex justify-between">
               <Typography color="secondary">
-                {t('tracker-infos-custom_name')}
+                {l10n.getString('tracker-infos-custom_name')}
               </Typography>
               <Typography>
                 {tracker?.tracker.info?.customName || '--'}
@@ -188,7 +212,7 @@ export function TrackerSettingsPage() {
             </div>
             <div className="flex justify-between">
               <Typography color="secondary">
-                {t('tracker-infos-url')}
+                {l10n.getString('tracker-infos-url')}
               </Typography>
               <Typography>
                 udp://
@@ -200,22 +224,26 @@ export function TrackerSettingsPage() {
           </div>
         </div>
         <div className="flex flex-col flex-grow  bg-background-70 rounded-lg p-5 gap-3">
-          <ArrowLink to="/">{t('tracker-settings-back')}</ArrowLink>
+          <ArrowLink to="/">
+            {l10n.getString('tracker-settings-back')}
+          </ArrowLink>
           <Typography variant="main-title">
-            {t('tracker-settings-title')}
+            {l10n.getString('tracker-settings-title')}
           </Typography>
           <div className="flex flex-col gap-2 w-full mt-3">
             <Typography variant="section-title">
-              {t('tracker-settings-assignment_section-title')}
+              {l10n.getString('tracker-settings-assignment_section')}
             </Typography>
             <Typography color="secondary">
-              {t('tracker-settings-assignment_section-description')}
+              {l10n.getString(
+                'tracker-settings-assignment_section-description'
+              )}
             </Typography>
             <div className="flex justify-between bg-background-80 w-full p-3 rounded-lg">
               <div className="flex gap-3 items-center">
                 <FootIcon></FootIcon>
                 <Typography>
-                  {t(
+                  {l10n.getString(
                     'body_part-' +
                       BodyPart[tracker?.tracker.info?.bodyPart || BodyPart.NONE]
                   )}
@@ -226,42 +254,73 @@ export function TrackerSettingsPage() {
                   variant="secondary"
                   onClick={() => setSelectBodypart(true)}
                 >
-                  {t('tracker-settings-assignment_section-edit')}
+                  {l10n.getString('tracker-settings-assignment_section-edit')}
                 </Button>
               </div>
             </div>
           </div>
           <div className="flex flex-col gap-2 w-full mt-3">
             <Typography variant="section-title">
-              {t('tracker-settings-mounting_section-title')}
+              {l10n.getString('tracker-settings-mounting_section')}
             </Typography>
             <Typography color="secondary">
-              {t('tracker-settings-mounting_section-description')}
+              {l10n.getString('tracker-settings-mounting_section-description')}
             </Typography>
             <div className="flex justify-between bg-background-80 w-full p-3 rounded-lg">
               <div className="flex gap-3 items-center">
                 <FootIcon></FootIcon>
-                <Typography>{t(rotationsLabels[currRotation])}</Typography>
+                <Typography>
+                  {l10n.getString(rotationsLabels[currRotation])}
+                </Typography>
               </div>
               <div className="flex">
                 <Button
                   variant="secondary"
                   onClick={() => setSelectRotation(true)}
                 >
-                  {t('tracker-settings-mounting_section-edit')}
+                  {l10n.getString('tracker-settings-mounting_section-edit')}
                 </Button>
               </div>
             </div>
           </div>
+          {tracker?.tracker.info?.isImu && (
+            <>
+              <div className="flex flex-col gap-2 w-full mt-3">
+                <Typography variant="section-title">
+                  {l10n.getString(
+                    'tracker-settings-drift_compensation_section'
+                  )}
+                </Typography>
+                <Typography color="secondary">
+                  {l10n.getString(
+                    'tracker-settings-drift_compensation_section-description'
+                  )}
+                </Typography>
+                <div className="flex">
+                  <CheckBox
+                    variant="toggle"
+                    outlined
+                    name="allowDriftCompensation"
+                    control={control}
+                    label={l10n.getString(
+                      'tracker-settings-drift_compensation_section-edit'
+                    )}
+                  />
+                </div>
+              </div>
+            </>
+          )}
           <div className="flex flex-col gap-2 w-full mt-3">
             <Typography variant="section-title">
-              {t('tracker-settings-name_section-title')}
+              {l10n.getString('tracker-settings-name_section')}
             </Typography>
             <Typography color="secondary">
-              {t('tracker-settings-name_section-description')}
+              {l10n.getString('tracker-settings-name_section-description')}
             </Typography>
             <Input
-              placeholder={t('tracker-settings-name_section-input_placeholder')}
+              placeholder={l10n.getString(
+                'tracker-settings-name_section-placeholder'
+              )}
               type="text"
               autocomplete={false}
               {...register('trackerName')}

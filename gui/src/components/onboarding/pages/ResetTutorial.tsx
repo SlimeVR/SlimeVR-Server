@@ -1,11 +1,11 @@
-import { useTranslation } from 'react-i18next';
+import { useLocalization } from '@fluent/react';
 import { useOnboarding } from '../../../hooks/onboarding';
 import { ArrowLink } from '../../commons/ArrowLink';
 import { Button } from '../../commons/Button';
 import { Typography } from '../../commons/Typography';
 
 export function ResetTutorialPage() {
-  const { t } = useTranslation();
+  const { l10n } = useLocalization();
   const { applyProgress, skipSetup } = useOnboarding();
 
   applyProgress(0.8);
@@ -17,16 +17,16 @@ export function ResetTutorialPage() {
           <div className="flex gap-8">
             <div className="flex flex-col max-w-md gap-3">
               <ArrowLink to="/onboarding/mounting/auto" direction="left">
-                {t('onboarding-reset_tutorial-back')}
+                {l10n.getString('onboarding-reset_tutorial-back')}
               </ArrowLink>
               <Typography variant="main-title">
-                {t('onboarding-reset_tutorial-title')}
+                {l10n.getString('onboarding-reset_tutorial')}
                 <span className="mx-2 p-1 bg-accent-background-30 text-standard rounded-md">
-                  {t('onboarding-wip')}
+                  {l10n.getString('onboarding-wip')}
                 </span>
               </Typography>
               <Typography color="secondary">
-                {t('onboarding-reset_tutorial-description')}
+                {l10n.getString('onboarding-reset_tutorial-description')}
               </Typography>
             </div>
           </div>
@@ -34,12 +34,12 @@ export function ResetTutorialPage() {
         <div className="w-full py-4 flex flex-row">
           <div className="flex flex-grow">
             <Button variant="secondary" to="/" onClick={skipSetup}>
-              {t('onboarding-skip')}
+              {l10n.getString('onboarding-skip')}
             </Button>
           </div>
           <div className="flex gap-3">
             <Button variant="primary" to="/onboarding/body-proportions/auto">
-              {t('onboarding-continue')}
+              {l10n.getString('onboarding-continue')}
             </Button>
           </div>
         </div>
