@@ -539,7 +539,7 @@ export function GeneralSettings() {
                   variant="toggle"
                   outlined
                   control={control}
-                  name="toggles-viveEmulation"
+                  name="toggles.viveEmulation"
                   label={l10n.getString(
                     'settings-general-fk_settings-vive_emulation-label'
                   )}
@@ -640,7 +640,7 @@ export function GeneralSettings() {
                 })
               }
               min={2}
-              max={3}
+              max={10}
               step={1}
             />
             <NumberSelector
@@ -655,7 +655,7 @@ export function GeneralSettings() {
                 })
               }
               min={2}
-              max={3}
+              max={10}
               step={1}
             />
             <NumberSelector
@@ -670,7 +670,7 @@ export function GeneralSettings() {
                 })
               }
               min={2}
-              max={3}
+              max={10}
               step={1}
             />
           </div>
