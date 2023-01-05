@@ -16,6 +16,10 @@ export const langs = [
     key: 'es-419',
   },
   {
+    name: '🇪🇪 Eesti',
+    key: 'et',
+  },
+  {
     name: '🇫🇷 Français',
     key: 'fr',
   },
