@@ -64,8 +64,8 @@ export function useTracker(tracker: TrackerDataT) {
       ),
     useRefAdjRotationDebugEulerDegrees: () =>
       useMemo(
-        () => QuaternionToEulerDegrees(tracker?.rotationReferenceAdjustedDebug),
-        [tracker.rotationReferenceAdjustedDebug]
+        () => QuaternionToEulerDegrees(tracker?.rotationIdentityAdjusted),
+        [tracker.rotationIdentityAdjusted]
       ),
     useVelocity: () => {
       const previousRot = useRef<{

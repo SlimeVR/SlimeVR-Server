@@ -129,8 +129,7 @@ function SceneRenderer({ x, y, z, w }: QuatObject) {
 export function IMUVisualizerWidget({ tracker }: { tracker: TrackerDataT }) {
   const { l10n } = useLocalization();
   const [enabled, setEnabled] = useState(false);
-  const quat =
-    tracker?.rotationReferenceAdjustedDebug || new THREE.Quaternion();
+  const quat = tracker?.rotationIdentityAdjusted || new THREE.Quaternion();
 
   const { useRawRotationEulerDegrees, useRefAdjRotationEulerDegrees } =
     useTracker(tracker);

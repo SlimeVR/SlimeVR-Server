@@ -73,7 +73,7 @@ export function useProvideAppContext(): AppContext {
       trackerData.temp = true;
       trackerData.linearAcceleration = true;
       trackerData.rotationReferenceAdjusted = true;
-      trackerData.rotationReferenceAdjustedDebug = true;
+      trackerData.rotationIdentityAdjusted = true;
 
       const dataMask = new DeviceDataMaskT();
       dataMask.deviceData = true;
