@@ -564,33 +564,39 @@ public class TrackersUDPServer extends Thread {
 					break;
 				tracker.temperature = temp.temperature;
 				break;
-			case UDPProtocolParser.PACKET_RESET:
+			case UDPProtocolParser.PACKET_USER_ACTION:
 				if (connection == null)
 					break;
-				UDPPacket21Reset reset = (UDPPacket21Reset) packet;
-				String name = "";
-				switch (reset.type) {
-					case UDPPacket21Reset.RESET:
-						name = "Full";
-						Main.getVrServer().resetTrackers();
-						break;
-					case UDPPacket21Reset.RESET_YAW:
-						name = "Yaw";
-						Main.getVrServer().resetTrackersYaw();
-						break;
-					case UDPPacket21Reset.RESET_MOUNTING:
-						name = "Mounting";
-						Main.getVrServer().resetTrackersMounting();
+				UDPPacket21UserAction action = (UDPPacket21UserAction) packet;
+				switch (action.type) {
+					case UDPPacket21UserAction.RESET:
+					case UDPPacket21UserAction.RESET_YAW:
+					case UDPPacket21UserAction.RESET_MOUNTING:
+						String name = "";
+						switch (action.type) {
+							case UDPPacket21UserAction.RESET:
+								name = "Full";
+								Main.getVrServer().resetTrackers();
+								break;
+							case UDPPacket21UserAction.RESET_YAW:
+								name = "Yaw";
+								Main.getVrServer().resetTrackersYaw();
+								break;
+							case UDPPacket21UserAction.RESET_MOUNTING:
+								name = "Mounting";
+								Main.getVrServer().resetTrackersMounting();
+								break;
+						}
+						LogManager
+							.info(
+								"[TrackerServer] User action from "
+									+ connection.descriptiveName
+									+ " received. "
+									+ name
+									+ " reset performed."
+							);
 						break;
 				}
-				LogManager
-					.info(
-						"[TrackerServer] Reset packet from "
-							+ connection.descriptiveName
-							+ ". "
-							+ name
-							+ " reset performed."
-					);
 				break;
 			default:
 				LogManager.warning("[TrackerServer] Skipped packet " + packet);

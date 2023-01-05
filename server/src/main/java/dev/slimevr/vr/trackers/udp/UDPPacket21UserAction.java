@@ -4,15 +4,15 @@ import java.io.IOException;
 import java.nio.ByteBuffer;
 
 
-public class UDPPacket21Reset extends UDPPacket {
+public class UDPPacket21UserAction extends UDPPacket {
 
-	public static final int RESET = 0;
-	public static final int RESET_YAW = 1;
-	public static final int RESET_MOUNTING = 2;
+	public static final int RESET = 2;
+	public static final int RESET_YAW = 3;
+	public static final int RESET_MOUNTING = 4;
 
 	public int type;
 
-	public UDPPacket21Reset() {
+	public UDPPacket21UserAction() {
 	}
 
 	@Override
