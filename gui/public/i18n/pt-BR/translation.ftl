@@ -128,11 +128,14 @@ tracker-settings-assignment_section-edit = Editar atribuição
 tracker-settings-mounting_section = Posicionamento
 tracker-settings-mounting_section-description = Aonde o tracker está posicionado?
 tracker-settings-mounting_section-edit = Editar posição
+tracker-settings-drift_compensation_section = Allow drift compensation
+tracker-settings-drift_compensation_section-description = Should this tracker compensate for its drift when drift compensation is enabled?
+tracker-settings-drift_compensation_section-edit = Allow drift compensation
 # The .<name> means it's an attribute and it's related to the top key.
 # In this case that is the settings for the assignment section.
 tracker-settings-name_section = Nome do tracker
-tracker-settings-name_section-placeholder = Coxa esquerda de NightyBeast
 tracker-settings-name_section-description = Dê um apelido fofo :)
+tracker-settings-name_section-placeholder = Coxa esquerda de NightyBeast
 
 ## Tracker part card info
 tracker-part_card-no_name = Sem nome
@@ -213,19 +216,27 @@ settings-general-steamvr-trackers-hands = Mãos
 
 ## Tracker mechanics
 settings-general-tracker_mechanics = Mecânicas do Tracker
-settings-general-tracker_mechanics-subtitle = Filtros
+settings-general-tracker_mechanics-filtering = Filtros
 # This also cares about multilines
-settings-general-tracker_mechanics-description =
+settings-general-tracker_mechanics-filtering-description =
     Escolha o tipo de filtro para seus trackers.
     Predição prediz movimentação enquanto suavização suaviza o movimento.
-settings-general-tracker_mechanics-filtering_type = Tipo de filtro
-settings-general-tracker_mechanics-filtering_type-none = Sem filtro
-settings-general-tracker_mechanics-filtering_type-none-description = Utiliza as rotações como registradas. Sem qualquer tipo de filtro.
-settings-general-tracker_mechanics-filtering_type-smoothing = Suavização
-settings-general-tracker_mechanics-filtering_type-smoothing-description = Suaviza o movimento porém introduz um pouco de latência.
-settings-general-tracker_mechanics-filtering_type-prediction = Predição
-settings-general-tracker_mechanics-filtering_type-prediction-description = Reduz latência e torna os movimentos mais responsivos, porém aumenta tremulação (Jitter).
-settings-general-tracker_mechanics-amount = Quantidade
+settings-general-tracker_mechanics-filtering-type = Tipo de filtro
+settings-general-tracker_mechanics-filtering-type-none = Sem filtro
+settings-general-tracker_mechanics-filtering-type-none-description = Utiliza as rotações como registradas. Sem qualquer tipo de filtro.
+settings-general-tracker_mechanics-filtering-type-smoothing = Suavização
+settings-general-tracker_mechanics-filtering-type-smoothing-description = Suaviza o movimento porém introduz um pouco de latência.
+settings-general-tracker_mechanics-filtering-type-prediction = Predição
+settings-general-tracker_mechanics-filtering-type-prediction-description = Reduz latência e torna os movimentos mais responsivos, porém aumenta tremulação (Jitter).
+settings-general-tracker_mechanics-filtering-amount = Quantidade
+settings-general-tracker_mechanics-drift_compensation = Drift compensation
+# This cares about multilines
+settings-general-tracker_mechanics-drift_compensation-description =
+    Compensates IMU yaw drift by applying an inverse rotation.
+    Change amount of compensation and up to how many resets are taken into account.
+settings-general-tracker_mechanics-drift_compensation-enabled-label = Drift compensation
+settings-general-tracker_mechanics-drift_compensation-amount-label = Compensation amount
+settings-general-tracker_mechanics-drift_compensation-max_resets-label = Use up to x last resets
 
 ## FK/Tracking settings
 settings-general-fk_settings = Opções de Tracker

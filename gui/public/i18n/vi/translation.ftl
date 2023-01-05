@@ -128,11 +128,14 @@ tracker-settings-assignment_section-edit = Chỉnh lại giao bộ phận
 tracker-settings-mounting_section = Vị trí đặt bộ phận
 tracker-settings-mounting_section-description = Tracker đặt ở đâu?
 tracker-settings-mounting_section-edit = Chỉnh lại chỗ đặt
+tracker-settings-drift_compensation_section = Allow drift compensation
+tracker-settings-drift_compensation_section-description = Should this tracker compensate for its drift when drift compensation is enabled?
+tracker-settings-drift_compensation_section-edit = Allow drift compensation
 # The .<name> means it's an attribute and it's related to the top key.
 # In this case that is the settings for the assignment section.
 tracker-settings-name_section = Tên tracker
-tracker-settings-name_section-placeholder = Menaced's left leg
 tracker-settings-name_section-description = Hãy cho một tên đẹp :)
+tracker-settings-name_section-placeholder = Menaced's left leg
 
 ## Tracker part card info
 tracker-part_card-no_name = Không tên
@@ -213,19 +216,27 @@ settings-general-steamvr-trackers-hands = Hands
 
 ## Tracker mechanics
 settings-general-tracker_mechanics = Cơ khí tracker
-settings-general-tracker_mechanics-subtitle = Lọc rung
+settings-general-tracker_mechanics-filtering = Lọc rung
 # This also cares about multilines
-settings-general-tracker_mechanics-description =
+settings-general-tracker_mechanics-filtering-description =
     Chọn kiểu lọc rung cho tracker.
     Dự đoán đoán cử động trong khi lọc rung cử động.
-settings-general-tracker_mechanics-filtering_type = Kiểu lọc
-settings-general-tracker_mechanics-filtering_type-none = Không lọc
-settings-general-tracker_mechanics-filtering_type-none-description = Để đo chiều chuyển y nguyên. Không sử dụlọclọc.
-settings-general-tracker_mechanics-filtering_type-smoothing = Làm mượt
-settings-general-tracker_mechanics-filtering_type-smoothing-description = Lọc cử động mượt nhưng tạo ít chậm rễ.
-settings-general-tracker_mechanics-filtering_type-prediction = Dự đoán
-settings-general-tracker_mechanics-filtering_type-prediction-description = Giảm chậm trê và để cử động gọn hơn, nhưng có thể tăng độ rung.
-settings-general-tracker_mechanics-amount = Số luọng
+settings-general-tracker_mechanics-filtering-type = Kiểu lọc
+settings-general-tracker_mechanics-filtering-type-none = Không lọc
+settings-general-tracker_mechanics-filtering-type-none-description = Để đo chiều chuyển y nguyên. Không sử dụlọclọc.
+settings-general-tracker_mechanics-filtering-type-smoothing = Làm mượt
+settings-general-tracker_mechanics-filtering-type-smoothing-description = Lọc cử động mượt nhưng tạo ít chậm rễ.
+settings-general-tracker_mechanics-filtering-type-prediction = Dự đoán
+settings-general-tracker_mechanics-filtering-type-prediction-description = Giảm chậm trê và để cử động gọn hơn, nhưng có thể tăng độ rung.
+settings-general-tracker_mechanics-filtering-amount = Số luọng
+settings-general-tracker_mechanics-drift_compensation = Drift compensation
+# This cares about multilines
+settings-general-tracker_mechanics-drift_compensation-description =
+    Compensates IMU yaw drift by applying an inverse rotation.
+    Change amount of compensation and up to how many resets are taken into account.
+settings-general-tracker_mechanics-drift_compensation-enabled-label = Drift compensation
+settings-general-tracker_mechanics-drift_compensation-amount-label = Compensation amount
+settings-general-tracker_mechanics-drift_compensation-max_resets-label = Use up to x last resets
 
 ## FK/Tracking settings
 settings-general-fk_settings = Cài đặt FK

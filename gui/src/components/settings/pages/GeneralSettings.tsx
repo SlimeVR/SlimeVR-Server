@@ -13,6 +13,7 @@ import {
   SettingsResponseT,
   SteamVRTrackersSettingT,
   TapDetectionSettingsT,
+  DriftCompensationSettingsT,
 } from 'solarxr-protocol';
 import { useConfig } from '../../../hooks/config';
 import { useWebsocketAPI } from '../../../hooks/websocket-api';
@@ -39,6 +40,11 @@ interface SettingsForm {
   filtering: {
     type: number;
     amount: number;
+  };
+  driftCompensation: {
+    enabled: boolean;
+    amount: number;
+    maxResets: number;
   };
   toggles: {
     extendedSpine: boolean;
@@ -88,6 +94,11 @@ const defaultValues = {
     viveEmulation: false,
   },
   filtering: { amount: 0.1, type: FilteringType.NONE },
+  driftCompensation: {
+    enabled: false,
+    amount: 0.1,
+    maxResets: 1,
+  },
   tapDetection: {
     tapMountingResetEnabled: false,
     tapQuickResetEnabled: false,
@@ -165,6 +176,12 @@ export function GeneralSettings() {
     filtering.amount = values.filtering.amount;
     settings.filtering = filtering;
 
+    const driftCompensation = new DriftCompensationSettingsT();
+    driftCompensation.enabled = values.driftCompensation.enabled;
+    driftCompensation.amount = values.driftCompensation.amount;
+    driftCompensation.maxResets = values.driftCompensation.maxResets;
+    settings.driftCompensation = driftCompensation;
+
     sendRPCPacket(RpcMessage.ChangeSettingsRequest, settings);
 
     setConfig({
@@ -192,6 +209,10 @@ export function GeneralSettings() {
 
     if (settings.filtering) {
       formData.filtering = settings.filtering;
+    }
+
+    if (settings.driftCompensation) {
+      formData.driftCompensation = settings.driftCompensation;
     }
 
     if (settings.steamVrTrackers) {
@@ -340,12 +361,14 @@ export function GeneralSettings() {
             {l10n.getString('settings-general-tracker_mechanics')}
           </Typography>
           <Typography bold>
-            {l10n.getString('settings-general-tracker_mechanics-subtitle')}
+            {l10n.getString('settings-general-tracker_mechanics-filtering')}
           </Typography>
           <div className="flex flex-col pt-2 pb-4">
             <>
               {l10n
-                .getString('settings-general-tracker_mechanics-description')
+                .getString(
+                  'settings-general-tracker_mechanics-filtering-description'
+                )
                 .split('\n')
                 .map((line, i) => (
                   <Typography color="secondary" key={i}>
@@ -356,7 +379,7 @@ export function GeneralSettings() {
           </div>
           <Typography>
             {l10n.getString(
-              'settings-general-tracker_mechanics-filtering_type'
+              'settings-general-tracker_mechanics-filtering-type'
             )}
           </Typography>
           <div className="flex md:flex-row flex-col gap-3 pt-2">
@@ -364,10 +387,10 @@ export function GeneralSettings() {
               control={control}
               name="filtering.type"
               label={l10n.getString(
-                'settings-general-tracker_mechanics-filtering_type-none'
+                'settings-general-tracker_mechanics-filtering-type-none'
               )}
               desciption={l10n.getString(
-                'settings-general-tracker_mechanics-filtering_type-none-description'
+                'settings-general-tracker_mechanics-filtering-type-none-description'
               )}
               value={FilteringType.NONE}
             ></Radio>
@@ -375,10 +398,10 @@ export function GeneralSettings() {
               control={control}
               name="filtering.type"
               label={l10n.getString(
-                'settings-general-tracker_mechanics-filtering_type-smoothing'
+                'settings-general-tracker_mechanics-filtering-type-smoothing'
               )}
               desciption={l10n.getString(
-                'settings-general-tracker_mechanics-filtering_type-smoothing-description'
+                'settings-general-tracker_mechanics-filtering-type-smoothing-description'
               )}
               value={FilteringType.SMOOTHING}
             ></Radio>
@@ -386,10 +409,10 @@ export function GeneralSettings() {
               control={control}
               name="filtering.type"
               label={l10n.getString(
-                'settings-general-tracker_mechanics-filtering_type-prediction'
+                'settings-general-tracker_mechanics-filtering-type-prediction'
               )}
               desciption={l10n.getString(
-                'settings-general-tracker_mechanics-filtering_type-prediction-description'
+                'settings-general-tracker_mechanics-filtering-type-prediction-description'
               )}
               value={FilteringType.PREDICTION}
             ></Radio>
@@ -399,12 +422,66 @@ export function GeneralSettings() {
               control={control}
               name="filtering.amount"
               label={l10n.getString(
-                'settings-general-tracker_mechanics-amount'
+                'settings-general-tracker_mechanics-filtering-amount'
               )}
               valueLabelFormat={(value) => `${Math.round(value * 100)} %`}
               min={0.1}
               max={1.0}
               step={0.1}
+            />
+          </div>
+          <div className="flex flex-col pt-4 pb-4"></div>
+          <Typography bold>
+            {l10n.getString(
+              'settings-general-tracker_mechanics-drift_compensation'
+            )}
+          </Typography>
+          <div className="flex flex-col pt-2 pb-4">
+            <Typography color="secondary">
+              {l10n
+                .getString(
+                  'settings-general-tracker_mechanics-drift_compensation-description'
+                )
+                .split('\n')
+                .map((line, i) => (
+                  <Typography color="secondary" key={i}>
+                    {line}
+                  </Typography>
+                ))}
+            </Typography>
+          </div>
+          <CheckBox
+            variant="toggle"
+            outlined
+            control={control}
+            name="driftCompensation.enabled"
+            label={l10n.getString(
+              'settings-general-tracker_mechanics-drift_compensation-enabled-label'
+            )}
+          />
+          <div className="flex gap-5 pt-5 md:flex-row flex-col">
+            <NumberSelector
+              control={control}
+              name="driftCompensation.amount"
+              label={l10n.getString(
+                'settings-general-tracker_mechanics-drift_compensation-amount-label'
+              )}
+              valueLabelFormat={(value) => `${Math.round(value * 100)} %`}
+              min={0.1}
+              max={1.0}
+              step={0.1}
+            />
+          </div>
+          <div className="flex gap-5 pt-5 md:flex-row flex-col">
+            <NumberSelector
+              control={control}
+              name="driftCompensation.maxResets"
+              label={l10n.getString(
+                'settings-general-tracker_mechanics-drift_compensation-max_resets-label'
+              )}
+              min={1}
+              max={25}
+              step={1}
             />
           </div>
         </>
@@ -457,7 +534,6 @@ export function GeneralSettings() {
               step={0.1}
             />
           </div>
-
           <Typography bold>
             {l10n.getString('settings-general-fk_settings-arm_fk')}
           </Typography>
