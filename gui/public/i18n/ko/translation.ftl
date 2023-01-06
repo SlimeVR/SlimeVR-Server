@@ -1,8 +1,8 @@
 ### SlimeVR complete GUI translations
 # Please developers (not translators) don't reuse a key inside another key
-# or concat text with a translation string in the code, use the appropiate 
-# features like variables and selectors in each appropiate case!
-# And also comment the string if it's something not easy to translate so you help
+# or concat text with a translation string in the code, use the appropriate
+# features like variables and selectors in each appropriate case!
+# And also comment the string if it's something not easy to translate, so you help
 # translators on what it means
 
 ## Websocket (server) status
@@ -128,11 +128,14 @@ tracker-settings-assignment_section-edit = 위치 수정
 tracker-settings-mounting_section = 착용 방향
 tracker-settings-mounting_section-description = 트래커는 어디에 착용하나요?
 tracker-settings-mounting_section-edit = 방향 수정
+tracker-settings-drift_compensation_section = Allow drift compensation
+tracker-settings-drift_compensation_section-description = Should this tracker compensate for its drift when drift compensation is enabled?
+tracker-settings-drift_compensation_section-edit = Allow drift compensation
 # The .<name> means it's an attribute and it's related to the top key.
 # In this case that is the settings for the assignment section.
 tracker-settings-name_section = 트래커 이름
-tracker-settings-name_section-placeholder = NightyBeast's left leg
 tracker-settings-name_section-description = 귀여운 이름을 지어주세요! >_<
+tracker-settings-name_section-placeholder = NightyBeast's left leg
 
 ## Tracker part card info
 tracker-part_card-no_name = 이름 없음
@@ -213,19 +216,27 @@ settings-general-steamvr-trackers-hands = Hands
 
 ## Tracker mechanics
 settings-general-tracker_mechanics = 트래커 역학
-settings-general-tracker_mechanics-subtitle = 필터링
+settings-general-tracker_mechanics-filtering = 필터링
 # This also cares about multilines
-settings-general-tracker_mechanics-description =
+settings-general-tracker_mechanics-filtering-description =
     트래커의 필터링 유형을 선택하세요.
     Prediction은 움직임을 예측하고 Smoothing은 움직임을 부드럽게 해요.
-settings-general-tracker_mechanics-filtering_type = 필터링 타입
-settings-general-tracker_mechanics-filtering_type-none = 필터링 없음
-settings-general-tracker_mechanics-filtering_type-none-description = 어떠한 필터링도 사용하지 않아요. 있는 그대로의 회전 값을 사용해요.
-settings-general-tracker_mechanics-filtering_type-smoothing = Smoothing
-settings-general-tracker_mechanics-filtering_type-smoothing-description = 움직임을 부드럽게 하지만 약간의 대기 시간이 추가돼요.
-settings-general-tracker_mechanics-filtering_type-prediction = Prediction
-settings-general-tracker_mechanics-filtering_type-prediction-description = 대기 시간이 줄어들고 움직임이 더 빨라지지만 지터가 증가할 수 있어요.
-settings-general-tracker_mechanics-amount = 강도
+settings-general-tracker_mechanics-filtering-type = 필터링 타입
+settings-general-tracker_mechanics-filtering-type-none = 필터링 없음
+settings-general-tracker_mechanics-filtering-type-none-description = 어떠한 필터링도 사용하지 않아요. 있는 그대로의 회전 값을 사용해요.
+settings-general-tracker_mechanics-filtering-type-smoothing = Smoothing
+settings-general-tracker_mechanics-filtering-type-smoothing-description = 움직임을 부드럽게 하지만 약간의 대기 시간이 추가돼요.
+settings-general-tracker_mechanics-filtering-type-prediction = Prediction
+settings-general-tracker_mechanics-filtering-type-prediction-description = 대기 시간이 줄어들고 움직임이 더 빨라지지만 지터가 증가할 수 있어요.
+settings-general-tracker_mechanics-filtering-amount = 강도
+settings-general-tracker_mechanics-drift_compensation = Drift compensation
+# This cares about multilines
+settings-general-tracker_mechanics-drift_compensation-description =
+    Compensates IMU yaw drift by applying an inverse rotation.
+    Change amount of compensation and up to how many resets are taken into account.
+settings-general-tracker_mechanics-drift_compensation-enabled-label = Drift compensation
+settings-general-tracker_mechanics-drift_compensation-amount-label = Compensation amount
+settings-general-tracker_mechanics-drift_compensation-max_resets-label = Use up to x last resets
 
 ## FK/Tracking settings
 settings-general-fk_settings = FK 설정

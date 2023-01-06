@@ -19,19 +19,20 @@ public class TapDetection {
 	private LinkedList<float[]> accelList = new LinkedList<>();
 	private LinkedList<Float> tapTimes = new LinkedList<>();
 	private Tracker trackerToWatch = null;
+	private int numberTrackersOverThreshold = 1;
 
 	// hyperparameters
 	private static final float NS_CONVERTER = 1.0e9f;
 	private static final float NEEDED_ACCEL_DELTA = 6.0f;
 	private static final float ALLOWED_BODY_ACCEL = 1.5f;
 	private static final float ALLOWED_BODY_ACCEL_SQUARED = ALLOWED_BODY_ACCEL * ALLOWED_BODY_ACCEL;
-	private static final float CLUMP_TIME_NS = 0.03f * NS_CONVERTER;
-	private static final float TIME_WINDOW_NS = 0.6f * NS_CONVERTER;
+	private static final float CLUMP_TIME_NS = 0.08f * NS_CONVERTER;
+	private float timeWindowNS = 0.6f * NS_CONVERTER;
 
 	// state
 	private float detectionTime = -1.0f;
-	private boolean doubleTaped = false;
-	private boolean tripleTaped = false;
+	private int taps = 0;
+	private boolean waitForLowAccel = false;
 
 	public TapDetection(HumanSkeleton skeleton) {
 		this.skeleton = skeleton;
@@ -58,24 +59,28 @@ public class TapDetection {
 		trackerToWatch = tracker;
 	}
 
-	public boolean getDoubleTapped() {
-		return doubleTaped;
-	}
-
-	public boolean getTripleTapped() {
-		return tripleTaped;
+	public int getTaps() {
+		return taps;
 	}
 
 	public float getDetectionTime() {
 		return detectionTime;
 	}
 
+	public void setNumberTrackersOverThreshold(int numberTrackersOverThreshold) {
+		this.numberTrackersOverThreshold = numberTrackersOverThreshold;
+	}
+
 	// reset the lists for detecting taps
 	public void resetDetector() {
 		tapTimes.clear();
 		accelList.clear();
-		doubleTaped = false;
-		tripleTaped = false;
+		taps = 0;
+	}
+
+	// set the max taps this detector is configured to detect
+	public void setMaxTaps(int maxTaps) {
+		timeWindowNS = 0.3f * maxTaps * NS_CONVERTER;
 	}
 
 	// main function for tap detection
@@ -99,13 +104,21 @@ public class TapDetection {
 		}
 
 		// check for a tap
-		if (getAccelDelta() > NEEDED_ACCEL_DELTA) {
+		float accelDelta = getAccelDelta();
+		if (accelDelta > NEEDED_ACCEL_DELTA && !waitForLowAccel) {
+			// after a tap is added to the list, a lower acceleration
+			// is needed before another tap can be added
 			tapTimes.add(time);
+			waitForLowAccel = true;
 		}
+
+		// if waiting for low accel
+		if (accelDelta < ALLOWED_BODY_ACCEL)
+			waitForLowAccel = false;
 
 		// remove old taps from the list (if they are too old)
 		if (!tapTimes.isEmpty()) {
-			while (time - tapTimes.getFirst() > TIME_WINDOW_NS) {
+			while (time - tapTimes.getFirst() > timeWindowNS) {
 				tapTimes.removeFirst();
 				if (tapTimes.isEmpty())
 					return;
@@ -119,18 +132,13 @@ public class TapDetection {
 		}
 
 		// get the amount of taps in the list
-		int tapEvents = getTapEvents();
-
-		// if there are two tap events and the user is moving relatively slowly,
-		// quick reset
-		if (tapEvents == 2) {
-			doubleTaped = true;
+		// and set the detection time
+		int newTaps = getTapEvents();
+		if (newTaps > taps) {
+			taps = newTaps;
 			detectionTime = time;
-		} else if (tapEvents >= 3) {
-			detectionTime = time;
-			tripleTaped = true;
-			doubleTaped = false;
 		}
+
 	}
 
 	private float getAccelDelta() {
@@ -151,7 +159,7 @@ public class TapDetection {
 		if (tapTimes.isEmpty())
 			return 0;
 
-		int tapEvents = 0;
+		int tapEvents = 1;
 		float lastTapTime = tapTimes.getFirst();
 		for (int i = 0; i < tapTimes.size(); i++) {
 			if (tapTimes.get(i) - lastTapTime > CLUMP_TIME_NS) {
@@ -167,20 +175,21 @@ public class TapDetection {
 	// you need two or more trackers for this feature to be reliable)
 	private boolean isUserStatic(Tracker trackerToExclude) {
 		Vector3f accel = new Vector3f();
+		int num = 0;
 		if (skeleton.chestTracker != null && !skeleton.chestTracker.equals(trackerToExclude)) {
 			skeleton.chestTracker.getAcceleration(accel);
 			if (accel.lengthSquared() > ALLOWED_BODY_ACCEL_SQUARED)
-				return false;
+				num++;
 		}
 		if (skeleton.hipTracker != null && !skeleton.hipTracker.equals(trackerToExclude)) {
 			skeleton.hipTracker.getAcceleration(accel);
 			if (accel.lengthSquared() > ALLOWED_BODY_ACCEL_SQUARED)
-				return false;
+				num++;
 		}
 		if (skeleton.waistTracker != null && !skeleton.waistTracker.equals(trackerToExclude)) {
 			skeleton.waistTracker.getAcceleration(accel);
 			if (accel.lengthSquared() > ALLOWED_BODY_ACCEL_SQUARED)
-				return false;
+				num++;
 		}
 		if (
 			skeleton.leftUpperLegTracker != null
@@ -188,7 +197,7 @@ public class TapDetection {
 		) {
 			skeleton.leftUpperLegTracker.getAcceleration(accel);
 			if (accel.lengthSquared() > ALLOWED_BODY_ACCEL_SQUARED)
-				return false;
+				num++;
 		}
 		if (
 			skeleton.rightUpperLegTracker != null
@@ -196,22 +205,22 @@ public class TapDetection {
 		) {
 			skeleton.rightUpperLegTracker.getAcceleration(accel);
 			if (accel.lengthSquared() > ALLOWED_BODY_ACCEL_SQUARED)
-				return false;
+				num++;
 		}
 		if (
 			skeleton.leftFootTracker != null && !skeleton.leftFootTracker.equals(trackerToExclude)
 		) {
 			skeleton.leftFootTracker.getAcceleration(accel);
 			if (accel.lengthSquared() > ALLOWED_BODY_ACCEL_SQUARED)
-				return false;
+				num++;
 		}
 		if (
 			skeleton.rightFootTracker != null && !skeleton.rightFootTracker.equals(trackerToExclude)
 		) {
 			skeleton.rightFootTracker.getAcceleration(accel);
 			if (accel.lengthSquared() > ALLOWED_BODY_ACCEL_SQUARED)
-				return false;
+				num++;
 		}
-		return true;
+		return num < numberTrackersOverThreshold;
 	}
 }

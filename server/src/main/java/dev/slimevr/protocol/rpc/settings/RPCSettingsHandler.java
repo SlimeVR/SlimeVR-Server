@@ -1,6 +1,7 @@
 package dev.slimevr.protocol.rpc.settings;
 
 import com.google.flatbuffers.FlatBufferBuilder;
+import dev.slimevr.config.DriftCompensationConfig;
 import dev.slimevr.config.FiltersConfig;
 import dev.slimevr.config.OSCConfig;
 import dev.slimevr.config.TapDetectionConfig;
@@ -48,6 +49,11 @@ public record RPCSettingsHandler(RPCHandler rpcHandler, ProtocolAPI api) {
 					.createFilterSettings(
 						fbb,
 						this.api.server.getConfigManager().getVrConfig().getFilters()
+					),
+				RPCSettingsBuilder
+					.createDriftCompensationSettings(
+						fbb,
+						this.api.server.getConfigManager().getVrConfig().getDriftCompensation()
 					),
 				RPCSettingsBuilder
 					.createOSCRouterSettings(
@@ -111,6 +117,17 @@ public record RPCSettingsHandler(RPCHandler rpcHandler, ProtocolAPI api) {
 				filtersConfig.setAmount(req.filtering().amount());
 				filtersConfig.updateTrackersFilters();
 			}
+		}
+
+		if (req.driftCompensation() != null) {
+			DriftCompensationConfig driftCompensationConfig = this.api.server
+				.getConfigManager()
+				.getVrConfig()
+				.getDriftCompensation();
+			driftCompensationConfig.setEnabled(req.driftCompensation().enabled());
+			driftCompensationConfig.setAmount(req.driftCompensation().amount());
+			driftCompensationConfig.setMaxResets(req.driftCompensation().maxResets());
+			driftCompensationConfig.updateTrackersDriftCompensation();
 		}
 
 		if (req.vrcOsc() != null) {

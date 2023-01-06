@@ -17,6 +17,7 @@ public class TapDetectionConfig {
 	private int quickResetTaps = 2;
 	private int resetTaps = 3;
 	private int mountingResetTaps = 3;
+	private int numberTrackersOverThreshold = 1;
 
 	public float getQuickResetDelay() {
 		return quickResetDelay;
@@ -72,8 +73,7 @@ public class TapDetectionConfig {
 
 	// clamp to 2-3 to prevent errors
 	public void setQuickResetTaps(int quickResetTaps) {
-		if (quickResetTaps > 3 || quickResetTaps < 2)
-			FastMath.clamp(quickResetTaps, 2, 3);
+		this.quickResetTaps = (int) FastMath.clamp(quickResetTaps, 2, 10);
 		this.quickResetTaps = quickResetTaps;
 	}
 
@@ -82,8 +82,7 @@ public class TapDetectionConfig {
 	}
 
 	public void setResetTaps(int resetTaps) {
-		if (resetTaps > 3 || resetTaps < 2)
-			FastMath.clamp(resetTaps, 2, 3);
+		this.resetTaps = (int) FastMath.clamp(resetTaps, 2, 10);
 		this.resetTaps = resetTaps;
 	}
 
@@ -92,8 +91,15 @@ public class TapDetectionConfig {
 	}
 
 	public void setMountingResetTaps(int mountingResetTaps) {
-		if (mountingResetTaps > 3 || mountingResetTaps < 2)
-			FastMath.clamp(mountingResetTaps, 2, 3);
+		this.mountingResetTaps = (int) FastMath.clamp(mountingResetTaps, 2, 10);
 		this.mountingResetTaps = mountingResetTaps;
+	}
+
+	public int getNumberTrackersOverThreshold() {
+		return numberTrackersOverThreshold;
+	}
+
+	public void setNumberTrackersOverThreshold(int numberTrackersOverThreshold) {
+		this.numberTrackersOverThreshold = numberTrackersOverThreshold;
 	}
 }

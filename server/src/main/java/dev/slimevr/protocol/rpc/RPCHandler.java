@@ -211,6 +211,10 @@ public class RPCHandler extends ProtocolHandler<RpcMessageHeader>
 			}
 		}
 
+		if (tracker instanceof IMUTracker imu) {
+			imu.setAllowDriftCompensation(req.allowDriftCompensation());
+		}
+
 		this.api.server.trackerUpdated(tracker);
 	}
 
