@@ -9,7 +9,7 @@ if %errorlevel% EQU 0 (
     echo Java was not found in your system.
     echo.
     echo Either use SlimeVR Installer to install the server by following this link:
-    echo https://github.com/SlimeVR/SlimeVR-Installer/releases/latest/download/slimevr_web_installer.exe
+    echo https://slimevr.dev/download
     echo.
     echo Or download Java 17 by following this link:
     echo https://adoptium.net/temurin/releases/?version=17

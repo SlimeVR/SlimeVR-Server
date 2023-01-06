@@ -12,7 +12,7 @@ Integrations:
 * Integrations with other systems will be added later
 
 ## How to use
-It's recommended to download installer from here: https://github.com/SlimeVR/SlimeVR-Installer/releases/latest/download/slimevr_web_installer.exe
+It's recommended to download installer from here: https://slimevr.dev/download
 
 Latest instructions are [on our site](https://docs.slimevr.dev/server-setup/slimevr-setup.html).
 
