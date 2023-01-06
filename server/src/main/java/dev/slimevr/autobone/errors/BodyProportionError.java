@@ -102,6 +102,21 @@ public class BodyProportionError implements IAutoBoneError {
 		),
 	};
 
+	public static ProportionLimiter getProportionLimitForOffset(SkeletonConfigOffsets offset) {
+		ProportionLimiter result = null;
+		switch (offset) {
+			case HEAD -> result = proportionLimits[0];
+			case NECK -> result = proportionLimits[1];
+			case CHEST -> result = proportionLimits[2];
+			case WAIST -> result = proportionLimits[3];
+			case HIP -> result = proportionLimits[4];
+			case HIPS_WIDTH -> result = proportionLimits[5];
+			case UPPER_LEG -> result = proportionLimits[6];
+			case LOWER_LEG -> result = proportionLimits[7];
+		}
+		return result;
+	}
+
 	@Override
 	public float getStepError(AutoBoneTrainingStep trainingStep) throws AutoBoneException {
 		return getBodyProportionError(

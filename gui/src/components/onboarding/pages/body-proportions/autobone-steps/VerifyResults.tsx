@@ -34,7 +34,7 @@ export function VerifyResultsStep({
 
   return (
     <>
-      <div className="flex flex-col flex-grow justify-between gap-1">
+      <div className="flex flex-col flex-grow justify-between gap-2">
         <div className="flex flex-col gap-1 max-w-sm">
           <Typography variant="main-title" bold>
             {l10n.getString(
@@ -77,7 +77,6 @@ export function VerifyResultsStep({
                 </Typography>
               )}
             </div>
-            <div></div>
           </div>
         </div>
         <div className="flex gap-2">

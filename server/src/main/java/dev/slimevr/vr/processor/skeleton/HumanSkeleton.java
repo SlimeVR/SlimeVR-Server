@@ -1664,97 +1664,24 @@ public class HumanSkeleton extends Skeleton implements SkeletonConfigCallback {
 		}
 
 		switch (config) {
-			case HEAD -> skeletonConfig.setOffset(SkeletonConfigOffsets.HEAD, null);
-			case NECK -> skeletonConfig.setOffset(SkeletonConfigOffsets.NECK, null);
-			case CHEST -> {
+			case CHEST, WAIST, HIP, UPPER_LEG, LOWER_LEG -> {
 				Vector3f vec = new Vector3f();
 				hmdTracker.getPosition(vec);
 				float height = vec.y / BodyProportionError.eyeHeightToHeightRatio;
 				if (height > 0.5f) { // Reset only if floor level seems right,
 					skeletonConfig
 						.setOffset(
-							SkeletonConfigOffsets.CHEST,
-							(height * BodyProportionError.proportionLimits[2].getTargetRatio())
+							config,
+							height
+								* BodyProportionError
+									.getProportionLimitForOffset(config)
+									.getTargetRatio()
 						);
 				} else { // if floor level is incorrect
-					skeletonConfig.setOffset(SkeletonConfigOffsets.CHEST, null);
+					skeletonConfig.setOffset(config, null);
 				}
 			}
-			case CHEST_OFFSET -> skeletonConfig.setOffset(SkeletonConfigOffsets.CHEST_OFFSET, null);
-			case WAIST -> {
-				Vector3f vec = new Vector3f();
-				hmdTracker.getPosition(vec);
-				float height = vec.y / BodyProportionError.eyeHeightToHeightRatio;
-				if (height > 0.5f) { // Reset only if floor level seems right,
-					skeletonConfig
-						.setOffset(
-							SkeletonConfigOffsets.WAIST,
-							(height * BodyProportionError.proportionLimits[3].getTargetRatio())
-						);
-				} else { // if floor level is incorrect
-					skeletonConfig.setOffset(SkeletonConfigOffsets.WAIST, null);
-				}
-			}
-			case HIP -> {
-				Vector3f vec = new Vector3f();
-				hmdTracker.getPosition(vec);
-				float height = vec.y / BodyProportionError.eyeHeightToHeightRatio;
-				if (height > 0.5f) { // Reset only if floor level seems right,
-					skeletonConfig
-						.setOffset(
-							SkeletonConfigOffsets.HIP,
-							(height * BodyProportionError.proportionLimits[4].getTargetRatio())
-						);
-				} else { // if floor level is incorrect
-					skeletonConfig.setOffset(SkeletonConfigOffsets.HIP, null);
-				}
-			}
-			case HIP_OFFSET -> skeletonConfig.setOffset(SkeletonConfigOffsets.HIP_OFFSET, null);
-			case HIPS_WIDTH -> skeletonConfig.setOffset(SkeletonConfigOffsets.HIPS_WIDTH, null);
-			case UPPER_LEG -> {
-				Vector3f vec = new Vector3f();
-				hmdTracker.getPosition(vec);
-				float height = vec.y / BodyProportionError.eyeHeightToHeightRatio;
-				if (height > 0.5f) { // Reset only if floor level seems right,
-					skeletonConfig
-						.setOffset(
-							SkeletonConfigOffsets.UPPER_LEG,
-							(height * BodyProportionError.proportionLimits[6].getTargetRatio())
-						);
-				} else { // if floor level is incorrect
-					skeletonConfig.setOffset(SkeletonConfigOffsets.UPPER_LEG, null);
-				}
-			}
-			case LOWER_LEG -> {
-				Vector3f vec = new Vector3f();
-				hmdTracker.getPosition(vec);
-				float height = vec.y / BodyProportionError.eyeHeightToHeightRatio;
-				if (height > 0.5f) { // Reset only if floor level seems right,
-					skeletonConfig
-						.setOffset(
-							SkeletonConfigOffsets.LOWER_LEG,
-							(height * BodyProportionError.proportionLimits[7].getTargetRatio())
-						);
-				} else { // if floor level is incorrect
-					skeletonConfig.setOffset(SkeletonConfigOffsets.LOWER_LEG, null);
-				}
-			}
-			case FOOT_LENGTH -> skeletonConfig.setOffset(SkeletonConfigOffsets.FOOT_LENGTH, null);
-			case FOOT_SHIFT -> skeletonConfig.setOffset(SkeletonConfigOffsets.FOOT_SHIFT, null);
-			case SKELETON_OFFSET -> skeletonConfig
-				.setOffset(SkeletonConfigOffsets.SKELETON_OFFSET, null);
-			case SHOULDERS_DISTANCE -> skeletonConfig
-				.setOffset(SkeletonConfigOffsets.SHOULDERS_DISTANCE, null);
-			case SHOULDERS_WIDTH -> skeletonConfig
-				.setOffset(SkeletonConfigOffsets.SHOULDERS_WIDTH, null);
-			case UPPER_ARM -> skeletonConfig
-				.setOffset(SkeletonConfigOffsets.UPPER_ARM, null);
-			case LOWER_ARM -> skeletonConfig
-				.setOffset(SkeletonConfigOffsets.LOWER_ARM, null);
-			case CONTROLLER_Y -> skeletonConfig
-				.setOffset(SkeletonConfigOffsets.CONTROLLER_Y, null);
-			case CONTROLLER_Z -> skeletonConfig
-				.setOffset(SkeletonConfigOffsets.CONTROLLER_Z, null);
+			default -> skeletonConfig.setOffset(config, null);
 		}
 	}
 
