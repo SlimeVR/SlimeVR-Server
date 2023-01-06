@@ -74,10 +74,10 @@ We recommend committing first and then making the tag, that tag will point to th
 on.
 
 ## Code Licensing
-SlimeVR uses an MIT license, and some parts of the project use a dual MIT/Apache 2.0
-license. Be sure that any code that you reference, or dependencies you add, are
-compatible with these licenses. `GPL-v3` for example is not compatible because it
-requires any and all code that depends on it to *also* be licensed under `GPL-v3`.
+SlimeVR uses dual MIT and Apache-2.0 license. Be sure that any code that you reference,
+or dependencies you add, are compatible with these licenses. `GPL-v3` for example is
+not compatible because it requires any and all code that depends on it to *also* be
+licensed under `GPL-v3`.
 
 ## Discord
 We use discord *a lot* to coordinate and discuss development. Come join us at
