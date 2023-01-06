@@ -30,6 +30,7 @@ public class UDPProtocolParser {
 	public static final int PACKET_MAGNETOMETER_ACCURACY = 18;
 	public static final int PACKET_SIGNAL_STRENGTH = 19;
 	public static final int PACKET_TEMPERATURE = 20;
+	public static final int PACKET_USER_ACTION = 21;
 
 	public static final int PACKET_PROTOCOL_CHANGE = 200;
 
@@ -112,6 +113,7 @@ public class UDPProtocolParser {
 			case PACKET_MAGNETOMETER_ACCURACY -> new UDPPacket18MagnetometerAccuracy();
 			case PACKET_SIGNAL_STRENGTH -> new UDPPacket19SignalStrength();
 			case PACKET_TEMPERATURE -> new UDPPacket20Temperature();
+			case PACKET_USER_ACTION -> new UDPPacket21UserAction();
 			case PACKET_PROTOCOL_CHANGE -> new UDPPacket200ProtocolChange();
 			default -> null;
 		};
