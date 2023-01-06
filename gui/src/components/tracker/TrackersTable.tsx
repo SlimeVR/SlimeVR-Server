@@ -225,7 +225,7 @@ export function TrackersTable({
             {(device &&
               device.hardwareStatus &&
               device.hardwareStatus.rssi &&
-              device.hardwareStatus.ping && (
+              device.hardwareStatus.ping != null && (
                 <TrackerWifi
                   rssi={device.hardwareStatus.rssi}
                   rssiShowNumeric
@@ -246,7 +246,11 @@ export function TrackersTable({
         {filteredSortedTrackers.map(({ device, tracker }, index) => (
           <RowContainer {...makeColumnContainerProps(tracker, index)}>
             <Typography color={fontColor}>
-              {device?.hardwareStatus?.tps || <></>}
+              {(device &&
+                device.hardwareStatus &&
+                device.hardwareStatus.tps != null && (
+                  <>{device.hardwareStatus.tps}</>
+                )) || <></>}
             </Typography>
           </RowContainer>
         ))}
