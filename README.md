@@ -27,8 +27,8 @@ on SlimeVR, you need to be aware of them:**
 
 * When distributing any software that uses or is based on SlimeVR, you have to provide
   to the end-user at least one of the original, unmodified [LICENSE-MIT] or
-  [LICENSE-APACHE] files from SlimeVR. This includes the `Copyright (c) 2022 SlimeVR
-  Contributors` part of the license. It is insufficient to use a generic MIT
+  [LICENSE-APACHE] files from SlimeVR. This includes the `Copyright (c) 2020 Eiren Rain
+  and SlimeVR Contributors` part of the license. It is insufficient to use a generic MIT
   or Apache-2.0 License, **it must be the original license file**.
 * This applies even if you distribute software without the source code. In this case,
   one way to provide it to the end-user is to have a menu in your application that lists
