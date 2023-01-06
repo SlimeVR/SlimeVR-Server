@@ -51,8 +51,8 @@ skeleton_bone-KNEE_HEIGHT = Kniehöhe
 skeleton_bone-FOOT_LENGTH = Fußlänge
 skeleton_bone-FOOT_SHIFT = Fußverschiebung
 skeleton_bone-SKELETON_OFFSET = Skelettversatz
-skeleton_bone-CONTROLLER_DISTANCE_Z = Controllerabstand Z
-skeleton_bone-CONTROLLER_DISTANCE_Y = Controller Entfernung Y
+skeleton_bone-CONTROLLER_DISTANCE_Z = Controller Abstand Z
+skeleton_bone-CONTROLLER_DISTANCE_Y = Controller Abstand Y
 skeleton_bone-FOREARM_LENGTH = Unterarm Entfernung
 skeleton_bone-SHOULDERS_DISTANCE = Schulter Entfernung
 skeleton_bone-SHOULDERS_WIDTH = Schulterbreite
@@ -105,7 +105,7 @@ tracker-table-column-battery = Batterie
 tracker-table-column-ping = Ping
 tracker-table-column-rotation = Rotation X/Y/Z
 tracker-table-column-position = Position X/Y/Z
-tracker-table-column-url = URL
+tracker-table-column-url = Adresse
 
 ## Tracker rotation
 tracker-rotation-front = Vorne
@@ -117,7 +117,7 @@ tracker-rotation-back = Hinten
 tracker-infos-manufacturer = Hersteller
 tracker-infos-display_name = Anzeigename
 tracker-infos-custom_name = Benutzerdefinierter Name
-tracker-infos-url = Tracker-URL
+tracker-infos-url = Tracker- Adresse
 
 ## Tracker settings
 tracker-settings-back = Zurück zur Tracker-Liste
@@ -128,9 +128,9 @@ tracker-settings-assignment_section-edit = Zuweisung bearbeiten
 tracker-settings-mounting_section = Befestigungsposition
 tracker-settings-mounting_section-description = Wo ist der Tracker befestigt?
 tracker-settings-mounting_section-edit = Befestigung bearbeiten
-tracker-settings-drift_compensation_section = Allow drift compensation
-tracker-settings-drift_compensation_section-description = Should this tracker compensate for its drift when drift compensation is enabled?
-tracker-settings-drift_compensation_section-edit = Allow drift compensation
+tracker-settings-drift_compensation_section = Erlaube Drift Kompensierung
+tracker-settings-drift_compensation_section-description = Soll dieser Tracker Drift kompensieren wenn die Drift Kompensierung allgemein aktiviert ist?
+tracker-settings-drift_compensation_section-edit = Erlaube Drift Kompensierung
 # The .<name> means it's an attribute and it's related to the top key.
 # In this case that is the settings for the assignment section.
 tracker-settings-name_section = Trackername
@@ -151,7 +151,7 @@ body_assignment_menu-unassign_tracker = Zuweisung des Trackers aufheben
 ## Tracker assignment menu
 # A -translation_key (with a dash in the front) means that it's a label.
 # It can only be used in the translation file, it's nice for reusing names and that kind of stuff.
-# 
+#
 # We are using it here because english doesn't require changing the text in each case but
 # maybe your language does.
 -tracker_selection-part = Welcher Tracker soll
@@ -191,10 +191,10 @@ settings-sidebar-title = Einstellungen
 settings-sidebar-general = Allgemein
 settings-sidebar-tracker_mechanics = Tracker-Mechanik
 settings-sidebar-fk_settings = FK-Einstellungen
-settings-sidebar-gesture_control = Gesten-Steuerung
+settings-sidebar-gesture_control = Gestensteuerung
 settings-sidebar-interface = Bedienoberfläche
-settings-sidebar-osc_router = OSC router
-settings-sidebar-utils = Wekzeuge
+settings-sidebar-osc_router = OSC Router
+settings-sidebar-utils = Werkzeuge
 settings-sidebar-serial = Serielle Konsole
 
 ## SteamVR settings
@@ -212,7 +212,7 @@ settings-general-steamvr-trackers-chest = Brust
 settings-general-steamvr-trackers-feet = Füße
 settings-general-steamvr-trackers-knees = Knie
 settings-general-steamvr-trackers-elbows = Ellbogen
-settings-general-steamvr-trackers-hands = Hands
+settings-general-steamvr-trackers-hands = Hände
 
 ## Tracker mechanics
 settings-general-tracker_mechanics = Tracker-Verhalten
@@ -229,24 +229,24 @@ settings-general-tracker_mechanics-filtering-type-smoothing-description = Glätt
 settings-general-tracker_mechanics-filtering-type-prediction = Vorhersage
 settings-general-tracker_mechanics-filtering-type-prediction-description = Verringert die Latenz und macht die Bewegungen schneller, kann aber Zittern erhöhen.
 settings-general-tracker_mechanics-filtering-amount = Stärke
-settings-general-tracker_mechanics-drift_compensation = Drift Kompensation
+settings-general-tracker_mechanics-drift_compensation = Drift Kompensierung
 # This cares about multilines
 settings-general-tracker_mechanics-drift_compensation-description =
     Kompensiert IMU Drift auf der Gier Achse durch anwenden einer invertierten Rotation.
     Ändern sie die Menge der Kompensierung und die Anzahl der Resets welche für die Berechnung genutzt werden.
 settings-general-tracker_mechanics-drift_compensation-enabled-label = Drift Kompensierung
 settings-general-tracker_mechanics-drift_compensation-amount-label = Menge der Kompensierung
-settings-general-tracker_mechanics-drift_compensation-max_resets-label = Benutze die letzten x Resets
+settings-general-tracker_mechanics-drift_compensation-max_resets-label = Nutze die letzten x Resets
 
 ## FK/Tracking settings
 settings-general-fk_settings = FK-Einstellungen
 settings-general-fk_settings-leg_tweak = Optimierungen für die Beine
 settings-general-fk_settings-leg_tweak-description = Floor-Clip kann das einsinken in den Boden reduzieren oder sogar beseitigen, kann aber beim Knien Probleme verursachen. Die Rutsch-Korrektur verringert das Rutschen auf dem Boden, kann aber bei bestimmten Bewegungsmustern die Genauigkeit verringern.
-# Floor clip: 
+# Floor clip:
 # why the name - came from the idea of noclip in video games, but is the opposite where clipping to the floor is a desired feature
 # definition - Prevents the foot trackers from going lower than they where when a reset was performed
 settings-general-fk_settings-leg_tweak-floor_clip = Bodenclip
-# Skating correction: 
+# Skating correction:
 # why the name - without this enabled the feet will often slide across the ground as if your skating across the ground,
 # since this largely prevents this it corrects for it hence skating correction (note this may be renamed to sliding correction)
 # definition - Guesses when each foot is in contact with the ground and uses that information to improve tracking
@@ -254,7 +254,7 @@ settings-general-fk_settings-leg_tweak-skating_correction = Rutsch-Korrektur
 settings-general-fk_settings-leg_tweak-skating_correction-amount = Rutsch-Korrekturstärke
 settings-general-fk_settings-arm_fk = Arm tracking
 settings-general-fk_settings-arm_fk-description = Ändern Sie die Art und Weise, wie die Arme berechnet werden.
-settings-general-fk_settings-arm_fk-force_arms = Arme vom HMD erzwingen
+settings-general-fk_settings-arm_fk-force_arms = Arme vom VR-Headset erzwingen
 settings-general-fk_settings-skeleton_settings = Skeletteinstellungen
 settings-general-fk_settings-skeleton_settings-description = Schalten Sie Skeletteinstellungen ein oder aus. Es wird empfohlen, diese eingeschaltet zu lassen.
 settings-general-fk_settings-skeleton_settings-extended_spine = Erweiterte Wirbelsäule
@@ -266,13 +266,13 @@ settings-general-fk_settings-vive_emulation-label = Aktiviere Vive Simulierung
 
 ## Gesture control settings (tracker tapping)
 settings-general-gesture_control = Gestensteuerung
-settings-general-gesture_control-subtitle = Tippen basierte Resets
-settings-general-gesture_control-description = Erlaubt Reset durch das antippen eines Trackers auszulösen. Der höchste Tracker auf dem Oberkörper wird für Schnelle Resets genutzt, der höchste Tracker auf dem linken Bein wird für Reset genutzt und der höchste Tracker auf dem rechten Bein wird für Befestigungs-Reset genutzt. Das antippen muss innerhalb von 0.5 Sekunden erfolgen um erkannt zu werden.
+settings-general-gesture_control-subtitle = Reset durch Antippen
+settings-general-gesture_control-description = Erlaubt Reset durch das Antippen eines Trackers auszulösen. Der höchste Tracker auf dem Oberkörper wird für Schnelle Resets genutzt, der höchste Tracker auf dem linken Bein wird für Reset genutzt und der höchste Tracker auf dem rechten Bein wird für Befestigungs-Reset genutzt. Das antippen muss innerhalb von 0.5 Sekunden erfolgen, um erkannt zu werden.
 # This is a unit: 3 taps, 2 taps, 1 tap
 # $amount (Number) - Amount of taps (touches to the tracker's case)
 settings-general-gesture_control-taps = { $amount ->
-    [one] 1 x antippen
-    *[other] { $amount } x antippen
+    [one] 1-mal antippen
+    *[other] { $amount }-mal antippen
 }
 settings-general-gesture_control-quickResetEnabled = Aktiviere antippen für Schnellen Reset
 settings-general-gesture_control-quickResetDelay = Schneller Reset Verzögerung
@@ -310,46 +310,46 @@ settings-serial-serial_select = Wählen Sie einen seriellen Anschluss
 settings-serial-auto_dropdown_item = Auto
 
 ## OSC router settings
-settings-osc-router = OSC router
+settings-osc-router = OSC Router
 # This cares about multilines
 settings-osc-router-description =
-    Forward OSC messages from another program.
-    Useful for using another OSC program with VRChat for example.
-settings-osc-router-enable = Enable
-settings-osc-router-enable-description = Toggle the forwarding of messages.
-settings-osc-router-enable-label = Enable
-settings-osc-router-network = Network ports
+    Senden von OSC Daten an ein andere Programm.
+    Nützlich wenn z.B. ein anderes OSC Programm zusammen mit VRChat verwendet wird.
+settings-osc-router-enable = Aktivieren
+settings-osc-router-enable-description = Ein- und Ausschalten des Sendens und Empfangen von Daten
+settings-osc-router-enable-label = Aktivieren
+settings-osc-router-network = Netzwerk Ports
 # This cares about multilines
 settings-osc-router-network-description =
-    Set the ports for listening and sending data.
-    These can be the same as other ports used in the SlimeVR server.
+    Setzte die Ports zum hören und versenden von Daten.
+    Diese können die selben Ports sein welche vom SlimeVR Server verwendet werden.
 settings-osc-router-network-port_in =
-    .label = Port In
-    .placeholder = Port in (default: 9002)
+    .label = Eingangsport
+    .placeholder = Eingangsport (Standard: 9002)
 settings-osc-router-network-port_out =
-    .label = Port Out
-    .placeholder = Port out (default: 9000)
-settings-osc-router-network-address = Network address
-settings-osc-router-network-address-description = Set the address to send out data at.
-settings-osc-router-network-address-placeholder = IPV4 address
+    .label = Ausgangsport
+    .placeholder = Ausgangsport (Standard: 9000)
+settings-osc-router-network-address = Netzwerk-Adresse
+settings-osc-router-network-address-description = Setze die Adresse welche zum versenden von Daten genutzt wird.
+settings-osc-router-network-address-placeholder = IPv4 Adresse
 
 ## OSC VRChat settings
 settings-osc-vrchat = VRChat OSC Trackers
 # This cares about multilines
 settings-osc-vrchat-description =
-    Ändern Sie VRChat-spezifische Einstellungen, um HMD-Daten zu empfangen und zu senden
+    Ändern Sie VRChat-spezifische Einstellungen, um Headset-Daten zu empfangen und zu senden
     Tracker-Daten für FBT (funktioniert im Standalone-Modus auf Quest).
 settings-osc-vrchat-enable = Aktivieren
-settings-osc-vrchat-enable-description = Ein- und Ausschalten des Sendens und Empfangens von Daten
+settings-osc-vrchat-enable-description = Ein- und Ausschalten des Sendens und Empfangen von Daten
 settings-osc-vrchat-enable-label = Aktivieren
 settings-osc-vrchat-network = Netzwerk-Ports
 settings-osc-vrchat-network-description = Festlegen der Ports zum Empfangen und Senden von Daten an VRChat
 settings-osc-vrchat-network-port_in =
-    .label = Port In
-    .placeholder = Port in (Standard: 9001)
+    .label = Eingangsport
+    .placeholder = Eingangsport (Standard: 9001)
 settings-osc-vrchat-network-port_out =
-    .label = Port Out
-    .placeholder = Port out (Standard: 9000)
+    .label = Ausgangsport
+    .placeholder = Ausgangsport (Standard: 9000)
 settings-osc-vrchat-network-address = Netzwerkadresse
 settings-osc-vrchat-network-address-description = Wählen Sie, an welche Adresse die Daten an VRChat gesendet werden sollen (überprüfen Sie Ihre WLAN-Einstellungen auf Ihrem Gerät)
 settings-osc-vrchat-network-address-placeholder = VRChat-IP-Adresse
@@ -377,10 +377,10 @@ onboarding-wifi_creds-skip = WLAN-Zugangsdaten überspringen
 onboarding-wifi_creds-submit = Weiter!
 onboarding-wifi_creds-ssid =
     .label = SSID
-    .placeholder = Enter SSID
+    .placeholder = SSID eingeben
 onboarding-wifi_creds-password =
-    .label = Password
-    .placeholder = Enter password
+    .label = Passwort
+    .placeholder = Passwort eingeben
 
 ## Mounting setup
 onboarding-reset_tutorial-back = Zurück zur Trackerausrichtung
@@ -392,19 +392,19 @@ onboarding-home = Willkommen zu SlimeVR
 # This cares about multilines and it's centered!!
 onboarding-home-description =
     VR-Fullbody Tracking
-    für jeden
-onboarding-home-start = Lass uns loslegen!
+    für alle
+onboarding-home-start = Los geht’s!
 
 ## Enter VR part of setup
-onboarding-enter_vr-back = Zurück zur Tracker zuweisung
+onboarding-enter_vr-back = Zurück zur Tracker Zuweisung
 onboarding-enter_vr-title = Zeit für VR!
 onboarding-enter_vr-description = Ziehen Sie alle Tracker an und betreten Sie dann VR!
-onboarding-enter_vr-ready = Ich bin bereit
+onboarding-enter_vr-ready = Ich bin Bereit
 
 ## Setup done
 onboarding-done-title = Alles eingerichtet!
-onboarding-done-description = Genießen Sie Ihre Fullbody-Erfahrung
-onboarding-done-close = Schließen Sie die Einrichtung
+onboarding-done-description = Genieße die Fullbody-Erfahrung
+onboarding-done-close = Schließe die Einrichtung
 
 ## Tracker connection setup
 onboarding-connect_tracker-back = Zurück zu WLAN-Zugangsdaten
@@ -424,29 +424,29 @@ onboarding-connect_tracker-connection_status-handshake = Mit dem Server verbunde
 # we use 0 in an explicit way because there is no plural rule in english for 0, so we directly say
 # if $amount is 0 then we say "No trackers connected"
 onboarding-connect_tracker-connected_trackers = { $amount ->
-    [0] No trackers
-    [one] 1 tracker
-    *[other] { $amount } trackers
+    [0] Kein Tracker
+    [one] 1 Tracker
+    *[other] { $amount } Tracker
 } connected
 onboarding-connect_tracker-next = Ich habe alle meine Tracker verbunden.
 
 ## Tracker assignment setup
 onboarding-assign_trackers-back = Zurück zu den WLAN-Zugangsdaten
 onboarding-assign_trackers-title = Tracker zuweisen
-onboarding-assign_trackers-description = Wählen sie nun aus, welcher Tracker wo hin geht. Klicken Sie auf einen Ort, an dem Sie einen Tracker platzieren möchten
+onboarding-assign_trackers-description = Wähle nun aus, welcher Tracker wo befestigt ist. Klicke auf einen Ort, an dem der Tracker platziert ist
 # Look at translation of onboarding-connect_tracker-connected_trackers on how to use plurals
 # $assigned (Number) - Trackers that have been assigned a body part
 # $trackers (Number) - Trackers connected to the server
-onboarding-assign_trackers-assigned = { $assigned } of { $trackers ->
-    [one] 1 tracker
-    *[other] { $trackers } trackers
-} assigned
+onboarding-assign_trackers-assigned = { $assigned } von { $trackers ->
+    [one] 1 Tracker
+    *[other] { $trackers } Tracker
+} zugewiesen
 onboarding-assign_trackers-advanced = Erweiterte Zuweisungspositionen anzeigen
 onboarding-assign_trackers-next = Ich habe alle Tracker zugewiesen
 
 ## Tracker manual mounting setup
 onboarding-manual_mounting-back = Zurück zum Eintritt in die VR
-onboarding-manual_mounting = Manuelle definiton der Befestigungsposition
+onboarding-manual_mounting = Manuelle Definition der Befestigungsposition
 onboarding-manual_mounting-description = Klicken Sie auf jeden Tracker und wählen Sie aus, in welche Richtung diese montiert sind
 onboarding-manual_mounting-auto_mounting = Drehung automatisch ermitteln
 onboarding-manual_mounting-next = Nächster Schritt
@@ -494,17 +494,17 @@ onboarding-automatic_proportions-start_recording-description = Wir werden nun ei
 onboarding-automatic_proportions-start_recording-next = Aufnahme starten
 onboarding-automatic_proportions-recording-title = Aufnahme
 onboarding-automatic_proportions-recording-description-p0 = Aufnahme läuft...
-onboarding-automatic_proportions-recording-description-p1 = Mache die unten gezeigten Bewegungen:
+onboarding-automatic_proportions-recording-description-p1 = Mache die unten beschriebenen Bewegungen:
 onboarding-automatic_proportions-recording-steps-0 = Beuge ein paar Mal die Knie.
 onboarding-automatic_proportions-recording-steps-1 = Setze dich auf einen Stuhl und steh wieder auf.
 onboarding-automatic_proportions-recording-steps-2 = Drehe den oberen Körper nach links, dann beuge dich nach rechts.
 onboarding-automatic_proportions-recording-steps-3 = Drehe den oberen Körper nach rechts, dann beuge dich nach links.
 onboarding-automatic_proportions-recording-steps-4 = Bewege dich, bis die Zeit abgelaufen ist.
-onboarding-automatic_proportions-recording-processing = Ergebnis wird bearbeitet
+onboarding-automatic_proportions-recording-processing = Aufnahme wird verarbeitet...
 # $time (Number) - Seconds left for the automatic calibration recording to finish (max 15)
 onboarding-automatic_proportions-recording-timer = { $time ->
-    [one] 1 second left
-    *[other] { $time } seconds left
+    [one] 1 Sekunde verbleibend
+    *[other] { $time } Sekunden verbleibend
 }
 onboarding-automatic_proportions-verify_results-title = Ergebnisse überprüfen
 onboarding-automatic_proportions-verify_results-description = Überprüfe die Ergebnisse unten, sehen sie korrekt aus?
@@ -517,3 +517,4 @@ onboarding-automatic_proportions-done-description = Deine Körperproportionen-Ka
 
 ## Home
 home-no_trackers = Keine Tracker erkannt oder zugewiesen
+
