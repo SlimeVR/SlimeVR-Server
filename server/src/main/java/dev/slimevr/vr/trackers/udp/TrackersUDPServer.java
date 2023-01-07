@@ -564,6 +564,40 @@ public class TrackersUDPServer extends Thread {
 					break;
 				tracker.temperature = temp.temperature;
 				break;
+			case UDPProtocolParser.PACKET_USER_ACTION:
+				if (connection == null)
+					break;
+				UDPPacket21UserAction action = (UDPPacket21UserAction) packet;
+				switch (action.type) {
+					case UDPPacket21UserAction.RESET:
+					case UDPPacket21UserAction.RESET_YAW:
+					case UDPPacket21UserAction.RESET_MOUNTING:
+						String name = "";
+						switch (action.type) {
+							case UDPPacket21UserAction.RESET:
+								name = "Full";
+								Main.getVrServer().resetTrackers();
+								break;
+							case UDPPacket21UserAction.RESET_YAW:
+								name = "Yaw";
+								Main.getVrServer().resetTrackersYaw();
+								break;
+							case UDPPacket21UserAction.RESET_MOUNTING:
+								name = "Mounting";
+								Main.getVrServer().resetTrackersMounting();
+								break;
+						}
+						LogManager
+							.info(
+								"[TrackerServer] User action from "
+									+ connection.descriptiveName
+									+ " received. "
+									+ name
+									+ " reset performed."
+							);
+						break;
+				}
+				break;
 			default:
 				LogManager.warning("[TrackerServer] Skipped packet " + packet);
 				break;
