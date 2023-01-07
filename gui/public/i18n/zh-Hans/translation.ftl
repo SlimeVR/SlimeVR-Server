@@ -422,7 +422,10 @@ onboarding-connect_tracker-connection_status-handshake = 已连接到服务器
 # English in this case only has 2 plural rules, which are "one" and "other",
 # we use 0 in an explicit way because there is no plural rule in english for 0, so we directly say
 # if $amount is 0 then we say "No trackers connected"
-onboarding-connect_tracker-connected_trackers = { $amount } 个追踪器已连接
+onboarding-connect_tracker-connected_trackers = { $amount ->
+    [0] 没有已连接的追踪器
+    *[other] { $amount } 个追踪器已连接
+}
 onboarding-connect_tracker-next = 所有的追踪器都连接好了
 
 ## Tracker assignment setup
