@@ -270,7 +270,9 @@ settings-general-gesture_control-subtitle = 敲击重置
 settings-general-gesture_control-description = 启用或禁用敲击重置。启用时，敲击身上佩戴的最高的追踪器上的任何位置将激活快速重置。延迟是指记录到敲击和重置之间的时间。
 # This is a unit: 3 taps, 2 taps, 1 tap
 # $amount (Number) - Amount of taps (touches to the tracker's case)
-settings-general-gesture_control-taps = { $amount } 次敲击
+settings-general-gesture_control-taps = { $amount ->
+    *[other] { $amount }次敲击
+}
 settings-general-gesture_control-quickResetEnabled = 开启敲击快速重置
 settings-general-gesture_control-quickResetDelay = 敲击快速重置延迟
 settings-general-gesture_control-quickResetTaps = 快速重置敲击次数
@@ -430,7 +432,7 @@ onboarding-assign_trackers-description = 让我们选择哪个追踪器在哪里
 # Look at translation of onboarding-connect_tracker-connected_trackers on how to use plurals
 # $assigned (Number) - Trackers that have been assigned a body part
 # $trackers (Number) - Trackers connected to the server
-onboarding-assign_trackers-assigned = { $assigned } / { $trackers } 个追踪器已分配
+onboarding-assign_trackers-assigned = { $assigned }/{ $trackers } 个追踪器已分配
 onboarding-assign_trackers-advanced = 显示高级分配部位
 onboarding-assign_trackers-next = 所有的追踪器都分配好了
 
@@ -492,7 +494,7 @@ onboarding-automatic_proportions-recording-steps-3 = 向右扭转上身，然后
 onboarding-automatic_proportions-recording-steps-4 = 持续摆动身体，直到计时器结束。
 onboarding-automatic_proportions-recording-processing = 正在处理结果
 # $time (Number) - Seconds left for the automatic calibration recording to finish (max 15)
-onboarding-automatic_proportions-recording-timer =  剩余 { $time } 秒
+onboarding-automatic_proportions-recording-timer =  剩余{ $time }秒
 onboarding-automatic_proportions-verify_results-title = 校验结果
 onboarding-automatic_proportions-verify_results-description = 检查下面的结果，它们看起来是正确的吗？
 onboarding-automatic_proportions-verify_results-results = 录制结果
