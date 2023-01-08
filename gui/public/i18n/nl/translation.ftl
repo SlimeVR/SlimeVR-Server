@@ -7,7 +7,7 @@
 
 ## Websocket (server) status
 websocket-connecting = Verbinden met de server
-websocket-connection_lost = Verbinding met de server verbroken. Bezig met opnieuw verbinden...
+websocket-connection_lost = Verbinding met de server verbroken. Opniew verbinding maken...
 
 ## Tips
 tips-find_tracker = Weet je niet welke tracker welke is? Schud een tracker en het corresponderende item zal worden gemarkeerd.
@@ -62,7 +62,7 @@ skeleton_bone-ELBOW_OFFSET = Elleboogoffset
 ## Tracker reset buttons
 reset-reset_all = Alle afmetingen resetten
 reset-full = Resetten
-reset-mounting = Opstelling resetten
+reset-mounting = Bevestiging resetten
 reset-quick = Snel resetten
 
 ## Serial detection stuff
@@ -78,7 +78,7 @@ serial_detection-close = Sluiten
 navbar-home = Home
 navbar-body_proportions = Lichaamsverhoudingen
 navbar-trackers_assign = Tracker toewijzing
-navbar-mounting = Opstellingskalibratie
+navbar-mounting = Bevestigingskalibratie
 navbar-onboarding = Setup Wizard
 navbar-settings = Instellingen
 
@@ -95,7 +95,7 @@ tracker-status-none = Geen status
 tracker-status-busy = Bezig
 tracker-status-error = Fout
 tracker-status-disconnected = Verbinding verbroken
-tracker-status-occluded = Geblokkeerd
+tracker-status-occluded = Verborgen
 tracker-status-ok = OK
 
 ## Tracker status columns
@@ -125,14 +125,14 @@ tracker-settings-title = Trackersinstellingen
 tracker-settings-assignment_section = Toewijzing
 tracker-settings-assignment_section-description = Aan welk lichaamsdeel de tracker is toegewezen.
 tracker-settings-assignment_section-edit = Toewijzing bewerken
-tracker-settings-mounting_section = Opstellingspositie
+tracker-settings-mounting_section = Bevestigingspositie
 tracker-settings-mounting_section-description = Waar bevindt de tracker zich?
-tracker-settings-mounting_section-edit = Opstelling bewerken
+tracker-settings-mounting_section-edit = Bevestiging bewerken
 # The .<name> means it's an attribute and it's related to the top key.
 # In this case that is the settings for the assignment section.
 tracker-settings-name_section = Trackernaam
 tracker-settings-name_section-placeholder = NightyBeast's linkerbeen
-tracker-settings-name_section-description = Geef hem een schattige bijnaam :)
+tracker-settings-name_section-description = Geef een schattige bijnaam :)
 
 ## Tracker part card info
 tracker-part_card-no_name = Geen naam
@@ -141,7 +141,7 @@ tracker-part_card-unassigned = Niet toegewezen
 ## Body assignment menu
 body_assignment_menu = Waar wil je deze tracker hebben?
 body_assignment_menu-description = Kies een locatie waar je deze tracker wilt toewijzen. Alternatief kun je kiezen om alle trackers tegelijk te beheren in plaats van één voor één.
-body_assignment_menu-show_advanced_locations = Geavanceerde toewijzingslocaties weergeven
+body_assignment_menu-show_advanced_locations = Geavanceerde bevestigingslocaties weergeven
 body_assignment_menu-manage_trackers = Beheer alle trackers
 body_assignment_menu-unassign_tracker = Tracker niet toewijzen
 
@@ -151,36 +151,36 @@ body_assignment_menu-unassign_tracker = Tracker niet toewijzen
 # 
 # We are using it here because english doesn't require changing the text in each case but
 # maybe your language does.
--tracker_selection-part = Which tracker to assign to your
+-tracker_selection-part = Welke tracker wil je toewijzen aan je
 tracker_selection_menu-NONE = Which tracker do you want to be unassigned?
-tracker_selection_menu-HEAD = { -tracker_selection-part } head?
-tracker_selection_menu-NECK = { -tracker_selection-part } neck?
-tracker_selection_menu-RIGHT_SHOULDER = { -tracker_selection-part } right shoulder?
-tracker_selection_menu-RIGHT_UPPER_ARM = { -tracker_selection-part } right upper arm?
-tracker_selection_menu-RIGHT_LOWER_ARM = { -tracker_selection-part } right lower arm?
-tracker_selection_menu-RIGHT_HAND = { -tracker_selection-part } right hand?
-tracker_selection_menu-RIGHT_UPPER_LEG = { -tracker_selection-part } right thigh?
-tracker_selection_menu-RIGHT_LOWER_LEG = { -tracker_selection-part } right ankle?
-tracker_selection_menu-RIGHT_FOOT = { -tracker_selection-part } right foot?
-tracker_selection_menu-RIGHT_CONTROLLER = { -tracker_selection-part } right controller?
-tracker_selection_menu-CHEST = { -tracker_selection-part } chest?
-tracker_selection_menu-WAIST = { -tracker_selection-part } waist?
-tracker_selection_menu-HIP = { -tracker_selection-part } hip?
-tracker_selection_menu-LEFT_SHOULDER = { -tracker_selection-part } left shoulder?
-tracker_selection_menu-LEFT_UPPER_ARM = { -tracker_selection-part } left upper arm?
-tracker_selection_menu-LEFT_LOWER_ARM = { -tracker_selection-part } left lower arm?
-tracker_selection_menu-LEFT_HAND = { -tracker_selection-part } left hand?
-tracker_selection_menu-LEFT_UPPER_LEG = { -tracker_selection-part } left thigh?
-tracker_selection_menu-LEFT_LOWER_LEG = { -tracker_selection-part } left ankle?
-tracker_selection_menu-LEFT_FOOT = { -tracker_selection-part } left foot?
-tracker_selection_menu-LEFT_CONTROLLER = { -tracker_selection-part } left controller?
+tracker_selection_menu-HEAD = { -tracker_selection-part } hoofd?
+tracker_selection_menu-NECK = { -tracker_selection-part } nek?
+tracker_selection_menu-RIGHT_SHOULDER = { -tracker_selection-part } rechterschouder?
+tracker_selection_menu-RIGHT_UPPER_ARM = { -tracker_selection-part } rechterbovenarm?
+tracker_selection_menu-RIGHT_LOWER_ARM = { -tracker_selection-part } rechteronderarm?
+tracker_selection_menu-RIGHT_HAND = { -tracker_selection-part } rechterhand?
+tracker_selection_menu-RIGHT_UPPER_LEG = { -tracker_selection-part } rechterdij?
+tracker_selection_menu-RIGHT_LOWER_LEG = { -tracker_selection-part } rechterenkel?
+tracker_selection_menu-RIGHT_FOOT = { -tracker_selection-part } rechtervoet?
+tracker_selection_menu-RIGHT_CONTROLLER = { -tracker_selection-part } rechtercontroller?
+tracker_selection_menu-CHEST = { -tracker_selection-part } borst?
+tracker_selection_menu-WAIST = { -tracker_selection-part } taille?
+tracker_selection_menu-HIP = { -tracker_selection-part } heup?
+tracker_selection_menu-LEFT_SHOULDER = { -tracker_selection-part } linkerschouder?
+tracker_selection_menu-LEFT_UPPER_ARM = { -tracker_selection-part } linkerbovenarm?
+tracker_selection_menu-LEFT_LOWER_ARM = { -tracker_selection-part } linkeronderarm?
+tracker_selection_menu-LEFT_HAND = { -tracker_selection-part } linkerhand?
+tracker_selection_menu-LEFT_UPPER_LEG = { -tracker_selection-part } linkerdij?
+tracker_selection_menu-LEFT_LOWER_LEG = { -tracker_selection-part } linkerenkel?
+tracker_selection_menu-LEFT_FOOT = { -tracker_selection-part } linkervoet?
+tracker_selection_menu-LEFT_CONTROLLER = { -tracker_selection-part } linkercontroller?
 
 tracker_selection_menu-unassigned = Niet toegewezen trackers
 tracker_selection_menu-assigned = Toegewezen trackers
 tracker_selection_menu-dont_assign = Niet toewijzen
 
 ## Mounting menu
-mounting_selection_menu = Waar wil je deze tracker hebben?
+mounting_selection_menu = Waar wil je deze tracker hebben bevestigd?
 mounting_selection_menu-close = Sluiten
 
 ## Sidebar settings
@@ -188,7 +188,7 @@ settings-sidebar-title = Instellingen
 settings-sidebar-general = Algemeen
 settings-sidebar-tracker_mechanics = Trackersinstellingen
 settings-sidebar-fk_settings = FK-instellingen
-settings-sidebar-gesture_control = Gebarenbediening
+settings-sidebar-gesture_control = Tikbediening
 settings-sidebar-interface = Interface
 settings-sidebar-osc_router = OSC-router
 settings-sidebar-utils = Hulpmiddelen
@@ -212,7 +212,7 @@ settings-general-steamvr-trackers-elbows = Ellebogen
 settings-general-steamvr-trackers-hands = Handen
 
 ## Tracker mechanics
-settings-general-tracker_mechanics = Tracker mechanics
+settings-general-tracker_mechanics = Tracker aanpassingen
 settings-general-tracker_mechanics-subtitle = Filtering
 # This also cares about multilines
 settings-general-tracker_mechanics-description =
@@ -221,26 +221,26 @@ settings-general-tracker_mechanics-description =
 settings-general-tracker_mechanics-filtering_type = Filtering type
 settings-general-tracker_mechanics-filtering_type-none = Geen filtering
 settings-general-tracker_mechanics-filtering_type-none-description = Gebruik rotaties zoals ze zijn. Zal geen filtering uitvoeren.
-settings-general-tracker_mechanics-filtering_type-smoothing = Gladstrijken
-settings-general-tracker_mechanics-filtering_type-smoothing-description = Gladstrijkt bewegingen, maar voegt enige latentie toe.
+settings-general-tracker_mechanics-filtering_type-smoothing = Smoothing
+settings-general-tracker_mechanics-filtering_type-smoothing-description = Maakt bewegingen vloeiender, maar voegt enige latentie toe.
 settings-general-tracker_mechanics-filtering_type-prediction = Voorspelling
-settings-general-tracker_mechanics-filtering_type-prediction-description = Verlaagt latentie en maakt bewegingen sharper, maar kan trillingen verhogen.
+settings-general-tracker_mechanics-filtering_type-prediction-description = Verlaagt latentie en maakt bewegingen snappier, maar kan jitter verhogen.
 settings-general-tracker_mechanics-amount = Hoeveelheid
 
 ## FK/Tracking settings
 settings-general-fk_settings = Tracking instellingen
-settings-general-fk_settings-leg_tweak = Leg aanpassingen
-settings-general-fk_settings-leg_tweak-description = Floor-clip kan clipping met de vloer verminderen of zelfs elimineren, maar kan problemen veroorzaken als je op je knieën bent. Skating-correctie corrigeert voor ijshockey, maar kan de nauwkeurigheid in bepaalde bewegingspatronen verminderen.
+settings-general-fk_settings-leg_tweak = Been tracking aanpassingen
+settings-general-fk_settings-leg_tweak-description = Floor-clip verminderd de kans dat je voeten door de grond gaan, maar kan problemen veroorzaken als je op je knieën bent. Skating-correctie corrigeert ongewenst glijden van je voeten, maar kan de nauwkeurigheid in bepaalde bewegingspatronen verminderen.
 # Floor clip: 
 # why the name - came from the idea of noclip in video games, but is the opposite where clipping to the floor is a desired feature
 # definition - Prevents the foot trackers from going lower than they where when a reset was performed
-settings-general-fk_settings-leg_tweak-floor_clip = Vloer clip
+settings-general-fk_settings-leg_tweak-floor_clip = Floor-clip
 # Skating correction: 
 # why the name - without this enabled the feet will often slide across the ground as if your skating across the ground,
 # since this largely prevents this it corrects for it hence skating correction (note this may be renamed to sliding correction)
 # definition - Guesses when each foot is in contact with the ground and uses that information to improve tracking
-settings-general-fk_settings-leg_tweak-skating_correction = Skating correctie
-settings-general-fk_settings-leg_tweak-skating_correction-amount = Skating correctie sterkte
+settings-general-fk_settings-leg_tweak-skating_correction = Skating-correctie
+settings-general-fk_settings-leg_tweak-skating_correction-amount = Skating-correctie sterkte
 settings-general-fk_settings-arm_fk = Arm tracking
 settings-general-fk_settings-arm_fk-description = Verander de manier waarop de armen worden getrackt.
 settings-general-fk_settings-arm_fk-force_arms = Dwing armen vanuit HMD
@@ -249,9 +249,9 @@ settings-general-fk_settings-skeleton_settings-description = Schakel skeleton in
 settings-general-fk_settings-skeleton_settings-extended_spine = Uitgebreide rug
 settings-general-fk_settings-skeleton_settings-extended_pelvis = Uitgebreide bekken
 settings-general-fk_settings-skeleton_settings-extended_knees = Uitgebreide knieën
-settings-general-fk_settings-vive_emulation-title = Vive emulation
-settings-general-fk_settings-vive_emulation-description = Emulate the waist tracker problems that Vive trackers have. This is a joke and makes tracking worse.
-settings-general-fk_settings-vive_emulation-label = Enable Vive emulation
+settings-general-fk_settings-vive_emulation-title = Vive-emulatie
+settings-general-fk_settings-vive_emulation-description = Emuleer de problemen met de taille van Vive trackers. Dit is een mop en maakt tracking slechter.
+settings-general-fk_settings-vive_emulation-label = Vive-emulatie inschakelen
 
 ## Gesture control settings (tracker tapping)
 settings-general-gesture_control = Gesture control
@@ -290,7 +290,7 @@ settings-serial = Seriele console
 # This cares about multilines
 settings-serial-description =
     Dit is een live-informatiefeed voor seriële communicatie.
-    Kan nuttig zijn als u moet weten dat de firmware problemen veroorzaakt.
+    Kan nuttig zijn voor het debuggen van trackers.
 settings-serial-connection_lost = Verbinding met seriële poort verloren, opnieuw verbinden...
 settings-serial-reboot = Opnieuw opstarten
 settings-serial-factory_reset = Fabrieksinstellingen herstellen
