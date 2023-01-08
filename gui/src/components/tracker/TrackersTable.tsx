@@ -222,18 +222,16 @@ export function TrackersTable({
         </div>
         {filteredSortedTrackers.map(({ device, tracker }, index) => (
           <RowContainer {...makeColumnContainerProps(tracker, index)}>
-            {(device &&
-              device.hardwareStatus &&
-              device.hardwareStatus.rssi &&
-              device.hardwareStatus.ping != null && (
-                <TrackerWifi
-                  rssi={device.hardwareStatus.rssi}
-                  rssiShowNumeric
-                  ping={device.hardwareStatus.ping}
-                  disabled={tracker.status === TrackerStatusEnum.DISCONNECTED}
-                  textColor={fontColor}
-                ></TrackerWifi>
-              )) || <></>}
+            {((device?.hardwareStatus?.rssi != null ||
+              device?.hardwareStatus?.ping != null) && (
+              <TrackerWifi
+                rssi={device.hardwareStatus.rssi || 0}
+                rssiShowNumeric
+                ping={device.hardwareStatus.ping || 0}
+                disabled={tracker.status === TrackerStatusEnum.DISCONNECTED}
+                textColor={fontColor}
+              ></TrackerWifi>
+            )) || <></>}
           </RowContainer>
         ))}
       </div>
@@ -246,11 +244,9 @@ export function TrackersTable({
         {filteredSortedTrackers.map(({ device, tracker }, index) => (
           <RowContainer {...makeColumnContainerProps(tracker, index)}>
             <Typography color={fontColor}>
-              {(device &&
-                device.hardwareStatus &&
-                device.hardwareStatus.tps != null && (
-                  <>{device.hardwareStatus.tps}</>
-                )) || <></>}
+              {(device?.hardwareStatus && (
+                <>{device.hardwareStatus.tps || 0}</>
+              )) || <></>}
             </Typography>
           </RowContainer>
         ))}
