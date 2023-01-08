@@ -6,6 +6,9 @@ import {
 } from '../maths/quaternion';
 import { useAppContext } from './app';
 import { useLocalization } from '@fluent/react';
+import { useDataFeedConfig } from './datafeed-config';
+import { Quaternion, Vector3 } from 'three';
+import { Vector3FromVec3fT } from '../maths/vector3';
 
 export function useTrackers() {
   const { trackers } = useAppContext();
@@ -41,6 +44,7 @@ export function useTrackers() {
 
 export function useTracker(tracker: TrackerDataT) {
   const { l10n } = useLocalization();
+  const { feedMaxTps } = useDataFeedConfig();
 
   return {
     useName: () =>
@@ -68,37 +72,45 @@ export function useTracker(tracker: TrackerDataT) {
         [tracker.rotationIdentityAdjusted]
       ),
     useVelocity: () => {
-      const previousRot = useRef<{
-        x: number;
-        y: number;
-        z: number;
-        w: number;
-      }>(tracker.rotation || { x: 0, y: 0, z: 0, w: 1 });
+      const previousRot = useRef<Quaternion>(
+        QuaternionFromQuatT(tracker.rotation)
+      );
+      const previousAcc = useRef<Vector3>(
+        Vector3FromVec3fT(tracker.linearAcceleration)
+      );
       const [velocity, setVelocity] = useState<number>(0);
-      const [rots, setRotation] = useState<number[]>([]);
+      const [deltas] = useState<number[]>([]);
 
       useEffect(() => {
         if (tracker.rotation) {
           const rot = QuaternionFromQuatT(tracker.rotation).multiply(
-            QuaternionFromQuatT(previousRot.current).invert()
+            previousRot.current.clone().invert()
           );
-          const dif = Math.min(1, (rot.x ** 2 + rot.y ** 2 + rot.z ** 2) * 2.5);
-          // Use sum of rotation of last 3 frames (0.3sec) for smoother movement and better detection of slow movement.
-          if (rots.length === 3) {
-            rots.shift();
+          const acc = Vector3FromVec3fT(tracker.linearAcceleration).sub(
+            previousAcc.current
+          );
+          const dif = Math.min(
+            1,
+            (rot.x ** 2 + rot.y ** 2 + rot.z ** 2) * 2.5 +
+              (acc.x ** 2 + acc.y ** 2 + acc.z ** 2) / 1000
+          );
+          // Use sum of the rotation and acceleration delta vector lengths over 0.3sec
+          // for smoother movement and better detection of slow movement.
+          if (deltas.length >= 0.3 * feedMaxTps) {
+            deltas.shift();
           }
-          rots.push(dif);
-          setRotation(rots);
+          deltas.push(dif);
           setVelocity(
             Math.min(
               1,
               Math.max(
                 0,
-                rots.reduce((a, b) => a + b)
+                deltas.reduce((a, b) => a + b)
               )
             )
           );
-          previousRot.current = tracker.rotation;
+          previousRot.current = QuaternionFromQuatT(tracker.rotation);
+          previousAcc.current = Vector3FromVec3fT(tracker.linearAcceleration);
         }
       }, [tracker.rotation]);
 
