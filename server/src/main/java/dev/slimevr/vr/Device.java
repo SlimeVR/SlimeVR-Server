@@ -1,9 +1,9 @@
 package dev.slimevr.vr;
 
 import dev.slimevr.vr.trackers.Tracker;
-import io.eiren.util.collections.FastList;
 
 import java.net.InetAddress;
+import java.util.HashMap;
 import java.util.concurrent.atomic.AtomicInteger;
 
 
@@ -16,7 +16,7 @@ public class Device {
 	private String firmwareVersion;
 	private String manufacturer;
 
-	private final FastList<Tracker> trackers = new FastList<>();
+	private final HashMap<Integer, Tracker> trackers = new HashMap<>();
 
 	public Device() {
 		this.id = nextLocalDeviceId.incrementAndGet();
@@ -58,7 +58,7 @@ public class Device {
 		return null;
 	}
 
-	public FastList<Tracker> getTrackers() {
+	public HashMap<Integer, Tracker> getTrackers() {
 		return trackers;
 	}
 }

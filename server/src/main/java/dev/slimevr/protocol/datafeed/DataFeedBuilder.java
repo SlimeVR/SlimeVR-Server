@@ -30,7 +30,12 @@ import java.util.List;
 public class DataFeedBuilder {
 
 	public static int createHardwareInfo(FlatBufferBuilder fbb, Device device) {
-		Tracker tracker = device.getTrackers().get(0).get();
+		// Tracker firstTracker = device.getTrackers().get(0);
+		// if (firstTracker == null) {
+		// firstTracker =
+		// device.getTrackers().entrySet().iterator().next().getValue();
+		// }
+		// Tracker tracker = firstTracker.get();
 
 		int nameOffset = device.getFirmwareVersion() != null
 			? fbb.createString(device.getFirmwareVersion())
@@ -193,7 +198,7 @@ public class DataFeedBuilder {
 		device
 			.getTrackers()
 			.forEach(
-				(value) -> trackersOffsets
+				(key, value) -> trackersOffsets
 					.add(DataFeedBuilder.createTrackerData(fbb, mask.getTrackerData(), value))
 			);
 
@@ -214,8 +219,13 @@ public class DataFeedBuilder {
 		if (device.getTrackers().size() <= 0)
 			return 0;
 
-		Tracker tracker = device.getTrackers().get(0).get();
+		Tracker firstTracker = device.getTrackers().get(0);
+		if (firstTracker == null) {
+			// Not actually the "first" tracker, but do we care?
+			firstTracker = device.getTrackers().entrySet().iterator().next().getValue();
+		}
 
+		Tracker tracker = firstTracker.get();
 		if (tracker == null)
 			return 0;
 
