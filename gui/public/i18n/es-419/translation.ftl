@@ -105,7 +105,7 @@ widget-developer_mode-more_info = More info
 ## Widget: IMU Visualizer
 widget-imu_visualizer = Rotation
 widget-imu_visualizer-rotation_raw = Raw
-widget-imu_visualizer-rotation_adjusted = Adjusted
+widget-imu_visualizer-rotation_preview = Preview
 
 ## Tracker status
 tracker-status-none = Sin estado

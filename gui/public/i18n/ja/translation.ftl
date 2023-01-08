@@ -94,7 +94,7 @@ widget-overlay-is_mirrored_label = オーバーレイをミラーとして表示
 
 ## Widget: Developer settings
 widget-developer_mode = 開発者モード
-widget-developer_mode-high_contrast = ハイコントラスト
+widget-developer_mode-high_contrast = ハイ コントラスト
 widget-developer_mode-precise_rotation = 正確な回転角度を表示
 widget-developer_mode-fast_data_feed = 高速表示モード
 widget-developer_mode-filter_slimes_and_hmd = SlimeVRとHMDのみを表示
@@ -105,7 +105,7 @@ widget-developer_mode-more_info = 他情報
 ## Widget: IMU Visualizer
 widget-imu_visualizer = Rotation
 widget-imu_visualizer-rotation_raw = Raw
-widget-imu_visualizer-rotation_adjusted = Adjusted
+widget-imu_visualizer-rotation_preview = Preview
 
 ## Tracker status
 tracker-status-none = ステータスなし

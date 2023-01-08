@@ -131,7 +131,7 @@ export function IMUVisualizerWidget({ tracker }: { tracker: TrackerDataT }) {
   const [enabled, setEnabled] = useState(false);
   const quat = tracker?.rotationIdentityAdjusted || new THREE.Quaternion();
 
-  const { useRawRotationEulerDegrees, useRefAdjRotationEulerDegrees } =
+  const { useRawRotationEulerDegrees, useIdentAdjRotationEulerDegrees } =
     useTracker(tracker);
 
   return (
@@ -151,16 +151,16 @@ export function IMUVisualizerWidget({ tracker }: { tracker: TrackerDataT }) {
 
       <div className="flex justify-between">
         <Typography color="secondary">
-          {l10n.getString('widget-imu_visualizer-rotation_adjusted')}
+          {l10n.getString('widget-imu_visualizer-rotation_preview')}
         </Typography>
         <Typography>
-          {formatVector3(useRefAdjRotationEulerDegrees(), 2)}
+          {formatVector3(useIdentAdjRotationEulerDegrees(), 2)}
         </Typography>
       </div>
 
       {!enabled && (
         <Button variant="secondary" onClick={() => setEnabled(true)}>
-          Preview
+          {l10n.getString('widget-imu_visualizer-rotation_preview')}
         </Button>
       )}
       {enabled && <SceneRenderer {...quat}></SceneRenderer>}
