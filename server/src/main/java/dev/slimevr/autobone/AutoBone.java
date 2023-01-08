@@ -73,9 +73,11 @@ public class AutoBone {
 	public final FastList<SkeletonConfigOffsets> legacyHeightConfigs = new FastList<>(
 		new SkeletonConfigOffsets[] {
 			SkeletonConfigOffsets.NECK,
-			SkeletonConfigOffsets.TORSO,
-
-			SkeletonConfigOffsets.LEGS_LENGTH,
+			SkeletonConfigOffsets.CHEST,
+			SkeletonConfigOffsets.WAIST,
+			SkeletonConfigOffsets.HIP,
+			SkeletonConfigOffsets.UPPER_LEG,
+			SkeletonConfigOffsets.LOWER_LEG,
 		}
 	);
 
@@ -119,17 +121,14 @@ public class AutoBone {
 			case HEAD -> skeletonConfig.getOffset(SkeletonConfigOffsets.HEAD);
 			case NECK -> skeletonConfig.getOffset(SkeletonConfigOffsets.NECK);
 			case CHEST -> skeletonConfig.getOffset(SkeletonConfigOffsets.CHEST);
-			case WAIST -> -skeletonConfig.getOffset(SkeletonConfigOffsets.CHEST)
-				+ skeletonConfig.getOffset(SkeletonConfigOffsets.TORSO)
-				- skeletonConfig.getOffset(SkeletonConfigOffsets.WAIST);
-			case HIP -> skeletonConfig.getOffset(SkeletonConfigOffsets.WAIST);
+			case WAIST -> skeletonConfig.getOffset(SkeletonConfigOffsets.WAIST);
+			case HIP -> skeletonConfig.getOffset(SkeletonConfigOffsets.HIP);
 			case LEFT_HIP, RIGHT_HIP -> skeletonConfig.getOffset(SkeletonConfigOffsets.HIPS_WIDTH)
 				/ 2f;
 			case LEFT_UPPER_LEG, RIGHT_UPPER_LEG -> skeletonConfig
-				.getOffset(SkeletonConfigOffsets.LEGS_LENGTH)
-				- skeletonConfig.getOffset(SkeletonConfigOffsets.KNEE_HEIGHT);
+				.getOffset(SkeletonConfigOffsets.UPPER_LEG);
 			case LEFT_LOWER_LEG, RIGHT_LOWER_LEG -> skeletonConfig
-				.getOffset(SkeletonConfigOffsets.KNEE_HEIGHT);
+				.getOffset(SkeletonConfigOffsets.LOWER_LEG);
 			default -> -1f;
 		};
 
@@ -236,26 +235,23 @@ public class AutoBone {
 			if (headOffset != null) {
 				configConsumer.accept(SkeletonConfigOffsets.HEAD, headOffset);
 			}
-
 			Float neckOffset = offsets.get(BoneType.NECK);
 			if (neckOffset != null) {
 				configConsumer.accept(SkeletonConfigOffsets.NECK, neckOffset);
 			}
 
 			Float chestOffset = offsets.get(BoneType.CHEST);
-			Float hipOffset = offsets.get(BoneType.HIP);
 			Float waistOffset = offsets.get(BoneType.WAIST);
-			if (chestOffset != null && hipOffset != null && waistOffset != null) {
-				configConsumer
-					.accept(SkeletonConfigOffsets.TORSO, chestOffset + hipOffset + waistOffset);
-			}
-
+			Float hipOffset = offsets.get(BoneType.HIP);
 			if (chestOffset != null) {
-				configConsumer.accept(SkeletonConfigOffsets.CHEST, chestOffset);
+				configConsumer
+					.accept(SkeletonConfigOffsets.CHEST, chestOffset);
 			}
-
+			if (waistOffset != null) {
+				configConsumer.accept(SkeletonConfigOffsets.WAIST, waistOffset);
+			}
 			if (hipOffset != null) {
-				configConsumer.accept(SkeletonConfigOffsets.WAIST, hipOffset);
+				configConsumer.accept(SkeletonConfigOffsets.HIP, hipOffset);
 			}
 
 			Float hipWidthOffset = offsets.get(BoneType.LEFT_HIP);
@@ -275,14 +271,15 @@ public class AutoBone {
 			if (lowerLegOffset == null) {
 				lowerLegOffset = offsets.get(BoneType.RIGHT_LOWER_LEG);
 			}
-			if (upperLegOffset != null && lowerLegOffset != null) {
+
+			if (upperLegOffset != null) {
 				configConsumer
-					.accept(SkeletonConfigOffsets.LEGS_LENGTH, upperLegOffset + lowerLegOffset);
+					.accept(SkeletonConfigOffsets.UPPER_LEG, upperLegOffset);
+			}
+			if (lowerLegOffset != null) {
+				configConsumer.accept(SkeletonConfigOffsets.LOWER_LEG, lowerLegOffset);
 			}
 
-			if (lowerLegOffset != null) {
-				configConsumer.accept(SkeletonConfigOffsets.KNEE_HEIGHT, lowerLegOffset);
-			}
 			return true;
 		} catch (Exception e) {
 			return false;

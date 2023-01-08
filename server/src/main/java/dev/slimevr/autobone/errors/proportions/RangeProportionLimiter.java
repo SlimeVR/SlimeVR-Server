@@ -1,10 +1,9 @@
 package dev.slimevr.autobone.errors.proportions;
 
-import java.util.function.Function;
-
 import com.jme3.math.FastMath;
-
 import dev.slimevr.vr.processor.skeleton.SkeletonConfig;
+
+import java.util.function.Function;
 
 
 public class RangeProportionLimiter extends HardProportionLimiter {
@@ -71,5 +70,10 @@ public class RangeProportionLimiter extends HardProportionLimiter {
 		}
 
 		return 0f;
+	}
+
+	@Override
+	public float getTargetRatio() {
+		return targetRatio;
 	}
 }

@@ -4,6 +4,7 @@ import com.jme3.math.FastMath;
 import com.jme3.math.Quaternion;
 import com.jme3.math.Vector3f;
 import dev.slimevr.VRServer;
+import dev.slimevr.autobone.errors.BodyProportionError;
 import dev.slimevr.util.ann.VRServerThread;
 import dev.slimevr.vr.processor.ComputedHumanPoseTracker;
 import dev.slimevr.vr.processor.ComputedHumanPoseTrackerPosition;
@@ -78,7 +79,6 @@ public class HumanSkeleton extends Skeleton implements SkeletonConfigCallback {
 	protected boolean hasRightArmTracker;
 	static final Quaternion FORWARD_QUATERNION = new Quaternion()
 		.fromAngles(FastMath.HALF_PI, 0, 0);
-	static final float FLOOR_OFFSET = 0.05f;
 	// #region Tracker Input
 	protected Tracker hmdTracker;
 	protected Tracker neckTracker;
@@ -245,7 +245,7 @@ public class HumanSkeleton extends Skeleton implements SkeletonConfigCallback {
 
 		// #region Attach tracker nodes for tracker offsets
 		neckNode.attachChild(trackerHeadNode);
-		chestNode.attachChild(trackerChestNode);
+		neckNode.attachChild(trackerChestNode);
 		hipNode.attachChild(trackerWaistNode);
 
 		leftKneeNode.attachChild(trackerLeftKneeNode);
@@ -1135,13 +1135,17 @@ public class HumanSkeleton extends Skeleton implements SkeletonConfigCallback {
 					.getFirstAvailableTracker(leftLowerArmTracker, leftUpperArmTracker)
 					.getRotation(rotBuf1);
 				leftElbowNode.localTransform.setRotation(rotBuf1);
+			} else {
+				neckNode.localTransform.getRotation(rotBuf1);
+				leftShoulderTailNode.localTransform.setRotation(rotBuf1);
+				trackerLeftElbowNode.localTransform.setRotation(rotBuf1);
+				leftElbowNode.localTransform.setRotation(rotBuf1);
 			}
-			if (leftHandTracker != null) {
+			if (leftHandTracker != null)
 				leftHandTracker.getRotation(rotBuf1);
-				leftWristNode.localTransform.setRotation(rotBuf1);
-				leftHandNode.localTransform.setRotation(rotBuf1);
-				trackerLeftHandNode.localTransform.setRotation(rotBuf1);
-			}
+			leftWristNode.localTransform.setRotation(rotBuf1);
+			leftHandNode.localTransform.setRotation(rotBuf1);
+			trackerLeftHandNode.localTransform.setRotation(rotBuf1);
 		}
 
 		// Right arm
@@ -1184,13 +1188,17 @@ public class HumanSkeleton extends Skeleton implements SkeletonConfigCallback {
 					.getFirstAvailableTracker(rightLowerArmTracker, rightUpperArmTracker)
 					.getRotation(rotBuf1);
 				rightElbowNode.localTransform.setRotation(rotBuf1);
+			} else {
+				neckNode.localTransform.getRotation(rotBuf1);
+				rightShoulderTailNode.localTransform.setRotation(rotBuf1);
+				trackerRightElbowNode.localTransform.setRotation(rotBuf1);
+				rightElbowNode.localTransform.setRotation(rotBuf1);
 			}
-			if (rightHandTracker != null) {
+			if (rightHandTracker != null)
 				rightHandTracker.getRotation(rotBuf1);
-				rightWristNode.localTransform.setRotation(rotBuf1);
-				rightHandNode.localTransform.setRotation(rotBuf1);
-				trackerRightHandNode.localTransform.setRotation(rotBuf1);
-			}
+			rightWristNode.localTransform.setRotation(rotBuf1);
+			rightHandNode.localTransform.setRotation(rotBuf1);
+			trackerRightHandNode.localTransform.setRotation(rotBuf1);
 		}
 	}
 
@@ -1655,81 +1663,25 @@ public class HumanSkeleton extends Skeleton implements SkeletonConfigCallback {
 			return;
 		}
 
-		Vector3f vec;
-		float height;
 		switch (config) {
-			case HEAD -> skeletonConfig.setOffset(SkeletonConfigOffsets.HEAD, null);
-			case NECK -> skeletonConfig.setOffset(SkeletonConfigOffsets.NECK, null);
-			case TORSO -> { // Distance from shoulders to hip (full torso
-							// length)
-				vec = new Vector3f();
+			case CHEST, WAIST, HIP, UPPER_LEG, LOWER_LEG -> {
+				Vector3f vec = new Vector3f();
 				hmdTracker.getPosition(vec);
-				height = vec.y;
+				float height = vec.y / BodyProportionError.eyeHeightToHeightRatio;
 				if (height > 0.5f) { // Reset only if floor level seems right,
 					skeletonConfig
 						.setOffset(
-							SkeletonConfigOffsets.TORSO,
-							((height) * 0.42f)
-								- skeletonConfig.getOffset(SkeletonConfigOffsets.NECK)
-						);
-				} else// if floor level is incorrect
-				{
-					skeletonConfig.setOffset(SkeletonConfigOffsets.TORSO, null);
-				}
-			}
-			case CHEST -> // Chest is 57% of the upper body by default
-				// (shoulders to chest)
-				skeletonConfig
-					.setOffset(
-						SkeletonConfigOffsets.CHEST,
-						skeletonConfig.getOffset(SkeletonConfigOffsets.TORSO) * 0.57f
-					);
-			case WAIST -> // Waist length is from hip to waist
-				skeletonConfig.setOffset(SkeletonConfigOffsets.WAIST, null);
-			case HIP_OFFSET -> skeletonConfig.setOffset(SkeletonConfigOffsets.HIP_OFFSET, null);
-			case HIPS_WIDTH -> skeletonConfig.setOffset(SkeletonConfigOffsets.HIPS_WIDTH, null);
-			case FOOT_LENGTH -> skeletonConfig.setOffset(SkeletonConfigOffsets.FOOT_LENGTH, null);
-			case FOOT_SHIFT -> skeletonConfig.setOffset(SkeletonConfigOffsets.FOOT_SHIFT, null);
-			case SKELETON_OFFSET -> skeletonConfig
-				.setOffset(SkeletonConfigOffsets.SKELETON_OFFSET, null);
-			case LEGS_LENGTH -> { // Set legs length to be 5cm above floor level
-				vec = new Vector3f();
-				hmdTracker.getPosition(vec);
-				height = vec.y;
-				if (height > 0.5f) { // Reset only if floor level seems right,
-					skeletonConfig
-						.setOffset(
-							SkeletonConfigOffsets.LEGS_LENGTH,
+							config,
 							height
-								- skeletonConfig.getOffset(SkeletonConfigOffsets.NECK)
-								- skeletonConfig.getOffset(SkeletonConfigOffsets.TORSO)
-								- FLOOR_OFFSET
+								* BodyProportionError
+									.getProportionLimitForOffset(config)
+									.getTargetRatio()
 						);
-				} else // if floor level is incorrect
-				{
-					skeletonConfig.setOffset(SkeletonConfigOffsets.LEGS_LENGTH, null);
+				} else { // if floor level is incorrect
+					skeletonConfig.setOffset(config, null);
 				}
-				resetSkeletonConfig(SkeletonConfigOffsets.KNEE_HEIGHT);
 			}
-			case KNEE_HEIGHT -> // Knees are at 55% of the legs by default
-				skeletonConfig
-					.setOffset(
-						SkeletonConfigOffsets.KNEE_HEIGHT,
-						skeletonConfig.getOffset(SkeletonConfigOffsets.LEGS_LENGTH) * 0.55f
-					);
-			case CONTROLLER_DISTANCE_Z -> skeletonConfig
-				.setOffset(SkeletonConfigOffsets.CONTROLLER_DISTANCE_Z, null);
-			case CONTROLLER_DISTANCE_Y -> skeletonConfig
-				.setOffset(SkeletonConfigOffsets.CONTROLLER_DISTANCE_Y, null);
-			case LOWER_ARM_LENGTH -> skeletonConfig
-				.setOffset(SkeletonConfigOffsets.LOWER_ARM_LENGTH, null);
-			case ELBOW_OFFSET -> skeletonConfig.setOffset(SkeletonConfigOffsets.ELBOW_OFFSET, null);
-			case SHOULDERS_DISTANCE -> skeletonConfig
-				.setOffset(SkeletonConfigOffsets.SHOULDERS_DISTANCE, null);
-			case SHOULDERS_WIDTH -> skeletonConfig
-				.setOffset(SkeletonConfigOffsets.SHOULDERS_WIDTH, null);
-			case UPPER_ARM_LENGTH -> skeletonConfig
-				.setOffset(SkeletonConfigOffsets.UPPER_ARM_LENGTH, null);
+			default -> skeletonConfig.setOffset(config, null);
 		}
 	}
 
