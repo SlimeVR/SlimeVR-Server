@@ -276,9 +276,9 @@ public class IMUTracker
 	}
 
 	/**
-	 * Calculates zero-reference-adjusted rotation (with full/quick reset).
-	 * Same as {@link #getRotation(Quaternion)}, except rotation is aligned to
-	 * an identity quaternion instead of HMD and does not include mounting reset
+	 * Calculates zero-reference-adjusted rotation (with full/quick reset). Same
+	 * as {@link #getRotation(Quaternion)}, except rotation is aligned to an
+	 * identity quaternion instead of HMD and does not include mounting reset
 	 * and mounting orientation adjustments. Does not take drift compensation
 	 * into account.
 	 *
