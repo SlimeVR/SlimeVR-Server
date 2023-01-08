@@ -128,6 +128,9 @@ tracker-settings-assignment_section-edit = Muuda jälgija asukohta
 tracker-settings-mounting_section = Paigaldusasend
 tracker-settings-mounting_section-description = Kuhu on jälgija paigaldatud.
 tracker-settings-mounting_section-edit = Muuda paigaldusasendit
+tracker-settings-drift_compensation_section = Allow drift compensation
+tracker-settings-drift_compensation_section-description = Should this tracker compensate for its drift when drift compensation is enabled?
+tracker-settings-drift_compensation_section-edit = Allow drift compensation
 # The .<name> means it's an attribute and it's related to the top key.
 # In this case that is the settings for the assignment section.
 tracker-settings-name_section = Jälgija Nimi
@@ -213,19 +216,27 @@ settings-general-steamvr-trackers-hands = Käed
 
 ## Tracker mechanics
 settings-general-tracker_mechanics = Jälgija mehaanika
-settings-general-tracker_mechanics-subtitle = Filtreerimine
+settings-general-tracker_mechanics-filtering = Filtreerimine
 # This also cares about multilines
-settings-general-tracker_mechanics-description =
+settings-general-tracker_mechanics-filtering-description =
     Vali filtreerimis tüüp enda jälgijatele.
     Ennustus ennustab liikumist, aga silestamine silestab liikumist.
-settings-general-tracker_mechanics-filtering_type = Filtreerimise tüüp
-settings-general-tracker_mechanics-filtering_type-none = Ei mingit filtreerimist
-settings-general-tracker_mechanics-filtering_type-none-description = Kasutage pöörlemist nii nagu on. Ei tee mingit filtreerimist.
-settings-general-tracker_mechanics-filtering_type-smoothing = Silestamine
-settings-general-tracker_mechanics-filtering_type-smoothing-description = Teeb liigutused siledaks, aga lisab aega jälgija ja programmi vahel.
-settings-general-tracker_mechanics-filtering_type-prediction = Ennustamine
-settings-general-tracker_mechanics-filtering_type-prediction-description = Vähendab aega jälgija ja programmi vahel ja tee liigutused kiiremaks, aga võib lisada värinat.
-settings-general-tracker_mechanics-amount = Summa
+settings-general-tracker_mechanics-filtering-type = Filtreerimise tüüp
+settings-general-tracker_mechanics-filtering-type-none = Ei mingit filtreerimist
+settings-general-tracker_mechanics-filtering-type-none-description = Kasutage pöörlemist nii nagu on. Ei tee mingit filtreerimist.
+settings-general-tracker_mechanics-filtering-type-smoothing = Silestamine
+settings-general-tracker_mechanics-filtering-type-smoothing-description = Teeb liigutused siledaks, aga lisab aega jälgija ja programmi vahel.
+settings-general-tracker_mechanics-filtering-type-prediction = Ennustamine
+settings-general-tracker_mechanics-filtering-type-prediction-description = Vähendab aega jälgija ja programmi vahel ja tee liigutused kiiremaks, aga võib lisada värinat.
+settings-general-tracker_mechanics-filtering-amount = Amount
+settings-general-tracker_mechanics-drift_compensation = Drift compensation
+# This cares about multilines
+settings-general-tracker_mechanics-drift_compensation-description =
+    Compensates IMU yaw drift by applying an inverse rotation.
+    Change amount of compensation and up to how many resets are taken into account.
+settings-general-tracker_mechanics-drift_compensation-enabled-label = Drift compensation
+settings-general-tracker_mechanics-drift_compensation-amount-label = Compensation amount
+settings-general-tracker_mechanics-drift_compensation-max_resets-label = Use up to x last resets
 
 ## FK/Tracking settings
 settings-general-fk_settings = Jälgija seaded
