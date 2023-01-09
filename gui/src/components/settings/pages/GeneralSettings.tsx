@@ -437,18 +437,16 @@ export function GeneralSettings() {
             )}
           </Typography>
           <div className="flex flex-col pt-2 pb-4">
-            <Typography color="secondary">
-              {l10n
-                .getString(
-                  'settings-general-tracker_mechanics-drift_compensation-description'
-                )
-                .split('\n')
-                .map((line, i) => (
-                  <Typography color="secondary" key={i}>
-                    {line}
-                  </Typography>
-                ))}
-            </Typography>
+            {l10n
+              .getString(
+                'settings-general-tracker_mechanics-drift_compensation-description'
+              )
+              .split('\n')
+              .map((line, i) => (
+                <Typography color="secondary" key={i}>
+                  {line}
+                </Typography>
+              ))}
           </div>
           <CheckBox
             variant="toggle"
