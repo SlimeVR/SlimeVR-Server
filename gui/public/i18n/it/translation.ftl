@@ -58,6 +58,7 @@ skeleton_bone-UPPER_ARM = Lunghezza Braccia
 skeleton_bone-LOWER_ARM = Distanza Avambracci
 skeleton_bone-CONTROLLER_Y = Distanza Y Controller
 skeleton_bone-CONTROLLER_Z = Distanza Z Controller
+skeleton_bone-ELBOW_OFFSET = Correzione Gomito
 
 ## Tracker reset buttons
 reset-reset_all = Ripristina tutte le proporzioni

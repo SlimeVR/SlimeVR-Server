@@ -58,6 +58,7 @@ skeleton_bone-UPPER_ARM = uppew awm wength
 skeleton_bone-LOWER_ARM = fowewawm disyance
 skeleton_bone-CONTROLLER_Y = cyontwowla disance y
 skeleton_bone-CONTROLLER_Z = cyontwowla disance z
+skeleton_bone-ELBOW_OFFSET = ewbow awfsewt
 
 ## Tracker reset buttons
 reset-reset_all = weset aww pwopowtions~

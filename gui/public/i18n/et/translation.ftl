@@ -58,6 +58,7 @@ skeleton_bone-UPPER_ARM = Õlavarre Pikkus
 skeleton_bone-LOWER_ARM = Käsivarre Kaugus
 skeleton_bone-CONTROLLER_Y = Kontrolleri Kaugus Y
 skeleton_bone-CONTROLLER_Z = Kontrolleri Kaugus Z
+skeleton_bone-ELBOW_OFFSET = Küünarnuki Nihe
 
 ## Tracker reset buttons
 reset-reset_all = Lähtesta kõik proportsioonid

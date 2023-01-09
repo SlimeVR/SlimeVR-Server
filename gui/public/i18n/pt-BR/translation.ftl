@@ -58,6 +58,7 @@ skeleton_bone-UPPER_ARM = Tamanho do Braço Superior
 skeleton_bone-LOWER_ARM = Distância do Antebraço
 skeleton_bone-CONTROLLER_Y = Distância do Controle Y
 skeleton_bone-CONTROLLER_Z = Distância do Controle Z
+skeleton_bone-ELBOW_OFFSET = Compensação do Cotovelo
 
 ## Tracker reset buttons
 reset-reset_all = Redefinir todas as proporções

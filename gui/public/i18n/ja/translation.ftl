@@ -58,6 +58,7 @@ skeleton_bone-UPPER_ARM = 上腕長さ
 skeleton_bone-LOWER_ARM = 前腕長さ
 skeleton_bone-CONTROLLER_Y = コントローラ距離 Y
 skeleton_bone-CONTROLLER_Z = コントローラ距離 Z
+skeleton_bone-ELBOW_OFFSET = 肘オフセット
 
 ## Tracker reset buttons
 reset-reset_all = すべてのプロポーションをリセット
