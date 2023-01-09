@@ -758,76 +758,61 @@ export function GeneralSettings() {
           <Typography variant="main-title">
             {l10n.getString('settings-general-interface')}
           </Typography>
-          <div className="gap-4 grid">
-            <div className="grid sm:grid-cols-2">
-              <div>
-                <Typography bold>
-                  {l10n.getString('settings-general-interface-dev_mode')}
-                </Typography>
-                <div className="flex flex-col">
-                  <Typography color="secondary">
-                    {l10n.getString(
-                      'settings-general-interface-dev_mode-description'
-                    )}
-                  </Typography>
-                </div>
-                <div className="pt-2">
-                  <CheckBox
-                    variant="toggle"
-                    control={control}
-                    outlined
-                    name="interface.devmode"
-                    label={l10n.getString(
-                      'settings-general-interface-dev_mode-label'
-                    )}
-                  />
-                </div>
-              </div>
-            </div>
-            <div className="grid sm:grid-cols-2">
-              <div>
-                <Typography bold>
-                  {l10n.getString(
-                    'settings-general-interface-serial_detection'
-                  )}
-                </Typography>
-                <div className="flex flex-col">
-                  <Typography color="secondary">
-                    {l10n.getString(
-                      'settings-general-interface-serial_detection-description'
-                    )}
-                  </Typography>
-                </div>
-                <div className="pt-2">
-                  <CheckBox
-                    variant="toggle"
-                    control={control}
-                    outlined
-                    name="interface.watchNewDevices"
-                    label={l10n.getString(
-                      'settings-general-interface-serial_detection-label'
-                    )}
-                  />
-                </div>
-              </div>
-            </div>
-            <div className="grid sm:grid-cols-2">
-              <div>
-                <Typography bold>
-                  {l10n.getString('settings-general-interface-lang')}
-                </Typography>
-                <div className="flex flex-col">
-                  <Typography color="secondary">
-                    {l10n.getString(
-                      'settings-general-interface-lang-description'
-                    )}
-                  </Typography>
-                </div>
-                <div className="pt-2">
-                  <LangSelector />
-                </div>
-              </div>
-            </div>
+
+          <Typography bold>
+            {l10n.getString('settings-general-interface-dev_mode')}
+          </Typography>
+          <div className="flex flex-col pt-1 pb-2">
+            <Typography color="secondary">
+              {l10n.getString(
+                'settings-general-interface-dev_mode-description'
+              )}
+            </Typography>
+          </div>
+          <div className="grid sm:grid-cols-2 pb-4">
+            <CheckBox
+              variant="toggle"
+              control={control}
+              outlined
+              name="interface.devmode"
+              label={l10n.getString(
+                'settings-general-interface-dev_mode-label'
+              )}
+            />
+          </div>
+
+          <Typography bold>
+            {l10n.getString('settings-general-interface-serial_detection')}
+          </Typography>
+          <div className="flex flex-col pt-1 pb-2">
+            <Typography color="secondary">
+              {l10n.getString(
+                'settings-general-interface-serial_detection-description'
+              )}
+            </Typography>
+          </div>
+          <div className="grid sm:grid-cols-2 pb-4">
+            <CheckBox
+              variant="toggle"
+              control={control}
+              outlined
+              name="interface.watchNewDevices"
+              label={l10n.getString(
+                'settings-general-interface-serial_detection-label'
+              )}
+            />
+          </div>
+
+          <Typography bold>
+            {l10n.getString('settings-general-interface-lang')}
+          </Typography>
+          <div className="flex flex-col pt-1 pb-2">
+            <Typography color="secondary">
+              {l10n.getString('settings-general-interface-lang-description')}
+            </Typography>
+          </div>
+          <div className="grid sm:grid-cols-2 pb-4">
+            <LangSelector />
           </div>
         </>
       </SettingsPageLayout>
