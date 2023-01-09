@@ -1,5 +1,6 @@
 import { Euler, Quaternion } from 'three';
 import { QuatT } from 'solarxr-protocol';
+import { DEG_TO_RAD } from './angle';
 
 export type QuatObject = { x: number; y: number; z: number; w: number };
 
@@ -14,6 +15,16 @@ export function QuaternionToQuatT(q: QuatObject) {
   quat.z = q.z;
   quat.w = q.w;
   return quat;
+}
+
+export function MountingOrientationDegreesToQuatT(
+  mountingOrientationDegrees: number
+) {
+  return QuaternionToQuatT(
+    new Quaternion().setFromEuler(
+      new Euler(0, +mountingOrientationDegrees * DEG_TO_RAD, 0)
+    )
+  )
 }
 
 const RAD_TO_DEG = 180 / Math.PI;

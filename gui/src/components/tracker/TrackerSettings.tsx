@@ -1,5 +1,4 @@
 import { IPv4 } from 'ip-num/IPNumber';
-import { Quaternion, Euler } from 'three';
 import { useEffect, useMemo, useState } from 'react';
 import { useForm } from 'react-hook-form';
 import { useParams } from 'react-router-dom';
@@ -7,7 +6,10 @@ import { AssignTrackerRequestT, BodyPart, RpcMessage } from 'solarxr-protocol';
 import { useDebouncedEffect } from '../../hooks/timeout';
 import { useTrackerFromId } from '../../hooks/tracker';
 import { useWebsocketAPI } from '../../hooks/websocket-api';
-import { getYawInDegrees, QuaternionToQuatT } from '../../maths/quaternion';
+import {
+  getYawInDegrees,
+  MountingOrientationDegreesToQuatT,
+} from '../../maths/quaternion';
 import { ArrowLink } from '../commons/ArrowLink';
 import { Button } from '../commons/Button';
 import { FootIcon } from '../commons/icon/FootIcon';
@@ -61,15 +63,13 @@ export function TrackerSettingsPage() {
 
   const tracker = useTrackerFromId(trackernum, deviceid);
 
-  const onDirectionSelected = (mountingOrientation: number) => {
+  const onDirectionSelected = (mountingOrientationDegrees: number) => {
     if (!tracker) return;
 
     const assignreq = new AssignTrackerRequestT();
 
-    assignreq.mountingOrientation = QuaternionToQuatT(
-      new Quaternion().setFromEuler(
-        new Euler(0, +mountingOrientation * (Math.PI / 180), 0)
-      )
+    assignreq.mountingOrientation = MountingOrientationDegreesToQuatT(
+      mountingOrientationDegrees
     );
     assignreq.bodyPosition = tracker?.tracker.info?.bodyPart || BodyPart.NONE;
     assignreq.trackerId = tracker?.tracker.trackerId;
@@ -91,7 +91,7 @@ export function TrackerSettingsPage() {
     setSelectBodypart(false);
   };
 
-  const currRotation = useMemo(() => {
+  const currRotationDegrees = useMemo(() => {
     return tracker?.tracker.info?.mountingOrientation
       ? getYawInDegrees(tracker?.tracker.info?.mountingOrientation)
       : rotationToQuatMap.FRONT;
@@ -107,10 +107,9 @@ export function TrackerSettingsPage() {
       return;
     const assignreq = new AssignTrackerRequestT();
     assignreq.bodyPosition = tracker?.tracker.info?.bodyPart || BodyPart.NONE;
-    assignreq.mountingOrientation = assignreq.mountingOrientation =
-      QuaternionToQuatT(
-        Quaternion.fromEuler(0, 0, FixEuler(+currRotation) * DEG_TO_RAD, 'XZY')
-      );
+    assignreq.mountingOrientation =
+      MountingOrientationDegreesToQuatT(currRotationDegrees);
+
     assignreq.displayName = trackerName;
     assignreq.trackerId = tracker?.tracker.trackerId;
     assignreq.allowDriftCompensation = allowDriftCompensation;
@@ -274,7 +273,7 @@ export function TrackerSettingsPage() {
               <div className="flex gap-3 items-center">
                 <FootIcon></FootIcon>
                 <Typography>
-                  {l10n.getString(rotationsLabels[currRotation])}
+                  {l10n.getString(rotationsLabels[currRotationDegrees])}
                 </Typography>
               </div>
               <div className="flex">

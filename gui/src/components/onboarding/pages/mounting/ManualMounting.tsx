@@ -1,11 +1,10 @@
-import { Quaternion, Euler } from 'three';
 import { useMemo, useState } from 'react';
 import { AssignTrackerRequestT, BodyPart, RpcMessage } from 'solarxr-protocol';
 import { FlatDeviceTracker } from '../../../../hooks/app';
 import { useOnboarding } from '../../../../hooks/onboarding';
 import { useTrackers } from '../../../../hooks/tracker';
 import { useWebsocketAPI } from '../../../../hooks/websocket-api';
-import { QuaternionToQuatT } from '../../../../maths/quaternion';
+import { MountingOrientationDegreesToQuatT } from '../../../../maths/quaternion';
 import { ArrowLink } from '../../../commons/ArrowLink';
 import { Button } from '../../../commons/Button';
 import { TipBox } from '../../../commons/TipBox';
@@ -41,15 +40,13 @@ export function ManualMountingPage() {
     [assignedTrackers]
   );
 
-  const onDirectionSelected = (mountingOrientation: number) => {
+  const onDirectionSelected = (mountingOrientationDegrees: number) => {
     (trackerPartGrouped[selectedRole] || []).forEach((td) => {
       const assignreq = new AssignTrackerRequestT();
 
       assignreq.bodyPosition = td.tracker.info?.bodyPart || BodyPart.NONE;
-      assignreq.mountingOrientation = QuaternionToQuatT(
-        new Quaternion().setFromEuler(
-          new Euler(0, +mountingOrientation * (Math.PI / 180), 0)
-        )
+      assignreq.mountingOrientation = MountingOrientationDegreesToQuatT(
+        mountingOrientationDegrees
       );
       assignreq.trackerId = td.tracker.trackerId;
       sendRPCPacket(RpcMessage.AssignTrackerRequest, assignreq);
