@@ -67,9 +67,9 @@ reset-quick = Szybki Reset
 
 ## Serial detection stuff
 serial_detection-new_device-p0 = Wykryto Nowe Urządzenie.
-serial_detection-new_device-p1 = Wprowadź dane WiFi!
+serial_detection-new_device-p1 = Wprowadź dane Wi-Fi!
 serial_detection-new_device-p2 = Wybierz co chcesz z nim zrobić.
-serial_detection-open_wifi = Połącz z WiFi
+serial_detection-open_wifi = Połącz z Wi-Fi
 serial_detection-open_serial = Otwórz Konsole
 serial_detection-submit = Potwierdź!
 serial_detection-close = Zamknij
@@ -351,7 +351,7 @@ settings-osc-vrchat-network-port_out =
     .label = Port Out
     .placeholder = Port out (default: 9000)
 settings-osc-vrchat-network-address = Network address
-settings-osc-vrchat-network-address-description = Choose which address to send out data to VRChat (check your wifi settings on your device).
+settings-osc-vrchat-network-address-description = Choose which address to send out data to VRChat (check your Wi-Fi settings on your device).
 settings-osc-vrchat-network-address-placeholder = VRChat ip address
 settings-osc-vrchat-network-trackers = Trackers
 settings-osc-vrchat-network-trackers-description = Toggle the sending of specific trackers via OSC.
@@ -366,14 +366,14 @@ onboarding-skip = Pomiń wstępną konfiguracje
 onboarding-continue = Kontynuuj
 onboarding-wip = W trakcie prac
 
-## WiFi setup
+## Wi-Fi setup
 onboarding-wifi_creds-back = Cofnij się do początku
-onboarding-wifi_creds = Wpisz dane WiFi
+onboarding-wifi_creds = Wpisz dane Wi-Fi
 # This cares about multilines
 onboarding-wifi_creds-description =
     Trackery będą używać tej sieci do łączenia się z serwerem
     proszę używać sieci do której jest się połączonym
-onboarding-wifi_creds-skip = Pomiń ustawienia WiFi
+onboarding-wifi_creds-skip = Pomiń ustawienia Wi-Fi
 onboarding-wifi_creds-submit = Potwierdź!
 onboarding-wifi_creds-ssid =
     .label = SSID
@@ -407,15 +407,15 @@ onboarding-done-description = Ciesz się Full-Body
 onboarding-done-close = Zamknij Poradnik
 
 ## Tracker connection setup
-onboarding-connect_tracker-back = Cofnij się do ustawień WiFi
+onboarding-connect_tracker-back = Cofnij się do ustawień Wi-Fi
 onboarding-connect_tracker-title = Połącz trackery
 onboarding-connect_tracker-description-p0 = Teraz czas na zabawe, połączenie wszystkich trackerów!
 onboarding-connect_tracker-description-p1 = Po prostu połącz wszystkie dotychczas nie połączone trackery za pomocą USB
 onboarding-connect_tracker-issue-serial = Mam problemy z połączeniem!
 onboarding-connect_tracker-usb = USB Tracker
-onboarding-connect_tracker-connection_status-connecting = Wysyłanie danych WiFi
-onboarding-connect_tracker-connection_status-connected = Połączono z WiFi
-onboarding-connect_tracker-connection_status-error = Nie można połączyć z Wifi
+onboarding-connect_tracker-connection_status-connecting = Wysyłanie danych Wi-Fi
+onboarding-connect_tracker-connection_status-connected = Połączono z Wi-Fi
+onboarding-connect_tracker-connection_status-error = Nie można połączyć z Wi-Fi
 onboarding-connect_tracker-connection_status-start_connecting = Szukanie Trackerów
 onboarding-connect_tracker-connection_status-handshake = Połączono z serwerem
 # $amount (Number) - Amount of trackers connected (this is a number, but you can use CLDR plural rules for your language)
@@ -431,7 +431,7 @@ onboarding-connect_tracker-connected_trackers = { $amount ->
 onboarding-connect_tracker-next = Połączyłem już wszystkie trackery
 
 ## Tracker assignment setup
-onboarding-assign_trackers-back = Cofnij się do ustawień WiFi
+onboarding-assign_trackers-back = Cofnij się do ustawień Wi-Fi
 onboarding-assign_trackers-title = Przydziel Trackery
 onboarding-assign_trackers-description = Wybierzmy gdzie idzie jaki tracker. Naciśnij gdzie chcesz go przydzielić
 # Look at translation of onboarding-connect_tracker-connected_trackers on how to use plurals

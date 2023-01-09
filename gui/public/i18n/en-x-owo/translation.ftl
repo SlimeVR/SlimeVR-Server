@@ -67,7 +67,7 @@ reset-quick = quick weset
 
 ## Serial detection stuff
 serial_detection-new_device-p0 = nyu sewiaw device detected~!
-serial_detection-new_device-p1 = entaw youw wifi cwedentiaws~!
+serial_detection-new_device-p1 = entaw youw wi-fi cwedentiaws~!
 serial_detection-new_device-p2 = pwease sewect what youw want to do wit it
 serial_detection-open_wifi = cownnyect to wyfy~
 serial_detection-open_serial = awpen sewiaw console >w<
@@ -351,7 +351,7 @@ settings-osc-vrchat-network-port_out =
     .label = pawt out
     .placeholder = pawt out (defawwt: 9000)
 settings-osc-vrchat-network-address = network addwess
-settings-osc-vrchat-network-address-description = choose which addwess to send out data to vwchat (check yuw wifi settwings on yuw device)
+settings-osc-vrchat-network-address-description = choose which addwess to send out data to vwchat (check yuw wi-fi settwings on yuw device)
 settings-osc-vrchat-network-address-placeholder = vwchat ip addwess
 settings-osc-vrchat-network-trackers = trayckawws
 settings-osc-vrchat-network-trackers-description = toggle teh sending of spweciwic twackers viwa OSC
@@ -366,18 +366,18 @@ onboarding-skip = skipy setup
 onboarding-continue = continyue
 onboarding-wip = wowwk in pwowgress
 
-## WiFi setup
+## Wi-Fi setup
 onboarding-wifi_creds-back = gaww bawwk to intwoduction
-onboarding-wifi_creds = input wifi cwedentials
+onboarding-wifi_creds = input wi-fi cwedentials
 # This cares about multilines
 onboarding-wifi_creds-description =
     teh twawckaws will use these cwedentials to connect wirelessly
     pwease use teh cwedentials that yaww awe cwowently cownyected to
-onboarding-wifi_creds-skip = skipy wifi settiwyngs
+onboarding-wifi_creds-skip = skipy wi-fi settiwyngs
 onboarding-wifi_creds-submit = suwbmyt!
 onboarding-wifi_creds-ssid =
-    .label = SSID
-    .placeholder = Enter SSID
+    .label = wi-fi nawme
+    .placeholder = enter wi-fi nawme
 onboarding-wifi_creds-password =
     .label = Password
     .placeholder = Enter password
@@ -407,15 +407,15 @@ onboarding-done-description = enjoy yoaww fuww body expewwience
 onboarding-done-close = cwose the guide
 
 ## Tracker connection setup
-onboarding-connect_tracker-back = gaww bawwk to wifi cwedentials
+onboarding-connect_tracker-back = gaww bawwk to wi-fi cwedentials
 onboarding-connect_tracker-title = connect twackaws
 onboarding-connect_tracker-description-p0 = now onto teh fun pawwt, connecting awe teh twackaws!
 onboarding-connect_tracker-description-p1 = simply connect awe that awe nawt cownyected yet, through a usb powwt.
 onboarding-connect_tracker-issue-serial = i'm having twouble connecting!
 onboarding-connect_tracker-usb = usb twacker
-onboarding-connect_tracker-connection_status-connecting = sending wifi cwedentials
-onboarding-connect_tracker-connection_status-connected = cownyected to wifi
-onboarding-connect_tracker-connection_status-error = unabwe to cownyect to wifi
+onboarding-connect_tracker-connection_status-connecting = sending wi-fi cwedentials
+onboarding-connect_tracker-connection_status-connected = cownyected to wi-fi
+onboarding-connect_tracker-connection_status-error = unabwe to cownyect to wi-fi
 onboarding-connect_tracker-connection_status-start_connecting = wooking for twackaws
 onboarding-connect_tracker-connection_status-handshake = cownyected to teh sewvew
 # $amount (Number) - Amount of trackers connected (this is a number, but you can use CLDR plural rules for your language)
@@ -431,7 +431,7 @@ onboarding-connect_tracker-connected_trackers = { $amount ->
 onboarding-connect_tracker-next = i cownyected awe my twackaws
 
 ## Tracker assignment setup
-onboarding-assign_trackers-back = go bak to wifi credyentials
+onboarding-assign_trackers-back = go bak to wi-fi credyentials
 onboarding-assign_trackers-title = assign twackaws
 onboarding-assign_trackers-description = wets choyse which twackaw goes whewe. cwick on a wocation whewe yowo want to payce a twackaw
 # Look at translation of onboarding-connect_tracker-connected_trackers on how to use plurals
