@@ -371,7 +371,7 @@ onboarding-wifi_creds-back = Go Back to introduction
 onboarding-wifi_creds = Input Wi-Fi credentials
 # This cares about multilines
 onboarding-wifi_creds-description =
-    The Trackers will use these credentials to connect wireless.
+    The Trackers will use these credentials to connect wirelessly.
     Please use the credentials that you are currently connected to.
 onboarding-wifi_creds-skip = Skip Wi-Fi settings
 onboarding-wifi_creds-submit = Submit!
