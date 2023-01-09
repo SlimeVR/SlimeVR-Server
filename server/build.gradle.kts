@@ -138,7 +138,7 @@ configure<com.diffplug.gradle.spotless.SpotlessExtension> {
 		mapOf(
 			"indent_size" to 4,
 			"indent_style" to "tab",
-//			"max_line_length" to 88,
+// 			"max_line_length" to 88,
 			"ktlint_experimental" to "enabled"
 		)
 	val ktlintVersion = "0.47.1"
