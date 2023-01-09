@@ -30,13 +30,6 @@ import java.util.List;
 public class DataFeedBuilder {
 
 	public static int createHardwareInfo(FlatBufferBuilder fbb, Device device) {
-		// Tracker firstTracker = device.getTrackers().get(0);
-		// if (firstTracker == null) {
-		// firstTracker =
-		// device.getTrackers().entrySet().iterator().next().getValue();
-		// }
-		// Tracker tracker = firstTracker.get();
-
 		int nameOffset = device.getFirmwareVersion() != null
 			? fbb.createString(device.getFirmwareVersion())
 			: 0;
