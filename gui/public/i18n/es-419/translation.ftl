@@ -129,7 +129,7 @@ tracker-settings-mounting_section = Posición de montura
 tracker-settings-mounting_section-description = ¿Dónde está montado el sensor?
 tracker-settings-mounting_section-edit = Editar montura
 tracker-settings-drift_compensation_section = Permitir compensación de desviación
-tracker-settings-drift_compensation_section-description = ¿Este sensor deberia conpensar la desviación?
+tracker-settings-drift_compensation_section-description = ¿Este sensor deberia compensar la desviación?
 tracker-settings-drift_compensation_section-edit = Permitir compensación de desviación
 # The .<name> means it's an attribute and it's related to the top key.
 # In this case that is the settings for the assignment section.
