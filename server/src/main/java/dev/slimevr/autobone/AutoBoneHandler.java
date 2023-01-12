@@ -357,7 +357,8 @@ public class AutoBoneHandler {
 				// #region Stats/Values
 				skeletonConfigManagerBuffer.setOffsets(autoBoneResults.configValues);
 
-				float neckLength = skeletonConfigManagerBuffer.getOffset(SkeletonConfigOffsets.NECK);
+				float neckLength = skeletonConfigManagerBuffer
+					.getOffset(SkeletonConfigOffsets.NECK);
 				float chestLength = skeletonConfigManagerBuffer
 					.getOffset(SkeletonConfigOffsets.CHEST);
 				float waistLength = skeletonConfigManagerBuffer

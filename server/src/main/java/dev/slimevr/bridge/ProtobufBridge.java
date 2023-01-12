@@ -193,7 +193,8 @@ public abstract class ProtobufBridge<T extends VRTracker> implements Bridge {
 		if (tracker != null) {
 			tracker
 				.setStatus(
-					dev.slimevr.tracking.trackers.TrackerStatus.getById(trackerStatus.getStatusValue())
+					dev.slimevr.tracking.trackers.TrackerStatus
+						.getById(trackerStatus.getStatusValue())
 				);
 		}
 	}

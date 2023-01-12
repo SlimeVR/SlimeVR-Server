@@ -4,7 +4,6 @@ import com.jme3.math.FastMath;
 import com.jme3.math.Quaternion;
 import com.jme3.math.Vector3f;
 import dev.slimevr.VRServer;
-import dev.slimevr.autobone.errors.BodyProportionError;
 import dev.slimevr.tracking.processor.BoneInfo;
 import dev.slimevr.tracking.processor.BoneType;
 import dev.slimevr.tracking.processor.HumanPoseManager;

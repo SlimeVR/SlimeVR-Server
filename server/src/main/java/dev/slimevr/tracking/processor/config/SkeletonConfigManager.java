@@ -2,6 +2,7 @@ package dev.slimevr.tracking.processor.config;
 
 import com.jme3.math.Vector3f;
 import dev.slimevr.Main;
+import dev.slimevr.autobone.errors.BodyProportionError;
 import dev.slimevr.config.ConfigManager;
 import dev.slimevr.tracking.processor.BoneType;
 import dev.slimevr.tracking.processor.HumanPoseManager;
@@ -400,85 +401,28 @@ public class SkeletonConfigManager {
 	}
 
 	public void resetOffset(SkeletonConfigOffsets config) {
-		if (config == null)
+		if (config == null) {
 			return;
+		}
 
 		switch (config) {
-			case HEAD -> humanPoseManager.setOffset(SkeletonConfigOffsets.HEAD, null);
-			case NECK -> humanPoseManager.setOffset(SkeletonConfigOffsets.NECK, null);
-			case TORSO -> {
-				// Distance from shoulders to hip (full torso length)
-				float height = humanPoseManager.getHmdHeight();
+			case CHEST, WAIST, HIP, UPPER_LEG, LOWER_LEG -> {
+				float height = humanPoseManager.getHmdHeight()
+					/ BodyProportionError.eyeHeightToHeightRatio;
 				if (height > 0.5f) { // Reset only if floor level seems right,
 					humanPoseManager
 						.setOffset(
-							SkeletonConfigOffsets.TORSO,
-							((height) * 0.42f)
-								- humanPoseManager.getOffset(SkeletonConfigOffsets.NECK)
-						);
-				} else // if floor level is incorrect
-				{
-					humanPoseManager.setOffset(SkeletonConfigOffsets.TORSO, null);
-				}
-			}
-			case CHEST ->
-				// Chest is 57% of the upper body by default
-				// (shoulders to chest)
-				humanPoseManager
-					.setOffset(
-						SkeletonConfigOffsets.CHEST,
-						humanPoseManager.getOffset(SkeletonConfigOffsets.TORSO) * 0.57f
-					);
-			case WAIST -> // Waist length is from hip to waist
-				humanPoseManager.setOffset(SkeletonConfigOffsets.WAIST, null);
-			case HIP_OFFSET -> humanPoseManager
-				.setOffset(SkeletonConfigOffsets.HIP_OFFSET, null);
-			case HIPS_WIDTH -> humanPoseManager
-				.setOffset(SkeletonConfigOffsets.HIPS_WIDTH, null);
-			case FOOT_LENGTH -> humanPoseManager
-				.setOffset(SkeletonConfigOffsets.FOOT_LENGTH, null);
-			case FOOT_SHIFT -> humanPoseManager
-				.setOffset(SkeletonConfigOffsets.FOOT_SHIFT, null);
-			case SKELETON_OFFSET -> humanPoseManager
-				.setOffset(SkeletonConfigOffsets.SKELETON_OFFSET, null);
-			case LEGS_LENGTH -> {
-				// Set legs length to be 5cm above floor level
-				float height = humanPoseManager.getHmdHeight();
-				if (height > 0.5f) { // Reset only if floor level seems right,
-					humanPoseManager
-						.setOffset(
-							SkeletonConfigOffsets.LEGS_LENGTH,
+							config,
 							height
-								- humanPoseManager.getOffset(SkeletonConfigOffsets.NECK)
-								- humanPoseManager.getOffset(SkeletonConfigOffsets.TORSO)
-								- FLOOR_OFFSET
+								* BodyProportionError
+									.getProportionLimitForOffset(config)
+									.getTargetRatio()
 						);
-				} else // if floor level is incorrect
-				{
-					humanPoseManager.setOffset(SkeletonConfigOffsets.LEGS_LENGTH, null);
+				} else { // if floor level is incorrect
+					humanPoseManager.setOffset(config, null);
 				}
-				resetOffset(SkeletonConfigOffsets.KNEE_HEIGHT);
 			}
-			case KNEE_HEIGHT -> // Knees are at 55% of the legs by default
-				humanPoseManager
-					.setOffset(
-						SkeletonConfigOffsets.KNEE_HEIGHT,
-						humanPoseManager.getOffset(SkeletonConfigOffsets.LEGS_LENGTH) * 0.55f
-					);
-			case CONTROLLER_DISTANCE_Z -> humanPoseManager
-				.setOffset(SkeletonConfigOffsets.CONTROLLER_DISTANCE_Z, null);
-			case CONTROLLER_DISTANCE_Y -> humanPoseManager
-				.setOffset(SkeletonConfigOffsets.CONTROLLER_DISTANCE_Y, null);
-			case LOWER_ARM_LENGTH -> humanPoseManager
-				.setOffset(SkeletonConfigOffsets.LOWER_ARM_LENGTH, null);
-			case ELBOW_OFFSET -> humanPoseManager
-				.setOffset(SkeletonConfigOffsets.ELBOW_OFFSET, null);
-			case SHOULDERS_DISTANCE -> humanPoseManager
-				.setOffset(SkeletonConfigOffsets.SHOULDERS_DISTANCE, null);
-			case SHOULDERS_WIDTH -> humanPoseManager
-				.setOffset(SkeletonConfigOffsets.SHOULDERS_WIDTH, null);
-			case UPPER_ARM_LENGTH -> humanPoseManager
-				.setOffset(SkeletonConfigOffsets.UPPER_ARM_LENGTH, null);
+			default -> humanPoseManager.setOffset(config, null);
 		}
 	}
 
