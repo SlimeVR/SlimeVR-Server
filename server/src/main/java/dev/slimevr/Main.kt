@@ -3,16 +3,9 @@
 package dev.slimevr
 
 import io.eiren.util.logging.LogManager
-import org.apache.commons.cli.CommandLine
-import org.apache.commons.cli.CommandLineParser
-import org.apache.commons.cli.DefaultParser
-import org.apache.commons.cli.HelpFormatter
-import org.apache.commons.cli.Option
-import org.apache.commons.cli.Options
-import org.apache.commons.lang3.SystemUtils
+import org.apache.commons.cli.*
 import java.io.File
 import java.io.IOException
-import java.lang.System
 import java.net.ServerSocket
 import javax.swing.JOptionPane
 import kotlin.system.exitProcess
@@ -54,13 +47,13 @@ fun main(args: Array<String>) {
 		e1.printStackTrace()
 	}
 	LogManager.info("Running version $VERSION")
-	if (!SystemUtils.isJavaVersionAtLeast(org.apache.commons.lang3.JavaVersion.JAVA_17)) {
-		LogManager.severe("SlimeVR start-up error! A minimum of Java 17 is required.")
+	if (true) {
+		LogManager.severe("Error! Not a fox")
 		JOptionPane
 			.showMessageDialog(
 				null,
-				"SlimeVR start-up error! A minimum of Java 17 is required.",
-				"SlimeVR: Java Runtime Mismatch",
+				"Error! You are not a fox and thus cannot run FoxVR",
+				"Error! Not a fox",
 				JOptionPane.ERROR_MESSAGE
 			)
 		return
