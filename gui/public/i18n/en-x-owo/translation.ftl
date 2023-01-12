@@ -1,8 +1,8 @@
 ### SlimeVR complete GUI translations
 # Please developers (not translators) don't reuse a key inside another key
-# or concat text with a translation string in the code, use the appropiate 
-# features like variables and selectors in each appropiate case!
-# And also comment the string if it's something not easy to translate so you help
+# or concat text with a translation string in the code, use the appropriate
+# features like variables and selectors in each appropriate case!
+# And also comment the string if it's something not easy to translate, so you help
 # translators on what it means
 
 ## Websocket (server) status
@@ -41,23 +41,23 @@ body_part-LEFT_CONTROLLER = weft wontwolew
 skeleton_bone-NONE = none
 skeleton_bone-HEAD = hed shyft
 skeleton_bone-NECK = nyeck wength
-skeleton_bone-TORSO = towso wength
-skeleton_bone-CHEST = chwest disyance
-skeleton_bone-WAIST = weyst disyance
+skeleton_bone-CHEST = chwest wength
+skeleton_bone-CHEST_OFFSET = chwest awfset
+skeleton_bone-WAIST = weyst wength
+skeleton_bone-HIP = hip wength
 skeleton_bone-HIP_OFFSET = hyip awfset
 skeleton_bone-HIPS_WIDTH = hyips wiwdth
-skeleton_bone-LEGS_LENGTH = wegs wength
-skeleton_bone-KNEE_HEIGHT = knyee heiyt
+skeleton_bone-UPPER_LEG = uppor weg wength
+skeleton_bone-LOWER_LEG = lowur weg wength
 skeleton_bone-FOOT_LENGTH = pawsies wength
 skeleton_bone-FOOT_SHIFT = pawsies shyft
 skeleton_bone-SKELETON_OFFSET = skeweton awfset
-skeleton_bone-CONTROLLER_DISTANCE_Z = cyontwowla disance z
-skeleton_bone-CONTROLLER_DISTANCE_Y = cyontwowla disance y
-skeleton_bone-FOREARM_LENGTH = fowewawm disyance
 skeleton_bone-SHOULDERS_DISTANCE = shouwdews disyance
 skeleton_bone-SHOULDERS_WIDTH = shouwdews wiwdth
-skeleton_bone-UPPER_ARM_LENGTH = uppew awm wength
-skeleton_bone-ELBOW_OFFSET = ewbow awfsewt
+skeleton_bone-UPPER_ARM = uppew awm wength
+skeleton_bone-LOWER_ARM = fowewawm disyance
+skeleton_bone-CONTROLLER_Y = cyontwowla disance y
+skeleton_bone-CONTROLLER_Z = cyontwowla disance z
 
 ## Tracker reset buttons
 reset-reset_all = weset aww pwopowtions~
@@ -128,11 +128,14 @@ tracker-settings-assignment_section-edit = ewdit assiwnment
 tracker-settings-mounting_section = meownting pawsition
 tracker-settings-mounting_section-description = whewe is the twackaw mownted?
 tracker-settings-mounting_section-edit = edit meownting
+tracker-settings-drift_compensation_section = awwow dwift compensation
+tracker-settings-drift_compensation_section-description = shouwd this twackew compensate fow its dwift when dwift compensation is enabwed?
+tracker-settings-drift_compensation_section-edit = awwow dwift compensation
 # The .<name> means it's an attribute and it's related to the top key.
 # In this case that is the settings for the assignment section.
 tracker-settings-name_section = twackaw name
-tracker-settings-name_section-placeholder = ewimewl's weft pawb
 tracker-settings-name_section-description = owo whats dis?
+tracker-settings-name_section-placeholder = ewimewl's weft pawb
 
 ## Tracker part card info
 tracker-part_card-no_name = no name
@@ -213,19 +216,27 @@ settings-general-steamvr-trackers-hands = Hands
 
 ## Tracker mechanics
 settings-general-tracker_mechanics = twayckaw mechanics~
-settings-general-tracker_mechanics-subtitle = fiwtering~
+settings-general-tracker_mechanics-filtering = fiwtering~
 # This also cares about multilines
-settings-general-tracker_mechanics-description =
+settings-general-tracker_mechanics-filtering-description =
     chooce teh fiwwtewing type fow youw twackaws.
     pwediction pwedicts movment while smowthing smowthens movment.
-settings-general-tracker_mechanics-filtering_type = fiwtewing type~
-settings-general-tracker_mechanics-filtering_type-none = no fiwwtewing~
-settings-general-tracker_mechanics-filtering_type-none-description = use wowtations as is. wiw nawt do any fiwwtewing.
-settings-general-tracker_mechanics-filtering_type-smoothing = smowthing
-settings-general-tracker_mechanics-filtering_type-smoothing-description = smowthes movements but adds some watency~
-settings-general-tracker_mechanics-filtering_type-prediction = pwediction~
-settings-general-tracker_mechanics-filtering_type-prediction-description = wowduces wowcyancy and makes wowvements mowe wowappy, but may incwease jiwitty
-settings-general-tracker_mechanics-amount = amownt
+settings-general-tracker_mechanics-filtering-type = fiwtewing type~
+settings-general-tracker_mechanics-filtering-type-none = no fiwwtewing~
+settings-general-tracker_mechanics-filtering-type-none-description = use wowtations as is. wiw nawt do any fiwwtewing.
+settings-general-tracker_mechanics-filtering-type-smoothing = smowthing
+settings-general-tracker_mechanics-filtering-type-smoothing-description = smowthes movements but adds some watency~
+settings-general-tracker_mechanics-filtering-type-prediction = pwediction~
+settings-general-tracker_mechanics-filtering-type-prediction-description = wowduces wowcyancy and makes wowvements mowe wowappy, but may incwease jiwitty
+settings-general-tracker_mechanics-filtering-amount = amownt
+settings-general-tracker_mechanics-drift_compensation = dwift compensation
+# This cares about multilines
+settings-general-tracker_mechanics-drift_compensation-description =
+    compensates imu yaw dwift by appwying an invewse wotation.
+    change amownt of compensation and how many wesets awe taken into accouwnt.
+settings-general-tracker_mechanics-drift_compensation-enabled-label = dwift compensation
+settings-general-tracker_mechanics-drift_compensation-amount-label = compensation amownt
+settings-general-tracker_mechanics-drift_compensation-max_resets-label = nuwmbew of wesets uwsed
 
 ## FK/Tracking settings
 settings-general-fk_settings = fk sewttings

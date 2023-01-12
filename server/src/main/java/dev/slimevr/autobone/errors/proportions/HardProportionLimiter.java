@@ -28,4 +28,9 @@ public class HardProportionLimiter implements ProportionLimiter {
 		float boneLength = boneLengthFunction.apply(humanPoseManager);
 		return targetRatio - (boneLength / height);
 	}
+
+	@Override
+	public float getTargetRatio() {
+		return targetRatio;
+	}
 }

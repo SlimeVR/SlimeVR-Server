@@ -1,8 +1,8 @@
 ### SlimeVR complete GUI translations
 # Please developers (not translators) don't reuse a key inside another key
-# or concat text with a translation string in the code, use the appropiate 
-# features like variables and selectors in each appropiate case!
-# And also comment the string if it's something not easy to translate so you help
+# or concat text with a translation string in the code, use the appropriate
+# features like variables and selectors in each appropriate case!
+# And also comment the string if it's something not easy to translate, so you help
 # translators on what it means
 
 ## Websocket (server) status
@@ -41,23 +41,23 @@ body_part-LEFT_CONTROLLER = 左コントローラ
 skeleton_bone-NONE = 無し
 skeleton_bone-HEAD = ヘッドシフト
 skeleton_bone-NECK = 首長さ
-skeleton_bone-TORSO = 胴長さ
-skeleton_bone-CHEST = 胸部の距離
-skeleton_bone-WAIST = 腰部の距離
+skeleton_bone-CHEST = Chest Length
+skeleton_bone-CHEST_OFFSET = Chest Offset
+skeleton_bone-WAIST = Waist Length
+skeleton_bone-HIP = Hip Length
 skeleton_bone-HIP_OFFSET = ヒップオフセット
 skeleton_bone-HIPS_WIDTH = ヒップ幅
-skeleton_bone-LEGS_LENGTH = 脚長さ
-skeleton_bone-KNEE_HEIGHT = 膝高さ
+skeleton_bone-UPPER_LEG = Upper Leg Length
+skeleton_bone-LOWER_LEG = Lower Leg Length
 skeleton_bone-FOOT_LENGTH = 足先長さ
 skeleton_bone-FOOT_SHIFT = 足先シフト
 skeleton_bone-SKELETON_OFFSET = スケルトンオフセット
-skeleton_bone-CONTROLLER_DISTANCE_Z = コントローラ距離 Z
-skeleton_bone-CONTROLLER_DISTANCE_Y = コントローラ距離 Y
-skeleton_bone-FOREARM_LENGTH = 前腕長さ
 skeleton_bone-SHOULDERS_DISTANCE = 肩の距離
 skeleton_bone-SHOULDERS_WIDTH = 肩幅
-skeleton_bone-UPPER_ARM_LENGTH = 上腕長さ
-skeleton_bone-ELBOW_OFFSET = 肘オフセット
+skeleton_bone-UPPER_ARM = 上腕長さ
+skeleton_bone-LOWER_ARM = 前腕長さ
+skeleton_bone-CONTROLLER_Y = コントローラ距離 Y
+skeleton_bone-CONTROLLER_Z = コントローラ距離 Z
 
 ## Tracker reset buttons
 reset-reset_all = すべてのプロポーションをリセット
@@ -128,11 +128,14 @@ tracker-settings-assignment_section-edit = 割り当ての編集
 tracker-settings-mounting_section = 装着方向
 tracker-settings-mounting_section-description = トラッカーをどの方向に装着していますか?
 tracker-settings-mounting_section-edit = 装着向きの編集
+tracker-settings-drift_compensation_section = Allow drift compensation
+tracker-settings-drift_compensation_section-description = Should this tracker compensate for its drift when drift compensation is enabled?
+tracker-settings-drift_compensation_section-edit = Allow drift compensation
 # The .<name> means it's an attribute and it's related to the top key.
 # In this case that is the settings for the assignment section.
 tracker-settings-name_section = トラッカー名称
-tracker-settings-name_section-placeholder = NightyBeast's left leg
 tracker-settings-name_section-description = 自由に名称をつけてください
+tracker-settings-name_section-placeholder = NightyBeast's left leg
 
 ## Tracker part card info
 tracker-part_card-no_name = 名称無し
@@ -213,19 +216,27 @@ settings-general-steamvr-trackers-hands = Hands
 
 ## Tracker mechanics
 settings-general-tracker_mechanics = トラッカーメカニズム
-settings-general-tracker_mechanics-subtitle = フィルター機能
+settings-general-tracker_mechanics-filtering = フィルター機能
 # This also cares about multilines
-settings-general-tracker_mechanics-description =
+settings-general-tracker_mechanics-filtering-description =
     トラッカーのフィルタリングの種類を選択します。
     Predictionは動きを予測し、Smoothingは動きを滑らかにする。
-settings-general-tracker_mechanics-filtering_type = フィルタータイプ
-settings-general-tracker_mechanics-filtering_type-none = No filtering
-settings-general-tracker_mechanics-filtering_type-none-description = トラッカーの値をそのまま使用します。フィルタリングは行いません。
-settings-general-tracker_mechanics-filtering_type-smoothing = Smoothing
-settings-general-tracker_mechanics-filtering_type-smoothing-description = 動きを滑らかにしますが、若干の遅れが発生します
-settings-general-tracker_mechanics-filtering_type-prediction = Prediction
-settings-general-tracker_mechanics-filtering_type-prediction-description = レイテンシーを減らし、動きをよりキビキビさせますが、ジッターが増加する場合があります。
-settings-general-tracker_mechanics-amount = 数値
+settings-general-tracker_mechanics-filtering-type = フィルタータイプ
+settings-general-tracker_mechanics-filtering-type-none = No filtering
+settings-general-tracker_mechanics-filtering-type-none-description = トラッカーの値をそのまま使用します。フィルタリングは行いません。
+settings-general-tracker_mechanics-filtering-type-smoothing = Smoothing
+settings-general-tracker_mechanics-filtering-type-smoothing-description = 動きを滑らかにしますが、若干の遅れが発生します
+settings-general-tracker_mechanics-filtering-type-prediction = Prediction
+settings-general-tracker_mechanics-filtering-type-prediction-description = レイテンシーを減らし、動きをよりキビキビさせますが、ジッターが増加する場合があります。
+settings-general-tracker_mechanics-filtering-amount = 数値
+settings-general-tracker_mechanics-drift_compensation = Drift compensation
+# This cares about multilines
+settings-general-tracker_mechanics-drift_compensation-description =
+    Compensates IMU yaw drift by applying an inverse rotation.
+    Change amount of compensation and up to how many resets are taken into account.
+settings-general-tracker_mechanics-drift_compensation-enabled-label = Drift compensation
+settings-general-tracker_mechanics-drift_compensation-amount-label = Compensation amount
+settings-general-tracker_mechanics-drift_compensation-max_resets-label = Use up to x last resets
 
 ## FK settings
 settings-general-fk_settings = FK設定

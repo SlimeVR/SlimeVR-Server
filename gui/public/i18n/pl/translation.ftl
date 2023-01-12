@@ -1,8 +1,8 @@
 ### SlimeVR complete GUI translations
 # Please developers (not translators) don't reuse a key inside another key
-# or concat text with a translation string in the code, use the appropiate 
-# features like variables and selectors in each appropiate case!
-# And also comment the string if it's something not easy to translate so you help
+# or concat text with a translation string in the code, use the appropriate
+# features like variables and selectors in each appropriate case!
+# And also comment the string if it's something not easy to translate, so you help
 # translators on what it means
 
 ## Websocket (server) status
@@ -41,23 +41,23 @@ body_part-LEFT_CONTROLLER = Left controller
 skeleton_bone-NONE = Brak
 skeleton_bone-HEAD = Head Shift
 skeleton_bone-NECK = Długość Szyi
-skeleton_bone-TORSO = Długość Tułowia
-skeleton_bone-CHEST = Długość Klatki Piersiowej
-skeleton_bone-WAIST = Waist Distance
+skeleton_bone-CHEST = Chest Length
+skeleton_bone-CHEST_OFFSET = Chest Offset
+skeleton_bone-WAIST = Waist Length
+skeleton_bone-HIP = Hip Length
 skeleton_bone-HIP_OFFSET = Offset Bioder
 skeleton_bone-HIPS_WIDTH = Szerokość Bioder
-skeleton_bone-LEGS_LENGTH = Długość Nóg
-skeleton_bone-KNEE_HEIGHT = Wysokość Kolana
+skeleton_bone-UPPER_LEG = Upper Leg Length
+skeleton_bone-LOWER_LEG = Lower Leg Length
 skeleton_bone-FOOT_LENGTH = Długość Stopy
 skeleton_bone-FOOT_SHIFT = Foot Shift
 skeleton_bone-SKELETON_OFFSET = Skeleton Offset
-skeleton_bone-CONTROLLER_DISTANCE_Z = Controller Distance Z
-skeleton_bone-CONTROLLER_DISTANCE_Y = Controller Distance Y
-skeleton_bone-FOREARM_LENGTH = Długość PrzedRamienia
 skeleton_bone-SHOULDERS_DISTANCE = Shoulders Distance
 skeleton_bone-SHOULDERS_WIDTH = Szerokość Ramion
-skeleton_bone-UPPER_ARM_LENGTH = Długość Bicepsa
-skeleton_bone-ELBOW_OFFSET = Offset Łokcia
+skeleton_bone-UPPER_ARM = Długość Bicepsa
+skeleton_bone-LOWER_ARM = Długość PrzedRamienia
+skeleton_bone-CONTROLLER_Z = Controller Distance Z
+skeleton_bone-CONTROLLER_Y = Controller Distance Y
 
 ## Tracker reset buttons
 reset-reset_all = Zresetuj wszystkie wymiary
@@ -128,11 +128,14 @@ tracker-settings-assignment_section-edit = Edytuj
 tracker-settings-mounting_section = Położenie Trackera
 tracker-settings-mounting_section-description = Gdzie jest Tracker zamontowany?
 tracker-settings-mounting_section-edit = Edytuj
+tracker-settings-drift_compensation_section = Allow drift compensation
+tracker-settings-drift_compensation_section-description = Should this tracker compensate for its drift when drift compensation is enabled?
+tracker-settings-drift_compensation_section-edit = Allow drift compensation
 # The .<name> means it's an attribute and it's related to the top key.
 # In this case that is the settings for the assignment section.
 tracker-settings-name_section = Nazwa Trackera
-tracker-settings-name_section-placeholder = Lewa noga Yexo
 tracker-settings-name_section-description = Daj mu słodką nazwę :)
+tracker-settings-name_section-placeholder = Lewa noga Yexo
 
 ## Tracker part card info
 tracker-part_card-no_name = Brak Nazwy
@@ -213,19 +216,27 @@ settings-general-steamvr-trackers-hands = Ręce
 
 ## Tracker mechanics
 settings-general-tracker_mechanics = Tracker mechanics
-settings-general-tracker_mechanics-subtitle = Filtrowanie
+settings-general-tracker_mechanics-filtering = Filtrowanie
 # This also cares about multilines
-settings-general-tracker_mechanics-description =
+settings-general-tracker_mechanics-filtering-description =
     Wybierz Filtry dla twoich trackerów.
     Przewidywanie przewiduje ruchy a Wygładzanie stara się wygładzić ruchy.
-settings-general-tracker_mechanics-filtering_type = Filtry
-settings-general-tracker_mechanics-filtering_type-none = Brak Filtrów
-settings-general-tracker_mechanics-filtering_type-none-description = Używa rotacji takimi jakimi są.
-settings-general-tracker_mechanics-filtering_type-smoothing = Wygładzanie
-settings-general-tracker_mechanics-filtering_type-smoothing-description = Wygładza ruchy lecz dodaje trochę opóźnienia.
-settings-general-tracker_mechanics-filtering_type-prediction = Przewidywanie
-settings-general-tracker_mechanics-filtering_type-prediction-description = Zmniejsza opóźnienie i robi ruchy trochę ostrzejszymi, ale może dodać trochę drgań.
-settings-general-tracker_mechanics-amount = Ilość
+settings-general-tracker_mechanics-filtering-type = Filtry
+settings-general-tracker_mechanics-filtering-type-none = Brak Filtrów
+settings-general-tracker_mechanics-filtering-type-none-description = Używa rotacji takimi jakimi są.
+settings-general-tracker_mechanics-filtering-type-smoothing = Wygładzanie
+settings-general-tracker_mechanics-filtering-type-smoothing-description = Wygładza ruchy lecz dodaje trochę opóźnienia.
+settings-general-tracker_mechanics-filtering-type-prediction = Przewidywanie
+settings-general-tracker_mechanics-filtering-type-prediction-description = Zmniejsza opóźnienie i robi ruchy trochę ostrzejszymi, ale może dodać trochę drgań.
+settings-general-tracker_mechanics-filtering-amount = Ilość
+settings-general-tracker_mechanics-drift_compensation = Drift compensation
+# This cares about multilines
+settings-general-tracker_mechanics-drift_compensation-description =
+    Compensates IMU yaw drift by applying an inverse rotation.
+    Change amount of compensation and up to how many resets are taken into account.
+settings-general-tracker_mechanics-drift_compensation-enabled-label = Drift compensation
+settings-general-tracker_mechanics-drift_compensation-amount-label = Compensation amount
+settings-general-tracker_mechanics-drift_compensation-max_resets-label = Use up to x last resets
 
 ## FK settings
 settings-general-fk_settings = Tracking settings

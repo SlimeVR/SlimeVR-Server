@@ -4,6 +4,7 @@ import com.jme3.math.FastMath;
 import com.jme3.math.Quaternion;
 import com.jme3.math.Vector3f;
 import dev.slimevr.VRServer;
+import dev.slimevr.autobone.errors.BodyProportionError;
 import dev.slimevr.tracking.processor.BoneInfo;
 import dev.slimevr.tracking.processor.BoneType;
 import dev.slimevr.tracking.processor.HumanPoseManager;
@@ -214,7 +215,7 @@ public class HumanSkeleton {
 
 		// #region Attach tracker nodes for tracker offsets
 		neckNode.attachChild(trackerHeadNode);
-		chestNode.attachChild(trackerChestNode);
+		neckNode.attachChild(trackerChestNode);
 		hipNode.attachChild(trackerWaistNode);
 
 		leftKneeNode.attachChild(trackerLeftKneeNode);
@@ -1103,13 +1104,17 @@ public class HumanSkeleton {
 					.getFirstAvailableTracker(leftLowerArmTracker, leftUpperArmTracker)
 					.getRotation(rotBuf1);
 				leftElbowNode.localTransform.setRotation(rotBuf1);
+			} else {
+				neckNode.localTransform.getRotation(rotBuf1);
+				leftShoulderTailNode.localTransform.setRotation(rotBuf1);
+				trackerLeftElbowNode.localTransform.setRotation(rotBuf1);
+				leftElbowNode.localTransform.setRotation(rotBuf1);
 			}
-			if (leftHandTracker != null) {
+			if (leftHandTracker != null)
 				leftHandTracker.getRotation(rotBuf1);
-				leftWristNode.localTransform.setRotation(rotBuf1);
-				leftHandNode.localTransform.setRotation(rotBuf1);
-				trackerLeftHandNode.localTransform.setRotation(rotBuf1);
-			}
+			leftWristNode.localTransform.setRotation(rotBuf1);
+			leftHandNode.localTransform.setRotation(rotBuf1);
+			trackerLeftHandNode.localTransform.setRotation(rotBuf1);
 		}
 
 		// Right arm
@@ -1152,13 +1157,17 @@ public class HumanSkeleton {
 					.getFirstAvailableTracker(rightLowerArmTracker, rightUpperArmTracker)
 					.getRotation(rotBuf1);
 				rightElbowNode.localTransform.setRotation(rotBuf1);
+			} else {
+				neckNode.localTransform.getRotation(rotBuf1);
+				rightShoulderTailNode.localTransform.setRotation(rotBuf1);
+				trackerRightElbowNode.localTransform.setRotation(rotBuf1);
+				rightElbowNode.localTransform.setRotation(rotBuf1);
 			}
-			if (rightHandTracker != null) {
+			if (rightHandTracker != null)
 				rightHandTracker.getRotation(rotBuf1);
-				rightWristNode.localTransform.setRotation(rotBuf1);
-				rightHandNode.localTransform.setRotation(rotBuf1);
-				trackerRightHandNode.localTransform.setRotation(rotBuf1);
-			}
+			rightWristNode.localTransform.setRotation(rotBuf1);
+			rightHandNode.localTransform.setRotation(rotBuf1);
+			trackerRightHandNode.localTransform.setRotation(rotBuf1);
 		}
 	}
 

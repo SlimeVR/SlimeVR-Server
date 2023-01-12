@@ -1,8 +1,8 @@
 ### SlimeVR complete GUI translations
 # Please developers (not translators) don't reuse a key inside another key
-# or concat text with a translation string in the code, use the appropiate 
-# features like variables and selectors in each appropiate case!
-# And also comment the string if it's something not easy to translate so you help
+# or concat text with a translation string in the code, use the appropriate
+# features like variables and selectors in each appropriate case!
+# And also comment the string if it's something not easy to translate, so you help
 # translators on what it means
 
 ## Websocket (server) status
@@ -24,7 +24,7 @@ body_part-RIGHT_HAND = Tay phải
 body_part-RIGHT_UPPER_LEG = Chân phải trên
 body_part-RIGHT_LOWER_LEG = chân phải dưới
 body_part-RIGHT_FOOT = Bàn chân phải
-body_part-RIGHT_CONTROLLER = Right controller
+body_part-RIGHT_CONTROLLER = Tay cầm phải
 body_part-CHEST = Ngực
 body_part-WAIST = Eo
 body_part-HIP = Hông
@@ -35,29 +35,29 @@ body_part-LEFT_HAND = Tay trái
 body_part-LEFT_UPPER_LEG = Chân trái trên
 body_part-LEFT_LOWER_LEG = Chân trái dưới
 body_part-LEFT_FOOT = Bàn chân trái
-body_part-LEFT_CONTROLLER = Left controller
+body_part-LEFT_CONTROLLER = Tay cầm trái
 
 ## Skeleton stuff
 skeleton_bone-NONE = Chưa liên kết
 skeleton_bone-HEAD = Đầu ca
 skeleton_bone-NECK = Cổ dài
-skeleton_bone-TORSO = Chiều dài thân
-skeleton_bone-CHEST = Khoảng cách ngực
-skeleton_bone-WAIST = Khoảng cách eo
+skeleton_bone-CHEST = Chest Length
+skeleton_bone-CHEST_OFFSET = Chest Offset
+skeleton_bone-WAIST = Waist Length
+skeleton_bone-HIP = Hip Length
 skeleton_bone-HIP_OFFSET = Lệc đo hông
 skeleton_bone-HIPS_WIDTH = Chiều rộng hông
-skeleton_bone-LEGS_LENGTH = Chiều dài chân
-skeleton_bone-KNEE_HEIGHT = Chiều cao đầu gối
+skeleton_bone-UPPER_LEG = Upper Leg Length
+skeleton_bone-LOWER_LEG = Lower Leg Length
 skeleton_bone-FOOT_LENGTH = CHiều dài bàn chân
 skeleton_bone-FOOT_SHIFT = Lệch đo bàn chân
 skeleton_bone-SKELETON_OFFSET = Lệch đo thân
-skeleton_bone-CONTROLLER_DISTANCE_Z = Khoảng cách tay cầm Z
-skeleton_bone-CONTROLLER_DISTANCE_Y = Khoảng cách tay cầm Y
-skeleton_bone-FOREARM_LENGTH = khoảng cách cánh tay
 skeleton_bone-SHOULDERS_DISTANCE = Khoảng cách vai
 skeleton_bone-SHOULDERS_WIDTH = Chiều rộng vai
-skeleton_bone-UPPER_ARM_LENGTH = Chiều dài tay trên
-skeleton_bone-ELBOW_OFFSET = Lệch đo khuỷu tay
+skeleton_bone-UPPER_ARM = Chiều dài tay trên
+skeleton_bone-LOWER_ARM = khoảng cách cánh tay
+skeleton_bone-CONTROLLER_Y = Khoảng cách tay cầm Y
+skeleton_bone-CONTROLLER_Z = Khoảng cách tay cầm Z
 
 ## Tracker reset buttons
 reset-reset_all = Reset tất cả bộ phận
@@ -128,11 +128,14 @@ tracker-settings-assignment_section-edit = Chỉnh lại giao bộ phận
 tracker-settings-mounting_section = Vị trí đặt bộ phận
 tracker-settings-mounting_section-description = Tracker đặt ở đâu?
 tracker-settings-mounting_section-edit = Chỉnh lại chỗ đặt
+tracker-settings-drift_compensation_section = Allow drift compensation
+tracker-settings-drift_compensation_section-description = Should this tracker compensate for its drift when drift compensation is enabled?
+tracker-settings-drift_compensation_section-edit = Allow drift compensation
 # The .<name> means it's an attribute and it's related to the top key.
 # In this case that is the settings for the assignment section.
 tracker-settings-name_section = Tên tracker
-tracker-settings-name_section-placeholder = Menaced's left leg
 tracker-settings-name_section-description = Hãy cho một tên đẹp :)
+tracker-settings-name_section-placeholder = Menaced's left leg
 
 ## Tracker part card info
 tracker-part_card-no_name = Không tên
@@ -151,29 +154,29 @@ body_assignment_menu-unassign_tracker = Tracker chưa giao vị trí
 # 
 # We are using it here because english doesn't require changing the text in each case but
 # maybe your language does.
--tracker_selection-part = Which tracker to assign to your
-tracker_selection_menu-NONE = Which tracker do you want to be unassigned?
-tracker_selection_menu-HEAD = { -tracker_selection-part } head?
-tracker_selection_menu-NECK = { -tracker_selection-part } neck?
-tracker_selection_menu-RIGHT_SHOULDER = { -tracker_selection-part } right shoulder?
-tracker_selection_menu-RIGHT_UPPER_ARM = { -tracker_selection-part } right upper arm?
-tracker_selection_menu-RIGHT_LOWER_ARM = { -tracker_selection-part } right lower arm?
-tracker_selection_menu-RIGHT_HAND = { -tracker_selection-part } right hand?
-tracker_selection_menu-RIGHT_UPPER_LEG = { -tracker_selection-part } right thigh?
-tracker_selection_menu-RIGHT_LOWER_LEG = { -tracker_selection-part } right ankle?
-tracker_selection_menu-RIGHT_FOOT = { -tracker_selection-part } right foot?
-tracker_selection_menu-RIGHT_CONTROLLER = { -tracker_selection-part } right controller?
-tracker_selection_menu-CHEST = { -tracker_selection-part } chest?
-tracker_selection_menu-WAIST = { -tracker_selection-part } waist?
-tracker_selection_menu-HIP = { -tracker_selection-part } hip?
-tracker_selection_menu-LEFT_SHOULDER = { -tracker_selection-part } left shoulder?
-tracker_selection_menu-LEFT_UPPER_ARM = { -tracker_selection-part } left upper arm?
-tracker_selection_menu-LEFT_LOWER_ARM = { -tracker_selection-part } left lower arm?
-tracker_selection_menu-LEFT_HAND = { -tracker_selection-part } left hand?
-tracker_selection_menu-LEFT_UPPER_LEG = { -tracker_selection-part } left thigh?
-tracker_selection_menu-LEFT_LOWER_LEG = { -tracker_selection-part } left ankle?
-tracker_selection_menu-LEFT_FOOT = { -tracker_selection-part } left foot?
-tracker_selection_menu-LEFT_CONTROLLER = { -tracker_selection-part } left controller?
+-tracker_selection-part = Tracker nào để giao cho vị trí
+tracker_selection_menu-NONE = Bạn muốn giao cho tracker nào mà chua giao?
+tracker_selection_menu-HEAD = { -tracker_selection-part } đầu?
+tracker_selection_menu-NECK = { -tracker_selection-part } cổ?
+tracker_selection_menu-RIGHT_SHOULDER = { -tracker_selection-part } vai phải?
+tracker_selection_menu-RIGHT_UPPER_ARM = { -tracker_selection-part } tay phải trên?
+tracker_selection_menu-RIGHT_LOWER_ARM = { -tracker_selection-part } tay phải dưới?
+tracker_selection_menu-RIGHT_HAND = { -tracker_selection-part } tay phải?
+tracker_selection_menu-RIGHT_UPPER_LEG = { -tracker_selection-part } chân phải trên?
+tracker_selection_menu-RIGHT_LOWER_LEG = { -tracker_selection-part } chân phải dưới?
+tracker_selection_menu-RIGHT_FOOT = { -tracker_selection-part } bàn chân phải?
+tracker_selection_menu-RIGHT_CONTROLLER = { -tracker_selection-part } tay cầm phải?
+tracker_selection_menu-CHEST = { -tracker_selection-part } ngực?
+tracker_selection_menu-WAIST = { -tracker_selection-part } eo?
+tracker_selection_menu-HIP = { -tracker_selection-part } hông?
+tracker_selection_menu-LEFT_SHOULDER = { -tracker_selection-part } vai trái?
+tracker_selection_menu-LEFT_UPPER_ARM = { -tracker_selection-part } tay trái trên?
+tracker_selection_menu-LEFT_LOWER_ARM = { -tracker_selection-part } tay trái dưới?
+tracker_selection_menu-LEFT_HAND = { -tracker_selection-part } tay trái?
+tracker_selection_menu-LEFT_UPPER_LEG = { -tracker_selection-part } chân trái trên?
+tracker_selection_menu-LEFT_LOWER_LEG = { -tracker_selection-part } chân trái dưới?
+tracker_selection_menu-LEFT_FOOT = { -tracker_selection-part } bàn chân trái?
+tracker_selection_menu-LEFT_CONTROLLER = { -tracker_selection-part } tay tráitrái?
 
 tracker_selection_menu-unassigned = Chưa giao vị trí
 tracker_selection_menu-assigned = Đã giao vị trí
@@ -213,19 +216,27 @@ settings-general-steamvr-trackers-hands = Hands
 
 ## Tracker mechanics
 settings-general-tracker_mechanics = Cơ khí tracker
-settings-general-tracker_mechanics-subtitle = Lọc rung
+settings-general-tracker_mechanics-filtering = Lọc rung
 # This also cares about multilines
-settings-general-tracker_mechanics-description =
+settings-general-tracker_mechanics-filtering-description =
     Chọn kiểu lọc rung cho tracker.
     Dự đoán đoán cử động trong khi lọc rung cử động.
-settings-general-tracker_mechanics-filtering_type = Kiểu lọc
-settings-general-tracker_mechanics-filtering_type-none = Không lọc
-settings-general-tracker_mechanics-filtering_type-none-description = Để đo chiều chuyển y nguyên. Không sử dụlọclọc.
-settings-general-tracker_mechanics-filtering_type-smoothing = Làm mượt
-settings-general-tracker_mechanics-filtering_type-smoothing-description = Lọc cử động mượt nhưng tạo ít chậm rễ.
-settings-general-tracker_mechanics-filtering_type-prediction = Dự đoán
-settings-general-tracker_mechanics-filtering_type-prediction-description = Giảm chậm trê và để cử động gọn hơn, nhưng có thể tăng độ rung.
-settings-general-tracker_mechanics-amount = Số luọng
+settings-general-tracker_mechanics-filtering-type = Kiểu lọc
+settings-general-tracker_mechanics-filtering-type-none = Không lọc
+settings-general-tracker_mechanics-filtering-type-none-description = Để đo chiều chuyển y nguyên. Không sử dụlọclọc.
+settings-general-tracker_mechanics-filtering-type-smoothing = Làm mượt
+settings-general-tracker_mechanics-filtering-type-smoothing-description = Lọc cử động mượt nhưng tạo ít chậm rễ.
+settings-general-tracker_mechanics-filtering-type-prediction = Dự đoán
+settings-general-tracker_mechanics-filtering-type-prediction-description = Giảm chậm trê và để cử động gọn hơn, nhưng có thể tăng độ rung.
+settings-general-tracker_mechanics-filtering-amount = Số luọng
+settings-general-tracker_mechanics-drift_compensation = Drift compensation
+# This cares about multilines
+settings-general-tracker_mechanics-drift_compensation-description =
+    Compensates IMU yaw drift by applying an inverse rotation.
+    Change amount of compensation and up to how many resets are taken into account.
+settings-general-tracker_mechanics-drift_compensation-enabled-label = Drift compensation
+settings-general-tracker_mechanics-drift_compensation-amount-label = Compensation amount
+settings-general-tracker_mechanics-drift_compensation-max_resets-label = Use up to x last resets
 
 ## FK/Tracking settings
 settings-general-fk_settings = Cài đặt FK
@@ -261,7 +272,7 @@ settings-general-gesture_control-description = Bật hoặc tắt reset nhanh. K
 # $amount (Number) - Amount of taps (touches to the tracker's case)
 settings-general-gesture_control-taps = { $amount ->
     [one] 1 tap
-    *[other] { $amount } taps
+    *[other] { $amount } lần 
 }
 settings-general-gesture_control-quickResetEnabled = Enable tap to quick reset
 settings-general-gesture_control-quickResetDelay = Quick reset delay
@@ -413,10 +424,10 @@ onboarding-connect_tracker-connection_status-handshake = Đã kết nối với 
 # we use 0 in an explicit way because there is no plural rule in english for 0, so we directly say
 # if $amount is 0 then we say "No trackers connected"
 onboarding-connect_tracker-connected_trackers = { $amount ->
-    [0] No trackers
+    [0] Không trackers
     [one] 1 tracker
     *[other] { $amount } trackers
-} connected
+} đã giao
 onboarding-connect_tracker-next = Tôi đã kết nối tất cả tracker
 
 ## Tracker assignment setup
@@ -429,7 +440,7 @@ onboarding-assign_trackers-description = Hãy chọn tracker nào nằm ở đâ
 onboarding-assign_trackers-assigned = { $assigned } of { $trackers ->
     [one] 1 tracker
     *[other] { $trackers } trackers
-} assigned
+} đã giao
 onboarding-assign_trackers-advanced = Xem vị trí mở rộng
 onboarding-assign_trackers-next = Hoàn thành
 
@@ -492,8 +503,8 @@ onboarding-automatic_proportions-recording-steps-4 = Đảo xung quanh cho đế
 onboarding-automatic_proportions-recording-processing = Đang xử lí kết quả
 # $time (Number) - Seconds left for the automatic calibration recording to finish (max 15)
 onboarding-automatic_proportions-recording-timer = { $time ->
-    [one] 1 second left
-    *[other] { $time } seconds left
+    [one] 1 giây còn lại
+    *[other] { $time } giây còn 
 }
 onboarding-automatic_proportions-verify_results-title = Xác nhận kết quả
 onboarding-automatic_proportions-verify_results-description = Kiểm tra kết quả dưới đây, nó có chính xác không?

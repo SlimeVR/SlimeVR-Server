@@ -17,7 +17,7 @@ public class BodyProportionError implements IAutoBoneError {
 
 	// The headset height is not the full height! This value compensates for the
 	// offset from the headset height to the user height
-	public float eyeHeightToHeightRatio = 0.936f;
+	public static float eyeHeightToHeightRatio = 0.936f;
 
 	// Default config
 	// Height: 1.58
@@ -51,14 +51,6 @@ public class BodyProportionError implements IAutoBoneError {
 			0.0015f
 		),
 
-		// Torso
-		// Expected: 0.288 (0.333 including hip, this shouldn't be right...)
-		new RangeProportionLimiter(
-			0.333f,
-			config -> config.getOffset(SkeletonConfigOffsets.TORSO),
-			0.015f
-		),
-
 		// Chest
 		// Experimental: 0.189
 		new RangeProportionLimiter(
@@ -71,9 +63,7 @@ public class BodyProportionError implements IAutoBoneError {
 		// Experimental: 0.118
 		new RangeProportionLimiter(
 			0.118f,
-			config -> config.getOffset(SkeletonConfigOffsets.TORSO)
-				- config.getOffset(SkeletonConfigOffsets.CHEST)
-				- config.getOffset(SkeletonConfigOffsets.WAIST),
+			config -> config.getOffset(SkeletonConfigOffsets.WAIST),
 			0.05f
 		),
 
@@ -81,7 +71,7 @@ public class BodyProportionError implements IAutoBoneError {
 		// Experimental: 0.0237
 		new RangeProportionLimiter(
 			0.0237f,
-			config -> config.getOffset(SkeletonConfigOffsets.WAIST),
+			config -> config.getOffset(SkeletonConfigOffsets.HIP),
 			0.01f
 		),
 
@@ -98,8 +88,7 @@ public class BodyProportionError implements IAutoBoneError {
 		// Expected: 0.245
 		new RangeProportionLimiter(
 			0.245f,
-			config -> config.getOffset(SkeletonConfigOffsets.LEGS_LENGTH)
-				- config.getOffset(SkeletonConfigOffsets.KNEE_HEIGHT),
+			config -> config.getOffset(SkeletonConfigOffsets.UPPER_LEG),
 			0.015f
 		),
 
@@ -108,10 +97,25 @@ public class BodyProportionError implements IAutoBoneError {
 		// offset?)
 		new RangeProportionLimiter(
 			0.285f,
-			config -> config.getOffset(SkeletonConfigOffsets.KNEE_HEIGHT),
+			config -> config.getOffset(SkeletonConfigOffsets.LOWER_LEG),
 			0.02f
 		),
 	};
+
+	public static ProportionLimiter getProportionLimitForOffset(SkeletonConfigOffsets offset) {
+		ProportionLimiter result = null;
+		switch (offset) {
+			case HEAD -> result = proportionLimits[0];
+			case NECK -> result = proportionLimits[1];
+			case CHEST -> result = proportionLimits[2];
+			case WAIST -> result = proportionLimits[3];
+			case HIP -> result = proportionLimits[4];
+			case HIPS_WIDTH -> result = proportionLimits[5];
+			case UPPER_LEG -> result = proportionLimits[6];
+			case LOWER_LEG -> result = proportionLimits[7];
+		}
+		return result;
+	}
 
 	@Override
 	public float getStepError(AutoBoneTrainingStep trainingStep) throws AutoBoneException {

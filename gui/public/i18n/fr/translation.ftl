@@ -1,8 +1,8 @@
 ### SlimeVR complete GUI translations
 # Please developers (not translators) don't reuse a key inside another key
-# or concat text with a translation string in the code, use the appropiate 
-# features like variables and selectors in each appropiate case!
-# And also comment the string if it's something not easy to translate so you help
+# or concat text with a translation string in the code, use the appropriate
+# features like variables and selectors in each appropriate case!
+# And also comment the string if it's something not easy to translate, so you help
 # translators on what it means
 
 ## Websocket (server) status
@@ -41,23 +41,23 @@ body_part-LEFT_CONTROLLER = Left controller
 skeleton_bone-NONE = Aucun
 skeleton_bone-HEAD = Décalage de la tête
 skeleton_bone-NECK = Longueur du cou
-skeleton_bone-TORSO = Longueur du torse
-skeleton_bone-CHEST = Distance de la poitrine
-skeleton_bone-WAIST = Distance de la taille
+skeleton_bone-CHEST = Longueur de la poitrine
+skeleton_bone-CHEST_OFFSET = Écart de la poitrine
+skeleton_bone-WAIST = Longueur de la taille
+skeleton_bone-HIP = Longueur des hanches
 skeleton_bone-HIP_OFFSET = Écart de la hanche
 skeleton_bone-HIPS_WIDTH = Largeur des hanches
-skeleton_bone-LEGS_LENGTH = Longueur des jambes
-skeleton_bone-KNEE_HEIGHT = Hauteur des genoux
+skeleton_bone-UPPER_LEG = Longueur des jambes supérieures
+skeleton_bone-LOWER_LEG = Longueur des jambes inférieures
 skeleton_bone-FOOT_LENGTH = Longueur des pieds
 skeleton_bone-FOOT_SHIFT = Décalage des pieds
 skeleton_bone-SKELETON_OFFSET = Écart du squelette
-skeleton_bone-CONTROLLER_DISTANCE_Z = Distance Z des contrôleurs
-skeleton_bone-CONTROLLER_DISTANCE_Y = Distance Y des contrôleurs
-skeleton_bone-FOREARM_LENGTH = Longueur des avant-bras
 skeleton_bone-SHOULDERS_DISTANCE = Distance des épaules
 skeleton_bone-SHOULDERS_WIDTH = Largeur des épaules
-skeleton_bone-UPPER_ARM_LENGTH = Longueur des bras supérieurs
-skeleton_bone-ELBOW_OFFSET = Écart des coudes
+skeleton_bone-UPPER_ARM = Longueur des bras supérieurs
+skeleton_bone-LOWER_ARM = Longueur des avant-bras
+skeleton_bone-CONTROLLER_Y = Distance Y des contrôleurs
+skeleton_bone-CONTROLLER_Z = Distance Z des contrôleurs
 
 ## Tracker reset buttons
 reset-reset_all = Réinitialiser toutes les proportions
@@ -128,11 +128,14 @@ tracker-settings-assignment_section-edit = Ré-assigner
 tracker-settings-mounting_section = Orientation du capteur
 tracker-settings-mounting_section-description = Dans quelle direction pointe le capteur?
 tracker-settings-mounting_section-edit = Changer l'orientation
+tracker-settings-drift_compensation_section = Permettre la compensation de la dérive
+tracker-settings-drift_compensation_section-description = Ce capteur devrait-il compenser pour sa dérive si l'option est activée?
+tracker-settings-drift_compensation_section-edit = Permettre la compensation de la dérive
 # The .<name> means it's an attribute and it's related to the top key.
 # In this case that is the settings for the assignment section.
 tracker-settings-name_section = Nom personalisé
-tracker-settings-name_section-placeholder = Patte gauche d'Erimel
 tracker-settings-name_section-description = Donnez-lui un joli surnom :3
+tracker-settings-name_section-placeholder = Patte gauche d'Erimel
 
 ## Tracker part card info
 tracker-part_card-no_name = Sans nom
@@ -213,19 +216,27 @@ settings-general-steamvr-trackers-hands = Mains
 
 ## Tracker mechanics
 settings-general-tracker_mechanics = Paramètres des capteurs
-settings-general-tracker_mechanics-subtitle = Filtrage
+settings-general-tracker_mechanics-filtering = Filtrage
 # This also cares about multilines
-settings-general-tracker_mechanics-description =
+settings-general-tracker_mechanics-filtering-description =
     Choisissez le type de filtrage pour vos capteurs.
     La prédiction prédit les mouvements tandis que la fluidification rend les mouvements plus fluides.
-settings-general-tracker_mechanics-filtering_type = Type de filtrage
-settings-general-tracker_mechanics-filtering_type-none = Pas de filtrage
-settings-general-tracker_mechanics-filtering_type-none-description = Utilisez les rotations telles quelles.
-settings-general-tracker_mechanics-filtering_type-smoothing = Fluidification
-settings-general-tracker_mechanics-filtering_type-smoothing-description = Fluidifie les mouvements mais ajoute un peu de latence.
-settings-general-tracker_mechanics-filtering_type-prediction = Prédiction
-settings-general-tracker_mechanics-filtering_type-prediction-description = Réduit la latence et rend les mouvements plus vifs, mais moins fluides.
-settings-general-tracker_mechanics-amount = Intensité du filtrage
+settings-general-tracker_mechanics-filtering-type = Type de filtrage
+settings-general-tracker_mechanics-filtering-type-none = Pas de filtrage
+settings-general-tracker_mechanics-filtering-type-none-description = Utilisez les rotations telles quelles.
+settings-general-tracker_mechanics-filtering-type-smoothing = Fluidification
+settings-general-tracker_mechanics-filtering-type-smoothing-description = Fluidifie les mouvements mais ajoute un peu de latence.
+settings-general-tracker_mechanics-filtering-type-prediction = Prédiction
+settings-general-tracker_mechanics-filtering-type-prediction-description = Réduit la latence et rend les mouvements plus vifs, mais moins fluides.
+settings-general-tracker_mechanics-filtering-amount = Intensité du filtrage
+settings-general-tracker_mechanics-drift_compensation = Compensation de la dérive
+# This cares about multilines
+settings-general-tracker_mechanics-drift_compensation-description =
+    Compense la dérive des gyroscopes en appliquant une rotation inverse.
+    Modifier la force de la compensation et le nombre de réinitialisations prises en compte.
+settings-general-tracker_mechanics-drift_compensation-enabled-label = Compensation de la dérive
+settings-general-tracker_mechanics-drift_compensation-amount-label = Force de la compensation
+settings-general-tracker_mechanics-drift_compensation-max_resets-label = Nombre de réinitialisations prises en compte
 
 ## FK/Tracking settings
 settings-general-fk_settings = Paramètres de la capture

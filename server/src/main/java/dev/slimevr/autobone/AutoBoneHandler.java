@@ -357,25 +357,29 @@ public class AutoBoneHandler {
 				// #region Stats/Values
 				skeletonConfigManagerBuffer.setOffsets(autoBoneResults.configValues);
 
-				float neckLength = skeletonConfigManagerBuffer
-					.getOffset(SkeletonConfigOffsets.NECK);
-				float chestDistance = skeletonConfigManagerBuffer
+				float neckLength = skeletonConfigManagerBuffer.getOffset(SkeletonConfigOffsets.NECK);
+				float chestLength = skeletonConfigManagerBuffer
 					.getOffset(SkeletonConfigOffsets.CHEST);
-				float torsoLength = skeletonConfigManagerBuffer
-					.getOffset(SkeletonConfigOffsets.TORSO);
+				float waistLength = skeletonConfigManagerBuffer
+					.getOffset(SkeletonConfigOffsets.WAIST);
+				float hipLength = skeletonConfigManagerBuffer
+					.getOffset(SkeletonConfigOffsets.HIP);
+				float torsoLength = chestLength + waistLength + hipLength;
 				float hipWidth = skeletonConfigManagerBuffer
 					.getOffset(SkeletonConfigOffsets.HIPS_WIDTH);
-				float legsLength = skeletonConfigManagerBuffer
-					.getOffset(SkeletonConfigOffsets.LEGS_LENGTH);
-				float kneeHeight = skeletonConfigManagerBuffer
-					.getOffset(SkeletonConfigOffsets.KNEE_HEIGHT);
+				float legLength = skeletonConfigManagerBuffer
+					.getOffset(SkeletonConfigOffsets.UPPER_LEG)
+					+ skeletonConfigManagerBuffer
+						.getOffset(SkeletonConfigOffsets.LOWER_LEG);
+				float lowerLegLength = skeletonConfigManagerBuffer
+					.getOffset(SkeletonConfigOffsets.LOWER_LEG);
 
 				float neckTorso = neckLength / torsoLength;
-				float chestTorso = chestDistance / torsoLength;
+				float chestTorso = chestLength / torsoLength;
 				float torsoWaist = hipWidth / torsoLength;
-				float legTorso = legsLength / torsoLength;
-				float legBody = legsLength / (torsoLength + neckLength);
-				float kneeLeg = kneeHeight / legsLength;
+				float legTorso = legLength / torsoLength;
+				float legBody = legLength / (torsoLength + neckLength);
+				float kneeLeg = lowerLegLength / legLength;
 
 				LogManager
 					.info(

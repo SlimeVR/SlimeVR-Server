@@ -71,4 +71,9 @@ public class RangeProportionLimiter extends HardProportionLimiter {
 
 		return 0f;
 	}
+
+	@Override
+	public float getTargetRatio() {
+		return targetRatio;
+	}
 }

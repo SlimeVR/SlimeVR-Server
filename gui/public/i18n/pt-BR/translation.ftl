@@ -1,8 +1,8 @@
 ### SlimeVR complete GUI translations
 # Please developers (not translators) don't reuse a key inside another key
-# or concat text with a translation string in the code, use the appropiate 
-# features like variables and selectors in each appropiate case!
-# And also comment the string if it's something not easy to translate so you help
+# or concat text with a translation string in the code, use the appropriate
+# features like variables and selectors in each appropriate case!
+# And also comment the string if it's something not easy to translate, so you help
 # translators on what it means
 
 ## Websocket (server) status
@@ -41,23 +41,23 @@ body_part-LEFT_CONTROLLER = Controle esquerdo
 skeleton_bone-NONE = Nada
 skeleton_bone-HEAD = Deslocamento da Cabeça
 skeleton_bone-NECK = Tamanho do Pescoço
-skeleton_bone-TORSO = Tamanho do Torso
-skeleton_bone-CHEST = Distância do Peito
-skeleton_bone-WAIST = Distância da Cintura
+skeleton_bone-CHEST = Chest Length
+skeleton_bone-CHEST_OFFSET = Chest Offset
+skeleton_bone-WAIST = Waist Length
+skeleton_bone-HIP = Hip Length
 skeleton_bone-HIP_OFFSET = Compensação do Quadril
 skeleton_bone-HIPS_WIDTH = Largura do Quadril
-skeleton_bone-LEGS_LENGTH = Tamanho das Perna
-skeleton_bone-KNEE_HEIGHT = Altura dos Joelhos
+skeleton_bone-UPPER_LEG = Upper Leg Length
+skeleton_bone-LOWER_LEG = Lower Leg Length
 skeleton_bone-FOOT_LENGTH = Tamanho do Pé
 skeleton_bone-FOOT_SHIFT = Compensação do Pé
 skeleton_bone-SKELETON_OFFSET = Compensação do Esqueleto
-skeleton_bone-CONTROLLER_DISTANCE_Z = Distância do Controle Z
-skeleton_bone-CONTROLLER_DISTANCE_Y = Distância do Controle Y
-skeleton_bone-FOREARM_LENGTH = Distância do Antebraço
 skeleton_bone-SHOULDERS_DISTANCE = Distância dos Ombros
 skeleton_bone-SHOULDERS_WIDTH = Largura dos Ombros
-skeleton_bone-UPPER_ARM_LENGTH = Tamanho do Braço Superior
-skeleton_bone-ELBOW_OFFSET = Compensação do Cotovelo
+skeleton_bone-UPPER_ARM = Tamanho do Braço Superior
+skeleton_bone-LOWER_ARM = Distância do Antebraço
+skeleton_bone-CONTROLLER_Y = Distância do Controle Y
+skeleton_bone-CONTROLLER_Z = Distância do Controle Z
 
 ## Tracker reset buttons
 reset-reset_all = Redefinir todas as proporções
@@ -128,11 +128,14 @@ tracker-settings-assignment_section-edit = Editar atribuição
 tracker-settings-mounting_section = Posicionamento
 tracker-settings-mounting_section-description = Aonde o tracker está posicionado?
 tracker-settings-mounting_section-edit = Editar posição
+tracker-settings-drift_compensation_section = Allow drift compensation
+tracker-settings-drift_compensation_section-description = Should this tracker compensate for its drift when drift compensation is enabled?
+tracker-settings-drift_compensation_section-edit = Allow drift compensation
 # The .<name> means it's an attribute and it's related to the top key.
 # In this case that is the settings for the assignment section.
 tracker-settings-name_section = Nome do tracker
-tracker-settings-name_section-placeholder = Coxa esquerda de NightyBeast
 tracker-settings-name_section-description = Dê um apelido fofo :)
+tracker-settings-name_section-placeholder = Coxa esquerda de NightyBeast
 
 ## Tracker part card info
 tracker-part_card-no_name = Sem nome
@@ -213,19 +216,27 @@ settings-general-steamvr-trackers-hands = Mãos
 
 ## Tracker mechanics
 settings-general-tracker_mechanics = Mecânicas do Tracker
-settings-general-tracker_mechanics-subtitle = Filtros
+settings-general-tracker_mechanics-filtering = Filtros
 # This also cares about multilines
-settings-general-tracker_mechanics-description =
+settings-general-tracker_mechanics-filtering-description =
     Escolha o tipo de filtro para seus trackers.
     Predição prediz movimentação enquanto suavização suaviza o movimento.
-settings-general-tracker_mechanics-filtering_type = Tipo de filtro
-settings-general-tracker_mechanics-filtering_type-none = Sem filtro
-settings-general-tracker_mechanics-filtering_type-none-description = Utiliza as rotações como registradas. Sem qualquer tipo de filtro.
-settings-general-tracker_mechanics-filtering_type-smoothing = Suavização
-settings-general-tracker_mechanics-filtering_type-smoothing-description = Suaviza o movimento porém introduz um pouco de latência.
-settings-general-tracker_mechanics-filtering_type-prediction = Predição
-settings-general-tracker_mechanics-filtering_type-prediction-description = Reduz latência e torna os movimentos mais responsivos, porém aumenta tremulação (Jitter).
-settings-general-tracker_mechanics-amount = Quantidade
+settings-general-tracker_mechanics-filtering-type = Tipo de filtro
+settings-general-tracker_mechanics-filtering-type-none = Sem filtro
+settings-general-tracker_mechanics-filtering-type-none-description = Utiliza as rotações como registradas. Sem qualquer tipo de filtro.
+settings-general-tracker_mechanics-filtering-type-smoothing = Suavização
+settings-general-tracker_mechanics-filtering-type-smoothing-description = Suaviza o movimento porém introduz um pouco de latência.
+settings-general-tracker_mechanics-filtering-type-prediction = Predição
+settings-general-tracker_mechanics-filtering-type-prediction-description = Reduz latência e torna os movimentos mais responsivos, porém aumenta tremulação (Jitter).
+settings-general-tracker_mechanics-filtering-amount = Quantidade
+settings-general-tracker_mechanics-drift_compensation = Drift compensation
+# This cares about multilines
+settings-general-tracker_mechanics-drift_compensation-description =
+    Compensates IMU yaw drift by applying an inverse rotation.
+    Change amount of compensation and up to how many resets are taken into account.
+settings-general-tracker_mechanics-drift_compensation-enabled-label = Drift compensation
+settings-general-tracker_mechanics-drift_compensation-amount-label = Compensation amount
+settings-general-tracker_mechanics-drift_compensation-max_resets-label = Use up to x last resets
 
 ## FK/Tracking settings
 settings-general-fk_settings = Opções de Tracker

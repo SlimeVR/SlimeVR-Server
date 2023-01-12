@@ -4,5 +4,7 @@ import dev.slimevr.tracking.processor.HumanPoseManager;
 
 
 public interface ProportionLimiter {
-	float getProportionError(HumanPoseManager humanPoseManager, float height);
+	public float getProportionError(HumanPoseManager humanPoseManager, float height);
+
+	public float getTargetRatio();
 }

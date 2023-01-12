@@ -14,6 +14,7 @@ on:
       - gui/**
       - package*.json
   workflow_dispatch:
+  create:
 
 jobs:
   build:
