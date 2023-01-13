@@ -11,6 +11,7 @@ import dev.slimevr.poserecorder.PoseFrames;
 import dev.slimevr.tracking.processor.BoneType;
 import dev.slimevr.tracking.processor.HumanPoseManager;
 import dev.slimevr.tracking.processor.TransformNode;
+import dev.slimevr.tracking.processor.config.SkeletonConfigManager;
 import dev.slimevr.tracking.processor.config.SkeletonConfigOffsets;
 import dev.slimevr.tracking.processor.skeleton.HumanSkeleton;
 import dev.slimevr.tracking.trackers.TrackerRole;
@@ -117,19 +118,22 @@ public class AutoBone {
 		return loadDir;
 	}
 
-	public float computeBoneOffset(BoneType bone, HumanPoseManager humanPoseManager) {
+	public float computeBoneOffset(
+		BoneType bone,
+		Function<SkeletonConfigOffsets, Float> getOffset
+	) {
 		return switch (bone) {
-			case HEAD -> humanPoseManager.getOffset(SkeletonConfigOffsets.HEAD);
-			case NECK -> humanPoseManager.getOffset(SkeletonConfigOffsets.NECK);
-			case CHEST -> humanPoseManager.getOffset(SkeletonConfigOffsets.CHEST);
-			case WAIST -> humanPoseManager.getOffset(SkeletonConfigOffsets.WAIST);
-			case HIP -> humanPoseManager.getOffset(SkeletonConfigOffsets.HIP);
-			case LEFT_HIP, RIGHT_HIP -> humanPoseManager.getOffset(SkeletonConfigOffsets.HIPS_WIDTH)
+			case HEAD -> getOffset.apply(SkeletonConfigOffsets.HEAD);
+			case NECK -> getOffset.apply(SkeletonConfigOffsets.NECK);
+			case CHEST -> getOffset.apply(SkeletonConfigOffsets.CHEST);
+			case WAIST -> getOffset.apply(SkeletonConfigOffsets.WAIST);
+			case HIP -> getOffset.apply(SkeletonConfigOffsets.HIP);
+			case LEFT_HIP, RIGHT_HIP -> getOffset.apply(SkeletonConfigOffsets.HIPS_WIDTH)
 				/ 2f;
-			case LEFT_UPPER_LEG, RIGHT_UPPER_LEG -> humanPoseManager
-				.getOffset(SkeletonConfigOffsets.UPPER_LEG);
-			case LEFT_LOWER_LEG, RIGHT_LOWER_LEG -> humanPoseManager
-				.getOffset(SkeletonConfigOffsets.LOWER_LEG);
+			case LEFT_UPPER_LEG, RIGHT_UPPER_LEG -> getOffset
+				.apply(SkeletonConfigOffsets.UPPER_LEG);
+			case LEFT_LOWER_LEG, RIGHT_LOWER_LEG -> getOffset
+				.apply(SkeletonConfigOffsets.LOWER_LEG);
 			default -> -1f;
 		};
 
@@ -145,8 +149,12 @@ public class AutoBone {
 
 		// Get current or default skeleton configs
 		HumanPoseManager skeleton = getHumanPoseManager();
+		Function<SkeletonConfigOffsets, Float> getOffset = skeleton != null
+			? skeleton::getOffset
+			: new SkeletonConfigManager(false)::getOffset;
+
 		for (BoneType bone : adjustOffsets) {
-			float offset = computeBoneOffset(bone, skeleton);
+			float offset = computeBoneOffset(bone, getOffset);
 			if (offset > 0f) {
 				offsets.put(bone, offset);
 			}
