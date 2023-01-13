@@ -365,7 +365,7 @@ public class SkeletonConfigManager {
 				.getToggles()
 				.remove(value.configKey);
 			// Set default in skeleton
-			humanPoseManager.setToggle(value, value.defaultValue);
+			setToggle(value, value.defaultValue);
 		}
 	}
 
@@ -390,7 +390,7 @@ public class SkeletonConfigManager {
 				.getValues()
 				.remove(value.configKey);
 			// Set default in skeleton
-			humanPoseManager.setValue(value, value.defaultValue);
+			setValue(value, value.defaultValue);
 		}
 	}
 
@@ -410,19 +410,18 @@ public class SkeletonConfigManager {
 				float height = humanPoseManager.getHmdHeight()
 					/ BodyProportionError.eyeHeightToHeightRatio;
 				if (height > 0.5f) { // Reset only if floor level seems right,
-					humanPoseManager
-						.setOffset(
-							config,
-							height
-								* BodyProportionError
-									.getProportionLimitForOffset(config)
-									.getTargetRatio()
-						);
+					setOffset(
+						config,
+						height
+							* BodyProportionError
+								.getProportionLimitForOffset(config)
+								.getTargetRatio()
+					);
 				} else { // if floor level is incorrect
-					humanPoseManager.setOffset(config, null);
+					setOffset(config, null);
 				}
 			}
-			default -> humanPoseManager.setOffset(config, null);
+			default -> setOffset(config, null);
 		}
 	}
 
