@@ -5,12 +5,11 @@ enum class AutoBoneProcessType(val id: UByte) {
 	RECORD(1u),
 	SAVE(2u),
 	PROCESS(3u),
-	APPLY(3u);
-
+	APPLY(3u),
+	;
 	companion object {
-		fun getById(id: UByte): AutoBoneProcessType? {
-			return byId[id]
-		}
+		@JvmStatic
+		fun getById(id: UByte): AutoBoneProcessType? = byId[id]
 	}
 }
 

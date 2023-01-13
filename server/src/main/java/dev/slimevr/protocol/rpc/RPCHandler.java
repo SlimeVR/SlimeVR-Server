@@ -23,6 +23,7 @@ import solarxr_protocol.rpc.*;
 
 import java.util.EnumMap;
 import java.util.Map.Entry;
+import java.util.Objects;
 import java.util.function.BiConsumer;
 
 
@@ -76,7 +77,7 @@ public class RPCHandler extends ProtocolHandler<RpcMessageHeader>
 	) {
 		FlatBufferBuilder fbb = new FlatBufferBuilder(32);
 		OverlayConfig config = this.api.server.getConfigManager().getVrConfig().getOverlay();
-		int response = OverlayDisplayModeResponse.Companion
+		int response = OverlayDisplayModeResponse
 			.createOverlayDisplayModeResponse(fbb, config.isVisible(), config.isMirrored());
 		int outbound = this.createRPCMessage(fbb, RpcMessage.OverlayDisplayModeResponse, response);
 		fbb.finish(outbound);
@@ -159,7 +160,7 @@ public class RPCHandler extends ProtocolHandler<RpcMessageHeader>
 		}
 
 		FlatBufferBuilder fbb = new FlatBufferBuilder(40);
-		int status = RecordBVHStatus.Companion
+		int status = RecordBVHStatus
 			.createRecordBVHStatus(fbb, this.api.server.getBvhRecorder().isRecording());
 		int outbound = this.createRPCMessage(fbb, RpcMessage.RecordBVHStatus, status);
 		fbb.finish(outbound);
@@ -237,21 +238,21 @@ public class RPCHandler extends ProtocolHandler<RpcMessageHeader>
 	public int createRPCMessage(FlatBufferBuilder fbb, byte messageType, int messageOffset) {
 		int[] data = new int[1];
 
-		RpcMessageHeader.Companion.startRpcMessageHeader(fbb);
-		RpcMessageHeader.Companion.addMessage(fbb, messageOffset);
-		RpcMessageHeader.Companion.addMessageType(fbb, messageType);
-		RpcMessageHeader.Companion
+		RpcMessageHeader.startRpcMessageHeader(fbb);
+		RpcMessageHeader.addMessage(fbb, messageOffset);
+		RpcMessageHeader.addMessageType(fbb, messageType);
+		RpcMessageHeader
 			.addTxId(
 				fbb,
-				TransactionId.Companion.createTransactionId(fbb, (int) currTransactionId++)
+				TransactionId.createTransactionId(fbb, (int) currTransactionId++)
 			);
-		data[0] = RpcMessageHeader.Companion.endRpcMessageHeader(fbb);
+		data[0] = RpcMessageHeader.endRpcMessageHeader(fbb);
 
-		int messages = MessageBundle.Companion.createRpcMsgsVector(fbb, data);
+		int messages = MessageBundle.createRpcMsgsVector(fbb, data);
 
-		MessageBundle.Companion.startMessageBundle(fbb);
-		MessageBundle.Companion.addRpcMsgs(fbb, messages);
-		return MessageBundle.Companion.endMessageBundle(fbb);
+		MessageBundle.startMessageBundle(fbb);
+		MessageBundle.addRpcMsgs(fbb, messages);
+		return MessageBundle.endMessageBundle(fbb);
 	}
 
 	@Override
@@ -268,9 +269,20 @@ public class RPCHandler extends ProtocolHandler<RpcMessageHeader>
 		conn.getContext().setUseAutoBone(true);
 		this.api.server
 			.getAutoBoneHandler()
-			.startProcessByType(AutoBoneProcessType.Companion.getById(req.getProcessType()));
+			.startProcessByType(
+				Objects.requireNonNull(AutoBoneProcessType.getById(req.getProcessType()))
+			);
 	}
 
+	/**
+	 *
+	 * @param processType
+	 * @param message
+	 * @param current Unsigned int!
+	 * @param total Unsigned int!
+	 * @param completed
+	 * @param success
+	 */
 	@Override
 	public void onAutoBoneProcessStatus(
 		AutoBoneProcessType processType,
@@ -291,15 +303,15 @@ public class RPCHandler extends ProtocolHandler<RpcMessageHeader>
 
 						Integer messageOffset = message != null ? fbb.createString(message) : null;
 
-						AutoBoneProcessStatusResponse.Companion
+						AutoBoneProcessStatusResponse
 							.startAutoBoneProcessStatusResponse(fbb);
-						AutoBoneProcessStatusResponse.Companion
+						AutoBoneProcessStatusResponse
 							.addProcessType(fbb, processType.getId());
 						if (messageOffset != null)
 							AutoBoneProcessStatusResponse.addMessage(fbb, messageOffset);
 						if (total > 0 && current >= 0) {
-							AutoBoneProcessStatusResponse.addCurrent(fbb, current);
-							AutoBoneProcessStatusResponse.addTotal(fbb, total);
+							AutoBoneProcessStatusResponse.addCurrent(fbb, (int) current);
+							AutoBoneProcessStatusResponse.addTotal(fbb, (int) total);
 						}
 						AutoBoneProcessStatusResponse.addCompleted(fbb, completed);
 						AutoBoneProcessStatusResponse.addSuccess(fbb, success);
@@ -346,7 +358,7 @@ public class RPCHandler extends ProtocolHandler<RpcMessageHeader>
 							skeletonPartOffsets[i++] = SkeletonPart
 								.createSkeletonPart(
 									fbb,
-									skeletonConfig.getKey().id,
+									skeletonConfig.getKey().getId(),
 									skeletonConfig.getValue()
 								);
 						}
