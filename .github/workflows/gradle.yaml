@@ -80,9 +80,13 @@ jobs:
           path: server/build/libs/
 
       - name: Set up Linux dependencies
-        run: |
-          sudo apt-get update
-          sudo apt-get install -y libgtk-3-dev webkit2gtk-4.0 libappindicator3-dev librsvg2-dev patchelf libfuse2
+        uses: awalsh128/cache-apt-pkgs-action@latest
+        with:
+          packages: libgtk-3-dev webkit2gtk-4.0 libappindicator3-dev librsvg2-dev patchelf libfuse2
+          # Increment to invalidate the cache
+          version: 1.0
+          # Enables a workaround to attempt to run pre and post install scripts
+          execute_install_scripts: true
 
       - name: Cache cargo dependencies
         uses: Swatinem/rust-cache@v2
