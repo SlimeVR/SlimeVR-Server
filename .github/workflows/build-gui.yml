@@ -43,6 +43,8 @@ jobs:
           version: 1.0
           # Enables a workaround to attempt to run pre and post install scripts
           execute_install_scripts: true
+          # Disables uploading logs as a build artifact
+          debug: false
 
       - name: Cache cargo dependencies
         uses: Swatinem/rust-cache@v2
