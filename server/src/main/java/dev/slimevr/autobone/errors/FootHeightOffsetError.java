@@ -12,7 +12,10 @@ import dev.slimevr.tracking.trackers.TrackerRole;
 public class FootHeightOffsetError implements IAutoBoneError {
 	@Override
 	public float getStepError(AutoBoneTrainingStep trainingStep) throws AutoBoneException {
-		return getSlideError(trainingStep.getSkeleton1(), trainingStep.getSkeleton2());
+		return getSlideError(
+			trainingStep.getHumanPoseManager1().getSkeleton(),
+			trainingStep.getHumanPoseManager2().getSkeleton()
+		);
 	}
 
 	public static float getSlideError(HumanSkeleton skeleton1, HumanSkeleton skeleton2) {

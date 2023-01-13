@@ -20,12 +20,12 @@ public class PositionError implements IAutoBoneError {
 		return (getPositionError(
 			trackers,
 			trainingStep.getCursor1(),
-			trainingStep.getSkeleton1()
+			trainingStep.getHumanPoseManager1().getSkeleton()
 		)
 			+ getPositionError(
 				trackers,
 				trainingStep.getCursor2(),
-				trainingStep.getSkeleton2()
+				trainingStep.getHumanPoseManager2().getSkeleton()
 			))
 			/ 2f;
 	}

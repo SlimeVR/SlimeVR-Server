@@ -120,7 +120,7 @@ public class BodyProportionError implements IAutoBoneError {
 	@Override
 	public float getStepError(AutoBoneTrainingStep trainingStep) throws AutoBoneException {
 		return getBodyProportionError(
-			trainingStep.getSkeleton1().getSkeletonConfig(),
+			trainingStep.getHumanPoseManager1(),
 			trainingStep.getCurrentHeight()
 		);
 	}

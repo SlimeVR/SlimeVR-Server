@@ -21,8 +21,8 @@ public class PositionOffsetError implements IAutoBoneError {
 			trackers,
 			trainingStep.getCursor1(),
 			trainingStep.getCursor2(),
-			trainingStep.getSkeleton1(),
-			trainingStep.getSkeleton2()
+			trainingStep.getHumanPoseManager1().getSkeleton(),
+			trainingStep.getHumanPoseManager2().getSkeleton()
 		);
 	}
 

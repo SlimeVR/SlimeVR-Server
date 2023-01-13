@@ -1,8 +1,8 @@
 package dev.slimevr.config;
 
 import dev.slimevr.Main;
-import dev.slimevr.vr.trackers.IMUTracker;
-import dev.slimevr.vr.trackers.Tracker;
+import dev.slimevr.tracking.trackers.IMUTracker;
+import dev.slimevr.tracking.trackers.Tracker;
 
 
 public class DriftCompensationConfig {

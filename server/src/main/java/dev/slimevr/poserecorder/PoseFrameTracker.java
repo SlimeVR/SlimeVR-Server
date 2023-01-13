@@ -45,6 +45,10 @@ public class PoseFrameTracker implements Tracker, Iterable<TrackerFrame> {
 		this(parent.getName());
 	}
 
+	public PoseFrameTracker(PoseFrameTracker parent) {
+		this(parent.name, parent.frames);
+	}
+
 	private int limitCursor() {
 		if (frameCursor < 0 || frames.isEmpty()) {
 			frameCursor = 0;

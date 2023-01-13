@@ -245,6 +245,11 @@ public class HumanPoseManager {
 			skeleton.updatePose();
 	}
 
+	@ThreadSafe
+	public HumanSkeleton getSkeleton() {
+		return skeleton;
+	}
+
 	// #endregion
 	// #region tracker/nodes/bones methods
 	/**

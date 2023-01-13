@@ -13,6 +13,9 @@ public class PoseStreamer {
 	protected HumanSkeleton skeleton;
 	protected PoseDataStream poseFileStream;
 
+	protected PoseStreamer() {
+	}
+
 	public PoseStreamer(HumanSkeleton skeleton) {
 		this.skeleton = skeleton;
 	}
