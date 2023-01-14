@@ -22,6 +22,8 @@ import { CheckBox } from '../commons/Checkbox';
 import { useLocalization } from '@fluent/react';
 import { IMUVisualizerWidget } from '../widgets/IMUVisualizerWidget';
 import { useConfig } from '../../hooks/config';
+import { WarningIcon } from '../commons/icon/WarningIcon';
+import classNames from 'classnames';
 
 export const rotationToQuatMap = {
   FRONT: 180,
@@ -244,8 +246,18 @@ export function TrackerSettingsPage() {
             </Typography>
             <div className="flex justify-between bg-background-80 w-full p-3 rounded-lg">
               <div className="flex gap-3 items-center">
-                <FootIcon></FootIcon>
-                <Typography>
+                {tracker?.tracker.info?.bodyPart !== BodyPart.NONE && (
+                  <FootIcon></FootIcon>
+                )}
+                {tracker?.tracker.info?.bodyPart === BodyPart.NONE && (
+                  <WarningIcon className="text-yellow-300" />
+                )}
+                <Typography
+                  color={classNames({
+                    'text-yellow-300':
+                      tracker?.tracker.info?.bodyPart === BodyPart.NONE,
+                  })}
+                >
                   {l10n.getString(
                     'body_part-' +
                       BodyPart[tracker?.tracker.info?.bodyPart || BodyPart.NONE]
