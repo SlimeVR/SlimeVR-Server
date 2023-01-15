@@ -32,7 +32,7 @@ public abstract class SteamVRBridge extends ProtobufBridge<VRTracker> implements
 		this.bridgeSettingsKey = bridgeSettingsKey;
 		this.runnerThread = new Thread(this, threadName);
 		this.shareableTrackers = shareableTrackers;
-		this.config = server.getConfigManager().getVrConfig().getBrige(bridgeSettingsKey);
+		this.config = server.getConfigManager().getVrConfig().getBridge(bridgeSettingsKey);
 	}
 
 	@Override
