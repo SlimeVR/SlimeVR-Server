@@ -41,23 +41,23 @@ body_part-LEFT_CONTROLLER = Vasak kontroller
 skeleton_bone-NONE = Mitte midagi
 skeleton_bone-HEAD = Pea Nihe
 skeleton_bone-NECK = Kaela Pikkus
-skeleton_bone-TORSO = Torso Pikkus
-skeleton_bone-CHEST = Rinna Vahemaa
-skeleton_bone-WAIST = Vöökoha Vahemaa
+skeleton_bone-CHEST = Chest Length
+skeleton_bone-CHEST_OFFSET = Chest Offset
+skeleton_bone-WAIST = Waist Length
+skeleton_bone-HIP = Hip Lengthskeleton_bone-CHEST = Rinna Vahemaa
 skeleton_bone-HIP_OFFSET = Puusa Nihe
 skeleton_bone-HIPS_WIDTH = Puusa Laius
-skeleton_bone-LEGS_LENGTH = Jalgade Pikkus
-skeleton_bone-KNEE_HEIGHT = Põlve Kõrgus
+skeleton_bone-UPPER_LEG = Upper Leg Length
+skeleton_bone-LOWER_LEG = Lower Leg Length
 skeleton_bone-FOOT_LENGTH = Jala Pikkus
 skeleton_bone-FOOT_SHIFT = Jala Nihe
 skeleton_bone-SKELETON_OFFSET = Skeletti Nihe
-skeleton_bone-CONTROLLER_DISTANCE_Z = Kontrolleri Kaugus Z
-skeleton_bone-CONTROLLER_DISTANCE_Y = Kontrolleri Kaugus Y
-skeleton_bone-FOREARM_LENGTH = Käsivarre Kaugus
 skeleton_bone-SHOULDERS_DISTANCE = Õlgade Kaugus
 skeleton_bone-SHOULDERS_WIDTH = Õlgade Laius
-skeleton_bone-UPPER_ARM_LENGTH = Õlavarre Pikkus
-skeleton_bone-ELBOW_OFFSET = Küünarnuki Nihe
+skeleton_bone-UPPER_ARM = Õlavarre Pikkus
+skeleton_bone-LOWER_ARM = Käsivarre Kaugus
+skeleton_bone-CONTROLLER_Y = Kontrolleri Kaugus Y
+skeleton_bone-CONTROLLER_Z = Kontrolleri Kaugus Z
 
 ## Tracker reset buttons
 reset-reset_all = Lähtesta kõik proportsioonid
@@ -128,6 +128,9 @@ tracker-settings-assignment_section-edit = Muuda jälgija asukohta
 tracker-settings-mounting_section = Paigaldusasend
 tracker-settings-mounting_section-description = Kuhu on jälgija paigaldatud.
 tracker-settings-mounting_section-edit = Muuda paigaldusasendit
+tracker-settings-drift_compensation_section = Allow drift compensation
+tracker-settings-drift_compensation_section-description = Should this tracker compensate for its drift when drift compensation is enabled?
+tracker-settings-drift_compensation_section-edit = Allow drift compensation
 # The .<name> means it's an attribute and it's related to the top key.
 # In this case that is the settings for the assignment section.
 tracker-settings-name_section = Jälgija Nimi
@@ -213,19 +216,27 @@ settings-general-steamvr-trackers-hands = Käed
 
 ## Tracker mechanics
 settings-general-tracker_mechanics = Jälgija mehaanika
-settings-general-tracker_mechanics-subtitle = Filtreerimine
+settings-general-tracker_mechanics-filtering = Filtreerimine
 # This also cares about multilines
-settings-general-tracker_mechanics-description =
+settings-general-tracker_mechanics-filtering-description =
     Vali filtreerimis tüüp enda jälgijatele.
     Ennustus ennustab liikumist, aga silestamine silestab liikumist.
-settings-general-tracker_mechanics-filtering_type = Filtreerimise tüüp
-settings-general-tracker_mechanics-filtering_type-none = Ei mingit filtreerimist
-settings-general-tracker_mechanics-filtering_type-none-description = Kasutage pöörlemist nii nagu on. Ei tee mingit filtreerimist.
-settings-general-tracker_mechanics-filtering_type-smoothing = Silestamine
-settings-general-tracker_mechanics-filtering_type-smoothing-description = Teeb liigutused siledaks, aga lisab aega jälgija ja programmi vahel.
-settings-general-tracker_mechanics-filtering_type-prediction = Ennustamine
-settings-general-tracker_mechanics-filtering_type-prediction-description = Vähendab aega jälgija ja programmi vahel ja tee liigutused kiiremaks, aga võib lisada värinat.
-settings-general-tracker_mechanics-amount = Summa
+settings-general-tracker_mechanics-filtering-type = Filtreerimise tüüp
+settings-general-tracker_mechanics-filtering-type-none = Ei mingit filtreerimist
+settings-general-tracker_mechanics-filtering-type-none-description = Kasutage pöörlemist nii nagu on. Ei tee mingit filtreerimist.
+settings-general-tracker_mechanics-filtering-type-smoothing = Silestamine
+settings-general-tracker_mechanics-filtering-type-smoothing-description = Teeb liigutused siledaks, aga lisab aega jälgija ja programmi vahel.
+settings-general-tracker_mechanics-filtering-type-prediction = Ennustamine
+settings-general-tracker_mechanics-filtering-type-prediction-description = Vähendab aega jälgija ja programmi vahel ja tee liigutused kiiremaks, aga võib lisada värinat.
+settings-general-tracker_mechanics-filtering-amount = Amount
+settings-general-tracker_mechanics-drift_compensation = Drift compensation
+# This cares about multilines
+settings-general-tracker_mechanics-drift_compensation-description =
+    Compensates IMU yaw drift by applying an inverse rotation.
+    Change amount of compensation and up to how many resets are taken into account.
+settings-general-tracker_mechanics-drift_compensation-enabled-label = Drift compensation
+settings-general-tracker_mechanics-drift_compensation-amount-label = Compensation amount
+settings-general-tracker_mechanics-drift_compensation-max_resets-label = Use up to x last resets
 
 ## FK/Tracking settings
 settings-general-fk_settings = Jälgija seaded

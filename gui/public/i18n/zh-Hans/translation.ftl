@@ -24,7 +24,7 @@ body_part-RIGHT_HAND = 右手
 body_part-RIGHT_UPPER_LEG = 右大腿
 body_part-RIGHT_LOWER_LEG = 右小腿
 body_part-RIGHT_FOOT = 右脚
-body_part-RIGHT_CONTROLLER = Right controller
+body_part-RIGHT_CONTROLLER = 右控制器
 body_part-CHEST = 胸部
 body_part-WAIST = 腰部
 body_part-HIP = 髋部
@@ -35,29 +35,29 @@ body_part-LEFT_HAND = 左手
 body_part-LEFT_UPPER_LEG = 左大腿
 body_part-LEFT_LOWER_LEG = 左小腿
 body_part-LEFT_FOOT = 左脚
-body_part-LEFT_CONTROLLER = Left controller
+body_part-LEFT_CONTROLLER = 左控制器
 
 ## Skeleton stuff
 skeleton_bone-NONE = 无
 skeleton_bone-HEAD = 头部偏移
 skeleton_bone-NECK = 颈部长度
-skeleton_bone-TORSO = 躯干长度
-skeleton_bone-CHEST = 胸部距离
-skeleton_bone-WAIST = 腰部距离
+skeleton_bone-CHEST = Chest Length
+skeleton_bone-CHEST_OFFSET = Chest Offset
+skeleton_bone-WAIST = Waist Length
+skeleton_bone-HIP = Hip Length
 skeleton_bone-HIP_OFFSET = 髋部偏移
 skeleton_bone-HIPS_WIDTH = 髋部宽度
-skeleton_bone-LEGS_LENGTH = 腿部长度
-skeleton_bone-KNEE_HEIGHT = 膝盖高度
+skeleton_bone-UPPER_LEG = Upper Leg Length
+skeleton_bone-LOWER_LEG = Lower Leg Length
 skeleton_bone-FOOT_LENGTH = 脚部长度
 skeleton_bone-FOOT_SHIFT = 脚部偏移
 skeleton_bone-SKELETON_OFFSET = 骨骼偏移
-skeleton_bone-CONTROLLER_DISTANCE_Z = 控制器距离 Z
-skeleton_bone-CONTROLLER_DISTANCE_Y = 控制器距离 Y
-skeleton_bone-FOREARM_LENGTH = 前臂距离
 skeleton_bone-SHOULDERS_DISTANCE = 肩膀距离
 skeleton_bone-SHOULDERS_WIDTH = 肩膀宽度
-skeleton_bone-UPPER_ARM_LENGTH = 上臂长度
-skeleton_bone-ELBOW_OFFSET = 肘部偏移
+skeleton_bone-UPPER_ARM = 上臂长度
+skeleton_bone-LOWER_ARM = 前臂距离
+skeleton_bone-CONTROLLER_Y = 控制器距离 Y
+skeleton_bone-CONTROLLER_Z = 控制器距离 Z
 
 ## Tracker reset buttons
 reset-reset_all = 重置所有比例
@@ -70,7 +70,7 @@ serial_detection-new_device-p0 = 检测到了新的串口设备!
 serial_detection-new_device-p1 = 输入你的 WiFi 凭据!
 serial_detection-new_device-p2 = 请选择你想对它做什么
 serial_detection-open_wifi = 连接到 WiFi
-serial_detection-open_serial = 打开串口控制器
+serial_detection-open_serial = 打开串口控制台
 serial_detection-submit = 提交!
 serial_detection-close = 关闭
 
@@ -128,9 +128,9 @@ tracker-settings-assignment_section-edit = 编辑分配
 tracker-settings-mounting_section = 佩戴位置
 tracker-settings-mounting_section-description = 该追踪器被佩戴在哪里？
 tracker-settings-mounting_section-edit = 编辑佩戴
-tracker-settings-drift_compensation_section = Allow drift compensation
-tracker-settings-drift_compensation_section-description = Should this tracker compensate for its drift when drift compensation is enabled?
-tracker-settings-drift_compensation_section-edit = Allow drift compensation
+tracker-settings-drift_compensation_section = 允许漂移补偿
+tracker-settings-drift_compensation_section-description = 是否在此追踪器上应用漂移补偿？
+tracker-settings-drift_compensation_section-edit = 允许漂移补偿
 # The .<name> means it's an attribute and it's related to the top key.
 # In this case that is the settings for the assignment section.
 tracker-settings-name_section = 追踪器名称
@@ -142,7 +142,7 @@ tracker-part_card-no_name = 未命名
 tracker-part_card-unassigned = 未分配
 
 ## Body assignment menu
-body_assignment_menu = 你想把追踪器放在哪里?
+body_assignment_menu = 你想把追踪器戴在哪里？
 body_assignment_menu-description = 选择要将此追踪器分配到的位置，或者你也可以选择一次管理所有追踪器，而不是逐个管理。
 body_assignment_menu-show_advanced_locations = 显示高级分配位置
 body_assignment_menu-manage_trackers = 管理所有追踪器
@@ -154,29 +154,29 @@ body_assignment_menu-unassign_tracker = 取消分配追踪器
 # 
 # We are using it here because english doesn't require changing the text in each case but
 # maybe your language does.
--tracker_selection-part = Which tracker to assign to your
-tracker_selection_menu-NONE = Which tracker do you want to be unassigned?
-tracker_selection_menu-HEAD = { -tracker_selection-part } head?
-tracker_selection_menu-NECK = { -tracker_selection-part } neck?
-tracker_selection_menu-RIGHT_SHOULDER = { -tracker_selection-part } right shoulder?
-tracker_selection_menu-RIGHT_UPPER_ARM = { -tracker_selection-part } right upper arm?
-tracker_selection_menu-RIGHT_LOWER_ARM = { -tracker_selection-part } right lower arm?
-tracker_selection_menu-RIGHT_HAND = { -tracker_selection-part } right hand?
-tracker_selection_menu-RIGHT_UPPER_LEG = { -tracker_selection-part } right thigh?
-tracker_selection_menu-RIGHT_LOWER_LEG = { -tracker_selection-part } right ankle?
-tracker_selection_menu-RIGHT_FOOT = { -tracker_selection-part } right foot?
-tracker_selection_menu-RIGHT_CONTROLLER = { -tracker_selection-part } right controller?
-tracker_selection_menu-CHEST = { -tracker_selection-part } chest?
-tracker_selection_menu-WAIST = { -tracker_selection-part } waist?
-tracker_selection_menu-HIP = { -tracker_selection-part } hip?
-tracker_selection_menu-LEFT_SHOULDER = { -tracker_selection-part } left shoulder?
-tracker_selection_menu-LEFT_UPPER_ARM = { -tracker_selection-part } left upper arm?
-tracker_selection_menu-LEFT_LOWER_ARM = { -tracker_selection-part } left lower arm?
-tracker_selection_menu-LEFT_HAND = { -tracker_selection-part } left hand?
-tracker_selection_menu-LEFT_UPPER_LEG = { -tracker_selection-part } left thigh?
-tracker_selection_menu-LEFT_LOWER_LEG = { -tracker_selection-part } left ankle?
-tracker_selection_menu-LEFT_FOOT = { -tracker_selection-part } left foot?
-tracker_selection_menu-LEFT_CONTROLLER = { -tracker_selection-part } left controller?
+-tracker_selection-part = 哪个追踪器将被分配到你的
+tracker_selection_menu-NONE = 你想将哪个追踪器解除分配？
+tracker_selection_menu-HEAD = { -tracker_selection-part }头部？
+tracker_selection_menu-NECK = { -tracker_selection-part }颈部？
+tracker_selection_menu-RIGHT_SHOULDER = { -tracker_selection-part }右肩？
+tracker_selection_menu-RIGHT_UPPER_ARM = { -tracker_selection-part }右大臂？
+tracker_selection_menu-RIGHT_LOWER_ARM = { -tracker_selection-part }右小臂？
+tracker_selection_menu-RIGHT_HAND = { -tracker_selection-part }右手？
+tracker_selection_menu-RIGHT_UPPER_LEG = { -tracker_selection-part }右大腿？
+tracker_selection_menu-RIGHT_LOWER_LEG = { -tracker_selection-part }右小腿？
+tracker_selection_menu-RIGHT_FOOT = { -tracker_selection-part }右脚？
+tracker_selection_menu-RIGHT_CONTROLLER = { -tracker_selection-part }右控制器？
+tracker_selection_menu-CHEST = { -tracker_selection-part }胸部？
+tracker_selection_menu-WAIST = { -tracker_selection-part }腰部？
+tracker_selection_menu-HIP = { -tracker_selection-part }髋部？
+tracker_selection_menu-LEFT_SHOULDER = { -tracker_selection-part }左肩？
+tracker_selection_menu-LEFT_UPPER_ARM = { -tracker_selection-part }左大臂？
+tracker_selection_menu-LEFT_LOWER_ARM = { -tracker_selection-part }左小臂？
+tracker_selection_menu-LEFT_HAND = { -tracker_selection-part }左手？
+tracker_selection_menu-LEFT_UPPER_LEG = { -tracker_selection-part }左大腿？
+tracker_selection_menu-LEFT_LOWER_LEG = { -tracker_selection-part }左小腿？
+tracker_selection_menu-LEFT_FOOT = { -tracker_selection-part }左脚？
+tracker_selection_menu-LEFT_CONTROLLER = { -tracker_selection-part }左控制器？
 
 tracker_selection_menu-unassigned = 未分配的追踪器
 tracker_selection_menu-assigned = 已分配的追踪器
@@ -195,7 +195,7 @@ settings-sidebar-gesture_control = 手势控制
 settings-sidebar-interface = 交互界面
 settings-sidebar-osc_router = OSC 路由
 settings-sidebar-utils = 工具
-settings-sidebar-serial = 串行控制器
+settings-sidebar-serial = 串口控制台
 
 ## SteamVR settings
 settings-general-steamvr = SteamVR
@@ -223,20 +223,20 @@ settings-general-tracker_mechanics-filtering-description =
     预测型将会对你的运动加以预测，而平滑型将会让你的运动更加平滑。
 settings-general-tracker_mechanics-filtering-type = 滤波类型
 settings-general-tracker_mechanics-filtering-type-none = 无滤波
-settings-general-tracker_mechanics-filtering-type-none-description = 使用原始数据，不会进行任何过滤。
+settings-general-tracker_mechanics-filtering-type-none-description = 使用原始数据，不进行滤波。
 settings-general-tracker_mechanics-filtering-type-smoothing = 平滑型
 settings-general-tracker_mechanics-filtering-type-smoothing-description = 让运动更加平滑，但会增加一些延迟。
 settings-general-tracker_mechanics-filtering-type-prediction = 预测型
 settings-general-tracker_mechanics-filtering-type-prediction-description = 减少延迟并使移动更敏捷，但可能会增加一些抖动。
 settings-general-tracker_mechanics-filtering-amount = 滤波强度
-settings-general-tracker_mechanics-drift_compensation = Drift compensation
+settings-general-tracker_mechanics-drift_compensation = 漂移补偿
 # This cares about multilines
 settings-general-tracker_mechanics-drift_compensation-description =
-    Compensates IMU yaw drift by applying an inverse rotation.
-    Change amount of compensation and up to how many resets are taken into account.
-settings-general-tracker_mechanics-drift_compensation-enabled-label = Drift compensation
-settings-general-tracker_mechanics-drift_compensation-amount-label = Compensation amount
-settings-general-tracker_mechanics-drift_compensation-max_resets-label = Use up to x last resets
+    应用反向旋转以补偿IMU的偏航角漂移。
+    更改补偿量和使用多少次的重置结果用于计算补偿量。
+settings-general-tracker_mechanics-drift_compensation-enabled-label = 漂移补偿
+settings-general-tracker_mechanics-drift_compensation-amount-label = 补偿量
+settings-general-tracker_mechanics-drift_compensation-max_resets-label = 使用几次的重置结果？
 
 ## FK/Tracking settings
 settings-general-fk_settings = FK 设置
@@ -251,7 +251,7 @@ settings-general-fk_settings-leg_tweak-floor_clip = 地板限制
 # since this largely prevents this it corrects for it hence skating correction (note this may be renamed to sliding correction)
 # definition - Guesses when each foot is in contact with the ground and uses that information to improve tracking
 settings-general-fk_settings-leg_tweak-skating_correction = 脚滑矫正
-settings-general-fk_settings-leg_tweak-skating_correction-amount = 脚滑矫正数值
+settings-general-fk_settings-leg_tweak-skating_correction-amount = 脚滑矫正量
 settings-general-fk_settings-arm_fk = 手臂 FK
 settings-general-fk_settings-arm_fk-description = 更改手臂的追踪方式。
 settings-general-fk_settings-arm_fk-force_arms = 强制从头显获得数据
@@ -260,29 +260,28 @@ settings-general-fk_settings-skeleton_settings-description = 打开或关闭骨�
 settings-general-fk_settings-skeleton_settings-extended_spine = 脊柱延伸
 settings-general-fk_settings-skeleton_settings-extended_pelvis = 骨盆延伸
 settings-general-fk_settings-skeleton_settings-extended_knees = 膝盖延伸
-settings-general-fk_settings-vive_emulation-title = Vive emulation
-settings-general-fk_settings-vive_emulation-description = Emulate the waist tracker problems that Vive trackers have. This is a joke and makes tracking worse.
-settings-general-fk_settings-vive_emulation-label = Enable Vive emulation
+settings-general-fk_settings-vive_emulation-title = Vive 模拟
+settings-general-fk_settings-vive_emulation-description = 模拟Vive追踪器的腰部丢追问题。（ 注：这是一个玩笑功能，会劣化追踪质量。）
+settings-general-fk_settings-vive_emulation-label = 开启 Vive 模拟
 
 ## Gesture control settings (tracker tapping)
 settings-general-gesture_control = 手势控制
-settings-general-gesture_control-subtitle = 双击快速重置
-settings-general-gesture_control-description = 启用或禁用双击快速重置。启用时，双击身上佩戴的最高的追踪器上的任何位置将激活快速重置。延迟是指记录到敲击和重置之间的时间。
+settings-general-gesture_control-subtitle = 敲击重置
+settings-general-gesture_control-description = 启用或禁用敲击重置。启用时，敲击身上佩戴的最高的追踪器上的任何位置将激活快速重置。延迟是指记录到敲击和重置之间的时间。
 # This is a unit: 3 taps, 2 taps, 1 tap
 # $amount (Number) - Amount of taps (touches to the tracker's case)
 settings-general-gesture_control-taps = { $amount ->
-    [one] 1 tap
-    *[other] { $amount } taps
+    *[other] { $amount }次敲击
 }
-settings-general-gesture_control-quickResetEnabled = Enable tap to quick reset
-settings-general-gesture_control-quickResetDelay = Quick reset delay
-settings-general-gesture_control-quickResetTaps = Taps for quick reset
-settings-general-gesture_control-resetEnabled = Enable tap to reset
-settings-general-gesture_control-resetDelay = Reset delay
-settings-general-gesture_control-resetTaps = Taps for reset
-settings-general-gesture_control-mountingResetEnabled = Enable tap to reset mounting
-settings-general-gesture_control-mountingResetDelay = Mounting reset delay
-settings-general-gesture_control-mountingResetTaps = Taps for mounting reset
+settings-general-gesture_control-quickResetEnabled = 开启敲击快速重置
+settings-general-gesture_control-quickResetDelay = 敲击快速重置延迟
+settings-general-gesture_control-quickResetTaps = 快速重置敲击次数
+settings-general-gesture_control-resetEnabled = 开启敲击重置
+settings-general-gesture_control-resetDelay = 敲击重置延迟
+settings-general-gesture_control-resetTaps = 重置敲击次数
+settings-general-gesture_control-mountingResetEnabled = 开启敲击重置佩戴
+settings-general-gesture_control-mountingResetDelay = 敲击重置佩戴延迟
+settings-general-gesture_control-mountingResetTaps = 重置佩戴敲击次数
 
 ## Interface settings
 settings-general-interface = 交互界面
@@ -377,10 +376,10 @@ onboarding-wifi_creds-skip = 跳过 WiFi 设置
 onboarding-wifi_creds-submit = 提交！
 onboarding-wifi_creds-ssid =
     .label = SSID
-    .placeholder = Enter SSID
+    .placeholder = 输入 SSID
 onboarding-wifi_creds-password =
-    .label = Password
-    .placeholder = Enter password
+    .label = 密码
+    .placeholder = 输入密码
 
 ## Mounting setup
 onboarding-reset_tutorial-back = 返回到佩戴校准
@@ -424,10 +423,9 @@ onboarding-connect_tracker-connection_status-handshake = 已连接到服务器
 # we use 0 in an explicit way because there is no plural rule in english for 0, so we directly say
 # if $amount is 0 then we say "No trackers connected"
 onboarding-connect_tracker-connected_trackers = { $amount ->
-    [0] No trackers
-    [one] 1 tracker
-    *[other] { $amount } trackers
-} connected
+    [0] 没有已连接的追踪器
+    *[other] { $amount } 个追踪器已连接
+}
 onboarding-connect_tracker-next = 所有的追踪器都连接好了
 
 ## Tracker assignment setup
@@ -437,10 +435,7 @@ onboarding-assign_trackers-description = 让我们选择哪个追踪器在哪里
 # Look at translation of onboarding-connect_tracker-connected_trackers on how to use plurals
 # $assigned (Number) - Trackers that have been assigned a body part
 # $trackers (Number) - Trackers connected to the server
-onboarding-assign_trackers-assigned = { $assigned } of { $trackers ->
-    [one] 1 tracker
-    *[other] { $trackers } trackers
-} assigned
+onboarding-assign_trackers-assigned = { $assigned }/{ $trackers } 个追踪器已分配
 onboarding-assign_trackers-advanced = 显示高级分配部位
 onboarding-assign_trackers-next = 所有的追踪器都分配好了
 
@@ -502,10 +497,7 @@ onboarding-automatic_proportions-recording-steps-3 = 向右扭转上身，然后
 onboarding-automatic_proportions-recording-steps-4 = 持续摆动身体，直到计时器结束。
 onboarding-automatic_proportions-recording-processing = 正在处理结果
 # $time (Number) - Seconds left for the automatic calibration recording to finish (max 15)
-onboarding-automatic_proportions-recording-timer = { $time ->
-    [one] 1 second left
-    *[other] { $time } seconds left
-}
+onboarding-automatic_proportions-recording-timer =  剩余{ $time }秒
 onboarding-automatic_proportions-verify_results-title = 校验结果
 onboarding-automatic_proportions-verify_results-description = 检查下面的结果，它们看起来是正确的吗？
 onboarding-automatic_proportions-verify_results-results = 录制结果

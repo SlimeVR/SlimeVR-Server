@@ -102,6 +102,42 @@ public class CurrentVRConfigConverter implements VersionedModelConverter {
 				modelData.set("trackers", trackersNode);
 			}
 		}
+		if (version < 5) {
+			// Migrate old skeleton offsets to new ones
+			ObjectNode skeletonNode = (ObjectNode) modelData.get("skeleton");
+			if (skeletonNode != null) {
+				ObjectNode offsetsNode = (ObjectNode) skeletonNode.get("offsets");
+				if (offsetsNode != null) {
+					// torsoLength, chestDistance and waistDistance become
+					// chestLength, waistLength and hipLength.
+					float torsoLength = offsetsNode.get("torsoLength").floatValue();
+					float chestDistance = offsetsNode.get("chestDistance").floatValue();
+					float waistDistance = offsetsNode.get("waistDistance").floatValue();
+					offsetsNode.set("chestLength", offsetsNode.get("chestDistance"));
+					offsetsNode
+						.set(
+							"waistLength",
+							new FloatNode(torsoLength - chestDistance - waistDistance)
+						);
+					offsetsNode.set("hipLength", offsetsNode.get("waistDistance"));
+					offsetsNode.remove("torsoLength");
+					offsetsNode.remove("chestDistance");
+					offsetsNode.remove("waistDistance");
+
+					// legsLength and kneeHeight become
+					// upperLegLength and lowerLegLength
+					float legsLength = offsetsNode.get("legsLength").floatValue();
+					float kneeHeight = offsetsNode.get("kneeHeight").floatValue();
+					offsetsNode.set("upperLegLength", new FloatNode(legsLength - kneeHeight));
+					offsetsNode.set("lowerLegLength", offsetsNode.get("kneeHeight"));
+					offsetsNode.remove("legsLength");
+					offsetsNode.remove("kneeHeight");
+
+					skeletonNode.set("offsets", offsetsNode);
+					modelData.set("skeleton", skeletonNode);
+				}
+			}
+		}
 
 		return modelData;
 	}

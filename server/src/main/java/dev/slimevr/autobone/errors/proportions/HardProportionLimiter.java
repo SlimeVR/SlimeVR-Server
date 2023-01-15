@@ -1,8 +1,8 @@
 package dev.slimevr.autobone.errors.proportions;
 
-import java.util.function.Function;
-
 import dev.slimevr.vr.processor.skeleton.SkeletonConfig;
+
+import java.util.function.Function;
 
 
 public class HardProportionLimiter implements ProportionLimiter {
@@ -27,5 +27,10 @@ public class HardProportionLimiter implements ProportionLimiter {
 	public float getProportionError(SkeletonConfig config, float height) {
 		float boneLength = boneLengthFunction.apply(config);
 		return targetRatio - (boneLength / height);
+	}
+
+	@Override
+	public float getTargetRatio() {
+		return targetRatio;
 	}
 }
