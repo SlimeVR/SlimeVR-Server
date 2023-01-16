@@ -162,7 +162,7 @@ export function TrackerSettingsPage() {
         onClose={() => setSelectRotation(false)}
         onDirectionSelected={onDirectionSelected}
       ></MountingSelectionMenu>
-      <div className="flex gap-2 md:h-full flex-wrap md:flex-row ">
+      <div className="flex gap-2 md:h-full max-md:flex-wrap md:flex-row ">
         <div className="flex flex-col w-full md:max-w-xs gap-2">
           {tracker && (
             <TrackerCard
@@ -284,31 +284,27 @@ export function TrackerSettingsPage() {
             </div>
           </div>
           {tracker?.tracker.info?.isImu && (
-            <>
-              <div className="flex flex-col gap-2 w-full mt-3">
-                <Typography variant="section-title">
-                  {l10n.getString(
-                    'tracker-settings-drift_compensation_section'
+            <div className="flex flex-col gap-2 w-full mt-3">
+              <Typography variant="section-title">
+                {l10n.getString('tracker-settings-drift_compensation_section')}
+              </Typography>
+              <Typography color="secondary">
+                {l10n.getString(
+                  'tracker-settings-drift_compensation_section-description'
+                )}
+              </Typography>
+              <div className="flex">
+                <CheckBox
+                  variant="toggle"
+                  outlined
+                  name="allowDriftCompensation"
+                  control={control}
+                  label={l10n.getString(
+                    'tracker-settings-drift_compensation_section-edit'
                   )}
-                </Typography>
-                <Typography color="secondary">
-                  {l10n.getString(
-                    'tracker-settings-drift_compensation_section-description'
-                  )}
-                </Typography>
-                <div className="flex">
-                  <CheckBox
-                    variant="toggle"
-                    outlined
-                    name="allowDriftCompensation"
-                    control={control}
-                    label={l10n.getString(
-                      'tracker-settings-drift_compensation_section-edit'
-                    )}
-                  />
-                </div>
+                />
               </div>
-            </>
+            </div>
           )}
           <div className="flex flex-col gap-2 w-full mt-3">
             <Typography variant="section-title">
