@@ -68,9 +68,9 @@ reset-quick = Reset Rápido
 
 ## Serial detection stuff
 serial_detection-new_device-p0 = Novo dispositivo de serial detectado!
-serial_detection-new_device-p1 = Insira suas credenciais de wifi!
+serial_detection-new_device-p1 = Insira suas credenciais de Wi-Fi!
 serial_detection-new_device-p2 = Selecione o que quer fazer com ele
-serial_detection-open_wifi = Conectar ao WiFi
+serial_detection-open_wifi = Conectar ao Wi-Fi
 serial_detection-open_serial = Abrir o Console Serial
 serial_detection-submit = Enviar!
 serial_detection-close = Fechar
@@ -352,7 +352,7 @@ settings-osc-vrchat-network-port_out =
     .label = Porta de saída
     .placeholder = Porta de saída (padrão: 9000)
 settings-osc-vrchat-network-address = Endereço de rede
-settings-osc-vrchat-network-address-description = Escolha qual o endereço para enviar dados para o VRChat (verifique as suas opções de wifi no seu dispositivo)
+settings-osc-vrchat-network-address-description = Escolha qual o endereço para enviar dados para o VRChat (verifique as suas opções de Wi-Fi no seu dispositivo)
 settings-osc-vrchat-network-address-placeholder = Endereço de ip do VRChat
 settings-osc-vrchat-network-trackers = Trackers
 settings-osc-vrchat-network-trackers-description = Ligar ou desligar o envio e recepção de dados.
@@ -367,14 +367,14 @@ onboarding-skip = Pular configurações
 onboarding-continue = Continuar
 onboarding-wip = Trabalho em progresso
 
-## WiFi setup
+## Wi-Fi setup
 onboarding-wifi_creds-back = Voltar para introdução
-onboarding-wifi_creds = Insira as credenciais de WiFi
+onboarding-wifi_creds = Insira as credenciais de Wi-Fi
 # This cares about multilines
 onboarding-wifi_creds-description =
     Os Trackers vão usar essas credenciais para conectar à rede sem fio
     Use as credenciais da rede em que você está atualmente conectado
-onboarding-wifi_creds-skip = Pular as configurações de WiFi
+onboarding-wifi_creds-skip = Pular as configurações de Wi-Fi
 onboarding-wifi_creds-submit = Enviar!
 onboarding-wifi_creds-ssid =
     .label = SSID
@@ -408,15 +408,15 @@ onboarding-done-description = Aproveite sua experiência com full body
 onboarding-done-close = Fechar o guia
 
 ## Tracker connection setup
-onboarding-connect_tracker-back = Voltar para as credenciais de WiFi
+onboarding-connect_tracker-back = Voltar para as credenciais de Wi-Fi
 onboarding-connect_tracker-title = Conectar os trackers
 onboarding-connect_tracker-description-p0 = Agora para a parte divertida, conectando todos os seus trackers!
 onboarding-connect_tracker-description-p1 = Simplesmente conecte todos que ainda não estão conectados, via porta USB.
 onboarding-connect_tracker-issue-serial = Estou tendo problemas para conectar!
 onboarding-connect_tracker-usb = Tracker USB
-onboarding-connect_tracker-connection_status-connecting = Enviando credenciais de wifi
-onboarding-connect_tracker-connection_status-connected = Conectado ao WiFi
-onboarding-connect_tracker-connection_status-error = Não é possível conectar ao WiFi
+onboarding-connect_tracker-connection_status-connecting = Enviando credenciais de Wi-Fi
+onboarding-connect_tracker-connection_status-connected = Conectado ao Wi-Fi
+onboarding-connect_tracker-connection_status-error = Não é possível conectar ao Wi-Fi
 onboarding-connect_tracker-connection_status-start_connecting = Procurando por trackers
 onboarding-connect_tracker-connection_status-handshake = Conectado ao servidor
 # $amount (Number) - Amount of trackers connected (this is a number, but you can use CLDR plural rules for your language)
@@ -432,7 +432,7 @@ onboarding-connect_tracker-connected_trackers = { $amount ->
 onboarding-connect_tracker-next = Eu conectei todos os meus trackers
 
 ## Tracker assignment setup
-onboarding-assign_trackers-back = Voltar para as credenciais de WiFi
+onboarding-assign_trackers-back = Voltar para as credenciais de Wi-Fi
 onboarding-assign_trackers-title = Atribuir trackers
 onboarding-assign_trackers-description = Vamos escolher onde cada tracker vai. Clique no local onde você quer colocar o tracker
 # Look at translation of onboarding-connect_tracker-connected_trackers on how to use plurals

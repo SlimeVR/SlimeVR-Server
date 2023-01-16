@@ -367,7 +367,7 @@ onboarding-skip = Bỏ qua cài đặt
 onboarding-continue = Tiếp tục
 onboarding-wip = Đang làm dở (vui lòng quay lại sau update)
 
-## WiFi setup
+## Wi-Fi setup
 onboarding-wifi_creds-back = Quay lại đoạn giới thiệuthiệu
 onboarding-wifi_creds = Bỏ thông tin Wi-Fi ở đây
 # This cares about multilines

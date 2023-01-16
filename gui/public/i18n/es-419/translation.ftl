@@ -68,9 +68,9 @@ reset-quick = Reinicio rápido
 
 ## Serial detection stuff
 serial_detection-new_device-p0 = ¡Nuevo dispositivo serial detectado!
-serial_detection-new_device-p1 = ¡Ingresa tus credenciales del WiFi!
+serial_detection-new_device-p1 = ¡Ingresa tus credenciales del Wi-Fi!
 serial_detection-new_device-p2 = Por favor selecciona que quieres hacer con el
-serial_detection-open_wifi = Conectarse al WiFi
+serial_detection-open_wifi = Conectarse al Wi-Fi
 serial_detection-open_serial = Abrir consola serial
 serial_detection-submit = ¡Enviar!
 serial_detection-close = Cerrar
@@ -352,7 +352,7 @@ settings-osc-vrchat-network-port_out =
     .label = Puerto de salida
     .placeholder = Puerto de salida (por defecto: 9000)
 settings-osc-vrchat-network-address = Dirección de red
-settings-osc-vrchat-network-address-description = Establece la dirección donde se enviarán los datos de VRChat (revisa los ajustes de WiFi de tu dispositivo que tenga el juego).
+settings-osc-vrchat-network-address-description = Establece la dirección donde se enviarán los datos de VRChat (revisa los ajustes de Wi-Fi de tu dispositivo que tenga el juego).
 settings-osc-vrchat-network-address-placeholder = Dirección IP de VRChat
 settings-osc-vrchat-network-trackers = Sensores
 settings-osc-vrchat-network-trackers-description = Habilita el envío de sensores específicos mediante OSC.
@@ -367,14 +367,14 @@ onboarding-skip = Saltar configuración
 onboarding-continue = Continuar
 onboarding-wip = Trabajo en progreso
 
-## WiFi setup
+## Wi-Fi setup
 onboarding-wifi_creds-back = Volver a la introducción
-onboarding-wifi_creds = Ingresar credenciales del WiFi
+onboarding-wifi_creds = Ingresar credenciales del Wi-Fi
 # This cares about multilines
 onboarding-wifi_creds-description =
     Los sensores utilizarán estas credenciales para conectarse inalámbricamente. 
-    Por favor usa las credenciales del WiFi al cuál estás conectado actualmente.
-onboarding-wifi_creds-skip = Saltar ajustes de WiFi
+    Por favor usa las credenciales del Wi-Fi al cuál estás conectado actualmente.
+onboarding-wifi_creds-skip = Saltar ajustes de Wi-Fi
 onboarding-wifi_creds-submit = ¡Enviar!
 onboarding-wifi_creds-ssid =
     .label = SSID
@@ -408,15 +408,15 @@ onboarding-done-description = Disfruta moverte en la realidad virtual
 onboarding-done-close = Cerrar la guía
 
 ## Tracker connection setup
-onboarding-connect_tracker-back = Volver a las credenciales WiFi
+onboarding-connect_tracker-back = Volver a las credenciales Wi-Fi
 onboarding-connect_tracker-title = Conecta tus sensores
 onboarding-connect_tracker-description-p0 = Ahora la parte divertida, ¡Conectar todos tus sensores!
 onboarding-connect_tracker-description-p1 = Simplemente conecta todos los sensores que aún no están conectados, por medio de un puerto USB.
 onboarding-connect_tracker-issue-serial = ¡Tengo problemas conectándolos!
 onboarding-connect_tracker-usb = Sensor USB
-onboarding-connect_tracker-connection_status-connecting = Enviando credenciales WiFi
-onboarding-connect_tracker-connection_status-connected = Conectado al WiFi
-onboarding-connect_tracker-connection_status-error = Incapaz de conectar al WiFi
+onboarding-connect_tracker-connection_status-connecting = Enviando credenciales Wi-Fi
+onboarding-connect_tracker-connection_status-connected = Conectado al Wi-Fi
+onboarding-connect_tracker-connection_status-error = Incapaz de conectar al Wi-Fi
 onboarding-connect_tracker-connection_status-start_connecting = Buscando sensores
 onboarding-connect_tracker-connection_status-handshake = Conectado con el servidor
 # $amount (Number) - Amount of trackers connected (this is a number, but you can use CLDR plural rules for your language)
@@ -432,7 +432,7 @@ onboarding-connect_tracker-connected_trackers = { $amount ->
 onboarding-connect_tracker-next = He conectado todos mis sensores
 
 ## Tracker assignment setup
-onboarding-assign_trackers-back = Volver a las credenciales WiFi
+onboarding-assign_trackers-back = Volver a las credenciales Wi-Fi
 onboarding-assign_trackers-title = Asignación de sensores
 onboarding-assign_trackers-description = Debes escoger dónde van los sensores. Has clic en la ubicación donde quieras colocar un sensor
 # Look at translation of onboarding-connect_tracker-connected_trackers on how to use plurals

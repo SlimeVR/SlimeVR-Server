@@ -367,7 +367,7 @@ onboarding-skip = Passer
 onboarding-continue = Continuer
 onboarding-wip = Pas encore implémenté
 
-## WiFi setup
+## Wi-Fi setup
 onboarding-wifi_creds-back = Retour à l'introduction
 onboarding-wifi_creds = Saisir les identifiants Wi-Fi
 # This cares about multilines
@@ -377,11 +377,11 @@ onboarding-wifi_creds-description =
 onboarding-wifi_creds-skip = Passer la configuration Wi-Fi
 onboarding-wifi_creds-submit = Valider
 onboarding-wifi_creds-ssid =
-    .label = SSID
-    .placeholder = Enter SSID
+    .label = Nom du Wi-Fi
+    .placeholder = Nom
 onboarding-wifi_creds-password =
-    .label = Password
-    .placeholder = Enter password
+    .label = Mot de passe du Wi-Fi
+    .placeholder = Mot de passe
 
 ## Mounting setup
 onboarding-reset_tutorial-back = Retourner à l'alignement des capteurs

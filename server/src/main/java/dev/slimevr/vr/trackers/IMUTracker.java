@@ -32,10 +32,18 @@ public class IMUTracker
 	public final UDPDevice device;
 	public final int trackerNum;
 	public final Vector3f rotVector = new Vector3f();
-	public final Quaternion gyroFix = new Quaternion();
-	public final Quaternion attachmentFix = new Quaternion();
-	public final Quaternion mountRotFix = new Quaternion();
-	public final Quaternion yawFix = new Quaternion();
+
+	// Reference adjustment quats
+	private final Quaternion gyroFix = new Quaternion();
+	private final Quaternion attachmentFix = new Quaternion();
+	private final Quaternion mountRotFix = new Quaternion();
+	private final Quaternion yawFix = new Quaternion();
+
+	// Zero-reference adjustment quats for IMU debugging
+	private final Quaternion gyroFixNoMounting = new Quaternion();
+	private final Quaternion attachmentFixNoMounting = new Quaternion();
+	private final Quaternion yawFixZeroReference = new Quaternion();
+
 	protected final Quaternion correction = new Quaternion();
 	protected final int trackerId;
 	protected final String name;
@@ -241,17 +249,20 @@ public class IMUTracker
 		return true;
 	}
 
+	/**
+	 * Calculates reference-adjusted rotation (with full/quick reset) including
+	 * the mounting orientation (front, back, left, right) and mounting reset
+	 * adjustment. Also taking drift compensation into account.
+	 * 
+	 * @param store Where to store the calculation result.
+	 */
 	@Override
 	public boolean getRotation(Quaternion store) {
-		if (movingAverage != null) {
-			store.set(movingAverage.getFilteredQuaternion());
-		} else {
-			store.set(rotQuaternion);
-		}
+		this.getFilteredRotation(store);
 		// correction.mult(store, store); // Correction is not used now to
 		// prevent accidental errors while debugging other things
 		store.multLocal(mountAdjust);
-		adjustInternal(store);
+		adjustToReference(store);
 		if ((compensateDrift && allowDriftCompensation) && totalDriftTime > 0) {
 			store
 				.slerpLocal(
@@ -260,6 +271,32 @@ public class IMUTracker
 						* ((float) (System.currentTimeMillis() - driftSince)
 							/ totalDriftTime)
 				);
+		}
+		return true;
+	}
+
+	/**
+	 * Calculates zero-reference-adjusted rotation (with full/quick reset). Same
+	 * as {@link #getRotation(Quaternion)}, except rotation is aligned to an
+	 * identity quaternion instead of HMD and does not include mounting reset
+	 * and mounting orientation adjustments. Does not take drift compensation
+	 * into account.
+	 *
+	 * This rotation can be used in visualizations for debugging purposes.
+	 *
+	 * @param store Where to store the calculation result.
+	 */
+	public boolean getIdentityAdjustedRotation(Quaternion store) {
+		this.getFilteredRotation(store);
+		adjustToIdentity(store);
+		return true;
+	}
+
+	public boolean getFilteredRotation(Quaternion store) {
+		if (movingAverage != null) {
+			store.set(movingAverage.getFilteredQuaternion());
+		} else {
+			store.set(rotQuaternion);
 		}
 		return true;
 	}
@@ -275,12 +312,22 @@ public class IMUTracker
 		// correction.mult(store, store); // Correction is not used now to
 		// prevent accidental errors while debugging other things
 		rot.multLocal(mountAdjust);
-		adjustInternal(rot);
+		adjustToReference(rot);
 		return rot;
 	}
 
 	private Quaternion getMountedAdjustedRotation() {
 		Quaternion rot = new Quaternion(rotQuaternion);
+		// correction.mult(store, store); // Correction is not used now to
+		// prevent accidental errors while debugging other things
+		rot.multLocal(mountAdjust);
+		return rot;
+	}
+
+	private Quaternion getMountedAdjustedDriftRotation() {
+		Quaternion rot = new Quaternion(rotQuaternion);
+		// correction.mult(store, store); // Correction is not used now to
+		// prevent accidental errors while debugging other things
 		rot.multLocal(mountAdjust);
 		if ((compensateDrift && allowDriftCompensation) && totalDriftTime > 0) {
 			rot
@@ -358,6 +405,7 @@ public class IMUTracker
 		Quaternion rot = getAdjustedRawRotation();
 		fixGyroscope(getMountedAdjustedRotation());
 		fixAttachment(getMountedAdjustedRotation());
+		makeIdentityAdjustmentQuatsFull();
 		fixYaw(reference);
 		calibrateMag();
 		calculateDrift(rot);
@@ -374,15 +422,37 @@ public class IMUTracker
 	public void resetYaw(Quaternion reference) {
 		Quaternion rot = getAdjustedRawRotation();
 		fixYaw(reference);
+		makeIdentityAdjustmentQuatsYaw();
 		calibrateMag();
 		calculateDrift(rot);
 	}
 
-	protected void adjustInternal(Quaternion store) {
+	/**
+	 * Converts raw or filtered rotation into reference- and
+	 * mounting-reset-adjusted by applying quaternions produced after
+	 * {@link #resetFull(Quaternion)}, {@link #resetYaw(Quaternion)} and
+	 * {@link #resetMounting(boolean)}.
+	 * 
+	 * @param store Raw or filtered rotation to mutate.
+	 */
+	protected void adjustToReference(Quaternion store) {
 		gyroFix.mult(store, store);
 		store.multLocal(attachmentFix);
 		store.multLocal(mountRotFix);
 		yawFix.mult(store, store);
+	}
+
+	/**
+	 * Converts raw or filtered rotation into zero-reference-adjusted by
+	 * applying quaternions produced after {@link #resetFull(Quaternion)},
+	 * {@link #resetYaw(Quaternion)}.
+	 *
+	 * @param store Raw or filtered rotation to mutate.
+	 */
+	protected void adjustToIdentity(Quaternion store) {
+		gyroFixNoMounting.mult(store, store);
+		store.multLocal(attachmentFixNoMounting);
+		yawFixZeroReference.mult(store, store);
 	}
 
 	private void fixGyroscope(Quaternion sensorRotation) {
@@ -398,7 +468,7 @@ public class IMUTracker
 	@Override
 	public void resetMounting(boolean reverseYaw) {
 		// Get the current calibrated rotation
-		Quaternion buffer = getMountedAdjustedRotation();
+		Quaternion buffer = getMountedAdjustedDriftRotation();
 		gyroFix.mult(buffer, buffer);
 		buffer.multLocal(attachmentFix);
 
@@ -450,10 +520,10 @@ public class IMUTracker
 	}
 
 	/**
-	 * Calculates 1 since last reset and store the data related to it in
+	 * Calculates drift since last reset and store the data related to it in
 	 * driftQuat, timeAtLastReset and timeForLastReset
 	 */
-	synchronized public void calculateDrift(Quaternion beforeQuat) {
+	synchronized private void calculateDrift(Quaternion beforeQuat) {
 		if (compensateDrift && allowDriftCompensation) {
 			Quaternion rotQuat = getAdjustedRawRotation();
 
@@ -471,11 +541,10 @@ public class IMUTracker
 				// Add new drift quaternion
 				driftQuats
 					.add(
-						new Quaternion()
-							.fromAngles(
-								0f,
-								rotQuat.mult(beforeQuat.inverse()).getYaw(),
-								0f
+						rotQuat
+							.fromAngles(0, rotQuat.getYaw(), 0)
+							.mult(
+								beforeQuat.fromAngles(0, beforeQuat.getYaw(), 0).inverse()
 							)
 					);
 
@@ -512,23 +581,25 @@ public class IMUTracker
 				averagedDriftQuat.fromAveragedQuaternions(driftQuats, driftWeights);
 
 				// Save tracker rotation and current time
-				rotationSinceReset.set(rotQuat.mult(beforeQuat.inverse()));
+				rotationSinceReset.set(driftQuats.getLatest());
 				timeAtLastReset = System.currentTimeMillis();
 			} else if (
 				System.currentTimeMillis() - timeAtLastReset < DRIFT_COOLDOWN_MS
 					&& driftQuats.size() > 0
 			) {
 				// Replace latest drift quaternion
-				rotationSinceReset.multLocal(beforeQuat.mult(rotQuat.inverse()));
+				rotationSinceReset
+					.multLocal(
+						rotQuat
+							.fromAngles(0, rotQuat.getYaw(), 0)
+							.mult(
+								beforeQuat.fromAngles(0, beforeQuat.getYaw(), 0).inverse()
+							)
+					);
 				driftQuats
 					.set(
 						driftQuats.size() - 1,
-						new Quaternion()
-							.fromAngles(
-								0f,
-								rotationSinceReset.inverse().getYaw(),
-								0f
-							)
+						rotationSinceReset
 					);
 
 				// Add drift time to total
@@ -572,6 +643,25 @@ public class IMUTracker
 		}
 	}
 
+	private void makeIdentityAdjustmentQuatsFull() {
+		Quaternion sensorRotation = new Quaternion();
+		getRawRotation(sensorRotation);
+		sensorRotation.fromAngles(0, sensorRotation.getYaw(), 0);
+		gyroFixNoMounting.set(sensorRotation).inverseLocal();
+		getRawRotation(sensorRotation);
+		gyroFixNoMounting.mult(sensorRotation, sensorRotation);
+		attachmentFixNoMounting.set(sensorRotation).inverseLocal();
+	}
+
+	private void makeIdentityAdjustmentQuatsYaw() {
+		Quaternion sensorRotation = new Quaternion();
+		getRawRotation(sensorRotation);
+		gyroFixNoMounting.mult(sensorRotation, sensorRotation);
+		sensorRotation.multLocal(attachmentFixNoMounting);
+		sensorRotation.fromAngles(0, sensorRotation.getYaw(), 0);
+		yawFixZeroReference.set(sensorRotation).inverseLocal();
+	}
+
 	/**
 	 * Calculate correction between normal and magnetometer readings up to
 	 * accuracy threshold
@@ -604,6 +694,11 @@ public class IMUTracker
 	@Override
 	public boolean hasPosition() {
 		return false;
+	}
+
+	@Override
+	public boolean hasAcceleration() {
+		return true;
 	}
 
 	@Override
