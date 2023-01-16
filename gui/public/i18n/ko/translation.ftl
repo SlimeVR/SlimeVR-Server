@@ -67,9 +67,9 @@ reset-quick = 퀵 리셋
 
 ## Serial detection stuff
 serial_detection-new_device-p0 = 새로운 시리얼 디바이스를 찾았어요!
-serial_detection-new_device-p1 = WiFi 자격 증명을 입력해주세요!
+serial_detection-new_device-p1 = Wi-Fi 자격 증명을 입력해주세요!
 serial_detection-new_device-p2 = 원하는 작업을 선택하세요
-serial_detection-open_wifi = WiFi 연결
+serial_detection-open_wifi = Wi-Fi 연결
 serial_detection-open_serial = 시리얼 콘솔 열기
 serial_detection-submit = 저장!
 serial_detection-close = 닫기
@@ -366,14 +366,14 @@ onboarding-skip = 설정 건너뛰기
 onboarding-continue = 계속하기
 onboarding-wip = 아직 공사 중이에요
 
-## WiFi setup
+## Wi-Fi setup
 onboarding-wifi_creds-back = 처음으로 돌아가기
-onboarding-wifi_creds = WiFi 자격 증명을 입력하세요
+onboarding-wifi_creds = Wi-Fi 자격 증명을 입력하세요
 # This cares about multilines
 onboarding-wifi_creds-description =
     트래커는 이 자격 증명을 사용하여 무선으로 연결해요
     지금 연결되어 있는 자격 증명을 사용해주세요
-onboarding-wifi_creds-skip = WiFi 설정 건너뛰기
+onboarding-wifi_creds-skip = Wi-Fi 설정 건너뛰기
 onboarding-wifi_creds-submit = 저장!
 onboarding-wifi_creds-ssid =
     .label = SSID
@@ -407,15 +407,15 @@ onboarding-done-description = 풀바디 트래킹을 즐기세요!
 onboarding-done-close = 마법사 닫기
 
 ## Tracker connection setup
-onboarding-connect_tracker-back = WiFi 자격 증명으로 돌아가기
+onboarding-connect_tracker-back = Wi-Fi 자격 증명으로 돌아가기
 onboarding-connect_tracker-title = 트래커 연결
 onboarding-connect_tracker-description-p0 = 이제 모든 트래커를 연결하는 재미있는 부분으로 가봐요!
 onboarding-connect_tracker-description-p1 = 그냥 모든 트래커를 USB 포트에 연결하기만 하면 돼요
 onboarding-connect_tracker-issue-serial = 연결하는 데 문제가 생겼어요!
 onboarding-connect_tracker-usb = USB 트래커
-onboarding-connect_tracker-connection_status-connecting = WiFi 자격증명 전송 중
-onboarding-connect_tracker-connection_status-connected = WiFi 연결됨
-onboarding-connect_tracker-connection_status-error = Wifi에 연결할 수 없음
+onboarding-connect_tracker-connection_status-connecting = Wi-Fi 자격증명 전송 중
+onboarding-connect_tracker-connection_status-connected = Wi-Fi 연결됨
+onboarding-connect_tracker-connection_status-error = Wi-Fi에 연결할 수 없음
 onboarding-connect_tracker-connection_status-start_connecting = 트래커 찾는 중
 onboarding-connect_tracker-connection_status-handshake = 서버에 연결됨
 # $amount (Number) - Amount of trackers connected (this is a number, but you can use CLDR plural rules for your language)
@@ -431,7 +431,7 @@ onboarding-connect_tracker-connected_trackers = { $amount ->
 onboarding-connect_tracker-next = 모든 트래커를 잘 연결했어요
 
 ## Tracker assignment setup
-onboarding-assign_trackers-back = WiFi 자격 증명으로 돌아가기
+onboarding-assign_trackers-back = Wi-Fi 자격 증명으로 돌아가기
 onboarding-assign_trackers-title = 트래커 위치 지정
 onboarding-assign_trackers-description = 이제, 어떤 트래커가 어디에 있는지 선택할 시간이에요. 트래커를 배치할 위치를 클릭해보세요
 # Look at translation of onboarding-connect_tracker-connected_trackers on how to use plurals

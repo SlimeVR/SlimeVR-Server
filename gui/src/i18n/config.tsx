@@ -59,6 +59,10 @@ export const langs = [
     name: '🥺 Engwish~ OwO',
     key: 'en-x-owo',
   },
+  {
+    name: '🇳🇱 Nederlands',
+    key: 'nl',
+  },
 ];
 
 // Fetch translation file

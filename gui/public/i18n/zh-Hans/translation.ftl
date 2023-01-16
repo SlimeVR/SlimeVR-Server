@@ -67,9 +67,9 @@ reset-quick = 快速重置
 
 ## Serial detection stuff
 serial_detection-new_device-p0 = 检测到了新的串口设备!
-serial_detection-new_device-p1 = 输入你的 WiFi 凭据!
+serial_detection-new_device-p1 = 输入你的 Wi-Fi 凭据!
 serial_detection-new_device-p2 = 请选择你想对它做什么
-serial_detection-open_wifi = 连接到 WiFi
+serial_detection-open_wifi = 连接到 Wi-Fi
 serial_detection-open_serial = 打开串口控制台
 serial_detection-submit = 提交!
 serial_detection-close = 关闭
@@ -350,7 +350,7 @@ settings-osc-vrchat-network-port_out =
     .label = 输出端口
     .placeholder = 输出端口（默认 9000）
 settings-osc-vrchat-network-address = 网络地址
-settings-osc-vrchat-network-address-description = 选择将数据发送到 VRChat 的地址（检查设备上的 WiFi 设置）
+settings-osc-vrchat-network-address-description = 选择将数据发送到 VRChat 的地址（检查设备上的 Wi-Fi 设置）
 settings-osc-vrchat-network-address-placeholder = VRChat IP 地址
 settings-osc-vrchat-network-trackers = 追踪器
 settings-osc-vrchat-network-trackers-description = 切换数据的发送和接收
@@ -365,14 +365,14 @@ onboarding-skip = 跳过设置
 onboarding-continue = 继续
 onboarding-wip = 仍在开发中
 
-## WiFi setup
+## Wi-Fi setup
 onboarding-wifi_creds-back = 返回简介
-onboarding-wifi_creds = 输入 WiFi 凭据
+onboarding-wifi_creds = 输入 Wi-Fi 凭据
 # This cares about multilines
 onboarding-wifi_creds-description =
-    追踪器将使用这些凭据连接到 WiFi
-    请使用当前连接到 WiFi 的凭据
-onboarding-wifi_creds-skip = 跳过 WiFi 设置
+    追踪器将使用这些凭据连接到 Wi-Fi
+    请使用当前连接到 Wi-Fi 的凭据
+onboarding-wifi_creds-skip = 跳过 Wi-Fi 设置
 onboarding-wifi_creds-submit = 提交！
 onboarding-wifi_creds-ssid =
     .label = SSID
@@ -406,15 +406,15 @@ onboarding-done-description = 享受你的全身追踪体验吧
 onboarding-done-close = 关闭向导
 
 ## Tracker connection setup
-onboarding-connect_tracker-back = 返回到 WiFi 凭据设置
+onboarding-connect_tracker-back = 返回到 Wi-Fi 凭据设置
 onboarding-connect_tracker-title = 连接追踪器
 onboarding-connect_tracker-description-p0 = 来到了我第二喜欢的环节，连接所有的追踪器！
 onboarding-connect_tracker-description-p1 = 只需通过 USB 连接所有尚未连接的设备即可。
 onboarding-connect_tracker-issue-serial = QAQ 我在连接时遇到问题！
 onboarding-connect_tracker-usb = USB 追踪器
-onboarding-connect_tracker-connection_status-connecting = 正在发送 WiFi 凭据
-onboarding-connect_tracker-connection_status-connected = WiFi 已连接
-onboarding-connect_tracker-connection_status-error = 无法连接到 WiFi
+onboarding-connect_tracker-connection_status-connecting = 正在发送 Wi-Fi 凭据
+onboarding-connect_tracker-connection_status-connected = Wi-Fi 已连接
+onboarding-connect_tracker-connection_status-error = 无法连接到 Wi-Fi
 onboarding-connect_tracker-connection_status-start_connecting = 寻找追踪器
 onboarding-connect_tracker-connection_status-handshake = 已连接到服务器
 # $amount (Number) - Amount of trackers connected (this is a number, but you can use CLDR plural rules for your language)
@@ -429,7 +429,7 @@ onboarding-connect_tracker-connected_trackers = { $amount ->
 onboarding-connect_tracker-next = 所有的追踪器都连接好了
 
 ## Tracker assignment setup
-onboarding-assign_trackers-back = 返回 WiFi 凭据设置
+onboarding-assign_trackers-back = 返回 Wi-Fi 凭据设置
 onboarding-assign_trackers-title = 分配追踪器
 onboarding-assign_trackers-description = 让我们选择哪个追踪器在哪里。单击要放置追踪器的部位
 # Look at translation of onboarding-connect_tracker-connected_trackers on how to use plurals

@@ -102,8 +102,7 @@ export function useProvideWebsocketApi(): WebSocketApi {
   };
 
   const sendRPCPacket = (type: RpcMessage, data: RPCPacketType): void => {
-    if (!webSocketRef.current) throw new Error('No connection');
-
+    if (webSocketRef?.current?.readyState !== WebSocket.OPEN) return;
     const fbb = new Builder(1);
 
     const message = new MessageBundleT();
@@ -124,7 +123,7 @@ export function useProvideWebsocketApi(): WebSocketApi {
     type: DataFeedMessage,
     data: DataFeedPacketType
   ): void => {
-    if (!webSocketRef.current) throw new Error('No connection');
+    if (webSocketRef?.current?.readyState !== WebSocket.OPEN) return;
     const fbb = new Builder(1);
 
     const message = new MessageBundleT();
@@ -143,7 +142,7 @@ export function useProvideWebsocketApi(): WebSocketApi {
     type: PubSubUnion,
     data: PubSubPacketType
   ): void => {
-    if (!webSocketRef.current) throw new Error('No connection');
+    if (webSocketRef?.current?.readyState !== WebSocket.OPEN) return;
     const fbb = new Builder(1);
 
     const message = new MessageBundleT();
@@ -173,6 +172,10 @@ export function useProvideWebsocketApi(): WebSocketApi {
     webSocketRef.current.removeEventListener('open', onConnected);
     webSocketRef.current.removeEventListener('close', onConnectionClose);
     webSocketRef.current.removeEventListener('message', onMessage);
+    if (isConnected) {
+      setConnected(false);
+      webSocketRef.current.close();
+    }
   };
 
   useEffect(() => {
