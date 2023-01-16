@@ -52,10 +52,11 @@ allprojects {
 dependencies {
 	implementation(project(":solarxr-protocol"))
 
-	// This dependency is used internally, and not exposed to consumers on their own compile classpath.
+	// This dependency is used internally,
+	// and not exposed to consumers on their own compile classpath.
 	implementation("com.google.flatbuffers:flatbuffers-java:22.10.26")
 	implementation("commons-cli:commons-cli:1.3.1")
-	implementation("com.fasterxml.jackson.core:jackson-databind:2.12.6.1")
+	implementation("com.fasterxml.jackson.core:jackson-databind:2.12.7.1")
 	implementation("com.fasterxml.jackson.dataformat:jackson-dataformat-yaml:2.13.3")
 
 	implementation("com.github.jonpeterson:jackson-module-model-versioning:1.2.2")
@@ -137,7 +138,7 @@ configure<com.diffplug.gradle.spotless.SpotlessExtension> {
 		mapOf(
 			"indent_size" to 4,
 			"indent_style" to "tab",
-			"max_line_length" to 88,
+// 			"max_line_length" to 88,
 			"ktlint_experimental" to "enabled"
 		)
 	val ktlintVersion = "0.47.1"
