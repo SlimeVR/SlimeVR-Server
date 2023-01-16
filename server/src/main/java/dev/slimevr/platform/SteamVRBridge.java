@@ -103,7 +103,7 @@ public abstract class SteamVRBridge extends ProtobufBridge<VRTracker> implements
 			device
 		);
 
-		device.getTrackers().add(tracker);
+		device.getTrackers().put(0, tracker);
 		Main.getVrServer().getDeviceManager().addDevice(device);
 		TrackerRole role = TrackerRole.getById(trackerAdded.getTrackerRole());
 		if (role != null) {
