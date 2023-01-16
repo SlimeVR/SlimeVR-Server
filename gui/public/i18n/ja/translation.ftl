@@ -67,9 +67,9 @@ reset-quick = クイックリセット
 
 ## Serial detection stuff
 serial_detection-new_device-p0 = 新しいシリアルデバイスを検出しました！
-serial_detection-new_device-p1 = wifiの認証情報を入力してください！
+serial_detection-new_device-p1 = Wi-Fiの認証情報を入力してください！
 serial_detection-new_device-p2 = 何をするか選択してください
-serial_detection-open_wifi = WiFiに接続
+serial_detection-open_wifi = Wi-Fiに接続
 serial_detection-open_serial = シリアルコンソールを開く
 serial_detection-submit = 実行！
 serial_detection-close = 閉じる
@@ -351,7 +351,7 @@ settings-osc-vrchat-network-port_out =
     .label = ポートアウト
     .placeholder = ポートアウト (デフォルト: 9000)
 settings-osc-vrchat-network-address = ネットワークアドレス
-settings-osc-vrchat-network-address-description = VRChatにデータを送信するアドレスを選択してください（デバイスのwifi設定を確認してください）
+settings-osc-vrchat-network-address-description = VRChatにデータを送信するアドレスを選択してください（デバイスのWi-Fi設定を確認してください）
 settings-osc-vrchat-network-address-placeholder = VRChatのIPアドレス
 settings-osc-vrchat-network-trackers = トラッカー
 settings-osc-vrchat-network-trackers-description = データの送受信を切り替える。
@@ -366,14 +366,14 @@ onboarding-skip = 設定をスキップする
 onboarding-continue = 続ける
 onboarding-wip = 実行中
 
-## WiFi setup
+## Wi-Fi setup
 onboarding-wifi_creds-back = 戻る
-onboarding-wifi_creds = WiFiの認証情報の入力
+onboarding-wifi_creds = Wi-Fi
 # This cares about multilines
 onboarding-wifi_creds-description =
-    トラッカーはこれらの認証情報を使ってwifiに接続します。
+    トラッカーはこれらの認証情報を使ってWi-Fiに接続します。
     現在接続している認証情報を使用してください。
-onboarding-wifi_creds-skip = wifi設定をスキップする
+onboarding-wifi_creds-skip = Wi-Fi設定をスキップする
 onboarding-wifi_creds-submit = 実行！
 onboarding-wifi_creds-ssid =
     .label = SSID
@@ -407,15 +407,15 @@ onboarding-done-description = フルトラをお楽しみください
 onboarding-done-close = ガイドを閉じる
 
 ## Tracker connection setup
-onboarding-connect_tracker-back = WiFi認証に戻る
+onboarding-connect_tracker-back = Wi-Fi認証に戻る
 onboarding-connect_tracker-title = 接続中のトラッカー
 onboarding-connect_tracker-description-p0 = さあ、楽しい部分に移りましょう。すべてのトラッカーを接続します！
 onboarding-connect_tracker-description-p1 = まだ接続されていないトラッカーたちをUSBポートを通して接続するだけです。
 onboarding-connect_tracker-issue-serial = 接続に問題があります！
 onboarding-connect_tracker-usb = USBトラッカー
-onboarding-connect_tracker-connection_status-connecting = wifiの認証情報を送信中
-onboarding-connect_tracker-connection_status-connected = WiFiに接続されました
-onboarding-connect_tracker-connection_status-error = Wifiに接続できません
+onboarding-connect_tracker-connection_status-connecting = Wi-Fiの認証情報を送信中
+onboarding-connect_tracker-connection_status-connected = Wi-Fiに接続されました
+onboarding-connect_tracker-connection_status-error = Wi-Fiに接続できません
 onboarding-connect_tracker-connection_status-start_connecting = トラッカーを探しています
 onboarding-connect_tracker-connection_status-handshake = サーバーに接続されました
 # $amount (Number) - Amount of trackers connected (this is a number, but you can use CLDR plural rules for your language)
@@ -431,7 +431,7 @@ onboarding-connect_tracker-connected_trackers = { $amount ->
 onboarding-connect_tracker-next = すべてのトラッカーを接続しました
 
 ## Tracker assignment setup
-onboarding-assign_trackers-back = Wifi認証に戻る
+onboarding-assign_trackers-back = Wi-Fi認証に戻る
 onboarding-assign_trackers-title = トラッカーを割り当てる
 onboarding-assign_trackers-description = どのトラッカーをどこに置くか選んでみましょう。トラッカーを配置したい場所をクリックしてください。
 # Look at translation of onboarding-connect_tracker-connected_trackers on how to use plurals

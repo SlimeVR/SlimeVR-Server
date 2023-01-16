@@ -67,9 +67,9 @@ reset-quick = Kiir Lähtestamine
 
 ## Serial detection stuff
 serial_detection-new_device-p0 = Uus jadaseade tuvastatud!
-serial_detection-new_device-p1 = Sisestage enda WiFi andmed!
+serial_detection-new_device-p1 = Sisestage enda Wi-Fi andmed!
 serial_detection-new_device-p2 = Palun valige, mida te soovite sellega teha
-serial_detection-open_wifi = Ühendage WiFi-ga
+serial_detection-open_wifi = Ühendage Wi-Fi-ga
 serial_detection-open_serial = Avage Jadakonsool
 serial_detection-submit = Jätka!
 serial_detection-close = Sulge
@@ -351,7 +351,7 @@ settings-osc-vrchat-network-port_out =
     .label = Võrguport välja
     .placeholder = Võrguport välja (vaikimisi: 9000)
 settings-osc-vrchat-network-address = Võrgu aadress
-settings-osc-vrchat-network-address-description = Vali, mis aadressile saata andmeid VRChat-i jaoks (kontrolli enda WiFi seadeid seadmest).
+settings-osc-vrchat-network-address-description = Vali, mis aadressile saata andmeid VRChat-i jaoks (kontrolli enda Wi-Fi seadeid seadmest).
 settings-osc-vrchat-network-address-placeholder = VRChat ip aadress
 settings-osc-vrchat-network-trackers = Jälgia
 settings-osc-vrchat-network-trackers-description = Lülita sisse/välja teatud jälgijate andmete saatmise OSC kaudu.
@@ -366,14 +366,14 @@ onboarding-skip = Jäta seadistamine vahele
 onboarding-continue = Jätka
 onboarding-wip = Töö käib
 
-## WiFi setup
+## Wi-Fi setup
 onboarding-wifi_creds-back = Mine tagasi juhistele
-onboarding-wifi_creds = Sisestage enda WiFi andmed!
+onboarding-wifi_creds = Sisestage enda Wi-Fi andmed!
 # This cares about multilines
 onboarding-wifi_creds-description =
     Jälgijad kasutavad neid andmeid, et ühendada juhtmevabalt. 
-    Palun kasutage neid WiFi andmeid, millega te praegu olete ühendatud.
-onboarding-wifi_creds-skip = Jätke WiFi seaded vahele.
+    Palun kasutage neid Wi-Fi andmeid, millega te praegu olete ühendatud.
+onboarding-wifi_creds-skip = Jätke Wi-Fi seaded vahele.
 onboarding-wifi_creds-submit = Jätka!
 onboarding-wifi_creds-ssid =
     .label = SSID
@@ -407,15 +407,15 @@ onboarding-done-description = Nautige enda kogu keha jälgimis kogemust
 onboarding-done-close = Sulgege juhend
 
 ## Tracker connection setup
-onboarding-connect_tracker-back = Minge tagasi WiFi andmetesse
+onboarding-connect_tracker-back = Minge tagasi Wi-Fi andmetesse
 onboarding-connect_tracker-title = Ühendage jälgijad
 onboarding-connect_tracker-description-p0 = Nüüd lähme lõbusa osa juurde, ühendame kõik jälgijad-
 onboarding-connect_tracker-description-p1 = Lihtsalt ühendage kõik jälgijad, mis ei ole ühendatud läbi USB enda arvutisse.
 onboarding-connect_tracker-issue-serial = Mul on probleeme ühenduse loomisega!
 onboarding-connect_tracker-usb = USB Jälgija
-onboarding-connect_tracker-connection_status-connecting = Saadame WiFi andmeid
-onboarding-connect_tracker-connection_status-connected = Ühendatud WiFi võrguga
-onboarding-connect_tracker-connection_status-error = WiFi-ga ei saa ühendust luua!
+onboarding-connect_tracker-connection_status-connecting = Saadame Wi-Fi andmeid
+onboarding-connect_tracker-connection_status-connected = Ühendatud Wi-Fi võrguga
+onboarding-connect_tracker-connection_status-error = Wi-Fi-ga ei saa ühendust luua!
 onboarding-connect_tracker-connection_status-start_connecting = Jälgijate otsimine
 onboarding-connect_tracker-connection_status-handshake = Ühendatud serveriga
 # $amount (Number) - Amount of trackers connected (this is a number, but you can use CLDR plural rules for your language)
@@ -431,7 +431,7 @@ onboarding-connect_tracker-connected_trackers = { $amount ->
 onboarding-connect_tracker-next = Olen ühendanud kõik oma jälgijad
 
 ## Tracker assignment setup
-onboarding-assign_trackers-back = Minge tagasi WiFi andmetesse
+onboarding-assign_trackers-back = Minge tagasi Wi-Fi andmetesse
 onboarding-assign_trackers-title = Määrake jälgijad asukoht
 onboarding-assign_trackers-description = Valime mis jälgijad lähevad kuhu. Vajutage asukohale kuhu te tahate, et jälgija läheks.
 # Look at translation of onboarding-connect_tracker-connected_trackers on how to use plurals
