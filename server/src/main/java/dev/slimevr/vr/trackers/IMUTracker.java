@@ -318,6 +318,16 @@ public class IMUTracker
 
 	private Quaternion getMountedAdjustedRotation() {
 		Quaternion rot = new Quaternion(rotQuaternion);
+		// correction.mult(store, store); // Correction is not used now to
+		// prevent accidental errors while debugging other things
+		rot.multLocal(mountAdjust);
+		return rot;
+	}
+
+	private Quaternion getMountedAdjustedDriftRotation() {
+		Quaternion rot = new Quaternion(rotQuaternion);
+		// correction.mult(store, store); // Correction is not used now to
+		// prevent accidental errors while debugging other things
 		rot.multLocal(mountAdjust);
 		if ((compensateDrift && allowDriftCompensation) && totalDriftTime > 0) {
 			rot
@@ -458,7 +468,7 @@ public class IMUTracker
 	@Override
 	public void resetMounting(boolean reverseYaw) {
 		// Get the current calibrated rotation
-		Quaternion buffer = getMountedAdjustedRotation();
+		Quaternion buffer = getMountedAdjustedDriftRotation();
 		gyroFix.mult(buffer, buffer);
 		buffer.multLocal(attachmentFix);
 
@@ -510,10 +520,10 @@ public class IMUTracker
 	}
 
 	/**
-	 * Calculates 1 since last reset and store the data related to it in
+	 * Calculates drift since last reset and store the data related to it in
 	 * driftQuat, timeAtLastReset and timeForLastReset
 	 */
-	synchronized public void calculateDrift(Quaternion beforeQuat) {
+	synchronized private void calculateDrift(Quaternion beforeQuat) {
 		if (compensateDrift && allowDriftCompensation) {
 			Quaternion rotQuat = getAdjustedRawRotation();
 
@@ -531,11 +541,10 @@ public class IMUTracker
 				// Add new drift quaternion
 				driftQuats
 					.add(
-						new Quaternion()
-							.fromAngles(
-								0f,
-								rotQuat.mult(beforeQuat.inverse()).getYaw(),
-								0f
+						rotQuat
+							.fromAngles(0, rotQuat.getYaw(), 0)
+							.mult(
+								beforeQuat.fromAngles(0, beforeQuat.getYaw(), 0).inverse()
 							)
 					);
 
@@ -572,23 +581,25 @@ public class IMUTracker
 				averagedDriftQuat.fromAveragedQuaternions(driftQuats, driftWeights);
 
 				// Save tracker rotation and current time
-				rotationSinceReset.set(rotQuat.mult(beforeQuat.inverse()));
+				rotationSinceReset.set(driftQuats.getLatest());
 				timeAtLastReset = System.currentTimeMillis();
 			} else if (
 				System.currentTimeMillis() - timeAtLastReset < DRIFT_COOLDOWN_MS
 					&& driftQuats.size() > 0
 			) {
 				// Replace latest drift quaternion
-				rotationSinceReset.multLocal(beforeQuat.mult(rotQuat.inverse()));
+				rotationSinceReset
+					.multLocal(
+						rotQuat
+							.fromAngles(0, rotQuat.getYaw(), 0)
+							.mult(
+								beforeQuat.fromAngles(0, beforeQuat.getYaw(), 0).inverse()
+							)
+					);
 				driftQuats
 					.set(
 						driftQuats.size() - 1,
-						new Quaternion()
-							.fromAngles(
-								0f,
-								rotationSinceReset.inverse().getYaw(),
-								0f
-							)
+						rotationSinceReset
 					);
 
 				// Add drift time to total
