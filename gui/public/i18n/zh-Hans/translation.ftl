@@ -58,6 +58,7 @@ skeleton_bone-UPPER_ARM = 上臂长度
 skeleton_bone-LOWER_ARM = 前臂距离
 skeleton_bone-CONTROLLER_Y = 控制器距离 Y
 skeleton_bone-CONTROLLER_Z = 控制器距离 Z
+skeleton_bone-ELBOW_OFFSET = 肘部偏移
 
 ## Tracker reset buttons
 reset-reset_all = 重置所有比例
