@@ -119,7 +119,8 @@ public class UnixSocketBridge extends SteamVRBridge implements AutoCloseable {
 		int read = channel.read(dst);
 		boolean readAnything = false;
 		// if buffer has 4 bytes at least, we got the message size!
-		if (read > 0 && dst.remaining() >= 4) {
+		// processs all messages
+		while (dst.position() >= 4) {
 			int messageLength = dst.get(0) | dst.get(1) << 8 | dst.get(2) << 16 | dst.get(3) << 24;
 			if (messageLength > 1024) { // Overflow
 				LogManager
@@ -130,7 +131,7 @@ public class UnixSocketBridge extends SteamVRBridge implements AutoCloseable {
 							+ messageLength
 					);
 				socketError = true;
-			} else if (dst.remaining() >= messageLength) {
+			} else if (dst.position() >= messageLength) {
 				// Parse the message (this reads the array directly from the
 				// dst, so we need to move position ourselves)
 				try {
@@ -140,11 +141,15 @@ public class UnixSocketBridge extends SteamVRBridge implements AutoCloseable {
 				} catch (InvalidProtocolBufferException e) {
 					LogManager.severe("Failed to read protocol message", e);
 				}
+				int originalpos = dst.position();
 				dst.position(messageLength);
 				dst.compact();
+				// move position after compacting
+				dst.position(originalpos - messageLength);
 				readAnything = true;
 			}
-		} else if (read == -1) {
+		}
+		if (read == -1) {
 			LogManager
 				.info(
 					"["

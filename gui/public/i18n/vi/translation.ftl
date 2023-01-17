@@ -58,6 +58,7 @@ skeleton_bone-UPPER_ARM = Chiều dài tay trên
 skeleton_bone-LOWER_ARM = khoảng cách cánh tay
 skeleton_bone-CONTROLLER_Y = Khoảng cách tay cầm Y
 skeleton_bone-CONTROLLER_Z = Khoảng cách tay cầm Z
+skeleton_bone-ELBOW_OFFSET = Lệch đo khuỷu tay
 
 ## Tracker reset buttons
 reset-reset_all = Reset tất cả bộ phận
@@ -366,7 +367,7 @@ onboarding-skip = Bỏ qua cài đặt
 onboarding-continue = Tiếp tục
 onboarding-wip = Đang làm dở (vui lòng quay lại sau update)
 
-## WiFi setup
+## Wi-Fi setup
 onboarding-wifi_creds-back = Quay lại đoạn giới thiệuthiệu
 onboarding-wifi_creds = Bỏ thông tin Wi-Fi ở đây
 # This cares about multilines

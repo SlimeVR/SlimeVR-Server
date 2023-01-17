@@ -58,6 +58,7 @@ skeleton_bone-UPPER_ARM = Lunghezza Braccia
 skeleton_bone-LOWER_ARM = Distanza Avambracci
 skeleton_bone-CONTROLLER_Y = Distanza Y Controller
 skeleton_bone-CONTROLLER_Z = Distanza Z Controller
+skeleton_bone-ELBOW_OFFSET = Correzione Gomito
 
 ## Tracker reset buttons
 reset-reset_all = Ripristina tutte le proporzioni
@@ -67,9 +68,9 @@ reset-quick = Reset veloce
 
 ## Serial detection stuff
 serial_detection-new_device-p0 = Nuovo dispositivo seriale rilevato!
-serial_detection-new_device-p1 = Inserisci le tue credenziali WiFi!
+serial_detection-new_device-p1 = Inserisci le tue credenziali Wi-Fi!
 serial_detection-new_device-p2 = Seleziona come utilizzare il tracker, per piacere
-serial_detection-open_wifi = Connetti al WiFi
+serial_detection-open_wifi = Connetti al Wi-Fi
 serial_detection-open_serial = Apri la Serial Console
 serial_detection-submit = Conferma!
 serial_detection-close = Chiudi
@@ -351,7 +352,7 @@ settings-osc-vrchat-network-port_out =
     .label = Porta in uscita
     .placeholder = Porta in uscita (predefinito: 9000)
 settings-osc-vrchat-network-address = Indirizzo di rete
-settings-osc-vrchat-network-address-description = Scegli a quale indirizzo di rete inviare i dati di VRChat (controlla le impostazioni WiFi sul tuo dispositivo)
+settings-osc-vrchat-network-address-description = Scegli a quale indirizzo di rete inviare i dati di VRChat (controlla le impostazioni Wi-Fi sul tuo dispositivo)
 settings-osc-vrchat-network-address-placeholder = Indirizzo IP di VRChat
 settings-osc-vrchat-network-trackers = Tracker
 settings-osc-vrchat-network-trackers-description = Attiva o disattiva l'invio e la ricezione dei dati
@@ -366,14 +367,14 @@ onboarding-skip = Salta la configurazione
 onboarding-continue = Continua
 onboarding-wip = Lavori in corso
 
-## WiFi setup
+## Wi-Fi setup
 onboarding-wifi_creds-back = Torna all'introduzione
-onboarding-wifi_creds = Inserisci credenziali WiFi
+onboarding-wifi_creds = Inserisci credenziali Wi-Fi
 # This cares about multilines
 onboarding-wifi_creds-description =
     I tracker utilizzeranno queste credenziali per connettersi in modalità wireless
     Si prega di utilizzare le stesse credenziali con cui si è attualmente connessi
-onboarding-wifi_creds-skip = Salta impostazioni WiFi
+onboarding-wifi_creds-skip = Salta impostazioni Wi-Fi
 onboarding-wifi_creds-submit = Conferma!
 onboarding-wifi_creds-ssid =
     .label = SSID
@@ -407,15 +408,15 @@ onboarding-done-description = Goditi la tua esperienza di full-body tracking
 onboarding-done-close = Chiudi la guida
 
 ## Tracker connection setup
-onboarding-connect_tracker-back = Torna alle credenziali WiFi
+onboarding-connect_tracker-back = Torna alle credenziali Wi-Fi
 onboarding-connect_tracker-title = Connetti i tracker
 onboarding-connect_tracker-description-p0 = Ora passiamo alla parte divertente, colleghiamo tutti i tracker!
 onboarding-connect_tracker-description-p1 = Collega semplicemente tutti i tracker che non sono ancora collegati tramite una porta USB.
 onboarding-connect_tracker-issue-serial = Ho problemi con la connessione!
 onboarding-connect_tracker-usb = Tracker USB
-onboarding-connect_tracker-connection_status-connecting = Invio credenziali WiFi in corso.
-onboarding-connect_tracker-connection_status-connected = Connesso al WiFi
-onboarding-connect_tracker-connection_status-error = Impossibile connettersi al WiFi
+onboarding-connect_tracker-connection_status-connecting = Invio credenziali Wi-Fi in corso.
+onboarding-connect_tracker-connection_status-connected = Connesso al Wi-Fi
+onboarding-connect_tracker-connection_status-error = Impossibile connettersi al Wi-Fi
 onboarding-connect_tracker-connection_status-start_connecting = Ricerca dei tracker in corso
 onboarding-connect_tracker-connection_status-handshake = Connesso al Server
 # $amount (Number) - Amount of trackers connected (this is a number, but you can use CLDR plural rules for your language)
@@ -431,7 +432,7 @@ onboarding-connect_tracker-connected_trackers = { $amount ->
 onboarding-connect_tracker-next = Ho collegato tutti i miei tracker
 
 ## Tracker assignment setup
-onboarding-assign_trackers-back = Torna alle credenziali WiFi
+onboarding-assign_trackers-back = Torna alle credenziali Wi-Fi
 onboarding-assign_trackers-title = Assegna i tracker
 onboarding-assign_trackers-description = Scegliamo quale tracker va dove. Fare clic su una parte del corpo in cui si desidera assegnare un tracker
 # Look at translation of onboarding-connect_tracker-connected_trackers on how to use plurals
