@@ -37,7 +37,7 @@ body_part-LEFT_LOWER_LEG = Cheville gauche
 body_part-LEFT_FOOT = Pied gauche
 body_part-LEFT_CONTROLLER = Left controller
 
-## Skeleton stuff
+## Proportions
 skeleton_bone-NONE = Aucun
 skeleton_bone-HEAD = Décalage de la tête
 skeleton_bone-NECK = Longueur du cou
@@ -152,7 +152,7 @@ body_assignment_menu-unassign_tracker = Désassigner
 ## Tracker assignment menu
 # A -translation_key (with a dash in the front) means that it's a label.
 # It can only be used in the translation file, it's nice for reusing names and that kind of stuff.
-# 
+#
 # We are using it here because english doesn't require changing the text in each case but
 # maybe your language does.
 -tracker_selection-part = Which tracker to assign to your
@@ -243,11 +243,11 @@ settings-general-tracker_mechanics-drift_compensation-max_resets-label = Nombre 
 settings-general-fk_settings = Paramètres de la capture
 settings-general-fk_settings-leg_tweak = Ajustement des jambes
 settings-general-fk_settings-leg_tweak-description = Le limitage au sol empêche vos pieds de traverser le sol, mais peut causer des problèmes lorsque vous êtes à genoux. La correction du glissement réduit le glissement, mais peut réduire la précision de certains mouvements.
-# Floor clip: 
+# Floor clip:
 # why the name - came from the idea of noclip in video games, but is the opposite where clipping to the floor is a desired feature
 # definition - Prevents the foot trackers from going lower than they where when a reset was performed
 settings-general-fk_settings-leg_tweak-floor_clip = Limitage au sol
-# Skating correction: 
+# Skating correction:
 # why the name - without this enabled the feet will often slide across the ground as if your skating across the ground,
 # since this largely prevents this it corrects for it hence skating correction (note this may be renamed to sliding correction)
 # definition - Guesses when each foot is in contact with the ground and uses that information to improve tracking
@@ -491,7 +491,7 @@ onboarding-automatic_proportions-preparation-title = Préparation
 onboarding-automatic_proportions-preparation-description = Placez une chaise directement derrière vous dans votre espace de jeu.
 onboarding-automatic_proportions-preparation-next = je suis devant une chaise
 onboarding-automatic_proportions-start_recording-title = Préparez-vous à bouger
-onboarding-automatic_proportions-start_recording-description = Nous allons maintenant enregistrer des poses et des mouvements spécifiques. 
+onboarding-automatic_proportions-start_recording-description = Nous allons maintenant enregistrer des poses et des mouvements spécifiques.
 onboarding-automatic_proportions-start_recording-next = Commencer l'enregistrement
 onboarding-automatic_proportions-recording-title = Enregistrement
 onboarding-automatic_proportions-recording-description-p0 = Enregistrement en cours...

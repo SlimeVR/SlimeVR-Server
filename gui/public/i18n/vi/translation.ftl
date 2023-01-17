@@ -37,7 +37,7 @@ body_part-LEFT_LOWER_LEG = Chân trái dưới
 body_part-LEFT_FOOT = Bàn chân trái
 body_part-LEFT_CONTROLLER = Tay cầm trái
 
-## Skeleton stuff
+## Proportions
 skeleton_bone-NONE = Chưa liên kết
 skeleton_bone-HEAD = Đầu ca
 skeleton_bone-NECK = Cổ dài
@@ -152,7 +152,7 @@ body_assignment_menu-unassign_tracker = Tracker chưa giao vị trí
 ## Tracker assignment menu
 # A -translation_key (with a dash in the front) means that it's a label.
 # It can only be used in the translation file, it's nice for reusing names and that kind of stuff.
-# 
+#
 # We are using it here because english doesn't require changing the text in each case but
 # maybe your language does.
 -tracker_selection-part = Tracker nào để giao cho vị trí
@@ -243,11 +243,11 @@ settings-general-tracker_mechanics-drift_compensation-max_resets-label = Use up 
 settings-general-fk_settings = Cài đặt FK
 settings-general-fk_settings-leg_tweak = Chỉnh chân
 settings-general-fk_settings-leg_tweak-description = Chỉnh chân có thể giảm hoặc loại bỏ chân đi xuyên sàn nhà nhưng có thể ảnh hưởng đầu gối. Sửa trượt sửa khi lướt, nhưng giảm độ chính xác ở một số cử động.
-# Floor clip: 
+# Floor clip:
 # why the name - came from the idea of noclip in video games, but is the opposite where clipping to the floor is a desired feature
 # definition - Prevents the foot trackers from going lower than they where when a reset was performed
 settings-general-fk_settings-leg_tweak-floor_clip = Xuyên sàn
-# Skating correction: 
+# Skating correction:
 # why the name - without this enabled the feet will often slide across the ground as if your skating across the ground,
 # since this largely prevents this it corrects for it hence skating correction (note this may be renamed to sliding correction)
 # definition - Guesses when each foot is in contact with the ground and uses that information to improve tracking
@@ -273,7 +273,7 @@ settings-general-gesture_control-description = Bật hoặc tắt reset nhanh. K
 # $amount (Number) - Amount of taps (touches to the tracker's case)
 settings-general-gesture_control-taps = { $amount ->
     [one] 1 tap
-    *[other] { $amount } lần 
+    *[other] { $amount } lần
 }
 settings-general-gesture_control-quickResetEnabled = Enable tap to quick reset
 settings-general-gesture_control-quickResetDelay = Quick reset delay
@@ -505,7 +505,7 @@ onboarding-automatic_proportions-recording-processing = Đang xử lí kết qu�
 # $time (Number) - Seconds left for the automatic calibration recording to finish (max 15)
 onboarding-automatic_proportions-recording-timer = { $time ->
     [one] 1 giây còn lại
-    *[other] { $time } giây còn 
+    *[other] { $time } giây còn
 }
 onboarding-automatic_proportions-verify_results-title = Xác nhận kết quả
 onboarding-automatic_proportions-verify_results-description = Kiểm tra kết quả dưới đây, nó có chính xác không?

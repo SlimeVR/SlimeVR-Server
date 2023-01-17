@@ -37,7 +37,7 @@ body_part-LEFT_LOWER_LEG = 左小腿
 body_part-LEFT_FOOT = 左脚
 body_part-LEFT_CONTROLLER = 左控制器
 
-## Skeleton stuff
+## Proportions
 skeleton_bone-NONE = 无
 skeleton_bone-HEAD = 头部偏移
 skeleton_bone-NECK = 颈部长度
@@ -152,7 +152,7 @@ body_assignment_menu-unassign_tracker = 取消分配追踪器
 ## Tracker assignment menu
 # A -translation_key (with a dash in the front) means that it's a label.
 # It can only be used in the translation file, it's nice for reusing names and that kind of stuff.
-# 
+#
 # We are using it here because english doesn't require changing the text in each case but
 # maybe your language does.
 -tracker_selection-part = 哪个追踪器将被分配到你的
@@ -243,11 +243,11 @@ settings-general-tracker_mechanics-drift_compensation-max_resets-label = 使用�
 settings-general-fk_settings = FK 设置
 settings-general-fk_settings-leg_tweak = 腿部调整
 settings-general-fk_settings-leg_tweak-description = 本设置可以减少甚至消除脚部穿入地板的情况，但是当你跪在地上的时候可能产生一些问题. 脚滑矫正可以矫正一些脚滑溜冰的问题, 但是可能会降低某些动作的准确性。
-# Floor clip: 
+# Floor clip:
 # why the name - came from the idea of noclip in video games, but is the opposite where clipping to the floor is a desired feature
 # definition - Prevents the foot trackers from going lower than they where when a reset was performed
 settings-general-fk_settings-leg_tweak-floor_clip = 地板限制
-# Skating correction: 
+# Skating correction:
 # why the name - without this enabled the feet will often slide across the ground as if your skating across the ground,
 # since this largely prevents this it corrects for it hence skating correction (note this may be renamed to sliding correction)
 # definition - Guesses when each foot is in contact with the ground and uses that information to improve tracking

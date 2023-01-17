@@ -1,6 +1,6 @@
 ### SlimeVR complete GUI translations
 # Please developers (not translators) don't reuse a key inside another key
-# or concat text with a translation string in the code, use the appropiate 
+# or concat text with a translation string in the code, use the appropiate
 # features like variables and selectors in each appropiate case!
 # And also comment the string if it's something not easy to translate so you help
 # translators on what it means
@@ -37,7 +37,7 @@ body_part-LEFT_LOWER_LEG = Linkerenkel
 body_part-LEFT_FOOT = Linkervoet
 body_part-LEFT_CONTROLLER = Linkercontroller
 
-## Skeleton stuff
+## Proportions
 skeleton_bone-NONE = Geen
 skeleton_bone-HEAD = Hoofdverschuiving
 skeleton_bone-NECK = Necklengte
@@ -148,7 +148,7 @@ body_assignment_menu-unassign_tracker = Tracker niet toewijzen
 ## Tracker assignment menu
 # A -translation_key (with a dash in the front) means that it's a label.
 # It can only be used in the translation file, it's nice for reusing names and that kind of stuff.
-# 
+#
 # We are using it here because english doesn't require changing the text in each case but
 # maybe your language does.
 -tracker_selection-part = Welke tracker wil je toewijzen aan je
@@ -231,11 +231,11 @@ settings-general-tracker_mechanics-amount = Hoeveelheid
 settings-general-fk_settings = Tracking instellingen
 settings-general-fk_settings-leg_tweak = Been tracking aanpassingen
 settings-general-fk_settings-leg_tweak-description = Floor-clip verminderd de kans dat je voeten door de grond gaan, maar kan problemen veroorzaken als je op je knieën bent. Skating-correctie corrigeert ongewenst glijden van je voeten, maar kan de nauwkeurigheid in bepaalde bewegingspatronen verminderen.
-# Floor clip: 
+# Floor clip:
 # why the name - came from the idea of noclip in video games, but is the opposite where clipping to the floor is a desired feature
 # definition - Prevents the foot trackers from going lower than they where when a reset was performed
 settings-general-fk_settings-leg_tweak-floor_clip = Floor-clip
-# Skating correction: 
+# Skating correction:
 # why the name - without this enabled the feet will often slide across the ground as if your skating across the ground,
 # since this largely prevents this it corrects for it hence skating correction (note this may be renamed to sliding correction)
 # definition - Guesses when each foot is in contact with the ground and uses that information to improve tracking
