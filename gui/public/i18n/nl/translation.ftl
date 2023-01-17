@@ -77,9 +77,9 @@ serial_detection-close = Sluiten
 
 ## Navigation bar
 navbar-home = Home
-navbar-body_proportions = Lichaamsverhoudingen
+navbar-body_proportions = Lichaams- verhoudingen
 navbar-trackers_assign = Tracker toewijzing
-navbar-mounting = Bevestigingskalibratie
+navbar-mounting = Bevestigings- kalibratie
 navbar-onboarding = Setupgids
 navbar-settings = Instellingen
 
@@ -384,7 +384,7 @@ onboarding-wifi_creds-password =
     .placeholder = Vul paswoord in
 
 ## Mounting setup
-onboarding-reset_tutorial-back = Ga terug naar de bevestigingscalibratie
+onboarding-reset_tutorial-back = Ga terug naar de bevestigingskalibratie
 onboarding-reset_tutorial = Reset tutorial
 onboarding-reset_tutorial-description = Deze stap is nog niet afgewerkt, druk gewoon op doorgaan.
 
@@ -454,13 +454,13 @@ onboarding-manual_mounting-next = Volgende stap
 
 ## Tracker automatic mounting setup
 onboarding-automatic_mounting-back = Ga terug naar de VR sectie
-onboarding-automatic_mounting-title = Bevestigingscalibratie
+onboarding-automatic_mounting-title = Bevestigingskalibratie
 onboarding-automatic_mounting-description = Om je trackers te laten werken, moet de rotatie worden ingesteld hoe deze zijn bevestigd op je lichaam.
 onboarding-automatic_mounting-manual_mounting = Bevestiging handmatig instellen
 onboarding-automatic_mounting-next = Volgende stap
 onboarding-automatic_mounting-prev_step = Vorige stap
 onboarding-automatic_mounting-done-title = Bevestigingsrotaties gecalibreerd.
-onboarding-automatic_mounting-done-description = Uw bevestigingscalibratie is compleet!
+onboarding-automatic_mounting-done-description = Uw bevestigingskalibratie is compleet!
 onboarding-automatic_mounting-done-restart = Terug naar start
 onboarding-automatic_mounting-mounting_reset-title = Bevestiging calibreren
 onboarding-automatic_mounting-mounting_reset-step-0 = 1. Ga staan in een "skie"-houding met gebogen benen, uw bovenlichaam naar voren gekanteld en armen gebogen.
@@ -476,13 +476,13 @@ onboarding-automatic_mounting-put_trackers_on-next = Ik heb al mijn trackers aan
 onboarding-manual_proportions-back = Ga terug naar tutorial opnieuw instellen
 onboarding-manual_proportions-title = Handmatige lichaamsverhoudingen
 onboarding-manual_proportions-precision = Precisie-aanpassing
-onboarding-manual_proportions-auto = Automatische calibratie
+onboarding-manual_proportions-auto = Automatische kalibratie
 
 ## Tracker automatic proportions setup
 onboarding-automatic_proportions-back = Ga terug naar tutorial opnieuw instellen
 onboarding-automatic_proportions-title = Meet je lichaam
-onboarding-automatic_proportions-description = Om SlimeVR-trackers te laten werken, moeten we de lengte van je botten weten. Deze korte calibratie meet het voor je.
-onboarding-automatic_proportions-manual = Handmatige calibratie
+onboarding-automatic_proportions-description = Om SlimeVR-trackers te laten werken, moeten we de lengte van je botten weten. Deze korte kalibratie meet het voor je.
+onboarding-automatic_proportions-manual = Handmatige kalibratie
 onboarding-automatic_proportions-prev_step = Vorige stap
 onboarding-automatic_proportions-put_trackers_on-title = Doe je trackers aan
 onboarding-automatic_proportions-put_trackers_on-description = Om je verhoudingen te calibreren, gaan we gebruik maken van de trackers die je net hebt toegewezen. Doe al je trackers aan, je kunt zien welke trackers welke zijn in de figuur rechts.
@@ -514,7 +514,7 @@ onboarding-automatic_proportions-verify_results-processing = Resultaat verwerken
 onboarding-automatic_proportions-verify_results-redo = Opname opnieuw doen
 onboarding-automatic_proportions-verify_results-confirm = Ze zijn correct
 onboarding-automatic_proportions-done-title = Lichaam gemeten en opgeslagen.
-onboarding-automatic_proportions-done-description = Je calibratie voor lichaamsverhoudingen is voltooid!
+onboarding-automatic_proportions-done-description = Je kalibratie voor lichaamsverhoudingen is voltooid!
 
 ## Home
 home-no_trackers = Geen trackers gedetecteerd of toegewezen
