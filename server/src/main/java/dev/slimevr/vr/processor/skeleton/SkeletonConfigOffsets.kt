@@ -142,6 +142,12 @@ enum class SkeletonConfigOffsets(
 			BoneType.RIGHT_HAND,
 		),
 	),
+	ELBOW_OFFSET(
+		20u,
+		"elbowOffset",
+		0.0f,
+		arrayOf(BoneType.LEFT_ELBOW_TRACKER, BoneType.RIGHT_ELBOW_TRACKER),
+	),
 	;
 
 	companion object {
