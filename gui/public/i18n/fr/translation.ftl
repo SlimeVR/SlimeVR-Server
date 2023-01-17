@@ -275,6 +275,7 @@ settings-general-fk_settings-leg_tweak-skating_correction-amount = Force de la c
 settings-general-fk_settings-arm_fk = Capture des bras
 settings-general-fk_settings-arm_fk-description = Changez la façon dont les bras sont captés.
 settings-general-fk_settings-arm_fk-force_arms = Forcer les bras en provenance du casque VR
+settings-general-fk_settings-arm_fk-i_pose = Utiliser la i-pose au lieu de la t-pose
 settings-general-fk_settings-skeleton_settings = Paramètres du squelette
 settings-general-fk_settings-skeleton_settings-description = Activez ou désactivez des paramètres avancés de capture.
 settings-general-fk_settings-skeleton_settings-extended_spine = Colone vertébrale avancée

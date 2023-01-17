@@ -275,6 +275,7 @@ settings-general-fk_settings-leg_tweak-skating_correction-amount = Skating-corre
 settings-general-fk_settings-arm_fk = Arm tracking
 settings-general-fk_settings-arm_fk-description = Verander de manier waarop de armen worden getrackt.
 settings-general-fk_settings-arm_fk-force_arms = Dwing armen vanuit HMD
+settings-general-fk_settings-arm_fk-i_pose = Use i-pose instead of t-pose
 settings-general-fk_settings-skeleton_settings = Skeleton instellingen
 settings-general-fk_settings-skeleton_settings-description = Schakel skeleton instellingen in of uit. Het is aanbevolen om deze aan te laten.
 settings-general-fk_settings-skeleton_settings-extended_spine = Uitgebreide rug

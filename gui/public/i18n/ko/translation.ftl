@@ -275,6 +275,7 @@ settings-general-fk_settings-leg_tweak-skating_correction-amount = 스케이팅 
 settings-general-fk_settings-arm_fk = 팔 운동학
 settings-general-fk_settings-arm_fk-description = 팔이 추적되는 방식을 변경할 수 있어요.
 settings-general-fk_settings-arm_fk-force_arms = 팔을 HMD에서만 받아오기
+settings-general-fk_settings-arm_fk-i_pose = Use i-pose instead of t-pose
 settings-general-fk_settings-skeleton_settings = 골격 설정
 settings-general-fk_settings-skeleton_settings-description = 골격 설정을 설정하거나 해제해요. 이것들은 켜두는 게 좋아요.
 settings-general-fk_settings-skeleton_settings-extended_spine = 척추 확장

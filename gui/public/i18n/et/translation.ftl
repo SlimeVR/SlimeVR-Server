@@ -256,6 +256,7 @@ settings-general-fk_settings-leg_tweak-skating_correction-amount = Libisemise ko
 settings-general-fk_settings-arm_fk = Käe jälgimine
 settings-general-fk_settings-arm_fk-description = Muuda viisi kuidas käsi jälgitakse.
 settings-general-fk_settings-arm_fk-force_arms = Sunni käed HMD-st
+settings-general-fk_settings-arm_fk-i_pose = Use i-pose instead of t-pose
 settings-general-fk_settings-skeleton_settings = Skeletti seaded
 settings-general-fk_settings-skeleton_settings-description = Lülita skeletti seaded sisse või välja. Soovitatud on see sisse jätta.
 settings-general-fk_settings-skeleton_settings-extended_spine = Selgroo laiendamine

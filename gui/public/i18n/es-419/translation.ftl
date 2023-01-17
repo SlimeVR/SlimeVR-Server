@@ -275,6 +275,7 @@ settings-general-fk_settings-leg_tweak-skating_correction-amount = Agresividad d
 settings-general-fk_settings-arm_fk = Trackeo de brazos
 settings-general-fk_settings-arm_fk-description = Cambia cómo el movimiento de los brazos es detectado.
 settings-general-fk_settings-arm_fk-force_arms = Forzar brazos desde el HMD
+settings-general-fk_settings-arm_fk-i_pose = Use i-pose instead of t-pose
 settings-general-fk_settings-skeleton_settings = Ajustes de esqueleto
 settings-general-fk_settings-skeleton_settings-description = Habilita o deshabilita los ajustes de esqueleto. Es recomendado dejar estos ajustes habilitados.
 settings-general-fk_settings-skeleton_settings-extended_spine = Extención de columna

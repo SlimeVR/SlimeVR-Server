@@ -275,6 +275,7 @@ settings-general-fk_settings-leg_tweak-skating_correction-amount = 脚滑矫正�
 settings-general-fk_settings-arm_fk = 手臂 FK
 settings-general-fk_settings-arm_fk-description = 更改手臂的追踪方式。
 settings-general-fk_settings-arm_fk-force_arms = 强制从头显获得数据
+settings-general-fk_settings-arm_fk-i_pose = Use i-pose instead of t-pose
 settings-general-fk_settings-skeleton_settings = 骨架设置
 settings-general-fk_settings-skeleton_settings-description = 打开或关闭骨架设置。建议保持这些设置不变。
 settings-general-fk_settings-skeleton_settings-extended_spine = 脊柱延伸

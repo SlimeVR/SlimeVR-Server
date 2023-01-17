@@ -262,11 +262,11 @@ settings-general-tracker_mechanics-drift_compensation-max_resets-label = Số l�
 settings-general-fk_settings = Cài đặt nâng cao
 settings-general-fk_settings-leg_tweak = Chân
 settings-general-fk_settings-leg_tweak-description = "Ngăn xuyên sàn" có thể giảm thiểu khả năng chân xuống thấp hơn sàn sau khi đặt lại vị trí tracker, có thể gây vấn đề nếu đang đứng bằng đầu gối. "Sửa trượt" giúp giảm thiểu tình trạng chân có chuyển động nhỏ so với sàn khi đứng yên, có thể làm giảm độ chính xác với một số chuyển động cụ thể
-# Floor clip: 
+# Floor clip:
 # why the name - came from the idea of noclip in video games, but is the opposite where clipping to the floor is a desired feature
 # definition - Prevents the foot trackers from going lower than they where when a reset was performed
 settings-general-fk_settings-leg_tweak-floor_clip = Ngăn xuyên sàn
-# Skating correction: 
+# Skating correction:
 # why the name - without this enabled the feet will often slide across the ground as if your skating across the ground,
 # since this largely prevents this it corrects for it hence skating correction (note this may be renamed to sliding correction)
 # definition - Guesses when each foot is in contact with the ground and uses that information to improve tracking
@@ -275,6 +275,7 @@ settings-general-fk_settings-leg_tweak-skating_correction-amount = Mức độ s
 settings-general-fk_settings-arm_fk = Track cánh tay
 settings-general-fk_settings-arm_fk-description = Thay đổi cách cánh tay được track
 settings-general-fk_settings-arm_fk-force_arms = Lấy dữ liệu cánh tay từ kính
+settings-general-fk_settings-arm_fk-i_pose = Use i-pose instead of t-pose
 settings-general-fk_settings-skeleton_settings = Cài đặt khung cơ thể
 settings-general-fk_settings-skeleton_settings-description = Bật hoặc tắt các cài đặt về khung cơ thể. Các lựa chọn này nên được giữ bật
 settings-general-fk_settings-skeleton_settings-extended_spine = Xương sống kéo dài
@@ -292,7 +293,7 @@ settings-general-gesture_control-description = Cho phép chạm vào tracker đ�
 # $amount (Number) - Amount of taps (touches to the tracker's case)
 settings-general-gesture_control-taps = { $amount ->
 #   [one] 1 lần # Vietnamese doesn't have singular/plural difference but just leave it here to match up line count, easier for proofing with side by side English
-    *[other] { $amount } lần 
+    *[other] { $amount } lần
 }
 settings-general-gesture_control-quickResetEnabled = Chạm để đặt lại nhanh
 settings-general-gesture_control-quickResetDelay = Thời gian delay trước khi đặt lại nhanh

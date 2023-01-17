@@ -275,6 +275,7 @@ settings-general-fk_settings-leg_tweak-skating_correction-amount = Forza fattore
 settings-general-fk_settings-arm_fk = FK Braccia
 settings-general-fk_settings-arm_fk-description = Cambia la modalità di tracciamento delle braccia.
 settings-general-fk_settings-arm_fk-force_arms = Forza il calcolo della posizione delle braccia a utilizzare il HMD
+settings-general-fk_settings-arm_fk-i_pose = Use i-pose instead of t-pose
 settings-general-fk_settings-skeleton_settings = Impostazioni scheletro
 settings-general-fk_settings-skeleton_settings-description = Abilita o disabilita le impostazioni dello scheletro. É raccomandato lasciare queste impostazioni attive.
 settings-general-fk_settings-skeleton_settings-extended_spine = Estensione colonna vertebrale

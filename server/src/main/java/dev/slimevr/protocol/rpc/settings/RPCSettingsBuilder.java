@@ -153,7 +153,8 @@ public class RPCSettingsBuilder {
 				config.getToggle(SkeletonConfigToggles.FORCE_ARMS_FROM_HMD),
 				config.getToggle(SkeletonConfigToggles.FLOOR_CLIP),
 				config.getToggle(SkeletonConfigToggles.SKATING_CORRECTION),
-				config.getToggle(SkeletonConfigToggles.VIVE_EMULATION)
+				config.getToggle(SkeletonConfigToggles.VIVE_EMULATION),
+				config.getToggle(SkeletonConfigToggles.I_POSE)
 			);
 		int ratiosOffset = ModelRatios
 			.createModelRatios(

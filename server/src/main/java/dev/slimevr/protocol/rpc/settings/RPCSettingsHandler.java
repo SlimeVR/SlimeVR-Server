@@ -273,6 +273,7 @@ public record RPCSettingsHandler(RPCHandler rpcHandler, ProtocolAPI api) {
 						toggles.skatingCorrection()
 					);
 				cfg.setToggle(SkeletonConfigToggles.VIVE_EMULATION, toggles.viveEmulation());
+				cfg.setToggle(SkeletonConfigToggles.I_POSE, toggles.iPose());
 			}
 
 			if (ratios != null) {

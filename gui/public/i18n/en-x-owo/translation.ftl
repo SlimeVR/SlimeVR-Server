@@ -275,6 +275,7 @@ settings-general-fk_settings-leg_tweak-skating_correction-amount = skawting coww
 settings-general-fk_settings-arm_fk = awm fk
 settings-general-fk_settings-arm_fk-description = chawnge teh way teh awms awe twacked.
 settings-general-fk_settings-arm_fk-force_arms = fowce awms fwom hmd
+settings-general-fk_settings-arm_fk-i_pose = uwse i powse insted of t powse
 settings-general-fk_settings-skeleton_settings = skeweton sewttings
 settings-general-fk_settings-skeleton_settings-description = toggwe skeweton sewttings on owow off. is wowcommended to weawve these on~
 settings-general-fk_settings-skeleton_settings-extended_spine = ewtended spine

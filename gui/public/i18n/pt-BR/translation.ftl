@@ -275,6 +275,7 @@ settings-general-fk_settings-leg_tweak-skating_correction-amount = Força da cor
 settings-general-fk_settings-arm_fk = Opções do Braço
 settings-general-fk_settings-arm_fk-description = Muda o jeito que os braços são rastreados.
 settings-general-fk_settings-arm_fk-force_arms = Forçar braços do HMD
+settings-general-fk_settings-arm_fk-i_pose = Use i-pose instead of t-pose
 settings-general-fk_settings-skeleton_settings = Opções do esqueleto
 settings-general-fk_settings-skeleton_settings-description = Ligar ou desligar opções do esqueleto. É recomendado deixar eles ligados.
 settings-general-fk_settings-skeleton_settings-extended_spine = Estender coluna

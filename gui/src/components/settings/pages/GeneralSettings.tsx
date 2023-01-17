@@ -54,6 +54,7 @@ interface SettingsForm {
     floorClip: boolean;
     skatingCorrection: boolean;
     viveEmulation: boolean;
+    iPose: boolean;
   };
   tapDetection: {
     tapMountingResetEnabled: boolean;
@@ -92,6 +93,7 @@ const defaultValues = {
     floorClip: false,
     skatingCorrection: false,
     viveEmulation: false,
+    iPose: false,
   },
   filtering: { amount: 0.1, type: FilteringType.NONE },
   driftCompensation: {
@@ -149,6 +151,7 @@ export function GeneralSettings() {
     toggles.extendedSpine = values.toggles.extendedSpine;
     toggles.forceArmsFromHmd = values.toggles.forceArmsFromHmd;
     toggles.viveEmulation = values.toggles.viveEmulation;
+    toggles.iPose = values.toggles.iPose;
     legTweaks.correctionStrength = values.legTweaks.correctionStrength;
 
     modelSettings.toggles = toggles;
@@ -550,6 +553,17 @@ export function GeneralSettings() {
               name="toggles.forceArmsFromHmd"
               label={l10n.getString(
                 'settings-general-fk_settings-arm_fk-force_arms'
+              )}
+            />
+          </div>
+          <div className="grid sm:grid-cols-2 pb-5">
+            <CheckBox
+              variant="toggle"
+              outlined
+              control={control}
+              name="toggles.iPose"
+              label={l10n.getString(
+                'settings-general-fk_settings-arm_fk-i_pose'
               )}
             />
           </div>

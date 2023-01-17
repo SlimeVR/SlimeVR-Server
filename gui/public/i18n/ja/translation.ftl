@@ -275,6 +275,7 @@ settings-general-fk_settings-leg_tweak-skating_correction-amount = スケーテ�
 settings-general-fk_settings-arm_fk = アームトラッキング
 settings-general-fk_settings-arm_fk-description = 腕の追従方法を変更する。
 settings-general-fk_settings-arm_fk-force_arms = Force arms from HMD
+settings-general-fk_settings-arm_fk-i_pose = Use i-pose instead of t-pose
 settings-general-fk_settings-skeleton_settings = スケルトン設定
 settings-general-fk_settings-skeleton_settings-description = スケルトン設定のオン/オフを切り替えます。これらはオンのままにしておくことをお勧めします。
 settings-general-fk_settings-skeleton_settings-extended_spine = Extended spine
