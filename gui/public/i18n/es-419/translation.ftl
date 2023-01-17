@@ -232,7 +232,7 @@ settings-general-tracker_mechanics-filtering-amount = Cantidad
 settings-general-tracker_mechanics-drift_compensation = Compensación de desviación
 # This cares about multilines
 settings-general-tracker_mechanics-drift_compensation-description =
-    Compensa la desviación de los sensores aplicando una rotación inversa.
+    Compensa la desviación del eje vertical de los sensores aplicando una rotación inversa.
     Cambia la fuerza de la compensación y hasta cuantos reinicios tomar en cuenta.
 settings-general-tracker_mechanics-drift_compensation-enabled-label = Compensación de desviación
 settings-general-tracker_mechanics-drift_compensation-amount-label = Fuerza de la compensación
@@ -437,7 +437,7 @@ onboarding-assign_trackers-description = Debes escoger dónde van los sensores. 
 # Look at translation of onboarding-connect_tracker-connected_trackers on how to use plurals
 # $assigned (Number) - Trackers that have been assigned a body part
 # $trackers (Number) - Trackers connected to the server
-onboarding-assign_trackers-assigned = { $assigned } of { $trackers ->
+onboarding-assign_trackers-assigned = { $assigned } de { $trackers ->
     [one] 1 sensor asignado
     *[other] { $trackers } sensores asignados
 } 
