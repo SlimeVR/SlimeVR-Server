@@ -237,7 +237,7 @@ public class TrackersUDPServer extends Thread {
 				Main.getVrServer()
 			);
 
-			connection.getTrackers().add(imu);
+			connection.getTrackers().put(trackerId, imu);
 			trackersConsumer.accept(imu);
 			LogManager
 				.info(
@@ -315,7 +315,7 @@ public class TrackersUDPServer extends Thread {
 							parser.write(bb, conn, new UDPPacket1Heartbeat());
 							socket.send(new DatagramPacket(rcvBuffer, bb.position(), conn.address));
 							if (conn.lastPacket + 1000 < System.currentTimeMillis()) {
-								for (Tracker value : conn.getTrackers()) {
+								for (Tracker value : conn.getTrackers().values()) {
 									IMUTracker tracker = (IMUTracker) value;
 									if (tracker.getStatus() == TrackerStatus.OK)
 										tracker.setStatus(TrackerStatus.DISCONNECTED);
@@ -326,7 +326,7 @@ public class TrackersUDPServer extends Thread {
 								}
 							} else {
 								conn.timedOut = false;
-								for (Tracker value : conn.getTrackers()) {
+								for (Tracker value : conn.getTrackers().values()) {
 									IMUTracker tracker = (IMUTracker) value;
 									if (tracker.getStatus() == TrackerStatus.DISCONNECTED)
 										tracker.setStatus(TrackerStatus.OK);
@@ -452,7 +452,7 @@ public class TrackersUDPServer extends Thread {
 					break;
 				UDPPacket10PingPong ping = (UDPPacket10PingPong) packet;
 				if (connection.lastPingPacketId == ping.pingId) {
-					for (Tracker t : connection.getTrackers()) {
+					for (Tracker t : connection.getTrackers().values()) {
 						IMUTracker imuTracker = (IMUTracker) t;
 						imuTracker
 							.setPing(
@@ -485,7 +485,7 @@ public class TrackersUDPServer extends Thread {
 
 				if (connection.getTrackers().size() > 0) {
 
-					for (Tracker value : connection.getTrackers()) {
+					for (Tracker value : connection.getTrackers().values()) {
 						IMUTracker tr = (IMUTracker) value;
 						tr.setBatteryVoltage(battery.voltage);
 						tr.setBatteryLevel(battery.level * 100);
@@ -549,7 +549,7 @@ public class TrackersUDPServer extends Thread {
 				UDPPacket19SignalStrength signalStrength = (UDPPacket19SignalStrength) packet;
 
 				if (connection.getTrackers().size() > 0) {
-					for (Tracker value : connection.getTrackers()) {
+					for (Tracker value : connection.getTrackers().values()) {
 						IMUTracker tr = (IMUTracker) value;
 						tr.setSignalStrength(signalStrength.signalStrength);
 					}

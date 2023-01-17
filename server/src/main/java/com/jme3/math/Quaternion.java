@@ -1494,9 +1494,9 @@ public final class Quaternion implements Cloneable, java.io.Serializable {
 	/**
 	 * <code>inverse</code> returns the inverse of this quaternion as a new
 	 * quaternion. If this quaternion does not have an inverse (if its normal is
-	 * 0 or less), then null is returned.
+	 * 0 or less), then this quaternion is returned.
 	 *
-	 * @return the inverse of this quaternion or null if the inverse does not
+	 * @return the inverse of this quaternion or itself if the inverse does not
 	 * exist.
 	 */
 	public Quaternion inverse() {
@@ -1512,9 +1512,9 @@ public final class Quaternion implements Cloneable, java.io.Serializable {
 	/**
 	 * <code>inverse</code> returns the inverse of this quaternion. If this
 	 * quaternion does not have an inverse (if its normal is 0 or less), then
-	 * null is returned.
+	 * this quaternion is returned.
 	 *
-	 * @return the inverse of this quaternion or null if the inverse does not
+	 * @return the inverse of this quaternion or itself if the inverse does not
 	 * exist.
 	 */
 	public Quaternion inverse(Quaternion store) {
@@ -1523,8 +1523,8 @@ public final class Quaternion implements Cloneable, java.io.Serializable {
 			float invNorm = 1.0f / norm;
 			return store.set(-x * invNorm, -y * invNorm, -z * invNorm, w * invNorm);
 		}
-		// return an invalid result to flag the error
-		return null;
+		// return itself since it has no inverse
+		return this;
 	}
 
 	/**

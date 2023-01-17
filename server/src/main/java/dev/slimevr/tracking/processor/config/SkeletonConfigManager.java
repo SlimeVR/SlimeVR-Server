@@ -285,6 +285,12 @@ public class SkeletonConfigManager {
 				getOffset(SkeletonConfigOffsets.CONTROLLER_Y),
 				getOffset(SkeletonConfigOffsets.CONTROLLER_Z)
 			);
+			case LEFT_ELBOW_TRACKER, RIGHT_ELBOW_TRACKER -> setNodeOffset(
+				nodeOffset,
+				0,
+				getOffset(SkeletonConfigOffsets.ELBOW_OFFSET),
+				0
+			);
 		}
 	}
 

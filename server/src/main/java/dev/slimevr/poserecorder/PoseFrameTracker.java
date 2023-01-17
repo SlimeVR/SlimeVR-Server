@@ -264,6 +264,11 @@ public class PoseFrameTracker implements Tracker, Iterable<TrackerFrame> {
 	}
 
 	@Override
+	public boolean hasAcceleration() {
+		return false;
+	}
+
+	@Override
 	public boolean isComputed() {
 		return true;
 	}

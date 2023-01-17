@@ -125,6 +125,12 @@ public enum SkeletonConfigOffsets {
 		0.13f,
 		new BoneType[] { BoneType.LEFT_CONTROLLER, BoneType.RIGHT_CONTROLLER,
 			BoneType.LEFT_HAND, BoneType.RIGHT_HAND }
+	),
+	ELBOW_OFFSET(
+		20,
+		"elbowOffset",
+		0.0f,
+		new BoneType[] { BoneType.LEFT_ELBOW_TRACKER, BoneType.RIGHT_ELBOW_TRACKER }
 	),;
 
 	public static final SkeletonConfigOffsets[] values = values();

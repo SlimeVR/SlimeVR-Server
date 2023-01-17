@@ -58,6 +58,7 @@ skeleton_bone-UPPER_ARM = Upper Arm Length
 skeleton_bone-LOWER_ARM = Lower Arm Length
 skeleton_bone-CONTROLLER_Y = Controller Distance Y
 skeleton_bone-CONTROLLER_Z = Controller Distance Z
+skeleton_bone-ELBOW_OFFSET = Elbow Offset
 
 ## Tracker reset buttons
 reset-reset_all = Reset all proportions
@@ -67,9 +68,9 @@ reset-quick = Quick Reset
 
 ## Serial detection stuff
 serial_detection-new_device-p0 = New serial device detected!
-serial_detection-new_device-p1 = Enter your WiFi credentials!
+serial_detection-new_device-p1 = Enter your Wi-Fi credentials!
 serial_detection-new_device-p2 = Please select what you want to do with it
-serial_detection-open_wifi = Connect to WiFi
+serial_detection-open_wifi = Connect to Wi-Fi
 serial_detection-open_serial = Open Serial Console
 serial_detection-submit = Submit!
 serial_detection-close = Close
@@ -351,7 +352,7 @@ settings-osc-vrchat-network-port_out =
     .label = Port Out
     .placeholder = Port out (default: 9000)
 settings-osc-vrchat-network-address = Network address
-settings-osc-vrchat-network-address-description = Choose which address to send out data to VRChat (check your wifi settings on your device).
+settings-osc-vrchat-network-address-description = Choose which address to send out data to VRChat (check your Wi-Fi settings on your device).
 settings-osc-vrchat-network-address-placeholder = VRChat ip address
 settings-osc-vrchat-network-trackers = Trackers
 settings-osc-vrchat-network-trackers-description = Toggle the sending of specific trackers via OSC.
@@ -366,18 +367,18 @@ onboarding-skip = Skip setup
 onboarding-continue = Continue
 onboarding-wip = Work in progress
 
-## WiFi setup
+## Wi-Fi setup
 onboarding-wifi_creds-back = Go Back to introduction
-onboarding-wifi_creds = Input WiFi credentials
+onboarding-wifi_creds = Input Wi-Fi credentials
 # This cares about multilines
 onboarding-wifi_creds-description =
     The Trackers will use these credentials to connect wirelessly.
     Please use the credentials that you are currently connected to.
-onboarding-wifi_creds-skip = Skip wifi settings
+onboarding-wifi_creds-skip = Skip Wi-Fi settings
 onboarding-wifi_creds-submit = Submit!
 onboarding-wifi_creds-ssid =
-    .label = SSID
-    .placeholder = Enter SSID
+    .label = Wi-Fi name
+    .placeholder = Enter Wi-Fi name
 onboarding-wifi_creds-password =
     .label = Password
     .placeholder = Enter password
@@ -407,15 +408,15 @@ onboarding-done-description = Enjoy your full body experience
 onboarding-done-close = Close the guide
 
 ## Tracker connection setup
-onboarding-connect_tracker-back = Go Back to WiFi credentials
+onboarding-connect_tracker-back = Go Back to Wi-Fi credentials
 onboarding-connect_tracker-title = Connect trackers
 onboarding-connect_tracker-description-p0 = Now onto the fun part, connecting all the trackers!
 onboarding-connect_tracker-description-p1 = Simply connect all that aren't connected yet, through a USB port.
 onboarding-connect_tracker-issue-serial = I'm having trouble connecting!
 onboarding-connect_tracker-usb = USB Tracker
-onboarding-connect_tracker-connection_status-connecting = Sending wifi credentials
-onboarding-connect_tracker-connection_status-connected = Connected to WiFi
-onboarding-connect_tracker-connection_status-error = Unable to connect to Wifi
+onboarding-connect_tracker-connection_status-connecting = Sending Wi-Fi credentials
+onboarding-connect_tracker-connection_status-connected = Connected to Wi-Fi
+onboarding-connect_tracker-connection_status-error = Unable to connect to Wi-Fi
 onboarding-connect_tracker-connection_status-start_connecting = Looking for trackers
 onboarding-connect_tracker-connection_status-handshake = Connected to the Server
 # $amount (Number) - Amount of trackers connected (this is a number, but you can use CLDR plural rules for your language)
@@ -431,7 +432,7 @@ onboarding-connect_tracker-connected_trackers = { $amount ->
 onboarding-connect_tracker-next = I connected all my trackers
 
 ## Tracker assignment setup
-onboarding-assign_trackers-back = Go Back to Wifi Credentials
+onboarding-assign_trackers-back = Go Back to Wi-Fi Credentials
 onboarding-assign_trackers-title = Assign trackers
 onboarding-assign_trackers-description = Let's choose which tracker goes where. Click on a location where you want to place a tracker
 # Look at translation of onboarding-connect_tracker-connected_trackers on how to use plurals

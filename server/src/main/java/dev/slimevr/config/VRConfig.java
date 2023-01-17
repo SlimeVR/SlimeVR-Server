@@ -146,7 +146,7 @@ public class VRConfig {
 		tracker.writeConfig(tc);
 	}
 
-	public BridgeConfig getBrige(String bridgeKey) {
+	public BridgeConfig getBridge(String bridgeKey) {
 		BridgeConfig config = bridges.get(bridgeKey);
 		if (config == null) {
 			config = new BridgeConfig();
