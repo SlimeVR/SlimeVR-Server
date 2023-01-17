@@ -58,6 +58,7 @@ skeleton_bone-UPPER_ARM = Largo del brazo superior
 skeleton_bone-LOWER_ARM = Distancia del antebrazo
 skeleton_bone-CONTROLLER_Y = Distancia Y del mando
 skeleton_bone-CONTROLLER_Z = Distancia Z del mando
+skeleton_bone-ELBOW_OFFSET = Desplazamiento del codo
 
 ## Tracker reset buttons
 reset-reset_all = Reiniciar todas las proporciones

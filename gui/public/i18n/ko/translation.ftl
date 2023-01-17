@@ -58,6 +58,7 @@ skeleton_bone-UPPER_ARM = 위팔 거리
 skeleton_bone-LOWER_ARM = 전완 길이
 skeleton_bone-CONTROLLER_Y = 컨트롤러 Y축 거리
 skeleton_bone-CONTROLLER_Z = 컨트롤러 Z축 거리
+skeleton_bone-ELBOW_OFFSET = 팔꿈치 오프셋
 
 ## Tracker reset buttons
 reset-reset_all = 모든 신체 비율 리셋
