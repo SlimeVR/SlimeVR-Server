@@ -156,27 +156,27 @@ body_assignment_menu-unassign_tracker = Desasignar sensor
 # maybe your language does.
 -tracker_selection-part = ¿Qué sensor asignar a tu
 tracker_selection_menu-NONE = ¿Qué sensor quieres que esté sin asignar?
-tracker_selection_menu-HEAD = cabeza?
-tracker_selection_menu-NECK = cuello?
-tracker_selection_menu-RIGHT_SHOULDER = hombro derecho?
-tracker_selection_menu-RIGHT_UPPER_ARM = brazo superior derecho?
-tracker_selection_menu-RIGHT_LOWER_ARM = antebrazo derecho?
-tracker_selection_menu-RIGHT_HAND = mano derecha?
-tracker_selection_menu-RIGHT_UPPER_LEG = muslo derecho?
-tracker_selection_menu-RIGHT_LOWER_LEG = tobillo derecho?
-tracker_selection_menu-RIGHT_FOOT = pie derecho?
-tracker_selection_menu-RIGHT_CONTROLLER = mando derecho?
-tracker_selection_menu-CHEST = pecho?
-tracker_selection_menu-WAIST = cintura?
-tracker_selection_menu-HIP = cadera?
-tracker_selection_menu-LEFT_SHOULDER = hombro izquierdo?
-tracker_selection_menu-LEFT_UPPER_ARM = brazo superior izquierdo?
-tracker_selection_menu-LEFT_LOWER_ARM = antebrazo izquierdo?
-tracker_selection_menu-LEFT_HAND = mano izquierda?
-tracker_selection_menu-LEFT_UPPER_LEG = muslo izquierdo?
-tracker_selection_menu-LEFT_LOWER_LEG = tobillo izquiero?
-tracker_selection_menu-LEFT_FOOT = pie izquierdo?
-tracker_selection_menu-LEFT_CONTROLLER = mando izquierdo?
+tracker_selection_menu-HEAD = { -tracker_selection-part } cabeza?
+tracker_selection_menu-NECK = { -tracker_selection-part } cuello?
+tracker_selection_menu-RIGHT_SHOULDER = { -tracker_selection-part } hombro derecho?
+tracker_selection_menu-RIGHT_UPPER_ARM = { -tracker_selection-part } brazo superior derecho?
+tracker_selection_menu-RIGHT_LOWER_ARM = { -tracker_selection-part } antebrazo derecho?
+tracker_selection_menu-RIGHT_HAND = { -tracker_selection-part } mano derecha?
+tracker_selection_menu-RIGHT_UPPER_LEG = { -tracker_selection-part } muslo derecho?
+tracker_selection_menu-RIGHT_LOWER_LEG = { -tracker_selection-part } tobillo derecho?
+tracker_selection_menu-RIGHT_FOOT = { -tracker_selection-part } pie derecho?
+tracker_selection_menu-RIGHT_CONTROLLER = { -tracker_selection-part } mando derecho?
+tracker_selection_menu-CHEST = { -tracker_selection-part } pecho?
+tracker_selection_menu-WAIST = { -tracker_selection-part } cintura?
+tracker_selection_menu-HIP = { -tracker_selection-part } cadera?
+tracker_selection_menu-LEFT_SHOULDER = { -tracker_selection-part } hombro izquierdo?
+tracker_selection_menu-LEFT_UPPER_ARM = { -tracker_selection-part } brazo superior izquierdo?
+tracker_selection_menu-LEFT_LOWER_ARM = { -tracker_selection-part } antebrazo izquierdo?
+tracker_selection_menu-LEFT_HAND = { -tracker_selection-part } mano izquierda?
+tracker_selection_menu-LEFT_UPPER_LEG = { -tracker_selection-part } muslo izquierdo?
+tracker_selection_menu-LEFT_LOWER_LEG = { -tracker_selection-part } tobillo izquiero?
+tracker_selection_menu-LEFT_FOOT = { -tracker_selection-part } pie izquierdo?
+tracker_selection_menu-LEFT_CONTROLLER = { -tracker_selection-part } mando izquierdo?
 
 tracker_selection_menu-unassigned = Sensores sin asignar
 tracker_selection_menu-assigned = Sensores asignados
@@ -424,10 +424,10 @@ onboarding-connect_tracker-connection_status-handshake = Conectado con el servid
 # we use 0 in an explicit way because there is no plural rule in english for 0, so we directly say
 # if $amount is 0 then we say "No trackers connected"
 onboarding-connect_tracker-connected_trackers = { $amount ->
-    [0] No hay sensores
-    [one] 1 sensor
-    *[other] { $amount } sensores
-} conectados
+    [0] No hay sensores conectados
+    [one] 1 sensor conectado
+    *[other] { $amount } sensores conectados
+} 
 onboarding-connect_tracker-next = He conectado todos mis sensores
 
 ## Tracker assignment setup
@@ -438,9 +438,9 @@ onboarding-assign_trackers-description = Debes escoger dónde van los sensores. 
 # $assigned (Number) - Trackers that have been assigned a body part
 # $trackers (Number) - Trackers connected to the server
 onboarding-assign_trackers-assigned = { $assigned } of { $trackers ->
-    [one] 1 sensor
-    *[other] { $trackers } sensores
-} asignados
+    [one] 1 sensor asignado
+    *[other] { $trackers } sensores asignados
+} 
 onboarding-assign_trackers-advanced = Mostrar ubicación de asignaciones avanzados.
 onboarding-assign_trackers-next = He asignado todos los sensores
 
