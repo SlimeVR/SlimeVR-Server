@@ -58,6 +58,7 @@ skeleton_bone-UPPER_ARM = Długość Bicepsa
 skeleton_bone-LOWER_ARM = Długość PrzedRamienia
 skeleton_bone-CONTROLLER_Z = Controller Distance Z
 skeleton_bone-CONTROLLER_Y = Controller Distance Y
+skeleton_bone-ELBOW_OFFSET = Offset Łokcia
 
 ## Tracker reset buttons
 reset-reset_all = Zresetuj wszystkie wymiary
