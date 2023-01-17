@@ -36,6 +36,8 @@ public class VRTracker extends ComputedTracker {
 		return true;
 	}
 
+	// TODO Reduce code duplication from IMUTracker.java
+	// Refactor all tracker classes into one?
 	protected void adjustInternal(Quaternion store) {
 		store.multLocal(attachmentFix);
 		store.multLocal(mountFix);
