@@ -84,7 +84,7 @@ navbar-onboarding = Setupgids
 navbar-settings = Instellingen
 
 ## Bounding volume hierarchy recording
-bvh-start_recording = Opnemen BVH
+bvh-start_recording = BVH opnemen
 bvh-recording = Opname bezig...
 
 ## Overlay settings
@@ -470,7 +470,7 @@ onboarding-automatic_mounting-preparation-step-0 = 1. Sta rechtop met uw armen l
 onboarding-automatic_mounting-preparation-step-1 = 2. Druk op de knop "Resetten" en wacht 3 seconden voordat de trackers opnieuw worden ingesteld.
 onboarding-automatic_mounting-put_trackers_on-title = Doe je trackers aan
 onboarding-automatic_mounting-put_trackers_on-description = Om bevestigingsrotaties te calibreren, gaan we gebruik maken van de trackers die je net hebt toegewezen. Doe al je trackers aan, je kunt zien welke trackers welke zijn in de figuur rechts.
-onboarding-automatic_mounting-put_trackers_on-next = Ik heb alle mijn trackers aan
+onboarding-automatic_mounting-put_trackers_on-next = Ik heb al mijn trackers aan
 
 ## Tracker manual proportions setup
 onboarding-manual_proportions-back = Ga terug naar tutorial opnieuw instellen
@@ -488,8 +488,8 @@ onboarding-automatic_proportions-put_trackers_on-title = Doe je trackers aan
 onboarding-automatic_proportions-put_trackers_on-description = Om je verhoudingen te calibreren, gaan we gebruik maken van de trackers die je net hebt toegewezen. Doe al je trackers aan, je kunt zien welke trackers welke zijn in de figuur rechts.
 onboarding-automatic_proportions-put_trackers_on-next = Ik heb alle mijn trackers aan
 onboarding-automatic_proportions-preparation-title = Voorbereiding
-onboarding-automatic_proportions-preparation-description = Plaats een stoel recht achter je binnen je speelruimte. Zorg dat je klaar bent om te gaan zitten tijdens de autobone-installatie.
-onboarding-automatic_proportions-preparation-next = Ik ben voor een stoel
+onboarding-automatic_proportions-preparation-description = Plaats een stoel recht achter je binnen je speelruimte. Zorg dat je klaar bent om te gaan zitten tijdens de autobone-configuratie.
+onboarding-automatic_proportions-preparation-next = Ik sta voor een stoel
 onboarding-automatic_proportions-start_recording-title = Zorg dat je klaar bent om te bewegen
 onboarding-automatic_proportions-start_recording-description = We gaan nu enkele specifieke houdingen en bewegingen opnemen. Deze worden in het volgende scherm geprompt. Zorg dat je klaar bent om te beginnen als de knop wordt ingedrukt!
 onboarding-automatic_proportions-start_recording-next = Start opname
