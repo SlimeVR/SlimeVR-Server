@@ -407,6 +407,7 @@ public class IMUTracker
 		fixAttachment(getMountedAdjustedRotation());
 		makeIdentityAdjustmentQuatsFull();
 		fixYaw(getMountedAdjustedRotation(), reference);
+		calibrateMag();
 		calculateDrift(rot);
 	}
 
