@@ -56,8 +56,8 @@ skeleton_bone-SHOULDERS_DISTANCE = Khoảng cách vai
 skeleton_bone-SHOULDERS_WIDTH = Chiều rộng vai
 skeleton_bone-UPPER_ARM = Chiều dài bắp tay
 skeleton_bone-LOWER_ARM = Chiều dài cẳng tay
-skeleton_bone-CONTROLLER_DISTANCE_Z = Khoảng cách tay cầm theo trục Z
-skeleton_bone-CONTROLLER_DISTANCE_Y = Khoảng cách tay cầm theo trục Y
+skeleton_bone-CONTROLLER_Y = Khoảng cách tay cầm theo trục Y
+skeleton_bone-CONTROLLER_Z = Khoảng cách tay cầm theo trục Z
 skeleton_bone-ELBOW_OFFSET = Sai số khuỷu tay
 
 ## Tracker reset buttons
