@@ -458,7 +458,7 @@ public class IMUTracker
 	private void fixGyroscope(Quaternion sensorRotation) {
 		sensorRotation = sensorRotation.clone();
 		sensorRotation.fromAngles(0, sensorRotation.getYaw(), 0);
-		gyroFix.set(sensorRotation.inverse());
+		gyroFix.set(sensorRotation).inverseLocal();
 	}
 
 	private void fixAttachment(Quaternion sensorRotation) {
