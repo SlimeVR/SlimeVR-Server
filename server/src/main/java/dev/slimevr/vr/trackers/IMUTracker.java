@@ -464,7 +464,7 @@ public class IMUTracker
 	private void fixAttachment(Quaternion sensorRotation) {
 		sensorRotation = sensorRotation.clone();
 		gyroFix.mult(sensorRotation, sensorRotation);
-		attachmentFix.set(sensorRotation.inverse());
+		attachmentFix.set(sensorRotation.inverseLocal());
 	}
 
 	@Override
@@ -492,9 +492,9 @@ public class IMUTracker
 		mountRotFix.set(buffer);
 
 		// Get the difference from the last adjustment
-		buffer.multLocal(lastRotAdjust.inverse());
+		buffer.multLocal(lastRotAdjust.inverseLocal());
 		// Apply the yaw rotation difference to the yaw fix quaternion
-		yawFix.multLocal(buffer.inverse());
+		yawFix.multLocal(buffer.inverseLocal());
 	}
 
 	private void fixYaw(Quaternion sensorRotation, Quaternion reference) {
@@ -509,7 +509,7 @@ public class IMUTracker
 
 		sensorRotation.fromAngles(0, sensorRotation.getYaw(), 0);
 
-		yawFix.set(sensorRotation.inverse().mult(reference));
+		yawFix.set(sensorRotation).inverseLocal().multLocal(reference);
 	}
 
 	private void calibrateMag() {
@@ -517,7 +517,7 @@ public class IMUTracker
 			magnetometerCalibrated = true;
 			// During calibration set correction to match magnetometer readings
 			// TODO : Correct only yaw
-			correction.set(rotQuaternion.inverse().mult(rotMagQuaternion));
+			correction.set(rotQuaternion).inverseLocal().multLocal(rotMagQuaternion);
 		}
 	}
 

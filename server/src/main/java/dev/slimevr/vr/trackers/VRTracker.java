@@ -56,10 +56,8 @@ public class VRTracker extends ComputedTracker {
 	}
 
 	private void fixAttachment(Quaternion sensorRotation, Quaternion reference) {
-		reference = reference.clone();
 		mountFix.fromAngles(0, reference.getYaw(), 0);
 
-		sensorRotation = sensorRotation.clone();
 		attachmentFix.set(sensorRotation.inverse());
 	}
 
@@ -74,7 +72,7 @@ public class VRTracker extends ComputedTracker {
 
 		sensorRotation.fromAngles(0, sensorRotation.getYaw(), 0);
 
-		yawFix.set(sensorRotation.inverse().mult(reference));
+		yawFix.set(sensorRotation).inverseLocal().multLocal(reference);
 	}
 
 	@Override
