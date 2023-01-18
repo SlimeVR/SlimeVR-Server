@@ -87,9 +87,25 @@ navbar-settings = 設定
 bvh-start_recording = BVHレコーディング
 bvh-recording = レコーディング中...
 
-## Overlay settings
-overlay-is_visible_label = SteamVRでオーバーレイを表示する
-overlay-is_mirrored_label = オーバーレイをミラーとして表示する
+## Widget: Overlay settings
+widget-overlay = オーバーレイ設定
+widget-overlay-is_visible_label = SteamVRでオーバーレイを表示する
+widget-overlay-is_mirrored_label = オーバーレイをミラーとして表示する
+
+## Widget: Developer settings
+widget-developer_mode = 開発者モード
+widget-developer_mode-high_contrast = ハイ コントラスト
+widget-developer_mode-precise_rotation = 正確な回転角度を表示
+widget-developer_mode-fast_data_feed = 高速表示モード
+widget-developer_mode-filter_slimes_and_hmd = SlimeVRとHMDのみを表示
+widget-developer_mode-sort_by_name = 表示名順
+widget-developer_mode-raw_slime_rotation = 元の回転角度
+widget-developer_mode-more_info = 他情報
+
+## Widget: IMU Visualizer
+widget-imu_visualizer = Rotation
+widget-imu_visualizer-rotation_raw = Raw
+widget-imu_visualizer-rotation_preview = Preview
 
 ## Tracker status
 tracker-status-none = ステータスなし
@@ -104,6 +120,9 @@ tracker-table-column-name = Name
 tracker-table-column-type = Type
 tracker-table-column-battery = Battery
 tracker-table-column-ping = Ping
+tracker-table-column-tps = TPS
+tracker-table-column-temperature = Temp. °C
+tracker-table-column-linear-acceleration = Accel. X/Y/Z
 tracker-table-column-rotation = Rotation X/Y/Z
 tracker-table-column-position = Position X/Y/Z
 tracker-table-column-url = URL

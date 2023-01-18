@@ -44,10 +44,11 @@ function TrackerBig({
               />
             )}
             <div className="flex gap-2">
-              {device.hardwareStatus.rssi && device.hardwareStatus.ping && (
+              {(device.hardwareStatus.rssi != null ||
+                device.hardwareStatus.ping != null) && (
                 <TrackerWifi
-                  rssi={device.hardwareStatus.rssi}
-                  ping={device.hardwareStatus.ping}
+                  rssi={device.hardwareStatus.rssi || 0}
+                  ping={device.hardwareStatus.ping || 0}
                   disabled={tracker.status === TrackerStatusEnum.DISCONNECTED}
                 ></TrackerWifi>
               )}
@@ -90,10 +91,11 @@ function TrackerSmol({
             )}
           </div>
           <div className="flex flex-col justify-center items-center">
-            {device.hardwareStatus.rssi && device.hardwareStatus.ping && (
+            {(device.hardwareStatus.rssi != null ||
+              device.hardwareStatus.ping != null) && (
               <TrackerWifi
-                rssi={device.hardwareStatus.rssi}
-                ping={device.hardwareStatus.ping}
+                rssi={device.hardwareStatus.rssi || 0}
+                ping={device.hardwareStatus.ping || 0}
                 disabled={tracker.status === TrackerStatusEnum.DISCONNECTED}
               ></TrackerWifi>
             )}

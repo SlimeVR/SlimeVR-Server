@@ -87,9 +87,25 @@ navbar-settings = Cài đặt
 bvh-start_recording = Ghi BVH
 bvh-recording = Đang ghi...
 
-## Overlay settings
-overlay-is_visible_label = Xem overlay trên SteamVR
-overlay-is_mirrored_label = Xem overlay trong gương
+## Widget: Overlay settings
+widget-overlay = Overlay
+widget-overlay-is_visible_label = Xem overlay trên SteamVR
+widget-overlay-is_mirrored_label = Xem overlay trong gương
+
+## Widget: Developer settings
+widget-developer_mode = Chế độ nhà phát triển
+widget-developer_mode-high_contrast = High contrast
+widget-developer_mode-precise_rotation = Precise rotation
+widget-developer_mode-fast_data_feed = Fast data feed
+widget-developer_mode-filter_slimes_and_hmd = Filter slimes and HMD
+widget-developer_mode-sort_by_name = Sort by name
+widget-developer_mode-raw_slime_rotation = Raw rotation
+widget-developer_mode-more_info = More info
+
+## Widget: IMU Visualizer
+widget-imu_visualizer = Rotation
+widget-imu_visualizer-rotation_raw = Raw
+widget-imu_visualizer-rotation_preview = Preview
 
 ## Tracker status
 tracker-status-none = Không có tình trạng
@@ -104,6 +120,9 @@ tracker-table-column-name = Tên
 tracker-table-column-type = Loại
 tracker-table-column-battery = Pin
 tracker-table-column-ping = Ping
+tracker-table-column-tps = TPS
+tracker-table-column-temperature = Temp. °C
+tracker-table-column-linear-acceleration = Accel. X/Y/Z
 tracker-table-column-rotation = Chiều chuyển X/Y/Z
 tracker-table-column-position = Vị trí X/Y/Z
 tracker-table-column-url = URL

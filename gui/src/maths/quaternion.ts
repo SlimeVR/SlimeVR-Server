@@ -1,23 +1,15 @@
-import Quaternion from 'quaternion';
+import { Euler, Quaternion } from 'three';
 import { QuatT } from 'solarxr-protocol';
+import { DEG_TO_RAD } from './angle';
 
-export function QuaternionFromQuatT(q: {
-  x: number;
-  y: number;
-  z: number;
-  w: number;
-}) {
-  return new Quaternion(q.w, q.x, q.y, q.z);
+export type QuatObject = { x: number; y: number; z: number; w: number };
+
+export function QuaternionFromQuatT(q?: QuatObject | null) {
+  return q ? new Quaternion(q.x, q.y, q.z, q.w) : new Quaternion();
 }
 
-export function QuaternionToQuatT(q: {
-  x: number;
-  y: number;
-  z: number;
-  w: number;
-}) {
+export function QuaternionToQuatT(q: QuatObject) {
   const quat = new QuatT();
-
   quat.x = q.x;
   quat.y = q.y;
   quat.z = q.z;
@@ -25,39 +17,37 @@ export function QuaternionToQuatT(q: {
   return quat;
 }
 
-export function FixEuler(yaw: number) {
-  if (yaw > 180) {
-    yaw *= -1;
-    yaw += 180;
-  }
-  return Math.round(yaw);
+export function MountingOrientationDegreesToQuatT(
+  mountingOrientationDegrees: number
+) {
+  return QuaternionToQuatT(
+    new Quaternion().setFromEuler(
+      new Euler(0, +mountingOrientationDegrees * DEG_TO_RAD, 0)
+    )
+  )
 }
 
-export function GetYaw(q: { x: number; y: number; z: number; w: number }) {
-  const squareX = q.x * q.x,
-    squareY = q.y * q.y,
-    squareZ = q.z * q.z,
-    squareW = q.w * q.w;
+const RAD_TO_DEG = 180 / Math.PI;
 
-  // This value is 1 if the quaternion is a unit (normalized) quaternion,
-  // otherwise this will be a factor to compensate for the singularity pole checks
-  const correctionFactor = squareX + squareY + squareZ + squareW;
-  // This value is to test for a singularity, it will be 0.5 at the north singularity,
-  // -0.5 at the south singularity, and anything else at any other value
-  const singularityTest = q.x * q.y + q.z * q.w;
+export function getYawInDegrees(q?: QuatObject) {
+  if (!q) return 0;
 
-  // Singularity cutoff points are 0.499 (86.3 degrees) to compensate for error
-  if (singularityTest > 0.499 * correctionFactor) {
-    // Handle the singularity at the attitude of 90 degrees (north pole)
-    return 2 * Math.atan2(q.x, q.w);
-  } else if (singularityTest < -0.499 * correctionFactor) {
-    // Handle the singularity at the attitude of -90 degrees (south pole)
-    return -2 * Math.atan2(q.x, q.w);
-  }
+  //           X   Y    Z  Result
+  // back:     0   0    0       0
+  // front: -180 0.. -180     180
+  // left:     0  90    0      90
+  // right:    0 -90    0     -90
 
-  // Otherwise calculate the yaw normally
-  return Math.atan2(
-    2 * q.y * q.w - 2 * q.x * q.z,
-    squareX - squareY - squareZ + squareW
-  );
+  const angles = new Euler().setFromQuaternion(QuaternionFromQuatT(q));
+  return angles.y | 0
+    ? Math.round(angles.y * RAD_TO_DEG)
+    : Math.round(-angles.z * RAD_TO_DEG);
+}
+
+export function QuaternionToEulerDegrees(q?: QuatObject | null) {
+  const angles = { x: 0, y: 0, z: 0 };
+  if (!q) return angles;
+
+  const a = new Euler().setFromQuaternion(new Quaternion(q.x, q.y, q.z, q.w));
+  return { x: a.x * RAD_TO_DEG, y: a.y * RAD_TO_DEG, z: a.z * RAD_TO_DEG };
 }

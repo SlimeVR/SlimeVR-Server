@@ -87,9 +87,25 @@ navbar-settings = Ajustes
 bvh-start_recording = Grabar BVH
 bvh-recording = Grabando...
 
-## Overlay settings
-overlay-is_visible_label = Mostrar interfaz en SteamVR
-overlay-is_mirrored_label = Mostrar interfaz reflejada
+## Widget: Overlay settings
+widget-overlay = Overlay
+widget-overlay-is_visible_label = Mostrar interfaz en SteamVR
+widget-overlay-is_mirrored_label = Mostrar interfaz reflejada
+
+## Widget: Developer settings
+widget-developer_mode = Developer Mode
+widget-developer_mode-high_contrast = High contrast
+widget-developer_mode-precise_rotation = Precise rotation
+widget-developer_mode-fast_data_feed = Fast data feed
+widget-developer_mode-filter_slimes_and_hmd = Filter slimes and HMD
+widget-developer_mode-sort_by_name = Sort by name
+widget-developer_mode-raw_slime_rotation = Raw rotation
+widget-developer_mode-more_info = More info
+
+## Widget: IMU Visualizer
+widget-imu_visualizer = Rotation
+widget-imu_visualizer-rotation_raw = Raw
+widget-imu_visualizer-rotation_preview = Preview
 
 ## Tracker status
 tracker-status-none = Sin estado
@@ -104,6 +120,9 @@ tracker-table-column-name = Nombre
 tracker-table-column-type = Tipo
 tracker-table-column-battery = Batería
 tracker-table-column-ping = Latencia
+tracker-table-column-tps = TPS
+tracker-table-column-temperature = Temp. °C
+tracker-table-column-linear-acceleration = Accel. X/Y/Z
 tracker-table-column-rotation = Rotación X/Y/Z
 tracker-table-column-position = Posición X/Y/Z
 tracker-table-column-url = URL

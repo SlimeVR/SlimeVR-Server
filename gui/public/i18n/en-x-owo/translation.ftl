@@ -87,9 +87,25 @@ navbar-settings = sewtings
 bvh-start_recording = wecowd bvh
 bvh-recording = wecowding...
 
-## Overlay settings
-overlay-is_visible_label = show owovelay in steawmvr
-overlay-is_mirrored_label = dispway owovelay as miwwow
+## Widget: Overlay settings
+widget-overlay = owovelay
+widget-overlay-is_visible_label = show owovelay in steawmvr
+widget-overlay-is_mirrored_label = dispway owovelay as miwwow
+
+## Widget: Developer settings
+widget-developer_mode = devwowwewow mode
+widget-developer_mode-high_contrast = high contwast
+widget-developer_mode-precise_rotation = pwecise wotation
+widget-developer_mode-fast_data_feed = fast data feed
+widget-developer_mode-filter_slimes_and_hmd = fiwtew swimes a-and HMD
+widget-developer_mode-sort_by_name = sowt by nyame
+widget-developer_mode-raw_slime_rotation = waw wotation
+widget-developer_mode-more_info = mowe info
+
+## Widget: IMU Visualizer
+widget-imu_visualizer = wotation
+widget-imu_visualizer-rotation_raw = waw
+widget-imu_visualizer-rotation_preview = pwewiew
 
 ## Tracker status
 tracker-status-none = no stawtus
@@ -104,6 +120,9 @@ tracker-table-column-name = nayme
 tracker-table-column-type = type
 tracker-table-column-battery = battewy
 tracker-table-column-ping = pyng
+tracker-table-column-tps = tps
+tracker-table-column-temperature = temp. °C
+tracker-table-column-linear-acceleration = accew. X/Y/Z
 tracker-table-column-rotation = wotaytion x/y/z
 tracker-table-column-position = pawsytion x/y/z
 tracker-table-column-url = uawl
