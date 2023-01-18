@@ -76,9 +76,9 @@ serial_detection-submit = Verzenden!
 serial_detection-close = Sluiten
 
 ## Navigation bar
-navbar-home = Home
+navbar-home = Startpagina
 navbar-body_proportions = Lichaams- verhoudingen
-navbar-trackers_assign = Tracker toewijzing
+navbar-trackers_assign = Tracker- toewijzing
 navbar-mounting = Bevestigings- kalibratie
 navbar-onboarding = Setupgids
 navbar-settings = Instellingen
@@ -438,7 +438,7 @@ onboarding-assign_trackers-description = Laten we de bevesteging van je trackers
 # Look at translation of onboarding-connect_tracker-connected_trackers on how to use plurals
 # $assigned (Number) - Trackers that have been assigned a body part
 # $trackers (Number) - Trackers connected to the server
-onboarding-assign_trackers-assigned = { $assigned } of { $trackers ->
+onboarding-assign_trackers-assigned = { $assigned } van { $trackers ->
     [one] 1 tracker
     *[other] { $trackers } trackers
 } toegewezen
