@@ -370,8 +370,9 @@ onboarding-wifi_creds-back = Zurück zur Einführung
 onboarding-wifi_creds = WLAN-Zugangsdaten eingeben
 # This cares about multilines
 onboarding-wifi_creds-description =
-    Die Tracker nutzen diese Zugangsdaten, um sich mit dem WLAN zu verbinden
-    Bitte verwenden Sie die Zugangsdaten, mit denen ihr PC gerade verbunden sind
+    Die Tracker nutzen diese Zugangsdaten, um sich mit dem WLAN zu verbinden.
+    Bitte verwenden Sie die Zugangsdaten, mit denen ihr PC gerade verbunden sind.
+    Dieses WLAN-Netzwerk muss ein 2.4 GHz-Netzwerk sein.
 onboarding-wifi_creds-skip = WLAN-Zugangsdaten überspringen
 onboarding-wifi_creds-submit = Weiter!
 onboarding-wifi_creds-ssid =
