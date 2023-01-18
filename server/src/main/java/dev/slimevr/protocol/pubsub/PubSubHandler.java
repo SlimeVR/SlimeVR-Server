@@ -160,7 +160,7 @@ public class PubSubHandler extends ProtocolHandler<PubSubHeader> {
 					int outbound = createMessage(
 						fbb,
 						PubSubUnion.Message,
-						Message.createMessage(fbb, message)
+						createMessageMessageOffset(fbb, message)
 					);
 					fbb.finish(outbound);
 					conn.send(fbb.dataBuffer());
@@ -171,25 +171,36 @@ public class PubSubHandler extends ProtocolHandler<PubSubHeader> {
 
 	private int createMessageMessageOffset(FlatBufferBuilder fbb, Message msg) {
 		int topicOffset = switch(msg.getTopicType()) {
-			case Topic.TopicHandle -> TopicHandle.createTopicHandle(fbb, ((TopicHandle) msg.topic(new TopicHandle())).getId());
-			case Topic.TopicId -> createTopicIdOffset(fbb, (TopicId) msg.topic(new TopicId()));
+			case Topic.TopicHandle -> TopicHandle.createTopicHandle(
+				fbb, ((TopicHandle) msg.topic(new TopicHandle())).getId()
+			);
+			case Topic.TopicId -> createTopicIdOffset(
+				fbb, (TopicId) msg.topic(new TopicId())
+			);
 			default -> throw new RuntimeException("Unknown message type");
 		};
 		int payloadOffset = switch(msg.getPayloadType()) {
-			case Payload.solarxrProtocolDatatypesStringTable -> StringTable.createStringTable(fbb, fbb.createString(((StringTable) msg.payload(new StringTable())).getSAsByteBuffer()));
-			case Payload.solarxrProtocolDatatypesBytes -> Bytes.createBytes(fbb, fbb.createByteVector(((Bytes) msg.payload(new Bytes())).getBAsByteBuffer()));
+			case Payload.solarxrProtocolDatatypesStringTable ->
+				StringTable.createStringTable(
+					fbb,
+					fbb.createString(((StringTable) msg.payload(new StringTable())).getSAsByteBuffer())
+				);
+			case Payload.solarxrProtocolDatatypesBytes ->
+				Bytes.createBytes(
+					fbb,
+					fbb.createByteVector(((Bytes) msg.payload(new Bytes())).getBAsByteBuffer())
+				);
 			case Payload.KeyValues -> {
 				KeyValues keyValues = (KeyValues) msg.payload(new KeyValues());
-				fbb.
-				KeyValues.createKeyValues(fbb, keyValues.getByteBuffer())
+				keyValues.getByteBuffer()
 			}
-		}
+		};
 		return Message.createMessage(
 				fbb,
 				msg.getTopicType(),
 				topicOffset,
 				msg.getPayloadType(),
-
+				payloadOffset
 		);
 	}
 
