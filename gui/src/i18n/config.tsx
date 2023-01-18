@@ -40,6 +40,10 @@ export const langs = [
     key: 'ko',
   },
   {
+    name: '🇳🇱 Nederlands',
+    key: 'nl',
+  },
+  {
     name: '🇵🇱 Polski',
     key: 'pl',
   },
@@ -58,10 +62,6 @@ export const langs = [
   {
     name: '🥺 Engwish~ OwO',
     key: 'en-x-owo',
-  },
-  {
-    name: '🇳🇱 Nederlands',
-    key: 'nl',
   },
 ];
 
