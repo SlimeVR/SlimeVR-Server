@@ -1,6 +1,5 @@
 package dev.slimevr.platform.linux;
 
-import com.google.protobuf.CodedOutputStream;
 import com.google.protobuf.InvalidProtocolBufferException;
 import dev.slimevr.Main;
 import dev.slimevr.VRServer;
@@ -82,6 +81,7 @@ public class UnixSocketBridge extends SteamVRBridge implements AutoCloseable {
 							e.printStackTrace();
 						}
 					}
+					updateMessageQueue();
 				}
 			}
 		} catch (IOException e) {
@@ -98,8 +98,8 @@ public class UnixSocketBridge extends SteamVRBridge implements AutoCloseable {
 			try {
 				int size = message.getSerializedSize() + 4;
 				this.src.putInt(size);
-				CodedOutputStream os = CodedOutputStream.newInstance(this.src);
-				message.writeTo(os);
+				byte[] serialized = message.toByteArray();
+				this.src.put(serialized);
 				this.src.flip();
 
 				while (this.src.hasRemaining()) {
