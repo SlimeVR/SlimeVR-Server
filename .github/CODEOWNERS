@@ -1,5 +1,4 @@
-# Global code owner, will be requested for review
-# if there are no better matches
+# Global code owner
 * @Eirenliel
 
 # Make Loucas the owner of all GUI stuff
@@ -7,10 +6,14 @@
 
 # Uriel and Erimel responsible for i18n
 /gui/public/i18n/ @ImUrX @Louka3000
-/gui/src/i18n/ @ImUrX @Louka3000
+/gui/src/i18n/ @ImUrX @Louka3000 @loucass003
+
+/gui/src/components/settings/ @Louka3000 @loucass003
+
+/gui/src-tauri/ @ImUrX @TheButlah 
 
 # Some server code~
-/server/ @ButterscotchV @Eirenliel
+/server/ @ButterscotchV @Eirenliel @Louka3000
 
 /server/src/main/java/dev/slimevr/autobone/ @ButterscotchV
 /server/src/main/java/dev/slimevr/poserecorder/ @ButterscotchV
