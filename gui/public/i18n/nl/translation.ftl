@@ -275,15 +275,15 @@ settings-general-gesture_control-taps = { $amount ->
     [one] 1 tik
     *[other] { $amount } tikken
 }
-settings-general-gesture_control-quickResetEnabled = Schakel tikken in om snel opnieuw te starten
-settings-general-gesture_control-quickResetDelay = Vertraging snel opnieuw starten
-settings-general-gesture_control-quickResetTaps = Tikken voor snel opnieuw starten
-settings-general-gesture_control-resetEnabled = Schakel tikken in om opnieuw te starten
-settings-general-gesture_control-resetDelay = Vertraging opnieuw starten
-settings-general-gesture_control-resetTaps = Tikken voor opnieuw starten
-settings-general-gesture_control-mountingResetEnabled = Schakel tikken in om opnieuw te starten bij montage
-settings-general-gesture_control-mountingResetDelay = Vertraging opnieuw starten bij montage
-settings-general-gesture_control-mountingResetTaps = Tikken voor opnieuw starten bij montage
+settings-general-gesture_control-quickResetEnabled = Activeer tikken voor snelle reset
+settings-general-gesture_control-quickResetDelay = Vertraging snelle reset
+settings-general-gesture_control-quickResetTaps = Hoeveelheid tikken voor snelle reset
+settings-general-gesture_control-resetEnabled = Activeer tikken voor reset
+settings-general-gesture_control-resetDelay = Vertraging reset
+settings-general-gesture_control-resetTaps = Hoeveelheid tikken voor reset
+settings-general-gesture_control-mountingResetEnabled = Activeer tikken voor bevestigingskalibratie
+settings-general-gesture_control-mountingResetDelay = Vertraging bevestigingskalibratie
+settings-general-gesture_control-mountingResetTaps = Hoeveelheid tikken voor bevestigingskalibratie
 
 ## Interface settings
 settings-general-interface = Interface
