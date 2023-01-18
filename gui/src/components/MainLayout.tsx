@@ -1,11 +1,13 @@
 import classNames from 'classnames';
 import { ReactNode } from 'react';
 import { ResetType } from 'solarxr-protocol';
+import { useConfig } from '../hooks/config';
 import { useLayout } from '../hooks/layout';
 import { BVHButton } from './BVHButton';
 import { ResetButton } from './home/ResetButton';
 import { Navbar } from './Navbar';
 import { TopBar } from './TopBar';
+import { DeveloperModeWidget } from './widgets/DeveloperModeWidget';
 import { OverlayWidget } from './widgets/OverlayWidget';
 
 export function MainLayoutRoute({
@@ -19,6 +21,7 @@ export function MainLayoutRoute({
 }) {
   const { layoutHeight, ref } = useLayout<HTMLDivElement>();
   const { layoutWidth, ref: refw } = useLayout<HTMLDivElement>();
+  const { config } = useConfig();
 
   return (
     <>
@@ -59,6 +62,11 @@ export function MainLayoutRoute({
                 <div className="w-full">
                   <OverlayWidget></OverlayWidget>
                 </div>
+                {config?.debug && (
+                  <div className="w-full">
+                    <DeveloperModeWidget></DeveloperModeWidget>
+                  </div>
+                )}
               </div>
             )}
           </div>

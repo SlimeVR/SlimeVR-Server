@@ -1,5 +1,4 @@
 import { IPv4 } from 'ip-num/IPNumber';
-import Quaternion from 'quaternion';
 import { useEffect, useMemo, useState } from 'react';
 import { useForm } from 'react-hook-form';
 import { useParams } from 'react-router-dom';
@@ -7,8 +6,10 @@ import { AssignTrackerRequestT, BodyPart, RpcMessage } from 'solarxr-protocol';
 import { useDebouncedEffect } from '../../hooks/timeout';
 import { useTrackerFromId } from '../../hooks/tracker';
 import { useWebsocketAPI } from '../../hooks/websocket-api';
-import { DEG_TO_RAD, RAD_TO_DEG } from '../../maths/angle';
-import { FixEuler, GetYaw, QuaternionToQuatT } from '../../maths/quaternion';
+import {
+  getYawInDegrees,
+  MountingOrientationDegreesToQuatT,
+} from '../../maths/quaternion';
 import { ArrowLink } from '../commons/ArrowLink';
 import { Button } from '../commons/Button';
 import { FootIcon } from '../commons/icon/FootIcon';
@@ -19,6 +20,10 @@ import { SingleTrackerBodyAssignmentMenu } from './SingleTrackerBodyAssignmentMe
 import { TrackerCard } from './TrackerCard';
 import { CheckBox } from '../commons/Checkbox';
 import { useLocalization } from '@fluent/react';
+import { IMUVisualizerWidget } from '../widgets/IMUVisualizerWidget';
+import { useConfig } from '../../hooks/config';
+import { WarningIcon } from '../commons/icon/WarningIcon';
+import classNames from 'classnames';
 
 export const rotationToQuatMap = {
   FRONT: 180,
@@ -36,6 +41,7 @@ const rotationsLabels = {
 
 export function TrackerSettingsPage() {
   const { l10n } = useLocalization();
+  const { config } = useConfig();
 
   const { sendRPCPacket } = useWebsocketAPI();
   const [firstLoad, setFirstLoad] = useState(false);
@@ -59,18 +65,13 @@ export function TrackerSettingsPage() {
 
   const tracker = useTrackerFromId(trackernum, deviceid);
 
-  const onDirectionSelected = (mountingOrientation: number) => {
+  const onDirectionSelected = (mountingOrientationDegrees: number) => {
     if (!tracker) return;
 
     const assignreq = new AssignTrackerRequestT();
 
-    assignreq.mountingOrientation = QuaternionToQuatT(
-      Quaternion.fromEuler(
-        0,
-        0,
-        FixEuler(+mountingOrientation) * DEG_TO_RAD,
-        'XZY'
-      )
+    assignreq.mountingOrientation = MountingOrientationDegreesToQuatT(
+      mountingOrientationDegrees
     );
     assignreq.bodyPosition = tracker?.tracker.info?.bodyPart || BodyPart.NONE;
     assignreq.trackerId = tracker?.tracker.trackerId;
@@ -92,9 +93,9 @@ export function TrackerSettingsPage() {
     setSelectBodypart(false);
   };
 
-  const currRotation = useMemo(() => {
+  const currRotationDegrees = useMemo(() => {
     return tracker?.tracker.info?.mountingOrientation
-      ? FixEuler(GetYaw(tracker.tracker.info?.mountingOrientation) * RAD_TO_DEG)
+      ? getYawInDegrees(tracker?.tracker.info?.mountingOrientation)
       : rotationToQuatMap.FRONT;
   }, [tracker?.tracker.info?.mountingOrientation]);
 
@@ -108,10 +109,9 @@ export function TrackerSettingsPage() {
       return;
     const assignreq = new AssignTrackerRequestT();
     assignreq.bodyPosition = tracker?.tracker.info?.bodyPart || BodyPart.NONE;
-    assignreq.mountingOrientation = assignreq.mountingOrientation =
-      QuaternionToQuatT(
-        Quaternion.fromEuler(0, 0, FixEuler(+currRotation) * DEG_TO_RAD, 'XZY')
-      );
+    assignreq.mountingOrientation =
+      MountingOrientationDegreesToQuatT(currRotationDegrees);
+
     assignreq.displayName = trackerName;
     assignreq.trackerId = tracker?.tracker.trackerId;
     assignreq.allowDriftCompensation = allowDriftCompensation;
@@ -222,6 +222,11 @@ export function TrackerSettingsPage() {
               </Typography>
             </div>
           </div>
+          {tracker?.tracker && config?.debug && (
+            <IMUVisualizerWidget
+              tracker={tracker?.tracker}
+            ></IMUVisualizerWidget>
+          )}
         </div>
         <div className="flex flex-col flex-grow  bg-background-70 rounded-lg p-5 gap-3">
           <ArrowLink to="/">
@@ -241,8 +246,18 @@ export function TrackerSettingsPage() {
             </Typography>
             <div className="flex justify-between bg-background-80 w-full p-3 rounded-lg">
               <div className="flex gap-3 items-center">
-                <FootIcon></FootIcon>
-                <Typography>
+                {tracker?.tracker.info?.bodyPart !== BodyPart.NONE && (
+                  <FootIcon></FootIcon>
+                )}
+                {tracker?.tracker.info?.bodyPart === BodyPart.NONE && (
+                  <WarningIcon className="text-yellow-300" />
+                )}
+                <Typography
+                  color={classNames({
+                    'text-yellow-300':
+                      tracker?.tracker.info?.bodyPart === BodyPart.NONE,
+                  })}
+                >
                   {l10n.getString(
                     'body_part-' +
                       BodyPart[tracker?.tracker.info?.bodyPart || BodyPart.NONE]
@@ -270,7 +285,7 @@ export function TrackerSettingsPage() {
               <div className="flex gap-3 items-center">
                 <FootIcon></FootIcon>
                 <Typography>
-                  {l10n.getString(rotationsLabels[currRotation])}
+                  {l10n.getString(rotationsLabels[currRotationDegrees])}
                 </Typography>
               </div>
               <div className="flex">

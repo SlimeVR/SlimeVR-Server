@@ -8,6 +8,7 @@ import {
 } from '../../hooks/pubSub';
 import { CheckBox } from '../commons/Checkbox';
 import { useLocalization } from '@fluent/react';
+import { Typography } from '../commons/Typography';
 
 export function OverlayWidget() {
   const { l10n } = useLocalization();
@@ -64,17 +65,22 @@ export function OverlayWidget() {
 
   return (
     <form className="bg-background-60 flex flex-col w-full rounded-md px-2">
+      <div className="mt-2 px-1">
+        <Typography color="secondary">
+          {l10n.getString('widget-overlay')}
+        </Typography>
+      </div>
       <CheckBox
         control={control}
         name="isVisible"
         variant="toggle"
-        label={l10n.getString('overlay-is_visible_label')}
+        label={l10n.getString('widget-overlay-is_visible_label')}
       ></CheckBox>
       <CheckBox
         control={control}
         name="isMirrored"
         variant="toggle"
-        label={l10n.getString('overlay-is_mirrored_label')}
+        label={l10n.getString('widget-overlay-is_mirrored_label')}
       ></CheckBox>
     </form>
   );
