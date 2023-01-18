@@ -10,8 +10,8 @@ websocket-connecting = Đang kết nối với máy chủ
 websocket-connection_lost = Kết nối với máy chủ đã mất. Đang kết nối lại...
 
 ## Tips
-tips-find_tracker = Không rõ tracker nào đang được chọn? Di chuyển nó và trong menu sẽ sáng lên tracker đó.
-tips-do_not_move_heels = Không di chuyển gót chân trong khi đo!
+tips-find_tracker = Không rõ tracker nào đang được chọn? Di chuyển nó và trong menu sẽ sáng lên tracker đó
+tips-do_not_move_heels = Không di chuyển gót chân trong khi đo
 
 ## Body parts
 body_part-NONE = Chưa được gán
@@ -127,7 +127,7 @@ tracker-settings-assignment_section = Vị trí
 tracker-settings-assignment_section-description = Vị trí của tracker trên cơ thể
 tracker-settings-assignment_section-edit = Thay đổi vị trí
 tracker-settings-mounting_section = Vị trí đặt
-tracker-settings-mounting_section-description = Tracker đặt ở đâu?
+tracker-settings-mounting_section-description = Tracker được đặt ở đâu?
 tracker-settings-mounting_section-edit = Thay đổi chỗ đặt
 tracker-settings-drift_compensation_section = Cho phép bù trừ sai số
 tracker-settings-drift_compensation_section-description = Tracker này được phép bù trừ cho sai số của nó không?
