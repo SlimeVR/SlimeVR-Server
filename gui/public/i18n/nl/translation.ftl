@@ -473,13 +473,13 @@ onboarding-automatic_mounting-put_trackers_on-description = Om bevestigingsrotat
 onboarding-automatic_mounting-put_trackers_on-next = Ik heb al mijn trackers aan
 
 ## Tracker manual proportions setup
-onboarding-manual_proportions-back = Ga terug naar tutorial opnieuw instellen
+onboarding-manual_proportions-back = Ga terug naar de reset tutorial
 onboarding-manual_proportions-title = Handmatige lichaamsverhoudingen
 onboarding-manual_proportions-precision = Precisie-aanpassing
 onboarding-manual_proportions-auto = Automatische kalibratie
 
 ## Tracker automatic proportions setup
-onboarding-automatic_proportions-back = Ga terug naar tutorial opnieuw instellen
+onboarding-automatic_proportions-back = Ga terug naar de reset tutorial
 onboarding-automatic_proportions-title = Meet je lichaam
 onboarding-automatic_proportions-description = Om SlimeVR-trackers te laten werken, moeten we de lengte van je botten weten. Deze korte kalibratie meet het voor je.
 onboarding-automatic_proportions-manual = Handmatige kalibratie
