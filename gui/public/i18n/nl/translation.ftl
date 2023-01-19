@@ -89,8 +89,8 @@ bvh-recording = Opname bezig...
 
 ## Widget: Overlay settings
 widget-overlay = Overlay
-overlay-is_visible_label = Overlay in SteamVR weergeven
-overlay-is_mirrored_label = Overlay weergeven als spiegel
+widget-overlay-is_visible_label = Overlay in SteamVR weergeven
+widget-overlay-is_mirrored_label = Overlay weergeven als spiegel
 
 ## Widget: Developer settings
 widget-developer_mode = Developer Mode
