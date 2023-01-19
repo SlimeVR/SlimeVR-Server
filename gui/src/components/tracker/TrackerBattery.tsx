@@ -17,7 +17,7 @@ export function TrackerBattery({
   return (
     <div className="flex gap-2">
       <div className="flex flex-col justify-around">
-        <BatteryIcon value={percent} disabled={disabled} />
+        <BatteryIcon value={value} disabled={disabled} />
       </div>
       {!disabled && (
         <div className="w-10">
