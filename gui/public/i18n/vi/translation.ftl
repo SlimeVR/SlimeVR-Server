@@ -37,7 +37,7 @@ body_part-LEFT_LOWER_LEG = Chân trái dưới
 body_part-LEFT_FOOT = Bàn chân trái
 body_part-LEFT_CONTROLLER = Tay cầm trái
 
-## Skeleton stuff
+## Proportions
 skeleton_bone-NONE = Chưa liên kết
 skeleton_bone-HEAD = Đầu ca
 skeleton_bone-NECK = Cổ dài
@@ -58,6 +58,7 @@ skeleton_bone-UPPER_ARM = Chiều dài tay trên
 skeleton_bone-LOWER_ARM = khoảng cách cánh tay
 skeleton_bone-CONTROLLER_Y = Khoảng cách tay cầm Y
 skeleton_bone-CONTROLLER_Z = Khoảng cách tay cầm Z
+skeleton_bone-ELBOW_OFFSET = Lệch đo khuỷu tay
 
 ## Tracker reset buttons
 reset-reset_all = Reset tất cả bộ phận
@@ -86,9 +87,25 @@ navbar-settings = Cài đặt
 bvh-start_recording = Ghi BVH
 bvh-recording = Đang ghi...
 
-## Overlay settings
-overlay-is_visible_label = Xem overlay trên SteamVR
-overlay-is_mirrored_label = Xem overlay trong gương
+## Widget: Overlay settings
+widget-overlay = Overlay
+widget-overlay-is_visible_label = Xem overlay trên SteamVR
+widget-overlay-is_mirrored_label = Xem overlay trong gương
+
+## Widget: Developer settings
+widget-developer_mode = Chế độ nhà phát triển
+widget-developer_mode-high_contrast = High contrast
+widget-developer_mode-precise_rotation = Precise rotation
+widget-developer_mode-fast_data_feed = Fast data feed
+widget-developer_mode-filter_slimes_and_hmd = Filter slimes and HMD
+widget-developer_mode-sort_by_name = Sort by name
+widget-developer_mode-raw_slime_rotation = Raw rotation
+widget-developer_mode-more_info = More info
+
+## Widget: IMU Visualizer
+widget-imu_visualizer = Rotation
+widget-imu_visualizer-rotation_raw = Raw
+widget-imu_visualizer-rotation_preview = Preview
 
 ## Tracker status
 tracker-status-none = Không có tình trạng
@@ -103,6 +120,9 @@ tracker-table-column-name = Tên
 tracker-table-column-type = Loại
 tracker-table-column-battery = Pin
 tracker-table-column-ping = Ping
+tracker-table-column-tps = TPS
+tracker-table-column-temperature = Temp. °C
+tracker-table-column-linear-acceleration = Accel. X/Y/Z
 tracker-table-column-rotation = Chiều chuyển X/Y/Z
 tracker-table-column-position = Vị trí X/Y/Z
 tracker-table-column-url = URL
@@ -151,7 +171,7 @@ body_assignment_menu-unassign_tracker = Tracker chưa giao vị trí
 ## Tracker assignment menu
 # A -translation_key (with a dash in the front) means that it's a label.
 # It can only be used in the translation file, it's nice for reusing names and that kind of stuff.
-# 
+#
 # We are using it here because english doesn't require changing the text in each case but
 # maybe your language does.
 -tracker_selection-part = Tracker nào để giao cho vị trí
@@ -242,11 +262,11 @@ settings-general-tracker_mechanics-drift_compensation-max_resets-label = Use up 
 settings-general-fk_settings = Cài đặt FK
 settings-general-fk_settings-leg_tweak = Chỉnh chân
 settings-general-fk_settings-leg_tweak-description = Chỉnh chân có thể giảm hoặc loại bỏ chân đi xuyên sàn nhà nhưng có thể ảnh hưởng đầu gối. Sửa trượt sửa khi lướt, nhưng giảm độ chính xác ở một số cử động.
-# Floor clip: 
+# Floor clip:
 # why the name - came from the idea of noclip in video games, but is the opposite where clipping to the floor is a desired feature
 # definition - Prevents the foot trackers from going lower than they where when a reset was performed
 settings-general-fk_settings-leg_tweak-floor_clip = Xuyên sàn
-# Skating correction: 
+# Skating correction:
 # why the name - without this enabled the feet will often slide across the ground as if your skating across the ground,
 # since this largely prevents this it corrects for it hence skating correction (note this may be renamed to sliding correction)
 # definition - Guesses when each foot is in contact with the ground and uses that information to improve tracking
@@ -272,7 +292,7 @@ settings-general-gesture_control-description = Bật hoặc tắt reset nhanh. K
 # $amount (Number) - Amount of taps (touches to the tracker's case)
 settings-general-gesture_control-taps = { $amount ->
     [one] 1 tap
-    *[other] { $amount } lần 
+    *[other] { $amount } lần
 }
 settings-general-gesture_control-quickResetEnabled = Enable tap to quick reset
 settings-general-gesture_control-quickResetDelay = Quick reset delay
@@ -504,7 +524,7 @@ onboarding-automatic_proportions-recording-processing = Đang xử lí kết qu�
 # $time (Number) - Seconds left for the automatic calibration recording to finish (max 15)
 onboarding-automatic_proportions-recording-timer = { $time ->
     [one] 1 giây còn lại
-    *[other] { $time } giây còn 
+    *[other] { $time } giây còn
 }
 onboarding-automatic_proportions-verify_results-title = Xác nhận kết quả
 onboarding-automatic_proportions-verify_results-description = Kiểm tra kết quả dưới đây, nó có chính xác không?

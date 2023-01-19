@@ -1,8 +1,8 @@
 ### SlimeVR complete GUI translations
 # Please developers (not translators) don't reuse a key inside another key
-# or concat text with a translation string in the code, use the appropiate 
-# features like variables and selectors in each appropiate case!
-# And also comment the string if it's something not easy to translate so you help
+# or concat text with a translation string in the code, use the appropriate
+# features like variables and selectors in each appropriate case!
+# And also comment the string if it's something not easy to translate, so you help
 # translators on what it means
 
 ## Websocket (server) status
@@ -37,7 +37,7 @@ body_part-LEFT_LOWER_LEG = Vasak säär
 body_part-LEFT_FOOT = Vasak jalg
 body_part-LEFT_CONTROLLER = Vasak kontroller
 
-## Skeleton stuff
+## Proportions
 skeleton_bone-NONE = Mitte midagi
 skeleton_bone-HEAD = Pea Nihe
 skeleton_bone-NECK = Kaela Pikkus
@@ -58,6 +58,7 @@ skeleton_bone-UPPER_ARM = Õlavarre Pikkus
 skeleton_bone-LOWER_ARM = Käsivarre Kaugus
 skeleton_bone-CONTROLLER_Y = Kontrolleri Kaugus Y
 skeleton_bone-CONTROLLER_Z = Kontrolleri Kaugus Z
+skeleton_bone-ELBOW_OFFSET = Küünarnuki Nihe
 
 ## Tracker reset buttons
 reset-reset_all = Lähtesta kõik proportsioonid
@@ -95,7 +96,7 @@ tracker-status-none = Staatuseta
 tracker-status-busy = Hõivatud
 tracker-status-error = Viga
 tracker-status-disconnected = Ühendus katkestatud
-tracker-status-occluded = Jälgija kadunud 
+tracker-status-occluded = Jälgija kadunud
 tracker-status-ok = OK
 
 ## Tracker status columns
@@ -144,14 +145,14 @@ tracker-part_card-unassigned = Määramata
 ## Body assignment menu
 body_assignment_menu = Kus te soovite, et jälgija oleks?
 body_assignment_menu-description = Vali asukoht kuhu te soovite, et jälgija määratakse. Alternatiivina saate te hallata kõiki jälgijaid korraga mitte ükshaaval.
-body_assignment_menu-show_advanced_locations = Kuva täpsem määramise asukoht 
+body_assignment_menu-show_advanced_locations = Kuva täpsem määramise asukoht
 body_assignment_menu-manage_trackers = Halda kõiki jälgijaid
 body_assignment_menu-unassign_tracker = Tühista jälgija määramine
 
 ## Tracker assignment menu
 # A -translation_key (with a dash in the front) means that it's a label.
 # It can only be used in the translation file, it's nice for reusing names and that kind of stuff.
-# 
+#
 # We are using it here because english doesn't require changing the text in each case but
 # maybe your language does.
 -tracker_selection-part = Millist jälgijat määrata teie
@@ -242,11 +243,11 @@ settings-general-tracker_mechanics-drift_compensation-max_resets-label = Use up 
 settings-general-fk_settings = Jälgija seaded
 settings-general-fk_settings-leg_tweak = Jälgija näpunäiteid
 settings-general-fk_settings-leg_tweak-description = Põranda läbimine saab vähendada või isegi elimineerida jalgade positsiooni läbimist põrandaga, võib põhjustada probleeme põlvedega. Libisemise korrigeerimine korregeerib jalgade libisemist liikudes, aga võib vähendada täpsust teatud liikumiste puhul.
-# Floor clip: 
+# Floor clip:
 # why the name - came from the idea of noclip in video games, but is the opposite where clipping to the floor is a desired feature
 # definition - Prevents the foot trackers from going lower than they where when a reset was performed
 settings-general-fk_settings-leg_tweak-floor_clip = Põranda läbimine
-# Skating correction: 
+# Skating correction:
 # why the name - without this enabled the feet will often slide across the ground as if your skating across the ground,
 # since this largely prevents this it corrects for it hence skating correction (note this may be renamed to sliding correction)
 # definition - Guesses when each foot is in contact with the ground and uses that information to improve tracking
@@ -267,7 +268,7 @@ settings-general-fk_settings-vive_emulation-label = Luba Vive-i emulatsioon
 ## Gesture control settings (tracker tapping)
 settings-general-gesture_control = Žesti juhtimine
 settings-general-gesture_control-subtitle = Puudutusepõhised lähtestused
-settings-general-gesture_control-description = Lubab lähtestada jälgija puudutades jälgijat. Jälgija kere kõige kõrgemal osal kasutatakse kiireks lähtestamiseks, jälgija vasaku jala kõige kõrgemal osal kasutatakse lähtestamiseks ja jälgija parema jala kõige kõrgemal osal kasutatakse paigalduse lähtestamiseks. Vajutused peavad toimuma 0.6 sekundi jooksul, et need registreeritaks. 
+settings-general-gesture_control-description = Lubab lähtestada jälgija puudutades jälgijat. Jälgija kere kõige kõrgemal osal kasutatakse kiireks lähtestamiseks, jälgija vasaku jala kõige kõrgemal osal kasutatakse lähtestamiseks ja jälgija parema jala kõige kõrgemal osal kasutatakse paigalduse lähtestamiseks. Vajutused peavad toimuma 0.6 sekundi jooksul, et need registreeritaks.
 # This is a unit: 3 taps, 2 taps, 1 tap
 # $amount (Number) - Amount of taps (touches to the tracker's case)
 settings-general-gesture_control-taps = { $amount ->
@@ -337,7 +338,7 @@ settings-osc-router-network-address-placeholder = IPV4 aadress
 settings-osc-vrchat = VRChat OSC Jälgija
 # This cares about multilines
 settings-osc-vrchat-description =
-    Muuda VRChat-i spetsiifiliseid seadeid, et saada ja saata HMD andmeid. 
+    Muuda VRChat-i spetsiifiliseid seadeid, et saada ja saata HMD andmeid.
     Jälgijate andmed FBT jaoks (töötab Questi peal ilma arvuti ühenduseta).
 settings-osc-vrchat-enable = Luba
 settings-osc-vrchat-enable-description = Lülitage andmete sisestamine sisse/välja.
@@ -371,7 +372,7 @@ onboarding-wifi_creds-back = Mine tagasi juhistele
 onboarding-wifi_creds = Sisestage enda Wi-Fi andmed!
 # This cares about multilines
 onboarding-wifi_creds-description =
-    Jälgijad kasutavad neid andmeid, et ühendada juhtmevabalt. 
+    Jälgijad kasutavad neid andmeid, et ühendada juhtmevabalt.
     Palun kasutage neid Wi-Fi andmeid, millega te praegu olete ühendatud.
 onboarding-wifi_creds-skip = Jätke Wi-Fi seaded vahele.
 onboarding-wifi_creds-submit = Jätka!
