@@ -248,7 +248,7 @@ settings-general-tracker_mechanics-filtering-type-smoothing = Smoothing
 settings-general-tracker_mechanics-filtering-type-smoothing-description = Maakt bewegingen vloeiender, maar voegt enige latentie toe.
 settings-general-tracker_mechanics-filtering-type-prediction = Voorspelling
 settings-general-tracker_mechanics-filtering-type-prediction-description = Verlaagt latentie en maakt bewegingen snappier, maar kan jitter verhogen.
-settings-general-tracker_mechanics-amount = Hoeveelheid
+settings-general-tracker_mechanics-filtering-amount = Hoeveelheid
 settings-general-tracker_mechanics-drift_compensation = Drift compensatie
 # This cares about multilines
 settings-general-tracker_mechanics-drift_compensation-description =
