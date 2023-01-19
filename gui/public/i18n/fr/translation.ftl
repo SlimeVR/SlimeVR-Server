@@ -93,19 +93,19 @@ widget-overlay-is_visible_label = Superposer le squelette dans SteamVR
 widget-overlay-is_mirrored_label = Afficher le squelette en tant que miroir
 
 ## Widget: Developer settings
-widget-developer_mode = Developer Mode
-widget-developer_mode-high_contrast = High contrast
-widget-developer_mode-precise_rotation = Precise rotation
-widget-developer_mode-fast_data_feed = Fast data feed
-widget-developer_mode-filter_slimes_and_hmd = Filter slimes and HMD
-widget-developer_mode-sort_by_name = Sort by name
-widget-developer_mode-raw_slime_rotation = Raw rotation
-widget-developer_mode-more_info = More info
+widget-developer_mode = Mode développeur
+widget-developer_mode-high_contrast = Contraste élevé
+widget-developer_mode-precise_rotation = PRotation précise
+widget-developer_mode-fast_data_feed = Flux de données rapide
+widget-developer_mode-filter_slimes_and_hmd = Filtrer les capteurs SlimeVR et le casque VR
+widget-developer_mode-sort_by_name = Trier par nom
+widget-developer_mode-raw_slime_rotation = Rotation brute
+widget-developer_mode-more_info = Plus d'informations
 
 ## Widget: IMU Visualizer
 widget-imu_visualizer = Rotation
-widget-imu_visualizer-rotation_raw = Raw
-widget-imu_visualizer-rotation_preview = Preview
+widget-imu_visualizer-rotation_raw = Brute
+widget-imu_visualizer-rotation_preview = Aperçu
 
 ## Tracker status
 tracker-status-none = Pas de statut
@@ -122,7 +122,7 @@ tracker-table-column-battery = Batterie
 tracker-table-column-ping = Ping
 tracker-table-column-tps = TPS
 tracker-table-column-temperature = Temp. °C
-tracker-table-column-linear-acceleration = Accel. X/Y/Z
+tracker-table-column-linear-acceleration = Accél. X/Y/Z
 tracker-table-column-rotation = Rotation X/Y/Z
 tracker-table-column-position = Position X/Y/Z
 tracker-table-column-url = URL
