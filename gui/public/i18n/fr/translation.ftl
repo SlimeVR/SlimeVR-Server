@@ -95,7 +95,7 @@ widget-overlay-is_mirrored_label = Afficher le squelette en tant que miroir
 ## Widget: Developer settings
 widget-developer_mode = Mode développeur
 widget-developer_mode-high_contrast = Contraste élevé
-widget-developer_mode-precise_rotation = PRotation précise
+widget-developer_mode-precise_rotation = Rotation précise
 widget-developer_mode-fast_data_feed = Flux de données rapide
 widget-developer_mode-filter_slimes_and_hmd = Filtrer les capteurs SlimeVR et le casque VR
 widget-developer_mode-sort_by_name = Trier par nom
