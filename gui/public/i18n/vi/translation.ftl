@@ -37,7 +37,7 @@ body_part-LEFT_LOWER_LEG = Cẳng chân trái
 body_part-LEFT_FOOT = Bàn chân trái
 body_part-LEFT_CONTROLLER = Tay cầm bên trái
 
-## Skeleton stuff
+## Proportions
 skeleton_bone-NONE = Chưa được gán
 skeleton_bone-HEAD = Sai số đầu
 skeleton_bone-NECK = Chiều dài cổ
@@ -87,9 +87,25 @@ navbar-settings = Cài đặt
 bvh-start_recording = Ghi BVH
 bvh-recording = Đang ghi...
 
-## Overlay settings
-overlay-is_visible_label = Hiển thị overlay trong SteamVR
-overlay-is_mirrored_label = Hiển thị overlay trong gương
+## Widget: Overlay settings
+widget-overlay = Overlay
+widget-overlay-is_visible_label = Xem overlay trên SteamVR
+widget-overlay-is_mirrored_label = Xem overlay trong gương
+
+## Widget: Developer settings
+widget-developer_mode = Chế độ nhà phát triển
+widget-developer_mode-high_contrast = Chế độ tương phản cao
+widget-developer_mode-precise_rotation = Hiển thị góc quay chính xác
+widget-developer_mode-fast_data_feed = Tăng tốc độ gửi dữ liệu
+widget-developer_mode-filter_slimes_and_hmd = Lọc dữ liệu tracker và kính
+widget-developer_mode-sort_by_name = Sắp xếp theo tên
+widget-developer_mode-raw_slime_rotation = Sử dụng giá trị góc quay thực cho tracker
+widget-developer_mode-more_info = Thêm thông tin
+
+## Widget: IMU Visualizer
+widget-imu_visualizer = Góc quay
+widget-imu_visualizer-rotation_raw = Gốc
+widget-imu_visualizer-rotation_preview = Qua xử lí
 
 ## Tracker status
 tracker-status-none = Không có trạng thái
@@ -104,7 +120,10 @@ tracker-table-column-name = Tên
 tracker-table-column-type = Loại
 tracker-table-column-battery = Pin
 tracker-table-column-ping = Ping
-tracker-table-column-rotation = Góc xoay X/Y/Z
+tracker-table-column-tps = TPS
+tracker-table-column-temperature = Nhiệt độ (°C)
+tracker-table-column-linear-acceleration = Tốc độ X/Y/Z
+tracker-table-column-rotation = Góc quay X/Y/Z
 tracker-table-column-position = Tọa độ X/Y/Z
 tracker-table-column-url = Đường dẫn
 
