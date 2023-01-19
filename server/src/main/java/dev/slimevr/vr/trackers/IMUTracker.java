@@ -509,7 +509,7 @@ public class IMUTracker
 
 		sensorRotation.fromAngles(0, sensorRotation.getYaw(), 0);
 
-		yawFix.set(sensorRotation).inverseLocal().multLocal(reference);
+		yawFix.set(sensorRotation.inverseLocal().multLocal(reference));
 	}
 
 	private void calibrateMag() {
