@@ -37,7 +37,7 @@ body_part-LEFT_LOWER_LEG = weft wowwe weg
 body_part-LEFT_FOOT = weft pawb
 body_part-LEFT_CONTROLLER = weft wontwolew
 
-## Skeleton stuff
+## Proportions
 skeleton_bone-NONE = none
 skeleton_bone-HEAD = hed shyft
 skeleton_bone-NECK = nyeck wength
@@ -87,9 +87,25 @@ navbar-settings = sewtings
 bvh-start_recording = wecowd bvh
 bvh-recording = wecowding...
 
-## Overlay settings
-overlay-is_visible_label = show owovelay in steawmvr
-overlay-is_mirrored_label = dispway owovelay as miwwow
+## Widget: Overlay settings
+widget-overlay = owovelay
+widget-overlay-is_visible_label = show owovelay in steawmvr
+widget-overlay-is_mirrored_label = dispway owovelay as miwwow
+
+## Widget: Developer settings
+widget-developer_mode = devwowwewow mode
+widget-developer_mode-high_contrast = high contwast
+widget-developer_mode-precise_rotation = pwecise wotation
+widget-developer_mode-fast_data_feed = fast data feed
+widget-developer_mode-filter_slimes_and_hmd = fiwtew swimes a-and HMD
+widget-developer_mode-sort_by_name = sowt by nyame
+widget-developer_mode-raw_slime_rotation = waw wotation
+widget-developer_mode-more_info = mowe info
+
+## Widget: IMU Visualizer
+widget-imu_visualizer = wotation
+widget-imu_visualizer-rotation_raw = waw
+widget-imu_visualizer-rotation_preview = pwewiew
 
 ## Tracker status
 tracker-status-none = no stawtus
@@ -104,6 +120,9 @@ tracker-table-column-name = nayme
 tracker-table-column-type = type
 tracker-table-column-battery = battewy
 tracker-table-column-ping = pyng
+tracker-table-column-tps = tps
+tracker-table-column-temperature = temp. °C
+tracker-table-column-linear-acceleration = accew. X/Y/Z
 tracker-table-column-rotation = wotaytion x/y/z
 tracker-table-column-position = pawsytion x/y/z
 tracker-table-column-url = uawl
@@ -152,7 +171,7 @@ body_assignment_menu-unassign_tracker = unassyign twayckaw
 ## Tracker assignment menu
 # A -translation_key (with a dash in the front) means that it's a label.
 # It can only be used in the translation file, it's nice for reusing names and that kind of stuff.
-# 
+#
 # We are using it here because english doesn't require changing the text in each case but
 # maybe your language does.
 -tracker_selection-part = Which tracker to assign to your
@@ -243,11 +262,11 @@ settings-general-tracker_mechanics-drift_compensation-max_resets-label = nuwmbew
 settings-general-fk_settings = fk sewttings
 settings-general-fk_settings-leg_tweak = leg tweeks
 settings-general-fk_settings-leg_tweak-description = floo-cwip can wowduce owow even ewiminates cwipping with teh fwoor but may cause pwobweems when on yowur neeys. skayting-cowwection cowwects fow wowce skating, but can wowcyancy accuwowacy in cewtain wowvement wowttewns.
-# Floor clip: 
+# Floor clip:
 # why the name - came from the idea of noclip in video games, but is the opposite where clipping to the floor is a desired feature
 # definition - Prevents the foot trackers from going lower than they where when a reset was performed
 settings-general-fk_settings-leg_tweak-floor_clip = fwoow cwip
-# Skating correction: 
+# Skating correction:
 # why the name - without this enabled the feet will often slide across the ground as if your skating across the ground,
 # since this largely prevents this it corrects for it hence skating correction (note this may be renamed to sliding correction)
 # definition - Guesses when each foot is in contact with the ground and uses that information to improve tracking
@@ -313,7 +332,7 @@ settings-serial-auto_dropdown_item = awto
 ## OSC router settings
 settings-osc-router = OSC wouwter
 # This cares about multilines
-settings-osc-router-description = 
+settings-osc-router-description =
     fowwawd osc messages fwom anothew pwogwam
     usefuww fow uwsing anothew osc pwogwam with VRChat fow exampwe
 settings-osc-router-enable = enaybwe

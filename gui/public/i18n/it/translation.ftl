@@ -37,7 +37,7 @@ body_part-LEFT_LOWER_LEG = Caviglia sinistra
 body_part-LEFT_FOOT = Piede sinistro
 body_part-LEFT_CONTROLLER = Left controller
 
-## Skeleton stuff
+## Proportions
 skeleton_bone-NONE = Non assegnato
 skeleton_bone-HEAD = Correzione Testa
 skeleton_bone-NECK = Lunghezza Collo
@@ -87,9 +87,25 @@ navbar-settings = Impostazioni
 bvh-start_recording = Registra BVH
 bvh-recording = Registrazione in corso...
 
-## Overlay settings
-overlay-is_visible_label = Mostra Overlay in SteamVR
-overlay-is_mirrored_label = Includi uno specchio nel Overlay
+## Widget: Overlay settings
+widget-overlay = Overlay
+widget-overlay-is_visible_label = Mostra Overlay in SteamVR
+widget-overlay-is_mirrored_label = Includi uno specchio nel Overlay
+
+## Widget: Developer settings
+widget-developer_mode = Developer Mode
+widget-developer_mode-high_contrast = High contrast
+widget-developer_mode-precise_rotation = Precise rotation
+widget-developer_mode-fast_data_feed = Fast data feed
+widget-developer_mode-filter_slimes_and_hmd = Filter slimes and HMD
+widget-developer_mode-sort_by_name = Sort by name
+widget-developer_mode-raw_slime_rotation = Raw rotation
+widget-developer_mode-more_info = More info
+
+## Widget: IMU Visualizer
+widget-imu_visualizer = Rotation
+widget-imu_visualizer-rotation_raw = Raw
+widget-imu_visualizer-rotation_preview = Preview
 
 ## Tracker status
 tracker-status-none = Nessuno Stato
@@ -104,6 +120,9 @@ tracker-table-column-name = Nome
 tracker-table-column-type = Tipologia
 tracker-table-column-battery = Batteria
 tracker-table-column-ping = Ping
+tracker-table-column-tps = TPS
+tracker-table-column-temperature = Temp. °C
+tracker-table-column-linear-acceleration = Accel. X/Y/Z
 tracker-table-column-rotation = Rotazione X/Y/Z
 tracker-table-column-position = Rotazione X/Y/Z
 tracker-table-column-url = URL
@@ -152,7 +171,7 @@ body_assignment_menu-unassign_tracker = Rimuovi assegnazione del tracker
 ## Tracker assignment menu
 # A -translation_key (with a dash in the front) means that it's a label.
 # It can only be used in the translation file, it's nice for reusing names and that kind of stuff.
-# 
+#
 # We are using it here because english doesn't require changing the text in each case but
 # maybe your language does.
 -tracker_selection-part = Which tracker to assign to your
@@ -243,11 +262,11 @@ settings-general-tracker_mechanics-drift_compensation-max_resets-label = Use up 
 settings-general-fk_settings = Impostazioni FK
 settings-general-fk_settings-leg_tweak = Impostazioni Gambe
 settings-general-fk_settings-leg_tweak-description = "Compenetrazione pavimento" può ridurre o anche eliminare completamente la compenetrazione con il pavimento, ma può causare problemi quando in ginocchio. "Correzione pattinaggio" corregge l'effetto che fa sembrare che pattini sul ghiaccio, ma può peggiorare la precisione di certi movimenti.
-# Floor clip: 
+# Floor clip:
 # why the name - came from the idea of noclip in video games, but is the opposite where clipping to the floor is a desired feature
 # definition - Prevents the foot trackers from going lower than they where when a reset was performed
 settings-general-fk_settings-leg_tweak-floor_clip = Compenetrazione pavimento
-# Skating correction: 
+# Skating correction:
 # why the name - without this enabled the feet will often slide across the ground as if your skating across the ground,
 # since this largely prevents this it corrects for it hence skating correction (note this may be renamed to sliding correction)
 # definition - Guesses when each foot is in contact with the ground and uses that information to improve tracking

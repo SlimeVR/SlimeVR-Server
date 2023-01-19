@@ -171,7 +171,7 @@ body_assignment_menu-unassign_tracker = Bỏ gán tracker
 ## Tracker assignment menu
 # A -translation_key (with a dash in the front) means that it's a label.
 # It can only be used in the translation file, it's nice for reusing names and that kind of stuff.
-# 
+#
 # We are using it here because english doesn't require changing the text in each case but
 # maybe your language does.
 -tracker_selection-part = Tracker nào cho vị trí

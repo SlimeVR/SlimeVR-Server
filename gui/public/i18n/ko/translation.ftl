@@ -37,7 +37,7 @@ body_part-LEFT_LOWER_LEG = 왼쪽 다리 아래
 body_part-LEFT_FOOT = 왼발
 body_part-LEFT_CONTROLLER = Left controller
 
-## Skeleton stuff
+## Proportions
 skeleton_bone-NONE = None
 skeleton_bone-HEAD = 머리 밀림
 skeleton_bone-NECK = 목 길이
@@ -87,9 +87,25 @@ navbar-settings = 설정
 bvh-start_recording = BVH 기록
 bvh-recording = 기록중...
 
-## Overlay settings
-overlay-is_visible_label = SteamVR에서 오버레이 표시
-overlay-is_mirrored_label = 오버레이 반전
+## Widget: Overlay settings
+widget-overlay = 오버레이
+widget-overlay-is_visible_label = SteamVR에서 오버레이 표시
+widget-overlay-is_mirrored_label = 오버레이 반전
+
+## Widget: Developer settings
+widget-developer_mode = 개발자 모드
+widget-developer_mode-high_contrast = High contrast
+widget-developer_mode-precise_rotation = Precise rotation
+widget-developer_mode-fast_data_feed = Fast data feed
+widget-developer_mode-filter_slimes_and_hmd = Filter slimes and HMD
+widget-developer_mode-sort_by_name = Sort by name
+widget-developer_mode-raw_slime_rotation = Raw rotation
+widget-developer_mode-more_info = More info
+
+## Widget: IMU Visualizer
+widget-imu_visualizer = Rotation
+widget-imu_visualizer-rotation_raw = Raw
+widget-imu_visualizer-rotation_preview = Preview
 
 ## Tracker status
 tracker-status-none = No Status
@@ -104,6 +120,9 @@ tracker-table-column-name = 이름
 tracker-table-column-type = 타입
 tracker-table-column-battery = 배터리
 tracker-table-column-ping = Ping
+tracker-table-column-tps = TPS
+tracker-table-column-temperature = Temp. °C
+tracker-table-column-linear-acceleration = Accel. X/Y/Z
 tracker-table-column-rotation = X/Y/Z 회전
 tracker-table-column-position = X/Y/Z 위치
 tracker-table-column-url = URL
@@ -152,7 +171,7 @@ body_assignment_menu-unassign_tracker = 할당하지 않기
 ## Tracker assignment menu
 # A -translation_key (with a dash in the front) means that it's a label.
 # It can only be used in the translation file, it's nice for reusing names and that kind of stuff.
-# 
+#
 # We are using it here because english doesn't require changing the text in each case but
 # maybe your language does.
 -tracker_selection-part = Which tracker to assign to your
@@ -243,11 +262,11 @@ settings-general-tracker_mechanics-drift_compensation-max_resets-label = Use up 
 settings-general-fk_settings = FK 설정
 settings-general-fk_settings-leg_tweak = 다리 보정
 settings-general-fk_settings-leg_tweak-description = 플로어 클립은 바닥과의 클리핑을 줄이거나 제거할 수 있지만 무릎을 꿇을 때 문제를 일으킬 수 있어요. 스케이팅 보정은 아이스 스케이팅을 보정하지만, 특정 움직임 패턴에서 정확도를 저하시킬 수 있어요.
-# Floor clip: 
+# Floor clip:
 # why the name - came from the idea of noclip in video games, but is the opposite where clipping to the floor is a desired feature
 # definition - Prevents the foot trackers from going lower than they where when a reset was performed
 settings-general-fk_settings-leg_tweak-floor_clip = 플로어 클립
-# Skating correction: 
+# Skating correction:
 # why the name - without this enabled the feet will often slide across the ground as if your skating across the ground,
 # since this largely prevents this it corrects for it hence skating correction (note this may be renamed to sliding correction)
 # definition - Guesses when each foot is in contact with the ground and uses that information to improve tracking
