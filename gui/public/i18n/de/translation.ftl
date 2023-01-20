@@ -58,6 +58,7 @@ skeleton_bone-UPPER_ARM = Oberarmlänge
 skeleton_bone-LOWER_ARM = Unterarmlänge
 skeleton_bone-CONTROLLER_Y = Controller Abstand Y
 skeleton_bone-CONTROLLER_Z = Controller Abstand Z
+skeleton_bone-ELBOW_OFFSET = Ellbogenversatz
 
 ## Tracker reset buttons
 reset-reset_all = Alle Proportionen zurücksetzen
@@ -86,9 +87,25 @@ navbar-settings = Einstellungen
 bvh-start_recording = BVH aufnehmen
 bvh-recording = Aufnahme läuft...
 
-## Overlay settings
-overlay-is_visible_label = Visualisierungs-Overlay in SteamVR anzeigen
-overlay-is_mirrored_label = Visualisierung spiegeln
+## Widget: Overlay settings
+widget-overlay = Visualisierung
+widget-overlay-is_visible_label = Visualisierung in SteamVR anzeigen
+widget-overlay-is_mirrored_label = Visualisierung spiegeln
+
+## Widget: Developer settings
+widget-developer_mode = Entwicklermodus
+widget-developer_mode-high_contrast = Hoher Kontrast
+widget-developer_mode-precise_rotation = Präzise Drehung
+widget-developer_mode-fast_data_feed = Schnellerer Update-Intervall
+widget-developer_mode-filter_slimes_and_hmd = Slime-Tracker und HMD filtern
+widget-developer_mode-sort_by_name = Nach Namen sortieren
+widget-developer_mode-raw_slime_rotation = Rohe Drehung
+widget-developer_mode-more_info = Mehr Infos
+
+## Widget: IMU Visualizer
+widget-imu_visualizer = Drehung
+widget-imu_visualizer-rotation_raw = Roh
+widget-imu_visualizer-rotation_preview = Vorschau
 
 ## Tracker status
 tracker-status-none = Kein Status
@@ -103,6 +120,9 @@ tracker-table-column-name = Name
 tracker-table-column-type = Typ
 tracker-table-column-battery = Batterie
 tracker-table-column-ping = Latenz
+tracker-table-column-tps = TPS
+tracker-table-column-temperature = Temp. °C
+tracker-table-column-linear-acceleration = Geschwindigkeit X/Y/Z
 tracker-table-column-rotation = Rotation X/Y/Z
 tracker-table-column-position = Position X/Y/Z
 tracker-table-column-url = Adresse
@@ -487,7 +507,7 @@ onboarding-automatic_proportions-put_trackers_on-title = Legen Sie Ihre Tracker 
 onboarding-automatic_proportions-put_trackers_on-description = Um Ihre Proportionen zu kalibrieren, werden wir die Tracker verwenden, die Sie gerade zugewiesen haben. Legen Sie alle Ihre Tracker an. Sie können rechts in der Abbildung sehen, welche welche sind.
 onboarding-automatic_proportions-put_trackers_on-next = Ich habe alle meine Tracker angelegt
 onboarding-automatic_proportions-preparation-title = Vorbereitung
-onboarding-automatic_proportions-preparation-description = Stellen Sie einen Stuhl direkt hinter Ihnen in Ihrem Spielbereich. Seien Sie bereit, während der Autobone-Einrichtung zu sitzen.
+onboarding-automatic_proportions-preparation-description = Stellen Sie einen Stuhl direkt hinter in Ihren Spielbereich. Seien Sie bereit, während der Autobone-Einrichtung zu sitzen.
 onboarding-automatic_proportions-preparation-next = Ich stehe vor einem Stuhl
 onboarding-automatic_proportions-start_recording-title = Bereiten Sie sich auf ein paar Bewegungen vor
 onboarding-automatic_proportions-start_recording-description = Wir werden nun einige bestimmte Posen und Bewegungen aufnehmen. Diese werden im nächsten Bildschirm angezeigt. Bereiten Sie sicht darauf vor, wenn Sie den Knopf drücken!
@@ -495,11 +515,11 @@ onboarding-automatic_proportions-start_recording-next = Aufnahme starten
 onboarding-automatic_proportions-recording-title = Aufnahme
 onboarding-automatic_proportions-recording-description-p0 = Aufnahme läuft...
 onboarding-automatic_proportions-recording-description-p1 = Machen Sie die unten beschriebenen Bewegungen:
-onboarding-automatic_proportions-recording-steps-0 = Beuge ein paar Mal die Knie.
+onboarding-automatic_proportions-recording-steps-0 = Beugen Sie ein paar Mal die Knie.
 onboarding-automatic_proportions-recording-steps-1 = Bitte setzen Sie sich auf den Stuhl und stehen Sie wieder auf.
-onboarding-automatic_proportions-recording-steps-2 = Drehe den oberen Körper nach links, dann beuge dich nach rechts.
-onboarding-automatic_proportions-recording-steps-3 = Drehe den oberen Körper nach rechts, dann beuge dich nach links.
-onboarding-automatic_proportions-recording-steps-4 = Bewege dich, bis die Zeit abgelaufen ist.
+onboarding-automatic_proportions-recording-steps-2 = Drehen Sie den Oberkörper nach links, dann beugen Sie sich nach rechts.
+onboarding-automatic_proportions-recording-steps-3 = Drehen Sie den Oberkörper nach rechts, dann beugen Sie sich nach links.
+onboarding-automatic_proportions-recording-steps-4 = Bewegen Sie sich, bis die Zeit abgelaufen ist.
 onboarding-automatic_proportions-recording-processing = Aufnahme wird verarbeitet...
 # $time (Number) - Seconds left for the automatic calibration recording to finish (max 15)
 onboarding-automatic_proportions-recording-timer = { $time ->
@@ -507,13 +527,13 @@ onboarding-automatic_proportions-recording-timer = { $time ->
     *[other] { $time } Sekunden verbleibend
 }
 onboarding-automatic_proportions-verify_results-title = Ergebnisse überprüfen
-onboarding-automatic_proportions-verify_results-description = Überprüfe die Ergebnisse unten, sehen sie korrekt aus?
+onboarding-automatic_proportions-verify_results-description = Überprüfen Sie die Ergebnisse unten, sehen diese korrekt aus?
 onboarding-automatic_proportions-verify_results-results = Aufnahme-Ergebnisse
 onboarding-automatic_proportions-verify_results-processing = Ergebnis wird bearbeitet
 onboarding-automatic_proportions-verify_results-redo = Aufnahme wiederholen
 onboarding-automatic_proportions-verify_results-confirm = Ergebnisse sind korrekt
 onboarding-automatic_proportions-done-title = Körper gemessen und gespeichert.
-onboarding-automatic_proportions-done-description = Deine Körperproportionen-Kalibrierung ist abgeschlossen!
+onboarding-automatic_proportions-done-description = Ihre Körperproportionen-Kalibrierung ist abgeschlossen!
 
 ## Home
 home-no_trackers = Keine Tracker erkannt oder zugewiesen
