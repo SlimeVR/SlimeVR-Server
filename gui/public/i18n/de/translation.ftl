@@ -104,7 +104,7 @@ widget-developer_mode-more_info = Mehr Infos
 
 ## Widget: IMU Visualizer
 widget-imu_visualizer = Drehung
-widget-imu_visualizer-rotation_raw = Roh
+widget-imu_visualizer-rotation_raw = Rohe Drehung
 widget-imu_visualizer-rotation_preview = Vorschau
 
 ## Tracker status
@@ -122,7 +122,7 @@ tracker-table-column-battery = Batterie
 tracker-table-column-ping = Latenz
 tracker-table-column-tps = TPS
 tracker-table-column-temperature = Temp. °C
-tracker-table-column-linear-acceleration = Geschwindigkeit X/Y/Z
+tracker-table-column-linear-acceleration = Beschleunigung X/Y/Z
 tracker-table-column-rotation = Rotation X/Y/Z
 tracker-table-column-position = Position X/Y/Z
 tracker-table-column-url = Adresse
