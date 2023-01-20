@@ -623,8 +623,14 @@ public class HumanSkeleton extends Skeleton implements SkeletonConfigCallback {
 		assembleSkeletonArms(true);
 
 		// Refresh node offsets for arms
-		skeletonConfig.computeNodeOffset(BoneType.LEFT_LOWER_ARM);
-		skeletonConfig.computeNodeOffset(BoneType.RIGHT_LOWER_ARM);
+		if (skeletonConfig != null) {
+			skeletonConfig.computeNodeOffset(BoneType.LEFT_UPPER_ARM);
+			skeletonConfig.computeNodeOffset(BoneType.RIGHT_UPPER_ARM);
+			skeletonConfig.computeNodeOffset(BoneType.LEFT_LOWER_ARM);
+			skeletonConfig.computeNodeOffset(BoneType.RIGHT_LOWER_ARM);
+			skeletonConfig.computeNodeOffset(BoneType.LEFT_CONTROLLER);
+			skeletonConfig.computeNodeOffset(BoneType.RIGHT_CONTROLLER);
+		}
 
 		// Rebuild the bone list
 		resetBones();
@@ -934,7 +940,7 @@ public class HumanSkeleton extends Skeleton implements SkeletonConfigCallback {
 			leftHipNode.localTransform.getRotation(rotBuf1);
 			leftKneeNode.localTransform.getRotation(rotBuf2);
 
-			rotBuf2.set(extendedKneeYawRoll(rotBuf1.clone(), rotBuf2.clone()));
+			rotBuf2.set(extendedKneeYawRoll(rotBuf1, rotBuf2));
 
 			rotBuf1.slerpLocal(rotBuf2, kneeTrackerAnkleAveraging);
 			trackerLeftKneeNode.localTransform.setRotation(rotBuf1);
@@ -974,7 +980,7 @@ public class HumanSkeleton extends Skeleton implements SkeletonConfigCallback {
 			rightHipNode.localTransform.getRotation(rotBuf1);
 			rightKneeNode.localTransform.getRotation(rotBuf2);
 
-			rotBuf2.set(extendedKneeYawRoll(rotBuf1.clone(), rotBuf2.clone()));
+			rotBuf2.set(extendedKneeYawRoll(rotBuf1, rotBuf2));
 
 			rotBuf1.slerpLocal(rotBuf2, kneeTrackerAnkleAveraging);
 			trackerRightKneeNode.localTransform.setRotation(rotBuf1);
@@ -1087,7 +1093,7 @@ public class HumanSkeleton extends Skeleton implements SkeletonConfigCallback {
 			rightHipNode.localTransform.getRotation(rotBuf2);
 			hipNode.localTransform.getRotation(rotBuf3);
 
-			rotBuf1.set(extendedPelvisYawRoll(rotBuf1.clone(), rotBuf2.clone(), rotBuf3.clone()));
+			rotBuf1.set(extendedPelvisYawRoll(rotBuf1, rotBuf2, rotBuf3));
 
 			rotBuf3.slerpLocal(rotBuf1, hipLegsAveraging);
 			hipNode.localTransform.setRotation(rotBuf3);
@@ -1101,10 +1107,10 @@ public class HumanSkeleton extends Skeleton implements SkeletonConfigCallback {
 			leftControllerNode.localTransform.setTranslation(posBuf);
 			leftControllerNode.localTransform.setRotation(rotBuf1);
 
-			if (leftLowerArmTracker != null || leftUpperArmTracker != null) {
-				TrackerUtils
-					.getFirstAvailableTracker(leftLowerArmTracker, leftUpperArmTracker)
-					.getRotation(rotBuf1);
+			Tracker lowerArm = TrackerUtils
+				.getFirstAvailableTracker(leftLowerArmTracker, leftUpperArmTracker);
+			if (lowerArm != null) {
+				lowerArm.getRotation(rotBuf1);
 
 				leftWristNode.localTransform.setRotation(rotBuf1);
 
@@ -1121,6 +1127,22 @@ public class HumanSkeleton extends Skeleton implements SkeletonConfigCallback {
 				leftShoulderHeadNode.localTransform.setRotation(rotBuf1);
 			} else {
 				neckNode.localTransform.getRotation(rotBuf1);
+
+				if (leftUpperArmTracker != null || leftLowerArmTracker != null) {
+					// Average
+					TrackerUtils
+						.getFirstAvailableTracker(leftUpperArmTracker, leftLowerArmTracker)
+						.getRotation(rotBuf2);
+					rotBuf1
+						.fromAngles(
+							rotBuf1.getPitch(),
+							rotBuf2.getYaw(),
+							rotBuf1.getRoll()
+						);
+					// TODO use yaw from arm relative to HMD and
+					// pitch/roll from HMD (use methods below)
+				}
+
 				leftShoulderHeadNode.localTransform.setRotation(rotBuf1);
 			}
 
@@ -1141,8 +1163,10 @@ public class HumanSkeleton extends Skeleton implements SkeletonConfigCallback {
 				trackerLeftElbowNode.localTransform.setRotation(rotBuf1);
 				leftElbowNode.localTransform.setRotation(rotBuf1);
 			}
+
 			if (leftHandTracker != null)
 				leftHandTracker.getRotation(rotBuf1);
+
 			leftWristNode.localTransform.setRotation(rotBuf1);
 			leftHandNode.localTransform.setRotation(rotBuf1);
 			trackerLeftHandNode.localTransform.setRotation(rotBuf1);
@@ -1155,10 +1179,10 @@ public class HumanSkeleton extends Skeleton implements SkeletonConfigCallback {
 			rightControllerNode.localTransform.setTranslation(posBuf);
 			rightControllerNode.localTransform.setRotation(rotBuf1);
 
-			if (rightLowerArmTracker != null || rightUpperArmTracker != null) {
-				TrackerUtils
-					.getFirstAvailableTracker(rightLowerArmTracker, rightUpperArmTracker)
-					.getRotation(rotBuf1);
+			Tracker lowerArm = TrackerUtils
+				.getFirstAvailableTracker(rightLowerArmTracker, rightUpperArmTracker);
+			if (lowerArm != null) {
+				lowerArm.getRotation(rotBuf1);
 
 				rightWristNode.localTransform.setRotation(rotBuf1);
 
@@ -1175,8 +1199,17 @@ public class HumanSkeleton extends Skeleton implements SkeletonConfigCallback {
 				rightShoulderHeadNode.localTransform.setRotation(rotBuf1);
 			} else {
 				neckNode.localTransform.getRotation(rotBuf1);
+				if (rightUpperArmTracker != null || rightLowerArmTracker != null) {
+					// Average
+					TrackerUtils
+						.getFirstAvailableTracker(rightUpperArmTracker, rightLowerArmTracker)
+						.getRotation(rotBuf2);
+					rotBuf1.set(rotBuf1);
+				}
+
 				rightShoulderHeadNode.localTransform.setRotation(rotBuf1);
 			}
+
 			if (rightUpperArmTracker != null || rightLowerArmTracker != null) {
 				TrackerUtils
 					.getFirstAvailableTracker(rightUpperArmTracker, rightLowerArmTracker)
@@ -1194,8 +1227,10 @@ public class HumanSkeleton extends Skeleton implements SkeletonConfigCallback {
 				trackerRightElbowNode.localTransform.setRotation(rotBuf1);
 				rightElbowNode.localTransform.setRotation(rotBuf1);
 			}
+
 			if (rightHandTracker != null)
 				rightHandTracker.getRotation(rotBuf1);
+
 			rightWristNode.localTransform.setRotation(rotBuf1);
 			rightHandNode.localTransform.setRotation(rotBuf1);
 			trackerRightHandNode.localTransform.setRotation(rotBuf1);
@@ -1211,9 +1246,11 @@ public class HumanSkeleton extends Skeleton implements SkeletonConfigCallback {
 	 * @return the rotated Quaternion
 	 */
 	Quaternion extendedKneeYawRoll(Quaternion knee, Quaternion ankle) {
+		knee = knee.clone();
+		ankle = ankle.clone();
+
 		// Get the inverse rotation of the knee
-		rotBuf3.set(knee);
-		rotBuf3.inverseLocal();
+		rotBuf3.set(knee).inverseLocal();
 
 		// R = InverseKnee * Ankle
 		// C = Quaternion(-R.x, 0, 0, R.w)
@@ -1221,8 +1258,8 @@ public class HumanSkeleton extends Skeleton implements SkeletonConfigCallback {
 		// normalize(Knee)
 		rotBuf3.multLocal(ankle);
 		rotBuf4.set(-rotBuf3.getX(), 0, 0, rotBuf3.getW());
-		knee.set(knee.mult(rotBuf3).mult(rotBuf4));
-		return knee.normalize();
+		knee.multLocal(rotBuf3).multLocal(rotBuf4);
+		return knee.normalizeLocal();
 	}
 
 	/**
@@ -1235,6 +1272,10 @@ public class HumanSkeleton extends Skeleton implements SkeletonConfigCallback {
 	 * @return the rotated Quaternion
 	 */
 	Quaternion extendedPelvisYawRoll(Quaternion leftKnee, Quaternion rightKnee, Quaternion hip) {
+		leftKnee = leftKnee.clone();
+		rightKnee = rightKnee.clone();
+		hip = hip.clone();
+
 		// Get the knees' rotation relative to where we expect them to be.
 		// The angle between your knees and hip can be over 180 degrees...
 		hip.mult(FORWARD_QUATERNION, rotBuf1);
@@ -1246,8 +1287,7 @@ public class HumanSkeleton extends Skeleton implements SkeletonConfigCallback {
 		}
 
 		// Get the inverse rotation of the hip.
-		rotBuf1.set(hip);
-		rotBuf1.inverseLocal();
+		rotBuf1.set(hip).inverseLocal();
 
 		// R = InverseHip * (LeftLeft + RightLeg)
 		// C = Quaternion(-R.x, 0, 0, R.w)
@@ -1255,8 +1295,8 @@ public class HumanSkeleton extends Skeleton implements SkeletonConfigCallback {
 		// normalize(Pelvis)
 		rotBuf1.multLocal(leftKnee.add(rightKnee));
 		rotBuf2.set(-rotBuf1.getX(), 0, 0, rotBuf1.getW());
-		hip.set(hip.mult(rotBuf1).mult(rotBuf2));
-		return hip.normalize();
+		hip.multLocal(rotBuf1).multLocal(rotBuf2);
+		return hip.normalizeLocal();
 	}
 
 	// #region Update the output trackers
@@ -1366,6 +1406,16 @@ public class HumanSkeleton extends Skeleton implements SkeletonConfigCallback {
 
 				// Rebuilds the arm skeleton nodes attachments
 				assembleSkeletonArms(true);
+
+				// Refresh node offsets for arms
+				if (skeletonConfig != null) {
+					skeletonConfig.computeNodeOffset(BoneType.LEFT_UPPER_ARM);
+					skeletonConfig.computeNodeOffset(BoneType.RIGHT_UPPER_ARM);
+					skeletonConfig.computeNodeOffset(BoneType.LEFT_LOWER_ARM);
+					skeletonConfig.computeNodeOffset(BoneType.RIGHT_LOWER_ARM);
+					skeletonConfig.computeNodeOffset(BoneType.LEFT_CONTROLLER);
+					skeletonConfig.computeNodeOffset(BoneType.RIGHT_CONTROLLER);
+				}
 			}
 			case SKATING_CORRECTION -> legTweaks.setSkatingReductionEnabled(newValue);
 			case FLOOR_CLIP -> legTweaks.setFloorclipEnabled(newValue);
