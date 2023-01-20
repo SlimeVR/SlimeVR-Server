@@ -298,9 +298,9 @@ fn valid_java_paths() -> Vec<(OsString, i32)> {
 		.expect("Couldn't execute the main Java binary")
 		.code()
 	{
-		if main_child >= MINIMUM_JAVA_VERSION {
-			return vec![(main_java, main_child)];
-		}
+		// if main_child >= MINIMUM_JAVA_VERSION {
+		// 	return vec![(main_java, main_child)];
+		// }
 	}
 
 	// Otherwise check if anything else is a supported version
@@ -308,7 +308,7 @@ fn valid_java_paths() -> Vec<(OsString, i32)> {
 	cfg_if::cfg_if! {
 		if #[cfg(target_os = "macos")] {
 			// TODO: Actually use macOS paths
-			let libs = which::which_all(JAVA_BIN);
+			let libs = which::which_all(JAVA_BIN).unwrap();
 		} else if #[cfg(unix)] {
 			// Linux JVMs are saved on /usr/lib/jvm from what I found out,
 			// there is usually a default dir and a default-runtime dir also which are linked
@@ -317,7 +317,7 @@ fn valid_java_paths() -> Vec<(OsString, i32)> {
 				.unwrap()
 				.filter_map(|res| res.ok());
 		} else {
-			let libs = which::which_all(JAVA_BIN);
+			let libs = which::which_all(JAVA_BIN).unwrap();
 		}
 	}
 
