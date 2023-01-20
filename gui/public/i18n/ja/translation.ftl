@@ -37,7 +37,7 @@ body_part-LEFT_LOWER_LEG = 左足
 body_part-LEFT_FOOT = 左足先
 body_part-LEFT_CONTROLLER = 左コントローラ
 
-## Skeleton stuff
+## Proportions
 skeleton_bone-NONE = 無し
 skeleton_bone-HEAD = ヘッドシフト
 skeleton_bone-NECK = 首長さ
@@ -87,9 +87,25 @@ navbar-settings = 設定
 bvh-start_recording = BVHレコーディング
 bvh-recording = レコーディング中...
 
-## Overlay settings
-overlay-is_visible_label = SteamVRでオーバーレイを表示する
-overlay-is_mirrored_label = オーバーレイをミラーとして表示する
+## Widget: Overlay settings
+widget-overlay = オーバーレイ設定
+widget-overlay-is_visible_label = SteamVRでオーバーレイを表示する
+widget-overlay-is_mirrored_label = オーバーレイをミラーとして表示する
+
+## Widget: Developer settings
+widget-developer_mode = 開発者モード
+widget-developer_mode-high_contrast = ハイ コントラスト
+widget-developer_mode-precise_rotation = 正確な回転角度を表示
+widget-developer_mode-fast_data_feed = 高速表示モード
+widget-developer_mode-filter_slimes_and_hmd = SlimeVRとHMDのみを表示
+widget-developer_mode-sort_by_name = 表示名順
+widget-developer_mode-raw_slime_rotation = 元の回転角度
+widget-developer_mode-more_info = 他情報
+
+## Widget: IMU Visualizer
+widget-imu_visualizer = Rotation
+widget-imu_visualizer-rotation_raw = Raw
+widget-imu_visualizer-rotation_preview = Preview
 
 ## Tracker status
 tracker-status-none = ステータスなし
@@ -104,6 +120,9 @@ tracker-table-column-name = Name
 tracker-table-column-type = Type
 tracker-table-column-battery = Battery
 tracker-table-column-ping = Ping
+tracker-table-column-tps = TPS
+tracker-table-column-temperature = Temp. °C
+tracker-table-column-linear-acceleration = Accel. X/Y/Z
 tracker-table-column-rotation = Rotation X/Y/Z
 tracker-table-column-position = Position X/Y/Z
 tracker-table-column-url = URL
@@ -152,7 +171,7 @@ body_assignment_menu-unassign_tracker = トラッカーの割り当て解除
 ## Tracker assignment menu
 # A -translation_key (with a dash in the front) means that it's a label.
 # It can only be used in the translation file, it's nice for reusing names and that kind of stuff.
-# 
+#
 # We are using it here because english doesn't require changing the text in each case but
 # maybe your language does.
 -tracker_selection-part = Which tracker to assign to your
@@ -243,11 +262,11 @@ settings-general-tracker_mechanics-drift_compensation-max_resets-label = Use up 
 settings-general-fk_settings = FK設定
 settings-general-fk_settings-leg_tweak = 脚の微調整
 settings-general-fk_settings-leg_tweak-description = フロアクリップは、床とのクリッピングを減らす、あるいはなくすことができますが、膝をついたときに問題が発生する可能性があります。スケーティング補正は足の滑りを補正できますが、特定の動作パターンでは精度が落ちることがあります。
-# Floor clip: 
+# Floor clip:
 # why the name - came from the idea of noclip in video games, but is the opposite where clipping to the floor is a desired feature
 # definition - Prevents the foot trackers from going lower than they where when a reset was performed
 settings-general-fk_settings-leg_tweak-floor_clip = フロアクリップ
-# Skating correction: 
+# Skating correction:
 # why the name - without this enabled the feet will often slide across the ground as if your skating across the ground,
 # since this largely prevents this it corrects for it hence skating correction (note this may be renamed to sliding correction)
 # definition - Guesses when each foot is in contact with the ground and uses that information to improve tracking

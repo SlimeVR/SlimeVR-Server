@@ -7,6 +7,7 @@
     "@fluent/react": "^0.14.1",
     "@fontsource/poppins": "^4.5.8",
     "@formatjs/intl-localematcher": "^0.2.32",
+    "@react-three/fiber": "^8.10.0",
     "@tauri-apps/api": "^1.2.0",
     "@vitejs/plugin-react": "^3.0.0",
     "browserslist": "^4.18.1",
@@ -25,7 +26,6 @@
     "postcss-normalize": "^10.0.1",
     "postcss-preset-env": "^7.0.1",
     "prompts": "^2.4.2",
-    "quaternion": "^1.4.0",
     "react": "^18.0.0",
     "react-dev-utils": "^12.0.0",
     "react-dom": "^18.0.0",
@@ -34,6 +34,7 @@
     "react-router-dom": "^6.2.2",
     "semver": "^7.3.5",
     "solarxr-protocol": "file:../solarxr-protocol",
+    "three": "^0.148.0",
     "typescript": "^4.6.3"
   },
   "scripts": {
@@ -71,6 +72,7 @@
     "@types/react": "18.0.25",
     "@types/react-dom": "^18.0.5",
     "@types/react-modal": "3.13.1",
+    "@types/three": "^0.148.0",
     "@typescript-eslint/eslint-plugin": "^5.43.0",
     "@typescript-eslint/parser": "^5.43.0",
     "autoprefixer": "^10.4.4",

@@ -37,18 +37,18 @@ body_part-LEFT_LOWER_LEG = 左小腿
 body_part-LEFT_FOOT = 左脚
 body_part-LEFT_CONTROLLER = 左控制器
 
-## Skeleton stuff
+## Proportions
 skeleton_bone-NONE = 无
 skeleton_bone-HEAD = 头部偏移
 skeleton_bone-NECK = 颈部长度
-skeleton_bone-CHEST = Chest Length
-skeleton_bone-CHEST_OFFSET = Chest Offset
-skeleton_bone-WAIST = Waist Length
-skeleton_bone-HIP = Hip Length
+skeleton_bone-CHEST = 胸部长度
+skeleton_bone-CHEST_OFFSET = 胸部偏移
+skeleton_bone-WAIST = 腰部长度
+skeleton_bone-HIP = 髋部长度
 skeleton_bone-HIP_OFFSET = 髋部偏移
 skeleton_bone-HIPS_WIDTH = 髋部宽度
-skeleton_bone-UPPER_LEG = Upper Leg Length
-skeleton_bone-LOWER_LEG = Lower Leg Length
+skeleton_bone-UPPER_LEG = 大腿长度
+skeleton_bone-LOWER_LEG = 小腿长度
 skeleton_bone-FOOT_LENGTH = 脚部长度
 skeleton_bone-FOOT_SHIFT = 脚部偏移
 skeleton_bone-SKELETON_OFFSET = 骨骼偏移
@@ -87,9 +87,25 @@ navbar-settings = 设置
 bvh-start_recording = 录制 BVH 文件
 bvh-recording = 录制中...
 
-## Overlay settings
-overlay-is_visible_label = 在 SteamVR 中显示覆盖层
-overlay-is_mirrored_label = 镜像显示覆盖层
+## Widget: Overlay settings
+widget-overlay = 覆盖层
+widget-overlay-is_visible_label = 在 SteamVR 中显示覆盖层
+widget-overlay-is_mirrored_label = 镜像显示覆盖层
+
+## Widget: Developer settings
+widget-developer_mode = 开发者模式
+widget-developer_mode-high_contrast = High contrast
+widget-developer_mode-precise_rotation = Precise rotation
+widget-developer_mode-fast_data_feed = Fast data feed
+widget-developer_mode-filter_slimes_and_hmd = Filter slimes and HMD
+widget-developer_mode-sort_by_name = Sort by name
+widget-developer_mode-raw_slime_rotation = Raw rotation
+widget-developer_mode-more_info = More info
+
+## Widget: IMU Visualizer
+widget-imu_visualizer = Rotation
+widget-imu_visualizer-rotation_raw = Raw
+widget-imu_visualizer-rotation_preview = Preview
 
 ## Tracker status
 tracker-status-none = 无状态
@@ -104,6 +120,9 @@ tracker-table-column-name = 名字
 tracker-table-column-type = 类型
 tracker-table-column-battery = 电量
 tracker-table-column-ping = 延迟
+tracker-table-column-tps = TPS
+tracker-table-column-temperature = Temp. °C
+tracker-table-column-linear-acceleration = Accel. X/Y/Z
 tracker-table-column-rotation = 旋转 X/Y/Z
 tracker-table-column-position = 位置 X/Y/Z
 tracker-table-column-url = 地址
@@ -152,7 +171,7 @@ body_assignment_menu-unassign_tracker = 取消分配追踪器
 ## Tracker assignment menu
 # A -translation_key (with a dash in the front) means that it's a label.
 # It can only be used in the translation file, it's nice for reusing names and that kind of stuff.
-# 
+#
 # We are using it here because english doesn't require changing the text in each case but
 # maybe your language does.
 -tracker_selection-part = 哪个追踪器将被分配到你的
@@ -243,11 +262,11 @@ settings-general-tracker_mechanics-drift_compensation-max_resets-label = 使用�
 settings-general-fk_settings = FK 设置
 settings-general-fk_settings-leg_tweak = 腿部调整
 settings-general-fk_settings-leg_tweak-description = 本设置可以减少甚至消除脚部穿入地板的情况，但是当你跪在地上的时候可能产生一些问题. 脚滑矫正可以矫正一些脚滑溜冰的问题, 但是可能会降低某些动作的准确性。
-# Floor clip: 
+# Floor clip:
 # why the name - came from the idea of noclip in video games, but is the opposite where clipping to the floor is a desired feature
 # definition - Prevents the foot trackers from going lower than they where when a reset was performed
 settings-general-fk_settings-leg_tweak-floor_clip = 地板限制
-# Skating correction: 
+# Skating correction:
 # why the name - without this enabled the feet will often slide across the ground as if your skating across the ground,
 # since this largely prevents this it corrects for it hence skating correction (note this may be renamed to sliding correction)
 # definition - Guesses when each foot is in contact with the ground and uses that information to improve tracking
