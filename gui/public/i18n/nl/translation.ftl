@@ -87,9 +87,25 @@ navbar-settings = Instellingen
 bvh-start_recording = BVH opnemen
 bvh-recording = Opname bezig...
 
-## Overlay settings
-overlay-is_visible_label = Overlay in SteamVR weergeven
-overlay-is_mirrored_label = Overlay weergeven als spiegel
+## Widget: Overlay settings
+widget-overlay = Overlay
+widget-overlay-is_visible_label = Overlay in SteamVR weergeven
+widget-overlay-is_mirrored_label = Overlay weergeven als spiegel
+
+## Widget: Developer settings
+widget-developer_mode = Developer Mode
+widget-developer_mode-high_contrast = Hoog contrast
+widget-developer_mode-precise_rotation = Precieze rotatie
+widget-developer_mode-fast_data_feed = Snelle data feed
+widget-developer_mode-filter_slimes_and_hmd = Filter slimes en HMD
+widget-developer_mode-sort_by_name = Op naam sorteren
+widget-developer_mode-raw_slime_rotation = Ruwe rotatie
+widget-developer_mode-more_info = Meer informatie
+
+## Widget: IMU Visualizer
+widget-imu_visualizer = Rotatie
+widget-imu_visualizer-rotation_raw = Rauw
+widget-imu_visualizer-rotation_preview = Preview
 
 ## Tracker status
 tracker-status-none = Geen status
@@ -104,6 +120,9 @@ tracker-table-column-name = Naam
 tracker-table-column-type = Type
 tracker-table-column-battery = Batterij
 tracker-table-column-ping = Ping
+tracker-table-column-tps = TPS
+tracker-table-column-temperature = Temp. °C
+tracker-table-column-linear-acceleration = Accel. X/Y/Z
 tracker-table-column-rotation = Rotatie X/Y/Z
 tracker-table-column-position = Positie X/Y/Z
 tracker-table-column-url = URL
@@ -229,7 +248,7 @@ settings-general-tracker_mechanics-filtering-type-smoothing = Smoothing
 settings-general-tracker_mechanics-filtering-type-smoothing-description = Maakt bewegingen vloeiender, maar voegt enige latentie toe.
 settings-general-tracker_mechanics-filtering-type-prediction = Voorspelling
 settings-general-tracker_mechanics-filtering-type-prediction-description = Verlaagt latentie en maakt bewegingen snappier, maar kan jitter verhogen.
-settings-general-tracker_mechanics-amount = Hoeveelheid
+settings-general-tracker_mechanics-filtering-amount = Hoeveelheid
 settings-general-tracker_mechanics-drift_compensation = Drift compensatie
 # This cares about multilines
 settings-general-tracker_mechanics-drift_compensation-description =

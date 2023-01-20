@@ -24,7 +24,7 @@ body_part-RIGHT_HAND = Rechte Hand
 body_part-RIGHT_UPPER_LEG = Rechter Oberschenkel
 body_part-RIGHT_LOWER_LEG = Rechter Unterschenkel
 body_part-RIGHT_FOOT = Rechter Fuß
-body_part-RIGHT_CONTROLLER = Right controller
+body_part-RIGHT_CONTROLLER = Rechter Controller
 body_part-CHEST = Brust
 body_part-WAIST = Taille
 body_part-HIP = Hüfte
@@ -35,7 +35,7 @@ body_part-LEFT_HAND = Linke Hand
 body_part-LEFT_UPPER_LEG = Linker Oberschenkel
 body_part-LEFT_LOWER_LEG = Linker Unterschenkel
 body_part-LEFT_FOOT = Linker Fuß
-body_part-LEFT_CONTROLLER = Left controller
+body_part-LEFT_CONTROLLER = Linker Controller
 
 ## Skeleton stuff
 skeleton_bone-NONE = Keine
@@ -427,7 +427,7 @@ onboarding-connect_tracker-connected_trackers = { $amount ->
     [0] Kein Tracker
     [one] 1 Tracker
     *[other] { $amount } Tracker
-} connected
+} verbunden
 onboarding-connect_tracker-next = Ich habe alle meine Tracker verbunden.
 
 ## Tracker assignment setup
