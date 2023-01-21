@@ -213,7 +213,7 @@ settings-sidebar-tracker_mechanics = トラッカーメカニズム
 settings-sidebar-fk_settings = FK設定
 settings-sidebar-gesture_control = ジェスチャーコントロール
 settings-sidebar-interface = インターフェース
-settings-sidebar-osc_router = OSC router
+settings-sidebar-osc_router = OSCルーター
 settings-sidebar-utils = ユーティリティ
 settings-sidebar-serial = シリアルコンソール
 
@@ -242,11 +242,11 @@ settings-general-tracker_mechanics-filtering-description =
     トラッカーのフィルタリングの種類を選択します。
     Predictionは動きを予測し、Smoothingは動きを滑らかにする。
 settings-general-tracker_mechanics-filtering-type = フィルタータイプ
-settings-general-tracker_mechanics-filtering-type-none = No filtering
+settings-general-tracker_mechanics-filtering-type-none = フィルター無し
 settings-general-tracker_mechanics-filtering-type-none-description = トラッカーの値をそのまま使用します。フィルタリングは行いません。
-settings-general-tracker_mechanics-filtering-type-smoothing = Smoothing
+settings-general-tracker_mechanics-filtering-type-smoothing = スムージング
 settings-general-tracker_mechanics-filtering-type-smoothing-description = 動きを滑らかにしますが、若干の遅れが発生します
-settings-general-tracker_mechanics-filtering-type-prediction = Prediction
+settings-general-tracker_mechanics-filtering-type-prediction = プリディクション
 settings-general-tracker_mechanics-filtering-type-prediction-description = レイテンシーを減らし、動きをよりキビキビさせますが、ジッターが増加する場合があります。
 settings-general-tracker_mechanics-filtering-amount = 数値
 settings-general-tracker_mechanics-drift_compensation = ドリフト補正
@@ -292,7 +292,7 @@ settings-general-gesture_control-description = ダブルタップクイックリ
 # $amount (Number) - Amount of taps (touches to the tracker's case)
 settings-general-gesture_control-taps = { $amount ->
     [one] 1 tap
-    *[other] { $amount } taps
+    *[other] { $amount } タップ
 }
 settings-general-gesture_control-quickResetEnabled = タップによるクイックリセットを有効にする
 settings-general-gesture_control-quickResetDelay = クイックリセットディレイ
