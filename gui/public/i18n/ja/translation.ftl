@@ -41,14 +41,14 @@ body_part-LEFT_CONTROLLER = 左コントローラ
 skeleton_bone-NONE = 無し
 skeleton_bone-HEAD = ヘッドシフト
 skeleton_bone-NECK = 首長さ
-skeleton_bone-CHEST = Chest Length
-skeleton_bone-CHEST_OFFSET = Chest Offset
-skeleton_bone-WAIST = Waist Length
-skeleton_bone-HIP = Hip Length
+skeleton_bone-CHEST = 胸囲
+skeleton_bone-CHEST_OFFSET = 胸オフセット
+skeleton_bone-WAIST = ウエスト長さ
+skeleton_bone-HIP = ヒップ長さ
 skeleton_bone-HIP_OFFSET = ヒップオフセット
 skeleton_bone-HIPS_WIDTH = ヒップ幅
-skeleton_bone-UPPER_LEG = Upper Leg Length
-skeleton_bone-LOWER_LEG = Lower Leg Length
+skeleton_bone-UPPER_LEG = 膝長さ
+skeleton_bone-LOWER_LEG = 足長さ
 skeleton_bone-FOOT_LENGTH = 足先長さ
 skeleton_bone-FOOT_SHIFT = 足先シフト
 skeleton_bone-SKELETON_OFFSET = スケルトンオフセット
@@ -105,7 +105,7 @@ widget-developer_mode-more_info = 他情報
 ## Widget: IMU Visualizer
 widget-imu_visualizer = Rotation
 widget-imu_visualizer-rotation_raw = Raw
-widget-imu_visualizer-rotation_preview = Preview
+widget-imu_visualizer-rotation_preview = プレビュー
 
 ## Tracker status
 tracker-status-none = ステータスなし
@@ -118,13 +118,13 @@ tracker-status-ok = 接続中
 ## Tracker status columns
 tracker-table-column-name = Name
 tracker-table-column-type = Type
-tracker-table-column-battery = Battery
+tracker-table-column-battery = バッテリー
 tracker-table-column-ping = Ping
 tracker-table-column-tps = TPS
-tracker-table-column-temperature = Temp. °C
-tracker-table-column-linear-acceleration = Accel. X/Y/Z
-tracker-table-column-rotation = Rotation X/Y/Z
-tracker-table-column-position = Position X/Y/Z
+tracker-table-column-temperature = 温度. °C
+tracker-table-column-linear-acceleration = 加速度. X/Y/Z
+tracker-table-column-rotation = 回転 X/Y/Z
+tracker-table-column-position = 位置 X/Y/Z
 tracker-table-column-url = URL
 
 ## Tracker rotation
@@ -148,9 +148,9 @@ tracker-settings-assignment_section-edit = 割り当ての編集
 tracker-settings-mounting_section = 装着方向
 tracker-settings-mounting_section-description = トラッカーをどの方向に装着していますか?
 tracker-settings-mounting_section-edit = 装着向きの編集
-tracker-settings-drift_compensation_section = Allow drift compensation
-tracker-settings-drift_compensation_section-description = Should this tracker compensate for its drift when drift compensation is enabled?
-tracker-settings-drift_compensation_section-edit = Allow drift compensation
+tracker-settings-drift_compensation_section = ドリフト補正を行う
+tracker-settings-drift_compensation_section-description = ドリフト補正が有効になっている場合、このトラッカーはドリフトを補正する必要がありますか?
+tracker-settings-drift_compensation_section-edit = ドリフト補正を行う
 # The .<name> means it's an attribute and it's related to the top key.
 # In this case that is the settings for the assignment section.
 tracker-settings-name_section = トラッカー名称
@@ -174,29 +174,29 @@ body_assignment_menu-unassign_tracker = トラッカーの割り当て解除
 #
 # We are using it here because english doesn't require changing the text in each case but
 # maybe your language does.
--tracker_selection-part = Which tracker to assign to your
-tracker_selection_menu-NONE = Which tracker do you want to be unassigned?
-tracker_selection_menu-HEAD = { -tracker_selection-part } head?
-tracker_selection_menu-NECK = { -tracker_selection-part } neck?
-tracker_selection_menu-RIGHT_SHOULDER = { -tracker_selection-part } right shoulder?
-tracker_selection_menu-RIGHT_UPPER_ARM = { -tracker_selection-part } right upper arm?
-tracker_selection_menu-RIGHT_LOWER_ARM = { -tracker_selection-part } right lower arm?
-tracker_selection_menu-RIGHT_HAND = { -tracker_selection-part } right hand?
-tracker_selection_menu-RIGHT_UPPER_LEG = { -tracker_selection-part } right thigh?
-tracker_selection_menu-RIGHT_LOWER_LEG = { -tracker_selection-part } right ankle?
-tracker_selection_menu-RIGHT_FOOT = { -tracker_selection-part } right foot?
-tracker_selection_menu-RIGHT_CONTROLLER = { -tracker_selection-part } right controller?
-tracker_selection_menu-CHEST = { -tracker_selection-part } chest?
-tracker_selection_menu-WAIST = { -tracker_selection-part } waist?
-tracker_selection_menu-HIP = { -tracker_selection-part } hip?
-tracker_selection_menu-LEFT_SHOULDER = { -tracker_selection-part } left shoulder?
-tracker_selection_menu-LEFT_UPPER_ARM = { -tracker_selection-part } left upper arm?
-tracker_selection_menu-LEFT_LOWER_ARM = { -tracker_selection-part } left lower arm?
-tracker_selection_menu-LEFT_HAND = { -tracker_selection-part } left hand?
-tracker_selection_menu-LEFT_UPPER_LEG = { -tracker_selection-part } left thigh?
-tracker_selection_menu-LEFT_LOWER_LEG = { -tracker_selection-part } left ankle?
-tracker_selection_menu-LEFT_FOOT = { -tracker_selection-part } left foot?
-tracker_selection_menu-LEFT_CONTROLLER = { -tracker_selection-part } left controller?
+-tracker_selection-part = どのトラッカーを{ $body-part }に割り当てますか？
+tracker_selection_menu-NONE = どのトラッカーに割り当てないか？
+tracker_selection_menu-HEAD = { -tracker_selection-part(body-part: "頭") }
+tracker_selection_menu-NECK = { -tracker_selection-part(body-part: "首") }
+tracker_selection_menu-RIGHT_SHOULDER = { -tracker_selection-part(body-part: "右肩") }
+tracker_selection_menu-RIGHT_UPPER_ARM = { -tracker_selection-part(body-part: "右上腕") }
+tracker_selection_menu-RIGHT_LOWER_ARM = { -tracker_selection-part(body-part: "右前腕") }
+tracker_selection_menu-RIGHT_HAND = { -tracker_selection-part(body-part: "右手") }
+tracker_selection_menu-RIGHT_UPPER_LEG = { -tracker_selection-part(body-part: "右太もも") }
+tracker_selection_menu-RIGHT_LOWER_LEG = { -tracker_selection-part(body-part: "右足首") }
+tracker_selection_menu-RIGHT_FOOT = { -tracker_selection-part(body-part: "右足先") }
+tracker_selection_menu-RIGHT_CONTROLLER = { -tracker_selection-part(body-part: "右コントローラ") }
+tracker_selection_menu-CHEST = { -tracker_selection-part(body-part: "胸") }
+tracker_selection_menu-WAIST = { -tracker_selection-part(body-part: "腰") }
+tracker_selection_menu-HIP = { -tracker_selection-part(body-part: "ヒップ") }
+tracker_selection_menu-LEFT_SHOULDER = { -tracker_selection-part(body-part: "左肩") }
+tracker_selection_menu-LEFT_UPPER_ARM = { -tracker_selection-part(body-part: "左上腕") }
+tracker_selection_menu-LEFT_LOWER_ARM = { -tracker_selection-part(body-part: "左前腕") }
+tracker_selection_menu-LEFT_HAND = { -tracker_selection-part(body-part: "左手") }
+tracker_selection_menu-LEFT_UPPER_LEG = { -tracker_selection-part(body-part: "左太もも") }
+tracker_selection_menu-LEFT_LOWER_LEG = { -tracker_selection-part(body-part: "左足首") }
+tracker_selection_menu-LEFT_FOOT = { -tracker_selection-part(body-part: "左足先") }
+tracker_selection_menu-LEFT_CONTROLLER = { -tracker_selection-part(body-part: "左コントローラ") }
 
 tracker_selection_menu-unassigned = 未割り当てのトラッカー
 tracker_selection_menu-assigned = 割り当て済みのトラッカー
@@ -211,9 +211,9 @@ settings-sidebar-title = 設定
 settings-sidebar-general = 一般
 settings-sidebar-tracker_mechanics = トラッカーメカニズム
 settings-sidebar-fk_settings = FK設定
-settings-sidebar-gesture_control = Gesture control
+settings-sidebar-gesture_control = ジェスチャーコントロール
 settings-sidebar-interface = インターフェース
-settings-sidebar-osc_router = OSC router
+settings-sidebar-osc_router = OSCルーター
 settings-sidebar-utils = ユーティリティ
 settings-sidebar-serial = シリアルコンソール
 
@@ -232,7 +232,7 @@ settings-general-steamvr-trackers-chest = 胸
 settings-general-steamvr-trackers-feet = 足
 settings-general-steamvr-trackers-knees = 膝
 settings-general-steamvr-trackers-elbows = 肘
-settings-general-steamvr-trackers-hands = Hands
+settings-general-steamvr-trackers-hands = 手
 
 ## Tracker mechanics
 settings-general-tracker_mechanics = トラッカーメカニズム
@@ -242,21 +242,21 @@ settings-general-tracker_mechanics-filtering-description =
     トラッカーのフィルタリングの種類を選択します。
     Predictionは動きを予測し、Smoothingは動きを滑らかにする。
 settings-general-tracker_mechanics-filtering-type = フィルタータイプ
-settings-general-tracker_mechanics-filtering-type-none = No filtering
+settings-general-tracker_mechanics-filtering-type-none = フィルター無し
 settings-general-tracker_mechanics-filtering-type-none-description = トラッカーの値をそのまま使用します。フィルタリングは行いません。
-settings-general-tracker_mechanics-filtering-type-smoothing = Smoothing
+settings-general-tracker_mechanics-filtering-type-smoothing = スムージング
 settings-general-tracker_mechanics-filtering-type-smoothing-description = 動きを滑らかにしますが、若干の遅れが発生します
-settings-general-tracker_mechanics-filtering-type-prediction = Prediction
+settings-general-tracker_mechanics-filtering-type-prediction = プリディクション
 settings-general-tracker_mechanics-filtering-type-prediction-description = レイテンシーを減らし、動きをよりキビキビさせますが、ジッターが増加する場合があります。
 settings-general-tracker_mechanics-filtering-amount = 数値
-settings-general-tracker_mechanics-drift_compensation = Drift compensation
+settings-general-tracker_mechanics-drift_compensation = ドリフト補正
 # This cares about multilines
 settings-general-tracker_mechanics-drift_compensation-description =
-    Compensates IMU yaw drift by applying an inverse rotation.
-    Change amount of compensation and up to how many resets are taken into account.
-settings-general-tracker_mechanics-drift_compensation-enabled-label = Drift compensation
-settings-general-tracker_mechanics-drift_compensation-amount-label = Compensation amount
-settings-general-tracker_mechanics-drift_compensation-max_resets-label = Use up to x last resets
+    逆回転をかけることで IMU のヨー軸ドリフトを補正します。
+    補正量とリセット回数を変更します。
+settings-general-tracker_mechanics-drift_compensation-enabled-label = ドリフト補正
+settings-general-tracker_mechanics-drift_compensation-amount-label = 補正量
+settings-general-tracker_mechanics-drift_compensation-max_resets-label = 最大リセット回数
 
 ## FK settings
 settings-general-fk_settings = FK設定
@@ -271,8 +271,8 @@ settings-general-fk_settings-leg_tweak-floor_clip = フロアクリップ
 # since this largely prevents this it corrects for it hence skating correction (note this may be renamed to sliding correction)
 # definition - Guesses when each foot is in contact with the ground and uses that information to improve tracking
 settings-general-fk_settings-leg_tweak-skating_correction = スケーティング補正
-settings-general-fk_settings-leg_tweak-skating_correction-amount = Skating correction strength
-settings-general-fk_settings-arm_fk = アームFK
+settings-general-fk_settings-leg_tweak-skating_correction-amount = スケーティング補正の強さ
+settings-general-fk_settings-arm_fk = アームトラッキング
 settings-general-fk_settings-arm_fk-description = 腕の追従方法を変更する。
 settings-general-fk_settings-arm_fk-force_arms = Force arms from HMD
 settings-general-fk_settings-skeleton_settings = スケルトン設定
@@ -280,9 +280,9 @@ settings-general-fk_settings-skeleton_settings-description = スケルトン設�
 settings-general-fk_settings-skeleton_settings-extended_spine = Extended spine
 settings-general-fk_settings-skeleton_settings-extended_pelvis = Extended pelvis
 settings-general-fk_settings-skeleton_settings-extended_knees = Extended knee
-settings-general-fk_settings-vive_emulation-title = Vive emulation
-settings-general-fk_settings-vive_emulation-description = Emulate the waist tracker problems that Vive trackers have. This is a joke and makes tracking worse.
-settings-general-fk_settings-vive_emulation-label = Enable Vive emulation
+settings-general-fk_settings-vive_emulation-title = Viveエミュレーション
+settings-general-fk_settings-vive_emulation-description = Viveトラッカーが抱える腰トラッカーの問題をエミュレートします。
+settings-general-fk_settings-vive_emulation-label = Viveエミュレーションの有効化
 
 ## Gesture control settings (tracker tapping)
 settings-general-gesture_control = ジェスチャーコントロール
@@ -292,17 +292,17 @@ settings-general-gesture_control-description = ダブルタップクイックリ
 # $amount (Number) - Amount of taps (touches to the tracker's case)
 settings-general-gesture_control-taps = { $amount ->
     [one] 1 tap
-    *[other] { $amount } taps
+    *[other] { $amount } タップ
 }
-settings-general-gesture_control-quickResetEnabled = Enable tap to quick reset
-settings-general-gesture_control-quickResetDelay = Quick reset delay
-settings-general-gesture_control-quickResetTaps = Taps for quick reset
-settings-general-gesture_control-resetEnabled = Enable tap to reset
-settings-general-gesture_control-resetDelay = Reset delay
-settings-general-gesture_control-resetTaps = Taps for reset
-settings-general-gesture_control-mountingResetEnabled = Enable tap to reset mounting
-settings-general-gesture_control-mountingResetDelay = Mounting reset delay
-settings-general-gesture_control-mountingResetTaps = Taps for mounting reset
+settings-general-gesture_control-quickResetEnabled = タップによるクイックリセットを有効にする
+settings-general-gesture_control-quickResetDelay = クイックリセットディレイ
+settings-general-gesture_control-quickResetTaps = タップによるクイックリセット
+settings-general-gesture_control-resetEnabled = タップによるリセットを有効にする
+settings-general-gesture_control-resetDelay = リセットディレイ
+settings-general-gesture_control-resetTaps = タップによるリセット
+settings-general-gesture_control-mountingResetEnabled = タップによるマウントリセットを有効にする
+settings-general-gesture_control-mountingResetDelay = マウントリセットディレイ
+settings-general-gesture_control-mountingResetTaps = タップによるマウントリセット
 
 ## Interface settings
 settings-general-interface = インターフェース
@@ -330,31 +330,31 @@ settings-serial-serial_select = シリアルポートを選択
 settings-serial-auto_dropdown_item = 自動
 
 ## OSC router settings
-settings-osc-router = OSC router
+settings-osc-router = OSCルーター
 # This cares about multilines
 settings-osc-router-description =
-    Forward OSC messages from another program.
-    Useful for using another OSC program with VRChat for example.
-settings-osc-router-enable = Enable
-settings-osc-router-enable-description = Toggle the forwarding of messages.
-settings-osc-router-enable-label = Enable
-settings-osc-router-network = Network ports
+    他のプログラムからの OSC メッセージを転送します。
+    例えば、VRChat で他の OSC プログラムを使用する場合に便利です。
+settings-osc-router-enable = 有効
+settings-osc-router-enable-description = メッセージの転送を切り替えます。
+settings-osc-router-enable-label = 有効
+settings-osc-router-network = ネットワークポート
 # This cares about multilines
 settings-osc-router-network-description =
-    Set the ports for listening and sending data.
-    These can be the same as other ports used in the SlimeVR server.
+    データのリスニングと送信のためのポートを設定します。
+    これらはSlimeVRサーバーで使用する他のポートと同じでかまいません。
 settings-osc-router-network-port_in =
-    .label = Port In
-    .placeholder = Port in (default: 9002)
+    .label = ポートイン
+    .placeholder = ポートイン (デフォルト: 9002)
 settings-osc-router-network-port_out =
-    .label = Port Out
-    .placeholder = Port out (default: 9000)
-settings-osc-router-network-address = Network address
-settings-osc-router-network-address-description = Set the address to send out data at.
-settings-osc-router-network-address-placeholder = IPV4 address
+    .label = ポートアウト
+    .placeholder = ポートアウト (デフォルト: 9000)
+settings-osc-router-network-address = ネットワークアドレス
+settings-osc-router-network-address-description = データを送り出すアドレスを設定します。
+settings-osc-router-network-address-placeholder = IPV4アドレス
 
 ## OSC VRChat settings
-settings-osc-vrchat = VRChat OSC Trackers
+settings-osc-vrchat = VRChat OSCトラッカー
 # This cares about multilines
 settings-osc-vrchat-description =
     HMDのデータを受信して送信するためにVRChat固有の設定を変更する。
@@ -396,8 +396,8 @@ onboarding-wifi_creds-description =
 onboarding-wifi_creds-skip = Wi-Fi設定をスキップする
 onboarding-wifi_creds-submit = 実行！
 onboarding-wifi_creds-ssid =
-    .label = SSID
-    .placeholder = Enter SSID
+    .label = Wi-Fi名
+    .placeholder = Enter Wi-Fi名
 onboarding-wifi_creds-password =
     .label = Password
     .placeholder = Enter password
@@ -408,11 +408,11 @@ onboarding-reset_tutorial = リセットチュートリアル
 onboarding-reset_tutorial-description = この機能は終了していません。続けるを押してください。
 
 ## Setup start
-onboarding-home = Welcome to SlimeVR
+onboarding-home = SlimeVRへようこそ
 # This cares about multilines and it's centered!!
 onboarding-home-description =
-    Bringing full-body tracking
-    to everyone
+    フルボディトラッキングを実現する
+    すべての人に!
 onboarding-home-start = セットアップ開始！
 
 ## Enter VR part of setup
