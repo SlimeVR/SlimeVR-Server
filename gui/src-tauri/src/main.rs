@@ -63,7 +63,7 @@ fn get_launch_path(cli: Cli) -> Option<PathBuf> {
 		}
 	}
 
-	// This is only for AppImage
+	// AppImage passes the path in `APPDIR` env var.
 	if let Some(appimage) = env::var_os("APPDIR") {
 		let path = PathBuf::from(appimage);
 		if is_valid_path(&path) {
