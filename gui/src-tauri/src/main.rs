@@ -298,9 +298,9 @@ fn valid_java_paths() -> Vec<(OsString, i32)> {
 		.expect("Couldn't execute the main Java binary")
 		.code()
 	{
-		// if main_child >= MINIMUM_JAVA_VERSION {
-		// 	return vec![(main_java, main_child)];
-		// }
+		if main_child >= MINIMUM_JAVA_VERSION {
+			return vec![(main_java, main_child)];
+		}
 	}
 
 	// Otherwise check if anything else is a supported version
