@@ -68,7 +68,7 @@ fn get_launch_path(cli: Cli) -> Option<PathBuf> {
 	paths
 		.into_iter()
 		.filter_map(|x| x)
-		.find(|x: &PathBuf| is_valid_path(x))
+		.find(|x| is_valid_path(x))
 }
 
 fn spawn_java(java: &OsStr, java_version: &OsStr) -> std::io::Result<Child> {
