@@ -41,7 +41,7 @@ glob = "0.3"
 open = "3"
 shadow-rs = { version = "0.20", default-features = false }
 const_format = "0.2.30"
-cfg-if = "1.0.0"
+cfg-if = "1"
 
 [target.'cfg(windows)'.dependencies]
 win32job = "1"
