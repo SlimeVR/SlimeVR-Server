@@ -65,7 +65,10 @@ fn get_launch_path(cli: Cli) -> Option<PathBuf> {
 		Some(PathBuf::from(env!("CARGO_MANIFEST_DIR"))),
 		Some(PathBuf::from("/usr/share/slimevr/")),
 	];
-	paths.iter().filter_map(|x| *x).find(|x| is_valid_path(x))
+	paths
+		.into_iter()
+		.filter_map(|x| x)
+		.find(|x: &PathBuf| is_valid_path(x))
 }
 
 fn spawn_java(java: &OsStr, java_version: &OsStr) -> std::io::Result<Child> {
