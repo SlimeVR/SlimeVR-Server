@@ -408,11 +408,11 @@ onboarding-reset_tutorial = リセットチュートリアル
 onboarding-reset_tutorial-description = この機能は終了していません。続けるを押してください。
 
 ## Setup start
-onboarding-home = Welcome to SlimeVR
+onboarding-home = SlimeVRへようこそ
 # This cares about multilines and it's centered!!
 onboarding-home-description =
-    Bringing full-body tracking
-    to everyone
+    フルボディトラッキングを実現する
+    すべての人に!
 onboarding-home-start = セットアップ開始！
 
 ## Enter VR part of setup
