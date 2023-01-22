@@ -57,36 +57,15 @@ fn is_valid_path(path: &PathBuf) -> bool {
 }
 
 fn get_launch_path(cli: Cli) -> Option<PathBuf> {
-	if let Some(path) = cli.launch_from_path {
-		if path.exists() && is_valid_path(&path) {
-			return Some(path);
-		}
-	}
-
-	// AppImage passes the path in `APPDIR` env var.
-	if let Some(appimage) = env::var_os("APPDIR") {
-		let path = PathBuf::from(appimage);
-		if is_valid_path(&path) {
-			return Some(path);
-		}
-	}
-
-	let path = env::current_dir().unwrap();
-	if is_valid_path(&path) {
-		return Some(path);
-	}
-
-	let path = PathBuf::from(env!("CARGO_MANIFEST_DIR"));
-	if is_valid_path(&path) {
-		return Some(path);
-	}
-
-	let path = PathBuf::from("/usr/share/slimevr/");
-	if is_valid_path(&path) {
-		return Some(path);
-	}
-
-	None
+	let paths = [
+		cli.launch_from_path,
+		// AppImage passes the fakeroot in `APPDIR` env var.
+		env::var_os("APPDIR").map(|x| PathBuf::from(x)),
+		env::current_dir().ok(),
+		Some(PathBuf::from(env!("CARGO_MANIFEST_DIR"))),
+		Some(PathBuf::from("/usr/share/slimevr/")),
+	];
+	paths.iter().filter_map(|x| *x).find(|x| is_valid_path(x))
 }
 
 fn spawn_java(java: &OsStr, java_version: &OsStr) -> std::io::Result<Child> {
