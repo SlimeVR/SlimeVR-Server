@@ -5,7 +5,7 @@ use std::io::Write;
 #[cfg(windows)]
 use std::os::windows::process::CommandExt;
 use std::panic;
-use std::path::PathBuf;
+use std::path::{Path, PathBuf};
 use std::process::{Child, Stdio};
 
 use clap::Parser;
@@ -52,7 +52,7 @@ struct Cli {
 	verbose: clap_verbosity_flag::Verbosity,
 }
 
-fn is_valid_path(path: &PathBuf) -> bool {
+fn is_valid_path(path: &Path) -> bool {
 	path.join("slimevr.jar").exists()
 }
 
