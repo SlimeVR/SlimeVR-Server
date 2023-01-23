@@ -281,7 +281,7 @@ settings-general-fk_settings-skeleton_settings-extended_spine = ewtended spine
 settings-general-fk_settings-skeleton_settings-extended_pelvis = ewtended pelvis
 settings-general-fk_settings-skeleton_settings-extended_knees = ewtended neey
 settings-general-fk_settings-vive_emulation-title = vive emuwation
-settings-general-fk_settings-vive_emulation-description = emuwate the waist twackew pwobwems that vive twackews have. This is a joke and makes twacking wowse eheh ^^.
+settings-general-fk_settings-vive_emulation-description = emuwate the waist twackew pwobwems that vive twackews hawe. tis is a jowke and mawkes twacking wowse eheh ^^
 settings-general-fk_settings-vive_emulation-label = enabwe vive emuwation
 
 ## Gesture control settings (tracker tapping)
