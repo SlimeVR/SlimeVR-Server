@@ -227,12 +227,12 @@ settings-general-steamvr-subtitle = steamvr twayckaws~
 settings-general-steamvr-description =
     enyable or dysabywe specific twacking pawts.
     usefuw if yew want mowwe contwoww owew what swimevr does.
-settings-general-steamvr-trackers-waist = wyayst
-settings-general-steamvr-trackers-chest = chwest
-settings-general-steamvr-trackers-feet = pawbsies~
+settings-general-steamvr-trackers-waist = wyayst~
+settings-general-steamvr-trackers-chest = chwest~
+settings-general-steamvr-trackers-feet = pweets~
 settings-general-steamvr-trackers-knees = knyees~
 settings-general-steamvr-trackers-elbows = ewbows~
-settings-general-steamvr-trackers-hands = Hands
+settings-general-steamvr-trackers-hands = pawbsies~
 
 ## Tracker mechanics
 settings-general-tracker_mechanics = twayckaw mechanics~
@@ -271,7 +271,7 @@ settings-general-fk_settings-leg_tweak-floor_clip = fwoow cwip
 # since this largely prevents this it corrects for it hence skating correction (note this may be renamed to sliding correction)
 # definition - Guesses when each foot is in contact with the ground and uses that information to improve tracking
 settings-general-fk_settings-leg_tweak-skating_correction = skayting wowcowwection
-settings-general-fk_settings-leg_tweak-skating_correction-amount = Skating correction strength
+settings-general-fk_settings-leg_tweak-skating_correction-amount = skawting cowwection stwength
 settings-general-fk_settings-arm_fk = awm fk
 settings-general-fk_settings-arm_fk-description = chawnge teh way teh awms awe twacked.
 settings-general-fk_settings-arm_fk-force_arms = fowce awms fwom hmd
@@ -280,9 +280,9 @@ settings-general-fk_settings-skeleton_settings-description = toggwe skeweton sew
 settings-general-fk_settings-skeleton_settings-extended_spine = ewtended spine
 settings-general-fk_settings-skeleton_settings-extended_pelvis = ewtended pelvis
 settings-general-fk_settings-skeleton_settings-extended_knees = ewtended neey
-settings-general-fk_settings-vive_emulation-title = Vive emulation
-settings-general-fk_settings-vive_emulation-description = Emulate the waist tracker problems that Vive trackers have. This is a joke and makes tracking worse.
-settings-general-fk_settings-vive_emulation-label = Enable Vive emulation
+settings-general-fk_settings-vive_emulation-title = vive emuwation
+settings-general-fk_settings-vive_emulation-description = emuwate the waist twackew pwobwems that vive twackews have. This is a joke and makes twacking wowse eheh ^^.
+settings-general-fk_settings-vive_emulation-label = enabwe vive emuwation
 
 ## Gesture control settings (tracker tapping)
 settings-general-gesture_control = gestauw cantwol
@@ -375,11 +375,11 @@ settings-osc-vrchat-network-address-description = choose which addwess to send o
 settings-osc-vrchat-network-address-placeholder = vwchat ip addwess
 settings-osc-vrchat-network-trackers = trayckawws
 settings-osc-vrchat-network-trackers-description = toggle teh sending of spweciwic twackers viwa OSC
-settings-osc-vrchat-network-trackers-chest = chest
-settings-osc-vrchat-network-trackers-waist = wayst
-settings-osc-vrchat-network-trackers-knees = knees
-settings-osc-vrchat-network-trackers-feet = pawbs
-settings-osc-vrchat-network-trackers-elbows = elbows
+settings-osc-vrchat-network-trackers-chest = chwest~
+settings-osc-vrchat-network-trackers-waist = wyayst~
+settings-osc-vrchat-network-trackers-knees = knyees~
+settings-osc-vrchat-network-trackers-feet = pweets~
+settings-osc-vrchat-network-trackers-elbows = ewbows~
 
 ## Setup/onboarding menu
 onboarding-skip = skipy setup
@@ -397,10 +397,10 @@ onboarding-wifi_creds-skip = skipy wi-fi settiwyngs
 onboarding-wifi_creds-submit = suwbmyt!
 onboarding-wifi_creds-ssid =
     .label = wi-fi nawme
-    .placeholder = enter wi-fi nawme
+    .placeholder = entew wi-fi nawme
 onboarding-wifi_creds-password =
-    .label = Password
-    .placeholder = Enter password
+    .label = passwowod
+    .placeholder = entew passwowod
 
 ## Mounting setup
 onboarding-reset_tutorial-back = gaww bawwk to meownting cawwibwation
