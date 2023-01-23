@@ -63,9 +63,9 @@ fn get_launch_path(cli: Cli) -> Option<PathBuf> {
 		env::var_os("APPDIR").map(|x| PathBuf::from(x)),
 		env::current_dir().ok(),
 		Some(PathBuf::from(env!("CARGO_MANIFEST_DIR"))),
-		Some(PathBuf::from("/usr/share/slimevr/")),
 		// For flatpak container
 		Some(PathBuf::from("/app/share/slimevr/")),
+		Some(PathBuf::from("/usr/share/slimevr/")),
 	];
 	paths
 		.into_iter()
