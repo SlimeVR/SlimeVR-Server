@@ -99,7 +99,7 @@ widget-developer_mode-precise_rotation = Точное вращение
 widget-developer_mode-fast_data_feed = Быстрый поток данных
 widget-developer_mode-filter_slimes_and_hmd = Фильтровать SlimeVR и HMD
 widget-developer_mode-sort_by_name = Сортировка по имени
-widget-developer_mode-raw_slime_rotation = Сырое вращение 
+widget-developer_mode-raw_slime_rotation = Сырое вращение
 widget-developer_mode-more_info = Больше информации
 
 ## Widget: IMU Visualizer
@@ -158,7 +158,7 @@ tracker-settings-name_section-description = Дай ему милое имя :)
 tracker-settings-name_section-placeholder = Левая нога NightyBeast'а
 
 ## Tracker part card info
-tracker-part_card-no_name = Безымянный 
+tracker-part_card-no_name = Безымянный
 tracker-part_card-unassigned = Не привязан
 
 ## Body assignment menu
@@ -285,9 +285,9 @@ settings-general-fk_settings-vive_emulation-description = Имитируйте �
 settings-general-fk_settings-vive_emulation-label = Включить эмуляцию Vive
 
 ## Gesture control settings (tracker tapping)
-settings-general-gesture_control = Gesture control
-settings-general-gesture_control-subtitle = Tap based resets
-settings-general-gesture_control-description = Allows for resets to be triggered by tapping a tracker. The tracker highest up on your torso is used for Quick Reset, the tracker highest up on your left leg is used for Reset, and the tracker highest up on your right leg is used for Mounting Reset. It should be mentioned that taps must happen within 0.6 seconds to be registered.
+settings-general-gesture_control = Контроль жестами
+settings-general-gesture_control-subtitle = Нажатие на ресет
+settings-general-gesture_control-description = Позволяет запускать сброс настроек нажатием на трекер. Трекер, расположенный выше всего на вашем торсе, используется для быстрого сброса, трекер, расположенный выше всего на вашей левой ноге, используется для сброса, а трекер, расположенный выше всего на вашей правой ноге, используется для установки сброса. Следует отметить, что для регистрации нажатия должны происходить в течение 0,6 секунды.
 # This is a unit: 3 taps, 2 taps, 1 tap
 # $amount (Number) - Amount of taps (touches to the tracker's case)
 settings-general-gesture_control-taps = { $amount ->
@@ -301,7 +301,7 @@ settings-general-gesture_control-resetEnabled = Включить нажатие 
 settings-general-gesture_control-resetDelay = Сбросить задержку
 settings-general-gesture_control-resetTaps = Нажатия для сброса
 settings-general-gesture_control-mountingResetEnabled = Включите нажатия для сброса установки
-settings-general-gesture_control-mountingResetDelay = Задержка сброса крепления 
+settings-general-gesture_control-mountingResetDelay = Задержка сброса крепления
 settings-general-gesture_control-mountingResetTaps = Нажатия для сброса крепления
 
 ## Interface settings
@@ -445,9 +445,8 @@ onboarding-connect_tracker-connection_status-handshake = Подключен к �
 # if $amount is 0 then we say "No trackers connected"
 onboarding-connect_tracker-connected_trackers = { $amount ->
     [0] Нет трекеров
-    [one] 1 трекер
+    [one] { $amount } трекер
     [few] { $amount } трекера
-    [many] трекеров
     *[other] { $amount } трекеров
 } подключено
 onboarding-connect_tracker-next = Я подключил все трекеры!
@@ -459,10 +458,10 @@ onboarding-assign_trackers-description = Давайте выберем, како
 # Look at translation of onboarding-connect_tracker-connected_trackers on how to use plurals
 # $assigned (Number) - Трекеры, которым была назначена часть тела
 # $trackers (Number) - Трекеры, подключенные к серверу
-onboarding-assign_trackers-assigned = { $assigned } of { $trackers ->
+onboarding-assign_trackers-assigned = { $assigned } из { $trackers ->
     [one] 1 трекер
     [few] { $amount } трекера
-    [many] трекеров
+    [many] { $amount} трекеров
     *[other] { $amount } трекеров
 } привязано
 onboarding-assign_trackers-advanced = Показать дополнительные места привязки
@@ -527,6 +526,7 @@ onboarding-automatic_proportions-recording-processing = Обрабатываем
 # $time (Number) - Seconds left for the automatic calibration recording to finish (max 15)
 onboarding-automatic_proportions-recording-timer = { $time ->
     [one] секунда осталась
+    [few] { $time } секунды осталась
     *[other] { $time } секунд осталось
 }
 onboarding-automatic_proportions-verify_results-title = Подтвердить результаты
