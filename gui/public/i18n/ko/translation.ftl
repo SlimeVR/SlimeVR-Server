@@ -24,7 +24,7 @@ body_part-RIGHT_HAND = 오른손
 body_part-RIGHT_UPPER_LEG = 오른쪽 다리 위
 body_part-RIGHT_LOWER_LEG = 오른쪽 다리 아래
 body_part-RIGHT_FOOT = 오른발
-body_part-RIGHT_CONTROLLER = Right controller
+body_part-RIGHT_CONTROLLER = 오른쪽 컨트롤러
 body_part-CHEST = 가슴
 body_part-WAIST = 허리
 body_part-HIP = 골반
@@ -35,20 +35,20 @@ body_part-LEFT_HAND = 왼손
 body_part-LEFT_UPPER_LEG = 왼쪽 다리 위
 body_part-LEFT_LOWER_LEG = 왼쪽 다리 아래
 body_part-LEFT_FOOT = 왼발
-body_part-LEFT_CONTROLLER = Left controller
+body_part-LEFT_CONTROLLER = 왼쪽 컨트롤러
 
 ## Proportions
-skeleton_bone-NONE = None
+skeleton_bone-NONE = 없음
 skeleton_bone-HEAD = 머리 밀림
 skeleton_bone-NECK = 목 길이
-skeleton_bone-CHEST = Chest Length
-skeleton_bone-CHEST_OFFSET = Chest Offset
-skeleton_bone-WAIST = Waist Length
-skeleton_bone-HIP = Hip Length
+skeleton_bone-CHEST = 가슴 길이
+skeleton_bone-CHEST_OFFSET = 가슴 오프셋
+skeleton_bone-WAIST = 허리 길이
+skeleton_bone-HIP = 골반 길이
 skeleton_bone-HIP_OFFSET = 골반 오프셋
 skeleton_bone-HIPS_WIDTH = 골반 너비
-skeleton_bone-UPPER_LEG = Upper Leg Length
-skeleton_bone-LOWER_LEG = Lower Leg Length
+skeleton_bone-UPPER_LEG = 위쪽 다리 길이
+skeleton_bone-LOWER_LEG = 아래쪽 다리 길이
 skeleton_bone-FOOT_LENGTH = 발 크기
 skeleton_bone-FOOT_SHIFT = 발 밀림
 skeleton_bone-SKELETON_OFFSET = 골격 오프셋
@@ -94,21 +94,21 @@ widget-overlay-is_mirrored_label = 오버레이 반전
 
 ## Widget: Developer settings
 widget-developer_mode = 개발자 모드
-widget-developer_mode-high_contrast = High contrast
-widget-developer_mode-precise_rotation = Precise rotation
-widget-developer_mode-fast_data_feed = Fast data feed
-widget-developer_mode-filter_slimes_and_hmd = Filter slimes and HMD
-widget-developer_mode-sort_by_name = Sort by name
-widget-developer_mode-raw_slime_rotation = Raw rotation
-widget-developer_mode-more_info = More info
+widget-developer_mode-high_contrast = 고대비
+widget-developer_mode-precise_rotation = 회전 자세히 보기
+widget-developer_mode-fast_data_feed = 빠른 데이터 피드
+widget-developer_mode-filter_slimes_and_hmd = 트래커와 VR 헤드셋만 보기
+widget-developer_mode-sort_by_name = 이름순으로 정렬
+widget-developer_mode-raw_slime_rotation = 원시 회전값 보기
+widget-developer_mode-more_info = 더 많은 정보 보기
 
 ## Widget: IMU Visualizer
-widget-imu_visualizer = Rotation
+widget-imu_visualizer = 회전
 widget-imu_visualizer-rotation_raw = Raw
-widget-imu_visualizer-rotation_preview = Preview
+widget-imu_visualizer-rotation_preview = 미리보기
 
 ## Tracker status
-tracker-status-none = No Status
+tracker-status-none = 알 수 없음
 tracker-status-busy = 바쁨
 tracker-status-error = 오류
 tracker-status-disconnected = 연결되지 않음
@@ -121,8 +121,8 @@ tracker-table-column-type = 타입
 tracker-table-column-battery = 배터리
 tracker-table-column-ping = Ping
 tracker-table-column-tps = TPS
-tracker-table-column-temperature = Temp. °C
-tracker-table-column-linear-acceleration = Accel. X/Y/Z
+tracker-table-column-temperature = 온도 °C
+tracker-table-column-linear-acceleration = X/Y/Z 가속도
 tracker-table-column-rotation = X/Y/Z 회전
 tracker-table-column-position = X/Y/Z 위치
 tracker-table-column-url = URL
@@ -148,9 +148,9 @@ tracker-settings-assignment_section-edit = 위치 수정
 tracker-settings-mounting_section = 착용 방향
 tracker-settings-mounting_section-description = 트래커는 어디에 착용하나요?
 tracker-settings-mounting_section-edit = 방향 수정
-tracker-settings-drift_compensation_section = Allow drift compensation
-tracker-settings-drift_compensation_section-description = Should this tracker compensate for its drift when drift compensation is enabled?
-tracker-settings-drift_compensation_section-edit = Allow drift compensation
+tracker-settings-drift_compensation_section = 틀어짐 보정 사용
+tracker-settings-drift_compensation_section-description = 틀어짐 보정이 켜져 있을 때 이 트래커의 틀어짐을 보정할까요?
+tracker-settings-drift_compensation_section-edit = 틀어짐 보정 사용
 # The .<name> means it's an attribute and it's related to the top key.
 # In this case that is the settings for the assignment section.
 tracker-settings-name_section = 트래커 이름
@@ -174,29 +174,29 @@ body_assignment_menu-unassign_tracker = 할당하지 않기
 #
 # We are using it here because english doesn't require changing the text in each case but
 # maybe your language does.
--tracker_selection-part = Which tracker to assign to your
-tracker_selection_menu-NONE = Which tracker do you want to be unassigned?
-tracker_selection_menu-HEAD = { -tracker_selection-part } head?
-tracker_selection_menu-NECK = { -tracker_selection-part } neck?
-tracker_selection_menu-RIGHT_SHOULDER = { -tracker_selection-part } right shoulder?
-tracker_selection_menu-RIGHT_UPPER_ARM = { -tracker_selection-part } right upper arm?
-tracker_selection_menu-RIGHT_LOWER_ARM = { -tracker_selection-part } right lower arm?
-tracker_selection_menu-RIGHT_HAND = { -tracker_selection-part } right hand?
-tracker_selection_menu-RIGHT_UPPER_LEG = { -tracker_selection-part } right thigh?
-tracker_selection_menu-RIGHT_LOWER_LEG = { -tracker_selection-part } right ankle?
-tracker_selection_menu-RIGHT_FOOT = { -tracker_selection-part } right foot?
-tracker_selection_menu-RIGHT_CONTROLLER = { -tracker_selection-part } right controller?
-tracker_selection_menu-CHEST = { -tracker_selection-part } chest?
-tracker_selection_menu-WAIST = { -tracker_selection-part } waist?
-tracker_selection_menu-HIP = { -tracker_selection-part } hip?
-tracker_selection_menu-LEFT_SHOULDER = { -tracker_selection-part } left shoulder?
-tracker_selection_menu-LEFT_UPPER_ARM = { -tracker_selection-part } left upper arm?
-tracker_selection_menu-LEFT_LOWER_ARM = { -tracker_selection-part } left lower arm?
-tracker_selection_menu-LEFT_HAND = { -tracker_selection-part } left hand?
-tracker_selection_menu-LEFT_UPPER_LEG = { -tracker_selection-part } left thigh?
-tracker_selection_menu-LEFT_LOWER_LEG = { -tracker_selection-part } left ankle?
-tracker_selection_menu-LEFT_FOOT = { -tracker_selection-part } left foot?
-tracker_selection_menu-LEFT_CONTROLLER = { -tracker_selection-part } left controller?
+-tracker_selection-part = 에 어떤 트래커를 할당할까요?
+tracker_selection_menu-NONE = 어떤 트래커를 할당 취소할까요?
+tracker_selection_menu-HEAD = 머리{ -tracker_selection-part }
+tracker_selection_menu-NECK = 목{ -tracker_selection-part }
+tracker_selection_menu-RIGHT_SHOULDER = 오른쪽 어께{ -tracker_selection-part }
+tracker_selection_menu-RIGHT_UPPER_ARM = 오른쪽 팔 위{ -tracker_selection-part }
+tracker_selection_menu-RIGHT_LOWER_ARM = 오른쪽 팔 아래{ -tracker_selection-part }
+tracker_selection_menu-RIGHT_HAND = 오른손{ -tracker_selection-part }
+tracker_selection_menu-RIGHT_UPPER_LEG = 오른쪽 다리 위{ -tracker_selection-part }
+tracker_selection_menu-RIGHT_LOWER_LEG = 오른쪽 다리 아래{ -tracker_selection-part }
+tracker_selection_menu-RIGHT_FOOT = 오른쪽 발{ -tracker_selection-part }
+tracker_selection_menu-RIGHT_CONTROLLER = 오른쪽 컨트롤러{ -tracker_selection-part }
+tracker_selection_menu-CHEST = 가슴{ -tracker_selection-part }
+tracker_selection_menu-WAIST = 허리{ -tracker_selection-part }
+tracker_selection_menu-HIP = 골반{ -tracker_selection-part }
+tracker_selection_menu-LEFT_SHOULDER = 왼쪽 어께{ -tracker_selection-part }
+tracker_selection_menu-LEFT_UPPER_ARM = 왼쪽 팔 위{ -tracker_selection-part }
+tracker_selection_menu-LEFT_LOWER_ARM = 왼쪽 팔 아래{ -tracker_selection-part }
+tracker_selection_menu-LEFT_HAND = 왼손{ -tracker_selection-part }
+tracker_selection_menu-LEFT_UPPER_LEG = 왼쪽 다리 위{ -tracker_selection-part }
+tracker_selection_menu-LEFT_LOWER_LEG = 왼쪽 다리 아래{ -tracker_selection-part }
+tracker_selection_menu-LEFT_FOOT = 왼쪽 발{ -tracker_selection-part }
+tracker_selection_menu-LEFT_CONTROLLER = 왼쪽 컨트롤러{ -tracker_selection-part }
 
 tracker_selection_menu-unassigned = 할당되지 않은 트래커
 tracker_selection_menu-assigned = 할당된 트래커
@@ -249,14 +249,14 @@ settings-general-tracker_mechanics-filtering-type-smoothing-description = 움직
 settings-general-tracker_mechanics-filtering-type-prediction = Prediction
 settings-general-tracker_mechanics-filtering-type-prediction-description = 대기 시간이 줄어들고 움직임이 더 빨라지지만 지터가 증가할 수 있어요.
 settings-general-tracker_mechanics-filtering-amount = 강도
-settings-general-tracker_mechanics-drift_compensation = Drift compensation
+settings-general-tracker_mechanics-drift_compensation = 틀어짐 보정
 # This cares about multilines
 settings-general-tracker_mechanics-drift_compensation-description =
-    Compensates IMU yaw drift by applying an inverse rotation.
-    Change amount of compensation and up to how many resets are taken into account.
-settings-general-tracker_mechanics-drift_compensation-enabled-label = Drift compensation
-settings-general-tracker_mechanics-drift_compensation-amount-label = Compensation amount
-settings-general-tracker_mechanics-drift_compensation-max_resets-label = Use up to x last resets
+    틀어지는 방향의 반대 방향으로 회전해서 IMU yaw 드리프트를 보정할 수 있어요.
+    보정하는 강도와 감지할 최근 리셋 횟수를 설정할 수 있어요.
+settings-general-tracker_mechanics-drift_compensation-enabled-label = 틀어짐 보정
+settings-general-tracker_mechanics-drift_compensation-amount-label = 보정 강도
+settings-general-tracker_mechanics-drift_compensation-max_resets-label = 보정에 사용할 최근 리셋 횟수
 
 ## FK/Tracking settings
 settings-general-fk_settings = FK 설정
@@ -280,9 +280,9 @@ settings-general-fk_settings-skeleton_settings-description = 골격 설정을 �
 settings-general-fk_settings-skeleton_settings-extended_spine = 척추 확장
 settings-general-fk_settings-skeleton_settings-extended_pelvis = 골반 확장
 settings-general-fk_settings-skeleton_settings-extended_knees = 무릎 확장
-settings-general-fk_settings-vive_emulation-title = Vive emulation
-settings-general-fk_settings-vive_emulation-description = Emulate the waist tracker problems that Vive trackers have. This is a joke and makes tracking worse.
-settings-general-fk_settings-vive_emulation-label = Enable Vive emulation
+settings-general-fk_settings-vive_emulation-title = VIVE 에뮬레이션
+settings-general-fk_settings-vive_emulation-description = 바이브 트래커가 가지고 있는 허리 트래커 문제를 따라해보세요! 사실 이건 장난이고 추적을 더 악화시켜요.
+settings-general-fk_settings-vive_emulation-label = VIVE 에뮬레이션 활성화
 
 ## Gesture control settings (tracker tapping)
 settings-general-gesture_control = 제스처 제어
@@ -291,18 +291,17 @@ settings-general-gesture_control-description = 활성화하면 가장 높이 있
 # This is a unit: 3 taps, 2 taps, 1 tap
 # $amount (Number) - Amount of taps (touches to the tracker's case)
 settings-general-gesture_control-taps = { $amount ->
-    [one] 1 tap
-    *[other] { $amount } taps
+    *[other] { $amount } 탭
 }
-settings-general-gesture_control-quickResetEnabled = Enable tap to quick reset
-settings-general-gesture_control-quickResetDelay = Quick reset delay
-settings-general-gesture_control-quickResetTaps = Taps for quick reset
-settings-general-gesture_control-resetEnabled = Enable tap to reset
-settings-general-gesture_control-resetDelay = Reset delay
-settings-general-gesture_control-resetTaps = Taps for reset
-settings-general-gesture_control-mountingResetEnabled = Enable tap to reset mounting
-settings-general-gesture_control-mountingResetDelay = Mounting reset delay
-settings-general-gesture_control-mountingResetTaps = Taps for mounting reset
+settings-general-gesture_control-quickResetEnabled = 탭해서 퀵 리셋 활성화
+settings-general-gesture_control-quickResetDelay = 퀵 리셋 딜레이
+settings-general-gesture_control-quickResetTaps = 탭해서 퀵 리셋
+settings-general-gesture_control-resetEnabled = 탭해서 리셋 활성화
+settings-general-gesture_control-resetDelay = 리셋 딜레이
+settings-general-gesture_control-resetTaps = 탭해서 리셋
+settings-general-gesture_control-mountingResetEnabled = 탭해서 착용 방향 정렬 활성화
+settings-general-gesture_control-mountingResetDelay = 착용 방향 정렬 딜레이
+settings-general-gesture_control-mountingResetTaps = 탭해서 착용 방향 정렬
 
 ## Interface settings
 settings-general-interface = 인터페이스
@@ -397,10 +396,10 @@ onboarding-wifi_creds-skip = Wi-Fi 설정 건너뛰기
 onboarding-wifi_creds-submit = 저장!
 onboarding-wifi_creds-ssid =
     .label = SSID
-    .placeholder = Enter SSID
+    .placeholder = SSID를 입력하세요
 onboarding-wifi_creds-password =
-    .label = Password
-    .placeholder = Enter password
+    .label = 암호
+    .placeholder = 암호를 입력하세요
 
 ## Mounting setup
 onboarding-reset_tutorial-back = 착용 방향 정렬로 돌아가기
@@ -444,10 +443,9 @@ onboarding-connect_tracker-connection_status-handshake = 서버에 연결됨
 # we use 0 in an explicit way because there is no plural rule in english for 0, so we directly say
 # if $amount is 0 then we say "No trackers connected"
 onboarding-connect_tracker-connected_trackers = { $amount ->
-    [0] No trackers
-    [one] 1 tracker
-    *[other] { $amount } trackers
-} connected
+    [0] 연결된 트래커가 없어요.
+    *[other] 트래커 { $amount }개가 연결되었어요.
+}
 onboarding-connect_tracker-next = 모든 트래커를 잘 연결했어요
 
 ## Tracker assignment setup
@@ -523,8 +521,7 @@ onboarding-automatic_proportions-recording-steps-4 = 타이머가 종료될 때�
 onboarding-automatic_proportions-recording-processing = 결과 처리 중
 # $time (Number) - Seconds left for the automatic calibration recording to finish (max 15)
 onboarding-automatic_proportions-recording-timer = { $time ->
-    [one] 1 second left
-    *[other] { $time } seconds left
+    *[other] { $time } 초 남음
 }
 onboarding-automatic_proportions-verify_results-title = 결과를 확인하세요
 onboarding-automatic_proportions-verify_results-description = 아래 결과를 한번 보세요, 어때요?
