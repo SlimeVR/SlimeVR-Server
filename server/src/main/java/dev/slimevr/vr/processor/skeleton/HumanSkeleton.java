@@ -1116,23 +1116,11 @@ public class HumanSkeleton extends Skeleton implements SkeletonConfigCallback {
 				trackerLeftElbowNode.localTransform.setRotation(rotBuf1);
 			}
 		} else { // From HMD
-			if (leftShoulderTracker != null) {
+			if (leftShoulderTracker != null)
 				leftShoulderTracker.getRotation(rotBuf1);
-				leftShoulderHeadNode.localTransform.setRotation(rotBuf1);
-			} else {
-				if (leftUpperArmTracker != null || leftLowerArmTracker != null) {
-					// Average head and arm
-					TrackerUtils
-						.getFirstAvailableTracker(leftUpperArmTracker, leftLowerArmTracker)
-						.getRotation(rotBuf1);
-					headNode.localTransform.getRotation(rotBuf2);
-					rotBuf1.set(shoulderYaw(rotBuf1, rotBuf2));
-				} else {
-					neckNode.localTransform.getRotation(rotBuf1);
-				}
-
-				leftShoulderHeadNode.localTransform.setRotation(rotBuf1);
-			}
+			else
+				neckNode.localTransform.getRotation(rotBuf1);
+			leftShoulderHeadNode.localTransform.setRotation(rotBuf1);
 
 			if (leftUpperArmTracker != null || leftLowerArmTracker != null) {
 				TrackerUtils
@@ -1182,23 +1170,11 @@ public class HumanSkeleton extends Skeleton implements SkeletonConfigCallback {
 				trackerRightElbowNode.localTransform.setRotation(rotBuf1);
 			}
 		} else { // From HMD
-			if (rightShoulderTracker != null) {
+			if (rightShoulderTracker != null)
 				rightShoulderTracker.getRotation(rotBuf1);
-				rightShoulderHeadNode.localTransform.setRotation(rotBuf1);
-			} else {
-				if (rightUpperArmTracker != null || rightLowerArmTracker != null) {
-					// Average head and arm
-					TrackerUtils
-						.getFirstAvailableTracker(rightUpperArmTracker, rightLowerArmTracker)
-						.getRotation(rotBuf1);
-					headNode.localTransform.getRotation(rotBuf2);
-					rotBuf1.set(shoulderYaw(rotBuf1, rotBuf2));
-				} else {
-					neckNode.localTransform.getRotation(rotBuf1);
-				}
-
-				rightShoulderHeadNode.localTransform.setRotation(rotBuf1);
-			}
+			else
+				neckNode.localTransform.getRotation(rotBuf1);
+			rightShoulderHeadNode.localTransform.setRotation(rotBuf1);
 
 			if (rightUpperArmTracker != null || rightLowerArmTracker != null) {
 				TrackerUtils
@@ -1291,20 +1267,6 @@ public class HumanSkeleton extends Skeleton implements SkeletonConfigCallback {
 		hip.multLocal(rotBuf1).multLocal(rotBuf2);
 		return hip.normalizeLocal();
 	}
-
-	/**
-	 * Rotates the first Quaternion to match its local yaw to the rotation of
-	 * the second Quaternion
-	 *
-	 * @param elbow the first Quaternion
-	 * @param head the second Quaternion
-	 * @return the rotated Quaternion
-	 */
-	private Quaternion shoulderYaw(Quaternion elbow, Quaternion head) {
-		rotBuf1.set(head.inverse().multLocal(elbow));
-		return head.mult(new Quaternion(0, rotBuf1.getY(), 0, rotBuf1.getW()));
-	}
-
 
 	// #region Update the output trackers
 	protected void updateComputedTrackers() {
