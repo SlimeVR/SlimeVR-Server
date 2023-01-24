@@ -54,8 +54,8 @@ skeleton_bone-FOOT_SHIFT = 발 밀림
 skeleton_bone-SKELETON_OFFSET = 골격 오프셋
 skeleton_bone-SHOULDERS_DISTANCE = 어깨 거리
 skeleton_bone-SHOULDERS_WIDTH = 어깨 너비
-skeleton_bone-UPPER_ARM = 위팔 거리
-skeleton_bone-LOWER_ARM = 전완 길이
+skeleton_bone-UPPER_ARM = 위쪽 팔 거리
+skeleton_bone-LOWER_ARM = 아래쪽 팔 길이
 skeleton_bone-CONTROLLER_Y = 컨트롤러 Y축 거리
 skeleton_bone-CONTROLLER_Z = 컨트롤러 Z축 거리
 skeleton_bone-ELBOW_OFFSET = 팔꿈치 오프셋
@@ -455,10 +455,7 @@ onboarding-assign_trackers-description = 이제, 어떤 트래커가 어디에 �
 # Look at translation of onboarding-connect_tracker-connected_trackers on how to use plurals
 # $assigned (Number) - Trackers that have been assigned a body part
 # $trackers (Number) - Trackers connected to the server
-onboarding-assign_trackers-assigned = { $assigned } of { $trackers ->
-    [one] 1 tracker
-    *[other] { $trackers } trackers
-} assigned
+onboarding-assign_trackers-assigned = 트래커 { $trackers }개 중 { $assigned }개 연결됨
 onboarding-assign_trackers-advanced = 고급 할당 위치 보기
 onboarding-assign_trackers-next = 모든 트래커를 배치했어요
 
