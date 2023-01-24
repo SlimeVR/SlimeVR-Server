@@ -92,6 +92,9 @@ widget-overlay = 오버레이
 widget-overlay-is_visible_label = SteamVR에서 오버레이 표시
 widget-overlay-is_mirrored_label = 오버레이 반전
 
+## Widget: Drift compensation
+widget-drift_compensation-clear = Clear drift compensation
+
 ## Widget: Developer settings
 widget-developer_mode = 개발자 모드
 widget-developer_mode-high_contrast = High contrast

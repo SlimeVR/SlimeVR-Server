@@ -92,6 +92,9 @@ widget-overlay = オーバーレイ設定
 widget-overlay-is_visible_label = SteamVRでオーバーレイを表示する
 widget-overlay-is_mirrored_label = オーバーレイをミラーとして表示する
 
+## Widget: Drift compensation
+widget-drift_compensation-clear = Clear drift compensation
+
 ## Widget: Developer settings
 widget-developer_mode = 開発者モード
 widget-developer_mode-high_contrast = ハイ コントラスト

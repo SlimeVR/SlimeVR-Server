@@ -87,9 +87,28 @@ navbar-settings = Seaded
 bvh-start_recording = Salvesta BVH
 bvh-recording = Salvestamine...
 
-## Overlay settings
-overlay-is_visible_label = Näita Ülekatet SteamVR-is
-overlay-is_mirrored_label = Näita Ülekatet Peeglina
+## Widget: Overlay settings
+widget-overlay = Overlay
+widget-overlay-is_visible_label = Näita Ülekatet SteamVR-is
+widget-overlay-is_mirrored_label = Näita Ülekatet Peeglina
+
+## Widget: Drift compensation
+widget-drift_compensation-clear = Clear drift compensation
+
+## Widget: Developer settings
+widget-developer_mode = Developer Mode
+widget-developer_mode-high_contrast = High contrast
+widget-developer_mode-precise_rotation = Precise rotation
+widget-developer_mode-fast_data_feed = Fast data feed
+widget-developer_mode-filter_slimes_and_hmd = Filter slimes and HMD
+widget-developer_mode-sort_by_name = Sort by name
+widget-developer_mode-raw_slime_rotation = Raw rotation
+widget-developer_mode-more_info = More info
+
+## Widget: IMU Visualizer
+widget-imu_visualizer = Rotation
+widget-imu_visualizer-rotation_raw = Raw
+widget-imu_visualizer-rotation_preview = Preview
 
 ## Tracker status
 tracker-status-none = Staatuseta

@@ -58,6 +58,7 @@ skeleton_bone-UPPER_ARM = Oberarmlänge
 skeleton_bone-LOWER_ARM = Unterarmlänge
 skeleton_bone-CONTROLLER_Y = Controller Abstand Y
 skeleton_bone-CONTROLLER_Z = Controller Abstand Z
+skeleton_bone-ELBOW_OFFSET = Elbow Offset
 
 ## Tracker reset buttons
 reset-reset_all = Alle Proportionen zurücksetzen
@@ -86,9 +87,28 @@ navbar-settings = Einstellungen
 bvh-start_recording = BVH aufnehmen
 bvh-recording = Aufnahme läuft...
 
-## Overlay settings
-overlay-is_visible_label = Visualisierungs-Overlay in SteamVR anzeigen
-overlay-is_mirrored_label = Visualisierung spiegeln
+## Widget: Overlay settings
+widget-overlay = Overlay
+widget-overlay-is_visible_label = Visualisierungs-Overlay in SteamVR anzeigen
+widget-overlay-is_mirrored_label = Visualisierung spiegeln
+
+## Widget: Drift compensation
+widget-drift_compensation-clear = Clear drift compensation
+
+## Widget: Developer settings
+widget-developer_mode = Developer Mode
+widget-developer_mode-high_contrast = High contrast
+widget-developer_mode-precise_rotation = Precise rotation
+widget-developer_mode-fast_data_feed = Fast data feed
+widget-developer_mode-filter_slimes_and_hmd = Filter slimes and HMD
+widget-developer_mode-sort_by_name = Sort by name
+widget-developer_mode-raw_slime_rotation = Raw rotation
+widget-developer_mode-more_info = More info
+
+## Widget: IMU Visualizer
+widget-imu_visualizer = Rotation
+widget-imu_visualizer-rotation_raw = Raw
+widget-imu_visualizer-rotation_preview = Preview
 
 ## Tracker status
 tracker-status-none = Kein Status

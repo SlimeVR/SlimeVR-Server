@@ -92,6 +92,9 @@ widget-overlay = Squelette
 widget-overlay-is_visible_label = Superposer le squelette dans SteamVR
 widget-overlay-is_mirrored_label = Afficher le squelette en tant que miroir
 
+## Widget: Drift compensation
+widget-drift_compensation-clear = Remise à zéro de la compensation de la dérive
+
 ## Widget: Developer settings
 widget-developer_mode = Mode développeur
 widget-developer_mode-high_contrast = Contraste élevé

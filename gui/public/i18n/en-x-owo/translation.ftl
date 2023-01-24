@@ -92,6 +92,9 @@ widget-overlay = owovelay
 widget-overlay-is_visible_label = show owovelay in steawmvr
 widget-overlay-is_mirrored_label = dispway owovelay as miwwow
 
+## Widget: Drift compensation
+widget-drift_compensation-clear = cwear dwift compensation
+
 ## Widget: Developer settings
 widget-developer_mode = devwowwewow mode
 widget-developer_mode-high_contrast = high contwast
