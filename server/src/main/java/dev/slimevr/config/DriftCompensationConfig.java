@@ -33,6 +33,15 @@ public class DriftCompensationConfig {
 		}
 	}
 
+	public void clearTrackersDriftCompensation() {
+		for (Tracker t : Main.getVrServer().getAllTrackers()) {
+			Tracker tracker = t.get();
+			if (tracker instanceof IMUTracker imuTracker) {
+				imuTracker.clearDriftCompensation();
+			}
+		}
+	}
+
 
 	public boolean getEnabled() {
 		return enabled;
