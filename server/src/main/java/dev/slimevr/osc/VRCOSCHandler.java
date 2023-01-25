@@ -338,7 +338,7 @@ public class VRCOSCHandler implements OSCHandler {
 
 	/*
 	 * Apache Commons Math Copyright 2001-2022 The Apache Software Foundation
-	 * 
+	 *
 	 * The code below includes code developed at The Apache Software Foundation
 	 * (http://www.apache.org/).
 	 */

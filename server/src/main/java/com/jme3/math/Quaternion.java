@@ -45,9 +45,9 @@ import java.util.logging.Logger;
  * hypercomplex numbers. Quaternions extends a rotation in three dimensions to a
  * rotation in four dimensions. This avoids "gimbal lock" and allows for smooth
  * continuous rotation.
- * 
+ *
  * <code>Quaternion</code> is defined by four floating point numbers: {x y z w}.
- * 
+ *
  * @author Mark Powell
  * @author Joshua Slack
  */
@@ -239,10 +239,10 @@ public final class Quaternion implements Cloneable, java.io.Serializable {
 	 * angles (x,y,z) aka (pitch, yaw, rall)). Note that we are applying in
 	 * order: (y, z, x) aka (yaw, roll, pitch) but we've ordered them in x, y,
 	 * and z for convenience.
-	 * 
+	 *
 	 * @see <a href=
 	 * "http://www.euclideanspace.com/maths/geometry/rotations/conversions/eulerToQuaternion/index.htm">http://www.euclideanspace.com/maths/geometry/rotations/conversions/eulerToQuaternion/index.htm</a>
-	 * 
+	 *
 	 * @param xAngle the Euler pitch of rotation (in radians). (aka Attitude,
 	 * often rot around x)
 	 * @param yAngle the Euler yaw of rotation (in radians). (aka Heading, often
@@ -283,10 +283,10 @@ public final class Quaternion implements Cloneable, java.io.Serializable {
 	 * angles (pitch, yaw, roll).<br/>
 	 * Note that the result is not always 100% accurate due to the implications
 	 * of euler angles.
-	 * 
+	 *
 	 * @see <a href=
 	 * "http://www.euclideanspace.com/maths/geometry/rotations/conversions/quaternionToEuler/index.htm">http://www.euclideanspace.com/maths/geometry/rotations/conversions/quaternionToEuler/index.htm</a>
-	 * 
+	 *
 	 * @param angles the float[] in which the angles should be stored, or null
 	 * if you want a new float[] to be created
 	 * @return the float[] in which the angles are stored (pitch, yaw, roll).
@@ -327,7 +327,7 @@ public final class Quaternion implements Cloneable, java.io.Serializable {
 
 	/**
 	 * Returns Euler rotation angle around x axis (pitch).
-	 * 
+	 *
 	 * @return
 	 * @see #toAngles(float[])
 	 */
@@ -377,7 +377,7 @@ public final class Quaternion implements Cloneable, java.io.Serializable {
 
 	/**
 	 * Returns Euler rotation angle around z axis (roll).
-	 * 
+	 *
 	 * @return
 	 * @see #toAngles(float[])
 	 */
@@ -399,10 +399,10 @@ public final class Quaternion implements Cloneable, java.io.Serializable {
 	}
 
 	/**
-	 * 
+	 *
 	 * <code>fromRotationMatrix</code> generates a quaternion from a supplied
 	 * matrix. This matrix is assumed to be a rotational matrix.
-	 * 
+	 *
 	 * @param matrix the matrix that defines the rotation.
 	 */
 	public Quaternion fromRotationMatrix(Matrix3f matrix) {
@@ -501,7 +501,7 @@ public final class Quaternion implements Cloneable, java.io.Serializable {
 	 * <code>toRotationMatrix</code> converts this quaternion to a rotational
 	 * matrix. Note: the result is created from a normalized version of this
 	 * quat.
-	 * 
+	 *
 	 * @return the rotation matrix representation of this quaternion.
 	 */
 	public Matrix3f toRotationMatrix() {
@@ -512,7 +512,7 @@ public final class Quaternion implements Cloneable, java.io.Serializable {
 	/**
 	 * <code>toRotationMatrix</code> converts this quaternion to a rotational
 	 * matrix. The result is stored in result.
-	 * 
+	 *
 	 * @param result The Matrix3f to store the result in.
 	 * @return the rotation matrix representation of this quaternion.
 	 */
@@ -557,7 +557,7 @@ public final class Quaternion implements Cloneable, java.io.Serializable {
 	 * matrix. The result is stored in result. 4th row and 4th column values are
 	 * untouched. Note: the result is created from a normalized version of this
 	 * quat.
-	 * 
+	 *
 	 * @param result The Matrix4f to store the result in.
 	 * @return the rotation matrix representation of this quaternion.
 	 */
@@ -802,6 +802,38 @@ public final class Quaternion implements Cloneable, java.io.Serializable {
 		return angle;
 	}
 
+	public Quaternion align(Vector3f v1, Vector3f v2) {
+		float aLenSq = v1.x * v1.x + v1.y * v1.y + v2.z * v2.z;
+		float bLenSq = v2.x * v2.x + v2.y * v2.y + v2.z * v2.z;
+
+		float aLenSqInv = 1f / aLenSq;
+
+		float Rw = aLenSqInv * (x * v1.x + y * v1.y + z * v2.z);
+		float Rx = aLenSqInv * (z * v1.y - w * v1.x - y * v2.z);
+		float Ry = aLenSqInv * (x * v2.z - w * v1.y - z * v1.x);
+		float Rz = aLenSqInv * (y * v1.x - w * v2.z - x * v1.y);
+
+		float Sw = -v2.x * Rx - v2.y * Ry - v2.z * Rz;
+		float Sx = v2.x * Rw - v2.z * Ry + v2.y * Rz;
+		float Sy = v2.y * Rw + v2.z * Rx - v2.x * Rz;
+		float Sz = v2.z * Rw - v2.y * Rx + v2.x * Ry;
+
+		float mul = (float) Math.sqrt(aLenSqInv * bLenSq);
+
+		// (b*Q*a^-1 + len(b*a^-1)*Q)/2,
+		// a and b are treated as pure imaginary Quaternions
+		w = 0.5f * (Sw + mul * w);
+		x = 0.5f * (Sx + mul * x);
+		y = 0.5f * (Sy + mul * y);
+		z = 0.5f * (Sz + mul * z);
+
+		return this;
+	}
+
+	public Vector3f toAxis() {
+		return new Vector3f(x, y, z);
+	}
+
 	public float angleBetween(Quaternion q2) {
 		float w = this.w * q2.w + this.x * q2.x + this.y * q2.y + this.z * q2.z;
 		float x = this.w * q2.x - this.x * q2.w - this.y * q2.z + this.z * q2.y;
@@ -903,7 +935,7 @@ public final class Quaternion implements Cloneable, java.io.Serializable {
 	/**
 	 * Sets the values of this quaternion to the nlerp from itself to q2 by
 	 * blend.
-	 * 
+	 *
 	 * @param q2
 	 * @param blend
 	 */
@@ -1251,7 +1283,7 @@ public final class Quaternion implements Cloneable, java.io.Serializable {
 	/**
 	 * <code>mult</code> multiplies this quaternion by a parameter vector. The
 	 * result is returned as a new vector.
-	 * 
+	 *
 	 * @param v the vector to multiply this quaternion by.
 	 * @param store the vector to store the result in. It IS safe for v and
 	 * store to be the same object.
@@ -1374,7 +1406,7 @@ public final class Quaternion implements Cloneable, java.io.Serializable {
 	/**
 	 * <code>mult</code> multiplies this quaternion by a parameter vector. The
 	 * result is returned as a new vector.
-	 * 
+	 *
 	 * @param vx
 	 * @param vy
 	 * @param vz the vector to multiply this quaternion by.
@@ -1614,11 +1646,11 @@ public final class Quaternion implements Cloneable, java.io.Serializable {
 	}
 
 	/**
-	 * 
+	 *
 	 * <code>hashCode</code> returns the hash code value as an integer and is
 	 * supported for the benefit of hashing based collection classes such as
 	 * Hashtable, HashMap, HashSet etc.
-	 * 
+	 *
 	 * @return the hashcode for this instance of Quaternion.
 	 * @see java.lang.Object#hashCode()
 	 */
@@ -1637,7 +1669,7 @@ public final class Quaternion implements Cloneable, java.io.Serializable {
 	 * <code>readExternal</code> builds a quaternion from an
 	 * <code>ObjectInput</code> object. <br>
 	 * NOTE: Used with serialization. Not to be called manually.
-	 * 
+	 *
 	 * @param in the ObjectInput value to read from.
 	 * @throws IOException if the ObjectInput value has problems reading a
 	 * float.
@@ -1654,7 +1686,7 @@ public final class Quaternion implements Cloneable, java.io.Serializable {
 	 * <code>writeExternal</code> writes this quaternion out to a
 	 * <code>ObjectOutput</code> object. NOTE: Used with serialization. Not to
 	 * be called manually.
-	 * 
+	 *
 	 * @param out the object to write to.
 	 * @throws IOException if writing to the ObjectOutput fails.
 	 * @see java.io.Externalizable
@@ -1696,7 +1728,7 @@ public final class Quaternion implements Cloneable, java.io.Serializable {
 	/**
 	 * FIXME: This seems to have singularity type issues with angle == 0,
 	 * possibly others such as PI.
-	 * 
+	 *
 	 * @param store A Quaternion to store our result in. If null, a new one is
 	 * created.
 	 * @return The store quaternion (or a new Quaterion, if store is null) that
@@ -1737,7 +1769,7 @@ public final class Quaternion implements Cloneable, java.io.Serializable {
 	 * <p>
 	 * Based on implementation from here:
 	 * https://github.com/toji/gl-matrix/blob/f0583ef53e94bc7e78b78c8a24f09ed5e2f7a20c/src/gl-matrix/quat.js#L54
-	 * 
+	 *
 	 * @param vec1
 	 * @param vec2
 	 * @return this quaternion

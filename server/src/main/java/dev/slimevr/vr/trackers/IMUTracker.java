@@ -22,6 +22,10 @@ public class IMUTracker
 	TrackerWithFiltering {
 
 	public static final float MAX_MAG_CORRECTION_ACCURACY = 5 * FastMath.RAD_TO_DEG;
+	private static final Quaternion LEFT_TPOSE_OFFSET = new Quaternion()
+		.fromAngles(0, 0, FastMath.HALF_PI);
+	private static final Quaternion RIGHT_TPOSE_OFFSET = new Quaternion()
+		.fromAngles(0, 0, -FastMath.HALF_PI);
 
 	// public final Vector3f gyroVector = new Vector3f();
 	public final Vector3f accelVector = new Vector3f();
@@ -36,7 +40,7 @@ public class IMUTracker
 	// Reference adjustment quats
 	private final Quaternion gyroFix = new Quaternion();
 	private final Quaternion attachmentFix = new Quaternion();
-	private final Quaternion mountRotFix = new Quaternion();
+	private final Quaternion yawMountRotFix = new Quaternion();
 	private final Quaternion yawFix = new Quaternion();
 
 	// Zero-reference adjustment quats for IMU debugging
@@ -258,7 +262,7 @@ public class IMUTracker
 	 */
 	@Override
 	public boolean getRotation(Quaternion store) {
-		this.getFilteredRotation(store);
+		getFilteredRotation(store);
 		// correction.mult(store, store); // Correction is not used now to
 		// prevent accidental errors while debugging other things
 		store.multLocal(mountAdjust);
@@ -287,7 +291,7 @@ public class IMUTracker
 	 * @param store Where to store the calculation result.
 	 */
 	public boolean getIdentityAdjustedRotation(Quaternion store) {
-		this.getFilteredRotation(store);
+		getFilteredRotation(store);
 		adjustToIdentity(store);
 		return true;
 	}
@@ -401,12 +405,13 @@ public class IMUTracker
 	 * 0). This allows the tracker to be strapped to body at any pitch and roll.
 	 */
 	@Override
-	public void resetFull(Quaternion reference) {
+	public void resetFull(Quaternion reference, boolean tPose) {
 		Quaternion rot = getAdjustedRawRotation();
-		fixGyroscope(getMountedAdjustedRotation());
-		fixAttachment(getMountedAdjustedRotation());
+		fixGyroscope(getMountedAdjustedRotation(), tPose);
+		fixAttachment(getMountedAdjustedRotation(), tPose);
 		makeIdentityAdjustmentQuatsFull();
 		fixYaw(getMountedAdjustedRotation(), reference);
+		makeIdentityAdjustmentQuatsYaw();
 		calibrateMag();
 		calculateDrift(rot);
 	}
@@ -430,22 +435,22 @@ public class IMUTracker
 	/**
 	 * Converts raw or filtered rotation into reference- and
 	 * mounting-reset-adjusted by applying quaternions produced after
-	 * {@link #resetFull(Quaternion)}, {@link #resetYaw(Quaternion)} and
-	 * {@link #resetMounting(boolean)}.
+	 * {@link #resetFull(Quaternion, boolean)}, {@link #resetYaw(Quaternion)}
+	 * and {@link #resetMounting(boolean, boolean)}.
 	 *
 	 * @param store Raw or filtered rotation to mutate.
 	 */
 	protected void adjustToReference(Quaternion store) {
 		gyroFix.mult(store, store);
 		store.multLocal(attachmentFix);
-		store.multLocal(mountRotFix);
+		store.multLocal(yawMountRotFix);
 		yawFix.mult(store, store);
 	}
 
 	/**
 	 * Converts raw or filtered rotation into zero-reference-adjusted by
-	 * applying quaternions produced after {@link #resetFull(Quaternion)},
-	 * {@link #resetYaw(Quaternion)}.
+	 * applying quaternions produced after
+	 * {@link #resetFull(Quaternion, boolean)}, {@link #resetYaw(Quaternion)}.
 	 *
 	 * @param store Raw or filtered rotation to mutate.
 	 */
@@ -455,41 +460,59 @@ public class IMUTracker
 		yawFixZeroReference.mult(store, store);
 	}
 
-	private void fixGyroscope(Quaternion sensorRotation) {
+	private void fixGyroscope(Quaternion sensorRotation, boolean tPose) {
 		sensorRotation = sensorRotation.clone();
+		if (tPose)
+			fixForTPose(sensorRotation);
 		sensorRotation.fromAngles(0, sensorRotation.getYaw(), 0);
 		gyroFix.set(sensorRotation.inverseLocal());
 	}
 
-	private void fixAttachment(Quaternion sensorRotation) {
+	private void fixAttachment(Quaternion sensorRotation, boolean tPose) {
 		sensorRotation = sensorRotation.clone();
 		gyroFix.mult(sensorRotation, sensorRotation);
+		if (tPose)
+			fixForTPose(sensorRotation);
 		attachmentFix.set(sensorRotation.inverseLocal());
 	}
 
 	@Override
-	public void resetMounting(boolean reverseYaw) {
+	public void resetMounting(boolean reverseYaw, boolean tPose) {
 		// Get the current calibrated rotation
 		Quaternion buffer = getMountedAdjustedDriftRotation();
 		gyroFix.mult(buffer, buffer);
 		buffer.multLocal(attachmentFix);
+		float yawAngle;
 
-		// Reset the vector for the rotation to point straight up
-		rotVector.set(0f, 1f, 0f);
-		// Rotate the vector by the quat, then flatten and normalize the vector
-		buffer.multLocal(rotVector).setY(0f).normalizeLocal();
-
-		// Calculate the yaw angle using tan
-		// Just use an angle offset of zero for unsolvable circumstances
-		float yawAngle = FastMath.isApproxZero(rotVector.x) && FastMath.isApproxZero(rotVector.z)
-			? 0f
-			: FastMath.atan2(rotVector.x, rotVector.z);
+		if (tPose && (isOnLeftArm() || isOnRightArm())) {
+			// Find the global axis the tracker thinks it rotated about (should
+			// be z), then projected on to the xz plane
+			rotVector
+				.set(
+					((isOnLeftArm() ? LEFT_TPOSE_OFFSET : RIGHT_TPOSE_OFFSET)
+						.mult(buffer)).toAxis()
+				);
+			yawAngle = FastMath
+				.atan2(
+					rotVector.cross(Vector3f.NEGATIVE_UNIT_Z).dot(Vector3f.UNIT_Y),
+					rotVector.dot(Vector3f.NEGATIVE_UNIT_Z)
+				);
+			// TODO find out what what is causing arms to not work (yawFix?)
+		} else {
+			// Find the global axis the tracker thinks it rotated about (should
+			// be z), then projected on to the xz plane
+			rotVector.set(buffer.inverseLocal().toAxis());
+			yawAngle = new Quaternion(0f, 0f, 0f, 1f)
+				.align(rotVector, Vector3f.UNIT_X)
+				.normalizeLocal()
+				.getYaw();
+		}
 
 		// Make an adjustment quaternion from the angle
 		buffer.fromAngles(0f, reverseYaw ? yawAngle : yawAngle - FastMath.PI, 0f);
 
-		Quaternion lastRotAdjust = mountRotFix.clone();
-		mountRotFix.set(buffer);
+		Quaternion lastRotAdjust = yawMountRotFix.clone();
+		yawMountRotFix.set(buffer);
 
 		// Get the difference from the last adjustment
 		buffer.multLocal(lastRotAdjust.inverseLocal());
@@ -505,7 +528,7 @@ public class IMUTracker
 		sensorRotation = sensorRotation.clone();
 		gyroFix.mult(sensorRotation, sensorRotation);
 		sensorRotation.multLocal(attachmentFix);
-		sensorRotation.multLocal(mountRotFix);
+		sensorRotation.multLocal(yawMountRotFix);
 
 		sensorRotation.fromAngles(0, sensorRotation.getYaw(), 0);
 
@@ -671,6 +694,26 @@ public class IMUTracker
 	protected void calculateLiveMagnetometerCorrection() {
 		// TODO Magic, correct only yaw
 		// TODO Print "jump" length when correcting if it's more than 1 degree
+	}
+
+	private void fixForTPose(Quaternion store) {
+		if (isOnLeftArm()) {
+			store.set(LEFT_TPOSE_OFFSET.mult(store));
+		} else if (isOnRightArm()) {
+			store.set(RIGHT_TPOSE_OFFSET.mult(store));
+		}
+	}
+
+	private boolean isOnLeftArm() {
+		return bodyPosition == TrackerPosition.LEFT_UPPER_ARM
+			|| bodyPosition == TrackerPosition.LEFT_LOWER_ARM
+			|| bodyPosition == TrackerPosition.LEFT_HAND;
+	}
+
+	private boolean isOnRightArm() {
+		return bodyPosition == TrackerPosition.RIGHT_UPPER_ARM
+			|| bodyPosition == TrackerPosition.RIGHT_LOWER_ARM
+			|| bodyPosition == TrackerPosition.RIGHT_HAND;
 	}
 
 	@Override

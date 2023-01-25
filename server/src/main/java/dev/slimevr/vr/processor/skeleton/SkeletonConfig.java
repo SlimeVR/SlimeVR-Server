@@ -172,15 +172,6 @@ public class SkeletonConfig {
 				LogManager.severe("[SkeletonConfig] Exception while calling callback", e);
 			}
 		}
-
-		if (config == SkeletonConfigToggles.I_POSE) {
-			computeNodeOffset(BoneType.LEFT_UPPER_ARM);
-			computeNodeOffset(BoneType.RIGHT_UPPER_ARM);
-			computeNodeOffset(BoneType.LEFT_LOWER_ARM);
-			computeNodeOffset(BoneType.RIGHT_LOWER_ARM);
-			computeNodeOffset(BoneType.LEFT_ELBOW_TRACKER);
-			computeNodeOffset(BoneType.RIGHT_ELBOW_TRACKER);
-		}
 	}
 
 	public boolean getToggle(SkeletonConfigToggles config) {
@@ -314,73 +305,21 @@ public class SkeletonConfig {
 				-getOffset(SkeletonConfigOffsets.SHOULDERS_DISTANCE),
 				0
 			);
-			case LEFT_UPPER_ARM -> {
-				if (getToggle(SkeletonConfigToggles.I_POSE)) {
-					setNodeOffset(
-						nodeOffset,
-						0,
-						-getOffset(SkeletonConfigOffsets.UPPER_ARM),
-						0
-					);
-				} else {
-					setNodeOffset(
-						nodeOffset,
-						-getOffset(SkeletonConfigOffsets.UPPER_ARM),
-						0,
-						0
-					);
-				}
+			case LEFT_UPPER_ARM, RIGHT_UPPER_ARM -> {
+				setNodeOffset(
+					nodeOffset,
+					0,
+					-getOffset(SkeletonConfigOffsets.UPPER_ARM),
+					0
+				);
 			}
-			case RIGHT_UPPER_ARM -> {
-				if (getToggle(SkeletonConfigToggles.I_POSE)) {
-					setNodeOffset(
-						nodeOffset,
-						0,
-						-getOffset(SkeletonConfigOffsets.UPPER_ARM),
-						0
-					);
-				} else {
-					setNodeOffset(
-						nodeOffset,
-						getOffset(SkeletonConfigOffsets.UPPER_ARM),
-						0,
-						0
-					);
-				}
-			}
-			case LEFT_LOWER_ARM -> {
-				if (getToggle(SkeletonConfigToggles.I_POSE)) {
-					setNodeOffset(
-						nodeOffset,
-						0,
-						-getOffset(SkeletonConfigOffsets.LOWER_ARM),
-						0
-					);
-				} else {
-					setNodeOffset(
-						nodeOffset,
-						-getOffset(SkeletonConfigOffsets.LOWER_ARM),
-						0,
-						0
-					);
-				}
-			}
-			case RIGHT_LOWER_ARM -> {
-				if (getToggle(SkeletonConfigToggles.I_POSE)) {
-					setNodeOffset(
-						nodeOffset,
-						0,
-						-getOffset(SkeletonConfigOffsets.LOWER_ARM),
-						0
-					);
-				} else {
-					setNodeOffset(
-						nodeOffset,
-						getOffset(SkeletonConfigOffsets.LOWER_ARM),
-						0,
-						0
-					);
-				}
+			case LEFT_LOWER_ARM, RIGHT_LOWER_ARM -> {
+				setNodeOffset(
+					nodeOffset,
+					0,
+					-getOffset(SkeletonConfigOffsets.LOWER_ARM),
+					0
+				);
 			}
 			case LEFT_HAND, RIGHT_HAND -> setNodeOffset(
 				nodeOffset,
@@ -394,39 +333,13 @@ public class SkeletonConfig {
 				getOffset(SkeletonConfigOffsets.CONTROLLER_Y),
 				getOffset(SkeletonConfigOffsets.CONTROLLER_Z)
 			);
-			case LEFT_ELBOW_TRACKER -> {
-				if (getToggle(SkeletonConfigToggles.I_POSE)) {
-					setNodeOffset(
-						nodeOffset,
-						0,
-						-getOffset(SkeletonConfigOffsets.ELBOW_OFFSET),
-						0
-					);
-				} else {
-					setNodeOffset(
-						nodeOffset,
-						-getOffset(SkeletonConfigOffsets.ELBOW_OFFSET),
-						0,
-						0
-					);
-				}
-			}
-			case RIGHT_ELBOW_TRACKER -> {
-				if (getToggle(SkeletonConfigToggles.I_POSE)) {
-					setNodeOffset(
-						nodeOffset,
-						0,
-						-getOffset(SkeletonConfigOffsets.ELBOW_OFFSET),
-						0
-					);
-				} else {
-					setNodeOffset(
-						nodeOffset,
-						getOffset(SkeletonConfigOffsets.ELBOW_OFFSET),
-						0,
-						0
-					);
-				}
+			case LEFT_ELBOW_TRACKER, RIGHT_ELBOW_TRACKER -> {
+				setNodeOffset(
+					nodeOffset,
+					0,
+					-getOffset(SkeletonConfigOffsets.ELBOW_OFFSET),
+					0
+				);
 			}
 		}
 	}

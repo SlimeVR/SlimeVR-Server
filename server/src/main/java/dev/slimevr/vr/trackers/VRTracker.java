@@ -1,5 +1,6 @@
 package dev.slimevr.vr.trackers;
 
+import com.jme3.math.FastMath;
 import com.jme3.math.Quaternion;
 import dev.slimevr.vr.Device;
 import io.eiren.util.BufferedTimer;
@@ -7,6 +8,10 @@ import io.eiren.util.BufferedTimer;
 
 public class VRTracker extends ComputedTracker {
 
+	private static final Quaternion LEFT_TPOSE_OFFSET = new Quaternion()
+		.fromAngles(0, 0, FastMath.HALF_PI);
+	private static final Quaternion RIGHT_TPOSE_OFFSET = new Quaternion()
+		.fromAngles(0, 0, -FastMath.HALF_PI);
 	protected BufferedTimer timer = new BufferedTimer(1f);
 	public final Quaternion mountFix = new Quaternion();
 	public final Quaternion attachmentFix = new Quaternion();
@@ -45,8 +50,8 @@ public class VRTracker extends ComputedTracker {
 	}
 
 	@Override
-	public void resetFull(Quaternion reference) {
-		fixAttachment(rotation, reference);
+	public void resetFull(Quaternion reference, boolean tPose) {
+		fixAttachment(rotation, reference, tPose);
 		fixYaw(rotation, reference);
 	}
 
@@ -55,9 +60,10 @@ public class VRTracker extends ComputedTracker {
 		fixYaw(rotation, reference);
 	}
 
-	private void fixAttachment(Quaternion sensorRotation, Quaternion reference) {
+	private void fixAttachment(Quaternion sensorRotation, Quaternion reference, boolean tPose) {
 		mountFix.fromAngles(0, reference.getYaw(), 0);
-
+		if (tPose)
+			fixForTPose(sensorRotation);
 		attachmentFix.set(sensorRotation.inverse());
 	}
 
@@ -73,6 +79,26 @@ public class VRTracker extends ComputedTracker {
 		sensorRotation.fromAngles(0, sensorRotation.getYaw(), 0);
 
 		yawFix.set(sensorRotation).inverseLocal().multLocal(reference);
+	}
+
+	private void fixForTPose(Quaternion store) {
+		if (isOnLeftArm()) {
+			store.set(LEFT_TPOSE_OFFSET.mult(store));
+		} else if (isOnRightArm()) {
+			store.set(RIGHT_TPOSE_OFFSET.mult(store));
+		}
+	}
+
+	private boolean isOnLeftArm() {
+		return bodyPosition == TrackerPosition.LEFT_UPPER_ARM
+			|| bodyPosition == TrackerPosition.LEFT_LOWER_ARM
+			|| bodyPosition == TrackerPosition.LEFT_HAND;
+	}
+
+	private boolean isOnRightArm() {
+		return bodyPosition == TrackerPosition.RIGHT_UPPER_ARM
+			|| bodyPosition == TrackerPosition.RIGHT_LOWER_ARM
+			|| bodyPosition == TrackerPosition.RIGHT_HAND;
 	}
 
 	@Override

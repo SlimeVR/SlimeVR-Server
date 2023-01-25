@@ -210,7 +210,7 @@ public class PoseFrameTracker implements Tracker, Iterable<TrackerFrame> {
 	}
 
 	@Override
-	public void resetFull(Quaternion reference) {
+	public void resetFull(Quaternion reference, boolean tPose) {
 		throw new UnsupportedOperationException("PoseFrameTracker does not implement calibration");
 	}
 
@@ -220,7 +220,7 @@ public class PoseFrameTracker implements Tracker, Iterable<TrackerFrame> {
 	}
 
 	@Override
-	public void resetMounting(boolean reverseYaw) {
+	public void resetMounting(boolean reverseYaw, boolean tPose) {
 		throw new UnsupportedOperationException("PoseFrameTracker does not implement calibration");
 	}
 

@@ -186,7 +186,7 @@ public class ReferenceAdjustmentsTests {
 			null
 		);
 		tracker.rotQuaternion.set(trackerQuat);
-		tracker.resetFull(referenceQuat);
+		tracker.resetFull(referenceQuat, false);
 		Quaternion read = new Quaternion();
 		assertTrue(tracker.getRotation(read), "Adjusted tracker didn't return rotation");
 
@@ -257,7 +257,7 @@ public class ReferenceAdjustmentsTests {
 			null
 		);
 		tracker.rotQuaternion.set(trackerQuat);
-		tracker.resetFull(referenceQuat);
+		tracker.resetFull(referenceQuat, false);
 
 		// Use only yaw HMD rotation
 		Quaternion targetTrackerRotation = new Quaternion(referenceQuat);

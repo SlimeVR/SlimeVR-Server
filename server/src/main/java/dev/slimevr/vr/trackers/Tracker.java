@@ -34,11 +34,11 @@ public interface Tracker {
 
 	float getConfidenceLevel();
 
-	void resetFull(Quaternion reference);
+	void resetFull(Quaternion reference, boolean tPose);
 
 	void resetYaw(Quaternion reference);
 
-	void resetMounting(boolean reverseYaw);
+	void resetMounting(boolean reverseYaw, boolean tPose);
 
 	void tick();
 

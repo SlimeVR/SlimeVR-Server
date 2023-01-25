@@ -123,6 +123,7 @@ public class HumanSkeleton extends Skeleton implements SkeletonConfigCallback {
 	protected boolean extendedPelvisModel;
 	protected boolean extendedKneeModel;
 	protected boolean forceArmsFromHMD;
+	protected boolean iPose;
 	// Values
 	protected float waistFromChestHipAveraging;
 	protected float waistFromChestLegsAveraging;
@@ -1370,6 +1371,7 @@ public class HumanSkeleton extends Skeleton implements SkeletonConfigCallback {
 			case SKATING_CORRECTION -> legTweaks.setSkatingReductionEnabled(newValue);
 			case FLOOR_CLIP -> legTweaks.setFloorclipEnabled(newValue);
 			case VIVE_EMULATION -> viveEmulation.setEnabled(newValue);
+			case I_POSE -> iPose = newValue;
 		}
 	}
 
@@ -1742,7 +1744,7 @@ public class HumanSkeleton extends Skeleton implements SkeletonConfigCallback {
 
 		for (Tracker tracker : trackersToReset) {
 			if (tracker != null) {
-				tracker.resetFull(referenceRotation);
+				tracker.resetFull(referenceRotation, !iPose);
 			}
 		}
 
@@ -1764,6 +1766,8 @@ public class HumanSkeleton extends Skeleton implements SkeletonConfigCallback {
 		return position != null
 			&& (position == TrackerPosition.LEFT_UPPER_LEG
 				|| position == TrackerPosition.RIGHT_UPPER_LEG
+				|| position == TrackerPosition.LEFT_UPPER_ARM
+				|| position == TrackerPosition.RIGHT_UPPER_ARM
 				|| position == TrackerPosition.LEFT_LOWER_ARM
 				|| position == TrackerPosition.RIGHT_LOWER_ARM
 				|| position == TrackerPosition.LEFT_HAND
@@ -1778,7 +1782,7 @@ public class HumanSkeleton extends Skeleton implements SkeletonConfigCallback {
 
 		for (Tracker tracker : trackersToReset) {
 			if (tracker != null && shouldResetMounting(tracker.getBodyPosition())) {
-				tracker.resetMounting(shouldReverseYaw(tracker.getBodyPosition()));
+				tracker.resetMounting(shouldReverseYaw(tracker.getBodyPosition()), !iPose);
 			}
 		}
 		this.legTweaks.resetBuffer();
