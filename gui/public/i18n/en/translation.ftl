@@ -202,6 +202,13 @@ tracker_selection_menu-unassigned = Unassigned Trackers
 tracker_selection_menu-assigned = Assigned Trackers
 tracker_selection_menu-dont_assign = Do not assign
 
+# This line cares about multilines.
+# <b>text</b> means that the text should be bold.
+tracker_selection_menu-neck_warning =
+    <b>Warning:</b> A neck tracker can be deadly if adjusted too tightly,
+    the strap could cut the circulation to your head!
+tracker_selection_menu-neck_warning-done = I understand the risks
+
 ## Mounting menu
 mounting_selection_menu = Where do you want this tracker to be?
 mounting_selection_menu-close = Close
@@ -325,6 +332,13 @@ settings-serial-description =
 settings-serial-connection_lost = Connection to serial lost, Reconnecting...
 settings-serial-reboot = Reboot
 settings-serial-factory_reset = Factory Reset
+# This cares about multilines
+# <b>text</b> means that the text will be bold
+settings-serial-factory_reset-warning =
+    <b>Warning:</b> This will reset the tracker to factory settings.
+    Which means Wi-Fi and calibration settings <b>will all be lost!</b>
+settings-serial-factory_reset-warning-ok = I know what I'm doing
+settings-serial-factory_reset-warning-cancel = Cancel
 settings-serial-get_infos = Get Infos
 settings-serial-serial_select = Select a serial port
 settings-serial-auto_dropdown_item = Auto

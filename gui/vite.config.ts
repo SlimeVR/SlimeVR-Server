@@ -2,18 +2,12 @@ import react from '@vitejs/plugin-react';
 import { defineConfig, PluginOption } from 'vite';
 import { execSync } from 'child_process';
 
-const commitHash = execSync('git rev-parse --verify --short HEAD')
-  .toString()
-  .trim();
-const versionTag = execSync('git --no-pager tag --points-at HEAD')
-  .toString()
-  .trim();
+const commitHash = execSync('git rev-parse --verify --short HEAD').toString().trim();
+const versionTag = execSync('git --no-pager tag --points-at HEAD').toString().trim();
 // If not empty then it's not clean
 const gitClean = execSync('git status --porcelain').toString() ? false : true;
 
-console.log(
-  `version is ${versionTag || commitHash}${gitClean ? '' : '-dirty'}`
-);
+console.log(`version is ${versionTag || commitHash}${gitClean ? '' : '-dirty'}`);
 
 // Detect fluent file changes
 export function i18nHotReload(): PluginOption {
