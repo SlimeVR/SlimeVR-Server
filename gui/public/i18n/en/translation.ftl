@@ -333,7 +333,7 @@ settings-serial-connection_lost = Connection to serial lost, Reconnecting...
 settings-serial-reboot = Reboot
 settings-serial-factory_reset = Factory Reset
 # This cares about multilines
-# <b>text</b> means that the text will be bold
+# <b>text</b> means that the text should be bold
 settings-serial-factory_reset-warning =
     <b>Warning:</b> This will reset the tracker to factory settings.
     Which means Wi-Fi and calibration settings <b>will all be lost!</b>
