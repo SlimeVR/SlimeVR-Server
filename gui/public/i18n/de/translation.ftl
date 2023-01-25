@@ -87,8 +87,8 @@ bvh-start_recording = BVH aufnehmen
 bvh-recording = Aufnahme läuft...
 
 ## Overlay settings
-overlay-is_visible_label = Visualisierungs-Overlay in SteamVR anzeigen
-overlay-is_mirrored_label = Visualisierung spiegeln
+widget-overlay-is_visible_label = Visualisierungs-Overlay in SteamVR anzeigen
+widget-overlay-is_mirrored_label = Visualisierung spiegeln
 
 ## Tracker status
 tracker-status-none = Kein Status

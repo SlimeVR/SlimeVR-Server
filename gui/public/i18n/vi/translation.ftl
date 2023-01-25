@@ -262,11 +262,11 @@ settings-general-tracker_mechanics-drift_compensation-max_resets-label = Số l�
 settings-general-fk_settings = Cài đặt nâng cao
 settings-general-fk_settings-leg_tweak = Chân
 settings-general-fk_settings-leg_tweak-description = "Ngăn xuyên sàn" có thể giảm thiểu khả năng chân xuống thấp hơn sàn sau khi đặt lại vị trí tracker, có thể gây vấn đề nếu đang đứng bằng đầu gối. "Sửa trượt" giúp giảm thiểu tình trạng chân có chuyển động nhỏ so với sàn khi đứng yên, có thể làm giảm độ chính xác với một số chuyển động cụ thể
-# Floor clip: 
+# Floor clip:
 # why the name - came from the idea of noclip in video games, but is the opposite where clipping to the floor is a desired feature
 # definition - Prevents the foot trackers from going lower than they where when a reset was performed
 settings-general-fk_settings-leg_tweak-floor_clip = Ngăn xuyên sàn
-# Skating correction: 
+# Skating correction:
 # why the name - without this enabled the feet will often slide across the ground as if your skating across the ground,
 # since this largely prevents this it corrects for it hence skating correction (note this may be renamed to sliding correction)
 # definition - Guesses when each foot is in contact with the ground and uses that information to improve tracking
@@ -291,8 +291,8 @@ settings-general-gesture_control-description = Cho phép chạm vào tracker đ�
 # This is a unit: 3 taps, 2 taps, 1 tap
 # $amount (Number) - Amount of taps (touches to the tracker's case)
 settings-general-gesture_control-taps = { $amount ->
-#   [one] 1 lần # Vietnamese doesn't have singular/plural difference but just leave it here to match up line count, easier for proofing with side by side English
-    *[other] { $amount } lần 
+    [one] 1 tap
+    *[other] { $amount } lần
 }
 settings-general-gesture_control-quickResetEnabled = Chạm để đặt lại nhanh
 settings-general-gesture_control-quickResetDelay = Thời gian delay trước khi đặt lại nhanh
@@ -445,7 +445,7 @@ onboarding-connect_tracker-connection_status-handshake = Đã kết nối đến
 # if $amount is 0 then we say "No trackers connected"
 onboarding-connect_tracker-connected_trackers = { $amount ->
     [0] Không có tracker
-#   [one] 1 tracker # Vietnamese doesn't have singular/plural difference but just leave it here to match up line count, easier for proofing with side by side English
+    [one] 1 tracker
     *[other] { $amount } tracker
 } đã giao
 onboarding-connect_tracker-next = Đã kết nối với tất cả tracker
@@ -458,7 +458,7 @@ onboarding-assign_trackers-description = Chọn vị trí bạn muốn gán trac
 # $assigned (Number) - Trackers that have been assigned a body part
 # $trackers (Number) - Trackers connected to the server
 onboarding-assign_trackers-assigned = { $assigned } trên { $trackers ->
-#   [one] 1 tracker # Vietnamese doesn't have singular/plural difference but just leave it here to match up line count, easier for proofing with side by side English
+    [one] 1 tracker
     *[other] { $trackers } tracker
 } đã giao
 onboarding-assign_trackers-advanced = Xem thêm vị trí đặt
@@ -523,7 +523,7 @@ onboarding-automatic_proportions-recording-steps-4 = Làm thêm các chuyển đ
 onboarding-automatic_proportions-recording-processing = Đang xử lí kết quả...
 # $time (Number) - Seconds left for the automatic calibration recording to finish (max 15)
 onboarding-automatic_proportions-recording-timer = { $time ->
-#   [one] còn lại 1 giây # Vietnamese doesn't have singular/plural difference but just leave it here to match up line count, easier for proofing with side by side English
+    [one] 1 second
     *[other] còn lại { $time } giây
 }
 onboarding-automatic_proportions-verify_results-title = Kiểm tra kết quả
