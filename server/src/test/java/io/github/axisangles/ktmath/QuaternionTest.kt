@@ -2,6 +2,7 @@ package io.github.axisangles.ktmath
 
 import kotlin.math.*
 import kotlin.test.Test
+import kotlin.test.assertEquals
 import kotlin.test.assertTrue
 
 class QuaternionTest {
@@ -97,6 +98,79 @@ class QuaternionTest {
 		val q2 = Quaternion(5f, 6f, 7f, 8f)
 		val q3 = Quaternion(3f, 4f, 5f, 6f)
 		assertEquals(q1.lerp(q2, 0.5f), q3, 1e-7)
+	}
+
+	@Test
+	fun lerpR() {
+		val q1 = Quaternion(1f, 2f, 3f, 4f)
+		val q2 = Quaternion(-5f, -6f, -7f, -8f)
+		val q3 = Quaternion(3f, 4f, 5f, 6f)
+		assertEquals(q1.lerpR(q2, 0.5f), q3, 1e-7)
+	}
+
+	@Test
+	fun angleTo() {
+		val q1 = Quaternion(1f, 0f, 0f, 0f)
+		val q2 = Quaternion(0f, 1f, 0f, 0f)
+		assertEquals(q1.angleTo(q2), PI.toFloat()/2f)
+	}
+
+	@Test
+	fun angleToR() {
+		val q1 = Quaternion(1f, 0f, 0f, 0f)
+		val q2 = Quaternion(0f, 1f, 0f, 0f)
+		assertEquals(q1.angleToR(q2), PI.toFloat())
+	}
+
+	@Test
+	fun angle() {
+		val q = Quaternion(0f, 1f, 0f, 0f)
+		assertEquals(q.angle(), PI.toFloat()/2f)
+	}
+
+	@Test
+	fun angleR() {
+		val q = Quaternion(0f, 1f, 0f, 0f)
+		assertEquals(q.angleR(), PI.toFloat())
+	}
+
+	@Test
+	fun angleAbout() {
+		val q = Quaternion(1f, 1f, 1f, 0f)
+		assertEquals(q.angleAbout(Vector3.POS_Y), PI.toFloat()/4f)
+	}
+
+	@Test
+	fun angleAboutR() {
+		val q = Quaternion(1f, 1f, 1f, 0f)
+		assertEquals(q.angleAboutR(Vector3.POS_Y), PI.toFloat()/2f)
+	}
+
+	@Test
+	fun project() {
+		val q1 = Quaternion(1f, 1f, 1f, 0f)
+		val q2 = Quaternion(1f, 0f, 1f, 0f)
+		assertEquals(q1.project(Vector3.POS_Y), q2)
+	}
+
+	@Test
+	fun reject() {
+		val q1 = Quaternion(1f, 1f, 1f, 0f)
+		val q2 = Quaternion(1f, 1f, 0f, 0f)
+		assertEquals(q1.reject(Vector3.POS_Y), q2)
+	}
+
+	@Test
+	fun align() {
+		val q1 = Quaternion(0f, 1f, 0f, 0f)
+		val q2 = Quaternion(0f, 0.5f, 0.5f, 0f)
+		assertEquals(q1.align(Vector3.POS_X, Vector3.POS_Y), q2)
+	}
+
+	@Test
+	fun fromTo() {
+		val q1 = Quaternion(1f, 0f, 0f, 1f).unit()
+		assertEquals(Quaternion.fromTo(Vector3.POS_X, Vector3.POS_Y), q1)
 	}
 
 	companion object {

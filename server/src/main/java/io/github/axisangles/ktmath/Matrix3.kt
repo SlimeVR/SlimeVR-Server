@@ -153,6 +153,10 @@ data class Matrix3(
 	 * @return the rotation matrix
 	 */
 	fun orthonormalize(): Matrix3 {
+		if (this.det() <= 0f) { // maybe this doesn't have to be so
+			throw Exception("Attempt to convert non-positive determinant matrix to rotation matrix")
+		}
+
 		var curMat = this
 		var curDet = Float.POSITIVE_INFINITY
 
@@ -200,10 +204,6 @@ data class Matrix3(
 	 * @return the quaternion
 	 */
 	fun toQuaternionAssumingOrthonormal(): Quaternion {
-		if (this.det() <= 0f) {
-			throw Exception("Attempt to convert negative determinant matrix to quaternion")
-		}
-
 		return if (yy > -zz && zz > -xx && xx > -yy) {
 			Quaternion(1 + xx + yy + zz, yz - zy, zx - xz, xy - yx).unit()
 		} else if (xx > yy && xx > zz) {
@@ -306,10 +306,6 @@ data class Matrix3(
 	 * @return the eulerAngles
 	 */
 	fun toEulerAnglesAssumingOrthonormal(order: EulerOrder): EulerAngles {
-		if (this.det() <= 0f) {
-			throw Exception("Attempt to convert negative determinant matrix to euler angles")
-		}
-
 		val ETA = 1.57079632f
 		when (order) {
 			EulerOrder.XYZ -> {

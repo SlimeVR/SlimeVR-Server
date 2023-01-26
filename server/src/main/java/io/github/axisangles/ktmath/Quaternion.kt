@@ -22,6 +22,21 @@ data class Quaternion(val w: Float, val x: Float, val y: Float, val z: Float) {
 		 * @return the new quaternion
 		 **/
 		fun fromRotationVector(v: Vector3): Quaternion = Quaternion(0f, v / 2f).exp()
+
+		/**
+		 * finds Q, the smallest-angled quaternion whose local u direction aligns with
+		 * the global v direction.
+		 * @param u the local direction
+		 * @param v the global direction
+		 * @return Q
+		 **/
+		fun fromTo(u: Vector3, v: Vector3): Quaternion {
+			val U = Quaternion(0f, u)
+			val V = Quaternion(0f, v)
+			val D = V / U
+
+			return (D + D.len()).unit()
+		}
 	}
 
 	constructor(w: Float, xyz: Vector3) : this(w, xyz.x, xyz.y, xyz.z)
@@ -59,14 +74,16 @@ data class Quaternion(val w: Float, val x: Float, val y: Float, val z: Float) {
 		this.z - that.z
 	)
 
-	operator fun minus(that: Float): Quaternion = Quaternion(this.w - that, this.x, this.y, this.z)
+	operator fun minus(that: Float): Quaternion =
+		Quaternion(this.w - that, this.x, this.y, this.z)
 
 	/**
 	 * computes the dot product of this quaternion with that quaternion
 	 * @param that the quaternion with which to be dotted
-	 * @return the inversed quaternion
+	 * @return the inverse quaternion
 	 **/
-	fun dot(that: Quaternion): Float = this.w * that.w + this.x * that.x + this.y * that.y + this.z * that.z
+	fun dot(that: Quaternion): Float =
+		this.w * that.w + this.x * that.x + this.y * that.y + this.z * that.z
 
 	/**
 	 * computes the square of the length of this quaternion
@@ -141,7 +158,7 @@ data class Quaternion(val w: Float, val x: Float, val y: Float, val z: Float) {
 			return Quaternion(ln(len), xyz / w)
 		}
 
-		val ang = atan2(si, co)
+		val ang = atan(co, si)
 		return Quaternion(ln(len), ang / si * xyz)
 	}
 
@@ -172,16 +189,15 @@ data class Quaternion(val w: Float, val x: Float, val y: Float, val z: Float) {
 	// for a slight improvement in performance
 	// not fully implemented
 //    fun pow(t: Float): Quaternion {
-//        val imLen = imLen()
-//        val ang = atan2(imLen, w)
+//        val imLen = xyz.Len()
+//        val ang = atan(w, imLen)
 //
 //        val len = len().pow(t)
 //        val co = cos(t*ang)
 //        val si = sin(t*ang)
 //
 //        return if (imLen == 0f) {
-//            Quaternion(
-//                len*co,
+//            Quaternion(len*co,
 //                len*t*x,
 //                len*t*y,
 //                len*t*z
@@ -248,13 +264,13 @@ data class Quaternion(val w: Float, val x: Float, val y: Float, val z: Float) {
 	 * computes this quaternion's angle to identity in quaternion space
 	 * @return angle
 	 **/
-	fun angle(): Float = atan2(xyz.len(), w)
+	fun angle(): Float = atan(w, xyz.len())
 
 	/**
 	 * computes this quaternion's angle to identity in rotation space
 	 * @return angle
 	 **/
-	fun angleR(): Float = 2f * atan2(xyz.len(), abs(w))
+	fun angleR(): Float = 2f * atan(abs(w), xyz.len())
 
 	/**
 	 * computes the angle between this quaternion and that quaternion in quaternion space
@@ -276,9 +292,9 @@ data class Quaternion(val w: Float, val x: Float, val y: Float, val z: Float) {
 	 * @return angle
 	 **/
 	fun angleAbout(u: Vector3): Float {
-		val uDotIm = u.dot(xyz)
-		val uLen = u.len()
-		return atan2(uDotIm, uLen * w)
+		val si = u.dot(xyz)
+		val co = u.len()*w
+		return atan(co, si)
 	}
 
 	/**
@@ -287,34 +303,30 @@ data class Quaternion(val w: Float, val x: Float, val y: Float, val z: Float) {
 	 * @return angle
 	 **/
 	fun angleAboutR(u: Vector3): Float {
-		val uDotIm = u.dot(xyz)
-		val uLen = u.len()
-		return if (uDotIm < 0f) {
-			2f * atan2(-uDotIm, -uLen * w)
-		} else {
-			2f * atan2(uDotIm, uLen * w)
-		}
-	}
+		val si = u.dot(xyz)
+		val co = u.len()*w
+		return 2f * atan(abs(co), si)
+	}//: Float = 2f*this.twinNearest(Quaternion.ONE).angleAbout(u)
 
 	/**
-	 * finds Q, the quaternion nearest to this quaternion representing a rotation purely about the global u axis
-	 * Q is NOT unitized
+	 * finds Q, the quaternion nearest to this quaternion representing a rotation purely
+	 * about the global u axis. Q is NOT unitized
 	 * @param v the global axis
 	 * @return Q
 	 **/
 	fun project(v: Vector3) = Quaternion(w, xyz.dot(v) / v.lenSq() * v)
 
 	/**
-	 * finds Q, the quaternion nearest to this quaternion representing a rotation NOT on the global u axis.
-	 * Q is NOT unitized
+	 * finds Q, the quaternion nearest to this quaternion representing a rotation NOT
+	 * on the global u axis. Q is NOT unitized
 	 * @param v the global axis
 	 * @return Q
 	 **/
 	fun reject(v: Vector3) = Quaternion(w, v.cross(xyz).cross(v) / v.lenSq())
 
 	/**
-	 * finds Q, the quaternion nearest to this quaternion whose local u direction aligns with the global v direction.
-	 * Q is NOT unitized
+	 * finds Q, the quaternion nearest to this quaternion whose local u direction aligns
+	 * with the global v direction. Q is NOT unitized
 	 * @param u the local direction
 	 * @param v the global direction
 	 * @return Q
@@ -351,11 +363,12 @@ data class Quaternion(val w: Float, val x: Float, val y: Float, val z: Float) {
 	 **/
 	fun toMatrix(): Matrix3 {
 		val d = lenSq()
+		/* ktlint-disable */
 		return Matrix3(
-			(w * w + x * x - y * y - z * z) / d, 2f * (x * y - w * z) / d, 2f * (w * y + x * z) / d,
-			2f * (x * y + w * z) / d, (w * w - x * x + y * y - z * z) / d, 2f * (y * z - w * x) / d,
-			2f * (x * z - w * y) / d, 2f * (w * x + y * z) / d, (w * w - x * x - y * y + z * z) / d
-		)
+			(w*w + x*x - y*y - z*z)/d,     2f*(x*y - w*z)/d     ,     2f*(w*y + x*z)/d     ,
+			    2f*(x*y + w*z)/d     , (w*w - x*x + y*y - z*z)/d,     2f*(y*z - w*x)/d     ,
+			    2f*(x*z - w*y)/d     ,     2f*(w*x + y*z)/d     , (w*w - x*x - y*y + z*z)/d)
+		/* ktlint-enable */
 	}
 
 	/**
