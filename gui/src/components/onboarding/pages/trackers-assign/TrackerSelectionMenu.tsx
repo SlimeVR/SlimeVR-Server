@@ -130,7 +130,7 @@ export function TrackerSelectionMenu({
         hasShowed={neckVerified}
         bodyPart={bodyPart}
         onClose={onClose}
-        setShowed={setNeckVerified}
+        setShowed={(bool) => setNeckVerified(bool)}
       ></NeckWarningModal>
     </>
   );
