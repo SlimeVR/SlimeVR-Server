@@ -208,6 +208,7 @@ tracker_selection_menu-neck_warning =
     <b>Warning:</b> A neck tracker can be deadly if adjusted too tightly,
     the strap could cut the circulation to your head!
 tracker_selection_menu-neck_warning-done = I understand the risks
+tracker_selection_menu-neck_warning-cancel = Cancel
 
 ## Mounting menu
 mounting_selection_menu = Where do you want this tracker to be?

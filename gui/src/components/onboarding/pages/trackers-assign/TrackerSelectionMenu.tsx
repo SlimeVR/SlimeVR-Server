@@ -5,12 +5,12 @@ import { FlatDeviceTracker } from '../../../../hooks/app';
 import { useElemSize, useLayout } from '../../../../hooks/layout';
 import { useTrackers } from '../../../../hooks/tracker';
 import { Button } from '../../../commons/Button';
-import { TipBox, WarningBox } from '../../../commons/TipBox';
+import { TipBox } from '../../../commons/TipBox';
 import { Typography } from '../../../commons/Typography';
 import { TrackerCard } from '../../../tracker/TrackerCard';
-import { Localized, useLocalization } from '@fluent/react';
+import { useLocalization } from '@fluent/react';
 import { useState } from 'react';
-import { BaseModal } from '../../../commons/BaseModal';
+import { NeckWarningModal } from '../../NeckWarningModal';
 
 export function TrackerSelectionMenu({
   isOpen = true,
@@ -33,10 +33,6 @@ export function TrackerSelectionMenu({
 
   const unassignedTrackers = useUnassignedTrackers();
   const assignedTrackers = useAssignedTrackers();
-  // Skip popup if bodyPart isn't neck
-  if (isOpen && !neckVerified && bodyPart !== BodyPart.NECK) {
-    setNeckVerified(true);
-  }
 
   return (
     <>
@@ -44,10 +40,7 @@ export function TrackerSelectionMenu({
         isOpen={isOpen && neckVerified}
         shouldCloseOnOverlayClick
         shouldCloseOnEsc
-        onRequestClose={() => {
-          setNeckVerified(false);
-          onClose();
-        }}
+        onRequestClose={onClose}
         overlayClassName={classNames(
           'fixed top-0 right-0 left-0 bottom-0 flex flex-col items-center w-full h-full bg-black bg-opacity-90 z-20'
         )}
@@ -132,28 +125,13 @@ export function TrackerSelectionMenu({
           </div>
         </div>
       </ReactModal>
-      {/* Neck warning popup */}
-      <BaseModal
-        isOpen={isOpen && bodyPart === BodyPart.NECK && !neckVerified}
-        shouldCloseOnOverlayClick
-        shouldCloseOnEsc
-        onRequestClose={() => setNeckVerified(true)}
-      >
-        <div className="flex w-full h-full flex-col ">
-          <div className="flex w-full flex-col flex-grow items-center gap-3">
-            <Localized
-              id="tracker_selection_menu-neck_warning"
-              elems={{ b: <b></b> }}
-            >
-              <WarningBox>Warning!</WarningBox>
-            </Localized>
-
-            <Button variant="primary" onClick={() => setNeckVerified(true)}>
-              {l10n.getString('tracker_selection_menu-neck_warning-done')}
-            </Button>
-          </div>
-        </div>
-      </BaseModal>
+      <NeckWarningModal
+        isOpen={isOpen}
+        hasShowed={neckVerified}
+        bodyPart={bodyPart}
+        onClose={onClose}
+        setShowed={setNeckVerified}
+      ></NeckWarningModal>
     </>
   );
 }
