@@ -22,7 +22,7 @@ work.  If not, see <http://creativecommons.org/publicdomain/zero/1.0/>.
   <content_rating type="oars-1.1" />
   <url type="homepage">https://slimevr.dev/</url>
   <url type="bugtracker">https://github.com/SlimeVR/SlimeVR-Server/issues</url>
-  <url type="faq">https://docs.slimevr.dev/server-setup/slimevr-setup.html</url>
+  <url type="faq">https://docs.slimevr.dev/slimevr101.html</url>
   <url type="vcs-browser">https://github.com/SlimeVR/SlimeVR-Server</url>
   <recommends>
     <display_length compare="ge">880</display_length>
@@ -45,7 +45,7 @@ work.  If not, see <http://creativecommons.org/publicdomain/zero/1.0/>.
   <launchable type="desktop-id">dev.slimevr.SlimeVR.desktop</launchable>
   <screenshots>
     <screenshot type="default">
-      <image>https://media.discordapp.net/attachments/818062236492759050/1044722428951134310/image.png</image>
+      <image>https://raw.githubusercontent.com/SlimeVR/SlimeVR-Server/main/assets/img/onboarding.png</image>
     </screenshot>
   </screenshots>
   <releases>
