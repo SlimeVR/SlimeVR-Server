@@ -1212,6 +1212,7 @@ public class HumanSkeleton extends Skeleton implements SkeletonConfigCallback {
 	 * @return the rotated Quaternion
 	 */
 	private Quaternion extendedKneeYawRoll(Quaternion knee, Quaternion ankle) {
+		// Clone the knee since we're modifying it and returning it
 		knee = knee.clone();
 
 		// Get the inverse rotation of the knee
@@ -1241,17 +1242,18 @@ public class HumanSkeleton extends Skeleton implements SkeletonConfigCallback {
 		Quaternion rightKnee,
 		Quaternion hip
 	) {
-		leftKnee = leftKnee.clone();
-		rightKnee = rightKnee.clone();
+		// Clone the hip since we're modifying it and returning it
 		hip = hip.clone();
 
 		// Get the knees' rotation relative to where we expect them to be.
 		// The angle between your knees and hip can be over 180 degrees...
 		hip.mult(FORWARD_QUATERNION, rotBuf1);
 		if (rotBuf1.dot(leftKnee) < 0.0f) {
+			leftKnee = leftKnee.clone();
 			leftKnee.negateLocal();
 		}
 		if (rotBuf1.dot(rightKnee) < 0.0f) {
+			rightKnee = rightKnee.clone();
 			rightKnee.negateLocal();
 		}
 
