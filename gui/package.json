@@ -62,7 +62,7 @@
   },
   "devDependencies": {
     "@tailwindcss/forms": "^0.5.0",
-    "@tauri-apps/cli": "^1.2.2",
+    "@tauri-apps/cli": "^1.2.3",
     "@types/react": "18.0.25",
     "@types/react-dom": "^18.0.5",
     "@types/react-modal": "3.13.1",
