@@ -231,11 +231,7 @@ public class RPCHandler extends ProtocolHandler<RpcMessageHeader>
 		if (req == null)
 			return;
 
-		this.api.server
-			.getConfigManager()
-			.getVrConfig()
-			.getDriftCompensation()
-			.clearTrackersDriftCompensation();
+		this.api.server.clearTrackersDriftCompensation();
 	}
 
 	@Override

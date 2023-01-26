@@ -19,6 +19,7 @@ import dev.slimevr.vr.DeviceManager;
 import dev.slimevr.vr.processor.HumanPoseProcessor;
 import dev.slimevr.vr.processor.skeleton.Skeleton;
 import dev.slimevr.vr.trackers.HMDTracker;
+import dev.slimevr.vr.trackers.IMUTracker;
 import dev.slimevr.vr.trackers.ShareableTracker;
 import dev.slimevr.vr.trackers.Tracker;
 import dev.slimevr.vr.trackers.udp.TrackersUDPServer;
@@ -430,4 +431,12 @@ public class VRServer extends Thread {
 		return fpsTimer;
 	}
 
+	public void clearTrackersDriftCompensation() {
+		for (Tracker t : getAllTrackers()) {
+			Tracker tracker = t.get();
+			if (tracker instanceof IMUTracker imuTracker) {
+				imuTracker.clearDriftCompensation();
+			}
+		}
+	}
 }
