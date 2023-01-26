@@ -28,6 +28,8 @@ export function TrackerSelectionMenu({
     useLayout<HTMLDivElement>();
   const { ref: refOptions, height: optionsHeight } =
     useElemSize<HTMLDivElement>();
+  // This is true when the neck warning has been accepted
+  // It is used for showing or not showing the actual modal
   const [neckVerified, setNeckVerified] = useState(false);
   const { useAssignedTrackers, useUnassignedTrackers } = useTrackers();
 
@@ -125,12 +127,16 @@ export function TrackerSelectionMenu({
           </div>
         </div>
       </ReactModal>
+      {/**
+       * This one is simple, we simply pass everything directly
+       * the NeckWarningModal explain how everything works.
+       */}
       <NeckWarningModal
         isOpen={isOpen}
-        hasShowed={neckVerified}
+        hasShown={neckVerified}
         bodyPart={bodyPart}
         onClose={onClose}
-        setShowed={(bool) => setNeckVerified(bool)}
+        setShown={(bool) => setNeckVerified(bool)}
       ></NeckWarningModal>
     </>
   );

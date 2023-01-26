@@ -91,9 +91,21 @@ export function SingleTrackerBodyAssignmentMenu({
           </div>
         </div>
       </ReactModal>
+      {/**
+       * This is a nightmare so, we pass the overlay class to respect styling of the
+       * other modal.
+       * `onClose`: we want to update the `bodyPart` to null because we need to know if the
+       * `bodyPart` is no longer being chosen in the `NeckWarningModal`, if we don't do this
+       * then the state of `bodyPart` (and use `BodyPart.NONE` instead), this will later
+       * propagate to `setShown` and unassign the tracker.
+       * `setShown`: is more simple than what I just explained above, we only want to know
+       * when the `NeckWarningModal` wants to set to true `neckVerified`. We don't want it to
+       * reset to false in any circumstance because then the main modal won't show because we
+       * check for `neckVerified`.
+       */}
       <NeckWarningModal
         isOpen={isOpen}
-        hasShowed={neckVerified}
+        hasShown={neckVerified}
         bodyPart={bodyPart}
         overlayClassName={classNames(
           'fixed top-0 right-0 left-0 bottom-0 flex flex-col items-center w-full h-full justify-center bg-black bg-opacity-90 z-20'
@@ -102,7 +114,7 @@ export function SingleTrackerBodyAssignmentMenu({
           setBodyPart(null);
           setNeckVerified(true);
         }}
-        setShowed={(bool) => {
+        setShown={(bool) => {
           if (bool && bodyPart !== null) {
             onRoleSelected(bodyPart);
             setNeckVerified(true);

@@ -167,7 +167,10 @@ export function Serial() {
           id="settings-serial-factory_reset-warning"
           elems={{ b: <b></b> }}
         >
-          <WarningBox>Warning!</WarningBox>
+          <WarningBox>
+            <b>Warning:</b> This will reset the tracker to factory settings.
+            Which means Wi-Fi and calibration settings <b>will all be lost!</b>
+          </WarningBox>
         </Localized>
         <div className="flex flex-row gap-3 pt-5 place-content-center">
           <Button variant="secondary" onClick={() => setTryFactoryReset(false)}>

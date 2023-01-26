@@ -7,31 +7,54 @@ import ReactModal from 'react-modal';
 
 export function NeckWarningModal({
   isOpen = true,
-  hasShowed = false,
+  hasShown = false,
   onClose,
-  setShowed,
+  setShown,
   bodyPart,
   ...props
 }: {
+  /**
+   * Is the parent/sibling component opened?
+   */
   isOpen: boolean;
-  hasShowed: boolean;
+  /**
+   * Has this warning be shown
+   * We want the parent/sibling component to tell us this because they also should
+   * know about the state
+   */
+  hasShown: boolean;
+  /**
+   * The current body part chosen
+   */
   bodyPart: BodyPart | null;
+  /**
+   * Function to trigger when the neck warning hasn't been accepted
+   */
   onClose: () => void;
-  setShowed: (arg0: boolean) => void;
+  /**
+   * Function to change the hasShown value
+   */
+  setShown: (arg0: boolean) => void;
 } & ReactModal.Props) {
   const { l10n } = useLocalization();
-  // Skip popup if bodyPart isn't neck
-  if (isOpen && !hasShowed && bodyPart !== BodyPart.NECK) {
-    setShowed(true);
+  // Skip popup if bodyPart isn't neck or we already showed the warning in this session
+  if (
+    isOpen &&
+    !hasShown &&
+    (bodyPart !== BodyPart.NECK || sessionStorage.getItem('neckWarning'))
+  ) {
+    setShown(true);
   }
-  // Reset when no longer opened
-  if (!isOpen && hasShowed) {
-    setShowed(false);
+  // Reset shown to false when no longer opened
+  if (!isOpen && hasShown) {
+    setShown(false);
   }
 
+  // isOpen is checked by checking if the parent modal is opened + our bodyPart is the
+  // neck and we havent showed this warning yet
   return (
     <BaseModal
-      isOpen={isOpen && bodyPart === BodyPart.NECK && !hasShowed}
+      isOpen={isOpen && bodyPart === BodyPart.NECK && !hasShown}
       shouldCloseOnOverlayClick
       shouldCloseOnEsc
       onRequestClose={onClose}
@@ -44,14 +67,23 @@ export function NeckWarningModal({
             id="tracker_selection_menu-neck_warning"
             elems={{ b: <b></b> }}
           >
-            <WarningBox>Warning!</WarningBox>
+            <WarningBox>
+              <b>Warning:</b> A neck tracker can be deadly if adjusted too
+              tightly, the strap could cut the circulation to your head!
+            </WarningBox>
           </Localized>
 
           <div className="flex flex-row gap-3 pt-5 place-content-center">
             <Button variant="secondary" onClick={onClose}>
               {l10n.getString('tracker_selection_menu-neck_warning-cancel')}
             </Button>
-            <Button variant="primary" onClick={() => setShowed(true)}>
+            <Button
+              variant="primary"
+              onClick={() => {
+                setShown(true);
+                sessionStorage.setItem('neckWarning', 'true');
+              }}
+            >
               {l10n.getString('tracker_selection_menu-neck_warning-done')}
             </Button>
           </div>
