@@ -294,7 +294,7 @@ settings-general-gesture_control-description = Cho phép chạm vào tracker đ�
 # This is a unit: 3 taps, 2 taps, 1 tap
 # $amount (Number) - Amount of taps (touches to the tracker's case)
 settings-general-gesture_control-taps = { $amount ->
-#   [one] 1 lần # Vietnamese doesn't have singular/plural difference but just leave it here to match up line count, easier for proofing with side by side English
+    [one] 1 tap
     *[other] { $amount } lần
 }
 settings-general-gesture_control-quickResetEnabled = Chạm để đặt lại nhanh
@@ -448,7 +448,7 @@ onboarding-connect_tracker-connection_status-handshake = Đã kết nối đến
 # if $amount is 0 then we say "No trackers connected"
 onboarding-connect_tracker-connected_trackers = { $amount ->
     [0] Không có tracker
-#   [one] 1 tracker # Vietnamese doesn't have singular/plural difference but just leave it here to match up line count, easier for proofing with side by side English
+    [one] 1 tracker
     *[other] { $amount } tracker
 } đã giao
 onboarding-connect_tracker-next = Đã kết nối với tất cả tracker
@@ -461,7 +461,7 @@ onboarding-assign_trackers-description = Chọn vị trí bạn muốn gán trac
 # $assigned (Number) - Trackers that have been assigned a body part
 # $trackers (Number) - Trackers connected to the server
 onboarding-assign_trackers-assigned = { $assigned } trên { $trackers ->
-#   [one] 1 tracker # Vietnamese doesn't have singular/plural difference but just leave it here to match up line count, easier for proofing with side by side English
+    [one] 1 tracker
     *[other] { $trackers } tracker
 } đã giao
 onboarding-assign_trackers-advanced = Xem thêm vị trí đặt
@@ -526,7 +526,7 @@ onboarding-automatic_proportions-recording-steps-4 = Làm thêm các chuyển đ
 onboarding-automatic_proportions-recording-processing = Đang xử lí kết quả...
 # $time (Number) - Seconds left for the automatic calibration recording to finish (max 15)
 onboarding-automatic_proportions-recording-timer = { $time ->
-#   [one] còn lại 1 giây # Vietnamese doesn't have singular/plural difference but just leave it here to match up line count, easier for proofing with side by side English
+    [one] 1 second
     *[other] còn lại { $time } giây
 }
 onboarding-automatic_proportions-verify_results-title = Kiểm tra kết quả
