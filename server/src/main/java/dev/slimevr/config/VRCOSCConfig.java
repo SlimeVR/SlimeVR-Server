@@ -5,7 +5,7 @@ import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 import com.fasterxml.jackson.databind.ser.std.StdKeySerializers;
 import dev.slimevr.config.serializers.BooleanMapDeserializer;
-import dev.slimevr.vr.trackers.TrackerRole;
+import dev.slimevr.tracking.trackers.TrackerRole;
 
 import java.util.HashMap;
 import java.util.Map;

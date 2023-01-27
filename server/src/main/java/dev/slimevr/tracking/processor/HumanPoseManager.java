@@ -47,7 +47,7 @@ public class HumanPoseManager {
 	/**
 	 * Creates a new HumanPoseManager that uses the given trackers for the
 	 * HumanSkeleton and the default config
-	 * 
+	 *
 	 * @param trackers a list of all trackers
 	 */
 	public HumanPoseManager(List<? extends Tracker> trackers) {
@@ -270,7 +270,7 @@ public class HumanPoseManager {
 
 	/**
 	 * Get the corresponding computed tracker for a given TrackerRole
-	 * 
+	 *
 	 * @param trackerRole the role of the tracker which we want
 	 * @return the corresponding computed tracker for the trackerRole
 	 */
@@ -293,7 +293,7 @@ public class HumanPoseManager {
 
 	/**
 	 * Get the tail node (away from the tracking root) of the given bone
-	 * 
+	 *
 	 * @param bone the bone from which we want the tail node
 	 * @return the tail node of the bone
 	 */
@@ -342,10 +342,33 @@ public class HumanPoseManager {
 		return false;
 	}
 
+	/**
+	 * @return All skeleton bones as BoneInfo
+	 */
 	@ThreadSafe
-	public List<BoneInfo> getCurrentBoneInfo() {
+	public List<BoneInfo> getAllBoneInfo() {
 		if (isSkeletonPresent())
-			return skeleton.currentBoneInfo;
+			return skeleton.allBoneInfo;
+		return null;
+	}
+
+	/**
+	 * @return All shareable bones as BoneInfo
+	 */
+	@ThreadSafe
+	public List<BoneInfo> getShareableBoneInfo() {
+		if (isSkeletonPresent())
+			return skeleton.shareableBoneInfo;
+		return null;
+	}
+
+	/**
+	 * @return The bone as BoneInfo for the given BoneType
+	 */
+	@ThreadSafe
+	public BoneInfo getBoneInfoForBoneType(BoneType boneType) {
+		if (isSkeletonPresent())
+			return skeleton.getBoneInfoForBoneType(boneType);
 		return null;
 	}
 

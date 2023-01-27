@@ -343,7 +343,7 @@ public class DataFeedBuilder {
 			Bone.addRotationG(fbb, rotGOffset);
 			var headPosGOffset = Vec3f.createVec3f(fbb, headPosG.x, headPosG.y, headPosG.z);
 			Bone.addHeadPositionG(fbb, headPosGOffset);
-			Bone.addBodyPart(fbb, bi.bodyPart);
+			Bone.addBodyPart(fbb, bi.boneType.bodyPart);
 			Bone.addBoneLength(fbb, length);
 
 			boneOffsets[i] = Bone.endBone(fbb);

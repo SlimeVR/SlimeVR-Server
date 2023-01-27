@@ -1,5 +1,6 @@
 package dev.slimevr.posestreamer;
 
+import dev.slimevr.tracking.processor.BoneType;
 import dev.slimevr.tracking.processor.TransformNode;
 
 import java.io.File;
@@ -23,7 +24,7 @@ public class StdBVHFileStream extends BVHFileStream {
 
 	@Override
 	protected TransformNodeWrapper wrapSkeletonNodes(TransformNode rootNode) {
-		TransformNode newRoot = getNodeFromHierarchy(rootNode, "Hip");
+		TransformNode newRoot = getNodeFromHierarchy(rootNode, BoneType.HIP.name());
 		if (newRoot == null) {
 			return null;
 		}

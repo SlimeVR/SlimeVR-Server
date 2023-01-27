@@ -23,8 +23,7 @@ public enum SkeletonConfigOffsets {
 		3,
 		"chestLength",
 		0.32f,
-		new BoneType[] { BoneType.CHEST, BoneType.CHEST_TRACKER,
-			BoneType.LEFT_SHOULDER, BoneType.RIGHT_SHOULDER }
+		new BoneType[] { BoneType.CHEST, BoneType.CHEST_TRACKER }
 	),
 	CHEST_OFFSET(
 		4,

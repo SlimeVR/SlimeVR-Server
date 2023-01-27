@@ -23,49 +23,50 @@ public class HumanSkeleton {
 	protected final HumanPoseManager humanPoseManager;
 	// #region Upper body nodes (torso)
 	// @formatter:off
-	protected final TransformNode hmdNode = new TransformNode("HMD", false);
-	protected final TransformNode headNode = new TransformNode("Head", false);
-	protected final TransformNode trackerHeadNode = new TransformNode("Head-Tracker", false);
-	protected final TransformNode neckNode = new TransformNode("Neck", false);
-	protected final TransformNode chestNode = new TransformNode("Chest", false);
-	protected final TransformNode trackerChestNode = new TransformNode("Chest-Tracker", false);
-	protected final TransformNode waistNode = new TransformNode("Waist", false);
-	protected final TransformNode hipNode = new TransformNode("Hip", false);
-	protected final TransformNode trackerWaistNode = new TransformNode("Waist-Tracker", false);
+	protected final TransformNode hmdNode = new TransformNode(BoneType.HMD.name(), false);
+	protected final TransformNode headNode = new TransformNode(BoneType.HEAD.name(), false);
+	protected final TransformNode trackerHeadNode = new TransformNode(BoneType.HEAD_TRACKER.name(), false);
+	protected final TransformNode neckNode = new TransformNode(BoneType.NECK.name(), false);
+	protected final TransformNode chestNode = new TransformNode(BoneType.CHEST.name(), false);
+	protected final TransformNode trackerChestNode = new TransformNode(BoneType.CHEST_TRACKER.name(), false);
+	protected final TransformNode waistNode = new TransformNode(BoneType.WAIST.name(), false);
+	protected final TransformNode hipNode = new TransformNode(BoneType.HIP.name(), false);
+	protected final TransformNode trackerHipNode = new TransformNode(BoneType.HIP_TRACKER.name(), false);
 	// #endregion
 	// #region Lower body nodes (legs)
-	protected final TransformNode leftHipNode = new TransformNode("Left-Hip", false);
-	protected final TransformNode leftKneeNode = new TransformNode("Left-Knee", false);
-	protected final TransformNode trackerLeftKneeNode = new TransformNode("Left-Knee-Tracker", false);
-	protected final TransformNode leftAnkleNode = new TransformNode("Left-Ankle", false);
-	protected final TransformNode leftFootNode = new TransformNode("Left-Foot", false);
-	protected final TransformNode trackerLeftFootNode = new TransformNode("Left-Foot-Tracker", false);
-	protected final TransformNode rightHipNode = new TransformNode("Right-Hip", false);
-	protected final TransformNode rightKneeNode = new TransformNode("Right-Knee", false);
-	protected final TransformNode trackerRightKneeNode = new TransformNode("Right-Knee-Tracker", false);
-	protected final TransformNode rightAnkleNode = new TransformNode("Right-Ankle", false);
-	protected final TransformNode rightFootNode = new TransformNode("Right-Foot", false);
-	protected final TransformNode trackerRightFootNode = new TransformNode("Right-Foot-Tracker", false);
+	protected final TransformNode leftHipNode = new TransformNode(BoneType.LEFT_HIP.name(), false);
+	protected final TransformNode leftKneeNode = new TransformNode(BoneType.LEFT_UPPER_LEG.name(), false);
+	protected final TransformNode trackerLeftKneeNode = new TransformNode(BoneType.LEFT_KNEE_TRACKER.name(), false);
+	protected final TransformNode leftAnkleNode = new TransformNode(BoneType.LEFT_LOWER_LEG.name(), false);
+	protected final TransformNode leftFootNode = new TransformNode(BoneType.LEFT_FOOT.name(), false);
+	protected final TransformNode trackerLeftFootNode = new TransformNode(BoneType.LEFT_FOOT_TRACKER.name(), false);
+	protected final TransformNode rightHipNode = new TransformNode(BoneType.RIGHT_HIP.name(), false);
+	protected final TransformNode rightKneeNode = new TransformNode(BoneType.RIGHT_UPPER_LEG.name(), false);
+	protected final TransformNode trackerRightKneeNode = new TransformNode(BoneType.RIGHT_KNEE_TRACKER.name(), false);
+	protected final TransformNode rightAnkleNode = new TransformNode(BoneType.RIGHT_LOWER_LEG.name(), false);
+	protected final TransformNode rightFootNode = new TransformNode(BoneType.RIGHT_FOOT.name(), false);
+	protected final TransformNode trackerRightFootNode = new TransformNode(BoneType.RIGHT_FOOT_TRACKER.name(), false);
 	// #endregion
 	// #region Arms
-	protected final TransformNode leftShoulderHeadNode = new TransformNode("Left-Shoulder-Head", false);
-	protected final TransformNode rightShoulderHeadNode = new TransformNode("Right-Shoulder-Head", false);
-	protected final TransformNode leftShoulderTailNode = new TransformNode("Left-Shoulder-Tail", false);
-	protected final TransformNode rightShoulderTailNode = new TransformNode("Right-Shoulder-Tail", false);
-	protected final TransformNode leftElbowNode = new TransformNode("Left-Elbow", false);
-	protected final TransformNode rightElbowNode = new TransformNode("Right-Elbow", false);
-	protected final TransformNode trackerLeftElbowNode = new TransformNode("Left-Elbow-Tracker", false);
-	protected final TransformNode trackerRightElbowNode = new TransformNode("Right-Elbow-Tracker", false);
-	protected final TransformNode leftWristNode = new TransformNode("Left-Wrist", false);
-	protected final TransformNode rightWristNode = new TransformNode("Right-Wrist", false);
-	protected final TransformNode leftHandNode = new TransformNode("Left-Hand", false);
-	protected final TransformNode rightHandNode = new TransformNode("Right-Hand", false);
-	protected final TransformNode trackerLeftHandNode = new TransformNode("Left-Hand-Tracker", false);
-	protected final TransformNode trackerRightHandNode = new TransformNode("Right-Hand-Tracker", false);
-	protected final TransformNode leftControllerNode = new TransformNode("Left-Controller", false);
-	protected final TransformNode rightControllerNode = new TransformNode("Right-Controller", false);
+	protected final TransformNode leftShoulderHeadNode = new TransformNode(BoneType.LEFT_SHOULDER.name() + "_HEAD", false);
+	protected final TransformNode rightShoulderHeadNode = new TransformNode(BoneType.RIGHT_SHOULDER.name() + "_HEAD", false);
+	protected final TransformNode leftShoulderTailNode = new TransformNode(BoneType.LEFT_SHOULDER.name() + "_TAIL", false);
+	protected final TransformNode rightShoulderTailNode = new TransformNode(BoneType.RIGHT_SHOULDER.name() + "_TAIL", false);
+	protected final TransformNode leftElbowNode = new TransformNode(BoneType.LEFT_UPPER_ARM.name(), false);
+	protected final TransformNode rightElbowNode = new TransformNode(BoneType.RIGHT_UPPER_ARM.name(), false);
+	protected final TransformNode trackerLeftElbowNode = new TransformNode(BoneType.LEFT_ELBOW_TRACKER.name(), false);
+	protected final TransformNode trackerRightElbowNode = new TransformNode(BoneType.RIGHT_ELBOW_TRACKER.name(), false);
+	protected final TransformNode leftWristNode = new TransformNode(BoneType.LEFT_LOWER_ARM.name(), false);
+	protected final TransformNode rightWristNode = new TransformNode(BoneType.RIGHT_LOWER_ARM.name(), false);
+	protected final TransformNode leftHandNode = new TransformNode(BoneType.LEFT_HAND.name(), false);
+	protected final TransformNode rightHandNode = new TransformNode(BoneType.RIGHT_HAND.name(), false);
+	protected final TransformNode trackerLeftHandNode = new TransformNode(BoneType.LEFT_HAND_TRACKER.name(), false);
+	protected final TransformNode trackerRightHandNode = new TransformNode(BoneType.RIGHT_HAND_TRACKER.name(), false);
+	protected final TransformNode leftControllerNode = new TransformNode(BoneType.LEFT_CONTROLLER.name(), false);
+	protected final TransformNode rightControllerNode = new TransformNode(BoneType.RIGHT_CONTROLLER.name(), false);
 	// @formatter:on
-	public final List<BoneInfo> currentBoneInfo = new ArrayList<>();
+	public final List<BoneInfo> allBoneInfo = new ArrayList<>();
+	public final List<BoneInfo> shareableBoneInfo = new ArrayList<>();
 	// #endregion
 	// #region Buffers
 	private final Vector3f posBuf = new Vector3f();
@@ -169,7 +170,7 @@ public class HumanSkeleton {
 	) {
 		this(humanPoseManager);
 
-		setTrackersFromServer(server);
+		setTrackersFromList(server.getAllTrackers());
 
 		tapDetectionManager = new TapDetectionManager(
 			this,
@@ -215,7 +216,7 @@ public class HumanSkeleton {
 		// #region Attach tracker nodes for tracker offsets
 		neckNode.attachChild(trackerHeadNode);
 		neckNode.attachChild(trackerChestNode);
-		hipNode.attachChild(trackerWaistNode);
+		hipNode.attachChild(trackerHipNode);
 
 		leftKneeNode.attachChild(trackerLeftKneeNode);
 		rightKneeNode.attachChild(trackerRightKneeNode);
@@ -272,52 +273,41 @@ public class HumanSkeleton {
 		// #endregion
 	}
 
-	/**
-	 * Rebuilds the `currentBoneInfo` list
-	 */
 	protected void resetBones() {
-		currentBoneInfo.clear();
+		allBoneInfo.clear();
+		shareableBoneInfo.clear();
 
+		// Create all bones and add to allBoneInfo
+		for (BoneType boneType : BoneType.values) {
+			TransformNode transformNode = getTailNodeOfBone(boneType);
+			if (transformNode != null)
+				allBoneInfo.add(new BoneInfo(boneType, transformNode));
+		}
+
+		// Add shareable bones to shareableBoneInfo
 		// Head
-		currentBoneInfo.add(new BoneInfo(BoneType.HEAD, getTailNodeOfBone(BoneType.HEAD)));
-		currentBoneInfo.add(new BoneInfo(BoneType.NECK, getTailNodeOfBone(BoneType.NECK)));
+		shareableBoneInfo.add(getBoneInfoForBoneType(BoneType.HEAD));
+		shareableBoneInfo.add(getBoneInfoForBoneType(BoneType.NECK));
 
 		// Spine and legs
 		if (hasSpineTracker || hasLeftLegTracker || hasRightLegTracker || sendAllBones) {
 			// Spine
-			currentBoneInfo.add(new BoneInfo(BoneType.CHEST, getTailNodeOfBone(BoneType.CHEST)));
-			currentBoneInfo.add(new BoneInfo(BoneType.WAIST, getTailNodeOfBone(BoneType.WAIST)));
-			currentBoneInfo.add(new BoneInfo(BoneType.HIP, getTailNodeOfBone(BoneType.HIP)));
+			shareableBoneInfo.add(getBoneInfoForBoneType(BoneType.CHEST));
+			shareableBoneInfo.add(getBoneInfoForBoneType(BoneType.WAIST));
+			shareableBoneInfo.add(getBoneInfoForBoneType(BoneType.HIP));
 
 			// Left leg
 			if (hasLeftLegTracker || sendAllBones) {
 				if (sendAllBones) {
 					// don't send currently
-					currentBoneInfo
-						.add(new BoneInfo(BoneType.LEFT_HIP, getTailNodeOfBone(BoneType.LEFT_HIP)));
+					shareableBoneInfo.add(getBoneInfoForBoneType(BoneType.LEFT_HIP));
 				}
 
-				currentBoneInfo
-					.add(
-						new BoneInfo(
-							BoneType.LEFT_UPPER_LEG,
-							getTailNodeOfBone(BoneType.LEFT_UPPER_LEG)
-						)
-					);
-
-				currentBoneInfo
-					.add(
-						new BoneInfo(
-							BoneType.LEFT_LOWER_LEG,
-							getTailNodeOfBone(BoneType.LEFT_LOWER_LEG)
-						)
-					);
+				shareableBoneInfo.add(getBoneInfoForBoneType(BoneType.LEFT_UPPER_LEG));
+				shareableBoneInfo.add(getBoneInfoForBoneType(BoneType.LEFT_LOWER_LEG));
 
 				if (leftFootTracker != null || sendAllBones) {
-					currentBoneInfo
-						.add(
-							new BoneInfo(BoneType.LEFT_FOOT, getTailNodeOfBone(BoneType.LEFT_FOOT))
-						);
+					shareableBoneInfo.add(getBoneInfoForBoneType(BoneType.LEFT_FOOT));
 				}
 			}
 
@@ -325,36 +315,14 @@ public class HumanSkeleton {
 			if (hasRightLegTracker || sendAllBones) {
 				if (sendAllBones) {
 					// don't send currently
-					currentBoneInfo
-						.add(
-							new BoneInfo(BoneType.RIGHT_HIP, getTailNodeOfBone(BoneType.RIGHT_HIP))
-						);
+					shareableBoneInfo.add(getBoneInfoForBoneType(BoneType.RIGHT_HIP));
 				}
 
-				currentBoneInfo
-					.add(
-						new BoneInfo(
-							BoneType.RIGHT_UPPER_LEG,
-							getTailNodeOfBone(BoneType.RIGHT_UPPER_LEG)
-						)
-					);
-
-				currentBoneInfo
-					.add(
-						new BoneInfo(
-							BoneType.RIGHT_LOWER_LEG,
-							getTailNodeOfBone(BoneType.RIGHT_LOWER_LEG)
-						)
-					);
+				shareableBoneInfo.add(getBoneInfoForBoneType(BoneType.RIGHT_UPPER_LEG));
+				shareableBoneInfo.add(getBoneInfoForBoneType(BoneType.RIGHT_LOWER_LEG));
 
 				if (rightFootTracker != null || sendAllBones) {
-					currentBoneInfo
-						.add(
-							new BoneInfo(
-								BoneType.RIGHT_FOOT,
-								getTailNodeOfBone(BoneType.RIGHT_FOOT)
-							)
-						);
+					shareableBoneInfo.add(getBoneInfoForBoneType(BoneType.RIGHT_FOOT));
 				}
 			}
 		}
@@ -367,210 +335,153 @@ public class HumanSkeleton {
 		// Left arm
 		if ((hasLeftArmTracker || leftShoulderTracker != null) && sendAllBones) {
 			// don't send currently
-			currentBoneInfo
-				.add(
-					new BoneInfo(
-						BoneType.LEFT_SHOULDER,
-						getTailNodeOfBone(BoneType.LEFT_SHOULDER)
-					)
-				);
+			shareableBoneInfo.add(getBoneInfoForBoneType(BoneType.LEFT_SHOULDER));
 		}
 		if (hasLeftArmTracker && sendAllBones) {
 			// don't send currently
-			currentBoneInfo
-				.add(
-					new BoneInfo(
-						BoneType.LEFT_UPPER_ARM,
-						getTailNodeOfBone(BoneType.LEFT_UPPER_ARM)
-					)
-				);
+			shareableBoneInfo.add(getBoneInfoForBoneType(BoneType.LEFT_UPPER_ARM));
 		}
 		if (hasLeftArmTracker || sendAllBones) {
-			currentBoneInfo
-				.add(
-					new BoneInfo(
-						BoneType.LEFT_LOWER_ARM,
-						getTailNodeOfBone(BoneType.LEFT_LOWER_ARM)
-					)
-				);
+			shareableBoneInfo.add(getBoneInfoForBoneType(BoneType.LEFT_LOWER_ARM));
 		}
 		if ((hasLeftArmTracker || leftHandTracker != null) && sendAllBones) {
 			// don't send currently
-			currentBoneInfo
-				.add(
-					new BoneInfo(
-						BoneType.LEFT_HAND,
-						getTailNodeOfBone(BoneType.LEFT_HAND)
-					)
-				);
+			shareableBoneInfo.add(getBoneInfoForBoneType(BoneType.LEFT_HAND));
 		}
 		if (leftControllerTracker != null && sendAllBones) {
 			// don't send currently
-			currentBoneInfo
-				.add(
-					new BoneInfo(
-						BoneType.LEFT_CONTROLLER,
-						getTailNodeOfBone(BoneType.LEFT_CONTROLLER)
-					)
-				);
+			shareableBoneInfo.add(getBoneInfoForBoneType(BoneType.LEFT_CONTROLLER));
 		}
 
 		// Right arm
 		if ((hasRightArmTracker || rightShoulderTracker != null) && sendAllBones) {
 			// don't send currently
-			currentBoneInfo
-				.add(
-					new BoneInfo(
-						BoneType.RIGHT_SHOULDER,
-						getTailNodeOfBone(BoneType.RIGHT_SHOULDER)
-					)
-				);
+			shareableBoneInfo.add(getBoneInfoForBoneType(BoneType.RIGHT_SHOULDER));
 		}
 		if (hasRightArmTracker && sendAllBones) {
 			// don't send currently
-			currentBoneInfo
-				.add(
-					new BoneInfo(
-						BoneType.RIGHT_UPPER_ARM,
-						getTailNodeOfBone(BoneType.RIGHT_UPPER_ARM)
-					)
-				);
+			shareableBoneInfo.add(getBoneInfoForBoneType(BoneType.RIGHT_UPPER_ARM));
 		}
 		if (hasRightArmTracker || sendAllBones) {
-			currentBoneInfo
-				.add(
-					new BoneInfo(
-						BoneType.RIGHT_LOWER_ARM,
-						getTailNodeOfBone(BoneType.RIGHT_LOWER_ARM)
-					)
-				);
+			shareableBoneInfo.add(getBoneInfoForBoneType(BoneType.RIGHT_LOWER_ARM));
 		}
 		if ((hasRightArmTracker || rightHandTracker != null) && sendAllBones) {
 			// don't send currently
-			currentBoneInfo
-				.add(
-					new BoneInfo(
-						BoneType.RIGHT_HAND,
-						getTailNodeOfBone(BoneType.RIGHT_HAND)
-					)
-				);
+			shareableBoneInfo.add(getBoneInfoForBoneType(BoneType.RIGHT_HAND));
 		}
 		if (rightControllerTracker != null && sendAllBones) {
 			// don't send currently
-			currentBoneInfo
-				.add(
-					new BoneInfo(
-						BoneType.RIGHT_CONTROLLER,
-						getTailNodeOfBone(BoneType.RIGHT_CONTROLLER)
-					)
-				);
+			shareableBoneInfo.add(getBoneInfoForBoneType(BoneType.RIGHT_CONTROLLER));
 		}
 	}
 
 
 	// #region Set trackers inputs
 	protected void setTrackersFromList(List<? extends Tracker> trackers) {
-		this.hmdTracker = TrackerUtils
-			.findNonComputedHumanPoseTrackerForBodyPosition(
-				trackers,
-				TrackerPosition.HMD
-			);
-		this.leftControllerTracker = TrackerUtils
+		hmdTracker = TrackerUtils.getHMDTracker(trackers);
+		if (hmdTracker == null) {
+			hmdTracker = TrackerUtils
+				.findNonComputedHumanPoseTrackerForBodyPosition(
+					trackers,
+					TrackerPosition.HMD
+				);
+		}
+		leftControllerTracker = TrackerUtils
 			.findNonComputedHumanPoseTrackerForBodyPosition(
 				trackers,
 				TrackerPosition.LEFT_CONTROLLER
 			);
-		this.rightControllerTracker = TrackerUtils
+		rightControllerTracker = TrackerUtils
 			.findNonComputedHumanPoseTrackerForBodyPosition(
 				trackers,
 				TrackerPosition.RIGHT_CONTROLLER
 			);
-		this.neckTracker = TrackerUtils
+		neckTracker = TrackerUtils
 			.findNonComputedHumanPoseTrackerForBodyPosition(
 				trackers,
 				TrackerPosition.NECK
 			);
-		this.chestTracker = TrackerUtils
+		chestTracker = TrackerUtils
 			.findNonComputedHumanPoseTrackerForBodyPosition(
 				trackers,
 				TrackerPosition.CHEST
 			);
-		this.waistTracker = TrackerUtils
+		waistTracker = TrackerUtils
 			.findNonComputedHumanPoseTrackerForBodyPosition(
 				trackers,
 				TrackerPosition.WAIST
 			);
-		this.hipTracker = TrackerUtils
+		hipTracker = TrackerUtils
 			.findNonComputedHumanPoseTrackerForBodyPosition(
 				trackers,
 				TrackerPosition.HIP
 			);
-		this.leftUpperLegTracker = TrackerUtils
+		leftUpperLegTracker = TrackerUtils
 			.findNonComputedHumanPoseTrackerForBodyPosition(
 				trackers,
 				TrackerPosition.LEFT_UPPER_LEG
 			);
-		this.leftLowerLegTracker = TrackerUtils
+		leftLowerLegTracker = TrackerUtils
 			.findNonComputedHumanPoseTrackerForBodyPosition(
 				trackers,
 				TrackerPosition.LEFT_LOWER_LEG
 			);
-		this.leftFootTracker = TrackerUtils
+		leftFootTracker = TrackerUtils
 			.findNonComputedHumanPoseTrackerForBodyPosition(
 				trackers,
 				TrackerPosition.LEFT_FOOT
 			);
-		this.rightUpperLegTracker = TrackerUtils
+		rightUpperLegTracker = TrackerUtils
 			.findNonComputedHumanPoseTrackerForBodyPosition(
 				trackers,
 				TrackerPosition.RIGHT_UPPER_LEG
 			);
-		this.rightLowerLegTracker = TrackerUtils
+		rightLowerLegTracker = TrackerUtils
 			.findNonComputedHumanPoseTrackerForBodyPosition(
 				trackers,
 				TrackerPosition.RIGHT_LOWER_LEG
 			);
-		this.rightFootTracker = TrackerUtils
+		rightFootTracker = TrackerUtils
 			.findNonComputedHumanPoseTrackerForBodyPosition(
 				trackers,
 				TrackerPosition.RIGHT_FOOT
 			);
-		this.leftLowerArmTracker = TrackerUtils
+		leftLowerArmTracker = TrackerUtils
 			.findNonComputedHumanPoseTrackerForBodyPosition(
 				trackers,
 				TrackerPosition.LEFT_LOWER_ARM
 			);
-		this.rightLowerArmTracker = TrackerUtils
+		rightLowerArmTracker = TrackerUtils
 			.findNonComputedHumanPoseTrackerForBodyPosition(
 				trackers,
 				TrackerPosition.RIGHT_LOWER_ARM
 			);
-		this.leftUpperArmTracker = TrackerUtils
+		leftUpperArmTracker = TrackerUtils
 			.findNonComputedHumanPoseTrackerForBodyPosition(
 				trackers,
 				TrackerPosition.LEFT_UPPER_ARM
 			);
-		this.rightUpperArmTracker = TrackerUtils
+		rightUpperArmTracker = TrackerUtils
 			.findNonComputedHumanPoseTrackerForBodyPosition(
 				trackers,
 				TrackerPosition.RIGHT_UPPER_ARM
 			);
-		this.leftHandTracker = TrackerUtils
+		leftHandTracker = TrackerUtils
 			.findNonComputedHumanPoseTrackerForBodyPosition(
 				trackers,
 				TrackerPosition.LEFT_HAND
 			);
-		this.rightHandTracker = TrackerUtils
+		rightHandTracker = TrackerUtils
 			.findNonComputedHumanPoseTrackerForBodyPosition(
 				trackers,
 				TrackerPosition.RIGHT_HAND
 			);
-		this.leftShoulderTracker = TrackerUtils
+		leftShoulderTracker = TrackerUtils
 			.findNonComputedHumanPoseTrackerForBodyPosition(
 				trackers,
 				TrackerPosition.LEFT_SHOULDER
 			);
-		this.rightShoulderTracker = TrackerUtils
+		rightShoulderTracker = TrackerUtils
 			.findNonComputedHumanPoseTrackerForBodyPosition(
 				trackers,
 				TrackerPosition.RIGHT_SHOULDER
@@ -597,11 +508,6 @@ public class HumanSkeleton {
 
 		// Rebuild the bone list
 		resetBones();
-	}
-
-	protected void setTrackersFromServer(VRServer server) {
-		this.hmdTracker = server.hmdTracker;
-		setTrackersFromList(server.getAllTrackers());
 	}
 
 	protected void setComputedTracker(ComputedHumanPoseTracker tracker) {
@@ -855,7 +761,7 @@ public class HumanSkeleton {
 				.getRotation(rotBuf1);
 			waistNode.localTransform.setRotation(rotBuf1);
 			hipNode.localTransform.setRotation(rotBuf1);
-			trackerWaistNode.localTransform.setRotation(rotBuf1);
+			trackerHipNode.localTransform.setRotation(rotBuf1);
 		} else if (hmdTracker != null) {
 			// Align with last tracker's yaw (HMD or neck)
 			rotBuf1.fromAngles(0, rotBuf1.getYaw(), 0);
@@ -865,7 +771,7 @@ public class HumanSkeleton {
 			chestNode.localTransform.setRotation(rotBuf1);
 			waistNode.localTransform.setRotation(rotBuf1);
 			hipNode.localTransform.setRotation(rotBuf1);
-			trackerWaistNode.localTransform.setRotation(rotBuf1);
+			trackerHipNode.localTransform.setRotation(rotBuf1);
 		}
 
 		// Left Leg
@@ -1019,7 +925,7 @@ public class HumanSkeleton {
 
 					waistNode.localTransform.setRotation(rotBuf3);
 					hipNode.localTransform.setRotation(rotBuf3);
-					trackerWaistNode.localTransform.setRotation(rotBuf3);
+					trackerHipNode.localTransform.setRotation(rotBuf3);
 				} else if (chestTracker != null) {
 					// Calculates hip from chest + legs
 					leftHipNode.localTransform.getRotation(rotBuf1);
@@ -1044,7 +950,7 @@ public class HumanSkeleton {
 
 					waistNode.localTransform.setRotation(rotBuf3);
 					hipNode.localTransform.setRotation(rotBuf3);
-					trackerWaistNode.localTransform.setRotation(rotBuf3);
+					trackerHipNode.localTransform.setRotation(rotBuf3);
 				}
 			}
 		}
@@ -1059,7 +965,7 @@ public class HumanSkeleton {
 
 			rotBuf3.slerpLocal(rotBuf1, hipLegsAveraging);
 			hipNode.localTransform.setRotation(rotBuf3);
-			trackerWaistNode.localTransform.setRotation(rotBuf3);
+			trackerHipNode.localTransform.setRotation(rotBuf3);
 		}
 
 		// Left arm
@@ -1242,8 +1148,8 @@ public class HumanSkeleton {
 		}
 
 		if (computedWaistTracker != null) {
-			computedWaistTracker.position.set(trackerWaistNode.worldTransform.getTranslation());
-			computedWaistTracker.rotation.set(trackerWaistNode.worldTransform.getRotation());
+			computedWaistTracker.position.set(trackerHipNode.worldTransform.getTranslation());
+			computedWaistTracker.rotation.set(trackerHipNode.worldTransform.getRotation());
 			computedWaistTracker.dataTick();
 		}
 
@@ -1376,7 +1282,7 @@ public class HumanSkeleton {
 				hipNode.localTransform.setTranslation(offset);
 				break;
 			case HIP_TRACKER:
-				trackerWaistNode.localTransform.setTranslation(offset);
+				trackerHipNode.localTransform.setTranslation(offset);
 				break;
 			case LEFT_HIP:
 				leftHipNode.localTransform.setTranslation(offset);
@@ -1460,7 +1366,7 @@ public class HumanSkeleton {
 				break;
 		}
 
-		for (BoneInfo bone : currentBoneInfo) {
+		for (BoneInfo bone : allBoneInfo) {
 			bone.updateLength();
 		}
 	}
@@ -1484,7 +1390,7 @@ public class HumanSkeleton {
 			case HIP:
 				return hipNode;
 			case HIP_TRACKER:
-				return trackerWaistNode;
+				return trackerHipNode;
 			case LEFT_HIP:
 				return leftHipNode;
 			case RIGHT_HIP:
@@ -1541,6 +1447,15 @@ public class HumanSkeleton {
 
 		return null;
 	}
+
+	public BoneInfo getBoneInfoForBoneType(BoneType boneType) {
+		for (BoneInfo bone : allBoneInfo) {
+			if (bone.boneType == boneType)
+				return bone;
+		}
+
+		return null;
+	}
 	// #endregion
 
 	public TransformNode getRootNode() {
@@ -1557,7 +1472,7 @@ public class HumanSkeleton {
 			trackerChestNode,
 			waistNode,
 			hipNode,
-			trackerWaistNode,
+			trackerHipNode,
 			leftHipNode,
 			leftKneeNode,
 			trackerLeftKneeNode,

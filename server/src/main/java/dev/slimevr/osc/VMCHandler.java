@@ -8,15 +8,13 @@ import com.jme3.math.Quaternion;
 import com.jme3.math.Vector3f;
 import dev.slimevr.VRServer;
 import dev.slimevr.config.VMCConfig;
-import dev.slimevr.vr.processor.HumanPoseProcessor;
-import dev.slimevr.vr.processor.TransformNode;
-import dev.slimevr.vr.processor.skeleton.BoneInfo;
-import dev.slimevr.vr.processor.skeleton.BoneType;
-import dev.slimevr.vr.processor.skeleton.Skeleton;
-import dev.slimevr.vr.trackers.UnityBone;
+import dev.slimevr.tracking.processor.BoneInfo;
+import dev.slimevr.tracking.processor.BoneType;
+import dev.slimevr.tracking.processor.HumanPoseManager;
+import dev.slimevr.tracking.processor.TransformNode;
+import dev.slimevr.tracking.trackers.UnityBone;
 import io.eiren.util.collections.FastList;
 import io.eiren.util.logging.LogManager;
-import solarxr_protocol.datatypes.BodyPart;
 
 import java.io.IOException;
 import java.net.InetAddress;
@@ -30,7 +28,7 @@ public class VMCHandler implements OSCHandler {
 	private OSCPortOut oscSender;
 	private final VMCConfig config;
 	private final VRServer server;
-	private final HumanPoseProcessor humanPoseProcessor;
+	private final HumanPoseManager humanPoseManager;
 	private final FastList<Object> oscArgs = new FastList<>();
 	private final Vector3f vecBuf = new Vector3f();
 	private final Quaternion quatBuf = new Quaternion();
@@ -43,11 +41,11 @@ public class VMCHandler implements OSCHandler {
 
 	public VMCHandler(
 		VRServer server,
-		HumanPoseProcessor humanPoseProcessor,
+		HumanPoseManager humanPoseManager,
 		VMCConfig oscConfig
 	) {
 		this.server = server;
-		this.humanPoseProcessor = humanPoseProcessor;
+		this.humanPoseManager = humanPoseManager;
 		this.config = oscConfig;
 		startTime = System.currentTimeMillis();
 
@@ -157,19 +155,18 @@ public class VMCHandler implements OSCHandler {
 			oscArgs.add((System.currentTimeMillis() - startTime) / 1000f);
 			oscBundle.addPacket(new OSCMessage("/VMC/Ext/T", oscArgs.clone()));
 
-			Skeleton skeleton = humanPoseProcessor.getSkeleton();
-			if (skeleton != null) {
-				// Indicate tracking is available
-				oscArgs.clear();
-				oscArgs.add(1);
-				oscBundle
-					.addPacket(
-						new OSCMessage(
-							"/VMC/Ext/OK",
-							oscArgs.clone()
-						)
-					);
+			// Indicate tracking is available
+			oscArgs.clear();
+			oscArgs.add(1);
+			oscBundle
+				.addPacket(
+					new OSCMessage(
+						"/VMC/Ext/OK",
+						oscArgs.clone()
+					)
+				);
 
+			if (humanPoseManager.isSkeletonPresent()) {
 				// Add the tracking root
 				anchorHip = true;
 				if (anchorHip) {
@@ -178,8 +175,8 @@ public class VMCHandler implements OSCHandler {
 				} else {
 					// Head anchor
 					vecBuf.zero();
-					TransformNode headNode = skeleton.getTailNodeOfBone(BoneType.HEAD);
-					TransformNode secondNode = skeleton.getTailNodeOfBone(BoneType.HIP);
+					TransformNode headNode = humanPoseManager.getTailNodeOfBone(BoneType.HEAD);
+					TransformNode secondNode = humanPoseManager.getTailNodeOfBone(BoneType.HIP);
 
 					headNode.worldTransform.getTranslation(vecBuf);
 
@@ -216,19 +213,18 @@ public class VMCHandler implements OSCHandler {
 
 				// Add Unity humanoid bones transforms
 				for (UnityBone bone : UnityBone.values) {
-					// TODO fix head not rotating
-					BoneInfo boneInfo = skeleton
-						.getBoneInfoForBodyPart(
-							bone.bodyPart
+					BoneInfo boneInfo = humanPoseManager
+						.getBoneInfoForBoneType(
+							bone.boneType
 						);
 					if (boneInfo != null) {
 						vecBuf
 							.set(
 								boneInfo
 									.getLocalBoneTranslationFromRoot(
-										skeleton
-											.getBoneInfoForBodyPart(
-												BodyPart.HIP
+										humanPoseManager
+											.getBoneInfoForBoneType(
+												BoneType.HIP
 											),
 										true
 									)
@@ -237,9 +233,9 @@ public class VMCHandler implements OSCHandler {
 							.set(
 								boneInfo
 									.getLocalBoneRotationFromRoot(
-										skeleton
-											.getBoneInfoForBodyPart(
-												BodyPart.HIP
+										humanPoseManager
+											.getBoneInfoForBoneType(
+												BoneType.HIP
 											),
 										true
 									)
@@ -283,7 +279,7 @@ public class VMCHandler implements OSCHandler {
 	}
 
 	public void calibrateVMCHeadPosition() {
-		// TODO ?
+		// TODO
 	}
 
 	@Override

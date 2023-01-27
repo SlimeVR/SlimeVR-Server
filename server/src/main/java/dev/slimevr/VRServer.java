@@ -14,7 +14,6 @@ import dev.slimevr.platform.windows.WindowsNamedPipeBridge;
 import dev.slimevr.poserecorder.BVHRecorder;
 import dev.slimevr.protocol.ProtocolAPI;
 import dev.slimevr.serial.SerialHandler;
-import dev.slimevr.util.ann.VRServerThread;
 import dev.slimevr.tracking.DeviceManager;
 import dev.slimevr.tracking.processor.HumanPoseManager;
 import dev.slimevr.tracking.processor.skeleton.HumanSkeleton;
@@ -22,6 +21,7 @@ import dev.slimevr.tracking.trackers.HMDTracker;
 import dev.slimevr.tracking.trackers.ShareableTracker;
 import dev.slimevr.tracking.trackers.Tracker;
 import dev.slimevr.tracking.trackers.udp.TrackersUDPServer;
+import dev.slimevr.util.ann.VRServerThread;
 import dev.slimevr.websocketapi.WebSocketVRBridge;
 import io.eiren.util.OperatingSystem;
 import io.eiren.util.ann.ThreadSafe;
@@ -175,7 +175,7 @@ public class VRServer extends Thread {
 		);
 		vmcHandler = new VMCHandler(
 			this,
-			humanPoseProcessor,
+			humanPoseManager,
 			getConfigManager().getVrConfig().getVMC()
 		);
 

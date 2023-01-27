@@ -1,6 +1,6 @@
-package dev.slimevr.vr.trackers;
+package dev.slimevr.tracking.trackers;
 
-import solarxr_protocol.datatypes.BodyPart;
+import dev.slimevr.tracking.processor.BoneType;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -11,66 +11,66 @@ import java.util.Map;
  * https://docs.unity3d.com/ScriptReference/HumanBodyBones.html
  */
 public enum UnityBone {
-	HIPS("Hips", BodyPart.HIP),
-	LEFT_UPPER_LEG("LeftUpperLeg", BodyPart.LEFT_UPPER_LEG),
-	RIGHT_UPPER_LEG("RightUpperLeg", BodyPart.RIGHT_UPPER_LEG),
-	LEFT_LOWER_LEG("LeftLowerLeg", BodyPart.LEFT_LOWER_LEG),
-	RIGHT_LOWER_LEG("RightLowerLeg", BodyPart.RIGHT_LOWER_LEG),
-	LEFT_FOOT("LeftFoot", BodyPart.LEFT_FOOT),
-	RIGHT_FOOT("RightFoot", BodyPart.RIGHT_FOOT),
-	SPINE("Spine", BodyPart.WAIST),
-	CHEST("Chest", BodyPart.CHEST),
-	UPPER_CHEST("UpperChest", 0),
-	NECK("Neck", BodyPart.NECK),
-	HEAD("Head", BodyPart.HEAD),
-	LEFT_SHOULDER("LeftShoulder", BodyPart.LEFT_SHOULDER),
-	RIGHT_SHOULDER("RightShoulder", BodyPart.RIGHT_SHOULDER),
-	LEFT_UPPER_ARM("LeftUpperArm", BodyPart.LEFT_UPPER_ARM),
-	RIGHT_UPPER_ARM("RightUpperArm", BodyPart.RIGHT_UPPER_ARM),
-	LEFT_LOWER_ARM("LeftLowerArm", BodyPart.LEFT_LOWER_ARM),
-	RIGHT_LOWER_ARM("RightLowerArm", BodyPart.RIGHT_LOWER_ARM),
-	LEFT_HAND("LeftHand", BodyPart.LEFT_HAND),
-	RIGHT_HAND("RightHand", BodyPart.RIGHT_HAND),
-	LEFT_TOES("LeftToes", 0),
-	RIGHT_TOES("RightToes", 0),
-	LEFT_EYE("LeftEye", 0),
-	RIGHT_EYE("RightEye", 0),
-	JAW("Jaw", 0),
-	LEFT_THUMB_PROXIMAL("LeftThumbProximal", 0),
-	LEFT_THUMB_INTERMEDIATE("LeftThumbIntermediate", 0),
-	LEFT_THUMB_DISTAL("LeftThumbDistal", 0),
-	LEFT_INDEX_PROXIMAL("LeftIndexProximal", 0),
-	LEFT_INDEX_INTERMEDIATE("LeftIndexIntermediate", 0),
-	LEFT_INDEX_DISTAL("LeftIndexDistal", 0),
-	LEFT_MIDDLE_PROXIMAL("LeftMiddleProximal", 0),
-	LEFT_MIDDLE_INTERMEDIATE("LeftMiddleIntermediate", 0),
-	LEFT_MIDDLE_DISTAL("LeftMiddleDistal", 0),
-	LEFT_RING_PROXIMAL("LeftRingProximal", 0),
-	LEFT_RING_INTERMEDIATE("LeftRingIntermediate", 0),
-	LEFT_RING_DISTAL("LeftRingDistal", 0),
-	LEFT_LITTLE_PROXIMAL("LeftLittleProximal", 0),
-	LEFT_LITTLE_INTERMEDIATE("LeftLittleIntermediate", 0),
-	LEFT_LITTLE_DISTAL("LeftLittleDistal", 0),
-	RIGHT_THUMB_PROXIMAL("RightThumbProximal", 0),
-	RIGHT_THUMB_INTERMEDIATE("RightThumbIntermediate", 0),
-	RIGHT_THUMB_DISTAL("RightThumbDistal", 0),
-	RIGHT_INDEX_PROXIMAL("RightIndexProximal", 0),
-	RIGHT_INDEX_INTERMEDIATE("RightIndexIntermediate", 0),
-	RIGHT_INDEX_DISTAL("RightIndexDistal", 0),
-	RIGHT_MIDDLE_PROXIMAL("RightMiddleProximal", 0),
-	RIGHT_MIDDLE_INTERMEDIATE("RightMiddleIntermediate", 0),
-	RIGHT_MIDDLE_DISTAL("RightMiddleDistal", 0),
-	RIGHT_RING_PROXIMAL("RightRingProximal", 0),
-	RIGHT_RING_INTERMEDIATE("RightRingIntermediate", 0),
-	RIGHT_RING_DISTAL("RightRingDistal", 0),
-	RIGHT_LITTLE_PROXIMAL("RightLittleProximal", 0),
-	RIGHT_LITTLE_INTERMEDIATE("RightLittleIntermediate", 0),
-	RIGHT_LITTLE_DISTAL("RightLittleDistal", 0),
-	LAST_BONE("LastBone", 0);
+	HIPS("Hips", BoneType.HIP),
+	LEFT_UPPER_LEG("LeftUpperLeg", BoneType.LEFT_UPPER_LEG),
+	RIGHT_UPPER_LEG("RightUpperLeg", BoneType.RIGHT_UPPER_LEG),
+	LEFT_LOWER_LEG("LeftLowerLeg", BoneType.LEFT_LOWER_LEG),
+	RIGHT_LOWER_LEG("RightLowerLeg", BoneType.RIGHT_LOWER_LEG),
+	LEFT_FOOT("LeftFoot", BoneType.LEFT_FOOT),
+	RIGHT_FOOT("RightFoot", BoneType.RIGHT_FOOT),
+	SPINE("Spine", BoneType.WAIST),
+	CHEST("Chest", BoneType.CHEST),
+	UPPER_CHEST("UpperChest", null),
+	NECK("Neck", BoneType.NECK),
+	HEAD("Head", BoneType.HEAD),
+	LEFT_SHOULDER("LeftShoulder", BoneType.LEFT_SHOULDER),
+	RIGHT_SHOULDER("RightShoulder", BoneType.RIGHT_SHOULDER),
+	LEFT_UPPER_ARM("LeftUpperArm", BoneType.LEFT_UPPER_ARM),
+	RIGHT_UPPER_ARM("RightUpperArm", BoneType.RIGHT_UPPER_ARM),
+	LEFT_LOWER_ARM("LeftLowerArm", BoneType.LEFT_LOWER_ARM),
+	RIGHT_LOWER_ARM("RightLowerArm", BoneType.RIGHT_LOWER_ARM),
+	LEFT_HAND("LeftHand", BoneType.LEFT_HAND),
+	RIGHT_HAND("RightHand", BoneType.RIGHT_HAND),
+	LEFT_TOES("LeftToes", null),
+	RIGHT_TOES("RightToes", null),
+	LEFT_EYE("LeftEye", null),
+	RIGHT_EYE("RightEye", null),
+	JAW("Jaw", null),
+	LEFT_THUMB_PROXIMAL("LeftThumbProximal", null),
+	LEFT_THUMB_INTERMEDIATE("LeftThumbIntermediate", null),
+	LEFT_THUMB_DISTAL("LeftThumbDistal", null),
+	LEFT_INDEX_PROXIMAL("LeftIndexProximal", null),
+	LEFT_INDEX_INTERMEDIATE("LeftIndexIntermediate", null),
+	LEFT_INDEX_DISTAL("LeftIndexDistal", null),
+	LEFT_MIDDLE_PROXIMAL("LeftMiddleProximal", null),
+	LEFT_MIDDLE_INTERMEDIATE("LeftMiddleIntermediate", null),
+	LEFT_MIDDLE_DISTAL("LeftMiddleDistal", null),
+	LEFT_RING_PROXIMAL("LeftRingProximal", null),
+	LEFT_RING_INTERMEDIATE("LeftRingIntermediate", null),
+	LEFT_RING_DISTAL("LeftRingDistal", null),
+	LEFT_LITTLE_PROXIMAL("LeftLittleProximal", null),
+	LEFT_LITTLE_INTERMEDIATE("LeftLittleIntermediate", null),
+	LEFT_LITTLE_DISTAL("LeftLittleDistal", null),
+	RIGHT_THUMB_PROXIMAL("RightThumbProximal", null),
+	RIGHT_THUMB_INTERMEDIATE("RightThumbIntermediate", null),
+	RIGHT_THUMB_DISTAL("RightThumbDistal", null),
+	RIGHT_INDEX_PROXIMAL("RightIndexProximal", null),
+	RIGHT_INDEX_INTERMEDIATE("RightIndexIntermediate", null),
+	RIGHT_INDEX_DISTAL("RightIndexDistal", null),
+	RIGHT_MIDDLE_PROXIMAL("RightMiddleProximal", null),
+	RIGHT_MIDDLE_INTERMEDIATE("RightMiddleIntermediate", null),
+	RIGHT_MIDDLE_DISTAL("RightMiddleDistal", null),
+	RIGHT_RING_PROXIMAL("RightRingProximal", null),
+	RIGHT_RING_INTERMEDIATE("RightRingIntermediate", null),
+	RIGHT_RING_DISTAL("RightRingDistal", null),
+	RIGHT_LITTLE_PROXIMAL("RightLittleProximal", null),
+	RIGHT_LITTLE_INTERMEDIATE("RightLittleIntermediate", null),
+	RIGHT_LITTLE_DISTAL("RightLittleDistal", null),
+	LAST_BONE("LastBone", null);
 
 
 	private static final Map<String, UnityBone> byStringVal = new HashMap<>();
-	private static final Map<Integer, UnityBone> byBodyPart = new HashMap<>();
+	private static final Map<BoneType, UnityBone> byBoneType = new HashMap<>();
 
 	static {
 		for (UnityBone configVal : values()) {
@@ -79,24 +79,24 @@ public enum UnityBone {
 	}
 	static {
 		for (UnityBone configVal : values()) {
-			byBodyPart.put(configVal.bodyPart, configVal);
+			byBoneType.put(configVal.boneType, configVal);
 		}
 	}
 
 	public static final UnityBone[] values = values();
 	public final String stringVal;
-	public final int bodyPart;
+	public final BoneType boneType;
 
-	UnityBone(String stringVal, int bodyPart) {
+	UnityBone(String stringVal, BoneType boneType) {
 		this.stringVal = stringVal;
-		this.bodyPart = bodyPart;
+		this.boneType = boneType;
 	}
 
 	public static UnityBone getByStringVal(String stringVal) {
 		return stringVal == null ? null : byStringVal.get(stringVal.toLowerCase());
 	}
 
-	public static UnityBone getByBodyPart(int bone) {
-		return bone == 0 ? null : byBodyPart.get(bone);
+	public static UnityBone getByBoneType(BoneType boneType) {
+		return boneType == null ? null : byBoneType.get(boneType);
 	}
 }
