@@ -9,7 +9,7 @@ on:
 
 jobs:
   rebase:
-    if: github.repository == "SlimeVR/SlimeVR-Server"
+    if: ${{ github.repository == 'SlimeVR/SlimeVR-Server' }}
     runs-on: ubuntu-latest
     permissions:
       contents: write
