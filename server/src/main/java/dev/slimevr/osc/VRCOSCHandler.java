@@ -214,8 +214,10 @@ public class VRCOSCHandler implements OSCHandler {
 
 		// Send OSC data
 		if (oscSender != null && oscSender.isConnected()) {
+			int id = 0;
 			for (int i = 0; i < shareableTrackers.size(); i++) {
 				if (trackersEnabled[i]) {
+					id++;
 					// Send regular trackers' positions
 					shareableTrackers.get(i).getPosition(vec);
 					oscArgs.clear();
@@ -223,7 +225,7 @@ public class VRCOSCHandler implements OSCHandler {
 					oscArgs.add(vec.y);
 					oscArgs.add(-vec.z);
 					oscMessage = new OSCMessage(
-						"/tracking/trackers/" + (i + 1) + "/position",
+						"/tracking/trackers/" + id + "/position",
 						oscArgs
 					);
 					try {
@@ -250,7 +252,7 @@ public class VRCOSCHandler implements OSCHandler {
 					oscArgs.add(floatBuf[2] * FastMath.RAD_TO_DEG);
 
 					oscMessage = new OSCMessage(
-						"/tracking/trackers/" + (i + 1) + "/rotation",
+						"/tracking/trackers/" + id + "/rotation",
 						oscArgs
 					);
 					try {

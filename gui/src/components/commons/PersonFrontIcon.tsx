@@ -50,86 +50,86 @@ export function PersonFrontIcon({ width }: { width?: number }) {
         cx="139.004"
         cy="170"
         r={CIRCLE_RADIUS}
-        id={BodyPart[BodyPart.LEFT_HAND]}
-      />
-      <circle
-        className="body-part-circle"
-        cx="122"
-        cy="93"
-        r={CIRCLE_RADIUS}
-        id={BodyPart[BodyPart.LEFT_UPPER_ARM]}
-      />
-      <circle
-        className="body-part-circle"
-        cx="122"
-        cy="93"
-        r={CIRCLE_RADIUS}
-        id={BodyPart[BodyPart.LEFT_SHOULDER]}
-      />
-      <circle
-        className="body-part-circle"
-        cx="139.004"
-        cy="170"
-        r={CIRCLE_RADIUS}
-        id={BodyPart[BodyPart.LEFT_LOWER_ARM]}
-      />
-      <circle
-        className="body-part-circle"
-        cx="97.004"
-        cy="360"
-        r={CIRCLE_RADIUS}
-        id={BodyPart[BodyPart.LEFT_LOWER_LEG]}
-      />
-      <circle
-        className="body-part-circle"
-        cx="103.004"
-        cy="260"
-        r={CIRCLE_RADIUS}
-        id={BodyPart[BodyPart.LEFT_UPPER_LEG]}
-      />
-      <circle
-        className="body-part-circle"
-        cx="97.004"
-        cy="360"
-        r={CIRCLE_RADIUS}
-        id={BodyPart[BodyPart.LEFT_FOOT]}
-      />
-
-      <circle
-        className="body-part-circle"
-        cx="26.004"
-        cy="170"
-        r={CIRCLE_RADIUS}
         id={BodyPart[BodyPart.RIGHT_HAND]}
       />
-
       <circle
         className="body-part-circle"
-        cx="43"
+        cx="122"
         cy="93"
         r={CIRCLE_RADIUS}
         id={BodyPart[BodyPart.RIGHT_UPPER_ARM]}
       />
       <circle
         className="body-part-circle"
-        cx="43"
+        cx="122"
         cy="93"
         r={CIRCLE_RADIUS}
         id={BodyPart[BodyPart.RIGHT_SHOULDER]}
       />
       <circle
         className="body-part-circle"
-        cx="26.004"
+        cx="139.004"
         cy="170"
         r={CIRCLE_RADIUS}
         id={BodyPart[BodyPart.RIGHT_LOWER_ARM]}
       />
       <circle
         className="body-part-circle"
-        cx="67.004"
+        cx="97.004"
         cy="360"
         r={CIRCLE_RADIUS}
         id={BodyPart[BodyPart.RIGHT_LOWER_LEG]}
+      />
+      <circle
+        className="body-part-circle"
+        cx="103.004"
+        cy="260"
+        r={CIRCLE_RADIUS}
+        id={BodyPart[BodyPart.RIGHT_UPPER_LEG]}
+      />
+      <circle
+        className="body-part-circle"
+        cx="97.004"
+        cy="360"
+        r={CIRCLE_RADIUS}
+        id={BodyPart[BodyPart.RIGHT_FOOT]}
+      />
+
+      <circle
+        className="body-part-circle"
+        cx="26.004"
+        cy="170"
+        r={CIRCLE_RADIUS}
+        id={BodyPart[BodyPart.LEFT_HAND]}
+      />
+
+      <circle
+        className="body-part-circle"
+        cx="43"
+        cy="93"
+        r={CIRCLE_RADIUS}
+        id={BodyPart[BodyPart.LEFT_UPPER_ARM]}
+      />
+      <circle
+        className="body-part-circle"
+        cx="43"
+        cy="93"
+        r={CIRCLE_RADIUS}
+        id={BodyPart[BodyPart.LEFT_SHOULDER]}
+      />
+      <circle
+        className="body-part-circle"
+        cx="26.004"
+        cy="170"
+        r={CIRCLE_RADIUS}
+        id={BodyPart[BodyPart.LEFT_LOWER_ARM]}
+      />
+      <circle
+        className="body-part-circle"
+        cx="67.004"
+        cy="360"
+        r={CIRCLE_RADIUS}
+        id={BodyPart[BodyPart.LEFT_LOWER_LEG]}
       />
 
       <circle
@@ -137,14 +137,14 @@ export function PersonFrontIcon({ width }: { width?: number }) {
         cx="61.004"
         cy="260"
         r={CIRCLE_RADIUS}
-        id={BodyPart[BodyPart.RIGHT_UPPER_LEG]}
+        id={BodyPart[BodyPart.LEFT_UPPER_LEG]}
       />
       <circle
         className="body-part-circle"
         cx="67.004"
         cy="360"
         r={CIRCLE_RADIUS}
-        id={BodyPart[BodyPart.RIGHT_FOOT]}
+        id={BodyPart[BodyPart.LEFT_FOOT]}
       />
     </svg>
   );

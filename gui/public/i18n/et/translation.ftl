@@ -88,8 +88,8 @@ bvh-start_recording = Salvesta BVH
 bvh-recording = Salvestamine...
 
 ## Overlay settings
-overlay-is_visible_label = Näita Ülekatet SteamVR-is
-overlay-is_mirrored_label = Näita Ülekatet Peeglina
+widget-overlay-is_visible_label = Näita Ülekatet SteamVR-is
+widget-overlay-is_mirrored_label = Näita Ülekatet Peeglina
 
 ## Tracker status
 tracker-status-none = Staatuseta
