@@ -6,7 +6,7 @@ on:
 
 jobs:
   pull_request:
-
+    if: github.repository == "SlimeVR/SlimeVR-Server"
     runs-on: ubuntu-latest
     permissions:
       pull-requests: write
