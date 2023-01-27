@@ -592,8 +592,7 @@ public class HumanSkeleton {
 		assembleSkeletonArms(true);
 
 		// Refresh node offsets for arms
-		if (skeletonConfig != null)
-			computeDependentArmOffsets();
+		computeDependentArmOffsets();
 
 		// Rebuild the bone list
 		resetBones();
@@ -1341,8 +1340,7 @@ public class HumanSkeleton {
 				assembleSkeletonArms(true);
 
 				// Refresh node offsets for arms
-				if (skeletonConfig != null)
-					computeDependentArmOffsets();
+				computeDependentArmOffsets();
 			}
 			case SKATING_CORRECTION -> legTweaks.setSkatingReductionEnabled(newValue);
 			case FLOOR_CLIP -> legTweaks.setFloorclipEnabled(newValue);
