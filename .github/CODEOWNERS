@@ -10,7 +10,7 @@
 
 /gui/src/components/settings/ @Louka3000 @loucass003
 
-/gui/src-tauri/ @ImUrX @TheButlah 
+/gui/src-tauri/ @ImUrX @TheButlah
 
 # Some server code~
 /server/ @ButterscotchV @Eirenliel @Louka3000
@@ -20,7 +20,7 @@
 /server/src/main/java/dev/slimevr/posestreamer/ @ButterscotchV
 
 /server/src/main/java/dev/slimevr/osc/ @Louka3000
-/server/src/main/java/dev/slimevr/vr/processor/ @Louka3000
+/server/src/main/java/dev/slimevr/tracking/processor/ @Louka3000
 /server/src/main/java/dev/slimevr/filtering/ @Louka3000
 
 server/src/main/java/dev/slimevr/config/ @loucass003
