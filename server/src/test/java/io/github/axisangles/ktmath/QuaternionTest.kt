@@ -72,7 +72,7 @@ class QuaternionTest {
 		val q = Quaternion(1f, 2f, 3f, 4f)
 		assertEquals(q.pow(1f), q, 1e-5)
 		assertEquals(q.pow(2f), q * q, 1e-5)
-		assertEquals(q.pow(0f), Quaternion.ONE, 1e-5)
+		assertEquals(q.pow(0f), Quaternion.IDENTITY, 1e-5)
 		assertEquals(q.pow(-1f), q.inv(), 1e-5)
 	}
 
@@ -112,7 +112,7 @@ class QuaternionTest {
 	fun angleTo() {
 		val q1 = Quaternion(1f, 0f, 0f, 0f)
 		val q2 = Quaternion(0f, 1f, 0f, 0f)
-		assertEquals(q1.angleTo(q2), PI.toFloat()/2f)
+		assertEquals(q1.angleTo(q2), PI.toFloat() / 2f)
 	}
 
 	@Test
@@ -125,7 +125,7 @@ class QuaternionTest {
 	@Test
 	fun angle() {
 		val q = Quaternion(0f, 1f, 0f, 0f)
-		assertEquals(q.angle(), PI.toFloat()/2f)
+		assertEquals(q.angle(), PI.toFloat() / 2f)
 	}
 
 	@Test
@@ -137,13 +137,13 @@ class QuaternionTest {
 	@Test
 	fun angleAbout() {
 		val q = Quaternion(1f, 1f, 1f, 0f)
-		assertEquals(q.angleAbout(Vector3.POS_Y), PI.toFloat()/4f)
+		assertEquals(q.angleAbout(Vector3.POS_Y), PI.toFloat() / 4f)
 	}
 
 	@Test
 	fun angleAboutR() {
 		val q = Quaternion(1f, 1f, 1f, 0f)
-		assertEquals(q.angleAboutR(Vector3.POS_Y), PI.toFloat()/2f)
+		assertEquals(q.angleAboutR(Vector3.POS_Y), PI.toFloat() / 2f)
 	}
 
 	@Test
@@ -216,7 +216,7 @@ class QuaternionTest {
 	private fun testEulerAngles(order: EulerOrder) {
 		val inputQ = Quaternion(1f, 2f, 3f, 4f).unit()
 		val outputQ = inputQ.toEulerAngles(order)
-			.toQuaternion().twinNearest(Quaternion.ONE)
+			.toQuaternion().twinNearest(Quaternion.IDENTITY)
 		assertEquals(inputQ, outputQ, 1e-7)
 	}
 

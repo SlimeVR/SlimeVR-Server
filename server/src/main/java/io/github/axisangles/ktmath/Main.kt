@@ -121,7 +121,7 @@ fun testQuaternionInv() {
 	for (i in 1..1000) {
 		val Q = randQuaternion()
 
-		if (relError(Q * Q.inv(), Quaternion.ONE) > 1e-6f) {
+		if (relError(Q * Q.inv(), Quaternion.IDENTITY) > 1e-6f) {
 			throw Exception("Quaternion inv accuracy test failed")
 		}
 	}
@@ -131,7 +131,7 @@ fun testQuaternionDiv() {
 	for (i in 1..1000) {
 		val Q = randQuaternion()
 
-		if (!checkError(1e-6f, Q/Q, Quaternion.ONE)) {
+		if (!checkError(1e-6f, Q/Q, Quaternion.IDENTITY)) {
 			throw Exception("Quaternion div accuracy test failed")
 		}
 		if (!checkError(1e-6f, 2f/Q, 2f*Q.inv())) {
@@ -151,7 +151,7 @@ fun testQuaternionPow() {
 		if (!checkError(2e-6f, Q.pow(-1f), Q.inv())) {
 			throw Exception("Quaternion pow -1 accuracy test failed")
 		}
-		if (!checkError(2e-6f, Q.pow(0f), Quaternion.ONE)) {
+		if (!checkError(2e-6f, Q.pow(0f), Quaternion.IDENTITY)) {
 			throw Exception("Quaternion pow 0 accuracy test failed")
 		}
 		if (!checkError(2e-6f, Q.pow(1f), Q)) {

@@ -16,7 +16,7 @@ data class Matrix3(
 	val zz: Float
 ) {
 	companion object {
-		val ZERO = Matrix3(0f, 0f, 0f, 0f, 0f, 0f, 0f, 0f, 0f)
+		val NULL = Matrix3(0f, 0f, 0f, 0f, 0f, 0f, 0f, 0f, 0f)
 		val IDENTITY = Matrix3(1f, 0f, 0f, 0f, 1f, 0f, 0f, 0f, 1f)
 	}
 

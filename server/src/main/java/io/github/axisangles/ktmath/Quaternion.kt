@@ -10,18 +10,31 @@ import kotlin.math.*
  */
 data class Quaternion(val w: Float, val x: Float, val y: Float, val z: Float) {
 	companion object {
-		val ZERO = Quaternion(0f, 0f, 0f, 0f)
-		val ONE = Quaternion(1f, 0f, 0f, 0f)
+		val NULL = Quaternion(0f, 0f, 0f, 0f)
+		val IDENTITY = Quaternion(1f, 0f, 0f, 0f)
 		val I = Quaternion(0f, 1f, 0f, 0f)
 		val J = Quaternion(0f, 0f, 1f, 0f)
 		val K = Quaternion(0f, 0f, 0f, 1f)
 
 		// creates a new quaternion representing the rotation about axis v by rotational angle v
 		/**
-		 * creates a new quaternion representing the rotation about axis v by rotational angle of v's length
+		 * creates a new quaternion representing the rotation about v's axis
+		 * by an angle of v's length
+		 * @param v the rotation vector
 		 * @return the new quaternion
 		 **/
 		fun fromRotationVector(v: Vector3): Quaternion = Quaternion(0f, v / 2f).exp()
+
+		/**
+		 * creates a new quaternion representing the rotation about axis v
+		 * by an angle of v's length
+		 * @param vx the rotation vector's x component
+		 * @param vy the rotation vector's y component
+		 * @param vz the rotation vector's z component
+		 * @return the new quaternion
+		 **/
+		fun fromRotationVector(vx: Float, vy: Float, vz: Float): Quaternion =
+			fromRotationVector(Vector3(vx, vy, vz))
 
 		/**
 		 * finds Q, the smallest-angled quaternion whose local u direction aligns with
@@ -39,6 +52,9 @@ data class Quaternion(val w: Float, val x: Float, val y: Float, val z: Float) {
 		}
 	}
 
+	/**
+	 * @return the quaternion with w real component and xyz imaginary components
+	 */
 	constructor(w: Float, xyz: Vector3) : this(w, xyz.x, xyz.y, xyz.z)
 
 	/**
@@ -102,7 +118,7 @@ data class Quaternion(val w: Float, val x: Float, val y: Float, val z: Float) {
 	 **/
 	fun unit(): Quaternion {
 		val m = len()
-		return if (m == 0f) ZERO else this / m
+		return if (m == 0f) NULL else this / m
 	}
 
 	operator fun times(that: Float): Quaternion = Quaternion(
@@ -293,7 +309,7 @@ data class Quaternion(val w: Float, val x: Float, val y: Float, val z: Float) {
 	 **/
 	fun angleAbout(u: Vector3): Float {
 		val si = u.dot(xyz)
-		val co = u.len()*w
+		val co = u.len() * w
 		return atan2(si, co)
 	}
 
@@ -302,7 +318,7 @@ data class Quaternion(val w: Float, val x: Float, val y: Float, val z: Float) {
 	 * @param u the axis
 	 * @return angle
 	 **/
-	fun angleAboutR(u: Vector3): Float = 2f * twinNearest(ONE).angleAbout(u)
+	fun angleAboutR(u: Vector3): Float = 2f * twinNearest(IDENTITY).angleAbout(u)
 
 	/**
 	 * finds Q, the quaternion nearest to this quaternion representing a rotation purely
@@ -351,7 +367,7 @@ data class Quaternion(val w: Float, val x: Float, val y: Float, val z: Float) {
 	 * computes the rotation vector representing this quaternion's rotation
 	 * @return rotation vector
 	 **/
-	fun toRotationVector(): Vector3 = 2f * twinNearest(ONE).log().xyz
+	fun toRotationVector(): Vector3 = 2f * twinNearest(IDENTITY).log().xyz
 
 	/**
 	 * computes the matrix representing this quaternion's rotation
