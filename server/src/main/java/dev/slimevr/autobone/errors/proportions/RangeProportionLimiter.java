@@ -1,7 +1,7 @@
 package dev.slimevr.autobone.errors.proportions;
 
 import com.jme3.math.FastMath;
-import dev.slimevr.vr.processor.skeleton.SkeletonConfig;
+import dev.slimevr.tracking.processor.HumanPoseManager;
 
 import java.util.function.Function;
 
@@ -19,7 +19,7 @@ public class RangeProportionLimiter extends HardProportionLimiter {
 	 */
 	public RangeProportionLimiter(
 		float targetRatio,
-		Function<SkeletonConfig, Float> boneLengthFunction,
+		Function<HumanPoseManager, Float> boneLengthFunction,
 		float range
 	) {
 		super(targetRatio, boneLengthFunction);
@@ -41,7 +41,7 @@ public class RangeProportionLimiter extends HardProportionLimiter {
 	 */
 	public RangeProportionLimiter(
 		float targetRatio,
-		Function<SkeletonConfig, Float> boneLengthFunction,
+		Function<HumanPoseManager, Float> boneLengthFunction,
 		float positiveRange,
 		float negativeRange
 	) {
@@ -58,7 +58,7 @@ public class RangeProportionLimiter extends HardProportionLimiter {
 	}
 
 	@Override
-	public float getProportionError(SkeletonConfig config, float height) {
+	public float getProportionError(HumanPoseManager config, float height) {
 		float boneLength = boneLengthFunction.apply(config);
 		float ratioOffset = targetRatio - (boneLength / height);
 

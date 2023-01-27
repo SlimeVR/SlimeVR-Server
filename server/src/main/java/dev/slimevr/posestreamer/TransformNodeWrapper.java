@@ -2,7 +2,7 @@ package dev.slimevr.posestreamer;
 
 import com.jme3.math.Quaternion;
 import com.jme3.math.Transform;
-import dev.slimevr.vr.processor.TransformNode;
+import dev.slimevr.tracking.processor.TransformNode;
 import io.eiren.util.collections.FastList;
 
 import java.util.List;

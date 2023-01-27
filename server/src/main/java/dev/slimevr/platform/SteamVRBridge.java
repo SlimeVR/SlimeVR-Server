@@ -6,8 +6,8 @@ import dev.slimevr.bridge.ProtobufBridge;
 import dev.slimevr.bridge.ProtobufMessages;
 import dev.slimevr.config.BridgeConfig;
 import dev.slimevr.util.ann.VRServerThread;
-import dev.slimevr.vr.Device;
-import dev.slimevr.vr.trackers.*;
+import dev.slimevr.tracking.Device;
+import dev.slimevr.tracking.trackers.*;
 
 import java.util.List;
 

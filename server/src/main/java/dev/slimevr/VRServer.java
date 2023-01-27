@@ -15,13 +15,13 @@ import dev.slimevr.poserecorder.BVHRecorder;
 import dev.slimevr.protocol.ProtocolAPI;
 import dev.slimevr.serial.SerialHandler;
 import dev.slimevr.util.ann.VRServerThread;
-import dev.slimevr.vr.DeviceManager;
-import dev.slimevr.vr.processor.HumanPoseProcessor;
-import dev.slimevr.vr.processor.skeleton.Skeleton;
-import dev.slimevr.vr.trackers.HMDTracker;
-import dev.slimevr.vr.trackers.ShareableTracker;
-import dev.slimevr.vr.trackers.Tracker;
-import dev.slimevr.vr.trackers.udp.TrackersUDPServer;
+import dev.slimevr.tracking.DeviceManager;
+import dev.slimevr.tracking.processor.HumanPoseManager;
+import dev.slimevr.tracking.processor.skeleton.HumanSkeleton;
+import dev.slimevr.tracking.trackers.HMDTracker;
+import dev.slimevr.tracking.trackers.ShareableTracker;
+import dev.slimevr.tracking.trackers.Tracker;
+import dev.slimevr.tracking.trackers.udp.TrackersUDPServer;
 import dev.slimevr.websocketapi.WebSocketVRBridge;
 import io.eiren.util.OperatingSystem;
 import io.eiren.util.ann.ThreadSafe;
@@ -42,7 +42,7 @@ import java.util.function.Consumer;
 
 public class VRServer extends Thread {
 
-	public final HumanPoseProcessor humanPoseProcessor;
+	public final HumanPoseManager humanPoseManager;
 	public final HMDTracker hmdTracker;
 	private final List<Tracker> trackers = new FastList<>();
 	private final TrackersUDPServer trackersServer;
@@ -85,8 +85,8 @@ public class VRServer extends Thread {
 		hmdTracker.position.set(0, 1.8f, 0); // Set starting position for easier
 												// debugging
 		// TODO Multiple processors
-		humanPoseProcessor = new HumanPoseProcessor(this);
-		shareTrackers = humanPoseProcessor.getComputedTrackers();
+		humanPoseManager = new HumanPoseManager(this);
+		shareTrackers = humanPoseManager.getShareableTracker();
 
 		// Start server for SlimeVR trackers
 		int trackerPort = configManager.getVrConfig().getServer().getTrackerPort();
@@ -178,7 +178,7 @@ public class VRServer extends Thread {
 		vrcOSCHandler = new VRCOSCHandler(
 			this,
 			hmdTracker,
-			humanPoseProcessor,
+			humanPoseManager,
 			driverBridge,
 			getConfigManager().getVrConfig().getVrcOSC(),
 			shareTrackers
@@ -234,15 +234,15 @@ public class VRServer extends Thread {
 	@ThreadSafe
 	public void trackerUpdated(Tracker tracker) {
 		queueTask(() -> {
-			humanPoseProcessor.trackerUpdated(tracker);
+			humanPoseManager.trackerUpdated(tracker);
 			this.getConfigManager().getVrConfig().writeTrackerConfig(tracker);
 			this.getConfigManager().saveConfig();
 		});
 	}
 
 	@ThreadSafe
-	public void addSkeletonUpdatedCallback(Consumer<Skeleton> consumer) {
-		queueTask(() -> humanPoseProcessor.addSkeletonUpdatedCallback(consumer));
+	public void addSkeletonUpdatedCallback(Consumer<HumanSkeleton> consumer) {
+		queueTask(() -> humanPoseManager.addSkeletonUpdatedCallback(consumer));
 	}
 
 	@Override
@@ -267,7 +267,7 @@ public class VRServer extends Thread {
 			for (Tracker tracker : trackers) {
 				tracker.tick();
 			}
-			humanPoseProcessor.update();
+			humanPoseManager.update();
 			for (Bridge bridge : bridges) {
 				bridge.dataWrite();
 			}
@@ -286,7 +286,7 @@ public class VRServer extends Thread {
 
 	@VRServerThread
 	private void trackerAdded(Tracker tracker) {
-		humanPoseProcessor.trackerAdded(tracker);
+		humanPoseManager.trackerAdded(tracker);
 	}
 
 	@ThreadSecure
@@ -302,15 +302,15 @@ public class VRServer extends Thread {
 	}
 
 	public void resetTrackers() {
-		queueTask(humanPoseProcessor::resetTrackers);
+		queueTask(humanPoseManager::resetTrackersFull);
 	}
 
 	public void resetTrackersYaw() {
-		queueTask(humanPoseProcessor::resetTrackersYaw);
+		queueTask(humanPoseManager::resetTrackersYaw);
 	}
 
 	public void resetTrackersMounting() {
-		queueTask(humanPoseProcessor::resetTrackersMounting);
+		queueTask(humanPoseManager::resetTrackersMounting);
 	}
 
 	public void scheduleResetTrackers(long delay) {
@@ -330,32 +330,32 @@ public class VRServer extends Thread {
 
 	class resetTask extends TimerTask {
 		public void run() {
-			queueTask(humanPoseProcessor::resetTrackers);
+			queueTask(humanPoseManager::resetTrackersFull);
 		}
 	}
 
 	class yawResetTask extends TimerTask {
 		public void run() {
-			queueTask(humanPoseProcessor::resetTrackersYaw);
+			queueTask(humanPoseManager::resetTrackersYaw);
 		}
 	}
 
 	class resetMountingTask extends TimerTask {
 		public void run() {
-			queueTask(humanPoseProcessor::resetTrackersMounting);
+			queueTask(humanPoseManager::resetTrackersMounting);
 		}
 	}
 
 	public void setLegTweaksEnabled(boolean value) {
-		queueTask(() -> humanPoseProcessor.setLegTweaksEnabled(value));
+		queueTask(() -> humanPoseManager.setLegTweaksEnabled(value));
 	}
 
 	public void setSkatingReductionEnabled(boolean value) {
-		queueTask(() -> humanPoseProcessor.setSkatingCorrectionEnabled(value));
+		queueTask(() -> humanPoseManager.setSkatingCorrectionEnabled(value));
 	}
 
 	public void setFloorClipEnabled(boolean value) {
-		queueTask(() -> humanPoseProcessor.setFloorClipEnabled(value));
+		queueTask(() -> humanPoseManager.setFloorClipEnabled(value));
 	}
 
 	public int getTrackersCount() {
