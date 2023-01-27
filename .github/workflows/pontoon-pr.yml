@@ -5,19 +5,19 @@ on:
       - pontoon
 
 jobs:
-  rebase:
+  pull_request:
 
     runs-on: ubuntu-latest
     permissions:
-      contents: write
+      pull-requests: write
 
     steps:
       - uses: actions/checkout@v3
         with:
           submodules: recursive
-      - name: pull-request
-        uses: repo-sync/pull-request@v2
+      - uses: repo-sync/pull-request@v2
         with:
           destination_branch: "main"
           pr_title: "New Pontoon translations"
+          pr_body: "Please don't squash me 🥺"
           pr_label: "Area: Translation"
