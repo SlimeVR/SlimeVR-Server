@@ -158,7 +158,7 @@ data class Quaternion(val w: Float, val x: Float, val y: Float, val z: Float) {
 			return Quaternion(ln(len), xyz / w)
 		}
 
-		val ang = atan(co, si)
+		val ang = atan2(si, co)
 		return Quaternion(ln(len), ang / si * xyz)
 	}
 
@@ -264,13 +264,13 @@ data class Quaternion(val w: Float, val x: Float, val y: Float, val z: Float) {
 	 * computes this quaternion's angle to identity in quaternion space
 	 * @return angle
 	 **/
-	fun angle(): Float = atan(w, xyz.len())
+	fun angle(): Float = atan2(xyz.len(), w)
 
 	/**
 	 * computes this quaternion's angle to identity in rotation space
 	 * @return angle
 	 **/
-	fun angleR(): Float = 2f * atan(abs(w), xyz.len())
+	fun angleR(): Float = 2f * atan2(xyz.len(), abs(w))
 
 	/**
 	 * computes the angle between this quaternion and that quaternion in quaternion space
@@ -294,7 +294,7 @@ data class Quaternion(val w: Float, val x: Float, val y: Float, val z: Float) {
 	fun angleAbout(u: Vector3): Float {
 		val si = u.dot(xyz)
 		val co = u.len()*w
-		return atan(co, si)
+		return atan2(si, co)
 	}
 
 	/**
@@ -302,11 +302,7 @@ data class Quaternion(val w: Float, val x: Float, val y: Float, val z: Float) {
 	 * @param u the axis
 	 * @return angle
 	 **/
-	fun angleAboutR(u: Vector3): Float {
-		val si = u.dot(xyz)
-		val co = u.len()*w
-		return 2f * atan(abs(co), si)
-	}//: Float = 2f*this.twinNearest(Quaternion.ONE).angleAbout(u)
+	fun angleAboutR(u: Vector3): Float = 2f * twinNearest(ONE).angleAbout(u)
 
 	/**
 	 * finds Q, the quaternion nearest to this quaternion representing a rotation purely
@@ -355,7 +351,7 @@ data class Quaternion(val w: Float, val x: Float, val y: Float, val z: Float) {
 	 * computes the rotation vector representing this quaternion's rotation
 	 * @return rotation vector
 	 **/
-	fun toRotationVector(): Vector3 = 2f * log().xyz
+	fun toRotationVector(): Vector3 = 2f * twinNearest(ONE).log().xyz
 
 	/**
 	 * computes the matrix representing this quaternion's rotation

@@ -170,7 +170,84 @@ class QuaternionTest {
 	@Test
 	fun fromTo() {
 		val q1 = Quaternion(1f, 0f, 0f, 1f).unit()
-		assertEquals(Quaternion.fromTo(Vector3.POS_X, Vector3.POS_Y), q1)
+		assertEquals(q1, Quaternion.fromTo(Vector3.POS_X, Vector3.POS_Y))
+	}
+
+	@Test
+	fun sandwich() {
+		val v1 = Quaternion(1f, 1f, 0f, 0f).sandwich(Vector3(1f, 1f, 0f))
+		val v2 = Vector3(1f, 0f, 1f)
+		assertEquals(v2, v1)
+	}
+
+	@Test
+	fun axis() {
+		val v1 = Quaternion(0f, Quaternion(1f, 2f, 3f, 4f).axis())
+		val v2 = Quaternion(0f, Vector3(0.37139067f, 0.557086f, 0.74278134f))
+		assertEquals(v2, v1, 1e-7)
+	}
+
+	@Test
+	fun toRotationVector() {
+		val v1 = Quaternion(1f, 2f, 3f, 4f).toRotationVector()
+		val v2 = Vector3(1.0303806f, 1.5455709f, 2.0607612f)
+		assertEquals(v2, v1)
+	}
+
+	@Test
+	fun fromRotationVector() {
+		val v1 = Quaternion.fromRotationVector(Vector3(1f, 2f, 3f))
+		val v2 = Quaternion(-0.29555118f, 0.25532186f, 0.5106437f, 0.7659656f)
+		assertEquals(v2, v1)
+	}
+
+	@Test
+	fun toMatrix() {
+		/* ktlint-disable */
+		val m1 = Matrix3(
+			-1f,  0f,  0f,
+			 0f, -1f,  0f,
+			 0f,  0f,  1f)
+		/* ktlint-enable */
+		val m2 = Quaternion(0f, 0f, 0f, 2f).toMatrix()
+		assertEquals(m1, m2)
+	}
+
+	private fun testEulerAngles(order: EulerOrder) {
+		val inputQ = Quaternion(1f, 2f, 3f, 4f).unit()
+		val outputQ = inputQ.toEulerAngles(order)
+			.toQuaternion().twinNearest(Quaternion.ONE)
+		assertEquals(inputQ, outputQ, 1e-7)
+	}
+
+	@Test
+	fun eulerAnglesXYZ() {
+		testEulerAngles(EulerOrder.XYZ)
+	}
+
+	@Test
+	fun eulerAnglesYZX() {
+		testEulerAngles(EulerOrder.YZX)
+	}
+
+	@Test
+	fun eulerAnglesZXY() {
+		testEulerAngles(EulerOrder.ZXY)
+	}
+
+	@Test
+	fun eulerAnglesZYX() {
+		testEulerAngles(EulerOrder.ZYX)
+	}
+
+	@Test
+	fun eulerAnglesYXZ() {
+		testEulerAngles(EulerOrder.YXZ)
+	}
+
+	@Test
+	fun eulerAnglesXZY() {
+		testEulerAngles(EulerOrder.XZY)
 	}
 
 	companion object {
