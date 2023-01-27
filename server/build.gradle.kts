@@ -9,7 +9,7 @@ import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
 import java.io.ByteArrayOutputStream
 
 plugins {
-	kotlin("jvm") version "1.7.21"
+	kotlin("jvm") version "1.8.0"
 	application
 	id("com.github.johnrengelman.shadow") version "7.1.2"
 	id("com.diffplug.spotless") version "6.12.0"
