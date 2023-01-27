@@ -1,0 +1,28 @@
+# This workflow will triage pull requests and apply a label based on the
+# paths that are modified in the pull request.
+#
+# To use this workflow, you will need to set up a .github/labeler.yml
+# file with configuration.  For more information, see:
+# https://github.com/actions/labeler
+
+name: Rebaser
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  rebase:
+
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+
+    steps:
+      - uses: actions/checkout@v3
+        with:
+          ref: pontoon
+          submodules: recursive
+      - uses: imba-tjd/rebase-upstream-action@0.5
+        with:
+          branch: main
