@@ -1,9 +1,6 @@
-# This workflow will triage pull requests and apply a label based on the
-# paths that are modified in the pull request.
+# This workflow will rebase `pontoon` with `main` changes, it's for making the
+# Pontoon bot not try making commits to main
 #
-# To use this workflow, you will need to set up a .github/labeler.yml
-# file with configuration.  For more information, see:
-# https://github.com/actions/labeler
 
 name: Rebaser
 on:
