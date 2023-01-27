@@ -21,6 +21,7 @@ jobs:
           submodules: recursive
       - uses: imba-tjd/rebase-upstream-action@0.5
         with:
+          upstream: SlimeVR/SlimeVR-Server
           branch: main
       - name: Push rebase
         uses: github-actions-x/commit@v2.9
