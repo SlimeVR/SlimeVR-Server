@@ -527,7 +527,7 @@ onboarding-automatic_proportions-recording-timer = { $time ->
     *[other] { $time } Sekunden verbleibend
 }
 onboarding-automatic_proportions-verify_results-title = Ergebnisse überprüfen
-onboarding-automatic_proportions-verify_results-description = Überprüfen Sie die Ergebnisse unten, sehen diese korrekt aus?
+onboarding-automatic_proportions-verify_results-description = Sehen die untenstehenden Ergebnisse korrekt aus?
 onboarding-automatic_proportions-verify_results-results = Aufnahme-Ergebnisse
 onboarding-automatic_proportions-verify_results-processing = Ergebnis wird bearbeitet
 onboarding-automatic_proportions-verify_results-redo = Aufnahme wiederholen
