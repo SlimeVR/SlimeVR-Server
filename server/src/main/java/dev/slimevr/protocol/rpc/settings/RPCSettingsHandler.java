@@ -12,9 +12,9 @@ import dev.slimevr.platform.SteamVRBridge;
 import dev.slimevr.protocol.GenericConnection;
 import dev.slimevr.protocol.ProtocolAPI;
 import dev.slimevr.protocol.rpc.RPCHandler;
-import dev.slimevr.vr.processor.skeleton.SkeletonConfigToggles;
-import dev.slimevr.vr.processor.skeleton.SkeletonConfigValues;
-import dev.slimevr.vr.trackers.TrackerRole;
+import dev.slimevr.tracking.processor.config.SkeletonConfigToggles;
+import dev.slimevr.tracking.processor.config.SkeletonConfigValues;
+import dev.slimevr.tracking.trackers.TrackerRole;
 import solarxr_protocol.rpc.ChangeSettingsRequest;
 import solarxr_protocol.rpc.RpcMessage;
 import solarxr_protocol.rpc.RpcMessageHeader;
@@ -68,7 +68,7 @@ public record RPCSettingsHandler(RPCHandler rpcHandler, ProtocolAPI api) {
 				RPCSettingsBuilder
 					.createModelSettings(
 						fbb,
-						this.api.server.humanPoseProcessor.getSkeletonConfig(),
+						this.api.server.humanPoseManager,
 						this.api.server.getConfigManager().getVrConfig().getLegTweaks()
 					),
 				RPCSettingsBuilder
@@ -227,13 +227,13 @@ public record RPCSettingsHandler(RPCHandler rpcHandler, ProtocolAPI api) {
 						.setMountingResetTaps(tapDetectionSettings.tapMountingResetTaps());
 				}
 
-				this.api.server.humanPoseProcessor.getSkeleton().updateTapDetectionConfig();
+				this.api.server.humanPoseManager.updateTapDetectionConfig();
 			}
 		}
 
 		var modelSettings = req.modelSettings();
 		if (modelSettings != null) {
-			var cfg = this.api.server.humanPoseProcessor.getSkeletonConfig();
+			var hpm = this.api.server.humanPoseManager;
 			var legTweaksConfig = this.api.server.getConfigManager().getVrConfig().getLegTweaks();
 			var toggles = modelSettings.toggles();
 			var ratios = modelSettings.ratios();
@@ -242,73 +242,73 @@ public record RPCSettingsHandler(RPCHandler rpcHandler, ProtocolAPI api) {
 			if (toggles != null) {
 				// Note: toggles.has____ returns the same as toggles._____ this
 				// seems like a bug
-				cfg.setToggle(SkeletonConfigToggles.EXTENDED_SPINE_MODEL, toggles.extendedSpine());
-				cfg
+				hpm.setToggle(SkeletonConfigToggles.EXTENDED_SPINE_MODEL, toggles.extendedSpine());
+				hpm
 					.setToggle(
 						SkeletonConfigToggles.EXTENDED_PELVIS_MODEL,
 						toggles.extendedPelvis()
 					);
-				cfg.setToggle(SkeletonConfigToggles.EXTENDED_KNEE_MODEL, toggles.extendedKnee());
-				cfg
+				hpm.setToggle(SkeletonConfigToggles.EXTENDED_KNEE_MODEL, toggles.extendedKnee());
+				hpm
 					.setToggle(
 						SkeletonConfigToggles.FORCE_ARMS_FROM_HMD,
 						toggles.forceArmsFromHmd()
 					);
-				cfg.setToggle(SkeletonConfigToggles.EXTENDED_SPINE_MODEL, toggles.extendedSpine());
-				cfg
+				hpm.setToggle(SkeletonConfigToggles.EXTENDED_SPINE_MODEL, toggles.extendedSpine());
+				hpm
 					.setToggle(
 						SkeletonConfigToggles.EXTENDED_PELVIS_MODEL,
 						toggles.extendedPelvis()
 					);
-				cfg.setToggle(SkeletonConfigToggles.EXTENDED_KNEE_MODEL, toggles.extendedKnee());
-				cfg
+				hpm.setToggle(SkeletonConfigToggles.EXTENDED_KNEE_MODEL, toggles.extendedKnee());
+				hpm
 					.setToggle(
 						SkeletonConfigToggles.FORCE_ARMS_FROM_HMD,
 						toggles.forceArmsFromHmd()
 					);
-				cfg.setToggle(SkeletonConfigToggles.FLOOR_CLIP, toggles.floorClip());
-				cfg
+				hpm.setToggle(SkeletonConfigToggles.FLOOR_CLIP, toggles.floorClip());
+				hpm
 					.setToggle(
 						SkeletonConfigToggles.SKATING_CORRECTION,
 						toggles.skatingCorrection()
 					);
-				cfg.setToggle(SkeletonConfigToggles.VIVE_EMULATION, toggles.viveEmulation());
+				hpm.setToggle(SkeletonConfigToggles.VIVE_EMULATION, toggles.viveEmulation());
 			}
 
 			if (ratios != null) {
 				if (ratios.hasImputeWaistFromChestHip()) {
-					cfg
+					hpm
 						.setValue(
 							SkeletonConfigValues.WAIST_FROM_CHEST_HIP_AVERAGING,
 							ratios.imputeWaistFromChestHip()
 						);
 				}
 				if (ratios.hasImputeWaistFromChestLegs()) {
-					cfg
+					hpm
 						.setValue(
 							SkeletonConfigValues.WAIST_FROM_CHEST_LEGS_AVERAGING,
 							ratios.imputeWaistFromChestLegs()
 						);
 				}
 				if (ratios.hasImputeHipFromChestLegs()) {
-					cfg
+					hpm
 						.setValue(
 							SkeletonConfigValues.HIP_FROM_CHEST_LEGS_AVERAGING,
 							ratios.imputeHipFromChestLegs()
 						);
 				}
 				if (ratios.hasImputeHipFromWaistLegs()) {
-					cfg
+					hpm
 						.setValue(
 							SkeletonConfigValues.HIP_FROM_WAIST_LEGS_AVERAGING,
 							ratios.imputeHipFromWaistLegs()
 						);
 				}
 				if (ratios.hasInterpHipLegs()) {
-					cfg.setValue(SkeletonConfigValues.HIP_LEGS_AVERAGING, ratios.interpHipLegs());
+					hpm.setValue(SkeletonConfigValues.HIP_LEGS_AVERAGING, ratios.interpHipLegs());
 				}
 				if (ratios.hasInterpKneeTrackerAnkle()) {
-					cfg
+					hpm
 						.setValue(
 							SkeletonConfigValues.KNEE_TRACKER_ANKLE_AVERAGING,
 							ratios.interpKneeTrackerAnkle()
@@ -320,10 +320,10 @@ public record RPCSettingsHandler(RPCHandler rpcHandler, ProtocolAPI api) {
 				if (legTweaks.hasCorrectionStrength()) {
 					legTweaksConfig.setCorrectionStrength(legTweaks.correctionStrength());
 				}
-				this.api.server.humanPoseProcessor.getSkeleton().updateLegTweaksConfig();
+				this.api.server.humanPoseManager.updateLegTweaksConfig();
 			}
 
-			cfg.save();
+			hpm.saveConfig();
 
 		}
 

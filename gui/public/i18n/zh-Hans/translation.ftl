@@ -61,7 +61,7 @@ skeleton_bone-CONTROLLER_Z = 控制器距离 Z
 skeleton_bone-ELBOW_OFFSET = 肘部偏移
 
 ## Tracker reset buttons
-reset-reset_all = 重置所有比例
+reset-reset_all = 重置身体比例
 reset-full = 重置
 reset-mounting = 重置佩戴
 reset-quick = 快速重置
@@ -93,19 +93,19 @@ widget-overlay-is_visible_label = 在 SteamVR 中显示覆盖层
 widget-overlay-is_mirrored_label = 镜像显示覆盖层
 
 ## Widget: Developer settings
-widget-developer_mode = 开发者模式
-widget-developer_mode-high_contrast = High contrast
-widget-developer_mode-precise_rotation = Precise rotation
-widget-developer_mode-fast_data_feed = Fast data feed
-widget-developer_mode-filter_slimes_and_hmd = Filter slimes and HMD
-widget-developer_mode-sort_by_name = Sort by name
-widget-developer_mode-raw_slime_rotation = Raw rotation
-widget-developer_mode-more_info = More info
+widget-developer_mode = 开发者选项
+widget-developer_mode-high_contrast = 高对比度
+widget-developer_mode-precise_rotation = 显示精确旋转
+widget-developer_mode-fast_data_feed = 快速数据更新
+widget-developer_mode-filter_slimes_and_hmd = 对追踪器和HMD应用滤波
+widget-developer_mode-sort_by_name = 根据名称排序
+widget-developer_mode-raw_slime_rotation = 显示原始旋转
+widget-developer_mode-more_info = 显示更多信息
 
 ## Widget: IMU Visualizer
-widget-imu_visualizer = Rotation
-widget-imu_visualizer-rotation_raw = Raw
-widget-imu_visualizer-rotation_preview = Preview
+widget-imu_visualizer = 旋转
+widget-imu_visualizer-rotation_raw = 原始旋转
+widget-imu_visualizer-rotation_preview = 预览
 
 ## Tracker status
 tracker-status-none = 无状态
@@ -121,8 +121,8 @@ tracker-table-column-type = 类型
 tracker-table-column-battery = 电量
 tracker-table-column-ping = 延迟
 tracker-table-column-tps = TPS
-tracker-table-column-temperature = Temp. °C
-tracker-table-column-linear-acceleration = Accel. X/Y/Z
+tracker-table-column-temperature = 温度 °C
+tracker-table-column-linear-acceleration = 加速度 X/Y/Z
 tracker-table-column-rotation = 旋转 X/Y/Z
 tracker-table-column-position = 位置 X/Y/Z
 tracker-table-column-url = 地址
@@ -162,7 +162,7 @@ tracker-part_card-no_name = 未命名
 tracker-part_card-unassigned = 未分配
 
 ## Body assignment menu
-body_assignment_menu = 你想把追踪器戴在哪里？
+body_assignment_menu = 你想将此追踪器戴在哪里？
 body_assignment_menu-description = 选择要将此追踪器分配到的位置，或者你也可以选择一次管理所有追踪器，而不是逐个管理。
 body_assignment_menu-show_advanced_locations = 显示高级分配位置
 body_assignment_menu-manage_trackers = 管理所有追踪器
@@ -203,7 +203,7 @@ tracker_selection_menu-assigned = 已分配的追踪器
 tracker_selection_menu-dont_assign = 不分配
 
 ## Mounting menu
-mounting_selection_menu = 你想把追踪器放在哪里？
+mounting_selection_menu = 你想将此追踪器戴在哪里？
 mounting_selection_menu-close = 关闭
 
 ## Sidebar settings
@@ -319,7 +319,7 @@ settings-general-interface-lang-placeholder = 选择要使用的语言
 settings-serial = 串口控制台
 # This cares about multilines
 settings-serial-description =
-    这是用于串口通信的实时信息馈送。
+    这里用于显示串口的实时信息流。
     如果你需要了解固件是否出现问题，这将会很有用。
 settings-serial-connection_lost = 串口连接丢失，正在重新连接..
 settings-serial-reboot = 重新启动

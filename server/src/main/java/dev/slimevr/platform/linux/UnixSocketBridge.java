@@ -6,7 +6,7 @@ import dev.slimevr.VRServer;
 import dev.slimevr.bridge.BridgeThread;
 import dev.slimevr.bridge.ProtobufMessages;
 import dev.slimevr.platform.SteamVRBridge;
-import dev.slimevr.vr.trackers.*;
+import dev.slimevr.tracking.trackers.*;
 import io.eiren.util.logging.LogManager;
 
 import java.io.File;

@@ -5,8 +5,8 @@ import com.jme3.math.FastMath;
 import dev.slimevr.autobone.AutoBoneTrainingStep;
 import dev.slimevr.autobone.errors.proportions.ProportionLimiter;
 import dev.slimevr.autobone.errors.proportions.RangeProportionLimiter;
-import dev.slimevr.vr.processor.skeleton.SkeletonConfig;
-import dev.slimevr.vr.processor.skeleton.SkeletonConfigOffsets;
+import dev.slimevr.tracking.processor.HumanPoseManager;
+import dev.slimevr.tracking.processor.config.SkeletonConfigOffsets;
 
 
 // The distance from average human proportions
@@ -120,17 +120,17 @@ public class BodyProportionError implements IAutoBoneError {
 	@Override
 	public float getStepError(AutoBoneTrainingStep trainingStep) throws AutoBoneException {
 		return getBodyProportionError(
-			trainingStep.getSkeleton1().skeletonConfig,
+			trainingStep.getHumanPoseManager1(),
 			trainingStep.getCurrentHeight()
 		);
 	}
 
-	public float getBodyProportionError(SkeletonConfig config, float height) {
+	public float getBodyProportionError(HumanPoseManager humanPoseManager, float height) {
 		float fullHeight = height / eyeHeightToHeightRatio;
 
 		float sum = 0f;
 		for (ProportionLimiter limiter : proportionLimits) {
-			sum += FastMath.abs(limiter.getProportionError(config, fullHeight));
+			sum += FastMath.abs(limiter.getProportionError(humanPoseManager, fullHeight));
 		}
 
 		return sum;

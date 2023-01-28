@@ -1,6 +1,6 @@
 package dev.slimevr.posestreamer;
 
-import dev.slimevr.vr.processor.TransformNode;
+import dev.slimevr.tracking.processor.TransformNode;
 
 import java.io.File;
 import java.io.FileNotFoundException;
