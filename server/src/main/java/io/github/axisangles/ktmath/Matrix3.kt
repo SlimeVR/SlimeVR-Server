@@ -4,20 +4,24 @@ package io.github.axisangles.ktmath
 
 import kotlin.math.*
 
+/* ktlint-disable */
 data class Matrix3(
-	val xx: Float,
-	val yx: Float,
-	val zx: Float,
-	val xy: Float,
-	val yy: Float,
-	val zy: Float,
-	val xz: Float,
-	val yz: Float,
-	val zz: Float
+	val xx: Float, val yx: Float, val zx: Float,
+	val xy: Float, val yy: Float, val zy: Float,
+	val xz: Float, val yz: Float, val zz: Float
 ) {
+/* ktlint-enable */
 	companion object {
-		val NULL = Matrix3(0f, 0f, 0f, 0f, 0f, 0f, 0f, 0f, 0f)
-		val IDENTITY = Matrix3(1f, 0f, 0f, 0f, 1f, 0f, 0f, 0f, 1f)
+		val NULL = Matrix3(
+			0f, 0f, 0f,
+			0f, 0f, 0f,
+			0f, 0f, 0f
+		)
+		val IDENTITY = Matrix3(
+			1f, 0f, 0f,
+			0f, 1f, 0f,
+			0f, 0f, 1f
+		)
 	}
 
 	/**
@@ -85,7 +89,9 @@ data class Matrix3(
 	 * computes the square of the frobenius norm of this matrix
 	 * @return the frobenius norm squared
 	 */
-	fun normSq(): Float = xx * xx + yx * yx + zx * zx + xy * xy + yy * yy + zy * zy + xz * xz + yz * yz + zz * zz
+	fun normSq(): Float = (xx * xx + yx * yx + zx * zx
+						+ xy * xy + yy * yy + zy * zy
+						+ xz * xz + yz * yz + zz * zz)
 
 	/**
 	 * computes the frobenius norm of this matrix
@@ -97,7 +103,9 @@ data class Matrix3(
 	 * computes the determinant of this matrix
 	 * @return the determinant
 	 */
-	fun det(): Float = (xz * yx - xx * yz) * zy + (xx * yy - xy * yx) * zz + (xy * yz - xz * yy) * zx
+	fun det(): Float = ((xz * yx - xx * yz) * zy
+					+ (xx * yy - xy * yx) * zz
+					+ (xy * yz - xz * yy) * zx)
 
 	/**
 	 * computes the trace of this matrix
@@ -200,7 +208,8 @@ data class Matrix3(
 
 	// assumes this matrix is orthonormal and converts this to a quaternion
 	/**
-	 * creates a quaternion representing the same rotation as this matrix, assuming the matrix is a rotation matrix
+	 * creates a quaternion representing the same rotation as this matrix,
+	 * assuming the matrix is a rotation matrix
 	 * @return the quaternion
 	 */
 	fun toQuaternionAssumingOrthonormal(): Quaternion {
@@ -222,87 +231,88 @@ data class Matrix3(
 	 */
 	fun toQuaternion(): Quaternion = orthonormalize().toQuaternionAssumingOrthonormal()
 
-    /*
-        the standard algorithm:
+	/*
+		the standard algorithm:
 
-        yAng = asin(clamp(zx, -1, 1))
-        if (abs(zx) < 0.9999999f) {
-            xAng = atan2(-zy, zz)
-            zAng = atan2(-yx, xx)
-        } else {
-            xAng = atan2(yz, yy)
-            zAng = 0
-        }
-
-
-
-        problems with the standard algorithm:
-
-    1)
-            yAng = asin(clamp(zx, -1, 1))
-
-    FIX:
-            yAng = atan2(zx, sqrt(zy*zy + zz*zz))
-
-        this loses many bits of accuracy when near the singularity, zx = +-1 and
-        can cause the algorithm to return completely inaccurate results with only
-        small floating point errors in the matrix. this happens because zx is
-        NOT sin(pitch), but rather errorTerm*sin(pitch), and small changes in zx
-        when zx is near +-1 make large changes in asin(zx).
+		yAng = asin(clamp(zx, -1, 1))
+		if (abs(zx) < 0.9999999f) {
+			xAng = atan2(-zy, zz)
+			zAng = atan2(-yx, xx)
+		} else {
+			xAng = atan2(yz, yy)
+			zAng = 0
+		}
 
 
 
-    2)
-            if (abs(zx) < 0.9999999f) {
+		problems with the standard algorithm:
 
-    FIX:
-            if (zy*zy + zz*zz > 0f) {
+	1)
+			yAng = asin(clamp(zx, -1, 1))
 
-        this clause, meant to reduce the inaccuracy of the code following does
-        not actually test for the condition that makes the following atans unstable.
-        that is, when (zy, zz) and (yx, xx) are near 0.
-        after several matrix multiplications, the error term is expected to be
-        larger than 0.0000001. Often times, this clause will not catch the conditions
-        it is trying to catch.
+	FIX:
+			yAng = atan2(zx, sqrt(zy*zy + zz*zz))
 
-
-
-    3)
-            zAng = atan2(-yx, xx)
-
-    FIX:
-            zAng = atan2(xy*zz - xz*zy, yy*zz - yz*zy)
-
-        xAng and zAng are being computed separately. In the case of near singularity
-        the angles of xAng and zAng are effectively added together as they represent
-        the same operation (a rotation about the global y-axis). When computed
-        separately, it is not guaranteed that the xAng + zAng add together to give
-        the actual final rotation about the global y-axis.
+		this loses many bits of accuracy when near the singularity, zx = +-1 and
+		can cause the algorithm to return completely inaccurate results with only
+		small floating point errors in the matrix. this happens because zx is
+		NOT sin(pitch), but rather errorTerm*sin(pitch), and small changes in zx
+		when zx is near +-1 make large changes in asin(zx).
 
 
 
-    4)
-        after many matrix operations are performed, without orthonormalization
-        the matrix will contain floating point errors that will throw off the
-        accuracy of any euler angles algorithm. orthonormalization should be
-        built into the prerequisites for this function
-     */
+	2)
+			if (abs(zx) < 0.9999999f) {
 
-//    fun toEulerAnglesXYZFaulty(): EulerAngles {
-//        return if (abs(zx) < 0.9999999f)
-//            EulerAngles(EulerOrder.XYZ,
-//                atan2(-zy, zz),
-//                asin(zx.coerceIn(-1f, 1f)),
-//                atan2(-yx, xx))
-//        else
-//            EulerAngles(EulerOrder.XYZ,
-//                atan2(yz, yy),
-//                asin(zx.coerceIn(-1f, 1f)),
-//                0f)
-//    }
+	FIX:
+			if (zy*zy + zz*zz > 0f) {
+
+		this clause, meant to reduce the inaccuracy of the code following does
+		not actually test for the condition that makes the following atans unstable.
+		that is, when (zy, zz) and (yx, xx) are near 0.
+		after several matrix multiplications, the error term is expected to be
+		larger than 0.0000001. Often times, this clause will not catch the conditions
+		it is trying to catch.
+
+
+
+	3)
+			zAng = atan2(-yx, xx)
+
+	FIX:
+			zAng = atan2(xy*zz - xz*zy, yy*zz - yz*zy)
+
+		xAng and zAng are being computed separately. In the case of near singularity
+		the angles of xAng and zAng are effectively added together as they represent
+		the same operation (a rotation about the global y-axis). When computed
+		separately, it is not guaranteed that the xAng + zAng add together to give
+		the actual final rotation about the global y-axis.
+
+
+
+	4)
+		after many matrix operations are performed, without orthonormalization
+		the matrix will contain floating point errors that will throw off the
+		accuracy of any euler angles algorithm. orthonormalization should be
+		built into the prerequisites for this function
+	 */
+
+//fun toEulerAnglesXYZFaulty(): EulerAngles {
+//	return if (abs(zx) < 0.9999999f)
+//		EulerAngles(EulerOrder.XYZ,
+//			atan2(-zy, zz),
+//			asin(zx.coerceIn(-1f, 1f)),
+//			atan2(-yx, xx))
+//	else
+//		EulerAngles(EulerOrder.XYZ,
+//			atan2(yz, yy),
+//			asin(zx.coerceIn(-1f, 1f)),
+//			0f)
+//}
 
 	/**
-	 * creates an eulerAngles representing the same rotation as this matrix, assuming the matrix is a rotation matrix
+	 * creates an eulerAngles representing the same rotation as this matrix,
+	 * assuming the matrix is a rotation matrix
 	 * @return the eulerAngles
 	 */
 	fun toEulerAnglesAssumingOrthonormal(order: EulerOrder): EulerAngles {
@@ -310,7 +320,11 @@ data class Matrix3(
 		when (order) {
 			EulerOrder.XYZ -> {
 				val kc = zy * zy + zz * zz
-				if (kc == 0f) return EulerAngles(EulerOrder.XYZ, atan2(yz, yy), ETA.withSign(zx), 0f)
+				if (kc == 0f) {
+					return EulerAngles(
+						EulerOrder.XYZ, atan2(yz, yy), ETA.withSign(zx), 0f
+					)
+				}
 
 				return EulerAngles(
 					EulerOrder.XYZ,
@@ -321,7 +335,11 @@ data class Matrix3(
 			}
 			EulerOrder.YZX -> {
 				val kc = xx * xx + xz * xz
-				if (kc == 0f) return EulerAngles(EulerOrder.YZX, 0f, atan2(zx, zz), ETA.withSign(xy))
+				if (kc == 0f) {
+					return EulerAngles(
+						EulerOrder.YZX, 0f, atan2(zx, zz), ETA.withSign(xy)
+					)
+				}
 
 				return EulerAngles(
 					EulerOrder.YZX,
@@ -332,7 +350,11 @@ data class Matrix3(
 			}
 			EulerOrder.ZXY -> {
 				val kc = yy * yy + yx * yx
-				if (kc == 0f) return EulerAngles(EulerOrder.ZXY, ETA.withSign(yz), 0f, atan2(xy, xx))
+				if (kc == 0f) {
+					return EulerAngles(
+						EulerOrder.ZXY, ETA.withSign(yz), 0f, atan2(xy, xx)
+					)
+				}
 
 				return EulerAngles(
 					EulerOrder.ZXY,
@@ -343,7 +365,11 @@ data class Matrix3(
 			}
 			EulerOrder.ZYX -> {
 				val kc = xy * xy + xx * xx
-				if (kc == 0f) return EulerAngles(EulerOrder.ZYX, 0f, ETA.withSign(-xz), atan2(-yx, yy))
+				if (kc == 0f) {
+					return EulerAngles(
+						EulerOrder.ZYX, 0f, ETA.withSign(-xz), atan2(-yx, yy)
+					)
+				}
 
 				return EulerAngles(
 					EulerOrder.ZYX,
@@ -354,7 +380,11 @@ data class Matrix3(
 			}
 			EulerOrder.YXZ -> {
 				val kc = zx * zx + zz * zz
-				if (kc == 0f) return EulerAngles(EulerOrder.YXZ, ETA.withSign(-zy), atan2(-xz, xx), 0f)
+				if (kc == 0f) {
+					return EulerAngles(
+						EulerOrder.YXZ, ETA.withSign(-zy), atan2(-xz, xx), 0f
+					)
+				}
 
 				return EulerAngles(
 					EulerOrder.YXZ,
@@ -365,7 +395,11 @@ data class Matrix3(
 			}
 			EulerOrder.XZY -> {
 				val kc = yz * yz + yy * yy
-				if (kc == 0f) return EulerAngles(EulerOrder.XZY, atan2(-zy, zz), 0f, ETA.withSign(-yx))
+				if (kc == 0f) {
+					return EulerAngles(
+						EulerOrder.XZY, atan2(-zy, zz), 0f, ETA.withSign(-yx)
+					)
+				}
 
 				return EulerAngles(
 					EulerOrder.XZY,
@@ -373,9 +407,6 @@ data class Matrix3(
 					atan2(xy * yz - xz * yy, zz * yy - zy * yz),
 					atan2(-yx, sqrt(kc))
 				)
-			}
-			else -> {
-				throw Exception("EulerAngles not implemented for given EulerOrder")
 			}
 		}
 	}
@@ -385,7 +416,8 @@ data class Matrix3(
 	 * creates an eulerAngles representing the same rotation as this matrix
 	 * @return the eulerAngles
 	 */
-	fun toEulerAngles(order: EulerOrder): EulerAngles = orthonormalize().toEulerAnglesAssumingOrthonormal(order)
+	fun toEulerAngles(order: EulerOrder): EulerAngles =
+		orthonormalize().toEulerAnglesAssumingOrthonormal(order)
 }
 
 operator fun Float.times(that: Matrix3): Matrix3 = that * this

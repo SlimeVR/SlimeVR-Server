@@ -81,7 +81,8 @@ data class Quaternion(val w: Float, val x: Float, val y: Float, val z: Float) {
 		this.z + that.z
 	)
 
-	operator fun plus(that: Float): Quaternion = Quaternion(this.w + that, this.x, this.y, this.z)
+	operator fun plus(that: Float): Quaternion =
+		Quaternion(this.w + that, this.x, this.y, this.z)
 
 	operator fun minus(that: Quaternion): Quaternion = Quaternion(
 		this.w - that.w,
@@ -118,7 +119,7 @@ data class Quaternion(val w: Float, val x: Float, val y: Float, val z: Float) {
 	 **/
 	fun unit(): Quaternion {
 		val m = len()
-		return if (m == 0f) NULL else this / m
+		return if (m == 0f) NULL else (this / m)
 	}
 
 	operator fun times(that: Float): Quaternion = Quaternion(
@@ -204,36 +205,40 @@ data class Quaternion(val w: Float, val x: Float, val y: Float, val z: Float) {
 
 	// for a slight improvement in performance
 	// not fully implemented
-//    fun pow(t: Float): Quaternion {
-//        val imLen = xyz.Len()
-//        val ang = atan(w, imLen)
+// 	fun pow(t: Float): Quaternion {
+// 		val imLen = xyz.Len()
+// 		val ang = atan(w, imLen)
 //
-//        val len = len().pow(t)
-//        val co = cos(t*ang)
-//        val si = sin(t*ang)
+// 		val len = len().pow(t)
+// 		val co = cos(t*ang)
+// 		val si = sin(t*ang)
 //
-//        return if (imLen == 0f) {
-//            Quaternion(len*co,
-//                len*t*x,
-//                len*t*y,
-//                len*t*z
-//            )
-//        } else {
-//            Quaternion(
-//                len*co,
-//                len*si*x/imLen,
-//                len*si*y/imLen,
-//                len*si*z/imLen
-//            )
-//        }
-//    }
+// 		return if (imLen == 0f) {
+// 			Quaternion(len*co,
+// 				len*t*x,
+// 				len*t*y,
+// 				len*t*z
+// 			)
+// 		} else {
+// 			Quaternion(
+// 				len*co,
+// 				len*si*x/imLen,
+// 				len*si*y/imLen,
+// 				len*si*z/imLen
+// 			)
+// 		}
+// 	}
 
 	/**
 	 * between this and -this, picks the one nearest to that
 	 * @param that the quaternion to be nearest
 	 * @return nearest quaternion
 	 **/
-	fun twinNearest(that: Quaternion): Quaternion = if (this.dot(that) < 0f) -this else this
+	fun twinNearest(that: Quaternion): Quaternion = if (this.dot(that) < 0f) {
+		-this
+	} else {
+		this
+	}
 
 	/**
 	 * interpolates from this quaternion to that quaternion by t in quaternion space
@@ -261,7 +266,8 @@ data class Quaternion(val w: Float, val x: Float, val y: Float, val z: Float) {
 	fun interpR(that: Quaternion, t: Float) = this.interp(that.twinNearest(this), t)
 
 	/**
-	 * linearly interpolates from this quaternion to that quaternion by t in quaternion space
+	 * linearly interpolates from this quaternion to that quaternion by t in
+	 * quaternion space
 	 * @param that the quaternion to interpolate to
 	 * @param t the amount to interpolate
 	 * @return interpolated quaternion
@@ -269,7 +275,8 @@ data class Quaternion(val w: Float, val x: Float, val y: Float, val z: Float) {
 	fun lerp(that: Quaternion, t: Float): Quaternion = (1f - t) * this + t * that
 
 	/**
-	 * linearly interpolates from this quaternion to that quaternion by t in rotation space
+	 * linearly interpolates from this quaternion to that quaternion by t in
+	 * rotation space
 	 * @param that the quaternion to interpolate to
 	 * @param t the amount to interpolate
 	 * @return interpolated quaternion
@@ -377,9 +384,9 @@ data class Quaternion(val w: Float, val x: Float, val y: Float, val z: Float) {
 		val d = lenSq()
 		/* ktlint-disable */
 		return Matrix3(
-			(w*w + x*x - y*y - z*z)/d,     2f*(x*y - w*z)/d     ,     2f*(w*y + x*z)/d     ,
-			    2f*(x*y + w*z)/d     , (w*w - x*x + y*y - z*z)/d,     2f*(y*z - w*x)/d     ,
-			    2f*(x*z - w*y)/d     ,     2f*(w*x + y*z)/d     , (w*w - x*x - y*y + z*z)/d)
+			(w*w + x*x - y*y - z*z)/d,	2f*(x*y - w*z)/d, 			2f*(w*y + x*z)/d,
+			2f*(x*y + w*z)/d,			(w*w - x*x + y*y - z*z)/d,	2f*(y*z - w*x)/d,
+			2f*(x*z - w*y)/d,			2f*(w*x + y*z)/d,			(w*w - x*x - y*y + z*z)/d)
 		/* ktlint-enable */
 	}
 
@@ -388,7 +395,8 @@ data class Quaternion(val w: Float, val x: Float, val y: Float, val z: Float) {
 	 * @param order the order in which to decompose this quaternion into euler angles
 	 * @return euler angles
 	 **/
-	fun toEulerAngles(order: EulerOrder): EulerAngles = this.toMatrix().toEulerAnglesAssumingOrthonormal(order)
+	fun toEulerAngles(order: EulerOrder): EulerAngles =
+		this.toMatrix().toEulerAnglesAssumingOrthonormal(order)
 }
 
 operator fun Float.plus(that: Quaternion): Quaternion = that + this
