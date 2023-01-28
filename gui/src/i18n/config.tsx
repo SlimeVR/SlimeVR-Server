@@ -60,6 +60,10 @@ export const langs = [
     key: 'zh-Hans',
   },
   {
+    name: 'TW 繁體中文',
+    key: 'zh-Hant',
+  },
+  {
     name: '🥺 Engwish~ OwO',
     key: 'en-x-owo',
   },
