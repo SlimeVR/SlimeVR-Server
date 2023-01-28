@@ -19,8 +19,10 @@ import solarxr_protocol.rpc.RpcMessageHeader;
 import solarxr_protocol.rpc.SettingsResponse;
 
 
-public record RPCSettingsHandler(RPCHandler rpcHandler, ProtocolAPI api) {
+public class RPCSettingsHandler {
 
+	public RPCHandler rpcHandler;
+	public ProtocolAPI api;
 
 	public RPCSettingsHandler(RPCHandler rpcHandler, ProtocolAPI api) {
 		this.rpcHandler = rpcHandler;

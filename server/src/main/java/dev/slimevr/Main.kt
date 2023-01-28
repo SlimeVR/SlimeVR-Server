@@ -13,15 +13,11 @@ import java.io.File
 import java.io.IOException
 import java.lang.System
 import java.net.ServerSocket
-import javax.swing.JOptionPane
 import kotlin.concurrent.thread
 import kotlin.system.exitProcess
 
-val VERSION =
-	(GIT_VERSION_TAG.ifEmpty { GIT_COMMIT_HASH }) +
-		if (GIT_CLEAN) "" else "-dirty"
+val VERSION = "v0.7.0/android"
 lateinit var vrServer: VRServer
-	private set
 
 fun main(args: Array<String>) {
 	System.setProperty("awt.useSystemAAFontSettings", "on")
@@ -66,14 +62,6 @@ fun main(args: Array<String>) {
 	LogManager.info("Running version $VERSION")
 	if (!SystemUtils.isJavaVersionAtLeast(org.apache.commons.lang3.JavaVersion.JAVA_17)) {
 		LogManager.severe("SlimeVR start-up error! A minimum of Java 17 is required.")
-		JOptionPane
-			.showMessageDialog(
-				null,
-				"SlimeVR start-up error! A minimum of Java 17 is required.",
-				"SlimeVR: Java Runtime Mismatch",
-				JOptionPane.ERROR_MESSAGE
-			)
-		LogManager.closeLogger()
 		return
 	}
 	try {
@@ -86,14 +74,6 @@ fun main(args: Array<String>) {
 			.severe(
 				"SlimeVR start-up error! Required ports are busy. " +
 					"Make sure there is no other instance of SlimeVR Server running."
-			)
-		JOptionPane
-			.showMessageDialog(
-				null,
-				"SlimeVR start-up error! Required ports are busy. " +
-					"Make sure there is no other instance of SlimeVR Server running.",
-				"SlimeVR: Ports are busy",
-				JOptionPane.ERROR_MESSAGE
 			)
 		LogManager.closeLogger()
 		return

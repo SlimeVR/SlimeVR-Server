@@ -209,7 +209,7 @@ public abstract class ProtobufBridge implements Bridge {
 
 	@VRServerThread
 	protected void userActionReceived(UserAction userAction) {
-		String resetSourceName = "%s: %s".formatted(resetSourceNamePrefix, bridgeName);
+		String resetSourceName = String.format("%s: %s", resetSourceNamePrefix, bridgeName);
 		switch (userAction.getName()) {
 			case "calibrate":
 				LogManager

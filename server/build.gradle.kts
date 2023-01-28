@@ -9,12 +9,12 @@ import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
 import java.io.ByteArrayOutputStream
 
 plugins {
-	kotlin("jvm") version "1.8.21"
 	kotlin("plugin.serialization") version "1.8.21"
-	application
-	id("com.github.johnrengelman.shadow") version "8.1.1"
 	id("com.diffplug.spotless") version "6.12.0"
 	id("com.github.gmazzo.buildconfig") version "4.0.4"
+
+	id("com.android.application") version "7.4.2"
+	id("org.jetbrains.kotlin.android") version "1.8.0"
 }
 
 kotlin {
@@ -54,8 +54,7 @@ tasks
 
 allprojects {
 	repositories {
-		// Use jcenter for resolving dependencies.
-		// You can declare any Maven/Ivy/file repository here.
+		google()
 		mavenCentral()
 	}
 }
@@ -90,25 +89,99 @@ dependencies {
 	testImplementation(platform("org.junit:junit-bom:5.9.0"))
 	testImplementation("org.junit.jupiter:junit-jupiter")
 	testImplementation("org.junit.platform:junit-platform-launcher")
-}
-tasks.test {
-	useJUnitPlatform()
+
+	// Android stuff
+	implementation("androidx.appcompat:appcompat:1.6.1")
+	implementation("androidx.core:core-ktx:1.9.0")
+	implementation("com.google.android.material:material:1.8.0")
+	implementation("androidx.constraintlayout:constraintlayout:2.1.4")
+	implementation(fileTree(mapOf("dir" to "libs", "include" to listOf("*.jar"))))
+	androidTestImplementation("androidx.test.ext:junit:1.1.5")
+	androidTestImplementation("androidx.test.espresso:espresso-core:3.5.1")
 }
 
-tasks.shadowJar {
-	minimize {
-		exclude(dependency("com.fazecast:jSerialComm:.*"))
-		exclude(dependency("net.java.dev.jna:.*:.*"))
-		exclude(dependency("com.google.flatbuffers:flatbuffers-java:.*"))
+/**
+ * The android block is where you configure all your Android-specific
+ * build options.
+ */
 
-		exclude(project(":solarxr-protocol"))
+android {
+	/**
+	 * The app's namespace. Used primarily to access app resources.
+	 */
+
+	namespace = "dev.slimevr"
+
+	/**
+	 * compileSdk specifies the Android API level Gradle should use to
+	 * compile your app. This means your app can use the API features included in
+	 * this API level and lower.
+	 */
+
+	compileSdk = 33
+
+	/**
+	 * The defaultConfig block encapsulates default settings and entries for all
+	 * build variants and can override some attributes in main/AndroidManifest.xml
+	 * dynamically from the build system. You can configure product flavors to override
+	 * these values for different versions of your app.
+	 */
+
+	packagingOptions {
+		resources.excludes.add("META-INF/*")
 	}
-	archiveBaseName.set("slimevr")
-	archiveClassifier.set("")
-	archiveVersion.set("")
-}
-application {
-	mainClass.set("dev.slimevr.Main")
+
+	defaultConfig {
+
+		// Uniquely identifies the package for publishing.
+		applicationId = "dev.slimevr.server"
+
+		// Defines the minimum API level required to run the app.
+		minSdk = 33
+
+		// Specifies the API level used to test the app.
+		targetSdk = 33
+
+		// Defines the version number of your app.
+		versionCode = 1
+
+		// Defines a user-friendly version name for your app.
+		versionName = "1.0"
+
+		testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
+	}
+
+	/**
+	 * The buildTypes block is where you can configure multiple build types.
+	 * By default, the build system defines two build types: debug and release. The
+	 * debug build type is not explicitly shown in the default build configuration,
+	 * but it includes debugging tools and is signed with the debug key. The release
+	 * build type applies ProGuard settings and is not signed by default.
+	 */
+
+	buildTypes {
+
+		/**
+		 * By default, Android Studio configures the release build type to enable code
+		 * shrinking, using minifyEnabled, and specifies the default ProGuard rules file.
+		 */
+
+		getByName("release") {
+			isMinifyEnabled = true // Enables code shrinking for the release build type.
+			proguardFiles(
+				getDefaultProguardFile("proguard-android.txt"),
+				"proguard-rules.pro"
+			)
+		}
+	}
+
+	compileOptions {
+		sourceCompatibility = JavaVersion.VERSION_17
+		targetCompatibility = JavaVersion.VERSION_17
+	}
+	kotlinOptions {
+		jvmTarget = "17"
+	}
 }
 
 fun String.runCommand(currentWorkingDir: File = file("./")): String {

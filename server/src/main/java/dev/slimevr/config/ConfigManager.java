@@ -67,9 +67,9 @@ public class ConfigManager {
 	}
 
 	public void backupConfig() {
-		Path cfgFile = Path.of(configPath);
-		Path tmpBakCfgFile = Path.of(configPath + ".bak.tmp");
-		Path bakCfgFile = Path.of(configPath + ".bak");
+		Path cfgFile = Paths.get(configPath);
+		Path tmpBakCfgFile = Paths.get(configPath + ".bak.tmp");
+		Path bakCfgFile = Paths.get(configPath + ".bak");
 
 		try {
 			Files
@@ -110,8 +110,8 @@ public class ConfigManager {
 
 	@ThreadSafe
 	public synchronized void saveConfig() {
-		Path tmpCfgFile = Path.of(configPath + ".tmp");
-		Path cfgFile = Path.of(configPath);
+		Path tmpCfgFile = Paths.get(configPath + ".tmp");
+		Path cfgFile = Paths.get(configPath);
 
 		// Serialize config
 		try {

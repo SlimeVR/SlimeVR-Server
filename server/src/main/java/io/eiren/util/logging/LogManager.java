@@ -3,6 +3,7 @@ package io.eiren.util.logging;
 import java.io.File;
 import java.io.IOException;
 import java.io.PrintStream;
+import java.nio.file.Paths;
 import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.logging.ConsoleHandler;
 import java.util.logging.FileHandler;
@@ -38,8 +39,7 @@ public class LogManager {
 						f.delete();
 				}
 			}
-
-			String lastLogPattern = Path.of(mainLogDir.getPath(), "log_last_%g.log").toString();
+			String lastLogPattern = Paths.get(mainLogDir.getPath(), "log_last_%g.log").toString();
 			FileHandler filehandler = new FileHandler(lastLogPattern, 25 * 1000000, 2);
 			filehandler.setFormatter(loc);
 			global.addHandler(filehandler);

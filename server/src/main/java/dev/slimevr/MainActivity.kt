@@ -1,0 +1,35 @@
+package dev.slimevr
+
+import android.os.Bundle
+import androidx.appcompat.app.AppCompatActivity
+import io.eiren.util.logging.LogManager
+import java.io.File
+import kotlin.concurrent.thread
+import kotlin.system.exitProcess
+
+class MainActivity : AppCompatActivity() {
+	override fun onCreate(savedInstanceState: Bundle?) {
+		super.onCreate(savedInstanceState)
+		setContentView(R.layout.activity_main)
+
+		thread(start = true, name = "Main VRServer Thread") {
+			try {
+				LogManager.initialize(filesDir)
+			} catch (e1: java.lang.Exception) {
+				e1.printStackTrace()
+			}
+			LogManager.info("Running version $VERSION")
+			try {
+				vrServer = VRServer(File(filesDir, "vrconfig.yml").absolutePath)
+				vrServer.start()
+				Keybinding(vrServer)
+				vrServer.join()
+				LogManager.closeLogger()
+				exitProcess(0)
+			} catch (e: Throwable) {
+				e.printStackTrace()
+				exitProcess(1)
+			}
+		}
+	}
+}

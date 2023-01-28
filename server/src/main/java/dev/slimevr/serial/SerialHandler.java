@@ -14,6 +14,7 @@ import java.nio.ByteBuffer;
 import java.nio.charset.StandardCharsets;
 import java.util.*;
 import java.util.concurrent.CopyOnWriteArrayList;
+import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 
@@ -269,7 +270,7 @@ public class SerialHandler implements SerialPortMessageListener {
 			List<SerialPort> differences = new ArrayList<>(
 				CollectionUtils
 					.removeAll(
-						this.getKnownPorts().toList(),
+						this.getKnownPorts().collect(Collectors.toList()),
 						Arrays.asList(lastKnownPorts),
 						new Equator<>() {
 							@Override

@@ -9,6 +9,13 @@
 
 rootProject.name = "SlimeVR Server"
 
+pluginManagement {
+    repositories {
+        gradlePluginPortal()
+        google()
+        mavenCentral()
+    }
+}
 
 include(":solarxr-protocol")
 project(":solarxr-protocol").projectDir = File("solarxr-protocol/protocol/java")

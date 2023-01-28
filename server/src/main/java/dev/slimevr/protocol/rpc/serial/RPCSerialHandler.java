@@ -14,7 +14,10 @@ import java.util.List;
 import java.util.function.Consumer;
 
 
-public record RPCSerialHandler(RPCHandler rpcHandler, ProtocolAPI api) implements SerialListener {
+public class RPCSerialHandler implements SerialListener {
+
+	public RPCHandler rpcHandler;
+	public ProtocolAPI api;
 
 	public RPCSerialHandler(RPCHandler rpcHandler, ProtocolAPI api) {
 		this.rpcHandler = rpcHandler;

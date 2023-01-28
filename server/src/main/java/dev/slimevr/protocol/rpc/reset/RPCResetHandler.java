@@ -14,7 +14,10 @@ import solarxr_protocol.rpc.ResetStatus;
 import solarxr_protocol.rpc.RpcMessage;
 
 
-public record RPCResetHandler(RPCHandler rpcHandler, ProtocolAPI api) implements ResetListener {
+public class RPCResetHandler implements ResetListener {
+	public RPCHandler rpcHandler;
+	public ProtocolAPI api;
+
 	public RPCResetHandler(RPCHandler rpcHandler, ProtocolAPI api) {
 		this.rpcHandler = rpcHandler;
 		this.api = api;

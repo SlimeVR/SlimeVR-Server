@@ -1,7 +1,5 @@
 package io.eiren.util;
 
-import java.beans.ConstructorProperties;
-
 import com.jme3.system.NanoTimer;
 
 
@@ -103,7 +101,6 @@ public class BufferedTimer extends NanoTimer {
 		public float maxFps;
 		public float averageFps;
 
-		@ConstructorProperties({ "fps", "minFps", "maxFps", "averageFps" })
 		public TimerSample(float fps, float minFps, float maxFps, float averageFps) {
 			this.fps = fps;
 			this.minFps = minFps;

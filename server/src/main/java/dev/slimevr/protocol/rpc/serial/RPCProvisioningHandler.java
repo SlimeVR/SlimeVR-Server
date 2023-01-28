@@ -11,8 +11,10 @@ import solarxr_protocol.rpc.*;
 import java.util.function.Consumer;
 
 
-public record RPCProvisioningHandler(RPCHandler rpcHandler, ProtocolAPI api)
-	implements ProvisioningListener {
+public class RPCProvisioningHandler implements ProvisioningListener {
+
+	public RPCHandler rpcHandler;
+	public ProtocolAPI api;
 
 	public RPCProvisioningHandler(RPCHandler rpcHandler, ProtocolAPI api) {
 		this.rpcHandler = rpcHandler;

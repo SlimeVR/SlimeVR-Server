@@ -1404,7 +1404,7 @@ public class HumanSkeleton {
 		this.legTweaks.resetFloorLevel();
 		this.legTweaks.resetBuffer();
 
-		LogManager.info("[HumanSkeleton] Reset: full (%s)".formatted(resetSourceName));
+		LogManager.info(String.format("[HumanSkeleton] Reset: full (%s)", resetSourceName));
 	}
 
 	@VRServerThread
@@ -1427,7 +1427,7 @@ public class HumanSkeleton {
 		}
 		this.legTweaks.resetBuffer();
 
-		LogManager.info("[HumanSkeleton] Reset: yaw (%s)".formatted(resetSourceName));
+		LogManager.info(String.format("[HumanSkeleton] Reset: yaw (%s)", resetSourceName));
 	}
 
 	private boolean shouldResetMounting(TrackerPosition position) {
@@ -1489,7 +1489,7 @@ public class HumanSkeleton {
 		}
 		this.legTweaks.resetBuffer();
 
-		LogManager.info("[HumanSkeleton] Reset: mounting (%s)".formatted(resetSourceName));
+		LogManager.info(String.format("[HumanSkeleton] Reset: mounting (%s)", resetSourceName));
 	}
 
 	public void updateTapDetectionConfig() {
