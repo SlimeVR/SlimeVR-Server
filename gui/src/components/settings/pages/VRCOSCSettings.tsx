@@ -1,3 +1,4 @@
+import { Localized, useLocalization } from '@fluent/react';
 import { useEffect, useRef } from 'react';
 import { useForm } from 'react-hook-form';
 import { useLocation } from 'react-router-dom';
@@ -8,7 +9,7 @@ import {
   RpcMessage,
   SettingsRequestT,
   SettingsResponseT,
-  VRCOSCSettingsT,
+  VRCOSCSettingsT
 } from 'solarxr-protocol';
 import { useWebsocketAPI } from '../../../hooks/websocket-api';
 import { CheckBox } from '../../commons/Checkbox';
@@ -16,7 +17,6 @@ import { VRCIcon } from '../../commons/icon/VRCIcon';
 import { Input } from '../../commons/Input';
 import { Typography } from '../../commons/Typography';
 import { SettingsPageLayout } from '../SettingsPageLayout';
-import { Localized, useLocalization } from '@fluent/react';
 
 interface VRCOSCSettingsForm {
   vrchat: {
@@ -184,7 +184,9 @@ export function VRCOSCSettings() {
             >
               <Input
                 type="number"
-                {...register('vrchat.oscSettings.portIn', { required: true })}
+                control={control}
+                name="vrchat.oscSettings.portIn"
+                rules={{ required: true }}
                 placeholder="9001"
                 label="Port In"
               ></Input>
@@ -195,9 +197,9 @@ export function VRCOSCSettings() {
             >
               <Input
                 type="number"
-                {...register('vrchat.oscSettings.portOut', {
-                  required: true,
-                })}
+                control={control}
+                name="vrchat.oscSettings.portOut"
+                rules={{ required: true }}
                 placeholder="9000"
                 label="Port Out"
               ></Input>
@@ -216,11 +218,13 @@ export function VRCOSCSettings() {
           <div className="grid gap-3 pb-5">
             <Input
               type="text"
-              {...register('vrchat.oscSettings.address', {
+              control={control}
+              name="vrchat.oscSettings.address"
+              rules={{
                 required: true,
                 pattern:
                   /^(?!0)(?!.*\.$)((1?\d?\d|25[0-5]|2[0-4]\d)(\.|$)){4}$/i,
-              })}
+              }}
               placeholder={l10n.getString(
                 'settings-osc-vrchat-network-address-placeholder'
               )}

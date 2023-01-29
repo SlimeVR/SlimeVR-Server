@@ -1,8 +1,10 @@
+import { useLocalization } from '@fluent/react';
 import { useEffect, useRef } from 'react';
 import { DefaultValues, useForm } from 'react-hook-form';
 import { useLocation } from 'react-router-dom';
 import {
   ChangeSettingsRequestT,
+  DriftCompensationSettingsT,
   FilteringSettingsT,
   FilteringType,
   LegTweaksSettingsT,
@@ -12,8 +14,7 @@ import {
   SettingsRequestT,
   SettingsResponseT,
   SteamVRTrackersSettingT,
-  TapDetectionSettingsT,
-  DriftCompensationSettingsT,
+  TapDetectionSettingsT
 } from 'solarxr-protocol';
 import { useConfig } from '../../../hooks/config';
 import { useWebsocketAPI } from '../../../hooks/websocket-api';
@@ -26,7 +27,6 @@ import { NumberSelector } from '../../commons/NumberSelector';
 import { Radio } from '../../commons/Radio';
 import { Typography } from '../../commons/Typography';
 import { SettingsPageLayout } from '../SettingsPageLayout';
-import { useLocalization } from '@fluent/react';
 
 interface SettingsForm {
   trackers: {
@@ -298,16 +298,14 @@ export function GeneralSettings() {
             {l10n.getString('settings-general-steamvr-subtitle')}
           </Typography>
           <div className="flex flex-col py-2">
-            <>
-              {l10n
-                .getString('settings-general-steamvr-description')
-                .split('\n')
-                .map((line, i) => (
-                  <Typography color="secondary" key={i}>
-                    {line}
-                  </Typography>
-                ))}
-            </>
+            {l10n
+              .getString('settings-general-steamvr-description')
+              .split('\n')
+              .map((line, i) => (
+                <Typography color="secondary" key={i}>
+                  {line}
+                </Typography>
+              ))}
           </div>
           <div className="grid grid-cols-2 gap-3 pt-3">
             <CheckBox
@@ -364,18 +362,16 @@ export function GeneralSettings() {
             {l10n.getString('settings-general-tracker_mechanics-filtering')}
           </Typography>
           <div className="flex flex-col pt-2 pb-4">
-            <>
-              {l10n
-                .getString(
-                  'settings-general-tracker_mechanics-filtering-description'
-                )
-                .split('\n')
-                .map((line, i) => (
-                  <Typography color="secondary" key={i}>
-                    {line}
-                  </Typography>
-                ))}
-            </>
+            {l10n
+              .getString(
+                'settings-general-tracker_mechanics-filtering-description'
+              )
+              .split('\n')
+              .map((line, i) => (
+                <Typography color="secondary" key={i}>
+                  {line}
+                </Typography>
+              ))}
           </div>
           <Typography>
             {l10n.getString(
@@ -437,18 +433,16 @@ export function GeneralSettings() {
             )}
           </Typography>
           <div className="flex flex-col pt-2 pb-4">
-            <Typography color="secondary">
-              {l10n
-                .getString(
-                  'settings-general-tracker_mechanics-drift_compensation-description'
-                )
-                .split('\n')
-                .map((line, i) => (
-                  <Typography color="secondary" key={i}>
-                    {line}
-                  </Typography>
-                ))}
-            </Typography>
+            {l10n
+              .getString(
+                'settings-general-tracker_mechanics-drift_compensation-description'
+              )
+              .split('\n')
+              .map((line, i) => (
+                <Typography color="secondary" key={i}>
+                  {line}
+                </Typography>
+              ))}
           </div>
           <CheckBox
             variant="toggle"

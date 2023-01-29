@@ -6,6 +6,7 @@ import {
   useMemo,
   useState
 } from 'react';
+import { Control, Controller, UseControllerProps } from 'react-hook-form';
 import { EyeIcon } from './icon/EyeIcon';
 
 export interface InputProps {
@@ -14,12 +15,23 @@ export interface InputProps {
   label?: string | null;
   autocomplete?: boolean;
   variant?: 'primary' | 'secondary';
+
+  control: Control<any>;
+  name: string;
+  rules?: UseControllerProps<any>['rules'];
 }
 
-export const Input = forwardRef<HTMLInputElement, InputProps>(function AppInput(
-  { type, placeholder, label, autocomplete, variant = 'primary', ...props },
-  ref
-) {
+export function InputInside({
+  type,
+  control,
+  name,
+  placeholder,
+  label,
+  autocomplete,
+  variant = 'primary',
+  rules,
+  ...props
+}) {
   const [forceText, setForceText] = useState(false);
 
   const togglePassword = (e: MouseEvent<HTMLDivElement>) => {
@@ -44,12 +56,14 @@ export const Input = forwardRef<HTMLInputElement, InputProps>(function AppInput(
       {label}
       <div className="relative w-full">
         <input
+          {...props}
           type={forceText ? 'text' : type}
-          ref={ref}
           className={classNames(classes, { 'pr-10': type === 'password' })}
           placeholder={placeholder || undefined}
           autoComplete={autocomplete ? 'off' : 'on'}
-          {...props}
+          // onChange={onChange}
+          // name={name}
+          value={value}
         ></input>
         {type === 'password' && (
           <div
@@ -61,5 +75,34 @@ export const Input = forwardRef<HTMLInputElement, InputProps>(function AppInput(
         )}
       </div>
     </label>
+  )
+}
+
+
+export const Input = forwardRef<HTMLInputElement, InputProps>(function AppInput(
+  {
+    type,
+    control,
+    name,
+    placeholder,
+    label,
+    autocomplete,
+    variant = 'primary',
+    rules,
+    ...props
+  },
+  ref
+) {
+  
+
+  return (
+    <Controller
+      control={control}
+      name={name}
+      rules={rules}
+      render={({ field: { onChange, value, ref, name } }) => (
+       
+      )}
+    />
   );
 });

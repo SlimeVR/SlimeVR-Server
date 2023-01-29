@@ -1,3 +1,4 @@
+import { useLocalization } from '@fluent/react';
 import { IPv4 } from 'ip-num/IPNumber';
 import Quaternion from 'quaternion';
 import { useEffect, useMemo, useState } from 'react';
@@ -11,14 +12,13 @@ import { DEG_TO_RAD, RAD_TO_DEG } from '../../maths/angle';
 import { FixEuler, GetYaw, QuaternionToQuatT } from '../../maths/quaternion';
 import { ArrowLink } from '../commons/ArrowLink';
 import { Button } from '../commons/Button';
+import { CheckBox } from '../commons/Checkbox';
 import { FootIcon } from '../commons/icon/FootIcon';
 import { Input } from '../commons/Input';
 import { Typography } from '../commons/Typography';
 import { MountingSelectionMenu } from '../onboarding/pages/mounting/MountingSelectionMenu';
 import { SingleTrackerBodyAssignmentMenu } from './SingleTrackerBodyAssignmentMenu';
 import { TrackerCard } from './TrackerCard';
-import { CheckBox } from '../commons/Checkbox';
-import { useLocalization } from '@fluent/react';
 
 export const rotationToQuatMap = {
   FRONT: 180,
@@ -322,8 +322,9 @@ export function TrackerSettingsPage() {
                 'tracker-settings-name_section-placeholder'
               )}
               type="text"
+              name="trackerName"
+              control={control}
               autocomplete={false}
-              {...register('trackerName')}
             ></Input>
           </div>
         </div>

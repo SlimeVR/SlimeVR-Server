@@ -1,9 +1,9 @@
+import { Localized } from '@fluent/react';
 import { useEffect } from 'react';
 import { useForm } from 'react-hook-form';
 import { useNavigate } from 'react-router-dom';
 import { Input } from '../components/commons/Input';
 import { useOnboarding } from './onboarding';
-import { Localized } from '@fluent/react';
 
 export interface WifiFormData {
   ssid: string;
@@ -13,10 +13,11 @@ export interface WifiFormData {
 export function useWifiForm() {
   const navigate = useNavigate();
   const { state, setWifiCredentials } = useOnboarding();
-  const { register, reset, handleSubmit, formState } = useForm<WifiFormData>({
-    defaultValues: {},
-    mode: 'onChange',
-  });
+  const { register, reset, handleSubmit, formState, control } =
+    useForm<WifiFormData>({
+      defaultValues: {},
+      mode: 'onChange',
+    });
 
   useEffect(() => {
     if (state.wifi) {
@@ -47,7 +48,9 @@ export function useWifiForm() {
           attrs={{ placeholder: true, label: true }}
         >
           <Input
-            {...register('ssid', { required: true })}
+            control={control}
+            rules={{ required: true }}
+            name="ssid"
             type="text"
             label="SSID"
             placeholder="ssid"
@@ -59,7 +62,8 @@ export function useWifiForm() {
           attrs={{ placeholder: true, label: true }}
         >
           <Input
-            {...register('password')}
+            control={control}
+            name="password"
             type="password"
             label="Password"
             placeholder="password"
