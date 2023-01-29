@@ -12,7 +12,6 @@ data class Quaternion(val w: Float, val x: Float, val y: Float, val z: Float) {
 		val J = Quaternion(0f, 0f, 1f, 0f)
 		val K = Quaternion(0f, 0f, 0f, 1f)
 
-		// creates a new quaternion representing the rotation about axis v by rotational angle v
 		/**
 		 * creates a new quaternion representing the rotation about v's axis
 		 * by an angle of v's length
