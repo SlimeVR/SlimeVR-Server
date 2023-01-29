@@ -352,7 +352,7 @@ export function TrackersTable({
           tracker.position && (
             <Typography color={fontColor}>
               <span className="whitespace-nowrap">
-                {formatVector3(tracker.position, 1)}
+                {formatVector3(tracker.position, 2)}
               </span>
             </Typography>
           ),
