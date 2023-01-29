@@ -169,6 +169,23 @@ export function BodyAssignment({
             <div className="flex flex-col gap-2">
               <TrackerPartCard
                 onlyAssigned={onlyAssigned}
+                td={trackerPartGrouped[BodyPart.WAIST]}
+                onClick={() => onRoleSelected(BodyPart.WAIST)}
+                role={BodyPart.WAIST}
+                direction="left"
+              />
+              <TrackerPartCard
+                onlyAssigned={onlyAssigned}
+                td={trackerPartGrouped[BodyPart.HIP]}
+                onClick={() => onRoleSelected(BodyPart.HIP)}
+                role={BodyPart.HIP}
+                direction="left"
+              />
+            </div>
+
+            <div className="flex flex-col gap-2">
+              <TrackerPartCard
+                onlyAssigned={onlyAssigned}
                 td={trackerPartGrouped[BodyPart.RIGHT_LOWER_ARM]}
                 role={BodyPart.RIGHT_LOWER_ARM}
                 onClick={() => onRoleSelected(BodyPart.RIGHT_LOWER_ARM)}
@@ -185,22 +202,6 @@ export function BodyAssignment({
               )}
             </div>
 
-            <div className="flex flex-col gap-2">
-              <TrackerPartCard
-                onlyAssigned={onlyAssigned}
-                td={trackerPartGrouped[BodyPart.WAIST]}
-                onClick={() => onRoleSelected(BodyPart.WAIST)}
-                role={BodyPart.WAIST}
-                direction="left"
-              />
-              <TrackerPartCard
-                onlyAssigned={onlyAssigned}
-                td={trackerPartGrouped[BodyPart.HIP]}
-                onClick={() => onRoleSelected(BodyPart.HIP)}
-                role={BodyPart.HIP}
-                direction="left"
-              />
-            </div>
             <div className="flex flex-col gap-2">
               <TrackerPartCard
                 onlyAssigned={onlyAssigned}
