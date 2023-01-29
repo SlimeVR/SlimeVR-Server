@@ -32,6 +32,7 @@ import solarxr_protocol.datatypes.TrackerIdT;
 
 import java.net.InetAddress;
 import java.net.UnknownHostException;
+import java.nio.file.Paths;
 import java.util.List;
 import java.util.Queue;
 import java.util.Timer;
@@ -133,7 +134,7 @@ public class VRServer extends Thread {
 					hmdTracker,
 					"steamvr",
 					"SteamVR Driver Bridge",
-					"/tmp/SlimeVRDriver",
+					Paths.get(OperatingSystem.getTempDirectory(), "SlimeVRDriver").toString(),
 					shareTrackers
 				);
 			} catch (Exception ex) {
