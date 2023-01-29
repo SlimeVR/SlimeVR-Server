@@ -19,6 +19,8 @@ jobs:
         with:
           ref: pontoon
           submodules: recursive
+          # Get all the git history for rebasing
+          fetch-depth: 0
       - uses: imba-tjd/rebase-upstream-action@0.5
         with:
           upstream: SlimeVR/SlimeVR-Server
@@ -26,7 +28,7 @@ jobs:
       - name: Push rebase
         uses: github-actions-x/commit@v2.9
         with:
-          github-token: ${{ secrets.GITHUB_TOKEN }}
+          github-token: ${{ secrets.PONTOON_BOT_KEY }}
           push-branch: "pontoon"
           commit-message: "update"
           force-push: "true"
