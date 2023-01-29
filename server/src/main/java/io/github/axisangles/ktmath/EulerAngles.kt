@@ -7,11 +7,6 @@ import kotlin.math.sin
 
 enum class EulerOrder { XYZ, YZX, ZXY, ZYX, YXZ, XZY }
 
-// prefer Y.toX
-// but if ambiguous, use X.fromY
-/*
- * Euler Angles contains both the x y z angle parameters and the order of application
- */
 data class EulerAngles(val order: EulerOrder, val x: Float, val y: Float, val z: Float) {
 	/**
 	 * creates a quaternion which represents the same rotation as this eulerAngles
@@ -83,35 +78,34 @@ data class EulerAngles(val order: EulerOrder, val x: Float, val y: Float, val z:
 			// ktlint ruining spacing
 			/* ktlint-disable */
 			EulerOrder.XYZ -> Matrix3(
-				cY*cZ,				-cY*sZ,				sY,
-				cZ*sX*sY + cX*sZ,	cX*cZ - sX*sY*sZ,	-cY*sX,
-				sX*sZ - cX*cZ*sY,	cZ*sX + cX*sY*sZ,	cX*cY
-			)
+					  cY*cZ      ,      -cY*sZ      ,        sY        ,
+				cZ*sX*sY + cX*sZ , cX*cZ - sX*sY*sZ ,      -cY*sX      ,
+				sX*sZ - cX*cZ*sY , cZ*sX + cX*sY*sZ ,       cX*cY      )
+
 			EulerOrder.YZX -> Matrix3(
-				cY * cZ,	sX * sY - cX * cY * sZ,	cX * sY + cY * sX * sZ,
-				sZ,				cX * cZ,				-cZ * sX,
-				-cZ * sY,	cY * sX + cX * sY * sZ,	cX * cY - sX * sY * sZ
-			)
+					  cY*cZ      , sX*sY - cX*cY*sZ , cX*sY + cY*sX*sZ ,
+					   sZ        ,       cX*cZ      ,      -cZ*sX      ,
+					 -cZ*sY      , cY*sX + cX*sY*sZ , cX*cY - sX*sY*sZ )
+
 			EulerOrder.ZXY -> Matrix3(
-				cY * cZ - sX * sY * sZ,	-cX * sZ,	cZ * sY + cY * sX * sZ,
-				cZ * sX * sY + cY * sZ,	cX * cZ,	sY * sZ - cY * cZ * sX,
-				-cX * sY,				sX,				cX * cY
-			)
+				cY*cZ - sX*sY*sZ ,      -cX*sZ      , cZ*sY + cY*sX*sZ ,
+				cZ*sX*sY + cY*sZ ,       cX*cZ      , sY*sZ - cY*cZ*sX ,
+					 -cX*sY      ,        sX        ,       cX*cY      )
+
 			EulerOrder.ZYX -> Matrix3(
-				cY * cZ,	cZ * sX * sY - cX * sZ,	cX * cZ * sY + sX * sZ,
-				cY * sZ,	cX * cZ + sX * sY * sZ,	cX * sY * sZ - cZ * sX,
-				-sY,			cY * sX,				cX * cY
-			)
+					  cY*cZ      , cZ*sX*sY - cX*sZ , cX*cZ*sY + sX*sZ ,
+					  cY*sZ      , cX*cZ + sX*sY*sZ , cX*sY*sZ - cZ*sX ,
+					  -sY        ,       cY*sX      ,       cX*cY      )
+
 			EulerOrder.YXZ -> Matrix3(
-				cY * cZ + sX * sY * sZ,	cZ * sX * sY - cY * sZ,	cX * sY,
-				cX * sZ,				cX * cZ,				-sX,
-				cY * sX * sZ - cZ * sY,	cY * cZ * sX + sY * sZ,	cX * cY
-			)
+				cY*cZ + sX*sY*sZ , cZ*sX*sY - cY*sZ ,       cX*sY      ,
+					  cX*sZ      ,       cX*cZ      ,       -sX        ,
+				cY*sX*sZ - cZ*sY , cY*cZ*sX + sY*sZ ,       cX*cY      )
+
 			EulerOrder.XZY -> Matrix3(
-				cY * cZ,				-sZ,		cZ * sY,
-				sX * sY + cX * cY * sZ,	cX * cZ, 	cX * sY * sZ - cY * sX,
-				cY * sX * sZ - cX * sY,	cZ * sX, 	cX * cY + sX * sY * sZ
-			)
+					  cY*cZ      ,       -sZ        ,       cZ*sY      ,
+				sX*sY + cX*cY*sZ ,       cX*cZ      , cX*sY*sZ - cY*sX ,
+				cY*sX*sZ - cX*sY ,       cZ*sX      , cX*cY + sX*sY*sZ )
 			/* ktlint-enable */
 		}
 	}

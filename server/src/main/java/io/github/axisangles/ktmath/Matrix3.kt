@@ -89,9 +89,10 @@ data class Matrix3(
 	 * computes the square of the frobenius norm of this matrix
 	 * @return the frobenius norm squared
 	 */
-	fun normSq(): Float = (xx * xx + yx * yx + zx * zx
-						+ xy * xy + yy * yy + zy * zy
-						+ xz * xz + yz * yz + zz * zz)
+	fun normSq(): Float =
+		xx * xx + yx * yx + zx * zx +
+	    xy * xy + yy * yy + zy * zy +
+	    xz * xz + yz * yz + zz * zz
 
 	/**
 	 * computes the frobenius norm of this matrix
@@ -103,9 +104,10 @@ data class Matrix3(
 	 * computes the determinant of this matrix
 	 * @return the determinant
 	 */
-	fun det(): Float = ((xz * yx - xx * yz) * zy
-					+ (xx * yy - xy * yx) * zz
-					+ (xy * yz - xz * yy) * zx)
+	fun det(): Float =
+		(xz * yx - xx * yz) * zy +
+		(xx * yy - xy * yx) * zz +
+		(xy * yz - xz * yy) * zx
 
 	/**
 	 * computes the trace of this matrix
@@ -297,34 +299,18 @@ data class Matrix3(
 		built into the prerequisites for this function
 	 */
 
-//fun toEulerAnglesXYZFaulty(): EulerAngles {
-//	return if (abs(zx) < 0.9999999f)
-//		EulerAngles(EulerOrder.XYZ,
-//			atan2(-zy, zz),
-//			asin(zx.coerceIn(-1f, 1f)),
-//			atan2(-yx, xx))
-//	else
-//		EulerAngles(EulerOrder.XYZ,
-//			atan2(yz, yy),
-//			asin(zx.coerceIn(-1f, 1f)),
-//			0f)
-//}
-
 	/**
 	 * creates an eulerAngles representing the same rotation as this matrix,
 	 * assuming the matrix is a rotation matrix
 	 * @return the eulerAngles
 	 */
 	fun toEulerAnglesAssumingOrthonormal(order: EulerOrder): EulerAngles {
-		val ETA = 1.57079632f
+		val ETA = 1.5707964f
 		when (order) {
 			EulerOrder.XYZ -> {
 				val kc = zy * zy + zz * zz
-				if (kc == 0f) {
-					return EulerAngles(
-						EulerOrder.XYZ, atan2(yz, yy), ETA.withSign(zx), 0f
-					)
-				}
+				if (kc == 0f) return EulerAngles(EulerOrder.XYZ,
+					atan2(yz, yy), ETA.withSign(zx), 0f)
 
 				return EulerAngles(
 					EulerOrder.XYZ,
@@ -335,11 +321,8 @@ data class Matrix3(
 			}
 			EulerOrder.YZX -> {
 				val kc = xx * xx + xz * xz
-				if (kc == 0f) {
-					return EulerAngles(
-						EulerOrder.YZX, 0f, atan2(zx, zz), ETA.withSign(xy)
-					)
-				}
+				if (kc == 0f) return EulerAngles(EulerOrder.YZX,
+					0f, atan2(zx, zz), ETA.withSign(xy))
 
 				return EulerAngles(
 					EulerOrder.YZX,
@@ -350,11 +333,8 @@ data class Matrix3(
 			}
 			EulerOrder.ZXY -> {
 				val kc = yy * yy + yx * yx
-				if (kc == 0f) {
-					return EulerAngles(
-						EulerOrder.ZXY, ETA.withSign(yz), 0f, atan2(xy, xx)
-					)
-				}
+				if (kc == 0f) return EulerAngles(EulerOrder.ZXY,
+					ETA.withSign(yz), 0f, atan2(xy, xx))
 
 				return EulerAngles(
 					EulerOrder.ZXY,
@@ -365,11 +345,8 @@ data class Matrix3(
 			}
 			EulerOrder.ZYX -> {
 				val kc = xy * xy + xx * xx
-				if (kc == 0f) {
-					return EulerAngles(
-						EulerOrder.ZYX, 0f, ETA.withSign(-xz), atan2(-yx, yy)
-					)
-				}
+				if (kc == 0f) return EulerAngles(EulerOrder.ZYX,
+					0f, ETA.withSign(-xz), atan2(-yx, yy))
 
 				return EulerAngles(
 					EulerOrder.ZYX,
@@ -378,13 +355,11 @@ data class Matrix3(
 					atan2(xy, xx)
 				)
 			}
+
 			EulerOrder.YXZ -> {
 				val kc = zx * zx + zz * zz
-				if (kc == 0f) {
-					return EulerAngles(
-						EulerOrder.YXZ, ETA.withSign(-zy), atan2(-xz, xx), 0f
-					)
-				}
+				if (kc == 0f) return EulerAngles(EulerOrder.YXZ,
+					ETA.withSign(-zy), atan2(-xz, xx), 0f)
 
 				return EulerAngles(
 					EulerOrder.YXZ,
@@ -395,11 +370,8 @@ data class Matrix3(
 			}
 			EulerOrder.XZY -> {
 				val kc = yz * yz + yy * yy
-				if (kc == 0f) {
-					return EulerAngles(
-						EulerOrder.XZY, atan2(-zy, zz), 0f, ETA.withSign(-yx)
-					)
-				}
+				if (kc == 0f) return EulerAngles(EulerOrder.XZY,
+					atan2(-zy, zz), 0f, ETA.withSign(-yx))
 
 				return EulerAngles(
 					EulerOrder.XZY,

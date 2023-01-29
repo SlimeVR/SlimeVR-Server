@@ -77,11 +77,11 @@ class QuaternionTest {
 	}
 
 	@Test
-	fun interp() {
+	fun interpQ() {
 		val q1 = Quaternion(1f, 2f, 3f, 4f)
 		val q2 = Quaternion(5f, 6f, 7f, 8f)
 		val q3 = Quaternion(2.405691f, 3.5124686f, 4.619246f, 5.7260237f)
-		assertEquals(q1.interp(q2, 0.5f), q3, 1e-7)
+		assertEquals(q1.interpQ(q2, 0.5f), q3, 1e-7)
 	}
 
 	@Test
@@ -93,11 +93,11 @@ class QuaternionTest {
 	}
 
 	@Test
-	fun lerp() {
+	fun lerpQ() {
 		val q1 = Quaternion(1f, 2f, 3f, 4f)
 		val q2 = Quaternion(5f, 6f, 7f, 8f)
 		val q3 = Quaternion(3f, 4f, 5f, 6f)
-		assertEquals(q1.lerp(q2, 0.5f), q3, 1e-7)
+		assertEquals(q1.lerpQ(q2, 0.5f), q3, 1e-7)
 	}
 
 	@Test
@@ -109,10 +109,10 @@ class QuaternionTest {
 	}
 
 	@Test
-	fun angleTo() {
+	fun angleToQ() {
 		val q1 = Quaternion(1f, 0f, 0f, 0f)
 		val q2 = Quaternion(0f, 1f, 0f, 0f)
-		assertEquals(q1.angleTo(q2), PI.toFloat() / 2f)
+		assertEquals(q1.angleToQ(q2), PI.toFloat() / 2f)
 	}
 
 	@Test
@@ -123,9 +123,9 @@ class QuaternionTest {
 	}
 
 	@Test
-	fun angle() {
+	fun angleQ() {
 		val q = Quaternion(0f, 1f, 0f, 0f)
-		assertEquals(q.angle(), PI.toFloat() / 2f)
+		assertEquals(q.angleQ(), PI.toFloat() / 2f)
 	}
 
 	@Test
@@ -135,9 +135,9 @@ class QuaternionTest {
 	}
 
 	@Test
-	fun angleAbout() {
+	fun angleAboutQ() {
 		val q = Quaternion(1f, 1f, 1f, 0f)
-		assertEquals(q.angleAbout(Vector3.POS_Y), PI.toFloat() / 4f)
+		assertEquals(q.angleAboutQ(Vector3.POS_Y), PI.toFloat() / 4f)
 	}
 
 	@Test

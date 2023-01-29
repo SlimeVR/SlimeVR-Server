@@ -4,10 +4,6 @@ package io.github.axisangles.ktmath
 
 import kotlin.math.*
 
-/**
- * A Quaternion class properly implementing Quaternions as a real component and 3 imaginary components
- * All operations are well-defined
- */
 data class Quaternion(val w: Float, val x: Float, val y: Float, val z: Float) {
 	companion object {
 		val NULL = Quaternion(0f, 0f, 0f, 0f)
@@ -138,7 +134,7 @@ data class Quaternion(val w: Float, val x: Float, val y: Float, val z: Float) {
 
 	/**
 	 * computes the inverse of this quaternion
-	 * @return the inversed quaternion
+	 * @return the inverse quaternion
 	 **/
 	fun inv(): Quaternion {
 		val lenSq = lenSq()
@@ -203,42 +199,13 @@ data class Quaternion(val w: Float, val x: Float, val y: Float, val z: Float) {
 	 **/
 	fun pow(t: Float): Quaternion = (log() * t).exp()
 
-	// for a slight improvement in performance
-	// not fully implemented
-// 	fun pow(t: Float): Quaternion {
-// 		val imLen = xyz.Len()
-// 		val ang = atan(w, imLen)
-//
-// 		val len = len().pow(t)
-// 		val co = cos(t*ang)
-// 		val si = sin(t*ang)
-//
-// 		return if (imLen == 0f) {
-// 			Quaternion(len*co,
-// 				len*t*x,
-// 				len*t*y,
-// 				len*t*z
-// 			)
-// 		} else {
-// 			Quaternion(
-// 				len*co,
-// 				len*si*x/imLen,
-// 				len*si*y/imLen,
-// 				len*si*z/imLen
-// 			)
-// 		}
-// 	}
-
 	/**
-	 * between this and -this, picks the one nearest to that
+	 * between this and -this, picks the one nearest to that quaternion
 	 * @param that the quaternion to be nearest
 	 * @return nearest quaternion
 	 **/
-	fun twinNearest(that: Quaternion): Quaternion = if (this.dot(that) < 0f) {
-		-this
-	} else {
-		this
-	}
+	fun twinNearest(that: Quaternion): Quaternion =
+		if (this.dot(that) < 0f) -this else this
 
 	/**
 	 * interpolates from this quaternion to that quaternion by t in quaternion space
@@ -246,7 +213,7 @@ data class Quaternion(val w: Float, val x: Float, val y: Float, val z: Float) {
 	 * @param t the amount to interpolate
 	 * @return interpolated quaternion
 	 **/
-	fun interp(that: Quaternion, t: Float) =
+	fun interpQ(that: Quaternion, t: Float) =
 		if (t == 0f) {
 			this
 		} else if (t == 1f) {
@@ -263,7 +230,7 @@ data class Quaternion(val w: Float, val x: Float, val y: Float, val z: Float) {
 	 * @param t the amount to interpolate
 	 * @return interpolated quaternion
 	 **/
-	fun interpR(that: Quaternion, t: Float) = this.interp(that.twinNearest(this), t)
+	fun interpR(that: Quaternion, t: Float) = this.interpQ(that.twinNearest(this), t)
 
 	/**
 	 * linearly interpolates from this quaternion to that quaternion by t in
@@ -272,7 +239,7 @@ data class Quaternion(val w: Float, val x: Float, val y: Float, val z: Float) {
 	 * @param t the amount to interpolate
 	 * @return interpolated quaternion
 	 **/
-	fun lerp(that: Quaternion, t: Float): Quaternion = (1f - t) * this + t * that
+	fun lerpQ(that: Quaternion, t: Float): Quaternion = (1f - t) * this + t * that
 
 	/**
 	 * linearly interpolates from this quaternion to that quaternion by t in
@@ -281,13 +248,13 @@ data class Quaternion(val w: Float, val x: Float, val y: Float, val z: Float) {
 	 * @param t the amount to interpolate
 	 * @return interpolated quaternion
 	 **/
-	fun lerpR(that: Quaternion, t: Float) = this.lerp(that.twinNearest(this), t)
+	fun lerpR(that: Quaternion, t: Float) = this.lerpQ(that.twinNearest(this), t)
 
 	/**
 	 * computes this quaternion's angle to identity in quaternion space
 	 * @return angle
 	 **/
-	fun angle(): Float = atan2(xyz.len(), w)
+	fun angleQ(): Float = atan2(xyz.len(), w)
 
 	/**
 	 * computes this quaternion's angle to identity in rotation space
@@ -300,7 +267,7 @@ data class Quaternion(val w: Float, val x: Float, val y: Float, val z: Float) {
 	 * @param that the other quaternion
 	 * @return angle
 	 **/
-	fun angleTo(that: Quaternion): Float = (this / that).angle()
+	fun angleToQ(that: Quaternion): Float = (this / that).angleQ()
 
 	/**
 	 * computes the angle between this quaternion and that quaternion in rotation space
@@ -314,7 +281,7 @@ data class Quaternion(val w: Float, val x: Float, val y: Float, val z: Float) {
 	 * @param u the axis
 	 * @return angle
 	 **/
-	fun angleAbout(u: Vector3): Float {
+	fun angleAboutQ(u: Vector3): Float {
 		val si = u.dot(xyz)
 		val co = u.len() * w
 		return atan2(si, co)
@@ -325,7 +292,7 @@ data class Quaternion(val w: Float, val x: Float, val y: Float, val z: Float) {
 	 * @param u the axis
 	 * @return angle
 	 **/
-	fun angleAboutR(u: Vector3): Float = 2f * twinNearest(IDENTITY).angleAbout(u)
+	fun angleAboutR(u: Vector3): Float = 2f * twinNearest(IDENTITY).angleAboutQ(u)
 
 	/**
 	 * finds Q, the quaternion nearest to this quaternion representing a rotation purely
@@ -365,7 +332,7 @@ data class Quaternion(val w: Float, val x: Float, val y: Float, val z: Float) {
 	fun sandwich(that: Vector3): Vector3 = (this * Quaternion(0f, that) / this).xyz
 
 	/**
-	 * computes this quaternion's rotation axis
+	 * computes this quaternion's unit length rotation axis
 	 * @return rotation axis
 	 **/
 	fun axis(): Vector3 = xyz.unit()
@@ -384,9 +351,9 @@ data class Quaternion(val w: Float, val x: Float, val y: Float, val z: Float) {
 		val d = lenSq()
 		/* ktlint-disable */
 		return Matrix3(
-			(w*w + x*x - y*y - z*z)/d,	2f*(x*y - w*z)/d, 			2f*(w*y + x*z)/d,
-			2f*(x*y + w*z)/d,			(w*w - x*x + y*y - z*z)/d,	2f*(y*z - w*x)/d,
-			2f*(x*z - w*y)/d,			2f*(w*x + y*z)/d,			(w*w - x*x - y*y + z*z)/d)
+			(w*w + x*x - y*y - z*z)/d ,      2f*(x*y - w*z)/d     ,      2f*(w*y + x*z)/d     ,
+			     2f*(x*y + w*z)/d     , (w*w - x*x + y*y - z*z)/d ,      2f*(y*z - w*x)/d     ,
+			     2f*(x*z - w*y)/d     ,      2f*(w*x + y*z)/d     , (w*w - x*x - y*y + z*z)/d )
 		/* ktlint-enable */
 	}
 
