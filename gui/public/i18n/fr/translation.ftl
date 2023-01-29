@@ -205,6 +205,14 @@ tracker_selection_menu-unassigned = Capteurs non assignés
 tracker_selection_menu-assigned = Capteurs assignés
 tracker_selection_menu-dont_assign = Ne pas attribuer
 
+# This line cares about multilines.
+# <b>text</b> means that the text should be bold.
+tracker_selection_menu-neck_warning =
+    <b>Attention:</b> Un capteur de cou peut être mortel s'il est ajusté trop serré,
+            la sangle pourrait couper la circulation à la tête !
+tracker_selection_menu-neck_warning-done = Je suis conscient des risques
+tracker_selection_menu-neck_warning-cancel = Annuler
+
 ## Mounting menu
 mounting_selection_menu = Dans quelle direction pointe ce capteur?
 mounting_selection_menu-close = Fermer
@@ -328,6 +336,13 @@ settings-serial-description =
 settings-serial-connection_lost = Connexion à l'appareil perdue, reconnexion...
 settings-serial-reboot = Redémarrer
 settings-serial-factory_reset = Remise à zéro
+# This cares about multilines
+# <b>text</b> means that the text should be bold
+settings-serial-factory_reset-warning =
+    <b>Attention:</b> Cela réinitialisera les paramètres du capteur à zéro.
+            Ce qui signifie que les paramètres de Wi-Fi et de calibration <b>seront tous perdus!</b>
+settings-serial-factory_reset-warning-ok = Je sais ce que je fais
+settings-serial-factory_reset-warning-cancel = Annuler
 settings-serial-get_infos = Obtenir des informations
 settings-serial-serial_select = Sélectionnez un port série
 settings-serial-auto_dropdown_item = Automatique

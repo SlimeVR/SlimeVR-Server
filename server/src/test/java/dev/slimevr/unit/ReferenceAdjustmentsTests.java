@@ -2,9 +2,9 @@ package dev.slimevr.unit;
 
 import com.jme3.math.FastMath;
 import com.jme3.math.Quaternion;
-import dev.slimevr.vr.processor.TransformNode;
-import dev.slimevr.vr.trackers.IMUTracker;
-import dev.slimevr.vr.trackers.Tracker;
+import dev.slimevr.tracking.processor.TransformNode;
+import dev.slimevr.tracking.trackers.IMUTracker;
+import dev.slimevr.tracking.trackers.Tracker;
 import io.eiren.math.FloatMath;
 import io.eiren.util.StringUtils;
 import org.junit.jupiter.api.DynamicTest;

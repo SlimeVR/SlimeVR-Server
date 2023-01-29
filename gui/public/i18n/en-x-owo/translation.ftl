@@ -205,6 +205,14 @@ tracker_selection_menu-unassigned = unassyigned twackaws
 tracker_selection_menu-assigned = assyigned twackaws
 tracker_selection_menu-dont_assign = do nawt assyign
 
+# This line cares about multilines.
+# <b>text</b> means that the text should be bold.
+tracker_selection_menu-neck_warning =
+    <b>wawning:</b> a neck twackew can be deadwy if adjusted too tightwy,
+            the stwap (collar) couwd cut the ciwcuwation to youw head!
+tracker_selection_menu-neck_warning-done = i undewstand the wisks~
+tracker_selection_menu-neck_warning-cancel = cancew :o
+
 ## Mounting menu
 mounting_selection_menu = whewe doo yew want dis twayckaw to be?
 mounting_selection_menu-close = cwose
@@ -328,6 +336,13 @@ settings-serial-description =
 settings-serial-connection_lost = connyection to shewyaw wost, weconnyecting... >~<
 settings-serial-reboot = weboot
 settings-serial-factory_reset = fawctowy reset
+# This cares about multilines
+# <b>text</b> means that the text should be bold
+settings-serial-factory_reset-warning =
+    <b>wawning:</b> this wiww weset the twackew to factowy settings.
+            which means wi-fi and cawibwation settings <b>wiww aww be wost!</b>
+settings-serial-factory_reset-warning-ok = i know what I'm doing :3
+settings-serial-factory_reset-warning-cancel = cancew
 settings-serial-get_infos = get infows
 settings-serial-serial_select = sewect a shewyaw pawt
 settings-serial-auto_dropdown_item = awto

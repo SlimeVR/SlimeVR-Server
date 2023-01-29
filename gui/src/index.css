@@ -4,7 +4,7 @@
 
 body {
   font-variant-numeric: tabular-nums;
-  font-family: "Twemoji Country Flags", 'poppins', sans-serif;
+  font-family: 'poppins', sans-serif, emoji, "Twemoji Country Flags";
   height: 100vh;
   width: 100vw;
   user-select: none;

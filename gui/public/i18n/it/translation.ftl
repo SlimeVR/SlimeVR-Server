@@ -24,7 +24,7 @@ body_part-RIGHT_HAND = Mano destra
 body_part-RIGHT_UPPER_LEG = Coscia destra
 body_part-RIGHT_LOWER_LEG = Caviglia destra
 body_part-RIGHT_FOOT = Piede destro
-body_part-RIGHT_CONTROLLER = Right controller
+body_part-RIGHT_CONTROLLER = Controller destro
 body_part-CHEST = Petto
 body_part-WAIST = Girovita
 body_part-HIP = Fianchi
@@ -35,20 +35,20 @@ body_part-LEFT_HAND = Mano sinistra
 body_part-LEFT_UPPER_LEG = Coscia sinistra
 body_part-LEFT_LOWER_LEG = Caviglia sinistra
 body_part-LEFT_FOOT = Piede sinistro
-body_part-LEFT_CONTROLLER = Left controller
+body_part-LEFT_CONTROLLER = Controller sinistro
 
 ## Proportions
 skeleton_bone-NONE = Non assegnato
 skeleton_bone-HEAD = Correzione Testa
 skeleton_bone-NECK = Lunghezza Collo
-skeleton_bone-CHEST = Chest Length
+skeleton_bone-CHEST = Lunghezza del torace
 skeleton_bone-CHEST_OFFSET = Chest Offset
-skeleton_bone-WAIST = Waist Length
-skeleton_bone-HIP = Hip Length
+skeleton_bone-WAIST = Giro vita
+skeleton_bone-HIP = Lunghezza fianchi
 skeleton_bone-HIP_OFFSET = Correzione Fianchi
 skeleton_bone-HIPS_WIDTH = Larghezza Fianchi
-skeleton_bone-UPPER_LEG = Upper Leg Length
-skeleton_bone-LOWER_LEG = Lower Leg Length
+skeleton_bone-UPPER_LEG = Lunghezza della parte superiore della gamba
+skeleton_bone-LOWER_LEG = Lunghezza della parte inferiore della gamba
 skeleton_bone-FOOT_LENGTH = Lunghezza Piedi
 skeleton_bone-FOOT_SHIFT = Correzione Piedi
 skeleton_bone-SKELETON_OFFSET = Compensazione scheletro
@@ -96,19 +96,19 @@ widget-overlay-is_mirrored_label = Includi uno specchio nel Overlay
 widget-drift_compensation-clear = Clear drift compensation
 
 ## Widget: Developer settings
-widget-developer_mode = Developer Mode
-widget-developer_mode-high_contrast = High contrast
-widget-developer_mode-precise_rotation = Precise rotation
-widget-developer_mode-fast_data_feed = Fast data feed
-widget-developer_mode-filter_slimes_and_hmd = Filter slimes and HMD
-widget-developer_mode-sort_by_name = Sort by name
+widget-developer_mode = Modalità sviluppatore
+widget-developer_mode-high_contrast = Alto contrasto
+widget-developer_mode-precise_rotation = Rotazione precisa
+widget-developer_mode-fast_data_feed = Alimentazione veloce dei dati
+widget-developer_mode-filter_slimes_and_hmd = Filtra slimes e HMD
+widget-developer_mode-sort_by_name = Ordina per nome
 widget-developer_mode-raw_slime_rotation = Raw rotation
-widget-developer_mode-more_info = More info
+widget-developer_mode-more_info = Ulteriori informazioni
 
 ## Widget: IMU Visualizer
-widget-imu_visualizer = Rotation
+widget-imu_visualizer = Rotazione
 widget-imu_visualizer-rotation_raw = Raw
-widget-imu_visualizer-rotation_preview = Preview
+widget-imu_visualizer-rotation_preview = Anteprima
 
 ## Tracker status
 tracker-status-none = Nessuno Stato
@@ -151,9 +151,9 @@ tracker-settings-assignment_section-edit = Cambia assegnazione
 tracker-settings-mounting_section = posizionamento di montaggio
 tracker-settings-mounting_section-description =  Come è posizionato il tracker?
 tracker-settings-mounting_section-edit = Cambia posizionamento
-tracker-settings-drift_compensation_section = Allow drift compensation
+tracker-settings-drift_compensation_section = Consenti compensazione deriva
 tracker-settings-drift_compensation_section-description = Should this tracker compensate for its drift when drift compensation is enabled?
-tracker-settings-drift_compensation_section-edit = Allow drift compensation
+tracker-settings-drift_compensation_section-edit = Consenti compensazione deriva
 # The .<name> means it's an attribute and it's related to the top key.
 # In this case that is the settings for the assignment section.
 tracker-settings-name_section = Nome del tracker
@@ -178,28 +178,28 @@ body_assignment_menu-unassign_tracker = Rimuovi assegnazione del tracker
 # We are using it here because english doesn't require changing the text in each case but
 # maybe your language does.
 -tracker_selection-part = Which tracker to assign to your
-tracker_selection_menu-NONE = Which tracker do you want to be unassigned?
-tracker_selection_menu-HEAD = { -tracker_selection-part } head?
-tracker_selection_menu-NECK = { -tracker_selection-part } neck?
-tracker_selection_menu-RIGHT_SHOULDER = { -tracker_selection-part } right shoulder?
-tracker_selection_menu-RIGHT_UPPER_ARM = { -tracker_selection-part } right upper arm?
-tracker_selection_menu-RIGHT_LOWER_ARM = { -tracker_selection-part } right lower arm?
-tracker_selection_menu-RIGHT_HAND = { -tracker_selection-part } right hand?
-tracker_selection_menu-RIGHT_UPPER_LEG = { -tracker_selection-part } right thigh?
-tracker_selection_menu-RIGHT_LOWER_LEG = { -tracker_selection-part } right ankle?
-tracker_selection_menu-RIGHT_FOOT = { -tracker_selection-part } right foot?
-tracker_selection_menu-RIGHT_CONTROLLER = { -tracker_selection-part } right controller?
-tracker_selection_menu-CHEST = { -tracker_selection-part } chest?
-tracker_selection_menu-WAIST = { -tracker_selection-part } waist?
-tracker_selection_menu-HIP = { -tracker_selection-part } hip?
-tracker_selection_menu-LEFT_SHOULDER = { -tracker_selection-part } left shoulder?
-tracker_selection_menu-LEFT_UPPER_ARM = { -tracker_selection-part } left upper arm?
-tracker_selection_menu-LEFT_LOWER_ARM = { -tracker_selection-part } left lower arm?
-tracker_selection_menu-LEFT_HAND = { -tracker_selection-part } left hand?
-tracker_selection_menu-LEFT_UPPER_LEG = { -tracker_selection-part } left thigh?
-tracker_selection_menu-LEFT_LOWER_LEG = { -tracker_selection-part } left ankle?
-tracker_selection_menu-LEFT_FOOT = { -tracker_selection-part } left foot?
-tracker_selection_menu-LEFT_CONTROLLER = { -tracker_selection-part } left controller?
+tracker_selection_menu-NONE = Quale tracker vuoi che non sia assegnato?
+tracker_selection_menu-HEAD = { -tracker_selection-part } testa?
+tracker_selection_menu-NECK = { -tracker_selection-part } collo?
+tracker_selection_menu-RIGHT_SHOULDER = { -tracker_selection-part } spalla destra?
+tracker_selection_menu-RIGHT_UPPER_ARM = { -tracker_selection-part } braccio superiore destro?
+tracker_selection_menu-RIGHT_LOWER_ARM = { -tracker_selection-part } braccio inferiore destro?
+tracker_selection_menu-RIGHT_HAND = { -tracker_selection-part } mano destra?
+tracker_selection_menu-RIGHT_UPPER_LEG = { -tracker_selection-part } coscia destra?
+tracker_selection_menu-RIGHT_LOWER_LEG = { -tracker_selection-part } caviglia destra?
+tracker_selection_menu-RIGHT_FOOT = { -tracker_selection-part } piede destro?
+tracker_selection_menu-RIGHT_CONTROLLER = { -tracker_selection-part } controller destro?
+tracker_selection_menu-CHEST = { -tracker_selection-part } torace?
+tracker_selection_menu-WAIST = { -tracker_selection-part } vita?
+tracker_selection_menu-HIP = { -tracker_selection-part } anca?
+tracker_selection_menu-LEFT_SHOULDER = { -tracker_selection-part } spalla sinistra?
+tracker_selection_menu-LEFT_UPPER_ARM = { -tracker_selection-part } braccio superiore sinistro?
+tracker_selection_menu-LEFT_LOWER_ARM = { -tracker_selection-part } braccio inferiore sinistro?
+tracker_selection_menu-LEFT_HAND = { -tracker_selection-part } mano sinistra?
+tracker_selection_menu-LEFT_UPPER_LEG = { -tracker_selection-part } coscia sinistra?
+tracker_selection_menu-LEFT_LOWER_LEG = { -tracker_selection-part } caviglia sinistra?
+tracker_selection_menu-LEFT_FOOT = { -tracker_selection-part } piede sinistro?
+tracker_selection_menu-LEFT_CONTROLLER = { -tracker_selection-part } controller sinistro?
 
 tracker_selection_menu-unassigned = Tracker non assegnato
 tracker_selection_menu-assigned = Dispositivo assegnato
@@ -258,8 +258,8 @@ settings-general-tracker_mechanics-drift_compensation-description =
     Compensates IMU yaw drift by applying an inverse rotation.
     Change amount of compensation and up to how many resets are taken into account.
 settings-general-tracker_mechanics-drift_compensation-enabled-label = Drift compensation
-settings-general-tracker_mechanics-drift_compensation-amount-label = Compensation amount
-settings-general-tracker_mechanics-drift_compensation-max_resets-label = Use up to x last resets
+settings-general-tracker_mechanics-drift_compensation-amount-label = Compensazione totale
+settings-general-tracker_mechanics-drift_compensation-max_resets-label = Utilizza fino a x ultimi ripristini
 
 ## FK/Tracking settings
 settings-general-fk_settings = Impostazioni FK
@@ -283,9 +283,9 @@ settings-general-fk_settings-skeleton_settings-description = Abilita o disabilit
 settings-general-fk_settings-skeleton_settings-extended_spine = Estensione colonna vertebrale
 settings-general-fk_settings-skeleton_settings-extended_pelvis = Estensione bacino
 settings-general-fk_settings-skeleton_settings-extended_knees = Estensione ginocchia
-settings-general-fk_settings-vive_emulation-title = Vive emulation
-settings-general-fk_settings-vive_emulation-description = Emulate the waist tracker problems that Vive trackers have. This is a joke and makes tracking worse.
-settings-general-fk_settings-vive_emulation-label = Enable Vive emulation
+settings-general-fk_settings-vive_emulation-title = Emulazione vive
+settings-general-fk_settings-vive_emulation-description = Emula i problemi del tracker in vita che hanno i tracker Vive. Questo è uno scherzo e peggiora il tracciamento.
+settings-general-fk_settings-vive_emulation-label = Abilita l'emulazione Vive
 
 ## Gesture control settings (tracker tapping)
 settings-general-gesture_control = Controllo dei gesti
@@ -297,14 +297,14 @@ settings-general-gesture_control-taps = { $amount ->
     [one] 1 tap
     *[other] { $amount } taps
 }
-settings-general-gesture_control-quickResetEnabled = Enable tap to quick reset
-settings-general-gesture_control-quickResetDelay = Quick reset delay
-settings-general-gesture_control-quickResetTaps = Taps for quick reset
-settings-general-gesture_control-resetEnabled = Enable tap to reset
-settings-general-gesture_control-resetDelay = Reset delay
-settings-general-gesture_control-resetTaps = Taps for reset
-settings-general-gesture_control-mountingResetEnabled = Enable tap to reset mounting
-settings-general-gesture_control-mountingResetDelay = Mounting reset delay
+settings-general-gesture_control-quickResetEnabled = Abilita il tocco per il ripristino rapido
+settings-general-gesture_control-quickResetDelay = Ritardo reset rapido
+settings-general-gesture_control-quickResetTaps = Tocchi per ripristino rapido
+settings-general-gesture_control-resetEnabled = Abilita tocca per ripristinare
+settings-general-gesture_control-resetDelay = Ritardo reset
+settings-general-gesture_control-resetTaps = Tocchi per resettare
+settings-general-gesture_control-mountingResetEnabled = Abilita tocco per ripristinare il montaggio
+settings-general-gesture_control-mountingResetDelay = Ritardo ripristino montaggio
 settings-general-gesture_control-mountingResetTaps = Taps for mounting reset
 
 ## Interface settings

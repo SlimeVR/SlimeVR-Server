@@ -1,14 +1,15 @@
-import { useLocalization } from '@fluent/react';
+import { Localized, useLocalization } from '@fluent/react';
 import { useOnboarding } from '../../../hooks/onboarding';
 import { useWifiForm } from '../../../hooks/wifi-form';
 import { ArrowLink } from '../../commons/ArrowLink';
 import { Button } from '../../commons/Button';
+import { Input } from '../../commons/Input';
 import { Typography } from '../../commons/Typography';
 
 export function WifiCredsPage() {
   const { l10n } = useLocalization();
   const { applyProgress, skipSetup } = useOnboarding();
-  const { WifiForm, handleSubmit, submitWifiCreds, formState } = useWifiForm();
+  const { control, handleSubmit, submitWifiCreds, formState } = useWifiForm();
   applyProgress(0.2);
 
   return (
@@ -37,7 +38,33 @@ export function WifiCredsPage() {
             </>
           </div>
           <div className="flex flex-col bg-background-70 gap-3 p-10 rounded-xl max-w-sm">
-            <WifiForm></WifiForm>
+            <Localized
+              id="onboarding-wifi_creds-ssid"
+              attrs={{ placeholder: true, label: true }}
+            >
+              <Input
+                control={control}
+                rules={{ required: true }}
+                name="ssid"
+                type="text"
+                label="SSID"
+                placeholder="ssid"
+                variant="secondary"
+              />
+            </Localized>
+            <Localized
+              id="onboarding-wifi_creds-password"
+              attrs={{ placeholder: true, label: true }}
+            >
+              <Input
+                control={control}
+                name="password"
+                type="password"
+                label="Password"
+                placeholder="password"
+                variant="secondary"
+              />
+            </Localized>
           </div>
         </div>
       </div>

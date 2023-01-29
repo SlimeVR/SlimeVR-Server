@@ -4,8 +4,8 @@ import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.node.JsonNodeFactory;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 import com.jme3.math.Quaternion;
-import dev.slimevr.vr.trackers.IMUTracker;
-import dev.slimevr.vr.trackers.Tracker;
+import dev.slimevr.tracking.trackers.IMUTracker;
+import dev.slimevr.tracking.trackers.Tracker;
 
 
 public class TrackerConfig {

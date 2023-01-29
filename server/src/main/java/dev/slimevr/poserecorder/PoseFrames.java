@@ -1,7 +1,7 @@
 package dev.slimevr.poserecorder;
 
-import dev.slimevr.vr.trackers.TrackerPosition;
-import dev.slimevr.vr.trackers.TrackerUtils;
+import dev.slimevr.tracking.trackers.TrackerPosition;
+import dev.slimevr.tracking.trackers.TrackerUtils;
 import io.eiren.util.collections.FastList;
 
 import java.util.Iterator;
@@ -21,6 +21,22 @@ public final class PoseFrames implements Iterable<TrackerFrame[]> {
 	 */
 	public PoseFrames(FastList<PoseFrameTracker> trackers) {
 		this.trackers = trackers;
+	}
+
+	/**
+	 * Creates a {@link PoseFrames} object with the provided {@link PoseFrames}
+	 * object, wrapping the list of {@link PoseFrameTracker}s with new
+	 * {@link PoseFrameTracker} objects as the internal {@link PoseFrameTracker}
+	 * list
+	 *
+	 * @see {@link FastList}, {@link PoseFrameTracker}
+	 */
+	public PoseFrames(PoseFrames parent) {
+		trackers = new FastList<>(parent.trackers.size());
+		for (PoseFrameTracker tracker : parent.trackers) {
+			// Wrap all the trackers so cursors can be per-instance
+			trackers.add(tracker != null ? new PoseFrameTracker(tracker) : null);
+		}
 	}
 
 	/**
@@ -111,6 +127,20 @@ public final class PoseFrames implements Iterable<TrackerFrame[]> {
 	 */
 	public List<PoseFrameTracker> getTrackers() {
 		return trackers;
+	}
+
+	/**
+	 * Sets the cursor index for all the {@link PoseFrameTracker} objects from
+	 * the internal {@link PoseFrameTracker} list
+	 *
+	 * @see {@link List#remove(Object)}, {@link PoseFrameTracker}
+	 */
+	public void setCursors(int index) {
+		for (PoseFrameTracker tracker : trackers) {
+			if (tracker != null) {
+				tracker.setCursor(index);
+			}
+		}
 	}
 
 	// #region Data Utilities

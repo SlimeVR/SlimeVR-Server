@@ -1,13 +1,14 @@
+import { Localized, useLocalization } from '@fluent/react';
 import { useEffect, useRef } from 'react';
 import { useForm } from 'react-hook-form';
 import { useLocation } from 'react-router-dom';
 import {
   ChangeSettingsRequestT,
-  RpcMessage,
-  SettingsRequestT,
-  SettingsResponseT,
   OSCRouterSettingsT,
   OSCSettingsT,
+  RpcMessage,
+  SettingsRequestT,
+  SettingsResponseT
 } from 'solarxr-protocol';
 import { useWebsocketAPI } from '../../../hooks/websocket-api';
 import { CheckBox } from '../../commons/Checkbox';
@@ -15,7 +16,6 @@ import { RouterIcon } from '../../commons/icon/RouterIcon';
 import { Input } from '../../commons/Input';
 import { Typography } from '../../commons/Typography';
 import { SettingsPageLayout } from '../SettingsPageLayout';
-import { Localized, useLocalization } from '@fluent/react';
 
 interface OSCRouterSettingsForm {
   router: {
@@ -166,7 +166,9 @@ export function OSCRouterSettings() {
             >
               <Input
                 type="number"
-                {...register('router.oscSettings.portIn', { required: true })}
+                control={control}
+                rules={{ required: true }}
+                name="router.oscSettings.portIn"
                 placeholder="9002"
                 label="Port In"
               ></Input>
@@ -177,9 +179,9 @@ export function OSCRouterSettings() {
             >
               <Input
                 type="number"
-                {...register('router.oscSettings.portOut', {
-                  required: true,
-                })}
+                control={control}
+                rules={{ required: true }}
+                name="router.oscSettings.portOut"
                 placeholder="9000"
                 label="Port Out"
               ></Input>
@@ -198,11 +200,13 @@ export function OSCRouterSettings() {
           <div className="grid gap-3 pb-5">
             <Input
               type="text"
-              {...register('router.oscSettings.address', {
+              control={control}
+              rules={{
                 required: true,
                 pattern:
                   /^(?!0)(?!.*\.$)((1?\d?\d|25[0-5]|2[0-4]\d)(\.|$)){4}$/i,
-              })}
+              }}
+              name="router.oscSettings.address"
               placeholder={l10n.getString(
                 'settings-osc-router-network-address-placeholder'
               )}

@@ -4,16 +4,19 @@ import com.jme3.math.FastMath;
 import com.jme3.math.Vector3f;
 
 import dev.slimevr.autobone.AutoBoneTrainingStep;
-import dev.slimevr.vr.processor.skeleton.HumanSkeleton;
-import dev.slimevr.vr.trackers.ComputedTracker;
-import dev.slimevr.vr.trackers.TrackerRole;
+import dev.slimevr.tracking.processor.skeleton.HumanSkeleton;
+import dev.slimevr.tracking.trackers.ComputedTracker;
+import dev.slimevr.tracking.trackers.TrackerRole;
 
 
 // The change in distance between both of the ankles over time
 public class OffsetSlideError implements IAutoBoneError {
 	@Override
 	public float getStepError(AutoBoneTrainingStep trainingStep) throws AutoBoneException {
-		return getSlideError(trainingStep.getSkeleton1(), trainingStep.getSkeleton2());
+		return getSlideError(
+			trainingStep.getHumanPoseManager1().getSkeleton(),
+			trainingStep.getHumanPoseManager2().getSkeleton()
+		);
 	}
 
 	public static float getSlideError(HumanSkeleton skeleton1, HumanSkeleton skeleton2) {

@@ -12,10 +12,10 @@ import dev.slimevr.protocol.ProtocolAPI;
 import dev.slimevr.protocol.ProtocolHandler;
 import dev.slimevr.protocol.rpc.serial.RPCSerialHandler;
 import dev.slimevr.protocol.rpc.settings.RPCSettingsHandler;
-import dev.slimevr.vr.processor.skeleton.SkeletonConfigOffsets;
-import dev.slimevr.vr.trackers.IMUTracker;
-import dev.slimevr.vr.trackers.Tracker;
-import dev.slimevr.vr.trackers.TrackerPosition;
+import dev.slimevr.tracking.processor.config.SkeletonConfigOffsets;
+import dev.slimevr.tracking.trackers.IMUTracker;
+import dev.slimevr.tracking.trackers.Tracker;
+import dev.slimevr.tracking.trackers.TrackerPosition;
 import io.eiren.util.logging.LogManager;
 import solarxr_protocol.MessageBundle;
 import solarxr_protocol.datatypes.TransactionId;
@@ -105,13 +105,13 @@ public class RPCHandler extends ProtocolHandler<RpcMessageHeader>
 		if (req == null)
 			return;
 
-		this.api.server.humanPoseProcessor.getSkeletonConfig().resetOffsets();
-		this.api.server.humanPoseProcessor.getSkeletonConfig().save();
+		this.api.server.humanPoseManager.resetOffsets();
+		this.api.server.humanPoseManager.saveConfig();
 		this.api.server.getConfigManager().saveConfig();
 
 		// might not be a good idea maybe let the client ask again
 		FlatBufferBuilder fbb = new FlatBufferBuilder(300);
-		int config = RPCBuilder.createSkeletonConfig(fbb, this.api.server.humanPoseProcessor);
+		int config = RPCBuilder.createSkeletonConfig(fbb, this.api.server.humanPoseManager);
 		int outbound = this.createRPCMessage(fbb, RpcMessage.SkeletonConfigResponse, config);
 		fbb.finish(outbound);
 		conn.send(fbb.dataBuffer());
@@ -124,7 +124,7 @@ public class RPCHandler extends ProtocolHandler<RpcMessageHeader>
 			return;
 
 		FlatBufferBuilder fbb = new FlatBufferBuilder(300);
-		int config = RPCBuilder.createSkeletonConfig(fbb, this.api.server.humanPoseProcessor);
+		int config = RPCBuilder.createSkeletonConfig(fbb, this.api.server.humanPoseManager);
 		int outbound = this.createRPCMessage(fbb, RpcMessage.SkeletonConfigResponse, config);
 		fbb.finish(outbound);
 		conn.send(fbb.dataBuffer());
@@ -141,8 +141,8 @@ public class RPCHandler extends ProtocolHandler<RpcMessageHeader>
 
 		SkeletonConfigOffsets joint = SkeletonConfigOffsets.getById(req.bone());
 
-		this.api.server.humanPoseProcessor.setSkeletonConfig(joint, req.value());
-		this.api.server.humanPoseProcessor.getSkeletonConfig().save();
+		this.api.server.humanPoseManager.setOffset(joint, req.value());
+		this.api.server.humanPoseManager.saveConfig();
 		this.api.server.getConfigManager().saveConfig();
 	}
 

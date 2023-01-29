@@ -1,4 +1,4 @@
-import { useLocalization } from '@fluent/react';
+import { Localized, useLocalization } from '@fluent/react';
 import { useEffect, useState } from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
 import {
@@ -15,6 +15,7 @@ import { BaseModal } from './commons/BaseModal';
 import { Button } from './commons/Button';
 import { BulbIcon } from './commons/icon/BulbIcon';
 import { USBIcon } from './commons/icon/UsbIcon';
+import { Input } from './commons/Input';
 import { Typography } from './commons/Typography';
 
 const mapItems = <T,>(items: T[], getKey: (item: T) => string) => {
@@ -71,7 +72,7 @@ export function SerialDetectionModal() {
   const [isOpen, setOpen] = useState<SerialDeviceT | null>(null);
   const [showWifiForm, setShowWifiForm] = useState(false);
 
-  const { WifiForm, handleSubmit, submitWifiCreds, formState, hasWifiCreds } =
+  const { handleSubmit, submitWifiCreds, formState, hasWifiCreds, control } =
     useWifiForm();
 
   useEffect(() => {
@@ -185,7 +186,33 @@ export function SerialDetectionModal() {
               </Typography>
             </div>
             <div className="flex flex-col gap-3 rounded-xl max-w-sm">
-              <WifiForm></WifiForm>
+              <Localized
+                id="onboarding-wifi_creds-ssid"
+                attrs={{ placeholder: true, label: true }}
+              >
+                <Input
+                  control={control}
+                  rules={{ required: true }}
+                  name="ssid"
+                  type="text"
+                  label="SSID"
+                  placeholder="ssid"
+                  variant="secondary"
+                />
+              </Localized>
+              <Localized
+                id="onboarding-wifi_creds-password"
+                attrs={{ placeholder: true, label: true }}
+              >
+                <Input
+                  control={control}
+                  name="password"
+                  type="password"
+                  label="Password"
+                  placeholder="password"
+                  variant="secondary"
+                />
+              </Localized>
             </div>
 
             <Button

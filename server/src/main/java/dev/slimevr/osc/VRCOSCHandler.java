@@ -10,11 +10,11 @@ import com.jme3.math.Vector3f;
 import dev.slimevr.VRServer;
 import dev.slimevr.config.OSCConfig;
 import dev.slimevr.platform.SteamVRBridge;
-import dev.slimevr.vr.processor.HumanPoseProcessor;
-import dev.slimevr.vr.trackers.HMDTracker;
-import dev.slimevr.vr.trackers.ShareableTracker;
-import dev.slimevr.vr.trackers.TrackerRole;
-import dev.slimevr.vr.trackers.TrackerStatus;
+import dev.slimevr.tracking.processor.HumanPoseManager;
+import dev.slimevr.tracking.trackers.HMDTracker;
+import dev.slimevr.tracking.trackers.ShareableTracker;
+import dev.slimevr.tracking.trackers.TrackerRole;
+import dev.slimevr.tracking.trackers.TrackerStatus;
 import io.eiren.util.collections.FastList;
 import io.eiren.util.logging.LogManager;
 
@@ -34,7 +34,7 @@ public class VRCOSCHandler implements OSCHandler {
 	private final VRServer server;
 	private final HMDTracker hmd;
 	private final SteamVRBridge steamvrBridge;
-	private final HumanPoseProcessor humanPoseProcessor;
+	private final HumanPoseManager humanPoseManager;
 	private final List<? extends ShareableTracker> shareableTrackers;
 	private final FastList<Float> oscArgs = new FastList<>(3);
 	private final Vector3f vec = new Vector3f();
@@ -52,14 +52,14 @@ public class VRCOSCHandler implements OSCHandler {
 	public VRCOSCHandler(
 		VRServer server,
 		HMDTracker hmd,
-		HumanPoseProcessor humanPoseProcessor,
+		HumanPoseManager humanPoseManager,
 		SteamVRBridge steamvrBridge,
 		OSCConfig oscConfig,
 		List<? extends ShareableTracker> shareableTrackers
 	) {
 		this.server = server;
 		this.hmd = hmd;
-		this.humanPoseProcessor = humanPoseProcessor;
+		this.humanPoseManager = humanPoseManager;
 		this.steamvrBridge = steamvrBridge;
 		this.config = oscConfig;
 		this.shareableTrackers = shareableTrackers;
@@ -185,7 +185,7 @@ public class VRCOSCHandler implements OSCHandler {
 					(float) event
 						.getMessage()
 						.getArguments()
-						.get(0) * humanPoseProcessor.getUserHeightFromConfig(),
+						.get(0) * humanPoseManager.getUserHeightFromConfig(),
 					0f
 				);
 			hmd.rotation.set(Quaternion.IDENTITY);

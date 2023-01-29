@@ -1,10 +1,10 @@
 package dev.slimevr.autobone;
 
-import java.util.Map;
-
-import dev.slimevr.poserecorder.PoseFrameSkeleton;
 import dev.slimevr.poserecorder.PoseFrames;
-import dev.slimevr.vr.processor.skeleton.BoneType;
+import dev.slimevr.tracking.processor.BoneType;
+import dev.slimevr.tracking.processor.HumanPoseManager;
+
+import java.util.Map;
 
 
 public class AutoBoneTrainingStep {
@@ -14,8 +14,8 @@ public class AutoBoneTrainingStep {
 	private float currentHeight;
 	private final float targetHeight;
 
-	private final PoseFrameSkeleton skeleton1;
-	private final PoseFrameSkeleton skeleton2;
+	private final HumanPoseManager humanPoseManager1;
+	private final HumanPoseManager humanPoseManager2;
 
 	private final PoseFrames trainingFrames;
 
@@ -25,30 +25,30 @@ public class AutoBoneTrainingStep {
 		int cursor1,
 		int cursor2,
 		float targetHeight,
-		PoseFrameSkeleton skeleton1,
-		PoseFrameSkeleton skeleton2,
+		HumanPoseManager humanPoseManager1,
+		HumanPoseManager humanPoseManager2,
 		PoseFrames trainingFrames,
 		Map<BoneType, Float> intermediateOffsets
 	) {
 		this.cursor1 = cursor1;
 		this.cursor2 = cursor2;
 		this.targetHeight = targetHeight;
-		this.skeleton1 = skeleton1;
-		this.skeleton2 = skeleton2;
+		this.humanPoseManager1 = humanPoseManager1;
+		this.humanPoseManager2 = humanPoseManager2;
 		this.trainingFrames = trainingFrames;
 		this.intermediateOffsets = intermediateOffsets;
 	}
 
 	public AutoBoneTrainingStep(
 		float targetHeight,
-		PoseFrameSkeleton skeleton1,
-		PoseFrameSkeleton skeleton2,
+		HumanPoseManager humanPoseManager1,
+		HumanPoseManager humanPoseManager2,
 		PoseFrames trainingFrames,
 		Map<BoneType, Float> intermediateOffsets
 	) {
 		this.targetHeight = targetHeight;
-		this.skeleton1 = skeleton1;
-		this.skeleton2 = skeleton2;
+		this.humanPoseManager1 = humanPoseManager1;
+		this.humanPoseManager2 = humanPoseManager2;
 		this.trainingFrames = trainingFrames;
 		this.intermediateOffsets = intermediateOffsets;
 	}
@@ -86,12 +86,12 @@ public class AutoBoneTrainingStep {
 		return targetHeight;
 	}
 
-	public PoseFrameSkeleton getSkeleton1() {
-		return skeleton1;
+	public HumanPoseManager getHumanPoseManager1() {
+		return humanPoseManager1;
 	}
 
-	public PoseFrameSkeleton getSkeleton2() {
-		return skeleton2;
+	public HumanPoseManager getHumanPoseManager2() {
+		return humanPoseManager2;
 	}
 
 	public PoseFrames getTrainingFrames() {
