@@ -53,6 +53,12 @@ export function MainLayoutRoute({
                     type={ResetType.Full}
                     variant="big"
                   ></ResetButton>
+                  {config?.debug && (
+                    <ResetButton
+                      type={ResetType.Mounting}
+                      variant="big"
+                    ></ResetButton>
+                  )}
                   <BVHButton></BVHButton>
                 </div>
                 <div className="w-full">
