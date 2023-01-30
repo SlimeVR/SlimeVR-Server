@@ -3,22 +3,57 @@ package dev.slimevr.serial;
 import com.fazecast.jSerialComm.SerialPort;
 import com.fazecast.jSerialComm.SerialPortEvent;
 import com.fazecast.jSerialComm.SerialPortMessageListener;
+import io.eiren.util.logging.LogManager;
+import org.apache.commons.collections4.CollectionUtils;
+import org.apache.commons.collections4.Equator;
 
 import java.io.IOException;
 import java.io.OutputStream;
 import java.io.OutputStreamWriter;
 import java.nio.ByteBuffer;
 import java.nio.charset.StandardCharsets;
-import java.util.Arrays;
+import java.util.*;
 import java.util.concurrent.CopyOnWriteArrayList;
-import java.util.List;
 import java.util.stream.Stream;
 
 
 public class SerialHandler implements SerialPortMessageListener {
 
 	private final List<SerialListener> listeners = new CopyOnWriteArrayList<>();
-	private SerialPort trackerPort = null;
+	private final Timer getDevicesTimer = new Timer("GetDevicesTimer");
+
+	private SerialPort currentPort = null;
+
+	private boolean watchingNewDevices = false;
+	private SerialPort[] lastKnownPorts = new SerialPort[] {};
+
+	public SerialHandler() {
+		startWatchingNewDevices();
+	}
+
+	public void startWatchingNewDevices() {
+		if (this.watchingNewDevices)
+			return;
+		this.watchingNewDevices = true;
+		this.getDevicesTimer.scheduleAtFixedRate(new TimerTask() {
+			public void run() {
+				detectNewPorts();
+			}
+		}, 0, 3000);
+	}
+
+	public void stopWatchingNewDevices() {
+		if (!this.watchingNewDevices)
+			return;
+		this.watchingNewDevices = false;
+		this.getDevicesTimer.cancel();
+		this.getDevicesTimer.purge();
+	}
+
+	public void onNewDevice(SerialPort port) {
+		this.listeners.forEach((listener) -> listener.onNewSerialDevice(port));
+	}
+
 
 	public void addListener(SerialListener channel) {
 		this.listeners.add(channel);
@@ -30,37 +65,38 @@ public class SerialHandler implements SerialPortMessageListener {
 
 	public boolean openSerial(String portLocation, boolean auto) {
 		if (this.isConnected()) {
-			if (trackerPort != null)
-				trackerPort.closePort();
+			if (currentPort != null)
+				currentPort.closePort();
 		}
 
 		System.out.println("Trying to open:" + portLocation + "  auto: " + auto);
 
 		SerialPort[] ports = SerialPort.getCommPorts();
+		lastKnownPorts = ports;
 		for (SerialPort port : ports) {
 			if (!auto && port.getPortLocation().equals(portLocation)) {
-				trackerPort = port;
+				currentPort = port;
 				break;
 			}
 
 			if (auto && isKnownBoard(port.getDescriptivePortName())) {
-				trackerPort = port;
+				currentPort = port;
 				break;
 			}
 		}
-		if (trackerPort == null) {
+		if (currentPort == null) {
 			return false;
 		}
 
-		trackerPort.setBaudRate(115200);
-		trackerPort.clearRTS();
-		trackerPort.clearDTR();
-		if (!trackerPort.openPort()) {
+		currentPort.setBaudRate(115200);
+		currentPort.clearRTS();
+		currentPort.clearDTR();
+		if (!currentPort.openPort()) {
 			return false;
 		}
 
-		trackerPort.addDataListener(this);
-		this.listeners.forEach((listener) -> listener.onSerialConnected(trackerPort));
+		currentPort.addDataListener(this);
+		this.listeners.forEach((listener) -> listener.onSerialConnected(currentPort));
 		return true;
 	}
 
@@ -78,20 +114,20 @@ public class SerialHandler implements SerialPortMessageListener {
 
 	public void closeSerial() {
 		try {
-			if (trackerPort != null)
-				trackerPort.closePort();
+			if (currentPort != null)
+				currentPort.closePort();
 			this.listeners.forEach(SerialListener::onSerialDisconnected);
 			System.out.println("Port closed okay");
-			trackerPort = null;
+			currentPort = null;
 		} catch (Exception e) {
 			System.out.println("Error closing port: " + e.getMessage());
 		}
 	}
 
 	private void writeSerial(String serialText) {
-		if (trackerPort == null)
+		if (currentPort == null)
 			return;
-		OutputStream os = trackerPort.getOutputStream();
+		OutputStream os = currentPort.getOutputStream();
 		OutputStreamWriter writer = new OutputStreamWriter(os);
 		try {
 			writer.append(serialText).append("\n");
@@ -104,9 +140,9 @@ public class SerialHandler implements SerialPortMessageListener {
 	}
 
 	public void setWifi(String ssid, String passwd) {
-		if (trackerPort == null)
+		if (currentPort == null)
 			return;
-		OutputStream os = trackerPort.getOutputStream();
+		OutputStream os = currentPort.getOutputStream();
 		OutputStreamWriter writer = new OutputStreamWriter(os);
 		try {
 			writer.append("SET WIFI \"").append(ssid).append("\" \"").append(passwd).append("\"\n");
@@ -140,7 +176,7 @@ public class SerialHandler implements SerialPortMessageListener {
 	}
 
 	public boolean isConnected() {
-		return this.trackerPort != null && this.trackerPort.isOpen();
+		return this.currentPort != null && this.currentPort.isOpen();
 	}
 
 	@Override
@@ -168,5 +204,35 @@ public class SerialHandler implements SerialPortMessageListener {
 			|| lowerCom.contains("ch910")
 			|| (lowerCom.contains("usb")
 				&& lowerCom.contains("seri"));
+	}
+
+	private void detectNewPorts() {
+		try {
+			List<SerialPort> differences = new ArrayList<>(
+				CollectionUtils
+					.removeAll(
+						this.getKnownPorts().toList(),
+						Arrays.asList(lastKnownPorts),
+						new Equator<>() {
+							@Override
+							public boolean equate(SerialPort o1, SerialPort o2) {
+								return o1.getPortLocation().equals(o2.getPortLocation())
+									&& o1
+										.getDescriptivePortName()
+										.equals(o1.getDescriptivePortName());
+							}
+
+							@Override
+							public int hash(SerialPort o) {
+								return 0;
+							}
+						}
+					)
+			);
+			lastKnownPorts = SerialPort.getCommPorts();
+			differences.forEach(this::onNewDevice);
+		} catch (Throwable e) {
+			LogManager.severe("Using serial ports is not supported on this platform", e);
+		}
 	}
 }

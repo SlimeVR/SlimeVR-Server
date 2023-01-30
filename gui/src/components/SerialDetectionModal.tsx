@@ -1,14 +1,12 @@
 import { Localized, useLocalization } from '@fluent/react';
-import { useEffect, useState } from 'react';
+import { useState } from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
 import {
+  NewSerialDeviceResponseT,
   RpcMessage,
-  SerialDevicesRequestT,
-  SerialDevicesResponseT,
   SerialDeviceT,
 } from 'solarxr-protocol';
 import { useConfig } from '../hooks/config';
-import { usePrevious } from '../hooks/previous';
 import { useWebsocketAPI } from '../hooks/websocket-api';
 import { useWifiForm, WifiFormData } from '../hooks/wifi-form';
 import { BaseModal } from './commons/BaseModal';
@@ -18,95 +16,17 @@ import { USBIcon } from './commons/icon/UsbIcon';
 import { Input } from './commons/Input';
 import { Typography } from './commons/Typography';
 
-const mapItems = <T,>(items: T[], getKey: (item: T) => string) => {
-  const map: any = {};
-  for (const item of items) {
-    const key = getKey(item);
-    map[key] = item;
-  }
-  return map;
-};
-
-const detectChanges = <T,>(
-  prevItems: T[],
-  nextItems: T[],
-  getKey: (item: T) => string,
-  compareItems: (a: T, b: T) => boolean
-) => {
-  const mappedItems = mapItems(prevItems, getKey);
-  const addedItems = [];
-  const updatedItems = [];
-  const removedItems = [];
-  const unchangedItems = [];
-  for (const nextItem of nextItems) {
-    const itemKey = getKey(nextItem);
-    if (itemKey in mappedItems) {
-      const prevItem = mappedItems[itemKey];
-      if (delete mappedItems[itemKey] && compareItems(prevItem, nextItem)) {
-        unchangedItems.push(nextItem);
-      } else {
-        updatedItems.push(nextItem);
-      }
-    } else {
-      addedItems.push(nextItem);
-    }
-  }
-  for (const itemKey in mappedItems) {
-    if (itemKey in mappedItems) {
-      removedItems.push(mappedItems[itemKey]);
-    }
-  }
-  return { addedItems, updatedItems, removedItems, unchangedItems };
-};
-
 export function SerialDetectionModal() {
   const { l10n } = useLocalization();
   const { config } = useConfig();
   const nav = useNavigate();
   const { pathname } = useLocation();
-  const { sendRPCPacket, useRPCPacket } = useWebsocketAPI();
-  const [currentDevices, setCurrentDevices] = useState<SerialDeviceT[] | null>(
-    null
-  );
-  const prevDevices = usePrevious<SerialDeviceT[] | null>(currentDevices);
+  const { useRPCPacket } = useWebsocketAPI();
   const [isOpen, setOpen] = useState<SerialDeviceT | null>(null);
   const [showWifiForm, setShowWifiForm] = useState(false);
 
   const { handleSubmit, submitWifiCreds, formState, hasWifiCreds, control } =
     useWifiForm();
-
-  useEffect(() => {
-    if (prevDevices == null) return;
-
-    const changes = detectChanges(
-      prevDevices || [],
-      currentDevices || [],
-      (item) => item.port?.toString() || 'error',
-      (a, b) => a.port == b.port && a.name == b.name
-    );
-    if (changes.addedItems.length === 1) {
-      setOpen(changes.addedItems[0]);
-    }
-  }, [prevDevices, currentDevices]);
-
-  useEffect(() => {
-    let timerId: NodeJS.Timer;
-
-    if (
-      config?.watchNewDevices &&
-      !['/settings/serial', '/onboarding/connect-trackers'].includes(pathname)
-    ) {
-      timerId = setInterval(() => {
-        sendRPCPacket(
-          RpcMessage.SerialDevicesRequest,
-          new SerialDevicesRequestT()
-        );
-      }, 3000);
-    }
-    return () => {
-      clearInterval(timerId);
-    };
-  }, [config, sendRPCPacket, pathname]);
 
   const closeModal = () => {
     setOpen(null);
@@ -134,9 +54,15 @@ export function SerialDetectionModal() {
   };
 
   useRPCPacket(
-    RpcMessage.SerialDevicesResponse,
-    (val: SerialDevicesResponseT) => {
-      setCurrentDevices(val.devices);
+    RpcMessage.NewSerialDeviceResponse,
+    ({ device }: NewSerialDeviceResponseT) => {
+      console.log('hello new')
+      if (
+        config?.watchNewDevices &&
+        !['/settings/serial', '/onboarding/connect-trackers'].includes(pathname)
+      ) {
+        setOpen(device);
+      }
     }
   );
 
