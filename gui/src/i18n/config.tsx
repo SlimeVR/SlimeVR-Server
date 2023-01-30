@@ -1,7 +1,15 @@
 import { match } from '@formatjs/intl-localematcher';
 import { FluentBundle, FluentResource } from '@fluent/bundle';
 import { LocalizationProvider, ReactLocalization } from '@fluent/react';
-import { Children, ReactNode, useEffect, useState, createContext } from 'react';
+import {
+  Children,
+  ReactNode,
+  useEffect,
+  useState,
+  createContext,
+  useContext,
+} from 'react';
+import { ConfigContext, ConfigContextC } from '../hooks/config';
 
 export const defaultNS = 'translation';
 export const DEFAULT_LOCALE = 'en';
@@ -152,4 +160,14 @@ export function AppLocalizationProvider(props: AppLocalizationProviderProps) {
       </LocalizationProvider>
     </>
   );
+}
+
+export function useLocaleConfig() {
+  const context = useContext<i18n>(LangContext);
+  if (!context) {
+    throw new Error(
+      'useLocaleConfig must be within a AppLocalization Provider'
+    );
+  }
+  return context;
 }

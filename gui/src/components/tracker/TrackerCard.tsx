@@ -41,6 +41,7 @@ function TrackerBig({
               <TrackerBattery
                 value={device.hardwareStatus.batteryPctEstimate / 100}
                 disabled={tracker.status === TrackerStatusEnum.DISCONNECTED}
+                deviceId={device.id?.id || null}
               />
             )}
             <div className="flex gap-2">
@@ -87,6 +88,7 @@ function TrackerSmol({
               <TrackerBattery
                 value={device.hardwareStatus.batteryPctEstimate / 100}
                 disabled={tracker.status === TrackerStatusEnum.DISCONNECTED}
+                deviceId={device.id?.id || null}
               />
             )}
           </div>
