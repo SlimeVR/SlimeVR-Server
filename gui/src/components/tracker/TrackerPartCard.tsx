@@ -55,7 +55,10 @@ export function TrackerPartCard({
   };
 
   const globalVelocity = useMemo(
-    () => velocities.reduce((curr, v) => curr + v, 0) / (td?.length || 1),
+    () =>
+      Math.floor(
+        velocities.reduce((curr, v) => curr + v, 0) / (td?.length || 1)
+      ),
     [velocities, td]
   );
 
@@ -76,7 +79,7 @@ export function TrackerPartCard({
         style={{
           boxShadow: `0px 0px ${globalVelocity * 3}px ${
             globalVelocity * 3
-          }px #183951`,
+          }px  #BB8AE5`,
         }}
       >
         <Typography color="secondary">

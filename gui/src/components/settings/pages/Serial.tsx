@@ -18,7 +18,9 @@ import { useWebsocketAPI } from '../../../hooks/websocket-api';
 import { Button } from '../../commons/Button';
 import { Dropdown } from '../../commons/Dropdown';
 import { Typography } from '../../commons/Typography';
-import { useLocalization } from '@fluent/react';
+import { Localized, useLocalization } from '@fluent/react';
+import { BaseModal } from '../../commons/BaseModal';
+import { WarningBox } from '../../commons/TipBox';
 
 export interface SerialForm {
   port: string;
@@ -45,6 +47,8 @@ export function Serial() {
   const [serialDevices, setSerialDevices] = useState<
     Omit<SerialDeviceT, 'pack'>[]
   >([]);
+
+  const [tryFactoryReset, setTryFactoryReset] = useState(false);
 
   const { control, watch, handleSubmit, reset } = useForm<SerialForm>({
     defaultValues: { port: 'Auto' },
@@ -143,6 +147,8 @@ export function Serial() {
       RpcMessage.SerialTrackerFactoryResetRequest,
       new SerialTrackerFactoryResetRequestT()
     );
+
+    setTryFactoryReset(false);
   };
   const getInfos = () => {
     sendRPCPacket(
@@ -152,67 +158,94 @@ export function Serial() {
   };
 
   return (
-    <div className="flex flex-col bg-background-70 h-full p-5 rounded-md">
-      <div className="flex flex-col pb-2">
-        <Typography variant="main-title">
-          {l10n.getString('settings-serial')}
-        </Typography>
-        <>
-          {l10n
-            .getString('settings-serial-description')
-            .split('\n')
-            .map((line, i) => (
-              <Typography color="secondary" key={i}>
-                {line}
-              </Typography>
-            ))}
-        </>
-      </div>
-      <div className="bg-background-80 rounded-lg flex flex-col p-2">
-        <div
-          ref={consoleRef}
-          className="overflow-x-auto overflow-y-auto"
-          style={{
-            height: layoutHeight - height - 30,
-            width: layoutWidth - 24,
-          }}
+    <>
+      <BaseModal
+        isOpen={tryFactoryReset}
+        onRequestClose={() => setTryFactoryReset(false)}
+      >
+        <Localized
+          id="settings-serial-factory_reset-warning"
+          elems={{ b: <b></b> }}
         >
-          <div className="flex select-text px-3">
-            <pre>
-              {isSerialOpen
-                ? consoleContent
-                : l10n.getString('settings-serial-connection_lost')}
-            </pre>
-          </div>
+          <WarningBox>
+            <b>Warning:</b> This will reset the tracker to factory settings.
+            Which means Wi-Fi and calibration settings <b>will all be lost!</b>
+          </WarningBox>
+        </Localized>
+        <div className="flex flex-row gap-3 pt-5 place-content-center">
+          <Button variant="secondary" onClick={() => setTryFactoryReset(false)}>
+            {l10n.getString('settings-serial-factory_reset-warning-cancel')}
+          </Button>
+          <Button variant="primary" onClick={factoryReset}>
+            {l10n.getString('settings-serial-factory_reset-warning-ok')}
+          </Button>
         </div>
-        <div className="" ref={toolbarRef}>
-          <div className="border-t-2 pt-2  border-background-60 border-solid m-2 gap-2 flex flex-row">
-            <div className="flex flex-grow gap-2">
-              <Button variant="quaternary" onClick={reboot}>
-                {l10n.getString('settings-serial-reboot')}
-              </Button>
-              <Button variant="quaternary" onClick={factoryReset}>
-                {l10n.getString('settings-serial-factory_reset')}
-              </Button>
-              <Button variant="quaternary" onClick={getInfos}>
-                {l10n.getString('settings-serial-get_infos')}
-              </Button>
+      </BaseModal>
+      <div className="flex flex-col bg-background-70 h-full p-5 rounded-md">
+        <div className="flex flex-col pb-2">
+          <Typography variant="main-title">
+            {l10n.getString('settings-serial')}
+          </Typography>
+          <>
+            {l10n
+              .getString('settings-serial-description')
+              .split('\n')
+              .map((line, i) => (
+                <Typography color="secondary" key={i}>
+                  {line}
+                </Typography>
+              ))}
+          </>
+        </div>
+        <div className="bg-background-80 rounded-lg flex flex-col p-2">
+          <div
+            ref={consoleRef}
+            className="overflow-x-auto overflow-y-auto"
+            style={{
+              height: layoutHeight - height - 30,
+              width: layoutWidth - 24,
+            }}
+          >
+            <div className="flex select-text px-3">
+              <pre>
+                {isSerialOpen
+                  ? consoleContent
+                  : l10n.getString('settings-serial-connection_lost')}
+              </pre>
             </div>
+          </div>
+          <div className="" ref={toolbarRef}>
+            <div className="border-t-2 pt-2  border-background-60 border-solid m-2 gap-2 flex flex-row">
+              <div className="flex flex-grow gap-2">
+                <Button variant="quaternary" onClick={reboot}>
+                  {l10n.getString('settings-serial-reboot')}
+                </Button>
+                <Button
+                  variant="quaternary"
+                  onClick={() => setTryFactoryReset(true)}
+                >
+                  {l10n.getString('settings-serial-factory_reset')}
+                </Button>
+                <Button variant="quaternary" onClick={getInfos}>
+                  {l10n.getString('settings-serial-get_infos')}
+                </Button>
+              </div>
 
-            <div className="flex justify-end">
-              <Dropdown
-                control={control}
-                name="port"
-                placeholder={l10n.getString('settings-serial-serial_select')}
-                items={serialDevices.map((device) => ({
-                  label: device.name?.toString() || 'error',
-                  value: device.port?.toString() || 'error',
-                }))}
-              ></Dropdown>
+              <div className="flex justify-end">
+                <Dropdown
+                  control={control}
+                  name="port"
+                  placeholder={l10n.getString('settings-serial-serial_select')}
+                  items={serialDevices.map((device) => ({
+                    label: device.name?.toString() || 'error',
+                    value: device.port?.toString() || 'error',
+                  }))}
+                ></Dropdown>
+              </div>
             </div>
           </div>
         </div>
       </div>
-    </div>
+    </>
   );
 }

@@ -5,12 +5,19 @@ export function Typography({
   variant = 'standard',
   bold = false,
   color = 'primary',
+  whitespace = 'whitespace-normal',
   children,
 }: {
   variant?: 'main-title' | 'section-title' | 'standard' | 'vr-accessible';
   bold?: boolean;
   block?: boolean;
   color?: 'primary' | 'secondary' | string;
+  whitespace?:
+    | 'whitespace-normal'
+    | 'whitespace-nowrap'
+    | 'whitespace-pre'
+    | 'whitespace-pre-line'
+    | 'whitespace-pre-wrap';
   children: ReactNode;
 }) {
   const tag = useMemo(() => {
@@ -36,6 +43,7 @@ export function Typography({
         color === 'primary' && 'text-background-10',
         color === 'secondary' && 'text-background-30',
         typeof color === 'string' && color,
+        whitespace,
       ]),
     },
     children

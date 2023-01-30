@@ -132,7 +132,9 @@ export function RowContainer({
         onMouseEnter={onMouseOver}
         onMouseLeave={onMouseOut}
         style={{
-          boxShadow: `0px 0px ${velocity * 8}px ${velocity * 8}px #183951`,
+          boxShadow: `0px 0px ${Math.floor(velocity * 8)}px ${Math.floor(
+            velocity * 8
+          )}px  #BB8AE5`,
         }}
         className={classNames(
           'min-h-[50px]  flex flex-col justify-center px-3',
@@ -350,7 +352,7 @@ export function TrackersTable({
           tracker.position && (
             <Typography color={fontColor}>
               <span className="whitespace-nowrap">
-                {formatVector3(tracker.position, 1)}
+                {formatVector3(tracker.position, 2)}
               </span>
             </Typography>
           ),

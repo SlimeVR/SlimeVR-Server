@@ -1,9 +1,6 @@
 import { useEffect, useMemo, useRef, useState } from 'react';
 import { BodyPart, TrackerDataT, TrackerStatus } from 'solarxr-protocol';
-import {
-  QuaternionFromQuatT,
-  QuaternionToEulerDegrees,
-} from '../maths/quaternion';
+import { QuaternionFromQuatT, QuaternionToEulerDegrees } from '../maths/quaternion';
 import { useAppContext } from './app';
 import { useLocalization } from '@fluent/react';
 import { useDataFeedConfig } from './datafeed-config';
@@ -18,17 +15,13 @@ export function useTrackers() {
     useAssignedTrackers: () =>
       useMemo(
         () =>
-          trackers.filter(
-            ({ tracker }) => tracker.info?.bodyPart !== BodyPart.NONE
-          ),
+          trackers.filter(({ tracker }) => tracker.info?.bodyPart !== BodyPart.NONE),
         [trackers]
       ),
     useUnassignedTrackers: () =>
       useMemo(
         () =>
-          trackers.filter(
-            ({ tracker }) => tracker.info?.bodyPart === BodyPart.NONE
-          ),
+          trackers.filter(({ tracker }) => tracker.info?.bodyPart === BodyPart.NONE),
         [trackers]
       ),
     useConnectedTrackers: () =>
@@ -51,16 +44,11 @@ export function useTracker(tracker: TrackerDataT) {
       useMemo(() => {
         if (tracker.info?.customName) return tracker.info?.customName;
         if (tracker.info?.bodyPart)
-          return l10n.getString(
-            'body_part-' + BodyPart[tracker.info?.bodyPart]
-          );
+          return l10n.getString('body_part-' + BodyPart[tracker.info?.bodyPart]);
         return tracker.info?.displayName || 'NONE';
       }, [tracker.info]),
     useRawRotationEulerDegrees: () =>
-      useMemo(
-        () => QuaternionToEulerDegrees(tracker?.rotation),
-        [tracker.rotation]
-      ),
+      useMemo(() => QuaternionToEulerDegrees(tracker?.rotation), [tracker.rotation]),
     useRefAdjRotationEulerDegrees: () =>
       useMemo(
         () => QuaternionToEulerDegrees(tracker?.rotationReferenceAdjusted),
@@ -72,9 +60,7 @@ export function useTracker(tracker: TrackerDataT) {
         [tracker.rotationIdentityAdjusted]
       ),
     useVelocity: () => {
-      const previousRot = useRef<Quaternion>(
-        QuaternionFromQuatT(tracker.rotation)
-      );
+      const previousRot = useRef<Quaternion>(QuaternionFromQuatT(tracker.rotation));
       const previousAcc = useRef<Vector3>(
         Vector3FromVec3fT(tracker.linearAcceleration)
       );
@@ -91,12 +77,12 @@ export function useTracker(tracker: TrackerDataT) {
           );
           const dif = Math.min(
             1,
-            (rot.x ** 2 + rot.y ** 2 + rot.z ** 2) * 2.5 +
+            (rot.x ** 2 + rot.y ** 2 + rot.z ** 2) * 50 +
               (acc.x ** 2 + acc.y ** 2 + acc.z ** 2) / 1000
           );
           // Use sum of the rotation and acceleration delta vector lengths over 0.3sec
           // for smoother movement and better detection of slow movement.
-          if (deltas.length >= 0.3 * feedMaxTps) {
+          if (deltas.length >= 0.5 * feedMaxTps) {
             deltas.shift();
           }
           deltas.push(dif);
