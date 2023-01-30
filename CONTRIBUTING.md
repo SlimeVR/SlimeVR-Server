@@ -65,6 +65,7 @@ Eclipse will only do a subset of the checks in `spotless`, so you may still want
 `./gradlew spotlessApply` if you ever see an error from spotless.
 
 ### Version bumping
+* Add new release inside ``<releases>`` in the ``dev.slimevr.SlimeVR.metainfo.xml`` file. (Example: ``<release version="a.b.c" date="YYYY-MM-DD"><url>https://github.com/SlimeVR/SlimeVR-Server/releases/tag/va.b.c</url></release>``)
 * Create the git tag instead of making it from releases, you can do it by just ``git tag VERSION``,
   example ``git tag v0.5.0``
 * You need to push this change with ``git push origin VERSION`` or ``git push origin --tags``
