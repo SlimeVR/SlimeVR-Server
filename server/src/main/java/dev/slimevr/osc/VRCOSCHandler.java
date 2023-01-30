@@ -42,8 +42,6 @@ public class VRCOSCHandler implements OSCHandler {
 	private final Vector3f vecBuf1 = new Vector3f();
 	private final Vector3f vecBuf2 = new Vector3f();
 	private final boolean[] trackersEnabled;
-	private long timeAtLastOSCMessageReceived;
-	private static final long HMD_TIMEOUT = 15000;
 	private int lastPortIn;
 	private int lastPortOut;
 	private InetAddress lastAddress;
@@ -169,8 +167,6 @@ public class VRCOSCHandler implements OSCHandler {
 	}
 
 	void handleReceivedMessage(OSCMessageEvent event) {
-		timeAtLastOSCMessageReceived = System.currentTimeMillis();
-
 		if (steamvrBridge != null && !steamvrBridge.isConnected()) {
 			// Sets HMD status to OK
 			if (hmd.getStatus() != TrackerStatus.OK) {
@@ -203,7 +199,7 @@ public class VRCOSCHandler implements OSCHandler {
 				((steamvrBridge != null
 					&& steamvrBridge.isConnected())
 					||
-					currentTime - timeAtLastOSCMessageReceived > HMD_TIMEOUT
+					!hmd.isBeingUpdated()
 					||
 					!oscReceiver.isListening())
 					&& hmd.getStatus() == TrackerStatus.OK

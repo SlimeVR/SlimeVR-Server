@@ -10,7 +10,7 @@ public class TrackerUtils {
 
 	/**
 	 * Finds the first tracker from allTrackers matching the position
-	 * 
+	 *
 	 * @return The tracker as a Tracker
 	 */
 	public static <T extends Tracker> T findTrackerForBodyPosition(
@@ -29,7 +29,7 @@ public class TrackerUtils {
 	/**
 	 * Finds the first non ComputedHumanPoseTracker tracker from allTrackers
 	 * matching the position
-	 * 
+	 *
 	 * @return The non ComputedHumanPoseTracker as a Tracker
 	 */
 	public static <T extends Tracker> T findNonComputedHumanPoseTrackerForBodyPosition(
@@ -60,10 +60,7 @@ public class TrackerUtils {
 		List<T> allTrackers
 	) {
 		for (T t : allTrackers) {
-			if (
-				t != null
-					&& (t instanceof HMDTracker)
-			)
+			if (t instanceof HMDTracker && ((HMDTracker) t).isBeingUpdated())
 				return t;
 		}
 		return null;
@@ -87,7 +84,7 @@ public class TrackerUtils {
 	/**
 	 * Returns the first tracker that isn't null out of the 3 trackers passed as
 	 * arguments.
-	 * 
+	 *
 	 * @return The first non-null tracker or null
 	 */
 	public static <T extends Tracker> T getFirstAvailableTracker(

@@ -33,6 +33,7 @@ public class VMCHandler implements OSCHandler {
 	private final Vector3f vecBuf = new Vector3f();
 	private final Quaternion quatBuf = new Quaternion();
 	private final long startTime;
+	private final Vector3f hmdOffset = new Vector3f();
 	private float timeAtLastError;
 	private boolean anchorHip;
 	private int lastPortIn;
@@ -168,11 +169,8 @@ public class VMCHandler implements OSCHandler {
 
 			if (humanPoseManager.isSkeletonPresent()) {
 				// Add the tracking root
-				anchorHip = true;
-				if (anchorHip) {
-					// Hip anchor at fixed position
-					vecBuf.zero();
-				} else {
+				if (!anchorHip) {
+					// TODO
 					// Head anchor
 					vecBuf.zero();
 					TransformNode headNode = humanPoseManager.getTailNodeOfBone(BoneType.HEAD);
@@ -182,7 +180,6 @@ public class VMCHandler implements OSCHandler {
 
 					while (secondNode.getParent() != null && secondNode.getParent() != headNode) {
 						secondNode = secondNode.getParent();
-
 						vecBuf
 							.addLocal(
 								secondNode.worldTransform
@@ -192,27 +189,29 @@ public class VMCHandler implements OSCHandler {
 									)
 							);
 					}
+
+					quatBuf.loadIdentity();
+					oscArgs.clear();
+					oscArgs.add("root");
+					oscArgs.add(vecBuf.getX());
+					oscArgs.add(vecBuf.getY());
+					oscArgs.add(-vecBuf.getZ());
+					oscArgs.add(quatBuf.getX());
+					oscArgs.add(quatBuf.getY());
+					oscArgs.add(-quatBuf.getZ());
+					oscArgs.add(-quatBuf.getW());
+					oscBundle
+						.addPacket(
+							new OSCMessage(
+								"/VMC/Ext/Root/Pos",
+								oscArgs.clone()
+							)
+						);
 				}
-				quatBuf.loadIdentity();
-				oscArgs.clear();
-				oscArgs.add("root");
-				oscArgs.add(vecBuf.getX());
-				oscArgs.add(vecBuf.getY());
-				oscArgs.add(-vecBuf.getZ());
-				oscArgs.add(quatBuf.getX());
-				oscArgs.add(quatBuf.getY());
-				oscArgs.add(quatBuf.getZ());
-				oscArgs.add(-quatBuf.getW());
-				oscBundle
-					.addPacket(
-						new OSCMessage(
-							"/VMC/Ext/Root/Pos",
-							oscArgs.clone()
-						)
-					);
 
 				// Add Unity humanoid bones transforms
 				for (UnityBone bone : UnityBone.values) {
+					// TODO arms from controllers check
 					BoneInfo boneInfo = humanPoseManager
 						.getBoneInfoForBoneType(
 							bone.boneType
@@ -221,7 +220,7 @@ public class VMCHandler implements OSCHandler {
 						vecBuf
 							.set(
 								boneInfo
-									.getLocalBoneTranslationFromRoot(
+									.getLocalTranslationFromRoot(
 										humanPoseManager
 											.getBoneInfoForBoneType(
 												BoneType.HIP
@@ -232,7 +231,7 @@ public class VMCHandler implements OSCHandler {
 						quatBuf
 							.set(
 								boneInfo
-									.getLocalBoneRotationFromRoot(
+									.getLocalRotationFromRoot(
 										humanPoseManager
 											.getBoneInfoForBoneType(
 												BoneType.HIP
@@ -247,7 +246,7 @@ public class VMCHandler implements OSCHandler {
 						oscArgs.add(-vecBuf.z);
 						oscArgs.add(quatBuf.getX());
 						oscArgs.add(quatBuf.getY());
-						oscArgs.add(quatBuf.getZ());
+						oscArgs.add(-quatBuf.getZ());
 						oscArgs.add(-quatBuf.getW());
 						oscBundle
 							.addPacket(
@@ -279,7 +278,9 @@ public class VMCHandler implements OSCHandler {
 	}
 
 	public void calibrateVMCHeadPosition() {
-		// TODO
+		hmdOffset
+			.set(humanPoseManager.getBoneInfoForBoneType(BoneType.HEAD).getGlobalTranslation());
+		hmdOffset.set(-hmdOffset.x, 0, -hmdOffset.z);
 	}
 
 	@Override
