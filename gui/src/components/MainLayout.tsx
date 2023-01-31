@@ -59,7 +59,9 @@ export function MainLayoutRoute({
                       variant="big"
                     ></ResetButton>
                   )}
-                  <BVHButton></BVHButton>
+                  <BVHButton
+                    className={config?.debug ? 'col-span-1' : 'col-span-2'}
+                  ></BVHButton>
                 </div>
                 <div className="w-full">
                   <OverlayWidget></OverlayWidget>
