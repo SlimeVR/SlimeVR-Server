@@ -222,6 +222,13 @@ tracker_selection_menu-LEFT_CONTROLLER = { -tracker_selection-part } controller 
 tracker_selection_menu-unassigned = Tracker non assegnato
 tracker_selection_menu-assigned = Dispositivo assegnato
 tracker_selection_menu-dont_assign = Non assegnare
+# This line cares about multilines.
+# <b>text</b> means that the text should be bold.
+tracker_selection_menu-neck_warning =
+    <b>Avvertimento:</b> Un tracker per il collo può essere mortale se indossato troppo stretto,
+    Il cinturino potrebbe bloccare la circolazione alla tua testa!
+tracker_selection_menu-neck_warning-done = Comprendo il rischo
+tracker_selection_menu-neck_warning-cancel = Annulla
 
 ## Mounting menu
 
@@ -355,6 +362,13 @@ settings-serial-description =
 settings-serial-connection_lost = Connessione seriale persa. Riconnessione in corso...
 settings-serial-reboot = Riavvia
 settings-serial-factory_reset = Ripristino delle impostazioni di fabbrica
+# This cares about multilines
+# <b>text</b> means that the text should be bold
+settings-serial-factory_reset-warning =
+    <b>Avvertimento:</b> Questa azione ripristinerà il tracker alle impostazioni di fabbrica.
+    Ciò significa che le impostazioni Wi-Fi e di calibrazione <b>andranno tutte perse!</b>
+settings-serial-factory_reset-warning-ok = Capisco cosa sto facendo
+settings-serial-factory_reset-warning-cancel = Annulla
 settings-serial-get_infos = Ottieni informazioni
 settings-serial-serial_select = Seleziona una porta seriale
 settings-serial-auto_dropdown_item = Automatico
