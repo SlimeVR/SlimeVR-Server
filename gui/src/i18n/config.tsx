@@ -48,6 +48,10 @@ export const langs = [
     key: 'ko',
   },
   {
+    name: '🇳🇴  Norsk bokmål',
+    key: 'nb-NO',
+  },
+  {
     name: '🇳🇱 Nederlands',
     key: 'nl',
   },
