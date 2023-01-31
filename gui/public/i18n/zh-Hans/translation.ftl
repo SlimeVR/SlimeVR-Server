@@ -222,6 +222,13 @@ tracker_selection_menu-LEFT_CONTROLLER = { -tracker_selection-part }左控制器
 tracker_selection_menu-unassigned = 未分配的追踪器
 tracker_selection_menu-assigned = 已分配的追踪器
 tracker_selection_menu-dont_assign = 不分配
+# This line cares about multilines.
+# <b>text</b> means that the text should be bold.
+tracker_selection_menu-neck_warning =
+    <b>警告：</b> 颈部追踪器在调整得过紧时有致命风险
+    绑带可能会阻断你头部的血液循环！
+tracker_selection_menu-neck_warning-done = 我已知晓风险
+tracker_selection_menu-neck_warning-cancel = 取消
 
 ## Mounting menu
 
@@ -354,6 +361,13 @@ settings-serial-description =
 settings-serial-connection_lost = 串口连接丢失，正在重新连接..
 settings-serial-reboot = 重新启动
 settings-serial-factory_reset = 恢复出厂设置
+# This cares about multilines
+# <b>text</b> means that the text should be bold
+settings-serial-factory_reset-warning =
+    <b>警告：</b> 这会将跟踪器重置为出厂设置。
+    这意味着Wi-Fi凭据和校准数据 <b>都将丢失！</b>
+settings-serial-factory_reset-warning-ok = 我已知晓
+settings-serial-factory_reset-warning-cancel = 取消
 settings-serial-get_infos = 获取信息
 settings-serial-serial_select = 选择串行端口
 settings-serial-auto_dropdown_item = 自动
