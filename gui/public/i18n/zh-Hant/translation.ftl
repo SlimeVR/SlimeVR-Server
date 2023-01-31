@@ -155,7 +155,7 @@ tracker-rotation-back = 後
 tracker-infos-manufacturer = 製造商
 tracker-infos-display_name = 顯示名稱
 tracker-infos-custom_name = 自訂名稱
-tracker-infos-url = 追蹤器地址
+tracker-infos-url = 追蹤器 URL
 
 ## Tracker settings
 
@@ -222,6 +222,13 @@ tracker_selection_menu-LEFT_CONTROLLER = { -tracker_selection-part }左控制器
 tracker_selection_menu-unassigned = 尚未分配的追蹤器
 tracker_selection_menu-assigned = 已分配的追蹤器
 tracker_selection_menu-dont_assign = 不要分配
+# This line cares about multilines.
+# <b>text</b> means that the text should be bold.
+tracker_selection_menu-neck_warning =
+    <b>警告：</b>將追蹤器戴在頸部有致命危險，綁太緊可能會阻礙頭部
+    血液循環，進而導致窒息。
+tracker_selection_menu-neck_warning-done = 我已瞭解其風險
+tracker_selection_menu-neck_warning-cancel = 取消
 
 ## Mounting menu
 
@@ -352,6 +359,13 @@ settings-serial-description = 這裡用於顯示串列埠的即時資訊，有�
 settings-serial-connection_lost = 串列埠連線中斷，正在重新連線……
 settings-serial-reboot = 重新啟動
 settings-serial-factory_reset = 恢復出廠設定
+# This cares about multilines
+# <b>text</b> means that the text should be bold
+settings-serial-factory_reset-warning =
+    <b>警告：</b>本選項會將該追蹤器恢復出廠設定，
+    亦即其 Wi-Fi 與追蹤器校正的設定<b>將會全部刪除</b>。
+settings-serial-factory_reset-warning-ok = 我確實要執行出廠設定
+settings-serial-factory_reset-warning-cancel = 取消
 settings-serial-get_infos = 取得資訊
 settings-serial-serial_select = 選擇串列埠
 settings-serial-auto_dropdown_item = 自動
@@ -368,7 +382,9 @@ settings-osc-router-enable-description = 切換轉發 OSC 訊息。
 settings-osc-router-enable-label = 啟用
 settings-osc-router-network = 連接埠
 # This cares about multilines
-settings-osc-router-network-description = 設定用於監聽和向 VRChat 傳送資料的連接埠，可以與 SlimeVR 伺服器中使用的其他埠號相同。
+settings-osc-router-network-description =
+    設定用於監聽和傳送資料的連接埠，
+    可以與 SlimeVR 伺服器中使用的其他埠號相同。
 settings-osc-router-network-port_in =
     .label = 輸入埠
     .placeholder = 輸入埠
@@ -381,7 +397,7 @@ settings-osc-router-network-address-placeholder = IPV4 地址
 
 ## OSC VRChat settings
 
-settings-osc-vrchat = VRChat OSC Trackers
+settings-osc-vrchat = VRChat OSC 追蹤器
 # This cares about multilines
 settings-osc-vrchat-description =
     此處可更改 VRChat 專用的設定以取得頭戴顯示器的資料，並傳送
@@ -398,7 +414,7 @@ settings-osc-vrchat-network-port_out =
     .label = 輸出埠
     .placeholder = 輸出埠（預設 9000）
 settings-osc-vrchat-network-address = 網路位址
-settings-osc-vrchat-network-address-description = 設定用來發送資料到 VRChat 的地址（請檢察裝置的 Wi-Fi 設定）。
+settings-osc-vrchat-network-address-description = 設定用來發送資料到 VRChat 的位址（請檢察裝置的 Wi-Fi 設定）。
 settings-osc-vrchat-network-address-placeholder = VRChat IP 位址
 settings-osc-vrchat-network-trackers = 追蹤器
 settings-osc-vrchat-network-trackers-description = 切換傳送指定追蹤器的資料。
