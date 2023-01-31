@@ -1,19 +1,25 @@
 ### SlimeVR complete GUI translations
+
+
 # Please developers (not translators) don't reuse a key inside another key
 # or concat text with a translation string in the code, use the appropriate
 # features like variables and selectors in each appropriate case!
 # And also comment the string if it's something not easy to translate, so you help
 # translators on what it means
 
+
 ## Websocket (server) status
+
 websocket-connecting = サーバー接続中
 websocket-connection_lost = サーバーへの接続が失われました。再接続を試みています...
 
 ## Tips
+
 tips-find_tracker = どのトラッカーがどれだかわからない？トラッカーを振ると、該当する項目がハイライトされます。
 tips-do_not_move_heels = レコーディング中にかかとが動かないように注意しましょう！
 
 ## Body parts
+
 body_part-NONE = 未設定
 body_part-HEAD = 頭
 body_part-NECK = 首
@@ -38,6 +44,7 @@ body_part-LEFT_FOOT = 左足先
 body_part-LEFT_CONTROLLER = 左コントローラ
 
 ## Proportions
+
 skeleton_bone-NONE = 無し
 skeleton_bone-HEAD = ヘッドシフト
 skeleton_bone-NECK = 首長さ
@@ -61,12 +68,14 @@ skeleton_bone-CONTROLLER_Z = コントローラ距離 Z
 skeleton_bone-ELBOW_OFFSET = 肘オフセット
 
 ## Tracker reset buttons
+
 reset-reset_all = すべてのプロポーションをリセット
 reset-full = リセット
 reset-mounting = リセットマウンティング
 reset-quick = クイックリセット
 
 ## Serial detection stuff
+
 serial_detection-new_device-p0 = 新しいシリアルデバイスを検出しました！
 serial_detection-new_device-p1 = Wi-Fiの認証情報を入力してください！
 serial_detection-new_device-p2 = 何をするか選択してください
@@ -76,6 +85,7 @@ serial_detection-submit = 実行！
 serial_detection-close = 閉じる
 
 ## Navigation bar
+
 navbar-home = ホーム
 navbar-body_proportions = ボディプロポーション
 navbar-trackers_assign = トラッカー割り当て
@@ -84,15 +94,18 @@ navbar-onboarding = セットアップ ウィザード
 navbar-settings = 設定
 
 ## Bounding volume hierarchy recording
+
 bvh-start_recording = BVHレコーディング
 bvh-recording = レコーディング中...
 
 ## Widget: Overlay settings
+
 widget-overlay = オーバーレイ設定
 widget-overlay-is_visible_label = SteamVRでオーバーレイを表示する
 widget-overlay-is_mirrored_label = オーバーレイをミラーとして表示する
 
 ## Widget: Developer settings
+
 widget-developer_mode = 開発者モード
 widget-developer_mode-high_contrast = ハイ コントラスト
 widget-developer_mode-precise_rotation = 正確な回転角度を表示
@@ -103,11 +116,13 @@ widget-developer_mode-raw_slime_rotation = 元の回転角度
 widget-developer_mode-more_info = 他情報
 
 ## Widget: IMU Visualizer
-widget-imu_visualizer = Rotation
-widget-imu_visualizer-rotation_raw = Raw
-widget-imu_visualizer-rotation_preview = プレビュー
+
+widget-imu_visualizer = 回転
+widget-imu_visualizer-rotation_raw = 生
+widget-imu_visualizer-rotation_preview = 生
 
 ## Tracker status
+
 tracker-status-none = ステータスなし
 tracker-status-busy = Busy
 tracker-status-error = エラー
@@ -116,6 +131,7 @@ tracker-status-occluded = Occluded
 tracker-status-ok = 接続中
 
 ## Tracker status columns
+
 tracker-table-column-name = Name
 tracker-table-column-type = Type
 tracker-table-column-battery = バッテリー
@@ -128,18 +144,21 @@ tracker-table-column-position = 位置 X/Y/Z
 tracker-table-column-url = URL
 
 ## Tracker rotation
+
 tracker-rotation-front = 前
 tracker-rotation-left = 左
 tracker-rotation-right = 右
 tracker-rotation-back = 後
 
 ## Tracker information
+
 tracker-infos-manufacturer = メーカ－
 tracker-infos-display_name = 表示名
 tracker-infos-custom_name = カスタム名称
 tracker-infos-url = トラッカーURL
 
 ## Tracker settings
+
 tracker-settings-back = トラッカーリストへ戻る
 tracker-settings-title = トラッカー設定
 tracker-settings-assignment_section = 割り当て
@@ -158,10 +177,12 @@ tracker-settings-name_section-description = 自由に名称をつけてくださ
 tracker-settings-name_section-placeholder = NightyBeast's left leg
 
 ## Tracker part card info
+
 tracker-part_card-no_name = 名称無し
 tracker-part_card-unassigned = 未割り当て
 
 ## Body assignment menu
+
 body_assignment_menu = このトラッカーをどこに配置しますか？
 body_assignment_menu-description = このトラッカーを割り当てる場所を選択します。また、トラッカーを一つずつ管理するのではなく、すべてのトラッカーを一括して管理することもできます。
 body_assignment_menu-show_advanced_locations = 高度な割り当て場所の表示
@@ -169,6 +190,7 @@ body_assignment_menu-manage_trackers = すべてのトラッカーの管理
 body_assignment_menu-unassign_tracker = トラッカーの割り当て解除
 
 ## Tracker assignment menu
+
 # A -translation_key (with a dash in the front) means that it's a label.
 # It can only be used in the translation file, it's nice for reusing names and that kind of stuff.
 #
@@ -197,16 +219,19 @@ tracker_selection_menu-LEFT_UPPER_LEG = { -tracker_selection-part(body-part: "�
 tracker_selection_menu-LEFT_LOWER_LEG = { -tracker_selection-part(body-part: "左足首") }
 tracker_selection_menu-LEFT_FOOT = { -tracker_selection-part(body-part: "左足先") }
 tracker_selection_menu-LEFT_CONTROLLER = { -tracker_selection-part(body-part: "左コントローラ") }
-
 tracker_selection_menu-unassigned = 未割り当てのトラッカー
 tracker_selection_menu-assigned = 割り当て済みのトラッカー
 tracker_selection_menu-dont_assign = 割り当てない
+tracker_selection_menu-neck_warning-done = リスクを理解しています
+tracker_selection_menu-neck_warning-cancel = キャンセル
 
 ## Mounting menu
+
 mounting_selection_menu = このトラッカーをどこに配置しますか？
 mounting_selection_menu-close = 閉じる
 
 ## Sidebar settings
+
 settings-sidebar-title = 設定
 settings-sidebar-general = 一般
 settings-sidebar-tracker_mechanics = トラッカーメカニズム
@@ -218,6 +243,7 @@ settings-sidebar-utils = ユーティリティ
 settings-sidebar-serial = シリアルコンソール
 
 ## SteamVR settings
+
 settings-general-steamvr = SteamVR
 settings-general-steamvr-subtitle = SteamVRのトラッカー
 # Not all translation keys support multiline, only the ones that specify it will actually
@@ -235,6 +261,7 @@ settings-general-steamvr-trackers-elbows = 肘
 settings-general-steamvr-trackers-hands = 手
 
 ## Tracker mechanics
+
 settings-general-tracker_mechanics = トラッカーメカニズム
 settings-general-tracker_mechanics-filtering = フィルター機能
 # This also cares about multilines
@@ -258,7 +285,8 @@ settings-general-tracker_mechanics-drift_compensation-enabled-label = ドリフ�
 settings-general-tracker_mechanics-drift_compensation-amount-label = 補正量
 settings-general-tracker_mechanics-drift_compensation-max_resets-label = 最大リセット回数
 
-## FK settings
+## FK/Tracking settings
+
 settings-general-fk_settings = FK設定
 settings-general-fk_settings-leg_tweak = 脚の微調整
 settings-general-fk_settings-leg_tweak-description = フロアクリップは、床とのクリッピングを減らす、あるいはなくすことができますが、膝をついたときに問題が発生する可能性があります。スケーティング補正は足の滑りを補正できますが、特定の動作パターンでは精度が落ちることがあります。
@@ -285,15 +313,17 @@ settings-general-fk_settings-vive_emulation-description = Viveトラッカーが
 settings-general-fk_settings-vive_emulation-label = Viveエミュレーションの有効化
 
 ## Gesture control settings (tracker tapping)
+
 settings-general-gesture_control = ジェスチャーコントロール
 settings-general-gesture_control-subtitle = ダブルタップクイックリセット
 settings-general-gesture_control-description = ダブルタップクイックリセットの有効・無効を設定します。有効にすると、最も高い胴体トラッカー上の任意の場所をダブルタップすると、クイックリセットが起動します。ディレイは、タップされてからリセットされるまでの時間です。
 # This is a unit: 3 taps, 2 taps, 1 tap
 # $amount (Number) - Amount of taps (touches to the tracker's case)
-settings-general-gesture_control-taps = { $amount ->
-    [one] 1 tap
-    *[other] { $amount } タップ
-}
+settings-general-gesture_control-taps =
+    { $amount ->
+        [one] 1 tap
+       *[other] { $amount } タップ
+    }
 settings-general-gesture_control-quickResetEnabled = タップによるクイックリセットを有効にする
 settings-general-gesture_control-quickResetDelay = クイックリセットディレイ
 settings-general-gesture_control-quickResetTaps = タップによるクイックリセット
@@ -305,6 +335,7 @@ settings-general-gesture_control-mountingResetDelay = マウントリセット�
 settings-general-gesture_control-mountingResetTaps = タップによるマウントリセット
 
 ## Interface settings
+
 settings-general-interface = インターフェース
 settings-general-interface-dev_mode = 開発者モード
 settings-general-interface-dev_mode-description = このモードは、詳細なデータが必要な場合や、接続されたトラッカーをより高度なレベルで操作する場合に役立ちます。
@@ -317,6 +348,7 @@ settings-general-interface-lang-description = 使用したいデフォルトの�
 settings-general-interface-lang-placeholder = 使用する言語を選択する
 
 ## Serial settings
+
 settings-serial = シリアルコンソール
 # This cares about multilines
 settings-serial-description =
@@ -325,11 +357,14 @@ settings-serial-description =
 settings-serial-connection_lost = シリアルへの接続が失われました、再接続中...
 settings-serial-reboot = リブート
 settings-serial-factory_reset = ファクトリーリセット
+settings-serial-factory_reset-warning-ok = 自分が何しているかを知っています。
+settings-serial-factory_reset-warning-cancel = キャンセル
 settings-serial-get_infos = 情報取得
 settings-serial-serial_select = シリアルポートを選択
 settings-serial-auto_dropdown_item = 自動
 
 ## OSC router settings
+
 settings-osc-router = OSCルーター
 # This cares about multilines
 settings-osc-router-description =
@@ -354,6 +389,7 @@ settings-osc-router-network-address-description = データを送り出すアド
 settings-osc-router-network-address-placeholder = IPV4アドレス
 
 ## OSC VRChat settings
+
 settings-osc-vrchat = VRChat OSCトラッカー
 # This cares about multilines
 settings-osc-vrchat-description =
@@ -382,11 +418,13 @@ settings-osc-vrchat-network-trackers-feet = 足
 settings-osc-vrchat-network-trackers-elbows = 肘
 
 ## Setup/onboarding menu
+
 onboarding-skip = 設定をスキップする
 onboarding-continue = 続ける
 onboarding-wip = 実行中
 
 ## Wi-Fi setup
+
 onboarding-wifi_creds-back = 戻る
 onboarding-wifi_creds = Wi-Fi
 # This cares about multilines
@@ -403,11 +441,13 @@ onboarding-wifi_creds-password =
     .placeholder = Enter password
 
 ## Mounting setup
+
 onboarding-reset_tutorial-back = マウントキャリブレーションに戻る
 onboarding-reset_tutorial = リセットチュートリアル
 onboarding-reset_tutorial-description = この機能は終了していません。続けるを押してください。
 
 ## Setup start
+
 onboarding-home = SlimeVRへようこそ
 # This cares about multilines and it's centered!!
 onboarding-home-description =
@@ -416,17 +456,20 @@ onboarding-home-description =
 onboarding-home-start = セットアップ開始！
 
 ## Enter VR part of setup
+
 onboarding-enter_vr-back = トラッカー割り当てに戻る
 onboarding-enter_vr-title = VRに入る時間だ！
 onboarding-enter_vr-description = トラッカーを全部つけて、VRに突入せよ！
 onboarding-enter_vr-ready = 準備完了
 
 ## Setup done
+
 onboarding-done-title = 準備完了です！
 onboarding-done-description = フルトラをお楽しみください
 onboarding-done-close = ガイドを閉じる
 
 ## Tracker connection setup
+
 onboarding-connect_tracker-back = Wi-Fi認証に戻る
 onboarding-connect_tracker-title = 接続中のトラッカー
 onboarding-connect_tracker-description-p0 = さあ、楽しい部分に移りましょう。すべてのトラッカーを接続します！
@@ -443,28 +486,32 @@ onboarding-connect_tracker-connection_status-handshake = サーバーに接続�
 # English in this case only has 2 plural rules, which are "one" and "other",
 # we use 0 in an explicit way because there is no plural rule in english for 0, so we directly say
 # if $amount is 0 then we say "No trackers connected"
-onboarding-connect_tracker-connected_trackers = { $amount ->
-    [0] No trackers
-    [one] 1 tracker
-    *[other] { $amount } trackers
-} connected
+onboarding-connect_tracker-connected_trackers =
+    { $amount ->
+        [0] No trackers
+        [one] 1 tracker
+       *[other] { $amount } trackers
+    } connected
 onboarding-connect_tracker-next = すべてのトラッカーを接続しました
 
 ## Tracker assignment setup
+
 onboarding-assign_trackers-back = Wi-Fi認証に戻る
 onboarding-assign_trackers-title = トラッカーを割り当てる
 onboarding-assign_trackers-description = どのトラッカーをどこに置くか選んでみましょう。トラッカーを配置したい場所をクリックしてください。
 # Look at translation of onboarding-connect_tracker-connected_trackers on how to use plurals
 # $assigned (Number) - Trackers that have been assigned a body part
 # $trackers (Number) - Trackers connected to the server
-onboarding-assign_trackers-assigned = { $assigned } of { $trackers ->
-    [one] 1 tracker
-    *[other] { $trackers } trackers
-} assigned
+onboarding-assign_trackers-assigned =
+    { $assigned } of { $trackers ->
+        [one] 1 tracker
+       *[other] { $trackers } trackers
+    } assigned
 onboarding-assign_trackers-advanced = 高度な割り当て場所の表示
 onboarding-assign_trackers-next = すべてのトラッカーを割り当てました
 
 ## Tracker manual mounting setup
+
 onboarding-manual_mounting-back = VRの入力に戻る
 onboarding-manual_mounting = マニュアルマウント
 onboarding-manual_mounting-description = すべてのトラッカーをクリックし、どの方向にマウントするかを選択
@@ -472,6 +519,7 @@ onboarding-manual_mounting-auto_mounting = 自動マウント
 onboarding-manual_mounting-next = 次のステップ
 
 ## Tracker automatic mounting setup
+
 onboarding-automatic_mounting-back = VRの入力に戻る
 onboarding-automatic_mounting-title = マウントキャリブレーション
 onboarding-automatic_mounting-description = SlimeVRのトラッカーを動作させるためには、物理的なトラッカーの取り付け位置と合わせるために、トラッカーの取り付け方向を合わせる必要があります。
@@ -492,12 +540,14 @@ onboarding-automatic_mounting-put_trackers_on-description = マウントの方�
 onboarding-automatic_mounting-put_trackers_on-next = すべてのトラッカーを装着しました
 
 ## Tracker manual proportions setup
+
 onboarding-manual_proportions-back = チュートリアルをリセットする
 onboarding-manual_proportions-title = マニュアルボディプロポーション
 onboarding-manual_proportions-precision = 精度を調整する
 onboarding-manual_proportions-auto = 自動キャリブレーション
 
 ## Tracker automatic proportions setup
+
 onboarding-automatic_proportions-back = チュートリアルをリセットする
 onboarding-automatic_proportions-title = 自分の体の測定
 onboarding-automatic_proportions-description = SlimeVRのトラッカーが動作するためには、あなたの骨の長さを知る必要があります。この短いキャリブレーションでそれを測定します。
@@ -522,10 +572,11 @@ onboarding-automatic_proportions-recording-steps-3 = 上半身を右にひねり
 onboarding-automatic_proportions-recording-steps-4 = タイマーが終わるまで体をくねらせる
 onboarding-automatic_proportions-recording-processing = 結果を処理中
 # $time (Number) - Seconds left for the automatic calibration recording to finish (max 15)
-onboarding-automatic_proportions-recording-timer = { $time ->
-    [one] 1 second left
-    *[other] { $time } seconds left
-}
+onboarding-automatic_proportions-recording-timer =
+    { $time ->
+        [one] 1 second left
+       *[other] { $time } seconds left
+    }
 onboarding-automatic_proportions-verify_results-title = 結果を確認
 onboarding-automatic_proportions-verify_results-description = 以下の結果を確認してください。正しく表示されていますか？
 onboarding-automatic_proportions-verify_results-results = 記録結果
@@ -536,4 +587,5 @@ onboarding-automatic_proportions-done-title = 体を測定して保存
 onboarding-automatic_proportions-done-description = ボディプロポーションのキャリブレーションが完了しました！
 
 ## Home
+
 home-no_trackers = トラッカーを検出できません。もしくは割り当てられていません。
