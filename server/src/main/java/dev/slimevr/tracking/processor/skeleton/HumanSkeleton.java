@@ -1691,14 +1691,17 @@ public class HumanSkeleton {
 	}
 
 	private boolean shouldReverseYaw(TrackerPosition position) {
-		return position == TrackerPosition.LEFT_UPPER_LEG
-			|| position == TrackerPosition.RIGHT_UPPER_LEG
-			|| position == TrackerPosition.LEFT_UPPER_ARM
-			|| position == TrackerPosition.LEFT_LOWER_ARM
-			|| position == TrackerPosition.LEFT_HAND
-			|| position == TrackerPosition.RIGHT_UPPER_ARM
-			|| position == TrackerPosition.RIGHT_LOWER_ARM
-			|| position == TrackerPosition.RIGHT_HAND;
+		switch(position){
+			case LEFT_UPPER_LEG:
+			case RIGHT_UPPER_LEG:
+			case LEFT_UPPER_ARM:
+			case LEFT_LOWER_ARM:
+			case LEFT_HAND:
+			case RIGHT_UPPER_ARM:
+			case RIGHT_LOWER_ARM:
+			case RIGHT_HAND: return true;
+			default: return false;
+		}
 	}
 
 	@VRServerThread
