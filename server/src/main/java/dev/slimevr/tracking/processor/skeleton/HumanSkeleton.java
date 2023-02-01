@@ -1692,7 +1692,13 @@ public class HumanSkeleton {
 
 	private boolean shouldReverseYaw(TrackerPosition position) {
 		return position == TrackerPosition.LEFT_UPPER_LEG
-			|| position == TrackerPosition.RIGHT_UPPER_LEG;
+			|| position == TrackerPosition.RIGHT_UPPER_LEG
+			|| position == TrackerPosition.LEFT_UPPER_ARM
+			|| position == TrackerPosition.LEFT_LOWER_ARM
+			|| position == TrackerPosition.LEFT_HAND
+			|| position == TrackerPosition.RIGHT_UPPER_ARM
+			|| position == TrackerPosition.RIGHT_LOWER_ARM
+			|| position == TrackerPosition.RIGHT_HAND;
 	}
 
 	@VRServerThread
