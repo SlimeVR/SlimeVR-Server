@@ -1691,7 +1691,7 @@ public class HumanSkeleton {
 	}
 
 	private boolean shouldReverseYaw(TrackerPosition position) {
-		switch(position){
+		switch (position) {
 			case LEFT_UPPER_LEG:
 			case RIGHT_UPPER_LEG:
 			case LEFT_UPPER_ARM:
@@ -1699,8 +1699,10 @@ public class HumanSkeleton {
 			case LEFT_HAND:
 			case RIGHT_UPPER_ARM:
 			case RIGHT_LOWER_ARM:
-			case RIGHT_HAND: return true;
-			default: return false;
+			case RIGHT_HAND:
+				return true;
+			default:
+				return false;
 		}
 	}
 
