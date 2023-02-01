@@ -11,7 +11,7 @@ public enum ProvisioningStatus {
 	COULD_NOT_FIND_SERVER(6),
 	DONE(7);
 
-	public int id;
+	public final int id;
 
 	ProvisioningStatus(int id) {
 		this.id = id;
