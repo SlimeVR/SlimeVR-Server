@@ -14,6 +14,7 @@ work.  If not, see <http://creativecommons.org/publicdomain/zero/1.0/>.
 
   <name>SlimeVR</name>
   <summary>An app for facilitating full-body tracking in virtual reality</summary>
+  <developer_name>SlimeVR Team</developer_name>
 
   <!-- CC0 so attribution is not required -->
   <metadata_license>CC0-1.0</metadata_license>
@@ -24,6 +25,10 @@ work.  If not, see <http://creativecommons.org/publicdomain/zero/1.0/>.
   <url type="bugtracker">https://github.com/SlimeVR/SlimeVR-Server/issues</url>
   <url type="faq">https://docs.slimevr.dev/slimevr101.html</url>
   <url type="vcs-browser">https://github.com/SlimeVR/SlimeVR-Server</url>
+  <url type="translate">https://i18n.slimevr.dev</url>
+  <url type="help">https://docs.slimevr.dev/server-setup/slimevr-setup.html</url>
+  <url type="contribute">https://github.com/SlimeVR/SlimeVR-Server/blob/main/CONTRIBUTING.md</url>
+  <url type="contact">https://discord.gg/SlimeVR</url>
   <recommends>
     <display_length compare="ge">880</display_length>
   </recommends>
@@ -33,18 +38,24 @@ work.  If not, see <http://creativecommons.org/publicdomain/zero/1.0/>.
     <control>touch</control>
   </supports>
 
+  <branding>
+    <color type="primary">#663499</color>
+  </branding>
+
   <description>
     <p>
-      <em>SlimeVR</em>
+      <code>SlimeVR</code>
       is a set of open hardware sensors and open source software that facilitates full-body
       tracking (FBT) in virtual reality. With no base station required, SlimeVR makes wireless
       VR FBT affordable and comfortable.
     </p>
+
   </description>
 
   <launchable type="desktop-id">dev.slimevr.SlimeVR.desktop</launchable>
   <screenshots>
     <screenshot type="default">
+      <caption>The onboarding for the GUI</caption>
       <image>https://raw.githubusercontent.com/SlimeVR/SlimeVR-Server/main/assets/img/onboarding.png</image>
     </screenshot>
   </screenshots>
