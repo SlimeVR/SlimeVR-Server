@@ -21,7 +21,7 @@ export function TrackerBattery({
     style: 'percent',
   });
   const voltageFormatter = new Intl.NumberFormat(currentLocales, {
-    minimumFractionDigits: 2,
+    maximumFractionDigits: 2,
   });
 
   return (
