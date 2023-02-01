@@ -92,9 +92,6 @@ widget-overlay = Overlay
 widget-overlay-is_visible_label = Xem overlay trên SteamVR
 widget-overlay-is_mirrored_label = Xem overlay trong gương
 
-## Widget: Drift compensation
-widget-drift_compensation-clear = Clear drift compensation
-
 ## Widget: Developer settings
 widget-developer_mode = Chế độ nhà phát triển
 widget-developer_mode-high_contrast = Chế độ tương phản cao
