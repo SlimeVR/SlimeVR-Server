@@ -268,7 +268,6 @@ export function TrackersTable({
               voltage={device.hardwareStatus?.batteryVoltage}
               disabled={tracker.status === TrackerStatusEnum.DISCONNECTED}
               textColor={fontColor}
-              deviceId={device.id?.id || null}
             />
           ),
       })}
