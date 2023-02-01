@@ -580,22 +580,22 @@ onboarding-automatic_proportions-recording-description-p0 = Enregistrement en co
 onboarding-automatic_proportions-recording-description-p1 = Effectuez les mouvements indiqués ci-dessous:
 onboarding-automatic_proportions-recording-steps-0 = Pliez les genoux plusieurs fois.
 onboarding-automatic_proportions-recording-steps-1 = Asseyez-vous sur une chaise puis levez-vous.
-onboarding-automatic_proportions-recording-steps-2 = Tournez le haut du corps vers la gauche, puis panchez vers la droite.
-onboarding-automatic_proportions-recording-steps-3 = Tournez le haut du corps vers la droite, puis panchez vers la gauche.
+onboarding-automatic_proportions-recording-steps-2 = Tournez le haut du corps vers la gauche, puis penchez vous vers la droite.
+onboarding-automatic_proportions-recording-steps-3 = Tournez le haut du corps vers la droite, puis penchez vous vers la gauche.
 onboarding-automatic_proportions-recording-steps-4 = Remuez jusqu'à ce que la minuterie se termine.
 onboarding-automatic_proportions-recording-processing = Traitement du résultat
 # $time (Number) - Seconds left for the automatic calibration recording to finish (max 15)
 onboarding-automatic_proportions-recording-timer =
     { $time ->
-        [one] 1 second left
-       *[other] { $time } seconds left
+        [one] 1 secondes restantes
+       *[other] { $time } secondes restantes
     }
 onboarding-automatic_proportions-verify_results-title = Vérifier les résultats
 onboarding-automatic_proportions-verify_results-description = Les résultats ci-dessous vous semblent-ils corrects?
 onboarding-automatic_proportions-verify_results-results = Enregistrement des résultats
 onboarding-automatic_proportions-verify_results-processing = Traitement du résultat
 onboarding-automatic_proportions-verify_results-redo = Refaire l'enregistrement
-onboarding-automatic_proportions-verify_results-confirm = Les resultats sont corrects
+onboarding-automatic_proportions-verify_results-confirm = Les résultats sont corrects
 onboarding-automatic_proportions-done-title = Calibration terminée
 onboarding-automatic_proportions-done-description = Votre calibration est terminée!
 
