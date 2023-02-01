@@ -116,8 +116,6 @@ public class ProvisioningHandler implements SerialListener {
 
 	@Override
 	public void onSerialLog(String str) {
-		System.out.println(str);
-
 		if (!isRunning)
 			return;
 
@@ -153,8 +151,6 @@ public class ProvisioningHandler implements SerialListener {
 	public void changeStatus(ProvisioningStatus status) {
 		this.lastStatusChange = System.currentTimeMillis();
 		if (this.provisioningStatus != status) {
-			System.out.println(status);
-
 			this.listeners.forEach((l) -> l.onProvisioningStatusChange(status));
 			this.provisioningStatus = status;
 		}

@@ -75,7 +75,6 @@ export function ConnectTrackersPage() {
   useRPCPacket(
     RpcMessage.WifiProvisioningStatusResponse,
     ({ status }: WifiProvisioningStatusResponseT) => {
-      console.log('status?', status)
       setProvisioningStatus(status);
     }
   );

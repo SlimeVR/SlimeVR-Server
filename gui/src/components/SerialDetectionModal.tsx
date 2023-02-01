@@ -56,7 +56,6 @@ export function SerialDetectionModal() {
   useRPCPacket(
     RpcMessage.NewSerialDeviceResponse,
     ({ device }: NewSerialDeviceResponseT) => {
-      console.log('hello new')
       if (
         config?.watchNewDevices &&
         !['/settings/serial', '/onboarding/connect-trackers'].includes(pathname)
