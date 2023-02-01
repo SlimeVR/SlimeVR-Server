@@ -24,8 +24,6 @@ export function TrackerBattery({
     minimumFractionDigits: 2,
   });
 
-  // Why did I name it like this
-
   return (
     <div className="flex gap-2">
       <div className="flex flex-col justify-around">
