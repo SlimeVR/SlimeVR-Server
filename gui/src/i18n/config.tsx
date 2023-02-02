@@ -9,7 +9,6 @@ import {
   createContext,
   useContext,
 } from 'react';
-import { ConfigContext, ConfigContextC } from '../hooks/config';
 import { exists, readTextFile, BaseDirectory } from '@tauri-apps/api/fs';
 
 
@@ -138,8 +137,7 @@ export function AppLocalizationProvider(props: AppLocalizationProviderProps) {
 
     const currentLocaleFile: [string, string] = (await overrideLangExists)
       ? [
-          // TODO: Fix, actually detect the locale being used somehow...
-          'en-US',
+          currentLocale,
           await readTextFile(OVERRIDE_FILENAME, {
             dir: BaseDirectory.AppConfig,
           }),
