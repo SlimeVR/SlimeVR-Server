@@ -1,3 +1,5 @@
+import { useConfig } from '../../hooks/config';
+import { useLocaleConfig } from '../../i18n/config';
 import { BatteryIcon } from '../commons/icon/BatteryIcon';
 import { Typography } from '../commons/Typography';
 
@@ -7,31 +9,38 @@ export function TrackerBattery({
   disabled,
   textColor = 'secondary',
 }: {
+  /**
+   * a [0, 1] value range is expected
+   */
   value: number;
   voltage?: number | null;
   disabled?: boolean;
   textColor?: string;
 }) {
-  const percent = value * 100;
+  const { currentLocales } = useLocaleConfig();
+  const { config } = useConfig();
+  const percentFormatter = new Intl.NumberFormat(currentLocales, {
+    style: 'percent',
+  });
+  const voltageFormatter = new Intl.NumberFormat(currentLocales, {
+    maximumFractionDigits: 2,
+  });
 
   return (
     <div className="flex gap-2">
       <div className="flex flex-col justify-around">
         <BatteryIcon value={value} disabled={disabled} />
       </div>
-      {!disabled && (
-        <div className="w-10">
-          <Typography color={textColor}>{percent.toFixed(0)} %</Typography>
-          {voltage && (
-            <Typography color={textColor}>{voltage.toFixed(2)} V</Typography>
-          )}
-        </div>
-      )}
-      {disabled && (
-        <div className="flex flex-col justify-center w-10">
-          <div className="w-7 h-1 bg-background-30 rounded-full"></div>
-        </div>
-      )}
+      <div className="w-10">
+        <Typography color={textColor}>
+          {percentFormatter.format(value)}
+        </Typography>
+        {voltage && config?.debug && (
+          <Typography color={textColor}>
+            {voltageFormatter.format(voltage)} V
+          </Typography>
+        )}
+      </div>
     </div>
   );
 }
