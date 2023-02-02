@@ -381,6 +381,30 @@ settings-osc-vrchat-network-trackers-knees = knyees~
 settings-osc-vrchat-network-trackers-feet = pweets~
 settings-osc-vrchat-network-trackers-elbows = ewbows~
 
+## VMC OSC settings
+settings-osc-vmc = viwtuaw motion captuwe
+# This cares about multilines
+settings-osc-vmc-description =
+    change settings specific to the vmc (viwtuaw motion captuwe) pwotocow
+            to send swimevr's twacking data and weceive twacking data fwom othew apps.
+settings-osc-vmc-enable = enaybwe
+settings-osc-vmc-enable-description = toggle teh sending awnd wweceiving of data
+settings-osc-vmc-enable-label = enaybwe
+settings-osc-vmc-network = Network ports
+settings-osc-vmc-network-description = set the pawts fow wistening awnd sending data via vmc
+settings-osc-vmc-network-port_in =
+    .label = pawt in
+    .placeholder = pawt in (defawwt: 39540)
+settings-osc-vmc-network-port_out =
+    .label = pawt out
+    .placeholder = pawt out (defawwt: 39539)
+settings-osc-vmc-network-address = network addwess
+settings-osc-vmc-network-address-description = choose which addwess to send out data at via vmc
+settings-osc-vmc-network-address-placeholder = IPV4 addwess
+settings-osc-vmc-anchor_hip = anchow at hips
+settings-osc-vmc-anchor_hip-description = anchow the twacking at the hips, usefuw fow seated vtubing
+settings-osc-vmc-anchor_hip-label = anchow at hips
+
 ## Setup/onboarding menu
 onboarding-skip = skipy setup
 onboarding-continue = continyue

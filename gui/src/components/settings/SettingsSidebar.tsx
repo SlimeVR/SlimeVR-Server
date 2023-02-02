@@ -80,6 +80,11 @@ export function SettingsSidebar() {
             VRChat
           </SettingsLink>
         </div>
+        <div className="flex flex-col gap-2">
+          <SettingsLink to="/settings/osc/vmc" scrollTo="vmc">
+            VMC
+          </SettingsLink>
+        </div>
       </div>
       <div className="flex flex-col gap-3">
         <Typography variant="section-title">

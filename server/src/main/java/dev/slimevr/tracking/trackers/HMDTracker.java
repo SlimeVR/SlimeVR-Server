@@ -12,6 +12,7 @@ public class HMDTracker extends ComputedTracker implements TrackerWithTPS {
 	public HMDTracker(String name) {
 		super(0, name, true, true);
 		setBodyPosition(TrackerPosition.HMD);
+		timeAtLastUpdate = System.currentTimeMillis();
 	}
 
 	public boolean isBeingUpdated() {

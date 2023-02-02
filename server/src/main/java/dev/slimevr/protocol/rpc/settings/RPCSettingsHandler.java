@@ -1,13 +1,10 @@
 package dev.slimevr.protocol.rpc.settings;
 
 import com.google.flatbuffers.FlatBufferBuilder;
-import dev.slimevr.config.DriftCompensationConfig;
-import dev.slimevr.config.FiltersConfig;
-import dev.slimevr.config.OSCConfig;
-import dev.slimevr.config.TapDetectionConfig;
-import dev.slimevr.config.VRCOSCConfig;
+import dev.slimevr.config.*;
 import dev.slimevr.filtering.TrackerFilters;
 import dev.slimevr.osc.OSCRouter;
+import dev.slimevr.osc.VMCHandler;
 import dev.slimevr.osc.VRCOSCHandler;
 import dev.slimevr.platform.SteamVRBridge;
 import dev.slimevr.protocol.GenericConnection;
@@ -65,6 +62,11 @@ public record RPCSettingsHandler(RPCHandler rpcHandler, ProtocolAPI api) {
 					.createVRCOSCSettings(
 						fbb,
 						this.api.server.getConfigManager().getVrConfig().getVrcOSC()
+					),
+				RPCSettingsBuilder
+					.createVMCOSCSettings(
+						fbb,
+						this.api.server.getConfigManager().getVrConfig().getVMC()
 					),
 				RPCSettingsBuilder
 					.createModelSettings(
@@ -131,6 +133,25 @@ public record RPCSettingsHandler(RPCHandler rpcHandler, ProtocolAPI api) {
 			driftCompensationConfig.updateTrackersDriftCompensation();
 		}
 
+		if (req.oscRouter() != null) {
+			OSCConfig oscRouterConfig = this.api.server
+				.getConfigManager()
+				.getVrConfig()
+				.getOscRouter();
+			if (oscRouterConfig != null) {
+				OSCRouter oscRouter = this.api.server.getOSCRouter();
+				var osc = req.oscRouter().oscSettings();
+				if (osc != null) {
+					oscRouterConfig.setEnabled(osc.enabled());
+					oscRouterConfig.setPortIn(osc.portIn());
+					oscRouterConfig.setPortOut(osc.portOut());
+					oscRouterConfig.setAddress(osc.address());
+				}
+
+				oscRouter.refreshSettings(true);
+			}
+		}
+
 		if (req.vrcOsc() != null) {
 			VRCOSCConfig vrcOSCConfig = this.api.server
 				.getConfigManager()
@@ -165,22 +186,24 @@ public record RPCSettingsHandler(RPCHandler rpcHandler, ProtocolAPI api) {
 			}
 		}
 
-		if (req.oscRouter() != null) {
-			OSCConfig oscRouterConfig = this.api.server
+		if (req.vmcOsc() != null) {
+			VMCConfig vmcConfig = this.api.server
 				.getConfigManager()
 				.getVrConfig()
-				.getOscRouter();
-			if (oscRouterConfig != null) {
-				OSCRouter oscRouter = this.api.server.getOSCRouter();
-				var osc = req.oscRouter().oscSettings();
-				if (osc != null) {
-					oscRouterConfig.setEnabled(osc.enabled());
-					oscRouterConfig.setPortIn(osc.portIn());
-					oscRouterConfig.setPortOut(osc.portOut());
-					oscRouterConfig.setAddress(osc.address());
-				}
+				.getVMC();
+			if (vmcConfig != null) {
+				VMCHandler VMCHandler = this.api.server.getVMCHandler();
+				var osc = req.vmcOsc().oscSettings();
 
-				oscRouter.refreshSettings(true);
+				if (osc != null) {
+					vmcConfig.setEnabled(osc.enabled());
+					vmcConfig.setPortIn(osc.portIn());
+					vmcConfig.setPortOut(osc.portOut());
+					vmcConfig.setAddress(osc.address());
+				}
+				vmcConfig.setAnchorHip(req.vmcOsc().anchorHip());
+
+				VMCHandler.refreshSettings(true);
 			}
 		}
 

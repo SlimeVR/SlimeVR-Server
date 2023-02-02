@@ -11,7 +11,6 @@ import dev.slimevr.config.VMCConfig;
 import dev.slimevr.tracking.processor.BoneInfo;
 import dev.slimevr.tracking.processor.BoneType;
 import dev.slimevr.tracking.processor.HumanPoseManager;
-import dev.slimevr.tracking.processor.TransformNode;
 import dev.slimevr.tracking.trackers.UnityBone;
 import io.eiren.util.collections.FastList;
 import io.eiren.util.logging.LogManager;
@@ -141,7 +140,7 @@ public class VMCHandler implements OSCHandler {
 	}
 
 	void handleReceivedMessage(OSCMessageEvent event) {
-		// TODO ?
+		// TODO add received bones as VRTrackers
 	}
 
 	@Override
@@ -169,45 +168,43 @@ public class VMCHandler implements OSCHandler {
 
 			if (humanPoseManager.isSkeletonPresent()) {
 				// Add the tracking root
-				if (!anchorHip) {
-					// TODO
-					// Head anchor
+				if (anchorHip) {
+					// Hip anchor
 					vecBuf.zero();
-					TransformNode headNode = humanPoseManager.getTailNodeOfBone(BoneType.HEAD);
-					TransformNode secondNode = humanPoseManager.getTailNodeOfBone(BoneType.HIP);
+				} else {
+					// TODO : implement reading VMC/VSF avatars to get
+					// proportions?
+					// Or use user-inputted avatar height
+					// Or use scale in VMC protocol
+					float height = 1f;
+					float heightMultiplier = height / humanPoseManager.getUserHeightFromConfig();
 
-					headNode.worldTransform.getTranslation(vecBuf);
-
-					while (secondNode.getParent() != null && secondNode.getParent() != headNode) {
-						secondNode = secondNode.getParent();
-						vecBuf
-							.addLocal(
-								secondNode.worldTransform
-									.getTranslation()
-									.subtract(
-										secondNode.getParent().worldTransform.getTranslation()
-									)
-							);
-					}
-
-					quatBuf.loadIdentity();
-					oscArgs.clear();
-					oscArgs.add("root");
-					oscArgs.add(vecBuf.getX());
-					oscArgs.add(vecBuf.getY());
-					oscArgs.add(-vecBuf.getZ());
-					oscArgs.add(quatBuf.getX());
-					oscArgs.add(quatBuf.getY());
-					oscArgs.add(-quatBuf.getZ());
-					oscArgs.add(-quatBuf.getW());
-					oscBundle
-						.addPacket(
-							new OSCMessage(
-								"/VMC/Ext/Root/Pos",
-								oscArgs.clone()
-							)
+					// Head anchor
+					vecBuf
+						.set(
+							humanPoseManager
+								.getTailNodeOfBone(BoneType.HEAD)
+								.getParent().worldTransform.getTranslation()
+						)
+						.multLocal(heightMultiplier);
+					vecBuf
+						.addLocal(
+							humanPoseManager.getTailNodeOfBone(BoneType.HIP).worldTransform
+								.getTranslation()
+								.mult(heightMultiplier)
 						);
 				}
+				quatBuf.loadIdentity();
+				oscArgs.clear();
+				oscArgs.add("root");
+				addTransformToArgs(vecBuf, quatBuf);
+				oscBundle
+					.addPacket(
+						new OSCMessage(
+							"/VMC/Ext/Root/Pos",
+							oscArgs.clone()
+						)
+					);
 
 				// Add Unity humanoid bones transforms
 				for (UnityBone bone : UnityBone.values) {
@@ -241,13 +238,7 @@ public class VMCHandler implements OSCHandler {
 							);
 						oscArgs.clear();
 						oscArgs.add(bone.stringVal);
-						oscArgs.add(vecBuf.x);
-						oscArgs.add(vecBuf.y);
-						oscArgs.add(-vecBuf.z);
-						oscArgs.add(quatBuf.getX());
-						oscArgs.add(quatBuf.getY());
-						oscArgs.add(-quatBuf.getZ());
-						oscArgs.add(-quatBuf.getW());
+						addTransformToArgs(vecBuf, quatBuf);
 						oscBundle
 							.addPacket(
 								new OSCMessage(
@@ -277,10 +268,14 @@ public class VMCHandler implements OSCHandler {
 		}
 	}
 
-	public void calibrateVMCHeadPosition() {
-		hmdOffset
-			.set(humanPoseManager.getBoneInfoForBoneType(BoneType.HEAD).getGlobalTranslation());
-		hmdOffset.set(-hmdOffset.x, 0, -hmdOffset.z);
+	private void addTransformToArgs(Vector3f pos, Quaternion rot) {
+		oscArgs.add(pos.getX());
+		oscArgs.add(pos.getY());
+		oscArgs.add(-pos.getZ());
+		oscArgs.add(rot.getX());
+		oscArgs.add(rot.getY());
+		oscArgs.add(-rot.getZ());
+		oscArgs.add(-rot.getW());
 	}
 
 	@Override

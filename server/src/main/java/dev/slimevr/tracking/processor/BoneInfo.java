@@ -122,6 +122,7 @@ public class BoneInfo {
 		if (this == root) {
 			quatBuf.set(getGlobalRotation(unity));
 		} else if (boneType == BoneType.LEFT_FOOT || boneType == BoneType.RIGHT_FOOT) {
+			// TODO fix feet
 			return getLocalRotation(unity);
 		} else {
 			quatBuf

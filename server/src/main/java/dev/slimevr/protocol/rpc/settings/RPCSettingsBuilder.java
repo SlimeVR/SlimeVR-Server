@@ -69,9 +69,28 @@ public class RPCSettingsBuilder {
 		VRCOSCSettings.startVRCOSCSettings(fbb);
 		VRCOSCSettings.addOscSettings(fbb, generalSettingOffset);
 		VRCOSCSettings.addTrackers(fbb, oscSettingOffset);
-		VRCOSCSettings.addTrackers(fbb, oscSettingOffset);
 
 		return VRCOSCSettings.endVRCOSCSettings(fbb);
+	}
+
+	public static int createVMCOSCSettings(
+		FlatBufferBuilder fbb,
+		VMCConfig config
+	) {
+		int addressStringOffset = fbb.createString(config.getAddress());
+		int generalSettingOffset = OSCSettings
+			.createOSCSettings(
+				fbb,
+				config.getEnabled(),
+				config.getPortIn(),
+				config.getPortOut(),
+				addressStringOffset
+			);
+		VMCOSCSettings.startVMCOSCSettings(fbb);
+		VMCOSCSettings.addOscSettings(fbb, generalSettingOffset);
+		VMCOSCSettings.addAnchorHip(fbb, config.getAnchorHip());
+
+		return VMCOSCSettings.endVMCOSCSettings(fbb);
 	}
 
 	public static int createFilterSettings(

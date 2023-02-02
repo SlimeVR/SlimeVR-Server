@@ -381,6 +381,30 @@ settings-osc-vrchat-network-trackers-knees = Knees
 settings-osc-vrchat-network-trackers-feet = Feet
 settings-osc-vrchat-network-trackers-elbows = Elbows
 
+## VMC OSC settings
+settings-osc-vmc = Virtual Motion Capture
+# This cares about multilines
+settings-osc-vmc-description =
+    Change settings specific to the VMC (Virtual Motion Capture) protocol
+        to send SlimeVR's bone data and receive bone data from other apps.
+settings-osc-vmc-enable = Enable
+settings-osc-vmc-enable-description = Toggle the sending and receiving of data.
+settings-osc-vmc-enable-label = Enable
+settings-osc-vmc-network = Network ports
+settings-osc-vmc-network-description = Set the ports for listening and sending data via VMC
+settings-osc-vmc-network-port_in =
+    .label = Port In
+    .placeholder = Port in (default: 39540)
+settings-osc-vmc-network-port_out =
+    .label = Port Out
+    .placeholder = Port out (default: 39539)
+settings-osc-vmc-network-address = Network address
+settings-osc-vmc-network-address-description = Choose which address to send out data at via VMC
+settings-osc-vmc-network-address-placeholder = IPV4 address
+settings-osc-vmc-anchor_hip = Anchor at hips
+settings-osc-vmc-anchor_hip-description = Anchor the tracking at the hips, useful for seated VTubing
+settings-osc-vmc-anchor_hip-label = Anchor at hips
+
 ## Setup/onboarding menu
 onboarding-skip = Skip setup
 onboarding-continue = Continue

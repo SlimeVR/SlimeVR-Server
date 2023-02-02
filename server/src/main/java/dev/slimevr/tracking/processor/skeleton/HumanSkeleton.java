@@ -375,7 +375,6 @@ public class HumanSkeleton {
 
 	// #region Set trackers inputs
 	protected void setTrackersFromList(List<? extends Tracker> trackers) {
-		// TODO fix when adding real HMD
 		hmdTracker = TrackerUtils.getHMDTracker(trackers);
 		if (hmdTracker == null) {
 			hmdTracker = TrackerUtils

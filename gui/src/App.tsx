@@ -38,6 +38,7 @@ import { TrackerSettingsPage } from './components/tracker/TrackerSettings';
 import { useConfig } from './hooks/config';
 import { OSCRouterSettings } from './components/settings/pages/OSCRouterSettings';
 import { useLocalization } from '@fluent/react';
+import { VMCSettings } from './components/settings/pages/VMCSettings';
 
 function Layout() {
   const { loading } = useConfig();
@@ -75,6 +76,7 @@ function Layout() {
           <Route path="serial" element={<Serial />} />
           <Route path="osc/router" element={<OSCRouterSettings />} />
           <Route path="osc/vrchat" element={<VRCOSCSettings />} />
+          <Route path="osc/vmc" element={<VMCSettings />} />
         </Route>
         <Route
           path="/onboarding"

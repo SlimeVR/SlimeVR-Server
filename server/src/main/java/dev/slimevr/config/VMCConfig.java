@@ -13,7 +13,7 @@ public class VMCConfig extends OSCConfig {
 		return anchorHip;
 	}
 
-	public void setOSCTrackerRole(boolean anchorHip) {
+	public void setAnchorHip(boolean anchorHip) {
 		this.anchorHip = anchorHip;
 	}
 }

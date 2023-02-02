@@ -344,11 +344,11 @@ settings-osc-router-network-description =
     Définissez les ports pour écouter et envoyer des données.
     Ces ports peuvent être les mêmes que les autres utilisés dans le serveur SlimeVR.
 settings-osc-router-network-port_in =
-    .label = Port de réception
-    .placeholder = Port de réception (par défaut: 9002)
+    .label = Port d'entrée
+    .placeholder = Port d'entrée (par défaut: 9002)
 settings-osc-router-network-port_out =
-    .label = Port d'envoi
-    .placeholder = Port d'envoi (par défaut: 9000)
+    .label = Port de sortie
+    .placeholder = Port de sortie (par défaut: 9000)
 settings-osc-router-network-address = Adresse réseau
 settings-osc-router-network-address-description = Choisissez l'adresse vers laquelle envoyer les données.
 settings-osc-router-network-address-placeholder = Adresse IPv4
@@ -362,14 +362,14 @@ settings-osc-vrchat-description =
 settings-osc-vrchat-enable = Activer
 settings-osc-vrchat-enable-description = Activer/désactiver l'envoi et la réception de données.
 settings-osc-vrchat-enable-label = Activer
-settings-osc-vrchat-network = Connexions réseau
+settings-osc-vrchat-network = Ports réseau
 settings-osc-vrchat-network-description = Définissez les ports pour écouter et envoyer des données à VRChat.
 settings-osc-vrchat-network-port_in =
     .label = Port d'entrée
-    .placeholder = Port de réception (par défaut : 9001)
+    .placeholder = Port d'entrée (par défaut : 9001)
 settings-osc-vrchat-network-port_out =
     .label = Port de sortie
-    .placeholder = Port d'envoi (par défaut : 9000)
+    .placeholder = Port de sortie (par défaut : 9000)
 settings-osc-vrchat-network-address = Adresse réseau
 settings-osc-vrchat-network-address-description = Choisissez l'adresse à laquelle envoyer les données à VRChat (vérifiez les réseaux Wi-Fi de votre appareil).
 settings-osc-vrchat-network-address-placeholder = Adresse IP VRChat
@@ -380,6 +380,30 @@ settings-osc-vrchat-network-trackers-waist = Taille
 settings-osc-vrchat-network-trackers-knees = Genoux
 settings-osc-vrchat-network-trackers-feet = Pieds
 settings-osc-vrchat-network-trackers-elbows = Coudes
+
+## VMC OSC settings
+settings-osc-vmc = Virtual Motion Capture
+# This cares about multilines
+settings-osc-vmc-description =
+    Modifier les paramètres spécifique au protocole VMC (Virtual Motion Capture)
+           pour envoyer les données de capture de SlimeVR et recevoir les données de capture d'autres applications.
+settings-osc-vmc-enable = Activer
+settings-osc-vmc-enable-description = Activer/désactiver l'envoi et la réception de données.
+settings-osc-vmc-enable-label = Activer
+settings-osc-vmc-network = Ports réseau
+settings-osc-vmc-network-description = Définissez les ports pour écouter et envoyer des données par VMC.
+settings-osc-vmc-network-port_in =
+    .label = Port d'entrée
+    .placeholder = Port d'entrée (par défaut : 39540)
+settings-osc-vmc-network-port_out =
+    .label = Port de sortie
+    .placeholder = Port de sortie (par défaut : 39539)
+settings-osc-vmc-network-address = Adresse réseau
+settings-osc-vmc-network-address-description = Choisissez l'adresse vers laquelle envoyer des données VMC.
+settings-osc-vmc-network-address-placeholder = Adresse IPv4
+settings-osc-vmc-anchor_hip = Ancrage aux hanches
+settings-osc-vmc-anchor_hip-description = Ancrer la capture des mouvements aux hanches, utile pour le VTubing assis.
+settings-osc-vmc-anchor_hip-label = Ancrage aux hanches
 
 ## Setup/onboarding menu
 onboarding-skip = Passer

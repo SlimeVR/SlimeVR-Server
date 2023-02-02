@@ -17,10 +17,8 @@ public class TrackerUtils {
 		List<T> allTrackers,
 		TrackerPosition position
 	) {
-		if (position == null)
-			return null;
 		for (T t : allTrackers) {
-			if (t != null && t.getBodyPosition() == position)
+			if (t.getBodyPosition() == position)
 				return t;
 		}
 		return null;
@@ -36,15 +34,8 @@ public class TrackerUtils {
 		List<T> allTrackers,
 		TrackerPosition position
 	) {
-		if (position == null)
-			return null;
 		for (T t : allTrackers) {
-			if (
-				t != null
-					&& t.getBodyPosition() == position
-					&& !(t instanceof ComputedHumanPoseTracker)
-					&& !(t instanceof HMDTracker)
-			)
+			if (t.getBodyPosition() == position && !(t instanceof ComputedTracker))
 				return t;
 		}
 		return null;

@@ -8,7 +8,7 @@ import com.jme3.math.FastMath;
 import com.jme3.math.Quaternion;
 import com.jme3.math.Vector3f;
 import dev.slimevr.VRServer;
-import dev.slimevr.config.OSCConfig;
+import dev.slimevr.config.VRCOSCConfig;
 import dev.slimevr.platform.SteamVRBridge;
 import dev.slimevr.tracking.processor.HumanPoseManager;
 import dev.slimevr.tracking.trackers.HMDTracker;
@@ -30,7 +30,7 @@ public class VRCOSCHandler implements OSCHandler {
 	private OSCPortIn oscReceiver;
 	private OSCPortOut oscSender;
 	private OSCMessage oscMessage;
-	private final OSCConfig config;
+	private final VRCOSCConfig config;
 	private final VRServer server;
 	private final HMDTracker hmd;
 	private final SteamVRBridge steamvrBridge;
@@ -52,7 +52,7 @@ public class VRCOSCHandler implements OSCHandler {
 		HMDTracker hmd,
 		HumanPoseManager humanPoseManager,
 		SteamVRBridge steamvrBridge,
-		OSCConfig oscConfig,
+		VRCOSCConfig oscConfig,
 		List<? extends ShareableTracker> shareableTrackers
 	) {
 		this.server = server;
