@@ -1,3 +1,4 @@
+import { useConfig } from '../../hooks/config';
 import { useLocaleConfig } from '../../i18n/config';
 import { BatteryIcon } from '../commons/icon/BatteryIcon';
 import { Typography } from '../commons/Typography';
@@ -17,6 +18,7 @@ export function TrackerBattery({
   textColor?: string;
 }) {
   const { currentLocales } = useLocaleConfig();
+  const { config } = useConfig();
   const percentFormatter = new Intl.NumberFormat(currentLocales, {
     style: 'percent',
   });
@@ -33,7 +35,7 @@ export function TrackerBattery({
         <Typography color={textColor}>
           {percentFormatter.format(value)}
         </Typography>
-        {voltage && (
+        {voltage && config?.debug && (
           <Typography color={textColor}>
             {voltageFormatter.format(voltage)} V
           </Typography>
