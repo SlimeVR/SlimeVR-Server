@@ -33,7 +33,6 @@ public class DriftCompensationConfig {
 		}
 	}
 
-
 	public boolean getEnabled() {
 		return enabled;
 	}

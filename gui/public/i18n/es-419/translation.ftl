@@ -447,7 +447,7 @@ onboarding-connect_tracker-connected_trackers = { $amount ->
     [0] No hay sensores conectados
     [one] 1 sensor conectado
     *[other] { $amount } sensores conectados
-} 
+}
 onboarding-connect_tracker-next = He conectado todos mis sensores
 
 ## Tracker assignment setup
@@ -460,7 +460,7 @@ onboarding-assign_trackers-description = Debes escoger dónde van los sensores. 
 onboarding-assign_trackers-assigned = { $assigned } de { $trackers ->
     [one] 1 sensor asignado
     *[other] { $trackers } sensores asignados
-} 
+}
 onboarding-assign_trackers-advanced = Mostrar ubicación de asignaciones avanzados.
 onboarding-assign_trackers-next = He asignado todos los sensores
 
