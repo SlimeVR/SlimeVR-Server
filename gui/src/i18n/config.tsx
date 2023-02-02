@@ -83,7 +83,7 @@ export const langs = [
 // AppConfig path: https://docs.rs/tauri/1.2.4/tauri/api/path/fn.config_dir.html
 // We doing this only once, don't want an override check to be done on runtime,
 // only on launch :P
-const overrideLangExists = await exists(OVERRIDE_FILENAME, {
+const overrideLangExists = exists(OVERRIDE_FILENAME, {
   dir: BaseDirectory.AppConfig,
 });
 
@@ -136,7 +136,7 @@ export function AppLocalizationProvider(props: AppLocalizationProviderProps) {
     );
     setCurrentLocales([currentLocale]);
 
-    const currentLocaleFile: [string, string] = overrideLangExists
+    const currentLocaleFile: [string, string] = (await overrideLangExists)
       ? [
           // TODO: Fix, actually detect the locale being used somehow...
           'en-US',
