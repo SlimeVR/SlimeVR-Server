@@ -158,6 +158,28 @@ data class Matrix3(
 		)
 	}
 
+	/*
+		The following method returns the best guess rotation matrix.
+		In general, a square matrix can be represented as an
+		orthogonal matrix * symmetric matrix.
+			M = O*S
+		A symmetric matrix's transpose is itself.
+		An orthogonal matrix's transpose is its inverse.
+			S^T = S
+			O^T = O^-1
+		If we perform the following process, we can factor out O.
+			M + M^-T
+			= O*S + (O*S)^-T
+			= O*S + O^-T*S^-T
+			= O*S + O*S^-T
+			= O*(S + S^-T)
+		So we see if we perform M + M^-T, the rotation, O, remains unchanged.
+		Iterating M = (M + M^-T)/2, we converge the symmetric part to identity.
+
+		This converges exponentially (one digit per iteration) when it is far from a
+		rotation matrix, and quadratically (double the digits each iteration) when it
+		is close to a rotation matrix.
+	*/
 	/**
 	 * computes the nearest orthonormal matrix to this matrix
 	 * @return the rotation matrix
@@ -216,13 +238,13 @@ data class Matrix3(
 	 */
 	fun toQuaternionAssumingOrthonormal(): Quaternion {
 		return if (yy > -zz && zz > -xx && xx > -yy) {
-			Quaternion(1 + xx + yy + zz, yz - zy, zx - xz, xy - yx).unit()
+			Quaternion(1f + xx + yy + zz, yz - zy, zx - xz, xy - yx).unit()
 		} else if (xx > yy && xx > zz) {
-			Quaternion(yz - zy, 1 + xx - yy - zz, xy + yx, xz + zx).unit()
+			Quaternion(yz - zy, 1f + xx - yy - zz, xy + yx, xz + zx).unit()
 		} else if (yy > zz) {
-			Quaternion(zx - xz, xy + yx, 1 - xx + yy - zz, yz + zy).unit()
+			Quaternion(zx - xz, xy + yx, 1f - xx + yy - zz, yz + zy).unit()
 		} else {
-			Quaternion(xy - yx, xz + zx, yz + zy, 1 - xx - yy + zz).unit()
+			Quaternion(xy - yx, xz + zx, yz + zy, 1f - xx - yy + zz).unit()
 		}
 	}
 
@@ -308,76 +330,76 @@ data class Matrix3(
 		val ETA = 1.5707964f
 		when (order) {
 			EulerOrder.XYZ -> {
-				val kc = zy * zy + zz * zz
-				if (kc == 0f) return EulerAngles(EulerOrder.XYZ,
+				val kc = sqrt(zy * zy + zz * zz)
+				if (kc < 1e-7f) return EulerAngles(EulerOrder.XYZ,
 					atan2(yz, yy), ETA.withSign(zx), 0f)
 
 				return EulerAngles(
 					EulerOrder.XYZ,
 					atan2(-zy, zz),
-					atan2(zx, sqrt(kc)),
+					atan2(zx, kc),
 					atan2(xy * zz - xz * zy, yy * zz - yz * zy)
 				)
 			}
 			EulerOrder.YZX -> {
-				val kc = xx * xx + xz * xz
-				if (kc == 0f) return EulerAngles(EulerOrder.YZX,
+				val kc = sqrt(xx * xx + xz * xz)
+				if (kc < 1e-7f) return EulerAngles(EulerOrder.YZX,
 					0f, atan2(zx, zz), ETA.withSign(xy))
 
 				return EulerAngles(
 					EulerOrder.YZX,
 					atan2(xx * yz - xz * yx, xx * zz - xz * zx),
 					atan2(-xz, xx),
-					atan2(xy, sqrt(kc))
+					atan2(xy, kc)
 				)
 			}
 			EulerOrder.ZXY -> {
-				val kc = yy * yy + yx * yx
-				if (kc == 0f) return EulerAngles(EulerOrder.ZXY,
+				val kc = sqrt(yy * yy + yx * yx)
+				if (kc < 1e-7f) return EulerAngles(EulerOrder.ZXY,
 					ETA.withSign(yz), 0f, atan2(xy, xx))
 
 				return EulerAngles(
 					EulerOrder.ZXY,
-					atan2(yz, sqrt(kc)),
+					atan2(yz, kc),
 					atan2(yy * zx - yx * zy, yy * xx - yx * xy),
 					atan2(-yx, yy)
 				)
 			}
 			EulerOrder.ZYX -> {
-				val kc = xy * xy + xx * xx
-				if (kc == 0f) return EulerAngles(EulerOrder.ZYX,
+				val kc = sqrt(xy * xy + xx * xx)
+				if (kc < 1e-7f) return EulerAngles(EulerOrder.ZYX,
 					0f, ETA.withSign(-xz), atan2(-yx, yy))
 
 				return EulerAngles(
 					EulerOrder.ZYX,
 					atan2(zx * xy - zy * xx, yy * xx - yx * xy),
-					atan2(-xz, sqrt(kc)),
+					atan2(-xz, kc),
 					atan2(xy, xx)
 				)
 			}
 
 			EulerOrder.YXZ -> {
-				val kc = zx * zx + zz * zz
-				if (kc == 0f) return EulerAngles(EulerOrder.YXZ,
+				val kc = sqrt(zx * zx + zz * zz)
+				if (kc < 1e-7f) return EulerAngles(EulerOrder.YXZ,
 					ETA.withSign(-zy), atan2(-xz, xx), 0f)
 
 				return EulerAngles(
 					EulerOrder.YXZ,
-					atan2(-zy, sqrt(kc)),
+					atan2(-zy, kc),
 					atan2(zx, zz),
 					atan2(yz * zx - yx * zz, xx * zz - xz * zx)
 				)
 			}
 			EulerOrder.XZY -> {
-				val kc = yz * yz + yy * yy
-				if (kc == 0f) return EulerAngles(EulerOrder.XZY,
+				val kc = sqrt(yz * yz + yy * yy)
+				if (kc < 1e-7f) return EulerAngles(EulerOrder.XZY,
 					atan2(-zy, zz), 0f, ETA.withSign(-yx))
 
 				return EulerAngles(
 					EulerOrder.XZY,
 					atan2(yz, yy),
 					atan2(xy * yz - xz * yy, zz * yy - zy * yz),
-					atan2(-yx, sqrt(kc))
+					atan2(-yx, kc)
 				)
 			}
 		}
