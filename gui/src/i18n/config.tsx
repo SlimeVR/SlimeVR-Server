@@ -18,6 +18,10 @@ const OVERRIDE_FILENAME = 'override.ftl';
 
 export const langs = [
   {
+    name: '🇦🇪 عربى',
+    key: 'ar',
+  },
+  {
     name: '🇺🇸 English',
     key: 'en',
   },
