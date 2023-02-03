@@ -1,8 +1,11 @@
+import { useLocalization } from '@fluent/react';
+import classNames from 'classnames';
 import { IPv4 } from 'ip-num/IPNumber';
 import { useEffect, useMemo, useState } from 'react';
 import { useForm } from 'react-hook-form';
 import { useParams } from 'react-router-dom';
 import { AssignTrackerRequestT, BodyPart, RpcMessage } from 'solarxr-protocol';
+import { useConfig } from '../../hooks/config';
 import { useDebouncedEffect } from '../../hooks/timeout';
 import { useTrackerFromId } from '../../hooks/tracker';
 import { useWebsocketAPI } from '../../hooks/websocket-api';
@@ -12,18 +15,15 @@ import {
 } from '../../maths/quaternion';
 import { ArrowLink } from '../commons/ArrowLink';
 import { Button } from '../commons/Button';
+import { CheckBox } from '../commons/Checkbox';
 import { FootIcon } from '../commons/icon/FootIcon';
+import { WarningIcon } from '../commons/icon/WarningIcon';
 import { Input } from '../commons/Input';
 import { Typography } from '../commons/Typography';
 import { MountingSelectionMenu } from '../onboarding/pages/mounting/MountingSelectionMenu';
+import { IMUVisualizerWidget } from '../widgets/IMUVisualizerWidget';
 import { SingleTrackerBodyAssignmentMenu } from './SingleTrackerBodyAssignmentMenu';
 import { TrackerCard } from './TrackerCard';
-import { CheckBox } from '../commons/Checkbox';
-import { useLocalization } from '@fluent/react';
-import { IMUVisualizerWidget } from '../widgets/IMUVisualizerWidget';
-import { useConfig } from '../../hooks/config';
-import { WarningIcon } from '../commons/icon/WarningIcon';
-import classNames from 'classnames';
 
 export const rotationToQuatMap = {
   FRONT: 180,
@@ -333,8 +333,9 @@ export function TrackerSettingsPage() {
                 'tracker-settings-name_section-placeholder'
               )}
               type="text"
+              name="trackerName"
+              control={control}
               autocomplete={false}
-              {...register('trackerName')}
             ></Input>
           </div>
         </div>

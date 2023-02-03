@@ -1,0 +1,37 @@
+# This workflow will rebase `pontoon` with `main` changes, it's for making the
+# Pontoon bot not try making commits to main
+
+name: Rebase pontoon branch to main
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  rebase:
+    if: ${{ github.repository == 'SlimeVR/SlimeVR-Server' }}
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+
+    steps:
+      - uses: actions/checkout@v3
+        with:
+          ref: pontoon
+          submodules: recursive
+          # Get all the git history for rebasing
+          fetch-depth: 0
+      - name: Rebase
+        run: |
+          git config --local user.name "slimevr-bot"
+          git config --local user.email pantoon@slimevr.dev
+          git fetch origin main
+          git rebase origin/main
+      - name: Push rebase
+        uses: github-actions-x/commit@v2.9
+        with:
+          github-token: ${{ secrets.PONTOON_BOT_KEY }}
+          push-branch: "pontoon"
+          commit-message: "update"
+          force-push: "true"
+          name: "slimevr-bot"

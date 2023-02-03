@@ -18,6 +18,7 @@ import dev.slimevr.tracking.DeviceManager;
 import dev.slimevr.tracking.processor.HumanPoseManager;
 import dev.slimevr.tracking.processor.skeleton.HumanSkeleton;
 import dev.slimevr.tracking.trackers.HMDTracker;
+import dev.slimevr.tracking.trackers.IMUTracker;
 import dev.slimevr.tracking.trackers.ShareableTracker;
 import dev.slimevr.tracking.trackers.Tracker;
 import dev.slimevr.tracking.trackers.udp.TrackersUDPServer;
@@ -30,6 +31,9 @@ import io.eiren.util.collections.FastList;
 import io.eiren.util.logging.LogManager;
 import solarxr_protocol.datatypes.TrackerIdT;
 
+import java.net.InetAddress;
+import java.net.UnknownHostException;
+import java.nio.file.Paths;
 import java.util.List;
 import java.util.Queue;
 import java.util.Timer;
@@ -132,7 +136,7 @@ public class VRServer extends Thread {
 					hmdTracker,
 					"steamvr",
 					"SteamVR Driver Bridge",
-					"/tmp/SlimeVRDriver",
+					Paths.get(OperatingSystem.getTempDirectory(), "SlimeVRDriver").toString(),
 					shareTrackers
 				);
 			} catch (Exception ex) {
@@ -431,4 +435,12 @@ public class VRServer extends Thread {
 		return fpsTimer;
 	}
 
+	public void clearTrackersDriftCompensation() {
+		for (Tracker t : getAllTrackers()) {
+			Tracker tracker = t.get();
+			if (tracker instanceof IMUTracker imuTracker) {
+				imuTracker.clearDriftCompensation();
+			}
+		}
+	}
 }

@@ -43,6 +43,10 @@ public class RPCHandler extends ProtocolHandler<RpcMessageHeader>
 		registerPacketListener(RpcMessage.ResetRequest, this::onResetRequest);
 		registerPacketListener(RpcMessage.AssignTrackerRequest, this::onAssignTrackerRequest);
 
+		registerPacketListener(
+			RpcMessage.ClearDriftCompensationRequest,
+			this::onClearDriftCompensationRequest
+		);
 
 		registerPacketListener(RpcMessage.RecordBVHRequest, this::onRecordBVHRequest);
 
@@ -216,6 +220,18 @@ public class RPCHandler extends ProtocolHandler<RpcMessageHeader>
 		}
 
 		this.api.server.trackerUpdated(tracker);
+	}
+
+	public void onClearDriftCompensationRequest(
+		GenericConnection conn,
+		RpcMessageHeader messageHeader
+	) {
+		ClearDriftCompensationRequest req = (ClearDriftCompensationRequest) messageHeader
+			.message(new ClearDriftCompensationRequest());
+		if (req == null)
+			return;
+
+		this.api.server.clearTrackersDriftCompensation();
 	}
 
 	@Override

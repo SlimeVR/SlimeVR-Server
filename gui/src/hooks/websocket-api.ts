@@ -50,6 +50,10 @@ export function useProvideWebsocketApi(): WebSocketApi {
   const [isFirstConnection, setFirstConnection] = useState(true);
   const [isConnected, setConnected] = useState(false);
 
+  const urlParams = new URLSearchParams(window.location.search);
+  const targetIp = urlParams.get('ip') ?? 'localhost';
+  const targetPort = urlParams.get('port') ?? '21110';
+
   useInterval(() => {
     if (webSocketRef.current && !isConnected) {
       console.log('Attempting to reconnect');
@@ -158,7 +162,7 @@ export function useProvideWebsocketApi(): WebSocketApi {
   };
 
   const connect = () => {
-    webSocketRef.current = new WebSocket('ws://localhost:21110');
+    webSocketRef.current = new WebSocket(`ws://${targetIp}:${targetPort}`);
 
     // Connection opened
     webSocketRef.current.addEventListener('open', onConnected);

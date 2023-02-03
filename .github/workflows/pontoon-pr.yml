@@ -1,0 +1,24 @@
+name: Update translations in main
+on:
+  push:
+    branches:
+      - pontoon
+
+jobs:
+  pull_request:
+    if: ${{ github.repository == 'SlimeVR/SlimeVR-Server' }}
+    runs-on: ubuntu-latest
+    permissions:
+      pull-requests: write
+
+    steps:
+      - uses: actions/checkout@v3
+        with:
+          submodules: recursive
+      - uses: repo-sync/pull-request@v2
+        with:
+          destination_branch: "main"
+          pr_title: "New Pontoon translations"
+          pr_body: "Please don't squash me 🥺"
+          pr_label: "Area: Translation"
+          github_token: ${{ secrets.PONTOON_BOT_KEY }}

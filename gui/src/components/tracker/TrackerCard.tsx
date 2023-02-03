@@ -133,7 +133,7 @@ export function TrackerCard({
     <div
       onClick={onClick}
       className={classNames(
-        'rounded-lg',
+        'rounded-lg overflow-hidden',
         interactable && 'hover:bg-background-50 cursor-pointer',
         outlined && 'outline outline-2 outline-accent-background-40',
         bg
@@ -141,7 +141,9 @@ export function TrackerCard({
       style={
         shakeHighlight
           ? {
-              boxShadow: `0px 0px ${velocity * 8}px ${velocity * 8}px #183951`,
+              boxShadow: `0px 0px ${Math.floor(velocity * 8)}px ${Math.floor(
+                velocity * 8
+              )}px #BB8AE5`,
             }
           : {}
       }

@@ -102,13 +102,13 @@ public enum SkeletonConfigOffsets {
 	UPPER_ARM(
 		16,
 		"upperArmLength",
-		0.25f,
+		0.26f,
 		new BoneType[] { BoneType.LEFT_UPPER_ARM, BoneType.RIGHT_UPPER_ARM }
 	),
 	LOWER_ARM(
 		17,
 		"lowerArmLength",
-		0.25f,
+		0.26f,
 		new BoneType[] { BoneType.LEFT_LOWER_ARM, BoneType.RIGHT_LOWER_ARM }
 	),
 	CONTROLLER_Y(
