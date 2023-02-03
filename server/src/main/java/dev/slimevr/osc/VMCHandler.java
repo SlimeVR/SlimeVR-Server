@@ -141,6 +141,9 @@ public class VMCHandler implements OSCHandler {
 
 	void handleReceivedMessage(OSCMessageEvent event) {
 		// TODO add received bones as VRTrackers
+		// TODO support:
+		// /VMC/Ext/VRM
+		// /VMC/Ext/Rcv
 	}
 
 	@Override
@@ -155,45 +158,19 @@ public class VMCHandler implements OSCHandler {
 			oscArgs.add((System.currentTimeMillis() - startTime) / 1000f);
 			oscBundle.addPacket(new OSCMessage("/VMC/Ext/T", oscArgs.clone()));
 
-			// Indicate tracking is available
-			oscArgs.clear();
-			oscArgs.add(1);
-			oscBundle
-				.addPacket(
-					new OSCMessage(
-						"/VMC/Ext/OK",
-						oscArgs.clone()
-					)
-				);
-
 			if (humanPoseManager.isSkeletonPresent()) {
-				// Add the tracking root
-				if (anchorHip) {
-					// Hip anchor
-					vecBuf.zero();
-				} else {
-					// TODO : implement reading VMC/VSF avatars to get
-					// proportions?
-					// Or use user-inputted avatar height
-					// Or use scale in VMC protocol
-					float height = 1f;
-					float heightMultiplier = height / humanPoseManager.getUserHeightFromConfig();
-
-					// Head anchor
-					vecBuf
-						.set(
-							humanPoseManager
-								.getTailNodeOfBone(BoneType.HEAD)
-								.getParent().worldTransform.getTranslation()
+				// Indicate tracking is available
+				oscArgs.clear();
+				oscArgs.add(1);
+				oscBundle
+					.addPacket(
+						new OSCMessage(
+							"/VMC/Ext/OK",
+							oscArgs.clone()
 						)
-						.multLocal(heightMultiplier);
-					vecBuf
-						.addLocal(
-							humanPoseManager.getTailNodeOfBone(BoneType.HIP).worldTransform
-								.getTranslation()
-								.mult(heightMultiplier)
-						);
-				}
+					);
+
+				vecBuf.zero();
 				quatBuf.loadIdentity();
 				oscArgs.clear();
 				oscArgs.add("root");
@@ -208,46 +185,101 @@ public class VMCHandler implements OSCHandler {
 
 				// Add Unity humanoid bones transforms
 				for (UnityBone bone : UnityBone.values) {
-					// TODO arms from controllers check
-					BoneInfo boneInfo = humanPoseManager
-						.getBoneInfoForBoneType(
-							bone.boneType
-						);
-					if (boneInfo != null) {
-						vecBuf
-							.set(
-								boneInfo
-									.getLocalTranslationFromRoot(
+					if (true) { // TODO add check for arms from controllers
+						// Get BoneInfo for the bone
+						BoneInfo boneInfo = humanPoseManager
+							.getBoneInfoForBoneType(
+								bone.boneType
+							);
+
+						if (bone == UnityBone.HIPS) {
+							// Add the tracking root
+
+							// TODO : implement reading/loading VRM avatars
+							// to get proportions
+							//
+							// user needs to agree to the VRM's license (save
+							// per VRM's hash?)
+							float height = 1f;
+							float heightMultiplier = height
+								/ humanPoseManager.getUserHeightFromConfig();
+
+							// Get position
+							if (anchorHip) {
+								// Hip anchor
+								vecBuf.set(0f, height / 2f, 0f);
+							} else {
+								// Head anchor
+								vecBuf
+									.set(
 										humanPoseManager
-											.getBoneInfoForBoneType(
-												BoneType.HIP
-											),
-										true
+											.getTailNodeOfBone(BoneType.HEAD)
+											.getParent().worldTransform.getTranslation()
 									)
-							);
-						quatBuf
-							.set(
-								boneInfo
-									.getLocalRotationFromRoot(
+									.multLocal(heightMultiplier);
+								vecBuf
+									.addLocal(
 										humanPoseManager
-											.getBoneInfoForBoneType(
-												BoneType.HIP
-											),
-										true
-									)
-							);
-						oscArgs.clear();
-						oscArgs.add(bone.stringVal);
-						addTransformToArgs(vecBuf, quatBuf);
-						oscBundle
-							.addPacket(
-								new OSCMessage(
-									"/VMC/Ext/Bone/Pos",
-									oscArgs.clone()
-								)
-							);
+											.getTailNodeOfBone(BoneType.HIP).worldTransform
+												.getTranslation()
+												.mult(heightMultiplier)
+									);
+								vecBuf.setY(vecBuf.y - height);
+							}
+
+							// Get rotation
+							quatBuf.set(boneInfo.getGlobalRotation(true));
+						} else {
+							if (boneInfo != null) {
+								// Get position
+								vecBuf
+									.set(
+										boneInfo
+											.getLocalTranslationFromRoot(
+												humanPoseManager
+													.getBoneInfoForBoneType(
+														BoneType.HIP
+													),
+												true
+											)
+									);
+
+								// Get rotation
+								quatBuf
+									.set(
+										boneInfo
+											.getLocalRotationFromRoot(
+												humanPoseManager
+													.getBoneInfoForBoneType(
+														BoneType.HIP
+													),
+												true
+											)
+									);
+							}
+						}
+					} else {
+						vecBuf.zero();
+						quatBuf.loadIdentity();
 					}
+
+					oscArgs.clear();
+					oscArgs.add(bone.stringVal);
+					addTransformToArgs(vecBuf, quatBuf);
+					oscBundle
+						.addPacket(
+							new OSCMessage(
+								"/VMC/Ext/Bone/Pos",
+								oscArgs.clone()
+							)
+						);
 				}
+
+				// TODO support:
+				// /VMC/Ext/Hmd/Pos
+				// /VMC/Ext/Con/Pos
+				// /VMC/Ext/Tra/Pos
+
 			}
 
 			// Send OSC packets as bundle
