@@ -105,6 +105,7 @@ widget-overlay-is_visible_label = show owovelay in steawmvr
 widget-overlay-is_mirrored_label = dispway owovelay as miwwow
 
 ## Widget: Drift compensation
+
 widget-drift_compensation-clear = cwear dwift compensation
 
 ## Widget: Developer settings
@@ -324,7 +325,7 @@ settings-general-fk_settings-vive_emulation-label = enabwe vive emuwation
 
 settings-general-gesture_control = gestauw cantwol
 settings-general-gesture_control-subtitle = bap bwased wesets
-settings-general-gesture_control-description = allaws owr wesets wo be twiggered by wapping a twackaw. The twackaw hyighest wup on youwur twursuu is uwued for qwick weset, wa twackaw hyighest up on youwur weft weg is uwused for weset, and teh twackaw hyighest up on youwur wight weg is used for mmountwing weset. It showold we wentioned what waps muwst happen within 0.6 seconds wo be wegistered
+settings-general-gesture_control-description = allaws oww wesets wo be twiggewed by wapping a twackaw. The twackaw hyighest wup on youwuw twuwsuu is uwued fow qwick weset, wa twackaw hyighest up on youwuw weft weg is uwused fow weset, and teh twackaw hyighest up on youwuw wight weg is used fow mmountwing weset. It showold we wentioned what waps muwst happen within 0.6 seconds wo be wegistewed
 # This is a unit: 3 taps, 2 taps, 1 tap
 # $amount (Number) - Amount of taps (touches to the tracker's case)
 settings-general-gesture_control-taps =
@@ -334,10 +335,10 @@ settings-general-gesture_control-taps =
     }
 settings-general-gesture_control-quickResetEnabled = enable wap to quwuick weset
 settings-general-gesture_control-quickResetDelay = quwuick weset deway
-settings-general-gesture_control-quickResetTaps = baps for quwuick weset
+settings-general-gesture_control-quickResetTaps = baps fow quwuick weset
 settings-general-gesture_control-resetEnabled = enable wap to weset
 settings-general-gesture_control-resetDelay = weset deway
-settings-general-gesture_control-resetTaps = baps for weset
+settings-general-gesture_control-resetTaps = baps fow weset
 settings-general-gesture_control-mountingResetEnabled = enable wap to weset mountwing
 settings-general-gesture_control-mountingResetDelay = mountwing weset deway
 settings-general-gesture_control-mountingResetTaps = baps for mountwing weset
@@ -378,7 +379,7 @@ settings-serial-auto_dropdown_item = awto
 
 ## OSC router settings
 
-settings-osc-router = OSC wouwter
+settings-osc-router = OSC wouwtew
 # This cares about multilines
 settings-osc-router-description =
     fowwawd osc messages fwom anothew pwogwam
@@ -411,7 +412,7 @@ settings-osc-vrchat-description =
 settings-osc-vrchat-enable = enaybwe
 settings-osc-vrchat-enable-description = toggle teh sending awnd wweceiving of data
 settings-osc-vrchat-enable-label = enaybwe
-settings-osc-vrchat-network = network pawts
+settings-osc-vrchat-network = newtwowk pawts
 settings-osc-vrchat-network-description = set the pawts fow wistening awnd sending data to vwchawt
 settings-osc-vrchat-network-port_in =
     .label = pawt in
@@ -456,7 +457,7 @@ onboarding-wifi_creds-password =
 ## Mounting setup
 
 onboarding-reset_tutorial-back = gaww bawwk to meownting cawwibwation
-onboarding-reset_tutorial = weset tutowial
+onboarding-reset_tutorial = weset wtutowial
 onboarding-reset_tutorial-description = dis featuwe isn't done, just pwess continyue
 
 ## Setup start
@@ -465,7 +466,7 @@ onboarding-home = wewcome to swimevr
 # This cares about multilines and it's centered!!
 onboarding-home-description =
     bwinging fuww-bawdy twacking
-    to everyone
+    to evewyone
 onboarding-home-start = wets get set up!
 
 ## Enter VR part of setup
@@ -473,7 +474,7 @@ onboarding-home-start = wets get set up!
 onboarding-enter_vr-back = gaww bawwk to twacker assignyment
 onboarding-enter_vr-title = time to entew vr!
 onboarding-enter_vr-description = put on awe yoaww twackaws and then entew vr!
-onboarding-enter_vr-ready = iym ready
+onboarding-enter_vr-ready = iym weady
 
 ## Setup done
 
@@ -488,11 +489,11 @@ onboarding-connect_tracker-title = connect twackaws
 onboarding-connect_tracker-description-p0 = now onto teh fun pawwt, connecting awe teh twackaws!
 onboarding-connect_tracker-description-p1 = simply connect awe that awe nawt cownyected yet, through a usb powwt.
 onboarding-connect_tracker-issue-serial = i'm having twouble connecting!
-onboarding-connect_tracker-usb = usb twacker
+onboarding-connect_tracker-usb = usb twackew
 onboarding-connect_tracker-connection_status-connecting = sending wi-fi cwedentials
 onboarding-connect_tracker-connection_status-connected = cownyected to wi-fi
 onboarding-connect_tracker-connection_status-error = unabwe to cownyect to wi-fi
-onboarding-connect_tracker-connection_status-start_connecting = wooking for twackaws
+onboarding-connect_tracker-connection_status-start_connecting = wooking fow twackaws
 onboarding-connect_tracker-connection_status-handshake = cownyected to teh sewvew
 # $amount (Number) - Amount of trackers connected (this is a number, but you can use CLDR plural rules for your language)
 # More info on https://www.unicode.org/cldr/cldr-aux/charts/22/supplemental/language_plural_rules.html
@@ -541,15 +542,15 @@ onboarding-automatic_mounting-next = next step
 onboarding-automatic_mounting-prev_step = pwevious step
 onboarding-automatic_mounting-done-title = mounting wowations cawibwated.
 onboarding-automatic_mounting-done-description = yowo meownting cawibwation is compwete!
-onboarding-automatic_mounting-done-restart = weturn to start
+onboarding-automatic_mounting-done-restart = wetuwn to stawt
 onboarding-automatic_mounting-mounting_reset-title = meownting weset
 onboarding-automatic_mounting-mounting_reset-step-0 = 1. squawt in a "skiing" pose with yowo wegs bent, yowo upper body tilted fowwawds, and yowo awems bent.
 onboarding-automatic_mounting-mounting_reset-step-1 = 2. pwess the "weset meownting" button and wait fow 3 seconds befowe the twackaws' meownting wowations will weset.
-onboarding-automatic_mounting-preparation-title = pwepairation
+onboarding-automatic_mounting-preparation-title = pwepaiwation
 onboarding-automatic_mounting-preparation-step-0 = 1. stand upwight with yowo awems to yowo sides.
 onboarding-automatic_mounting-preparation-step-1 = 2. pwess the "weset" button and wait fow 3 seconds befowe the twackaws will weset.
 onboarding-automatic_mounting-put_trackers_on-title = put on yowo twackaws
-onboarding-automatic_mounting-put_trackers_on-description = to cawibwate meownting wowations, we'we gonna use the twackaws yowo just assigned. put on awe yowo twackaws, yowo can see which awe which in the figure to the wowight.
+onboarding-automatic_mounting-put_trackers_on-description = to cawibwate meownting wowations, we'we gonna use the twackaws yowo just assigned. put on awe yowo twackaws, yowo can see which awe which in the figuwe to the wowight.
 onboarding-automatic_mounting-put_trackers_on-next = i haff awe my twackaws on
 
 ## Tracker manual proportions setup
