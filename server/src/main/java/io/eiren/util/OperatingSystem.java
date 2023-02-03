@@ -11,7 +11,7 @@ public enum OperatingSystem {
 	OSX("osx", new String[]{"mac"}),
 	UNKNOWN("unknown", new String[0]);
 	//@fomatter: on
-	
+
 	private final String[] aliases;
 	public final String name;
 	private static OperatingSystem currentPlatform;
@@ -43,5 +43,13 @@ public enum OperatingSystem {
 			}
 		}
 		return UNKNOWN;
+	}
+
+	public static String getTempDirectory() {
+		if(currentPlatform == LINUX) {
+			String tmp = System.getenv("XDG_RUNTIME_DIR");
+			if(tmp != null) return tmp;
+		}
+		return System.getProperty("java.io.tmpdir");
 	}
 }

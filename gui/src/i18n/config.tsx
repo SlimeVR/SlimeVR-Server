@@ -1,7 +1,15 @@
 import { match } from '@formatjs/intl-localematcher';
 import { FluentBundle, FluentResource } from '@fluent/bundle';
 import { LocalizationProvider, ReactLocalization } from '@fluent/react';
-import { Children, ReactNode, useEffect, useState, createContext } from 'react';
+import {
+  Children,
+  ReactNode,
+  useEffect,
+  useState,
+  createContext,
+  useContext,
+} from 'react';
+import { ConfigContext, ConfigContextC } from '../hooks/config';
 
 export const defaultNS = 'translation';
 export const DEFAULT_LOCALE = 'en';
@@ -40,6 +48,10 @@ export const langs = [
     key: 'ko',
   },
   {
+    name: '🇳🇴  Norsk bokmål',
+    key: 'nb-NO',
+  },
+  {
     name: '🇳🇱 Nederlands',
     key: 'nl',
   },
@@ -58,6 +70,10 @@ export const langs = [
   {
     name: '🇨🇳 简体中文',
     key: 'zh-Hans',
+  },
+  {
+    name: '🧋 繁體中文',
+    key: 'zh-Hant',
   },
   {
     name: '🥺 Engwish~ OwO',
@@ -148,4 +164,14 @@ export function AppLocalizationProvider(props: AppLocalizationProviderProps) {
       </LocalizationProvider>
     </>
   );
+}
+
+export function useLocaleConfig() {
+  const context = useContext<i18n>(LangContext);
+  if (!context) {
+    throw new Error(
+      'useLocaleConfig must be within a AppLocalization Provider'
+    );
+  }
+  return context;
 }

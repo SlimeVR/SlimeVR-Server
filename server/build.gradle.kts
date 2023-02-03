@@ -68,7 +68,7 @@ dependencies {
 	implementation("net.java.dev.jna:jna-platform:5.+")
 	implementation("com.illposed.osc:javaosc-core:0.8")
 	implementation("com.fazecast:jSerialComm:2.+")
-	implementation("com.google.protobuf:protobuf-java:3.+")
+	implementation("com.google.protobuf:protobuf-java:3.21.12")
 	implementation("org.java-websocket:Java-WebSocket:1.+")
 	implementation("com.melloware:jintellitype:1.+")
 

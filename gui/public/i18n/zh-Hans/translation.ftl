@@ -1,19 +1,25 @@
 ### SlimeVR complete GUI translations
+
+
 # Please developers (not translators) don't reuse a key inside another key
 # or concat text with a translation string in the code, use the appropriate
 # features like variables and selectors in each appropriate case!
 # And also comment the string if it's something not easy to translate, so you help
 # translators on what it means
 
+
 ## Websocket (server) status
+
 websocket-connecting = 正在连接到服务器
 websocket-connection_lost = 与服务器的连接丢失，正在尝试重新连接...
 
 ## Tips
+
 tips-find_tracker = 不确定哪个追踪器是哪个？在现实中摇动一个追踪器，对应的那个将在屏幕上高亮显示。
 tips-do_not_move_heels = 确保你的脚跟在录制的时候不会发生移动!
 
 ## Body parts
+
 body_part-NONE = 未分配
 body_part-HEAD = 头部
 body_part-NECK = 颈部
@@ -38,6 +44,7 @@ body_part-LEFT_FOOT = 左脚
 body_part-LEFT_CONTROLLER = 左控制器
 
 ## Proportions
+
 skeleton_bone-NONE = 无
 skeleton_bone-HEAD = 头部偏移
 skeleton_bone-NECK = 颈部长度
@@ -61,12 +68,14 @@ skeleton_bone-CONTROLLER_Z = 控制器距离 Z
 skeleton_bone-ELBOW_OFFSET = 肘部偏移
 
 ## Tracker reset buttons
+
 reset-reset_all = 重置身体比例
 reset-full = 重置
 reset-mounting = 重置佩戴
 reset-quick = 快速重置
 
 ## Serial detection stuff
+
 serial_detection-new_device-p0 = 检测到了新的串口设备!
 serial_detection-new_device-p1 = 输入你的 Wi-Fi 凭据!
 serial_detection-new_device-p2 = 请选择你想对它做什么
@@ -76,6 +85,7 @@ serial_detection-submit = 提交!
 serial_detection-close = 关闭
 
 ## Navigation bar
+
 navbar-home = 主页
 navbar-body_proportions = 身体比例
 navbar-trackers_assign = 追踪器分配
@@ -84,30 +94,35 @@ navbar-onboarding = 向导
 navbar-settings = 设置
 
 ## Bounding volume hierarchy recording
+
 bvh-start_recording = 录制 BVH 文件
 bvh-recording = 录制中...
 
 ## Widget: Overlay settings
+
 widget-overlay = 覆盖层
 widget-overlay-is_visible_label = 在 SteamVR 中显示覆盖层
 widget-overlay-is_mirrored_label = 镜像显示覆盖层
 
 ## Widget: Developer settings
+
 widget-developer_mode = 开发者选项
 widget-developer_mode-high_contrast = 高对比度
 widget-developer_mode-precise_rotation = 显示精确旋转
 widget-developer_mode-fast_data_feed = 快速数据更新
-widget-developer_mode-filter_slimes_and_hmd = 对追踪器和HMD应用滤波
+widget-developer_mode-filter_slimes_and_hmd = 只显示 Slime 追踪器与 HMD
 widget-developer_mode-sort_by_name = 根据名称排序
 widget-developer_mode-raw_slime_rotation = 显示原始旋转
 widget-developer_mode-more_info = 显示更多信息
 
 ## Widget: IMU Visualizer
+
 widget-imu_visualizer = 旋转
 widget-imu_visualizer-rotation_raw = 原始旋转
 widget-imu_visualizer-rotation_preview = 预览
 
 ## Tracker status
+
 tracker-status-none = 无状态
 tracker-status-busy = 繁忙
 tracker-status-error = 错误
@@ -116,6 +131,7 @@ tracker-status-occluded = 被遮挡
 tracker-status-ok = 已连接
 
 ## Tracker status columns
+
 tracker-table-column-name = 名字
 tracker-table-column-type = 类型
 tracker-table-column-battery = 电量
@@ -128,18 +144,21 @@ tracker-table-column-position = 位置 X/Y/Z
 tracker-table-column-url = 地址
 
 ## Tracker rotation
+
 tracker-rotation-front = 前
 tracker-rotation-left = 左
 tracker-rotation-right = 右
 tracker-rotation-back = 后
 
 ## Tracker information
+
 tracker-infos-manufacturer = 制造商
 tracker-infos-display_name = 显示名称
 tracker-infos-custom_name = 自定义名称
 tracker-infos-url = 追踪器地址
 
 ## Tracker settings
+
 tracker-settings-back = 返回追踪器列表
 tracker-settings-title = 追踪器设置
 tracker-settings-assignment_section = 分配追踪器
@@ -158,10 +177,12 @@ tracker-settings-name_section-description = 给它起一个可爱的名字吧=w=
 tracker-settings-name_section-placeholder = CC 封印着漆黑之力的漆黑左臂
 
 ## Tracker part card info
+
 tracker-part_card-no_name = 未命名
 tracker-part_card-unassigned = 未分配
 
 ## Body assignment menu
+
 body_assignment_menu = 你想将此追踪器戴在哪里？
 body_assignment_menu-description = 选择要将此追踪器分配到的位置，或者你也可以选择一次管理所有追踪器，而不是逐个管理。
 body_assignment_menu-show_advanced_locations = 显示高级分配位置
@@ -169,6 +190,7 @@ body_assignment_menu-manage_trackers = 管理所有追踪器
 body_assignment_menu-unassign_tracker = 取消分配追踪器
 
 ## Tracker assignment menu
+
 # A -translation_key (with a dash in the front) means that it's a label.
 # It can only be used in the translation file, it's nice for reusing names and that kind of stuff.
 #
@@ -197,16 +219,24 @@ tracker_selection_menu-LEFT_UPPER_LEG = { -tracker_selection-part }左大腿？
 tracker_selection_menu-LEFT_LOWER_LEG = { -tracker_selection-part }左小腿？
 tracker_selection_menu-LEFT_FOOT = { -tracker_selection-part }左脚？
 tracker_selection_menu-LEFT_CONTROLLER = { -tracker_selection-part }左控制器？
-
 tracker_selection_menu-unassigned = 未分配的追踪器
 tracker_selection_menu-assigned = 已分配的追踪器
 tracker_selection_menu-dont_assign = 不分配
+# This line cares about multilines.
+# <b>text</b> means that the text should be bold.
+tracker_selection_menu-neck_warning =
+    <b>警告：</b> 颈部追踪器在调整得过紧时有致命风险
+    绑带可能会阻断你头部的血液循环！
+tracker_selection_menu-neck_warning-done = 我已知晓风险
+tracker_selection_menu-neck_warning-cancel = 取消
 
 ## Mounting menu
+
 mounting_selection_menu = 你想将此追踪器戴在哪里？
 mounting_selection_menu-close = 关闭
 
 ## Sidebar settings
+
 settings-sidebar-title = 设置
 settings-sidebar-general = 通用设置
 settings-sidebar-tracker_mechanics = 追踪器设置
@@ -218,6 +248,7 @@ settings-sidebar-utils = 工具
 settings-sidebar-serial = 串口控制台
 
 ## SteamVR settings
+
 settings-general-steamvr = SteamVR
 settings-general-steamvr-subtitle = SteamVR 追踪器
 # Not all translation keys support multiline, only the ones that specify it will actually
@@ -235,6 +266,7 @@ settings-general-steamvr-trackers-elbows = 肘部
 settings-general-steamvr-trackers-hands = 手部
 
 ## Tracker mechanics
+
 settings-general-tracker_mechanics = 追踪器设置
 settings-general-tracker_mechanics-filtering = 滤波
 # This also cares about multilines
@@ -259,6 +291,7 @@ settings-general-tracker_mechanics-drift_compensation-amount-label = 补偿量
 settings-general-tracker_mechanics-drift_compensation-max_resets-label = 使用几次的重置结果？
 
 ## FK/Tracking settings
+
 settings-general-fk_settings = FK 设置
 settings-general-fk_settings-leg_tweak = 腿部调整
 settings-general-fk_settings-leg_tweak-description = 本设置可以减少甚至消除脚部穿入地板的情况，但是当你跪在地上的时候可能产生一些问题. 脚滑矫正可以矫正一些脚滑溜冰的问题, 但是可能会降低某些动作的准确性。
@@ -285,14 +318,16 @@ settings-general-fk_settings-vive_emulation-description = 模拟Vive追踪器的
 settings-general-fk_settings-vive_emulation-label = 开启 Vive 模拟
 
 ## Gesture control settings (tracker tapping)
+
 settings-general-gesture_control = 手势控制
 settings-general-gesture_control-subtitle = 敲击重置
 settings-general-gesture_control-description = 启用或禁用敲击重置。启用时，敲击身上佩戴的最高的追踪器上的任何位置将激活快速重置。延迟是指记录到敲击和重置之间的时间。
 # This is a unit: 3 taps, 2 taps, 1 tap
 # $amount (Number) - Amount of taps (touches to the tracker's case)
-settings-general-gesture_control-taps = { $amount ->
-    *[other] { $amount }次敲击
-}
+settings-general-gesture_control-taps =
+    { $amount ->
+       *[other] { $amount }次敲击
+    }
 settings-general-gesture_control-quickResetEnabled = 开启敲击快速重置
 settings-general-gesture_control-quickResetDelay = 敲击快速重置延迟
 settings-general-gesture_control-quickResetTaps = 快速重置敲击次数
@@ -304,6 +339,7 @@ settings-general-gesture_control-mountingResetDelay = 敲击重置佩戴延迟
 settings-general-gesture_control-mountingResetTaps = 重置佩戴敲击次数
 
 ## Interface settings
+
 settings-general-interface = 交互界面
 settings-general-interface-dev_mode = 开发者模式
 settings-general-interface-dev_mode-description = 如果你需要深入的数据或更深入地与连接的追踪器进行交互，打开此模式将会非常有用。
@@ -316,6 +352,7 @@ settings-general-interface-lang-description = 更改要使用的默认语言
 settings-general-interface-lang-placeholder = 选择要使用的语言
 
 ## Serial settings
+
 settings-serial = 串口控制台
 # This cares about multilines
 settings-serial-description =
@@ -324,11 +361,19 @@ settings-serial-description =
 settings-serial-connection_lost = 串口连接丢失，正在重新连接..
 settings-serial-reboot = 重新启动
 settings-serial-factory_reset = 恢复出厂设置
+# This cares about multilines
+# <b>text</b> means that the text should be bold
+settings-serial-factory_reset-warning =
+    <b>警告：</b> 这会将跟踪器重置为出厂设置。
+    这意味着Wi-Fi凭据和校准数据 <b>都将丢失！</b>
+settings-serial-factory_reset-warning-ok = 我已知晓
+settings-serial-factory_reset-warning-cancel = 取消
 settings-serial-get_infos = 获取信息
 settings-serial-serial_select = 选择串行端口
 settings-serial-auto_dropdown_item = 自动
 
 ## OSC router settings
+
 settings-osc-router = OSC 路由
 # This cares about multilines
 settings-osc-router-description =
@@ -353,6 +398,7 @@ settings-osc-router-network-address-description = 设置用来发送数据的地
 settings-osc-router-network-address-placeholder = IPV4 地址
 
 ## OSC VRChat settings
+
 settings-osc-vrchat = VRChat OSC Trackers
 # This cares about multilines
 settings-osc-vrchat-description =
@@ -381,11 +427,13 @@ settings-osc-vrchat-network-trackers-feet = 脚部
 settings-osc-vrchat-network-trackers-elbows = 肘部
 
 ## Setup/onboarding menu
+
 onboarding-skip = 跳过设置
 onboarding-continue = 继续
 onboarding-wip = 仍在开发中
 
 ## Wi-Fi setup
+
 onboarding-wifi_creds-back = 返回简介
 onboarding-wifi_creds = 输入 Wi-Fi 凭据
 # This cares about multilines
@@ -402,11 +450,13 @@ onboarding-wifi_creds-password =
     .placeholder = 输入密码
 
 ## Mounting setup
+
 onboarding-reset_tutorial-back = 返回到佩戴校准
 onboarding-reset_tutorial = 重置教程
 onboarding-reset_tutorial-description = 此功能尚未开发完成，请继续就好
 
 ## Setup start
+
 onboarding-home = 欢迎来到 SlimeVR
 # This cares about multilines and it's centered!!
 onboarding-home-description =
@@ -415,17 +465,20 @@ onboarding-home-description =
 onboarding-home-start = 我准备好了！
 
 ## Enter VR part of setup
+
 onboarding-enter_vr-back = 返回到追踪器分配
 onboarding-enter_vr-title = VR 时间到！
 onboarding-enter_vr-description = 穿戴好所有的追踪器，开始快乐 VR 吧！
 onboarding-enter_vr-ready = 我准备好了
 
 ## Setup done
+
 onboarding-done-title = 都搞定啦！
 onboarding-done-description = 享受你的全身追踪体验吧
 onboarding-done-close = 关闭向导
 
 ## Tracker connection setup
+
 onboarding-connect_tracker-back = 返回到 Wi-Fi 凭据设置
 onboarding-connect_tracker-title = 连接追踪器
 onboarding-connect_tracker-description-p0 = 来到了我第二喜欢的环节，连接所有的追踪器！
@@ -442,13 +495,15 @@ onboarding-connect_tracker-connection_status-handshake = 已连接到服务器
 # English in this case only has 2 plural rules, which are "one" and "other",
 # we use 0 in an explicit way because there is no plural rule in english for 0, so we directly say
 # if $amount is 0 then we say "No trackers connected"
-onboarding-connect_tracker-connected_trackers = { $amount ->
-    [0] 没有已连接的追踪器
-    *[other] { $amount } 个追踪器已连接
-}
+onboarding-connect_tracker-connected_trackers =
+    { $amount ->
+        [0] 没有已连接的追踪器
+       *[other] { $amount } 个追踪器已连接
+    }
 onboarding-connect_tracker-next = 所有的追踪器都连接好了
 
 ## Tracker assignment setup
+
 onboarding-assign_trackers-back = 返回 Wi-Fi 凭据设置
 onboarding-assign_trackers-title = 分配追踪器
 onboarding-assign_trackers-description = 让我们选择哪个追踪器在哪里。单击要放置追踪器的部位
@@ -460,13 +515,15 @@ onboarding-assign_trackers-advanced = 显示高级分配部位
 onboarding-assign_trackers-next = 所有的追踪器都分配好了
 
 ## Tracker manual mounting setup
+
 onboarding-manual_mounting-back = 返回到进入 VR
 onboarding-manual_mounting = 手动佩戴
-onboarding-manual_mounting-description = 单击每个追踪器并选择它们的配电方式
+onboarding-manual_mounting-description = 单击每个追踪器并选择它们的佩戴方式
 onboarding-manual_mounting-auto_mounting = 自动佩戴
 onboarding-manual_mounting-next = 下一步
 
 ## Tracker automatic mounting setup
+
 onboarding-automatic_mounting-back = 返回到进入 VR
 onboarding-automatic_mounting-title = 佩戴校准
 onboarding-automatic_mounting-description = 为了让 SlimeVR 追踪器正常工作，我们需要为你的追踪器分配一个佩戴方向，以使其与你的物理追踪器佩戴方式对齐。
@@ -487,12 +544,14 @@ onboarding-automatic_mounting-put_trackers_on-description = 为了校准佩戴�
 onboarding-automatic_mounting-put_trackers_on-next = 所有的追踪器都已开启！
 
 ## Tracker manual proportions setup
+
 onboarding-manual_proportions-back = 返回重置教程
 onboarding-manual_proportions-title = 手动调整身体比例
 onboarding-manual_proportions-precision = 精确调整
 onboarding-manual_proportions-auto = 自动校准
 
 ## Tracker automatic proportions setup
+
 onboarding-automatic_proportions-back = 返回重置教程
 onboarding-automatic_proportions-title = 测量你的身体比例
 onboarding-automatic_proportions-description = 为了让 SlimeVR 追踪器正常使用，我们需要知道你的骨头的长度。这个简短的校准将为你测量它们。
@@ -517,7 +576,7 @@ onboarding-automatic_proportions-recording-steps-3 = 向右扭转上身，然后
 onboarding-automatic_proportions-recording-steps-4 = 持续摆动身体，直到计时器结束。
 onboarding-automatic_proportions-recording-processing = 正在处理结果
 # $time (Number) - Seconds left for the automatic calibration recording to finish (max 15)
-onboarding-automatic_proportions-recording-timer =  剩余{ $time }秒
+onboarding-automatic_proportions-recording-timer = 剩余{ $time }秒
 onboarding-automatic_proportions-verify_results-title = 校验结果
 onboarding-automatic_proportions-verify_results-description = 检查下面的结果，它们看起来是正确的吗？
 onboarding-automatic_proportions-verify_results-results = 录制结果
@@ -528,4 +587,5 @@ onboarding-automatic_proportions-done-title = 身体数据已测量并保存。
 onboarding-automatic_proportions-done-description = 你的身体比例校准已完成！
 
 ## Home
+
 home-no_trackers = 未检测到或未分配追踪器

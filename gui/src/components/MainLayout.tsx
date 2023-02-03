@@ -1,6 +1,13 @@
 import classNames from 'classnames';
-import { ReactNode } from 'react';
-import { ResetType } from 'solarxr-protocol';
+import { ReactNode, useEffect, useState } from 'react';
+import {
+  DriftCompensationSettings,
+  DriftCompensationSettingsT,
+  ResetType,
+  RpcMessage,
+  SettingsRequestT,
+  SettingsResponseT,
+} from 'solarxr-protocol';
 import { useConfig } from '../hooks/config';
 import { useLayout } from '../hooks/layout';
 import { BVHButton } from './BVHButton';
@@ -9,6 +16,8 @@ import { Navbar } from './Navbar';
 import { TopBar } from './TopBar';
 import { DeveloperModeWidget } from './widgets/DeveloperModeWidget';
 import { OverlayWidget } from './widgets/OverlayWidget';
+import { ClearDriftCompensationButton } from './ClearDriftCompensationButton';
+import { useWebsocketAPI } from '../hooks/websocket-api';
 
 export function MainLayoutRoute({
   children,
@@ -22,6 +31,18 @@ export function MainLayoutRoute({
   const { layoutHeight, ref } = useLayout<HTMLDivElement>();
   const { layoutWidth, ref: refw } = useLayout<HTMLDivElement>();
   const { config } = useConfig();
+  const { useRPCPacket, sendRPCPacket } = useWebsocketAPI();
+  const [driftCompensationEnabled, setDriftCompensationEnabled] =
+    useState(false);
+
+  useEffect(() => {
+    sendRPCPacket(RpcMessage.SettingsRequest, new SettingsRequestT());
+  }, []);
+
+  useRPCPacket(RpcMessage.SettingsResponse, (settings: SettingsResponseT) => {
+    if (settings.driftCompensation != null)
+      setDriftCompensationEnabled(settings.driftCompensation.enabled);
+  });
 
   return (
     <>
@@ -59,6 +80,9 @@ export function MainLayoutRoute({
                   ></ResetButton>
                   <BVHButton></BVHButton>
                 </div>
+                {driftCompensationEnabled && (
+                  <ClearDriftCompensationButton></ClearDriftCompensationButton>
+                )}
                 <div className="w-full">
                   <OverlayWidget></OverlayWidget>
                 </div>

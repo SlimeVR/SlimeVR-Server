@@ -1,19 +1,25 @@
 ### SlimeVR complete GUI translations
+
+
 # Please developers (not translators) don't reuse a key inside another key
 # or concat text with a translation string in the code, use the appropriate
 # features like variables and selectors in each appropriate case!
 # And also comment the string if it's something not easy to translate, so you help
 # translators on what it means
 
+
 ## Websocket (server) status
+
 websocket-connecting = Đang kết nối với máy chủ
 websocket-connection_lost = Kết nối với máy chủ đã mất. Đang kết nối lại...
 
 ## Tips
+
 tips-find_tracker = Không rõ tracker nào đang được chọn? Di chuyển nó và trong menu sẽ sáng lên tracker đó
 tips-do_not_move_heels = Không di chuyển gót chân trong khi đo
 
 ## Body parts
+
 body_part-NONE = Chưa được gán
 body_part-HEAD = Đầu
 body_part-NECK = Cổ
@@ -38,6 +44,7 @@ body_part-LEFT_FOOT = Bàn chân trái
 body_part-LEFT_CONTROLLER = Tay cầm bên trái
 
 ## Proportions
+
 skeleton_bone-NONE = Chưa được gán
 skeleton_bone-HEAD = Sai số đầu
 skeleton_bone-NECK = Chiều dài cổ
@@ -61,12 +68,14 @@ skeleton_bone-CONTROLLER_Z = Khoảng cách tay cầm theo trục Z
 skeleton_bone-ELBOW_OFFSET = Sai số khuỷu tay
 
 ## Tracker reset buttons
+
 reset-reset_all = Đặt lại tất cả bộ phận
 reset-full = Đặt lại
 reset-mounting = Đặt lại hướng gắn tracker
 reset-quick = Đặt lại nhanh
 
 ## Serial detection stuff
+
 serial_detection-new_device-p0 = Tìm thấy thiết bị mới!
 serial_detection-new_device-p1 = Nhập thông tin Wi-Fi
 serial_detection-new_device-p2 = Chọn hành động cần thực hiện
@@ -76,6 +85,7 @@ serial_detection-submit = Gửi
 serial_detection-close = Đóng
 
 ## Navigation bar
+
 navbar-home = Trang chủ
 navbar-body_proportions = Tỉ lệ cơ thể
 navbar-trackers_assign = Phân bố tracker
@@ -84,15 +94,18 @@ navbar-onboarding = Trình thiết lập
 navbar-settings = Cài đặt
 
 ## Bounding volume hierarchy recording
+
 bvh-start_recording = Ghi BVH
 bvh-recording = Đang ghi...
 
 ## Widget: Overlay settings
+
 widget-overlay = Overlay
 widget-overlay-is_visible_label = Xem overlay trên SteamVR
 widget-overlay-is_mirrored_label = Xem overlay trong gương
 
 ## Widget: Developer settings
+
 widget-developer_mode = Chế độ nhà phát triển
 widget-developer_mode-high_contrast = Chế độ tương phản cao
 widget-developer_mode-precise_rotation = Hiển thị góc quay chính xác
@@ -103,11 +116,13 @@ widget-developer_mode-raw_slime_rotation = Sử dụng giá trị góc quay th�
 widget-developer_mode-more_info = Thêm thông tin
 
 ## Widget: IMU Visualizer
+
 widget-imu_visualizer = Góc quay
 widget-imu_visualizer-rotation_raw = Gốc
 widget-imu_visualizer-rotation_preview = Qua xử lí
 
 ## Tracker status
+
 tracker-status-none = Không có trạng thái
 tracker-status-busy = Bận
 tracker-status-error = Lỗi
@@ -116,6 +131,7 @@ tracker-status-occluded = Nghẽn
 tracker-status-ok = Đã kết nối
 
 ## Tracker status columns
+
 tracker-table-column-name = Tên
 tracker-table-column-type = Loại
 tracker-table-column-battery = Pin
@@ -128,18 +144,21 @@ tracker-table-column-position = Tọa độ X/Y/Z
 tracker-table-column-url = Đường dẫn
 
 ## Tracker rotation
+
 tracker-rotation-front = Trước
 tracker-rotation-left = Trái
 tracker-rotation-right = Phải
 tracker-rotation-back = Sau
 
 ## Tracker information
+
 tracker-infos-manufacturer = Nhà sản xuất
 tracker-infos-display_name = Tên hiển thị
 tracker-infos-custom_name = Tên gọi
 tracker-infos-url = Đường dẫn
 
 ## Tracker settings
+
 tracker-settings-back = Quay lại danh sách tracker
 tracker-settings-title = Cài đặt
 tracker-settings-assignment_section = Vị trí
@@ -158,10 +177,12 @@ tracker-settings-name_section-description = Đặt cho nó một cái tên đẹ
 tracker-settings-name_section-placeholder = Chân trái của JINODK
 
 ## Tracker part card info
+
 tracker-part_card-no_name = Không tên
 tracker-part_card-unassigned = Chưa gán vị trí
 
 ## Body assignment menu
+
 body_assignment_menu = Bạn muốn gán tracker này cho bộ phận nào?
 body_assignment_menu-description = Chọn vị trí bạn muốn gán tracker, ngoài ra bạn cũng có thể quản lí vị trí tất cả các tracker cùng một lúc
 body_assignment_menu-show_advanced_locations = Xem thêm vị trí đặt
@@ -169,6 +190,7 @@ body_assignment_menu-manage_trackers = Quản lí tất cả tracker
 body_assignment_menu-unassign_tracker = Bỏ gán tracker
 
 ## Tracker assignment menu
+
 # A -translation_key (with a dash in the front) means that it's a label.
 # It can only be used in the translation file, it's nice for reusing names and that kind of stuff.
 #
@@ -197,16 +219,17 @@ tracker_selection_menu-LEFT_UPPER_LEG = { -tracker_selection-part } bắp chân 
 tracker_selection_menu-LEFT_LOWER_LEG = { -tracker_selection-part } cẳng chân trái?
 tracker_selection_menu-LEFT_FOOT = { -tracker_selection-part } bàn chân trái?
 tracker_selection_menu-LEFT_CONTROLLER = { -tracker_selection-part } tay cầm bên trái?
-
-tracker_selection_menu-unassigned = Chưa gán vị trí
+tracker_selection_menu-unassigned = Chưa gắn vị trí
 tracker_selection_menu-assigned = Đã gán vị trí
-tracker_selection_menu-dont_assign = Không gán
+tracker_selection_menu-dont_assign = Không gắn
 
 ## Mounting menu
-mounting_selection_menu = Bạn muốn gán tracker này cho bộ phận nào?
+
+mounting_selection_menu = Bạn muốn gắn tracker này cho bộ phận nào?
 mounting_selection_menu-close = Đóng
 
 ## Sidebar settings
+
 settings-sidebar-title = Cài đặt
 settings-sidebar-general = Cài đặt chung
 settings-sidebar-tracker_mechanics = Cơ chế tracker
@@ -218,6 +241,7 @@ settings-sidebar-utils = Công cụ
 settings-sidebar-serial = Cổng Serial
 
 ## SteamVR settings
+
 settings-general-steamvr = SteamVR
 settings-general-steamvr-subtitle = Tracker SteamVR
 # Not all translation keys support multiline, only the ones that specify it will actually
@@ -235,6 +259,7 @@ settings-general-steamvr-trackers-elbows = Khuỷu tay
 settings-general-steamvr-trackers-hands = Tay
 
 ## Tracker mechanics
+
 settings-general-tracker_mechanics = Cơ chế tracker
 settings-general-tracker_mechanics-filtering = Lọc nhiễu
 # This also cares about multilines
@@ -259,6 +284,7 @@ settings-general-tracker_mechanics-drift_compensation-amount-label = Mức độ
 settings-general-tracker_mechanics-drift_compensation-max_resets-label = Số lần đặt lại được áp dụng bù trừ
 
 ## FK/Tracking settings
+
 settings-general-fk_settings = Cài đặt nâng cao
 settings-general-fk_settings-leg_tweak = Chân
 settings-general-fk_settings-leg_tweak-description = "Ngăn xuyên sàn" có thể giảm thiểu khả năng chân xuống thấp hơn sàn sau khi đặt lại vị trí tracker, có thể gây vấn đề nếu đang đứng bằng đầu gối. "Sửa trượt" giúp giảm thiểu tình trạng chân có chuyển động nhỏ so với sàn khi đứng yên, có thể làm giảm độ chính xác với một số chuyển động cụ thể
@@ -285,15 +311,17 @@ settings-general-fk_settings-vive_emulation-description = Giả lập cách trac
 settings-general-fk_settings-vive_emulation-label = Giả lập tracker Vive
 
 ## Gesture control settings (tracker tapping)
+
 settings-general-gesture_control = Cử chỉ điều khiển
 settings-general-gesture_control-subtitle = Chạm để đặt lại
 settings-general-gesture_control-description = Cho phép chạm vào tracker để đặt lại vị trí, chạm hai lần vào tracker cao nhất ở thân để đặt lại nhanh, chạm hai lần vào tracker cao nhất ở chân trái để đặt lại, chạm hai lần vào tracker cao nhất ở chân phải để đặt lại vị trí gắn tracker. Cử chỉ chỉ được tiếp nhận khi thời gian giữa hai lần chạm ngắn hơn 0.6 giây.
 # This is a unit: 3 taps, 2 taps, 1 tap
 # $amount (Number) - Amount of taps (touches to the tracker's case)
-settings-general-gesture_control-taps = { $amount ->
-    [one] 1 tap
-    *[other] { $amount } lần
-}
+settings-general-gesture_control-taps =
+    { $amount ->
+        [one] 1 tap
+       *[other] { $amount } lần
+    }
 settings-general-gesture_control-quickResetEnabled = Chạm để đặt lại nhanh
 settings-general-gesture_control-quickResetDelay = Thời gian delay trước khi đặt lại nhanh
 settings-general-gesture_control-quickResetTaps = Số lần chạm cho đặt lại nhanh
@@ -305,6 +333,7 @@ settings-general-gesture_control-mountingResetDelay = Thời gian delay trước
 settings-general-gesture_control-mountingResetTaps = Số lần chạm cho đặt lại hướng gắn tracker
 
 ## Interface settings
+
 settings-general-interface = Giao diện
 settings-general-interface-dev_mode = Chế độ nhà phát triển
 settings-general-interface-dev_mode-description = Hữu dụng nếu cần thêm thông tin chi tiết của tracker hay can thiệp sâu hơn vào tracker
@@ -317,6 +346,7 @@ settings-general-interface-lang-description = Đổi ngôn ngữ hiển thị (C
 settings-general-interface-lang-placeholder = Chọn ngôn ngữ để sử dụng (Select the language to use)
 
 ## Serial settings
+
 settings-serial = Cổng Serial
 # This cares about multilines
 settings-serial-description =
@@ -330,6 +360,7 @@ settings-serial-serial_select = Chọn cổng Serial
 settings-serial-auto_dropdown_item = Tự động
 
 ## OSC router settings
+
 settings-osc-router = Router OSC
 # This cares about multilines
 settings-osc-router-description =
@@ -354,6 +385,7 @@ settings-osc-router-network-address-description = Địa chỉ mạng mà SlimeV
 settings-osc-router-network-address-placeholder = Địa chỉ IPv4
 
 ## OSC VRChat settings
+
 settings-osc-vrchat = VRChat OSC Trackers
 # This cares about multilines
 settings-osc-vrchat-description =
@@ -382,11 +414,13 @@ settings-osc-vrchat-network-trackers-feet = Bàn chân
 settings-osc-vrchat-network-trackers-elbows = Khuỷu tay
 
 ## Setup/onboarding menu
+
 onboarding-skip = Bỏ qua cài đặt
 onboarding-continue = Tiếp tục
 onboarding-wip = Chưa hoàn thiện
 
-## WiFi setup
+## Wi-Fi setup
+
 onboarding-wifi_creds-back = Quay lại giới thiệu
 onboarding-wifi_creds = Nhập thông tin Wi-Fi
 # This cares about multilines
@@ -403,11 +437,13 @@ onboarding-wifi_creds-password =
     .placeholder = và mật khẩu
 
 ## Mounting setup
+
 onboarding-reset_tutorial-back = Quay lại cân chỉnh vị trí gắn tracker
 onboarding-reset_tutorial = Làm lại
 onboarding-reset_tutorial-description = Tính năng này chưa hoàn thiện, vui lòng bấm tiếp tục và quay lại sau
 
 ## Setup start
+
 onboarding-home = Chào mừng bạn đến với SlimeVR!
 # This cares about multilines and it's centered!!
 onboarding-home-description =
@@ -416,17 +452,20 @@ onboarding-home-description =
 onboarding-home-start = Bắt đầu thiết lập!
 
 ## Enter VR part of setup
+
 onboarding-enter_vr-back = Quay lại gán tracker
 onboarding-enter_vr-title = Chuẩn bị cho việc cân chỉnh trong VR
 onboarding-enter_vr-description = Đeo tất cả tracker và vào VR trước khi tiếp tục
 onboarding-enter_vr-ready = Sẵn sàng
 
 ## Setup done
+
 onboarding-done-title = Hoàn thành!
 onboarding-done-description = Bạn đã hoàn tất quá trình thiết lập cơ bản
 onboarding-done-close = Đóng hướng dẫn
 
 ## Tracker connection setup
+
 onboarding-connect_tracker-back = Quay lại cài đặt Wi-Fi
 onboarding-connect_tracker-title = Kết nối tracker
 onboarding-connect_tracker-description-p0 = Cập nhật thông tin Wi-Fi cho tracker
@@ -443,28 +482,32 @@ onboarding-connect_tracker-connection_status-handshake = Đã kết nối đến
 # English in this case only has 2 plural rules, which are "one" and "other",
 # we use 0 in an explicit way because there is no plural rule in english for 0, so we directly say
 # if $amount is 0 then we say "No trackers connected"
-onboarding-connect_tracker-connected_trackers = { $amount ->
-    [0] Không có tracker
-    [one] 1 tracker
-    *[other] { $amount } tracker
-} đã giao
+onboarding-connect_tracker-connected_trackers =
+    { $amount ->
+        [0] Không có tracker
+        [one] 1 tracker
+       *[other] { $amount } tracker
+    } đã giao
 onboarding-connect_tracker-next = Đã kết nối với tất cả tracker
 
 ## Tracker assignment setup
+
 onboarding-assign_trackers-back = Quay lại cài đặt Wi-Fi
 onboarding-assign_trackers-title = Gán tracker
 onboarding-assign_trackers-description = Chọn vị trí bạn muốn gán tracker bằng cách nhấn vào tên bộ phận muốn gán và chọn tracker
 # Look at translation of onboarding-connect_tracker-connected_trackers on how to use plurals
 # $assigned (Number) - Trackers that have been assigned a body part
 # $trackers (Number) - Trackers connected to the server
-onboarding-assign_trackers-assigned = { $assigned } trên { $trackers ->
-    [one] 1 tracker
-    *[other] { $trackers } tracker
-} đã giao
+onboarding-assign_trackers-assigned =
+    { $assigned } trên { $trackers ->
+        [one] 1 tracker
+       *[other] { $trackers } tracker
+    } đã giao
 onboarding-assign_trackers-advanced = Xem thêm vị trí đặt
 onboarding-assign_trackers-next = Hoàn thành
 
 ## Tracker manual mounting setup
+
 onboarding-manual_mounting-back = Quay lại chuẩn bị cân chỉnh
 onboarding-manual_mounting = Cân chỉnh thủ công
 onboarding-manual_mounting-description = Chọn từng tracker và chọn hướng nó được gắn
@@ -472,6 +515,7 @@ onboarding-manual_mounting-auto_mounting = Cân chỉnh tự động
 onboarding-manual_mounting-next = Tiếp tục
 
 ## Tracker automatic mounting setup
+
 onboarding-automatic_mounting-back = Quay lại chuẩn bị cân chỉnh
 onboarding-automatic_mounting-title = Cân chỉnh hướng gắn
 onboarding-automatic_mounting-description = SlimeVR cần biết hướng gắn thực của tracker để hoạt động đúng, làm theo hướng dẫn để cân chỉnh hướng gắn tự động
@@ -492,12 +536,14 @@ onboarding-automatic_mounting-put_trackers_on-description = Để cân chỉnh h
 onboarding-automatic_mounting-put_trackers_on-next = Tiếp tục
 
 ## Tracker manual proportions setup
+
 onboarding-manual_proportions-back = Quay lại cân chỉnh hướng gắn
 onboarding-manual_proportions-title = Đo kích thước cơ thể thủ công
 onboarding-manual_proportions-precision = Cân chỉnh cụ thể (giảm hệ số chỉnh)
 onboarding-manual_proportions-auto = Đo kích thước cơ thể tự động
 
 ## Tracker automatic proportions setup
+
 onboarding-automatic_proportions-back = Quay lại cân chỉnh hướng gắn
 onboarding-automatic_proportions-title = Đo kích thước cơ thể
 onboarding-automatic_proportions-description = Để tracker có vị trí chính xác, SlimeVR cần biết các chỉ số kích thước cơ thể, làm theo hướng dẫn để đo kích thước cơ thể tự động
@@ -522,18 +568,20 @@ onboarding-automatic_proportions-recording-steps-3 = Vặn thân sang phải và
 onboarding-automatic_proportions-recording-steps-4 = Làm thêm các chuyển động khác đến khi hết thời gian
 onboarding-automatic_proportions-recording-processing = Đang xử lí kết quả...
 # $time (Number) - Seconds left for the automatic calibration recording to finish (max 15)
-onboarding-automatic_proportions-recording-timer = { $time ->
-    [one] 1 second
-    *[other] còn lại { $time } giây
-}
+onboarding-automatic_proportions-recording-timer =
+    { $time ->
+        [one] 1 second
+       *[other] còn lại { $time } giây
+    }
 onboarding-automatic_proportions-verify_results-title = Kiểm tra kết quả
 onboarding-automatic_proportions-verify_results-description = So sánh kết quả với chỉ số thực, Lưu ý: kết quả chỉ mang tính tương đối
 onboarding-automatic_proportions-verify_results-results = Kết quả đo
-onboarding-automatic_proportions-verify_results-processing = Đang chờ kết quả...
+onboarding-automatic_proportions-verify_results-processing = Đang xử lí kết quả...
 onboarding-automatic_proportions-verify_results-redo = Thử lại
 onboarding-automatic_proportions-verify_results-confirm = Kết quả tương đối chính xác
 onboarding-automatic_proportions-done-title = Đã lưu chỉ số đo
 onboarding-automatic_proportions-done-description = Quá trình đo đã hoàn tất
 
 ## Home
+
 home-no_trackers = Không tìm thấy tracker / Tracker chưa được gán
