@@ -228,6 +228,7 @@ export function VRCOSCSettings() {
               placeholder={l10n.getString(
                 'settings-osc-vrchat-network-address-placeholder'
               )}
+              label="Address"
             ></Input>
           </div>
           <Typography bold>

@@ -33,8 +33,11 @@ public class BoneInfo {
 	 */
 	public BoneInfo(BoneType boneType, TransformNode tailNode) {
 		this.boneType = boneType;
-		this.headNode = tailNode.getParent();
 		this.tailNode = tailNode;
+		if(tailNode.getParent() != null)
+			this.headNode = tailNode.getParent();
+		else
+			this.headNode = tailNode;
 		updateLength();
 	}
 
@@ -179,6 +182,8 @@ public class BoneInfo {
 		// None are found in children, so must be in parents.
 		if (unity) {
 			TransformNode thirdSearching = from.getParent();
+			if(thirdSearching == null)
+				return from;
 			while (
 				thirdSearching.getParent() != null
 					&& UnityBone

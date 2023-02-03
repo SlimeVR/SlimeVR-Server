@@ -31,8 +31,6 @@ import io.eiren.util.collections.FastList;
 import io.eiren.util.logging.LogManager;
 import solarxr_protocol.datatypes.TrackerIdT;
 
-import java.net.InetAddress;
-import java.net.UnknownHostException;
 import java.nio.file.Paths;
 import java.util.List;
 import java.util.Queue;

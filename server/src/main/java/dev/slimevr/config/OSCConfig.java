@@ -1,16 +1,6 @@
 package dev.slimevr.config;
 
 
-import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
-import com.fasterxml.jackson.databind.annotation.JsonSerialize;
-import com.fasterxml.jackson.databind.ser.std.StdKeySerializers;
-import dev.slimevr.config.serializers.BooleanMapDeserializer;
-import dev.slimevr.tracking.trackers.TrackerRole;
-
-import java.util.HashMap;
-import java.util.Map;
-
-
 public class OSCConfig {
 
 	// Are the OSC receiver and sender enabled?

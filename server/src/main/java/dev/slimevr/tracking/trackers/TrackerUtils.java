@@ -35,7 +35,7 @@ public class TrackerUtils {
 		TrackerPosition position
 	) {
 		for (T t : allTrackers) {
-			if (t.getBodyPosition() == position && !(t instanceof ComputedTracker))
+			if (t.getBodyPosition() == position && !(t instanceof ComputedHumanPoseTracker))
 				return t;
 		}
 		return null;

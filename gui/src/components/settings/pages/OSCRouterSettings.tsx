@@ -8,7 +8,7 @@ import {
   OSCSettingsT,
   RpcMessage,
   SettingsRequestT,
-  SettingsResponseT
+  SettingsResponseT,
 } from 'solarxr-protocol';
 import { useWebsocketAPI } from '../../../hooks/websocket-api';
 import { CheckBox } from '../../commons/Checkbox';
@@ -210,6 +210,7 @@ export function OSCRouterSettings() {
               placeholder={l10n.getString(
                 'settings-osc-router-network-address-placeholder'
               )}
+              label="Address"
             ></Input>
           </div>
         </>

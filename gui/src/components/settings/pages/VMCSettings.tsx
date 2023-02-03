@@ -1,3 +1,4 @@
+import { Localized, useLocalization } from '@fluent/react';
 import { useEffect, useRef } from 'react';
 import { useForm } from 'react-hook-form';
 import { useLocation } from 'react-router-dom';
@@ -15,7 +16,6 @@ import { VMCIcon } from '../../commons/icon/VMCIcon';
 import { Input } from '../../commons/Input';
 import { Typography } from '../../commons/Typography';
 import { SettingsPageLayout } from '../SettingsPageLayout';
-import { Localized, useLocalization } from '@fluent/react';
 
 interface VMCSettingsForm {
   vmc: {
@@ -168,7 +168,9 @@ export function VMCSettings() {
             >
               <Input
                 type="number"
-                {...register('vmc.oscSettings.portIn', { required: true })}
+                control={control}
+                name="vmc.oscSettings.portIn"
+                rules={{ required: true }}
                 placeholder="9002"
                 label="Port In"
               ></Input>
@@ -179,9 +181,9 @@ export function VMCSettings() {
             >
               <Input
                 type="number"
-                {...register('vmc.oscSettings.portOut', {
-                  required: true,
-                })}
+                control={control}
+                name="vmc.oscSettings.portOut"
+                rules={{ required: true }}
                 placeholder="9000"
                 label="Port Out"
               ></Input>
@@ -198,14 +200,17 @@ export function VMCSettings() {
           <div className="grid gap-3 pb-5">
             <Input
               type="text"
-              {...register('vmc.oscSettings.address', {
+              control={control}
+              name="vmc.oscSettings.address"
+              rules={{
                 required: true,
                 pattern:
                   /^(?!0)(?!.*\.$)((1?\d?\d|25[0-5]|2[0-4]\d)(\.|$)){4}$/i,
-              })}
+              }}
               placeholder={l10n.getString(
                 'settings-osc-vmc-network-address-placeholder'
               )}
+              label="Address"
             ></Input>
           </div>
           <Typography bold>
