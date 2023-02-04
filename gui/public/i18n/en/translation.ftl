@@ -481,6 +481,12 @@ onboarding-assign_trackers-assigned = { $assigned } of { $trackers ->
 } assigned
 onboarding-assign_trackers-advanced = Show advanced assign locations
 onboarding-assign_trackers-next = I assigned all the trackers
+onboarding-assign_trackers-tracker-warning-and = {" , "}
+onboarding-assign_trackers-tracker-warning-or = {" or "}
+onboarding-assign_trackers-tracker-warning = { $role } is assigned but { $unassigned_count ->
+    [one] { $unassigned_roles } is not!
+    *[other] { $unassigned_roles } are not!
+}
 
 ## Tracker manual mounting setup
 onboarding-manual_mounting-back = Go Back to Enter VR
