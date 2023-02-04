@@ -1,13 +1,16 @@
-import { useEffect, useMemo, useState } from 'react';
+import { useLocalization } from '@fluent/react';
+import classNames from 'classnames';
+import { useMemo, useState } from 'react';
 import { useForm } from 'react-hook-form';
 import {
   AssignTrackerRequestT,
   BodyPart,
   QuatT,
   RpcMessage,
-  TrackerIdT,
+  TrackerIdT
 } from 'solarxr-protocol';
 import { FlatDeviceTracker } from '../../../../hooks/app';
+import { useChockerWarning } from '../../../../hooks/chocker-warning';
 import { useOnboarding } from '../../../../hooks/onboarding';
 import { useTrackers } from '../../../../hooks/tracker';
 import { useWebsocketAPI } from '../../../../hooks/websocket-api';
@@ -17,11 +20,8 @@ import { CheckBox } from '../../../commons/Checkbox';
 import { TipBox } from '../../../commons/TipBox';
 import { Typography } from '../../../commons/Typography';
 import { assigmentRules, BodyAssignment } from '../../BodyAssignment';
-import { TrackerSelectionMenu } from './TrackerSelectionMenu';
-import { useLocalization } from '@fluent/react';
 import { NeckWarningModal } from '../../NeckWarningModal';
-import classNames from 'classnames';
-import { useChockerWarning } from '../../../../hooks/chocker-warning';
+import { TrackerSelectionMenu } from './TrackerSelectionMenu';
 
 export type BodyPartError = {
   label: string | undefined;
@@ -211,7 +211,7 @@ export function TrackersAssignPage() {
                 variant="toggle"
               ></CheckBox>
               {!!firstError && (
-                <div className="bg-status-warning text-background-60 p-2 rounded-md">
+                <div className="bg-status-warning text-background-60 px-3 py-2 text-justify rounded-md">
                   <div className="flex flex-col gap-1 whitespace-normal">
                     <span>{firstError.label}</span>
                   </div>
