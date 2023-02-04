@@ -33,3 +33,6 @@ build/
 
 # Rust build artifacts
 /target
+
+# direnv has been claimed for Nix usage
+.direnv/
