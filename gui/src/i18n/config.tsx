@@ -9,10 +9,12 @@ import {
   createContext,
   useContext,
 } from 'react';
-import { ConfigContext, ConfigContextC } from '../hooks/config';
+import { exists, readTextFile, BaseDirectory } from '@tauri-apps/api/fs';
+
 
 export const defaultNS = 'translation';
 export const DEFAULT_LOCALE = 'en';
+const OVERRIDE_FILENAME = 'override.ftl';
 
 export const langs = [
   {
@@ -81,6 +83,13 @@ export const langs = [
   },
 ];
 
+// AppConfig path: https://docs.rs/tauri/1.2.4/tauri/api/path/fn.config_dir.html
+// We doing this only once, don't want an override check to be done on runtime,
+// only on launch :P
+const overrideLangExists = exists(OVERRIDE_FILENAME, {
+  dir: BaseDirectory.AppConfig,
+});
+
 // Fetch translation file
 async function fetchMessages(locale: string): Promise<[string, string]> {
   const response = await fetch(`/i18n/${locale}/translation.ftl`);
@@ -130,8 +139,17 @@ export function AppLocalizationProvider(props: AppLocalizationProviderProps) {
     );
     setCurrentLocales([currentLocale]);
 
+    const currentLocaleFile: [string, string] = (await overrideLangExists)
+      ? [
+          currentLocale,
+          await readTextFile(OVERRIDE_FILENAME, {
+            dir: BaseDirectory.AppConfig,
+          }),
+        ]
+      : await fetchMessages(currentLocale);
+
     const fetchedMessages = [
-      await fetchMessages(currentLocale),
+      currentLocaleFile,
       await fetchMessages(DEFAULT_LOCALE),
     ];
 
