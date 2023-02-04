@@ -104,6 +104,10 @@ widget-overlay = 覆盖层
 widget-overlay-is_visible_label = 在 SteamVR 中显示覆盖层
 widget-overlay-is_mirrored_label = 镜像显示覆盖层
 
+## Widget: Drift compensation
+
+widget-drift_compensation-clear = 清除漂移补偿数据
+
 ## Widget: Developer settings
 
 widget-developer_mode = 开发者选项
