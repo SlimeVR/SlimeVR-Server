@@ -59,7 +59,7 @@ export const InputInside = forwardRef<
           autoComplete={autocomplete ? 'off' : 'on'}
           onChange={onChange}
           name={name}
-          value={value}
+          value={value || ''}
           ref={ref}
         ></input>
         {type === 'password' && (
