@@ -13,7 +13,9 @@ body {
 
 @font-face {
   font-family: 'Twemoji';
-  src: url('/fonts/twemoji-glyf_colr_1.ttf') format('truetype'), url('/fonts/twemoji-picosvg.ttf') format('truetype');
+  src: url('/fonts/twemoji-glyf_colr_1.ttf') format('truetype'),
+    url('/fonts/twemoji-picosvg.ttf') format('truetype'),
+    emoji;
   font-display: swap;
 }
 
