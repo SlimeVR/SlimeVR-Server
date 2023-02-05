@@ -481,6 +481,56 @@ onboarding-assign_trackers-assigned = { $assigned } of { $trackers ->
 } assigned
 onboarding-assign_trackers-advanced = Show advanced assign locations
 onboarding-assign_trackers-next = I assigned all the trackers
+
+## Tracker assignment warnings
+# Note for devs, number is used for representing boolean states per bit.
+# $unassigned (Number) - Bits are based on BodyAssignment.ASSIGNMENT_RULES order
+onboarding-assign_trackers-warning-LEFT_FOOT = Left foot is assigned but you need { $unassigned ->
+    [0] the left ankle, left thigh and either the chest, hip or waist
+    [1] the left thigh and either the chest, hip or waist
+    [2] the left ankle and either the chest, hip or waist
+    [3] either the chest, hip or waist
+    [4] the left ankle and left thigh
+    [5] the left thigh
+    [6] the left ankle
+    *[unknown] Unknown unassigned body part
+} to also be assigned!
+# $unassigned (Number) - Bits are based on BodyAssignment.ASSIGNMENT_RULES order
+onboarding-assign_trackers-warning-RIGHT_FOOT = Right foot is assigned but you need { $unassigned ->
+    [0] the right ankle, right thigh and either the chest, hip or waist
+    [1] the right thigh and either the chest, hip or waist
+    [2] the right ankle and either the chest, hip or waist
+    [3] either the chest, hip or waist
+    [4] the right ankle and right thigh
+    [5] the right thigh
+    [6] the right ankle
+    *[unknown] Unknown unassigned body part
+} to also be assigned!
+# $unassigned (Number) - Bits are based on BodyAssignment.ASSIGNMENT_RULES order
+onboarding-assign_trackers-warning-LEFT_LOWER_LEG = Left ankle is assigned but you need { $unassigned ->
+    [0] the left thigh and either the chest, hip or waist
+    [1] either the chest, hip or waist
+    [2] the left thigh
+    *[unknown] Unknown unassigned body part
+} to also be assigned!
+# $unassigned (Number) - Bits are based on BodyAssignment.ASSIGNMENT_RULES order
+onboarding-assign_trackers-warning-RIGHT_LOWER_LEG = Right ankle is assigned but you need { $unassigned ->
+    [0] the right thigh and either the chest, hip or waist
+    [1] either the chest, hip or waist
+    [2] the right thigh
+    *[unknown] Unknown unassigned body part
+} to also be assigned!
+# $unassigned (Number) - Bits are based on BodyAssignment.ASSIGNMENT_RULES order
+onboarding-assign_trackers-warning-LEFT_UPPER_LEG = Left thigh is assigned but you need { $unassigned ->
+    [0] either the chest, hip or waist
+    *[unknown] Unknown unassigned body part
+} to also be assigned!
+# $unassigned (Number) - Bits are based on BodyAssignment.ASSIGNMENT_RULES order
+onboarding-assign_trackers-warning-RIGHT_UPPER_LEG = Right thigh is assigned but you need { $unassigned ->
+    [0] either the chest, hip or waist
+    *[unknown] Unknown unassigned body part
+} to also be assigned!
+
 onboarding-assign_trackers-tracker-warning-and = {" , "}
 onboarding-assign_trackers-tracker-warning-or = {" or "}
 onboarding-assign_trackers-tracker-warning = { $role } is assigned but { $unassigned_count ->

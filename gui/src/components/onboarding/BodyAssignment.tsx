@@ -6,7 +6,8 @@ import { BodyInteractions } from '../commons/BodyInteractions';
 import { TrackerPartCard } from '../tracker/TrackerPartCard';
 import { BodyPartError } from './pages/trackers-assign/TrackerAssignment';
 
-export const assigmentRules: Partial<
+export const SPINE_PARTS = [BodyPart.HIP, BodyPart.CHEST, BodyPart.WAIST];
+export const ASSIGNMENT_RULES: Partial<
   Record<BodyPart, (BodyPart | BodyPart[])[]>
 > = {
   [BodyPart.LEFT_FOOT]: [

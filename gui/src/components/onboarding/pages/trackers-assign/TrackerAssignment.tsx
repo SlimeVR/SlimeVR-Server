@@ -7,7 +7,7 @@ import {
   BodyPart,
   QuatT,
   RpcMessage,
-  TrackerIdT
+  TrackerIdT,
 } from 'solarxr-protocol';
 import { FlatDeviceTracker } from '../../../../hooks/app';
 import { useChockerWarning } from '../../../../hooks/chocker-warning';
@@ -19,7 +19,7 @@ import { Button } from '../../../commons/Button';
 import { CheckBox } from '../../../commons/Checkbox';
 import { TipBox } from '../../../commons/TipBox';
 import { Typography } from '../../../commons/Typography';
-import { assigmentRules, BodyAssignment } from '../../BodyAssignment';
+import { ASSIGNMENT_RULES, BodyAssignment } from '../../BodyAssignment';
 import { NeckWarningModal } from '../../NeckWarningModal';
 import { TrackerSelectionMenu } from './TrackerSelectionMenu';
 
@@ -58,58 +58,37 @@ export function TrackersAssignPage() {
 
   const rolesWithErrors = useMemo(() => {
     const trackerRoles = trackers.map(
-      ({ tracker }) => tracker.info?.bodyPart || BodyPart.NONE,
-      {}
+      ({ tracker }) => tracker.info?.bodyPart || BodyPart.NONE
     );
 
-    const handleOrMessage = (unassigned_roles: BodyPart[]) =>
-      !unassigned_roles.find((role) => trackerRoles.includes(role))
-        ? unassigned_roles
-        : undefined;
+    const message = (assignedRole: BodyPart) => {
+      const unassignedRoles: [BodyPart | BodyPart[], boolean][] = (
+        ASSIGNMENT_RULES[assignedRole] || []
+      ).map((part) => [
+        part,
+        Array.isArray(part)
+          ? trackerRoles.some((tr) => part.includes(tr))
+          : trackerRoles.includes(part),
+      ]);
 
-    const handleAndMessage = (role: BodyPart) =>
-      !trackerRoles.find((tr) => tr === role) ? role : undefined;
+      if (unassignedRoles.length === 0) return;
 
-    const message = (assigned_role: BodyPart) => {
-      const unassigned_roles = (assigmentRules[assigned_role] || [])
-        .map((unassigned_roles_rules) =>
-          Array.isArray(unassigned_roles_rules)
-            ? handleOrMessage(unassigned_roles_rules)
-            : handleAndMessage(unassigned_roles_rules)
-        )
-        .filter((m) => m !== undefined) as (BodyPart | BodyPart[])[];
-      const unassigned_count = unassigned_roles.reduce(
-        (curr, r) => curr + (Array.isArray(r) ? r.length : 1),
-        0
-      );
-      if (unassigned_roles.length === 0) return;
       return {
-        affected_roles: unassigned_roles.flat(),
-        label: l10n.getString('onboarding-assign_trackers-tracker-warning', {
-          role: l10n.getString('body_part-' + BodyPart[assigned_role]),
-          unassigned_roles: unassigned_roles
-            .map((r) =>
-              Array.isArray(r)
-                ? r
-                    .map((r) => l10n.getString('body_part-' + BodyPart[r]))
-                    .join(
-                      l10n.getString(
-                        'onboarding-assign_trackers-tracker-warning-or'
-                      )
-                    )
-                : l10n.getString('body_part-' + BodyPart[r])
-            )
-            .join(
-              l10n.getString('onboarding-assign_trackers-tracker-warning-and')
-            ),
-          unassigned_count,
-        }),
+        affected_roles: unassignedRoles.flatMap(([part]) => part),
+        label: l10n.getString(
+          `onboarding-assign_trackers-warning-${BodyPart[assignedRole]}`,
+          {
+            unassigned: unassignedRoles
+              .map(([, state]) => state)
+              .reduce((acc, cur, i) => acc + (Number(cur) << i), 0),
+          }
+        ),
       };
     };
 
     return Object.keys(BodyPart)
-      .map<BodyPart>((key) => +key)
       .filter((key) => typeof key === 'number' && !Number.isNaN(key))
+      .map<BodyPart>((key) => +key)
       .reduce<Record<BodyPart, BodyPartError>>((curr, role) => {
         return {
           ...curr,
