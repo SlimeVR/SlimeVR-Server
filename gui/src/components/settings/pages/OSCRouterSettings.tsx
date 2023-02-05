@@ -8,7 +8,7 @@ import {
   OSCSettingsT,
   RpcMessage,
   SettingsRequestT,
-  SettingsResponseT
+  SettingsResponseT,
 } from 'solarxr-protocol';
 import { useWebsocketAPI } from '../../../hooks/websocket-api';
 import { CheckBox } from '../../commons/Checkbox';

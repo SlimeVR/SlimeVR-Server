@@ -1,8 +1,4 @@
-import {
-  DataFeedConfigT,
-  DeviceDataMaskT,
-  TrackerDataMaskT,
-} from 'solarxr-protocol';
+import { DataFeedConfigT, DeviceDataMaskT, TrackerDataMaskT } from 'solarxr-protocol';
 import { useConfig } from './config';
 
 export function useDataFeedConfig() {

@@ -5,7 +5,7 @@ import {
   useLayoutEffect,
   useMemo,
   useRef,
-  useState
+  useState,
 } from 'react';
 import { BodyPart, TrackerDataT } from 'solarxr-protocol';
 import { FlatDeviceTracker } from '../../hooks/app';

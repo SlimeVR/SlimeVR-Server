@@ -3,7 +3,7 @@ import {
   createDir,
   readTextFile,
   renameFile,
-  writeFile
+  writeFile,
 } from '@tauri-apps/api/fs';
 
 import { createContext, useContext, useRef, useState } from 'react';

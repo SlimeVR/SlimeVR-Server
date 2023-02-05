@@ -9,7 +9,7 @@ import {
   RpcMessage,
   SettingsRequestT,
   SettingsResponseT,
-  VRCOSCSettingsT
+  VRCOSCSettingsT,
 } from 'solarxr-protocol';
 import { useWebsocketAPI } from '../../../hooks/websocket-api';
 import { CheckBox } from '../../commons/Checkbox';

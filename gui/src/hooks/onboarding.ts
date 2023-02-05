@@ -51,18 +51,18 @@ export function reducer(state: OnboardingState, action: OnboardingAction) {
 
 export function useProvideOnboarding(): OnboardingContext {
   const { setConfig } = useConfig();
-  const [state, dispatch] = useReducer<
-    Reducer<OnboardingState, OnboardingAction>
-  >(reducer, {
-    progress: 0,
-    alonePage: false,
-  });
+  const [state, dispatch] = useReducer<Reducer<OnboardingState, OnboardingAction>>(
+    reducer,
+    {
+      progress: 0,
+      alonePage: false,
+    }
+  );
 
   const { state: locatioState } = useLocation();
 
   useLayoutEffect(() => {
-    const { alonePage = false }: { alonePage?: boolean } =
-      (locatioState as any) || {};
+    const { alonePage = false }: { alonePage?: boolean } = (locatioState as any) || {};
 
     if (alonePage !== state.alonePage)
       dispatch({ type: 'alone-page', value: alonePage });
@@ -84,16 +84,12 @@ export function useProvideOnboarding(): OnboardingContext {
   };
 }
 
-export const OnboardingContextC = createContext<OnboardingContext>(
-  undefined as any
-);
+export const OnboardingContextC = createContext<OnboardingContext>(undefined as any);
 
 export function useOnboarding() {
   const context = useContext<OnboardingContext>(OnboardingContextC);
   if (!context) {
-    throw new Error(
-      'useOnboarding must be within a OnboardingContext Provider'
-    );
+    throw new Error('useOnboarding must be within a OnboardingContext Provider');
   }
   return context;
 }
