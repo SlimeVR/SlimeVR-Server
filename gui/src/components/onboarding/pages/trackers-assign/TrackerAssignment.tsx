@@ -10,7 +10,7 @@ import {
   TrackerIdT,
 } from 'solarxr-protocol';
 import { FlatDeviceTracker } from '../../../../hooks/app';
-import { useChockerWarning } from '../../../../hooks/chocker-warning';
+import { useChokerWarning } from '../../../../hooks/choker-warning';
 import { useOnboarding } from '../../../../hooks/onboarding';
 import { useTrackers } from '../../../../hooks/tracker';
 import { useWebsocketAPI } from '../../../../hooks/websocket-api';
@@ -71,10 +71,12 @@ export function TrackersAssignPage() {
           : trackerRoles.includes(part),
       ]);
 
-      if (unassignedRoles.length === 0) return;
+      if (unassignedRoles.every(([, state]) => state)) return;
 
       return {
-        affected_roles: unassignedRoles.flatMap(([part]) => part),
+        affected_roles: unassignedRoles
+          .filter(([, state]) => !state)
+          .flatMap(([part]) => part),
         label: l10n.getString(
           `onboarding-assign_trackers-warning-${BodyPart[assignedRole]}`,
           {
@@ -87,8 +89,8 @@ export function TrackersAssignPage() {
     };
 
     return Object.keys(BodyPart)
-      .filter((key) => typeof key === 'number' && !Number.isNaN(key))
       .map<BodyPart>((key) => +key)
+      .filter((key) => typeof key === 'number' && !Number.isNaN(key))
       .reduce<Record<BodyPart, BodyPartError>>((curr, role) => {
         return {
           ...curr,
@@ -136,8 +138,8 @@ export function TrackersAssignPage() {
 
   applyProgress(0.5);
 
-  const { closeChockerWarning, tryOpenChockerWarning, shouldShowChockerWarn } =
-    useChockerWarning({
+  const { closeChokerWarning, tryOpenChokerWarning, shouldShowChokerWarn } =
+    useChokerWarning({
       next: setSelectRole,
     });
 
@@ -152,12 +154,12 @@ export function TrackersAssignPage() {
         onTrackerSelected={onTrackerSelected}
       ></TrackerSelectionMenu>
       <NeckWarningModal
-        isOpen={shouldShowChockerWarn}
+        isOpen={shouldShowChokerWarn}
         overlayClassName={classNames(
           'fixed top-0 right-0 left-0 bottom-0 flex flex-col items-center w-full h-full justify-center bg-black bg-opacity-90 z-20'
         )}
-        onClose={() => closeChockerWarning(true)}
-        accept={() => closeChockerWarning(false)}
+        onClose={() => closeChokerWarning(true)}
+        accept={() => closeChokerWarning(false)}
       ></NeckWarningModal>
       <div className="flex flex-col gap-5 h-full items-center w-full justify-center">
         <div className="flex flex-col w-full h-full justify-center items-center">
@@ -203,7 +205,7 @@ export function TrackersAssignPage() {
                 highlightedRoles={firstError?.affected_roles || []}
                 rolesWithErrors={rolesWithErrors}
                 advanced={advanced}
-                onRoleSelected={tryOpenChockerWarning}
+                onRoleSelected={tryOpenChokerWarning}
               ></BodyAssignment>
             </div>
           </div>

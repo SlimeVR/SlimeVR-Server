@@ -8,7 +8,7 @@ import { Typography } from '../commons/Typography';
 import { BodyAssignment } from '../onboarding/BodyAssignment';
 import { useLocalization } from '@fluent/react';
 import { NeckWarningModal } from '../onboarding/NeckWarningModal';
-import { useChockerWarning } from '../../hooks/chocker-warning';
+import { useChokerWarning } from '../../hooks/choker-warning';
 
 export function SingleTrackerBodyAssignmentMenu({
   isOpen,
@@ -25,8 +25,8 @@ export function SingleTrackerBodyAssignmentMenu({
   });
   const { advanced } = watch();
 
-  const { closeChockerWarning, tryOpenChockerWarning, shouldShowChockerWarn } =
-    useChockerWarning({
+  const { closeChokerWarning, tryOpenChokerWarning, shouldShowChokerWarn } =
+    useChokerWarning({
       next: onRoleSelected,
     });
 
@@ -76,7 +76,7 @@ export function SingleTrackerBodyAssignmentMenu({
                 <BodyAssignment
                   onlyAssigned={false}
                   advanced={advanced}
-                  onRoleSelected={tryOpenChockerWarning}
+                  onRoleSelected={tryOpenChokerWarning}
                 ></BodyAssignment>
                 <div className="flex justify-center">
                   <Button
@@ -93,12 +93,12 @@ export function SingleTrackerBodyAssignmentMenu({
       </ReactModal>
 
       <NeckWarningModal
-        isOpen={shouldShowChockerWarn}
+        isOpen={shouldShowChokerWarn}
         overlayClassName={classNames(
           'fixed top-0 right-0 left-0 bottom-0 flex flex-col items-center w-full h-full justify-center bg-black bg-opacity-90 z-20'
         )}
-        onClose={() => closeChockerWarning(true)}
-        accept={() => closeChockerWarning(false)}
+        onClose={() => closeChokerWarning(true)}
+        accept={() => closeChokerWarning(false)}
       ></NeckWarningModal>
     </>
   );
