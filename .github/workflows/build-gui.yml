@@ -17,6 +17,26 @@ on:
   create:
 
 jobs:
+  lint:
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v3
+        with:
+          submodules: recursive
+
+      - name: Use Node.js ${{ matrix.node-version }}
+        uses: actions/setup-node@v3
+        with:
+          node-version-file: '.node-version'
+          cache: 'npm'
+
+      - name: Build
+        run: |
+          npm ci
+          cd gui
+          npm run lint
+
   build:
     strategy:
       fail-fast: false
