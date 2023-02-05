@@ -2,6 +2,7 @@ import { useLocalization } from '@fluent/react';
 import classnames from 'classnames';
 import { ReactNode } from 'react';
 import { NavLink, useMatch } from 'react-router-dom';
+import { useBodyProportions } from '../hooks/body-proportions';
 import { CubeIcon } from './commons/icon/CubeIcon';
 import { GearIcon } from './commons/icon/GearIcon';
 
@@ -58,6 +59,7 @@ export function NavButton({
 
 export function Navbar() {
   const { l10n } = useLocalization();
+  const { lastUsedPage } = useBodyProportions();
 
   return (
     <div className="flex flex-col px-2 pt-2">
@@ -66,7 +68,7 @@ export function Navbar() {
           {l10n.getString('navbar-home')}
         </NavButton>
         <NavButton
-          to="/onboarding/body-proportions/auto"
+          to={lastUsedPage}
           match="/onboarding/body-proportions/*"
           state={{ alonePage: true }}
           icon={<GearIcon></GearIcon>}

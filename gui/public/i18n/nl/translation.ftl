@@ -1,19 +1,25 @@
 ### SlimeVR complete GUI translations
+
+
 # Please developers (not translators) don't reuse a key inside another key
-# or concat text with a translation string in the code, use the appropiate
-# features like variables and selectors in each appropiate case!
-# And also comment the string if it's something not easy to translate so you help
+# or concat text with a translation string in the code, use the appropriate
+# features like variables and selectors in each appropriate case!
+# And also comment the string if it's something not easy to translate, so you help
 # translators on what it means
 
+
 ## Websocket (server) status
-websocket-connecting = Verbinden met de server
+
+websocket-connecting = Verbinding maken met de server
 websocket-connection_lost = Verbinding met de server verbroken. Opniew verbinding maken...
 
 ## Tips
+
 tips-find_tracker = Weet je niet welke tracker welke is? Schud een tracker en het corresponderende item zal worden gemarkeerd.
-tips-do_not_move_heels = Zorg ervoor dat je hielen tijdens het opnemen niet bewegen!
+tips-do_not_move_heels = Zorg ervoor dat je hielen niet bewegen tijdens de opname!
 
 ## Body parts
+
 body_part-NONE = Niet toegewezen
 body_part-HEAD = Hoofd
 body_part-NECK = Neck
@@ -38,6 +44,7 @@ body_part-LEFT_FOOT = Linkervoet
 body_part-LEFT_CONTROLLER = Linkercontroller
 
 ## Proportions
+
 skeleton_bone-NONE = Geen
 skeleton_bone-HEAD = Hoofdverschuiving
 skeleton_bone-NECK = Necklengte
@@ -61,21 +68,24 @@ skeleton_bone-CONTROLLER_Z = Controllerafstand Z
 skeleton_bone-ELBOW_OFFSET = Elleboogoffset
 
 ## Tracker reset buttons
+
 reset-reset_all = Alle afmetingen resetten
 reset-full = Resetten
 reset-mounting = Bevestiging resetten
 reset-quick = Snel resetten
 
 ## Serial detection stuff
+
 serial_detection-new_device-p0 = Nieuw serieel apparaat gedetecteerd!
 serial_detection-new_device-p1 = Voer je WiFi-inloggegevens in!
 serial_detection-new_device-p2 = Selecteer wat je wil doen
-serial_detection-open_wifi = Verbinden met WiFi
-serial_detection-open_serial = Open serieel console
+serial_detection-open_wifi = Verbinding maken met WiFi
+serial_detection-open_serial = Seriële console openen
 serial_detection-submit = Verzenden!
 serial_detection-close = Sluiten
 
 ## Navigation bar
+
 navbar-home = Startpagina
 navbar-body_proportions = Lichaams- verhoudingen
 navbar-trackers_assign = Tracker- toewijzing
@@ -84,15 +94,18 @@ navbar-onboarding = Setupgids
 navbar-settings = Instellingen
 
 ## Bounding volume hierarchy recording
+
 bvh-start_recording = BVH opnemen
 bvh-recording = Opname bezig...
 
 ## Widget: Overlay settings
+
 widget-overlay = Overlay
 widget-overlay-is_visible_label = Overlay in SteamVR weergeven
 widget-overlay-is_mirrored_label = Overlay weergeven als spiegel
 
 ## Widget: Developer settings
+
 widget-developer_mode = Developer Mode
 widget-developer_mode-high_contrast = Hoog contrast
 widget-developer_mode-precise_rotation = Precieze rotatie
@@ -103,11 +116,13 @@ widget-developer_mode-raw_slime_rotation = Ruwe rotatie
 widget-developer_mode-more_info = Meer informatie
 
 ## Widget: IMU Visualizer
+
 widget-imu_visualizer = Rotatie
 widget-imu_visualizer-rotation_raw = Rauw
 widget-imu_visualizer-rotation_preview = Preview
 
 ## Tracker status
+
 tracker-status-none = Geen status
 tracker-status-busy = Bezig
 tracker-status-error = Fout
@@ -116,6 +131,7 @@ tracker-status-occluded = Verborgen
 tracker-status-ok = OK
 
 ## Tracker status columns
+
 tracker-table-column-name = Naam
 tracker-table-column-type = Type
 tracker-table-column-battery = Batterij
@@ -128,18 +144,21 @@ tracker-table-column-position = Positie X/Y/Z
 tracker-table-column-url = URL
 
 ## Tracker rotation
+
 tracker-rotation-front = Voorzijde
 tracker-rotation-left = Links
 tracker-rotation-right = Rechts
 tracker-rotation-back = Achterzijde
 
 ## Tracker information
+
 tracker-infos-manufacturer = Fabrikant
 tracker-infos-display_name = Weergavenaam
 tracker-infos-custom_name = Aangepaste naam
 tracker-infos-url = Tracker URL
 
 ## Tracker settings
+
 tracker-settings-back = Terug naar trackerslijst
 tracker-settings-title = Trackersinstellingen
 tracker-settings-assignment_section = Toewijzing
@@ -154,21 +173,24 @@ tracker-settings-drift_compensation_section-edit = Laat drift compensatie toe
 # The .<name> means it's an attribute and it's related to the top key.
 # In this case that is the settings for the assignment section.
 tracker-settings-name_section = Trackernaam
-tracker-settings-name_section-placeholder = NightyBeast's linkerbeen
 tracker-settings-name_section-description = Geef een schattige bijnaam :)
+tracker-settings-name_section-placeholder = NightyBeast's linkerbeen
 
 ## Tracker part card info
+
 tracker-part_card-no_name = Geen naam
 tracker-part_card-unassigned = Niet toegewezen
 
 ## Body assignment menu
+
 body_assignment_menu = Waar wil je deze tracker bevestigen?
-body_assignment_menu-description = Kies een locatie waar je deze tracker wilt toewijzen. Alternatief kun je kiezen om alle trackers tegelijk te beheren in plaats van één voor één.
+body_assignment_menu-description = Kies een locatie waar je deze tracker wilt toewijzen. Als alternatief kun je kiezen om alle trackers tegelijk te beheren in plaats van één voor één.
 body_assignment_menu-show_advanced_locations = Geavanceerde bevestigingslocaties weergeven
 body_assignment_menu-manage_trackers = Beheer alle trackers
 body_assignment_menu-unassign_tracker = Tracker niet toewijzen
 
 ## Tracker assignment menu
+
 # A -translation_key (with a dash in the front) means that it's a label.
 # It can only be used in the translation file, it's nice for reusing names and that kind of stuff.
 #
@@ -197,16 +219,24 @@ tracker_selection_menu-LEFT_UPPER_LEG = { -tracker_selection-part } linkerdij?
 tracker_selection_menu-LEFT_LOWER_LEG = { -tracker_selection-part } linkerenkel?
 tracker_selection_menu-LEFT_FOOT = { -tracker_selection-part } linkervoet?
 tracker_selection_menu-LEFT_CONTROLLER = { -tracker_selection-part } linkercontroller?
-
 tracker_selection_menu-unassigned = Niet toegewezen trackers
 tracker_selection_menu-assigned = Toegewezen trackers
 tracker_selection_menu-dont_assign = Niet toewijzen
+# This line cares about multilines.
+# <b>text</b> means that the text should be bold.
+tracker_selection_menu-neck_warning =
+    <b>Waarschuwing:</b> Een nektracker kan dodelijk zijn indien deze te strak wordt afgesteld,
+    de band kan de bloedsomloop naar je hoofd afsnijden!
+tracker_selection_menu-neck_warning-done = Ik begrijp de risico's
+tracker_selection_menu-neck_warning-cancel = Annuleren
 
 ## Mounting menu
+
 mounting_selection_menu = Waar wil je deze tracker hebben bevestigd?
 mounting_selection_menu-close = Sluiten
 
 ## Sidebar settings
+
 settings-sidebar-title = Instellingen
 settings-sidebar-general = Algemeen
 settings-sidebar-tracker_mechanics = Trackersinstellingen
@@ -218,6 +248,7 @@ settings-sidebar-utils = Hulpmiddelen
 settings-sidebar-serial = Serieel console
 
 ## SteamVR settings
+
 settings-general-steamvr = SteamVR
 settings-general-steamvr-subtitle = SteamVR trackers
 # Not all translation keys support multiline, only the ones that specify it will actually
@@ -235,6 +266,7 @@ settings-general-steamvr-trackers-elbows = Ellebogen
 settings-general-steamvr-trackers-hands = Handen
 
 ## Tracker mechanics
+
 settings-general-tracker_mechanics = Tracker aanpassingen
 settings-general-tracker_mechanics-filtering = Filtering
 # This also cares about multilines
@@ -259,6 +291,7 @@ settings-general-tracker_mechanics-drift_compensation-amount-label = Compensatie
 settings-general-tracker_mechanics-drift_compensation-max_resets-label = Gebruik de laatste x resets
 
 ## FK/Tracking settings
+
 settings-general-fk_settings = Tracking instellingen
 settings-general-fk_settings-leg_tweak = Aanpassingen van tracking gedrag voor benen
 settings-general-fk_settings-leg_tweak-description = Floor-clip verminderd de kans dat je voeten door de grond gaan, maar kan problemen veroorzaken als je op je knieën bent. Skating-correctie corrigeert ongewenst glijden van je voeten, maar kan de nauwkeurigheid in bepaalde bewegingspatronen verminderen.
@@ -285,15 +318,17 @@ settings-general-fk_settings-vive_emulation-description = Emuleer de problemen m
 settings-general-fk_settings-vive_emulation-label = Vive-emulatie inschakelen
 
 ## Gesture control settings (tracker tapping)
+
 settings-general-gesture_control = Gesture control
 settings-general-gesture_control-subtitle = Op tik gebaseerde resets
 settings-general-gesture_control-description = Maakt het mogelijk om resets te activeren door op een tracker te tikken. De tracker het hoogst op je bovenlichaam wordt gebruikt voor Quick Reset, de tracker het hoogst op je linkerbeen voor Reset en de tracker het hoogst op je rechterbeen voor Mounting Reset. Het moet worden vermeld dat tikken binnen 0,6 seconden moeten gebeuren om geregistreerd te worden.
 # This is a unit: 3 taps, 2 taps, 1 tap
 # $amount (Number) - Amount of taps (touches to the tracker's case)
-settings-general-gesture_control-taps = { $amount ->
-    [one] 1 tik
-    *[other] { $amount } tikken
-}
+settings-general-gesture_control-taps =
+    { $amount ->
+        [one] 1 tik
+       *[other] { $amount } tikken
+    }
 settings-general-gesture_control-quickResetEnabled = Activeer tikken voor snelle reset
 settings-general-gesture_control-quickResetDelay = Vertraging snelle reset
 settings-general-gesture_control-quickResetTaps = Hoeveelheid tikken voor snelle reset
@@ -305,6 +340,7 @@ settings-general-gesture_control-mountingResetDelay = Vertraging bevestigingskal
 settings-general-gesture_control-mountingResetTaps = Hoeveelheid tikken voor bevestigingskalibratie
 
 ## Interface settings
+
 settings-general-interface = Interface
 settings-general-interface-dev_mode = Ontwikkelaarsmodus
 settings-general-interface-dev_mode-description = Deze modus kan nuttig zijn als u diepgaande gegevens nodig hebt of op een geavanceerd niveau wilt communiceren met aangesloten trackers.
@@ -317,19 +353,28 @@ settings-general-interface-lang-description = Verander de standaardtaal die u wi
 settings-general-interface-lang-placeholder = Selecteer de te gebruiken taal
 
 ## Serial settings
+
 settings-serial = Seriele console
 # This cares about multilines
 settings-serial-description =
-    Dit is een live-informatiefeed voor seriële communicatie.
-    Kan nuttig zijn voor het debuggen van trackers.
+    Dit is een live informatiefeed voor seriële communicatie.
+    Kan handig zijn als u wilt weten dat de firmware werkt.
 settings-serial-connection_lost = Verbinding met seriële poort verloren, opnieuw verbinden...
 settings-serial-reboot = Opnieuw opstarten
 settings-serial-factory_reset = Fabrieksinstellingen herstellen
+# This cares about multilines
+# <b>text</b> means that the text should be bold
+settings-serial-factory_reset-warning =
+    <b>Waarschuwing:</b> Hiermee wordt de tracker teruggezet naar de fabrieksinstellingen.
+    Wat betekent dat Wi-Fi en kalibratie-instellingen <b>allemaal verloren gaan!</b>
+settings-serial-factory_reset-warning-ok = Ik weet wat ik doe
+settings-serial-factory_reset-warning-cancel = Annuleren
 settings-serial-get_infos = Informatie ophalen
 settings-serial-serial_select = Selecteer een seriële poort
 settings-serial-auto_dropdown_item = Automatisch
 
 ## OSC router settings
+
 settings-osc-router = OSC-router
 # This cares about multilines
 settings-osc-router-description =
@@ -354,6 +399,7 @@ settings-osc-router-network-address-description = Stel het adres in waarnaar geg
 settings-osc-router-network-address-placeholder = IPV4-adres
 
 ## OSC VRChat settings
+
 settings-osc-vrchat = VRChat OSC Trackers
 # This cares about multilines
 settings-osc-vrchat-description =
@@ -382,11 +428,13 @@ settings-osc-vrchat-network-trackers-feet = Voeten
 settings-osc-vrchat-network-trackers-elbows = Ellebogen
 
 ## Setup/onboarding menu
+
 onboarding-skip = Setupgids overslaan
 onboarding-continue = Doorgaan
 onboarding-wip = WIP
 
-## WiFi setup
+## Wi-Fi setup
+
 onboarding-wifi_creds-back = Ga terug naar de introductie
 onboarding-wifi_creds = Voer de WiFi-inloggegevens in
 # This cares about multilines
@@ -403,11 +451,13 @@ onboarding-wifi_creds-password =
     .placeholder = Vul paswoord in
 
 ## Mounting setup
+
 onboarding-reset_tutorial-back = Ga terug naar de bevestigingskalibratie
 onboarding-reset_tutorial = Reset tutorial
 onboarding-reset_tutorial-description = Deze stap is nog niet afgewerkt, druk gewoon op doorgaan.
 
 ## Setup start
+
 onboarding-home = Welkom bij SlimeVR
 # This cares about multilines and it's centered!!
 onboarding-home-description =
@@ -416,17 +466,20 @@ onboarding-home-description =
 onboarding-home-start = Laten we beginnen!
 
 ## Enter VR part of setup
+
 onboarding-enter_vr-back = Ga terug naar de sectie voor toewijzing van trackers
 onboarding-enter_vr-title = Tijd om VR in te gaan!
 onboarding-enter_vr-description = Doe al je trackers aan en ga dan in VR!
 onboarding-enter_vr-ready = Gereed!
 
 ## Setup done
+
 onboarding-done-title = Je bent klaar!
 onboarding-done-description = Geniet van je full-body ervaring
 onboarding-done-close = Sluit de gids
 
 ## Tracker connection setup
+
 onboarding-connect_tracker-back = Ga terug naar de instellingen voor WiFi-configuratie
 onboarding-connect_tracker-title = Trackers verbinden
 onboarding-connect_tracker-description-p0 = Nu het leuke gedeelte, verbind al je trackers!
@@ -443,28 +496,32 @@ onboarding-connect_tracker-connection_status-handshake = Verbonden met de server
 # English in this case only has 2 plural rules, which are "one" and "other",
 # we use 0 in an explicit way because there is no plural rule in english for 0, so we directly say
 # if $amount is 0 then we say "No trackers connected"
-onboarding-connect_tracker-connected_trackers = { $amount ->
-    [0] Geen trackers
-    [one] 1 tracker
-    *[other] { $amount } trackers
-} verbonden
+onboarding-connect_tracker-connected_trackers =
+    { $amount ->
+        [0] Geen trackers
+        [one] 1 tracker
+       *[other] { $amount } trackers
+    } verbonden
 onboarding-connect_tracker-next = Ik heb al mijn trackers verbonden
 
 ## Tracker assignment setup
+
 onboarding-assign_trackers-back = Ga terug naar de instellingen voor WiFi-configuratie
 onboarding-assign_trackers-title = Trackers toewijzen
 onboarding-assign_trackers-description = Laten we de bevesteging van je trackers bepalen. Klik op de lichaamslocatie waar je een tracker wilt toewijzen.
 # Look at translation of onboarding-connect_tracker-connected_trackers on how to use plurals
 # $assigned (Number) - Trackers that have been assigned a body part
 # $trackers (Number) - Trackers connected to the server
-onboarding-assign_trackers-assigned = { $assigned } van { $trackers ->
-    [one] 1 tracker
-    *[other] { $trackers } trackers
-} toegewezen
+onboarding-assign_trackers-assigned =
+    { $assigned } van { $trackers ->
+        [one] 1 tracker
+       *[other] { $trackers } trackers
+    } toegewezen
 onboarding-assign_trackers-advanced = Geavanceerde toewijzingslocaties weergeven
 onboarding-assign_trackers-next = Ik heb alle trackers toegewezen
 
 ## Tracker manual mounting setup
+
 onboarding-manual_mounting-back = Ga terug naar de VR sectie
 onboarding-manual_mounting = Handmatige bevestiging
 onboarding-manual_mounting-description = Klik op elke tracker en selecteer op welke manier ze zijn bevestigd
@@ -472,6 +529,7 @@ onboarding-manual_mounting-auto_mounting = Automatische bevestiging
 onboarding-manual_mounting-next = Volgende stap
 
 ## Tracker automatic mounting setup
+
 onboarding-automatic_mounting-back = Ga terug naar de VR sectie
 onboarding-automatic_mounting-title = Bevestigingskalibratie
 onboarding-automatic_mounting-description = Om je trackers te laten werken, moet de rotatie worden ingesteld hoe deze zijn bevestigd op je lichaam.
@@ -492,12 +550,14 @@ onboarding-automatic_mounting-put_trackers_on-description = Om bevestigingsrotat
 onboarding-automatic_mounting-put_trackers_on-next = Ik heb al mijn trackers aan
 
 ## Tracker manual proportions setup
+
 onboarding-manual_proportions-back = Ga terug naar de reset tutorial
 onboarding-manual_proportions-title = Handmatige lichaamsverhoudingen
 onboarding-manual_proportions-precision = Precisie-aanpassing
 onboarding-manual_proportions-auto = Automatische kalibratie
 
 ## Tracker automatic proportions setup
+
 onboarding-automatic_proportions-back = Ga terug naar de reset tutorial
 onboarding-automatic_proportions-title = Meet je lichaam
 onboarding-automatic_proportions-description = Om SlimeVR-trackers te laten werken, moeten we de lengte van je botten weten. Deze korte kalibratie meet het voor je.
@@ -522,10 +582,11 @@ onboarding-automatic_proportions-recording-steps-3 = Draai je bovenlichaam naar 
 onboarding-automatic_proportions-recording-steps-4 = Wiebel rond tot de timer is afgelopen.
 onboarding-automatic_proportions-recording-processing = Resultaat verwerken
 # $time (Number) - Seconds left for the automatic calibration recording to finish (max 15)
-onboarding-automatic_proportions-recording-timer = { $time ->
-    [one] 1 seconde resterend
-    *[other] { $time } seconden resterend
-}
+onboarding-automatic_proportions-recording-timer =
+    { $time ->
+        [one] 1 seconde resterend
+       *[other] { $time } seconden resterend
+    }
 onboarding-automatic_proportions-verify_results-title = Resultaten controleren
 onboarding-automatic_proportions-verify_results-description = Controleer de resultaten hieronder, zien ze er correct uit?
 onboarding-automatic_proportions-verify_results-results = Opnameresultaten
@@ -536,4 +597,5 @@ onboarding-automatic_proportions-done-title = Lichaam gemeten en opgeslagen.
 onboarding-automatic_proportions-done-description = Je kalibratie voor lichaamsverhoudingen is voltooid!
 
 ## Home
+
 home-no_trackers = Geen trackers gedetecteerd of toegewezen

@@ -1,10 +1,11 @@
 import { useLocalization } from '@fluent/react';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { RpcMessage, SkeletonResetAllRequestT } from 'solarxr-protocol';
 import {
   AutoboneContextC,
   useProvideAutobone,
 } from '../../../../hooks/autobone';
+import { useBodyProportions } from '../../../../hooks/body-proportions';
 import { useOnboarding } from '../../../../hooks/onboarding';
 import { useWebsocketAPI } from '../../../../hooks/websocket-api';
 import { ArrowLink } from '../../../commons/ArrowLink';
@@ -24,6 +25,7 @@ export function AutomaticProportionsPage() {
   const { sendRPCPacket } = useWebsocketAPI();
   const context = useProvideAutobone();
   const [resetDisabled, setResetDisabled] = useState(false);
+  const { onPageOpened } = useBodyProportions();
 
   applyProgress(0.9);
 
@@ -38,6 +40,10 @@ export function AutomaticProportionsPage() {
       setResetDisabled(false);
     }, 3000);
   };
+
+  useEffect(() => {
+    onPageOpened();
+  }, []);
 
   return (
     <AutoboneContextC.Provider value={context}>

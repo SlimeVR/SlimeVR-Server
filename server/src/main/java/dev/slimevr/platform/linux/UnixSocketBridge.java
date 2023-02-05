@@ -93,7 +93,6 @@ public class UnixSocketBridge extends SteamVRBridge implements AutoCloseable {
 	@Override
 	@BridgeThread
 	protected boolean sendMessageReal(ProtobufMessages.ProtobufMessage message) {
-		LogManager.debug("Sending msg: " + message.toString());
 		if (this.channel != null) {
 			try {
 				int size = message.getSerializedSize() + 4;
@@ -136,7 +135,6 @@ public class UnixSocketBridge extends SteamVRBridge implements AutoCloseable {
 				// dst, so we need to move position ourselves)
 				try {
 					var message = parseMessage(dst.array(), 4, messageLength - 4);
-					LogManager.debug("Receiving msg " + message.toString());
 					this.messageReceived(message);
 				} catch (InvalidProtocolBufferException e) {
 					LogManager.severe("Failed to read protocol message", e);

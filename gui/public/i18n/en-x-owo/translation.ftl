@@ -1,19 +1,25 @@
 ### SlimeVR complete GUI translations
+
+
 # Please developers (not translators) don't reuse a key inside another key
 # or concat text with a translation string in the code, use the appropriate
 # features like variables and selectors in each appropriate case!
 # And also comment the string if it's something not easy to translate, so you help
 # translators on what it means
 
+
 ## Websocket (server) status
-websocket-connecting = weconnyecting to teh sewvew
+
+websocket-connecting = connyecting to teh sewvew
 websocket-connection_lost = oopsie woopsie~ connyection wost to teh sewvew ;m;... uwu am twying to weconnyect owo!
 
 ## Tips
+
 tips-find_tracker = nawt suwe whicsh twayckyaw is whicsh? shayke a twackaw and it will hyighwight the cowowesponding iytem.
 tips-do_not_move_heels = ensuwe yoowr pawsies do nawt mowve duwing wecowding! ^w^
 
 ## Body parts
+
 body_part-NONE = unassyigned
 body_part-HEAD = hed
 body_part-NECK = nyecky wecky
@@ -38,6 +44,7 @@ body_part-LEFT_FOOT = weft pawb
 body_part-LEFT_CONTROLLER = weft wontwolew
 
 ## Proportions
+
 skeleton_bone-NONE = none
 skeleton_bone-HEAD = hed shyft
 skeleton_bone-NECK = nyeck wength
@@ -47,8 +54,8 @@ skeleton_bone-WAIST = weyst wength
 skeleton_bone-HIP = hip wength
 skeleton_bone-HIP_OFFSET = hyip awfset
 skeleton_bone-HIPS_WIDTH = hyips wiwdth
-skeleton_bone-UPPER_LEG = uppor weg wength
-skeleton_bone-LOWER_LEG = lowur weg wength
+skeleton_bone-UPPER_LEG = uppew weg wength
+skeleton_bone-LOWER_LEG = wowwe weg wength
 skeleton_bone-FOOT_LENGTH = pawsies wength
 skeleton_bone-FOOT_SHIFT = pawsies shyft
 skeleton_bone-SKELETON_OFFSET = skeweton awfset
@@ -61,12 +68,14 @@ skeleton_bone-CONTROLLER_Z = cyontwowla disance z
 skeleton_bone-ELBOW_OFFSET = ewbow awfsewt
 
 ## Tracker reset buttons
+
 reset-reset_all = weset aww pwopowtions~
 reset-full = weset~
 reset-mounting = weset meownting
 reset-quick = quick weset
 
 ## Serial detection stuff
+
 serial_detection-new_device-p0 = nyu sewiaw device detected~!
 serial_detection-new_device-p1 = entaw youw wi-fi cwedentiaws~!
 serial_detection-new_device-p2 = pwease sewect what youw want to do wit it
@@ -76,6 +85,7 @@ serial_detection-submit = suwbmyt~!
 serial_detection-close = cwose
 
 ## Navigation bar
+
 navbar-home = howme
 navbar-body_proportions = body pwopowshons
 navbar-trackers_assign = twackaws assigwment
@@ -84,15 +94,21 @@ navbar-onboarding = suwep wisawd
 navbar-settings = sewtings
 
 ## Bounding volume hierarchy recording
+
 bvh-start_recording = wecowd bvh
 bvh-recording = wecowding...
 
 ## Widget: Overlay settings
+
 widget-overlay = owovelay
 widget-overlay-is_visible_label = show owovelay in steawmvr
 widget-overlay-is_mirrored_label = dispway owovelay as miwwow
 
+## Widget: Drift compensation
+widget-drift_compensation-clear = cwear dwift compensation
+
 ## Widget: Developer settings
+
 widget-developer_mode = devwowwewow mode
 widget-developer_mode-high_contrast = high contwast
 widget-developer_mode-precise_rotation = pwecise wotation
@@ -103,11 +119,13 @@ widget-developer_mode-raw_slime_rotation = waw wotation
 widget-developer_mode-more_info = mowe info
 
 ## Widget: IMU Visualizer
+
 widget-imu_visualizer = wotation
 widget-imu_visualizer-rotation_raw = waw
 widget-imu_visualizer-rotation_preview = pwewiew
 
 ## Tracker status
+
 tracker-status-none = no stawtus
 tracker-status-busy = busy
 tracker-status-error = ewwow
@@ -116,6 +134,7 @@ tracker-status-occluded = occwuded
 tracker-status-ok = oki
 
 ## Tracker status columns
+
 tracker-table-column-name = nayme
 tracker-table-column-type = type
 tracker-table-column-battery = battewy
@@ -128,18 +147,21 @@ tracker-table-column-position = pawsytion x/y/z
 tracker-table-column-url = uawl
 
 ## Tracker rotation
+
 tracker-rotation-front = fwowt
 tracker-rotation-left = lewft
 tracker-rotation-right = wight
 tracker-rotation-back = bak
 
 ## Tracker information
+
 tracker-infos-manufacturer = mawufactuwer
 tracker-infos-display_name = dispway name
 tracker-infos-custom_name = custowm name
 tracker-infos-url = twackaw uawl
 
 ## Tracker settings
+
 tracker-settings-back = go bak to twackaws liwst
 tracker-settings-title = twackaw sewtings
 tracker-settings-assignment_section = assiwnment
@@ -158,10 +180,12 @@ tracker-settings-name_section-description = owo whats dis?
 tracker-settings-name_section-placeholder = ewimewl's weft pawb
 
 ## Tracker part card info
+
 tracker-part_card-no_name = no name
 tracker-part_card-unassigned = unassigwed
 
 ## Body assignment menu
+
 body_assignment_menu = whewe doo yew want dis twayckaw to be?? >~>
 body_assignment_menu-description = chooce a wocation whewe yew want dis twayckaw to be assyigned. awtwernativewy, yew can chooce to manage awl twackaws at ownce instawd of won by won.
 body_assignment_menu-show_advanced_locations = show advawnced assyign wocations
@@ -169,6 +193,7 @@ body_assignment_menu-manage_trackers = manage awl twackaws
 body_assignment_menu-unassign_tracker = unassyign twayckaw
 
 ## Tracker assignment menu
+
 # A -translation_key (with a dash in the front) means that it's a label.
 # It can only be used in the translation file, it's nice for reusing names and that kind of stuff.
 #
@@ -197,11 +222,9 @@ tracker_selection_menu-LEFT_UPPER_LEG = { -tracker_selection-part } left thigh?
 tracker_selection_menu-LEFT_LOWER_LEG = { -tracker_selection-part } left ankle?
 tracker_selection_menu-LEFT_FOOT = { -tracker_selection-part } left foot?
 tracker_selection_menu-LEFT_CONTROLLER = { -tracker_selection-part } left controller?
-
 tracker_selection_menu-unassigned = unassyigned twackaws
 tracker_selection_menu-assigned = assyigned twackaws
 tracker_selection_menu-dont_assign = do nawt assyign
-
 # This line cares about multilines.
 # <b>text</b> means that the text should be bold.
 tracker_selection_menu-neck_warning =
@@ -211,21 +234,24 @@ tracker_selection_menu-neck_warning-done = i undewstand the wisks~
 tracker_selection_menu-neck_warning-cancel = cancew :o
 
 ## Mounting menu
+
 mounting_selection_menu = whewe doo yew want dis twayckaw to be?
 mounting_selection_menu-close = cwose
 
 ## Sidebar settings
+
 settings-sidebar-title = settyings~
 settings-sidebar-general = genyawaw
 settings-sidebar-tracker_mechanics = twayckaw mechanics~
 settings-sidebar-fk_settings = fk settyings
-settings-sidebar-gesture_control = Gesture control
+settings-sidebar-gesture_control = gestauw cantwol
 settings-sidebar-interface = intyawface~
 settings-sidebar-osc_router = OSC wouwter
 settings-sidebar-utils = utiwities
 settings-sidebar-serial = sewiaw cownsaw
 
 ## SteamVR settings
+
 settings-general-steamvr = steamvr~
 settings-general-steamvr-subtitle = steamvr twayckaws~
 # Not all translation keys support multiline, only the ones that specify it will actually
@@ -243,8 +269,9 @@ settings-general-steamvr-trackers-elbows = ewbows~
 settings-general-steamvr-trackers-hands = pawbsies~
 
 ## Tracker mechanics
+
 settings-general-tracker_mechanics = twayckaw mechanics~
-settings-general-tracker_mechanics-filtering = fiwtering~
+settings-general-tracker_mechanics-filtering = fiwtewing~
 # This also cares about multilines
 settings-general-tracker_mechanics-filtering-description =
     chooce teh fiwwtewing type fow youw twackaws.
@@ -267,9 +294,10 @@ settings-general-tracker_mechanics-drift_compensation-amount-label = compensatio
 settings-general-tracker_mechanics-drift_compensation-max_resets-label = nuwmbew of wesets uwsed
 
 ## FK/Tracking settings
+
 settings-general-fk_settings = fk sewttings
 settings-general-fk_settings-leg_tweak = leg tweeks
-settings-general-fk_settings-leg_tweak-description = floo-cwip can wowduce owow even ewiminates cwipping with teh fwoor but may cause pwobweems when on yowur neeys. skayting-cowwection cowwects fow wowce skating, but can wowcyancy accuwowacy in cewtain wowvement wowttewns.
+settings-general-fk_settings-leg_tweak-description = floo-cwip can wowduce owow even ewiminates cwipping with teh fwoow but may cause pwobweems when on yowuw neeys. skayting-cowwection cowwects fow wowce skating, but can wowcyancy accuwowacy in cewtain wowvement wowttewns.
 # Floor clip:
 # why the name - came from the idea of noclip in video games, but is the opposite where clipping to the floor is a desired feature
 # definition - Prevents the foot trackers from going lower than they where when a reset was performed
@@ -293,15 +321,17 @@ settings-general-fk_settings-vive_emulation-description = emuwate the waist twac
 settings-general-fk_settings-vive_emulation-label = enabwe vive emuwation
 
 ## Gesture control settings (tracker tapping)
+
 settings-general-gesture_control = gestauw cantwol
 settings-general-gesture_control-subtitle = bap bwased wesets
 settings-general-gesture_control-description = allaws owr wesets wo be twiggered by wapping a twackaw. The twackaw hyighest wup on youwur twursuu is uwued for qwick weset, wa twackaw hyighest up on youwur weft weg is uwused for weset, and teh twackaw hyighest up on youwur wight weg is used for mmountwing weset. It showold we wentioned what waps muwst happen within 0.6 seconds wo be wegistered
 # This is a unit: 3 taps, 2 taps, 1 tap
 # $amount (Number) - Amount of taps (touches to the tracker's case)
-settings-general-gesture_control-taps = { $amount ->
-    [one] 1 bap
-    *[other] { $amount } baps
-}
+settings-general-gesture_control-taps =
+    { $amount ->
+        [one] 1 bap
+       *[other] { $amount } baps
+    }
 settings-general-gesture_control-quickResetEnabled = enable wap to quwuick weset
 settings-general-gesture_control-quickResetDelay = quwuick weset deway
 settings-general-gesture_control-quickResetTaps = baps for quwuick weset
@@ -313,6 +343,7 @@ settings-general-gesture_control-mountingResetDelay = mountwing weset deway
 settings-general-gesture_control-mountingResetTaps = baps for mountwing weset
 
 ## Interface settings
+
 settings-general-interface = intewface
 settings-general-interface-dev_mode = devwowwewow mode
 settings-general-interface-dev_mode-description = this mode can be wowseffuw if you need in-dipth data owow to intewact with cownnected twackaws on a wowowe wowadvanced wowwevew
@@ -325,6 +356,7 @@ settings-general-interface-lang-description = change the defawwt wanguage yuw wa
 settings-general-interface-lang-placeholder = sewect teh wanguage to use
 
 ## Serial settings
+
 settings-serial = shewyaw console
 # This cares about multilines
 settings-serial-description =
@@ -345,6 +377,7 @@ settings-serial-serial_select = sewect a shewyaw pawt
 settings-serial-auto_dropdown_item = awto
 
 ## OSC router settings
+
 settings-osc-router = OSC wouwter
 # This cares about multilines
 settings-osc-router-description =
@@ -369,6 +402,7 @@ settings-osc-router-network-address-description = choose which addwess to send o
 settings-osc-router-network-address-placeholder = IPV4 addwess
 
 ## OSC VRChat settings
+
 settings-osc-vrchat = VRChat OSC Trackers
 # This cares about multilines
 settings-osc-vrchat-description =
@@ -397,11 +431,13 @@ settings-osc-vrchat-network-trackers-feet = pweets~
 settings-osc-vrchat-network-trackers-elbows = ewbows~
 
 ## Setup/onboarding menu
+
 onboarding-skip = skipy setup
 onboarding-continue = continyue
 onboarding-wip = wowwk in pwowgress
 
 ## Wi-Fi setup
+
 onboarding-wifi_creds-back = gaww bawwk to intwoduction
 onboarding-wifi_creds = input wi-fi cwedentials
 # This cares about multilines
@@ -418,11 +454,13 @@ onboarding-wifi_creds-password =
     .placeholder = entew passwowod
 
 ## Mounting setup
+
 onboarding-reset_tutorial-back = gaww bawwk to meownting cawwibwation
 onboarding-reset_tutorial = weset tutowial
 onboarding-reset_tutorial-description = dis featuwe isn't done, just pwess continyue
 
 ## Setup start
+
 onboarding-home = wewcome to swimevr
 # This cares about multilines and it's centered!!
 onboarding-home-description =
@@ -431,17 +469,20 @@ onboarding-home-description =
 onboarding-home-start = wets get set up!
 
 ## Enter VR part of setup
+
 onboarding-enter_vr-back = gaww bawwk to twacker assignyment
 onboarding-enter_vr-title = time to entew vr!
 onboarding-enter_vr-description = put on awe yoaww twackaws and then entew vr!
 onboarding-enter_vr-ready = iym ready
 
 ## Setup done
+
 onboarding-done-title = yaww awe awe set!
 onboarding-done-description = enjoy yoaww fuww body expewwience
 onboarding-done-close = cwose the guide
 
 ## Tracker connection setup
+
 onboarding-connect_tracker-back = gaww bawwk to wi-fi cwedentials
 onboarding-connect_tracker-title = connect twackaws
 onboarding-connect_tracker-description-p0 = now onto teh fun pawwt, connecting awe teh twackaws!
@@ -458,28 +499,32 @@ onboarding-connect_tracker-connection_status-handshake = cownyected to teh sewve
 # English in this case only has 2 plural rules, which are "one" and "other",
 # we use 0 in an explicit way because there is no plural rule in english for 0, so we directly say
 # if $amount is 0 then we say "No trackers connected"
-onboarding-connect_tracker-connected_trackers = { $amount ->
-    [0] no twackers
-    [one] 1 twackers
-    *[other] { $amount } twackers
-} cownyected
+onboarding-connect_tracker-connected_trackers =
+    { $amount ->
+        [0] no twackers
+        [one] 1 twackers
+       *[other] { $amount } twackers
+    } cownyected
 onboarding-connect_tracker-next = i cownyected awe my twackaws
 
 ## Tracker assignment setup
+
 onboarding-assign_trackers-back = go bak to wi-fi credyentials
 onboarding-assign_trackers-title = assign twackaws
 onboarding-assign_trackers-description = wets choyse which twackaw goes whewe. cwick on a wocation whewe yowo want to payce a twackaw
 # Look at translation of onboarding-connect_tracker-connected_trackers on how to use plurals
 # $assigned (Number) - Trackers that have been assigned a body part
 # $trackers (Number) - Trackers connected to the server
-onboarding-assign_trackers-assigned = { $assigned } of { $trackers ->
-    [one] 1 twackaws
-    *[other] { $trackers } twackaws
-} assigned
+onboarding-assign_trackers-assigned =
+    { $assigned } of { $trackers ->
+        [one] 1 twackaws
+       *[other] { $trackers } twackaws
+    } assigned
 onboarding-assign_trackers-advanced = show advanced assign wocations
 onboarding-assign_trackers-next = i assigned awe the twackaws
 
 ## Tracker manual mounting setup
+
 onboarding-manual_mounting-back = go bak to entaw vawe
 onboarding-manual_mounting = manual meownting
 onboarding-manual_mounting-description = cwick on evewy twackaw and sewect which way they awe mownted
@@ -487,6 +532,7 @@ onboarding-manual_mounting-auto_mounting = awtomawic meownting
 onboarding-manual_mounting-next = newt stewp
 
 ## Tracker automatic mounting setup
+
 onboarding-automatic_mounting-back = go bak to entaw vawe
 onboarding-automatic_mounting-title = meownting cawibwation
 onboarding-automatic_mounting-description = fow SlimeVR twackaws to wowk, we need to assign a meownting wowation to yowo twackaws to awign them with yowo pwysical twackaw mounting.
@@ -507,12 +553,14 @@ onboarding-automatic_mounting-put_trackers_on-description = to cawibwate meownti
 onboarding-automatic_mounting-put_trackers_on-next = i haff awe my twackaws on
 
 ## Tracker manual proportions setup
+
 onboarding-manual_proportions-back = go bawck to weset tutowiaw
 onboarding-manual_proportions-title = manyuaw bodee pwopowtiesions
 onboarding-manual_proportions-precision = pwecision adjusty
 onboarding-manual_proportions-auto = owtomatic cawybwation
 
 ## Tracker automatic proportions setup
+
 onboarding-automatic_proportions-back = go bawck to weweset tutowiaw
 onboarding-automatic_proportions-title = measuwe yowuw bodee
 onboarding-automatic_proportions-description = fow swimevw twackaws to wowk, we need to know teh wowkty of yowuw bones. dis showt cawybwation will measuwe it fow yowu
@@ -528,7 +576,7 @@ onboarding-automatic_proportions-start_recording-title = get wowdy to move
 onboarding-automatic_proportions-start_recording-description = we'we now going to wowcawd some specific poses and moves. these will be pwompted in teh wowst screen. be wowdy to stawt when teh buttawn is pwessed!
 onboarding-automatic_proportions-start_recording-next = stawt wowcawding
 onboarding-automatic_proportions-recording-title = wowcawd
-onboarding-automatic_proportions-recording-description-p0 = wowcawding in pwowgress...
+onboarding-automatic_proportions-recording-description-p0 = wowcawding in pwowgwess...
 onboarding-automatic_proportions-recording-description-p1 = make teh moves shown bowow:
 onboarding-automatic_proportions-recording-steps-0 = bend knees a few times.
 onboarding-automatic_proportions-recording-steps-1 = sit on a chayaw then stawnd up.
@@ -537,10 +585,11 @@ onboarding-automatic_proportions-recording-steps-3 = twist upwe wowdy wowight, t
 onboarding-automatic_proportions-recording-steps-4 = wiggy aweound until tymey ends.
 onboarding-automatic_proportions-recording-processing = pwowcessing teh wowesult
 # $time (Number) - Seconds left for the automatic calibration recording to finish (max 15)
-onboarding-automatic_proportions-recording-timer = { $time ->
-    [one] 1 second wowft
-    *[other] { $time } secondsy wowft
-}
+onboarding-automatic_proportions-recording-timer =
+    { $time ->
+        [one] 1 second wowft
+       *[other] { $time } secondsy wowft
+    }
 onboarding-automatic_proportions-verify_results-title = vewify wowesults
 onboarding-automatic_proportions-verify_results-description = check teh wewesults below, do tehy weok coowect?
 onboarding-automatic_proportions-verify_results-results = wecowding wewesults
@@ -551,4 +600,5 @@ onboarding-automatic_proportions-done-title = bawdy meowsured anwd sayved uwu
 onboarding-automatic_proportions-done-description = yoww body pwopowwtions cawybowwation is cowowplete! ^w^
 
 ## Home
+
 home-no_trackers = no twackaws detecyted owo wowigned

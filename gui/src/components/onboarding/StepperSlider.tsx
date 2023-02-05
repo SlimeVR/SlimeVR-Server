@@ -133,7 +133,7 @@ export function StepperSlider({
               type={type}
               width={width}
               active={index === step}
-              step={step}
+              step={index}
             >
               <StepComponent
                 variant={variant}

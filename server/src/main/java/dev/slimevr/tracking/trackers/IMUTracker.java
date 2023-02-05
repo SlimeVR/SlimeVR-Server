@@ -213,6 +213,16 @@ public class IMUTracker
 		}
 	}
 
+	public void clearDriftCompensation() {
+		driftSince = 0L;
+		timeAtLastReset = 0L;
+		totalDriftTime = 0L;
+		if (driftQuats != null) {
+			driftQuats.clear();
+			driftTimes.clear();
+		}
+	}
+
 	@Override
 	public void tick() {
 		if (magnetometerCalibrated && hasNewCorrectionData) {

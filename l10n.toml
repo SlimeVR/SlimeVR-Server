@@ -2,6 +2,7 @@
 basepath = "."
 
 locales = [
+	'de',
 	"en-x-owo",
 	"es-419",
 	"et",
@@ -9,10 +10,13 @@ locales = [
 	"it",
 	"ja",
 	"ko",
+	"nb-NO",
+	'nl',
 	"pl",
 	"pt-BR",
 	"vi",
-	"zh-Hans"
+	"zh-Hans",
+	"zh-Hant",
 ]
 
 [[paths]]

@@ -21,10 +21,12 @@ jobs:
           submodules: recursive
           # Get all the git history for rebasing
           fetch-depth: 0
-      - uses: imba-tjd/rebase-upstream-action@0.5
-        with:
-          upstream: SlimeVR/SlimeVR-Server
-          branch: main
+      - name: Rebase
+        run: |
+          git config --local user.name "slimevr-bot"
+          git config --local user.email pantoon@slimevr.dev
+          git fetch origin main
+          git rebase origin/main
       - name: Push rebase
         uses: github-actions-x/commit@v2.9
         with:

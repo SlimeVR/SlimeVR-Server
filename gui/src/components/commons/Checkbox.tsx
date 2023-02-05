@@ -62,7 +62,7 @@ export function CheckBox({
             <input
               ref={ref}
               onChange={onChange}
-              checked={value}
+              checked={value || false}
               name={name}
               className={classes.checkbox}
               type="checkbox"
