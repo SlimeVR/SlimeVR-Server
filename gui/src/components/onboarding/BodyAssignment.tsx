@@ -30,6 +30,8 @@ export const ASSIGNMENT_RULES: Partial<
   ],
   [BodyPart.LEFT_UPPER_LEG]: [[BodyPart.HIP, BodyPart.CHEST, BodyPart.WAIST]],
   [BodyPart.RIGHT_UPPER_LEG]: [[BodyPart.HIP, BodyPart.CHEST, BodyPart.WAIST]],
+  [BodyPart.HIP]: [BodyPart.CHEST],
+  [BodyPart.WAIST]: [BodyPart.CHEST],
 };
 
 export function BodyAssignment({

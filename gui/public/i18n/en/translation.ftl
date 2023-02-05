@@ -530,13 +530,16 @@ onboarding-assign_trackers-warning-RIGHT_UPPER_LEG = Right thigh is assigned but
     [0] either the chest, hip or waist
     *[unknown] Unknown unassigned body part
 } to also be assigned!
-
-onboarding-assign_trackers-tracker-warning-and = {" , "}
-onboarding-assign_trackers-tracker-warning-or = {" or "}
-onboarding-assign_trackers-tracker-warning = { $role } is assigned but { $unassigned_count ->
-    [one] { $unassigned_roles } is not!
-    *[other] { $unassigned_roles } are not!
-}
+# $unassigned (Number) - Bits are based on BodyAssignment.ASSIGNMENT_RULES order
+onboarding-assign_trackers-warning-HIP = Hip is assigned but you need { $unassigned ->
+    [0] the chest
+    *[unknown] Unknown unassigned body part
+} to also be assigned!
+# $unassigned (Number) - Bits are based on BodyAssignment.ASSIGNMENT_RULES order
+onboarding-assign_trackers-warning-WAIST = Waist is assigned but you need { $unassigned ->
+    [0] the chest
+    *[unknown] Unknown unassigned body part
+} to also be assigned!
 
 ## Tracker manual mounting setup
 onboarding-manual_mounting-back = Go Back to Enter VR
