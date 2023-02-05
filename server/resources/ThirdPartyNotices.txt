@@ -1446,7 +1446,7 @@ END OF TERMS AND CONDITIONS
 ---------------------------------------------------------------
 
 ---------------------------------------------------------------
-Font file containing language flags by:
+Font file containing emojis by:
 Twitter Emoji (Twemoji)
 https://github.com/twitter/twemoji
 
