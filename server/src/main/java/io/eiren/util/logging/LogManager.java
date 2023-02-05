@@ -3,7 +3,6 @@ package io.eiren.util.logging;
 import java.io.File;
 import java.io.IOException;
 import java.io.PrintStream;
-import java.text.SimpleDateFormat;
 import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.logging.ConsoleHandler;
 import java.util.logging.FileHandler;
@@ -20,7 +19,7 @@ public class LogManager {
 	public static final IGLog log = new DefaultGLog(global);
 	public static ConsoleHandler handler;
 
-	public static void initialize(File logsDir, File mainLogDir)
+	public static void initialize(File mainLogDir)
 		throws SecurityException, IOException {
 		if (initialized.getAndSet(true))
 			return;
@@ -31,29 +30,9 @@ public class LogManager {
 			File lastLogFile = new File(mainLogDir, "log_last.log");
 			if (lastLogFile.exists())
 				lastLogFile.delete();
-			File mainLog = new File(mainLogDir, "log_main.log");
-			FileHandler mHandler = new FileHandler(mainLog.getPath(), true);
 			FileHandler filehandler = new FileHandler(lastLogFile.getPath(), true);
-			mHandler.setFormatter(loc);
 			filehandler.setFormatter(loc);
-			global.addHandler(mHandler);
 			global.addHandler(filehandler);
-		}
-		if (logsDir != null) {
-			if (!logsDir.exists())
-				logsDir.mkdir();
-			if (!logsDir.isDirectory())
-				System.out.println("*** WARNING *** LOG FOLDER IS NOT A DIRECTORY!");
-			File currentLog = new File(
-				logsDir,
-				"log_"
-					+ new SimpleDateFormat("yyyy-MM-dd")
-						.format(System.currentTimeMillis())
-					+ ".log"
-			);
-			FileHandler filehandler2 = new FileHandler(currentLog.getPath(), true);
-			filehandler2.setFormatter(loc);
-			global.addHandler(filehandler2);
 		}
 	}
 

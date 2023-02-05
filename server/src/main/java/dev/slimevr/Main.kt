@@ -49,7 +49,7 @@ fun main(args: Array<String>) {
 	}
 	val dir = File("").absoluteFile
 	try {
-		LogManager.initialize(File(dir, "logs/"), dir)
+		LogManager.initialize(dir)
 	} catch (e1: java.lang.Exception) {
 		e1.printStackTrace()
 	}
