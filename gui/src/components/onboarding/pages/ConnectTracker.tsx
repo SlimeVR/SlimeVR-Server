@@ -23,7 +23,8 @@ import { TrackerCard } from '../../tracker/TrackerCard';
 const BOTTOM_HEIGHT = 80;
 
 const statusLabelMap = {
-  [WifiProvisioningStatus.NONE]: 'onboarding-connect_tracker-connection_status-none',
+  [WifiProvisioningStatus.NONE]:
+    'onboarding-connect_tracker-connection_status-none',
   [WifiProvisioningStatus.SERIAL_INIT]:
     'onboarding-connect_tracker-connection_status-serial_init',
   [WifiProvisioningStatus.PROVISIONING]:
