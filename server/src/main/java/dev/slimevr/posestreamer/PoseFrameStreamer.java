@@ -30,6 +30,10 @@ public class PoseFrameStreamer extends PoseStreamer {
 		return frames;
 	}
 
+	public HumanPoseManager getHumanPoseManager() {
+		return humanPoseManager;
+	}
+
 	public synchronized void streamAllFrames() {
 		for (int i = 0; i < frames.getMaxFrameCount(); i++) {
 			frames.setCursors(i);
