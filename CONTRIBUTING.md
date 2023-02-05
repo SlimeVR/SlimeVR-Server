@@ -18,7 +18,7 @@ cd SlimeVR-Server
 Now you can open the codebase in your favorite IDE or text editor.
 
 ### Installing Java
-The codebase is required to build with Java version 11 or higher.
+The codebase is required to build with Java version 17 or higher.
 
 ```bash
 # Check java version
