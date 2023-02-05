@@ -13,23 +13,17 @@ export const ASSIGNMENT_RULES: Partial<
   [BodyPart.LEFT_FOOT]: [
     BodyPart.LEFT_LOWER_LEG,
     BodyPart.LEFT_UPPER_LEG,
-    [BodyPart.HIP, BodyPart.CHEST, BodyPart.WAIST],
+    SPINE_PARTS,
   ],
   [BodyPart.RIGHT_FOOT]: [
     BodyPart.RIGHT_LOWER_LEG,
     BodyPart.RIGHT_UPPER_LEG,
-    [BodyPart.HIP, BodyPart.CHEST, BodyPart.WAIST],
+    SPINE_PARTS,
   ],
-  [BodyPart.LEFT_LOWER_LEG]: [
-    BodyPart.LEFT_UPPER_LEG,
-    [BodyPart.HIP, BodyPart.CHEST, BodyPart.WAIST],
-  ],
-  [BodyPart.RIGHT_LOWER_LEG]: [
-    BodyPart.RIGHT_UPPER_LEG,
-    [BodyPart.HIP, BodyPart.CHEST, BodyPart.WAIST],
-  ],
-  [BodyPart.LEFT_UPPER_LEG]: [[BodyPart.HIP, BodyPart.CHEST, BodyPart.WAIST]],
-  [BodyPart.RIGHT_UPPER_LEG]: [[BodyPart.HIP, BodyPart.CHEST, BodyPart.WAIST]],
+  [BodyPart.LEFT_LOWER_LEG]: [BodyPart.LEFT_UPPER_LEG, SPINE_PARTS],
+  [BodyPart.RIGHT_LOWER_LEG]: [BodyPart.RIGHT_UPPER_LEG, SPINE_PARTS],
+  [BodyPart.LEFT_UPPER_LEG]: [SPINE_PARTS],
+  [BodyPart.RIGHT_UPPER_LEG]: [SPINE_PARTS],
   [BodyPart.HIP]: [BodyPart.CHEST],
   [BodyPart.WAIST]: [BodyPart.CHEST],
 };
