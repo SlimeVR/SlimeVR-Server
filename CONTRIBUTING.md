@@ -17,6 +17,15 @@ cd SlimeVR-Server
 
 Now you can open the codebase in your favorite IDE or text editor.
 
+### Installing Java
+The codebase is required to build with Java version 11 or higher.
+
+```bash
+# Check java version
+java --version
+```
+
+
 ### Building the code
 The code is built with `gradle`, a cli tool that manages java projects and their
 dependencies. You can build the code with `./gradlew build` and run it with
