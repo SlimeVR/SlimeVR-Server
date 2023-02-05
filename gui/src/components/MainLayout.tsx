@@ -1,8 +1,6 @@
 import classNames from 'classnames';
 import { ReactNode, useEffect, useState } from 'react';
 import {
-  DriftCompensationSettings,
-  DriftCompensationSettingsT,
   ResetType,
   RpcMessage,
   SettingsRequestT,

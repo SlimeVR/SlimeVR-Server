@@ -5,7 +5,7 @@ import { EyeIcon } from './icon/EyeIcon';
 
 interface InputProps {
   variant?: 'primary' | 'secondary';
-  label: string;
+  label?: string;
   name: string;
 }
 
@@ -13,7 +13,7 @@ export const InputInside = forwardRef<
   HTMLInputElement,
   {
     variant?: 'primary' | 'secondary';
-    label: string;
+    label?: string;
     onChange: () => void;
   } & Partial<HTMLInputElement>
 >(function AppInput(

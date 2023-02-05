@@ -1,12 +1,5 @@
-import {
-  createContext,
-  Reducer,
-  useContext,
-  useEffect,
-  useLayoutEffect,
-  useReducer,
-} from 'react';
-import { useLocation, useParams } from 'react-router-dom';
+import { createContext, Reducer, useContext, useLayoutEffect, useReducer } from 'react';
+import { useLocation } from 'react-router-dom';
 import { useConfig } from './config';
 
 type OnboardingAction =

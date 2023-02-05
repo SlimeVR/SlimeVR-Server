@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import { useEffect } from 'react';
 
 export function useTimeout(fn: () => void, delay: number) {
   useEffect(() => {
