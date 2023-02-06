@@ -40,7 +40,7 @@ body_part-LEFT_CONTROLLER = Левый контроллер
 ## Proportions
 skeleton_bone-NONE = Пусто
 skeleton_bone-HEAD = Голова
-skeleton_bone-NECK = Длинна шеи
+skeleton_bone-NECK = Длина шеи
 skeleton_bone-CHEST = Длинна груди
 skeleton_bone-CHEST_OFFSET = Оффсет груди
 skeleton_bone-WAIST = Длинна талии
