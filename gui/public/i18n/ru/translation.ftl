@@ -6,7 +6,7 @@
 # translators on what it means
 
 ## Websocket (server) status
-websocket-connecting = Подключаемся к серверу
+websocket-connecting = Подключение к серверу
 websocket-connection_lost = Потеряно подключение к сервер. Пробуем переподключиться...
 
 ## Tips
