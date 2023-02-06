@@ -70,7 +70,7 @@ export const langs = [
     key: 'pt-BR',
   },
   {
-    name: 'Русский',
+    name: '🇷🇺 Русский',
     key: 'ru',
   },
   {
