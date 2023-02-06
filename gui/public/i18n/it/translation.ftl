@@ -104,6 +104,10 @@ widget-overlay = Overlay
 widget-overlay-is_visible_label = Mostra Overlay in SteamVR
 widget-overlay-is_mirrored_label = Includi uno specchio nel Overlay
 
+## Widget: Drift compensation
+
+widget-drift_compensation-clear = Rimuovi compensazione del drift
+
 ## Widget: Developer settings
 
 widget-developer_mode = Modalità sviluppatore
@@ -240,7 +244,7 @@ mounting_selection_menu-close = Chiudi
 settings-sidebar-title = Impostazioni
 settings-sidebar-general = Generali
 settings-sidebar-tracker_mechanics = Comportamento del tracker
-settings-sidebar-fk_settings = Impostazioni FK
+settings-sidebar-fk_settings = Impostazioni Traking
 settings-sidebar-gesture_control = Controllo dei gesti
 settings-sidebar-interface = Interfaccia
 settings-sidebar-osc_router = OSC router
@@ -305,7 +309,7 @@ settings-general-fk_settings-leg_tweak-floor_clip = Compenetrazione pavimento
 # definition - Guesses when each foot is in contact with the ground and uses that information to improve tracking
 settings-general-fk_settings-leg_tweak-skating_correction = Correzione pattinaggio
 settings-general-fk_settings-leg_tweak-skating_correction-amount = Forza fattore di correzione pattinaggio
-settings-general-fk_settings-arm_fk = FK Braccia
+settings-general-fk_settings-arm_fk = Tracking Braccia
 settings-general-fk_settings-arm_fk-description = Cambia la modalità di tracciamento delle braccia.
 settings-general-fk_settings-arm_fk-force_arms = Forza il calcolo della posizione delle braccia a utilizzare il HMD
 settings-general-fk_settings-skeleton_settings = Impostazioni scheletro
@@ -313,9 +317,9 @@ settings-general-fk_settings-skeleton_settings-description = Abilita o disabilit
 settings-general-fk_settings-skeleton_settings-extended_spine = Estensione colonna vertebrale
 settings-general-fk_settings-skeleton_settings-extended_pelvis = Estensione bacino
 settings-general-fk_settings-skeleton_settings-extended_knees = Estensione ginocchia
-settings-general-fk_settings-vive_emulation-title = Emulazione Vive
-settings-general-fk_settings-vive_emulation-description = Emula i problemi del tracker in vita che hanno i tracker Vive. Questo è uno scherzo e peggiora il tracciamento.
-settings-general-fk_settings-vive_emulation-label = Abilita l'emulazione Vive
+settings-general-fk_settings-vive_emulation-title = Imitazione Vive
+settings-general-fk_settings-vive_emulation-description = Imita i problemi che hanno i Vive tracker utilizzati sul girovita. Questo è uno scherzo e peggiora il tracciamento.
+settings-general-fk_settings-vive_emulation-label = Abilita l'imitazione Vive
 
 ## Gesture control settings (tracker tapping)
 
