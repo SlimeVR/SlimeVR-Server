@@ -69,6 +69,10 @@ export const langs = [
     key: 'pt-BR',
   },
   {
+    name: '🇷🇺 Русский',
+    key: 'ru',
+  },
+  {
     name: '🇻🇳 Tiếng Việt',
     key: 'vi',
   },
