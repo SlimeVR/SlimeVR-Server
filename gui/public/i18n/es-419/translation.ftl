@@ -104,6 +104,10 @@ widget-overlay = Overlay
 widget-overlay-is_visible_label = Mostrar interfaz en SteamVR
 widget-overlay-is_mirrored_label = Mostrar interfaz reflejada
 
+## Widget: Drift compensation
+
+widget-drift_compensation-clear = Limpiar compensación de desviación
+
 ## Widget: Developer settings
 
 widget-developer_mode = Developer Mode
@@ -174,7 +178,7 @@ tracker-settings-drift_compensation_section-edit = Permitir compensación de des
 # In this case that is the settings for the assignment section.
 tracker-settings-name_section = Nombre del sensor
 tracker-settings-name_section-description = Dale un apodo bonito :)
-tracker-settings-name_section-placeholder = Pierna izquierda de NightyBeast
+tracker-settings-name_section-placeholder = Pata izquierda de Manteca
 
 ## Tracker part card info
 
