@@ -7,7 +7,7 @@
 
 ## Websocket (server) status
 websocket-connecting = Подключение к серверу
-websocket-connection_lost = Потеряно подключение к сервер. Пробуем переподключиться...
+websocket-connection_lost = Потеряно подключение к серверу. Переподключение...
 
 ## Tips
 tips-find_tracker = Не уверены, какой трекер какой? Встряхните трекер, и он выделит соответствующий элемент.
