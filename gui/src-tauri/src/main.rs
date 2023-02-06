@@ -225,8 +225,7 @@ fn main() {
 		.run(tauri::generate_context!());
 	match builder {
 		#[cfg(windows)]
-		// The actual error is Runtime(CreateWebview(WebView2Error(WindowsError(error))))
-		// I don't know where to find the WebView2Error type...
+		// Often triggered when the user doesn't have webview2 installed
 		Err(tauri::Error::Runtime(tauri_runtime::Error::CreateWebview(error))) => {
 			// I should log this anyways, don't want to dig a grave by not logging the error.
 			log::error!("CreateWebview error {}", error);
