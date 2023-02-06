@@ -33,7 +33,7 @@ body_part-LEFT_UPPER_ARM = Левое предплечье
 body_part-LEFT_LOWER_ARM = Левое нижнее предплечье
 body_part-LEFT_HAND = Левая рука
 body_part-LEFT_UPPER_LEG = Левое бедро
-body_part-LEFT_LOWER_LEG = Левая лодышка
+body_part-LEFT_LOWER_LEG = Левая голень
 body_part-LEFT_FOOT = Левая ступня
 body_part-LEFT_CONTROLLER = Левый контроллер
 
