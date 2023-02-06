@@ -21,6 +21,10 @@ export const langs = [
     key: 'ar',
   },
   {
+    name: '🇨🇿 Čeština',
+    key: 'cz',
+  },
+  {
     name: '🇺🇸 English',
     key: 'en',
   },
