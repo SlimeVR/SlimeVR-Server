@@ -27,10 +27,11 @@ public class LogManager {
 		if (mainLogDir != null) {
 			if (!mainLogDir.exists())
 				mainLogDir.mkdirs();
-			File lastLogFile = new File(mainLogDir, "log_last.log");
-			if (lastLogFile.exists())
-				lastLogFile.delete();
-			FileHandler filehandler = new FileHandler(lastLogFile.getPath(), true);
+			for (File f : mainLogDir.listFiles()) {
+				if (f.getName().startsWith("log_last"))
+					f.delete();
+			}
+			FileHandler filehandler = new FileHandler("log_last_%g.log", 25 * 1000000, 2);
 			filehandler.setFormatter(loc);
 			global.addHandler(filehandler);
 		}
