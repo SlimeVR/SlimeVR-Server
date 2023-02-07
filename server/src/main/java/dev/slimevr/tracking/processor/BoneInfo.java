@@ -16,7 +16,7 @@ public class BoneInfo {
 	public final TransformNode headNode;
 	public final TransformNode tailNode;
 	public float length;
-	private final Quaternion quatBuf = new Quaternion();
+	protected final TransformNode unityNodeTowardsHip;
 	private static final Quaternion FOOT_OFFSET = Quaternion.X_90_DEG;
 	private static final Quaternion LEFT_SHOULDER_OFFSET = new Quaternion()
 		.fromAngles(0f, 0f, FastMath.HALF_PI);
@@ -24,11 +24,9 @@ public class BoneInfo {
 		.fromAngles(0f, 0f, -FastMath.HALF_PI);
 
 	/**
-	 * Creates a `BoneInfo`.
-	 *
-	 * We use `tailNode` because the length of the bone comes from the tail
-	 * node's local transform (offset from head), but the rotation of a bone
-	 * comes from the head node's rotation.
+	 * Creates a `BoneInfo`. We use `tailNode` because the length of the bone
+	 * comes from the tail node's local transform (offset from head), but the
+	 * rotation of a bone comes from the head node's rotation.
 	 */
 	public BoneInfo(BoneType boneType, TransformNode tailNode) {
 		this.boneType = boneType;
@@ -37,6 +35,7 @@ public class BoneInfo {
 			this.headNode = tailNode.getParent();
 		else
 			this.headNode = tailNode;
+		unityNodeTowardsHip = getNodeTowards(BoneType.HIP, true);
 		updateLength();
 	}
 
@@ -47,31 +46,54 @@ public class BoneInfo {
 		length = tailNode.localTransform.getTranslation().length();
 	}
 
-	public Vector3f getGlobalTranslation() {
-		return tailNode.worldTransform.getTranslation();
+	public Vector3f getGlobalTranslation(boolean unity) {
+		return getAdjustedTranslation(tailNode.worldTransform.getTranslation(), unity);
 	}
 
-	public Vector3f getLocalTranslation() {
-		return tailNode.localTransform.getTranslation();
+	public Vector3f getLocalTranslation(boolean unity) {
+		return getAdjustedTranslation(tailNode.localTransform.getTranslation(), unity);
 	}
 
 	public Quaternion getGlobalRotation(boolean unity) {
-		Quaternion rot = headNode.worldTransform.getRotation();
-		adjustRotation(rot, unity);
-		return rot;
+		return getAdjustedRotation(headNode.worldTransform.getRotation(), unity);
 	}
 
 	public Quaternion getLocalRotation(boolean unity) {
-		Quaternion rot = headNode.localTransform.getRotation();
-		adjustRotation(rot, unity);
-		return rot;
+		return getAdjustedRotation(headNode.localTransform.getRotation(), unity);
 	}
 
 	// TODO : There shouldn't be edge cases like multiplying
 	// feet by rotation. This is the best solution right now,
 	// or we'd need to store this info on the client, which is
 	// worse. Need to rework the way the sussy offsets work
-	private void adjustRotation(Quaternion rot, boolean unity) {
+	private Vector3f getAdjustedTranslation(Vector3f pos, boolean unity) {
+		// TODO
+		if (!unity) {
+			// Offset feet 90 degrees to satisfy the SteamVR bone overlay
+			if (boneType == BoneType.LEFT_FOOT || boneType == BoneType.RIGHT_FOOT) {
+//				pos.multLocal(FOOT_OFFSET);
+			}
+		} else { // Adapt to Unity/VMC standards
+			// Offset to satisfy apps that expect T-Pose, but we have I-Pose
+			if (
+				boneType == BoneType.LEFT_UPPER_ARM
+					|| boneType == BoneType.LEFT_LOWER_ARM
+					|| boneType == BoneType.LEFT_HAND
+			) {
+//				pos.multLocal(LEFT_SHOULDER_OFFSET);
+			} else if (
+				boneType == BoneType.RIGHT_UPPER_ARM
+					|| boneType == BoneType.RIGHT_LOWER_ARM
+					|| boneType == BoneType.RIGHT_HAND
+			) {
+//				pos.multLocal(RIGHT_SHOULDER_OFFSET);
+			}
+		}
+
+		return pos;
+	}
+
+	private Quaternion getAdjustedRotation(Quaternion rot, boolean unity) {
 		if (!unity) {
 			// Offset feet 90 degrees to satisfy the SteamVR bone overlay
 			if (boneType == BoneType.LEFT_FOOT || boneType == BoneType.RIGHT_FOOT) {
@@ -93,6 +115,8 @@ public class BoneInfo {
 				rot.multLocal(RIGHT_SHOULDER_OFFSET);
 			}
 		}
+
+		return rot;
 	}
 
 	/**
@@ -100,10 +124,12 @@ public class BoneInfo {
 	 * @param unity Only use bones from Unity's HumanBodyBones
 	 * @return The bone's local translation relative to a new root
 	 */
-	public Vector3f getLocalTranslationFromRoot(BoneInfo root, boolean unity) {
-		return getNodeTowards(root.headNode, unity).worldTransform
-			.getTranslation()
-			.subtract(getGlobalTranslation());
+	public Vector3f getLocalTranslationFromRoot(BoneType root, boolean unity) {
+		return getGlobalTranslation(unity)
+			.subtract(
+				getNodeTowards(root, unity).worldTransform
+					.getTranslation()
+			);
 	}
 
 	/**
@@ -111,57 +137,65 @@ public class BoneInfo {
 	 * @param unity Only use bones from Unity's HumanBodyBones
 	 * @return The bone's local rotation relative to a new root
 	 */
-	public Quaternion getLocalRotationFromRoot(BoneInfo root, boolean unity) {
-		if (this == root) {
-			quatBuf.set(getGlobalRotation(unity));
-		} else{
-			quatBuf
-				.set(
-					getNodeTowards(root.headNode, unity).worldTransform
-						.getRotation()
-						.inverse()
-						.mult(getGlobalRotation(unity))
-				);
+	public Quaternion getLocalRotationFromRoot(BoneType root, boolean unity) {
+		if (this.boneType == root) {
+			return getGlobalRotation(unity);
+		} else {
+			return getNodeTowards(root, unity).worldTransform
+				.getRotation()
+				.inverse()
+				.mult(getGlobalRotation(unity));
 		}
-
-		return quatBuf;
 	}
 
-	/**
-	 * @param towards The goal of the search
-	 * @param unity Only use bones from Unity's HumanBodyBones
-	 * @return the first node from the bone's headNode towards "towards"
-	 */
 	private TransformNode getNodeTowards(
-		TransformNode towards,
+		BoneType towards,
 		boolean unity
 	) {
-		// TODO cache the result
-		if(headNode == towards)
+		if (towards == BoneType.HIP && unity && unityNodeTowardsHip != null) {
+			// Use cached nodeTowards
+			return unityNodeTowardsHip;
+		}
+		if (boneType == towards) {
+			// Return itself
 			return headNode;
-		if(boneType == BoneType.LEFT_FOOT || boneType == BoneType.RIGHT_FOOT)
-			return headNode.getParent();
+		}
 
 		// Search in children
 		FastList<TransformNode> searching = new FastList<>(headNode.children);
 		int i = 0;
 		while (i < searching.size()) {
 			// Search for node in children
-			if (searching.get(i).getName().equalsIgnoreCase(towards.getName())) {
+			if (searching.get(i).getBoneType() == towards) {
 				// Found in children. Go back to "headNode"
-				TransformNode parentSearching = searching.get(i);
+				TransformNode fromChildSearching = searching.get(i);
+
 				if (unity) {
-					while (parentSearching.getParent() != headNode) {
-						// TODO unity
-						parentSearching = parentSearching.getParent();
+					// Search in parents
+					while (fromChildSearching.getParent() != headNode) {
+						// Check if the parent of the parent == headNode and
+						// if parent isn't a unity bone
+						if (
+							fromChildSearching.getParent().getParent() != null
+								&& fromChildSearching.getParent().getParent() == headNode
+								&& UnityBone
+									.getByBoneType(
+										fromChildSearching.getParent().getBoneType()
+									)
+									== null
+						) {
+							return fromChildSearching;
+						} else {
+							fromChildSearching = fromChildSearching.getParent();
+						}
 					}
 				} else {
-					while (parentSearching.getParent() != headNode) {
-						parentSearching = parentSearching.getParent();
+					// Search in parents
+					while (fromChildSearching.getParent() != headNode) {
+						fromChildSearching = fromChildSearching.getParent();
 					}
 				}
-
-				return parentSearching;
+				return fromChildSearching;
 			}
 
 			searching.addAll(searching.get(i).children);
@@ -169,29 +203,19 @@ public class BoneInfo {
 		}
 
 		// None are found in children, so must be in parents.
+		TransformNode parentSearching = headNode;
 		if (unity) {
-			// TODO wtf
-			TransformNode parentSearching = headNode.getParent();
-			if (parentSearching == null)
-				return headNode;
+			// Check if current bone isn't a unity bone
 			while (
 				parentSearching.getParent() != null
-					&& UnityBone
-						.getByBoneType(
-							BoneType
-								.valueOf(parentSearching.getParent().getName())
-						)
-						== null
+					&& UnityBone.getByBoneType(parentSearching.getBoneType()) == null
 			) {
-
 				parentSearching = parentSearching.getParent();
 			}
-			return parentSearching;
 		}
-
-		if(headNode.getParent() == null)
-			return headNode;
-		return headNode.getParent();
+		if (parentSearching.getParent() == null)
+			return parentSearching;
+		return parentSearching.getParent();
 	}
 
 }

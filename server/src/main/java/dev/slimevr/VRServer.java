@@ -178,7 +178,8 @@ public class VRServer extends Thread {
 		vmcHandler = new VMCHandler(
 			this,
 			humanPoseManager,
-			getConfigManager().getVrConfig().getVMC()
+			getConfigManager().getVrConfig().getVMC(),
+			shareTrackers
 		);
 
 		// Initialize OSC router

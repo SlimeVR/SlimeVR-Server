@@ -12,6 +12,7 @@ import dev.slimevr.tracking.processor.config.SkeletonConfigToggles;
 import dev.slimevr.tracking.processor.config.SkeletonConfigValues;
 import dev.slimevr.tracking.trackers.*;
 import dev.slimevr.util.ann.VRServerThread;
+import io.eiren.util.ann.ThreadSafe;
 import io.eiren.util.collections.FastList;
 
 import java.util.ArrayList;
@@ -23,47 +24,47 @@ public class HumanSkeleton {
 	protected final HumanPoseManager humanPoseManager;
 	// #region Upper body nodes (torso)
 	// @formatter:off
-	protected final TransformNode hmdNode = new TransformNode(BoneType.HMD.name(), false);
-	protected final TransformNode headNode = new TransformNode(BoneType.HEAD.name(), false);
-	protected final TransformNode trackerHeadNode = new TransformNode(BoneType.HEAD_TRACKER.name(), false);
-	protected final TransformNode neckNode = new TransformNode(BoneType.NECK.name(), false);
-	protected final TransformNode chestNode = new TransformNode(BoneType.CHEST.name(), false);
-	protected final TransformNode trackerChestNode = new TransformNode(BoneType.CHEST_TRACKER.name(), false);
-	protected final TransformNode waistNode = new TransformNode(BoneType.WAIST.name(), false);
-	protected final TransformNode hipNode = new TransformNode(BoneType.HIP.name(), false);
-	protected final TransformNode trackerHipNode = new TransformNode(BoneType.HIP_TRACKER.name(), false);
+	protected final TransformNode hmdNode = new TransformNode(BoneType.HMD, false);
+	protected final TransformNode headNode = new TransformNode(BoneType.HEAD, false);
+	protected final TransformNode trackerHeadNode = new TransformNode(BoneType.HEAD_TRACKER, false);
+	protected final TransformNode neckNode = new TransformNode(BoneType.NECK, false);
+	protected final TransformNode chestNode = new TransformNode(BoneType.CHEST, false);
+	protected final TransformNode trackerChestNode = new TransformNode(BoneType.CHEST_TRACKER, false);
+	protected final TransformNode waistNode = new TransformNode(BoneType.WAIST, false);
+	protected final TransformNode hipNode = new TransformNode(BoneType.HIP, false);
+	protected final TransformNode trackerHipNode = new TransformNode(BoneType.HIP_TRACKER, false);
 	// #endregion
 	// #region Lower body nodes (legs)
-	protected final TransformNode leftHipNode = new TransformNode(BoneType.LEFT_HIP.name(), false);
-	protected final TransformNode leftKneeNode = new TransformNode(BoneType.LEFT_UPPER_LEG.name(), false);
-	protected final TransformNode trackerLeftKneeNode = new TransformNode(BoneType.LEFT_KNEE_TRACKER.name(), false);
-	protected final TransformNode leftAnkleNode = new TransformNode(BoneType.LEFT_LOWER_LEG.name(), false);
-	protected final TransformNode leftFootNode = new TransformNode(BoneType.LEFT_FOOT.name(), false);
-	protected final TransformNode trackerLeftFootNode = new TransformNode(BoneType.LEFT_FOOT_TRACKER.name(), false);
-	protected final TransformNode rightHipNode = new TransformNode(BoneType.RIGHT_HIP.name(), false);
-	protected final TransformNode rightKneeNode = new TransformNode(BoneType.RIGHT_UPPER_LEG.name(), false);
-	protected final TransformNode trackerRightKneeNode = new TransformNode(BoneType.RIGHT_KNEE_TRACKER.name(), false);
-	protected final TransformNode rightAnkleNode = new TransformNode(BoneType.RIGHT_LOWER_LEG.name(), false);
-	protected final TransformNode rightFootNode = new TransformNode(BoneType.RIGHT_FOOT.name(), false);
-	protected final TransformNode trackerRightFootNode = new TransformNode(BoneType.RIGHT_FOOT_TRACKER.name(), false);
+	protected final TransformNode leftHipNode = new TransformNode(BoneType.LEFT_HIP, false);
+	protected final TransformNode leftKneeNode = new TransformNode(BoneType.LEFT_UPPER_LEG, false);
+	protected final TransformNode trackerLeftKneeNode = new TransformNode(BoneType.LEFT_KNEE_TRACKER, false);
+	protected final TransformNode leftAnkleNode = new TransformNode(BoneType.LEFT_LOWER_LEG, false);
+	protected final TransformNode leftFootNode = new TransformNode(BoneType.LEFT_FOOT, false);
+	protected final TransformNode trackerLeftFootNode = new TransformNode(BoneType.LEFT_FOOT_TRACKER, false);
+	protected final TransformNode rightHipNode = new TransformNode(BoneType.RIGHT_HIP, false);
+	protected final TransformNode rightKneeNode = new TransformNode(BoneType.RIGHT_UPPER_LEG, false);
+	protected final TransformNode trackerRightKneeNode = new TransformNode(BoneType.RIGHT_KNEE_TRACKER, false);
+	protected final TransformNode rightAnkleNode = new TransformNode(BoneType.RIGHT_LOWER_LEG, false);
+	protected final TransformNode rightFootNode = new TransformNode(BoneType.RIGHT_FOOT, false);
+	protected final TransformNode trackerRightFootNode = new TransformNode(BoneType.RIGHT_FOOT_TRACKER, false);
 	// #endregion
 	// #region Arms
-	protected final TransformNode leftShoulderHeadNode = new TransformNode(BoneType.LEFT_SHOULDER.name(), false);
-	protected final TransformNode rightShoulderHeadNode = new TransformNode(BoneType.RIGHT_SHOULDER.name(), false);
-	protected final TransformNode leftShoulderTailNode = new TransformNode(BoneType.LEFT_UPPER_ARM.name(), false);
-	protected final TransformNode rightShoulderTailNode = new TransformNode(BoneType.RIGHT_UPPER_ARM.name(), false);
-	protected final TransformNode leftElbowNode = new TransformNode(BoneType.LEFT_LOWER_ARM.name(), false);
-	protected final TransformNode rightElbowNode = new TransformNode(BoneType.RIGHT_LOWER_ARM.name(), false);
-	protected final TransformNode trackerLeftElbowNode = new TransformNode(BoneType.LEFT_ELBOW_TRACKER.name(), false);
-	protected final TransformNode trackerRightElbowNode = new TransformNode(BoneType.RIGHT_ELBOW_TRACKER.name(), false);
-	protected final TransformNode leftWristNode = new TransformNode(BoneType.LEFT_HAND.name(), false);
-	protected final TransformNode rightWristNode = new TransformNode(BoneType.RIGHT_HAND.name(), false);
-	protected final TransformNode leftHandNode = new TransformNode(BoneType.LEFT_HAND.name(), false);
-	protected final TransformNode rightHandNode = new TransformNode(BoneType.RIGHT_HAND.name(), false);
-	protected final TransformNode trackerLeftHandNode = new TransformNode(BoneType.LEFT_HAND_TRACKER.name(), false);
-	protected final TransformNode trackerRightHandNode = new TransformNode(BoneType.RIGHT_HAND_TRACKER.name(), false);
-	protected final TransformNode leftControllerNode = new TransformNode(BoneType.LEFT_CONTROLLER.name(), false);
-	protected final TransformNode rightControllerNode = new TransformNode(BoneType.RIGHT_CONTROLLER.name(), false);
+	protected final TransformNode leftShoulderHeadNode = new TransformNode(BoneType.LEFT_SHOULDER, false);
+	protected final TransformNode rightShoulderHeadNode = new TransformNode(BoneType.RIGHT_SHOULDER, false);
+	protected final TransformNode leftShoulderTailNode = new TransformNode(BoneType.LEFT_UPPER_ARM, false);
+	protected final TransformNode rightShoulderTailNode = new TransformNode(BoneType.RIGHT_UPPER_ARM, false);
+	protected final TransformNode leftElbowNode = new TransformNode(BoneType.LEFT_LOWER_ARM, false);
+	protected final TransformNode rightElbowNode = new TransformNode(BoneType.RIGHT_LOWER_ARM, false);
+	protected final TransformNode trackerLeftElbowNode = new TransformNode(BoneType.LEFT_ELBOW_TRACKER, false);
+	protected final TransformNode trackerRightElbowNode = new TransformNode(BoneType.RIGHT_ELBOW_TRACKER, false);
+	protected final TransformNode leftWristNode = new TransformNode(BoneType.LEFT_HAND, false);
+	protected final TransformNode rightWristNode = new TransformNode(BoneType.RIGHT_HAND, false);
+	protected final TransformNode leftHandNode = new TransformNode(BoneType.LEFT_HAND, false);
+	protected final TransformNode rightHandNode = new TransformNode(BoneType.RIGHT_HAND, false);
+	protected final TransformNode trackerLeftHandNode = new TransformNode(BoneType.LEFT_HAND_TRACKER, false);
+	protected final TransformNode trackerRightHandNode = new TransformNode(BoneType.RIGHT_HAND_TRACKER, false);
+	protected final TransformNode leftControllerNode = new TransformNode(BoneType.LEFT_CONTROLLER, false);
+	protected final TransformNode rightControllerNode = new TransformNode(BoneType.RIGHT_CONTROLLER, false);
 	// @formatter:on
 	public final List<BoneInfo> allBoneInfo = new ArrayList<>();
 	public final List<BoneInfo> shareableBoneInfo = new ArrayList<>();
@@ -125,7 +126,7 @@ public class HumanSkeleton {
 	protected boolean extendedSpineModel;
 	protected boolean extendedPelvisModel;
 	protected boolean extendedKneeModel;
-	protected boolean forceArmsFromHMD;
+	protected boolean forceArmsFromHMD = true;
 	// Values
 	protected float waistFromChestHipAveraging;
 	protected float waistFromChestLegsAveraging;
@@ -190,6 +191,7 @@ public class HumanSkeleton {
 	}
 	// #endregion
 
+	@ThreadSafe
 	protected void assembleSkeleton() {
 		// #region Assemble skeleton from hmd to hip
 		hmdNode.attachChild(headNode);
@@ -229,6 +231,7 @@ public class HumanSkeleton {
 		assembleSkeletonArms(false);
 	}
 
+	@ThreadSafe
 	protected void assembleSkeletonArms(boolean reset) {
 		if (reset) {
 			for (TransformNode node : getArmNodes()) {
@@ -1481,9 +1484,9 @@ public class HumanSkeleton {
 				return leftWristNode;
 			case RIGHT_CONTROLLER:
 				return rightWristNode;
+			default:
+				return null;
 		}
-
-		return null;
 	}
 
 	public BoneInfo getBoneInfoForBoneType(BoneType boneType) {

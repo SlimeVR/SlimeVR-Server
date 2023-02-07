@@ -11,12 +11,15 @@ import dev.slimevr.config.VMCConfig;
 import dev.slimevr.tracking.processor.BoneInfo;
 import dev.slimevr.tracking.processor.BoneType;
 import dev.slimevr.tracking.processor.HumanPoseManager;
+import dev.slimevr.tracking.trackers.ShareableTracker;
+import dev.slimevr.tracking.trackers.TrackerRole;
 import dev.slimevr.tracking.trackers.UnityBone;
 import io.eiren.util.collections.FastList;
 import io.eiren.util.logging.LogManager;
 
 import java.io.IOException;
 import java.net.InetAddress;
+import java.util.List;
 
 
 /**
@@ -28,6 +31,7 @@ public class VMCHandler implements OSCHandler {
 	private final VMCConfig config;
 	private final VRServer server;
 	private final HumanPoseManager humanPoseManager;
+	private final List<? extends ShareableTracker> shareableTrackers;
 	private final FastList<Object> oscArgs = new FastList<>();
 	private final Vector3f vecBuf = new Vector3f();
 	private final Quaternion quatBuf = new Quaternion();
@@ -42,11 +46,14 @@ public class VMCHandler implements OSCHandler {
 	public VMCHandler(
 		VRServer server,
 		HumanPoseManager humanPoseManager,
-		VMCConfig oscConfig
+		VMCConfig oscConfig,
+		List<? extends ShareableTracker> shareableTrackers
 	) {
 		this.server = server;
 		this.humanPoseManager = humanPoseManager;
 		this.config = oscConfig;
+		this.shareableTrackers = shareableTrackers;
+
 		startTime = System.currentTimeMillis();
 
 		refreshSettings(false);
@@ -94,10 +101,26 @@ public class VMCHandler implements OSCHandler {
 			// Starts listening for VMC messages
 			if (oscReceiver != null) {
 				OSCMessageListener listener = this::handleReceivedMessage;
-				MessageSelector selector = new OSCPatternAddressMessageSelector(
-					"/VMC//"
+				MessageSelector rcvSelector = new OSCPatternAddressMessageSelector(
+					"/VMC/Ext/Rcv"
 				);
-				oscReceiver.getDispatcher().addListener(selector, listener);
+				MessageSelector boneSelector = new OSCPatternAddressMessageSelector(
+					"/VMC/Ext/Bone/Pos"
+				);
+				MessageSelector hmdSelector = new OSCPatternAddressMessageSelector(
+					"/VMC/Ext/Hmd/Pos"
+				);
+				MessageSelector controllerSelector = new OSCPatternAddressMessageSelector(
+					"/VMC/Ext/Con/Pos"
+				);
+				MessageSelector trackerSelector = new OSCPatternAddressMessageSelector(
+					"/VMC/Ext/Tra/Pos"
+				);
+				oscReceiver.getDispatcher().addListener(rcvSelector, listener);
+				oscReceiver.getDispatcher().addListener(boneSelector, listener);
+				oscReceiver.getDispatcher().addListener(hmdSelector, listener);
+				oscReceiver.getDispatcher().addListener(controllerSelector, listener);
+				oscReceiver.getDispatcher().addListener(trackerSelector, listener);
 				oscReceiver.startListening();
 			}
 
@@ -133,6 +156,9 @@ public class VMCHandler implements OSCHandler {
 							+ e
 					);
 			}
+
+			// Load VRM data
+			VMCReader.readVMC(config.getVRMAddress());
 		}
 
 		if (refreshRouterSettings && server.getOSCRouter() != null)
@@ -140,10 +166,16 @@ public class VMCHandler implements OSCHandler {
 	}
 
 	void handleReceivedMessage(OSCMessageEvent event) {
-		// TODO add received bones as VRTrackers
-		// TODO support:
-		// /VMC/Ext/VRM
-		// /VMC/Ext/Rcv
+		String address = event.getMessage().getAddress();
+		if (address.equalsIgnoreCase("/VMC/Ext/Bone/Pos")) {
+			// TODO add rotation trackers
+		} else if (
+			address.equalsIgnoreCase("/VMC/Ext/Hmd/Pos")
+				|| address.equalsIgnoreCase("/VMC/Ext/Con/Pos")
+				|| address.equalsIgnoreCase("/VMC/Ext/Tra/Pos")
+		) {
+			// TODO add position + rotation trackers
+		}
 	}
 
 	@Override
@@ -185,25 +217,26 @@ public class VMCHandler implements OSCHandler {
 
 				// Add Unity humanoid bones transforms
 				for (UnityBone bone : UnityBone.values) {
-					if (true) { // TODO add check for arms from controllers
+					if (
+						!(humanPoseManager.isTrackingLeftArmFromController()
+							&& isLeftArmUnityBone(bone))
+							&& !(humanPoseManager.isTrackingRightArmFromController()
+								&& isRightArmUnityBone(bone))
+					) {
 						// Get BoneInfo for the bone
 						BoneInfo boneInfo = humanPoseManager
 							.getBoneInfoForBoneType(
 								bone.boneType
 							);
 
+						// TODO : implement reading/loading VRM avatars
+						// to get proportions.
+						// User needs to agree to the VRM's license
+						float height = 0.7f;
+						float heightMultiplier = height
+							/ humanPoseManager.getUserHeightFromConfig();
 						if (bone == UnityBone.HIPS) {
 							// Add the tracking root
-
-							// TODO : implement reading/loading VRM avatars
-							// to get proportions
-							//
-							// user needs to agree to the VRM's license (save
-							// per VRM's hash?)
-							float height = 1f;
-							float heightMultiplier = height
-								/ humanPoseManager.getUserHeightFromConfig();
-
 							// Get position
 							if (anchorHip) {
 								// Hip anchor
@@ -236,50 +269,64 @@ public class VMCHandler implements OSCHandler {
 									.set(
 										boneInfo
 											.getLocalTranslationFromRoot(
-												humanPoseManager
-													.getBoneInfoForBoneType(
-														BoneType.HIP
-													),
+												BoneType.HIP,
 												true
 											)
-									);
+									)
+									.multLocal(heightMultiplier);
 
 								// Get rotation
 								quatBuf
 									.set(
 										boneInfo
 											.getLocalRotationFromRoot(
-												humanPoseManager
-													.getBoneInfoForBoneType(
-														BoneType.HIP
-													),
+												BoneType.HIP,
 												true
 											)
 									);
 							}
 						}
-					} else {
-						vecBuf.zero();
-						quatBuf.loadIdentity();
+
+						oscArgs.clear();
+						oscArgs.add(bone.stringVal);
+						addTransformToArgs(vecBuf, quatBuf);
+						oscBundle
+							.addPacket(
+								new OSCMessage(
+									"/VMC/Ext/Bone/Pos",
+									oscArgs.clone()
+								)
+							);
 					}
 
-					oscArgs.clear();
-					oscArgs.add(bone.stringVal);
-					addTransformToArgs(vecBuf, quatBuf);
-					oscBundle
-						.addPacket(
-							new OSCMessage(
-								"/VMC/Ext/Bone/Pos",
-								oscArgs.clone()
-							)
-						);
+
 				}
+			}
 
-				// TODO support:
-				// /VMC/Ext/Hmd/Pos
-				// /VMC/Ext/Con/Pos
-				// /VMC/Ext/Tra/Pos
-
+			for (ShareableTracker shareableTracker : shareableTrackers) {
+				shareableTracker.getPosition(vecBuf);
+				shareableTracker.getRotation(quatBuf);
+				oscArgs.clear();
+				oscArgs.add(String.valueOf(shareableTracker.getTrackerId()));
+				addTransformToArgs(vecBuf, quatBuf);
+				String address;
+				if (shareableTracker.getTrackerRole() == TrackerRole.HMD) {
+					address = "/VMC/Ext/Hmd/Pos";
+				} else if (
+					shareableTracker.getTrackerRole() == TrackerRole.LEFT_CONTROLLER
+						|| shareableTracker.getTrackerRole() == TrackerRole.RIGHT_CONTROLLER
+				) {
+					address = "/VMC/Ext/Con/Pos";
+				} else {
+					address = "/VMC/Ext/Tra/Pos";
+				}
+				oscBundle
+					.addPacket(
+						new OSCMessage(
+							address,
+							oscArgs.clone()
+						)
+					);
 			}
 
 			// Send OSC packets as bundle
@@ -308,6 +355,18 @@ public class VMCHandler implements OSCHandler {
 		oscArgs.add(rot.getY());
 		oscArgs.add(-rot.getZ());
 		oscArgs.add(-rot.getW());
+	}
+
+	private boolean isLeftArmUnityBone(UnityBone bone) {
+		return bone == UnityBone.LEFT_UPPER_ARM
+			|| bone == UnityBone.LEFT_LOWER_ARM
+			|| bone == UnityBone.LEFT_HAND;
+	}
+
+	private boolean isRightArmUnityBone(UnityBone bone) {
+		return bone == UnityBone.RIGHT_UPPER_ARM
+			|| bone == UnityBone.RIGHT_LOWER_ARM
+			|| bone == UnityBone.RIGHT_HAND;
 	}
 
 	@Override
