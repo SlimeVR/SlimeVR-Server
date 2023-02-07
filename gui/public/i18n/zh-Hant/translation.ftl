@@ -106,6 +106,7 @@ widget-overlay-is_mirrored_label = 鏡像顯示內嵌介面
 
 ## Widget: Drift compensation
 
+widget-drift_compensation-clear = 清除偏移補償數據
 
 ## Widget: Developer settings
 
