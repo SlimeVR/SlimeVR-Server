@@ -9,6 +9,7 @@ import java.util.logging.FileHandler;
 import java.util.logging.Handler;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import java.nio.file.Path;
 
 
 public class LogManager {
@@ -31,7 +32,8 @@ public class LogManager {
 				if (f.getName().startsWith("log_last"))
 					f.delete();
 			}
-			FileHandler filehandler = new FileHandler("log_last_%g.log", 25 * 1000000, 2);
+			String lastLogPattern = Path.of(mainLogDir.getPath(), "log_last_%g.log").toString();
+			FileHandler filehandler = new FileHandler(lastLogPattern, 25 * 1000000, 2);
 			filehandler.setFormatter(loc);
 			global.addHandler(filehandler);
 		}
