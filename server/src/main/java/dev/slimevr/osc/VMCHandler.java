@@ -8,18 +8,19 @@ import com.jme3.math.Quaternion;
 import com.jme3.math.Vector3f;
 import dev.slimevr.VRServer;
 import dev.slimevr.config.VMCConfig;
+import dev.slimevr.tracking.Device;
 import dev.slimevr.tracking.processor.BoneInfo;
 import dev.slimevr.tracking.processor.BoneType;
 import dev.slimevr.tracking.processor.HumanPoseManager;
-import dev.slimevr.tracking.trackers.ShareableTracker;
-import dev.slimevr.tracking.trackers.TrackerRole;
-import dev.slimevr.tracking.trackers.UnityBone;
+import dev.slimevr.tracking.trackers.*;
 import io.eiren.util.collections.FastList;
 import io.eiren.util.logging.LogManager;
 
 import java.io.IOException;
 import java.net.InetAddress;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 
 /**
@@ -36,7 +37,8 @@ public class VMCHandler implements OSCHandler {
 	private final Vector3f vecBuf = new Vector3f();
 	private final Quaternion quatBuf = new Quaternion();
 	private final long startTime;
-	private final Vector3f hmdOffset = new Vector3f();
+	private final Map<Integer, VRTracker> remoteTrackersByTrackerId = new HashMap<>();
+	private Device trackerDevice;
 	private float timeAtLastError;
 	private boolean anchorHip;
 	private int lastPortIn;
@@ -165,17 +167,88 @@ public class VMCHandler implements OSCHandler {
 			server.getOSCRouter().refreshSettings(false);
 	}
 
-	void handleReceivedMessage(OSCMessageEvent event) {
+	private void handleReceivedMessage(OSCMessageEvent event) {
 		String address = event.getMessage().getAddress();
-		if (address.equalsIgnoreCase("/VMC/Ext/Bone/Pos")) {
-			// TODO add rotation trackers
+		if (address.equals("/VMC/Ext/Bone/Pos")) {
+			TrackerPosition trackerPosition = UnityBone
+				.getByStringVal(
+					String.valueOf(event.getMessage().getArguments().get(0))
+				).trackerPosition;
+			if (trackerPosition != null) {
+				handleReceivedTracker(
+					trackerPosition.id,
+					"VMC-Bone-" + event.getMessage().getArguments().get(0),
+					trackerPosition,
+					null,
+					new Quaternion(
+						(float) event.getMessage().getArguments().get(4),
+						(float) event.getMessage().getArguments().get(5),
+						(float) event.getMessage().getArguments().get(6),
+						(float) event.getMessage().getArguments().get(7)
+					)
+				);
+			}
 		} else if (
-			address.equalsIgnoreCase("/VMC/Ext/Hmd/Pos")
-				|| address.equalsIgnoreCase("/VMC/Ext/Con/Pos")
-				|| address.equalsIgnoreCase("/VMC/Ext/Tra/Pos")
+			address.equals("/VMC/Ext/Hmd/Pos")
+				|| address.equals("/VMC/Ext/Con/Pos")
+				|| address.equals("/VMC/Ext/Tra/Pos")
 		) {
-			// TODO add position + rotation trackers
+			String serial = String.valueOf(event.getMessage().getArguments().get(0));
+			handleReceivedTracker(
+				serial.hashCode(),
+				"VMC-Tracker-" + serial,
+				null,
+				new Vector3f(
+					(float) event.getMessage().getArguments().get(1),
+					(float) event.getMessage().getArguments().get(2),
+					(float) event.getMessage().getArguments().get(3)
+				),
+				new Quaternion(
+					(float) event.getMessage().getArguments().get(4),
+					(float) event.getMessage().getArguments().get(5),
+					(float) event.getMessage().getArguments().get(6),
+					(float) event.getMessage().getArguments().get(7)
+				)
+			);
 		}
+	}
+
+	// TODO manage timeout, load trackers from config...
+	private void handleReceivedTracker(
+		int id,
+		String name,
+		TrackerPosition trackerPosition,
+		Vector3f position,
+		Quaternion rotation
+	) {
+		if (trackerDevice == null) {
+			trackerDevice = server.getDeviceManager().createDevice("VMCReceiver", "1.0", "VMC");
+			server.getDeviceManager().addDevice(trackerDevice);
+		}
+		VRTracker tracker = remoteTrackersByTrackerId.get(id);
+		if (tracker == null) {
+			tracker = new VRTracker(
+				id,
+				name,
+				name,
+				rotation != null,
+				position != null,
+				trackerDevice
+			);
+			tracker.setBodyPosition(trackerPosition);
+			trackerDevice.getTrackers().put(trackerDevice.getTrackers().size() + 1, tracker);
+			remoteTrackersByTrackerId.put(tracker.getTrackerId(), tracker);
+			server.registerTracker(tracker);
+		}
+		tracker.setStatus(TrackerStatus.OK);
+
+		if (position != null) {
+			tracker.position.set(position);
+		}
+		if (rotation != null) {
+			tracker.rotation.set(rotation);
+		}
+		tracker.dataTick();
 	}
 
 	@Override

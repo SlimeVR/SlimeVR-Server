@@ -23,10 +23,6 @@ public class VRTracker extends ComputedTracker {
 		super(id, serial, name, hasRotation, hasPosition, device);
 	}
 
-	public VRTracker(int id, String name, boolean hasRotation, boolean hasPosition) {
-		super(id, name, name, hasRotation, hasPosition, null);
-	}
-
 	@Override
 	public boolean getRotation(Quaternion store) {
 		store.set(rotation);
