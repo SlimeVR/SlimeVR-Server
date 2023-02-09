@@ -13,7 +13,7 @@
     "bundle": {
       "active": true,
       "targets": "all",
-      "identifier": "slimevr.dev",
+      "identifier": "dev.slimevr.SlimeVR",
       "icon": ["icons/icon.ico", "icons/icon.png"],
       "resources": [],
       "externalBin": [],
