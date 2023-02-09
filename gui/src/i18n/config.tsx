@@ -22,7 +22,11 @@ export const langs = [
   },
   {
     name: '🇨🇿 Čeština',
-    key: 'cz',
+    key: 'cs',
+  },
+  {
+    name: '🇩🇪 Deutsch',
+    key: 'de',
   },
   {
     name: '🇺🇸 English',
@@ -37,8 +41,8 @@ export const langs = [
     key: 'et',
   },
   {
-    name: '🇩🇪 Deutsch',
-    key: 'de',
+    name: '🇫🇮 Suomi',
+    key: 'fi',
   },
   {
     name: '🇫🇷 Français',
