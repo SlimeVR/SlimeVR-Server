@@ -69,7 +69,7 @@ jobs:
       - name: Cache cargo dependencies
         uses: Swatinem/rust-cache@v2
         with:
-          shared-key: "tauri"
+          shared-key: "${{ matrix.os }}"
 
       - name: Use Node.js ${{ matrix.node-version }}
         uses: actions/setup-node@v3
