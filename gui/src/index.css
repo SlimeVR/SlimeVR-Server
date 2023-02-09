@@ -4,11 +4,17 @@
 
 body {
   font-variant-numeric: tabular-nums;
-  font-family: 'poppins', sans-serif, 'Twemoji Webkit', 'Twemoji Chromium', emoji;
+  font-family: 'poppins', sans-serif, 'Twemoji Chromium', emoji;
   height: 100vh;
   width: 100vw;
   user-select: none;
   background: theme('colors.background.20');
+}
+
+@media (-webkit-animation) {
+  body {
+    font-family: 'poppins', sans-serif, 'Twemoji Webkit', emoji;
+  }
 }
 
 @font-face {
