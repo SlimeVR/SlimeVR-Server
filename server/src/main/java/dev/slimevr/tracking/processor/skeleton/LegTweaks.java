@@ -6,6 +6,7 @@ import com.jme3.math.Vector3f;
 import dev.slimevr.config.LegTweaksConfig;
 
 import dev.slimevr.tracking.processor.TransformNode;
+import solarxr_protocol.datatypes.math.Quat;
 
 
 public class LegTweaks {
@@ -18,6 +19,8 @@ public class LegTweaks {
 	private boolean enabled = true; // master switch
 	private boolean floorclipEnabled = false;
 	private boolean skatingCorrectionEnabled = false;
+	private boolean toeSnap = false;
+	private boolean footPlant = false;
 	private boolean active = false;
 	private boolean rightLegActive = false;
 	private boolean leftLegActive = false;
@@ -89,6 +92,11 @@ public class LegTweaks {
 	private static final float CALF_MASS = 0.0535f;
 	private static final float UPPER_ARM_MASS = 0.031f;
 	private static final float FOREARM_MASS = 0.017f;
+
+	// hyperparameters (rotation correction)
+	private static final float TOE_SNAP_MAX_VELOCITY = 0.5f;
+	private static final float FOOT_PLANT_MAX_VELOCITY = 0.5f;
+	private static final float ROTATION_CORRECTION_VERTICAL = 0.05f;
 
 	// hyperparameters (misc)
 	static final float NEARLY_ZERO = 0.001f;
@@ -202,6 +210,14 @@ public class LegTweaks {
 		this.bufferInvalid = true;
 	}
 
+	public void setToeSnap(boolean val) {
+		toeSnap = val;
+	}
+
+	public void setFootPlant(boolean val) {
+		footPlant = val;
+	}
+
 	public boolean getEnabled() {
 		return this.enabled;
 	}
@@ -212,6 +228,14 @@ public class LegTweaks {
 
 	public boolean getSkatingReductionEnabled() {
 		return this.skatingCorrectionEnabled;
+	}
+
+	public boolean getToeSnap() {
+		return toeSnap;
+	}
+
+	public boolean getFootPlant() {
+		return footPlant;
 	}
 
 	public void resetBuffer() {
@@ -446,6 +470,9 @@ public class LegTweaks {
 		// calculate the correction for the knees
 		if (kneesActive && initialized)
 			solveLowerBody();
+
+		// if enabled corret foot rotation's
+		correctFootRotations();
 
 		// populate the corrected data into the current frame
 		this.bufferHead.setLeftFootPositionCorrected(leftFootPosition);
@@ -712,6 +739,48 @@ public class LegTweaks {
 				}
 			}
 		}
+	}
+
+	// correct the rotation of the foot trackers
+	private void correctFootRotations() {
+		// corrects rotations when planted firmly on the ground
+		if (footPlant) {
+			float weightL = 0.0f;
+			float weightR = 0.0f;
+			// calculate the correction weight
+			if (bufferHead.getLeftFootVelocity(null).length() < FOOT_PLANT_MAX_VELOCITY) {
+				// weight should be 1 if the foot is not moving and 0 if greater than the max velocity
+				weightL = 1.0f - (bufferHead.getLeftFootVelocity(null).length() / FOOT_PLANT_MAX_VELOCITY);
+
+				// the further from the ground the foot is, the less weight it should have
+				// this should set weight L to 0 if the foot is above the ground and 1 if it is on the ground
+				weightL = (bufferHead.getLeftFootPosition(null).y - floorLevel > ROTATION_CORRECTION_VERTICAL) ? 0.0f : weightL * (1.0f - (bufferHead.getLeftFootPosition(null).y - floorLevel) / ROTATION_CORRECTION_VERTICAL);
+			
+			}
+			if (bufferHead.getRightFootVelocity(null).length() < FOOT_PLANT_MAX_VELOCITY) {
+				weightR = 1.0f - (bufferHead.getRightFootVelocity(null).length() / FOOT_PLANT_MAX_VELOCITY);
+
+				weightR = (bufferHead.getRightFootPosition(null).y - floorLevel > ROTATION_CORRECTION_VERTICAL) ? 0.0f : weightR * (1.0f - (bufferHead.getRightFootPosition(null).y - floorLevel) / ROTATION_CORRECTION_VERTICAL);
+			}
+
+			// perform the correction
+			Vector3f temp = computeUnitVector(leftFootRotation).setY(0);
+			Quaternion fullyCorrectedRot = new Quaternion(temp.x, temp.y, temp.z, 0);
+			skeleton.computedLeftFootTracker.rotation.set(bufferHead.getParent().getLeftFootRotation(null).slerp(leftFootRotation, fullyCorrectedRot, weightL));
+
+			temp = computeUnitVector(rightFootRotation).setY(0);
+			fullyCorrectedRot = new Quaternion(temp.x, temp.y, temp.z, 0);
+			skeleton.computedRightFootTracker.rotation.set(bufferHead.getParent().getRightFootRotation(null).slerp(rightFootRotation, fullyCorrectedRot, weightR));
+			
+			
+		}
+
+		// corrects rotations when the foot is in the air
+		if (toeSnap) {
+			// TODO impliment this 
+		}
+
+		return;
 	}
 
 	// returns true if it is likely the user is standing
