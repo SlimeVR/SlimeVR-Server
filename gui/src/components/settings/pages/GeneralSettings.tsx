@@ -54,6 +54,8 @@ interface SettingsForm {
     floorClip: boolean;
     skatingCorrection: boolean;
     viveEmulation: boolean;
+    toeSnap: boolean;
+    footPlant: boolean;
   };
   tapDetection: {
     tapMountingResetEnabled: boolean;
@@ -92,6 +94,8 @@ const defaultValues = {
     floorClip: false,
     skatingCorrection: false,
     viveEmulation: false,
+    toeSnap: false,
+    flootPlant: true,
   },
   filtering: { amount: 0.1, type: FilteringType.NONE },
   driftCompensation: {
@@ -149,6 +153,8 @@ export function GeneralSettings() {
     toggles.extendedSpine = values.toggles.extendedSpine;
     toggles.forceArmsFromHmd = values.toggles.forceArmsFromHmd;
     toggles.viveEmulation = values.toggles.viveEmulation;
+    toggles.toeSnap = values.toggles.toeSnap;
+    toggles.footPlant = values.toggles.footPlant;
     legTweaks.correctionStrength = values.legTweaks.correctionStrength;
 
     modelSettings.toggles = toggles;
@@ -512,6 +518,24 @@ export function GeneralSettings() {
               name="toggles.skatingCorrection"
               label={l10n.getString(
                 'settings-general-fk_settings-leg_tweak-skating_correction'
+              )}
+            />
+            <CheckBox
+              variant="toggle"
+              outlined
+              control={control}
+              name="toggles.toeSnap"
+              label={l10n.getString(
+                'settings-general-fk_settings-leg_tweak-toe_snap'
+              )}
+            />
+            <CheckBox
+              variant="toggle"
+              outlined
+              control={control}
+              name="toggles.footPlant"
+              label={l10n.getString(
+                'settings-general-fk_settings-leg_tweak-foot_plant'
               )}
             />
           </div>
