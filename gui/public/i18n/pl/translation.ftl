@@ -106,6 +106,7 @@ widget-overlay-is_mirrored_label = Pokaż Overlay jako Lustro
 
 ## Widget: Drift compensation
 
+widget-drift_compensation-clear = Wyczyść kompensację dryfu
 
 ## Widget: Developer settings
 

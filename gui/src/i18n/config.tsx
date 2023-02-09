@@ -21,6 +21,14 @@ export const langs = [
     key: 'ar',
   },
   {
+    name: '🇨🇿 Čeština',
+    key: 'cs',
+  },
+  {
+    name: '🇩🇪 Deutsch',
+    key: 'de',
+  },
+  {
     name: '🇺🇸 English',
     key: 'en',
   },
@@ -33,8 +41,8 @@ export const langs = [
     key: 'et',
   },
   {
-    name: '🇩🇪 Deutsch',
-    key: 'de',
+    name: '🇫🇮 Suomi',
+    key: 'fi',
   },
   {
     name: '🇫🇷 Français',
@@ -67,6 +75,10 @@ export const langs = [
   {
     name: '🇧🇷 Português Brasileiro',
     key: 'pt-BR',
+  },
+  {
+    name: '🇷🇺 Русский',
+    key: 'ru',
   },
   {
     name: '🇻🇳 Tiếng Việt',
