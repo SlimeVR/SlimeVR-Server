@@ -130,3 +130,40 @@ jobs:
         with:
           name: SlimeVR-GUI-AppImage
           path: target/release/bundle/appimage/slimevr*.AppImage
+
+  bundle:
+    runs-on: macos-latest
+    needs: build
+    steps:
+      - uses: actions/checkout@v3
+        with:
+          submodules: recursive
+
+      - uses: actions/download-artifact@v3
+        with:
+          name: "SlimeVR-Server"
+          path: server/build/libs/
+
+      - name: Cache cargo dependencies
+        uses: Swatinem/rust-cache@v2
+
+      - name: Use Node.js
+        uses: actions/setup-node@v3
+        with:
+          node-version-file: '.node-version'
+          cache: 'npm'
+
+      - name: Build
+        run: |
+          npm ci
+          npm run tauri build -- "--target universal-apple-darwin"
+
+      - name: Modify Application
+        run: |
+          cd target/release/bundle/macos/slimevr.app/Contents/MacOS
+          cp $( git rev-parse --show-toplevel )/server/build/libs/slimevr.jar ./
+
+      - uses: actions/upload-artifact@v3.1.0
+        with:
+          name: SlimeVR-GUI-MacApp
+          path: target/release/bundle/macos/slimevr*.app
