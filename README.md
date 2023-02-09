@@ -5,18 +5,20 @@ Server orchestrates communication between multiple sensors and integrations, lik
 
 Sensors implementations:
 * [SlimeVR Tracker for ESP](https://github.com/SlimeVR/SlimeVR-Tracker-ESP) - ESP microcontrollers and multiple IMUs are supported
-* [owoTrack Mobile App](https://github.com/abb128/owoTrackVRSyncMobile) - use phone as a tracker (limited functionality and compatibility)
+* [owoTrack Mobile App](https://github.com/abb128/owoTrackVRSyncMobile) - use phones as trackers (limited functionality and compatibility)
+* [SlimeVR Wrangler](https://github.com/carl-anders/slimevr-wrangler) - use Nintendo Switch Joycon controllers as trackers
 
 Integrations:
 * Use [SlimeVR OpenVR Driver](https://github.com/SlimeVR/SlimeVR-OpenVR-Driver) as a driver for SteamVR
+* Use built-in OSC support for integration with other apps, such as VRChat, using OSC
 * Integrations with other systems will be added later
 
 ## How to use
-It's recommended to download installer from here: https://github.com/SlimeVR/SlimeVR-Installer/releases/latest/download/slimevr_web_installer.exe
+It's highly recommended to install using the installer downloadable here: https://github.com/SlimeVR/SlimeVR-Installer/releases/latest/download/slimevr_web_installer.exe
 
-Latest instructions are [on our site](https://docs.slimevr.dev/server-setup/slimevr-setup.html).
+Latest setup instructions are [on our site](https://docs.slimevr.dev/server/index.html).
 
-## License Clarification
+## License clarification
 **SlimeVR software** (including server, firmware, drivers, installer, documents, and others - see
 licence for each case specifically) **is distributed under a dual MIT/Apache 2.0 License
 ([LICENSE-MIT] and [LICENSE-APACHE]). The software is the copyright of the SlimeVR
