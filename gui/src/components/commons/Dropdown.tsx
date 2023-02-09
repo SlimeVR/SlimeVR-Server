@@ -92,7 +92,7 @@ export function Dropdown({
                   variant == 'primary' && 'bg-background-60',
                   variant == 'secondary' && 'bg-background-70',
                   alignment === 'right' && 'right-0',
-                  alignment == 'left' && 'left-0'
+                  alignment === 'left' && 'left-0'
                 )}
               >
                 <ul className="py-1 text-sm text-gray-200 flex flex-col pr-2">
