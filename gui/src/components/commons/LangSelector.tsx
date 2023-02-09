@@ -7,8 +7,10 @@ import { Dropdown, DropdownDirection } from './Dropdown';
 
 export function LangSelector({
   direction = 'up',
+  alignment = 'right',
 }: {
   direction?: DropdownDirection;
+  alignment?: 'right' | 'left';
 }) {
   const { changeLocales } = useContext(LangContext);
   const { l10n } = useLocalization();
@@ -41,6 +43,7 @@ export function LangSelector({
       )}
       items={languagesItems}
       direction={direction}
+      alignment={alignment}
     ></Dropdown>
   );
 }

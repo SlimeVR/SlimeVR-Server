@@ -1,6 +1,7 @@
 import classNames from 'classnames';
 import { useState } from 'react';
 import { Control, Controller } from 'react-hook-form';
+import { a11yClick } from '../utils/a11y';
 
 export interface DropdownItem {
   label: string;
@@ -12,6 +13,7 @@ export type DropdownDirection = 'up' | 'down';
 export function Dropdown({
   direction = 'up',
   variant = 'primary',
+  alignment = 'right',
   placeholder,
   control,
   name,
@@ -19,6 +21,7 @@ export function Dropdown({
 }: {
   direction?: DropdownDirection;
   variant?: 'primary' | 'secondary';
+  alignment?: 'right' | 'left';
   placeholder: string;
   control: Control<any>;
   name: string;
@@ -41,13 +44,16 @@ export function Dropdown({
           <div className="relative w-fit">
             <div
               className={classNames(
-                'min-h-[35px] text-white px-5 py-2.5 rounded-md focus:ring-4 text-center flex',
+                'min-h-[35px] text-white px-5 py-2.5 rounded-md focus:ring-4 text-center',
+                'flex cursor-pointer',
                 variant == 'primary' &&
                   'bg-background-60 hover:bg-background-50',
                 variant == 'secondary' &&
                   'bg-background-70 hover:bg-background-60'
               )}
               onClick={() => setOpen((open) => !open)}
+              onKeyDown={(ev) => a11yClick(ev) && setOpen((open) => !open)}
+              tabIndex={0}
             >
               <div className="flex-grow">
                 {items.find((i) => i.value == value)?.label || placeholder}
@@ -79,18 +85,21 @@ export function Dropdown({
             {isOpen && (
               <div
                 className={classNames(
-                  'absolute z-10 rounded shadow right-0 min-w-max',
+                  'absolute z-10 rounded shadow min-w-max max-h-[50vh]',
+                  'overflow-y-auto dropdown-scroll',
                   direction === 'up' && 'bottom-[45px]',
                   direction === 'down' && 'top-[45px]',
                   variant == 'primary' && 'bg-background-60',
-                  variant == 'secondary' && 'bg-background-70'
+                  variant == 'secondary' && 'bg-background-70',
+                  alignment === 'right' && 'right-0',
+                  alignment == 'left' && 'left-0'
                 )}
               >
-                <ul className="py-1 text-sm text-gray-200 flex flex-col ">
+                <ul className="py-1 text-sm text-gray-200 flex flex-col pr-2">
                   {items.map((item) => (
                     <li
                       className={classNames(
-                        'py-2 px-4 hover:text-white min-w-max',
+                        'py-2 px-4 hover:text-white min-w-max cursor-pointer',
                         variant == 'primary' && 'hover:bg-background-50',
                         variant == 'secondary' && 'hover:bg-background-60'
                       )}
@@ -98,7 +107,13 @@ export function Dropdown({
                         onChange(item.value);
                         setOpen(false);
                       }}
+                      onKeyDown={(ev) => {
+                        if (!a11yClick(ev)) return;
+                        onChange(item.value);
+                        setOpen(false);
+                      }}
                       key={item.value}
+                      tabIndex={0}
                     >
                       {item.label}
                     </li>
