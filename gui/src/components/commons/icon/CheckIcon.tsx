@@ -1,4 +1,4 @@
-export function CheckIcon(props: any) {
+export function CheckIcon(_props: any) {
   return (
     <svg
       width="9"

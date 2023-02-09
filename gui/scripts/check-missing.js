@@ -1,4 +1,4 @@
-#!/bin/node
+#!/usr/bin/env node
 /*
   Process exit codes:
   First bit: Fluent syntax error in english file

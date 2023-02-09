@@ -1,8 +1,6 @@
-import { Localized } from '@fluent/react';
 import { useEffect } from 'react';
 import { useForm } from 'react-hook-form';
 import { useNavigate } from 'react-router-dom';
-import { Input } from '../components/commons/Input';
 import { useOnboarding } from './onboarding';
 
 export interface WifiFormData {

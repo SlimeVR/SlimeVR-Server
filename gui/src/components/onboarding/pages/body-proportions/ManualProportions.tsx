@@ -9,11 +9,14 @@ import { PersonFrontIcon } from '../../../commons/PersonFrontIcon';
 import { Typography } from '../../../commons/Typography';
 import { BodyProportions } from './BodyProportions';
 import { useLocalization } from '@fluent/react';
+import { useEffect } from 'react';
+import { useBodyProportions } from '../../../../hooks/body-proportions';
 
 export function ManualProportionsPage() {
   const { l10n } = useLocalization();
   const { applyProgress, skipSetup, state } = useOnboarding();
   const { sendRPCPacket } = useWebsocketAPI();
+  const { onPageOpened } = useBodyProportions();
 
   applyProgress(0.9);
 
@@ -28,6 +31,10 @@ export function ManualProportionsPage() {
       new SkeletonResetAllRequestT()
     );
   };
+
+  useEffect(() => {
+    onPageOpened();
+  }, []);
 
   return (
     <>
