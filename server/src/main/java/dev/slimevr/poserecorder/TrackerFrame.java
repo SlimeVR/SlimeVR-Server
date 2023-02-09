@@ -234,4 +234,8 @@ public final class TrackerFrame implements Tracker {
 	public String getCustomName() {
 		return null;
 	}
+
+	@Override
+	public void setCustomName(String customName) {
+	}
 }

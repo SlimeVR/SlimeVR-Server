@@ -743,6 +743,7 @@ public class IMUTracker
 		return customName;
 	}
 
+	@Override
 	public void setCustomName(String customName) {
 		this.customName = customName;
 	}

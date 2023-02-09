@@ -12,6 +12,7 @@ import dev.slimevr.tracking.Device;
 import dev.slimevr.tracking.processor.BoneInfo;
 import dev.slimevr.tracking.processor.BoneType;
 import dev.slimevr.tracking.processor.HumanPoseManager;
+import dev.slimevr.tracking.processor.skeleton.UnityHierarchy;
 import dev.slimevr.tracking.trackers.*;
 import io.eiren.util.collections.FastList;
 import io.eiren.util.logging.LogManager;
@@ -25,6 +26,10 @@ import java.util.Map;
 
 /**
  * VMC documentation: https://protocol.vmc.info/english
+ * <p>
+ * Notes: VMC uses local rotation from hip (unlike SlimeVR, which uses rotations
+ * from head). VMC works with Unity's coordinate system, which means
+ * Quaternions' z and w components and Vectors' z components need to be inverse
  */
 public class VMCHandler implements OSCHandler {
 	private OSCPortIn oscReceiver;
@@ -37,7 +42,12 @@ public class VMCHandler implements OSCHandler {
 	private final Vector3f vecBuf = new Vector3f();
 	private final Quaternion quatBuf = new Quaternion();
 	private final long startTime;
-	private final Map<Integer, VRTracker> remoteTrackersByTrackerId = new HashMap<>();
+	private final Map<String, VRTracker> byTrackerNameTracker = new HashMap<>();
+	private final Map<BoneType, VRTracker> byBonetypeTracker = new HashMap<>();
+	private final Map<String, Long> byTrackerNameTimeout = new HashMap<>();
+	private final static Long TRACKER_TIMEOUT_MS = 2000L;
+	private final FastList<VRTracker> trackersList = new FastList<>();
+	private final UnityHierarchy unityHierarchy;
 	private Device trackerDevice;
 	private float timeAtLastError;
 	private boolean anchorHip;
@@ -57,6 +67,7 @@ public class VMCHandler implements OSCHandler {
 		this.shareableTrackers = shareableTrackers;
 
 		startTime = System.currentTimeMillis();
+		unityHierarchy = new UnityHierarchy();
 
 		refreshSettings(false);
 	}
@@ -103,26 +114,48 @@ public class VMCHandler implements OSCHandler {
 			// Starts listening for VMC messages
 			if (oscReceiver != null) {
 				OSCMessageListener listener = this::handleReceivedMessage;
-				MessageSelector rcvSelector = new OSCPatternAddressMessageSelector(
-					"/VMC/Ext/Rcv"
-				);
-				MessageSelector boneSelector = new OSCPatternAddressMessageSelector(
-					"/VMC/Ext/Bone/Pos"
-				);
-				MessageSelector hmdSelector = new OSCPatternAddressMessageSelector(
-					"/VMC/Ext/Hmd/Pos"
-				);
-				MessageSelector controllerSelector = new OSCPatternAddressMessageSelector(
-					"/VMC/Ext/Con/Pos"
-				);
-				MessageSelector trackerSelector = new OSCPatternAddressMessageSelector(
-					"/VMC/Ext/Tra/Pos"
-				);
-				oscReceiver.getDispatcher().addListener(rcvSelector, listener);
-				oscReceiver.getDispatcher().addListener(boneSelector, listener);
-				oscReceiver.getDispatcher().addListener(hmdSelector, listener);
-				oscReceiver.getDispatcher().addListener(controllerSelector, listener);
-				oscReceiver.getDispatcher().addListener(trackerSelector, listener);
+
+				oscReceiver
+					.getDispatcher()
+					.addListener(
+						new OSCPatternAddressMessageSelector(
+							"/VMC/Ext/Rcv"
+						),
+						listener
+					);
+				oscReceiver
+					.getDispatcher()
+					.addListener(
+						new OSCPatternAddressMessageSelector(
+							"/VMC/Ext/Bone/Pos"
+						),
+						listener
+					);
+				oscReceiver
+					.getDispatcher()
+					.addListener(
+						new OSCPatternAddressMessageSelector(
+							"/VMC/Ext/Hmd/Pos"
+						),
+						listener
+					);
+				oscReceiver
+					.getDispatcher()
+					.addListener(
+						new OSCPatternAddressMessageSelector(
+							"/VMC/Ext/Con/Pos"
+						),
+						listener
+					);
+				oscReceiver
+					.getDispatcher()
+					.addListener(
+						new OSCPatternAddressMessageSelector(
+							"/VMC/Ext/Tra/Pos"
+						),
+						listener
+					);
+
 				oscReceiver.startListening();
 			}
 
@@ -169,66 +202,78 @@ public class VMCHandler implements OSCHandler {
 
 	private void handleReceivedMessage(OSCMessageEvent event) {
 		String address = event.getMessage().getAddress();
-		if (address.equals("/VMC/Ext/Bone/Pos")) {
+
+		if (address.equals("/VMC/Ext/Bone/Pos")) { // Is bone (rotation)
 			TrackerPosition trackerPosition = UnityBone
 				.getByStringVal(
 					String.valueOf(event.getMessage().getArguments().get(0))
 				).trackerPosition;
+			// If received bone is part of SlimeVR's skeleton
 			if (trackerPosition != null) {
 				handleReceivedTracker(
-					trackerPosition.id,
 					"VMC-Bone-" + event.getMessage().getArguments().get(0),
 					trackerPosition,
 					null,
 					new Quaternion(
 						(float) event.getMessage().getArguments().get(4),
 						(float) event.getMessage().getArguments().get(5),
-						(float) event.getMessage().getArguments().get(6),
-						(float) event.getMessage().getArguments().get(7)
-					)
+						-((float) event.getMessage().getArguments().get(6)),
+						-((float) event.getMessage().getArguments().get(7))
+					),
+					true,
+					UnityBone
+						.getByStringVal(
+							String.valueOf(event.getMessage().getArguments().get(0))
+						).boneType
 				);
 			}
 		} else if (
 			address.equals("/VMC/Ext/Hmd/Pos")
 				|| address.equals("/VMC/Ext/Con/Pos")
 				|| address.equals("/VMC/Ext/Tra/Pos")
-		) {
-			String serial = String.valueOf(event.getMessage().getArguments().get(0));
+		) { // Is tracker (position + rotation)
 			handleReceivedTracker(
-				serial.hashCode(),
-				"VMC-Tracker-" + serial,
+				"VMC-Tracker-" + event.getMessage().getArguments().get(0),
 				null,
 				new Vector3f(
 					(float) event.getMessage().getArguments().get(1),
 					(float) event.getMessage().getArguments().get(2),
-					(float) event.getMessage().getArguments().get(3)
+					-((float) event.getMessage().getArguments().get(3))
 				),
 				new Quaternion(
 					(float) event.getMessage().getArguments().get(4),
 					(float) event.getMessage().getArguments().get(5),
-					(float) event.getMessage().getArguments().get(6),
-					(float) event.getMessage().getArguments().get(7)
-				)
+					-((float) event.getMessage().getArguments().get(6)),
+					-((float) event.getMessage().getArguments().get(7))
+				),
+				false,
+				null
 			);
 		}
 	}
 
-	// TODO manage timeout, load trackers from config...
+	// TODO localRotation
 	private void handleReceivedTracker(
-		int id,
 		String name,
 		TrackerPosition trackerPosition,
 		Vector3f position,
-		Quaternion rotation
+		Quaternion rotation,
+		boolean localRotation,
+		BoneType boneType
 	) {
+		// Create device if it doesn't exist
 		if (trackerDevice == null) {
 			trackerDevice = server.getDeviceManager().createDevice("VMCReceiver", "1.0", "VMC");
 			server.getDeviceManager().addDevice(trackerDevice);
 		}
-		VRTracker tracker = remoteTrackersByTrackerId.get(id);
+
+		// Try to get tracker
+		VRTracker tracker = byTrackerNameTracker.get(name);
+
+		// Create tracker if trying to get it returned null
 		if (tracker == null) {
 			tracker = new VRTracker(
-				id,
+				Tracker.getNextLocalTrackerId(),
 				name,
 				name,
 				rotation != null,
@@ -236,23 +281,48 @@ public class VMCHandler implements OSCHandler {
 				trackerDevice
 			);
 			tracker.setBodyPosition(trackerPosition);
-			trackerDevice.getTrackers().put(trackerDevice.getTrackers().size() + 1, tracker);
-			remoteTrackersByTrackerId.put(tracker.getTrackerId(), tracker);
+			trackerDevice.getTrackers().put(trackerDevice.getTrackers().size(), tracker);
+			byTrackerNameTracker.put(name, tracker);
+			if(boneType != null)
+				byBonetypeTracker.put(boneType, tracker);
 			server.registerTracker(tracker);
+			trackersList.add(tracker);
 		}
-		tracker.setStatus(TrackerStatus.OK);
+		if (tracker.getStatus() != TrackerStatus.OK) {
+			tracker.setStatus(TrackerStatus.OK);
+		}
 
+		// Set position
 		if (position != null) {
 			tracker.position.set(position);
 		}
+
+		// Set rotation
 		if (rotation != null) {
+			if (localRotation) {
+				unityHierarchy.updatePose(boneType, rotation);
+				tracker.rotation.set(unityHierarchy.getGlobalRotForBone(boneType));
+			}
 			tracker.rotation.set(rotation);
 		}
+
+		byTrackerNameTimeout.put(name, System.currentTimeMillis());
 		tracker.dataTick();
 	}
 
 	@Override
 	public void update() {
+		// Manage tracker timeout
+		for (VRTracker tracker : trackersList) {
+			if (
+				System.currentTimeMillis() - byTrackerNameTimeout.get(tracker.getName())
+					> TRACKER_TIMEOUT_MS
+					&& tracker.getStatus() != TrackerStatus.DISCONNECTED
+			) {
+				tracker.setStatus(TrackerStatus.DISCONNECTED);
+			}
+		}
+
 		// Send OSC data
 		if (oscSender != null && oscSender.isConnected()) {
 			// Create new OSC Bundle
