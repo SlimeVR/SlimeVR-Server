@@ -131,7 +131,7 @@ jobs:
           name: SlimeVR-GUI-AppImage
           path: target/release/bundle/appimage/slimevr*.AppImage
 
-  bundle:
+  bundle-mac:
     runs-on: macos-latest
     needs: build
     steps:
@@ -146,6 +146,8 @@ jobs:
 
       - name: Cache cargo dependencies
         uses: Swatinem/rust-cache@v2
+        with:
+          shared-key: "tauri-mac"
 
       - name: Use Node.js
         uses: actions/setup-node@v3
