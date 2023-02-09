@@ -5,7 +5,7 @@ import {
   ReactNode,
   useEffect,
   useRef,
-  useState
+  useState,
 } from 'react';
 import { useElemSize } from '../../hooks/layout';
 import { CheckIcon } from '../commons/icon/CheckIcon';

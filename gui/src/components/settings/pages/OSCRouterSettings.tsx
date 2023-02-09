@@ -8,7 +8,7 @@ import {
   OSCSettingsT,
   RpcMessage,
   SettingsRequestT,
-  SettingsResponseT
+  SettingsResponseT,
 } from 'solarxr-protocol';
 import { useWebsocketAPI } from '../../../hooks/websocket-api';
 import { CheckBox } from '../../commons/Checkbox';
@@ -45,7 +45,7 @@ export function OSCRouterSettings() {
   const { state } = useLocation();
   const pageRef = useRef<HTMLFormElement | null>(null);
 
-  const { reset, control, watch, handleSubmit, register } =
+  const { reset, control, watch, handleSubmit } =
     useForm<OSCRouterSettingsForm>({
       defaultValues: defaultValues,
     });

@@ -17,14 +17,12 @@ export function QuaternionToQuatT(q: QuatObject) {
   return quat;
 }
 
-export function MountingOrientationDegreesToQuatT(
-  mountingOrientationDegrees: number
-) {
+export function MountingOrientationDegreesToQuatT(mountingOrientationDegrees: number) {
   return QuaternionToQuatT(
     new Quaternion().setFromEuler(
       new Euler(0, +mountingOrientationDegrees * DEG_TO_RAD, 0)
     )
-  )
+  );
 }
 
 const RAD_TO_DEG = 180 / Math.PI;

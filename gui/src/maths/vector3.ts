@@ -1,7 +1,7 @@
 import { Vec3fT } from 'solarxr-protocol';
 import { Vector3 } from 'three';
 
-export type Vector3Object = { x: number; y: number; z: number; };
+export type Vector3Object = { x: number; y: number; z: number };
 
 export function Vector3FromVec3fT(vec?: Vector3Object | null) {
   return vec ? new Vector3(vec.x, vec.y, vec.z) : new Vector3();

@@ -28,9 +28,7 @@ export function useProvideAutobone(): AutoboneContext {
   const [hasRecording, setHasRecording] = useState(false);
   const [hasCalibration, setHasCalibration] = useState(false);
   const [progress, setProgress] = useState(0);
-  const [skeletonParts, setSkeletonParts] = useState<SkeletonPartT[] | null>(
-    null
-  );
+  const [skeletonParts, setSkeletonParts] = useState<SkeletonPartT[] | null>(null);
 
   const bodyParts = useMemo(() => {
     return (
@@ -81,11 +79,7 @@ export function useProvideAutobone(): AutoboneContext {
 
       if (data.processType) {
         if (data.message) {
-          console.log(
-            AutoBoneProcessType[data.processType],
-            ': ',
-            data.message
-          );
+          console.log(AutoBoneProcessType[data.processType], ': ', data.message);
         }
 
         if (data.total > 0 && data.current >= 0) {
@@ -123,25 +117,22 @@ export function useProvideAutobone(): AutoboneContext {
     }
   );
 
-  useRPCPacket(
-    RpcMessage.AutoBoneEpochResponse,
-    (data: AutoBoneEpochResponseT) => {
-      setProgress(data.currentEpoch / data.totalEpochs);
+  useRPCPacket(RpcMessage.AutoBoneEpochResponse, (data: AutoBoneEpochResponseT) => {
+    setProgress(data.currentEpoch / data.totalEpochs);
 
-      // Probably not necessary to show to the user
-      console.log(
-        'Epoch ',
-        data.currentEpoch,
-        '/',
-        data.totalEpochs,
-        ' (Error ',
-        data.epochError,
-        ')'
-      );
+    // Probably not necessary to show to the user
+    console.log(
+      'Epoch ',
+      data.currentEpoch,
+      '/',
+      data.totalEpochs,
+      ' (Error ',
+      data.epochError,
+      ')'
+    );
 
-      setSkeletonParts(data.adjustedSkeletonParts);
-    }
-  );
+    setSkeletonParts(data.adjustedSkeletonParts);
+  });
 
   return {
     hasCalibration,
@@ -154,9 +145,7 @@ export function useProvideAutobone(): AutoboneContext {
   };
 }
 
-export const AutoboneContextC = createContext<AutoboneContext>(
-  undefined as any
-);
+export const AutoboneContextC = createContext<AutoboneContext>(undefined as any);
 
 export function useAutobone() {
   const context = useContext<AutoboneContext>(AutoboneContextC);

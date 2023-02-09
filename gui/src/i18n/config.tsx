@@ -11,7 +11,6 @@ import {
 } from 'react';
 import { exists, readTextFile, BaseDirectory } from '@tauri-apps/api/fs';
 
-
 export const defaultNS = 'translation';
 export const DEFAULT_LOCALE = 'en';
 const OVERRIDE_FILENAME = 'override.ftl';
