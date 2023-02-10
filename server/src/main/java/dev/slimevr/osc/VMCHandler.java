@@ -200,10 +200,17 @@ public class VMCHandler implements OSCHandler {
 			}
 
 			// Load VRM data
-			VMCReader.readVMC(config.getVRMAddress());
-
 			// TODO : set outputUnityHierarchy's nodes' local translations to
 			// the loaded VRM avatar's
+			// else, use some defaults
+			if (outputUnityHierarchy != null) {
+				VRMReader vrmReader = new VRMReader(config.getVRMAddress());
+				for (TransformNode node : outputUnityHierarchy.getAllNodes()) {
+					if (node.getBoneType() != null)
+						node.localTransform
+							.setTranslation(vrmReader.getOffsetForBone(node.getBoneType()));
+				}
+			}
 		}
 
 		if (refreshRouterSettings && server.getOSCRouter() != null)

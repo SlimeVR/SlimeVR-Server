@@ -25,6 +25,7 @@ interface VMCSettingsForm {
       portOut: number;
       address: string;
     };
+    vrmAddress: string;
     anchorHip: boolean;
   };
 }
@@ -37,6 +38,7 @@ const defaultValues = {
       portOut: 39539,
       address: '127.0.0.1',
     },
+    vrmAddress: '',
     anchorHip: true,
   },
 };
@@ -62,6 +64,7 @@ export function VMCSettings() {
         new OSCSettingsT(),
         values.vmc.oscSettings
       );
+      vmcOsc.vrmAddress = values.vmc.vrmAddress;
       vmcOsc.anchorHip = values.vmc.anchorHip;
 
       settings.vmcOsc = vmcOsc;
@@ -91,8 +94,10 @@ export function VMCSettings() {
         if (settings.vmcOsc.oscSettings.address)
           formData.vmc.oscSettings.address =
             settings.vmcOsc.oscSettings.address.toString();
-        formData.vmc.anchorHip = settings.vmcOsc.anchorHip;
       }
+      if (settings.vmcOsc.vrmAddress)
+        formData.vmc.vrmAddress = settings.vmcOsc.vrmAddress.toString();
+      formData.vmc.anchorHip = settings.vmcOsc.anchorHip;
     }
 
     reset(formData);
@@ -172,7 +177,7 @@ export function VMCSettings() {
                 name="vmc.oscSettings.portIn"
                 rules={{ required: true }}
                 placeholder="9002"
-                label="Port In"
+                label=""
               ></Input>
             </Localized>
             <Localized
@@ -185,7 +190,7 @@ export function VMCSettings() {
                 name="vmc.oscSettings.portOut"
                 rules={{ required: true }}
                 placeholder="9000"
-                label="Port Out"
+                label=""
               ></Input>
             </Localized>
           </div>
@@ -210,7 +215,29 @@ export function VMCSettings() {
               placeholder={l10n.getString(
                 'settings-osc-vmc-network-address-placeholder'
               )}
-              label="Address"
+              label=""
+            ></Input>
+          </div>
+          <Typography bold>
+            {l10n.getString('settings-osc-vmc-vrm_address')}
+          </Typography>
+          <div className="flex flex-col pb-2">
+            <Typography color="secondary">
+              {l10n.getString('settings-osc-vmc-vrm_address_description')}
+            </Typography>
+          </div>
+          <div className="grid gap-3 pb-5">
+            <Input
+              type="text"
+              control={control}
+              name="vmc.vrmAddress"
+              rules={{
+                required: true,
+              }}
+              placeholder={l10n.getString(
+                'settings-osc-vmc-vrm_address-placeholder'
+              )}
+              label=""
             ></Input>
           </div>
           <Typography bold>

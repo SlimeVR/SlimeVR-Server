@@ -45,24 +45,24 @@ public class UnityHierarchy {
 		neckNode = new TransformNode(BoneType.NECK, local);
 		chestNode = new TransformNode(BoneType.CHEST, local);
 		waistTailNode = new TransformNode(BoneType.WAIST, local);
-		waistHeadNode = new TransformNode(BoneType.WAIST, local);
+		waistHeadNode = new TransformNode(null, local);
 		hipNode = new TransformNode(BoneType.HIP, local);
-		leftHipNode = new TransformNode(BoneType.LEFT_HIP, local);
-		rightHipNode = new TransformNode(BoneType.RIGHT_HIP, local);
+		leftHipNode = new TransformNode(null, local);
+		rightHipNode = new TransformNode(null, local);
 		leftKneeNode = new TransformNode(BoneType.LEFT_UPPER_LEG, local);
 		leftAnkleNode = new TransformNode(BoneType.LEFT_LOWER_LEG, local);
 		leftFootNode = new TransformNode(BoneType.LEFT_FOOT, local);
 		rightKneeNode = new TransformNode(BoneType.RIGHT_UPPER_LEG, local);
 		rightAnkleNode = new TransformNode(BoneType.RIGHT_LOWER_LEG, local);
 		rightFootNode = new TransformNode(BoneType.RIGHT_FOOT, local);
-		leftShoulderHeadNode = new TransformNode(BoneType.LEFT_SHOULDER, local);
-		rightShoulderHeadNode = new TransformNode(BoneType.RIGHT_SHOULDER, local);
-		leftShoulderTailNode = new TransformNode(BoneType.LEFT_UPPER_ARM, local);
-		rightShoulderTailNode = new TransformNode(BoneType.RIGHT_UPPER_ARM, local);
-		leftElbowNode = new TransformNode(BoneType.LEFT_LOWER_ARM, local);
-		rightElbowNode = new TransformNode(BoneType.RIGHT_LOWER_ARM, local);
-		leftWristNode = new TransformNode(BoneType.LEFT_HAND, local);
-		rightWristNode = new TransformNode(BoneType.RIGHT_HAND, local);
+		leftShoulderHeadNode = new TransformNode(null, local);
+		rightShoulderHeadNode = new TransformNode(null, local);
+		leftShoulderTailNode = new TransformNode(BoneType.LEFT_SHOULDER, local);
+		rightShoulderTailNode = new TransformNode(BoneType.RIGHT_SHOULDER, local);
+		leftElbowNode = new TransformNode(BoneType.LEFT_UPPER_ARM, local);
+		rightElbowNode = new TransformNode(BoneType.RIGHT_UPPER_ARM, local);
+		leftWristNode = new TransformNode(BoneType.LEFT_LOWER_ARM, local);
+		rightWristNode = new TransformNode(BoneType.RIGHT_LOWER_ARM, local);
 		leftHandNode = new TransformNode(BoneType.LEFT_HAND, local);
 		rightHandNode = new TransformNode(BoneType.RIGHT_HAND, local);
 
@@ -207,6 +207,35 @@ public class UnityHierarchy {
 			case LEFT_HAND -> leftWristNode;
 			case RIGHT_HAND -> rightWristNode;
 			default -> null;
+		};
+	}
+
+	public TransformNode[] getAllNodes() {
+		return new TransformNode[] {
+			headNode,
+			neckNode,
+			chestNode,
+			waistHeadNode,
+			waistTailNode,
+			hipNode,
+			leftHipNode,
+			leftKneeNode,
+			leftAnkleNode,
+			leftFootNode,
+			rightHipNode,
+			rightKneeNode,
+			rightAnkleNode,
+			rightFootNode,
+			leftShoulderHeadNode,
+			rightShoulderHeadNode,
+			leftShoulderTailNode,
+			rightShoulderTailNode,
+			leftElbowNode,
+			rightElbowNode,
+			leftWristNode,
+			rightWristNode,
+			leftHandNode,
+			rightHandNode,
 		};
 	}
 }

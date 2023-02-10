@@ -187,7 +187,7 @@ export function VRCOSCSettings() {
                 name="vrchat.oscSettings.portIn"
                 rules={{ required: true }}
                 placeholder="9001"
-                label="Port In"
+                label=""
               ></Input>
             </Localized>
             <Localized
@@ -200,7 +200,7 @@ export function VRCOSCSettings() {
                 name="vrchat.oscSettings.portOut"
                 rules={{ required: true }}
                 placeholder="9000"
-                label="Port Out"
+                label=""
               ></Input>
             </Localized>
           </div>
@@ -227,7 +227,7 @@ export function VRCOSCSettings() {
               placeholder={l10n.getString(
                 'settings-osc-vrchat-network-address-placeholder'
               )}
-              label="Address"
+              label=""
             ></Input>
           </div>
           <Typography bold>
