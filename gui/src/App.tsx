@@ -123,7 +123,7 @@ export default function App() {
         document.body.classList.remove(type.toLowerCase());
       });
     };
-  });
+  }, []);
 
   useEffect(() => {
     const unlisten = listen(
