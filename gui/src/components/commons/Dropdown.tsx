@@ -29,11 +29,19 @@ export function Dropdown({
 }) {
   const [isOpen, setOpen] = useState(false);
   useEffect(() => {
-    document.addEventListener('wheel', () => {
+    if (!isOpen) return;
+
+    function onWheelEvent() {
+      console.log('heyaaa');
       if (isOpen && !document.querySelector('div.dropdown-scroll:hover')) {
         setOpen(false);
       }
-    });
+    }
+
+    document.addEventListener('wheel', onWheelEvent, { passive: true });
+
+    // TS doesn't let me specify { passive: true }, but I believe it will work anyways
+    return () => document.removeEventListener('wheel', onWheelEvent);
   });
 
   return (
