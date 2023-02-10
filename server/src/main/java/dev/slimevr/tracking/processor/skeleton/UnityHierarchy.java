@@ -8,7 +8,6 @@ import dev.slimevr.tracking.processor.TransformNode;
 
 
 public class UnityHierarchy {
-	// @formatter:off
 	protected final TransformNode headNode;
 	protected final TransformNode neckNode;
 	protected final TransformNode chestNode;
@@ -16,23 +15,23 @@ public class UnityHierarchy {
 	protected final TransformNode waistHeadNode;
 	protected final TransformNode hipNode;
 	protected final TransformNode leftHipNode;
-	protected final TransformNode rightHipNode ;
-	protected final TransformNode leftKneeNode ;
+	protected final TransformNode rightHipNode;
+	protected final TransformNode leftKneeNode;
 	protected final TransformNode leftAnkleNode;
 	protected final TransformNode leftFootNode;
-	protected final TransformNode rightKneeNode ;
+	protected final TransformNode rightKneeNode;
 	protected final TransformNode rightAnkleNode;
-	protected final TransformNode rightFootNode ;
-	protected final TransformNode leftShoulderHeadNode ;
+	protected final TransformNode rightFootNode;
+	protected final TransformNode leftShoulderHeadNode;
 	protected final TransformNode rightShoulderHeadNode;
-	protected final TransformNode leftShoulderTailNode ;
+	protected final TransformNode leftShoulderTailNode;
 	protected final TransformNode rightShoulderTailNode;
 	protected final TransformNode leftElbowNode;
 	protected final TransformNode rightElbowNode;
-	protected final TransformNode leftWristNode ;
+	protected final TransformNode leftWristNode;
 	protected final TransformNode rightWristNode;
 	protected final TransformNode leftHandNode;
-	protected final TransformNode rightHandNode ;
+	protected final TransformNode rightHandNode;
 	private static final Quaternion LEFT_SHOULDER_OFFSET = new Quaternion()
 		.fromAngles(0f, 0f, FastMath.HALF_PI);
 	private static final Quaternion RIGHT_SHOULDER_OFFSET = new Quaternion()
@@ -132,8 +131,8 @@ public class UnityHierarchy {
 
 	public Vector3f getGlobalTranslationForBone(BoneType boneType) {
 		TransformNode node = getHeadNodeForBone(boneType);
-		if (node != null){
-			if(node.getParent() != null)
+		if (node != null) {
+			if (node.getParent() != null)
 				node = node.getParent();
 			return node.worldTransform.getTranslation().add(rootPosition);
 		}
@@ -142,10 +141,10 @@ public class UnityHierarchy {
 
 	public Vector3f getLocalTranslationForBone(BoneType boneType) {
 		TransformNode node = getHeadNodeForBone(boneType);
-		if (node != null){
-			if(node == hipNode)
+		if (node != null) {
+			if (node == hipNode)
 				return node.worldTransform.getTranslation();
-			if(node.getParent() != null)
+			if (node.getParent() != null)
 				node = node.getParent();
 			return node.localTransform.getTranslation();
 		}
@@ -162,20 +161,21 @@ public class UnityHierarchy {
 	public Quaternion getLocalRotationForBone(BoneType boneType) {
 		TransformNode node = getHeadNodeForBone(boneType);
 		Quaternion rotBuf = new Quaternion();
-		if (node != null){
-			if(node == hipNode){
+		if (node != null) {
+			if (node == hipNode) {
 				// Use global rotation for hip (root)
 				rotBuf.set(node.worldTransform.getRotation());
-			}else{
+			} else {
 				rotBuf.set(node.worldTransform.getRotation());
 				// Adjust from I-Pose to T-Pose
 				if (boneType == BoneType.LEFT_UPPER_ARM) {
 					rotBuf.multLocal(LEFT_SHOULDER_OFFSET);
-				} else if (boneType == BoneType.RIGHT_UPPER_ARM){
+				} else if (boneType == BoneType.RIGHT_UPPER_ARM) {
 					rotBuf.multLocal(RIGHT_SHOULDER_OFFSET);
 				}
 				// Compute local rotation from parent
-				rotBuf.set(node.getParent().worldTransform.getRotation().inverse().multLocal(rotBuf));
+				rotBuf
+					.set(node.getParent().worldTransform.getRotation().inverse().multLocal(rotBuf));
 			}
 		}
 		return rotBuf;
