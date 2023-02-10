@@ -56,6 +56,9 @@
       "path": {
         "all": true
       },
+      "os": {
+        "all": true
+      },
       "window": {
         "setResizable": true,
         "setTitle": true,
