@@ -18,9 +18,12 @@ public class ComputedTracker implements Tracker, TrackerWithTPS {
 	protected final boolean hasPosition;
 	protected final int trackerId;
 	private final Device device;
+	private final boolean useTimeout;
 	private String customName;
 	public TrackerPosition bodyPosition = null;
 	protected TrackerStatus status = TrackerStatus.DISCONNECTED;
+	private long timeAtLastUpdate;
+	private final static Long TIMEOUT_MS = 2000L;
 
 	public ComputedTracker(
 		int trackerId,
@@ -28,7 +31,8 @@ public class ComputedTracker implements Tracker, TrackerWithTPS {
 		String name,
 		boolean hasRotation,
 		boolean hasPosition,
-		Device device
+		Device device,
+		boolean useTimeout
 	) {
 		this.name = name;
 		this.serial = serial;
@@ -36,10 +40,11 @@ public class ComputedTracker implements Tracker, TrackerWithTPS {
 		this.hasPosition = hasPosition;
 		this.trackerId = trackerId;
 		this.device = device;
+		this.useTimeout = useTimeout;
 	}
 
 	public ComputedTracker(int trackerId, String name, boolean hasRotation, boolean hasPosition) {
-		this(trackerId, name, name, hasRotation, hasPosition, null);
+		this(trackerId, name, name, hasRotation, hasPosition, null, false);
 	}
 
 	@Override
@@ -137,10 +142,17 @@ public class ComputedTracker implements Tracker, TrackerWithTPS {
 
 	@Override
 	public void dataTick() {
+		timeAtLastUpdate = System.currentTimeMillis();
 	}
 
 	@Override
 	public void tick() {
+		if (useTimeout) {
+			if (System.currentTimeMillis() - timeAtLastUpdate < TIMEOUT_MS)
+				setStatus(TrackerStatus.OK);
+			else
+				setStatus(TrackerStatus.DISCONNECTED);
+		}
 	}
 
 	@Override

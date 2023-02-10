@@ -70,7 +70,7 @@ public class UnityHierarchy {
 		rightWristNode.attachChild(rightHandNode);
 	}
 
-	public void updateNodes(){
+	public void updateNodes() {
 		hipNode.update();
 	}
 

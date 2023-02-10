@@ -44,8 +44,6 @@ public class VMCHandler implements OSCHandler {
 	private final long startTime;
 	private final Map<String, VRTracker> byTrackerNameTracker = new HashMap<>();
 	private final Map<BoneType, VRTracker> byBonetypeTracker = new HashMap<>();
-	private final Map<String, Long> byTrackerNameTimeout = new HashMap<>();
-	private final static Long TRACKER_TIMEOUT_MS = 2000L;
 	private final FastList<VRTracker> trackersList = new FastList<>();
 	private UnityHierarchy unityHierarchy;
 	private Device trackerDevice;
@@ -299,18 +297,17 @@ public class VMCHandler implements OSCHandler {
 				name,
 				rotation != null,
 				position != null,
-				trackerDevice
+				trackerDevice,
+				true
 			);
 			tracker.setBodyPosition(trackerPosition);
+			tracker.setStatus(TrackerStatus.OK);
 			trackerDevice.getTrackers().put(trackerDevice.getTrackers().size(), tracker);
 			byTrackerNameTracker.put(name, tracker);
 			if (boneType != null)
 				byBonetypeTracker.put(boneType, tracker);
 			server.registerTracker(tracker);
 			trackersList.add(tracker);
-		}
-		if (tracker.getStatus() != TrackerStatus.OK) {
-			tracker.setStatus(TrackerStatus.OK);
 		}
 
 		// Set position
@@ -331,7 +328,6 @@ public class VMCHandler implements OSCHandler {
 			tracker.rotation.set(rotation);
 		}
 
-		byTrackerNameTimeout.put(name, System.currentTimeMillis());
 		tracker.dataTick();
 	}
 
@@ -340,17 +336,6 @@ public class VMCHandler implements OSCHandler {
 		// Update unity hierarchy
 		if (unityHierarchy != null)
 			unityHierarchy.updateNodes();
-
-		// Manage tracker timeout
-		for (VRTracker tracker : trackersList) {
-			if (
-				System.currentTimeMillis() - byTrackerNameTimeout.get(tracker.getName())
-					> TRACKER_TIMEOUT_MS
-					&& tracker.getStatus() != TrackerStatus.DISCONNECTED
-			) {
-				tracker.setStatus(TrackerStatus.DISCONNECTED);
-			}
-		}
 
 		// Send OSC data
 		if (oscSender != null && oscSender.isConnected()) {

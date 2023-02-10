@@ -193,20 +193,6 @@ public class VRCOSCHandler implements OSCHandler {
 	@Override
 	public void update() {
 		float currentTime = System.currentTimeMillis();
-		// Manage HMD state with timeout
-		if (oscReceiver != null) {
-			if (
-				((steamvrBridge != null
-					&& steamvrBridge.isConnected())
-					||
-					!hmd.isBeingUpdated()
-					||
-					!oscReceiver.isListening())
-					&& hmd.getStatus() == TrackerStatus.OK
-			) {
-				hmd.setStatus(TrackerStatus.DISCONNECTED);
-			}
-		}
 
 		// Send OSC data
 		if (oscSender != null && oscSender.isConnected()) {

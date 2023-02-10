@@ -35,7 +35,11 @@ public class TrackerUtils {
 		TrackerPosition position
 	) {
 		for (T t : allTrackers) {
-			if (t.getBodyPosition() == position && !(t instanceof ComputedHumanPoseTracker))
+			if (
+				t.getBodyPosition() == position
+					&& !(t instanceof ComputedHumanPoseTracker)
+					&& !(t instanceof HMDTracker)
+			)
 				return t;
 		}
 		return null;
@@ -51,7 +55,7 @@ public class TrackerUtils {
 		List<T> allTrackers
 	) {
 		for (T t : allTrackers) {
-			if (t instanceof HMDTracker && ((HMDTracker) t).isBeingUpdated())
+			if (t instanceof HMDTracker && t.getStatus() != TrackerStatus.DISCONNECTED)
 				return t;
 		}
 		return null;
