@@ -11,7 +11,7 @@ import solarxr_protocol.datatypes.math.Quat;
 
 public class LegTweaks {
 	// state variables
-	private float floorLevel;
+	private float floorLevel = 0.0f;
 	private float waistToFloorDist;
 	private float currentDisengagementOffset = 0.0f;
 	private static float currentCorrectionStrength = 0.3f; // default value
@@ -94,9 +94,9 @@ public class LegTweaks {
 	private static final float FOREARM_MASS = 0.017f;
 
 	// hyperparameters (rotation correction)
-	private static final float TOE_SNAP_MAX_VELOCITY = 0.5f;
-	private static final float FOOT_PLANT_MAX_VELOCITY = 0.5f;
-	private static final float ROTATION_CORRECTION_VERTICAL = 0.05f;
+	private static final float ROTATION_CORRECTION_VERTICAL = 0.1f;
+	private static final float MAXIMUM_CORRECTION_ANGLE = 0.3f;
+	private static final float MAXIMUM_CORRECTION_ANGLE_DELTA = 0.7f;
 
 	// hyperparameters (misc)
 	static final float NEARLY_ZERO = 0.001f;
@@ -211,11 +211,11 @@ public class LegTweaks {
 	}
 
 	public void setToeSnap(boolean val) {
-		toeSnap = val;
+		this.toeSnap = val;
 	}
 
 	public void setFootPlant(boolean val) {
-		footPlant = val;
+		this.footPlant = val;
 	}
 
 	public boolean getEnabled() {
@@ -231,11 +231,11 @@ public class LegTweaks {
 	}
 
 	public boolean getToeSnap() {
-		return toeSnap;
+		return this.toeSnap;
 	}
 
 	public boolean getFootPlant() {
-		return footPlant;
+		return this.footPlant;
 	}
 
 	public void resetBuffer() {
@@ -743,41 +743,48 @@ public class LegTweaks {
 
 	// correct the rotation of the foot trackers
 	private void correctFootRotations() {
-		// corrects rotations when planted firmly on the ground
-		if (footPlant) {
-			float weightL = 0.0f;
-			float weightR = 0.0f;
-			// calculate the correction weight
-			if (bufferHead.getLeftFootVelocity(null).length() < FOOT_PLANT_MAX_VELOCITY) {
-				// weight should be 1 if the foot is not moving and 0 if greater than the max velocity
-				weightL = 1.0f - (bufferHead.getLeftFootVelocity(null).length() / FOOT_PLANT_MAX_VELOCITY);
-
-				// the further from the ground the foot is, the less weight it should have
-				// this should set weight L to 0 if the foot is above the ground and 1 if it is on the ground
-				weightL = (bufferHead.getLeftFootPosition(null).y - floorLevel > ROTATION_CORRECTION_VERTICAL) ? 0.0f : weightL * (1.0f - (bufferHead.getLeftFootPosition(null).y - floorLevel) / ROTATION_CORRECTION_VERTICAL);
-			
-			}
-			if (bufferHead.getRightFootVelocity(null).length() < FOOT_PLANT_MAX_VELOCITY) {
-				weightR = 1.0f - (bufferHead.getRightFootVelocity(null).length() / FOOT_PLANT_MAX_VELOCITY);
-
-				weightR = (bufferHead.getRightFootPosition(null).y - floorLevel > ROTATION_CORRECTION_VERTICAL) ? 0.0f : weightR * (1.0f - (bufferHead.getRightFootPosition(null).y - floorLevel) / ROTATION_CORRECTION_VERTICAL);
-			}
-
-			// perform the correction
-			Vector3f temp = computeUnitVector(leftFootRotation).setY(0);
-			Quaternion fullyCorrectedRot = new Quaternion(temp.x, temp.y, temp.z, 0);
-			skeleton.computedLeftFootTracker.rotation.set(bufferHead.getParent().getLeftFootRotation(null).slerp(leftFootRotation, fullyCorrectedRot, weightL));
-
-			temp = computeUnitVector(rightFootRotation).setY(0);
-			fullyCorrectedRot = new Quaternion(temp.x, temp.y, temp.z, 0);
-			skeleton.computedRightFootTracker.rotation.set(bufferHead.getParent().getRightFootRotation(null).slerp(rightFootRotation, fullyCorrectedRot, weightR));
-			
-			
+		// null check's
+		if (bufferHead == null || bufferHead.getParent() == null) {
+			return;
 		}
 
-		// corrects rotations when the foot is in the air
+		// between maximum correction angle and maximum correction angle delta the values are interpolated
+		float kneeAngle = bufferHead.getLeftFootPosition(null).subtract(bufferHead.getLeftKneePosition(null)).normalize().setY(0.0f).length();
+		float masterWeightL = (kneeAngle > MAXIMUM_CORRECTION_ANGLE && kneeAngle < MAXIMUM_CORRECTION_ANGLE_DELTA) ? 1.0f - ((kneeAngle - MAXIMUM_CORRECTION_ANGLE) / (MAXIMUM_CORRECTION_ANGLE_DELTA - MAXIMUM_CORRECTION_ANGLE)) : 0.0f;
+		masterWeightL = (kneeAngle < MAXIMUM_CORRECTION_ANGLE) ? 1.0f : masterWeightL;
+
+		kneeAngle = bufferHead.getRightFootPosition(null).subtract(bufferHead.getRightKneePosition(null)).normalize().setY(0.0f).length();
+		float masterWeightR = (kneeAngle > MAXIMUM_CORRECTION_ANGLE && kneeAngle < MAXIMUM_CORRECTION_ANGLE_DELTA) ? 1.0f - ((kneeAngle - MAXIMUM_CORRECTION_ANGLE) / (MAXIMUM_CORRECTION_ANGLE_DELTA - MAXIMUM_CORRECTION_ANGLE)) : 0.0f;
+		masterWeightR = (kneeAngle < MAXIMUM_CORRECTION_ANGLE) ? 1.0f : masterWeightR;
+
+
+		// corrects rotations when planted firmly on the ground
+		if (footPlant) {
+			// prepare some variables
+			float weightL = 0.0f;
+			float weightR = 0.0f;
+			Vector3f leftFootPos = bufferHead.getLeftFootPosition(null);
+			Vector3f rightFootPos = bufferHead.getRightFootPosition(null);
+
+			// the further from the ground the foot is, the less weight it should have
+			weightL = ((leftFootPos.y - floorLevel) > ROTATION_CORRECTION_VERTICAL) ? 0.0f : 1.0f - ((leftFootPos.y - floorLevel) / ROTATION_CORRECTION_VERTICAL);
+			weightL = FastMath.clamp(weightL, 0.0f, 1.0f);
+
+			weightR = (rightFootPos.y - floorLevel > ROTATION_CORRECTION_VERTICAL) ? 0.0f : 1.0f - ((rightFootPos.y - floorLevel) / ROTATION_CORRECTION_VERTICAL);
+			weightR = FastMath.clamp(weightR, 0.0f, 1.0f);
+
+
+
+			// perform the correction but the maximum amount of correction is 10 degrees
+			skeleton.computedLeftFootTracker.rotation.set(bufferHead.getParent().getLeftFootRotation(null).slerp(leftFootRotation, issolateYaw(leftFootRotation), weightL * masterWeightL));
+
+			skeleton.computedRightFootTracker.rotation.set(bufferHead.getParent().getRightFootRotation(null).slerp(rightFootRotation, issolateYaw(rightFootRotation), weightR * masterWeightR));
+
+		}
+
+		// corrects rotations when the foot is in the air by rotating the foot down so that the toes are touching
 		if (toeSnap) {
-			// TODO impliment this 
+			// TODO impliment this
 		}
 
 		return;
@@ -1000,6 +1007,16 @@ public class LegTweaks {
 			rightFramesLocked = 0;
 			rightFramesUnlocked++;
 		}
+	}
+
+	// remove the x and z components of the given quaternion
+	private Quaternion issolateYaw(Quaternion quaternion) {
+		return new Quaternion(
+			0,
+			quaternion.getY(),
+			0,
+			quaternion.getW()
+		);
 	}
 
 	// check if the difference between two floats flipped after correction
