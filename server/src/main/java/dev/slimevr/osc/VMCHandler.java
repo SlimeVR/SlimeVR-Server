@@ -9,9 +9,9 @@ import com.jme3.math.Vector3f;
 import dev.slimevr.VRServer;
 import dev.slimevr.config.VMCConfig;
 import dev.slimevr.tracking.Device;
-import dev.slimevr.tracking.processor.BoneInfo;
 import dev.slimevr.tracking.processor.BoneType;
 import dev.slimevr.tracking.processor.HumanPoseManager;
+import dev.slimevr.tracking.processor.TransformNode;
 import dev.slimevr.tracking.processor.skeleton.UnityHierarchy;
 import dev.slimevr.tracking.trackers.*;
 import io.eiren.util.collections.FastList;
@@ -45,7 +45,8 @@ public class VMCHandler implements OSCHandler {
 	private final Map<String, VRTracker> byTrackerNameTracker = new HashMap<>();
 	private final Map<BoneType, VRTracker> byBonetypeTracker = new HashMap<>();
 	private final FastList<VRTracker> trackersList = new FastList<>();
-	private UnityHierarchy unityHierarchy;
+	private UnityHierarchy inputUnityHierarchy;
+	private UnityHierarchy outputUnityHierarchy;
 	private Device trackerDevice;
 	private float timeAtLastError;
 	private boolean anchorHip;
@@ -185,6 +186,7 @@ public class VMCHandler implements OSCHandler {
 				lastAddress = address;
 
 				oscSender.connect();
+				outputUnityHierarchy = new UnityHierarchy(false);
 			} catch (IOException e) {
 				LogManager
 					.severe(
@@ -199,6 +201,9 @@ public class VMCHandler implements OSCHandler {
 
 			// Load VRM data
 			VMCReader.readVMC(config.getVRMAddress());
+
+			// TODO : set outputUnityHierarchy's nodes' local translations to
+			// the loaded VRM avatar's
 		}
 
 		if (refreshRouterSettings && server.getOSCRouter() != null)
@@ -257,9 +262,14 @@ public class VMCHandler implements OSCHandler {
 				break;
 			case "/VMC/Ext/Root/Pos":
 				// Is VMC tracking root (offsets all rotations)
-				if (unityHierarchy != null) {
-					unityHierarchy
-						.setRootRotation(
+				if (inputUnityHierarchy != null) {
+					inputUnityHierarchy
+						.setRootPose(
+							new Vector3f(
+								(float) event.getMessage().getArguments().get(1),
+								(float) event.getMessage().getArguments().get(2),
+								-((float) event.getMessage().getArguments().get(3))
+							),
 							new Quaternion(
 								(float) event.getMessage().getArguments().get(4),
 								(float) event.getMessage().getArguments().get(5),
@@ -319,11 +329,11 @@ public class VMCHandler implements OSCHandler {
 		if (rotation != null) {
 			if (localRotation) {
 				// Instantiate unityHierarchy if not done
-				if (unityHierarchy == null)
-					unityHierarchy = new UnityHierarchy();
+				if (inputUnityHierarchy == null)
+					inputUnityHierarchy = new UnityHierarchy(true);
 				// TODO bones need mounting reset once trackers are rewritten
-				unityHierarchy.updateBone(boneType, rotation);
-				rotation.set(unityHierarchy.getGlobalRotForBone(boneType));
+				inputUnityHierarchy.setBoneLocalRotation(boneType, rotation);
+				rotation.set(inputUnityHierarchy.getGlobalRotationForBone(boneType));
 			}
 			tracker.rotation.set(rotation);
 		}
@@ -334,8 +344,8 @@ public class VMCHandler implements OSCHandler {
 	@Override
 	public void update() {
 		// Update unity hierarchy
-		if (unityHierarchy != null)
-			unityHierarchy.updateNodes();
+		if (inputUnityHierarchy != null)
+			inputUnityHierarchy.updateNodes();
 
 		// Send OSC data
 		if (oscSender != null && oscSender.isConnected()) {
@@ -372,6 +382,22 @@ public class VMCHandler implements OSCHandler {
 						)
 					);
 
+				for (UnityBone bone : UnityBone.values) {
+					// Get tailNode for bone
+					TransformNode tailNode = humanPoseManager
+						.getTailNodeOfBone(
+							bone.boneType
+						);
+					// Update unity hierarchy from bone's global rotation
+					if (tailNode != null)
+						outputUnityHierarchy
+							.setBoneGlobalRotation(
+								bone.boneType,
+								tailNode.getParent().worldTransform.getRotation()
+							);
+				}
+				outputUnityHierarchy.updateNodes();
+
 				// Add Unity humanoid bones transforms
 				for (UnityBone bone : UnityBone.values) {
 					if (
@@ -380,68 +406,38 @@ public class VMCHandler implements OSCHandler {
 							&& !(humanPoseManager.isTrackingRightArmFromController()
 								&& isRightArmUnityBone(bone))
 					) {
-						// Get BoneInfo for the bone
-						BoneInfo boneInfo = humanPoseManager
-							.getBoneInfoForBoneType(
-								bone.boneType
-							);
-
-						// TODO : implement reading/loading VRM avatars
-						// to get proportions.
-						// User needs to agree to the VRM's license
-						float height = 0.7f;
-						float heightMultiplier = height
-							/ humanPoseManager.getUserHeightFromConfig();
 						if (bone == UnityBone.HIPS) {
 							// Add the tracking root
 							// Get position
 							if (anchorHip) {
 								// Hip anchor
-								vecBuf.set(0f, height / 2f, 0f);
+								vecBuf.set(0f, 0, 0f);
 							} else {
 								// Head anchor
 								vecBuf
 									.set(
-										humanPoseManager
-											.getTailNodeOfBone(BoneType.HEAD)
-											.getParent().worldTransform.getTranslation()
+										outputUnityHierarchy
+											.getGlobalTranslationForBone(BoneType.HEAD)
 									)
-									.multLocal(heightMultiplier);
-								vecBuf
 									.addLocal(
-										humanPoseManager
-											.getTailNodeOfBone(BoneType.HIP).worldTransform
-												.getTranslation()
-												.mult(heightMultiplier)
+										outputUnityHierarchy
+											.getGlobalTranslationForBone(BoneType.HIP)
 									);
-								vecBuf.setY(vecBuf.y - height);
 							}
 
 							// Get rotation
-							quatBuf.set(boneInfo.getGlobalRotation(true));
+							quatBuf
+								.set(outputUnityHierarchy.getGlobalRotationForBone(BoneType.HIP));
 						} else {
-							if (boneInfo != null) {
-								// Get position
-								vecBuf
-									.set(
-										boneInfo
-											.getLocalTranslationFromRoot(
-												BoneType.HIP,
-												true
-											)
-									)
-									.multLocal(heightMultiplier);
+							// Get position
+							vecBuf
+								.set(
+									outputUnityHierarchy.getLocalTranslationForBone(bone.boneType)
+								);
 
-								// Get rotation
-								quatBuf
-									.set(
-										boneInfo
-											.getLocalRotationFromRoot(
-												BoneType.HIP,
-												true
-											)
-									);
-							}
+							// Get rotation
+							quatBuf
+								.set(outputUnityHierarchy.getLocalRotationForBone(bone.boneType));
 						}
 
 						oscArgs.clear();

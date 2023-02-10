@@ -336,7 +336,7 @@ public class DataFeedBuilder {
 			var bi = boneInfos.get(i);
 
 			var headPosG = bi.tailNode.getParent().worldTransform.getTranslation();
-			var rotG = bi.getGlobalRotation(false);
+			var rotG = bi.getGlobalRotation();
 			var length = bi.length;
 
 			Bone.startBone(fbb);
