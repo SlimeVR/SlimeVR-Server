@@ -7,14 +7,14 @@ import dev.slimevr.config.LegTweaksConfig;
 
 import dev.slimevr.tracking.processor.TransformNode;
 import dev.slimevr.tracking.processor.config.SkeletonConfigToggles;
-import solarxr_protocol.datatypes.math.Quat;
 
 
 public class LegTweaks {
 	// state variables
-	private float floorLevel = 0.0f;
+	private float floorLevel;
 	private float waistToFloorDist;
 	private float currentDisengagementOffset = 0.0f;
+	private float footLength = 0.0f;
 	private static float currentCorrectionStrength = 0.3f; // default value
 	private boolean initialized = true;
 	private boolean enabled = true; // master switch
@@ -68,12 +68,11 @@ public class LegTweaks {
 
 	// hyperparameters (clip correction)
 	static float DYNAMIC_DISPLACEMENT_CUTOFF = 1.0f;
-	static float MAX_DYNAMIC_DISPLACEMENT = 0.06f;
 	private static final float FLOOR_CALIBRATION_OFFSET = 0.015f;
 
 	// hyperparameters (skating correction)
 	private static final float MIN_ACCEPTABLE_ERROR = 0.01f;
-	private static final float MAX_ACCEPTABLE_ERROR = 0.225f;
+	private static final float MAX_ACCEPTABLE_ERROR = 0.05f;
 	private static final float CORRECTION_WEIGHT_MIN = 0.55f;
 	private static final float CORRECTION_WEIGHT_MAX = 0.70f;
 	private static final float CONTINUOUS_CORRECTION_DIST = 0.5f;
@@ -252,7 +251,8 @@ public class LegTweaks {
 		LegTweaks.updateHyperParameters(config.getCorrectionStrength());
 
 		floorclipEnabled = skeleton.humanPoseManager.getToggle(SkeletonConfigToggles.FLOOR_CLIP);
-		skatingCorrectionEnabled = skeleton.humanPoseManager.getToggle(SkeletonConfigToggles.SKATING_CORRECTION);
+		skatingCorrectionEnabled = skeleton.humanPoseManager
+			.getToggle(SkeletonConfigToggles.SKATING_CORRECTION);
 		toeSnap = skeleton.humanPoseManager.getToggle(SkeletonConfigToggles.TOE_SNAP);
 		footPlant = skeleton.humanPoseManager.getToggle(SkeletonConfigToggles.FOOT_PLANT);
 	}
@@ -337,6 +337,13 @@ public class LegTweaks {
 			initialized = true;
 		}
 
+		// update the foot length
+		footLength = skeleton.leftAnkleNode.worldTransform
+			.getTranslation()
+			.distance(
+				skeleton.leftFootNode.worldTransform.getTranslation()
+			);
+
 		// if not enabled do nothing and return false
 		if (!enabled)
 			return false;
@@ -384,13 +391,13 @@ public class LegTweaks {
 
 		currentFrame
 			.setLeftFloorLevel(
-				(floorLevel + (MAX_DYNAMIC_DISPLACEMENT * getLeftFootOffset()))
+				(floorLevel + (footLength * getLeftFootOffset()))
 					- currentDisengagementOffset
 			);
 
 		currentFrame
 			.setRightFloorLevel(
-				(floorLevel + (MAX_DYNAMIC_DISPLACEMENT * getRightFootOffset()))
+				(floorLevel + (footLength * getRightFootOffset()))
 					- currentDisengagementOffset
 			);
 
@@ -510,13 +517,13 @@ public class LegTweaks {
 		// move the feet to their new positions
 		if (
 			leftFootPosition.y
-				< (floorLevel + (MAX_DYNAMIC_DISPLACEMENT * leftOffset))
+				< (floorLevel + (footLength * leftOffset))
 					- currentDisengagementOffset
 		) {
 			float displacement = Math
 				.abs(
 					floorLevel
-						+ (MAX_DYNAMIC_DISPLACEMENT * leftOffset)
+						+ (footLength * leftOffset)
 						- leftFootPosition.y
 						- currentDisengagementOffset
 				);
@@ -528,13 +535,13 @@ public class LegTweaks {
 
 		if (
 			rightFootPosition.y
-				< (floorLevel + (MAX_DYNAMIC_DISPLACEMENT * rightOffset))
+				< (floorLevel + (footLength * rightOffset))
 					- currentDisengagementOffset
 		) {
 			float displacement = Math
 				.abs(
 					floorLevel
-						+ (MAX_DYNAMIC_DISPLACEMENT * rightOffset)
+						+ (footLength * rightOffset)
 						- rightFootPosition.y
 						- currentDisengagementOffset
 				);
@@ -750,17 +757,42 @@ public class LegTweaks {
 	// correct the rotation of the foot trackers
 	private void correctFootRotations() {
 		// null check's
-		if (bufferHead == null || bufferHead.getParent() == null) {
+		if (bufferHead == null || bufferHead.getParent() == null)
 			return;
-		}
 
-		// between maximum correction angle and maximum correction angle delta the values are interpolated
-		float kneeAngle = bufferHead.getLeftFootPosition(null).subtract(bufferHead.getLeftKneePosition(null)).normalize().setY(0.0f).length();
-		float masterWeightL = (kneeAngle > MAXIMUM_CORRECTION_ANGLE && kneeAngle < MAXIMUM_CORRECTION_ANGLE_DELTA) ? 1.0f - ((kneeAngle - MAXIMUM_CORRECTION_ANGLE) / (MAXIMUM_CORRECTION_ANGLE_DELTA - MAXIMUM_CORRECTION_ANGLE)) : 0.0f;
+		// if there is a foot tracker for a foot don't correct it
+		if (skeleton.leftFootTracker != null || skeleton.rightFootTracker != null)
+			return;
+
+
+		// between maximum correction angle and maximum correction angle delta
+		// the values are interpolated
+		float kneeAngle = bufferHead
+			.getLeftFootPosition(null)
+			.subtract(bufferHead.getLeftKneePosition(null))
+			.normalize()
+			.setY(0.0f)
+			.length();
+		float masterWeightL = (kneeAngle > MAXIMUM_CORRECTION_ANGLE
+			&& kneeAngle < MAXIMUM_CORRECTION_ANGLE_DELTA)
+				? 1.0f
+					- ((kneeAngle - MAXIMUM_CORRECTION_ANGLE)
+						/ (MAXIMUM_CORRECTION_ANGLE_DELTA - MAXIMUM_CORRECTION_ANGLE))
+				: 0.0f;
 		masterWeightL = (kneeAngle < MAXIMUM_CORRECTION_ANGLE) ? 1.0f : masterWeightL;
 
-		kneeAngle = bufferHead.getRightFootPosition(null).subtract(bufferHead.getRightKneePosition(null)).normalize().setY(0.0f).length();
-		float masterWeightR = (kneeAngle > MAXIMUM_CORRECTION_ANGLE && kneeAngle < MAXIMUM_CORRECTION_ANGLE_DELTA) ? 1.0f - ((kneeAngle - MAXIMUM_CORRECTION_ANGLE) / (MAXIMUM_CORRECTION_ANGLE_DELTA - MAXIMUM_CORRECTION_ANGLE)) : 0.0f;
+		kneeAngle = bufferHead
+			.getRightFootPosition(null)
+			.subtract(bufferHead.getRightKneePosition(null))
+			.normalize()
+			.setY(0.0f)
+			.length();
+		float masterWeightR = (kneeAngle > MAXIMUM_CORRECTION_ANGLE
+			&& kneeAngle < MAXIMUM_CORRECTION_ANGLE_DELTA)
+				? 1.0f
+					- ((kneeAngle - MAXIMUM_CORRECTION_ANGLE)
+						/ (MAXIMUM_CORRECTION_ANGLE_DELTA - MAXIMUM_CORRECTION_ANGLE))
+				: 0.0f;
 		masterWeightR = (kneeAngle < MAXIMUM_CORRECTION_ANGLE) ? 1.0f : masterWeightR;
 
 
@@ -772,23 +804,49 @@ public class LegTweaks {
 			Vector3f leftFootPos = bufferHead.getLeftFootPosition(null);
 			Vector3f rightFootPos = bufferHead.getRightFootPosition(null);
 
-			// the further from the ground the foot is, the less weight it should have
-			weightL = ((leftFootPos.y - floorLevel) > ROTATION_CORRECTION_VERTICAL) ? 0.0f : 1.0f - ((leftFootPos.y - floorLevel) / ROTATION_CORRECTION_VERTICAL);
+			// the further from the ground the foot is, the less weight it
+			// should have
+			weightL = ((leftFootPos.y - floorLevel) > ROTATION_CORRECTION_VERTICAL)
+				? 0.0f
+				: 1.0f - ((leftFootPos.y - floorLevel) / ROTATION_CORRECTION_VERTICAL);
 			weightL = FastMath.clamp(weightL, 0.0f, 1.0f);
 
-			weightR = (rightFootPos.y - floorLevel > ROTATION_CORRECTION_VERTICAL) ? 0.0f : 1.0f - ((rightFootPos.y - floorLevel) / ROTATION_CORRECTION_VERTICAL);
+			weightR = (rightFootPos.y - floorLevel > ROTATION_CORRECTION_VERTICAL)
+				? 0.0f
+				: 1.0f - ((rightFootPos.y - floorLevel) / ROTATION_CORRECTION_VERTICAL);
 			weightR = FastMath.clamp(weightR, 0.0f, 1.0f);
 
 
+			// perform the correction but the maximum amount of correction is 10
+			// degrees
+			skeleton.computedLeftFootTracker.rotation
+				.set(
+					bufferHead
+						.getParent()
+						.getLeftFootRotation(null)
+						.slerp(
+							leftFootRotation,
+							issolateYaw(leftFootRotation),
+							weightL * masterWeightL
+						)
+				);
 
-			// perform the correction but the maximum amount of correction is 10 degrees
-			skeleton.computedLeftFootTracker.rotation.set(bufferHead.getParent().getLeftFootRotation(null).slerp(leftFootRotation, issolateYaw(leftFootRotation), weightL * masterWeightL));
-
-			skeleton.computedRightFootTracker.rotation.set(bufferHead.getParent().getRightFootRotation(null).slerp(rightFootRotation, issolateYaw(rightFootRotation), weightR * masterWeightR));
+			skeleton.computedRightFootTracker.rotation
+				.set(
+					bufferHead
+						.getParent()
+						.getRightFootRotation(null)
+						.slerp(
+							rightFootRotation,
+							issolateYaw(rightFootRotation),
+							weightR * masterWeightR
+						)
+				);
 
 		}
 
-		// corrects rotations when the foot is in the air by rotating the foot down so that the toes are touching
+		// corrects rotations when the foot is in the air by rotating the foot
+		// down so that the toes are touching
 		if (toeSnap) {
 			// TODO impliment this
 		}
