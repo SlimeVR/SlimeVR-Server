@@ -41,7 +41,7 @@ export function Dropdown({
 
     // TS doesn't let me specify { passive: true }, but I believe it will work anyways
     return () => document.removeEventListener('wheel', onWheelEvent);
-  });
+  }, [isOpen]);
 
   return (
     <Controller
