@@ -332,6 +332,7 @@ settings-general-gesture_control-taps =
     { $amount ->
         [one] { $amount } нажатие
         [few] { $amount } нажатия
+        [many] { $amount } нажатий
        *[other] { $amount } нажатий
     }
 settings-general-gesture_control-quickResetEnabled = Включить нажатие для быстрого сброса
@@ -505,6 +506,7 @@ onboarding-connect_tracker-connected_trackers =
     { $amount ->
         [0] Нет подключенных трекеров
         [one] { $amount } подключенный трекер
+        [many] { $amount } подключённых трекеров
         [few] { $amount } подключённых трекеров
        *[other] { $amount } подключённых трекеров
     }
@@ -594,6 +596,7 @@ onboarding-automatic_proportions-recording-timer =
     { $time ->
         [one] { $time } секунда
         [few] { $time } секунды
+        [many] { $time } секунд
        *[other] { $time } секунд
     }
 onboarding-automatic_proportions-verify_results-title = Подтвердить результаты
