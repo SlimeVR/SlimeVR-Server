@@ -6,6 +6,7 @@ import com.jme3.math.Vector3f;
 import dev.slimevr.config.LegTweaksConfig;
 
 import dev.slimevr.tracking.processor.TransformNode;
+import dev.slimevr.tracking.processor.config.SkeletonConfigToggles;
 import solarxr_protocol.datatypes.math.Quat;
 
 
@@ -73,7 +74,7 @@ public class LegTweaks {
 	// hyperparameters (skating correction)
 	private static final float MIN_ACCEPTABLE_ERROR = 0.01f;
 	private static final float MAX_ACCEPTABLE_ERROR = 0.225f;
-	private static final float CORRECTION_WEIGHT_MIN = 0.40f;
+	private static final float CORRECTION_WEIGHT_MIN = 0.55f;
 	private static final float CORRECTION_WEIGHT_MAX = 0.70f;
 	private static final float CONTINUOUS_CORRECTION_DIST = 0.5f;
 	private static final int CONTINUOUS_CORRECTION_WARMUP = 175;
@@ -95,8 +96,8 @@ public class LegTweaks {
 
 	// hyperparameters (rotation correction)
 	private static final float ROTATION_CORRECTION_VERTICAL = 0.1f;
-	private static final float MAXIMUM_CORRECTION_ANGLE = 0.3f;
-	private static final float MAXIMUM_CORRECTION_ANGLE_DELTA = 0.7f;
+	private static final float MAXIMUM_CORRECTION_ANGLE = 0.5f;
+	private static final float MAXIMUM_CORRECTION_ANGLE_DELTA = 0.6f;
 
 	// hyperparameters (misc)
 	static final float NEARLY_ZERO = 0.001f;
@@ -249,6 +250,11 @@ public class LegTweaks {
 
 	public void updateConfig() {
 		LegTweaks.updateHyperParameters(config.getCorrectionStrength());
+
+		floorclipEnabled = skeleton.humanPoseManager.getToggle(SkeletonConfigToggles.FLOOR_CLIP);
+		skatingCorrectionEnabled = skeleton.humanPoseManager.getToggle(SkeletonConfigToggles.SKATING_CORRECTION);
+		toeSnap = skeleton.humanPoseManager.getToggle(SkeletonConfigToggles.TOE_SNAP);
+		footPlant = skeleton.humanPoseManager.getToggle(SkeletonConfigToggles.FOOT_PLANT);
 	}
 
 	// update the hyper parameters with the config
@@ -420,6 +426,9 @@ public class LegTweaks {
 		if (!preUpdate())
 			return;
 
+		// correct foot rotation's
+		correctFootRotations();
+
 		// push the feet up if needed
 		if (floorclipEnabled)
 			correctClipping();
@@ -470,9 +479,6 @@ public class LegTweaks {
 		// calculate the correction for the knees
 		if (kneesActive && initialized)
 			solveLowerBody();
-
-		// if enabled corret foot rotation's
-		correctFootRotations();
 
 		// populate the corrected data into the current frame
 		this.bufferHead.setLeftFootPositionCorrected(leftFootPosition);
