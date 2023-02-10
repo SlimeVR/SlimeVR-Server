@@ -32,7 +32,6 @@ export function Dropdown({
     if (!isOpen) return;
 
     function onWheelEvent() {
-      console.log('heyaaa');
       if (isOpen && !document.querySelector('div.dropdown-scroll:hover')) {
         setOpen(false);
       }
