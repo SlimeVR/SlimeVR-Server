@@ -47,7 +47,7 @@ public class VMCHandler implements OSCHandler {
 	private final Map<String, Long> byTrackerNameTimeout = new HashMap<>();
 	private final static Long TRACKER_TIMEOUT_MS = 2000L;
 	private final FastList<VRTracker> trackersList = new FastList<>();
-	private final UnityHierarchy unityHierarchy;
+	private UnityHierarchy unityHierarchy;
 	private Device trackerDevice;
 	private float timeAtLastError;
 	private boolean anchorHip;
@@ -67,7 +67,6 @@ public class VMCHandler implements OSCHandler {
 		this.shareableTrackers = shareableTrackers;
 
 		startTime = System.currentTimeMillis();
-		unityHierarchy = new UnityHierarchy();
 
 		refreshSettings(false);
 	}
@@ -155,6 +154,14 @@ public class VMCHandler implements OSCHandler {
 						),
 						listener
 					);
+				oscReceiver
+					.getDispatcher()
+					.addListener(
+						new OSCPatternAddressMessageSelector(
+							"/VMC/Ext/Root/Pos"
+						),
+						listener
+					);
 
 				oscReceiver.startListening();
 			}
@@ -201,58 +208,72 @@ public class VMCHandler implements OSCHandler {
 	}
 
 	private void handleReceivedMessage(OSCMessageEvent event) {
-		String address = event.getMessage().getAddress();
-
-		if (address.equals("/VMC/Ext/Bone/Pos")) { // Is bone (rotation)
-			TrackerPosition trackerPosition = UnityBone
-				.getByStringVal(
-					String.valueOf(event.getMessage().getArguments().get(0))
-				).trackerPosition;
-			// If received bone is part of SlimeVR's skeleton
-			if (trackerPosition != null) {
+		switch (event.getMessage().getAddress()) {
+			case "/VMC/Ext/Bone/Pos":
+				// Is bone (rotation)
+				TrackerPosition trackerPosition = UnityBone
+					.getByStringVal(
+						String.valueOf(event.getMessage().getArguments().get(0))
+					).trackerPosition;
+				// If received bone is part of SlimeVR's skeleton
+				if (trackerPosition != null) {
+					handleReceivedTracker(
+						"VMC-Bone-" + event.getMessage().getArguments().get(0),
+						trackerPosition,
+						null,
+						new Quaternion(
+							(float) event.getMessage().getArguments().get(4),
+							(float) event.getMessage().getArguments().get(5),
+							-((float) event.getMessage().getArguments().get(6)),
+							-((float) event.getMessage().getArguments().get(7))
+						),
+						true,
+						UnityBone
+							.getByStringVal(
+								String.valueOf(event.getMessage().getArguments().get(0))
+							).boneType
+					);
+				}
+				break;
+			case "/VMC/Ext/Hmd/Pos":
+			case "/VMC/Ext/Con/Pos":
+			case "/VMC/Ext/Tra/Pos":
+				// Is tracker (position + rotation)
 				handleReceivedTracker(
-					"VMC-Bone-" + event.getMessage().getArguments().get(0),
-					trackerPosition,
+					"VMC-Tracker-" + event.getMessage().getArguments().get(0),
 					null,
+					new Vector3f(
+						(float) event.getMessage().getArguments().get(1),
+						(float) event.getMessage().getArguments().get(2),
+						-((float) event.getMessage().getArguments().get(3))
+					),
 					new Quaternion(
 						(float) event.getMessage().getArguments().get(4),
 						(float) event.getMessage().getArguments().get(5),
 						-((float) event.getMessage().getArguments().get(6)),
 						-((float) event.getMessage().getArguments().get(7))
 					),
-					true,
-					UnityBone
-						.getByStringVal(
-							String.valueOf(event.getMessage().getArguments().get(0))
-						).boneType
+					false,
+					null
 				);
-			}
-		} else if (
-			address.equals("/VMC/Ext/Hmd/Pos")
-				|| address.equals("/VMC/Ext/Con/Pos")
-				|| address.equals("/VMC/Ext/Tra/Pos")
-		) { // Is tracker (position + rotation)
-			handleReceivedTracker(
-				"VMC-Tracker-" + event.getMessage().getArguments().get(0),
-				null,
-				new Vector3f(
-					(float) event.getMessage().getArguments().get(1),
-					(float) event.getMessage().getArguments().get(2),
-					-((float) event.getMessage().getArguments().get(3))
-				),
-				new Quaternion(
-					(float) event.getMessage().getArguments().get(4),
-					(float) event.getMessage().getArguments().get(5),
-					-((float) event.getMessage().getArguments().get(6)),
-					-((float) event.getMessage().getArguments().get(7))
-				),
-				false,
-				null
-			);
+				break;
+			case "/VMC/Ext/Root/Pos":
+				// Is VMC tracking root (offsets all rotations)
+				if (unityHierarchy != null) {
+					unityHierarchy
+						.setRootRotation(
+							new Quaternion(
+								(float) event.getMessage().getArguments().get(4),
+								(float) event.getMessage().getArguments().get(5),
+								-((float) event.getMessage().getArguments().get(6)),
+								-((float) event.getMessage().getArguments().get(7))
+							)
+						);
+				}
+				break;
 		}
 	}
 
-	// TODO localRotation
 	private void handleReceivedTracker(
 		String name,
 		TrackerPosition trackerPosition,
@@ -283,7 +304,7 @@ public class VMCHandler implements OSCHandler {
 			tracker.setBodyPosition(trackerPosition);
 			trackerDevice.getTrackers().put(trackerDevice.getTrackers().size(), tracker);
 			byTrackerNameTracker.put(name, tracker);
-			if(boneType != null)
+			if (boneType != null)
 				byBonetypeTracker.put(boneType, tracker);
 			server.registerTracker(tracker);
 			trackersList.add(tracker);
@@ -300,8 +321,12 @@ public class VMCHandler implements OSCHandler {
 		// Set rotation
 		if (rotation != null) {
 			if (localRotation) {
-				unityHierarchy.updatePose(boneType, rotation);
-				tracker.rotation.set(unityHierarchy.getGlobalRotForBone(boneType));
+				// Instantiate unityHierarchy if not done
+				if (unityHierarchy == null)
+					unityHierarchy = new UnityHierarchy();
+				// TODO bones need mounting reset once trackers are rewritten
+				unityHierarchy.updateBone(boneType, rotation);
+				rotation.set(unityHierarchy.getGlobalRotForBone(boneType));
 			}
 			tracker.rotation.set(rotation);
 		}
@@ -312,6 +337,10 @@ public class VMCHandler implements OSCHandler {
 
 	@Override
 	public void update() {
+		// Update unity hierarchy
+		if (unityHierarchy != null)
+			unityHierarchy.updateNodes();
+
 		// Manage tracker timeout
 		for (VRTracker tracker : trackersList) {
 			if (
