@@ -11,7 +11,7 @@ import dev.slimevr.bridge.BridgeThread;
 import dev.slimevr.bridge.PipeState;
 import dev.slimevr.bridge.ProtobufMessages.ProtobufMessage;
 import dev.slimevr.platform.SteamVRBridge;
-import dev.slimevr.vr.trackers.*;
+import dev.slimevr.tracking.trackers.*;
 import io.eiren.util.logging.LogManager;
 
 import java.io.IOException;
@@ -161,7 +161,7 @@ public class WindowsNamedPipeBridge extends SteamVRBridge {
 	private void resetPipe() {
 		WindowsPipe.safeDisconnect(pipe);
 		pipe.state = PipeState.CREATED;
-		Main.vrServer.queueTask(this::disconnected);
+		Main.getVrServer().queueTask(this::disconnected);
 	}
 
 	private void createPipe() throws IOException {
@@ -199,7 +199,7 @@ public class WindowsNamedPipeBridge extends SteamVRBridge {
 		) {
 			pipe.state = PipeState.OPEN;
 			LogManager.info("[" + bridgeName + "] Pipe " + pipe.name + " is open");
-			Main.vrServer.queueTask(this::reconnected);
+			Main.getVrServer().queueTask(this::reconnected);
 			return true;
 		}
 		LogManager

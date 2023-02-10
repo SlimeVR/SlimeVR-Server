@@ -1,20 +1,20 @@
-import { t } from 'i18next';
-import Quaternion from 'quaternion';
 import { useMemo, useState } from 'react';
 import { AssignTrackerRequestT, BodyPart, RpcMessage } from 'solarxr-protocol';
 import { FlatDeviceTracker } from '../../../../hooks/app';
 import { useOnboarding } from '../../../../hooks/onboarding';
 import { useTrackers } from '../../../../hooks/tracker';
 import { useWebsocketAPI } from '../../../../hooks/websocket-api';
-import { QuaternionToQuatT } from '../../../../maths/quaternion';
+import { MountingOrientationDegreesToQuatT } from '../../../../maths/quaternion';
 import { ArrowLink } from '../../../commons/ArrowLink';
 import { Button } from '../../../commons/Button';
 import { TipBox } from '../../../commons/TipBox';
 import { Typography } from '../../../commons/Typography';
 import { BodyAssignment } from '../../BodyAssignment';
 import { MountingSelectionMenu } from './MountingSelectionMenu';
+import { useLocalization } from '@fluent/react';
 
 export function ManualMountingPage() {
+  const { l10n } = useLocalization();
   const { applyProgress, skipSetup, state } = useOnboarding();
   const { sendRPCPacket } = useWebsocketAPI();
 
@@ -40,13 +40,13 @@ export function ManualMountingPage() {
     [assignedTrackers]
   );
 
-  const onDirectionSelected = (mountingOrientation: number) => {
+  const onDirectionSelected = (mountingOrientationDegrees: number) => {
     (trackerPartGrouped[selectedRole] || []).forEach((td) => {
       const assignreq = new AssignTrackerRequestT();
 
       assignreq.bodyPosition = td.tracker.info?.bodyPart || BodyPart.NONE;
-      assignreq.mountingRotation = QuaternionToQuatT(
-        Quaternion.fromEuler(0, +mountingOrientation, 0)
+      assignreq.mountingOrientation = MountingOrientationDegreesToQuatT(
+        mountingOrientationDegrees
       );
       assignreq.trackerId = td.tracker.trackerId;
       sendRPCPacket(RpcMessage.AssignTrackerRequest, assignreq);
@@ -68,16 +68,16 @@ export function ManualMountingPage() {
             <div className="flex flex-col w-full max-w-md gap-3">
               {!state.alonePage && (
                 <ArrowLink to="/onboarding/enter-vr" direction="left">
-                  {t('onboarding.manual-mounting.back')}
+                  {l10n.getString('onboarding-manual_mounting-back')}
                 </ArrowLink>
               )}
               <Typography variant="main-title">
-                {t('onboarding.manual-mounting.title')}
+                {l10n.getString('onboarding-manual_mounting')}
               </Typography>
               <Typography color="secondary">
-                {t('onboarding.manual-mounting.description')}
+                {l10n.getString('onboarding-manual_mounting-description')}
               </Typography>
-              <TipBox>{t('tips.find-tracker')}</TipBox>
+              <TipBox>{l10n.getString('tips-find_tracker')}</TipBox>
             </div>
             <div className="flex flex-col flex-grow gap-3 rounded-xl fill-background-50">
               <BodyAssignment
@@ -92,7 +92,7 @@ export function ManualMountingPage() {
           <div className="flex flex-grow">
             {!state.alonePage && (
               <Button variant="secondary" to="/" onClick={skipSetup}>
-                {t('onboarding.skip')}
+                {l10n.getString('onboarding-skip')}
               </Button>
             )}
           </div>
@@ -102,11 +102,11 @@ export function ManualMountingPage() {
               state={{ alonePage: state.alonePage }}
               to="/onboarding/mounting/auto"
             >
-              {t('onboarding.manual-mounting.auto-mounting')}
+              {l10n.getString('onboarding-manual_mounting-auto_mounting')}
             </Button>
             {!state.alonePage && (
               <Button variant="primary" to="/onboarding/reset-tutorial">
-                {t('onboarding.manual-mounting.next')}
+                {l10n.getString('onboarding-manual_mounting-next')}
               </Button>
             )}
           </div>

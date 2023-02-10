@@ -1,5 +1,5 @@
+import { useLocalization } from '@fluent/react';
 import { useMemo } from 'react';
-import { useTranslation } from 'react-i18next';
 import { ResetRequestT, ResetType, RpcMessage } from 'solarxr-protocol';
 import { useCountdown } from '../../hooks/countdown';
 import { useWebsocketAPI } from '../../hooks/websocket-api';
@@ -8,7 +8,7 @@ import { Button } from '../commons/Button';
 import {
   MountingResetIcon,
   QuickResetIcon,
-  ResetIcon
+  ResetIcon,
 } from '../commons/icon/ResetIcon';
 
 export function ResetButton({
@@ -20,7 +20,7 @@ export function ResetButton({
   variant: 'big' | 'small';
   onReseted?: () => void;
 }) {
-  const { t } = useTranslation();
+  const { l10n } = useLocalization();
   const { sendRPCPacket } = useWebsocketAPI();
 
   const reset = () => {
@@ -39,13 +39,13 @@ export function ResetButton({
   const text = useMemo(() => {
     switch (type) {
       case ResetType.Quick:
-        return t('reset.quick');
+        return l10n.getString('reset-quick');
       case ResetType.Mounting:
-        return t('reset.mounting');
+        return l10n.getString('reset-mounting');
       case ResetType.Full:
-        return t('reset.full');
+        return l10n.getString('reset-full');
     }
-    return t('reset.full');
+    return l10n.getString('reset-full');
   }, [type]);
 
   const getIcon = () => {

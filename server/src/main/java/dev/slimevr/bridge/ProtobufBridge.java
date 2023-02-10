@@ -6,7 +6,7 @@ import dev.slimevr.Main;
 import dev.slimevr.bridge.ProtobufMessages.TrackerStatus;
 import dev.slimevr.bridge.ProtobufMessages.*;
 import dev.slimevr.util.ann.VRServerThread;
-import dev.slimevr.vr.trackers.*;
+import dev.slimevr.tracking.trackers.*;
 import io.eiren.util.ann.Synchronize;
 import io.eiren.util.ann.ThreadSafe;
 import io.eiren.util.collections.FastList;
@@ -167,7 +167,7 @@ public abstract class ProtobufBridge<T extends VRTracker> implements Bridge {
 		if (trackerAdded.getTrackerRole() == TrackerRole.HMD.id) {
 			hmdTracker = tracker;
 		} else {
-			Main.vrServer.registerTracker(tracker);
+			Main.getVrServer().registerTracker(tracker);
 		}
 	}
 
@@ -179,10 +179,10 @@ public abstract class ProtobufBridge<T extends VRTracker> implements Bridge {
 					.warning("[" + bridgeName + "] Received deprecated user action 'calibrate'!");
 			case "reset":
 				// TODO : Check pose field
-				Main.vrServer.resetTrackers();
+				Main.getVrServer().resetTrackers();
 				break;
 			case "fast_reset":
-				Main.vrServer.resetTrackersYaw();
+				Main.getVrServer().resetTrackersYaw();
 				break;
 		}
 	}
@@ -193,7 +193,8 @@ public abstract class ProtobufBridge<T extends VRTracker> implements Bridge {
 		if (tracker != null) {
 			tracker
 				.setStatus(
-					dev.slimevr.vr.trackers.TrackerStatus.getById(trackerStatus.getStatusValue())
+					dev.slimevr.tracking.trackers.TrackerStatus
+						.getById(trackerStatus.getStatusValue())
 				);
 		}
 	}
@@ -224,11 +225,11 @@ public abstract class ProtobufBridge<T extends VRTracker> implements Bridge {
 			for (Entry<Integer, T> integerTEntry : remoteTrackersByTrackerId.entrySet()) {
 				integerTEntry
 					.getValue()
-					.setStatus(dev.slimevr.vr.trackers.TrackerStatus.DISCONNECTED);
+					.setStatus(dev.slimevr.tracking.trackers.TrackerStatus.DISCONNECTED);
 			}
 		}
 		if (hmdTracker != null) {
-			hmd.setStatus(dev.slimevr.vr.trackers.TrackerStatus.DISCONNECTED);
+			hmd.setStatus(dev.slimevr.tracking.trackers.TrackerStatus.DISCONNECTED);
 		}
 	}
 

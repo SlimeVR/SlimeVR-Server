@@ -5,29 +5,31 @@ Server orchestrates communication between multiple sensors and integrations, lik
 
 Sensors implementations:
 * [SlimeVR Tracker for ESP](https://github.com/SlimeVR/SlimeVR-Tracker-ESP) - ESP microcontrollers and multiple IMUs are supported
-* [owoTrack Mobile App](https://github.com/abb128/owoTrackVRSyncMobile) - use phone as a tracker (limited functionality and compatibility)
+* [owoTrack Mobile App](https://github.com/abb128/owoTrackVRSyncMobile) - use phones as trackers (limited functionality and compatibility)
+* [SlimeVR Wrangler](https://github.com/carl-anders/slimevr-wrangler) - use Nintendo Switch Joycon controllers as trackers
 
 Integrations:
 * Use [SlimeVR OpenVR Driver](https://github.com/SlimeVR/SlimeVR-OpenVR-Driver) as a driver for SteamVR
+* Use built-in OSC support for integration with other apps, such as VRChat, using OSC
 * Integrations with other systems will be added later
 
 ## How to use
-It's recommended to download installer from here: https://github.com/SlimeVR/SlimeVR-Installer/releases/latest/download/slimevr_web_installer.exe
+It's highly recommended to install using the installer downloadable here: https://github.com/SlimeVR/SlimeVR-Installer/releases/latest/download/slimevr_web_installer.exe
 
-Latest instructions are [on our site](https://docs.slimevr.dev/server-setup/slimevr-setup.html).
+Latest setup instructions are [on our site](https://docs.slimevr.dev/server/index.html).
 
-## License Clarification
-**SlimeVR software** (including server, firmware, drivers, installator, documents, and others - see
-licence for each case specifically) **is distributed under the MIT License ([LICENSE-MIT])
-and in some cases dually licensed under Apache-2.0 License ([LICENSE-APACHE]). These
-licenses are the copyright of Eiren Rain and the SlimeVR contributors.** 
+## License clarification
+**SlimeVR software** (including server, firmware, drivers, installer, documents, and others - see
+licence for each case specifically) **is distributed under a dual MIT/Apache 2.0 License
+([LICENSE-MIT] and [LICENSE-APACHE]). The software is the copyright of the SlimeVR
+contributors.** 
 
-**However, these Licenses have some limits, and if you wish to distribute software based
+**However, these licenses have some limits, and if you wish to distribute software based
 on SlimeVR, you need to be aware of them:**
 
 * When distributing any software that uses or is based on SlimeVR, you have to provide
   to the end-user at least one of the original, unmodified [LICENSE-MIT] or
-  [LICENSE-APACHE] files from SlimeVR. This includes the `Copyright (c) 2022 Eiren Rain
+  [LICENSE-APACHE] files from SlimeVR. This includes the `Copyright (c) 2020 Eiren Rain
   and SlimeVR Contributors` part of the license. It is insufficient to use a generic MIT
   or Apache-2.0 License, **it must be the original license file**.
 * This applies even if you distribute software without the source code. In this case,
@@ -35,7 +37,7 @@ on SlimeVR, you need to be aware of them:**
   all the open source licenses used, including SlimeVR's.
 
 Please refer to the [LICENSE-MIT] and [LICENSE-APACHE] files if you are at any point
-uncertain what the exact the requirements are.
+uncertain what the exact requirements are.
 
 ## Contributions
 Any contributions submitted for inclusion in this repository will be dual-licensed under

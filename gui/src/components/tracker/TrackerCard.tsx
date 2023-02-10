@@ -44,10 +44,11 @@ function TrackerBig({
               />
             )}
             <div className="flex gap-2">
-              {device.hardwareStatus.rssi && device.hardwareStatus.ping && (
+              {(device.hardwareStatus.rssi != null ||
+                device.hardwareStatus.ping != null) && (
                 <TrackerWifi
-                  rssi={device.hardwareStatus.rssi}
-                  ping={device.hardwareStatus.ping}
+                  rssi={device.hardwareStatus.rssi || 0}
+                  ping={device.hardwareStatus.ping || 0}
                   disabled={tracker.status === TrackerStatusEnum.DISCONNECTED}
                 ></TrackerWifi>
               )}
@@ -90,10 +91,11 @@ function TrackerSmol({
             )}
           </div>
           <div className="flex flex-col justify-center items-center">
-            {device.hardwareStatus.rssi && device.hardwareStatus.ping && (
+            {(device.hardwareStatus.rssi != null ||
+              device.hardwareStatus.ping != null) && (
               <TrackerWifi
-                rssi={device.hardwareStatus.rssi}
-                ping={device.hardwareStatus.ping}
+                rssi={device.hardwareStatus.rssi || 0}
+                ping={device.hardwareStatus.ping || 0}
                 disabled={tracker.status === TrackerStatusEnum.DISCONNECTED}
               ></TrackerWifi>
             )}
@@ -131,7 +133,7 @@ export function TrackerCard({
     <div
       onClick={onClick}
       className={classNames(
-        'rounded-lg',
+        'rounded-lg overflow-hidden',
         interactable && 'hover:bg-background-50 cursor-pointer',
         outlined && 'outline outline-2 outline-accent-background-40',
         bg
@@ -139,7 +141,9 @@ export function TrackerCard({
       style={
         shakeHighlight
           ? {
-              boxShadow: `0px 0px ${velocity * 8}px ${velocity * 8}px #183951`,
+              boxShadow: `0px 0px ${Math.floor(velocity * 8)}px ${Math.floor(
+                velocity * 8
+              )}px #BB8AE5`,
             }
           : {}
       }

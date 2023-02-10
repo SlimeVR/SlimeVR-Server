@@ -1,8 +1,8 @@
-import { useTranslation } from 'react-i18next';
 import { useAutobone } from '../../../../../hooks/autobone';
 import { Button } from '../../../../commons/Button';
 import { TipBox } from '../../../../commons/TipBox';
 import { Typography } from '../../../../commons/Typography';
+import { useLocalization } from '@fluent/react';
 
 export function StartRecording({
   nextStep,
@@ -13,7 +13,7 @@ export function StartRecording({
   prevStep: () => void;
   variant: 'onboarding' | 'alone';
 }) {
-  const { t } = useTranslation();
+  const { l10n } = useLocalization();
   const { startRecording } = useAutobone();
 
   const start = () => {
@@ -26,17 +26,19 @@ export function StartRecording({
       <div className="flex flex-col flex-grow">
         <div className="flex flex-grow flex-col gap-4 max-w-sm">
           <Typography variant="main-title" bold>
-            {t('onboarding.automatic-proportions.start-recording.title')}
+            {l10n.getString(
+              'onboarding-automatic_proportions-start_recording-title'
+            )}
           </Typography>
           <div>
             <Typography color="secondary">
-              {t(
-                'onboarding.automatic-proportions.start-recording.description'
+              {l10n.getString(
+                'onboarding-automatic_proportions-start_recording-description'
               )}
             </Typography>
           </div>
           <div className="flex">
-            <TipBox>{t('tips.find-tracker')}</TipBox>
+            <TipBox>{l10n.getString('tips-find_tracker')}</TipBox>
           </div>
         </div>
 
@@ -45,10 +47,12 @@ export function StartRecording({
             variant={variant === 'onboarding' ? 'secondary' : 'tiertiary'}
             onClick={prevStep}
           >
-            {t('onboarding.automatic-proportions.prev-step')}
+            {l10n.getString('onboarding-automatic_proportions-prev_step')}
           </Button>
           <Button variant="primary" onClick={start}>
-            {t('onboarding.automatic-proportions.start-recording.next')}
+            {l10n.getString(
+              'onboarding-automatic_proportions-start_recording-next'
+            )}
           </Button>
         </div>
       </div>

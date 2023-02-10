@@ -2,8 +2,8 @@ package dev.slimevr.config;
 
 import dev.slimevr.Main;
 import dev.slimevr.filtering.TrackerFilters;
-import dev.slimevr.vr.trackers.Tracker;
-import dev.slimevr.vr.trackers.TrackerWithFiltering;
+import dev.slimevr.tracking.trackers.Tracker;
+import dev.slimevr.tracking.trackers.TrackerWithFiltering;
 
 
 public class FiltersConfig {
@@ -18,7 +18,7 @@ public class FiltersConfig {
 	}
 
 	public void updateTrackersFilters() {
-		for (Tracker t : Main.vrServer.getAllTrackers()) {
+		for (Tracker t : Main.getVrServer().getAllTrackers()) {
 			Tracker tracker = t.get();
 			if (tracker instanceof TrackerWithFiltering) {
 				((TrackerWithFiltering) tracker)

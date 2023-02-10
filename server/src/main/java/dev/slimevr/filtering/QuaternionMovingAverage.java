@@ -36,7 +36,7 @@ public class QuaternionMovingAverage {
 		float amount,
 		Quaternion initialRotation
 	) {
-		fpsTimer = Main.vrServer.getFpsTimer();
+		fpsTimer = Main.getVrServer().getFpsTimer();
 
 		// amount should range from 0 to 1.
 		// GUI should clamp it from 0.01 (1%) or 0.1 (10%)

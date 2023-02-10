@@ -17,23 +17,16 @@ import { useInterval } from './timeout';
 export interface WebSocketApi {
   isConnected: boolean;
   isFirstConnection: boolean;
+  reconnect: () => void;
   useRPCPacket: <T>(type: RpcMessage, callback: (packet: T) => void) => void;
-  useDataFeedPacket: <T>(
-    type: DataFeedMessage,
-    callback: (packet: T) => void
-  ) => void;
+  useDataFeedPacket: <T>(type: DataFeedMessage, callback: (packet: T) => void) => void;
   sendRPCPacket: (type: RpcMessage, data: RPCPacketType) => void;
   sendDataFeedPacket: (type: DataFeedMessage, data: DataFeedPacketType) => void;
-  usePubSubPacket: <T>(
-    type: PubSubUnion,
-    callback: (packet: T) => void
-  ) => void;
+  usePubSubPacket: <T>(type: PubSubUnion, callback: (packet: T) => void) => void;
   sendPubSubPacket: (type: PubSubUnion, data: PubSubPacketType) => void;
 }
 
-export const WebSocketApiContext = createContext<WebSocketApi>(
-  undefined as never
-);
+export const WebSocketApiContext = createContext<WebSocketApi>(undefined as never);
 
 export type RPCPacketType = RpcMessageHeaderT['message'];
 export type PubSubPacketType = PubSubHeaderT['u'];
@@ -49,11 +42,14 @@ export function useProvideWebsocketApi(): WebSocketApi {
   const [isFirstConnection, setFirstConnection] = useState(true);
   const [isConnected, setConnected] = useState(false);
 
+  const urlParams = new URLSearchParams(window.location.search);
+  const targetIp = urlParams.get('ip') ?? 'localhost';
+  const targetPort = urlParams.get('port') ?? '21110';
+
   useInterval(() => {
     if (webSocketRef.current && !isConnected) {
-      disconnect();
-      connect();
-      console.log('Try reconnecting');
+      console.log('Attempting to reconnect');
+      reconnect();
     }
   }, 3000);
 
@@ -102,8 +98,7 @@ export function useProvideWebsocketApi(): WebSocketApi {
   };
 
   const sendRPCPacket = (type: RpcMessage, data: RPCPacketType): void => {
-    if (!webSocketRef.current) throw new Error('No connection');
-
+    if (webSocketRef?.current?.readyState !== WebSocket.OPEN) return;
     const fbb = new Builder(1);
 
     const message = new MessageBundleT();
@@ -124,7 +119,7 @@ export function useProvideWebsocketApi(): WebSocketApi {
     type: DataFeedMessage,
     data: DataFeedPacketType
   ): void => {
-    if (!webSocketRef.current) throw new Error('No connection');
+    if (webSocketRef?.current?.readyState !== WebSocket.OPEN) return;
     const fbb = new Builder(1);
 
     const message = new MessageBundleT();
@@ -139,11 +134,8 @@ export function useProvideWebsocketApi(): WebSocketApi {
     webSocketRef.current.send(fbb.asUint8Array());
   };
 
-  const sendPubSubPacket = (
-    type: PubSubUnion,
-    data: PubSubPacketType
-  ): void => {
-    if (!webSocketRef.current) throw new Error('No connection');
+  const sendPubSubPacket = (type: PubSubUnion, data: PubSubPacketType): void => {
+    if (webSocketRef?.current?.readyState !== WebSocket.OPEN) return;
     const fbb = new Builder(1);
 
     const message = new MessageBundleT();
@@ -159,7 +151,7 @@ export function useProvideWebsocketApi(): WebSocketApi {
   };
 
   const connect = () => {
-    webSocketRef.current = new WebSocket('ws://localhost:21110');
+    webSocketRef.current = new WebSocket(`ws://${targetIp}:${targetPort}`);
 
     // Connection opened
     webSocketRef.current.addEventListener('open', onConnected);
@@ -173,6 +165,15 @@ export function useProvideWebsocketApi(): WebSocketApi {
     webSocketRef.current.removeEventListener('open', onConnected);
     webSocketRef.current.removeEventListener('close', onConnectionClose);
     webSocketRef.current.removeEventListener('message', onMessage);
+    if (isConnected) {
+      setConnected(false);
+      webSocketRef.current.close();
+    }
+  };
+
+  const reconnect = () => {
+    disconnect();
+    connect();
   };
 
   useEffect(() => {
@@ -185,18 +186,13 @@ export function useProvideWebsocketApi(): WebSocketApi {
   return {
     isConnected,
     isFirstConnection,
-    useDataFeedPacket: <T>(
-      type: DataFeedMessage,
-      callback: (packet: T) => void
-    ) => {
+    reconnect,
+    useDataFeedPacket: <T>(type: DataFeedMessage, callback: (packet: T) => void) => {
       useEffect(() => {
         const onEvent = (event: CustomEventInit) => {
           callback(event.detail);
         };
-        datafeedlistenerRef.current.addEventListener(
-          DataFeedMessage[type],
-          onEvent
-        );
+        datafeedlistenerRef.current.addEventListener(DataFeedMessage[type], onEvent);
         return () => {
           datafeedlistenerRef.current.removeEventListener(
             DataFeedMessage[type],
@@ -223,10 +219,7 @@ export function useProvideWebsocketApi(): WebSocketApi {
         };
         pubsublistenerRef.current.addEventListener(PubSubUnion[type], onEvent);
         return () => {
-          pubsublistenerRef.current.removeEventListener(
-            PubSubUnion[type],
-            onEvent
-          );
+          pubsublistenerRef.current.removeEventListener(PubSubUnion[type], onEvent);
         };
       }, [callback, type]);
     },

@@ -8,8 +8,8 @@ import dev.slimevr.autobone.AutoBoneTrainingStep;
 import dev.slimevr.poserecorder.PoseFrameTracker;
 import dev.slimevr.poserecorder.TrackerFrame;
 import dev.slimevr.poserecorder.TrackerFrameData;
-import dev.slimevr.vr.processor.skeleton.HumanSkeleton;
-import dev.slimevr.vr.trackers.ComputedTracker;
+import dev.slimevr.tracking.processor.skeleton.HumanSkeleton;
+import dev.slimevr.tracking.trackers.ComputedTracker;
 
 
 // The difference between offset of absolute position and the corresponding point over time
@@ -21,8 +21,8 @@ public class PositionOffsetError implements IAutoBoneError {
 			trackers,
 			trainingStep.getCursor1(),
 			trainingStep.getCursor2(),
-			trainingStep.getSkeleton1(),
-			trainingStep.getSkeleton2()
+			trainingStep.getHumanPoseManager1().getSkeleton(),
+			trainingStep.getHumanPoseManager2().getSkeleton()
 		);
 	}
 

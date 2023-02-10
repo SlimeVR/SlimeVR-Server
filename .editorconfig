@@ -1,0 +1,24 @@
+root = true
+
+[*]
+trim_trailing_whitespace = true
+insert_final_newline = true
+charset = utf-8
+
+# Fluent files only support spaces for indentation
+[*.ftl]
+indent_size = 4
+indent_style = space
+
+# Current config in eslint uses 2 spaces for indentation
+[*.{.tsx,ts,jsx,js}]
+indent_size = 2
+indent_style = space
+max_line_length = 88
+
+# This is how everything should actually be
+[*.{kt,kts,java,rs}]
+indent_size = 4
+indent_style = tab
+max_line_length = 88
+ij_kotlin_packages_to_use_import_on_demand = java.util.*,kotlin.math.*

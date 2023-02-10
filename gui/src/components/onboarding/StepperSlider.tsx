@@ -5,7 +5,7 @@ import {
   ReactNode,
   useEffect,
   useRef,
-  useState
+  useState,
 } from 'react';
 import { useElemSize } from '../../hooks/layout';
 import { CheckIcon } from '../commons/icon/CheckIcon';
@@ -133,7 +133,7 @@ export function StepperSlider({
               type={type}
               width={width}
               active={index === step}
-              step={step}
+              step={index}
             >
               <StepComponent
                 variant={variant}

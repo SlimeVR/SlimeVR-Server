@@ -1,6 +1,6 @@
 package dev.slimevr.bridge;
 
-import dev.slimevr.vr.trackers.ShareableTracker;
+import dev.slimevr.tracking.trackers.ShareableTracker;
 
 import java.net.InetAddress;
 

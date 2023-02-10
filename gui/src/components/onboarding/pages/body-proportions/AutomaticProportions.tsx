@@ -1,10 +1,11 @@
-import { useState } from 'react';
-import { useTranslation } from 'react-i18next';
+import { useLocalization } from '@fluent/react';
+import { useEffect, useState } from 'react';
 import { RpcMessage, SkeletonResetAllRequestT } from 'solarxr-protocol';
 import {
   AutoboneContextC,
-  useProvideAutobone
+  useProvideAutobone,
 } from '../../../../hooks/autobone';
+import { useBodyProportions } from '../../../../hooks/body-proportions';
 import { useOnboarding } from '../../../../hooks/onboarding';
 import { useWebsocketAPI } from '../../../../hooks/websocket-api';
 import { ArrowLink } from '../../../commons/ArrowLink';
@@ -19,11 +20,12 @@ import { StartRecording } from './autobone-steps/StartRecording';
 import { VerifyResultsStep } from './autobone-steps/VerifyResults';
 
 export function AutomaticProportionsPage() {
-  const { t } = useTranslation();
+  const { l10n } = useLocalization();
   const { applyProgress, skipSetup, state } = useOnboarding();
   const { sendRPCPacket } = useWebsocketAPI();
   const context = useProvideAutobone();
   const [resetDisabled, setResetDisabled] = useState(false);
+  const { onPageOpened } = useBodyProportions();
 
   applyProgress(0.9);
 
@@ -39,6 +41,10 @@ export function AutomaticProportionsPage() {
     }, 3000);
   };
 
+  useEffect(() => {
+    onPageOpened();
+  }, []);
+
   return (
     <AutoboneContextC.Provider value={context}>
       <div className="flex flex-col gap-5 h-full items-center w-full justify-center">
@@ -46,15 +52,15 @@ export function AutomaticProportionsPage() {
           <div className="flex flex-col max-w-lg gap-3">
             {!state.alonePage && (
               <ArrowLink to="/onboarding/reset-tutorial" direction="left">
-                {t('onboarding.automatic-proportions.back')}
+                {l10n.getString('onboarding-automatic_proportions-back')}
               </ArrowLink>
             )}
             <Typography variant="main-title">
-              {t('onboarding.automatic-proportions.title')}
+              {l10n.getString('onboarding-automatic_proportions-title')}
             </Typography>
             <div>
               <Typography color="secondary">
-                {t('onboarding.automatic-proportions.description')}
+                {l10n.getString('onboarding-automatic_proportions-description')}
               </Typography>
             </div>
           </div>
@@ -76,7 +82,7 @@ export function AutomaticProportionsPage() {
           <div className="flex flex-grow gap-3">
             {!state.alonePage && (
               <Button variant="secondary" to="/" onClick={skipSetup}>
-                {t('onboarding.skip')}
+                {l10n.getString('onboarding-skip')}
               </Button>
             )}
             <Button
@@ -84,7 +90,7 @@ export function AutomaticProportionsPage() {
               onClick={resetAll}
               disabled={resetDisabled}
             >
-              {t('reset.reset-all')}
+              {l10n.getString('reset-reset_all')}
             </Button>
           </div>
           <div className="flex gap-3">
@@ -93,11 +99,11 @@ export function AutomaticProportionsPage() {
               state={{ alonePage: state.alonePage }}
               to="/onboarding/body-proportions/manual"
             >
-              {t('onboarding.automatic-proportions.manual')}
+              {l10n.getString('onboarding-automatic_proportions-manual')}
             </Button>
             {!state.alonePage && (
               <Button variant="primary" to="/onboarding/done">
-                {t('onboarding.continue')}
+                {l10n.getString('onboarding-continue')}
               </Button>
             )}
           </div>

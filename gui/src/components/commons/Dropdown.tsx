@@ -79,7 +79,7 @@ export function Dropdown({
             {isOpen && (
               <div
                 className={classNames(
-                  'absolute z-10 rounded shadow right-0',
+                  'absolute z-10 rounded shadow right-0 min-w-max',
                   direction === 'up' && 'bottom-[45px]',
                   direction === 'down' && 'top-[45px]',
                   variant == 'primary' && 'bg-background-60',

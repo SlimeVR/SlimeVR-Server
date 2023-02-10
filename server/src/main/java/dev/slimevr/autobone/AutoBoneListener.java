@@ -1,10 +1,10 @@
 package dev.slimevr.autobone;
 
-import java.util.EnumMap;
-
 import dev.slimevr.autobone.AutoBone.Epoch;
 import dev.slimevr.poserecorder.PoseFrames;
-import dev.slimevr.vr.processor.skeleton.SkeletonConfigOffsets;
+import dev.slimevr.tracking.processor.config.SkeletonConfigOffsets;
+
+import java.util.EnumMap;
 
 
 public interface AutoBoneListener {

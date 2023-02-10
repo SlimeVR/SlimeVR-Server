@@ -1,0 +1,6 @@
+# File format info: https://moz-l10n-config.readthedocs.io/en/latest/fileformat.html
+basepath = "."
+
+[[paths]]
+    reference = "gui/public/i18n/en/*.ftl"
+    l10n = "gui/public/i18n/{locale}/*.ftl"

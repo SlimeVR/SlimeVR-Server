@@ -1,16 +1,16 @@
 import classNames from 'classnames';
 import { useMemo } from 'react';
-import { useTranslation } from 'react-i18next';
 import { TrackerStatus as TrackerStatusEnum } from 'solarxr-protocol';
 import { Typography } from '../commons/Typography';
+import { useLocalization } from '@fluent/react';
 
 const statusLabelMap: { [key: number]: string } = {
-  [TrackerStatusEnum.NONE]: 'tracker.status.none',
-  [TrackerStatusEnum.BUSY]: 'tracker.status.busy',
-  [TrackerStatusEnum.ERROR]: 'tracker.status.error',
-  [TrackerStatusEnum.DISCONNECTED]: 'tracker.status.disconnected',
-  [TrackerStatusEnum.OCCLUDED]: 'tracker.status.occluded',
-  [TrackerStatusEnum.OK]: 'tracker.status.ok',
+  [TrackerStatusEnum.NONE]: 'tracker-status-none',
+  [TrackerStatusEnum.BUSY]: 'tracker-status-busy',
+  [TrackerStatusEnum.ERROR]: 'tracker-status-error',
+  [TrackerStatusEnum.DISCONNECTED]: 'tracker-status-disconnected',
+  [TrackerStatusEnum.OCCLUDED]: 'tracker-status-occluded',
+  [TrackerStatusEnum.OK]: 'tracker-status-ok',
 };
 
 const statusClassMap: { [key: number]: string } = {
@@ -23,7 +23,7 @@ const statusClassMap: { [key: number]: string } = {
 };
 
 export function TrackerStatus({ status }: { status: number }) {
-  const { t } = useTranslation();
+  const { l10n } = useLocalization();
 
   const statusClass = useMemo(() => statusClassMap[status], [status]);
   const statusLabel = useMemo(() => statusLabelMap[status], [status]);
@@ -33,7 +33,7 @@ export function TrackerStatus({ status }: { status: number }) {
       <div className="flex flex-col justify-center">
         <div className={classNames('w-2 h-2 rounded-full', statusClass)}></div>
       </div>
-      <Typography color="secondary">{t(statusLabel)}</Typography>
+      <Typography color="secondary">{l10n.getString(statusLabel)}</Typography>
     </div>
   );
 }

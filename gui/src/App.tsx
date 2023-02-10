@@ -3,7 +3,7 @@ import {
   BrowserRouter as Router,
   Outlet,
   Route,
-  Routes
+  Routes,
 } from 'react-router-dom';
 import { Home } from './components/home/Home';
 import { MainLayoutRoute } from './components/MainLayout';
@@ -13,11 +13,10 @@ import { Serial } from './components/settings/pages/Serial';
 import { SettingsLayoutRoute } from './components/settings/SettingsLayout';
 import {
   useProvideWebsocketApi,
-  WebSocketApiContext
+  WebSocketApiContext,
 } from './hooks/websocket-api';
 
 import { Event, listen } from '@tauri-apps/api/event';
-import { useTranslation, withTranslation } from 'react-i18next';
 import { OnboardingContextProvider } from './components/onboarding/OnboardingContextProvicer';
 import { OnboardingLayout } from './components/onboarding/OnboardingLayout';
 import { AutomaticProportionsPage } from './components/onboarding/pages/body-proportions/AutomaticProportions';
@@ -38,6 +37,7 @@ import { TopBar } from './components/TopBar';
 import { TrackerSettingsPage } from './components/tracker/TrackerSettings';
 import { useConfig } from './hooks/config';
 import { OSCRouterSettings } from './components/settings/pages/OSCRouterSettings';
+import { useLocalization } from '@fluent/react';
 
 function Layout() {
   const { loading } = useConfig();
@@ -108,16 +108,16 @@ function Layout() {
   );
 }
 
-function App() {
+export default function App() {
   const websocketAPI = useProvideWebsocketApi();
-  const { t } = useTranslation();
+  const { l10n } = useLocalization();
 
   useEffect(() => {
     const unlisten = listen(
       'server-status',
       (event: Event<[string, string]>) => {
-        const [event_type, s] = event.payload;
-        if ('stderr' === event_type) {
+        const [eventType, s] = event.payload;
+        if ('stderr' === eventType) {
           // This strange invocation is what lets us lose the line information in the console
           // See more here: https://stackoverflow.com/a/48994308
           setTimeout(
@@ -128,7 +128,7 @@ function App() {
               'color:red'
             )
           );
-        } else if (event_type === 'stdout') {
+        } else if (eventType === 'stdout') {
           setTimeout(
             console.log.bind(
               console,
@@ -137,11 +137,11 @@ function App() {
               'color:green'
             )
           );
-        } else if (event_type === 'error') {
+        } else if (eventType === 'error') {
           console.error('Error: %s', s);
-        } else if (event_type === 'terminated') {
+        } else if (eventType === 'terminated') {
           console.error('Server Process Terminated: %s', s);
-        } else if (event_type === 'other') {
+        } else if (eventType === 'other') {
           console.log('Other process event: %s', s);
         }
       }
@@ -165,8 +165,8 @@ function App() {
                       <TopBar></TopBar>
                       <div className="flex w-full h-full justify-center items-center p-2">
                         {websocketAPI.isFirstConnection
-                          ? t('websocket.connecting')
-                          : t('websocket.connection-lost')}
+                          ? l10n.getString('websocket-connecting')
+                          : l10n.getString('websocket-connection_lost')}
                       </div>
                     </>
                   )}
@@ -180,5 +180,3 @@ function App() {
     </Router>
   );
 }
-
-export default withTranslation()(App);

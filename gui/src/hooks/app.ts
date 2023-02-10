@@ -10,16 +10,14 @@ import {
 } from 'react';
 import { useNavigate } from 'react-router-dom';
 import {
-  DataFeedConfigT,
   DataFeedMessage,
   DataFeedUpdateT,
-  DeviceDataMaskT,
   DeviceDataT,
   StartDataFeedT,
-  TrackerDataMaskT,
   TrackerDataT,
 } from 'solarxr-protocol';
 import { useConfig } from './config';
+import { useDataFeedConfig } from './datafeed-config';
 import { useWebsocketAPI } from './websocket-api';
 
 export interface FlatDeviceTracker {
@@ -49,37 +47,18 @@ export function reducer(state: AppState, action: AppStateAction) {
 }
 
 export function useProvideAppContext(): AppContext {
-  const { sendDataFeedPacket, useDataFeedPacket, isConnected } =
-    useWebsocketAPI();
+  const { sendDataFeedPacket, useDataFeedPacket, isConnected } = useWebsocketAPI();
   const { config } = useConfig();
+  const { dataFeedConfig } = useDataFeedConfig();
   const navigate = useNavigate();
-  const [state, dispatch] = useReducer<Reducer<AppState, AppStateAction>>(
-    reducer,
-    {
-      datafeed: new DataFeedUpdateT(),
-    }
-  );
+  const [state, dispatch] = useReducer<Reducer<AppState, AppStateAction>>(reducer, {
+    datafeed: new DataFeedUpdateT(),
+  });
 
   useEffect(() => {
     if (isConnected) {
-      const trackerData = new TrackerDataMaskT();
-      trackerData.position = true;
-      trackerData.rotation = true;
-      trackerData.info = true;
-      trackerData.status = true;
-      trackerData.temp = true;
-
-      const dataMask = new DeviceDataMaskT();
-      dataMask.deviceData = true;
-      dataMask.trackerData = trackerData;
-
-      const config = new DataFeedConfigT();
-      config.dataMask = dataMask;
-      config.minimumTimeSinceLast = 100;
-      config.syntheticTrackersMask = trackerData;
-
       const startDataFeed = new StartDataFeedT();
-      startDataFeed.dataFeeds = [config];
+      startDataFeed.dataFeeds = [dataFeedConfig];
       sendDataFeedPacket(DataFeedMessage.StartDataFeed, startDataFeed);
     }
   }, [isConnected]);
@@ -102,12 +81,9 @@ export function useProvideAppContext(): AppContext {
     [state]
   );
 
-  useDataFeedPacket(
-    DataFeedMessage.DataFeedUpdate,
-    (packet: DataFeedUpdateT) => {
-      dispatch({ type: 'datafeed', value: packet });
-    }
-  );
+  useDataFeedPacket(DataFeedMessage.DataFeedUpdate, (packet: DataFeedUpdateT) => {
+    dispatch({ type: 'datafeed', value: packet });
+  });
 
   return {
     state,

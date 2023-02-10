@@ -1,12 +1,12 @@
-import { useTranslation } from 'react-i18next';
 import { useTrackers } from '../../../../../hooks/tracker';
 import { BodyDisplay } from '../../../../commons/BodyDisplay';
 import { Button } from '../../../../commons/Button';
 import { TipBox } from '../../../../commons/TipBox';
 import { Typography } from '../../../../commons/Typography';
+import { useLocalization } from '@fluent/react';
 
 export function PutTrackersOnStep({ nextStep }: { nextStep: () => void }) {
-  const { t } = useTranslation();
+  const { l10n } = useLocalization();
   const { trackers } = useTrackers();
 
   return (
@@ -14,23 +14,27 @@ export function PutTrackersOnStep({ nextStep }: { nextStep: () => void }) {
       <div className="flex flex-col flex-grow">
         <div className="flex flex-grow flex-col gap-4 max-w-sm">
           <Typography variant="main-title" bold>
-            {t('onboarding.automatic-proportions.put-trackers-on.title')}
+            {l10n.getString(
+              'onboarding-automatic_proportions-put_trackers_on-title'
+            )}
           </Typography>
           <div>
             <Typography color="secondary">
-              {t(
-                'onboarding.automatic-proportions.put-trackers-on.description'
+              {l10n.getString(
+                'onboarding-automatic_proportions-put_trackers_on-description'
               )}
             </Typography>
           </div>
           <div className="flex">
-            <TipBox>{t('tips.find-tracker')}</TipBox>
+            <TipBox>{l10n.getString('tips-find_tracker')}</TipBox>
           </div>
         </div>
 
         <div className="flex">
           <Button variant="primary" onClick={nextStep}>
-            {t('onboarding.automatic-proportions.put-trackers-on.next')}
+            {l10n.getString(
+              'onboarding-automatic_proportions-put_trackers_on-next'
+            )}
           </Button>
         </div>
       </div>

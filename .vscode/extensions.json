@@ -8,7 +8,9 @@
 		"dbaeumer.vscode-eslint",
 		"esbenp.prettier-vscode",
 		"rust-lang.rust-analyzer",
-		"bradlc.vscode-tailwindcss"
+		"bradlc.vscode-tailwindcss",
+		"EditorConfig.EditorConfig",
+		"macabeus.vscode-fluent",
 	],
 	// List of extensions recommended by VS Code that should not be recommended for users of this workspace.
 	"unwantedRecommendations": []

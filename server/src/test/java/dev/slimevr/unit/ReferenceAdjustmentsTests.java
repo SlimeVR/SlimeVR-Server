@@ -2,10 +2,9 @@ package dev.slimevr.unit;
 
 import com.jme3.math.FastMath;
 import com.jme3.math.Quaternion;
-import dev.slimevr.vr.processor.TransformNode;
-import dev.slimevr.vr.trackers.ComputedTracker;
-import dev.slimevr.vr.trackers.ReferenceAdjustedTracker;
-import dev.slimevr.vr.trackers.Tracker;
+import dev.slimevr.tracking.processor.TransformNode;
+import dev.slimevr.tracking.trackers.IMUTracker;
+import dev.slimevr.tracking.trackers.Tracker;
 import io.eiren.math.FloatMath;
 import io.eiren.util.StringUtils;
 import org.junit.jupiter.api.DynamicTest;
@@ -21,7 +20,7 @@ import static org.junit.jupiter.api.DynamicTest.dynamicTest;
 
 
 /**
- * Tests {@link ReferenceAdjustedTracker#resetFull(Quaternion)}
+ * Tests {@link IMUTracker#resetFull(Quaternion)}
  */
 public class ReferenceAdjustmentsTests {
 
@@ -177,17 +176,19 @@ public class ReferenceAdjustmentsTests {
 		int refRoll
 	) {
 		Quaternion referenceQuat = q(refPitch, refYaw, refRoll);
-		ComputedTracker tracker = new ComputedTracker(
+		IMUTracker tracker = new IMUTracker(
+			null,
 			Tracker.getNextLocalTrackerId(),
+			0,
 			"test",
-			true,
-			false
+			"test",
+			null,
+			null
 		);
-		tracker.rotation.set(trackerQuat);
-		ReferenceAdjustedTracker<ComputedTracker> adj = new ReferenceAdjustedTracker<>(tracker);
-		adj.resetFull(referenceQuat);
+		tracker.rotQuaternion.set(trackerQuat);
+		tracker.resetFull(referenceQuat);
 		Quaternion read = new Quaternion();
-		assertTrue(adj.getRotation(read), "Adjusted tracker didn't return rotation");
+		assertTrue(tracker.getRotation(read), "Adjusted tracker didn't return rotation");
 
 		// Use only yaw HMD rotation
 		Quaternion targetTrackerRotation = new Quaternion(referenceQuat);
@@ -212,18 +213,21 @@ public class ReferenceAdjustmentsTests {
 		int refYaw,
 		int refRoll
 	) {
+		// FIXME
 		Quaternion referenceQuat = q(refPitch, refYaw, refRoll);
-		ComputedTracker tracker = new ComputedTracker(
+		IMUTracker tracker = new IMUTracker(
+			null,
 			Tracker.getNextLocalTrackerId(),
+			0,
 			"test",
-			true,
-			false
+			"test",
+			null,
+			null
 		);
-		tracker.rotation.set(trackerQuat);
-		ReferenceAdjustedTracker<ComputedTracker> adj = new ReferenceAdjustedTracker<>(tracker);
-		adj.resetYaw(referenceQuat);
+		tracker.rotQuaternion.set(trackerQuat);
+		tracker.resetYaw(referenceQuat);
 		Quaternion read = new Quaternion();
-		assertTrue(adj.getRotation(read), "Adjusted tracker didn't return rotation");
+		assertTrue(tracker.getRotation(read), "Adjusted tracker didn't return rotation");
 		assertEquals(
 			new QuatEqualYawWithEpsilon(referenceQuat),
 			new QuatEqualYawWithEpsilon(read),
@@ -241,16 +245,19 @@ public class ReferenceAdjustmentsTests {
 		int refYaw,
 		int refRoll
 	) {
+		// FIXME
 		Quaternion referenceQuat = q(refPitch, refYaw, refRoll);
-		ComputedTracker tracker = new ComputedTracker(
+		IMUTracker tracker = new IMUTracker(
+			null,
 			Tracker.getNextLocalTrackerId(),
+			0,
 			"test",
-			true,
-			false
+			"test",
+			null,
+			null
 		);
-		tracker.rotation.set(trackerQuat);
-		ReferenceAdjustedTracker<ComputedTracker> adj = new ReferenceAdjustedTracker<>(tracker);
-		adj.resetFull(referenceQuat);
+		tracker.rotQuaternion.set(trackerQuat);
+		tracker.resetFull(referenceQuat);
 
 		// Use only yaw HMD rotation
 		Quaternion targetTrackerRotation = new Quaternion(referenceQuat);
@@ -269,7 +276,7 @@ public class ReferenceAdjustmentsTests {
 		TransformNode rotationNode = new TransformNode("Rot", true);
 		rotationNode.attachChild(trackerNode);
 
-		trackerNode.localTransform.setRotation(tracker.rotation);
+		trackerNode.localTransform.setRotation(tracker.rotQuaternion);
 
 		for (int yaw = 0; yaw <= 360; yaw += 30) {
 			for (int pitch = -90; pitch <= 90; pitch += 15) {
@@ -288,10 +295,10 @@ public class ReferenceAdjustmentsTests {
 						);
 					rotationNode.localTransform.setRotation(rotation);
 					rotationNode.update();
-					tracker.rotation.set(trackerNode.worldTransform.getRotation());
-					tracker.rotation.toAngles(angles);
+					tracker.rotQuaternion.set(trackerNode.worldTransform.getRotation());
+					tracker.rotQuaternion.toAngles(angles);
 
-					adj.getRotation(read);
+					tracker.getRotation(read);
 					read.toAngles(anglesAdj);
 
 					diff.set(read).inverseLocal().multLocal(rotationCompare);

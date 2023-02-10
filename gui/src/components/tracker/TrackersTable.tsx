@@ -1,11 +1,10 @@
 import classNames from 'classnames';
 import { IPv4 } from 'ip-num/IPNumber';
-import { MouseEventHandler, ReactNode, useState } from 'react';
-import { useTranslation } from 'react-i18next';
+import { MouseEventHandler, ReactNode, useState, useMemo } from 'react';
 import {
   TrackerDataT,
   TrackerIdT,
-  TrackerStatus as TrackerStatusEnum
+  TrackerStatus as TrackerStatusEnum,
 } from 'solarxr-protocol';
 import { FlatDeviceTracker } from '../../hooks/app';
 import { useTracker } from '../../hooks/tracker';
@@ -14,8 +13,46 @@ import { Typography } from '../commons/Typography';
 import { TrackerBattery } from './TrackerBattery';
 import { TrackerStatus } from './TrackerStatus';
 import { TrackerWifi } from './TrackerWifi';
+import { useLocalization } from '@fluent/react';
+import { formatVector3 } from '../utils/formatting';
+import { useConfig } from '../../hooks/config';
 
-export function TrackerNameCol({ tracker }: { tracker: TrackerDataT }) {
+enum DisplayColumn {
+  NAME,
+  TYPE,
+  BATTERY,
+  PING,
+  TPS,
+  ROTATION,
+  TEMPERATURE,
+  LINEAR_ACCELERATION,
+  POSITION,
+  URL,
+}
+
+const displayColumns: { [k: string]: boolean } = {
+  [DisplayColumn.NAME]: true,
+  [DisplayColumn.TYPE]: true,
+  [DisplayColumn.BATTERY]: true,
+  [DisplayColumn.PING]: true,
+  [DisplayColumn.TPS]: true,
+  [DisplayColumn.ROTATION]: true,
+  [DisplayColumn.TEMPERATURE]: true,
+  [DisplayColumn.LINEAR_ACCELERATION]: true,
+  [DisplayColumn.POSITION]: true,
+  [DisplayColumn.URL]: true,
+};
+
+const isSlime = ({ device }: FlatDeviceTracker) =>
+  device?.hardwareInfo?.manufacturer === 'SlimeVR';
+
+const getDeviceName = ({ device }: FlatDeviceTracker) =>
+  device?.customName?.toString() || '';
+
+const getTrackerName = ({ tracker }: FlatDeviceTracker) =>
+  tracker?.info?.customName?.toString() || '';
+
+export function TrackerNameCell({ tracker }: { tracker: TrackerDataT }) {
   const { useName } = useTracker(tracker);
 
   const name = useName();
@@ -33,17 +70,28 @@ export function TrackerNameCol({ tracker }: { tracker: TrackerDataT }) {
   );
 }
 
-export function TrackerRotCol({ tracker }: { tracker: TrackerDataT }) {
-  const { useRotationDegrees } = useTracker(tracker);
+export function TrackerRotCell({
+  tracker,
+  precise,
+  color,
+  referenceAdjusted,
+}: {
+  tracker: TrackerDataT;
+  precise?: boolean;
+  color?: string;
+  referenceAdjusted?: boolean;
+}) {
+  const { useRawRotationEulerDegrees, useRefAdjRotationEulerDegrees } =
+    useTracker(tracker);
 
-  const rot = useRotationDegrees();
+  const rot = referenceAdjusted
+    ? useRefAdjRotationEulerDegrees()
+    : useRawRotationEulerDegrees();
 
   return (
-    <Typography color="secondary">
+    <Typography color={color}>
       <span className="whitespace-nowrap">
-        {`${rot.pitch.toFixed(0)} / ${rot.yaw.toFixed(0)} / ${rot.roll.toFixed(
-          0
-        )}`}
+        {formatVector3(rot, precise ? 2 : 0)}
       </span>
     </Typography>
   );
@@ -84,13 +132,15 @@ export function RowContainer({
         onMouseEnter={onMouseOver}
         onMouseLeave={onMouseOut}
         style={{
-          boxShadow: `0px 0px ${velocity * 8}px ${velocity * 8}px #183951`,
+          boxShadow: `0px 0px ${Math.floor(velocity * 8)}px ${Math.floor(
+            velocity * 8
+          )}px  #BB8AE5`,
         }}
         className={classNames(
           'min-h-[50px]  flex flex-col justify-center px-3',
           rounded === 'left' && 'rounded-l-lg',
           rounded === 'right' && 'rounded-r-lg',
-          hover ? 'bg-background-50' : 'bg-background-60'
+          hover ? 'bg-background-50 cursor-pointer' : 'bg-background-60'
         )}
       >
         {children}
@@ -106,160 +156,220 @@ export function TrackersTable({
   clickedTracker: (tracker: TrackerDataT) => void;
   flatTrackers: FlatDeviceTracker[];
 }) {
-  const { t } = useTranslation();
+  const { l10n } = useLocalization();
   const [hoverTracker, setHoverTracker] = useState<TrackerIdT | null>(null);
+  const { config } = useConfig();
 
   const trackerEqual = (id: TrackerIdT | null) =>
     id?.trackerNum == hoverTracker?.trackerNum &&
     (!id?.deviceId || id.deviceId.id == hoverTracker?.deviceId?.id);
 
+  const filteringEnabled =
+    config?.debug && config?.devSettings?.filterSlimesAndHMD;
+  const sortingEnabled = config?.debug && config?.devSettings?.sortByName;
+  // TODO: fix memo
+  const filteredSortedTrackers = useMemo(() => {
+    const list = filteringEnabled
+      ? flatTrackers.filter((t) => getDeviceName(t) === 'HMD' || isSlime(t))
+      : flatTrackers;
+
+    if (sortingEnabled) {
+      list.sort((a, b) => getTrackerName(a).localeCompare(getTrackerName(b)));
+    }
+    return list;
+  }, [flatTrackers, filteringEnabled, sortingEnabled]);
+
+  const fontColor = config?.devSettings?.highContrast ? 'primary' : 'secondary';
+  const moreInfo = config?.devSettings?.moreInfo;
+
+  const hasTemperature = !!filteredSortedTrackers.find(
+    ({ tracker }) => Number(tracker?.temp?.temp) != 0
+  );
+  displayColumns[DisplayColumn.TEMPERATURE] = hasTemperature || false;
+  displayColumns[DisplayColumn.POSITION] = moreInfo || false;
+  displayColumns[DisplayColumn.LINEAR_ACCELERATION] = moreInfo || false;
+  displayColumns[DisplayColumn.URL] = moreInfo || false;
+  const displayColumnsKeys = Object.keys(displayColumns).filter(
+    (k) => displayColumns[k]
+  );
+  const firstColumnId = +displayColumnsKeys[0];
+  const lastColumnId = +displayColumnsKeys[displayColumnsKeys.length - 1];
+
+  function column({
+    id,
+    label,
+    labelClassName,
+    row,
+  }: {
+    id: DisplayColumn;
+    label: string;
+    labelClassName?: string;
+    row: (data: FlatDeviceTracker) => ReactNode | null;
+  }) {
+    let rounded: 'left' | 'right' | 'none' = 'none';
+    if (firstColumnId === id) rounded = 'left';
+    else if (lastColumnId === id) rounded = 'right';
+
+    if (!displayColumns[id]) return <></>;
+
+    return (
+      <div
+        className={classNames('flex flex-col gap-1', {
+          'flex-grow': lastColumnId === id,
+        })}
+      >
+        <div className={`flex px-3 whitespace-nowrap ${labelClassName}`}>
+          {label}
+        </div>
+        {filteredSortedTrackers.map((data, index) => (
+          <RowContainer
+            rounded={rounded}
+            key={index}
+            tracker={data.tracker}
+            onClick={() => clickedTracker(data.tracker)}
+            hover={trackerEqual(data.tracker.trackerId)}
+            onMouseOver={() => setHoverTracker(data.tracker.trackerId)}
+            onMouseOut={() => setHoverTracker(null)}
+          >
+            {row(data) || <></>}
+          </RowContainer>
+        ))}
+      </div>
+    );
+  }
+
   return (
     <div className="flex w-full overflow-x-auto py-2">
-      <div className="flex flex-col gap-1">
-        <div className="flex px-3">{t('tracker.table.column.name')}</div>
-        {flatTrackers.map(({ tracker }, index) => (
-          <RowContainer
-            key={index}
-            rounded="left"
-            tracker={tracker}
-            onClick={() => clickedTracker(tracker)}
-            hover={trackerEqual(tracker.trackerId)}
-            onMouseOver={() => setHoverTracker(tracker.trackerId)}
-            onMouseOut={() => setHoverTracker(null)}
-          >
-            <TrackerNameCol tracker={tracker}></TrackerNameCol>
-          </RowContainer>
-        ))}
-      </div>
-      <div className="flex flex-col gap-1">
-        <div className="flex px-3">{t('tracker.table.column.type')}</div>
-        {flatTrackers.map(({ device, tracker }, index) => (
-          <RowContainer
-            key={index}
-            tracker={tracker}
-            onClick={() => clickedTracker(tracker)}
-            hover={trackerEqual(tracker.trackerId)}
-            onMouseOver={() => setHoverTracker(tracker.trackerId)}
-            onMouseOut={() => setHoverTracker(null)}
-          >
-            <Typography color="secondary">
-              {device?.hardwareInfo?.manufacturer || '--'}
-            </Typography>
-          </RowContainer>
-        ))}
-      </div>
-      <div className="flex flex-col gap-1">
-        <div className="flex px-3">{t('tracker.table.column.battery')}</div>
-        {flatTrackers.map(({ device, tracker }, index) => (
-          <RowContainer
-            key={index}
-            tracker={tracker}
-            onClick={() => clickedTracker(tracker)}
-            hover={trackerEqual(tracker.trackerId)}
-            onMouseOver={() => setHoverTracker(tracker.trackerId)}
-            onMouseOut={() => setHoverTracker(null)}
-          >
-            {(device &&
-              device.hardwareStatus &&
-              device.hardwareStatus.batteryPctEstimate && (
-                <TrackerBattery
-                  value={device.hardwareStatus.batteryPctEstimate / 100}
-                  disabled={tracker.status === TrackerStatusEnum.DISCONNECTED}
-                />
-              )) || <></>}
-          </RowContainer>
-        ))}
-      </div>
-      <div className="flex flex-col gap-1">
-        <div className="flex px-3">{t('tracker.table.column.ping')}</div>
-        {flatTrackers.map(({ device, tracker }, index) => (
-          <RowContainer
-            key={index}
-            tracker={tracker}
-            onClick={() => clickedTracker(tracker)}
-            hover={trackerEqual(tracker.trackerId)}
-            onMouseOver={() => setHoverTracker(tracker.trackerId)}
-            onMouseOut={() => setHoverTracker(null)}
-          >
-            {(device &&
-              device.hardwareStatus &&
-              device.hardwareStatus.rssi &&
-              device.hardwareStatus.ping && (
-                <TrackerWifi
-                  rssi={device.hardwareStatus.rssi}
-                  ping={device.hardwareStatus.ping}
-                  disabled={tracker.status === TrackerStatusEnum.DISCONNECTED}
-                ></TrackerWifi>
-              )) || <></>}
-          </RowContainer>
-        ))}
-      </div>
-      <div className="flex flex-col gap-1">
-        <div className="flex px-3 whitespace-nowrap">
-          {t('tracker.table.column.rotation')}
-        </div>
-        {flatTrackers.map(({ tracker }, index) => (
-          <RowContainer
-            key={index}
-            tracker={tracker}
-            onClick={() => clickedTracker(tracker)}
-            hover={trackerEqual(tracker.trackerId)}
-            onMouseOver={() => setHoverTracker(tracker.trackerId)}
-            onMouseOut={() => setHoverTracker(null)}
-          >
-            <TrackerRotCol tracker={tracker} />
-          </RowContainer>
-        ))}
-      </div>
-      <div className="flex flex-col gap-1">
-        <div className="flex px-3 whitespace-nowrap">
-          {t('tracker.table.column.position')}
-        </div>
-        {flatTrackers.map(({ tracker }, index) => (
-          <RowContainer
-            key={index}
-            tracker={tracker}
-            onClick={() => clickedTracker(tracker)}
-            hover={trackerEqual(tracker.trackerId)}
-            onMouseOver={() => setHoverTracker(tracker.trackerId)}
-            onMouseOut={() => setHoverTracker(null)}
-          >
-            {(tracker.position && (
-              <Typography color="secondary">
-                <span className="whitespace-nowrap">
-                  {`${tracker.position?.x.toFixed(
-                    0
-                  )} / ${tracker.position?.y.toFixed(
-                    0
-                  )} / ${tracker.position?.z.toFixed(0)}`}
-                </span>
-              </Typography>
-            )) || <></>}
-          </RowContainer>
-        ))}
-      </div>
-      <div className="flex flex-col gap-1 flex-grow">
-        <div className="flex px-3">{t('tracker.table.column.url')}</div>
+      {column({
+        id: DisplayColumn.NAME,
+        label: l10n.getString('tracker-table-column-name'),
+        row: ({ tracker }) => (
+          <TrackerNameCell tracker={tracker}></TrackerNameCell>
+        ),
+      })}
 
-        {flatTrackers.map(({ device, tracker }, index) => (
-          <RowContainer
-            key={index}
-            rounded="right"
+      {column({
+        id: DisplayColumn.TYPE,
+        label: l10n.getString('tracker-table-column-type'),
+        row: ({ device }) => (
+          <Typography color={fontColor}>
+            {device?.hardwareInfo?.manufacturer || '--'}
+          </Typography>
+        ),
+      })}
+
+      {column({
+        id: DisplayColumn.BATTERY,
+        label: l10n.getString('tracker-table-column-battery'),
+        row: ({ device, tracker }) =>
+          device?.hardwareStatus?.batteryPctEstimate && (
+            <TrackerBattery
+              value={device.hardwareStatus.batteryPctEstimate / 100}
+              voltage={device.hardwareStatus?.batteryVoltage}
+              disabled={tracker.status === TrackerStatusEnum.DISCONNECTED}
+              textColor={fontColor}
+            />
+          ),
+      })}
+
+      {column({
+        id: DisplayColumn.PING,
+        label: l10n.getString('tracker-table-column-ping'),
+        row: ({ device, tracker }) =>
+          (device?.hardwareStatus?.rssi != null ||
+            device?.hardwareStatus?.ping != null) && (
+            <TrackerWifi
+              rssi={device?.hardwareStatus?.rssi || 0}
+              rssiShowNumeric
+              ping={device?.hardwareStatus?.ping || 0}
+              disabled={tracker.status === TrackerStatusEnum.DISCONNECTED}
+              textColor={fontColor}
+            ></TrackerWifi>
+          ),
+      })}
+
+      {column({
+        id: DisplayColumn.TPS,
+        label: l10n.getString('tracker-table-column-tps'),
+        row: ({ device }) => (
+          <Typography color={fontColor}>
+            {(device?.hardwareStatus?.tps != null && (
+              <>{device.hardwareStatus.tps || 0}</>
+            )) || <></>}
+          </Typography>
+        ),
+      })}
+
+      {column({
+        id: DisplayColumn.ROTATION,
+        label: l10n.getString('tracker-table-column-rotation'),
+        labelClassName: classNames({
+          'w-44': config?.devSettings?.preciseRotation,
+          'w-32': !config?.devSettings?.preciseRotation,
+        }),
+        row: ({ tracker }) => (
+          <TrackerRotCell
             tracker={tracker}
-            onClick={() => clickedTracker(tracker)}
-            hover={trackerEqual(tracker.trackerId)}
-            onMouseOver={() => setHoverTracker(tracker.trackerId)}
-            onMouseOut={() => setHoverTracker(null)}
-          >
-            <Typography color="secondary">
-              udp://
-              {IPv4.fromNumber(
-                device?.hardwareInfo?.ipAddress?.addr || 0
-              ).toString()}
+            precise={config?.devSettings?.preciseRotation}
+            referenceAdjusted={!config?.devSettings?.rawSlimeRotation}
+            color={fontColor}
+          />
+        ),
+      })}
+
+      {column({
+        id: DisplayColumn.TEMPERATURE,
+        label: l10n.getString('tracker-table-column-temperature'),
+        row: ({ tracker }) =>
+          tracker.temp?.temp != 0 && (
+            <Typography color={fontColor}>
+              <span className="whitespace-nowrap">
+                {`${tracker.temp?.temp.toFixed(2)}`}
+              </span>
             </Typography>
-          </RowContainer>
-        ))}
-      </div>
+          ),
+      })}
+
+      {column({
+        id: DisplayColumn.LINEAR_ACCELERATION,
+        label: l10n.getString('tracker-table-column-linear-acceleration'),
+        labelClassName: 'w-36',
+        row: ({ tracker }) =>
+          tracker.linearAcceleration && (
+            <Typography color={fontColor}>
+              <span className="whitespace-nowrap">
+                {formatVector3(tracker.linearAcceleration, 1)}
+              </span>
+            </Typography>
+          ),
+      })}
+
+      {column({
+        id: DisplayColumn.POSITION,
+        label: l10n.getString('tracker-table-column-position'),
+        labelClassName: 'w-36',
+        row: ({ tracker }) =>
+          tracker.position && (
+            <Typography color={fontColor}>
+              <span className="whitespace-nowrap">
+                {formatVector3(tracker.position, 2)}
+              </span>
+            </Typography>
+          ),
+      })}
+
+      {column({
+        id: DisplayColumn.URL,
+        label: l10n.getString('tracker-table-column-url'),
+        row: ({ device }) => (
+          <Typography color={fontColor}>
+            udp://
+            {IPv4.fromNumber(
+              device?.hardwareInfo?.ipAddress?.addr || 0
+            ).toString()}
+          </Typography>
+        ),
+      })}
     </div>
   );
 }

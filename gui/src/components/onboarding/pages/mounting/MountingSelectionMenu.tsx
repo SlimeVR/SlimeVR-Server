@@ -1,12 +1,12 @@
 import classNames from 'classnames';
 import { MouseEventHandler } from 'react';
-import { useTranslation } from 'react-i18next';
 import ReactModal from 'react-modal';
 import { useElemSize, useLayout } from '../../../../hooks/layout';
 import { Button } from '../../../commons/Button';
 import { FootIcon } from '../../../commons/icon/FootIcon';
 import { Typography } from '../../../commons/Typography';
 import { rotationToQuatMap } from '../../../tracker/TrackerSettings';
+import { useLocalization } from '@fluent/react';
 
 function MoutingOrientationCard({
   orientation,
@@ -39,7 +39,7 @@ export function MountingSelectionMenu({
   onClose: () => void;
   onDirectionSelected: (direction: number) => void;
 }) {
-  const { t } = useTranslation();
+  const { l10n } = useLocalization();
   const { ref: refTrackers, layoutHeight: trackersHeight } =
     useLayout<HTMLDivElement>();
   const { ref: refOptions, height: optionsHeight } =
@@ -60,7 +60,7 @@ export function MountingSelectionMenu({
     >
       <div className="flex w-full h-full flex-col ">
         <Typography variant="main-title" bold>
-          {t('mounting-selection-menu.title')}
+          {l10n.getString('mounting_selection_menu')}
         </Typography>
         <div
           className="flex w-full flex-col flex-grow items-center gap-3 justify-center"
@@ -69,19 +69,19 @@ export function MountingSelectionMenu({
         >
           <div className="grid grid-cols-2 grid-rows-2 gap-6 w-full">
             <MoutingOrientationCard
-              orientation={t('tracker.rotation.left')}
+              orientation={l10n.getString('tracker-rotation-left')}
               onClick={() => onDirectionSelected(rotationToQuatMap.LEFT)}
             />
             <MoutingOrientationCard
-              orientation={t('tracker.rotation.right')}
+              orientation={l10n.getString('tracker-rotation-right')}
               onClick={() => onDirectionSelected(rotationToQuatMap.RIGHT)}
             />
             <MoutingOrientationCard
-              orientation={t('tracker.rotation.front')}
+              orientation={l10n.getString('tracker-rotation-front')}
               onClick={() => onDirectionSelected(rotationToQuatMap.FRONT)}
             />
             <MoutingOrientationCard
-              orientation={t('tracker.rotation.back')}
+              orientation={l10n.getString('tracker-rotation-back')}
               onClick={() => onDirectionSelected(rotationToQuatMap.BACK)}
             />
           </div>
@@ -94,7 +94,7 @@ export function MountingSelectionMenu({
       >
         <div className="flex flex-col justify-end pointer-events-auto">
           <Button variant="primary" onClick={onClose}>
-            {t('mounting-selection-menu.close')}
+            {l10n.getString('mounting_selection_menu-close')}
           </Button>
         </div>
       </div>

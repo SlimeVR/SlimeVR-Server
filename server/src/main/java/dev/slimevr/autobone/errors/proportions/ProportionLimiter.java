@@ -1,8 +1,10 @@
 package dev.slimevr.autobone.errors.proportions;
 
-import dev.slimevr.vr.processor.skeleton.SkeletonConfig;
+import dev.slimevr.tracking.processor.HumanPoseManager;
 
 
 public interface ProportionLimiter {
-	public float getProportionError(SkeletonConfig config, float height);
+	public float getProportionError(HumanPoseManager humanPoseManager, float height);
+
+	public float getTargetRatio();
 }

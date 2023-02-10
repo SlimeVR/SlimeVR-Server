@@ -10,7 +10,7 @@ import org.apache.commons.lang3.tuple.Pair;
 
 import dev.slimevr.VRServer;
 import dev.slimevr.util.ann.VRServerThread;
-import dev.slimevr.vr.trackers.Tracker;
+import dev.slimevr.tracking.trackers.Tracker;
 import io.eiren.util.collections.FastList;
 import io.eiren.util.logging.LogManager;
 

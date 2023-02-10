@@ -9,7 +9,7 @@ import com.sun.jna.ptr.IntByReference;
 import dev.slimevr.VRServer;
 import dev.slimevr.bridge.Bridge;
 import dev.slimevr.bridge.PipeState;
-import dev.slimevr.vr.trackers.*;
+import dev.slimevr.tracking.trackers.*;
 import io.eiren.util.collections.FastList;
 import io.eiren.util.logging.LogManager;
 

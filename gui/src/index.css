@@ -4,11 +4,19 @@
 
 body {
   font-variant-numeric: tabular-nums;
-  font-family: 'poppins', sans-serif;
+  font-family: 'poppins', sans-serif, 'Twemoji';
   height: 100vh;
   width: 100vw;
   user-select: none;
   background: theme('colors.background.20');
+}
+
+@font-face {
+  font-family: 'Twemoji';
+  src: url('/fonts/twemoji-glyf_colr_1.ttf') format('truetype'),
+    url('/fonts/twemoji-picosvg.ttf') format('truetype'),
+    emoji;
+  font-display: swap;
 }
 
 html {

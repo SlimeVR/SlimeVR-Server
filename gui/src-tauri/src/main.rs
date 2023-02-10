@@ -5,27 +5,23 @@ use std::io::Write;
 #[cfg(windows)]
 use std::os::windows::process::CommandExt;
 use std::panic;
-use std::path::PathBuf;
+use std::path::{Path, PathBuf};
 use std::process::{Child, Stdio};
 
 use clap::Parser;
-use clap_verbosity_flag::{InfoLevel, Verbosity};
+use const_format::concatcp;
 use rand::{seq::SliceRandom, thread_rng};
-use tauri::api::{clap, process::Command};
+use shadow_rs::shadow;
+use tauri::api::process::Command;
 use tauri::Manager;
 use tempfile::Builder;
-use which::which_all;
 
 #[cfg(windows)]
 /// For Commands on Windows so they dont create terminals
 const CREATE_NO_WINDOW: u32 = 0x0800_0000;
 /// It's an i32 because we check it through exit codes of the process
 const MINIMUM_JAVA_VERSION: i32 = 17;
-const JAVA_BIN: &str = if cfg!(windows) {
-	"java.exe"
-} else {
-	"java"
-};
+const JAVA_BIN: &str = if cfg!(windows) { "java.exe" } else { "java" };
 static POSSIBLE_TITLES: &[&str] = &[
 	"Panicking situation",
 	"looking for spatula",
@@ -33,43 +29,48 @@ static POSSIBLE_TITLES: &[&str] = &[
 	"never gonna let you down",
 	"uwu sowwy",
 ];
+shadow!(build);
+// Tauri has a way to return the package.json version, but it's not a constant...
+const VERSION: &str = if build::TAG.is_empty() {
+	build::SHORT_COMMIT
+} else {
+	build::TAG
+};
+const MODIFIED: &str = if build::GIT_CLEAN { "" } else { "-dirty" };
 
-#[derive(Parser)]
-#[clap(version, about)]
+#[derive(Debug, Parser)]
+#[clap(
+	version = concatcp!(VERSION, MODIFIED),
+	about
+)]
 struct Cli {
 	#[clap(short, long)]
 	display_console: bool,
 	#[clap(long)]
 	launch_from_path: Option<PathBuf>,
 	#[clap(flatten)]
-	verbosity: Verbosity<InfoLevel>,
+	verbose: clap_verbosity_flag::Verbosity,
 }
 
-fn is_valid_path(path: &PathBuf) -> bool {
-	// Might need to be changed in the future, at least for linux
-	let server_path = path.join("slimevr.jar");
-
-	return server_path.exists();
+fn is_valid_path(path: &Path) -> bool {
+	path.join("slimevr.jar").exists()
 }
 
 fn get_launch_path(cli: Cli) -> Option<PathBuf> {
-	if let Some(path) = cli.launch_from_path {
-		if path.exists() && is_valid_path(&path) {
-			return Some(path);
-		}
-	}
-
-	let mut path = env::current_dir().unwrap();
-	if is_valid_path(&path) {
-		return Some(path);
-	}
-
-	path = PathBuf::from(env!("CARGO_MANIFEST_DIR"));
-	if is_valid_path(&path) {
-		return Some(path);
-	}
-
-	None
+	let paths = [
+		cli.launch_from_path,
+		// AppImage passes the fakeroot in `APPDIR` env var.
+		env::var_os("APPDIR").map(|x| PathBuf::from(x)),
+		env::current_dir().ok(),
+		Some(PathBuf::from(env!("CARGO_MANIFEST_DIR"))),
+		// For flatpak container
+		Some(PathBuf::from("/app/share/slimevr/")),
+		Some(PathBuf::from("/usr/share/slimevr/")),
+	];
+	paths
+		.into_iter()
+		.filter_map(|x| x)
+		.find(|x| is_valid_path(x))
 }
 
 fn spawn_java(java: &OsStr, java_version: &OsStr) -> std::io::Result<Child> {
@@ -190,7 +191,7 @@ fn main() {
 		None
 	};
 
-	tauri::Builder::default()
+	let builder = tauri::Builder::default()
 		.plugin(tauri_plugin_window_state::Builder::default().build())
 		.setup(|app| {
 			if let Some(mut recv) = stdout_recv {
@@ -221,8 +222,29 @@ fn main() {
 			Ok(())
 		})
 		//
-		.run(tauri::generate_context!())
-		.expect("error while running tauri application");
+		.run(tauri::generate_context!());
+	match builder {
+		#[cfg(windows)]
+		// Often triggered when the user doesn't have webview2 installed
+		Err(tauri::Error::Runtime(tauri_runtime::Error::CreateWebview(error))) => {
+			// I should log this anyways, don't want to dig a grave by not logging the error.
+			log::error!("CreateWebview error {}", error);
+
+			use tauri::api::dialog::{
+				blocking::MessageDialogBuilder, MessageDialogButtons, MessageDialogKind,
+			};
+
+			let confirm = MessageDialogBuilder::new("SlimeVR", "You seem to have a faulty installation of WebView2. You can check a guide on how to fix that in the docs!")
+				.buttons(MessageDialogButtons::OkCancel)
+				.kind(MessageDialogKind::Error)
+				.show();
+			if confirm {
+				open::that("https://docs.slimevr.dev/common-issues.html#webview2-is-missing--slimevr-gui-crashes-immediately--panicked-at--webview2error").unwrap();
+			}
+			return;
+		}
+		_ => builder.expect("error while running tauri application")
+	}
 }
 
 #[cfg(windows)]
@@ -286,7 +308,23 @@ fn valid_java_paths() -> Vec<(OsString, i32)> {
 
 	// Otherwise check if anything else is a supported version
 	let mut childs = vec![];
-	for java in which_all(JAVA_BIN).unwrap() {
+	cfg_if::cfg_if! {
+		if #[cfg(target_os = "macos")] {
+			// TODO: Actually use macOS paths
+			let libs = which::which_all(JAVA_BIN).unwrap();
+		} else if #[cfg(unix)] {
+			// Linux JVMs are saved on /usr/lib/jvm from what I found out,
+			// there is usually a default dir and a default-runtime dir also which are linked
+			// to the current default runtime and the current default JDK (I think it's JDK)
+			let libs = glob::glob(concatcp!("/usr/lib/jvm/*/bin/", JAVA_BIN))
+				.unwrap()
+				.filter_map(|res| res.ok());
+		} else {
+			let libs = which::which_all(JAVA_BIN).unwrap();
+		}
+	}
+
+	for java in libs {
 		let res = spawn_java(java.as_os_str(), java_version.as_os_str());
 
 		match res {

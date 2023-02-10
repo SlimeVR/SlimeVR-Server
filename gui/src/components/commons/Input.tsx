@@ -1,23 +1,32 @@
 import classNames from 'classnames';
-import {
-  forwardRef,
-  HTMLInputTypeAttribute,
-  MouseEvent,
-  useMemo,
-  useState
-} from 'react';
+import { forwardRef, MouseEvent, useMemo, useState } from 'react';
+import { Control, Controller, UseControllerProps } from 'react-hook-form';
 import { EyeIcon } from './icon/EyeIcon';
 
-export interface InputProps {
-  type: HTMLInputTypeAttribute;
-  placeholder?: string | null;
-  label?: string | null;
-  autocomplete?: boolean;
+interface InputProps {
   variant?: 'primary' | 'secondary';
+  label?: string;
+  name: string;
 }
 
-export const Input = forwardRef<HTMLInputElement, InputProps>(function AppInput(
-  { type, placeholder, label, autocomplete, variant = 'primary', ...props },
+export const InputInside = forwardRef<
+  HTMLInputElement,
+  {
+    variant?: 'primary' | 'secondary';
+    label?: string;
+    onChange: () => void;
+  } & Partial<HTMLInputElement>
+>(function AppInput(
+  {
+    type,
+    placeholder,
+    label,
+    autocomplete,
+    name,
+    onChange,
+    value,
+    variant = 'primary',
+  },
   ref
 ) {
   const [forceText, setForceText] = useState(false);
@@ -45,11 +54,13 @@ export const Input = forwardRef<HTMLInputElement, InputProps>(function AppInput(
       <div className="relative w-full">
         <input
           type={forceText ? 'text' : type}
-          ref={ref}
           className={classNames(classes, { 'pr-10': type === 'password' })}
           placeholder={placeholder || undefined}
           autoComplete={autocomplete ? 'off' : 'on'}
-          {...props}
+          onChange={onChange}
+          name={name}
+          value={value || ''}
+          ref={ref}
         ></input>
         {type === 'password' && (
           <div
@@ -63,3 +74,39 @@ export const Input = forwardRef<HTMLInputElement, InputProps>(function AppInput(
     </label>
   );
 });
+
+export const Input = ({
+  type,
+  control,
+  name,
+  placeholder,
+  label,
+  autocomplete,
+  variant = 'primary',
+  rules,
+}: {
+  rules: UseControllerProps<any>['rules'];
+  control: Control<any>;
+} & InputProps &
+  Partial<HTMLInputElement>) => {
+  return (
+    <Controller
+      control={control}
+      name={name}
+      rules={rules}
+      render={({ field: { onChange, value, ref, name } }) => (
+        <InputInside
+          type={type}
+          autocomplete={autocomplete}
+          label={label}
+          placeholder={placeholder}
+          variant={variant}
+          value={value}
+          onChange={onChange}
+          ref={ref}
+          name={name}
+        ></InputInside>
+      )}
+    />
+  );
+};

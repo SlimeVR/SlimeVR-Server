@@ -1,4 +1,4 @@
-import { useTranslation } from 'react-i18next';
+import { useLocalization } from '@fluent/react';
 import { NavLink } from 'react-router-dom';
 import { useOnboarding } from '../../../hooks/onboarding';
 import { Button } from '../../commons/Button';
@@ -7,7 +7,7 @@ import { LangSelector } from '../../commons/LangSelector';
 import { Typography } from '../../commons/Typography';
 
 export function HomePage() {
-  const { t } = useTranslation();
+  const { l10n } = useLocalization();
   const { applyProgress, skipSetup } = useOnboarding();
 
   applyProgress(0.1);
@@ -17,21 +17,27 @@ export function HomePage() {
       <div className="flex flex-col gap-5 items-center z-10">
         <SlimeVRIcon></SlimeVRIcon>
         <Typography variant="main-title">
-          {t('onboarding.home.title')}
+          {l10n.getString('onboarding-home')}
         </Typography>
         <div className="flex flex-col items-center">
-          <Typography color="secondary">
-            {t('onboarding.home.description.p0')}
-          </Typography>
-          <Typography color="secondary">
-            {t('onboarding.home.description.p1')}
-          </Typography>
+          <>
+            {l10n
+              .getString('onboarding-home-description')
+              .split('\n')
+              .map((line, i) => (
+                <Typography color="secondary" key={i}>
+                  {line}
+                </Typography>
+              ))}
+          </>
         </div>
         <Button variant="primary" to="/onboarding/wifi-creds">
-          {t('onboarding.home.start')}
+          {l10n.getString('onboarding-home-start')}
         </Button>
         <NavLink to="/" onClick={skipSetup}>
-          <Typography color="secondary">{t('onboarding.skip')}</Typography>
+          <Typography color="secondary">
+            {l10n.getString('onboarding-skip')}
+          </Typography>
         </NavLink>
       </div>
       <div className="absolute right-4 bottom-4 z-50">

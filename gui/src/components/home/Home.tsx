@@ -1,4 +1,4 @@
-import { t } from 'i18next';
+import { useLocalization } from '@fluent/react';
 import { useNavigate } from 'react-router-dom';
 import { TrackerDataT } from 'solarxr-protocol';
 import { useConfig } from '../../hooks/config';
@@ -8,6 +8,7 @@ import { TrackerCard } from '../tracker/TrackerCard';
 import { TrackersTable } from '../tracker/TrackersTable';
 
 export function Home() {
+  const { l10n } = useLocalization();
   const { config } = useConfig();
   const { trackers } = useTrackers();
   const navigate = useNavigate();
@@ -22,7 +23,9 @@ export function Home() {
     <div className="overflow-y-auto flex flex-col gap-2">
       {trackers.length === 0 && (
         <div className="flex px-5 pt-5 justify-center">
-          <Typography variant="standard">{t('home.no-trackers')}</Typography>
+          <Typography variant="standard">
+            {l10n.getString('home-no_trackers')}
+          </Typography>
         </div>
       )}
 

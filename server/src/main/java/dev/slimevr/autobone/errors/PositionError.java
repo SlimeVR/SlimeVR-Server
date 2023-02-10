@@ -8,8 +8,8 @@ import dev.slimevr.autobone.AutoBoneTrainingStep;
 import dev.slimevr.poserecorder.PoseFrameTracker;
 import dev.slimevr.poserecorder.TrackerFrame;
 import dev.slimevr.poserecorder.TrackerFrameData;
-import dev.slimevr.vr.processor.skeleton.HumanSkeleton;
-import dev.slimevr.vr.trackers.ComputedTracker;
+import dev.slimevr.tracking.processor.skeleton.HumanSkeleton;
+import dev.slimevr.tracking.trackers.ComputedTracker;
 
 
 // The distance of any points to the corresponding absolute position
@@ -20,12 +20,12 @@ public class PositionError implements IAutoBoneError {
 		return (getPositionError(
 			trackers,
 			trainingStep.getCursor1(),
-			trainingStep.getSkeleton1()
+			trainingStep.getHumanPoseManager1().getSkeleton()
 		)
 			+ getPositionError(
 				trackers,
 				trainingStep.getCursor2(),
-				trainingStep.getSkeleton2()
+				trainingStep.getHumanPoseManager2().getSkeleton()
 			))
 			/ 2f;
 	}

@@ -6,13 +6,15 @@ import dev.slimevr.VRServer;
 import dev.slimevr.autobone.errors.*;
 import dev.slimevr.config.AutoBoneConfig;
 import dev.slimevr.poserecorder.PoseFrameIO;
-import dev.slimevr.poserecorder.PoseFrameSkeleton;
 import dev.slimevr.poserecorder.PoseFrameTracker;
 import dev.slimevr.poserecorder.PoseFrames;
-import dev.slimevr.vr.processor.HumanPoseProcessor;
-import dev.slimevr.vr.processor.TransformNode;
-import dev.slimevr.vr.processor.skeleton.*;
-import dev.slimevr.vr.trackers.TrackerRole;
+import dev.slimevr.tracking.processor.BoneType;
+import dev.slimevr.tracking.processor.HumanPoseManager;
+import dev.slimevr.tracking.processor.TransformNode;
+import dev.slimevr.tracking.processor.config.SkeletonConfigManager;
+import dev.slimevr.tracking.processor.config.SkeletonConfigOffsets;
+import dev.slimevr.tracking.processor.skeleton.HumanSkeleton;
+import dev.slimevr.tracking.trackers.TrackerRole;
 import io.eiren.util.StringUtils;
 import io.eiren.util.collections.FastList;
 import io.eiren.util.logging.LogManager;
@@ -73,9 +75,11 @@ public class AutoBone {
 	public final FastList<SkeletonConfigOffsets> legacyHeightConfigs = new FastList<>(
 		new SkeletonConfigOffsets[] {
 			SkeletonConfigOffsets.NECK,
-			SkeletonConfigOffsets.TORSO,
-
-			SkeletonConfigOffsets.LEGS_LENGTH,
+			SkeletonConfigOffsets.CHEST,
+			SkeletonConfigOffsets.WAIST,
+			SkeletonConfigOffsets.HIP,
+			SkeletonConfigOffsets.UPPER_LEG,
+			SkeletonConfigOffsets.LOWER_LEG,
 		}
 	);
 
@@ -114,22 +118,22 @@ public class AutoBone {
 		return loadDir;
 	}
 
-	public float computeBoneOffset(BoneType bone, SkeletonConfig skeletonConfig) {
+	public float computeBoneOffset(
+		BoneType bone,
+		Function<SkeletonConfigOffsets, Float> getOffset
+	) {
 		return switch (bone) {
-			case HEAD -> skeletonConfig.getOffset(SkeletonConfigOffsets.HEAD);
-			case NECK -> skeletonConfig.getOffset(SkeletonConfigOffsets.NECK);
-			case CHEST -> skeletonConfig.getOffset(SkeletonConfigOffsets.CHEST);
-			case WAIST -> -skeletonConfig.getOffset(SkeletonConfigOffsets.CHEST)
-				+ skeletonConfig.getOffset(SkeletonConfigOffsets.TORSO)
-				- skeletonConfig.getOffset(SkeletonConfigOffsets.WAIST);
-			case HIP -> skeletonConfig.getOffset(SkeletonConfigOffsets.WAIST);
-			case LEFT_HIP, RIGHT_HIP -> skeletonConfig.getOffset(SkeletonConfigOffsets.HIPS_WIDTH)
+			case HEAD -> getOffset.apply(SkeletonConfigOffsets.HEAD);
+			case NECK -> getOffset.apply(SkeletonConfigOffsets.NECK);
+			case CHEST -> getOffset.apply(SkeletonConfigOffsets.CHEST);
+			case WAIST -> getOffset.apply(SkeletonConfigOffsets.WAIST);
+			case HIP -> getOffset.apply(SkeletonConfigOffsets.HIP);
+			case LEFT_HIP, RIGHT_HIP -> getOffset.apply(SkeletonConfigOffsets.HIPS_WIDTH)
 				/ 2f;
-			case LEFT_UPPER_LEG, RIGHT_UPPER_LEG -> skeletonConfig
-				.getOffset(SkeletonConfigOffsets.LEGS_LENGTH)
-				- skeletonConfig.getOffset(SkeletonConfigOffsets.KNEE_HEIGHT);
-			case LEFT_LOWER_LEG, RIGHT_LOWER_LEG -> skeletonConfig
-				.getOffset(SkeletonConfigOffsets.KNEE_HEIGHT);
+			case LEFT_UPPER_LEG, RIGHT_UPPER_LEG -> getOffset
+				.apply(SkeletonConfigOffsets.UPPER_LEG);
+			case LEFT_LOWER_LEG, RIGHT_LOWER_LEG -> getOffset
+				.apply(SkeletonConfigOffsets.LOWER_LEG);
 			default -> -1f;
 		};
 
@@ -144,13 +148,13 @@ public class AutoBone {
 		offsets.clear();
 
 		// Get current or default skeleton configs
-		Skeleton skeleton = getSkeleton();
-		SkeletonConfig skeletonConfig = skeleton != null
-			? skeleton.getSkeletonConfig()
-			: new SkeletonConfig(false);
+		HumanPoseManager skeleton = getHumanPoseManager();
+		Function<SkeletonConfigOffsets, Float> getOffset = skeleton != null
+			? skeleton::getOffset
+			: new SkeletonConfigManager(false)::getOffset;
 
 		for (BoneType bone : adjustOffsets) {
-			float offset = computeBoneOffset(bone, skeletonConfig);
+			float offset = computeBoneOffset(bone, getOffset);
 			if (offset > 0f) {
 				offsets.put(bone, offset);
 			}
@@ -158,7 +162,7 @@ public class AutoBone {
 	}
 
 	public Vector3f getBoneDirection(
-		HumanSkeleton skeleton,
+		HumanPoseManager skeleton,
 		BoneType node,
 		boolean rightSide,
 		Vector3f buffer
@@ -185,8 +189,8 @@ public class AutoBone {
 	}
 
 	public float getDotProductDiff(
-		HumanSkeleton skeleton1,
-		HumanSkeleton skeleton2,
+		HumanPoseManager skeleton1,
+		HumanPoseManager skeleton2,
 		BoneType node,
 		boolean rightSide,
 		Vector3f offset
@@ -204,20 +208,19 @@ public class AutoBone {
 	}
 
 	/**
-	 * A simple utility method to get the {@link Skeleton} from the
+	 * A simple utility method to get the {@link HumanSkeleton} from the
 	 * {@link VRServer}
 	 *
-	 * @return The {@link Skeleton} associated with the {@link VRServer}, or
-	 * null if there is none available
-	 * @see {@link VRServer}, {@link Skeleton}
+	 * @return The {@link HumanSkeleton} associated with the {@link VRServer},
+	 * or null if there is none available
+	 * @see {@link VRServer}, {@link HumanSkeleton}
 	 */
-	private Skeleton getSkeleton() {
-		HumanPoseProcessor humanPoseProcessor = server != null ? server.humanPoseProcessor : null;
-		return humanPoseProcessor != null ? humanPoseProcessor.getSkeleton() : null;
+	private HumanPoseManager getHumanPoseManager() {
+		return server != null ? server.humanPoseManager : null;
 	}
 
 	public void applyAndSaveConfig() {
-		if (!applyAndSaveConfig(getSkeleton())) {
+		if (!applyAndSaveConfig(getHumanPoseManager())) {
 			// Unable to apply to skeleton, save directly
 			// saveConfigs();
 		}
@@ -236,26 +239,23 @@ public class AutoBone {
 			if (headOffset != null) {
 				configConsumer.accept(SkeletonConfigOffsets.HEAD, headOffset);
 			}
-
 			Float neckOffset = offsets.get(BoneType.NECK);
 			if (neckOffset != null) {
 				configConsumer.accept(SkeletonConfigOffsets.NECK, neckOffset);
 			}
 
 			Float chestOffset = offsets.get(BoneType.CHEST);
-			Float hipOffset = offsets.get(BoneType.HIP);
 			Float waistOffset = offsets.get(BoneType.WAIST);
-			if (chestOffset != null && hipOffset != null && waistOffset != null) {
-				configConsumer
-					.accept(SkeletonConfigOffsets.TORSO, chestOffset + hipOffset + waistOffset);
-			}
-
+			Float hipOffset = offsets.get(BoneType.HIP);
 			if (chestOffset != null) {
-				configConsumer.accept(SkeletonConfigOffsets.CHEST, chestOffset);
+				configConsumer
+					.accept(SkeletonConfigOffsets.CHEST, chestOffset);
 			}
-
+			if (waistOffset != null) {
+				configConsumer.accept(SkeletonConfigOffsets.WAIST, waistOffset);
+			}
 			if (hipOffset != null) {
-				configConsumer.accept(SkeletonConfigOffsets.WAIST, hipOffset);
+				configConsumer.accept(SkeletonConfigOffsets.HIP, hipOffset);
 			}
 
 			Float hipWidthOffset = offsets.get(BoneType.LEFT_HIP);
@@ -275,14 +275,15 @@ public class AutoBone {
 			if (lowerLegOffset == null) {
 				lowerLegOffset = offsets.get(BoneType.RIGHT_LOWER_LEG);
 			}
-			if (upperLegOffset != null && lowerLegOffset != null) {
+
+			if (upperLegOffset != null) {
 				configConsumer
-					.accept(SkeletonConfigOffsets.LEGS_LENGTH, upperLegOffset + lowerLegOffset);
+					.accept(SkeletonConfigOffsets.UPPER_LEG, upperLegOffset);
+			}
+			if (lowerLegOffset != null) {
+				configConsumer.accept(SkeletonConfigOffsets.LOWER_LEG, lowerLegOffset);
 			}
 
-			if (lowerLegOffset != null) {
-				configConsumer.accept(SkeletonConfigOffsets.KNEE_HEIGHT, lowerLegOffset);
-			}
 			return true;
 		} catch (Exception e) {
 			return false;
@@ -308,28 +309,30 @@ public class AutoBone {
 		return applyConfig(skeletonConfig, offsets);
 	}
 
-	public boolean applyConfig(SkeletonConfig skeletonConfig, Map<BoneType, Float> offsets) {
-		if (skeletonConfig == null) {
+	public boolean applyConfig(
+		HumanPoseManager humanPoseManager,
+		Map<BoneType, Float> offsets
+	) {
+		if (humanPoseManager == null) {
 			return false;
 		}
 
-		return applyConfig(skeletonConfig::setOffset, offsets);
+		return applyConfig(humanPoseManager::setOffset, offsets);
 	}
 
-	public boolean applyConfig(SkeletonConfig skeletonConfig) {
-		return applyConfig(skeletonConfig, offsets);
+	public boolean applyConfig(HumanPoseManager humanPoseManager) {
+		return applyConfig(humanPoseManager, offsets);
 	}
 
-	public boolean applyAndSaveConfig(Skeleton skeleton) {
-		if (skeleton == null) {
+	public boolean applyAndSaveConfig(HumanPoseManager humanPoseManager) {
+		if (humanPoseManager == null) {
 			return false;
 		}
 
-		SkeletonConfig skeletonConfig = skeleton.getSkeletonConfig();
-		if (!applyConfig(skeletonConfig))
+		if (!applyConfig(humanPoseManager))
 			return false;
 
-		skeletonConfig.save();
+		humanPoseManager.saveConfig();
 		server.getConfigManager().saveConfig();
 
 		LogManager.info("[AutoBone] Configured skeleton bone lengths");
@@ -365,9 +368,9 @@ public class AutoBone {
 
 	public float sumSelectConfigs(
 		List<SkeletonConfigOffsets> selection,
-		SkeletonConfig config
+		HumanPoseManager humanPoseManager
 	) {
-		return sumSelectConfigs(selection, config::getOffset);
+		return sumSelectConfigs(selection, humanPoseManager::getOffset);
 	}
 
 	public float getLengthSum(Map<BoneType, Float> configs) {
@@ -399,11 +402,11 @@ public class AutoBone {
 	public float getTargetHeight(PoseFrames frames) {
 		float targetHeight;
 		// Get the current skeleton from the server
-		Skeleton skeleton = getSkeleton();
-		if (skeleton != null) {
+		HumanPoseManager humanPoseManager = getHumanPoseManager();
+		if (humanPoseManager != null) {
 			// If there is a skeleton available, calculate the target height
 			// from its configs
-			targetHeight = sumSelectConfigs(legacyHeightConfigs, skeleton.getSkeletonConfig());
+			targetHeight = sumSelectConfigs(legacyHeightConfigs, humanPoseManager);
 			LogManager
 				.warning(
 					"[AutoBone] Target height loaded from skeleton (Make sure you reset before running!): "
@@ -451,17 +454,20 @@ public class AutoBone {
 	) throws AutoBoneException {
 		final int frameCount = frames.getMaxFrameCount();
 
-		List<PoseFrameTracker> trackers = frames.getTrackers();
-		reloadConfigValues(trackers); // Reload configs and detect chest tracker
-										// from the first frame
+		final PoseFrames frames1 = new PoseFrames(frames);
+		final PoseFrames frames2 = new PoseFrames(frames);
 
-		final PoseFrameSkeleton skeleton1 = new PoseFrameSkeleton(
-			trackers,
-			null
+		List<PoseFrameTracker> trackers1 = frames1.getTrackers();
+		List<PoseFrameTracker> trackers2 = frames2.getTrackers();
+
+		// Reload configs and detect chest tracker from the first frame
+		reloadConfigValues(trackers1);
+
+		final HumanPoseManager skeleton1 = new HumanPoseManager(
+			trackers1
 		);
-		final PoseFrameSkeleton skeleton2 = new PoseFrameSkeleton(
-			trackers,
-			null
+		final HumanPoseManager skeleton2 = new HumanPoseManager(
+			trackers2
 		);
 
 		EnumMap<BoneType, Float> intermediateOffsets = new EnumMap<>(
@@ -528,8 +534,8 @@ public class AutoBone {
 				) {
 					int frameCursor2 = frameCursor + cursorOffset;
 
-					applyConfig(skeleton1.skeletonConfig);
-					skeleton2.skeletonConfig.setOffsets(skeleton1.skeletonConfig);
+					applyConfig(skeleton1);
+					applyConfig(skeleton2);
 
 					if (config.randomizeFrameOrder) {
 						trainingStep
@@ -541,11 +547,11 @@ public class AutoBone {
 						trainingStep.setCursors(frameCursor, frameCursor2);
 					}
 
-					skeleton1.setCursor(trainingStep.getCursor1());
-					skeleton2.setCursor(trainingStep.getCursor2());
+					frames1.setCursors(trainingStep.getCursor1());
+					frames2.setCursors(trainingStep.getCursor2());
 
-					skeleton1.updatePose();
-					skeleton2.updatePose();
+					skeleton1.update();
+					skeleton2.update();
 
 					float totalLength = getLengthSum(offsets);
 					float curHeight = sumSelectConfigs(heightOffsets, offsets);
@@ -561,7 +567,7 @@ public class AutoBone {
 							.warning(
 								"[AutoBone] Error value is invalid, resetting variables to recover"
 							);
-						reloadConfigValues(trackers);
+						reloadConfigValues(trackers1);
 
 						// Reset error sum values
 						errorStats.reset();
@@ -635,12 +641,12 @@ public class AutoBone {
 
 						// Apply new offset length
 						intermediateOffsets.put(entry.getKey(), newLength);
-						applyConfig(skeleton1.skeletonConfig, intermediateOffsets);
-						skeleton2.skeletonConfig.setOffsets(skeleton1.skeletonConfig);
+						applyConfig(skeleton1, intermediateOffsets);
+						applyConfig(skeleton2, intermediateOffsets);
 
 						// Update the skeleton poses for the new offset length
-						skeleton1.updatePose();
-						skeleton2.updatePose();
+						skeleton1.update();
+						skeleton2.update();
 
 						float newHeight = isHeightVar ? curHeight + curAdjustVal : curHeight;
 						trainingStep.setCurrentHeight(newHeight);
@@ -654,8 +660,8 @@ public class AutoBone {
 						// Reset the length to minimize bias in other variables,
 						// it's applied later
 						intermediateOffsets.put(entry.getKey(), originalLength);
-						applyConfig(skeleton1.skeletonConfig, intermediateOffsets);
-						skeleton2.skeletonConfig.setOffsets(skeleton1.skeletonConfig);
+						applyConfig(skeleton1, intermediateOffsets);
+						applyConfig(skeleton2, intermediateOffsets);
 					}
 
 					if (config.scaleEachStep) {

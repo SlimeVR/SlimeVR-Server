@@ -1,15 +1,15 @@
 package dev.slimevr.platform.linux;
 
-import com.google.protobuf.CodedOutputStream;
 import com.google.protobuf.InvalidProtocolBufferException;
 import dev.slimevr.Main;
 import dev.slimevr.VRServer;
 import dev.slimevr.bridge.BridgeThread;
 import dev.slimevr.bridge.ProtobufMessages;
 import dev.slimevr.platform.SteamVRBridge;
-import dev.slimevr.vr.trackers.*;
+import dev.slimevr.tracking.trackers.*;
 import io.eiren.util.logging.LogManager;
 
+import java.io.File;
 import java.io.IOException;
 import java.net.StandardProtocolFamily;
 import java.net.UnixDomainSocketAddress;
@@ -41,6 +41,12 @@ public class UnixSocketBridge extends SteamVRBridge implements AutoCloseable {
 		super(server, hmd, "Named socket thread", bridgeName, bridgeSettingsKey, shareableTrackers);
 		this.socketPath = socketPath;
 		this.socketAddress = UnixDomainSocketAddress.of(socketPath);
+
+		File socketFile = new File(socketPath);
+		if (socketFile.exists()) {
+			throw new RuntimeException(socketPath + " socket already exists.");
+		}
+		socketFile.deleteOnExit();
 	}
 
 	@Override
@@ -53,7 +59,7 @@ public class UnixSocketBridge extends SteamVRBridge implements AutoCloseable {
 					this.channel = server.accept();
 					if (this.channel == null)
 						continue;
-					Main.vrServer.queueTask(this::reconnected);
+					Main.getVrServer().queueTask(this::reconnected);
 					LogManager
 						.info(
 							"["
@@ -75,6 +81,7 @@ public class UnixSocketBridge extends SteamVRBridge implements AutoCloseable {
 							e.printStackTrace();
 						}
 					}
+					updateMessageQueue();
 				}
 			}
 		} catch (IOException e) {
@@ -86,13 +93,12 @@ public class UnixSocketBridge extends SteamVRBridge implements AutoCloseable {
 	@Override
 	@BridgeThread
 	protected boolean sendMessageReal(ProtobufMessages.ProtobufMessage message) {
-		LogManager.debug("Sending msg: " + message.toString());
 		if (this.channel != null) {
 			try {
 				int size = message.getSerializedSize() + 4;
 				this.src.putInt(size);
-				CodedOutputStream os = CodedOutputStream.newInstance(this.src);
-				message.writeTo(os);
+				byte[] serialized = message.toByteArray();
+				this.src.put(serialized);
 				this.src.flip();
 
 				while (this.src.hasRemaining()) {
@@ -112,7 +118,8 @@ public class UnixSocketBridge extends SteamVRBridge implements AutoCloseable {
 		int read = channel.read(dst);
 		boolean readAnything = false;
 		// if buffer has 4 bytes at least, we got the message size!
-		if (read > 0 && dst.remaining() >= 4) {
+		// processs all messages
+		while (dst.position() >= 4) {
 			int messageLength = dst.get(0) | dst.get(1) << 8 | dst.get(2) << 16 | dst.get(3) << 24;
 			if (messageLength > 1024) { // Overflow
 				LogManager
@@ -123,21 +130,24 @@ public class UnixSocketBridge extends SteamVRBridge implements AutoCloseable {
 							+ messageLength
 					);
 				socketError = true;
-			} else if (dst.remaining() >= messageLength) {
+			} else if (dst.position() >= messageLength) {
 				// Parse the message (this reads the array directly from the
 				// dst, so we need to move position ourselves)
 				try {
 					var message = parseMessage(dst.array(), 4, messageLength - 4);
-					LogManager.debug("Receiving msg " + message.toString());
 					this.messageReceived(message);
 				} catch (InvalidProtocolBufferException e) {
 					LogManager.severe("Failed to read protocol message", e);
 				}
+				int originalpos = dst.position();
 				dst.position(messageLength);
 				dst.compact();
+				// move position after compacting
+				dst.position(originalpos - messageLength);
 				readAnything = true;
 			}
-		} else if (read == -1) {
+		}
+		if (read == -1) {
 			LogManager
 				.info(
 					"["
@@ -172,7 +182,7 @@ public class UnixSocketBridge extends SteamVRBridge implements AutoCloseable {
 		this.channel = null;
 		this.socketError = false;
 		this.dst.clear();
-		Main.vrServer.queueTask(this::disconnected);
+		Main.getVrServer().queueTask(this::disconnected);
 	}
 
 	private ServerSocketChannel createSocket() throws IOException {
@@ -191,7 +201,7 @@ public class UnixSocketBridge extends SteamVRBridge implements AutoCloseable {
 
 	@Override
 	public boolean isConnected() {
-		return channel.isConnected();
+		return channel != null && channel.isConnected();
 	}
 }
 

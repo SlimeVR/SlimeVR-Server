@@ -31,7 +31,7 @@ public class DataFeedHandler extends ProtocolHandler<DataFeedMessageHeader> {
 			return;
 		int dataFeeds = req.dataFeedsLength();
 
-		conn.getContext().getDataFeedConfigList().clear();
+		conn.getContext().clearDataFeeds();
 		for (int i = 0; i < dataFeeds; i++) {
 			// Using the object api here because we need to copy from the buffer
 			// anyway so
@@ -89,12 +89,12 @@ public class DataFeedHandler extends ProtocolHandler<DataFeedMessageHeader> {
 					.collect(Collectors.toList())
 			);
 
-		var s = this.api.server.humanPoseProcessor.getSkeleton();
+		var h = this.api.server.humanPoseManager;
 		int bonesOffset = DataFeedBuilder
 			.createBonesData(
 				fbb,
 				config.getBoneMask(),
-				s.currentBoneInfo
+				h.getCurrentBoneInfo()
 			);
 
 		return DataFeedUpdate.createDataFeedUpdate(fbb, devicesOffset, trackersOffset, bonesOffset);

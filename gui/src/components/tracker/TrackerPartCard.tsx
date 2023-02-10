@@ -1,10 +1,10 @@
 import classNames from 'classnames';
 import { MouseEventHandler, useEffect, useMemo, useState } from 'react';
-import { useTranslation } from 'react-i18next';
 import { BodyPart, TrackerDataT } from 'solarxr-protocol';
 import { FlatDeviceTracker } from '../../hooks/app';
 import { useTracker } from '../../hooks/tracker';
 import { Typography } from '../commons/Typography';
+import { useLocalization } from '@fluent/react';
 
 function Tracker({
   tracker,
@@ -13,7 +13,7 @@ function Tracker({
   tracker: TrackerDataT;
   updateVelocity: (velocity: number) => void;
 }) {
-  const { t } = useTranslation();
+  const { l10n } = useLocalization();
   const { useVelocity } = useTracker(tracker);
 
   const velocity = useVelocity();
@@ -25,7 +25,7 @@ function Tracker({
   return (
     <Typography>
       {`${tracker.info?.customName || tracker.info?.displayName}` ||
-        t('tracker.part-card.unassigned')}
+        l10n.getString('tracker-part_card-unassigned')}
     </Typography>
   );
 }
@@ -43,7 +43,7 @@ export function TrackerPartCard({
   direction: 'left' | 'right';
   onClick?: MouseEventHandler<HTMLDivElement>;
 }) {
-  const { t } = useTranslation();
+  const { l10n } = useLocalization();
   const [velocities, setVelocities] = useState<number[]>([]);
 
   const updateVelocity = (vel: number) => {
@@ -55,7 +55,10 @@ export function TrackerPartCard({
   };
 
   const globalVelocity = useMemo(
-    () => velocities.reduce((curr, v) => curr + v, 0) / (td?.length || 1),
+    () =>
+      Math.floor(
+        velocities.reduce((curr, v) => curr + v, 0) / (td?.length || 1)
+      ),
     [velocities, td]
   );
 
@@ -76,11 +79,11 @@ export function TrackerPartCard({
         style={{
           boxShadow: `0px 0px ${globalVelocity * 3}px ${
             globalVelocity * 3
-          }px #183951`,
+          }px  #BB8AE5`,
         }}
       >
         <Typography color="secondary">
-          {t('body-part.' + BodyPart[role])}
+          {l10n.getString('body_part-' + BodyPart[role])}
         </Typography>
         {td?.map(({ tracker }, index) => (
           <Tracker
@@ -89,7 +92,11 @@ export function TrackerPartCard({
             updateVelocity={(vel) => updateVelocity(vel)}
           />
         ))}
-        {!td && <Typography>{t('tracker.part-card.unassigned')}</Typography>}
+        {!td && (
+          <Typography>
+            {l10n.getString('tracker-part_card-unassigned')}
+          </Typography>
+        )}
       </div>
     )) || <></>
   );

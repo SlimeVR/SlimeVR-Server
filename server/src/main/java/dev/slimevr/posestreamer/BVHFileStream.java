@@ -4,18 +4,18 @@ import com.jme3.math.FastMath;
 import com.jme3.math.Quaternion;
 import com.jme3.math.Transform;
 import com.jme3.math.Vector3f;
-import dev.slimevr.vr.processor.TransformNode;
-import dev.slimevr.vr.processor.skeleton.Skeleton;
+import dev.slimevr.tracking.processor.TransformNode;
+import dev.slimevr.tracking.processor.skeleton.HumanSkeleton;
 import org.apache.commons.lang3.StringUtils;
 
 import java.io.*;
 
 
 public class BVHFileStream extends PoseDataStream {
-
 	private static final int LONG_MAX_VALUE_DIGITS = Long.toString(Long.MAX_VALUE).length();
-	private static final float OFFSET_SCALE = 100f;
-	private static final float POSITION_SCALE = 100f;
+
+	private BVHSettings bvhSettings = BVHSettings.DEFAULT;
+
 	private final BufferedWriter writer;
 	private long frameCount = 0;
 	private long frameCountOffset;
@@ -23,7 +23,7 @@ public class BVHFileStream extends PoseDataStream {
 	private float[] angleBuf = new float[3];
 	private Quaternion rotBuf = new Quaternion();
 
-	private Skeleton wrappedSkeleton;
+	private HumanSkeleton wrappedSkeleton;
 	private TransformNodeWrapper rootNode;
 
 	public BVHFileStream(OutputStream outputStream) {
@@ -31,14 +31,37 @@ public class BVHFileStream extends PoseDataStream {
 		writer = new BufferedWriter(new OutputStreamWriter(outputStream), 4096);
 	}
 
+	public BVHFileStream(OutputStream outputStream, BVHSettings bvhSettings) {
+		this(outputStream);
+		this.bvhSettings = bvhSettings;
+	}
+
 	public BVHFileStream(File file) throws FileNotFoundException {
 		super(file);
 		writer = new BufferedWriter(new OutputStreamWriter(outputStream), 4096);
 	}
 
+	public BVHFileStream(File file, BVHSettings bvhSettings) throws FileNotFoundException {
+		this(file);
+		this.bvhSettings = bvhSettings;
+	}
+
 	public BVHFileStream(String file) throws FileNotFoundException {
 		super(file);
 		writer = new BufferedWriter(new OutputStreamWriter(outputStream), 4096);
+	}
+
+	public BVHFileStream(String file, BVHSettings bvhSettings) throws FileNotFoundException {
+		this(file);
+		this.bvhSettings = bvhSettings;
+	}
+
+	public BVHSettings getBvhSettings() {
+		return bvhSettings;
+	}
+
+	public void setBvhSettings(BVHSettings bvhSettings) {
+		this.bvhSettings = bvhSettings;
 	}
 
 	private String getBufferedFrameCount(long frameCount) {
@@ -48,7 +71,7 @@ public class BVHFileStream extends PoseDataStream {
 		return bufferCount > 0 ? frameString + StringUtils.repeat(' ', bufferCount) : frameString;
 	}
 
-	private TransformNodeWrapper wrapSkeletonIfNew(Skeleton skeleton) {
+	private TransformNodeWrapper wrapSkeletonIfNew(HumanSkeleton skeleton) {
 		TransformNodeWrapper wrapper = rootNode;
 
 		// If the wrapped skeleton is missing or the skeleton is updated
@@ -59,7 +82,7 @@ public class BVHFileStream extends PoseDataStream {
 		return wrapper;
 	}
 
-	private TransformNodeWrapper wrapSkeleton(Skeleton skeleton) {
+	private TransformNodeWrapper wrapSkeleton(HumanSkeleton skeleton) {
 		TransformNodeWrapper wrapper = wrapSkeletonNodes(skeleton.getRootNode());
 
 		wrappedSkeleton = skeleton;
@@ -72,13 +95,28 @@ public class BVHFileStream extends PoseDataStream {
 		return TransformNodeWrapper.wrapFullHierarchy(rootNode);
 	}
 
+	private boolean isEndNode(TransformNodeWrapper node) {
+		return node == null || (!bvhSettings.shouldWriteEndNodes() && node.children.isEmpty());
+	}
+
 	private void writeNodeHierarchy(TransformNodeWrapper node) throws IOException {
 		writeNodeHierarchy(node, 0);
 	}
 
 	private void writeNodeHierarchy(TransformNodeWrapper node, int level) throws IOException {
-		// Don't write end sites at populated nodes
-		if (node.children.isEmpty() && node.getParent().children.size() > 1) {
+		// Treat null as an end node, this allows for simply writing empty end
+		// nodes
+		boolean isEndNode = isEndNode(node);
+
+		// Don't write end sites at populated nodes, most BVH parsers don't like
+		// this
+		// Ex case caught: `joint{ joint{ end }, end, end }` outputs `joint{ end
+		// }` instead
+		// Ex case let through: `joint{ end }`
+		boolean isSingleChild = node == null
+			|| node.getParent() == null
+			|| node.getParent().children.size() <= 1;
+		if (isEndNode && !isSingleChild) {
 			return;
 		}
 
@@ -86,7 +124,7 @@ public class BVHFileStream extends PoseDataStream {
 		String nextIndentLevel = indentLevel + "\t";
 
 		// Handle ends
-		if (node.children.isEmpty()) {
+		if (isEndNode) {
 			writer.write(indentLevel + "End Site\n");
 		} else {
 			writer.write((level > 0 ? indentLevel + "JOINT " : "ROOT ") + node.getName() + "\n");
@@ -94,18 +132,19 @@ public class BVHFileStream extends PoseDataStream {
 		writer.write(indentLevel + "{\n");
 
 		// Ignore the root offset and original root offset
-		if (level > 0 && node.wrappedNode.getParent() != null) {
+		if (level > 0 && node != null && node.wrappedNode.getParent() != null) {
 			Vector3f offset = node.localTransform.getTranslation();
 			float reverseMultiplier = node.hasReversedHierarchy() ? -1 : 1;
+			float offsetScale = bvhSettings.getOffsetScale() * reverseMultiplier;
 			writer
 				.write(
 					nextIndentLevel
 						+ "OFFSET "
-						+ offset.getX() * OFFSET_SCALE * reverseMultiplier
+						+ offset.getX() * offsetScale
 						+ " "
-						+ offset.getY() * OFFSET_SCALE * reverseMultiplier
+						+ offset.getY() * offsetScale
 						+ " "
-						+ offset.getZ() * OFFSET_SCALE * reverseMultiplier
+						+ offset.getZ() * offsetScale
 						+ "\n"
 				);
 		} else {
@@ -113,7 +152,7 @@ public class BVHFileStream extends PoseDataStream {
 		}
 
 		// Handle ends
-		if (!node.children.isEmpty()) {
+		if (!isEndNode) {
 			// Only give position for root
 			if (level > 0) {
 				writer.write(nextIndentLevel + "CHANNELS 3 Zrotation Xrotation Yrotation\n");
@@ -125,8 +164,14 @@ public class BVHFileStream extends PoseDataStream {
 					);
 			}
 
-			for (TransformNodeWrapper childNode : node.children) {
-				writeNodeHierarchy(childNode, level + 1);
+			// If the node has children
+			if (!node.children.isEmpty()) {
+				for (TransformNodeWrapper childNode : node.children) {
+					writeNodeHierarchy(childNode, level + 1);
+				}
+			} else {
+				// Write an empty end node
+				writeNodeHierarchy(null, level + 1);
 			}
 		}
 
@@ -134,7 +179,7 @@ public class BVHFileStream extends PoseDataStream {
 	}
 
 	@Override
-	public void writeHeader(Skeleton skeleton, PoseStreamer streamer) throws IOException {
+	public void writeHeader(HumanSkeleton skeleton, PoseStreamer streamer) throws IOException {
 		if (skeleton == null) {
 			throw new NullPointerException("skeleton must not be null");
 		}
@@ -215,9 +260,6 @@ public class BVHFileStream extends PoseDataStream {
 			rotBuf = inverseRootRot.mult(rotBuf, rotBuf);
 		}
 
-		// Yaw (Z), roll (X), pitch (Y) (intrinsic)
-		// angleBuf = rotBuf.toAngles(angleBuf);
-
 		// Roll (X), pitch (Y), yaw (Z) (intrinsic)
 		angleBuf = quatToXyzAngles(rotBuf.normalizeLocal(), angleBuf);
 
@@ -235,7 +277,7 @@ public class BVHFileStream extends PoseDataStream {
 		if (!node.children.isEmpty()) {
 			Quaternion inverseRot = transform.getRotation().inverse();
 			for (TransformNodeWrapper childNode : node.children) {
-				if (childNode.children.isEmpty()) {
+				if (isEndNode(childNode)) {
 					// If it's an end node, skip
 					continue;
 				}
@@ -248,7 +290,7 @@ public class BVHFileStream extends PoseDataStream {
 	}
 
 	@Override
-	public void writeFrame(Skeleton skeleton) throws IOException {
+	public void writeFrame(HumanSkeleton skeleton) throws IOException {
 		if (skeleton == null) {
 			throw new NullPointerException("skeleton must not be null");
 		}
@@ -258,13 +300,14 @@ public class BVHFileStream extends PoseDataStream {
 		Vector3f rootPos = rootNode.worldTransform.getTranslation();
 
 		// Write root position
+		float positionScale = bvhSettings.getPositionScale();
 		writer
 			.write(
-				rootPos.getX() * POSITION_SCALE
+				rootPos.getX() * positionScale
 					+ " "
-					+ rootPos.getY() * POSITION_SCALE
+					+ rootPos.getY() * positionScale
 					+ " "
-					+ rootPos.getZ() * POSITION_SCALE
+					+ rootPos.getZ() * positionScale
 					+ " "
 			);
 		writeNodeHierarchyRotation(rootNode, null);
@@ -275,7 +318,7 @@ public class BVHFileStream extends PoseDataStream {
 	}
 
 	@Override
-	public void writeFooter(Skeleton skeleton) throws IOException {
+	public void writeFooter(HumanSkeleton skeleton) throws IOException {
 		// Write the final frame count for files
 		if (outputStream instanceof FileOutputStream fileOutputStream) {
 			// Flush before anything else

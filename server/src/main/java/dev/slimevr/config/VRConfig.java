@@ -6,21 +6,23 @@ import com.fasterxml.jackson.databind.ser.std.StdKeySerializers;
 import com.github.jonpeterson.jackson.module.versioning.JsonVersionedModel;
 import dev.slimevr.config.serializers.BridgeConfigMapDeserializer;
 import dev.slimevr.config.serializers.TrackerConfigMapDeserializer;
-import dev.slimevr.vr.trackers.Tracker;
-import dev.slimevr.vr.trackers.TrackerRole;
+import dev.slimevr.tracking.trackers.Tracker;
+import dev.slimevr.tracking.trackers.TrackerRole;
 
 import java.util.HashMap;
 import java.util.Map;
 
 
 @JsonVersionedModel(
-	currentVersion = "2", defaultDeserializeToVersion = "1", toCurrentConverterClass = CurrentVRConfigConverter.class
+	currentVersion = "5", defaultDeserializeToVersion = "5", toCurrentConverterClass = CurrentVRConfigConverter.class
 )
 public class VRConfig {
 
-	private final WindowConfig window = new WindowConfig();
+	private final ServerConfig server = new ServerConfig();
 
 	private final FiltersConfig filters = new FiltersConfig();
+
+	private final DriftCompensationConfig driftCompensation = new DriftCompensationConfig();
 
 	private final OSCConfig oscRouter = new OSCConfig();
 
@@ -73,12 +75,16 @@ public class VRConfig {
 	}
 
 
-	public WindowConfig getWindow() {
-		return window;
+	public ServerConfig getServer() {
+		return server;
 	}
 
 	public FiltersConfig getFilters() {
 		return filters;
+	}
+
+	public DriftCompensationConfig getDriftCompensation() {
+		return driftCompensation;
 	}
 
 	public OSCConfig getOscRouter() {
@@ -140,7 +146,7 @@ public class VRConfig {
 		tracker.writeConfig(tc);
 	}
 
-	public BridgeConfig getBrige(String bridgeKey) {
+	public BridgeConfig getBridge(String bridgeKey) {
 		BridgeConfig config = bridges.get(bridgeKey);
 		if (config == null) {
 			config = new BridgeConfig();

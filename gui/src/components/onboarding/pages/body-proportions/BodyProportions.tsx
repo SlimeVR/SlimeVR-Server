@@ -1,18 +1,18 @@
+import { useLocalization } from '@fluent/react';
 import classNames from 'classnames';
 import {
   MouseEventHandler,
   ReactNode,
   useEffect,
   useMemo,
-  useState
+  useState,
 } from 'react';
-import { useTranslation } from 'react-i18next';
 import {
   ChangeSkeletonConfigRequestT,
   RpcMessage,
   SkeletonBone,
   SkeletonConfigRequestT,
-  SkeletonConfigResponseT
+  SkeletonConfigResponseT,
 } from 'solarxr-protocol';
 import { useWebsocketAPI } from '../../../../hooks/websocket-api';
 import { Typography } from '../../../commons/Typography';
@@ -45,7 +45,7 @@ export function BodyProportions({
   precise: boolean;
   variant: 'onboarding' | 'alone';
 }) {
-  const { t } = useTranslation();
+  const { l10n } = useLocalization();
   const { useRPCPacket, sendRPCPacket } = useWebsocketAPI();
   const [config, setConfig] = useState<Omit<
     SkeletonConfigResponseT,
@@ -56,7 +56,7 @@ export function BodyProportions({
     return (
       config?.skeletonParts.map(({ bone, value }) => ({
         bone,
-        label: t('skeleton-bone.' + SkeletonBone[bone]),
+        label: l10n.getString('skeleton_bone-' + SkeletonBone[bone]),
         value,
       })) || []
     );
@@ -124,8 +124,8 @@ export function BodyProportions({
               )}
             >
               {!precise && (
-                <IncrementButton onClick={() => decrement(value, 10)}>
-                  -10
+                <IncrementButton onClick={() => decrement(value, 5)}>
+                  -5
                 </IncrementButton>
               )}
               <IncrementButton onClick={() => decrement(value, 1)}>
@@ -174,8 +174,8 @@ export function BodyProportions({
                 +1
               </IncrementButton>
               {!precise && (
-                <IncrementButton onClick={() => increment(value, 10)}>
-                  +10
+                <IncrementButton onClick={() => increment(value, 5)}>
+                  +5
                 </IncrementButton>
               )}
             </div>

@@ -17,6 +17,15 @@ cd SlimeVR-Server
 
 Now you can open the codebase in your favorite IDE or text editor.
 
+### Installing Java
+The codebase is required to build with Java version 17 or higher.
+
+```bash
+# Check java version
+java --version
+```
+
+
 ### Building the code
 The code is built with `gradle`, a cli tool that manages java projects and their
 dependencies. You can build the code with `./gradlew build` and run it with
@@ -64,11 +73,21 @@ Import the formatting settings defined in `spotless.xml`, like this:
 Eclipse will only do a subset of the checks in `spotless`, so you may still want to do
 `./gradlew spotlessApply` if you ever see an error from spotless.
 
+### Version bumping
+* Add new release inside ``<releases>`` in the ``dev.slimevr.SlimeVR.metainfo.xml`` file. (Example: ``<release version="a.b.c" date="YYYY-MM-DD"><url>https://github.com/SlimeVR/SlimeVR-Server/releases/tag/va.b.c</url></release>``)
+* Create the git tag instead of making it from releases, you can do it by just ``git tag VERSION``,
+  example ``git tag v0.5.0``
+* You need to push this change with ``git push origin VERSION`` or ``git push origin --tags``
+(will push all tags you made).
+
+We recommend committing first and then making the tag, that tag will point to the commit you are currently
+on.
+
 ## Code Licensing
-SlimeVR uses an MIT license, and some parts of the project use a dual MIT/Apache 2.0
-license. Be sure that any code that you reference, or dependencies you add, are
-compatible with these licenses. `GPL-v3` for example is not compatible because it
-requires any and all code that depends on it to *also* be licensed under `GPL-v3`.
+SlimeVR uses dual MIT and Apache-2.0 license. Be sure that any code that you reference,
+or dependencies you add, are compatible with these licenses. `GPL-v3` for example is
+not compatible because it requires any and all code that depends on it to *also* be
+licensed under `GPL-v3`.
 
 ## Discord
 We use discord *a lot* to coordinate and discuss development. Come join us at

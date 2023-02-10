@@ -3,10 +3,11 @@ import {
   createDir,
   readTextFile,
   renameFile,
-  writeFile
+  writeFile,
 } from '@tauri-apps/api/fs';
 
 import { createContext, useContext, useRef, useState } from 'react';
+import { DeveloperModeWidgetForm } from '../components/widgets/DeveloperModeWidget';
 
 export interface WindowConfig {
   width: number;
@@ -20,6 +21,7 @@ export interface Config {
   lang: string;
   doneOnboarding: boolean;
   watchNewDevices: boolean;
+  devSettings: DeveloperModeWidgetForm;
 }
 
 export interface ConfigContext {

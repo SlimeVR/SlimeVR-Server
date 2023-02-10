@@ -1,8 +1,8 @@
-import { useEffect, useMemo } from 'react';
+import { useLocalization } from '@fluent/react';
+import { useEffect, useMemo, useContext } from 'react';
 import { useForm } from 'react-hook-form';
-import { useTranslation } from 'react-i18next';
 import { useConfig } from '../../hooks/config';
-import i18next, { langs } from '../../i18n/config';
+import { langs, LangContext } from '../../i18n/config';
 import { Dropdown, DropdownDirection } from './Dropdown';
 
 export function LangSelector({
@@ -10,7 +10,8 @@ export function LangSelector({
 }: {
   direction?: DropdownDirection;
 }) {
-  const { t } = useTranslation();
+  const { changeLocales } = useContext(LangContext);
+  const { l10n } = useLocalization();
   const { config, setConfig } = useConfig();
   const { control, watch, handleSubmit } = useForm<{ lang: string }>({
     defaultValues: { lang: config?.lang || 'en' },
@@ -27,7 +28,7 @@ export function LangSelector({
   }, []);
 
   const onSubmit = (value: { lang: string }) => {
-    i18next.changeLanguage(value.lang);
+    changeLocales([value.lang]);
     setConfig({ lang: value.lang });
   };
 
@@ -35,7 +36,9 @@ export function LangSelector({
     <Dropdown
       control={control}
       name="lang"
-      placeholder={t('settings.interface.lang.placeholder')}
+      placeholder={l10n.getString(
+        'settings-general-interface-lang-placeholder'
+      )}
       items={languagesItems}
       direction={direction}
     ></Dropdown>

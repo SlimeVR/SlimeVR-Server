@@ -1,14 +1,14 @@
+import { Localized, useLocalization } from '@fluent/react';
 import { useEffect, useRef } from 'react';
 import { useForm } from 'react-hook-form';
-import { useTranslation } from 'react-i18next';
 import { useLocation } from 'react-router-dom';
 import {
   ChangeSettingsRequestT,
+  OSCRouterSettingsT,
+  OSCSettingsT,
   RpcMessage,
   SettingsRequestT,
   SettingsResponseT,
-  OSCRouterSettingsT,
-  OSCSettingsT,
 } from 'solarxr-protocol';
 import { useWebsocketAPI } from '../../../hooks/websocket-api';
 import { CheckBox } from '../../commons/Checkbox';
@@ -40,12 +40,12 @@ const defaultValues = {
 };
 
 export function OSCRouterSettings() {
-  const { t } = useTranslation();
+  const { l10n } = useLocalization();
   const { sendRPCPacket, useRPCPacket } = useWebsocketAPI();
   const { state } = useLocation();
   const pageRef = useRef<HTMLFormElement | null>(null);
 
-  const { reset, control, watch, handleSubmit, register } =
+  const { reset, control, watch, handleSubmit } =
     useForm<OSCRouterSettingsForm>({
       defaultValues: defaultValues,
     });
@@ -113,20 +113,26 @@ export function OSCRouterSettings() {
       <SettingsPageLayout icon={<RouterIcon></RouterIcon>} id="router">
         <>
           <Typography variant="main-title">
-            {t('settings.osc.router.title')}
+            {l10n.getString('settings-osc-router')}
           </Typography>
           <div className="flex flex-col pt-2 pb-4">
-            <Typography color="secondary">
-              {t('settings.osc.router.description.p0')}
-            </Typography>
-            <Typography color="secondary">
-              {t('settings.osc.router.description.p1')}
-            </Typography>
+            <>
+              {l10n
+                .getString('settings-osc-router-description')
+                .split('\n')
+                .map((line, i) => (
+                  <Typography color="secondary" key={i}>
+                    {line}
+                  </Typography>
+                ))}
+            </>
           </div>
-          <Typography bold>{t('settings.osc.router.enable.title')}</Typography>
+          <Typography bold>
+            {l10n.getString('settings-osc-router-enable')}
+          </Typography>
           <div className="flex flex-col pb-2">
             <Typography color="secondary">
-              {t('settings.osc.router.enable.description')}
+              {l10n.getString('settings-osc-router-enable-description')}
             </Typography>
           </div>
           <div className="grid grid-cols-2 gap-3 pb-5">
@@ -135,53 +141,75 @@ export function OSCRouterSettings() {
               outlined
               control={control}
               name="router.oscSettings.enabled"
-              label={t('settings.osc.router.enable.label')}
+              label={l10n.getString('settings-osc-router-enable-label')}
             />
           </div>
-          <Typography bold>{t('settings.osc.router.network.title')}</Typography>
+          <Typography bold>
+            {l10n.getString('settings-osc-router-network')}
+          </Typography>
           <div className="flex flex-col pb-2">
-            <Typography color="secondary">
-              {t('settings.osc.router.network.description.p0')}
-            </Typography>
-            <Typography color="secondary">
-              {t('settings.osc.router.network.description.p1')}
-            </Typography>
+            <>
+              {l10n
+                .getString('settings-osc-router-network-description')
+                .split('\n')
+                .map((line, i) => (
+                  <Typography color="secondary" key={i}>
+                    {line}
+                  </Typography>
+                ))}
+            </>
           </div>
           <div className="grid grid-cols-2 gap-3 pb-5">
-            <Input
-              type="number"
-              {...register('router.oscSettings.portIn', { required: true })}
-              placeholder={t('settings.osc.router.network.port-in.placeholder')}
-              label={t('settings.osc.router.network.port-in.label')}
-            ></Input>
-            <Input
-              type="number"
-              {...register('router.oscSettings.portOut', {
-                required: true,
-              })}
-              placeholder={t(
-                'settings.osc.router.network.port-out.placeholder'
-              )}
-              label={t('settings.osc.router.network.port-out.label')}
-            ></Input>
+            <Localized
+              id="settings-osc-router-network-port_in"
+              attrs={{ placeholder: true, label: true }}
+            >
+              <Input
+                type="number"
+                control={control}
+                rules={{ required: true }}
+                name="router.oscSettings.portIn"
+                placeholder="9002"
+                label="Port In"
+              ></Input>
+            </Localized>
+            <Localized
+              id="settings-osc-router-network-port_out"
+              attrs={{ placeholder: true, label: true }}
+            >
+              <Input
+                type="number"
+                control={control}
+                rules={{ required: true }}
+                name="router.oscSettings.portOut"
+                placeholder="9000"
+                label="Port Out"
+              ></Input>
+            </Localized>
           </div>
           <Typography bold>
-            {t('settings.osc.router.network.address.title')}
+            {l10n.getString('settings-osc-router-network-address')}
           </Typography>
           <div className="flex flex-col pb-2">
             <Typography color="secondary">
-              {t('settings.osc.router.network.address.description')}
+              {l10n.getString(
+                'settings-osc-router-network-address-description'
+              )}
             </Typography>
           </div>
           <div className="grid gap-3 pb-5">
             <Input
               type="text"
-              {...register('router.oscSettings.address', {
+              control={control}
+              rules={{
                 required: true,
                 pattern:
                   /^(?!0)(?!.*\.$)((1?\d?\d|25[0-5]|2[0-4]\d)(\.|$)){4}$/i,
-              })}
-              placeholder={t('settings.osc.router.network.address.placeholder')}
+              }}
+              name="router.oscSettings.address"
+              placeholder={l10n.getString(
+                'settings-osc-router-network-address-placeholder'
+              )}
             ></Input>
           </div>
         </>

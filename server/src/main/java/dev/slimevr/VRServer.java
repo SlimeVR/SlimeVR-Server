@@ -14,23 +14,26 @@ import dev.slimevr.platform.windows.WindowsNamedPipeBridge;
 import dev.slimevr.poserecorder.BVHRecorder;
 import dev.slimevr.protocol.ProtocolAPI;
 import dev.slimevr.serial.SerialHandler;
+import dev.slimevr.tracking.DeviceManager;
+import dev.slimevr.tracking.processor.HumanPoseManager;
+import dev.slimevr.tracking.processor.skeleton.HumanSkeleton;
+import dev.slimevr.tracking.trackers.HMDTracker;
+import dev.slimevr.tracking.trackers.IMUTracker;
+import dev.slimevr.tracking.trackers.ShareableTracker;
+import dev.slimevr.tracking.trackers.Tracker;
+import dev.slimevr.tracking.trackers.udp.TrackersUDPServer;
 import dev.slimevr.util.ann.VRServerThread;
-import dev.slimevr.vr.DeviceManager;
-import dev.slimevr.vr.processor.HumanPoseProcessor;
-import dev.slimevr.vr.processor.skeleton.Skeleton;
-import dev.slimevr.vr.trackers.HMDTracker;
-import dev.slimevr.vr.trackers.ShareableTracker;
-import dev.slimevr.vr.trackers.Tracker;
-import dev.slimevr.vr.trackers.udp.TrackersUDPServer;
 import dev.slimevr.websocketapi.WebSocketVRBridge;
 import io.eiren.util.OperatingSystem;
 import io.eiren.util.ann.ThreadSafe;
 import io.eiren.util.ann.ThreadSecure;
 import io.eiren.util.collections.FastList;
+import io.eiren.util.logging.LogManager;
 import solarxr_protocol.datatypes.TrackerIdT;
 
 import java.net.InetAddress;
 import java.net.UnknownHostException;
+import java.nio.file.Paths;
 import java.util.List;
 import java.util.Queue;
 import java.util.Timer;
@@ -41,7 +44,7 @@ import java.util.function.Consumer;
 
 public class VRServer extends Thread {
 
-	public final HumanPoseProcessor humanPoseProcessor;
+	public final HumanPoseManager humanPoseManager;
 	public final HMDTracker hmdTracker;
 	private final List<Tracker> trackers = new FastList<>();
 	private final TrackersUDPServer trackersServer;
@@ -84,14 +87,20 @@ public class VRServer extends Thread {
 		hmdTracker.position.set(0, 1.8f, 0); // Set starting position for easier
 												// debugging
 		// TODO Multiple processors
-		humanPoseProcessor = new HumanPoseProcessor(this);
-		shareTrackers = humanPoseProcessor.getComputedTrackers();
+		humanPoseManager = new HumanPoseManager(this);
+		shareTrackers = humanPoseManager.getShareableTracker();
 
 		// Start server for SlimeVR trackers
-		trackersServer = new TrackersUDPServer(6969, "Sensors UDP server", this::registerTracker);
+		int trackerPort = configManager.getVrConfig().getServer().getTrackerPort();
+		LogManager.info("Starting the tracker server on port " + trackerPort + "...");
+		trackersServer = new TrackersUDPServer(
+			trackerPort,
+			"Sensors UDP server",
+			this::registerTracker
+		);
 
 		// OpenVR bridge currently only supports Windows
-		SteamVRBridge driverBridge = null;
+		final SteamVRBridge driverBridge;
 		if (OperatingSystem.getCurrentPlatform() == OperatingSystem.WINDOWS) {
 
 			// Create named pipe bridge for SteamVR driver
@@ -119,17 +128,39 @@ public class VRServer extends Thread {
 			tasks.add(feederBridge::startBridge);
 			bridges.add(feederBridge);
 		} else if (OperatingSystem.getCurrentPlatform() == OperatingSystem.LINUX) {
-			driverBridge = new UnixSocketBridge(
-				this,
-				hmdTracker,
-				"steamvr",
-				"SteamVR Driver Bridge",
-				"/tmp/SlimeVRDriver",
-				shareTrackers
-			);
-			tasks.add(driverBridge::startBridge);
-			bridges.add(driverBridge);
+			SteamVRBridge linuxBridge = null;
+			try {
+				linuxBridge = new UnixSocketBridge(
+					this,
+					hmdTracker,
+					"steamvr",
+					"SteamVR Driver Bridge",
+					Paths.get(OperatingSystem.getTempDirectory(), "SlimeVRDriver").toString(),
+					shareTrackers
+				);
+			} catch (Exception ex) {
+				LogManager.severe("Failed to initiate Unix socket, disabling driver bridge...", ex);
+			}
+			driverBridge = linuxBridge;
+			if (driverBridge != null) {
+				tasks.add(driverBridge::startBridge);
+				bridges.add(driverBridge);
+			}
+		} else {
+			driverBridge = null;
 		}
+
+		// Add shutdown hook
+		Runtime.getRuntime().addShutdownHook(new Thread(() -> {
+			try {
+				if (driverBridge instanceof UnixSocketBridge linuxBridge) {
+					// Auto-close Linux SteamVR bridge on JVM shutdown
+					linuxBridge.close();
+				}
+			} catch (Exception e) {
+				throw new RuntimeException(e);
+			}
+		}));
 
 		// Create WebSocket server
 		WebSocketVRBridge wsBridge = new WebSocketVRBridge(hmdTracker, shareTrackers, this);
@@ -149,7 +180,7 @@ public class VRServer extends Thread {
 		vrcOSCHandler = new VRCOSCHandler(
 			this,
 			hmdTracker,
-			humanPoseProcessor,
+			humanPoseManager,
 			driverBridge,
 			getConfigManager().getVrConfig().getVrcOSC(),
 			shareTrackers
@@ -205,15 +236,15 @@ public class VRServer extends Thread {
 	@ThreadSafe
 	public void trackerUpdated(Tracker tracker) {
 		queueTask(() -> {
-			humanPoseProcessor.trackerUpdated(tracker);
+			humanPoseManager.trackerUpdated(tracker);
 			this.getConfigManager().getVrConfig().writeTrackerConfig(tracker);
 			this.getConfigManager().saveConfig();
 		});
 	}
 
 	@ThreadSafe
-	public void addSkeletonUpdatedCallback(Consumer<Skeleton> consumer) {
-		queueTask(() -> humanPoseProcessor.addSkeletonUpdatedCallback(consumer));
+	public void addSkeletonUpdatedCallback(Consumer<HumanSkeleton> consumer) {
+		queueTask(() -> humanPoseManager.addSkeletonUpdatedCallback(consumer));
 	}
 
 	@Override
@@ -238,7 +269,7 @@ public class VRServer extends Thread {
 			for (Tracker tracker : trackers) {
 				tracker.tick();
 			}
-			humanPoseProcessor.update();
+			humanPoseManager.update();
 			for (Bridge bridge : bridges) {
 				bridge.dataWrite();
 			}
@@ -257,7 +288,7 @@ public class VRServer extends Thread {
 
 	@VRServerThread
 	private void trackerAdded(Tracker tracker) {
-		humanPoseProcessor.trackerAdded(tracker);
+		humanPoseManager.trackerAdded(tracker);
 	}
 
 	@ThreadSecure
@@ -273,15 +304,15 @@ public class VRServer extends Thread {
 	}
 
 	public void resetTrackers() {
-		queueTask(humanPoseProcessor::resetTrackers);
+		queueTask(humanPoseManager::resetTrackersFull);
 	}
 
 	public void resetTrackersYaw() {
-		queueTask(humanPoseProcessor::resetTrackersYaw);
+		queueTask(humanPoseManager::resetTrackersYaw);
 	}
 
 	public void resetTrackersMounting() {
-		queueTask(humanPoseProcessor::resetTrackersMounting);
+		queueTask(humanPoseManager::resetTrackersMounting);
 	}
 
 	public void scheduleResetTrackers(long delay) {
@@ -301,32 +332,32 @@ public class VRServer extends Thread {
 
 	class resetTask extends TimerTask {
 		public void run() {
-			queueTask(humanPoseProcessor::resetTrackers);
+			queueTask(humanPoseManager::resetTrackersFull);
 		}
 	}
 
 	class yawResetTask extends TimerTask {
 		public void run() {
-			queueTask(humanPoseProcessor::resetTrackersYaw);
+			queueTask(humanPoseManager::resetTrackersYaw);
 		}
 	}
 
 	class resetMountingTask extends TimerTask {
 		public void run() {
-			queueTask(humanPoseProcessor::resetTrackersMounting);
+			queueTask(humanPoseManager::resetTrackersMounting);
 		}
 	}
 
 	public void setLegTweaksEnabled(boolean value) {
-		queueTask(() -> humanPoseProcessor.setLegTweaksEnabled(value));
+		queueTask(() -> humanPoseManager.setLegTweaksEnabled(value));
 	}
 
 	public void setSkatingReductionEnabled(boolean value) {
-		queueTask(() -> humanPoseProcessor.setSkatingCorrectionEnabled(value));
+		queueTask(() -> humanPoseManager.setSkatingCorrectionEnabled(value));
 	}
 
 	public void setFloorClipEnabled(boolean value) {
-		queueTask(() -> humanPoseProcessor.setFloorClipEnabled(value));
+		queueTask(() -> humanPoseManager.setFloorClipEnabled(value));
 	}
 
 	public int getTrackersCount() {
@@ -401,4 +432,12 @@ public class VRServer extends Thread {
 		return fpsTimer;
 	}
 
+	public void clearTrackersDriftCompensation() {
+		for (Tracker t : getAllTrackers()) {
+			Tracker tracker = t.get();
+			if (tracker instanceof IMUTracker imuTracker) {
+				imuTracker.clearDriftCompensation();
+			}
+		}
+	}
 }

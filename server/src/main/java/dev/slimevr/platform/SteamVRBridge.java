@@ -6,8 +6,8 @@ import dev.slimevr.bridge.ProtobufBridge;
 import dev.slimevr.bridge.ProtobufMessages;
 import dev.slimevr.config.BridgeConfig;
 import dev.slimevr.util.ann.VRServerThread;
-import dev.slimevr.vr.Device;
-import dev.slimevr.vr.trackers.*;
+import dev.slimevr.tracking.Device;
+import dev.slimevr.tracking.trackers.*;
 
 import java.util.List;
 
@@ -32,7 +32,7 @@ public abstract class SteamVRBridge extends ProtobufBridge<VRTracker> implements
 		this.bridgeSettingsKey = bridgeSettingsKey;
 		this.runnerThread = new Thread(this, threadName);
 		this.shareableTrackers = shareableTrackers;
-		this.config = server.getConfigManager().getVrConfig().getBrige(bridgeSettingsKey);
+		this.config = server.getConfigManager().getVrConfig().getBridge(bridgeSettingsKey);
 	}
 
 	@Override
@@ -76,7 +76,7 @@ public abstract class SteamVRBridge extends ProtobufBridge<VRTracker> implements
 					removeSharedTracker(tr);
 				}
 				config.setBridgeTrackerRole(role, share);
-				Main.vrServer.getConfigManager().saveConfig();
+				Main.getVrServer().getConfigManager().saveConfig();
 			}
 		}
 	}
@@ -85,7 +85,8 @@ public abstract class SteamVRBridge extends ProtobufBridge<VRTracker> implements
 	@VRServerThread
 	protected VRTracker createNewTracker(ProtobufMessages.TrackerAdded trackerAdded) {
 		// Todo: We need the manufacturer
-		Device device = Main.vrServer
+		Device device = Main
+			.getVrServer()
 			.getDeviceManager()
 			.createDevice(
 				trackerAdded.getTrackerName(),
@@ -102,8 +103,8 @@ public abstract class SteamVRBridge extends ProtobufBridge<VRTracker> implements
 			device
 		);
 
-		device.getTrackers().add(tracker);
-		Main.vrServer.getDeviceManager().addDevice(device);
+		device.getTrackers().put(0, tracker);
+		Main.getVrServer().getDeviceManager().addDevice(device);
 		TrackerRole role = TrackerRole.getById(trackerAdded.getTrackerRole());
 		if (role != null) {
 			tracker.setBodyPosition(TrackerPosition.getByTrackerRole(role).orElse(null));

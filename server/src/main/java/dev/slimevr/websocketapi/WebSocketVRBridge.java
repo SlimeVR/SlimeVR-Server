@@ -7,7 +7,7 @@ import com.jme3.math.Vector3f;
 import dev.slimevr.Main;
 import dev.slimevr.VRServer;
 import dev.slimevr.bridge.Bridge;
-import dev.slimevr.vr.trackers.*;
+import dev.slimevr.tracking.trackers.*;
 import io.eiren.util.collections.FastList;
 import io.eiren.util.logging.LogManager;
 import org.java_websocket.WebSocket;
@@ -170,8 +170,8 @@ public class WebSocketVRBridge extends WebsocketAPI implements Bridge {
 
 	private void parseAction(ObjectNode json, WebSocket conn) {
 		switch (json.get("name").asText()) {
-			case "calibrate" -> Main.vrServer.resetTrackersYaw();
-			case "full_calibrate" -> Main.vrServer.resetTrackers();
+			case "calibrate" -> Main.getVrServer().resetTrackersYaw();
+			case "full_calibrate" -> Main.getVrServer().resetTrackers();
 		}
 	}
 

@@ -1,7 +1,12 @@
 import { appWindow } from '@tauri-apps/api/window';
-import { ReactNode } from 'react';
-import { NavLink } from 'react-router-dom';
-import packagejson from '../../package.json';
+import { ReactNode, useEffect, useLayoutEffect, useState } from 'react';
+import { NavLink, useMatch } from 'react-router-dom';
+import {
+  RpcMessage,
+  ServerInfosRequestT,
+  ServerInfosResponseT,
+} from 'solarxr-protocol';
+import { useWebsocketAPI } from '../hooks/websocket-api';
 import { CloseIcon } from './commons/icon/CloseIcon';
 import { MaximiseIcon } from './commons/icon/MaximiseIcon';
 import { MinimiseIcon } from './commons/icon/MinimiseIcon';
@@ -15,13 +20,30 @@ export function TopBar({
   children?: ReactNode;
   progress?: number;
 }) {
+  const { useRPCPacket, sendRPCPacket } = useWebsocketAPI();
+  const [localIp, setLocalIp] = useState<string | null>(null);
+  const doesMatchSettings = useMatch({
+    path: '/settings/*',
+  });
+
+  useEffect(() => {
+    sendRPCPacket(RpcMessage.ServerInfosRequest, new ServerInfosRequestT());
+  }, []);
+
+  useRPCPacket(
+    RpcMessage.ServerInfosResponse,
+    ({ localIp }: ServerInfosResponseT) => {
+      if (localIp) setLocalIp(localIp.toString());
+    }
+  );
+
   return (
     <div data-tauri-drag-region className="flex gap-2 h-[38px] z-50">
       <div
         className="flex px-2 pb-1 mt-3 justify-around z-50"
         data-tauri-drag-region
       >
-        <div className="flex gap-1" data-tauri-drag-region>
+        <div className="flex gap-2" data-tauri-drag-region>
           <NavLink
             to="/"
             className="flex justify-around flex-col select-all"
@@ -32,12 +54,15 @@ export function TopBar({
           <div className="flex justify-around flex-col" data-tauri-drag-region>
             <Typography>SlimeVR</Typography>
           </div>
-          <div
-            className="mx-2 flex justify-around flex-col text-standard-bold text-status-success bg-status-success bg-opacity-20 rounded-lg px-3"
-            data-tauri-drag-region
-          >
-            v{packagejson.version}
+          <div className="flex justify-around flex-col text-standard-bold text-status-success bg-status-success bg-opacity-20 rounded-lg px-3 select-text">
+            {(__VERSION_TAG__ || __COMMIT_HASH__) +
+              (__GIT_CLEAN__ ? '' : '-dirty')}
           </div>
+          {doesMatchSettings && (
+            <div className="flex justify-around flex-col text-standard-bold text-status-special bg-status-special bg-opacity-20 rounded-lg px-3 select-text">
+              {localIp || 'unknown local ip'}
+            </div>
+          )}
         </div>
       </div>
       <div

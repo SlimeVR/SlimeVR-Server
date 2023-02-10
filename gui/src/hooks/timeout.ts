@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import { useEffect } from 'react';
 
 export function useTimeout(fn: () => void, delay: number) {
   useEffect(() => {
@@ -14,11 +14,7 @@ export function useInterval(fn: () => void, delay: number) {
   });
 }
 
-export const useDebouncedEffect = (
-  effect: () => void,
-  deps: any[],
-  delay: number
-) => {
+export const useDebouncedEffect = (effect: () => void, deps: any[], delay: number) => {
   useEffect(() => {
     const handler = setTimeout(() => effect(), delay);
 

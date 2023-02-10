@@ -1,9 +1,10 @@
+import { useLocalization } from '@fluent/react';
 import { useEffect, useRef } from 'react';
 import { DefaultValues, useForm } from 'react-hook-form';
-import { useTranslation } from 'react-i18next';
 import { useLocation } from 'react-router-dom';
 import {
   ChangeSettingsRequestT,
+  DriftCompensationSettingsT,
   FilteringSettingsT,
   FilteringType,
   LegTweaksSettingsT,
@@ -40,6 +41,11 @@ interface SettingsForm {
     type: number;
     amount: number;
   };
+  driftCompensation: {
+    enabled: boolean;
+    amount: number;
+    maxResets: number;
+  };
   toggles: {
     extendedSpine: boolean;
     extendedPelvis: boolean;
@@ -47,10 +53,18 @@ interface SettingsForm {
     forceArmsFromHmd: boolean;
     floorClip: boolean;
     skatingCorrection: boolean;
+    viveEmulation: boolean;
   };
   tapDetection: {
+    tapMountingResetEnabled: boolean;
+    tapQuickResetEnabled: boolean;
     tapResetEnabled: boolean;
+    tapQuickResetDelay: number;
     tapResetDelay: number;
+    tapMountingResetDelay: number;
+    tapQuickResetTaps: number;
+    tapResetTaps: number;
+    tapMountingResetTaps: number;
   };
   legTweaks: {
     correctionStrength: number;
@@ -77,15 +91,31 @@ const defaultValues = {
     forceArmsFromHmd: false,
     floorClip: false,
     skatingCorrection: false,
+    viveEmulation: false,
   },
   filtering: { amount: 0.1, type: FilteringType.NONE },
-  tapDetection: { tapResetEnabled: false, tapResetDelay: 0.2 },
+  driftCompensation: {
+    enabled: false,
+    amount: 0.1,
+    maxResets: 1,
+  },
+  tapDetection: {
+    tapMountingResetEnabled: false,
+    tapQuickResetEnabled: false,
+    tapResetEnabled: false,
+    tapQuickResetDelay: 0.2,
+    tapResetDelay: 1.0,
+    tapMountingResetDelay: 1.0,
+    tapQuickResetTaps: 2,
+    tapResetTaps: 3,
+    tapMountingResetTaps: 3,
+  },
   legTweaks: { correctionStrength: 0.3 },
   interface: { devmode: false, watchNewDevices: true },
 };
 
 export function GeneralSettings() {
-  const { t } = useTranslation();
+  const { l10n } = useLocalization();
   const { config, setConfig } = useConfig();
   const { state } = useLocation();
   const pageRef = useRef<HTMLFormElement | null>(null);
@@ -118,6 +148,7 @@ export function GeneralSettings() {
     toggles.extendedPelvis = values.toggles.extendedPelvis;
     toggles.extendedSpine = values.toggles.extendedSpine;
     toggles.forceArmsFromHmd = values.toggles.forceArmsFromHmd;
+    toggles.viveEmulation = values.toggles.viveEmulation;
     legTweaks.correctionStrength = values.legTweaks.correctionStrength;
 
     modelSettings.toggles = toggles;
@@ -125,14 +156,31 @@ export function GeneralSettings() {
     settings.modelSettings = modelSettings;
 
     const tapDetection = new TapDetectionSettingsT();
-    tapDetection.tapResetEnabled = values.tapDetection.tapResetEnabled;
     tapDetection.tapResetDelay = values.tapDetection.tapResetDelay;
+    tapDetection.tapResetEnabled = values.tapDetection.tapResetEnabled;
+    tapDetection.tapResetTaps = values.tapDetection.tapResetTaps;
+    tapDetection.tapQuickResetDelay = values.tapDetection.tapQuickResetDelay;
+    tapDetection.tapQuickResetEnabled =
+      values.tapDetection.tapQuickResetEnabled;
+    tapDetection.tapQuickResetTaps = values.tapDetection.tapQuickResetTaps;
+    tapDetection.tapMountingResetEnabled =
+      values.tapDetection.tapMountingResetEnabled;
+    tapDetection.tapMountingResetDelay =
+      values.tapDetection.tapMountingResetDelay;
+    tapDetection.tapMountingResetTaps =
+      values.tapDetection.tapMountingResetTaps;
     settings.tapDetectionSettings = tapDetection;
 
     const filtering = new FilteringSettingsT();
     filtering.type = values.filtering.type;
     filtering.amount = values.filtering.amount;
     settings.filtering = filtering;
+
+    const driftCompensation = new DriftCompensationSettingsT();
+    driftCompensation.enabled = values.driftCompensation.enabled;
+    driftCompensation.amount = values.driftCompensation.amount;
+    driftCompensation.maxResets = values.driftCompensation.maxResets;
+    settings.driftCompensation = driftCompensation;
 
     sendRPCPacket(RpcMessage.ChangeSettingsRequest, settings);
 
@@ -163,6 +211,10 @@ export function GeneralSettings() {
       formData.filtering = settings.filtering;
     }
 
+    if (settings.driftCompensation) {
+      formData.driftCompensation = settings.driftCompensation;
+    }
+
     if (settings.steamVrTrackers) {
       formData.trackers = settings.steamVrTrackers;
     }
@@ -182,12 +234,33 @@ export function GeneralSettings() {
 
     if (settings.tapDetectionSettings) {
       formData.tapDetection = {
-        tapResetDelay:
-          settings.tapDetectionSettings.tapResetDelay ||
-          defaultValues.tapDetection.tapResetDelay,
+        tapQuickResetEnabled:
+          settings.tapDetectionSettings.tapQuickResetEnabled ||
+          defaultValues.tapDetection.tapQuickResetEnabled,
         tapResetEnabled:
           settings.tapDetectionSettings.tapResetEnabled ||
           defaultValues.tapDetection.tapResetEnabled,
+        tapMountingResetEnabled:
+          settings.tapDetectionSettings.tapMountingResetEnabled ||
+          defaultValues.tapDetection.tapMountingResetEnabled,
+        tapQuickResetDelay:
+          settings.tapDetectionSettings.tapQuickResetDelay ||
+          defaultValues.tapDetection.tapQuickResetDelay,
+        tapResetDelay:
+          settings.tapDetectionSettings.tapResetDelay ||
+          defaultValues.tapDetection.tapResetDelay,
+        tapMountingResetDelay:
+          settings.tapDetectionSettings.tapMountingResetDelay ||
+          defaultValues.tapDetection.tapMountingResetDelay,
+        tapQuickResetTaps:
+          settings.tapDetectionSettings.tapQuickResetTaps ||
+          defaultValues.tapDetection.tapQuickResetTaps,
+        tapResetTaps:
+          settings.tapDetectionSettings.tapResetTaps ||
+          defaultValues.tapDetection.tapResetTaps,
+        tapMountingResetTaps:
+          settings.tapDetectionSettings.tapMountingResetTaps ||
+          defaultValues.tapDetection.tapMountingResetTaps,
       };
     }
 
@@ -219,16 +292,20 @@ export function GeneralSettings() {
       <SettingsPageLayout icon={<SteamIcon></SteamIcon>} id="steamvr">
         <>
           <Typography variant="main-title">
-            {t('settings.general.steamvr.title')}
+            {l10n.getString('settings-general-steamvr')}
           </Typography>
-          <Typography bold>{t('settings.general.steamvr.subtitle')}</Typography>
+          <Typography bold>
+            {l10n.getString('settings-general-steamvr-subtitle')}
+          </Typography>
           <div className="flex flex-col py-2">
-            <Typography color="secondary">
-              {t('settings.general.steamvr.description.p0')}
-            </Typography>
-            <Typography color="secondary">
-              {t('settings.general.steamvr.description.p1')}
-            </Typography>
+            {l10n
+              .getString('settings-general-steamvr-description')
+              .split('\n')
+              .map((line, i) => (
+                <Typography color="secondary" key={i}>
+                  {line}
+                </Typography>
+              ))}
           </div>
           <div className="grid grid-cols-2 gap-3 pt-3">
             <CheckBox
@@ -236,42 +313,42 @@ export function GeneralSettings() {
               outlined
               control={control}
               name="trackers.chest"
-              label={t('settings.general.steamvr.trackers.chest')}
+              label={l10n.getString('settings-general-steamvr-trackers-chest')}
             />
             <CheckBox
               variant="toggle"
               outlined
               control={control}
               name="trackers.waist"
-              label={t('settings.general.steamvr.trackers.waist')}
+              label={l10n.getString('settings-general-steamvr-trackers-waist')}
             />
             <CheckBox
               variant="toggle"
               outlined
               control={control}
               name="trackers.knees"
-              label={t('settings.general.steamvr.trackers.knees')}
+              label={l10n.getString('settings-general-steamvr-trackers-knees')}
             />
             <CheckBox
               variant="toggle"
               outlined
               control={control}
               name="trackers.feet"
-              label={t('settings.general.steamvr.trackers.feet')}
+              label={l10n.getString('settings-general-steamvr-trackers-feet')}
             />
             <CheckBox
               variant="toggle"
               outlined
               control={control}
               name="trackers.elbows"
-              label={t('settings.general.steamvr.trackers.elbows')}
+              label={l10n.getString('settings-general-steamvr-trackers-elbows')}
             />
             <CheckBox
               variant="toggle"
               outlined
               control={control}
               name="trackers.hands"
-              label={t('settings.general.steamvr.trackers.hands')}
+              label={l10n.getString('settings-general-steamvr-trackers-hands')}
             />
           </div>
         </>
@@ -279,53 +356,59 @@ export function GeneralSettings() {
       <SettingsPageLayout icon={<WrenchIcon></WrenchIcon>} id="mechanics">
         <>
           <Typography variant="main-title">
-            {t('settings.general.tracker-mechanics.title')}
+            {l10n.getString('settings-general-tracker_mechanics')}
           </Typography>
           <Typography bold>
-            {t('settings.general.tracker-mechanics.subtitle')}
+            {l10n.getString('settings-general-tracker_mechanics-filtering')}
           </Typography>
           <div className="flex flex-col pt-2 pb-4">
-            <Typography color="secondary">
-              {t('settings.general.tracker-mechanics.description.p0')}
-            </Typography>
-            <Typography color="secondary">
-              {t('settings.general.tracker-mechanics.description.p1')}
-            </Typography>
+            {l10n
+              .getString(
+                'settings-general-tracker_mechanics-filtering-description'
+              )
+              .split('\n')
+              .map((line, i) => (
+                <Typography color="secondary" key={i}>
+                  {line}
+                </Typography>
+              ))}
           </div>
           <Typography>
-            {t('settings.general.tracker-mechanics.filtering-type.title')}
+            {l10n.getString(
+              'settings-general-tracker_mechanics-filtering-type'
+            )}
           </Typography>
           <div className="flex md:flex-row flex-col gap-3 pt-2">
             <Radio
               control={control}
               name="filtering.type"
-              label={t(
-                'settings.general.tracker-mechanics.filtering-type.none.label'
+              label={l10n.getString(
+                'settings-general-tracker_mechanics-filtering-type-none'
               )}
-              desciption={t(
-                'settings.general.tracker-mechanics.filtering-type.none.description'
+              desciption={l10n.getString(
+                'settings-general-tracker_mechanics-filtering-type-none-description'
               )}
               value={FilteringType.NONE}
             ></Radio>
             <Radio
               control={control}
               name="filtering.type"
-              label={t(
-                'settings.general.tracker-mechanics.filtering-type.smoothing.label'
+              label={l10n.getString(
+                'settings-general-tracker_mechanics-filtering-type-smoothing'
               )}
-              desciption={t(
-                'settings.general.tracker-mechanics.filtering-type.smoothing.description'
+              desciption={l10n.getString(
+                'settings-general-tracker_mechanics-filtering-type-smoothing-description'
               )}
               value={FilteringType.SMOOTHING}
             ></Radio>
             <Radio
               control={control}
               name="filtering.type"
-              label={t(
-                'settings.general.tracker-mechanics.filtering-type.prediction.label'
+              label={l10n.getString(
+                'settings-general-tracker_mechanics-filtering-type-prediction'
               )}
-              desciption={t(
-                'settings.general.tracker-mechanics.filtering-type.prediction.description'
+              desciption={l10n.getString(
+                'settings-general-tracker_mechanics-filtering-type-prediction-description'
               )}
               value={FilteringType.PREDICTION}
             ></Radio>
@@ -334,11 +417,65 @@ export function GeneralSettings() {
             <NumberSelector
               control={control}
               name="filtering.amount"
-              label={t('settings.general.tracker-mechanics.amount.label')}
+              label={l10n.getString(
+                'settings-general-tracker_mechanics-filtering-amount'
+              )}
               valueLabelFormat={(value) => `${Math.round(value * 100)} %`}
               min={0.1}
               max={1.0}
               step={0.1}
+            />
+          </div>
+          <div className="flex flex-col pt-4 pb-4"></div>
+          <Typography bold>
+            {l10n.getString(
+              'settings-general-tracker_mechanics-drift_compensation'
+            )}
+          </Typography>
+          <div className="flex flex-col pt-2 pb-4">
+            {l10n
+              .getString(
+                'settings-general-tracker_mechanics-drift_compensation-description'
+              )
+              .split('\n')
+              .map((line, i) => (
+                <Typography color="secondary" key={i}>
+                  {line}
+                </Typography>
+              ))}
+          </div>
+          <CheckBox
+            variant="toggle"
+            outlined
+            control={control}
+            name="driftCompensation.enabled"
+            label={l10n.getString(
+              'settings-general-tracker_mechanics-drift_compensation-enabled-label'
+            )}
+          />
+          <div className="flex gap-5 pt-5 md:flex-row flex-col">
+            <NumberSelector
+              control={control}
+              name="driftCompensation.amount"
+              label={l10n.getString(
+                'settings-general-tracker_mechanics-drift_compensation-amount-label'
+              )}
+              valueLabelFormat={(value) => `${Math.round(value * 100)} %`}
+              min={0.1}
+              max={1.0}
+              step={0.1}
+            />
+          </div>
+          <div className="flex gap-5 pt-5 md:flex-row flex-col">
+            <NumberSelector
+              control={control}
+              name="driftCompensation.maxResets"
+              label={l10n.getString(
+                'settings-general-tracker_mechanics-drift_compensation-max_resets-label'
+              )}
+              min={1}
+              max={25}
+              step={1}
             />
           </div>
         </>
@@ -346,14 +483,16 @@ export function GeneralSettings() {
       <SettingsPageLayout icon={<WrenchIcon></WrenchIcon>} id="fksettings">
         <>
           <Typography variant="main-title">
-            {t('settings.general.fk-settings.title')}
+            {l10n.getString('settings-general-fk_settings')}
           </Typography>
           <Typography bold>
-            {t('settings.general.fk-settings.leg-tweak.title')}
+            {l10n.getString('settings-general-fk_settings-leg_tweak')}
           </Typography>
           <div className="flex flex-col pt-2 pb-4">
             <Typography color="secondary">
-              {t('settings.general.fk-settings.leg-tweak.description')}
+              {l10n.getString(
+                'settings-general-fk_settings-leg_tweak-description'
+              )}
             </Typography>
           </div>
           <div className="grid sm:grid-cols-2 gap-3 pb-5">
@@ -362,15 +501,17 @@ export function GeneralSettings() {
               outlined
               control={control}
               name="toggles.floorClip"
-              label={t('settings.general.fk-settings.leg-tweak.floor-clip')}
+              label={l10n.getString(
+                'settings-general-fk_settings-leg_tweak-floor_clip'
+              )}
             />
             <CheckBox
               variant="toggle"
               outlined
               control={control}
               name="toggles.skatingCorrection"
-              label={t(
-                'settings.general.fk-settings.leg-tweak.skating-correction'
+              label={l10n.getString(
+                'settings-general-fk_settings-leg_tweak-skating_correction'
               )}
             />
           </div>
@@ -378,8 +519,8 @@ export function GeneralSettings() {
             <NumberSelector
               control={control}
               name="legTweaks.correctionStrength"
-              label={t(
-                'settings.general.fk-settings.leg-tweak.skating-correction-amount'
+              label={l10n.getString(
+                'settings-general-fk_settings-leg_tweak-skating_correction-amount'
               )}
               valueLabelFormat={(value) => `${Math.round(value * 100)} %`}
               min={0.1}
@@ -387,13 +528,14 @@ export function GeneralSettings() {
               step={0.1}
             />
           </div>
-
           <Typography bold>
-            {t('settings.general.fk-settings.arm-fk.title')}
+            {l10n.getString('settings-general-fk_settings-arm_fk')}
           </Typography>
           <div className="flex flex-col pt-2 pb-4">
             <Typography color="secondary">
-              {t('settings.general.fk-settings.arm-fk.description')}
+              {l10n.getString(
+                'settings-general-fk_settings-arm_fk-description'
+              )}
             </Typography>
           </div>
           <div className="grid sm:grid-cols-2 pb-5">
@@ -402,18 +544,22 @@ export function GeneralSettings() {
               outlined
               control={control}
               name="toggles.forceArmsFromHmd"
-              label={t('settings.general.fk-settings.arm-fk.force-arms')}
+              label={l10n.getString(
+                'settings-general-fk_settings-arm_fk-force_arms'
+              )}
             />
           </div>
           {config?.debug && (
             <>
               <Typography bold>
-                {t('settings.general.fk-settings.skeleton-settings.title')}
+                {l10n.getString(
+                  'settings-general-fk_settings-skeleton_settings'
+                )}
               </Typography>
               <div className="flex flex-col pt-2 pb-4">
                 <Typography color="secondary">
-                  {t(
-                    'settings.general.fk-settings.skeleton-settings.description'
+                  {l10n.getString(
+                    'settings-general-fk_settings-skeleton_settings-description'
                   )}
                 </Typography>
               </div>
@@ -423,8 +569,8 @@ export function GeneralSettings() {
                   outlined
                   control={control}
                   name="toggles.extendedSpine"
-                  label={t(
-                    'settings.general.fk-settings.skeleton-settings.extended-spine'
+                  label={l10n.getString(
+                    'settings-general-fk_settings-skeleton_settings-extended_spine'
                   )}
                 />
                 <CheckBox
@@ -432,8 +578,8 @@ export function GeneralSettings() {
                   outlined
                   control={control}
                   name="toggles.extendedPelvis"
-                  label={t(
-                    'settings.general.fk-settings.skeleton-settings.extended-pelvis'
+                  label={l10n.getString(
+                    'settings-general-fk_settings-skeleton_settings-extended_pelvis'
                   )}
                 />
                 <CheckBox
@@ -441,8 +587,31 @@ export function GeneralSettings() {
                   outlined
                   control={control}
                   name="toggles.extendedKnee"
-                  label={t(
-                    'settings.general.fk-settings.skeleton-settings.extended-knees'
+                  label={l10n.getString(
+                    'settings-general-fk_settings-skeleton_settings-extended_knees'
+                  )}
+                />
+              </div>
+              <Typography bold>
+                {l10n.getString(
+                  'settings-general-fk_settings-vive_emulation-title'
+                )}
+              </Typography>
+              <div className="flex flex-col pt-2 pb-4">
+                <Typography color="secondary">
+                  {l10n.getString(
+                    'settings-general-fk_settings-vive_emulation-description'
+                  )}
+                </Typography>
+              </div>
+              <div className="grid sm:grid-cols-2 gap-3 pb-5">
+                <CheckBox
+                  variant="toggle"
+                  outlined
+                  control={control}
+                  name="toggles.viveEmulation"
+                  label={l10n.getString(
+                    'settings-general-fk_settings-vive_emulation-label'
                   )}
                 />
               </div>
@@ -454,32 +623,125 @@ export function GeneralSettings() {
       <SettingsPageLayout icon={<WrenchIcon></WrenchIcon>} id="gestureControl">
         <>
           <Typography variant="main-title">
-            {t('settings.general.gesture-control.title')}
+            {l10n.getString('settings-general-gesture_control')}
           </Typography>
           <Typography bold>
-            {t('settings.general.gesture-control.subtitle')}
+            {l10n.getString('settings-general-gesture_control-subtitle')}
           </Typography>
           <div className="flex flex-col pt-2 pb-4">
             <Typography color="secondary">
-              {t('settings.general.gesture-control.description')}
+              {l10n.getString('settings-general-gesture_control-description')}
             </Typography>
           </div>
-          <div className="grid sm:grid-cols-1 gap-3 pb-5">
+          <div className="grid sm:grid-cols-3 gap-5 pb-2">
+            <CheckBox
+              variant="toggle"
+              outlined
+              control={control}
+              name="tapDetection.tapQuickResetEnabled"
+              label={l10n.getString(
+                'settings-general-gesture_control-quickResetEnabled'
+              )}
+            />
             <CheckBox
               variant="toggle"
               outlined
               control={control}
               name="tapDetection.tapResetEnabled"
-              label={t('settings.general.gesture-control.enable')}
+              label={l10n.getString(
+                'settings-general-gesture_control-resetEnabled'
+              )}
             />
+            <CheckBox
+              variant="toggle"
+              outlined
+              control={control}
+              name="tapDetection.tapMountingResetEnabled"
+              label={l10n.getString(
+                'settings-general-gesture_control-mountingResetEnabled'
+              )}
+            />
+          </div>
+          <div className="grid sm:grid-cols-3 gap-5 pb-2">
             <NumberSelector
               control={control}
-              name="tapDetection.tapResetDelay"
-              label={t('settings.general.gesture-control.delay')}
+              name="tapDetection.tapQuickResetDelay"
+              label={l10n.getString(
+                'settings-general-gesture_control-quickResetDelay'
+              )}
               valueLabelFormat={(value) => `${Math.round(value * 10) / 10} s`}
               min={0.2}
               max={3.0}
               step={0.2}
+            />
+            <NumberSelector
+              control={control}
+              name="tapDetection.tapResetDelay"
+              label={l10n.getString(
+                'settings-general-gesture_control-resetDelay'
+              )}
+              valueLabelFormat={(value) => `${Math.round(value * 10) / 10} s`}
+              min={0.2}
+              max={3.0}
+              step={0.2}
+            />
+            <NumberSelector
+              control={control}
+              name="tapDetection.tapMountingResetDelay"
+              label={l10n.getString(
+                'settings-general-gesture_control-mountingResetDelay'
+              )}
+              valueLabelFormat={(value) => `${Math.round(value * 10) / 10} s`}
+              min={0.2}
+              max={3.0}
+              step={0.2}
+            />
+          </div>
+          <div className="grid sm:grid-cols-3 gap-5 pb-2">
+            <NumberSelector
+              control={control}
+              name="tapDetection.tapQuickResetTaps"
+              label={l10n.getString(
+                'settings-general-gesture_control-quickResetTaps'
+              )}
+              valueLabelFormat={(value) =>
+                l10n.getString('settings-general-gesture_control-taps', {
+                  amount: Math.round(value),
+                })
+              }
+              min={2}
+              max={10}
+              step={1}
+            />
+            <NumberSelector
+              control={control}
+              name="tapDetection.tapResetTaps"
+              label={l10n.getString(
+                'settings-general-gesture_control-resetTaps'
+              )}
+              valueLabelFormat={(value) =>
+                l10n.getString('settings-general-gesture_control-taps', {
+                  amount: Math.round(value),
+                })
+              }
+              min={2}
+              max={10}
+              step={1}
+            />
+            <NumberSelector
+              control={control}
+              name="tapDetection.tapMountingResetTaps"
+              label={l10n.getString(
+                'settings-general-gesture_control-mountingResetTaps'
+              )}
+              valueLabelFormat={(value) =>
+                l10n.getString('settings-general-gesture_control-taps', {
+                  amount: Math.round(value),
+                })
+              }
+              min={2}
+              max={10}
+              step={1}
             />
           </div>
         </>
@@ -488,70 +750,63 @@ export function GeneralSettings() {
       <SettingsPageLayout icon={<SquaresIcon></SquaresIcon>} id="interface">
         <>
           <Typography variant="main-title">
-            {t('settings.general.interface.title')}
+            {l10n.getString('settings-general-interface')}
           </Typography>
-          <div className="gap-4 grid">
-            <div className="grid sm:grid-cols-2">
-              <div>
-                <Typography bold>
-                  {t('settings.general.interface.dev-mode.title')}
-                </Typography>
-                <div className="flex flex-col">
-                  <Typography color="secondary">
-                    {t('settings.general.interface.dev-mode.description')}
-                  </Typography>
-                </div>
-                <div className="pt-2">
-                  <CheckBox
-                    variant="toggle"
-                    control={control}
-                    outlined
-                    name="interface.devmode"
-                    label={t('settings.general.interface.dev-mode.label')}
-                  />
-                </div>
-              </div>
-            </div>
-            <div className="grid sm:grid-cols-2">
-              <div>
-                <Typography bold>
-                  {t('settings.general.interface.serial-detection.title')}
-                </Typography>
-                <div className="flex flex-col">
-                  <Typography color="secondary">
-                    {t(
-                      'settings.general.interface.serial-detection.description'
-                    )}
-                  </Typography>
-                </div>
-                <div className="pt-2">
-                  <CheckBox
-                    variant="toggle"
-                    control={control}
-                    outlined
-                    name="interface.watchNewDevices"
-                    label={t(
-                      'settings.general.interface.serial-detection.label'
-                    )}
-                  />
-                </div>
-              </div>
-            </div>
-            <div className="grid sm:grid-cols-2">
-              <div>
-                <Typography bold>
-                  {t('settings.general.interface.lang.title')}
-                </Typography>
-                <div className="flex flex-col">
-                  <Typography color="secondary">
-                    {t('settings.general.interface.lang.description')}
-                  </Typography>
-                </div>
-                <div className="pt-2">
-                  <LangSelector />
-                </div>
-              </div>
-            </div>
+
+          <Typography bold>
+            {l10n.getString('settings-general-interface-dev_mode')}
+          </Typography>
+          <div className="flex flex-col pt-1 pb-2">
+            <Typography color="secondary">
+              {l10n.getString(
+                'settings-general-interface-dev_mode-description'
+              )}
+            </Typography>
+          </div>
+          <div className="grid sm:grid-cols-2 pb-4">
+            <CheckBox
+              variant="toggle"
+              control={control}
+              outlined
+              name="interface.devmode"
+              label={l10n.getString(
+                'settings-general-interface-dev_mode-label'
+              )}
+            />
+          </div>
+
+          <Typography bold>
+            {l10n.getString('settings-general-interface-serial_detection')}
+          </Typography>
+          <div className="flex flex-col pt-1 pb-2">
+            <Typography color="secondary">
+              {l10n.getString(
+                'settings-general-interface-serial_detection-description'
+              )}
+            </Typography>
+          </div>
+          <div className="grid sm:grid-cols-2 pb-4">
+            <CheckBox
+              variant="toggle"
+              control={control}
+              outlined
+              name="interface.watchNewDevices"
+              label={l10n.getString(
+                'settings-general-interface-serial_detection-label'
+              )}
+            />
+          </div>
+
+          <Typography bold>
+            {l10n.getString('settings-general-interface-lang')}
+          </Typography>
+          <div className="flex flex-col pt-1 pb-2">
+            <Typography color="secondary">
+              {l10n.getString('settings-general-interface-lang-description')}
+            </Typography>
+          </div>
+          <div className="grid sm:grid-cols-2 pb-4">
+            <LangSelector />
           </div>
         </>
       </SettingsPageLayout>

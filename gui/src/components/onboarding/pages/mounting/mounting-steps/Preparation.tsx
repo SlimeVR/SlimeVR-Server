@@ -1,8 +1,8 @@
-import { useTranslation } from 'react-i18next';
 import { ResetType } from 'solarxr-protocol';
 import { Button } from '../../../../commons/Button';
 import { Typography } from '../../../../commons/Typography';
 import { ResetButton } from '../../../../home/ResetButton';
+import { useLocalization } from '@fluent/react';
 
 export function PreparationStep({
   nextStep,
@@ -13,21 +13,25 @@ export function PreparationStep({
   prevStep: () => void;
   variant: 'onboarding' | 'alone';
 }) {
-  const { t } = useTranslation();
+  const { l10n } = useLocalization();
 
   return (
     <>
       <div className="flex flex-col flex-grow">
         <div className="flex flex-col gap-4 max-w-sm">
           <Typography variant="main-title" bold>
-            {t('onboarding.automatic-mounting.preparation.title')}
+            {l10n.getString('onboarding-automatic_mounting-preparation-title')}
           </Typography>
           <div>
             <Typography color="secondary">
-              {t('onboarding.automatic-mounting.preparation.step.0')}
+              {l10n.getString(
+                'onboarding-automatic_mounting-preparation-step-0'
+              )}
             </Typography>
             <Typography color="secondary">
-              {t('onboarding.automatic-mounting.preparation.step.1')}
+              {l10n.getString(
+                'onboarding-automatic_mounting-preparation-step-1'
+              )}
             </Typography>
           </div>
         </div>
@@ -38,7 +42,7 @@ export function PreparationStep({
             variant={variant === 'onboarding' ? 'secondary' : 'tiertiary'}
             onClick={prevStep}
           >
-            {t('onboarding.automatic-mounting.prev-step')}
+            {l10n.getString('onboarding-automatic_mounting-prev_step')}
           </Button>
           <ResetButton
             variant="small"
@@ -48,7 +52,7 @@ export function PreparationStep({
         </div>
       </div>
       <div className="flex flex-col pt-1 items-center fill-background-50 justify-center px-12">
-        <img src="/images/reset-pose.png" width={60} />
+        <img src="/images/reset-pose.png" width={90} alt="Reset position" />
       </div>
     </>
   );

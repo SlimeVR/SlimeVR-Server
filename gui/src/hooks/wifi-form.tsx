@@ -1,7 +1,6 @@
 import { useEffect } from 'react';
 import { useForm } from 'react-hook-form';
 import { useNavigate } from 'react-router-dom';
-import { Input } from '../components/commons/Input';
 import { useOnboarding } from './onboarding';
 
 export interface WifiFormData {
@@ -12,10 +11,11 @@ export interface WifiFormData {
 export function useWifiForm() {
   const navigate = useNavigate();
   const { state, setWifiCredentials } = useOnboarding();
-  const { register, reset, handleSubmit, formState } = useForm<WifiFormData>({
-    defaultValues: {},
-    mode: 'onChange',
-  });
+  const { register, reset, handleSubmit, formState, control } =
+    useForm<WifiFormData>({
+      defaultValues: {},
+      reValidateMode: 'onSubmit',
+    });
 
   useEffect(() => {
     if (state.wifi) {
@@ -39,23 +39,6 @@ export function useWifiForm() {
     register,
     formState,
     hasWifiCreds: !!state.wifi,
-    WifiForm: () => (
-      <>
-        <Input
-          {...register('ssid', { required: true })}
-          type="text"
-          label="SSID"
-          placeholder="Enter SSID"
-          variant="secondary"
-        />
-        <Input
-          {...register('password')}
-          type="password"
-          label="Password"
-          placeholder="Enter password"
-          variant="secondary"
-        />
-      </>
-    ),
+    control,
   };
 }

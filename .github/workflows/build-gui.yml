@@ -2,6 +2,8 @@ name: Build GUI
 
 on:
   push:
+    branches:
+      - main
     paths:
       - .github/workflows/build-gui.yml
       - gui/**
@@ -12,13 +14,34 @@ on:
       - gui/**
       - package*.json
   workflow_dispatch:
+  create:
 
 jobs:
+  lint:
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v3
+        with:
+          submodules: recursive
+
+      - name: Use Node.js ${{ matrix.node-version }}
+        uses: actions/setup-node@v3
+        with:
+          node-version-file: '.node-version'
+          cache: 'npm'
+
+      - name: Build
+        run: |
+          npm ci
+          cd gui
+          npm run lint
+
   build:
     strategy:
       fail-fast: false
       matrix:
-        os: [ubuntu-latest, windows-latest]
+        os: [ubuntu-20.04, windows-latest]
 
     runs-on: ${{ matrix.os }}
 
@@ -31,14 +54,22 @@ jobs:
         with:
           submodules: recursive
 
-      - if: matrix.os == 'ubuntu-latest'
+      - if: matrix.os == 'ubuntu-20.04'
         name: Set up Linux dependencies
-        run: |
-          sudo apt-get update
-          sudo apt-get install -y libgtk-3-dev webkit2gtk-4.0 libappindicator3-dev librsvg2-dev patchelf
+        uses: awalsh128/cache-apt-pkgs-action@latest
+        with:
+          packages: libgtk-3-dev webkit2gtk-4.0 libappindicator3-dev librsvg2-dev patchelf
+          # Increment to invalidate the cache
+          version: 1.0
+          # Enables a workaround to attempt to run pre and post install scripts
+          execute_install_scripts: true
+          # Disables uploading logs as a build artifact
+          debug: false
 
       - name: Cache cargo dependencies
         uses: Swatinem/rust-cache@v2
+        with:
+          shared-key: "tauri"
 
       - name: Use Node.js ${{ matrix.node-version }}
         uses: actions/setup-node@v3
@@ -49,7 +80,7 @@ jobs:
       - name: Build
         run: |
           npm ci
-          npm run tauri build
+          npm run skipbundler
 
       - if: matrix.os == 'windows-latest'
         name: Upload a Build Artifact
@@ -60,20 +91,11 @@ jobs:
           # A file, directory or wildcard pattern that describes what to upload
           path: target/release/slimevr.exe
 
-      - if: matrix.os == 'ubuntu-latest'
+      - if: matrix.os == 'ubuntu-20.04'
         name: Upload a Build Artifact
         uses: actions/upload-artifact@v3.1.0
         with:
           # Artifact name
-          name: SlimeVR-GUI-Deb
+          name: SlimeVR-GUI-Linux
           # A file, directory or wildcard pattern that describes what to upload
-          path: target/release/bundle/deb/slimevr*.deb
-
-      - if: matrix.os == 'ubuntu-latest'
-        name: Upload a Build Artifact
-        uses: actions/upload-artifact@v3.1.0
-        with:
-          # Artifact name
-          name: SlimeVR-GUI-AppImage
-          # A file, directory or wildcard pattern that describes what to upload
-          path: target/release/bundle/appimage/slimevr*.AppImage
+          path: target/release/slimevr
