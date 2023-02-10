@@ -735,7 +735,8 @@ public class IMUTracker
 
 	@Override
 	public String getDisplayName() {
-		return "IMU Tracker #" + getTrackerId();
+		return "IMU Tracker #"
+			+ (getTrackerId() - vrserver.humanPoseManager.getShareableTracker().size());
 	}
 
 	@Override

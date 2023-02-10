@@ -1,8 +1,6 @@
 import classNames from 'classnames';
 import { ReactNode, useEffect, useState } from 'react';
 import {
-  DriftCompensationSettings,
-  DriftCompensationSettingsT,
   ResetType,
   RpcMessage,
   SettingsRequestT,
@@ -74,11 +72,15 @@ export function MainLayoutRoute({
                     type={ResetType.Full}
                     variant="big"
                   ></ResetButton>
-                  <ResetButton
-                    type={ResetType.Mounting}
-                    variant="big"
-                  ></ResetButton>
-                  <BVHButton></BVHButton>
+                  {config?.debug && (
+                    <ResetButton
+                      type={ResetType.Mounting}
+                      variant="big"
+                    ></ResetButton>
+                  )}
+                  <BVHButton
+                    className={config?.debug ? 'col-span-1' : 'col-span-2'}
+                  ></BVHButton>
                 </div>
                 {driftCompensationEnabled && (
                   <ClearDriftCompensationButton></ClearDriftCompensationButton>

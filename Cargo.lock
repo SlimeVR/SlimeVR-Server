@@ -2625,6 +2625,7 @@ dependencies = [
  "tauri",
  "tauri-build",
  "tauri-plugin-window-state",
+ "tauri-runtime",
  "tempfile",
  "which",
  "win32job",
@@ -2914,10 +2915,13 @@ dependencies = [
 [[package]]
 name = "tauri-plugin-window-state"
 version = "0.1.0"
-source = "git+https://github.com/tauri-apps/tauri-plugin-window-state?rev=refs/pull/52/head#53288bde5968f16cd876c23255ffeeaecbf4466f"
+source = "git+https://github.com/tauri-apps/plugins-workspace?branch=dev#bf1106a0a5e178ce38ecde56751ba037307a7ae8"
 dependencies = [
  "bincode",
+ "bitflags",
+ "log",
  "serde",
+ "serde_json",
  "tauri",
  "thiserror",
 ]

@@ -131,11 +131,7 @@ public class DataFeedBuilder {
 
 	public static int createTrackerRotation(FlatBufferBuilder fbb, Tracker tracker) {
 		Quaternion quaternion = new Quaternion();
-		if (tracker instanceof IMUTracker imuTracker) {
-			imuTracker.getRawRotation(quaternion);
-		} else {
-			tracker.getRotation(quaternion);
-		}
+		tracker.getRawRotation(quaternion);
 
 		return createQuat(fbb, quaternion);
 	}
@@ -192,6 +188,16 @@ public class DataFeedBuilder {
 			}
 			if (mask.getRotationIdentityAdjusted() && tracker.hasRotation()) {
 				imuTracker.getIdentityAdjustedRotation(quaternion);
+				TrackerData.addRotationIdentityAdjusted(fbb, createQuat(fbb, quaternion));
+			}
+		} else if (tracker instanceof VRTracker vrTracker) {
+			Quaternion quaternion = new Quaternion();
+			if (mask.getRotationReferenceAdjusted() && tracker.hasRotation()) {
+				vrTracker.getRotation(quaternion);
+				TrackerData.addRotationReferenceAdjusted(fbb, createQuat(fbb, quaternion));
+			}
+			if (mask.getRotationIdentityAdjusted() && tracker.hasRotation()) {
+				vrTracker.getRawRotation(quaternion);
 				TrackerData.addRotationIdentityAdjusted(fbb, createQuat(fbb, quaternion));
 			}
 		}

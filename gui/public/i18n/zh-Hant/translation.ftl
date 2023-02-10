@@ -104,6 +104,10 @@ widget-overlay = 內嵌介面
 widget-overlay-is_visible_label = 在 SteamVR 中顯示內嵌介面
 widget-overlay-is_mirrored_label = 鏡像顯示內嵌介面
 
+## Widget: Drift compensation
+
+widget-drift_compensation-clear = 清除偏移補償數據
+
 ## Widget: Developer settings
 
 widget-developer_mode = 開發者選項
@@ -162,7 +166,7 @@ tracker-infos-url = 追蹤器 URL
 tracker-settings-back = 返回追蹤器列表
 tracker-settings-title = 追蹤器設定
 tracker-settings-assignment_section = 分配追蹤器
-tracker-settings-assignment_section-description = 這個追蹤器要分配到身上的哪個部位？
+tracker-settings-assignment_section-description = 這個追蹤器分配到的身體部位
 tracker-settings-assignment_section-edit = 編輯分配
 tracker-settings-mounting_section = 配戴方式
 tracker-settings-mounting_section-description = 這個追蹤器要配戴在哪裡？

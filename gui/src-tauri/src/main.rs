@@ -191,10 +191,8 @@ fn main() {
 		None
 	};
 
-	let builder = tauri::Builder::default();
-	#[cfg(not(target_os = "macos"))]
-	let builder = builder.plugin(tauri_plugin_window_state::Builder::default().build());
-	builder
+	let builder = tauri::Builder::default()
+		.plugin(tauri_plugin_window_state::Builder::default().build())
 		.setup(|app| {
 			if let Some(mut recv) = stdout_recv {
 				let app_handle = app.app_handle();
@@ -224,8 +222,29 @@ fn main() {
 			Ok(())
 		})
 		//
-		.run(tauri::generate_context!())
-		.expect("error while running tauri application");
+		.run(tauri::generate_context!());
+	match builder {
+		#[cfg(windows)]
+		// Often triggered when the user doesn't have webview2 installed
+		Err(tauri::Error::Runtime(tauri_runtime::Error::CreateWebview(error))) => {
+			// I should log this anyways, don't want to dig a grave by not logging the error.
+			log::error!("CreateWebview error {}", error);
+
+			use tauri::api::dialog::{
+				blocking::MessageDialogBuilder, MessageDialogButtons, MessageDialogKind,
+			};
+
+			let confirm = MessageDialogBuilder::new("SlimeVR", "You seem to have a faulty installation of WebView2. You can check a guide on how to fix that in the docs!")
+				.buttons(MessageDialogButtons::OkCancel)
+				.kind(MessageDialogKind::Error)
+				.show();
+			if confirm {
+				open::that("https://docs.slimevr.dev/common-issues.html#webview2-is-missing--slimevr-gui-crashes-immediately--panicked-at--webview2error").unwrap();
+			}
+			return;
+		}
+		_ => builder.expect("error while running tauri application")
+	}
 }
 
 #[cfg(windows)]

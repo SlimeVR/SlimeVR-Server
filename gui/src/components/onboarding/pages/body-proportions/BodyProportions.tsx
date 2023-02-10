@@ -124,8 +124,8 @@ export function BodyProportions({
               )}
             >
               {!precise && (
-                <IncrementButton onClick={() => decrement(value, 10)}>
-                  -10
+                <IncrementButton onClick={() => decrement(value, 5)}>
+                  -5
                 </IncrementButton>
               )}
               <IncrementButton onClick={() => decrement(value, 1)}>
@@ -174,8 +174,8 @@ export function BodyProportions({
                 +1
               </IncrementButton>
               {!precise && (
-                <IncrementButton onClick={() => increment(value, 10)}>
-                  +10
+                <IncrementButton onClick={() => increment(value, 5)}>
+                  +5
                 </IncrementButton>
               )}
             </div>

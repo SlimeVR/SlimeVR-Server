@@ -51,7 +51,7 @@ export function TrackerSettingsPage() {
     trackernum: string;
     deviceid: string;
   }>();
-  const { control, register, watch, reset, handleSubmit } = useForm<{
+  const { control, watch, reset, handleSubmit } = useForm<{
     trackerName: string | null;
     allowDriftCompensation: boolean | null;
   }>({
@@ -339,7 +339,8 @@ export function TrackerSettingsPage() {
               type="text"
               name="trackerName"
               control={control}
-              rules={{}}
+              autocomplete="false"
+              rules={undefined}
               label="Tracker name"
             ></Input>
           </div>
