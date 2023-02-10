@@ -1,5 +1,5 @@
 import classNames from 'classnames';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { Control, Controller } from 'react-hook-form';
 import { a11yClick } from '../utils/a11y';
 
@@ -28,6 +28,13 @@ export function Dropdown({
   items: DropdownItem[];
 }) {
   const [isOpen, setOpen] = useState(false);
+  useEffect(() => {
+    document.addEventListener('wheel', () => {
+      if (isOpen && !document.querySelector('div.dropdown-scroll:hover')) {
+        setOpen(false);
+      }
+    });
+  });
 
   return (
     <Controller
