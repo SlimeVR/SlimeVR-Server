@@ -321,11 +321,10 @@ export function TrackersTable({
         id: DisplayColumn.TEMPERATURE,
         label: l10n.getString('tracker-table-column-temperature'),
         row: ({ tracker }) =>
-          tracker?.temp && tracker?.temp?.temp != 0 && (
-            <Typography color={fontColor}>
-              <span className="whitespace-nowrap">
-                {`${tracker.temp.temp.toFixed(2)}`}
-              </span>
+          tracker?.temp &&
+          tracker?.temp?.temp != 0 && (
+            <Typography color={fontColor} whitespace="whitespace-nowrap">
+              {`${tracker.temp.temp.toFixed(2)}`}
             </Typography>
           ),
       })}
