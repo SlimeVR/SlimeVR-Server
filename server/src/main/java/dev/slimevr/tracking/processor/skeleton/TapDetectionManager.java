@@ -184,8 +184,7 @@ public class TapDetectionManager {
 
 			public void run() {
 				String soundName = switch (resetType) {
-					case ResetType.Quick -> "/single_beep.wav"; // default
-																// implies 0
+					case ResetType.Quick -> "/single_beep.wav";
 					case ResetType.Full -> "/double_beep.wav";
 					case ResetType.Mounting -> "/triple_beep.wav";
 					default -> "/single_beep.wav";
