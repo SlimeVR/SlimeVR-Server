@@ -65,6 +65,7 @@ interface SettingsForm {
     tapQuickResetTaps: number;
     tapResetTaps: number;
     tapMountingResetTaps: number;
+    tapFeedbackSoundEnabled: boolean;
   };
   legTweaks: {
     correctionStrength: number;
@@ -109,6 +110,7 @@ const defaultValues = {
     tapQuickResetTaps: 2,
     tapResetTaps: 3,
     tapMountingResetTaps: 3,
+    tapFeedbackSoundEnabled: false,
   },
   legTweaks: { correctionStrength: 0.3 },
   interface: { devmode: false, watchNewDevices: true },
@@ -169,6 +171,8 @@ export function GeneralSettings() {
       values.tapDetection.tapMountingResetDelay;
     tapDetection.tapMountingResetTaps =
       values.tapDetection.tapMountingResetTaps;
+    tapDetection.tapFeedbackSoundEnabled =
+      values.tapDetection.tapFeedbackSoundEnabled;
     settings.tapDetectionSettings = tapDetection;
 
     const filtering = new FilteringSettingsT();
@@ -261,6 +265,9 @@ export function GeneralSettings() {
         tapMountingResetTaps:
           settings.tapDetectionSettings.tapMountingResetTaps ||
           defaultValues.tapDetection.tapMountingResetTaps,
+        tapFeedbackSoundEnabled:
+          settings.tapDetectionSettings.tapFeedbackSoundEnabled ||
+          defaultValues.tapDetection.tapFeedbackSoundEnabled,
       };
     }
 
@@ -697,7 +704,7 @@ export function GeneralSettings() {
               step={0.2}
             />
           </div>
-          <div className="grid sm:grid-cols-3 gap-5 pb-2">
+          <div className="grid sm:grid-cols-3 gap-5 pb-5">
             <NumberSelector
               control={control}
               name="tapDetection.tapQuickResetTaps"
@@ -742,6 +749,27 @@ export function GeneralSettings() {
               min={2}
               max={10}
               step={1}
+            />
+          </div>
+          <Typography bold>
+            {l10n.getString('settings-general-gesture_control-feedBackSound')}
+          </Typography>
+          <div className="flex flex-col pt-2 pb-4">
+            <Typography color="secondary">
+              {l10n.getString(
+                'settings-general-gesture_control-feedBackSound-description'
+              )}
+            </Typography>
+          </div>
+          <div className="grid sm:grid-cols-2 pb-5">
+            <CheckBox
+              variant="toggle"
+              outlined
+              control={control}
+              name="tapDetection.tapFeedbackSoundEnabled"
+              label={l10n.getString(
+                'settings-general-gesture_control-feedBackSound-label'
+              )}
             />
           </div>
         </>

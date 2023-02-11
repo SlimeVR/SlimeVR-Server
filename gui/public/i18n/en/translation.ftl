@@ -315,6 +315,11 @@ settings-general-gesture_control-mountingResetEnabled = Enable tap to reset moun
 settings-general-gesture_control-mountingResetDelay = Mounting reset delay
 settings-general-gesture_control-mountingResetTaps = Taps for mounting reset
 
+settings-general-gesture_control-feedBackSound = Feedback Sound
+settings-general-gesture_control-feedBackSound-description = This option will enable a feedback sound when reset is triggered by tapping
+settings-general-gesture_control-feedBackSound-label = Enable feedback sound
+              
+
 ## Interface settings
 settings-general-interface = Interface
 settings-general-interface-dev_mode = Developer Mode

@@ -5,6 +5,13 @@ import dev.slimevr.config.TapDetectionConfig;
 import dev.slimevr.osc.VRCOSCHandler;
 import dev.slimevr.tracking.trackers.Tracker;
 
+import solarxr_protocol.rpc.ResetType;
+import javax.sound.sampled.AudioInputStream;
+import javax.sound.sampled.AudioSystem;
+import javax.sound.sampled.Clip;
+import java.io.BufferedInputStream;
+import java.util.Objects;
+
 
 // handles tap detection for the skeleton
 public class TapDetectionManager {
@@ -29,6 +36,9 @@ public class TapDetectionManager {
 	private float resetDelayNs = 0.20f * NS_CONVERTER;
 	private float quickResetDelayNs = 1.00f * NS_CONVERTER;
 	private float mountingResetDelayNs = 1.00f * NS_CONVERTER;
+
+	// feedback
+	private boolean feedbackSoundEnabled = true;
 
 	public TapDetectionManager(HumanSkeleton skeleton) {
 		this.skeleton = skeleton;
@@ -69,6 +79,7 @@ public class TapDetectionManager {
 		this.quickResetDelayNs = config.getQuickResetDelay() * NS_CONVERTER;
 		this.resetDelayNs = config.getResetDelay() * NS_CONVERTER;
 		this.mountingResetDelayNs = config.getMountingResetDelay() * NS_CONVERTER;
+		this.feedbackSoundEnabled = config.getFeedbackSoundEnabled();
 		quickResetDetector.setEnabled(config.getQuickResetEnabled());
 		resetDetector.setEnabled(config.getResetEnabled());
 		mountingResetDetector.setEnabled(config.getMountingResetEnabled());
@@ -96,10 +107,11 @@ public class TapDetectionManager {
 
 	private void checkQuickReset() {
 		boolean tapped = (quickResetTaps <= quickResetDetector.getTaps());
-
 		if (
 			tapped && System.nanoTime() - quickResetDetector.getDetectionTime() > quickResetDelayNs
 		) {
+			if (feedbackSoundEnabled)
+				playSound(ResetType.Quick);
 			if (oscHandler != null)
 				oscHandler.yawAlign();
 			skeleton.resetTrackersYaw();
@@ -113,6 +125,8 @@ public class TapDetectionManager {
 		if (
 			tapped && System.nanoTime() - resetDetector.getDetectionTime() > resetDelayNs
 		) {
+			if (feedbackSoundEnabled)
+				playSound(ResetType.Full);
 			if (oscHandler != null)
 				oscHandler.yawAlign();
 			skeleton.resetTrackersFull();
@@ -128,6 +142,8 @@ public class TapDetectionManager {
 				&& System.nanoTime() - mountingResetDetector.getDetectionTime()
 					> mountingResetDelayNs
 		) {
+			if (feedbackSoundEnabled)
+				playSound(ResetType.Mounting);
 			skeleton.resetTrackersMounting();
 			mountingResetDetector.resetDetector();
 		}
@@ -162,5 +178,37 @@ public class TapDetectionManager {
 			return skeleton.rightLowerLegTracker;
 		return null;
 	}
+
+	private void playSound(int resetType) {
+		new Thread(new Runnable() {
+
+			public void run() {
+				String soundName = switch (resetType) {
+					case ResetType.Quick -> "/single_beep.wav"; // default
+																// implies 0
+					case ResetType.Full -> "/double_beep.wav";
+					case ResetType.Mounting -> "/triple_beep.wav";
+					default -> "/single_beep.wav";
+				};
+
+				try {
+					Clip clip = AudioSystem.getClip();
+
+					BufferedInputStream bufferedStream = new BufferedInputStream(
+						Objects.requireNonNull(this.getClass().getResourceAsStream(soundName))
+					);
+					AudioInputStream inputStream = AudioSystem.getAudioInputStream(bufferedStream);
+
+					clip.open(inputStream);
+					clip.start();
+
+				} catch (Exception e) {
+					System.err.println(e.getMessage());
+					e.printStackTrace();
+				}
+			}
+		}).start();
+	}
+
 
 }

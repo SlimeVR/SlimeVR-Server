@@ -18,6 +18,7 @@ public class TapDetectionConfig {
 	private int resetTaps = 3;
 	private int mountingResetTaps = 3;
 	private int numberTrackersOverThreshold = 1;
+	private boolean feedbackSoundEnabled = true;
 
 	public float getQuickResetDelay() {
 		return quickResetDelay;
@@ -101,5 +102,13 @@ public class TapDetectionConfig {
 
 	public void setNumberTrackersOverThreshold(int numberTrackersOverThreshold) {
 		this.numberTrackersOverThreshold = numberTrackersOverThreshold;
+	}
+
+	public void setFeedbackSoundEnabled(boolean feedbackSoundEnabled) {
+		this.feedbackSoundEnabled = feedbackSoundEnabled;
+	}
+
+	public boolean getFeedbackSoundEnabled() {
+		return feedbackSoundEnabled;
 	}
 }

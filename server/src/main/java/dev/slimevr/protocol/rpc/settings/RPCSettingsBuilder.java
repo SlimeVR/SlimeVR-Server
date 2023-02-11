@@ -114,7 +114,8 @@ public class RPCSettingsBuilder {
 				tapDetectionConfig.getQuickResetTaps(),
 				tapDetectionConfig.getMountingResetDelay(),
 				tapDetectionConfig.getMountingResetEnabled(),
-				tapDetectionConfig.getMountingResetTaps()
+				tapDetectionConfig.getMountingResetTaps(),
+				tapDetectionConfig.getFeedbackSoundEnabled()
 			);
 	}
 
