@@ -41,7 +41,7 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        os: [ubuntu-20.04, windows-latest]
+        os: [ubuntu-20.04, windows-latest, macos-latest]
 
     runs-on: ${{ matrix.os }}
 
@@ -69,7 +69,7 @@ jobs:
       - name: Cache cargo dependencies
         uses: Swatinem/rust-cache@v2
         with:
-          shared-key: "tauri"
+          shared-key: "${{ matrix.os }}"
 
       - name: Use Node.js ${{ matrix.node-version }}
         uses: actions/setup-node@v3
@@ -91,7 +91,7 @@ jobs:
           # A file, directory or wildcard pattern that describes what to upload
           path: target/release/slimevr.exe
 
-      - if: matrix.os == 'ubuntu-20.04'
+      - if: matrix.os != 'windows-latest'
         name: Upload a Build Artifact
         uses: actions/upload-artifact@v3.1.0
         with:

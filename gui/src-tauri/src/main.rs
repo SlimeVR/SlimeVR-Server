@@ -62,11 +62,19 @@ fn get_launch_path(cli: Cli) -> Option<PathBuf> {
 		// AppImage passes the fakeroot in `APPDIR` env var.
 		env::var_os("APPDIR").map(|x| PathBuf::from(x)),
 		env::current_dir().ok(),
+		// getcwd in Mac can't be trusted, so let's get the executable's path
+		env::current_exe()
+			.map(|mut f| {
+				f.pop();
+				f
+			})
+			.ok(),
 		Some(PathBuf::from(env!("CARGO_MANIFEST_DIR"))),
 		// For flatpak container
 		Some(PathBuf::from("/app/share/slimevr/")),
 		Some(PathBuf::from("/usr/share/slimevr/")),
 	];
+
 	paths
 		.into_iter()
 		.filter_map(|x| x)
@@ -243,7 +251,7 @@ fn main() {
 			}
 			return;
 		}
-		_ => builder.expect("error while running tauri application")
+		_ => builder.expect("error while running tauri application"),
 	}
 }
 
@@ -310,8 +318,12 @@ fn valid_java_paths() -> Vec<(OsString, i32)> {
 	let mut childs = vec![];
 	cfg_if::cfg_if! {
 		if #[cfg(target_os = "macos")] {
-			// TODO: Actually use macOS paths
-			let libs = which::which_all(JAVA_BIN).unwrap();
+			// macOS JVMs are saved on multiple possible places,
+			// /Library/Java/JavaVirtualMachines are the ones installed by an admin
+			// /Users/$USER/Library/Java/JavaVirtualMachines are the ones installed locally by the user
+			let libs = glob::glob(concatcp!("/Library/Java/JavaVirtualMachines/*/Contents/Home/bin/", JAVA_BIN))
+				.unwrap()
+				.filter_map(|res| res.ok());
 		} else if #[cfg(unix)] {
 			// Linux JVMs are saved on /usr/lib/jvm from what I found out,
 			// there is usually a default dir and a default-runtime dir also which are linked
