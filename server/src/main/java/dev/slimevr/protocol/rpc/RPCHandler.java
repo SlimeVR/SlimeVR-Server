@@ -297,7 +297,7 @@ public class RPCHandler extends ProtocolHandler<RpcMessageHeader>
 		conn.getContext().setUseAutoBone(true);
 		this.api.server
 			.getAutoBoneHandler()
-			.startProcessByType(AutoBoneProcessType.getById(req.processType()));
+			.startProcessByType(AutoBoneProcessType.Companion.getById(req.processType()));
 	}
 
 	@Override
@@ -321,7 +321,7 @@ public class RPCHandler extends ProtocolHandler<RpcMessageHeader>
 						Integer messageOffset = message != null ? fbb.createString(message) : null;
 
 						AutoBoneProcessStatusResponse.startAutoBoneProcessStatusResponse(fbb);
-						AutoBoneProcessStatusResponse.addProcessType(fbb, processType.id);
+						AutoBoneProcessStatusResponse.addProcessType(fbb, processType.getId());
 						if (messageOffset != null)
 							AutoBoneProcessStatusResponse.addMessage(fbb, messageOffset);
 						if (total > 0 && current >= 0) {
