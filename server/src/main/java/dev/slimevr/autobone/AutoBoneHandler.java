@@ -22,16 +22,16 @@ public class AutoBoneHandler {
 	private final PoseRecorder poseRecorder;
 	private final AutoBone autoBone;
 
-	private ReentrantLock recordingLock = new ReentrantLock();
+	private final ReentrantLock recordingLock = new ReentrantLock();
 	private Thread recordingThread = null;
 
-	private ReentrantLock saveRecordingLock = new ReentrantLock();
+	private final ReentrantLock saveRecordingLock = new ReentrantLock();
 	private Thread saveRecordingThread = null;
 
-	private ReentrantLock autoBoneLock = new ReentrantLock();
+	private final ReentrantLock autoBoneLock = new ReentrantLock();
 	private Thread autoBoneThread = null;
 
-	private List<AutoBoneListener> listeners = new CopyOnWriteArrayList<>();
+	private final List<AutoBoneListener> listeners = new CopyOnWriteArrayList<>();
 
 	public AutoBoneHandler(VRServer server) {
 		this.server = server;
@@ -102,24 +102,13 @@ public class AutoBoneHandler {
 
 	public boolean startProcessByType(AutoBoneProcessType processType) {
 		switch (processType) {
-			case RECORD:
-				startRecording();
-				break;
-
-			case SAVE:
-				saveRecording();
-				break;
-
-			case PROCESS:
-				processRecording();
-				break;
-
-			case APPLY:
-				applyValues();
-				break;
-
-			default:
+			case RECORD -> startRecording();
+			case SAVE -> saveRecording();
+			case PROCESS -> processRecording();
+			case APPLY -> applyValues();
+			default -> {
 				return false;
+			}
 		}
 
 		return true;
@@ -304,7 +293,7 @@ public class AutoBoneHandler {
 					LogManager
 						.severe(
 							"[AutoBone] No recordings found in \""
-								+ AutoBone.getLoadDir().getPath()
+								+ AutoBone.Companion.getLoadDir().getPath()
 								+ "\" and no recording was done..."
 						);
 					return;
@@ -355,7 +344,7 @@ public class AutoBoneHandler {
 				LogManager.info("[AutoBone] Done processing!");
 
 				// #region Stats/Values
-				skeletonConfigManagerBuffer.setOffsets(autoBoneResults.configValues);
+				skeletonConfigManagerBuffer.setOffsets(autoBoneResults.getConfigValues());
 
 				float neckLength = skeletonConfigManagerBuffer
 					.getOffset(SkeletonConfigOffsets.NECK);
@@ -411,7 +400,7 @@ public class AutoBoneHandler {
 				);
 			// #endregion
 
-			listeners.forEach(listener -> listener.onAutoBoneEnd(autoBone.legacyConfigs));
+			listeners.forEach(listener -> listener.onAutoBoneEnd(autoBone.getLegacyConfigs()));
 
 			announceProcessStatus(AutoBoneProcessType.PROCESS, "Done processing!", true, true);
 		} catch (Exception e) {
