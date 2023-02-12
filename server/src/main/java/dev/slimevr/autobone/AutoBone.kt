@@ -42,7 +42,7 @@ class AutoBone(server: VRServer) {
 			BoneType.CHEST,
 			BoneType.WAIST,
 			BoneType.HIP, // This now works when using body proportion error! It's not the
-			// best still but it is somewhat functional
+			// best still, but it is somewhat functional
 			BoneType.LEFT_HIP,
 			BoneType.LEFT_UPPER_LEG,
 			BoneType.LEFT_LOWER_LEG
@@ -58,16 +58,6 @@ class AutoBone(server: VRServer) {
 			BoneType.RIGHT_UPPER_LEG,
 			BoneType.LEFT_LOWER_LEG,
 			BoneType.RIGHT_LOWER_LEG
-		)
-	)
-	val legacyHeightConfigs = FastList(
-		arrayOf(
-			SkeletonConfigOffsets.NECK,
-			SkeletonConfigOffsets.CHEST,
-			SkeletonConfigOffsets.WAIST,
-			SkeletonConfigOffsets.HIP,
-			SkeletonConfigOffsets.UPPER_LEG,
-			SkeletonConfigOffsets.LOWER_LEG
 		)
 	)
 
@@ -351,11 +341,10 @@ class AutoBone(server: VRServer) {
 		if (humanPoseManager != null) {
 			// If there is a skeleton available, calculate the target height
 			// from its configs
-			targetHeight = sumSelectConfigs(legacyHeightConfigs, humanPoseManager)
+			targetHeight = humanPoseManager.userHeightFromConfig
 			LogManager
 				.warning(
-					"[AutoBone] Target height loaded from skeleton (Make sure you reset before running!): " +
-						targetHeight
+					"[AutoBone] Target height loaded from skeleton (Make sure you reset before running!): $targetHeight"
 				)
 		} else {
 			// Otherwise if there is no skeleton available, attempt to get the
@@ -364,8 +353,7 @@ class AutoBone(server: VRServer) {
 			if (hmdHeight <= 0.50f) {
 				LogManager
 					.warning(
-						"[AutoBone] Max headset height detected (Value seems too low, did you not stand up straight while measuring?): " +
-							hmdHeight
+						"[AutoBone] Max headset height detected (Value seems too low, did you not stand up straight while measuring?): $hmdHeight"
 					)
 			} else {
 				LogManager.info("[AutoBone] Max headset height detected: $hmdHeight")
@@ -445,9 +433,8 @@ class AutoBone(server: VRServer) {
 				}
 			}
 
-			// Iterate over the frames using a cursor and an offset for
-			// comparing frames a
-			// certain number of frames apart
+			// Iterate over the frames using a cursor and an offset for comparing
+			// frames a certain number of frames apart
 			var cursorOffset = config.minDataDistance
 			while (cursorOffset <= config.maxDataDistance &&
 				cursorOffset < frameCount
@@ -603,13 +590,7 @@ class AutoBone(server: VRServer) {
 			if (epoch <= 0 || epoch >= config.numEpochs - 1 || (epoch + 1) % config.printEveryNumEpochs == 0) {
 				LogManager
 					.info(
-						"[AutoBone] Epoch " +
-							(epoch + 1) +
-							" average error: " +
-							errorStats.mean +
-							" (SD " +
-							errorStats.standardDeviation +
-							")"
+						"[AutoBone] Epoch ${epoch + 1} average error: ${errorStats.mean} (SD ${errorStats.standardDeviation})"
 					)
 			}
 			applyConfig(legacyConfigs)
@@ -618,10 +599,7 @@ class AutoBone(server: VRServer) {
 		val finalHeight = sumSelectConfigs(heightOffsets, offsets)
 		LogManager
 			.info(
-				"[AutoBone] Target height: " +
-					targetHeight +
-					" New height: " +
-					finalHeight
+				"[AutoBone] Target height: $targetHeight New height: $finalHeight"
 			)
 		return AutoBoneResults(finalHeight, targetHeight, errorStats, legacyConfigs)
 	}
@@ -686,28 +664,22 @@ class AutoBone(server: VRServer) {
 	fun saveRecording(frames: PoseFrames?, recordingFile: File) {
 		if (saveDir.isDirectory || saveDir.mkdirs()) {
 			LogManager
-				.info("[AutoBone] Exporting frames to \"" + recordingFile.path + "\"...")
+				.info("[AutoBone] Exporting frames to \"${recordingFile.path}\"...")
 			if (PoseFrameIO.writeToFile(recordingFile, frames)) {
 				LogManager
 					.info(
-						"[AutoBone] Done exporting! Recording can be found at \"" +
-							recordingFile.path +
-							"\"."
+						"[AutoBone] Done exporting! Recording can be found at \"${recordingFile.path}\"."
 					)
 			} else {
 				LogManager
 					.severe(
-						"[AutoBone] Failed to export the recording to \"" +
-							recordingFile.path +
-							"\"."
+						"[AutoBone] Failed to export the recording to \"${recordingFile.path}\"."
 					)
 			}
 		} else {
 			LogManager
 				.severe(
-					"[AutoBone] Failed to create the recording directory \"" +
-						saveDir.path +
-						"\"."
+					"[AutoBone] Failed to create the recording directory \"${saveDir.path}\"."
 				)
 		}
 	}
@@ -720,13 +692,13 @@ class AutoBone(server: VRServer) {
 		var recordingFile: File
 		var recordingIndex = 1
 		do {
-			recordingFile = File(saveDir, "ABRecording" + recordingIndex++ + ".pfr")
+			recordingFile = File(saveDir, "ABRecording${recordingIndex++}.pfr")
 		} while (recordingFile.exists())
 		saveRecording(frames, recordingFile)
 	}
 
-	fun loadRecordings(): List<Pair<String, PoseFrames>> {
-		val recordings: MutableList<Pair<String, PoseFrames>> = FastList()
+	fun loadRecordings(): FastList<Pair<String, PoseFrames>> {
+		val recordings = FastList<Pair<String, PoseFrames>>()
 		if (loadDir.isDirectory) {
 			val files = loadDir.listFiles()
 			if (files != null) {
@@ -737,14 +709,12 @@ class AutoBone(server: VRServer) {
 					) {
 						LogManager
 							.info(
-								"[AutoBone] Detected recording at \"" +
-									file.path +
-									"\", loading frames..."
+								"[AutoBone] Detected recording at \"${file.path}\", loading frames..."
 							)
 						val frames = PoseFrameIO.readFromFile(file)
 						if (frames == null) {
 							LogManager
-								.severe("Reading frames from \"" + file.path + "\" failed...")
+								.severe("Reading frames from \"${file.path}\" failed...")
 						} else {
 							recordings.add(Pair.of(file.name, frames))
 						}
