@@ -28,27 +28,27 @@ public final class TrackerFrame implements Tracker {
 	) {
 		this.designation = designation;
 		if (designation != null) {
-			dataFlags |= TrackerFrameData.DESIGNATION_ENUM.flag;
+			dataFlags = TrackerFrameData.DESIGNATION_ENUM.add(dataFlags);
 		}
 
 		this.rotation = rotation;
 		if (rotation != null) {
-			dataFlags |= TrackerFrameData.ROTATION.flag;
+			dataFlags = TrackerFrameData.ROTATION.add(dataFlags);
 		}
 
 		this.position = position;
 		if (position != null) {
-			dataFlags |= TrackerFrameData.POSITION.flag;
+			dataFlags = TrackerFrameData.POSITION.add(dataFlags);
 		}
 
 		this.acceleration = acceleration;
 		if (acceleration != null) {
-			dataFlags |= TrackerFrameData.ACCELERATION.flag;
+			dataFlags = TrackerFrameData.ACCELERATION.add(dataFlags);
 		}
 
 		this.rawRotation = rawRotation;
 		if (rawRotation != null) {
-			dataFlags |= TrackerFrameData.RAW_ROTATION.flag;
+			dataFlags = TrackerFrameData.RAW_ROTATION.add(dataFlags);
 		}
 	}
 

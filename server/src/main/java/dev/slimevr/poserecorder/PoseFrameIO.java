@@ -44,11 +44,16 @@ public final class PoseFrameIO {
 							continue;
 						}
 
-						outputStream.writeInt(trackerFrame.getDataFlags());
+						int dataFlags = trackerFrame.getDataFlags();
 
+						// Don't write destination strings anymore, replace with
+						// the enum
 						if (trackerFrame.hasData(TrackerFrameData.DESIGNATION_STRING)) {
-							outputStream.writeUTF(trackerFrame.designation.designation);
+							dataFlags = TrackerFrameData.DESIGNATION_ENUM
+								.add(TrackerFrameData.DESIGNATION_STRING.remove(dataFlags));
 						}
+
+						outputStream.writeInt(dataFlags);
 
 						if (trackerFrame.hasData(TrackerFrameData.ROTATION)) {
 							writeQuaternion(outputStream, trackerFrame.rotation);
@@ -58,7 +63,7 @@ public final class PoseFrameIO {
 							writeVector3f(outputStream, trackerFrame.position);
 						}
 
-						if (trackerFrame.hasData(TrackerFrameData.DESIGNATION_ENUM)) {
+						if (TrackerFrameData.DESIGNATION_ENUM.check(dataFlags)) {
 							outputStream.writeInt(trackerFrame.designation.ordinal());
 						}
 
