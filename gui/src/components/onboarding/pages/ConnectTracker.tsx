@@ -5,9 +5,9 @@ import { useNavigate } from 'react-router-dom';
 import {
   RpcMessage,
   StartWifiProvisioningRequestT,
-  StopWifiProvisioningRquestT,
+  StopWifiProvisioningRequestT,
   WifiProvisioningStatus,
-  WifiProvisioningStatusResponseT,
+  WifiProvisioningStatusResponseT
 } from 'solarxr-protocol';
 import { useLayout } from '../../../hooks/layout';
 import { useOnboarding } from '../../../hooks/onboarding';
@@ -23,7 +23,8 @@ import { TrackerCard } from '../../tracker/TrackerCard';
 const BOTTOM_HEIGHT = 80;
 
 const statusLabelMap = {
-  [WifiProvisioningStatus.NONE]: 'onboarding-connect_tracker-connection_status-none',
+  [WifiProvisioningStatus.NONE]:
+    'onboarding-connect_tracker-connection_status-none',
   [WifiProvisioningStatus.SERIAL_INIT]:
     'onboarding-connect_tracker-connection_status-serial_init',
   [WifiProvisioningStatus.PROVISIONING]:
@@ -66,8 +67,8 @@ export function ConnectTrackersPage() {
     sendRPCPacket(RpcMessage.StartWifiProvisioningRequest, req);
     return () => {
       sendRPCPacket(
-        RpcMessage.StopWifiProvisioningRquest,
-        new StopWifiProvisioningRquestT()
+        RpcMessage.StopWifiProvisioningRequest,
+        new StopWifiProvisioningRequestT()
       );
     };
   }, []);
