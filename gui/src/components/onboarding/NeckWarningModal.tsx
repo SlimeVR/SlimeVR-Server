@@ -1,4 +1,3 @@
-import { BodyPart } from 'solarxr-protocol';
 import { Button } from '../commons/Button';
 import { WarningBox } from '../commons/TipBox';
 import { Localized, useLocalization } from '@fluent/react';

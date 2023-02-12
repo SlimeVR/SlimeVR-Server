@@ -25,7 +25,7 @@ import { TrackerSelectionMenu } from './TrackerSelectionMenu';
 
 export type BodyPartError = {
   label: string | undefined;
-  affected_roles: BodyPart[];
+  affectedRoles: BodyPart[];
 };
 
 export function TrackersAssignPage() {
@@ -74,7 +74,7 @@ export function TrackersAssignPage() {
       if (unassignedRoles.every(([, state]) => state)) return;
 
       return {
-        affected_roles: unassignedRoles
+        affectedRoles: unassignedRoles
           .filter(([, state]) => !state)
           .flatMap(([part]) => part),
         label: l10n.getString(
@@ -202,7 +202,7 @@ export function TrackersAssignPage() {
             <div className="flex flex-col flex-grow gap-3 rounded-xl fill-background-50">
               <BodyAssignment
                 onlyAssigned={false}
-                highlightedRoles={firstError?.affected_roles || []}
+                highlightedRoles={firstError?.affectedRoles || []}
                 rolesWithErrors={rolesWithErrors}
                 advanced={advanced}
                 onRoleSelected={tryOpenChokerWarning}
