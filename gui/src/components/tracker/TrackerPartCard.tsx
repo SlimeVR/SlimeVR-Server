@@ -5,6 +5,7 @@ import { FlatDeviceTracker } from '../../hooks/app';
 import { useTracker } from '../../hooks/tracker';
 import { Typography } from '../commons/Typography';
 import { useLocalization } from '@fluent/react';
+import { WarningIcon } from '../commons/icon/WarningIcon';
 
 function Tracker({
   tracker,
@@ -34,11 +35,13 @@ export function TrackerPartCard({
   td,
   role,
   direction,
+  roleError,
   onlyAssigned,
   onClick,
 }: {
   td: FlatDeviceTracker[];
   role: BodyPart;
+  roleError: string | undefined;
   onlyAssigned: boolean;
   direction: 'left' | 'right';
   onClick?: MouseEventHandler<HTMLDivElement>;
@@ -71,7 +74,7 @@ export function TrackerPartCard({
     (showCard && (
       <div
         className={classNames(
-          'flex flex-col gap-1 control w-32 hover:bg-background-50 px-2 py-1 rounded-md',
+          'flex flex-col gap-1 control w-32 hover:bg-background-50 px-2 py-1 rounded-md relative',
           direction === 'left' ? 'items-start' : 'items-end'
         )}
         id={BodyPart[role]}
@@ -82,6 +85,16 @@ export function TrackerPartCard({
           }px  #BB8AE5`,
         }}
       >
+        {roleError && (
+          <div
+            className={classNames(
+              'absolute text-status-warning scale-75 -top-1',
+              direction === 'right' ? '-right-6' : '-left-6'
+            )}
+          >
+            <WarningIcon></WarningIcon>
+          </div>
+        )}
         <Typography color="secondary">
           {l10n.getString('body_part-' + BodyPart[role])}
         </Typography>
