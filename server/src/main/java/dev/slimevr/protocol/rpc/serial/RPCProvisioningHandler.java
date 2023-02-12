@@ -25,7 +25,7 @@ public record RPCProvisioningHandler(RPCHandler rpcHandler, ProtocolAPI api)
 			);
 		rpcHandler
 			.registerPacketListener(
-				RpcMessage.StopWifiProvisioningRquest,
+				RpcMessage.StopWifiProvisioningRequest,
 				this::onStopWifiProvisioningRequest
 			);
 
@@ -48,8 +48,8 @@ public record RPCProvisioningHandler(RPCHandler rpcHandler, ProtocolAPI api)
 		GenericConnection conn,
 		RpcMessageHeader messageHeader
 	) {
-		StopWifiProvisioningRquest req = (StopWifiProvisioningRquest) messageHeader
-			.message(new StopWifiProvisioningRquest());
+		StopWifiProvisioningRequest req = (StopWifiProvisioningRequest) messageHeader
+			.message(new StopWifiProvisioningRequest());
 		if (req == null)
 			return;
 		conn.getContext().setUseProvisioning(false);
