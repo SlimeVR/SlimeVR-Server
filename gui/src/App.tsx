@@ -38,6 +38,7 @@ import { TrackerSettingsPage } from './components/tracker/TrackerSettings';
 import { useConfig } from './hooks/config';
 import { OSCRouterSettings } from './components/settings/pages/OSCRouterSettings';
 import { useLocalization } from '@fluent/react';
+import { os } from '@tauri-apps/api';
 
 function Layout() {
   const { loading } = useConfig();
@@ -111,6 +112,18 @@ function Layout() {
 export default function App() {
   const websocketAPI = useProvideWebsocketApi();
   const { l10n } = useLocalization();
+
+  useEffect(() => {
+    os.type().then((type) => {
+      document.body.classList.add(type.toLowerCase());
+    });
+
+    return () => {
+      os.type().then((type) => {
+        document.body.classList.remove(type.toLowerCase());
+      });
+    };
+  }, []);
 
   useEffect(() => {
     const unlisten = listen(
