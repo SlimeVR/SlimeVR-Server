@@ -86,9 +86,9 @@ export function TrackerRotCell({
   const { useRawRotationEulerDegrees, useRefAdjRotationEulerDegrees } =
     useTracker(tracker);
 
-  const rot = referenceAdjusted
-    ? useRefAdjRotationEulerDegrees()
-    : useRawRotationEulerDegrees();
+  const rotationRaw = useRawRotationEulerDegrees();
+  const rotationRef = useRefAdjRotationEulerDegrees() || rotationRaw;
+  const rot = referenceAdjusted ? rotationRef : rotationRaw;
 
   return (
     <Typography color={color} whitespace="whitespace-nowrap">
