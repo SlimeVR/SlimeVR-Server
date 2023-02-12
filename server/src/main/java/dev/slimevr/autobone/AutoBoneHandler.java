@@ -316,17 +316,35 @@ public class AutoBoneHandler {
 						continue;
 
 					TrackerFrame frame = tracker.safeGetFrame(0);
-					if (frame == null || !frame.hasData(TrackerFrameData.DESIGNATION))
+					if (frame == null || frame.getBodyPosition() == null)
 						continue;
 
-					if (trackerInfo.length() > 0) {
+					// Add a comma if this is not the first item listed
+					if (!trackerInfo.isEmpty()) {
 						trackerInfo.append(", ");
 					}
 
-					trackerInfo.append(frame.designation.designation);
+					trackerInfo.append(frame.getBodyPosition().designation);
 
+					// Represent the data flags
+					StringBuilder trackerFlags = new StringBuilder();
+					if (frame.hasData(TrackerFrameData.ROTATION)) {
+						trackerFlags.append("R");
+					}
 					if (frame.hasData(TrackerFrameData.POSITION)) {
-						trackerInfo.append(" (P)");
+						trackerFlags.append("P");
+					}
+					if (frame.hasData(TrackerFrameData.ACCELERATION)) {
+						trackerFlags.append("A");
+					}
+					if (frame.hasData(TrackerFrameData.RAW_ROTATION)) {
+						trackerFlags.append("r");
+					}
+
+					// If there are data flags, print them in brackets after the
+					// designation
+					if (!trackerFlags.isEmpty()) {
+						trackerInfo.append(" (").append(trackerFlags).append(")");
 					}
 				}
 

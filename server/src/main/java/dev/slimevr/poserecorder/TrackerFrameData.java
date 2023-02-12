@@ -2,7 +2,8 @@ package dev.slimevr.poserecorder;
 
 public enum TrackerFrameData {
 
-	DESIGNATION(0), ROTATION(1), POSITION(2),;
+	DESIGNATION_STRING(0), ROTATION(1), POSITION(2), DESIGNATION_ENUM(3), ACCELERATION(4),
+	RAW_ROTATION(5),;
 
 	public final int flag;
 

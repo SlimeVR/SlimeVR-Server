@@ -7,7 +7,6 @@ import com.jme3.math.FastMath;
 import dev.slimevr.autobone.AutoBoneTrainingStep;
 import dev.slimevr.poserecorder.PoseFrameTracker;
 import dev.slimevr.poserecorder.TrackerFrame;
-import dev.slimevr.poserecorder.TrackerFrameData;
 import dev.slimevr.tracking.processor.skeleton.HumanSkeleton;
 import dev.slimevr.tracking.trackers.ComputedTracker;
 
@@ -40,9 +39,9 @@ public class PositionOffsetError implements IAutoBoneError {
 			TrackerFrame trackerFrame1 = tracker.safeGetFrame(cursor1);
 			if (
 				trackerFrame1 == null
-					|| !trackerFrame1.hasData(TrackerFrameData.POSITION)
-					|| !trackerFrame1.hasData(TrackerFrameData.DESIGNATION)
-					|| trackerFrame1.designation.trackerRole.isEmpty()
+					|| !trackerFrame1.hasPosition()
+					|| trackerFrame1.getBodyPosition() == null
+					|| trackerFrame1.getBodyPosition().trackerRole.isEmpty()
 			) {
 				continue;
 			}
@@ -50,21 +49,21 @@ public class PositionOffsetError implements IAutoBoneError {
 			TrackerFrame trackerFrame2 = tracker.safeGetFrame(cursor2);
 			if (
 				trackerFrame2 == null
-					|| !trackerFrame2.hasData(TrackerFrameData.POSITION)
-					|| !trackerFrame2.hasData(TrackerFrameData.DESIGNATION)
-					|| trackerFrame2.designation.trackerRole.isEmpty()
+					|| !trackerFrame2.hasPosition()
+					|| trackerFrame2.getBodyPosition() == null
+					|| trackerFrame2.getBodyPosition().trackerRole.isEmpty()
 			) {
 				continue;
 			}
 
 			ComputedTracker computedTracker1 = skeleton1
-				.getComputedTracker(trackerFrame1.designation.trackerRole.get());
+				.getComputedTracker(trackerFrame1.getBodyPosition().trackerRole.get());
 			if (computedTracker1 == null) {
 				continue;
 			}
 
 			ComputedTracker computedTracker2 = skeleton2
-				.getComputedTracker(trackerFrame2.designation.trackerRole.get());
+				.getComputedTracker(trackerFrame2.getBodyPosition().trackerRole.get());
 			if (computedTracker2 == null) {
 				continue;
 			}

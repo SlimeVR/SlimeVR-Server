@@ -15,6 +15,21 @@ public final class PoseFrameIO {
 		// Do not allow instantiating
 	}
 
+	private static void writeVector3f(DataOutputStream outputStream, Vector3f vector)
+		throws IOException {
+		outputStream.writeFloat(vector.getX());
+		outputStream.writeFloat(vector.getY());
+		outputStream.writeFloat(vector.getZ());
+	}
+
+	private static void writeQuaternion(DataOutputStream outputStream, Quaternion quaternion)
+		throws IOException {
+		outputStream.writeFloat(quaternion.getX());
+		outputStream.writeFloat(quaternion.getY());
+		outputStream.writeFloat(quaternion.getZ());
+		outputStream.writeFloat(quaternion.getW());
+	}
+
 	public static boolean writeFrames(DataOutputStream outputStream, PoseFrames frames) {
 		try {
 			if (frames != null) {
@@ -31,21 +46,28 @@ public final class PoseFrameIO {
 
 						outputStream.writeInt(trackerFrame.getDataFlags());
 
-						if (trackerFrame.hasData(TrackerFrameData.DESIGNATION)) {
+						if (trackerFrame.hasData(TrackerFrameData.DESIGNATION_STRING)) {
 							outputStream.writeUTF(trackerFrame.designation.designation);
 						}
 
 						if (trackerFrame.hasData(TrackerFrameData.ROTATION)) {
-							outputStream.writeFloat(trackerFrame.rotation.getX());
-							outputStream.writeFloat(trackerFrame.rotation.getY());
-							outputStream.writeFloat(trackerFrame.rotation.getZ());
-							outputStream.writeFloat(trackerFrame.rotation.getW());
+							writeQuaternion(outputStream, trackerFrame.rotation);
 						}
 
 						if (trackerFrame.hasData(TrackerFrameData.POSITION)) {
-							outputStream.writeFloat(trackerFrame.position.getX());
-							outputStream.writeFloat(trackerFrame.position.getY());
-							outputStream.writeFloat(trackerFrame.position.getZ());
+							writeVector3f(outputStream, trackerFrame.position);
+						}
+
+						if (trackerFrame.hasData(TrackerFrameData.DESIGNATION_ENUM)) {
+							outputStream.writeInt(trackerFrame.designation.ordinal());
+						}
+
+						if (trackerFrame.hasData(TrackerFrameData.ACCELERATION)) {
+							writeVector3f(outputStream, trackerFrame.acceleration);
+						}
+
+						if (trackerFrame.hasData(TrackerFrameData.RAW_ROTATION)) {
+							writeQuaternion(outputStream, trackerFrame.rawRotation);
 						}
 					}
 				}
@@ -75,6 +97,23 @@ public final class PoseFrameIO {
 		return true;
 	}
 
+	private static Vector3f readVector3f(DataInputStream inputStream) throws IOException {
+		return new Vector3f(
+			inputStream.readFloat(),
+			inputStream.readFloat(),
+			inputStream.readFloat()
+		);
+	}
+
+	private static Quaternion readQuaternion(DataInputStream inputStream) throws IOException {
+		return new Quaternion(
+			inputStream.readFloat(),
+			inputStream.readFloat(),
+			inputStream.readFloat(),
+			inputStream.readFloat()
+		);
+	}
+
 	public static PoseFrames readFrames(DataInputStream inputStream) {
 		try {
 
@@ -91,7 +130,7 @@ public final class PoseFrameIO {
 					int dataFlags = inputStream.readInt();
 
 					TrackerPosition designation = null;
-					if (TrackerFrameData.DESIGNATION.check(dataFlags)) {
+					if (TrackerFrameData.DESIGNATION_STRING.check(dataFlags)) {
 						designation = TrackerPosition
 							.getByDesignation(inputStream.readUTF())
 							.orElse(null);
@@ -99,22 +138,38 @@ public final class PoseFrameIO {
 
 					Quaternion rotation = null;
 					if (TrackerFrameData.ROTATION.check(dataFlags)) {
-						float quatX = inputStream.readFloat();
-						float quatY = inputStream.readFloat();
-						float quatZ = inputStream.readFloat();
-						float quatW = inputStream.readFloat();
-						rotation = new Quaternion(quatX, quatY, quatZ, quatW);
+						rotation = readQuaternion(inputStream);
 					}
 
 					Vector3f position = null;
 					if (TrackerFrameData.POSITION.check(dataFlags)) {
-						float posX = inputStream.readFloat();
-						float posY = inputStream.readFloat();
-						float posZ = inputStream.readFloat();
-						position = new Vector3f(posX, posY, posZ);
+						position = readVector3f(inputStream);
 					}
 
-					trackerFrames.add(new TrackerFrame(designation, rotation, position));
+					if (TrackerFrameData.DESIGNATION_ENUM.check(dataFlags)) {
+						designation = TrackerPosition.values[inputStream.readInt()];
+					}
+
+					Vector3f acceleration = null;
+					if (TrackerFrameData.ACCELERATION.check(dataFlags)) {
+						acceleration = readVector3f(inputStream);
+					}
+
+					Quaternion rawRotation = null;
+					if (TrackerFrameData.RAW_ROTATION.check(dataFlags)) {
+						rawRotation = readQuaternion(inputStream);
+					}
+
+					trackerFrames
+						.add(
+							new TrackerFrame(
+								designation,
+								rotation,
+								position,
+								acceleration,
+								rawRotation
+							)
+						);
 				}
 
 				trackers.add(new PoseFrameTracker(name, trackerFrames));

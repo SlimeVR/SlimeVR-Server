@@ -7,7 +7,6 @@ import com.jme3.math.FastMath;
 import dev.slimevr.autobone.AutoBoneTrainingStep;
 import dev.slimevr.poserecorder.PoseFrameTracker;
 import dev.slimevr.poserecorder.TrackerFrame;
-import dev.slimevr.poserecorder.TrackerFrameData;
 import dev.slimevr.tracking.processor.skeleton.HumanSkeleton;
 import dev.slimevr.tracking.trackers.ComputedTracker;
 
@@ -42,15 +41,15 @@ public class PositionError implements IAutoBoneError {
 			TrackerFrame trackerFrame = tracker.safeGetFrame(cursor);
 			if (
 				trackerFrame == null
-					|| !trackerFrame.hasData(TrackerFrameData.POSITION)
-					|| !trackerFrame.hasData(TrackerFrameData.DESIGNATION)
-					|| trackerFrame.designation.trackerRole.isEmpty()
+					|| !trackerFrame.hasPosition()
+					|| trackerFrame.getBodyPosition() == null
+					|| trackerFrame.getBodyPosition().trackerRole.isEmpty()
 			) {
 				continue;
 			}
 
 			ComputedTracker computedTracker = skeleton
-				.getComputedTracker(trackerFrame.designation.trackerRole.get());
+				.getComputedTracker(trackerFrame.getBodyPosition().trackerRole.get());
 			if (computedTracker != null) {
 				offset += FastMath.abs(computedTracker.position.distance(trackerFrame.position));
 				offsetCount++;
