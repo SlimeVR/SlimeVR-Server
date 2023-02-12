@@ -419,7 +419,6 @@ public class AutoBoneHandler {
 	public void applyValues() {
 		autoBone.applyAndSaveConfig();
 		announceProcessStatus(AutoBoneProcessType.APPLY, "Adjusted values applied!", true, true);
-		// TODO Update GUI values after applying? Is that needed here?
 	}
 
 }

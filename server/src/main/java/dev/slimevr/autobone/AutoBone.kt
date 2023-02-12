@@ -204,14 +204,6 @@ class AutoBone(server: VRServer) {
 		 */
 		get() = server.humanPoseManager
 
-	fun applyAndSaveConfig() {
-		if (!applyAndSaveConfig(humanPoseManager)) {
-			// Unable to apply to skeleton, save directly
-			// saveConfigs();
-		}
-	}
-
-	@JvmOverloads
 	fun applyConfig(
 		configConsumer: BiConsumer<SkeletonConfigOffsets, Float>,
 		offsets: Map<BoneType, Float> = this.offsets
@@ -286,7 +278,8 @@ class AutoBone(server: VRServer) {
 		}, offsets)
 	}
 
-	fun applyAndSaveConfig(humanPoseManager: HumanPoseManager?): Boolean {
+	@JvmOverloads
+	fun applyAndSaveConfig(humanPoseManager: HumanPoseManager? = this.humanPoseManager): Boolean {
 		if (humanPoseManager == null) return false
 		if (!applyConfig(humanPoseManager)) return false
 		humanPoseManager.saveConfig()
@@ -384,24 +377,10 @@ class AutoBone(server: VRServer) {
 	}
 
 	@Throws(AutoBoneException::class)
-	fun processFrames(frames: PoseFrames, epochCallback: Consumer<Epoch?>?): AutoBoneResults {
-		return processFrames(frames, -1f, epochCallback)
-	}
-
-	@Throws(AutoBoneException::class)
 	fun processFrames(
 		frames: PoseFrames,
-		targetHeight: Float,
-		epochCallback: Consumer<Epoch?>?
-	): AutoBoneResults {
-		return processFrames(frames, true, targetHeight, epochCallback)
-	}
-
-	@Throws(AutoBoneException::class)
-	fun processFrames(
-		frames: PoseFrames,
-		calcInitError: Boolean,
-		targetHeight: Float,
+		calcInitError: Boolean = true,
+		targetHeight: Float = -1f,
 		epochCallback: Consumer<Epoch?>?
 	): AutoBoneResults {
 		var targetHeight = targetHeight
