@@ -28,6 +28,7 @@ public class WebsocketAPI extends WebSocketServer implements ProtocolAPIServer {
 		this.protocolAPI = protocolAPI;
 
 		this.protocolAPI.registerAPIServer(this);
+		setReuseAddr(true);
 	}
 
 	@Override

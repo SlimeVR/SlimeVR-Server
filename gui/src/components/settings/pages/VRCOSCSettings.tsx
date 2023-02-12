@@ -9,7 +9,7 @@ import {
   RpcMessage,
   SettingsRequestT,
   SettingsResponseT,
-  VRCOSCSettingsT
+  VRCOSCSettingsT,
 } from 'solarxr-protocol';
 import { useWebsocketAPI } from '../../../hooks/websocket-api';
 import { CheckBox } from '../../commons/Checkbox';
@@ -64,10 +64,9 @@ export function VRCOSCSettings() {
   const { state } = useLocation();
   const pageRef = useRef<HTMLFormElement | null>(null);
 
-  const { reset, control, watch, handleSubmit, register } =
-    useForm<VRCOSCSettingsForm>({
-      defaultValues: defaultValues,
-    });
+  const { reset, control, watch, handleSubmit } = useForm<VRCOSCSettingsForm>({
+    defaultValues: defaultValues,
+  });
 
   const onSubmit = (values: VRCOSCSettingsForm) => {
     const settings = new ChangeSettingsRequestT();

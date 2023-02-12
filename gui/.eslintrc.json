@@ -27,7 +27,15 @@
     "no-inline-styles": "off",
     "@typescript-eslint/no-explicit-any": "off",
     "react/no-unescaped-entities": "off",
-    "prettier/prettier": "warn"
+    "prettier/prettier": "warn",
+    "camelcase": "error",
+    "@typescript-eslint/no-unused-vars": [
+      "warn",
+      {
+        "argsIgnorePattern": "^_",
+        "varsIgnorePattern": "^_"
+      }
+    ]
   },
   "settings": {
     "import/resolver": {

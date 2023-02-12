@@ -9,7 +9,7 @@ import { useWebsocketAPI } from '../hooks/websocket-api';
 import { BigButton } from './commons/BigButton';
 import { RecordIcon } from './commons/icon/RecordIcon';
 
-export function BVHButton() {
+export function BVHButton(props: React.HTMLAttributes<HTMLButtonElement>) {
   const { l10n } = useLocalization();
   const { useRPCPacket, sendRPCPacket } = useWebsocketAPI();
   const [recording, setRecording] = useState(false);
@@ -29,6 +29,7 @@ export function BVHButton() {
       text={l10n.getString(recording ? 'bvh-recording' : 'bvh-start_recording')}
       icon={<RecordIcon width={20} />}
       onClick={toggleBVH}
+      className={props.className}
     ></BigButton>
   );
 }

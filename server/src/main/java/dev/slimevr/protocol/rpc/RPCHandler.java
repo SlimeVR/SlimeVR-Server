@@ -22,6 +22,8 @@ import solarxr_protocol.MessageBundle;
 import solarxr_protocol.datatypes.TransactionId;
 import solarxr_protocol.rpc.*;
 
+import java.net.InetAddress;
+import java.net.UnknownHostException;
 import java.util.EnumMap;
 import java.util.Map.Entry;
 import java.util.function.BiConsumer;
@@ -70,7 +72,27 @@ public class RPCHandler extends ProtocolHandler<RpcMessageHeader>
 			this::onOverlayDisplayModeRequest
 		);
 
+		registerPacketListener(RpcMessage.ServerInfosRequest, this::onServerInfosRequest);
+
 		this.api.server.getAutoBoneHandler().addListener(this);
+	}
+
+	private void onServerInfosRequest(
+		GenericConnection conn,
+		RpcMessageHeader messageHeader
+	) {
+		FlatBufferBuilder fbb = new FlatBufferBuilder(32);
+
+		try {
+			String localIp = InetAddress.getLocalHost().getHostAddress();
+			int response = ServerInfosResponse
+				.createServerInfosResponse(fbb, fbb.createString(localIp));
+			int outbound = this.createRPCMessage(fbb, RpcMessage.ServerInfosResponse, response);
+			fbb.finish(outbound);
+			conn.send(fbb.dataBuffer());
+		} catch (UnknownHostException e) {
+			throw new RuntimeException(e);
+		}
 	}
 
 	private void onOverlayDisplayModeRequest(

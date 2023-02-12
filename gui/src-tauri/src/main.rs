@@ -62,11 +62,19 @@ fn get_launch_path(cli: Cli) -> Option<PathBuf> {
 		// AppImage passes the fakeroot in `APPDIR` env var.
 		env::var_os("APPDIR").map(|x| PathBuf::from(x)),
 		env::current_dir().ok(),
+		// getcwd in Mac can't be trusted, so let's get the executable's path
+		env::current_exe()
+			.map(|mut f| {
+				f.pop();
+				f
+			})
+			.ok(),
 		Some(PathBuf::from(env!("CARGO_MANIFEST_DIR"))),
 		// For flatpak container
 		Some(PathBuf::from("/app/share/slimevr/")),
 		Some(PathBuf::from("/usr/share/slimevr/")),
 	];
+
 	paths
 		.into_iter()
 		.filter_map(|x| x)
@@ -191,10 +199,8 @@ fn main() {
 		None
 	};
 
-	let builder = tauri::Builder::default();
-	#[cfg(not(target_os = "macos"))]
-	let builder = builder.plugin(tauri_plugin_window_state::Builder::default().build());
-	builder
+	let builder = tauri::Builder::default()
+		.plugin(tauri_plugin_window_state::Builder::default().build())
 		.setup(|app| {
 			if let Some(mut recv) = stdout_recv {
 				let app_handle = app.app_handle();
@@ -224,8 +230,29 @@ fn main() {
 			Ok(())
 		})
 		//
-		.run(tauri::generate_context!())
-		.expect("error while running tauri application");
+		.run(tauri::generate_context!());
+	match builder {
+		#[cfg(windows)]
+		// Often triggered when the user doesn't have webview2 installed
+		Err(tauri::Error::Runtime(tauri_runtime::Error::CreateWebview(error))) => {
+			// I should log this anyways, don't want to dig a grave by not logging the error.
+			log::error!("CreateWebview error {}", error);
+
+			use tauri::api::dialog::{
+				blocking::MessageDialogBuilder, MessageDialogButtons, MessageDialogKind,
+			};
+
+			let confirm = MessageDialogBuilder::new("SlimeVR", "You seem to have a faulty installation of WebView2. You can check a guide on how to fix that in the docs!")
+				.buttons(MessageDialogButtons::OkCancel)
+				.kind(MessageDialogKind::Error)
+				.show();
+			if confirm {
+				open::that("https://docs.slimevr.dev/common-issues.html#webview2-is-missing--slimevr-gui-crashes-immediately--panicked-at--webview2error").unwrap();
+			}
+			return;
+		}
+		_ => builder.expect("error while running tauri application"),
+	}
 }
 
 #[cfg(windows)]
@@ -291,8 +318,12 @@ fn valid_java_paths() -> Vec<(OsString, i32)> {
 	let mut childs = vec![];
 	cfg_if::cfg_if! {
 		if #[cfg(target_os = "macos")] {
-			// TODO: Actually use macOS paths
-			let libs = which::which_all(JAVA_BIN).unwrap();
+			// macOS JVMs are saved on multiple possible places,
+			// /Library/Java/JavaVirtualMachines are the ones installed by an admin
+			// /Users/$USER/Library/Java/JavaVirtualMachines are the ones installed locally by the user
+			let libs = glob::glob(concatcp!("/Library/Java/JavaVirtualMachines/*/Contents/Home/bin/", JAVA_BIN))
+				.unwrap()
+				.filter_map(|res| res.ok());
 		} else if #[cfg(unix)] {
 			// Linux JVMs are saved on /usr/lib/jvm from what I found out,
 			// there is usually a default dir and a default-runtime dir also which are linked

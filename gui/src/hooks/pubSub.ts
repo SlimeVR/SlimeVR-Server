@@ -16,9 +16,7 @@ export type PayloadType = MessageT['payloadType'];
 
 export function usePubSub() {
   const { sendPubSubPacket, usePubSubPacket } = useWebsocketAPI();
-  const [handleTopics, setHandleTopics] = useState<{ [key: number]: TopicIdT }>(
-    {}
-  );
+  const [handleTopics, setHandleTopics] = useState<{ [key: number]: TopicIdT }>({});
 
   const subscribe = (
     topicId: TopicIdT,
@@ -78,11 +76,7 @@ export function usePubSub() {
   };
 }
 
-export const topic = ({
-  appName,
-  organization,
-  topic,
-}: Omit<TopicIdT, 'pack'>) =>
+export const topic = ({ appName, organization, topic }: Omit<TopicIdT, 'pack'>) =>
   Object.assign(new TopicIdT(), { appName, organization, topic });
 
 export const OVERLAY_DISPLAY_SETTINGS_TOPIC = topic({

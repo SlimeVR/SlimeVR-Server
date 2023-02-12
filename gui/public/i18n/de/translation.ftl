@@ -104,6 +104,10 @@ widget-overlay = Visualisierung
 widget-overlay-is_visible_label = Visualisierung in SteamVR anzeigen
 widget-overlay-is_mirrored_label = Visualisierung spiegeln
 
+## Widget: Drift compensation
+
+widget-drift_compensation-clear = Driftkompensation zurücksetzen
+
 ## Widget: Developer settings
 
 widget-developer_mode = Entwicklermodus

@@ -19,22 +19,14 @@ export interface WebSocketApi {
   isFirstConnection: boolean;
   reconnect: () => void;
   useRPCPacket: <T>(type: RpcMessage, callback: (packet: T) => void) => void;
-  useDataFeedPacket: <T>(
-    type: DataFeedMessage,
-    callback: (packet: T) => void
-  ) => void;
+  useDataFeedPacket: <T>(type: DataFeedMessage, callback: (packet: T) => void) => void;
   sendRPCPacket: (type: RpcMessage, data: RPCPacketType) => void;
   sendDataFeedPacket: (type: DataFeedMessage, data: DataFeedPacketType) => void;
-  usePubSubPacket: <T>(
-    type: PubSubUnion,
-    callback: (packet: T) => void
-  ) => void;
+  usePubSubPacket: <T>(type: PubSubUnion, callback: (packet: T) => void) => void;
   sendPubSubPacket: (type: PubSubUnion, data: PubSubPacketType) => void;
 }
 
-export const WebSocketApiContext = createContext<WebSocketApi>(
-  undefined as never
-);
+export const WebSocketApiContext = createContext<WebSocketApi>(undefined as never);
 
 export type RPCPacketType = RpcMessageHeaderT['message'];
 export type PubSubPacketType = PubSubHeaderT['u'];
@@ -142,10 +134,7 @@ export function useProvideWebsocketApi(): WebSocketApi {
     webSocketRef.current.send(fbb.asUint8Array());
   };
 
-  const sendPubSubPacket = (
-    type: PubSubUnion,
-    data: PubSubPacketType
-  ): void => {
+  const sendPubSubPacket = (type: PubSubUnion, data: PubSubPacketType): void => {
     if (webSocketRef?.current?.readyState !== WebSocket.OPEN) return;
     const fbb = new Builder(1);
 
@@ -198,18 +187,12 @@ export function useProvideWebsocketApi(): WebSocketApi {
     isConnected,
     isFirstConnection,
     reconnect,
-    useDataFeedPacket: <T>(
-      type: DataFeedMessage,
-      callback: (packet: T) => void
-    ) => {
+    useDataFeedPacket: <T>(type: DataFeedMessage, callback: (packet: T) => void) => {
       useEffect(() => {
         const onEvent = (event: CustomEventInit) => {
           callback(event.detail);
         };
-        datafeedlistenerRef.current.addEventListener(
-          DataFeedMessage[type],
-          onEvent
-        );
+        datafeedlistenerRef.current.addEventListener(DataFeedMessage[type], onEvent);
         return () => {
           datafeedlistenerRef.current.removeEventListener(
             DataFeedMessage[type],
@@ -236,10 +219,7 @@ export function useProvideWebsocketApi(): WebSocketApi {
         };
         pubsublistenerRef.current.addEventListener(PubSubUnion[type], onEvent);
         return () => {
-          pubsublistenerRef.current.removeEventListener(
-            PubSubUnion[type],
-            onEvent
-          );
+          pubsublistenerRef.current.removeEventListener(PubSubUnion[type], onEvent);
         };
       }, [callback, type]);
     },

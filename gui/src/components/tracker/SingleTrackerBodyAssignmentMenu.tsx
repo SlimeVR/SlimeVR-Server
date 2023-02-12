@@ -7,11 +7,11 @@ import { CheckBox } from '../commons/Checkbox';
 import { Typography } from '../commons/Typography';
 import { BodyAssignment } from '../onboarding/BodyAssignment';
 import { useLocalization } from '@fluent/react';
-import { useState } from 'react';
 import { NeckWarningModal } from '../onboarding/NeckWarningModal';
+import { useChokerWarning } from '../../hooks/choker-warning';
 
 export function SingleTrackerBodyAssignmentMenu({
-  isOpen = true,
+  isOpen,
   onClose,
   onRoleSelected,
 }: {
@@ -23,14 +23,17 @@ export function SingleTrackerBodyAssignmentMenu({
   const { control, watch } = useForm<{ advanced: boolean }>({
     defaultValues: { advanced: false },
   });
-  const [bodyPart, setBodyPart] = useState<null | BodyPart>(null);
-  const [neckVerified, setNeckVerified] = useState(true);
   const { advanced } = watch();
+
+  const { closeChokerWarning, tryOpenChokerWarning, shouldShowChokerWarn } =
+    useChokerWarning({
+      next: onRoleSelected,
+    });
 
   return (
     <>
       <ReactModal
-        isOpen={isOpen && neckVerified}
+        isOpen={isOpen}
         shouldCloseOnOverlayClick
         shouldCloseOnEsc
         onRequestClose={onClose}
@@ -73,10 +76,7 @@ export function SingleTrackerBodyAssignmentMenu({
                 <BodyAssignment
                   onlyAssigned={false}
                   advanced={advanced}
-                  onRoleSelected={(b) => {
-                    setBodyPart(b);
-                    setNeckVerified(false);
-                  }}
+                  onRoleSelected={tryOpenChokerWarning}
                 ></BodyAssignment>
                 <div className="flex justify-center">
                   <Button
@@ -91,35 +91,14 @@ export function SingleTrackerBodyAssignmentMenu({
           </div>
         </div>
       </ReactModal>
-      {/**
-       * This is a nightmare so, we pass the overlay class to respect styling of the
-       * other modal.
-       * `onClose`: we want to update the `bodyPart` to null because we need to know if the
-       * `bodyPart` is no longer being chosen in the `NeckWarningModal`, if we don't do this
-       * then the state of `bodyPart` (and use `BodyPart.NONE` instead), this will later
-       * propagate to `setShown` and unassign the tracker.
-       * `setShown`: is more simple than what I just explained above, we only want to know
-       * when the `NeckWarningModal` wants to set to true `neckVerified`. We don't want it to
-       * reset to false in any circumstance because then the main modal won't show because we
-       * check for `neckVerified`.
-       */}
+
       <NeckWarningModal
-        isOpen={isOpen}
-        hasShown={neckVerified}
-        bodyPart={bodyPart}
+        isOpen={shouldShowChokerWarn}
         overlayClassName={classNames(
           'fixed top-0 right-0 left-0 bottom-0 flex flex-col items-center w-full h-full justify-center bg-black bg-opacity-90 z-20'
         )}
-        onClose={() => {
-          setBodyPart(null);
-          setNeckVerified(true);
-        }}
-        setShown={(bool) => {
-          if (bool && bodyPart !== null) {
-            onRoleSelected(bodyPart);
-            setNeckVerified(true);
-          }
-        }}
+        onClose={() => closeChokerWarning(true)}
+        accept={() => closeChokerWarning(false)}
       ></NeckWarningModal>
     </>
   );

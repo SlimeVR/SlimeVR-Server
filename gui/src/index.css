@@ -4,18 +4,38 @@
 
 body {
   font-variant-numeric: tabular-nums;
-  font-family: 'poppins', sans-serif, emoji, "Twemoji Country Flags";
+  font-family: 'poppins', sans-serif, 'Twemoji Chromium', emoji;
   height: 100vh;
   width: 100vw;
   user-select: none;
   background: theme('colors.background.20');
+
+  /**
+    * Scrollbars for Firefox
+    */
+  scrollbar-color: theme('colors.background.50') theme('colors.background.60');
+  scrollbar-width: thin;
+}
+
+@media (-webkit-animation) {
+  body {
+    font-family: 'poppins', sans-serif, 'Twemoji Webkit', emoji;
+  }
+
+  body.linux {
+    font-family: 'poppins', sans-serif, emoji;
+  }
 }
 
 @font-face {
-  font-family: "Twemoji Country Flags";
-  unicode-range: U+1F1E6-1F1FF, U+1F3F4, U+E0062-E0063, U+E0065, U+E0067,
-    U+E006C, U+E006E, U+E0073-E0074, U+E0077, U+E007F;
-  src: url('/fonts/TwemojiCountryFlags.woff2') format('woff2');
+  font-family: 'Twemoji Webkit';
+  src: url('/fonts/twemoji-picosvg.ttf') format('truetype');
+  font-display: swap;
+}
+
+@font-face {
+  font-family: 'Twemoji Chromium';
+  src: url('/fonts/twemoji-glyf_colr_1.ttf') format('truetype');
   font-display: swap;
 }
 
@@ -49,6 +69,18 @@ html {
 
 ::-webkit-scrollbar-thumb:hover {
   background: theme('colors.background.60');
+}
+
+.dropdown-scroll {
+  scrollbar-color: theme('colors.background.40') theme('colors.background.50');
+}
+
+.dropdown-scroll::-webkit-scrollbar-thumb {
+  background: theme('colors.background.40');
+}
+
+.dropdown-scroll::-webkit-scrollbar-thumb:hover {
+  background: theme('colors.background.50');
 }
 
 input::-ms-reveal,

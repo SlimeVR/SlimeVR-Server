@@ -38,6 +38,7 @@ import { TrackerSettingsPage } from './components/tracker/TrackerSettings';
 import { useConfig } from './hooks/config';
 import { OSCRouterSettings } from './components/settings/pages/OSCRouterSettings';
 import { useLocalization } from '@fluent/react';
+import { os } from '@tauri-apps/api';
 
 function Layout() {
   const { loading } = useConfig();
@@ -113,11 +114,23 @@ export default function App() {
   const { l10n } = useLocalization();
 
   useEffect(() => {
+    os.type().then((type) => {
+      document.body.classList.add(type.toLowerCase());
+    });
+
+    return () => {
+      os.type().then((type) => {
+        document.body.classList.remove(type.toLowerCase());
+      });
+    };
+  }, []);
+
+  useEffect(() => {
     const unlisten = listen(
       'server-status',
       (event: Event<[string, string]>) => {
-        const [event_type, s] = event.payload;
-        if ('stderr' === event_type) {
+        const [eventType, s] = event.payload;
+        if ('stderr' === eventType) {
           // This strange invocation is what lets us lose the line information in the console
           // See more here: https://stackoverflow.com/a/48994308
           setTimeout(
@@ -128,7 +141,7 @@ export default function App() {
               'color:red'
             )
           );
-        } else if (event_type === 'stdout') {
+        } else if (eventType === 'stdout') {
           setTimeout(
             console.log.bind(
               console,
@@ -137,11 +150,11 @@ export default function App() {
               'color:green'
             )
           );
-        } else if (event_type === 'error') {
+        } else if (eventType === 'error') {
           console.error('Error: %s', s);
-        } else if (event_type === 'terminated') {
+        } else if (eventType === 'terminated') {
           console.error('Server Process Terminated: %s', s);
-        } else if (event_type === 'other') {
+        } else if (eventType === 'other') {
           console.log('Other process event: %s', s);
         }
       }

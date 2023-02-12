@@ -47,17 +47,13 @@ export function reducer(state: AppState, action: AppStateAction) {
 }
 
 export function useProvideAppContext(): AppContext {
-  const { sendDataFeedPacket, useDataFeedPacket, isConnected } =
-    useWebsocketAPI();
+  const { sendDataFeedPacket, useDataFeedPacket, isConnected } = useWebsocketAPI();
   const { config } = useConfig();
   const { dataFeedConfig } = useDataFeedConfig();
   const navigate = useNavigate();
-  const [state, dispatch] = useReducer<Reducer<AppState, AppStateAction>>(
-    reducer,
-    {
-      datafeed: new DataFeedUpdateT(),
-    }
-  );
+  const [state, dispatch] = useReducer<Reducer<AppState, AppStateAction>>(reducer, {
+    datafeed: new DataFeedUpdateT(),
+  });
 
   useEffect(() => {
     if (isConnected) {
@@ -85,12 +81,9 @@ export function useProvideAppContext(): AppContext {
     [state]
   );
 
-  useDataFeedPacket(
-    DataFeedMessage.DataFeedUpdate,
-    (packet: DataFeedUpdateT) => {
-      dispatch({ type: 'datafeed', value: packet });
-    }
-  );
+  useDataFeedPacket(DataFeedMessage.DataFeedUpdate, (packet: DataFeedUpdateT) => {
+    dispatch({ type: 'datafeed', value: packet });
+  });
 
   return {
     state,

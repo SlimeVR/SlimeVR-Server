@@ -104,6 +104,10 @@ widget-overlay = Overlay
 widget-overlay-is_visible_label = Pokaż Overlay w SteamVR
 widget-overlay-is_mirrored_label = Pokaż Overlay jako Lustro
 
+## Widget: Drift compensation
+
+widget-drift_compensation-clear = Wyczyść kompensację dryfu
+
 ## Widget: Developer settings
 
 widget-developer_mode = Tryb Dewelopera
@@ -222,6 +226,13 @@ tracker_selection_menu-LEFT_CONTROLLER = { -tracker_selection-part } left contro
 tracker_selection_menu-unassigned = Nieprzydzielone trackery
 tracker_selection_menu-assigned = Przydzielone trackery
 tracker_selection_menu-dont_assign = Nie przydzielaj
+# This line cares about multilines.
+# <b>text</b> means that the text should be bold.
+tracker_selection_menu-neck_warning =
+    <b>Ostrzeżenie:</b> Opaska na szyję może być śmiertelna, jeśli zostanie dopasowana zbyt ciasno,
+    pasek może odciąć krążenie do głowy!
+tracker_selection_menu-neck_warning-done = Rozumiem ryzyko
+tracker_selection_menu-neck_warning-cancel = Anuluj
 
 ## Mounting menu
 
@@ -348,6 +359,13 @@ settings-serial-description =
 settings-serial-connection_lost = Connection to serial lost, Reconnecting...
 settings-serial-reboot = Reboot
 settings-serial-factory_reset = Factory Reset
+# This cares about multilines
+# <b>text</b> means that the text should be bold
+settings-serial-factory_reset-warning =
+    <b>Ostrzeżenie:</b> Spowoduje to zresetowanie trackera do ustawień fabrycznych.
+    Co oznacza, że ustawienia Wi-Fi i kalibracji <b>zostaną utracone!</b>
+settings-serial-factory_reset-warning-ok = Wiem co robię
+settings-serial-factory_reset-warning-cancel = Anuluj
 settings-serial-get_infos = Get Infos
 settings-serial-serial_select = Select a serial port
 settings-serial-auto_dropdown_item = Auto
