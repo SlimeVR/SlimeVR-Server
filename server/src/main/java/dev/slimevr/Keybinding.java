@@ -3,6 +3,7 @@ package dev.slimevr;
 import com.melloware.jintellitype.HotkeyListener;
 import com.melloware.jintellitype.JIntellitype;
 import dev.slimevr.config.KeybindingsConfig;
+import dev.slimevr.config.TapDetectionConfig;
 import io.eiren.util.OperatingSystem;
 import io.eiren.util.ann.AWTThread;
 import io.eiren.util.logging.LogManager;
@@ -12,6 +13,7 @@ public class Keybinding implements HotkeyListener {
 	private static final int RESET = 1;
 	private static final int QUICK_RESET = 2;
 	private static final int RESET_MOUNTING = 3;
+	private static final int FEEDBACK_SOUND = 4;
 	public final VRServer server;
 	public final KeybindingsConfig config;
 
@@ -44,6 +46,10 @@ public class Keybinding implements HotkeyListener {
 				String resetMountingBinding = this.config.getResetMountingBinding();
 				JIntellitype.getInstance().registerHotKey(RESET_MOUNTING, resetMountingBinding);
 				LogManager.info("[Keybinding] Bound reset mounting to " + resetMountingBinding);
+
+				String tabFeedBackSoundBinding = this.config.getTapFeedBackSoundBinding();
+				JIntellitype.getInstance().registerHotKey(FEEDBACK_SOUND, tabFeedBackSoundBinding);
+				LogManager.info("[Keybinding] Bound feedback sound to " + tabFeedBackSoundBinding);
 			}
 		} catch (Throwable e) {
 			LogManager
@@ -68,6 +74,16 @@ public class Keybinding implements HotkeyListener {
 			case RESET_MOUNTING -> {
 				LogManager.info("[Keybinding] Reset mounting pressed");
 				server.scheduleResetTrackersMounting(this.config.getResetMountingDelay());
+			}
+			case FEEDBACK_SOUND -> {
+				LogManager.info("[Keybinding] feddback sound pressed");
+				TapDetectionConfig tapDetectionConfig = server
+					.getConfigManager()
+					.getVrConfig()
+					.getTapDetection();
+				tapDetectionConfig
+					.setFeedbackSoundEnabled(!tapDetectionConfig.getFeedbackSoundEnabled());
+				server.getConfigManager().saveConfig();
 			}
 		}
 	}
