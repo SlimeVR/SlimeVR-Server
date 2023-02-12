@@ -39,6 +39,9 @@ public class TapDetectionManager {
 
 	// feedback
 	private boolean feedbackSoundEnabled = true;
+	private boolean quickResetAllowPlaySound = true;
+	private boolean resetAllowPlaySound = true;
+	private boolean mountingResetAllowPlaySound = true;
 
 	public TapDetectionManager(HumanSkeleton skeleton) {
 		this.skeleton = skeleton;
@@ -107,47 +110,64 @@ public class TapDetectionManager {
 
 	private void checkQuickReset() {
 		boolean tapped = (quickResetTaps <= quickResetDetector.getTaps());
+
+		if (tapped && quickResetAllowPlaySound && feedbackSoundEnabled) {
+			playSound(ResetType.Quick);
+			quickResetAllowPlaySound = false;
+		}
+
 		if (
 			tapped && System.nanoTime() - quickResetDetector.getDetectionTime() > quickResetDelayNs
 		) {
-			if (feedbackSoundEnabled)
-				playSound(ResetType.Quick);
 			if (oscHandler != null)
 				oscHandler.yawAlign();
 			skeleton.resetTrackersYaw();
 			quickResetDetector.resetDetector();
+			if (feedbackSoundEnabled)
+				quickResetAllowPlaySound = true;
 		}
 	}
 
 	private void checkReset() {
 		boolean tapped = (resetTaps <= resetDetector.getTaps());
 
+		if (tapped && resetAllowPlaySound && feedbackSoundEnabled) {
+			playSound(ResetType.Full);
+			resetAllowPlaySound = false;
+		}
+
 		if (
 			tapped && System.nanoTime() - resetDetector.getDetectionTime() > resetDelayNs
 		) {
-			if (feedbackSoundEnabled)
-				playSound(ResetType.Full);
 			if (oscHandler != null)
 				oscHandler.yawAlign();
 			skeleton.resetTrackersFull();
 			resetDetector.resetDetector();
+			if (feedbackSoundEnabled)
+				resetAllowPlaySound = true;
 		}
 	}
 
 	private void checkMountingReset() {
 		boolean tapped = (mountingResetTaps <= mountingResetDetector.getTaps());
 
+		if (tapped && mountingResetAllowPlaySound && feedbackSoundEnabled) {
+			playSound(ResetType.Mounting);
+			mountingResetAllowPlaySound = false;
+		}
+
 		if (
 			tapped
 				&& System.nanoTime() - mountingResetDetector.getDetectionTime()
 					> mountingResetDelayNs
 		) {
-			if (feedbackSoundEnabled)
-				playSound(ResetType.Mounting);
 			skeleton.resetTrackersMounting();
 			mountingResetDetector.resetDetector();
+			if (feedbackSoundEnabled)
+				mountingResetAllowPlaySound = true;
 		}
 	}
+
 
 	// returns either the chest tracker, hip tracker, or waist tracker depending
 	// on which one is available
