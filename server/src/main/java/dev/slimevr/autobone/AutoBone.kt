@@ -74,7 +74,8 @@ class AutoBone(server: VRServer) {
 	val legacyConfigs = EnumMap<SkeletonConfigOffsets, Float>(
 		SkeletonConfigOffsets::class.java
 	)
-	protected val server: VRServer
+
+	private val server: VRServer
 
 	// #region Error functions
 	var slideError = SlideError()
@@ -626,7 +627,7 @@ class AutoBone(server: VRServer) {
 	}
 
 	@Throws(AutoBoneException::class)
-	protected fun getErrorDeriv(trainingStep: AutoBoneTrainingStep?): Float {
+	protected fun getErrorDeriv(trainingStep: AutoBoneTrainingStep): Float {
 		var sumError = 0f
 		if (config.slideErrorFactor > 0f) {
 			sumError += slideError.getStepError(trainingStep) * config.slideErrorFactor
