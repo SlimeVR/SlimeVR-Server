@@ -272,7 +272,7 @@ settings-general-tracker_mechanics-drift_compensation-max_resets-label = Use up 
 ## FK/Tracking settings
 settings-general-fk_settings = Tracking settings
 settings-general-fk_settings-leg_tweak = Leg tweaks
-settings-general-fk_settings-leg_tweak-description = Floor-clip can Reduce or even eliminates clipping with the floor but may cause problems when on your knees. Skating-correction corrects for ice skating, but can decrease accuracy in certain movement patterns.
+settings-general-fk_settings-leg_tweak-description = Floor-clip can Reduce or even eliminates clipping with the floor but may cause problems when on your knees. Skating-correction corrects for ice skating, but can decrease accuracy in certain movement patterns. Toe snap and foot plant make a guess at the rotation of your foot and are only active when no trackers are assigned to the feet.
 # Floor clip:
 # why the name - came from the idea of noclip in video games, but is the opposite where clipping to the floor is a desired feature
 # definition - Prevents the foot trackers from going lower than they where when a reset was performed
@@ -282,6 +282,8 @@ settings-general-fk_settings-leg_tweak-floor_clip = Floor clip
 # since this largely prevents this it corrects for it hence skating correction (note this may be renamed to sliding correction)
 # definition - Guesses when each foot is in contact with the ground and uses that information to improve tracking
 settings-general-fk_settings-leg_tweak-skating_correction = Skating correction
+settings-general-fk_settings-leg_tweak-toe_snap = Toe snap
+settings-general-fk_settings-leg_tweak-foot_plant = Foot plant
 settings-general-fk_settings-leg_tweak-skating_correction-amount = Skating correction strength
 settings-general-fk_settings-arm_fk = Arm tracking
 settings-general-fk_settings-arm_fk-description = Change the way the arms are tracked.

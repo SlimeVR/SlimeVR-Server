@@ -97,7 +97,8 @@ public class LegTweaks {
 	private static final float ROTATION_CORRECTION_VERTICAL = 0.1f;
 	private static final float MAXIMUM_CORRECTION_ANGLE = 0.5f;
 	private static final float MAXIMUM_CORRECTION_ANGLE_DELTA = 0.6f;
-	private static final float MAXIMUM_TOE_DOWN_ANGLE = 0.9f;
+	private static final float MAXIMUM_TOE_DOWN_ANGLE = 0.7f;
+	private static final float TOE_SNAP_COOLDOWN = 3.0f;
 
 	// hyperparameters (misc)
 	static final float NEARLY_ZERO = 0.001f;
@@ -106,7 +107,7 @@ public class LegTweaks {
 	private static final float DEFAULT_ARM_DISTANCE = 0.15f;
 	private static final float MAX_CORRECTION_STRENGTH_DELTA = 1.0f;
 
-	// counters
+	// counters and such
 	private int leftFramesLocked = 0;
 	private int rightFramesLocked = 0;
 	private int leftFramesUnlocked = 0;
@@ -755,7 +756,9 @@ public class LegTweaks {
 		}
 	}
 
-	// correct the rotation of the foot trackers
+	// correct the rotations of the feet
+	// this is done by planting the foot better and by snapping the toes to the
+	// ground
 	private void correctFootRotations() {
 		// null check's
 		if (bufferHead == null || bufferHead.getParent() == null)
@@ -850,33 +853,44 @@ public class LegTweaks {
 			float weightR = 0.0f;
 
 			// first compute the Y component of the foot rotation
-			// TODO check this
-			float angleL = leftFootPos.y - floorLevel;
+			float angleL = FastMath.clamp(leftFootPos.y - floorLevel, 0.0f, footLength);
 			angleL = (angleL > footLength * MAXIMUM_TOE_DOWN_ANGLE)
-				? FastMath.HALF_PI
+				? FastMath.asin((footLength * MAXIMUM_TOE_DOWN_ANGLE) / footLength)
 				: FastMath.asin((angleL / footLength));
 
-			float angleR = rightFootPos.y - floorLevel;
+			float angleR = FastMath.clamp(rightFootPos.y - floorLevel, 0.0f, footLength);
 			angleR = (angleR > footLength * MAXIMUM_TOE_DOWN_ANGLE)
-				? FastMath.HALF_PI
+				? FastMath.asin((footLength * MAXIMUM_TOE_DOWN_ANGLE) / footLength)
 				: FastMath.asin((angleR / footLength));
 
 			// then compute the weight of the correction
-			weightL = ((leftFootPos.y - floorLevel) > footLength * 2.0f)
+			weightL = ((leftFootPos.y - floorLevel) > footLength * TOE_SNAP_COOLDOWN)
 				? 0.0f
-				: 1.0f - ((leftFootPos.y - floorLevel - footLength) / footLength);
+				: 1.0f
+					- ((leftFootPos.y - floorLevel - footLength)
+						/ (footLength * (TOE_SNAP_COOLDOWN - 1.0f)));
 			weightL = FastMath.clamp(weightL, 0.0f, 1.0f);
 
-			weightR = ((rightFootPos.y - floorLevel) > footLength * 2.0f)
+			weightR = ((rightFootPos.y - floorLevel) > footLength * TOE_SNAP_COOLDOWN)
 				? 0.0f
-				: 1.0f - ((rightFootPos.y - floorLevel - footLength) / footLength);
+				: 1.0f
+					- ((rightFootPos.y - floorLevel - footLength)
+						/ (footLength * (TOE_SNAP_COOLDOWN - 1.0f)));
 			weightR = FastMath.clamp(weightR, 0.0f, 1.0f);
 
 			// then slerp the rotation to the new rotation based on the weight
 			leftFootRotation
-				.slerp(leftFootRotation, replacePitch(leftFootRotation, -angleL), 1.0f); //weightL * masterWeightL);
+				.slerp(
+					leftFootRotation,
+					replacePitch(leftFootRotation, -angleL),
+					weightL * masterWeightL
+				);
 			rightFootRotation
-				.slerp(rightFootRotation, replacePitch(rightFootRotation, -angleR), 1.0f); //weightR * masterWeightR);
+				.slerp(
+					rightFootRotation,
+					replacePitch(rightFootRotation, -angleR),
+					weightR * masterWeightR
+				);
 		}
 
 		// finally update the skeletons rotations with the new rotations
