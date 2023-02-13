@@ -1,8 +1,5 @@
 package dev.slimevr.osc
 
-import com.fasterxml.jackson.core.JsonFactory
-import com.fasterxml.jackson.databind.DeserializationFeature
-import com.fasterxml.jackson.databind.ObjectMapper
 import com.jme3.math.Vector3f
 import dev.slimevr.tracking.processor.BoneType
 import dev.slimevr.tracking.trackers.UnityBone
@@ -18,7 +15,6 @@ import java.util.*
 class InvalidGltfFile(message: String?) : Exception(message)
 
 class VRMReader(private val vrmPath: String) {
-	private val objectMapper: ObjectMapper = ObjectMapper(JsonFactory())
 	private val data: GLTF
 
 	init {
@@ -46,12 +42,9 @@ class VRMReader(private val vrmPath: String) {
 				)
 			}
 		}
-		objectMapper.configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false)
 	}
 
 	fun getOffsetForBone(boneType: BoneType): Vector3f? {
-		val translation = Vector3f()
-
 		val unityBone = UnityBone.getByBoneType(boneType)
 		val bone = try {
 			data.extensions.vrm.humanoid.humanoidBones.first { it.bone == unityBone.name }
@@ -60,6 +53,7 @@ class VRMReader(private val vrmPath: String) {
 			return null
 		}
 
+		val translation = Vector3f()
 		val translationNode = data.nodes[bone.node].translation
 		translation.x = translationNode[0].toFloat()
 		translation.y = translationNode[1].toFloat()
