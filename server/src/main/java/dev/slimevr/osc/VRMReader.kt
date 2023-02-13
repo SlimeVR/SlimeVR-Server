@@ -18,11 +18,11 @@ import java.util.*
 class InvalidGltfFile(message: String?) : Exception(message)
 
 class VRMReader(private val vrmPath: String) {
-    private val objectMapper: ObjectMapper = ObjectMapper(JsonFactory())
+	private val objectMapper: ObjectMapper = ObjectMapper(JsonFactory())
 	private val data: GLTF
 
 	init {
-//		vrmPath = "C:/Users/mario/Documents/VSeeFace Custom Data/Auy2.3.1.vrm";
+// 		vrmPath = "C:/Users/mario/Documents/VSeeFace Custom Data/Auy2.3.1.vrm";
 		FileSystem.SYSTEM.source(vrmPath.toPath()).use { fileSource ->
 			fileSource.buffer().use { bufferedSource ->
 				if (bufferedSource.readIntLe() != 0x46546C67) { // "glTF"
@@ -47,10 +47,10 @@ class VRMReader(private val vrmPath: String) {
 			}
 		}
 		objectMapper.configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false)
-    }
+	}
 
-    fun getOffsetForBone(boneType: BoneType): Vector3f? {
-        val translation = Vector3f()
+	fun getOffsetForBone(boneType: BoneType): Vector3f? {
+		val translation = Vector3f()
 
 		val unityBone = UnityBone.getByBoneType(boneType)
 		val bone = try {
@@ -74,18 +74,18 @@ data class GLTF(
 	val extensions: Extensions,
 	val extensionsUsed: List<String>,
 	val extensionsRequired: List<String>,
-	val nodes: List<Node>,
+	val nodes: List<Node>
 )
 
 @Serializable
 data class Extensions(
 	@SerialName("VRM")
-	val vrm: VRM,
+	val vrm: VRM
 )
 
 @Serializable
 data class VRM(
-	val humanoid: Humanoid,
+	val humanoid: Humanoid
 )
 
 @Serializable
@@ -98,14 +98,14 @@ data class Humanoid(
 	val upperLegTwist: Double,
 	val lowerLegTwist: Double,
 	val feetSpacing: Double,
-	val hasTranslationDoF: Boolean,
+	val hasTranslationDoF: Boolean
 )
 
 @Serializable
 data class HumanoidBone(
 	val bone: String,
 	val node: Int,
-	val useDefaultValues: Boolean,
+	val useDefaultValues: Boolean
 )
 
 @Serializable
@@ -116,5 +116,5 @@ data class Node(
 	// GLTF says that there can be a matrix instead of translation,
 	// rotation and scale, so we need to support that too in the future.
 	// val matrix: List<List<Double>>,
-	val children: List<Int>,
+	val children: List<Int>
 )
