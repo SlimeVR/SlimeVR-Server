@@ -171,9 +171,9 @@ tracker-settings-assignment_section-edit = Editar atribuição
 tracker-settings-mounting_section = Posicionamento
 tracker-settings-mounting_section-description = Aonde o tracker está posicionado?
 tracker-settings-mounting_section-edit = Editar posição
-tracker-settings-drift_compensation_section = Allow drift compensation
-tracker-settings-drift_compensation_section-description = Should this tracker compensate for its drift when drift compensation is enabled?
-tracker-settings-drift_compensation_section-edit = Allow drift compensation
+tracker-settings-drift_compensation_section = Ligar a compensação de drift
+tracker-settings-drift_compensation_section-description = Esse tracker deverá compensar pelo drift quando a compensação de drift estiver ligado?
+tracker-settings-drift_compensation_section-edit = Ligar a compensação de drift
 # The .<name> means it's an attribute and it's related to the top key.
 # In this case that is the settings for the assignment section.
 tracker-settings-name_section = Nome do tracker
@@ -285,14 +285,14 @@ settings-general-tracker_mechanics-filtering-type-smoothing-description = Suaviz
 settings-general-tracker_mechanics-filtering-type-prediction = Predição
 settings-general-tracker_mechanics-filtering-type-prediction-description = Reduz latência e torna os movimentos mais responsivos, porém aumenta tremulação (Jitter).
 settings-general-tracker_mechanics-filtering-amount = Quantidade
-settings-general-tracker_mechanics-drift_compensation = Drift compensation
+settings-general-tracker_mechanics-drift_compensation = Compensação de drift
 # This cares about multilines
 settings-general-tracker_mechanics-drift_compensation-description =
-    Compensates IMU yaw drift by applying an inverse rotation.
-    Change amount of compensation and up to how many resets are taken into account.
-settings-general-tracker_mechanics-drift_compensation-enabled-label = Drift compensation
-settings-general-tracker_mechanics-drift_compensation-amount-label = Compensation amount
-settings-general-tracker_mechanics-drift_compensation-max_resets-label = Use up to x last resets
+    Compensa o drift de guinada (yaw) aplicando uma rotação inversa.
+    Mudar a quantidade de compensação e até quantos resets vão ser levados em conta.
+settings-general-tracker_mechanics-drift_compensation-enabled-label = Compensação de drift
+settings-general-tracker_mechanics-drift_compensation-amount-label = Quantidade de compensação
+settings-general-tracker_mechanics-drift_compensation-max_resets-label = Use até x últimos resets
 
 ## FK/Tracking settings
 
@@ -490,11 +490,14 @@ onboarding-connect_tracker-description-p0 = Agora para a parte divertida, conect
 onboarding-connect_tracker-description-p1 = Simplesmente conecte todos que ainda não estão conectados, via porta USB.
 onboarding-connect_tracker-issue-serial = Estou tendo problemas para conectar!
 onboarding-connect_tracker-usb = Tracker USB
+onboarding-connect_tracker-connection_status-none = Procurando por trackers
+onboarding-connect_tracker-connection_status-serial_init = Conectando ao dispositivo serial
+onboarding-connect_tracker-connection_status-provisioning = Enviando credenciais de Wi-Fi
 onboarding-connect_tracker-connection_status-connecting = Enviando credenciais de Wi-Fi
-onboarding-connect_tracker-connection_status-connected = Conectado ao Wi-Fi
-onboarding-connect_tracker-connection_status-error = Não é possível conectar ao Wi-Fi
-onboarding-connect_tracker-connection_status-start_connecting = Procurando por trackers
-onboarding-connect_tracker-connection_status-handshake = Conectado ao servidor
+onboarding-connect_tracker-connection_status-looking_for_server = Procurando servidor
+onboarding-connect_tracker-connection_status-connection_error = Não é possível conectar ao Wi-Fi
+onboarding-connect_tracker-connection_status-could_not_find_server = Não foi possível conectar ao servidor
+onboarding-connect_tracker-connection_status-done = Conectado ao servidor
 # $amount (Number) - Amount of trackers connected (this is a number, but you can use CLDR plural rules for your language)
 # More info on https://www.unicode.org/cldr/cldr-aux/charts/22/supplemental/language_plural_rules.html
 # English in this case only has 2 plural rules, which are "one" and "other",
@@ -523,6 +526,33 @@ onboarding-assign_trackers-assigned =
     } assigned
 onboarding-assign_trackers-advanced = Mostrar locais de atribuição avançados
 onboarding-assign_trackers-next = Atribui todos os trackers
+
+## Tracker assignment warnings
+
+# $unassigned (Number) - Bits are based on BodyAssignment.ASSIGNMENT_RULES order
+onboarding-assign_trackers-warning-LEFT_UPPER_LEG =
+    { $unassigned ->
+        [0] Coxa esquerda está atribuída, porém peito, quadril ou peito também precisam ser atribuídos!
+       *[unknown] Coxa esquerda está atribuída, porém a parte do corpo desconhecida não atribuída também precisa ser atribuída!
+    }
+# $unassigned (Number) - Bits are based on BodyAssignment.ASSIGNMENT_RULES order
+onboarding-assign_trackers-warning-RIGHT_UPPER_LEG =
+    { $unassigned ->
+        [0] Coxa direita está atribuída, porém peito, quadril ou peito também precisam ser atribuídos!
+       *[unknown] Coxa direita está atribuída, porém a parte do corpo desconhecida não atribuída também precisa ser atribuída!
+    }
+# $unassigned (Number) - Bits are based on BodyAssignment.ASSIGNMENT_RULES order
+onboarding-assign_trackers-warning-HIP =
+    { $unassigned ->
+        [0] Quadril está atribuído, porém o peito também precisa ser atribuído!
+       *[unknown] Quadril está atribuído, porém a parte do corpo desconhecida não atribuída também precisa ser atribuída!
+    }
+# $unassigned (Number) - Bits are based on BodyAssignment.ASSIGNMENT_RULES order
+onboarding-assign_trackers-warning-WAIST =
+    { $unassigned ->
+        [0] Cintura está atribuído, porém o peito também precisa ser atribuído!
+       *[unknown] Cintura está atribuído, porém a parte do corpo desconhecida não atribuída também precisa ser atribuída!
+    }
 
 ## Tracker manual mounting setup
 
