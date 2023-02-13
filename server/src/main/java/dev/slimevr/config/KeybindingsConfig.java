@@ -8,8 +8,6 @@ public class KeybindingsConfig {
 
 	private String resetMountingBinding = "CTRL+ALT+SHIFT+I";
 
-	private String tapFeedBackSoundBinding = "CTRL+ALT+SHIFT+O";
-
 	private long resetDelay = 0L;
 
 	private long quickResetDelay = 0L;
@@ -30,10 +28,6 @@ public class KeybindingsConfig {
 
 	public String getResetMountingBinding() {
 		return resetMountingBinding;
-	}
-
-	public String getTapFeedBackSoundBinding() {
-		return tapFeedBackSoundBinding;
 	}
 
 	public long getResetDelay() {
