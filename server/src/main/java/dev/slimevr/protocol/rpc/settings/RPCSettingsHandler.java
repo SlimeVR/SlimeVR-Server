@@ -227,6 +227,11 @@ public record RPCSettingsHandler(RPCHandler rpcHandler, ProtocolAPI api) {
 						.setMountingResetTaps(tapDetectionSettings.tapMountingResetTaps());
 				}
 
+				// set feedback sound
+				tapDetectionConfig
+					.setFeedbackSoundEnabled(tapDetectionSettings.tapFeedbackSoundEnabled());
+
+
 				this.api.server.humanPoseManager.updateTapDetectionConfig();
 			}
 		}
