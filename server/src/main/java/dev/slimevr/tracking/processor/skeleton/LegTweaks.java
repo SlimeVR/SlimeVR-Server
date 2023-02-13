@@ -97,7 +97,7 @@ public class LegTweaks {
 	private static final float ROTATION_CORRECTION_VERTICAL = 0.1f;
 	private static final float MAXIMUM_CORRECTION_ANGLE = 0.5f;
 	private static final float MAXIMUM_CORRECTION_ANGLE_DELTA = 0.6f;
-	private static final float MAXIMUM_TOE_DOWN_ANGLE = 0.8f;
+	private static final float MAXIMUM_TOE_DOWN_ANGLE = 0.9f;
 
 	// hyperparameters (misc)
 	static final float NEARLY_ZERO = 0.001f;
@@ -850,15 +850,16 @@ public class LegTweaks {
 			float weightR = 0.0f;
 
 			// first compute the Y component of the foot rotation
-			float angleL = bufferHead.getLeftFootPosition(null).y - floorLevel;
+			// TODO check this
+			float angleL = leftFootPos.y - floorLevel;
 			angleL = (angleL > footLength * MAXIMUM_TOE_DOWN_ANGLE)
-				? leftFootRotation.getY()
-				: FastMath.acos((angleL / footLength));
+				? FastMath.HALF_PI
+				: FastMath.asin((angleL / footLength));
 
-			float angleR = bufferHead.getRightFootPosition(null).y - floorLevel;
+			float angleR = rightFootPos.y - floorLevel;
 			angleR = (angleR > footLength * MAXIMUM_TOE_DOWN_ANGLE)
-				? rightFootRotation.getY()
-				: FastMath.acos((angleR / footLength));
+				? FastMath.HALF_PI
+				: FastMath.asin((angleR / footLength));
 
 			// then compute the weight of the correction
 			weightL = ((leftFootPos.y - floorLevel) > footLength * 2.0f)
@@ -873,9 +874,9 @@ public class LegTweaks {
 
 			// then slerp the rotation to the new rotation based on the weight
 			leftFootRotation
-				.slerp(leftFootRotation, issolateYaw(leftFootRotation), weightL * masterWeightL);
+				.slerp(leftFootRotation, replacePitch(leftFootRotation, -angleL), 1.0f); //weightL * masterWeightL);
 			rightFootRotation
-				.slerp(rightFootRotation, issolateYaw(rightFootRotation), weightR * masterWeightR);
+				.slerp(rightFootRotation, replacePitch(rightFootRotation, -angleR), 1.0f); //weightR * masterWeightR);
 		}
 
 		// finally update the skeletons rotations with the new rotations
@@ -1112,12 +1113,19 @@ public class LegTweaks {
 		);
 	}
 
-	// return a quaternion that has the same x and z components but replace the
-	// y component with
-	// the given value
-	private Quaternion replaceYaw(Quaternion quaternion, float newYaw) {
-		Quaternion newQuat = quaternion.normalize();
-		return newQuat.set(newQuat.getX(), newYaw, newQuat.getZ(), newQuat.getW());
+	// return a quaternion that has been rotated by the new pitch amount
+	private Quaternion replacePitch(Quaternion quaternion, float newPitch) {
+		// first get the axis of the current pitch
+		Vector3f currentPitchAxis = quaternion.getRotationColumn(0).normalize();
+
+		// then get the current pitch
+		float currentPitch = (float) Math.asin(currentPitchAxis.y);
+
+		// then add the new pitch
+		Quaternion newQuat = new Quaternion();
+		newQuat.fromAngleAxis(newPitch + currentPitch, currentPitchAxis);
+
+		return newQuat.mult(quaternion);
 	}
 
 	// check if the difference between two floats flipped after correction
