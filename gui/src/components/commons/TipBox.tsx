@@ -21,12 +21,12 @@ export function TipBox({ children }: { children: ReactNode }) {
  */
 export function WarningBox({ children }: { children: ReactNode }) {
   return (
-    <div className="flex flex-row gap-4 bg-red-900 p-4 rounded-md">
-      <div className="fill-red-500 flex flex-col justify-center">
+    <div className="flex flex-row gap-4 bg-status-warning p-4 rounded-md">
+      <div className="text-background-60 flex flex-col justify-center">
         <WarningIcon></WarningIcon>
       </div>
       <div className="flex flex-col">
-        <Typography color="text-red-300" whitespace="whitespace-pre">
+        <Typography color="text-background-60" whitespace="whitespace-pre">
           {children}
         </Typography>
       </div>

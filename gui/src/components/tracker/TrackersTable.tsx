@@ -62,8 +62,10 @@ export function TrackerNameCell({ tracker }: { tracker: TrackerDataT }) {
       <div className="flex flex-col justify-center items-center fill-background-10">
         <FootIcon></FootIcon>
       </div>
-      <div className="flex flex-col flex-grow whitespace-nowrap">
-        <Typography bold>{name}</Typography>
+      <div className="flex flex-col flex-grow">
+        <Typography bold whitespace="whitespace-nowrap">
+          {name}
+        </Typography>
         <TrackerStatus status={tracker.status}></TrackerStatus>
       </div>
     </div>
@@ -84,15 +86,13 @@ export function TrackerRotCell({
   const { useRawRotationEulerDegrees, useRefAdjRotationEulerDegrees } =
     useTracker(tracker);
 
-  const rot = referenceAdjusted
-    ? useRefAdjRotationEulerDegrees()
-    : useRawRotationEulerDegrees();
+  const rotationRaw = useRawRotationEulerDegrees();
+  const rotationRef = useRefAdjRotationEulerDegrees() || rotationRaw;
+  const rot = referenceAdjusted ? rotationRef : rotationRaw;
 
   return (
-    <Typography color={color}>
-      <span className="whitespace-nowrap">
-        {formatVector3(rot, precise ? 2 : 0)}
-      </span>
+    <Typography color={color} whitespace="whitespace-nowrap">
+      {formatVector3(rot, precise ? 2 : 0)}
     </Typography>
   );
 }
@@ -183,7 +183,7 @@ export function TrackersTable({
   const moreInfo = config?.devSettings?.moreInfo;
 
   const hasTemperature = !!filteredSortedTrackers.find(
-    ({ tracker }) => Number(tracker?.temp?.temp) != 0
+    ({ tracker }) => tracker?.temp && tracker?.temp?.temp != 0
   );
   displayColumns[DisplayColumn.TEMPERATURE] = hasTemperature || false;
   displayColumns[DisplayColumn.POSITION] = moreInfo || false;
@@ -321,11 +321,10 @@ export function TrackersTable({
         id: DisplayColumn.TEMPERATURE,
         label: l10n.getString('tracker-table-column-temperature'),
         row: ({ tracker }) =>
-          tracker.temp?.temp != 0 && (
-            <Typography color={fontColor}>
-              <span className="whitespace-nowrap">
-                {`${tracker.temp?.temp.toFixed(2)}`}
-              </span>
+          tracker?.temp &&
+          tracker?.temp?.temp != 0 && (
+            <Typography color={fontColor} whitespace="whitespace-nowrap">
+              {`${tracker.temp.temp.toFixed(2)}`}
             </Typography>
           ),
       })}
@@ -336,10 +335,8 @@ export function TrackersTable({
         labelClassName: 'w-36',
         row: ({ tracker }) =>
           tracker.linearAcceleration && (
-            <Typography color={fontColor}>
-              <span className="whitespace-nowrap">
-                {formatVector3(tracker.linearAcceleration, 1)}
-              </span>
+            <Typography color={fontColor} whitespace="whitespace-nowrap">
+              {formatVector3(tracker.linearAcceleration, 1)}
             </Typography>
           ),
       })}
@@ -350,10 +347,8 @@ export function TrackersTable({
         labelClassName: 'w-36',
         row: ({ tracker }) =>
           tracker.position && (
-            <Typography color={fontColor}>
-              <span className="whitespace-nowrap">
-                {formatVector3(tracker.position, 2)}
-              </span>
+            <Typography color={fontColor} whitespace="whitespace-nowrap">
+              {formatVector3(tracker.position, 2)}
             </Typography>
           ),
       })}
@@ -362,7 +357,7 @@ export function TrackersTable({
         id: DisplayColumn.URL,
         label: l10n.getString('tracker-table-column-url'),
         row: ({ device }) => (
-          <Typography color={fontColor}>
+          <Typography color={fontColor} whitespace="whitespace-nowrap">
             udp://
             {IPv4.fromNumber(
               device?.hardwareInfo?.ipAddress?.addr || 0

@@ -404,7 +404,7 @@ settings-osc-router-network-address-placeholder = IPV4 addwess
 
 ## OSC VRChat settings
 
-settings-osc-vrchat = VRChat OSC Trackers
+settings-osc-vrchat = VRChawt OSC Twayckaws
 # This cares about multilines
 settings-osc-vrchat-description =
     change vwchat-specific settwings to wweceive hmd data awnd send

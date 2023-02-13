@@ -129,10 +129,16 @@ function SceneRenderer({ x, y, z, w }: QuatObject) {
 export function IMUVisualizerWidget({ tracker }: { tracker: TrackerDataT }) {
   const { l10n } = useLocalization();
   const [enabled, setEnabled] = useState(false);
-  const quat = tracker?.rotationIdentityAdjusted || new THREE.Quaternion();
 
   const { useRawRotationEulerDegrees, useIdentAdjRotationEulerDegrees } =
     useTracker(tracker);
+
+  const rotationRaw = useRawRotationEulerDegrees();
+  const rotationIdent = useIdentAdjRotationEulerDegrees() || rotationRaw;
+  const quat =
+    tracker?.rotationIdentityAdjusted ||
+    tracker?.rotation ||
+    new THREE.Quaternion();
 
   return (
     <div className="bg-background-70 flex flex-col p-3 rounded-lg gap-2">
@@ -144,18 +150,14 @@ export function IMUVisualizerWidget({ tracker }: { tracker: TrackerDataT }) {
         <Typography color="secondary">
           {l10n.getString('widget-imu_visualizer-rotation_raw')}
         </Typography>
-        <Typography>
-          {formatVector3(useRawRotationEulerDegrees(), 2)}
-        </Typography>
+        <Typography>{formatVector3(rotationRaw, 2)}</Typography>
       </div>
 
       <div className="flex justify-between">
         <Typography color="secondary">
           {l10n.getString('widget-imu_visualizer-rotation_preview')}
         </Typography>
-        <Typography>
-          {formatVector3(useIdentAdjRotationEulerDegrees(), 2)}
-        </Typography>
+        <Typography>{formatVector3(rotationIdent, 2)}</Typography>
       </div>
 
       {!enabled && (

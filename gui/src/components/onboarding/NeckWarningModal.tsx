@@ -1,4 +1,3 @@
-import { BodyPart } from 'solarxr-protocol';
 import { Button } from '../commons/Button';
 import { WarningBox } from '../commons/TipBox';
 import { Localized, useLocalization } from '@fluent/react';
@@ -7,10 +6,8 @@ import ReactModal from 'react-modal';
 
 export function NeckWarningModal({
   isOpen = true,
-  hasShown = false,
   onClose,
-  setShown,
-  bodyPart,
+  accept,
   ...props
 }: {
   /**
@@ -18,43 +15,21 @@ export function NeckWarningModal({
    */
   isOpen: boolean;
   /**
-   * Has this warning be shown
-   * We want the parent/sibling component to tell us this because they also should
-   * know about the state
-   */
-  hasShown: boolean;
-  /**
-   * The current body part chosen
-   */
-  bodyPart: BodyPart | null;
-  /**
    * Function to trigger when the neck warning hasn't been accepted
    */
   onClose: () => void;
   /**
-   * Function to change the hasShown value
+   * Function when you press `i understand`
    */
-  setShown: (arg0: boolean) => void;
+  accept: () => void;
 } & ReactModal.Props) {
   const { l10n } = useLocalization();
-  // Skip popup if bodyPart isn't neck or we already showed the warning in this session
-  if (
-    isOpen &&
-    !hasShown &&
-    (bodyPart !== BodyPart.NECK || sessionStorage.getItem('neckWarning'))
-  ) {
-    setShown(true);
-  }
-  // Reset shown to false when no longer opened
-  if (!isOpen && hasShown) {
-    setShown(false);
-  }
 
   // isOpen is checked by checking if the parent modal is opened + our bodyPart is the
   // neck and we havent showed this warning yet
   return (
     <BaseModal
-      isOpen={isOpen && bodyPart === BodyPart.NECK && !hasShown}
+      isOpen={isOpen}
       shouldCloseOnOverlayClick
       shouldCloseOnEsc
       onRequestClose={onClose}
@@ -80,7 +55,7 @@ export function NeckWarningModal({
             <Button
               variant="primary"
               onClick={() => {
-                setShown(true);
+                accept();
                 sessionStorage.setItem('neckWarning', 'true');
               }}
             >
