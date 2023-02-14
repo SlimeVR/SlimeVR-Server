@@ -806,7 +806,7 @@ export function GeneralSettings() {
             </Typography>
           </div>
           <div className="grid sm:grid-cols-2 pb-4">
-            <LangSelector />
+            <LangSelector alignment="left" />
           </div>
         </>
       </SettingsPageLayout>

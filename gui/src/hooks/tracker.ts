@@ -51,12 +51,16 @@ export function useTracker(tracker: TrackerDataT) {
       useMemo(() => QuaternionToEulerDegrees(tracker?.rotation), [tracker.rotation]),
     useRefAdjRotationEulerDegrees: () =>
       useMemo(
-        () => QuaternionToEulerDegrees(tracker?.rotationReferenceAdjusted),
+        () =>
+          tracker?.rotationReferenceAdjusted &&
+          QuaternionToEulerDegrees(tracker?.rotationReferenceAdjusted),
         [tracker.rotationReferenceAdjusted]
       ),
     useIdentAdjRotationEulerDegrees: () =>
       useMemo(
-        () => QuaternionToEulerDegrees(tracker?.rotationIdentityAdjusted),
+        () =>
+          tracker?.rotationIdentityAdjusted &&
+          QuaternionToEulerDegrees(tracker?.rotationIdentityAdjusted),
         [tracker.rotationIdentityAdjusted]
       ),
     useVelocity: () => {

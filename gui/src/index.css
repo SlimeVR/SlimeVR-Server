@@ -9,6 +9,12 @@ body {
   width: 100vw;
   user-select: none;
   background: theme('colors.background.20');
+
+  /**
+    * Scrollbars for Firefox
+    */
+  scrollbar-color: theme('colors.background.50') theme('colors.background.60');
+  scrollbar-width: thin;
 }
 
 @media (-webkit-animation) {
@@ -63,6 +69,18 @@ html {
 
 ::-webkit-scrollbar-thumb:hover {
   background: theme('colors.background.60');
+}
+
+.dropdown-scroll {
+  scrollbar-color: theme('colors.background.40') theme('colors.background.50');
+}
+
+.dropdown-scroll::-webkit-scrollbar-thumb {
+  background: theme('colors.background.40');
+}
+
+.dropdown-scroll::-webkit-scrollbar-thumb:hover {
+  background: theme('colors.background.50');
 }
 
 input::-ms-reveal,

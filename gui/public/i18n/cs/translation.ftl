@@ -326,6 +326,14 @@ settings-general-fk_settings-vive_emulation-label = Povolení emulace Vive
 settings-general-gesture_control = Ovládání gesty
 settings-general-gesture_control-subtitle = Resetování na základě klepnutí
 settings-general-gesture_control-description = Umožňuje spouštět resetování klepnutím na tracker. Sledovací zařízení umístěné nejvýše na vašem hrudníku slouží k Rychlému-Resetování, tracker umístěný nejvýše na levé noze se používá pro Resetování, a tracker umístěný nejvýše na pravé noze se používá pro Resetování Montáže. Je třeba zmínit, že aby bylo klepnutí zaregistrováno, klepnutí musí být provedena do 0.6 vteřin.
+# This is a unit: 3 taps, 2 taps, 1 tap
+# $amount (Number) - Amount of taps (touches to the tracker's case)
+settings-general-gesture_control-taps =
+    { $amount ->
+        [one] { $amount } klepnutí
+        [few] { $amount } klepnutí
+       *[other] { $amount } klepnutí
+    }
 settings-general-gesture_control-quickResetEnabled = Povolit klepnutí pro rychlý resetování
 settings-general-gesture_control-quickResetDelay = Zpoždění rychlého resetu
 settings-general-gesture_control-quickResetTaps = Klepnutí pro rychlý reset
@@ -580,6 +588,13 @@ onboarding-automatic_proportions-recording-steps-2 = Natočte horní část těl
 onboarding-automatic_proportions-recording-steps-3 = Natočte horní část těla doprava a pak se ohněte doleva.
 onboarding-automatic_proportions-recording-steps-4 = Hýbejte se, dokud časovač neskončí.
 onboarding-automatic_proportions-recording-processing = Zpracování výsledku
+# $time (Number) - Seconds left for the automatic calibration recording to finish (max 15)
+onboarding-automatic_proportions-recording-timer =
+    { $time ->
+        [one] Zbývá 1 sekunda
+        [few] Zbývají { $time } sekundy
+       *[other] Zbývá { $time } sekund
+    }
 onboarding-automatic_proportions-verify_results-title = Ověření výsledků
 onboarding-automatic_proportions-verify_results-description = Zkontrolujte výsledky níže, vypadají správně?
 onboarding-automatic_proportions-verify_results-results = Zaznamenávání výsledků

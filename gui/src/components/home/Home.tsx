@@ -44,7 +44,7 @@ export function Home() {
         </div>
       )}
       {config?.debug && trackers.length > 0 && (
-        <div className="flex px-2 pt-5 justify-center  overflow-x-auto">
+        <div className="px-2 pt-5 overflow-y-scroll overflow-x-auto">
           <TrackersTable
             flatTrackers={trackers}
             clickedTracker={(tracker) => sendToSettings(tracker)}
