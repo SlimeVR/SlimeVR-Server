@@ -281,7 +281,7 @@ public class LegTweaks {
 	private void setVectors() {
 		// set the positions of the feet and knees to the skeletons current
 		// positions
-		if (skeleton.computedLeftKneeTracker != null || skeleton.computedRightKneeTracker != null) {
+		if (skeleton.computedLeftKneeTracker != null && skeleton.computedRightKneeTracker != null) {
 			kneesActive = true;
 			leftKneePosition = skeleton.computedLeftKneeTracker.position;
 			rightKneePosition = skeleton.computedRightKneeTracker.position;
@@ -404,8 +404,8 @@ public class LegTweaks {
 			);
 
 		// put the acceleration vector that is applicable to the tracker
-		// quantity in the the buffer
-		// (if feet are not available, fallback to 6 tracker mode)
+		// quantity in the buffer
+		// (if feet are not available, fall back to 6 tracker mode)
 		if (skeleton.leftFootTracker != null && skeleton.rightFootTracker != null) {
 			currentFrame.setLeftFootAcceleration(leftFootAcceleration);
 			currentFrame.setRightFootAcceleration(rightFootAcceleration);
@@ -829,7 +829,7 @@ public class LegTweaks {
 					leftFootRotation
 						.slerp(
 							leftFootRotation,
-							issolateYaw(leftFootRotation),
+							isolateYaw(leftFootRotation),
 							weightL * masterWeightL
 						)
 				);
@@ -839,7 +839,7 @@ public class LegTweaks {
 					rightFootRotation
 						.slerp(
 							rightFootRotation,
-							issolateYaw(rightFootRotation),
+							isolateYaw(rightFootRotation),
 							weightR * masterWeightR
 						)
 				);
@@ -1054,7 +1054,7 @@ public class LegTweaks {
 			centerOfMass = centerOfMass.add(leftForearm.mult(FOREARM_MASS));
 			centerOfMass = centerOfMass.add(rightForearm.mult(FOREARM_MASS));
 		} else {
-			// if the arms are not avaliable put them slightly in front
+			// if the arms are not available put them slightly in front
 			// of the chest.
 			Vector3f chestUnitVector = computeUnitVector(
 				skeleton.chestNode.worldTransform.getRotation()
@@ -1118,7 +1118,7 @@ public class LegTweaks {
 	}
 
 	// remove the x and z components of the given quaternion
-	private Quaternion issolateYaw(Quaternion quaternion) {
+	private Quaternion isolateYaw(Quaternion quaternion) {
 		return new Quaternion(
 			0,
 			quaternion.getY(),

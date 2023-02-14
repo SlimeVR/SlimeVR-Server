@@ -88,7 +88,7 @@ public class LegTweakBuffer {
 	private static final float FLOOR_DISTANCE_CUTOFF = 0.125f;
 	private static final float SIX_TRACKER_TOLLERANCE = -0.10f;
 	private static final Vector3f FORCE_VECTOR_TO_PRESSURE = new Vector3f(0.25f, 1.0f, 0.25f);
-	private static final float FORCE_ERROR_TOLLERANCE = 4.0f;
+	private static final float FORCE_ERROR_TOLLERANCE_SQR = FastMath.sqr(4.0f);
 	private static final float[] FORCE_VECTOR_FALLBACK = new float[] { 0.1f, 0.1f };
 
 	static float PARAM_SCALAR_MAX = 3.2f;
@@ -424,6 +424,7 @@ public class LegTweakBuffer {
 	// check if a locked foot should stay locked or be released
 	private int checkStateLeft() {
 		float timeStep = getTimeDelta();
+
 		if (parent.leftLegState == UNLOCKED) {
 			if (
 				parent.getLeftFootHorizantalDifference() > SKATING_CUTOFF_ENGAGE
@@ -463,9 +464,9 @@ public class LegTweakBuffer {
 			if (
 				parent.getRightFootHorizantalDifference() > SKATING_CUTOFF_ENGAGE
 					|| rightFootVelocityMagnitude * timeStep
-						> SKATING_VELOCITY_CUTOFF_ENGAGE * leftFootSensitivityVel
+						> SKATING_VELOCITY_CUTOFF_ENGAGE * rightFootSensitivityVel
 					|| rightFootAngleDiff * timeStep
-						> SKATING_ROTATIONAL_VELOCITY_CUTOFF_ENGAGE * leftFootSensitivityVel
+						> SKATING_ROTATIONAL_VELOCITY_CUTOFF_ENGAGE * rightFootSensitivityVel
 					|| rightFootPosition.y > rightFloorLevel + FLOOR_DISTANCE_CUTOFF
 					|| accelerationAboveThresholdRight
 			) {
@@ -581,12 +582,12 @@ public class LegTweakBuffer {
 		float leftFootScalarAccel = getLeftFootScalarAccel();
 		float rightFootScalarAccel = getRightFootScalarAccel();
 
-		// get the second set of scalars that is based of of how close each foot
-		// is to a lock and dynamically adjusting the scalars
-		// (based off the assumption that if you are standing one foot is likly
+		// get the second set of scalars that is based off of how close each
+		// foot is to a lock and dynamically adjusting the scalars
+		// (based off the assumption that if you are standing one foot is likely
 		// planted on the ground unless you are moving fast)
-		float leftFootScalarVel = getLeftFootLockLiklyHood();
-		float rightFootScalarVel = getRightFootLockLiklyHood();
+		float leftFootScalarVel = getLeftFootLockLikelihood();
+		float rightFootScalarVel = getRightFootLockLikelihood();
 
 		// get the third set of scalars that is based on where the COM is
 		float[] pressureScalars = getPressurePrediction();
@@ -638,7 +639,7 @@ public class LegTweakBuffer {
 	// states to calculate a scalar to apply to the non acceleration based
 	// hyperparameters when calculating
 	// lock states
-	private float getLeftFootLockLiklyHood() {
+	private float getLeftFootLockLikelihood() {
 		if (leftLegState == LOCKED && rightLegState == LOCKED) {
 			Vector3f velocityDiff = leftFootVelocity.subtract(rightFootVelocity);
 			velocityDiff.setY(0.0f);
@@ -654,24 +655,24 @@ public class LegTweakBuffer {
 		}
 
 		// calculate the 'unlockedness factor' and use that to
-		// determine the scalar (go as low as 0.5 as as high as
+		// determine the scalar (go as low as 0.5 and as high as
 		// param_scalar_max)
-		float velocityDifAbs = Math.abs(leftFootVelocityMagnitude)
-			- Math.abs(rightFootVelocityMagnitude);
+		float velocityDiffAbs = FastMath
+			.abs(leftFootVelocityMagnitude - rightFootVelocityMagnitude);
 
-		if (velocityDifAbs > MIN_SCALAR_ACTIVE) {
+		if (velocityDiffAbs > MIN_SCALAR_ACTIVE) {
 			return PARAM_SCALAR_MIN;
-		} else if (velocityDifAbs < MAX_SCALAR_ACTIVE) {
+		} else if (velocityDiffAbs < MAX_SCALAR_ACTIVE) {
 			return PARAM_SCALAR_MAX;
 		}
 
 		return PARAM_SCALAR_MAX
-			* (velocityDifAbs - MIN_SCALAR_ACTIVE)
+			* (velocityDiffAbs - MIN_SCALAR_ACTIVE)
 			/ (MAX_SCALAR_ACTIVE - MIN_SCALAR_ACTIVE)
 			- PARAM_SCALAR_MID;
 	}
 
-	private float getRightFootLockLiklyHood() {
+	private float getRightFootLockLikelihood() {
 		if (rightLegState == LOCKED && leftLegState == LOCKED) {
 			Vector3f velocityDiff = rightFootVelocity.subtract(leftFootVelocity);
 			velocityDiff.setY(0.0f);
@@ -687,19 +688,19 @@ public class LegTweakBuffer {
 		}
 
 		// calculate the 'unlockedness factor' and use that to
-		// determine the scalar (go as low as 0.5 as as high as
+		// determine the scalar (go as low as 0.5 and as high as
 		// param_scalar_max)
-		float velocityDifAbs = Math.abs(rightFootVelocityMagnitude)
-			- Math.abs(leftFootVelocityMagnitude);
+		float velocityDiffAbs = FastMath
+			.abs(rightFootVelocityMagnitude - leftFootVelocityMagnitude);
 
-		if (velocityDifAbs > MIN_SCALAR_ACTIVE) {
+		if (velocityDiffAbs > MIN_SCALAR_ACTIVE) {
 			return PARAM_SCALAR_MIN;
-		} else if (velocityDifAbs < MAX_SCALAR_ACTIVE) {
+		} else if (velocityDiffAbs < MAX_SCALAR_ACTIVE) {
 			return PARAM_SCALAR_MAX;
 		}
 
 		return PARAM_SCALAR_MAX
-			* (velocityDifAbs - MIN_SCALAR_ACTIVE)
+			* (velocityDiffAbs - MIN_SCALAR_ACTIVE)
 			/ (MAX_SCALAR_ACTIVE - MIN_SCALAR_ACTIVE)
 			- PARAM_SCALAR_MID;
 	}
@@ -821,7 +822,7 @@ public class LegTweakBuffer {
 	private boolean detectOutsideForces(Vector3f f1, Vector3f f2) {
 		Vector3f force = GRAVITY.add(f1).add(f2);
 		Vector3f error = centerOfMassAcceleration.subtract(force);
-		return error.lengthSquared() > FastMath.sqr(FORCE_ERROR_TOLLERANCE);
+		return error.lengthSquared() > FORCE_ERROR_TOLLERANCE_SQR;
 	}
 
 	// simple error function for the force vector gradient descent
