@@ -6,6 +6,7 @@ import dev.slimevr.tracking.trackers.UnityBone
 import io.eiren.util.logging.LogManager
 import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
+import kotlinx.serialization.decodeFromString
 import kotlinx.serialization.json.Json
 import okio.FileSystem
 import okio.Path.Companion.toPath
@@ -14,6 +15,7 @@ import java.util.*
 
 class InvalidGltfFile(message: String?) : Exception(message)
 
+private val jsonIgnoreKeys = Json { ignoreUnknownKeys = true }
 class VRMReader(private val vrmPath: String) {
 	private val data: GLTF
 
@@ -36,8 +38,7 @@ class VRMReader(private val vrmPath: String) {
 					throw InvalidGltfFile("JSON chunk not found")
 				}
 
-				data = Json.decodeFromString(
-					GLTF.serializer(),
+				data = jsonIgnoreKeys.decodeFromString(
 					bufferedSource.readUtf8(jsonLength)
 				)
 			}
@@ -47,7 +48,7 @@ class VRMReader(private val vrmPath: String) {
 	fun getOffsetForBone(boneType: BoneType): Vector3f? {
 		val unityBone = UnityBone.getByBoneType(boneType)
 		val bone = try {
-			data.extensions.vrm.humanoid.humanoidBones.first { it.bone == unityBone.name }
+			data.extensions.vrm.humanoid.humanBones.first { it.bone == unityBone.name }
 		} catch (e: NoSuchElementException) {
 			LogManager.warning("[VMCReader] Bone ${boneType.name} not found in \"$vrmPath\"")
 			return null
@@ -84,7 +85,7 @@ data class VRM(
 
 @Serializable
 data class Humanoid(
-	val humanoidBones: List<HumanoidBone>,
+	val humanBones: List<HumanBone>,
 	val armStretch: Double,
 	val legStretch: Double,
 	val upperArmTwist: Double,
@@ -96,7 +97,7 @@ data class Humanoid(
 )
 
 @Serializable
-data class HumanoidBone(
+data class HumanBone(
 	val bone: String,
 	val node: Int,
 	val useDefaultValues: Boolean
