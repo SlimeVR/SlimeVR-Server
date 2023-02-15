@@ -10,7 +10,7 @@ import com.jme3.math.FastMath;
  * the legs such as the position of the foot, knee, and waist, after and before
  * correction, the velocity of the foot and the computed state of the feet at
  * that frame. mainly calculates the state of the legs per frame using these
- * rules: The conditions for an unlock are as follows: 1. the foot is tpo far
+ * rules: The conditions for an unlock are as follows: 1. the foot is too far
  * from its correct position 2. a velocity higher than a threshold is achieved
  * 3. a large acceleration is applied to the foot 4. angular velocity of the
  * foot goes higher than a threshold. The conditions for a lock are the opposite
