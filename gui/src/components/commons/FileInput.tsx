@@ -1,5 +1,5 @@
 import classNames from 'classnames';
-import { forwardRef, MouseEvent, useMemo, useState } from 'react';
+import { forwardRef, useMemo } from 'react';
 import { Control, Controller, UseControllerProps } from 'react-hook-form';
 
 interface InputProps {
@@ -13,10 +13,23 @@ export const FileInputInside = forwardRef<
   {
     variant?: 'primary' | 'secondary';
     label?: string;
+    accept: string;
+    capture?: boolean | 'user' | 'environment';
+    multiple?: boolean;
     onChange: () => void;
   } & Partial<HTMLInputElement>
 >(function AppInput(
-  { placeholder, label, name, onChange, value, variant = 'primary' },
+  {
+    placeholder,
+    label,
+    name,
+    onChange,
+    value,
+    variant = 'primary',
+    accept,
+    capture,
+    multiple = false,
+  },
   ref
 ) {
   const classes = useMemo(() => {
@@ -43,6 +56,9 @@ export const FileInputInside = forwardRef<
           name={name}
           value={value || ''}
           ref={ref}
+          accept={accept}
+          multiple={multiple}
+          capture={capture}
         ></input>
       </div>
     </label>
@@ -56,9 +72,15 @@ export const FileInput = ({
   label,
   variant = 'primary',
   rules,
+  accept,
+  multiple,
+  capture,
 }: {
   rules: UseControllerProps<any>['rules'];
   control: Control<any>;
+  accept: string;
+  multiple?: boolean;
+  capture?: boolean | 'user' | 'environment';
 } & InputProps &
   Partial<HTMLInputElement>) => {
   return (
@@ -75,6 +97,9 @@ export const FileInput = ({
           onChange={onChange}
           ref={ref}
           name={name}
+          accept={accept}
+          capture={capture}
+          multiple={multiple}
         ></FileInputInside>
       )}
     />

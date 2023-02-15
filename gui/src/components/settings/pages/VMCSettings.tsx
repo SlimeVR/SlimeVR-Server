@@ -12,6 +12,7 @@ import {
 } from 'solarxr-protocol';
 import { useWebsocketAPI } from '../../../hooks/websocket-api';
 import { CheckBox } from '../../commons/Checkbox';
+import { FileInput } from '../../commons/FileInput';
 import { VMCIcon } from '../../commons/icon/VMCIcon';
 import { Input } from '../../commons/Input';
 import { Typography } from '../../commons/Typography';
@@ -256,6 +257,29 @@ export function VMCSettings() {
               name="vmc.anchorHip"
               label={l10n.getString('settings-osc-vmc-anchor_hip-label')}
             />
+          </div>
+          <Typography bold>
+            {l10n.getString('settings-osc-vmc-file')}
+          </Typography>
+          <div className="flex flex-col pb-2">
+            <Typography color="secondary">
+              {l10n.getString('settings-osc-vmc-file-description')}
+            </Typography>
+          </div>
+          <div className="grid gap-3 pb-5">
+            <FileInput
+              control={control}
+              name="vmc.vrmFile"
+              rules={{
+                required: true,
+              }}
+              placeholder={l10n.getString(
+                'settings-osc-vmc-vrm_address-placeholder'
+              )}
+              label=""
+              accept="model/gltf-binary, model/gltf+json, model/vrml, .vrm"
+            ></FileInput>
+            {/* For some reason, linux (GNOME) is detecting the VRM file is a VRML */}
           </div>
         </>
       </SettingsPageLayout>
