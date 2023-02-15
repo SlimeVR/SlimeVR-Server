@@ -654,6 +654,7 @@ public class HumanSkeleton {
 	}
 	// #endregion
 
+	@ThreadSafe
 	protected void updateRootTrackers() {
 		hmdNode.update();
 		if (isTrackingLeftArmFromController()) {

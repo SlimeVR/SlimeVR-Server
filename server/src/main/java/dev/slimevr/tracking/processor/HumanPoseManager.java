@@ -517,7 +517,7 @@ public class HumanPoseManager {
 	public void resetTrackersFull() {
 		if (isSkeletonPresent()) {
 			skeleton.resetTrackersFull();
-			if (server != null){
+			if (server != null) {
 				server.getVrcOSCHandler().yawAlign();
 				server.getVMCHandler().alignVMCTracking(getRootNode().worldTransform.getRotation());
 			}
@@ -534,7 +534,7 @@ public class HumanPoseManager {
 	public void resetTrackersYaw() {
 		if (isSkeletonPresent()) {
 			skeleton.resetTrackersYaw();
-			if (server != null){
+			if (server != null) {
 				server.getVrcOSCHandler().yawAlign();
 				server.getVMCHandler().alignVMCTracking(getRootNode().worldTransform.getRotation());
 			}

@@ -20,7 +20,6 @@ class VRMReader(private val vrmPath: String) {
 	private val data: GLTF
 
 	init {
-// 		vrmPath = "C:/Users/mario/Documents/VSeeFace Custom Data/Auy2.3.1.vrm";
 		FileSystem.SYSTEM.source(vrmPath.toPath()).use { fileSource ->
 			fileSource.buffer().use { bufferedSource ->
 				if (bufferedSource.readIntLe() != 0x46546C67) { // "glTF"
@@ -45,17 +44,18 @@ class VRMReader(private val vrmPath: String) {
 		}
 	}
 
-	fun getOffsetForBone(boneType: BoneType): Vector3f? {
+	fun getOffsetForBone(boneType: BoneType): Vector3f {
+		val translation = Vector3f()
+
 		val unityBone = UnityBone.getByBoneType(boneType)
 		val bone = try {
-			data.extensions.vrm.humanoid.humanBones.first { it.bone == unityBone.name }
+			data.extensions.vrm.humanoid.humanBones.first { it.bone.equals(unityBone.stringVal, ignoreCase = true) }
 		} catch (e: NoSuchElementException) {
-			LogManager.warning("[VMCReader] Bone ${boneType.name} not found in \"$vrmPath\"")
-			return null
+			LogManager.warning("[VRMReader] Bone ${unityBone.stringVal} not found in \"$vrmPath\"")
+			return translation
 		}
 
-		val translation = Vector3f()
-		val translationNode = data.nodes[bone.node].translation ?: return null
+		val translationNode = data.nodes[bone.node].translation ?: return translation
 		translation.x = translationNode[0].toFloat()
 		translation.y = translationNode[1].toFloat()
 		translation.z = -translationNode[2].toFloat()
@@ -68,7 +68,6 @@ class VRMReader(private val vrmPath: String) {
 data class GLTF(
 	val extensions: Extensions,
 	val extensionsUsed: List<String>,
-	val extensionsRequired: List<String>,
 	val nodes: List<Node>,
 )
 
@@ -105,11 +104,11 @@ data class HumanBone(
 
 @Serializable
 data class Node(
-	val translation: List<Double>?,
-	val rotation: List<Double>?,
-	val scale: List<Double>?,
+	val translation: List<Double>? = null,
+	val rotation: List<Double>? = null,
+	val scale: List<Double>? = null,
 	// GLTF says that there can be a matrix instead of translation,
 	// rotation and scale, so we need to support that too in the future.
 	// val matrix: List<List<Double>>,
-	val children: List<Int>,
+	val children: List<Int> = emptyList(),
 )

@@ -353,13 +353,13 @@ public class VMCHandler implements OSCHandler {
 							bone.boneType
 						);
 					// Update unity hierarchy from bone's global rotation
-					if (tailNode != null)
+					if (tailNode != null && tailNode.getParent() != null)
 						outputUnityHierarchy
 							.setBoneGlobalRotation(
 								bone.boneType,
 								tailNode.getParent().worldTransform.getRotation()
 							);
-				}
+				} // TODO fix arms
 				outputUnityHierarchy.updateNodes();
 
 				// Add Unity humanoid bones transforms
@@ -375,17 +375,38 @@ public class VMCHandler implements OSCHandler {
 							// Get position
 							if (anchorHip) {
 								// Hip anchor
-								vecBuf.set(0f, 0, 0f);
-							} else {
-								// Head anchor
 								vecBuf
 									.set(
-										outputUnityHierarchy
-											.getGlobalTranslationForBone(BoneType.HEAD)
-									)
-									.addLocal(
+										0f,
 										outputUnityHierarchy
 											.getGlobalTranslationForBone(BoneType.HIP)
+											.length(),
+										0f
+									);
+							} else {
+								// Head anchor
+								// TODO do this shit idk ;-;
+								float scaleMultiplier = outputUnityHierarchy
+									.getGlobalTranslationForBone(BoneType.HEAD)
+									.add(
+										outputUnityHierarchy
+											.getGlobalTranslationForBone(BoneType.HIP)
+									)
+									.length();
+								scaleMultiplier = 0.55f;
+								vecBuf
+									.set(
+										humanPoseManager
+											.getTailNodeOfBone(BoneType.HEAD).worldTransform
+												.getTranslation()
+									)
+									.multLocal(scaleMultiplier);
+								vecBuf
+									.addLocal(
+										humanPoseManager
+											.getTailNodeOfBone(BoneType.HIP).worldTransform
+												.getTranslation()
+												.mult(scaleMultiplier)
 									);
 							}
 
@@ -427,11 +448,11 @@ public class VMCHandler implements OSCHandler {
 				oscArgs.add(String.valueOf(shareableTracker.getTrackerId()));
 				addTransformToArgs(vecBuf, quatBuf);
 				String address;
-				if (shareableTracker.getTrackerRole() == TrackerRole.HMD) {
+				TrackerRole role = shareableTracker.getTrackerRole();
+				if (role == TrackerRole.HMD) {
 					address = "/VMC/Ext/Hmd/Pos";
 				} else if (
-					shareableTracker.getTrackerRole() == TrackerRole.LEFT_CONTROLLER
-						|| shareableTracker.getTrackerRole() == TrackerRole.RIGHT_CONTROLLER
+					role == TrackerRole.LEFT_CONTROLLER || role == TrackerRole.RIGHT_CONTROLLER
 				) {
 					address = "/VMC/Ext/Con/Pos";
 				} else {
