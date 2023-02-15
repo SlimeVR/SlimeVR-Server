@@ -103,6 +103,10 @@ public class SerialHandler implements SerialPortMessageListener {
 					);
 				currentPort.removeDataListener();
 				currentPort.closePort();
+			} else {
+				LogManager.info("Reusing already open port");
+				this.listeners.forEach((listener) -> listener.onSerialConnected(currentPort));
+				return;
 			}
 		}
 		currentPort = newPort;
