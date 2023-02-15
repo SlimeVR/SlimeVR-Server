@@ -45,6 +45,7 @@ public class VMCHandler implements OSCHandler {
 	private final Map<String, VRTracker> byTrackerNameTracker = new HashMap<>();
 	private final Map<BoneType, VRTracker> byBonetypeTracker = new HashMap<>();
 	private final FastList<VRTracker> trackersList = new FastList<>();
+	private final Quaternion yawOffset = new Quaternion();
 	private UnityHierarchy inputUnityHierarchy;
 	private UnityHierarchy outputUnityHierarchy;
 	private Device trackerDevice;
@@ -112,55 +113,14 @@ public class VMCHandler implements OSCHandler {
 			// Starts listening for VMC messages
 			if (oscReceiver != null) {
 				OSCMessageListener listener = this::handleReceivedMessage;
+				String[] listenAddresses = { "/VMC/Ext/Bone/Pos", "/VMC/Ext/Hmd/Pos",
+					"/VMC/Ext/Con/Pos", "/VMC/Ext/Tra/Pos", "/VMC/Ext/Root/Pos" };
 
-				oscReceiver
-					.getDispatcher()
-					.addListener(
-						new OSCPatternAddressMessageSelector(
-							"/VMC/Ext/Rcv"
-						),
-						listener
-					);
-				oscReceiver
-					.getDispatcher()
-					.addListener(
-						new OSCPatternAddressMessageSelector(
-							"/VMC/Ext/Bone/Pos"
-						),
-						listener
-					);
-				oscReceiver
-					.getDispatcher()
-					.addListener(
-						new OSCPatternAddressMessageSelector(
-							"/VMC/Ext/Hmd/Pos"
-						),
-						listener
-					);
-				oscReceiver
-					.getDispatcher()
-					.addListener(
-						new OSCPatternAddressMessageSelector(
-							"/VMC/Ext/Con/Pos"
-						),
-						listener
-					);
-				oscReceiver
-					.getDispatcher()
-					.addListener(
-						new OSCPatternAddressMessageSelector(
-							"/VMC/Ext/Tra/Pos"
-						),
-						listener
-					);
-				oscReceiver
-					.getDispatcher()
-					.addListener(
-						new OSCPatternAddressMessageSelector(
-							"/VMC/Ext/Root/Pos"
-						),
-						listener
-					);
+				for (String address : listenAddresses) {
+					oscReceiver
+						.getDispatcher()
+						.addListener(new OSCPatternAddressMessageSelector(address), listener);
+				}
 
 				oscReceiver.startListening();
 			}
@@ -200,16 +160,13 @@ public class VMCHandler implements OSCHandler {
 			}
 
 			// Load VRM data
-			// TODO : set outputUnityHierarchy's nodes' local translations to
-			// the loaded VRM avatar's
-			// else, use some defaults
 			if (outputUnityHierarchy != null) {
-				VRMReader vrmReader = new VRMReader(config.getVRMAddress());
-				for (TransformNode node : outputUnityHierarchy.getAllNodes()) {
-					if (node.getBoneType() != null)
-						node.localTransform
-							.setTranslation(vrmReader.getOffsetForBone(node.getBoneType()));
-				}
+//				VRMReader vrmReader = new VRMReader(config.getVRMAddress());
+//				for (TransformNode node : outputUnityHierarchy.getAllNodes()) {
+//					if (node.getBoneType() != null)
+//						node.localTransform
+//							.setTranslation(vrmReader.getOffsetForBone(node.getBoneType()));
+//				}
 			}
 		}
 
@@ -338,10 +295,10 @@ public class VMCHandler implements OSCHandler {
 				// Instantiate unityHierarchy if not done
 				if (inputUnityHierarchy == null)
 					inputUnityHierarchy = new UnityHierarchy(true);
-				// TODO bones need mounting reset once trackers are rewritten
 				inputUnityHierarchy.setBoneLocalRotation(boneType, rotation);
 				rotation.set(inputUnityHierarchy.getGlobalRotationForBone(boneType));
 			}
+			rotation.multLocal(yawOffset);
 			tracker.rotation.set(rotation);
 		}
 
@@ -505,6 +462,15 @@ public class VMCHandler implements OSCHandler {
 				}
 			}
 		}
+	}
+
+	/**
+	 * Set the Quaternion to offset the received VMC tracking rotations' yaw by
+	 *
+	 * @param reference usually the HMD's rotation
+	 */
+	public void alignVMCTracking(Quaternion reference) {
+		yawOffset.fromAngles(0, reference.getYaw(), 0);
 	}
 
 	private void addTransformToArgs(Vector3f pos, Quaternion rot) {

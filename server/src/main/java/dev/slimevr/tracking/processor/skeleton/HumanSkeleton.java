@@ -175,7 +175,7 @@ public class HumanSkeleton {
 
 		tapDetectionManager = new TapDetectionManager(
 			this,
-			server.getVrcOSCHandler(),
+			humanPoseManager,
 			server.getConfigManager().getVrConfig().getTapDetection()
 		);
 		legTweaks.setConfig(server.getConfigManager().getVrConfig().getLegTweaks());
