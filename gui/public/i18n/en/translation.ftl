@@ -24,7 +24,6 @@ body_part-RIGHT_HAND = Right hand
 body_part-RIGHT_UPPER_LEG = Right thigh
 body_part-RIGHT_LOWER_LEG = Right ankle
 body_part-RIGHT_FOOT = Right foot
-body_part-RIGHT_CONTROLLER = Right controller
 body_part-CHEST = Chest
 body_part-WAIST = Waist
 body_part-HIP = Hip
@@ -35,7 +34,6 @@ body_part-LEFT_HAND = Left hand
 body_part-LEFT_UPPER_LEG = Left thigh
 body_part-LEFT_LOWER_LEG = Left ankle
 body_part-LEFT_FOOT = Left foot
-body_part-LEFT_CONTROLLER = Left controller
 
 ## Proportions
 skeleton_bone-NONE = None
@@ -56,8 +54,8 @@ skeleton_bone-SHOULDERS_DISTANCE = Shoulders Distance
 skeleton_bone-SHOULDERS_WIDTH = Shoulders Width
 skeleton_bone-UPPER_ARM = Upper Arm Length
 skeleton_bone-LOWER_ARM = Lower Arm Length
-skeleton_bone-CONTROLLER_Y = Controller Distance Y
-skeleton_bone-CONTROLLER_Z = Controller Distance Z
+skeleton_bone-HAND_Y = Hand Distance Y
+skeleton_bone-HAND_Z = Hand Distance Z
 skeleton_bone-ELBOW_OFFSET = Elbow Offset
 
 ## Tracker reset buttons

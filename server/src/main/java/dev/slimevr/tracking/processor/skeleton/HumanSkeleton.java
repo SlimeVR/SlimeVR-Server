@@ -95,8 +95,6 @@ public class HumanSkeleton {
 	protected Tracker rightUpperLegTracker;
 	protected Tracker rightLowerLegTracker;
 	protected Tracker rightFootTracker;
-	protected Tracker leftControllerTracker;
-	protected Tracker rightControllerTracker;
 	protected Tracker leftLowerArmTracker;
 	protected Tracker rightLowerArmTracker;
 	protected Tracker leftUpperArmTracker;
@@ -348,10 +346,6 @@ public class HumanSkeleton {
 			// don't send currently
 			shareableBoneInfo.add(getBoneInfoForBoneType(BoneType.LEFT_HAND));
 		}
-		if (leftControllerTracker != null && sendAllBones) {
-			// don't send currently
-			shareableBoneInfo.add(getBoneInfoForBoneType(BoneType.LEFT_CONTROLLER));
-		}
 
 		// Right arm
 		if ((hasRightArmTracker || rightShoulderTracker != null) && sendAllBones) {
@@ -369,10 +363,6 @@ public class HumanSkeleton {
 			// don't send currently
 			shareableBoneInfo.add(getBoneInfoForBoneType(BoneType.RIGHT_HAND));
 		}
-		if (rightControllerTracker != null && sendAllBones) {
-			// don't send currently
-			shareableBoneInfo.add(getBoneInfoForBoneType(BoneType.RIGHT_CONTROLLER));
-		}
 	}
 
 
@@ -386,16 +376,6 @@ public class HumanSkeleton {
 					TrackerPosition.HMD
 				);
 		}
-		leftControllerTracker = TrackerUtils
-			.findNonComputedHumanPoseTrackerForBodyPosition(
-				trackers,
-				TrackerPosition.LEFT_CONTROLLER
-			);
-		rightControllerTracker = TrackerUtils
-			.findNonComputedHumanPoseTrackerForBodyPosition(
-				trackers,
-				TrackerPosition.RIGHT_CONTROLLER
-			);
 		neckTracker = TrackerUtils
 			.findNonComputedHumanPoseTrackerForBodyPosition(
 				trackers,
@@ -710,8 +690,6 @@ public class HumanSkeleton {
 		Tracker rightLowerLegTracker = trackerPreUpdate(this.rightLowerLegTracker);
 		Tracker rightFootTracker = trackerPreUpdate(this.rightFootTracker);
 
-		Tracker leftControllerTracker = trackerPreUpdate(this.leftControllerTracker);
-		Tracker rightControllerTracker = trackerPreUpdate(this.rightControllerTracker);
 		Tracker leftLowerArmTracker = trackerPreUpdate(this.leftLowerArmTracker);
 		Tracker rightLowerArmTracker = trackerPreUpdate(this.rightLowerArmTracker);
 		Tracker leftUpperArmTracker = trackerPreUpdate(this.leftUpperArmTracker);
@@ -977,8 +955,8 @@ public class HumanSkeleton {
 
 		// Left arm
 		if (isTrackingLeftArmFromController()) { // From controller
-			leftControllerTracker.getPosition(posBuf);
-			leftControllerTracker.getRotation(rotBuf1);
+			leftHandTracker.getPosition(posBuf);
+			leftHandTracker.getRotation(rotBuf1);
 			leftControllerNode.localTransform.setTranslation(posBuf);
 			leftControllerNode.localTransform.setRotation(rotBuf1);
 
@@ -1031,8 +1009,8 @@ public class HumanSkeleton {
 
 		// Right arm
 		if (isTrackingRightArmFromController()) { // From controller
-			rightControllerTracker.getPosition(posBuf);
-			rightControllerTracker.getRotation(rotBuf1);
+			rightHandTracker.getPosition(posBuf);
+			rightHandTracker.getRotation(rotBuf1);
 			rightControllerNode.localTransform.setTranslation(posBuf);
 			rightControllerNode.localTransform.setRotation(rotBuf1);
 
@@ -1312,28 +1290,33 @@ public class HumanSkeleton {
 				rightHipNode.localTransform.setTranslation(offset);
 				break;
 			case LEFT_UPPER_LEG:
-			case RIGHT_UPPER_LEG:
 				leftKneeNode.localTransform.setTranslation(offset);
+				break;
+			case RIGHT_UPPER_LEG:
 				rightKneeNode.localTransform.setTranslation(offset);
 				break;
 			case LEFT_KNEE_TRACKER:
-			case RIGHT_KNEE_TRACKER:
 				trackerLeftKneeNode.localTransform.setTranslation(offset);
+				break;
+			case RIGHT_KNEE_TRACKER:
 				trackerRightKneeNode.localTransform.setTranslation(offset);
 				break;
 			case LEFT_LOWER_LEG:
-			case RIGHT_LOWER_LEG:
 				leftAnkleNode.localTransform.setTranslation(offset);
+				break;
+			case RIGHT_LOWER_LEG:
 				rightAnkleNode.localTransform.setTranslation(offset);
 				break;
 			case LEFT_FOOT:
-			case RIGHT_FOOT:
 				leftFootNode.localTransform.setTranslation(offset);
+				break;
+			case RIGHT_FOOT:
 				rightFootNode.localTransform.setTranslation(offset);
 				break;
 			case LEFT_FOOT_TRACKER:
-			case RIGHT_FOOT_TRACKER:
 				trackerLeftFootNode.localTransform.setTranslation(offset);
+				break;
+			case RIGHT_FOOT_TRACKER:
 				trackerRightFootNode.localTransform.setTranslation(offset);
 				break;
 			case LEFT_SHOULDER:
@@ -1365,22 +1348,23 @@ public class HumanSkeleton {
 				}
 				break;
 			case LEFT_ELBOW_TRACKER:
-			case RIGHT_ELBOW_TRACKER:
 				trackerLeftElbowNode.localTransform.setTranslation(offset);
+				break;
+			case RIGHT_ELBOW_TRACKER:
 				trackerRightElbowNode.localTransform.setTranslation(offset);
 				break;
 			case LEFT_HAND:
-			case RIGHT_HAND:
-				leftHandNode.localTransform.setTranslation(offset);
-				rightHandNode.localTransform.setTranslation(offset);
-				break;
-			case LEFT_CONTROLLER:
 				if (isTrackingLeftArmFromController()) {
-					leftWristNode.localTransform.setTranslation(offset);
+					leftWristNode.localTransform.setTranslation(offset.negate());
+				} else {
+					leftHandNode.localTransform.setTranslation(offset);
 				}
-			case RIGHT_CONTROLLER:
+				break;
+			case RIGHT_HAND:
 				if (isTrackingRightArmFromController()) {
-					rightWristNode.localTransform.setTranslation(offset);
+					rightWristNode.localTransform.setTranslation(offset.negate());
+				} else {
+					rightHandNode.localTransform.setTranslation(offset);
 				}
 				break;
 			default:
@@ -1397,8 +1381,6 @@ public class HumanSkeleton {
 		humanPoseManager.computeNodeOffset(BoneType.RIGHT_UPPER_ARM);
 		humanPoseManager.computeNodeOffset(BoneType.LEFT_LOWER_ARM);
 		humanPoseManager.computeNodeOffset(BoneType.RIGHT_LOWER_ARM);
-		humanPoseManager.computeNodeOffset(BoneType.LEFT_CONTROLLER);
-		humanPoseManager.computeNodeOffset(BoneType.RIGHT_CONTROLLER);
 	}
 
 	public TransformNode getTailNodeOfBone(BoneType bone) {
@@ -1473,7 +1455,11 @@ public class HumanSkeleton {
 					return rightWristNode;
 				}
 			case LEFT_HAND:
-				return leftHandNode;
+				if (isTrackingLeftArmFromController()) {
+					return leftWristNode;
+				} else {
+					return leftHandNode;
+				}
 			case RIGHT_HAND:
 				return rightHandNode;
 			case LEFT_HAND_TRACKER:
@@ -1481,9 +1467,17 @@ public class HumanSkeleton {
 			case RIGHT_HAND_TRACKER:
 				return trackerRightHandNode;
 			case LEFT_CONTROLLER:
+			if (isTrackingLeftArmFromController()) {
 				return leftWristNode;
+			} else {
+				return leftHandNode;
+			}
 			case RIGHT_CONTROLLER:
+			if (isTrackingRightArmFromController()) {
 				return rightWristNode;
+			} else {
+				return rightHandNode;
+			}
 			default:
 				return null;
 		}
@@ -1581,7 +1575,7 @@ public class HumanSkeleton {
 	 * controller or not.
 	 */
 	public boolean isTrackingLeftArmFromController() {
-		return leftControllerTracker != null && !forceArmsFromHMD;
+		return leftHandTracker != null && leftHandTracker.hasPosition() && !forceArmsFromHMD;
 	}
 
 	/**
@@ -1592,7 +1586,7 @@ public class HumanSkeleton {
 	 * controller or not.
 	 */
 	public boolean isTrackingRightArmFromController() {
-		return rightControllerTracker != null && !forceArmsFromHMD;
+		return rightHandTracker != null && rightHandTracker.hasPosition() && !forceArmsFromHMD;
 	}
 
 	protected Tracker[] getTrackersToReset() {
