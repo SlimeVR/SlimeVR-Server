@@ -185,6 +185,7 @@ export function GeneralSettings() {
     driftCompensation.amount = values.driftCompensation.amount;
     driftCompensation.maxResets = values.driftCompensation.maxResets;
     settings.driftCompensation = driftCompensation;
+
     sendRPCPacket(RpcMessage.ChangeSettingsRequest, settings);
 
     setConfig({
@@ -823,6 +824,7 @@ export function GeneralSettings() {
               )}
             />
           </div>
+
           <Typography bold>
             {l10n.getString('settings-general-interface-lang')}
           </Typography>
