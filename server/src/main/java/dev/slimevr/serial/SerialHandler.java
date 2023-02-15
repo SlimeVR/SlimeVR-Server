@@ -121,10 +121,20 @@ public class SerialHandler implements SerialPortMessageListener {
 			if (currentPort != null)
 				currentPort.closePort();
 			this.listeners.forEach(SerialListener::onSerialDisconnected);
-			LogManager.info("Port " + (currentPort != null ? currentPort.getDescriptivePortName() : "null") + " closed okay");
+			LogManager.
+				info(
+					"Port "
+						+ (currentPort != null ? currentPort.getDescriptivePortName() : "null")
+						+ " closed okay"
+				);
 			currentPort = null;
 		} catch (Exception e) {
-			LogManager.warning("Error closing port " + (currentPort != null ? currentPort.getDescriptivePortName() : "null"), e);
+			LogManager.
+				warning(
+					"Error closing port "
+						+ (currentPort != null ? currentPort.getDescriptivePortName() : "null"),
+					e
+				);
 		}
 	}
 
