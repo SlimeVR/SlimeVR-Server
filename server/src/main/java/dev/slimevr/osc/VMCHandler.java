@@ -161,12 +161,12 @@ public class VMCHandler implements OSCHandler {
 
 			// Load VRM data
 			if (outputUnityHierarchy != null) {
-//				VRMReader vrmReader = new VRMReader(config.getVRMAddress());
-//				for (TransformNode node : outputUnityHierarchy.getAllNodes()) {
-//					if (node.getBoneType() != null)
-//						node.localTransform
-//							.setTranslation(vrmReader.getOffsetForBone(node.getBoneType()));
-//				}
+				VRMReader vrmReader = new VRMReader(config.getVRMAddress());
+				for (TransformNode node : outputUnityHierarchy.getAllNodes()) {
+					if (node.getBoneType() != null)
+						node.localTransform
+							.setTranslation(vrmReader.getOffsetForBone(node.getBoneType()));
+				}
 			}
 		}
 
@@ -256,7 +256,7 @@ public class VMCHandler implements OSCHandler {
 	) {
 		// Create device if it doesn't exist
 		if (trackerDevice == null) {
-			trackerDevice = server.getDeviceManager().createDevice("VMCReceiver", "1.0", "VMC");
+			trackerDevice = server.getDeviceManager().createDevice("VMC receiver", "1.0", "VMC");
 			server.getDeviceManager().addDevice(trackerDevice);
 		}
 
@@ -298,7 +298,7 @@ public class VMCHandler implements OSCHandler {
 				inputUnityHierarchy.setBoneLocalRotation(boneType, rotation);
 				rotation.set(inputUnityHierarchy.getGlobalRotationForBone(boneType));
 			}
-			rotation.multLocal(yawOffset);
+			rotation.set(yawOffset.mult(rotation));
 			tracker.rotation.set(rotation);
 		}
 
