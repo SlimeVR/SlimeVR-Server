@@ -81,6 +81,12 @@ public class SerialHandler implements SerialPortMessageListener {
 			}
 		}
 		if (newPort == null) {
+			LogManager
+				.info(
+					"No serial ports found to connect to ("
+						+ ports.length
+						+ ") total ports"
+					);
 			return false;
 		}
 		if (this.isConnected()) {
@@ -90,6 +96,11 @@ public class SerialHandler implements SerialPortMessageListener {
 			}
 		}
 		currentPort = newPort;
+		LogManager
+			.info(
+				"Trying to connect to new serial port "
+					+ currentPort.getDescriptivePortName()
+				);
 
 		currentPort.setBaudRate(115200);
 		currentPort.clearRTS();
