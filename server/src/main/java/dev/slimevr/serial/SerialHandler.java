@@ -64,28 +64,31 @@ public class SerialHandler implements SerialPortMessageListener {
 	}
 
 	public boolean openSerial(String portLocation, boolean auto) {
-		if (this.isConnected()) {
-			if (currentPort != null)
-				currentPort.closePort();
-		}
-
 		System.out.println("Trying to open:" + portLocation + "  auto: " + auto);
 
 		SerialPort[] ports = SerialPort.getCommPorts();
 		lastKnownPorts = ports;
+		SerialPort newPort = null;
 		for (SerialPort port : ports) {
 			if (!auto && port.getPortLocation().equals(portLocation)) {
-				currentPort = port;
+				newPort = port;
 				break;
 			}
 
 			if (auto && isKnownBoard(port.getDescriptivePortName())) {
-				currentPort = port;
+				newPort = port;
 				break;
 			}
 		}
-		if (currentPort == null) {
+		if (newPort == null) {
 			return false;
+		}
+		if (this.isConnected()) {
+			if (currentPort != null && newPort != currentPort) {
+				currentPort.removeDataListener();
+				currentPort.closePort();
+				Thread.sleep(500L);
+			}
 		}
 
 		currentPort.setBaudRate(115200);

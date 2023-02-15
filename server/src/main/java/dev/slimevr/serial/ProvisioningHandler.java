@@ -92,6 +92,8 @@ public class ProvisioningHandler implements SerialListener {
 		if (System.currentTimeMillis() - this.lastStatusChange > 10000) {
 			if (this.provisioningStatus == ProvisioningStatus.NONE)
 				this.initSerial(this.preferredPort);
+			else if (this.provisioningStatus == ProvisioningStatus.SERIAL_INIT)
+				initSerial(this.preferredPort);
 			else if (this.provisioningStatus == ProvisioningStatus.PROVISIONING)
 				this.tryProvisioning();
 			else if (this.provisioningStatus == ProvisioningStatus.LOOKING_FOR_SERVER)
