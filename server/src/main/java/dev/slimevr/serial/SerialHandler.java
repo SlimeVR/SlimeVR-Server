@@ -92,7 +92,9 @@ public class SerialHandler implements SerialPortMessageListener {
 		if (this.isConnected()) {
 			if (
 				!newPort.getPortLocation().equals(currentPort.getPortLocation())
-					|| !newPort.getDescriptivePortName().equals(currentPort.getDescriptivePortName())
+					|| !newPort
+						.getDescriptivePortName()
+						.equals(currentPort.getDescriptivePortName())
 			) {
 				LogManager
 					.info(
