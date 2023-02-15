@@ -91,6 +91,11 @@ public class SerialHandler implements SerialPortMessageListener {
 		}
 		if (this.isConnected()) {
 			if (currentPort != null && newPort != currentPort) {
+				LogManager
+					.info(
+						"Closing current serial port "
+							+ currentPort.getDescriptivePortName()
+					);
 				currentPort.removeDataListener();
 				currentPort.closePort();
 			}
@@ -105,7 +110,15 @@ public class SerialHandler implements SerialPortMessageListener {
 		currentPort.setBaudRate(115200);
 		currentPort.clearRTS();
 		currentPort.clearDTR();
-		if (!currentPort.openPort()) {
+		if (!currentPort.openPort(1000)) {
+			LogManager
+				.warning(
+					"Can't open serial port "
+						+ currentPort.getDescriptivePortName()
+						+ ", last error: "
+						currentPort.getLastErrorCode()
+				);
+			currentPort = null;
 			return false;
 		}
 
