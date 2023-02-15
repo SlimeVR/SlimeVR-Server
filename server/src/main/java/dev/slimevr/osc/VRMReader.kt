@@ -55,7 +55,7 @@ class VRMReader(private val vrmPath: String) {
 		}
 
 		val translation = Vector3f()
-		val translationNode = data.nodes[bone.node].translation
+		val translationNode = data.nodes[bone.node].translation ?: return null
 		translation.x = translationNode[0].toFloat()
 		translation.y = translationNode[1].toFloat()
 		translation.z = -translationNode[2].toFloat()
@@ -69,18 +69,18 @@ data class GLTF(
 	val extensions: Extensions,
 	val extensionsUsed: List<String>,
 	val extensionsRequired: List<String>,
-	val nodes: List<Node>
+	val nodes: List<Node>,
 )
 
 @Serializable
 data class Extensions(
 	@SerialName("VRM")
-	val vrm: VRM
+	val vrm: VRM,
 )
 
 @Serializable
 data class VRM(
-	val humanoid: Humanoid
+	val humanoid: Humanoid,
 )
 
 @Serializable
@@ -93,23 +93,23 @@ data class Humanoid(
 	val upperLegTwist: Double,
 	val lowerLegTwist: Double,
 	val feetSpacing: Double,
-	val hasTranslationDoF: Boolean
+	val hasTranslationDoF: Boolean,
 )
 
 @Serializable
 data class HumanBone(
 	val bone: String,
 	val node: Int,
-	val useDefaultValues: Boolean
+	val useDefaultValues: Boolean,
 )
 
 @Serializable
 data class Node(
-	val translation: List<Double>,
-	val rotation: List<Double>,
-	val scale: List<Double>,
+	val translation: List<Double>?,
+	val rotation: List<Double>?,
+	val scale: List<Double>?,
 	// GLTF says that there can be a matrix instead of translation,
 	// rotation and scale, so we need to support that too in the future.
 	// val matrix: List<List<Double>>,
-	val children: List<Int>
+	val children: List<Int>,
 )
