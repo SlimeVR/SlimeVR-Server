@@ -19,6 +19,8 @@ public class ConnectionContext {
 	private final List<Integer> subscribedTopics = new ArrayList<>();
 
 	private boolean useSerial = false;
+
+	private boolean useProvisioning = false;
 	private boolean useAutoBone = false;
 
 	public List<DataFeedConfigT> getDataFeedConfigList() {
@@ -54,4 +56,11 @@ public class ConnectionContext {
 		this.useAutoBone = useAutoBone;
 	}
 
+	public boolean useProvisioning() {
+		return useProvisioning;
+	}
+
+	public void setUseProvisioning(boolean useProvisioning) {
+		this.useProvisioning = useProvisioning;
+	}
 }

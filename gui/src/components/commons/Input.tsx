@@ -85,7 +85,7 @@ export const Input = ({
   variant = 'primary',
   rules,
 }: {
-  rules: UseControllerProps<any>['rules'];
+  rules?: UseControllerProps<any>['rules'];
   control: Control<any>;
 } & InputProps &
   Partial<HTMLInputElement>) => {

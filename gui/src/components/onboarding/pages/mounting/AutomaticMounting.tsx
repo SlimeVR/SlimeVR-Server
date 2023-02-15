@@ -17,7 +17,7 @@ export function AutomaticMountingPage() {
 
   return (
     <>
-      <div className="flex flex-col gap-5 h-full items-center w-full justify-center">
+      <div className="flex flex-col gap-2 h-full items-center w-full justify-center">
         <div className="flex flex-col w-full h-full justify-center max-w-3xl gap-5">
           <div className="flex flex-col max-w-lg gap-3">
             {!state.alonePage && (

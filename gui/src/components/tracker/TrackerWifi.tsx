@@ -15,15 +15,19 @@ export function TrackerWifi({
   textColor?: string;
 }) {
   return (
-    <div className="flex gap-2 whitespace-nowrap">
+    <div className="flex gap-2">
       <div className="flex flex-col justify-around">
         <WifiIcon value={rssi} disabled={disabled} />
       </div>
       {!disabled && (
         <div className="w-12">
-          <Typography color={textColor}>{ping} ms</Typography>
+          <Typography color={textColor} whitespace="whitespace-nowrap">
+            {ping} ms
+          </Typography>
           {rssiShowNumeric && (
-            <Typography color={textColor}>{rssi} dBm</Typography>
+            <Typography color={textColor} whitespace="whitespace-nowrap">
+              {rssi} dBm
+            </Typography>
           )}
         </div>
       )}

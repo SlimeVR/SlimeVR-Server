@@ -63,6 +63,8 @@ dependencies {
 	implementation("com.github.jonpeterson:jackson-module-model-versioning:1.2.2")
 	implementation("org.apache.commons:commons-math3:3.6.1")
 	implementation("org.apache.commons:commons-lang3:3.12.0")
+	implementation("org.apache.commons:commons-collections4:4.1")
+
 	implementation("net.java.dev.jna:jna:5.+")
 	implementation("net.java.dev.jna:jna-platform:5.+")
 	implementation("com.illposed.osc:javaosc-core:0.8")
