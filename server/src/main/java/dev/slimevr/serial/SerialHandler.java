@@ -116,7 +116,7 @@ public class SerialHandler implements SerialPortMessageListener {
 					"Can't open serial port "
 						+ currentPort.getDescriptivePortName()
 						+ ", last error: "
-						currentPort.getLastErrorCode()
+						+ currentPort.getLastErrorCode()
 				);
 			currentPort = null;
 			return false;
