@@ -64,7 +64,7 @@ public class SerialHandler implements SerialPortMessageListener {
 	}
 
 	public boolean openSerial(String portLocation, boolean auto) {
-		System.out.println("Trying to open:" + portLocation + "  auto: " + auto);
+		LogManager.info("Trying to open:" + portLocation + "  auto: " + auto);
 
 		SerialPort[] ports = SerialPort.getCommPorts();
 		lastKnownPorts = ports;
@@ -100,6 +100,7 @@ public class SerialHandler implements SerialPortMessageListener {
 
 		currentPort.addDataListener(this);
 		this.listeners.forEach((listener) -> listener.onSerialConnected(currentPort));
+		LogManager.info("Serial port " + newPort.getDescriptivePortName() + " is open");
 		return true;
 	}
 
@@ -120,10 +121,10 @@ public class SerialHandler implements SerialPortMessageListener {
 			if (currentPort != null)
 				currentPort.closePort();
 			this.listeners.forEach(SerialListener::onSerialDisconnected);
-			System.out.println("Port closed okay");
+			LogManager.info("Port " + (currentPort != null ? currentPort.getDescriptivePortName() : "null") + " closed okay");
 			currentPort = null;
 		} catch (Exception e) {
-			System.out.println("Error closing port: " + e.getMessage());
+			LogManager.warning("Error closing port " + (currentPort != null ? currentPort.getDescriptivePortName() : "null"), e);
 		}
 	}
 
@@ -137,8 +138,8 @@ public class SerialHandler implements SerialPortMessageListener {
 			writer.flush();
 			this.addLog("-> " + serialText + "\n");
 		} catch (IOException e) {
-			addLog(e + "\n");
-			e.printStackTrace();
+			addLog("[!] Serial error: " + e.getMessage() + "\n");
+			LogManager.warning("Serial port write error", e);
 		}
 	}
 
@@ -153,7 +154,7 @@ public class SerialHandler implements SerialPortMessageListener {
 			this.addLog("-> SET WIFI \"" + ssid + "\" \"" + passwd.replaceAll(".", "*") + "\"\n");
 		} catch (IOException e) {
 			addLog(e + "\n");
-			e.printStackTrace();
+			LogManager.warning("Serial port write error", e);
 		}
 	}
 
@@ -236,6 +237,7 @@ public class SerialHandler implements SerialPortMessageListener {
 			differences.forEach(this::onNewDevice);
 		} catch (Throwable e) {
 			LogManager.severe("Using serial ports is not supported on this platform", e);
+			throw new RuntimeException("Serial unsupported");
 		}
 	}
 }
