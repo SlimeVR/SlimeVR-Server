@@ -39,6 +39,7 @@ import { useConfig } from './hooks/config';
 import { OSCRouterSettings } from './components/settings/pages/OSCRouterSettings';
 import { useLocalization } from '@fluent/react';
 import { os } from '@tauri-apps/api';
+import { VMCSettings } from './components/settings/pages/VMCSettings';
 
 function Layout() {
   const { loading } = useConfig();

@@ -63,8 +63,6 @@ public class HumanSkeleton {
 	protected final TransformNode rightHandNode = new TransformNode(BoneType.RIGHT_HAND, false);
 	protected final TransformNode trackerLeftHandNode = new TransformNode(BoneType.LEFT_HAND_TRACKER, false);
 	protected final TransformNode trackerRightHandNode = new TransformNode(BoneType.RIGHT_HAND_TRACKER, false);
-	protected final TransformNode leftControllerNode = new TransformNode(BoneType.LEFT_CONTROLLER, false);
-	protected final TransformNode rightControllerNode = new TransformNode(BoneType.RIGHT_CONTROLLER, false);
 	// @formatter:on
 	public final List<BoneInfo> allBoneInfo = new ArrayList<>();
 	public final List<BoneInfo> shareableBoneInfo = new ArrayList<>();
@@ -246,7 +244,7 @@ public class HumanSkeleton {
 
 		if (isTrackingLeftArmFromController()) {
 			leftWristNode.attachChild(leftElbowNode);
-			leftControllerNode.attachChild(leftWristNode);
+			leftHandNode.attachChild(leftWristNode);
 
 		} else {
 			leftShoulderTailNode.attachChild(leftElbowNode);
@@ -256,7 +254,7 @@ public class HumanSkeleton {
 		}
 		if (isTrackingRightArmFromController()) {
 			rightWristNode.attachChild(rightElbowNode);
-			rightControllerNode.attachChild(rightWristNode);
+			rightHandNode.attachChild(rightWristNode);
 		} else {
 			rightShoulderTailNode.attachChild(rightElbowNode);
 			rightElbowNode.attachChild(rightWristNode);
@@ -659,10 +657,10 @@ public class HumanSkeleton {
 	protected void updateRootTrackers() {
 		hmdNode.update();
 		if (isTrackingLeftArmFromController()) {
-			leftControllerNode.update();
+			leftHandNode.update();
 		}
 		if (isTrackingRightArmFromController()) {
-			rightControllerNode.update();
+			rightHandNode.update();
 		}
 	}
 
@@ -957,8 +955,8 @@ public class HumanSkeleton {
 		if (isTrackingLeftArmFromController()) { // From controller
 			leftHandTracker.getPosition(posBuf);
 			leftHandTracker.getRotation(rotBuf1);
-			leftControllerNode.localTransform.setTranslation(posBuf);
-			leftControllerNode.localTransform.setRotation(rotBuf1);
+			leftHandNode.localTransform.setTranslation(posBuf);
+			leftHandNode.localTransform.setRotation(rotBuf1);
 
 			Tracker lowerArm = TrackerUtils
 				.getFirstAvailableTracker(leftLowerArmTracker, leftUpperArmTracker);
@@ -1011,8 +1009,8 @@ public class HumanSkeleton {
 		if (isTrackingRightArmFromController()) { // From controller
 			rightHandTracker.getPosition(posBuf);
 			rightHandTracker.getRotation(rotBuf1);
-			rightControllerNode.localTransform.setTranslation(posBuf);
-			rightControllerNode.localTransform.setRotation(rotBuf1);
+			rightHandNode.localTransform.setTranslation(posBuf);
+			rightHandNode.localTransform.setRotation(rotBuf1);
 
 			Tracker lowerArm = TrackerUtils
 				.getFirstAvailableTracker(rightLowerArmTracker, rightUpperArmTracker);
@@ -1461,23 +1459,15 @@ public class HumanSkeleton {
 					return leftHandNode;
 				}
 			case RIGHT_HAND:
-				return rightHandNode;
+				if (isTrackingRightArmFromController()) {
+					return rightWristNode;
+				} else {
+					return rightHandNode;
+				}
 			case LEFT_HAND_TRACKER:
 				return trackerLeftHandNode;
 			case RIGHT_HAND_TRACKER:
 				return trackerRightHandNode;
-			case LEFT_CONTROLLER:
-			if (isTrackingLeftArmFromController()) {
-				return leftWristNode;
-			} else {
-				return leftHandNode;
-			}
-			case RIGHT_CONTROLLER:
-			if (isTrackingRightArmFromController()) {
-				return rightWristNode;
-			} else {
-				return rightHandNode;
-			}
 			default:
 				return null;
 		}
@@ -1534,8 +1524,6 @@ public class HumanSkeleton {
 			rightHandNode,
 			trackerLeftHandNode,
 			trackerRightHandNode,
-			leftControllerNode,
-			rightControllerNode,
 		};
 	}
 
@@ -1555,8 +1543,6 @@ public class HumanSkeleton {
 			rightHandNode,
 			trackerLeftHandNode,
 			trackerRightHandNode,
-			leftControllerNode,
-			rightControllerNode,
 		};
 	}
 
