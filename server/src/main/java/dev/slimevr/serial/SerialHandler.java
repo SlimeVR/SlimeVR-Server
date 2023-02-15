@@ -90,7 +90,10 @@ public class SerialHandler implements SerialPortMessageListener {
 			return false;
 		}
 		if (this.isConnected()) {
-			if (currentPort != null && newPort != currentPort) {
+			if (
+				!newPort.getPortLocation().equals(currentPort.getPortLocation())
+					|| !newPort.getDescriptivePortName().equals(currentPort.getDescriptivePortName())
+			) {
 				LogManager
 					.info(
 						"Closing current serial port "
@@ -193,6 +196,7 @@ public class SerialHandler implements SerialPortMessageListener {
 	}
 
 	public void addLog(String str) {
+		LogManager.info("[Serial] " + str);
 		this.listeners.forEach(listener -> listener.onSerialLog(str));
 	}
 
