@@ -703,7 +703,7 @@ export function GeneralSettings() {
               step={0.2}
             />
           </div>
-          <div className="grid sm:grid-cols-3 gap-5 pb-2">
+          <div className="grid sm:grid-cols-3 gap-5 pb-5">
             <NumberSelector
               control={control}
               name="tapDetection.tapQuickResetTaps"
@@ -748,6 +748,27 @@ export function GeneralSettings() {
               min={2}
               max={10}
               step={1}
+            />
+          </div>
+          <Typography bold>
+            {l10n.getString('settings-general-gesture_control-feedBackSound')}
+          </Typography>
+          <div className="flex flex-col pt-2 pb-4">
+            <Typography color="secondary">
+              {l10n.getString(
+                'settings-general-gesture_control-feedBackSound-description'
+              )}
+            </Typography>
+          </div>
+          <div className="grid sm:grid-cols-2 pb-5">
+            <CheckBox
+              variant="toggle"
+              outlined
+              control={control}
+              name="tapDetection.tapFeedbackSoundEnabled"
+              label={l10n.getString(
+                'settings-general-gesture_control-feedBackSound-label'
+              )}
             />
           </div>
         </>
@@ -802,28 +823,6 @@ export function GeneralSettings() {
               )}
             />
           </div>
-          <Typography bold>
-            {l10n.getString('settings-general-interface-feedBackSound')}
-          </Typography>
-          <div className="flex flex-col pt-2 pb-4">
-            <Typography color="secondary">
-              {l10n.getString(
-                'settings-general-interface-feedBackSound-description'
-              )}
-            </Typography>
-          </div>
-          <div className="grid sm:grid-cols-2 pb-5">
-            <CheckBox
-              variant="toggle"
-              outlined
-              control={control}
-              name="tapDetection.tapFeedbackSoundEnabled"
-              label={l10n.getString(
-                'settings-general-interface-feedBackSound-label'
-              )}
-            />
-          </div>
-
           <Typography bold>
             {l10n.getString('settings-general-interface-lang')}
           </Typography>

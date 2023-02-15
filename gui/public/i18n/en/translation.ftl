@@ -314,6 +314,9 @@ settings-general-gesture_control-resetTaps = Taps for reset
 settings-general-gesture_control-mountingResetEnabled = Enable tap to reset mounting
 settings-general-gesture_control-mountingResetDelay = Mounting reset delay
 settings-general-gesture_control-mountingResetTaps = Taps for mounting reset
+settings-general-gesture_control-feedBackSound = Feedback Sound
+settings-general-gesture_control-feedBackSound-description = This option will enable a feedback sound when reset is triggered by tapping
+settings-general-gesture_control-feedBackSound-label = Enable feedback sound
 
 ## Interface settings
 settings-general-interface = Interface
@@ -321,9 +324,6 @@ settings-general-interface-dev_mode = Developer Mode
 settings-general-interface-dev_mode-description = This mode can be useful if you need in-depth data or to interact with connected trackers on a more advanced level.
 settings-general-interface-dev_mode-label = Developer Mode
 settings-general-interface-serial_detection = Serial device detection
-settings-general-interface-feedBackSound = Feedback Sound
-settings-general-interface-feedBackSound-description = This option will enable a feedback sound when reset is triggered by tapping
-settings-general-interface-feedBackSound-label = Enable feedback sound
 settings-general-interface-serial_detection-description = This option will show a pop-up every time you plug a new serial device that could be a tracker. It helps improving the setup process of a tracker.
 settings-general-interface-serial_detection-label = Serial device detection
 settings-general-interface-lang = Select language
