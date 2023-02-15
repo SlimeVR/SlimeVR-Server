@@ -87,9 +87,9 @@ public class SerialHandler implements SerialPortMessageListener {
 			if (currentPort != null && newPort != currentPort) {
 				currentPort.removeDataListener();
 				currentPort.closePort();
-				Thread.sleep(500L);
 			}
 		}
+		currentPort = newPort;
 
 		currentPort.setBaudRate(115200);
 		currentPort.clearRTS();
