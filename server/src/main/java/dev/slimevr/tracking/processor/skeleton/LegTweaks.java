@@ -774,36 +774,13 @@ public class LegTweaks {
 		Vector3f leftFootPos = bufferHead.getLeftFootPosition(null);
 		Vector3f rightFootPos = bufferHead.getRightFootPosition(null);
 
-
 		// between maximum correction angle and maximum correction angle delta
 		// the values are interpolated
-		float kneeAngleL = bufferHead
-			.getLeftFootPosition(null)
-			.subtract(bufferHead.getLeftKneePosition(null))
-			.normalize()
-			.setY(0.0f)
-			.length();
-		float masterWeightL = (kneeAngleL > MAXIMUM_CORRECTION_ANGLE
-			&& kneeAngleL < MAXIMUM_CORRECTION_ANGLE_DELTA)
-				? 1.0f
-					- ((kneeAngleL - MAXIMUM_CORRECTION_ANGLE)
-						/ (MAXIMUM_CORRECTION_ANGLE_DELTA - MAXIMUM_CORRECTION_ANGLE))
-				: 0.0f;
-		masterWeightL = (kneeAngleL < MAXIMUM_CORRECTION_ANGLE) ? 1.0f : masterWeightL;
+		float kneeAngleL = getXZAmount(leftFootPos, bufferHead.getLeftKneePosition(null));
+		float kneeAngleR = getXZAmount(rightFootPos, bufferHead.getRightKneePosition(null));
 
-		float kneeAngleR = bufferHead
-			.getRightFootPosition(null)
-			.subtract(bufferHead.getRightKneePosition(null))
-			.normalize()
-			.setY(0.0f)
-			.length();
-		float masterWeightR = (kneeAngleR > MAXIMUM_CORRECTION_ANGLE
-			&& kneeAngleR < MAXIMUM_CORRECTION_ANGLE_DELTA)
-				? 1.0f
-					- ((kneeAngleR - MAXIMUM_CORRECTION_ANGLE)
-						/ (MAXIMUM_CORRECTION_ANGLE_DELTA - MAXIMUM_CORRECTION_ANGLE))
-				: 0.0f;
-		masterWeightR = (kneeAngleR < MAXIMUM_CORRECTION_ANGLE) ? 1.0f : masterWeightR;
+		float masterWeightL = getMasterWeight(kneeAngleL);
+		float masterWeightR = getMasterWeight(kneeAngleR);
 
 		// corrects rotations when planted firmly on the ground
 		if (footPlant) {
@@ -813,15 +790,8 @@ public class LegTweaks {
 
 			// the further from the ground the foot is, the less weight it
 			// should have
-			weightL = ((leftFootPos.y - floorLevel) > ROTATION_CORRECTION_VERTICAL)
-				? 0.0f
-				: 1.0f - ((leftFootPos.y - floorLevel) / ROTATION_CORRECTION_VERTICAL);
-			weightL = FastMath.clamp(weightL, 0.0f, 1.0f);
-
-			weightR = (rightFootPos.y - floorLevel > ROTATION_CORRECTION_VERTICAL)
-				? 0.0f
-				: 1.0f - ((rightFootPos.y - floorLevel) / ROTATION_CORRECTION_VERTICAL);
-			weightR = FastMath.clamp(weightR, 0.0f, 1.0f);
+			weightL = getFootPlantWeight(leftFootPos);
+			weightR = getFootPlantWeight(rightFootPos);
 
 			// perform the correction
 			leftFootRotation
@@ -852,31 +822,13 @@ public class LegTweaks {
 			float weightL = 0.0f;
 			float weightR = 0.0f;
 
-			// first compute the Y component of the foot rotation
-			float angleL = FastMath.clamp(leftFootPos.y - floorLevel, 0.0f, footLength);
-			angleL = (angleL > footLength * MAXIMUM_TOE_DOWN_ANGLE)
-				? FastMath.asin((footLength * MAXIMUM_TOE_DOWN_ANGLE) / footLength)
-				: FastMath.asin((angleL / footLength));
-
-			float angleR = FastMath.clamp(rightFootPos.y - floorLevel, 0.0f, footLength);
-			angleR = (angleR > footLength * MAXIMUM_TOE_DOWN_ANGLE)
-				? FastMath.asin((footLength * MAXIMUM_TOE_DOWN_ANGLE) / footLength)
-				: FastMath.asin((angleR / footLength));
+			// first compute the angle of the foot
+			float angleL = getToeSnapAngle(rightFootPos);
+			float angleR = getToeSnapAngle(leftFootPos);
 
 			// then compute the weight of the correction
-			weightL = ((leftFootPos.y - floorLevel) > footLength * TOE_SNAP_COOLDOWN)
-				? 0.0f
-				: 1.0f
-					- ((leftFootPos.y - floorLevel - footLength)
-						/ (footLength * (TOE_SNAP_COOLDOWN - 1.0f)));
-			weightL = FastMath.clamp(weightL, 0.0f, 1.0f);
-
-			weightR = ((rightFootPos.y - floorLevel) > footLength * TOE_SNAP_COOLDOWN)
-				? 0.0f
-				: 1.0f
-					- ((rightFootPos.y - floorLevel - footLength)
-						/ (footLength * (TOE_SNAP_COOLDOWN - 1.0f)));
-			weightR = FastMath.clamp(weightR, 0.0f, 1.0f);
+			weightL = getToeSnapWeight(leftFootPos, angleL);
+			weightR = getToeSnapWeight(rightFootPos, angleR);
 
 			// then slerp the rotation to the new rotation based on the weight
 			leftFootRotation
@@ -896,6 +848,55 @@ public class LegTweaks {
 		// finally update the skeletons rotations with the new rotations
 		skeleton.computedLeftFootTracker.rotation.set(leftFootRotation);
 		skeleton.computedRightFootTracker.rotation.set(rightFootRotation);
+	}
+
+	// returns the length of the xz components of the normalized difference
+	// between two vectors
+	public float getXZAmount(Vector3f vec1, Vector3f vec2) {
+		return vec1
+			.subtract(vec2)
+			.normalize()
+			.setY(0.0f)
+			.length();
+	}
+
+	// returns a float between 0 and 1 that represents the master weight for
+	// foot rotation correciton
+	private float getMasterWeight(float kneeAngle) {
+		float masterWeight = (kneeAngle > MAXIMUM_CORRECTION_ANGLE
+			&& kneeAngle < MAXIMUM_CORRECTION_ANGLE_DELTA)
+				? 1.0f
+					- ((kneeAngle - MAXIMUM_CORRECTION_ANGLE)
+						/ (MAXIMUM_CORRECTION_ANGLE_DELTA - MAXIMUM_CORRECTION_ANGLE))
+				: 0.0f;
+		return (kneeAngle < MAXIMUM_CORRECTION_ANGLE) ? 1.0f : masterWeight;
+	}
+
+	// return the weight of the correction for toe snap
+	private float getToeSnapWeight(Vector3f footPos, float angle) {
+		// then compute the weight of the correction
+		float weight = ((footPos.y - floorLevel) > footLength * TOE_SNAP_COOLDOWN)
+			? 0.0f
+			: 1.0f
+				- ((footPos.y - floorLevel - footLength)
+					/ (footLength * (TOE_SNAP_COOLDOWN - 1.0f)));
+		return FastMath.clamp(weight, 0.0f, 1.0f);
+	}
+
+	// returns the angle of the foot for toe snap
+	private float getToeSnapAngle(Vector3f footPos) {
+		float angle = FastMath.clamp(footPos.y - floorLevel, 0.0f, footLength);
+		return (angle > footLength * MAXIMUM_TOE_DOWN_ANGLE)
+			? FastMath.asin((footLength * MAXIMUM_TOE_DOWN_ANGLE) / footLength)
+			: FastMath.asin((angle / footLength));
+	}
+
+	// returns the weight for floor plant
+	private float getFootPlantWeight(Vector3f footPos) {
+		float weight = (footPos.y - floorLevel > ROTATION_CORRECTION_VERTICAL)
+			? 0.0f
+			: 1.0f - ((footPos.y - floorLevel) / ROTATION_CORRECTION_VERTICAL);
+		return FastMath.clamp(weight, 0.0f, 1.0f);
 	}
 
 	// returns true if it is likely the user is standing
