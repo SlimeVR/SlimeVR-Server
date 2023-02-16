@@ -26,7 +26,7 @@ interface VMCSettingsForm {
       portOut: number;
       address: string;
     };
-    vrmAddress: string;
+    vrmPath: string;
     anchorHip: boolean;
   };
 }
@@ -39,7 +39,7 @@ const defaultValues = {
       portOut: 39539,
       address: '127.0.0.1',
     },
-    vrmAddress: '',
+    vrmPath: '',
     anchorHip: true,
   },
 };
@@ -65,7 +65,7 @@ export function VMCSettings() {
         new OSCSettingsT(),
         values.vmc.oscSettings
       );
-      vmcOsc.vrmAddress = values.vmc.vrmAddress;
+      vmcOsc.vrmPath = values.vmc.vrmPath;
       vmcOsc.anchorHip = values.vmc.anchorHip;
 
       settings.vmcOsc = vmcOsc;
@@ -96,8 +96,8 @@ export function VMCSettings() {
           formData.vmc.oscSettings.address =
             settings.vmcOsc.oscSettings.address.toString();
       }
-      if (settings.vmcOsc.vrmAddress)
-        formData.vmc.vrmAddress = settings.vmcOsc.vrmAddress.toString();
+      if (settings.vmcOsc.vrmPath)
+        formData.vmc.vrmPath = settings.vmcOsc.vrmPath.toString();
       formData.vmc.anchorHip = settings.vmcOsc.anchorHip;
     }
 
@@ -220,26 +220,25 @@ export function VMCSettings() {
             ></Input>
           </div>
           <Typography bold>
-            {l10n.getString('settings-osc-vmc-vrm_address')}
+            {l10n.getString('settings-osc-vmc-vrm')}
           </Typography>
           <div className="flex flex-col pb-2">
             <Typography color="secondary">
-              {l10n.getString('settings-osc-vmc-vrm_address_description')}
+              {l10n.getString('settings-osc-vmc-vrm-description')}
             </Typography>
           </div>
           <div className="grid gap-3 pb-5">
-            <Input
-              type="text"
+            <FileInput
               control={control}
-              name="vmc.vrmAddress"
+              name="vmc.vrmPath"
               rules={{
                 required: true,
               }}
-              placeholder={l10n.getString(
-                'settings-osc-vmc-vrm_address-placeholder'
-              )}
+              placeholder={l10n.getString('settings-osc-vmc-vrm-placeholder')}
               label=""
-            ></Input>
+              accept="model/gltf-binary, model/gltf+json, model/vrml, .vrm"
+            ></FileInput>
+            {/* For some reason, linux (GNOME) is detecting the VRM file is a VRML */}
           </div>
           <Typography bold>
             {l10n.getString('settings-osc-vmc-anchor_hip')}
@@ -257,29 +256,6 @@ export function VMCSettings() {
               name="vmc.anchorHip"
               label={l10n.getString('settings-osc-vmc-anchor_hip-label')}
             />
-          </div>
-          <Typography bold>
-            {l10n.getString('settings-osc-vmc-file')}
-          </Typography>
-          <div className="flex flex-col pb-2">
-            <Typography color="secondary">
-              {l10n.getString('settings-osc-vmc-file-description')}
-            </Typography>
-          </div>
-          <div className="grid gap-3 pb-5">
-            <FileInput
-              control={control}
-              name="vmc.vrmFile"
-              rules={{
-                required: true,
-              }}
-              placeholder={l10n.getString(
-                'settings-osc-vmc-vrm_address-placeholder'
-              )}
-              label=""
-              accept="model/gltf-binary, model/gltf+json, model/vrml, .vrm"
-            ></FileInput>
-            {/* For some reason, linux (GNOME) is detecting the VRM file is a VRML */}
           </div>
         </>
       </SettingsPageLayout>

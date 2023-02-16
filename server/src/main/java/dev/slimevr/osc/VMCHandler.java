@@ -161,7 +161,7 @@ public class VMCHandler implements OSCHandler {
 
 			// Load VRM data
 			if (outputUnityHierarchy != null) {
-				VRMReader vrmReader = new VRMReader(config.getVRMAddress());
+				VRMReader vrmReader = new VRMReader(config.getVRMPath());
 				for (TransformNode node : outputUnityHierarchy.getAllNodes()) {
 					if (node.getBoneType() != null)
 						node.localTransform

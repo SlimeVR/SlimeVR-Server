@@ -6,7 +6,7 @@ public class VMCConfig extends OSCConfig {
 	// Anchor the tracking at the hip?
 	boolean anchorHip = true;
 	// Address of the VRM to be used
-	String VRMAddress = "";
+	String VRMPath = "";
 
 	public VMCConfig() {
 	}
@@ -19,11 +19,11 @@ public class VMCConfig extends OSCConfig {
 		this.anchorHip = anchorHip;
 	}
 
-	public String getVRMAddress() {
-		return VRMAddress;
+	public String getVRMPath() {
+		return VRMPath;
 	}
 
-	public void setVRMAddress(String VRMAddress) {
-		this.VRMAddress = VRMAddress;
+	public void setVRMPath(String VRMPath) {
+		this.VRMPath = VRMPath;
 	}
 }
