@@ -20,7 +20,7 @@ public enum UnityBone {
 	RIGHT_FOOT("RightFoot", BoneType.RIGHT_FOOT, TrackerPosition.RIGHT_FOOT),
 	SPINE("Spine", BoneType.WAIST, TrackerPosition.WAIST),
 	CHEST("Chest", BoneType.CHEST, TrackerPosition.CHEST),
-	UPPER_CHEST("UpperChest", null, null),
+	UPPER_CHEST("UpperChest", BoneType.CHEST, TrackerPosition.CHEST),
 	NECK("Neck", BoneType.NECK, TrackerPosition.NECK),
 	HEAD("Head", BoneType.HEAD, TrackerPosition.HMD),
 	LEFT_SHOULDER("LeftShoulder", BoneType.LEFT_SHOULDER, TrackerPosition.LEFT_SHOULDER),
@@ -70,16 +70,10 @@ public enum UnityBone {
 
 
 	private static final Map<String, UnityBone> byStringVal = new HashMap<>();
-	private static final Map<BoneType, UnityBone> byBoneType = new HashMap<>();
 
 	static {
 		for (UnityBone configVal : values()) {
 			byStringVal.put(configVal.stringVal.toLowerCase(), configVal);
-		}
-	}
-	static {
-		for (UnityBone configVal : values()) {
-			byBoneType.put(configVal.boneType, configVal);
 		}
 	}
 
@@ -96,9 +90,5 @@ public enum UnityBone {
 
 	public static UnityBone getByStringVal(String stringVal) {
 		return stringVal == null ? null : byStringVal.get(stringVal.toLowerCase());
-	}
-
-	public static UnityBone getByBoneType(BoneType boneType) {
-		return boneType == null ? null : byBoneType.get(boneType);
 	}
 }

@@ -26,6 +26,10 @@ public class TransformNode {
 		this(boneType, true);
 	}
 
+	public TransformNode() {
+		this(null, true);
+	}
+
 	public void attachChild(TransformNode node) {
 		if (node.parent != null) {
 			throw new IllegalArgumentException("The child node must not already have a parent");

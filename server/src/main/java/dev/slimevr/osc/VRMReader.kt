@@ -1,7 +1,6 @@
 package dev.slimevr.osc
 
 import com.jme3.math.Vector3f
-import dev.slimevr.tracking.processor.BoneType
 import dev.slimevr.tracking.trackers.UnityBone
 import io.eiren.util.logging.LogManager
 import kotlinx.serialization.SerialName
@@ -44,10 +43,9 @@ class VRMReader(private val vrmPath: String) {
 		}
 	}
 
-	fun getOffsetForBone(boneType: BoneType): Vector3f {
+	fun getOffsetForBone(unityBone: UnityBone): Vector3f {
 		val translation = Vector3f()
 
-		val unityBone = UnityBone.getByBoneType(boneType)
 		val bone = try {
 			data.extensions.vrm.humanoid.humanBones.first { it.bone.equals(unityBone.stringVal, ignoreCase = true) }
 		} catch (e: NoSuchElementException) {

@@ -3,35 +3,37 @@ package dev.slimevr.tracking.processor.skeleton;
 import com.jme3.math.FastMath;
 import com.jme3.math.Quaternion;
 import com.jme3.math.Vector3f;
-import dev.slimevr.tracking.processor.BoneType;
 import dev.slimevr.tracking.processor.TransformNode;
+import dev.slimevr.tracking.trackers.UnityBone;
 
 
-public class UnityHierarchy {
-	protected final TransformNode headNode;
-	protected final TransformNode neckNode;
-	protected final TransformNode chestNode;
-	protected final TransformNode waistTailNode;
-	protected final TransformNode waistHeadNode;
-	protected final TransformNode hipNode;
-	protected final TransformNode leftHipNode;
-	protected final TransformNode rightHipNode;
-	protected final TransformNode leftKneeNode;
-	protected final TransformNode leftAnkleNode;
-	protected final TransformNode leftFootNode;
-	protected final TransformNode rightKneeNode;
-	protected final TransformNode rightAnkleNode;
-	protected final TransformNode rightFootNode;
-	protected final TransformNode leftShoulderHeadNode;
-	protected final TransformNode rightShoulderHeadNode;
-	protected final TransformNode leftShoulderTailNode;
-	protected final TransformNode rightShoulderTailNode;
-	protected final TransformNode leftElbowNode;
-	protected final TransformNode rightElbowNode;
-	protected final TransformNode leftWristNode;
-	protected final TransformNode rightWristNode;
-	protected final TransformNode leftHandNode;
-	protected final TransformNode rightHandNode;
+public class UnityArmature {
+	protected final TransformNode headNode = new TransformNode();
+	protected final TransformNode neckTailNode = new TransformNode();
+	protected final TransformNode neckHeadNode = new TransformNode();
+	protected final TransformNode upperChestNode = new TransformNode();
+	protected final TransformNode chestNode = new TransformNode();
+	protected final TransformNode waistTailNode = new TransformNode();
+	protected final TransformNode waistHeadNode = new TransformNode();
+	protected final TransformNode hipNode = new TransformNode();
+	protected final TransformNode leftHipNode = new TransformNode();
+	protected final TransformNode rightHipNode = new TransformNode();
+	protected final TransformNode leftKneeNode = new TransformNode();
+	protected final TransformNode leftAnkleNode = new TransformNode();
+	protected final TransformNode leftFootNode = new TransformNode();
+	protected final TransformNode rightKneeNode = new TransformNode();
+	protected final TransformNode rightAnkleNode = new TransformNode();
+	protected final TransformNode rightFootNode = new TransformNode();
+	protected final TransformNode leftShoulderHeadNode = new TransformNode();
+	protected final TransformNode rightShoulderHeadNode = new TransformNode();
+	protected final TransformNode leftShoulderTailNode = new TransformNode();
+	protected final TransformNode rightShoulderTailNode = new TransformNode();
+	protected final TransformNode leftElbowNode = new TransformNode();
+	protected final TransformNode rightElbowNode = new TransformNode();
+	protected final TransformNode leftWristNode = new TransformNode();
+	protected final TransformNode rightWristNode = new TransformNode();
+	protected final TransformNode leftHandNode = new TransformNode();
+	protected final TransformNode rightHandNode = new TransformNode();
 	private static final Quaternion LEFT_SHOULDER_OFFSET = new Quaternion()
 		.fromAngles(0f, 0f, FastMath.HALF_PI);
 	private static final Quaternion RIGHT_SHOULDER_OFFSET = new Quaternion()
@@ -39,40 +41,20 @@ public class UnityHierarchy {
 	protected final Vector3f rootPosition = new Vector3f();
 	protected final Quaternion rootRotation = new Quaternion();
 
-	public UnityHierarchy(boolean local) {
-		// Create nodes
-		headNode = new TransformNode(BoneType.HEAD, local);
-		neckNode = new TransformNode(BoneType.NECK, local);
-		chestNode = new TransformNode(BoneType.CHEST, local);
-		waistTailNode = new TransformNode(BoneType.WAIST, local);
-		waistHeadNode = new TransformNode(null, local);
-		hipNode = new TransformNode(BoneType.HIP, local);
-		leftHipNode = new TransformNode(null, local);
-		rightHipNode = new TransformNode(null, local);
-		leftKneeNode = new TransformNode(BoneType.LEFT_UPPER_LEG, local);
-		leftAnkleNode = new TransformNode(BoneType.LEFT_LOWER_LEG, local);
-		leftFootNode = new TransformNode(BoneType.LEFT_FOOT, local);
-		rightKneeNode = new TransformNode(BoneType.RIGHT_UPPER_LEG, local);
-		rightAnkleNode = new TransformNode(BoneType.RIGHT_LOWER_LEG, local);
-		rightFootNode = new TransformNode(BoneType.RIGHT_FOOT, local);
-		leftShoulderHeadNode = new TransformNode(null, local);
-		rightShoulderHeadNode = new TransformNode(null, local);
-		leftShoulderTailNode = new TransformNode(BoneType.LEFT_SHOULDER, local);
-		rightShoulderTailNode = new TransformNode(BoneType.RIGHT_SHOULDER, local);
-		leftElbowNode = new TransformNode(BoneType.LEFT_UPPER_ARM, local);
-		rightElbowNode = new TransformNode(BoneType.RIGHT_UPPER_ARM, local);
-		leftWristNode = new TransformNode(BoneType.LEFT_LOWER_ARM, local);
-		rightWristNode = new TransformNode(BoneType.RIGHT_LOWER_ARM, local);
-		leftHandNode = new TransformNode(BoneType.LEFT_HAND, local);
-		rightHandNode = new TransformNode(BoneType.RIGHT_HAND, local);
+	public UnityArmature(boolean localRotation) {
+		for (TransformNode node : getAllNodes()) {
+			node.localRotation = localRotation;
+		}
 
 		// Attach nodes
 		// Spine
 		hipNode.attachChild(waistHeadNode);
 		waistHeadNode.attachChild(waistTailNode);
 		waistTailNode.attachChild(chestNode);
-		chestNode.attachChild(neckNode);
-		neckNode.attachChild(headNode);
+		chestNode.attachChild(upperChestNode);
+		upperChestNode.attachChild(neckHeadNode);
+		neckHeadNode.attachChild(neckTailNode);
+		neckTailNode.attachChild(headNode);
 
 		// Legs
 		hipNode.attachChild(leftHipNode);
@@ -85,8 +67,8 @@ public class UnityHierarchy {
 		rightAnkleNode.attachChild(rightFootNode);
 
 		// Arms
-		chestNode.attachChild(leftShoulderHeadNode);
-		chestNode.attachChild(rightShoulderHeadNode);
+		upperChestNode.attachChild(leftShoulderHeadNode);
+		upperChestNode.attachChild(rightShoulderHeadNode);
 		leftShoulderHeadNode.attachChild(leftShoulderTailNode);
 		rightShoulderHeadNode.attachChild(rightShoulderTailNode);
 		leftShoulderTailNode.attachChild(leftElbowNode);
@@ -106,21 +88,22 @@ public class UnityHierarchy {
 		rootRotation.set(globalRot);
 	}
 
-	public void setBoneGlobalRotation(BoneType boneType, Quaternion globalRot) {
-		TransformNode node = getHeadNodeForBone(boneType);
-		if (node != null)
+	public void setBoneGlobalRotation(UnityBone unityBone, Quaternion globalRot) {
+		TransformNode node = getHeadNodeForBone(unityBone);
+		if (node != null) {
 			node.localTransform.setRotation(globalRot);
+		}
 	}
 
-	public void setBoneLocalRotation(BoneType boneType, Quaternion localRot) {
-		TransformNode node = getHeadNodeForBone(boneType);
+	public void setBoneLocalRotation(UnityBone unityBone, Quaternion localRot) {
+		TransformNode node = getHeadNodeForBone(unityBone);
 		if (node != null) {
 			if (node == hipNode) {
 				node.worldTransform.setRotation(localRot);
 			} else {
-				if (boneType == BoneType.LEFT_UPPER_ARM) {
+				if (unityBone == UnityBone.LEFT_UPPER_ARM) {
 					localRot.mult(RIGHT_SHOULDER_OFFSET, localRot);
-				} else if (boneType == BoneType.RIGHT_UPPER_ARM) {
+				} else if (unityBone == UnityBone.RIGHT_UPPER_ARM) {
 					localRot.mult(LEFT_SHOULDER_OFFSET, localRot);
 				}
 
@@ -129,8 +112,8 @@ public class UnityHierarchy {
 		}
 	}
 
-	public Vector3f getGlobalTranslationForBone(BoneType boneType) {
-		TransformNode node = getHeadNodeForBone(boneType);
+	public Vector3f getGlobalTranslationForBone(UnityBone unityBone) {
+		TransformNode node = getHeadNodeForBone(unityBone);
 		if (node != null) {
 			if (node.getParent() != null)
 				node = node.getParent();
@@ -139,8 +122,8 @@ public class UnityHierarchy {
 		return Vector3f.ZERO;
 	}
 
-	public Vector3f getLocalTranslationForBone(BoneType boneType) {
-		TransformNode node = getHeadNodeForBone(boneType);
+	public Vector3f getLocalTranslationForBone(UnityBone unityBone) {
+		TransformNode node = getHeadNodeForBone(unityBone);
 		if (node != null) {
 			if (node == hipNode)
 				return node.worldTransform.getTranslation();
@@ -151,15 +134,15 @@ public class UnityHierarchy {
 		return Vector3f.ZERO;
 	}
 
-	public Quaternion getGlobalRotationForBone(BoneType boneType) {
-		TransformNode node = getHeadNodeForBone(boneType);
+	public Quaternion getGlobalRotationForBone(UnityBone unityBone) {
+		TransformNode node = getHeadNodeForBone(unityBone);
 		if (node != null)
 			return node.worldTransform.getRotation().mult(rootRotation);
 		return Quaternion.IDENTITY;
 	}
 
-	public Quaternion getLocalRotationForBone(BoneType boneType) {
-		TransformNode node = getHeadNodeForBone(boneType);
+	public Quaternion getLocalRotationForBone(UnityBone unityBone) {
+		TransformNode node = getHeadNodeForBone(unityBone);
 		Quaternion rotBuf = new Quaternion();
 		if (node != null) {
 			if (node == hipNode) {
@@ -168,9 +151,9 @@ public class UnityHierarchy {
 			} else {
 				rotBuf.set(node.worldTransform.getRotation());
 				// Adjust from I-Pose to T-Pose
-				if (boneType == BoneType.LEFT_UPPER_ARM) {
+				if (unityBone == UnityBone.LEFT_UPPER_ARM) {
 					rotBuf.multLocal(LEFT_SHOULDER_OFFSET);
-				} else if (boneType == BoneType.RIGHT_UPPER_ARM) {
+				} else if (unityBone == UnityBone.RIGHT_UPPER_ARM) {
 					rotBuf.multLocal(RIGHT_SHOULDER_OFFSET);
 				}
 				// Compute local rotation from parent
@@ -181,17 +164,18 @@ public class UnityHierarchy {
 		return rotBuf;
 	}
 
-	private TransformNode getHeadNodeForBone(BoneType boneType) {
-		if (boneType == null) {
+	public TransformNode getHeadNodeForBone(UnityBone unityBone) {
+		if (unityBone == null) {
 			return null;
 		}
 
-		return switch (boneType) {
-			case HMD, HEAD -> neckNode;
-			case NECK -> chestNode;
+		return switch (unityBone) {
+			case HEAD -> neckTailNode;
+			case NECK -> neckHeadNode;
+			case UPPER_CHEST -> chestNode;
 			case CHEST -> waistTailNode;
-			case WAIST -> waistHeadNode;
-			case HIP -> hipNode;
+			case SPINE -> waistHeadNode;
+			case HIPS -> hipNode;
 			case LEFT_UPPER_LEG -> leftHipNode;
 			case RIGHT_UPPER_LEG -> rightHipNode;
 			case LEFT_LOWER_LEG -> leftKneeNode;
@@ -213,7 +197,8 @@ public class UnityHierarchy {
 	public TransformNode[] getAllNodes() {
 		return new TransformNode[] {
 			headNode,
-			neckNode,
+			neckTailNode,
+			neckHeadNode,
 			chestNode,
 			waistHeadNode,
 			waistTailNode,
