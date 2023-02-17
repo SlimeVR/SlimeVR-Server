@@ -99,8 +99,8 @@ public class LegTweaks {
 	private static final float MAXIMUM_CORRECTION_ANGLE_DELTA = 0.5f;
 	private static final float MAXIMUM_TOE_DOWN_ANGLE = 0.7f;
 	private static final float TOE_SNAP_COOLDOWN = 3.0f;
-	private static final float MAX_TOE_SNAP_ANGLE = 0.1f;
-	private static final float TOE_SNAP_DEFAULT_SLERP = 0.01f;
+	private static final float MAX_TOE_SNAP_ANGLE = 0.01f;
+	private static final float TOE_SNAP_DEFAULT_SLERP = 0.001f;
 
 	// hyperparameters (misc)
 	static final float NEARLY_ZERO = 0.001f;
@@ -849,17 +849,6 @@ public class LegTweaks {
 					replacePitch(rightFootRotation, -angleR),
 					weightR * masterWeightR
 				);
-
-			// if the foot is in the air and the current rotation is not able to be reached smoothly
-			// then just set the rotation to a portion of the difference
-			if (leftFootPos.y - floorLevel > footLength && lastLeftFootRotation.angleBetween(leftFootRotation) > MAX_TOE_SNAP_ANGLE) {
-				lastLeftFootRotation
-					.slerp(
-						lastLeftFootRotation,
-						leftFootRotation,
-						TOE_SNAP_DEFAULT_SLERP
-					);
-			}
 
 		}
 
