@@ -50,20 +50,20 @@ public class LegTweaks {
 	private boolean kneesActive = false;
 
 	/**
-	 * here is a explination of each parameter that may need explaining
+	 * here is an explanation of each parameter that may need explaining
 	 * STANDING_CUTOFF_VERTICAL is the percentage the waist has to be below its
 	 * position at calibration to register as the user not standing
-	 * MAX_DISENGAGMENT_OFFSET is how much the floor will be shifted to allow an
-	 * offset to happen smoothly DYNAMIC_DISPLACEMENT_CUTOFF is the percent of
-	 * downwards rotation that can contribute to dynamic displacment
-	 * MAX_DYNAMIC_DISPLACMENT is the max amount the floor will be moved up to
+	 * MAX_DISENGAGEMENT_OFFSET is how much the floor will be shifted to allow
+	 * an offset to happen smoothly DYNAMIC_DISPLACEMENT_CUTOFF is the percent
+	 * of downwards rotation that can contribute to dynamic displacement
+	 * MAX_DYNAMIC_DISPLACEMENT is the max amount the floor will be moved up to
 	 * account for the foot rotating downward and needing to be put higher to
-	 * avoid clipping in the gameworld MIN_ACCEPTABLE_ERROR and
-	 * MAX_ACCEPTABLE_ERROR Defines the disitance where CORRECTION_WEIGHT_MIN
-	 * and CORRECTION_WEIGHT_MAX are calculating a percent of velocity to
-	 * correct rather than using the min or max FLOOR_CALIBRATION_OFFSET is the
-	 * amount the floor plane is shifted up. This can help the feet from
-	 * floating slightly above the ground
+	 * avoid clipping in the game world MIN_ACCEPTABLE_ERROR and
+	 * MAX_ACCEPTABLE_ERROR Defines the distance where CORRECTION_WEIGHT_MIN and
+	 * CORRECTION_WEIGHT_MAX are calculating a percent of velocity to correct
+	 * rather than using the min or max FLOOR_CALIBRATION_OFFSET is the amount
+	 * the floor plane is shifted up. This can help the feet from floating
+	 * slightly above the ground
 	 */
 
 	// hyperparameters (clip correction)
@@ -103,7 +103,7 @@ public class LegTweaks {
 	// hyperparameters (misc)
 	static final float NEARLY_ZERO = 0.001f;
 	private static final float STANDING_CUTOFF_VERTICAL = 0.65f;
-	private static final float MAX_DISENGAGMENT_OFFSET = 0.30f;
+	private static final float MAX_DISENGAGEMENT_OFFSET = 0.30f;
 	private static final float DEFAULT_ARM_DISTANCE = 0.15f;
 	private static final float MAX_CORRECTION_STRENGTH_DELTA = 1.0f;
 
@@ -113,7 +113,7 @@ public class LegTweaks {
 	private int leftFramesUnlocked = 0;
 	private int rightFramesUnlocked = 0;
 
-	// buffer for holding previus frames of data
+	// buffer for holding previous frames of data
 	private LegTweakBuffer bufferHead = new LegTweakBuffer();
 	private boolean bufferInvalid = true;
 
@@ -259,7 +259,7 @@ public class LegTweaks {
 		footPlant = skeleton.humanPoseManager.getToggle(SkeletonConfigToggles.FOOT_PLANT);
 	}
 
-	// update the hyper parameters with the config
+	// update the hyperparameters with the config
 	public static void updateHyperParameters(float newStrength) {
 		LegTweakBuffer.SKATING_VELOCITY_THRESHOLD = getScaledHyperParameter(
 			newStrength,
@@ -281,7 +281,7 @@ public class LegTweaks {
 	private void setVectors() {
 		// set the positions of the feet and knees to the skeletons current
 		// positions
-		if (skeleton.computedLeftKneeTracker != null || skeleton.computedRightKneeTracker != null) {
+		if (skeleton.computedLeftKneeTracker != null && skeleton.computedRightKneeTracker != null) {
 			kneesActive = true;
 			leftKneePosition = skeleton.computedLeftKneeTracker.position;
 			rightKneePosition = skeleton.computedRightKneeTracker.position;
@@ -333,7 +333,7 @@ public class LegTweaks {
 			floorLevel = (leftFootPosition.y + rightFootPosition.y) / 2f + FLOOR_CALIBRATION_OFFSET;
 			waistToFloorDist = waistPosition.y - floorLevel;
 
-			// invalidate the buffer since the non initialized output may be
+			// invalidate the buffer since the non-initialized output may be
 			// very wrong
 			bufferInvalid = true;
 			initialized = true;
@@ -346,7 +346,7 @@ public class LegTweaks {
 				skeleton.leftFootNode.worldTransform.getTranslation()
 			);
 
-		// if not enabled do nothing and return false
+		// if not enabled, do nothing and return false
 		if (!enabled)
 			return false;
 
@@ -369,7 +369,7 @@ public class LegTweaks {
 			bufferHead.setLeftLegState(LegTweakBuffer.UNLOCKED);
 			bufferHead.setRightLegState(LegTweakBuffer.UNLOCKED);
 
-			// if the system is active propulate the buffer with corrected floor
+			// if the system is active, populate the buffer with corrected floor
 			// clip feet positions
 			if (active && isStanding()) {
 				correctClipping();
@@ -404,8 +404,8 @@ public class LegTweaks {
 			);
 
 		// put the acceleration vector that is applicable to the tracker
-		// quantity in the the buffer
-		// (if feet are not available, fallback to 6 tracker mode)
+		// quantity in the buffer
+		// (if feet are not available, fall back to 6 tracker mode)
 		if (skeleton.leftFootTracker != null && skeleton.rightFootTracker != null) {
 			currentFrame.setLeftFootAcceleration(leftFootAcceleration);
 			currentFrame.setRightFootAcceleration(rightFootAcceleration);
@@ -799,7 +799,7 @@ public class LegTweaks {
 					leftFootRotation
 						.slerp(
 							leftFootRotation,
-							issolateYaw(leftFootRotation),
+							isolateYaw(leftFootRotation),
 							weightL * masterWeightL
 						)
 				);
@@ -809,7 +809,7 @@ public class LegTweaks {
 					rightFootRotation
 						.slerp(
 							rightFootRotation,
-							issolateYaw(rightFootRotation),
+							isolateYaw(rightFootRotation),
 							weightR * masterWeightR
 						)
 				);
@@ -908,7 +908,7 @@ public class LegTweaks {
 
 		if (waistPosition.y < cutoff) {
 			currentDisengagementOffset = (1 - waistPosition.y / cutoff)
-				* MAX_DISENGAGMENT_OFFSET;
+				* MAX_DISENGAGEMENT_OFFSET;
 
 			return false;
 		}
@@ -927,7 +927,7 @@ public class LegTweaks {
 		Vector3f tempLeft;
 		Vector3f tempRight;
 
-		// before moveing the knees back closer to the waist nodes offset them
+		// before moving the knees back closer to the waist nodes, offset them
 		// the same amount the foot trackers where offset
 		float leftXDif = leftFootPosition.x - bufferHead.getLeftFootPosition(null).x;
 		float rightXDif = rightFootPosition.x - bufferHead.getRightFootPosition(null).x;
@@ -1055,7 +1055,7 @@ public class LegTweaks {
 			centerOfMass = centerOfMass.add(leftForearm.mult(FOREARM_MASS));
 			centerOfMass = centerOfMass.add(rightForearm.mult(FOREARM_MASS));
 		} else {
-			// if the arms are not avaliable put them slightly in front
+			// if the arms are not available put them slightly in front
 			// of the chest.
 			Vector3f chestUnitVector = computeUnitVector(
 				skeleton.chestNode.worldTransform.getRotation()
@@ -1119,7 +1119,7 @@ public class LegTweaks {
 	}
 
 	// remove the x and z components of the given quaternion
-	private Quaternion issolateYaw(Quaternion quaternion) {
+	private Quaternion isolateYaw(Quaternion quaternion) {
 		return new Quaternion(
 			0,
 			quaternion.getY(),
