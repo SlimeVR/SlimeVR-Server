@@ -7,41 +7,18 @@ import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
 import kotlinx.serialization.decodeFromString
 import kotlinx.serialization.json.Json
+import kotlinx.serialization.json.okio.decodeFromBufferedSource
 import okio.FileSystem
 import okio.Path.Companion.toPath
 import okio.buffer
+import java.nio.ByteBuffer
 import java.util.*
 
 class InvalidGltfFile(message: String?) : Exception(message)
 
 private val jsonIgnoreKeys = Json { ignoreUnknownKeys = true }
-class VRMReader(private val vrmPath: String) {
-	private val data: GLTF
-
-	init {
-		FileSystem.SYSTEM.source(vrmPath.toPath()).use { fileSource ->
-			fileSource.buffer().use { bufferedSource ->
-				if (bufferedSource.readIntLe() != 0x46546C67) { // "glTF"
-					throw InvalidGltfFile("Magic numbers are not the expected ones")
-				}
-
-				if (bufferedSource.readIntLe() != 2) {
-					throw InvalidGltfFile("Only glTF 2.0 is supported")
-				}
-
-				bufferedSource.readIntLe() // length of file
-				val jsonLength: Long = bufferedSource.readIntLe().toLong()
-
-				if (bufferedSource.readIntLe() != 0x4E4F534A) { // "JSON"
-					throw InvalidGltfFile("JSON chunk not found")
-				}
-
-				data = jsonIgnoreKeys.decodeFromString(
-					bufferedSource.readUtf8(jsonLength)
-				)
-			}
-		}
-	}
+class VRMReader(private val vrmJson: String) {
+	private val data: GLTF = jsonIgnoreKeys.decodeFromString(vrmJson)
 
 	fun getOffsetForBone(unityBone: UnityBone): Vector3f {
 		val translation = Vector3f()
@@ -49,7 +26,7 @@ class VRMReader(private val vrmPath: String) {
 		val bone = try {
 			data.extensions.vrm.humanoid.humanBones.first { it.bone.equals(unityBone.stringVal, ignoreCase = true) }
 		} catch (e: NoSuchElementException) {
-			LogManager.warning("[VRMReader] Bone ${unityBone.stringVal} not found in \"$vrmPath\"")
+			LogManager.warning("[VRMReader] Bone ${unityBone.stringVal} not found in JSON")
 			return translation
 		}
 

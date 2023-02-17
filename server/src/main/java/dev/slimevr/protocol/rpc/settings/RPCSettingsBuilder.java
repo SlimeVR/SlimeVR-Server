@@ -86,11 +86,11 @@ public class RPCSettingsBuilder {
 				config.getPortOut(),
 				addressStringOffset
 			);
-		int vrmPathOffset = fbb.createString(config.getVRMPath());
+		int vrmJsonOffset = fbb.createString(config.getVrmJson());
 		VMCOSCSettings.startVMCOSCSettings(fbb);
 		VMCOSCSettings.addOscSettings(fbb, generalSettingOffset);
-		VMCOSCSettings.addVrmPath(fbb, vrmPathOffset);
-		VMCOSCSettings.addAnchorHip(fbb, config.getAnchorHip());
+		VMCOSCSettings.addVrmJson(fbb, vrmJsonOffset);
+		VMCOSCSettings.addAnchorHip(fbb, config.anchorHip);
 
 		return VMCOSCSettings.endVMCOSCSettings(fbb);
 	}

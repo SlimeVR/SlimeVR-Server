@@ -8,6 +8,11 @@ interface InputProps {
   name: string;
 }
 
+export interface FileValue {
+  value?: string;
+  files: FileList;
+}
+
 export const FileInputInside = forwardRef<
   HTMLInputElement,
   {
@@ -16,11 +21,11 @@ export const FileInputInside = forwardRef<
     accept: string;
     capture?: boolean | 'user' | 'environment';
     multiple?: boolean;
-    onChange: () => void;
+    value: FileValue;
+    onChange: (...event: any[]) => void;
   } & Partial<HTMLInputElement>
 >(function AppInput(
   {
-    placeholder,
     label,
     name,
     onChange,
@@ -51,10 +56,14 @@ export const FileInputInside = forwardRef<
         <input
           type="file"
           className={classNames(classes)}
-          placeholder={placeholder || undefined}
-          onChange={onChange}
+          onChange={(ev) => {
+            onChange({
+              value: ev.target.value,
+              files: ev.target.files,
+            });
+          }}
           name={name}
-          value={value || ''}
+          value={value?.value || ''}
           ref={ref}
           accept={accept}
           multiple={multiple}
@@ -68,7 +77,6 @@ export const FileInputInside = forwardRef<
 export const FileInput = ({
   control,
   name,
-  placeholder,
   label,
   variant = 'primary',
   rules,
@@ -91,7 +99,6 @@ export const FileInput = ({
       render={({ field: { onChange, value, ref, name } }) => (
         <FileInputInside
           label={label}
-          placeholder={placeholder}
           variant={variant}
           value={value}
           onChange={onChange}

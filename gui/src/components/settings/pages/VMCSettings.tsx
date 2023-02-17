@@ -12,10 +12,11 @@ import {
 } from 'solarxr-protocol';
 import { useWebsocketAPI } from '../../../hooks/websocket-api';
 import { CheckBox } from '../../commons/Checkbox';
-import { FileInput } from '../../commons/FileInput';
+import { FileInput, FileValue } from '../../commons/FileInput';
 import { VMCIcon } from '../../commons/icon/VMCIcon';
 import { Input } from '../../commons/Input';
 import { Typography } from '../../commons/Typography';
+import { magic } from '../../utils/formatting';
 import { SettingsPageLayout } from '../SettingsPageLayout';
 
 interface VMCSettingsForm {
@@ -26,7 +27,7 @@ interface VMCSettingsForm {
       portOut: number;
       address: string;
     };
-    vrmPath: string;
+    vrmJson?: FileValue;
     anchorHip: boolean;
   };
 }
@@ -39,7 +40,6 @@ const defaultValues = {
       portOut: 39539,
       address: '127.0.0.1',
     },
-    vrmPath: '',
     anchorHip: true,
   },
 };
@@ -55,7 +55,7 @@ export function VMCSettings() {
       defaultValues: defaultValues,
     });
 
-  const onSubmit = (values: VMCSettingsForm) => {
+  const onSubmit = async (values: VMCSettingsForm) => {
     const settings = new ChangeSettingsRequestT();
 
     if (values.vmc) {
@@ -65,7 +65,9 @@ export function VMCSettings() {
         new OSCSettingsT(),
         values.vmc.oscSettings
       );
-      vmcOsc.vrmPath = values.vmc.vrmPath;
+      if (values.vmc.vrmJson?.files.length) {
+        vmcOsc.vrmJson = await parseVRMFile(values.vmc.vrmJson.files[0]);
+      }
       vmcOsc.anchorHip = values.vmc.anchorHip;
 
       settings.vmcOsc = vmcOsc;
@@ -96,8 +98,7 @@ export function VMCSettings() {
           formData.vmc.oscSettings.address =
             settings.vmcOsc.oscSettings.address.toString();
       }
-      if (settings.vmcOsc.vrmPath)
-        formData.vmc.vrmPath = settings.vmcOsc.vrmPath.toString();
+      if (settings.vmcOsc.vrmJson?.length) console.log(settings.vmcOsc.vrmJson);
       formData.vmc.anchorHip = settings.vmcOsc.anchorHip;
     }
 
@@ -219,9 +220,7 @@ export function VMCSettings() {
               label=""
             ></Input>
           </div>
-          <Typography bold>
-            {l10n.getString('settings-osc-vmc-vrm')}
-          </Typography>
+          <Typography bold>{l10n.getString('settings-osc-vmc-vrm')}</Typography>
           <div className="flex flex-col pb-2">
             <Typography color="secondary">
               {l10n.getString('settings-osc-vmc-vrm-description')}
@@ -230,7 +229,7 @@ export function VMCSettings() {
           <div className="grid gap-3 pb-5">
             <FileInput
               control={control}
-              name="vmc.vrmPath"
+              name="vmc.vrmJson"
               rules={{
                 required: true,
               }}
@@ -261,4 +260,49 @@ export function VMCSettings() {
       </SettingsPageLayout>
     </form>
   );
+}
+
+const gltfHeaderStart = 0;
+const gltfHeaderEnd = 20;
+async function parseVRMFile(vrm: File): Promise<string | null> {
+  const headerView = new DataView(
+    await vrm.slice(gltfHeaderStart, gltfHeaderEnd).arrayBuffer()
+  );
+  let cursor = 0;
+  const magicBytes = headerView.getUint32(cursor, true);
+  if (magicBytes !== magic`glTF`) {
+    console.error(
+      `.vrm file starts with ${magicBytes.toString(
+        16
+      )} instead of ${magic`glTF`.toString(16)}`
+    );
+    return null;
+  }
+  cursor += 4;
+
+  const versionNumber = headerView.getUint32(cursor, true);
+  if (versionNumber !== 2) {
+    console.error('unsupported glTF version');
+    return null;
+  }
+  cursor += 4;
+
+  // const fileLength = headerView.getUint32(8, true);
+  cursor += 4;
+
+  const jsonLength = headerView.getUint32(cursor, true);
+  cursor += 4;
+  const jsonMagicBytes = headerView.getUint32(cursor, true);
+  if (jsonMagicBytes !== magic`JSON`) {
+    console.error(
+      `first chunk contains ${jsonMagicBytes.toString(
+        16
+      )} instead of ${magic`JSON`.toString(16)}`
+    );
+    return null;
+  }
+
+  return vrm
+    .slice(gltfHeaderEnd, gltfHeaderEnd + jsonLength, 'application/json')
+    .text();
 }
