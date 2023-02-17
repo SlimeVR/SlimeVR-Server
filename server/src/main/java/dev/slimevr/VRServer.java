@@ -13,6 +13,7 @@ import dev.slimevr.platform.linux.UnixSocketBridge;
 import dev.slimevr.platform.windows.WindowsNamedPipeBridge;
 import dev.slimevr.poserecorder.BVHRecorder;
 import dev.slimevr.protocol.ProtocolAPI;
+import dev.slimevr.serial.ProvisioningHandler;
 import dev.slimevr.serial.SerialHandler;
 import dev.slimevr.tracking.DeviceManager;
 import dev.slimevr.tracking.processor.HumanPoseManager;
@@ -63,6 +64,7 @@ public class VRServer extends Thread {
 	private final ConfigManager configManager;
 	private final Timer timer = new Timer();
 	private final NanoTimer fpsTimer = new NanoTimer();
+	private final ProvisioningHandler provisioningHandler;
 
 	/**
 	 * This function is used by VRWorkout, do not remove!
@@ -80,6 +82,9 @@ public class VRServer extends Thread {
 		deviceManager = new DeviceManager(this);
 
 		serialHandler = new SerialHandler();
+
+		provisioningHandler = new ProvisioningHandler(this);
+
 		autoBoneHandler = new AutoBoneHandler(this);
 		protocolAPI = new ProtocolAPI(this);
 
@@ -145,6 +150,22 @@ public class VRServer extends Thread {
 			if (driverBridge != null) {
 				tasks.add(driverBridge::startBridge);
 				bridges.add(driverBridge);
+			}
+
+			try {
+				SteamVRBridge feederBridge = new UnixSocketBridge(
+					this,
+					null,
+					"steamvr_feeder",
+					"SteamVR Feeder Bridge",
+					Paths.get(OperatingSystem.getTempDirectory(), "SlimeVRInput").toString(),
+					new FastList<>()
+				);
+
+				tasks.add(feederBridge::startBridge);
+				bridges.add(feederBridge);
+			} catch (Exception ex) {
+				LogManager.severe("Failed to initiate Unix socket, disabling feeder bridge...", ex);
 			}
 		} else {
 			driverBridge = null;
@@ -430,6 +451,10 @@ public class VRServer extends Thread {
 
 	public NanoTimer getFpsTimer() {
 		return fpsTimer;
+	}
+
+	public ProvisioningHandler getProvisioningHandler() {
+		return provisioningHandler;
 	}
 
 	public void clearTrackersDriftCompensation() {

@@ -6,10 +6,12 @@ import { PersonFrontIcon } from './PersonFrontIcon';
 export function BodyInteractions({
   leftControls,
   rightControls,
+  highlightedRoles,
   assignedRoles,
   width = 228,
-  dotsSize = 20,
+  dotsSize = 15,
   variant = 'tracker-select',
+  onSelectRole,
 }: {
   leftControls?: ReactNode;
   rightControls?: ReactNode;
@@ -17,6 +19,8 @@ export function BodyInteractions({
   dotsSize?: number;
   variant?: 'dots' | 'tracker-select';
   assignedRoles: BodyPart[];
+  onSelectRole: (role: BodyPart) => void;
+  highlightedRoles: BodyPart[];
 }) {
   const personRef = useRef<HTMLDivElement | null>(null);
   const leftContainerRef = useRef<HTMLDivElement | null>(null);
@@ -165,21 +169,41 @@ export function BodyInteractions({
               <div
                 key={id}
                 className="absolute z-10"
+                onClick={() => onSelectRole((BodyPart as any)[id])}
                 style={{
                   top: top + height / 2 - dotsSize / 2 + buttonOffset.top,
                   left: left + width / 2 - dotsSize / 2 + buttonOffset.left,
                 }}
               >
-                <div
-                  className={classNames(
-                    'rounded-full outline outline-2 outline-background-20 transition-opacity',
-                    (assignedRoles.includes((BodyPart as any)[id]) &&
-                      'bg-background-70') ||
-                      'bg-background-10',
-                    (hidden && 'opacity-0') || 'opacity-100'
+                <div className="relative">
+                  {highlightedRoles.includes((BodyPart as any)[id]) && (
+                    <div
+                      className={classNames(
+                        'absolute rounded-full outline outline-2 outline-status-warning transition-opacity',
+                        (hidden && 'opacity-0') || 'opacity-100 animate-ping'
+                      )}
+                      style={{
+                        width: dotsSize,
+                        height: dotsSize,
+                        animationDuration: '1.5s',
+                      }}
+                    ></div>
                   )}
-                  style={{ width: dotsSize, height: dotsSize }}
-                ></div>
+                  <div
+                    className={classNames(
+                      'absolute rounded-full outline outline-2 outline-background-20 transition-opacity',
+                      'hover:bg-accent-background-40',
+                      (assignedRoles.includes((BodyPart as any)[id]) &&
+                        'bg-background-70') ||
+                        'bg-background-10',
+                      (hidden && 'opacity-0') || 'opacity-100'
+                    )}
+                    style={{
+                      width: dotsSize,
+                      height: dotsSize,
+                    }}
+                  ></div>
+                </div>
               </div>
             )
           )}

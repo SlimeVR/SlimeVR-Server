@@ -21,6 +21,14 @@ export const langs = [
     key: 'ar',
   },
   {
+    name: '🇨🇿 Čeština',
+    key: 'cs',
+  },
+  {
+    name: '🇩🇪 Deutsch',
+    key: 'de',
+  },
+  {
     name: '🇺🇸 English',
     key: 'en',
   },
@@ -33,8 +41,8 @@ export const langs = [
     key: 'et',
   },
   {
-    name: '🇩🇪 Deutsch',
-    key: 'de',
+    name: '🇫🇮 Suomi',
+    key: 'fi',
   },
   {
     name: '🇫🇷 Français',
@@ -69,6 +77,10 @@ export const langs = [
     key: 'pt-BR',
   },
   {
+    name: '🇷🇺 Русский',
+    key: 'ru',
+  },
+  {
     name: '🇻🇳 Tiếng Việt',
     key: 'vi',
   },
@@ -91,7 +103,7 @@ export const langs = [
 // only on launch :P
 const overrideLangExists = exists(OVERRIDE_FILENAME, {
   dir: BaseDirectory.AppConfig,
-});
+}).catch(() => false);
 
 // Fetch translation file
 async function fetchMessages(locale: string): Promise<[string, string]> {

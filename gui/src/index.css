@@ -4,18 +4,38 @@
 
 body {
   font-variant-numeric: tabular-nums;
-  font-family: 'poppins', sans-serif, 'Twemoji';
+  font-family: 'poppins', sans-serif, 'Twemoji Chromium', emoji;
   height: 100vh;
   width: 100vw;
   user-select: none;
   background: theme('colors.background.20');
+
+  /**
+    * Scrollbars for Firefox
+    */
+  scrollbar-color: theme('colors.background.50') theme('colors.background.60');
+  scrollbar-width: thin;
+}
+
+@media (-webkit-animation) {
+  body {
+    font-family: 'poppins', sans-serif, 'Twemoji Webkit', emoji;
+  }
+
+  body.linux {
+    font-family: 'poppins', sans-serif, emoji;
+  }
 }
 
 @font-face {
-  font-family: 'Twemoji';
-  src: url('/fonts/twemoji-glyf_colr_1.ttf') format('truetype'),
-    url('/fonts/twemoji-picosvg.ttf') format('truetype'),
-    emoji;
+  font-family: 'Twemoji Webkit';
+  src: url('/fonts/twemoji-picosvg.ttf') format('truetype');
+  font-display: swap;
+}
+
+@font-face {
+  font-family: 'Twemoji Chromium';
+  src: url('/fonts/twemoji-glyf_colr_1.ttf') format('truetype');
   font-display: swap;
 }
 
@@ -49,6 +69,18 @@ html {
 
 ::-webkit-scrollbar-thumb:hover {
   background: theme('colors.background.60');
+}
+
+.dropdown-scroll {
+  scrollbar-color: theme('colors.background.40') theme('colors.background.50');
+}
+
+.dropdown-scroll::-webkit-scrollbar-thumb {
+  background: theme('colors.background.40');
+}
+
+.dropdown-scroll::-webkit-scrollbar-thumb:hover {
+  background: theme('colors.background.50');
 }
 
 input::-ms-reveal,

@@ -138,6 +138,17 @@ public class CurrentVRConfigConverter implements VersionedModelConverter {
 				}
 			}
 		}
+		if (version < 6) {
+			// Migrate controllers offsets to hands offsets
+			ObjectNode skeletonNode = (ObjectNode) modelData.get("skeleton");
+			if (skeletonNode != null) {
+				ObjectNode offsetsNode = (ObjectNode) skeletonNode.get("offsets");
+				if (offsetsNode != null) {
+					offsetsNode.set("handDistanceY", offsetsNode.get("controllerDistanceY"));
+					offsetsNode.set("handDistanceZ", offsetsNode.get("controllerDistanceZ"));
+				}
+			}
+		}
 
 		return modelData;
 	}

@@ -106,6 +106,7 @@ widget-overlay-is_mirrored_label = 鏡像顯示內嵌介面
 
 ## Widget: Drift compensation
 
+widget-drift_compensation-clear = 清除偏移補償數據
 
 ## Widget: Developer settings
 
@@ -444,8 +445,8 @@ onboarding-wifi_creds-description =
 onboarding-wifi_creds-skip = 跳過 Wi-Fi 設定
 onboarding-wifi_creds-submit = 送出！
 onboarding-wifi_creds-ssid =
-    .label = Wi-Fi 網路名稱
-    .placeholder = 輸入 Wi-Fi 網路名稱
+    .label = Wi-Fi 名稱
+    .placeholder = 請輸入 Wi-Fi 名稱
 onboarding-wifi_creds-password =
     .label = 密碼
     .placeholder = 輸入密碼
@@ -486,11 +487,14 @@ onboarding-connect_tracker-description-p0 = 來到了我第二喜歡的環節，
 onboarding-connect_tracker-description-p1 = 只需透過 USB 連線所有尚未連線的裝置即可。
 onboarding-connect_tracker-issue-serial = 我在連接時碰到問題了！
 onboarding-connect_tracker-usb = USB 追蹤器
+onboarding-connect_tracker-connection_status-none = 正在尋找追蹤器
+onboarding-connect_tracker-connection_status-serial_init = 正在連線到序列裝置
+onboarding-connect_tracker-connection_status-provisioning = 正在傳送 Wi-Fi 認證
 onboarding-connect_tracker-connection_status-connecting = 正在傳送 Wi-Fi 資訊
-onboarding-connect_tracker-connection_status-connected = Wi-Fi 已連線
-onboarding-connect_tracker-connection_status-error = 無法連線到 Wi-Fi
-onboarding-connect_tracker-connection_status-start_connecting = 尋找追蹤器
-onboarding-connect_tracker-connection_status-handshake = 已連線到伺服器
+onboarding-connect_tracker-connection_status-looking_for_server = 正在尋找伺服器
+onboarding-connect_tracker-connection_status-connection_error = 無法連線到 Wi-Fi
+onboarding-connect_tracker-connection_status-could_not_find_server = 未尋找到可用的伺服器
+onboarding-connect_tracker-connection_status-done = 已連線到伺服器
 # $amount (Number) - Amount of trackers connected (this is a number, but you can use CLDR plural rules for your language)
 # More info on https://www.unicode.org/cldr/cldr-aux/charts/22/supplemental/language_plural_rules.html
 # English in this case only has 2 plural rules, which are "one" and "other",
@@ -514,6 +518,74 @@ onboarding-assign_trackers-description = 這些追蹤器要放在身上的哪個
 onboarding-assign_trackers-assigned = { $assigned }/{ $trackers } 個追蹤器已分配
 onboarding-assign_trackers-advanced = 顯示進階分配部位
 onboarding-assign_trackers-next = 所有的追蹤器都分配好了
+
+## Tracker assignment warnings
+
+# Note for devs, number is used for representing boolean states per bit.
+# $unassigned (Number) - Bits are based on BodyAssignment.ASSIGNMENT_RULES order
+onboarding-assign_trackers-warning-LEFT_FOOT =
+    { $unassigned ->
+        [0] 左腳已分配，但您還需要分配左腳踝、左大腿和胸部、臀部或腰部！
+        [1] 左腳已分配，但您還需要分配左大腿和胸部、臀部或腰部！
+        [2] 左腳已分配，但您還需要分配左腳踝和胸部、臀部或腰部！
+        [3] 左腳已分配，但您還需要分配胸部、臀部或腰部！
+        [4] 左腳已分配，但您還需要分配左腳踝和左大腿！
+        [5] 左腳已分配，但您還需要分配左大腿！
+        [6] 左腳已分配，但您還需要分配左腳踝！
+       *[unknown] 左腳已分配，但您還需要分配其它未分配的身體部位！
+    }
+# $unassigned (Number) - Bits are based on BodyAssignment.ASSIGNMENT_RULES order
+onboarding-assign_trackers-warning-RIGHT_FOOT =
+    { $unassigned ->
+        [0] 右腳已分配，但您還需要分配右腳踝、右大腿以及胸部、臀部或腰部！
+        [1] 右腳已分配，但您還需要分配右大腿和胸部、臀部或腰部！
+        [2] 右腳已分配，但您還需要分配右腳踝和胸部、臀部或腰部！
+        [3] 右腳已分配，但您還需要分配胸部、臀部或腰部！
+        [4] 右腳已分配，但您還需要分配右腳踝和右大腿！
+        [5] 右腳已分配，但您還需要分配右大腿！
+        [6] 右腳已分配，但您還需要分配右腳踝！
+       *[unknown] 右腳已分配，但您還需要分配其它未分配的身體部位！
+    }
+# $unassigned (Number) - Bits are based on BodyAssignment.ASSIGNMENT_RULES order
+onboarding-assign_trackers-warning-LEFT_LOWER_LEG =
+    { $unassigned ->
+        [0] 左腳踝已分配，但您還需要分配左大腿和胸部、臀部或腰部！
+        [1] 左腳踝已分配，但您還需要分配胸部、臀部或腰部！
+        [2] 左腳踝已分配，但您還需要分配左大腿！
+       *[unknown] 左腳踝已分配，但您還需要分配其它未分配的身體部位！
+    }
+# $unassigned (Number) - Bits are based on BodyAssignment.ASSIGNMENT_RULES order
+onboarding-assign_trackers-warning-RIGHT_LOWER_LEG =
+    { $unassigned ->
+        [0] 右腳踝已分配，但您還需要分配右大腿和胸部、臀部或腰部！
+        [1] 右腳踝已分配，但您還需要分配胸部、臀部或腰部！
+        [2] 右腳踝已分配，但您還需要分配右大腿！
+       *[unknown] 右腳踝已分配，但您還需要分配其它未分配的身體部位！
+    }
+# $unassigned (Number) - Bits are based on BodyAssignment.ASSIGNMENT_RULES order
+onboarding-assign_trackers-warning-LEFT_UPPER_LEG =
+    { $unassigned ->
+        [0] 左大腿已分配，但您還需要分配胸部、臀部或腰部！
+       *[unknown] 左大腿已分配，但您還需要分配其它未分配的身體部位！
+    }
+# $unassigned (Number) - Bits are based on BodyAssignment.ASSIGNMENT_RULES order
+onboarding-assign_trackers-warning-RIGHT_UPPER_LEG =
+    { $unassigned ->
+        [0] 右大腿已分配，但您還需要分配胸部、臀部或腰部！
+       *[unknown] 右大腿已分配，但您還需要分配其它未分配的身體部位！
+    }
+# $unassigned (Number) - Bits are based on BodyAssignment.ASSIGNMENT_RULES order
+onboarding-assign_trackers-warning-HIP =
+    { $unassigned ->
+        [0] 臀部已分配，但您還需要分配胸部！
+       *[unknown] 臀部已分配，但您還需要分配其它未分配的身體部位！
+    }
+# $unassigned (Number) - Bits are based on BodyAssignment.ASSIGNMENT_RULES order
+onboarding-assign_trackers-warning-WAIST =
+    { $unassigned ->
+        [0] 腰部已分配，但您還需要分配胸部！
+       *[unknown] 腰部已分配，但您還需要分配其它未分配的身體部位！
+    }
 
 ## Tracker manual mounting setup
 
