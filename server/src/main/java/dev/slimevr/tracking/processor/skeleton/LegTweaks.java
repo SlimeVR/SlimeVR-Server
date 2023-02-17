@@ -823,8 +823,8 @@ public class LegTweaks {
 			float weightR = 0.0f;
 
 			// first compute the angle of the foot
-			float angleL = getToeSnapAngle(rightFootPos);
-			float angleR = getToeSnapAngle(leftFootPos);
+			float angleL = getToeSnapAngle(leftFootPos);
+			float angleR = getToeSnapAngle(rightFootPos);
 
 			// then compute the weight of the correction
 			weightL = getToeSnapWeight(leftFootPos, angleL);
