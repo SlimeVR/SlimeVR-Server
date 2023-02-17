@@ -89,12 +89,12 @@ public class RPCSettingsBuilder {
 
 		String vrmJson = config.getVrmJson();
 		int vrmJsonOffset = 0;
-		if(vrmJson != null)
+		if (vrmJson != null)
 			vrmJsonOffset = fbb.createString(vrmJson);
 
 		VMCOSCSettings.startVMCOSCSettings(fbb);
 		VMCOSCSettings.addOscSettings(fbb, generalSettingOffset);
-		if(vrmJson != null)
+		if (vrmJson != null)
 			VMCOSCSettings.addVrmJson(fbb, vrmJsonOffset);
 		VMCOSCSettings.addAnchorHip(fbb, config.getAnchorHip());
 

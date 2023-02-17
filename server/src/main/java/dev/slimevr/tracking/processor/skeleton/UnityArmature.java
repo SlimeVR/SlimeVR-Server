@@ -89,17 +89,17 @@ public class UnityArmature {
 	}
 
 	public void setBoneRotationFromGlobal(UnityBone unityBone, Quaternion globalRot) {
-		TransformNode node = getTailNodeForBone(unityBone);
+		TransformNode node = getHeadNodeOfBone(unityBone);
 		if (node != null) {
-			node.getParent().localTransform.setRotation(globalRot);
+			node.localTransform.setRotation(globalRot);
 		}
 	}
 
 	public void setBoneRotationFromLocal(UnityBone unityBone, Quaternion localRot) {
-		TransformNode node = getTailNodeForBone(unityBone);
+		TransformNode node = getHeadNodeOfBone(unityBone);
 		if (node != null) {
 			if (unityBone == UnityBone.HIPS) {
-				node.getParent().worldTransform.setRotation(localRot);
+				node.worldTransform.setRotation(localRot);
 			} else {
 				if (unityBone == UnityBone.LEFT_UPPER_ARM) {
 					localRot.mult(RIGHT_SHOULDER_OFFSET, localRot);
@@ -107,20 +107,32 @@ public class UnityArmature {
 					localRot.mult(LEFT_SHOULDER_OFFSET, localRot);
 				}
 
-				node.getParent().localTransform.setRotation(localRot);
+				node.localTransform.setRotation(localRot);
 			}
 		}
 	}
 
 	public Vector3f getGlobalTranslationForBone(UnityBone unityBone) {
-		TransformNode node = getTailNodeForBone(unityBone);
-		if (node != null)
+		TransformNode node = getHeadNodeOfBone(unityBone);
+		if (node != null) {
+			if (unityBone == UnityBone.HIPS) {
+				return node.worldTransform
+					.getTranslation()
+					.mult(2f)
+					.subtractLocal(
+						(leftHipNode.worldTransform
+							.getTranslation()
+							.add(rightHipNode.worldTransform.getTranslation())).multLocal(0.5f)
+					)
+					.addLocal(rootPosition);
+			}
 			return node.worldTransform.getTranslation().add(rootPosition);
+		}
 		return Vector3f.ZERO;
 	}
 
 	public Vector3f getLocalTranslationForBone(UnityBone unityBone) {
-		TransformNode node = getTailNodeForBone(unityBone);
+		TransformNode node = getHeadNodeOfBone(unityBone);
 		if (node != null) {
 			return node.localTransform.getTranslation();
 		}
@@ -128,16 +140,15 @@ public class UnityArmature {
 	}
 
 	public Quaternion getGlobalRotationForBone(UnityBone unityBone) {
-		TransformNode node = getTailNodeForBone(unityBone);
+		TransformNode node = getHeadNodeOfBone(unityBone);
 		if (node != null)
-			return node.getParent().worldTransform.getRotation().mult(rootRotation);
+			return node.worldTransform.getRotation().mult(rootRotation);
 		return Quaternion.IDENTITY;
 	}
 
 	public Quaternion getLocalRotationForBone(UnityBone unityBone) {
-		TransformNode node = getTailNodeForBone(unityBone);
+		TransformNode node = getHeadNodeOfBone(unityBone);
 		if (node != null) {
-			node = node.getParent();
 			if (unityBone == UnityBone.HIPS) {
 				return node.worldTransform.getRotation();
 			} else {
@@ -158,32 +169,32 @@ public class UnityArmature {
 		return Quaternion.IDENTITY;
 	}
 
-	public TransformNode getTailNodeForBone(UnityBone unityBone) {
+	public TransformNode getHeadNodeOfBone(UnityBone unityBone) {
 		if (unityBone == null) {
 			return null;
 		}
 
 		return switch (unityBone) {
-			case HEAD -> headNode;
-			case NECK -> neckTailNode;
-			case UPPER_CHEST -> neckHeadNode;
-			case CHEST -> chestNode;
-			case SPINE -> waistTailNode;
-			case HIPS -> waistHeadNode;
-			case LEFT_UPPER_LEG -> leftKneeNode;
-			case RIGHT_UPPER_LEG -> rightKneeNode;
-			case LEFT_LOWER_LEG -> leftAnkleNode;
-			case RIGHT_LOWER_LEG -> rightAnkleNode;
-			case LEFT_FOOT -> leftFootNode;
-			case RIGHT_FOOT -> rightFootNode;
-			case LEFT_SHOULDER -> leftShoulderTailNode;
-			case RIGHT_SHOULDER -> rightShoulderTailNode;
-			case LEFT_UPPER_ARM -> leftElbowNode;
-			case RIGHT_UPPER_ARM -> rightElbowNode;
-			case LEFT_LOWER_ARM -> leftWristNode;
-			case RIGHT_LOWER_ARM -> rightWristNode;
-			case LEFT_HAND -> leftHandNode;
-			case RIGHT_HAND -> rightHandNode;
+			case HEAD -> neckTailNode;
+			case NECK -> neckHeadNode;
+			case UPPER_CHEST -> chestNode;
+			case CHEST -> waistTailNode;
+			case SPINE -> waistHeadNode;
+			case HIPS -> hipNode;
+			case LEFT_UPPER_LEG -> leftHipNode;
+			case RIGHT_UPPER_LEG -> rightHipNode;
+			case LEFT_LOWER_LEG -> leftKneeNode;
+			case RIGHT_LOWER_LEG -> rightKneeNode;
+			case LEFT_FOOT -> leftAnkleNode;
+			case RIGHT_FOOT -> rightAnkleNode;
+			case LEFT_SHOULDER -> leftShoulderHeadNode;
+			case RIGHT_SHOULDER -> rightShoulderHeadNode;
+			case LEFT_UPPER_ARM -> leftShoulderTailNode;
+			case RIGHT_UPPER_ARM -> rightShoulderTailNode;
+			case LEFT_LOWER_ARM -> leftElbowNode;
+			case RIGHT_LOWER_ARM -> rightElbowNode;
+			case LEFT_HAND -> leftWristNode;
+			case RIGHT_HAND -> rightWristNode;
 			default -> null;
 		};
 	}

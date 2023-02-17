@@ -44,7 +44,6 @@ public class VMCHandler implements OSCHandler {
 	private final long startTime;
 	private final Map<String, VRTracker> byTrackerNameTracker = new HashMap<>();
 	private final Quaternion yawOffset = new Quaternion();
-	private final Vector3f hipPosition = new Vector3f();
 	private UnityArmature inputUnityArmature;
 	private UnityArmature outputUnityArmature;
 	private float scaleMultiplier;
@@ -163,13 +162,11 @@ public class VMCHandler implements OSCHandler {
 			if (outputUnityArmature != null && config.getVrmJson() != null) {
 				VRMReader vrmReader = new VRMReader(config.getVrmJson());
 				for (UnityBone unityBone : UnityBone.values) {
-					TransformNode node = outputUnityArmature.getTailNodeForBone(unityBone);
+					TransformNode node = outputUnityArmature.getHeadNodeOfBone(unityBone);
 					if (node != null)
 						node.localTransform
 							.setTranslation(vrmReader.getOffsetForBone(unityBone));
 				}
-
-				hipPosition.set(vrmReader.getOffsetForBone(UnityBone.HIPS));
 
 				vecBuf.zero();
 				vecBuf.addLocal(vrmReader.getOffsetForBone(UnityBone.HIPS));
@@ -177,7 +174,6 @@ public class VMCHandler implements OSCHandler {
 				vecBuf.addLocal(vrmReader.getOffsetForBone(UnityBone.CHEST));
 				vecBuf.addLocal(vrmReader.getOffsetForBone(UnityBone.UPPER_CHEST));
 				vecBuf.addLocal(vrmReader.getOffsetForBone(UnityBone.NECK));
-				vecBuf.addLocal(vrmReader.getOffsetForBone(UnityBone.HEAD));
 				scaleMultiplier = vecBuf.length();
 			}
 		}
@@ -384,7 +380,11 @@ public class VMCHandler implements OSCHandler {
 							// Get position
 							if (anchorHip) {
 								// Hip anchor
-								vecBuf.set(hipPosition.subtract(outputUnityArmature.getLocalTranslationForBone(UnityBone.HIPS)));
+								vecBuf
+									.set(
+										outputUnityArmature
+											.getGlobalTranslationForBone(UnityBone.HIPS)
+									);
 							} else {
 								// Head anchor
 								vecBuf
@@ -403,7 +403,8 @@ public class VMCHandler implements OSCHandler {
 							}
 
 							// Get rotation
-							quatBuf.set(outputUnityArmature.getLocalRotationForBone(UnityBone.HIPS));
+							quatBuf
+								.set(outputUnityArmature.getGlobalRotationForBone(UnityBone.HIPS));
 						} else {
 							// Get position
 							vecBuf
