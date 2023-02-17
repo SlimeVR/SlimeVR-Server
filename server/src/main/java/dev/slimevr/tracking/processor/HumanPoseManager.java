@@ -47,12 +47,13 @@ public class HumanPoseManager {
 	/**
 	 * Creates a new HumanPoseManager that uses the given trackers for the
 	 * HumanSkeleton and the default config
-	 * 
+	 *
 	 * @param trackers a list of all trackers
 	 */
 	public HumanPoseManager(List<? extends Tracker> trackers) {
 		this();
 		skeleton = new HumanSkeleton(this, trackers);
+		skeletonConfigManager.updateSettingsInSkeleton();
 	}
 
 	/**
@@ -71,6 +72,7 @@ public class HumanPoseManager {
 		skeleton = new HumanSkeleton(this, trackers);
 		// Set offsetConfigs from given offsetConfigs on creation
 		skeletonConfigManager.setOffsets(offsetConfigs);
+		skeletonConfigManager.updateSettingsInSkeleton();
 	}
 
 	/**
@@ -97,6 +99,7 @@ public class HumanPoseManager {
 			skeletonConfigManager.setOffsets(altOffsetConfigs);
 		}
 		skeletonConfigManager.setOffsets(offsetConfigs);
+		skeletonConfigManager.updateSettingsInSkeleton();
 	}
 
 	// #endregion
@@ -270,7 +273,7 @@ public class HumanPoseManager {
 
 	/**
 	 * Get the corresponding computed tracker for a given TrackerRole
-	 * 
+	 *
 	 * @param trackerRole the role of the tracker which we want
 	 * @return the corresponding computed tracker for the trackerRole
 	 */
@@ -293,7 +296,7 @@ public class HumanPoseManager {
 
 	/**
 	 * Get the tail node (away from the tracking root) of the given bone
-	 * 
+	 *
 	 * @param bone the bone from which we want the tail node
 	 * @return the tail node of the bone
 	 */
