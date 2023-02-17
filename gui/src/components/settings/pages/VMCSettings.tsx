@@ -230,7 +230,7 @@ export function VMCSettings() {
               control={control}
               name="vmc.vrmJson"
               rules={{
-                required: true,
+                required: false,
               }}
               placeholder={l10n.getString('settings-osc-vmc-vrm-placeholder')}
               label=""
