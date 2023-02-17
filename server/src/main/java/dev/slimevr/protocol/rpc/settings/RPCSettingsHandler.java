@@ -201,7 +201,8 @@ public record RPCSettingsHandler(RPCHandler rpcHandler, ProtocolAPI api) {
 					vmcConfig.setPortOut(osc.portOut());
 					vmcConfig.setAddress(osc.address());
 				}
-				vmcConfig.setVrmJson(req.vmcOsc().vrmJson());
+				if (req.vmcOsc().vrmJson() != null)
+					vmcConfig.setVrmJson(req.vmcOsc().vrmJson());
 				vmcConfig.setAnchorHip(req.vmcOsc().anchorHip());
 
 				VMCHandler.refreshSettings(true);

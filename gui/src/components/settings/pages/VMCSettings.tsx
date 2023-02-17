@@ -98,7 +98,6 @@ export function VMCSettings() {
           formData.vmc.oscSettings.address =
             settings.vmcOsc.oscSettings.address.toString();
       }
-      if (settings.vmcOsc.vrmJson?.length) console.log(settings.vmcOsc.vrmJson);
       formData.vmc.anchorHip = settings.vmcOsc.anchorHip;
     }
 
