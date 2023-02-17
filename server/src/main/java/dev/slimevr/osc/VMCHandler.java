@@ -168,10 +168,12 @@ public class VMCHandler implements OSCHandler {
 							.setTranslation(vrmReader.getOffsetForBone(unityBone));
 				}
 
-				scaleMultiplier = outputUnityArmature
-					.getGlobalTranslationForBone(UnityBone.HIPS)
-					.subtract(outputUnityArmature.getLocalTranslationForBone(UnityBone.HEAD))
-					.length();
+				scaleMultiplier =  vrmReader.getOffsetForBone(UnityBone.HIPS).length()
+					+ vrmReader.getOffsetForBone(UnityBone.SPINE).length()
+					+ vrmReader.getOffsetForBone(UnityBone.CHEST).length()
+					+ vrmReader.getOffsetForBone(UnityBone.UPPER_CHEST).length()
+					+ vrmReader.getOffsetForBone(UnityBone.NECK).length()
+					+ vrmReader.getOffsetForBone(UnityBone.HEAD).length();
 			}
 		}
 
