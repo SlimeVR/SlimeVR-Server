@@ -4,9 +4,11 @@ import { useMemo } from 'react';
 export function BatteryIcon({
   value,
   disabled = false,
+  charging,
 }: {
   value: number;
   disabled?: boolean;
+  charging: boolean;
 }) {
   const col = useMemo(() => {
     const colorsMap: { [key: number]: string } = {
@@ -26,7 +28,7 @@ export function BatteryIcon({
   return (
     <svg
       width="19"
-      height="9"
+      height="11"
       viewBox="0 0 19 9"
       xmlns="http://www.w3.org/2000/svg"
     >
@@ -59,6 +61,13 @@ export function BatteryIcon({
       <g mask="url(#mask0_4_39)" className={classNames(col, 'opacity-100')}>
         <rect width={value * 18} height="9" />
       </g>
+      {charging && (
+        <path
+          d="M 0.93561138,11.744353 2.4349252,6.1488377 H 0.0312815 L 3.5761014,0.00903018 2.2061799,5.1216451 h 2.4534885 z"
+          fill="#081e30"
+          transform="translate(5,-1)"
+        />
+      )}
     </svg>
   );
 }
