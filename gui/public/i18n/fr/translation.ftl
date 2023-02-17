@@ -30,7 +30,6 @@ body_part-RIGHT_HAND = Main droite
 body_part-RIGHT_UPPER_LEG = Cuisse droite
 body_part-RIGHT_LOWER_LEG = Cheville droite
 body_part-RIGHT_FOOT = Pied droit
-body_part-RIGHT_CONTROLLER = Manette gauche
 body_part-CHEST = Poitrine
 body_part-WAIST = Taille
 body_part-HIP = Hanche
@@ -41,7 +40,6 @@ body_part-LEFT_HAND = Main gauche
 body_part-LEFT_UPPER_LEG = Cuisse gauche
 body_part-LEFT_LOWER_LEG = Cheville gauche
 body_part-LEFT_FOOT = Pied gauche
-body_part-LEFT_CONTROLLER = Manette gauche
 
 ## Proportions
 
@@ -63,8 +61,8 @@ skeleton_bone-SHOULDERS_DISTANCE = Distance des épaules
 skeleton_bone-SHOULDERS_WIDTH = Largeur des épaules
 skeleton_bone-UPPER_ARM = Longueur des bras supérieurs
 skeleton_bone-LOWER_ARM = Longueur des avant-bras
-skeleton_bone-CONTROLLER_Y = Distance Y des manettes
-skeleton_bone-CONTROLLER_Z = Distance Z des manettes
+skeleton_bone-HAND_Y = Distance Y des mains
+skeleton_bone-HAND_Z = Distance Z des mains
 skeleton_bone-ELBOW_OFFSET = Écart des coudes
 
 ## Tracker reset buttons
