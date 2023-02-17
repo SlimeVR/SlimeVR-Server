@@ -276,14 +276,8 @@ public class SkeletonConfigManager {
 			case LEFT_HAND, RIGHT_HAND -> setNodeOffset(
 				nodeOffset,
 				0,
-				-getOffset(SkeletonConfigOffsets.CONTROLLER_Y),
-				-getOffset(SkeletonConfigOffsets.CONTROLLER_Z)
-			);
-			case LEFT_CONTROLLER, RIGHT_CONTROLLER -> setNodeOffset(
-				nodeOffset,
-				0,
-				getOffset(SkeletonConfigOffsets.CONTROLLER_Y),
-				getOffset(SkeletonConfigOffsets.CONTROLLER_Z)
+				-getOffset(SkeletonConfigOffsets.HAND_Y),
+				-getOffset(SkeletonConfigOffsets.HAND_Z)
 			);
 			case LEFT_ELBOW_TRACKER, RIGHT_ELBOW_TRACKER -> setNodeOffset(
 				nodeOffset,
@@ -455,6 +449,8 @@ public class SkeletonConfigManager {
 				.get(configValue.configKey);
 			if (val != null) {
 				setToggle(configValue, val);
+			} else if (humanPoseManager != null) {
+				humanPoseManager.updateToggleState(configValue, configValue.defaultValue);
 			}
 		}
 
@@ -467,6 +463,8 @@ public class SkeletonConfigManager {
 				.get(configValue.configKey);
 			if (val != null) {
 				setValue(configValue, val);
+			} else if (humanPoseManager != null) {
+				humanPoseManager.updateValueState(configValue, configValue.defaultValue);
 			}
 		}
 

@@ -151,6 +151,22 @@ public class VRServer extends Thread {
 				tasks.add(driverBridge::startBridge);
 				bridges.add(driverBridge);
 			}
+
+			try {
+				SteamVRBridge feederBridge = new UnixSocketBridge(
+					this,
+					null,
+					"steamvr_feeder",
+					"SteamVR Feeder Bridge",
+					Paths.get(OperatingSystem.getTempDirectory(), "SlimeVRInput").toString(),
+					new FastList<>()
+				);
+
+				tasks.add(feederBridge::startBridge);
+				bridges.add(feederBridge);
+			} catch (Exception ex) {
+				LogManager.severe("Failed to initiate Unix socket, disabling feeder bridge...", ex);
+			}
 		} else {
 			driverBridge = null;
 		}
