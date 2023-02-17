@@ -221,6 +221,22 @@ export function TrackerSettingsPage() {
                 ).toString()}
               </Typography>
             </div>
+            <div className="flex justify-between">
+              <Typography color="secondary">
+                {l10n.getString('tracker-infos-version')}
+              </Typography>
+              <Typography>
+                {tracker?.device?.hardwareInfo?.firmwareVersion || '--'}
+              </Typography>
+            </div>
+            <div className="flex justify-between">
+              <Typography color="secondary">
+                {l10n.getString('tracker-infos-hardware_rev')}
+              </Typography>
+              <Typography>
+                {tracker?.device?.hardwareInfo?.hardwareRevision || '--'}
+              </Typography>
+            </div>
           </div>
           {tracker?.tracker && config?.debug && (
             <IMUVisualizerWidget
