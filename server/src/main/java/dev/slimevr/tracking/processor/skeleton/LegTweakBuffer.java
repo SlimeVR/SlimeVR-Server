@@ -50,6 +50,8 @@ public class LegTweakBuffer {
 	private Vector3f leftKneePositionCorrected = new Vector3f();
 	private Vector3f rightKneePositionCorrected = new Vector3f();
 	private Vector3f waistPositionCorrected = new Vector3f();
+	private Quaternion leftFootRotationCorrected = new Quaternion();
+	private Quaternion rightFootRotationCorrected = new Quaternion();
 
 	// velocities
 	private Vector3f leftFootVelocity = new Vector3f();
@@ -80,8 +82,8 @@ public class LegTweakBuffer {
 
 	// hyperparameters
 	public static final float SKATING_DISTANCE_CUTOFF = 0.5f;
-	static float SKATING_VELOCITY_THRESHOLD = 2.6f;
-	static float SKATING_ACCELERATION_THRESHOLD = 0.8f;
+	static float SKATING_VELOCITY_THRESHOLD = 2.4f;
+	static float SKATING_ACCELERATION_THRESHOLD = 0.7f;
 	private static final float SKATING_ROTVELOCITY_THRESHOLD = 4.5f;
 	private static final float SKATING_LOCK_ENGAGE_PERCENT = 0.85f;
 	private static final float SKATING_ACCELERATION_Y_USE_PERCENT = 0.25f;
@@ -202,6 +204,28 @@ public class LegTweakBuffer {
 
 	public void setRightFootRotation(Quaternion rightFootRotation) {
 		this.rightFootRotation.set(rightFootRotation);
+	}
+
+	public Quaternion getLeftFootRotationCorrected(Quaternion quat) {
+		if (quat == null)
+			quat = new Quaternion();
+
+		return quat.set(leftFootRotationCorrected);
+	}
+
+	public void setLeftFootRotationCorrected(Quaternion quat) {
+		this.leftFootRotationCorrected.set(quat);
+	}
+
+	public Quaternion getRightFootRotationCorrected(Quaternion quat) {
+		if (quat == null)
+			quat = new Quaternion();
+
+		return quat.set(rightFootRotationCorrected);
+	}
+
+	public void setRightFootRotationCorrected(Quaternion quat) {
+		this.rightFootRotationCorrected.set(quat);
 	}
 
 	public Vector3f getLeftFootPositionCorrected(Vector3f vec) {
