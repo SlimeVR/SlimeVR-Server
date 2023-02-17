@@ -72,9 +72,7 @@ dependencies {
 	implementation("com.google.protobuf:protobuf-java:3.21.12")
 	implementation("org.java-websocket:Java-WebSocket:1.+")
 	implementation("com.melloware:jintellitype:1.+")
-	implementation("com.squareup.okio:okio:3.3.0")
 	implementation("org.jetbrains.kotlinx:kotlinx-serialization-json:1.5.0-RC")
-	implementation("org.jetbrains.kotlinx:kotlinx-serialization-json-okio:1.5.0-RC")
 
 	testImplementation(kotlin("test"))
 	// Use JUnit test framework

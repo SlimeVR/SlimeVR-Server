@@ -90,7 +90,7 @@ public class RPCSettingsBuilder {
 		VMCOSCSettings.startVMCOSCSettings(fbb);
 		VMCOSCSettings.addOscSettings(fbb, generalSettingOffset);
 		VMCOSCSettings.addVrmJson(fbb, vrmJsonOffset);
-		VMCOSCSettings.addAnchorHip(fbb, config.anchorHip);
+		VMCOSCSettings.addAnchorHip(fbb, config.getAnchorHip());
 
 		return VMCOSCSettings.endVMCOSCSettings(fbb);
 	}

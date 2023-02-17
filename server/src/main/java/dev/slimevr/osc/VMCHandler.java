@@ -72,7 +72,7 @@ public class VMCHandler implements OSCHandler {
 
 	@Override
 	public void refreshSettings(boolean refreshRouterSettings) {
-		anchorHip = config.anchorHip;
+		anchorHip = config.getAnchorHip();
 
 		// Stops listening and closes OSC port
 		boolean wasListening = oscReceiver != null && oscReceiver.isListening();
@@ -159,7 +159,7 @@ public class VMCHandler implements OSCHandler {
 			}
 
 			// Load VRM data
-			if (outputUnityHierarchy != null && config.getVrmJson() != null) {
+			if (outputUnityArmature != null && config.getVrmJson() != null) {
 				VRMReader vrmReader = new VRMReader(config.getVrmJson());
 				for (UnityBone unityBone : UnityBone.values) {
 					TransformNode node = outputUnityArmature.getHeadNodeForBone(unityBone);

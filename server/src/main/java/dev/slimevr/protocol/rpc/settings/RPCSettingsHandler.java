@@ -202,7 +202,7 @@ public record RPCSettingsHandler(RPCHandler rpcHandler, ProtocolAPI api) {
 					vmcConfig.setAddress(osc.address());
 				}
 				vmcConfig.setVrmJson(req.vmcOsc().vrmJson());
-				vmcConfig.anchorHip = req.vmcOsc().anchorHip();
+				vmcConfig.setAnchorHip(req.vmcOsc().anchorHip());
 
 				VMCHandler.refreshSettings(true);
 			}

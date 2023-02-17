@@ -7,17 +7,10 @@ import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
 import kotlinx.serialization.decodeFromString
 import kotlinx.serialization.json.Json
-import kotlinx.serialization.json.okio.decodeFromBufferedSource
-import okio.FileSystem
-import okio.Path.Companion.toPath
-import okio.buffer
-import java.nio.ByteBuffer
 import java.util.*
 
-class InvalidGltfFile(message: String?) : Exception(message)
-
 private val jsonIgnoreKeys = Json { ignoreUnknownKeys = true }
-class VRMReader(private val vrmJson: String) {
+class VRMReader(vrmJson: String) {
 	private val data: GLTF = jsonIgnoreKeys.decodeFromString(vrmJson)
 
 	fun getOffsetForBone(unityBone: UnityBone): Vector3f {
