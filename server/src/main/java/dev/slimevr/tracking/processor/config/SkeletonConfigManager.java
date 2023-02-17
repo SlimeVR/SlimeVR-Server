@@ -455,7 +455,7 @@ public class SkeletonConfigManager {
 				.get(configValue.configKey);
 			if (val != null) {
 				setToggle(configValue, val);
-			}else if (humanPoseManager != null){
+			} else if (humanPoseManager != null) {
 				humanPoseManager.updateToggleState(configValue, configValue.defaultValue);
 			}
 		}
@@ -469,7 +469,7 @@ public class SkeletonConfigManager {
 				.get(configValue.configKey);
 			if (val != null) {
 				setValue(configValue, val);
-			}else if (humanPoseManager != null){
+			} else if (humanPoseManager != null) {
 				humanPoseManager.updateValueState(configValue, configValue.defaultValue);
 			}
 		}
