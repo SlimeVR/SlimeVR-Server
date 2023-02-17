@@ -24,7 +24,6 @@ body_part-RIGHT_HAND = Right hand
 body_part-RIGHT_UPPER_LEG = Right thigh
 body_part-RIGHT_LOWER_LEG = Right ankle
 body_part-RIGHT_FOOT = Right foot
-body_part-RIGHT_CONTROLLER = Right controller
 body_part-CHEST = Chest
 body_part-WAIST = Waist
 body_part-HIP = Hip
@@ -35,7 +34,6 @@ body_part-LEFT_HAND = Left hand
 body_part-LEFT_UPPER_LEG = Left thigh
 body_part-LEFT_LOWER_LEG = Left ankle
 body_part-LEFT_FOOT = Left foot
-body_part-LEFT_CONTROLLER = Left controller
 
 ## Proportions
 skeleton_bone-NONE = None
@@ -56,8 +54,8 @@ skeleton_bone-SHOULDERS_DISTANCE = Shoulders Distance
 skeleton_bone-SHOULDERS_WIDTH = Shoulders Width
 skeleton_bone-UPPER_ARM = Upper Arm Length
 skeleton_bone-LOWER_ARM = Lower Arm Length
-skeleton_bone-CONTROLLER_Y = Controller Distance Y
-skeleton_bone-CONTROLLER_Z = Controller Distance Z
+skeleton_bone-HAND_Y = Hand Distance Y
+skeleton_bone-HAND_Z = Hand Distance Z
 skeleton_bone-ELBOW_OFFSET = Elbow Offset
 
 ## Tracker reset buttons
@@ -141,6 +139,8 @@ tracker-infos-manufacturer = Manufacturer
 tracker-infos-display_name = Display Name
 tracker-infos-custom_name = Custom Name
 tracker-infos-url = Tracker URL
+tracker-infos-version = Firmware Version
+tracker-infos-hardware_rev = Hardware Revision
 
 ## Tracker settings
 tracker-settings-back = Go back to trackers list
@@ -453,11 +453,14 @@ onboarding-connect_tracker-description-p0 = Now onto the fun part, connecting al
 onboarding-connect_tracker-description-p1 = Simply connect all that aren't connected yet, through a USB port.
 onboarding-connect_tracker-issue-serial = I'm having trouble connecting!
 onboarding-connect_tracker-usb = USB Tracker
-onboarding-connect_tracker-connection_status-connecting = Sending Wi-Fi credentials
-onboarding-connect_tracker-connection_status-connected = Connected to Wi-Fi
-onboarding-connect_tracker-connection_status-error = Unable to connect to Wi-Fi
-onboarding-connect_tracker-connection_status-start_connecting = Looking for trackers
-onboarding-connect_tracker-connection_status-handshake = Connected to the Server
+onboarding-connect_tracker-connection_status-none = Looking for trackers
+onboarding-connect_tracker-connection_status-serial_init = Connecting to serial device
+onboarding-connect_tracker-connection_status-provisioning = Sending Wi-Fi credentials
+onboarding-connect_tracker-connection_status-connecting = Trying to connect to Wi-Fi
+onboarding-connect_tracker-connection_status-looking_for_server = Looking for server
+onboarding-connect_tracker-connection_status-connection_error = Unable to connect to Wi-Fi
+onboarding-connect_tracker-connection_status-could_not_find_server = Could not find the server
+onboarding-connect_tracker-connection_status-done = Connected to the Server
 # $amount (Number) - Amount of trackers connected (this is a number, but you can use CLDR plural rules for your language)
 # More info on https://www.unicode.org/cldr/cldr-aux/charts/22/supplemental/language_plural_rules.html
 # English in this case only has 2 plural rules, which are "one" and "other",
@@ -483,6 +486,65 @@ onboarding-assign_trackers-assigned = { $assigned } of { $trackers ->
 } assigned
 onboarding-assign_trackers-advanced = Show advanced assign locations
 onboarding-assign_trackers-next = I assigned all the trackers
+
+## Tracker assignment warnings
+# Note for devs, number is used for representing boolean states per bit.
+# $unassigned (Number) - Bits are based on BodyAssignment.ASSIGNMENT_RULES order
+onboarding-assign_trackers-warning-LEFT_FOOT = Left foot is assigned but you need { $unassigned ->
+    [0] the left ankle, left thigh and either the chest, hip or waist
+    [1] the left thigh and either the chest, hip or waist
+    [2] the left ankle and either the chest, hip or waist
+    [3] either the chest, hip or waist
+    [4] the left ankle and left thigh
+    [5] the left thigh
+    [6] the left ankle
+    *[unknown] Unknown unassigned body part
+} to also be assigned!
+# $unassigned (Number) - Bits are based on BodyAssignment.ASSIGNMENT_RULES order
+onboarding-assign_trackers-warning-RIGHT_FOOT = Right foot is assigned but you need { $unassigned ->
+    [0] the right ankle, right thigh and either the chest, hip or waist
+    [1] the right thigh and either the chest, hip or waist
+    [2] the right ankle and either the chest, hip or waist
+    [3] either the chest, hip or waist
+    [4] the right ankle and right thigh
+    [5] the right thigh
+    [6] the right ankle
+    *[unknown] Unknown unassigned body part
+} to also be assigned!
+# $unassigned (Number) - Bits are based on BodyAssignment.ASSIGNMENT_RULES order
+onboarding-assign_trackers-warning-LEFT_LOWER_LEG = Left ankle is assigned but you need { $unassigned ->
+    [0] the left thigh and either the chest, hip or waist
+    [1] either the chest, hip or waist
+    [2] the left thigh
+    *[unknown] Unknown unassigned body part
+} to also be assigned!
+# $unassigned (Number) - Bits are based on BodyAssignment.ASSIGNMENT_RULES order
+onboarding-assign_trackers-warning-RIGHT_LOWER_LEG = Right ankle is assigned but you need { $unassigned ->
+    [0] the right thigh and either the chest, hip or waist
+    [1] either the chest, hip or waist
+    [2] the right thigh
+    *[unknown] Unknown unassigned body part
+} to also be assigned!
+# $unassigned (Number) - Bits are based on BodyAssignment.ASSIGNMENT_RULES order
+onboarding-assign_trackers-warning-LEFT_UPPER_LEG = Left thigh is assigned but you need { $unassigned ->
+    [0] either the chest, hip or waist
+    *[unknown] Unknown unassigned body part
+} to also be assigned!
+# $unassigned (Number) - Bits are based on BodyAssignment.ASSIGNMENT_RULES order
+onboarding-assign_trackers-warning-RIGHT_UPPER_LEG = Right thigh is assigned but you need { $unassigned ->
+    [0] either the chest, hip or waist
+    *[unknown] Unknown unassigned body part
+} to also be assigned!
+# $unassigned (Number) - Bits are based on BodyAssignment.ASSIGNMENT_RULES order
+onboarding-assign_trackers-warning-HIP = Hip is assigned but you need { $unassigned ->
+    [0] the chest
+    *[unknown] Unknown unassigned body part
+} to also be assigned!
+# $unassigned (Number) - Bits are based on BodyAssignment.ASSIGNMENT_RULES order
+onboarding-assign_trackers-warning-WAIST = Waist is assigned but you need { $unassigned ->
+    [0] the chest
+    *[unknown] Unknown unassigned body part
+} to also be assigned!
 
 ## Tracker manual mounting setup
 onboarding-manual_mounting-back = Go Back to Enter VR

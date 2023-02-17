@@ -79,6 +79,31 @@ public record RPCSerialHandler(RPCHandler rpcHandler, ProtocolAPI api) implement
 	}
 
 	@Override
+	public void onNewSerialDevice(SerialPort port) {
+		FlatBufferBuilder fbb = new FlatBufferBuilder(32);
+
+		int portOffset = fbb.createString(port.getPortLocation());
+		int nameOffset = fbb.createString(port.getDescriptivePortName());
+		int deviceOffset = SerialDevice.createSerialDevice(fbb, portOffset, nameOffset);
+		int newSerialOffset = NewSerialDeviceResponse
+			.createNewSerialDeviceResponse(fbb, deviceOffset);
+		int outbound = rpcHandler
+			.createRPCMessage(fbb, RpcMessage.NewSerialDeviceResponse, newSerialOffset);
+		fbb.finish(outbound);
+
+
+		this.api
+			.getAPIServers()
+			.forEach(
+				(server) -> server
+					.getAPIConnections()
+					.forEach((conn) -> {
+						conn.send(fbb.dataBuffer());
+					})
+			);
+	}
+
+	@Override
 	public void onSerialConnected(SerialPort port) {
 
 		FlatBufferBuilder fbb = new FlatBufferBuilder(32);
