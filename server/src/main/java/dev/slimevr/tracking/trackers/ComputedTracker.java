@@ -148,9 +148,7 @@ public class ComputedTracker implements Tracker, TrackerWithTPS {
 	@Override
 	public void tick() {
 		if (useTimeout) {
-			if (System.currentTimeMillis() - timeAtLastUpdate < TIMEOUT_MS)
-				setStatus(TrackerStatus.OK);
-			else
+			if (System.currentTimeMillis() - timeAtLastUpdate > TIMEOUT_MS)
 				setStatus(TrackerStatus.DISCONNECTED);
 		}
 	}

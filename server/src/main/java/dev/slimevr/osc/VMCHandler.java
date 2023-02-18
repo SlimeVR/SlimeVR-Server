@@ -283,11 +283,11 @@ public class VMCHandler implements OSCHandler {
 				true
 			);
 			tracker.setBodyPosition(trackerPosition);
-			tracker.setStatus(TrackerStatus.OK);
 			trackerDevice.getTrackers().put(trackerDevice.getTrackers().size(), tracker);
 			byTrackerNameTracker.put(name, tracker);
 			server.registerTracker(tracker);
 		}
+		tracker.setStatus(TrackerStatus.OK);
 
 		// Set position
 		if (position != null) {

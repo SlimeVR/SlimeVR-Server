@@ -194,7 +194,7 @@ public class HumanPoseManager {
 
 	@VRServerThread
 	private void updateSkeletonModelFromServer() {
-		disconnectAllTrackers();
+		disconnectComputedHumanPoseTrackers();
 		skeleton = new HumanSkeleton(this, server);
 		skeletonConfigManager.loadFromConfig(server.getConfigManager());
 		for (Consumer<HumanSkeleton> sc : onSkeletonUpdated)
@@ -202,7 +202,7 @@ public class HumanPoseManager {
 	}
 
 	@VRServerThread
-	private void disconnectAllTrackers() {
+	private void disconnectComputedHumanPoseTrackers() {
 		for (ComputedHumanPoseTracker t : computedTrackers) {
 			t.setStatus(TrackerStatus.DISCONNECTED);
 		}

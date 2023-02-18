@@ -91,7 +91,21 @@ public class UnityArmature {
 	public void setBoneRotationFromGlobal(UnityBone unityBone, Quaternion globalRot) {
 		TransformNode node = getHeadNodeOfBone(unityBone);
 		if (node != null) {
-			node.localTransform.setRotation(globalRot);
+			if (
+				unityBone == UnityBone.LEFT_UPPER_ARM
+					|| unityBone == UnityBone.LEFT_LOWER_ARM
+					|| unityBone == UnityBone.LEFT_HAND
+			) {
+				node.localTransform.setRotation(globalRot.mult(LEFT_SHOULDER_OFFSET));
+			} else if (
+				unityBone == UnityBone.RIGHT_UPPER_ARM
+					|| unityBone == UnityBone.RIGHT_LOWER_ARM
+					|| unityBone == UnityBone.RIGHT_HAND
+			) {
+				node.localTransform.setRotation(globalRot.mult(RIGHT_SHOULDER_OFFSET));
+			} else {
+				node.localTransform.setRotation(globalRot);
+			}
 		}
 	}
 
@@ -102,12 +116,12 @@ public class UnityArmature {
 				node.worldTransform.setRotation(localRot);
 			} else {
 				if (unityBone == UnityBone.LEFT_UPPER_ARM) {
-					localRot.mult(RIGHT_SHOULDER_OFFSET, localRot);
+					node.localTransform.setRotation(localRot.mult(RIGHT_SHOULDER_OFFSET));
 				} else if (unityBone == UnityBone.RIGHT_UPPER_ARM) {
-					localRot.mult(LEFT_SHOULDER_OFFSET, localRot);
+					node.localTransform.setRotation(localRot.mult(LEFT_SHOULDER_OFFSET));
+				} else {
+					node.localTransform.setRotation(localRot);
 				}
-
-				node.localTransform.setRotation(localRot);
 			}
 		}
 	}
@@ -149,22 +163,13 @@ public class UnityArmature {
 	public Quaternion getLocalRotationForBone(UnityBone unityBone) {
 		TransformNode node = getHeadNodeOfBone(unityBone);
 		if (node != null) {
-			if (unityBone == UnityBone.HIPS) {
+			if (unityBone == UnityBone.HIPS)
 				return node.worldTransform.getRotation();
-			} else {
-				Quaternion rotBuf = new Quaternion();
-				rotBuf.set(node.worldTransform.getRotation());
-				// Adjust from I-Pose to T-Pose
-				if (unityBone == UnityBone.LEFT_UPPER_ARM) {
-					rotBuf.multLocal(LEFT_SHOULDER_OFFSET);
-				} else if (unityBone == UnityBone.RIGHT_UPPER_ARM) {
-					rotBuf.multLocal(RIGHT_SHOULDER_OFFSET);
-				}
-				// Compute local rotation from parent
-				rotBuf
-					.set(node.getParent().worldTransform.getRotation().inverse().multLocal(rotBuf));
-				return rotBuf;
-			}
+			else
+				return node.getParent().worldTransform
+					.getRotation()
+					.inverse()
+					.multLocal(node.worldTransform.getRotation());
 		}
 		return Quaternion.IDENTITY;
 	}

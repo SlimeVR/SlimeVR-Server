@@ -103,7 +103,6 @@ public class VRServer extends Thread {
 			this::registerTracker
 		);
 
-		// OpenVR bridge currently only supports Windows
 		final SteamVRBridge driverBridge;
 		if (OperatingSystem.getCurrentPlatform() == OperatingSystem.WINDOWS) {
 

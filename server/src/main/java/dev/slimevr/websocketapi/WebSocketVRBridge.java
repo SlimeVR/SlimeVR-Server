@@ -37,7 +37,6 @@ public class WebSocketVRBridge extends WebsocketAPI implements Bridge {
 	) {
 		super(server, server.getProtocolAPI());
 		this.hmd = hmd;
-		server.humanPoseManager.trackerUpdated(hmd);
 		this.shareTrackers = new FastList<>(shareTrackers);
 		this.internalTrackers = new FastList<>(shareTrackers.size());
 		for (Tracker t : shareTrackers) {
