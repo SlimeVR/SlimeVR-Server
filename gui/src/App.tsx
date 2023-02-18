@@ -116,14 +116,18 @@ export default function App() {
   const { l10n } = useLocalization();
 
   useEffect(() => {
-    os.type().then((type) => {
-      document.body.classList.add(type.toLowerCase());
-    });
+    os.type()
+      .then((type) => {
+        document.body.classList.add(type.toLowerCase());
+      })
+      .catch(console.error);
 
     return () => {
-      os.type().then((type) => {
-        document.body.classList.remove(type.toLowerCase());
-      });
+      os.type()
+        .then((type) => {
+          document.body.classList.remove(type.toLowerCase());
+        })
+        .catch(console.error);
     };
   }, []);
 

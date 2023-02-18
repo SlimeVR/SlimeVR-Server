@@ -53,6 +53,7 @@ public class HumanPoseManager {
 	public HumanPoseManager(List<? extends Tracker> trackers) {
 		this();
 		skeleton = new HumanSkeleton(this, trackers);
+		skeletonConfigManager.updateSettingsInSkeleton();
 	}
 
 	/**
@@ -71,6 +72,7 @@ public class HumanPoseManager {
 		skeleton = new HumanSkeleton(this, trackers);
 		// Set offsetConfigs from given offsetConfigs on creation
 		skeletonConfigManager.setOffsets(offsetConfigs);
+		skeletonConfigManager.updateSettingsInSkeleton();
 	}
 
 	/**
@@ -97,6 +99,7 @@ public class HumanPoseManager {
 			skeletonConfigManager.setOffsets(altOffsetConfigs);
 		}
 		skeletonConfigManager.setOffsets(offsetConfigs);
+		skeletonConfigManager.updateSettingsInSkeleton();
 	}
 
 	// #endregion

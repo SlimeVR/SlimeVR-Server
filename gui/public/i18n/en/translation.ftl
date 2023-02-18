@@ -139,6 +139,8 @@ tracker-infos-manufacturer = Manufacturer
 tracker-infos-display_name = Display Name
 tracker-infos-custom_name = Custom Name
 tracker-infos-url = Tracker URL
+tracker-infos-version = Firmware Version
+tracker-infos-hardware_rev = Hardware Revision
 
 ## Tracker settings
 tracker-settings-back = Go back to trackers list

@@ -489,11 +489,14 @@ onboarding-connect_tracker-description-p0 = Nun zum unterhaltsamen Teil, verbind
 onboarding-connect_tracker-description-p1 = Verbinden Sie einfach alle Tracker, die noch nicht verbunden sind, über einen USB-Anschluss.
 onboarding-connect_tracker-issue-serial = Ich habe Schwierigkeiten die Tracker zu verbinden!
 onboarding-connect_tracker-usb = USB Tracker
+onboarding-connect_tracker-connection_status-none = Suche nach Trackern
+onboarding-connect_tracker-connection_status-serial_init = Verbindung zum seriellen Gerät wird hergestellt
+onboarding-connect_tracker-connection_status-provisioning = Sende WLAN-Zugangsdaten
 onboarding-connect_tracker-connection_status-connecting = Sende WLAN-Zugangsdaten
-onboarding-connect_tracker-connection_status-connected = Mit WLAN verbunden
-onboarding-connect_tracker-connection_status-error = Kann nicht mit WLAN verbinden
-onboarding-connect_tracker-connection_status-start_connecting = Suche nach Trackern
-onboarding-connect_tracker-connection_status-handshake = Mit dem Server verbunden
+onboarding-connect_tracker-connection_status-looking_for_server = Suche nach Server
+onboarding-connect_tracker-connection_status-connection_error = Es kann keine WLAN-Verbindung hergestellt werden
+onboarding-connect_tracker-connection_status-could_not_find_server = Server konnte nicht gefunden werden
+onboarding-connect_tracker-connection_status-done = Verbindung zum Server hergestellt.
 # $amount (Number) - Amount of trackers connected (this is a number, but you can use CLDR plural rules for your language)
 # More info on https://www.unicode.org/cldr/cldr-aux/charts/22/supplemental/language_plural_rules.html
 # English in this case only has 2 plural rules, which are "one" and "other",
@@ -522,6 +525,15 @@ onboarding-assign_trackers-assigned =
     } zugewiesen
 onboarding-assign_trackers-advanced = Erweiterte Zuweisungspositionen anzeigen
 onboarding-assign_trackers-next = Ich habe alle Tracker zugewiesen
+
+## Tracker assignment warnings
+
+# $unassigned (Number) - Bits are based on BodyAssignment.ASSIGNMENT_RULES order
+onboarding-assign_trackers-warning-WAIST =
+    { $unassigned ->
+        [0] Taille ist zugewiesen, aber die Brust muss ebenfalls zugewiesen werden!
+       *[unknown] Taille ist zugewiesen, aber "Unbekanntes nicht zugewiesenes Körperteil" muss ebenfalls zugewiesen werden!
+    }
 
 ## Tracker manual mounting setup
 

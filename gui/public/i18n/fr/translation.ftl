@@ -20,7 +20,7 @@ tips-do_not_move_heels = Assurez-vous de ne pas bouger vos pieds pendant la cali
 
 ## Body parts
 
-body_part-NONE = Non-assigné
+body_part-NONE = Non-attribué
 body_part-HEAD = Tête
 body_part-NECK = Cou
 body_part-RIGHT_SHOULDER = Épaule droite
@@ -86,7 +86,7 @@ serial_detection-close = Fermer
 
 navbar-home = Accueil
 navbar-body_proportions = Proportions du corps
-navbar-trackers_assign = Asignement des capteurs
+navbar-trackers_assign = Attribution des capteurs
 navbar-mounting = Alignement des capteurs
 navbar-onboarding = Assistant de configuration
 navbar-settings = Réglages
@@ -103,6 +103,7 @@ widget-overlay-is_visible_label = Superposer le squelette dans SteamVR
 widget-overlay-is_mirrored_label = Afficher le squelette en tant que miroir
 
 ## Widget: Drift compensation
+
 widget-drift_compensation-clear = Remise à zéro de la compensation de la dérive
 
 ## Widget: Developer settings
@@ -162,9 +163,9 @@ tracker-infos-url = URL
 
 tracker-settings-back = Retour à la liste des capteurs
 tracker-settings-title = Paramètres du capteur
-tracker-settings-assignment_section = Assignement du capteur
-tracker-settings-assignment_section-description = À quelle partie du corps le capteur est assigné.
-tracker-settings-assignment_section-edit = Ré-assigner
+tracker-settings-assignment_section = Attribution du capteur
+tracker-settings-assignment_section-description = À quelle partie du corps le capteur est attribué.
+tracker-settings-assignment_section-edit = Ré-attribuer
 tracker-settings-mounting_section = Orientation du capteur
 tracker-settings-mounting_section-description = Dans quelle direction pointe le capteur?
 tracker-settings-mounting_section-edit = Changer l'orientation
@@ -180,15 +181,15 @@ tracker-settings-name_section-placeholder = Patte gauche d'Erimel
 ## Tracker part card info
 
 tracker-part_card-no_name = Sans nom
-tracker-part_card-unassigned = Non attribué
+tracker-part_card-unassigned = Non-attribué
 
 ## Body assignment menu
 
-body_assignment_menu = Où assigner ce capteur?
-body_assignment_menu-description = Choisissez l'endroit où assigner ce capteur. Vous pouvez également gérer tous les capteurs à la fois.
+body_assignment_menu = Où attribuer ce capteur?
+body_assignment_menu-description = Choisissez où attribuer ce capteur. Vous pouvez également gérer tous les capteurs à la fois au lieu d'un à la fois.
 body_assignment_menu-show_advanced_locations = Afficher les emplacements d'attribution avancés
 body_assignment_menu-manage_trackers = Gérer tous les capteurs
-body_assignment_menu-unassign_tracker = Désassigner
+body_assignment_menu-unassign_tracker = Désattribuer
 
 ## Tracker assignment menu
 
@@ -197,8 +198,8 @@ body_assignment_menu-unassign_tracker = Désassigner
 #
 # We are using it here because english doesn't require changing the text in each case but
 # maybe your language does.
--tracker_selection-part = Quel capteur à assigner à votre
-tracker_selection_menu-NONE = Quel capteur voulez-vous désassigner?
+-tracker_selection-part = Quel capteur à attribuer à votre
+tracker_selection_menu-NONE = Quel capteur voulez-vous désattribuer?
 tracker_selection_menu-HEAD = { -tracker_selection-part } tête?
 tracker_selection_menu-NECK = { -tracker_selection-part } cou?
 tracker_selection_menu-RIGHT_SHOULDER = { -tracker_selection-part } épaule droite?
@@ -220,14 +221,14 @@ tracker_selection_menu-LEFT_UPPER_LEG = { -tracker_selection-part } cuisse gauch
 tracker_selection_menu-LEFT_LOWER_LEG = { -tracker_selection-part } cheville gauche?
 tracker_selection_menu-LEFT_FOOT = { -tracker_selection-part } pied gauche?
 tracker_selection_menu-LEFT_CONTROLLER = { -tracker_selection-part } manette gauche?
-tracker_selection_menu-unassigned = Capteurs non assignés
-tracker_selection_menu-assigned = Capteurs assignés
+tracker_selection_menu-unassigned = Capteurs non-attribués
+tracker_selection_menu-assigned = Capteurs attribués
 tracker_selection_menu-dont_assign = Ne pas attribuer
 # This line cares about multilines.
 # <b>text</b> means that the text should be bold.
 tracker_selection_menu-neck_warning =
-    <b>Attention:</b> Un capteur de cou peut être mortel s'il est ajusté trop serré,
-            la sangle pourrait couper la circulation à la tête !
+    <b>Attention:</b> Un capteur au cou peut être mortel s'il est trop serré,
+            la sangle pourrait couper la circulation à la tête!
 tracker_selection_menu-neck_warning-done = Je suis conscient des risques
 tracker_selection_menu-neck_warning-cancel = Annuler
 
@@ -511,11 +512,14 @@ onboarding-connect_tracker-description-p0 = Passons maintenant à la partie amus
 onboarding-connect_tracker-description-p1 = Connectez chaque capteur qui n'est pas encore connecté via un port USB.
 onboarding-connect_tracker-issue-serial = J'ai du mal à me connecter!
 onboarding-connect_tracker-usb = Capteur USB
+onboarding-connect_tracker-connection_status-none = Recherche de capteurs
+onboarding-connect_tracker-connection_status-serial_init = Connexion au périphérique en série
+onboarding-connect_tracker-connection_status-provisioning = Envoi des identifiants Wi-Fi
 onboarding-connect_tracker-connection_status-connecting = Envoi d'identifiants Wi-Fi
-onboarding-connect_tracker-connection_status-connected = Connecté au Wi-Fi
-onboarding-connect_tracker-connection_status-error = Impossible de se connecter au réseau
-onboarding-connect_tracker-connection_status-start_connecting = Recherche de capteurs
-onboarding-connect_tracker-connection_status-handshake = Connecté au serveur
+onboarding-connect_tracker-connection_status-looking_for_server = Recherche du serveur
+onboarding-connect_tracker-connection_status-connection_error = Impossible de se connecter au réseau
+onboarding-connect_tracker-connection_status-could_not_find_server = Impossible de trouver le serveur
+onboarding-connect_tracker-connection_status-done = Connecté au serveur
 # $amount (Number) - Amount of trackers connected (this is a number, but you can use CLDR plural rules for your language)
 # More info on https://www.unicode.org/cldr/cldr-aux/charts/22/supplemental/language_plural_rules.html
 # English in this case only has 2 plural rules, which are "one" and "other",
@@ -539,11 +543,79 @@ onboarding-assign_trackers-description = Choisissons où mettre chaque capteur.
 # $trackers (Number) - Trackers connected to the server
 onboarding-assign_trackers-assigned =
     { $trackers ->
-        [one] { $assigned } sur 1 capteur assigné
-       *[other] { $assigned } sur { $trackers } capteurs assignés
+        [one] { $assigned } sur 1 capteur attribué
+       *[other] { $assigned } sur { $trackers } capteurs attribués
     }
 onboarding-assign_trackers-advanced = Afficher les emplacements d'attribution avancés
-onboarding-assign_trackers-next = J'ai assigné tous mes capteurs
+onboarding-assign_trackers-next = J'ai attribué tous mes capteurs
+
+## Tracker assignment warnings
+
+# Note for devs, number is used for representing boolean states per bit.
+# $unassigned (Number) - Bits are based on BodyAssignment.ASSIGNMENT_RULES order
+onboarding-assign_trackers-warning-LEFT_FOOT =
+    { $unassigned ->
+        [0] Le pied gauche est attribué mais il faut que la cheville gauche, la cuisse gauche et soit la poitrine, la hanche ou la taille soient également attribuées!
+        [1] Le pied gauche est attribué mais il faut que la cuisse gauche et soit la poitrine, la hanche ou la taille soient également attribuées!
+        [2] Le pied gauche est attribué mais il faut que la cheville gauche et soit la poitrine, la hanche ou la taille soient également attribuées!
+        [3] Le pied gauche est attribué mais il faut que la poitrine, la hanche ou la taille soient également attribuées!
+        [4] Le pied gauche est attribué mais il faut que la cheville gauche et la cuisse gauche soient également attribuées!
+        [5] Le pied gauche est attribué mais il faut que la cuisse gauche le soit également!
+        [6] Le pied gauche est attribué mais il faut que la cheville gauche le soit également!
+       *[unknown] Le pied gauche est attribué mais il faut qu'une autre partie du corps inconnue non assignée soit également attribuée!
+    }
+# $unassigned (Number) - Bits are based on BodyAssignment.ASSIGNMENT_RULES order
+onboarding-assign_trackers-warning-RIGHT_FOOT =
+    { $unassigned ->
+        [0] Le pied droit est attribué mais il faut que la cheville droite, la cuisse droite et soit la poitrine, la hanche ou la taille soient également attribuées!
+        [1] Le pied droit est assigné mais il faut que la cuisse droite et soit la poitrine, la hanche ou la taille soient également attribuées!
+        [2] Le pied droit est assigné mais il faut que la cheville droite et soit la poitrine, la hanche ou la taille soient également attribuées!
+        [3] Le pied droit est attribué mais il faut que la poitrine, la hanche ou la taille soient également attribuées!
+        [4] Le pied droit est attribué mais il faut que la cheville droite et la cuisse droite soient également attribuées!
+        [5] Le pied droit est attribué mais il faut que la cuisse droite le soit également!
+        [6] Le pied droit est attribué mais il faut que la cheville droite le soit également!
+       *[unknown] Le pied droit est assigné mais il faut qu'une autre partie du corps inconnue non assignée soit également attribuée!
+    }
+# $unassigned (Number) - Bits are based on BodyAssignment.ASSIGNMENT_RULES order
+onboarding-assign_trackers-warning-LEFT_LOWER_LEG =
+    { $unassigned ->
+        [0] La cheville gauche est attribuée mais il faut que la cuisse gauche et soit la poitrine, la hanche ou la taille soient également attribuées!
+        [1] La cheville gauche est attribuée mais il faut que la poitrine, la hanche ou la taille soient également attribuées!
+        [2] La cheville gauche est attribuée mais il faut que la cuisse gauche soit également attribuée!
+       *[unknown] La cheville gauche est attribuée mais il faut qu'une partie du corps inconnue non assignée soit également attribuée!
+    }
+# $unassigned (Number) - Bits are based on BodyAssignment.ASSIGNMENT_RULES order
+onboarding-assign_trackers-warning-RIGHT_LOWER_LEG =
+    { $unassigned ->
+        [0] La cheville droite est attribuée mais il faut que la cuisse droite et soit la poitrine, la hanche ou la taille soient également attribuées!
+        [1] La cheville droite est attribuée mais il faut que la poitrine, la hanche ou la taille soient également attribuées!
+        [2] La cheville droite est attribuée mais il faut que la cuisse droite soit également attribuée !
+       *[unknown] La cheville droite est attribuée mais il faut qu'une partie du corps inconnue non assignée soit également attribuée!
+    }
+# $unassigned (Number) - Bits are based on BodyAssignment.ASSIGNMENT_RULES order
+onboarding-assign_trackers-warning-LEFT_UPPER_LEG =
+    { $unassigned ->
+        [0] La cuisse gauche est attribuée mais il faut que la poitrine, la hanche ou la taille soient également attribuées!
+       *[unknown] La cuisse gauche est attribuée mais il faut qu'une partie du corps inconnue non assignée soit également attribuée!
+    }
+# $unassigned (Number) - Bits are based on BodyAssignment.ASSIGNMENT_RULES order
+onboarding-assign_trackers-warning-RIGHT_UPPER_LEG =
+    { $unassigned ->
+        [0] La cuisse droite est attribuée mais il faut que la poitrine, la hanche ou la taille soient également attribuées!
+       *[unknown] La cuisse droite est attribuée mais il faut qu'une partie du corps inconnue non assignée soit également attribuée!
+    }
+# $unassigned (Number) - Bits are based on BodyAssignment.ASSIGNMENT_RULES order
+onboarding-assign_trackers-warning-HIP =
+    { $unassigned ->
+        [0] La hanche est attribuée mais il faut que la poitrine le soit aussi!
+       *[unknown] La hanche est attribuée mais il faut qu'une partie du corps inconnue non assignée soit également attribuée!
+    }
+# $unassigned (Number) - Bits are based on BodyAssignment.ASSIGNMENT_RULES order
+onboarding-assign_trackers-warning-WAIST =
+    { $unassigned ->
+        [0] La taille est attribuée mais il faut que la poitrine le soit aussi!
+       *[unknown] La taille est attribuée mais il faut qu'une partie du corps inconnue non assignée soit également attribuée!
+    }
 
 ## Tracker manual mounting setup
 
@@ -571,7 +643,7 @@ onboarding-automatic_mounting-preparation-title = Préparation
 onboarding-automatic_mounting-preparation-step-0 = 1. Tenez-vous debout avec vos bras à vos côtés.
 onboarding-automatic_mounting-preparation-step-1 = 2. Appuyez sur le bouton "Réinitialiser" et attendez 3 secondes avant que les capteurs ne se réinitialisent.
 onboarding-automatic_mounting-put_trackers_on-title = Enfilez vos capteurs
-onboarding-automatic_mounting-put_trackers_on-description = Pour calibrer l'alignement, nous allons utiliser les capteurs que vous venez d'affecter.
+onboarding-automatic_mounting-put_trackers_on-description = Pour calibrer l'alignement, nous allons utiliser les capteurs que vous venez d'attribuer.
 onboarding-automatic_mounting-put_trackers_on-next = J'ai tous mes capteurs
 
 ## Tracker manual proportions setup
@@ -589,7 +661,7 @@ onboarding-automatic_proportions-description = Pour que les capteurs SlimeVR fon
 onboarding-automatic_proportions-manual = Calibration manuelle
 onboarding-automatic_proportions-prev_step = Étape précédente
 onboarding-automatic_proportions-put_trackers_on-title = Enfilez vos capteurs
-onboarding-automatic_proportions-put_trackers_on-description = Pour calibrer vos proportions, nous allons utiliser les capteurs que vous venez d'assigner.
+onboarding-automatic_proportions-put_trackers_on-description = Pour calibrer vos proportions, nous allons utiliser les capteurs que vous venez d'attribuer.
 onboarding-automatic_proportions-put_trackers_on-next = J'ai tous mes capteurs
 onboarding-automatic_proportions-preparation-title = Préparation
 onboarding-automatic_proportions-preparation-description = Placez une chaise directement derrière vous dans votre espace de jeu.

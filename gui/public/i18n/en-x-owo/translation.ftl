@@ -512,11 +512,14 @@ onboarding-connect_tracker-description-p0 = now onto teh fun pawwt, connecting a
 onboarding-connect_tracker-description-p1 = simply connect awe that awe nawt cownyected yet, through a usb powwt.
 onboarding-connect_tracker-issue-serial = i'm having twouble connecting!
 onboarding-connect_tracker-usb = usb twackew
+onboarding-connect_tracker-connection_status-none = wooking fow twackaws
+onboarding-connect_tracker-connection_status-serial_init = conectin too da sewiaw dewise
+onboarding-connect_tracker-connection_status-provisioning = sending wi-fi cwedentials
 onboarding-connect_tracker-connection_status-connecting = sending wi-fi cwedentials
-onboarding-connect_tracker-connection_status-connected = cownyected to wi-fi
-onboarding-connect_tracker-connection_status-error = unabwe to cownyect to wi-fi
-onboarding-connect_tracker-connection_status-start_connecting = wooking fow twackaws
-onboarding-connect_tracker-connection_status-handshake = cownyected to teh sewvew
+onboarding-connect_tracker-connection_status-looking_for_server = wookin fow da sewvew
+onboarding-connect_tracker-connection_status-connection_error = unabwe to cownyect to wi-fi
+onboarding-connect_tracker-connection_status-could_not_find_server = i cannt find da sewvew ;w;
+onboarding-connect_tracker-connection_status-done = cownyected to teh sewvew
 # $amount (Number) - Amount of trackers connected (this is a number, but you can use CLDR plural rules for your language)
 # More info on https://www.unicode.org/cldr/cldr-aux/charts/22/supplemental/language_plural_rules.html
 # English in this case only has 2 plural rules, which are "one" and "other",
@@ -545,6 +548,74 @@ onboarding-assign_trackers-assigned =
     } assigned
 onboarding-assign_trackers-advanced = show advanced assign wocations
 onboarding-assign_trackers-next = i assigned awe the twackaws
+
+## Tracker assignment warnings
+
+# Note for devs, number is used for representing boolean states per bit.
+# $unassigned (Number) - Bits are based on BodyAssignment.ASSIGNMENT_RULES order
+onboarding-assign_trackers-warning-LEFT_FOOT =
+    { $unassigned ->
+        [0] weft foot ish assignyed but c-chu nyeed the weft ankwe, weft thigh and eithew da chest, hip o-ow waist to awso be assignyed!
+        [1] weft foot ish assignyed but chu nyeed da weft thigh a-and eithew da chest, hip ow waist to a-awso be assignyed!
+        [2] weft foot ish assignyed but chu nyeed da weft ankwe and eithew da chest, hip ow waist t-to awso be a-assignyed!
+        [3] weft foot ish assignyed but chu nyeed eithew da chest, hip ow waist to awso be assignyed!
+        [4] weft foot i-ish assignyed but chu nyeed da weft a-ankwe a-and weft thigh to awso be assignyed!
+        [5] weft foot ish assignyed but chu nyeed da weft thigh to a-awso be assignyed!
+        [6] wefwft foot ish assignyed but chu nyeed da weft ankwe to awso be assignyed!
+       *[unknown] weft foot is assignyed b-but chu n-nyeed unknyown unyassignyed body pawt to a-awso be assignyed!
+    }
+# $unassigned (Number) - Bits are based on BodyAssignment.ASSIGNMENT_RULES order
+onboarding-assign_trackers-warning-RIGHT_FOOT =
+    { $unassigned ->
+        [0] w-wight foot ish assignyed but yuu nyeed da wight ankwe, wight thigh and eithew da chest, h-h-hip ow waist to awso be assignyed!
+        [1] wight foot ish assignyed b-but chu nyeed da wight thigh and eithew da c-chest, hip ow w-waist to awso be assignyed!
+        [2] wight foot ish assignyed but chu nyeed da w-wight a-ankwe and eithew da chest, hip ow waist to awso be assignyed!
+        [3] wight foot ish assignyed but chu nyeed eithew da chest, hip ow waist to awso be assignyed!
+        [4] wight foot ish assignyed but chu nyeed da wight ankwe and wight thigh to awso be assignyed!
+        [5] wight foot i-i-ish assignyed but chu nyeed da wight thigh to awso be assignyed!
+        [6] wight foot ish assignyed but chu nyeed da wight ankwe to awso be a-assignyed!
+       *[unknown] wight foot ish assignyed but chu nyeed unknyown u-unyassignyed body pawt t-to awso be assignyed!
+    }
+# $unassigned (Number) - Bits are based on BodyAssignment.ASSIGNMENT_RULES order
+onboarding-assign_trackers-warning-LEFT_LOWER_LEG =
+    { $unassigned ->
+        [0] wight ankwe i-ish assignyed but chu nyeed da wight thigh and eithew da chest, h-hip ow waist to awso be assignyed!
+        [1] wight a-a-ankwe ish assignyed but chu nyeed eithew da chest, hip ow w-waist to awso be assignyed!
+        [2] wight ankwe ish assignyed but chu nyeed da wight thigh to awso be assignyed!
+       *[unknown] wight ankwe i-ish assignyed but chu n-nyeed unknyown unyassignyed body pawt to awso be assignyed!
+    }
+# $unassigned (Number) - Bits are based on BodyAssignment.ASSIGNMENT_RULES order
+onboarding-assign_trackers-warning-RIGHT_LOWER_LEG =
+    { $unassigned ->
+        [0] wight ankwe ish a-assignyed but chu nyeed da w-wight thigh and eithew da chest, hip ow waist to awso b-be assignyed!
+        [1] wight ankwe ish assignyed but chu nyeed eithew da c-chest, hip ow waist to awso be assignyed!
+        [2] wight ankwe i-ish assignyed but chu nyeed da wight thigh to awso be assignyed!
+       *[unknown] wight ankwe ish assignyed but chu nyeed unknyown unyassignyed body pawt to awso be assignyed!
+    }
+# $unassigned (Number) - Bits are based on BodyAssignment.ASSIGNMENT_RULES order
+onboarding-assign_trackers-warning-LEFT_UPPER_LEG =
+    { $unassigned ->
+        [0] weft thigh is assignyed b-but chu nyeed eithew da chest, hip o-ow waist to awso b-be assignyed!
+       *[unknown] weft t-thigh is assignyed but chu nyeed unknyown unyassignyed body pawt to awso be assignyed!
+    }
+# $unassigned (Number) - Bits are based on BodyAssignment.ASSIGNMENT_RULES order
+onboarding-assign_trackers-warning-RIGHT_UPPER_LEG =
+    { $unassigned ->
+        [0] wight thigh ish assignyed but chu nyeed eithew da chest, hip ow waist to awso be assignyed!
+       *[unknown] wight thigh ish assignyed but chu nyeed unknyown unyassignyed body pawt to awso be assignyed!
+    }
+# $unassigned (Number) - Bits are based on BodyAssignment.ASSIGNMENT_RULES order
+onboarding-assign_trackers-warning-HIP =
+    { $unassigned ->
+        [0] hip is assignyed but yuw nyeed the chest to awso b-be assignyed!
+       *[unknown] hip is assignyed but yuw nyeed unknyown unyassignyed body pawt to awso be assignyed!
+    }
+# $unassigned (Number) - Bits are based on BodyAssignment.ASSIGNMENT_RULES order
+onboarding-assign_trackers-warning-WAIST =
+    { $unassigned ->
+        [0] waiwst is assignyed b-but you nyeed teh chest to awso b-be assignyed!
+       *[unknown] waiwst is assignyed but you nyeed unknyoun unyassignyed body pawt to awso be assignyed!
+    }
 
 ## Tracker manual mounting setup
 

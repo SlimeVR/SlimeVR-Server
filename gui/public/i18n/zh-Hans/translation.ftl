@@ -489,11 +489,14 @@ onboarding-connect_tracker-description-p0 = 来到了我第二喜欢的环节，
 onboarding-connect_tracker-description-p1 = 只需通过 USB 连接所有尚未连接的设备即可。
 onboarding-connect_tracker-issue-serial = QAQ 我在连接时遇到问题！
 onboarding-connect_tracker-usb = USB 追踪器
+onboarding-connect_tracker-connection_status-none = 正在寻找追踪器
+onboarding-connect_tracker-connection_status-serial_init = 正在连接到串口设备
+onboarding-connect_tracker-connection_status-provisioning = 正在发送 Wi-Fi 凭据
 onboarding-connect_tracker-connection_status-connecting = 正在发送 Wi-Fi 凭据
-onboarding-connect_tracker-connection_status-connected = Wi-Fi 已连接
-onboarding-connect_tracker-connection_status-error = 无法连接到 Wi-Fi
-onboarding-connect_tracker-connection_status-start_connecting = 寻找追踪器
-onboarding-connect_tracker-connection_status-handshake = 已连接到服务器
+onboarding-connect_tracker-connection_status-looking_for_server = 正在寻找服务器
+onboarding-connect_tracker-connection_status-connection_error = 无法连接到 Wi-Fi
+onboarding-connect_tracker-connection_status-could_not_find_server = 未找到到服务器
+onboarding-connect_tracker-connection_status-done = 已连接到服务器
 # $amount (Number) - Amount of trackers connected (this is a number, but you can use CLDR plural rules for your language)
 # More info on https://www.unicode.org/cldr/cldr-aux/charts/22/supplemental/language_plural_rules.html
 # English in this case only has 2 plural rules, which are "one" and "other",
@@ -517,6 +520,74 @@ onboarding-assign_trackers-description = 让我们选择哪个追踪器在哪里
 onboarding-assign_trackers-assigned = { $assigned }/{ $trackers } 个追踪器已分配
 onboarding-assign_trackers-advanced = 显示高级分配部位
 onboarding-assign_trackers-next = 所有的追踪器都分配好了
+
+## Tracker assignment warnings
+
+# Note for devs, number is used for representing boolean states per bit.
+# $unassigned (Number) - Bits are based on BodyAssignment.ASSIGNMENT_RULES order
+onboarding-assign_trackers-warning-LEFT_FOOT =
+    { $unassigned ->
+        [0] 左脚 已分配，但您还需要分配 左小腿 左大腿 胸部 髋部/腰部！
+        [1] 左脚 已分配，但您还需要分配 左大腿 胸部 髋部/腰部！
+        [2] 左脚 已分配，但您还需要分配 左小腿 胸部 髋部/腰部！
+        [3] 左脚 已分配，但您还需要分配 胸部 髋部/腰部！
+        [4] 左脚 已分配，但您还需要分配 左小腿 左大腿 ！
+        [5] 左脚 已分配，但您还需要分配 左大腿！
+        [6] 左脚 已分配，但您还需要分配 左小腿！
+       *[unknown] 左脚 已分配，但您还需要分配 未知未分配身体部位！
+    }
+# $unassigned (Number) - Bits are based on BodyAssignment.ASSIGNMENT_RULES order
+onboarding-assign_trackers-warning-RIGHT_FOOT =
+    { $unassigned ->
+        [0] 右脚 已分配，但您还需要分配 右小腿 右大腿 胸部 髋部/腰部！
+        [1] 右脚 已分配，但您还需要分配 右大腿 胸部 髋部/腰部！
+        [2] 右脚 已分配，但您还需要分配 右小腿 胸部 髋部/腰部！
+        [3] 右脚 已分配，但您还需要分配 胸部 髋部/腰部！
+        [4] 右脚 已分配，但您还需要分配 右小腿 右大腿 ！
+        [5] 右脚 已分配，但您还需要分配 右大腿！
+        [6] 右脚 已分配，但您还需要分配 右小腿！
+       *[unknown] 右脚 已分配，但您还需要分配 未知未分配身体部位！
+    }
+# $unassigned (Number) - Bits are based on BodyAssignment.ASSIGNMENT_RULES order
+onboarding-assign_trackers-warning-LEFT_LOWER_LEG =
+    { $unassigned ->
+        [0] 左小腿 已分配，但您还需要分配 左大腿 胸部 髋部/腰部！
+        [1] 左小腿 已分配，但您还需要分配 胸部 髋部/腰部！
+        [2] 左小腿 已分配，但您还需要分配 左大腿！
+       *[unknown] 左小腿 已分配，但您还需要分配 未知未分配身体部位！
+    }
+# $unassigned (Number) - Bits are based on BodyAssignment.ASSIGNMENT_RULES order
+onboarding-assign_trackers-warning-RIGHT_LOWER_LEG =
+    { $unassigned ->
+        [0] 右小腿 已分配，但您还需要分配 右大腿 胸部 髋部/腰部！
+        [1] 右小腿 已分配，但您还需要分配 胸部 髋部/腰部！
+        [2] 右小腿 已分配，但您还需要分配 右大腿！
+       *[unknown] 右小腿 已分配，但您还需要分配 未知未分配身体部位！
+    }
+# $unassigned (Number) - Bits are based on BodyAssignment.ASSIGNMENT_RULES order
+onboarding-assign_trackers-warning-LEFT_UPPER_LEG =
+    { $unassigned ->
+        [0] 左大腿 已分配，但您还需要分配 胸部 髋部/腰部！
+       *[unknown] 左大腿 已分配，但您还需要分配 未知未分配身体部位！
+    }
+# $unassigned (Number) - Bits are based on BodyAssignment.ASSIGNMENT_RULES order
+onboarding-assign_trackers-warning-RIGHT_UPPER_LEG =
+    { $unassigned ->
+        [0] 右大腿 已分配，但您还需要分配 胸部 髋部/腰部！
+       *[unknown] 右大腿 已分配，但您还需要分配 未知未分配身体部位！
+    }
+# $unassigned (Number) - Bits are based on BodyAssignment.ASSIGNMENT_RULES order
+onboarding-assign_trackers-warning-HIP =
+    { $unassigned ->
+        [0] 髋部 已分配，但您还需要分配 胸部！
+       *[unknown] 髋部 已分配，但您还需要分配 未知未分配身体部位！
+    }
+# $unassigned (Number) - Bits are based on BodyAssignment.ASSIGNMENT_RULES order
+onboarding-assign_trackers-warning-WAIST =
+    { $unassigned ->
+        [0] 腰部 已分配，但您还需要分配 胸部！
+       *[unknown] 腰部 已分配，但您还需要分配 未知未分配身体部位！
+    }
 
 ## Tracker manual mounting setup
 
