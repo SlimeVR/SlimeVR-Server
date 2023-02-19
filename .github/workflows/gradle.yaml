@@ -200,6 +200,7 @@ jobs:
           --eula ../../../../LICENSE-MIT slimevr.dmg ../macos/slimevr.app
 
       - uses: actions/upload-artifact@v3.1.0
+        if: ${{ github.event_name == "workflow_dispatch" || github.event_name == "create" }}
         with:
           name: SlimeVR-GUI-MacApp
           path: target/release/bundle/macos/slimevr*.app
@@ -254,25 +255,24 @@ jobs:
           npm ci
           npm run skipbundler
       
-      # - name: Bundle to zips
-      #   run: |
-
-
-      - uses: actions/upload-artifact@v3.1.0
-        with:
-          name: SlimeVR-GUI-MacApp
-          path: target/release/bundle/macos/slimevr*.app
-
-      - uses: actions/upload-artifact@v3.1.0
-        if: github.event_name == "workflow_dispatch" || github.event_name == "create"
-        with:
-          name: SlimeVR-GUI-MacDmg
-          path: target/release/bundle/dmg/slimevr.dmg
-
-      - name: Prepare for release
-        if: startsWith(github.ref, 'refs/tags/')
+      - name: Bundle to zips
+        shell: bash
         run: |
-          cp target/release/bundle/dmg/slimevr.dmg ./SlimeVR-mac.dmg
+          mkdir SlimeVR
+          cp gui/src-tauri/icons/icon.ico ./SlimeVR/run.ico
+          cp server/build/libs/slimevr.jar ./SlimeVR/slimevr.jar
+          cp server/resources/* ./SlimeVR/
+          cp target/release/slimevr.exe ./SlimeVR/
+          7z a -tzip SlimeVR-win64.zip ./SlimeVR/
+
+          mv ./SlimeVR/slimevr.exe ./SlimeVR/slimevr-ui.exe
+          7z a -tzip SlimeVR.zip ./SlimeVR/
+
+      - uses: actions/upload-artifact@v3.1.0
+        if: ${{ github.event_name == "workflow_dispatch" || github.event_name == "create" }}
+        with:
+          name: SlimeVR-GUI-Windows
+          path: ./SlimeVR-win64.zip
 
       - name: Upload to draft release
         uses: softprops/action-gh-release@v1
@@ -281,4 +281,4 @@ jobs:
           draft: true
           generate_release_notes: true
           files: |
-            ./SlimeVR-mac.dmg
+            ./SlimeVR-win64.zip
