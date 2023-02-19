@@ -67,6 +67,11 @@ export function VMCSettings() {
       );
       if (values.vmc.vrmJson?.files.length) {
         vmcOsc.vrmJson = await parseVRMFile(values.vmc.vrmJson.files[0]);
+        reset({
+          vmc: {
+            vrmJson: undefined,
+          },
+        });
       }
       vmcOsc.anchorHip = values.vmc.anchorHip;
 
@@ -232,6 +237,7 @@ export function VMCSettings() {
               rules={{
                 required: false,
               }}
+              value="help"
               placeholder={l10n.getString('settings-osc-vmc-vrm-placeholder')}
               label=""
               accept="model/gltf-binary, model/gltf+json, model/vrml, .vrm"
