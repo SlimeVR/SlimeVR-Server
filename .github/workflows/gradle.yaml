@@ -80,6 +80,7 @@ jobs:
   bundle-linux:
     runs-on: ubuntu-20.04
     needs: [build, test]
+    if: contains(fromJSON('["workflow_dispatch", "create"]'), github.event_name)
     steps:
       - uses: actions/checkout@v3
         with:
@@ -138,7 +139,6 @@ jobs:
           appimagetool squashfs-root slimevr*.AppImage
 
       - uses: actions/upload-artifact@v3.1.0
-        if: github.event_name == "workflow_dispatch" || github.event_name == "create"
         with:
           name: SlimeVR-GUI-AppImage
           path: target/release/bundle/appimage/slimevr*.AppImage
@@ -163,6 +163,7 @@ jobs:
   bundle-mac:
     runs-on: macos-latest
     needs: build
+    if: contains(fromJSON('["workflow_dispatch", "create"]'), github.event_name)
     steps:
       - uses: actions/checkout@v3
         with:
@@ -200,13 +201,11 @@ jobs:
           --eula ../../../../LICENSE-MIT slimevr.dmg ../macos/slimevr.app
 
       - uses: actions/upload-artifact@v3.1.0
-        if: ${{ github.event_name == "workflow_dispatch" || github.event_name == "create" }}
         with:
           name: SlimeVR-GUI-MacApp
           path: target/release/bundle/macos/slimevr*.app
 
       - uses: actions/upload-artifact@v3.1.0
-        if: github.event_name == "workflow_dispatch" || github.event_name == "create"
         with:
           name: SlimeVR-GUI-MacDmg
           path: target/release/bundle/dmg/slimevr.dmg
@@ -229,6 +228,7 @@ jobs:
   bundle-windows:
     runs-on: windows-latest
     needs: build
+    if: contains(fromJSON('["workflow_dispatch", "create"]'), github.event_name)
     steps:
       - uses: actions/checkout@v3
         with:
@@ -269,7 +269,6 @@ jobs:
           7z a -tzip SlimeVR.zip ./SlimeVR/
 
       - uses: actions/upload-artifact@v3.1.0
-        if: ${{ github.event_name == "workflow_dispatch" || github.event_name == "create" }}
         with:
           name: SlimeVR-GUI-Windows
           path: ./SlimeVR-win64.zip
