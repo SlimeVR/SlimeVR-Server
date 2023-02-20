@@ -68,11 +68,6 @@ export function VMCSettings() {
       );
       if (values.vmc.vrmJson?.files.length) {
         vmcOsc.vrmJson = await parseVRMFile(values.vmc.vrmJson.files[0]);
-        // reset({
-        //   vmc: {
-        //     vrmJson: undefined,
-        //   },
-        // });
       }
       vmcOsc.anchorHip = values.vmc.anchorHip;
 
@@ -92,7 +87,6 @@ export function VMCSettings() {
 
   useRPCPacket(RpcMessage.SettingsResponse, (settings: SettingsResponseT) => {
     const formData: VMCSettingsForm = defaultValues;
-    console.log(settings);
     if (settings.vmcOsc) {
       if (settings.vmcOsc.oscSettings) {
         formData.vmc.oscSettings.enabled = settings.vmcOsc.oscSettings.enabled;
