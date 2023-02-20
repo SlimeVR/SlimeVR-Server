@@ -419,8 +419,8 @@ settings-osc-vmc-network-port_out =
 settings-osc-vmc-network-address = Network address
 settings-osc-vmc-network-address-description = Choose which address to send out data at via VMC
 settings-osc-vmc-network-address-placeholder = IPV4 address
-settings-osc-vmc-vrm = VRM Path
-settings-osc-vmc-vrm-description = Load VRM data for higher compatibility with other applications
+settings-osc-vmc-vrm = VRM Model
+settings-osc-vmc-vrm-description = Load a VRM model to enable head anchor and a higher compatibility with other applications
 settings-osc-vmc-vrm-model_unloaded = No model loaded
 settings-osc-vmc-vrm-model_loaded = { $titled ->
     *[false] Untitled model loaded
