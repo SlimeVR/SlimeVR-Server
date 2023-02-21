@@ -30,7 +30,6 @@ body_part-RIGHT_HAND = Mano derecha
 body_part-RIGHT_UPPER_LEG = Muslo derecho
 body_part-RIGHT_LOWER_LEG = Tobillo derecho
 body_part-RIGHT_FOOT = Pie derecho
-body_part-RIGHT_CONTROLLER = Control derecho
 body_part-CHEST = Pecho
 body_part-WAIST = Cintura
 body_part-HIP = Cadera
@@ -41,7 +40,6 @@ body_part-LEFT_HAND = Mano izquierda
 body_part-LEFT_UPPER_LEG = Muslo izquierdo
 body_part-LEFT_LOWER_LEG = Tobillo izquierdo
 body_part-LEFT_FOOT = Pie izquierdo
-body_part-LEFT_CONTROLLER = Control izquierdo
 
 ## Proportions
 
@@ -63,8 +61,8 @@ skeleton_bone-SHOULDERS_DISTANCE = Distancia de los hombros
 skeleton_bone-SHOULDERS_WIDTH = Ancho de los hombros
 skeleton_bone-UPPER_ARM = Largo del brazo superior
 skeleton_bone-LOWER_ARM = Distancia del antebrazo
-skeleton_bone-CONTROLLER_Y = Distancia Y del mando
-skeleton_bone-CONTROLLER_Z = Distancia Z del mando
+skeleton_bone-HAND_Y = Distancia Y de la mano
+skeleton_bone-HAND_Z = Distancia Z de la mano
 skeleton_bone-ELBOW_OFFSET = Desplazamiento del codo
 
 ## Tracker reset buttons
@@ -160,6 +158,8 @@ tracker-infos-manufacturer = Fabricante
 tracker-infos-display_name = Nombre
 tracker-infos-custom_name = Nombre personalizado
 tracker-infos-url = URL del sensor
+tracker-infos-version = Versión del firmware
+tracker-infos-hardware_rev = Revisión del hardware
 
 ## Tracker settings
 
