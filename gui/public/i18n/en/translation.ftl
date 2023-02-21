@@ -12,7 +12,7 @@ websocket-connection_lost = Connection lost to the server. Trying to reconnect..
 ## Tips
 tips-find_tracker = Not sure which tracker is which? Shake a tracker and it will highlight the corresponding item.
 tips-do_not_move_heels = Ensure your heels do not move during recording!
-tips-file_select = Drop files to use, or <u>browse</u>.
+tips-file_select = Drag & drop files to use, or <u>browse</u>.
 
 ## Body parts
 body_part-NONE = Unassigned
@@ -427,7 +427,7 @@ settings-osc-vmc-vrm-model_loaded = { $titled ->
     *[false] Untitled model loaded
     [true] Model loaded: { $name }
 }
-settings-osc-vmc-vrm-file_select = Drop a model to use, or <u>browse</u>
+settings-osc-vmc-vrm-file_select = Drag & drop a model to use, or <u>browse</u>
 settings-osc-vmc-anchor_hip = Anchor at hips
 settings-osc-vmc-anchor_hip-description = Anchor the tracking at the hips, useful for seated VTubing
 settings-osc-vmc-anchor_hip-label = Anchor at hips
