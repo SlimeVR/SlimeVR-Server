@@ -326,49 +326,55 @@ public class VRServer extends Thread {
 		queueTask(humanPoseManager::updateSkeletonModelFromServer);
 	}
 
-	public void resetTrackers() {
-		queueTask(humanPoseManager::resetTrackersFull);
+	public void resetTrackers(String resetSourceName) {
+		queueTask(() -> {
+			humanPoseManager.resetTrackersFull(resetSourceName);
+		});
 	}
 
-	public void resetTrackersYaw() {
-		queueTask(humanPoseManager::resetTrackersYaw);
+	public void resetTrackersYaw(String resetSourceName) {
+		queueTask(() -> {
+			humanPoseManager.resetTrackersYaw(resetSourceName);
+		});
 	}
 
-	public void resetTrackersMounting() {
-		queueTask(humanPoseManager::resetTrackersMounting);
+	public void resetTrackersMounting(String resetSourceName) {
+		queueTask(() -> {
+			humanPoseManager.resetTrackersMounting(resetSourceName);
+		});
 	}
 
-	public void scheduleResetTrackers(long delay) {
-		TimerTask resetTask = new resetTask();
+	public void scheduleResetTrackers(String resetSourceName, long delay) {
+		TimerTask resetTask = new TimerTask() {
+			public void run() {
+				queueTask(() -> {
+					humanPoseManager.resetTrackersFull(resetSourceName);
+				});
+			}
+		};
 		timer.schedule(resetTask, delay);
 	}
 
-	public void scheduleResetTrackersYaw(long delay) {
-		TimerTask yawResetTask = new yawResetTask();
+	public void scheduleResetTrackersYaw(String resetSourceName, long delay) {
+		TimerTask yawResetTask = new TimerTask() {
+			public void run() {
+				queueTask(() -> {
+					humanPoseManager.resetTrackersYaw(resetSourceName);
+				});
+			}
+		};
 		timer.schedule(yawResetTask, delay);
 	}
 
-	public void scheduleResetTrackersMounting(long delay) {
-		TimerTask resetMountingTask = new resetMountingTask();
+	public void scheduleResetTrackersMounting(String resetSourceName, long delay) {
+		TimerTask resetMountingTask = new TimerTask() {
+			public void run() {
+				queueTask(() -> {
+					humanPoseManager.resetTrackersMounting(resetSourceName);
+				});
+			}
+		};
 		timer.schedule(resetMountingTask, delay);
-	}
-
-	class resetTask extends TimerTask {
-		public void run() {
-			queueTask(humanPoseManager::resetTrackersFull);
-		}
-	}
-
-	class yawResetTask extends TimerTask {
-		public void run() {
-			queueTask(humanPoseManager::resetTrackersYaw);
-		}
-	}
-
-	class resetMountingTask extends TimerTask {
-		public void run() {
-			queueTask(humanPoseManager::resetTrackersMounting);
-		}
 	}
 
 	public void setLegTweaksEnabled(boolean value) {

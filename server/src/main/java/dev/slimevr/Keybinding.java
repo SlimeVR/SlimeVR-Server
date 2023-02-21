@@ -9,6 +9,8 @@ import io.eiren.util.logging.LogManager;
 
 
 public class Keybinding implements HotkeyListener {
+	private static final String resetSourceName = "Keybinding";
+
 	private static final int RESET = 1;
 	private static final int QUICK_RESET = 2;
 	private static final int RESET_MOUNTING = 3;
@@ -59,15 +61,19 @@ public class Keybinding implements HotkeyListener {
 		switch (identifier) {
 			case RESET -> {
 				LogManager.info("[Keybinding] Reset pressed");
-				server.scheduleResetTrackers(this.config.getResetDelay());
+				server.scheduleResetTrackers(resetSourceName, this.config.getResetDelay());
 			}
 			case QUICK_RESET -> {
 				LogManager.info("[Keybinding] Quick reset pressed");
-				server.scheduleResetTrackersYaw(this.config.getQuickResetDelay());
+				server.scheduleResetTrackersYaw(resetSourceName, this.config.getQuickResetDelay());
 			}
 			case RESET_MOUNTING -> {
 				LogManager.info("[Keybinding] Reset mounting pressed");
-				server.scheduleResetTrackersMounting(this.config.getResetMountingDelay());
+				server
+					.scheduleResetTrackersMounting(
+						resetSourceName,
+						this.config.getResetMountingDelay()
+					);
 			}
 		}
 	}

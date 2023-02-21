@@ -21,6 +21,7 @@ import java.util.concurrent.LinkedBlockingQueue;
 
 
 public abstract class ProtobufBridge<T extends VRTracker> implements Bridge {
+	private static final String resetSourceNamePrefix = "ProtobufBridge";
 
 	@VRServerThread
 	protected final List<ShareableTracker> sharedTrackers = new FastList<>();
@@ -181,16 +182,17 @@ public abstract class ProtobufBridge<T extends VRTracker> implements Bridge {
 
 	@VRServerThread
 	protected void userActionReceived(UserAction userAction) {
+		String resetSourceName = "%s: %s".formatted(resetSourceNamePrefix, bridgeName);
 		switch (userAction.getName()) {
 			case "calibrate":
 				LogManager
 					.warning("[" + bridgeName + "] Received deprecated user action 'calibrate'!");
 			case "reset":
 				// TODO : Check pose field
-				Main.getVrServer().resetTrackers();
+				Main.getVrServer().resetTrackers(resetSourceName);
 				break;
 			case "fast_reset":
-				Main.getVrServer().resetTrackersYaw();
+				Main.getVrServer().resetTrackersYaw(resetSourceName);
 				break;
 		}
 	}

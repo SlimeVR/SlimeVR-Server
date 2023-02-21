@@ -517,9 +517,9 @@ public class HumanPoseManager {
 	}
 
 	@VRServerThread
-	public void resetTrackersFull() {
+	public void resetTrackersFull(String resetSourceName) {
 		if (isSkeletonPresent()) {
-			skeleton.resetTrackersFull();
+			skeleton.resetTrackersFull(resetSourceName);
 			if (server != null) {
 				server.getVrcOSCHandler().yawAlign();
 				server.getVMCHandler().alignVMCTracking(getRootNode().worldTransform.getRotation());
@@ -528,15 +528,15 @@ public class HumanPoseManager {
 	}
 
 	@VRServerThread
-	public void resetTrackersMounting() {
+	public void resetTrackersMounting(String resetSourceName) {
 		if (isSkeletonPresent())
-			skeleton.resetTrackersMounting();
+			skeleton.resetTrackersMounting(resetSourceName);
 	}
 
 	@VRServerThread
-	public void resetTrackersYaw() {
+	public void resetTrackersYaw(String resetSourceName) {
 		if (isSkeletonPresent()) {
-			skeleton.resetTrackersYaw();
+			skeleton.resetTrackersYaw(resetSourceName);
 			if (server != null) {
 				server.getVrcOSCHandler().yawAlign();
 				server.getVMCHandler().alignVMCTracking(getRootNode().worldTransform.getRotation());

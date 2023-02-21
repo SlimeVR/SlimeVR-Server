@@ -31,6 +31,8 @@ public class TrackersUDPServer extends Thread {
 	private static final Quaternion offset = new Quaternion()
 		.fromAngleAxis(-FastMath.HALF_PI, Vector3f.UNIT_X);
 
+	private static final String resetSourceName = "TrackerServer";
+
 	private final Quaternion buf = new Quaternion();
 	private final Random random = new Random();
 	private final List<UDPDevice> connections = new FastList<>();
@@ -576,15 +578,15 @@ public class TrackersUDPServer extends Thread {
 						switch (action.type) {
 							case UDPPacket21UserAction.RESET:
 								name = "Full";
-								Main.getVrServer().resetTrackers();
+								Main.getVrServer().resetTrackers(resetSourceName);
 								break;
 							case UDPPacket21UserAction.RESET_YAW:
 								name = "Yaw";
-								Main.getVrServer().resetTrackersYaw();
+								Main.getVrServer().resetTrackersYaw(resetSourceName);
 								break;
 							case UDPPacket21UserAction.RESET_MOUNTING:
 								name = "Mounting";
-								Main.getVrServer().resetTrackersMounting();
+								Main.getVrServer().resetTrackersMounting(resetSourceName);
 								break;
 						}
 						LogManager

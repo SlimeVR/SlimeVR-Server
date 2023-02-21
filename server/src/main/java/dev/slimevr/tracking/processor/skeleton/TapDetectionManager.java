@@ -8,6 +8,7 @@ import dev.slimevr.tracking.trackers.Tracker;
 
 // handles tap detection for the skeleton
 public class TapDetectionManager {
+	private static final String resetSourceName = "TapDetection";
 
 	// server and related classes
 	private final HumanSkeleton skeleton;
@@ -101,9 +102,9 @@ public class TapDetectionManager {
 			tapped && System.nanoTime() - quickResetDetector.getDetectionTime() > quickResetDelayNs
 		) {
 			if (humanPoseManager != null)
-				humanPoseManager.resetTrackersYaw();
+				humanPoseManager.resetTrackersYaw(resetSourceName);
 			else
-				skeleton.resetTrackersYaw();
+				skeleton.resetTrackersYaw(resetSourceName);
 			quickResetDetector.resetDetector();
 		}
 	}
@@ -115,9 +116,9 @@ public class TapDetectionManager {
 			tapped && System.nanoTime() - resetDetector.getDetectionTime() > resetDelayNs
 		) {
 			if (humanPoseManager != null)
-				humanPoseManager.resetTrackersFull();
+				humanPoseManager.resetTrackersFull(resetSourceName);
 			else
-				skeleton.resetTrackersFull();
+				skeleton.resetTrackersFull(resetSourceName);
 			resetDetector.resetDetector();
 		}
 	}
@@ -130,7 +131,7 @@ public class TapDetectionManager {
 				&& System.nanoTime() - mountingResetDetector.getDetectionTime()
 					> mountingResetDelayNs
 		) {
-			skeleton.resetTrackersMounting();
+			skeleton.resetTrackersMounting(resetSourceName);
 			mountingResetDetector.resetDetector();
 		}
 	}
