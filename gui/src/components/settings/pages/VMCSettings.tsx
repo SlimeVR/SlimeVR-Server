@@ -12,7 +12,7 @@ import {
 } from 'solarxr-protocol';
 import { useWebsocketAPI } from '../../../hooks/websocket-api';
 import { CheckBox } from '../../commons/Checkbox';
-import { FileInput, FileValue } from '../../commons/FileInput';
+import { FileInput } from '../../commons/FileInput';
 import { VMCIcon } from '../../commons/icon/VMCIcon';
 import { Input } from '../../commons/Input';
 import { Typography } from '../../commons/Typography';
@@ -27,7 +27,7 @@ interface VMCSettingsForm {
       portOut: number;
       address: string;
     };
-    vrmJson?: FileValue;
+    vrmJson?: FileList;
     anchorHip: boolean;
   };
 }
@@ -50,6 +50,12 @@ export function VMCSettings() {
   const { state } = useLocation();
   const pageRef = useRef<HTMLFormElement | null>(null);
   const [modelName, setModelName] = useState<string | null>(null);
+  const [flashLoaded, setFlashLoaded] = useState(false);
+
+  const toggleFlash = (bool: boolean) => {
+    setFlashLoaded(bool);
+    setTimeout(() => setFlashLoaded(!bool), 1000);
+  };
 
   const { reset, control, watch, handleSubmit, register } =
     useForm<VMCSettingsForm>({
@@ -66,8 +72,9 @@ export function VMCSettings() {
         new OSCSettingsT(),
         values.vmc.oscSettings
       );
-      if (values.vmc.vrmJson?.files.length) {
-        vmcOsc.vrmJson = await parseVRMFile(values.vmc.vrmJson.files[0]);
+      if (values.vmc.vrmJson?.length) {
+        toggleFlash(true);
+        vmcOsc.vrmJson = await parseVRMFile(values.vmc.vrmJson[0]);
       }
       vmcOsc.anchorHip = values.vmc.anchorHip;
 
@@ -232,7 +239,7 @@ export function VMCSettings() {
             </Typography>
           </div>
           <div className="flex flex-col pb-2">
-            <Typography color="secondary">
+            <Typography color={flashLoaded ? 'primary' : 'secondary'}>
               {modelName === null
                 ? l10n.getString('settings-osc-vmc-vrm-model_unloaded')
                 : l10n.getString('settings-osc-vmc-vrm-model_loaded', {
@@ -249,7 +256,7 @@ export function VMCSettings() {
                 required: false,
               }}
               value="help"
-              label=""
+              label="settings-osc-vmc-vrm-file_select"
               accept="model/gltf-binary, model/gltf+json, model/vrml, .vrm"
             ></FileInput>
             {/* For some reason, linux (GNOME) is detecting the VRM file is a VRML */}
