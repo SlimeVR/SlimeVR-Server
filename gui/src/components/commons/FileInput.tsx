@@ -62,6 +62,7 @@ export const FileInputInside = forwardRef<
       onDragOver={(ev) => ev.preventDefault()}
       onDrop={(ev) => {
         ev.preventDefault();
+        setDragging(false);
 
         if (
           ev.dataTransfer.files.length &&
