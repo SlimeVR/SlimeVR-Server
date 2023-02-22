@@ -421,7 +421,7 @@ settings-osc-vmc-network-address = Network address
 settings-osc-vmc-network-address-description = Choose which address to send out data at via VMC
 settings-osc-vmc-network-address-placeholder = IPV4 address
 settings-osc-vmc-vrm = VRM Model
-settings-osc-vmc-vrm-description = Load a VRM model to enable head anchor and a higher compatibility with other applications
+settings-osc-vmc-vrm-description = Load a VRM model to allow head anchor and enable a higher compatibility with other applications
 settings-osc-vmc-vrm-model_unloaded = No model loaded
 settings-osc-vmc-vrm-model_loaded = { $titled ->
     *[false] Untitled model loaded
@@ -429,7 +429,7 @@ settings-osc-vmc-vrm-model_loaded = { $titled ->
 }
 settings-osc-vmc-vrm-file_select = Drag & drop a model to use, or <u>browse</u>
 settings-osc-vmc-anchor_hip = Anchor at hips
-settings-osc-vmc-anchor_hip-description = Anchor the tracking at the hips, useful for seated VTubing
+settings-osc-vmc-anchor_hip-description = Anchor the tracking at the hips, useful for seated VTubing. If disabling, load a VRM model.
 settings-osc-vmc-anchor_hip-label = Anchor at hips
 
 ## Setup/onboarding menu
