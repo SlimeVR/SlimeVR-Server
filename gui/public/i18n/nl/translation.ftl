@@ -30,7 +30,6 @@ body_part-RIGHT_HAND = Rechterhand
 body_part-RIGHT_UPPER_LEG = Rechterdij
 body_part-RIGHT_LOWER_LEG = Rechterenkel
 body_part-RIGHT_FOOT = Rechtervoet
-body_part-RIGHT_CONTROLLER = Rechtercontroller
 body_part-CHEST = Borst
 body_part-WAIST = Taille
 body_part-HIP = Heup
@@ -41,7 +40,6 @@ body_part-LEFT_HAND = Linkerhand
 body_part-LEFT_UPPER_LEG = Linkerdij
 body_part-LEFT_LOWER_LEG = Linkerenkel
 body_part-LEFT_FOOT = Linkervoet
-body_part-LEFT_CONTROLLER = Linkercontroller
 
 ## Proportions
 
@@ -63,8 +61,8 @@ skeleton_bone-SHOULDERS_DISTANCE = Schoudersafstand
 skeleton_bone-SHOULDERS_WIDTH = Schouderbreedte
 skeleton_bone-UPPER_ARM = Bovenarmlengte
 skeleton_bone-LOWER_ARM = Onderarmlengte
-skeleton_bone-CONTROLLER_Y = Controllerafstand Y
-skeleton_bone-CONTROLLER_Z = Controllerafstand Z
+skeleton_bone-HAND_Y = Afstand hand Y
+skeleton_bone-HAND_Z = Afstand hand Z
 skeleton_bone-ELBOW_OFFSET = Elleboogoffset
 
 ## Tracker reset buttons
@@ -160,6 +158,8 @@ tracker-infos-manufacturer = Fabrikant
 tracker-infos-display_name = Weergavenaam
 tracker-infos-custom_name = Aangepaste naam
 tracker-infos-url = Tracker URL
+tracker-infos-version = Firmware versie
+tracker-infos-hardware_rev = Hardware revisie
 
 ## Tracker settings
 

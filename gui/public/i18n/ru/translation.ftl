@@ -30,7 +30,6 @@ body_part-RIGHT_HAND = Правая рука
 body_part-RIGHT_UPPER_LEG = Правое бедро
 body_part-RIGHT_LOWER_LEG = Правая голень
 body_part-RIGHT_FOOT = Правая ступня
-body_part-RIGHT_CONTROLLER = Правый контроллер
 body_part-CHEST = Грудь
 body_part-WAIST = Талия
 body_part-HIP = Таз
@@ -41,7 +40,6 @@ body_part-LEFT_HAND = Левая рука
 body_part-LEFT_UPPER_LEG = Левое бедро
 body_part-LEFT_LOWER_LEG = Левая голень
 body_part-LEFT_FOOT = Левая ступня
-body_part-LEFT_CONTROLLER = Левый контроллер
 
 ## Proportions
 
@@ -63,8 +61,8 @@ skeleton_bone-SHOULDERS_DISTANCE = Дистанция плеч
 skeleton_bone-SHOULDERS_WIDTH = Ширина плеч
 skeleton_bone-UPPER_ARM = Длинна предплечья
 skeleton_bone-LOWER_ARM = Длинна нижнего предплечья
-skeleton_bone-CONTROLLER_Y = Дистанция контроллера Y
-skeleton_bone-CONTROLLER_Z = Дистанция контроллера Z
+skeleton_bone-HAND_Y = Расстояние от руки Y
+skeleton_bone-HAND_Z = Расстояние от руки Z
 skeleton_bone-ELBOW_OFFSET = Смещение локтя
 
 ## Tracker reset buttons
@@ -160,6 +158,8 @@ tracker-infos-manufacturer = Производитель
 tracker-infos-display_name = Отображаемое имя
 tracker-infos-custom_name = Свое имя
 tracker-infos-url = URL трекера
+tracker-infos-version = Версия прошивки
+tracker-infos-hardware_rev = Ревизия устройства
 
 ## Tracker settings
 
@@ -559,6 +559,22 @@ onboarding-assign_trackers-warning-RIGHT_FOOT =
         [5] Назначена правая ступня, но вам нужно, назначить правое бедро!
         [6] Назначена правая ступня, но вам нужно, назначить правую голень!
        *[unknown] Назначена правая ступня, но вам также нужно назначить неизвестную неназначенную часть тела!
+    }
+# $unassigned (Number) - Bits are based on BodyAssignment.ASSIGNMENT_RULES order
+onboarding-assign_trackers-warning-LEFT_LOWER_LEG =
+    { $unassigned ->
+        [0] Назначена левая голень, но вам нужно, чтобы также было назначено левое бедро!
+        [1] Назначена левая голень, но вам также нужно назначить грудь, таз или талию!
+        [2] Назначена левая голень, но вам также нужно назначить левое бедро и либо грудь, либо таз, либо талию!
+       *[other] Назначена левая голень, но вам также нужно назначить неизвестную неназначенную часть тела!
+    }
+# $unassigned (Number) - Bits are based on BodyAssignment.ASSIGNMENT_RULES order
+onboarding-assign_trackers-warning-RIGHT_LOWER_LEG =
+    { $unassigned ->
+        [0] Назначена правая голень, но вам также нужно назначить правое бедро и либо грудь, либо таз, либо талию!
+        [1] Назначена правая голень, но вам также нужно назначить грудь, таз или талию!
+        [2] Назначена правая голень, но вам нужно, чтобы также было назначено правое бедро!
+       *[other] Назначена правая голень, но вам также нужно назначить неизвестную неназначенную часть тела!
     }
 # $unassigned (Number) - Bits are based on BodyAssignment.ASSIGNMENT_RULES order
 onboarding-assign_trackers-warning-LEFT_UPPER_LEG =
