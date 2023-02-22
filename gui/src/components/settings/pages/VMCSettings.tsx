@@ -72,8 +72,11 @@ export function VMCSettings() {
         values.vmc.oscSettings
       );
       if (values.vmc.vrmJson?.length) {
-        toggleFlash(true);
         vmcOsc.vrmJson = await parseVRMFile(values.vmc.vrmJson[0]);
+        if (vmcOsc.vrmJson) {
+          toggleFlash(true);
+          setModelName(JSON.parse(vmcOsc.vrmJson).extensions.VRM.meta.title);
+        }
       }
       vmcOsc.anchorHip = values.vmc.anchorHip;
 
