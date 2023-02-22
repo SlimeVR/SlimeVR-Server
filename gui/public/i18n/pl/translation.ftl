@@ -30,7 +30,6 @@ body_part-RIGHT_HAND = Prawa Dłoń
 body_part-RIGHT_UPPER_LEG = Prawe Udo
 body_part-RIGHT_LOWER_LEG = Prawy Podudzie
 body_part-RIGHT_FOOT = Prawa Stopa
-body_part-RIGHT_CONTROLLER = Prawy kontroler
 body_part-CHEST = Klatka Piersiowa
 body_part-WAIST = Talia
 body_part-HIP = Biodra
@@ -41,7 +40,6 @@ body_part-LEFT_HAND = Lewa Dłoń
 body_part-LEFT_UPPER_LEG = Lewe Udo
 body_part-LEFT_LOWER_LEG = Lewe Podudzie
 body_part-LEFT_FOOT = Lewa Stopa
-body_part-LEFT_CONTROLLER = Left controller
 
 ## Proportions
 
@@ -63,8 +61,8 @@ skeleton_bone-SHOULDERS_DISTANCE = Shoulders Distance
 skeleton_bone-SHOULDERS_WIDTH = Szerokość Ramion
 skeleton_bone-UPPER_ARM = Długość Bicepsa
 skeleton_bone-LOWER_ARM = Długość PrzedRamienia
-skeleton_bone-CONTROLLER_Y = Controller Distance Y
-skeleton_bone-CONTROLLER_Z = Controller Distance Z
+skeleton_bone-HAND_Y = Odległość ręki Y
+skeleton_bone-HAND_Z = Odległość ręki Z
 skeleton_bone-ELBOW_OFFSET = Offset Łokcia
 
 ## Tracker reset buttons
@@ -160,6 +158,8 @@ tracker-infos-manufacturer = Producent
 tracker-infos-display_name = Wyświetlana Nazwa
 tracker-infos-custom_name = Niestandardowa Nazwa
 tracker-infos-url = Tracker URL
+tracker-infos-version = Wersja Oprogramowania
+tracker-infos-hardware_rev = Wersja Sprzętu
 
 ## Tracker settings
 

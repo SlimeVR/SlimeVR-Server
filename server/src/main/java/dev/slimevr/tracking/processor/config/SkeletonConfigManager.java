@@ -195,7 +195,7 @@ public class SkeletonConfigManager {
 			case CHEST_TRACKER -> setNodeOffset(
 				nodeOffset,
 				0,
-				getOffset(SkeletonConfigOffsets.CHEST_OFFSET)
+				-getOffset(SkeletonConfigOffsets.CHEST_OFFSET)
 					- getOffset(SkeletonConfigOffsets.CHEST),
 				-getOffset(SkeletonConfigOffsets.SKELETON_OFFSET)
 			);
@@ -204,7 +204,7 @@ public class SkeletonConfigManager {
 			case HIP_TRACKER -> setNodeOffset(
 				nodeOffset,
 				0,
-				getOffset(SkeletonConfigOffsets.HIP_OFFSET),
+				-getOffset(SkeletonConfigOffsets.HIP_OFFSET),
 				-getOffset(SkeletonConfigOffsets.SKELETON_OFFSET)
 			);
 			case LEFT_HIP -> setNodeOffset(
@@ -282,7 +282,7 @@ public class SkeletonConfigManager {
 			case LEFT_ELBOW_TRACKER, RIGHT_ELBOW_TRACKER -> setNodeOffset(
 				nodeOffset,
 				0,
-				getOffset(SkeletonConfigOffsets.ELBOW_OFFSET),
+				-getOffset(SkeletonConfigOffsets.ELBOW_OFFSET),
 				0
 			);
 		}

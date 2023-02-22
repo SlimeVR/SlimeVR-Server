@@ -38,6 +38,7 @@ jobs:
       - name: Test with Gradle
         run: ./gradlew test
 
+
   build:
     runs-on: ubuntu-latest
 
@@ -66,9 +67,20 @@ jobs:
           # A file, directory or wildcard pattern that describes what to upload
           path: server/build/libs/*
 
-  bundle:
+      - name: Upload to draft release
+        uses: softprops/action-gh-release@v1
+        if: startsWith(github.ref, 'refs/tags/')
+        with:
+          draft: true
+          generate_release_notes: true
+          files: |
+            server/build/libs/*
+
+
+  bundle-linux:
     runs-on: ubuntu-20.04
-    needs: build
+    needs: [build, test]
+    if: contains(fromJSON('["workflow_dispatch", "create"]'), github.event_name)
     steps:
       - uses: actions/checkout@v3
         with:
@@ -131,9 +143,27 @@ jobs:
           name: SlimeVR-GUI-AppImage
           path: target/release/bundle/appimage/slimevr*.AppImage
 
+      - name: Prepare for release
+        if: startsWith(github.ref, 'refs/tags/')
+        run: |
+          cp target/release/bundle/appimage/slimevr*.AppImage ./SlimeVR-amd64.appimage
+          cp target/release/bundle/deb/slimevr*.deb ./SlimeVR-amd64.deb
+
+      - name: Upload to draft release
+        uses: softprops/action-gh-release@v1
+        if: startsWith(github.ref, 'refs/tags/')
+        with:
+          draft: true
+          generate_release_notes: true
+          files: |
+            ./SlimeVR-amd64.appimage
+            ./SlimeVR-amd64.deb
+
+
   bundle-mac:
     runs-on: macos-latest
-    needs: build
+    needs: [build, test]
+    if: contains(fromJSON('["workflow_dispatch", "create"]'), github.event_name)
     steps:
       - uses: actions/checkout@v3
         with:
@@ -179,3 +209,76 @@ jobs:
         with:
           name: SlimeVR-GUI-MacDmg
           path: target/release/bundle/dmg/slimevr.dmg
+
+      - name: Prepare for release
+        if: startsWith(github.ref, 'refs/tags/')
+        run: |
+          cp target/release/bundle/dmg/slimevr.dmg ./SlimeVR-mac.dmg
+
+      - name: Upload to draft release
+        uses: softprops/action-gh-release@v1
+        if: startsWith(github.ref, 'refs/tags/')
+        with:
+          draft: true
+          generate_release_notes: true
+          files: |
+            ./SlimeVR-mac.dmg
+
+
+  bundle-windows:
+    runs-on: windows-latest
+    needs: [build, test]
+    if: contains(fromJSON('["workflow_dispatch", "create"]'), github.event_name)
+    steps:
+      - uses: actions/checkout@v3
+        with:
+          submodules: recursive
+
+      - uses: actions/download-artifact@v3
+        with:
+          name: "SlimeVR-Server"
+          path: server/build/libs/
+
+      - name: Cache cargo dependencies
+        uses: Swatinem/rust-cache@v2
+        with:
+          shared-key: "windows-latest"
+
+      - name: Use Node.js
+        uses: actions/setup-node@v3
+        with:
+          node-version-file: '.node-version'
+          cache: 'npm'
+
+      - name: Build
+        run: |
+          npm ci
+          npm run skipbundler
+
+      - name: Bundle to zips
+        shell: bash
+        run: |
+          mkdir SlimeVR
+          cp gui/src-tauri/icons/icon.ico ./SlimeVR/run.ico
+          cp server/build/libs/slimevr.jar ./SlimeVR/slimevr.jar
+          cp server/resources/* ./SlimeVR/
+          cp target/release/slimevr.exe ./SlimeVR/
+          7z a -tzip SlimeVR-win64.zip ./SlimeVR/
+
+          mv ./SlimeVR/slimevr.exe ./SlimeVR/slimevr-ui.exe
+          7z a -tzip SlimeVR.zip ./SlimeVR/
+
+      - uses: actions/upload-artifact@v3.1.0
+        with:
+          name: SlimeVR-GUI-Windows
+          path: ./SlimeVR*.zip
+
+      - name: Upload to draft release
+        uses: softprops/action-gh-release@v1
+        if: startsWith(github.ref, 'refs/tags/')
+        with:
+          draft: true
+          generate_release_notes: true
+          files: |
+            ./SlimeVR-win64.zip
+            ./SlimeVR.zip
