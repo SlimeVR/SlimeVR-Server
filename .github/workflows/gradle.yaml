@@ -162,7 +162,7 @@ jobs:
 
   bundle-mac:
     runs-on: macos-latest
-    needs: build
+    needs: [build, test]
     if: contains(fromJSON('["workflow_dispatch", "create"]'), github.event_name)
     steps:
       - uses: actions/checkout@v3
@@ -227,7 +227,7 @@ jobs:
 
   bundle-windows:
     runs-on: windows-latest
-    needs: build
+    needs: [build, test]
     if: contains(fromJSON('["workflow_dispatch", "create"]'), github.event_name)
     steps:
       - uses: actions/checkout@v3
