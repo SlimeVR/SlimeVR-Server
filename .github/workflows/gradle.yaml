@@ -254,7 +254,7 @@ jobs:
         run: |
           npm ci
           npm run skipbundler
-      
+
       - name: Bundle to zips
         shell: bash
         run: |
@@ -271,7 +271,7 @@ jobs:
       - uses: actions/upload-artifact@v3.1.0
         with:
           name: SlimeVR-GUI-Windows
-          path: ./SlimeVR-win64.zip
+          path: ./SlimeVR*.zip
 
       - name: Upload to draft release
         uses: softprops/action-gh-release@v1
@@ -281,3 +281,4 @@ jobs:
           generate_release_notes: true
           files: |
             ./SlimeVR-win64.zip
+            ./SlimeVR.zip
