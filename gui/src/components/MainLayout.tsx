@@ -79,10 +79,10 @@ export function MainLayoutRoute({
                     ></ResetButton>
                   )}
                   <BVHButton></BVHButton>
+                  {driftCompensationEnabled && (
+                    <ClearDriftCompensationButton></ClearDriftCompensationButton>
+                  )}
                 </div>
-                {driftCompensationEnabled && (
-                  <ClearDriftCompensationButton></ClearDriftCompensationButton>
-                )}
                 <div className="w-full">
                   <OverlayWidget></OverlayWidget>
                 </div>
