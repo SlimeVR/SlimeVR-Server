@@ -67,7 +67,12 @@ export const FileInputInside = forwardRef<
 
         if (
           ev.dataTransfer.files.length &&
-          acceptList.includes(ev.dataTransfer.files[0].type)
+          // If MIME type is any of the accept list,
+          // or if file extension is anything on the acceptList
+          (acceptList.includes(ev.dataTransfer.files[0].type) ||
+            acceptList.some((ext) =>
+              ev.dataTransfer.files[0].name.endsWith(ext)
+            ))
         ) {
           onChange(ev.dataTransfer.files);
         }
@@ -76,7 +81,10 @@ export const FileInputInside = forwardRef<
         ev.preventDefault();
         setDragging(true);
       }}
-      onDragLeave={() => setDragging(false)}
+      onDragLeave={(ev) => {
+        ev.preventDefault();
+        setDragging(false);
+      }}
     >
       <span className="flex items-center space-x-2 pointer-events-none">
         <FileIcon isDragging={isDragging} />

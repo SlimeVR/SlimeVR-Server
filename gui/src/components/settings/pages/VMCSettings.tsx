@@ -57,10 +57,9 @@ export function VMCSettings() {
     setTimeout(() => setFlashLoaded(!bool), 1000);
   };
 
-  const { reset, control, watch, handleSubmit, register } =
-    useForm<VMCSettingsForm>({
-      defaultValues: defaultValues,
-    });
+  const { reset, control, watch, handleSubmit } = useForm<VMCSettingsForm>({
+    defaultValues: defaultValues,
+  });
 
   const onSubmit = async (values: VMCSettingsForm) => {
     const settings = new ChangeSettingsRequestT();
@@ -257,7 +256,7 @@ export function VMCSettings() {
               }}
               value="help"
               label="settings-osc-vmc-vrm-file_select"
-              accept="model/gltf-binary, model/gltf+json, model/vrml, .vrm"
+              accept="model/gltf-binary, model/gltf+json, model/vrml, .vrm, .glb, .gltf"
             ></FileInput>
             {/* For some reason, linux (GNOME) is detecting the VRM file is a VRML */}
           </div>
