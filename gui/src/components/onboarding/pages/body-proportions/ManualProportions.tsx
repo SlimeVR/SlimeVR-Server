@@ -20,10 +20,10 @@ export function ManualProportionsPage() {
 
   applyProgress(0.9);
 
-  const { control, watch } = useForm<{ precise: boolean }>({
-    defaultValues: { precise: false },
+  const { control, watch } = useForm<{ precise: boolean; ratio: boolean }>({
+    defaultValues: { precise: false, ratio: true },
   });
-  const { precise } = watch();
+  const { precise, ratio } = watch();
 
   const resetAll = () => {
     sendRPCPacket(
@@ -53,6 +53,12 @@ export function ManualProportionsPage() {
                 </Typography>
                 <CheckBox
                   control={control}
+                  label={l10n.getString('onboarding-manual_proportions-ratio')}
+                  name="ratio"
+                  variant="toggle"
+                ></CheckBox>
+                <CheckBox
+                  control={control}
                   label={l10n.getString(
                     'onboarding-manual_proportions-precision'
                   )}
@@ -62,6 +68,7 @@ export function ManualProportionsPage() {
               </div>
               <BodyProportions
                 precise={precise}
+                type={ratio ? 'ratio' : 'linear'}
                 variant={state.alonePage ? 'alone' : 'onboarding'}
               ></BodyProportions>
             </div>
