@@ -15,6 +15,7 @@ import {
   SkeletonConfigResponseT,
 } from 'solarxr-protocol';
 import { useWebsocketAPI } from '../../../../hooks/websocket-api';
+import { useLocaleConfig } from '../../../../i18n/config';
 import { Typography } from '../../../commons/Typography';
 
 function IncrementButton({
@@ -237,7 +238,17 @@ export function RatioBoneList({
   setSelectedBone: _setSelectedBone,
   updateConfigValue,
 }: BoneListCall) {
+  const { currentLocales } = useLocaleConfig();
   const { l10n } = useLocalization();
+  const cmFormat = Intl.NumberFormat(currentLocales, {
+    style: 'unit',
+    unit: 'centimeter',
+    maximumFractionDigits: 1,
+  });
+  const configFormat = Intl.NumberFormat(currentLocales, {
+    signDisplay: 'always',
+    maximumFractionDigits: 1,
+  });
 
   const bodyParts = useMemo(() => {
     return SkeletonGroup.mixArray(
@@ -328,15 +339,15 @@ export function RatioBoneList({
             >
               {!precise && (
                 <IncrementButton onClick={() => decrement(part.value, 5)}>
-                  -5
+                  {configFormat.format(-5)}
                 </IncrementButton>
               )}
               <IncrementButton onClick={() => decrement(part.value, 1)}>
-                -1
+                {configFormat.format(-1)}
               </IncrementButton>
               {precise && (
                 <IncrementButton onClick={() => decrement(part.value, 0.5)}>
-                  -0.5
+                  {configFormat.format(-0.5)}
                 </IncrementButton>
               )}
             </div>
@@ -355,10 +366,7 @@ export function RatioBoneList({
                   {part.label}
                 </Typography>
                 <Typography variant="main-title" bold>
-                  {Number(part.value * 100)
-                    .toFixed(1)
-                    .replace(/[.,]0$/, '')}{' '}
-                  CM
+                  {cmFormat.format(part.value * 100)}
                 </Typography>
               </div>
             </div>
@@ -370,15 +378,15 @@ export function RatioBoneList({
             >
               {precise && (
                 <IncrementButton onClick={() => increment(part.value, 0.5)}>
-                  +0.5
+                  {configFormat.format(+0.5)}
                 </IncrementButton>
               )}
               <IncrementButton onClick={() => increment(part.value, 1)}>
-                +1
+                {configFormat.format(+1)}
               </IncrementButton>
               {!precise && (
                 <IncrementButton onClick={() => increment(part.value, 5)}>
-                  +5
+                  {configFormat.format(+5)}
                 </IncrementButton>
               )}
             </div>
@@ -394,15 +402,15 @@ export function RatioBoneList({
               >
                 {!precise && (
                   <IncrementButton onClick={() => decrement(part.value, 5)}>
-                    -5
+                    {configFormat.format(-5)}
                   </IncrementButton>
                 )}
                 <IncrementButton onClick={() => decrement(part.value, 1)}>
-                  -1
+                  {configFormat.format(-1)}
                 </IncrementButton>
                 {precise && (
                   <IncrementButton onClick={() => decrement(part.value, 0.5)}>
-                    -0.5
+                    {configFormat.format(-0.5)}
                   </IncrementButton>
                 )}
               </div>
@@ -421,10 +429,7 @@ export function RatioBoneList({
                     {part.label}
                   </Typography>
                   <Typography variant="main-title" bold>
-                    {Number(part.value * 100)
-                      .toFixed(1)
-                      .replace(/[.,]0$/, '')}{' '}
-                    CM
+                    {cmFormat.format(part.value * 100)}
                   </Typography>
                 </div>
               </div>
@@ -436,15 +441,15 @@ export function RatioBoneList({
               >
                 {precise && (
                   <IncrementButton onClick={() => increment(part.value, 0.5)}>
-                    +0.5
+                    {configFormat.format(+0.5)}
                   </IncrementButton>
                 )}
                 <IncrementButton onClick={() => increment(part.value, 1)}>
-                  +1
+                  {configFormat.format(+1)}
                 </IncrementButton>
                 {!precise && (
                   <IncrementButton onClick={() => increment(part.value, 5)}>
-                    +5
+                    {configFormat.format(+5)}
                   </IncrementButton>
                 )}
               </div>
@@ -463,7 +468,17 @@ export function LinearBoneList({
   setSelectedBone,
   updateConfigValue,
 }: BoneListCall) {
+  const { currentLocales } = useLocaleConfig();
   const { l10n } = useLocalization();
+  const cmFormat = Intl.NumberFormat(currentLocales, {
+    style: 'unit',
+    unit: 'centimeter',
+    maximumFractionDigits: 1,
+  });
+  const configFormat = Intl.NumberFormat(currentLocales, {
+    signDisplay: 'always',
+    maximumFractionDigits: 1,
+  });
 
   const bodyParts: BoneLabel[] = useMemo(() => {
     return (
@@ -505,15 +520,15 @@ export function LinearBoneList({
           >
             {!precise && (
               <IncrementButton onClick={() => decrement(value, 5)}>
-                -5
+                {configFormat.format(-5)}
               </IncrementButton>
             )}
             <IncrementButton onClick={() => decrement(value, 1)}>
-              -1
+              {configFormat.format(-1)}
             </IncrementButton>
             {precise && (
               <IncrementButton onClick={() => decrement(value, 0.5)}>
-                -0.5
+                {configFormat.format(-0.5)}
               </IncrementButton>
             )}
           </div>
@@ -532,10 +547,7 @@ export function LinearBoneList({
                 {label}
               </Typography>
               <Typography variant="main-title" bold>
-                {Number(value * 100)
-                  .toFixed(1)
-                  .replace(/[.,]0$/, '')}{' '}
-                CM
+                {cmFormat.format(value * 100)}
               </Typography>
             </div>
           </div>
@@ -547,15 +559,15 @@ export function LinearBoneList({
           >
             {precise && (
               <IncrementButton onClick={() => increment(value, 0.5)}>
-                +0.5
+                {configFormat.format(+0.5)}
               </IncrementButton>
             )}
             <IncrementButton onClick={() => increment(value, 1)}>
-              +1
+              {configFormat.format(+1)}
             </IncrementButton>
             {!precise && (
               <IncrementButton onClick={() => increment(value, 5)}>
-                +5
+                {configFormat.format(+5)}
               </IncrementButton>
             )}
           </div>
