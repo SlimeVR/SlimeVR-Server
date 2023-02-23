@@ -10,45 +10,6 @@ import dev.slimevr.tracking.processor.config.SkeletonConfigToggles;
 
 
 public class LegTweaks {
-	// state variables
-	private float floorLevel;
-	private float waistToFloorDist;
-	private float currentDisengagementOffset = 0.0f;
-	private float footLength = 0.0f;
-	private static float currentCorrectionStrength = 0.3f; // default value
-	private boolean initialized = true;
-	private boolean enabled = true; // master switch
-	private boolean floorclipEnabled = false;
-	private boolean skatingCorrectionEnabled = false;
-	private boolean toeSnap = false;
-	private boolean footPlant = false;
-	private boolean active = false;
-	private boolean rightLegActive = false;
-	private boolean leftLegActive = false;
-
-	// skeleton and config
-	private HumanSkeleton skeleton;
-	private LegTweaksConfig config;
-
-	// leg data
-	private Vector3f leftFootPosition = new Vector3f();
-	private Vector3f rightFootPosition = new Vector3f();
-	private Vector3f leftKneePosition = new Vector3f();
-	private Vector3f rightKneePosition = new Vector3f();
-	private Vector3f waistPosition = new Vector3f();
-	private Quaternion leftFootRotation = new Quaternion();
-	private Quaternion rightFootRotation = new Quaternion();
-
-	private Vector3f leftFootAcceleration = new Vector3f();
-	private Vector3f rightFootAcceleration = new Vector3f();
-	private Vector3f leftLowerLegAcceleration = new Vector3f();
-	private Vector3f rightLowerLegAcceleration = new Vector3f();
-
-	// knee placeholder
-	private Vector3f leftKneePlaceholder = new Vector3f();
-	private Vector3f rightKneePlaceholder = new Vector3f();
-	private boolean kneesActive = false;
-
 	/**
 	 * here is an explanation of each parameter that may need explaining
 	 * STANDING_CUTOFF_VERTICAL is the percentage the waist has to be below its
@@ -96,11 +57,9 @@ public class LegTweaks {
 	// hyperparameters (rotation correction)
 	private static final float ROTATION_CORRECTION_VERTICAL = 0.1f;
 	private static final float MAXIMUM_CORRECTION_ANGLE = 0.4f;
-	private static final float MAXIMUM_CORRECTION_ANGLE_DELTA = 0.5f;
-	private static final float MAXIMUM_TOE_DOWN_ANGLE = 0.7f;
+	private static final float MAXIMUM_CORRECTION_ANGLE_DELTA = 0.7f;
+	private static final float MAXIMUM_TOE_DOWN_ANGLE = 0.8f;
 	private static final float TOE_SNAP_COOLDOWN = 3.0f;
-	private static final float MAX_TOE_SNAP_ANGLE = 0.01f;
-	private static final float TOE_SNAP_DEFAULT_SLERP = 0.001f;
 
 	// hyperparameters (misc)
 	static final float NEARLY_ZERO = 0.001f;
@@ -109,11 +68,52 @@ public class LegTweaks {
 	private static final float DEFAULT_ARM_DISTANCE = 0.15f;
 	private static final float MAX_CORRECTION_STRENGTH_DELTA = 1.0f;
 
-	// counters and such
+	// state variables
+	private float floorLevel;
+	private float waistToFloorDist;
+	private float currentDisengagementOffset = 0.0f;
+	private float footLength = 0.0f;
+	private static float currentCorrectionStrength = 0.3f; // default value
+	private boolean initialized = true;
+	private boolean enabled = true; // master switch
+	private boolean floorclipEnabled = false;
+	private boolean skatingCorrectionEnabled = false;
+	private boolean toeSnap = false;
+	private boolean footPlant = false;
+	private boolean active = false;
+	private boolean rightLegActive = false;
+	private boolean leftLegActive = false;
 	private int leftFramesLocked = 0;
 	private int rightFramesLocked = 0;
 	private int leftFramesUnlocked = 0;
 	private int rightFramesUnlocked = 0;
+	private float leftToeAngle = 0.0f;
+	private boolean leftToeTouched = false;
+	private float rightToeAngle = 0.0f;
+	private boolean rightToeTouched = false;
+
+	// skeleton and config
+	private HumanSkeleton skeleton;
+	private LegTweaksConfig config;
+
+	// leg data
+	private Vector3f leftFootPosition = new Vector3f();
+	private Vector3f rightFootPosition = new Vector3f();
+	private Vector3f leftKneePosition = new Vector3f();
+	private Vector3f rightKneePosition = new Vector3f();
+	private Vector3f waistPosition = new Vector3f();
+	private Quaternion leftFootRotation = new Quaternion();
+	private Quaternion rightFootRotation = new Quaternion();
+
+	private Vector3f leftFootAcceleration = new Vector3f();
+	private Vector3f rightFootAcceleration = new Vector3f();
+	private Vector3f leftLowerLegAcceleration = new Vector3f();
+	private Vector3f rightLowerLegAcceleration = new Vector3f();
+
+	// knee placeholder
+	private Vector3f leftKneePlaceholder = new Vector3f();
+	private Vector3f rightKneePlaceholder = new Vector3f();
+	private boolean kneesActive = false;
 
 	// buffer for holding previous frames of data
 	private LegTweakBuffer bufferHead = new LegTweakBuffer();
@@ -776,10 +776,6 @@ public class LegTweaks {
 		Quaternion leftFootRotation = bufferHead.getLeftFootRotation(null);
 		Quaternion rightFootRotation = bufferHead.getRightFootRotation(null);
 
-		// get the last rotations
-		Quaternion lastLeftFootRotation = bufferHead.getParent().getLeftFootRotationCorrected(null);
-		Quaternion lastRightFootRotation = bufferHead.getParent().getRightFootRotationCorrected(null);
-
 		// between maximum correction angle and maximum correction angle delta
 		// the values are interpolated
 		float kneeAngleL = getXZAmount(leftFootPos, bufferHead.getLeftKneePosition(null));
@@ -836,6 +832,15 @@ public class LegTweaks {
 			weightL = getToeSnapWeight(leftFootPos, angleL);
 			weightR = getToeSnapWeight(rightFootPos, angleR);
 
+			// depending on the state variables, the correction weights should
+			// be clamped
+			if (!leftToeTouched) {
+				weightL = Math.min(weightL, leftToeAngle);
+			}
+			if (!rightToeTouched) {
+				weightR = Math.min(weightR, rightToeAngle);
+			}
+
 			// then slerp the rotation to the new rotation based on the weight
 			leftFootRotation
 				.slerp(
@@ -850,6 +855,21 @@ public class LegTweaks {
 					weightR * masterWeightR
 				);
 
+			// update state variables regarding toe snap
+			if (leftFootPos.y - floorLevel > footLength * MAXIMUM_TOE_DOWN_ANGLE) {
+				leftToeTouched = false;
+				leftToeAngle = weightL;
+			} else if (leftFootPos.y - floorLevel < 0.0f) {
+				leftToeTouched = true;
+				leftToeAngle = 1.0f;
+			}
+			if (rightFootPos.y - floorLevel > footLength * MAXIMUM_TOE_DOWN_ANGLE) {
+				rightToeTouched = false;
+				rightToeAngle = weightR;
+			} else if (rightFootPos.y - floorLevel < 0.0f) {
+				rightToeTouched = true;
+				rightToeAngle = 1.0f;
+			}
 		}
 
 		// update the foot rotations in the buffer
