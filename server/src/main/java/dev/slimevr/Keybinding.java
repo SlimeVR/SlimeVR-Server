@@ -60,15 +60,12 @@ public class Keybinding implements HotkeyListener {
 	public void onHotKey(int identifier) {
 		switch (identifier) {
 			case RESET -> {
-				LogManager.info("[Keybinding] Reset pressed");
 				server.scheduleResetTrackers(resetSourceName, this.config.getResetDelay());
 			}
 			case QUICK_RESET -> {
-				LogManager.info("[Keybinding] Quick reset pressed");
 				server.scheduleResetTrackersYaw(resetSourceName, this.config.getQuickResetDelay());
 			}
 			case RESET_MOUNTING -> {
-				LogManager.info("[Keybinding] Reset mounting pressed");
 				server
 					.scheduleResetTrackersMounting(
 						resetSourceName,
