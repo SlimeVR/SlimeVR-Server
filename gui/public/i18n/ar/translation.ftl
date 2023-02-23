@@ -30,7 +30,6 @@ body_part-RIGHT_HAND = اليد اليمنى
 body_part-RIGHT_UPPER_LEG = الفخذ الأيمن
 body_part-RIGHT_LOWER_LEG = الكاحل الأيمن
 body_part-RIGHT_FOOT = القدم اليمنى
-body_part-RIGHT_CONTROLLER = جهاز التحكم اليمنى
 body_part-CHEST = الصدر
 body_part-WAIST = الخصر
 body_part-HIP = الورك
@@ -41,7 +40,6 @@ body_part-LEFT_HAND = اليد اليسرى
 body_part-LEFT_UPPER_LEG = الفخذ الأيسر
 body_part-LEFT_LOWER_LEG = الكاحل الأيسر
 body_part-LEFT_FOOT = القدم اليسرى
-body_part-LEFT_CONTROLLER = جهاز التحكم الايسر
 
 ## Proportions
 
@@ -63,8 +61,8 @@ skeleton_bone-SHOULDERS_DISTANCE = مسافة الكتفين
 skeleton_bone-SHOULDERS_WIDTH = عرض الكتفين
 skeleton_bone-UPPER_ARM = طول العضد
 skeleton_bone-LOWER_ARM = طول الساعد
-skeleton_bone-CONTROLLER_Y = مسافة وحدة التحكم Y
-skeleton_bone-CONTROLLER_Z = مسافة وحدة التحكم Z
+skeleton_bone-HAND_Y = مسافة اليد Y
+skeleton_bone-HAND_Z = مسافة اليد Z
 skeleton_bone-ELBOW_OFFSET = درجة تشريد الكوع
 
 ## Tracker reset buttons
@@ -160,6 +158,8 @@ tracker-infos-manufacturer = المصنّع
 tracker-infos-display_name = اسم العرض
 tracker-infos-custom_name = اسم مخصص
 tracker-infos-url = عنوان URL لجهاز التعقب
+tracker-infos-version = إصدار البرنامج الثابت
+tracker-infos-hardware_rev = مراجعة الأجهزة
 
 ## Tracker settings
 
