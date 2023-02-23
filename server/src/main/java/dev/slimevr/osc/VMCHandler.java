@@ -46,7 +46,7 @@ public class VMCHandler implements OSCHandler {
 	private final Quaternion yawOffset = new Quaternion();
 	private UnityArmature inputUnityArmature;
 	private UnityArmature outputUnityArmature;
-	private float scaleMultiplier;
+	private float vrmHeight;
 	private Device trackerDevice;
 	private float timeAtLastError;
 	private boolean anchorHip;
@@ -168,13 +168,14 @@ public class VMCHandler implements OSCHandler {
 							.setTranslation(vrmReader.getOffsetForBone(unityBone));
 				}
 
-				vecBuf.zero();
-				vecBuf.addLocal(vrmReader.getOffsetForBone(UnityBone.HIPS));
-				vecBuf.addLocal(vrmReader.getOffsetForBone(UnityBone.SPINE));
-				vecBuf.addLocal(vrmReader.getOffsetForBone(UnityBone.CHEST));
-				vecBuf.addLocal(vrmReader.getOffsetForBone(UnityBone.UPPER_CHEST));
-				vecBuf.addLocal(vrmReader.getOffsetForBone(UnityBone.NECK));
-				scaleMultiplier = vecBuf.length();
+				vrmHeight = vrmReader
+					.getOffsetForBone(UnityBone.HIPS)
+					.add(vrmReader.getOffsetForBone(UnityBone.SPINE))
+					.addLocal(vrmReader.getOffsetForBone(UnityBone.CHEST))
+					.addLocal(vrmReader.getOffsetForBone(UnityBone.UPPER_CHEST))
+					.addLocal(vrmReader.getOffsetForBone(UnityBone.NECK))
+					.addLocal(vrmReader.getOffsetForBone(UnityBone.HEAD))
+					.length();
 			}
 		}
 
@@ -365,6 +366,29 @@ public class VMCHandler implements OSCHandler {
 								tailNode.getParent().worldTransform.getRotation()
 							);
 				}
+				if (!anchorHip) {
+					// Anchor from head
+					outputUnityArmature.getRootNode().localTransform
+						.setTranslation(
+							humanPoseManager.getTailNodeOfBone(BoneType.HEAD).worldTransform
+								.getTranslation()
+								.mult(vrmHeight)
+								.subtractLocal(
+									(outputUnityArmature
+										.getHeadNodeOfBone(UnityBone.HEAD)
+										.getParent().worldTransform
+											.getTranslation()
+											.subtract(
+												outputUnityArmature
+													.getHeadNodeOfBone(
+														UnityBone.HIPS
+													).worldTransform.getTranslation()
+											)).multLocal(10f / 9f)
+								)
+						);
+				}
+
+				// Update Unity skeleton
 				outputUnityArmature.updateNodes();
 
 				// Add Unity humanoid bones transforms
@@ -375,47 +399,10 @@ public class VMCHandler implements OSCHandler {
 							&& !(humanPoseManager.isTrackingRightArmFromController()
 								&& isRightArmUnityBone(bone))
 					) {
-						if (bone == UnityBone.HIPS) {
-							// Add the tracking root
-							// Get position
-							if (anchorHip) {
-								// Hip anchor
-								vecBuf
-									.set(
-										outputUnityArmature
-											.getGlobalTranslationForBone(UnityBone.HIPS)
-									);
-							} else {
-								// Head anchor
-								vecBuf
-									.set(
-										humanPoseManager
-											.getTailNodeOfBone(BoneType.HEAD).worldTransform
-												.getTranslation()
-									)
-									.multLocal(scaleMultiplier)
-									.addLocal(
-										humanPoseManager
-											.getTailNodeOfBone(BoneType.HIP).worldTransform
-												.getTranslation()
-												.mult(scaleMultiplier)
-									);
-							}
-
-							// Get rotation
-							quatBuf
-								.set(outputUnityArmature.getGlobalRotationForBone(UnityBone.HIPS));
-						} else {
-							// Get position
-							vecBuf
-								.set(
-									outputUnityArmature.getLocalTranslationForBone(bone)
-								);
-
-							// Get rotation
-							quatBuf
-								.set(outputUnityArmature.getLocalRotationForBone(bone));
-						}
+						// Get position
+						vecBuf.set(outputUnityArmature.getLocalTranslationForBone(bone));
+						// Get rotation
+						quatBuf.set(outputUnityArmature.getLocalRotationForBone(bone));
 
 						oscArgs.clear();
 						oscArgs.add(bone.stringVal);

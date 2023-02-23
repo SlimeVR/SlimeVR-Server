@@ -64,6 +64,7 @@ public class VRServer extends Thread {
 	private final Timer timer = new Timer();
 	private final NanoTimer fpsTimer = new NanoTimer();
 	private final ProvisioningHandler provisioningHandler;
+	private int vmcHZLimiter;
 
 	/**
 	 * This function is used by VRWorkout, do not remove!
@@ -291,7 +292,11 @@ public class VRServer extends Thread {
 				bridge.dataWrite();
 			}
 			vrcOSCHandler.update();
-			vmcHandler.update();
+			if(vmcHZLimiter > 1){
+				vmcHandler.update();
+				vmcHZLimiter = 0;
+			}
+			vmcHZLimiter++;
 			// final long time = System.currentTimeMillis() - start;
 			try {
 				Thread.sleep(1); // 1000Hz

@@ -83,6 +83,10 @@ public class UnityArmature {
 		hipNode.update();
 	}
 
+	public TransformNode getRootNode() {
+		return hipNode;
+	}
+
 	public void setRootPose(Vector3f globalPos, Quaternion globalRot) {
 		rootPosition.set(globalPos);
 		rootRotation.set(globalRot);
@@ -148,6 +152,17 @@ public class UnityArmature {
 	public Vector3f getLocalTranslationForBone(UnityBone unityBone) {
 		TransformNode node = getHeadNodeOfBone(unityBone);
 		if (node != null) {
+			if (unityBone == UnityBone.HIPS) {
+				return node.worldTransform
+					.getTranslation()
+					.mult(2f)
+					.subtractLocal(
+						(leftHipNode.worldTransform
+							.getTranslation()
+							.add(rightHipNode.worldTransform.getTranslation())).multLocal(0.5f)
+					)
+					.addLocal(rootPosition);
+			}
 			return node.localTransform.getTranslation();
 		}
 		return Vector3f.ZERO;
@@ -164,7 +179,7 @@ public class UnityArmature {
 		TransformNode node = getHeadNodeOfBone(unityBone);
 		if (node != null) {
 			if (unityBone == UnityBone.HIPS)
-				return node.worldTransform.getRotation();
+				return node.worldTransform.getRotation().mult(rootRotation);
 			else
 				return node.getParent().worldTransform
 					.getRotation()

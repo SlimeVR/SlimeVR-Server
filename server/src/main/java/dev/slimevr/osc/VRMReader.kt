@@ -27,7 +27,7 @@ class VRMReader(vrmJson: String) {
 		translation.x = translationNode[0].toFloat()
 		translation.y = translationNode[1].toFloat()
 		translation.z = -translationNode[2].toFloat()
-		if (unityBone == UnityBone.LEFT_FOOT || unityBone == UnityBone.RIGHT_FOOT) {
+		if (unityBone != UnityBone.LEFT_FOOT && unityBone != UnityBone.RIGHT_FOOT) {
 			translation.z = -translation.z
 		}
 
