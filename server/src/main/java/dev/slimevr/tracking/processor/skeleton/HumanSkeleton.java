@@ -1696,7 +1696,7 @@ public class HumanSkeleton {
 		}
 		this.legTweaks.resetBuffer();
 
-		LogManager.info("Reset: quick (%s)".formatted(resetSourceName));
+		LogManager.info("Reset: yaw (%s)".formatted(resetSourceName));
 	}
 
 	public void updateTapDetectionConfig() {
