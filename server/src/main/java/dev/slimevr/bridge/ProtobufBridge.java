@@ -76,9 +76,12 @@ public abstract class ProtobufBridge<T extends VRTracker> implements Bridge {
 			hadNewData = true;
 		}
 		if (hadNewData && hmdTracker != null) {
-			if (hmd.getStatus() == dev.slimevr.tracking.trackers.TrackerStatus.DISCONNECTED)
-				Main.getVrServer().trackerUpdated(hmd);
 			trackerOverrideUpdate(hmdTracker, hmd);
+			// If HMD was DISCONNECTED, need to rebuild the skeleton, as it
+			// ignores the HMD if it's DISCONNECTED in order to support using
+			// other trackers on head.
+			if (hmd.getStatus() == dev.slimevr.tracking.trackers.TrackerStatus.DISCONNECTED)
+				Main.getVrServer().updateSkeletonModel();
 		}
 	}
 

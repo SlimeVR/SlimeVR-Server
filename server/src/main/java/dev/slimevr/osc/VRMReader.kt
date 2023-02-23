@@ -11,6 +11,7 @@ import java.util.*
 
 private val jsonIgnoreKeys = Json { ignoreUnknownKeys = true }
 class VRMReader(vrmJson: String) {
+
 	private val data: GLTF = jsonIgnoreKeys.decodeFromString(vrmJson)
 
 	fun getOffsetForBone(unityBone: UnityBone): Vector3f {

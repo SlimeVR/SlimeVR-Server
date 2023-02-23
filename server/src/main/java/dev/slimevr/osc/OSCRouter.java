@@ -21,7 +21,7 @@ public class OSCRouter {
 	private int lastPortIn;
 	private int lastPortOut;
 	private InetAddress lastAddress;
-	private float timeAtLastError;
+	private long timeAtLastError;
 
 	public OSCRouter(
 		OSCConfig oscConfig,

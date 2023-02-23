@@ -196,7 +196,7 @@ public class HumanPoseManager {
 	}
 
 	@VRServerThread
-	private void updateSkeletonModelFromServer() {
+	public void updateSkeletonModelFromServer() {
 		disconnectComputedHumanPoseTrackers();
 		skeleton = new HumanSkeleton(this, server);
 		skeletonConfigManager.loadFromConfig(server.getConfigManager());

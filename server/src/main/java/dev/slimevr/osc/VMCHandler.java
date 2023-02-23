@@ -48,7 +48,8 @@ public class VMCHandler implements OSCHandler {
 	private UnityArmature outputUnityArmature;
 	private float vrmHeight;
 	private Device trackerDevice;
-	private float timeAtLastError;
+	private long timeAtLastError;
+	private long timeAtLastSend;
 	private boolean anchorHip;
 	private int lastPortIn;
 	private int lastPortOut;
@@ -317,148 +318,152 @@ public class VMCHandler implements OSCHandler {
 		if (inputUnityArmature != null)
 			inputUnityArmature.updateNodes();
 
-		// Send OSC data
-		if (oscSender != null && oscSender.isConnected()) {
-			// Create new OSC Bundle
-			OSCBundle oscBundle = new OSCBundle();
+		long currentTime = System.currentTimeMillis();
+		if (currentTime - timeAtLastSend > 3) { // 200hz to not crash VSF
+			timeAtLastSend = currentTime;
+			// Send OSC data
+			if (oscSender != null && oscSender.isConnected()) {
+				// Create new OSC Bundle
+				OSCBundle oscBundle = new OSCBundle();
 
-			// Add our relative time
-			oscArgs.clear();
-			oscArgs.add((System.currentTimeMillis() - startTime) / 1000f);
-			oscBundle.addPacket(new OSCMessage("/VMC/Ext/T", oscArgs.clone()));
-
-			if (humanPoseManager.isSkeletonPresent()) {
-				// Indicate tracking is available
+				// Add our relative time
 				oscArgs.clear();
-				oscArgs.add(1);
-				oscBundle
-					.addPacket(
-						new OSCMessage(
-							"/VMC/Ext/OK",
-							oscArgs.clone()
-						)
-					);
+				oscArgs.add((System.currentTimeMillis() - startTime) / 1000f);
+				oscBundle.addPacket(new OSCMessage("/VMC/Ext/T", oscArgs.clone()));
 
-				vecBuf.zero();
-				quatBuf.loadIdentity();
-				oscArgs.clear();
-				oscArgs.add("root");
-				addTransformToArgs(vecBuf, quatBuf);
-				oscBundle
-					.addPacket(
-						new OSCMessage(
-							"/VMC/Ext/Root/Pos",
-							oscArgs.clone()
-						)
-					);
-
-				for (UnityBone bone : UnityBone.values) {
-					// Get tailNode for bone
-					TransformNode tailNode = humanPoseManager
-						.getTailNodeOfBone(
-							bone.boneType
+				if (humanPoseManager.isSkeletonPresent()) {
+					// Indicate tracking is available
+					oscArgs.clear();
+					oscArgs.add(1);
+					oscBundle
+						.addPacket(
+							new OSCMessage(
+								"/VMC/Ext/OK",
+								oscArgs.clone()
+							)
 						);
-					// Update unity hierarchy from bone's global rotation
-					if (tailNode != null && tailNode.getParent() != null)
-						outputUnityArmature
-							.setBoneRotationFromGlobal(
-								bone,
-								tailNode.getParent().worldTransform.getRotation()
+
+					vecBuf.zero();
+					quatBuf.loadIdentity();
+					oscArgs.clear();
+					oscArgs.add("root");
+					addTransformToArgs(vecBuf, quatBuf);
+					oscBundle
+						.addPacket(
+							new OSCMessage(
+								"/VMC/Ext/Root/Pos",
+								oscArgs.clone()
+							)
+						);
+
+					for (UnityBone bone : UnityBone.values) {
+						// Get tailNode for bone
+						TransformNode tailNode = humanPoseManager
+							.getTailNodeOfBone(
+								bone.boneType
 							);
-				}
-				if (!anchorHip) {
-					// Anchor from head
-					outputUnityArmature.getRootNode().localTransform
-						.setTranslation(
-							humanPoseManager.getTailNodeOfBone(BoneType.HEAD).worldTransform
-								.getTranslation()
-								.mult(vrmHeight)
-								.subtractLocal(
-									(outputUnityArmature
-										.getHeadNodeOfBone(UnityBone.HEAD)
-										.getParent().worldTransform
-											.getTranslation()
-											.subtract(
-												outputUnityArmature
-													.getHeadNodeOfBone(
-														UnityBone.HIPS
-													).worldTransform.getTranslation()
-											)).multLocal(10f / 9f)
-								)
-						);
-				}
-
-				// Update Unity skeleton
-				outputUnityArmature.updateNodes();
-
-				// Add Unity humanoid bones transforms
-				for (UnityBone bone : UnityBone.values) {
-					if (
-						!(humanPoseManager.isTrackingLeftArmFromController()
-							&& isLeftArmUnityBone(bone))
-							&& !(humanPoseManager.isTrackingRightArmFromController()
-								&& isRightArmUnityBone(bone))
-					) {
-						// Get position
-						vecBuf.set(outputUnityArmature.getLocalTranslationForBone(bone));
-						// Get rotation
-						quatBuf.set(outputUnityArmature.getLocalRotationForBone(bone));
-
-						oscArgs.clear();
-						oscArgs.add(bone.stringVal);
-						addTransformToArgs(vecBuf, quatBuf);
-						oscBundle
-							.addPacket(
-								new OSCMessage(
-									"/VMC/Ext/Bone/Pos",
-									oscArgs.clone()
-								)
+						// Update unity hierarchy from bone's global rotation
+						if (tailNode != null && tailNode.getParent() != null)
+							outputUnityArmature
+								.setBoneRotationFromGlobal(
+									bone,
+									tailNode.getParent().worldTransform.getRotation()
+								);
+					}
+					if (!anchorHip) {
+						// Anchor from head
+						outputUnityArmature.getRootNode().localTransform
+							.setTranslation(
+								humanPoseManager.getTailNodeOfBone(BoneType.HEAD).worldTransform
+									.getTranslation()
+									.mult(vrmHeight)
+									.subtractLocal(
+										(outputUnityArmature
+											.getHeadNodeOfBone(UnityBone.HEAD)
+											.getParent().worldTransform
+												.getTranslation()
+												.subtract(
+													outputUnityArmature
+														.getHeadNodeOfBone(
+															UnityBone.HIPS
+														).worldTransform.getTranslation()
+												)).multLocal(10f / 9f)
+									)
 							);
 					}
 
+					// Update Unity skeleton
+					outputUnityArmature.updateNodes();
 
+					// Add Unity humanoid bones transforms
+					for (UnityBone bone : UnityBone.values) {
+						if (
+							!(humanPoseManager.isTrackingLeftArmFromController()
+								&& isLeftArmUnityBone(bone))
+								&& !(humanPoseManager.isTrackingRightArmFromController()
+									&& isRightArmUnityBone(bone))
+						) {
+							// Get position
+							vecBuf.set(outputUnityArmature.getLocalTranslationForBone(bone));
+							// Get rotation
+							quatBuf.set(outputUnityArmature.getLocalRotationForBone(bone));
+
+							oscArgs.clear();
+							oscArgs.add(bone.stringVal);
+							addTransformToArgs(vecBuf, quatBuf);
+							oscBundle
+								.addPacket(
+									new OSCMessage(
+										"/VMC/Ext/Bone/Pos",
+										oscArgs.clone()
+									)
+								);
+						}
+
+
+					}
 				}
-			}
 
-			for (ShareableTracker shareableTracker : shareableTrackers) {
-				shareableTracker.getPosition(vecBuf);
-				shareableTracker.getRotation(quatBuf);
-				oscArgs.clear();
-				oscArgs.add(String.valueOf(shareableTracker.getTrackerId()));
-				addTransformToArgs(vecBuf, quatBuf);
-				String address;
-				TrackerRole role = shareableTracker.getTrackerRole();
-				if (role == TrackerRole.HMD) {
-					address = "/VMC/Ext/Hmd/Pos";
-				} else if (
-					role == TrackerRole.LEFT_CONTROLLER || role == TrackerRole.RIGHT_CONTROLLER
-				) {
-					address = "/VMC/Ext/Con/Pos";
-				} else {
-					address = "/VMC/Ext/Tra/Pos";
-				}
-				oscBundle
-					.addPacket(
-						new OSCMessage(
-							address,
-							oscArgs.clone()
-						)
-					);
-			}
-
-			// Send OSC packets as bundle
-			try {
-				oscSender.send(oscBundle);
-			} catch (IOException | OSCSerializeException e) {
-				// Avoid spamming AsynchronousCloseException too many
-				// times per second
-				if (System.currentTimeMillis() - timeAtLastError > 100) {
-					timeAtLastError = System.currentTimeMillis();
-					LogManager
-						.warning(
-							"[VMCHandler] Error sending OSC packets: "
-								+ e
+				for (ShareableTracker shareableTracker : shareableTrackers) {
+					shareableTracker.getPosition(vecBuf);
+					shareableTracker.getRotation(quatBuf);
+					oscArgs.clear();
+					oscArgs.add(String.valueOf(shareableTracker.getTrackerId()));
+					addTransformToArgs(vecBuf, quatBuf);
+					String address;
+					TrackerRole role = shareableTracker.getTrackerRole();
+					if (role == TrackerRole.HMD) {
+						address = "/VMC/Ext/Hmd/Pos";
+					} else if (
+						role == TrackerRole.LEFT_CONTROLLER || role == TrackerRole.RIGHT_CONTROLLER
+					) {
+						address = "/VMC/Ext/Con/Pos";
+					} else {
+						address = "/VMC/Ext/Tra/Pos";
+					}
+					oscBundle
+						.addPacket(
+							new OSCMessage(
+								address,
+								oscArgs.clone()
+							)
 						);
+				}
+
+				// Send OSC packets as bundle
+				try {
+					oscSender.send(oscBundle);
+				} catch (IOException | OSCSerializeException e) {
+					// Avoid spamming AsynchronousCloseException too many
+					// times per second
+					if (System.currentTimeMillis() - timeAtLastError > 100) {
+						timeAtLastError = System.currentTimeMillis();
+						LogManager
+							.warning(
+								"[VMCHandler] Error sending OSC packets: "
+									+ e
+							);
+					}
 				}
 			}
 		}

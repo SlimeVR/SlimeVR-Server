@@ -45,7 +45,7 @@ public class VRCOSCHandler implements OSCHandler {
 	private int lastPortIn;
 	private int lastPortOut;
 	private InetAddress lastAddress;
-	private float timeAtLastError;
+	private long timeAtLastError;
 
 	public VRCOSCHandler(
 		VRServer server,
