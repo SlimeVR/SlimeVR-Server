@@ -168,6 +168,32 @@ export class SkeletonGroup {
   has(bone: SkeletonBone): boolean {
     return this.children.some((x) => x.bone === bone);
   }
+
+  static mixArray(
+    bones: (BoneLabel | SkeletonGroup)[]
+  ): (BoneLabel | SkeletonGroup)[] {
+    if (!bones.length) return bones;
+    for (const [expectedBones, build] of SkeletonGroup.BONE_MAPPING) {
+      const group: BoneLabel[] = [];
+
+      const filtered = bones.filter((part) => {
+        if ('bone' in part && expectedBones.includes(part.bone)) {
+          group.push(part);
+          return false;
+        }
+        return true;
+      });
+
+      if (group.length !== expectedBones.length) {
+        throw `SkeletonGroup mapping has invalid expected bones: ${expectedBones}`;
+      }
+
+      filtered.push(build(...group));
+
+      bones = filtered;
+    }
+    return bones;
+  }
 }
 
 export function RatioBoneList({
@@ -180,7 +206,7 @@ export function RatioBoneList({
   const { l10n } = useLocalization();
 
   const bodyParts = useMemo(() => {
-    return (
+    return SkeletonGroup.mixArray(
       config?.skeletonParts.map(({ bone, value }) => ({
         bone,
         label: l10n.getString('skeleton_bone-' + SkeletonBone[bone]),
@@ -217,72 +243,142 @@ export function RatioBoneList({
 
   return (
     <>
-      {bodyParts.map(({ label, bone, value }) => (
-        <div className="flex" key={bone}>
-          <div
-            className={classNames(
-              'flex gap-2 transition-opacity duration-300',
-              selectedBone != bone && 'opacity-0 pointer-events-none'
-            )}
-          >
-            {!precise && (
-              <IncrementButton onClick={() => decrement(value, 5)}>
-                -5
-              </IncrementButton>
-            )}
-            <IncrementButton onClick={() => decrement(value, 1)}>
-              -1
-            </IncrementButton>
-            {precise && (
-              <IncrementButton onClick={() => decrement(value, 0.5)}>
-                -0.5
-              </IncrementButton>
-            )}
-          </div>
-          <div
-            className="flex flex-grow flex-col px-2"
-            onClick={() => setSelectedBone(bone)}
-          >
+      {bodyParts.map(({ label, value, ...props }) =>
+        'bone' in props ? (
+          <div className="flex" key={props.bone}>
             <div
-              key={bone}
               className={classNames(
-                'p-3  rounded-lg h-16 flex w-full items-center justify-between px-6 transition-colors duration-300 bg-background-60',
-                (selectedBone == bone && 'opacity-100') || 'opacity-50'
+                'flex gap-2 transition-opacity duration-300',
+                selectedBone != props.bone && 'opacity-0 pointer-events-none'
               )}
             >
-              <Typography variant="section-title" bold>
-                {label}
-              </Typography>
-              <Typography variant="main-title" bold>
-                {Number(value * 100)
-                  .toFixed(1)
-                  .replace(/[.,]0$/, '')}{' '}
-                CM
-              </Typography>
+              {!precise && (
+                <IncrementButton onClick={() => decrement(value, 5)}>
+                  -5
+                </IncrementButton>
+              )}
+              <IncrementButton onClick={() => decrement(value, 1)}>
+                -1
+              </IncrementButton>
+              {precise && (
+                <IncrementButton onClick={() => decrement(value, 0.5)}>
+                  -0.5
+                </IncrementButton>
+              )}
+            </div>
+            <div
+              className="flex flex-grow flex-col px-2"
+              onClick={() => setSelectedBone(props.bone)}
+            >
+              <div
+                key={props.bone}
+                className={classNames(
+                  'p-3  rounded-lg h-16 flex w-full items-center justify-between px-6 transition-colors duration-300 bg-background-60',
+                  (selectedBone == props.bone && 'opacity-100') || 'opacity-50'
+                )}
+              >
+                <Typography variant="section-title" bold>
+                  {label}
+                </Typography>
+                <Typography variant="main-title" bold>
+                  {Number(value * 100)
+                    .toFixed(1)
+                    .replace(/[.,]0$/, '')}{' '}
+                  CM
+                </Typography>
+              </div>
+            </div>
+            <div
+              className={classNames(
+                'flex gap-2 transition-opacity duration-300',
+                selectedBone != props.bone && 'opacity-0 pointer-events-none'
+              )}
+            >
+              {precise && (
+                <IncrementButton onClick={() => increment(value, 0.5)}>
+                  +0.5
+                </IncrementButton>
+              )}
+              <IncrementButton onClick={() => increment(value, 1)}>
+                +1
+              </IncrementButton>
+              {!precise && (
+                <IncrementButton onClick={() => increment(value, 5)}>
+                  +5
+                </IncrementButton>
+              )}
             </div>
           </div>
-          <div
-            className={classNames(
-              'flex gap-2 transition-opacity duration-300',
-              selectedBone != bone && 'opacity-0 pointer-events-none'
-            )}
-          >
-            {precise && (
-              <IncrementButton onClick={() => increment(value, 0.5)}>
-                +0.5
-              </IncrementButton>
-            )}
-            <IncrementButton onClick={() => increment(value, 1)}>
-              +1
-            </IncrementButton>
-            {!precise && (
-              <IncrementButton onClick={() => increment(value, 5)}>
-                +5
-              </IncrementButton>
-            )}
-          </div>
-        </div>
-      ))}
+        ) : (
+          <>
+            <div className="flex" key={label}>
+              <div
+                className={classNames(
+                  'flex gap-2 transition-opacity duration-300',
+                  selectedBone != props.bone && 'opacity-0 pointer-events-none'
+                )}
+              >
+                {!precise && (
+                  <IncrementButton onClick={() => decrement(value, 5)}>
+                    -5
+                  </IncrementButton>
+                )}
+                <IncrementButton onClick={() => decrement(value, 1)}>
+                  -1
+                </IncrementButton>
+                {precise && (
+                  <IncrementButton onClick={() => decrement(value, 0.5)}>
+                    -0.5
+                  </IncrementButton>
+                )}
+              </div>
+              <div
+                className="flex flex-grow flex-col px-2"
+                onClick={() => setSelectedBone(props.bone)}
+              >
+                <div
+                  key={props.bone}
+                  className={classNames(
+                    'p-3  rounded-lg h-16 flex w-full items-center justify-between px-6 transition-colors duration-300 bg-background-60',
+                    (selectedBone == props.bone && 'opacity-100') ||
+                      'opacity-50'
+                  )}
+                >
+                  <Typography variant="section-title" bold>
+                    {label}
+                  </Typography>
+                  <Typography variant="main-title" bold>
+                    {Number(value * 100)
+                      .toFixed(1)
+                      .replace(/[.,]0$/, '')}{' '}
+                    CM
+                  </Typography>
+                </div>
+              </div>
+              <div
+                className={classNames(
+                  'flex gap-2 transition-opacity duration-300',
+                  selectedBone != props.bone && 'opacity-0 pointer-events-none'
+                )}
+              >
+                {precise && (
+                  <IncrementButton onClick={() => increment(value, 0.5)}>
+                    +0.5
+                  </IncrementButton>
+                )}
+                <IncrementButton onClick={() => increment(value, 1)}>
+                  +1
+                </IncrementButton>
+                {!precise && (
+                  <IncrementButton onClick={() => increment(value, 5)}>
+                    +5
+                  </IncrementButton>
+                )}
+              </div>
+            </div>
+          </>
+        )
+      )}
     </>
   );
 }
