@@ -7,6 +7,7 @@ import com.illposed.osc.transport.OSCPortOut;
 import com.jme3.math.Quaternion;
 import com.jme3.math.Vector3f;
 import dev.slimevr.VRServer;
+import dev.slimevr.autobone.errors.BodyProportionError;
 import dev.slimevr.config.VMCConfig;
 import dev.slimevr.tracking.Device;
 import dev.slimevr.tracking.processor.BoneType;
@@ -168,7 +169,6 @@ public class VMCHandler implements OSCHandler {
 						node.localTransform
 							.setTranslation(vrmReader.getOffsetForBone(unityBone));
 				}
-
 				vrmHeight = vrmReader
 					.getOffsetForBone(UnityBone.HIPS)
 					.add(vrmReader.getOffsetForBone(UnityBone.SPINE))
@@ -376,7 +376,11 @@ public class VMCHandler implements OSCHandler {
 							.setTranslation(
 								humanPoseManager.getTailNodeOfBone(BoneType.HEAD).worldTransform
 									.getTranslation()
-									.mult(vrmHeight)
+									.mult(
+										vrmHeight
+											/ (humanPoseManager.getUserHeightFromConfig()
+												* BodyProportionError.eyeHeightToHeightRatio)
+									)
 									.subtractLocal(
 										(outputUnityArmature
 											.getHeadNodeOfBone(UnityBone.HEAD)
@@ -385,9 +389,12 @@ public class VMCHandler implements OSCHandler {
 												.subtract(
 													outputUnityArmature
 														.getHeadNodeOfBone(
-															UnityBone.HIPS
-														).worldTransform.getTranslation()
-												)).multLocal(10f / 9f)
+															UnityBone.HIPS // TODO
+																			// hip
+																			// dafuq
+														).worldTransform
+															.getTranslation()
+												))
 									)
 							);
 					}

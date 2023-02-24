@@ -1264,7 +1264,11 @@ public class HumanSkeleton {
 
 		switch (nodeOffset) {
 			case HEAD:
-				headNode.localTransform.setTranslation(offset);
+				if (hmdTracker != null && hmdTracker.hasPosition()) {
+					headNode.localTransform.setTranslation(offset);
+				} else {
+					headNode.localTransform.setTranslation(Vector3f.ZERO);
+				}
 				break;
 			case NECK:
 				neckNode.localTransform.setTranslation(offset);
