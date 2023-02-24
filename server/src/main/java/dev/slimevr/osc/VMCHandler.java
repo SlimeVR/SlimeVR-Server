@@ -372,6 +372,9 @@ public class VMCHandler implements OSCHandler {
 					}
 					if (!anchorHip) {
 						// Anchor from head
+						// Gets the SlimeVR head position, scales it to the VRM,
+						// and subtracts the difference between the VRM's head and hip
+						// FIXME this way isn't perfect, but I give up - Erimel
 						outputUnityArmature.getRootNode().localTransform
 							.setTranslation(
 								humanPoseManager.getTailNodeOfBone(BoneType.HEAD).worldTransform
@@ -387,13 +390,18 @@ public class VMCHandler implements OSCHandler {
 											.getParent().worldTransform
 												.getTranslation()
 												.subtract(
-													outputUnityArmature
+													(outputUnityArmature
 														.getHeadNodeOfBone(
-															UnityBone.HIPS // TODO
-																			// hip
-																			// dafuq
+															UnityBone.LEFT_UPPER_LEG
 														).worldTransform
 															.getTranslation()
+															.add(
+																outputUnityArmature
+																	.getHeadNodeOfBone(
+																		UnityBone.RIGHT_UPPER_LEG
+																	).worldTransform
+																		.getTranslation()
+															)).multLocal(0.5f)
 												))
 									)
 							);
@@ -426,8 +434,6 @@ public class VMCHandler implements OSCHandler {
 									)
 								);
 						}
-
-
 					}
 				}
 

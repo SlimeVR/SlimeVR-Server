@@ -333,11 +333,11 @@ public class HumanSkeleton {
 			// don't send currently
 			shareableBoneInfo.add(getBoneInfoForBoneType(BoneType.LEFT_SHOULDER));
 		}
-		if (hasLeftArmTracker && sendAllBones) {
+		if (hasLeftArmTracker || sendAllBones) {
 			// don't send currently
 			shareableBoneInfo.add(getBoneInfoForBoneType(BoneType.LEFT_UPPER_ARM));
 		}
-		if (hasLeftArmTracker || sendAllBones) {
+		if (hasLeftArmTracker && sendAllBones) {
 			shareableBoneInfo.add(getBoneInfoForBoneType(BoneType.LEFT_LOWER_ARM));
 		}
 		if ((hasLeftArmTracker || leftHandTracker != null) && sendAllBones) {
@@ -350,14 +350,14 @@ public class HumanSkeleton {
 			// don't send currently
 			shareableBoneInfo.add(getBoneInfoForBoneType(BoneType.RIGHT_SHOULDER));
 		}
-		if (hasRightArmTracker && sendAllBones) {
+		if (hasRightArmTracker || sendAllBones) {
 			// don't send currently
 			shareableBoneInfo.add(getBoneInfoForBoneType(BoneType.RIGHT_UPPER_ARM));
 		}
-		if (hasRightArmTracker || sendAllBones) {
+		if (hasRightArmTracker && sendAllBones) {
 			shareableBoneInfo.add(getBoneInfoForBoneType(BoneType.RIGHT_LOWER_ARM));
 		}
-		if ((hasRightArmTracker || rightHandTracker != null) && sendAllBones) {
+		if ((hasRightArmTracker && rightHandTracker != null) && sendAllBones) {
 			// don't send currently
 			shareableBoneInfo.add(getBoneInfoForBoneType(BoneType.RIGHT_HAND));
 		}
