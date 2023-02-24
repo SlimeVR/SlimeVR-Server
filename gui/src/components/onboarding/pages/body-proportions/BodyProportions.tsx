@@ -209,9 +209,8 @@ export class SkeletonGroup {
     this.children[i].ratio += v;
     const filtered = this.children.filter((_x, index) => i !== index);
     const total = filtered.reduce((acc, cur) => acc + cur.ratio, 0);
-
     for (const part of filtered) {
-      part.ratio += (part.ratio / total) * v;
+      part.ratio -= (part.ratio / total) * v;
     }
   }
 
@@ -226,7 +225,7 @@ export class SkeletonGroup {
     const total = filtered.reduce((acc, cur) => acc + cur.ratio, 0);
 
     for (const part of filtered) {
-      part.ratio -= (part.ratio / total) * v;
+      part.ratio += (part.ratio / total) * v;
     }
   }
 }
@@ -249,44 +248,62 @@ export function RatioBoneList({
     signDisplay: 'always',
     maximumFractionDigits: 1,
   });
+  const percentageFormat = Intl.NumberFormat(currentLocales, {
+    style: 'percent',
+    maximumFractionDigits: 2,
+  });
 
-  const bodyParts = useMemo(() => {
-    return SkeletonGroup.mixArray(
-      config?.skeletonParts.map(({ bone, value }) => ({
-        bone,
-        label: l10n.getString('skeleton_bone-' + SkeletonBone[bone]),
-        value,
-      })) || []
-    );
-  }, [config]);
+  const bodyParts = SkeletonGroup.mixArray(
+    config?.skeletonParts.map(({ bone, value }) => ({
+      bone,
+      label: l10n.getString('skeleton_bone-' + SkeletonBone[bone]),
+      value,
+    })) || []
+  );
 
   const [selectedBone, setSelectedBoneGroup] = useState<
     SkeletonGroup | SkeletonBone
   >(_selectedBone);
-  const [index, setIndex] = useState<number | null>(null);
+  const [currentIndex, _setCurrentIndex] = useState<number | null>(null);
 
-  const setSelectedBone = (bone: SkeletonGroup | SkeletonBone) => {
-    if (index !== null) setIndex(null);
-
-    setSelectedBoneGroup(bone);
-    if (!(bone instanceof SkeletonGroup)) {
+  const setSelectedBone = (
+    bone: SkeletonGroup | SkeletonBone,
+    i: number | null = null
+  ) => {
+    if (bone instanceof SkeletonGroup) {
+      if (i !== null) {
+        _setSelectedBone(bone.children[i].bone);
+      }
+      _setCurrentIndex(i);
+    } else {
       _setSelectedBone(bone);
     }
+
+    if (
+      currentIndex !== null &&
+      bone instanceof SkeletonGroup &&
+      selectedBone instanceof SkeletonGroup &&
+      bone.label !== selectedBone.label
+    )
+      _setCurrentIndex(null);
+
+    setSelectedBoneGroup(bone);
   };
 
   const increment = async (value: number, v: number) => {
     if (selectedBone instanceof SkeletonGroup) {
-      if (index !== null) {
-        selectedBone.increaseChild(index, v);
+      if (currentIndex !== null) {
+        selectedBone.increaseChild(currentIndex, v);
       } else {
         selectedBone.value = roundedStep(value, v, true);
       }
-
+      console.log(selectedBone);
       for (const [i, child] of selectedBone.children.entries()) {
         const configChange = new ChangeSkeletonConfigRequestT();
 
         configChange.bone = child.bone;
         configChange.value = selectedBone.getChildLength(i);
+        console.log(configChange);
 
         updateConfigValue(configChange);
       }
@@ -302,8 +319,8 @@ export function RatioBoneList({
 
   const decrement = (value: number, v: number) => {
     if (selectedBone instanceof SkeletonGroup) {
-      if (index !== null) {
-        selectedBone.decreaseChild(index, v);
+      if (currentIndex !== null) {
+        selectedBone.decreaseChild(currentIndex, v);
       } else {
         selectedBone.value = value - v / 100;
       }
@@ -328,8 +345,13 @@ export function RatioBoneList({
 
   return (
     <>
-      {bodyParts.map((part) =>
-        'bone' in part ? (
+      {bodyParts.map((part) => {
+        const isMe =
+          selectedBone instanceof SkeletonGroup &&
+          selectedBone.label === part.label &&
+          currentIndex === null;
+        console.log(part);
+        return 'bone' in part ? (
           <div className="flex" key={part.bone}>
             <div
               className={classNames(
@@ -397,7 +419,7 @@ export function RatioBoneList({
               <div
                 className={classNames(
                   'flex gap-2 transition-opacity duration-300',
-                  selectedBone != part && 'opacity-0 pointer-events-none'
+                  !isMe && 'opacity-0 pointer-events-none'
                 )}
               >
                 {!precise && (
@@ -422,7 +444,7 @@ export function RatioBoneList({
                   key={part.label}
                   className={classNames(
                     'p-3  rounded-lg h-16 flex w-full items-center justify-between px-6 transition-colors duration-300 bg-background-60',
-                    (selectedBone == part && 'opacity-100') || 'opacity-50'
+                    (isMe && 'opacity-100') || 'opacity-50'
                   )}
                 >
                   <Typography variant="section-title" bold>
@@ -436,7 +458,7 @@ export function RatioBoneList({
               <div
                 className={classNames(
                   'flex gap-2 transition-opacity duration-300',
-                  selectedBone != part && 'opacity-0 pointer-events-none'
+                  !isMe && 'opacity-0 pointer-events-none'
                 )}
               >
                 {precise && (
@@ -454,9 +476,91 @@ export function RatioBoneList({
                 )}
               </div>
             </div>
+            {/* Show children */}
+            {part.children.map((child, childIndex) => {
+              const isMe =
+                selectedBone instanceof SkeletonGroup &&
+                selectedBone.label === part.label &&
+                currentIndex === childIndex;
+              return (
+                <div className="flex" key={child.bone}>
+                  <div
+                    className={classNames(
+                      'flex gap-2 transition-opacity duration-300',
+                      !isMe && 'opacity-0 pointer-events-none'
+                    )}
+                  >
+                    {!precise && (
+                      <IncrementButton
+                        onClick={() => decrement(child.ratio, 0.05)}
+                      >
+                        {configFormat.format(-5)}
+                      </IncrementButton>
+                    )}
+                    <IncrementButton
+                      onClick={() => decrement(child.ratio, 0.01)}
+                    >
+                      {configFormat.format(-1)}
+                    </IncrementButton>
+                    {precise && (
+                      <IncrementButton
+                        onClick={() => decrement(child.ratio, 0.005)}
+                      >
+                        {configFormat.format(-0.5)}
+                      </IncrementButton>
+                    )}
+                  </div>
+                  <div
+                    className="flex flex-grow flex-col px-2"
+                    onClick={() => setSelectedBone(part, childIndex)}
+                  >
+                    <div
+                      key={child.bone}
+                      className={classNames(
+                        'p-3  rounded-lg h-16 flex w-full items-center justify-between px-6 transition-colors duration-300 bg-background-60',
+                        (isMe && 'opacity-100') || 'opacity-50'
+                      )}
+                    >
+                      <Typography variant="section-title" bold>
+                        {child.label}
+                      </Typography>
+                      <Typography variant="main-title" bold>
+                        {percentageFormat.format(child.ratio)}
+                      </Typography>
+                    </div>
+                  </div>
+                  <div
+                    className={classNames(
+                      'flex gap-2 transition-opacity duration-300',
+                      !isMe && 'opacity-0 pointer-events-none'
+                    )}
+                  >
+                    {precise && (
+                      <IncrementButton
+                        onClick={() => increment(child.ratio, 0.005)}
+                      >
+                        {configFormat.format(+0.5)}
+                      </IncrementButton>
+                    )}
+                    <IncrementButton
+                      onClick={() => increment(child.ratio, 0.01)}
+                    >
+                      {configFormat.format(+1)}
+                    </IncrementButton>
+                    {!precise && (
+                      <IncrementButton
+                        onClick={() => increment(child.ratio, 0.05)}
+                      >
+                        {configFormat.format(+5)}
+                      </IncrementButton>
+                    )}
+                  </div>
+                </div>
+              );
+            })}
           </>
-        )
-      )}
+        );
+      })}
     </>
   );
 }
