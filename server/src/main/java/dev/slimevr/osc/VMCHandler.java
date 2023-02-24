@@ -373,7 +373,8 @@ public class VMCHandler implements OSCHandler {
 					if (!anchorHip) {
 						// Anchor from head
 						// Gets the SlimeVR head position, scales it to the VRM,
-						// and subtracts the difference between the VRM's head and hip
+						// and subtracts the difference between the VRM's head
+						// and hip
 						// FIXME this way isn't perfect, but I give up - Erimel
 						outputUnityArmature.getRootNode().localTransform
 							.setTranslation(
