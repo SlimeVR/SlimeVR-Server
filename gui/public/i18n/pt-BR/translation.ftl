@@ -30,7 +30,6 @@ body_part-RIGHT_HAND = Mão Direita
 body_part-RIGHT_UPPER_LEG = Coxa direita
 body_part-RIGHT_LOWER_LEG = Canela direita
 body_part-RIGHT_FOOT = Pé direito
-body_part-RIGHT_CONTROLLER = Controle direito
 body_part-CHEST = Peito
 body_part-WAIST = Cintura
 body_part-HIP = Quadril
@@ -41,7 +40,6 @@ body_part-LEFT_HAND = Mão esquerda
 body_part-LEFT_UPPER_LEG = Coxa esquerda
 body_part-LEFT_LOWER_LEG = Canela esquerda
 body_part-LEFT_FOOT = Pé esquerdo
-body_part-LEFT_CONTROLLER = Controle esquerdo
 
 ## Proportions
 
@@ -63,8 +61,8 @@ skeleton_bone-SHOULDERS_DISTANCE = Distância dos Ombros
 skeleton_bone-SHOULDERS_WIDTH = Largura dos Ombros
 skeleton_bone-UPPER_ARM = Tamanho do Braço Superior
 skeleton_bone-LOWER_ARM = Distância do Antebraço
-skeleton_bone-CONTROLLER_Y = Distância do Controle Y
-skeleton_bone-CONTROLLER_Z = Distância do Controle Z
+skeleton_bone-HAND_Y = Distância da mão Y
+skeleton_bone-HAND_Z = Distância da mão Z
 skeleton_bone-ELBOW_OFFSET = Compensação do Cotovelo
 
 ## Tracker reset buttons
@@ -160,6 +158,8 @@ tracker-infos-manufacturer = Fabricante
 tracker-infos-display_name = Nome de exibição
 tracker-infos-custom_name = Nome personalizado
 tracker-infos-url = URL do Tracker
+tracker-infos-version = Versão do firmware
+tracker-infos-hardware_rev = Revisão do hardware
 
 ## Tracker settings
 
@@ -529,16 +529,57 @@ onboarding-assign_trackers-next = Atribui todos os trackers
 
 ## Tracker assignment warnings
 
+# Note for devs, number is used for representing boolean states per bit.
+# $unassigned (Number) - Bits are based on BodyAssignment.ASSIGNMENT_RULES order
+onboarding-assign_trackers-warning-LEFT_FOOT =
+    { $unassigned ->
+        [0] Pé esquerdo está atribuído, porém a canela esquerda, coxa esquerda e peito, quadril ou cintura também precisam ser atribuídos!
+        [1] Pé esquerdo está atribuído, porém a coxa esquerda e peito, quadril ou cintura também precisam ser atribuídos!
+        [2] Pé esquerdo está atribuído, porém a canela esquerda e peito, quadril ou cintura também precisam ser atribuídos!
+        [3] Pé esquerdo está atribuído, porém peito, quadril ou cintura também precisam ser atribuídos!
+        [4] Pé esquerdo está atribuído, porém a canela esquerda e coxa esquerda também precisam ser atribuídos!
+        [5] Pé esquerdo está atribuído, porém a coxa esquerda também precisa ser atribuída!
+        [6] Pé esquerdo está atribuído, porém a canela esquerda também precisa ser atribuída!
+       *[unknown] Pé esquerdo está atribuído, porém a parte do corpo desconhecida não atribuída também precisa ser atribuída!
+    }
+# $unassigned (Number) - Bits are based on BodyAssignment.ASSIGNMENT_RULES order
+onboarding-assign_trackers-warning-RIGHT_FOOT =
+    { $unassigned ->
+        [0] Pé direito está atribuído, porém a canela direita, coxa direita e peito, quadril ou cintura também precisam ser atribuídos!
+        [1] Pé direito está atribuído, porém a coxa direita e peito, quadril ou cintura também precisam ser atribuídos!
+        [2] Pé direito está atribuído, porém a canela direita e peito, quadril ou cintura também precisam ser atribuídos!
+        [3] Pé direito está atribuído, porém peito, quadril ou cintura também precisam ser atribuídos!
+        [4] Pé direito está atribuído, porém a canela direita e coxa direita também precisam ser atribuídos!
+        [5] Pé direito está atribuído, porém a coxa direita também precisa ser atribuída!
+        [6] Pé direito está atribuído, porém a canela direita também precisa ser atribuída!
+       *[unknown] Pé direito está atribuído, porém a parte do corpo desconhecida não atribuída também precisa ser atribuída!
+    }
+# $unassigned (Number) - Bits are based on BodyAssignment.ASSIGNMENT_RULES order
+onboarding-assign_trackers-warning-LEFT_LOWER_LEG =
+    { $unassigned ->
+        [0] Canela esquerda está atribuída, porém a coxa esquerda e peito, quadril ou cintura também precisam ser atribuídos!
+        [1] Canela esquerda está atribuída, porém peito, quadril ou cintura também precisam ser atribuídos!
+        [2] Canela esquerda está atribuída, porém a coxa direita também precisa ser atribuída!
+       *[unknown] Canela esquerda está atribuída, porém a parte do corpo desconhecida não atribuída também precisa ser atribuída!
+    }
+# $unassigned (Number) - Bits are based on BodyAssignment.ASSIGNMENT_RULES order
+onboarding-assign_trackers-warning-RIGHT_LOWER_LEG =
+    { $unassigned ->
+        [0] Canela direita está atribuída, porém a coxa direita e peito, quadril ou cintura também precisam ser atribuídos!
+        [1] Canela direita está atribuída, porém peito, quadril ou cintura também precisam ser atribuídos!
+        [2] Canela direita está atribuída, porém a coxa direita também precisa ser atribuída!
+       *[unknown] Canela direita está atribuída, porém a parte do corpo desconhecida não atribuída também precisa ser atribuída!
+    }
 # $unassigned (Number) - Bits are based on BodyAssignment.ASSIGNMENT_RULES order
 onboarding-assign_trackers-warning-LEFT_UPPER_LEG =
     { $unassigned ->
-        [0] Coxa esquerda está atribuída, porém peito, quadril ou peito também precisam ser atribuídos!
+        [0] Coxa esquerda está atribuída, porém peito, quadril ou cintura também precisam ser atribuídos!
        *[unknown] Coxa esquerda está atribuída, porém a parte do corpo desconhecida não atribuída também precisa ser atribuída!
     }
 # $unassigned (Number) - Bits are based on BodyAssignment.ASSIGNMENT_RULES order
 onboarding-assign_trackers-warning-RIGHT_UPPER_LEG =
     { $unassigned ->
-        [0] Coxa direita está atribuída, porém peito, quadril ou peito também precisam ser atribuídos!
+        [0] Coxa direita está atribuída, porém peito, quadril ou cintura também precisam ser atribuídos!
        *[unknown] Coxa direita está atribuída, porém a parte do corpo desconhecida não atribuída também precisa ser atribuída!
     }
 # $unassigned (Number) - Bits are based on BodyAssignment.ASSIGNMENT_RULES order

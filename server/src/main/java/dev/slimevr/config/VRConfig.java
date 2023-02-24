@@ -14,7 +14,7 @@ import java.util.Map;
 
 
 @JsonVersionedModel(
-	currentVersion = "6", defaultDeserializeToVersion = "6", toCurrentConverterClass = CurrentVRConfigConverter.class
+	currentVersion = "7", defaultDeserializeToVersion = "7", toCurrentConverterClass = CurrentVRConfigConverter.class
 )
 public class VRConfig {
 

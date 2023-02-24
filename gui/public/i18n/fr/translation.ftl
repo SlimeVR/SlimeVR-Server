@@ -158,6 +158,8 @@ tracker-infos-manufacturer = Fabricant
 tracker-infos-display_name = Nom
 tracker-infos-custom_name = Nom personnalisé
 tracker-infos-url = URL
+tracker-infos-version = Version du firmware
+tracker-infos-hardware_rev = Révision du hardware
 
 ## Tracker settings
 

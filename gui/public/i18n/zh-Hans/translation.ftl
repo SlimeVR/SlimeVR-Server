@@ -30,7 +30,6 @@ body_part-RIGHT_HAND = 右手
 body_part-RIGHT_UPPER_LEG = 右大腿
 body_part-RIGHT_LOWER_LEG = 右小腿
 body_part-RIGHT_FOOT = 右脚
-body_part-RIGHT_CONTROLLER = 右控制器
 body_part-CHEST = 胸部
 body_part-WAIST = 腰部
 body_part-HIP = 髋部
@@ -41,7 +40,6 @@ body_part-LEFT_HAND = 左手
 body_part-LEFT_UPPER_LEG = 左大腿
 body_part-LEFT_LOWER_LEG = 左小腿
 body_part-LEFT_FOOT = 左脚
-body_part-LEFT_CONTROLLER = 左控制器
 
 ## Proportions
 
@@ -63,8 +61,8 @@ skeleton_bone-SHOULDERS_DISTANCE = 肩膀距离
 skeleton_bone-SHOULDERS_WIDTH = 肩膀宽度
 skeleton_bone-UPPER_ARM = 上臂长度
 skeleton_bone-LOWER_ARM = 前臂距离
-skeleton_bone-CONTROLLER_Y = 控制器距离 Y
-skeleton_bone-CONTROLLER_Z = 控制器距离 Z
+skeleton_bone-HAND_Y = 手部距离Y
+skeleton_bone-HAND_Z = 手部距离Z
 skeleton_bone-ELBOW_OFFSET = 肘部偏移
 
 ## Tracker reset buttons
@@ -160,6 +158,8 @@ tracker-infos-manufacturer = 制造商
 tracker-infos-display_name = 显示名称
 tracker-infos-custom_name = 自定义名称
 tracker-infos-url = 追踪器地址
+tracker-infos-version = 固件版本
+tracker-infos-hardware_rev = 硬件版本
 
 ## Tracker settings
 
