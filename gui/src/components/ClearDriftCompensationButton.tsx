@@ -1,7 +1,8 @@
 import { useLocalization } from '@fluent/react';
 import { ClearDriftCompensationRequestT, RpcMessage } from 'solarxr-protocol';
 import { useWebsocketAPI } from '../hooks/websocket-api';
-import { Button } from './commons/Button';
+import { BigButton } from './commons/BigButton';
+import { TrashIcon } from './commons/icon/TrashIcon';
 
 export function ClearDriftCompensationButton() {
   const { l10n } = useLocalization();
@@ -13,8 +14,12 @@ export function ClearDriftCompensationButton() {
   };
 
   return (
-    <Button variant="secondary" onClick={clearDriftCompensation}>
-      {l10n.getString('widget-drift_compensation-clear')}
-    </Button>
+    <BigButton
+      text={l10n.getString('widget-drift_compensation-clear')}
+      icon={<TrashIcon width={20} />}
+      onClick={clearDriftCompensation}
+    >
+      {}
+    </BigButton>
   );
 }
