@@ -69,12 +69,17 @@ export function BodyProportions({
     );
   }, []);
 
-  const updateConfigValue = (configChange: ChangeSkeletonConfigRequestT) => {
-    sendRPCPacket(RpcMessage.ChangeSkeletonConfigRequest, configChange);
+  const updateConfigValue = (
+    ...configChanges: ChangeSkeletonConfigRequestT[]
+  ) => {
     const conf = { ...config } as Omit<SkeletonConfigResponseT, 'pack'> | null;
-    const b = conf?.skeletonParts?.find(({ bone }) => bone == selectedBone);
-    if (!b || !conf) return;
-    b.value = configChange.value;
+    for (const configChange of configChanges) {
+      sendRPCPacket(RpcMessage.ChangeSkeletonConfigRequest, configChange);
+      const b = conf?.skeletonParts?.find(({ bone }) => bone == selectedBone);
+      if (!b || !conf) return;
+      b.value = configChange.value;
+    }
+
     setConfig(conf);
   };
 
@@ -116,7 +121,7 @@ interface BoneListCall {
   config: Omit<SkeletonConfigResponseT, 'pack'> | null;
   selectedBone: SkeletonBone;
   setSelectedBone: (skeletonBone: SkeletonBone) => void;
-  updateConfigValue: (configChange: ChangeSkeletonConfigRequestT) => void;
+  updateConfigValue: (...configChange: ChangeSkeletonConfigRequestT[]) => void;
 }
 
 interface BoneLabel {
@@ -166,30 +171,23 @@ export class SkeletonGroup {
     );
   }
 
-  static mixArray(
-    bones: (BoneLabel | SkeletonGroup)[]
-  ): (BoneLabel | SkeletonGroup)[] {
-    if (!bones.length) return bones;
-    for (const [expectedBones, build] of SkeletonGroup.BONE_MAPPING) {
-      const group: BoneLabel[] = [];
+  static getGroups(bones: BoneLabel[]): SkeletonGroup[] {
+    if (!bones.length) return [];
 
-      const filtered = bones.filter((part) => {
-        if ('bone' in part && expectedBones.includes(part.bone)) {
-          group.push(part);
-          return false;
-        }
-        return true;
-      });
+    const groups = [];
+    for (const [expectedBones, build] of SkeletonGroup.BONE_MAPPING) {
+      const group = bones.filter(
+        (part) => 'bone' in part && expectedBones.includes(part.bone)
+      );
 
       if (group.length !== expectedBones.length) {
         throw `SkeletonGroup mapping has invalid expected bones: ${expectedBones}`;
       }
 
-      filtered.push(build(...group));
-
-      bones = filtered;
+      groups.push(build(...group));
     }
-    return bones;
+
+    return groups;
   }
 
   has(bone: SkeletonBone): boolean {
@@ -209,6 +207,7 @@ export class SkeletonGroup {
     this.children[i].ratio += v;
     const filtered = this.children.filter((_x, index) => i !== index);
     const total = filtered.reduce((acc, cur) => acc + cur.ratio, 0);
+
     for (const part of filtered) {
       part.ratio -= (part.ratio / total) * v;
     }
@@ -253,13 +252,18 @@ export function RatioBoneList({
     maximumFractionDigits: 2,
   });
 
-  const bodyParts = SkeletonGroup.mixArray(
-    config?.skeletonParts.map(({ bone, value }) => ({
-      bone,
-      label: l10n.getString('skeleton_bone-' + SkeletonBone[bone]),
-      value,
-    })) || []
-  );
+  const bodyParts: BoneLabel[] = useMemo(() => {
+    const temp =
+      config?.skeletonParts.map(({ bone, value }) => ({
+        bone,
+        label: l10n.getString('skeleton_bone-' + SkeletonBone[bone]),
+        value,
+      })) || [];
+
+    updateBodyGroups(SkeletonGroup.getGroups(temp));
+
+    return temp;
+  }, [config]);
 
   const [selectedBone, setSelectedBoneGroup] = useState<
     SkeletonGroup | SkeletonBone
@@ -345,13 +349,9 @@ export function RatioBoneList({
 
   return (
     <>
-      {bodyParts.map((part) => {
-        const isMe =
-          selectedBone instanceof SkeletonGroup &&
-          selectedBone.label === part.label &&
-          currentIndex === null;
-        console.log(part);
-        return 'bone' in part ? (
+      {bodyParts
+        .filter((x) => bodyGroups.some((group) => group.has(x.bone)))
+        .map((part) => (
           <div className="flex" key={part.bone}>
             <div
               className={classNames(
@@ -413,9 +413,15 @@ export function RatioBoneList({
               )}
             </div>
           </div>
-        ) : (
+        ))}
+      {bodyGroups.map((group) => {
+        const isMe =
+          selectedBone instanceof SkeletonGroup &&
+          selectedBone.label === group.label &&
+          currentIndex === null;
+        return (
           <>
-            <div className="flex" key={part.label}>
+            <div className="flex" key={group.label}>
               <div
                 className={classNames(
                   'flex gap-2 transition-opacity duration-300',
@@ -423,35 +429,35 @@ export function RatioBoneList({
                 )}
               >
                 {!precise && (
-                  <IncrementButton onClick={() => decrement(part.value, 5)}>
+                  <IncrementButton onClick={() => decrement(group.value, 5)}>
                     {configFormat.format(-5)}
                   </IncrementButton>
                 )}
-                <IncrementButton onClick={() => decrement(part.value, 1)}>
+                <IncrementButton onClick={() => decrement(group.value, 1)}>
                   {configFormat.format(-1)}
                 </IncrementButton>
                 {precise && (
-                  <IncrementButton onClick={() => decrement(part.value, 0.5)}>
+                  <IncrementButton onClick={() => decrement(group.value, 0.5)}>
                     {configFormat.format(-0.5)}
                   </IncrementButton>
                 )}
               </div>
               <div
                 className="flex flex-grow flex-col px-2"
-                onClick={() => setSelectedBone(part)}
+                onClick={() => setSelectedBone(group)}
               >
                 <div
-                  key={part.label}
+                  key={group.label}
                   className={classNames(
                     'p-3  rounded-lg h-16 flex w-full items-center justify-between px-6 transition-colors duration-300 bg-background-60',
                     (isMe && 'opacity-100') || 'opacity-50'
                   )}
                 >
                   <Typography variant="section-title" bold>
-                    {part.label}
+                    {group.label}
                   </Typography>
                   <Typography variant="main-title" bold>
-                    {cmFormat.format(part.value * 100)}
+                    {cmFormat.format(group.value * 100)}
                   </Typography>
                 </div>
               </div>
@@ -462,25 +468,25 @@ export function RatioBoneList({
                 )}
               >
                 {precise && (
-                  <IncrementButton onClick={() => increment(part.value, 0.5)}>
+                  <IncrementButton onClick={() => increment(group.value, 0.5)}>
                     {configFormat.format(+0.5)}
                   </IncrementButton>
                 )}
-                <IncrementButton onClick={() => increment(part.value, 1)}>
+                <IncrementButton onClick={() => increment(group.value, 1)}>
                   {configFormat.format(+1)}
                 </IncrementButton>
                 {!precise && (
-                  <IncrementButton onClick={() => increment(part.value, 5)}>
+                  <IncrementButton onClick={() => increment(group.value, 5)}>
                     {configFormat.format(+5)}
                   </IncrementButton>
                 )}
               </div>
             </div>
             {/* Show children */}
-            {part.children.map((child, childIndex) => {
+            {group.children.map((child, childIndex) => {
               const isMe =
                 selectedBone instanceof SkeletonGroup &&
-                selectedBone.label === part.label &&
+                selectedBone.label === group.label &&
                 currentIndex === childIndex;
               return (
                 <div className="flex" key={child.bone}>
@@ -512,7 +518,7 @@ export function RatioBoneList({
                   </div>
                   <div
                     className="flex flex-grow flex-col px-2"
-                    onClick={() => setSelectedBone(part, childIndex)}
+                    onClick={() => setSelectedBone(group, childIndex)}
                   >
                     <div
                       key={child.bone}
