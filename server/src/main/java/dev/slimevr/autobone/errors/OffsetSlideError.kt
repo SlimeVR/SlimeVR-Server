@@ -29,7 +29,7 @@ class OffsetSlideError : IAutoBoneError {
 			leftTracker1: ComputedTracker,
 			rightTracker1: ComputedTracker,
 			leftTracker2: ComputedTracker,
-			rightTracker2: ComputedTracker
+			rightTracker2: ComputedTracker,
 		): Float {
 			val leftFoot1 = leftTracker1.position
 			val rightFoot1 = rightTracker1.position

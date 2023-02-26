@@ -47,7 +47,7 @@ class AutoBoneHandler(private val server: VRServer) {
 		current: Long,
 		total: Long,
 		completed: Boolean,
-		success: Boolean
+		success: Boolean,
 	) {
 		listeners
 			.forEach(
@@ -69,7 +69,7 @@ class AutoBoneHandler(private val server: VRServer) {
 		processType: AutoBoneProcessType,
 		message: String,
 		completed: Boolean = false,
-		success: Boolean = true
+		success: Boolean = true,
 	) {
 		announceProcessStatus(processType, message, 0, 0, completed, success)
 	}

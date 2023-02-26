@@ -10,7 +10,7 @@ import java.util.function.Function
  */
 open class HardProportionLimiter(
 	override val targetRatio: Float = 0f,
-	protected val boneLengthFunction: Function<HumanPoseManager, Float>
+	protected val boneLengthFunction: Function<HumanPoseManager, Float>,
 ) : ProportionLimiter {
 	override fun getProportionError(humanPoseManager: HumanPoseManager, height: Float): Float {
 		val boneLength = boneLengthFunction.apply(humanPoseManager)

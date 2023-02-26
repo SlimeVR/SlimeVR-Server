@@ -89,7 +89,7 @@ class AutoBone(server: VRServer) {
 
 	fun computeBoneOffset(
 		bone: BoneType?,
-		getOffset: Function<SkeletonConfigOffsets?, Float>
+		getOffset: Function<SkeletonConfigOffsets?, Float>,
 	): Float {
 		return when (bone) {
 			BoneType.HEAD -> getOffset.apply(SkeletonConfigOffsets.HEAD)
@@ -140,7 +140,7 @@ class AutoBone(server: VRServer) {
 		skeleton: HumanPoseManager,
 		node: BoneType,
 		rightSide: Boolean,
-		buffer: Vector3f?
+		buffer: Vector3f?,
 	): Vector3f {
 		var node = node
 		var buffer = buffer
@@ -173,7 +173,7 @@ class AutoBone(server: VRServer) {
 		skeleton2: HumanPoseManager,
 		node: BoneType,
 		rightSide: Boolean,
-		offset: Vector3f
+		offset: Vector3f,
 	): Float {
 		val normalizedOffset = offset.normalize()
 		val boneRotation = Vector3f()
@@ -197,7 +197,7 @@ class AutoBone(server: VRServer) {
 
 	fun applyConfig(
 		configConsumer: BiConsumer<SkeletonConfigOffsets, Float>,
-		offsets: Map<BoneType, Float> = this.offsets
+		offsets: Map<BoneType, Float> = this.offsets,
 	): Boolean {
 		return try {
 			val headOffset = offsets[BoneType.HEAD]
@@ -252,14 +252,14 @@ class AutoBone(server: VRServer) {
 
 	fun applyConfig(
 		skeletonConfig: MutableMap<SkeletonConfigOffsets, Float>,
-		offsets: Map<BoneType, Float> = this.offsets
+		offsets: Map<BoneType, Float> = this.offsets,
 	): Boolean {
 		return applyConfig({ key: SkeletonConfigOffsets, value: Float -> skeletonConfig[key] = value }, offsets)
 	}
 
 	fun applyConfig(
 		humanPoseManager: HumanPoseManager,
-		offsets: Map<BoneType, Float> = this.offsets
+		offsets: Map<BoneType, Float> = this.offsets,
 	): Boolean {
 		return applyConfig({ key: SkeletonConfigOffsets?, newLength: Float? ->
 			humanPoseManager.setOffset(
@@ -285,7 +285,7 @@ class AutoBone(server: VRServer) {
 
 	fun <T> sumSelectConfigs(
 		selection: List<T>,
-		configs: Function<T, Float?>
+		configs: Function<T, Float?>,
 	): Float {
 		var sum = 0f
 		for (config in selection) {
@@ -299,14 +299,14 @@ class AutoBone(server: VRServer) {
 
 	fun <T> sumSelectConfigs(
 		selection: List<T>,
-		configs: Map<T, Float>
+		configs: Map<T, Float>,
 	): Float {
 		return sumSelectConfigs(selection) { key: T -> configs[key] }
 	}
 
 	fun sumSelectConfigs(
 		selection: List<SkeletonConfigOffsets>,
-		humanPoseManager: HumanPoseManager
+		humanPoseManager: HumanPoseManager,
 	): Float {
 		return sumSelectConfigs(selection) { key: SkeletonConfigOffsets? -> humanPoseManager.getOffset(key) }
 	}
@@ -317,7 +317,7 @@ class AutoBone(server: VRServer) {
 
 	fun getLengthSum(
 		configs: Map<BoneType, Float>,
-		configsAlt: Map<BoneType, Float>?
+		configsAlt: Map<BoneType, Float>?,
 	): Float {
 		var length = 0f
 		if (configsAlt != null) {
@@ -370,7 +370,7 @@ class AutoBone(server: VRServer) {
 		frames: PoseFrames,
 		calcInitError: Boolean = true,
 		targetHeight: Float = -1f,
-		epochCallback: Consumer<Epoch?>?
+		epochCallback: Consumer<Epoch?>?,
 	): AutoBoneResults {
 		var targetHeight = targetHeight
 		val frameCount = frames.maxFrameCount
@@ -729,7 +729,7 @@ class AutoBone(server: VRServer) {
 		val epoch: Int,
 		val totalEpochs: Int,
 		val epochError: StatsCalculator,
-		val configValues: EnumMap<SkeletonConfigOffsets, Float>
+		val configValues: EnumMap<SkeletonConfigOffsets, Float>,
 	) {
 		override fun toString(): String {
 			return "Epoch: $epoch, Epoch Error: $epochError"
@@ -740,7 +740,7 @@ class AutoBone(server: VRServer) {
 		val finalHeight: Float,
 		val targetHeight: Float,
 		val epochError: StatsCalculator,
-		val configValues: EnumMap<SkeletonConfigOffsets, Float>
+		val configValues: EnumMap<SkeletonConfigOffsets, Float>,
 	) {
 		val heightDifference: Float
 			get() = FastMath.abs(targetHeight - finalHeight)

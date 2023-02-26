@@ -17,7 +17,7 @@ class RangeProportionLimiter : HardProportionLimiter {
 	constructor(
 		targetRatio: Float,
 		boneLengthFunction: Function<HumanPoseManager, Float>,
-		range: Float
+		range: Float,
 	) : super(targetRatio, boneLengthFunction) {
 		var range = range
 
@@ -40,7 +40,7 @@ class RangeProportionLimiter : HardProportionLimiter {
 		targetRatio: Float,
 		boneLengthFunction: Function<HumanPoseManager, Float>,
 		positiveRange: Float,
-		negativeRange: Float
+		negativeRange: Float,
 	) : super(targetRatio, boneLengthFunction) {
 
 		// If the positive range is less than the negative range, something is

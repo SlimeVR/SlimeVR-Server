@@ -32,7 +32,7 @@ class PositionError : IAutoBoneError {
 		fun getPositionError(
 			trackers: List<PoseFrameTracker>,
 			cursor: Int,
-			skeleton: HumanSkeleton
+			skeleton: HumanSkeleton,
 		): Float {
 			var offset = 0f
 			var offsetCount = 0

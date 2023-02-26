@@ -12,7 +12,7 @@ interface AutoBoneListener {
 		current: Long,
 		total: Long,
 		completed: Boolean,
-		success: Boolean
+		success: Boolean,
 	)
 
 	fun onAutoBoneRecordingEnd(recording: PoseFrames)

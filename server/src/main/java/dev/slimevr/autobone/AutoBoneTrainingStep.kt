@@ -12,7 +12,7 @@ class AutoBoneTrainingStep(
 	val intermediateOffsets: Map<BoneType, Float>,
 	var cursor1: Int = 0,
 	var cursor2: Int = 0,
-	var currentHeight: Float = 0f
+	var currentHeight: Float = 0f,
 ) {
 
 	fun setCursors(cursor1: Int, cursor2: Int) {

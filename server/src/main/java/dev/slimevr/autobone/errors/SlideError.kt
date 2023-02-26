@@ -27,7 +27,7 @@ class SlideError : IAutoBoneError {
 		fun getSlideError(
 			skeleton1: HumanSkeleton,
 			skeleton2: HumanSkeleton,
-			trackerRole: TrackerRole
+			trackerRole: TrackerRole,
 		): Float {
 			// Calculate and average between both feet
 			return getSlideError(

@@ -9,6 +9,6 @@ class AutoBoneException : Exception {
 		message: String?,
 		cause: Throwable?,
 		enableSuppression: Boolean,
-		writableStackTrace: Boolean
+		writableStackTrace: Boolean,
 	) : super(message, cause, enableSuppression, writableStackTrace)
 }

@@ -24,7 +24,7 @@ class PositionOffsetError : IAutoBoneError {
 		cursor1: Int,
 		cursor2: Int,
 		skeleton1: HumanSkeleton,
-		skeleton2: HumanSkeleton
+		skeleton2: HumanSkeleton,
 	): Float {
 		var offset = 0f
 		var offsetCount = 0
