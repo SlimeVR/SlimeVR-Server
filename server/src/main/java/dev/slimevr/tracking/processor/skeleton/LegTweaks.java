@@ -4,7 +4,6 @@ import com.jme3.math.FastMath;
 import com.jme3.math.Quaternion;
 import com.jme3.math.Vector3f;
 import dev.slimevr.config.LegTweaksConfig;
-
 import dev.slimevr.tracking.processor.TransformNode;
 
 
@@ -883,7 +882,7 @@ public class LegTweaks {
 		// finally translate in to tracker space
 		centerOfMass = waistPosition
 			.add(
-				centerOfMass.subtract(skeleton.trackerWaistNode.worldTransform.getTranslation(null))
+				centerOfMass.subtract(skeleton.trackerHipNode.worldTransform.getTranslation(null))
 			);
 
 		return centerOfMass;

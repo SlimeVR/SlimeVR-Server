@@ -66,6 +66,8 @@ public interface Tracker {
 
 	String getCustomName();
 
+	void setCustomName(String customName);
+
 
 	/**
 	 * Returns the real tracker behind this tracker.

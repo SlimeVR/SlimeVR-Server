@@ -32,6 +32,8 @@ import java.util.function.BiConsumer;
 public class RPCHandler extends ProtocolHandler<RpcMessageHeader>
 	implements AutoBoneListener {
 
+	private static final String resetSourceName = "WebSocketAPI";
+
 	private final ProtocolAPI api;
 
 	private long currTransactionId = 0;
@@ -197,12 +199,11 @@ public class RPCHandler extends ProtocolHandler<RpcMessageHeader>
 			return;
 
 		if (req.resetType() == ResetType.Quick)
-			this.api.server.resetTrackersYaw();
+			this.api.server.resetTrackersYaw(resetSourceName);
 		if (req.resetType() == ResetType.Full)
-			this.api.server.resetTrackers();
+			this.api.server.resetTrackers(resetSourceName);
 		if (req.resetType() == ResetType.Mounting)
-			this.api.server.resetTrackersMounting();
-		LogManager.info("[WebSocketAPI] Reset performed");
+			this.api.server.resetTrackersMounting(resetSourceName);
 	}
 
 	public void onAssignTrackerRequest(GenericConnection conn, RpcMessageHeader messageHeader) {
@@ -234,9 +235,7 @@ public class RPCHandler extends ProtocolHandler<RpcMessageHeader>
 		}
 
 		if (req.displayName() != null) {
-			if (tracker instanceof IMUTracker imu) {
-				imu.setCustomName(req.displayName());
-			}
+			tracker.setCustomName(req.displayName());
 		}
 
 		if (tracker instanceof IMUTracker imu) {
@@ -299,7 +298,7 @@ public class RPCHandler extends ProtocolHandler<RpcMessageHeader>
 		conn.getContext().setUseAutoBone(true);
 		this.api.server
 			.getAutoBoneHandler()
-			.startProcessByType(AutoBoneProcessType.getById(req.processType()));
+			.startProcessByType(AutoBoneProcessType.Companion.getById(req.processType()));
 	}
 
 	@Override
@@ -323,7 +322,7 @@ public class RPCHandler extends ProtocolHandler<RpcMessageHeader>
 						Integer messageOffset = message != null ? fbb.createString(message) : null;
 
 						AutoBoneProcessStatusResponse.startAutoBoneProcessStatusResponse(fbb);
-						AutoBoneProcessStatusResponse.addProcessType(fbb, processType.id);
+						AutoBoneProcessStatusResponse.addProcessType(fbb, processType.getId());
 						if (messageOffset != null)
 							AutoBoneProcessStatusResponse.addMessage(fbb, messageOffset);
 						if (total > 0 && current >= 0) {
@@ -366,10 +365,11 @@ public class RPCHandler extends ProtocolHandler<RpcMessageHeader>
 					.forEach((conn) -> {
 						FlatBufferBuilder fbb = new FlatBufferBuilder(32);
 
-						int[] skeletonPartOffsets = new int[epoch.configValues.size()];
+						int[] skeletonPartOffsets = new int[epoch.getConfigValues().size()];
 						int i = 0;
 						for (
-							Entry<SkeletonConfigOffsets, Float> skeletonConfig : epoch.configValues
+							Entry<SkeletonConfigOffsets, Float> skeletonConfig : epoch
+								.getConfigValues()
 								.entrySet()
 						) {
 							skeletonPartOffsets[i++] = SkeletonPart
@@ -386,9 +386,9 @@ public class RPCHandler extends ProtocolHandler<RpcMessageHeader>
 						int update = AutoBoneEpochResponse
 							.createAutoBoneEpochResponse(
 								fbb,
-								epoch.epoch,
-								epoch.totalEpochs,
-								epoch.epochError.getMean(),
+								epoch.getEpoch(),
+								epoch.getTotalEpochs(),
+								epoch.getEpochError().getMean(),
 								skeletonPartsOffset
 							);
 						int outbound = this

@@ -3,6 +3,7 @@ package dev.slimevr.tracking.processor.config;
 import com.jme3.math.Vector3f;
 import dev.slimevr.Main;
 import dev.slimevr.autobone.errors.BodyProportionError;
+import dev.slimevr.autobone.errors.proportions.ProportionLimiter;
 import dev.slimevr.config.ConfigManager;
 import dev.slimevr.tracking.processor.BoneType;
 import dev.slimevr.tracking.processor.HumanPoseManager;
@@ -410,13 +411,16 @@ public class SkeletonConfigManager {
 				float height = humanPoseManager.getHmdHeight()
 					/ BodyProportionError.eyeHeightToHeightRatio;
 				if (height > 0.5f) { // Reset only if floor level seems right,
-					setOffset(
-						config,
-						height
-							* BodyProportionError
-								.getProportionLimitForOffset(config)
-								.getTargetRatio()
-					);
+					ProportionLimiter proportionLimiter = BodyProportionError
+						.getProportionLimitForOffset(config);
+					if (proportionLimiter != null) {
+						setOffset(
+							config,
+							height * proportionLimiter.getTargetRatio()
+						);
+					} else {
+						setOffset(config, null);
+					}
 				} else { // if floor level is incorrect
 					setOffset(config, null);
 				}

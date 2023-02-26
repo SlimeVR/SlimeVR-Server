@@ -10,6 +10,7 @@ import java.io.ByteArrayOutputStream
 
 plugins {
 	kotlin("jvm") version "1.8.0"
+	kotlin("plugin.serialization") version "1.8.0"
 	application
 	id("com.github.johnrengelman.shadow") version "7.1.2"
 	id("com.diffplug.spotless") version "6.12.0"
@@ -71,6 +72,7 @@ dependencies {
 	implementation("com.google.protobuf:protobuf-java:3.21.12")
 	implementation("org.java-websocket:Java-WebSocket:1.+")
 	implementation("com.melloware:jintellitype:1.+")
+	implementation("org.jetbrains.kotlinx:kotlinx-serialization-json:1.5.0-RC")
 
 	testImplementation(kotlin("test"))
 	// Use JUnit test framework
@@ -142,7 +144,8 @@ configure<com.diffplug.gradle.spotless.SpotlessExtension> {
 			"indent_style" to "tab",
 // 			"max_line_length" to 88,
 			"ktlint_experimental" to "enabled",
-			"ij_kotlin_packages_to_use_import_on_demand" to "java.util.*,kotlin.math.*"
+			"ij_kotlin_packages_to_use_import_on_demand" to "java.util.*,kotlin.math.*",
+			"ij_kotlin_allow_trailing_comma" to true
 		)
 	val ktlintVersion = "0.47.1"
 	kotlinGradle {

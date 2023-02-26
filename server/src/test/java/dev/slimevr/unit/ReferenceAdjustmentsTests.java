@@ -2,6 +2,7 @@ package dev.slimevr.unit;
 
 import com.jme3.math.FastMath;
 import com.jme3.math.Quaternion;
+import dev.slimevr.tracking.processor.BoneType;
 import dev.slimevr.tracking.processor.TransformNode;
 import dev.slimevr.tracking.trackers.IMUTracker;
 import dev.slimevr.tracking.trackers.Tracker;
@@ -272,8 +273,8 @@ public class ReferenceAdjustmentsTests {
 		float[] anglesAdj = new float[3];
 		float[] anglesDiff = new float[3];
 
-		TransformNode trackerNode = new TransformNode("Tracker", true);
-		TransformNode rotationNode = new TransformNode("Rot", true);
+		TransformNode trackerNode = new TransformNode(BoneType.HIP, true);
+		TransformNode rotationNode = new TransformNode(BoneType.HIP, true);
 		rotationNode.attachChild(trackerNode);
 
 		trackerNode.localTransform.setRotation(tracker.rotQuaternion);
