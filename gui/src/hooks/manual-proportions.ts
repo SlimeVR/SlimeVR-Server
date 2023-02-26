@@ -8,12 +8,6 @@ import {
 import { useWebsocketAPI } from './websocket-api';
 import { useReducer, useEffect, useMemo, useState } from 'react';
 
-export interface BoneLabel {
-  bone: SkeletonBone;
-  value: number;
-  label: string;
-}
-
 export type ProportionChange = LinearChange | BoneChange;
 
 export enum ProportionChangeType {
@@ -30,18 +24,31 @@ export interface BoneChange {
   type: ProportionChangeType.Bone;
   bone: SkeletonBone;
   value: number;
+  label: string;
 }
 
-export type ProportionState = BoneState;
+export type ProportionState = BoneState | GroupState;
 
 export enum BoneType {
   Single,
+  Group,
 }
 
 export interface BoneState {
   type: BoneType.Single;
   bone: SkeletonBone;
   value: number;
+  label: string;
+}
+
+export interface GroupState {
+  type: BoneType.Group;
+  bones: {
+    bone: SkeletonBone;
+    value: number;
+  }[];
+  value: number;
+  label: string;
 }
 
 function reducer(state: ProportionState, action: ProportionChange): ProportionState {
@@ -69,12 +76,68 @@ function reducer(state: ProportionState, action: ProportionChange): ProportionSt
   }
 }
 
-export function useManualProportions() {
+export type Label = BoneLabel | GroupLabel | GroupPartLabel;
+
+export enum LabelType {
+  Bone,
+  Group,
+  GroupPart,
+}
+
+export interface BoneLabel {
+  type: LabelType.Bone;
+  bone: SkeletonBone;
+  value: number;
+  label: string;
+}
+
+export interface GroupLabel {
+  type: LabelType.Group;
+  bones: {
+    bone: SkeletonBone;
+    value: number;
+    label: string;
+  }[];
+  value: number;
+  label: string;
+}
+
+export interface GroupPartLabel {
+  type: LabelType.GroupPart;
+  bone: SkeletonBone;
+  value: number;
+  label: string;
+  index: number;
+}
+
+export function useManualProportions(): [
+  Label[],
+  boolean,
+  ProportionState,
+  (change: ProportionChange) => void,
+  (ratio: boolean) => void
+] {
   const { useRPCPacket, sendRPCPacket } = useWebsocketAPI();
   const [config, setConfig] = useState<Omit<SkeletonConfigResponseT, 'pack'> | null>(
     null
   );
-  const [state, dispatch] = useReducer();
+  const [ratio, setRatio] = useState(false);
+  const [state, dispatch] = useReducer(reducer, {
+    type: BoneType.Single,
+    bone: SkeletonBone.NONE,
+    value: 0,
+    label: 'invalid-bone',
+  });
+
+  const bodyParts: Label[] = useMemo(() => {
+    return (
+      config?.skeletonParts.map(({ bone, value }) => ({
+        bone,
+        label: 'skeleton_bone-' + SkeletonBone[bone],
+        value,
+      })) || []
+    );
+  }, [config]);
 
   useRPCPacket(RpcMessage.SkeletonConfigResponse, (data: SkeletonConfigResponseT) => {
     setConfig(data);
@@ -84,27 +147,27 @@ export function useManualProportions() {
     sendRPCPacket(RpcMessage.SkeletonConfigRequest, new SkeletonConfigRequestT());
   }, []);
 
-  const updateConfigValue = (...configChanges: ChangeSkeletonConfigRequestT[]) => {
-    const conf = { ...config } as Omit<SkeletonConfigResponseT, 'pack'> | null;
-    for (const configChange of configChanges) {
-      sendRPCPacket(RpcMessage.ChangeSkeletonConfigRequest, configChange);
-      const b = conf?.skeletonParts?.find(({ bone }) => bone == selectedBone);
-      if (!b || !conf) return;
-      b.value = configChange.value;
+  useEffect(() => {
+    if (
+      state.bone === SkeletonBone.NONE ||
+      bodyParts.find((it) => it.bone === state.bone)?.value === state.value
+    ) {
+      return;
     }
 
-    setConfig(conf);
-  };
-
-  const bodyParts: BoneLabel[] = useMemo(() => {
-    return (
-      config?.skeletonParts.map(({ bone, value }) => ({
-        bone,
-        label: 'skeleton_bone-' + SkeletonBone[bone],
-        value,
-      })) || []
+    sendRPCPacket(
+      RpcMessage.ChangeSkeletonConfigRequest,
+      new ChangeSkeletonConfigRequestT(state.bone, state.value)
     );
-  }, [config]);
+    const conf = { ...config } as Omit<SkeletonConfigResponseT, 'pack'> | null;
+    const b = conf?.skeletonParts?.find(({ bone }) => bone == state.bone);
+    if (!b || !conf) return;
+    b.value = state.value;
+
+    setConfig(conf);
+  }, [state]);
+
+  return [bodyParts, ratio, state, dispatch, setRatio];
 }
 
 function roundedStep(value: number, step: number, add: boolean): number {
