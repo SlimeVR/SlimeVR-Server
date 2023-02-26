@@ -5,7 +5,7 @@ import { KeyValuesT, MessageT, Payload, Topic } from 'solarxr-protocol';
 import {
   OVERLAY_DISPLAY_SETTINGS_TOPIC,
   PayloadData,
-  usePubSub
+  usePubSub,
 } from '../../hooks/pubSub';
 import { CheckBox } from '../commons/Checkbox';
 import { Typography } from '../commons/Typography';
