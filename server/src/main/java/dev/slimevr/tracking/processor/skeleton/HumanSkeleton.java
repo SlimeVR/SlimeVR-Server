@@ -14,6 +14,7 @@ import dev.slimevr.tracking.trackers.*;
 import dev.slimevr.util.ann.VRServerThread;
 import io.eiren.util.ann.ThreadSafe;
 import io.eiren.util.collections.FastList;
+import io.eiren.util.logging.LogManager;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -1605,7 +1606,7 @@ public class HumanSkeleton {
 		};
 	}
 
-	public void resetTrackersFull() {
+	public void resetTrackersFull(String resetSourceName) {
 		// Pass all trackers through trackerPreUpdate
 		Tracker hmdTracker = trackerPreUpdate(this.hmdTracker);
 		Tracker[] trackersToReset = getTrackersToReset();
@@ -1628,6 +1629,8 @@ public class HumanSkeleton {
 		// of the computed trackers
 		this.legTweaks.resetFloorLevel();
 		this.legTweaks.resetBuffer();
+
+		LogManager.info("Reset: full (%s)".formatted(resetSourceName));
 	}
 
 	private boolean shouldResetMounting(TrackerPosition position) {
@@ -1653,7 +1656,7 @@ public class HumanSkeleton {
 	}
 
 	@VRServerThread
-	public void resetTrackersMounting() {
+	public void resetTrackersMounting(String resetSourceName) {
 		// Pass all trackers through trackerPreUpdate
 		Tracker[] trackersToReset = getTrackersToReset();
 
@@ -1668,10 +1671,12 @@ public class HumanSkeleton {
 			}
 		}
 		this.legTweaks.resetBuffer();
+
+		LogManager.info("Reset: mounting (%s)".formatted(resetSourceName));
 	}
 
 	@VRServerThread
-	public void resetTrackersYaw() {
+	public void resetTrackersYaw(String resetSourceName) {
 		// Pass all trackers through trackerPreUpdate
 		Tracker hmdTracker = trackerPreUpdate(this.hmdTracker);
 		Tracker[] trackersToReset = getTrackersToReset();
@@ -1690,6 +1695,8 @@ public class HumanSkeleton {
 			}
 		}
 		this.legTweaks.resetBuffer();
+
+		LogManager.info("Reset: yaw (%s)".formatted(resetSourceName));
 	}
 
 	public void updateTapDetectionConfig() {

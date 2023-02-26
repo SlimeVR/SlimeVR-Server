@@ -32,6 +32,8 @@ import java.util.function.BiConsumer;
 public class RPCHandler extends ProtocolHandler<RpcMessageHeader>
 	implements AutoBoneListener {
 
+	private static final String resetSourceName = "WebSocketAPI";
+
 	private final ProtocolAPI api;
 
 	private long currTransactionId = 0;
@@ -197,12 +199,11 @@ public class RPCHandler extends ProtocolHandler<RpcMessageHeader>
 			return;
 
 		if (req.resetType() == ResetType.Quick)
-			this.api.server.resetTrackersYaw();
+			this.api.server.resetTrackersYaw(resetSourceName);
 		if (req.resetType() == ResetType.Full)
-			this.api.server.resetTrackers();
+			this.api.server.resetTrackers(resetSourceName);
 		if (req.resetType() == ResetType.Mounting)
-			this.api.server.resetTrackersMounting();
-		LogManager.info("[WebSocketAPI] Reset performed");
+			this.api.server.resetTrackersMounting(resetSourceName);
 	}
 
 	public void onAssignTrackerRequest(GenericConnection conn, RpcMessageHeader messageHeader) {
