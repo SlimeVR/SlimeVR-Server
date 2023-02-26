@@ -18,6 +18,7 @@ import java.util.concurrent.atomic.AtomicBoolean;
 
 
 public class WebSocketVRBridge extends WebsocketAPI implements Bridge {
+	private static final String resetSourceName = "WebSocketVRBridge";
 
 	private final Vector3f vBuffer = new Vector3f();
 	private final Quaternion qBuffer = new Quaternion();
@@ -170,8 +171,8 @@ public class WebSocketVRBridge extends WebsocketAPI implements Bridge {
 
 	private void parseAction(ObjectNode json, WebSocket conn) {
 		switch (json.get("name").asText()) {
-			case "calibrate" -> Main.getVrServer().resetTrackersYaw();
-			case "full_calibrate" -> Main.getVrServer().resetTrackers();
+			case "calibrate" -> Main.getVrServer().resetTrackersYaw(resetSourceName);
+			case "full_calibrate" -> Main.getVrServer().resetTrackers(resetSourceName);
 		}
 	}
 

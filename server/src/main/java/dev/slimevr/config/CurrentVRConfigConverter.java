@@ -138,6 +138,41 @@ public class CurrentVRConfigConverter implements VersionedModelConverter {
 				}
 			}
 		}
+		if (version < 6) {
+			// Migrate controllers offsets to hands offsets
+			ObjectNode skeletonNode = (ObjectNode) modelData.get("skeleton");
+			if (skeletonNode != null) {
+				ObjectNode offsetsNode = (ObjectNode) skeletonNode.get("offsets");
+				if (offsetsNode != null) {
+					offsetsNode.set("handDistanceY", offsetsNode.get("controllerDistanceY"));
+					offsetsNode.set("handDistanceZ", offsetsNode.get("controllerDistanceZ"));
+				}
+			}
+		}
+		if (version < 7) {
+			// Chest, hip, and elbow offsets now go the opposite direction
+			ObjectNode skeletonNode = (ObjectNode) modelData.get("skeleton");
+			if (skeletonNode != null) {
+				ObjectNode offsetsNode = (ObjectNode) skeletonNode.get("offsets");
+				if (offsetsNode != null) {
+					offsetsNode
+						.set(
+							"chestOffset",
+							new FloatNode(-offsetsNode.get("chestOffset").floatValue())
+						);
+					offsetsNode
+						.set(
+							"hipOffset",
+							new FloatNode(-offsetsNode.get("hipOffset").floatValue())
+						);
+					offsetsNode
+						.set(
+							"elbowOffset",
+							new FloatNode(-offsetsNode.get("elbowOffset").floatValue())
+						);
+				}
+			}
+		}
 
 		return modelData;
 	}

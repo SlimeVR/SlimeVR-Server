@@ -29,7 +29,11 @@ export function TrackerBattery({
   return (
     <div className="flex gap-2">
       <div className="flex flex-col justify-around">
-        <BatteryIcon value={value} disabled={disabled} />
+        <BatteryIcon
+          value={value}
+          disabled={disabled}
+          charging={(voltage || 0) > 4.3}
+        />
       </div>
       <div className="w-10">
         <Typography color={textColor}>

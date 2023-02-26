@@ -47,12 +47,13 @@ public class HumanPoseManager {
 	/**
 	 * Creates a new HumanPoseManager that uses the given trackers for the
 	 * HumanSkeleton and the default config
-	 * 
+	 *
 	 * @param trackers a list of all trackers
 	 */
 	public HumanPoseManager(List<? extends Tracker> trackers) {
 		this();
 		skeleton = new HumanSkeleton(this, trackers);
+		skeletonConfigManager.updateSettingsInSkeleton();
 	}
 
 	/**
@@ -71,6 +72,7 @@ public class HumanPoseManager {
 		skeleton = new HumanSkeleton(this, trackers);
 		// Set offsetConfigs from given offsetConfigs on creation
 		skeletonConfigManager.setOffsets(offsetConfigs);
+		skeletonConfigManager.updateSettingsInSkeleton();
 	}
 
 	/**
@@ -97,6 +99,7 @@ public class HumanPoseManager {
 			skeletonConfigManager.setOffsets(altOffsetConfigs);
 		}
 		skeletonConfigManager.setOffsets(offsetConfigs);
+		skeletonConfigManager.updateSettingsInSkeleton();
 	}
 
 	// #endregion
@@ -193,8 +196,8 @@ public class HumanPoseManager {
 	}
 
 	@VRServerThread
-	private void updateSkeletonModelFromServer() {
-		disconnectAllTrackers();
+	public void updateSkeletonModelFromServer() {
+		disconnectComputedHumanPoseTrackers();
 		skeleton = new HumanSkeleton(this, server);
 		skeletonConfigManager.loadFromConfig(server.getConfigManager());
 		for (Consumer<HumanSkeleton> sc : onSkeletonUpdated)
@@ -202,7 +205,7 @@ public class HumanPoseManager {
 	}
 
 	@VRServerThread
-	private void disconnectAllTrackers() {
+	private void disconnectComputedHumanPoseTrackers() {
 		for (ComputedHumanPoseTracker t : computedTrackers) {
 			t.setStatus(TrackerStatus.DISCONNECTED);
 		}
@@ -270,7 +273,7 @@ public class HumanPoseManager {
 
 	/**
 	 * Get the corresponding computed tracker for a given TrackerRole
-	 * 
+	 *
 	 * @param trackerRole the role of the tracker which we want
 	 * @return the corresponding computed tracker for the trackerRole
 	 */
@@ -293,7 +296,7 @@ public class HumanPoseManager {
 
 	/**
 	 * Get the tail node (away from the tracking root) of the given bone
-	 * 
+	 *
 	 * @param bone the bone from which we want the tail node
 	 * @return the tail node of the bone
 	 */
@@ -342,10 +345,33 @@ public class HumanPoseManager {
 		return false;
 	}
 
+	/**
+	 * @return All skeleton bones as BoneInfo
+	 */
 	@ThreadSafe
-	public List<BoneInfo> getCurrentBoneInfo() {
+	public List<BoneInfo> getAllBoneInfo() {
 		if (isSkeletonPresent())
-			return skeleton.currentBoneInfo;
+			return skeleton.allBoneInfo;
+		return null;
+	}
+
+	/**
+	 * @return All shareable bones as BoneInfo
+	 */
+	@ThreadSafe
+	public List<BoneInfo> getShareableBoneInfo() {
+		if (isSkeletonPresent())
+			return skeleton.shareableBoneInfo;
+		return null;
+	}
+
+	/**
+	 * @return The bone as BoneInfo for the given BoneType
+	 */
+	@ThreadSafe
+	public BoneInfo getBoneInfoForBoneType(BoneType boneType) {
+		if (isSkeletonPresent())
+			return skeleton.getBoneInfoForBoneType(boneType);
 		return null;
 	}
 
@@ -491,26 +517,30 @@ public class HumanPoseManager {
 	}
 
 	@VRServerThread
-	public void resetTrackersFull() {
+	public void resetTrackersFull(String resetSourceName) {
 		if (isSkeletonPresent()) {
-			skeleton.resetTrackersFull();
-			if (server != null)
+			skeleton.resetTrackersFull(resetSourceName);
+			if (server != null) {
 				server.getVrcOSCHandler().yawAlign();
+				server.getVMCHandler().alignVMCTracking(getRootNode().worldTransform.getRotation());
+			}
 		}
 	}
 
 	@VRServerThread
-	public void resetTrackersMounting() {
+	public void resetTrackersMounting(String resetSourceName) {
 		if (isSkeletonPresent())
-			skeleton.resetTrackersMounting();
+			skeleton.resetTrackersMounting(resetSourceName);
 	}
 
 	@VRServerThread
-	public void resetTrackersYaw() {
+	public void resetTrackersYaw(String resetSourceName) {
 		if (isSkeletonPresent()) {
-			skeleton.resetTrackersYaw();
-			if (server != null)
+			skeleton.resetTrackersYaw(resetSourceName);
+			if (server != null) {
 				server.getVrcOSCHandler().yawAlign();
+				server.getVMCHandler().alignVMCTracking(getRootNode().worldTransform.getRotation());
+			}
 		}
 	}
 

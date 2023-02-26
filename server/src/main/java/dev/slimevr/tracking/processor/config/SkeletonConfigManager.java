@@ -3,6 +3,7 @@ package dev.slimevr.tracking.processor.config;
 import com.jme3.math.Vector3f;
 import dev.slimevr.Main;
 import dev.slimevr.autobone.errors.BodyProportionError;
+import dev.slimevr.autobone.errors.proportions.ProportionLimiter;
 import dev.slimevr.config.ConfigManager;
 import dev.slimevr.tracking.processor.BoneType;
 import dev.slimevr.tracking.processor.HumanPoseManager;
@@ -195,7 +196,7 @@ public class SkeletonConfigManager {
 			case CHEST_TRACKER -> setNodeOffset(
 				nodeOffset,
 				0,
-				getOffset(SkeletonConfigOffsets.CHEST_OFFSET)
+				-getOffset(SkeletonConfigOffsets.CHEST_OFFSET)
 					- getOffset(SkeletonConfigOffsets.CHEST),
 				-getOffset(SkeletonConfigOffsets.SKELETON_OFFSET)
 			);
@@ -204,7 +205,7 @@ public class SkeletonConfigManager {
 			case HIP_TRACKER -> setNodeOffset(
 				nodeOffset,
 				0,
-				getOffset(SkeletonConfigOffsets.HIP_OFFSET),
+				-getOffset(SkeletonConfigOffsets.HIP_OFFSET),
 				-getOffset(SkeletonConfigOffsets.SKELETON_OFFSET)
 			);
 			case LEFT_HIP -> setNodeOffset(
@@ -276,19 +277,13 @@ public class SkeletonConfigManager {
 			case LEFT_HAND, RIGHT_HAND -> setNodeOffset(
 				nodeOffset,
 				0,
-				-getOffset(SkeletonConfigOffsets.CONTROLLER_Y),
-				-getOffset(SkeletonConfigOffsets.CONTROLLER_Z)
-			);
-			case LEFT_CONTROLLER, RIGHT_CONTROLLER -> setNodeOffset(
-				nodeOffset,
-				0,
-				getOffset(SkeletonConfigOffsets.CONTROLLER_Y),
-				getOffset(SkeletonConfigOffsets.CONTROLLER_Z)
+				-getOffset(SkeletonConfigOffsets.HAND_Y),
+				-getOffset(SkeletonConfigOffsets.HAND_Z)
 			);
 			case LEFT_ELBOW_TRACKER, RIGHT_ELBOW_TRACKER -> setNodeOffset(
 				nodeOffset,
 				0,
-				getOffset(SkeletonConfigOffsets.ELBOW_OFFSET),
+				-getOffset(SkeletonConfigOffsets.ELBOW_OFFSET),
 				0
 			);
 		}
@@ -416,13 +411,16 @@ public class SkeletonConfigManager {
 				float height = humanPoseManager.getHmdHeight()
 					/ BodyProportionError.eyeHeightToHeightRatio;
 				if (height > 0.5f) { // Reset only if floor level seems right,
-					setOffset(
-						config,
-						height
-							* BodyProportionError
-								.getProportionLimitForOffset(config)
-								.getTargetRatio()
-					);
+					ProportionLimiter proportionLimiter = BodyProportionError
+						.getProportionLimitForOffset(config);
+					if (proportionLimiter != null) {
+						setOffset(
+							config,
+							height * proportionLimiter.getTargetRatio()
+						);
+					} else {
+						setOffset(config, null);
+					}
 				} else { // if floor level is incorrect
 					setOffset(config, null);
 				}
@@ -455,6 +453,8 @@ public class SkeletonConfigManager {
 				.get(configValue.configKey);
 			if (val != null) {
 				setToggle(configValue, val);
+			} else if (humanPoseManager != null) {
+				humanPoseManager.updateToggleState(configValue, configValue.defaultValue);
 			}
 		}
 
@@ -467,6 +467,8 @@ public class SkeletonConfigManager {
 				.get(configValue.configKey);
 			if (val != null) {
 				setValue(configValue, val);
+			} else if (humanPoseManager != null) {
+				humanPoseManager.updateValueState(configValue, configValue.defaultValue);
 			}
 		}
 

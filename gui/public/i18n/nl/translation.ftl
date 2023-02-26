@@ -30,7 +30,6 @@ body_part-RIGHT_HAND = Rechterhand
 body_part-RIGHT_UPPER_LEG = Rechterdij
 body_part-RIGHT_LOWER_LEG = Rechterenkel
 body_part-RIGHT_FOOT = Rechtervoet
-body_part-RIGHT_CONTROLLER = Rechtercontroller
 body_part-CHEST = Borst
 body_part-WAIST = Taille
 body_part-HIP = Heup
@@ -41,7 +40,6 @@ body_part-LEFT_HAND = Linkerhand
 body_part-LEFT_UPPER_LEG = Linkerdij
 body_part-LEFT_LOWER_LEG = Linkerenkel
 body_part-LEFT_FOOT = Linkervoet
-body_part-LEFT_CONTROLLER = Linkercontroller
 
 ## Proportions
 
@@ -63,8 +61,8 @@ skeleton_bone-SHOULDERS_DISTANCE = Schoudersafstand
 skeleton_bone-SHOULDERS_WIDTH = Schouderbreedte
 skeleton_bone-UPPER_ARM = Bovenarmlengte
 skeleton_bone-LOWER_ARM = Onderarmlengte
-skeleton_bone-CONTROLLER_Y = Controllerafstand Y
-skeleton_bone-CONTROLLER_Z = Controllerafstand Z
+skeleton_bone-HAND_Y = Afstand hand Y
+skeleton_bone-HAND_Z = Afstand hand Z
 skeleton_bone-ELBOW_OFFSET = Elleboogoffset
 
 ## Tracker reset buttons
@@ -160,6 +158,8 @@ tracker-infos-manufacturer = Fabrikant
 tracker-infos-display_name = Weergavenaam
 tracker-infos-custom_name = Aangepaste naam
 tracker-infos-url = Tracker URL
+tracker-infos-version = Firmware versie
+tracker-infos-hardware_rev = Hardware revisie
 
 ## Tracker settings
 
@@ -490,11 +490,14 @@ onboarding-connect_tracker-description-p0 = Nu het leuke gedeelte, verbind al je
 onboarding-connect_tracker-description-p1 = Gebruik een USB-kabel om alle trackers te verbinden die nog niet verbonden zijn.
 onboarding-connect_tracker-issue-serial = Ik heb problemen met verbinden!
 onboarding-connect_tracker-usb = USB Tracker
+onboarding-connect_tracker-connection_status-none = Op zoek naar trackers
+onboarding-connect_tracker-connection_status-serial_init = Verbinding maken met een serieel apparaat
+onboarding-connect_tracker-connection_status-provisioning = Wifi-inloggegevens verzenden
 onboarding-connect_tracker-connection_status-connecting = Wifi-inloggegevens verzenden
-onboarding-connect_tracker-connection_status-connected = Verbonden via WiFi
-onboarding-connect_tracker-connection_status-error = Kan geen verbinding maken via WiFi
-onboarding-connect_tracker-connection_status-start_connecting = Zoeken naar trackers
-onboarding-connect_tracker-connection_status-handshake = Verbonden met de server
+onboarding-connect_tracker-connection_status-looking_for_server = Op zoek naar server
+onboarding-connect_tracker-connection_status-connection_error = Kan geen verbinding maken met Wi-Fi
+onboarding-connect_tracker-connection_status-could_not_find_server = Kan de server niet vinden
+onboarding-connect_tracker-connection_status-done = Verbonden met de server
 # $amount (Number) - Amount of trackers connected (this is a number, but you can use CLDR plural rules for your language)
 # More info on https://www.unicode.org/cldr/cldr-aux/charts/22/supplemental/language_plural_rules.html
 # English in this case only has 2 plural rules, which are "one" and "other",
@@ -523,6 +526,9 @@ onboarding-assign_trackers-assigned =
     } toegewezen
 onboarding-assign_trackers-advanced = Geavanceerde toewijzingslocaties weergeven
 onboarding-assign_trackers-next = Ik heb alle trackers toegewezen
+
+## Tracker assignment warnings
+
 
 ## Tracker manual mounting setup
 

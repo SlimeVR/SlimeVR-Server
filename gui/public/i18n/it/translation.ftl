@@ -30,10 +30,9 @@ body_part-RIGHT_HAND = Mano destra
 body_part-RIGHT_UPPER_LEG = Coscia destra
 body_part-RIGHT_LOWER_LEG = Caviglia destra
 body_part-RIGHT_FOOT = Piede destro
-body_part-RIGHT_CONTROLLER = Controller destro
 body_part-CHEST = Petto
 body_part-WAIST = Girovita
-body_part-HIP = Fianchi
+body_part-HIP = Bacino
 body_part-LEFT_SHOULDER = Spalla sinistra
 body_part-LEFT_UPPER_ARM = Braccio sinistro
 body_part-LEFT_LOWER_ARM = Avambraccio sinistro
@@ -41,7 +40,6 @@ body_part-LEFT_HAND = Mano sinistra
 body_part-LEFT_UPPER_LEG = Coscia sinistra
 body_part-LEFT_LOWER_LEG = Caviglia sinistra
 body_part-LEFT_FOOT = Piede sinistro
-body_part-LEFT_CONTROLLER = Controller sinistro
 
 ## Proportions
 
@@ -51,9 +49,9 @@ skeleton_bone-NECK = Lunghezza Collo
 skeleton_bone-CHEST = Lunghezza del torace
 skeleton_bone-CHEST_OFFSET = Correzione Petto
 skeleton_bone-WAIST = Giro vita
-skeleton_bone-HIP = Lunghezza fianchi
-skeleton_bone-HIP_OFFSET = Correzione Fianchi
-skeleton_bone-HIPS_WIDTH = Larghezza Fianchi
+skeleton_bone-HIP = Lunghezza bacino
+skeleton_bone-HIP_OFFSET = Correzione bacino
+skeleton_bone-HIPS_WIDTH = Larghezza bacino
 skeleton_bone-UPPER_LEG = Lunghezza della parte superiore della gamba
 skeleton_bone-LOWER_LEG = Lunghezza della parte inferiore della gamba
 skeleton_bone-FOOT_LENGTH = Lunghezza Piedi
@@ -63,8 +61,8 @@ skeleton_bone-SHOULDERS_DISTANCE = Distanza Spalle
 skeleton_bone-SHOULDERS_WIDTH = Larghezza Spalle
 skeleton_bone-UPPER_ARM = Lunghezza Braccia
 skeleton_bone-LOWER_ARM = Distanza Avambracci
-skeleton_bone-CONTROLLER_Y = Distanza Y Controller
-skeleton_bone-CONTROLLER_Z = Distanza Z Controller
+skeleton_bone-HAND_Y = Distanza Mano Y
+skeleton_bone-HAND_Z = Distanza Mano Z
 skeleton_bone-ELBOW_OFFSET = Correzione Gomito
 
 ## Tracker reset buttons
@@ -160,6 +158,8 @@ tracker-infos-manufacturer = Produttore
 tracker-infos-display_name = Nome da visualizzare
 tracker-infos-custom_name = Nome Personalizzato
 tracker-infos-url = URL del tracker
+tracker-infos-version = Versione Firmware
+tracker-infos-hardware_rev = Versione Hardware
 
 ## Tracker settings
 
@@ -214,7 +214,7 @@ tracker_selection_menu-RIGHT_FOOT = { -tracker_selection-part } piede destro?
 tracker_selection_menu-RIGHT_CONTROLLER = { -tracker_selection-part } controller destro?
 tracker_selection_menu-CHEST = { -tracker_selection-part } petto?
 tracker_selection_menu-WAIST = { -tracker_selection-part } vita?
-tracker_selection_menu-HIP = { -tracker_selection-part } anca?
+tracker_selection_menu-HIP = { -tracker_selection-part } bacino?
 tracker_selection_menu-LEFT_SHOULDER = { -tracker_selection-part } spalla sinistra?
 tracker_selection_menu-LEFT_UPPER_ARM = { -tracker_selection-part } braccio superiore sinistro?
 tracker_selection_menu-LEFT_LOWER_ARM = { -tracker_selection-part } braccio inferiore sinistro?
@@ -490,11 +490,14 @@ onboarding-connect_tracker-description-p0 = Ora passiamo alla parte divertente, 
 onboarding-connect_tracker-description-p1 = Collega semplicemente tutti i tracker che non sono ancora collegati tramite una porta USB.
 onboarding-connect_tracker-issue-serial = Ho problemi con la connessione!
 onboarding-connect_tracker-usb = Tracker USB
+onboarding-connect_tracker-connection_status-none = Ricerca dei tracker in corso
+onboarding-connect_tracker-connection_status-serial_init = Connessione al dispositivo seriale in corso
+onboarding-connect_tracker-connection_status-provisioning = Invio credenziali Wi-Fi in corso
 onboarding-connect_tracker-connection_status-connecting = Invio credenziali Wi-Fi in corso.
-onboarding-connect_tracker-connection_status-connected = Connesso al Wi-Fi
-onboarding-connect_tracker-connection_status-error = Impossibile connettersi al Wi-Fi
-onboarding-connect_tracker-connection_status-start_connecting = Ricerca dei tracker in corso
-onboarding-connect_tracker-connection_status-handshake = Connesso al Server
+onboarding-connect_tracker-connection_status-looking_for_server = Ricerca del server in corso
+onboarding-connect_tracker-connection_status-connection_error = Impossibile connettersi al Wi-Fi
+onboarding-connect_tracker-connection_status-could_not_find_server = Impossibile trovare il server
+onboarding-connect_tracker-connection_status-done = Connesso al Server
 # $amount (Number) - Amount of trackers connected (this is a number, but you can use CLDR plural rules for your language)
 # More info on https://www.unicode.org/cldr/cldr-aux/charts/22/supplemental/language_plural_rules.html
 # English in this case only has 2 plural rules, which are "one" and "other",
@@ -523,6 +526,74 @@ onboarding-assign_trackers-assigned =
     } assigned
 onboarding-assign_trackers-advanced = Mostra impostazioni avanzate di assegnazione
 onboarding-assign_trackers-next = Ho assegnato tutti i miei tracker
+
+## Tracker assignment warnings
+
+# Note for devs, number is used for representing boolean states per bit.
+# $unassigned (Number) - Bits are based on BodyAssignment.ASSIGNMENT_RULES order
+onboarding-assign_trackers-warning-LEFT_FOOT =
+    { $unassigned ->
+        [0] Il piede sinistro è assegnato, ma anche la coscia sinistra e la caviglia sinistra e almeno uno tra il petto o il bacino o il girovita devono avere un tracker assegnato!
+        [1] Il piede sinistro è assegnato, ma anche la coscia sinistra e almeno uno tra il petto o il bacino o il girovita devono avere un tracker assegnato!
+        [2] Il piede sinistro è assegnato, ma anche la caviglia sinistra e almeno uno tra il petto o il bacino o il girovita devono avere un tracker assegnato!
+        [3] Il piede sinistro è assegnato, ma anche il petto o il bacino o il girovita devono avere un tracker assegnato!
+        [4] Il piede sinistro è assegnato, ma anche la coscia sinistra e la caviglia destra devono avere un tracker assegnato!
+        [5] Il piede sinistro è assegnato, ma anche la coscia sinistra deve avere un tracker assegnato!
+        [6] Il piede sinistro è assegnato, ma anche la caviglia sinistra deve avere un tracker assegnato!
+       *[unknown] Il piede sinistro è assegnato, ma una parte del corpo sconosciuta non ha un tracker assegnato!
+    }
+# $unassigned (Number) - Bits are based on BodyAssignment.ASSIGNMENT_RULES order
+onboarding-assign_trackers-warning-RIGHT_FOOT =
+    { $unassigned ->
+        [0] Il piede destro è assegnato, ma anche la coscia destra e la caviglia destra e almeno uno tra il petto o il bacino o il girovita devono avere un tracker assegnato!
+        [1] Il piede destro è assegnato, ma anche la coscia destra e almeno uno tra il petto o il bacino o il girovita devono avere un tracker assegnato!
+        [2] Il piede destro è assegnato, ma anche la caviglia destra e almeno uno tra il petto o il bacino o il girovita devono avere un tracker assegnato!
+        [3] Il piede destro è assegnato, ma anche il petto o il bacino o il girovita devono avere un tracker assegnato!
+        [4] Il piede destro è assegnato, ma anche la coscia destra e la caviglia destra devono avere un tracker assegnato!
+        [5] Il piede destro è assegnato, ma anche la coscia destra deve avere un tracker assegnato!
+        [6] Il piede destro è assegnato, ma anche la caviglia destra deve avere un tracker assegnato!
+       *[unknown] Il piede destro è assegnato, ma una parte del corpo sconosciuta non ha un tracker assegnato!
+    }
+# $unassigned (Number) - Bits are based on BodyAssignment.ASSIGNMENT_RULES order
+onboarding-assign_trackers-warning-LEFT_LOWER_LEG =
+    { $unassigned ->
+        [0] La caviglia sinistra è assegnata, ma anche la coscia sinistra e almeno uno tra il petto o il bacino o il girovita devono avere un tracker assegnato!
+        [1] La caviglia sinistra è assegnata, ma anche il petto o il bacino o il girovita devono avere un tracker assegnato!
+        [2] La caviglia sinistra è assegnata, ma anche la coscia sinistra deve avere un tracker assegnato!
+       *[unknown] La caviglia sinistra è assegnata, ma una parte del corpo sconosciuta non ha un tracker assegnato!
+    }
+# $unassigned (Number) - Bits are based on BodyAssignment.ASSIGNMENT_RULES order
+onboarding-assign_trackers-warning-RIGHT_LOWER_LEG =
+    { $unassigned ->
+        [0] La caviglia destra è assegnata, ma anche la coscia destra e almeno uno tra il petto o il bacino o il girovita devono avere un tracker assegnato!
+        [1] La caviglia destra è assegnata, ma anche il petto o il bacino o il girovita devono avere un tracker assegnato!
+        [2] La caviglia destra è assegnata, ma anche la coscia destra deve avere un tracker assegnato!
+       *[unknown] La caviglia destra è assegnata, ma una parte del corpo sconosciuta non ha un tracker assegnato!
+    }
+# $unassigned (Number) - Bits are based on BodyAssignment.ASSIGNMENT_RULES order
+onboarding-assign_trackers-warning-LEFT_UPPER_LEG =
+    { $unassigned ->
+        [0] La coscia sinistra è assegnata, ma anche il petto o il bacino o il girovita devono avere un tracker assegnato!
+       *[unknown] La coscia sinistra è assegnata, ma una parte del corpo sconosciuta non ha un tracker assegnato!
+    }
+# $unassigned (Number) - Bits are based on BodyAssignment.ASSIGNMENT_RULES order
+onboarding-assign_trackers-warning-RIGHT_UPPER_LEG =
+    { $unassigned ->
+        [0] La coscia destra è assegnata, ma anche il petto o il bacino o il girovita  devono avere un tracker assegnato!
+       *[unknown] La coscia destra è assegnata, ma una parte del corpo sconosciuta non ha un tracker assegnato!
+    }
+# $unassigned (Number) - Bits are based on BodyAssignment.ASSIGNMENT_RULES order
+onboarding-assign_trackers-warning-HIP =
+    { $unassigned ->
+        [0] Il bacino è assegnato, ma anche il petto deve avere un tracker assegnato!
+       *[unknown] Il bacino è assegnato, ma una parte del corpo sconosciuta non ha un tracker assegnato!
+    }
+# $unassigned (Number) - Bits are based on BodyAssignment.ASSIGNMENT_RULES order
+onboarding-assign_trackers-warning-WAIST =
+    { $unassigned ->
+        [0] Il girovita è assegnato, ma anche il petto deve avere un tracker assegnato!
+       *[unknown] Il girovita è assegnato, ma una parte del corpo sconosciuta non ha un tracker assegnato!
+    }
 
 ## Tracker manual mounting setup
 

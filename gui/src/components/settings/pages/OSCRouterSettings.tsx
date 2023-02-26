@@ -170,7 +170,7 @@ export function OSCRouterSettings() {
                 rules={{ required: true }}
                 name="router.oscSettings.portIn"
                 placeholder="9002"
-                label="Port In"
+                label=""
               ></Input>
             </Localized>
             <Localized
@@ -183,7 +183,7 @@ export function OSCRouterSettings() {
                 rules={{ required: true }}
                 name="router.oscSettings.portOut"
                 placeholder="9000"
-                label="Port Out"
+                label=""
               ></Input>
             </Localized>
           </div>
@@ -210,6 +210,7 @@ export function OSCRouterSettings() {
               placeholder={l10n.getString(
                 'settings-osc-router-network-address-placeholder'
               )}
+              label=""
             ></Input>
           </div>
         </>

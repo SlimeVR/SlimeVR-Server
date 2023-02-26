@@ -30,7 +30,6 @@ body_part-RIGHT_HAND = Mano derecha
 body_part-RIGHT_UPPER_LEG = Muslo derecho
 body_part-RIGHT_LOWER_LEG = Tobillo derecho
 body_part-RIGHT_FOOT = Pie derecho
-body_part-RIGHT_CONTROLLER = Control derecho
 body_part-CHEST = Pecho
 body_part-WAIST = Cintura
 body_part-HIP = Cadera
@@ -41,7 +40,6 @@ body_part-LEFT_HAND = Mano izquierda
 body_part-LEFT_UPPER_LEG = Muslo izquierdo
 body_part-LEFT_LOWER_LEG = Tobillo izquierdo
 body_part-LEFT_FOOT = Pie izquierdo
-body_part-LEFT_CONTROLLER = Control izquierdo
 
 ## Proportions
 
@@ -63,8 +61,8 @@ skeleton_bone-SHOULDERS_DISTANCE = Distancia de los hombros
 skeleton_bone-SHOULDERS_WIDTH = Ancho de los hombros
 skeleton_bone-UPPER_ARM = Largo del brazo superior
 skeleton_bone-LOWER_ARM = Distancia del antebrazo
-skeleton_bone-CONTROLLER_Y = Distancia Y del mando
-skeleton_bone-CONTROLLER_Z = Distancia Z del mando
+skeleton_bone-HAND_Y = Distancia Y de la mano
+skeleton_bone-HAND_Z = Distancia Z de la mano
 skeleton_bone-ELBOW_OFFSET = Desplazamiento del codo
 
 ## Tracker reset buttons
@@ -160,6 +158,8 @@ tracker-infos-manufacturer = Fabricante
 tracker-infos-display_name = Nombre
 tracker-infos-custom_name = Nombre personalizado
 tracker-infos-url = URL del sensor
+tracker-infos-version = Versión del firmware
+tracker-infos-hardware_rev = Revisión del hardware
 
 ## Tracker settings
 
@@ -490,11 +490,14 @@ onboarding-connect_tracker-description-p0 = Ahora la parte divertida, ¡Conectar
 onboarding-connect_tracker-description-p1 = Simplemente conecta todos los sensores que aún no están conectados, por medio de un puerto USB.
 onboarding-connect_tracker-issue-serial = ¡Tengo problemas conectándolos!
 onboarding-connect_tracker-usb = Sensor USB
+onboarding-connect_tracker-connection_status-none = Buscando sensores
+onboarding-connect_tracker-connection_status-serial_init = Conectando al dispositivo serial
+onboarding-connect_tracker-connection_status-provisioning = Enviando credenciales Wi-Fi
 onboarding-connect_tracker-connection_status-connecting = Enviando credenciales Wi-Fi
-onboarding-connect_tracker-connection_status-connected = Conectado al Wi-Fi
-onboarding-connect_tracker-connection_status-error = Incapaz de conectar al Wi-Fi
-onboarding-connect_tracker-connection_status-start_connecting = Buscando sensores
-onboarding-connect_tracker-connection_status-handshake = Conectado con el servidor
+onboarding-connect_tracker-connection_status-looking_for_server = Buscando servidor
+onboarding-connect_tracker-connection_status-connection_error = Incapaz de conectar al Wi-Fi
+onboarding-connect_tracker-connection_status-could_not_find_server = No se pudo encontrar el servidor
+onboarding-connect_tracker-connection_status-done = Conectado con el servidor
 # $amount (Number) - Amount of trackers connected (this is a number, but you can use CLDR plural rules for your language)
 # More info on https://www.unicode.org/cldr/cldr-aux/charts/22/supplemental/language_plural_rules.html
 # English in this case only has 2 plural rules, which are "one" and "other",
@@ -523,6 +526,74 @@ onboarding-assign_trackers-assigned =
     }
 onboarding-assign_trackers-advanced = Mostrar ubicación de asignaciones avanzados.
 onboarding-assign_trackers-next = He asignado todos los sensores
+
+## Tracker assignment warnings
+
+# Note for devs, number is used for representing boolean states per bit.
+# $unassigned (Number) - Bits are based on BodyAssignment.ASSIGNMENT_RULES order
+onboarding-assign_trackers-warning-LEFT_FOOT =
+    { $unassigned ->
+        [0] El pie izquierdo está asignado, pero necesitas el tobillo izquierdo, el muslo izquierdo y que el pecho, la cadera o la cintura estén asignados.
+        [1] El pie izquierdo está asignado, pero necesitas que el muslo izquierdo y el pecho, la cadera o la cintura estén asignados.
+        [2] El pie izquierdo está asignado, pero necesitas que el tobillo izquierdo y el pecho, la cadera o la cintura estén asignados.
+        [3] El pie izquierdo está asignado, pero necesitas que el pecho, la cadera o la cintura estén asignados.
+        [4] El pie izquierdo está asignado, pero necesitas que el tobillo izquierdo y el muslo izquierdo estén asignados.
+        [5] El pie izquierdo está asignado, pero necesitas que el muslo izquierdo igual esté asignado.
+        [6] El pie izquierdo está asignado, pero necesitas que el tobillo izquierdo igual esté asignado.
+       *[unknown] El pie izquierdo está asignado, pero necesitas asignar la parte del cuerpo desconocida sin asignar.
+    }
+# $unassigned (Number) - Bits are based on BodyAssignment.ASSIGNMENT_RULES order
+onboarding-assign_trackers-warning-RIGHT_FOOT =
+    { $unassigned ->
+        [0] El pie derecho está asignado, pero necesitas el tobillo derecho, el muslo derecho y que el pecho, la cadera o la cintura estén asignados.
+        [1] El pie derecho está asignado, pero necesitas el muslo derecho y el pecho, la cadera o la cintura estén asignados.
+        [2] El pie derecho está asignado, pero necesitas el tobillo derecho y el pecho, la cadera o la cintura estén asignados.
+        [3] El pie derecho está asignado, pero necesitas que el pecho, la cadera o la cintura estén asignados.
+        [4] El pie derecho está asignado, pero necesitas que el tobillo derecho y el muslo derecho estén asignados.
+        [5] El pie derecho está asignado, pero necesitas que el muslo derecho igual esté asignado.
+        [6] El pie derecho está asignado, pero necesitas que el tobillo derecho igual esté asignado.
+       *[unknown] El pie derecho está asignado, pero necesitas asignar la parte del cuerpo desconocida sin asignar.
+    }
+# $unassigned (Number) - Bits are based on BodyAssignment.ASSIGNMENT_RULES order
+onboarding-assign_trackers-warning-LEFT_LOWER_LEG =
+    { $unassigned ->
+        [0] El tobillo izquierdo está asignado, pero necesitas el muslo izquierdo y que el pecho, la cadera o la cintura estén asignados.
+        [1] El tobillo izquierdo está asignado, pero necesitas que el pecho, la cadera o la cintura estén asignados.
+        [2] El tobillo izquierdo está asignado, pero necesitas que el muslo izquierdo igual esté asignado.
+       *[unknown] El tobillo izquierdo está asignado, pero necesitas asignar la parte del cuerpo desconocida sin asignar.
+    }
+# $unassigned (Number) - Bits are based on BodyAssignment.ASSIGNMENT_RULES order
+onboarding-assign_trackers-warning-RIGHT_LOWER_LEG =
+    { $unassigned ->
+        [0] El tobillo derecho está asignado, pero necesitas el muslo derecho y que el pecho, la cadera o la cintura estén asignados.
+        [1] El tobillo derecho está asignado, pero necesitas que el pecho, la cadera o la cintura estén asignados.
+        [2] El tobillo derecho está asignado, pero necesitas que el muslo derecho igual esté asignado.
+       *[unknown] El tobillo derecho está asignado, pero necesitas asignar la parte del cuerpo desconocida sin asignar.
+    }
+# $unassigned (Number) - Bits are based on BodyAssignment.ASSIGNMENT_RULES order
+onboarding-assign_trackers-warning-LEFT_UPPER_LEG =
+    { $unassigned ->
+        [0] El muslo izquierdo está asignado, pero necesitas que el pecho, la cadera o la cintura estén asignados.
+       *[unknown] El muslo izquierdo está asignado, pero necesitas asignar la parte del cuerpo desconocida sin asignar.
+    }
+# $unassigned (Number) - Bits are based on BodyAssignment.ASSIGNMENT_RULES order
+onboarding-assign_trackers-warning-RIGHT_UPPER_LEG =
+    { $unassigned ->
+        [0] El muslo derecho está asignado, pero necesitas que el pecho, la cadera o la cintura estén asignados.
+       *[unknown] El muslo derecho está asignado, pero necesitas asignar la parte del cuerpo desconocida sin asignar.
+    }
+# $unassigned (Number) - Bits are based on BodyAssignment.ASSIGNMENT_RULES order
+onboarding-assign_trackers-warning-HIP =
+    { $unassigned ->
+        [0] La cadera está asignada, pero necesitas que el pecho igual esté asignado.
+       *[unknown] La cadera está asignada, pero necesitas asignar la parte del cuerpo desconocida sin asignar.
+    }
+# $unassigned (Number) - Bits are based on BodyAssignment.ASSIGNMENT_RULES order
+onboarding-assign_trackers-warning-WAIST =
+    { $unassigned ->
+        [0] La cintura está asignada, pero necesitas que el pecho igual esté asignado.
+       *[unknown] La cintura está asignada, pero necesitas asignar la parte del cuerpo desconocida sin asignar.
+    }
 
 ## Tracker manual mounting setup
 

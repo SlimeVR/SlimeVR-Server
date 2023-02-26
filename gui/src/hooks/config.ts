@@ -1,10 +1,4 @@
-import {
-  BaseDirectory,
-  createDir,
-  readTextFile,
-  renameFile,
-  writeFile,
-} from '@tauri-apps/api/fs';
+import { BaseDirectory, readTextFile } from '@tauri-apps/api/fs';
 
 import { createContext, useContext, useRef, useState } from 'react';
 import { DeveloperModeWidgetForm } from '../components/widgets/DeveloperModeWidget';
@@ -53,14 +47,7 @@ export function useConfigProvider(): ConfigContext {
 
     if (!debounceTimer.current) {
       debounceTimer.current = setTimeout(async () => {
-        await createDir('', { dir: BaseDirectory.App, recursive: true });
-        await writeFile(
-          { contents: JSON.stringify(newConfig), path: 'config.json.tmp' },
-          { dir: BaseDirectory.App }
-        );
-        await renameFile('config.json.tmp', 'config.json', {
-          dir: BaseDirectory.App,
-        });
+        localStorage.setItem('config.json', JSON.stringify(newConfig));
         debounceTimer.current = null;
       }, 10);
     }
@@ -73,9 +60,21 @@ export function useConfigProvider(): ConfigContext {
     loadConfig: async () => {
       setLoading(true);
       try {
-        const json = await readTextFile('config.json', {
-          dir: BaseDirectory.App,
-        });
+        const migrated = localStorage.getItem('configMigrated');
+        if (!migrated) {
+          const oldConfig = await readTextFile('config.json', {
+            dir: BaseDirectory.App,
+          }).catch(() => null);
+
+          if (oldConfig) localStorage.setItem('config.json', oldConfig);
+
+          localStorage.setItem('configMigrated', 'true');
+        }
+
+        const json = localStorage.getItem('config.json');
+
+        if (!json) throw new Error('Config has ceased existing for some reason');
+
         const loadedConfig = JSON.parse(json);
         set(loadedConfig);
         setLoading(false);

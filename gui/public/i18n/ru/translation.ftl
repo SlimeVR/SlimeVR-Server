@@ -30,7 +30,6 @@ body_part-RIGHT_HAND = Правая рука
 body_part-RIGHT_UPPER_LEG = Правое бедро
 body_part-RIGHT_LOWER_LEG = Правая голень
 body_part-RIGHT_FOOT = Правая ступня
-body_part-RIGHT_CONTROLLER = Правый контроллер
 body_part-CHEST = Грудь
 body_part-WAIST = Талия
 body_part-HIP = Таз
@@ -41,7 +40,6 @@ body_part-LEFT_HAND = Левая рука
 body_part-LEFT_UPPER_LEG = Левое бедро
 body_part-LEFT_LOWER_LEG = Левая голень
 body_part-LEFT_FOOT = Левая ступня
-body_part-LEFT_CONTROLLER = Левый контроллер
 
 ## Proportions
 
@@ -63,8 +61,8 @@ skeleton_bone-SHOULDERS_DISTANCE = Дистанция плеч
 skeleton_bone-SHOULDERS_WIDTH = Ширина плеч
 skeleton_bone-UPPER_ARM = Длинна предплечья
 skeleton_bone-LOWER_ARM = Длинна нижнего предплечья
-skeleton_bone-CONTROLLER_Y = Дистанция контроллера Y
-skeleton_bone-CONTROLLER_Z = Дистанция контроллера Z
+skeleton_bone-HAND_Y = Расстояние от руки Y
+skeleton_bone-HAND_Z = Расстояние от руки Z
 skeleton_bone-ELBOW_OFFSET = Смещение локтя
 
 ## Tracker reset buttons
@@ -160,6 +158,8 @@ tracker-infos-manufacturer = Производитель
 tracker-infos-display_name = Отображаемое имя
 tracker-infos-custom_name = Свое имя
 tracker-infos-url = URL трекера
+tracker-infos-version = Версия прошивки
+tracker-infos-hardware_rev = Ревизия устройства
 
 ## Tracker settings
 
@@ -492,11 +492,14 @@ onboarding-connect_tracker-description-p0 = Теперь самое интере
 onboarding-connect_tracker-description-p1 = Просто подключите все, что еще не подключены, через USB-порт.
 onboarding-connect_tracker-issue-serial = У меня проблемы с подключением!
 onboarding-connect_tracker-usb = USB Трекер
+onboarding-connect_tracker-connection_status-none = Поиск трекеров
+onboarding-connect_tracker-connection_status-serial_init = Подключение к устройству
+onboarding-connect_tracker-connection_status-provisioning = Отправка данных Wi-Fi
 onboarding-connect_tracker-connection_status-connecting = Отправить данные Wi_Fi
-onboarding-connect_tracker-connection_status-connected = Подключен к Wi-Fi
-onboarding-connect_tracker-connection_status-error = Невозможно подключиться к Wi-Fi
-onboarding-connect_tracker-connection_status-start_connecting = Ищем трекеры...
-onboarding-connect_tracker-connection_status-handshake = Подключен к трекеру
+onboarding-connect_tracker-connection_status-looking_for_server = Поиск сервера
+onboarding-connect_tracker-connection_status-connection_error = Не удается подключиться к Wi-Fi
+onboarding-connect_tracker-connection_status-could_not_find_server = Не удалось найти сервер
+onboarding-connect_tracker-connection_status-done = Подключен к серверу
 # $amount (Number) - Amount of trackers connected (this is a number, but you can use CLDR plural rules for your language)
 # More info on https://www.unicode.org/cldr/cldr-aux/charts/22/supplemental/language_plural_rules.html
 # English in this case only has 2 plural rules, which are "one" and "other",
@@ -529,6 +532,74 @@ onboarding-assign_trackers-assigned =
     } привязано
 onboarding-assign_trackers-advanced = Показать дополнительные места привязки
 onboarding-assign_trackers-next = Я привязал все трекеры
+
+## Tracker assignment warnings
+
+# Note for devs, number is used for representing boolean states per bit.
+# $unassigned (Number) - Bits are based on BodyAssignment.ASSIGNMENT_RULES order
+onboarding-assign_trackers-warning-LEFT_FOOT =
+    { $unassigned ->
+        [0] Назначена левая ступня, также вам нужно назначить левую голень и левое бедро, и либо грудь, либо талию!
+        [1] Назначена левая ступня, но вам также нужно назначить левое бедро и грудь, а также либо таз, либо талию!
+        [2] Назначена левая ступня, но вам также нужно назначить левую голень и грудь, а также либо таз, либо талию!
+        [3] Назначена левая ступня, но вам нужно, назначить грудь, таз или талия также должны быть назначены!
+        [4] Назначена левая ступня, но вам нужно, назначить левую голень и левое бедро!
+        [5] Назначена левая ступня, но вам нужно, назначить левое бедро!
+        [6] Назначена левая ступня, но вам нужно, назначить левую голень!
+       *[unknown] Назначена левая ступня, но вам также нужно назначить неизвестную неназначенную часть тела!
+    }
+# $unassigned (Number) - Bits are based on BodyAssignment.ASSIGNMENT_RULES order
+onboarding-assign_trackers-warning-RIGHT_FOOT =
+    { $unassigned ->
+        [0] Назначена правая ступня, также вам нужно назначить правую голень и правое бедро, и либо грудь, либо талию!
+        [1] Назначена правая ступня, но вам также нужно назначить правое бедро и грудь, а также либо таз, либо талию!
+        [2] Назначена правая ступня, но вам также нужно назначить правую голень и грудь, а также либо таз, либо талию!
+        [3] Назначена правая ступня, но вам нужно, назначить грудь, таз или талия также должны быть назначены!
+        [4] Назначена правая ступня, но вам нужно, назначить правую голень и правое бедро!
+        [5] Назначена правая ступня, но вам нужно, назначить правое бедро!
+        [6] Назначена правая ступня, но вам нужно, назначить правую голень!
+       *[unknown] Назначена правая ступня, но вам также нужно назначить неизвестную неназначенную часть тела!
+    }
+# $unassigned (Number) - Bits are based on BodyAssignment.ASSIGNMENT_RULES order
+onboarding-assign_trackers-warning-LEFT_LOWER_LEG =
+    { $unassigned ->
+        [0] Назначена левая голень, но вам нужно, чтобы также было назначено левое бедро!
+        [1] Назначена левая голень, но вам также нужно назначить грудь, таз или талию!
+        [2] Назначена левая голень, но вам также нужно назначить левое бедро и либо грудь, либо таз, либо талию!
+       *[other] Назначена левая голень, но вам также нужно назначить неизвестную неназначенную часть тела!
+    }
+# $unassigned (Number) - Bits are based on BodyAssignment.ASSIGNMENT_RULES order
+onboarding-assign_trackers-warning-RIGHT_LOWER_LEG =
+    { $unassigned ->
+        [0] Назначена правая голень, но вам также нужно назначить правое бедро и либо грудь, либо таз, либо талию!
+        [1] Назначена правая голень, но вам также нужно назначить грудь, таз или талию!
+        [2] Назначена правая голень, но вам нужно, чтобы также было назначено правое бедро!
+       *[other] Назначена правая голень, но вам также нужно назначить неизвестную неназначенную часть тела!
+    }
+# $unassigned (Number) - Bits are based on BodyAssignment.ASSIGNMENT_RULES order
+onboarding-assign_trackers-warning-LEFT_UPPER_LEG =
+    { $unassigned ->
+        [0] Назначено левое бедро, вам также нужно назначить грудь, таз или талию!
+       *[unknown] Назначено левое бедро, но вам также нужно назначить неизвестную неназначенную часть тела!
+    }
+# $unassigned (Number) - Bits are based on BodyAssignment.ASSIGNMENT_RULES order
+onboarding-assign_trackers-warning-RIGHT_UPPER_LEG =
+    { $unassigned ->
+        [0] Назначено правое бедро, вам также нужно назначить грудь, таз или талию!
+       *[unknown] Назначено правое бедро, но вам также нужно назначить неизвестную неназначенную часть тела!
+    }
+# $unassigned (Number) - Bits are based on BodyAssignment.ASSIGNMENT_RULES order
+onboarding-assign_trackers-warning-HIP =
+    { $unassigned ->
+        [0] Таз назначен, но вам нужно, чтобы грудь также была назначена!
+       *[unknown] Таз назначен, но вам нужно, чтобы неизвестная неназначенная часть тела также была назначена!
+    }
+# $unassigned (Number) - Bits are based on BodyAssignment.ASSIGNMENT_RULES order
+onboarding-assign_trackers-warning-WAIST =
+    { $unassigned ->
+        [0] Талия назначена, но вам нужно, чтобы грудь также была назначена!
+       *[unknown] Талия назначена, но вам нужно, чтобы неизвестная неназначенная часть тела также была назначена!
+    }
 
 ## Tracker manual mounting setup
 

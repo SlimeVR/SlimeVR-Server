@@ -4,6 +4,7 @@ import com.google.protobuf.CodedOutputStream;
 import com.sun.jna.platform.win32.Kernel32;
 import com.sun.jna.platform.win32.WinBase;
 import com.sun.jna.platform.win32.WinError;
+import com.sun.jna.platform.win32.WinNT;
 import com.sun.jna.ptr.IntByReference;
 import dev.slimevr.Main;
 import dev.slimevr.VRServer;
@@ -23,6 +24,8 @@ public class WindowsNamedPipeBridge extends SteamVRBridge {
 	protected final String pipeName;
 	private final byte[] buffArray = new byte[2048];
 	protected WindowsPipe pipe;
+	protected WinNT.HANDLE dataEvent = Kernel32.INSTANCE.CreateEvent(null, false, false, null);
+	protected WinBase.OVERLAPPED overlapped = new WinBase.OVERLAPPED();
 
 	public WindowsNamedPipeBridge(
 		VRServer server,
@@ -34,6 +37,7 @@ public class WindowsNamedPipeBridge extends SteamVRBridge {
 	) {
 		super(server, hmd, "Named pipe thread", bridgeName, bridgeSettingsKey, shareableTrackers);
 		this.pipeName = pipeName;
+		overlapped.hEvent = dataEvent;
 	}
 
 	@Override
@@ -54,10 +58,14 @@ public class WindowsNamedPipeBridge extends SteamVRBridge {
 					resetPipe();
 				}
 				if (!pipesUpdated) {
-					try {
-						Thread.sleep(5); // Up to 200Hz
-					} catch (InterruptedException e) {
-						e.printStackTrace();
+					if (pipe.state == PipeState.OPEN) {
+						waitForData();
+					} else {
+						try {
+							Thread.sleep(20);
+						} catch (InterruptedException e) {
+							e.printStackTrace();
+						}
 					}
 				}
 			}
@@ -91,6 +99,14 @@ public class WindowsNamedPipeBridge extends SteamVRBridge {
 			}
 		}
 		return false;
+	}
+
+	private void waitForData() {
+		if (pipe.state != PipeState.OPEN)
+			return;
+		// async request for data, overlapped contains the event handle
+		Kernel32.INSTANCE.ReadFile(pipe.pipeHandle, null, 0, null, overlapped);
+		Kernel32.INSTANCE.WaitForSingleObject(dataEvent, 20);
 	}
 
 	private boolean updatePipe() throws IOException {

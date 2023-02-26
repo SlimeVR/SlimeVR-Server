@@ -4,6 +4,7 @@ import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.module.SimpleModule;
 import com.fasterxml.jackson.dataformat.yaml.YAMLFactory;
+import com.fasterxml.jackson.dataformat.yaml.YAMLGenerator;
 import com.github.jonpeterson.jackson.module.versioning.VersioningModule;
 import com.jme3.math.Quaternion;
 import dev.slimevr.config.serializers.QuaternionDeserializer;
@@ -26,7 +27,7 @@ public class ConfigManager {
 
 	public ConfigManager(String configPath) {
 		this.configPath = configPath;
-		om = new ObjectMapper(new YAMLFactory());
+		om = new ObjectMapper(new YAMLFactory().disable(YAMLGenerator.Feature.SPLIT_LINES));
 		om.configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false);
 		om.registerModule(new VersioningModule());
 		SimpleModule quaternionModule = new SimpleModule();

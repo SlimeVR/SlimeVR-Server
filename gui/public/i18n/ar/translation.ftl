@@ -30,7 +30,6 @@ body_part-RIGHT_HAND = اليد اليمنى
 body_part-RIGHT_UPPER_LEG = الفخذ الأيمن
 body_part-RIGHT_LOWER_LEG = الكاحل الأيمن
 body_part-RIGHT_FOOT = القدم اليمنى
-body_part-RIGHT_CONTROLLER = جهاز التحكم اليمنى
 body_part-CHEST = الصدر
 body_part-WAIST = الخصر
 body_part-HIP = الورك
@@ -41,7 +40,6 @@ body_part-LEFT_HAND = اليد اليسرى
 body_part-LEFT_UPPER_LEG = الفخذ الأيسر
 body_part-LEFT_LOWER_LEG = الكاحل الأيسر
 body_part-LEFT_FOOT = القدم اليسرى
-body_part-LEFT_CONTROLLER = جهاز التحكم الايسر
 
 ## Proportions
 
@@ -63,8 +61,8 @@ skeleton_bone-SHOULDERS_DISTANCE = مسافة الكتفين
 skeleton_bone-SHOULDERS_WIDTH = عرض الكتفين
 skeleton_bone-UPPER_ARM = طول العضد
 skeleton_bone-LOWER_ARM = طول الساعد
-skeleton_bone-CONTROLLER_Y = مسافة وحدة التحكم Y
-skeleton_bone-CONTROLLER_Z = مسافة وحدة التحكم Z
+skeleton_bone-HAND_Y = مسافة اليد Y
+skeleton_bone-HAND_Z = مسافة اليد Z
 skeleton_bone-ELBOW_OFFSET = درجة تشريد الكوع
 
 ## Tracker reset buttons
@@ -77,9 +75,9 @@ reset-quick = إعادة تعيين سريعة
 ## Serial detection stuff
 
 serial_detection-new_device-p0 = تم اكتشاف جهاز تسلسلي جديد!
-serial_detection-new_device-p1 = أدخل بيانات اعتماد الWi-Fi الخاصة بك!
+serial_detection-new_device-p1 = أدخل بيانات اعتماد الواي فاي  الخاصة بك!
 serial_detection-new_device-p2 = يرجى تحديد ما تريد القيام به
-serial_detection-open_wifi = اتصل بشبكة الWi-Fi
+serial_detection-open_wifi = اتصل بشبكة الواي فاي
 serial_detection-open_serial = افتح وحدة التحكم التسلسلية
 serial_detection-submit = إرسال!
 serial_detection-close = أغلق
@@ -95,13 +93,13 @@ navbar-settings = الإعدادات
 
 ## Bounding volume hierarchy recording
 
-bvh-start_recording = سجل BVH
+bvh-start_recording = سجل بي في ايتش
 bvh-recording = تسجيل...
 
 ## Widget: Overlay settings
 
 widget-overlay = التراكب
-widget-overlay-is_visible_label = إظهار التراكب في SteamVR
+widget-overlay-is_visible_label = إظهار التراكب في ستيم في ار
 widget-overlay-is_mirrored_label = عكس تراكب الشاشة
 
 ## Widget: Drift compensation
@@ -114,7 +112,7 @@ widget-developer_mode = وضع المطوّر
 widget-developer_mode-high_contrast = تباين عالي
 widget-developer_mode-precise_rotation = دوران دقيق
 widget-developer_mode-fast_data_feed = تغذية البيانات السريعة
-widget-developer_mode-filter_slimes_and_hmd = تصفية السليمس و HMD
+widget-developer_mode-filter_slimes_and_hmd = تصفية السليمس و ايتش أم دي
 widget-developer_mode-sort_by_name = فرز بالاسم
 widget-developer_mode-raw_slime_rotation = الدوران الصافي
 widget-developer_mode-more_info = المزيد
@@ -140,8 +138,8 @@ tracker-table-column-name = الاسم
 tracker-table-column-type = النوع
 tracker-table-column-battery = البطارية
 tracker-table-column-ping = بينج
-tracker-table-column-tps = TPS
-tracker-table-column-temperature = درجة الحرارة °C
+tracker-table-column-tps = تي بي أس
+tracker-table-column-temperature = درجة الحرارة درجة مئوية
 tracker-table-column-linear-acceleration = تسارع X/Y/Z
 tracker-table-column-rotation = دوران X / Y / Z
 tracker-table-column-position = موضع X/Y/Z
@@ -160,6 +158,8 @@ tracker-infos-manufacturer = المصنّع
 tracker-infos-display_name = اسم العرض
 tracker-infos-custom_name = اسم مخصص
 tracker-infos-url = عنوان URL لجهاز التعقب
+tracker-infos-version = إصدار البرنامج الثابت
+tracker-infos-hardware_rev = مراجعة الأجهزة
 
 ## Tracker settings
 
@@ -247,20 +247,20 @@ settings-sidebar-tracker_mechanics = ميكانيكا جهاز التعقب
 settings-sidebar-fk_settings = إعدادات التعقب
 settings-sidebar-gesture_control = التحكم بالإيماءات
 settings-sidebar-interface = واجهة المستخدم
-settings-sidebar-osc_router = راوتر OSC
+settings-sidebar-osc_router = راوتر أوه أس سي
 settings-sidebar-utils = الأدوات المساعدة
 settings-sidebar-serial = وحدة التحكم التسلسلية
 
 ## SteamVR settings
 
-settings-general-steamvr = SteamVR
-settings-general-steamvr-subtitle = أجهزة تعقب SteamVR
+settings-general-steamvr = ستيم في ار
+settings-general-steamvr-subtitle = أجهزة تعقب ستيم في ار
 # Not all translation keys support multiline, only the ones that specify it will actually
 # split it in lines (that also means you can split in lines however you want in those).
 # The first spaces (not tabs) for indentation will be ignored, just to make the file look nice when writing.
 # This one is one of this cases that cares about multilines
 settings-general-steamvr-description =
-    تمكين أو تعطيل أجهزة التعقب المحددة لSteamVR.
+    تمكين أو تعطيل أجهزة التعقب المحددة لستيم في ار.
     مفيد فقط للألعاب أو التطبيقات التي تدعم أجهزة تعقب معينة.
 settings-general-steamvr-trackers-waist = الخصر
 settings-general-steamvr-trackers-chest = الصدر
@@ -311,15 +311,15 @@ settings-general-fk_settings-leg_tweak-skating_correction = تصحيح التز�
 settings-general-fk_settings-leg_tweak-skating_correction-amount = قوة تصحيح التزحلق
 settings-general-fk_settings-arm_fk = تعقب الذراع
 settings-general-fk_settings-arm_fk-description = تغيير طريقة تعقب الذراعين.
-settings-general-fk_settings-arm_fk-force_arms = إجبار الذراعين من HMD
+settings-general-fk_settings-arm_fk-force_arms = إجبار الذراعين من ايتش أم دي
 settings-general-fk_settings-skeleton_settings = إعدادات الهيكل العظمي
 settings-general-fk_settings-skeleton_settings-description = تبديل إعدادات الهيكل العظمي أو إيقافه. يوصى بتركها شغالة.
 settings-general-fk_settings-skeleton_settings-extended_spine = العمود الفقري الممتد
 settings-general-fk_settings-skeleton_settings-extended_pelvis = الحوض الممتد
 settings-general-fk_settings-skeleton_settings-extended_knees = الركبة الممتدة
-settings-general-fk_settings-vive_emulation-title = محاكاة Vive
-settings-general-fk_settings-vive_emulation-description = محاكاة مشاكل تعقب الخصر التي تعاني منها أجهزة تعقب Vive. هذه مزحة وتجعل التتبع أسوأ.
-settings-general-fk_settings-vive_emulation-label = تمكين محاكاة Vive
+settings-general-fk_settings-vive_emulation-title = محاكاة فايف
+settings-general-fk_settings-vive_emulation-description = محاكاة مشاكل تعقب الخصر التي تعاني منها أجهزة تعقب فايف. هذه مزحة وتجعل التتبع أسوأ.
+settings-general-fk_settings-vive_emulation-label = تمكين محاكاة فايف
 
 ## Gesture control settings (tracker tapping)
 
@@ -374,7 +374,7 @@ settings-serial-factory_reset = إعادة التعيين إلى إعدادات 
 # <b>text</b> means that the text should be bold
 settings-serial-factory_reset-warning =
     <b>تحذير:</b> سيؤدي هذا إلى إعادة تعيين المتعقب إلى إعدادات المصنع.
-    مما يعني أن إعدادات Wi-Fi والمعايرة <b>ستفقد جميعا!</b>
+    مما يعني أن إعدادات واي فاي والمعايرة <b>ستفقد جميعا!</b>
 settings-serial-factory_reset-warning-ok = أنا أعرف ماذا أفعل
 settings-serial-factory_reset-warning-cancel = إلغاء
 settings-serial-get_infos = احصل على معلومات
@@ -383,11 +383,11 @@ settings-serial-auto_dropdown_item = تلقائي
 
 ## OSC router settings
 
-settings-osc-router = راوتر OSC
+settings-osc-router = راوتر أوه أس سي
 # This cares about multilines
 settings-osc-router-description =
-    إعادة توجيه رسائل OSC من برنامج آخر.
-    مفيد لاستخدام برنامج OSC آخر مع VRChat على سبيل المثال.
+    إعادة توجيه رسائل أوه أس سي من برنامج آخر.
+    مفيد لاستخدام برنامج أوه أس سي آخر مع في ار تشات على سبيل المثال.
 settings-osc-router-enable = تمكين
 settings-osc-router-enable-description = تبديل إعادة توجيه الرسائل.
 settings-osc-router-enable-label = تمكين
@@ -395,7 +395,7 @@ settings-osc-router-network = منافذ الشبكة
 # This cares about multilines
 settings-osc-router-network-description =
     اضبط المنافذ للاستماع وإرسال البيانات.
-        يمكن أن تكون هذه هي نفس المنافذ الأخرى المستخدمة في خادم SlimeVR.
+        يمكن أن تكون هذه هي نفس المنافذ الأخرى المستخدمة في خادم سلايم في ار.
 settings-osc-router-network-port_in =
     .label = منفذ الدخول
     .placeholder = منفذ الدخول (الإفتراضي: 9002)
@@ -404,20 +404,20 @@ settings-osc-router-network-port_out =
     .placeholder = منفذ الخروج (الإفتراضي: 9000)
 settings-osc-router-network-address = عنوان الشبكة
 settings-osc-router-network-address-description = قم بتعيين العنوان لإرسال البيانات إليه.
-settings-osc-router-network-address-placeholder = عنوان IPV4
+settings-osc-router-network-address-placeholder = عنوان آي بي في 4
 
 ## OSC VRChat settings
 
-settings-osc-vrchat = أجهزة تعقب "OSC VRChat"
+settings-osc-vrchat = أجهزة تعقب "في ار تشات أوه أس سي"
 # This cares about multilines
 settings-osc-vrchat-description =
-    قم بتغيير الإعدادات الخاصة ب VRChat لتلقي بيانات HMD وإرسالها
-    بيانات أجهزة تعقب ل FBT (يعمل على Quest مستقل).
+    قم بتغيير الإعدادات الخاصة ب في ار تشات لتلقي بيانات ايتش أم دي وإرسالها
+    بيانات أجهزة تعقب لتعقب الجسم (يعمل على كوست مستقل).
 settings-osc-vrchat-enable = تمكين
 settings-osc-vrchat-enable-description = بتبديل إرسال واستقبال البيانات.
 settings-osc-vrchat-enable-label = تمكين
 settings-osc-vrchat-network = منافذ الشبكة
-settings-osc-vrchat-network-description = قم بتعيين المنافذ للاستماع وإرسال البيانات إلى VRChat
+settings-osc-vrchat-network-description = قم بتعيين المنافذ للاستماع وإرسال البيانات إلى في ار تشات
 settings-osc-vrchat-network-port_in =
     .label = منفذ الدخول
     .placeholder = منفذ الدخول (الإفتراضي: 9001)
@@ -425,10 +425,10 @@ settings-osc-vrchat-network-port_out =
     .label = منفذ الخروج
     .placeholder = منفذ الخروج (الإفتراضي: 9000)
 settings-osc-vrchat-network-address = عنوان الشبكة
-settings-osc-vrchat-network-address-description = اختر العنوان الذي تريد إرسال البيانات إلى VRChat (تحقق من إعدادات Wi-Fi على جهازك)
-settings-osc-vrchat-network-address-placeholder = عنوان IP الخاص ب VRChat
+settings-osc-vrchat-network-address-description = اختر العنوان الذي تريد إرسال البيانات إلى في ار تشات (تحقق من إعدادات واي فاي على جهازك)
+settings-osc-vrchat-network-address-placeholder = عنوان آي بي الخاص بفي ار تشات
 settings-osc-vrchat-network-trackers = أجهزة التعقب
-settings-osc-vrchat-network-trackers-description = تبديل إرسال أجهزة تتبع محددة عبر OSC.
+settings-osc-vrchat-network-trackers-description = تبديل إرسال أجهزة تتبع محددة عبر أوه أس سي.
 settings-osc-vrchat-network-trackers-chest = الصدر
 settings-osc-vrchat-network-trackers-waist = الخصر
 settings-osc-vrchat-network-trackers-knees = الركبتين
@@ -444,16 +444,16 @@ onboarding-wip = جاري العمل
 ## Wi-Fi setup
 
 onboarding-wifi_creds-back = العودة إلى المقدمة
-onboarding-wifi_creds = إدخل بيانات اعتماد Wi-Fi
+onboarding-wifi_creds = إدخل بيانات اعتماد واي فاي
 # This cares about multilines
 onboarding-wifi_creds-description =
     ستستخدم أجهزة التعقب بيانات الاعتماد هذه للاتصال لاسلكيًا.
     الرجاء استخدام بيانات الاعتماد التي تتصل بها حاليًا.
-onboarding-wifi_creds-skip = تخطى إعدادات Wi-Fi
+onboarding-wifi_creds-skip = تخطى إعدادات واي فاي
 onboarding-wifi_creds-submit = إرسال!
 onboarding-wifi_creds-ssid =
-    .label = اسم الWi-Fi
-    .placeholder = أدخل اسم الWi-Fi
+    .label = اسم الواي فاي
+    .placeholder = أدخل اسم الواي فاي
 onboarding-wifi_creds-password =
     .label = كلمة السر
     .placeholder = أدخل كلمة السر
@@ -466,7 +466,7 @@ onboarding-reset_tutorial-description = هذه الميزة لم تنته بعد
 
 ## Setup start
 
-onboarding-home = مرحبا بكم في SlimeVR
+onboarding-home = مرحبا بكم في سلايم في ار
 # This cares about multilines and it's centered!!
 onboarding-home-description =
     جلب التعقب كامل الجسم
@@ -476,8 +476,8 @@ onboarding-home-start = هيا نتجهز!
 ## Enter VR part of setup
 
 onboarding-enter_vr-back = العودة إلى تعيين أجهزة التعقب
-onboarding-enter_vr-title = حان وقت دخول VR!
-onboarding-enter_vr-description = ضع كل أجهزة التعقب ثم أدخل VR!
+onboarding-enter_vr-title = حان وقت دخول في ار!
+onboarding-enter_vr-description = ضع كل أجهزة التعقب ثم أدخل في ار!
 onboarding-enter_vr-ready = أنا جاهز
 
 ## Setup done
@@ -488,17 +488,20 @@ onboarding-done-close = إغلاق الدليل
 
 ## Tracker connection setup
 
-onboarding-connect_tracker-back = العودة إلى بيانات اعتماد الWi-Fi
+onboarding-connect_tracker-back = العودة إلى بيانات اعتماد الواي فاي
 onboarding-connect_tracker-title = ربط أجهزة التعقب
 onboarding-connect_tracker-description-p0 = ننتقل الآن إلى الجزء الممتع ، ربط جميع أجهزة التعقب!
-onboarding-connect_tracker-description-p1 = ما عليك سوى توصيل كل ما لم يتم توصيله بعد من خلال منفذ USB.
+onboarding-connect_tracker-description-p1 = ما عليك سوى توصيل كل ما لم يتم توصيله بعد من خلال منفذ يو أس بي.
 onboarding-connect_tracker-issue-serial = أواجه مشكلة في الاتصال!
-onboarding-connect_tracker-usb = جهاز تعقب USB
-onboarding-connect_tracker-connection_status-connecting = جارٍ إرسال بيانات اعتماد الWi-Fi
-onboarding-connect_tracker-connection_status-connected = متصل بشبكة الWi-Fi
-onboarding-connect_tracker-connection_status-error = غير قادر على الاتصال بشبكة الWi-Fi
-onboarding-connect_tracker-connection_status-start_connecting = يتم البحث عن أجهزة التعقب
-onboarding-connect_tracker-connection_status-handshake = متصل بالسيرفر
+onboarding-connect_tracker-usb = جهاز تعقب يو أس بي
+onboarding-connect_tracker-connection_status-none = نبحث عن أجهزة التعقب
+onboarding-connect_tracker-connection_status-serial_init = نتواصل بجهاز التسلسلي
+onboarding-connect_tracker-connection_status-provisioning = نرسل بيانات اعتماد واي فاي
+onboarding-connect_tracker-connection_status-connecting = جارٍ إرسال بيانات اعتماد الواي فاي
+onboarding-connect_tracker-connection_status-looking_for_server = نبحث عن السرفر
+onboarding-connect_tracker-connection_status-connection_error = غير قادر على الاتصال بشبكة الواي فاي
+onboarding-connect_tracker-connection_status-could_not_find_server = تعذر العثور على السرفر
+onboarding-connect_tracker-connection_status-done = متصل بالسيرفر
 # $amount (Number) - Amount of trackers connected (this is a number, but you can use CLDR plural rules for your language)
 # More info on https://www.unicode.org/cldr/cldr-aux/charts/22/supplemental/language_plural_rules.html
 # English in this case only has 2 plural rules, which are "one" and "other",
@@ -518,7 +521,7 @@ onboarding-connect_tracker-next = لقد قمت بتوصيل جميع أجهزة
 
 ## Tracker assignment setup
 
-onboarding-assign_trackers-back = العودة إلى بيانات اعتماد الWi-Fi
+onboarding-assign_trackers-back = العودة إلى بيانات اعتماد الواي فاي
 onboarding-assign_trackers-title = تعيين أجهزة التعقب
 onboarding-assign_trackers-description = دعنا نختار موقع أجهزة التعقب. انقر فوق المكان الذي تريد وضع جهاز تعقب فيه
 # Look at translation of onboarding-connect_tracker-connected_trackers on how to use plurals
@@ -536,9 +539,77 @@ onboarding-assign_trackers-assigned =
 onboarding-assign_trackers-advanced = إظهار مواقع التعيين المتقدمة
 onboarding-assign_trackers-next = لقد عينت جميع أجهزة التعقب
 
+## Tracker assignment warnings
+
+# Note for devs, number is used for representing boolean states per bit.
+# $unassigned (Number) - Bits are based on BodyAssignment.ASSIGNMENT_RULES order
+onboarding-assign_trackers-warning-LEFT_FOOT =
+    { $unassigned ->
+        [0] تم تحديد القدم اليسرى، ولكنك تحتاج أيضًا إلى تحديد الكاحل الأيسر والفخذ الأيسر وإما الصدر أو الورك أو الخصر!
+        [1] تم تحديد القدم اليسرى، ولكنك تحتاج أيضًا إلى تحديد الفخذ الأيسر وإما الصدر أو الورك أو الخصر!
+        [2] تم تحديد القدم اليسرى، ولكنك تحتاج أيضًا إلى تحديد الكاحل الأيسر وإما الصدر أو الورك أو الخصر!
+        [3] تم تحديد القدم اليسرى، ولكنك تحتاج أيضًا إلى تحديد إما الصدر أو الورك أو الخصر!
+        [4] تم تحديد القدم اليسرى، ولكنك تحتاج أيضًا إلى تحديد الكاحل الأيسر والفخذ الأيسر!
+        [5] تم تحديد القدم اليسرى، ولكنك تحتاج أيضًا إلى تحديد الفخذ الأيسر!
+        [6] تم تحديد القدم اليسرى، ولكنك تحتاج أيضًا إلى تحديد الكاحل الأيسر !
+       *[unknown] تم تحديد القدم اليسرى، ولكنك تحتاج أيضًا إلى تحديد جزء جسم غير معروف غير مخصص !
+    }
+# $unassigned (Number) - Bits are based on BodyAssignment.ASSIGNMENT_RULES order
+onboarding-assign_trackers-warning-RIGHT_FOOT =
+    { $unassigned ->
+        [0] تم تحديد القدم اليمنى، ولكنك تحتاج أيضًا إلى تحديد الكاحل الأيمن والفخذ الأيمن وإما الصدر أو الورك أو الخصر!
+        [1] تم تحديد القدم اليمنى، ولكنك تحتاج أيضًا إلى تحديد الفخذ الأيمن وإما الصدر أو الورك أو الخصر!
+        [2] تم تحديد القدم اليمنى، ولكنك تحتاج أيضًا إلى تحديد الكاحل الأيمن وإما الصدر أو الورك أو الخصر!
+        [3] تم تحديد القدم اليمنى، ولكنك تحتاج أيضًا إلى تحديد إما الصدر أو الورك أو الخصر!
+        [4] تم تحديد القدم اليمنى، ولكنك تحتاج أيضًا إلى تحديد الكاحل الأيمن والفخذ الأيمن!
+        [5] تم تحديد القدم اليمنى، ولكنك تحتاج أيضًا إلى تحديد الفخذ الأيمن!
+        [6] تم تحديد القدم اليمنى، ولكنك تحتاج أيضًا إلى تحديد الكاحل الأيمن!
+       *[unknown] تم تحديد القدم اليمنى، ولكنك تحتاج أيضًا إلى تحديد جزء جسم غير معروف غير مخصص!
+    }
+# $unassigned (Number) - Bits are based on BodyAssignment.ASSIGNMENT_RULES order
+onboarding-assign_trackers-warning-LEFT_LOWER_LEG =
+    { $unassigned ->
+        [0] تم تحديد الكاحل الأيسر، ولكنك تحتاج أيضًا إلى تحديد الفخذ الأيسر وإما الصدر أو الورك أو الخصر!
+        [1] تم تحديد الكاحل الأيسر، ولكنك تحتاج أيضًا إلى تحديد إما الصدر أو الورك أو الخصر!
+        [2] تم تحديد الكاحل الأيسر، ولكنك تحتاج أيضًا إلى تحديد الفخذ الأيسر!
+       *[unknown] تم تحديد الكاحل الأيسر، ولكنك تحتاج أيضًا إلى تحديد جزء جسم غير معروف غير مخصص!
+    }
+# $unassigned (Number) - Bits are based on BodyAssignment.ASSIGNMENT_RULES order
+onboarding-assign_trackers-warning-RIGHT_LOWER_LEG =
+    { $unassigned ->
+        [0] تم تحديد الكاحل الأيمن، ولكنك تحتاج أيضًا إلى تحديد الفخذ الأيمن وتحديد إما الصدر أو الورك أو الخصر!
+        [1] تم تحديد الكاحل الأيمن، ولكنك تحتاج أيضًا إلى تحديد إما الصدر أو الورك أو الخصر!
+        [2] تم تحديد الكاحل الأيمن، ولكنك تحتاج أيضًا إلى تحديد الفخذ الأيمن!
+       *[unknown] تم تحديد الكاحل الأيمن، ولكنك تحتاج أيضًا إلى تحديد جزء جسم غير معروف غير مخصص!
+    }
+# $unassigned (Number) - Bits are based on BodyAssignment.ASSIGNMENT_RULES order
+onboarding-assign_trackers-warning-LEFT_UPPER_LEG =
+    { $unassigned ->
+        [0] تم تحديد الفخذ الأيسر، ولكنك تحتاج أيضًا إلى تحديد الصدر أو الورك أو الخصر!
+       *[unknown] تم تحديد الفخذ الأيسر، ولكنك تحتاج أيضًا إلى تحديد جزء جسم غير معروف غير مخصص !
+    }
+# $unassigned (Number) - Bits are based on BodyAssignment.ASSIGNMENT_RULES order
+onboarding-assign_trackers-warning-RIGHT_UPPER_LEG =
+    { $unassigned ->
+        [0] تم تحديد الفخذ الأيمن ولكنك تحتاج أيضًا إلى تحديد الصدر أو الورك أو الخصر!
+       *[unknown] تم تحديد الفخذ الأيمن ولكنك تحتاج أيضًا إلى تحديد جزء جسم غير معروف غير مخصص !
+    }
+# $unassigned (Number) - Bits are based on BodyAssignment.ASSIGNMENT_RULES order
+onboarding-assign_trackers-warning-HIP =
+    { $unassigned ->
+        [0] تم تحديد الورك، ولكنك تحتاج إلى تحديد الصدر أيضًا!
+       *[unknown] تم تحديد الورك، ولكنك تحتاج إلى تحديد جزء جسم غير معروف غير مخصص أيضًا!
+    }
+# $unassigned (Number) - Bits are based on BodyAssignment.ASSIGNMENT_RULES order
+onboarding-assign_trackers-warning-WAIST =
+    { $unassigned ->
+        [0] تم تحديد الخصر، ولكنك تحتاج إلى تحديد الصدر أيضًا!
+       *[unknown] تم تحديد الخصر، ولكنك تحتاج إلى تحديد جزء جسم غير معروف غير مخصص أيضًا!
+    }
+
 ## Tracker manual mounting setup
 
-onboarding-manual_mounting-back = العودة إلى دخول VR
+onboarding-manual_mounting-back = العودة إلى دخول في ار
 onboarding-manual_mounting = التركيب اليدوي
 onboarding-manual_mounting-description = انقر فوق كل جهاز تعقب وحدد طريقة تركيبها
 onboarding-manual_mounting-auto_mounting = التركيب التلقائي
@@ -546,9 +617,9 @@ onboarding-manual_mounting-next = الخطوة التالية
 
 ## Tracker automatic mounting setup
 
-onboarding-automatic_mounting-back = العودة إلى دخول VR
+onboarding-automatic_mounting-back = العودة إلى دخول في ار
 onboarding-automatic_mounting-title = معايرة التركيب
-onboarding-automatic_mounting-description = لكي تعمل أجهزة تعقب SlimeVR ، نحتاج إلى تعيين دوران تركيب أجهزة التعقب لمواءمتها مع تركيب جهاز التعقب المادي.
+onboarding-automatic_mounting-description = لكي تعمل أجهزة تعقب سلايم في ار، نحتاج إلى تعيين دوران تركيب أجهزة التعقب لمواءمتها مع تركيب جهاز التعقب المادي.
 onboarding-automatic_mounting-manual_mounting = ضبط التركيب يدويًا
 onboarding-automatic_mounting-next = الخطوة التالية
 onboarding-automatic_mounting-prev_step = الخطوة السابقة
@@ -560,7 +631,7 @@ onboarding-automatic_mounting-mounting_reset-step-0 = 1. قرفص في وضع "�
 onboarding-automatic_mounting-mounting_reset-step-1 = 2. اضغط على زر "إعادة تعيين التركيب" وانتظر لمدة 3 ثوان قبل إعادة تعيين دوران تركيب أجهزة التعقب.
 onboarding-automatic_mounting-preparation-title = التحضير
 onboarding-automatic_mounting-preparation-step-0 = 1. قف بشكل مستقيم مع ذراعيك على جانبيك.
-onboarding-automatic_mounting-preparation-step-1 = اضغط على الزر "Reset" و انتظر لمدة 3 ثوانٍ قبل إعادة تعيين أجهزة التعقب.
+onboarding-automatic_mounting-preparation-step-1 = اضغط على زر "إعادة ضبط" و انتظر لمدة 3 ثوانٍ قبل إعادة تعيين أجهزة التعقب.
 onboarding-automatic_mounting-put_trackers_on-title = ارتدي أجهزة التعقب
 onboarding-automatic_mounting-put_trackers_on-description = لمعايرة دوران التركيب، سنستخدم أجهزة التعقب التي قمت بتعيينها. ارتدي جميع أجهزة التعقب، يمكنك معرفة أي منها في المستند على اليمين.
 onboarding-automatic_mounting-put_trackers_on-next = ارتديت جميع أجهزة التعقب.
@@ -576,7 +647,7 @@ onboarding-manual_proportions-auto = المعايرة التلقائية
 
 onboarding-automatic_proportions-back = العودة إلى برنامج تعليم إعادة التعيين
 onboarding-automatic_proportions-title = قياس جسمك
-onboarding-automatic_proportions-description = لكي تعمل أجهزة تعقب SlimeVR, نحتاج إلى معرفة طول عظامك. هذه المعايرة القصيرة ستقيسها لك.
+onboarding-automatic_proportions-description = لكي تعمل أجهزة تعقب سلايم في ار, نحتاج إلى معرفة طول عظامك. هذه المعايرة القصيرة ستقيسها لك.
 onboarding-automatic_proportions-manual = معايرة يدوية
 onboarding-automatic_proportions-prev_step = الخطوة السابقة
 onboarding-automatic_proportions-put_trackers_on-title = ارتدي أجهزة التعقب

@@ -23,8 +23,7 @@ public enum SkeletonConfigOffsets {
 		3,
 		"chestLength",
 		0.32f,
-		new BoneType[] { BoneType.CHEST, BoneType.CHEST_TRACKER,
-			BoneType.LEFT_SHOULDER, BoneType.RIGHT_SHOULDER }
+		new BoneType[] { BoneType.CHEST, BoneType.CHEST_TRACKER }
 	),
 	CHEST_OFFSET(
 		4,
@@ -112,19 +111,17 @@ public enum SkeletonConfigOffsets {
 		0.26f,
 		new BoneType[] { BoneType.LEFT_LOWER_ARM, BoneType.RIGHT_LOWER_ARM }
 	),
-	CONTROLLER_Y(
+	HAND_Y(
 		18,
-		"controllerDistanceY",
+		"handDistanceY",
 		0.035f,
-		new BoneType[] { BoneType.LEFT_CONTROLLER, BoneType.RIGHT_CONTROLLER,
-			BoneType.LEFT_HAND, BoneType.RIGHT_HAND }
+		new BoneType[] { BoneType.LEFT_HAND, BoneType.RIGHT_HAND }
 	),
-	CONTROLLER_Z(
+	HAND_Z(
 		19,
-		"controllerDistanceZ",
+		"handDistanceZ",
 		0.13f,
-		new BoneType[] { BoneType.LEFT_CONTROLLER, BoneType.RIGHT_CONTROLLER,
-			BoneType.LEFT_HAND, BoneType.RIGHT_HAND }
+		new BoneType[] { BoneType.LEFT_HAND, BoneType.RIGHT_HAND }
 	),
 	ELBOW_OFFSET(
 		20,
