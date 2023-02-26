@@ -308,4 +308,8 @@ public class PoseFrameTracker implements Tracker, Iterable<TrackerFrame> {
 	public String getCustomName() {
 		return null;
 	}
+
+	@Override
+	public void setCustomName(String customName) {
+	}
 }

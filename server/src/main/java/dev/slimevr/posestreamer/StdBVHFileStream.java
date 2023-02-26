@@ -1,5 +1,6 @@
 package dev.slimevr.posestreamer;
 
+import dev.slimevr.tracking.processor.BoneType;
 import dev.slimevr.tracking.processor.TransformNode;
 
 import java.io.File;
@@ -23,7 +24,7 @@ public class StdBVHFileStream extends BVHFileStream {
 
 	@Override
 	protected TransformNodeWrapper wrapSkeletonNodes(TransformNode rootNode) {
-		TransformNode newRoot = getNodeFromHierarchy(rootNode, "Hip");
+		TransformNode newRoot = getNodeFromHierarchy(rootNode, BoneType.HIP);
 		if (newRoot == null) {
 			return null;
 		}
@@ -31,13 +32,13 @@ public class StdBVHFileStream extends BVHFileStream {
 		return TransformNodeWrapper.wrapFullHierarchy(newRoot);
 	}
 
-	private TransformNode getNodeFromHierarchy(TransformNode node, String name) {
-		if (node.getName().equalsIgnoreCase(name)) {
+	private TransformNode getNodeFromHierarchy(TransformNode node, BoneType boneType) {
+		if (node.getBoneType() == boneType) {
 			return node;
 		}
 
 		for (TransformNode child : node.children) {
-			TransformNode result = getNodeFromHierarchy(child, name);
+			TransformNode result = getNodeFromHierarchy(child, boneType);
 			if (result != null) {
 				return result;
 			}

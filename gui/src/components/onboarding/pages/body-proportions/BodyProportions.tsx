@@ -66,7 +66,6 @@ export function BodyProportions({
     RpcMessage.SkeletonConfigResponse,
     (data: SkeletonConfigResponseT) => {
       setConfig(data);
-      console.log(data);
     }
   );
 

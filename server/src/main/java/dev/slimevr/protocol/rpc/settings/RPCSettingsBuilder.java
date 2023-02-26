@@ -40,7 +40,7 @@ public class RPCSettingsBuilder {
 
 	public static int createVRCOSCSettings(
 		FlatBufferBuilder fbb,
-		OSCConfig config
+		VRCOSCConfig config
 	) {
 		int addressStringOffset = fbb.createString(config.getAddress());
 		int generalSettingOffset = OSCSettings
@@ -69,9 +69,36 @@ public class RPCSettingsBuilder {
 		VRCOSCSettings.startVRCOSCSettings(fbb);
 		VRCOSCSettings.addOscSettings(fbb, generalSettingOffset);
 		VRCOSCSettings.addTrackers(fbb, oscSettingOffset);
-		VRCOSCSettings.addTrackers(fbb, oscSettingOffset);
 
 		return VRCOSCSettings.endVRCOSCSettings(fbb);
+	}
+
+	public static int createVMCOSCSettings(
+		FlatBufferBuilder fbb,
+		VMCConfig config
+	) {
+		int addressStringOffset = fbb.createString(config.getAddress());
+		int generalSettingOffset = OSCSettings
+			.createOSCSettings(
+				fbb,
+				config.getEnabled(),
+				config.getPortIn(),
+				config.getPortOut(),
+				addressStringOffset
+			);
+
+		String vrmJson = config.getVrmJson();
+		int vrmJsonOffset = 0;
+		if (vrmJson != null)
+			vrmJsonOffset = fbb.createString(vrmJson);
+
+		VMCOSCSettings.startVMCOSCSettings(fbb);
+		VMCOSCSettings.addOscSettings(fbb, generalSettingOffset);
+		if (vrmJson != null)
+			VMCOSCSettings.addVrmJson(fbb, vrmJsonOffset);
+		VMCOSCSettings.addAnchorHip(fbb, config.getAnchorHip());
+
+		return VMCOSCSettings.endVMCOSCSettings(fbb);
 	}
 
 	public static int createFilterSettings(

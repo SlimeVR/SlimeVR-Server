@@ -34,6 +34,7 @@ export function Typography({
     tag,
     {
       className: classNames([
+        'transition-colors',
         variant === 'main-title' && 'text-main-title',
         variant === 'section-title' && 'text-section-title',
         variant === 'standard' &&

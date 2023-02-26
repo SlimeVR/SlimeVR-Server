@@ -63,7 +63,7 @@ export function MainLayoutRoute({
             </div>
             {widgets && (
               <div className="flex flex-col px-2 min-w-[274px] w-[274px] gap-2 pt-2 rounded-xl overflow-y-auto bg-background-70">
-                <div className="grid grid-cols-2 gap-2 w-full">
+                <div className="grid grid-cols-2 gap-2 w-full [&>*:nth-child(odd):last-of-type]:col-span-full">
                   <ResetButton
                     type={ResetType.Quick}
                     variant="big"
@@ -78,13 +78,11 @@ export function MainLayoutRoute({
                       variant="big"
                     ></ResetButton>
                   )}
-                  <BVHButton
-                    className={config?.debug ? 'col-span-1' : 'col-span-2'}
-                  ></BVHButton>
+                  <BVHButton></BVHButton>
+                  {driftCompensationEnabled && (
+                    <ClearDriftCompensationButton></ClearDriftCompensationButton>
+                  )}
                 </div>
-                {driftCompensationEnabled && (
-                  <ClearDriftCompensationButton></ClearDriftCompensationButton>
-                )}
                 <div className="w-full">
                   <OverlayWidget></OverlayWidget>
                 </div>

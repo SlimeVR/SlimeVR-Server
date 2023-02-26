@@ -2,7 +2,7 @@ package dev.slimevr.tracking.processor.skeleton;
 
 
 import dev.slimevr.config.TapDetectionConfig;
-import dev.slimevr.osc.VRCOSCHandler;
+import dev.slimevr.tracking.processor.HumanPoseManager;
 import dev.slimevr.tracking.trackers.Tracker;
 
 
@@ -10,8 +10,8 @@ import dev.slimevr.tracking.trackers.Tracker;
 public class TapDetectionManager {
 
 	// server and related classes
-	private HumanSkeleton skeleton;
-	private VRCOSCHandler oscHandler;
+	private final HumanSkeleton skeleton;
+	private HumanPoseManager humanPoseManager;
 	private TapDetectionConfig config;
 
 	// tap detectors
@@ -36,11 +36,11 @@ public class TapDetectionManager {
 
 	public TapDetectionManager(
 		HumanSkeleton skeleton,
-		VRCOSCHandler oscHandler,
+		HumanPoseManager humanPoseManager,
 		TapDetectionConfig config
 	) {
 		this.skeleton = skeleton;
-		this.oscHandler = oscHandler;
+		this.humanPoseManager = humanPoseManager;
 		this.config = config;
 
 		quickResetDetector = new TapDetection(skeleton, getTrackerToWatchQuickReset());
@@ -100,9 +100,10 @@ public class TapDetectionManager {
 		if (
 			tapped && System.nanoTime() - quickResetDetector.getDetectionTime() > quickResetDelayNs
 		) {
-			if (oscHandler != null)
-				oscHandler.yawAlign();
-			skeleton.resetTrackersYaw();
+			if (humanPoseManager != null)
+				humanPoseManager.resetTrackersYaw();
+			else
+				skeleton.resetTrackersYaw();
 			quickResetDetector.resetDetector();
 		}
 	}
@@ -113,9 +114,10 @@ public class TapDetectionManager {
 		if (
 			tapped && System.nanoTime() - resetDetector.getDetectionTime() > resetDelayNs
 		) {
-			if (oscHandler != null)
-				oscHandler.yawAlign();
-			skeleton.resetTrackersFull();
+			if (humanPoseManager != null)
+				humanPoseManager.resetTrackersFull();
+			else
+				skeleton.resetTrackersFull();
 			resetDetector.resetDetector();
 		}
 	}

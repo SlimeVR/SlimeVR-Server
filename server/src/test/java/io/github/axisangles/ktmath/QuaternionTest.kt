@@ -256,7 +256,7 @@ class QuaternionTest {
 		internal fun assertEquals(
 			expected: Quaternion,
 			actual: Quaternion,
-			tolerance: Double = RELATIVE_TOLERANCE
+			tolerance: Double = RELATIVE_TOLERANCE,
 		) {
 			val len = (actual - expected).lenSq()
 			val squareSum = expected.lenSq() + actual.lenSq()

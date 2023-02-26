@@ -22,40 +22,40 @@ public class SkeletonData {
 	);
 
 	// #region Upper body nodes (torso)
-	protected final Joint hmdJoint = new Joint("HMD");
-	protected final Joint headJoint = new Joint("Head");
-	protected final Joint neckJoint = new Joint("Neck");
-	protected final Joint chestJoint = new Joint("Chest");
-	protected final Joint trackerChestJoint = new Joint("Chest-Tracker");
-	protected final Joint waistJoint = new Joint("Waist");
-	protected final Joint hipJoint = new Joint("Hip");
-	protected final Joint trackerWaistJoint = new Joint("Waist-Tracker");
+	protected final Joint hmdJoint = new Joint(BoneType.HMD);
+	protected final Joint headJoint = new Joint(BoneType.HEAD);
+	protected final Joint neckJoint = new Joint(BoneType.NECK);
+	protected final Joint chestJoint = new Joint(BoneType.CHEST);
+	protected final Joint trackerChestJoint = new Joint(BoneType.CHEST_TRACKER);
+	protected final Joint waistJoint = new Joint(BoneType.WAIST);
+	protected final Joint hipJoint = new Joint(BoneType.HIP);
+	protected final Joint trackerHipJoint = new Joint(BoneType.HIP_TRACKER);
 	// #region Legs
-	protected final Joint leftHipJoint = new Joint("Left-Hip");
-	protected final Joint leftKneeJoint = new Joint("Left-Knee");
-	protected final Joint trackerLeftKneeJoint = new Joint("Left-Knee-Tracker");
-	protected final Joint leftAnkleJoint = new Joint("Left-Ankle");
-	protected final Joint leftFootJoint = new Joint("Left-Foot");
-	protected final Joint trackerLeftFootJoint = new Joint("Left-Foot-Tracker");
-	protected final Joint rightHipJoint = new Joint("Right-Hip");
-	protected final Joint rightKneeJoint = new Joint("Right-Knee");
-	protected final Joint trackerRightKneeJoint = new Joint("Right-Knee-Tracker");
-	protected final Joint rightAnkleJoint = new Joint("Right-Ankle");
-	protected final Joint rightFootJoint = new Joint("Right-Foot");
-	protected final Joint trackerRightFootJoint = new Joint("Right-Foot-Tracker");
+	protected final Joint leftHipJoint = new Joint(BoneType.LEFT_HIP);
+	protected final Joint leftKneeJoint = new Joint(BoneType.LEFT_UPPER_LEG);
+	protected final Joint trackerLeftKneeJoint = new Joint(BoneType.LEFT_KNEE_TRACKER);
+	protected final Joint leftAnkleJoint = new Joint(BoneType.LEFT_LOWER_LEG);
+	protected final Joint leftFootJoint = new Joint(BoneType.LEFT_FOOT);
+	protected final Joint trackerLeftFootJoint = new Joint(BoneType.LEFT_FOOT_TRACKER);
+	protected final Joint rightHipJoint = new Joint(BoneType.RIGHT_HIP);
+	protected final Joint rightKneeJoint = new Joint(BoneType.RIGHT_UPPER_LEG);
+	protected final Joint trackerRightKneeJoint = new Joint(BoneType.RIGHT_KNEE_TRACKER);
+	protected final Joint rightAnkleJoint = new Joint(BoneType.RIGHT_LOWER_LEG);
+	protected final Joint rightFootJoint = new Joint(BoneType.RIGHT_FOOT);
+	protected final Joint trackerRightFootJoint = new Joint(BoneType.RIGHT_FOOT_TRACKER);
 	// #region Arms
-	protected final Joint leftShoulderJoint = new Joint("Left-Shoulder");
-	protected final Joint rightShoulderJoint = new Joint("Right-Shoulder");
-	protected final Joint leftElbowJoint = new Joint("Left-Elbow");
-	protected final Joint rightElbowJoint = new Joint("Right-Elbow");
-	protected final Joint trackerLeftElbowJoint = new Joint("Left-Elbow-Tracker");
-	protected final Joint trackerRightElbowJoint = new Joint("Right-Elbow-Tracker");
-	protected final Joint leftWristJoint = new Joint("Left-Wrist");
-	protected final Joint rightWristJoint = new Joint("Right-Wrist");
-	protected final Joint leftHandJoint = new Joint("Left-Hand-Hm");
-	protected final Joint rightHandJoint = new Joint("Right-Hand");
-	protected final Joint trackerLeftHandJoint = new Joint("Left-Hand-Tracker");
-	protected final Joint trackerRightHandJoint = new Joint("Right-Hand-Tracker");
+	protected final Joint leftShoulderJoint = new Joint(BoneType.LEFT_SHOULDER);
+	protected final Joint rightShoulderJoint = new Joint(BoneType.RIGHT_SHOULDER);
+	protected final Joint leftElbowJoint = new Joint(BoneType.LEFT_UPPER_LEG);
+	protected final Joint rightElbowJoint = new Joint(BoneType.RIGHT_UPPER_ARM);
+	protected final Joint trackerLeftElbowJoint = new Joint(BoneType.LEFT_ELBOW_TRACKER);
+	protected final Joint trackerRightElbowJoint = new Joint(BoneType.RIGHT_ELBOW_TRACKER);
+	protected final Joint leftWristJoint = new Joint(BoneType.LEFT_LOWER_ARM);
+	protected final Joint rightWristJoint = new Joint(BoneType.RIGHT_LOWER_ARM);
+	protected final Joint leftHandJoint = new Joint(BoneType.LEFT_HAND);
+	protected final Joint rightHandJoint = new Joint(BoneType.RIGHT_HAND);
+	protected final Joint trackerLeftHandJoint = new Joint(BoneType.LEFT_HAND_TRACKER);
+	protected final Joint trackerRightHandJoint = new Joint(BoneType.RIGHT_HAND_TRACKER);
 	// #endregion
 
 	public SkeletonData(SkeletonConfigManager config) {
@@ -121,7 +121,7 @@ public class SkeletonData {
 
 		// #region Attach tracker nodes for offsets
 		chestJoint.attachJoint(trackerChestJoint, BoneType.CHEST_TRACKER);
-		hipJoint.attachJoint(trackerWaistJoint, BoneType.HIP_TRACKER);
+		hipJoint.attachJoint(trackerHipJoint, BoneType.HIP_TRACKER);
 
 		leftKneeJoint.attachJoint(trackerLeftKneeJoint, BoneType.LEFT_KNEE_TRACKER);
 		rightKneeJoint.attachJoint(trackerRightKneeJoint, BoneType.RIGHT_KNEE_TRACKER);
@@ -142,15 +142,15 @@ public class SkeletonData {
 		public Map<Joint, Bone> childrenBones = new HashMap<>();
 		public boolean isInput = false;
 
-		public Joint(String name) {
-			node = new TransformNode(name, false);
+		public Joint(BoneType bone) {
+			node = new TransformNode(bone, false);
 		}
 
 		public Bone attachJoint(Joint childJoint, BoneType offsetKey) {
 			Bone bone = childrenBones.get(childJoint);
 			if (bone == null) {
 				bone = new Bone(
-					this.node.getName() + "-" + childJoint.node.getName(),
+					this.node.getBoneType().name() + "-" + childJoint.node.getBoneType().name(),
 					this,
 					childJoint,
 					offsetKey
