@@ -298,7 +298,7 @@ public class RPCHandler extends ProtocolHandler<RpcMessageHeader>
 		conn.getContext().setUseAutoBone(true);
 		this.api.server
 			.getAutoBoneHandler()
-			.startProcessByType(AutoBoneProcessType.getById(req.processType()));
+			.startProcessByType(AutoBoneProcessType.Companion.getById(req.processType()));
 	}
 
 	@Override
@@ -322,7 +322,7 @@ public class RPCHandler extends ProtocolHandler<RpcMessageHeader>
 						Integer messageOffset = message != null ? fbb.createString(message) : null;
 
 						AutoBoneProcessStatusResponse.startAutoBoneProcessStatusResponse(fbb);
-						AutoBoneProcessStatusResponse.addProcessType(fbb, processType.id);
+						AutoBoneProcessStatusResponse.addProcessType(fbb, processType.getId());
 						if (messageOffset != null)
 							AutoBoneProcessStatusResponse.addMessage(fbb, messageOffset);
 						if (total > 0 && current >= 0) {
@@ -365,10 +365,11 @@ public class RPCHandler extends ProtocolHandler<RpcMessageHeader>
 					.forEach((conn) -> {
 						FlatBufferBuilder fbb = new FlatBufferBuilder(32);
 
-						int[] skeletonPartOffsets = new int[epoch.configValues.size()];
+						int[] skeletonPartOffsets = new int[epoch.getConfigValues().size()];
 						int i = 0;
 						for (
-							Entry<SkeletonConfigOffsets, Float> skeletonConfig : epoch.configValues
+							Entry<SkeletonConfigOffsets, Float> skeletonConfig : epoch
+								.getConfigValues()
 								.entrySet()
 						) {
 							skeletonPartOffsets[i++] = SkeletonPart
@@ -385,9 +386,9 @@ public class RPCHandler extends ProtocolHandler<RpcMessageHeader>
 						int update = AutoBoneEpochResponse
 							.createAutoBoneEpochResponse(
 								fbb,
-								epoch.epoch,
-								epoch.totalEpochs,
-								epoch.epochError.getMean(),
+								epoch.getEpoch(),
+								epoch.getTotalEpochs(),
+								epoch.getEpochError().getMean(),
 								skeletonPartsOffset
 							);
 						int outbound = this
