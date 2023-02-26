@@ -290,30 +290,34 @@ export function TrackerSettingsPage() {
               </div>
             </div>
           </div>
-          <div className="flex flex-col gap-2 w-full mt-3">
-            <Typography variant="section-title">
-              {l10n.getString('tracker-settings-mounting_section')}
-            </Typography>
-            <Typography color="secondary">
-              {l10n.getString('tracker-settings-mounting_section-description')}
-            </Typography>
-            <div className="flex justify-between bg-background-80 w-full p-3 rounded-lg">
-              <div className="flex gap-3 items-center">
-                <FootIcon></FootIcon>
-                <Typography>
-                  {l10n.getString(rotationsLabels[currRotationDegrees])}
-                </Typography>
-              </div>
-              <div className="flex">
-                <Button
-                  variant="secondary"
-                  onClick={() => setSelectRotation(true)}
-                >
-                  {l10n.getString('tracker-settings-mounting_section-edit')}
-                </Button>
+          {tracker?.tracker.info?.isImu && (
+            <div className="flex flex-col gap-2 w-full mt-3">
+              <Typography variant="section-title">
+                {l10n.getString('tracker-settings-mounting_section')}
+              </Typography>
+              <Typography color="secondary">
+                {l10n.getString(
+                  'tracker-settings-mounting_section-description'
+                )}
+              </Typography>
+              <div className="flex justify-between bg-background-80 w-full p-3 rounded-lg">
+                <div className="flex gap-3 items-center">
+                  <FootIcon></FootIcon>
+                  <Typography>
+                    {l10n.getString(rotationsLabels[currRotationDegrees])}
+                  </Typography>
+                </div>
+                <div className="flex">
+                  <Button
+                    variant="secondary"
+                    onClick={() => setSelectRotation(true)}
+                  >
+                    {l10n.getString('tracker-settings-mounting_section-edit')}
+                  </Button>
+                </div>
               </div>
             </div>
-          </div>
+          )}
           {tracker?.tracker.info?.isImu && (
             <div className="flex flex-col gap-2 w-full mt-3">
               <Typography variant="section-title">
@@ -353,6 +357,7 @@ export function TrackerSettingsPage() {
               control={control}
               autocomplete="false"
               rules={undefined}
+              label="Tracker name"
             ></Input>
           </div>
         </div>

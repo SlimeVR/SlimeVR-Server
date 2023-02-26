@@ -234,9 +234,7 @@ public class RPCHandler extends ProtocolHandler<RpcMessageHeader>
 		}
 
 		if (req.displayName() != null) {
-			if (tracker instanceof IMUTracker imu) {
-				imu.setCustomName(req.displayName());
-			}
+			tracker.setCustomName(req.displayName());
 		}
 
 		if (tracker instanceof IMUTracker imu) {

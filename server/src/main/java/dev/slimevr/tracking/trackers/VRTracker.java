@@ -18,13 +18,10 @@ public class VRTracker extends ComputedTracker {
 		String name,
 		boolean hasRotation,
 		boolean hasPosition,
-		Device device
+		Device device,
+		boolean useTimeout
 	) {
-		super(id, serial, name, hasRotation, hasPosition, device);
-	}
-
-	public VRTracker(int id, String name, boolean hasRotation, boolean hasPosition) {
-		super(id, name, name, hasRotation, hasPosition, null);
+		super(id, serial, name, hasRotation, hasPosition, device, useTimeout);
 	}
 
 	@Override
@@ -82,6 +79,7 @@ public class VRTracker extends ComputedTracker {
 
 	@Override
 	public void dataTick() {
+		super.dataTick();
 		timer.update();
 	}
 

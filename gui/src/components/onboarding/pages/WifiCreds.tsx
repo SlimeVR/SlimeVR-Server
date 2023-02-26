@@ -58,6 +58,7 @@ export function WifiCredsPage() {
             >
               <Input
                 control={control}
+                rules={{ required: true }}
                 name="password"
                 type="password"
                 label="Password"

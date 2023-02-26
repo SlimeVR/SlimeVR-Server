@@ -2,6 +2,7 @@ package dev.slimevr.posestreamer;
 
 import com.jme3.math.Quaternion;
 import com.jme3.math.Transform;
+import dev.slimevr.tracking.processor.BoneType;
 import dev.slimevr.tracking.processor.TransformNode;
 import io.eiren.util.collections.FastList;
 
@@ -14,19 +15,19 @@ public class TransformNodeWrapper {
 	public final Transform localTransform;
 	public final Transform worldTransform;
 	public final List<TransformNodeWrapper> children;
-	protected String name;
+	protected BoneType boneType;
 	protected TransformNodeWrapper parent;
 	private boolean reversedHierarchy = false;
 
 	public TransformNodeWrapper(
 		TransformNode nodeToWrap,
-		String name,
+		BoneType boneType,
 		boolean reversedHierarchy,
 		int initialChildCapacity
 	) {
 		this.wrappedNode = nodeToWrap;
 
-		this.name = name;
+		this.boneType = boneType;
 
 		this.localTransform = nodeToWrap.localTransform;
 		this.worldTransform = nodeToWrap.worldTransform;
@@ -36,12 +37,16 @@ public class TransformNodeWrapper {
 		this.children = new FastList<>(initialChildCapacity);
 	}
 
-	public TransformNodeWrapper(TransformNode nodeToWrap, String name, int initialChildCapacity) {
-		this(nodeToWrap, name, false, initialChildCapacity);
+	public TransformNodeWrapper(
+		TransformNode nodeToWrap,
+		BoneType boneType,
+		int initialChildCapacity
+	) {
+		this(nodeToWrap, boneType, false, initialChildCapacity);
 	}
 
-	public TransformNodeWrapper(TransformNode nodeToWrap, String name) {
-		this(nodeToWrap, name, false, 5);
+	public TransformNodeWrapper(TransformNode nodeToWrap, BoneType boneType) {
+		this(nodeToWrap, boneType, false, 5);
 	}
 
 	public TransformNodeWrapper(
@@ -49,19 +54,19 @@ public class TransformNodeWrapper {
 		boolean reversedHierarchy,
 		int initialChildCapacity
 	) {
-		this(nodeToWrap, nodeToWrap.getName(), reversedHierarchy, initialChildCapacity);
+		this(nodeToWrap, nodeToWrap.getBoneType(), reversedHierarchy, initialChildCapacity);
 	}
 
 	public TransformNodeWrapper(TransformNode nodeToWrap, boolean reversedHierarchy) {
-		this(nodeToWrap, nodeToWrap.getName(), reversedHierarchy, 5);
+		this(nodeToWrap, nodeToWrap.getBoneType(), reversedHierarchy, 5);
 	}
 
 	public TransformNodeWrapper(TransformNode nodeToWrap, int initialChildCapacity) {
-		this(nodeToWrap, nodeToWrap.getName(), initialChildCapacity);
+		this(nodeToWrap, nodeToWrap.getBoneType(), initialChildCapacity);
 	}
 
 	public TransformNodeWrapper(TransformNode nodeToWrap) {
-		this(nodeToWrap, nodeToWrap.getName());
+		this(nodeToWrap, nodeToWrap.getBoneType());
 	}
 
 	public static TransformNodeWrapper wrapFullHierarchyWithFakeRoot(TransformNode root) {
@@ -186,11 +191,11 @@ public class TransformNodeWrapper {
 		return parent;
 	}
 
-	public String getName() {
-		return name;
+	public BoneType getBoneType() {
+		return boneType;
 	}
 
-	public void setName(String name) {
-		this.name = name;
+	public void setBoneType(BoneType boneType) {
+		this.boneType = boneType;
 	}
 }

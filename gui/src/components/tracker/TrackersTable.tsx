@@ -1,21 +1,21 @@
+import { useLocalization } from '@fluent/react';
 import classNames from 'classnames';
 import { IPv4 } from 'ip-num/IPNumber';
-import { MouseEventHandler, ReactNode, useState, useMemo } from 'react';
+import { MouseEventHandler, ReactNode, useMemo, useState } from 'react';
 import {
   TrackerDataT,
   TrackerIdT,
-  TrackerStatus as TrackerStatusEnum,
+  TrackerStatus as TrackerStatusEnum
 } from 'solarxr-protocol';
 import { FlatDeviceTracker } from '../../hooks/app';
+import { useConfig } from '../../hooks/config';
 import { useTracker } from '../../hooks/tracker';
 import { FootIcon } from '../commons/icon/FootIcon';
 import { Typography } from '../commons/Typography';
+import { formatVector3 } from '../utils/formatting';
 import { TrackerBattery } from './TrackerBattery';
 import { TrackerStatus } from './TrackerStatus';
 import { TrackerWifi } from './TrackerWifi';
-import { useLocalization } from '@fluent/react';
-import { formatVector3 } from '../utils/formatting';
-import { useConfig } from '../../hooks/config';
 
 enum DisplayColumn {
   NAME,
@@ -137,7 +137,7 @@ export function RowContainer({
           )}px  #BB8AE5`,
         }}
         className={classNames(
-          'min-h-[50px]  flex flex-col justify-center px-3',
+          'h-[50px]  flex flex-col justify-center px-3',
           rounded === 'left' && 'rounded-l-lg',
           rounded === 'right' && 'rounded-r-lg',
           hover ? 'bg-background-50 cursor-pointer' : 'bg-background-60'

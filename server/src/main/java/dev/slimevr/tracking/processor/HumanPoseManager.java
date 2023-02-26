@@ -196,8 +196,8 @@ public class HumanPoseManager {
 	}
 
 	@VRServerThread
-	private void updateSkeletonModelFromServer() {
-		disconnectAllTrackers();
+	public void updateSkeletonModelFromServer() {
+		disconnectComputedHumanPoseTrackers();
 		skeleton = new HumanSkeleton(this, server);
 		skeletonConfigManager.loadFromConfig(server.getConfigManager());
 		for (Consumer<HumanSkeleton> sc : onSkeletonUpdated)
@@ -205,7 +205,7 @@ public class HumanPoseManager {
 	}
 
 	@VRServerThread
-	private void disconnectAllTrackers() {
+	private void disconnectComputedHumanPoseTrackers() {
 		for (ComputedHumanPoseTracker t : computedTrackers) {
 			t.setStatus(TrackerStatus.DISCONNECTED);
 		}
@@ -345,10 +345,33 @@ public class HumanPoseManager {
 		return false;
 	}
 
+	/**
+	 * @return All skeleton bones as BoneInfo
+	 */
 	@ThreadSafe
-	public List<BoneInfo> getCurrentBoneInfo() {
+	public List<BoneInfo> getAllBoneInfo() {
 		if (isSkeletonPresent())
-			return skeleton.currentBoneInfo;
+			return skeleton.allBoneInfo;
+		return null;
+	}
+
+	/**
+	 * @return All shareable bones as BoneInfo
+	 */
+	@ThreadSafe
+	public List<BoneInfo> getShareableBoneInfo() {
+		if (isSkeletonPresent())
+			return skeleton.shareableBoneInfo;
+		return null;
+	}
+
+	/**
+	 * @return The bone as BoneInfo for the given BoneType
+	 */
+	@ThreadSafe
+	public BoneInfo getBoneInfoForBoneType(BoneType boneType) {
+		if (isSkeletonPresent())
+			return skeleton.getBoneInfoForBoneType(boneType);
 		return null;
 	}
 
@@ -497,8 +520,10 @@ public class HumanPoseManager {
 	public void resetTrackersFull() {
 		if (isSkeletonPresent()) {
 			skeleton.resetTrackersFull();
-			if (server != null)
+			if (server != null) {
 				server.getVrcOSCHandler().yawAlign();
+				server.getVMCHandler().alignVMCTracking(getRootNode().worldTransform.getRotation());
+			}
 		}
 	}
 
@@ -512,8 +537,10 @@ public class HumanPoseManager {
 	public void resetTrackersYaw() {
 		if (isSkeletonPresent()) {
 			skeleton.resetTrackersYaw();
-			if (server != null)
+			if (server != null) {
 				server.getVrcOSCHandler().yawAlign();
+				server.getVMCHandler().alignVMCTracking(getRootNode().worldTransform.getRotation());
+			}
 		}
 	}
 

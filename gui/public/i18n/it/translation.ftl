@@ -30,7 +30,6 @@ body_part-RIGHT_HAND = Mano destra
 body_part-RIGHT_UPPER_LEG = Coscia destra
 body_part-RIGHT_LOWER_LEG = Caviglia destra
 body_part-RIGHT_FOOT = Piede destro
-body_part-RIGHT_CONTROLLER = Controller destro
 body_part-CHEST = Petto
 body_part-WAIST = Girovita
 body_part-HIP = Bacino
@@ -41,7 +40,6 @@ body_part-LEFT_HAND = Mano sinistra
 body_part-LEFT_UPPER_LEG = Coscia sinistra
 body_part-LEFT_LOWER_LEG = Caviglia sinistra
 body_part-LEFT_FOOT = Piede sinistro
-body_part-LEFT_CONTROLLER = Controller sinistro
 
 ## Proportions
 
@@ -63,8 +61,8 @@ skeleton_bone-SHOULDERS_DISTANCE = Distanza Spalle
 skeleton_bone-SHOULDERS_WIDTH = Larghezza Spalle
 skeleton_bone-UPPER_ARM = Lunghezza Braccia
 skeleton_bone-LOWER_ARM = Distanza Avambracci
-skeleton_bone-CONTROLLER_Y = Distanza Y Controller
-skeleton_bone-CONTROLLER_Z = Distanza Z Controller
+skeleton_bone-HAND_Y = Distanza Mano Y
+skeleton_bone-HAND_Z = Distanza Mano Z
 skeleton_bone-ELBOW_OFFSET = Correzione Gomito
 
 ## Tracker reset buttons
@@ -160,6 +158,8 @@ tracker-infos-manufacturer = Produttore
 tracker-infos-display_name = Nome da visualizzare
 tracker-infos-custom_name = Nome Personalizzato
 tracker-infos-url = URL del tracker
+tracker-infos-version = Versione Firmware
+tracker-infos-hardware_rev = Versione Hardware
 
 ## Tracker settings
 
