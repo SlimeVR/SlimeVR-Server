@@ -86,7 +86,7 @@ class AutoBoneHandler(private val server: VRServer) {
 		return autoBone
 			.processFrames(
 				frames,
-				autoBone.config.calcInitError,
+				autoBone.config.shouldCalcInitError(),
 				autoBone.config.targetHeight
 			) { epoch: Epoch? -> listeners.forEach(Consumer { listener: AutoBoneListener -> listener.onAutoBoneEpoch(epoch!!) }) }
 	}
@@ -140,7 +140,7 @@ class AutoBoneHandler(private val server: VRServer) {
 				// Save a recurring recording for users to send as debug info
 				announceProcessStatus(AutoBoneProcessType.RECORD, "Saving recording...")
 				autoBone.saveRecording(frames, "LastABRecording.pfr")
-				if (autoBone.config.saveRecordings) {
+				if (autoBone.config.shouldSaveRecordings()) {
 					announceProcessStatus(
 						AutoBoneProcessType.RECORD,
 						"Saving recording (from config option)..."
