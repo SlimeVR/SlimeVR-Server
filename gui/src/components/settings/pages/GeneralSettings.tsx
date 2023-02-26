@@ -493,7 +493,9 @@ export function GeneralSettings() {
           </Typography>
           <div className="flex flex-col pt-2 pb-4">
             <Typography bold>
-              {l10n.getString('settings-general-fk_settings-leg_tweak-skating_correction')}
+              {l10n.getString(
+                'settings-general-fk_settings-leg_tweak-skating_correction'
+              )}
             </Typography>
             <Typography color="secondary">
               {l10n.getString(
@@ -525,7 +527,9 @@ export function GeneralSettings() {
           </div>
           <div className="flex flex-col pt-2 pb-4">
             <Typography bold>
-              {l10n.getString('settings-general-fk_settings-leg_tweak-floor_clip')}
+              {l10n.getString(
+                'settings-general-fk_settings-leg_tweak-floor_clip'
+              )}
             </Typography>
             <Typography color="secondary">
               {l10n.getString(
@@ -546,7 +550,9 @@ export function GeneralSettings() {
           </div>
           <div className="flex flex-col pt-2 pb-3">
             <Typography bold>
-              {l10n.getString('settings-general-fk_settings-leg_tweak-foot_plant')}
+              {l10n.getString(
+                'settings-general-fk_settings-leg_tweak-foot_plant'
+              )}
             </Typography>
             <Typography color="secondary">
               {l10n.getString(
@@ -567,7 +573,9 @@ export function GeneralSettings() {
           </div>
           <div className="flex flex-col pt-2 pb-3">
             <Typography bold>
-              {l10n.getString('settings-general-fk_settings-leg_tweak-toe_snap')}
+              {l10n.getString(
+                'settings-general-fk_settings-leg_tweak-toe_snap'
+              )}
             </Typography>
             <Typography color="secondary">
               {l10n.getString(
