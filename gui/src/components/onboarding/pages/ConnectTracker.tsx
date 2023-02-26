@@ -7,7 +7,7 @@ import {
   StartWifiProvisioningRequestT,
   StopWifiProvisioningRequestT,
   WifiProvisioningStatus,
-  WifiProvisioningStatusResponseT
+  WifiProvisioningStatusResponseT,
 } from 'solarxr-protocol';
 import { useLayout } from '../../../hooks/layout';
 import { useOnboarding } from '../../../hooks/onboarding';

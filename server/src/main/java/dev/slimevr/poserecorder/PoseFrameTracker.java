@@ -145,9 +145,8 @@ public class PoseFrameTracker implements Tracker, Iterable<TrackerFrame> {
 	@Override
 	public boolean getRotation(Quaternion store) {
 		TrackerFrame frame = safeGetFrame();
-		if (frame != null && frame.hasData(TrackerFrameData.ROTATION)) {
-			store.set(frame.rotation);
-			return true;
+		if (frame != null) {
+			return frame.getRotation(store);
 		}
 
 		store.set(Quaternion.IDENTITY);
@@ -157,9 +156,8 @@ public class PoseFrameTracker implements Tracker, Iterable<TrackerFrame> {
 	@Override
 	public boolean getRawRotation(Quaternion store) {
 		TrackerFrame frame = safeGetFrame();
-		if (frame != null && frame.hasData(TrackerFrameData.ROTATION)) {
-			store.set(frame.rotation);
-			return true;
+		if (frame != null) {
+			return frame.getRawRotation(store);
 		}
 
 		store.set(Quaternion.IDENTITY);
@@ -169,9 +167,8 @@ public class PoseFrameTracker implements Tracker, Iterable<TrackerFrame> {
 	@Override
 	public boolean getPosition(Vector3f store) {
 		TrackerFrame frame = safeGetFrame();
-		if (frame != null && frame.hasData(TrackerFrameData.POSITION)) {
-			store.set(frame.position);
-			return true;
+		if (frame != null) {
+			return frame.getPosition(store);
 		}
 
 		store.set(Vector3f.ZERO);
@@ -180,7 +177,12 @@ public class PoseFrameTracker implements Tracker, Iterable<TrackerFrame> {
 
 	@Override
 	public boolean getAcceleration(Vector3f store) {
-		store.set(0, 0, 0);
+		TrackerFrame frame = safeGetFrame();
+		if (frame != null) {
+			return frame.getAcceleration(store);
+		}
+
+		store.set(Vector3f.ZERO);
 		return false;
 	}
 

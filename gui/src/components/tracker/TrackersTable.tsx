@@ -5,7 +5,7 @@ import { MouseEventHandler, ReactNode, useMemo, useState } from 'react';
 import {
   TrackerDataT,
   TrackerIdT,
-  TrackerStatus as TrackerStatusEnum
+  TrackerStatus as TrackerStatusEnum,
 } from 'solarxr-protocol';
 import { FlatDeviceTracker } from '../../hooks/app';
 import { useConfig } from '../../hooks/config';
