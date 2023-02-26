@@ -8,15 +8,25 @@ import {
 import { useWebsocketAPI } from './websocket-api';
 import { useReducer, useEffect, useMemo, useState } from 'react';
 
-export type ProportionChange = LinearChange | BoneChange;
+export type ProportionChange = LinearChange | RatioChange | BoneChange | GroupChange;
 
 export enum ProportionChangeType {
   Linear,
+  Ratio,
   Bone,
+  Group,
 }
 
 export interface LinearChange {
   type: ProportionChangeType.Linear;
+  value: number;
+}
+
+export interface RatioChange {
+  type: ProportionChangeType.Ratio;
+  /**
+   * This is a number between -1 and 1 [-1; 1]
+   */
   value: number;
 }
 
@@ -25,6 +35,21 @@ export interface BoneChange {
   bone: SkeletonBone;
   value: number;
   label: string;
+}
+
+export interface GroupChange {
+  type: ProportionChangeType.Group;
+  bones: {
+    bone: SkeletonBone;
+    /**
+     * This is a number between 0 and 1 [0; 1]
+     */
+    value: number;
+    label: string;
+  }[];
+  value: number;
+  label: string;
+  index?: number;
 }
 
 export type ProportionState = BoneState | GroupState;
@@ -45,10 +70,14 @@ export interface GroupState {
   type: BoneType.Group;
   bones: {
     bone: SkeletonBone;
+    /**
+     * This is a number between 0 and 1 [0; 1]
+     */
     value: number;
   }[];
   value: number;
   label: string;
+  index?: number;
 }
 
 function reducer(state: ProportionState, action: ProportionChange): ProportionState {
@@ -57,6 +86,13 @@ function reducer(state: ProportionState, action: ProportionChange): ProportionSt
       return {
         ...action,
         type: BoneType.Single,
+      };
+    }
+
+    case ProportionChangeType.Group: {
+      return {
+        ...action,
+        type: BoneType.Group,
       };
     }
 
@@ -72,6 +108,24 @@ function reducer(state: ProportionState, action: ProportionChange): ProportionSt
         ...state,
         value: state.value - action.value / 100,
       };
+    }
+
+    case ProportionChangeType.Ratio: {
+      if (state.type === BoneType.Single || state.index === undefined) {
+        throw new Error(`Unexpected increase of bone ${state}`);
+      }
+
+      const newState = { ...state };
+      if (newState.index === undefined) throw 'unreachable';
+      newState.bones[newState.index].value += action.value;
+      const filtered = newState.bones.filter((_it, index) => newState.index !== index);
+      const total = filtered.reduce((acc, cur) => acc + cur.value, 0);
+
+      for (const part of filtered) {
+        part.value += (part.value / total) * action.value;
+      }
+
+      return newState;
     }
   }
 }
@@ -95,6 +149,9 @@ export interface GroupLabel {
   type: LabelType.Group;
   bones: {
     bone: SkeletonBone;
+    /**
+     * This is a number between 0 and 1 [0; 1]
+     */
     value: number;
     label: string;
   }[];
@@ -105,6 +162,9 @@ export interface GroupLabel {
 export interface GroupPartLabel {
   type: LabelType.GroupPart;
   bone: SkeletonBone;
+  /**
+   * This is a number between 0 and 1 [0; 1]
+   */
   value: number;
   label: string;
   index: number;
@@ -130,14 +190,19 @@ export function useManualProportions(): [
   });
 
   const bodyParts: Label[] = useMemo(() => {
-    return (
-      config?.skeletonParts.map(({ bone, value }) => ({
-        bone,
-        label: 'skeleton_bone-' + SkeletonBone[bone],
-        value,
-      })) || []
-    );
-  }, [config]);
+    if (!config) return [];
+    if (ratio) {
+      // TODO: Please do this Uriel.
+      return [];
+    }
+
+    return config.skeletonParts.map(({ bone, value }) => ({
+      type: LabelType.Bone,
+      bone,
+      label: 'skeleton_bone-' + SkeletonBone[bone],
+      value,
+    }));
+  }, [config, ratio]);
 
   useRPCPacket(RpcMessage.SkeletonConfigResponse, (data: SkeletonConfigResponseT) => {
     setConfig(data);
@@ -148,21 +213,54 @@ export function useManualProportions(): [
   }, []);
 
   useEffect(() => {
-    if (
-      state.bone === SkeletonBone.NONE ||
-      bodyParts.find((it) => it.bone === state.bone)?.value === state.value
-    ) {
-      return;
-    }
-
-    sendRPCPacket(
-      RpcMessage.ChangeSkeletonConfigRequest,
-      new ChangeSkeletonConfigRequestT(state.bone, state.value)
-    );
     const conf = { ...config } as Omit<SkeletonConfigResponseT, 'pack'> | null;
-    const b = conf?.skeletonParts?.find(({ bone }) => bone == state.bone);
-    if (!b || !conf) return;
-    b.value = state.value;
+
+    if (state.type === BoneType.Single) {
+      // Just ignore if bone is none (because initial state value)
+      // and check if we actually changed of value
+      if (
+        state.bone === SkeletonBone.NONE ||
+        bodyParts.find((it) => it.type === LabelType.Bone && it.bone === state.bone)
+          ?.value === state.value
+      ) {
+        return;
+      }
+
+      sendRPCPacket(
+        RpcMessage.ChangeSkeletonConfigRequest,
+        new ChangeSkeletonConfigRequestT(state.bone, state.value)
+      );
+      const b = conf?.skeletonParts?.find(({ bone }) => bone === state.bone);
+      if (!b || !conf) return;
+      b.value = state.value;
+    } else {
+      const part = bodyParts.find(
+        (it) => it.type === LabelType.Group && it.label === state.label
+      ) as GroupLabel | undefined;
+
+      // Check if we found the group we were looking for
+      // and check if it even changed of value
+      // we only need to check one child because changing one
+      // value propagates to the other children
+      if (
+        !part ||
+        part.value === state.value ||
+        part.bones[0].value === state.bones[0].value
+      ) {
+        return;
+      }
+
+      for (const child of state.bones) {
+        sendRPCPacket(
+          RpcMessage.ChangeSkeletonConfigRequest,
+          new ChangeSkeletonConfigRequestT(child.bone, state.value * child.value)
+        );
+
+        const b = conf?.skeletonParts?.find(({ bone }) => bone === child.bone);
+        if (!b || !conf) return;
+        b.value = state.value;
+      }
+    }
 
     setConfig(conf);
   }, [state]);
