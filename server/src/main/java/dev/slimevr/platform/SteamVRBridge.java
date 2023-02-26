@@ -5,9 +5,9 @@ import dev.slimevr.VRServer;
 import dev.slimevr.bridge.ProtobufBridge;
 import dev.slimevr.bridge.ProtobufMessages;
 import dev.slimevr.config.BridgeConfig;
-import dev.slimevr.util.ann.VRServerThread;
 import dev.slimevr.tracking.Device;
 import dev.slimevr.tracking.trackers.*;
+import dev.slimevr.util.ann.VRServerThread;
 
 import java.util.List;
 
@@ -100,7 +100,8 @@ public abstract class SteamVRBridge extends ProtobufBridge<VRTracker> implements
 			trackerAdded.getTrackerName(),
 			true,
 			true,
-			device
+			device,
+			false
 		);
 
 		device.getTrackers().put(0, tracker);

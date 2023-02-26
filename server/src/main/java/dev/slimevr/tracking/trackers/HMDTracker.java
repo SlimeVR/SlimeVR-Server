@@ -8,7 +8,7 @@ public class HMDTracker extends ComputedTracker implements TrackerWithTPS {
 	protected BufferedTimer timer = new BufferedTimer(1f);
 
 	public HMDTracker(String name) {
-		super(0, name, true, true);
+		super(0, name, name, true, true, null, true);
 		setBodyPosition(TrackerPosition.HMD);
 	}
 
@@ -19,6 +19,7 @@ public class HMDTracker extends ComputedTracker implements TrackerWithTPS {
 
 	@Override
 	public void dataTick() {
+		super.dataTick();
 		timer.update();
 	}
 

@@ -1,6 +1,7 @@
 package dev.slimevr.tracking.processor;
 
 import com.jme3.math.Transform;
+import io.eiren.util.ann.ThreadSafe;
 import io.eiren.util.collections.FastList;
 
 import java.util.List;
@@ -14,15 +15,19 @@ public class TransformNode {
 	public final List<TransformNode> children = new FastList<>();
 	public boolean localRotation = false;
 	protected TransformNode parent;
-	protected String name;
+	protected BoneType boneType;
 
-	public TransformNode(String name, boolean localRotation) {
-		this.name = name;
+	public TransformNode(BoneType boneType, boolean localRotation) {
+		this.boneType = boneType;
 		this.localRotation = localRotation;
 	}
 
-	public TransformNode(String name) {
-		this(name, true);
+	public TransformNode(BoneType boneType) {
+		this(boneType, true);
+	}
+
+	public TransformNode() {
+		this(null, true);
 	}
 
 	public void attachChild(TransformNode node) {
@@ -38,6 +43,7 @@ public class TransformNode {
 		return parent;
 	}
 
+	@ThreadSafe
 	public void update() {
 		updateWorldTransforms(); // Call update on each frame because we have
 									// relatively few nodes
@@ -65,8 +71,8 @@ public class TransformNode {
 		visitor.accept(this);
 	}
 
-	public String getName() {
-		return name;
+	public BoneType getBoneType() {
+		return boneType;
 	}
 
 	public void combineWithParentGlobalRotation(Transform parent) {

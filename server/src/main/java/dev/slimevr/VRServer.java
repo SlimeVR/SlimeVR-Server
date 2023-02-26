@@ -3,10 +3,10 @@ package dev.slimevr;
 import com.jme3.system.NanoTimer;
 import dev.slimevr.autobone.AutoBoneHandler;
 import dev.slimevr.bridge.Bridge;
-import dev.slimevr.bridge.VMCBridge;
 import dev.slimevr.config.ConfigManager;
 import dev.slimevr.osc.OSCHandler;
 import dev.slimevr.osc.OSCRouter;
+import dev.slimevr.osc.VMCHandler;
 import dev.slimevr.osc.VRCOSCHandler;
 import dev.slimevr.platform.SteamVRBridge;
 import dev.slimevr.platform.linux.UnixSocketBridge;
@@ -32,8 +32,6 @@ import io.eiren.util.collections.FastList;
 import io.eiren.util.logging.LogManager;
 import solarxr_protocol.datatypes.TrackerIdT;
 
-import java.net.InetAddress;
-import java.net.UnknownHostException;
 import java.nio.file.Paths;
 import java.util.List;
 import java.util.Queue;
@@ -56,6 +54,7 @@ public class VRServer extends Thread {
 	private final List<? extends ShareableTracker> shareTrackers;
 	private final OSCRouter oscRouter;
 	private final VRCOSCHandler vrcOSCHandler;
+	private final VMCHandler vmcHandler;
 	private final DeviceManager deviceManager;
 	private final BVHRecorder bvhRecorder;
 	private final SerialHandler serialHandler;
@@ -104,7 +103,6 @@ public class VRServer extends Thread {
 			this::registerTracker
 		);
 
-		// OpenVR bridge currently only supports Windows
 		final SteamVRBridge driverBridge;
 		if (OperatingSystem.getCurrentPlatform() == OperatingSystem.WINDOWS) {
 
@@ -188,15 +186,6 @@ public class VRServer extends Thread {
 		tasks.add(wsBridge::startBridge);
 		bridges.add(wsBridge);
 
-		// Create VMCBridge
-		try {
-			VMCBridge vmcBridge = new VMCBridge(39539, 39540, InetAddress.getLocalHost());
-			tasks.add(vmcBridge::startBridge);
-			bridges.add(vmcBridge);
-		} catch (UnknownHostException e) {
-			e.printStackTrace();
-		}
-
 		// Initialize OSC handlers
 		vrcOSCHandler = new VRCOSCHandler(
 			this,
@@ -206,10 +195,17 @@ public class VRServer extends Thread {
 			getConfigManager().getVrConfig().getVrcOSC(),
 			shareTrackers
 		);
+		vmcHandler = new VMCHandler(
+			this,
+			humanPoseManager,
+			getConfigManager().getVrConfig().getVMC(),
+			shareTrackers
+		);
 
 		// Initialize OSC router
 		FastList<OSCHandler> oscHandlers = new FastList<>();
 		oscHandlers.add(vrcOSCHandler);
+		oscHandlers.add(vmcHandler);
 		oscRouter = new OSCRouter(getConfigManager().getVrConfig().getOscRouter(), oscHandlers);
 
 		bvhRecorder = new BVHRecorder(this);
@@ -295,6 +291,7 @@ public class VRServer extends Thread {
 				bridge.dataWrite();
 			}
 			vrcOSCHandler.update();
+			vmcHandler.update();
 			// final long time = System.currentTimeMillis() - start;
 			try {
 				Thread.sleep(1); // 1000Hz
@@ -322,6 +319,11 @@ public class VRServer extends Thread {
 				tc.accept(tracker);
 			}
 		});
+	}
+
+	@ThreadSafe
+	public void updateSkeletonModel() {
+		queueTask(humanPoseManager::updateSkeletonModelFromServer);
 	}
 
 	public void resetTrackers() {
@@ -439,6 +441,10 @@ public class VRServer extends Thread {
 
 	public VRCOSCHandler getVrcOSCHandler() {
 		return vrcOSCHandler;
+	}
+
+	public VMCHandler getVMCHandler() {
+		return vmcHandler;
 	}
 
 	public DeviceManager getDeviceManager() {

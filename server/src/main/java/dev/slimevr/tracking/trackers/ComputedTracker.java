@@ -18,8 +18,12 @@ public class ComputedTracker implements Tracker, TrackerWithTPS {
 	protected final boolean hasPosition;
 	protected final int trackerId;
 	private final Device device;
+	private final boolean useTimeout;
+	private String customName;
 	public TrackerPosition bodyPosition = null;
 	protected TrackerStatus status = TrackerStatus.DISCONNECTED;
+	private long timeAtLastUpdate;
+	private final static Long TIMEOUT_MS = 2000L;
 
 	public ComputedTracker(
 		int trackerId,
@@ -27,7 +31,8 @@ public class ComputedTracker implements Tracker, TrackerWithTPS {
 		String name,
 		boolean hasRotation,
 		boolean hasPosition,
-		Device device
+		Device device,
+		boolean useTimeout
 	) {
 		this.name = name;
 		this.serial = serial;
@@ -35,23 +40,25 @@ public class ComputedTracker implements Tracker, TrackerWithTPS {
 		this.hasPosition = hasPosition;
 		this.trackerId = trackerId;
 		this.device = device;
+		this.useTimeout = useTimeout;
 	}
 
 	public ComputedTracker(int trackerId, String name, boolean hasRotation, boolean hasPosition) {
-		this(trackerId, name, name, hasRotation, hasPosition, null);
+		this(trackerId, name, name, hasRotation, hasPosition, null, false);
 	}
 
 	@Override
 	public void writeConfig(TrackerConfig config) {
 		config.setDesignation(bodyPosition == null ? null : bodyPosition.designation);
+		config.setCustomName(customName);
 	}
 
 	@Override
 	public void readConfig(TrackerConfig config) {
 		// Loading a config is an act of user editing, therefore it shouldn't
-		// not be
-		// allowed if editing is not allowed
+		// be allowed if editing is not allowed
 		if (userEditable()) {
+			setCustomName(config.getCustomName());
 			Optional<TrackerPosition> trackerPosition = TrackerPosition
 				.getByDesignation(config.getDesignation());
 			if (trackerPosition.isEmpty()) {
@@ -135,10 +142,15 @@ public class ComputedTracker implements Tracker, TrackerWithTPS {
 
 	@Override
 	public void dataTick() {
+		timeAtLastUpdate = System.currentTimeMillis();
 	}
 
 	@Override
 	public void tick() {
+		if (useTimeout) {
+			if (System.currentTimeMillis() - timeAtLastUpdate > TIMEOUT_MS)
+				setStatus(TrackerStatus.DISCONNECTED);
+		}
 	}
 
 	@Override
@@ -193,6 +205,11 @@ public class ComputedTracker implements Tracker, TrackerWithTPS {
 
 	@Override
 	public String getCustomName() {
-		return null;
+		return customName;
+	}
+
+	@Override
+	public void setCustomName(String customName) {
+		this.customName = customName;
 	}
 }

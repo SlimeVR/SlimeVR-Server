@@ -21,7 +21,7 @@ public class OSCRouter {
 	private int lastPortIn;
 	private int lastPortOut;
 	private InetAddress lastAddress;
-	private float timeAtLastError;
+	private long timeAtLastError;
 
 	public OSCRouter(
 		OSCConfig oscConfig,
@@ -170,7 +170,7 @@ public class OSCRouter {
 					timeAtLastError = System.currentTimeMillis();
 					LogManager
 						.warning(
-							"[OSCRouter] Error sending OSC message: "
+							"[OSCRouter] Error sending OSC packet: "
 								+ e
 						);
 				}

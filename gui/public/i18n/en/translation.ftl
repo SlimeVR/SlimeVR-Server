@@ -12,6 +12,7 @@ websocket-connection_lost = Connection lost to the server. Trying to reconnect..
 ## Tips
 tips-find_tracker = Not sure which tracker is which? Shake a tracker and it will highlight the corresponding item.
 tips-do_not_move_heels = Ensure your heels do not move during recording!
+tips-file_select = Drag & drop files to use, or <u>browse</u>.
 
 ## Body parts
 body_part-NONE = Unassigned
@@ -400,6 +401,38 @@ settings-osc-vrchat-network-trackers-waist = Waist
 settings-osc-vrchat-network-trackers-knees = Knees
 settings-osc-vrchat-network-trackers-feet = Feet
 settings-osc-vrchat-network-trackers-elbows = Elbows
+
+## VMC OSC settings
+settings-osc-vmc = Virtual Motion Capture
+# This cares about multilines
+settings-osc-vmc-description =
+    Change settings specific to the VMC (Virtual Motion Capture) protocol
+        to send SlimeVR's bone data and receive bone data from other apps.
+settings-osc-vmc-enable = Enable
+settings-osc-vmc-enable-description = Toggle the sending and receiving of data.
+settings-osc-vmc-enable-label = Enable
+settings-osc-vmc-network = Network ports
+settings-osc-vmc-network-description = Set the ports for listening and sending data via VMC
+settings-osc-vmc-network-port_in =
+    .label = Port In
+    .placeholder = Port in (default: 39540)
+settings-osc-vmc-network-port_out =
+    .label = Port Out
+    .placeholder = Port out (default: 39539)
+settings-osc-vmc-network-address = Network address
+settings-osc-vmc-network-address-description = Choose which address to send out data at via VMC
+settings-osc-vmc-network-address-placeholder = IPV4 address
+settings-osc-vmc-vrm = VRM Model
+settings-osc-vmc-vrm-description = Load a VRM model to allow head anchor and enable a higher compatibility with other applications
+settings-osc-vmc-vrm-model_unloaded = No model loaded
+settings-osc-vmc-vrm-model_loaded = { $titled ->
+    *[false] Untitled model loaded
+    [true] Model loaded: { $name }
+}
+settings-osc-vmc-vrm-file_select = Drag & drop a model to use, or <u>browse</u>
+settings-osc-vmc-anchor_hip = Anchor at hips
+settings-osc-vmc-anchor_hip-description = Anchor the tracking at the hips, useful for seated VTubing. If disabling, load a VRM model.
+settings-osc-vmc-anchor_hip-label = Anchor at hips
 
 ## Setup/onboarding menu
 onboarding-skip = Skip setup
