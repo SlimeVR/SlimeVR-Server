@@ -885,7 +885,7 @@ public class LegTweaks {
 	public float getXZAmount(Vector3f vec1, Vector3f vec2) {
 		return vec1
 			.subtract(vec2)
-			.normalize()
+			.normalizeLocal()
 			.setY(0.0f)
 			.length();
 	}
