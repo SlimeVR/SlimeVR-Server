@@ -417,7 +417,7 @@ class AutoBone(server: VRServer) {
 				0f
 			}
 			var randomFrameIndices: IntArray? = null
-			if (config.shouldRandomizeFrameOrder()) {
+			if (config.randomizeFrameOrder) {
 				randomFrameIndices = IntArray(frameCount)
 				var zeroPos = -1
 				for (i in 0 until frameCount) {
@@ -444,7 +444,7 @@ class AutoBone(server: VRServer) {
 					val frameCursor2 = frameCursor + cursorOffset
 					applyConfig(skeleton1)
 					applyConfig(skeleton2)
-					if (config.shouldRandomizeFrameOrder()) {
+					if (config.randomizeFrameOrder) {
 						trainingStep
 							.setCursors(
 								randomFrameIndices!![frameCursor],
@@ -559,7 +559,7 @@ class AutoBone(server: VRServer) {
 						applyConfig(skeleton1, intermediateOffsets)
 						applyConfig(skeleton2, intermediateOffsets)
 					}
-					if (config.shouldScaleEachStep()) {
+					if (config.scaleEachStep) {
 						val stepHeight = sumSelectConfigs(heightOffsets, offsets)
 						if (stepHeight > 0f) {
 							val stepHeightDiff = targetHeight - stepHeight
