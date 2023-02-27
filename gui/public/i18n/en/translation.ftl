@@ -281,6 +281,9 @@ settings-general-fk_settings-leg_tweak-floor_clip = Floor clip
 # why the name - without this enabled the feet will often slide across the ground as if your skating across the ground,
 # since this largely prevents this it corrects for it hence skating correction (note this may be renamed to sliding correction)
 # definition - Guesses when each foot is in contact with the ground and uses that information to improve tracking
+
+
+
 settings-general-fk_settings-leg_tweak-skating_correction = Skating correction
 settings-general-fk_settings-leg_tweak-toe_snap = Toe snap
 settings-general-fk_settings-leg_tweak-foot_plant = Foot plant
@@ -289,8 +292,9 @@ settings-general-fk_settings-leg_tweak-skating_correction-description = Skating-
 settings-general-fk_settings-leg_tweak-floor_clip-description = Floor-clip can Reduce or even eliminates clipping through the floor. When enabling this, make sure to full reset and recalibrate in game.
 settings-general-fk_settings-leg_tweak-toe_snap-description = Toe-snap attempts to guess the rotation of your feet if feet trackers are not in use.
 settings-general-fk_settings-leg_tweak-foot_plant-description = Foot-plant rotates your feet to be parallel to the ground when in contact.
+settings-general-fk_settings-leg_fk = Leg tracking
 settings-general-fk_settings-arm_fk = Arm tracking
-settings-general-fk_settings-arm_fk-description = Change the way the arms are tracked.
+settings-general-fk_settings-arm_fk-description = Force arms to be tracked from the HMD even if positional hand data is available.
 settings-general-fk_settings-arm_fk-force_arms = Force arms from HMD
 settings-general-fk_settings-skeleton_settings = Skeleton settings
 settings-general-fk_settings-skeleton_settings-description = Toggle skeleton settings on or off. It is recommended to leave these on.
