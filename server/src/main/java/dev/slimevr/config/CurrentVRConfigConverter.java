@@ -181,10 +181,11 @@ public class CurrentVRConfigConverter implements VersionedModelConverter {
 				keybindingsNode.set("yawResetBinding", keybindingsNode.get("quickResetBinding"));
 				keybindingsNode
 					.set("mountingResetBinding", keybindingsNode.get("resetMountingBinding"));
-				if(keybindingsNode.get("resetDelay") != null){
+				if (keybindingsNode.get("resetDelay") != null) {
 					keybindingsNode.set("fullResetDelay", keybindingsNode.get("resetDelay"));
 					keybindingsNode.set("yawResetDelay", keybindingsNode.get("quickResetDelay"));
-					keybindingsNode.set("mountingResetDelay", keybindingsNode.get("resetMountingDelay"));
+					keybindingsNode
+						.set("mountingResetDelay", keybindingsNode.get("resetMountingDelay"));
 				}
 			}
 
