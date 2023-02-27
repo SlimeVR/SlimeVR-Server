@@ -39,7 +39,7 @@ export function BodyProportions({
   type: 'linear' | 'ratio';
   variant: 'onboarding' | 'alone';
 }) {
-  const [bodyParts, ratioMode, currentSelection, dispatch, setRatioMode] =
+  const [bodyParts, _ratioMode, currentSelection, dispatch, setRatioMode] =
     useManualProportions();
   const { currentLocales } = useLocaleConfig();
   const { l10n } = useLocalization();
