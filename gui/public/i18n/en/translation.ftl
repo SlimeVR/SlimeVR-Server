@@ -281,9 +281,6 @@ settings-general-fk_settings-leg_tweak-floor_clip = Floor clip
 # why the name - without this enabled the feet will often slide across the ground as if your skating across the ground,
 # since this largely prevents this it corrects for it hence skating correction (note this may be renamed to sliding correction)
 # definition - Guesses when each foot is in contact with the ground and uses that information to improve tracking
-
-
-
 settings-general-fk_settings-leg_tweak-skating_correction = Skating correction
 settings-general-fk_settings-leg_tweak-toe_snap = Toe snap
 settings-general-fk_settings-leg_tweak-foot_plant = Foot plant

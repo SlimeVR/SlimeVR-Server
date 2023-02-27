@@ -341,11 +341,7 @@ public class LegTweaks {
 		}
 
 		// update the foot length
-		footLength = skeleton.leftAnkleNode.worldTransform
-			.getTranslation()
-			.distance(
-				skeleton.leftFootNode.worldTransform.getTranslation()
-			);
+		footLength = skeleton.leftFootNode.localTransform.getTranslation().length();
 
 		// if not enabled, do nothing and return false
 		if (!enabled)
