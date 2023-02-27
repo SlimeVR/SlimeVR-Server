@@ -72,6 +72,7 @@ interface SettingsForm {
   interface: {
     devmode: boolean;
     watchNewDevices: boolean;
+    feedbackSound: boolean;
   };
 }
 
@@ -111,7 +112,7 @@ const defaultValues = {
     tapMountingResetTaps: 3,
   },
   legTweaks: { correctionStrength: 0.3 },
-  interface: { devmode: false, watchNewDevices: true },
+  interface: { devmode: false, watchNewDevices: true, feedbackSound: true },
 };
 
 export function GeneralSettings() {
@@ -187,6 +188,7 @@ export function GeneralSettings() {
     setConfig({
       debug: values.interface.devmode,
       watchNewDevices: values.interface.watchNewDevices,
+      feedbackSound: values.interface.feedbackSound,
     });
   };
 
@@ -793,6 +795,28 @@ export function GeneralSettings() {
               name="interface.watchNewDevices"
               label={l10n.getString(
                 'settings-general-interface-serial_detection-label'
+              )}
+            />
+          </div>
+
+          <Typography bold>
+            {l10n.getString('settings-general-interface-feedback_sound')}
+          </Typography>
+          <div className="flex flex-col pt-1 pb-2">
+            <Typography color="secondary">
+              {l10n.getString(
+                'settings-general-interface-feedback_sound-description'
+              )}
+            </Typography>
+          </div>
+          <div className="grid sm:grid-cols-2 pb-4">
+            <CheckBox
+              variant="toggle"
+              control={control}
+              outlined
+              name="interface.feedbackSound"
+              label={l10n.getString(
+                'settings-general-interface-feedback_sound-label'
               )}
             />
           </div>

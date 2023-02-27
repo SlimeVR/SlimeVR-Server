@@ -3,6 +3,7 @@ import { useMemo } from 'react';
 import { ResetRequestT, ResetType, RpcMessage } from 'solarxr-protocol';
 import { useCountdown } from '../../hooks/countdown';
 import { useWebsocketAPI } from '../../hooks/websocket-api';
+import { playSoundForTriggered } from '../../sounds/sounds';
 import { BigButton } from '../commons/BigButton';
 import { Button } from '../commons/Button';
 import {
@@ -61,13 +62,23 @@ export function ResetButton({
   const variantsMap = {
     small:
       type == ResetType.Quick ? (
-        <Button icon={getIcon()} onClick={reset} variant="primary">
+        <Button
+          icon={getIcon()}
+          onClick={() => {
+            reset();
+            playSoundForTriggered(ResetType.Quick);
+          }}
+          variant="primary"
+        >
           {text}
         </Button>
       ) : (
         <Button
           icon={getIcon()}
-          onClick={startCountdown}
+          onClick={() => {
+            startCountdown();
+            playSoundForTriggered(ResetType.Full);
+          }}
           variant="primary"
           disabled={isCounting}
         >
@@ -79,12 +90,22 @@ export function ResetButton({
       ),
     big:
       type == ResetType.Quick ? (
-        <BigButton text={text} icon={getIcon()} onClick={reset}></BigButton>
+        <BigButton
+          text={text}
+          icon={getIcon()}
+          onClick={() => {
+            reset();
+            playSoundForTriggered(ResetType.Quick);
+          }}
+        ></BigButton>
       ) : (
         <BigButton
           text={!isCounting ? text : String(timer)}
           icon={getIcon()}
-          onClick={startCountdown}
+          onClick={() => {
+            startCountdown();
+            playSoundForTriggered(ResetType.Full);
+          }}
           disabled={isCounting}
         ></BigButton>
       ),

@@ -13,9 +13,13 @@ import {
   DataFeedMessage,
   DataFeedUpdateT,
   DeviceDataT,
+  ResetResponseT,
+  ResetStatus,
+  RpcMessage,
   StartDataFeedT,
   TrackerDataT,
 } from 'solarxr-protocol';
+import { playSoundForTriggered } from '../sounds/sounds';
 import { useConfig } from './config';
 import { useDataFeedConfig } from './datafeed-config';
 import { useWebsocketAPI } from './websocket-api';
@@ -47,7 +51,8 @@ export function reducer(state: AppState, action: AppStateAction) {
 }
 
 export function useProvideAppContext(): AppContext {
-  const { sendDataFeedPacket, useDataFeedPacket, isConnected } = useWebsocketAPI();
+  const { useRPCPacket, sendDataFeedPacket, useDataFeedPacket, isConnected } =
+    useWebsocketAPI();
   const { config } = useConfig();
   const { dataFeedConfig } = useDataFeedConfig();
   const navigate = useNavigate();
@@ -83,6 +88,20 @@ export function useProvideAppContext(): AppContext {
 
   useDataFeedPacket(DataFeedMessage.DataFeedUpdate, (packet: DataFeedUpdateT) => {
     dispatch({ type: 'datafeed', value: packet });
+  });
+
+  useRPCPacket(RpcMessage.ResetResponse, ({ status, resetType }: ResetResponseT) => {
+    if (!config?.feedbackSound) return;
+    try {
+      switch (status) {
+        case ResetStatus.TRIGGERED: {
+          playSoundForTriggered(resetType);
+          break;
+        }
+      }
+    } catch (error) {
+      console.log(error);
+    }
   });
 
   return {

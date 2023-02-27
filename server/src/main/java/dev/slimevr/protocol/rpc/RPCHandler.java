@@ -10,6 +10,7 @@ import dev.slimevr.poserecorder.PoseFrames;
 import dev.slimevr.protocol.GenericConnection;
 import dev.slimevr.protocol.ProtocolAPI;
 import dev.slimevr.protocol.ProtocolHandler;
+import dev.slimevr.protocol.rpc.reset.RPCResetHandler;
 import dev.slimevr.protocol.rpc.serial.RPCProvisioningHandler;
 import dev.slimevr.protocol.rpc.serial.RPCSerialHandler;
 import dev.slimevr.protocol.rpc.settings.RPCSettingsHandler;
@@ -42,6 +43,7 @@ public class RPCHandler extends ProtocolHandler<RpcMessageHeader>
 		super();
 		this.api = api;
 
+		new RPCResetHandler(this, api);
 		new RPCSerialHandler(this, api);
 		new RPCProvisioningHandler(this, api);
 		new RPCSettingsHandler(this, api);

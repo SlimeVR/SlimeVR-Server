@@ -16,6 +16,7 @@ export interface Config {
   doneOnboarding: boolean;
   watchNewDevices: boolean;
   devSettings: DeveloperModeWidgetForm;
+  feedbackSound: boolean;
 }
 
 export interface ConfigContext {
@@ -29,6 +30,7 @@ const initialConfig = {
   doneOnboarding: false,
   watchNewDevices: true,
   lang: 'en',
+  feedbackSound: true,
 };
 
 export function useConfigProvider(): ConfigContext {

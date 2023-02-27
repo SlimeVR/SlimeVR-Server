@@ -2,8 +2,10 @@ package dev.slimevr.tracking.processor.skeleton;
 
 
 import dev.slimevr.config.TapDetectionConfig;
+import dev.slimevr.reset.ResetHandler;
 import dev.slimevr.tracking.processor.HumanPoseManager;
 import dev.slimevr.tracking.trackers.Tracker;
+import solarxr_protocol.rpc.ResetType;
 
 
 // handles tap detection for the skeleton
@@ -37,6 +39,8 @@ public class TapDetectionManager {
 	private boolean resetAllowPlaySound = true;
 	private boolean mountingResetAllowPlaySound = true;
 
+	private ResetHandler resetHandler;
+
 	public TapDetectionManager(HumanSkeleton skeleton) {
 		this.skeleton = skeleton;
 	}
@@ -44,11 +48,13 @@ public class TapDetectionManager {
 	public TapDetectionManager(
 		HumanSkeleton skeleton,
 		HumanPoseManager humanPoseManager,
-		TapDetectionConfig config
+		TapDetectionConfig config,
+		ResetHandler resetHandler
 	) {
 		this.skeleton = skeleton;
 		this.humanPoseManager = humanPoseManager;
 		this.config = config;
+		this.resetHandler = resetHandler;
 
 		quickResetDetector = new TapDetection(skeleton, getTrackerToWatchQuickReset());
 		resetDetector = new TapDetection(skeleton, getTrackerToWatchReset());
@@ -105,7 +111,7 @@ public class TapDetectionManager {
 		boolean tapped = (quickResetTaps <= quickResetDetector.getTaps());
 
 		if (tapped && quickResetAllowPlaySound) {
-			// send Rpcmessage
+			this.resetHandler.sendTriggered(ResetType.Quick);
 			quickResetAllowPlaySound = false;
 		}
 
@@ -126,7 +132,7 @@ public class TapDetectionManager {
 		boolean tapped = (resetTaps <= resetDetector.getTaps());
 
 		if (tapped && resetAllowPlaySound) {
-			// send Rpcmessage
+			this.resetHandler.sendTriggered(ResetType.Full);
 			resetAllowPlaySound = false;
 		}
 
@@ -147,7 +153,7 @@ public class TapDetectionManager {
 		boolean tapped = (mountingResetTaps <= mountingResetDetector.getTaps());
 
 		if (tapped && mountingResetAllowPlaySound) {
-			// send Rpcmessage
+			this.resetHandler.sendTriggered(ResetType.Mounting);
 			mountingResetAllowPlaySound = false;
 		}
 

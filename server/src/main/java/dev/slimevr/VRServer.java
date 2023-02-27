@@ -13,6 +13,7 @@ import dev.slimevr.platform.linux.UnixSocketBridge;
 import dev.slimevr.platform.windows.WindowsNamedPipeBridge;
 import dev.slimevr.poserecorder.BVHRecorder;
 import dev.slimevr.protocol.ProtocolAPI;
+import dev.slimevr.reset.ResetHandler;
 import dev.slimevr.serial.ProvisioningHandler;
 import dev.slimevr.serial.SerialHandler;
 import dev.slimevr.tracking.DeviceManager;
@@ -64,6 +65,7 @@ public class VRServer extends Thread {
 	private final Timer timer = new Timer();
 	private final NanoTimer fpsTimer = new NanoTimer();
 	private final ProvisioningHandler provisioningHandler;
+	private final ResetHandler resetHandler;
 
 	/**
 	 * This function is used by VRWorkout, do not remove!
@@ -83,6 +85,8 @@ public class VRServer extends Thread {
 		serialHandler = new SerialHandler();
 
 		provisioningHandler = new ProvisioningHandler(this);
+
+		resetHandler = new ResetHandler();
 
 		autoBoneHandler = new AutoBoneHandler(this);
 		protocolAPI = new ProtocolAPI(this);
@@ -427,6 +431,10 @@ public class VRServer extends Thread {
 
 	public SerialHandler getSerialHandler() {
 		return this.serialHandler;
+	}
+
+	public ResetHandler getResetHandler() {
+		return this.resetHandler;
 	}
 
 	public AutoBoneHandler getAutoBoneHandler() {
