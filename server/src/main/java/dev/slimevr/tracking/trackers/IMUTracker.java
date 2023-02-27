@@ -260,7 +260,7 @@ public class IMUTracker
 	}
 
 	/**
-	 * Calculates reference-adjusted rotation (with full/quick reset) including
+	 * Calculates reference-adjusted rotation (with full/yaw reset) including
 	 * the mounting orientation (front, back, left, right) and mounting reset
 	 * adjustment. Also taking drift compensation into account.
 	 *
@@ -286,7 +286,7 @@ public class IMUTracker
 	}
 
 	/**
-	 * Calculates zero-reference-adjusted rotation (with full/quick reset). Same
+	 * Calculates zero-reference-adjusted rotation (with full/yaw reset). Same
 	 * as {@link #getRotation(Quaternion)}, except rotation is aligned to an
 	 * identity quaternion instead of HMD and does not include mounting reset
 	 * and mounting orientation adjustments. Does not take drift compensation

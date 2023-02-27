@@ -61,9 +61,9 @@ skeleton_bone-ELBOW_OFFSET = Elbow Offset
 
 ## Tracker reset buttons
 reset-reset_all = Reset all proportions
-reset-full = Reset
+reset-full = Full Reset
 reset-mounting = Reset Mounting
-reset-quick = Quick Reset
+reset-yaw = Yaw Reset
 
 ## Serial detection stuff
 serial_detection-new_device-p0 = New serial device detected!
@@ -299,19 +299,19 @@ settings-general-fk_settings-vive_emulation-label = Enable Vive emulation
 ## Gesture control settings (tracker tapping)
 settings-general-gesture_control = Gesture control
 settings-general-gesture_control-subtitle = Tap based resets
-settings-general-gesture_control-description = Allows for resets to be triggered by tapping a tracker. The tracker highest up on your torso is used for Quick Reset, the tracker highest up on your left leg is used for Reset, and the tracker highest up on your right leg is used for Mounting Reset. It should be mentioned that taps must happen within 0.6 seconds to be registered.
+settings-general-gesture_control-description = Allows for resets to be triggered by tapping a tracker. The tracker highest up on your torso is used for Yaw Reset, the tracker highest up on your left leg is used for Full Reset, and the tracker highest up on your right leg is used for Mounting Reset. It should be mentioned that taps must happen within 0.6 seconds to be registered.
 # This is a unit: 3 taps, 2 taps, 1 tap
 # $amount (Number) - Amount of taps (touches to the tracker's case)
 settings-general-gesture_control-taps = { $amount ->
     [one] 1 tap
     *[other] { $amount } taps
 }
-settings-general-gesture_control-quickResetEnabled = Enable tap to quick reset
-settings-general-gesture_control-quickResetDelay = Quick reset delay
-settings-general-gesture_control-quickResetTaps = Taps for quick reset
-settings-general-gesture_control-resetEnabled = Enable tap to reset
-settings-general-gesture_control-resetDelay = Reset delay
-settings-general-gesture_control-resetTaps = Taps for reset
+settings-general-gesture_control-yawResetEnabled = Enable tap to yaw reset
+settings-general-gesture_control-yawResetDelay = Yaw reset delay
+settings-general-gesture_control-yawResetTaps = Taps for yaw reset
+settings-general-gesture_control-fullResetEnabled = Enable tap to full reset
+settings-general-gesture_control-fullResetDelay = Full reset delay
+settings-general-gesture_control-fullResetTaps = Taps for full reset
 settings-general-gesture_control-mountingResetEnabled = Enable tap to reset mounting
 settings-general-gesture_control-mountingResetDelay = Mounting reset delay
 settings-general-gesture_control-mountingResetTaps = Taps for mounting reset

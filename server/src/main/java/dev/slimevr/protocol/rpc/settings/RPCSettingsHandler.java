@@ -219,20 +219,20 @@ public record RPCSettingsHandler(RPCHandler rpcHandler, ProtocolAPI api) {
 			if (tapDetectionSettings != null) {
 				// enable/disable tap detection
 				tapDetectionConfig
-					.setQuickResetEnabled(tapDetectionSettings.tapQuickResetEnabled());
+					.setYawResetEnabled(tapDetectionSettings.tapYawResetEnabled());
 				tapDetectionConfig
-					.setResetEnabled(tapDetectionSettings.tapResetEnabled());
+					.setFullResetEnabled(tapDetectionSettings.tapFullResetEnabled());
 				tapDetectionConfig
 					.setMountingResetEnabled(tapDetectionSettings.tapMountingResetEnabled());
 
 				// set tap detection delays
-				if (tapDetectionSettings.hasTapQuickResetDelay()) {
+				if (tapDetectionSettings.hasTapYawResetDelay()) {
 					tapDetectionConfig
-						.setQuickResetDelay(tapDetectionSettings.tapQuickResetDelay());
+						.setYawResetDelay(tapDetectionSettings.tapYawResetDelay());
 				}
-				if (tapDetectionSettings.hasTapResetDelay()) {
+				if (tapDetectionSettings.hasTapFullResetDelay()) {
 					tapDetectionConfig
-						.setResetDelay(tapDetectionSettings.tapResetDelay());
+						.setFullResetDelay(tapDetectionSettings.tapFullResetDelay());
 				}
 				if (tapDetectionSettings.hasTapMountingResetDelay()) {
 					tapDetectionConfig
@@ -240,13 +240,13 @@ public record RPCSettingsHandler(RPCHandler rpcHandler, ProtocolAPI api) {
 				}
 
 				// set the number of taps required for each action
-				if (tapDetectionSettings.hasTapQuickResetTaps()) {
+				if (tapDetectionSettings.hasTapYawResetTaps()) {
 					tapDetectionConfig
-						.setQuickResetTaps(tapDetectionSettings.tapQuickResetTaps());
+						.setYawResetTaps(tapDetectionSettings.tapYawResetTaps());
 				}
-				if (tapDetectionSettings.hasTapResetTaps()) {
+				if (tapDetectionSettings.hasTapFullResetTaps()) {
 					tapDetectionConfig
-						.setResetTaps(tapDetectionSettings.tapResetTaps());
+						.setFullResetTaps(tapDetectionSettings.tapFullResetTaps());
 				}
 				if (tapDetectionSettings.hasTapMountingResetTaps()) {
 					tapDetectionConfig

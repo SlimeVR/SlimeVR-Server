@@ -189,7 +189,7 @@ public abstract class ProtobufBridge<T extends VRTracker> implements Bridge {
 					.warning("[" + bridgeName + "] Received deprecated user action 'calibrate'!");
 			case "reset":
 				// TODO : Check pose field
-				Main.getVrServer().resetTrackers(resetSourceName);
+				Main.getVrServer().resetTrackersFull(resetSourceName);
 				break;
 			case "fast_reset":
 				Main.getVrServer().resetTrackersYaw(resetSourceName);

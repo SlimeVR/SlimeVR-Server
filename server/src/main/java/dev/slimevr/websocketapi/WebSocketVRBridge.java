@@ -172,7 +172,7 @@ public class WebSocketVRBridge extends WebsocketAPI implements Bridge {
 	private void parseAction(ObjectNode json, WebSocket conn) {
 		switch (json.get("name").asText()) {
 			case "calibrate" -> Main.getVrServer().resetTrackersYaw(resetSourceName);
-			case "full_calibrate" -> Main.getVrServer().resetTrackers(resetSourceName);
+			case "full_calibrate" -> Main.getVrServer().resetTrackersFull(resetSourceName);
 		}
 	}
 
