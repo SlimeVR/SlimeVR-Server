@@ -106,7 +106,7 @@ function reducer(state: ProportionState, action: ProportionChange): ProportionSt
 
       return {
         ...state,
-        value: state.value - action.value / 100,
+        value: state.value + action.value / 100,
       };
     }
 
@@ -159,16 +159,10 @@ export interface GroupLabel {
   label: string;
 }
 
-export interface GroupPartLabel {
+export type GroupPartLabel = Omit<GroupLabel, 'type'> & {
   type: LabelType.GroupPart;
-  bone: SkeletonBone;
-  /**
-   * This is a number between 0 and 1 [0; 1]
-   */
-  value: number;
-  label: string;
   index: number;
-}
+};
 
 export function useManualProportions(): [
   Label[],
