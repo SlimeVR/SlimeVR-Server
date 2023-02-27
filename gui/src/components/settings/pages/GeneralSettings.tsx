@@ -160,8 +160,7 @@ export function GeneralSettings() {
     tapDetection.tapFullResetEnabled = values.tapDetection.tapFullResetEnabled;
     tapDetection.tapFullResetTaps = values.tapDetection.tapFullResetTaps;
     tapDetection.tapYawResetDelay = values.tapDetection.tapYawResetDelay;
-    tapDetection.tapYawResetEnabled =
-      values.tapDetection.tapYawResetEnabled;
+    tapDetection.tapYawResetEnabled = values.tapDetection.tapYawResetEnabled;
     tapDetection.tapYawResetTaps = values.tapDetection.tapYawResetTaps;
     tapDetection.tapMountingResetEnabled =
       values.tapDetection.tapMountingResetEnabled;
