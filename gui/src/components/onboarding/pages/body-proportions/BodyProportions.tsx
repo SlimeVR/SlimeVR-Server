@@ -177,7 +177,7 @@ export function BodyProportions({
                     {l10n.getString(label)}
                   </Typography>
                   <Typography variant="main-title" bold>
-                    {ratioMode
+                    {type === LabelType.GroupPart
                       ? percentageFormat.format(value)
                       : cmFormat.format(value * 100)}
                   </Typography>
