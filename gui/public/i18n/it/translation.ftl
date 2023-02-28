@@ -17,6 +17,7 @@ websocket-connection_lost = Connessione con il server persa. Tentativo di riconn
 
 tips-find_tracker = Non sei sicurə quale tracker è quale? Agitalo e l'oggetto corrispondente sarà evidenziato.
 tips-do_not_move_heels = Assicurati di non muovere i tuoi talloni durante la registrazione!
+tips-file_select = Trascina qui i file da usare, o <u>sfoglia</u>.
 
 ## Body parts
 
@@ -24,7 +25,7 @@ body_part-NONE = Non assegnato
 body_part-HEAD = Testa
 body_part-NECK = Collo
 body_part-RIGHT_SHOULDER = Spalla destra
-body_part-RIGHT_UPPER_ARM = Braccio destro
+body_part-RIGHT_UPPER_ARM = Parte superiore del braccio destro
 body_part-RIGHT_LOWER_ARM = Avambraccio destro
 body_part-RIGHT_HAND = Mano destra
 body_part-RIGHT_UPPER_LEG = Coscia destra
@@ -34,7 +35,7 @@ body_part-CHEST = Petto
 body_part-WAIST = Girovita
 body_part-HIP = Bacino
 body_part-LEFT_SHOULDER = Spalla sinistra
-body_part-LEFT_UPPER_ARM = Braccio sinistro
+body_part-LEFT_UPPER_ARM = Parte superiore del braccio sinistro
 body_part-LEFT_LOWER_ARM = Avambraccio sinistro
 body_part-LEFT_HAND = Mano sinistra
 body_part-LEFT_UPPER_LEG = Coscia sinistra
@@ -43,42 +44,45 @@ body_part-LEFT_FOOT = Piede sinistro
 
 ## Proportions
 
-skeleton_bone-NONE = Non assegnato
-skeleton_bone-HEAD = Correzione Testa
-skeleton_bone-NECK = Lunghezza Collo
+skeleton_bone-NONE = Nessuna selezione
+skeleton_bone-HEAD = Correzione per la testa
+skeleton_bone-NECK = Lunghezza del collo
+skeleton_bone-torso_group = Lunghezza del torso
 skeleton_bone-CHEST = Lunghezza del torace
-skeleton_bone-CHEST_OFFSET = Correzione Petto
-skeleton_bone-WAIST = Giro vita
-skeleton_bone-HIP = Lunghezza bacino
-skeleton_bone-HIP_OFFSET = Correzione bacino
-skeleton_bone-HIPS_WIDTH = Larghezza bacino
+skeleton_bone-CHEST_OFFSET = Correzione per il petto
+skeleton_bone-WAIST = Lunghezza del girovita
+skeleton_bone-HIP = Lunghezza del bacino
+skeleton_bone-HIP_OFFSET = Correzione per il bacino
+skeleton_bone-HIPS_WIDTH = Larghezza del bacino
+skeleton_bone-leg_group = Lunghezza della gamba
 skeleton_bone-UPPER_LEG = Lunghezza della parte superiore della gamba
 skeleton_bone-LOWER_LEG = Lunghezza della parte inferiore della gamba
-skeleton_bone-FOOT_LENGTH = Lunghezza Piedi
-skeleton_bone-FOOT_SHIFT = Correzione Piedi
-skeleton_bone-SKELETON_OFFSET = Compensazione scheletro
-skeleton_bone-SHOULDERS_DISTANCE = Distanza Spalle
-skeleton_bone-SHOULDERS_WIDTH = Larghezza Spalle
-skeleton_bone-UPPER_ARM = Lunghezza Braccia
-skeleton_bone-LOWER_ARM = Distanza Avambracci
-skeleton_bone-HAND_Y = Distanza Mano Y
-skeleton_bone-HAND_Z = Distanza Mano Z
-skeleton_bone-ELBOW_OFFSET = Correzione Gomito
+skeleton_bone-FOOT_LENGTH = Lunghezza dei piedi
+skeleton_bone-FOOT_SHIFT = Correzione per i piedi
+skeleton_bone-SKELETON_OFFSET = Correzione per lo scheletro
+skeleton_bone-SHOULDERS_DISTANCE = Distanza delle spalle
+skeleton_bone-SHOULDERS_WIDTH = Larghezza delle spalle
+skeleton_bone-arm_group = Lunghezza delle braccia
+skeleton_bone-UPPER_ARM = Lunghezza della parte superiore delle braccia
+skeleton_bone-LOWER_ARM = Lunghezza degli avambracci
+skeleton_bone-HAND_Y = Distanza della mano sull'asse Y
+skeleton_bone-HAND_Z = Distanza della mano sull'asse Z
+skeleton_bone-ELBOW_OFFSET = Correzione per il gomito
 
 ## Tracker reset buttons
 
-reset-reset_all = Ripristina tutte le proporzioni
-reset-full = Ripristina
-reset-mounting = Ripristina posizionamento
-reset-quick = Reset veloce
+reset-reset_all = Reset di tutte le proporzioni
+reset-full = Reset completo
+reset-mounting = Reset posizionamento
+reset-yaw = Reset orientamento
 
 ## Serial detection stuff
 
 serial_detection-new_device-p0 = Nuovo dispositivo seriale rilevato!
 serial_detection-new_device-p1 = Inserisci le tue credenziali Wi-Fi!
-serial_detection-new_device-p2 = Seleziona come utilizzare il tracker, per piacere
+serial_detection-new_device-p2 = Per favore, seleziona come utilizzare il tracker
 serial_detection-open_wifi = Connetti al Wi-Fi
-serial_detection-open_serial = Apri la Serial Console
+serial_detection-open_serial = Apri la Console Seriale
 serial_detection-submit = Conferma!
 serial_detection-close = Chiudi
 
@@ -87,7 +91,7 @@ serial_detection-close = Chiudi
 navbar-home = Home
 navbar-body_proportions = Proporzioni del corpo
 navbar-trackers_assign = Assegnazione dei tracker
-navbar-mounting = Calibrazione della posizionamento
+navbar-mounting = Calibrazione del posizionamento
 navbar-onboarding = Installazione guidata
 navbar-settings = Impostazioni
 
@@ -104,15 +108,15 @@ widget-overlay-is_mirrored_label = Includi uno specchio nel Overlay
 
 ## Widget: Drift compensation
 
-widget-drift_compensation-clear = Rimuovi compensazione del drift
+widget-drift_compensation-clear = Rimuovi compensazione per il drift
 
 ## Widget: Developer settings
 
 widget-developer_mode = Modalità sviluppatore
-widget-developer_mode-high_contrast = Alto contrasto
+widget-developer_mode-high_contrast = Contrasto alto
 widget-developer_mode-precise_rotation = Rotazione precisa
-widget-developer_mode-fast_data_feed = Alimentazione veloce dei dati
-widget-developer_mode-filter_slimes_and_hmd = Filtra slimes e HMD
+widget-developer_mode-fast_data_feed = Trasmissione veloce dei dati
+widget-developer_mode-filter_slimes_and_hmd = Filtra gli slime e HMD
 widget-developer_mode-sort_by_name = Ordina per nome
 widget-developer_mode-raw_slime_rotation = Rotazione non processata
 widget-developer_mode-more_info = Ulteriori informazioni
@@ -125,7 +129,7 @@ widget-imu_visualizer-rotation_preview = Anteprima
 
 ## Tracker status
 
-tracker-status-none = Nessuno Stato
+tracker-status-none = Nessuno stato
 tracker-status-busy = Occupato
 tracker-status-error = Errore
 tracker-status-disconnected = Disconnesso
@@ -158,8 +162,8 @@ tracker-infos-manufacturer = Produttore
 tracker-infos-display_name = Nome da visualizzare
 tracker-infos-custom_name = Nome Personalizzato
 tracker-infos-url = URL del tracker
-tracker-infos-version = Versione Firmware
-tracker-infos-hardware_rev = Versione Hardware
+tracker-infos-version = Versione firmware
+tracker-infos-hardware_rev = Versione hardware
 
 ## Tracker settings
 
@@ -168,12 +172,12 @@ tracker-settings-title = Impostazioni del tracker
 tracker-settings-assignment_section = Assegnazione
 tracker-settings-assignment_section-description = Definisce a che parte del corpo è assegnato il tracker.
 tracker-settings-assignment_section-edit = Cambia assegnazione
-tracker-settings-mounting_section = posizionamento di montaggio
-tracker-settings-mounting_section-description = Come è posizionato il tracker?
+tracker-settings-mounting_section = Posizionamento di montaggio
+tracker-settings-mounting_section-description = Dove è posizionato il tracker?
 tracker-settings-mounting_section-edit = Cambia posizionamento
-tracker-settings-drift_compensation_section = Consenti compensazione deriva
-tracker-settings-drift_compensation_section-description = Questo tracker dovrebbe compensare per il drift quando la compensazione del drift è abilitata?
-tracker-settings-drift_compensation_section-edit = Consenti compensazione del drift
+tracker-settings-drift_compensation_section = Consenti compensazione per il drift
+tracker-settings-drift_compensation_section-description = Questo tracker dovrebbe compensare per il drift quando la compensazione per il drift è abilitata?
+tracker-settings-drift_compensation_section-edit = Consenti compensazione per il drift
 # The .<name> means it's an attribute and it's related to the top key.
 # In this case that is the settings for the assignment section.
 tracker-settings-name_section = Nome del tracker
@@ -187,9 +191,9 @@ tracker-part_card-unassigned = Non assegnato
 
 ## Body assignment menu
 
-body_assignment_menu = Con che parte del corpo vuoi utilizzare il tracker?
+body_assignment_menu = Dove vuoi posizionare il tracker?
 body_assignment_menu-description = Scegli una parte del corpo a cui assegnare questo tracker. Alternativamente puoi scegliere di gestire tutti i tracker in una schermata unica invece che singolarmente.
-body_assignment_menu-show_advanced_locations = Mostra impostazioni avanzate di Assegnazione
+body_assignment_menu-show_advanced_locations = Mostra impostazioni avanzate di assegnazione
 body_assignment_menu-manage_trackers = Gestisci tutti i tracker
 body_assignment_menu-unassign_tracker = Rimuovi assegnazione del tracker
 
@@ -200,13 +204,13 @@ body_assignment_menu-unassign_tracker = Rimuovi assegnazione del tracker
 #
 # We are using it here because english doesn't require changing the text in each case but
 # maybe your language does.
--tracker_selection-part = Which tracker to assign to your
+-tracker_selection-part = Quale tracker vuoi assegnare al vostro
 tracker_selection_menu-NONE = Quale tracker vuoi che non sia assegnato?
 tracker_selection_menu-HEAD = { -tracker_selection-part } testa?
 tracker_selection_menu-NECK = { -tracker_selection-part } collo?
 tracker_selection_menu-RIGHT_SHOULDER = { -tracker_selection-part } spalla destra?
-tracker_selection_menu-RIGHT_UPPER_ARM = { -tracker_selection-part } braccio superiore destro?
-tracker_selection_menu-RIGHT_LOWER_ARM = { -tracker_selection-part } braccio inferiore destro?
+tracker_selection_menu-RIGHT_UPPER_ARM = { -tracker_selection-part } parte superiore del braccio destro?
+tracker_selection_menu-RIGHT_LOWER_ARM = { -tracker_selection-part } avambraccio destro?
 tracker_selection_menu-RIGHT_HAND = { -tracker_selection-part } mano destra?
 tracker_selection_menu-RIGHT_UPPER_LEG = { -tracker_selection-part } coscia destra?
 tracker_selection_menu-RIGHT_LOWER_LEG = { -tracker_selection-part } caviglia destra?
@@ -216,27 +220,27 @@ tracker_selection_menu-CHEST = { -tracker_selection-part } petto?
 tracker_selection_menu-WAIST = { -tracker_selection-part } vita?
 tracker_selection_menu-HIP = { -tracker_selection-part } bacino?
 tracker_selection_menu-LEFT_SHOULDER = { -tracker_selection-part } spalla sinistra?
-tracker_selection_menu-LEFT_UPPER_ARM = { -tracker_selection-part } braccio superiore sinistro?
-tracker_selection_menu-LEFT_LOWER_ARM = { -tracker_selection-part } braccio inferiore sinistro?
+tracker_selection_menu-LEFT_UPPER_ARM = { -tracker_selection-part } parte superiore del braccio sinistro?
+tracker_selection_menu-LEFT_LOWER_ARM = { -tracker_selection-part } avambraccio sinistro?
 tracker_selection_menu-LEFT_HAND = { -tracker_selection-part } mano sinistra?
 tracker_selection_menu-LEFT_UPPER_LEG = { -tracker_selection-part } coscia sinistra?
 tracker_selection_menu-LEFT_LOWER_LEG = { -tracker_selection-part } caviglia sinistra?
 tracker_selection_menu-LEFT_FOOT = { -tracker_selection-part } piede sinistro?
 tracker_selection_menu-LEFT_CONTROLLER = { -tracker_selection-part } controller sinistro?
-tracker_selection_menu-unassigned = Tracker non assegnato
-tracker_selection_menu-assigned = Dispositivo assegnato
+tracker_selection_menu-unassigned = Tracker non assegnati
+tracker_selection_menu-assigned = Tracker assegnati
 tracker_selection_menu-dont_assign = Non assegnare
 # This line cares about multilines.
 # <b>text</b> means that the text should be bold.
 tracker_selection_menu-neck_warning =
     <b>Avvertimento:</b> Un tracker per il collo può essere mortale se indossato troppo stretto,
     Il cinturino potrebbe bloccare la circolazione alla tua testa!
-tracker_selection_menu-neck_warning-done = Comprendo il rischo
+tracker_selection_menu-neck_warning-done = Comprendo i rischi
 tracker_selection_menu-neck_warning-cancel = Annulla
 
 ## Mounting menu
 
-mounting_selection_menu = Come è posizionato il tracker?
+mounting_selection_menu = Dove vuoi che sia posizionato questo tracker?
 mounting_selection_menu-close = Chiudi
 
 ## Sidebar settings
@@ -244,10 +248,10 @@ mounting_selection_menu-close = Chiudi
 settings-sidebar-title = Impostazioni
 settings-sidebar-general = Generali
 settings-sidebar-tracker_mechanics = Comportamento del tracker
-settings-sidebar-fk_settings = Impostazioni Traking
-settings-sidebar-gesture_control = Controllo dei gesti
+settings-sidebar-fk_settings = Impostazioni di traking
+settings-sidebar-gesture_control = Controllo con gesti
 settings-sidebar-interface = Interfaccia
-settings-sidebar-osc_router = OSC router
+settings-sidebar-osc_router = Router OSC
 settings-sidebar-utils = Strumenti
 settings-sidebar-serial = Console seriale
 
@@ -285,20 +289,16 @@ settings-general-tracker_mechanics-filtering-type-smoothing-description = Attenu
 settings-general-tracker_mechanics-filtering-type-prediction = Predizione
 settings-general-tracker_mechanics-filtering-type-prediction-description = Riduce ritardo e rende movimenti più istantanei, ma può introdurre tremolio.
 settings-general-tracker_mechanics-filtering-amount = Quantità
-settings-general-tracker_mechanics-drift_compensation = Compensazione del drift
+settings-general-tracker_mechanics-drift_compensation = Compensazione per il drift
 # This cares about multilines
-settings-general-tracker_mechanics-drift_compensation-description =
-    Compensates IMU yaw drift by applying an inverse rotation.
-    Change amount of compensation and up to how many resets are taken into account.
-settings-general-tracker_mechanics-drift_compensation-enabled-label = Compensazione del drift
+settings-general-tracker_mechanics-drift_compensation-description = Compensa il drift degli IMU applicando una rotazione inversa. Modifica la forza della compensazione e il massimo numero di reset che sono presi in considerazione.
+settings-general-tracker_mechanics-drift_compensation-enabled-label = Compensazione per il drift
 settings-general-tracker_mechanics-drift_compensation-amount-label = Grado di compensazione
-settings-general-tracker_mechanics-drift_compensation-max_resets-label = Utilizza fino a x ultimi ripristini
+settings-general-tracker_mechanics-drift_compensation-max_resets-label = Utilizza fino a x ultimi reset
 
 ## FK/Tracking settings
 
-settings-general-fk_settings = Impostazioni Tracking
-settings-general-fk_settings-leg_tweak = Impostazioni Gambe
-settings-general-fk_settings-leg_tweak-description = "Compenetrazione pavimento" può ridurre o anche eliminare completamente la compenetrazione con il pavimento, ma può causare problemi quando in ginocchio. "Correzione pattinaggio" corregge l'effetto che fa sembrare che pattini sul ghiaccio, ma può peggiorare la precisione di certi movimenti.
+settings-general-fk_settings = Impostazioni di tracking
 # Floor clip:
 # why the name - came from the idea of noclip in video games, but is the opposite where clipping to the floor is a desired feature
 # definition - Prevents the foot trackers from going lower than they where when a reset was performed
@@ -307,25 +307,32 @@ settings-general-fk_settings-leg_tweak-floor_clip = Compenetrazione pavimento
 # why the name - without this enabled the feet will often slide across the ground as if your skating across the ground,
 # since this largely prevents this it corrects for it hence skating correction (note this may be renamed to sliding correction)
 # definition - Guesses when each foot is in contact with the ground and uses that information to improve tracking
-settings-general-fk_settings-leg_tweak-skating_correction = Correzione pattinaggio
+settings-general-fk_settings-leg_tweak-skating_correction = Correzione slittamento
+settings-general-fk_settings-leg_tweak-toe_snap = Dita dei piedi piantate
+settings-general-fk_settings-leg_tweak-foot_plant = Piedi piantati
 settings-general-fk_settings-leg_tweak-skating_correction-amount = Forza fattore di correzione pattinaggio
-settings-general-fk_settings-arm_fk = Tracking Braccia
-settings-general-fk_settings-arm_fk-description = Cambia la modalità di tracciamento delle braccia.
+settings-general-fk_settings-leg_tweak-skating_correction-description = "Correzione slittamento" corregge l'effetto che fa sembrare che pattini sul ghiaccio, ma può peggiorare la precisione di certi movimenti. Quando abiliti questa funzione é necessario eseguire un reset completo e ri-calibrazione in gioco per il corretto funzionamento.
+settings-general-fk_settings-leg_tweak-floor_clip-description = "Compenetrazione pavimento" può ridurre o anche eliminare completamente la compenetrazione con il pavimento. Quando abiliti questa funzione é necessario eseguire un reset completo e ri-calibrazione in gioco per il corretto funzionamento.
+settings-general-fk_settings-leg_tweak-toe_snap-description = "Dita dei piedi piantate" prova ad indovinare la rotazione dei tuoi piedi quando non stai usando dei tracker per i piedi.
+settings-general-fk_settings-leg_tweak-foot_plant-description = "Piedi piantati" ruota i piedi in modo tale che siano paralleli al terreno quando in contatto con esso.
+settings-general-fk_settings-leg_fk = Tracking delle gambe
+settings-general-fk_settings-arm_fk = Tracking delle braccia
+settings-general-fk_settings-arm_fk-description = Cambia la modalità di tracking delle braccia.
 settings-general-fk_settings-arm_fk-force_arms = Forza il calcolo della posizione delle braccia a utilizzare il HMD
-settings-general-fk_settings-skeleton_settings = Impostazioni scheletro
+settings-general-fk_settings-skeleton_settings = Impostazioni dello scheletro
 settings-general-fk_settings-skeleton_settings-description = Abilita o disabilita le impostazioni dello scheletro. É raccomandato lasciare queste impostazioni attive.
-settings-general-fk_settings-skeleton_settings-extended_spine = Estensione colonna vertebrale
-settings-general-fk_settings-skeleton_settings-extended_pelvis = Estensione bacino
-settings-general-fk_settings-skeleton_settings-extended_knees = Estensione ginocchia
+settings-general-fk_settings-skeleton_settings-extended_spine = Colonna vertebrale estesa
+settings-general-fk_settings-skeleton_settings-extended_pelvis = Bacino esteso
+settings-general-fk_settings-skeleton_settings-extended_knees = Ginocchia estese
 settings-general-fk_settings-vive_emulation-title = Imitazione Vive
 settings-general-fk_settings-vive_emulation-description = Imita i problemi che hanno i Vive tracker utilizzati sul girovita. Questo è uno scherzo e peggiora il tracciamento.
 settings-general-fk_settings-vive_emulation-label = Abilita l'imitazione Vive
 
 ## Gesture control settings (tracker tapping)
 
-settings-general-gesture_control = Controllo dei gesti
-settings-general-gesture_control-subtitle = Reset veloce con il doppio tocco
-settings-general-gesture_control-description = Abilita o disabilita il reset veloce con il doppio tocco. Quando attivato, un doppio tocco su una qualsiasi parte del tracker posizionato più in altro lungo il torso abiliterà il reset veloce. "Ritardo" è il ritardo dal momento in cui il gesto è eseguito e il Reset.
+settings-general-gesture_control = Controllo con gesti
+settings-general-gesture_control-subtitle = Reset toccando un tracker
+settings-general-gesture_control-description = Abilita o disabilita il reset toccando un tracker. Il tracker più in alto sul torso viene utilizzato per il reset orientamento, il tracker più in alto sulla gamba sinistra viene utilizzato per il reset completo e il tracker più in alto sulla gamba destra viene utilizzato per il reset posizionamento. Si deve tener presente che i tocchi devono avvenire entro 0,6 secondi per essere registrati.
 # This is a unit: 3 taps, 2 taps, 1 tap
 # $amount (Number) - Amount of taps (touches to the tracker's case)
 settings-general-gesture_control-taps =
@@ -333,15 +340,15 @@ settings-general-gesture_control-taps =
         [one] 1 tocco
        *[other] { $amount } tocchi
     }
-settings-general-gesture_control-quickResetEnabled = Abilita il tocco per il ripristino rapido
-settings-general-gesture_control-quickResetDelay = Ritardo reset rapido
-settings-general-gesture_control-quickResetTaps = Tocchi per ripristino rapido
-settings-general-gesture_control-resetEnabled = Abilita tocca per ripristinare
-settings-general-gesture_control-resetDelay = Ritardo reset
-settings-general-gesture_control-resetTaps = Tocchi per resettare
-settings-general-gesture_control-mountingResetEnabled = Abilita tocco per ripristinare il montaggio
-settings-general-gesture_control-mountingResetDelay = Ritardo ripristino montaggio
-settings-general-gesture_control-mountingResetTaps = Tocchi per il ripristino rapido
+settings-general-gesture_control-yawResetEnabled = Abilita tocco per il reset orientamento
+settings-general-gesture_control-yawResetDelay = Ritardo per il reset orientamento
+settings-general-gesture_control-yawResetTaps = Numero di tocchi per il reset orientamento
+settings-general-gesture_control-fullResetEnabled = Abilita tocco per il reset completo
+settings-general-gesture_control-fullResetDelay = Ritardo per il reset completo
+settings-general-gesture_control-fullResetTaps = Numero di tocchi per il reset completo
+settings-general-gesture_control-mountingResetEnabled = Abilita tocco per reset posizionamento
+settings-general-gesture_control-mountingResetDelay = Ritardo per il reset posizionamento
+settings-general-gesture_control-mountingResetTaps = Numero di tocchi per il reset posizionamento
 
 ## Interface settings
 
@@ -352,13 +359,16 @@ settings-general-interface-dev_mode-label = Modalità sviluppatore
 settings-general-interface-serial_detection = Rilevazione nuovi dispositivi seriali
 settings-general-interface-serial_detection-description = Questa opzione mostrerà un pop-up ogni volta che colleghi un nuovo dispositivo seriale che potrebbe essere un tracker. Aiuta a facilitare la configurazione iniziale di un tracker
 settings-general-interface-serial_detection-label = Rilevazione nuovi dispositivi seriali
+settings-general-interface-feedback_sound = Suono di feedback
+settings-general-interface-feedback_sound-description = Questa opzione riprodurrà un suono quando viene effettuato un reset
+settings-general-interface-feedback_sound-label = Suono di feedback
 settings-general-interface-lang = Seleziona la lingua
 settings-general-interface-lang-description = Seleziona la lingua che vuoi utilizzare
 settings-general-interface-lang-placeholder = Seleziona la lingua da utilizzare
 
 ## Serial settings
 
-settings-serial = Serial Console
+settings-serial = Console Seriale
 # This cares about multilines
 settings-serial-description =
     Questo è un feed di informazioni in tempo reale per la comunicazione seriale.
@@ -379,7 +389,7 @@ settings-serial-auto_dropdown_item = Automatico
 
 ## OSC router settings
 
-settings-osc-router = OSC router
+settings-osc-router = Router OSC
 # This cares about multilines
 settings-osc-router-description =
     Inoltra messaggi OSC da un altro programma.
@@ -404,7 +414,7 @@ settings-osc-router-network-address-placeholder = Indirizzo IPV4
 
 ## OSC VRChat settings
 
-settings-osc-vrchat = VRChat OSC Trackers
+settings-osc-vrchat = Tracker OSC per VRChat
 # This cares about multilines
 settings-osc-vrchat-description =
     Modifica le impostazioni specifiche a VRChat per ricevere e inviare dati del HMD
@@ -431,6 +441,40 @@ settings-osc-vrchat-network-trackers-knees = Ginocchia
 settings-osc-vrchat-network-trackers-feet = Piedi
 settings-osc-vrchat-network-trackers-elbows = Gomiti
 
+## VMC OSC settings
+
+settings-osc-vmc = Virtual Motion Capture
+# This cares about multilines
+settings-osc-vmc-description =
+    Cambia impostazioni legate al protocollo VMC (Virtual Motion Capture)
+     per inviare dati dello scheletro di SlimeVR e ricevere dati dello scheletro da altre applicazioni.
+settings-osc-vmc-enable = Attiva
+settings-osc-vmc-enable-description = Attiva o disattiva l'invio e la ricezione dei dati
+settings-osc-vmc-enable-label = Attiva
+settings-osc-vmc-network = Porte di rete
+settings-osc-vmc-network-description = Impostare le porte di rete per ascoltare e inviare dati a VMC
+settings-osc-vmc-network-port_in =
+    .label = Porta in ingresso
+    .placeholder = Porta in ingresso (predefinita: 39540)
+settings-osc-vmc-network-port_out =
+    .label = Porta in uscita
+    .placeholder = Porta in uscita (predefinita: 39539)
+settings-osc-vmc-network-address = Indirizzo di rete
+settings-osc-vmc-network-address-description = Scegli l'indirizzo di rete a cui inviare i dati
+settings-osc-vmc-network-address-placeholder = Indirizzo IPV4
+settings-osc-vmc-vrm = Modello VRM
+settings-osc-vmc-vrm-description = Carica un modello VRM per consentite l'ancoraggio della testa e migliorare la compatibilitá con altre applicazioni
+settings-osc-vmc-vrm-model_unloaded = Nessun modello caricato
+settings-osc-vmc-vrm-model_loaded =
+    { $titled ->
+        [true] Modello caricato: { $name }
+       *[other] Modello senza titolo caricato
+    }
+settings-osc-vmc-vrm-file_select = Trascina qui un modello da usare, o <u>sfoglia</u>
+settings-osc-vmc-anchor_hip = Ancoraggio sul bacino
+settings-osc-vmc-anchor_hip-description = Ancora la posizione del tracciamento del bacino; utile per VTubing da seduti. Se disabilitato, carica un modello VRM.
+settings-osc-vmc-anchor_hip-label = Ancoraggio sul bacino
+
 ## Setup/onboarding menu
 
 onboarding-skip = Salta la configurazione
@@ -452,12 +496,12 @@ onboarding-wifi_creds-ssid =
     .placeholder = Enter SSID
 onboarding-wifi_creds-password =
     .label = Password
-    .placeholder = Enter password
+    .placeholder = Inserisci password
 
 ## Mounting setup
 
 onboarding-reset_tutorial-back = Torna alla calibrazione posizionamento
-onboarding-reset_tutorial = Tutorial di ripristino
+onboarding-reset_tutorial = Tutorial di reset
 onboarding-reset_tutorial-description = Questa funzionalità non è completa, premi continua
 
 ## Setup start
@@ -488,7 +532,7 @@ onboarding-connect_tracker-back = Torna alle credenziali Wi-Fi
 onboarding-connect_tracker-title = Connetti i tracker
 onboarding-connect_tracker-description-p0 = Ora passiamo alla parte divertente, colleghiamo tutti i tracker!
 onboarding-connect_tracker-description-p1 = Collega semplicemente tutti i tracker che non sono ancora collegati tramite una porta USB.
-onboarding-connect_tracker-issue-serial = Ho problemi con la connessione!
+onboarding-connect_tracker-issue-serial = Sto avendo problemi nel connettermi!
 onboarding-connect_tracker-usb = Tracker USB
 onboarding-connect_tracker-connection_status-none = Ricerca dei tracker in corso
 onboarding-connect_tracker-connection_status-serial_init = Connessione al dispositivo seriale in corso
@@ -497,7 +541,7 @@ onboarding-connect_tracker-connection_status-connecting = Invio credenziali Wi-F
 onboarding-connect_tracker-connection_status-looking_for_server = Ricerca del server in corso
 onboarding-connect_tracker-connection_status-connection_error = Impossibile connettersi al Wi-Fi
 onboarding-connect_tracker-connection_status-could_not_find_server = Impossibile trovare il server
-onboarding-connect_tracker-connection_status-done = Connesso al Server
+onboarding-connect_tracker-connection_status-done = Connesso al server
 # $amount (Number) - Amount of trackers connected (this is a number, but you can use CLDR plural rules for your language)
 # More info on https://www.unicode.org/cldr/cldr-aux/charts/22/supplemental/language_plural_rules.html
 # English in this case only has 2 plural rules, which are "one" and "other",
@@ -505,10 +549,10 @@ onboarding-connect_tracker-connection_status-done = Connesso al Server
 # if $amount is 0 then we say "No trackers connected"
 onboarding-connect_tracker-connected_trackers =
     { $amount ->
-        [0] No trackers
-        [one] 1 tracker
-       *[other] { $amount } trackers
-    } connected
+        [0] Nessun Tracker connesso
+        [one] 1 tracker connesso
+       *[other] { $amount } tracker connessi
+    }
 onboarding-connect_tracker-next = Ho collegato tutti i miei tracker
 
 ## Tracker assignment setup
@@ -614,14 +658,14 @@ onboarding-automatic_mounting-prev_step = Passaggio precedente
 onboarding-automatic_mounting-done-title = Rotazione delle posizioni di montaggio calibrate.
 onboarding-automatic_mounting-done-description = La calibrazione della posizione é completa!
 onboarding-automatic_mounting-done-restart = Torna all'inizio
-onboarding-automatic_mounting-mounting_reset-title = Ripristina posizionamento
+onboarding-automatic_mounting-mounting_reset-title = Reset posizionamento
 onboarding-automatic_mounting-mounting_reset-step-0 = 1. Piegati come per sciare: con le gambe leggermente piegate e unite, la parte superiore del corpo inclinata in avanti e le braccia piegate.
-onboarding-automatic_mounting-mounting_reset-step-1 = 2. Premere il pulsante "Ripristina posizionamento" e attendere 3 secondi prima che le rotazioni delle posizioni di montaggio dei tracker vengano ripristinate.
+onboarding-automatic_mounting-mounting_reset-step-1 = 2. Premere il pulsante "Reset posizionamento" e attendere 3 secondi prima che le rotazioni delle posizioni di montaggio dei tracker vengano ripristinate.
 onboarding-automatic_mounting-preparation-title = Preparazione
 onboarding-automatic_mounting-preparation-step-0 = 1. Stai in piedi drittə con le braccia lungo i fianchi.
-onboarding-automatic_mounting-preparation-step-1 = 2. Premi il pulsante "Reset" e attendi 3 secondi prima che i tracker vengano ripristinati.
+onboarding-automatic_mounting-preparation-step-1 = 2. Premi il pulsante "Reset completo" e attendi 3 secondi prima che i tracker vengano ripristinati.
 onboarding-automatic_mounting-put_trackers_on-title = Indossa i tuoi tracker
-onboarding-automatic_mounting-put_trackers_on-description = Per calibrare le rotazioni delle posizioni montaggio useremo i tracker che hai appena assegnato. Indossa tutti i tuoi tracker, puoi vedere quali sono quali nella figura a destra.
+onboarding-automatic_mounting-put_trackers_on-description = Per calibrare le rotazioni delle posizioni di montaggio useremo i tracker che hai appena assegnato. Indossa tutti i tuoi tracker, puoi vedere quali sono quali nella figura a destra.
 onboarding-automatic_mounting-put_trackers_on-next = Sto indossando tutti i miei tracker
 
 ## Tracker manual proportions setup
@@ -630,6 +674,7 @@ onboarding-manual_proportions-back = Torna al tutorial di reset
 onboarding-manual_proportions-title = Impostazione manuale delle proporzioni del corpo
 onboarding-manual_proportions-precision = Regolazione di precisione
 onboarding-manual_proportions-auto = Calibrazione automatica
+onboarding-manual_proportions-ratio = Regolazione tramite gruppi di rapporti
 
 ## Tracker automatic proportions setup
 
@@ -659,8 +704,8 @@ onboarding-automatic_proportions-recording-processing = Elaborazione del risulta
 # $time (Number) - Seconds left for the automatic calibration recording to finish (max 15)
 onboarding-automatic_proportions-recording-timer =
     { $time ->
-        [one] 1 second left
-       *[other] { $time } seconds left
+        [one] 1 secondo rimasto
+       *[other] { $time } secondi rimasti
     }
 onboarding-automatic_proportions-verify_results-title = Verifica i risultati
 onboarding-automatic_proportions-verify_results-description = Controlla i risultati qui sotto, sembrano corretti?
