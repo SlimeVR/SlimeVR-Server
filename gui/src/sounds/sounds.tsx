@@ -1,17 +1,21 @@
 import { ResetType } from 'solarxr-protocol';
 
+const singleBeep = new Audio('/sounds/single_beep.wav');
+const doubleBeep = new Audio('/sounds/double_beep.wav');
+const tripleBeep = new Audio('/sounds/triple_beep.wav');
+
 export function playSoundForTriggered(resetType: ResetType) {
   switch (resetType) {
     case ResetType.Quick: {
-      new Audio('/sounds/single_beep.wav').play();
+      singleBeep.play();
       break;
     }
     case ResetType.Full: {
-      new Audio('/sounds/double_beep.wav').play();
+      doubleBeep.play();
       break;
     }
     case ResetType.Mounting: {
-      new Audio('/sounds/triple_beep.wav').play();
+      tripleBeep.play();
       break;
     }
   }
