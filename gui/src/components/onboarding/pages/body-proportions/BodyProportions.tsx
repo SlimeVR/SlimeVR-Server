@@ -77,7 +77,6 @@ export function BodyProportions({
       >
         <>
           {bodyParts.map(({ label, type, value: originalValue, ...props }) => {
-            if(type === LabelType.Group) console.log(originalValue)
             const value =
               'index' in props && props.index !== undefined
                 ? props.bones[props.index].value
