@@ -194,9 +194,9 @@ export function BodyProportions({
                     </Typography>
                     <Typography variant="main-title" bold>
                       {type === LabelType.GroupPart
-                        /* Make number rounding so it's based on .25 decimals */
-                        ? percentageFormat.format(Math.round(value * 400) / 400)
-                        : cmFormat.format(Math.round(value * 400) / 4)}
+                        /* Make number rounding so it's based on .5 decimals */
+                        ? percentageFormat.format(Math.round(value * 200) / 200)
+                        : cmFormat.format(Math.round(value * 200) / 2)}
                     </Typography>
                   </div>
                 </div>
