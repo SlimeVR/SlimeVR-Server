@@ -76,166 +76,190 @@ export function BodyProportions({
         )}
       >
         <>
-          {bodyParts.map(({ label, type, value, ...props }) => (
-            <div className="flex" key={label}>
-              <div
-                className={classNames(
-                  'flex gap-2 transition-opacity duration-300',
-                  currentSelection.label !== label &&
-                    'opacity-0 pointer-events-none'
-                )}
-              >
-                {!precise && (
-                  <IncrementButton
-                    onClick={() =>
-                      dispatch({
-                        type:
-                          type === LabelType.GroupPart
-                            ? ProportionChangeType.Ratio
-                            : ProportionChangeType.Linear,
-                        value: -5,
-                      })
-                    }
-                  >
-                    {configFormat.format(-5)}
-                  </IncrementButton>
-                )}
-                <IncrementButton
-                  onClick={() =>
-                    dispatch({
-                      type:
-                        type === LabelType.GroupPart
-                          ? ProportionChangeType.Ratio
-                          : ProportionChangeType.Linear,
-                      value: -1,
-                    })
-                  }
-                >
-                  {configFormat.format(-1)}
-                </IncrementButton>
-                {precise && (
-                  <IncrementButton
-                    onClick={() =>
-                      dispatch({
-                        type:
-                          type === LabelType.GroupPart
-                            ? ProportionChangeType.Ratio
-                            : ProportionChangeType.Linear,
-                        value: -0.5,
-                      })
-                    }
-                  >
-                    {configFormat.format(-0.5)}
-                  </IncrementButton>
-                )}
-              </div>
-              <div
-                className="flex flex-grow flex-col px-2"
-                onClick={() => {
-                  switch (type) {
-                    case LabelType.Bone: {
-                      if (!('bone' in props)) throw 'unreachable';
-                      dispatch({
-                        ...props,
-                        label,
-                        value,
-                        type: ProportionChangeType.Bone,
-                      });
-                      break;
-                    }
-                    case LabelType.Group: {
-                      if (!('bones' in props)) throw 'unreachable';
-                      dispatch({
-                        ...props,
-                        label,
-                        value,
-                        type: ProportionChangeType.Group,
-                      });
-                      break;
-                    }
-                    case LabelType.GroupPart: {
-                      if (!('index' in props)) throw 'unreachable';
-                      dispatch({
-                        ...props,
-                        label,
-                        value,
-                        type: ProportionChangeType.Group,
-                      });
-                    }
-                  }
-                }}
-              >
+          {bodyParts.map(({ label, type, value: originalValue, ...props }) => {
+            if(type === LabelType.Group) console.log(originalValue)
+            const value =
+              'index' in props && props.index !== undefined
+                ? props.bones[props.index].value
+                : originalValue;
+            return (
+              <div className="flex" key={label}>
                 <div
-                  key={label}
                   className={classNames(
-                    'p-3  rounded-lg h-16 flex w-full items-center justify-between px-6 transition-colors duration-300 bg-background-60',
-                    (currentSelection.label === label && 'opacity-100') ||
-                      'opacity-50'
+                    'flex gap-2 transition-opacity duration-300',
+                    currentSelection.label !== label &&
+                      'opacity-0 pointer-events-none'
                   )}
                 >
-                  <Typography variant="section-title" bold>
-                    {l10n.getString(label)}
-                  </Typography>
-                  <Typography variant="main-title" bold>
-                    {type === LabelType.GroupPart
-                      ? percentageFormat.format(value)
-                      : cmFormat.format(value * 100)}
-                  </Typography>
+                  {!precise && (
+                    <IncrementButton
+                      onClick={() =>
+                        type === LabelType.GroupPart
+                          ? dispatch({
+                              type: ProportionChangeType.Ratio,
+                              value: -0.05,
+                            })
+                          : dispatch({
+                              type: ProportionChangeType.Linear,
+                              value: -5,
+                            })
+                      }
+                    >
+                      {configFormat.format(-5)}
+                    </IncrementButton>
+                  )}
+                  <IncrementButton
+                    onClick={() =>
+                      type === LabelType.GroupPart
+                        ? dispatch({
+                            type: ProportionChangeType.Ratio,
+                            value: -0.01,
+                          })
+                        : dispatch({
+                            type: ProportionChangeType.Linear,
+                            value: -1,
+                          })
+                    }
+                  >
+                    {configFormat.format(-1)}
+                  </IncrementButton>
+                  {precise && (
+                    <IncrementButton
+                      onClick={() =>
+                        type === LabelType.GroupPart
+                          ? dispatch({
+                              type: ProportionChangeType.Ratio,
+                              value: -0.005,
+                            })
+                          : dispatch({
+                              type: ProportionChangeType.Linear,
+                              value: -0.5,
+                            })
+                      }
+                    >
+                      {configFormat.format(-0.5)}
+                    </IncrementButton>
+                  )}
+                </div>
+                <div
+                  className="flex flex-grow flex-col px-2"
+                  onClick={() => {
+                    switch (type) {
+                      case LabelType.Bone: {
+                        if (!('bone' in props)) throw 'unreachable';
+                        dispatch({
+                          ...props,
+                          label,
+                          value,
+                          type: ProportionChangeType.Bone,
+                        });
+                        break;
+                      }
+                      case LabelType.Group: {
+                        if (!('bones' in props)) throw 'unreachable';
+                        dispatch({
+                          ...props,
+                          label,
+                          value,
+                          type: ProportionChangeType.Group,
+                          index: undefined,
+                          parentLabel: label,
+                        });
+                        break;
+                      }
+                      case LabelType.GroupPart: {
+                        if (!('index' in props)) throw 'unreachable';
+                        dispatch({
+                          ...props,
+                          label,
+                          // If this isn't done, we are replacing total
+                          // with percentage value
+                          value: originalValue,
+                          type: ProportionChangeType.Group,
+                          index: props.index,
+                        });
+                      }
+                    }
+                  }}
+                >
+                  <div
+                    key={label}
+                    className={classNames(
+                      'p-3  rounded-lg h-16 flex w-full items-center justify-between px-6 transition-colors duration-300 bg-background-60',
+                      (currentSelection.label === label && 'opacity-100') ||
+                        'opacity-50'
+                    )}
+                  >
+                    <Typography variant="section-title" bold>
+                      {l10n.getString(label)}
+                    </Typography>
+                    <Typography variant="main-title" bold>
+                      {type === LabelType.GroupPart
+                        ? percentageFormat.format(value)
+                        : cmFormat.format(value * 100)}
+                    </Typography>
+                  </div>
+                </div>
+                <div
+                  className={classNames(
+                    'flex gap-2 transition-opacity duration-300',
+                    currentSelection.label !== label &&
+                      'opacity-0 pointer-events-none'
+                  )}
+                >
+                  {precise && (
+                    <IncrementButton
+                      onClick={() =>
+                        type === LabelType.GroupPart
+                          ? dispatch({
+                              type: ProportionChangeType.Ratio,
+                              value: 0.005,
+                            })
+                          : dispatch({
+                              type: ProportionChangeType.Linear,
+                              value: 0.5,
+                            })
+                      }
+                    >
+                      {configFormat.format(+0.5)}
+                    </IncrementButton>
+                  )}
+                  <IncrementButton
+                    onClick={() =>
+                      type === LabelType.GroupPart
+                        ? dispatch({
+                            type: ProportionChangeType.Ratio,
+                            value: 0.01,
+                          })
+                        : dispatch({
+                            type: ProportionChangeType.Linear,
+                            value: 1,
+                          })
+                    }
+                  >
+                    {configFormat.format(+1)}
+                  </IncrementButton>
+                  {!precise && (
+                    <IncrementButton
+                      onClick={() =>
+                        type === LabelType.GroupPart
+                          ? dispatch({
+                              type: ProportionChangeType.Ratio,
+                              value: 0.05,
+                            })
+                          : dispatch({
+                              type: ProportionChangeType.Linear,
+                              value: 5,
+                            })
+                      }
+                    >
+                      {configFormat.format(+5)}
+                    </IncrementButton>
+                  )}
                 </div>
               </div>
-              <div
-                className={classNames(
-                  'flex gap-2 transition-opacity duration-300',
-                  currentSelection.label !== label &&
-                    'opacity-0 pointer-events-none'
-                )}
-              >
-                {precise && (
-                  <IncrementButton
-                    onClick={() =>
-                      dispatch({
-                        type:
-                          type === LabelType.GroupPart
-                            ? ProportionChangeType.Ratio
-                            : ProportionChangeType.Linear,
-                        value: 0.5,
-                      })
-                    }
-                  >
-                    {configFormat.format(+0.5)}
-                  </IncrementButton>
-                )}
-                <IncrementButton
-                  onClick={() =>
-                    dispatch({
-                      type:
-                        type === LabelType.GroupPart
-                          ? ProportionChangeType.Ratio
-                          : ProportionChangeType.Linear,
-                      value: 1,
-                    })
-                  }
-                >
-                  {configFormat.format(+1)}
-                </IncrementButton>
-                {!precise && (
-                  <IncrementButton
-                    onClick={() =>
-                      dispatch({
-                        type:
-                          type === LabelType.GroupPart
-                            ? ProportionChangeType.Ratio
-                            : ProportionChangeType.Linear,
-                        value: 5,
-                      })
-                    }
-                  >
-                    {configFormat.format(+5)}
-                  </IncrementButton>
-                )}
-              </div>
-            </div>
-          ))}
+            );
+          })}
         </>
       </div>
     </div>

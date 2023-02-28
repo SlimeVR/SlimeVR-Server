@@ -50,6 +50,7 @@ export interface GroupChange {
   value: number;
   label: string;
   index?: number;
+  parentLabel: string;
 }
 
 export type ProportionState = BoneState | GroupState;
@@ -78,6 +79,7 @@ export interface GroupState {
   value: number;
   label: string;
   index?: number;
+  parentLabel: string;
 }
 
 function reducer(state: ProportionState, action: ProportionChange): ProportionState {
@@ -112,17 +114,17 @@ function reducer(state: ProportionState, action: ProportionChange): ProportionSt
 
     case ProportionChangeType.Ratio: {
       if (state.type === BoneType.Single || state.index === undefined) {
-        throw new Error(`Unexpected increase of bone ${state}`);
+        throw new Error(`Unexpected increase of bone ${state.label}`);
       }
 
-      const newState = { ...state };
+      const newState: GroupState = JSON.parse(JSON.stringify(state));
       if (newState.index === undefined) throw 'unreachable';
       newState.bones[newState.index].value += action.value;
       const filtered = newState.bones.filter((_it, index) => newState.index !== index);
       const total = filtered.reduce((acc, cur) => acc + cur.value, 0);
 
       for (const part of filtered) {
-        part.value += (part.value / total) * action.value;
+        part.value += (part.value / total) * action.value * -1
       }
 
       return newState;
@@ -159,10 +161,21 @@ export interface GroupLabel {
   label: string;
 }
 
-export type GroupPartLabel = {
+export interface GroupPartLabel {
   type: LabelType.GroupPart;
+  bones: {
+    bone: SkeletonBone;
+    /**
+     * This is a number between 0 and 1 [0; 1]
+     */
+    value: number;
+    label: string;
+  }[];
+  value: number;
+  label: string;
+  parentLabel: string;
   index: number;
-} & Omit<GroupLabel, 'type'>;
+}
 
 const BONE_MAPPING: Map<string, SkeletonBone[]> = new Map([
   [
@@ -201,6 +214,7 @@ export function useManualProportions(): [
         const total = children.reduce((acc, cur) => cur.value + acc, 0);
 
         const group: GroupPartLabel = {
+          parentLabel: label,
           label,
           type: LabelType.GroupPart,
           value: total,
@@ -215,11 +229,12 @@ export function useManualProportions(): [
           ...children.map((_it, index) => ({
             ...group,
             index,
+            label: group.bones[index].label,
           }))
         );
       }
 
-      config.skeletonParts.flatMap(({ bone, value }) => {
+      return config.skeletonParts.flatMap(({ bone, value }) => {
         const part = groups.find((it) => it.bones[it.index].bone === bone);
         if (part === undefined) {
           return {
@@ -230,8 +245,22 @@ export function useManualProportions(): [
           };
         }
 
+        if (part.index === 0) {
+          return [
+            // For some reason, Typescript can't handle this being a GroupPart
+            // when specifically inside an array. If I directly return it without part,
+            // it will work. Surely some typing in flatMap's definition is wrong
+            {
+              ...part,
+              type: LabelType.Group,
+              label: part.parentLabel,
+              index: undefined,
+            } as unknown as GroupPartLabel,
+            part,
+          ];
+        }
+        return part;
       });
-      return [];
     }
 
     return config.skeletonParts.map(({ bone, value }) => ({
@@ -273,17 +302,19 @@ export function useManualProportions(): [
       b.value = state.value;
     } else {
       const part = bodyParts.find(
-        (it) => it.type === LabelType.Group && it.label === state.label
+        (it) =>
+          it.type === LabelType.Group &&
+          (it.label === state.label || it.label === state.parentLabel)
       ) as GroupLabel | undefined;
 
       // Check if we found the group we were looking for
       // and check if it even changed of value
       // we only need to check one child because changing one
       // value propagates to the other children
+
       if (
         !part ||
-        part.value === state.value ||
-        part.bones[0].value === state.bones[0].value
+        (part.value === state.value && part.bones[0].value === state.bones[0].value)
       ) {
         return;
       }
@@ -296,7 +327,7 @@ export function useManualProportions(): [
 
         const b = conf?.skeletonParts?.find(({ bone }) => bone === child.bone);
         if (!b || !conf) return;
-        b.value = state.value;
+        b.value = state.value * child.value;
       }
     }
 
