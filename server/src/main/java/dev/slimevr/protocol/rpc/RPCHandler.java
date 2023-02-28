@@ -221,6 +221,7 @@ public class RPCHandler extends ProtocolHandler<RpcMessageHeader>
 		if (req.mountingOrientation() != null) {
 			if (tracker.getNeedsMounting()) {
 				tracker
+					.getResetsHandler()
 					.setMountingOrientation(
 						new Quaternion(
 							req.mountingOrientation().w(),
@@ -237,7 +238,7 @@ public class RPCHandler extends ProtocolHandler<RpcMessageHeader>
 		}
 
 		if (tracker.isImu()) {
-			tracker.setAllowDriftCompensation(req.allowDriftCompensation());
+			tracker.getResetsHandler().setAllowDriftCompensation(req.allowDriftCompensation());
 		}
 
 		this.api.server.trackerUpdated(tracker);

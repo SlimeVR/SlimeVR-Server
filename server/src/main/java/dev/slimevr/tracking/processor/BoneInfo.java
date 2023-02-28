@@ -1,5 +1,8 @@
 package dev.slimevr.tracking.processor;
 
+import com.jme3.math.FastMath;
+import io.github.axisangles.ktmath.EulerAngles;
+import io.github.axisangles.ktmath.EulerOrder;
 import io.github.axisangles.ktmath.Quaternion;
 import io.github.axisangles.ktmath.Vector3;
 
@@ -13,8 +16,12 @@ public class BoneInfo {
 	public final TransformNode headNode;
 	public final TransformNode tailNode;
 	public float length;
-	private static final Quaternion FOOT_OFFSET = Quaternion.Companion
-		.fromRotationVector(1f, 0f, 0f) // TODO does this worK?
+	private static final Quaternion FOOT_OFFSET = new EulerAngles(
+		EulerOrder.YZX,
+		0f,
+		FastMath.HALF_PI,
+		0f
+	).toQuaternion();
 
 	/**
 	 * Creates a `BoneInfo`. We use `tailNode` because the length of the bone

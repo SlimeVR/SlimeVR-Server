@@ -1,9 +1,8 @@
 package dev.slimevr.tracking.processor.skeleton;
 
-import java.util.LinkedList;
-import com.jme3.math.Vector3f;
+import dev.slimevr.tracking.trackers.Tracker;
 
-import dev.slimevr.tracking.trackers.TrackerJava;
+import java.util.LinkedList;
 
 
 // class that monitors the acceleration of the waist, hip, or chest trackers to detect taps
@@ -12,13 +11,13 @@ import dev.slimevr.tracking.trackers.TrackerJava;
 public class TapDetection {
 
 	// server and related classes
-	private HumanSkeleton skeleton;
+	private final HumanSkeleton skeleton;
 
 	// tap detection
 	private boolean enabled = false;
-	private LinkedList<float[]> accelList = new LinkedList<>();
-	private LinkedList<Float> tapTimes = new LinkedList<>();
-	private TrackerJava trackerToWatch = null;
+	private final LinkedList<float[]> accelList = new LinkedList<>();
+	private final LinkedList<Float> tapTimes = new LinkedList<>();
+	private Tracker trackerToWatch = null;
 	private int numberTrackersOverThreshold = 1;
 
 	// hyperparameters
@@ -40,7 +39,7 @@ public class TapDetection {
 
 	public TapDetection(
 		HumanSkeleton skeleton,
-		TrackerJava trackerToWatch
+		Tracker trackerToWatch
 	) {
 		this.skeleton = skeleton;
 		this.trackerToWatch = trackerToWatch;
@@ -55,7 +54,7 @@ public class TapDetection {
 	}
 
 	// set the tracker to watch and detect taps on
-	public void setTrackerToWatch(TrackerJava tracker) {
+	public void setTrackerToWatch(Tracker tracker) {
 		trackerToWatch = tracker;
 	}
 
@@ -92,10 +91,8 @@ public class TapDetection {
 			return;
 
 		// get the acceleration of the tracker and add it to the list
-		Vector3f accel = new Vector3f();
-		trackerToWatch.getAcceleration(accel);
 		float time = System.nanoTime();
-		float[] listval = { accel.length(), time };
+		float[] listval = { trackerToWatch.getAcceleration().len(), time };
 		accelList.add(listval);
 
 		// remove old values from the list (if they are too old)
@@ -144,8 +141,7 @@ public class TapDetection {
 	private float getAccelDelta() {
 		float max = -999.9f;
 		float min = 999.9f;
-		for (int i = 0; i < accelList.size(); i++) {
-			float[] val = accelList.get(i);
+		for (float[] val : accelList) {
 			if (val[0] > max)
 				max = val[0];
 			if (val[0] < min)
@@ -161,10 +157,10 @@ public class TapDetection {
 
 		int tapEvents = 1;
 		float lastTapTime = tapTimes.getFirst();
-		for (int i = 0; i < tapTimes.size(); i++) {
-			if (tapTimes.get(i) - lastTapTime > CLUMP_TIME_NS) {
+		for (Float tapTime : tapTimes) {
+			if (tapTime - lastTapTime > CLUMP_TIME_NS) {
 				tapEvents++;
-				lastTapTime = tapTimes.get(i);
+				lastTapTime = tapTime;
 			}
 		}
 		return tapEvents;
@@ -173,52 +169,44 @@ public class TapDetection {
 	// returns true if the user is not imparting more than allowedBodyAccel of
 	// force on any of the torso or upper leg trackers (this sadly implies that
 	// you need two or more trackers for this feature to be reliable)
-	private boolean isUserStatic(TrackerJava trackerToExclude) {
-		Vector3f accel = new Vector3f();
+	private boolean isUserStatic(Tracker trackerToExclude) {
 		int num = 0;
 		if (skeleton.chestTracker != null && !skeleton.chestTracker.equals(trackerToExclude)) {
-			skeleton.chestTracker.getAcceleration(accel);
-			if (accel.lengthSquared() > ALLOWED_BODY_ACCEL_SQUARED)
+			if (skeleton.chestTracker.getAcceleration().lenSq() > ALLOWED_BODY_ACCEL_SQUARED)
 				num++;
 		}
 		if (skeleton.hipTracker != null && !skeleton.hipTracker.equals(trackerToExclude)) {
-			skeleton.hipTracker.getAcceleration(accel);
-			if (accel.lengthSquared() > ALLOWED_BODY_ACCEL_SQUARED)
+			if (skeleton.hipTracker.getAcceleration().lenSq() > ALLOWED_BODY_ACCEL_SQUARED)
 				num++;
 		}
 		if (skeleton.waistTracker != null && !skeleton.waistTracker.equals(trackerToExclude)) {
-			skeleton.waistTracker.getAcceleration(accel);
-			if (accel.lengthSquared() > ALLOWED_BODY_ACCEL_SQUARED)
+			if (skeleton.waistTracker.getAcceleration().lenSq() > ALLOWED_BODY_ACCEL_SQUARED)
 				num++;
 		}
 		if (
 			skeleton.leftUpperLegTracker != null
 				&& !skeleton.leftUpperLegTracker.equals(trackerToExclude)
 		) {
-			skeleton.leftUpperLegTracker.getAcceleration(accel);
-			if (accel.lengthSquared() > ALLOWED_BODY_ACCEL_SQUARED)
+			if (skeleton.leftUpperLegTracker.getAcceleration().lenSq() > ALLOWED_BODY_ACCEL_SQUARED)
 				num++;
 		}
 		if (
 			skeleton.rightUpperLegTracker != null
 				&& !skeleton.rightUpperLegTracker.equals(trackerToExclude)
 		) {
-			skeleton.rightUpperLegTracker.getAcceleration(accel);
-			if (accel.lengthSquared() > ALLOWED_BODY_ACCEL_SQUARED)
+			if (skeleton.rightUpperLegTracker.getAcceleration().lenSq() > ALLOWED_BODY_ACCEL_SQUARED)
 				num++;
 		}
 		if (
 			skeleton.leftFootTracker != null && !skeleton.leftFootTracker.equals(trackerToExclude)
 		) {
-			skeleton.leftFootTracker.getAcceleration(accel);
-			if (accel.lengthSquared() > ALLOWED_BODY_ACCEL_SQUARED)
+			if (skeleton.leftFootTracker.getAcceleration().lenSq() > ALLOWED_BODY_ACCEL_SQUARED)
 				num++;
 		}
 		if (
 			skeleton.rightFootTracker != null && !skeleton.rightFootTracker.equals(trackerToExclude)
 		) {
-			skeleton.rightFootTracker.getAcceleration(accel);
-			if (accel.lengthSquared() > ALLOWED_BODY_ACCEL_SQUARED)
+			if (skeleton.rightFootTracker.getAcceleration().lenSq() > ALLOWED_BODY_ACCEL_SQUARED)
 				num++;
 		}
 		return num < numberTrackersOverThreshold;

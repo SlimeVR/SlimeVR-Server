@@ -1,7 +1,5 @@
 package dev.slimevr.platform.windows;
 
-import com.jme3.math.Quaternion;
-import com.jme3.math.Vector3f;
 import com.sun.jna.platform.win32.Kernel32;
 import com.sun.jna.platform.win32.WinBase;
 import com.sun.jna.platform.win32.WinNT.HANDLE;
@@ -9,9 +7,13 @@ import com.sun.jna.ptr.IntByReference;
 import dev.slimevr.VRServer;
 import dev.slimevr.bridge.Bridge;
 import dev.slimevr.bridge.PipeState;
-import dev.slimevr.tracking.trackers.*;
+import dev.slimevr.tracking.trackers.Tracker;
+import dev.slimevr.tracking.trackers.TrackerPosition;
+import dev.slimevr.tracking.trackers.TrackerStatus;
 import io.eiren.util.collections.FastList;
 import io.eiren.util.logging.LogManager;
+import io.github.axisangles.ktmath.Quaternion;
+import io.github.axisangles.ktmath.Vector3;
 
 import java.io.IOException;
 import java.nio.charset.Charset;
@@ -29,32 +31,45 @@ public class WindowsNamedPipeVRBridge extends Thread implements Bridge {
 	private final byte[] buffArray = new byte[1024];
 	private final StringBuilder commandBuilder = new StringBuilder(1024);
 	private final StringBuilder sbBuffer = new StringBuilder(1024);
-	private final Vector3f vBuffer = new Vector3f();
-	private final Vector3f vBuffer2 = new Vector3f();
-	private final Quaternion qBuffer = new Quaternion();
-	private final Quaternion qBuffer2 = new Quaternion();
-	private final HMDTracker hmd;
+	private final Tracker hmd;
 	private final List<WindowsPipe> trackerPipes;
-	private final List<? extends TrackerJava> shareTrackers;
-	private final List<ComputedTracker> internalTrackers;
-	private final HMDTracker internalHMDTracker = new HMDTracker("internal://HMD");
+	private final List<Tracker> computedTrackers;
+	private final List<Tracker> internalTrackers;
+	private final Tracker internalHMDTracker = new Tracker(
+		null,
+		0,
+		"internal://HMD",
+		TrackerPosition.HEAD,
+		true,
+		true,
+		false,
+		false,
+		true,
+		true
+	);
 	private final AtomicBoolean newHMDData = new AtomicBoolean(false);
 	private WindowsPipe hmdPipe;
 
 	public WindowsNamedPipeVRBridge(
-		HMDTracker hmd,
-		List<? extends TrackerJava> shareTrackers,
+		Tracker hmd,
+		List<Tracker> computedTrackers,
 		VRServer server
 	) {
 		super("Named Pipe VR Bridge");
 		this.hmd = hmd;
-		this.shareTrackers = new FastList<>(shareTrackers);
-		this.trackerPipes = new FastList<>(shareTrackers.size());
-		this.internalTrackers = new FastList<>(shareTrackers.size());
-		for (TrackerJava t : shareTrackers) {
-			ComputedTracker ct = new ComputedTracker(
-				t.getTrackerId(),
+		this.computedTrackers = new FastList<>(computedTrackers);
+		this.trackerPipes = new FastList<>(computedTrackers.size());
+		this.internalTrackers = new FastList<>(computedTrackers.size());
+		for (Tracker t : computedTrackers) {
+			Tracker ct = new Tracker(
+				null,
+				t.getId(),
 				"internal://" + t.getName(),
+				null,
+				true,
+				true,
+				false,
+				false,
 				true,
 				true
 			);
@@ -95,21 +110,19 @@ public class WindowsNamedPipeVRBridge extends Thread implements Bridge {
 	@Override
 	public void dataRead() {
 		if (newHMDData.compareAndSet(true, false)) {
-			hmd.position.set(internalHMDTracker.position);
-			hmd.rotation.set(internalHMDTracker.rotation);
+			hmd.setPosition(internalHMDTracker.getPosition());
+			hmd.setRotation(internalHMDTracker.getRotation());
 			hmd.dataTick();
 		}
 	}
 
 	@Override
 	public void dataWrite() {
-		for (int i = 0; i < shareTrackers.size(); ++i) {
-			TrackerJava t = shareTrackers.get(i);
-			ComputedTracker it = this.internalTrackers.get(i);
-			if (t.getPosition(vBuffer2))
-				it.position.set(vBuffer2);
-			if (t.getRotation(qBuffer2))
-				it.rotation.set(qBuffer2);
+		for (int i = 0; i < computedTrackers.size(); ++i) {
+			Tracker t = computedTrackers.get(i);
+			Tracker it = this.internalTrackers.get(i);
+			it.setPosition(t.getPosition());
+			it.setRotation(t.getRotation());
 		}
 	}
 
@@ -187,8 +200,8 @@ public class WindowsNamedPipeVRBridge extends Thread implements Bridge {
 			double qy = Double.parseDouble(split[5]);
 			double qz = Double.parseDouble(split[6]);
 
-			internalHMDTracker.position.set((float) x, (float) y, (float) z);
-			internalHMDTracker.rotation.set((float) qx, (float) qy, (float) qz, (float) qw);
+			internalHMDTracker.setPosition(new Vector3((float) x, (float) y, (float) z));
+			internalHMDTracker.setRotation(new Quaternion((float) qw, (float) qx, (float) qy, (float) qz));
 			internalHMDTracker.dataTick();
 			newHMDData.set(true);
 		} catch (NumberFormatException e) {
@@ -197,28 +210,28 @@ public class WindowsNamedPipeVRBridge extends Thread implements Bridge {
 	}
 
 	public void updateTracker(int trackerId, boolean hmdUpdated) {
-		TrackerJava sensor = internalTrackers.get(trackerId);
+		Tracker sensor = internalTrackers.get(trackerId);
 		if (sensor.getStatus().getSendData()) {
 			WindowsPipe trackerPipe = trackerPipes.get(trackerId);
 			if (hmdUpdated && trackerPipe.state == PipeState.OPEN) {
 				sbBuffer.setLength(0);
-				sensor.getPosition(vBuffer);
-				sensor.getRotation(qBuffer);
+				Vector3 sensorPos = sensor.getPosition();
+				Quaternion sensorRot = sensor.getRotation();
 				sbBuffer
-					.append(vBuffer.x)
+					.append(sensorPos.getX())
 					.append(' ')
-					.append(vBuffer.y)
+					.append(sensorPos.getY())
 					.append(' ')
-					.append(vBuffer.z)
+					.append(sensorPos.getZ())
 					.append(' ');
 				sbBuffer
-					.append(qBuffer.getW())
+					.append(sensorRot.getW())
 					.append(' ')
-					.append(qBuffer.getX())
+					.append(sensorRot.getX())
 					.append(' ')
-					.append(qBuffer.getY())
+					.append(sensorRot.getY())
 					.append(' ')
-					.append(qBuffer.getZ())
+					.append(sensorRot.getZ())
 					.append('\n');
 				String str = sbBuffer.toString();
 				System.arraycopy(str.getBytes(ASCII), 0, buffArray, 0, str.length());
@@ -241,7 +254,7 @@ public class WindowsNamedPipeVRBridge extends Thread implements Bridge {
 	}
 
 	private void initTrackerPipe(WindowsPipe pipe, int trackerId) {
-		String trackerHello = this.shareTrackers.size() + " 0";
+		String trackerHello = this.computedTrackers.size() + " 0";
 		System.arraycopy(trackerHello.getBytes(ASCII), 0, buffArray, 0, trackerHello.length());
 		buffArray[trackerHello.length()] = '\0';
 		IntByReference lpNumberOfBytesWritten = new IntByReference(0);
@@ -305,7 +318,7 @@ public class WindowsNamedPipeVRBridge extends Thread implements Bridge {
 				throw new IOException(
 					"Can't open " + HMDPipeName + " pipe: " + Kernel32.INSTANCE.GetLastError()
 				);
-			for (int i = 0; i < this.shareTrackers.size(); ++i) {
+			for (int i = 0; i < this.computedTrackers.size(); ++i) {
 				String pipeName = TrackersPipeName + i;
 				HANDLE pipeHandle = Kernel32.INSTANCE
 					.CreateNamedPipe(

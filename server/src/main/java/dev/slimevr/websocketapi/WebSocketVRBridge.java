@@ -22,7 +22,7 @@ import java.util.concurrent.atomic.AtomicBoolean;
 public class WebSocketVRBridge extends WebsocketAPI implements Bridge {
 	private static final String resetSourceName = "WebSocketVRBridge";
 	private final Tracker hmd;
-	private final List<Tracker> shareTrackers;
+	private final List<Tracker> computedTrackers;
 	private final List<Tracker> internalTrackers;
 	private final AtomicBoolean newHMDData = new AtomicBoolean(false);
 	private final ObjectMapper mapper = new ObjectMapper();
@@ -41,14 +41,14 @@ public class WebSocketVRBridge extends WebsocketAPI implements Bridge {
 
 	public WebSocketVRBridge(
 		Tracker hmd,
-		List<Tracker> shareTrackers,
+		List<Tracker> computedTrackers,
 		VRServer server
 	) {
 		super(server, server.getProtocolAPI());
 		this.hmd = hmd;
-		this.shareTrackers = new FastList<>(shareTrackers);
-		this.internalTrackers = new FastList<>(shareTrackers.size());
-		for (Tracker t : shareTrackers) {
+		this.computedTrackers = new FastList<>(computedTrackers);
+		this.internalTrackers = new FastList<>(computedTrackers.size());
+		for (Tracker t : computedTrackers) {
 			Tracker ct = new Tracker(
 				null,
 				t.getId(),
@@ -76,8 +76,8 @@ public class WebSocketVRBridge extends WebsocketAPI implements Bridge {
 
 	@Override
 	public void dataWrite() {
-		for (int i = 0; i < shareTrackers.size(); ++i) {
-			Tracker t = shareTrackers.get(i);
+		for (int i = 0; i < computedTrackers.size(); ++i) {
+			Tracker t = computedTrackers.get(i);
 			Tracker it = this.internalTrackers.get(i);
 			if (t.getHasPosition())
 				it.setPosition(t.getPosition());
@@ -97,7 +97,7 @@ public class WebSocketVRBridge extends WebsocketAPI implements Bridge {
 			message
 				.put(
 					"location",
-					shareTrackers.get(i).getTrackerPosition().getTrackerRole().name().toLowerCase()
+					computedTrackers.get(i).getTrackerPosition().getTrackerRole().name().toLowerCase()
 				);
 			message.put("tracker_type", message.get("location").asText());
 			conn.send(message.toString());

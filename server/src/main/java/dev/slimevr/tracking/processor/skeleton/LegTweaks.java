@@ -5,6 +5,7 @@ import com.jme3.math.Quaternion;
 import com.jme3.math.Vector3f;
 import dev.slimevr.config.LegTweaksConfig;
 import dev.slimevr.tracking.processor.TransformNode;
+import io.github.axisangles.ktmath.Vector3;
 
 
 public class LegTweaks {
@@ -26,22 +27,22 @@ public class LegTweaks {
 	private LegTweaksConfig config;
 
 	// leg data
-	private Vector3f leftFootPosition = new Vector3f();
-	private Vector3f rightFootPosition = new Vector3f();
-	private Vector3f leftKneePosition = new Vector3f();
-	private Vector3f rightKneePosition = new Vector3f();
-	private Vector3f waistPosition = new Vector3f();
+	private Vector3 leftFootPosition = new Vector3(0f ,0f,0f);
+	private Vector3 rightFootPosition = new Vector3(0f ,0f,0f);
+	private Vector3 leftKneePosition = new Vector3(0f ,0f,0f);
+	private Vector3 rightKneePosition = new Vector3(0f ,0f,0f);
+	private Vector3 waistPosition = new Vector3(0f ,0f,0f);
 	private Quaternion leftFootRotation = new Quaternion();
 	private Quaternion rightFootRotation = new Quaternion();
 
-	private Vector3f leftFootAcceleration = new Vector3f();
-	private Vector3f rightFootAcceleration = new Vector3f();
-	private Vector3f leftLowerLegAcceleration = new Vector3f();
-	private Vector3f rightLowerLegAcceleration = new Vector3f();
+	private Vector3 leftFootAcceleration = new Vector3(0f ,0f,0f);
+	private Vector3 rightFootAcceleration = new Vector3(0f ,0f,0f);
+	private Vector3 leftLowerLegAcceleration = new Vector3(0f ,0f,0f);
+	private Vector3 rightLowerLegAcceleration = new Vector3(0f ,0f,0f);
 
 	// knee placeholder
-	private Vector3f leftKneePlaceholder = new Vector3f();
-	private Vector3f rightKneePlaceholder = new Vector3f();
+	private Vector3 leftKneePlaceholder = new Vector3(0f ,0f,0f);
+	private Vector3 rightKneePlaceholder = new Vector3(0f ,0f,0f);
 	private boolean kneesActive = false;
 
 	/**
@@ -250,7 +251,7 @@ public class LegTweaks {
 		// positions
 		if (skeleton.computedLeftKneeTracker != null || skeleton.computedRightKneeTracker != null) {
 			kneesActive = true;
-			leftKneePosition = skeleton.computedLeftKneeTracker.position;
+			leftKneePosition = skeleton.computedLeftKneeTracker.getPosition();
 			rightKneePosition = skeleton.computedRightKneeTracker.position;
 		} else {
 			kneesActive = false;
@@ -406,14 +407,14 @@ public class LegTweaks {
 		// determine if either leg is in a position to activate or deactivate
 		// (use the buffer to get the positions before corrections)
 		float leftFootDif = bufferHead
-			.getLeftFootPosition(null)
+			.getLeftFootPosition()
 			.subtract(leftFootPosition)
 			.setX(0)
 			.setZ(0)
 			.length();
 
 		float rightFootDif = bufferHead
-			.getRightFootPosition(null)
+			.getRightFootPosition()
 			.subtract(rightFootPosition)
 			.setX(0)
 			.setZ(0)
@@ -812,21 +813,6 @@ public class LegTweaks {
 	// calculate the center of mass of the user for the current frame
 	// returns a vector representing the center of mass position
 	private Vector3f computeCenterOfMass() {
-		// perform a check to see if the needed data is available
-		if (
-			skeleton.headNode == null
-				|| skeleton.chestNode == null
-				|| skeleton.waistNode == null
-				|| skeleton.leftFootNode == null
-				|| skeleton.rightFootNode == null
-				|| skeleton.leftKneeNode == null
-				|| skeleton.rightKneeNode == null
-				|| skeleton.leftHipNode == null
-				|| skeleton.rightHipNode == null
-		) {
-			return null;
-		}
-
 		// check if arm data is available
 		boolean armsAvailable = skeleton.hasLeftArmTracker
 			&& skeleton.hasRightArmTracker;
@@ -835,13 +821,13 @@ public class LegTweaks {
 
 		// compute the center of mass of smaller body parts and then sum them up
 		// with their respective weights
-		Vector3f head = skeleton.headNode.worldTransform.getTranslation();
-		Vector3f chest = skeleton.chestNode.worldTransform.getTranslation();
-		Vector3f waist = skeleton.waistNode.worldTransform.getTranslation();
-		Vector3f leftCalf = getCenterOfJoint(skeleton.leftAnkleNode, skeleton.leftKneeNode);
-		Vector3f rightCalf = getCenterOfJoint(skeleton.rightAnkleNode, skeleton.rightKneeNode);
-		Vector3f leftThigh = getCenterOfJoint(skeleton.leftKneeNode, skeleton.leftHipNode);
-		Vector3f rightThigh = getCenterOfJoint(skeleton.rightKneeNode, skeleton.rightHipNode);
+		Vector3 head = skeleton.headNode.getWorldTransform().getTranslation();
+		Vector3 chest = skeleton.chestNode.getWorldTransform().getTranslation();
+		Vector3 waist = skeleton.waistNode.getWorldTransform().getTranslation();
+		Vector3 leftCalf = getCenterOfJoint(skeleton.leftAnkleNode, skeleton.leftKneeNode);
+		Vector3 rightCalf = getCenterOfJoint(skeleton.rightAnkleNode, skeleton.rightKneeNode);
+		Vector3 leftThigh = getCenterOfJoint(skeleton.leftKneeNode, skeleton.leftHipNode);
+		Vector3 rightThigh = getCenterOfJoint(skeleton.rightKneeNode, skeleton.rightHipNode);
 		centerOfMass = centerOfMass.add(head.mult(HEAD_MASS));
 		centerOfMass = centerOfMass.add(chest.mult(CHEST_MASS));
 		centerOfMass = centerOfMass.add(waist.mult(WAIST_MASS));
@@ -889,11 +875,11 @@ public class LegTweaks {
 	}
 
 	// get the center of two joints
-	private Vector3f getCenterOfJoint(TransformNode node1, TransformNode node2) {
-		return node1.worldTransform
-			.getTranslation(null)
-			.add(node2.worldTransform.getTranslation(null))
-			.mult(0.5f);
+	private Vector3 getCenterOfJoint(TransformNode node1, TransformNode node2) {
+		return node1.getWorldTransform()
+			.getTranslation()
+			.plus(node2.getWorldTransform().getTranslation())
+			.times(0.5f);
 	}
 
 	// get the amount of the constant correction to apply.

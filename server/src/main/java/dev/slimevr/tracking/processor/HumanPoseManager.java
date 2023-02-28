@@ -595,7 +595,7 @@ public class HumanPoseManager {
 			skeleton.resetTrackersFull(resetSourceName);
 			if (server != null) {
 				server.getVrcOSCHandler().yawAlign();
-				server.getVMCHandler().alignVMCTracking(getRootNode().worldTransform.getRotation());
+				server.getVMCHandler().alignVMCTracking(getRootNode().getWorldTransform().getRotation());
 			}
 		}
 	}
@@ -612,7 +612,7 @@ public class HumanPoseManager {
 			skeleton.resetTrackersYaw(resetSourceName);
 			if (server != null) {
 				server.getVrcOSCHandler().yawAlign();
-				server.getVMCHandler().alignVMCTracking(getRootNode().worldTransform.getRotation());
+				server.getVMCHandler().alignVMCTracking(getRootNode().getWorldTransform().getRotation());
 			}
 		}
 	}

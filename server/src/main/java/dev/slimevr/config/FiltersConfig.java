@@ -19,7 +19,7 @@ public class FiltersConfig {
 	public void updateTrackersFilters() {
 		for (Tracker tracker : Main.getVrServer().getAllTrackers()) {
 			if (tracker.getNeedsFiltering()) {
-				tracker.setFiltering(enumGetType(), getAmount());
+				tracker.getFilteringHandler().setFiltering(enumGetType(), getAmount());
 			}
 		}
 	}

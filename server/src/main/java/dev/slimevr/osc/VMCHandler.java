@@ -4,18 +4,17 @@ import com.illposed.osc.*;
 import com.illposed.osc.messageselector.OSCPatternAddressMessageSelector;
 import com.illposed.osc.transport.OSCPortIn;
 import com.illposed.osc.transport.OSCPortOut;
-import com.jme3.math.Quaternion;
-import com.jme3.math.Vector3f;
 import dev.slimevr.VRServer;
 import dev.slimevr.autobone.errors.BodyProportionError;
 import dev.slimevr.config.VMCConfig;
 import dev.slimevr.tracking.processor.BoneType;
 import dev.slimevr.tracking.processor.HumanPoseManager;
 import dev.slimevr.tracking.processor.TransformNode;
-import dev.slimevr.tracking.processor.skeleton.UnityArmature;
 import dev.slimevr.tracking.trackers.*;
 import io.eiren.util.collections.FastList;
 import io.eiren.util.logging.LogManager;
+import io.github.axisangles.ktmath.Quaternion;
+import io.github.axisangles.ktmath.Vector3;
 
 import java.io.IOException;
 import java.net.InetAddress;
@@ -39,11 +38,9 @@ public class VMCHandler implements OSCHandler {
 	private final HumanPoseManager humanPoseManager;
 	private final List<Tracker> computedTrackers;
 	private final FastList<Object> oscArgs = new FastList<>();
-	private final Vector3f vecBuf = new Vector3f();
-	private final Quaternion quatBuf = new Quaternion();
 	private final long startTime;
 	private final Map<String, VRTracker> byTrackerNameTracker = new HashMap<>();
-	private final Quaternion yawOffset = new Quaternion();
+	private final Quaternion yawOffset = Quaternion.Companion.getIDENTITY();
 	private UnityArmature inputUnityArmature;
 	private UnityArmature outputUnityArmature;
 	private float vrmHeight;
@@ -220,16 +217,16 @@ public class VMCHandler implements OSCHandler {
 				handleReceivedTracker(
 					"VMC-Tracker-" + event.getMessage().getArguments().get(0),
 					null,
-					new Vector3f(
+					new Vector3(
 						(float) event.getMessage().getArguments().get(1),
 						(float) event.getMessage().getArguments().get(2),
 						-((float) event.getMessage().getArguments().get(3))
 					),
 					new Quaternion(
+						-((float) event.getMessage().getArguments().get(7)),
 						(float) event.getMessage().getArguments().get(4),
 						(float) event.getMessage().getArguments().get(5),
-						-((float) event.getMessage().getArguments().get(6)),
-						-((float) event.getMessage().getArguments().get(7))
+						-((float) event.getMessage().getArguments().get(6))
 					),
 					false,
 					null
@@ -240,7 +237,7 @@ public class VMCHandler implements OSCHandler {
 				if (inputUnityArmature != null) {
 					inputUnityArmature
 						.setRootPose(
-							new Vector3f(
+							new Vector3(
 								(float) event.getMessage().getArguments().get(1),
 								(float) event.getMessage().getArguments().get(2),
 								-((float) event.getMessage().getArguments().get(3))
@@ -260,7 +257,7 @@ public class VMCHandler implements OSCHandler {
 	private void handleReceivedTracker(
 		String name,
 		TrackerPosition trackerPosition,
-		Vector3f position,
+		Vector3 position,
 		Quaternion rotation,
 		boolean localRotation,
 		UnityBone unityBone
@@ -304,9 +301,9 @@ public class VMCHandler implements OSCHandler {
 				if (inputUnityArmature == null)
 					inputUnityArmature = new UnityArmature(true);
 				inputUnityArmature.setBoneRotationFromLocal(unityBone, rotation);
-				rotation.set(inputUnityArmature.getGlobalRotationForBone(unityBone));
+				rotation =  inputUnityArmature.getGlobalRotationForBone(unityBone);
 			}
-			rotation.set(yawOffset.mult(rotation));
+			rotation = yawOffset.times(rotation);
 			tracker.rotation.set(rotation);
 		}
 
@@ -377,7 +374,7 @@ public class VMCHandler implements OSCHandler {
 						// and subtracts the difference between the VRM's head
 						// and hip
 						// FIXME this way isn't perfect, but I give up - Erimel
-						outputUnityArmature.getRootNode().getLocalTransform()
+						outputUnityArmature.getHeadNodeOfBone(UnityBone.HIPS).getLocalTransform()
 							.setTranslation(
 								humanPoseManager.getTailNodeOfBone(BoneType.HEAD).getWorldTransform()
 									.getTranslation()
@@ -443,10 +440,10 @@ public class VMCHandler implements OSCHandler {
 					shareableTracker.getPosition(vecBuf);
 					shareableTracker.getRotation(quatBuf);
 					oscArgs.clear();
-					oscArgs.add(String.valueOf(shareableTracker.getTrackerId()));
+					oscArgs.add(String.valueOf(shareableTracker.getId()));
 					addTransformToArgs(vecBuf, quatBuf);
 					String address;
-					TrackerRole role = shareableTracker.getTrackerRole();
+					TrackerRole role = shareableTracker.getTrackerPosition().getTrackerRole();
 					if (role == TrackerRole.HMD) {
 						address = "/VMC/Ext/Hmd/Pos";
 					} else if (
@@ -493,7 +490,7 @@ public class VMCHandler implements OSCHandler {
 		yawOffset.fromAngles(0, reference.getYaw(), 0);
 	}
 
-	private void addTransformToArgs(Vector3f pos, Quaternion rot) {
+	private void addTransformToArgs(Vector3 pos, Quaternion rot) {
 		oscArgs.add(pos.getX());
 		oscArgs.add(pos.getY());
 		oscArgs.add(-pos.getZ());

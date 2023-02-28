@@ -111,15 +111,19 @@ public class DataFeedBuilder {
 
 		if (tracker.isImu()) {
 			TrackerInfo.addIsImu(fbb, true);
-			TrackerInfo.addAllowDriftCompensation(fbb, tracker.getAllowDriftCompensation());
+			TrackerInfo
+				.addAllowDriftCompensation(
+					fbb,
+					tracker.getResetsHandler().getAllowDriftCompensation()
+				);
 		} else {
 			TrackerInfo.addIsImu(fbb, false);
 			TrackerInfo.addAllowDriftCompensation(fbb, false);
 		}
 
 		if (tracker.getNeedsMounting()) {
-			if (tracker.getMountingOrientation() != null) {
-				Quaternion quaternion = tracker.getMountingOrientation();
+			if (tracker.getResetsHandler().getMountingOrientation() != null) {
+				Quaternion quaternion = tracker.getResetsHandler().getMountingOrientation();
 				TrackerInfo.addMountingOrientation(fbb, createQuat(fbb, quaternion));
 			}
 		}
@@ -342,7 +346,7 @@ public class DataFeedBuilder {
 		for (var i = 0; i < boneInfos.size(); ++i) {
 			var bi = boneInfos.get(i);
 
-			var headPosG = bi.tailNode.getParent().worldTransform.getTranslation();
+			var headPosG = bi.headNode.getWorldTransform().getTranslation();
 			var rotG = bi.getGlobalRotation();
 			var length = bi.length;
 
@@ -350,7 +354,8 @@ public class DataFeedBuilder {
 
 			var rotGOffset = createQuat(fbb, rotG);
 			Bone.addRotationG(fbb, rotGOffset);
-			var headPosGOffset = Vec3f.createVec3f(fbb, headPosG.x, headPosG.y, headPosG.z);
+			var headPosGOffset = Vec3f
+				.createVec3f(fbb, headPosG.getX(), headPosG.getY(), headPosG.getZ());
 			Bone.addHeadPositionG(fbb, headPosGOffset);
 			Bone.addBodyPart(fbb, bi.boneType.bodyPart);
 			Bone.addBoneLength(fbb, length);

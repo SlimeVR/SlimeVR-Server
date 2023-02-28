@@ -81,7 +81,7 @@ public class HumanSkeleton {
 	protected boolean hasLeftArmTracker;
 	protected boolean hasRightArmTracker;
 	static final Quaternion FORWARD_QUATERNION = new EulerAngles(
-		EulerOrder.XYZ,
+		EulerOrder.YZX,
 		FastMath.HALF_PI,
 		0,
 		0
@@ -1030,49 +1030,49 @@ public class HumanSkeleton {
 
 	// #region Update the output trackers
 	protected void updateComputedTrackers() {
-		computedHeadTracker.setPosition(trackerHeadNode.worldTransform.getTranslation());
-		computedHeadTracker.setRotation(trackerHeadNode.worldTransform.getRotation());
+		computedHeadTracker.setPosition(trackerHeadNode.getWorldTransform().getTranslation());
+		computedHeadTracker.setRotation(trackerHeadNode.getWorldTransform().getRotation());
 		computedHeadTracker.dataTick();
 
-		computedChestTracker.setPosition(trackerChestNode.worldTransform.getTranslation());
-		computedChestTracker.setRotation(trackerChestNode.worldTransform.getRotation());
+		computedChestTracker.setPosition(trackerChestNode.getWorldTransform().getTranslation());
+		computedChestTracker.setRotation(trackerChestNode.getWorldTransform().getRotation());
 		computedChestTracker.dataTick();
 
-		computedWaistTracker.setPosition(trackerHipNode.worldTransform.getTranslation());
-		computedWaistTracker.setRotation(trackerHipNode.worldTransform.getRotation());
+		computedWaistTracker.setPosition(trackerHipNode.getWorldTransform().getTranslation());
+		computedWaistTracker.setRotation(trackerHipNode.getWorldTransform().getRotation());
 		computedWaistTracker.dataTick();
 
-		computedLeftKneeTracker.setPosition(trackerLeftKneeNode.worldTransform.getTranslation());
-		computedLeftKneeTracker.setRotation(trackerLeftKneeNode.worldTransform.getRotation());
+		computedLeftKneeTracker.setPosition(trackerLeftKneeNode.getWorldTransform().getTranslation());
+		computedLeftKneeTracker.setRotation(trackerLeftKneeNode.getWorldTransform().getRotation());
 		computedLeftKneeTracker.dataTick();
 
-		computedLeftFootTracker.setPosition(trackerLeftFootNode.worldTransform.getTranslation());
-		computedLeftFootTracker.setRotation(trackerLeftFootNode.worldTransform.getRotation());
+		computedLeftFootTracker.setPosition(trackerLeftFootNode.getWorldTransform().getTranslation());
+		computedLeftFootTracker.setRotation(trackerLeftFootNode.getWorldTransform().getRotation());
 		computedLeftFootTracker.dataTick();
 
-		computedRightKneeTracker.setPosition(trackerRightKneeNode.worldTransform.getTranslation());
-		computedRightKneeTracker.setRotation(trackerRightKneeNode.worldTransform.getRotation());
+		computedRightKneeTracker.setPosition(trackerRightKneeNode.getWorldTransform().getTranslation());
+		computedRightKneeTracker.setRotation(trackerRightKneeNode.getWorldTransform().getRotation());
 		computedRightKneeTracker.dataTick();
 
-		computedRightFootTracker.setPosition(trackerRightFootNode.worldTransform.getTranslation());
-		computedRightFootTracker.setRotation(trackerRightFootNode.worldTransform.getRotation());
+		computedRightFootTracker.setPosition(trackerRightFootNode.getWorldTransform().getTranslation());
+		computedRightFootTracker.setRotation(trackerRightFootNode.getWorldTransform().getRotation());
 		computedRightFootTracker.dataTick();
 
-		computedLeftElbowTracker.setPosition(trackerLeftElbowNode.worldTransform.getTranslation());
-		computedLeftElbowTracker.setRotation(trackerLeftElbowNode.worldTransform.getRotation());
+		computedLeftElbowTracker.setPosition(trackerLeftElbowNode.getWorldTransform().getTranslation());
+		computedLeftElbowTracker.setRotation(trackerLeftElbowNode.getWorldTransform().getRotation());
 		computedLeftElbowTracker.dataTick();
 
 		computedRightElbowTracker
-			.setPosition(trackerRightElbowNode.worldTransform.getTranslation());
-		computedRightElbowTracker.setRotation(trackerRightElbowNode.worldTransform.getRotation());
+			.setPosition(trackerRightElbowNode.getWorldTransform().getTranslation());
+		computedRightElbowTracker.setRotation(trackerRightElbowNode.getWorldTransform().getRotation());
 		computedRightElbowTracker.dataTick();
 
-		computedLeftHandTracker.setPosition(trackerLeftHandNode.worldTransform.getTranslation());
-		computedLeftHandTracker.setRotation(trackerLeftHandNode.worldTransform.getRotation());
+		computedLeftHandTracker.setPosition(trackerLeftHandNode.getWorldTransform().getTranslation());
+		computedLeftHandTracker.setRotation(trackerLeftHandNode.getWorldTransform().getRotation());
 		computedLeftHandTracker.dataTick();
 
-		computedRightHandTracker.setPosition(trackerRightHandNode.worldTransform.getTranslation());
-		computedRightHandTracker.setRotation(trackerRightHandNode.worldTransform.getRotation());
+		computedRightHandTracker.setPosition(trackerRightHandNode.getWorldTransform().getTranslation());
+		computedRightHandTracker.setRotation(trackerRightHandNode.getWorldTransform().getRotation());
 		computedRightHandTracker.dataTick();
 	}
 	// #endregion
@@ -1407,13 +1407,13 @@ public class HumanSkeleton {
 		Quaternion referenceRotation = Quaternion.Companion.getIDENTITY();
 		if (hmdTracker != null) {
 			if (hmdTracker.getNeedsReset())
-				hmdTracker.resetFull(referenceRotation);
-			hmdTracker.getRotation(referenceRotation);
+				hmdTracker.getResetsHandler().resetFull(referenceRotation);
+			referenceRotation = hmdTracker.getRotation();
 		}
 
 		for (Tracker tracker : trackersToReset) {
 			if (tracker != null && tracker.getNeedsReset()) {
-				tracker.resetFull(referenceRotation);
+				tracker.getResetsHandler().resetFull(referenceRotation);
 			}
 		}
 
@@ -1454,16 +1454,16 @@ public class HumanSkeleton {
 
 		if (hmdTracker != null) {
 			if (hmdTracker.getNeedsMounting())
-				hmdTracker.resetMounting(shouldReverseYaw(hmdTracker.getTrackerPosition()));
+				hmdTracker.getResetsHandler().resetMounting(shouldReverseYaw(hmdTracker.getTrackerPosition()));
 		}
 
 		for (Tracker tracker : trackersToReset) {
 			if (
 				tracker != null
-					&& shouldResetMounting(tracker.getTrackerPosition())
 					&& tracker.getNeedsMounting()
+					&& shouldResetMounting(tracker.getTrackerPosition())
 			) {
-				tracker.resetMounting(shouldReverseYaw(tracker.getTrackerPosition()));
+				tracker.getResetsHandler().resetMounting(shouldReverseYaw(tracker.getTrackerPosition()));
 			}
 		}
 		this.legTweaks.resetBuffer();
@@ -1481,13 +1481,13 @@ public class HumanSkeleton {
 		Quaternion referenceRotation = Quaternion.Companion.getIDENTITY();
 		if (hmdTracker != null) {
 			if (hmdTracker.getNeedsReset())
-				hmdTracker.resetYaw(referenceRotation);
-			hmdTracker.getRotation(referenceRotation);
+				hmdTracker.getResetsHandler().resetYaw(referenceRotation);
+			referenceRotation = hmdTracker.getRotation();
 		}
 
 		for (Tracker tracker : trackersToReset) {
 			if (tracker != null && tracker.getNeedsReset()) {
-				tracker.resetYaw(referenceRotation);
+				tracker.getResetsHandler().resetYaw(referenceRotation);
 			}
 		}
 		this.legTweaks.resetBuffer();

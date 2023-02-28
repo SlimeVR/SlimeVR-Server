@@ -1,10 +1,14 @@
 package dev.slimevr.tracking.trackers
 
-import com.jme3.math.Vector3f
+import dev.slimevr.config.TrackerConfig
 import io.eiren.util.BufferedTimer
 import io.github.axisangles.ktmath.Quaternion
 import io.github.axisangles.ktmath.Vector3
 
+/**
+ * Generic tracker class for input and output tracker,
+ * with flags on instantiation
+ */
 class Tracker @JvmOverloads constructor(
 	val device: Device?,
 	val id: Int,
@@ -26,12 +30,12 @@ class Tracker @JvmOverloads constructor(
 	val hasBattery: Boolean = false,
 ) {
 	private val timer = BufferedTimer(1f)
-	var status = TrackerStatus.DISCONNECTED
+	private var rotation = Quaternion.IDENTITY
 	var position = Vector3.NULL
-	var rotation = Quaternion.IDENTITY
-	var rawRotation = Quaternion.IDENTITY
-	var IdentityAdjustedRotation = Quaternion.IDENTITY
-	var acceleration = Vector3f()
+	val resetsHandler: ResetsHandler = ResetsHandler(this)
+	val filteringHandler: FilteringHandler = FilteringHandler(this)
+	var status = TrackerStatus.DISCONNECTED
+	var acceleration = Vector3.NULL
 	var batteryVoltage = 0f
 	var batteryLevel = 0f
 	var ping = -1
@@ -39,15 +43,36 @@ class Tracker @JvmOverloads constructor(
 	var temperature = 0f
 	var displayName: String? = null
 	var customName: String? = null
-	var allowDriftCompensation = false
-	var mountingOrientation: Quaternion? = null
+
+	init {
+
+	}
+
+	fun readConfig(config: TrackerConfig) {
+		if (userEditable) {
+		}
+	}
+
+	fun writeConfig(config: TrackerConfig) {}
+
+	fun getRotation(): Quaternion {
+		return Quaternion.IDENTITY
+	}
+
+	fun getIdentityAdjustedRotation(): Quaternion {
+		return Quaternion.IDENTITY
+	}
+
+	fun getRawRotation(): Quaternion {
+		return rotation
+	}
+
+	fun setRotation(rotation: Quaternion) {
+		this.rotation = rotation
+	}
 
 	val tps: Float
 		get() = timer.averageFPS
-
-	fun readConfig() {}
-
-	fun writeConfig() {}
 
 	fun tick() {}
 

@@ -3,10 +3,11 @@ package dev.slimevr.tracking.processor.skeleton;
 
 import dev.slimevr.config.TapDetectionConfig;
 import dev.slimevr.tracking.processor.HumanPoseManager;
-import dev.slimevr.tracking.trackers.TrackerJava;
+import dev.slimevr.tracking.trackers.Tracker;
 
-
-// handles tap detection for the skeleton
+/**
+ * Handles tap detection for reset
+ */
 public class TapDetectionManager {
 	private static final String resetSourceName = "TapDetection";
 
@@ -139,7 +140,7 @@ public class TapDetectionManager {
 	// returns either the chest tracker, hip tracker, or waist tracker depending
 	// on which one is available
 	// if none are available, returns null
-	private TrackerJava getTrackerToWatchQuickReset() {
+	private Tracker getTrackerToWatchQuickReset() {
 		if (skeleton.chestTracker != null)
 			return skeleton.chestTracker;
 		else if (skeleton.hipTracker != null)
@@ -150,7 +151,7 @@ public class TapDetectionManager {
 			return null;
 	}
 
-	private TrackerJava getTrackerToWatchReset() {
+	private Tracker getTrackerToWatchReset() {
 		if (skeleton.leftUpperLegTracker != null)
 			return skeleton.leftUpperLegTracker;
 		else if (skeleton.leftLowerLegTracker != null)
@@ -158,7 +159,7 @@ public class TapDetectionManager {
 		return null;
 	}
 
-	private TrackerJava getTrackerToWatchMountingReset() {
+	private Tracker getTrackerToWatchMountingReset() {
 		if (skeleton.rightUpperLegTracker != null)
 			return skeleton.rightUpperLegTracker;
 		else if (skeleton.rightLowerLegTracker != null)
