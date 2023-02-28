@@ -54,7 +54,7 @@ export function BodyProportions({
   });
   const percentageFormat = Intl.NumberFormat(currentLocales, {
     style: 'percent',
-    maximumFractionDigits: 2,
+    maximumFractionDigits: 1,
   });
 
   useEffect(() => {
@@ -194,8 +194,9 @@ export function BodyProportions({
                     </Typography>
                     <Typography variant="main-title" bold>
                       {type === LabelType.GroupPart
-                        ? percentageFormat.format(value)
-                        : cmFormat.format(value * 100)}
+                        /* Make number rounding so it's based on .25 decimals */
+                        ? percentageFormat.format(Math.round(value * 400) / 400)
+                        : cmFormat.format(Math.round(value * 400) / 4)}
                     </Typography>
                   </div>
                 </div>
