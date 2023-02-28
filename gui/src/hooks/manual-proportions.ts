@@ -159,10 +159,19 @@ export interface GroupLabel {
   label: string;
 }
 
-export type GroupPartLabel = Omit<GroupLabel, 'type'> & {
+export type GroupPartLabel = {
   type: LabelType.GroupPart;
   index: number;
-};
+} & Omit<GroupLabel, 'type'>;
+
+const BONE_MAPPING: Map<string, SkeletonBone[]> = new Map([
+  [
+    'skeleton_bone-torso_group',
+    [SkeletonBone.CHEST, SkeletonBone.HIP, SkeletonBone.WAIST],
+  ],
+  ['skeleton_bone-leg_group', [SkeletonBone.UPPER_LEG, SkeletonBone.LOWER_LEG]],
+  ['skeleton_bone-arm_group', [SkeletonBone.UPPER_ARM, SkeletonBone.LOWER_ARM]],
+]);
 
 export function useManualProportions(): [
   Label[],
@@ -186,7 +195,42 @@ export function useManualProportions(): [
   const bodyParts: Label[] = useMemo(() => {
     if (!config) return [];
     if (ratio) {
-      // TODO: Please do this Uriel.
+      const groups: GroupPartLabel[] = [];
+      for (const [label, related] of BONE_MAPPING) {
+        const children = config.skeletonParts.filter((it) => related.includes(it.bone));
+        const total = children.reduce((acc, cur) => cur.value + acc, 0);
+
+        const group: GroupPartLabel = {
+          label,
+          type: LabelType.GroupPart,
+          value: total,
+          bones: children.map((it) => ({
+            label: 'skeleton_bone-' + SkeletonBone[it.bone],
+            value: it.value / total,
+            bone: it.bone,
+          })),
+          index: 0,
+        };
+        groups.push(
+          ...children.map((_it, index) => ({
+            ...group,
+            index,
+          }))
+        );
+      }
+
+      config.skeletonParts.flatMap(({ bone, value }) => {
+        const part = groups.find((it) => it.bones[it.index].bone === bone);
+        if (part === undefined) {
+          return {
+            type: LabelType.Bone,
+            bone,
+            label: 'skeleton_bone-' + SkeletonBone[bone],
+            value,
+          };
+        }
+
+      });
       return [];
     }
 
