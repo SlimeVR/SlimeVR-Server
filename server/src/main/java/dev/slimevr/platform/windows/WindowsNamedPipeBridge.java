@@ -12,7 +12,7 @@ import dev.slimevr.bridge.BridgeThread;
 import dev.slimevr.bridge.PipeState;
 import dev.slimevr.bridge.ProtobufMessages.ProtobufMessage;
 import dev.slimevr.platform.SteamVRBridge;
-import dev.slimevr.tracking.trackers.*;
+import dev.slimevr.tracking.trackers.Tracker;
 import io.eiren.util.logging.LogManager;
 
 import java.io.IOException;
@@ -29,11 +29,11 @@ public class WindowsNamedPipeBridge extends SteamVRBridge {
 
 	public WindowsNamedPipeBridge(
 		VRServer server,
-		HMDTracker hmd,
+		Tracker hmd,
 		String bridgeSettingsKey,
 		String bridgeName,
 		String pipeName,
-		List<? extends ShareableTracker> shareableTrackers
+		List<Tracker> shareableTrackers
 	) {
 		super(server, hmd, "Named pipe thread", bridgeName, bridgeSettingsKey, shareableTrackers);
 		this.pipeName = pipeName;

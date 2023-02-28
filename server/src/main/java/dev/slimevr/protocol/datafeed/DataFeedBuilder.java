@@ -1,11 +1,10 @@
 package dev.slimevr.protocol.datafeed;
 
 import com.google.flatbuffers.FlatBufferBuilder;
-import com.jme3.math.Quaternion;
-import com.jme3.math.Vector3f;
-import dev.slimevr.tracking.Device;
 import dev.slimevr.tracking.processor.BoneInfo;
-import dev.slimevr.tracking.trackers.*;
+import dev.slimevr.tracking.trackers.Device;
+import dev.slimevr.tracking.trackers.Tracker;
+import io.github.axisangles.ktmath.Quaternion;
 import solarxr_protocol.data_feed.Bone;
 import solarxr_protocol.data_feed.DataFeedUpdate;
 import solarxr_protocol.data_feed.device_data.DeviceData;
@@ -65,7 +64,7 @@ public class DataFeedBuilder {
 	public static int createTrackerId(FlatBufferBuilder fbb, Tracker tracker) {
 		TrackerId.startTrackerId(fbb);
 
-		TrackerId.addTrackerNum(fbb, tracker.getTrackerNum());
+		TrackerId.addTrackerNum(fbb, tracker.getId());
 		if (tracker.getDevice() != null)
 			TrackerId.addDeviceId(fbb, DeviceId.createDeviceId(fbb, tracker.getDevice().getId()));
 
@@ -83,7 +82,11 @@ public class DataFeedBuilder {
 			);
 	}
 
-	public static int createTrackerInfos(FlatBufferBuilder fbb, boolean infoMask, Tracker tracker) {
+	public static int createTrackerInfos(
+		FlatBufferBuilder fbb,
+		boolean infoMask,
+		Tracker tracker
+	) {
 
 		if (!infoMask)
 			return 0;
@@ -96,9 +99,9 @@ public class DataFeedBuilder {
 
 
 		TrackerInfo.startTrackerInfo(fbb);
-		if (tracker.getBodyPosition() != null)
-			TrackerInfo.addBodyPart(fbb, tracker.getBodyPosition().bodyPart);
-		TrackerInfo.addEditable(fbb, tracker.userEditable());
+		if (tracker.getTrackerPosition() != null)
+			TrackerInfo.addBodyPart(fbb, tracker.getTrackerPosition().getBodyPart());
+		TrackerInfo.addEditable(fbb, tracker.getUserEditable());
 		TrackerInfo.addIsComputed(fbb, tracker.isComputed());
 		TrackerInfo.addDisplayName(fbb, displayNameOffset);
 		TrackerInfo.addCustomName(fbb, customNameOffset);
@@ -106,47 +109,52 @@ public class DataFeedBuilder {
 		// TODO need support: TrackerInfo.addImuType(fbb, tracker.im);
 		// TODO need support: TrackerInfo.addPollRate(fbb, tracker.);
 
-		if (tracker instanceof IMUTracker imuTracker) {
+		if (tracker.isImu()) {
 			TrackerInfo.addIsImu(fbb, true);
-
-			if (imuTracker.getMountingOrientation() != null) {
-				Quaternion quaternion = imuTracker.getMountingOrientation();
-				TrackerInfo.addMountingOrientation(fbb, createQuat(fbb, quaternion));
-			}
-
-			TrackerInfo.addAllowDriftCompensation(fbb, imuTracker.getAllowDriftCompensation());
+			TrackerInfo.addAllowDriftCompensation(fbb, tracker.getAllowDriftCompensation());
 		} else {
 			TrackerInfo.addIsImu(fbb, false);
+			TrackerInfo.addAllowDriftCompensation(fbb, false);
+		}
+
+		if (tracker.getNeedsMounting()) {
+			if (tracker.getMountingOrientation() != null) {
+				Quaternion quaternion = tracker.getMountingOrientation();
+				TrackerInfo.addMountingOrientation(fbb, createQuat(fbb, quaternion));
+			}
 		}
 
 		return TrackerInfo.endTrackerInfo(fbb);
 	}
 
 	public static int createTrackerPosition(FlatBufferBuilder fbb, Tracker tracker) {
-		Vector3f pos = new Vector3f();
-		tracker.getPosition(pos);
-
-		return Vec3f.createVec3f(fbb, pos.x, pos.y, pos.z);
+		return Vec3f
+			.createVec3f(
+				fbb,
+				tracker.getPosition().getX(),
+				tracker.getPosition().getY(),
+				tracker.getPosition().getZ()
+			);
 	}
 
 	public static int createTrackerRotation(FlatBufferBuilder fbb, Tracker tracker) {
-		Quaternion quaternion = new Quaternion();
-		tracker.getRawRotation(quaternion);
-
-		return createQuat(fbb, quaternion);
+		return createQuat(fbb, tracker.getRawRotation());
 	}
 
 	public static int createTrackerAcceleration(FlatBufferBuilder fbb, Tracker tracker) {
-		Vector3f accel = new Vector3f();
-		tracker.getAcceleration(accel);
-
-		return Vec3f.createVec3f(fbb, accel.x, accel.y, accel.z);
+		return Vec3f
+			.createVec3f(
+				fbb,
+				tracker.getAcceleration().getX(),
+				tracker.getAcceleration().getY(),
+				tracker.getAcceleration().getZ()
+			);
 	}
 
 	public static int createTrackerTemperature(FlatBufferBuilder fbb, Tracker tracker) {
-		if (!(tracker instanceof IMUTracker imuTracker))
+		if (!tracker.isImu())
 			return 0;
-		return Temperature.createTemperature(fbb, imuTracker.temperature);
+		return Temperature.createTemperature(fbb, tracker.getTemperature());
 	}
 
 	public static int createTrackerData(
@@ -164,12 +172,12 @@ public class DataFeedBuilder {
 		if (trackerInfosOffset != 0)
 			TrackerData.addInfo(fbb, trackerInfosOffset);
 		if (mask.getStatus())
-			TrackerData.addStatus(fbb, tracker.getStatus().id + 1);
-		if (mask.getPosition() && tracker.hasPosition())
+			TrackerData.addStatus(fbb, tracker.getStatus().getId() + 1);
+		if (mask.getPosition() && tracker.getHasPosition())
 			TrackerData.addPosition(fbb, DataFeedBuilder.createTrackerPosition(fbb, tracker));
-		if (mask.getRotation() && tracker.hasRotation())
+		if (mask.getRotation() && tracker.getHasRotation())
 			TrackerData.addRotation(fbb, DataFeedBuilder.createTrackerRotation(fbb, tracker));
-		if (mask.getLinearAcceleration() && tracker.hasAcceleration())
+		if (mask.getLinearAcceleration() && tracker.getHasAcceleration())
 			TrackerData
 				.addLinearAcceleration(
 					fbb,
@@ -180,25 +188,26 @@ public class DataFeedBuilder {
 			if (trackerTemperatureOffset != 0)
 				TrackerData.addTemp(fbb, trackerTemperatureOffset);
 		}
-		if (tracker instanceof IMUTracker imuTracker) {
-			Quaternion quaternion = new Quaternion();
-			if (mask.getRotationReferenceAdjusted() && tracker.hasRotation()) {
-				imuTracker.getRotation(quaternion);
-				TrackerData.addRotationReferenceAdjusted(fbb, createQuat(fbb, quaternion));
+		if (tracker.getNeedsMounting() && tracker.getHasRotation()) {
+			if (mask.getRotationReferenceAdjusted()) {
+				TrackerData
+					.addRotationReferenceAdjusted(fbb, createQuat(fbb, tracker.getRotation()));
 			}
-			if (mask.getRotationIdentityAdjusted() && tracker.hasRotation()) {
-				imuTracker.getIdentityAdjustedRotation(quaternion);
-				TrackerData.addRotationIdentityAdjusted(fbb, createQuat(fbb, quaternion));
+			if (mask.getRotationIdentityAdjusted()) {
+				TrackerData
+					.addRotationIdentityAdjusted(
+						fbb,
+						createQuat(fbb, tracker.getIdentityAdjustedRotation())
+					);
 			}
-		} else if (tracker instanceof VRTracker vrTracker) {
-			Quaternion quaternion = new Quaternion();
-			if (mask.getRotationReferenceAdjusted() && tracker.hasRotation()) {
-				vrTracker.getRotation(quaternion);
-				TrackerData.addRotationReferenceAdjusted(fbb, createQuat(fbb, quaternion));
+		} else if (tracker.getNeedsReset() && tracker.getHasRotation()) {
+			if (mask.getRotationReferenceAdjusted()) {
+				TrackerData
+					.addRotationReferenceAdjusted(fbb, createQuat(fbb, tracker.getRotation()));
 			}
-			if (mask.getRotationIdentityAdjusted() && tracker.hasRotation()) {
-				vrTracker.getRawRotation(quaternion);
-				TrackerData.addRotationIdentityAdjusted(fbb, createQuat(fbb, quaternion));
+			if (mask.getRotationIdentityAdjusted()) {
+				TrackerData
+					.addRotationIdentityAdjusted(fbb, createQuat(fbb, tracker.getRawRotation()));
 			}
 		}
 
@@ -245,24 +254,22 @@ public class DataFeedBuilder {
 			firstTracker = device.getTrackers().entrySet().iterator().next().getValue();
 		}
 
-		Tracker tracker = firstTracker.get();
+		Tracker tracker = firstTracker;
 		if (tracker == null)
 			return 0;
 
 		HardwareStatus.startHardwareStatus(fbb);
-		HardwareStatus.addErrorStatus(fbb, tracker.getStatus().id);
+		HardwareStatus.addErrorStatus(fbb, tracker.getStatus().getId());
+		HardwareStatus.addTps(fbb, (int) tracker.getTps());
 
-		if (tracker instanceof TrackerWithTPS)
-			HardwareStatus.addTps(fbb, (int) ((TrackerWithTPS) tracker).getTPS());
-
-		if (tracker instanceof TrackerWithBattery twb) {
-			HardwareStatus.addBatteryVoltage(fbb, twb.getBatteryVoltage());
-			HardwareStatus.addBatteryPctEstimate(fbb, (int) twb.getBatteryLevel());
+		if (tracker.getHasBattery()) {
+			HardwareStatus.addBatteryVoltage(fbb, tracker.getBatteryVoltage());
+			HardwareStatus.addBatteryPctEstimate(fbb, (int) tracker.getBatteryLevel());
 		}
 
-		if (tracker instanceof TrackerWithWireless tww) {
-			HardwareStatus.addPing(fbb, tww.getPing());
-			HardwareStatus.addRssi(fbb, (short) tww.getSignalStrength());
+		if (tracker.isWireless()) {
+			HardwareStatus.addPing(fbb, tracker.getPing());
+			HardwareStatus.addRssi(fbb, (short) tracker.getSignalStrength());
 		}
 
 		int hardwareDataOffset = HardwareStatus.endHardwareStatus(fbb);

@@ -5,6 +5,7 @@ import com.jme3.math.Quaternion;
 import com.jme3.math.Vector3f;
 import dev.slimevr.Main;
 import dev.slimevr.NetworkProtocol;
+import dev.slimevr.VRServer;
 import dev.slimevr.tracking.trackers.IMUTracker;
 import dev.slimevr.tracking.trackers.Tracker;
 import dev.slimevr.tracking.trackers.TrackerStatus;
@@ -28,7 +29,7 @@ public class TrackersUDPServer extends Thread {
 	/**
 	 * Change between IMU axes and OpenGL/SteamVR axes
 	 */
-	private static final Quaternion offset = new Quaternion()
+	private static final Quaternion spaceOffset = new Quaternion()
 		.fromAngleAxis(-FastMath.HALF_PI, Vector3f.UNIT_X);
 
 	private static final String resetSourceName = "TrackerServer";
@@ -227,11 +228,11 @@ public class TrackersUDPServer extends Thread {
 					+ " status: "
 					+ sensorStatus
 			);
-		IMUTracker imu = connection.getTracker(trackerId);
+		Tracker imu = connection.getTracker(trackerId);
 		if (imu == null) {
 			imu = new IMUTracker(
 				connection,
-				Tracker.getNextLocalTrackerId(),
+				VRServer.getNextLocalTrackerId(),
 				trackerId,
 				connection.name + "/" + trackerId,
 				connection.descriptiveName + "/" + trackerId,
@@ -318,9 +319,8 @@ public class TrackersUDPServer extends Thread {
 							socket.send(new DatagramPacket(rcvBuffer, bb.position(), conn.address));
 							if (conn.lastPacket + 1000 < System.currentTimeMillis()) {
 								for (Tracker value : conn.getTrackers().values()) {
-									IMUTracker tracker = (IMUTracker) value;
-									if (tracker.getStatus() == TrackerStatus.OK)
-										tracker.setStatus(TrackerStatus.DISCONNECTED);
+									if (value.getStatus() != TrackerStatus.DISCONNECTED)
+										value.setStatus(TrackerStatus.DISCONNECTED);
 								}
 								if (!conn.timedOut) {
 									conn.timedOut = true;
@@ -329,9 +329,8 @@ public class TrackersUDPServer extends Thread {
 							} else {
 								conn.timedOut = false;
 								for (Tracker value : conn.getTrackers().values()) {
-									IMUTracker tracker = (IMUTracker) value;
-									if (tracker.getStatus() == TrackerStatus.DISCONNECTED)
-										tracker.setStatus(TrackerStatus.OK);
+									if (value.getStatus() == TrackerStatus.DISCONNECTED)
+										value.setStatus(TrackerStatus.OK);
 								}
 							}
 							if (conn.serialBuffer.length() > 0) {
@@ -372,7 +371,7 @@ public class TrackersUDPServer extends Thread {
 
 	protected void processPacket(DatagramPacket received, UDPPacket packet, UDPDevice connection)
 		throws IOException {
-		IMUTracker tracker = null;
+		Tracker tracker = null;
 		switch (packet.getPacketId()) {
 			case UDPProtocolParser.PACKET_HEARTBEAT:
 				break;
@@ -385,11 +384,11 @@ public class TrackersUDPServer extends Thread {
 					break;
 				UDPPacket1Rotation rotationPacket = (UDPPacket1Rotation) packet;
 				buf.set(rotationPacket.rotation);
-				offset.mult(buf, buf);
+				spaceOffset.mult(buf, buf);
 				tracker = connection.getTracker(rotationPacket.getSensorId());
 				if (tracker == null)
 					break;
-				tracker.rotQuaternion.set(buf);
+				tracker.setRotation(buf);
 				tracker.dataTick();
 				break;
 			case UDPProtocolParser.PACKET_ROTATION_DATA:
@@ -400,11 +399,11 @@ public class TrackersUDPServer extends Thread {
 				if (tracker == null)
 					break;
 				buf.set(rotationData.rotation);
-				offset.mult(buf, buf);
+				spaceOffset.mult(buf, buf);
 
 				switch (rotationData.dataType) {
 					case UDPPacket17RotationData.DATA_TYPE_NORMAL -> {
-						tracker.rotQuaternion.set(buf);
+						tracker.setRotation(buf);
 						tracker.calibrationStatus = rotationData.calibrationInfo;
 						tracker.dataTick();
 					}
@@ -456,13 +455,12 @@ public class TrackersUDPServer extends Thread {
 				if (connection.lastPingPacketId == ping.pingId) {
 					for (Tracker t : connection.getTrackers().values()) {
 						IMUTracker imuTracker = (IMUTracker) t;
-						imuTracker
+						t
 							.setPing(
-								(int) (System.currentTimeMillis()
-									- connection.lastPingPacketTime) / 2
+								(int) (System.currentTimeMillis() - connection.lastPingPacketTime)
+									/ 2
 							);
-
-						imuTracker.dataTick();
+						t.dataTick();
 					}
 				} else {
 					LogManager
@@ -488,9 +486,8 @@ public class TrackersUDPServer extends Thread {
 				if (connection.getTrackers().size() > 0) {
 
 					for (Tracker value : connection.getTrackers().values()) {
-						IMUTracker tr = (IMUTracker) value;
-						tr.setBatteryVoltage(battery.voltage);
-						tr.setBatteryLevel(battery.level * 100);
+						value.setBatteryVoltage(battery.voltage);
+						value.setBatteryLevel(battery.level * 100);
 					}
 				}
 				break;
@@ -552,8 +549,7 @@ public class TrackersUDPServer extends Thread {
 
 				if (connection.getTrackers().size() > 0) {
 					for (Tracker value : connection.getTrackers().values()) {
-						IMUTracker tr = (IMUTracker) value;
-						tr.setSignalStrength(signalStrength.signalStrength);
+						value.setSignalStrength(signalStrength.signalStrength);
 					}
 				}
 				break;
@@ -564,7 +560,7 @@ public class TrackersUDPServer extends Thread {
 				tracker = connection.getTracker(temp.getSensorId());
 				if (tracker == null)
 					break;
-				tracker.temperature = temp.temperature;
+				tracker.setTemperature(temp.temperature);
 				break;
 			case UDPProtocolParser.PACKET_USER_ACTION:
 				if (connection == null)

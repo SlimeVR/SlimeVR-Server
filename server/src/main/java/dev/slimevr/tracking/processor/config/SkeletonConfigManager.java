@@ -1,12 +1,12 @@
 package dev.slimevr.tracking.processor.config;
 
-import com.jme3.math.Vector3f;
 import dev.slimevr.Main;
 import dev.slimevr.autobone.errors.BodyProportionError;
 import dev.slimevr.autobone.errors.proportions.ProportionLimiter;
 import dev.slimevr.config.ConfigManager;
 import dev.slimevr.tracking.processor.BoneType;
 import dev.slimevr.tracking.processor.HumanPoseManager;
+import io.github.axisangles.ktmath.Vector3;
 
 import java.util.Arrays;
 import java.util.EnumMap;
@@ -28,7 +28,7 @@ public class SkeletonConfigManager {
 	protected boolean[] changedToggles = new boolean[SkeletonConfigToggles.values.length];
 	protected boolean[] changedValues = new boolean[SkeletonConfigValues.values.length];
 
-	protected final EnumMap<BoneType, Vector3f> nodeOffsets = new EnumMap<>(
+	protected final EnumMap<BoneType, Vector3> nodeOffsets = new EnumMap<>(
 		BoneType.class
 	);
 
@@ -173,13 +173,13 @@ public class SkeletonConfigManager {
 	}
 
 	protected void setNodeOffset(BoneType nodeOffset, float x, float y, float z) {
-		Vector3f offset = nodeOffsets.get(nodeOffset);
+		Vector3 offset = nodeOffsets.get(nodeOffset);
 
 		if (offset == null) {
-			offset = new Vector3f(x, y, z);
+			offset = new Vector3(x, y, z);
 			nodeOffsets.put(nodeOffset, offset);
 		} else {
-			offset.set(x, y, z);
+			offset = new Vector3(x, y, z);
 		}
 
 		// Updates in skeleton
@@ -327,7 +327,7 @@ public class SkeletonConfigManager {
 
 		// Copy skeletonConfig's nodeOffsets as the configs are all the same
 		skeletonConfigManager.nodeOffsets.forEach((key, value) -> {
-			setNodeOffset(key, value.x, value.y, value.z);
+			setNodeOffset(key, value.getX(), value.getY(), value.getZ());
 		});
 	}
 

@@ -2,7 +2,7 @@ package dev.slimevr.config;
 
 import dev.slimevr.Main;
 import dev.slimevr.tracking.trackers.IMUTracker;
-import dev.slimevr.tracking.trackers.Tracker;
+import dev.slimevr.tracking.trackers.TrackerJava;
 
 
 public class DriftCompensationConfig {
@@ -20,8 +20,8 @@ public class DriftCompensationConfig {
 	}
 
 	public void updateTrackersDriftCompensation() {
-		for (Tracker t : Main.getVrServer().getAllTrackers()) {
-			Tracker tracker = t.get();
+		for (TrackerJava t : Main.getVrServer().getAllTrackers()) {
+			TrackerJava tracker = t.get();
 			if (tracker instanceof IMUTracker imuTracker) {
 				imuTracker
 					.setDriftCompensationSettings(

@@ -7,6 +7,7 @@ import com.github.jonpeterson.jackson.module.versioning.JsonVersionedModel;
 import dev.slimevr.config.serializers.BridgeConfigMapDeserializer;
 import dev.slimevr.config.serializers.TrackerConfigMapDeserializer;
 import dev.slimevr.tracking.trackers.Tracker;
+import dev.slimevr.tracking.trackers.TrackerJava;
 import dev.slimevr.tracking.trackers.TrackerRole;
 
 import java.util.HashMap;
@@ -136,7 +137,7 @@ public class VRConfig {
 		return overlay;
 	}
 
-	public TrackerConfig getTracker(Tracker tracker) {
+	public TrackerConfig getTracker(TrackerJava tracker) {
 		TrackerConfig config = trackers.get(tracker.getName());
 		if (config == null) {
 			config = new TrackerConfig(tracker);

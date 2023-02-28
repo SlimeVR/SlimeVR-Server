@@ -1,7 +1,7 @@
 package dev.slimevr.tracking.processor.skeleton;
 
-import com.jme3.math.Quaternion;
-import com.jme3.math.Vector3f;
+import io.github.axisangles.ktmath.Quaternion;
+import io.github.axisangles.ktmath.Vector3;
 
 import java.util.Random;
 
@@ -30,7 +30,7 @@ public class ViveEmulation {
 	private static final float SLERP_AMOUNT = 0.2f;
 	private static final float NS_CONVERTER = 1e9f;
 	private static final float NEARLY_ZERO = 0.01f;
-	private static final Vector3f ADJUSTER = new Vector3f(1.0f, 0.1f, 1.0f);
+	private static final Vector3 ADJUSTER = new Vector3(1.0f, 0.1f, 1.0f);
 
 	// state variables
 	private boolean enabled = false;
@@ -41,18 +41,18 @@ public class ViveEmulation {
 	private float flyStartTime = 0.0f;
 	private float flySpeed = 0.0f;
 	private int ticksToFly = random.nextInt(CHANCE);
-	private Vector3f flyDirection = new Vector3f();
-	private Vector3f lastPosition = new Vector3f();
-	private Vector3f targetPosition = new Vector3f();
-	private Quaternion randomRotation = new Quaternion();
-	private Quaternion lastRotation = new Quaternion();
+	private Vector3 flyDirection = Vector3.Companion.getNULL();
+	private Vector3 lastPosition = Vector3.Companion.getNULL();
+	private Vector3 targetPosition = Vector3.Companion.getNULL();
+	private Quaternion randomRotation = Quaternion.Companion.getIDENTITY();
+	private Quaternion lastRotation = Quaternion.Companion.getIDENTITY();
 	private long time = System.nanoTime();
 	private float timeDelta = 0.0f;
 
 	public ViveEmulation(HumanSkeleton skeleton) {
 		this.skeleton = skeleton;
 		if (skeleton.computedWaistTracker != null)
-			this.lastPosition = skeleton.computedWaistTracker.position.clone();
+			this.lastPosition = skeleton.computedWaistTracker.getPosition();
 	}
 
 	public boolean getEnabled() {
@@ -84,11 +84,11 @@ public class ViveEmulation {
 				flyingBack = true;
 				overShooting = true;
 				flySpeed = FLY_BACK_SPEED;
-				getOvershootPosition(targetPosition);
+				targetPosition = getOvershootPosition();
 				return;
 			}
-			skeleton.computedWaistTracker.position.set(getFlyingPos());
-			skeleton.computedWaistTracker.rotation.set(getFlyingRotation());
+			skeleton.computedWaistTracker.setPosition(getFlyingPos());
+			skeleton.computedWaistTracker.setRotation(getFlyingRotation());
 		}
 		// in this state the tracker is returning to its position but has not
 		// yet overshot its target
@@ -96,49 +96,51 @@ public class ViveEmulation {
 			if (targetPosition.distanceSquared(lastPosition) < NEARLY_ZERO * NEARLY_ZERO) {
 				overShooting = false;
 				flySpeed = FLY_BACK_OVERSHOOT;
-				targetPosition.set(skeleton.computedWaistTracker.position);
+				targetPosition = skeleton.computedWaistTracker.getPosition();
 				return;
 			}
-			skeleton.computedWaistTracker.position.set(getFlyingBackPos());
+			skeleton.computedWaistTracker.setPosition((getFlyingBackPos()));
 		}
 		// in this state the tracker will return to its original position
 		else if (flyingBack) {
-			if (skeleton.computedWaistTracker.position.distance(lastPosition) < NEARLY_ZERO) {
+			if (skeleton.computedWaistTracker.getPosition().distance(lastPosition) < NEARLY_ZERO) {
 				flyingBack = false;
 				ticksToFly = random.nextInt(CHANCE);
 				return;
 			}
-			targetPosition.set(skeleton.computedWaistTracker.position);
-			skeleton.computedWaistTracker.position.set(getFlyingBackPos());
+			targetPosition = skeleton.computedWaistTracker.getPosition();
+			skeleton.computedWaistTracker.setPosition(getFlyingBackPos());
 		}
 
 		// if the tracker is not flying, we check if it should fly
 		// if it should, we set the state variables accordingly
 		if (ticksToFly <= 0 && !flying && !flyingBack) {
 			flying = true;
-			flyDirection
-				.set(
-					random.nextFloat() - 0.5f,
-					random.nextFloat() - 0.5f,
-					random.nextFloat() - 0.5f
-				)
-				.normalizeLocal();
+			flyDirection = new Vector3(
+				random.nextFloat() - 0.5f,
+				random.nextFloat() - 0.5f,
+				random.nextFloat() - 0.5f
+			)
+				.unit();
 			flyTime = (random.nextFloat() * (MAX_FLY_TIME - MIN_FLY_TIME) + MIN_FLY_TIME)
 				* NS_CONVERTER;
 			flySpeed = (random.nextFloat() * FLY_SPEED_VARIANCE + FLY_SPEED);
 			flyStartTime = System.nanoTime();
-			randomRotation
-				.set(random.nextFloat(), random.nextFloat(), random.nextFloat(), random.nextFloat())
-				.normalizeLocal();
-			lastRotation.set(skeleton.computedWaistTracker.rotation);
-			lastPosition.set(skeleton.computedWaistTracker.position);
+			randomRotation = new Quaternion(
+				random.nextFloat(),
+				random.nextFloat(),
+				random.nextFloat(),
+				random.nextFloat()
+			).unit();
+			lastRotation = skeleton.computedWaistTracker.getRotation();
+			lastPosition = skeleton.computedWaistTracker.getPosition();
 		}
 	}
 
 	// returns the position of the waist tracker when it is flying
 	// and update flySpeed and last position
-	private Vector3f getFlyingPos() {
-		lastPosition.addLocal(flyDirection.mult(flySpeed * timeDelta).mult(ADJUSTER));
+	private Vector3 getFlyingPos() {
+		lastPosition = lastPosition.plus(flyDirection.times(flySpeed * timeDelta).cross(ADJUSTER));
 		flySpeed -= FLY_SPEED_DRAG * timeDelta;
 
 		if (flySpeed < 0.0f)
@@ -149,39 +151,36 @@ public class ViveEmulation {
 
 	// normally you would want to avoid any overshooting
 	// but since vive trackers do it sometimes, we do it too!
-	private Vector3f getFlyingBackPos() {
-		lastPosition
-			.subtractLocal(
+	private Vector3 getFlyingBackPos() {
+		lastPosition = lastPosition
+			.minus(
 				lastPosition
-					.subtract(targetPosition)
-					.normalize()
-					.mult(flySpeed * timeDelta)
+					.minus(targetPosition)
+					.unit()
+					.times(flySpeed * timeDelta)
 			);
 
 		return lastPosition;
 	}
 
-	// slowly rotate the tracker as it flys away
+	// slowly rotate the tracker as it flies away
 	private Quaternion getFlyingRotation() {
-		lastRotation.slerp(lastRotation, randomRotation, SLERP_AMOUNT * timeDelta);
-		return lastRotation;
+		return lastRotation.interpQ(randomRotation, SLERP_AMOUNT * timeDelta);
 	}
 
 	// get the position to fly back to (initially overshoot the actualy waist
 	// position)
-	private void getOvershootPosition(Vector3f store) {
-		store
-			.set(
-				skeleton.computedWaistTracker.position
-					.subtract(
-						lastPosition
-							.subtract(skeleton.computedWaistTracker.position)
-							.normalize()
-							.mult(
-								random.nextFloat()
-									* (MAX_OVERSHOOT_DISTANCE - MIN_OVERSHOOT_DISTANCE)
-									+ MIN_OVERSHOOT_DISTANCE
-							)
+	private Vector3 getOvershootPosition() {
+		return skeleton.computedWaistTracker
+			.getPosition()
+			.minus(
+				lastPosition
+					.cross(skeleton.computedWaistTracker.getPosition())
+					.unit()
+					.times(
+						random.nextFloat()
+							* (MAX_OVERSHOOT_DISTANCE - MIN_OVERSHOOT_DISTANCE)
+							+ MIN_OVERSHOOT_DISTANCE
 					)
 			);
 	}

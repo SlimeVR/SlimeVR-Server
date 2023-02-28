@@ -3,14 +3,7 @@ package dev.slimevr.autobone
 import com.jme3.math.FastMath
 import com.jme3.math.Vector3f
 import dev.slimevr.VRServer
-import dev.slimevr.autobone.errors.AutoBoneException
-import dev.slimevr.autobone.errors.BodyProportionError
-import dev.slimevr.autobone.errors.FootHeightOffsetError
-import dev.slimevr.autobone.errors.HeightError
-import dev.slimevr.autobone.errors.OffsetSlideError
-import dev.slimevr.autobone.errors.PositionError
-import dev.slimevr.autobone.errors.PositionOffsetError
-import dev.slimevr.autobone.errors.SlideError
+import dev.slimevr.autobone.errors.*
 import dev.slimevr.config.AutoBoneConfig
 import dev.slimevr.poserecorder.PoseFrameIO
 import dev.slimevr.poserecorder.PoseFrameTracker

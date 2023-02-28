@@ -3,11 +3,11 @@ package dev.slimevr.tracking.processor.skeleton;
 import java.util.LinkedList;
 import com.jme3.math.Vector3f;
 
-import dev.slimevr.tracking.trackers.Tracker;
+import dev.slimevr.tracking.trackers.TrackerJava;
 
 
 // class that monitors the acceleration of the waist, hip, or chest trackers to detect taps
-// and use this to trigger a varaity of resets (if your wondering why no single tap class exists, it's because 
+// and use this to trigger a varaity of resets (if your wondering why no single tap class exists, it's because
 // to many false positives)
 public class TapDetection {
 
@@ -18,7 +18,7 @@ public class TapDetection {
 	private boolean enabled = false;
 	private LinkedList<float[]> accelList = new LinkedList<>();
 	private LinkedList<Float> tapTimes = new LinkedList<>();
-	private Tracker trackerToWatch = null;
+	private TrackerJava trackerToWatch = null;
 	private int numberTrackersOverThreshold = 1;
 
 	// hyperparameters
@@ -40,7 +40,7 @@ public class TapDetection {
 
 	public TapDetection(
 		HumanSkeleton skeleton,
-		Tracker trackerToWatch
+		TrackerJava trackerToWatch
 	) {
 		this.skeleton = skeleton;
 		this.trackerToWatch = trackerToWatch;
@@ -55,7 +55,7 @@ public class TapDetection {
 	}
 
 	// set the tracker to watch and detect taps on
-	public void setTrackerToWatch(Tracker tracker) {
+	public void setTrackerToWatch(TrackerJava tracker) {
 		trackerToWatch = tracker;
 	}
 
@@ -173,7 +173,7 @@ public class TapDetection {
 	// returns true if the user is not imparting more than allowedBodyAccel of
 	// force on any of the torso or upper leg trackers (this sadly implies that
 	// you need two or more trackers for this feature to be reliable)
-	private boolean isUserStatic(Tracker trackerToExclude) {
+	private boolean isUserStatic(TrackerJava trackerToExclude) {
 		Vector3f accel = new Vector3f();
 		int num = 0;
 		if (skeleton.chestTracker != null && !skeleton.chestTracker.equals(trackerToExclude)) {

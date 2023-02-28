@@ -1,7 +1,6 @@
 package dev.slimevr.osc
 
 import com.jme3.math.Vector3f
-import dev.slimevr.tracking.trackers.UnityBone
 import io.eiren.util.logging.LogManager
 import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable

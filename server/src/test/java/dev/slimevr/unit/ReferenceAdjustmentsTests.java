@@ -5,7 +5,7 @@ import com.jme3.math.Quaternion;
 import dev.slimevr.tracking.processor.BoneType;
 import dev.slimevr.tracking.processor.TransformNode;
 import dev.slimevr.tracking.trackers.IMUTracker;
-import dev.slimevr.tracking.trackers.Tracker;
+import dev.slimevr.tracking.trackers.TrackerJava;
 import io.eiren.math.FloatMath;
 import io.eiren.util.StringUtils;
 import org.junit.jupiter.api.DynamicTest;
@@ -179,7 +179,7 @@ public class ReferenceAdjustmentsTests {
 		Quaternion referenceQuat = q(refPitch, refYaw, refRoll);
 		IMUTracker tracker = new IMUTracker(
 			null,
-			Tracker.getNextLocalTrackerId(),
+			TrackerJava.getNextLocalTrackerId(),
 			0,
 			"test",
 			"test",
@@ -218,7 +218,7 @@ public class ReferenceAdjustmentsTests {
 		Quaternion referenceQuat = q(refPitch, refYaw, refRoll);
 		IMUTracker tracker = new IMUTracker(
 			null,
-			Tracker.getNextLocalTrackerId(),
+			TrackerJava.getNextLocalTrackerId(),
 			0,
 			"test",
 			"test",
@@ -250,7 +250,7 @@ public class ReferenceAdjustmentsTests {
 		Quaternion referenceQuat = q(refPitch, refYaw, refRoll);
 		IMUTracker tracker = new IMUTracker(
 			null,
-			Tracker.getNextLocalTrackerId(),
+			TrackerJava.getNextLocalTrackerId(),
 			0,
 			"test",
 			"test",

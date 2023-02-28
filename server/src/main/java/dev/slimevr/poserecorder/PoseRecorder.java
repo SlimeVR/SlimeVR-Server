@@ -10,7 +10,7 @@ import org.apache.commons.lang3.tuple.Pair;
 
 import dev.slimevr.VRServer;
 import dev.slimevr.util.ann.VRServerThread;
-import dev.slimevr.tracking.trackers.Tracker;
+import dev.slimevr.tracking.trackers.TrackerJava;
 import io.eiren.util.collections.FastList;
 import io.eiren.util.logging.LogManager;
 
@@ -39,7 +39,7 @@ public class PoseRecorder {
 	protected Consumer<RecordingProgress> currentFrameCallback;
 
 	protected final VRServer server;
-	FastList<Pair<Tracker, PoseFrameTracker>> trackers = new FastList<>();
+	FastList<Pair<TrackerJava, PoseFrameTracker>> trackers = new FastList<>();
 
 	public PoseRecorder(VRServer server) {
 		this.server = server;
@@ -53,7 +53,7 @@ public class PoseRecorder {
 		}
 
 		PoseFrames poseFrame = this.poseFrame;
-		List<Pair<Tracker, PoseFrameTracker>> trackers = this.trackers;
+		List<Pair<TrackerJava, PoseFrameTracker>> trackers = this.trackers;
 		if (poseFrame == null || trackers == null) {
 			return;
 		}
@@ -84,7 +84,7 @@ public class PoseRecorder {
 			// A stopped recording will be accounted for by an empty "trackers"
 			// list
 			int cursor = frameCursor++;
-			for (Pair<Tracker, PoseFrameTracker> tracker : trackers) {
+			for (Pair<TrackerJava, PoseFrameTracker> tracker : trackers) {
 				// Add a frame for each tracker
 				tracker.getRight().addFrame(cursor, tracker.getLeft());
 			}
@@ -115,7 +115,7 @@ public class PoseRecorder {
 	public synchronized Future<PoseFrames> startFrameRecording(
 		int numFrames,
 		long intervalMs,
-		List<Tracker> trackers
+		List<TrackerJava> trackers
 	) {
 		return startFrameRecording(numFrames, intervalMs, trackers, null);
 	}
@@ -123,7 +123,7 @@ public class PoseRecorder {
 	public synchronized Future<PoseFrames> startFrameRecording(
 		int numFrames,
 		long intervalMs,
-		List<Tracker> trackers,
+		List<TrackerJava> trackers,
 		Consumer<RecordingProgress> frameCallback
 	) {
 		if (numFrames < 1) {
@@ -148,7 +148,7 @@ public class PoseRecorder {
 
 		// Update tracker list
 		this.trackers.ensureCapacity(trackers.size());
-		for (Tracker tracker : trackers) {
+		for (TrackerJava tracker : trackers) {
 			// Ignore null and computed trackers
 			if (tracker == null || tracker.isComputed()) {
 				continue;

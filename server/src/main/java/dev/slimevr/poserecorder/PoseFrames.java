@@ -1,5 +1,6 @@
 package dev.slimevr.poserecorder;
 
+import dev.slimevr.tracking.trackers.Tracker;
 import dev.slimevr.tracking.trackers.TrackerPosition;
 import dev.slimevr.tracking.trackers.TrackerUtils;
 import io.eiren.util.collections.FastList;
@@ -11,7 +12,7 @@ import java.util.NoSuchElementException;
 
 public final class PoseFrames implements Iterable<TrackerFrame[]> {
 
-	private final FastList<PoseFrameTracker> trackers;
+	private final FastList<Tracker> trackers;
 
 	/**
 	 * Creates a {@link PoseFrames} object with the provided list of
@@ -19,7 +20,7 @@ public final class PoseFrames implements Iterable<TrackerFrame[]> {
 	 *
 	 * @see {@link FastList}, {@link PoseFrameTracker}
 	 */
-	public PoseFrames(FastList<PoseFrameTracker> trackers) {
+	public PoseFrames(FastList<Tracker> trackers) {
 		this.trackers = trackers;
 	}
 
@@ -33,7 +34,7 @@ public final class PoseFrames implements Iterable<TrackerFrame[]> {
 	 */
 	public PoseFrames(PoseFrames parent) {
 		trackers = new FastList<>(parent.trackers.size());
-		for (PoseFrameTracker tracker : parent.trackers) {
+		for (Tracker tracker : parent.trackers) {
 			// Wrap all the trackers so cursors can be per-instance
 			trackers.add(tracker != null ? new PoseFrameTracker(tracker) : null);
 		}
@@ -78,7 +79,7 @@ public final class PoseFrames implements Iterable<TrackerFrame[]> {
 	 * @return The {@link PoseFrameTracker} previously at the specified index
 	 * @see {@link List#remove(int)}, {@link PoseFrameTracker}
 	 */
-	public PoseFrameTracker removeTracker(int index) {
+	public Tracker removeTracker(int index) {
 		return trackers.remove(index);
 	}
 
@@ -125,7 +126,7 @@ public final class PoseFrames implements Iterable<TrackerFrame[]> {
 	 * @return A list of the contained {@link PoseFrameTracker} objects
 	 * @see {@link List}, {@link PoseFrameTracker}
 	 */
-	public List<PoseFrameTracker> getTrackers() {
+	public List<Tracker> getTrackers() {
 		return trackers;
 	}
 
@@ -147,14 +148,14 @@ public final class PoseFrames implements Iterable<TrackerFrame[]> {
 
 	/**
 	 * A utility function to get the maximum Y value of the tracker associated
-	 * with the {@link TrackerPosition#HMD} tracker position
+	 * with the {@link TrackerPosition#HEAD} tracker position
 	 *
 	 * @return The maximum Y value of the tracker associated with the
-	 * {@link TrackerPosition#HMD} tracker position
-	 * @see {@link #getMaxHeight(TrackerPosition)}, {@link TrackerPosition#HMD}
+	 * {@link TrackerPosition#HEAD} tracker position
+	 * @see {@link #getMaxHeight(TrackerPosition)}, {@link TrackerPosition#HEAD}
 	 */
 	public float getMaxHmdHeight() {
-		return getMaxHeight(TrackerPosition.HMD);
+		return getMaxHeight(TrackerPosition.HEAD);
 	}
 
 	/**
@@ -168,14 +169,14 @@ public final class PoseFrames implements Iterable<TrackerFrame[]> {
 	public float getMaxHeight(TrackerPosition trackerPosition) {
 		float maxHeight = 0f;
 
-		PoseFrameTracker hmd = TrackerUtils
-			.findNonComputedHumanPoseTrackerForBodyPosition(trackers, trackerPosition);
+		Tracker hmd = TrackerUtils
+			.getNonInternalTrackerForBodyPosition(trackers, trackerPosition);
 
 		if (hmd == null) {
 			return maxHeight;
 		}
 
-		for (TrackerFrame frame : hmd) {
+		for (Tracker frame : hmd) {
 			if (frame.hasData(TrackerFrameData.POSITION) && frame.position.y > maxHeight) {
 				maxHeight = frame.position.y;
 			}

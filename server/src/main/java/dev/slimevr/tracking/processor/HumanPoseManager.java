@@ -1,16 +1,19 @@
 package dev.slimevr.tracking.processor;
 
-import com.jme3.math.Vector3f;
 import dev.slimevr.VRServer;
 import dev.slimevr.tracking.processor.config.SkeletonConfigManager;
 import dev.slimevr.tracking.processor.config.SkeletonConfigOffsets;
 import dev.slimevr.tracking.processor.config.SkeletonConfigToggles;
 import dev.slimevr.tracking.processor.config.SkeletonConfigValues;
 import dev.slimevr.tracking.processor.skeleton.HumanSkeleton;
-import dev.slimevr.tracking.trackers.*;
+import dev.slimevr.tracking.trackers.Tracker;
+import dev.slimevr.tracking.trackers.TrackerPosition;
+import dev.slimevr.tracking.trackers.TrackerRole;
+import dev.slimevr.tracking.trackers.TrackerStatus;
 import dev.slimevr.util.ann.VRServerThread;
 import io.eiren.util.ann.ThreadSafe;
 import io.eiren.util.collections.FastList;
+import io.github.axisangles.ktmath.Vector3;
 
 import java.util.List;
 import java.util.Map;
@@ -23,7 +26,7 @@ import java.util.function.Consumer;
 public class HumanPoseManager {
 
 	private VRServer server;
-	private final List<ComputedHumanPoseTracker> computedTrackers = new FastList<>();
+	private final List<Tracker> computedTrackers = new FastList<>();
 	private final List<Consumer<HumanSkeleton>> onSkeletonUpdated = new FastList<>();
 	private final SkeletonConfigManager skeletonConfigManager;
 	private HumanSkeleton skeleton;
@@ -50,7 +53,7 @@ public class HumanPoseManager {
 	 *
 	 * @param trackers a list of all trackers
 	 */
-	public HumanPoseManager(List<? extends Tracker> trackers) {
+	public HumanPoseManager(List<Tracker> trackers) {
 		this();
 		skeleton = new HumanSkeleton(this, trackers);
 		skeletonConfigManager.updateSettingsInSkeleton();
@@ -65,7 +68,7 @@ public class HumanPoseManager {
 	 * them
 	 */
 	public HumanPoseManager(
-		List<? extends Tracker> trackers,
+		List<Tracker> trackers,
 		Map<SkeletonConfigOffsets, Float> offsetConfigs
 	) {
 		this();
@@ -86,7 +89,7 @@ public class HumanPoseManager {
 	 * and values for them
 	 */
 	public HumanPoseManager(
-		List<? extends Tracker> trackers,
+		List<Tracker> trackers,
 		Map<SkeletonConfigOffsets, Float> offsetConfigs,
 		Map<SkeletonConfigOffsets, Float> altOffsetConfigs
 	) {
@@ -107,90 +110,168 @@ public class HumanPoseManager {
 	private void initializeComputedHumanPoseTracker() {
 		computedTrackers
 			.add(
-				new ComputedHumanPoseTracker(
-					Tracker.getNextLocalTrackerId(),
-					ComputedHumanPoseTrackerPosition.HEAD,
-					TrackerRole.HEAD
+				new Tracker(
+					null,
+					VRServer.getNextLocalTrackerId(),
+					"Computed head/HMD",
+					TrackerPosition.HEAD,
+					true,
+					true,
+					false,
+					false,
+					true,
+					true
 				)
 			);
 		computedTrackers
 			.add(
-				new ComputedHumanPoseTracker(
-					Tracker.getNextLocalTrackerId(),
-					ComputedHumanPoseTrackerPosition.CHEST,
-					TrackerRole.CHEST
+				new Tracker(
+					null,
+					VRServer.getNextLocalTrackerId(),
+					"Computed chest",
+					TrackerPosition.CHEST,
+					true,
+					true,
+					false,
+					false,
+					true,
+					true
 				)
 			);
 		computedTrackers
 			.add(
-				new ComputedHumanPoseTracker(
-					Tracker.getNextLocalTrackerId(),
-					ComputedHumanPoseTrackerPosition.WAIST,
-					TrackerRole.WAIST
+				new Tracker(
+					null,
+					VRServer.getNextLocalTrackerId(),
+					"Computed waist/hip",
+					TrackerPosition.HIP,
+					true,
+					true,
+					false,
+					false,
+					true,
+					true
 				)
 			);
 		computedTrackers
 			.add(
-				new ComputedHumanPoseTracker(
-					Tracker.getNextLocalTrackerId(),
-					ComputedHumanPoseTrackerPosition.LEFT_FOOT,
-					TrackerRole.LEFT_FOOT
+				new Tracker(
+					null,
+					VRServer.getNextLocalTrackerId(),
+					"Computed left foot",
+					TrackerPosition.LEFT_FOOT,
+					true,
+					true,
+					false,
+					false,
+					true,
+					true
 				)
 			);
 		computedTrackers
 			.add(
-				new ComputedHumanPoseTracker(
-					Tracker.getNextLocalTrackerId(),
-					ComputedHumanPoseTrackerPosition.RIGHT_FOOT,
-					TrackerRole.RIGHT_FOOT
+				new Tracker(
+					null,
+					VRServer.getNextLocalTrackerId(),
+					"Computed right foot",
+					TrackerPosition.RIGHT_FOOT,
+					true,
+					true,
+					false,
+					false,
+					true,
+					true
 				)
 			);
 		computedTrackers
 			.add(
-				new ComputedHumanPoseTracker(
-					Tracker.getNextLocalTrackerId(),
-					ComputedHumanPoseTrackerPosition.LEFT_KNEE,
-					TrackerRole.LEFT_KNEE
+				new Tracker(
+					null,
+					VRServer.getNextLocalTrackerId(),
+					"Computed left knee",
+					TrackerPosition.LEFT_UPPER_LEG,
+					true,
+					true,
+					false,
+					false,
+					true,
+					true
 				)
 			);
 		computedTrackers
 			.add(
-				new ComputedHumanPoseTracker(
-					Tracker.getNextLocalTrackerId(),
-					ComputedHumanPoseTrackerPosition.RIGHT_KNEE,
-					TrackerRole.RIGHT_KNEE
+				new Tracker(
+					null,
+					VRServer.getNextLocalTrackerId(),
+					"Computed right knee",
+					TrackerPosition.RIGHT_UPPER_LEG,
+					true,
+					true,
+					false,
+					false,
+					true,
+					true
 				)
 			);
 		computedTrackers
 			.add(
-				new ComputedHumanPoseTracker(
-					Tracker.getNextLocalTrackerId(),
-					ComputedHumanPoseTrackerPosition.LEFT_ELBOW,
-					TrackerRole.LEFT_ELBOW
+				new Tracker(
+					null,
+					VRServer.getNextLocalTrackerId(),
+					"Computed left elbow",
+					TrackerPosition.LEFT_UPPER_ARM,
+					true,
+					true,
+					false,
+					false,
+					true,
+					true
 				)
 			);
 		computedTrackers
 			.add(
-				new ComputedHumanPoseTracker(
-					Tracker.getNextLocalTrackerId(),
-					ComputedHumanPoseTrackerPosition.RIGHT_ELBOW,
-					TrackerRole.RIGHT_ELBOW
+				new Tracker(
+					null,
+					VRServer.getNextLocalTrackerId(),
+					"Computed right elbow",
+					TrackerPosition.RIGHT_UPPER_ARM,
+					true,
+					true,
+					false,
+					false,
+					true,
+					true
 				)
 			);
 		computedTrackers
 			.add(
-				new ComputedHumanPoseTracker(
-					Tracker.getNextLocalTrackerId(),
-					ComputedHumanPoseTrackerPosition.LEFT_HAND,
-					TrackerRole.LEFT_HAND
+				new Tracker(
+					null,
+					VRServer.getNextLocalTrackerId(),
+					"Computed left hand/controller",
+					TrackerPosition.LEFT_HAND,
+					true,
+					true,
+					false,
+					false,
+					true,
+					true
+
 				)
 			);
 		computedTrackers
 			.add(
-				new ComputedHumanPoseTracker(
-					Tracker.getNextLocalTrackerId(),
-					ComputedHumanPoseTrackerPosition.RIGHT_HAND,
-					TrackerRole.RIGHT_HAND
+				new Tracker(
+					null,
+					VRServer.getNextLocalTrackerId(),
+					"Computed right hand/controller",
+					TrackerPosition.RIGHT_HAND,
+					true,
+					true,
+					false,
+					false,
+					true,
+					true
 				)
 			);
 	}
@@ -206,7 +287,7 @@ public class HumanPoseManager {
 
 	@VRServerThread
 	private void disconnectComputedHumanPoseTrackers() {
-		for (ComputedHumanPoseTracker t : computedTrackers) {
+		for (Tracker t : computedTrackers) {
 			t.setStatus(TrackerStatus.DISCONNECTED);
 		}
 	}
@@ -256,18 +337,10 @@ public class HumanPoseManager {
 	// #endregion
 	// #region tracker/nodes/bones methods
 	/**
-	 * @return a list of the computed trackers as ShareableTrackers
+	 * @return a list of the computed trackers
 	 */
 	@ThreadSafe
-	public List<? extends ShareableTracker> getShareableTracker() {
-		return computedTrackers;
-	}
-
-	/**
-	 * @return a list of the computed trackers as ComputedHumanPoseTracker
-	 */
-	@ThreadSafe
-	public List<? extends ComputedHumanPoseTracker> getComputedTracker() {
+	public List<Tracker> getComputedTrackers() {
 		return computedTrackers;
 	}
 
@@ -278,7 +351,7 @@ public class HumanPoseManager {
 	 * @return the corresponding computed tracker for the trackerRole
 	 */
 	@ThreadSafe
-	public ComputedHumanPoseTracker getComputedTracker(TrackerRole trackerRole) {
+	public Tracker getComputedTracker(TrackerRole trackerRole) {
 		if (isSkeletonPresent())
 			return skeleton.getComputedTracker(trackerRole);
 		return null;
@@ -478,7 +551,7 @@ public class HumanPoseManager {
 	 * @param offset the new offset to apply to the node
 	 */
 	@ThreadSafe
-	public void updateNodeOffset(BoneType node, Vector3f offset) {
+	public void updateNodeOffset(BoneType node, Vector3 offset) {
 		if (isSkeletonPresent())
 			skeleton.updateNodeOffset(node, offset);
 	}

@@ -3,12 +3,9 @@ package dev.slimevr.tracking.trackers;
 import com.jme3.math.Quaternion;
 import com.jme3.math.Vector3f;
 import dev.slimevr.config.TrackerConfig;
-import dev.slimevr.tracking.Device;
-
-import java.util.Optional;
 
 
-public class ComputedTracker implements Tracker, TrackerWithTPS {
+public class ComputedTracker implements TrackerJava, TrackerWithTPS {
 
 	public final Vector3f position = new Vector3f();
 	public final Quaternion rotation = new Quaternion();
@@ -49,7 +46,7 @@ public class ComputedTracker implements Tracker, TrackerWithTPS {
 
 	@Override
 	public void writeConfig(TrackerConfig config) {
-		config.setDesignation(bodyPosition == null ? null : bodyPosition.designation);
+		config.setDesignation(bodyPosition == null ? null : bodyPosition.getDesignation());
 		config.setCustomName(customName);
 	}
 
@@ -59,13 +56,8 @@ public class ComputedTracker implements Tracker, TrackerWithTPS {
 		// be allowed if editing is not allowed
 		if (userEditable()) {
 			setCustomName(config.getCustomName());
-			Optional<TrackerPosition> trackerPosition = TrackerPosition
+			bodyPosition = TrackerPosition
 				.getByDesignation(config.getDesignation());
-			if (trackerPosition.isEmpty()) {
-				bodyPosition = null;
-			} else {
-				bodyPosition = trackerPosition.get();
-			}
 		}
 	}
 
@@ -194,7 +186,7 @@ public class ComputedTracker implements Tracker, TrackerWithTPS {
 	}
 
 	@Override
-	public Tracker get() {
+	public TrackerJava get() {
 		return this;
 	}
 

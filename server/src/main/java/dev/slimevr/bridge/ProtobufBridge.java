@@ -1,16 +1,15 @@
 package dev.slimevr.bridge;
 
-import com.jme3.math.Quaternion;
-import com.jme3.math.Vector3f;
 import dev.slimevr.Main;
-import dev.slimevr.bridge.ProtobufMessages.TrackerStatus;
 import dev.slimevr.bridge.ProtobufMessages.*;
-import dev.slimevr.tracking.trackers.*;
+import dev.slimevr.tracking.trackers.Tracker;
+import dev.slimevr.tracking.trackers.TrackerRole;
 import dev.slimevr.util.ann.VRServerThread;
 import io.eiren.util.ann.Synchronize;
 import io.eiren.util.ann.ThreadSafe;
 import io.eiren.util.collections.FastList;
 import io.eiren.util.logging.LogManager;
+import io.github.axisangles.ktmath.Vector3;
 
 import java.util.HashMap;
 import java.util.List;
@@ -20,27 +19,25 @@ import java.util.Queue;
 import java.util.concurrent.LinkedBlockingQueue;
 
 
-public abstract class ProtobufBridge<T extends VRTracker> implements Bridge {
+public abstract class ProtobufBridge implements Bridge {
 	private static final String resetSourceNamePrefix = "ProtobufBridge";
 
 	@VRServerThread
-	protected final List<ShareableTracker> sharedTrackers = new FastList<>();
+	protected final List<Tracker> sharedTrackers = new FastList<>();
 	protected final String bridgeName;
-	private final Vector3f vec1 = new Vector3f();
-	private final Quaternion quat1 = new Quaternion();
 	@ThreadSafe
 	private final Queue<ProtobufMessage> inputQueue = new LinkedBlockingQueue<>();
 	@ThreadSafe
 	private final Queue<ProtobufMessage> outputQueue = new LinkedBlockingQueue<>();
 	@Synchronize("self")
-	private final Map<String, T> remoteTrackersBySerial = new HashMap<>();
+	private final Map<String, Tracker> remoteTrackersBySerial = new HashMap<>();
 	@Synchronize("self")
-	private final Map<Integer, T> remoteTrackersByTrackerId = new HashMap<>();
-	private final HMDTracker hmd;
+	private final Map<Integer, Tracker> remoteTrackersByTrackerId = new HashMap<>();
+	private final Tracker hmd;
 	private boolean hadNewData = false;
-	private T hmdTracker;
+	private Tracker hmdTracker;
 
-	public ProtobufBridge(String bridgeName, HMDTracker hmd) {
+	public ProtobufBridge(String bridgeName, Tracker hmd) {
 		this.bridgeName = bridgeName;
 		this.hmd = hmd;
 	}
@@ -87,9 +84,9 @@ public abstract class ProtobufBridge<T extends VRTracker> implements Bridge {
 	}
 
 	@VRServerThread
-	protected void trackerOverrideUpdate(T source, ComputedTracker target) {
-		target.position.set(source.position);
-		target.rotation.set(source.rotation);
+	protected void trackerOverrideUpdate(Tracker source, Tracker target) {
+		target.setPosition(source.getPosition());
+		target.setRotation(source.getRotation());
 		target.setStatus(source.getStatus());
 		target.dataTick();
 	}
@@ -101,24 +98,24 @@ public abstract class ProtobufBridge<T extends VRTracker> implements Bridge {
 							// always process at the
 			// speed of the other side
 			return;
-		for (ShareableTracker tracker : sharedTrackers) {
+		for (Tracker tracker : sharedTrackers) {
 			writeTrackerUpdate(tracker);
 		}
 	}
 
 	@VRServerThread
-	protected void writeTrackerUpdate(ShareableTracker localTracker) {
-		Position.Builder builder = Position.newBuilder().setTrackerId(localTracker.getTrackerId());
-		if (localTracker.getPosition(vec1)) {
-			builder.setX(vec1.x);
-			builder.setY(vec1.y);
-			builder.setZ(vec1.z);
+	protected void writeTrackerUpdate(Tracker localTracker) {
+		Position.Builder builder = Position.newBuilder().setTrackerId(localTracker.getId());
+		if (localTracker.getHasPosition()) {
+			builder.setX(localTracker.getPosition().getX());
+			builder.setY(localTracker.getPosition().getY());
+			builder.setZ(localTracker.getPosition().getZ());
 		}
-		if (localTracker.getRotation(quat1)) {
-			builder.setQx(quat1.getX());
-			builder.setQy(quat1.getY());
-			builder.setQz(quat1.getZ());
-			builder.setQw(quat1.getW());
+		if (localTracker.getHasRotation()) {
+			builder.setQx(localTracker.getRotation().getX());
+			builder.setQy(localTracker.getRotation().getY());
+			builder.setQz(localTracker.getRotation().getZ());
+			builder.setQw(localTracker.getRotation().getW());
 		}
 		sendMessage(ProtobufMessage.newBuilder().setPosition(builder).build());
 	}
@@ -140,28 +137,37 @@ public abstract class ProtobufBridge<T extends VRTracker> implements Bridge {
 
 	@VRServerThread
 	protected void positionReceived(Position positionMessage) {
-		T tracker = getInternalRemoteTrackerById(positionMessage.getTrackerId());
+		Tracker tracker = getInternalRemoteTrackerById(positionMessage.getTrackerId());
 		if (tracker != null) {
 			if (positionMessage.hasX())
-				tracker.position
-					.set(positionMessage.getX(), positionMessage.getY(), positionMessage.getZ());
-			tracker.rotation
-				.set(
-					positionMessage.getQx(),
-					positionMessage.getQy(),
-					positionMessage.getQz(),
-					positionMessage.getQw()
+				tracker
+					.setPosition(
+						new Vector3(
+							positionMessage.getX(),
+							positionMessage.getY(),
+							positionMessage.getZ()
+						)
+					);
+			tracker
+				.setRotation(
+					new io.github.axisangles.ktmath.Quaternion(
+						positionMessage.getQw(),
+						positionMessage.getQx(),
+						positionMessage.getQy(),
+						positionMessage.getQz()
+					)
+
 				);
 			tracker.dataTick();
 		}
 	}
 
 	@VRServerThread
-	protected abstract T createNewTracker(TrackerAdded trackerAdded);
+	protected abstract Tracker createNewTracker(TrackerAdded trackerAdded);
 
 	@VRServerThread
 	protected void trackerAddedReceived(TrackerAdded trackerAdded) {
-		T tracker = getInternalRemoteTrackerById(trackerAdded.getTrackerId());
+		Tracker tracker = getInternalRemoteTrackerById(trackerAdded.getTrackerId());
 		if (tracker != null) {
 			// TODO reinit?
 			return;
@@ -171,9 +177,9 @@ public abstract class ProtobufBridge<T extends VRTracker> implements Bridge {
 			remoteTrackersBySerial.put(tracker.getName(), tracker);
 		}
 		synchronized (remoteTrackersByTrackerId) {
-			remoteTrackersByTrackerId.put(tracker.getTrackerId(), tracker);
+			remoteTrackersByTrackerId.put(tracker.getId(), tracker);
 		}
-		if (trackerAdded.getTrackerRole() == TrackerRole.HMD.id) {
+		if (trackerAdded.getTrackerRole() == TrackerRole.HMD.getId()) {
 			hmdTracker = tracker;
 		} else {
 			Main.getVrServer().registerTracker(tracker);
@@ -199,7 +205,7 @@ public abstract class ProtobufBridge<T extends VRTracker> implements Bridge {
 
 	@VRServerThread
 	protected void trackerStatusReceived(TrackerStatus trackerStatus) {
-		T tracker = getInternalRemoteTrackerById(trackerStatus.getTrackerId());
+		Tracker tracker = getInternalRemoteTrackerById(trackerStatus.getTrackerId());
 		if (tracker != null) {
 			tracker
 				.setStatus(
@@ -210,7 +216,7 @@ public abstract class ProtobufBridge<T extends VRTracker> implements Bridge {
 	}
 
 	@ThreadSafe
-	protected T getInternalRemoteTrackerById(int trackerId) {
+	protected Tracker getInternalRemoteTrackerById(int trackerId) {
 		synchronized (remoteTrackersByTrackerId) {
 			return remoteTrackersByTrackerId.get(trackerId);
 		}
@@ -218,13 +224,13 @@ public abstract class ProtobufBridge<T extends VRTracker> implements Bridge {
 
 	@VRServerThread
 	protected void reconnected() {
-		for (ShareableTracker tracker : sharedTrackers) {
+		for (Tracker tracker : sharedTrackers) {
 			TrackerAdded.Builder builder = TrackerAdded
 				.newBuilder()
-				.setTrackerId(tracker.getTrackerId())
+				.setTrackerId(tracker.getId())
 				.setTrackerName(tracker.getName())
 				.setTrackerSerial(tracker.getName())
-				.setTrackerRole(tracker.getTrackerRole().id);
+				.setTrackerRole(tracker.getTrackerPosition().getTrackerRole().getId());
 			sendMessage(ProtobufMessage.newBuilder().setTrackerAdded(builder).build());
 		}
 	}
@@ -232,7 +238,7 @@ public abstract class ProtobufBridge<T extends VRTracker> implements Bridge {
 	@VRServerThread
 	protected void disconnected() {
 		synchronized (remoteTrackersByTrackerId) {
-			for (Entry<Integer, T> integerTEntry : remoteTrackersByTrackerId.entrySet()) {
+			for (Entry<Integer, Tracker> integerTEntry : remoteTrackersByTrackerId.entrySet()) {
 				integerTEntry
 					.getValue()
 					.setStatus(dev.slimevr.tracking.trackers.TrackerStatus.DISCONNECTED);
@@ -245,29 +251,29 @@ public abstract class ProtobufBridge<T extends VRTracker> implements Bridge {
 
 	@VRServerThread
 	@Override
-	public void addSharedTracker(ShareableTracker tracker) {
+	public void addSharedTracker(Tracker tracker) {
 		if (sharedTrackers.contains(tracker))
 			return;
 		sharedTrackers.add(tracker);
 		TrackerAdded.Builder builder = TrackerAdded
 			.newBuilder()
-			.setTrackerId(tracker.getTrackerId())
+			.setTrackerId(tracker.getId())
 			.setTrackerName(tracker.getName())
 			.setTrackerSerial(tracker.getName())
-			.setTrackerRole(tracker.getTrackerRole().id);
+			.setTrackerRole(tracker.getTrackerPosition().getTrackerRole().getId());
 		sendMessage(ProtobufMessage.newBuilder().setTrackerAdded(builder).build());
 	}
 
 	@VRServerThread
 	@Override
-	public void removeSharedTracker(ShareableTracker tracker) {
+	public void removeSharedTracker(Tracker tracker) {
 		// Remove shared tracker
 		sharedTrackers.remove(tracker);
 
 		// Set the tracker's status as disconnected
 		TrackerStatus.Builder statusBuilder = TrackerStatus
 			.newBuilder()
-			.setTrackerId(tracker.getTrackerId());
+			.setTrackerId(tracker.getId());
 		statusBuilder.setStatus(TrackerStatus.Status.DISCONNECTED);
 		sendMessage(ProtobufMessage.newBuilder().setTrackerStatus(statusBuilder).build());
 	}

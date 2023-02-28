@@ -9,7 +9,7 @@ public class HMDTracker extends ComputedTracker implements TrackerWithTPS {
 
 	public HMDTracker(String name) {
 		super(0, name, name, true, true, null, true);
-		setBodyPosition(TrackerPosition.HMD);
+		setBodyPosition(TrackerPosition.HEAD);
 	}
 
 	@Override

@@ -9,7 +9,6 @@ import com.jme3.math.Vector3f;
 import dev.slimevr.VRServer;
 import dev.slimevr.autobone.errors.BodyProportionError;
 import dev.slimevr.config.VMCConfig;
-import dev.slimevr.tracking.Device;
 import dev.slimevr.tracking.processor.BoneType;
 import dev.slimevr.tracking.processor.HumanPoseManager;
 import dev.slimevr.tracking.processor.TransformNode;
@@ -38,7 +37,7 @@ public class VMCHandler implements OSCHandler {
 	private final VMCConfig config;
 	private final VRServer server;
 	private final HumanPoseManager humanPoseManager;
-	private final List<? extends ShareableTracker> shareableTrackers;
+	private final List<Tracker> computedTrackers;
 	private final FastList<Object> oscArgs = new FastList<>();
 	private final Vector3f vecBuf = new Vector3f();
 	private final Quaternion quatBuf = new Quaternion();
@@ -60,12 +59,12 @@ public class VMCHandler implements OSCHandler {
 		VRServer server,
 		HumanPoseManager humanPoseManager,
 		VMCConfig oscConfig,
-		List<? extends ShareableTracker> shareableTrackers
+		List<Tracker> computedTrackers
 	) {
 		this.server = server;
 		this.humanPoseManager = humanPoseManager;
 		this.config = oscConfig;
-		this.shareableTrackers = shareableTrackers;
+		this.computedTrackers = computedTrackers;
 
 		startTime = System.currentTimeMillis();
 
@@ -163,10 +162,10 @@ public class VMCHandler implements OSCHandler {
 			// Load VRM data
 			if (outputUnityArmature != null && config.getVrmJson() != null) {
 				VRMReader vrmReader = new VRMReader(config.getVrmJson());
-				for (UnityBone unityBone : UnityBone.values) {
+				for (UnityBone unityBone : UnityBone.values()) {
 					TransformNode node = outputUnityArmature.getHeadNodeOfBone(unityBone);
 					if (node != null)
-						node.localTransform
+						node.getLocalTransform()
 							.setTranslation(vrmReader.getOffsetForBone(unityBone));
 				}
 				vrmHeight = vrmReader
@@ -188,10 +187,12 @@ public class VMCHandler implements OSCHandler {
 		switch (event.getMessage().getAddress()) {
 			case "/VMC/Ext/Bone/Pos":
 				// Is bone (rotation)
-				TrackerPosition trackerPosition = UnityBone
-					.getByStringVal(
-						String.valueOf(event.getMessage().getArguments().get(0))
-					).trackerPosition;
+				TrackerPosition trackerPosition = null;
+				UnityBone bone = UnityBone
+					.getByStringVal(String.valueOf(event.getMessage().getArguments().get(0)));
+				if (bone != null)
+					trackerPosition = bone.getTrackerPosition();
+
 				// If received bone is part of SlimeVR's skeleton
 				if (trackerPosition != null) {
 					handleReceivedTracker(
@@ -276,7 +277,7 @@ public class VMCHandler implements OSCHandler {
 		// Create tracker if trying to get it returned null
 		if (tracker == null) {
 			tracker = new VRTracker(
-				Tracker.getNextLocalTrackerId(),
+				VRServer.getNextLocalTrackerId(),
 				name,
 				name,
 				rotation != null,
@@ -356,18 +357,18 @@ public class VMCHandler implements OSCHandler {
 							)
 						);
 
-					for (UnityBone bone : UnityBone.values) {
+					for (UnityBone bone : UnityBone.values()) {
 						// Get tailNode for bone
 						TransformNode tailNode = humanPoseManager
 							.getTailNodeOfBone(
-								bone.boneType
+								bone.getBoneType()
 							);
 						// Update unity hierarchy from bone's global rotation
 						if (tailNode != null && tailNode.getParent() != null)
 							outputUnityArmature
 								.setBoneRotationFromGlobal(
 									bone,
-									tailNode.getParent().worldTransform.getRotation()
+									tailNode.getParent().getWorldTransform().getRotation()
 								);
 					}
 					if (!anchorHip) {
@@ -376,33 +377,33 @@ public class VMCHandler implements OSCHandler {
 						// and subtracts the difference between the VRM's head
 						// and hip
 						// FIXME this way isn't perfect, but I give up - Erimel
-						outputUnityArmature.getRootNode().localTransform
+						outputUnityArmature.getRootNode().getLocalTransform()
 							.setTranslation(
-								humanPoseManager.getTailNodeOfBone(BoneType.HEAD).worldTransform
+								humanPoseManager.getTailNodeOfBone(BoneType.HEAD).getWorldTransform()
 									.getTranslation()
-									.mult(
+									.times(
 										vrmHeight
 											/ (humanPoseManager.getUserHeightFromConfig()
 												* BodyProportionError.eyeHeightToHeightRatio)
 									)
-									.subtractLocal(
+									.minus(
 										(outputUnityArmature
 											.getHeadNodeOfBone(UnityBone.HEAD)
-											.getParent().worldTransform
+											.getParent().getWorldTransform()
 												.getTranslation()
-												.subtract(
+												.minus(
 													(outputUnityArmature
 														.getHeadNodeOfBone(
 															UnityBone.LEFT_UPPER_LEG
-														).worldTransform
+														).getWorldTransform()
 															.getTranslation()
-															.add(
+															.plus(
 																outputUnityArmature
 																	.getHeadNodeOfBone(
 																		UnityBone.RIGHT_UPPER_LEG
-																	).worldTransform
+																	).getWorldTransform()
 																		.getTranslation()
-															)).multLocal(0.5f)
+															)).times(0.5f)
 												))
 									)
 							);
@@ -412,7 +413,7 @@ public class VMCHandler implements OSCHandler {
 					outputUnityArmature.updateNodes();
 
 					// Add Unity humanoid bones transforms
-					for (UnityBone bone : UnityBone.values) {
+					for (UnityBone bone : UnityBone.values()) {
 						if (
 							!(humanPoseManager.isTrackingLeftArmFromController()
 								&& isLeftArmUnityBone(bone))
@@ -425,7 +426,7 @@ public class VMCHandler implements OSCHandler {
 							quatBuf.set(outputUnityArmature.getLocalRotationForBone(bone));
 
 							oscArgs.clear();
-							oscArgs.add(bone.stringVal);
+							oscArgs.add(bone.getStringVal());
 							addTransformToArgs(vecBuf, quatBuf);
 							oscBundle
 								.addPacket(
@@ -438,7 +439,7 @@ public class VMCHandler implements OSCHandler {
 					}
 				}
 
-				for (ShareableTracker shareableTracker : shareableTrackers) {
+				for (Tracker shareableTracker : computedTrackers) {
 					shareableTracker.getPosition(vecBuf);
 					shareableTracker.getRotation(quatBuf);
 					oscArgs.clear();

@@ -2,8 +2,7 @@
 
 package io.github.axisangles.ktmath
 
-import kotlin.math.atan2
-import kotlin.math.sqrt
+import kotlin.math.*
 
 data class Vector3(val x: Float, val y: Float, val z: Float) {
 	companion object {
@@ -35,14 +34,14 @@ data class Vector3(val x: Float, val y: Float, val z: Float) {
 	 * @param that the vector with which to be dotted
 	 * @return the dot product
 	 **/
-	fun dot(that: Vector3) = this.x * that.x + this.y * that.y + this.z * that.z
+	infix fun dot(that: Vector3) = this.x * that.x + this.y * that.y + this.z * that.z
 
 	/**
 	 * computes the cross product of this vector with that vector
 	 * @param that the vector with which to be crossed
 	 * @return the cross product
 	 **/
-	fun cross(that: Vector3) = Vector3(
+	infix fun cross(that: Vector3) = Vector3(
 		this.y * that.z - this.z * that.y,
 		this.z * that.x - this.x * that.z,
 		this.x * that.y - this.y * that.x

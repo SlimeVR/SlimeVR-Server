@@ -3,18 +3,9 @@ package dev.slimevr.tracking.trackers;
 import com.jme3.math.Quaternion;
 import com.jme3.math.Vector3f;
 import dev.slimevr.config.TrackerConfig;
-import dev.slimevr.tracking.Device;
-
-import java.util.concurrent.atomic.AtomicInteger;
 
 
-public interface Tracker {
-
-	AtomicInteger nextLocalTrackerId = new AtomicInteger();
-
-	static int getNextLocalTrackerId() {
-		return nextLocalTrackerId.incrementAndGet();
-	}
+public interface TrackerJava {
 
 	boolean getPosition(Vector3f store);
 
@@ -72,7 +63,7 @@ public interface Tracker {
 	/**
 	 * Returns the real tracker behind this tracker.
 	 */
-	Tracker get();
+	TrackerJava get();
 
 
 }

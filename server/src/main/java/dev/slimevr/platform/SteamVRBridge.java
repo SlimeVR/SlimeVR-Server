@@ -5,28 +5,30 @@ import dev.slimevr.VRServer;
 import dev.slimevr.bridge.ProtobufBridge;
 import dev.slimevr.bridge.ProtobufMessages;
 import dev.slimevr.config.BridgeConfig;
-import dev.slimevr.tracking.Device;
-import dev.slimevr.tracking.trackers.*;
+import dev.slimevr.tracking.trackers.Device;
+import dev.slimevr.tracking.trackers.Tracker;
+import dev.slimevr.tracking.trackers.TrackerPosition;
+import dev.slimevr.tracking.trackers.TrackerRole;
 import dev.slimevr.util.ann.VRServerThread;
 
 import java.util.List;
 
 
-public abstract class SteamVRBridge extends ProtobufBridge<VRTracker> implements Runnable {
+public abstract class SteamVRBridge extends ProtobufBridge implements Runnable {
 	protected final String bridgeSettingsKey;
 	protected final TrackerRole[] defaultRoles = new TrackerRole[] { TrackerRole.WAIST,
 		TrackerRole.LEFT_FOOT, TrackerRole.RIGHT_FOOT };
 	protected final Thread runnerThread;
-	protected final List<? extends ShareableTracker> shareableTrackers;
+	protected final List<Tracker> shareableTrackers;
 	protected final BridgeConfig config;
 
 	public SteamVRBridge(
 		VRServer server,
-		HMDTracker hmd,
+		Tracker hmd,
 		String threadName,
 		String bridgeName,
 		String bridgeSettingsKey,
-		List<? extends ShareableTracker> shareableTrackers
+		List<Tracker> shareableTrackers
 	) {
 		super(bridgeName, hmd);
 		this.bridgeSettingsKey = bridgeSettingsKey;
@@ -44,8 +46,8 @@ public abstract class SteamVRBridge extends ProtobufBridge<VRTracker> implements
 				this.config.getBridgeTrackerRole(role, true)
 			);
 		}
-		for (ShareableTracker tr : shareableTrackers) {
-			TrackerRole role = tr.getTrackerRole();
+		for (Tracker tr : shareableTrackers) {
+			TrackerRole role = tr.getTrackerPosition().getTrackerRole();
 			changeShareSettings(
 				role,
 				this.config.getBridgeTrackerRole(role, false)
@@ -56,8 +58,8 @@ public abstract class SteamVRBridge extends ProtobufBridge<VRTracker> implements
 
 	@VRServerThread
 	public boolean getShareSetting(TrackerRole role) {
-		for (ShareableTracker tr : shareableTrackers) {
-			if (tr.getTrackerRole() == role) {
+		for (Tracker tr : shareableTrackers) {
+			if (tr.getTrackerPosition().getTrackerRole() == role) {
 				return sharedTrackers.contains(tr);
 			}
 		}
@@ -68,8 +70,8 @@ public abstract class SteamVRBridge extends ProtobufBridge<VRTracker> implements
 	public void changeShareSettings(TrackerRole role, boolean share) {
 		if (role == null)
 			return;
-		for (ShareableTracker tr : shareableTrackers) {
-			if (tr.getTrackerRole() == role) {
+		for (Tracker tr : shareableTrackers) {
+			if (tr.getTrackerPosition().getTrackerRole() == role) {
 				if (share) {
 					addSharedTracker(tr);
 				} else {
@@ -83,7 +85,7 @@ public abstract class SteamVRBridge extends ProtobufBridge<VRTracker> implements
 
 	@Override
 	@VRServerThread
-	protected VRTracker createNewTracker(ProtobufMessages.TrackerAdded trackerAdded) {
+	protected Tracker createNewTracker(ProtobufMessages.TrackerAdded trackerAdded) {
 		// Todo: We need the manufacturer
 		Device device = Main
 			.getVrServer()
@@ -94,21 +96,21 @@ public abstract class SteamVRBridge extends ProtobufBridge<VRTracker> implements
 				"FeederAPP"
 			);
 
-		VRTracker tracker = new VRTracker(
-			trackerAdded.getTrackerId(),
-			trackerAdded.getTrackerSerial(),
-			trackerAdded.getTrackerName(),
-			true,
-			true,
+		Tracker tracker = new Tracker(
 			device,
-			false
+			trackerAdded.getTrackerId(),
+			trackerAdded.getTrackerName(),
+			null,
+			true,
+			true,
+			true
 		);
 
 		device.getTrackers().put(0, tracker);
 		Main.getVrServer().getDeviceManager().addDevice(device);
 		TrackerRole role = TrackerRole.getById(trackerAdded.getTrackerRole());
 		if (role != null) {
-			tracker.setBodyPosition(TrackerPosition.getByTrackerRole(role).orElse(null));
+			tracker.setTrackerPosition(TrackerPosition.getByTrackerRole(role));
 		}
 		return tracker;
 	}

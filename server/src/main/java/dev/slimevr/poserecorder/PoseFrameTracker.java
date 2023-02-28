@@ -2,22 +2,24 @@ package dev.slimevr.poserecorder;
 
 import com.jme3.math.Quaternion;
 import com.jme3.math.Vector3f;
+import dev.slimevr.VRServer;
 import dev.slimevr.config.TrackerConfig;
-import dev.slimevr.tracking.Device;
-import dev.slimevr.tracking.trackers.Tracker;
+import dev.slimevr.tracking.trackers.Device;
+import dev.slimevr.tracking.trackers.TrackerJava;
 import dev.slimevr.tracking.trackers.TrackerPosition;
 import dev.slimevr.tracking.trackers.TrackerStatus;
 import io.eiren.util.collections.FastList;
+import org.jetbrains.annotations.Nullable;
 
 import java.util.Iterator;
 
 
-public class PoseFrameTracker implements Tracker, Iterable<TrackerFrame> {
+public class PoseFrameTracker implements TrackerJava, Iterable<TrackerFrame> {
 
 	public final String name;
 
 	private final FastList<TrackerFrame> frames;
-	private final int trackerId = Tracker.getNextLocalTrackerId();
+	private final int trackerId = VRServer.getNextLocalTrackerId();
 	private int frameCursor = 0;
 
 	public PoseFrameTracker(String name, FastList<TrackerFrame> frames) {
@@ -33,7 +35,7 @@ public class PoseFrameTracker implements Tracker, Iterable<TrackerFrame> {
 		this(name, new FastList<>(initialCapacity));
 	}
 
-	public PoseFrameTracker(Tracker parent, int initialCapacity) {
+	public PoseFrameTracker(TrackerJava parent, int initialCapacity) {
 		this(parent.getName(), initialCapacity);
 	}
 
@@ -41,7 +43,7 @@ public class PoseFrameTracker implements Tracker, Iterable<TrackerFrame> {
 		this(name, 5);
 	}
 
-	public PoseFrameTracker(Tracker parent) {
+	public PoseFrameTracker(TrackerJava parent) {
 		this(parent.getName());
 	}
 
@@ -86,7 +88,7 @@ public class PoseFrameTracker implements Tracker, Iterable<TrackerFrame> {
 		return trackerFrame;
 	}
 
-	public TrackerFrame addFrame(int index, Tracker tracker) {
+	public TrackerFrame addFrame(int index, TrackerJava tracker) {
 		return addFrame(index, TrackerFrame.fromTracker(tracker));
 	}
 
@@ -95,7 +97,7 @@ public class PoseFrameTracker implements Tracker, Iterable<TrackerFrame> {
 		return trackerFrame;
 	}
 
-	public TrackerFrame addFrame(Tracker tracker) {
+	public TrackerFrame addFrame(TrackerJava tracker) {
 		return addFrame(TrackerFrame.fromTracker(tracker));
 	}
 
@@ -129,6 +131,7 @@ public class PoseFrameTracker implements Tracker, Iterable<TrackerFrame> {
 		return getFrame(frameCursor);
 	}
 
+	@Nullable
 	public TrackerFrame safeGetFrame(int index) {
 		try {
 			return getFrame(index);
@@ -297,7 +300,7 @@ public class PoseFrameTracker implements Tracker, Iterable<TrackerFrame> {
 	}
 
 	@Override
-	public Tracker get() {
+	public TrackerJava get() {
 		return this;
 	}
 

@@ -3,8 +3,8 @@ package dev.slimevr.tracking.processor.skeleton;
 import com.jme3.math.FastMath;
 import com.jme3.math.Quaternion;
 import com.jme3.math.Vector3f;
+import dev.slimevr.osc.UnityBone;
 import dev.slimevr.tracking.processor.TransformNode;
-import dev.slimevr.tracking.trackers.UnityBone;
 
 
 public class UnityArmature {

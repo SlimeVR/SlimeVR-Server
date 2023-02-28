@@ -3,20 +3,20 @@ package dev.slimevr.poserecorder;
 import com.jme3.math.Quaternion;
 import com.jme3.math.Vector3f;
 import dev.slimevr.config.TrackerConfig;
-import dev.slimevr.tracking.Device;
-import dev.slimevr.tracking.trackers.Tracker;
+import dev.slimevr.tracking.trackers.Device;
+import dev.slimevr.tracking.trackers.TrackerJava;
 import dev.slimevr.tracking.trackers.TrackerPosition;
 import dev.slimevr.tracking.trackers.TrackerStatus;
 
 
-public final class TrackerFrame implements Tracker {
+public final class TrackerFrame implements TrackerJava {
 
 	public final TrackerPosition designation;
 	public final Quaternion rotation;
 	public final Vector3f position;
 	public final Vector3f acceleration;
 	public final Quaternion rawRotation;
-	private final int trackerId = Tracker.getNextLocalTrackerId();
+	private final int trackerId = TrackerJava.getNextLocalTrackerId();
 	private int dataFlags = 0;
 
 	public TrackerFrame(
@@ -52,7 +52,7 @@ public final class TrackerFrame implements Tracker {
 		}
 	}
 
-	public static TrackerFrame fromTracker(Tracker tracker) {
+	public static TrackerFrame fromTracker(TrackerJava tracker) {
 		if (tracker == null) {
 			return null;
 		}
@@ -275,7 +275,7 @@ public final class TrackerFrame implements Tracker {
 	}
 
 	@Override
-	public Tracker get() {
+	public TrackerJava get() {
 		return this;
 	}
 

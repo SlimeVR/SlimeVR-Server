@@ -1,8 +1,7 @@
 package dev.slimevr.tracking.trackers.udp;
 
 import dev.slimevr.NetworkProtocol;
-import dev.slimevr.tracking.Device;
-import dev.slimevr.tracking.trackers.IMUTracker;
+import dev.slimevr.tracking.trackers.Device;
 import dev.slimevr.tracking.trackers.Tracker;
 
 import java.net.InetAddress;
@@ -81,7 +80,7 @@ public class UDPDevice extends Device {
 		return this.trackers;
 	}
 
-	public IMUTracker getTracker(int id) {
-		return (IMUTracker) this.getTrackers().get(id);
+	public Tracker getTracker(int id) {
+		return this.getTrackers().get(id);
 	}
 }

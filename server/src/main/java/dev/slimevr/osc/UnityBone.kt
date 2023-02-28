@@ -1,16 +1,18 @@
-package dev.slimevr.tracking.trackers;
+package dev.slimevr.osc
 
-import dev.slimevr.tracking.processor.BoneType;
-
-import java.util.HashMap;
-import java.util.Map;
-
+import dev.slimevr.tracking.processor.BoneType
+import dev.slimevr.tracking.trackers.TrackerPosition
 
 /**
  * Unity HumanBodyBones from:
  * https://docs.unity3d.com/ScriptReference/HumanBodyBones.html
  */
-public enum UnityBone {
+enum class UnityBone(
+	val stringVal: String,
+	val boneType: BoneType?,
+	val trackerPosition: TrackerPosition?,
+) {
+
 	HIPS("Hips", BoneType.HIP, TrackerPosition.HIP),
 	LEFT_UPPER_LEG("LeftUpperLeg", BoneType.LEFT_UPPER_LEG, TrackerPosition.LEFT_UPPER_LEG),
 	RIGHT_UPPER_LEG("RightUpperLeg", BoneType.RIGHT_UPPER_LEG, TrackerPosition.RIGHT_UPPER_LEG),
@@ -22,7 +24,7 @@ public enum UnityBone {
 	CHEST("Chest", BoneType.CHEST, TrackerPosition.CHEST),
 	UPPER_CHEST("UpperChest", BoneType.CHEST, TrackerPosition.CHEST),
 	NECK("Neck", BoneType.NECK, TrackerPosition.NECK),
-	HEAD("Head", BoneType.HEAD, TrackerPosition.HMD),
+	HEAD("Head", BoneType.HEAD, TrackerPosition.HEAD),
 	LEFT_SHOULDER("LeftShoulder", BoneType.LEFT_SHOULDER, TrackerPosition.LEFT_SHOULDER),
 	RIGHT_SHOULDER("RightShoulder", BoneType.RIGHT_SHOULDER, TrackerPosition.RIGHT_SHOULDER),
 	LEFT_UPPER_ARM("LeftUpperArm", BoneType.LEFT_UPPER_ARM, TrackerPosition.LEFT_UPPER_ARM),
@@ -66,29 +68,13 @@ public enum UnityBone {
 	RIGHT_LITTLE_PROXIMAL("RightLittleProximal", null, null),
 	RIGHT_LITTLE_INTERMEDIATE("RightLittleIntermediate", null, null),
 	RIGHT_LITTLE_DISTAL("RightLittleDistal", null, null),
-	LAST_BONE("LastBone", null, null);
+	LAST_BONE("LastBone", null, null),
+	;
 
+	companion object {
+		private val byStringVal: Map<String, UnityBone> = values().associateBy { it.stringVal.lowercase() }
 
-	private static final Map<String, UnityBone> byStringVal = new HashMap<>();
-
-	static {
-		for (UnityBone configVal : values()) {
-			byStringVal.put(configVal.stringVal.toLowerCase(), configVal);
-		}
-	}
-
-	public static final UnityBone[] values = values();
-	public final String stringVal;
-	public final BoneType boneType;
-	public final TrackerPosition trackerPosition;
-
-	UnityBone(String stringVal, BoneType boneType, TrackerPosition trackerPosition) {
-		this.stringVal = stringVal;
-		this.boneType = boneType;
-		this.trackerPosition = trackerPosition;
-	}
-
-	public static UnityBone getByStringVal(String stringVal) {
-		return stringVal == null ? null : byStringVal.get(stringVal.toLowerCase());
+		@JvmStatic
+		fun getByStringVal(stringVal: String): UnityBone? = byStringVal[stringVal.lowercase()]
 	}
 }

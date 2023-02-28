@@ -8,17 +8,14 @@ import dev.slimevr.config.TrackerConfig;
 import dev.slimevr.filtering.CircularArrayList;
 import dev.slimevr.filtering.QuaternionMovingAverage;
 import dev.slimevr.filtering.TrackerFilters;
-import dev.slimevr.tracking.Device;
 import dev.slimevr.tracking.trackers.udp.TrackersUDPServer;
 import dev.slimevr.tracking.trackers.udp.UDPDevice;
 import io.eiren.util.BufferedTimer;
 import io.eiren.util.collections.FastList;
 
-import java.util.Optional;
-
 
 public class IMUTracker
-	implements Tracker, TrackerWithTPS, TrackerWithBattery, TrackerWithWireless,
+	implements TrackerJava, TrackerWithTPS, TrackerWithBattery, TrackerWithWireless,
 	TrackerWithFiltering {
 
 	public static final float MAX_MAG_CORRECTION_ACCURACY = 5 * FastMath.RAD_TO_DEG;
@@ -112,7 +109,7 @@ public class IMUTracker
 
 	@Override
 	public void writeConfig(TrackerConfig config) {
-		config.setDesignation(bodyPosition == null ? null : bodyPosition.designation);
+		config.setDesignation(bodyPosition == null ? null : bodyPosition.getDesignation());
 		config
 			.setMountingOrientation(
 				mounting != null ? mounting : new Quaternion().fromAngles(0, FastMath.PI, 0)
@@ -134,13 +131,8 @@ public class IMUTracker
 			} else {
 				mountAdjust.loadIdentity();
 			}
-			Optional<TrackerPosition> trackerPosition = TrackerPosition
+			bodyPosition = TrackerPosition
 				.getByDesignation(config.getDesignation());
-			if (trackerPosition.isEmpty()) {
-				bodyPosition = null;
-			} else {
-				bodyPosition = trackerPosition.get();
-			}
 			if (config.getAllowDriftCompensation() == null) {
 				// If value didn't exist, default to true and save
 				allowDriftCompensation = true;
@@ -736,7 +728,7 @@ public class IMUTracker
 	@Override
 	public String getDisplayName() {
 		return "IMU Tracker #"
-			+ (getTrackerId() - vrserver.humanPoseManager.getShareableTracker().size());
+			+ (getTrackerId() - vrserver.humanPoseManager.getComputedTrackers().size());
 	}
 
 	@Override
@@ -750,7 +742,7 @@ public class IMUTracker
 	}
 
 	@Override
-	public Tracker get() {
+	public TrackerJava get() {
 		return this;
 	}
 

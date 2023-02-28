@@ -1,7 +1,7 @@
 package dev.slimevr.bridge;
 
+import dev.slimevr.tracking.trackers.Tracker;
 import dev.slimevr.util.ann.VRServerThread;
-import dev.slimevr.tracking.trackers.ShareableTracker;
 
 
 /**
@@ -26,7 +26,7 @@ public interface Bridge {
 	 * @param tracker
 	 */
 	@VRServerThread
-	void addSharedTracker(ShareableTracker tracker);
+	void addSharedTracker(Tracker tracker);
 
 	/**
 	 * Removes tracker from a bridge. If the other side supports tracker
@@ -37,7 +37,7 @@ public interface Bridge {
 	 * @param tracker
 	 */
 	@VRServerThread
-	void removeSharedTracker(ShareableTracker tracker);
+	void removeSharedTracker(Tracker tracker);
 
 	@VRServerThread
 	void startBridge();

@@ -1,4 +1,4 @@
-package dev.slimevr.tracking.trackers;
+package dev.slimevr.tracking.trackers
 
 /**
  * The tracker role classifies the position and the role of a tracker on user's
@@ -7,8 +7,7 @@ package dev.slimevr.tracking.trackers;
  * body's bones on purpose. Example: virtual vive trackers for SteamVR vs actual
  * SlimeVR trackers.
  */
-public enum TrackerRole {
-
+enum class TrackerRole(val id: Int, val roleHint: String, val viveRole: String, val deviceType: DeviceType?) {
 	// @formatter:off
 	NONE(0, "", "", null),
 	WAIST(1, "vive_tracker_waist", "TrackerRole_Waist", DeviceType.TRACKER),
@@ -25,46 +24,18 @@ public enum TrackerRole {
 	RIGHT_HAND(12, "vive_tracker_handed", "TrackerRole_Handed", DeviceType.TRACKER),
 	LEFT_CONTROLLER(13, "vive_tracker_handed", "TrackerRole_Handed", DeviceType.CONTROLLER),
 	RIGHT_CONTROLLER(14, "vive_tracker_handed", "TrackerRole_Handed", DeviceType.CONTROLLER),
-	HEAD(15, "", "", DeviceType.TRACKER),
-	NECK(16, "", "", DeviceType.TRACKER),
+	HEAD(15, "", "", DeviceType.TRACKER), NECK(16, "", "", DeviceType.TRACKER),
 	CAMERA(17, "vive_tracker_camera", "TrackerRole_Camera", DeviceType.TRACKER),
 	KEYBOARD(18, "vive_tracker_keyboard", "TrackerRole_Keyboard", DeviceType.TRACKER),
 	HMD(19, "", "", DeviceType.HMD),
 	BEACON(20, "", "", DeviceType.TRACKING_REFERENCE),
-	GENERIC_CONTROLLER(21, "vive_tracker_handed", "TrackerRole_Handed", DeviceType.CONTROLLER);
-	// @formatter:on
+	GENERIC_CONTROLLER(21, "vive_tracker_handed", "TrackerRole_Handed", DeviceType.CONTROLLER),
+	;
 
-	public static final TrackerRole[] values = values();
-	private static final TrackerRole[] byId = new TrackerRole[22];
+	companion object {
+		private val byId = values().associateBy { it.id }
 
-	static {
-		for (TrackerRole tr : values) {
-			if (byId[tr.id] != null)
-				throw new AssertionError(
-					"Tracker role id "
-						+ tr.id
-						+ " occupied by "
-						+ byId[tr.id]
-						+ " when adding "
-						+ tr
-				);
-			byId[tr.id] = tr;
-		}
-	}
-
-	public final int id;
-	public final String roleHint;
-	public final String viveRole;
-	public final DeviceType deviceType;
-
-	TrackerRole(int id, String roleHint, String viveRole, DeviceType deviceType) {
-		this.id = id;
-		this.roleHint = roleHint;
-		this.viveRole = viveRole;
-		this.deviceType = deviceType;
-	}
-
-	public static TrackerRole getById(int id) {
-		return id < 0 || id >= byId.length ? null : byId[id];
+		@JvmStatic
+		fun getById(id: Int): TrackerRole? = byId[id]
 	}
 }

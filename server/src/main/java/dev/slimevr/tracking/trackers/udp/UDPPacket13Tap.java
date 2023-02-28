@@ -1,7 +1,5 @@
 package dev.slimevr.tracking.trackers.udp;
 
-import dev.slimevr.tracking.trackers.SensorTap;
-
 import java.io.IOException;
 import java.nio.ByteBuffer;
 

@@ -35,7 +35,7 @@ public class WindowsNamedPipeVRBridge extends Thread implements Bridge {
 	private final Quaternion qBuffer2 = new Quaternion();
 	private final HMDTracker hmd;
 	private final List<WindowsPipe> trackerPipes;
-	private final List<? extends Tracker> shareTrackers;
+	private final List<? extends TrackerJava> shareTrackers;
 	private final List<ComputedTracker> internalTrackers;
 	private final HMDTracker internalHMDTracker = new HMDTracker("internal://HMD");
 	private final AtomicBoolean newHMDData = new AtomicBoolean(false);
@@ -43,7 +43,7 @@ public class WindowsNamedPipeVRBridge extends Thread implements Bridge {
 
 	public WindowsNamedPipeVRBridge(
 		HMDTracker hmd,
-		List<? extends Tracker> shareTrackers,
+		List<? extends TrackerJava> shareTrackers,
 		VRServer server
 	) {
 		super("Named Pipe VR Bridge");
@@ -51,7 +51,7 @@ public class WindowsNamedPipeVRBridge extends Thread implements Bridge {
 		this.shareTrackers = new FastList<>(shareTrackers);
 		this.trackerPipes = new FastList<>(shareTrackers.size());
 		this.internalTrackers = new FastList<>(shareTrackers.size());
-		for (Tracker t : shareTrackers) {
+		for (TrackerJava t : shareTrackers) {
 			ComputedTracker ct = new ComputedTracker(
 				t.getTrackerId(),
 				"internal://" + t.getName(),
@@ -104,7 +104,7 @@ public class WindowsNamedPipeVRBridge extends Thread implements Bridge {
 	@Override
 	public void dataWrite() {
 		for (int i = 0; i < shareTrackers.size(); ++i) {
-			Tracker t = shareTrackers.get(i);
+			TrackerJava t = shareTrackers.get(i);
 			ComputedTracker it = this.internalTrackers.get(i);
 			if (t.getPosition(vBuffer2))
 				it.position.set(vBuffer2);
@@ -197,8 +197,8 @@ public class WindowsNamedPipeVRBridge extends Thread implements Bridge {
 	}
 
 	public void updateTracker(int trackerId, boolean hmdUpdated) {
-		Tracker sensor = internalTrackers.get(trackerId);
-		if (sensor.getStatus().sendData) {
+		TrackerJava sensor = internalTrackers.get(trackerId);
+		if (sensor.getStatus().getSendData()) {
 			WindowsPipe trackerPipe = trackerPipes.get(trackerId);
 			if (hmdUpdated && trackerPipe.state == PipeState.OPEN) {
 				sbBuffer.setLength(0);
@@ -337,13 +337,13 @@ public class WindowsNamedPipeVRBridge extends Thread implements Bridge {
 	}
 
 	@Override
-	public void addSharedTracker(ShareableTracker tracker) {
+	public void addSharedTracker(Tracker tracker) {
 		// TODO Auto-generated method stub
 
 	}
 
 	@Override
-	public void removeSharedTracker(ShareableTracker tracker) {
+	public void removeSharedTracker(Tracker tracker) {
 		// TODO Auto-generated method stub
 
 	}

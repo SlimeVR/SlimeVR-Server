@@ -2,14 +2,16 @@ package dev.slimevr.websocketapi;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.node.ObjectNode;
-import com.jme3.math.Quaternion;
-import com.jme3.math.Vector3f;
 import dev.slimevr.Main;
 import dev.slimevr.VRServer;
 import dev.slimevr.bridge.Bridge;
-import dev.slimevr.tracking.trackers.*;
+import dev.slimevr.tracking.trackers.Tracker;
+import dev.slimevr.tracking.trackers.TrackerPosition;
+import dev.slimevr.tracking.trackers.TrackerStatus;
 import io.eiren.util.collections.FastList;
 import io.eiren.util.logging.LogManager;
+import io.github.axisangles.ktmath.Quaternion;
+import io.github.axisangles.ktmath.Vector3;
 import org.java_websocket.WebSocket;
 import org.java_websocket.handshake.ClientHandshake;
 
@@ -19,21 +21,27 @@ import java.util.concurrent.atomic.AtomicBoolean;
 
 public class WebSocketVRBridge extends WebsocketAPI implements Bridge {
 	private static final String resetSourceName = "WebSocketVRBridge";
-
-	private final Vector3f vBuffer = new Vector3f();
-	private final Quaternion qBuffer = new Quaternion();
-
-	private final HMDTracker hmd;
-	private final List<? extends ShareableTracker> shareTrackers;
-	private final List<ComputedTracker> internalTrackers;
-
-	private final HMDTracker internalHMDTracker = new HMDTracker("internal://HMD");
+	private final Tracker hmd;
+	private final List<Tracker> shareTrackers;
+	private final List<Tracker> internalTrackers;
 	private final AtomicBoolean newHMDData = new AtomicBoolean(false);
 	private final ObjectMapper mapper = new ObjectMapper();
+	private final Tracker internalHMDTracker = new Tracker(
+		null,
+		0,
+		"internal://HMD",
+		TrackerPosition.HEAD,
+		true,
+		true,
+		false,
+		false,
+		true,
+		true
+	);
 
 	public WebSocketVRBridge(
-		HMDTracker hmd,
-		List<? extends ShareableTracker> shareTrackers,
+		Tracker hmd,
+		List<Tracker> shareTrackers,
 		VRServer server
 	) {
 		super(server, server.getProtocolAPI());
@@ -41,14 +49,18 @@ public class WebSocketVRBridge extends WebsocketAPI implements Bridge {
 		this.shareTrackers = new FastList<>(shareTrackers);
 		this.internalTrackers = new FastList<>(shareTrackers.size());
 		for (Tracker t : shareTrackers) {
-			ComputedTracker ct = new ComputedTracker(
-				t.getTrackerId(),
+			Tracker ct = new Tracker(
+				null,
+				t.getId(),
 				"internal://" + t.getName(),
+				t.getTrackerPosition(),
+				true,
+				true,
+				false,
 				true,
 				true
 			);
 			ct.setStatus(TrackerStatus.OK);
-			ct.bodyPosition = t.getBodyPosition();
 			this.internalTrackers.add(ct);
 		}
 	}
@@ -56,8 +68,8 @@ public class WebSocketVRBridge extends WebsocketAPI implements Bridge {
 	@Override
 	public void dataRead() {
 		if (newHMDData.compareAndSet(true, false)) {
-			hmd.position.set(internalHMDTracker.position);
-			hmd.rotation.set(internalHMDTracker.rotation);
+			hmd.setPosition(internalHMDTracker.getPosition());
+			hmd.setRotation(internalHMDTracker.getRotation());
 			hmd.dataTick();
 		}
 	}
@@ -66,11 +78,11 @@ public class WebSocketVRBridge extends WebsocketAPI implements Bridge {
 	public void dataWrite() {
 		for (int i = 0; i < shareTrackers.size(); ++i) {
 			Tracker t = shareTrackers.get(i);
-			ComputedTracker it = this.internalTrackers.get(i);
-			if (t.getPosition(vBuffer))
-				it.position.set(vBuffer);
-			if (t.getRotation(qBuffer))
-				it.rotation.set(qBuffer);
+			Tracker it = this.internalTrackers.get(i);
+			if (t.getHasPosition())
+				it.setPosition(t.getPosition());
+			if (t.getHasRotation())
+				it.setRotation(t.getRotation());
 		}
 	}
 
@@ -82,7 +94,11 @@ public class WebSocketVRBridge extends WebsocketAPI implements Bridge {
 			ObjectNode message = mapper.getNodeFactory().objectNode();
 			message.put("type", "config");
 			message.put("tracker_id", "SlimeVR Tracker " + (i + 1));
-			message.put("location", shareTrackers.get(i).getTrackerRole().name().toLowerCase());
+			message
+				.put(
+					"location",
+					shareTrackers.get(i).getTrackerPosition().getTrackerRole().name().toLowerCase()
+				);
 			message.put("tracker_type", message.get("location").asText());
 			conn.send(message.toString());
 		}
@@ -132,18 +148,22 @@ public class WebSocketVRBridge extends WebsocketAPI implements Bridge {
 	private void parsePosition(ObjectNode json, WebSocket conn) {
 		if (json.get("tracker_id").asInt() == 0) {
 			// Read HMD information
-			internalHMDTracker.position
-				.set(
-					(float) json.get("x").asDouble(),
-					(float) json.get("y").asDouble() + 0.2f,
-					(float) json.get("z").asDouble()
+			internalHMDTracker
+				.setPosition(
+					new Vector3(
+						(float) json.get("x").asDouble(),
+						(float) json.get("y").asDouble() + 0.2f,
+						(float) json.get("z").asDouble()
+					)
 				); // TODO Wtf is this hack? VRWorkout issue?
-			internalHMDTracker.rotation
-				.set(
-					(float) json.get("qx").asDouble(),
-					(float) json.get("qy").asDouble(),
-					(float) json.get("qz").asDouble(),
-					(float) json.get("qw").asDouble()
+			internalHMDTracker
+				.setRotation(
+					new Quaternion(
+						(float) json.get("qw").asDouble(),
+						(float) json.get("qx").asDouble(),
+						(float) json.get("qy").asDouble(),
+						(float) json.get("qz").asDouble()
+					)
 				);
 			internalHMDTracker.dataTick();
 			newHMDData.set(true);
@@ -155,14 +175,14 @@ public class WebSocketVRBridge extends WebsocketAPI implements Bridge {
 				message.put("src", "full");
 				message.put("tracker_id", "SlimeVR Tracker " + (i + 1));
 
-				ComputedTracker t = internalTrackers.get(i);
-				message.put("x", t.position.x);
-				message.put("y", t.position.y);
-				message.put("z", t.position.z);
-				message.put("qx", t.rotation.getX());
-				message.put("qy", t.rotation.getY());
-				message.put("qz", t.rotation.getZ());
-				message.put("qw", t.rotation.getW());
+				Tracker t = internalTrackers.get(i);
+				message.put("x", t.getPosition().getX());
+				message.put("y", t.getPosition().getY());
+				message.put("z", t.getPosition().getZ());
+				message.put("qx", t.getRotation().getX());
+				message.put("qy", t.getRotation().getY());
+				message.put("qz", t.getRotation().getZ());
+				message.put("qw", t.getRotation().getW());
 
 				conn.send(message.toString());
 			}
@@ -186,13 +206,13 @@ public class WebSocketVRBridge extends WebsocketAPI implements Bridge {
 	}
 
 	@Override
-	public void addSharedTracker(ShareableTracker tracker) {
+	public void addSharedTracker(Tracker tracker) {
 		// TODO Auto-generated method stub
 
 	}
 
 	@Override
-	public void removeSharedTracker(ShareableTracker tracker) {
+	public void removeSharedTracker(Tracker tracker) {
 		// TODO Auto-generated method stub
 
 	}

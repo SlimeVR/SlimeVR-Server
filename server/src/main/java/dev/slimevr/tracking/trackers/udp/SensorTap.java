@@ -1,4 +1,4 @@
-package dev.slimevr.tracking.trackers;
+package dev.slimevr.tracking.trackers.udp;
 
 public class SensorTap {
 

@@ -1,7 +1,6 @@
 package dev.slimevr.protocol.rpc;
 
 import com.google.flatbuffers.FlatBufferBuilder;
-import com.jme3.math.Quaternion;
 import dev.slimevr.autobone.AutoBone.Epoch;
 import dev.slimevr.autobone.AutoBoneListener;
 import dev.slimevr.autobone.AutoBoneProcessType;
@@ -14,10 +13,10 @@ import dev.slimevr.protocol.rpc.serial.RPCProvisioningHandler;
 import dev.slimevr.protocol.rpc.serial.RPCSerialHandler;
 import dev.slimevr.protocol.rpc.settings.RPCSettingsHandler;
 import dev.slimevr.tracking.processor.config.SkeletonConfigOffsets;
-import dev.slimevr.tracking.trackers.IMUTracker;
 import dev.slimevr.tracking.trackers.Tracker;
 import dev.slimevr.tracking.trackers.TrackerPosition;
 import io.eiren.util.logging.LogManager;
+import io.github.axisangles.ktmath.Quaternion;
 import solarxr_protocol.MessageBundle;
 import solarxr_protocol.datatypes.TransactionId;
 import solarxr_protocol.rpc.*;
@@ -215,31 +214,30 @@ public class RPCHandler extends ProtocolHandler<RpcMessageHeader>
 		Tracker tracker = this.api.server.getTrackerById(req.trackerId().unpack());
 		if (tracker == null)
 			return;
-		tracker = tracker.get();
 
-		TrackerPosition pos = TrackerPosition.getByBodyPart(req.bodyPosition()).orElse(null);
-		tracker.setBodyPosition(pos);
+		TrackerPosition pos = TrackerPosition.getByBodyPart(req.bodyPosition());
+		tracker.setTrackerPosition(pos);
 
 		if (req.mountingOrientation() != null) {
-			if (tracker instanceof IMUTracker imu) {
-				imu
+			if (tracker.getNeedsMounting()) {
+				tracker
 					.setMountingOrientation(
 						new Quaternion(
+							req.mountingOrientation().w(),
 							req.mountingOrientation().x(),
 							req.mountingOrientation().y(),
-							req.mountingOrientation().z(),
-							req.mountingOrientation().w()
+							req.mountingOrientation().z()
 						)
 					);
 			}
 		}
 
 		if (req.displayName() != null) {
-			tracker.setCustomName(req.displayName());
+			tracker.setDisplayName(req.displayName());
 		}
 
-		if (tracker instanceof IMUTracker imu) {
-			imu.setAllowDriftCompensation(req.allowDriftCompensation());
+		if (tracker.isImu()) {
+			tracker.setAllowDriftCompensation(req.allowDriftCompensation());
 		}
 
 		this.api.server.trackerUpdated(tracker);

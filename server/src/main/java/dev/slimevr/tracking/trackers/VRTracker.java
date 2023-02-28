@@ -1,7 +1,6 @@
 package dev.slimevr.tracking.trackers;
 
 import com.jme3.math.Quaternion;
-import dev.slimevr.tracking.Device;
 import io.eiren.util.BufferedTimer;
 
 
@@ -28,7 +27,7 @@ public class VRTracker extends ComputedTracker {
 	public boolean getRotation(Quaternion store) {
 		store.set(rotation);
 		// Don't adjust if tracker is HMD/Head (use raw rotation)
-		if (super.getBodyPosition() != TrackerPosition.HMD)
+		if (super.getBodyPosition() != TrackerPosition.HEAD)
 			adjustInternal(store);
 		return true;
 	}

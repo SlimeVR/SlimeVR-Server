@@ -6,7 +6,7 @@ import dev.slimevr.VRServer;
 import dev.slimevr.bridge.BridgeThread;
 import dev.slimevr.bridge.ProtobufMessages;
 import dev.slimevr.platform.SteamVRBridge;
-import dev.slimevr.tracking.trackers.*;
+import dev.slimevr.tracking.trackers.Tracker;
 import io.eiren.util.logging.LogManager;
 
 import java.io.File;
@@ -32,11 +32,11 @@ public class UnixSocketBridge extends SteamVRBridge implements AutoCloseable {
 
 	public UnixSocketBridge(
 		VRServer server,
-		HMDTracker hmd,
+		Tracker hmd,
 		String bridgeSettingsKey,
 		String bridgeName,
 		String socketPath,
-		List<? extends ShareableTracker> shareableTrackers
+		List<Tracker> shareableTrackers
 	) {
 		super(server, hmd, "Named socket thread", bridgeName, bridgeSettingsKey, shareableTrackers);
 		this.socketPath = socketPath;

@@ -1,7 +1,7 @@
 package dev.slimevr.tracking.processor;
 
-import com.jme3.math.Quaternion;
-import com.jme3.math.Vector3f;
+import io.github.axisangles.ktmath.Quaternion;
+import io.github.axisangles.ktmath.Vector3;
 
 
 /**
@@ -13,7 +13,8 @@ public class BoneInfo {
 	public final TransformNode headNode;
 	public final TransformNode tailNode;
 	public float length;
-	private static final Quaternion FOOT_OFFSET = Quaternion.X_90_DEG;
+	private static final Quaternion FOOT_OFFSET = Quaternion.Companion
+		.fromRotationVector(1f, 0f, 0f) // TODO does this worK?
 
 	/**
 	 * Creates a `BoneInfo`. We use `tailNode` because the length of the bone
@@ -36,23 +37,23 @@ public class BoneInfo {
 	 * Recomputes `BoneInfo.length`
 	 */
 	public void updateLength() {
-		length = tailNode.localTransform.getTranslation().length();
+		length = tailNode.getLocalTransform().getTranslation().len();
 	}
 
-	public Vector3f getGlobalTranslation() {
-		return tailNode.worldTransform.getTranslation();
+	public Vector3 getGlobalTranslation() {
+		return tailNode.getWorldTransform().getTranslation();
 	}
 
-	public Vector3f getLocalTranslation() {
-		return tailNode.localTransform.getTranslation();
+	public Vector3 getLocalTranslation() {
+		return tailNode.getLocalTransform().getTranslation();
 	}
 
 	public Quaternion getGlobalRotation() {
-		return getAdjustedRotation(headNode.worldTransform.getRotation());
+		return getAdjustedRotation(headNode.getWorldTransform().getRotation());
 	}
 
 	public Quaternion getLocalRotation() {
-		return getAdjustedRotation(headNode.localTransform.getRotation());
+		return getAdjustedRotation(headNode.getLocalTransform().getRotation());
 	}
 
 	// TODO : There shouldn't be edge cases like multiplying
@@ -62,7 +63,7 @@ public class BoneInfo {
 	private Quaternion getAdjustedRotation(Quaternion rot) {
 		// Offset feet 90 degrees to satisfy the SteamVR bone overlay
 		if (boneType == BoneType.LEFT_FOOT || boneType == BoneType.RIGHT_FOOT) {
-			rot.multLocal(FOOT_OFFSET);
+			rot.times(FOOT_OFFSET);
 		}
 		return rot;
 	}

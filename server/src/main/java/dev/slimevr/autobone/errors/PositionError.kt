@@ -40,13 +40,12 @@ class PositionError : IAutoBoneError {
 				val trackerFrame = tracker.safeGetFrame(cursor)
 				if (trackerFrame == null ||
 					!trackerFrame.hasPosition() ||
-					trackerFrame.bodyPosition == null ||
-					trackerFrame.bodyPosition.trackerRole.isEmpty
+					trackerFrame.bodyPosition?.trackerRole == null
 				) {
 					continue
 				}
 				val computedTracker: ComputedTracker? = skeleton
-					.getComputedTracker(trackerFrame.bodyPosition.trackerRole.get())
+					.getComputedTracker(trackerFrame.bodyPosition.trackerRole)
 				if (computedTracker != null) {
 					offset += FastMath.abs(computedTracker.position.distance(trackerFrame.position))
 					offsetCount++
