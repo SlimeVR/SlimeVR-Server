@@ -1,17 +1,18 @@
 package dev.slimevr.tracking.trackers.udp;
 
 import com.jme3.math.FastMath;
-import com.jme3.math.Quaternion;
-import com.jme3.math.Vector3f;
 import dev.slimevr.Main;
 import dev.slimevr.NetworkProtocol;
 import dev.slimevr.VRServer;
-import dev.slimevr.tracking.trackers.IMUTracker;
 import dev.slimevr.tracking.trackers.Tracker;
 import dev.slimevr.tracking.trackers.TrackerStatus;
 import io.eiren.util.Util;
 import io.eiren.util.collections.FastList;
 import io.eiren.util.logging.LogManager;
+import io.github.axisangles.ktmath.EulerAngles;
+import io.github.axisangles.ktmath.EulerOrder;
+import io.github.axisangles.ktmath.Quaternion;
+import io.github.axisangles.ktmath.Vector3;
 import org.apache.commons.lang3.ArrayUtils;
 
 import java.io.IOException;
@@ -29,12 +30,15 @@ public class TrackersUDPServer extends Thread {
 	/**
 	 * Change between IMU axes and OpenGL/SteamVR axes
 	 */
-	private static final Quaternion spaceOffset = new Quaternion()
-		.fromAngleAxis(-FastMath.HALF_PI, Vector3f.UNIT_X);
+	private static final Quaternion AXES_OFFSET = new EulerAngles(
+		EulerOrder.YZX,
+		FastMath.HALF_PI,
+		0f,
+		0f
+	).toQuaternion();
+
 
 	private static final String resetSourceName = "TrackerServer";
-
-	private final Quaternion buf = new Quaternion();
 	private final Random random = new Random();
 	private final List<UDPDevice> connections = new FastList<>();
 	private final Map<InetAddress, UDPDevice> connectionsByAddress = new HashMap<>();
@@ -137,10 +141,13 @@ public class TrackersUDPServer extends Thread {
 			} else {
 				connection.protocol = NetworkProtocol.SLIMEVR_RAW;
 			}
-			connection.name = handshake.macString != null
-				? "udp://" + handshake.macString
-				: "udp:/"
-					+ handshakePacket.getAddress().toString();
+			connection
+				.setName(
+					handshake.macString != null
+						? "udp://" + handshake.macString
+						: "udp:/"
+							+ handshakePacket.getAddress().toString()
+				);
 			connection.descriptiveName = "udp:/" + handshakePacket.getAddress().toString();
 			int i = 0;
 			synchronized (connections) {
@@ -149,11 +156,11 @@ public class TrackersUDPServer extends Thread {
 				) {
 					UDPDevice previousConnection = connectionsByMAC.get(handshake.macString);
 					i = connections.indexOf(previousConnection);
-					connectionsByAddress.remove(previousConnection.ipAddress);
+					connectionsByAddress.remove(previousConnection.getIpAddress());
 					previousConnection.lastPacketNumber = 0;
-					previousConnection.ipAddress = addr;
-					previousConnection.address = handshakePacket.getSocketAddress();
-					previousConnection.name = connection.name;
+					previousConnection.setIpAddress(addr);
+					previousConnection.setAddress(handshakePacket.getSocketAddress());
+					previousConnection.setName(connection.getName());
 					previousConnection.descriptiveName = connection.descriptiveName;
 					connectionsByAddress.put(addr, previousConnection);
 					LogManager
@@ -173,7 +180,7 @@ public class TrackersUDPServer extends Thread {
 								+ "), mac: "
 								+ handshake.macString
 								+ ", name: "
-								+ previousConnection.name
+								+ previousConnection.getName()
 						);
 				} else {
 					i = connections.size();
@@ -199,22 +206,21 @@ public class TrackersUDPServer extends Thread {
 								+ "), mac: "
 								+ handshake.macString
 								+ ", name: "
-								+ connection.name
+								+ connection.getName()
 						);
 				}
 			}
 			if (connection.protocol == NetworkProtocol.OWO_LEGACY || connection.firmwareBuild < 9) {
-				// Set up new sensor for older firmware
+				// Set up new sensor for older firmware.
 				// Firmware after 7 should send sensor status packet and sensor
-				// will be created
-				// when it's received
+				// will be created when it's received
 				setUpSensor(connection, 0, handshake.imuType, 1);
 			}
 		}
 		bb.limit(bb.capacity());
 		bb.rewind();
 		parser.writeHandshakeResponse(bb, connection);
-		socket.send(new DatagramPacket(rcvBuffer, bb.position(), connection.address));
+		socket.send(new DatagramPacket(rcvBuffer, bb.position(), connection.getAddress()));
 	}
 
 	private void setUpSensor(UDPDevice connection, int trackerId, int sensorType, int sensorStatus)
@@ -224,37 +230,48 @@ public class TrackersUDPServer extends Thread {
 				"[TrackerServer] Sensor "
 					+ trackerId
 					+ " for "
-					+ connection.name
+					+ connection.getName()
 					+ " status: "
 					+ sensorStatus
 			);
-		Tracker imu = connection.getTracker(trackerId);
-		if (imu == null) {
-			imu = new IMUTracker(
+		Tracker imuTracker = connection.getTracker(trackerId);
+		if (imuTracker == null) {
+			imuTracker = new Tracker(
 				connection,
 				VRServer.getNextLocalTrackerId(),
-				trackerId,
-				connection.name + "/" + trackerId,
-				connection.descriptiveName + "/" + trackerId,
-				this,
-				Main.getVrServer()
+				connection.getName() + "/" + trackerId,
+				null,
+				false,
+				true,
+				true,
+				true,
+				false,
+				false,
+				true,
+				false,
+				false,
+				true,
+				true,
+				true,
+				true,
+				true
 			);
 
-			connection.getTrackers().put(trackerId, imu);
-			trackersConsumer.accept(imu);
+			connection.getTrackers().put(trackerId, imuTracker);
+			trackersConsumer.accept(imuTracker);
 			LogManager
 				.info(
 					"[TrackerServer] Added sensor "
 						+ trackerId
 						+ " for "
-						+ connection.name
+						+ connection.getName()
 						+ ", type "
 						+ sensorType
 				);
 		}
 		TrackerStatus status = UDPPacket15SensorInfo.getStatus(sensorStatus);
 		if (status != null)
-			imu.setStatus(status);
+			imuTracker.setStatus(status);
 	}
 
 	@Override
@@ -316,7 +333,10 @@ public class TrackersUDPServer extends Thread {
 							bb.limit(bb.capacity());
 							bb.rewind();
 							parser.write(bb, conn, new UDPPacket1Heartbeat());
-							socket.send(new DatagramPacket(rcvBuffer, bb.position(), conn.address));
+							socket
+								.send(
+									new DatagramPacket(rcvBuffer, bb.position(), conn.getAddress())
+								);
 							if (conn.lastPacket + 1000 < System.currentTimeMillis()) {
 								for (Tracker value : conn.getTrackers().values()) {
 									if (value.getStatus() != TrackerStatus.DISCONNECTED)
@@ -337,7 +357,7 @@ public class TrackersUDPServer extends Thread {
 								if (conn.lastSerialUpdate + 500L < System.currentTimeMillis()) {
 									serialBuffer2
 										.append('[')
-										.append(conn.name)
+										.append(conn.getName())
 										.append("] ")
 										.append(conn.serialBuffer);
 									System.out.println(serialBuffer2);
@@ -355,7 +375,11 @@ public class TrackersUDPServer extends Thread {
 								bb.putInt(conn.lastPingPacketId);
 								socket
 									.send(
-										new DatagramPacket(rcvBuffer, bb.position(), conn.address)
+										new DatagramPacket(
+											rcvBuffer,
+											bb.position(),
+											conn.getAddress()
+										)
 									);
 							}
 						}
@@ -383,12 +407,12 @@ public class TrackersUDPServer extends Thread {
 				if (connection == null)
 					break;
 				UDPPacket1Rotation rotationPacket = (UDPPacket1Rotation) packet;
-				buf.set(rotationPacket.rotation);
-				spaceOffset.mult(buf, buf);
+				Quaternion rot = rotationPacket.rotation;
+				rot = AXES_OFFSET.times(rot);
 				tracker = connection.getTracker(rotationPacket.getSensorId());
 				if (tracker == null)
 					break;
-				tracker.setRotation(buf);
+				tracker.setRotation(rot);
 				tracker.dataTick();
 				break;
 			case UDPProtocolParser.PACKET_ROTATION_DATA:
@@ -398,30 +422,33 @@ public class TrackersUDPServer extends Thread {
 				tracker = connection.getTracker(rotationData.getSensorId());
 				if (tracker == null)
 					break;
-				buf.set(rotationData.rotation);
-				spaceOffset.mult(buf, buf);
+				Quaternion rot17 = rotationData.rotation;
+				rot17 = AXES_OFFSET.times(rot17);
 
 				switch (rotationData.dataType) {
 					case UDPPacket17RotationData.DATA_TYPE_NORMAL -> {
-						tracker.setRotation(buf);
-						tracker.calibrationStatus = rotationData.calibrationInfo;
+						tracker.setRotation(rot17);
 						tracker.dataTick();
+//						tracker.calibrationStatus = rotationData.calibrationInfo;
+						// Not implemented in server
 					}
 					case UDPPacket17RotationData.DATA_TYPE_CORRECTION -> {
-						tracker.rotMagQuaternion.set(buf);
-						tracker.magCalibrationStatus = rotationData.calibrationInfo;
-						tracker.hasNewCorrectionData = true;
+//						tracker.rotMagQuaternion.set(rot17);
+//						tracker.magCalibrationStatus = rotationData.calibrationInfo;
+//						tracker.hasNewCorrectionData = true;
+						// Not implemented in server
 					}
 				}
 				break;
 			case UDPProtocolParser.PACKET_MAGNETOMETER_ACCURACY:
-				if (connection == null)
-					break;
-				UDPPacket18MagnetometerAccuracy magAccuracy = (UDPPacket18MagnetometerAccuracy) packet;
-				tracker = connection.getTracker(magAccuracy.getSensorId());
-				if (tracker == null)
-					break;
-				tracker.magnetometerAccuracy = magAccuracy.accuracyInfo;
+//				if (connection == null)
+//					break;
+//				UDPPacket18MagnetometerAccuracy magAccuracy = (UDPPacket18MagnetometerAccuracy) packet;
+//				tracker = connection.getTracker(magAccuracy.getSensorId());
+//				if (tracker == null)
+//					break;
+//				tracker.magnetometerAccuracy = magAccuracy.accuracyInfo;
+				// Not implemented in server
 				break;
 
 			case UDPProtocolParser.PACKET_ACCEL:
@@ -434,16 +461,15 @@ public class TrackersUDPServer extends Thread {
 				if (tracker == null)
 					break;
 
-				Vector3f acceleration = tracker.rotQuaternion.mult(accelPacket.acceleration);
-				tracker.accelVector.set(acceleration);
+				Vector3 acceleration = tracker.getRotation().sandwich(accelPacket.acceleration);
+				tracker.setAcceleration(acceleration);
 				break;
 
 			case 2: // PACKET_GYRO
 			case 5: // PACKET_MAG
-			case 9: // PACKET_RAW_MAGENTOMETER
+			case 9: // PACKET_RAW_MAGNETOMETER
 				break; // None of these packets are used by SlimeVR trackers and
-			// are deprecated, use
-			// more generic PACKET_ROTATION_DATA
+						// are deprecated, use more generic PACKET_ROTATION_DATA
 			case 8: // PACKET_CONFIG
 				if (connection == null)
 					break;
@@ -454,7 +480,6 @@ public class TrackersUDPServer extends Thread {
 				UDPPacket10PingPong ping = (UDPPacket10PingPong) packet;
 				if (connection.lastPingPacketId == ping.pingId) {
 					for (Tracker t : connection.getTrackers().values()) {
-						IMUTracker imuTracker = (IMUTracker) t;
 						t
 							.setPing(
 								(int) (System.currentTimeMillis() - connection.lastPingPacketTime)
@@ -476,7 +501,7 @@ public class TrackersUDPServer extends Thread {
 				if (connection == null)
 					break;
 				UDPPacket11Serial serial = (UDPPacket11Serial) packet;
-				System.out.println("[" + connection.name + "] " + serial.serial);
+				System.out.println("[" + connection.getName() + "] " + serial.serial);
 				break;
 			case UDPProtocolParser.PACKET_BATTERY_LEVEL:
 				if (connection == null)
@@ -531,7 +556,7 @@ public class TrackersUDPServer extends Thread {
 				bb.limit(bb.capacity());
 				bb.rewind();
 				parser.writeSensorInfoResponse(bb, connection, info);
-				socket.send(new DatagramPacket(rcvBuffer, bb.position(), connection.address));
+				socket.send(new DatagramPacket(rcvBuffer, bb.position(), connection.getAddress()));
 				LogManager
 					.info(
 						"[TrackerServer] Sensor info for "
@@ -572,18 +597,18 @@ public class TrackersUDPServer extends Thread {
 					case UDPPacket21UserAction.RESET_MOUNTING:
 						String name = "";
 						switch (action.type) {
-							case UDPPacket21UserAction.RESET:
+							case UDPPacket21UserAction.RESET -> {
 								name = "Full";
 								Main.getVrServer().resetTrackers(resetSourceName);
-								break;
-							case UDPPacket21UserAction.RESET_YAW:
+							}
+							case UDPPacket21UserAction.RESET_YAW -> {
 								name = "Yaw";
 								Main.getVrServer().resetTrackersYaw(resetSourceName);
-								break;
-							case UDPPacket21UserAction.RESET_MOUNTING:
+							}
+							case UDPPacket21UserAction.RESET_MOUNTING -> {
 								name = "Mounting";
 								Main.getVrServer().resetTrackersMounting(resetSourceName);
-								break;
+							}
 						}
 						LogManager
 							.info(

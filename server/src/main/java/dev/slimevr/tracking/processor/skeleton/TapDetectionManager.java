@@ -5,6 +5,7 @@ import dev.slimevr.config.TapDetectionConfig;
 import dev.slimevr.tracking.processor.HumanPoseManager;
 import dev.slimevr.tracking.trackers.Tracker;
 
+
 /**
  * Handles tap detection for reset
  */

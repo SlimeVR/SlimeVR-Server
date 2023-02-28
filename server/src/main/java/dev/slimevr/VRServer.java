@@ -95,6 +95,7 @@ public class VRServer extends Thread {
 			true,
 			false,
 			false,
+			true,
 			true
 		);
 
@@ -470,7 +471,7 @@ public class VRServer extends Thread {
 	public void clearTrackersDriftCompensation() {
 		for (Tracker t : getAllTrackers()) {
 			if (t.isImu()) {
-				t.clearDriftCompensation();
+				t.getResetsHandler().clearDriftCompensation();
 			}
 		}
 	}

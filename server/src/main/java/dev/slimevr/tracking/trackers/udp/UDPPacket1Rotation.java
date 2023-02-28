@@ -1,6 +1,7 @@
 package dev.slimevr.tracking.trackers.udp;
 
-import com.jme3.math.Quaternion;
+
+import io.github.axisangles.ktmath.Quaternion;
 
 import java.io.IOException;
 import java.nio.ByteBuffer;
@@ -8,7 +9,7 @@ import java.nio.ByteBuffer;
 
 public class UDPPacket1Rotation extends UDPPacket implements SensorSpecificPacket {
 
-	public final Quaternion rotation = new Quaternion();
+	public Quaternion rotation = Quaternion.Companion.getIDENTITY();
 
 	public UDPPacket1Rotation() {
 	}
@@ -20,7 +21,11 @@ public class UDPPacket1Rotation extends UDPPacket implements SensorSpecificPacke
 
 	@Override
 	public void readData(ByteBuffer buf) throws IOException {
-		rotation.set(buf.getFloat(), buf.getFloat(), buf.getFloat(), buf.getFloat());
+		float x = buf.getFloat();
+		float y = buf.getFloat();
+		float z = buf.getFloat();
+		float w = buf.getFloat();
+		rotation = new Quaternion(w, x, y, z);
 	}
 
 	@Override

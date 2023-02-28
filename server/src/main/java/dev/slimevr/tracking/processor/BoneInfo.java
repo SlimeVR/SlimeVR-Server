@@ -18,8 +18,8 @@ public class BoneInfo {
 	public float length;
 	private static final Quaternion FOOT_OFFSET = new EulerAngles(
 		EulerOrder.YZX,
-		0f,
 		FastMath.HALF_PI,
+		0f,
 		0f
 	).toQuaternion();
 

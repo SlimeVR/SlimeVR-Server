@@ -194,7 +194,9 @@ public class TapDetection {
 			skeleton.rightUpperLegTracker != null
 				&& !skeleton.rightUpperLegTracker.equals(trackerToExclude)
 		) {
-			if (skeleton.rightUpperLegTracker.getAcceleration().lenSq() > ALLOWED_BODY_ACCEL_SQUARED)
+			if (
+				skeleton.rightUpperLegTracker.getAcceleration().lenSq() > ALLOWED_BODY_ACCEL_SQUARED
+			)
 				num++;
 		}
 		if (

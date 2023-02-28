@@ -201,7 +201,7 @@ public class DataFeedBuilder {
 				TrackerData
 					.addRotationIdentityAdjusted(
 						fbb,
-						createQuat(fbb, tracker.getIdentityAdjustedRotation())
+						createQuat(fbb, tracker.getResetsHandler().getIdentityAdjustedRotation())
 					);
 			}
 		} else if (tracker.getNeedsReset() && tracker.getHasRotation()) {
@@ -280,8 +280,8 @@ public class DataFeedBuilder {
 		int hardwareInfoOffset = DataFeedBuilder.createHardwareInfo(fbb, device);
 		int trackersOffset = DataFeedBuilder.createTrackersData(fbb, mask, device);
 
-		int nameOffset = device.getCustomName() != null
-			? fbb.createString(device.getCustomName())
+		int nameOffset = device.getName() != null
+			? fbb.createString(device.getName())
 			: 0;
 
 		DeviceData.startDeviceData(fbb);

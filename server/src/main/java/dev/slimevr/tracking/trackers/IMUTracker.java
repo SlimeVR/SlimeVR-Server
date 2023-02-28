@@ -110,7 +110,10 @@ public class IMUTracker
 	@Override
 	public void writeConfig(TrackerConfig config) {
 		config.setDesignation(bodyPosition == null ? null : bodyPosition.getDesignation());
-		config.setMountingOrientation(mounting != null ? mounting : new Quaternion().fromAngles(0, FastMath.PI, 0));
+		config
+			.setMountingOrientation(
+				mounting != null ? mounting : new Quaternion().fromAngles(0, FastMath.PI, 0)
+			);
 		config.setCustomName(customName);
 		config.setAllowDriftCompensation(allowDriftCompensation);
 	}

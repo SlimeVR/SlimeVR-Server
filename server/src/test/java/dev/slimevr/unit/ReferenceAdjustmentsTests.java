@@ -2,10 +2,10 @@ package dev.slimevr.unit;
 
 import com.jme3.math.FastMath;
 import com.jme3.math.Quaternion;
+import dev.slimevr.VRServer;
 import dev.slimevr.tracking.processor.BoneType;
 import dev.slimevr.tracking.processor.TransformNode;
 import dev.slimevr.tracking.trackers.IMUTracker;
-import dev.slimevr.tracking.trackers.TrackerJava;
 import io.eiren.math.FloatMath;
 import io.eiren.util.StringUtils;
 import org.junit.jupiter.api.DynamicTest;
@@ -179,7 +179,7 @@ public class ReferenceAdjustmentsTests {
 		Quaternion referenceQuat = q(refPitch, refYaw, refRoll);
 		IMUTracker tracker = new IMUTracker(
 			null,
-			TrackerJava.getNextLocalTrackerId(),
+			VRServer.getNextLocalTrackerId(),
 			0,
 			"test",
 			"test",
@@ -218,7 +218,7 @@ public class ReferenceAdjustmentsTests {
 		Quaternion referenceQuat = q(refPitch, refYaw, refRoll);
 		IMUTracker tracker = new IMUTracker(
 			null,
-			TrackerJava.getNextLocalTrackerId(),
+			VRServer.getNextLocalTrackerId(),
 			0,
 			"test",
 			"test",
@@ -250,7 +250,7 @@ public class ReferenceAdjustmentsTests {
 		Quaternion referenceQuat = q(refPitch, refYaw, refRoll);
 		IMUTracker tracker = new IMUTracker(
 			null,
-			TrackerJava.getNextLocalTrackerId(),
+			VRServer.getNextLocalTrackerId(),
 			0,
 			"test",
 			"test",
@@ -277,7 +277,7 @@ public class ReferenceAdjustmentsTests {
 		TransformNode rotationNode = new TransformNode(BoneType.HIP, true);
 		rotationNode.attachChild(trackerNode);
 
-		trackerNode.localTransform.setRotation(tracker.rotQuaternion);
+		trackerNode.getLocalTransform().setRotation(tracker.rotQuaternion);
 
 		for (int yaw = 0; yaw <= 360; yaw += 30) {
 			for (int pitch = -90; pitch <= 90; pitch += 15) {
@@ -294,9 +294,9 @@ public class ReferenceAdjustmentsTests {
 							(yaw + refYaw) * FastMath.DEG_TO_RAD,
 							roll * FastMath.DEG_TO_RAD
 						);
-					rotationNode.localTransform.setRotation(rotation);
+					rotationNode.getLocalTransform().setRotation(rotation);
 					rotationNode.update();
-					tracker.rotQuaternion.set(trackerNode.worldTransform.getRotation());
+					tracker.rotQuaternion.set(trackerNode.getWorldTransform().getRotation());
 					tracker.rotQuaternion.toAngles(angles);
 
 					tracker.getRotation(read);

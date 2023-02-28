@@ -65,6 +65,7 @@ public class VRCOSCHandler implements OSCHandler {
 			false,
 			false,
 			false,
+			true,
 			true
 		);
 

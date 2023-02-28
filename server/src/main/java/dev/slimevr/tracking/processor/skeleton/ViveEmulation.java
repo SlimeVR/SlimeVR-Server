@@ -93,7 +93,7 @@ public class ViveEmulation {
 		// in this state the tracker is returning to its position but has not
 		// yet overshot its target
 		else if (flyingBack && overShooting) {
-			if (targetPosition.distanceSquared(lastPosition) < NEARLY_ZERO * NEARLY_ZERO) {
+			if (targetPosition.minus(lastPosition).lenSq() < NEARLY_ZERO * NEARLY_ZERO) {
 				overShooting = false;
 				flySpeed = FLY_BACK_OVERSHOOT;
 				targetPosition = skeleton.computedWaistTracker.getPosition();
@@ -103,7 +103,9 @@ public class ViveEmulation {
 		}
 		// in this state the tracker will return to its original position
 		else if (flyingBack) {
-			if (skeleton.computedWaistTracker.getPosition().distance(lastPosition) < NEARLY_ZERO) {
+			if (
+				skeleton.computedWaistTracker.getPosition().minus(lastPosition).len() < NEARLY_ZERO
+			) {
 				flyingBack = false;
 				ticksToFly = random.nextInt(CHANCE);
 				return;

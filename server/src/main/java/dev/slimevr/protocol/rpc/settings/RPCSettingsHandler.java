@@ -116,7 +116,7 @@ public record RPCSettingsHandler(RPCHandler rpcHandler, ProtocolAPI api) {
 					.getConfigManager()
 					.getVrConfig()
 					.getFilters();
-				filtersConfig.setType(type.configKey);
+				filtersConfig.setType(type.getConfigKey());
 				filtersConfig.setAmount(req.filtering().amount());
 				filtersConfig.updateTrackersFilters();
 			}

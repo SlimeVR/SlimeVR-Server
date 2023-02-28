@@ -97,7 +97,12 @@ public class WebSocketVRBridge extends WebsocketAPI implements Bridge {
 			message
 				.put(
 					"location",
-					computedTrackers.get(i).getTrackerPosition().getTrackerRole().name().toLowerCase()
+					computedTrackers
+						.get(i)
+						.getTrackerPosition()
+						.getTrackerRole()
+						.name()
+						.toLowerCase()
 				);
 			message.put("tracker_type", message.get("location").asText());
 			conn.send(message.toString());

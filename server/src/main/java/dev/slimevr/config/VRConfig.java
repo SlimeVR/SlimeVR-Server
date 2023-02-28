@@ -148,6 +148,10 @@ public class VRConfig {
 	public void readTrackerConfig(Tracker tracker) {
 		TrackerConfig config = getTracker(tracker);
 		tracker.readConfig(config);
+		if (tracker.isImu())
+			tracker.getResetsHandler().readDriftCompensationConfig(driftCompensation);
+		if (tracker.getNeedsFiltering())
+			tracker.getFilteringHandler().readFilteringConfig(filters);
 	}
 
 	public void writeTrackerConfig(Tracker tracker) {

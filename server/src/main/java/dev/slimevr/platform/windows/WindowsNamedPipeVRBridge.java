@@ -201,7 +201,8 @@ public class WindowsNamedPipeVRBridge extends Thread implements Bridge {
 			double qz = Double.parseDouble(split[6]);
 
 			internalHMDTracker.setPosition(new Vector3((float) x, (float) y, (float) z));
-			internalHMDTracker.setRotation(new Quaternion((float) qw, (float) qx, (float) qy, (float) qz));
+			internalHMDTracker
+				.setRotation(new Quaternion((float) qw, (float) qx, (float) qy, (float) qz));
 			internalHMDTracker.dataTick();
 			newHMDData.set(true);
 		} catch (NumberFormatException e) {

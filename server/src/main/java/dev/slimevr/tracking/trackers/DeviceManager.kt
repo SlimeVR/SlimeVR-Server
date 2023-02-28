@@ -7,7 +7,7 @@ class DeviceManager(private val server: VRServer) {
 	val devices = FastList<Device>()
 	fun createDevice(name: String?, version: String?, manufacturer: String?): Device {
 		val device = Device()
-		device.customName = name
+		device.name = name
 		device.firmwareVersion = version
 		device.manufacturer = manufacturer
 		return device

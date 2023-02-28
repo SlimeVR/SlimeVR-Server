@@ -1,7 +1,7 @@
 package dev.slimevr.tracking.processor.skeleton;
 
 import com.jme3.math.FastMath;
-import com.jme3.math.Quaternion;
+import io.github.axisangles.ktmath.Quaternion;
 import io.github.axisangles.ktmath.Vector3;
 
 
@@ -29,7 +29,7 @@ public class LegTweakBuffer {
 
 	public static final float NS_CONVERT = 1.0e9f;
 	private static final Vector3 GRAVITY = new Vector3(0, -9.81f, 0);
-	private static final float GRAVITY_MAGNITUDE = GRAVITY.length();
+	private static final float GRAVITY_MAGNITUDE = GRAVITY.len();
 	private static final int BUFFER_LEN = 10;
 
 	// states for the legs
@@ -37,32 +37,32 @@ public class LegTweakBuffer {
 	private int rightLegState = STATE_UNKNOWN;
 
 	// positions and rotations
-	private Vector3 leftFootPosition = new Vector3();
-	private Vector3 rightFootPosition = new Vector3();
-	private Vector3 leftKneePosition = new Vector3();
-	private Vector3 rightKneePosition = new Vector3();
-	private Vector3 waistPosition = new Vector3();
-	private Quaternion leftFootRotation = new Quaternion();
-	private Quaternion rightFootRotation = new Quaternion();
+	private Vector3 leftFootPosition = Vector3.Companion.getNULL();
+	private Vector3 rightFootPosition = Vector3.Companion.getNULL();
+	private Vector3 leftKneePosition = Vector3.Companion.getNULL();
+	private Vector3 rightKneePosition = Vector3.Companion.getNULL();
+	private Vector3 waistPosition = Vector3.Companion.getNULL();
+	private Quaternion leftFootRotation = Quaternion.Companion.getIDENTITY();
+	private Quaternion rightFootRotation = Quaternion.Companion.getIDENTITY();
 
-	private Vector3 leftFootPositionCorrected = new Vector3();
-	private Vector3 rightFootPositionCorrected = new Vector3();
-	private Vector3 leftKneePositionCorrected = new Vector3();
-	private Vector3 rightKneePositionCorrected = new Vector3();
-	private Vector3 waistPositionCorrected = new Vector3();
+	private Vector3 leftFootPositionCorrected = Vector3.Companion.getNULL();
+	private Vector3 rightFootPositionCorrected = Vector3.Companion.getNULL();
+	private Vector3 leftKneePositionCorrected = Vector3.Companion.getNULL();
+	private Vector3 rightKneePositionCorrected = Vector3.Companion.getNULL();
+	private Vector3 waistPositionCorrected = Vector3.Companion.getNULL();
 
 	// velocities
-	private Vector3 leftFootVelocity = new Vector3();
+	private Vector3 leftFootVelocity = Vector3.Companion.getNULL();
 	private float leftFootVelocityMagnitude = 0;
-	private Vector3 rightFootVelocity = new Vector3();
+	private Vector3 rightFootVelocity = Vector3.Companion.getNULL();
 	private float rightFootVelocityMagnitude = 0;
 	private float leftFootAngleDiff = 0;
 	private float rightFootAngleDiff = 0;
 
 	// acceleration
-	private Vector3 leftFootAcceleration = new Vector3();
+	private Vector3 leftFootAcceleration = Vector3.Companion.getNULL();
 	private float leftFootAccelerationMagnitude = 0;
-	private Vector3 rightFootAcceleration = new Vector3();
+	private Vector3 rightFootAcceleration = Vector3.Companion.getNULL();
 	private float rightFootAccelerationMagnitude = 0;
 
 	// other data
@@ -72,9 +72,9 @@ public class LegTweakBuffer {
 	private int detectionMode = ANKLE_ACCEL; // detection mode
 	private boolean accelerationAboveThresholdLeft = true;
 	private boolean accelerationAboveThresholdRight = true;
-	private Vector3 centerOfMass = new Vector3();
-	private Vector3 centerOfMassVelocity = new Vector3();
-	private Vector3 centerOfMassAcceleration = new Vector3();
+	private Vector3 centerOfMass = Vector3.Companion.getNULL();
+	private Vector3 centerOfMassVelocity = Vector3.Companion.getNULL();
+	private Vector3 centerOfMassAcceleration = Vector3.Companion.getNULL();
 	private float leftFloorLevel;
 	private float rightFloorLevel;
 
@@ -128,11 +128,8 @@ public class LegTweakBuffer {
 		* SKATING_LOCK_ENGAGE_PERCENT;
 
 	// getters and setters
-	public Vector3 getLeftFootPosition(Vector3 vec) {
-		if (vec == null)
-			vec = new Vector3();
-
-		return vec.set(leftFootPosition);
+	public Vector3 getLeftFootPosition() {
+		return leftFootPosition;
 	}
 
 	public void setLeftFootPosition(Vector3 leftFootPosition) {
@@ -144,7 +141,7 @@ public class LegTweakBuffer {
 	}
 
 	public void setRightFootPosition(Vector3 rightFootPosition) {
-		this.rightFootPosition.set(rightFootPosition);
+		this.rightFootPosition = rightFootPosition;
 	}
 
 	public Vector3 getLeftKneePosition() {
@@ -152,130 +149,95 @@ public class LegTweakBuffer {
 	}
 
 	public void setLeftKneePosition(Vector3 leftKneePosition) {
-		this.leftKneePosition.set(leftKneePosition);
+		this.leftKneePosition = leftKneePosition;
 	}
 
-	public Vector3 getRightKneePosition(Vector3 vec) {
-		if (vec == null)
-			vec = new Vector3();
-		return vec.set(rightKneePosition);
+	public Vector3 getRightKneePosition() {
+		return rightKneePosition;
 	}
 
 	public void setRightKneePosition(Vector3 rightKneePosition) {
-		this.rightKneePosition.set(rightKneePosition);
+		this.rightKneePosition = rightKneePosition;
 	}
 
-	public Vector3 getWaistPosition(Vector3 vec) {
-		if (vec == null)
-			vec = new Vector3();
-
-		return vec.set(waistPosition);
+	public Vector3 getWaistPosition() {
+		return waistPosition;
 	}
 
 	public void setWaistPosition(Vector3 waistPosition) {
-		this.waistPosition.set(waistPosition);
+		this.waistPosition = waistPosition;
 	}
 
-	public Quaternion getLeftFootRotation(Quaternion quat) {
-		if (quat == null)
-			quat = new Quaternion();
-
-		return quat.set(leftFootRotation);
+	public Quaternion getLeftFootRotation() {
+		return leftFootRotation;
 	}
 
 	public void setLeftFootRotation(Quaternion leftFootRotation) {
-		this.leftFootRotation.set(leftFootRotation);
+		this.leftFootRotation = leftFootRotation;
 	}
 
-	public Quaternion getRightFootRotation(Quaternion quat) {
-		if (quat == null)
-			quat = new Quaternion();
-
-		return quat.set(rightFootRotation);
+	public Quaternion getRightFootRotation() {
+		return rightFootRotation;
 	}
 
 	public void setRightFootRotation(Quaternion rightFootRotation) {
-		this.rightFootRotation.set(rightFootRotation);
+		this.rightFootRotation = rightFootRotation;
 	}
 
-	public Vector3 getLeftFootPositionCorrected(Vector3 vec) {
-		if (vec == null)
-			vec = new Vector3();
-
-		return vec.set(leftFootPositionCorrected);
+	public Vector3 getLeftFootPositionCorrected() {
+		return leftFootPositionCorrected;
 	}
 
 	public void setLeftFootPositionCorrected(Vector3 leftFootPositionCorrected) {
-		this.leftFootPositionCorrected.set(leftFootPositionCorrected);
+		this.leftFootPositionCorrected = leftFootPositionCorrected;
 	}
 
-	public Vector3 getRightFootPositionCorrected(Vector3 vec) {
-		if (vec == null)
-			vec = new Vector3();
-
-		return vec.set(rightFootPositionCorrected);
+	public Vector3 getRightFootPositionCorrected() {
+		return rightFootPositionCorrected;
 	}
 
 	public void setRightFootPositionCorrected(Vector3 rightFootPositionCorrected) {
-		this.rightFootPositionCorrected.set(rightFootPositionCorrected);
+		this.rightFootPositionCorrected = rightFootPositionCorrected;
 	}
 
-	public Vector3 getLeftKneePositionCorrected(Vector3 vec) {
-		if (vec == null)
-			vec = new Vector3();
-
-		return vec.set(leftKneePositionCorrected);
+	public Vector3 getLeftKneePositionCorrected() {
+		return leftKneePositionCorrected;
 	}
 
 	public void setLeftKneePositionCorrected(Vector3 leftKneePositionCorrected) {
-		this.leftKneePositionCorrected.set(leftKneePositionCorrected);
+		this.leftKneePositionCorrected = leftKneePositionCorrected;
 	}
 
-	public Vector3 getRightKneePositionCorrected(Vector3 vec) {
-		if (vec == null)
-			vec = new Vector3();
-
-		return vec.set(rightKneePositionCorrected);
+	public Vector3 getRightKneePositionCorrected() {
+		return rightKneePositionCorrected;
 	}
 
 	public void setRightKneePositionCorrected(Vector3 rightKneePositionCorrected) {
-		this.rightKneePositionCorrected.set(rightKneePositionCorrected);
+		this.rightKneePositionCorrected = rightKneePositionCorrected;
 	}
 
-	public Vector3 getWaistPositionCorrected(Vector3 vec) {
-		if (vec == null)
-			vec = new Vector3();
-
-		return vec.set(waistPositionCorrected);
+	public Vector3 getWaistPositionCorrected() {
+		return waistPositionCorrected;
 	}
 
 	public void setWaistPositionCorrected(Vector3 waistPositionCorrected) {
-		this.waistPositionCorrected.set(waistPositionCorrected);
+		this.waistPositionCorrected = waistPositionCorrected;
 	}
 
-	public Vector3 getLeftFootVelocity(Vector3 vec) {
-		if (vec == null)
-			vec = new Vector3();
-
-		return vec.set(leftFootVelocity);
+	public Vector3 getLeftFootVelocity() {
+		return leftFootVelocity;
 	}
 
-	public Vector3 getRightFootVelocity(Vector3 vec) {
-		if (vec == null)
-			vec = new Vector3();
-
-		return vec.set(rightFootVelocity);
+	public Vector3 getRightFootVelocity() {
+		return rightFootVelocity;
 	}
 
-	public Vector3 getCenterOfMass(Vector3 vec) {
-		if (vec == null)
-			vec = new Vector3();
-
-		return vec.set(centerOfMass);
+	public Vector3 getCenterOfMass() {
+		return centerOfMass;
 	}
 
 	public void setCenterOfMass(Vector3 centerOfMass) {
-		this.centerOfMass.set(centerOfMass);
+		this.centerOfMass = centerOfMass;
 	}
 
 	public void setLeftFloorLevel(float leftFloorLevel) {
@@ -311,41 +273,35 @@ public class LegTweakBuffer {
 	}
 
 	public void setLeftFootAcceleration(Vector3 leftFootAcceleration) {
-		this.leftFootAcceleration.set(leftFootAcceleration);
+		this.leftFootAcceleration = leftFootAcceleration;
 	}
 
 	public void setRightFootAcceleration(Vector3 rightFootAcceleration) {
-		this.rightFootAcceleration.set(rightFootAcceleration);
+		this.rightFootAcceleration = rightFootAcceleration;
 	}
 
 	public Vector3 getLeftFootAcceleration(Vector3 vec) {
-		if (vec == null)
-			vec = new Vector3();
-
-		return vec.set(leftFootAcceleration);
+		return leftFootAcceleration;
 	}
 
 	public Vector3 getRightFootAcceleration(Vector3 vec) {
-		if (vec == null)
-			vec = new Vector3();
-
-		return vec.set(rightFootAcceleration);
+		return rightFootAcceleration;
 	}
 
 	public float getLeftFootAccelerationMagnitude() {
-		return this.leftFootAcceleration.length();
+		return this.leftFootAcceleration.len();
 	}
 
 	public float getRightFootAccelerationMagnitude() {
-		return this.rightFootAcceleration.length();
+		return this.rightFootAcceleration.len();
 	}
 
 	public float getLeftFootAccelerationY() {
-		return this.leftFootAcceleration.y;
+		return this.leftFootAcceleration.getY();
 	}
 
 	public float getRightFootAccelerationY() {
-		return this.rightFootAcceleration.y;
+		return this.rightFootAcceleration.getY();
 	}
 
 	public float getLeftFloorLevel() {
@@ -368,14 +324,14 @@ public class LegTweakBuffer {
 		this.detectionMode = mode;
 	}
 
-	// calculate momvent attributes
+	// calculate movement attributes
 	public void calculateFootAttributes(boolean active) {
 		updateFrameNumber(0);
 
 		// compute attributes of the legs
 		computeVelocity();
 		computeAccelerationMagnitude();
-		computeComAtributes();
+		computeComAttributes();
 
 		// check if the acceleration triggers forced unlock
 		if (detectionMode == FOOT_ACCEL) {
@@ -420,12 +376,12 @@ public class LegTweakBuffer {
 		float timeStep = getTimeDelta();
 		if (parent.leftLegState == UNLOCKED) {
 			if (
-				parent.getLeftFootHorizantalDifference() > SKATING_CUTOFF_ENGAGE
+				parent.getLeftFootHorizontalDifference() > SKATING_CUTOFF_ENGAGE
 					|| leftFootVelocityMagnitude * timeStep
 						> SKATING_VELOCITY_CUTOFF_ENGAGE * leftFootSensitivityVel
 					|| leftFootAngleDiff * timeStep
 						> SKATING_ROTATIONAL_VELOCITY_CUTOFF_ENGAGE * leftFootSensitivityVel
-					|| leftFootPosition.y > leftFloorLevel + FLOOR_DISTANCE_CUTOFF
+					|| leftFootPosition.getY() > leftFloorLevel + FLOOR_DISTANCE_CUTOFF
 					|| accelerationAboveThresholdLeft
 			) {
 				return UNLOCKED;
@@ -435,7 +391,7 @@ public class LegTweakBuffer {
 		}
 
 		if (
-			parent.getLeftFootHorizantalDifference() > SKATING_DISTANCE_CUTOFF
+			parent.getLeftFootHorizontalDifference() > SKATING_DISTANCE_CUTOFF
 				|| leftFootVelocityMagnitude * timeStep
 					> SKATING_VELOCITY_THRESHOLD * leftFootSensitivityVel
 				|| leftFootAngleDiff * timeStep
@@ -455,7 +411,7 @@ public class LegTweakBuffer {
 
 		if (parent.rightLegState == UNLOCKED) {
 			if (
-				parent.getRightFootHorizantalDifference() > SKATING_CUTOFF_ENGAGE
+				parent.getRightFootHorizontalDifference() > SKATING_CUTOFF_ENGAGE
 					|| rightFootVelocityMagnitude * timeStep
 						> SKATING_VELOCITY_CUTOFF_ENGAGE * leftFootSensitivityVel
 					|| rightFootAngleDiff * timeStep
@@ -470,7 +426,7 @@ public class LegTweakBuffer {
 		}
 
 		if (
-			parent.getRightFootHorizantalDifference() > SKATING_DISTANCE_CUTOFF
+			parent.getRightFootHorizontalDifference() > SKATING_DISTANCE_CUTOFF
 				|| rightFootVelocityMagnitude * timeStep
 					> SKATING_VELOCITY_THRESHOLD * rightFootSensitivityVel
 				|| rightFootAngleDiff * timeStep
@@ -486,28 +442,40 @@ public class LegTweakBuffer {
 
 	// get the difference in feet position between the kinematic and corrected
 	// positions of the feet disregarding vertical displacment
-	private float getLeftFootHorizantalDifference() {
-		return leftFootPositionCorrected.minus(leftFootPosition).setY(0).length();
+	private float getLeftFootHorizontalDifference() {
+		return new Vector3(
+			leftFootPositionCorrected.minus(leftFootPosition).getX(),
+			0f,
+			leftFootPositionCorrected.minus(leftFootPosition).getZ()
+		).len();
 	}
 
 	// get the difference in feet position between the kinematic and corrected
 	// positions of the feet
-	private float getRightFootHorizantalDifference() {
-		return rightFootPositionCorrected.minus(rightFootPosition).setY(0).length();
+	private float getRightFootHorizontalDifference() {
+		return new Vector3(
+			rightFootPositionCorrected.minus(rightFootPosition).getX(),
+			0f,
+			rightFootPositionCorrected.minus(rightFootPosition).getZ()
+		).len();
 	}
 
 	// get the angular velocity of the left foot (kinda we just want a scalar)
 	private float getLeftFootAngularVelocity() {
 		return leftFootRotation
-			.getRotationColumn(2)
-			.distance(parent.leftFootRotation.getRotationColumn(2));
+			.toMatrix()
+			.getZ()
+			.minus(parent.leftFootRotation.toMatrix().getZ())
+			.len();
 	}
 
 	// get the angular velocity of the right foot (kinda we just want a scalar)
 	private float getRightFootAngularVelocity() {
 		return rightFootRotation
-			.getRotationColumn(2)
-			.distance(parent.rightFootRotation.getRotationColumn(2));
+			.toMatrix()
+			.getZ()
+			.minus(parent.rightFootRotation.toMatrix().getZ())
+			.len();
 	}
 
 	// compute the velocity of the feet from the position in the last frames
@@ -534,17 +502,21 @@ public class LegTweakBuffer {
 	// compute the acceleration magnitude of the feet from the acceleration
 	// given by the imus (exclude y)
 	private void computeAccelerationMagnitude() {
-		leftFootAccelerationMagnitude = leftFootAcceleration
-			.setY(leftFootAcceleration.getY() * SKATING_ACCELERATION_Y_USE_PERCENT)
-			.length();
+		leftFootAccelerationMagnitude = new Vector3(
+			leftFootAcceleration.getX(),
+			leftFootAcceleration.getY() * SKATING_ACCELERATION_Y_USE_PERCENT,
+			leftFootAcceleration.getZ()
+		).len();
 
-		rightFootAccelerationMagnitude = rightFootAcceleration
-			.setY(rightFootAcceleration.getY() * SKATING_ACCELERATION_Y_USE_PERCENT)
-			.length();
+		rightFootAccelerationMagnitude = new Vector3(
+			rightFootAcceleration.getX(),
+			rightFootAcceleration.getY() * SKATING_ACCELERATION_Y_USE_PERCENT,
+			rightFootAcceleration.getZ()
+		).len();
 	}
 
 	// compute the velocity and acceleration of the center of mass
-	private void computeComAtributes() {
+	private void computeComAttributes() {
 		centerOfMassVelocity = centerOfMass.minus(parent.centerOfMass);
 		centerOfMassAcceleration = centerOfMassVelocity.minus(parent.centerOfMassVelocity);
 	}
@@ -635,7 +607,7 @@ public class LegTweakBuffer {
 	private float getLeftFootLockLiklyHood() {
 		if (leftLegState == LOCKED && rightLegState == LOCKED) {
 			Vector3 velocityDiff = leftFootVelocity.minus(rightFootVelocity);
-			velocityDiff.setY(0.0f);
+			velocityDiff = new Vector3(velocityDiff.getX(), 0f, velocityDiff.getZ());
 			float velocityDiffMagnitude = velocityDiff.len();
 
 			if (velocityDiffMagnitude < MAX_SCALAR_DORMANT) {
@@ -668,7 +640,7 @@ public class LegTweakBuffer {
 	private float getRightFootLockLiklyHood() {
 		if (rightLegState == LOCKED && leftLegState == LOCKED) {
 			Vector3 velocityDiff = rightFootVelocity.minus(leftFootVelocity);
-			velocityDiff.setY(0.0f);
+			velocityDiff = new Vector3(velocityDiff.getX(), 0f, velocityDiff.getZ());
 			float velocityDiffMagnitude = velocityDiff.len();
 
 			if (velocityDiffMagnitude < MAX_SCALAR_DORMANT) {
@@ -715,7 +687,9 @@ public class LegTweakBuffer {
 
 		// get the magnitude of the force on each foot
 		float leftFootMagnitude = GRAVITY_MAGNITUDE * leftFootVector.getY() / leftFootVector.len();
-		float rightFootMagnitude = GRAVITY_MAGNITUDE * rightFootVector.getY() / rightFootVector.len();
+		float rightFootMagnitude = GRAVITY_MAGNITUDE
+			* rightFootVector.getY()
+			/ rightFootVector.len();
 
 		// get the force vector each foot could apply to the com
 		Vector3 leftFootForce = leftFootVector.times(leftFootMagnitude / 2.0f);
@@ -734,13 +708,13 @@ public class LegTweakBuffer {
 
 		// set the pressure to the force on each foot times the force to
 		// pressure scalar
-		leftFootPressure = leftFootForce.times(FORCE_VECTOR_TO_PRESSURE).length();
-		rightFootPressure = rightFootForce.times(FORCE_VECTOR_TO_PRESSURE).length();
+		leftFootPressure = leftFootForce.cross(FORCE_VECTOR_TO_PRESSURE).len();
+		rightFootPressure = rightFootForce.cross(FORCE_VECTOR_TO_PRESSURE).len();
 
 		// distance from the ground is a factor in the pressure
 		// using the inverse of the distance to the ground scale the
 		// pressure
-		float leftDistance = (leftFootPosition.getY()> leftFloorLevel)
+		float leftDistance = (leftFootPosition.getY() > leftFloorLevel)
 			? (leftFootPosition.getY() - leftFloorLevel)
 			: LegTweaks.NEARLY_ZERO;
 		leftFootPressure *= 1.0f / (leftDistance);
@@ -763,10 +737,10 @@ public class LegTweakBuffer {
 		int iterations = 100;
 		float stepSize = 0.01f;
 		// set up the temporary variables
-		Vector3 tempLeftFootForce1 = leftFootForce.clone();
-		Vector3 tempLeftFootForce2 = leftFootForce.clone();
-		Vector3 tempRightFootForce1 = rightFootForce.clone();
-		Vector3 tempRightFootForce2 = rightFootForce.clone();
+		Vector3 tempLeftFootForce1;
+		Vector3 tempLeftFootForce2;
+		Vector3 tempRightFootForce1;
+		Vector3 tempRightFootForce2;
 		Vector3 error;
 		Vector3 error1;
 		Vector3 error2;
@@ -774,14 +748,14 @@ public class LegTweakBuffer {
 		Vector3 error4;
 
 		for (int i = 0; i < iterations; i++) {
-			tempLeftFootForce1.set(leftFootForce);
-			tempLeftFootForce2.set(leftFootForce);
-			tempRightFootForce1.set(rightFootForce);
-			tempRightFootForce2.set(rightFootForce);
+			tempLeftFootForce1 = leftFootForce;
+			tempLeftFootForce2 = leftFootForce;
+			tempRightFootForce1 = rightFootForce;
+			tempRightFootForce2 = rightFootForce;
 
 			// get the error at the current position
 			error = centerOfMassAcceleration
-				.subtract(leftFootForce.add(rightFootForce).add(GRAVITY));
+				.minus(leftFootForce.plus(rightFootForce).plus(GRAVITY));
 
 			// add and subtract the error to the force vectors
 			tempLeftFootForce1 = tempLeftFootForce1.times(1.0f + stepSize);
@@ -797,15 +771,15 @@ public class LegTweakBuffer {
 
 			// set the new force vectors
 			if (error1.len() < error.len()) {
-				leftFootForce.set(tempLeftFootForce1);
+				leftFootForce = tempLeftFootForce1;
 			} else if (error2.len() < error.len()) {
-				leftFootForce.set(tempLeftFootForce2);
+				leftFootForce = tempLeftFootForce2;
 			}
 
 			if (error3.len() < error.len()) {
-				rightFootForce.set(tempRightFootForce1);
+				rightFootForce = tempRightFootForce1;
 			} else if (error4.len() < error.len()) {
-				rightFootForce.set(tempRightFootForce2);
+				rightFootForce = tempRightFootForce2;
 			}
 		}
 	}
