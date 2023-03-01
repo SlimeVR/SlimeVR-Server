@@ -770,15 +770,13 @@ public class LegTweaks {
 			return;
 
 		// get the foot positions
-		Vector3f leftFootPos = bufferHead.getLeftFootPosition(null);
-		Vector3f rightFootPos = bufferHead.getRightFootPosition(null);
 		Quaternion leftFootRotation = bufferHead.getLeftFootRotation(null);
 		Quaternion rightFootRotation = bufferHead.getRightFootRotation(null);
 
 		// between maximum correction angle and maximum correction angle delta
 		// the values are interpolated
-		float kneeAngleL = getXZAmount(leftFootPos, bufferHead.getLeftKneePosition(null));
-		float kneeAngleR = getXZAmount(rightFootPos, bufferHead.getRightKneePosition(null));
+		float kneeAngleL = getXZAmount(leftFootPosition, leftKneePosition);
+		float kneeAngleR = getXZAmount(rightFootPosition, rightKneePosition);
 
 		float masterWeightL = getMasterWeight(kneeAngleL);
 		float masterWeightR = getMasterWeight(kneeAngleR);
@@ -791,8 +789,8 @@ public class LegTweaks {
 
 			// the further from the ground the foot is, the less weight it
 			// should have
-			weightL = getFootPlantWeight(leftFootPos);
-			weightR = getFootPlantWeight(rightFootPos);
+			weightL = getFootPlantWeight(leftFootPosition);
+			weightR = getFootPlantWeight(rightFootPosition);
 
 			// perform the correction
 			leftFootRotation
@@ -824,12 +822,12 @@ public class LegTweaks {
 			float weightR = 0.0f;
 
 			// first compute the angle of the foot
-			float angleL = getToeSnapAngle(leftFootPos);
-			float angleR = getToeSnapAngle(rightFootPos);
+			float angleL = getToeSnapAngle(leftFootPosition);
+			float angleR = getToeSnapAngle(rightFootPosition);
 
 			// then compute the weight of the correction
-			weightL = getToeSnapWeight(leftFootPos, angleL);
-			weightR = getToeSnapWeight(rightFootPos, angleR);
+			weightL = getToeSnapWeight(leftFootPosition, angleL);
+			weightR = getToeSnapWeight(rightFootPosition, angleR);
 
 			// depending on the state variables, the correction weights should
 			// be clamped
@@ -855,17 +853,17 @@ public class LegTweaks {
 				);
 
 			// update state variables regarding toe snap
-			if (leftFootPos.y - floorLevel > footLength * MAXIMUM_TOE_DOWN_ANGLE) {
+			if (leftFootPosition.y - floorLevel > footLength * MAXIMUM_TOE_DOWN_ANGLE) {
 				leftToeTouched = false;
 				leftToeAngle = weightL;
-			} else if (leftFootPos.y - floorLevel < 0.0f) {
+			} else if (leftFootPosition.y - floorLevel < 0.0f) {
 				leftToeTouched = true;
 				leftToeAngle = 1.0f;
 			}
-			if (rightFootPos.y - floorLevel > footLength * MAXIMUM_TOE_DOWN_ANGLE) {
+			if (rightFootPosition.y - floorLevel > footLength * MAXIMUM_TOE_DOWN_ANGLE) {
 				rightToeTouched = false;
 				rightToeAngle = weightR;
-			} else if (rightFootPos.y - floorLevel < 0.0f) {
+			} else if (rightFootPosition.y - floorLevel < 0.0f) {
 				rightToeTouched = true;
 				rightToeAngle = 1.0f;
 			}
