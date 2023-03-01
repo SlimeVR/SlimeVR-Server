@@ -56,15 +56,15 @@ interface SettingsForm {
     viveEmulation: boolean;
   };
   tapDetection: {
-    tapMountingResetEnabled: boolean;
-    tapYawResetEnabled: boolean;
-    tapFullResetEnabled: boolean;
-    tapYawResetDelay: number;
-    tapFullResetDelay: number;
-    tapMountingResetDelay: number;
-    tapYawResetTaps: number;
-    tapFullResetTaps: number;
-    tapMountingResetTaps: number;
+    mountingResetEnabled: boolean;
+    yawResetEnabled: boolean;
+    fullResetEnabled: boolean;
+    yawResetDelay: number;
+    fullResetDelay: number;
+    mountingResetDelay: number;
+    yawResetTaps: number;
+    fullResetTaps: number;
+    mountingResetTaps: number;
   };
   legTweaks: {
     correctionStrength: number;
@@ -100,15 +100,15 @@ const defaultValues = {
     maxResets: 1,
   },
   tapDetection: {
-    tapMountingResetEnabled: false,
-    tapYawResetEnabled: false,
-    tapFullResetEnabled: false,
-    tapYawResetDelay: 0.2,
-    tapFullResetDelay: 1.0,
-    tapMountingResetDelay: 1.0,
-    tapYawResetTaps: 2,
-    tapFullResetTaps: 3,
-    tapMountingResetTaps: 3,
+    mountingResetEnabled: false,
+    yawResetEnabled: false,
+    fullResetEnabled: false,
+    yawResetDelay: 0.2,
+    fullResetDelay: 1.0,
+    mountingResetDelay: 1.0,
+    yawResetTaps: 2,
+    fullResetTaps: 3,
+    mountingResetTaps: 3,
   },
   legTweaks: { correctionStrength: 0.3 },
   interface: { devmode: false, watchNewDevices: true },
@@ -156,18 +156,18 @@ export function GeneralSettings() {
     settings.modelSettings = modelSettings;
 
     const tapDetection = new TapDetectionSettingsT();
-    tapDetection.tapFullResetDelay = values.tapDetection.tapFullResetDelay;
-    tapDetection.tapFullResetEnabled = values.tapDetection.tapFullResetEnabled;
-    tapDetection.tapFullResetTaps = values.tapDetection.tapFullResetTaps;
-    tapDetection.tapYawResetDelay = values.tapDetection.tapYawResetDelay;
-    tapDetection.tapYawResetEnabled = values.tapDetection.tapYawResetEnabled;
-    tapDetection.tapYawResetTaps = values.tapDetection.tapYawResetTaps;
-    tapDetection.tapMountingResetEnabled =
-      values.tapDetection.tapMountingResetEnabled;
-    tapDetection.tapMountingResetDelay =
-      values.tapDetection.tapMountingResetDelay;
-    tapDetection.tapMountingResetTaps =
-      values.tapDetection.tapMountingResetTaps;
+    tapDetection.fullResetDelay = values.tapDetection.fullResetDelay;
+    tapDetection.fullResetEnabled = values.tapDetection.fullResetEnabled;
+    tapDetection.fullResetTaps = values.tapDetection.fullResetTaps;
+    tapDetection.yawResetDelay = values.tapDetection.yawResetDelay;
+    tapDetection.yawResetEnabled = values.tapDetection.yawResetEnabled;
+    tapDetection.yawResetTaps = values.tapDetection.yawResetTaps;
+    tapDetection.mountingResetEnabled =
+      values.tapDetection.mountingResetEnabled;
+    tapDetection.mountingResetDelay =
+      values.tapDetection.mountingResetDelay;
+    tapDetection.mountingResetTaps =
+      values.tapDetection.mountingResetTaps;
     settings.tapDetectionSettings = tapDetection;
 
     const filtering = new FilteringSettingsT();
@@ -233,33 +233,33 @@ export function GeneralSettings() {
 
     if (settings.tapDetectionSettings) {
       formData.tapDetection = {
-        tapYawResetEnabled:
-          settings.tapDetectionSettings.tapYawResetEnabled ||
-          defaultValues.tapDetection.tapYawResetEnabled,
-        tapFullResetEnabled:
-          settings.tapDetectionSettings.tapFullResetEnabled ||
-          defaultValues.tapDetection.tapFullResetEnabled,
-        tapMountingResetEnabled:
-          settings.tapDetectionSettings.tapMountingResetEnabled ||
-          defaultValues.tapDetection.tapMountingResetEnabled,
-        tapYawResetDelay:
-          settings.tapDetectionSettings.tapYawResetDelay ||
-          defaultValues.tapDetection.tapYawResetDelay,
-        tapFullResetDelay:
-          settings.tapDetectionSettings.tapFullResetDelay ||
-          defaultValues.tapDetection.tapFullResetDelay,
-        tapMountingResetDelay:
-          settings.tapDetectionSettings.tapMountingResetDelay ||
-          defaultValues.tapDetection.tapMountingResetDelay,
-        tapYawResetTaps:
-          settings.tapDetectionSettings.tapYawResetTaps ||
-          defaultValues.tapDetection.tapYawResetTaps,
-        tapFullResetTaps:
-          settings.tapDetectionSettings.tapFullResetTaps ||
-          defaultValues.tapDetection.tapFullResetTaps,
-        tapMountingResetTaps:
-          settings.tapDetectionSettings.tapMountingResetTaps ||
-          defaultValues.tapDetection.tapMountingResetTaps,
+        yawResetEnabled:
+          settings.tapDetectionSettings.yawResetEnabled ||
+          defaultValues.tapDetection.yawResetEnabled,
+        fullResetEnabled:
+          settings.tapDetectionSettings.fullResetEnabled ||
+          defaultValues.tapDetection.fullResetEnabled,
+        mountingResetEnabled:
+          settings.tapDetectionSettings.mountingResetEnabled ||
+          defaultValues.tapDetection.mountingResetEnabled,
+        yawResetDelay:
+          settings.tapDetectionSettings.yawResetDelay ||
+          defaultValues.tapDetection.yawResetDelay,
+        fullResetDelay:
+          settings.tapDetectionSettings.fullResetDelay ||
+          defaultValues.tapDetection.fullResetDelay,
+        mountingResetDelay:
+          settings.tapDetectionSettings.mountingResetDelay ||
+          defaultValues.tapDetection.mountingResetDelay,
+        yawResetTaps:
+          settings.tapDetectionSettings.yawResetTaps ||
+          defaultValues.tapDetection.yawResetTaps,
+        fullResetTaps:
+          settings.tapDetectionSettings.fullResetTaps ||
+          defaultValues.tapDetection.fullResetTaps,
+        mountingResetTaps:
+          settings.tapDetectionSettings.mountingResetTaps ||
+          defaultValues.tapDetection.mountingResetTaps,
       };
     }
 
@@ -637,7 +637,7 @@ export function GeneralSettings() {
               variant="toggle"
               outlined
               control={control}
-              name="tapDetection.tapYawResetEnabled"
+              name="tapDetection.yawResetEnabled"
               label={l10n.getString(
                 'settings-general-gesture_control-yawResetEnabled'
               )}
@@ -646,7 +646,7 @@ export function GeneralSettings() {
               variant="toggle"
               outlined
               control={control}
-              name="tapDetection.tapFullResetEnabled"
+              name="tapDetection.fullResetEnabled"
               label={l10n.getString(
                 'settings-general-gesture_control-fullResetEnabled'
               )}
@@ -655,7 +655,7 @@ export function GeneralSettings() {
               variant="toggle"
               outlined
               control={control}
-              name="tapDetection.tapMountingResetEnabled"
+              name="tapDetection.mountingResetEnabled"
               label={l10n.getString(
                 'settings-general-gesture_control-mountingResetEnabled'
               )}
@@ -664,7 +664,7 @@ export function GeneralSettings() {
           <div className="grid sm:grid-cols-3 gap-5 pb-2">
             <NumberSelector
               control={control}
-              name="tapDetection.tapYawResetDelay"
+              name="tapDetection.yawResetDelay"
               label={l10n.getString(
                 'settings-general-gesture_control-yawResetDelay'
               )}
@@ -675,7 +675,7 @@ export function GeneralSettings() {
             />
             <NumberSelector
               control={control}
-              name="tapDetection.tapFullResetDelay"
+              name="tapDetection.fullResetDelay"
               label={l10n.getString(
                 'settings-general-gesture_control-fullResetDelay'
               )}
@@ -686,7 +686,7 @@ export function GeneralSettings() {
             />
             <NumberSelector
               control={control}
-              name="tapDetection.tapMountingResetDelay"
+              name="tapDetection.mountingResetDelay"
               label={l10n.getString(
                 'settings-general-gesture_control-mountingResetDelay'
               )}
@@ -699,7 +699,7 @@ export function GeneralSettings() {
           <div className="grid sm:grid-cols-3 gap-5 pb-2">
             <NumberSelector
               control={control}
-              name="tapDetection.tapYawResetTaps"
+              name="tapDetection.yawResetTaps"
               label={l10n.getString(
                 'settings-general-gesture_control-yawResetTaps'
               )}
@@ -714,7 +714,7 @@ export function GeneralSettings() {
             />
             <NumberSelector
               control={control}
-              name="tapDetection.tapFullResetTaps"
+              name="tapDetection.fullResetTaps"
               label={l10n.getString(
                 'settings-general-gesture_control-fullResetTaps'
               )}
@@ -729,7 +729,7 @@ export function GeneralSettings() {
             />
             <NumberSelector
               control={control}
-              name="tapDetection.tapMountingResetTaps"
+              name="tapDetection.mountingResetTaps"
               label={l10n.getString(
                 'settings-general-gesture_control-mountingResetTaps'
               )}

@@ -219,38 +219,38 @@ public record RPCSettingsHandler(RPCHandler rpcHandler, ProtocolAPI api) {
 			if (tapDetectionSettings != null) {
 				// enable/disable tap detection
 				tapDetectionConfig
-					.setYawResetEnabled(tapDetectionSettings.tapYawResetEnabled());
+					.setYawResetEnabled(tapDetectionSettings.yawResetEnabled());
 				tapDetectionConfig
-					.setFullResetEnabled(tapDetectionSettings.tapFullResetEnabled());
+					.setFullResetEnabled(tapDetectionSettings.fullResetEnabled());
 				tapDetectionConfig
-					.setMountingResetEnabled(tapDetectionSettings.tapMountingResetEnabled());
+					.setMountingResetEnabled(tapDetectionSettings.mountingResetEnabled());
 
 				// set tap detection delays
-				if (tapDetectionSettings.hasTapYawResetDelay()) {
+				if (tapDetectionSettings.hasYawResetDelay()) {
 					tapDetectionConfig
-						.setYawResetDelay(tapDetectionSettings.tapYawResetDelay());
+						.setYawResetDelay(tapDetectionSettings.yawResetDelay());
 				}
-				if (tapDetectionSettings.hasTapFullResetDelay()) {
+				if (tapDetectionSettings.hasFullResetDelay()) {
 					tapDetectionConfig
-						.setFullResetDelay(tapDetectionSettings.tapFullResetDelay());
+						.setFullResetDelay(tapDetectionSettings.fullResetDelay());
 				}
-				if (tapDetectionSettings.hasTapMountingResetDelay()) {
+				if (tapDetectionSettings.hasMountingResetDelay()) {
 					tapDetectionConfig
-						.setMountingResetDelay(tapDetectionSettings.tapMountingResetDelay());
+						.setMountingResetDelay(tapDetectionSettings.mountingResetDelay());
 				}
 
 				// set the number of taps required for each action
-				if (tapDetectionSettings.hasTapYawResetTaps()) {
+				if (tapDetectionSettings.hasYawResetTaps()) {
 					tapDetectionConfig
-						.setYawResetTaps(tapDetectionSettings.tapYawResetTaps());
+						.setYawResetTaps(tapDetectionSettings.yawResetTaps());
 				}
-				if (tapDetectionSettings.hasTapFullResetTaps()) {
+				if (tapDetectionSettings.hasFullResetTaps()) {
 					tapDetectionConfig
-						.setFullResetTaps(tapDetectionSettings.tapFullResetTaps());
+						.setFullResetTaps(tapDetectionSettings.fullResetTaps());
 				}
-				if (tapDetectionSettings.hasTapMountingResetTaps()) {
+				if (tapDetectionSettings.hasMountingResetTaps()) {
 					tapDetectionConfig
-						.setMountingResetTaps(tapDetectionSettings.tapMountingResetTaps());
+						.setMountingResetTaps(tapDetectionSettings.mountingResetTaps());
 				}
 
 				this.api.server.humanPoseManager.updateTapDetectionConfig();
