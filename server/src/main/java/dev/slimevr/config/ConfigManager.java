@@ -12,7 +12,9 @@ import dev.slimevr.config.serializers.QuaternionSerializer;
 import io.eiren.util.ann.ThreadSafe;
 import io.eiren.util.logging.LogManager;
 
-import java.io.*;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.io.IOException;
 import java.nio.file.*;
 
 
@@ -43,10 +45,10 @@ public class ConfigManager {
 		} catch (FileNotFoundException e) {
 			// Config file didn't exist, is not an error
 		} catch (IOException e) {
+			// Log the exception
+			LogManager.severe("Config failed to load: " + e);
 			// Make a backup of the erroneous config
 			backupConfig();
-			// Re-throw the exception
-			throw new RuntimeException(e);
 		}
 
 		if (this.vrConfig == null) {
@@ -77,6 +79,7 @@ public class ConfigManager {
 					StandardCopyOption.REPLACE_EXISTING,
 					StandardCopyOption.COPY_ATTRIBUTES
 				);
+			LogManager.info("Made a backup copy of config to \"" + tmpBakCfgFile + "\"");
 		} catch (IOException e) {
 			LogManager
 				.severe(
