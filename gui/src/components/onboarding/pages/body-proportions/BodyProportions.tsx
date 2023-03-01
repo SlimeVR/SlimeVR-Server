@@ -81,8 +81,7 @@ export function BodyProportions({
               'index' in props && props.index !== undefined
                 ? props.bones[props.index].value
                 : originalValue;
-            const selected =
-              currentSelection.label === label;
+            const selected = currentSelection.label === label;
             return (
               <div className="flex" key={label}>
                 <div

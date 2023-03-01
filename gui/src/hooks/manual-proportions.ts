@@ -124,7 +124,7 @@ function reducer(state: ProportionState, action: ProportionChange): ProportionSt
       const total = filtered.reduce((acc, cur) => acc + cur.value, 0);
 
       for (const part of filtered) {
-        part.value += (part.value / total) * action.value * -1
+        part.value += (part.value / total) * action.value * -1;
       }
 
       return newState;
@@ -191,7 +191,7 @@ export const INVALID_BONE: BoneState = {
   bone: SkeletonBone.NONE,
   value: 0,
   label: 'invalid-bone',
-}
+};
 
 export function useManualProportions(): [
   Label[],
@@ -276,9 +276,9 @@ export function useManualProportions(): [
   useLayoutEffect(() => {
     dispatch({
       ...INVALID_BONE,
-      type: ProportionChangeType.Bone
-    })
-  }, [ratio])
+      type: ProportionChangeType.Bone,
+    });
+  }, [ratio]);
 
   useRPCPacket(RpcMessage.SkeletonConfigResponse, (data: SkeletonConfigResponseT) => {
     setConfig(data);
