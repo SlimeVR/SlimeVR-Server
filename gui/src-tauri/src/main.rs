@@ -13,7 +13,7 @@ use const_format::concatcp;
 use rand::{seq::SliceRandom, thread_rng};
 use shadow_rs::shadow;
 use tauri::api::process::Command;
-use tauri::Manager;
+use tauri::{Manager, WindowEvent};
 use tempfile::Builder;
 
 #[cfg(windows)]
@@ -199,7 +199,7 @@ fn main() {
 		None
 	};
 
-	let builder = tauri::Builder::default()
+	let run_result = tauri::Builder::default()
 		.plugin(tauri_plugin_window_state::Builder::default().build())
 		.setup(|app| {
 			if let Some(mut recv) = stdout_recv {
@@ -229,9 +229,14 @@ fn main() {
 			}
 			Ok(())
 		})
-		//
+		.on_window_event(|e| match e.event() {
+			// See https://github.com/tauri-apps/tauri/issues/4012#issuecomment-1449499149
+			#[cfg(windows)]
+			WindowEvent::Resized(_) => std::thread::sleep(std::time::Duration::from_nanos(1)),
+			_ => (),
+		})
 		.run(tauri::generate_context!());
-	match builder {
+	match run_result {
 		#[cfg(windows)]
 		// Often triggered when the user doesn't have webview2 installed
 		Err(tauri::Error::Runtime(tauri_runtime::Error::CreateWebview(error))) => {
@@ -251,7 +256,7 @@ fn main() {
 			}
 			return;
 		}
-		_ => builder.expect("error while running tauri application"),
+		_ => run_result.expect("error while running tauri application"),
 	}
 }
 
