@@ -164,10 +164,8 @@ export function GeneralSettings() {
     tapDetection.yawResetTaps = values.tapDetection.yawResetTaps;
     tapDetection.mountingResetEnabled =
       values.tapDetection.mountingResetEnabled;
-    tapDetection.mountingResetDelay =
-      values.tapDetection.mountingResetDelay;
-    tapDetection.mountingResetTaps =
-      values.tapDetection.mountingResetTaps;
+    tapDetection.mountingResetDelay = values.tapDetection.mountingResetDelay;
+    tapDetection.mountingResetTaps = values.tapDetection.mountingResetTaps;
     settings.tapDetectionSettings = tapDetection;
 
     const filtering = new FilteringSettingsT();
