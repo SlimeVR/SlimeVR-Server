@@ -6,7 +6,7 @@ import {
   ChangeSkeletonConfigRequestT,
 } from 'solarxr-protocol';
 import { useWebsocketAPI } from './websocket-api';
-import { useReducer, useEffect, useMemo, useState } from 'react';
+import { useReducer, useEffect, useMemo, useState, useLayoutEffect } from 'react';
 
 export type ProportionChange = LinearChange | RatioChange | BoneChange | GroupChange;
 
@@ -186,6 +186,13 @@ const BONE_MAPPING: Map<string, SkeletonBone[]> = new Map([
   ['skeleton_bone-arm_group', [SkeletonBone.UPPER_ARM, SkeletonBone.LOWER_ARM]],
 ]);
 
+export const INVALID_BONE: BoneState = {
+  type: BoneType.Single,
+  bone: SkeletonBone.NONE,
+  value: 0,
+  label: 'invalid-bone',
+}
+
 export function useManualProportions(): [
   Label[],
   boolean,
@@ -198,12 +205,7 @@ export function useManualProportions(): [
     null
   );
   const [ratio, setRatio] = useState(false);
-  const [state, dispatch] = useReducer(reducer, {
-    type: BoneType.Single,
-    bone: SkeletonBone.NONE,
-    value: 0,
-    label: 'invalid-bone',
-  });
+  const [state, dispatch] = useReducer(reducer, INVALID_BONE);
 
   const bodyParts: Label[] = useMemo(() => {
     if (!config) return [];
@@ -270,6 +272,13 @@ export function useManualProportions(): [
       value,
     }));
   }, [config, ratio]);
+
+  useLayoutEffect(() => {
+    dispatch({
+      ...INVALID_BONE,
+      type: ProportionChangeType.Bone
+    })
+  }, [ratio])
 
   useRPCPacket(RpcMessage.SkeletonConfigResponse, (data: SkeletonConfigResponseT) => {
     setConfig(data);

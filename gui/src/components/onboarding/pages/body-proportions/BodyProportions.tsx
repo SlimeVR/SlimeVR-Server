@@ -81,13 +81,14 @@ export function BodyProportions({
               'index' in props && props.index !== undefined
                 ? props.bones[props.index].value
                 : originalValue;
+            const selected =
+              currentSelection.label === label;
             return (
               <div className="flex" key={label}>
                 <div
                   className={classNames(
                     'flex gap-2 transition-opacity duration-300',
-                    currentSelection.label !== label &&
-                      'opacity-0 pointer-events-none'
+                    !selected && 'opacity-0 pointer-events-none'
                   )}
                 >
                   {!precise && (
@@ -185,8 +186,7 @@ export function BodyProportions({
                     key={label}
                     className={classNames(
                       'p-3  rounded-lg h-16 flex w-full items-center justify-between px-6 transition-colors duration-300 bg-background-60',
-                      (currentSelection.label === label && 'opacity-100') ||
-                        'opacity-50'
+                      (selected && 'opacity-100') || 'opacity-50'
                     )}
                   >
                     <Typography variant="section-title" bold>
@@ -194,8 +194,8 @@ export function BodyProportions({
                     </Typography>
                     <Typography variant="main-title" bold>
                       {type === LabelType.GroupPart
-                        /* Make number rounding so it's based on .5 decimals */
-                        ? percentageFormat.format(Math.round(value * 200) / 200)
+                        ? /* Make number rounding so it's based on .5 decimals */
+                          percentageFormat.format(Math.round(value * 200) / 200)
                         : cmFormat.format(Math.round(value * 200) / 2)}
                     </Typography>
                   </div>
@@ -203,8 +203,7 @@ export function BodyProportions({
                 <div
                   className={classNames(
                     'flex gap-2 transition-opacity duration-300',
-                    currentSelection.label !== label &&
-                      'opacity-0 pointer-events-none'
+                    !selected && 'opacity-0 pointer-events-none'
                   )}
                 >
                   {precise && (
