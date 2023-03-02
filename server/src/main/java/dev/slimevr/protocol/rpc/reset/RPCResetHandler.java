@@ -23,12 +23,12 @@ public record RPCResetHandler(RPCHandler rpcHandler, ProtocolAPI api) implements
 	}
 
 	@Override
-	public void onTriggered(int resetType) {
+	public void onStarted(int resetType) {
 
 		FlatBufferBuilder fbb = new FlatBufferBuilder(32);
 		ResetResponse.startResetResponse(fbb);
 		ResetResponse.addResetType(fbb, resetType);
-		ResetResponse.addStatus(fbb, ResetStatus.TRIGGERED);
+		ResetResponse.addStatus(fbb, ResetStatus.STARTED);
 		int update = ResetResponse.endResetResponse(fbb);
 		int outbound = rpcHandler.createRPCMessage(fbb, RpcMessage.ResetResponse, update);
 		fbb.finish(outbound);

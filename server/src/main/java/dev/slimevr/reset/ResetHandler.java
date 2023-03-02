@@ -12,8 +12,8 @@ public class ResetHandler {
 
 	}
 
-	public void sendTriggered(int resetType) {
-		this.listeners.forEach((listener) -> listener.onTriggered(resetType));
+	public void sendStarted(int resetType) {
+		this.listeners.forEach((listener) -> listener.onStarted(resetType));
 	}
 
 	public void addListener(ResetListener listener) {

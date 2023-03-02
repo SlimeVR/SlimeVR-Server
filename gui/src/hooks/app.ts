@@ -19,7 +19,7 @@ import {
   StartDataFeedT,
   TrackerDataT,
 } from 'solarxr-protocol';
-import { playSoundForTriggered } from '../sounds/sounds';
+import { playSoundForStarted } from '../sounds/sounds';
 import { useConfig } from './config';
 import { useDataFeedConfig } from './datafeed-config';
 import { useWebsocketAPI } from './websocket-api';
@@ -94,8 +94,8 @@ export function useProvideAppContext(): AppContext {
     if (!config?.feedbackSound) return;
     try {
       switch (status) {
-        case ResetStatus.TRIGGERED: {
-          playSoundForTriggered(resetType);
+        case ResetStatus.STARTED: {
+          playSoundForStarted(resetType);
           break;
         }
       }

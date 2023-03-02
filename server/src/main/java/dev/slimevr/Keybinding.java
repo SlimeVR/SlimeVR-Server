@@ -61,15 +61,15 @@ public class Keybinding implements HotkeyListener {
 	public void onHotKey(int identifier) {
 		switch (identifier) {
 			case RESET -> {
-				server.getResetHandler().sendTriggered(ResetType.Full);
+				server.getResetHandler().sendStarted(ResetType.Full);
 				server.scheduleResetTrackers(resetSourceName, this.config.getResetDelay());
 			}
 			case QUICK_RESET -> {
-				server.getResetHandler().sendTriggered(ResetType.Quick);
+				server.getResetHandler().sendStarted(ResetType.Quick);
 				server.scheduleResetTrackersYaw(resetSourceName, this.config.getQuickResetDelay());
 			}
 			case RESET_MOUNTING -> {
-				server.getResetHandler().sendTriggered(ResetType.Mounting);
+				server.getResetHandler().sendStarted(ResetType.Mounting);
 				server
 					.scheduleResetTrackersMounting(
 						resetSourceName,

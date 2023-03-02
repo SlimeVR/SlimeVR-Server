@@ -111,7 +111,7 @@ public class TapDetectionManager {
 		boolean tapped = (quickResetTaps <= quickResetDetector.getTaps());
 
 		if (tapped && quickResetAllowPlaySound) {
-			this.resetHandler.sendTriggered(ResetType.Quick);
+			this.resetHandler.sendStarted(ResetType.Quick);
 			quickResetAllowPlaySound = false;
 		}
 
@@ -132,7 +132,7 @@ public class TapDetectionManager {
 		boolean tapped = (resetTaps <= resetDetector.getTaps());
 
 		if (tapped && resetAllowPlaySound) {
-			this.resetHandler.sendTriggered(ResetType.Full);
+			this.resetHandler.sendStarted(ResetType.Full);
 			resetAllowPlaySound = false;
 		}
 
@@ -153,7 +153,7 @@ public class TapDetectionManager {
 		boolean tapped = (mountingResetTaps <= mountingResetDetector.getTaps());
 
 		if (tapped && mountingResetAllowPlaySound) {
-			this.resetHandler.sendTriggered(ResetType.Mounting);
+			this.resetHandler.sendStarted(ResetType.Mounting);
 			mountingResetAllowPlaySound = false;
 		}
 

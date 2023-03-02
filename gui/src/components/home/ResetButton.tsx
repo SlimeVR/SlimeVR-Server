@@ -3,7 +3,7 @@ import { useMemo } from 'react';
 import { ResetRequestT, ResetType, RpcMessage } from 'solarxr-protocol';
 import { useCountdown } from '../../hooks/countdown';
 import { useWebsocketAPI } from '../../hooks/websocket-api';
-import { playSoundForTriggered } from '../../sounds/sounds';
+import { playSoundForStarted } from '../../sounds/sounds';
 import { BigButton } from '../commons/BigButton';
 import { Button } from '../commons/Button';
 import {
@@ -66,7 +66,7 @@ export function ResetButton({
           icon={getIcon()}
           onClick={() => {
             reset();
-            playSoundForTriggered(ResetType.Quick);
+            playSoundForStarted(ResetType.Quick);
           }}
           variant="primary"
         >
@@ -77,7 +77,7 @@ export function ResetButton({
           icon={getIcon()}
           onClick={() => {
             startCountdown();
-            playSoundForTriggered(ResetType.Full);
+            playSoundForStarted(ResetType.Full);
           }}
           variant="primary"
           disabled={isCounting}
@@ -95,7 +95,7 @@ export function ResetButton({
           icon={getIcon()}
           onClick={() => {
             reset();
-            playSoundForTriggered(ResetType.Quick);
+            playSoundForStarted(ResetType.Quick);
           }}
         ></BigButton>
       ) : (
@@ -104,7 +104,7 @@ export function ResetButton({
           icon={getIcon()}
           onClick={() => {
             startCountdown();
-            playSoundForTriggered(ResetType.Full);
+            playSoundForStarted(ResetType.Full);
           }}
           disabled={isCounting}
         ></BigButton>
