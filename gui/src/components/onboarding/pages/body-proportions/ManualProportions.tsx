@@ -20,7 +20,7 @@ export function ManualProportionsPage() {
 
   applyProgress(0.9);
 
-  const savedValue = useMemo(() => localStorage.getItem('ratioMode'), [])
+  const savedValue = useMemo(() => localStorage.getItem('ratioMode'), []);
 
   const { control, watch } = useForm<{ precise: boolean; ratio: boolean }>({
     defaultValues: { precise: false, ratio: savedValue !== 'false' || true },
@@ -36,7 +36,7 @@ export function ManualProportionsPage() {
 
   useEffect(() => {
     localStorage.setItem('ratioMode', ratio.toString());
-  }, [ratio])
+  }, [ratio]);
 
   useEffect(() => {
     onPageOpened();
