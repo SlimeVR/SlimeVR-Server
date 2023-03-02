@@ -831,23 +831,17 @@ public class LegTweaks {
 			weightR = getFootPlantWeight(rightFootPosition);
 
 			// perform the correction
-			leftFootRotation
-				= (
-					leftFootRotation
-						.interpR(
-							isolateYaw(leftFootRotation),
-							weightL * masterWeightL
-						)
-				);
+			leftFootRotation = (leftFootRotation
+				.interpR(
+					isolateYaw(leftFootRotation),
+					weightL * masterWeightL
+				));
 
-			rightFootRotation
-				= (
-					rightFootRotation
-						.interpR(
-							isolateYaw(rightFootRotation),
-							weightR * masterWeightR
-						)
-				);
+			rightFootRotation = (rightFootRotation
+				.interpR(
+					isolateYaw(rightFootRotation),
+					weightR * masterWeightR
+				));
 		}
 
 		// corrects rotations when the foot is in the air by rotating the foot
@@ -1181,7 +1175,8 @@ public class LegTweaks {
 		float currentPitch = (float) Math.asin(currentPitchAxis.getY());
 
 		// then add the new pitch
-		Quaternion newQuat = newQuat.fromAngleAxis(newPitch + currentPitch, currentPitchAxis);
+		Quaternion newQuat = Quaternion.Companion
+			.fromRotationVector(currentPitchAxis.times(newPitch + currentPitch));
 
 		return newQuat.times(quaternion);
 	}

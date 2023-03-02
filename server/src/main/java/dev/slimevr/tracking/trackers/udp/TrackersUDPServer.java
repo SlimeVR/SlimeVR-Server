@@ -28,9 +28,8 @@ public class TrackersUDPServer extends Thread {
 	/**
 	 * Change between IMU axes and OpenGL/SteamVR axes
 	 */
-	private static final Quaternion AXES_OFFSET = new Quaternion().fromAngleAxis(-FastMath.HALF_PI, Vector3.Companion.getPOS_X());
-
-
+	private static final Quaternion AXES_OFFSET = Quaternion.Companion
+		.fromRotationVector(-FastMath.HALF_PI, 0f, 0f);
 	private static final String resetSourceName = "TrackerServer";
 	private final Random random = new Random();
 	private final List<UDPDevice> connections = new FastList<>();
@@ -590,7 +589,7 @@ public class TrackersUDPServer extends Thread {
 					case UDPPacket21UserAction.RESET_MOUNTING:
 						String name = "";
 						switch (action.type) {
-							case UDPPacket21UserAction.RESET -> {
+							case UDPPacket21UserAction.RESET_FULL -> {
 								name = "Full";
 								Main.getVrServer().resetTrackersFull(resetSourceName);
 							}

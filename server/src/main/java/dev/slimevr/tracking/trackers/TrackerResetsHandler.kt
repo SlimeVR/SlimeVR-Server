@@ -288,10 +288,10 @@ class TrackerResetsHandler(val tracker: Tracker) {
 			) {
 				// Replace latest drift quaternion
 				rotationSinceReset *= (
-							rotQuat.project(Vector3.POS_Y).unit()
-							.times(
-								beforeQuat.project(Vector3.POS_Y).unit().inv()
-							)
+					rotQuat.project(Vector3.POS_Y).unit()
+						.times(
+							beforeQuat.project(Vector3.POS_Y).unit().inv()
+						)
 					)
 				driftQuats[driftQuats.size - 1] = rotationSinceReset
 
