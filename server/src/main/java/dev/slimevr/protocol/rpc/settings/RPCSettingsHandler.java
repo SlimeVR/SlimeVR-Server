@@ -299,6 +299,8 @@ public record RPCSettingsHandler(RPCHandler rpcHandler, ProtocolAPI api) {
 						toggles.skatingCorrection()
 					);
 				hpm.setToggle(SkeletonConfigToggles.VIVE_EMULATION, toggles.viveEmulation());
+				hpm.setToggle(SkeletonConfigToggles.TOE_SNAP, toggles.toeSnap());
+				hpm.setToggle(SkeletonConfigToggles.FOOT_PLANT, toggles.footPlant());
 			}
 
 			if (ratios != null) {

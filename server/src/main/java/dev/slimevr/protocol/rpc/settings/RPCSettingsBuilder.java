@@ -181,7 +181,9 @@ public class RPCSettingsBuilder {
 				humanPoseManager.getToggle(SkeletonConfigToggles.FORCE_ARMS_FROM_HMD),
 				humanPoseManager.getToggle(SkeletonConfigToggles.FLOOR_CLIP),
 				humanPoseManager.getToggle(SkeletonConfigToggles.SKATING_CORRECTION),
-				humanPoseManager.getToggle(SkeletonConfigToggles.VIVE_EMULATION)
+				humanPoseManager.getToggle(SkeletonConfigToggles.VIVE_EMULATION),
+				humanPoseManager.getToggle(SkeletonConfigToggles.TOE_SNAP),
+				humanPoseManager.getToggle(SkeletonConfigToggles.FOOT_PLANT)
 			);
 		int ratiosOffset = ModelRatios
 			.createModelRatios(
