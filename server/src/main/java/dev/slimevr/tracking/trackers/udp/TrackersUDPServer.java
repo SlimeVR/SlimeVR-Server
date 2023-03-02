@@ -9,8 +9,6 @@ import dev.slimevr.tracking.trackers.TrackerStatus;
 import io.eiren.util.Util;
 import io.eiren.util.collections.FastList;
 import io.eiren.util.logging.LogManager;
-import io.github.axisangles.ktmath.EulerAngles;
-import io.github.axisangles.ktmath.EulerOrder;
 import io.github.axisangles.ktmath.Quaternion;
 import io.github.axisangles.ktmath.Vector3;
 import org.apache.commons.lang3.ArrayUtils;
@@ -30,12 +28,7 @@ public class TrackersUDPServer extends Thread {
 	/**
 	 * Change between IMU axes and OpenGL/SteamVR axes
 	 */
-	private static final Quaternion AXES_OFFSET = new EulerAngles(
-		EulerOrder.YZX,
-		FastMath.HALF_PI,
-		0f,
-		0f
-	).toQuaternion();
+	private static final Quaternion AXES_OFFSET = new Quaternion().fromAngleAxis(-FastMath.HALF_PI, Vector3.Companion.getPOS_X());
 
 
 	private static final String resetSourceName = "TrackerServer";

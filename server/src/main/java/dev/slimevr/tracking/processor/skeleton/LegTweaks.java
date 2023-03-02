@@ -3,9 +3,9 @@ package dev.slimevr.tracking.processor.skeleton;
 import com.jme3.math.FastMath;
 import dev.slimevr.config.LegTweaksConfig;
 import dev.slimevr.tracking.processor.TransformNode;
+import dev.slimevr.tracking.processor.config.SkeletonConfigToggles;
 import io.github.axisangles.ktmath.Quaternion;
 import io.github.axisangles.ktmath.Vector3;
-import dev.slimevr.tracking.processor.config.SkeletonConfigToggles;
 
 
 public class LegTweaks {
@@ -329,7 +329,7 @@ public class LegTweaks {
 		}
 
 		// update the foot length
-		footLength = skeleton.leftFootNode.localTransform.getTranslation().length();
+		footLength = skeleton.leftFootNode.getLocalTransform().getTranslation().len();
 
 		// if not enabled, do nothing and return false
 		if (!enabled)
@@ -521,7 +521,7 @@ public class LegTweaks {
 
 		// move the feet to their new positions
 		if (
-			leftFootPosition.y
+			leftFootPosition.getY()
 				< (floorLevel + (footLength * leftOffset))
 					- currentDisengagementOffset
 		) {
@@ -547,7 +547,7 @@ public class LegTweaks {
 		}
 
 		if (
-			rightFootPosition.y
+			rightFootPosition.getY()
 				< (floorLevel + (footLength * rightOffset))
 					- currentDisengagementOffset
 		) {
@@ -808,8 +808,8 @@ public class LegTweaks {
 			return;
 
 		// get the foot positions
-		Quaternion leftFootRotation = bufferHead.getLeftFootRotation(null);
-		Quaternion rightFootRotation = bufferHead.getRightFootRotation(null);
+		Quaternion leftFootRotation = bufferHead.getLeftFootRotation();
+		Quaternion rightFootRotation = bufferHead.getRightFootRotation();
 
 		// between maximum correction angle and maximum correction angle delta
 		// the values are interpolated
@@ -822,8 +822,8 @@ public class LegTweaks {
 		// corrects rotations when planted firmly on the ground
 		if (footPlant) {
 			// prepare the weight vars for this correction step
-			float weightL = 0.0f;
-			float weightR = 0.0f;
+			float weightL;
+			float weightR;
 
 			// the further from the ground the foot is, the less weight it
 			// should have
@@ -832,20 +832,18 @@ public class LegTweaks {
 
 			// perform the correction
 			leftFootRotation
-				.set(
+				= (
 					leftFootRotation
-						.slerp(
-							leftFootRotation,
+						.interpR(
 							isolateYaw(leftFootRotation),
 							weightL * masterWeightL
 						)
 				);
 
 			rightFootRotation
-				.set(
+				= (
 					rightFootRotation
-						.slerp(
-							rightFootRotation,
+						.interpR(
 							isolateYaw(rightFootRotation),
 							weightR * masterWeightR
 						)
@@ -856,8 +854,8 @@ public class LegTweaks {
 		// down so that the toes are touching
 		if (toeSnap) {
 			// this correction step has its own weight vars
-			float weightL = 0.0f;
-			float weightR = 0.0f;
+			float weightL;
+			float weightR;
 
 			// first compute the angle of the foot
 			float angleL = getToeSnapAngle(leftFootPosition);
@@ -877,31 +875,29 @@ public class LegTweaks {
 			}
 
 			// then slerp the rotation to the new rotation based on the weight
-			leftFootRotation
-				.slerp(
-					leftFootRotation,
+			leftFootRotation = leftFootRotation
+				.interpR(
 					replacePitch(leftFootRotation, -angleL),
 					weightL * masterWeightL
 				);
-			rightFootRotation
-				.slerp(
-					rightFootRotation,
+			rightFootRotation = rightFootRotation
+				.interpR(
 					replacePitch(rightFootRotation, -angleR),
 					weightR * masterWeightR
 				);
 
 			// update state variables regarding toe snap
-			if (leftFootPosition.y - floorLevel > footLength * MAXIMUM_TOE_DOWN_ANGLE) {
+			if (leftFootPosition.getY() - floorLevel > footLength * MAXIMUM_TOE_DOWN_ANGLE) {
 				leftToeTouched = false;
 				leftToeAngle = weightL;
-			} else if (leftFootPosition.y - floorLevel < 0.0f) {
+			} else if (leftFootPosition.getY() - floorLevel < 0.0f) {
 				leftToeTouched = true;
 				leftToeAngle = 1.0f;
 			}
-			if (rightFootPosition.y - floorLevel > footLength * MAXIMUM_TOE_DOWN_ANGLE) {
+			if (rightFootPosition.getY() - floorLevel > footLength * MAXIMUM_TOE_DOWN_ANGLE) {
 				rightToeTouched = false;
 				rightToeAngle = weightR;
-			} else if (rightFootPosition.y - floorLevel < 0.0f) {
+			} else if (rightFootPosition.getY() - floorLevel < 0.0f) {
 				rightToeTouched = true;
 				rightToeAngle = 1.0f;
 			}
@@ -912,18 +908,15 @@ public class LegTweaks {
 		bufferHead.setRightFootRotationCorrected(rightFootRotation);
 
 		// finally update the skeletons rotations with the new rotations
-		skeleton.computedLeftFootTracker.rotation.set(leftFootRotation);
-		skeleton.computedRightFootTracker.rotation.set(rightFootRotation);
+		skeleton.computedLeftFootTracker.setRotation(leftFootRotation);
+		skeleton.computedRightFootTracker.setRotation(rightFootRotation);
 	}
 
 	// returns the length of the xz components of the normalized difference
 	// between two vectors
-	public float getXZAmount(Vector3f vec1, Vector3f vec2) {
-		return vec1
-			.subtract(vec2)
-			.normalizeLocal()
-			.setY(0.0f)
-			.length();
+	public float getXZAmount(Vector3 vec1, Vector3 vec2) {
+		Vector3 vec = vec1.minus(vec2).unit();
+		return new Vector3(vec.getX(), 0f, vec.getZ()).len();
 	}
 
 	// returns a float between 0 and 1 that represents the master weight for
@@ -939,29 +932,29 @@ public class LegTweaks {
 	}
 
 	// return the weight of the correction for toe snap
-	private float getToeSnapWeight(Vector3f footPos, float angle) {
+	private float getToeSnapWeight(Vector3 footPos, float angle) {
 		// then compute the weight of the correction
-		float weight = ((footPos.y - floorLevel) > footLength * TOE_SNAP_COOLDOWN)
+		float weight = ((footPos.getY() - floorLevel) > footLength * TOE_SNAP_COOLDOWN)
 			? 0.0f
 			: 1.0f
-				- ((footPos.y - floorLevel - footLength)
+				- ((footPos.getY() - floorLevel - footLength)
 					/ (footLength * (TOE_SNAP_COOLDOWN - 1.0f)));
 		return FastMath.clamp(weight, 0.0f, 1.0f);
 	}
 
 	// returns the angle of the foot for toe snap
-	private float getToeSnapAngle(Vector3f footPos) {
-		float angle = FastMath.clamp(footPos.y - floorLevel, 0.0f, footLength);
+	private float getToeSnapAngle(Vector3 footPos) {
+		float angle = FastMath.clamp(footPos.getY() - floorLevel, 0.0f, footLength);
 		return (angle > footLength * MAXIMUM_TOE_DOWN_ANGLE)
 			? FastMath.asin((footLength * MAXIMUM_TOE_DOWN_ANGLE) / footLength)
 			: FastMath.asin((angle / footLength));
 	}
 
 	// returns the weight for floor plant
-	private float getFootPlantWeight(Vector3f footPos) {
-		float weight = (footPos.y - floorLevel > ROTATION_CORRECTION_VERTICAL)
+	private float getFootPlantWeight(Vector3 footPos) {
+		float weight = (footPos.getY() - floorLevel > ROTATION_CORRECTION_VERTICAL)
 			? 0.0f
-			: 1.0f - ((footPos.y - floorLevel) / ROTATION_CORRECTION_VERTICAL);
+			: 1.0f - ((footPos.getY() - floorLevel) / ROTATION_CORRECTION_VERTICAL);
 		return FastMath.clamp(weight, 0.0f, 1.0f);
 	}
 
@@ -1182,16 +1175,15 @@ public class LegTweaks {
 	// return a quaternion that has been rotated by the new pitch amount
 	private Quaternion replacePitch(Quaternion quaternion, float newPitch) {
 		// first get the axis of the current pitch
-		Vector3f currentPitchAxis = quaternion.getRotationColumn(0).normalize();
+		Vector3 currentPitchAxis = quaternion.toMatrix().getX().unit();
 
 		// then get the current pitch
-		float currentPitch = (float) Math.asin(currentPitchAxis.y);
+		float currentPitch = (float) Math.asin(currentPitchAxis.getY());
 
 		// then add the new pitch
-		Quaternion newQuat = new Quaternion();
-		newQuat.fromAngleAxis(newPitch + currentPitch, currentPitchAxis);
+		Quaternion newQuat = newQuat.fromAngleAxis(newPitch + currentPitch, currentPitchAxis);
 
-		return newQuat.mult(quaternion);
+		return newQuat.times(quaternion);
 	}
 
 	// check if the difference between two floats flipped after correction

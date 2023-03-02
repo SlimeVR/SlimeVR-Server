@@ -186,33 +186,24 @@ public class LegTweakBuffer {
 		this.rightFootRotation = rightFootRotation;
 	}
 
-	public Quaternion getLeftFootRotationCorrected(Quaternion quat) {
-		if (quat == null)
-			quat = new Quaternion();
-
-		return quat.set(leftFootRotationCorrected);
+	public Quaternion getLeftFootRotationCorrected() {
+		return leftFootRotationCorrected;
 	}
 
 	public void setLeftFootRotationCorrected(Quaternion quat) {
-		this.leftFootRotationCorrected.set(quat);
+		this.leftFootRotationCorrected = quat;
 	}
 
-	public Quaternion getRightFootRotationCorrected(Quaternion quat) {
-		if (quat == null)
-			quat = new Quaternion();
-
-		return quat.set(rightFootRotationCorrected);
+	public Quaternion getRightFootRotationCorrected() {
+		return rightFootRotationCorrected;
 	}
 
 	public void setRightFootRotationCorrected(Quaternion quat) {
-		this.rightFootRotationCorrected.set(quat);
+		this.rightFootRotationCorrected = quat;
 	}
 
-	public Vector3f getLeftFootPositionCorrected(Vector3f vec) {
-		if (vec == null)
-			vec = new Vector3f();
-
-		return vec.set(leftFootPositionCorrected);
+	public Vector3 getLeftFootPositionCorrected() {
+		return leftFootPositionCorrected;
 	}
 
 	public void setLeftFootPositionCorrected(Vector3 leftFootPositionCorrected) {
@@ -814,10 +805,10 @@ public class LegTweakBuffer {
 
 	// detect any outside forces on the body such
 	// as a wall or a chair. returns true if there is an outside force
-	private boolean detectOutsideForces(Vector3f f1, Vector3f f2) {
-		Vector3f force = GRAVITY.add(f1).add(f2);
-		Vector3f error = centerOfMassAcceleration.subtract(force);
-		return error.lengthSquared() > FORCE_ERROR_TOLERANCE_SQR;
+	private boolean detectOutsideForces(Vector3 f1, Vector3 f2) {
+		Vector3 force = GRAVITY.plus(f1).plus(f2);
+		Vector3 error = centerOfMassAcceleration.minus(force);
+		return error.lenSq() > FORCE_ERROR_TOLERANCE_SQR;
 	}
 
 	// simple error function for the force vector gradient descent
