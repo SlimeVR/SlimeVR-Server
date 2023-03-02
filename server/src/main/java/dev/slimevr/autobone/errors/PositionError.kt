@@ -1,10 +1,8 @@
 package dev.slimevr.autobone.errors
 
-import com.jme3.math.FastMath
 import dev.slimevr.autobone.AutoBoneTrainingStep
-import dev.slimevr.poserecorder.PoseFrameTracker
 import dev.slimevr.tracking.processor.skeleton.HumanSkeleton
-import dev.slimevr.tracking.trackers.ComputedTracker
+import dev.slimevr.tracking.trackers.Tracker
 
 // The distance of any points to the corresponding absolute position
 class PositionError : IAutoBoneError {
@@ -30,24 +28,24 @@ class PositionError : IAutoBoneError {
 
 	companion object {
 		fun getPositionError(
-			trackers: List<PoseFrameTracker>,
+			trackers: List<Tracker>,
 			cursor: Int,
 			skeleton: HumanSkeleton,
 		): Float {
 			var offset = 0f
 			var offsetCount = 0
 			for (tracker in trackers) {
-				val trackerFrame = tracker.safeGetFrame(cursor)
+				val trackerFrame = tracker.poseFramesHandler.safeGetFrame(cursor)
 				if (trackerFrame == null ||
 					!trackerFrame.hasPosition() ||
 					trackerFrame.bodyPosition?.trackerRole == null
 				) {
 					continue
 				}
-				val computedTracker: ComputedTracker? = skeleton
+				val computedTracker: Tracker? = skeleton
 					.getComputedTracker(trackerFrame.bodyPosition.trackerRole)
 				if (computedTracker != null) {
-					offset += FastMath.abs(computedTracker.position.distance(trackerFrame.position))
+					offset += (computedTracker.position - trackerFrame.position).len()
 					offsetCount++
 				}
 			}

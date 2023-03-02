@@ -12,8 +12,8 @@ class FiltersConfig {
 
 	fun updateTrackersFilters() {
 		for (tracker in vrServer!!.allTrackers) {
-			if (tracker.isImu) {
-				tracker.filteringHandler.readFilteringConfig(this)
+			if (tracker.needsFiltering) {
+				tracker.filteringHandler.readFilteringConfig(this, tracker.getRawRotation())
 			}
 		}
 	}

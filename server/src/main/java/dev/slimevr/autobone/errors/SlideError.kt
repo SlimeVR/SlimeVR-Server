@@ -2,7 +2,7 @@ package dev.slimevr.autobone.errors
 
 import dev.slimevr.autobone.AutoBoneTrainingStep
 import dev.slimevr.tracking.processor.skeleton.HumanSkeleton
-import dev.slimevr.tracking.trackers.ComputedTracker
+import dev.slimevr.tracking.trackers.Tracker
 import dev.slimevr.tracking.trackers.TrackerRole
 
 // The change in position of the ankle over time
@@ -36,9 +36,9 @@ class SlideError : IAutoBoneError {
 			)
 		}
 
-		fun getSlideError(tracker1: ComputedTracker, tracker2: ComputedTracker): Float {
+		fun getSlideError(tracker1: Tracker, tracker2: Tracker): Float {
 			// Return the midpoint distance
-			return tracker1.position.distance(tracker2.position) / 2f
+			return (tracker1.position - tracker2.position).len() / 2f
 		}
 	}
 }

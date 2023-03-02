@@ -1,7 +1,5 @@
 package dev.slimevr.poserecorder;
 
-import com.jme3.math.Quaternion;
-import com.jme3.math.Vector3f;
 import dev.slimevr.tracking.trackers.TrackerPosition;
 import io.eiren.util.collections.FastList;
 import io.eiren.util.logging.LogManager;

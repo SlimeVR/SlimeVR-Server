@@ -201,7 +201,7 @@ public class DataFeedBuilder {
 				TrackerData
 					.addRotationIdentityAdjusted(
 						fbb,
-						createQuat(fbb, tracker.getResetsHandler().getIdentityAdjustedRotation())
+						createQuat(fbb, tracker.getIdentityAdjustedRotation())
 					);
 			}
 		} else if (tracker.getNeedsReset() && tracker.getHasRotation()) {

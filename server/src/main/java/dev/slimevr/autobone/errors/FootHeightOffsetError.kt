@@ -3,7 +3,7 @@ package dev.slimevr.autobone.errors
 import com.jme3.math.FastMath
 import dev.slimevr.autobone.AutoBoneTrainingStep
 import dev.slimevr.tracking.processor.skeleton.HumanSkeleton
-import dev.slimevr.tracking.trackers.ComputedTracker
+import dev.slimevr.tracking.trackers.Tracker
 import dev.slimevr.tracking.trackers.TrackerRole
 
 // The offset between the height both feet at one instant and over time
@@ -18,18 +18,18 @@ class FootHeightOffsetError : IAutoBoneError {
 
 	companion object {
 		fun getSlideError(skeleton1: HumanSkeleton, skeleton2: HumanSkeleton): Float {
-			val leftTracker1: ComputedTracker = skeleton1.getComputedTracker(TrackerRole.LEFT_FOOT)
-			val rightTracker1: ComputedTracker = skeleton1.getComputedTracker(TrackerRole.RIGHT_FOOT)
-			val leftTracker2: ComputedTracker = skeleton2.getComputedTracker(TrackerRole.LEFT_FOOT)
-			val rightTracker2: ComputedTracker = skeleton2.getComputedTracker(TrackerRole.RIGHT_FOOT)
+			val leftTracker1: Tracker = skeleton1.getComputedTracker(TrackerRole.LEFT_FOOT)
+			val rightTracker1: Tracker = skeleton1.getComputedTracker(TrackerRole.RIGHT_FOOT)
+			val leftTracker2: Tracker = skeleton2.getComputedTracker(TrackerRole.LEFT_FOOT)
+			val rightTracker2: Tracker = skeleton2.getComputedTracker(TrackerRole.RIGHT_FOOT)
 			return getFootHeightError(leftTracker1, rightTracker1, leftTracker2, rightTracker2)
 		}
 
 		fun getFootHeightError(
-			leftTracker1: ComputedTracker,
-			rightTracker1: ComputedTracker,
-			leftTracker2: ComputedTracker,
-			rightTracker2: ComputedTracker,
+			leftTracker1: Tracker,
+			rightTracker1: Tracker,
+			leftTracker2: Tracker,
+			rightTracker2: Tracker,
 		): Float {
 			val leftFoot1 = leftTracker1.position.y
 			val rightFoot1 = rightTracker1.position.y

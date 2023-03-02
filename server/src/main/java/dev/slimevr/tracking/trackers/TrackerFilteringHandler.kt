@@ -9,17 +9,21 @@ import io.github.axisangles.ktmath.Quaternion
  * Class taking care of filtering logic
  * (smoothing and prediction)
  */
-class TrackerFilteringHandler(val tracker: Tracker) {
+class TrackerFilteringHandler() {
+
 	private var movingAverage: QuaternionMovingAverage? = null
 	var enabled = false
 
-	fun readFilteringConfig(config: FiltersConfig) {
+	/**
+	 * Reads/loads filtering settings from given config
+	 */
+	fun readFilteringConfig(config: FiltersConfig, currentRawRotation: Quaternion) {
 		val type = TrackerFilters.getByConfigkey(config.type)
 		if (type == TrackerFilters.SMOOTHING || type == TrackerFilters.PREDICTION) {
 			movingAverage = QuaternionMovingAverage(
 				type,
 				config.amount,
-				tracker.getRawRotation()
+				currentRawRotation
 			)
 			enabled = true
 		} else {
@@ -28,10 +32,23 @@ class TrackerFilteringHandler(val tracker: Tracker) {
 		}
 	}
 
+	/**
+	 * Update the moving average to make it smooth~
+	 */
 	fun tick() {
 		movingAverage?.update()
 	}
 
+	/**
+	 * Updates the latest rotation
+	 */
+	fun dataTick(currentRawRotation: Quaternion) {
+		movingAverage?.addQuaternion(currentRawRotation)
+	}
+
+	/**
+	 * Get the filtered rotation from the moving average
+	 */
 	fun getFilteredRotation(): Quaternion {
 		return movingAverage?.filteredQuaternion ?: Quaternion.IDENTITY
 	}

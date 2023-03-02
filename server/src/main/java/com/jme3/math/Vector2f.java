@@ -31,6 +31,8 @@
  */
 package com.jme3.math;
 
+import io.github.axisangles.ktmath.Vector3;
+
 import java.io.IOException;
 import java.io.ObjectInput;
 import java.io.ObjectOutput;
@@ -39,7 +41,7 @@ import java.util.logging.Logger;
 
 /**
  * <code>Vector2f</code> defines a Vector for a two float value vector.
- * 
+ *
  * @author Mark Powell
  * @author Joshua Slack
  */
@@ -62,7 +64,7 @@ public final class Vector2f implements Cloneable, java.io.Serializable {
 
 	/**
 	 * Creates a Vector2f with the given initial x and y values.
-	 * 
+	 *
 	 * @param x The x value of this Vector2f.
 	 * @param y The y value of this Vector2f.
 	 */
@@ -80,7 +82,7 @@ public final class Vector2f implements Cloneable, java.io.Serializable {
 
 	/**
 	 * Creates a new Vector2f that contains the passed vector's information
-	 * 
+	 *
 	 * @param vector2f The vector to copy
 	 */
 	public Vector2f(Vector2f vector2f) {
@@ -90,7 +92,7 @@ public final class Vector2f implements Cloneable, java.io.Serializable {
 
 	/**
 	 * set the x and y values of the vector
-	 * 
+	 *
 	 * @param x the x value of the vector.
 	 * @param y the y value of the vector.
 	 * @return this vector
@@ -103,7 +105,7 @@ public final class Vector2f implements Cloneable, java.io.Serializable {
 
 	/**
 	 * set the x and y values of the vector from another vector
-	 * 
+	 *
 	 * @param vec the vector to copy from
 	 * @return this vector
 	 */
@@ -117,7 +119,7 @@ public final class Vector2f implements Cloneable, java.io.Serializable {
 	 * <code>add</code> adds a provided vector to this vector creating a
 	 * resultant vector which is returned. If the provided vector is null, null
 	 * is returned.
-	 * 
+	 *
 	 * @param vec the vector to add to this.
 	 * @return the resultant vector.
 	 */
@@ -133,7 +135,7 @@ public final class Vector2f implements Cloneable, java.io.Serializable {
 	 * <code>addLocal</code> adds a provided vector to this vector internally,
 	 * and returns a handle to this vector for easy chaining of calls. If the
 	 * provided vector is null, null is returned.
-	 * 
+	 *
 	 * @param vec the vector to add to this vector.
 	 * @return this
 	 */
@@ -150,7 +152,7 @@ public final class Vector2f implements Cloneable, java.io.Serializable {
 	/**
 	 * <code>addLocal</code> adds the provided values to this vector internally,
 	 * and returns a handle to this vector for easy chaining of calls.
-	 * 
+	 *
 	 * @param addX value to add to x
 	 * @param addY value to add to y
 	 * @return this
@@ -164,7 +166,7 @@ public final class Vector2f implements Cloneable, java.io.Serializable {
 	/**
 	 * <code>add</code> adds this vector by <code>vec</code> and stores the
 	 * result in <code>result</code>.
-	 * 
+	 *
 	 * @param vec The vector to add.
 	 * @param result The vector to store the result in.
 	 * @return The result vector, after adding.
@@ -184,7 +186,7 @@ public final class Vector2f implements Cloneable, java.io.Serializable {
 	/**
 	 * <code>dot</code> calculates the dot product of this vector with a
 	 * provided vector. If the provided vector is null, 0 is returned.
-	 * 
+	 *
 	 * @param vec the vector to dot with this vector.
 	 * @return the resultant dot product of this vector and a given vector.
 	 */
@@ -199,12 +201,12 @@ public final class Vector2f implements Cloneable, java.io.Serializable {
 	/**
 	 * <code>cross</code> calculates the cross product of this vector with a
 	 * parameter vector v.
-	 * 
+	 *
 	 * @param v the vector to take the cross product of with this.
 	 * @return the cross product vector.
 	 */
-	public Vector3f cross(Vector2f v) {
-		return new Vector3f(0, 0, determinant(v));
+	public Vector3 cross(Vector2f v) {
+		return new Vector3(0, 0, determinant(v));
 	}
 
 	public float determinant(Vector2f v) {
@@ -214,7 +216,7 @@ public final class Vector2f implements Cloneable, java.io.Serializable {
 	/**
 	 * Sets this vector to the interpolation by changeAmnt from this to the
 	 * finalVec this=(1-changeAmnt)*this + changeAmnt * finalVec
-	 * 
+	 *
 	 * @param finalVec The final vector to interpolate towards
 	 * @param changeAmnt An amount between 0.0 - 1.0 representing a percentage
 	 * change from this towards finalVec
@@ -228,7 +230,7 @@ public final class Vector2f implements Cloneable, java.io.Serializable {
 	/**
 	 * Sets this vector to the interpolation by changeAmnt from beginVec to
 	 * finalVec this=(1-changeAmnt)*beginVec + changeAmnt * finalVec
-	 * 
+	 *
 	 * @param beginVec The begining vector (delta=0)
 	 * @param finalVec The final vector to interpolate towards (delta=1)
 	 * @param changeAmnt An amount between 0.0 - 1.0 representing a precentage
@@ -247,7 +249,7 @@ public final class Vector2f implements Cloneable, java.io.Serializable {
 	/**
 	 * Check a vector... if it is null or its floats are NaN or infinite, return
 	 * false. Else return true.
-	 * 
+	 *
 	 * @param vector the vector to check
 	 * @return true or false as stated above.
 	 */
@@ -271,7 +273,7 @@ public final class Vector2f implements Cloneable, java.io.Serializable {
 
 	/**
 	 * <code>length</code> calculates the magnitude of this vector.
-	 * 
+	 *
 	 * @return the length or magnitude of the vector.
 	 */
 	public float length() {
@@ -281,7 +283,7 @@ public final class Vector2f implements Cloneable, java.io.Serializable {
 	/**
 	 * <code>lengthSquared</code> calculates the squared value of the magnitude
 	 * of the vector.
-	 * 
+	 *
 	 * @return the magnitude squared of the vector.
 	 */
 	public float lengthSquared() {
@@ -329,7 +331,7 @@ public final class Vector2f implements Cloneable, java.io.Serializable {
 	/**
 	 * <code>mult</code> multiplies this vector by a scalar. The resultant
 	 * vector is returned.
-	 * 
+	 *
 	 * @param scalar the value to multiply this vector by.
 	 * @return the new vector.
 	 */
@@ -340,7 +342,7 @@ public final class Vector2f implements Cloneable, java.io.Serializable {
 	/**
 	 * <code>multLocal</code> multiplies this vector by a scalar internally, and
 	 * returns a handle to this vector for easy chaining of calls.
-	 * 
+	 *
 	 * @param scalar the value to multiply this vector by.
 	 * @return this
 	 */
@@ -354,7 +356,7 @@ public final class Vector2f implements Cloneable, java.io.Serializable {
 	 * <code>multLocal</code> multiplies a provided vector to this vector
 	 * internally, and returns a handle to this vector for easy chaining of
 	 * calls. If the provided vector is null, null is returned.
-	 * 
+	 *
 	 * @param vec the vector to mult to this vector.
 	 * @return this
 	 */
@@ -372,7 +374,7 @@ public final class Vector2f implements Cloneable, java.io.Serializable {
 	 * Multiplies this Vector2f's x and y by the scalar and stores the result in
 	 * product. The result is returned for chaining. Similar to
 	 * product=this*scalar;
-	 * 
+	 *
 	 * @param scalar The scalar to multiply by.
 	 * @param product The vector2f to store the result in.
 	 * @return product, after multiplication.
@@ -390,7 +392,7 @@ public final class Vector2f implements Cloneable, java.io.Serializable {
 	/**
 	 * <code>divide</code> divides the values of this vector by a scalar and
 	 * returns the result. The values of this vector remain untouched.
-	 * 
+	 *
 	 * @param scalar the value to divide this vectors attributes by.
 	 * @return the result <code>Vector</code>.
 	 */
@@ -402,7 +404,7 @@ public final class Vector2f implements Cloneable, java.io.Serializable {
 	 * <code>divideLocal</code> divides this vector by a scalar internally, and
 	 * returns a handle to this vector for easy chaining of calls. Dividing by
 	 * zero will result in an exception.
-	 * 
+	 *
 	 * @param scalar the value to divides this vector by.
 	 * @return this
 	 */
@@ -415,7 +417,7 @@ public final class Vector2f implements Cloneable, java.io.Serializable {
 	/**
 	 * <code>negate</code> returns the negative of this vector. All values are
 	 * negated and set to a new vector.
-	 * 
+	 *
 	 * @return the negated vector.
 	 */
 	public Vector2f negate() {
@@ -424,7 +426,7 @@ public final class Vector2f implements Cloneable, java.io.Serializable {
 
 	/**
 	 * <code>negateLocal</code> negates the internal values of this vector.
-	 * 
+	 *
 	 * @return this.
 	 */
 	public Vector2f negateLocal() {
@@ -437,7 +439,7 @@ public final class Vector2f implements Cloneable, java.io.Serializable {
 	 * <code>subtract</code> subtracts the values of a given vector from those
 	 * of this vector creating a new vector object. If the provided vector is
 	 * null, an exception is thrown.
-	 * 
+	 *
 	 * @param vec the vector to subtract from this vector.
 	 * @return the result vector.
 	 */
@@ -449,7 +451,7 @@ public final class Vector2f implements Cloneable, java.io.Serializable {
 	 * <code>subtract</code> subtracts the values of a given vector from those
 	 * of this vector storing the result in the given vector object. If the
 	 * provided vector is null, an exception is thrown.
-	 * 
+	 *
 	 * @param vec the vector to subtract from this vector.
 	 * @param store the vector to store the result in. It is safe for this to be
 	 * the same as vec. If null, a new vector is created.
@@ -466,7 +468,7 @@ public final class Vector2f implements Cloneable, java.io.Serializable {
 	/**
 	 * <code>subtract</code> subtracts the given x,y values from those of this
 	 * vector creating a new vector object.
-	 * 
+	 *
 	 * @param valX value to subtract from x
 	 * @param valY value to subtract from y
 	 * @return this
@@ -479,7 +481,7 @@ public final class Vector2f implements Cloneable, java.io.Serializable {
 	 * <code>subtractLocal</code> subtracts a provided vector to this vector
 	 * internally, and returns a handle to this vector for easy chaining of
 	 * calls. If the provided vector is null, null is returned.
-	 * 
+	 *
 	 * @param vec the vector to subtract
 	 * @return this
 	 */
@@ -497,7 +499,7 @@ public final class Vector2f implements Cloneable, java.io.Serializable {
 	 * <code>subtractLocal</code> subtracts the provided values from this vector
 	 * internally, and returns a handle to this vector for easy chaining of
 	 * calls.
-	 * 
+	 *
 	 * @param valX value to subtract from x
 	 * @param valY value to subtract from y
 	 * @return this
@@ -510,7 +512,7 @@ public final class Vector2f implements Cloneable, java.io.Serializable {
 
 	/**
 	 * <code>normalize</code> returns the unit vector of this vector.
-	 * 
+	 *
 	 * @return unit vector of this vector.
 	 */
 	public Vector2f normalize() {
@@ -525,7 +527,7 @@ public final class Vector2f implements Cloneable, java.io.Serializable {
 	/**
 	 * <code>normalizeLocal</code> makes this vector into a unit vector of
 	 * itself.
-	 * 
+	 *
 	 * @return this.
 	 */
 	public Vector2f normalizeLocal() {
@@ -541,7 +543,7 @@ public final class Vector2f implements Cloneable, java.io.Serializable {
 	 * <code>smallestAngleBetween</code> returns (in radians) the minimum angle
 	 * between two vectors. It is assumed that both this vector and the given
 	 * vector are unit vectors (iow, normalized).
-	 * 
+	 *
 	 * @param otherVector a unit vector to find the angle against
 	 * @return the angle in radians.
 	 */
@@ -556,7 +558,7 @@ public final class Vector2f implements Cloneable, java.io.Serializable {
 	 * rotate a ray represented by this vector to lie colinear to a ray
 	 * described by the given vector. It is assumed that both this vector and
 	 * the given vector are unit vectors (iow, normalized).
-	 * 
+	 *
 	 * @param otherVector the "destination" unit vector
 	 * @return the angle in radians.
 	 */
@@ -589,7 +591,7 @@ public final class Vector2f implements Cloneable, java.io.Serializable {
 	 * Vector2f as expressed by a conversion from rectangular coordinates
 	 * (<code>x</code>,&nbsp;<code>y</code>) to polar coordinates
 	 * (r,&nbsp;<i>theta</i>).
-	 * 
+	 *
 	 * @return the angle in radians. [-pi, pi)
 	 */
 	public float getAngle() {
@@ -608,7 +610,7 @@ public final class Vector2f implements Cloneable, java.io.Serializable {
 	 * <code>hashCode</code> returns a unique code for this vector object based
 	 * on it's values. If two vectors are logically equivalent, they will return
 	 * the same hash code value.
-	 * 
+	 *
 	 * @return the hash code value of this vector.
 	 */
 	@Override
@@ -630,7 +632,7 @@ public final class Vector2f implements Cloneable, java.io.Serializable {
 
 	/**
 	 * Saves this Vector2f into the given float[] object.
-	 * 
+	 *
 	 * @param floats The float[] to take this Vector2f. If null, a new float[2]
 	 * is created.
 	 * @return The array, with X, Y float values in that order
@@ -647,7 +649,7 @@ public final class Vector2f implements Cloneable, java.io.Serializable {
 	/**
 	 * are these two vectors the same? they are is they both have the same x and
 	 * y values.
-	 * 
+	 *
 	 * @param o the object to compare for equality
 	 * @return true if they are equal
 	 */
@@ -673,7 +675,7 @@ public final class Vector2f implements Cloneable, java.io.Serializable {
 	 * <code>toString</code> returns the string representation of this vector
 	 * object. The format of the string is such: com.jme.math.Vector2f
 	 * [X=XX.XXXX, Y=YY.YYYY]
-	 * 
+	 *
 	 * @return the string representation of this vector.
 	 */
 	@Override
@@ -683,7 +685,7 @@ public final class Vector2f implements Cloneable, java.io.Serializable {
 
 	/**
 	 * Used with serialization. Not to be called manually.
-	 * 
+	 *
 	 * @param in ObjectInput
 	 * @throws IOException
 	 * @throws ClassNotFoundException
@@ -697,7 +699,7 @@ public final class Vector2f implements Cloneable, java.io.Serializable {
 
 	/**
 	 * Used with serialization. Not to be called manually.
-	 * 
+	 *
 	 * @param out ObjectOutput
 	 * @throws IOException
 	 * @see java.io.Externalizable

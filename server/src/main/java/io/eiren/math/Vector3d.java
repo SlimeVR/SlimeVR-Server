@@ -1,6 +1,7 @@
 package io.eiren.math;
 
-import com.jme3.math.Vector3f;
+
+import io.github.axisangles.ktmath.Vector3;
 
 
 public class Vector3d implements Cloneable {
@@ -24,8 +25,8 @@ public class Vector3d implements Cloneable {
 		this.z = z2 - z1;
 	}
 
-	public Vector3d(Vector3f src) {
-		this(src.x, src.y, src.z);
+	public Vector3d(Vector3 src) {
+		this(src.getX(), src.getY(), src.getZ());
 	}
 
 	public Vector3d set(double x, double y, double z) {
@@ -155,8 +156,8 @@ public class Vector3d implements Cloneable {
 		return this;
 	}
 
-	public Vector3f toVector3f() {
-		return new Vector3f((float) x, (float) y, (float) z);
+	public Vector3 toVector3f() {
+		return new Vector3((float) x, (float) y, (float) z);
 	}
 
 	public double length() {

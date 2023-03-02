@@ -14,7 +14,7 @@ const val TIMEOUT_MS = 2000L
 
 /**
  * Generic tracker class for input and output tracker,
- * with flags on instantiation
+ * with flags on instantiation.
  */
 class Tracker @JvmOverloads constructor(
 	val device: Device?,
@@ -40,19 +40,21 @@ class Tracker @JvmOverloads constructor(
 	private var timeAtLastUpdate: Long = 0
 	private var rotation = Quaternion.IDENTITY
 	var position = Vector3.NULL
-	val resetsHandler: TrackerResetsHandler = TrackerResetsHandler(this)
-	val filteringHandler: TrackerFilteringHandler = TrackerFilteringHandler(this)
-	val poseFramesHandler: TrackerPoseFramesHandler = TrackerPoseFramesHandler(this)
-	var status = TrackerStatus.DISCONNECTED
 	var acceleration = Vector3.NULL
-	var batteryVoltage = 0f
-	var batteryLevel = 0f
+	val resetsHandler: TrackerResetsHandler = TrackerResetsHandler()
+	val filteringHandler: TrackerFilteringHandler = TrackerFilteringHandler()
+	var status = TrackerStatus.DISCONNECTED
+	var batteryVoltage = -1f
+	var batteryLevel = -1f
 	var ping = -1
 	var signalStrength = -1
-	var temperature = 0f
+	var temperature = -1f
 	var displayName: String? = null
 	var customName: String? = null
 
+	/**
+	 * Reads/loads from the given config
+	 */
 	fun readConfig(config: TrackerConfig) {
 		if (userEditable) {
 			val cN = config.customName
@@ -85,6 +87,9 @@ class Tracker @JvmOverloads constructor(
 		}
 	}
 
+	/**
+	 * Writes/saves to the given config
+	 */
 	fun writeConfig(config: TrackerConfig) {
 		val tP = trackerPosition
 		if (tP != null) {
@@ -114,6 +119,9 @@ class Tracker @JvmOverloads constructor(
 		}
 	}
 
+	/**
+	 * Synchronized with the VRServer's 1000hz while loop
+	 */
 	fun tick() {
 		if (usesTimeout) {
 			if (System.currentTimeMillis() - timeAtLastUpdate > TIMEOUT_MS) {
@@ -123,11 +131,20 @@ class Tracker @JvmOverloads constructor(
 		filteringHandler.tick()
 	}
 
+	/**
+	 * Tells the tracker that it received new data
+	 */
 	fun dataTick() {
 		timer.update()
 		timeAtLastUpdate = System.currentTimeMillis()
+		filteringHandler.dataTick(rotation)
 	}
 
+	/**
+	 * Gets the adjusted tracker rotation after all corrections
+	 * (filtering, reset, mounting and drift compensation).
+	 * This is the rotation that is applied on the SlimeVR skeleton bones.
+	 */
 	fun getRotation(): Quaternion {
 		var rot = if (filteringHandler.enabled) {
 			// Get filtered rotation
@@ -145,14 +162,46 @@ class Tracker @JvmOverloads constructor(
 		return rot
 	}
 
+	/**
+	 * Gets the identity-adjusted tracker rotation after some corrections
+	 * (filtering, identity reset and identity mounting).
+	 * This is used for debugging/visualizing tracker data
+	 */
+	fun getIdentityAdjustedRotation(): Quaternion {
+		var rot = if (filteringHandler.enabled) {
+			// Get filtered rotation
+			filteringHandler.getFilteredRotation()
+		} else {
+			// Get unfiltered rotation
+			rotation
+		}
+
+		if (needsReset && trackerPosition != TrackerPosition.HEAD) {
+			// Adjust to reset and mounting
+			rot = resetsHandler.getIdentityAdjustedRotationFrom(rot)
+		}
+
+		return rot
+	}
+
+	/**
+	 * Gets the raw (unadjusted) rotation of the tracker.
+	 * If this is an IMU, this will be the raw sensor rotation.
+	 */
 	fun getRawRotation(): Quaternion {
 		return rotation
 	}
 
+	/**
+	 * Sets the raw (unadjusted) rotation of the tracker.
+	 */
 	fun setRotation(rotation: Quaternion) {
 		this.rotation = rotation
 	}
 
+	/**
+	 * Gets the current TPS of the tracker
+	 */
 	val tps: Float
 		get() = timer.averageFPS
 }

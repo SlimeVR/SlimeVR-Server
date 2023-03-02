@@ -1,21 +1,21 @@
 package dev.slimevr.poserecorder;
 
-import com.jme3.math.Quaternion;
-import com.jme3.math.Vector3f;
 import dev.slimevr.VRServer;
 import dev.slimevr.config.TrackerConfig;
 import dev.slimevr.tracking.trackers.Device;
 import dev.slimevr.tracking.trackers.TrackerJava;
 import dev.slimevr.tracking.trackers.TrackerPosition;
 import dev.slimevr.tracking.trackers.TrackerStatus;
+import io.github.axisangles.ktmath.Quaternion;
+import io.github.axisangles.ktmath.Vector3;
 
 
 public final class TrackerFrame implements TrackerJava {
 
 	public final TrackerPosition designation;
 	public final Quaternion rotation;
-	public final Vector3f position;
-	public final Vector3f acceleration;
+	public final Vector3 position;
+	public final Vector3 acceleration;
 	public final Quaternion rawRotation;
 	private final int trackerId = VRServer.getNextLocalTrackerId();
 	private int dataFlags = 0;
@@ -23,8 +23,8 @@ public final class TrackerFrame implements TrackerJava {
 	public TrackerFrame(
 		TrackerPosition designation,
 		Quaternion rotation,
-		Vector3f position,
-		Vector3f acceleration,
+		Vector3 position,
+		Vector3 acceleration,
 		Quaternion rawRotation
 	) {
 		this.designation = designation;
@@ -78,18 +78,18 @@ public final class TrackerFrame implements TrackerJava {
 			}
 		}
 
-		Vector3f position = null;
+		Vector3 position = null;
 		if (tracker.hasPosition()) {
-			position = new Vector3f();
+			position = new Vector3();
 			if (!tracker.getPosition(position)) {
 				// If the get failed, set it back to null
 				position = null;
 			}
 		}
 
-		Vector3f acceleration = null;
+		Vector3 acceleration = null;
 		if (tracker.hasAcceleration()) {
-			acceleration = new Vector3f();
+			acceleration = new Vector3();
 			if (!tracker.getAcceleration(acceleration)) {
 				// If the get failed, set it back to null
 				acceleration = null;
@@ -156,24 +156,24 @@ public final class TrackerFrame implements TrackerJava {
 	}
 
 	@Override
-	public boolean getPosition(Vector3f store) {
+	public boolean getPosition(Vector3 store) {
 		if (hasData(TrackerFrameData.POSITION)) {
 			store.set(position);
 			return true;
 		}
 
-		store.set(Vector3f.ZERO);
+		store.set(Vector3.ZERO);
 		return false;
 	}
 
 	@Override
-	public boolean getAcceleration(Vector3f store) {
+	public boolean getAcceleration(Vector3 store) {
 		if (hasData(TrackerFrameData.ACCELERATION)) {
 			store.set(acceleration);
 			return true;
 		}
 
-		store.set(Vector3f.ZERO);
+		store.set(Vector3.ZERO);
 		return false;
 	}
 

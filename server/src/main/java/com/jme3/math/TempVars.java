@@ -82,7 +82,7 @@ public class TempVars {
 	 * instance after use by calling the release() method. If more than
 	 * STACK_SIZE (currently 5) instances are requested in a single thread then
 	 * an ArrayIndexOutOfBoundsException will be thrown.
-	 * 
+	 *
 	 * @return A TempVar instance
 	 */
 	public static TempVars get() {
@@ -132,12 +132,6 @@ public class TempVars {
 		}
 	}
 
-	/**
-	 * General vectors.
-	 */
-	public final Vector3f vect1 = new Vector3f();
-	public final Vector3f vect2 = new Vector3f();
-	public final Vector3f vect3 = new Vector3f();
 	/**
 	 * General matrices.
 	 */

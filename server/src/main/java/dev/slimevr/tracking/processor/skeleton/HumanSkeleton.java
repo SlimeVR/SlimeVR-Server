@@ -697,7 +697,7 @@ public class HumanSkeleton {
 
 			trackerLeftKneeNode
 				.getLocalTransform()
-				.setRotation(leftHip.interpQ(extendedRot, kneeTrackerAnkleAveraging));
+				.setRotation(leftHip.interpR(extendedRot, kneeTrackerAnkleAveraging));
 		}
 
 		// Right Leg
@@ -739,7 +739,7 @@ public class HumanSkeleton {
 
 			var extendedRoll = extendedKneeYawRoll(rightHipRot, rightKneeRot);
 
-			var slerp = extendedRoll.interpQ(rightKneeRot, kneeTrackerAnkleAveraging);
+			var slerp = extendedRoll.interpR(rightKneeRot, kneeTrackerAnkleAveraging);
 			trackerRightKneeNode.getLocalTransform().setRotation(slerp);
 		}
 
@@ -753,17 +753,16 @@ public class HumanSkeleton {
 					var hipRot = hipTracker.getRotation();
 					var chestRot = chestTracker.getRotation();
 
-					// Get the rotation relative to where we expect the
-					// hip to be
-					var expectedHipRot = chestRot.times(FORWARD_QUATERNION);
-					if (expectedHipRot.dot(hipRot) < 0.0f) {
+					// Get the rotation relative to where we expect the hip to
+					// be
+					if (chestRot.times(FORWARD_QUATERNION).dot(hipRot) < 0.0f) {
 						hipRot = hipRot.unaryMinus();
 					}
 
 					// Interpolate between the chest and the hip
-					rotBuf2.pureSlerpLocal(rotBuf1, waistFromChestHipAveraging);
+					chestRot = chestRot.interpQ(hipRot, waistFromChestHipAveraging);
 
-					chestNode.getLocalTransform().setRotation(rotBuf2);
+					chestNode.getLocalTransform().setRotation(chestRot);
 				} else if (chestTracker != null && hasKneeTrackers) {
 					// Calculates waist from chest + legs
 					var leftHipRot = leftHipNode.getLocalTransform().getRotation();
@@ -780,13 +779,12 @@ public class HumanSkeleton {
 						rightHipRot = rightHipRot.unaryMinus();
 					}
 
-					// Average the legs to calculate the pelvis
-					var lerp = leftHipRot.lerpQ(rightHipRot, 0.5f);
+					// Interpolate between the pelvis, averaged from the legs,
+					// and the chest
+					chestRot = chestRot
+						.interpQ(leftHipRot.lerpQ(rightHipRot, 0.5f), waistFromChestLegsAveraging);
 
-					// Interpolate between the pelvis and the chest
-					rotBuf3.pureSlerpLocal(rotBuf1, waistFromChestLegsAveraging);
-
-					chestNode.getLocalTransform().setRotation(rotBuf3);
+					chestNode.getLocalTransform().setRotation(chestRot);
 				}
 			}
 			if (hipTracker == null && hasKneeTrackers) {
@@ -806,15 +804,14 @@ public class HumanSkeleton {
 						rightHipRot = rightHipRot.unaryMinus();
 					}
 
-					// Average the legs to calculate the pelvis
-					var lerp = leftHipRot.lerpQ(rightHipRot, 0.5f);
+					// Interpolate between the pelvis, averaged from the legs,
+					// and the chest
+					waistRot = waistRot
+						.interpQ(leftHipRot.lerpQ(rightHipRot, 0.5f), hipFromWaistLegsAveraging);
 
-					// Interpolate between the pelvis and the chest
-					rotBuf3.pureSlerpLocal(rotBuf1, hipFromWaistLegsAveraging);
-
-					waistNode.getLocalTransform().setRotation(rotBuf3);
-					hipNode.getLocalTransform().setRotation(rotBuf3);
-					trackerHipNode.getLocalTransform().setRotation(rotBuf3);
+					waistNode.getLocalTransform().setRotation(waistRot);
+					hipNode.getLocalTransform().setRotation(waistRot);
+					trackerHipNode.getLocalTransform().setRotation(waistRot);
 				} else if (chestTracker != null) {
 					// Calculates hip from chest + legs
 					var leftHipRot = leftHipNode.getLocalTransform().getRotation();
@@ -831,15 +828,14 @@ public class HumanSkeleton {
 						rightHipRot = rightHipRot.unaryMinus();
 					}
 
-					// Average the legs to calculate the pelvis
-					var lerp = leftHipRot.lerpQ(rightHipRot, 0.5f);
+					// Interpolate between the pelvis, averaged from the legs,
+					// and the chest
+					chestRot = chestRot
+						.interpQ(leftHipRot.lerpQ(rightHipRot, 0.5f), hipFromChestLegsAveraging);
 
-					// Interpolate between the pelvis and the chest
-					rotBuf3.pureSlerpLocal(rotBuf1, hipFromChestLegsAveraging);
-
-					waistNode.getLocalTransform().setRotation(rotBuf3);
-					hipNode.getLocalTransform().setRotation(rotBuf3);
-					trackerHipNode.getLocalTransform().setRotation(rotBuf3);
+					waistNode.getLocalTransform().setRotation(chestRot);
+					hipNode.getLocalTransform().setRotation(chestRot);
+					trackerHipNode.getLocalTransform().setRotation(chestRot);
 				}
 			}
 		}
@@ -852,7 +848,7 @@ public class HumanSkeleton {
 
 			var extendedPelvisRot = extendedPelvisYawRoll(leftHipRot, rightHipRot, hipRot);
 
-			var slerp = hipRot.interpQ(extendedPelvisRot, hipLegsAveraging);
+			var slerp = hipRot.interpR(extendedPelvisRot, hipLegsAveraging);
 			hipNode.getLocalTransform().setRotation(slerp);
 			trackerHipNode.getLocalTransform().setRotation(slerp);
 		}
@@ -1008,14 +1004,11 @@ public class HumanSkeleton {
 			rightKnee = rightKnee.unaryMinus();
 		}
 
-		// Get the inverse rotation of the hip.
-		var hipInvRot = hip.inv();
-
 		// R = InverseHip * (LeftLeft + RightLeg)
 		// C = Quaternion(-R.x, 0, 0, R.w)
 		// Pelvis = Hip * R * C
 		// normalize(Pelvis)
-		var r = hipInvRot.times(leftKnee.plus(rightKnee));
+		var r = hip.inv().times(leftKnee.plus(rightKnee));
 		var c = new Quaternion(-r.getX(), 0, 0, r.getW());
 		return hip.times(r).times(c).unit();
 	}
@@ -1095,10 +1088,8 @@ public class HumanSkeleton {
 			case EXTENDED_KNEE_MODEL -> extendedKneeModel = newValue;
 			case FORCE_ARMS_FROM_HMD -> {
 				forceArmsFromHMD = newValue;
-
 				// Rebuilds the arm skeleton nodes attachments
 				assembleSkeletonArms(true);
-
 				// Refresh node offsets for arms
 				computeDependentArmOffsets();
 			}
@@ -1213,7 +1204,6 @@ public class HumanSkeleton {
 					rightHandNode.getLocalTransform().setTranslation(offset);
 				}
 			}
-			default -> {}
 		}
 
 		for (BoneInfo bone : allBoneInfo) {
@@ -1263,16 +1253,15 @@ public class HumanSkeleton {
 			case LEFT_LOWER_ARM -> isTrackingLeftArmFromController()
 				? leftElbowNode
 				: leftWristNode;
-
 			case RIGHT_LOWER_ARM -> isTrackingRightArmFromController()
 				? rightElbowNode
 				: rightWristNode;
-
 			case LEFT_HAND -> isTrackingLeftArmFromController()
 				? leftWristNode
 				: leftHandNode;
-			case RIGHT_HAND -> isTrackingRightArmFromController() ? rightWristNode : rightHandNode;
-
+			case RIGHT_HAND -> isTrackingRightArmFromController()
+				? rightWristNode
+				: rightHandNode;
 			case LEFT_HAND_TRACKER -> trackerLeftHandNode;
 			case RIGHT_HAND_TRACKER -> trackerRightHandNode;
 		};

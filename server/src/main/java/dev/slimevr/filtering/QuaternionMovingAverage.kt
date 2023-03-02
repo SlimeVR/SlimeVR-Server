@@ -49,7 +49,7 @@ class QuaternionMovingAverage(
 
 				// Slerps the target rotation to that predicted rotation by
 				// a certain factor.
-				filteredQuaternion = filteredQuaternion.interpQ(latestQuaternion, predictFactor * fpsTimer.timePerFrame)
+				filteredQuaternion = filteredQuaternion.interpR(latestQuaternion, predictFactor * fpsTimer.timePerFrame)
 			}
 		}
 		if (type === TrackerFilters.SMOOTHING) {
@@ -58,7 +58,7 @@ class QuaternionMovingAverage(
 			val amt = (smoothFactor * fpsTimer.timePerFrame * smoothingCounter).coerceAtMost(1f)
 
 			// Smooth towards the target rotation
-			filteredQuaternion = smoothingQuaternion.interpQ(latestQuaternion, amt)
+			filteredQuaternion = smoothingQuaternion.interpR(latestQuaternion, amt)
 		}
 	}
 

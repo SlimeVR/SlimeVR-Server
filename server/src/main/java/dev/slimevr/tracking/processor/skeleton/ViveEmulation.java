@@ -167,7 +167,7 @@ public class ViveEmulation {
 
 	// slowly rotate the tracker as it flies away
 	private Quaternion getFlyingRotation() {
-		return lastRotation.interpQ(randomRotation, SLERP_AMOUNT * timeDelta);
+		return lastRotation.interpR(randomRotation, SLERP_AMOUNT * timeDelta);
 	}
 
 	// get the position to fly back to (initially overshoot the actualy waist

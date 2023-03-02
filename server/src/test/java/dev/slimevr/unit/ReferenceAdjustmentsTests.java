@@ -1,13 +1,14 @@
 package dev.slimevr.unit;
 
 import com.jme3.math.FastMath;
-import com.jme3.math.Quaternion;
 import dev.slimevr.VRServer;
 import dev.slimevr.tracking.processor.BoneType;
 import dev.slimevr.tracking.processor.TransformNode;
-import dev.slimevr.tracking.trackers.IMUTracker;
+import dev.slimevr.tracking.trackers.Tracker;
+import dev.slimevr.tracking.trackers.TrackerResetsHandler;
 import io.eiren.math.FloatMath;
 import io.eiren.util.StringUtils;
+import io.github.axisangles.ktmath.Quaternion;
 import org.junit.jupiter.api.DynamicTest;
 import org.junit.jupiter.api.TestFactory;
 
@@ -21,7 +22,7 @@ import static org.junit.jupiter.api.DynamicTest.dynamicTest;
 
 
 /**
- * Tests {@link IMUTracker#resetFull(Quaternion)}
+ * Tests {@link TrackerResetsHandler#resetFull(Quaternion)}
  */
 public class ReferenceAdjustmentsTests {
 
@@ -177,17 +178,26 @@ public class ReferenceAdjustmentsTests {
 		int refRoll
 	) {
 		Quaternion referenceQuat = q(refPitch, refYaw, refRoll);
-		IMUTracker tracker = new IMUTracker(
+		Tracker tracker = new Tracker(
 			null,
 			VRServer.getNextLocalTrackerId(),
-			0,
-			"test",
 			"test",
 			null,
-			null
+			false,
+			true,
+			false,
+			false,
+			true,
+			false,
+			true,
+			false,
+			false,
+			true,
+			true,
+			true
 		);
-		tracker.rotQuaternion.set(trackerQuat);
-		tracker.resetFull(referenceQuat);
+		tracker.setRotation(trackerQuat);
+		tracker.getResetsHandler().resetFull(referenceQuat);
 		Quaternion read = new Quaternion();
 		assertTrue(tracker.getRotation(read), "Adjusted tracker didn't return rotation");
 
@@ -216,17 +226,26 @@ public class ReferenceAdjustmentsTests {
 	) {
 		// FIXME
 		Quaternion referenceQuat = q(refPitch, refYaw, refRoll);
-		IMUTracker tracker = new IMUTracker(
+		Tracker tracker = new Tracker(
 			null,
 			VRServer.getNextLocalTrackerId(),
-			0,
-			"test",
 			"test",
 			null,
-			null
+			false,
+			true,
+			false,
+			false,
+			true,
+			false,
+			true,
+			false,
+			false,
+			true,
+			true,
+			true
 		);
-		tracker.rotQuaternion.set(trackerQuat);
-		tracker.resetYaw(referenceQuat);
+		tracker.setRotation(trackerQuat);
+		tracker.getResetsHandler().resetYaw(referenceQuat);
 		Quaternion read = new Quaternion();
 		assertTrue(tracker.getRotation(read), "Adjusted tracker didn't return rotation");
 		assertEquals(
@@ -246,19 +265,27 @@ public class ReferenceAdjustmentsTests {
 		int refYaw,
 		int refRoll
 	) {
-		// FIXME
 		Quaternion referenceQuat = q(refPitch, refYaw, refRoll);
-		IMUTracker tracker = new IMUTracker(
+		Tracker tracker = new Tracker(
 			null,
 			VRServer.getNextLocalTrackerId(),
-			0,
-			"test",
 			"test",
 			null,
-			null
+			false,
+			true,
+			false,
+			false,
+			true,
+			false,
+			true,
+			false,
+			false,
+			true,
+			true,
+			true
 		);
-		tracker.rotQuaternion.set(trackerQuat);
-		tracker.resetFull(referenceQuat);
+		tracker.setRotation(trackerQuat);
+		tracker.getResetsHandler().resetFull(referenceQuat);
 
 		// Use only yaw HMD rotation
 		Quaternion targetTrackerRotation = new Quaternion(referenceQuat);
@@ -277,7 +304,7 @@ public class ReferenceAdjustmentsTests {
 		TransformNode rotationNode = new TransformNode(BoneType.HIP, true);
 		rotationNode.attachChild(trackerNode);
 
-		trackerNode.getLocalTransform().setRotation(tracker.rotQuaternion);
+		trackerNode.getLocalTransform().setRotation(tracker.getRawRotation());
 
 		for (int yaw = 0; yaw <= 360; yaw += 30) {
 			for (int pitch = -90; pitch <= 90; pitch += 15) {
@@ -296,8 +323,8 @@ public class ReferenceAdjustmentsTests {
 						);
 					rotationNode.getLocalTransform().setRotation(rotation);
 					rotationNode.update();
-					tracker.rotQuaternion.set(trackerNode.getWorldTransform().getRotation());
-					tracker.rotQuaternion.toAngles(angles);
+					tracker.setRotation(trackerNode.getWorldTransform().getRotation());
+					tracker.getRawRotation().toAngles(angles);
 
 					tracker.getRotation(read);
 					read.toAngles(anglesAdj);

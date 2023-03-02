@@ -639,21 +639,16 @@ public class LegTweaks {
 							* (velocity.getZ() > 0 ? 1 : -1)
 							/ bufferHead.getTimeDelta());
 				}
-				leftFootPosition = new Vector3(leftX, leftFootPosition.getY(), leftZ);
 
 				// if the foot overshot the target, move it back to the target
 				if (
 					checkOverShoot(
 						this.bufferHead.getLeftFootPosition().getX(),
 						this.bufferHead.getParent().getLeftFootPositionCorrected().getX(),
-						leftFootPosition.getX()
+						leftX
 					)
 				) {
-					leftFootPosition = new Vector3(
-						bufferHead.getLeftFootPosition().getX(),
-						leftFootPosition.getY(),
-						leftFootPosition.getZ()
-					);
+					leftX = bufferHead.getLeftFootPosition().getX();
 				}
 
 				if (
@@ -663,12 +658,10 @@ public class LegTweaks {
 						leftFootPosition.getZ()
 					)
 				) {
-					leftFootPosition = new Vector3(
-						leftFootPosition.getZ(),
-						leftFootPosition.getY(),
-						bufferHead.getLeftFootPosition().getZ()
-					);
+					leftZ = bufferHead.getLeftFootPosition().getZ();
 				}
+
+				leftFootPosition = new Vector3(leftX, leftFootPosition.getY(), leftZ);
 			}
 		}
 	}
@@ -676,11 +669,11 @@ public class LegTweaks {
 	private void correctUnlockedRightFootTracker() {
 		if (bufferHead.getRightLegState() == LegTweakBuffer.UNLOCKED) {
 			Vector3 rightFootDif = rightFootPosition
-				.minus(bufferHead.getParent().getRightFootPositionCorrected())
-				.setY(0);
+				.minus(bufferHead.getParent().getRightFootPositionCorrected());
+			rightFootDif = new Vector3(rightFootDif.getX(), 0f, rightFootDif.getZ());
 
-			if (rightFootDif.length() > NEARLY_ZERO) {
-				float rightY = rightFootPosition.y;
+			if (rightFootDif.len() > NEARLY_ZERO) {
+				float rightY = rightFootPosition.getY();
 				Vector3 temp = bufferHead
 					.getParent()
 					.getRightFootPositionCorrected();
@@ -688,16 +681,14 @@ public class LegTweaks {
 
 				// first add the difference from the last frame to this frame
 				temp = temp
-					.subtract(
+					.minus(
 						bufferHead
 							.getParent()
 							.getRightFootPosition()
-							.subtract(bufferHead.getRightFootPosition())
+							.minus(bufferHead.getRightFootPosition())
 					);
 
-				rightFootPosition.y = rightY;
-				rightFootPosition.x = temp.x;
-				rightFootPosition.z = temp.z;
+				rightFootPosition = new Vector3(temp.getX(), rightY, temp.getZ());
 
 				// if velocity and dif are pointing in the same direction,
 				// add a small amount of velocity to the dif
@@ -708,50 +699,58 @@ public class LegTweaks {
 					bufferHead.getParent().getRightFootPositionCorrected()
 				);
 
-				if (velocity.x * rightFootDif.x > 0) {
-					rightFootPosition.x += (velocity.x * weight)
+				float rightX = rightFootPosition.getX();
+				float rightZ = rightFootPosition.getZ();
+				if (velocity.getX() * rightFootDif.getX() > 0) {
+					rightX += (velocity.getX() * weight)
 						+ (getConstantCorrectionQuantityRight()
-							* (velocity.x > 0 ? 1 : -1)
+							* (velocity.getX() > 0 ? 1 : -1)
 							/ bufferHead.getTimeDelta());
-				} else if (velocity.x * rightFootDif.x < 0) {
-					rightFootPosition.x -= (velocity.x * weight)
+				} else if (velocity.getX() * rightFootDif.getX() < 0) {
+					rightX -= (velocity.getX() * weight)
 						+ (getConstantCorrectionQuantityRight()
-							* (velocity.x > 0 ? 1 : -1)
+							* (velocity.getX() > 0 ? 1 : -1)
 							/ bufferHead.getTimeDelta());
 				}
 
-				if (velocity.z * rightFootDif.z > 0) {
-					rightFootPosition.z += (velocity.z * weight)
+				if (velocity.getZ() * rightFootDif.getZ() > 0) {
+					rightZ += (velocity.getZ() * weight)
 						+ (getConstantCorrectionQuantityRight()
-							* (velocity.z > 0 ? 1 : -1)
+							* (velocity.getZ() > 0 ? 1 : -1)
 							/ bufferHead.getTimeDelta());
-				} else if (velocity.z * rightFootDif.z < 0) {
-					rightFootPosition.z -= (velocity.z * weight)
+				} else if (velocity.getZ() * rightFootDif.getZ() < 0) {
+					rightZ -= (velocity.getZ() * weight)
 						+ (getConstantCorrectionQuantityRight()
-							* (velocity.z > 0 ? 1 : -1)
+							* (velocity.getZ() > 0 ? 1 : -1)
 							/ bufferHead.getTimeDelta());
 				}
 
 				// if the foot overshot the target, move it back to the target
 				if (
 					checkOverShoot(
-						this.bufferHead.getRightFootPosition().x,
-						this.bufferHead.getParent().getRightFootPositionCorrected().x,
-						rightFootPosition.x
+						this.bufferHead.getRightFootPosition().getX(),
+						this.bufferHead.getParent().getRightFootPositionCorrected().getX(),
+						rightX
 					)
 				) {
-					rightFootPosition.x = bufferHead.getRightFootPosition().x;
+					rightX = bufferHead.getRightFootPosition().getX();
 				}
 
 				if (
 					checkOverShoot(
-						this.bufferHead.getRightFootPosition().z,
-						this.bufferHead.getParent().getRightFootPositionCorrected().z,
-						rightFootPosition.z
+						this.bufferHead.getRightFootPosition().getZ(),
+						this.bufferHead.getParent().getRightFootPositionCorrected().getZ(),
+						rightZ
 					)
 				) {
-					rightFootPosition.z = bufferHead.getRightFootPosition().z;
+					rightZ += bufferHead.getRightFootPosition().getZ();
 				}
+
+				rightFootPosition = new Vector3(
+					rightX,
+					rightFootPosition.getY(),
+					rightZ
+				);
 			}
 		}
 	}
@@ -763,8 +762,8 @@ public class LegTweaks {
 			+ waistToFloorDist
 			- (waistToFloorDist * STANDING_CUTOFF_VERTICAL);
 
-		if (waistPosition.y < cutoff) {
-			currentDisengagementOffset = (1 - waistPosition.y / cutoff)
+		if (waistPosition.getY() < cutoff) {
+			currentDisengagementOffset = (1 - waistPosition.getY() / cutoff)
 				* MAX_DISENGAGMENT_OFFSET;
 
 			return false;
@@ -791,10 +790,10 @@ public class LegTweaks {
 		float leftZDif = leftFootPosition.getZ() - bufferHead.getLeftFootPosition().getZ();
 		float rightZDif = rightFootPosition.getZ() - bufferHead.getRightFootPosition().getZ();
 
-		leftKneePosition.x += leftXDif * KNEE_LATERAL_WEIGHT;
-		leftKneePosition.z += leftZDif * KNEE_LATERAL_WEIGHT;
-		rightKneePosition.x += rightXDif * KNEE_LATERAL_WEIGHT;
-		rightKneePosition.z += rightZDif * KNEE_LATERAL_WEIGHT;
+		leftKneePosition.getX() += leftXDif * KNEE_LATERAL_WEIGHT;
+		leftKneePosition.getZ() += leftZDif * KNEE_LATERAL_WEIGHT;
+		rightKneePosition.getX() += rightXDif * KNEE_LATERAL_WEIGHT;
+		rightKneePosition.getZ() += rightZDif * KNEE_LATERAL_WEIGHT;
 
 		// calculate the bone distances
 		float leftKneeWaist = bufferHead.getLeftKneePosition().minus(leftWaist).len();
@@ -870,13 +869,13 @@ public class LegTweaks {
 		Vector3 rightCalf = getCenterOfJoint(skeleton.rightAnkleNode, skeleton.rightKneeNode);
 		Vector3 leftThigh = getCenterOfJoint(skeleton.leftKneeNode, skeleton.leftHipNode);
 		Vector3 rightThigh = getCenterOfJoint(skeleton.rightKneeNode, skeleton.rightHipNode);
-		centerOfMass = centerOfMass.add(head.mult(HEAD_MASS));
-		centerOfMass = centerOfMass.add(chest.mult(CHEST_MASS));
-		centerOfMass = centerOfMass.add(waist.mult(WAIST_MASS));
-		centerOfMass = centerOfMass.add(leftCalf.mult(CALF_MASS));
-		centerOfMass = centerOfMass.add(rightCalf.mult(CALF_MASS));
-		centerOfMass = centerOfMass.add(leftThigh.mult(THIGH_MASS));
-		centerOfMass = centerOfMass.add(rightThigh.mult(THIGH_MASS));
+		centerOfMass = centerOfMass.plus(head.times(HEAD_MASS));
+		centerOfMass = centerOfMass.plus(chest.times(CHEST_MASS));
+		centerOfMass = centerOfMass.plus(waist.times(WAIST_MASS));
+		centerOfMass = centerOfMass.plus(leftCalf.times(CALF_MASS));
+		centerOfMass = centerOfMass.plus(rightCalf.times(CALF_MASS));
+		centerOfMass = centerOfMass.plus(leftThigh.times(THIGH_MASS));
+		centerOfMass = centerOfMass.plus(rightThigh.times(THIGH_MASS));
 
 		if (armsAvailable) {
 			Vector3 leftUpperArm = getCenterOfJoint(
@@ -892,25 +891,25 @@ public class LegTweaks {
 				skeleton.rightElbowNode,
 				skeleton.rightHandNode
 			);
-			centerOfMass = centerOfMass.add(leftUpperArm.mult(UPPER_ARM_MASS));
-			centerOfMass = centerOfMass.add(rightUpperArm.mult(UPPER_ARM_MASS));
-			centerOfMass = centerOfMass.add(leftForearm.mult(FOREARM_MASS));
-			centerOfMass = centerOfMass.add(rightForearm.mult(FOREARM_MASS));
+			centerOfMass = centerOfMass.plus(leftUpperArm.times(UPPER_ARM_MASS));
+			centerOfMass = centerOfMass.plus(rightUpperArm.times(UPPER_ARM_MASS));
+			centerOfMass = centerOfMass.plus(leftForearm.times(FOREARM_MASS));
+			centerOfMass = centerOfMass.plus(rightForearm.times(FOREARM_MASS));
 		} else {
 			// if the arms are not avaliable put them slightly in front
 			// of the chest.
 			Vector3 chestUnitVector = computeUnitVector(
-				skeleton.chestNode.worldTransform.getRotation()
+				skeleton.chestNode.getWorldTransform().getRotation()
 			);
-			Vector3 armLocation = chest.add(chestUnitVector.mult(DEFAULT_ARM_DISTANCE));
-			centerOfMass = centerOfMass.add(armLocation.mult(UPPER_ARM_MASS * 2.0f));
-			centerOfMass = centerOfMass.add(armLocation.mult(FOREARM_MASS * 2.0f));
+			Vector3 armLocation = chest.plus(chestUnitVector.times(DEFAULT_ARM_DISTANCE));
+			centerOfMass = centerOfMass.plus(armLocation.times(UPPER_ARM_MASS * 2.0f));
+			centerOfMass = centerOfMass.plus(armLocation.times(FOREARM_MASS * 2.0f));
 		}
 
 		// finally translate in to tracker space
 		centerOfMass = waistPosition
-			.add(
-				centerOfMass.subtract(skeleton.trackerHipNode.worldTransform.getTranslation(null))
+			.plus(
+				centerOfMass.minus(skeleton.trackerHipNode.getWorldTransform().getTranslation())
 			);
 
 		return centerOfMass;
@@ -968,6 +967,6 @@ public class LegTweaks {
 
 	// get the unit vector of the given rotation
 	private Vector3 computeUnitVector(Quaternion quaternion) {
-		return quaternion.getRotationColumn(2).normalize();
+		return quaternion.toMatrix().getZ().unit();
 	}
 }
