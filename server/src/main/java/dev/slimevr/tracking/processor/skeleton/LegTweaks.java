@@ -780,9 +780,6 @@ public class LegTweaks {
 		Vector3 leftWaist = waistPosition;
 		Vector3 rightWaist = waistPosition;
 
-		Vector3 tempLeft;
-		Vector3 tempRight;
-
 		// before moveing the knees back closer to the waist nodes offset them
 		// the same amount the foot trackers where offset
 		float leftXDif = leftFootPosition.getX() - bufferHead.getLeftFootPosition().getX();
@@ -790,10 +787,13 @@ public class LegTweaks {
 		float leftZDif = leftFootPosition.getZ() - bufferHead.getLeftFootPosition().getZ();
 		float rightZDif = rightFootPosition.getZ() - bufferHead.getRightFootPosition().getZ();
 
-		leftKneePosition.getX() += leftXDif * KNEE_LATERAL_WEIGHT;
-		leftKneePosition.getZ() += leftZDif * KNEE_LATERAL_WEIGHT;
-		rightKneePosition.getX() += rightXDif * KNEE_LATERAL_WEIGHT;
-		rightKneePosition.getZ() += rightZDif * KNEE_LATERAL_WEIGHT;
+		float leftX = leftKneePosition.getX() + (leftXDif * KNEE_LATERAL_WEIGHT);
+		float leftZ = leftKneePosition.getZ() + (leftZDif * KNEE_LATERAL_WEIGHT);
+		float rightX = rightKneePosition.getX() + (rightXDif * KNEE_LATERAL_WEIGHT);
+		float rightZ = rightKneePosition.getZ() + (rightZDif * KNEE_LATERAL_WEIGHT);
+
+		leftKneePosition = new Vector3(leftX, leftKneePosition.getY(), leftZ);
+		rightKneePosition = new Vector3(rightX, rightKneePosition.getY(), rightZ);
 
 		// calculate the bone distances
 		float leftKneeWaist = bufferHead.getLeftKneePosition().minus(leftWaist).len();
@@ -816,10 +816,8 @@ public class LegTweaks {
 			.times(rightKneeOffset * KNEE_CORRECTION_WEIGHT);
 
 		// correct the knees
-		tempLeft = leftKneePosition.minus(leftKneeVector);
-		tempRight = rightKneePosition.minus(rightKneeVector);
-		leftKneePosition = tempLeft;
-		rightKneePosition = tempRight;
+		leftKneePosition = leftKneePosition.minus(leftKneeVector);
+		rightKneePosition = rightKneePosition.minus(rightKneeVector);
 	}
 
 	private float getLeftFootOffset() {
@@ -837,7 +835,8 @@ public class LegTweaks {
 		Vector3 foot,
 		Vector3 footCorrected
 	) {
-		Vector3 footDif = foot.minus(footCorrected).setY(0);
+		Vector3 footDif = foot.minus(footCorrected);
+		footDif = new Vector3(footDif.getX(), 0f, footDif.getZ());
 
 		if (footDif.len() < MIN_ACCEPTABLE_ERROR) {
 			return CORRECTION_WEIGHT_MIN;
@@ -858,7 +857,7 @@ public class LegTweaks {
 		boolean armsAvailable = skeleton.hasLeftArmTracker
 			&& skeleton.hasRightArmTracker;
 
-		Vector3 centerOfMass = new Vector3();
+		Vector3 centerOfMass = new Vector3(0f, 0f, 0f);
 
 		// compute the center of mass of smaller body parts and then sum them up
 		// with their respective weights

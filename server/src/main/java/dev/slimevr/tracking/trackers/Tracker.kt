@@ -41,7 +41,7 @@ class Tracker @JvmOverloads constructor(
 	private var rotation = Quaternion.IDENTITY
 	var position = Vector3.NULL
 	var acceleration = Vector3.NULL
-	val resetsHandler: TrackerResetsHandler = TrackerResetsHandler()
+	val resetsHandler: TrackerResetsHandler = TrackerResetsHandler(this)
 	val filteringHandler: TrackerFilteringHandler = TrackerFilteringHandler()
 	var status = TrackerStatus.DISCONNECTED
 	var batteryVoltage = -1f

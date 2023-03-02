@@ -855,110 +855,104 @@ public class HumanSkeleton {
 
 		// Left arm
 		if (isTrackingLeftArmFromController()) { // From controller
-			var leftHandPos = leftHandTracker.getPosition();
-			var leftHandRot = leftHandTracker.getRotation();
-			leftHandNode.getLocalTransform().setTranslation(leftHandPos);
-			leftHandNode.getLocalTransform().setRotation(leftHandRot);
+			leftHandNode.getLocalTransform().setTranslation(leftHandTracker.getPosition());
+			leftHandNode.getLocalTransform().setRotation(leftHandTracker.getRotation());
 
 			Tracker lowerArm = TrackerUtils
 				.getFirstAvailableTracker(leftLowerArmTracker, leftUpperArmTracker);
 			if (lowerArm != null) {
-				var lowerArmRot = lowerArm.getRotation();
-
-				leftWristNode.getLocalTransform().setRotation(lowerArmRot);
+				leftWristNode.getLocalTransform().setRotation(lowerArm.getRotation());
 
 				var leftArmRot = TrackerUtils
 					.getFirstAvailableTracker(leftUpperArmTracker, leftLowerArmTracker)
 					.getRotation();
-
 				leftElbowNode.getLocalTransform().setRotation(leftArmRot);
 				trackerLeftElbowNode.getLocalTransform().setRotation(leftArmRot);
 			}
 		} else { // From HMD
+			Quaternion leftShoulderRot;
 			if (leftShoulderTracker != null)
-				leftShoulderTracker.getRotation(rotBuf1);
+				leftShoulderRot = leftShoulderTracker.getRotation();
 			else
-				neckNode.getLocalTransform().getRotation(rotBuf1);
-			leftShoulderHeadNode.getLocalTransform().setRotation(rotBuf1);
+				leftShoulderRot = neckNode.getLocalTransform().getRotation();
+			leftShoulderHeadNode.getLocalTransform().setRotation(leftShoulderRot);
 
+			Quaternion leftArmRot;
 			if (leftUpperArmTracker != null || leftLowerArmTracker != null) {
-				TrackerUtils
+				leftArmRot = TrackerUtils
 					.getFirstAvailableTracker(leftUpperArmTracker, leftLowerArmTracker)
-					.getRotation(rotBuf1);
-				leftShoulderTailNode.getLocalTransform().setRotation(rotBuf1);
-				trackerLeftElbowNode.getLocalTransform().setRotation(rotBuf1);
+					.getRotation();
+				leftShoulderTailNode.getLocalTransform().setRotation(leftArmRot);
+				trackerLeftElbowNode.getLocalTransform().setRotation(leftArmRot);
 
-				TrackerUtils
+				leftArmRot = TrackerUtils
 					.getFirstAvailableTracker(leftLowerArmTracker, leftUpperArmTracker)
-					.getRotation(rotBuf1);
-				leftElbowNode.getLocalTransform().setRotation(rotBuf1);
+					.getRotation();
+				leftElbowNode.getLocalTransform().setRotation(leftArmRot);
 			} else {
-				neckNode.getLocalTransform().getRotation(rotBuf1);
-				leftShoulderTailNode.getLocalTransform().setRotation(rotBuf1);
-				trackerLeftElbowNode.getLocalTransform().setRotation(rotBuf1);
-				leftElbowNode.getLocalTransform().setRotation(rotBuf1);
+				leftArmRot = neckNode.getLocalTransform().getRotation();
+				leftShoulderTailNode.getLocalTransform().setRotation(leftArmRot);
+				trackerLeftElbowNode.getLocalTransform().setRotation(leftArmRot);
+				leftElbowNode.getLocalTransform().setRotation(leftArmRot);
 			}
 
 			if (leftHandTracker != null)
-				leftHandTracker.getRotation(rotBuf1);
+				leftArmRot = leftHandTracker.getRotation();
 
-			leftWristNode.getLocalTransform().setRotation(rotBuf1);
-			leftHandNode.getLocalTransform().setRotation(rotBuf1);
-			trackerLeftHandNode.getLocalTransform().setRotation(rotBuf1);
+			leftWristNode.getLocalTransform().setRotation(leftArmRot);
+			leftHandNode.getLocalTransform().setRotation(leftArmRot);
+			trackerLeftHandNode.getLocalTransform().setRotation(leftArmRot);
 		}
 
 		// Right arm
 		if (isTrackingRightArmFromController()) { // From controller
-			rightHandTracker.getPosition(posBuf);
-			rightHandTracker.getRotation(rotBuf1);
-			rightHandNode.getLocalTransform().setTranslation(posBuf);
-			rightHandNode.getLocalTransform().setRotation(rotBuf1);
+			rightHandNode.getLocalTransform().setTranslation(rightHandTracker.getPosition());
+			rightHandNode.getLocalTransform().setRotation(rightHandTracker.getRotation());
 
 			Tracker lowerArm = TrackerUtils
 				.getFirstAvailableTracker(rightLowerArmTracker, rightUpperArmTracker);
 			if (lowerArm != null) {
-				lowerArm.getRotation(rotBuf1);
+				rightWristNode.getLocalTransform().setRotation(lowerArm.getRotation());
 
-				rightWristNode.getLocalTransform().setRotation(rotBuf1);
-
-				TrackerUtils
+				var rightArmRot = TrackerUtils
 					.getFirstAvailableTracker(rightUpperArmTracker, rightLowerArmTracker)
-					.getRotation(rotBuf1);
-
-				rightElbowNode.getLocalTransform().setRotation(rotBuf1);
-				trackerRightElbowNode.getLocalTransform().setRotation(rotBuf1);
+					.getRotation();
+				rightElbowNode.getLocalTransform().setRotation(rightArmRot);
+				trackerRightElbowNode.getLocalTransform().setRotation(rightArmRot);
 			}
 		} else { // From HMD
+			Quaternion rightShoulderRot;
 			if (rightShoulderTracker != null)
-				rightShoulderTracker.getRotation(rotBuf1);
+				rightShoulderRot = rightShoulderTracker.getRotation();
 			else
-				neckNode.getLocalTransform().getRotation(rotBuf1);
-			rightShoulderHeadNode.getLocalTransform().setRotation(rotBuf1);
+				rightShoulderRot = neckNode.getLocalTransform().getRotation();
+			rightShoulderHeadNode.getLocalTransform().setRotation(rightShoulderRot);
 
+			Quaternion rightArmRot;
 			if (rightUpperArmTracker != null || rightLowerArmTracker != null) {
-				TrackerUtils
+				rightArmRot = TrackerUtils
 					.getFirstAvailableTracker(rightUpperArmTracker, rightLowerArmTracker)
-					.getRotation(rotBuf1);
-				rightShoulderTailNode.getLocalTransform().setRotation(rotBuf1);
-				trackerRightElbowNode.getLocalTransform().setRotation(rotBuf1);
+					.getRotation();
+				rightShoulderTailNode.getLocalTransform().setRotation(rightArmRot);
+				trackerRightElbowNode.getLocalTransform().setRotation(rightArmRot);
 
-				TrackerUtils
+				rightArmRot = TrackerUtils
 					.getFirstAvailableTracker(rightLowerArmTracker, rightUpperArmTracker)
-					.getRotation(rotBuf1);
-				rightElbowNode.getLocalTransform().setRotation(rotBuf1);
+					.getRotation();
+				rightElbowNode.getLocalTransform().setRotation(rightArmRot);
 			} else {
-				neckNode.getLocalTransform().getRotation(rotBuf1);
-				rightShoulderTailNode.getLocalTransform().setRotation(rotBuf1);
-				trackerRightElbowNode.getLocalTransform().setRotation(rotBuf1);
-				rightElbowNode.getLocalTransform().setRotation(rotBuf1);
+				rightArmRot = neckNode.getLocalTransform().getRotation();
+				rightShoulderTailNode.getLocalTransform().setRotation(rightArmRot);
+				trackerRightElbowNode.getLocalTransform().setRotation(rightArmRot);
+				rightElbowNode.getLocalTransform().setRotation(rightArmRot);
 			}
 
 			if (rightHandTracker != null)
-				rightHandTracker.getRotation(rotBuf1);
+				rightArmRot = rightHandTracker.getRotation();
 
-			rightWristNode.getLocalTransform().setRotation(rotBuf1);
-			rightHandNode.getLocalTransform().setRotation(rotBuf1);
-			trackerRightHandNode.getLocalTransform().setRotation(rotBuf1);
+			rightWristNode.getLocalTransform().setRotation(rightArmRot);
+			rightHandNode.getLocalTransform().setRotation(rightArmRot);
+			trackerRightHandNode.getLocalTransform().setRotation(rightArmRot);
 		}
 	}
 
