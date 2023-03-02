@@ -5,21 +5,91 @@ import dev.slimevr.config.LegTweaksConfig;
 import dev.slimevr.tracking.processor.TransformNode;
 import io.github.axisangles.ktmath.Quaternion;
 import io.github.axisangles.ktmath.Vector3;
+import dev.slimevr.tracking.processor.config.SkeletonConfigToggles;
 
 
 public class LegTweaks {
+	/**
+	 * here is an explanation of each parameter that may need explaining
+	 * STANDING_CUTOFF_VERTICAL is the percentage the waist has to be below its
+	 * position at calibration to register as the user not standing
+	 * MAX_DISENGAGEMENT_OFFSET is how much the floor will be shifted to allow
+	 * an offset to happen smoothly DYNAMIC_DISPLACEMENT_CUTOFF is the percent
+	 * of downwards rotation that can contribute to dynamic displacement
+	 * MAX_DYNAMIC_DISPLACEMENT is the max amount the floor will be moved up to
+	 * account for the foot rotating downward and needing to be put higher to
+	 * avoid clipping in the game world MIN_ACCEPTABLE_ERROR and
+	 * MAX_ACCEPTABLE_ERROR Defines the distance where CORRECTION_WEIGHT_MIN and
+	 * CORRECTION_WEIGHT_MAX are calculating a percent of velocity to correct
+	 * rather than using the min or max FLOOR_CALIBRATION_OFFSET is the amount
+	 * the floor plane is shifted up. This can help the feet from floating
+	 * slightly above the ground
+	 */
+
+	// hyperparameters (clip correction)
+	static float DYNAMIC_DISPLACEMENT_CUTOFF = 1.0f;
+	private static final float FLOOR_CALIBRATION_OFFSET = 0.015f;
+
+	// hyperparameters (skating correction)
+	private static final float MIN_ACCEPTABLE_ERROR = 0.01f;
+	private static final float MAX_ACCEPTABLE_ERROR = 0.05f;
+	private static final float CORRECTION_WEIGHT_MIN = 0.55f;
+	private static final float CORRECTION_WEIGHT_MAX = 0.70f;
+	private static final float CONTINUOUS_CORRECTION_DIST = 0.5f;
+	private static final int CONTINUOUS_CORRECTION_WARMUP = 175;
+
+	// hyperparameters (knee / waist correction)
+	private static final float KNEE_CORRECTION_WEIGHT = 0.00f;
+	private static final float KNEE_LATERAL_WEIGHT = 0.8f;
+	private static final float WAIST_PUSH_WEIGHT = 0.2f;
+
+	// hyperparameters (COM calculation)
+	// mass percentages of the body
+	private static final float HEAD_MASS = 0.082f;
+	private static final float CHEST_MASS = 0.25f;
+	private static final float WAIST_MASS = 0.209f;
+	private static final float THIGH_MASS = 0.128f;
+	private static final float CALF_MASS = 0.0535f;
+	private static final float UPPER_ARM_MASS = 0.031f;
+	private static final float FOREARM_MASS = 0.017f;
+
+	// hyperparameters (rotation correction)
+	private static final float ROTATION_CORRECTION_VERTICAL = 0.1f;
+	private static final float MAXIMUM_CORRECTION_ANGLE = 0.4f;
+	private static final float MAXIMUM_CORRECTION_ANGLE_DELTA = 0.7f;
+	private static final float MAXIMUM_TOE_DOWN_ANGLE = 0.8f;
+	private static final float TOE_SNAP_COOLDOWN = 3.0f;
+
+	// hyperparameters (misc)
+	static final float NEARLY_ZERO = 0.001f;
+	private static final float STANDING_CUTOFF_VERTICAL = 0.65f;
+	private static final float MAX_DISENGAGEMENT_OFFSET = 0.30f;
+	private static final float DEFAULT_ARM_DISTANCE = 0.15f;
+	private static final float MAX_CORRECTION_STRENGTH_DELTA = 1.0f;
+
 	// state variables
 	private float floorLevel;
 	private float waistToFloorDist;
 	private float currentDisengagementOffset = 0.0f;
+	private float footLength = 0.0f;
 	private static float currentCorrectionStrength = 0.3f; // default value
 	private boolean initialized = true;
 	private boolean enabled = true; // master switch
 	private boolean floorclipEnabled = false;
 	private boolean skatingCorrectionEnabled = false;
+	private boolean toeSnap = false;
+	private boolean footPlant = false;
 	private boolean active = false;
 	private boolean rightLegActive = false;
 	private boolean leftLegActive = false;
+	private int leftFramesLocked = 0;
+	private int rightFramesLocked = 0;
+	private int leftFramesUnlocked = 0;
+	private int rightFramesUnlocked = 0;
+	private float leftToeAngle = 0.0f;
+	private boolean leftToeTouched = false;
+	private float rightToeAngle = 0.0f;
+	private boolean rightToeTouched = false;
 
 	// skeleton and config
 	private HumanSkeleton skeleton;
@@ -43,65 +113,7 @@ public class LegTweaks {
 	private Vector3 leftKneePlaceholder = Vector3.Companion.getNULL();
 	private Vector3 rightKneePlaceholder = Vector3.Companion.getNULL();
 
-	/**
-	 * here is a explination of each parameter that may need explaining
-	 * STANDING_CUTOFF_VERTICAL is the percentage the waist has to be below its
-	 * position at calibration to register as the user not standing
-	 * MAX_DISENGAGMENT_OFFSET is how much the floor will be shifted to allow an
-	 * offset to happen smoothly DYNAMIC_DISPLACEMENT_CUTOFF is the percent of
-	 * downwards rotation that can contribute to dynamic displacment
-	 * MAX_DYNAMIC_DISPLACMENT is the max amount the floor will be moved up to
-	 * account for the foot rotating downward and needing to be put higher to
-	 * avoid clipping in the gameworld MIN_ACCEPTABLE_ERROR and
-	 * MAX_ACCEPTABLE_ERROR Defines the disitance where CORRECTION_WEIGHT_MIN
-	 * and CORRECTION_WEIGHT_MAX are calculating a percent of velocity to
-	 * correct rather than using the min or max FLOOR_CALIBRATION_OFFSET is the
-	 * amount the floor plane is shifted up. This can help the feet from
-	 * floating slightly above the ground
-	 */
-
-	// hyperparameters (clip correction)
-	static float DYNAMIC_DISPLACEMENT_CUTOFF = 1.0f;
-	static float MAX_DYNAMIC_DISPLACEMENT = 0.06f;
-	private static final float FLOOR_CALIBRATION_OFFSET = 0.015f;
-
-	// hyperparameters (skating correction)
-	private static final float MIN_ACCEPTABLE_ERROR = 0.01f;
-	private static final float MAX_ACCEPTABLE_ERROR = 0.225f;
-	private static final float CORRECTION_WEIGHT_MIN = 0.40f;
-	private static final float CORRECTION_WEIGHT_MAX = 0.70f;
-	private static final float CONTINUOUS_CORRECTION_DIST = 0.5f;
-	private static final int CONTINUOUS_CORRECTION_WARMUP = 175;
-
-	// hyperparameters (knee / waist correction)
-	private static final float KNEE_CORRECTION_WEIGHT = 0.00f;
-	private static final float KNEE_LATERAL_WEIGHT = 0.8f;
-	private static final float WAIST_PUSH_WEIGHT = 0.2f;
-
-	// hyperparameters (COM calculation)
-	// mass percentages of the body
-	private static final float HEAD_MASS = 0.082f;
-	private static final float CHEST_MASS = 0.25f;
-	private static final float WAIST_MASS = 0.209f;
-	private static final float THIGH_MASS = 0.128f;
-	private static final float CALF_MASS = 0.0535f;
-	private static final float UPPER_ARM_MASS = 0.031f;
-	private static final float FOREARM_MASS = 0.017f;
-
-	// hyperparameters (misc)
-	static final float NEARLY_ZERO = 0.001f;
-	private static final float STANDING_CUTOFF_VERTICAL = 0.65f;
-	private static final float MAX_DISENGAGMENT_OFFSET = 0.30f;
-	private static final float DEFAULT_ARM_DISTANCE = 0.15f;
-	private static final float MAX_CORRECTION_STRENGTH_DELTA = 1.0f;
-
-	// counters
-	private int leftFramesLocked = 0;
-	private int rightFramesLocked = 0;
-	private int leftFramesUnlocked = 0;
-	private int rightFramesUnlocked = 0;
-
-	// buffer for holding previus frames of data
+	// buffer for holding previous frames of data
 	private LegTweakBuffer bufferHead = new LegTweakBuffer();
 	private boolean bufferInvalid = true;
 
@@ -200,6 +212,14 @@ public class LegTweaks {
 		this.bufferInvalid = true;
 	}
 
+	public void setToeSnap(boolean val) {
+		this.toeSnap = val;
+	}
+
+	public void setFootPlant(boolean val) {
+		this.footPlant = val;
+	}
+
 	public boolean getEnabled() {
 		return this.enabled;
 	}
@@ -210,6 +230,14 @@ public class LegTweaks {
 
 	public boolean getSkatingReductionEnabled() {
 		return this.skatingCorrectionEnabled;
+	}
+
+	public boolean getToeSnap() {
+		return this.toeSnap;
+	}
+
+	public boolean getFootPlant() {
+		return this.footPlant;
 	}
 
 	public void resetBuffer() {
@@ -223,9 +251,15 @@ public class LegTweaks {
 
 	public void updateConfig() {
 		LegTweaks.updateHyperParameters(config.getCorrectionStrength());
+
+		floorclipEnabled = skeleton.humanPoseManager.getToggle(SkeletonConfigToggles.FLOOR_CLIP);
+		skatingCorrectionEnabled = skeleton.humanPoseManager
+			.getToggle(SkeletonConfigToggles.SKATING_CORRECTION);
+		toeSnap = skeleton.humanPoseManager.getToggle(SkeletonConfigToggles.TOE_SNAP);
+		footPlant = skeleton.humanPoseManager.getToggle(SkeletonConfigToggles.FOOT_PLANT);
 	}
 
-	// update the hyper parameters with the config
+	// update the hyperparameters with the config
 	public static void updateHyperParameters(float newStrength) {
 		LegTweakBuffer.SKATING_VELOCITY_THRESHOLD = getScaledHyperParameter(
 			newStrength,
@@ -294,7 +328,10 @@ public class LegTweaks {
 			initialized = true;
 		}
 
-		// if not enabled do nothing and return false
+		// update the foot length
+		footLength = skeleton.leftFootNode.localTransform.getTranslation().length();
+
+		// if not enabled, do nothing and return false
 		if (!enabled)
 			return false;
 
@@ -317,7 +354,7 @@ public class LegTweaks {
 			bufferHead.setLeftLegState(LegTweakBuffer.UNLOCKED);
 			bufferHead.setRightLegState(LegTweakBuffer.UNLOCKED);
 
-			// if the system is active populate the buffer with corrected floor
+			// if the system is active, populate the buffer with corrected floor
 			// clip feet positions
 			if (active && isStanding()) {
 				correctClipping();
@@ -341,19 +378,19 @@ public class LegTweaks {
 
 		currentFrame
 			.setLeftFloorLevel(
-				(floorLevel + (MAX_DYNAMIC_DISPLACEMENT * getLeftFootOffset()))
+				(floorLevel + (footLength * getLeftFootOffset()))
 					- currentDisengagementOffset
 			);
 
 		currentFrame
 			.setRightFloorLevel(
-				(floorLevel + (MAX_DYNAMIC_DISPLACEMENT * getRightFootOffset()))
+				(floorLevel + (footLength * getRightFootOffset()))
 					- currentDisengagementOffset
 			);
 
 		// put the acceleration vector that is applicable to the tracker
-		// quantity in the the buffer
-		// (if feet are not available, fallback to 6 tracker mode)
+		// quantity in the buffer
+		// (if feet are not available, fall back to 6 tracker mode)
 		if (skeleton.leftFootTracker != null && skeleton.rightFootTracker != null) {
 			currentFrame.setLeftFootAcceleration(leftFootAcceleration);
 			currentFrame.setRightFootAcceleration(rightFootAcceleration);
@@ -382,6 +419,9 @@ public class LegTweaks {
 		// tweaked
 		if (!preUpdate())
 			return;
+
+		// correct foot rotation's
+		correctFootRotations();
 
 		// push the feet up if needed
 		if (floorclipEnabled)
@@ -481,14 +521,14 @@ public class LegTweaks {
 
 		// move the feet to their new positions
 		if (
-			leftFootPosition.getY()
-				< (floorLevel + (MAX_DYNAMIC_DISPLACEMENT * leftOffset))
+			leftFootPosition.y
+				< (floorLevel + (footLength * leftOffset))
 					- currentDisengagementOffset
 		) {
 			float displacement = Math
 				.abs(
 					floorLevel
-						+ (MAX_DYNAMIC_DISPLACEMENT * leftOffset)
+						+ (footLength * leftOffset)
 						- leftFootPosition.getY()
 						- currentDisengagementOffset
 				);
@@ -507,14 +547,14 @@ public class LegTweaks {
 		}
 
 		if (
-			rightFootPosition.getY()
-				< (floorLevel + (MAX_DYNAMIC_DISPLACEMENT * rightOffset))
+			rightFootPosition.y
+				< (floorLevel + (footLength * rightOffset))
 					- currentDisengagementOffset
 		) {
 			float displacement = Math
 				.abs(
 					floorLevel
-						+ (MAX_DYNAMIC_DISPLACEMENT * rightOffset)
+						+ (footLength * rightOffset)
 						- rightFootPosition.getY()
 						- currentDisengagementOffset
 				);
@@ -755,6 +795,176 @@ public class LegTweaks {
 		}
 	}
 
+	// correct the rotations of the feet
+	// this is done by planting the foot better and by snapping the toes to the
+	// ground
+	private void correctFootRotations() {
+		// null check's
+		if (bufferHead == null || bufferHead.getParent() == null)
+			return;
+
+		// if there is a foot tracker for a foot don't correct it
+		if (skeleton.leftFootTracker != null || skeleton.rightFootTracker != null)
+			return;
+
+		// get the foot positions
+		Quaternion leftFootRotation = bufferHead.getLeftFootRotation(null);
+		Quaternion rightFootRotation = bufferHead.getRightFootRotation(null);
+
+		// between maximum correction angle and maximum correction angle delta
+		// the values are interpolated
+		float kneeAngleL = getXZAmount(leftFootPosition, leftKneePosition);
+		float kneeAngleR = getXZAmount(rightFootPosition, rightKneePosition);
+
+		float masterWeightL = getMasterWeight(kneeAngleL);
+		float masterWeightR = getMasterWeight(kneeAngleR);
+
+		// corrects rotations when planted firmly on the ground
+		if (footPlant) {
+			// prepare the weight vars for this correction step
+			float weightL = 0.0f;
+			float weightR = 0.0f;
+
+			// the further from the ground the foot is, the less weight it
+			// should have
+			weightL = getFootPlantWeight(leftFootPosition);
+			weightR = getFootPlantWeight(rightFootPosition);
+
+			// perform the correction
+			leftFootRotation
+				.set(
+					leftFootRotation
+						.slerp(
+							leftFootRotation,
+							isolateYaw(leftFootRotation),
+							weightL * masterWeightL
+						)
+				);
+
+			rightFootRotation
+				.set(
+					rightFootRotation
+						.slerp(
+							rightFootRotation,
+							isolateYaw(rightFootRotation),
+							weightR * masterWeightR
+						)
+				);
+		}
+
+		// corrects rotations when the foot is in the air by rotating the foot
+		// down so that the toes are touching
+		if (toeSnap) {
+			// this correction step has its own weight vars
+			float weightL = 0.0f;
+			float weightR = 0.0f;
+
+			// first compute the angle of the foot
+			float angleL = getToeSnapAngle(leftFootPosition);
+			float angleR = getToeSnapAngle(rightFootPosition);
+
+			// then compute the weight of the correction
+			weightL = getToeSnapWeight(leftFootPosition, angleL);
+			weightR = getToeSnapWeight(rightFootPosition, angleR);
+
+			// depending on the state variables, the correction weights should
+			// be clamped
+			if (!leftToeTouched) {
+				weightL = Math.min(weightL, leftToeAngle);
+			}
+			if (!rightToeTouched) {
+				weightR = Math.min(weightR, rightToeAngle);
+			}
+
+			// then slerp the rotation to the new rotation based on the weight
+			leftFootRotation
+				.slerp(
+					leftFootRotation,
+					replacePitch(leftFootRotation, -angleL),
+					weightL * masterWeightL
+				);
+			rightFootRotation
+				.slerp(
+					rightFootRotation,
+					replacePitch(rightFootRotation, -angleR),
+					weightR * masterWeightR
+				);
+
+			// update state variables regarding toe snap
+			if (leftFootPosition.y - floorLevel > footLength * MAXIMUM_TOE_DOWN_ANGLE) {
+				leftToeTouched = false;
+				leftToeAngle = weightL;
+			} else if (leftFootPosition.y - floorLevel < 0.0f) {
+				leftToeTouched = true;
+				leftToeAngle = 1.0f;
+			}
+			if (rightFootPosition.y - floorLevel > footLength * MAXIMUM_TOE_DOWN_ANGLE) {
+				rightToeTouched = false;
+				rightToeAngle = weightR;
+			} else if (rightFootPosition.y - floorLevel < 0.0f) {
+				rightToeTouched = true;
+				rightToeAngle = 1.0f;
+			}
+		}
+
+		// update the foot rotations in the buffer
+		bufferHead.setLeftFootRotationCorrected(leftFootRotation);
+		bufferHead.setRightFootRotationCorrected(rightFootRotation);
+
+		// finally update the skeletons rotations with the new rotations
+		skeleton.computedLeftFootTracker.rotation.set(leftFootRotation);
+		skeleton.computedRightFootTracker.rotation.set(rightFootRotation);
+	}
+
+	// returns the length of the xz components of the normalized difference
+	// between two vectors
+	public float getXZAmount(Vector3f vec1, Vector3f vec2) {
+		return vec1
+			.subtract(vec2)
+			.normalizeLocal()
+			.setY(0.0f)
+			.length();
+	}
+
+	// returns a float between 0 and 1 that represents the master weight for
+	// foot rotation correciton
+	private float getMasterWeight(float kneeAngle) {
+		float masterWeight = (kneeAngle > MAXIMUM_CORRECTION_ANGLE
+			&& kneeAngle < MAXIMUM_CORRECTION_ANGLE_DELTA)
+				? 1.0f
+					- ((kneeAngle - MAXIMUM_CORRECTION_ANGLE)
+						/ (MAXIMUM_CORRECTION_ANGLE_DELTA - MAXIMUM_CORRECTION_ANGLE))
+				: 0.0f;
+		return (kneeAngle < MAXIMUM_CORRECTION_ANGLE) ? 1.0f : masterWeight;
+	}
+
+	// return the weight of the correction for toe snap
+	private float getToeSnapWeight(Vector3f footPos, float angle) {
+		// then compute the weight of the correction
+		float weight = ((footPos.y - floorLevel) > footLength * TOE_SNAP_COOLDOWN)
+			? 0.0f
+			: 1.0f
+				- ((footPos.y - floorLevel - footLength)
+					/ (footLength * (TOE_SNAP_COOLDOWN - 1.0f)));
+		return FastMath.clamp(weight, 0.0f, 1.0f);
+	}
+
+	// returns the angle of the foot for toe snap
+	private float getToeSnapAngle(Vector3f footPos) {
+		float angle = FastMath.clamp(footPos.y - floorLevel, 0.0f, footLength);
+		return (angle > footLength * MAXIMUM_TOE_DOWN_ANGLE)
+			? FastMath.asin((footLength * MAXIMUM_TOE_DOWN_ANGLE) / footLength)
+			: FastMath.asin((angle / footLength));
+	}
+
+	// returns the weight for floor plant
+	private float getFootPlantWeight(Vector3f footPos) {
+		float weight = (footPos.y - floorLevel > ROTATION_CORRECTION_VERTICAL)
+			? 0.0f
+			: 1.0f - ((footPos.y - floorLevel) / ROTATION_CORRECTION_VERTICAL);
+		return FastMath.clamp(weight, 0.0f, 1.0f);
+	}
+
 	// returns true if it is likely the user is standing
 	public boolean isStanding() {
 		// if the waist is below the vertical cutoff, user is not standing
@@ -764,7 +974,7 @@ public class LegTweaks {
 
 		if (waistPosition.getY() < cutoff) {
 			currentDisengagementOffset = (1 - waistPosition.getY() / cutoff)
-				* MAX_DISENGAGMENT_OFFSET;
+				* MAX_DISENGAGEMENT_OFFSET;
 
 			return false;
 		}
@@ -780,7 +990,7 @@ public class LegTweaks {
 		Vector3 leftWaist = waistPosition;
 		Vector3 rightWaist = waistPosition;
 
-		// before moveing the knees back closer to the waist nodes offset them
+		// before moving the knees back closer to the waist nodes, offset them
 		// the same amount the foot trackers where offset
 		float leftXDif = leftFootPosition.getX() - bufferHead.getLeftFootPosition().getX();
 		float rightXDif = rightFootPosition.getX() - bufferHead.getRightFootPosition().getX();
@@ -895,7 +1105,7 @@ public class LegTweaks {
 			centerOfMass = centerOfMass.plus(leftForearm.times(FOREARM_MASS));
 			centerOfMass = centerOfMass.plus(rightForearm.times(FOREARM_MASS));
 		} else {
-			// if the arms are not avaliable put them slightly in front
+			// if the arms are not available put them slightly in front
 			// of the chest.
 			Vector3 chestUnitVector = computeUnitVector(
 				skeleton.chestNode.getWorldTransform().getRotation()
@@ -957,6 +1167,31 @@ public class LegTweaks {
 			rightFramesLocked = 0;
 			rightFramesUnlocked++;
 		}
+	}
+
+	// remove the x and z components of the given quaternion
+	private Quaternion isolateYaw(Quaternion quaternion) {
+		return new Quaternion(
+			0,
+			quaternion.getY(),
+			0,
+			quaternion.getW()
+		);
+	}
+
+	// return a quaternion that has been rotated by the new pitch amount
+	private Quaternion replacePitch(Quaternion quaternion, float newPitch) {
+		// first get the axis of the current pitch
+		Vector3f currentPitchAxis = quaternion.getRotationColumn(0).normalize();
+
+		// then get the current pitch
+		float currentPitch = (float) Math.asin(currentPitchAxis.y);
+
+		// then add the new pitch
+		Quaternion newQuat = new Quaternion();
+		newQuat.fromAngleAxis(newPitch + currentPitch, currentPitchAxis);
+
+		return newQuat.mult(quaternion);
 	}
 
 	// check if the difference between two floats flipped after correction

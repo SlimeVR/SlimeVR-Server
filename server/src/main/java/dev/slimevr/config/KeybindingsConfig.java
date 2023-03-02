@@ -2,55 +2,55 @@ package dev.slimevr.config;
 
 public class KeybindingsConfig {
 
-	private String resetBinding = "CTRL+ALT+SHIFT+Y";
+	private String fullResetBinding = "CTRL+ALT+SHIFT+Y";
 
-	private String quickResetBinding = "CTRL+ALT+SHIFT+U";
+	private String yawResetBinding = "CTRL+ALT+SHIFT+U";
 
-	private String resetMountingBinding = "CTRL+ALT+SHIFT+I";
+	private String mountingResetBinding = "CTRL+ALT+SHIFT+I";
 
-	private long resetDelay = 0L;
+	private long fullResetDelay = 0L;
 
-	private long quickResetDelay = 0L;
+	private long yawResetDelay = 0L;
 
-	private long resetMountingDelay = 0L;
+	private long mountingResetDelay = 0L;
 
 
 	public KeybindingsConfig() {
 	}
 
-	public String getResetBinding() {
-		return resetBinding;
+	public String getFullResetBinding() {
+		return fullResetBinding;
 	}
 
-	public String getQuickResetBinding() {
-		return quickResetBinding;
+	public String getYawResetBinding() {
+		return yawResetBinding;
 	}
 
-	public String getResetMountingBinding() {
-		return resetMountingBinding;
+	public String getMountingResetBinding() {
+		return mountingResetBinding;
 	}
 
-	public long getResetDelay() {
-		return resetDelay;
+	public long getFullResetDelay() {
+		return fullResetDelay;
 	}
 
-	public void setResetDelay(long delay) {
-		resetDelay = delay;
+	public void setFullResetDelay(long delay) {
+		fullResetDelay = delay;
 	}
 
-	public long getQuickResetDelay() {
-		return quickResetDelay;
+	public long getYawResetDelay() {
+		return yawResetDelay;
 	}
 
-	public void setQuickResetDelay(long delay) {
-		quickResetDelay = delay;
+	public void setYawResetDelay(long delay) {
+		yawResetDelay = delay;
 	}
 
-	public long getResetMountingDelay() {
-		return resetMountingDelay;
+	public long getMountingResetDelay() {
+		return mountingResetDelay;
 	}
 
-	public void setResetMountingDelay(long delay) {
-		resetMountingDelay = delay;
+	public void setMountingResetDelay(long delay) {
+		mountingResetDelay = delay;
 	}
 }

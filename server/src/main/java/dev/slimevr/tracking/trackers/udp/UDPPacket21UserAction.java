@@ -6,7 +6,7 @@ import java.nio.ByteBuffer;
 
 public class UDPPacket21UserAction extends UDPPacket {
 
-	public static final int RESET = 2;
+	public static final int RESET_FULL = 2;
 	public static final int RESET_YAW = 3;
 	public static final int RESET_MOUNTING = 4;
 

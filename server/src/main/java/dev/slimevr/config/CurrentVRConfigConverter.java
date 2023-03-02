@@ -175,6 +175,32 @@ public class CurrentVRConfigConverter implements VersionedModelConverter {
 				}
 			}
 		}
+		if (version < 8) {
+			// reset > fullReset, quickReset > yawReset
+			ObjectNode keybindingsNode = (ObjectNode) modelData.get("keybindings");
+			if (keybindingsNode != null) {
+				keybindingsNode.set("fullResetBinding", keybindingsNode.get("resetBinding"));
+				keybindingsNode.set("yawResetBinding", keybindingsNode.get("quickResetBinding"));
+				keybindingsNode
+					.set("mountingResetBinding", keybindingsNode.get("resetMountingBinding"));
+				if (keybindingsNode.get("resetDelay") != null) {
+					keybindingsNode.set("fullResetDelay", keybindingsNode.get("resetDelay"));
+					keybindingsNode.set("yawResetDelay", keybindingsNode.get("quickResetDelay"));
+					keybindingsNode
+						.set("mountingResetDelay", keybindingsNode.get("resetMountingDelay"));
+				}
+			}
+
+			ObjectNode tapDetectionNode = (ObjectNode) modelData.get("tapDetection");
+			if (tapDetectionNode != null) {
+				tapDetectionNode.set("yawResetDelay", tapDetectionNode.get("quickResetDelay"));
+				tapDetectionNode.set("fullResetDelay", tapDetectionNode.get("resetDelay"));
+				tapDetectionNode.set("yawResetEnabled", tapDetectionNode.get("quickResetEnabled"));
+				tapDetectionNode.set("fullResetEnabled", tapDetectionNode.get("resetEnabled"));
+				tapDetectionNode.set("yawResetTaps", tapDetectionNode.get("quickResetTaps"));
+				tapDetectionNode.set("fullResetTaps", tapDetectionNode.get("resetTaps"));
+			}
+		}
 
 		return modelData;
 	}

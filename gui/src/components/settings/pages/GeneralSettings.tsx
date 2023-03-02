@@ -54,17 +54,19 @@ interface SettingsForm {
     floorClip: boolean;
     skatingCorrection: boolean;
     viveEmulation: boolean;
+    toeSnap: boolean;
+    footPlant: boolean;
   };
   tapDetection: {
-    tapMountingResetEnabled: boolean;
-    tapQuickResetEnabled: boolean;
-    tapResetEnabled: boolean;
-    tapQuickResetDelay: number;
-    tapResetDelay: number;
-    tapMountingResetDelay: number;
-    tapQuickResetTaps: number;
-    tapResetTaps: number;
-    tapMountingResetTaps: number;
+    mountingResetEnabled: boolean;
+    yawResetEnabled: boolean;
+    fullResetEnabled: boolean;
+    yawResetDelay: number;
+    fullResetDelay: number;
+    mountingResetDelay: number;
+    yawResetTaps: number;
+    fullResetTaps: number;
+    mountingResetTaps: number;
   };
   legTweaks: {
     correctionStrength: number;
@@ -92,6 +94,8 @@ const defaultValues = {
     floorClip: false,
     skatingCorrection: false,
     viveEmulation: false,
+    toeSnap: false,
+    flootPlant: true,
   },
   filtering: { amount: 0.1, type: FilteringType.NONE },
   driftCompensation: {
@@ -100,15 +104,15 @@ const defaultValues = {
     maxResets: 1,
   },
   tapDetection: {
-    tapMountingResetEnabled: false,
-    tapQuickResetEnabled: false,
-    tapResetEnabled: false,
-    tapQuickResetDelay: 0.2,
-    tapResetDelay: 1.0,
-    tapMountingResetDelay: 1.0,
-    tapQuickResetTaps: 2,
-    tapResetTaps: 3,
-    tapMountingResetTaps: 3,
+    mountingResetEnabled: false,
+    yawResetEnabled: false,
+    fullResetEnabled: false,
+    yawResetDelay: 0.2,
+    fullResetDelay: 1.0,
+    mountingResetDelay: 1.0,
+    yawResetTaps: 2,
+    fullResetTaps: 3,
+    mountingResetTaps: 3,
   },
   legTweaks: { correctionStrength: 0.3 },
   interface: { devmode: false, watchNewDevices: true },
@@ -149,6 +153,8 @@ export function GeneralSettings() {
     toggles.extendedSpine = values.toggles.extendedSpine;
     toggles.forceArmsFromHmd = values.toggles.forceArmsFromHmd;
     toggles.viveEmulation = values.toggles.viveEmulation;
+    toggles.toeSnap = values.toggles.toeSnap;
+    toggles.footPlant = values.toggles.footPlant;
     legTweaks.correctionStrength = values.legTweaks.correctionStrength;
 
     modelSettings.toggles = toggles;
@@ -156,19 +162,16 @@ export function GeneralSettings() {
     settings.modelSettings = modelSettings;
 
     const tapDetection = new TapDetectionSettingsT();
-    tapDetection.tapResetDelay = values.tapDetection.tapResetDelay;
-    tapDetection.tapResetEnabled = values.tapDetection.tapResetEnabled;
-    tapDetection.tapResetTaps = values.tapDetection.tapResetTaps;
-    tapDetection.tapQuickResetDelay = values.tapDetection.tapQuickResetDelay;
-    tapDetection.tapQuickResetEnabled =
-      values.tapDetection.tapQuickResetEnabled;
-    tapDetection.tapQuickResetTaps = values.tapDetection.tapQuickResetTaps;
-    tapDetection.tapMountingResetEnabled =
-      values.tapDetection.tapMountingResetEnabled;
-    tapDetection.tapMountingResetDelay =
-      values.tapDetection.tapMountingResetDelay;
-    tapDetection.tapMountingResetTaps =
-      values.tapDetection.tapMountingResetTaps;
+    tapDetection.fullResetDelay = values.tapDetection.fullResetDelay;
+    tapDetection.fullResetEnabled = values.tapDetection.fullResetEnabled;
+    tapDetection.fullResetTaps = values.tapDetection.fullResetTaps;
+    tapDetection.yawResetDelay = values.tapDetection.yawResetDelay;
+    tapDetection.yawResetEnabled = values.tapDetection.yawResetEnabled;
+    tapDetection.yawResetTaps = values.tapDetection.yawResetTaps;
+    tapDetection.mountingResetEnabled =
+      values.tapDetection.mountingResetEnabled;
+    tapDetection.mountingResetDelay = values.tapDetection.mountingResetDelay;
+    tapDetection.mountingResetTaps = values.tapDetection.mountingResetTaps;
     settings.tapDetectionSettings = tapDetection;
 
     const filtering = new FilteringSettingsT();
@@ -234,33 +237,33 @@ export function GeneralSettings() {
 
     if (settings.tapDetectionSettings) {
       formData.tapDetection = {
-        tapQuickResetEnabled:
-          settings.tapDetectionSettings.tapQuickResetEnabled ||
-          defaultValues.tapDetection.tapQuickResetEnabled,
-        tapResetEnabled:
-          settings.tapDetectionSettings.tapResetEnabled ||
-          defaultValues.tapDetection.tapResetEnabled,
-        tapMountingResetEnabled:
-          settings.tapDetectionSettings.tapMountingResetEnabled ||
-          defaultValues.tapDetection.tapMountingResetEnabled,
-        tapQuickResetDelay:
-          settings.tapDetectionSettings.tapQuickResetDelay ||
-          defaultValues.tapDetection.tapQuickResetDelay,
-        tapResetDelay:
-          settings.tapDetectionSettings.tapResetDelay ||
-          defaultValues.tapDetection.tapResetDelay,
-        tapMountingResetDelay:
-          settings.tapDetectionSettings.tapMountingResetDelay ||
-          defaultValues.tapDetection.tapMountingResetDelay,
-        tapQuickResetTaps:
-          settings.tapDetectionSettings.tapQuickResetTaps ||
-          defaultValues.tapDetection.tapQuickResetTaps,
-        tapResetTaps:
-          settings.tapDetectionSettings.tapResetTaps ||
-          defaultValues.tapDetection.tapResetTaps,
-        tapMountingResetTaps:
-          settings.tapDetectionSettings.tapMountingResetTaps ||
-          defaultValues.tapDetection.tapMountingResetTaps,
+        yawResetEnabled:
+          settings.tapDetectionSettings.yawResetEnabled ||
+          defaultValues.tapDetection.yawResetEnabled,
+        fullResetEnabled:
+          settings.tapDetectionSettings.fullResetEnabled ||
+          defaultValues.tapDetection.fullResetEnabled,
+        mountingResetEnabled:
+          settings.tapDetectionSettings.mountingResetEnabled ||
+          defaultValues.tapDetection.mountingResetEnabled,
+        yawResetDelay:
+          settings.tapDetectionSettings.yawResetDelay ||
+          defaultValues.tapDetection.yawResetDelay,
+        fullResetDelay:
+          settings.tapDetectionSettings.fullResetDelay ||
+          defaultValues.tapDetection.fullResetDelay,
+        mountingResetDelay:
+          settings.tapDetectionSettings.mountingResetDelay ||
+          defaultValues.tapDetection.mountingResetDelay,
+        yawResetTaps:
+          settings.tapDetectionSettings.yawResetTaps ||
+          defaultValues.tapDetection.yawResetTaps,
+        fullResetTaps:
+          settings.tapDetectionSettings.fullResetTaps ||
+          defaultValues.tapDetection.fullResetTaps,
+        mountingResetTaps:
+          settings.tapDetectionSettings.mountingResetTaps ||
+          defaultValues.tapDetection.mountingResetTaps,
       };
     }
 
@@ -485,26 +488,19 @@ export function GeneralSettings() {
           <Typography variant="main-title">
             {l10n.getString('settings-general-fk_settings')}
           </Typography>
-          <Typography bold>
-            {l10n.getString('settings-general-fk_settings-leg_tweak')}
-          </Typography>
           <div className="flex flex-col pt-2 pb-4">
+            <Typography bold>
+              {l10n.getString(
+                'settings-general-fk_settings-leg_tweak-skating_correction'
+              )}
+            </Typography>
             <Typography color="secondary">
               {l10n.getString(
-                'settings-general-fk_settings-leg_tweak-description'
+                'settings-general-fk_settings-leg_tweak-skating_correction-description'
               )}
             </Typography>
           </div>
-          <div className="grid sm:grid-cols-2 gap-3 pb-5">
-            <CheckBox
-              variant="toggle"
-              outlined
-              control={control}
-              name="toggles.floorClip"
-              label={l10n.getString(
-                'settings-general-fk_settings-leg_tweak-floor_clip'
-              )}
-            />
+          <div className="grid sm:grid-cols-1 gap-3 pb-4">
             <CheckBox
               variant="toggle"
               outlined
@@ -514,8 +510,6 @@ export function GeneralSettings() {
                 'settings-general-fk_settings-leg_tweak-skating_correction'
               )}
             />
-          </div>
-          <div className="flex sm:grid cols-1 gap3 pb-5">
             <NumberSelector
               control={control}
               name="legTweaks.correctionStrength"
@@ -528,17 +522,78 @@ export function GeneralSettings() {
               step={0.1}
             />
           </div>
-          <Typography bold>
-            {l10n.getString('settings-general-fk_settings-arm_fk')}
-          </Typography>
-          <div className="flex flex-col pt-2 pb-4">
+
+          <div className="flex flex-col pt-2 pb-2">
+            <Typography bold>
+              {l10n.getString('settings-general-fk_settings-leg_fk')}
+            </Typography>
+          </div>
+          <div className="grid sm:grid-cols-1 gap-3 pb-3">
+            <Typography color="secondary">
+              {l10n.getString(
+                'settings-general-fk_settings-leg_tweak-floor_clip-description'
+              )}
+            </Typography>
+          </div>
+          <div className="grid sm:grid-cols-1 gap-3 pb-3">
+            <CheckBox
+              variant="toggle"
+              outlined
+              control={control}
+              name="toggles.floorClip"
+              label={l10n.getString(
+                'settings-general-fk_settings-leg_tweak-floor_clip'
+              )}
+            />
+          </div>
+          <div className="flex flex-col pt-2 pb-3">
+            <Typography color="secondary">
+              {l10n.getString(
+                'settings-general-fk_settings-leg_tweak-foot_plant-description'
+              )}
+            </Typography>
+          </div>
+          <div className="grid sm:grid-cols-1 gap-3 pb-3">
+            <CheckBox
+              variant="toggle"
+              outlined
+              control={control}
+              name="toggles.footPlant"
+              label={l10n.getString(
+                'settings-general-fk_settings-leg_tweak-foot_plant'
+              )}
+            />
+          </div>
+          <div className="flex flex-col pt-2 pb-3">
+            <Typography color="secondary">
+              {l10n.getString(
+                'settings-general-fk_settings-leg_tweak-toe_snap-description'
+              )}
+            </Typography>
+          </div>
+          <div className="grid sm:grid-cols-1 gap-3 pb-3">
+            <CheckBox
+              variant="toggle"
+              outlined
+              control={control}
+              name="toggles.toeSnap"
+              label={l10n.getString(
+                'settings-general-fk_settings-leg_tweak-toe_snap'
+              )}
+            />
+          </div>
+
+          <div className="flex flex-col pt-2 pb-3">
+            <Typography bold>
+              {l10n.getString('settings-general-fk_settings-arm_fk')}
+            </Typography>
             <Typography color="secondary">
               {l10n.getString(
                 'settings-general-fk_settings-arm_fk-description'
               )}
             </Typography>
           </div>
-          <div className="grid sm:grid-cols-2 pb-5">
+          <div className="grid sm:grid-cols-1 pb-3">
             <CheckBox
               variant="toggle"
               outlined
@@ -551,19 +606,19 @@ export function GeneralSettings() {
           </div>
           {config?.debug && (
             <>
-              <Typography bold>
-                {l10n.getString(
-                  'settings-general-fk_settings-skeleton_settings'
-                )}
-              </Typography>
-              <div className="flex flex-col pt-2 pb-4">
+              <div className="flex flex-col pt-2 pb-3">
+                <Typography bold>
+                  {l10n.getString(
+                    'settings-general-fk_settings-skeleton_settings'
+                  )}
+                </Typography>
                 <Typography color="secondary">
                   {l10n.getString(
                     'settings-general-fk_settings-skeleton_settings-description'
                   )}
                 </Typography>
               </div>
-              <div className="grid sm:grid-cols-2 gap-3 pb-5">
+              <div className="grid sm:grid-cols-2 gap-3 pb-3">
                 <CheckBox
                   variant="toggle"
                   outlined
@@ -592,19 +647,19 @@ export function GeneralSettings() {
                   )}
                 />
               </div>
-              <Typography bold>
-                {l10n.getString(
-                  'settings-general-fk_settings-vive_emulation-title'
-                )}
-              </Typography>
-              <div className="flex flex-col pt-2 pb-4">
+              <div className="flex flex-col pt-2 pb-3">
+                <Typography bold>
+                  {l10n.getString(
+                    'settings-general-fk_settings-vive_emulation-title'
+                  )}
+                </Typography>
                 <Typography color="secondary">
                   {l10n.getString(
                     'settings-general-fk_settings-vive_emulation-description'
                   )}
                 </Typography>
               </div>
-              <div className="grid sm:grid-cols-2 gap-3 pb-5">
+              <div className="grid sm:grid-cols-1 gap-3 pb-5">
                 <CheckBox
                   variant="toggle"
                   outlined
@@ -638,25 +693,25 @@ export function GeneralSettings() {
               variant="toggle"
               outlined
               control={control}
-              name="tapDetection.tapQuickResetEnabled"
+              name="tapDetection.yawResetEnabled"
               label={l10n.getString(
-                'settings-general-gesture_control-quickResetEnabled'
+                'settings-general-gesture_control-yawResetEnabled'
               )}
             />
             <CheckBox
               variant="toggle"
               outlined
               control={control}
-              name="tapDetection.tapResetEnabled"
+              name="tapDetection.fullResetEnabled"
               label={l10n.getString(
-                'settings-general-gesture_control-resetEnabled'
+                'settings-general-gesture_control-fullResetEnabled'
               )}
             />
             <CheckBox
               variant="toggle"
               outlined
               control={control}
-              name="tapDetection.tapMountingResetEnabled"
+              name="tapDetection.mountingResetEnabled"
               label={l10n.getString(
                 'settings-general-gesture_control-mountingResetEnabled'
               )}
@@ -665,9 +720,9 @@ export function GeneralSettings() {
           <div className="grid sm:grid-cols-3 gap-5 pb-2">
             <NumberSelector
               control={control}
-              name="tapDetection.tapQuickResetDelay"
+              name="tapDetection.yawResetDelay"
               label={l10n.getString(
-                'settings-general-gesture_control-quickResetDelay'
+                'settings-general-gesture_control-yawResetDelay'
               )}
               valueLabelFormat={(value) => `${Math.round(value * 10) / 10} s`}
               min={0.2}
@@ -676,9 +731,9 @@ export function GeneralSettings() {
             />
             <NumberSelector
               control={control}
-              name="tapDetection.tapResetDelay"
+              name="tapDetection.fullResetDelay"
               label={l10n.getString(
-                'settings-general-gesture_control-resetDelay'
+                'settings-general-gesture_control-fullResetDelay'
               )}
               valueLabelFormat={(value) => `${Math.round(value * 10) / 10} s`}
               min={0.2}
@@ -687,7 +742,7 @@ export function GeneralSettings() {
             />
             <NumberSelector
               control={control}
-              name="tapDetection.tapMountingResetDelay"
+              name="tapDetection.mountingResetDelay"
               label={l10n.getString(
                 'settings-general-gesture_control-mountingResetDelay'
               )}
@@ -700,9 +755,9 @@ export function GeneralSettings() {
           <div className="grid sm:grid-cols-3 gap-5 pb-2">
             <NumberSelector
               control={control}
-              name="tapDetection.tapQuickResetTaps"
+              name="tapDetection.yawResetTaps"
               label={l10n.getString(
-                'settings-general-gesture_control-quickResetTaps'
+                'settings-general-gesture_control-yawResetTaps'
               )}
               valueLabelFormat={(value) =>
                 l10n.getString('settings-general-gesture_control-taps', {
@@ -715,9 +770,9 @@ export function GeneralSettings() {
             />
             <NumberSelector
               control={control}
-              name="tapDetection.tapResetTaps"
+              name="tapDetection.fullResetTaps"
               label={l10n.getString(
-                'settings-general-gesture_control-resetTaps'
+                'settings-general-gesture_control-fullResetTaps'
               )}
               valueLabelFormat={(value) =>
                 l10n.getString('settings-general-gesture_control-taps', {
@@ -730,7 +785,7 @@ export function GeneralSettings() {
             />
             <NumberSelector
               control={control}
-              name="tapDetection.tapMountingResetTaps"
+              name="tapDetection.mountingResetTaps"
               label={l10n.getString(
                 'settings-general-gesture_control-mountingResetTaps'
               )}

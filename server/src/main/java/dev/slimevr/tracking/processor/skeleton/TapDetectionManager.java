@@ -18,19 +18,19 @@ public class TapDetectionManager {
 	private TapDetectionConfig config;
 
 	// tap detectors
-	private TapDetection quickResetDetector;
-	private TapDetection resetDetector;
+	private TapDetection yawResetDetector;
+	private TapDetection fullResetDetector;
 	private TapDetection mountingResetDetector;
 
 	// number of taps to detect
-	private int quickResetTaps = 2;
-	private int resetTaps = 3;
+	private int yawResetTaps = 2;
+	private int fullResetTaps = 3;
 	private int mountingResetTaps = 3;
 
 	// delay
 	private static final float NS_CONVERTER = 1.0e9f;
-	private float resetDelayNs = 0.20f * NS_CONVERTER;
-	private float quickResetDelayNs = 1.00f * NS_CONVERTER;
+	private float fullResetDelayNs = 0.20f * NS_CONVERTER;
+	private float yawResetDelayNs = 1.00f * NS_CONVERTER;
 	private float mountingResetDelayNs = 1.00f * NS_CONVERTER;
 
 	public TapDetectionManager(HumanSkeleton skeleton) {
@@ -46,17 +46,17 @@ public class TapDetectionManager {
 		this.humanPoseManager = humanPoseManager;
 		this.config = config;
 
-		quickResetDetector = new TapDetection(skeleton, getTrackerToWatchQuickReset());
-		resetDetector = new TapDetection(skeleton, getTrackerToWatchReset());
+		yawResetDetector = new TapDetection(skeleton, getTrackerToWatchYawReset());
+		fullResetDetector = new TapDetection(skeleton, getTrackerToWatchFullReset());
 		mountingResetDetector = new TapDetection(skeleton, getTrackerToWatchMountingReset());
 
 		// since this config value is only modified by editing the config file,
 		// we can set it here
-		quickResetDetector
+		yawResetDetector
 			.setNumberTrackersOverThreshold(
 				config.getNumberTrackersOverThreshold()
 			);
-		resetDetector
+		fullResetDetector
 			.setNumberTrackersOverThreshold(
 				config.getNumberTrackersOverThreshold()
 			);
@@ -69,59 +69,59 @@ public class TapDetectionManager {
 	}
 
 	public void updateConfig() {
-		this.quickResetDelayNs = config.getQuickResetDelay() * NS_CONVERTER;
-		this.resetDelayNs = config.getResetDelay() * NS_CONVERTER;
+		this.yawResetDelayNs = config.getYawResetDelay() * NS_CONVERTER;
+		this.fullResetDelayNs = config.getFullResetDelay() * NS_CONVERTER;
 		this.mountingResetDelayNs = config.getMountingResetDelay() * NS_CONVERTER;
-		quickResetDetector.setEnabled(config.getQuickResetEnabled());
-		resetDetector.setEnabled(config.getResetEnabled());
+		yawResetDetector.setEnabled(config.getYawResetEnabled());
+		fullResetDetector.setEnabled(config.getFullResetEnabled());
 		mountingResetDetector.setEnabled(config.getMountingResetEnabled());
-		quickResetTaps = config.getQuickResetTaps();
-		resetTaps = config.getResetTaps();
+		yawResetTaps = config.getYawResetTaps();
+		fullResetTaps = config.getFullResetTaps();
 		mountingResetTaps = config.getMountingResetTaps();
-		quickResetDetector.setMaxTaps(quickResetTaps);
-		resetDetector.setMaxTaps(resetTaps);
+		yawResetDetector.setMaxTaps(yawResetTaps);
+		fullResetDetector.setMaxTaps(fullResetTaps);
 		mountingResetDetector.setMaxTaps(mountingResetTaps);
 	}
 
 	public void update() {
-		if (quickResetDetector == null || resetDetector == null || mountingResetDetector == null)
+		if (yawResetDetector == null || fullResetDetector == null || mountingResetDetector == null)
 			return;
 		// update the tap detectors
-		quickResetDetector.update();
-		resetDetector.update();
+		yawResetDetector.update();
+		fullResetDetector.update();
 		mountingResetDetector.update();
 
 		// check if any tap detectors have detected taps
-		checkQuickReset();
-		checkReset();
+		checkYawReset();
+		checkFullReset();
 		checkMountingReset();
 	}
 
-	private void checkQuickReset() {
-		boolean tapped = (quickResetTaps <= quickResetDetector.getTaps());
+	private void checkYawReset() {
+		boolean tapped = (yawResetTaps <= yawResetDetector.getTaps());
 
 		if (
-			tapped && System.nanoTime() - quickResetDetector.getDetectionTime() > quickResetDelayNs
+			tapped && System.nanoTime() - yawResetDetector.getDetectionTime() > yawResetDelayNs
 		) {
 			if (humanPoseManager != null)
 				humanPoseManager.resetTrackersYaw(resetSourceName);
 			else
 				skeleton.resetTrackersYaw(resetSourceName);
-			quickResetDetector.resetDetector();
+			yawResetDetector.resetDetector();
 		}
 	}
 
-	private void checkReset() {
-		boolean tapped = (resetTaps <= resetDetector.getTaps());
+	private void checkFullReset() {
+		boolean tapped = (fullResetTaps <= fullResetDetector.getTaps());
 
 		if (
-			tapped && System.nanoTime() - resetDetector.getDetectionTime() > resetDelayNs
+			tapped && System.nanoTime() - fullResetDetector.getDetectionTime() > fullResetDelayNs
 		) {
 			if (humanPoseManager != null)
 				humanPoseManager.resetTrackersFull(resetSourceName);
 			else
 				skeleton.resetTrackersFull(resetSourceName);
-			resetDetector.resetDetector();
+			fullResetDetector.resetDetector();
 		}
 	}
 
@@ -141,7 +141,7 @@ public class TapDetectionManager {
 	// returns either the chest tracker, hip tracker, or waist tracker depending
 	// on which one is available
 	// if none are available, returns null
-	private Tracker getTrackerToWatchQuickReset() {
+	private Tracker getTrackerToWatchYawReset() {
 		if (skeleton.chestTracker != null)
 			return skeleton.chestTracker;
 		else if (skeleton.hipTracker != null)
@@ -152,7 +152,7 @@ public class TapDetectionManager {
 			return null;
 	}
 
-	private Tracker getTrackerToWatchReset() {
+	private Tracker getTrackerToWatchFullReset() {
 		if (skeleton.leftUpperLegTracker != null)
 			return skeleton.leftUpperLegTracker;
 		else if (skeleton.leftLowerLegTracker != null)

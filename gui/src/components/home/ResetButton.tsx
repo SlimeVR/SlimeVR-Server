@@ -7,8 +7,8 @@ import { BigButton } from '../commons/BigButton';
 import { Button } from '../commons/Button';
 import {
   MountingResetIcon,
-  QuickResetIcon,
-  ResetIcon,
+  YawResetIcon,
+  FullResetIcon,
 } from '../commons/icon/ResetIcon';
 
 export function ResetButton({
@@ -38,8 +38,8 @@ export function ResetButton({
 
   const text = useMemo(() => {
     switch (type) {
-      case ResetType.Quick:
-        return l10n.getString('reset-quick');
+      case ResetType.Yaw:
+        return l10n.getString('reset-yaw');
       case ResetType.Mounting:
         return l10n.getString('reset-mounting');
       case ResetType.Full:
@@ -50,17 +50,17 @@ export function ResetButton({
 
   const getIcon = () => {
     switch (type) {
-      case ResetType.Quick:
-        return <QuickResetIcon width={20} />;
+      case ResetType.Yaw:
+        return <YawResetIcon width={20} />;
       case ResetType.Mounting:
         return <MountingResetIcon width={20} />;
     }
-    return <ResetIcon width={20} />;
+    return <FullResetIcon width={20} />;
   };
 
   const variantsMap = {
     small:
-      type == ResetType.Quick ? (
+      type == ResetType.Yaw ? (
         <Button icon={getIcon()} onClick={reset} variant="primary">
           {text}
         </Button>
@@ -78,7 +78,7 @@ export function ResetButton({
         </Button>
       ),
     big:
-      type == ResetType.Quick ? (
+      type == ResetType.Yaw ? (
         <BigButton text={text} icon={getIcon()} onClick={reset}></BigButton>
       ) : (
         <BigButton

@@ -133,12 +133,12 @@ public class RPCSettingsBuilder {
 		return TapDetectionSettings
 			.createTapDetectionSettings(
 				fbb,
-				tapDetectionConfig.getResetDelay(),
-				tapDetectionConfig.getResetEnabled(),
-				tapDetectionConfig.getResetTaps(),
-				tapDetectionConfig.getQuickResetDelay(),
-				tapDetectionConfig.getQuickResetEnabled(),
-				tapDetectionConfig.getQuickResetTaps(),
+				tapDetectionConfig.getFullResetDelay(),
+				tapDetectionConfig.getFullResetEnabled(),
+				tapDetectionConfig.getFullResetTaps(),
+				tapDetectionConfig.getYawResetDelay(),
+				tapDetectionConfig.getYawResetEnabled(),
+				tapDetectionConfig.getYawResetTaps(),
 				tapDetectionConfig.getMountingResetDelay(),
 				tapDetectionConfig.getMountingResetEnabled(),
 				tapDetectionConfig.getMountingResetTaps(),
@@ -181,7 +181,9 @@ public class RPCSettingsBuilder {
 				humanPoseManager.getToggle(SkeletonConfigToggles.FORCE_ARMS_FROM_HMD),
 				humanPoseManager.getToggle(SkeletonConfigToggles.FLOOR_CLIP),
 				humanPoseManager.getToggle(SkeletonConfigToggles.SKATING_CORRECTION),
-				humanPoseManager.getToggle(SkeletonConfigToggles.VIVE_EMULATION)
+				humanPoseManager.getToggle(SkeletonConfigToggles.VIVE_EMULATION),
+				humanPoseManager.getToggle(SkeletonConfigToggles.TOE_SNAP),
+				humanPoseManager.getToggle(SkeletonConfigToggles.FOOT_PLANT)
 			);
 		int ratiosOffset = ModelRatios
 			.createModelRatios(

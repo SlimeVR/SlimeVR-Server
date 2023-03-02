@@ -14,7 +14,7 @@ import java.util.Map;
 
 
 @JsonVersionedModel(
-	currentVersion = "7", defaultDeserializeToVersion = "7", toCurrentConverterClass = CurrentVRConfigConverter.class
+	currentVersion = "8", defaultDeserializeToVersion = "8", toCurrentConverterClass = CurrentVRConfigConverter.class
 )
 public class VRConfig {
 
@@ -30,7 +30,7 @@ public class VRConfig {
 
 	private final VMCConfig vmc = new VMCConfig();
 
-	private final AutoBoneConfig autobone = new AutoBoneConfig();
+	private final AutoBoneConfig autoBone = new AutoBoneConfig();
 
 	private final KeybindingsConfig keybindings = new KeybindingsConfig();
 
@@ -105,7 +105,7 @@ public class VRConfig {
 	}
 
 	public AutoBoneConfig getAutoBone() {
-		return autobone;
+		return autoBone;
 	}
 
 	public KeybindingsConfig getKeybindings() {
