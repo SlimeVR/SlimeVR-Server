@@ -28,9 +28,7 @@ const PATH = path.join(
 const langs = fs.readdirSync(PATH).filter((x) => x !== 'en');
 const en = new FluentBundle('en');
 const enErrors = en.addResource(
-  new FluentResource(
-    fs.readFileSync(path.join(PATH, 'en/translation.ftl'), 'utf-8')
-  )
+  new FluentResource(fs.readFileSync(path.join(PATH, 'en/translation.ftl'), 'utf-8'))
 );
 if (enErrors.length) {
   for (const error of enErrors) {

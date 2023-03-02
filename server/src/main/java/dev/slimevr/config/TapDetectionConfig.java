@@ -8,31 +8,31 @@ import com.jme3.math.FastMath;
 // for each reset type
 public class TapDetectionConfig {
 
-	private float quickResetDelay = 0.2f;
-	private float resetDelay = 1.0f;
+	private float yawResetDelay = 0.2f;
+	private float fullResetDelay = 1.0f;
 	private float mountingResetDelay = 1.0f;
-	private boolean quickResetEnabled = true;
-	private boolean resetEnabled = true;
+	private boolean yawResetEnabled = true;
+	private boolean fullResetEnabled = true;
 	private boolean mountingResetEnabled = true;
-	private int quickResetTaps = 2;
-	private int resetTaps = 3;
+	private int yawResetTaps = 2;
+	private int fullResetTaps = 3;
 	private int mountingResetTaps = 3;
 	private int numberTrackersOverThreshold = 1;
 
-	public float getQuickResetDelay() {
-		return quickResetDelay;
+	public float getYawResetDelay() {
+		return yawResetDelay;
 	}
 
-	public void setQuickResetDelay(float quickResetDelay) {
-		this.quickResetDelay = quickResetDelay;
+	public void setYawResetDelay(float yawResetDelay) {
+		this.yawResetDelay = yawResetDelay;
 	}
 
-	public float getResetDelay() {
-		return resetDelay;
+	public float getFullResetDelay() {
+		return fullResetDelay;
 	}
 
-	public void setResetDelay(float resetDelay) {
-		this.resetDelay = resetDelay;
+	public void setFullResetDelay(float fullResetDelay) {
+		this.fullResetDelay = fullResetDelay;
 	}
 
 	public float getMountingResetDelay() {
@@ -43,20 +43,20 @@ public class TapDetectionConfig {
 		this.mountingResetDelay = mountingResetDelay;
 	}
 
-	public boolean getQuickResetEnabled() {
-		return quickResetEnabled;
+	public boolean getYawResetEnabled() {
+		return yawResetEnabled;
 	}
 
-	public void setQuickResetEnabled(boolean quickResetEnabled) {
-		this.quickResetEnabled = quickResetEnabled;
+	public void setYawResetEnabled(boolean yawResetEnabled) {
+		this.yawResetEnabled = yawResetEnabled;
 	}
 
-	public boolean getResetEnabled() {
-		return resetEnabled;
+	public boolean getFullResetEnabled() {
+		return fullResetEnabled;
 	}
 
-	public void setResetEnabled(boolean resetEnabled) {
-		this.resetEnabled = resetEnabled;
+	public void setFullResetEnabled(boolean fullResetEnabled) {
+		this.fullResetEnabled = fullResetEnabled;
 	}
 
 	public boolean getMountingResetEnabled() {
@@ -67,23 +67,23 @@ public class TapDetectionConfig {
 		this.mountingResetEnabled = mountingResetEnabled;
 	}
 
-	public int getQuickResetTaps() {
-		return quickResetTaps;
+	public int getYawResetTaps() {
+		return yawResetTaps;
 	}
 
 	// clamp to 2-3 to prevent errors
-	public void setQuickResetTaps(int quickResetTaps) {
-		this.quickResetTaps = (int) FastMath.clamp(quickResetTaps, 2, 10);
-		this.quickResetTaps = quickResetTaps;
+	public void setYawResetTaps(int yawResetTaps) {
+		this.yawResetTaps = (int) FastMath.clamp(yawResetTaps, 2, 10);
+		this.yawResetTaps = yawResetTaps;
 	}
 
-	public int getResetTaps() {
-		return resetTaps;
+	public int getFullResetTaps() {
+		return fullResetTaps;
 	}
 
-	public void setResetTaps(int resetTaps) {
-		this.resetTaps = (int) FastMath.clamp(resetTaps, 2, 10);
-		this.resetTaps = resetTaps;
+	public void setFullResetTaps(int fullResetTaps) {
+		this.fullResetTaps = (int) FastMath.clamp(fullResetTaps, 2, 10);
+		this.fullResetTaps = fullResetTaps;
 	}
 
 	public int getMountingResetTaps() {

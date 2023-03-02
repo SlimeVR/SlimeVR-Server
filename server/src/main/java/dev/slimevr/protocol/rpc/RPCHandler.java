@@ -198,10 +198,10 @@ public class RPCHandler extends ProtocolHandler<RpcMessageHeader>
 		if (req == null)
 			return;
 
-		if (req.resetType() == ResetType.Quick)
+		if (req.resetType() == ResetType.Yaw)
 			this.api.server.resetTrackersYaw(resetSourceName);
 		if (req.resetType() == ResetType.Full)
-			this.api.server.resetTrackers(resetSourceName);
+			this.api.server.resetTrackersFull(resetSourceName);
 		if (req.resetType() == ResetType.Mounting)
 			this.api.server.resetTrackersMounting(resetSourceName);
 	}
