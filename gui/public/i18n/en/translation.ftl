@@ -272,8 +272,7 @@ settings-general-tracker_mechanics-drift_compensation-max_resets-label = Use up 
 
 ## FK/Tracking settings
 settings-general-fk_settings = Tracking settings
-settings-general-fk_settings-leg_tweak = Leg tweaks
-settings-general-fk_settings-leg_tweak-description = Floor-clip can Reduce or even eliminates clipping with the floor but may cause problems when on your knees. Skating-correction corrects for ice skating, but can decrease accuracy in certain movement patterns.
+
 # Floor clip:
 # why the name - came from the idea of noclip in video games, but is the opposite where clipping to the floor is a desired feature
 # definition - Prevents the foot trackers from going lower than they where when a reset was performed
@@ -283,9 +282,16 @@ settings-general-fk_settings-leg_tweak-floor_clip = Floor clip
 # since this largely prevents this it corrects for it hence skating correction (note this may be renamed to sliding correction)
 # definition - Guesses when each foot is in contact with the ground and uses that information to improve tracking
 settings-general-fk_settings-leg_tweak-skating_correction = Skating correction
+settings-general-fk_settings-leg_tweak-toe_snap = Toe snap
+settings-general-fk_settings-leg_tweak-foot_plant = Foot plant
 settings-general-fk_settings-leg_tweak-skating_correction-amount = Skating correction strength
+settings-general-fk_settings-leg_tweak-skating_correction-description = Skating-correction corrects for ice skating but can decrease accuracy in certain movement patterns. When enabling this make sure to full reset and recalibrate in game.
+settings-general-fk_settings-leg_tweak-floor_clip-description = Floor-clip can Reduce or even eliminates clipping through the floor. When enabling this, make sure to full reset and recalibrate in game.
+settings-general-fk_settings-leg_tweak-toe_snap-description = Toe-snap attempts to guess the rotation of your feet if feet trackers are not in use.
+settings-general-fk_settings-leg_tweak-foot_plant-description = Foot-plant rotates your feet to be parallel to the ground when in contact.
+settings-general-fk_settings-leg_fk = Leg tracking
 settings-general-fk_settings-arm_fk = Arm tracking
-settings-general-fk_settings-arm_fk-description = Change the way the arms are tracked.
+settings-general-fk_settings-arm_fk-description = Force arms to be tracked from the HMD even if positional hand data is available.
 settings-general-fk_settings-arm_fk-force_arms = Force arms from HMD
 settings-general-fk_settings-skeleton_settings = Skeleton settings
 settings-general-fk_settings-skeleton_settings-description = Toggle skeleton settings on or off. It is recommended to leave these on.

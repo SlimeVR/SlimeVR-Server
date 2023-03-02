@@ -1239,6 +1239,8 @@ public class HumanSkeleton {
 			case SKATING_CORRECTION -> legTweaks.setSkatingReductionEnabled(newValue);
 			case FLOOR_CLIP -> legTweaks.setFloorclipEnabled(newValue);
 			case VIVE_EMULATION -> viveEmulation.setEnabled(newValue);
+			case TOE_SNAP -> legTweaks.setToeSnap(newValue);
+			case FOOT_PLANT -> legTweaks.setFootPlant(newValue);
 		}
 	}
 

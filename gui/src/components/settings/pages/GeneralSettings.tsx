@@ -54,6 +54,8 @@ interface SettingsForm {
     floorClip: boolean;
     skatingCorrection: boolean;
     viveEmulation: boolean;
+    toeSnap: boolean;
+    footPlant: boolean;
   };
   tapDetection: {
     mountingResetEnabled: boolean;
@@ -92,6 +94,8 @@ const defaultValues = {
     floorClip: false,
     skatingCorrection: false,
     viveEmulation: false,
+    toeSnap: false,
+    flootPlant: true,
   },
   filtering: { amount: 0.1, type: FilteringType.NONE },
   driftCompensation: {
@@ -149,6 +153,8 @@ export function GeneralSettings() {
     toggles.extendedSpine = values.toggles.extendedSpine;
     toggles.forceArmsFromHmd = values.toggles.forceArmsFromHmd;
     toggles.viveEmulation = values.toggles.viveEmulation;
+    toggles.toeSnap = values.toggles.toeSnap;
+    toggles.footPlant = values.toggles.footPlant;
     legTweaks.correctionStrength = values.legTweaks.correctionStrength;
 
     modelSettings.toggles = toggles;
@@ -482,26 +488,19 @@ export function GeneralSettings() {
           <Typography variant="main-title">
             {l10n.getString('settings-general-fk_settings')}
           </Typography>
-          <Typography bold>
-            {l10n.getString('settings-general-fk_settings-leg_tweak')}
-          </Typography>
           <div className="flex flex-col pt-2 pb-4">
+            <Typography bold>
+              {l10n.getString(
+                'settings-general-fk_settings-leg_tweak-skating_correction'
+              )}
+            </Typography>
             <Typography color="secondary">
               {l10n.getString(
-                'settings-general-fk_settings-leg_tweak-description'
+                'settings-general-fk_settings-leg_tweak-skating_correction-description'
               )}
             </Typography>
           </div>
-          <div className="grid sm:grid-cols-2 gap-3 pb-5">
-            <CheckBox
-              variant="toggle"
-              outlined
-              control={control}
-              name="toggles.floorClip"
-              label={l10n.getString(
-                'settings-general-fk_settings-leg_tweak-floor_clip'
-              )}
-            />
+          <div className="grid sm:grid-cols-1 gap-3 pb-4">
             <CheckBox
               variant="toggle"
               outlined
@@ -511,8 +510,6 @@ export function GeneralSettings() {
                 'settings-general-fk_settings-leg_tweak-skating_correction'
               )}
             />
-          </div>
-          <div className="flex sm:grid cols-1 gap3 pb-5">
             <NumberSelector
               control={control}
               name="legTweaks.correctionStrength"
@@ -525,17 +522,78 @@ export function GeneralSettings() {
               step={0.1}
             />
           </div>
-          <Typography bold>
-            {l10n.getString('settings-general-fk_settings-arm_fk')}
-          </Typography>
-          <div className="flex flex-col pt-2 pb-4">
+
+          <div className="flex flex-col pt-2 pb-2">
+            <Typography bold>
+              {l10n.getString('settings-general-fk_settings-leg_fk')}
+            </Typography>
+          </div>
+          <div className="grid sm:grid-cols-1 gap-3 pb-3">
+            <Typography color="secondary">
+              {l10n.getString(
+                'settings-general-fk_settings-leg_tweak-floor_clip-description'
+              )}
+            </Typography>
+          </div>
+          <div className="grid sm:grid-cols-1 gap-3 pb-3">
+            <CheckBox
+              variant="toggle"
+              outlined
+              control={control}
+              name="toggles.floorClip"
+              label={l10n.getString(
+                'settings-general-fk_settings-leg_tweak-floor_clip'
+              )}
+            />
+          </div>
+          <div className="flex flex-col pt-2 pb-3">
+            <Typography color="secondary">
+              {l10n.getString(
+                'settings-general-fk_settings-leg_tweak-foot_plant-description'
+              )}
+            </Typography>
+          </div>
+          <div className="grid sm:grid-cols-1 gap-3 pb-3">
+            <CheckBox
+              variant="toggle"
+              outlined
+              control={control}
+              name="toggles.footPlant"
+              label={l10n.getString(
+                'settings-general-fk_settings-leg_tweak-foot_plant'
+              )}
+            />
+          </div>
+          <div className="flex flex-col pt-2 pb-3">
+            <Typography color="secondary">
+              {l10n.getString(
+                'settings-general-fk_settings-leg_tweak-toe_snap-description'
+              )}
+            </Typography>
+          </div>
+          <div className="grid sm:grid-cols-1 gap-3 pb-3">
+            <CheckBox
+              variant="toggle"
+              outlined
+              control={control}
+              name="toggles.toeSnap"
+              label={l10n.getString(
+                'settings-general-fk_settings-leg_tweak-toe_snap'
+              )}
+            />
+          </div>
+
+          <div className="flex flex-col pt-2 pb-3">
+            <Typography bold>
+              {l10n.getString('settings-general-fk_settings-arm_fk')}
+            </Typography>
             <Typography color="secondary">
               {l10n.getString(
                 'settings-general-fk_settings-arm_fk-description'
               )}
             </Typography>
           </div>
-          <div className="grid sm:grid-cols-2 pb-5">
+          <div className="grid sm:grid-cols-1 pb-3">
             <CheckBox
               variant="toggle"
               outlined
@@ -548,19 +606,19 @@ export function GeneralSettings() {
           </div>
           {config?.debug && (
             <>
-              <Typography bold>
-                {l10n.getString(
-                  'settings-general-fk_settings-skeleton_settings'
-                )}
-              </Typography>
-              <div className="flex flex-col pt-2 pb-4">
+              <div className="flex flex-col pt-2 pb-3">
+                <Typography bold>
+                  {l10n.getString(
+                    'settings-general-fk_settings-skeleton_settings'
+                  )}
+                </Typography>
                 <Typography color="secondary">
                   {l10n.getString(
                     'settings-general-fk_settings-skeleton_settings-description'
                   )}
                 </Typography>
               </div>
-              <div className="grid sm:grid-cols-2 gap-3 pb-5">
+              <div className="grid sm:grid-cols-2 gap-3 pb-3">
                 <CheckBox
                   variant="toggle"
                   outlined
@@ -589,19 +647,19 @@ export function GeneralSettings() {
                   )}
                 />
               </div>
-              <Typography bold>
-                {l10n.getString(
-                  'settings-general-fk_settings-vive_emulation-title'
-                )}
-              </Typography>
-              <div className="flex flex-col pt-2 pb-4">
+              <div className="flex flex-col pt-2 pb-3">
+                <Typography bold>
+                  {l10n.getString(
+                    'settings-general-fk_settings-vive_emulation-title'
+                  )}
+                </Typography>
                 <Typography color="secondary">
                   {l10n.getString(
                     'settings-general-fk_settings-vive_emulation-description'
                   )}
                 </Typography>
               </div>
-              <div className="grid sm:grid-cols-2 gap-3 pb-5">
+              <div className="grid sm:grid-cols-1 gap-3 pb-5">
                 <CheckBox
                   variant="toggle"
                   outlined

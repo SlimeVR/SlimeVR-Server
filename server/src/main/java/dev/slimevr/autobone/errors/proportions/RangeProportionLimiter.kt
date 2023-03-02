@@ -19,12 +19,11 @@ class RangeProportionLimiter : HardProportionLimiter {
 		boneLengthFunction: Function<HumanPoseManager, Float>,
 		range: Float,
 	) : super(targetRatio, boneLengthFunction) {
-		var range = range
+		val absRange = FastMath.abs(range)
 
 		// Handle if someone puts in a negative value
-		range = FastMath.abs(range)
-		targetPositiveRange = range
-		targetNegativeRange = -range
+		targetPositiveRange = absRange
+		targetNegativeRange = -absRange
 	}
 
 	/**
@@ -50,8 +49,8 @@ class RangeProportionLimiter : HardProportionLimiter {
 		targetNegativeRange = negativeRange
 	}
 
-	override fun getProportionError(config: HumanPoseManager, height: Float): Float {
-		val boneLength = boneLengthFunction.apply(config)
+	override fun getProportionError(humanPoseManager: HumanPoseManager, height: Float): Float {
+		val boneLength = boneLengthFunction.apply(humanPoseManager)
 		val ratioOffset = targetRatio - boneLength / height
 
 		// If the range is exceeded, return the offset from the range limit

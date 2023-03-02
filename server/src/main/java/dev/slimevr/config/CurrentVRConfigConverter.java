@@ -155,11 +155,13 @@ public class CurrentVRConfigConverter implements VersionedModelConverter {
 			if (skeletonNode != null) {
 				ObjectNode offsetsNode = (ObjectNode) skeletonNode.get("offsets");
 				if (offsetsNode != null) {
-					offsetsNode
-						.set(
-							"chestOffset",
-							new FloatNode(-offsetsNode.get("chestOffset").floatValue())
-						);
+					if (offsetsNode.get("chestOffset") != null) {
+						offsetsNode
+							.set(
+								"chestOffset",
+								new FloatNode(-offsetsNode.get("chestOffset").floatValue())
+							);
+					}
 					offsetsNode
 						.set(
 							"hipOffset",
