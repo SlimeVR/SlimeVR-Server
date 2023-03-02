@@ -82,6 +82,46 @@ export function BodyProportions({
                 ? props.bones[props.index].value
                 : originalValue;
             const selected = currentSelection.label === label;
+
+            const selectNew = () => {
+              switch (type) {
+                case LabelType.Bone: {
+                  if (!('bone' in props)) throw 'unreachable';
+                  dispatch({
+                    ...props,
+                    label,
+                    value,
+                    type: ProportionChangeType.Bone,
+                  });
+                  break;
+                }
+                case LabelType.Group: {
+                  if (!('bones' in props)) throw 'unreachable';
+                  dispatch({
+                    ...props,
+                    label,
+                    value,
+                    type: ProportionChangeType.Group,
+                    index: undefined,
+                    parentLabel: label,
+                  });
+                  break;
+                }
+                case LabelType.GroupPart: {
+                  if (!('index' in props)) throw 'unreachable';
+                  dispatch({
+                    ...props,
+                    label,
+                    // If this isn't done, we are replacing total
+                    // with percentage value
+                    value: originalValue,
+                    type: ProportionChangeType.Group,
+                    index: props.index,
+                  });
+                }
+              }
+            };
+
             return (
               <div className="flex" key={label}>
                 <div
@@ -142,44 +182,7 @@ export function BodyProportions({
                 </div>
                 <div
                   className="flex flex-grow flex-col px-2"
-                  onClick={() => {
-                    switch (type) {
-                      case LabelType.Bone: {
-                        if (!('bone' in props)) throw 'unreachable';
-                        dispatch({
-                          ...props,
-                          label,
-                          value,
-                          type: ProportionChangeType.Bone,
-                        });
-                        break;
-                      }
-                      case LabelType.Group: {
-                        if (!('bones' in props)) throw 'unreachable';
-                        dispatch({
-                          ...props,
-                          label,
-                          value,
-                          type: ProportionChangeType.Group,
-                          index: undefined,
-                          parentLabel: label,
-                        });
-                        break;
-                      }
-                      case LabelType.GroupPart: {
-                        if (!('index' in props)) throw 'unreachable';
-                        dispatch({
-                          ...props,
-                          label,
-                          // If this isn't done, we are replacing total
-                          // with percentage value
-                          value: originalValue,
-                          type: ProportionChangeType.Group,
-                          index: props.index,
-                        });
-                      }
-                    }
-                  }}
+                  onClick={selectNew}
                 >
                   <div
                     key={label}
@@ -195,7 +198,12 @@ export function BodyProportions({
                       {type === LabelType.GroupPart
                         ? /* Make number rounding so it's based on .5 decimals */
                           percentageFormat.format(Math.round(value * 200) / 200)
-                        : cmFormat.format(Math.round(value * 200) / 2)}
+                        : cmFormat.format(value * 100)}
+                      {type === LabelType.GroupPart && (
+                        <p className="text-standard">{`(${cmFormat.format(
+                          value * originalValue * 100
+                        )})`}</p>
+                      )}
                     </Typography>
                   </div>
                 </div>

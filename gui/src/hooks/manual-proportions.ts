@@ -120,11 +120,13 @@ function reducer(state: ProportionState, action: ProportionChange): ProportionSt
       const newState: GroupState = JSON.parse(JSON.stringify(state));
       if (newState.index === undefined) throw 'unreachable';
       newState.bones[newState.index].value += action.value;
+      if (newState.bones[newState.index].value <= 0) return state;
       const filtered = newState.bones.filter((_it, index) => newState.index !== index);
       const total = filtered.reduce((acc, cur) => acc + cur.value, 0);
 
       for (const part of filtered) {
         part.value += (part.value / total) * action.value * -1;
+        if (part.value <= 0) return state;
       }
 
       return newState;

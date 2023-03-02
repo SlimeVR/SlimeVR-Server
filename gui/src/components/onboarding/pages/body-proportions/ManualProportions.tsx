@@ -9,7 +9,7 @@ import { PersonFrontIcon } from '../../../commons/PersonFrontIcon';
 import { Typography } from '../../../commons/Typography';
 import { BodyProportions } from './BodyProportions';
 import { useLocalization } from '@fluent/react';
-import { useEffect } from 'react';
+import { useEffect, useMemo } from 'react';
 import { useBodyProportions } from '../../../../hooks/body-proportions';
 
 export function ManualProportionsPage() {
@@ -20,8 +20,10 @@ export function ManualProportionsPage() {
 
   applyProgress(0.9);
 
+  const savedValue = useMemo(() => localStorage.getItem('ratioMode'), [])
+
   const { control, watch } = useForm<{ precise: boolean; ratio: boolean }>({
-    defaultValues: { precise: false, ratio: true },
+    defaultValues: { precise: false, ratio: savedValue !== 'false' || true },
   });
   const { precise, ratio } = watch();
 
@@ -31,6 +33,10 @@ export function ManualProportionsPage() {
       new SkeletonResetAllRequestT()
     );
   };
+
+  useEffect(() => {
+    localStorage.setItem('ratioMode', ratio.toString());
+  }, [ratio])
 
   useEffect(() => {
     onPageOpened();
