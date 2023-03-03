@@ -6,7 +6,7 @@ const tripleBeep = new Audio('/sounds/triple_beep.wav');
 
 export function playSoundForStarted(resetType: ResetType) {
   switch (resetType) {
-    case ResetType.Quick: {
+    case ResetType.Yaw: {
       singleBeep.play();
       break;
     }
