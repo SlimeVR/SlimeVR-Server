@@ -1,6 +1,7 @@
 import { useLocalization } from '@fluent/react';
 import { useMemo } from 'react';
 import { ResetRequestT, ResetType, RpcMessage } from 'solarxr-protocol';
+import { useConfig } from '../../hooks/config';
 import { useCountdown } from '../../hooks/countdown';
 import { useWebsocketAPI } from '../../hooks/websocket-api';
 import { playSoundForStarted } from '../../sounds/sounds';
@@ -23,6 +24,7 @@ export function ResetButton({
 }) {
   const { l10n } = useLocalization();
   const { sendRPCPacket } = useWebsocketAPI();
+  const { config } = useConfig();
 
   const reset = () => {
     const req = new ResetRequestT();
@@ -66,7 +68,7 @@ export function ResetButton({
           icon={getIcon()}
           onClick={() => {
             reset();
-            playSoundForStarted(ResetType.Yaw);
+            if (config?.feedbackSound) playSoundForStarted(ResetType.Yaw);
           }}
           variant="primary"
         >
@@ -77,7 +79,7 @@ export function ResetButton({
           icon={getIcon()}
           onClick={() => {
             startCountdown();
-            playSoundForStarted(ResetType.Full);
+            if (config?.feedbackSound) playSoundForStarted(ResetType.Full);
           }}
           variant="primary"
           disabled={isCounting}
@@ -95,7 +97,7 @@ export function ResetButton({
           icon={getIcon()}
           onClick={() => {
             reset();
-            playSoundForStarted(ResetType.Yaw);
+            if (config?.feedbackSound) playSoundForStarted(ResetType.Yaw);
           }}
         ></BigButton>
       ) : (
@@ -104,7 +106,7 @@ export function ResetButton({
           icon={getIcon()}
           onClick={() => {
             startCountdown();
-            playSoundForStarted(ResetType.Full);
+            if (config?.feedbackSound) playSoundForStarted(ResetType.Full);
           }}
           disabled={isCounting}
         ></BigButton>
