@@ -12,9 +12,9 @@ import solarxr_protocol.rpc.ResetType;
 public class Keybinding implements HotkeyListener {
 	private static final String resetSourceName = "Keybinding";
 
-	private static final int RESET = 1;
-	private static final int QUICK_RESET = 2;
-	private static final int RESET_MOUNTING = 3;
+	private static final int FULL_RESET = 1;
+	private static final int YAW_RESET = 2;
+	private static final int MOUNTING_RESET = 3;
 	public final VRServer server;
 	public final KeybindingsConfig config;
 
@@ -36,17 +36,17 @@ public class Keybinding implements HotkeyListener {
 			if (JIntellitype.getInstance() instanceof JIntellitype) {
 				JIntellitype.getInstance().addHotKeyListener(this);
 
-				String resetBinding = this.config.getResetBinding();
-				JIntellitype.getInstance().registerHotKey(RESET, resetBinding);
-				LogManager.info("[Keybinding] Bound reset to " + resetBinding);
+				String fullResetBinding = this.config.getFullResetBinding();
+				JIntellitype.getInstance().registerHotKey(FULL_RESET, fullResetBinding);
+				LogManager.info("[Keybinding] Bound full reset to " + fullResetBinding);
 
-				String quickResetBinding = this.config.getQuickResetBinding();
-				JIntellitype.getInstance().registerHotKey(QUICK_RESET, quickResetBinding);
-				LogManager.info("[Keybinding] Bound quick reset to " + quickResetBinding);
+				String yawResetBinding = this.config.getYawResetBinding();
+				JIntellitype.getInstance().registerHotKey(YAW_RESET, yawResetBinding);
+				LogManager.info("[Keybinding] Bound yaw reset to " + yawResetBinding);
 
-				String resetMountingBinding = this.config.getResetMountingBinding();
-				JIntellitype.getInstance().registerHotKey(RESET_MOUNTING, resetMountingBinding);
-				LogManager.info("[Keybinding] Bound reset mounting to " + resetMountingBinding);
+				String mountingResetBinding = this.config.getMountingResetBinding();
+				JIntellitype.getInstance().registerHotKey(MOUNTING_RESET, mountingResetBinding);
+				LogManager.info("[Keybinding] Bound reset mounting to " + mountingResetBinding);
 			}
 		} catch (Throwable e) {
 			LogManager
@@ -60,20 +60,20 @@ public class Keybinding implements HotkeyListener {
 	@Override
 	public void onHotKey(int identifier) {
 		switch (identifier) {
-			case RESET -> {
+			case FULL_RESET -> {
 				server.getResetHandler().sendStarted(ResetType.Full);
-				server.scheduleResetTrackers(resetSourceName, this.config.getResetDelay());
+				server.scheduleResetTrackersFull(resetSourceName, this.config.getFullResetDelay());
 			}
-			case QUICK_RESET -> {
-				server.getResetHandler().sendStarted(ResetType.Quick);
-				server.scheduleResetTrackersYaw(resetSourceName, this.config.getQuickResetDelay());
+			case YAW_RESET -> {
+				server.getResetHandler().sendStarted(ResetType.Yaw);
+				server.scheduleResetTrackersYaw(resetSourceName, this.config.getYawResetDelay());
 			}
-			case RESET_MOUNTING -> {
+			case MOUNTING_RESET -> {
 				server.getResetHandler().sendStarted(ResetType.Mounting);
 				server
 					.scheduleResetTrackersMounting(
 						resetSourceName,
-						this.config.getResetMountingDelay()
+						this.config.getMountingResetDelay()
 					);
 			}
 		}

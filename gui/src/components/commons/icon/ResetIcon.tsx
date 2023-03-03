@@ -1,4 +1,4 @@
-export function ResetIcon({ width = 33 }: { width?: number }) {
+export function FullResetIcon({ width = 33 }: { width?: number }) {
   return (
     <svg
       width={width}
@@ -25,7 +25,7 @@ export function ResetIcon({ width = 33 }: { width?: number }) {
   );
 }
 
-export function QuickResetIcon({ width = 33 }: { width?: number }) {
+export function YawResetIcon({ width = 33 }: { width?: number }) {
   return (
     <svg
       width={width}

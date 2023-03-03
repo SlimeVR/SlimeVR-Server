@@ -571,14 +571,14 @@ public class TrackersUDPServer extends Thread {
 					break;
 				UDPPacket21UserAction action = (UDPPacket21UserAction) packet;
 				switch (action.type) {
-					case UDPPacket21UserAction.RESET:
+					case UDPPacket21UserAction.RESET_FULL:
 					case UDPPacket21UserAction.RESET_YAW:
 					case UDPPacket21UserAction.RESET_MOUNTING:
 						String name = "";
 						switch (action.type) {
-							case UDPPacket21UserAction.RESET:
+							case UDPPacket21UserAction.RESET_FULL:
 								name = "Full";
-								Main.getVrServer().resetTrackers(resetSourceName);
+								Main.getVrServer().resetTrackersFull(resetSourceName);
 								break;
 							case UDPPacket21UserAction.RESET_YAW:
 								name = "Yaw";

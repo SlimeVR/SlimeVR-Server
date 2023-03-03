@@ -61,9 +61,9 @@ skeleton_bone-ELBOW_OFFSET = Elbow Offset
 
 ## Tracker reset buttons
 reset-reset_all = Reset all proportions
-reset-full = Reset
+reset-full = Full Reset
 reset-mounting = Reset Mounting
-reset-quick = Quick Reset
+reset-yaw = Yaw Reset
 
 ## Serial detection stuff
 serial_detection-new_device-p0 = New serial device detected!
@@ -272,8 +272,7 @@ settings-general-tracker_mechanics-drift_compensation-max_resets-label = Use up 
 
 ## FK/Tracking settings
 settings-general-fk_settings = Tracking settings
-settings-general-fk_settings-leg_tweak = Leg tweaks
-settings-general-fk_settings-leg_tweak-description = Floor-clip can Reduce or even eliminates clipping with the floor but may cause problems when on your knees. Skating-correction corrects for ice skating, but can decrease accuracy in certain movement patterns.
+
 # Floor clip:
 # why the name - came from the idea of noclip in video games, but is the opposite where clipping to the floor is a desired feature
 # definition - Prevents the foot trackers from going lower than they where when a reset was performed
@@ -283,9 +282,16 @@ settings-general-fk_settings-leg_tweak-floor_clip = Floor clip
 # since this largely prevents this it corrects for it hence skating correction (note this may be renamed to sliding correction)
 # definition - Guesses when each foot is in contact with the ground and uses that information to improve tracking
 settings-general-fk_settings-leg_tweak-skating_correction = Skating correction
+settings-general-fk_settings-leg_tweak-toe_snap = Toe snap
+settings-general-fk_settings-leg_tweak-foot_plant = Foot plant
 settings-general-fk_settings-leg_tweak-skating_correction-amount = Skating correction strength
+settings-general-fk_settings-leg_tweak-skating_correction-description = Skating-correction corrects for ice skating but can decrease accuracy in certain movement patterns. When enabling this make sure to full reset and recalibrate in game.
+settings-general-fk_settings-leg_tweak-floor_clip-description = Floor-clip can Reduce or even eliminates clipping through the floor. When enabling this, make sure to full reset and recalibrate in game.
+settings-general-fk_settings-leg_tweak-toe_snap-description = Toe-snap attempts to guess the rotation of your feet if feet trackers are not in use.
+settings-general-fk_settings-leg_tweak-foot_plant-description = Foot-plant rotates your feet to be parallel to the ground when in contact.
+settings-general-fk_settings-leg_fk = Leg tracking
 settings-general-fk_settings-arm_fk = Arm tracking
-settings-general-fk_settings-arm_fk-description = Change the way the arms are tracked.
+settings-general-fk_settings-arm_fk-description = Force arms to be tracked from the HMD even if positional hand data is available.
 settings-general-fk_settings-arm_fk-force_arms = Force arms from HMD
 settings-general-fk_settings-skeleton_settings = Skeleton settings
 settings-general-fk_settings-skeleton_settings-description = Toggle skeleton settings on or off. It is recommended to leave these on.
@@ -299,19 +305,19 @@ settings-general-fk_settings-vive_emulation-label = Enable Vive emulation
 ## Gesture control settings (tracker tapping)
 settings-general-gesture_control = Gesture control
 settings-general-gesture_control-subtitle = Tap based resets
-settings-general-gesture_control-description = Allows for resets to be triggered by tapping a tracker. The tracker highest up on your torso is used for Quick Reset, the tracker highest up on your left leg is used for Reset, and the tracker highest up on your right leg is used for Mounting Reset. It should be mentioned that taps must happen within 0.6 seconds to be registered.
+settings-general-gesture_control-description = Allows for resets to be triggered by tapping a tracker. The tracker highest up on your torso is used for Yaw Reset, the tracker highest up on your left leg is used for Full Reset, and the tracker highest up on your right leg is used for Mounting Reset. It should be mentioned that taps must happen within 0.6 seconds to be registered.
 # This is a unit: 3 taps, 2 taps, 1 tap
 # $amount (Number) - Amount of taps (touches to the tracker's case)
 settings-general-gesture_control-taps = { $amount ->
     [one] 1 tap
     *[other] { $amount } taps
 }
-settings-general-gesture_control-quickResetEnabled = Enable tap to quick reset
-settings-general-gesture_control-quickResetDelay = Quick reset delay
-settings-general-gesture_control-quickResetTaps = Taps for quick reset
-settings-general-gesture_control-resetEnabled = Enable tap to reset
-settings-general-gesture_control-resetDelay = Reset delay
-settings-general-gesture_control-resetTaps = Taps for reset
+settings-general-gesture_control-yawResetEnabled = Enable tap to yaw reset
+settings-general-gesture_control-yawResetDelay = Yaw reset delay
+settings-general-gesture_control-yawResetTaps = Taps for yaw reset
+settings-general-gesture_control-fullResetEnabled = Enable tap to full reset
+settings-general-gesture_control-fullResetDelay = Full reset delay
+settings-general-gesture_control-fullResetTaps = Taps for full reset
 settings-general-gesture_control-mountingResetEnabled = Enable tap to reset mounting
 settings-general-gesture_control-mountingResetDelay = Mounting reset delay
 settings-general-gesture_control-mountingResetTaps = Taps for mounting reset
@@ -602,7 +608,7 @@ onboarding-automatic_mounting-mounting_reset-step-0 = 1. Squat in a "skiing" pos
 onboarding-automatic_mounting-mounting_reset-step-1 = 2. Press the "Reset Mounting" button and wait for 3 seconds before the trackers' mounting rotations will reset.
 onboarding-automatic_mounting-preparation-title = Preparation
 onboarding-automatic_mounting-preparation-step-0 = 1. Stand upright with your arms to your sides.
-onboarding-automatic_mounting-preparation-step-1 = 2. Press the "Reset" button and wait for 3 seconds before the trackers will reset.
+onboarding-automatic_mounting-preparation-step-1 = 2. Press the "Full Reset" button and wait for 3 seconds before the trackers will reset.
 onboarding-automatic_mounting-put_trackers_on-title = Put on your trackers
 onboarding-automatic_mounting-put_trackers_on-description = To calibrate mounting rotations, we're gonna use the trackers you just assigned. Put on all your trackers, you can see which are which in the figure to the right.
 onboarding-automatic_mounting-put_trackers_on-next = I have all my trackers on

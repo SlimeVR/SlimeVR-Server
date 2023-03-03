@@ -330,7 +330,7 @@ public class VRServer extends Thread {
 		queueTask(humanPoseManager::updateSkeletonModelFromServer);
 	}
 
-	public void resetTrackers(String resetSourceName) {
+	public void resetTrackersFull(String resetSourceName) {
 		queueTask(() -> {
 			humanPoseManager.resetTrackersFull(resetSourceName);
 		});
@@ -348,7 +348,7 @@ public class VRServer extends Thread {
 		});
 	}
 
-	public void scheduleResetTrackers(String resetSourceName, long delay) {
+	public void scheduleResetTrackersFull(String resetSourceName, long delay) {
 		TimerTask resetTask = new TimerTask() {
 			public void run() {
 				queueTask(() -> {
