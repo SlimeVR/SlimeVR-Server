@@ -1167,19 +1167,12 @@ public class LegTweaks {
 	}
 
 	// return a quaternion that has been rotated by the new pitch amount
+	// TODO verify that this is working as expected
 	private Quaternion replacePitch(Quaternion quaternion, float newPitch) {
-		// first get the axis of the current pitch
-		Vector3 currentPitchAxis = quaternion.toMatrix().getX().unit();
-
-		// then get the current pitch
-		float currentPitch = (float) Math.asin(currentPitchAxis.getY());
-
-		// then add the new pitch
-		Quaternion newQuat = Quaternion.Companion
-			.fromRotationVector(currentPitchAxis.times(newPitch + currentPitch));
-
-		return newQuat.times(quaternion);
-	}
+        EulerAngles curAngs = quaternion.toEulerAngles(EulerOrder.YXZ);
+        EulerAngles newAngs = EulerAngles(EulerOrder.YXZ, newPitch, curAngs.y, curAngs.z);
+        return newAngs.toQuaternion();
+    }
 
 	// check if the difference between two floats flipped after correction
 	private boolean checkOverShoot(float trueVal, float valBefore, float valAfter) {
