@@ -1167,10 +1167,11 @@ public class LegTweaks {
 	}
 
 	// return a quaternion that has been rotated by the new pitch amount
+	// TODO verify that this is working as expected
 	private Quaternion replacePitch(Quaternion quaternion, float newPitch) {
         EulerAngles curAngs = quaternion.toEulerAngles(EulerOrder.YXZ);
-        EulerAngles newAngs = EulerAngles(EulerOrder.YXZ, newPitch, curAngs.y, curAngs.z)
-        return newAngs.toQuaternion()
+        EulerAngles newAngs = EulerAngles(EulerOrder.YXZ, newPitch, curAngs.y, curAngs.z);
+        return newAngs.toQuaternion();
     }
 
 	// check if the difference between two floats flipped after correction
