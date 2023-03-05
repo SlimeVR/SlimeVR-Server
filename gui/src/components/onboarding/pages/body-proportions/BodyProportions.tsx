@@ -33,7 +33,7 @@ function IncrementButton({
 export function BodyProportions({
   precise,
   type,
-  variant = 'onboarding',
+  variant: _variant = 'onboarding',
 }: {
   precise: boolean;
   type: 'linear' | 'ratio';
@@ -69,10 +69,8 @@ export function BodyProportions({
     <div className="relative w-full">
       <div
         className={classNames(
-          'flex flex-col overflow-y-scroll overflow-x-hidden max-h-[450px] w-full px-1',
-          'gap-3 pb-16',
-          variant === 'onboarding' && 'gradient-mask-b-90',
-          variant === 'alone' && 'gradient-mask-b-80'
+          'flex flex-col overflow-y-scroll overflow-x-hidden max-h-[450px] h-[54vh]',
+          'w-full px-1 gap-3 gradient-mask-b-90'
         )}
       >
         <>
