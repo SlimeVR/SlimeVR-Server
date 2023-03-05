@@ -36,6 +36,7 @@ export type DataFeedPacketType = DataFeedMessageHeaderT['message'];
 export function useProvideWebsocketApi(): WebSocketApi {
   const rpcPacketCounterRef = useRef<number>(0);
   const webSocketRef = useRef<WebSocket | null>(null);
+  let wsCurrent: WebSocket | null = null;
   const rpclistenerRef = useRef<EventTarget>(new EventTarget());
   const pubsublistenerRef = useRef<EventTarget>(new EventTarget());
   const datafeedlistenerRef = useRef<EventTarget>(new EventTarget());
@@ -157,6 +158,8 @@ export function useProvideWebsocketApi(): WebSocketApi {
     webSocketRef.current.addEventListener('open', onConnected);
     webSocketRef.current.addEventListener('close', onConnectionClose);
     webSocketRef.current.addEventListener('message', onMessage);
+
+    wsCurrent = webSocketRef.current;
   };
 
   const disconnect = () => {
@@ -165,9 +168,10 @@ export function useProvideWebsocketApi(): WebSocketApi {
     webSocketRef.current.removeEventListener('open', onConnected);
     webSocketRef.current.removeEventListener('close', onConnectionClose);
     webSocketRef.current.removeEventListener('message', onMessage);
-    if (isConnected) {
+    if (wsCurrent) {
       setConnected(false);
-      webSocketRef.current.close();
+      wsCurrent.close();
+      wsCurrent = null;
     }
   };
 
