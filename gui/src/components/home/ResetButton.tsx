@@ -68,7 +68,7 @@ export function ResetButton({
           icon={getIcon()}
           onClick={() => {
             reset();
-            if (config?.feedbackSound) playSoundForStarted(ResetType.Yaw);
+            if (config?.feedbackSound) playSoundForStarted(type);
           }}
           variant="primary"
         >
@@ -79,7 +79,7 @@ export function ResetButton({
           icon={getIcon()}
           onClick={() => {
             startCountdown();
-            if (config?.feedbackSound) playSoundForStarted(ResetType.Full);
+            if (config?.feedbackSound) playSoundForStarted(type);
           }}
           variant="primary"
           disabled={isCounting}
@@ -97,7 +97,7 @@ export function ResetButton({
           icon={getIcon()}
           onClick={() => {
             reset();
-            if (config?.feedbackSound) playSoundForStarted(ResetType.Yaw);
+            if (config?.feedbackSound) playSoundForStarted(type);
           }}
         ></BigButton>
       ) : (
@@ -106,7 +106,7 @@ export function ResetButton({
           icon={getIcon()}
           onClick={() => {
             startCountdown();
-            if (config?.feedbackSound) playSoundForStarted(ResetType.Full);
+            if (config?.feedbackSound) playSoundForStarted(type);
           }}
           disabled={isCounting}
         ></BigButton>
