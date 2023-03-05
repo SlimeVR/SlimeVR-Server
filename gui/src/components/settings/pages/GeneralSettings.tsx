@@ -209,7 +209,7 @@ export function GeneralSettings() {
       interface: {
         devmode: config?.debug,
         watchNewDevices: config?.watchNewDevices,
-        feedbackSound: config?.feedbackSound
+        feedbackSound: config?.feedbackSound,
       },
     };
 
