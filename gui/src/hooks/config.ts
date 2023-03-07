@@ -67,14 +67,8 @@ export function useConfigProvider(): ConfigContext {
           const oldConfig = await readTextFile('config.json', {
             dir: BaseDirectory.App,
           }).catch(() => null);
-          if (oldConfig) {
-            const parsedOldConfig = JSON.parse(oldConfig);
-            const newConfig = {
-              ...parsedOldConfig,
-              feedbackSound: true,
-            };
-            localStorage.setItem('config.json', JSON.stringify(newConfig));
-          }
+
+          if (oldConfig) localStorage.setItem('config.json', oldConfig);
 
           localStorage.setItem('configMigrated', 'true');
         }
@@ -84,6 +78,7 @@ export function useConfigProvider(): ConfigContext {
         if (!json) throw new Error('Config has ceased existing for some reason');
 
         const loadedConfig = JSON.parse(json);
+        if (!loadedConfig.has('feedbackSound')) loadedConfig.feedbackSound = true;
         set(loadedConfig);
         setLoading(false);
         return loadedConfig;
