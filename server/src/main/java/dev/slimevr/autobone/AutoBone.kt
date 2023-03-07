@@ -409,10 +409,7 @@ class AutoBone(server: VRServer) {
 		// Epoch loop, each epoch is one full iteration over the full dataset
 		for (epoch in (if (calcInitError) -1 else 0) until config.numEpochs) {
 			val adjustRate = if (epoch >= 0) {
-				(
-					config.initialAdjustRate
-						* FastMath.pow(config.adjustRateMultiplier, epoch.toFloat())
-					)
+				config.initialAdjustRate / (1 + (config.adjustRateDecay * epoch))
 			} else {
 				0f
 			}
