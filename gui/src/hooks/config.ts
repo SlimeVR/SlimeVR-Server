@@ -78,7 +78,7 @@ export function useConfigProvider(): ConfigContext {
         if (!json) throw new Error('Config has ceased existing for some reason');
 
         const loadedConfig = JSON.parse(json);
-        if (!loadedConfig.has('feedbackSound')) loadedConfig.feedbackSound = true;
+        if (!('feedbackSound' in loadedConfig)) loadedConfig.feedbackSound = true;
         set(loadedConfig);
         setLoading(false);
         return loadedConfig;
