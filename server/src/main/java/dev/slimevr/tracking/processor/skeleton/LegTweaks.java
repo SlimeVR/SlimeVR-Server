@@ -344,8 +344,10 @@ public class LegTweaks {
 		footLength = skeleton.leftFootNode.localTransform.getTranslation().length();
 
 		// if not enabled, do nothing and return false
-		if (!enabled)
+		if (!enabled) {
+			bufferInvalid = true;
 			return false;
+		}
 
 		// if the user is standing start checking for a good time to enable leg
 		// tweaks

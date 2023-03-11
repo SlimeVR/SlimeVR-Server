@@ -1,6 +1,7 @@
 import classNames from 'classnames';
 import { ReactNode, useEffect, useState } from 'react';
 import {
+  GUIInfosResponseT,
   ResetType,
   RpcMessage,
   SettingsRequestT,
@@ -41,6 +42,15 @@ export function MainLayoutRoute({
     if (settings.driftCompensation != null)
       setDriftCompensationEnabled(settings.driftCompensation.enabled);
   });
+
+  useEffect(() => {
+    if (location.pathname.includes('/onboarding/body-proportions')) {
+      sendRPCPacket(RpcMessage.GUIInfosResponse, new GUIInfosResponseT(true));
+    }
+    else {
+      sendRPCPacket(RpcMessage.GUIInfosResponse, new GUIInfosResponseT(false));
+    }
+  }, [location.pathname]);
 
   return (
     <>
