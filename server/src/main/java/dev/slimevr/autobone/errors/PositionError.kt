@@ -3,7 +3,6 @@ package dev.slimevr.autobone.errors
 import dev.slimevr.autobone.AutoBoneTrainingStep
 import dev.slimevr.poseframeformat.trackerdata.TrackerFrames
 import dev.slimevr.tracking.processor.skeleton.HumanSkeleton
-import dev.slimevr.tracking.trackers.Tracker
 
 // The distance of any points to the corresponding absolute position
 class PositionError : IAutoBoneError {
