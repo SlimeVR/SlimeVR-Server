@@ -7,6 +7,7 @@ import {
   DriftCompensationSettingsT,
   FilteringSettingsT,
   FilteringType,
+  GUIInfosResponseT,
   LegTweaksSettingsT,
   ModelSettingsT,
   ModelTogglesT,
@@ -201,6 +202,15 @@ export function GeneralSettings() {
   useEffect(() => {
     sendRPCPacket(RpcMessage.SettingsRequest, new SettingsRequestT());
   }, []);
+
+  useEffect(() => {
+    if (location.pathname.includes('/onboarding/body-proportions')) {
+      sendRPCPacket(RpcMessage.GUIInfosResponse, new GUIInfosResponseT(true));
+    }
+    else {
+      sendRPCPacket(RpcMessage.GUIInfosResponse, new GUIInfosResponseT(false));
+    }
+  }, [location.pathname]);
 
   useRPCPacket(RpcMessage.SettingsResponse, (settings: SettingsResponseT) => {
     const formData: DefaultValues<SettingsForm> = {
