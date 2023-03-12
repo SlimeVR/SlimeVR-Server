@@ -5,10 +5,10 @@ import dev.slimevr.autobone.AutoBone.AutoBoneResults
 import dev.slimevr.autobone.AutoBone.Companion.loadDir
 import dev.slimevr.autobone.AutoBone.Epoch
 import dev.slimevr.autobone.errors.AutoBoneException
-import dev.slimevr.poserecorder.PoseFrames
-import dev.slimevr.poserecorder.PoseRecorder
-import dev.slimevr.poserecorder.PoseRecorder.RecordingProgress
-import dev.slimevr.poserecorder.TrackerFrameData
+import dev.slimevr.poseframeformat.PoseFrames
+import dev.slimevr.poseframeformat.PoseRecorder
+import dev.slimevr.poseframeformat.PoseRecorder.RecordingProgress
+import dev.slimevr.poseframeformat.trackerdata.TrackerFrameData
 import dev.slimevr.tracking.processor.config.SkeletonConfigManager
 import dev.slimevr.tracking.processor.config.SkeletonConfigOffsets
 import io.eiren.util.StringUtils
@@ -273,18 +273,18 @@ class AutoBoneHandler(private val server: VRServer) {
 			for ((key, value) in frameRecordings) {
 				LogManager
 					.info("[AutoBone] Processing frames from \"$key\"...")
-				val trackers = value.trackers
+				val trackers = value.frameHolders
 				val trackerInfo = StringBuilder()
 				for (tracker in trackers) {
 					if (tracker == null) continue
-					val frame = tracker.safeGetFrame(0)
-					if (frame == null || frame.bodyPosition == null) continue
+					val frame = tracker.tryGetFrame(0)
+					if (frame?.trackerPosition == null) continue
 
 					// Add a comma if this is not the first item listed
 					if (trackerInfo.isNotEmpty()) {
 						trackerInfo.append(", ")
 					}
-					trackerInfo.append(frame.bodyPosition.designation)
+					trackerInfo.append(frame.trackerPosition.designation)
 
 					// Represent the data flags
 					val trackerFlags = StringBuilder()

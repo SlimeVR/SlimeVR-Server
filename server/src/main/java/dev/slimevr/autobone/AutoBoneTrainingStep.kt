@@ -1,6 +1,6 @@
 package dev.slimevr.autobone
 
-import dev.slimevr.poserecorder.PoseFrames
+import dev.slimevr.poseframeformat.PoseFrames
 import dev.slimevr.tracking.processor.BoneType
 import dev.slimevr.tracking.processor.HumanPoseManager
 

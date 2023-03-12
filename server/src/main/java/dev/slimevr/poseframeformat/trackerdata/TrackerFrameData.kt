@@ -1,7 +1,7 @@
-package dev.slimevr.poserecorder
+package dev.slimevr.poseframeformat.trackerdata
 
 enum class TrackerFrameData(id: Int) {
-	DESIGNATION_STRING(0), ROTATION(1), POSITION(2), DESIGNATION_ENUM(3), ACCELERATION(4), RAW_ROTATION(5);
+	DESIGNATION_STRING(0), ROTATION(1), POSITION(2), TRACKER_POSITION_ENUM(3), ACCELERATION(4), RAW_ROTATION(5);
 
 	val flag: Int
 

@@ -4,8 +4,8 @@ import com.jme3.math.FastMath
 import dev.slimevr.VRServer
 import dev.slimevr.autobone.errors.*
 import dev.slimevr.config.AutoBoneConfig
-import dev.slimevr.poserecorder.PoseFrameIO
-import dev.slimevr.poserecorder.PoseFrames
+import dev.slimevr.poseframeformat.PoseFrameIO
+import dev.slimevr.poseframeformat.PoseFrames
 import dev.slimevr.tracking.processor.BoneType
 import dev.slimevr.tracking.processor.HumanPoseManager
 import dev.slimevr.tracking.processor.config.SkeletonConfigManager

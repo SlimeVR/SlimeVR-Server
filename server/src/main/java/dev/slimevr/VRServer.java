@@ -11,7 +11,7 @@ import dev.slimevr.osc.VRCOSCHandler;
 import dev.slimevr.platform.SteamVRBridge;
 import dev.slimevr.platform.linux.UnixSocketBridge;
 import dev.slimevr.platform.windows.WindowsNamedPipeBridge;
-import dev.slimevr.poserecorder.BVHRecorder;
+import dev.slimevr.posestreamer.BVHRecorder;
 import dev.slimevr.protocol.ProtocolAPI;
 import dev.slimevr.serial.ProvisioningHandler;
 import dev.slimevr.serial.SerialHandler;

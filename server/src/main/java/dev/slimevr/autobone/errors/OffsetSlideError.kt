@@ -35,10 +35,10 @@ class OffsetSlideError : IAutoBoneError {
 			val rightFoot1 = rightTracker1.position
 			val leftFoot2 = leftTracker2.position
 			val rightFoot2 = rightTracker2.position
-			val slideDist1 = leftFoot1.distance(rightFoot1)
-			val slideDist2 = leftFoot2.distance(rightFoot2)
-			val slideDist3 = leftFoot1.distance(rightFoot2)
-			val slideDist4 = leftFoot2.distance(rightFoot1)
+			val slideDist1 = (rightFoot1 - leftFoot1).len()
+			val slideDist2 = (rightFoot2 - leftFoot2).len()
+			val slideDist3 = (rightFoot2 - leftFoot1).len()
+			val slideDist4 = (rightFoot1 - leftFoot2).len()
 
 			// Compute all combinations of distances
 			val dist1 = FastMath.abs(slideDist1 - slideDist2)

@@ -5,7 +5,7 @@ import dev.slimevr.autobone.AutoBone.Epoch;
 import dev.slimevr.autobone.AutoBoneListener;
 import dev.slimevr.autobone.AutoBoneProcessType;
 import dev.slimevr.config.OverlayConfig;
-import dev.slimevr.poserecorder.PoseFrames;
+import dev.slimevr.poseframeformat.PoseFrames;
 import dev.slimevr.protocol.GenericConnection;
 import dev.slimevr.protocol.ProtocolAPI;
 import dev.slimevr.protocol.ProtocolHandler;

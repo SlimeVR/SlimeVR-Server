@@ -1,9 +1,6 @@
-package dev.slimevr.poserecorder;
+package dev.slimevr.posestreamer;
 
 import dev.slimevr.VRServer;
-import dev.slimevr.posestreamer.BVHFileStream;
-import dev.slimevr.posestreamer.PoseDataStream;
-import dev.slimevr.posestreamer.ServerPoseStreamer;
 import io.eiren.util.logging.LogManager;
 
 import java.io.File;
