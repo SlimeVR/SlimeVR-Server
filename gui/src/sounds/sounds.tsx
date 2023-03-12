@@ -1,21 +1,33 @@
 import { ResetType } from 'solarxr-protocol';
 
-const singleBeep = new Audio('/sounds/single_beep.wav');
-const doubleBeep = new Audio('/sounds/double_beep.wav');
-const tripleBeep = new Audio('/sounds/triple_beep.wav');
+const quickResetStartedSound = new Audio(
+  '/sounds/quick-reset-started-sound.mp3'
+);
+const fullResetStartedSound = new Audio('/sounds/full-reset-started-sound.mp3');
+const mountingResetStartedSound = new Audio(
+  '/sounds/mounting-reset-started-sound.mp3'
+);
+
+function restartAndPlay(audio: HTMLAudioElement) {
+  if (audio.paused) {
+    audio.play();
+  } else {
+    audio.currentTime = 0;
+  }
+}
 
 export function playSoundForStarted(resetType: ResetType) {
   switch (resetType) {
     case ResetType.Yaw: {
-      singleBeep.play();
+      restartAndPlay(quickResetStartedSound);
       break;
     }
     case ResetType.Full: {
-      doubleBeep.play();
+      restartAndPlay(fullResetStartedSound);
       break;
     }
     case ResetType.Mounting: {
-      tripleBeep.play();
+      restartAndPlay(mountingResetStartedSound);
       break;
     }
   }
