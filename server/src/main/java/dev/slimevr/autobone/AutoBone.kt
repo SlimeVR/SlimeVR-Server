@@ -420,10 +420,10 @@ class AutoBone(server: VRServer) {
 					val frameCursor2 = frameCursor + cursorOffset
 					applyConfig(skeleton1)
 					applyConfig(skeleton2)
-					if (config.randomizeFrameOrder) {
+					if (config.randomizeFrameOrder && randomFrameIndices != null) {
 						trainingStep
 							.setCursors(
-								randomFrameIndices!![frameCursor],
+								randomFrameIndices[frameCursor],
 								randomFrameIndices[frameCursor2]
 							)
 					} else {
