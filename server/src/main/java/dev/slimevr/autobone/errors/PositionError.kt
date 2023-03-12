@@ -1,6 +1,7 @@
 package dev.slimevr.autobone.errors
 
 import dev.slimevr.autobone.AutoBoneTrainingStep
+import dev.slimevr.poseframeformat.trackerdata.TrackerFrames
 import dev.slimevr.tracking.processor.skeleton.HumanSkeleton
 import dev.slimevr.tracking.trackers.Tracker
 
@@ -28,26 +29,21 @@ class PositionError : IAutoBoneError {
 
 	companion object {
 		fun getPositionError(
-			trackers: List<Tracker>,
+			trackers: List<TrackerFrames>,
 			cursor: Int,
 			skeleton: HumanSkeleton,
 		): Float {
 			var offset = 0f
 			var offsetCount = 0
 			for (tracker in trackers) {
-				val trackerFrame = tracker.poseFramesHandler.safeGetFrame(cursor)
-				if (trackerFrame == null ||
-					!trackerFrame.hasPosition() ||
-					trackerFrame.bodyPosition?.trackerRole == null
-				) {
-					continue
-				}
-				val computedTracker: Tracker? = skeleton
-					.getComputedTracker(trackerFrame.bodyPosition.trackerRole)
-				if (computedTracker != null) {
-					offset += (computedTracker.position - trackerFrame.position).len()
-					offsetCount++
-				}
+				val trackerFrame = tracker.tryGetFrame(cursor) ?: continue
+				val position = trackerFrame.tryGetPosition() ?: continue
+				val trackerRole = trackerFrame.tryGetTrackerPosition()?.trackerRole ?: continue
+
+				val computedTracker = skeleton.getComputedTracker(trackerRole) ?: continue
+
+				offset += (computedTracker.position - position).len()
+				offsetCount++
 			}
 			return if (offsetCount > 0) offset / offsetCount else 0f
 		}

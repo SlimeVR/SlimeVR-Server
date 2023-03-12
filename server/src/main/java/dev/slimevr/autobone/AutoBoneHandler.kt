@@ -193,7 +193,7 @@ class AutoBoneHandler(private val server: VRServer) {
 			if (framesFuture != null) {
 				announceProcessStatus(AutoBoneProcessType.SAVE, "Waiting for recording...")
 				val frames = framesFuture.get()
-				check(frames.trackerCount > 0) { "Recording has no trackers" }
+				check(frames.frameHolders.isEmpty()) { "Recording has no trackers" }
 				check(frames.maxFrameCount > 0) { "Recording has no frames" }
 				announceProcessStatus(AutoBoneProcessType.SAVE, "Saving recording...")
 				autoBone.saveRecording(frames)
@@ -247,7 +247,7 @@ class AutoBoneHandler(private val server: VRServer) {
 				if (framesFuture != null) {
 					announceProcessStatus(AutoBoneProcessType.PROCESS, "Waiting for recording...")
 					val frames = framesFuture.get()
-					check(frames.trackerCount > 0) { "Recording has no trackers" }
+					check(frames.frameHolders.isEmpty()) { "Recording has no trackers" }
 					check(frames.maxFrameCount > 0) { "Recording has no frames" }
 					frameRecordings.add(Pair.of("<Recording>", frames))
 				} else {

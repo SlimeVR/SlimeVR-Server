@@ -122,7 +122,7 @@ class PoseRecorder(private val server: VRServer) {
 			}
 
 			// Create a tracker recording
-			val trackerFrames = TrackerFrames(numFrames)
+			val trackerFrames = TrackerFrames(tracker, numFrames)
 			poseFrame?.frameHolders?.add(trackerFrames)
 
 			// Pair tracker with recording

@@ -9,6 +9,10 @@ enum class TrackerFrameData(id: Int) {
 		flag = 1 shl id
 	}
 
+	/*
+	 * Inline is fine for these, there's no negative to inlining them as they'll never
+	 * change, so any warning about it can be safely ignored
+	 */
 	inline fun check(dataFlags: Int): Boolean {
 		return dataFlags and flag != 0
 	}

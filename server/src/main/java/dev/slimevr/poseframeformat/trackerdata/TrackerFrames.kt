@@ -6,9 +6,11 @@ import dev.slimevr.tracking.trackers.Tracker
 import dev.slimevr.tracking.trackers.TrackerStatus
 import io.eiren.util.collections.FastList
 
-data class TrackerFrames(val frames: FastList<TrackerFrame?>) {
+data class TrackerFrames(val name: String = "", val frames: FastList<TrackerFrame?>) {
 
-	constructor(initialCapacity: Int = 5) : this(FastList<TrackerFrame?>(initialCapacity))
+	constructor(name: String = "", initialCapacity: Int = 5) : this(name, FastList<TrackerFrame?>(initialCapacity))
+	constructor(baseTracker: Tracker, frames: FastList<TrackerFrame?>) : this(baseTracker.name, frames)
+	constructor(baseTracker: Tracker, initialCapacity: Int = 5) : this(baseTracker, FastList<TrackerFrame?>(initialCapacity))
 
 	fun addFrameFromTracker(index: Int, tracker: Tracker): TrackerFrame? {
 		val trackerFrame = fromTracker(tracker)
@@ -35,7 +37,7 @@ data class TrackerFrames(val frames: FastList<TrackerFrame?>) {
 		val tracker = Tracker(
 			device = null,
 			id = VRServer.getNextLocalTrackerId(),
-			name = firstFrame.name,
+			name = name,
 			trackerPosition = firstFrame.tryGetTrackerPosition(),
 			hasPosition = firstFrame.hasPosition(),
 			hasRotation = firstFrame.hasRotation(),

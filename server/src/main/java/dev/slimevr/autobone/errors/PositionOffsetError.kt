@@ -29,28 +29,19 @@ class PositionOffsetError : IAutoBoneError {
 		var offset = 0f
 		var offsetCount = 0
 		for (tracker in trackers) {
-			val trackerFrame1 = tracker.tryGetFrame(cursor1)
-			if (trackerFrame1 == null ||
-				!trackerFrame1.hasPosition() ||
-				trackerFrame1.trackerPosition == null ||
-				trackerFrame1.trackerPosition.trackerRole.isEmpty
-			) {
-				continue
-			}
-			val trackerFrame2 = tracker.tryGetFrame(cursor2)
-			if (trackerFrame2 == null ||
-				!trackerFrame2.hasPosition() ||
-				trackerFrame2.trackerPosition == null ||
-				trackerFrame2.trackerPosition.trackerRole.isEmpty
-			) {
-				continue
-			}
-			val computedTracker1 = skeleton1
-				.getComputedTracker(trackerFrame1.trackerPosition.trackerRole.get()) ?: continue
-			val computedTracker2 = skeleton2
-				.getComputedTracker(trackerFrame2.trackerPosition.trackerRole.get()) ?: continue
-			val dist1 = FastMath.abs(computedTracker1.position.distance(trackerFrame1.position))
-			val dist2 = FastMath.abs(computedTracker2.position.distance(trackerFrame2.position))
+			val trackerFrame1 = tracker.tryGetFrame(cursor1) ?: continue
+			val position1 = trackerFrame1.tryGetPosition() ?: continue
+			val trackerRole1 = trackerFrame1.tryGetTrackerPosition()?.trackerRole ?: continue
+
+			val trackerFrame2 = tracker.tryGetFrame(cursor2) ?: continue
+			val position2 = trackerFrame2.tryGetPosition() ?: continue
+			val trackerRole2 = trackerFrame2.tryGetTrackerPosition()?.trackerRole ?: continue
+
+			val computedTracker1 = skeleton1.getComputedTracker(trackerRole1) ?: continue
+			val computedTracker2 = skeleton2.getComputedTracker(trackerRole2) ?: continue
+
+			val dist1 = (computedTracker1.position - position1).len()
+			val dist2 = (computedTracker2.position - position2).len()
 			offset += FastMath.abs(dist2 - dist1)
 			offsetCount++
 		}

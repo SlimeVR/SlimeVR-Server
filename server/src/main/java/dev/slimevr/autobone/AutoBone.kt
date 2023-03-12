@@ -6,6 +6,7 @@ import dev.slimevr.autobone.errors.*
 import dev.slimevr.config.AutoBoneConfig
 import dev.slimevr.poseframeformat.PoseFrameIO
 import dev.slimevr.poseframeformat.PoseFrames
+import dev.slimevr.poseframeformat.player.TrackerFramesPlayer
 import dev.slimevr.tracking.processor.BoneType
 import dev.slimevr.tracking.processor.HumanPoseManager
 import dev.slimevr.tracking.processor.config.SkeletonConfigManager
@@ -349,10 +350,10 @@ class AutoBone(server: VRServer) {
 	): AutoBoneResults {
 		var targetHeight = targetHeight
 		val frameCount = frames.maxFrameCount
-		val frames1 = PoseFrames(frames)
-		val frames2 = PoseFrames(frames)
-		val trackers1 = frames1.trackers
-		val trackers2 = frames2.trackers
+		val frames1 = TrackerFramesPlayer(frames)
+		val frames2 = TrackerFramesPlayer(frames)
+		val trackers1 = frames1.trackers.toList()
+		val trackers2 = frames2.trackers.toList()
 
 		// Reload configs and detect chest tracker from the first frame
 		reloadConfigValues(trackers1)
@@ -621,7 +622,7 @@ class AutoBone(server: VRServer) {
 		get() {
 			val configInfo = StringBuilder()
 			offsets.forEach { (key: BoneType, value: Float) ->
-				if (configInfo.length > 0) {
+				if (configInfo.isNotEmpty()) {
 					configInfo.append(", ")
 				}
 				configInfo
@@ -632,11 +633,11 @@ class AutoBone(server: VRServer) {
 			return configInfo.toString()
 		}
 
-	fun saveRecording(frames: PoseFrames?, recordingFile: File) {
+	fun saveRecording(frames: PoseFrames, recordingFile: File) {
 		if (saveDir.isDirectory || saveDir.mkdirs()) {
 			LogManager
 				.info("[AutoBone] Exporting frames to \"${recordingFile.path}\"...")
-			if (PoseFrameIO.writeToFile(recordingFile, frames)) {
+			if (PoseFrameIO.tryWriteToFile(recordingFile, frames)) {
 				LogManager
 					.info(
 						"[AutoBone] Done exporting! Recording can be found at \"${recordingFile.path}\"."
@@ -682,7 +683,7 @@ class AutoBone(server: VRServer) {
 							.info(
 								"[AutoBone] Detected recording at \"${file.path}\", loading frames..."
 							)
-						val frames = PoseFrameIO.readFromFile(file)
+						val frames = PoseFrameIO.tryReadFromFile(file)
 						if (frames == null) {
 							LogManager
 								.severe("Reading frames from \"${file.path}\" failed...")

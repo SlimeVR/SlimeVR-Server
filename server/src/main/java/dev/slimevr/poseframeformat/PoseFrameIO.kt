@@ -34,45 +34,48 @@ object PoseFrameIO {
 		outputStream.writeFloat(quaternion.w)
 	}
 
-	fun writeFrames(outputStream: DataOutputStream, frames: PoseFrames): Boolean {
-		try {
-			outputStream.writeInt(frames.frameHolders.size)
-			for (tracker in frames.frameHolders) {
-				val firstFrameOrNull = tracker.tryGetFirstNotNullFrame()
-				outputStream.writeUTF(firstFrameOrNull?.name ?: "")
-				outputStream.writeInt(tracker.frames.size)
-				for (i in 0 until tracker.frames.size) {
-					val trackerFrame = tracker.tryGetFrame(i)
-					if (trackerFrame == null) {
-						outputStream.writeInt(0)
-						continue
-					}
-					var dataFlags = trackerFrame.dataFlags
+	fun writeFrames(outputStream: DataOutputStream, frames: PoseFrames) {
+		outputStream.writeInt(frames.frameHolders.size)
+		for (tracker in frames.frameHolders) {
+			outputStream.writeUTF(tracker.name)
+			outputStream.writeInt(tracker.frames.size)
+			for (i in 0 until tracker.frames.size) {
+				val trackerFrame = tracker.tryGetFrame(i)
+				if (trackerFrame == null) {
+					outputStream.writeInt(0)
+					continue
+				}
+				var dataFlags = trackerFrame.dataFlags
 
-					// Don't write destination strings anymore, replace with
-					// the enum
-					if (trackerFrame.hasData(TrackerFrameData.DESIGNATION_STRING)) {
-						dataFlags = TrackerFrameData.TRACKER_POSITION_ENUM
-							.add(TrackerFrameData.DESIGNATION_STRING.remove(dataFlags))
-					}
-					outputStream.writeInt(dataFlags)
-					if (trackerFrame.hasData(TrackerFrameData.ROTATION)) {
-						writeQuaternion(outputStream, trackerFrame.rotation!!)
-					}
-					if (trackerFrame.hasData(TrackerFrameData.POSITION)) {
-						writeVector3f(outputStream, trackerFrame.position!!)
-					}
-					if (TrackerFrameData.TRACKER_POSITION_ENUM.check(dataFlags)) {
-						outputStream.writeInt(trackerFrame.trackerPosition!!.ordinal)
-					}
-					if (trackerFrame.hasData(TrackerFrameData.ACCELERATION)) {
-						writeVector3f(outputStream, trackerFrame.acceleration!!)
-					}
-					if (trackerFrame.hasData(TrackerFrameData.RAW_ROTATION)) {
-						writeQuaternion(outputStream, trackerFrame.rawRotation!!)
-					}
+				// Don't write destination strings anymore, replace with
+				// the enum
+				if (trackerFrame.hasData(TrackerFrameData.DESIGNATION_STRING)) {
+					dataFlags = TrackerFrameData.TRACKER_POSITION_ENUM
+						.add(TrackerFrameData.DESIGNATION_STRING.remove(dataFlags))
+				}
+				outputStream.writeInt(dataFlags)
+				if (trackerFrame.hasData(TrackerFrameData.ROTATION)) {
+					writeQuaternion(outputStream, trackerFrame.rotation!!)
+				}
+				if (trackerFrame.hasData(TrackerFrameData.POSITION)) {
+					writeVector3f(outputStream, trackerFrame.position!!)
+				}
+				if (TrackerFrameData.TRACKER_POSITION_ENUM.check(dataFlags)) {
+					outputStream.writeInt(trackerFrame.trackerPosition!!.ordinal)
+				}
+				if (trackerFrame.hasData(TrackerFrameData.ACCELERATION)) {
+					writeVector3f(outputStream, trackerFrame.acceleration!!)
+				}
+				if (trackerFrame.hasData(TrackerFrameData.RAW_ROTATION)) {
+					writeQuaternion(outputStream, trackerFrame.rawRotation!!)
 				}
 			}
+		}
+	}
+
+	fun tryWriteFrames(outputStream: DataOutputStream, frames: PoseFrames): Boolean {
+		try {
+			writeFrames(outputStream, frames)
 		} catch (e: Exception) {
 			LogManager.severe("Error writing frame to stream", e)
 			return false
@@ -80,11 +83,15 @@ object PoseFrameIO {
 		return true
 	}
 
-	fun writeToFile(file: File, frames: PoseFrames): Boolean {
+	fun writeToFile(file: File, frames: PoseFrames) {
+		DataOutputStream(
+			BufferedOutputStream(FileOutputStream(file))
+		).use { outputStream -> writeFrames(outputStream, frames) }
+	}
+
+	fun tryWriteToFile(file: File, frames: PoseFrames): Boolean {
 		try {
-			DataOutputStream(
-				BufferedOutputStream(FileOutputStream(file))
-			).use { outputStream -> writeFrames(outputStream, frames) }
+			writeToFile(file, frames)
 		} catch (e: Exception) {
 			LogManager.severe("Error writing frames to file", e)
 			return false
@@ -156,7 +163,7 @@ object PoseFrameIO {
 						)
 					)
 			}
-			trackers.add(TrackerFrames(trackerFrames))
+			trackers.add(TrackerFrames(name, trackerFrames))
 		}
 		return PoseFrames(trackers)
 	}
