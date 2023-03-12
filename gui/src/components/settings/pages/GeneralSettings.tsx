@@ -206,8 +206,7 @@ export function GeneralSettings() {
   useEffect(() => {
     if (location.pathname.includes('/onboarding/body-proportions')) {
       sendRPCPacket(RpcMessage.GUIInfosResponse, new GUIInfosResponseT(true));
-    }
-    else {
+    } else {
       sendRPCPacket(RpcMessage.GUIInfosResponse, new GUIInfosResponseT(false));
     }
   }, [location.pathname]);
