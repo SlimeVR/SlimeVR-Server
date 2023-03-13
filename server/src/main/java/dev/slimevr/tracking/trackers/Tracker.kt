@@ -52,6 +52,19 @@ class Tracker @JvmOverloads constructor(
 	var displayName: String? = null
 	var customName: String? = null
 
+	// Computed value to simplify availability checks
+	val hasAdjustedRotation = hasRotation && (needsFiltering || needsReset)
+
+	init {
+		// IMPORTANT: Look here for the required states of inputs
+		require(!needsReset || (hasRotation && needsReset)) {
+			"If ${::needsReset.name} is true, then ${::hasRotation.name} must also be true"
+		}
+		require(!needsMounting || (needsFiltering && needsMounting)) {
+			"If ${::needsMounting.name} is true, then ${::needsReset.name} must also be true"
+		}
+	}
+
 	/**
 	 * Reads/loads from the given config
 	 */
@@ -85,21 +98,16 @@ class Tracker @JvmOverloads constructor(
 	 * Writes/saves to the given config
 	 */
 	fun writeConfig(config: TrackerConfig) {
-		trackerPosition ?: let { config.designation = trackerPosition?.designation ?: config.designation }
+		trackerPosition?.let { config.designation = trackerPosition?.designation ?: config.designation }
 		customName?.let { config.customName = customName }
 		if (needsMounting) {
-			config
-				.setMountingOrientation(
-					resetsHandler.mountingOrientation?.let { resetsHandler.mountingOrientation }
-						?: run {
-							EulerAngles(
-								EulerOrder.YZX,
-								0f,
-								FastMath.PI,
-								0f
-							).toQuaternion()
-						}
-				)
+			config.mountingOrientation = resetsHandler.mountingOrientation
+				?: EulerAngles(
+					EulerOrder.YZX,
+					0f,
+					FastMath.PI,
+					0f
+				).toQuaternion()
 		}
 		if (isImu) {
 			config.allowDriftCompensation = resetsHandler.allowDriftCompensation
@@ -140,7 +148,7 @@ class Tracker @JvmOverloads constructor(
 			// Get unfiltered rotation
 			rotation
 		}
-		
+
 		if (needsReset && trackerPosition != TrackerPosition.HEAD) {
 			// Adjust to reset, mounting and drift compensation
 			rot = resetsHandler.getReferenceAdjustedRotationFrom(rot)
