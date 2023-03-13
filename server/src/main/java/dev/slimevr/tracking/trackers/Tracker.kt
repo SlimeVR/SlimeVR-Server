@@ -139,7 +139,7 @@ class Tracker @JvmOverloads constructor(
 	 * This is the rotation that is applied on the SlimeVR skeleton bones.
 	 */
 	fun getRotation(): Quaternion {
-		var rot = if (filteringHandler.enabled) {
+		var rot = if (needsFiltering && filteringHandler.enabled) {
 			// Get filtered rotation
 			filteringHandler.getFilteredRotation()
 		} else {
