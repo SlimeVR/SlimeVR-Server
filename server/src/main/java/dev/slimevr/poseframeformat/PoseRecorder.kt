@@ -136,11 +136,7 @@ class PoseRecorder(private val server: VRServer) {
 
 		LogManager
 			.info(
-				"[PoseRecorder] Recording " +
-					numFrames +
-					" samples at a " +
-					intervalMs +
-					" ms frame interval"
+				"[PoseRecorder] Recording $numFrames samples at a $intervalMs ms frame interval"
 			)
 
 		currentFrameCallback = frameCallback

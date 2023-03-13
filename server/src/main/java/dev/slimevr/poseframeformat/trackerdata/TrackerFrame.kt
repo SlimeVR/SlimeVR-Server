@@ -16,7 +16,7 @@ data class TrackerFrame(
 	val dataFlags: Int
 
 	val name: String
-		get() = "TrackerFrame:/" + (trackerPosition?.designation ?: "null")
+		get() = "TrackerFrame:/${trackerPosition?.designation ?: "null"}"
 
 	init {
 		var initDataFlags = 0
@@ -103,58 +103,34 @@ data class TrackerFrame(
 
 		fun fromTracker(tracker: Tracker): TrackerFrame? {
 			// If the tracker is not ready
-			if (tracker.status !== TrackerStatus.OK && tracker.status !== TrackerStatus.BUSY && tracker.status !== TrackerStatus.OCCLUDED) {
+			if (tracker.status != TrackerStatus.OK && tracker.status != TrackerStatus.BUSY && tracker.status != TrackerStatus.OCCLUDED) {
 				return null
 			}
-			val designation = tracker.trackerPosition
 
-			// TODO: Discuss with Erimel to fix these
-			val rotation: Quaternion? = null
-// 			if (tracker.getHasRotation()) {
-// 				rotation = new Quaternion();
-// 				if (!tracker.getRotation(rotation)) {
-// 					// If the get failed, set it back to null
-// 					rotation = null;
-// 				}
-// 			}
-			val position: Vector3? = null
-// 			if (tracker.getHasPosition()) {
-// 				position = new Vector3();
-// 				if (!tracker.getPosition(position)) {
-// 					// If the get failed, set it back to null
-// 					position = null;
-// 				}
-// 			}
-			val acceleration: Vector3? = null
-// 			if (tracker.getHasAcceleration()) {
-// 				acceleration = new Vector3();
-// 				if (!tracker.getAcceleration(acceleration)) {
-// 					// If the get failed, set it back to null
-// 					acceleration = null;
-// 				}
-// 			}
-
-			// TODO: Why is there no `hasRawRotation`? Update this to check that
-			// first when it exists
-			val rawRotation: Quaternion? = null
-// 			if (!(tracker.getRawRotation(rawRotation) && !rawRotation.equals(rotation))) {
-// 				// If the get failed or the rawRotation is the same as rotation, set
-// 				// it back to null
-// 				rawRotation = null;
-// 			}
+			val trackerPosition = tracker.trackerPosition
 
 			// If tracker has no data at all, there's no point in writing a frame
-			return if (designation == null && rotation == null && position == null && acceleration == null && rawRotation == null) {
-				null
-			} else {
-				TrackerFrame(
-					designation,
-					rotation,
-					position,
-					acceleration,
-					rawRotation
-				)
+			// Note: This includes rawRotation because of `!tracker.hasRotation`
+			if (trackerPosition == null && !tracker.hasRotation && !tracker.hasPosition && !tracker.hasAcceleration) {
+				return null
 			}
+
+			val rotation: Quaternion? = if (tracker.hasRotation) tracker.getRotation() else null
+			val position: Vector3? = if (tracker.hasPosition) tracker.position else null
+			val acceleration: Vector3? = if (tracker.hasAcceleration) tracker.acceleration else null
+
+			val needsRawRotation = tracker.hasRotation && (tracker.needsFiltering || tracker.needsReset || tracker.needsMounting)
+			var rawRotation: Quaternion? = if (needsRawRotation) tracker.getRawRotation() else null
+			// If the rawRotation is the same as rotation, there's no point in saving it, set it back to null
+			if (rawRotation == rotation) rawRotation = null
+
+			return TrackerFrame(
+				trackerPosition,
+				rotation,
+				position,
+				acceleration,
+				rawRotation
+			)
 		}
 	}
 }
