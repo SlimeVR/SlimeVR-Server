@@ -84,16 +84,16 @@ class TrackerResetsHandler(val tracker: Tracker) {
 	}
 
 	private fun getAdjustedRawRotation(): Quaternion {
-		return adjustToReference(tracker.getRotation())
+		return adjustToReference(tracker.getRawRotation())
 	}
 
 	private fun getMountedAdjustedRotation(): Quaternion {
-		mountingOrientation?.let { return tracker.getRotation() * it }
-		return tracker.getRotation()
+		mountingOrientation?.let { return tracker.getRawRotation() * it }
+		return tracker.getRawRotation()
 	}
 
 	private fun getMountedAdjustedDriftRotation(): Quaternion {
-		var rot = tracker.getRotation()
+		var rot = tracker.getRawRotation()
 		mountingOrientation?.let { rot *= it }
 		rot = adjustToDrift(rot)
 		return rot
@@ -146,7 +146,7 @@ class TrackerResetsHandler(val tracker: Tracker) {
 	 * 0). This allows the tracker to be strapped to body at any pitch and roll.
 	 */
 	fun resetFull(reference: Quaternion) {
-		val rot: Quaternion = adjustToReference(tracker.getRotation())
+		val rot: Quaternion = adjustToReference(tracker.getRawRotation())
 
 		fixGyroscope(getMountedAdjustedRotation())
 		fixAttachment(getMountedAdjustedRotation())
@@ -174,7 +174,7 @@ class TrackerResetsHandler(val tracker: Tracker) {
 	 * if it's reliable.
 	 */
 	fun resetYaw(reference: Quaternion) {
-		val rot: Quaternion = adjustToReference(tracker.getRotation())
+		val rot: Quaternion = adjustToReference(tracker.getRawRotation())
 
 		fixYaw(getMountedAdjustedRotation(), reference)
 
@@ -241,7 +241,7 @@ class TrackerResetsHandler(val tracker: Tracker) {
 
 				// Add new drift quaternion
 				driftQuats.add(
-					adjustToReference(tracker.getRotation()).project(Vector3.POS_Y).unit() *
+					adjustToReference(tracker.getRawRotation()).project(Vector3.POS_Y).unit() *
 						(beforeQuat.project(Vector3.POS_Y).unit().inv())
 				)
 
@@ -271,7 +271,7 @@ class TrackerResetsHandler(val tracker: Tracker) {
 			} else if (System.currentTimeMillis() - timeAtLastReset < DRIFT_COOLDOWN_MS && driftQuats.size > 0) {
 				// Replace latest drift quaternion
 				rotationSinceReset *= (
-					adjustToReference(tracker.getRotation()).project(Vector3.POS_Y).unit() *
+					adjustToReference(tracker.getRawRotation()).project(Vector3.POS_Y).unit() *
 						(beforeQuat.project(Vector3.POS_Y).unit().inv())
 					)
 				driftQuats[driftQuats.size - 1] = rotationSinceReset
