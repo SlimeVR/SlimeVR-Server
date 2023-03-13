@@ -70,6 +70,7 @@ module.exports = {
   },
   plugins: [
     require('@tailwindcss/forms'),
+    require('tailwind-gradient-mask-image'),
     plugin(function ({ addUtilities, theme }) {
       const textConfig = (fontSize, fontWeight) => ({
         fontSize,

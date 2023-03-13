@@ -1,7 +1,7 @@
 {
   description = "Server app for SlimeVR ecosystem";
 
-  inputs.nixpkgs.url = "nixpkgs/nixos-22.11";
+  inputs.nixpkgs.url = "nixpkgs/nixos-unstable";
   inputs.flake-utils.url = "github:numtide/flake-utils";
 
   inputs.rust-overlay.url = "github:oxalica/rust-overlay";
@@ -57,7 +57,7 @@
           exa
           fd
 
-          jdk # JDK17
+          jdk17 # JDK17
           nodejs
           gradle
         ];
