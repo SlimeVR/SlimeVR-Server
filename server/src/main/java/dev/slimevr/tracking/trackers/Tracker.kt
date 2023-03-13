@@ -60,7 +60,7 @@ class Tracker @JvmOverloads constructor(
 		require(!needsReset || (hasRotation && needsReset)) {
 			"If ${::needsReset.name} is true, then ${::hasRotation.name} must also be true"
 		}
-		require(!needsMounting || (needsFiltering && needsMounting)) {
+		require(!needsMounting || (needsReset && needsMounting)) {
 			"If ${::needsMounting.name} is true, then ${::needsReset.name} must also be true"
 		}
 	}
