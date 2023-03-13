@@ -45,6 +45,9 @@ public abstract class ProtobufBridge<T extends VRTracker> implements Bridge {
 		this.hmd = hmd;
 	}
 
+	@ThreadSafe
+	protected abstract void signalSend();
+
 	@BridgeThread
 	protected abstract boolean sendMessageReal(ProtobufMessage message);
 
@@ -56,6 +59,7 @@ public abstract class ProtobufBridge<T extends VRTracker> implements Bridge {
 	@ThreadSafe
 	protected void sendMessage(ProtobufMessage message) {
 		outputQueue.add(message);
+		signalSend();
 	}
 
 	@BridgeThread

@@ -7,6 +7,7 @@ import dev.slimevr.bridge.BridgeThread;
 import dev.slimevr.bridge.ProtobufMessages;
 import dev.slimevr.platform.SteamVRBridge;
 import dev.slimevr.tracking.trackers.*;
+import io.eiren.util.ann.ThreadSafe;
 import io.eiren.util.logging.LogManager;
 
 import java.io.File;
@@ -17,6 +18,8 @@ import java.nio.ByteBuffer;
 import java.nio.ByteOrder;
 import java.nio.channels.ServerSocketChannel;
 import java.nio.channels.SocketChannel;
+import java.nio.channels.Selector;
+import java.nio.channels.SelectionKey;
 import java.util.List;
 
 
@@ -28,6 +31,7 @@ public class UnixSocketBridge extends SteamVRBridge implements AutoCloseable {
 
 	private ServerSocketChannel server;
 	private SocketChannel channel;
+	private Selector selector;
 	private boolean socketError = false;
 
 	public UnixSocketBridge(
@@ -56,7 +60,10 @@ public class UnixSocketBridge extends SteamVRBridge implements AutoCloseable {
 			this.server = createSocket();
 			while (true) {
 				if (this.channel == null) {
+					this.selector = Selector.open();
 					this.channel = server.accept();
+					this.channel.configureBlocking(false);
+					this.channel.register(this.selector, SelectionKey.OP_READ);
 					if (this.channel == null)
 						continue;
 					Main.getVrServer().queueTask(this::reconnected);
@@ -73,21 +80,42 @@ public class UnixSocketBridge extends SteamVRBridge implements AutoCloseable {
 						this.resetChannel();
 						continue;
 					}
-					boolean update = this.updateSocket();
-					if (!update) {
+					try {
+						boolean updated = this.updateSocket();
+						updateMessageQueue();
+						if (!updated) {
+							this.waitForData(10);
+						}
+					} catch (IOException ioError) {
+						this.resetChannel();
+						ioError.printStackTrace();
 						try {
-							Thread.sleep(5); // Up to 200Hz
+							Thread.sleep(10);
 						} catch (InterruptedException e) {
 							e.printStackTrace();
 						}
 					}
-					updateMessageQueue();
 				}
 			}
 		} catch (IOException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
+	}
+
+	@Override
+	@ThreadSafe
+	protected void signalSend() {
+		Selector selector = this.selector;
+		if (selector == null) {
+			return;
+		}
+		selector.wakeup();
+	}
+
+	@BridgeThread
+	private void waitForData(long timeoutMs) throws IOException {
+		this.selector.select(timeoutMs);
 	}
 
 	@Override
@@ -116,6 +144,20 @@ public class UnixSocketBridge extends SteamVRBridge implements AutoCloseable {
 
 	private boolean updateSocket() throws IOException {
 		int read = channel.read(dst);
+		if (read == -1) {
+			LogManager
+				.info(
+					"["
+						+ bridgeName
+						+ "] Reached end-of-stream on connection of "
+						+ this.channel.getRemoteAddress().toString()
+				);
+			socketError = true;
+			return false;
+		} else if (read == 0) {
+			return false;
+		}
+
 		boolean readAnything = false;
 		// if buffer has 4 bytes at least, we got the message size!
 		// processs all messages
@@ -130,6 +172,7 @@ public class UnixSocketBridge extends SteamVRBridge implements AutoCloseable {
 							+ messageLength
 					);
 				socketError = true;
+				break;
 			} else if (dst.position() >= messageLength) {
 				// Parse the message (this reads the array directly from the
 				// dst, so we need to move position ourselves)
@@ -145,17 +188,9 @@ public class UnixSocketBridge extends SteamVRBridge implements AutoCloseable {
 				// move position after compacting
 				dst.position(originalpos - messageLength);
 				readAnything = true;
+			} else {
+				break;
 			}
-		}
-		if (read == -1) {
-			LogManager
-				.info(
-					"["
-						+ bridgeName
-						+ "] Reached end-of-stream on connection of "
-						+ this.channel.getRemoteAddress().toString()
-				);
-			socketError = true;
 		}
 		return readAnything;
 	}
@@ -178,6 +213,8 @@ public class UnixSocketBridge extends SteamVRBridge implements AutoCloseable {
 					+ "] Disconnected from "
 					+ this.channel.getRemoteAddress().toString()
 			);
+		this.selector.close();
+		this.selector = null;
 		this.channel.close();
 		this.channel = null;
 		this.socketError = false;

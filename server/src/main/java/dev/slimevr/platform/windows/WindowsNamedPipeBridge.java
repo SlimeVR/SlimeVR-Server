@@ -13,6 +13,7 @@ import dev.slimevr.bridge.PipeState;
 import dev.slimevr.bridge.ProtobufMessages.ProtobufMessage;
 import dev.slimevr.platform.SteamVRBridge;
 import dev.slimevr.tracking.trackers.*;
+import io.eiren.util.ann.ThreadSafe;
 import io.eiren.util.logging.LogManager;
 
 import java.io.IOException;
@@ -24,7 +25,9 @@ public class WindowsNamedPipeBridge extends SteamVRBridge {
 	protected final String pipeName;
 	private final byte[] buffArray = new byte[2048];
 	protected WindowsPipe pipe;
-	protected WinNT.HANDLE dataEvent = Kernel32.INSTANCE.CreateEvent(null, false, false, null);
+	protected WinNT.HANDLE rxEvent = Kernel32.INSTANCE.CreateEvent(null, false, false, null);
+	protected WinNT.HANDLE txEvent = Kernel32.INSTANCE.CreateEvent(null, false, false, null);
+	protected WinNT.HANDLE[] events = new WinNT.HANDLE[] { rxEvent, txEvent };
 	protected WinBase.OVERLAPPED overlapped = new WinBase.OVERLAPPED();
 
 	public WindowsNamedPipeBridge(
@@ -37,7 +40,7 @@ public class WindowsNamedPipeBridge extends SteamVRBridge {
 	) {
 		super(server, hmd, "Named pipe thread", bridgeName, bridgeSettingsKey, shareableTrackers);
 		this.pipeName = pipeName;
-		overlapped.hEvent = dataEvent;
+		overlapped.hEvent = rxEvent;
 	}
 
 	@Override
@@ -59,10 +62,10 @@ public class WindowsNamedPipeBridge extends SteamVRBridge {
 				}
 				if (!pipesUpdated) {
 					if (pipe.state == PipeState.OPEN) {
-						waitForData();
+						waitForData(10);
 					} else {
 						try {
-							Thread.sleep(20);
+							Thread.sleep(10);
 						} catch (InterruptedException e) {
 							e.printStackTrace();
 						}
@@ -73,6 +76,21 @@ public class WindowsNamedPipeBridge extends SteamVRBridge {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
+	}
+
+	@Override
+	@ThreadSafe
+	protected void signalSend() {
+		Kernel32.INSTANCE.SetEvent(txEvent);
+	}
+
+	@BridgeThread
+	private void waitForData(int timeoutMs) {
+		if (pipe.state != PipeState.OPEN)
+			return;
+		// async request for data, overlapped contains the rxEvent handle
+		Kernel32.INSTANCE.ReadFile(pipe.pipeHandle, null, 0, null, overlapped);
+		Kernel32.INSTANCE.WaitForMultipleObjects(events.length, events, false, timeoutMs);
 	}
 
 	@Override
@@ -99,14 +117,6 @@ public class WindowsNamedPipeBridge extends SteamVRBridge {
 			}
 		}
 		return false;
-	}
-
-	private void waitForData() {
-		if (pipe.state != PipeState.OPEN)
-			return;
-		// async request for data, overlapped contains the event handle
-		Kernel32.INSTANCE.ReadFile(pipe.pipeHandle, null, 0, null, overlapped);
-		Kernel32.INSTANCE.WaitForSingleObject(dataEvent, 20);
 	}
 
 	private boolean updatePipe() throws IOException {
@@ -186,7 +196,7 @@ public class WindowsNamedPipeBridge extends SteamVRBridge {
 				Kernel32.INSTANCE
 					.CreateNamedPipe(
 						pipeName,
-						WinBase.PIPE_ACCESS_DUPLEX, // dwOpenMode
+						WinBase.PIPE_ACCESS_DUPLEX | WinNT.FILE_FLAG_OVERLAPPED, // dwOpenMode
 						WinBase.PIPE_TYPE_BYTE | WinBase.PIPE_READMODE_BYTE | WinBase.PIPE_WAIT, // dwPipeMode
 						1, // nMaxInstances,
 						1024 * 16, // nOutBufferSize,
