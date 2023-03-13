@@ -57,32 +57,26 @@ class Tracker @JvmOverloads constructor(
 	 */
 	fun readConfig(config: TrackerConfig) {
 		if (userEditable) {
-			val cN = config.customName
-			if (cN != null) {
-				customName = cN
+			config.customName?.let {
+				customName = config.customName
 			}
-			val des = getByDesignation(config.designation)
-			if (des != null) {
-				trackerPosition = des
+			config.designation?.let {
+				if (getByDesignation(config.designation) != null) {
+					trackerPosition = getByDesignation(config.designation)
+				}
 			}
-			val mO = config.mountingOrientation
-			if (needsMounting && mO != null) {
-				resetsHandler.mountingOrientation = mO
-			} else {
-				resetsHandler.mountingOrientation = Quaternion.IDENTITY
+			if (needsMounting) {
+				resetsHandler.mountingOrientation = config.mountingOrientation
 			}
-			val aDC = config.allowDriftCompensation
-			if (isImu && aDC == null) {
+			if (isImu && config.allowDriftCompensation == null) {
 				// If value didn't exist, default to true and save
 				resetsHandler.allowDriftCompensation = true
-				vrServer!!
-					.getConfigManager()
-					.getVrConfig()
-					.getTracker(this)
-					.setAllowDriftCompensation(true)
-				vrServer!!.getConfigManager().saveConfig()
+				vrServer!!.configManager.vrConfig.getTracker(this).allowDriftCompensation = true
+				vrServer!!.configManager.saveConfig()
 			} else {
-				resetsHandler.allowDriftCompensation = aDC
+				config.allowDriftCompensation?.let {
+					resetsHandler.allowDriftCompensation = config.allowDriftCompensation
+				}
 			}
 		}
 	}
@@ -91,27 +85,20 @@ class Tracker @JvmOverloads constructor(
 	 * Writes/saves to the given config
 	 */
 	fun writeConfig(config: TrackerConfig) {
-		val tP = trackerPosition
-		if (tP != null) {
-			config.designation = tP.designation
-		}
-		val cN = config.customName
-		if (cN != null) {
-			config.customName = cN
-		}
+		trackerPosition ?: let { config.designation = trackerPosition?.designation ?: config.designation }
+		customName?.let { config.customName = customName }
 		if (needsMounting) {
 			config
 				.setMountingOrientation(
-					if (resetsHandler.mountingOrientation != null) {
-						resetsHandler.mountingOrientation
-					} else {
-						EulerAngles(
-							EulerOrder.YZX,
-							0f,
-							FastMath.PI,
-							0f
-						).toQuaternion()
-					}
+					resetsHandler.mountingOrientation?.let { resetsHandler.mountingOrientation }
+						?: run {
+							EulerAngles(
+								EulerOrder.YZX,
+								0f,
+								FastMath.PI,
+								0f
+							).toQuaternion()
+						}
 				)
 		}
 		if (isImu) {
@@ -153,7 +140,7 @@ class Tracker @JvmOverloads constructor(
 			// Get unfiltered rotation
 			rotation
 		}
-
+		
 		if (needsReset && trackerPosition != TrackerPosition.HEAD) {
 			// Adjust to reset, mounting and drift compensation
 			rot = resetsHandler.getReferenceAdjustedRotationFrom(rot)
