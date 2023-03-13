@@ -36,7 +36,7 @@ enum class TrackerPosition(
 
 	companion object {
 		/** Indexed by `BodyPart` int value. EFFICIENCY FTW  */
-		private val byBodyPart: Array<out TrackerPosition?> = Array(BodyPart.names.size) { i -> values()[i] }
+		private val byBodyPart: Array<out TrackerPosition?> = Array(BodyPart.names.size) { i -> values()[i] } // FIXME
 		private val byDesignation = values().associateBy { it.designation.lowercase() }
 		private val byTrackerRole = values().filter { it.trackerRole != null }.associateBy { it.trackerRole!! }
 

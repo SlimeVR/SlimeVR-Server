@@ -492,7 +492,7 @@ public class HumanSkeleton {
 		switch (tracker.getTrackerPosition()) {
 			case HEAD -> computedHeadTracker = tracker;
 			case CHEST -> computedChestTracker = tracker;
-			case WAIST -> computedWaistTracker = tracker;
+			case HIP -> computedWaistTracker = tracker;
 			case LEFT_UPPER_LEG -> computedLeftKneeTracker = tracker;
 			case LEFT_FOOT -> computedLeftFootTracker = tracker;
 			case RIGHT_UPPER_LEG -> computedRightKneeTracker = tracker;

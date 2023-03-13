@@ -8,7 +8,10 @@ import dev.slimevr.tracking.trackers.Tracker;
 import dev.slimevr.tracking.trackers.TrackerResetsHandler;
 import io.eiren.math.FloatMath;
 import io.eiren.util.StringUtils;
+import io.github.axisangles.ktmath.EulerAngles;
+import io.github.axisangles.ktmath.EulerOrder;
 import io.github.axisangles.ktmath.Quaternion;
+import io.github.axisangles.ktmath.Vector3;
 import org.junit.jupiter.api.DynamicTest;
 import org.junit.jupiter.api.TestFactory;
 
@@ -16,8 +19,7 @@ import java.util.function.Function;
 import java.util.stream.IntStream;
 import java.util.stream.Stream;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.junit.jupiter.api.Assertions.*;
 import static org.junit.jupiter.api.DynamicTest.dynamicTest;
 
 
@@ -53,9 +55,9 @@ public class ReferenceAdjustmentsTests {
 		int yaw,
 		int pitch,
 		int roll,
-		float[] angles,
-		float[] anglesAdj,
-		float[] anglesDiff
+		EulerAngles angles,
+		EulerAngles anglesAdj,
+		EulerAngles anglesDiff
 	) {
 		return "Rot: "
 			+ yaw
@@ -65,42 +67,41 @@ public class ReferenceAdjustmentsTests {
 			+ roll
 			+ ". "
 			+ "Angles: "
-			+ StringUtils.prettyNumber(angles[0] * FastMath.RAD_TO_DEG, 1)
+			+ StringUtils.prettyNumber(angles.getX() * FastMath.RAD_TO_DEG, 1)
 			+ "/"
-			+ StringUtils.prettyNumber(anglesAdj[0] * FastMath.RAD_TO_DEG, 1)
+			+ StringUtils.prettyNumber(anglesAdj.getX() * FastMath.RAD_TO_DEG, 1)
 			+ ", "
-			+ StringUtils.prettyNumber(angles[1] * FastMath.RAD_TO_DEG, 1)
+			+ StringUtils.prettyNumber(angles.getY() * FastMath.RAD_TO_DEG, 1)
 			+ "/"
-			+ StringUtils.prettyNumber(anglesAdj[1] * FastMath.RAD_TO_DEG, 1)
+			+ StringUtils.prettyNumber(anglesAdj.getY() * FastMath.RAD_TO_DEG, 1)
 			+ ", "
-			+ StringUtils.prettyNumber(angles[2] * FastMath.RAD_TO_DEG, 1)
+			+ StringUtils.prettyNumber(angles.getZ() * FastMath.RAD_TO_DEG, 1)
 			+ "/"
-			+ StringUtils.prettyNumber(anglesAdj[2] * FastMath.RAD_TO_DEG, 1)
+			+ StringUtils.prettyNumber(anglesAdj.getZ() * FastMath.RAD_TO_DEG, 1)
 			+ ". Diff: "
-			+ StringUtils.prettyNumber(anglesDiff[0] * FastMath.RAD_TO_DEG, 1)
+			+ StringUtils.prettyNumber(anglesDiff.getX() * FastMath.RAD_TO_DEG, 1)
 			+ ", "
-			+ StringUtils.prettyNumber(anglesDiff[1] * FastMath.RAD_TO_DEG, 1)
+			+ StringUtils.prettyNumber(anglesDiff.getY() * FastMath.RAD_TO_DEG, 1)
 			+ ", "
-			+ StringUtils.prettyNumber(anglesDiff[2] * FastMath.RAD_TO_DEG, 1);
+			+ StringUtils.prettyNumber(anglesDiff.getZ() * FastMath.RAD_TO_DEG, 1);
 	}
 
 	public static Quaternion q(float pitch, float yaw, float roll) {
-		return new Quaternion()
-			.fromAngles(
-				pitch * FastMath.DEG_TO_RAD,
-				yaw * FastMath.DEG_TO_RAD,
-				roll * FastMath.DEG_TO_RAD
-			);
+		return new EulerAngles(
+			EulerOrder.YZX,
+			pitch * FastMath.DEG_TO_RAD,
+			yaw * FastMath.DEG_TO_RAD,
+			roll * FastMath.DEG_TO_RAD
+		).toQuaternion();
 	}
 
 	public static String toDegs(Quaternion q) {
-		float[] degs = new float[3];
-		q.toAngles(degs);
-		return StringUtils.prettyNumber(degs[0] * FastMath.RAD_TO_DEG, 0)
+		EulerAngles angles = q.toEulerAngles(EulerOrder.YZX);
+		return StringUtils.prettyNumber(angles.getX() * FastMath.RAD_TO_DEG, 0)
 			+ ","
-			+ StringUtils.prettyNumber(degs[1] * FastMath.RAD_TO_DEG, 0)
+			+ StringUtils.prettyNumber(angles.getY() * FastMath.RAD_TO_DEG, 0)
 			+ ","
-			+ StringUtils.prettyNumber(degs[2] * FastMath.RAD_TO_DEG, 0);
+			+ StringUtils.prettyNumber(angles.getZ() * FastMath.RAD_TO_DEG, 0);
 	}
 
 	@TestFactory
@@ -198,20 +199,17 @@ public class ReferenceAdjustmentsTests {
 		);
 		tracker.setRotation(trackerQuat);
 		tracker.getResetsHandler().resetFull(referenceQuat);
-		Quaternion read = new Quaternion();
-		assertTrue(tracker.getRotation(read), "Adjusted tracker didn't return rotation");
+		Quaternion read = tracker.getRotation();
+		assertNotNull(read, "Adjusted tracker didn't return rotation");
 
 		// Use only yaw HMD rotation
-		Quaternion targetTrackerRotation = new Quaternion(referenceQuat);
-		float[] angles = new float[3];
-		targetTrackerRotation.toAngles(angles);
-		targetTrackerRotation.fromAngles(0, angles[1], 0);
+		referenceQuat.project(Vector3.Companion.getPOS_Y()).unit();
 
 		assertEquals(
 			new QuatEqualFullWithEpsilon(read),
-			new QuatEqualFullWithEpsilon(targetTrackerRotation),
+			new QuatEqualFullWithEpsilon(referenceQuat),
 			"Adjusted quat is not equal to reference quat ("
-				+ toDegs(targetTrackerRotation)
+				+ toDegs(referenceQuat)
 				+ " vs "
 				+ toDegs(read)
 				+ ")"
@@ -246,8 +244,9 @@ public class ReferenceAdjustmentsTests {
 		);
 		tracker.setRotation(trackerQuat);
 		tracker.getResetsHandler().resetYaw(referenceQuat);
-		Quaternion read = new Quaternion();
-		assertTrue(tracker.getRotation(read), "Adjusted tracker didn't return rotation");
+		Quaternion read = tracker.getRotation();
+		assertNotNull(read, "Adjusted tracker didn't return rotation");
+
 		assertEquals(
 			new QuatEqualYawWithEpsilon(referenceQuat),
 			new QuatEqualYawWithEpsilon(read),
@@ -288,17 +287,7 @@ public class ReferenceAdjustmentsTests {
 		tracker.getResetsHandler().resetFull(referenceQuat);
 
 		// Use only yaw HMD rotation
-		Quaternion targetTrackerRotation = new Quaternion(referenceQuat);
-		float[] angles = new float[3];
-		targetTrackerRotation.toAngles(angles);
-		targetTrackerRotation.fromAngles(0, angles[1], 0);
-
-		Quaternion read = new Quaternion();
-		Quaternion rotation = new Quaternion();
-		Quaternion rotationCompare = new Quaternion();
-		Quaternion diff = new Quaternion();
-		float[] anglesAdj = new float[3];
-		float[] anglesDiff = new float[3];
+		referenceQuat.project(Vector3.Companion.getPOS_Y()).unit();
 
 		TransformNode trackerNode = new TransformNode(BoneType.HIP, true);
 		TransformNode rotationNode = new TransformNode(BoneType.HIP, true);
@@ -309,41 +298,43 @@ public class ReferenceAdjustmentsTests {
 		for (int yaw = 0; yaw <= 360; yaw += 30) {
 			for (int pitch = -90; pitch <= 90; pitch += 15) {
 				for (int roll = -90; roll <= 90; roll += 15) {
-					rotation
-						.fromAngles(
-							pitch * FastMath.DEG_TO_RAD,
-							yaw * FastMath.DEG_TO_RAD,
-							roll * FastMath.DEG_TO_RAD
-						);
-					rotationCompare
-						.fromAngles(
-							pitch * FastMath.DEG_TO_RAD,
-							(yaw + refYaw) * FastMath.DEG_TO_RAD,
-							roll * FastMath.DEG_TO_RAD
-						);
+					Quaternion rotation = new EulerAngles(
+						EulerOrder.YZX,
+						pitch * FastMath.DEG_TO_RAD,
+						yaw * FastMath.DEG_TO_RAD,
+						roll * FastMath.DEG_TO_RAD
+					).toQuaternion();
+					Quaternion rotationCompare = new EulerAngles(
+						EulerOrder.YZX,
+						pitch * FastMath.DEG_TO_RAD,
+						(yaw + refYaw) * FastMath.DEG_TO_RAD,
+						roll * FastMath.DEG_TO_RAD
+					).toQuaternion();
+
 					rotationNode.getLocalTransform().setRotation(rotation);
 					rotationNode.update();
 					tracker.setRotation(trackerNode.getWorldTransform().getRotation());
-					tracker.getRawRotation().toAngles(angles);
 
-					tracker.getRotation(read);
-					read.toAngles(anglesAdj);
-
-					diff.set(read).inverseLocal().multLocal(rotationCompare);
-					diff.toAngles(anglesDiff);
+					EulerAngles angles = tracker.getRawRotation().toEulerAngles(EulerOrder.YZX);
+					EulerAngles anglesAdj = tracker.getRotation().toEulerAngles(EulerOrder.YZX);
+					EulerAngles anglesDiff = tracker
+						.getRotation()
+						.inv()
+						.times(rotationCompare)
+						.toEulerAngles(EulerOrder.YZX);
 
 					if (!PRINT_TEST_RESULTS) {
 						assertTrue(
-							FloatMath.equalsToZero(anglesDiff[0])
-								&& FloatMath.equalsToZero(anglesDiff[1])
-								&& FloatMath.equalsToZero(anglesDiff[2]),
+							FloatMath.equalsToZero(anglesDiff.getX())
+								&& FloatMath.equalsToZero(anglesDiff.getY())
+								&& FloatMath.equalsToZero(anglesDiff.getZ()),
 							name(yaw, pitch, roll, angles, anglesAdj, anglesDiff)
 						);
 					} else {
 						if (
-							FloatMath.equalsToZero(anglesDiff[0])
-								&& FloatMath.equalsToZero(anglesDiff[1])
-								&& FloatMath.equalsToZero(anglesDiff[2])
+							FloatMath.equalsToZero(anglesDiff.getX())
+								&& FloatMath.equalsToZero(anglesDiff.getY())
+								&& FloatMath.equalsToZero(anglesDiff.getZ())
 						)
 							successes++;
 						else
@@ -371,15 +362,23 @@ public class ReferenceAdjustmentsTests {
 			if (!(obj instanceof QuatEqualYawWithEpsilon))
 				return false;
 			Quaternion q2 = ((QuatEqualYawWithEpsilon) obj).q;
-			float[] degs1 = new float[3];
-			q.toAngles(degs1);
-			float[] degs2 = new float[3];
-			q2.toAngles(degs2);
-			if (degs1[1] < -FloatMath.ANGLE_EPSILON_RAD)
-				degs1[1] += FastMath.TWO_PI;
-			if (degs2[1] < -FloatMath.ANGLE_EPSILON_RAD)
-				degs2[1] += FastMath.TWO_PI;
-			return FloatMath.equalsWithEpsilon(degs1[1], degs2[1]);
+			EulerAngles degs1 = q.toEulerAngles(EulerOrder.YZX);
+			EulerAngles degs2 = q2.toEulerAngles(EulerOrder.YZX);
+			if (degs1.getY() < -FloatMath.ANGLE_EPSILON_RAD)
+				degs1 = new EulerAngles(
+					EulerOrder.YZX,
+					degs1.getX(),
+					degs1.getY() + FastMath.TWO_PI,
+					degs1.getZ()
+				);
+			if (degs2.getY() < -FloatMath.ANGLE_EPSILON_RAD)
+				degs2 = new EulerAngles(
+					EulerOrder.YZX,
+					degs2.getX(),
+					degs2.getY() + FastMath.TWO_PI,
+					degs2.getZ()
+				);
+			return FloatMath.equalsWithEpsilon(degs1.getY(), degs2.getY());
 		}
 	}
 
@@ -408,17 +407,25 @@ public class ReferenceAdjustmentsTests {
 			if (!(obj instanceof QuatEqualFullWithEpsilon))
 				return false;
 			Quaternion q2 = ((QuatEqualFullWithEpsilon) obj).q;
-			float[] degs1 = new float[3];
-			q.toAngles(degs1);
-			float[] degs2 = new float[3];
-			q2.toAngles(degs2);
-			if (degs1[1] < -FloatMath.ANGLE_EPSILON_RAD)
-				degs1[1] += FastMath.TWO_PI;
-			if (degs2[1] < -FloatMath.ANGLE_EPSILON_RAD)
-				degs2[1] += FastMath.TWO_PI;
-			return FloatMath.equalsWithEpsilon(degs1[0], degs2[0])
-				&& FloatMath.equalsWithEpsilon(degs1[1], degs2[1])
-				&& FloatMath.equalsWithEpsilon(degs1[2], degs2[2]);
+			EulerAngles degs1 = q.toEulerAngles(EulerOrder.YZX);
+			EulerAngles degs2 = q2.toEulerAngles(EulerOrder.YZX);
+			if (degs1.getY() < -FloatMath.ANGLE_EPSILON_RAD)
+				degs1 = new EulerAngles(
+					EulerOrder.YZX,
+					degs1.getX(),
+					degs1.getY() + FastMath.TWO_PI,
+					degs1.getZ()
+				);
+			if (degs2.getY() < -FloatMath.ANGLE_EPSILON_RAD)
+				degs2 = new EulerAngles(
+					EulerOrder.YZX,
+					degs2.getX(),
+					degs2.getY() + FastMath.TWO_PI,
+					degs2.getZ()
+				);
+			return FloatMath.equalsWithEpsilon(degs1.getX(), degs2.getX())
+				&& FloatMath.equalsWithEpsilon(degs1.getY(), degs2.getY())
+				&& FloatMath.equalsWithEpsilon(degs1.getZ(), degs2.getZ());
 		}
 	}
 

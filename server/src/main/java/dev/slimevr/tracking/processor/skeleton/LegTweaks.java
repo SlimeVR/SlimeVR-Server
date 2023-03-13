@@ -4,6 +4,8 @@ import com.jme3.math.FastMath;
 import dev.slimevr.config.LegTweaksConfig;
 import dev.slimevr.tracking.processor.TransformNode;
 import dev.slimevr.tracking.processor.config.SkeletonConfigToggles;
+import io.github.axisangles.ktmath.EulerAngles;
+import io.github.axisangles.ktmath.EulerOrder;
 import io.github.axisangles.ktmath.Quaternion;
 import io.github.axisangles.ktmath.Vector3;
 
@@ -1169,8 +1171,13 @@ public class LegTweaks {
 	// return a quaternion that has been rotated by the new pitch amount
 	// TODO verify that this is working as expected
 	private Quaternion replacePitch(Quaternion quaternion, float newPitch) {
-		EulerAngles curAngs = quaternion.toEulerAngles(EulerOrder.YXZ);
-		EulerAngles newAngs = EulerAngles(EulerOrder.YXZ, newPitch, curAngs.y, curAngs.z);
+		EulerAngles curAngs = quaternion.toEulerAngles(EulerOrder.YZX);
+		EulerAngles newAngs = new EulerAngles(
+			EulerOrder.YZX,
+			newPitch,
+			curAngs.getY(),
+			curAngs.getZ()
+		);
 		return newAngs.toQuaternion();
 	}
 

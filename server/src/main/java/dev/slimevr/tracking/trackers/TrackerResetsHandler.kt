@@ -2,8 +2,11 @@ package dev.slimevr.tracking.trackers
 
 import dev.slimevr.config.DriftCompensationConfig
 import dev.slimevr.filtering.CircularArrayList
+import io.github.axisangles.ktmath.EulerAngles
+import io.github.axisangles.ktmath.EulerOrder
 import io.github.axisangles.ktmath.Quaternion
 import io.github.axisangles.ktmath.Vector3
+import kotlin.math.*
 
 private const val DRIFT_COOLDOWN_MS = 30000L
 
@@ -85,13 +88,13 @@ class TrackerResetsHandler(val tracker: Tracker) {
 	}
 
 	private fun getMountedAdjustedRotation(): Quaternion {
-		var rot = tracker.getRotation()
-		rot *= mountingOrientation
-		return rot
+		mountingOrientation ?: let { return tracker.getRotation() * mountingOrientation as Quaternion }
+		return tracker.getRotation()
 	}
 
 	private fun getMountedAdjustedDriftRotation(): Quaternion {
-		var rot = tracker.getRotation() * mountingOrientation
+		var rot = tracker.getRotation()
+		mountingOrientation ?: let { rot *= mountingOrientation as Quaternion }
 		rot = adjustToDrift(rot)
 		return rot
 	}
@@ -105,7 +108,8 @@ class TrackerResetsHandler(val tracker: Tracker) {
 	 * @param store Raw or filtered rotation to mutate.
 	 */
 	private fun adjustToReference(rotation: Quaternion): Quaternion {
-		var rot = rotation * mountingOrientation
+		var rot = rotation
+		mountingOrientation ?: let { rot *= mountingOrientation as Quaternion }
 		rot = gyroFix * rot
 		rot *= attachmentFix
 		rot *= mountRotFix
@@ -198,35 +202,28 @@ class TrackerResetsHandler(val tracker: Tracker) {
 		var rotVector = Vector3(0f, 1f, 0f)
 
 		// Rotate the vector by the quat, then flatten and normalize the vector
-		buffer.multLocal(rotVector).setY(0f).normalizeLocal()
+		rotVector = buffer.sandwich(rotVector.unit())
 
 		// Calculate the yaw angle using tan
 		// Just use an angle offset of zero for unsolvable circumstances
-		val yawAngle =
-			if (FastMath.isApproxZero(rotVector.x) && FastMath.isApproxZero(rotVector.z)) {
-				0f
-			} else {
-				FastMath.atan2(
-					rotVector.x,
-					rotVector.z
-				)
-			}
+		val yawAngle = atan2(rotVector.x, rotVector.z)
 
 		// Make an adjustment quaternion from the angle
-		buffer.fromAngles(
+		buffer = EulerAngles(
+			EulerOrder.YZX,
 			0f,
-			if (reverseYaw) yawAngle else yawAngle - Math.PI,
+			(if (reverseYaw) yawAngle else yawAngle - Math.PI) as Float,
 			0f
-		)
+		).toQuaternion()
 
-		val lastRotAdjust: Quaternion = mountRotFix.clone()
-		mountRotFix.set(buffer)
+		val lastRotAdjust: Quaternion = mountRotFix
+		mountRotFix = buffer
 
 		// Get the difference from the last adjustment
-		buffer.multLocal(lastRotAdjust.inverseLocal())
+		buffer *= lastRotAdjust.inv()
 
 		// Apply the yaw rotation difference to the yaw fix quaternion
-		yawFix.multLocal(buffer.inverseLocal())
+		yawFix *= buffer.inv()
 	}
 
 	/**
@@ -235,109 +232,87 @@ class TrackerResetsHandler(val tracker: Tracker) {
 	 */
 	private fun calculateDrift(beforeQuat: Quaternion) {
 		if (compensateDrift && allowDriftCompensation) {
-			val rotQuat: Quaternion = adjustToReference(tracker.getRotation())
-			if (driftSince > 0 &&
-				System.currentTimeMillis() - timeAtLastReset > DRIFT_COOLDOWN_MS
-			) {
-				// Check and remove from lists to keep them under the reset
-				// limit
+			if (driftSince > 0 && System.currentTimeMillis() - timeAtLastReset > DRIFT_COOLDOWN_MS) {
+				// Check and remove from lists to keep them under the reset limit
 				if (driftQuats.size == driftQuats.capacity()) {
 					driftQuats.removeLast()
 					driftTimes.removeLast()
 				}
 
 				// Add new drift quaternion
-				driftQuats
-					.add(
-						rotQuat
-							.project(Vector3.POS_Y).unit()
-							.times(
-								beforeQuat.project(Vector3.POS_Y).unit().inv()
-							)
-					)
+				driftQuats.add(
+					adjustToReference(tracker.getRotation()).project(Vector3.POS_Y).unit() *
+						(beforeQuat.project(Vector3.POS_Y).unit().inv())
+				)
 
 				// Add drift time to total
 				driftTimes.add(System.currentTimeMillis() - driftSince)
 				totalDriftTime = 0
-				for (time in driftTimes) {
-					totalDriftTime += time
-				}
+				for (time in driftTimes) { totalDriftTime += time }
 
 				// Calculate drift Quaternions' weights
 				val driftWeights = ArrayList<Float>(driftTimes.size)
-				for (time in driftTimes) {
-					driftWeights.add(time.toFloat() / totalDriftTime.toFloat())
-				}
+				for (time in driftTimes) { driftWeights.add(time.toFloat() / totalDriftTime.toFloat()) }
+
 				// Make it so recent Quaternions weigh more
 				for (i in driftWeights.size - 1 downTo 1) {
 					// Add some of i-1's value to i
-					driftWeights[i] =
-						driftWeights[i] + driftWeights[i - 1] / driftWeights.size
+					driftWeights[i] = driftWeights[i] + driftWeights[i - 1] / driftWeights.size
 					// Remove the value that was added to i from i-1
 					driftWeights[i - 1] = driftWeights[i - 1] - driftWeights[i - 1] / driftWeights.size
 				}
 
 				// Set final averaged drift Quaternion
-				averagedDriftQuat.fromAveragedQuaternions(driftQuats, driftWeights)
+// 				averagedDriftQuat.fromAveragedQuaternions(driftQuats, driftWeights) TODO
 
 				// Save tracker rotation and current time
-				rotationSinceReset.set(driftQuats.getLatest())
+				rotationSinceReset = driftQuats.latest
 				timeAtLastReset = System.currentTimeMillis()
-			} else if (System.currentTimeMillis() - timeAtLastReset < DRIFT_COOLDOWN_MS &&
-				driftQuats.size > 0
-			) {
+			} else if (System.currentTimeMillis() - timeAtLastReset < DRIFT_COOLDOWN_MS && driftQuats.size > 0) {
 				// Replace latest drift quaternion
 				rotationSinceReset *= (
-					rotQuat.project(Vector3.POS_Y).unit()
-						.times(
-							beforeQuat.project(Vector3.POS_Y).unit().inv()
-						)
+					adjustToReference(tracker.getRotation()).project(Vector3.POS_Y).unit() *
+						(beforeQuat.project(Vector3.POS_Y).unit().inv())
 					)
 				driftQuats[driftQuats.size - 1] = rotationSinceReset
 
 				// Add drift time to total
-				driftTimes[driftTimes.size - 1] =
-					driftTimes.latest + System.currentTimeMillis() - driftSince
+				driftTimes[driftTimes.size - 1] = driftTimes.latest + System.currentTimeMillis() - driftSince
 				totalDriftTime = 0
-				for (time in driftTimes) {
-					totalDriftTime += time
-				}
+				for (time in driftTimes) { totalDriftTime += time }
 
 				// Calculate drift Quaternions' weights
 				val driftWeights = ArrayList<Float>(driftTimes.size)
-				for (time in driftTimes) {
-					driftWeights.add(time.toFloat() / totalDriftTime.toFloat())
-				}
+				for (time in driftTimes) { driftWeights.add(time.toFloat() / totalDriftTime.toFloat()) }
+
 				// Make it so recent Quaternions weigh more
 				for (i in driftWeights.size - 1 downTo 1) {
-					driftWeights[i] =
-						driftWeights[i] + driftWeights[i - 1] / driftWeights.size
+					// Add some of i-1's value to i
+					driftWeights[i] = driftWeights[i] + driftWeights[i - 1] / driftWeights.size
+					// Remove the value that was added to i from i-1
 					driftWeights[i - 1] = driftWeights[i - 1] - driftWeights[i - 1] / driftWeights.size
 				}
 
 				// Set final averaged drift Quaternion
-				averagedDriftQuat.fromAveragedQuaternions(driftQuats, driftWeights)
+// 				averagedDriftQuat.fromAveragedQuaternions(driftQuats, driftWeights) TODO
 			} else {
 				timeAtLastReset = System.currentTimeMillis()
 			}
+
 			driftSince = System.currentTimeMillis()
 		}
 	}
 
 	private fun makeIdentityAdjustmentQuatsFull() {
-		var sensorRotation = tracker.getRawRotation()
-		sensorRotation = sensorRotation.project(Vector3.POS_Y).unit()
-		gyroFixNoMounting = sensorRotation.inv()
-		sensorRotation = tracker.getRawRotation()
-		sensorRotation = gyroFixNoMounting * sensorRotation
-		attachmentFixNoMounting = sensorRotation.inv()
+		val sensorRotation = tracker.getRawRotation()
+		gyroFixNoMounting = sensorRotation.project(Vector3.POS_Y).unit().inv()
+		attachmentFixNoMounting = (gyroFixNoMounting * sensorRotation).inv()
 	}
 
 	private fun makeIdentityAdjustmentQuatsYaw() {
 		var sensorRotation = tracker.getRawRotation()
 		sensorRotation = gyroFixNoMounting * sensorRotation
 		sensorRotation *= attachmentFixNoMounting
-		sensorRotation = sensorRotation.project(Vector3.POS_Y).unit()
-		yawFixZeroReference = sensorRotation.inv()
+		yawFixZeroReference = sensorRotation.project(Vector3.POS_Y).unit().inv()
 	}
 }

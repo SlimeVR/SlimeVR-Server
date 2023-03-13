@@ -1,6 +1,5 @@
 package dev.slimevr.tracking.processor
 
-import io.eiren.util.ann.ThreadSafe
 import io.eiren.util.collections.FastList
 import io.github.axisangles.ktmath.Transform
 import java.util.function.Consumer
@@ -18,27 +17,21 @@ class TransformNode @JvmOverloads constructor(var boneType: BoneType? = null, va
 		node.parent = this
 	}
 
-	@ThreadSafe
 	fun update() {
-		updateWorldTransforms() // Call update on each frame because we have
-		// relatively few nodes
+		// Call update on each frame because we have relatively few nodes
+		updateWorldTransforms()
 		for (node in children) {
 			node.update()
 		}
 	}
 
-	@Synchronized
 	private fun updateWorldTransforms() {
-		if (parent == null) {
-			worldTransform.set(localTransform)
-		} else {
-			worldTransform.set(localTransform)
+		worldTransform.set(localTransform)
+		parent?.let {
 			if (localRotation) {
-				worldTransform.combineWithParent(parent!!.worldTransform)
+				worldTransform.combineWithParent(it.worldTransform)
 			} else {
-				combineWithParentGlobalRotation(
-					parent!!.worldTransform
-				)
+				combineWithParentGlobalRotation(it.worldTransform)
 			}
 		}
 	}
