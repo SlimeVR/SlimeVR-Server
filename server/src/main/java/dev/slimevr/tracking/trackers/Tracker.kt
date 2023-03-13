@@ -71,12 +71,10 @@ class Tracker @JvmOverloads constructor(
 	fun readConfig(config: TrackerConfig) {
 		if (userEditable) {
 			config.customName?.let {
-				customName = config.customName
+				customName = it
 			}
-			config.designation?.let {
-				if (getByDesignation(config.designation) != null) {
-					trackerPosition = getByDesignation(config.designation)
-				}
+			config.designation?.let { designation ->
+				getByDesignation(designation)?.let { trackerPosition = it }
 			}
 			if (needsMounting) {
 				resetsHandler.mountingOrientation = config.mountingOrientation
@@ -88,7 +86,7 @@ class Tracker @JvmOverloads constructor(
 				vrServer!!.configManager.saveConfig()
 			} else {
 				config.allowDriftCompensation?.let {
-					resetsHandler.allowDriftCompensation = config.allowDriftCompensation
+					resetsHandler.allowDriftCompensation = it
 				}
 			}
 		}
@@ -98,8 +96,8 @@ class Tracker @JvmOverloads constructor(
 	 * Writes/saves to the given config
 	 */
 	fun writeConfig(config: TrackerConfig) {
-		trackerPosition?.let { config.designation = trackerPosition?.designation ?: config.designation }
-		customName?.let { config.customName = customName }
+		trackerPosition?.let { config.designation = it.designation }
+		customName?.let { config.customName = it }
 		if (needsMounting) {
 			config.mountingOrientation = resetsHandler.mountingOrientation
 				?: EulerAngles(

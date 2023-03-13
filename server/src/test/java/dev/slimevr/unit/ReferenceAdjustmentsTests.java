@@ -203,11 +203,11 @@ public class ReferenceAdjustmentsTests {
 		assertNotNull(read, "Adjusted tracker didn't return rotation");
 
 		// Use only yaw HMD rotation
-		referenceQuat.project(Vector3.Companion.getPOS_Y()).unit();
+		referenceQuat = referenceQuat.project(Vector3.Companion.getPOS_Y()).unit();
 
 		assertEquals(
-			new QuatEqualFullWithEpsilon(read),
 			new QuatEqualFullWithEpsilon(referenceQuat),
+			new QuatEqualFullWithEpsilon(read),
 			"Adjusted quat is not equal to reference quat ("
 				+ toDegs(referenceQuat)
 				+ " vs "

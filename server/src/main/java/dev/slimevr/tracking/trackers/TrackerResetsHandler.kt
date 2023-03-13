@@ -88,13 +88,13 @@ class TrackerResetsHandler(val tracker: Tracker) {
 	}
 
 	private fun getMountedAdjustedRotation(): Quaternion {
-		mountingOrientation?.let { return tracker.getRotation() * mountingOrientation as Quaternion }
+		mountingOrientation?.let { return tracker.getRotation() * it }
 		return tracker.getRotation()
 	}
 
 	private fun getMountedAdjustedDriftRotation(): Quaternion {
 		var rot = tracker.getRotation()
-		mountingOrientation?.let { rot *= mountingOrientation as Quaternion }
+		mountingOrientation?.let { rot *= it }
 		rot = adjustToDrift(rot)
 		return rot
 	}
@@ -109,7 +109,7 @@ class TrackerResetsHandler(val tracker: Tracker) {
 	 */
 	private fun adjustToReference(rotation: Quaternion): Quaternion {
 		var rot = rotation
-		mountingOrientation?.let { rot *= mountingOrientation as Quaternion }
+		mountingOrientation?.let { rot *= it }
 		rot = gyroFix * rot
 		rot *= attachmentFix
 		rot *= mountRotFix
