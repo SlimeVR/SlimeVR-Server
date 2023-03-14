@@ -102,4 +102,5 @@ public class TapDetectionConfig {
 	public void setNumberTrackersOverThreshold(int numberTrackersOverThreshold) {
 		this.numberTrackersOverThreshold = numberTrackersOverThreshold;
 	}
+
 }
