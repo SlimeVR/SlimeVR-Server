@@ -40,11 +40,13 @@ public class WindowsNamedPipeBridge extends SteamVRBridge {
 	protected final String pipeName;
 	private final byte[] buffArray = new byte[2048];
 	protected WindowsPipe pipe;
+	protected WinNT.HANDLE openEvent = k32.CreateEvent(null, false, false, null);
 	protected WinNT.HANDLE readEvent = k32.CreateEvent(null, false, false, null);
 	protected WinNT.HANDLE writeEvent = k32.CreateEvent(null, false, false, null);
 	protected WinNT.HANDLE rxEvent = k32.CreateEvent(null, false, false, null);
 	protected WinNT.HANDLE txEvent = k32.CreateEvent(null, false, false, null);
 	protected WinNT.HANDLE[] events = new WinNT.HANDLE[] { rxEvent, txEvent };
+	WinBase.OVERLAPPED overlappedOpen = new WinBase.OVERLAPPED();
 	WinBase.OVERLAPPED overlappedWrite = new WinBase.OVERLAPPED();
 	WinBase.OVERLAPPED overlappedRead = new WinBase.OVERLAPPED();
 	WinBase.OVERLAPPED overlappedWait = new WinBase.OVERLAPPED();
@@ -269,25 +271,29 @@ public class WindowsNamedPipeBridge extends SteamVRBridge {
 	}
 
 	private boolean tryOpeningPipe(WindowsPipe pipe) {
-		if (
-			k32.ConnectNamedPipe(pipe.pipeHandle, null)
-				|| k32.GetLastError() == WinError.ERROR_PIPE_CONNECTED
-		) {
-			pipe.state = PipeState.OPEN;
-			LogManager.info("[" + bridgeName + "] Pipe " + pipe.name + " is open");
-			Main.getVrServer().queueTask(this::reconnected);
-			return true;
+		overlappedOpen.clear();
+		overlappedOpen.hEvent = openEvent;
+
+		boolean ok = k32.ConnectNamedPipe(pipe.pipeHandle, overlappedOpen);
+		int err = k32.GetLastError();
+		if (!ok && err != WinError.ERROR_PIPE_CONNECTED) {
+			if (err != WinError.ERROR_IO_PENDING) {
+				setPipeError("ConnectNamedPipe failed: " + err);
+				return false;
+			}
+
+			if (!k32io.GetOverlappedResult(pipe.pipeHandle, overlappedOpen, bytesRead, true)) {
+				setPipeError(
+					"tryOpeningPipe/GetOverlappedResult failed: " + k32.GetLastError()
+				);
+				return false;
+			}
 		}
-		LogManager
-			.info(
-				"["
-					+ bridgeName
-					+ "] Error connecting to pipe "
-					+ pipe.name
-					+ ": "
-					+ k32.GetLastError()
-			);
-		return false;
+
+		pipe.state = PipeState.OPEN;
+		LogManager.info("[" + bridgeName + "] Pipe " + pipe.name + " is open");
+		Main.getVrServer().queueTask(this::reconnected);
+		return true;
 	}
 
 	@Override
