@@ -2,11 +2,9 @@ package dev.slimevr.tracking.trackers
 
 import dev.slimevr.config.DriftCompensationConfig
 import dev.slimevr.filtering.CircularArrayList
-import io.github.axisangles.ktmath.EulerAngles
-import io.github.axisangles.ktmath.EulerOrder
-import io.github.axisangles.ktmath.Quaternion
-import io.github.axisangles.ktmath.Vector3
+import io.github.axisangles.ktmath.*
 import kotlin.math.*
+
 
 private const val DRIFT_COOLDOWN_MS = 30000L
 
@@ -18,7 +16,7 @@ class TrackerResetsHandler(val tracker: Tracker) {
 
 	private var compensateDrift = false
 	private var driftAmount = 0f
-	private val averagedDriftQuat = Quaternion.IDENTITY
+	private var averagedDriftQuat = Quaternion.IDENTITY
 	private var rotationSinceReset = Quaternion.IDENTITY
 	private var driftQuats = CircularArrayList<Quaternion>(0)
 	private var driftTimes = CircularArrayList<Long>(0)
@@ -263,7 +261,7 @@ class TrackerResetsHandler(val tracker: Tracker) {
 				}
 
 				// Set final averaged drift Quaternion
-// 				averagedDriftQuat.fromAveragedQuaternions(driftQuats, driftWeights) TODO
+ 				averagedDriftQuat = fromAveragedQuaternions(driftQuats, driftWeights)
 
 				// Save tracker rotation and current time
 				rotationSinceReset = driftQuats.latest
@@ -294,13 +292,24 @@ class TrackerResetsHandler(val tracker: Tracker) {
 				}
 
 				// Set final averaged drift Quaternion
-// 				averagedDriftQuat.fromAveragedQuaternions(driftQuats, driftWeights) TODO
+ 				averagedDriftQuat = fromAveragedQuaternions(driftQuats, driftWeights)
 			} else {
 				timeAtLastReset = System.currentTimeMillis()
 			}
 
 			driftSince = System.currentTimeMillis()
 		}
+	}
+
+	private fun fromAveragedQuaternions(
+		qn: CircularArrayList<Quaternion>,
+		tn: ArrayList<Float>
+	): Quaternion {
+		var totalMatrix: Matrix3 = qn[0].toMatrix() * tn[0]
+		for (i in 1 until qn.size) {
+			totalMatrix += (qn[i].toMatrix() * tn[i])
+		}
+		return totalMatrix.toQuaternion()
 	}
 
 	private fun makeIdentityAdjustmentQuatsFull() {
