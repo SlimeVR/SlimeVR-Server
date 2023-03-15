@@ -141,8 +141,7 @@ public class RPCSettingsBuilder {
 				tapDetectionConfig.getYawResetTaps(),
 				tapDetectionConfig.getMountingResetDelay(),
 				tapDetectionConfig.getMountingResetEnabled(),
-				tapDetectionConfig.getMountingResetTaps(),
-				false
+				tapDetectionConfig.getMountingResetTaps()
 			);
 	}
 

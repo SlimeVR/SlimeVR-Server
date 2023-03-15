@@ -1,20 +1,12 @@
 import { useLocalization } from '@fluent/react';
 import classNames from 'classnames';
+import { MouseEventHandler, ReactNode, useEffect } from 'react';
 import {
-  MouseEventHandler,
-  ReactNode,
-  useEffect,
-  useMemo,
-  useState,
-} from 'react';
-import {
-  ChangeSkeletonConfigRequestT,
-  RpcMessage,
-  SkeletonBone,
-  SkeletonConfigRequestT,
-  SkeletonConfigResponseT,
-} from 'solarxr-protocol';
-import { useWebsocketAPI } from '../../../../hooks/websocket-api';
+  LabelType,
+  ProportionChangeType,
+  useManualProportions,
+} from '../../../../hooks/manual-proportions';
+import { useLocaleConfig } from '../../../../i18n/config';
 import { Typography } from '../../../commons/Typography';
 
 function IncrementButton({
@@ -40,156 +32,239 @@ function IncrementButton({
 
 export function BodyProportions({
   precise,
-  variant = 'onboarding',
+  type,
+  variant: _variant = 'onboarding',
 }: {
   precise: boolean;
+  type: 'linear' | 'ratio';
   variant: 'onboarding' | 'alone';
 }) {
+  const [bodyParts, _ratioMode, currentSelection, dispatch, setRatioMode] =
+    useManualProportions();
+  const { currentLocales } = useLocaleConfig();
   const { l10n } = useLocalization();
-  const { useRPCPacket, sendRPCPacket } = useWebsocketAPI();
-  const [config, setConfig] = useState<Omit<
-    SkeletonConfigResponseT,
-    'pack'
-  > | null>(null);
-  const [selectedBone, setSelectedBone] = useState(SkeletonBone.HEAD);
-  const bodyParts = useMemo(() => {
-    return (
-      config?.skeletonParts.map(({ bone, value }) => ({
-        bone,
-        label: l10n.getString('skeleton_bone-' + SkeletonBone[bone]),
-        value,
-      })) || []
-    );
-  }, [config]);
-
-  useRPCPacket(
-    RpcMessage.SkeletonConfigResponse,
-    (data: SkeletonConfigResponseT) => {
-      setConfig(data);
-    }
-  );
+  const cmFormat = Intl.NumberFormat(currentLocales, {
+    style: 'unit',
+    unit: 'centimeter',
+    maximumFractionDigits: 1,
+  });
+  const configFormat = Intl.NumberFormat(currentLocales, {
+    signDisplay: 'always',
+    maximumFractionDigits: 1,
+  });
+  const percentageFormat = Intl.NumberFormat(currentLocales, {
+    style: 'percent',
+    maximumFractionDigits: 1,
+  });
 
   useEffect(() => {
-    sendRPCPacket(
-      RpcMessage.SkeletonConfigRequest,
-      new SkeletonConfigRequestT()
-    );
-  }, []);
-
-  const roundedStep = (value: number, step: number, add: boolean) => {
-    if (!add) {
-      return (Math.round(value * 200) - step * 2) / 200;
+    if (type === 'linear') {
+      setRatioMode(false);
     } else {
-      return (Math.round(value * 200) + step * 2) / 200;
+      setRatioMode(true);
     }
-  };
-
-  const updateConfigValue = (configChange: ChangeSkeletonConfigRequestT) => {
-    sendRPCPacket(RpcMessage.ChangeSkeletonConfigRequest, configChange);
-    const conf = { ...config } as Omit<SkeletonConfigResponseT, 'pack'> | null;
-    const b = conf?.skeletonParts?.find(({ bone }) => bone == selectedBone);
-    if (!b || !conf) return;
-    b.value = configChange.value;
-    setConfig(conf);
-  };
-
-  const increment = async (value: number, v: number) => {
-    const configChange = new ChangeSkeletonConfigRequestT();
-
-    configChange.bone = selectedBone;
-    configChange.value = roundedStep(value, v, true);
-
-    updateConfigValue(configChange);
-  };
-
-  const decrement = (value: number, v: number) => {
-    const configChange = new ChangeSkeletonConfigRequestT();
-
-    configChange.bone = selectedBone;
-    configChange.value = value - v / 100;
-
-    updateConfigValue(configChange);
-  };
+  }, [type]);
 
   return (
     <div className="relative w-full">
-      <div className="flex flex-col overflow-y-scroll overflow-x-hidden max-h-[450px] w-full px-1  gap-3 pb-16">
-        {bodyParts.map(({ label, bone, value }) => (
-          <div className="flex" key={bone}>
-            <div
-              className={classNames(
-                'flex gap-2 transition-opacity duration-300',
-                selectedBone != bone && 'opacity-0 pointer-events-none'
-              )}
-            >
-              {!precise && (
-                <IncrementButton onClick={() => decrement(value, 5)}>
-                  -5
-                </IncrementButton>
-              )}
-              <IncrementButton onClick={() => decrement(value, 1)}>
-                -1
-              </IncrementButton>
-              {precise && (
-                <IncrementButton onClick={() => decrement(value, 0.5)}>
-                  -0.5
-                </IncrementButton>
-              )}
-            </div>
-            <div
-              className="flex flex-grow flex-col px-2"
-              onClick={() => setSelectedBone(bone)}
-            >
-              <div
-                key={bone}
-                className={classNames(
-                  'p-3  rounded-lg h-16 flex w-full items-center justify-between px-6 transition-colors duration-300 bg-background-60',
-                  (selectedBone == bone && 'opacity-100') || 'opacity-50'
-                )}
-              >
-                <Typography variant="section-title" bold>
-                  {label}
-                </Typography>
-                <Typography variant="main-title" bold>
-                  {Number(value * 100)
-                    .toFixed(1)
-                    .replace(/[.,]0$/, '')}{' '}
-                  CM
-                </Typography>
-              </div>
-            </div>
-            <div
-              className={classNames(
-                'flex gap-2 transition-opacity duration-300',
-                selectedBone != bone && 'opacity-0 pointer-events-none'
-              )}
-            >
-              {precise && (
-                <IncrementButton onClick={() => increment(value, 0.5)}>
-                  +0.5
-                </IncrementButton>
-              )}
-              <IncrementButton onClick={() => increment(value, 1)}>
-                +1
-              </IncrementButton>
-              {!precise && (
-                <IncrementButton onClick={() => increment(value, 5)}>
-                  +5
-                </IncrementButton>
-              )}
-            </div>
-          </div>
-        ))}
-      </div>
+      <div
+        className={classNames(
+          'flex flex-col overflow-y-scroll overflow-x-hidden max-h-[450px] h-[54vh]',
+          'w-full px-1 gap-3 gradient-mask-b-90'
+        )}
+      >
+        <>
+          {bodyParts.map(({ label, type, value: originalValue, ...props }) => {
+            const value =
+              'index' in props && props.index !== undefined
+                ? props.bones[props.index].value
+                : originalValue;
+            const selected = currentSelection.label === label;
 
-      <div className="absolute bottom-0 h-20 w-full pointer-events-none">
-        <div
-          className={classNames(
-            'w-full h-full bg-gradient-to-b from-transparent  opacity-100',
-            variant === 'onboarding' && 'to-background-80',
-            variant === 'alone' && 'to-background-70'
-          )}
-        ></div>
+            const selectNew = () => {
+              switch (type) {
+                case LabelType.Bone: {
+                  if (!('bone' in props)) throw 'unreachable';
+                  dispatch({
+                    ...props,
+                    label,
+                    value,
+                    type: ProportionChangeType.Bone,
+                  });
+                  break;
+                }
+                case LabelType.Group: {
+                  if (!('bones' in props)) throw 'unreachable';
+                  dispatch({
+                    ...props,
+                    label,
+                    value,
+                    type: ProportionChangeType.Group,
+                    index: undefined,
+                    parentLabel: label,
+                  });
+                  break;
+                }
+                case LabelType.GroupPart: {
+                  if (!('index' in props)) throw 'unreachable';
+                  dispatch({
+                    ...props,
+                    label,
+                    // If this isn't done, we are replacing total
+                    // with percentage value
+                    value: originalValue,
+                    type: ProportionChangeType.Group,
+                    index: props.index,
+                  });
+                }
+              }
+            };
+
+            return (
+              <div className="flex" key={label}>
+                <div
+                  className={classNames(
+                    'flex gap-2 transition-opacity duration-300',
+                    !selected && 'opacity-0 pointer-events-none'
+                  )}
+                >
+                  {!precise && (
+                    <IncrementButton
+                      onClick={() =>
+                        type === LabelType.GroupPart
+                          ? dispatch({
+                              type: ProportionChangeType.Ratio,
+                              value: -0.05,
+                            })
+                          : dispatch({
+                              type: ProportionChangeType.Linear,
+                              value: -5,
+                            })
+                      }
+                    >
+                      {configFormat.format(-5)}
+                    </IncrementButton>
+                  )}
+                  <IncrementButton
+                    onClick={() =>
+                      type === LabelType.GroupPart
+                        ? dispatch({
+                            type: ProportionChangeType.Ratio,
+                            value: -0.01,
+                          })
+                        : dispatch({
+                            type: ProportionChangeType.Linear,
+                            value: -1,
+                          })
+                    }
+                  >
+                    {configFormat.format(-1)}
+                  </IncrementButton>
+                  {precise && (
+                    <IncrementButton
+                      onClick={() =>
+                        type === LabelType.GroupPart
+                          ? dispatch({
+                              type: ProportionChangeType.Ratio,
+                              value: -0.005,
+                            })
+                          : dispatch({
+                              type: ProportionChangeType.Linear,
+                              value: -0.5,
+                            })
+                      }
+                    >
+                      {configFormat.format(-0.5)}
+                    </IncrementButton>
+                  )}
+                </div>
+                <div
+                  className="flex flex-grow flex-col px-2"
+                  onClick={selectNew}
+                >
+                  <div
+                    key={label}
+                    className={classNames(
+                      'p-3  rounded-lg h-16 flex w-full items-center justify-between px-6 transition-colors duration-300 bg-background-60',
+                      (selected && 'opacity-100') || 'opacity-50'
+                    )}
+                  >
+                    <Typography variant="section-title" bold>
+                      {l10n.getString(label)}
+                    </Typography>
+                    <Typography variant="main-title" bold>
+                      {type === LabelType.GroupPart
+                        ? /* Make number rounding so it's based on .5 decimals */
+                          percentageFormat.format(Math.round(value * 200) / 200)
+                        : cmFormat.format(value * 100)}
+                      {type === LabelType.GroupPart && (
+                        <p className="text-standard">{`(${cmFormat.format(
+                          value * originalValue * 100
+                        )})`}</p>
+                      )}
+                    </Typography>
+                  </div>
+                </div>
+                <div
+                  className={classNames(
+                    'flex gap-2 transition-opacity duration-300',
+                    !selected && 'opacity-0 pointer-events-none'
+                  )}
+                >
+                  {precise && (
+                    <IncrementButton
+                      onClick={() =>
+                        type === LabelType.GroupPart
+                          ? dispatch({
+                              type: ProportionChangeType.Ratio,
+                              value: 0.005,
+                            })
+                          : dispatch({
+                              type: ProportionChangeType.Linear,
+                              value: 0.5,
+                            })
+                      }
+                    >
+                      {configFormat.format(+0.5)}
+                    </IncrementButton>
+                  )}
+                  <IncrementButton
+                    onClick={() =>
+                      type === LabelType.GroupPart
+                        ? dispatch({
+                            type: ProportionChangeType.Ratio,
+                            value: 0.01,
+                          })
+                        : dispatch({
+                            type: ProportionChangeType.Linear,
+                            value: 1,
+                          })
+                    }
+                  >
+                    {configFormat.format(+1)}
+                  </IncrementButton>
+                  {!precise && (
+                    <IncrementButton
+                      onClick={() =>
+                        type === LabelType.GroupPart
+                          ? dispatch({
+                              type: ProportionChangeType.Ratio,
+                              value: 0.05,
+                            })
+                          : dispatch({
+                              type: ProportionChangeType.Linear,
+                              value: 5,
+                            })
+                      }
+                    >
+                      {configFormat.format(+5)}
+                    </IncrementButton>
+                  )}
+                </div>
+              </div>
+            );
+          })}
+        </>
       </div>
     </div>
   );
