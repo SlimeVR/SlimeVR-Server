@@ -144,7 +144,6 @@ public class WindowsNamedPipeBridge extends SteamVRBridge {
 				return false;
 			}
 
-			bytesWritten.setValue(0);
 			if (!k32io.GetOverlappedResult(pipe.pipeHandle, overlappedWrite, bytesWritten, true)) {
 				setPipeError(
 					"sendMessageReal/GetOverlappedResult failed: " + k32.GetLastError()
@@ -168,7 +167,6 @@ public class WindowsNamedPipeBridge extends SteamVRBridge {
 		if (pipe.state != PipeState.OPEN) {
 			return false;
 		}
-		bytesAvailable.setValue(0);
 		boolean readAnything = false;
 		while (k32.PeekNamedPipe(pipe.pipeHandle, buffArray, 4, null, bytesAvailable, null)) {
 			if (bytesAvailable.getValue() < 4) {
@@ -188,7 +186,6 @@ public class WindowsNamedPipeBridge extends SteamVRBridge {
 
 			overlappedRead.clear();
 			overlappedRead.hEvent = readEvent;
-
 			boolean immediate = k32
 				.ReadFile(pipe.pipeHandle, buffArray, messageLength, null, overlappedRead);
 			int err = k32.GetLastError();
@@ -197,7 +194,6 @@ public class WindowsNamedPipeBridge extends SteamVRBridge {
 				return readAnything;
 			}
 
-			bytesRead.setValue(0);
 			if (!k32io.GetOverlappedResult(pipe.pipeHandle, overlappedRead, bytesRead, true)) {
 				setPipeError(
 					"updatePipe/GetOverlappedResult failed: " + k32.GetLastError()
