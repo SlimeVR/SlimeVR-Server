@@ -46,14 +46,14 @@ public class WindowsNamedPipeBridge extends SteamVRBridge {
 	protected WinNT.HANDLE rxEvent = k32.CreateEvent(null, false, false, null);
 	protected WinNT.HANDLE txEvent = k32.CreateEvent(null, false, false, null);
 	protected WinNT.HANDLE[] events = new WinNT.HANDLE[] { rxEvent, txEvent };
-	WinBase.OVERLAPPED overlappedOpen = new WinBase.OVERLAPPED();
-	WinBase.OVERLAPPED overlappedWrite = new WinBase.OVERLAPPED();
-	WinBase.OVERLAPPED overlappedRead = new WinBase.OVERLAPPED();
-	WinBase.OVERLAPPED overlappedWait = new WinBase.OVERLAPPED();
-	IntByReference bytesWritten = new IntByReference(0);
-	IntByReference bytesAvailable = new IntByReference(0);
-	IntByReference bytesRead = new IntByReference(0);
-	IntByReference bytesWait = new IntByReference(0);
+	private final WinBase.OVERLAPPED overlappedOpen = new WinBase.OVERLAPPED();
+	private final WinBase.OVERLAPPED overlappedWrite = new WinBase.OVERLAPPED();
+	private final WinBase.OVERLAPPED overlappedRead = new WinBase.OVERLAPPED();
+	private final WinBase.OVERLAPPED overlappedWait = new WinBase.OVERLAPPED();
+	private final IntByReference bytesWritten = new IntByReference(0);
+	private final IntByReference bytesAvailable = new IntByReference(0);
+	private final IntByReference bytesRead = new IntByReference(0);
+	private boolean pendingWait = false;
 
 	public WindowsNamedPipeBridge(
 		VRServer server,
@@ -65,6 +65,7 @@ public class WindowsNamedPipeBridge extends SteamVRBridge {
 	) {
 		super(server, hmd, "Named pipe thread", bridgeName, bridgeSettingsKey, shareableTrackers);
 		this.pipeName = pipeName;
+		overlappedWait.hEvent = rxEvent;
 	}
 
 	@Override
@@ -112,12 +113,15 @@ public class WindowsNamedPipeBridge extends SteamVRBridge {
 	private void waitForData(int timeoutMs) {
 		if (pipe.state != PipeState.OPEN)
 			return;
-		if (k32io.GetOverlappedResult(pipe.pipeHandle, overlappedWait, bytesWait, false)) {
-			overlappedWait.clear();
-			overlappedWait.hEvent = rxEvent;
+		if (!pendingWait) {
+			k32.ReadFile(pipe.pipeHandle, null, 0, null, overlappedWait);
+			pendingWait = true;
 		}
-		k32.ReadFile(pipe.pipeHandle, null, 0, null, overlappedWait);
-		k32.WaitForMultipleObjects(events.length, events, false, timeoutMs);
+		int evIdx = k32.WaitForMultipleObjects(events.length, events, false, timeoutMs);
+		if (evIdx == 0) {
+			// events[0] == overlappedWait.hEvent == rxEvent
+			pendingWait = false;
+		}
 	}
 
 	@Override
