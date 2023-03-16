@@ -115,7 +115,7 @@ const defaultValues = {
     fullResetTaps: 3,
     mountingResetTaps: 3,
   },
-  legTweaks: { correctionStrength: 0.3, enabled: true},
+  legTweaks: { correctionStrength: 0.3, enabled: true },
   interface: { devmode: false, watchNewDevices: true },
 };
 

@@ -35,8 +35,7 @@ export function MainLayoutRoute({
   const { useRPCPacket, sendRPCPacket } = useWebsocketAPI();
   const [driftCompensationEnabled, setDriftCompensationEnabled] =
     useState(false);
-  const [ProportionsLastPageOpen, setProportionsLastPageOpen] =
-    useState(true);
+  const [ProportionsLastPageOpen, setProportionsLastPageOpen] = useState(true);
 
   useEffect(() => {
     sendRPCPacket(RpcMessage.SettingsRequest, new SettingsRequestT());
@@ -54,18 +53,22 @@ export function MainLayoutRoute({
   }
 
   usePageChanged(() => {
-    if (ProportionsLastPageOpen || location.pathname.includes('body-proportions')) {
+    if (
+      ProportionsLastPageOpen ||
+      location.pathname.includes('body-proportions')
+    ) {
       const settings = new ChangeSettingsRequestT();
       const modelSettings = new ModelSettingsT();
       const legTweaks = new LegTweaksSettingsT();
-      legTweaks.enabled = !location.pathname.includes('/onboarding/body-proportions')
+      legTweaks.enabled = !location.pathname.includes(
+        '/onboarding/body-proportions'
+      );
       modelSettings.legTweaks = legTweaks;
       settings.modelSettings = modelSettings;
       sendRPCPacket(RpcMessage.ChangeSettingsRequest, settings);
     }
     setProportionsLastPageOpen(location.pathname.includes('body-proportions'));
-  })
-
+  });
 
   return (
     <>
