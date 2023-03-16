@@ -16,6 +16,7 @@ import { useWebsocketAPI } from '../../../hooks/websocket-api';
 import { ArrowLink } from '../../commons/ArrowLink';
 import { Button } from '../../commons/Button';
 import { LoaderIcon } from '../../commons/icon/LoaderIcon';
+import { ProgressBar } from '../../commons/ProgressBar';
 import { TipBox } from '../../commons/TipBox';
 import { Typography } from '../../commons/Typography';
 import { TrackerCard } from '../../tracker/TrackerCard';
@@ -39,6 +40,17 @@ const statusLabelMap = {
     'onboarding-connect_tracker-connection_status-connection_error',
   [WifiProvisioningStatus.COULD_NOT_FIND_SERVER]:
     'onboarding-connect_tracker-connection_status-could_not_find_server',
+};
+
+const statusProgressMap = {
+  [WifiProvisioningStatus.NONE]: 0,
+  [WifiProvisioningStatus.SERIAL_INIT]: 0.2,
+  [WifiProvisioningStatus.PROVISIONING]: 0.4,
+  [WifiProvisioningStatus.CONNECTING]: 0.6,
+  [WifiProvisioningStatus.LOOKING_FOR_SERVER]: 0.8,
+  [WifiProvisioningStatus.DONE]: 1,
+  [WifiProvisioningStatus.CONNECTION_ERROR]: 0.6,
+  [WifiProvisioningStatus.COULD_NOT_FIND_SERVER]: 0.8,
 };
 
 export function ConnectTrackersPage() {
@@ -133,13 +145,25 @@ export function ConnectTrackersPage() {
                 youSpinMeRightRoundBabyRightRound={!isError}
               ></LoaderIcon>
             </div>
-            <div className="flex flex-col">
+            <div className="flex flex-col grow">
               <Typography bold>
                 {l10n.getString('onboarding-connect_tracker-usb')}
               </Typography>
               <Typography color="secondary">
                 {l10n.getString(statusLabelMap[provisioningStatus])}
               </Typography>
+              <ProgressBar
+                progress={statusProgressMap[provisioningStatus]}
+                height={6}
+                animated={true}
+                colorClass={
+                  isError
+                    ? 'bg-status-critical'
+                    : provisioningStatus === WifiProvisioningStatus.DONE
+                    ? 'bg-status-success'
+                    : undefined
+                }
+              ></ProgressBar>
             </div>
           </div>
         </div>
