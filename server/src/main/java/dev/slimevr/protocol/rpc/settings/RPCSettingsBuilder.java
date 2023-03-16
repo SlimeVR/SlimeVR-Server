@@ -197,7 +197,8 @@ public class RPCSettingsBuilder {
 		int legTweaksOffset = LegTweaksSettings
 			.createLegTweaksSettings(
 				fbb,
-				legTweaksConfig.getCorrectionStrength()
+				legTweaksConfig.getCorrectionStrength(),
+				true
 			);
 		return ModelSettings.createModelSettings(fbb, togglesOffset, ratiosOffset, legTweaksOffset);
 	}

@@ -76,8 +76,6 @@ public class RPCHandler extends ProtocolHandler<RpcMessageHeader>
 
 		registerPacketListener(RpcMessage.ServerInfosRequest, this::onServerInfosRequest);
 
-		registerPacketListener(RpcMessage.GUIInfosResponse, this::onGUIInfosResponse);
-
 		this.api.server.getAutoBoneHandler().addListener(this);
 	}
 
@@ -257,17 +255,6 @@ public class RPCHandler extends ProtocolHandler<RpcMessageHeader>
 			return;
 
 		this.api.server.clearTrackersDriftCompensation();
-	}
-
-	public void onGUIInfosResponse(
-		GenericConnection conn,
-		RpcMessageHeader messageHeader
-	) {
-		GUIInfosResponse req = (GUIInfosResponse) messageHeader.message(new GUIInfosResponse());
-		if (req == null)
-			return;
-
-		this.api.server.setLegTweaksEnabled(!req.inProportions());
 	}
 
 	@Override

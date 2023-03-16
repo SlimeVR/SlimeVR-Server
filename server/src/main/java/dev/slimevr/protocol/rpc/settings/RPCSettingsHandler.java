@@ -348,6 +348,7 @@ public record RPCSettingsHandler(RPCHandler rpcHandler, ProtocolAPI api) {
 				if (legTweaks.hasCorrectionStrength()) {
 					legTweaksConfig.setCorrectionStrength(legTweaks.correctionStrength());
 				}
+				this.api.server.setLegTweaksEnabled(legTweaks.enabled());
 				this.api.server.humanPoseManager.updateLegTweaksConfig();
 			}
 

@@ -7,7 +7,6 @@ import {
   DriftCompensationSettingsT,
   FilteringSettingsT,
   FilteringType,
-  GUIInfosResponseT,
   LegTweaksSettingsT,
   ModelSettingsT,
   ModelTogglesT,
@@ -71,6 +70,7 @@ interface SettingsForm {
   };
   legTweaks: {
     correctionStrength: number;
+    enabled: boolean;
   };
   interface: {
     devmode: boolean;
@@ -115,7 +115,7 @@ const defaultValues = {
     fullResetTaps: 3,
     mountingResetTaps: 3,
   },
-  legTweaks: { correctionStrength: 0.3 },
+  legTweaks: { correctionStrength: 0.3, enabled: true},
   interface: { devmode: false, watchNewDevices: true },
 };
 
@@ -146,7 +146,6 @@ export function GeneralSettings() {
 
     const modelSettings = new ModelSettingsT();
     const toggles = new ModelTogglesT();
-    const legTweaks = new LegTweaksSettingsT();
     toggles.floorClip = values.toggles.floorClip;
     toggles.skatingCorrection = values.toggles.skatingCorrection;
     toggles.extendedKnee = values.toggles.extendedKnee;
@@ -156,7 +155,10 @@ export function GeneralSettings() {
     toggles.viveEmulation = values.toggles.viveEmulation;
     toggles.toeSnap = values.toggles.toeSnap;
     toggles.footPlant = values.toggles.footPlant;
+
+    const legTweaks = new LegTweaksSettingsT();
     legTweaks.correctionStrength = values.legTweaks.correctionStrength;
+    legTweaks.enabled = values.legTweaks.enabled;
 
     modelSettings.toggles = toggles;
     modelSettings.legTweaks = legTweaks;
@@ -202,14 +204,6 @@ export function GeneralSettings() {
   useEffect(() => {
     sendRPCPacket(RpcMessage.SettingsRequest, new SettingsRequestT());
   }, []);
-
-  useEffect(() => {
-    if (location.pathname.includes('/onboarding/body-proportions')) {
-      sendRPCPacket(RpcMessage.GUIInfosResponse, new GUIInfosResponseT(true));
-    } else {
-      sendRPCPacket(RpcMessage.GUIInfosResponse, new GUIInfosResponseT(false));
-    }
-  }, [location.pathname]);
 
   useRPCPacket(RpcMessage.SettingsResponse, (settings: SettingsResponseT) => {
     const formData: DefaultValues<SettingsForm> = {
@@ -281,6 +275,10 @@ export function GeneralSettings() {
         correctionStrength:
           settings.modelSettings?.legTweaks.correctionStrength ||
           defaultValues.legTweaks.correctionStrength,
+        enabled:
+          // enable legtweaks by default unless in the body proportions tab
+          !location.pathname.includes('/onboarding/body-proportions') ||
+          defaultValues.legTweaks.enabled,
       };
     }
 

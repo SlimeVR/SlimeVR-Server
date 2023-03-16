@@ -1,7 +1,9 @@
 import classNames from 'classnames';
 import { ReactNode, useEffect, useState } from 'react';
 import {
-  GUIInfosResponseT,
+  ChangeSettingsRequestT,
+  LegTweaksSettingsT,
+  ModelSettingsT,
   ResetType,
   RpcMessage,
   SettingsRequestT,
@@ -33,6 +35,8 @@ export function MainLayoutRoute({
   const { useRPCPacket, sendRPCPacket } = useWebsocketAPI();
   const [driftCompensationEnabled, setDriftCompensationEnabled] =
     useState(false);
+  const [ProportionsLastPageOpen, setProportionsLastPageOpen] =
+    useState(true);
 
   useEffect(() => {
     sendRPCPacket(RpcMessage.SettingsRequest, new SettingsRequestT());
@@ -43,13 +47,25 @@ export function MainLayoutRoute({
       setDriftCompensationEnabled(settings.driftCompensation.enabled);
   });
 
-  useEffect(() => {
-    if (location.pathname.includes('/onboarding/body-proportions')) {
-      sendRPCPacket(RpcMessage.GUIInfosResponse, new GUIInfosResponseT(true));
-    } else {
-      sendRPCPacket(RpcMessage.GUIInfosResponse, new GUIInfosResponseT(false));
+  function usePageChanged(callback: () => void) {
+    useEffect(() => {
+      callback();
+    }, [location.pathname]);
+  }
+
+  usePageChanged(() => {
+    if (ProportionsLastPageOpen || location.pathname.includes('body-proportions')) {
+      const settings = new ChangeSettingsRequestT();
+      const modelSettings = new ModelSettingsT();
+      const legTweaks = new LegTweaksSettingsT();
+      legTweaks.enabled = !location.pathname.includes('/onboarding/body-proportions')
+      modelSettings.legTweaks = legTweaks;
+      settings.modelSettings = modelSettings;
+      sendRPCPacket(RpcMessage.ChangeSettingsRequest, settings);
     }
-  }, [location.pathname]);
+    setProportionsLastPageOpen(location.pathname.includes('body-proportions'));
+  })
+
 
   return (
     <>
