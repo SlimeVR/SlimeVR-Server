@@ -6,6 +6,7 @@ import dev.slimevr.config.KeybindingsConfig;
 import io.eiren.util.OperatingSystem;
 import io.eiren.util.ann.AWTThread;
 import io.eiren.util.logging.LogManager;
+import solarxr_protocol.rpc.ResetType;
 
 
 public class Keybinding implements HotkeyListener {
@@ -60,12 +61,15 @@ public class Keybinding implements HotkeyListener {
 	public void onHotKey(int identifier) {
 		switch (identifier) {
 			case FULL_RESET -> {
+				server.getResetHandler().sendStarted(ResetType.Full);
 				server.scheduleResetTrackersFull(resetSourceName, this.config.getFullResetDelay());
 			}
 			case YAW_RESET -> {
+				server.getResetHandler().sendStarted(ResetType.Yaw);
 				server.scheduleResetTrackersYaw(resetSourceName, this.config.getYawResetDelay());
 			}
 			case MOUNTING_RESET -> {
+				server.getResetHandler().sendStarted(ResetType.Mounting);
 				server
 					.scheduleResetTrackersMounting(
 						resetSourceName,
