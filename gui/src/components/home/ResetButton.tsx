@@ -1,8 +1,10 @@
 import { useLocalization } from '@fluent/react';
 import { useMemo } from 'react';
 import { ResetRequestT, ResetType, RpcMessage } from 'solarxr-protocol';
+import { useConfig } from '../../hooks/config';
 import { useCountdown } from '../../hooks/countdown';
 import { useWebsocketAPI } from '../../hooks/websocket-api';
+import { playSoundForStarted } from '../../sounds/sounds';
 import { BigButton } from '../commons/BigButton';
 import { Button } from '../commons/Button';
 import {
@@ -22,6 +24,7 @@ export function ResetButton({
 }) {
   const { l10n } = useLocalization();
   const { sendRPCPacket } = useWebsocketAPI();
+  const { config } = useConfig();
 
   const reset = () => {
     const req = new ResetRequestT();
@@ -61,13 +64,23 @@ export function ResetButton({
   const variantsMap = {
     small:
       type == ResetType.Yaw ? (
-        <Button icon={getIcon()} onClick={reset} variant="primary">
+        <Button
+          icon={getIcon()}
+          onClick={() => {
+            reset();
+            if (config?.feedbackSound) playSoundForStarted(type);
+          }}
+          variant="primary"
+        >
           {text}
         </Button>
       ) : (
         <Button
           icon={getIcon()}
-          onClick={startCountdown}
+          onClick={() => {
+            startCountdown();
+            if (config?.feedbackSound) playSoundForStarted(type);
+          }}
           variant="primary"
           disabled={isCounting}
         >
@@ -79,12 +92,22 @@ export function ResetButton({
       ),
     big:
       type == ResetType.Yaw ? (
-        <BigButton text={text} icon={getIcon()} onClick={reset}></BigButton>
+        <BigButton
+          text={text}
+          icon={getIcon()}
+          onClick={() => {
+            reset();
+            if (config?.feedbackSound) playSoundForStarted(type);
+          }}
+        ></BigButton>
       ) : (
         <BigButton
           text={!isCounting ? text : String(timer)}
           icon={getIcon()}
-          onClick={startCountdown}
+          onClick={() => {
+            startCountdown();
+            if (config?.feedbackSound) playSoundForStarted(type);
+          }}
           disabled={isCounting}
         ></BigButton>
       ),
