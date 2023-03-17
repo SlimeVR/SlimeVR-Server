@@ -16,7 +16,8 @@ websocket-connection_lost = 與伺服器的連線已中斷，正在嘗試重新�
 ## Tips
 
 tips-find_tracker = 若你不確定手上的追蹤器是哪一個，搖一搖它，對應的項目就會顯示出來
-tips-do_not_move_heels = 確保你的腳跟在測量過程時不會發生移動!
+tips-do_not_move_heels = 確保你的腳跟在測量過程時不會發生移動！
+tips-file_select = 拖曳檔案或 <u>瀏覽檔案</u> 以使用
 
 ## Body parts
 
@@ -32,7 +33,7 @@ body_part-RIGHT_LOWER_LEG = 右小腿
 body_part-RIGHT_FOOT = 右腳
 body_part-CHEST = 胸部
 body_part-WAIST = 腰部
-body_part-HIP = 髖部
+body_part-HIP = 臀部
 body_part-LEFT_SHOULDER = 左肩
 body_part-LEFT_UPPER_ARM = 左上臂
 body_part-LEFT_LOWER_ARM = 左前臂
@@ -46,12 +47,14 @@ body_part-LEFT_FOOT = 左腳
 skeleton_bone-NONE = 無
 skeleton_bone-HEAD = 頭部偏移
 skeleton_bone-NECK = 頸部長度
+skeleton_bone-torso_group = 軀幹長度
 skeleton_bone-CHEST = 胸部長度
 skeleton_bone-CHEST_OFFSET = 胸部偏移
 skeleton_bone-WAIST = 腰部長度
-skeleton_bone-HIP = 髖部長度
-skeleton_bone-HIP_OFFSET = 髖部偏移
-skeleton_bone-HIPS_WIDTH = 髖部寬度
+skeleton_bone-HIP = 臀部長度
+skeleton_bone-HIP_OFFSET = 臀部偏移
+skeleton_bone-HIPS_WIDTH = 臀部寬度
+skeleton_bone-leg_group = 腿部長度
 skeleton_bone-UPPER_LEG = 大腿長度
 skeleton_bone-LOWER_LEG = 小腿長度
 skeleton_bone-FOOT_LENGTH = 腳部長度
@@ -59,6 +62,7 @@ skeleton_bone-FOOT_SHIFT = 腳部偏移
 skeleton_bone-SKELETON_OFFSET = 骨骼偏移
 skeleton_bone-SHOULDERS_DISTANCE = 肩膀距離
 skeleton_bone-SHOULDERS_WIDTH = 肩膀寬度
+skeleton_bone-arm_group = 手臂長度
 skeleton_bone-UPPER_ARM = 上臂長度
 skeleton_bone-LOWER_ARM = 前臂長度
 skeleton_bone-HAND_Y = 手部距離Y
@@ -68,9 +72,9 @@ skeleton_bone-ELBOW_OFFSET = 肘部偏移
 ## Tracker reset buttons
 
 reset-reset_all = 重置軀幹比例
-reset-full = 重置
+reset-full = 完整重置
 reset-mounting = 配戴重置
-reset-quick = 快速重置
+reset-yaw = 左右偏擺重置
 
 ## Serial detection stuff
 
@@ -214,7 +218,7 @@ tracker_selection_menu-RIGHT_FOOT = { -tracker_selection-part }右腳？
 tracker_selection_menu-RIGHT_CONTROLLER = { -tracker_selection-part }右控制器？
 tracker_selection_menu-CHEST = { -tracker_selection-part }胸部？
 tracker_selection_menu-WAIST = { -tracker_selection-part }腰部？
-tracker_selection_menu-HIP = { -tracker_selection-part }髖部？
+tracker_selection_menu-HIP = { -tracker_selection-part }臀部？
 tracker_selection_menu-LEFT_SHOULDER = { -tracker_selection-part }左肩？
 tracker_selection_menu-LEFT_UPPER_ARM = { -tracker_selection-part }左上臂？
 tracker_selection_menu-LEFT_LOWER_ARM = { -tracker_selection-part }左前臂？
@@ -288,8 +292,8 @@ settings-general-tracker_mechanics-filtering-amount = 濾波強度
 settings-general-tracker_mechanics-drift_compensation = 偏移補償
 # This cares about multilines
 settings-general-tracker_mechanics-drift_compensation-description =
-    套用逆向旋轉以補償IMU的偏航角位移。
-    更改補償量和使用多少次的重置結果用於計算補償量。
+    套用逆向旋轉以補償陀螺儀的左右偏擺位移。
+    你可以更改補償的強度，以及使用幾次以內的重置結果來進行補償。
 settings-general-tracker_mechanics-drift_compensation-enabled-label = 偏移補償
 settings-general-tracker_mechanics-drift_compensation-amount-label = 補償量
 settings-general-tracker_mechanics-drift_compensation-max_resets-label = 使用幾次的重置結果？
@@ -297,8 +301,6 @@ settings-general-tracker_mechanics-drift_compensation-max_resets-label = 使用�
 ## FK/Tracking settings
 
 settings-general-fk_settings = 追蹤設定
-settings-general-fk_settings-leg_tweak = 腿部調整
-settings-general-fk_settings-leg_tweak-description = 地板限制可以減輕甚至解決腳部穿入地板的情況，但是當跪在地上的時候可能會造成問題。腳滑修正可以矯正一些腳滑溜冰的問題，但是可能會降低某些動作的準確度。
 # Floor clip:
 # why the name - came from the idea of noclip in video games, but is the opposite where clipping to the floor is a desired feature
 # definition - Prevents the foot trackers from going lower than they where when a reset was performed
@@ -308,7 +310,14 @@ settings-general-fk_settings-leg_tweak-floor_clip = 地板限制
 # since this largely prevents this it corrects for it hence skating correction (note this may be renamed to sliding correction)
 # definition - Guesses when each foot is in contact with the ground and uses that information to improve tracking
 settings-general-fk_settings-leg_tweak-skating_correction = 腳滑修正
+settings-general-fk_settings-leg_tweak-toe_snap = 腳趾跟地
+settings-general-fk_settings-leg_tweak-foot_plant = 腳底貼地
 settings-general-fk_settings-leg_tweak-skating_correction-amount = 腳滑修正量
+settings-general-fk_settings-leg_tweak-skating_correction-description = 腳滑修正功能可以矯正腳滑溜冰的問題，但會降低某些動作的準確度。啟用本功能前請進行完整重置，並在遊戲內進行校正。
+settings-general-fk_settings-leg_tweak-floor_clip-description = 地板限制功能可以減輕甚至解決腳部穿入地板的情況。啟用本功能前請進行完整重置，並在遊戲內進行校正。
+settings-general-fk_settings-leg_tweak-toe_snap-description = 腳趾跟地功能在沒有腳部的追蹤器時，會嘗試猜測腳掌的旋轉角度。
+settings-general-fk_settings-leg_tweak-foot_plant-description = 腳底貼地功能會在腳底與地面接觸時，將腳部旋轉成與地板平行。
+settings-general-fk_settings-leg_fk = 腿部追蹤
 settings-general-fk_settings-arm_fk = 手臂追蹤
 settings-general-fk_settings-arm_fk-description = 更改手臂的追蹤方式。
 settings-general-fk_settings-arm_fk-force_arms = 強制從頭戴顯示器取得資料
@@ -325,20 +334,20 @@ settings-general-fk_settings-vive_emulation-label = 開啟 Vive 模擬
 
 settings-general-gesture_control = 手勢控制
 settings-general-gesture_control-subtitle = 敲擊重置
-settings-general-gesture_control-description = 使用敲擊追蹤器的方法觸發重置。敲擊軀幹所配戴的最高的追蹤器會啟用快速重置，敲擊左腳配戴最高的追蹤器會觸發重置，敲擊右腳配戴最高的追蹤器會觸發配戴重置。請注意，需要在 0.6 秒內滿足敲擊次數才會觸發。
+settings-general-gesture_control-description = 使用敲擊追蹤器的方法觸發重置。敲擊軀幹所配戴的最高的追蹤器會啟用左右偏擺重置，敲擊左腳配戴最高的追蹤器會觸發完整重置，敲擊右腳配戴最高的追蹤器會觸發配戴重置。請注意，需要在 0.6 秒內滿足敲擊次數才會觸發。
 # This is a unit: 3 taps, 2 taps, 1 tap
 # $amount (Number) - Amount of taps (touches to the tracker's case)
 settings-general-gesture_control-taps =
     { $amount ->
        *[other] { $amount } 次敲擊
     }
-settings-general-gesture_control-quickResetEnabled = 敲擊以快速重置
-settings-general-gesture_control-quickResetDelay = 快速重置延遲
-settings-general-gesture_control-quickResetTaps = 快速重置敲擊次數
-settings-general-gesture_control-resetEnabled = 敲擊以重置
-settings-general-gesture_control-resetDelay = 重置延遲
-settings-general-gesture_control-resetTaps = 重置敲擊次數
-settings-general-gesture_control-mountingResetEnabled = 敲擊以重置佩戴
+settings-general-gesture_control-yawResetEnabled = 敲擊以左右偏擺重置
+settings-general-gesture_control-yawResetDelay = 左右偏擺重置延遲
+settings-general-gesture_control-yawResetTaps = 左右偏擺重置敲擊次數
+settings-general-gesture_control-fullResetEnabled = 敲擊以完整重置
+settings-general-gesture_control-fullResetDelay = 完整重置延遲
+settings-general-gesture_control-fullResetTaps = 完整重置敲擊次數
+settings-general-gesture_control-mountingResetEnabled = 敲擊以配戴重置
 settings-general-gesture_control-mountingResetDelay = 重置佩戴延遲
 settings-general-gesture_control-mountingResetTaps = 重置佩戴敲擊次數
 
@@ -351,6 +360,9 @@ settings-general-interface-dev_mode-label = 開發者模式
 settings-general-interface-serial_detection = 串列埠裝置檢測
 settings-general-interface-serial_detection-description = 每次插入新串列埠的裝置（可能是追蹤器）時，此選項會顯示一個彈出視窗。這有助於改進追蹤器的設定流程。
 settings-general-interface-serial_detection-label = 串列埠裝置檢測
+settings-general-interface-feedback_sound = 聲音回饋
+settings-general-interface-feedback_sound-description = 啟用本選項後，觸發重置時會發出提示音
+settings-general-interface-feedback_sound-label = 聲音回饋
 settings-general-interface-lang = 選擇語言
 settings-general-interface-lang-description = 更改要使用的預設語言
 settings-general-interface-lang-placeholder = 選擇要使用的語言
@@ -410,7 +422,7 @@ settings-osc-vrchat-enable = 啟用
 settings-osc-vrchat-enable-description = 切換資料的傳送和接收。
 settings-osc-vrchat-enable-label = 啟用
 settings-osc-vrchat-network = 連接埠
-settings-osc-vrchat-network-description = 設定用於監聽和向 VRChat 傳送資料的連接埠。
+settings-osc-vrchat-network-description = 設定與 VRChat 監聽和傳送資料的連接埠。
 settings-osc-vrchat-network-port_in =
     .label = 輸入埠
     .placeholder = 輸入埠（預設 9001）
@@ -418,7 +430,7 @@ settings-osc-vrchat-network-port_out =
     .label = 輸出埠
     .placeholder = 輸出埠（預設 9000）
 settings-osc-vrchat-network-address = 網路位址
-settings-osc-vrchat-network-address-description = 設定用來發送資料到 VRChat 的位址（請檢察裝置的 Wi-Fi 設定）。
+settings-osc-vrchat-network-address-description = 設定用來發送資料到 VRChat 的位址（請檢查裝置的 Wi-Fi 設定）。
 settings-osc-vrchat-network-address-placeholder = VRChat IP 位址
 settings-osc-vrchat-network-trackers = 追蹤器
 settings-osc-vrchat-network-trackers-description = 切換傳送指定追蹤器的資料。
@@ -427,6 +439,40 @@ settings-osc-vrchat-network-trackers-waist = 腰部
 settings-osc-vrchat-network-trackers-knees = 膝蓋
 settings-osc-vrchat-network-trackers-feet = 腳部
 settings-osc-vrchat-network-trackers-elbows = 肘部
+
+## VMC OSC settings
+
+settings-osc-vmc = Virtual Motion Capture
+# This cares about multilines
+settings-osc-vmc-description =
+    修改 VMC (Virtual Motion Capture) 協定的相關設定
+    以傳送 SlimeVR 的骨骼資料，並接收來自其他應用程式的骨骼資料
+settings-osc-vmc-enable = 啟用
+settings-osc-vmc-enable-description = 切換資料的傳送和接收。
+settings-osc-vmc-enable-label = 啟用
+settings-osc-vmc-network = 連接埠
+settings-osc-vmc-network-description = 設定用於監聽和傳送 VMC 資料的連接埠
+settings-osc-vmc-network-port_in =
+    .label = 輸入埠
+    .placeholder = 輸入埠（預設：39540）
+settings-osc-vmc-network-port_out =
+    .label = 輸出埠
+    .placeholder = 輸出埠（預設：39539）
+settings-osc-vmc-network-address = 網路地址
+settings-osc-vmc-network-address-description = 設定用來發送 VMC 資料的位址
+settings-osc-vmc-network-address-placeholder = IPV4 地址
+settings-osc-vmc-vrm = VRM 模型
+settings-osc-vmc-vrm-description = 載入 VRM 模型以允許頭部錨定，並增進與其他應用程式的相容性
+settings-osc-vmc-vrm-model_unloaded = 未載入模型
+settings-osc-vmc-vrm-model_loaded =
+    { $titled ->
+        [true] 已載入模型：{ $name }
+       *[other] 已載入未命名的模型
+    }
+settings-osc-vmc-vrm-file_select = 拖曳檔案或 <u>瀏覽檔案</u> 以載入模型
+settings-osc-vmc-anchor_hip = 臀部錨定
+settings-osc-vmc-anchor_hip-description = 將追蹤錨定在臀部，有利於坐姿進行虛擬直播。若本選項無法切換，請載入 VRM 模型。
+settings-osc-vmc-anchor_hip-label = 臀部錨定
 
 ## Setup/onboarding menu
 
@@ -606,12 +652,12 @@ onboarding-automatic_mounting-prev_step = 上一步
 onboarding-automatic_mounting-done-title = 配戴方向已校正。
 onboarding-automatic_mounting-done-description = 你的配戴方向校準完成！
 onboarding-automatic_mounting-done-restart = 返回以開始
-onboarding-automatic_mounting-mounting_reset-title = 重置配戴
+onboarding-automatic_mounting-mounting_reset-title = 配戴重置
 onboarding-automatic_mounting-mounting_reset-step-0 = 1. 雙腿彎曲以滑雪的姿勢蹲下，上身向前傾斜，手臂彎曲。
-onboarding-automatic_mounting-mounting_reset-step-1 = 按下重置配戴按鈕並等待 3 秒鐘，然後追蹤器的佩戴方向將被重置。
+onboarding-automatic_mounting-mounting_reset-step-1 = 2. 按下「配戴重置」按鈕並等待 3 秒鐘，追蹤器的配戴方向將被重置。
 onboarding-automatic_mounting-preparation-title = 準備
 onboarding-automatic_mounting-preparation-step-0 = 1. 身體直立，雙臂放在身體兩側。
-onboarding-automatic_mounting-preparation-step-1 = 按下「重置」按鈕，等待 3 秒鐘，追蹤器將會重置。
+onboarding-automatic_mounting-preparation-step-1 = 2. 按下「完整重置」按鈕，等待 3 秒鐘，追蹤器將會重置。
 onboarding-automatic_mounting-put_trackers_on-title = 請戴好追蹤器
 onboarding-automatic_mounting-put_trackers_on-description = 為了校準配戴方向，我們將使用剛才分配的追蹤器。戴上你所有的追蹤器，你可以在右邊的圖中看到追蹤器的對應部位。
 onboarding-automatic_mounting-put_trackers_on-next = 我所有的追蹤器都戴好了！
@@ -622,6 +668,7 @@ onboarding-manual_proportions-back = 返回重置教學
 onboarding-manual_proportions-title = 手動調整軀幹比例
 onboarding-manual_proportions-precision = 精確調整
 onboarding-manual_proportions-auto = 自動校準
+onboarding-manual_proportions-ratio = 依比例分組調整
 
 ## Tracker automatic proportions setup
 

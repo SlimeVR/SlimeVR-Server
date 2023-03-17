@@ -17,6 +17,7 @@ websocket-connection_lost = oopsie woopsie~ connyection wost to teh sewvew ;m;..
 
 tips-find_tracker = nawt suwe whicsh twayckyaw is whicsh? shayke a twackaw and it will hyighwight the cowowesponding iytem.
 tips-do_not_move_heels = ensuwe yoowr pawsies do nawt mowve duwing wecowding! ^w^
+tips-file_select = dwag & dwop fiwes to use OwO, ow <u>bwowse</u>.
 
 ## Body parts
 
@@ -30,8 +31,8 @@ body_part-RIGHT_HAND = wight pawb
 body_part-RIGHT_UPPER_LEG = wight uppew weg
 body_part-RIGHT_LOWER_LEG = wight wowwe weg
 body_part-RIGHT_FOOT = wight pawb
-body_part-CHEST = chwest
-body_part-WAIST = wyayst
+body_part-CHEST = chwest~
+body_part-WAIST = wyayst~
 body_part-HIP = hyip
 body_part-LEFT_SHOULDER = weft shouwder~
 body_part-LEFT_UPPER_ARM = weft uppew awm
@@ -46,12 +47,14 @@ body_part-LEFT_FOOT = weft pawb
 skeleton_bone-NONE = none
 skeleton_bone-HEAD = hed shyft
 skeleton_bone-NECK = nyeck wength
+skeleton_bone-torso_group = towso wength
 skeleton_bone-CHEST = chwest wength
 skeleton_bone-CHEST_OFFSET = chwest awfset
 skeleton_bone-WAIST = weyst wength
 skeleton_bone-HIP = hip wength
 skeleton_bone-HIP_OFFSET = hyip awfset
 skeleton_bone-HIPS_WIDTH = hyips wiwdth
+skeleton_bone-leg_group = weg wength
 skeleton_bone-UPPER_LEG = uppew weg wength
 skeleton_bone-LOWER_LEG = wowwe weg wength
 skeleton_bone-FOOT_LENGTH = pawsies wength
@@ -59,8 +62,9 @@ skeleton_bone-FOOT_SHIFT = pawsies shyft
 skeleton_bone-SKELETON_OFFSET = skeweton awfset
 skeleton_bone-SHOULDERS_DISTANCE = shouwdews disyance
 skeleton_bone-SHOULDERS_WIDTH = shouwdews wiwdth
+skeleton_bone-arm_group = awm wength
 skeleton_bone-UPPER_ARM = uppew awm wength
-skeleton_bone-LOWER_ARM = fowewawm disyance
+skeleton_bone-LOWER_ARM = wowwer awm wength
 skeleton_bone-HAND_Y = hawnd disance y
 skeleton_bone-HAND_Z = hawnd disance z
 skeleton_bone-ELBOW_OFFSET = ewbow awfsewt
@@ -68,9 +72,9 @@ skeleton_bone-ELBOW_OFFSET = ewbow awfsewt
 ## Tracker reset buttons
 
 reset-reset_all = weset aww pwopowtions~
-reset-full = weset~
+reset-full = fuww weset~
 reset-mounting = weset meownting
-reset-quick = quick weset
+reset-yaw = waw weset
 
 ## Serial detection stuff
 
@@ -158,6 +162,8 @@ tracker-infos-manufacturer = mawufactuwer
 tracker-infos-display_name = dispway name
 tracker-infos-custom_name = custowm name
 tracker-infos-url = twackaw uawl
+tracker-infos-version = fiwmwawe vewsion
+tracker-infos-hardware_rev = hawdwawe revision
 
 ## Tracker settings
 
@@ -198,29 +204,29 @@ body_assignment_menu-unassign_tracker = unassyign twayckaw
 #
 # We are using it here because english doesn't require changing the text in each case but
 # maybe your language does.
--tracker_selection-part = Which tracker to assign to your
-tracker_selection_menu-NONE = Which tracker do you want to be unassigned?
-tracker_selection_menu-HEAD = { -tracker_selection-part } head?
-tracker_selection_menu-NECK = { -tracker_selection-part } neck?
-tracker_selection_menu-RIGHT_SHOULDER = { -tracker_selection-part } right shoulder?
-tracker_selection_menu-RIGHT_UPPER_ARM = { -tracker_selection-part } right upper arm?
-tracker_selection_menu-RIGHT_LOWER_ARM = { -tracker_selection-part } right lower arm?
-tracker_selection_menu-RIGHT_HAND = { -tracker_selection-part } right hand?
-tracker_selection_menu-RIGHT_UPPER_LEG = { -tracker_selection-part } right thigh?
-tracker_selection_menu-RIGHT_LOWER_LEG = { -tracker_selection-part } right ankle?
-tracker_selection_menu-RIGHT_FOOT = { -tracker_selection-part } right foot?
-tracker_selection_menu-RIGHT_CONTROLLER = { -tracker_selection-part } right controller?
-tracker_selection_menu-CHEST = { -tracker_selection-part } chest?
-tracker_selection_menu-WAIST = { -tracker_selection-part } waist?
-tracker_selection_menu-HIP = { -tracker_selection-part } hip?
-tracker_selection_menu-LEFT_SHOULDER = { -tracker_selection-part } left shoulder?
-tracker_selection_menu-LEFT_UPPER_ARM = { -tracker_selection-part } left upper arm?
-tracker_selection_menu-LEFT_LOWER_ARM = { -tracker_selection-part } left lower arm?
-tracker_selection_menu-LEFT_HAND = { -tracker_selection-part } left hand?
-tracker_selection_menu-LEFT_UPPER_LEG = { -tracker_selection-part } left thigh?
-tracker_selection_menu-LEFT_LOWER_LEG = { -tracker_selection-part } left ankle?
-tracker_selection_menu-LEFT_FOOT = { -tracker_selection-part } left foot?
-tracker_selection_menu-LEFT_CONTROLLER = { -tracker_selection-part } left controller?
+-tracker_selection-part = wich twacaw to assine to youw
+tracker_selection_menu-NONE = wich twacaw do u wan be unassine?
+tracker_selection_menu-HEAD = { -tracker_selection-part } hed?
+tracker_selection_menu-NECK = { -tracker_selection-part } nek?
+tracker_selection_menu-RIGHT_SHOULDER = { -tracker_selection-part } wight shouwdaw?
+tracker_selection_menu-RIGHT_UPPER_ARM = { -tracker_selection-part } wight uppaw awm?
+tracker_selection_menu-RIGHT_LOWER_ARM = { -tracker_selection-part } wight wowwer awm?
+tracker_selection_menu-RIGHT_HAND = { -tracker_selection-part } wight hannd?
+tracker_selection_menu-RIGHT_UPPER_LEG = { -tracker_selection-part } wight tigh?
+tracker_selection_menu-RIGHT_LOWER_LEG = { -tracker_selection-part } wight ankew?
+tracker_selection_menu-RIGHT_FOOT = { -tracker_selection-part } wight pawb?
+tracker_selection_menu-RIGHT_CONTROLLER = { -tracker_selection-part } wight contwowwaw?
+tracker_selection_menu-CHEST = { -tracker_selection-part } chwest?
+tracker_selection_menu-WAIST = { -tracker_selection-part } waste?
+tracker_selection_menu-HIP = { -tracker_selection-part } hiyp?
+tracker_selection_menu-LEFT_SHOULDER = { -tracker_selection-part } weft shouwder?
+tracker_selection_menu-LEFT_UPPER_ARM = { -tracker_selection-part } weft uppew awm?
+tracker_selection_menu-LEFT_LOWER_ARM = { -tracker_selection-part } weft wowwer awm?
+tracker_selection_menu-LEFT_HAND = { -tracker_selection-part } weft hand?
+tracker_selection_menu-LEFT_UPPER_LEG = { -tracker_selection-part } weft tigh?
+tracker_selection_menu-LEFT_LOWER_LEG = { -tracker_selection-part } weft ankew?
+tracker_selection_menu-LEFT_FOOT = { -tracker_selection-part } weft pawb?
+tracker_selection_menu-LEFT_CONTROLLER = { -tracker_selection-part } weft contwowwaw?
 tracker_selection_menu-unassigned = unassyigned twackaws
 tracker_selection_menu-assigned = assyigned twackaws
 tracker_selection_menu-dont_assign = do nawt assyign
@@ -242,7 +248,7 @@ mounting_selection_menu-close = cwose
 settings-sidebar-title = settyings~
 settings-sidebar-general = genyawaw
 settings-sidebar-tracker_mechanics = twayckaw mechanics~
-settings-sidebar-fk_settings = fk settyings
+settings-sidebar-fk_settings = twacking settyings
 settings-sidebar-gesture_control = gestauw cantwol
 settings-sidebar-interface = intyawface~
 settings-sidebar-osc_router = OSC wouwter
@@ -251,8 +257,8 @@ settings-sidebar-serial = sewiaw cownsaw
 
 ## SteamVR settings
 
-settings-general-steamvr = steamvr~
-settings-general-steamvr-subtitle = steamvr twayckaws~
+settings-general-steamvr = steawmvr~
+settings-general-steamvr-subtitle = steawmvr twayckaws~
 # Not all translation keys support multiline, only the ones that specify it will actually
 # split it in lines (that also means you can split in lines however you want in those).
 # The first spaces (not tabs) for indentation will be ignored, just to make the file look nice when writing.
@@ -294,9 +300,7 @@ settings-general-tracker_mechanics-drift_compensation-max_resets-label = nuwmbew
 
 ## FK/Tracking settings
 
-settings-general-fk_settings = fk sewttings
-settings-general-fk_settings-leg_tweak = leg tweeks
-settings-general-fk_settings-leg_tweak-description = floo-cwip can wowduce owow even ewiminates cwipping with teh fwoow but may cause pwobweems when on yowuw neeys. skayting-cowwection cowwects fow wowce skating, but can wowcyancy accuwowacy in cewtain wowvement wowttewns.
+settings-general-fk_settings = twacking sewttings
 # Floor clip:
 # why the name - came from the idea of noclip in video games, but is the opposite where clipping to the floor is a desired feature
 # definition - Prevents the foot trackers from going lower than they where when a reset was performed
@@ -306,8 +310,15 @@ settings-general-fk_settings-leg_tweak-floor_clip = fwoow cwip
 # since this largely prevents this it corrects for it hence skating correction (note this may be renamed to sliding correction)
 # definition - Guesses when each foot is in contact with the ground and uses that information to improve tracking
 settings-general-fk_settings-leg_tweak-skating_correction = skayting wowcowwection
+settings-general-fk_settings-leg_tweak-toe_snap = toe snappp
+settings-general-fk_settings-leg_tweak-foot_plant = pawb pwant
 settings-general-fk_settings-leg_tweak-skating_correction-amount = skawting cowwection stwength
-settings-general-fk_settings-arm_fk = awm fk
+settings-general-fk_settings-leg_tweak-skating_correction-description = skating-cowwection cowwects fow ice skating but can decwease accuwacy in cewtain movement pattewns. When enabwing this make suwe to fuww weset and wecawibwate in game.
+settings-general-fk_settings-leg_tweak-floor_clip-description = fwoow-cwip can reduce ow even ewiminates cwipping thwough the fwoow. When enabwing this, make suwe to fuww weset and wecawibwate in game.
+settings-general-fk_settings-leg_tweak-toe_snap-description = toe-snap atempts to gwess da wotation of ur fweet if fweet tracker thingys arewnt in use
+settings-general-fk_settings-leg_tweak-foot_plant-description = pawb-pwant wotates youw feet to be pawawwew to the gwound wen in cawntact.
+settings-general-fk_settings-leg_fk = weg twackin
+settings-general-fk_settings-arm_fk = awm twacking
 settings-general-fk_settings-arm_fk-description = chawnge teh way teh awms awe twacked.
 settings-general-fk_settings-arm_fk-force_arms = fowce awms fwom hmd
 settings-general-fk_settings-skeleton_settings = skeweton sewttings
@@ -323,7 +334,7 @@ settings-general-fk_settings-vive_emulation-label = enabwe vive emuwation
 
 settings-general-gesture_control = gestauw cantwol
 settings-general-gesture_control-subtitle = bap bwased wesets
-settings-general-gesture_control-description = allaws oww wesets wo be twiggewed by wapping a twackaw. The twackaw hyighest wup on youwuw twuwsuu is uwued fow qwick weset, wa twackaw hyighest up on youwuw weft weg is uwused fow weset, and teh twackaw hyighest up on youwuw wight weg is used fow mmountwing weset. It showold we wentioned what waps muwst happen within 0.6 seconds wo be wegistewed
+settings-general-gesture_control-description = awwows fow wesets to be twiggewed by bapping a twackew. teh twackew hyest up on youw towso is used fow yaw weset, the twackew hyest up on youw weft weg is use fow fuww reset, and da twackew hiest up on youw wight weg is used fow mounting weset. it shouwd be menshuned dat baps must bappen wifin 0.6 second to be wegistewed.
 # This is a unit: 3 taps, 2 taps, 1 tap
 # $amount (Number) - Amount of taps (touches to the tracker's case)
 settings-general-gesture_control-taps =
@@ -331,12 +342,12 @@ settings-general-gesture_control-taps =
         [one] 1 bap
        *[other] { $amount } baps
     }
-settings-general-gesture_control-quickResetEnabled = enable wap to quwuick weset
-settings-general-gesture_control-quickResetDelay = quwuick weset deway
-settings-general-gesture_control-quickResetTaps = baps fow quwuick weset
-settings-general-gesture_control-resetEnabled = enable wap to weset
-settings-general-gesture_control-resetDelay = weset deway
-settings-general-gesture_control-resetTaps = baps fow weset
+settings-general-gesture_control-yawResetEnabled = enabwe bap to yaw weset
+settings-general-gesture_control-yawResetDelay = yaw weset deway
+settings-general-gesture_control-yawResetTaps = baps fow yaw weset
+settings-general-gesture_control-fullResetEnabled = enabwe bap to fuww weset
+settings-general-gesture_control-fullResetDelay = fuww weset deway
+settings-general-gesture_control-fullResetTaps = baps fow fuww weset
 settings-general-gesture_control-mountingResetEnabled = enable wap to weset mountwing
 settings-general-gesture_control-mountingResetDelay = mountwing weset deway
 settings-general-gesture_control-mountingResetTaps = baps for mountwing weset
@@ -350,6 +361,9 @@ settings-general-interface-dev_mode-label = devwowwewow mode
 settings-general-interface-serial_detection = shewyaw device deteccion
 settings-general-interface-serial_detection-description = this option will shaww a pawp-up evewy time yuw pwug a new shewyaw device that cawwld be a twayckaw. it helps iympwooving teh setup pwocess of a twayckaw
 settings-general-interface-serial_detection-label = shewyaw device deteccion
+settings-general-interface-feedback_sound = feeback sownd
+settings-general-interface-feedback_sound-description = dis awptshun wiww pway a sownd wen a weset is twiggered (meow~!)
+settings-general-interface-feedback_sound-label = feeback sownd
 settings-general-interface-lang = sewect wanguage
 settings-general-interface-lang-description = change the defawwt wanguage yuw want to use
 settings-general-interface-lang-placeholder = sewect teh wanguage to use
@@ -430,6 +444,7 @@ settings-osc-vrchat-network-trackers-feet = pweets~
 settings-osc-vrchat-network-trackers-elbows = ewbows~
 
 ## VMC OSC settings
+
 settings-osc-vmc = viwtuaw motion captuwe
 # This cares about multilines
 settings-osc-vmc-description =
@@ -449,6 +464,15 @@ settings-osc-vmc-network-port_out =
 settings-osc-vmc-network-address = network addwess
 settings-osc-vmc-network-address-description = choose which addwess to send out data at via vmc
 settings-osc-vmc-network-address-placeholder = IPV4 addwess
+settings-osc-vmc-vrm = VRM modew
+settings-osc-vmc-vrm-description = woad a VRM modew to awwow head anchow and enabwe a highew compatibiwity with othew appwications
+settings-osc-vmc-vrm-model_unloaded = no modew woaded
+settings-osc-vmc-vrm-model_loaded =
+    { $titled ->
+        [true] modew woaded: { $name }
+       *[other] untitwed modew woaded
+    }
+settings-osc-vmc-vrm-file_select = dwag & dwop a modew to use OwO, ow <u>bwowse</u>
 settings-osc-vmc-anchor_hip = anchow at hips
 settings-osc-vmc-anchor_hip-description = anchow the twacking at the hips, usefuw fow seated vtubing
 settings-osc-vmc-anchor_hip-label = anchow at hips
@@ -641,7 +665,7 @@ onboarding-automatic_mounting-mounting_reset-step-0 = 1. squawt in a "skiing" po
 onboarding-automatic_mounting-mounting_reset-step-1 = 2. pwess the "weset meownting" button and wait fow 3 seconds befowe the twackaws' meownting wowations will weset.
 onboarding-automatic_mounting-preparation-title = pwepaiwation
 onboarding-automatic_mounting-preparation-step-0 = 1. stand upwight with yowo awems to yowo sides.
-onboarding-automatic_mounting-preparation-step-1 = 2. pwess the "weset" button and wait fow 3 seconds befowe the twackaws will weset.
+onboarding-automatic_mounting-preparation-step-1 = 2. pwess the "fuww weset" button and wait fow 3 seconds befowe the twackaws will weset.
 onboarding-automatic_mounting-put_trackers_on-title = put on yowo twackaws
 onboarding-automatic_mounting-put_trackers_on-description = to cawibwate meownting wowations, we'we gonna use the twackaws yowo just assigned. put on awe yowo twackaws, yowo can see which awe which in the figuwe to the wowight.
 onboarding-automatic_mounting-put_trackers_on-next = i haff awe my twackaws on
@@ -652,6 +676,7 @@ onboarding-manual_proportions-back = go bawck to weset tutowiaw
 onboarding-manual_proportions-title = manyuaw bodee pwopowtiesions
 onboarding-manual_proportions-precision = pwecision adjusty
 onboarding-manual_proportions-auto = owtomatic cawybwation
+onboarding-manual_proportions-ratio = ajust by watio gwoups
 
 ## Tracker automatic proportions setup
 
