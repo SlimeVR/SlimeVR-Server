@@ -95,6 +95,12 @@ public class WindowsNamedPipeBridge extends SteamVRBridge {
 							e.printStackTrace();
 						}
 					}
+				} else {
+					try {
+						Main.getVrServer().interrupt();
+					} catch (SecurityException ex) {
+						// do nothing
+					}
 				}
 			}
 		} catch (IOException e) {
