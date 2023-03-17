@@ -64,7 +64,7 @@ public class SerialHandler implements SerialPortMessageListener {
 	}
 
 	public boolean openSerial(String portLocation, boolean auto) {
-		LogManager.info("Trying to open:" + portLocation + "  auto: " + auto);
+		LogManager.info("[SerialHandler] Trying to open: " + portLocation + ", auto: " + auto);
 
 		SerialPort[] ports = SerialPort.getCommPorts();
 		lastKnownPorts = ports;
@@ -112,7 +112,7 @@ public class SerialHandler implements SerialPortMessageListener {
 		currentPort = newPort;
 		LogManager
 			.info(
-				"Trying to connect to new serial port "
+				"[SerialHandler] Trying to connect to new serial port "
 					+ currentPort.getDescriptivePortName()
 			);
 
@@ -122,7 +122,7 @@ public class SerialHandler implements SerialPortMessageListener {
 		if (!currentPort.openPort(1000)) {
 			LogManager
 				.warning(
-					"Can't open serial port "
+					"[SerialHandler] Can't open serial port "
 						+ currentPort.getDescriptivePortName()
 						+ ", last error: "
 						+ currentPort.getLastErrorCode()
@@ -133,7 +133,7 @@ public class SerialHandler implements SerialPortMessageListener {
 
 		currentPort.addDataListener(this);
 		this.listeners.forEach((listener) -> listener.onSerialConnected(currentPort));
-		LogManager.info("Serial port " + newPort.getDescriptivePortName() + " is open");
+		LogManager.info("[SerialHandler] Serial port " + newPort.getDescriptivePortName() + " is open");
 		return true;
 	}
 
@@ -156,7 +156,7 @@ public class SerialHandler implements SerialPortMessageListener {
 			this.listeners.forEach(SerialListener::onSerialDisconnected);
 			LogManager
 				.info(
-					"Port "
+					"[SerialHandler] Port "
 						+ (currentPort != null ? currentPort.getDescriptivePortName() : "null")
 						+ " closed okay"
 				);
@@ -164,7 +164,7 @@ public class SerialHandler implements SerialPortMessageListener {
 		} catch (Exception e) {
 			LogManager
 				.warning(
-					"Error closing port "
+					"[SerialHandler] Error closing port "
 						+ (currentPort != null ? currentPort.getDescriptivePortName() : "null"),
 					e
 				);
@@ -182,7 +182,7 @@ public class SerialHandler implements SerialPortMessageListener {
 			this.addLog("-> " + serialText + "\n");
 		} catch (IOException e) {
 			addLog("[!] Serial error: " + e.getMessage() + "\n");
-			LogManager.warning("Serial port write error", e);
+			LogManager.warning("[SerialHandler] Serial port write error", e);
 		}
 	}
 
@@ -197,7 +197,7 @@ public class SerialHandler implements SerialPortMessageListener {
 			this.addLog("-> SET WIFI \"" + ssid + "\" \"" + passwd.replaceAll(".", "*") + "\"\n");
 		} catch (IOException e) {
 			addLog(e + "\n");
-			LogManager.warning("Serial port write error", e);
+			LogManager.warning("[SerialHandler] Serial port write error", e);
 		}
 	}
 
@@ -280,7 +280,7 @@ public class SerialHandler implements SerialPortMessageListener {
 			lastKnownPorts = SerialPort.getCommPorts();
 			differences.forEach(this::onNewDevice);
 		} catch (Throwable e) {
-			LogManager.severe("Using serial ports is not supported on this platform", e);
+			LogManager.severe("[SerialHandler] Using serial ports is not supported on this platform", e);
 			throw new RuntimeException("Serial unsupported");
 		}
 	}

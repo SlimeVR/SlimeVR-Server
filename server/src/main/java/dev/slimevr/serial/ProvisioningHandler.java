@@ -67,9 +67,9 @@ public class ProvisioningHandler implements SerialListener {
 			else
 				openResult = vrServer.getSerialHandler().openSerial(null, true);
 			if (!openResult)
-				LogManager.info("Serial port wasn't open...");
+				LogManager.info("[SerialHandler] Serial port wasn't open...");
 		} catch (Exception e) {
-			LogManager.severe("Unable to open serial port", e);
+			LogManager.severe("[SerialHandler] Unable to open serial port", e);
 		} catch (Throwable e) {
 			LogManager.severe("Using serial ports is not supported on this platform", e);
 		}
