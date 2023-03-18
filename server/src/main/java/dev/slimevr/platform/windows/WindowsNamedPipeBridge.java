@@ -85,7 +85,9 @@ public class WindowsNamedPipeBridge extends SteamVRBridge {
 				if (pipe.state == PipeState.ERROR) {
 					resetPipe();
 				}
-				if (!pipesUpdated) {
+				if (pipesUpdated) {
+					signalRecv();
+				} else {
 					if (pipe.state == PipeState.OPEN) {
 						waitForData(10);
 					} else {
@@ -94,12 +96,6 @@ public class WindowsNamedPipeBridge extends SteamVRBridge {
 						} catch (InterruptedException e) {
 							e.printStackTrace();
 						}
-					}
-				} else {
-					try {
-						Main.getVrServer().interrupt();
-					} catch (SecurityException ex) {
-						// do nothing
 					}
 				}
 			}
