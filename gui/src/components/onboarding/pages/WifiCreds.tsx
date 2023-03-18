@@ -1,7 +1,6 @@
 import { Localized, useLocalization } from '@fluent/react';
 import { useOnboarding } from '../../../hooks/onboarding';
 import { useWifiForm } from '../../../hooks/wifi-form';
-import { ArrowLink } from '../../commons/ArrowLink';
 import { Button } from '../../commons/Button';
 import { Input } from '../../commons/Input';
 import { Typography } from '../../commons/Typography';
@@ -20,9 +19,6 @@ export function WifiCredsPage() {
       <div className="flex flex-col w-full h-full justify-center items-center">
         <div className="flex gap-10">
           <div className="flex flex-col max-w-sm">
-            <ArrowLink to="/onboarding/home" direction="left">
-              {l10n.getString('onboarding-wifi_creds-back')}
-            </ArrowLink>
             <Typography variant="main-title">
               {l10n.getString('onboarding-wifi_creds')}
             </Typography>
@@ -70,7 +66,10 @@ export function WifiCredsPage() {
         </div>
       </div>
       <div className="w-full py-4 flex flex-row">
-        <div className="flex flex-grow">
+        <div className="flex flex-grow gap-3">
+          <Button variant="secondary" to="/onboarding/home">
+            {l10n.getString('onboarding-wifi_creds-back')}
+          </Button>
           <Button variant="secondary" to="/" onClick={skipSetup}>
             {l10n.getString('onboarding-skip')}
           </Button>

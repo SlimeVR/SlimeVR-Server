@@ -2,7 +2,6 @@ import { useForm } from 'react-hook-form';
 import { RpcMessage, SkeletonResetAllRequestT } from 'solarxr-protocol';
 import { useOnboarding } from '../../../../hooks/onboarding';
 import { useWebsocketAPI } from '../../../../hooks/websocket-api';
-import { ArrowLink } from '../../../commons/ArrowLink';
 import { Button } from '../../../commons/Button';
 import { CheckBox } from '../../../commons/Checkbox';
 import { PersonFrontIcon } from '../../../commons/PersonFrontIcon';
@@ -49,11 +48,6 @@ export function ManualProportionsPage() {
           <div className="flex gap-8 justify-center">
             <div className="flex flex-col w-full max-w-2xl gap-3 items-center">
               <div className="flex flex-col">
-                {!state.alonePage && (
-                  <ArrowLink to="/onboarding/reset-tutorial" direction="left">
-                    {l10n.getString('onboarding-manual_proportions-back')}
-                  </ArrowLink>
-                )}
                 <Typography variant="main-title">
                   {l10n.getString('onboarding-manual_proportions-title')}
                 </Typography>
@@ -86,9 +80,14 @@ export function ManualProportionsPage() {
         <div className="w-full py-4 flex flex-row">
           <div className="flex flex-grow gap-3">
             {!state.alonePage && (
-              <Button variant="secondary" to="/" onClick={skipSetup}>
-                {l10n.getString('onboarding-skip')}
-              </Button>
+              <>
+                <Button variant="secondary" to="/onboarding/reset-tutorial">
+                  {l10n.getString('onboarding-manual_proportions-back')}
+                </Button>
+                <Button variant="secondary" to="/" onClick={skipSetup}>
+                  {l10n.getString('onboarding-skip')}
+                </Button>
+              </>
             )}
             <Button variant="secondary" onClick={resetAll}>
               {l10n.getString('reset-reset_all')}

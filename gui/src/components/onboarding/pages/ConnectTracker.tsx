@@ -100,11 +100,6 @@ export function ConnectTrackersPage() {
     <div className="flex flex-col items-center">
       <div className="flex gap-10 w-full max-w-7xl ">
         <div className="flex flex-col w-full max-w-sm">
-          {!state.alonePage && (
-            <ArrowLink to="/onboarding/wifi-creds">
-              {l10n.getString('onboarding-connect_tracker-back')}
-            </ArrowLink>
-          )}
           <Typography variant="main-title">
             {l10n.getString('onboarding-connect_tracker-title')}
           </Typography>
@@ -222,9 +217,14 @@ export function ConnectTrackersPage() {
           </div>
           <div className="flex gap-3">
             {!state.alonePage && (
-              <Button variant="primary" to="/onboarding/trackers-assign">
-                {l10n.getString('onboarding-connect_tracker-next')}
-              </Button>
+              <>
+                <Button variant="secondary" to="/onboarding/wifi-creds">
+                  {l10n.getString('onboarding-connect_tracker-back')}
+                </Button>
+                <Button variant="primary" to="/onboarding/trackers-assign">
+                  {l10n.getString('onboarding-connect_tracker-next')}
+                </Button>
+              </>
             )}
             {state.alonePage && (
               <Button variant="primary" to="/">

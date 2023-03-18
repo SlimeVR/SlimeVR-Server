@@ -1,6 +1,5 @@
 import { useLocalization } from '@fluent/react';
 import { useOnboarding } from '../../../hooks/onboarding';
-import { ArrowLink } from '../../commons/ArrowLink';
 import { Button } from '../../commons/Button';
 import { Typography } from '../../commons/Typography';
 
@@ -16,9 +15,6 @@ export function ResetTutorialPage() {
         <div className="flex flex-col w-full h-full justify-center px-20">
           <div className="flex gap-8">
             <div className="flex flex-col max-w-md gap-3">
-              <ArrowLink to="/onboarding/mounting/auto" direction="left">
-                {l10n.getString('onboarding-reset_tutorial-back')}
-              </ArrowLink>
               <Typography variant="main-title">
                 {l10n.getString('onboarding-reset_tutorial')}
                 <span className="mx-2 p-1 bg-accent-background-30 text-standard rounded-md">
@@ -32,7 +28,10 @@ export function ResetTutorialPage() {
           </div>
         </div>
         <div className="w-full py-4 flex flex-row">
-          <div className="flex flex-grow">
+          <div className="flex flex-grow gap-3">
+            <Button variant="secondary" to="/onboarding/mounting/auto">
+              {l10n.getString('onboarding-reset_tutorial-back')}
+            </Button>
             <Button variant="secondary" to="/" onClick={skipSetup}>
               {l10n.getString('onboarding-skip')}
             </Button>

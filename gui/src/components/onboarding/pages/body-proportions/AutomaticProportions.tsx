@@ -8,7 +8,6 @@ import {
 import { useBodyProportions } from '../../../../hooks/body-proportions';
 import { useOnboarding } from '../../../../hooks/onboarding';
 import { useWebsocketAPI } from '../../../../hooks/websocket-api';
-import { ArrowLink } from '../../../commons/ArrowLink';
 import { Button } from '../../../commons/Button';
 import { Typography } from '../../../commons/Typography';
 import { StepperSlider } from '../../StepperSlider';
@@ -50,11 +49,6 @@ export function AutomaticProportionsPage() {
       <div className="flex flex-col gap-5 h-full items-center w-full justify-center">
         <div className="flex flex-col w-full h-full justify-center max-w-3xl gap-5">
           <div className="flex flex-col max-w-lg gap-3">
-            {!state.alonePage && (
-              <ArrowLink to="/onboarding/reset-tutorial" direction="left">
-                {l10n.getString('onboarding-automatic_proportions-back')}
-              </ArrowLink>
-            )}
             <Typography variant="main-title">
               {l10n.getString('onboarding-automatic_proportions-title')}
             </Typography>
@@ -81,9 +75,14 @@ export function AutomaticProportionsPage() {
         <div className="w-full pb-4 flex flex-row">
           <div className="flex flex-grow gap-3">
             {!state.alonePage && (
+              <>
+              <Button variant="secondary" to="/onboarding/reset-tutorial">
+                {l10n.getString('onboarding-automatic_proportions-back')}
+              </Button>
               <Button variant="secondary" to="/" onClick={skipSetup}>
                 {l10n.getString('onboarding-skip')}
               </Button>
+              </>
             )}
             <Button
               variant="secondary"

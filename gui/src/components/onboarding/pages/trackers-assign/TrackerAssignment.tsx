@@ -14,7 +14,6 @@ import { useChokerWarning } from '../../../../hooks/choker-warning';
 import { useOnboarding } from '../../../../hooks/onboarding';
 import { useTrackers } from '../../../../hooks/tracker';
 import { useWebsocketAPI } from '../../../../hooks/websocket-api';
-import { ArrowLink } from '../../../commons/ArrowLink';
 import { Button } from '../../../commons/Button';
 import { CheckBox } from '../../../commons/Checkbox';
 import { TipBox } from '../../../commons/TipBox';
@@ -165,11 +164,6 @@ export function TrackersAssignPage() {
         <div className="flex flex-col w-full h-full justify-center items-center">
           <div className="flex md:gap-8">
             <div className="flex flex-col max-w-sm gap-3">
-              {!state.alonePage && (
-                <ArrowLink to="/onboarding/wifi-creds" direction="left">
-                  {l10n.getString('onboarding-assign_trackers-back')}
-                </ArrowLink>
-              )}
               <Typography variant="main-title">
                 {l10n.getString('onboarding-assign_trackers-title')}
               </Typography>
@@ -211,17 +205,26 @@ export function TrackersAssignPage() {
           </div>
         </div>
         <div className="w-full pb-4 flex flex-row">
-          <div className="flex flex-grow">
+          <div className="flex flex-grow gap-3">
             {!state.alonePage && (
-              <Button variant="secondary" to="/" onClick={skipSetup}>
-                {l10n.getString('onboarding-skip')}
-              </Button>
+              <>
+                <Button variant="secondary" to="/onboarding/wifi-creds">
+                  {l10n.getString('onboarding-assign_trackers-back')}
+                </Button>
+                <Button variant="secondary" to="/" onClick={skipSetup}>
+                  {l10n.getString('onboarding-skip')}
+                </Button>
+              </>
             )}
           </div>
           <div className="flex gap-3">
             {!state.alonePage && (
-              <Button variant="primary" to="/onboarding/enter-vr">
-                {l10n.getString('onboarding-assign_trackers-next')}
+              <Button
+                variant="primary"
+                to="/onboarding/mounting/auto"
+                disabled={assignedTrackers.length === 0 && trackers.length > 0}
+              >
+                {l10n.getString('onboarding-enter_vr-ready')}
               </Button>
             )}
           </div>

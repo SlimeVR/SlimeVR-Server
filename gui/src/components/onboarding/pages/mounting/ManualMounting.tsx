@@ -5,7 +5,6 @@ import { useOnboarding } from '../../../../hooks/onboarding';
 import { useTrackers } from '../../../../hooks/tracker';
 import { useWebsocketAPI } from '../../../../hooks/websocket-api';
 import { MountingOrientationDegreesToQuatT } from '../../../../maths/quaternion';
-import { ArrowLink } from '../../../commons/ArrowLink';
 import { Button } from '../../../commons/Button';
 import { TipBox } from '../../../commons/TipBox';
 import { Typography } from '../../../commons/Typography';
@@ -66,11 +65,6 @@ export function ManualMountingPage() {
         <div className="flex flex-col w-full h-full justify-center items-center">
           <div className="flex md:gap-8">
             <div className="flex flex-col w-full max-w-md gap-3">
-              {!state.alonePage && (
-                <ArrowLink to="/onboarding/enter-vr" direction="left">
-                  {l10n.getString('onboarding-manual_mounting-back')}
-                </ArrowLink>
-              )}
               <Typography variant="main-title">
                 {l10n.getString('onboarding-manual_mounting')}
               </Typography>
@@ -89,11 +83,16 @@ export function ManualMountingPage() {
           </div>
         </div>
         <div className="w-full pb-4 flex flex-row">
-          <div className="flex flex-grow">
+          <div className="flex flex-grow gap-3">
             {!state.alonePage && (
-              <Button variant="secondary" to="/" onClick={skipSetup}>
-                {l10n.getString('onboarding-skip')}
-              </Button>
+              <>
+                <Button variant="secondary" to="/onboarding/trackers-assign">
+                  {l10n.getString('onboarding-enter_vr-back')}
+                </Button>
+                <Button variant="secondary" to="/" onClick={skipSetup}>
+                  {l10n.getString('onboarding-skip')}
+                </Button>
+              </>
             )}
           </div>
           <div className="flex gap-3">
