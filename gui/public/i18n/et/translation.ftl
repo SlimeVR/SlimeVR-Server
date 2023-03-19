@@ -30,7 +30,6 @@ body_part-RIGHT_HAND = Parem käsi
 body_part-RIGHT_UPPER_LEG = Parem reis
 body_part-RIGHT_LOWER_LEG = Parem säär
 body_part-RIGHT_FOOT = Parem jalg
-body_part-RIGHT_CONTROLLER = Parem kontroller
 body_part-CHEST = Rind
 body_part-WAIST = Vöökoht
 body_part-HIP = Puus
@@ -41,7 +40,6 @@ body_part-LEFT_HAND = Vasak käsi
 body_part-LEFT_UPPER_LEG = Vasak reis
 body_part-LEFT_LOWER_LEG = Vasak säär
 body_part-LEFT_FOOT = Vasak jalg
-body_part-LEFT_CONTROLLER = Vasak kontroller
 
 ## Proportions
 
@@ -63,8 +61,8 @@ skeleton_bone-SHOULDERS_DISTANCE = Õlgade Kaugus
 skeleton_bone-SHOULDERS_WIDTH = Õlgade Laius
 skeleton_bone-UPPER_ARM = Õlavarre Pikkus
 skeleton_bone-LOWER_ARM = Käsivarre Kaugus
-skeleton_bone-CONTROLLER_Y = Kontrolleri Kaugus Y
-skeleton_bone-CONTROLLER_Z = Kontrolleri Kaugus Z
+skeleton_bone-HAND_Y = Käte kaugus Y
+skeleton_bone-HAND_Z = Käte kaugus Z
 skeleton_bone-ELBOW_OFFSET = Küünarnuki Nihe
 
 ## Tracker reset buttons
@@ -72,7 +70,6 @@ skeleton_bone-ELBOW_OFFSET = Küünarnuki Nihe
 reset-reset_all = Lähtesta kõik proportsioonid
 reset-full = Lähtesta
 reset-mounting = Lähtesta Paigaldusasend
-reset-quick = Kiir Lähtestamine
 
 ## Serial detection stuff
 
@@ -103,6 +100,10 @@ bvh-recording = Salvestamine...
 widget-overlay = Ülekate
 widget-overlay-is_visible_label = Näita Ülekatet SteamVR-is
 widget-overlay-is_mirrored_label = Näita Ülekatet Peeglina
+
+## Widget: Drift compensation
+
+widget-drift_compensation-clear = Selgem triivi kompenseerimine
 
 ## Widget: Developer settings
 
@@ -156,6 +157,8 @@ tracker-infos-manufacturer = Tootja
 tracker-infos-display_name = Kuvatav Nimi
 tracker-infos-custom_name = Kohandatud Nimi
 tracker-infos-url = Jälgija URL
+tracker-infos-version = Püsivara versioon
+tracker-infos-hardware_rev = Riistvara revisjon
 
 ## Tracker settings
 
@@ -222,6 +225,13 @@ tracker_selection_menu-LEFT_CONTROLLER = { -tracker_selection-part } vasakule ko
 tracker_selection_menu-unassigned = Määramata Jälgijad
 tracker_selection_menu-assigned = Määratud Jälgijad
 tracker_selection_menu-dont_assign = Ära määra jälgijat
+# This line cares about multilines.
+# <b>text</b> means that the text should be bold.
+tracker_selection_menu-neck_warning =
+    <b>Hoiatus:</b> Kaelajälgija võib olla surmav, kui seda liiga tihedalt reguleerida,
+    rihm võib vere ringluse pähe lõpetada!
+tracker_selection_menu-neck_warning-done = Ma mõistan riske
+tracker_selection_menu-neck_warning-cancel = Tühista
 
 ## Mounting menu
 
@@ -286,8 +296,6 @@ settings-general-tracker_mechanics-drift_compensation-max_resets-label = Use up 
 ## FK/Tracking settings
 
 settings-general-fk_settings = Jälgija seaded
-settings-general-fk_settings-leg_tweak = Jälgija näpunäiteid
-settings-general-fk_settings-leg_tweak-description = Põranda läbimine saab vähendada või isegi elimineerida jalgade positsiooni läbimist põrandaga, võib põhjustada probleeme põlvedega. Libisemise korrigeerimine korregeerib jalgade libisemist liikudes, aga võib vähendada täpsust teatud liikumiste puhul.
 # Floor clip:
 # why the name - came from the idea of noclip in video games, but is the opposite where clipping to the floor is a desired feature
 # definition - Prevents the foot trackers from going lower than they where when a reset was performed
@@ -322,12 +330,6 @@ settings-general-gesture_control-taps =
         [one] 1 tap
        *[other] { $amount } taps
     }
-settings-general-gesture_control-quickResetEnabled = Luba, et vajutus kiir lähtestab
-settings-general-gesture_control-quickResetDelay = Kiir lähtestamise viivitus
-settings-general-gesture_control-quickResetTaps = Kiir lähtestamis vajutus
-settings-general-gesture_control-resetEnabled = Luba, et vajutus lähtestab
-settings-general-gesture_control-resetDelay = Lähtestamise viivitus
-settings-general-gesture_control-resetTaps = Lähtestamise vajutus
 settings-general-gesture_control-mountingResetEnabled = Luba, et vajutus lähtestab paigalduseasendi
 settings-general-gesture_control-mountingResetDelay = Paigaldusasendi lähtestamise viivitus
 settings-general-gesture_control-mountingResetTaps = Paigaldusasendi lähtestamise vajutus
@@ -355,6 +357,13 @@ settings-serial-description =
 settings-serial-connection_lost = Ühendus jadakonsooliga kaotatud. Ühenduse taastamine...
 settings-serial-reboot = Taaskäivitage
 settings-serial-factory_reset = Tehaseseadete taastamine
+# This cares about multilines
+# <b>text</b> means that the text should be bold
+settings-serial-factory_reset-warning =
+    <b>Hoiatus:</b> See lähtestab jälgija tehaseseadetele.
+    Mis tähendab et WI-FI ja kalibreerimis sätted <b>kustutatakse!</b>
+settings-serial-factory_reset-warning-ok = Ma tean mida ma teen
+settings-serial-factory_reset-warning-cancel = Tühista
 settings-serial-get_infos = Saa infot
 settings-serial-serial_select = Valige jadaport
 settings-serial-auto_dropdown_item = Auto
@@ -412,6 +421,9 @@ settings-osc-vrchat-network-trackers-waist = Vöökoht
 settings-osc-vrchat-network-trackers-knees = Põlved
 settings-osc-vrchat-network-trackers-feet = Jalad
 settings-osc-vrchat-network-trackers-elbows = Küünarnukid
+
+## VMC OSC settings
+
 
 ## Setup/onboarding menu
 
@@ -472,11 +484,14 @@ onboarding-connect_tracker-description-p0 = Nüüd lähme lõbusa osa juurde, ü
 onboarding-connect_tracker-description-p1 = Lihtsalt ühendage kõik jälgijad, mis ei ole ühendatud läbi USB enda arvutisse.
 onboarding-connect_tracker-issue-serial = Mul on probleeme ühenduse loomisega!
 onboarding-connect_tracker-usb = USB Jälgija
+onboarding-connect_tracker-connection_status-none = Jälgijate otsimine
+onboarding-connect_tracker-connection_status-serial_init = Ühenduse loomine jadaseadmega
+onboarding-connect_tracker-connection_status-provisioning = Saadame Wi-Fi andmeid
 onboarding-connect_tracker-connection_status-connecting = Saadame Wi-Fi andmeid
-onboarding-connect_tracker-connection_status-connected = Ühendatud Wi-Fi võrguga
-onboarding-connect_tracker-connection_status-error = Wi-Fi-ga ei saa ühendust luua!
-onboarding-connect_tracker-connection_status-start_connecting = Jälgijate otsimine
-onboarding-connect_tracker-connection_status-handshake = Ühendatud serveriga
+onboarding-connect_tracker-connection_status-looking_for_server = Serveri otsimine
+onboarding-connect_tracker-connection_status-connection_error = Wi-Fi-ga ei saa ühendust luua!
+onboarding-connect_tracker-connection_status-could_not_find_server = Serverit ei leitud
+onboarding-connect_tracker-connection_status-done = Ühendatud serveriga
 # $amount (Number) - Amount of trackers connected (this is a number, but you can use CLDR plural rules for your language)
 # More info on https://www.unicode.org/cldr/cldr-aux/charts/22/supplemental/language_plural_rules.html
 # English in this case only has 2 plural rules, which are "one" and "other",
@@ -505,6 +520,9 @@ onboarding-assign_trackers-assigned =
     } assigned
 onboarding-assign_trackers-advanced = Kuva täpsemad määramiskohad
 onboarding-assign_trackers-next = Määrasin kõikide jälgijate asukohad
+
+## Tracker assignment warnings
+
 
 ## Tracker manual mounting setup
 

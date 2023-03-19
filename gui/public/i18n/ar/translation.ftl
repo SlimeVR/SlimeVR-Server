@@ -17,6 +17,7 @@ websocket-connection_lost = انقطع الاتصال بالسيرفر. يتم �
 
 tips-find_tracker = لست متأكد من أجهزة التعقب؟ قم بتحريك الجهاز لتحديد العنصر المناسب.
 tips-do_not_move_heels = يرجى عدم تحريك كاحليك أثناء التسجيل!
+tips-file_select = اسحب الملفات وأفلتها لاستخدامها أو <u> تصفح </ u>
 
 ## Body parts
 
@@ -46,12 +47,14 @@ body_part-LEFT_FOOT = القدم اليسرى
 skeleton_bone-NONE = غير محدد
 skeleton_bone-HEAD = إمالة الرأس
 skeleton_bone-NECK = طول العنق
+skeleton_bone-torso_group = طول الجذع
 skeleton_bone-CHEST = طول الصدر
 skeleton_bone-CHEST_OFFSET = درجة تشريد الصدر
 skeleton_bone-WAIST = طول الخصر
 skeleton_bone-HIP = طول الورك
 skeleton_bone-HIP_OFFSET = درجة تشريد الورك
 skeleton_bone-HIPS_WIDTH = عرض الورك
+skeleton_bone-leg_group = طول الساق
 skeleton_bone-UPPER_LEG = طول الفخذ
 skeleton_bone-LOWER_LEG = طول الساق السفلي
 skeleton_bone-FOOT_LENGTH = طول القدم
@@ -59,6 +62,7 @@ skeleton_bone-FOOT_SHIFT = إمالة القدم
 skeleton_bone-SKELETON_OFFSET = درجة تشريد الهيكل العظمي
 skeleton_bone-SHOULDERS_DISTANCE = مسافة الكتفين
 skeleton_bone-SHOULDERS_WIDTH = عرض الكتفين
+skeleton_bone-arm_group = طول الذراع
 skeleton_bone-UPPER_ARM = طول العضد
 skeleton_bone-LOWER_ARM = طول الساعد
 skeleton_bone-HAND_Y = مسافة اليد Y
@@ -70,7 +74,7 @@ skeleton_bone-ELBOW_OFFSET = درجة تشريد الكوع
 reset-reset_all = إعادة تعيين جميع النسب
 reset-full = اعاده تعيين
 reset-mounting = إعادة تعيين التركيب
-reset-quick = إعادة تعيين سريعة
+reset-yaw = إعادة تعيين الانعراج
 
 ## Serial detection stuff
 
@@ -297,8 +301,6 @@ settings-general-tracker_mechanics-drift_compensation-max_resets-label = است�
 ## FK/Tracking settings
 
 settings-general-fk_settings = إعدادات التعقب
-settings-general-fk_settings-leg_tweak = تعديلات الساق
-settings-general-fk_settings-leg_tweak-description = يمكن أن يقلل أدت التقليم الأرضية من تقليم الأرض أو حتى يزيله ، ولكنه قد يسبب مشاكل عند الركوع على ركبتيك. تصحيح التزحلق على الجليد يصحح التزحلق على الجليد ، لكن يمكنه أن يقلل الدقة في أنماط حركة معينة
 # Floor clip:
 # why the name - came from the idea of noclip in video games, but is the opposite where clipping to the floor is a desired feature
 # definition - Prevents the foot trackers from going lower than they where when a reset was performed
@@ -308,7 +310,14 @@ settings-general-fk_settings-leg_tweak-floor_clip = فلور كليب
 # since this largely prevents this it corrects for it hence skating correction (note this may be renamed to sliding correction)
 # definition - Guesses when each foot is in contact with the ground and uses that information to improve tracking
 settings-general-fk_settings-leg_tweak-skating_correction = تصحيح التزحلق
+settings-general-fk_settings-leg_tweak-toe_snap = انجذاب إلى أصابع القدم
+settings-general-fk_settings-leg_tweak-foot_plant = تثبيت اصبع القدم
 settings-general-fk_settings-leg_tweak-skating_correction-amount = قوة تصحيح التزحلق
+settings-general-fk_settings-leg_tweak-skating_correction-description = تصحيح التزحلق يصحح التزحلق على الجليد، ولكن يمكن أن يقلل الدقة في أنماط حركة معينة. عند تمكين هذا، تأكد من إعادة الضبط وإعادة المعايرة بالكامل في اللعبة.
+settings-general-fk_settings-leg_tweak-floor_clip-description = يمكن أن يقلل التثبيت الأرضية من الإجتياز الأرضية أو حتى يزيله. عند تمكين هذا، تأكد من إعادة الضبط وإعادة المعايرة بالكامل في اللعبة.
+settings-general-fk_settings-leg_tweak-toe_snap-description = الانجذاب إلى أصابع القدم يحاول تخمين دوران قدميك إذا لم تكن أجهزة تعقب القدم قيد الاستخدام.
+settings-general-fk_settings-leg_tweak-foot_plant-description = تثبيت اصبع القدم يحاول تخمين دوران قدميك إذا لم تكن أجهزة تعقب القدم قيد الاستخدام.
+settings-general-fk_settings-leg_fk = تعقب الساق
 settings-general-fk_settings-arm_fk = تعقب الذراع
 settings-general-fk_settings-arm_fk-description = تغيير طريقة تعقب الذراعين.
 settings-general-fk_settings-arm_fk-force_arms = إجبار الذراعين من ايتش أم دي
@@ -337,12 +346,12 @@ settings-general-gesture_control-taps =
         [many] { $amount } نقرات
        *[other] { $amount } نقرات
     }
-settings-general-gesture_control-quickResetEnabled = تمكين النقر لإعادة الضبط السريع
-settings-general-gesture_control-quickResetDelay = تأخير إعادة الضبط السريع
-settings-general-gesture_control-quickResetTaps = نقرات لإعادة الضبط السريع
-settings-general-gesture_control-resetEnabled = تمكين النقر لإعادة التعيين
-settings-general-gesture_control-resetDelay = إعادة تعيين التأخير
-settings-general-gesture_control-resetTaps = نقرات لإعادة الضبط
+settings-general-gesture_control-yawResetEnabled = تمكين النقر لإعادة التعيين الانعراج
+settings-general-gesture_control-yawResetDelay = إعادة تعيين التأخير الانعراج
+settings-general-gesture_control-yawResetTaps = عدد النقرات لإعادة تعيين الانعراج
+settings-general-gesture_control-fullResetEnabled = تمكين النقر لإعادة التعيين الكامل
+settings-general-gesture_control-fullResetDelay = تأخير إعادة التعيين الكامل
+settings-general-gesture_control-fullResetTaps = عدد النقرات لإعادة التعيين الكامل
 settings-general-gesture_control-mountingResetEnabled = تمكين النقر لإعادة تعيين التركيب
 settings-general-gesture_control-mountingResetDelay = تأخير إعادة تعيين التركيب
 settings-general-gesture_control-mountingResetTaps = نقرات لإعادة تعيين التركيب
@@ -356,6 +365,9 @@ settings-general-interface-dev_mode-label = وضع المطوّر
 settings-general-interface-serial_detection = الكشف عن جهاز تسلسلي
 settings-general-interface-serial_detection-description = سيعرض هذا الخيار نافذة منبثقة في كل مرة تقوم فيها بتوصيل جهاز تسلسلي جديد يمكن أن يكون جهاز تعقب. يساعد في تحسين عملية إعداد جهاز التعقب.
 settings-general-interface-serial_detection-label = الكشف عن جهاز تسلسلي
+settings-general-interface-feedback_sound = صوت ردود الفعل
+settings-general-interface-feedback_sound-description = سيصدر هذا الخيار صوتًا عند تشغيل إعادة الضبط
+settings-general-interface-feedback_sound-label = صوت ردود الفعل
 settings-general-interface-lang = اختر اللغة
 settings-general-interface-lang-description = قم بتغيير اللغة الافتراضية التي تريد استخدامها.
 settings-general-interface-lang-placeholder = اختر اللغة التي تريد استخدامها
@@ -434,6 +446,40 @@ settings-osc-vrchat-network-trackers-waist = الخصر
 settings-osc-vrchat-network-trackers-knees = الركبتين
 settings-osc-vrchat-network-trackers-feet = القدمين
 settings-osc-vrchat-network-trackers-elbows = الكوعين
+
+## VMC OSC settings
+
+settings-osc-vmc = التقاط الحركة الافتراضية
+# This cares about multilines
+settings-osc-vmc-description =
+    قم بتغيير الإعدادات الخاصة ببروتوكول التقاط الحركة الافتراضية
+    لإرسال بيانات عظام سلايم في ار وتلقي بيانات العظام من تطبيقات أخرى.
+settings-osc-vmc-enable = تمكين
+settings-osc-vmc-enable-description = تبديل إرسال واستقبال البيانات.
+settings-osc-vmc-enable-label = تمكين
+settings-osc-vmc-network = منافذ الشبكة
+settings-osc-vmc-network-description = قم بتعيين المنافذ للاستماع وإرسال البيانات إلى التقاط الحركة الافتراضية
+settings-osc-vmc-network-port_in =
+    .label = منفذ الدخول
+    .placeholder = منفذ الدخول (الافتراضي: 39540)
+settings-osc-vmc-network-port_out =
+    .label = منفذ الخروج
+    .placeholder = منفذ الخروج (الافتراضي: 39539)
+settings-osc-vmc-network-address = عنوان الشبكة
+settings-osc-vmc-network-address-description = قم بتعيين العنوان لإرسال البيانات إلى التقاط الحركة الافتراضية.
+settings-osc-vmc-network-address-placeholder = عنوان آي بي في 4
+settings-osc-vmc-vrm = نموذج في ار إم
+settings-osc-vmc-vrm-description = قم بتحميل نموذج في ار إم للسماح بتركيز الرأس وتمكين توافق أعلى مع تطبيقات الأخرى
+settings-osc-vmc-vrm-model_unloaded = لم يتم تحميل أي نموذج
+settings-osc-vmc-vrm-model_loaded =
+    { $titled ->
+        [true] تحميل النموذج: { $name }
+       *[other] تم تحميل نموذج بدون عنوان
+    }
+settings-osc-vmc-vrm-file_select = اسحب نموذج وأفلته لاستخدامه أو <u> تصفح </ u>
+settings-osc-vmc-anchor_hip = ثبت في الوركين
+settings-osc-vmc-anchor_hip-description = ثبت التعقب في الوركين، هو مفيد إن كنت تيوبنغ جالسًا. في حالة التعطيل، قم بتحميل نموذج في ار إم.
+settings-osc-vmc-anchor_hip-label = ثبت في الوركين
 
 ## Setup/onboarding menu
 
@@ -642,6 +688,7 @@ onboarding-manual_proportions-back = العودة إلى برنامج تعليم
 onboarding-manual_proportions-title = نسب الجسم اليدوية
 onboarding-manual_proportions-precision = ضبط الدقة
 onboarding-manual_proportions-auto = المعايرة التلقائية
+onboarding-manual_proportions-ratio = اضبط حسب مجموعات النسب
 
 ## Tracker automatic proportions setup
 

@@ -17,6 +17,7 @@ websocket-connection_lost = 与服务器的连接丢失，正在尝试重新连�
 
 tips-find_tracker = 不确定哪个追踪器是哪个？在现实中摇动一个追踪器，对应的那个将在屏幕上高亮显示。
 tips-do_not_move_heels = 确保你的脚跟在录制的时候不会发生移动!
+tips-file_select = 拖放文档或 <u>浏览文档</u> 以使用
 
 ## Body parts
 
@@ -46,12 +47,14 @@ body_part-LEFT_FOOT = 左脚
 skeleton_bone-NONE = 无
 skeleton_bone-HEAD = 头部偏移
 skeleton_bone-NECK = 颈部长度
+skeleton_bone-torso_group = 躯干长度
 skeleton_bone-CHEST = 胸部长度
 skeleton_bone-CHEST_OFFSET = 胸部偏移
 skeleton_bone-WAIST = 腰部长度
 skeleton_bone-HIP = 髋部长度
 skeleton_bone-HIP_OFFSET = 髋部偏移
 skeleton_bone-HIPS_WIDTH = 髋部宽度
+skeleton_bone-leg_group = 全腿长度
 skeleton_bone-UPPER_LEG = 大腿长度
 skeleton_bone-LOWER_LEG = 小腿长度
 skeleton_bone-FOOT_LENGTH = 脚部长度
@@ -59,6 +62,7 @@ skeleton_bone-FOOT_SHIFT = 脚部偏移
 skeleton_bone-SKELETON_OFFSET = 骨骼偏移
 skeleton_bone-SHOULDERS_DISTANCE = 肩膀距离
 skeleton_bone-SHOULDERS_WIDTH = 肩膀宽度
+skeleton_bone-arm_group = 手臂长度
 skeleton_bone-UPPER_ARM = 上臂长度
 skeleton_bone-LOWER_ARM = 前臂距离
 skeleton_bone-HAND_Y = 手部距离Y
@@ -68,9 +72,9 @@ skeleton_bone-ELBOW_OFFSET = 肘部偏移
 ## Tracker reset buttons
 
 reset-reset_all = 重置身体比例
-reset-full = 重置
+reset-full = 完整重置
 reset-mounting = 重置佩戴
-reset-quick = 快速重置
+reset-yaw = 重置航向轴
 
 ## Serial detection stuff
 
@@ -297,8 +301,6 @@ settings-general-tracker_mechanics-drift_compensation-max_resets-label = 使用�
 ## FK/Tracking settings
 
 settings-general-fk_settings = FK 设置
-settings-general-fk_settings-leg_tweak = 腿部调整
-settings-general-fk_settings-leg_tweak-description = 本设置可以减少甚至消除脚部穿入地板的情况，但是当你跪在地上的时候可能产生一些问题. 脚滑矫正可以矫正一些脚滑溜冰的问题, 但是可能会降低某些动作的准确性。
 # Floor clip:
 # why the name - came from the idea of noclip in video games, but is the opposite where clipping to the floor is a desired feature
 # definition - Prevents the foot trackers from going lower than they where when a reset was performed
@@ -308,7 +310,14 @@ settings-general-fk_settings-leg_tweak-floor_clip = 地板限制
 # since this largely prevents this it corrects for it hence skating correction (note this may be renamed to sliding correction)
 # definition - Guesses when each foot is in contact with the ground and uses that information to improve tracking
 settings-general-fk_settings-leg_tweak-skating_correction = 脚滑矫正
+settings-general-fk_settings-leg_tweak-toe_snap = 脚趾着地
+settings-general-fk_settings-leg_tweak-foot_plant = 脚掌着地
 settings-general-fk_settings-leg_tweak-skating_correction-amount = 脚滑矫正量
+settings-general-fk_settings-leg_tweak-skating_correction-description = 脚滑矫正可以矫正一些脚滑溜冰的问题, 但是可能会降低某些动作的准确性。启用前请先进行完整重置，启用后在游戏内重新校准。
+settings-general-fk_settings-leg_tweak-floor_clip-description = 地板限制可以减轻甚至消除脚部穿入地板的情况。启用前请先进行完整重置，启用后在游戏内重新校准。
+settings-general-fk_settings-leg_tweak-toe_snap-description = 脚趾着地可以在没有脚部追踪器的情况下尝试猜测脚部的俯仰。
+settings-general-fk_settings-leg_tweak-foot_plant-description = 脚掌着地会在脚与地面接触时保持脚掌与地板平行。
+settings-general-fk_settings-leg_fk = 腿部追踪
 settings-general-fk_settings-arm_fk = 手臂 FK
 settings-general-fk_settings-arm_fk-description = 更改手臂的追踪方式。
 settings-general-fk_settings-arm_fk-force_arms = 强制从头显获得数据
@@ -325,19 +334,19 @@ settings-general-fk_settings-vive_emulation-label = 开启 Vive 模拟
 
 settings-general-gesture_control = 手势控制
 settings-general-gesture_control-subtitle = 敲击重置
-settings-general-gesture_control-description = 启用或禁用敲击重置。启用时，敲击身上佩戴的最高的追踪器上的任何位置将激活快速重置。延迟是指记录到敲击和重置之间的时间。
+settings-general-gesture_control-description = 启用敲击追踪器触发重置。敲击躯干配戴最高的追踪器会触发重置航向轴，敲击左腿配戴最高的追踪器会触发完整重置，敲击右腿配戴最高的追踪器会触发重置佩戴。请注意，需要在 0.6 秒内满足敲击次数才会触发。
 # This is a unit: 3 taps, 2 taps, 1 tap
 # $amount (Number) - Amount of taps (touches to the tracker's case)
 settings-general-gesture_control-taps =
     { $amount ->
        *[other] { $amount }次敲击
     }
-settings-general-gesture_control-quickResetEnabled = 开启敲击快速重置
-settings-general-gesture_control-quickResetDelay = 敲击快速重置延迟
-settings-general-gesture_control-quickResetTaps = 快速重置敲击次数
-settings-general-gesture_control-resetEnabled = 开启敲击重置
-settings-general-gesture_control-resetDelay = 敲击重置延迟
-settings-general-gesture_control-resetTaps = 重置敲击次数
+settings-general-gesture_control-yawResetEnabled = 开启敲击重置航向轴
+settings-general-gesture_control-yawResetDelay = 敲击重置航向轴延迟
+settings-general-gesture_control-yawResetTaps = 重置航向轴敲击次数
+settings-general-gesture_control-fullResetEnabled = 开启敲击完整重置
+settings-general-gesture_control-fullResetDelay = 敲击完整重置延迟
+settings-general-gesture_control-fullResetTaps = 完整重置敲击次数
 settings-general-gesture_control-mountingResetEnabled = 开启敲击重置佩戴
 settings-general-gesture_control-mountingResetDelay = 敲击重置佩戴延迟
 settings-general-gesture_control-mountingResetTaps = 重置佩戴敲击次数
@@ -351,6 +360,9 @@ settings-general-interface-dev_mode-label = 开发者模式
 settings-general-interface-serial_detection = 串口设备检测
 settings-general-interface-serial_detection-description = 每次插入可能是追踪器的新串口设备时，此选项都会显示一个弹出窗口。这有助于改进追踪器的设置过程。
 settings-general-interface-serial_detection-label = 串口设备检测
+settings-general-interface-feedback_sound = 声音反馈
+settings-general-interface-feedback_sound-description = 开启此选项会在触发重置时发出提示音
+settings-general-interface-feedback_sound-label = 声音反馈
 settings-general-interface-lang = 选择语言
 settings-general-interface-lang-description = 更改要使用的默认语言
 settings-general-interface-lang-placeholder = 选择要使用的语言
@@ -429,6 +441,40 @@ settings-osc-vrchat-network-trackers-waist = 腰部
 settings-osc-vrchat-network-trackers-knees = 膝盖
 settings-osc-vrchat-network-trackers-feet = 脚部
 settings-osc-vrchat-network-trackers-elbows = 肘部
+
+## VMC OSC settings
+
+settings-osc-vmc = Virtual Motion Capture
+# This cares about multilines
+settings-osc-vmc-description =
+    修改 VMC (Virtual Motion Capture) 协定的相关设置
+    以发送 SlimeVR 的骨骼数据，并接收来自其他应用程序的骨骼数据
+settings-osc-vmc-enable = 启用
+settings-osc-vmc-enable-description = 切换数据的发送和接收
+settings-osc-vmc-enable-label = 启用
+settings-osc-vmc-network = 网络端口
+settings-osc-vmc-network-description = 设置用于监听和发送 VMC 数据的连接端口
+settings-osc-vmc-network-port_in =
+    .label = 输入端口
+    .placeholder = 输入端口 (默认: 39540)
+settings-osc-vmc-network-port_out =
+    .label = 输出端口
+    .placeholder = 输出端口 (默认: 39539)
+settings-osc-vmc-network-address = 网络地址
+settings-osc-vmc-network-address-description = 设置用来发送 VMC 数据的地址
+settings-osc-vmc-network-address-placeholder = IPV4 地址
+settings-osc-vmc-vrm = VRM 模型
+settings-osc-vmc-vrm-description = 加载 VRM 模型以允许头部锚定，并增进与其他程序的兼容
+settings-osc-vmc-vrm-model_unloaded = 未加载模型
+settings-osc-vmc-vrm-model_loaded =
+    { $titled ->
+        [true] 已加载模型：{ $name }
+       *[other] 已加载未命名的模型
+    }
+settings-osc-vmc-vrm-file_select = 拖曳文件或 <u>浏览文件</u> 以加载模型
+settings-osc-vmc-anchor_hip = 髋部锚定
+settings-osc-vmc-anchor_hip-description = 将追踪锚定在髋部，有利于坐姿进行虚拟直播。若本选项无法切换，请加载 VRM 模型。
+settings-osc-vmc-anchor_hip-label = 髋部锚定
 
 ## Setup/onboarding menu
 
@@ -624,6 +670,7 @@ onboarding-manual_proportions-back = 返回重置教程
 onboarding-manual_proportions-title = 手动调整身体比例
 onboarding-manual_proportions-precision = 精确调整
 onboarding-manual_proportions-auto = 自动校准
+onboarding-manual_proportions-ratio = 按比例分组调整
 
 ## Tracker automatic proportions setup
 

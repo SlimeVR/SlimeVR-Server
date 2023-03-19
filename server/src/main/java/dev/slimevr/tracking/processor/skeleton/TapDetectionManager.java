@@ -2,8 +2,10 @@ package dev.slimevr.tracking.processor.skeleton;
 
 
 import dev.slimevr.config.TapDetectionConfig;
+import dev.slimevr.reset.ResetHandler;
 import dev.slimevr.tracking.processor.HumanPoseManager;
 import dev.slimevr.tracking.trackers.Tracker;
+import solarxr_protocol.rpc.ResetType;
 
 
 // handles tap detection for the skeleton
@@ -31,6 +33,13 @@ public class TapDetectionManager {
 	private float yawResetDelayNs = 1.00f * NS_CONVERTER;
 	private float mountingResetDelayNs = 1.00f * NS_CONVERTER;
 
+	// feedback
+	private boolean yawResetAllowPlaySound = true;
+	private boolean fullResetAllowPlaySound = true;
+	private boolean mountingResetAllowPlaySound = true;
+
+	private ResetHandler resetHandler;
+
 	public TapDetectionManager(HumanSkeleton skeleton) {
 		this.skeleton = skeleton;
 	}
@@ -38,11 +47,13 @@ public class TapDetectionManager {
 	public TapDetectionManager(
 		HumanSkeleton skeleton,
 		HumanPoseManager humanPoseManager,
-		TapDetectionConfig config
+		TapDetectionConfig config,
+		ResetHandler resetHandler
 	) {
 		this.skeleton = skeleton;
 		this.humanPoseManager = humanPoseManager;
 		this.config = config;
+		this.resetHandler = resetHandler;
 
 		yawResetDetector = new TapDetection(skeleton, getTrackerToWatchYawReset());
 		fullResetDetector = new TapDetection(skeleton, getTrackerToWatchFullReset());
@@ -98,6 +109,11 @@ public class TapDetectionManager {
 	private void checkYawReset() {
 		boolean tapped = (yawResetTaps <= yawResetDetector.getTaps());
 
+		if (tapped && yawResetAllowPlaySound) {
+			this.resetHandler.sendStarted(ResetType.Yaw);
+			yawResetAllowPlaySound = false;
+		}
+
 		if (
 			tapped && System.nanoTime() - yawResetDetector.getDetectionTime() > yawResetDelayNs
 		) {
@@ -105,12 +121,19 @@ public class TapDetectionManager {
 				humanPoseManager.resetTrackersYaw(resetSourceName);
 			else
 				skeleton.resetTrackersYaw(resetSourceName);
+
 			yawResetDetector.resetDetector();
+			yawResetAllowPlaySound = true;
 		}
 	}
 
 	private void checkFullReset() {
 		boolean tapped = (fullResetTaps <= fullResetDetector.getTaps());
+
+		if (tapped && fullResetAllowPlaySound) {
+			this.resetHandler.sendStarted(ResetType.Full);
+			fullResetAllowPlaySound = false;
+		}
 
 		if (
 			tapped && System.nanoTime() - fullResetDetector.getDetectionTime() > fullResetDelayNs
@@ -119,12 +142,19 @@ public class TapDetectionManager {
 				humanPoseManager.resetTrackersFull(resetSourceName);
 			else
 				skeleton.resetTrackersFull(resetSourceName);
+
 			fullResetDetector.resetDetector();
+			yawResetAllowPlaySound = true;
 		}
 	}
 
 	private void checkMountingReset() {
 		boolean tapped = (mountingResetTaps <= mountingResetDetector.getTaps());
+
+		if (tapped && mountingResetAllowPlaySound) {
+			this.resetHandler.sendStarted(ResetType.Mounting);
+			mountingResetAllowPlaySound = false;
+		}
 
 		if (
 			tapped
@@ -133,8 +163,10 @@ public class TapDetectionManager {
 		) {
 			skeleton.resetTrackersMounting(resetSourceName);
 			mountingResetDetector.resetDetector();
+			mountingResetAllowPlaySound = true;
 		}
 	}
+
 
 	// returns either the chest tracker, hip tracker, or waist tracker depending
 	// on which one is available
