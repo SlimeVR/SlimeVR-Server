@@ -77,8 +77,8 @@ public class LegTweaks {
 	private boolean enabled = true; // master switch
 	private boolean floorclipEnabled = false;
 	private boolean skatingCorrectionEnabled = false;
-	private boolean toeSnap = false;
-	private boolean footPlant = false;
+	private boolean toeSnapEnabled = false;
+	private boolean footPlantEnabled = false;
 	private boolean active = false;
 	private boolean rightLegActive = false;
 	private boolean leftLegActive = false;
@@ -213,12 +213,12 @@ public class LegTweaks {
 		this.bufferInvalid = true;
 	}
 
-	public void setToeSnap(boolean val) {
-		this.toeSnap = val;
+	public void setToeSnapEnabled(boolean val) {
+		this.toeSnapEnabled = val;
 	}
 
-	public void setFootPlant(boolean val) {
-		this.footPlant = val;
+	public void setFootPlantEnabled(boolean val) {
+		this.footPlantEnabled = val;
 	}
 
 	public boolean getEnabled() {
@@ -233,12 +233,12 @@ public class LegTweaks {
 		return this.skatingCorrectionEnabled;
 	}
 
-	public boolean getToeSnap() {
-		return this.toeSnap;
+	public boolean getToeSnapEnabled() {
+		return this.toeSnapEnabled;
 	}
 
-	public boolean getFootPlant() {
-		return this.footPlant;
+	public boolean getFootPlantEnabled() {
+		return this.footPlantEnabled;
 	}
 
 	public void resetBuffer() {
@@ -256,8 +256,8 @@ public class LegTweaks {
 		floorclipEnabled = skeleton.humanPoseManager.getToggle(SkeletonConfigToggles.FLOOR_CLIP);
 		skatingCorrectionEnabled = skeleton.humanPoseManager
 			.getToggle(SkeletonConfigToggles.SKATING_CORRECTION);
-		toeSnap = skeleton.humanPoseManager.getToggle(SkeletonConfigToggles.TOE_SNAP);
-		footPlant = skeleton.humanPoseManager.getToggle(SkeletonConfigToggles.FOOT_PLANT);
+		toeSnapEnabled = skeleton.humanPoseManager.getToggle(SkeletonConfigToggles.TOE_SNAP);
+		footPlantEnabled = skeleton.humanPoseManager.getToggle(SkeletonConfigToggles.FOOT_PLANT);
 	}
 
 	// update the hyperparameters with the config
@@ -780,7 +780,7 @@ public class LegTweaks {
 		float masterWeightR = getMasterWeight(kneeAngleR);
 
 		// corrects rotations when planted firmly on the ground
-		if (footPlant) {
+		if (footPlantEnabled) {
 			// prepare the weight vars for this correction step
 			float weightL = 0.0f;
 			float weightR = 0.0f;
@@ -814,7 +814,7 @@ public class LegTweaks {
 
 		// corrects rotations when the foot is in the air by rotating the foot
 		// down so that the toes are touching
-		if (toeSnap) {
+		if (toeSnapEnabled) {
 			// this correction step has its own weight vars
 			float weightL = 0.0f;
 			float weightR = 0.0f;

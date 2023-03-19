@@ -70,7 +70,6 @@ interface SettingsForm {
   };
   legTweaks: {
     correctionStrength: number;
-    enabled: boolean;
   };
   interface: {
     devmode: boolean;
@@ -116,7 +115,7 @@ const defaultValues = {
     fullResetTaps: 3,
     mountingResetTaps: 3,
   },
-  legTweaks: { correctionStrength: 0.3, enabled: true },
+  legTweaks: { correctionStrength: 0.3},
   interface: { devmode: false, watchNewDevices: true, feedbackSound: true },
 };
 
@@ -159,7 +158,6 @@ export function GeneralSettings() {
 
     const legTweaks = new LegTweaksSettingsT();
     legTweaks.correctionStrength = values.legTweaks.correctionStrength;
-    legTweaks.enabled = values.legTweaks.enabled;
 
     modelSettings.toggles = toggles;
     modelSettings.legTweaks = legTweaks;
@@ -278,10 +276,6 @@ export function GeneralSettings() {
         correctionStrength:
           settings.modelSettings?.legTweaks.correctionStrength ||
           defaultValues.legTweaks.correctionStrength,
-        enabled:
-          // enable legtweaks by default unless in the body proportions tab
-          !location.pathname.includes('/onboarding/body-proportions') ||
-          defaultValues.legTweaks.enabled,
       };
     }
 

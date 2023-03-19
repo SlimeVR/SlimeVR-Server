@@ -1240,8 +1240,8 @@ public class HumanSkeleton {
 			case SKATING_CORRECTION -> legTweaks.setSkatingReductionEnabled(newValue);
 			case FLOOR_CLIP -> legTweaks.setFloorclipEnabled(newValue);
 			case VIVE_EMULATION -> viveEmulation.setEnabled(newValue);
-			case TOE_SNAP -> legTweaks.setToeSnap(newValue);
-			case FOOT_PLANT -> legTweaks.setFootPlant(newValue);
+			case TOE_SNAP -> legTweaks.setToeSnapEnabled(newValue);
+			case FOOT_PLANT -> legTweaks.setFootPlantEnabled(newValue);
 		}
 	}
 
@@ -1710,10 +1710,34 @@ public class HumanSkeleton {
 		legTweaks.updateConfig();
 	}
 
+	// does not save to config
+	public void setLegTweaksStateTemp(boolean skatingCorrection, boolean floorClip, boolean toeSnap, boolean footPlant) {
+		this.legTweaks.setSkatingReductionEnabled(skatingCorrection);
+		this.legTweaks.setFloorclipEnabled(floorClip);
+		this.legTweaks.setToeSnapEnabled(toeSnap);
+		this.legTweaks.setFootPlantEnabled(footPlant);
+	}
+
+	// resets to config values
+	public void clearLegTweaksStateTemp(boolean skatingCorrection, boolean floorClip, boolean toeSnap, boolean footPlant) {
+		// only reset the true values as they are a mask for what to reset
+		if (skatingCorrection)
+			this.legTweaks.setSkatingReductionEnabled(humanPoseManager.getToggle(SkeletonConfigToggles.SKATING_CORRECTION));
+		if (floorClip)
+			this.legTweaks.setFloorclipEnabled(humanPoseManager.getToggle(SkeletonConfigToggles.FLOOR_CLIP));
+		if (toeSnap)
+			this.legTweaks.setToeSnapEnabled(humanPoseManager.getToggle(SkeletonConfigToggles.TOE_SNAP));
+		if (footPlant)
+			this.legTweaks.setFootPlantEnabled(humanPoseManager.getToggle(SkeletonConfigToggles.FOOT_PLANT));
+	}
+
 	public boolean[] getLegTweaksState() {
-		boolean[] state = new boolean[2];
+		boolean[] state = new boolean[4];
 		state[0] = this.legTweaks.getFloorclipEnabled();
 		state[1] = this.legTweaks.getSkatingReductionEnabled();
+		state[2] = this.legTweaks.getToeSnapEnabled();
+		state[3] = this.legTweaks.getFootPlantEnabled();
+
 		return state;
 	}
 

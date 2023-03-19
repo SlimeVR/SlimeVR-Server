@@ -1,9 +1,9 @@
 import classNames from 'classnames';
 import { ReactNode, useEffect, useState } from 'react';
 import {
-  ChangeSettingsRequestT,
-  LegTweaksSettingsT,
-  ModelSettingsT,
+
+  LegTweaksTmpChangeT,
+  LegTweaksTmpClearT,
   ResetType,
   RpcMessage,
   SettingsRequestT,
@@ -53,19 +53,23 @@ export function MainLayoutRoute({
   }
 
   usePageChanged(() => {
-    if (
-      ProportionsLastPageOpen ||
-      location.pathname.includes('body-proportions')
-    ) {
-      const settings = new ChangeSettingsRequestT();
-      const modelSettings = new ModelSettingsT();
-      const legTweaks = new LegTweaksSettingsT();
-      legTweaks.enabled = !location.pathname.includes(
-        '/onboarding/body-proportions'
-      );
-      modelSettings.legTweaks = legTweaks;
-      settings.modelSettings = modelSettings;
-      sendRPCPacket(RpcMessage.ChangeSettingsRequest, settings);
+    if (location.pathname.includes('body-proportions')) {
+      const tempSettings = new LegTweaksTmpChangeT();
+      tempSettings.skatingCorrection = false;
+      tempSettings.floorClip = false;
+      tempSettings.toeSnap = false;
+      tempSettings.footPlant = false;
+
+      sendRPCPacket(RpcMessage.LegTweaksTmpChange, tempSettings);
+    }
+    else if (ProportionsLastPageOpen) {
+      const resetSettings = new LegTweaksTmpClearT();
+      resetSettings.skatingCorrection = true;
+      resetSettings.floorClip = true;
+      resetSettings.toeSnap = true;
+      resetSettings.footPlant = true;
+
+      sendRPCPacket(RpcMessage.LegTweaksTmpClear, resetSettings);
     }
     setProportionsLastPageOpen(location.pathname.includes('body-proportions'));
   });

@@ -22,6 +22,7 @@ import io.eiren.util.logging.LogManager;
 import solarxr_protocol.MessageBundle;
 import solarxr_protocol.datatypes.TransactionId;
 import solarxr_protocol.rpc.*;
+import solarxr_protocol.rpc.settings.LegTweaksSettings;
 
 import java.net.InetAddress;
 import java.net.UnknownHostException;
@@ -77,6 +78,10 @@ public class RPCHandler extends ProtocolHandler<RpcMessageHeader>
 		);
 
 		registerPacketListener(RpcMessage.ServerInfosRequest, this::onServerInfosRequest);
+
+		registerPacketListener(RpcMessage.LegTweaksTmpChange, this::onLegTweaksTmpChange);
+
+		registerPacketListener(RpcMessage.LegTweaksTmpClear, this::onLegTweaksTmpClear);
 
 		this.api.server.getAutoBoneHandler().addListener(this);
 	}
@@ -257,6 +262,31 @@ public class RPCHandler extends ProtocolHandler<RpcMessageHeader>
 			return;
 
 		this.api.server.clearTrackersDriftCompensation();
+	}
+
+	public void onLegTweaksTmpChange(
+		GenericConnection conn,
+		RpcMessageHeader messageHeader
+	) {
+		LegTweaksTmpChange req = (LegTweaksTmpChange) messageHeader
+			.message(new LegTweaksTmpChange());
+		if (req == null)
+			return;
+		
+		this.api.server.humanPoseManager.setLegTweaksStateTemp(req.skatingCorrection(), req.floorClip(), req.toeSnap(), req.footPlant());
+	}
+
+	public void onLegTweaksTmpClear(
+		GenericConnection conn,
+		RpcMessageHeader messageHeader
+	) {
+		LegTweaksTmpClear req = (LegTweaksTmpClear) messageHeader
+			.message(new LegTweaksTmpClear());
+		if (req == null)
+			return;
+		
+		this.api.server.humanPoseManager.clearLegTweaksStateTemp(req.skatingCorrection(), req.floorClip(), req.toeSnap(), req.footPlant());
+
 	}
 
 	@Override
