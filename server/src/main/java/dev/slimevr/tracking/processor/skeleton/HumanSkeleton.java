@@ -1711,7 +1711,12 @@ public class HumanSkeleton {
 	}
 
 	// does not save to config
-	public void setLegTweaksStateTemp(boolean skatingCorrection, boolean floorClip, boolean toeSnap, boolean footPlant) {
+	public void setLegTweaksStateTemp(
+		boolean skatingCorrection,
+		boolean floorClip,
+		boolean toeSnap,
+		boolean footPlant
+	) {
 		this.legTweaks.setSkatingReductionEnabled(skatingCorrection);
 		this.legTweaks.setFloorclipEnabled(floorClip);
 		this.legTweaks.setToeSnapEnabled(toeSnap);
@@ -1719,16 +1724,27 @@ public class HumanSkeleton {
 	}
 
 	// resets to config values
-	public void clearLegTweaksStateTemp(boolean skatingCorrection, boolean floorClip, boolean toeSnap, boolean footPlant) {
+	public void clearLegTweaksStateTemp(
+		boolean skatingCorrection,
+		boolean floorClip,
+		boolean toeSnap,
+		boolean footPlant
+	) {
 		// only reset the true values as they are a mask for what to reset
 		if (skatingCorrection)
-			this.legTweaks.setSkatingReductionEnabled(humanPoseManager.getToggle(SkeletonConfigToggles.SKATING_CORRECTION));
+			this.legTweaks
+				.setSkatingReductionEnabled(
+					humanPoseManager.getToggle(SkeletonConfigToggles.SKATING_CORRECTION)
+				);
 		if (floorClip)
-			this.legTweaks.setFloorclipEnabled(humanPoseManager.getToggle(SkeletonConfigToggles.FLOOR_CLIP));
+			this.legTweaks
+				.setFloorclipEnabled(humanPoseManager.getToggle(SkeletonConfigToggles.FLOOR_CLIP));
 		if (toeSnap)
-			this.legTweaks.setToeSnapEnabled(humanPoseManager.getToggle(SkeletonConfigToggles.TOE_SNAP));
+			this.legTweaks
+				.setToeSnapEnabled(humanPoseManager.getToggle(SkeletonConfigToggles.TOE_SNAP));
 		if (footPlant)
-			this.legTweaks.setFootPlantEnabled(humanPoseManager.getToggle(SkeletonConfigToggles.FOOT_PLANT));
+			this.legTweaks
+				.setFootPlantEnabled(humanPoseManager.getToggle(SkeletonConfigToggles.FOOT_PLANT));
 	}
 
 	public boolean[] getLegTweaksState() {

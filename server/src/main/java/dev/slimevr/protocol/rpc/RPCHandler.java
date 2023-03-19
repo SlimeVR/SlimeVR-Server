@@ -22,7 +22,6 @@ import io.eiren.util.logging.LogManager;
 import solarxr_protocol.MessageBundle;
 import solarxr_protocol.datatypes.TransactionId;
 import solarxr_protocol.rpc.*;
-import solarxr_protocol.rpc.settings.LegTweaksSettings;
 
 import java.net.InetAddress;
 import java.net.UnknownHostException;
@@ -272,8 +271,14 @@ public class RPCHandler extends ProtocolHandler<RpcMessageHeader>
 			.message(new LegTweaksTmpChange());
 		if (req == null)
 			return;
-		
-		this.api.server.humanPoseManager.setLegTweaksStateTemp(req.skatingCorrection(), req.floorClip(), req.toeSnap(), req.footPlant());
+
+		this.api.server.humanPoseManager
+			.setLegTweaksStateTemp(
+				req.skatingCorrection(),
+				req.floorClip(),
+				req.toeSnap(),
+				req.footPlant()
+			);
 	}
 
 	public void onLegTweaksTmpClear(
@@ -284,8 +289,14 @@ public class RPCHandler extends ProtocolHandler<RpcMessageHeader>
 			.message(new LegTweaksTmpClear());
 		if (req == null)
 			return;
-		
-		this.api.server.humanPoseManager.clearLegTweaksStateTemp(req.skatingCorrection(), req.floorClip(), req.toeSnap(), req.footPlant());
+
+		this.api.server.humanPoseManager
+			.clearLegTweaksStateTemp(
+				req.skatingCorrection(),
+				req.floorClip(),
+				req.toeSnap(),
+				req.footPlant()
+			);
 
 	}
 

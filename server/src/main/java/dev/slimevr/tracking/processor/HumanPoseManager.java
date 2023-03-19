@@ -587,12 +587,22 @@ public class HumanPoseManager {
 		}
 	}
 
-	public void setLegTweaksStateTemp(boolean skatingCorrection, boolean floorClip, boolean toeSnap, boolean footPlant) {
+	public void setLegTweaksStateTemp(
+		boolean skatingCorrection,
+		boolean floorClip,
+		boolean toeSnap,
+		boolean footPlant
+	) {
 		if (isSkeletonPresent())
 			skeleton.setLegTweaksStateTemp(skatingCorrection, floorClip, toeSnap, footPlant);
 	}
 
-	public void clearLegTweaksStateTemp(boolean skatingCorrection, boolean floorClip, boolean toeSnap, boolean footPlant) {
+	public void clearLegTweaksStateTemp(
+		boolean skatingCorrection,
+		boolean floorClip,
+		boolean toeSnap,
+		boolean footPlant
+	) {
 		if (isSkeletonPresent())
 			skeleton.clearLegTweaksStateTemp(skatingCorrection, floorClip, toeSnap, footPlant);
 	}
