@@ -219,7 +219,7 @@ export function ConnectTrackersPage() {
             {!state.alonePage && (
               <>
                 <Button variant="secondary" to="/onboarding/wifi-creds">
-                  {l10n.getString('onboarding-connect_tracker-back')}
+                  {l10n.getString('onboarding-previous_step')}
                 </Button>
                 <Button variant="primary" to="/onboarding/trackers-assign">
                   {l10n.getString('onboarding-connect_tracker-next')}

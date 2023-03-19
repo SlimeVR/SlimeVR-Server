@@ -448,6 +448,7 @@ settings-osc-vmc-anchor_hip-label = Anchor at hips
 onboarding-skip = Skip setup
 onboarding-continue = Continue
 onboarding-wip = Work in progress
+onboarding-previous_step = Previous step
 
 ## Wi-Fi setup
 onboarding-wifi_creds-back = Go Back to introduction

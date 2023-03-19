@@ -68,7 +68,7 @@ export function WifiCredsPage() {
       <div className="w-full py-4 flex flex-row">
         <div className="flex flex-grow gap-3">
           <Button variant="secondary" to="/onboarding/home">
-            {l10n.getString('onboarding-wifi_creds-back')}
+            {l10n.getString('onboarding-previous_step')}
           </Button>
           <Button variant="secondary" to="/" onClick={skipSetup}>
             {l10n.getString('onboarding-skip')}

@@ -209,7 +209,7 @@ export function TrackersAssignPage() {
             {!state.alonePage && (
               <>
                 <Button variant="secondary" to="/onboarding/wifi-creds">
-                  {l10n.getString('onboarding-assign_trackers-back')}
+                  {l10n.getString('onboarding-previous_step')}
                 </Button>
                 <Button variant="secondary" to="/" onClick={skipSetup}>
                   {l10n.getString('onboarding-skip')}

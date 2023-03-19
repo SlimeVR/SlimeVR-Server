@@ -44,6 +44,7 @@ export function PutTrackersOnStep({ nextStep }: { nextStep: () => void }) {
           width={150}
           dotsSize={15}
           variant="dots"
+          hideUnassigned={true}
         />
       </div>
     </>

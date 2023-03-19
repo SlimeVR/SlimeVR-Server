@@ -77,7 +77,7 @@ export function AutomaticProportionsPage() {
             {!state.alonePage && (
               <>
               <Button variant="secondary" to="/onboarding/reset-tutorial">
-                {l10n.getString('onboarding-automatic_proportions-back')}
+                {l10n.getString('onboarding-previous_step')}
               </Button>
               <Button variant="secondary" to="/" onClick={skipSetup}>
                 {l10n.getString('onboarding-skip')}
