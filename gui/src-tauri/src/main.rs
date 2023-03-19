@@ -12,10 +12,10 @@ use clap::Parser;
 use const_format::concatcp;
 use rand::{seq::SliceRandom, thread_rng};
 use shadow_rs::shadow;
-use tauri::api::process::Command;
-use tauri::Manager;
+use tauri::api::process::{Command, CommandChild};
 #[cfg(windows)]
 use tauri::WindowEvent;
+use tauri::{Manager, RunEvent};
 use tempfile::Builder;
 
 #[cfg(windows)]
@@ -31,6 +31,10 @@ static POSSIBLE_TITLES: &[&str] = &[
 	"never gonna let you down",
 	"uwu sowwy",
 ];
+
+#[derive(Default)]
+struct Backend(Option<CommandChild>);
+
 shadow!(build);
 // Tauri has a way to return the package.json version, but it's not a constant...
 const VERSION: &str = if build::TAG.is_empty() {
@@ -173,6 +177,7 @@ fn main() {
 	}
 
 	// Spawn server process
+	let mut backend = Backend::default();
 	let run_path = get_launch_path(cli);
 
 	let stdout_recv = if let Some(p) = run_path {
@@ -190,18 +195,19 @@ fn main() {
 		};
 
 		log::info!("Using Java binary: {:?}", java_bin);
-		let (recv, _child) = Command::new(java_bin.to_str().unwrap())
+		let (recv, child) = Command::new(java_bin.to_str().unwrap())
 			.current_dir(p)
 			.args(["-Xmx512M", "-jar", "slimevr.jar", "--no-gui"])
 			.spawn()
 			.expect("Unable to start the server jar");
+		_ = backend.0.insert(child);
 		Some(recv)
 	} else {
 		log::warn!("No server found. We will not start the server.");
 		None
 	};
 
-	let run_result = tauri::Builder::default()
+	let build_result = tauri::Builder::default()
 		.plugin(tauri_plugin_window_state::Builder::default().build())
 		.setup(|app| {
 			if let Some(mut recv) = stdout_recv {
@@ -237,8 +243,26 @@ fn main() {
 			WindowEvent::Resized(_) => std::thread::sleep(std::time::Duration::from_nanos(1)),
 			_ => (),
 		})
-		.run(tauri::generate_context!());
-	match run_result {
+		.build(tauri::generate_context!());
+	match build_result {
+		Ok(app) => {
+			app.run(move |_app_handle, event| match event {
+				RunEvent::ExitRequested { .. } => {
+					if let Some(child) = backend.0.take() {
+						let kill_status = Command::new("taskkill")
+							.args(["/pid", &child.pid().to_string(), "/f"])
+							.status()
+							.unwrap();
+						log::info!(
+							"Backend gracefully shutdown. {:?}",
+							kill_status.code()
+						)
+					}
+				}
+				_ => {}
+			});
+		}
+
 		#[cfg(windows)]
 		// Often triggered when the user doesn't have webview2 installed
 		Err(tauri::Error::Runtime(tauri_runtime::Error::CreateWebview(error))) => {
@@ -258,7 +282,10 @@ fn main() {
 			}
 			return;
 		}
-		_ => run_result.expect("error while running tauri application"),
+
+		Err(_) => {
+			println!("Unknown Error")
+		}
 	}
 }
 

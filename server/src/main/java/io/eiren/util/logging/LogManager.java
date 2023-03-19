@@ -98,6 +98,13 @@ public class LogManager {
 		log.log(level, message, t);
 	}
 
+	public static void closeLogger() {
+		for (Handler handler : global.getHandlers()) {
+			handler.close();
+			removeHandler(handler);
+		}
+	}
+
 	static {
 		boolean hasConsoleHandler = false;
 		for (Handler h : global.getHandlers()) {

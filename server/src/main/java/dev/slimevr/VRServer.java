@@ -175,6 +175,7 @@ public class VRServer extends Thread {
 
 		// Add shutdown hook
 		Runtime.getRuntime().addShutdownHook(new Thread(() -> {
+			LogManager.closeLogger();
 			try {
 				if (driverBridge instanceof UnixSocketBridge linuxBridge) {
 					// Auto-close Linux SteamVR bridge on JVM shutdown

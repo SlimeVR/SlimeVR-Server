@@ -63,6 +63,7 @@ fun main(args: Array<String>) {
 				"SlimeVR: Java Runtime Mismatch",
 				JOptionPane.ERROR_MESSAGE
 			)
+		LogManager.closeLogger()
 		return
 	}
 	try {
@@ -84,6 +85,7 @@ fun main(args: Array<String>) {
 				"SlimeVR: Ports are busy",
 				JOptionPane.ERROR_MESSAGE
 			)
+		LogManager.closeLogger()
 		return
 	}
 	try {
@@ -103,6 +105,11 @@ fun main(args: Array<String>) {
 	} finally {
 		try {
 			Thread.sleep(2000L)
+			Runtime.getRuntime().addShutdownHook(object : Thread() {
+				override fun run() {
+					println("Test")
+				}
+			})
 		} catch (e: InterruptedException) {
 			e.printStackTrace()
 		}
