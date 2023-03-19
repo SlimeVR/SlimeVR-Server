@@ -1,7 +1,6 @@
 import classNames from 'classnames';
 import { ReactNode, useEffect, useState } from 'react';
 import {
-
   LegTweaksTmpChangeT,
   LegTweaksTmpClearT,
   ResetType,
@@ -61,8 +60,7 @@ export function MainLayoutRoute({
       tempSettings.footPlant = false;
 
       sendRPCPacket(RpcMessage.LegTweaksTmpChange, tempSettings);
-    }
-    else if (ProportionsLastPageOpen) {
+    } else if (ProportionsLastPageOpen) {
       const resetSettings = new LegTweaksTmpClearT();
       resetSettings.skatingCorrection = true;
       resetSettings.floorClip = true;
