@@ -7,8 +7,8 @@ import { MountingResetStep } from './mounting-steps/MountingReset';
 import { PreparationStep } from './mounting-steps/Preparation';
 import { PutTrackersOnStep } from './mounting-steps/PutTrackersOn';
 import { useLocalization } from '@fluent/react';
-import {SkipSetupWarningModal} from '../../SkipSetupWarningModal';
-import {useState} from 'react';
+import { SkipSetupWarningModal } from '../../SkipSetupWarningModal';
+import { useState } from 'react';
 
 const steps: Step[] = [
   { type: 'numbered', component: PutTrackersOnStep },
@@ -62,10 +62,10 @@ export function AutomaticMountingPage() {
         </div>
       </div>
       <SkipSetupWarningModal
-          accept={skipSetup}
-          onClose={() => setSkipWarning(false)}
-          isOpen={skipWarning}
-        ></SkipSetupWarningModal>
+        accept={skipSetup}
+        onClose={() => setSkipWarning(false)}
+        isOpen={skipWarning}
+      ></SkipSetupWarningModal>
     </>
   );
 }
