@@ -94,7 +94,12 @@ export function Button({
   }, [variant, disabled, rounded]);
 
   return to ? (
-    <NavLink to={to} className={classes} state={state}>
+    <NavLink
+      to={to}
+      className={classes}
+      state={state}
+      onClick={(ev) => disabled && ev.preventDefault()}
+    >
       <ButtonContent icon={icon} loading={loading}>
         {children}
       </ButtonContent>
