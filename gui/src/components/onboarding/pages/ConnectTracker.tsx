@@ -20,6 +20,7 @@ import { ProgressBar } from '../../commons/ProgressBar';
 import { TipBox } from '../../commons/TipBox';
 import { Typography } from '../../commons/Typography';
 import { TrackerCard } from '../../tracker/TrackerCard';
+import { SkipSetupWarningModal } from '../SkipSetupWarningModal';
 
 const BOTTOM_HEIGHT = 80;
 
@@ -62,6 +63,7 @@ export function ConnectTrackersPage() {
   const { sendRPCPacket, useRPCPacket } = useWebsocketAPI();
   const [provisioningStatus, setProvisioningStatus] =
     useState<WifiProvisioningStatus>(WifiProvisioningStatus.NONE);
+  const [skipWarning, setSkipWarning] = useState(false);
 
   applyProgress(0.4);
 
@@ -208,23 +210,26 @@ export function ConnectTrackersPage() {
         className="flex items-center w-full"
       >
         <div className="w-full flex">
-          <div className="flex flex-grow">
-            {!state.alonePage && (
-              <Button variant="secondary" to="/" onClick={skipSetup}>
-                {l10n.getString('onboarding-skip')}
-              </Button>
-            )}
-          </div>
-          <div className="flex gap-3">
+          <div className="flex flex-grow gap-3">
             {!state.alonePage && (
               <>
                 <Button variant="secondary" to="/onboarding/wifi-creds">
                   {l10n.getString('onboarding-previous_step')}
                 </Button>
-                <Button variant="primary" to="/onboarding/trackers-assign">
-                  {l10n.getString('onboarding-connect_tracker-next')}
+                <Button
+                  variant="secondary"
+                  onClick={() => setSkipWarning(true)}
+                >
+                  {l10n.getString('onboarding-skip')}
                 </Button>
               </>
+            )}
+          </div>
+          <div className="flex">
+            {!state.alonePage && (
+              <Button variant="primary" to="/onboarding/trackers-assign">
+                {l10n.getString('onboarding-connect_tracker-next')}
+              </Button>
             )}
             {state.alonePage && (
               <Button variant="primary" to="/">
@@ -234,6 +239,11 @@ export function ConnectTrackersPage() {
           </div>
         </div>
       </div>
+      <SkipSetupWarningModal
+        accept={skipSetup}
+        onClose={() => setSkipWarning(false)}
+        isOpen={skipWarning}
+      ></SkipSetupWarningModal>
     </div>
   );
 }

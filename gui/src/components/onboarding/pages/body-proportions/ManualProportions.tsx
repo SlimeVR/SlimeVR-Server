@@ -8,14 +8,16 @@ import { PersonFrontIcon } from '../../../commons/PersonFrontIcon';
 import { Typography } from '../../../commons/Typography';
 import { BodyProportions } from './BodyProportions';
 import { useLocalization } from '@fluent/react';
-import { useEffect, useMemo } from 'react';
+import { useEffect, useMemo, useState } from 'react';
 import { useBodyProportions } from '../../../../hooks/body-proportions';
+import { SkipSetupWarningModal } from '../../SkipSetupWarningModal';
 
 export function ManualProportionsPage() {
   const { l10n } = useLocalization();
   const { applyProgress, skipSetup, state } = useOnboarding();
   const { sendRPCPacket } = useWebsocketAPI();
   const { onPageOpened } = useBodyProportions();
+  const [skipWarning, setSkipWarning] = useState(false);
 
   applyProgress(0.9);
 
@@ -84,7 +86,10 @@ export function ManualProportionsPage() {
                 <Button variant="secondary" to="/onboarding/reset-tutorial">
                   {l10n.getString('onboarding-previous_step')}
                 </Button>
-                <Button variant="secondary" to="/" onClick={skipSetup}>
+                <Button
+                  variant="secondary"
+                  onClick={() => setSkipWarning(true)}
+                >
                   {l10n.getString('onboarding-skip')}
                 </Button>
               </>
@@ -109,6 +114,11 @@ export function ManualProportionsPage() {
           </div>
         </div>
       </div>
+      <SkipSetupWarningModal
+        accept={skipSetup}
+        onClose={() => setSkipWarning(false)}
+        isOpen={skipWarning}
+      ></SkipSetupWarningModal>
     </>
   );
 }

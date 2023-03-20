@@ -21,6 +21,7 @@ import { Typography } from '../../../commons/Typography';
 import { ASSIGNMENT_RULES, BodyAssignment } from '../../BodyAssignment';
 import { NeckWarningModal } from '../../NeckWarningModal';
 import { TrackerSelectionMenu } from './TrackerSelectionMenu';
+import {SkipSetupWarningModal} from '../../SkipSetupWarningModal';
 
 export type BodyPartError = {
   label: string | undefined;
@@ -39,6 +40,7 @@ export function TrackersAssignPage() {
   const { advanced } = watch();
   const [selectedRole, setSelectRole] = useState<BodyPart>(BodyPart.NONE);
   const assignedTrackers = useAssignedTrackers();
+  const [skipWarning, setSkipWarning] = useState(false);
 
   const trackerPartGrouped = useMemo(
     () =>
@@ -211,7 +213,7 @@ export function TrackersAssignPage() {
                 <Button variant="secondary" to="/onboarding/wifi-creds">
                   {l10n.getString('onboarding-previous_step')}
                 </Button>
-                <Button variant="secondary" to="/" onClick={skipSetup}>
+                <Button variant="secondary" onClick={() => setSkipWarning(true)}>
                   {l10n.getString('onboarding-skip')}
                 </Button>
               </>
@@ -230,6 +232,11 @@ export function TrackersAssignPage() {
           </div>
         </div>
       </div>
+      <SkipSetupWarningModal
+          accept={skipSetup}
+          onClose={() => setSkipWarning(false)}
+          isOpen={skipWarning}
+        ></SkipSetupWarningModal>
     </>
   );
 }

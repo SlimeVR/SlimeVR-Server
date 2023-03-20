@@ -5,7 +5,13 @@ import { TipBox } from '../../../../commons/TipBox';
 import { Typography } from '../../../../commons/Typography';
 import { useLocalization } from '@fluent/react';
 
-export function PutTrackersOnStep({ nextStep }: { nextStep: () => void }) {
+export function PutTrackersOnStep({
+  nextStep,
+  variant,
+}: {
+  nextStep: () => void;
+  variant: 'alone' | 'onboarding';
+}) {
   const { l10n } = useLocalization();
   const { trackers } = useTrackers();
 
@@ -30,7 +36,12 @@ export function PutTrackersOnStep({ nextStep }: { nextStep: () => void }) {
           </div>
         </div>
 
-        <div className="flex">
+        <div className="flex gap-3">
+          {variant === 'onboarding' && (
+            <Button variant="secondary" to="/onboarding/reset-tutorial">
+              {l10n.getString('onboarding-automatic_proportions-prev_step')}
+            </Button>
+          )}
           <Button variant="primary" onClick={nextStep}>
             {l10n.getString(
               'onboarding-automatic_proportions-put_trackers_on-next'

@@ -23,7 +23,6 @@ export function DoneStep({
           {l10n.getString('onboarding-automatic_mounting-done-description')}
         </Typography>
       </div>
-      {/* <Button variant="primary">Continue to next step</Button> */}
 
       <div className="flex gap-3">
         <Button
@@ -32,6 +31,12 @@ export function DoneStep({
         >
           {l10n.getString('onboarding-automatic_mounting-done-restart')}
         </Button>
+
+        {variant === 'onboarding' && (
+          <Button variant="primary" to="/onboarding/reset-tutorial">
+            {l10n.getString('onboarding-automatic_mounting-next')}
+          </Button>
+        )}
       </div>
     </div>
   );

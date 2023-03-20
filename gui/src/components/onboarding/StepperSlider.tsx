@@ -17,7 +17,7 @@ type StepComponentType = FC<{
   resetSteps: () => void;
   variant: 'alone' | 'onboarding';
 }>;
-type Step = { type: 'numbered' | 'fullsize'; component: StepComponentType };
+export type Step = { type: 'numbered' | 'fullsize'; component: StepComponentType };
 
 export function StepContainer({
   children,

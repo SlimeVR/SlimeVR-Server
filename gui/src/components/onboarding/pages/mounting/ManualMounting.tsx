@@ -11,11 +11,13 @@ import { Typography } from '../../../commons/Typography';
 import { BodyAssignment } from '../../BodyAssignment';
 import { MountingSelectionMenu } from './MountingSelectionMenu';
 import { useLocalization } from '@fluent/react';
+import { SkipSetupWarningModal } from '../../SkipSetupWarningModal';
 
 export function ManualMountingPage() {
   const { l10n } = useLocalization();
   const { applyProgress, skipSetup, state } = useOnboarding();
   const { sendRPCPacket } = useWebsocketAPI();
+  const [skipWarning, setSkipWarning] = useState(false);
 
   const [selectedRole, setSelectRole] = useState<BodyPart>(BodyPart.NONE);
 
@@ -89,7 +91,10 @@ export function ManualMountingPage() {
                 <Button variant="secondary" to="/onboarding/trackers-assign">
                   {l10n.getString('onboarding-previous_step')}
                 </Button>
-                <Button variant="secondary" to="/" onClick={skipSetup}>
+                <Button
+                  variant="secondary"
+                  onClick={() => setSkipWarning(true)}
+                >
                   {l10n.getString('onboarding-skip')}
                 </Button>
               </>
@@ -111,6 +116,11 @@ export function ManualMountingPage() {
           </div>
         </div>
       </div>
+      <SkipSetupWarningModal
+        accept={skipSetup}
+        onClose={() => setSkipWarning(false)}
+        isOpen={skipWarning}
+      ></SkipSetupWarningModal>
     </>
   );
 }

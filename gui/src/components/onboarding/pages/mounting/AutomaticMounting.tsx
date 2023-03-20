@@ -1,16 +1,25 @@
 import { useOnboarding } from '../../../../hooks/onboarding';
 import { Button } from '../../../commons/Button';
 import { Typography } from '../../../commons/Typography';
-import { StepperSlider } from '../../StepperSlider';
+import { Step, StepperSlider } from '../../StepperSlider';
 import { DoneStep } from './mounting-steps/Done';
 import { MountingResetStep } from './mounting-steps/MountingReset';
 import { PreparationStep } from './mounting-steps/Preparation';
 import { PutTrackersOnStep } from './mounting-steps/PutTrackersOn';
 import { useLocalization } from '@fluent/react';
+import {SkipSetupWarningModal} from '../../SkipSetupWarningModal';
+import {useState} from 'react';
 
+const steps: Step[] = [
+  { type: 'numbered', component: PutTrackersOnStep },
+  { type: 'numbered', component: PreparationStep },
+  { type: 'numbered', component: MountingResetStep },
+  { type: 'fullsize', component: DoneStep },
+];
 export function AutomaticMountingPage() {
   const { l10n } = useLocalization();
   const { applyProgress, skipSetup, state } = useOnboarding();
+  const [skipWarning, setSkipWarning] = useState(false);
 
   applyProgress(0.7);
 
@@ -29,26 +38,16 @@ export function AutomaticMountingPage() {
           <div className="flex">
             <StepperSlider
               variant={state.alonePage ? 'alone' : 'onboarding'}
-              steps={[
-                { type: 'numbered', component: PutTrackersOnStep },
-                { type: 'numbered', component: PreparationStep },
-                { type: 'numbered', component: MountingResetStep },
-                { type: 'fullsize', component: DoneStep },
-              ]}
+              steps={steps}
             ></StepperSlider>
           </div>
         </div>
         <div className="w-full pb-4 flex flex-row">
           <div className="flex flex-grow gap-3">
             {!state.alonePage && (
-              <>
-                <Button variant="secondary" to="/onboarding/trackers-assign">
-                  {l10n.getString('onboarding-previous_step')}
-                </Button>
-                <Button variant="secondary" to="/" onClick={skipSetup}>
-                  {l10n.getString('onboarding-skip')}
-                </Button>
-              </>
+              <Button variant="secondary" onClick={() => setSkipWarning(true)}>
+                {l10n.getString('onboarding-skip')}
+              </Button>
             )}
           </div>
           <div className="flex gap-3">
@@ -59,14 +58,14 @@ export function AutomaticMountingPage() {
             >
               {l10n.getString('onboarding-automatic_mounting-manual_mounting')}
             </Button>
-            {!state.alonePage && (
-              <Button variant="primary" to="/onboarding/reset-tutorial">
-                {l10n.getString('onboarding-automatic_mounting-next')}
-              </Button>
-            )}
           </div>
         </div>
       </div>
+      <SkipSetupWarningModal
+          accept={skipSetup}
+          onClose={() => setSkipWarning(false)}
+          isOpen={skipWarning}
+        ></SkipSetupWarningModal>
     </>
   );
 }

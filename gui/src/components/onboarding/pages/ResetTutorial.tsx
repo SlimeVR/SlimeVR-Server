@@ -2,10 +2,13 @@ import { useLocalization } from '@fluent/react';
 import { useOnboarding } from '../../../hooks/onboarding';
 import { Button } from '../../commons/Button';
 import { Typography } from '../../commons/Typography';
+import { useState } from 'react';
+import { SkipSetupWarningModal } from '../SkipSetupWarningModal';
 
 export function ResetTutorialPage() {
   const { l10n } = useLocalization();
   const { applyProgress, skipSetup } = useOnboarding();
+  const [skipWarning, setSkipWarning] = useState(false);
 
   applyProgress(0.8);
 
@@ -32,7 +35,7 @@ export function ResetTutorialPage() {
             <Button variant="secondary" to="/onboarding/mounting/auto">
               {l10n.getString('onboarding-previous_step')}
             </Button>
-            <Button variant="secondary" to="/" onClick={skipSetup}>
+            <Button variant="secondary" onClick={() => setSkipWarning(true)}>
               {l10n.getString('onboarding-skip')}
             </Button>
           </div>
@@ -42,6 +45,11 @@ export function ResetTutorialPage() {
             </Button>
           </div>
         </div>
+        <SkipSetupWarningModal
+          accept={skipSetup}
+          onClose={() => setSkipWarning(false)}
+          isOpen={skipWarning}
+        ></SkipSetupWarningModal>
       </div>
     </>
   );

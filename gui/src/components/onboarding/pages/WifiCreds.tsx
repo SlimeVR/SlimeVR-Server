@@ -4,11 +4,15 @@ import { useWifiForm } from '../../../hooks/wifi-form';
 import { Button } from '../../commons/Button';
 import { Input } from '../../commons/Input';
 import { Typography } from '../../commons/Typography';
+import { useState } from 'react';
+import { SkipSetupWarningModal } from '../SkipSetupWarningModal';
 
 export function WifiCredsPage() {
   const { l10n } = useLocalization();
   const { applyProgress, skipSetup } = useOnboarding();
   const { control, handleSubmit, submitWifiCreds, formState } = useWifiForm();
+  const [skipWarning, setSkipWarning] = useState(false);
+
   applyProgress(0.2);
 
   return (
@@ -70,7 +74,7 @@ export function WifiCredsPage() {
           <Button variant="secondary" to="/onboarding/home">
             {l10n.getString('onboarding-previous_step')}
           </Button>
-          <Button variant="secondary" to="/" onClick={skipSetup}>
+          <Button variant="secondary" onClick={() => setSkipWarning(true)}>
             {l10n.getString('onboarding-skip')}
           </Button>
         </div>
@@ -83,6 +87,11 @@ export function WifiCredsPage() {
           </Button>
         </div>
       </div>
+      <SkipSetupWarningModal
+        accept={skipSetup}
+        onClose={() => setSkipWarning(false)}
+        isOpen={skipWarning}
+      ></SkipSetupWarningModal>
     </form>
   );
 }

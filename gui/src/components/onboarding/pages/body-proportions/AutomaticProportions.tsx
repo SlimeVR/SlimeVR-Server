@@ -17,6 +17,7 @@ import { PutTrackersOnStep } from './autobone-steps/PutTrackersOn';
 import { Recording } from './autobone-steps/Recording';
 import { StartRecording } from './autobone-steps/StartRecording';
 import { VerifyResultsStep } from './autobone-steps/VerifyResults';
+import { SkipSetupWarningModal } from '../../SkipSetupWarningModal';
 
 export function AutomaticProportionsPage() {
   const { l10n } = useLocalization();
@@ -25,6 +26,7 @@ export function AutomaticProportionsPage() {
   const context = useProvideAutobone();
   const [resetDisabled, setResetDisabled] = useState(false);
   const { onPageOpened } = useBodyProportions();
+  const [skipWarning, setSkipWarning] = useState(false);
 
   applyProgress(0.9);
 
@@ -75,14 +77,9 @@ export function AutomaticProportionsPage() {
         <div className="w-full pb-4 flex flex-row">
           <div className="flex flex-grow gap-3">
             {!state.alonePage && (
-              <>
-              <Button variant="secondary" to="/onboarding/reset-tutorial">
-                {l10n.getString('onboarding-previous_step')}
-              </Button>
-              <Button variant="secondary" to="/" onClick={skipSetup}>
+              <Button variant="secondary" onClick={() => setSkipWarning(true)}>
                 {l10n.getString('onboarding-skip')}
               </Button>
-              </>
             )}
             <Button
               variant="secondary"
@@ -100,14 +97,14 @@ export function AutomaticProportionsPage() {
             >
               {l10n.getString('onboarding-automatic_proportions-manual')}
             </Button>
-            {!state.alonePage && (
-              <Button variant="primary" to="/onboarding/done">
-                {l10n.getString('onboarding-continue')}
-              </Button>
-            )}
           </div>
         </div>
       </div>
+      <SkipSetupWarningModal
+        accept={skipSetup}
+        onClose={() => setSkipWarning(false)}
+        isOpen={skipWarning}
+      ></SkipSetupWarningModal>
     </AutoboneContextC.Provider>
   );
 }
