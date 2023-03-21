@@ -5,7 +5,6 @@ import dev.slimevr.filtering.CircularArrayList
 import io.github.axisangles.ktmath.*
 import kotlin.math.*
 
-
 private const val DRIFT_COOLDOWN_MS = 30000L
 
 /**
@@ -261,7 +260,7 @@ class TrackerResetsHandler(val tracker: Tracker) {
 				}
 
 				// Set final averaged drift Quaternion
- 				averagedDriftQuat = fromAveragedQuaternions(driftQuats, driftWeights)
+				averagedDriftQuat = fromAveragedQuaternions(driftQuats, driftWeights)
 
 				// Save tracker rotation and current time
 				rotationSinceReset = driftQuats.latest
@@ -292,7 +291,7 @@ class TrackerResetsHandler(val tracker: Tracker) {
 				}
 
 				// Set final averaged drift Quaternion
- 				averagedDriftQuat = fromAveragedQuaternions(driftQuats, driftWeights)
+				averagedDriftQuat = fromAveragedQuaternions(driftQuats, driftWeights)
 			} else {
 				timeAtLastReset = System.currentTimeMillis()
 			}
@@ -303,7 +302,7 @@ class TrackerResetsHandler(val tracker: Tracker) {
 
 	private fun fromAveragedQuaternions(
 		qn: CircularArrayList<Quaternion>,
-		tn: ArrayList<Float>
+		tn: ArrayList<Float>,
 	): Quaternion {
 		var totalMatrix: Matrix3 = qn[0].toMatrix() * tn[0]
 		for (i in 1 until qn.size) {
