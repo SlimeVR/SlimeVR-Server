@@ -352,6 +352,7 @@ settings-general-interface-serial_detection-label = Serielle Geräteerkennung
 settings-general-interface-feedback_sound = Feedback-Geräusch
 settings-general-interface-feedback_sound-description = Diese Option wird ein Geräusch abspielen, wenn ein Reset ausgeführt wurde.
 settings-general-interface-feedback_sound-label = Feedback-Geräusch
+settings-general-interface-feedback_sound-volume = Feedback-Sound-Lautstärke
 settings-general-interface-lang = Sprachauswahl
 settings-general-interface-lang-description = Ändern Sie die Standard-Sprache, die Sie verwenden möchten
 settings-general-interface-lang-placeholder = Wählen Sie die zu verwendende Sprache aus
@@ -431,6 +432,7 @@ settings-osc-vrchat-network-trackers-elbows = Ellbogen
 
 ## VMC OSC settings
 
+settings-osc-vmc = Virtual Motion Capture
 settings-osc-vmc-enable = Aktivieren
 settings-osc-vmc-enable-description = Ein- und Ausschalten des Sendens und Empfangen von Daten.
 settings-osc-vmc-enable-label = Aktivieren
@@ -443,8 +445,10 @@ settings-osc-vmc-network-port_out =
     .label = Ausgehender Port
     .placeholder = Ausgehender Port (default: 39539)
 settings-osc-vmc-network-address = Netzwerkadresse
+settings-osc-vmc-network-address-description = Setze die Adresse, wo die Daten hinversendet werden sollen.
 settings-osc-vmc-network-address-placeholder = IPv4-Adresse
 settings-osc-vmc-vrm = VRM-Model
+settings-osc-vmc-vrm-description = Lade ein VRM-Modell um die Kopfverankerung anzuschalten und eine bessere Kompatibilität mit anderen Anwendungen zu bekommen.
 settings-osc-vmc-vrm-model_unloaded = Kein Modell geladen
 settings-osc-vmc-vrm-model_loaded =
     { $titled ->
@@ -554,6 +558,19 @@ onboarding-assign_trackers-next = Ich habe alle Tracker zugewiesen
 
 ## Tracker assignment warnings
 
+# Note for devs, number is used for representing boolean states per bit.
+# $unassigned (Number) - Bits are based on BodyAssignment.ASSIGNMENT_RULES order
+onboarding-assign_trackers-warning-LEFT_FOOT =
+    { $unassigned ->
+        [6] Der linke Fuß ist zugewiesen, aber der linke Unterschenkel muss ebenfalls zugewiesen sein!
+        [5] Der linke Fuß ist zugewiesen, aber der linke Oberschenkel muss ebenfalls zugewiesen sein!
+        [4] Der linke Fuß ist zugewiesen, aber der linke Unter- und Oberschenkel müssen ebenfalls zugewiesen sein!
+        [3] Der linke Fuß ist zugewiesen, aber die Brust, oder Taille muss ebenfalls zugewiesen sein!
+        [2] Der linke Fuß ist zugewiesen, aber der linke Unterschenkel und die Brust, Hüfte oder Taille müssen ebenfalls zugewiesen sein!
+        [1] Der linke Fuß ist zugewiesen, aber der linke Oberschenkel und die Brust, die Hüfte oder die Taille müssen ebenfalls zugewiesen sein!
+        [0] Der linke Fuß ist zugewiesen, aber der linke Unter- und Oberschenkel und die Brust, die Hüfte oder die Taille müssen ebenfalls zugewiesen sein!
+       *[other] Der linke Fuß ist zugewiesen, aber "Unbekanntes nicht zugewiesenes Körperteil" muss ebenfalls zugewiesen sein!
+    }
 # $unassigned (Number) - Bits are based on BodyAssignment.ASSIGNMENT_RULES order
 onboarding-assign_trackers-warning-LEFT_UPPER_LEG =
     { $unassigned ->
@@ -625,22 +642,16 @@ onboarding-automatic_proportions-prev_step = Vorheriger Schritt
 onboarding-automatic_proportions-put_trackers_on-title = Legen Sie Ihre Tracker an
 onboarding-automatic_proportions-put_trackers_on-description = Um Ihre Proportionen zu kalibrieren, werden wir die Tracker verwenden, die Sie gerade zugewiesen haben. Legen Sie alle Ihre Tracker an. Sie können rechts in der Abbildung sehen, welche welche sind.
 onboarding-automatic_proportions-put_trackers_on-next = Ich habe alle meine Tracker angelegt
-onboarding-automatic_proportions-preparation-title = Vorbereitung
-onboarding-automatic_proportions-preparation-description = Stellen Sie ein Stuhl hinter sich in Ihrem Spielbereich auf. Seien Sie bereit, sich während der Autobone-Einrichtung hinzusetzen.
-onboarding-automatic_proportions-preparation-next = Ich stehe vor dem Stuhl
+onboarding-automatic_proportions-requirements-title = Anforderungen
+onboarding-automatic_proportions-requirements-next = Ich habe die Anforderungen gelesen
 onboarding-automatic_proportions-start_recording-title = Bereiten Sie sich auf ein paar Bewegungen vor
 onboarding-automatic_proportions-start_recording-description = Wir werden nun einige bestimmte Posen und Bewegungen aufnehmen. Diese werden im nächsten Bildschirm angezeigt. Bereiten Sie sicht darauf vor, wenn Sie den Knopf drücken!
 onboarding-automatic_proportions-start_recording-next = Aufnahme starten
 onboarding-automatic_proportions-recording-title = Aufnahme
 onboarding-automatic_proportions-recording-description-p0 = Aufnahme läuft...
 onboarding-automatic_proportions-recording-description-p1 = Machen Sie die unten beschriebenen Bewegungen:
-onboarding-automatic_proportions-recording-steps-0 = Gehen Sie ein paarmal in die Knie, ohne Ihre Füße zu bewegen.
-onboarding-automatic_proportions-recording-steps-1 = Bitte setzen Sie sich auf den Stuhl und stehen Sie wieder auf.
-onboarding-automatic_proportions-recording-steps-2 = Drehen Sie den Oberkörper nach links, dann beugen Sie sich nach rechts.
-onboarding-automatic_proportions-recording-steps-3 = Drehen Sie den Oberkörper nach rechts, dann beugen Sie sich nach links.
-onboarding-automatic_proportions-recording-steps-4 = Bewegen Sie sich, bis die Zeit abgelaufen ist.
 onboarding-automatic_proportions-recording-processing = Aufnahme wird verarbeitet...
-# $time (Number) - Seconds left for the automatic calibration recording to finish (max 15)
+# $time (Number) - Seconds left for the automatic calibration recording to finish (max 20)
 onboarding-automatic_proportions-recording-timer =
     { $time ->
         [one] 1 Sekunde verbleibend
