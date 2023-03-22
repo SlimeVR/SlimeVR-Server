@@ -21,6 +21,7 @@ import { TipBox } from '../../commons/TipBox';
 import { Typography } from '../../commons/Typography';
 import { TrackerCard } from '../../tracker/TrackerCard';
 import { SkipSetupWarningModal } from '../SkipSetupWarningModal';
+import { SkipSetupButton } from '../SkipSetupButton';
 
 const BOTTOM_HEIGHT = 80;
 
@@ -99,7 +100,12 @@ export function ConnectTrackersPage() {
     provisioningStatus === WifiProvisioningStatus.COULD_NOT_FIND_SERVER;
 
   return (
-    <div className="flex flex-col items-center">
+    <div className="flex flex-col items-center relative">
+      <SkipSetupButton
+        visible={!state.alonePage}
+        modalVisible={skipWarning}
+        onClick={() => setSkipWarning(true)}
+      ></SkipSetupButton>
       <div className="flex gap-10 w-full max-w-7xl ">
         <div className="flex flex-col w-full max-w-sm">
           <Typography variant="main-title">
@@ -163,6 +169,20 @@ export function ConnectTrackersPage() {
               ></ProgressBar>
             </div>
           </div>
+          <div className="flex flex-row mt-4">
+            {!state.alonePage && (
+              <Button variant="secondary" to="/onboarding/wifi-creds">
+                {l10n.getString('onboarding-previous_step')}
+              </Button>
+            )}
+            <Button
+              variant="primary"
+              to={state.alonePage ? '/' : '/onboarding/trackers-assign'}
+              className="ml-auto"
+            >
+              {l10n.getString('onboarding-connect_tracker-next')}
+            </Button>
+          </div>
         </div>
         <div className="flex flex-col flex-grow">
           <Typography color="secondary" bold>
@@ -202,40 +222,6 @@ export function ConnectTrackersPage() {
                 </div>
               ))}
             </div>
-          </div>
-        </div>
-      </div>
-      <div
-        style={{ height: BOTTOM_HEIGHT }}
-        className="flex items-center w-full"
-      >
-        <div className="w-full flex">
-          <div className="flex flex-grow gap-3">
-            {!state.alonePage && (
-              <>
-                <Button variant="secondary" to="/onboarding/wifi-creds">
-                  {l10n.getString('onboarding-previous_step')}
-                </Button>
-                <Button
-                  variant="secondary"
-                  onClick={() => setSkipWarning(true)}
-                >
-                  {l10n.getString('onboarding-skip')}
-                </Button>
-              </>
-            )}
-          </div>
-          <div className="flex">
-            {!state.alonePage && (
-              <Button variant="primary" to="/onboarding/trackers-assign">
-                {l10n.getString('onboarding-connect_tracker-next')}
-              </Button>
-            )}
-            {state.alonePage && (
-              <Button variant="primary" to="/">
-                {l10n.getString('onboarding-connect_tracker-next')}
-              </Button>
-            )}
           </div>
         </div>
       </div>

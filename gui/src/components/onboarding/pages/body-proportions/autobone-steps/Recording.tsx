@@ -65,7 +65,7 @@ export function Recording({ nextStep }: { nextStep: () => void }) {
             : l10n.getString(
                 'onboarding-automatic_proportions-recording-timer',
                 {
-                  time: 15,
+                  time: Math.round(20 * (1 - progress)),
                 }
               )}
         </Typography>

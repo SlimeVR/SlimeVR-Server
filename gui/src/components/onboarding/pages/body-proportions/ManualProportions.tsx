@@ -11,6 +11,7 @@ import { useLocalization } from '@fluent/react';
 import { useEffect, useMemo, useState } from 'react';
 import { useBodyProportions } from '../../../../hooks/body-proportions';
 import { SkipSetupWarningModal } from '../../SkipSetupWarningModal';
+import { SkipSetupButton } from '../../SkipSetupButton';
 
 export function ManualProportionsPage() {
   const { l10n } = useLocalization();
@@ -45,7 +46,12 @@ export function ManualProportionsPage() {
 
   return (
     <>
-      <div className="flex flex-col gap-5 h-full items-center w-full justify-center">
+      <div className="flex flex-col gap-5 h-full items-center w-full justify-center relative">
+        <SkipSetupButton
+          visible={!state.alonePage}
+          modalVisible={skipWarning}
+          onClick={() => setSkipWarning(true)}
+        ></SkipSetupButton>
         <div className="flex flex-col w-full h-full max-w-5xl justify-center">
           <div className="flex gap-8 justify-center">
             <div className="flex flex-col w-full max-w-2xl gap-3 items-center">
@@ -78,31 +84,22 @@ export function ManualProportionsPage() {
               <PersonFrontIcon width={200}></PersonFrontIcon>
             </div>
           </div>
-        </div>
-        <div className="w-full py-4 flex flex-row">
-          <div className="flex flex-grow gap-3">
+          <div className="flex gap-3 mt-5">
             {!state.alonePage && (
               <>
                 <Button variant="secondary" to="/onboarding/reset-tutorial">
                   {l10n.getString('onboarding-previous_step')}
-                </Button>
-                <Button
-                  variant="secondary"
-                  onClick={() => setSkipWarning(true)}
-                >
-                  {l10n.getString('onboarding-skip')}
                 </Button>
               </>
             )}
             <Button variant="secondary" onClick={resetAll}>
               {l10n.getString('reset-reset_all')}
             </Button>
-          </div>
-          <div className="flex gap-3">
             <Button
               variant="secondary"
               state={{ alonePage: state.alonePage }}
               to="/onboarding/body-proportions/auto"
+              className="ml-auto"
             >
               {l10n.getString('onboarding-manual_proportions-auto')}
             </Button>
@@ -112,6 +109,10 @@ export function ManualProportionsPage() {
               </Button>
             )}
           </div>
+        </div>
+        <div className="w-full py-4 flex flex-row">
+          <div className="flex flex-grow gap-3"></div>
+          <div className="flex gap-3"></div>
         </div>
       </div>
       <SkipSetupWarningModal

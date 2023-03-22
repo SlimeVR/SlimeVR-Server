@@ -36,7 +36,15 @@ export function PutTrackersOnStep({
           </div>
         </div>
 
-        <div className="flex gap-3">
+        <div className="flex flex-col gap-3">
+          <Button
+            variant="secondary"
+            to="/onboarding/mounting/manual"
+            className="self-start"
+          >
+            {l10n.getString('onboarding-automatic_mounting-manual_mounting')}
+          </Button>
+          <div className="flex gap-3">
           {variant === 'onboarding' && (
             <Button variant="secondary" to="/onboarding/trackers-assign">
               {l10n.getString('onboarding-automatic_mounting-prev_step')}
@@ -47,6 +55,7 @@ export function PutTrackersOnStep({
               'onboarding-automatic_mounting-put_trackers_on-next'
             )}
           </Button>
+          </div>
         </div>
       </div>
       <div className="flex flex-col pt-1 items-center fill-background-50 justify-center px-16">

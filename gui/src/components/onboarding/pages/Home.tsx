@@ -18,7 +18,11 @@ export function HomePage() {
   return (
     <>
       <div className="flex flex-col gap-5 h-full items-center w-full justify-center relative">
-        <SkipSetupButton></SkipSetupButton>
+        <SkipSetupButton
+          visible={true}
+          modalVisible={skipWarning}
+          onClick={() => setSkipWarning(true)}
+        ></SkipSetupButton>
         <div className="flex flex-col gap-5 items-center z-10">
           <SlimeVRIcon></SlimeVRIcon>
           <Typography variant="main-title">
@@ -39,11 +43,8 @@ export function HomePage() {
           <Button variant="primary" to="/onboarding/wifi-creds">
             {l10n.getString('onboarding-home-start')}
           </Button>
-          <Button variant="quaternary" onClick={() => setSkipWarning(true)}>
-            {l10n.getString('onboarding-skip')}
-          </Button>
         </div>
-        <div className="absolute right-4 bottom-4 z-50">
+        <div className="absolute right-0 bottom-4 z-50">
           <LangSelector />
         </div>
         <div

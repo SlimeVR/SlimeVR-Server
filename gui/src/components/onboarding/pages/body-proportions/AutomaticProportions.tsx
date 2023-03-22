@@ -18,6 +18,7 @@ import { Recording } from './autobone-steps/Recording';
 import { StartRecording } from './autobone-steps/StartRecording';
 import { VerifyResultsStep } from './autobone-steps/VerifyResults';
 import { SkipSetupWarningModal } from '../../SkipSetupWarningModal';
+import { SkipSetupButton } from '../../SkipSetupButton';
 
 export function AutomaticProportionsPage() {
   const { l10n } = useLocalization();
@@ -48,7 +49,12 @@ export function AutomaticProportionsPage() {
 
   return (
     <AutoboneContextC.Provider value={context}>
-      <div className="flex flex-col gap-5 h-full items-center w-full justify-center">
+      <div className="flex flex-col gap-5 h-full items-center w-full justify-center relative">
+        <SkipSetupButton
+          visible={!state.alonePage}
+          modalVisible={skipWarning}
+          onClick={() => setSkipWarning(true)}
+        ></SkipSetupButton>
         <div className="flex flex-col w-full h-full justify-center max-w-3xl gap-5">
           <div className="flex flex-col max-w-lg gap-3">
             <Typography variant="main-title">
@@ -76,26 +82,12 @@ export function AutomaticProportionsPage() {
         </div>
         <div className="w-full pb-4 flex flex-row">
           <div className="flex flex-grow gap-3">
-            {!state.alonePage && (
-              <Button variant="secondary" onClick={() => setSkipWarning(true)}>
-                {l10n.getString('onboarding-skip')}
-              </Button>
-            )}
             <Button
               variant="secondary"
               onClick={resetAll}
               disabled={resetDisabled}
             >
               {l10n.getString('reset-reset_all')}
-            </Button>
-          </div>
-          <div className="flex gap-3">
-            <Button
-              variant="secondary"
-              state={{ alonePage: state.alonePage }}
-              to="/onboarding/body-proportions/manual"
-            >
-              {l10n.getString('onboarding-automatic_proportions-manual')}
             </Button>
           </div>
         </div>

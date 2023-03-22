@@ -91,7 +91,7 @@ export function Button({
       },
       props.className
     );
-  }, [variant, disabled, rounded]);
+  }, [variant, disabled, rounded, props.className]);
 
   return to ? (
     <NavLink

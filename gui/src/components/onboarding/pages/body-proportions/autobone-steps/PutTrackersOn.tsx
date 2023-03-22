@@ -36,17 +36,26 @@ export function PutTrackersOnStep({
           </div>
         </div>
 
-        <div className="flex gap-3">
-          {variant === 'onboarding' && (
-            <Button variant="secondary" to="/onboarding/reset-tutorial">
-              {l10n.getString('onboarding-automatic_proportions-prev_step')}
-            </Button>
-          )}
-          <Button variant="primary" onClick={nextStep}>
-            {l10n.getString(
-              'onboarding-automatic_proportions-put_trackers_on-next'
-            )}
+        <div className="flex flex-col gap-3">
+          <Button
+            variant="secondary"
+            to="/onboarding/body-proportions/manual"
+            className="self-start"
+          >
+            {l10n.getString('onboarding-automatic_proportions-manual')}
           </Button>
+          <div className="flex gap-3">
+            {variant === 'onboarding' && (
+              <Button variant="secondary" to="/onboarding/reset-tutorial">
+                {l10n.getString('onboarding-automatic_proportions-prev_step')}
+              </Button>
+            )}
+            <Button variant="primary" onClick={nextStep}>
+              {l10n.getString(
+                'onboarding-automatic_proportions-put_trackers_on-next'
+              )}
+            </Button>
+          </div>
         </div>
       </div>
       <div className="flex flex-col pt-1 items-center fill-background-50 justify-center px-16">

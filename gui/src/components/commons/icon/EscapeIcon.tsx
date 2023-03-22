@@ -1,5 +1,3 @@
-import classNames from 'classnames';
-
 export function EscapeIcon({
   size = 24,
   className = '',
