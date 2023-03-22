@@ -5,6 +5,7 @@ import { Button } from '../../commons/Button';
 import { SlimeVRIcon } from '../../commons/icon/SimevrIcon';
 import { LangSelector } from '../../commons/LangSelector';
 import { Typography } from '../../commons/Typography';
+import { SkipSetupButton } from '../SkipSetupButton';
 import { SkipSetupWarningModal } from '../SkipSetupWarningModal';
 
 export function HomePage() {
@@ -16,7 +17,8 @@ export function HomePage() {
 
   return (
     <>
-      <div className="flex flex-col gap-5 h-full items-center w-full justify-center">
+      <div className="flex flex-col gap-5 h-full items-center w-full justify-center relative">
+        <SkipSetupButton></SkipSetupButton>
         <div className="flex flex-col gap-5 items-center z-10">
           <SlimeVRIcon></SlimeVRIcon>
           <Typography variant="main-title">

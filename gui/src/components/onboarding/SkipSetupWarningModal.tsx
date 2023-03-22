@@ -48,11 +48,11 @@ export function SkipSetupWarningModal({
           </Localized>
 
           <div className="flex flex-row gap-3 pt-5 place-content-center">
-            <Button variant="tiertiary" onClick={onClose}>
+            <Button variant="primary" onClick={onClose}>
               {l10n.getString('onboarding-setup_warning-cancel')}
             </Button>
             <Button
-              variant="primary"
+              variant="tiertiary"
               onClick={() => {
                 accept();
                 navigate('/');
