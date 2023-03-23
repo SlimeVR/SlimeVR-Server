@@ -635,6 +635,7 @@ onboarding-automatic_proportions-put_trackers_on-next = I have all my trackers o
 onboarding-automatic_proportions-requirements-title = Requirements
 # Each line of text is a different list item
 onboarding-automatic_proportions-requirements-description =
+    You have at least enough trackers to track your feet (generally 5 trackers).
     You have your trackers and headset on.
     You are wearing your trackers and headset.
     Your trackers and headset are connected to the SlimeVR server.
