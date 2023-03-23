@@ -38,7 +38,7 @@ export function PutTrackersOnStep({
 
         <div className="flex flex-col gap-3">
           <Button
-            variant="secondary"
+            variant={variant === 'onboarding' ? 'secondary' : 'tiertiary'}
             to="/onboarding/mounting/manual"
             className="self-start"
           >

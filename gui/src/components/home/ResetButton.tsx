@@ -48,7 +48,6 @@ export function ResetButton({
       case ResetType.Full:
         return l10n.getString('reset-full');
     }
-    return l10n.getString('reset-full');
   }, [type]);
 
   const getIcon = () => {
