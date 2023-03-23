@@ -64,7 +64,7 @@ export function ResetButton({
   const maybePlaySoundOnResetStarted = (type: ResetType) => {
     if (!config?.feedbackSound) return;
     playSoundOnResetStarted(type, config?.feedbackSoundVolume);
-  }
+  };
 
   const variantsMap = {
     small:
