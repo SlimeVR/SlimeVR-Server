@@ -63,7 +63,7 @@ public class SerialHandler implements SerialPortMessageListener {
 		listeners.removeIf(listener -> l == listener);
 	}
 
-	public boolean openSerial(String portLocation, boolean auto) {
+	public synchronized boolean openSerial(String portLocation, boolean auto) {
 		LogManager.info("[SerialHandler] Trying to open: " + portLocation + ", auto: " + auto);
 
 		SerialPort[] ports = SerialPort.getCommPorts();
@@ -150,7 +150,7 @@ public class SerialHandler implements SerialPortMessageListener {
 		this.writeSerial("GET INFO");
 	}
 
-	public void closeSerial() {
+	public synchronized void closeSerial() {
 		try {
 			if (currentPort != null)
 				currentPort.closePort();
@@ -172,7 +172,7 @@ public class SerialHandler implements SerialPortMessageListener {
 		}
 	}
 
-	private void writeSerial(String serialText) {
+	private synchronized void writeSerial(String serialText) {
 		if (currentPort == null)
 			return;
 		OutputStream os = currentPort.getOutputStream();
@@ -187,7 +187,7 @@ public class SerialHandler implements SerialPortMessageListener {
 		}
 	}
 
-	public void setWifi(String ssid, String passwd) {
+	public synchronized void setWifi(String ssid, String passwd) {
 		if (currentPort == null)
 			return;
 		OutputStream os = currentPort.getOutputStream();
@@ -224,7 +224,7 @@ public class SerialHandler implements SerialPortMessageListener {
 		}
 	}
 
-	public boolean isConnected() {
+	public synchronized boolean isConnected() {
 		return this.currentPort != null && this.currentPort.isOpen();
 	}
 
