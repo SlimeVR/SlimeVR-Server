@@ -84,7 +84,9 @@ export function AutomaticProportionsPage() {
               disabled={isCounting}
             >
               <div className="relative">
-                <div className="opacity-0 h-0">{l10n.getString('reset-reset_all')}</div>
+                <div className="opacity-0 h-0">
+                  {l10n.getString('reset-reset_all')}
+                </div>
                 {!isCounting ? l10n.getString('reset-reset_all') : timer}
               </div>
             </Button>

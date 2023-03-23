@@ -5,13 +5,13 @@ import { EscapeIcon } from '../commons/icon/EscapeIcon';
 export function SkipSetupButton({
   modalVisible,
   onClick,
-  visible
+  visible,
 }: {
   onClick: () => void;
   modalVisible: boolean;
   visible: boolean;
 }) {
-  if(!visible) return <div></div>;
+  if (!visible) return <div></div>;
   useEffect(() => {
     if (modalVisible) return;
 
