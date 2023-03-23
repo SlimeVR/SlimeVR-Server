@@ -4,7 +4,7 @@ import { ResetRequestT, ResetType, RpcMessage } from 'solarxr-protocol';
 import { useConfig } from '../../hooks/config';
 import { useCountdown } from '../../hooks/countdown';
 import { useWebsocketAPI } from '../../hooks/websocket-api';
-import { playSoundForStarted } from '../../sounds/sounds';
+import { playSoundOnResetStarted } from '../../sounds/sounds';
 import { BigButton } from '../commons/BigButton';
 import { Button } from '../commons/Button';
 import {
@@ -61,6 +61,11 @@ export function ResetButton({
     return <FullResetIcon width={20} />;
   };
 
+  const maybePlaySoundOnResetStarted = (type: ResetType) => {
+    if (!config?.feedbackSound) return;
+    playSoundOnResetStarted(type, config?.feedbackSoundVolume);
+  }
+
   const variantsMap = {
     small:
       type == ResetType.Yaw ? (
@@ -68,7 +73,7 @@ export function ResetButton({
           icon={getIcon()}
           onClick={() => {
             reset();
-            if (config?.feedbackSound) playSoundForStarted(type);
+            maybePlaySoundOnResetStarted(type);
           }}
           variant="primary"
         >
@@ -79,7 +84,7 @@ export function ResetButton({
           icon={getIcon()}
           onClick={() => {
             startCountdown();
-            if (config?.feedbackSound) playSoundForStarted(type);
+            maybePlaySoundOnResetStarted(type);
           }}
           variant="primary"
           disabled={isCounting}
@@ -97,7 +102,7 @@ export function ResetButton({
           icon={getIcon()}
           onClick={() => {
             reset();
-            if (config?.feedbackSound) playSoundForStarted(type);
+            maybePlaySoundOnResetStarted(type);
           }}
         ></BigButton>
       ) : (
@@ -106,7 +111,7 @@ export function ResetButton({
           icon={getIcon()}
           onClick={() => {
             startCountdown();
-            if (config?.feedbackSound) playSoundForStarted(type);
+            maybePlaySoundOnResetStarted(type);
           }}
           disabled={isCounting}
         ></BigButton>

@@ -8,7 +8,8 @@ const mountingResetStartedSound = new Audio(
   '/sounds/mounting-reset-started-sound.mp3'
 );
 
-function restartAndPlay(audio: HTMLAudioElement) {
+function restartAndPlay(audio: HTMLAudioElement, volume: number) {
+  audio.volume = volume;
   if (audio.paused) {
     audio.play();
   } else {
@@ -16,18 +17,18 @@ function restartAndPlay(audio: HTMLAudioElement) {
   }
 }
 
-export function playSoundForStarted(resetType: ResetType) {
+export function playSoundOnResetStarted(resetType: ResetType, volume = 1) {
   switch (resetType) {
     case ResetType.Yaw: {
-      restartAndPlay(quickResetStartedSound);
+      restartAndPlay(quickResetStartedSound, volume);
       break;
     }
     case ResetType.Full: {
-      restartAndPlay(fullResetStartedSound);
+      restartAndPlay(fullResetStartedSound, volume);
       break;
     }
     case ResetType.Mounting: {
-      restartAndPlay(mountingResetStartedSound);
+      restartAndPlay(mountingResetStartedSound, volume);
       break;
     }
   }

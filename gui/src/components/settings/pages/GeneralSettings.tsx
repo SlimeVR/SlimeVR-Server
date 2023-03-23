@@ -75,6 +75,7 @@ interface SettingsForm {
     devmode: boolean;
     watchNewDevices: boolean;
     feedbackSound: boolean;
+    feedbackSoundVolume: number;
   };
 }
 
@@ -116,7 +117,12 @@ const defaultValues = {
     mountingResetTaps: 3,
   },
   legTweaks: { correctionStrength: 0.3 },
-  interface: { devmode: false, watchNewDevices: true, feedbackSound: true },
+  interface: {
+    devmode: false,
+    watchNewDevices: true,
+    feedbackSound: true,
+    feedbackSoundVolume: 0.8,
+  },
 };
 
 export function GeneralSettings() {
@@ -192,6 +198,7 @@ export function GeneralSettings() {
       debug: values.interface.devmode,
       watchNewDevices: values.interface.watchNewDevices,
       feedbackSound: values.interface.feedbackSound,
+      feedbackSoundVolume: values.interface.feedbackSoundVolume,
     });
   };
 
@@ -210,6 +217,7 @@ export function GeneralSettings() {
         devmode: config?.debug,
         watchNewDevices: config?.watchNewDevices,
         feedbackSound: config?.feedbackSound,
+        feedbackSoundVolume: config?.feedbackSoundVolume,
       },
     };
 
@@ -874,6 +882,19 @@ export function GeneralSettings() {
               label={l10n.getString(
                 'settings-general-interface-feedback_sound-label'
               )}
+            />
+          </div>
+          <div className="grid sm:grid-cols-2 pb-4">
+            <NumberSelector
+              control={control}
+              name="interface.feedbackSoundVolume"
+              label={l10n.getString(
+                'settings-general-interface-feedback_sound-volume'
+              )}
+              valueLabelFormat={(value) => `${Math.round(value * 100)} %`}
+              min={0.1}
+              max={1.0}
+              step={0.1}
             />
           </div>
 
