@@ -9,7 +9,7 @@ const mountingResetStartedSound = new Audio(
 );
 
 function restartAndPlay(audio: HTMLAudioElement, volume: number) {
-  audio.volume = Math.pow(Math.min(1, volume + 0.1), Math.E);
+  audio.volume = Math.min(1, Math.pow(volume, Math.E) + 0.05);
   if (audio.paused) {
     audio.play();
   } else {
