@@ -56,11 +56,7 @@ public abstract class ProtobufBridge<T extends VRTracker> implements Bridge {
 	 */
 	@ThreadSafe
 	protected void signalRecv() {
-		try {
-			Main.getVrServer().interrupt();
-		} catch (SecurityException ex) {
-			// do nothing
-		}
+		Main.getVrServer().wakeup();
 	}
 
 	@BridgeThread
