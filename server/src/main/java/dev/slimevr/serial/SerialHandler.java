@@ -133,7 +133,8 @@ public class SerialHandler implements SerialPortMessageListener {
 
 		currentPort.addDataListener(this);
 		this.listeners.forEach((listener) -> listener.onSerialConnected(currentPort));
-		LogManager.info("[SerialHandler] Serial port " + newPort.getDescriptivePortName() + " is open");
+		LogManager
+			.info("[SerialHandler] Serial port " + newPort.getDescriptivePortName() + " is open");
 		return true;
 	}
 
@@ -280,7 +281,8 @@ public class SerialHandler implements SerialPortMessageListener {
 			lastKnownPorts = SerialPort.getCommPorts();
 			differences.forEach(this::onNewDevice);
 		} catch (Throwable e) {
-			LogManager.severe("[SerialHandler] Using serial ports is not supported on this platform", e);
+			LogManager
+				.severe("[SerialHandler] Using serial ports is not supported on this platform", e);
 			throw new RuntimeException("Serial unsupported");
 		}
 	}
