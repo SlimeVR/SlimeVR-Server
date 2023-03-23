@@ -17,6 +17,7 @@ websocket-connection_lost = Verbindung zum Server verloren. Versuche Verbindung 
 
 tips-find_tracker = Sie sind sich nicht sicher, welcher Tracker welcher ist? Schütteln Sie einen Tracker, um den zugehörigen Eintrag hervorzuheben.
 tips-do_not_move_heels = Stellen Sie sicher, dass Sie Ihre Fersen während der Aufnahme nicht bewegen!
+tips-file_select = Dateien per Drag & Drop verwenden oder <u>durchsuchen</u>
 
 ## Body parts
 
@@ -30,7 +31,6 @@ body_part-RIGHT_HAND = Rechte Hand
 body_part-RIGHT_UPPER_LEG = Rechter Oberschenkel
 body_part-RIGHT_LOWER_LEG = Rechter Unterschenkel
 body_part-RIGHT_FOOT = Rechter Fuß
-body_part-RIGHT_CONTROLLER = Rechter Controller
 body_part-CHEST = Brust
 body_part-WAIST = Taille
 body_part-HIP = Hüfte
@@ -41,19 +41,20 @@ body_part-LEFT_HAND = Linke Hand
 body_part-LEFT_UPPER_LEG = Linker Oberschenkel
 body_part-LEFT_LOWER_LEG = Linker Unterschenkel
 body_part-LEFT_FOOT = Linker Fuß
-body_part-LEFT_CONTROLLER = Linker Controller
 
 ## Proportions
 
 skeleton_bone-NONE = Keine
 skeleton_bone-HEAD = Kopfverschiebung
 skeleton_bone-NECK = Halslänge
+skeleton_bone-torso_group = Oberkörperhöhe
 skeleton_bone-CHEST = Brustabstand
 skeleton_bone-CHEST_OFFSET = Brustversatz
 skeleton_bone-WAIST = Taillenabstand
 skeleton_bone-HIP = Hüftlänge
 skeleton_bone-HIP_OFFSET = Hüftversatz
 skeleton_bone-HIPS_WIDTH = Hüftbreite
+skeleton_bone-leg_group = Beinlänge
 skeleton_bone-UPPER_LEG = Linker Oberschenkellänge
 skeleton_bone-LOWER_LEG = Linker Unterschenkellänge
 skeleton_bone-FOOT_LENGTH = Fußlänge
@@ -61,10 +62,11 @@ skeleton_bone-FOOT_SHIFT = Fußverschiebung
 skeleton_bone-SKELETON_OFFSET = Skelettversatz
 skeleton_bone-SHOULDERS_DISTANCE = Schulterentfernung
 skeleton_bone-SHOULDERS_WIDTH = Schulterbreite
+skeleton_bone-arm_group = Armlänge
 skeleton_bone-UPPER_ARM = Oberarmlänge
 skeleton_bone-LOWER_ARM = Unterarmlänge
-skeleton_bone-CONTROLLER_Y = Controller Abstand Y
-skeleton_bone-CONTROLLER_Z = Controller Abstand Z
+skeleton_bone-HAND_Y = Y-Abstand der Hände
+skeleton_bone-HAND_Z = Z-Abstand der Hände
 skeleton_bone-ELBOW_OFFSET = Ellbogenversatz
 
 ## Tracker reset buttons
@@ -72,7 +74,6 @@ skeleton_bone-ELBOW_OFFSET = Ellbogenversatz
 reset-reset_all = Alle Proportionen zurücksetzen
 reset-full = Reset
 reset-mounting = Befestigungs-Reset
-reset-quick = Schneller Reset
 
 ## Serial detection stuff
 
@@ -160,6 +161,8 @@ tracker-infos-manufacturer = Hersteller
 tracker-infos-display_name = Anzeigename
 tracker-infos-custom_name = Benutzerdefinierter Name
 tracker-infos-url = Tracker-Adresse
+tracker-infos-version = Firmware-Version
+tracker-infos-hardware_rev = Hardware-Version
 
 ## Tracker settings
 
@@ -297,8 +300,6 @@ settings-general-tracker_mechanics-drift_compensation-max_resets-label = Nutze d
 ## FK/Tracking settings
 
 settings-general-fk_settings = FK-Einstellungen
-settings-general-fk_settings-leg_tweak = Beinoptimierungen
-settings-general-fk_settings-leg_tweak-description = Bodenclip kann das einsinken in den Boden reduzieren oder sogar beseitigen, kann aber beim Knien Probleme verursachen. Die Rutsch-Korrektur verringert das Rutschen auf dem Boden, kann aber bei bestimmten Bewegungsmustern die Genauigkeit verringern.
 # Floor clip:
 # why the name - came from the idea of noclip in video games, but is the opposite where clipping to the floor is a desired feature
 # definition - Prevents the foot trackers from going lower than they where when a reset was performed
@@ -308,7 +309,9 @@ settings-general-fk_settings-leg_tweak-floor_clip = Bodenclip
 # since this largely prevents this it corrects for it hence skating correction (note this may be renamed to sliding correction)
 # definition - Guesses when each foot is in contact with the ground and uses that information to improve tracking
 settings-general-fk_settings-leg_tweak-skating_correction = Rutschkorrektur
+settings-general-fk_settings-leg_tweak-foot_plant = Fußkorrektur
 settings-general-fk_settings-leg_tweak-skating_correction-amount = Rutschkorrekturstärke
+settings-general-fk_settings-leg_fk = Beintracking
 settings-general-fk_settings-arm_fk = Arm-Tracking
 settings-general-fk_settings-arm_fk-description = Ändern Sie die Art und Weise, wie die Arme berechnet werden.
 settings-general-fk_settings-arm_fk-force_arms = Arme vom VR-Headset erzwingen
@@ -333,12 +336,6 @@ settings-general-gesture_control-taps =
         [one] 1-mal antippen
        *[other] { $amount }-mal antippen
     }
-settings-general-gesture_control-quickResetEnabled = Antippen für schnellen Reset
-settings-general-gesture_control-quickResetDelay = Verzögerung für schnellen Reset
-settings-general-gesture_control-quickResetTaps = Anzahl für schnellen Reset
-settings-general-gesture_control-resetEnabled = Antippen für Reset
-settings-general-gesture_control-resetDelay = Reset-Verzögerung
-settings-general-gesture_control-resetTaps = Anzahl für Reset
 settings-general-gesture_control-mountingResetEnabled = Antippen für Befestigungs-Reset
 settings-general-gesture_control-mountingResetDelay = Befestigungs-Reset-Verzügerung
 settings-general-gesture_control-mountingResetTaps = Anzahl für Befestigungs-Reset
@@ -352,6 +349,9 @@ settings-general-interface-dev_mode-label = Entwicklermodus
 settings-general-interface-serial_detection = Serielle Geräteerkennung
 settings-general-interface-serial_detection-description = Diese Option zeigt jedes Mal ein Pop-up-Fenster an, wenn ein neues serielles Gerät angeschlossen wird, das ein Tracker sein könnte. Dies hilft beim Einrichtungsprozess des Trackers
 settings-general-interface-serial_detection-label = Serielle Geräteerkennung
+settings-general-interface-feedback_sound = Feedback-Geräusch
+settings-general-interface-feedback_sound-description = Diese Option wird ein Geräusch abspielen, wenn ein Reset ausgeführt wurde.
+settings-general-interface-feedback_sound-label = Feedback-Geräusch
 settings-general-interface-lang = Sprachauswahl
 settings-general-interface-lang-description = Ändern Sie die Standard-Sprache, die Sie verwenden möchten
 settings-general-interface-lang-placeholder = Wählen Sie die zu verwendende Sprache aus
@@ -428,6 +428,32 @@ settings-osc-vrchat-network-trackers-waist = Taille
 settings-osc-vrchat-network-trackers-knees = Knie
 settings-osc-vrchat-network-trackers-feet = Füße
 settings-osc-vrchat-network-trackers-elbows = Ellbogen
+
+## VMC OSC settings
+
+settings-osc-vmc-enable = Aktivieren
+settings-osc-vmc-enable-description = Ein- und Ausschalten des Sendens und Empfangen von Daten.
+settings-osc-vmc-enable-label = Aktivieren
+settings-osc-vmc-network = Netzwerk-Ports
+settings-osc-vmc-network-description = Port Einstellungen zum Empfangen und Senden von Daten über VMC.
+settings-osc-vmc-network-port_in =
+    .label = Eingehender Port
+    .placeholder = Eingehender Port (default: 39540)
+settings-osc-vmc-network-port_out =
+    .label = Ausgehender Port
+    .placeholder = Ausgehender Port (default: 39539)
+settings-osc-vmc-network-address = Netzwerkadresse
+settings-osc-vmc-network-address-placeholder = IPv4-Adresse
+settings-osc-vmc-vrm = VRM-Model
+settings-osc-vmc-vrm-model_unloaded = Kein Modell geladen
+settings-osc-vmc-vrm-model_loaded =
+    { $titled ->
+        [true] Modell geladen: { $name }
+       *[other] Unbenanntes Modell geladen
+    }
+settings-osc-vmc-vrm-file_select = Modell per Drag & Drop laden oder <u>durchsuchen</u>
+settings-osc-vmc-anchor_hip = Hüftenverankerung
+settings-osc-vmc-anchor_hip-label = Hüftenverankerung
 
 ## Setup/onboarding menu
 
@@ -528,6 +554,24 @@ onboarding-assign_trackers-next = Ich habe alle Tracker zugewiesen
 
 ## Tracker assignment warnings
 
+# $unassigned (Number) - Bits are based on BodyAssignment.ASSIGNMENT_RULES order
+onboarding-assign_trackers-warning-LEFT_UPPER_LEG =
+    { $unassigned ->
+        [0] Der linke Oberschenkel ist zugewiesen, aber entweder die Brust, die Hüfte oder die Taille muss ebenfalls zugewiesen werden!
+       *[other] Der linke Oberschenkel ist zugewiesen, aber "Unbekanntes nicht zugewiesenes Körperteil" muss ebenfalls zugewiesen werden!
+    }
+# $unassigned (Number) - Bits are based on BodyAssignment.ASSIGNMENT_RULES order
+onboarding-assign_trackers-warning-RIGHT_UPPER_LEG =
+    { $unassigned ->
+        [0] Der rechte Oberschenkel ist zugewiesen, aber entweder die Brust, die Hüfte oder die Taille muss ebenfalls zugewiesen werden!
+       *[other] Der rechte Oberschenkel ist zugewiesen, aber "Unbekanntes nicht zugewiesenes Körperteil" muss ebenfalls zugewiesen werden!
+    }
+# $unassigned (Number) - Bits are based on BodyAssignment.ASSIGNMENT_RULES order
+onboarding-assign_trackers-warning-HIP =
+    { $unassigned ->
+        [0] Die Hüfte ist zugewiesen, aber die Brust muss ebenfalls zugewiesen werden!
+       *[other] Die Hüfte ist zugewiesen, aber "Unbekanntes nicht zugewiesenes Körperteil" muss ebenfalls zugewiesen werden!
+    }
 # $unassigned (Number) - Bits are based on BodyAssignment.ASSIGNMENT_RULES order
 onboarding-assign_trackers-warning-WAIST =
     { $unassigned ->

@@ -17,6 +17,7 @@ websocket-connection_lost = Połączenie z serwerem zostało utracone. Próba po
 
 tips-find_tracker = Nie wiesz który tracker to który? Obracaj Trackerem , podczas obracania będzie sie on podświetlał w serwerze.
 tips-do_not_move_heels = Upewnij się aby pięty pozostały w bezruchu podczas nagrywania.
+tips-file_select = Przeciągnij i upuść pliki, których chcesz użyć, lub <u>przeglądaj</u>.
 
 ## Body parts
 
@@ -28,7 +29,7 @@ body_part-RIGHT_UPPER_ARM = Prawy Biceps
 body_part-RIGHT_LOWER_ARM = Prawe PrzedRamie
 body_part-RIGHT_HAND = Prawa Dłoń
 body_part-RIGHT_UPPER_LEG = Prawe Udo
-body_part-RIGHT_LOWER_LEG = Prawy Podudzie
+body_part-RIGHT_LOWER_LEG = Prawe Podudzie
 body_part-RIGHT_FOOT = Prawa Stopa
 body_part-CHEST = Klatka Piersiowa
 body_part-WAIST = Talia
@@ -44,33 +45,36 @@ body_part-LEFT_FOOT = Lewa Stopa
 ## Proportions
 
 skeleton_bone-NONE = Brak
-skeleton_bone-HEAD = Head Shift
+skeleton_bone-HEAD = Przesunięcie Głowy
 skeleton_bone-NECK = Długość Szyi
-skeleton_bone-CHEST = Chest Length
-skeleton_bone-CHEST_OFFSET = Chest Offset
-skeleton_bone-WAIST = Waist Length
-skeleton_bone-HIP = Hip Length
-skeleton_bone-HIP_OFFSET = Offset Bioder
+skeleton_bone-torso_group = Długość torsu
+skeleton_bone-CHEST = Długość Klatki Piersiowej
+skeleton_bone-CHEST_OFFSET = Przesunięcie Klatki Piersiowej
+skeleton_bone-WAIST = Długość Talii
+skeleton_bone-HIP = Długość Bioder
+skeleton_bone-HIP_OFFSET = Przesunięcie Bioder
 skeleton_bone-HIPS_WIDTH = Szerokość Bioder
-skeleton_bone-UPPER_LEG = Upper Leg Length
-skeleton_bone-LOWER_LEG = Lower Leg Length
+skeleton_bone-leg_group = Długość nóg
+skeleton_bone-UPPER_LEG = Długość Górnej Części Nogi
+skeleton_bone-LOWER_LEG = Długość Dolnej Części Nogi
 skeleton_bone-FOOT_LENGTH = Długość Stopy
-skeleton_bone-FOOT_SHIFT = Foot Shift
-skeleton_bone-SKELETON_OFFSET = Skeleton Offset
-skeleton_bone-SHOULDERS_DISTANCE = Shoulders Distance
+skeleton_bone-FOOT_SHIFT = Przesunięcie Stopy
+skeleton_bone-SKELETON_OFFSET = Przesunięcie Szkieletu
+skeleton_bone-SHOULDERS_DISTANCE = Odległość Ramion
 skeleton_bone-SHOULDERS_WIDTH = Szerokość Ramion
+skeleton_bone-arm_group = Długość ramienia
 skeleton_bone-UPPER_ARM = Długość Bicepsa
 skeleton_bone-LOWER_ARM = Długość PrzedRamienia
 skeleton_bone-HAND_Y = Odległość ręki Y
 skeleton_bone-HAND_Z = Odległość ręki Z
-skeleton_bone-ELBOW_OFFSET = Offset Łokcia
+skeleton_bone-ELBOW_OFFSET = Przesunięcie Łokcia
 
 ## Tracker reset buttons
 
 reset-reset_all = Zresetuj wszystkie wymiary
 reset-full = Reset
 reset-mounting = Zresetuj Położenie
-reset-quick = Szybki Reset
+reset-yaw = Reset Odchylenia
 
 ## Serial detection stuff
 
@@ -109,19 +113,19 @@ widget-drift_compensation-clear = Wyczyść kompensację dryfu
 ## Widget: Developer settings
 
 widget-developer_mode = Tryb Dewelopera
-widget-developer_mode-high_contrast = High contrast
+widget-developer_mode-high_contrast = Wysoki kontrast
 widget-developer_mode-precise_rotation = Precise rotation
-widget-developer_mode-fast_data_feed = Fast data feed
-widget-developer_mode-filter_slimes_and_hmd = Filter slimes and HMD
-widget-developer_mode-sort_by_name = Sort by name
-widget-developer_mode-raw_slime_rotation = Raw rotation
-widget-developer_mode-more_info = More info
+widget-developer_mode-fast_data_feed = Szybkie przesyłanie danych
+widget-developer_mode-filter_slimes_and_hmd = Filtruj slimy i HMD
+widget-developer_mode-sort_by_name = Sortuj według nazwy
+widget-developer_mode-raw_slime_rotation = Surowa rotacja
+widget-developer_mode-more_info = Więcej info
 
 ## Widget: IMU Visualizer
 
-widget-imu_visualizer = Rotation
+widget-imu_visualizer = Obrót
 widget-imu_visualizer-rotation_raw = Raw
-widget-imu_visualizer-rotation_preview = Preview
+widget-imu_visualizer-rotation_preview = Podgląd
 
 ## Tracker status
 
@@ -297,8 +301,6 @@ settings-general-tracker_mechanics-drift_compensation-max_resets-label = Użyj m
 ## FK/Tracking settings
 
 settings-general-fk_settings = Ustawienia śledzenia
-settings-general-fk_settings-leg_tweak = Ulepszenia nóg
-settings-general-fk_settings-leg_tweak-description = Klips do podłogi może zmniejszyć lub nawet wyeliminować przywieranie do podłogi, ale może powodować problemy podczas klęczenia. Korekta jazdy na łyżwach koryguje jazdę na łyżwach, ale może zmniejszyć dokładność niektórych wzorców ruchu.
 # Floor clip:
 # why the name - came from the idea of noclip in video games, but is the opposite where clipping to the floor is a desired feature
 # definition - Prevents the foot trackers from going lower than they where when a reset was performed
@@ -307,11 +309,18 @@ settings-general-fk_settings-leg_tweak-floor_clip = Klip podłogowy
 # why the name - without this enabled the feet will often slide across the ground as if your skating across the ground,
 # since this largely prevents this it corrects for it hence skating correction (note this may be renamed to sliding correction)
 # definition - Guesses when each foot is in contact with the ground and uses that information to improve tracking
-settings-general-fk_settings-leg_tweak-skating_correction = Skating correction
+settings-general-fk_settings-leg_tweak-skating_correction = Korekta jazdy na łyżwach
+settings-general-fk_settings-leg_tweak-toe_snap = Pstryknięcie palcem
+settings-general-fk_settings-leg_tweak-foot_plant = Korekta stopy
 settings-general-fk_settings-leg_tweak-skating_correction-amount = Skating correction strength
+settings-general-fk_settings-leg_tweak-skating_correction-description = Korekta jazdy na łyżwach koryguje jazdę na łyżwach, ale może zmniejszyć dokładność niektórych wzorców ruchu. Włączając tę opcję, pamiętaj o pełnym zresetowaniu i ponownej kalibracji w grze.
+settings-general-fk_settings-leg_tweak-floor_clip-description = Floor-clip może zmniejszyć lub nawet wyeliminować przecinanie podłogi. Włączając tę opcję, pamiętaj o pełnym zresetowaniu i ponownej kalibracji w grze.
+settings-general-fk_settings-leg_tweak-toe_snap-description = Toe-snap próbuje odgadnąć obrót twoich stóp, jeśli trackery stóp nie są używane.
+settings-general-fk_settings-leg_tweak-foot_plant-description = Foot-plant obraca stopy, aby były równoległe do podłoża podczas kontaktu.
+settings-general-fk_settings-leg_fk = Śledzenie nóg
 settings-general-fk_settings-arm_fk = Śledzenie ramienia
 settings-general-fk_settings-arm_fk-description = Zmień sposób śledzenia ramion.
-settings-general-fk_settings-arm_fk-force_arms = Force arms from HMD
+settings-general-fk_settings-arm_fk-force_arms = Śledź ramiona z gogli VR
 settings-general-fk_settings-skeleton_settings = Ustawienia szkieletu
 settings-general-fk_settings-skeleton_settings-description = Włącz lub wyłącz ustawienia szkieletu. Zaleca się pozostawienie ich włączonych.
 settings-general-fk_settings-skeleton_settings-extended_spine = Wydłużony kręgosłup
@@ -325,16 +334,25 @@ settings-general-fk_settings-vive_emulation-label = Włącz emulację Vive
 
 settings-general-gesture_control = Kontrola Gestami
 settings-general-gesture_control-subtitle = Dotknij 2 razy by wykonać szybki reset
-settings-general-gesture_control-description = Włącz lub wyłącz opcje szybkiego resetowanie podwójnym dotknięciem. Stuknij 2 razy w jakąkolwiek część trackera na klatce piersiowej aby wykonać szybki reset. Opóźnienie jest czasem pomiędzy stuknięciem a wykonaniem szybkiego resetu.
-settings-general-gesture_control-quickResetEnabled = Włącz stuknięcie, aby szybko zresetować
-settings-general-gesture_control-quickResetDelay = Opóźnienie szybkiego resetowania
-settings-general-gesture_control-quickResetTaps = Dotknięcia do szybkiego resetowania
-settings-general-gesture_control-resetEnabled = Włącz stuknij, by zresetować
-settings-general-gesture_control-resetDelay = Zresetuj opóźnienie
-settings-general-gesture_control-resetTaps = Stuknięcie w celu zresetowania
+settings-general-gesture_control-description = Umożliwia wyzwalanie resetów przez stuknięcie modułu śledzącego. Układ śledzący znajdujący się najwyżej na tułowiu służy do resetowania odchylenia, układ śledzący znajdujący się najwyżej na lewej nodze służy do pełnego resetu, a układ śledzący znajdujący się najwyżej na prawej nodze służy do resetowania montażu. Należy wspomnieć, że stuknięcia muszą nastąpić w ciągu 0,6 sekundy, aby zostały zarejestrowane.
+# This is a unit: 3 taps, 2 taps, 1 tap
+# $amount (Number) - Amount of taps (touches to the tracker's case)
+settings-general-gesture_control-taps =
+    { $amount ->
+        [one] 1 dotknięcie
+        [few] { $amount } dotknięcia
+        [many] { $amount } dotknięć
+       *[other] { $amount } dotknięć
+    }
+settings-general-gesture_control-yawResetEnabled = Włącz stuknięcie, aby zresetować odchylanie
+settings-general-gesture_control-yawResetDelay = Opóźnienie resetowania odchylenia
+settings-general-gesture_control-yawResetTaps = Stuknięcie do resetowania odchylenia
+settings-general-gesture_control-fullResetEnabled = Włącz stuknięcie, aby całkowicie zresetować
+settings-general-gesture_control-fullResetDelay = Pełne opóźnienie resetu
+settings-general-gesture_control-fullResetTaps = Stuknij do pełnego resetu
 settings-general-gesture_control-mountingResetEnabled = Włącz stuknięcie, aby zresetować położenie
 settings-general-gesture_control-mountingResetDelay = Opóźnienie resetowania położenia
-settings-general-gesture_control-mountingResetTaps = Zaczepy do resetowania położenia
+settings-general-gesture_control-mountingResetTaps = Stuknięcie do resetowania położenia
 
 ## Interface settings
 
@@ -345,6 +363,9 @@ settings-general-interface-dev_mode-label = Tryb Dewelopera
 settings-general-interface-serial_detection = Wykrywanie urządzeń
 settings-general-interface-serial_detection-description = Ta opcja daje powiadomienia jeżeli serwer wykryje urządzenie które może być trackerem
 settings-general-interface-serial_detection-label = Wykrywanie urządzeń
+settings-general-interface-feedback_sound = Dźwięk Informacji
+settings-general-interface-feedback_sound-description = Ta opcja odtworzy dźwięk, gdy reset zostanie uruchomiony
+settings-general-interface-feedback_sound-label = Dźwięk Informacji
 settings-general-interface-lang = Wybierz Język
 settings-general-interface-lang-description = Zmień podstawowy język jaki chcesz używać
 settings-general-interface-lang-placeholder = Wybierz Język który będziesz używać
@@ -424,6 +445,40 @@ settings-osc-vrchat-network-trackers-knees = Kolana
 settings-osc-vrchat-network-trackers-feet = Stopy
 settings-osc-vrchat-network-trackers-elbows = Łokcie
 
+## VMC OSC settings
+
+settings-osc-vmc = Virtual Motion Capture
+# This cares about multilines
+settings-osc-vmc-description =
+    Zmień ustawienia specyficzne dla protokołu VMC (Virtual Motion Capture).
+    aby wysyłać dane z kości SlimeVR i odbierać dane kości z innych aplikacji.
+settings-osc-vmc-enable = Umożliwiać
+settings-osc-vmc-enable-description = Przełącz wysyłanie i odbieranie danych.
+settings-osc-vmc-enable-label = Umożliwiać
+settings-osc-vmc-network = Porty sieciowe
+settings-osc-vmc-network-description = Ustaw porty do odbierania i wysyłania danych przez VMC
+settings-osc-vmc-network-port_in =
+    .label = Port Wejścia
+    .placeholder = Port Wejścia (domyślnie: 39540)
+settings-osc-vmc-network-port_out =
+    .label = Port Wyjścia
+    .placeholder = Port Wyjścia (domyślnie: 39539)
+settings-osc-vmc-network-address = Adres sieciowy
+settings-osc-vmc-network-address-description = Wybierz adres, na który chcesz wysłać dane przez WRR
+settings-osc-vmc-network-address-placeholder = IPV4 adres
+settings-osc-vmc-vrm = Model VRM
+settings-osc-vmc-vrm-description = Załaduj model VRM, aby umożliwić zablokowanie głowy i zapewnić większą kompatybilność z innymi aplikacjami
+settings-osc-vmc-vrm-model_unloaded = Nie załadowano modelu
+settings-osc-vmc-vrm-model_loaded =
+    { $titled ->
+        [true] Model załadowany: { $name }
+       *[other] Załadowano model bez nazwy
+    }
+settings-osc-vmc-vrm-file_select = Przeciągnij i upuść model, którego chcesz użyć, lub <u>przeglądaj</u>
+settings-osc-vmc-anchor_hip = Blokada na biodrach
+settings-osc-vmc-anchor_hip-description = Zablokuj śledzenie na biodrach, przydatne podczas siedzenia VTubing. W przypadku wyłączenia załaduj model VRM.
+settings-osc-vmc-anchor_hip-label = Blokada na biodrach
+
 ## Setup/onboarding menu
 
 onboarding-skip = Pomiń wstępną konfiguracje
@@ -491,6 +546,19 @@ onboarding-connect_tracker-connection_status-looking_for_server = Szukanie serwe
 onboarding-connect_tracker-connection_status-connection_error = Nie można połączyć się z Wi-Fi
 onboarding-connect_tracker-connection_status-could_not_find_server = Nie można znaleźć serwera
 onboarding-connect_tracker-connection_status-done = Połączono z serwerem
+# $amount (Number) - Amount of trackers connected (this is a number, but you can use CLDR plural rules for your language)
+# More info on https://www.unicode.org/cldr/cldr-aux/charts/22/supplemental/language_plural_rules.html
+# English in this case only has 2 plural rules, which are "one" and "other",
+# we use 0 in an explicit way because there is no plural rule in english for 0, so we directly say
+# if $amount is 0 then we say "No trackers connected"
+onboarding-connect_tracker-connected_trackers =
+    { $amount ->
+        [0] Brak podłączonych trackerów
+        [one] 1 podłączony tracker
+        [few] { $amount } podłączone trackery
+        [many] { $amount } połączonych trackerów
+       *[other] { $amount } połączonych trackerów
+    }
 onboarding-connect_tracker-next = Połączyłem już wszystkie trackery
 
 ## Tracker assignment setup
@@ -498,6 +566,16 @@ onboarding-connect_tracker-next = Połączyłem już wszystkie trackery
 onboarding-assign_trackers-back = Cofnij się do ustawień Wi-Fi
 onboarding-assign_trackers-title = Przydziel Trackery
 onboarding-assign_trackers-description = Wybierzmy gdzie idzie jaki tracker. Naciśnij gdzie chcesz go przydzielić
+# Look at translation of onboarding-connect_tracker-connected_trackers on how to use plurals
+# $assigned (Number) - Trackers that have been assigned a body part
+# $trackers (Number) - Trackers connected to the server
+onboarding-assign_trackers-assigned =
+    { $trackers ->
+        [one] { $assigned } z 1 przypisanego trackera
+        [few] { $assigned } z { $trackers } przypisanych trackerów
+        [many] Przypisano { $assigned } z { $trackers } trackerów
+       *[other] Przypisano { $assigned } z { $trackers } trackerów
+    }
 onboarding-assign_trackers-advanced = Pokaż zaawansowane ustawienia pozycji
 onboarding-assign_trackers-next = Przydzieliłem już wszystkie trackery
 
@@ -604,6 +682,7 @@ onboarding-manual_proportions-back = Wróć do samouczka resetowania
 onboarding-manual_proportions-title = Manualne Proporcje Ciała
 onboarding-manual_proportions-precision = Precyzyjna Regulacja
 onboarding-manual_proportions-auto = Automatyczna Kalibracja
+onboarding-manual_proportions-ratio = Dostosuj według grup proporcji
 
 ## Tracker automatic proportions setup
 
@@ -630,6 +709,14 @@ onboarding-automatic_proportions-recording-steps-2 = Przekręć ciało w lewo ,p
 onboarding-automatic_proportions-recording-steps-3 = Przekręć ciało w prawo ,po czym przechyl się w lewo.
 onboarding-automatic_proportions-recording-steps-4 = Poruszaj się dopuki czas się nie skończy
 onboarding-automatic_proportions-recording-processing = Przetwarzanie wyników
+# $time (Number) - Seconds left for the automatic calibration recording to finish (max 15)
+onboarding-automatic_proportions-recording-timer =
+    { $time ->
+        [one] Pozostała 1 sekunda
+        [few] Pozostały { $time } sekundy
+        [many] Pozostało { $time } sekund
+       *[other] Pozostało { $time } sekund
+    }
 onboarding-automatic_proportions-verify_results-title = Zweryfikuj Wyniki
 onboarding-automatic_proportions-verify_results-description = Sprawdź wyniki poniżej, czy są prawidłowe?
 onboarding-automatic_proportions-verify_results-results = Wyniki Nagrywania

@@ -17,6 +17,7 @@ websocket-connection_lost = Verbinding met de server verbroken. Opniew verbindin
 
 tips-find_tracker = Weet je niet welke tracker welke is? Schud een tracker en het corresponderende item zal worden gemarkeerd.
 tips-do_not_move_heels = Zorg ervoor dat je hielen niet bewegen tijdens de opname!
+tips-file_select = Sleep bestanden naar hier om ze te gebruiken of <u>blader</u>.
 
 ## Body parts
 
@@ -46,12 +47,14 @@ body_part-LEFT_FOOT = Linkervoet
 skeleton_bone-NONE = Geen
 skeleton_bone-HEAD = Hoofdverschuiving
 skeleton_bone-NECK = Necklengte
+skeleton_bone-torso_group = Torso lengte
 skeleton_bone-CHEST = Borstafstand
 skeleton_bone-CHEST_OFFSET = Borstoffset
 skeleton_bone-WAIST = Tailleafstand
 skeleton_bone-HIP = Heuplengte
 skeleton_bone-HIP_OFFSET = Heupoffset
 skeleton_bone-HIPS_WIDTH = Heupbreedte
+skeleton_bone-leg_group = Beenlengte
 skeleton_bone-UPPER_LEG = Bovenbeenlengte
 skeleton_bone-LOWER_LEG = Onderbeenlengte
 skeleton_bone-FOOT_LENGTH = Voetlengte
@@ -59,6 +62,7 @@ skeleton_bone-FOOT_SHIFT = Voetverschuiving
 skeleton_bone-SKELETON_OFFSET = Skelettenoffset
 skeleton_bone-SHOULDERS_DISTANCE = Schoudersafstand
 skeleton_bone-SHOULDERS_WIDTH = Schouderbreedte
+skeleton_bone-arm_group = Armlengte
 skeleton_bone-UPPER_ARM = Bovenarmlengte
 skeleton_bone-LOWER_ARM = Onderarmlengte
 skeleton_bone-HAND_Y = Afstand hand Y
@@ -70,7 +74,7 @@ skeleton_bone-ELBOW_OFFSET = Elleboogoffset
 reset-reset_all = Alle afmetingen resetten
 reset-full = Resetten
 reset-mounting = Bevestiging resetten
-reset-quick = Snel resetten
+reset-yaw = Horizontale reset
 
 ## Serial detection stuff
 
@@ -275,7 +279,7 @@ settings-general-tracker_mechanics = Tracker aanpassingen
 settings-general-tracker_mechanics-filtering = Filtering
 # This also cares about multilines
 settings-general-tracker_mechanics-filtering-description =
-    Kies het type filter voor uw trackers.
+    Kies het type filter voor je trackers.
     Voorspelling voorspelt beweging terwijl smoothing bewegingen vloeiender maakt.
 settings-general-tracker_mechanics-filtering-type = Filtering type
 settings-general-tracker_mechanics-filtering-type-none = Geen filtering
@@ -297,8 +301,6 @@ settings-general-tracker_mechanics-drift_compensation-max_resets-label = Gebruik
 ## FK/Tracking settings
 
 settings-general-fk_settings = Tracking instellingen
-settings-general-fk_settings-leg_tweak = Aanpassingen van tracking gedrag voor benen
-settings-general-fk_settings-leg_tweak-description = Floor-clip verminderd de kans dat je voeten door de grond gaan, maar kan problemen veroorzaken als je op je knieën bent. Skating-correctie corrigeert ongewenst glijden van je voeten, maar kan de nauwkeurigheid in bepaalde bewegingspatronen verminderen.
 # Floor clip:
 # why the name - came from the idea of noclip in video games, but is the opposite where clipping to the floor is a desired feature
 # definition - Prevents the foot trackers from going lower than they where when a reset was performed
@@ -333,12 +335,12 @@ settings-general-gesture_control-taps =
         [one] 1 tik
        *[other] { $amount } tikken
     }
-settings-general-gesture_control-quickResetEnabled = Activeer tikken voor snelle reset
-settings-general-gesture_control-quickResetDelay = Vertraging snelle reset
-settings-general-gesture_control-quickResetTaps = Hoeveelheid tikken voor snelle reset
-settings-general-gesture_control-resetEnabled = Activeer tikken voor reset
-settings-general-gesture_control-resetDelay = Vertraging reset
-settings-general-gesture_control-resetTaps = Hoeveelheid tikken voor reset
+settings-general-gesture_control-yawResetEnabled = Activeer tikken voor horizontale reset
+settings-general-gesture_control-yawResetDelay = Vertraging horizontale reset
+settings-general-gesture_control-yawResetTaps = Hoeveelheid tikken voor horizontale reset
+settings-general-gesture_control-fullResetEnabled = Activeer tikken voor volledige reset
+settings-general-gesture_control-fullResetDelay = Vertraging volledige reset
+settings-general-gesture_control-fullResetTaps = Hoeveelheid tikken voor volledige reset
 settings-general-gesture_control-mountingResetEnabled = Activeer tikken voor bevestigingskalibratie
 settings-general-gesture_control-mountingResetDelay = Vertraging bevestigingskalibratie
 settings-general-gesture_control-mountingResetTaps = Hoeveelheid tikken voor bevestigingskalibratie
@@ -347,13 +349,13 @@ settings-general-gesture_control-mountingResetTaps = Hoeveelheid tikken voor bev
 
 settings-general-interface = Interface
 settings-general-interface-dev_mode = Ontwikkelaarsmodus
-settings-general-interface-dev_mode-description = Deze modus kan nuttig zijn als u diepgaande gegevens nodig hebt of op een geavanceerd niveau wilt communiceren met aangesloten trackers.
+settings-general-interface-dev_mode-description = Deze modus kan nuttig zijn als je diepgaande gegevens nodig hebt of op een geavanceerd niveau wilt communiceren met aangesloten trackers.
 settings-general-interface-dev_mode-label = Ontwikkelaarsmodus
 settings-general-interface-serial_detection = Detectie van seriële apparaten
-settings-general-interface-serial_detection-description = Met deze optie verschijnt er elke keer dat u een nieuw serieel apparaat aansluit dat mogelijk een tracker is, een pop-up. Dit helpt bij het verbeteren van het instelproces van een tracker.
+settings-general-interface-serial_detection-description = Met deze optie verschijnt er elke keer dat je een nieuw serieel apparaat aansluit dat mogelijk een tracker is, een pop-up. Dit helpt bij het verbeteren van het instelproces van een tracker.
 settings-general-interface-serial_detection-label = Detectie van seriële apparaten
 settings-general-interface-lang = Selecteer taal
-settings-general-interface-lang-description = Verander de standaardtaal die u wilt gebruiken.
+settings-general-interface-lang-description = Verander de standaardtaal die je wilt gebruiken.
 settings-general-interface-lang-placeholder = Selecteer de te gebruiken taal
 
 ## Serial settings
@@ -362,7 +364,7 @@ settings-serial = Seriele console
 # This cares about multilines
 settings-serial-description =
     Dit is een live informatiefeed voor seriële communicatie.
-    Kan handig zijn als u wilt weten dat de firmware werkt.
+    Kan handig zijn als je wilt weten dat de firmware werkt.
 settings-serial-connection_lost = Verbinding met seriële poort verloren, opnieuw verbinden...
 settings-serial-reboot = Opnieuw opstarten
 settings-serial-factory_reset = Fabrieksinstellingen herstellen
@@ -421,7 +423,7 @@ settings-osc-vrchat-network-port_out =
     .label = Poort Out
     .placeholder = Poort uit (standaard: 9000)
 settings-osc-vrchat-network-address = Netwerkadres
-settings-osc-vrchat-network-address-description = Kies naar welk adres u gegevens naar VRChat wilt verzenden (controleer de wifi-instellingen op je apparaat).
+settings-osc-vrchat-network-address-description = Kies naar welk adres je gegevens naar VRChat wilt verzenden (controleer de wifi-instellingen op je apparaat).
 settings-osc-vrchat-network-address-placeholder = VRChat IP-adres
 settings-osc-vrchat-network-trackers = Trackers
 settings-osc-vrchat-network-trackers-description = Schakel het verzenden van specifieke trackers via OSC in en uit.
@@ -430,6 +432,39 @@ settings-osc-vrchat-network-trackers-waist = Taille
 settings-osc-vrchat-network-trackers-knees = Knieën
 settings-osc-vrchat-network-trackers-feet = Voeten
 settings-osc-vrchat-network-trackers-elbows = Ellebogen
+
+## VMC OSC settings
+
+settings-osc-vmc = Virtuele motion capture
+# This cares about multilines
+settings-osc-vmc-description =
+    Verander instellingen specifiek voor het VMC (Virtual Motion Capture) protocol
+     botgegevens van SlimeVR te verzenden en botgegevens van andere apps te ontvangen.
+settings-osc-vmc-enable = Inschakelen
+settings-osc-vmc-enable-description = Schakel het verzenden en ontvangen van gegevens in en uit.
+settings-osc-vmc-enable-label = Inschakelen
+settings-osc-vmc-network = Netwerkpoorten
+settings-osc-vmc-network-description = Stel de poorten in voor het zenden en ontvangen van VMC-gegevens.
+settings-osc-vmc-network-port_in =
+    .label = Poort In
+    .placeholder = Poort in (standaard: 39540)
+settings-osc-vmc-network-port_out =
+    .label = Poort uit
+    .placeholder = Poort uit (standaard: 39539)
+settings-osc-vmc-network-address = Netwerkadres
+settings-osc-vmc-network-address-description = Stel het adres in waarnaar gegevens moeten worden verzonden via VMC.
+settings-osc-vmc-network-address-placeholder = IPV4-adres
+settings-osc-vmc-vrm = VRM Model
+settings-osc-vmc-vrm-description = Laad een VRM-model om hoofdverankering mogelijk te maken en zorg voor een hogere compatibiliteit met andere applicaties.
+settings-osc-vmc-vrm-model_unloaded = Geen model geladen
+settings-osc-vmc-vrm-model_loaded =
+    { $titled ->
+        [true] Model geladen: { $name }
+       *[other] Ongetitelde model geladen
+    }
+settings-osc-vmc-vrm-file_select = Sleep een modelbestand naar hier om ze te gebruiken of <u>blader</u>.
+settings-osc-vmc-anchor_hip = Heupverankering
+settings-osc-vmc-anchor_hip-label = Heupverankering
 
 ## Setup/onboarding menu
 
@@ -547,13 +582,13 @@ onboarding-automatic_mounting-manual_mounting = Bevestiging handmatig instellen
 onboarding-automatic_mounting-next = Volgende stap
 onboarding-automatic_mounting-prev_step = Vorige stap
 onboarding-automatic_mounting-done-title = Bevestigingsrotaties gekalibreerd.
-onboarding-automatic_mounting-done-description = Uw bevestigingskalibratie is compleet!
+onboarding-automatic_mounting-done-description = Je bevestigingskalibratie is compleet!
 onboarding-automatic_mounting-done-restart = Terug naar start
 onboarding-automatic_mounting-mounting_reset-title = Bevestiging kalibreren
-onboarding-automatic_mounting-mounting_reset-step-0 = 1. Ga staan in een "skie"-houding met gebogen benen, uw bovenlichaam naar voren gekanteld en armen gebogen.
+onboarding-automatic_mounting-mounting_reset-step-0 = 1. Ga staan in een "skie"-houding met gebogen benen, je bovenlichaam naar voren gekanteld en armen gebogen.
 onboarding-automatic_mounting-mounting_reset-step-1 = 2. Druk op de knop "Bevestiging resetten" en wacht 3 seconden voordat de bevestigingsrotaties van de trackers opnieuw worden ingesteld.
 onboarding-automatic_mounting-preparation-title = Voorbereiding
-onboarding-automatic_mounting-preparation-step-0 = 1. Sta rechtop met uw armen langs uw zij.
+onboarding-automatic_mounting-preparation-step-0 = 1. Sta rechtop met je armen langs je zij.
 onboarding-automatic_mounting-preparation-step-1 = 2. Druk op de knop "Resetten" en wacht 3 seconden voordat de trackers opnieuw worden ingesteld.
 onboarding-automatic_mounting-put_trackers_on-title = Doe je trackers aan
 onboarding-automatic_mounting-put_trackers_on-description = Om bevestigingsrotaties te kalibreren, gaan we gebruik maken van de trackers die je net hebt toegewezen. Doe al je trackers aan, je kunt zien welke trackers welke zijn in de figuur rechts.

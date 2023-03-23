@@ -11,6 +11,8 @@ import dev.slimevr.tracking.trackers.TrackerStatus;
 import io.eiren.util.Util;
 import io.eiren.util.collections.FastList;
 import io.eiren.util.logging.LogManager;
+import solarxr_protocol.rpc.ResetType;
+
 import org.apache.commons.lang3.ArrayUtils;
 
 import java.io.IOException;
@@ -578,14 +580,20 @@ public class TrackersUDPServer extends Thread {
 						switch (action.type) {
 							case UDPPacket21UserAction.RESET_FULL:
 								name = "Full";
+								Main.getVrServer().getResetHandler().sendStarted(ResetType.Full);
 								Main.getVrServer().resetTrackersFull(resetSourceName);
 								break;
 							case UDPPacket21UserAction.RESET_YAW:
 								name = "Yaw";
+								Main.getVrServer().getResetHandler().sendStarted(ResetType.Yaw);
 								Main.getVrServer().resetTrackersYaw(resetSourceName);
 								break;
 							case UDPPacket21UserAction.RESET_MOUNTING:
 								name = "Mounting";
+								Main
+									.getVrServer()
+									.getResetHandler()
+									.sendStarted(ResetType.Mounting);
 								Main.getVrServer().resetTrackersMounting(resetSourceName);
 								break;
 						}
