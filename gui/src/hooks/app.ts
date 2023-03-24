@@ -10,6 +10,7 @@ import {
 } from 'react';
 import { useNavigate } from 'react-router-dom';
 import {
+  BoneT,
   DataFeedMessage,
   DataFeedUpdateT,
   DeviceDataT,
@@ -39,6 +40,7 @@ export interface AppContext {
   state: AppState;
   trackers: FlatDeviceTracker[];
   dispatch: Dispatch<AppStateAction>;
+  bones: BoneT[];
 }
 
 export function reducer(state: AppState, action: AppStateAction) {
@@ -110,6 +112,7 @@ export function useProvideAppContext(): AppContext {
     state,
     trackers,
     dispatch,
+    bones,
   };
 }
 
