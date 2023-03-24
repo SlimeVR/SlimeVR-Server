@@ -51,8 +51,8 @@ public class ViveEmulation {
 
 	public ViveEmulation(HumanSkeleton skeleton) {
 		this.skeleton = skeleton;
-		if (skeleton.computedWaistTracker != null)
-			this.lastPosition = skeleton.computedWaistTracker.getPosition();
+		if (skeleton.computedHipTracker != null)
+			this.lastPosition = skeleton.computedHipTracker.getPosition();
 	}
 
 	public boolean getEnabled() {
@@ -68,7 +68,7 @@ public class ViveEmulation {
 	public void update() {
 		// if the skeleton is not enabled or the waist tracker is not present,
 		// we do nothing
-		if (!enabled || skeleton.computedWaistTracker == null)
+		if (!enabled || skeleton.computedHipTracker == null)
 			return;
 
 		// update state
@@ -87,8 +87,8 @@ public class ViveEmulation {
 				targetPosition = getOvershootPosition();
 				return;
 			}
-			skeleton.computedWaistTracker.setPosition(getFlyingPos());
-			skeleton.computedWaistTracker.setRotation(getFlyingRotation());
+			skeleton.computedHipTracker.setPosition(getFlyingPos());
+			skeleton.computedHipTracker.setRotation(getFlyingRotation());
 		}
 		// in this state the tracker is returning to its position but has not
 		// yet overshot its target
@@ -96,22 +96,22 @@ public class ViveEmulation {
 			if (targetPosition.minus(lastPosition).lenSq() < NEARLY_ZERO * NEARLY_ZERO) {
 				overShooting = false;
 				flySpeed = FLY_BACK_OVERSHOOT;
-				targetPosition = skeleton.computedWaistTracker.getPosition();
+				targetPosition = skeleton.computedHipTracker.getPosition();
 				return;
 			}
-			skeleton.computedWaistTracker.setPosition((getFlyingBackPos()));
+			skeleton.computedHipTracker.setPosition((getFlyingBackPos()));
 		}
 		// in this state the tracker will return to its original position
 		else if (flyingBack) {
 			if (
-				skeleton.computedWaistTracker.getPosition().minus(lastPosition).len() < NEARLY_ZERO
+				skeleton.computedHipTracker.getPosition().minus(lastPosition).len() < NEARLY_ZERO
 			) {
 				flyingBack = false;
 				ticksToFly = random.nextInt(CHANCE);
 				return;
 			}
-			targetPosition = skeleton.computedWaistTracker.getPosition();
-			skeleton.computedWaistTracker.setPosition(getFlyingBackPos());
+			targetPosition = skeleton.computedHipTracker.getPosition();
+			skeleton.computedHipTracker.setPosition(getFlyingBackPos());
 		}
 
 		// if the tracker is not flying, we check if it should fly
@@ -134,8 +134,8 @@ public class ViveEmulation {
 				random.nextFloat(),
 				random.nextFloat()
 			).unit();
-			lastRotation = skeleton.computedWaistTracker.getRotation();
-			lastPosition = skeleton.computedWaistTracker.getPosition();
+			lastRotation = skeleton.computedHipTracker.getRotation();
+			lastPosition = skeleton.computedHipTracker.getPosition();
 		}
 	}
 
@@ -173,11 +173,11 @@ public class ViveEmulation {
 	// get the position to fly back to (initially overshoot the actualy waist
 	// position)
 	private Vector3 getOvershootPosition() {
-		return skeleton.computedWaistTracker
+		return skeleton.computedHipTracker
 			.getPosition()
 			.minus(
 				lastPosition
-					.cross(skeleton.computedWaistTracker.getPosition())
+					.cross(skeleton.computedHipTracker.getPosition())
 					.unit()
 					.times(
 						random.nextFloat()

@@ -110,7 +110,7 @@ public class HumanSkeleton {
 	// #region Tracker Output
 	protected Tracker computedHeadTracker;
 	protected Tracker computedChestTracker;
-	protected Tracker computedWaistTracker;
+	protected Tracker computedHipTracker;
 	protected Tracker computedLeftKneeTracker;
 	protected Tracker computedLeftFootTracker;
 	protected Tracker computedRightKneeTracker;
@@ -493,7 +493,7 @@ public class HumanSkeleton {
 		switch (tracker.getTrackerPosition()) {
 			case HEAD -> computedHeadTracker = tracker;
 			case CHEST -> computedChestTracker = tracker;
-			case HIP -> computedWaistTracker = tracker;
+			case HIP -> computedHipTracker = tracker;
 			case LEFT_UPPER_LEG -> computedLeftKneeTracker = tracker;
 			case LEFT_FOOT -> computedLeftFootTracker = tracker;
 			case RIGHT_UPPER_LEG -> computedRightKneeTracker = tracker;
@@ -519,7 +519,7 @@ public class HumanSkeleton {
 		return switch (trackerRole) {
 			case HEAD -> computedHeadTracker;
 			case CHEST -> computedChestTracker;
-			case WAIST -> computedWaistTracker;
+			case WAIST -> computedHipTracker;
 			case LEFT_KNEE -> computedLeftKneeTracker;
 			case LEFT_FOOT -> computedLeftFootTracker;
 			case RIGHT_KNEE -> computedRightKneeTracker;
@@ -1010,17 +1010,23 @@ public class HumanSkeleton {
 
 	// #region Update the output trackers
 	protected void updateComputedTrackers() {
-		computedHeadTracker.setPosition(trackerHeadNode.getWorldTransform().getTranslation());
-		computedHeadTracker.setRotation(trackerHeadNode.getWorldTransform().getRotation());
+		computedHeadTracker
+			.setPosition(trackerHeadNode.getWorldTransform().getTranslation());
+		computedHeadTracker
+			.setRotation(trackerHeadNode.getWorldTransform().getRotation());
 		computedHeadTracker.dataTick();
 
-		computedChestTracker.setPosition(trackerChestNode.getWorldTransform().getTranslation());
-		computedChestTracker.setRotation(trackerChestNode.getWorldTransform().getRotation());
+		computedChestTracker
+			.setPosition(trackerChestNode.getWorldTransform().getTranslation());
+		computedChestTracker
+			.setRotation(trackerChestNode.getWorldTransform().getRotation());
 		computedChestTracker.dataTick();
 
-		computedWaistTracker.setPosition(trackerHipNode.getWorldTransform().getTranslation());
-		computedWaistTracker.setRotation(trackerHipNode.getWorldTransform().getRotation());
-		computedWaistTracker.dataTick();
+		computedHipTracker
+			.setPosition(trackerHipNode.getWorldTransform().getTranslation());
+		computedHipTracker
+			.setRotation(trackerHipNode.getWorldTransform().getRotation());
+		computedHipTracker.dataTick();
 
 		computedLeftKneeTracker
 			.setPosition(trackerLeftKneeNode.getWorldTransform().getTranslation());
@@ -1029,7 +1035,8 @@ public class HumanSkeleton {
 
 		computedLeftFootTracker
 			.setPosition(trackerLeftFootNode.getWorldTransform().getTranslation());
-		computedLeftFootTracker.setRotation(trackerLeftFootNode.getWorldTransform().getRotation());
+		computedLeftFootTracker
+			.setRotation(trackerLeftFootNode.getWorldTransform().getRotation());
 		computedLeftFootTracker.dataTick();
 
 		computedRightKneeTracker
@@ -1058,7 +1065,8 @@ public class HumanSkeleton {
 
 		computedLeftHandTracker
 			.setPosition(trackerLeftHandNode.getWorldTransform().getTranslation());
-		computedLeftHandTracker.setRotation(trackerLeftHandNode.getWorldTransform().getRotation());
+		computedLeftHandTracker
+			.setRotation(trackerLeftHandNode.getWorldTransform().getRotation());
 		computedLeftHandTracker.dataTick();
 
 		computedRightHandTracker

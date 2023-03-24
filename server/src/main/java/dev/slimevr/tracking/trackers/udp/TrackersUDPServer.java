@@ -11,8 +11,8 @@ import io.eiren.util.collections.FastList;
 import io.eiren.util.logging.LogManager;
 import io.github.axisangles.ktmath.Quaternion;
 import io.github.axisangles.ktmath.Vector3;
-import solarxr_protocol.rpc.ResetType;
 import org.apache.commons.lang3.ArrayUtils;
+import solarxr_protocol.rpc.ResetType;
 
 import java.io.IOException;
 import java.net.*;
@@ -242,9 +242,6 @@ public class TrackersUDPServer extends Thread {
 				false,
 				true,
 				false,
-				false,
-				true,
-				true,
 				true,
 				true,
 				true

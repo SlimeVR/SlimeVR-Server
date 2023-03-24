@@ -28,13 +28,10 @@ class Tracker @JvmOverloads constructor(
 	val isInternal: Boolean = false,
 	val isComputed: Boolean = false,
 	val isImu: Boolean = false,
-	val isPoseFrame: Boolean = false,
 	val usesTimeout: Boolean = false,
 	val needsFiltering: Boolean = false,
 	val needsReset: Boolean = false,
 	val needsMounting: Boolean = false,
-	val isWireless: Boolean = false,
-	val hasBattery: Boolean = false,
 ) {
 	private val timer = BufferedTimer(1f)
 	private var timeAtLastUpdate: Long = 0
@@ -44,11 +41,11 @@ class Tracker @JvmOverloads constructor(
 	val resetsHandler: TrackerResetsHandler = TrackerResetsHandler(this)
 	val filteringHandler: TrackerFilteringHandler = TrackerFilteringHandler()
 	var status = TrackerStatus.DISCONNECTED
-	var batteryVoltage = -1f
-	var batteryLevel = -1f
-	var ping = -1
-	var signalStrength = -1
-	var temperature = -1f
+	var batteryVoltage: Float? = null
+	var batteryLevel: Float? = null
+	var ping: Int? = null
+	var signalStrength: Int? = null
+	var temperature: Float? = null
 	var displayName: String? = null
 	var customName: String? = null
 
@@ -69,7 +66,7 @@ class Tracker @JvmOverloads constructor(
 	 * Reads/loads from the given config
 	 */
 	fun readConfig(config: TrackerConfig) {
-		if (userEditable) {
+		if (userEditable && !isInternal) {
 			config.customName?.let {
 				customName = it
 			}
@@ -96,19 +93,21 @@ class Tracker @JvmOverloads constructor(
 	 * Writes/saves to the given config
 	 */
 	fun writeConfig(config: TrackerConfig) {
-		trackerPosition?.let { config.designation = it.designation }
-		customName?.let { config.customName = it }
-		if (needsMounting) {
-			config.mountingOrientation = resetsHandler.mountingOrientation
-				?: EulerAngles(
-					EulerOrder.YZX,
-					0f,
-					FastMath.PI,
-					0f
-				).toQuaternion()
-		}
-		if (isImu) {
-			config.allowDriftCompensation = resetsHandler.allowDriftCompensation
+		if (userEditable && !isInternal) {
+			trackerPosition?.let { config.designation = it.designation }
+			customName?.let { config.customName = it }
+			if (needsMounting) {
+				config.mountingOrientation = resetsHandler.mountingOrientation
+					?: EulerAngles(
+						EulerOrder.YZX,
+						0f,
+						FastMath.PI,
+						0f
+					).toQuaternion()
+			}
+			if (isImu) {
+				config.allowDriftCompensation = resetsHandler.allowDriftCompensation
+			}
 		}
 	}
 

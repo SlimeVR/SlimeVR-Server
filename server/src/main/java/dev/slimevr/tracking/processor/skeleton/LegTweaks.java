@@ -283,7 +283,7 @@ public class LegTweaks {
 	private void setVectors() {
 		// set the positions of the feet and knees to the skeleton's
 		// current positions
-		waistPosition = skeleton.computedWaistTracker.getPosition();
+		waistPosition = skeleton.computedHipTracker.getPosition();
 
 		leftKneePosition = skeleton.computedLeftKneeTracker.getPosition();
 		rightKneePosition = skeleton.computedRightKneeTracker.getPosition();

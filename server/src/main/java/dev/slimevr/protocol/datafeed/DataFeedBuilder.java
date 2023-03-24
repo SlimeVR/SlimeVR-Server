@@ -158,7 +158,7 @@ public class DataFeedBuilder {
 	}
 
 	public static int createTrackerTemperature(FlatBufferBuilder fbb, Tracker tracker) {
-		if (!tracker.isImu())
+		if (tracker.getTemperature() == null)
 			return 0;
 		return Temperature.createTemperature(fbb, tracker.getTemperature());
 	}
@@ -268,15 +268,19 @@ public class DataFeedBuilder {
 		HardwareStatus.addErrorStatus(fbb, tracker.getStatus().getId());
 		HardwareStatus.addTps(fbb, (int) tracker.getTps());
 
-		if (tracker.getHasBattery()) {
+		if (tracker.getBatteryVoltage() != null) {
 			HardwareStatus.addBatteryVoltage(fbb, tracker.getBatteryVoltage());
-			HardwareStatus.addBatteryPctEstimate(fbb, (int) tracker.getBatteryLevel());
+		}
+		if (tracker.getBatteryLevel() != null) {
+			HardwareStatus.addBatteryPctEstimate(fbb, (int) tracker.getBatteryLevel().floatValue());
+		}
+		if (tracker.getPing() != null) {
+			HardwareStatus.addPing(fbb, tracker.getPing());
+		}
+		if (tracker.getSignalStrength() != null) {
+			HardwareStatus.addRssi(fbb, (short) tracker.getSignalStrength().floatValue());
 		}
 
-		if (tracker.isWireless()) {
-			HardwareStatus.addPing(fbb, tracker.getPing());
-			HardwareStatus.addRssi(fbb, (short) tracker.getSignalStrength());
-		}
 
 		int hardwareDataOffset = HardwareStatus.endHardwareStatus(fbb);
 		int hardwareInfoOffset = DataFeedBuilder.createHardwareInfo(fbb, device);

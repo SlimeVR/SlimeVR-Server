@@ -209,7 +209,7 @@ class TrackerResetsHandler(val tracker: Tracker) {
 		buffer = EulerAngles(
 			EulerOrder.YZX,
 			0f,
-			(if (reverseYaw) yawAngle else yawAngle - Math.PI) as Float,
+			(if (reverseYaw) yawAngle else yawAngle - Math.PI.toFloat()),
 			0f
 		).toQuaternion()
 

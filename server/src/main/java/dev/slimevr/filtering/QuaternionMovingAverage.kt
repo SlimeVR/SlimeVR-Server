@@ -5,6 +5,17 @@ import dev.slimevr.vrServer
 import io.github.axisangles.ktmath.Quaternion
 import io.github.axisangles.ktmath.Quaternion.Companion.IDENTITY
 
+// influences the range of smoothFactor.
+private const val SMOOTH_MULTIPLIER = 42f
+private const val SMOOTH_MIN = 20f
+
+// influences the range of predictFactor
+private const val PREDICT_MULTIPLIER = 14f
+private const val PREDICT_MIN = 10f
+
+// how many past rotations are used for prediction.
+private const val PREDICT_BUFFER = 6
+
 class QuaternionMovingAverage(
 	val type: TrackerFilters,
 	var amount: Float,
@@ -44,12 +55,14 @@ class QuaternionMovingAverage(
 	fun update() {
 		if (type === TrackerFilters.PREDICTION) {
 			if (rotBuffer.size > 0) {
+				var quatBuf = latestQuaternion
+
 				// Applies the past rotations to the current rotation
-				rotBuffer.forEach { latestQuaternion *= it }
+				rotBuffer.forEach { quatBuf *= it }
 
 				// Slerps the target rotation to that predicted rotation by
 				// a certain factor.
-				filteredQuaternion = filteredQuaternion.interpR(latestQuaternion, predictFactor * fpsTimer.timePerFrame)
+				filteredQuaternion = filteredQuaternion.interpR(quatBuf, predictFactor * fpsTimer.timePerFrame)
 			}
 		}
 		if (type === TrackerFilters.SMOOTHING) {
@@ -77,18 +90,5 @@ class QuaternionMovingAverage(
 			smoothingQuaternion = filteredQuaternion
 		}
 		latestQuaternion = q
-	}
-
-	companion object {
-		// influences the range of smoothFactor.
-		private const val SMOOTH_MULTIPLIER = 42f
-		private const val SMOOTH_MIN = 20f
-
-		// influences the range of predictFactor
-		private const val PREDICT_MULTIPLIER = 14f
-		private const val PREDICT_MIN = 10f
-
-		// how many past rotations are used for prediction.
-		private const val PREDICT_BUFFER = 6
 	}
 }

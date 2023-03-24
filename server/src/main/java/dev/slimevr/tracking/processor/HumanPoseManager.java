@@ -113,7 +113,7 @@ public class HumanPoseManager {
 				new Tracker(
 					null,
 					VRServer.getNextLocalTrackerId(),
-					"Computed head/HMD",
+					"Computed head",
 					TrackerPosition.HEAD,
 					true,
 					true,
@@ -143,7 +143,7 @@ public class HumanPoseManager {
 				new Tracker(
 					null,
 					VRServer.getNextLocalTrackerId(),
-					"Computed waist/hip",
+					"Computed hip",
 					TrackerPosition.HIP,
 					true,
 					true,
@@ -248,7 +248,7 @@ public class HumanPoseManager {
 				new Tracker(
 					null,
 					VRServer.getNextLocalTrackerId(),
-					"Computed left hand/controller",
+					"Computed left hand",
 					TrackerPosition.LEFT_HAND,
 					true,
 					true,
@@ -264,7 +264,7 @@ public class HumanPoseManager {
 				new Tracker(
 					null,
 					VRServer.getNextLocalTrackerId(),
-					"Computed right hand/controller",
+					"Computed right hand",
 					TrackerPosition.RIGHT_HAND,
 					true,
 					true,

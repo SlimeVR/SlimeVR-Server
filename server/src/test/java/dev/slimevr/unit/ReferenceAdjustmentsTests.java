@@ -190,9 +190,7 @@ public class ReferenceAdjustmentsTests {
 			true,
 			false,
 			false,
-			false,
-			true,
-			false
+			true
 		);
 		tracker.setRotation(trackerQuat);
 		tracker.getResetsHandler().resetFull(referenceQuat);
@@ -235,9 +233,7 @@ public class ReferenceAdjustmentsTests {
 			true,
 			false,
 			false,
-			false,
-			true,
-			false
+			true
 		);
 		tracker.setRotation(trackerQuat);
 		tracker.getResetsHandler().resetYaw(referenceQuat);
@@ -273,9 +269,7 @@ public class ReferenceAdjustmentsTests {
 			true,
 			false,
 			false,
-			false,
-			true,
-			false
+			true
 		);
 		tracker.setRotation(trackerQuat);
 		tracker.getResetsHandler().resetFull(referenceQuat);
