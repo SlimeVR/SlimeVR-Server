@@ -83,7 +83,7 @@ jobs:
           npm run skipbundler
 
       - if: matrix.os == 'windows-latest'
-        name: Upload a Build Artifact
+        name: Upload a Build Artifact (Windows)
         uses: actions/upload-artifact@v3
         with:
           # Artifact name
@@ -92,7 +92,7 @@ jobs:
           path: target/release/slimevr.exe
 
       - if: matrix.os == 'ubuntu-20.04'
-        name: Upload a Build Artifact
+        name: Upload a Build Artifact (Linux)
         uses: actions/upload-artifact@v3
         with:
           # Artifact name
@@ -101,10 +101,10 @@ jobs:
           path: target/release/slimevr
 
       - if: matrix.os == 'macos-latest'
-        name: Upload a Build Artifact
+        name: Upload a Build Artifact (macOS)
         uses: actions/upload-artifact@v3
         with:
           # Artifact name
-          name: SlimeVR-GUI-MacOS
+          name: SlimeVR-GUI-macOS
           # A file, directory or wildcard pattern that describes what to upload
           path: target/release/slimevr
