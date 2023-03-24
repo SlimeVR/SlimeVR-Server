@@ -18,6 +18,7 @@ import {
 } from 'solarxr-protocol';
 import { useConfig } from '../../../hooks/config';
 import { useWebsocketAPI } from '../../../hooks/websocket-api';
+import { useLocaleConfig } from '../../../i18n/config';
 import { CheckBox } from '../../commons/Checkbox';
 import { SquaresIcon } from '../../commons/icon/SquaresIcon';
 import { SteamIcon } from '../../commons/icon/SteamIcon';
@@ -129,8 +130,21 @@ export function GeneralSettings() {
   const { l10n } = useLocalization();
   const { config, setConfig } = useConfig();
   const { state } = useLocation();
+  const { currentLocales } = useLocaleConfig();
   const pageRef = useRef<HTMLFormElement | null>(null);
-
+  
+  const percentageFormat = Intl.NumberFormat(currentLocales, {
+    style: 'percent',
+    maximumFractionDigits: 0,
+  });
+  const formatPercentWithSpace = (value: number) =>
+    percentageFormat.formatToParts(value).reduce((result, part) => {
+      if (part.type === 'percentSign') {
+        return result + ' ' + part.value;
+      }
+      return result + part.value;
+    }, '');
+  
   const { sendRPCPacket, useRPCPacket } = useWebsocketAPI();
   const { reset, control, watch, handleSubmit } = useForm<SettingsForm>({
     defaultValues: defaultValues,
@@ -434,7 +448,7 @@ export function GeneralSettings() {
               label={l10n.getString(
                 'settings-general-tracker_mechanics-filtering-amount'
               )}
-              valueLabelFormat={(value) => `${Math.round(value * 100)} %`}
+              valueLabelFormat={(value) => formatPercentWithSpace(value)}
               min={0.1}
               max={1.0}
               step={0.1}
@@ -474,7 +488,7 @@ export function GeneralSettings() {
               label={l10n.getString(
                 'settings-general-tracker_mechanics-drift_compensation-amount-label'
               )}
-              valueLabelFormat={(value) => `${Math.round(value * 100)} %`}
+              valueLabelFormat={(value) => formatPercentWithSpace(value)}
               min={0.1}
               max={1.0}
               step={0.1}
@@ -527,7 +541,7 @@ export function GeneralSettings() {
               label={l10n.getString(
                 'settings-general-fk_settings-leg_tweak-skating_correction-amount'
               )}
-              valueLabelFormat={(value) => `${Math.round(value * 100)} %`}
+              valueLabelFormat={(value) => formatPercentWithSpace(value)}
               min={0.1}
               max={1.0}
               step={0.1}
@@ -891,7 +905,7 @@ export function GeneralSettings() {
               label={l10n.getString(
                 'settings-general-interface-feedback_sound-volume'
               )}
-              valueLabelFormat={(value) => `${Math.round(value * 100)} %`}
+              valueLabelFormat={(value) => formatPercentWithSpace(value)}
               min={0.1}
               max={1.0}
               step={0.1}
