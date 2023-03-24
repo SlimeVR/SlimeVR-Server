@@ -23,7 +23,7 @@ export function TrackerModel() {
     loader.setDRACOLoader(dracoLoader);
   });
   return (
-    <group scale={scale} rotation={[Math.PI/2, 0, 0]}>
+    <group scale={scale} rotation={[Math.PI / 2, 0, 0]}>
       <primitive object={gltf.scene} />
     </group>
   );
