@@ -122,7 +122,7 @@ const defaultValues = {
     devmode: false,
     watchNewDevices: true,
     feedbackSound: true,
-    feedbackSoundVolume: 0.8,
+    feedbackSoundVolume: 0.5,
   },
 };
 

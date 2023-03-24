@@ -32,7 +32,7 @@ const defaultConfig: Partial<Config> = {
   doneOnboarding: false,
   watchNewDevices: true,
   feedbackSound: true,
-  feedbackSoundVolume: 0.6,
+  feedbackSoundVolume: 0.5,
 };
 
 function fallbackToDefaults(loadedConfig: any): Config {
