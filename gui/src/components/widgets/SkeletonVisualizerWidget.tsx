@@ -113,7 +113,9 @@ export function SkeletonVisualizerWidget() {
           (camera as PerspectiveCamera).fov = 60;
         }}
       >
-        <skeletonHelper args={[skeleton as unknown as Object3D<Event>]}></skeletonHelper>
+        <skeletonHelper
+          args={[skeleton as unknown as Object3D<Event>]}
+        ></skeletonHelper>
       </Canvas>
     </div>
   );
