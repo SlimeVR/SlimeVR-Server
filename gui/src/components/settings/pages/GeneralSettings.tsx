@@ -139,9 +139,12 @@ export function GeneralSettings() {
   });
 
   const formatPercentWithSpace = (value: number) =>
-    percentageFormat.formatToParts(value).reduce((result, part) => {
+    percentageFormat.formatToParts(value).reduce((result, part, i) => {
+      if (part.type === 'literal') {
+        return result;
+      }
       if (part.type === 'percentSign') {
-        return `${result} ${part.value}`;
+        return i === 0 ? `${result}${part.value} ` : `${result} ${part.value}`;
       }
       return result + part.value;
     }, '');
