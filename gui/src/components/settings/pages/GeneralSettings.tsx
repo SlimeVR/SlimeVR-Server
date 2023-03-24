@@ -138,17 +138,6 @@ export function GeneralSettings() {
     maximumFractionDigits: 0,
   });
 
-  const formatPercentWithSpace = (value: number) =>
-    percentageFormat.formatToParts(value).reduce((result, part, i) => {
-      if (part.type === 'literal') {
-        return result;
-      }
-      if (part.type === 'percentSign') {
-        return i === 0 ? `${result}${part.value} ` : `${result} ${part.value}`;
-      }
-      return result + part.value;
-    }, '');
-
   const { sendRPCPacket, useRPCPacket } = useWebsocketAPI();
   const { reset, control, watch, handleSubmit } = useForm<SettingsForm>({
     defaultValues: defaultValues,
@@ -452,7 +441,7 @@ export function GeneralSettings() {
               label={l10n.getString(
                 'settings-general-tracker_mechanics-filtering-amount'
               )}
-              valueLabelFormat={(value) => formatPercentWithSpace(value)}
+              valueLabelFormat={(value) => percentageFormat.format(value)}
               min={0.1}
               max={1.0}
               step={0.1}
@@ -492,7 +481,7 @@ export function GeneralSettings() {
               label={l10n.getString(
                 'settings-general-tracker_mechanics-drift_compensation-amount-label'
               )}
-              valueLabelFormat={(value) => formatPercentWithSpace(value)}
+              valueLabelFormat={(value) => percentageFormat.format(value)}
               min={0.1}
               max={1.0}
               step={0.1}
@@ -545,7 +534,7 @@ export function GeneralSettings() {
               label={l10n.getString(
                 'settings-general-fk_settings-leg_tweak-skating_correction-amount'
               )}
-              valueLabelFormat={(value) => formatPercentWithSpace(value)}
+              valueLabelFormat={(value) => percentageFormat.format(value)}
               min={0.1}
               max={1.0}
               step={0.1}
@@ -909,7 +898,7 @@ export function GeneralSettings() {
               label={l10n.getString(
                 'settings-general-interface-feedback_sound-volume'
               )}
-              valueLabelFormat={(value) => formatPercentWithSpace(value)}
+              valueLabelFormat={(value) => percentageFormat.format(value)}
               min={0.1}
               max={1.0}
               step={0.1}
