@@ -132,19 +132,20 @@ export function GeneralSettings() {
   const { state } = useLocation();
   const { currentLocales } = useLocaleConfig();
   const pageRef = useRef<HTMLFormElement | null>(null);
-  
+
   const percentageFormat = Intl.NumberFormat(currentLocales, {
     style: 'percent',
     maximumFractionDigits: 0,
   });
+
   const formatPercentWithSpace = (value: number) =>
     percentageFormat.formatToParts(value).reduce((result, part) => {
       if (part.type === 'percentSign') {
-        return result + ' ' + part.value;
+        return `${result} ${part.value}`;
       }
       return result + part.value;
     }, '');
-  
+
   const { sendRPCPacket, useRPCPacket } = useWebsocketAPI();
   const { reset, control, watch, handleSubmit } = useForm<SettingsForm>({
     defaultValues: defaultValues,
