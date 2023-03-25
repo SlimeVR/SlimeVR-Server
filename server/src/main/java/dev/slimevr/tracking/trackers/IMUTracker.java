@@ -481,11 +481,18 @@ public class IMUTracker
 	}
 
 	@Override
-	public void resetMounting(boolean reverseYaw) {
+	public void resetMounting(boolean reverseYaw, Quaternion reference) {
+		// Use only yaw HMD rotation
+		reference = reference.clone();
+		reference.fromAngles(0, reference.getYaw(), 0);
+
 		// Get the current calibrated rotation
 		Quaternion buffer = getMountedAdjustedDriftRotation();
 		gyroFix.mult(buffer, buffer);
 		buffer.multLocal(attachmentFix);
+
+		// Use the HMD as the reference
+		buffer.multLocal(reference.inverseLocal());
 
 		// Reset the vector for the rotation to point straight up
 		rotVector.set(0f, 1f, 0f);

@@ -38,7 +38,7 @@ public interface Tracker {
 
 	void resetYaw(Quaternion reference);
 
-	void resetMounting(boolean reverseYaw);
+	void resetMounting(boolean reverseYaw, Quaternion reference);
 
 	void tick();
 
