@@ -17,21 +17,27 @@ export interface Config {
   watchNewDevices: boolean;
   devSettings: DeveloperModeWidgetForm;
   feedbackSound: boolean;
+  feedbackSoundVolume: number;
 }
 
 export interface ConfigContext {
   config: Config | null;
   loading: boolean;
   setConfig: (config: Partial<Config>) => Promise<void>;
-  loadConfig: () => Promise<Config>;
+  loadConfig: () => Promise<Config | null>;
 }
 
-const initialConfig = {
+const defaultConfig: Partial<Config> = {
+  lang: 'en',
   doneOnboarding: false,
   watchNewDevices: true,
-  lang: 'en',
   feedbackSound: true,
+  feedbackSoundVolume: 0.5,
 };
+
+function fallbackToDefaults(loadedConfig: any): Config {
+  return Object.assign({}, defaultConfig, loadedConfig);
+}
 
 export function useConfigProvider(): ConfigContext {
   const debounceTimer = useRef<NodeJS.Timeout | null>(null);
@@ -77,14 +83,13 @@ export function useConfigProvider(): ConfigContext {
 
         if (!json) throw new Error('Config has ceased existing for some reason');
 
-        const loadedConfig = JSON.parse(json);
-        if (!('feedbackSound' in loadedConfig)) loadedConfig.feedbackSound = true;
+        const loadedConfig = fallbackToDefaults(JSON.parse(json));
         set(loadedConfig);
         setLoading(false);
         return loadedConfig;
       } catch (e) {
         console.log(e);
-        setConfig(initialConfig);
+        setConfig(defaultConfig);
         setLoading(false);
         return null;
       }
