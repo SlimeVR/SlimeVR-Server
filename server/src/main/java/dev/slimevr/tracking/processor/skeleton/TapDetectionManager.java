@@ -144,7 +144,7 @@ public class TapDetectionManager {
 				skeleton.resetTrackersFull(resetSourceName);
 
 			fullResetDetector.resetDetector();
-			yawResetAllowPlaySound = true;
+			fullResetAllowPlaySound = true;
 		}
 	}
 

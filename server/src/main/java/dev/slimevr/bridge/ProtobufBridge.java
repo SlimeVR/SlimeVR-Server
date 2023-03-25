@@ -45,6 +45,20 @@ public abstract class ProtobufBridge<T extends VRTracker> implements Bridge {
 		this.hmd = hmd;
 	}
 
+	/**
+	 * Wakes the bridge thread, implementation is platform-specific.
+	 */
+	@ThreadSafe
+	protected abstract void signalSend();
+
+	/**
+	 * Wakes the VRServer thread.
+	 */
+	@ThreadSafe
+	protected void signalRecv() {
+		Main.getVrServer().wakeup();
+	}
+
 	@BridgeThread
 	protected abstract boolean sendMessageReal(ProtobufMessage message);
 
@@ -56,6 +70,7 @@ public abstract class ProtobufBridge<T extends VRTracker> implements Bridge {
 	@ThreadSafe
 	protected void sendMessage(ProtobufMessage message) {
 		outputQueue.add(message);
+		signalSend();
 	}
 
 	@BridgeThread

@@ -1,5 +1,6 @@
 package dev.slimevr.posestreamer;
 
+import dev.slimevr.config.ConfigManager;
 import dev.slimevr.poserecorder.PoseFrameIO;
 import dev.slimevr.poserecorder.PoseFrames;
 import dev.slimevr.tracking.processor.HumanPoseManager;
@@ -24,6 +25,11 @@ public class PoseFrameStreamer extends PoseStreamer {
 		this.frames = new PoseFrames(frames);
 		humanPoseManager = new HumanPoseManager(this.frames.getTrackers());
 		skeleton = humanPoseManager.getSkeleton();
+	}
+
+	public PoseFrameStreamer(PoseFrames frames, ConfigManager configManager) {
+		this(frames);
+		humanPoseManager.loadFromConfig(configManager);
 	}
 
 	public PoseFrames getFrames() {

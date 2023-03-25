@@ -12,7 +12,7 @@ import { Button } from '../../../commons/Button';
 import { Typography } from '../../../commons/Typography';
 import { StepperSlider } from '../../StepperSlider';
 import { DoneStep } from './autobone-steps/Done';
-import { PreparationStep } from './autobone-steps/Preparation';
+import { RequirementsStep } from './autobone-steps/Requirements';
 import { PutTrackersOnStep } from './autobone-steps/PutTrackersOn';
 import { Recording } from './autobone-steps/Recording';
 import { StartRecording } from './autobone-steps/StartRecording';
@@ -67,7 +67,7 @@ export function AutomaticProportionsPage() {
               variant={state.alonePage ? 'alone' : 'onboarding'}
               steps={[
                 { type: 'numbered', component: PutTrackersOnStep },
-                { type: 'numbered', component: PreparationStep },
+                { type: 'numbered', component: RequirementsStep },
                 { type: 'numbered', component: StartRecording },
                 { type: 'fullsize', component: Recording },
                 { type: 'numbered', component: VerifyResultsStep },

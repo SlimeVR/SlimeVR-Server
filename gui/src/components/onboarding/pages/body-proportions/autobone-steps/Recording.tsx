@@ -35,23 +35,18 @@ export function Recording({ nextStep }: { nextStep: () => void }) {
           )}
         </Typography>
       </div>
-      <div>
-        <Typography color="secondary">
-          {l10n.getString('onboarding-automatic_proportions-recording-steps-0')}
-        </Typography>
-        <Typography color="secondary">
-          {l10n.getString('onboarding-automatic_proportions-recording-steps-1')}
-        </Typography>
-        <Typography color="secondary">
-          {l10n.getString('onboarding-automatic_proportions-recording-steps-2')}
-        </Typography>
-        <Typography color="secondary">
-          {l10n.getString('onboarding-automatic_proportions-recording-steps-3')}
-        </Typography>
-        <Typography color="secondary">
-          {l10n.getString('onboarding-automatic_proportions-recording-steps-4')}
-        </Typography>
-      </div>
+      <ol className="list-decimal">
+        <>
+          {l10n
+            .getString('onboarding-automatic_proportions-recording-steps')
+            .split('\n')
+            .map((line, i) => (
+              <li key={i}>
+                <Typography color="secondary">{line}</Typography>
+              </li>
+            ))}
+        </>
+      </ol>
       <div className="flex">
         <TipBox>{l10n.getString('tips-do_not_move_heels')}</TipBox>
       </div>
