@@ -167,6 +167,9 @@ public class IMUTracker
 		} else {
 			mountAdjust.loadIdentity();
 		}
+
+		// Clear the mounting reset now that it's been set manually
+		clearMounting();
 	}
 
 	public boolean getAllowDriftCompensation() {
@@ -505,6 +508,13 @@ public class IMUTracker
 		buffer.multLocal(lastRotAdjust.inverseLocal());
 		// Apply the yaw rotation difference to the yaw fix quaternion
 		yawFix.multLocal(buffer.inverseLocal());
+	}
+
+	public void clearMounting() {
+		// Undo the effect on yaw fix
+		yawFix.multLocal(mountRotFix.inverseLocal());
+		// Clear the mounting reset
+		mountRotFix.loadIdentity();
 	}
 
 	private void fixYaw(Quaternion sensorRotation, Quaternion reference) {
