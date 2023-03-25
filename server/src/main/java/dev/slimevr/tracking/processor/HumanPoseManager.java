@@ -2,6 +2,7 @@ package dev.slimevr.tracking.processor;
 
 import com.jme3.math.Vector3f;
 import dev.slimevr.VRServer;
+import dev.slimevr.config.ConfigManager;
 import dev.slimevr.tracking.processor.config.SkeletonConfigManager;
 import dev.slimevr.tracking.processor.config.SkeletonConfigOffsets;
 import dev.slimevr.tracking.processor.config.SkeletonConfigToggles;
@@ -53,6 +54,8 @@ public class HumanPoseManager {
 	public HumanPoseManager(List<? extends Tracker> trackers) {
 		this();
 		skeleton = new HumanSkeleton(this, trackers);
+		// Set default node offsets on the new skeleton
+		skeletonConfigManager.updateNodeOffsetsInSkeleton();
 		skeletonConfigManager.updateSettingsInSkeleton();
 	}
 
@@ -70,6 +73,8 @@ public class HumanPoseManager {
 	) {
 		this();
 		skeleton = new HumanSkeleton(this, trackers);
+		// Set default node offsets on the new skeleton
+		skeletonConfigManager.updateNodeOffsetsInSkeleton();
 		// Set offsetConfigs from given offsetConfigs on creation
 		skeletonConfigManager.setOffsets(offsetConfigs);
 		skeletonConfigManager.updateSettingsInSkeleton();
@@ -92,6 +97,8 @@ public class HumanPoseManager {
 	) {
 		this();
 		skeleton = new HumanSkeleton(this, trackers);
+		// Set default node offsets on the new skeleton
+		skeletonConfigManager.updateNodeOffsetsInSkeleton();
 		// Set offsetConfigs from given offsetConfigs on creation
 		if (altOffsetConfigs != null) {
 			// Set alts first, so if there's any overlap it doesn't affect
@@ -195,11 +202,18 @@ public class HumanPoseManager {
 			);
 	}
 
+	public void loadFromConfig(ConfigManager configManager) {
+		skeletonConfigManager.loadFromConfig(configManager);
+	}
+
 	@VRServerThread
 	public void updateSkeletonModelFromServer() {
 		disconnectComputedHumanPoseTrackers();
 		skeleton = new HumanSkeleton(this, server);
-		skeletonConfigManager.loadFromConfig(server.getConfigManager());
+		// This recomputes all node offsets, so the defaults don't need to be
+		// explicitly loaded into the skeleton (no need for
+		// `updateNodeOffsetsInSkeleton()`)
+		loadFromConfig(server.getConfigManager());
 		for (Consumer<HumanSkeleton> sc : onSkeletonUpdated)
 			sc.accept(skeleton);
 	}
@@ -585,6 +599,26 @@ public class HumanPoseManager {
 				server.getConfigManager().saveConfig();
 			}
 		}
+	}
+
+	public void setLegTweaksStateTemp(
+		boolean skatingCorrection,
+		boolean floorClip,
+		boolean toeSnap,
+		boolean footPlant
+	) {
+		if (isSkeletonPresent())
+			skeleton.setLegTweaksStateTemp(skatingCorrection, floorClip, toeSnap, footPlant);
+	}
+
+	public void clearLegTweaksStateTemp(
+		boolean skatingCorrection,
+		boolean floorClip,
+		boolean toeSnap,
+		boolean footPlant
+	) {
+		if (isSkeletonPresent())
+			skeleton.clearLegTweaksStateTemp(skatingCorrection, floorClip, toeSnap, footPlant);
 	}
 
 	public void updateTapDetectionConfig() {
