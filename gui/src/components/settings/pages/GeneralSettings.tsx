@@ -159,7 +159,6 @@ export function GeneralSettings() {
 
     const modelSettings = new ModelSettingsT();
     const toggles = new ModelTogglesT();
-    const legTweaks = new LegTweaksSettingsT();
     toggles.floorClip = values.toggles.floorClip;
     toggles.skatingCorrection = values.toggles.skatingCorrection;
     toggles.extendedKnee = values.toggles.extendedKnee;
@@ -169,6 +168,8 @@ export function GeneralSettings() {
     toggles.viveEmulation = values.toggles.viveEmulation;
     toggles.toeSnap = values.toggles.toeSnap;
     toggles.footPlant = values.toggles.footPlant;
+
+    const legTweaks = new LegTweaksSettingsT();
     legTweaks.correctionStrength = values.legTweaks.correctionStrength;
 
     modelSettings.toggles = toggles;
