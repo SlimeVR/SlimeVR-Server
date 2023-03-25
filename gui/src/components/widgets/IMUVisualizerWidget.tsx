@@ -10,18 +10,13 @@ import { Button } from '../commons/Button';
 import { QuatObject } from '../../maths/quaternion';
 import { useLocalization } from '@fluent/react';
 import { GLTFLoader } from 'three/examples/jsm/loaders/GLTFLoader';
-import { DRACOLoader } from 'three/examples/jsm/loaders/DRACOLoader';
 
 const groundColor = '#4444aa';
 
-const scale = 0.05;
+const scale = 6.5;
 
 export function TrackerModel() {
-  const gltf = useLoader(GLTFLoader, '/models/tracker.gltf', (loader) => {
-    const dracoLoader = new DRACOLoader();
-    dracoLoader.setDecoderPath('/draco/');
-    loader.setDRACOLoader(dracoLoader);
-  });
+  const gltf = useLoader(GLTFLoader, '/models/tracker.gltf');
   return (
     <group scale={scale} rotation={[Math.PI / 2, 0, 0]}>
       <primitive object={gltf.scene} />
