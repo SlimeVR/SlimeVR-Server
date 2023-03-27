@@ -333,9 +333,10 @@ settings-general-interface-dev_mode-label = Developer Mode
 settings-general-interface-serial_detection = Serial device detection
 settings-general-interface-serial_detection-description = This option will show a pop-up every time you plug a new serial device that could be a tracker. It helps improving the setup process of a tracker.
 settings-general-interface-serial_detection-label = Serial device detection
-settings-general-interface-feedback_sound = Feedback Sound
+settings-general-interface-feedback_sound = Feedback sound
 settings-general-interface-feedback_sound-description = This option will play a sound when a reset is triggered
-settings-general-interface-feedback_sound-label = Feedback Sound
+settings-general-interface-feedback_sound-label = Feedback sound
+settings-general-interface-feedback_sound-volume = Feedback sound volume
 settings-general-interface-lang = Select language
 settings-general-interface-lang-description = Change the default language you want to use.
 settings-general-interface-lang-placeholder = Select the language to use
@@ -632,22 +633,32 @@ onboarding-automatic_proportions-prev_step = Previous step
 onboarding-automatic_proportions-put_trackers_on-title = Put on your trackers
 onboarding-automatic_proportions-put_trackers_on-description = To calibrate your proportions, we're gonna use the trackers you just assigned. Put on all your trackers, you can see which are which in the figure to the right.
 onboarding-automatic_proportions-put_trackers_on-next = I have all my trackers on
-onboarding-automatic_proportions-preparation-title = Preparation
-onboarding-automatic_proportions-preparation-description = Place a chair directly behind you inside your play space. Be prepared to sit down during the autobone setup.
-onboarding-automatic_proportions-preparation-next = I am in front of a chair
+onboarding-automatic_proportions-requirements-title = Requirements
+# Each line of text is a different list item
+onboarding-automatic_proportions-requirements-description =
+    You have at least enough trackers to track your feet (generally 5 trackers).
+    You have your trackers and headset on.
+    You are wearing your trackers and headset.
+    Your trackers and headset are connected to the SlimeVR server.
+    Your trackers and headset are working properly within the SlimeVR server.
+    Your headset is reporting positional data to the SlimeVR server (this generally means having SteamVR running and connected to SlimeVR using SlimeVR's SteamVR driver).
+onboarding-automatic_proportions-requirements-next = I have read the requirements
 onboarding-automatic_proportions-start_recording-title = Get ready to move
 onboarding-automatic_proportions-start_recording-description = We're now going to record some specific poses and moves. These will be prompted in the next screen. Be ready to start when the button is pressed!
 onboarding-automatic_proportions-start_recording-next = Start Recording
 onboarding-automatic_proportions-recording-title = REC
 onboarding-automatic_proportions-recording-description-p0 = Recording in progress...
 onboarding-automatic_proportions-recording-description-p1 = Make the moves shown below:
-onboarding-automatic_proportions-recording-steps-0 = Bend knees a few times.
-onboarding-automatic_proportions-recording-steps-1 = Sit on a chair then stand up.
-onboarding-automatic_proportions-recording-steps-2 = Twist upper body left, then bend right.
-onboarding-automatic_proportions-recording-steps-3 = Twist upper body right, then bend left.
-onboarding-automatic_proportions-recording-steps-4 = Wiggle around until timer ends.
+# Each line of text is a different list item
+onboarding-automatic_proportions-recording-steps =
+    Standing up straight, roll your head in a circle.
+    Bend your back forwards and squat. While squatting, look to your left, then to your right.
+    Twist your upper body to the left (counter-clockwise), then reach down towards the ground.
+    Twist your upper body to the right (clockwise), then reach down towards the ground.
+    Roll your hips in a circular motion as if you're using a hula hoop.
+    If there is time left on the recording, you can repeat these steps until it's finished.
 onboarding-automatic_proportions-recording-processing = Processing the result
-# $time (Number) - Seconds left for the automatic calibration recording to finish (max 15)
+# $time (Number) - Seconds left for the automatic calibration recording to finish (max 20)
 onboarding-automatic_proportions-recording-timer = { $time ->
     [one] 1 second left
     *[other] { $time } seconds left

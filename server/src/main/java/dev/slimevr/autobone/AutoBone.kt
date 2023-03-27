@@ -13,7 +13,6 @@ import dev.slimevr.autobone.errors.PositionOffsetError
 import dev.slimevr.autobone.errors.SlideError
 import dev.slimevr.config.AutoBoneConfig
 import dev.slimevr.poserecorder.PoseFrameIO
-import dev.slimevr.poserecorder.PoseFrameTracker
 import dev.slimevr.poserecorder.PoseFrames
 import dev.slimevr.tracking.processor.BoneType
 import dev.slimevr.tracking.processor.HumanPoseManager
@@ -84,12 +83,12 @@ class AutoBone(server: VRServer) {
 	init {
 		config = server.configManager.vrConfig.autoBone
 		this.server = server
-		reloadConfigValues()
+		loadConfigValues()
 	}
 
 	fun computeBoneOffset(
-		bone: BoneType?,
-		getOffset: Function<SkeletonConfigOffsets?, Float>,
+		bone: BoneType,
+		getOffset: Function<SkeletonConfigOffsets, Float>,
 	): Float {
 		return when (bone) {
 			BoneType.HEAD -> getOffset.apply(SkeletonConfigOffsets.HEAD)
@@ -114,18 +113,19 @@ class AutoBone(server: VRServer) {
 		}
 	}
 
-	fun reloadConfigValues(trackers: List<PoseFrameTracker?>? = null) {
+	private fun loadConfigValues() {
 		// Remove all previous values
 		offsets.clear()
 
 		// Get current or default skeleton configs
 		val skeleton = humanPoseManager
-		val getOffset: Function<SkeletonConfigOffsets?, Float> =
+		val getOffset: Function<SkeletonConfigOffsets, Float> =
 			if (skeleton != null) {
-				Function { key: SkeletonConfigOffsets? -> skeleton.getOffset(key) }
+				Function { key: SkeletonConfigOffsets -> skeleton.getOffset(key) }
 			} else {
-				Function { config: SkeletonConfigOffsets? ->
-					SkeletonConfigManager(false).getOffset(config)
+				val defaultConfig = SkeletonConfigManager(false)
+				Function { config: SkeletonConfigOffsets ->
+					defaultConfig.getOffset(config)
 				}
 			}
 		for (bone in adjustOffsets) {
@@ -379,14 +379,23 @@ class AutoBone(server: VRServer) {
 		val trackers1 = frames1.trackers
 		val trackers2 = frames2.trackers
 
-		// Reload configs and detect chest tracker from the first frame
-		reloadConfigValues(trackers1)
+		// Load current values for adjustable configs
+		loadConfigValues()
+
 		val skeleton1 = HumanPoseManager(
 			trackers1
 		)
 		val skeleton2 = HumanPoseManager(
 			trackers2
 		)
+
+		// Load server configs into the skeleton
+		skeleton1.loadFromConfig(server.configManager)
+		skeleton2.loadFromConfig(server.configManager)
+		// Disable leg tweaks, this will mess with the resulting positions
+		skeleton1.setLegTweaksEnabled(false)
+		skeleton2.setLegTweaksEnabled(false)
+
 		val intermediateOffsets = EnumMap(
 			offsets
 		)
@@ -397,8 +406,6 @@ class AutoBone(server: VRServer) {
 			frames,
 			intermediateOffsets
 		)
-		skeleton1.setLegTweaksEnabled(false)
-		skeleton2.setLegTweaksEnabled(false)
 
 		// If target height isn't specified, auto-detect
 		if (targetHeight < 0f) {
@@ -470,7 +477,8 @@ class AutoBone(server: VRServer) {
 							.warning(
 								"[AutoBone] Error value is invalid, resetting variables to recover"
 							)
-						reloadConfigValues(trackers1)
+						// Reset adjustable config values
+						loadConfigValues()
 
 						// Reset error sum values
 						errorStats.reset()
