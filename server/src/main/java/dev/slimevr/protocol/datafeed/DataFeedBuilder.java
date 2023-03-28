@@ -91,15 +91,11 @@ public class DataFeedBuilder {
 		if (!infoMask)
 			return 0;
 
-		int displayNameOffset = tracker.getDisplayName() != null
-			? fbb.createString(tracker.getDisplayName())
-			: 0;
-
+		int displayNameOffset = fbb.createString(tracker.getDisplayName());
 		int customNameOffset = tracker.getCustomName() != null
 			? fbb.createString(tracker.getCustomName())
 			: 0;
-
-
+		
 		TrackerInfo.startTrackerInfo(fbb);
 		if (tracker.getTrackerPosition() != null)
 			TrackerInfo.addBodyPart(fbb, tracker.getTrackerPosition().getBodyPart());
