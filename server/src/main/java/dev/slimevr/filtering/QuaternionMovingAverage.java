@@ -21,7 +21,7 @@ public class QuaternionMovingAverage {
 
 	// influences the range of smoothFactor.
 	private static final float SMOOTH_MULTIPLIER = 42f;
-	private static final float SMOOTH_MIN = 20f;
+	private static final float SMOOTH_MIN = 12f;
 
 	// influences the range of predictFactor
 	private static final float PREDICT_MULTIPLIER = 14f;
