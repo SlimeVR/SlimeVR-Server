@@ -82,7 +82,7 @@ public class SkeletonConfigManager {
 			return;
 
 		for (BoneType config : BoneType.values) {
-			Vector3f val = nodeOffsets.get(config);
+			Vector3 val = nodeOffsets.get(config);
 			if (val != null)
 				humanPoseManager.updateNodeOffset(config, val);
 		}
