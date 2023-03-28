@@ -17,6 +17,7 @@ websocket-connection_lost = Потеряно соединение с серве�
 
 tips-find_tracker = Не уверены, какой это трекер? Встряхните его, и трекер выделится в списке.
 tips-do_not_move_heels = Убедитесь, что ваши пятки не двигаются во время записи!
+tips-file_select = Выберите или перетащите файлы для использования <u>выбрать</u>.
 
 ## Body parts
 
@@ -46,12 +47,14 @@ body_part-LEFT_FOOT = Левая ступня
 skeleton_bone-NONE = Пусто
 skeleton_bone-HEAD = Голова
 skeleton_bone-NECK = Длина шеи
+skeleton_bone-torso_group = Длина туловища
 skeleton_bone-CHEST = Длина груди
 skeleton_bone-CHEST_OFFSET = Смещение груди
 skeleton_bone-WAIST = Длина талии
 skeleton_bone-HIP = Длина таза
 skeleton_bone-HIP_OFFSET = Смещение таза
 skeleton_bone-HIPS_WIDTH = Ширина бедер
+skeleton_bone-leg_group = Длина ноги
 skeleton_bone-UPPER_LEG = Длина бедра
 skeleton_bone-LOWER_LEG = Длина голени
 skeleton_bone-FOOT_LENGTH = Длинна стопы
@@ -59,6 +62,7 @@ skeleton_bone-FOOT_SHIFT = Смещение стопы
 skeleton_bone-SKELETON_OFFSET = Смещение скелета
 skeleton_bone-SHOULDERS_DISTANCE = Дистанция плеч
 skeleton_bone-SHOULDERS_WIDTH = Ширина плеч
+skeleton_bone-arm_group = Длина руки
 skeleton_bone-UPPER_ARM = Длинна предплечья
 skeleton_bone-LOWER_ARM = Длинна нижнего предплечья
 skeleton_bone-HAND_Y = Расстояние от руки Y
@@ -68,9 +72,9 @@ skeleton_bone-ELBOW_OFFSET = Смещение локтя
 ## Tracker reset buttons
 
 reset-reset_all = Сбросить все пропорции
-reset-full = Сброс
+reset-full = Полный сброс
 reset-mounting = Сбросить крепление
-reset-quick = Быстрый сброс
+reset-yaw = Горизонтальный сброс
 
 ## Serial detection stuff
 
@@ -172,7 +176,7 @@ tracker-settings-mounting_section = Положение крепления
 tracker-settings-mounting_section-description = Где прикреплен трекер?
 tracker-settings-mounting_section-edit = Изменить прикрепление
 tracker-settings-drift_compensation_section = Разрешить компенсацию дрифта
-tracker-settings-drift_compensation_section-description = Should this tracker compensate for its drift when drift compensation is enabled?
+tracker-settings-drift_compensation_section-description = Должен ли этот трекер компенсировать свой дрифт, когда включена компенсация дрифта?
 tracker-settings-drift_compensation_section-edit = Разрешить компенсацию дрифта
 # The .<name> means it's an attribute and it's related to the top key.
 # In this case that is the settings for the assignment section.
@@ -297,8 +301,6 @@ settings-general-tracker_mechanics-drift_compensation-max_resets-label = Исп�
 ## FK/Tracking settings
 
 settings-general-fk_settings = Настройки трекеров
-settings-general-fk_settings-leg_tweak = Починка ног
-settings-general-fk_settings-leg_tweak-description = Привязка к полу может уменьшить или даже вовсе исключить сцепление с полом, но может вызвать проблемы, когда вы стоите на коленях. Катание на коньках-коррекция корректирует катание на коньках, но может снизить точность в определенных моделях движений.
 # Floor clip:
 # why the name - came from the idea of noclip in video games, but is the opposite where clipping to the floor is a desired feature
 # definition - Prevents the foot trackers from going lower than they where when a reset was performed
@@ -308,7 +310,14 @@ settings-general-fk_settings-leg_tweak-floor_clip = Привязка к полу
 # since this largely prevents this it corrects for it hence skating correction (note this may be renamed to sliding correction)
 # definition - Guesses when each foot is in contact with the ground and uses that information to improve tracking
 settings-general-fk_settings-leg_tweak-skating_correction = Коррекция скольжения
+settings-general-fk_settings-leg_tweak-toe_snap = Коррекция пальцев ног
+settings-general-fk_settings-leg_tweak-foot_plant = Коррекция стоп
 settings-general-fk_settings-leg_tweak-skating_correction-amount = Сила коррекции скольжения
+settings-general-fk_settings-leg_tweak-skating_correction-description = Сила коррекции скольжения корректирует катание на коньках, но может снизить точность определенных моделей движения. При включении обязательно выполните полный сброс и повторную калибровку в игре.
+settings-general-fk_settings-leg_tweak-floor_clip-description = Привязка к полу может уменьшить или даже полностью исключить прохождение через пол. При включении обязательно выполните полный сброс и повторную калибровку в игре.
+settings-general-fk_settings-leg_tweak-toe_snap-description = Toe-snap пытается угадать вращение ваших ступней, если трекеры для них не используются.
+settings-general-fk_settings-leg_tweak-foot_plant-description = Foot-Plant поворачивает ваши ступни так, чтобы они были параллельны земле при контакте.
+settings-general-fk_settings-leg_fk = Трекинг ноги
 settings-general-fk_settings-arm_fk = Трекинг руки
 settings-general-fk_settings-arm_fk-description = Измените способ отслеживания рук.
 settings-general-fk_settings-arm_fk-force_arms = Руки от HMD
@@ -335,12 +344,12 @@ settings-general-gesture_control-taps =
         [many] { $amount } нажатий
        *[other] { $amount } нажатий
     }
-settings-general-gesture_control-quickResetEnabled = Включить нажатие для быстрого сброса
-settings-general-gesture_control-quickResetDelay = Задержка быстрого сброса
-settings-general-gesture_control-quickResetTaps = Нажатия для быстрого сброса
-settings-general-gesture_control-resetEnabled = Включить нажатие для сброса
-settings-general-gesture_control-resetDelay = Сбросить задержку
-settings-general-gesture_control-resetTaps = Нажатия для сброса
+settings-general-gesture_control-yawResetEnabled = Включить нажатие для сброса
+settings-general-gesture_control-yawResetDelay = Задержка сброса
+settings-general-gesture_control-yawResetTaps = Нажатия для сброса
+settings-general-gesture_control-fullResetEnabled = Включить нажатия для полного сброса
+settings-general-gesture_control-fullResetDelay = Задержка полного сброса
+settings-general-gesture_control-fullResetTaps = Нажатия для полного сброса
 settings-general-gesture_control-mountingResetEnabled = Включить нажатия для сброса крепления
 settings-general-gesture_control-mountingResetDelay = Задержка сброса крепления
 settings-general-gesture_control-mountingResetTaps = Нажатия для сброса крепления
@@ -354,6 +363,9 @@ settings-general-interface-dev_mode-label = Режим разработчика
 settings-general-interface-serial_detection = Обнаружение серийного устройства
 settings-general-interface-serial_detection-description = Эта опция будет показывать всплывающее окно каждый раз, когда вы подключаете новое серийное устройство, которое может быть трекером. Это помогает улучшить процесс настройки трекера.
 settings-general-interface-serial_detection-label = Обнаружение серийного устройства
+settings-general-interface-feedback_sound = Звук обратной связи
+settings-general-interface-feedback_sound-description = Эта опция будет воспроизводить звук при срабатывании сброса.
+settings-general-interface-feedback_sound-label = Звук обратной связи
 settings-general-interface-lang = Выбрать язык
 settings-general-interface-lang-description = Измените язык по умолчанию, который вы хотите использовать.
 settings-general-interface-lang-placeholder = Выберите язык для использования
@@ -432,6 +444,40 @@ settings-osc-vrchat-network-trackers-waist = Талия
 settings-osc-vrchat-network-trackers-knees = Колени
 settings-osc-vrchat-network-trackers-feet = Ступни
 settings-osc-vrchat-network-trackers-elbows = Локти
+
+## VMC OSC settings
+
+settings-osc-vmc = Виртуальный захват движения
+# This cares about multilines
+settings-osc-vmc-description =
+    Измените настройки, специфичные для протокола VMC (Virtual Motion Capture)
+    , чтобы отправлять данные о костях SlimeVR и получать данные о костях из других приложений.
+settings-osc-vmc-enable = Включить
+settings-osc-vmc-enable-description = Включить/отключить отправку и получение данных.
+settings-osc-vmc-enable-label = Включить
+settings-osc-vmc-network = Сетевые порты
+settings-osc-vmc-network-description = Установите порты для прослушивания и отправки данных через VMC
+settings-osc-vmc-network-port_in =
+    .label = Порт Вход
+    .placeholder = Порт Вход (по умолчанию: 39540)
+settings-osc-vmc-network-port_out =
+    .label = Порт Выход
+    .placeholder = Порт Выход (по умолчанию 39539)
+settings-osc-vmc-network-address = Адрес сети
+settings-osc-vmc-network-address-description = Выберите, на какой адрес отправлять данные через VMC
+settings-osc-vmc-network-address-placeholder = IPV4 адрес
+settings-osc-vmc-vrm = VRM Модель
+settings-osc-vmc-vrm-description = Загрузите модель VRM, чтобы обеспечить возможность крепления на голове и обеспечить большую совместимость с другими приложениями
+settings-osc-vmc-vrm-model_unloaded = Модель не загружена
+settings-osc-vmc-vrm-model_loaded =
+    { $titled ->
+        [true] Загруженная модель: { $name }
+       *[other] Загружена модель без названия
+    }
+settings-osc-vmc-vrm-file_select = Перетащите модель для использования, или <u>выбрать</u>
+settings-osc-vmc-anchor_hip = Привязать к бедрам
+settings-osc-vmc-anchor_hip-description = Привязать трекинг к бедрам, полезно для сидячего VTubing'а. Если выключено, загрузите VRM модель.
+settings-osc-vmc-anchor_hip-label = Привязать к бедрам
 
 ## Setup/onboarding menu
 

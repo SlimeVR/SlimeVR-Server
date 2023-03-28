@@ -4,6 +4,7 @@ import dev.slimevr.Main;
 import dev.slimevr.autobone.errors.BodyProportionError;
 import dev.slimevr.autobone.errors.proportions.ProportionLimiter;
 import dev.slimevr.config.ConfigManager;
+import dev.slimevr.config.SkeletonConfig;
 import dev.slimevr.tracking.processor.BoneType;
 import dev.slimevr.tracking.processor.HumanPoseManager;
 import io.github.axisangles.ktmath.Vector3;
@@ -73,6 +74,17 @@ public class SkeletonConfigManager {
 		for (SkeletonConfigValues config : SkeletonConfigValues.values) {
 			Float val = configValues.get(config);
 			humanPoseManager.updateValueState(config, val == null ? config.defaultValue : val);
+		}
+	}
+
+	public void updateNodeOffsetsInSkeleton() {
+		if (humanPoseManager == null)
+			return;
+
+		for (BoneType config : BoneType.values) {
+			Vector3f val = nodeOffsets.get(config);
+			if (val != null)
+				humanPoseManager.updateNodeOffset(config, val);
 		}
 	}
 
@@ -430,13 +442,12 @@ public class SkeletonConfigManager {
 	}
 
 	public void loadFromConfig(ConfigManager configManager) {
+		SkeletonConfig skeletonConfig = configManager.getVrConfig().getSkeleton();
+
 		// Load offsets
+		Map<String, Float> offsets = skeletonConfig.getOffsets();
 		for (SkeletonConfigOffsets configValue : SkeletonConfigOffsets.values) {
-			Float val = configManager
-				.getVrConfig()
-				.getSkeleton()
-				.getOffsets()
-				.get(configValue.configKey);
+			Float val = offsets.get(configValue.configKey);
 			if (val != null) {
 				// Do not recalculate the offsets, these are done in bulk at the
 				// end
@@ -445,12 +456,9 @@ public class SkeletonConfigManager {
 		}
 
 		// Load toggles
+		Map<String, Boolean> toggles = skeletonConfig.getToggles();
 		for (SkeletonConfigToggles configValue : SkeletonConfigToggles.values) {
-			Boolean val = configManager
-				.getVrConfig()
-				.getSkeleton()
-				.getToggles()
-				.get(configValue.configKey);
+			Boolean val = toggles.get(configValue.configKey);
 			if (val != null) {
 				setToggle(configValue, val);
 			} else if (humanPoseManager != null) {
@@ -459,12 +467,9 @@ public class SkeletonConfigManager {
 		}
 
 		// Load values
+		Map<String, Float> values = skeletonConfig.getValues();
 		for (SkeletonConfigValues configValue : SkeletonConfigValues.values) {
-			Float val = configManager
-				.getVrConfig()
-				.getSkeleton()
-				.getValues()
-				.get(configValue.configKey);
+			Float val = values.get(configValue.configKey);
 			if (val != null) {
 				setValue(configValue, val);
 			} else if (humanPoseManager != null) {

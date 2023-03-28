@@ -17,6 +17,7 @@ websocket-connection_lost = Connexion avec le serveur perdue. Reconnexion...
 
 tips-find_tracker = Impossible de différencier vos capteurs? Secouez-en un pour qu'il soit mis en évidence.
 tips-do_not_move_heels = Assurez-vous de ne pas bouger vos pieds pendant la calibration!
+tips-file_select = Glissez et déposez des fichiers à utiliser, ou <u>parcourir</u>.
 
 ## Body parts
 
@@ -46,12 +47,14 @@ body_part-LEFT_FOOT = Pied gauche
 skeleton_bone-NONE = Aucun
 skeleton_bone-HEAD = Décalage de la tête
 skeleton_bone-NECK = Longueur du cou
+skeleton_bone-torso_group = Longueur du torse
 skeleton_bone-CHEST = Longueur de la poitrine
 skeleton_bone-CHEST_OFFSET = Écart de la poitrine
 skeleton_bone-WAIST = Longueur de la taille
 skeleton_bone-HIP = Longueur des hanches
 skeleton_bone-HIP_OFFSET = Écart de la hanche
 skeleton_bone-HIPS_WIDTH = Largeur des hanches
+skeleton_bone-leg_group = Longueur des jambes
 skeleton_bone-UPPER_LEG = Longueur des jambes supérieures
 skeleton_bone-LOWER_LEG = Longueur des jambes inférieures
 skeleton_bone-FOOT_LENGTH = Longueur des pieds
@@ -59,6 +62,7 @@ skeleton_bone-FOOT_SHIFT = Décalage des pieds
 skeleton_bone-SKELETON_OFFSET = Écart du squelette
 skeleton_bone-SHOULDERS_DISTANCE = Distance des épaules
 skeleton_bone-SHOULDERS_WIDTH = Largeur des épaules
+skeleton_bone-arm_group = Longueur des bras
 skeleton_bone-UPPER_ARM = Longueur des bras supérieurs
 skeleton_bone-LOWER_ARM = Longueur des avant-bras
 skeleton_bone-HAND_Y = Distance Y des mains
@@ -68,9 +72,9 @@ skeleton_bone-ELBOW_OFFSET = Écart des coudes
 ## Tracker reset buttons
 
 reset-reset_all = Réinitialiser toutes les proportions
-reset-full = Réinitialiser
+reset-full = Réinitialisation complète
 reset-mounting = Réinitialiser l'alignement
-reset-quick = Réinitialisation rapide
+reset-yaw = Réinitialisation horizontale
 
 ## Serial detection stuff
 
@@ -297,8 +301,6 @@ settings-general-tracker_mechanics-drift_compensation-max_resets-label = Nombre 
 ## FK/Tracking settings
 
 settings-general-fk_settings = Paramètres de la capture
-settings-general-fk_settings-leg_tweak = Ajustement des jambes
-settings-general-fk_settings-leg_tweak-description = Le limitage au sol empêche vos pieds de traverser le sol, mais peut causer des problèmes lorsque vous êtes à genoux. La correction du glissement réduit le glissement, mais peut réduire la précision de certains mouvements.
 # Floor clip:
 # why the name - came from the idea of noclip in video games, but is the opposite where clipping to the floor is a desired feature
 # definition - Prevents the foot trackers from going lower than they where when a reset was performed
@@ -308,7 +310,14 @@ settings-general-fk_settings-leg_tweak-floor_clip = Limitage au sol
 # since this largely prevents this it corrects for it hence skating correction (note this may be renamed to sliding correction)
 # definition - Guesses when each foot is in contact with the ground and uses that information to improve tracking
 settings-general-fk_settings-leg_tweak-skating_correction = Correction du glissement
+settings-general-fk_settings-leg_tweak-toe_snap = Correction des orteils
+settings-general-fk_settings-leg_tweak-foot_plant = Correction des pieds
 settings-general-fk_settings-leg_tweak-skating_correction-amount = Force de la correction du glissement
+settings-general-fk_settings-leg_tweak-skating_correction-description = La correction de patinage corrige le patinage des pieds mais peut diminuer la précision de certains mouvements. Lorsque vous activez cette option, assurez-vous d'effectuer une réinitialisation complète et de le recalibrer en jeu.
+settings-general-fk_settings-leg_tweak-floor_clip-description = Le limitage au sol tente de réduire ou même d'empêcher que vos pieds traversent le sol. Lorsque vous activez cette fonction, assurez-vous d'effectuer une réinitialisation complète et de recalibrer en jeu.
+settings-general-fk_settings-leg_tweak-toe_snap-description = La correction des orteils estime l'orientation de vos pieds si vous ne portez pas de capteurs sur ses derniers.
+settings-general-fk_settings-leg_tweak-foot_plant-description = La correction des pieds oriente vos pieds pour qu'ils soient parallèles au sol lorsqu'ils le touche.
+settings-general-fk_settings-leg_fk = Capture des jambes
 settings-general-fk_settings-arm_fk = Capture des bras
 settings-general-fk_settings-arm_fk-description = Changez la façon dont les bras sont captés.
 settings-general-fk_settings-arm_fk-force_arms = Forcer les bras en provenance du casque VR
@@ -317,15 +326,15 @@ settings-general-fk_settings-skeleton_settings-description = Activez ou désacti
 settings-general-fk_settings-skeleton_settings-extended_spine = Colone vertébrale avancée
 settings-general-fk_settings-skeleton_settings-extended_pelvis = Bassin avancé
 settings-general-fk_settings-skeleton_settings-extended_knees = Genoux avancés
-settings-general-fk_settings-vive_emulation-title = Vive emulation
-settings-general-fk_settings-vive_emulation-description = Emulate the waist tracker problems that Vive trackers have. This is a joke and makes tracking worse.
-settings-general-fk_settings-vive_emulation-label = Enable Vive emulation
+settings-general-fk_settings-vive_emulation-title = Émulation Vive
+settings-general-fk_settings-vive_emulation-description = Simule les problèmes des capteurs de taille que capteurs Vive ont. Cette optionest une blague et rend la capture des mouvements pire.
+settings-general-fk_settings-vive_emulation-label = Activer l'émulation Vive
 
 ## Gesture control settings (tracker tapping)
 
 settings-general-gesture_control = Contrôle gestuel
 settings-general-gesture_control-subtitle = Double tape pour réinitialisation rapide
-settings-general-gesture_control-description = Permet de déclencher des réinitialisations en tapant un capteur. Le capteur le plus haut sur votre torse est utilisé pour la réinitialisation rapide, le capteur le plus haut sur votre jambe gauche est utilisé pour la réinitialisation, et le capteur le plus haut sur votre jambe droite est utilisé pour la réinitialisation de l'alignement. Les tapes doivent être enchainées en moins de 0,6 seconde pour être pris en compte.
+settings-general-gesture_control-description = Permet de déclencher des réinitialisations en tapant un capteur. Le capteur le plus haut sur votre torse est utilisé pour la réinitialisation horizontale, le capteur le plus haut sur votre jambe gauche est utilisé pour la réinitialisation complète, et le capteur le plus haut sur votre jambe droite est utilisé pour la réinitialisation de l'alignement. Les tapes doivent être enchainées en moins de 0,6 seconde pour être pris en compte.
 # This is a unit: 3 taps, 2 taps, 1 tap
 # $amount (Number) - Amount of taps (touches to the tracker's case)
 settings-general-gesture_control-taps =
@@ -333,12 +342,12 @@ settings-general-gesture_control-taps =
         [one] 1 tap
        *[other] { $amount } taps
     }
-settings-general-gesture_control-quickResetEnabled = Taper pour réinitialisation rapide
-settings-general-gesture_control-quickResetDelay = Délai de réinitialisation rapide
-settings-general-gesture_control-quickResetTaps = Tapes pour réinitialisation rapide
-settings-general-gesture_control-resetEnabled = Taper pour réinitialisation
-settings-general-gesture_control-resetDelay = Délai de réinitialisation
-settings-general-gesture_control-resetTaps = Tapes pour réinitialisation
+settings-general-gesture_control-yawResetEnabled = Taper pour réinitialisation horizontale
+settings-general-gesture_control-yawResetDelay = Délai de réinitialisation horizontale
+settings-general-gesture_control-yawResetTaps = Tapes pour réinitialisation horizontale
+settings-general-gesture_control-fullResetEnabled = Taper pour réinitialisation complète
+settings-general-gesture_control-fullResetDelay = Délai de réinitialisation complète
+settings-general-gesture_control-fullResetTaps = Tapes pour réinitialisation complète
 settings-general-gesture_control-mountingResetEnabled = Taper pour réinitialisation de l'alignement
 settings-general-gesture_control-mountingResetDelay = Délai de réinitialisation de l'alignement
 settings-general-gesture_control-mountingResetTaps = Tapes pour la réinitialisation de l'alignement
@@ -352,6 +361,9 @@ settings-general-interface-dev_mode-label = Mode développeur
 settings-general-interface-serial_detection = Détection de périphérique série
 settings-general-interface-serial_detection-description = Cette option affichera une fenêtre chaque fois qu'un nouveau périphérique série qui pourrait être un capteur est connecté.
 settings-general-interface-serial_detection-label = Détection de périphérique série
+settings-general-interface-feedback_sound = Son de retour
+settings-general-interface-feedback_sound-description = Cette option va jouer un son lorsqu'une réanitilisation est enclenchée
+settings-general-interface-feedback_sound-label = Son de retour
 settings-general-interface-lang = Sélectionner la langue
 settings-general-interface-lang-description = Choisir la langue par défaut.
 settings-general-interface-lang-placeholder = Choisissez la langue
@@ -432,6 +444,7 @@ settings-osc-vrchat-network-trackers-feet = Pieds
 settings-osc-vrchat-network-trackers-elbows = Coudes
 
 ## VMC OSC settings
+
 settings-osc-vmc = Virtual Motion Capture
 # This cares about multilines
 settings-osc-vmc-description =
@@ -451,6 +464,15 @@ settings-osc-vmc-network-port_out =
 settings-osc-vmc-network-address = Adresse réseau
 settings-osc-vmc-network-address-description = Choisissez l'adresse vers laquelle envoyer des données VMC.
 settings-osc-vmc-network-address-placeholder = Adresse IPv4
+settings-osc-vmc-vrm = Modèle VRM
+settings-osc-vmc-vrm-description = Chargez un modèle VRM pour permettre l'ancrage à la tête et permettre une plus grande compatibilité avec d'autres applications
+settings-osc-vmc-vrm-model_unloaded = Aucun modèle chargé
+settings-osc-vmc-vrm-model_loaded =
+    { $titled ->
+        [true] Modèle chargé : { $name }
+       *[other] Modèle sans nom chargé
+    }
+settings-osc-vmc-vrm-file_select = Glissez et déposez un modèle à utiliser, ou <u>parcourir</u>.
 settings-osc-vmc-anchor_hip = Ancrage aux hanches
 settings-osc-vmc-anchor_hip-description = Ancrer la capture des mouvements aux hanches, utile pour le VTubing assis.
 settings-osc-vmc-anchor_hip-label = Ancrage aux hanches
@@ -643,7 +665,7 @@ onboarding-automatic_mounting-mounting_reset-step-0 = 1. Accroupissez-vous dans 
 onboarding-automatic_mounting-mounting_reset-step-1 = 2. Appuyez sur le bouton "Réinitialiser l'alignement" et attendez 3 secondes avant que l'alignement des capteurs se calibre.
 onboarding-automatic_mounting-preparation-title = Préparation
 onboarding-automatic_mounting-preparation-step-0 = 1. Tenez-vous debout avec vos bras à vos côtés.
-onboarding-automatic_mounting-preparation-step-1 = 2. Appuyez sur le bouton "Réinitialiser" et attendez 3 secondes avant que les capteurs ne se réinitialisent.
+onboarding-automatic_mounting-preparation-step-1 = 2. Appuyez sur le bouton "Réinitialisation complète" et attendez 3 secondes avant que les capteurs ne se réinitialisent.
 onboarding-automatic_mounting-put_trackers_on-title = Enfilez vos capteurs
 onboarding-automatic_mounting-put_trackers_on-description = Pour calibrer l'alignement, nous allons utiliser les capteurs que vous venez d'attribuer.
 onboarding-automatic_mounting-put_trackers_on-next = J'ai tous mes capteurs
@@ -654,6 +676,7 @@ onboarding-manual_proportions-back = Revenir au didacticiel de réinitialisation
 onboarding-manual_proportions-title = Proportions manuelles du corps
 onboarding-manual_proportions-precision = Ajustement de précision
 onboarding-manual_proportions-auto = Calibration automatique
+onboarding-manual_proportions-ratio = Ajuster par groupes de ratios
 
 ## Tracker automatic proportions setup
 
