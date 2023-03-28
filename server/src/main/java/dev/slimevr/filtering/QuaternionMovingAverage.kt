@@ -7,7 +7,7 @@ import io.github.axisangles.ktmath.Quaternion.Companion.IDENTITY
 
 // influences the range of smoothFactor.
 private const val SMOOTH_MULTIPLIER = 42f
-private const val SMOOTH_MIN = 20f
+private const val SMOOTH_MIN = 12f
 
 // influences the range of predictFactor
 private const val PREDICT_MULTIPLIER = 14f

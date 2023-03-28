@@ -113,6 +113,7 @@ public class HumanPoseManager {
 				new Tracker(
 					null,
 					VRServer.getNextLocalTrackerId(),
+					"human://HEAD",
 					"Computed head",
 					TrackerPosition.HEAD,
 					true,
@@ -128,6 +129,7 @@ public class HumanPoseManager {
 				new Tracker(
 					null,
 					VRServer.getNextLocalTrackerId(),
+					"human://CHEST",
 					"Computed chest",
 					TrackerPosition.CHEST,
 					true,
@@ -143,6 +145,7 @@ public class HumanPoseManager {
 				new Tracker(
 					null,
 					VRServer.getNextLocalTrackerId(),
+					"human://WAIST",
 					"Computed hip",
 					TrackerPosition.HIP,
 					true,
@@ -158,6 +161,7 @@ public class HumanPoseManager {
 				new Tracker(
 					null,
 					VRServer.getNextLocalTrackerId(),
+					"human://LEFT_FOOT",
 					"Computed left foot",
 					TrackerPosition.LEFT_FOOT,
 					true,
@@ -173,6 +177,7 @@ public class HumanPoseManager {
 				new Tracker(
 					null,
 					VRServer.getNextLocalTrackerId(),
+					"human://RIGHT_FOOT",
 					"Computed right foot",
 					TrackerPosition.RIGHT_FOOT,
 					true,
@@ -188,6 +193,7 @@ public class HumanPoseManager {
 				new Tracker(
 					null,
 					VRServer.getNextLocalTrackerId(),
+					"human://LEFT_KNEE",
 					"Computed left knee",
 					TrackerPosition.LEFT_UPPER_LEG,
 					true,
@@ -203,6 +209,7 @@ public class HumanPoseManager {
 				new Tracker(
 					null,
 					VRServer.getNextLocalTrackerId(),
+					"human://RIGHT_KNEE",
 					"Computed right knee",
 					TrackerPosition.RIGHT_UPPER_LEG,
 					true,
@@ -218,6 +225,7 @@ public class HumanPoseManager {
 				new Tracker(
 					null,
 					VRServer.getNextLocalTrackerId(),
+					"human://LEFT_ELBOW",
 					"Computed left elbow",
 					TrackerPosition.LEFT_UPPER_ARM,
 					true,
@@ -233,6 +241,7 @@ public class HumanPoseManager {
 				new Tracker(
 					null,
 					VRServer.getNextLocalTrackerId(),
+					"human://RIGHT_ELBOW",
 					"Computed right elbow",
 					TrackerPosition.RIGHT_UPPER_ARM,
 					true,
@@ -248,6 +257,7 @@ public class HumanPoseManager {
 				new Tracker(
 					null,
 					VRServer.getNextLocalTrackerId(),
+					"human://LEFT_HAND",
 					"Computed left hand",
 					TrackerPosition.LEFT_HAND,
 					true,
@@ -264,6 +274,7 @@ public class HumanPoseManager {
 				new Tracker(
 					null,
 					VRServer.getNextLocalTrackerId(),
+					"human://RIGHT_HAND",
 					"Computed right hand",
 					TrackerPosition.RIGHT_HAND,
 					true,

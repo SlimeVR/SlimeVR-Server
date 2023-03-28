@@ -60,6 +60,7 @@ public class VRCOSCHandler implements OSCHandler {
 			null,
 			VRServer.getNextLocalTrackerId(),
 			"VRC HMD",
+			"VRC HMD",
 			TrackerPosition.HEAD,
 			true,
 			false,

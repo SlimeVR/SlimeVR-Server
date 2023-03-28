@@ -43,7 +43,7 @@ data class TrackerFrames(val name: String = "", val frames: FastList<TrackerFram
 			hasRotation = firstFrame.hasRotation(),
 			hasAcceleration = firstFrame.hasAcceleration(),
 			isInternal = true,
-			isComputed = true,
+			isComputed = true
 		)
 
 		tracker.status = TrackerStatus.OK

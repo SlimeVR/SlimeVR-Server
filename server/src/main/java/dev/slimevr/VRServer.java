@@ -94,12 +94,13 @@ public class VRServer extends Thread {
 			null,
 			0,
 			"HMD",
+			"HMD",
 			TrackerPosition.HEAD,
 			true,
 			true,
 			false,
 			false,
-			true,
+			false,
 			true
 		);
 
@@ -317,6 +318,10 @@ public class VRServer extends Thread {
 
 	public static int getNextLocalTrackerId() {
 		return nextLocalTrackerId.incrementAndGet();
+	}
+
+	public static int getCurrentLocalTrackerId() {
+		return nextLocalTrackerId.get();
 	}
 
 	@VRServerThread

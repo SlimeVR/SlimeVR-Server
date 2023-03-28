@@ -180,6 +180,7 @@ public class ReferenceAdjustmentsTests {
 			null,
 			VRServer.getNextLocalTrackerId(),
 			"test",
+			"test",
 			null,
 			false,
 			true,
@@ -223,6 +224,7 @@ public class ReferenceAdjustmentsTests {
 			null,
 			VRServer.getNextLocalTrackerId(),
 			"test",
+			"test",
 			null,
 			false,
 			true,
@@ -258,6 +260,7 @@ public class ReferenceAdjustmentsTests {
 		Tracker tracker = new Tracker(
 			null,
 			VRServer.getNextLocalTrackerId(),
+			"test",
 			"test",
 			null,
 			false,

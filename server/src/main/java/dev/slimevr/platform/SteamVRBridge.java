@@ -93,13 +93,14 @@ public abstract class SteamVRBridge extends ProtobufBridge implements Runnable {
 			.createDevice(
 				trackerAdded.getTrackerName(),
 				trackerAdded.getTrackerSerial(),
-				"FeederAPP"
+				"OpenVR"
 			);
 
 		Tracker tracker = new Tracker(
 			device,
 			trackerAdded.getTrackerId(),
 			trackerAdded.getTrackerName(),
+			"VR Tracker #" + trackerAdded.getTrackerId(),
 			null,
 			true,
 			true,

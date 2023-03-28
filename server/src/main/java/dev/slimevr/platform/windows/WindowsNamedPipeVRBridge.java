@@ -39,6 +39,7 @@ public class WindowsNamedPipeVRBridge extends Thread implements Bridge {
 		null,
 		0,
 		"internal://HMD",
+		"internal://HMD",
 		TrackerPosition.HEAD,
 		true,
 		true,
@@ -64,6 +65,7 @@ public class WindowsNamedPipeVRBridge extends Thread implements Bridge {
 			Tracker ct = new Tracker(
 				null,
 				t.getId(),
+				"internal://" + t.getName(),
 				"internal://" + t.getName(),
 				null,
 				true,

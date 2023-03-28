@@ -20,6 +20,7 @@ class Tracker @JvmOverloads constructor(
 	val device: Device?,
 	val id: Int,
 	val name: String,
+	val displayName: String = "Tracker #$id",
 	var trackerPosition: TrackerPosition?,
 	val hasPosition: Boolean = false,
 	val hasRotation: Boolean = false,
@@ -46,7 +47,6 @@ class Tracker @JvmOverloads constructor(
 	var ping: Int? = null
 	var signalStrength: Int? = null
 	var temperature: Float? = null
-	var displayName: String? = null
 	var customName: String? = null
 
 	// Computed value to simplify availability checks

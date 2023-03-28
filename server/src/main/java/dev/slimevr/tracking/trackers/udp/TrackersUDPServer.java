@@ -233,6 +233,7 @@ public class TrackersUDPServer extends Thread {
 				connection,
 				VRServer.getNextLocalTrackerId(),
 				connection.getName() + "/" + trackerId,
+				"IMU Tracker #" + VRServer.getCurrentLocalTrackerId(),
 				null,
 				false,
 				true,

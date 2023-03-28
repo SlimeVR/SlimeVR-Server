@@ -30,6 +30,7 @@ public class WebSocketVRBridge extends WebsocketAPI implements Bridge {
 		null,
 		0,
 		"internal://HMD",
+		"internal://HMD",
 		TrackerPosition.HEAD,
 		true,
 		true,
@@ -52,6 +53,7 @@ public class WebSocketVRBridge extends WebsocketAPI implements Bridge {
 			Tracker ct = new Tracker(
 				null,
 				t.getId(),
+				"internal://" + t.getName(),
 				"internal://" + t.getName(),
 				t.getTrackerPosition(),
 				true,
