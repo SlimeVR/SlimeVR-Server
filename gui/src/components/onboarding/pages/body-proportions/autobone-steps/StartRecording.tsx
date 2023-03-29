@@ -24,7 +24,7 @@ export function StartRecording({
   return (
     <>
       <div className="flex flex-col flex-grow">
-        <div className="flex flex-grow flex-col gap-4 max-w-sm">
+        <div className="flex flex-grow flex-col gap-4">
           <Typography variant="main-title" bold>
             {l10n.getString(
               'onboarding-automatic_proportions-start_recording-title'
@@ -37,8 +37,20 @@ export function StartRecording({
               )}
             </Typography>
           </div>
+          <ol className="list-decimal">
+            <>
+              {l10n
+                .getString('onboarding-automatic_proportions-recording-steps')
+                .split('\n')
+                .map((line, i) => (
+                  <li key={i}>
+                    <Typography color="secondary">{line}</Typography>
+                  </li>
+                ))}
+            </>
+          </ol>
           <div className="flex">
-            <TipBox>{l10n.getString('tips-find_tracker')}</TipBox>
+            <TipBox>{l10n.getString('tips-do_not_move_heels')}</TipBox>
           </div>
         </div>
 

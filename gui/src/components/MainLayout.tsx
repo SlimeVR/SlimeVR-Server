@@ -1,6 +1,8 @@
 import classNames from 'classnames';
 import { ReactNode, useEffect, useState } from 'react';
 import {
+  LegTweaksTmpChangeT,
+  LegTweaksTmpClearT,
   ResetType,
   RpcMessage,
   SettingsRequestT,
@@ -32,6 +34,7 @@ export function MainLayoutRoute({
   const { useRPCPacket, sendRPCPacket } = useWebsocketAPI();
   const [driftCompensationEnabled, setDriftCompensationEnabled] =
     useState(false);
+  const [ProportionsLastPageOpen, setProportionsLastPageOpen] = useState(true);
 
   useEffect(() => {
     sendRPCPacket(RpcMessage.SettingsRequest, new SettingsRequestT());
@@ -40,6 +43,33 @@ export function MainLayoutRoute({
   useRPCPacket(RpcMessage.SettingsResponse, (settings: SettingsResponseT) => {
     if (settings.driftCompensation != null)
       setDriftCompensationEnabled(settings.driftCompensation.enabled);
+  });
+
+  function usePageChanged(callback: () => void) {
+    useEffect(() => {
+      callback();
+    }, [location.pathname]);
+  }
+
+  usePageChanged(() => {
+    if (location.pathname.includes('body-proportions')) {
+      const tempSettings = new LegTweaksTmpChangeT();
+      tempSettings.skatingCorrection = false;
+      tempSettings.floorClip = false;
+      tempSettings.toeSnap = false;
+      tempSettings.footPlant = false;
+
+      sendRPCPacket(RpcMessage.LegTweaksTmpChange, tempSettings);
+    } else if (ProportionsLastPageOpen) {
+      const resetSettings = new LegTweaksTmpClearT();
+      resetSettings.skatingCorrection = true;
+      resetSettings.floorClip = true;
+      resetSettings.toeSnap = true;
+      resetSettings.footPlant = true;
+
+      sendRPCPacket(RpcMessage.LegTweaksTmpClear, resetSettings);
+    }
+    setProportionsLastPageOpen(location.pathname.includes('body-proportions'));
   });
 
   return (
