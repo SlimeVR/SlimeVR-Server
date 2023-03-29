@@ -362,6 +362,7 @@ settings-general-interface-serial_detection-label = Rilevazione nuovi dispositiv
 settings-general-interface-feedback_sound = Suono di feedback
 settings-general-interface-feedback_sound-description = Questa opzione riprodurrà un suono quando viene effettuato un reset
 settings-general-interface-feedback_sound-label = Suono di feedback
+settings-general-interface-feedback_sound-volume = Volume del suono si feedback
 settings-general-interface-lang = Seleziona la lingua
 settings-general-interface-lang-description = Seleziona la lingua che vuoi utilizzare
 settings-general-interface-lang-placeholder = Seleziona la lingua da utilizzare
@@ -480,6 +481,12 @@ settings-osc-vmc-anchor_hip-label = Ancoraggio sul bacino
 onboarding-skip = Salta la configurazione
 onboarding-continue = Continua
 onboarding-wip = Lavori in corso
+onboarding-previous_step = Passaggio precedente
+onboarding-setup_warning =
+    <b>Attenzione:</b> La configurazione è necessaria per un buon tracking,
+    è richiesta se è la prima volta che usi SlimeVR.
+onboarding-setup_warning-skip = Salta la configurazione
+onboarding-setup_warning-cancel = Continua la configurazione
 
 ## Wi-Fi setup
 
@@ -686,22 +693,31 @@ onboarding-automatic_proportions-prev_step = Passaggio precedente
 onboarding-automatic_proportions-put_trackers_on-title = Indossa i tuoi tracker
 onboarding-automatic_proportions-put_trackers_on-description = Per calibrare le tue proporzioni useremo i tracker che hai appena assegnato. Indossa tutti i tuoi tracker, puoi vedere quali sono quali nella figura a destra.
 onboarding-automatic_proportions-put_trackers_on-next = Sto indossando tutti i miei tracker
-onboarding-automatic_proportions-preparation-title = Preparazione
-onboarding-automatic_proportions-preparation-description = Posiziona una sedia direttamente dietro di te all'interno della tua area di gioco. Ti verrà richiesto di sederti durante certi passaggi della calibrazione delle proporzioni.
-onboarding-automatic_proportions-preparation-next = Sono davanti a una sedia
+onboarding-automatic_proportions-requirements-title = Requisiti
+# Each line of text is a different list item
+onboarding-automatic_proportions-requirements-description =
+    Hai almeno abbastanza tracker per tracciare i tuoi piedi (generalmente 5 tracker).
+    Hai indossato i tuoi tracker e il visore.
+    I tuoi tracker e il visore sono connessi al server di SlimeVR.
+    I tuoi tracker e il visore stanno funzionando correttamente con il server di SlimeVR.
+    Il tuo visore sta riportando dati di posizione al server di SlimeVR (ciò significa generalmente avere SteamVR in esecuzione e connesso a SlimeVR usando il driver di SlimeVR per SteamVR).
+onboarding-automatic_proportions-requirements-next = Ho letto i requisiti.
 onboarding-automatic_proportions-start_recording-title = Preparati a muoverti
 onboarding-automatic_proportions-start_recording-description = Ora registreremo alcune pose e movimenti specifici. Questi verranno descritte nelle schermate successive. Preparati a iniziare quando premi il pulsante!
 onboarding-automatic_proportions-start_recording-next = Inizia registrazione
 onboarding-automatic_proportions-recording-title = REC
 onboarding-automatic_proportions-recording-description-p0 = Registrazione in corso...
 onboarding-automatic_proportions-recording-description-p1 = Fai i movimenti mostrati di seguito:
-onboarding-automatic_proportions-recording-steps-0 = Piega le ginocchia un paio di volte.
-onboarding-automatic_proportions-recording-steps-1 = Siediti su una sedia e poi alzati.
-onboarding-automatic_proportions-recording-steps-2 = Ruota la parte superiore del corpo a sinistra, poi piegati a destra.
-onboarding-automatic_proportions-recording-steps-3 = Ruota la parte superiore del corpo a destra, poi piegati a sinistra.
-onboarding-automatic_proportions-recording-steps-4 = Muoviti un poco fino allo scadere del timer.
+# Each line of text is a different list item
+onboarding-automatic_proportions-recording-steps =
+    Stando dritti, ruota la testa con un movimento circolare.
+    Piega la schiena in avanti e accovacciati. Mentre sei accovacciatə, guarda a sinistra e poi a destra.
+    Ruota la parte superiore del tuo corpo verso sinistra (in senso antiorario), poi raggiungi il suolo con la mano.
+    Rupta la parte superiore del tuo corpo verso destra (in senso orario), poi raggiungi il suolo con la mano.
+    Ruota i tuoi fianchi in un movimento circolare come se stessi usando un hula hoop.
+    Se c'è tempo rimasto nella registrazione, puoi ripetere questi passaggi fino alla fine.
 onboarding-automatic_proportions-recording-processing = Elaborazione del risultato
-# $time (Number) - Seconds left for the automatic calibration recording to finish (max 15)
+# $time (Number) - Seconds left for the automatic calibration recording to finish (max 20)
 onboarding-automatic_proportions-recording-timer =
     { $time ->
         [one] 1 secondo rimasto
