@@ -249,7 +249,6 @@ fn main() {
 		Ok(app) => {
 			app.run(move |_app_handle, event| match event {
 				RunEvent::ExitRequested { .. } => {
-					log::info!("send exist to backend");
 					if let Some(mut child) = backend.0.take() {
 						let write_result = child.write(b"exit\n");
 						match write_result {
