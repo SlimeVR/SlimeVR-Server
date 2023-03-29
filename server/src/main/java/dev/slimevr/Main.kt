@@ -21,6 +21,7 @@ val VERSION =
 	(GIT_VERSION_TAG.ifEmpty { GIT_COMMIT_HASH }) +
 		if (GIT_CLEAN) "" else "-dirty"
 var vrServer: VRServer? = null
+var commandServer: CommandServer? = null
 
 fun main(args: Array<String>) {
 	System.setProperty("awt.useSystemAAFontSettings", "on")
@@ -92,26 +93,13 @@ fun main(args: Array<String>) {
 		vrServer = VRServer()
 		vrServer!!.start()
 		Keybinding(vrServer)
+		commandServer = CommandServer(vrServer)
+		commandServer!!.start()
+		vrServer!!.join()
+		commandServer!!.join()
+		exitProcess(0)
 	} catch (e: Throwable) {
 		e.printStackTrace()
-		try {
-			Thread.sleep(2000L)
-		} catch (e2: InterruptedException) {
-			e.printStackTrace()
-		}
-		exitProcess(1) // Exit in case error happened on init and window
-		// not appeared, but some thread
-		// started
-	} finally {
-		try {
-			Thread.sleep(2000L)
-			Runtime.getRuntime().addShutdownHook(object : Thread() {
-				override fun run() {
-					println("Test")
-				}
-			})
-		} catch (e: InterruptedException) {
-			e.printStackTrace()
-		}
+		exitProcess(1)
 	}
 }
