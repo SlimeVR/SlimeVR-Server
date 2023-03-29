@@ -241,6 +241,28 @@ fn main() {
 			_ => (),
 		})
 		.run(tauri::generate_context!());
+	match run_result {
+		#[cfg(windows)]
+		// Often triggered when the user doesn't have webview2 installed
+		Err(tauri::Error::Runtime(tauri_runtime::Error::CreateWebview(error))) => {
+			// I should log this anyways, don't want to dig a grave by not logging the error.
+			log::error!("CreateWebview error {}", error);
+
+			use tauri::api::dialog::{
+				blocking::MessageDialogBuilder, MessageDialogButtons, MessageDialogKind,
+			};
+
+			let confirm = MessageDialogBuilder::new("SlimeVR", "You seem to have a faulty installation of WebView2. You can check a guide on how to fix that in the docs!")
+				.buttons(MessageDialogButtons::OkCancel)
+				.kind(MessageDialogKind::Error)
+				.show();
+			if confirm {
+				open::that("https://docs.slimevr.dev/common-issues.html#webview2-is-missing--slimevr-gui-crashes-immediately--panicked-at--webview2error").unwrap();
+			}
+			return;
+		}
+		_ => run_result.expect("error while running tauri application"),
+	}
 }
 
 #[cfg(windows)]

@@ -98,6 +98,7 @@ fun main(args: Array<String>) {
 		vrServer!!.join()
 		commandServer!!.join()
 		exitProcess(0)
+		LogManager.closeLogger()
 	} catch (e: Throwable) {
 		e.printStackTrace()
 		exitProcess(1)
