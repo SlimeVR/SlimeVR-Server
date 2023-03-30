@@ -1,6 +1,7 @@
 import { Canvas } from '@react-three/fiber';
 import { useAppContext } from '../../hooks/app';
-import { Bone, Object3D, PerspectiveCamera, Quaternion, Skeleton } from 'three';
+import { Bone, PerspectiveCamera, Quaternion, Skeleton } from 'three';
+import { getHelperFromSkeleton } from 'three/examples/jsm/utils/SkeletonUtils';
 import { useMemo } from 'react';
 import { Vector3FromVec3fT } from '../../maths/vector3';
 import { QuaternionFromQuatT } from '../../maths/quaternion';
@@ -101,7 +102,7 @@ export function SkeletonVisualizerWidget() {
         parentQuatInvert
       );
     }
-    return skeleton;
+    return getHelperFromSkeleton(skeleton);
   }, [bones]);
 
   return (
@@ -113,9 +114,9 @@ export function SkeletonVisualizerWidget() {
           (camera as PerspectiveCamera).fov = 60;
         }}
       >
-        <skeletonHelper
-          args={[skeleton as unknown as Object3D<Event>]}
-        ></skeletonHelper>
+        <group scale={0.04}>
+          <primitive object={skeleton}></primitive>
+        </group>
       </Canvas>
     </div>
   );

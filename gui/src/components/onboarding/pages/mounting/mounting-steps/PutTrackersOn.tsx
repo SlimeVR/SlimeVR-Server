@@ -41,6 +41,7 @@ export function PutTrackersOnStep({
             variant={variant === 'onboarding' ? 'secondary' : 'tiertiary'}
             to="/onboarding/mounting/manual"
             className="self-start"
+            state={{ alonePage: variant === 'alone' }}
           >
             {l10n.getString('onboarding-automatic_mounting-manual_mounting')}
           </Button>

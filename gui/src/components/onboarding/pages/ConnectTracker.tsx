@@ -1,6 +1,6 @@
 import { useLocalization } from '@fluent/react';
 import classNames from 'classnames';
-import { useEffect, useState } from 'react';
+import { useEffect, useMemo, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import {
   RpcMessage,
@@ -99,6 +99,16 @@ export function ConnectTrackersPage() {
     provisioningStatus === WifiProvisioningStatus.CONNECTION_ERROR ||
     provisioningStatus === WifiProvisioningStatus.COULD_NOT_FIND_SERVER;
 
+  const progressBarClass = useMemo(() => {
+    if (isError) {
+      return 'bg-status-critical';
+    }
+
+    if (provisioningStatus === WifiProvisioningStatus.DONE) {
+      return 'bg-status-success';
+    }
+  }, [provisioningStatus]);
+
   return (
     <div className="flex flex-col items-center relative">
       <SkipSetupButton
@@ -159,13 +169,7 @@ export function ConnectTrackersPage() {
                 progress={statusProgressMap[provisioningStatus]}
                 height={6}
                 animated={true}
-                colorClass={
-                  isError
-                    ? 'bg-status-critical'
-                    : provisioningStatus === WifiProvisioningStatus.DONE
-                    ? 'bg-status-success'
-                    : undefined
-                }
+                colorClass={progressBarClass}
               ></ProgressBar>
             </div>
           </div>

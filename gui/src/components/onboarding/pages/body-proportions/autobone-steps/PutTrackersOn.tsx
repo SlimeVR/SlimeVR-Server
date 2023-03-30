@@ -41,6 +41,7 @@ export function PutTrackersOnStep({
             variant={variant === 'onboarding' ? 'secondary' : 'tiertiary'}
             to="/onboarding/body-proportions/manual"
             className="self-start"
+            state={{ alonePage: variant === 'alone' }}
           >
             {l10n.getString('onboarding-automatic_proportions-manual')}
           </Button>

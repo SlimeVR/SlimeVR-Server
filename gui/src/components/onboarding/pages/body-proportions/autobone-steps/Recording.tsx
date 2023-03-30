@@ -60,6 +60,7 @@ export function Recording({ nextStep }: { nextStep: () => void }) {
             : l10n.getString(
                 'onboarding-automatic_proportions-recording-timer',
                 {
+                  // TODO: The progress should be communicated by the server in SolarXR
                   time: Math.round(20 * (1 - progress)),
                 }
               )}
