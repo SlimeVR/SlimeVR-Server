@@ -89,7 +89,6 @@ export function useProvideAppContext(): AppContext {
   );
 
   const bones = useMemo(() => state.datafeed?.bones || [], [state]);
-  console.log(bones);
 
   useDataFeedPacket(DataFeedMessage.DataFeedUpdate, (packet: DataFeedUpdateT) => {
     dispatch({ type: 'datafeed', value: packet });
