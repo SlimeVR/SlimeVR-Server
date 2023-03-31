@@ -1,5 +1,4 @@
 #![cfg_attr(all(not(debug_assertions), windows), windows_subsystem = "windows")]
-use std::{env, thread};
 use std::ffi::{OsStr, OsString};
 use std::io::Write;
 #[cfg(windows)]
@@ -8,15 +7,16 @@ use std::panic;
 use std::path::{Path, PathBuf};
 use std::process::{Child, Stdio};
 use std::time::Duration;
+use std::{env, thread};
 
 use clap::Parser;
 use const_format::concatcp;
 use rand::{seq::SliceRandom, thread_rng};
 use shadow_rs::shadow;
 use tauri::api::process::{Command, CommandChild};
+use tauri::WindowEvent;
 #[cfg(windows)]
 use tauri::{Manager, RunEvent};
-use tauri::WindowEvent;
 use tempfile::Builder;
 
 #[cfg(windows)]
@@ -33,6 +33,7 @@ static POSSIBLE_TITLES: &[&str] = &[
 	"uwu sowwy",
 ];
 
+// For storing the Slime Server
 #[derive(Default)]
 struct Backend(Option<CommandChild>);
 
@@ -252,10 +253,9 @@ fn main() {
 					if let Some(mut child) = backend.0.take() {
 						let write_result = child.write(b"exit\n");
 						match write_result {
-							Ok(()) => log::info!("send exist to backend"),
-        					Err(_) => log::info!("fail to send exist to backend"),
+							Ok(()) => log::info!("send exit to backend"),
+							Err(_) => log::info!("fail to send exit to backend"),
 						}
-						thread::sleep(Duration::from_millis(10000));
 					}
 				}
 				_ => {}
@@ -280,8 +280,20 @@ fn main() {
 			}
 			return;
 		}
-		Err(_) => {
-			println!("Unknown Error")
+		Err(error) => {
+			log::error!("Error {}", error);
+			use tauri::api::dialog::{
+				blocking::MessageDialogBuilder, MessageDialogButtons, MessageDialogKind,
+			};
+
+			MessageDialogBuilder::new(
+				"SlimeVR",
+				"Some unknown Error occurs: ".to_owned() + &error.to_string(),
+			)
+			.buttons(MessageDialogButtons::OkCancel)
+			.kind(MessageDialogKind::Error)
+			.show();
+			return;
 		}
 	}
 }
