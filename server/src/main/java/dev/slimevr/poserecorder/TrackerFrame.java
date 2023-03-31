@@ -212,7 +212,7 @@ public final class TrackerFrame implements Tracker {
 	}
 
 	@Override
-	public void resetMounting(boolean reverseYaw) {
+	public void resetMounting(boolean reverseYaw, Quaternion reference) {
 		throw new UnsupportedOperationException("TrackerFrame does not implement calibration");
 	}
 

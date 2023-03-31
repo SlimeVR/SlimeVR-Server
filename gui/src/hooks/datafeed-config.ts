@@ -23,6 +23,7 @@ export function useDataFeedConfig() {
 
   const dataFeedConfig = new DataFeedConfigT();
   dataFeedConfig.dataMask = dataMask;
+  dataFeedConfig.boneMask = true;
   dataFeedConfig.minimumTimeSinceLast = 1000 / feedMaxTps;
   dataFeedConfig.syntheticTrackersMask = trackerData;
 
