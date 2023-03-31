@@ -85,9 +85,7 @@ public class WindowsNamedPipeBridge extends SteamVRBridge {
 				if (pipe.state == PipeState.ERROR) {
 					resetPipe();
 				}
-				if (pipesUpdated) {
-					signalRecv();
-				} else {
+				if (!pipesUpdated) {
 					if (pipe.state == PipeState.OPEN) {
 						waitForData(10);
 					} else {

@@ -14,7 +14,6 @@ import { useChokerWarning } from '../../../../hooks/choker-warning';
 import { useOnboarding } from '../../../../hooks/onboarding';
 import { useTrackers } from '../../../../hooks/tracker';
 import { useWebsocketAPI } from '../../../../hooks/websocket-api';
-import { ArrowLink } from '../../../commons/ArrowLink';
 import { Button } from '../../../commons/Button';
 import { CheckBox } from '../../../commons/Checkbox';
 import { TipBox } from '../../../commons/TipBox';
@@ -22,6 +21,8 @@ import { Typography } from '../../../commons/Typography';
 import { ASSIGNMENT_RULES, BodyAssignment } from '../../BodyAssignment';
 import { NeckWarningModal } from '../../NeckWarningModal';
 import { TrackerSelectionMenu } from './TrackerSelectionMenu';
+import { SkipSetupWarningModal } from '../../SkipSetupWarningModal';
+import { SkipSetupButton } from '../../SkipSetupButton';
 
 export type BodyPartError = {
   label: string | undefined;
@@ -40,6 +41,7 @@ export function TrackersAssignPage() {
   const { advanced } = watch();
   const [selectedRole, setSelectRole] = useState<BodyPart>(BodyPart.NONE);
   const assignedTrackers = useAssignedTrackers();
+  const [skipWarning, setSkipWarning] = useState(false);
 
   const trackerPartGrouped = useMemo(
     () =>
@@ -161,15 +163,15 @@ export function TrackersAssignPage() {
         onClose={() => closeChokerWarning(true)}
         accept={() => closeChokerWarning(false)}
       ></NeckWarningModal>
-      <div className="flex flex-col gap-5 h-full items-center w-full justify-center">
+      <div className="flex flex-col gap-5 h-full items-center w-full justify-center relative">
+        <SkipSetupButton
+          visible={!state.alonePage}
+          modalVisible={skipWarning}
+          onClick={() => setSkipWarning(true)}
+        ></SkipSetupButton>
         <div className="flex flex-col w-full h-full justify-center items-center">
           <div className="flex md:gap-8">
             <div className="flex flex-col max-w-sm gap-3">
-              {!state.alonePage && (
-                <ArrowLink to="/onboarding/wifi-creds" direction="left">
-                  {l10n.getString('onboarding-assign_trackers-back')}
-                </ArrowLink>
-              )}
               <Typography variant="main-title">
                 {l10n.getString('onboarding-assign_trackers-title')}
               </Typography>
@@ -198,6 +200,25 @@ export function TrackersAssignPage() {
                   </div>
                 </div>
               )}
+              <div className="flex flex-row mt-auto">
+                {!state.alonePage && (
+                  <>
+                    <Button variant="secondary" to="/onboarding/wifi-creds">
+                      {l10n.getString('onboarding-previous_step')}
+                    </Button>
+                    <Button
+                      variant="primary"
+                      to="/onboarding/mounting/auto"
+                      disabled={
+                        assignedTrackers.length === 0 && trackers.length > 0
+                      }
+                      className="ml-auto"
+                    >
+                      {l10n.getString('onboarding-enter_vr-ready')}
+                    </Button>
+                  </>
+                )}
+              </div>
             </div>
             <div className="flex flex-col flex-grow gap-3 rounded-xl fill-background-50">
               <BodyAssignment
@@ -211,22 +232,15 @@ export function TrackersAssignPage() {
           </div>
         </div>
         <div className="w-full pb-4 flex flex-row">
-          <div className="flex flex-grow">
-            {!state.alonePage && (
-              <Button variant="secondary" to="/" onClick={skipSetup}>
-                {l10n.getString('onboarding-skip')}
-              </Button>
-            )}
-          </div>
-          <div className="flex gap-3">
-            {!state.alonePage && (
-              <Button variant="primary" to="/onboarding/enter-vr">
-                {l10n.getString('onboarding-assign_trackers-next')}
-              </Button>
-            )}
-          </div>
+          <div className="flex flex-grow gap-3"></div>
+          <div className="flex gap-3"></div>
         </div>
       </div>
+      <SkipSetupWarningModal
+        accept={skipSetup}
+        onClose={() => setSkipWarning(false)}
+        isOpen={skipWarning}
+      ></SkipSetupWarningModal>
     </>
   );
 }

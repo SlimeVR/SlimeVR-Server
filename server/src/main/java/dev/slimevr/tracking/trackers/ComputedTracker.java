@@ -122,7 +122,7 @@ public class ComputedTracker implements Tracker, TrackerWithTPS {
 	}
 
 	@Override
-	public void resetMounting(boolean reverseYaw) {
+	public void resetMounting(boolean reverseYaw, Quaternion reference) {
 	}
 
 	@Override

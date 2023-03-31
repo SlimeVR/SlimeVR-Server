@@ -1,6 +1,7 @@
 import { Button } from '../../../../commons/Button';
 import { Typography } from '../../../../commons/Typography';
 import { useLocalization } from '@fluent/react';
+import { SkeletonVisualizerWidget } from '../../../../widgets/SkeletonVisualizerWidget';
 
 export function DoneStep({
   resetSteps,
@@ -23,7 +24,7 @@ export function DoneStep({
           {l10n.getString('onboarding-automatic_mounting-done-description')}
         </Typography>
       </div>
-      {/* <Button variant="primary">Continue to next step</Button> */}
+      <SkeletonVisualizerWidget></SkeletonVisualizerWidget>
 
       <div className="flex gap-3">
         <Button
@@ -32,6 +33,12 @@ export function DoneStep({
         >
           {l10n.getString('onboarding-automatic_mounting-done-restart')}
         </Button>
+
+        {variant === 'onboarding' && (
+          <Button variant="primary" to="/onboarding/reset-tutorial">
+            {l10n.getString('onboarding-automatic_mounting-next')}
+          </Button>
+        )}
       </div>
     </div>
   );

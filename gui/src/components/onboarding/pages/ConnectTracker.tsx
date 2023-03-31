@@ -1,6 +1,6 @@
 import { useLocalization } from '@fluent/react';
 import classNames from 'classnames';
-import { useEffect, useState } from 'react';
+import { useEffect, useMemo, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import {
   RpcMessage,
@@ -16,9 +16,12 @@ import { useWebsocketAPI } from '../../../hooks/websocket-api';
 import { ArrowLink } from '../../commons/ArrowLink';
 import { Button } from '../../commons/Button';
 import { LoaderIcon } from '../../commons/icon/LoaderIcon';
+import { ProgressBar } from '../../commons/ProgressBar';
 import { TipBox } from '../../commons/TipBox';
 import { Typography } from '../../commons/Typography';
 import { TrackerCard } from '../../tracker/TrackerCard';
+import { SkipSetupWarningModal } from '../SkipSetupWarningModal';
+import { SkipSetupButton } from '../SkipSetupButton';
 
 const BOTTOM_HEIGHT = 80;
 
@@ -41,6 +44,17 @@ const statusLabelMap = {
     'onboarding-connect_tracker-connection_status-could_not_find_server',
 };
 
+const statusProgressMap = {
+  [WifiProvisioningStatus.NONE]: 0,
+  [WifiProvisioningStatus.SERIAL_INIT]: 0.2,
+  [WifiProvisioningStatus.PROVISIONING]: 0.4,
+  [WifiProvisioningStatus.CONNECTING]: 0.6,
+  [WifiProvisioningStatus.LOOKING_FOR_SERVER]: 0.8,
+  [WifiProvisioningStatus.DONE]: 1,
+  [WifiProvisioningStatus.CONNECTION_ERROR]: 0.6,
+  [WifiProvisioningStatus.COULD_NOT_FIND_SERVER]: 0.8,
+};
+
 export function ConnectTrackersPage() {
   const { l10n } = useLocalization();
   const { layoutHeight, ref } = useLayout<HTMLDivElement>();
@@ -50,6 +64,7 @@ export function ConnectTrackersPage() {
   const { sendRPCPacket, useRPCPacket } = useWebsocketAPI();
   const [provisioningStatus, setProvisioningStatus] =
     useState<WifiProvisioningStatus>(WifiProvisioningStatus.NONE);
+  const [skipWarning, setSkipWarning] = useState(false);
 
   applyProgress(0.4);
 
@@ -84,15 +99,25 @@ export function ConnectTrackersPage() {
     provisioningStatus === WifiProvisioningStatus.CONNECTION_ERROR ||
     provisioningStatus === WifiProvisioningStatus.COULD_NOT_FIND_SERVER;
 
+  const progressBarClass = useMemo(() => {
+    if (isError) {
+      return 'bg-status-critical';
+    }
+
+    if (provisioningStatus === WifiProvisioningStatus.DONE) {
+      return 'bg-status-success';
+    }
+  }, [provisioningStatus]);
+
   return (
-    <div className="flex flex-col items-center">
+    <div className="flex flex-col items-center relative">
+      <SkipSetupButton
+        visible={!state.alonePage}
+        modalVisible={skipWarning}
+        onClick={() => setSkipWarning(true)}
+      ></SkipSetupButton>
       <div className="flex gap-10 w-full max-w-7xl ">
         <div className="flex flex-col w-full max-w-sm">
-          {!state.alonePage && (
-            <ArrowLink to="/onboarding/wifi-creds">
-              {l10n.getString('onboarding-connect_tracker-back')}
-            </ArrowLink>
-          )}
           <Typography variant="main-title">
             {l10n.getString('onboarding-connect_tracker-title')}
           </Typography>
@@ -133,14 +158,34 @@ export function ConnectTrackersPage() {
                 youSpinMeRightRoundBabyRightRound={!isError}
               ></LoaderIcon>
             </div>
-            <div className="flex flex-col">
+            <div className="flex flex-col grow">
               <Typography bold>
                 {l10n.getString('onboarding-connect_tracker-usb')}
               </Typography>
               <Typography color="secondary">
                 {l10n.getString(statusLabelMap[provisioningStatus])}
               </Typography>
+              <ProgressBar
+                progress={statusProgressMap[provisioningStatus]}
+                height={6}
+                animated={true}
+                colorClass={progressBarClass}
+              ></ProgressBar>
             </div>
+          </div>
+          <div className="flex flex-row mt-4">
+            {!state.alonePage && (
+              <Button variant="secondary" to="/onboarding/wifi-creds">
+                {l10n.getString('onboarding-previous_step')}
+              </Button>
+            )}
+            <Button
+              variant="primary"
+              to={state.alonePage ? '/' : '/onboarding/trackers-assign'}
+              className="ml-auto"
+            >
+              {l10n.getString('onboarding-connect_tracker-next')}
+            </Button>
           </div>
         </div>
         <div className="flex flex-col flex-grow">
@@ -184,32 +229,11 @@ export function ConnectTrackersPage() {
           </div>
         </div>
       </div>
-      <div
-        style={{ height: BOTTOM_HEIGHT }}
-        className="flex items-center w-full"
-      >
-        <div className="w-full flex">
-          <div className="flex flex-grow">
-            {!state.alonePage && (
-              <Button variant="secondary" to="/" onClick={skipSetup}>
-                {l10n.getString('onboarding-skip')}
-              </Button>
-            )}
-          </div>
-          <div className="flex gap-3">
-            {!state.alonePage && (
-              <Button variant="primary" to="/onboarding/trackers-assign">
-                {l10n.getString('onboarding-connect_tracker-next')}
-              </Button>
-            )}
-            {state.alonePage && (
-              <Button variant="primary" to="/">
-                {l10n.getString('onboarding-connect_tracker-next')}
-              </Button>
-            )}
-          </div>
-        </div>
-      </div>
+      <SkipSetupWarningModal
+        accept={skipSetup}
+        onClose={() => setSkipWarning(false)}
+        isOpen={skipWarning}
+      ></SkipSetupWarningModal>
     </div>
   );
 }
