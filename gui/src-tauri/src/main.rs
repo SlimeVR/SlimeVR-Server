@@ -1,4 +1,5 @@
 #![cfg_attr(all(not(debug_assertions), windows), windows_subsystem = "windows")]
+use std::{env, thread};
 use std::ffi::{OsStr, OsString};
 use std::io::Write;
 #[cfg(windows)]
@@ -7,16 +8,15 @@ use std::panic;
 use std::path::{Path, PathBuf};
 use std::process::{Child, Stdio};
 use std::time::Duration;
-use std::{env, thread};
 
 use clap::Parser;
 use const_format::concatcp;
 use rand::{seq::SliceRandom, thread_rng};
 use shadow_rs::shadow;
 use tauri::api::process::{Command, CommandChild};
-use tauri::WindowEvent;
 #[cfg(windows)]
 use tauri::{Manager, RunEvent};
+use tauri::WindowEvent;
 use tempfile::Builder;
 
 #[cfg(windows)]
@@ -254,8 +254,9 @@ fn main() {
 						let write_result = child.write(b"exit\n");
 						match write_result {
 							Ok(()) => log::info!("send exit to backend"),
-							Err(_) => log::info!("fail to send exit to backend"),
+        					Err(_) => log::info!("fail to send exit to backend"),
 						}
+						thread::sleep(Duration::from_millis(10000));
 					}
 				}
 				_ => {}
@@ -286,13 +287,10 @@ fn main() {
 				blocking::MessageDialogBuilder, MessageDialogButtons, MessageDialogKind,
 			};
 
-			MessageDialogBuilder::new(
-				"SlimeVR",
-				"Some unknown Error occurs: ".to_owned() + &error.to_string(),
-			)
-			.buttons(MessageDialogButtons::OkCancel)
-			.kind(MessageDialogKind::Error)
-			.show();
+			MessageDialogBuilder::new("SlimeVR", "Some unknown Error occurs: ".to_owned()+ &error.to_string())
+				.buttons(MessageDialogButtons::OkCancel)
+				.kind(MessageDialogKind::Error)
+				.show();
 			return;
 		}
 	}
