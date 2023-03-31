@@ -310,7 +310,10 @@ settings-general-fk_settings-leg_tweak-floor_clip = Floor-clip
 # since this largely prevents this it corrects for it hence skating correction (note this may be renamed to sliding correction)
 # definition - Guesses when each foot is in contact with the ground and uses that information to improve tracking
 settings-general-fk_settings-leg_tweak-skating_correction = Skating-correctie
+settings-general-fk_settings-leg_tweak-toe_snap = Teen snap
+settings-general-fk_settings-leg_tweak-foot_plant = Voetplant
 settings-general-fk_settings-leg_tweak-skating_correction-amount = Skating-correctie sterkte
+settings-general-fk_settings-leg_fk = Been tracking
 settings-general-fk_settings-arm_fk = Arm tracking
 settings-general-fk_settings-arm_fk-description = Verander de manier waarop de armen worden getrackt.
 settings-general-fk_settings-arm_fk-force_arms = Dwing armen vanuit HMD
@@ -354,6 +357,10 @@ settings-general-interface-dev_mode-label = Ontwikkelaarsmodus
 settings-general-interface-serial_detection = Detectie van seriële apparaten
 settings-general-interface-serial_detection-description = Met deze optie verschijnt er elke keer dat je een nieuw serieel apparaat aansluit dat mogelijk een tracker is, een pop-up. Dit helpt bij het verbeteren van het instelproces van een tracker.
 settings-general-interface-serial_detection-label = Detectie van seriële apparaten
+settings-general-interface-feedback_sound = Feedback geluid
+settings-general-interface-feedback_sound-description = Speelt een geluid telkens de reset wordt uitgevoerd
+settings-general-interface-feedback_sound-label = Feedback geluid
+settings-general-interface-feedback_sound-volume = Feedback geluid volume
 settings-general-interface-lang = Selecteer taal
 settings-general-interface-lang-description = Verander de standaardtaal die je wilt gebruiken.
 settings-general-interface-lang-placeholder = Selecteer de te gebruiken taal
@@ -611,22 +618,16 @@ onboarding-automatic_proportions-prev_step = Vorige stap
 onboarding-automatic_proportions-put_trackers_on-title = Doe je trackers aan
 onboarding-automatic_proportions-put_trackers_on-description = Om je verhoudingen te kalibreren, gaan we gebruik maken van de trackers die je net hebt toegewezen. Doe al je trackers aan, je kunt zien welke trackers welke zijn in de figuur rechts.
 onboarding-automatic_proportions-put_trackers_on-next = Ik heb al mijn trackers aan
-onboarding-automatic_proportions-preparation-title = Voorbereiding
-onboarding-automatic_proportions-preparation-description = Plaats een stoel recht achter je binnen je speelruimte. Zorg dat je klaar bent om te gaan zitten tijdens de autobone-configuratie.
-onboarding-automatic_proportions-preparation-next = Ik sta voor een stoel
+onboarding-automatic_proportions-requirements-title = Vereisten
+onboarding-automatic_proportions-requirements-next = Ik heb de vereisten gelezen
 onboarding-automatic_proportions-start_recording-title = Zorg dat je klaar bent om te bewegen
 onboarding-automatic_proportions-start_recording-description = We gaan nu enkele specifieke houdingen en bewegingen opnemen. Deze worden in het volgende scherm geprompt. Zorg dat je klaar bent om te beginnen als de knop wordt ingedrukt!
 onboarding-automatic_proportions-start_recording-next = Start opname
 onboarding-automatic_proportions-recording-title = REC
 onboarding-automatic_proportions-recording-description-p0 = Opname bezig...
 onboarding-automatic_proportions-recording-description-p1 = Voer de onderstaande bewegingen uit:
-onboarding-automatic_proportions-recording-steps-0 = Buig een paar keer op je knieën.
-onboarding-automatic_proportions-recording-steps-1 = Ga zitten op een stoel en sta weer op.
-onboarding-automatic_proportions-recording-steps-2 = Draai je bovenlichaam naar links, buig dan naar rechts.
-onboarding-automatic_proportions-recording-steps-3 = Draai je bovenlichaam naar rechts, buig dan naar links.
-onboarding-automatic_proportions-recording-steps-4 = Wiebel rond tot de timer is afgelopen.
 onboarding-automatic_proportions-recording-processing = Resultaat verwerken
-# $time (Number) - Seconds left for the automatic calibration recording to finish (max 15)
+# $time (Number) - Seconds left for the automatic calibration recording to finish (max 20)
 onboarding-automatic_proportions-recording-timer =
     { $time ->
         [one] 1 seconde resterend
