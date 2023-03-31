@@ -192,7 +192,12 @@ public class HumanSkeleton {
 	) {
 		this(humanPoseManager);
 
-		setTrackersFromList(Objects.requireNonNullElseGet(trackers, () -> new FastList<>(0)));
+		List<? extends Tracker> trackersList = trackers;
+		if (trackersList == null) {
+			trackersList = new FastList<>(0);
+		}
+
+		setTrackersFromList(trackersList);
 	}
 	// #endregion
 

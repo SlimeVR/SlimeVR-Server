@@ -137,7 +137,7 @@ android {
 		applicationId = "dev.slimevr.server"
 
 		// Defines the minimum API level required to run the app.
-		minSdk = 33
+		minSdk = 26
 
 		// Specifies the API level used to test the app.
 		targetSdk = 33

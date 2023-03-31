@@ -73,7 +73,7 @@ public class PubSubHandler extends ProtocolHandler<PubSubHeader> {
 			.stream()
 			.filter((handle) -> handle == finalSubHandle)
 			.findFirst();
-		if (first.isEmpty()) {
+		if (!first.isPresent()) {
 			conn.getContext().getSubscribedTopics().add(finalSubHandle);
 		}
 
