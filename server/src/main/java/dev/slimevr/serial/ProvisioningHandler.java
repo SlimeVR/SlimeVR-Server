@@ -71,7 +71,8 @@ public class ProvisioningHandler implements SerialListener {
 		} catch (Exception e) {
 			LogManager.severe("[SerialHandler] Unable to open serial port", e);
 		} catch (Throwable e) {
-			LogManager.severe("[SerialHandler] Using serial ports is not supported on this platform", e);
+			LogManager
+				.severe("[SerialHandler] Using serial ports is not supported on this platform", e);
 		}
 
 	}

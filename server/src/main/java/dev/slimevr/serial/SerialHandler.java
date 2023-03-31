@@ -83,7 +83,7 @@ public class SerialHandler implements SerialPortMessageListener {
 		if (newPort == null) {
 			LogManager
 				.info(
-					"No serial ports found to connect to ("
+					"[SerialHandler] No serial ports found to connect to ("
 						+ ports.length
 						+ ") total ports"
 				);
@@ -98,7 +98,7 @@ public class SerialHandler implements SerialPortMessageListener {
 			) {
 				LogManager
 					.info(
-						"Closing current serial port "
+						"[SerialHandler] Closing current serial port "
 							+ currentPort.getDescriptivePortName()
 					);
 				currentPort.removeDataListener();
