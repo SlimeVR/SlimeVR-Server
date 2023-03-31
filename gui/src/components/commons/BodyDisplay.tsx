@@ -27,6 +27,7 @@ interface SlotDot {
 type DotParams = {
   dotSize: number;
   trackers: FlatDeviceTracker[];
+  hidden: boolean;
 } & SlotDot;
 
 function Tracker({
@@ -56,6 +57,7 @@ function Dot({
   left,
   dotSize,
   trackers,
+  hidden,
 }: DotParams) {
   const [velocities, setVelocities] = useState<number[]>([]);
 
@@ -83,7 +85,9 @@ function Dot({
     >
       <div
         className={classNames(
-          'rounded-full outline outline-2 outline-accent-background-20 bg-background-10 transition-transform'
+          'rounded-full outline outline-2 outline-background-20',
+          'bg-background-10 transition-transform',
+          hidden && 'opacity-0'
         )}
         style={{
           width: dotSize,
@@ -109,6 +113,7 @@ export function BodyDisplay({
   width = 228,
   dotsSize = 20,
   variant = 'tracker-select',
+  hideUnassigned = false,
 }: {
   leftControls?: ReactNode;
   rightControls?: ReactNode;
@@ -116,6 +121,7 @@ export function BodyDisplay({
   dotsSize?: number;
   variant?: 'dots' | 'tracker-select';
   trackers: FlatDeviceTracker[];
+  hideUnassigned: boolean;
 }) {
   const personRef = useRef<HTMLDivElement | null>(null);
   const [slotsButtonsPos, setSlotsButtonPos] = useState<SlotDot[]>([]);
@@ -187,6 +193,10 @@ export function BodyDisplay({
             {...dotData}
             dotSize={dotsSize}
             key={dotData.id}
+            hidden={
+              hideUnassigned &&
+              trackerPartGrouped[(BodyPart as any)[dotData.id]] === undefined
+            }
             trackers={trackerPartGrouped[(BodyPart as any)[dotData.id]]}
           />
         ))}

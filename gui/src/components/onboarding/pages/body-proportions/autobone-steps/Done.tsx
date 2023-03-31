@@ -1,7 +1,8 @@
 import { Typography } from '../../../../commons/Typography';
 import { useLocalization } from '@fluent/react';
+import { Button } from '../../../../commons/Button';
 
-export function DoneStep() {
+export function DoneStep({ variant }: { variant: 'onboarding' | 'alone' }) {
   const { l10n } = useLocalization();
 
   return (
@@ -13,6 +14,14 @@ export function DoneStep() {
         <Typography color="secondary">
           {l10n.getString('onboarding-automatic_proportions-done-description')}
         </Typography>
+      </div>
+
+      <div className="flex">
+        {variant === 'onboarding' && (
+          <Button variant="primary" to="/onboarding/done">
+            {l10n.getString('onboarding-continue')}
+          </Button>
+        )}
       </div>
     </div>
   );
