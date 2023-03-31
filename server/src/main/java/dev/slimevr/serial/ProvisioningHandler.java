@@ -61,14 +61,18 @@ public class ProvisioningHandler implements SerialListener {
 		this.provisioningStatus = ProvisioningStatus.SERIAL_INIT;
 
 		try {
+			boolean openResult = false;
 			if (port != null)
-				vrServer.getSerialHandler().openSerial(port, false);
+				openResult = vrServer.getSerialHandler().openSerial(port, false);
 			else
-				vrServer.getSerialHandler().openSerial(null, true);
+				openResult = vrServer.getSerialHandler().openSerial(null, true);
+			if (!openResult)
+				LogManager.info("[SerialHandler] Serial port wasn't open...");
 		} catch (Exception e) {
-			LogManager.severe("Unable to open serial port", e);
+			LogManager.severe("[SerialHandler] Unable to open serial port", e);
 		} catch (Throwable e) {
-			LogManager.severe("Using serial ports is not supported on this platform", e);
+			LogManager
+				.severe("[SerialHandler] Using serial ports is not supported on this platform", e);
 		}
 
 	}
@@ -92,6 +96,8 @@ public class ProvisioningHandler implements SerialListener {
 		if (System.currentTimeMillis() - this.lastStatusChange > 10000) {
 			if (this.provisioningStatus == ProvisioningStatus.NONE)
 				this.initSerial(this.preferredPort);
+			else if (this.provisioningStatus == ProvisioningStatus.SERIAL_INIT)
+				initSerial(this.preferredPort);
 			else if (this.provisioningStatus == ProvisioningStatus.PROVISIONING)
 				this.tryProvisioning();
 			else if (this.provisioningStatus == ProvisioningStatus.LOOKING_FOR_SERVER)
