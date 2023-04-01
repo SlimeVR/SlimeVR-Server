@@ -77,34 +77,11 @@ class PoseRecorder(private val server: VRServer) {
 	}
 
 	@Synchronized
-	fun startFrameRecording(numFrames: Int, intervalMs: Long): Future<PoseFrames> {
-		return startFrameRecording(numFrames, intervalMs, server.allTrackers, null)
-	}
-
-	@Synchronized
 	fun startFrameRecording(
 		numFrames: Int,
 		intervalMs: Long,
-		frameCallback: Consumer<RecordingProgress>?,
-	): Future<PoseFrames> {
-		return startFrameRecording(numFrames, intervalMs, server.allTrackers, frameCallback)
-	}
-
-	@Synchronized
-	fun startFrameRecording(
-		numFrames: Int,
-		intervalMs: Long,
-		trackers: List<Tracker?>,
-	): Future<PoseFrames> {
-		return startFrameRecording(numFrames, intervalMs, trackers, null)
-	}
-
-	@Synchronized
-	fun startFrameRecording(
-		numFrames: Int,
-		intervalMs: Long,
-		trackers: List<Tracker?>,
-		frameCallback: Consumer<RecordingProgress>?,
+		trackers: List<Tracker?> = server.allTrackers,
+		frameCallback: Consumer<RecordingProgress>? = null,
 	): Future<PoseFrames> {
 		require(numFrames >= 1) { "numFrames must at least have a value of 1" }
 		require(intervalMs >= 1) { "intervalMs must at least have a value of 1" }
@@ -146,16 +123,17 @@ class PoseRecorder(private val server: VRServer) {
 	}
 
 	@Synchronized
-	fun stopFrameRecording() {
+	fun internalStopFrameRecording(cancel: Boolean) {
 		val currentRecording = currentRecording
 		if (currentRecording != null && !currentRecording.isDone) {
 			val currentFrames = poseFrame
-			if (currentFrames != null) {
+			if (cancel || currentFrames == null) {
+				// If it's supposed to be cancelled or there's actually no recording,
+				// then cancel the recording and return nothing
+				currentRecording.cancel(true)
+			} else {
 				// Stop the recording, returning the frames recorded
 				currentRecording.complete(currentFrames)
-			} else {
-				// If there's actually no recording, then just cancel
-				currentRecording.cancel(true)
 			}
 		}
 		numFrames = -1
@@ -165,16 +143,13 @@ class PoseRecorder(private val server: VRServer) {
 	}
 
 	@Synchronized
+	fun stopFrameRecording() {
+		internalStopFrameRecording(false)
+	}
+
+	@Synchronized
 	fun cancelFrameRecording() {
-		val currentRecording = currentRecording
-		if (currentRecording != null && !currentRecording.isDone) {
-			// Cancel the current recording and return nothing
-			currentRecording.cancel(true)
-		}
-		numFrames = -1
-		frameCursor = 0
-		trackers.clear()
-		poseFrame = null
+		internalStopFrameRecording(true)
 	}
 
 	@get:Synchronized
