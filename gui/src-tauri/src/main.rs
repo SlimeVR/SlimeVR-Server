@@ -14,10 +14,9 @@ use const_format::concatcp;
 use rand::{seq::SliceRandom, thread_rng};
 use shadow_rs::shadow;
 use tauri::api::process::{Command, CommandChild};
-use tauri::{RunEvent};
+use tauri::{RunEvent, Manager};
 
 #[cfg(windows)]
-use tauri::{Manager};
 use tauri::WindowEvent;
 use tempfile::Builder;
 
