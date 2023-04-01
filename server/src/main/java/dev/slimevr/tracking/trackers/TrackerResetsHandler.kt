@@ -221,14 +221,10 @@ class TrackerResetsHandler(val tracker: Tracker) {
 			0f
 		).toQuaternion()
 
-		val lastRotAdjust: Quaternion = mountRotFix
+		// Get the difference from the last mounting to the current mounting and apply
+		// the difference to the yaw fix quaternion to correct for the rotation change
+		yawFix *= (buffer * mountRotFix.inv()).inv()
 		mountRotFix = buffer
-
-		// Get the difference from the last adjustment
-		buffer *= lastRotAdjust.inv()
-
-		// Apply the yaw rotation difference to the yaw fix quaternion
-		yawFix *= buffer.inv()
 	}
 
 	fun clearMounting() {
