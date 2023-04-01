@@ -95,7 +95,7 @@ public class DataFeedBuilder {
 		int customNameOffset = tracker.getCustomName() != null
 			? fbb.createString(tracker.getCustomName())
 			: 0;
-		
+
 		TrackerInfo.startTrackerInfo(fbb);
 		if (tracker.getTrackerPosition() != null)
 			TrackerInfo.addBodyPart(fbb, tracker.getTrackerPosition().getBodyPart());

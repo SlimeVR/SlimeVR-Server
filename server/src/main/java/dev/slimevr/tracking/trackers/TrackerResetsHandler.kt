@@ -29,7 +29,7 @@ class TrackerResetsHandler(val tracker: Tracker) {
 		set(value) {
 			field = value
 			// Clear the mounting reset now that it's been set manually
-			clearMounting();
+			clearMounting()
 		}
 
 	// Reference adjustment quats
