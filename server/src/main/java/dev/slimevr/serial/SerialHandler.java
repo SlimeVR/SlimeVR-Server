@@ -63,40 +63,78 @@ public class SerialHandler implements SerialPortMessageListener {
 		listeners.removeIf(listener -> l == listener);
 	}
 
-	public boolean openSerial(String portLocation, boolean auto) {
-		if (this.isConnected()) {
-			if (currentPort != null)
-				currentPort.closePort();
-		}
-
-		System.out.println("Trying to open:" + portLocation + "  auto: " + auto);
+	public synchronized boolean openSerial(String portLocation, boolean auto) {
+		LogManager.info("[SerialHandler] Trying to open: " + portLocation + ", auto: " + auto);
 
 		SerialPort[] ports = SerialPort.getCommPorts();
 		lastKnownPorts = ports;
+		SerialPort newPort = null;
 		for (SerialPort port : ports) {
 			if (!auto && port.getPortLocation().equals(portLocation)) {
-				currentPort = port;
+				newPort = port;
 				break;
 			}
 
 			if (auto && isKnownBoard(port.getDescriptivePortName())) {
-				currentPort = port;
+				newPort = port;
 				break;
 			}
 		}
-		if (currentPort == null) {
+		if (newPort == null) {
+			LogManager
+				.info(
+					"[SerialHandler] No serial ports found to connect to ("
+						+ ports.length
+						+ ") total ports"
+				);
 			return false;
 		}
+		if (this.isConnected()) {
+			if (
+				!newPort.getPortLocation().equals(currentPort.getPortLocation())
+					|| !newPort
+						.getDescriptivePortName()
+						.equals(currentPort.getDescriptivePortName())
+			) {
+				LogManager
+					.info(
+						"[SerialHandler] Closing current serial port "
+							+ currentPort.getDescriptivePortName()
+					);
+				currentPort.removeDataListener();
+				currentPort.closePort();
+			} else {
+				LogManager.info("[SerialHandler] Reusing already open port");
+				this.listeners.forEach((listener) -> listener.onSerialConnected(currentPort));
+				return true;
+			}
+		}
+		currentPort = newPort;
+		LogManager
+			.info(
+				"[SerialHandler] Trying to connect to new serial port "
+					+ currentPort.getDescriptivePortName()
+			);
 
 		currentPort.setBaudRate(115200);
 		currentPort.clearRTS();
 		currentPort.clearDTR();
-		if (!currentPort.openPort()) {
+		if (!currentPort.openPort(1000)) {
+			LogManager
+				.warning(
+					"[SerialHandler] Can't open serial port "
+						+ currentPort.getDescriptivePortName()
+						+ ", last error: "
+						+ currentPort.getLastErrorCode()
+				);
+			currentPort = null;
 			return false;
 		}
 
 		currentPort.addDataListener(this);
 		this.listeners.forEach((listener) -> listener.onSerialConnected(currentPort));
+		LogManager
+			.info("[SerialHandler] Serial port " + newPort.getDescriptivePortName() + " is open");
 		return true;
 	}
 
@@ -112,19 +150,29 @@ public class SerialHandler implements SerialPortMessageListener {
 		this.writeSerial("GET INFO");
 	}
 
-	public void closeSerial() {
+	public synchronized void closeSerial() {
 		try {
 			if (currentPort != null)
 				currentPort.closePort();
 			this.listeners.forEach(SerialListener::onSerialDisconnected);
-			System.out.println("Port closed okay");
+			LogManager
+				.info(
+					"[SerialHandler] Port "
+						+ (currentPort != null ? currentPort.getDescriptivePortName() : "null")
+						+ " closed okay"
+				);
 			currentPort = null;
 		} catch (Exception e) {
-			System.out.println("Error closing port: " + e.getMessage());
+			LogManager
+				.warning(
+					"[SerialHandler] Error closing port "
+						+ (currentPort != null ? currentPort.getDescriptivePortName() : "null"),
+					e
+				);
 		}
 	}
 
-	private void writeSerial(String serialText) {
+	private synchronized void writeSerial(String serialText) {
 		if (currentPort == null)
 			return;
 		OutputStream os = currentPort.getOutputStream();
@@ -134,12 +182,12 @@ public class SerialHandler implements SerialPortMessageListener {
 			writer.flush();
 			this.addLog("-> " + serialText + "\n");
 		} catch (IOException e) {
-			addLog(e + "\n");
-			e.printStackTrace();
+			addLog("[!] Serial error: " + e.getMessage() + "\n");
+			LogManager.warning("[SerialHandler] Serial port write error", e);
 		}
 	}
 
-	public void setWifi(String ssid, String passwd) {
+	public synchronized void setWifi(String ssid, String passwd) {
 		if (currentPort == null)
 			return;
 		OutputStream os = currentPort.getOutputStream();
@@ -150,11 +198,12 @@ public class SerialHandler implements SerialPortMessageListener {
 			this.addLog("-> SET WIFI \"" + ssid + "\" \"" + passwd.replaceAll(".", "*") + "\"\n");
 		} catch (IOException e) {
 			addLog(e + "\n");
-			e.printStackTrace();
+			LogManager.warning("[SerialHandler] Serial port write error", e);
 		}
 	}
 
 	public void addLog(String str) {
+		LogManager.info("[Serial] " + str);
 		this.listeners.forEach(listener -> listener.onSerialLog(str));
 	}
 
@@ -175,7 +224,7 @@ public class SerialHandler implements SerialPortMessageListener {
 		}
 	}
 
-	public boolean isConnected() {
+	public synchronized boolean isConnected() {
 		return this.currentPort != null && this.currentPort.isOpen();
 	}
 
@@ -232,7 +281,9 @@ public class SerialHandler implements SerialPortMessageListener {
 			lastKnownPorts = SerialPort.getCommPorts();
 			differences.forEach(this::onNewDevice);
 		} catch (Throwable e) {
-			LogManager.severe("Using serial ports is not supported on this platform", e);
+			LogManager
+				.severe("[SerialHandler] Using serial ports is not supported on this platform", e);
+			throw new RuntimeException("Serial unsupported");
 		}
 	}
 }

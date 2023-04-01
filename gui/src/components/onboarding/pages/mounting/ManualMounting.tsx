@@ -5,18 +5,20 @@ import { useOnboarding } from '../../../../hooks/onboarding';
 import { useTrackers } from '../../../../hooks/tracker';
 import { useWebsocketAPI } from '../../../../hooks/websocket-api';
 import { MountingOrientationDegreesToQuatT } from '../../../../maths/quaternion';
-import { ArrowLink } from '../../../commons/ArrowLink';
 import { Button } from '../../../commons/Button';
 import { TipBox } from '../../../commons/TipBox';
 import { Typography } from '../../../commons/Typography';
 import { BodyAssignment } from '../../BodyAssignment';
 import { MountingSelectionMenu } from './MountingSelectionMenu';
 import { useLocalization } from '@fluent/react';
+import { SkipSetupWarningModal } from '../../SkipSetupWarningModal';
+import { SkipSetupButton } from '../../SkipSetupButton';
 
 export function ManualMountingPage() {
   const { l10n } = useLocalization();
   const { applyProgress, skipSetup, state } = useOnboarding();
   const { sendRPCPacket } = useWebsocketAPI();
+  const [skipWarning, setSkipWarning] = useState(false);
 
   const [selectedRole, setSelectRole] = useState<BodyPart>(BodyPart.NONE);
 
@@ -62,15 +64,15 @@ export function ManualMountingPage() {
         onClose={() => setSelectRole(BodyPart.NONE)}
         onDirectionSelected={onDirectionSelected}
       ></MountingSelectionMenu>
-      <div className="flex flex-col gap-5 h-full items-center w-full justify-center">
+      <div className="flex flex-col gap-5 h-full items-center w-full justify-center relative">
+        <SkipSetupButton
+          visible={!state.alonePage}
+          modalVisible={skipWarning}
+          onClick={() => setSkipWarning(true)}
+        ></SkipSetupButton>
         <div className="flex flex-col w-full h-full justify-center items-center">
           <div className="flex md:gap-8">
             <div className="flex flex-col w-full max-w-md gap-3">
-              {!state.alonePage && (
-                <ArrowLink to="/onboarding/enter-vr" direction="left">
-                  {l10n.getString('onboarding-manual_mounting-back')}
-                </ArrowLink>
-              )}
               <Typography variant="main-title">
                 {l10n.getString('onboarding-manual_mounting')}
               </Typography>
@@ -78,6 +80,26 @@ export function ManualMountingPage() {
                 {l10n.getString('onboarding-manual_mounting-description')}
               </Typography>
               <TipBox>{l10n.getString('tips-find_tracker')}</TipBox>
+              <div className="flex flex-row gap-3 mt-auto">
+                {!state.alonePage && (
+                  <Button variant="secondary" to="/onboarding/trackers-assign">
+                    {l10n.getString('onboarding-previous_step')}
+                  </Button>
+                )}
+                <Button
+                  variant="secondary"
+                  state={{ alonePage: state.alonePage }}
+                  to="/onboarding/mounting/auto"
+                  className="ml-auto"
+                >
+                  {l10n.getString('onboarding-manual_mounting-auto_mounting')}
+                </Button>
+                {!state.alonePage && (
+                  <Button variant="primary" to="/onboarding/reset-tutorial">
+                    {l10n.getString('onboarding-manual_mounting-next')}
+                  </Button>
+                )}
+              </div>
             </div>
             <div className="flex flex-col flex-grow gap-3 rounded-xl fill-background-50">
               <BodyAssignment
@@ -88,30 +110,12 @@ export function ManualMountingPage() {
             </div>
           </div>
         </div>
-        <div className="w-full pb-4 flex flex-row">
-          <div className="flex flex-grow">
-            {!state.alonePage && (
-              <Button variant="secondary" to="/" onClick={skipSetup}>
-                {l10n.getString('onboarding-skip')}
-              </Button>
-            )}
-          </div>
-          <div className="flex gap-3">
-            <Button
-              variant="secondary"
-              state={{ alonePage: state.alonePage }}
-              to="/onboarding/mounting/auto"
-            >
-              {l10n.getString('onboarding-manual_mounting-auto_mounting')}
-            </Button>
-            {!state.alonePage && (
-              <Button variant="primary" to="/onboarding/reset-tutorial">
-                {l10n.getString('onboarding-manual_mounting-next')}
-              </Button>
-            )}
-          </div>
-        </div>
       </div>
+      <SkipSetupWarningModal
+        accept={skipSetup}
+        onClose={() => setSkipWarning(false)}
+        isOpen={skipWarning}
+      ></SkipSetupWarningModal>
     </>
   );
 }

@@ -66,7 +66,6 @@ public class VRServer extends Thread {
 	private final NanoTimer fpsTimer = new NanoTimer();
 	private final ProvisioningHandler provisioningHandler;
 	private final ResetHandler resetHandler;
-	private final Object wakeupLock = new Object();
 
 	/**
 	 * This function is used by VRWorkout, do not remove!
@@ -298,18 +297,9 @@ public class VRServer extends Thread {
 			vrcOSCHandler.update();
 			vmcHandler.update();
 			// final long time = System.currentTimeMillis() - start;
-			synchronized (wakeupLock) {
-				try {
-					wakeupLock.wait(1); // 1000Hz
-				} catch (InterruptedException ignored) {}
-			}
-		}
-	}
-
-	@ThreadSafe
-	public void wakeup() {
-		synchronized (wakeupLock) {
-			wakeupLock.notify();
+			try {
+				Thread.sleep(1); // 1000Hz
+			} catch (InterruptedException ignored) {}
 		}
 	}
 

@@ -449,6 +449,12 @@ settings-osc-vmc-anchor_hip-label = Anchor at hips
 onboarding-skip = Skip setup
 onboarding-continue = Continue
 onboarding-wip = Work in progress
+onboarding-previous_step = Previous step
+onboarding-setup_warning =
+    <b>Warning:</b> The setup is needed for good tracking,
+    it is required if it is your first time using SlimeVR.
+onboarding-setup_warning-skip = Skip setup
+onboarding-setup_warning-cancel = Continue setup
 
 ## Wi-Fi setup
 onboarding-wifi_creds-back = Go Back to introduction
@@ -606,7 +612,7 @@ onboarding-automatic_mounting-next = Next step
 onboarding-automatic_mounting-prev_step = Previous step
 onboarding-automatic_mounting-done-title = Mounting rotations calibrated.
 onboarding-automatic_mounting-done-description = Your mounting calibration is complete!
-onboarding-automatic_mounting-done-restart = Return to start
+onboarding-automatic_mounting-done-restart = Try again
 onboarding-automatic_mounting-mounting_reset-title = Mounting Reset
 onboarding-automatic_mounting-mounting_reset-step-0 = 1. Squat in a "skiing" pose with your legs bent, your upper body tilted forwards, and your arms bent.
 onboarding-automatic_mounting-mounting_reset-step-1 = 2. Press the "Reset Mounting" button and wait for 3 seconds before the trackers' mounting rotations will reset.
