@@ -26,6 +26,11 @@ class TrackerResetsHandler(val tracker: Tracker) {
 
 	// Manual mounting orientation
 	var mountingOrientation: Quaternion? = null
+		set(value) {
+			field = value
+			// Clear the mounting reset now that it's been set manually
+			clearMounting();
+		}
 
 	// Reference adjustment quats
 	private var gyroFix = Quaternion.IDENTITY
@@ -189,11 +194,14 @@ class TrackerResetsHandler(val tracker: Tracker) {
 		yawFix = rot.inv().times(reference.project(Vector3.POS_Y).unit())
 	}
 
-	fun resetMounting(reverseYaw: Boolean) {
+	fun resetMounting(reverseYaw: Boolean, reference: Quaternion) {
 		// Get the current calibrated rotation
 		var buffer: Quaternion = getMountedAdjustedDriftRotation()
 		buffer = gyroFix * buffer
 		buffer *= attachmentFix
+
+		// Use the HMD as the reference
+		buffer *= reference.project(Vector3.POS_Y).unit().inv()
 
 		// Reset the vector for the rotation to point straight up
 		var rotVector = Vector3(0f, 1f, 0f)
@@ -221,6 +229,13 @@ class TrackerResetsHandler(val tracker: Tracker) {
 
 		// Apply the yaw rotation difference to the yaw fix quaternion
 		yawFix *= buffer.inv()
+	}
+
+	fun clearMounting() {
+		// Undo the effect on yaw fix
+		yawFix *= mountRotFix.inv()
+		// Clear the mounting reset
+		mountRotFix = Quaternion.IDENTITY
 	}
 
 	/**

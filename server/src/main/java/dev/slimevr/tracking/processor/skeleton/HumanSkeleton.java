@@ -1466,7 +1466,7 @@ public class HumanSkeleton {
 			if (hmdTracker.getNeedsMounting())
 				hmdTracker
 					.getResetsHandler()
-					.resetMounting(shouldReverseYaw(hmdTracker));
+					.resetMounting(shouldReverseYaw(hmdTracker), referenceRotation);
 			referenceRotation = hmdTracker.getRotation();
 		}
 
