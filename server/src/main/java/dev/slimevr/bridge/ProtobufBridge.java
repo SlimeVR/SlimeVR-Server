@@ -48,14 +48,6 @@ public abstract class ProtobufBridge implements Bridge {
 	@ThreadSafe
 	protected abstract void signalSend();
 
-	/**
-	 * Wakes the VRServer thread.
-	 */
-	@ThreadSafe
-	protected void signalRecv() {
-		Main.getVrServer().wakeup();
-	}
-
 	@BridgeThread
 	protected abstract boolean sendMessageReal(ProtobufMessage message);
 

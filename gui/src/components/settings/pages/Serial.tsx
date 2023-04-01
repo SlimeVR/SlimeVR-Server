@@ -93,9 +93,7 @@ export function Serial() {
     (data: SerialUpdateResponseT) => {
       if (data.closed) {
         setSerialOpen(false);
-      }
-
-      if (!data.closed) {
+      } else {
         setSerialOpen(true);
       }
 
@@ -127,9 +125,12 @@ export function Serial() {
 
   useEffect(() => {
     const id = setInterval(() => {
-      if (!isSerialOpen) openSerial(port);
-      else clearInterval(id);
-    }, 1000);
+      if (!isSerialOpen) {
+        openSerial(port);
+      } else {
+        clearInterval(id);
+      }
+    }, 3000);
 
     return () => {
       clearInterval(id);

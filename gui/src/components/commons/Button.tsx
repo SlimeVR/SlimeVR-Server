@@ -91,10 +91,15 @@ export function Button({
       },
       props.className
     );
-  }, [variant, disabled, rounded]);
+  }, [variant, disabled, rounded, props.className]);
 
   return to ? (
-    <NavLink to={to} className={classes} state={state}>
+    <NavLink
+      to={to}
+      className={classes}
+      state={state}
+      onClick={(ev) => disabled && ev.preventDefault()}
+    >
       <ButtonContent icon={icon} loading={loading}>
         {children}
       </ButtonContent>

@@ -168,6 +168,7 @@ export function BodyInteractions({
             ({ top, left, height, width, id, hidden, buttonOffset }) => (
               <div
                 key={id}
+                hidden={hidden}
                 className="absolute z-10"
                 onClick={() => onSelectRole((BodyPart as any)[id])}
                 style={{
@@ -179,8 +180,8 @@ export function BodyInteractions({
                   {highlightedRoles.includes((BodyPart as any)[id]) && (
                     <div
                       className={classNames(
-                        'absolute rounded-full outline outline-2 outline-status-warning transition-opacity',
-                        (hidden && 'opacity-0') || 'opacity-100 animate-ping'
+                        'absolute rounded-full outline outline-2 outline-status-warning',
+                        'transition-opacity opacity-100 animate-ping'
                       )}
                       style={{
                         width: dotsSize,

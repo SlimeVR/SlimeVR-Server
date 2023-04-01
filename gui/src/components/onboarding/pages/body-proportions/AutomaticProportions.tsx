@@ -8,7 +8,6 @@ import {
 import { useBodyProportions } from '../../../../hooks/body-proportions';
 import { useOnboarding } from '../../../../hooks/onboarding';
 import { useWebsocketAPI } from '../../../../hooks/websocket-api';
-import { ArrowLink } from '../../../commons/ArrowLink';
 import { Button } from '../../../commons/Button';
 import { Typography } from '../../../commons/Typography';
 import { StepperSlider } from '../../StepperSlider';
@@ -18,28 +17,27 @@ import { PutTrackersOnStep } from './autobone-steps/PutTrackersOn';
 import { Recording } from './autobone-steps/Recording';
 import { StartRecording } from './autobone-steps/StartRecording';
 import { VerifyResultsStep } from './autobone-steps/VerifyResults';
+import { SkipSetupWarningModal } from '../../SkipSetupWarningModal';
+import { SkipSetupButton } from '../../SkipSetupButton';
+import { useCountdown } from '../../../../hooks/countdown';
 
 export function AutomaticProportionsPage() {
   const { l10n } = useLocalization();
   const { applyProgress, skipSetup, state } = useOnboarding();
   const { sendRPCPacket } = useWebsocketAPI();
   const context = useProvideAutobone();
-  const [resetDisabled, setResetDisabled] = useState(false);
   const { onPageOpened } = useBodyProportions();
+  const [skipWarning, setSkipWarning] = useState(false);
+  const { isCounting, startCountdown, timer } = useCountdown({
+    onCountdownEnd: () => {
+      sendRPCPacket(
+        RpcMessage.SkeletonResetAllRequest,
+        new SkeletonResetAllRequestT()
+      );
+    },
+  });
 
   applyProgress(0.9);
-
-  const resetAll = () => {
-    sendRPCPacket(
-      RpcMessage.SkeletonResetAllRequest,
-      new SkeletonResetAllRequestT()
-    );
-    setResetDisabled(true);
-
-    setTimeout(() => {
-      setResetDisabled(false);
-    }, 3000);
-  };
 
   useEffect(() => {
     onPageOpened();
@@ -47,14 +45,14 @@ export function AutomaticProportionsPage() {
 
   return (
     <AutoboneContextC.Provider value={context}>
-      <div className="flex flex-col gap-5 h-full items-center w-full justify-center">
+      <div className="flex flex-col gap-5 h-full items-center w-full justify-center relative">
+        <SkipSetupButton
+          visible={!state.alonePage}
+          modalVisible={skipWarning}
+          onClick={() => setSkipWarning(true)}
+        ></SkipSetupButton>
         <div className="flex flex-col w-full h-full justify-center max-w-3xl gap-5">
           <div className="flex flex-col max-w-lg gap-3">
-            {!state.alonePage && (
-              <ArrowLink to="/onboarding/reset-tutorial" direction="left">
-                {l10n.getString('onboarding-automatic_proportions-back')}
-              </ArrowLink>
-            )}
             <Typography variant="main-title">
               {l10n.getString('onboarding-automatic_proportions-title')}
             </Typography>
@@ -80,35 +78,26 @@ export function AutomaticProportionsPage() {
         </div>
         <div className="w-full pb-4 flex flex-row">
           <div className="flex flex-grow gap-3">
-            {!state.alonePage && (
-              <Button variant="secondary" to="/" onClick={skipSetup}>
-                {l10n.getString('onboarding-skip')}
-              </Button>
-            )}
             <Button
               variant="secondary"
-              onClick={resetAll}
-              disabled={resetDisabled}
+              onClick={startCountdown}
+              disabled={isCounting}
             >
-              {l10n.getString('reset-reset_all')}
+              <div className="relative">
+                <div className="opacity-0 h-0">
+                  {l10n.getString('reset-reset_all')}
+                </div>
+                {!isCounting ? l10n.getString('reset-reset_all') : timer}
+              </div>
             </Button>
-          </div>
-          <div className="flex gap-3">
-            <Button
-              variant="secondary"
-              state={{ alonePage: state.alonePage }}
-              to="/onboarding/body-proportions/manual"
-            >
-              {l10n.getString('onboarding-automatic_proportions-manual')}
-            </Button>
-            {!state.alonePage && (
-              <Button variant="primary" to="/onboarding/done">
-                {l10n.getString('onboarding-continue')}
-              </Button>
-            )}
           </div>
         </div>
       </div>
+      <SkipSetupWarningModal
+        accept={skipSetup}
+        onClose={() => setSkipWarning(false)}
+        isOpen={skipWarning}
+      ></SkipSetupWarningModal>
     </AutoboneContextC.Provider>
   );
 }
