@@ -35,10 +35,6 @@ static POSSIBLE_TITLES: &[&str] = &[
 	"uwu sowwy",
 ];
 
-// For storing the Slime Server
-#[derive(Default)]
-struct Backend(Option<CommandChild>);
-
 shadow!(build);
 // Tauri has a way to return the package.json version, but it's not a constant...
 const VERSION: &str = if build::TAG.is_empty() {
@@ -181,7 +177,7 @@ fn main() {
 	}
 
 	// Spawn server process
-	let mut backend = Backend::default();
+	let mut backend = Option::<CommandChild>::default();
 	let run_path = get_launch_path(cli);
 
 	let stdout_recv = if let Some(p) = run_path {
@@ -204,7 +200,7 @@ fn main() {
 			.args(["-Xmx512M", "-jar", "slimevr.jar", "--no-gui"])
 			.spawn()
 			.expect("Unable to start the server jar");
-		_ = backend.0.insert(child);
+		_ = backend.insert(child);
 		Some(recv)
 	} else {
 		log::warn!("No server found. We will not start the server.");
@@ -252,7 +248,7 @@ fn main() {
 		Ok(app) => {
 			app.run(move |_app_handle, event| match event {
 				RunEvent::ExitRequested { .. } => {
-					if let Some(mut child) = backend.0.take() {
+					if let Some(mut child) = backend.take() {
 						let write_result = child.write(b"exit\n");
 						match write_result {
 							Ok(()) => log::info!("send exit to backend"),
