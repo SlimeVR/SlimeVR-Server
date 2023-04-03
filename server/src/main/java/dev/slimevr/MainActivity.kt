@@ -3,6 +3,10 @@ package dev.slimevr
 import android.os.Bundle
 import androidx.appcompat.app.AppCompatActivity
 import io.eiren.util.logging.LogManager
+import io.ktor.server.engine.embeddedServer
+import io.ktor.server.http.content.*
+import io.ktor.server.netty.Netty
+import io.ktor.server.routing.routing
 import java.io.File
 import kotlin.concurrent.thread
 import kotlin.system.exitProcess
@@ -20,6 +24,17 @@ class MainActivity : AppCompatActivity() {
 			}
 			LogManager.info("Running version $VERSION")
 			try {
+				// Run the web GUI server
+				embeddedServer(Netty, port = 8080) {
+					routing {
+						static("/") {
+							staticBasePackage = "web-gui"
+							resources()
+							defaultResource("index.html")
+						}
+					}
+				}.start(wait = false)
+
 				vrServer = VRServer(File(filesDir, "vrconfig.yml").absolutePath)
 				vrServer.start()
 				Keybinding(vrServer)

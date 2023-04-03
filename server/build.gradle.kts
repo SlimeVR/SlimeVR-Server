@@ -98,6 +98,9 @@ dependencies {
 	implementation(fileTree(mapOf("dir" to "libs", "include" to listOf("*.jar"))))
 	androidTestImplementation("androidx.test.ext:junit:1.1.5")
 	androidTestImplementation("androidx.test.espresso:espresso-core:3.5.1")
+	// For hosting web GUI
+	implementation("io.ktor:ktor-server-core:2.2.4")
+	implementation("io.ktor:ktor-server-netty:2.2.4")
 }
 
 /**
