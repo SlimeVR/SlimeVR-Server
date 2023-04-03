@@ -596,6 +596,18 @@ onboarding-assign_trackers-warning-WAIST = Waist is assigned but you need { $una
     *[unknown] Unknown unassigned body part
 } to also be assigned!
 
+## Tracker mounting method choose
+onboarding-choose_mounting = What mounting method do you want to use?
+onboarding-choose_mounting-auto_mounting = Automatic mounting
+# Italized text
+onboarding-choose_mounting-auto_mounting-subtitle = Recommended
+onboarding-choose_mounting-auto_mounting-description = This will detect your tracker's mounting and automatically assign it to the correct body part
+onboarding-choose_mounting-manual_mounting = Manual mounting
+# Italized text
+onboarding-choose_mounting-manual_mounting-subtitle = If you know what you are doing
+onboarding-choose_mounting-manual_mounting-description = This will let you choose the mounting manually per tracker
+
+
 ## Tracker manual mounting setup
 onboarding-manual_mounting-back = Go Back to Enter VR
 onboarding-manual_mounting = Manual Mounting

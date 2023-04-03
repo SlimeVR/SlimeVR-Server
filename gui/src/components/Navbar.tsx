@@ -83,7 +83,7 @@ export function Navbar() {
           {l10n.getString('navbar-trackers_assign')}
         </NavButton>
         <NavButton
-          to="/onboarding/mounting/auto"
+          to="/onboarding/mounting/choose"
           match="/onboarding/mounting/*"
           state={{ alonePage: true }}
           icon={<GearIcon></GearIcon>}
