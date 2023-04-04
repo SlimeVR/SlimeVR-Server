@@ -10,6 +10,7 @@ import io.eiren.util.logging.LogManager;
 
 import java.io.IOException;
 import java.net.InetAddress;
+import java.net.InetSocketAddress;
 import java.net.UnknownHostException;
 
 
@@ -71,7 +72,7 @@ public class OSCRouter {
 			// Else, create our own OSC receiver
 			if (oscReceiver == null) {
 				try {
-					oscReceiver = new OSCPortIn(portIn);
+					oscReceiver = new OSCPortIn(OSCStatic.serializer, portIn);
 					if (lastPortIn != portIn || !wasListening) {
 						LogManager.info("[OSCRouter] Listening to port " + portIn);
 					}
@@ -114,8 +115,8 @@ public class OSCRouter {
 			if (oscSender == null) {
 				try {
 					oscSender = new OSCPortOut(
-						address,
-						portOut
+						OSCStatic.serializer,
+						new InetSocketAddress(address, portOut)
 					);
 					if ((lastPortOut != portOut && lastAddress != address) || !wasConnected) {
 						LogManager

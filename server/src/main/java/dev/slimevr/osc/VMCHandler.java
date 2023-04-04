@@ -21,6 +21,7 @@ import io.github.axisangles.ktmath.Vector3;
 
 import java.io.IOException;
 import java.net.InetAddress;
+import java.net.InetSocketAddress;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -94,6 +95,7 @@ public class VMCHandler implements OSCHandler {
 			try {
 				int port = config.getPortIn();
 				oscReceiver = new OSCPortIn(
+					OSCStatic.serializer,
 					port
 				);
 				if (lastPortIn != port || !wasListening) {
@@ -130,8 +132,8 @@ public class VMCHandler implements OSCHandler {
 				InetAddress address = InetAddress.getByName(config.getAddress());
 				int port = config.getPortOut();
 				oscSender = new OSCPortOut(
-					address,
-					port
+					OSCStatic.serializer,
+					new InetSocketAddress(address, port)
 				);
 				if ((lastPortOut != port && lastAddress != address) || !wasConnected) {
 					LogManager
