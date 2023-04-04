@@ -21,6 +21,8 @@ import kotlin.system.exitProcess
 val VERSION =
 	(GIT_VERSION_TAG.ifEmpty { GIT_COMMIT_HASH }) +
 		if (GIT_CLEAN) "" else "-dirty"
+lateinit var vrServer: VRServer
+	private set
 
 fun main(args: Array<String>) {
 	System.setProperty("awt.useSystemAAFontSettings", "on")
@@ -89,7 +91,7 @@ fun main(args: Array<String>) {
 		return
 	}
 	try {
-		val vrServer = VRServer()
+		vrServer = VRServer()
 		vrServer.start()
 		Keybinding(vrServer)
 		val scanner = thread {

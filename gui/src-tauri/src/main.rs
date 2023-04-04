@@ -40,6 +40,7 @@ fn main() {
 	#[cfg(windows)]
 	{
 		use win32job::{ExtendedLimitInfo, Job};
+		use crate::util::webview2_exists;
 
 		let mut info = ExtendedLimitInfo::new();
 		info.limit_kill_on_job_close();
