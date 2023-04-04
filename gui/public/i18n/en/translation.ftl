@@ -479,11 +479,7 @@ onboarding-reset_tutorial-description = This feature isn't done, just press cont
 
 ## Setup start
 onboarding-home = Welcome to SlimeVR
-# This cares about multilines and it's centered!!
-onboarding-home-description =
-    Bringing full-body tracking
-    to everyone
-onboarding-home-start = Lets get set up!
+onboarding-home-start = Let's get set up!
 
 ## Enter VR part of setup
 onboarding-enter_vr-back = Go Back to Tracker assignent

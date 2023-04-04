@@ -10,7 +10,7 @@ import {
 import { FlatDeviceTracker } from '../../hooks/app';
 import { useConfig } from '../../hooks/config';
 import { useTracker } from '../../hooks/tracker';
-import { FootIcon } from '../commons/icon/FootIcon';
+import { BodyPartIcon } from '../commons/BodyPartIcon';
 import { Typography } from '../commons/Typography';
 import { formatVector3 } from '../utils/formatting';
 import { TrackerBattery } from './TrackerBattery';
@@ -60,7 +60,7 @@ export function TrackerNameCell({ tracker }: { tracker: TrackerDataT }) {
   return (
     <div className="flex flex-row gap-2">
       <div className="flex flex-col justify-center items-center fill-background-10">
-        <FootIcon></FootIcon>
+        <BodyPartIcon bodyPart={tracker.info?.bodyPart}></BodyPartIcon>
       </div>
       <div className="flex flex-col flex-grow">
         <Typography bold whitespace="whitespace-nowrap">

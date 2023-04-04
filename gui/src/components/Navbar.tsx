@@ -5,6 +5,10 @@ import { NavLink, useMatch } from 'react-router-dom';
 import { useBodyProportions } from '../hooks/body-proportions';
 import { CubeIcon } from './commons/icon/CubeIcon';
 import { GearIcon } from './commons/icon/GearIcon';
+import { HumanIcon } from './commons/icon/HumanIcon';
+import { RulerIcon } from './commons/icon/RulerIcon';
+import { SparkleIcon } from './commons/icon/SparkleIcon';
+import { WrenchIcon } from './commons/icon/WrenchIcons';
 
 export function NavButton({
   to,
@@ -28,7 +32,7 @@ export function NavButton({
       to={to}
       state={state}
       className={classnames(
-        'flex flex-col justify-center gap-4 w-[85px] h-[85px] rounded-md group select-text',
+        'flex flex-col justify-center gap-4 w-[85px] py-3 rounded-md group select-text',
         {
           'bg-accent-background-50 fill-accent-background-20': doesMatch,
           'hover:bg-background-70': !doesMatch,
@@ -71,14 +75,14 @@ export function Navbar() {
           to={lastUsedPage}
           match="/onboarding/body-proportions/*"
           state={{ alonePage: true }}
-          icon={<GearIcon></GearIcon>}
+          icon={<RulerIcon></RulerIcon>}
         >
           {l10n.getString('navbar-body_proportions')}
         </NavButton>
         <NavButton
           to="/onboarding/trackers-assign"
           state={{ alonePage: true }}
-          icon={<GearIcon></GearIcon>}
+          icon={<HumanIcon></HumanIcon>}
         >
           {l10n.getString('navbar-trackers_assign')}
         </NavButton>
@@ -86,11 +90,11 @@ export function Navbar() {
           to="/onboarding/mounting/choose"
           match="/onboarding/mounting/*"
           state={{ alonePage: true }}
-          icon={<GearIcon></GearIcon>}
+          icon={<WrenchIcon></WrenchIcon>}
         >
           {l10n.getString('navbar-mounting')}
         </NavButton>
-        <NavButton to="/onboarding/home" icon={<GearIcon></GearIcon>}>
+        <NavButton to="/onboarding/home" icon={<SparkleIcon></SparkleIcon>}>
           {l10n.getString('navbar-onboarding')}
         </NavButton>
       </div>
