@@ -25,12 +25,12 @@ data class Transform @JvmOverloads constructor(
 	 * @return This matrix, after combining.
 	 */
 	fun combineWithParent(parent: Transform): Transform {
-		this.scale = this.scale cross parent.scale
+		this.scale = this.scale hadamard parent.scale
 
 		this.rotation = parent.rotation * this.rotation
 
-		val scaledTranslation = this.translation cross parent.scale
-		this.translation = (parent.rotation.toMatrix() * scaledTranslation) + parent.translation
+		val scaledTranslation = this.translation hadamard parent.scale
+		this.translation = parent.rotation.sandwich(scaledTranslation) + parent.translation
 
 		return this
 	}

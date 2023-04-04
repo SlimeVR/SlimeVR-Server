@@ -47,6 +47,12 @@ data class Vector3(val x: Float, val y: Float, val z: Float) {
 		this.x * that.y - this.y * that.x
 	)
 
+	infix fun hadamard(that: Vector3) = Vector3(
+		this.x * that.x,
+		this.y * that.y,
+		this.z * that.z
+	)
+
 	/**
 	 * computes the square of the length of this vector
 	 * @return the length squared

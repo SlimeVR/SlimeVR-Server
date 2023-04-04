@@ -1,10 +1,14 @@
 package dev.slimevr.tracking.processor
 
+import io.eiren.util.ann.ThreadSafe
 import io.eiren.util.collections.FastList
 import io.github.axisangles.ktmath.Transform
 import java.util.function.Consumer
 
-class TransformNode @JvmOverloads constructor(var boneType: BoneType? = null, val localRotation: Boolean = true) {
+class TransformNode @JvmOverloads constructor(
+	var boneType: BoneType? = null,
+	val localRotation: Boolean = true,
+) {
 	val localTransform = Transform()
 	val worldTransform = Transform()
 	val children: MutableList<TransformNode> = FastList()
@@ -17,6 +21,7 @@ class TransformNode @JvmOverloads constructor(var boneType: BoneType? = null, va
 		node.parent = this
 	}
 
+	@ThreadSafe
 	fun update() {
 		// Call update on each frame because we have relatively few nodes
 		updateWorldTransforms()
@@ -25,6 +30,7 @@ class TransformNode @JvmOverloads constructor(var boneType: BoneType? = null, va
 		}
 	}
 
+	@Synchronized
 	private fun updateWorldTransforms() {
 		worldTransform.set(localTransform)
 		parent?.let {
@@ -44,9 +50,9 @@ class TransformNode @JvmOverloads constructor(var boneType: BoneType? = null, va
 	}
 
 	fun combineWithParentGlobalRotation(parent: Transform) {
-		worldTransform.scale = worldTransform.scale cross parent.scale
-		val scaledTranslation = worldTransform.translation cross parent.scale
-		worldTransform.translation = (parent.rotation.toMatrix() * scaledTranslation) + parent.translation
+		worldTransform.scale = worldTransform.scale hadamard parent.scale
+		val scaledTranslation = worldTransform.translation hadamard parent.scale
+		worldTransform.translation = parent.rotation.sandwich(scaledTranslation) + parent.translation
 	}
 
 	fun detachWithChildren() {
