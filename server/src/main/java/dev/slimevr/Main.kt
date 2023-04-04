@@ -96,7 +96,7 @@ fun main(args: Array<String>) {
 			while (true) {
 				if (readln() == "exit") {
 					vrServer.interrupt()
-					break;
+					break
 				}
 			}
 		}
