@@ -24,7 +24,6 @@ export function DoneStep({
           {l10n.getString('onboarding-automatic_mounting-done-description')}
         </Typography>
       </div>
-      <SkeletonVisualizerWidget></SkeletonVisualizerWidget>
 
       <div className="flex gap-3">
         <Button
