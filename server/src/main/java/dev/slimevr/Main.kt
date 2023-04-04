@@ -15,13 +15,12 @@ import java.io.IOException
 import java.lang.System
 import java.net.ServerSocket
 import javax.swing.JOptionPane
+import kotlin.concurrent.thread
 import kotlin.system.exitProcess
 
 val VERSION =
 	(GIT_VERSION_TAG.ifEmpty { GIT_COMMIT_HASH }) +
 		if (GIT_CLEAN) "" else "-dirty"
-var vrServer: VRServer? = null
-var commandServer: CommandServer? = null
 
 fun main(args: Array<String>) {
 	System.setProperty("awt.useSystemAAFontSettings", "on")
@@ -90,15 +89,21 @@ fun main(args: Array<String>) {
 		return
 	}
 	try {
-		vrServer = VRServer()
-		vrServer!!.start()
+		val vrServer = VRServer()
+		vrServer.start()
 		Keybinding(vrServer)
-		commandServer = CommandServer(vrServer)
-		commandServer!!.start()
-		vrServer!!.join()
-		commandServer!!.join()
-		exitProcess(0)
+		val scanner = thread {
+			while (true) {
+				if (readln() == "exit") {
+					vrServer.interrupt()
+					break;
+				}
+			}
+		}
+		vrServer.join()
+		scanner.join()
 		LogManager.closeLogger()
+		exitProcess(0)
 	} catch (e: Throwable) {
 		e.printStackTrace()
 		exitProcess(1)
