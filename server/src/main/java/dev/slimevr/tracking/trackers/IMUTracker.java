@@ -28,7 +28,7 @@ public class IMUTracker
 	// public final Vector3f magVector = new Vector3f();
 	public final Quaternion rotQuaternion = new Quaternion();
 	public final Quaternion rotMagQuaternion = new Quaternion();
-	public final Quaternion mountAdjust = new Quaternion();
+	public final Quaternion mountAdjust = new Quaternion().fromAngles(0, FastMath.PI, 0);
 	public final UDPDevice device;
 	public final int trackerNum;
 	public final Vector3f rotVector = new Vector3f();
@@ -132,7 +132,7 @@ public class IMUTracker
 				mounting = config.getMountingOrientation();
 				mountAdjust.set(config.getMountingOrientation());
 			} else {
-				mountAdjust.loadIdentity();
+				mountAdjust.fromAngles(0, FastMath.PI, 0);
 			}
 			Optional<TrackerPosition> trackerPosition = TrackerPosition
 				.getByDesignation(config.getDesignation());
@@ -165,7 +165,7 @@ public class IMUTracker
 		if (mounting != null) {
 			mountAdjust.set(mounting);
 		} else {
-			mountAdjust.loadIdentity();
+			mountAdjust.fromAngles(0, FastMath.PI, 0);
 		}
 
 		// Clear the mounting reset now that it's been set manually
