@@ -971,7 +971,7 @@ public class HumanSkeleton {
 		// Knee = Knee * R * C
 		// normalize(Knee)
 		Quaternion r = knee.inv().times(ankle);
-		Quaternion c = new Quaternion(-r.getX(), 0, 0, r.getW());
+		Quaternion c = new Quaternion(r.getW(), -r.getX(), 0, 0);
 		return knee.times(r).times(c).unit();
 	}
 
@@ -1004,7 +1004,7 @@ public class HumanSkeleton {
 		// Pelvis = Hip * R * C
 		// normalize(Pelvis)
 		var r = hip.inv().times(leftKnee.plus(rightKnee));
-		var c = new Quaternion(-r.getX(), 0, 0, r.getW());
+		var c = new Quaternion(r.getW(), -r.getX(), 0, 0);
 		return hip.times(r).times(c).unit();
 	}
 
