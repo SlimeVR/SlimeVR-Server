@@ -35,7 +35,7 @@
       },
       "appimage": {
         "bundleMediaFramework": true 
-      }
+      },
       "macOS": {
         "frameworks": [],
         "exceptionDomain": "localhost",
