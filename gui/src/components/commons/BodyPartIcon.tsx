@@ -8,6 +8,7 @@ import { HipIcon } from './icon/HipIcon';
 import { LowerArmIcon } from './icon/LowerArmIcon';
 import { NeckIcon } from './icon/NeckIcon';
 import { ShoulderIcon } from './icon/ShoulderIcon';
+import { SlimeVRIcon } from './icon/SlimeVRIcon';
 import { UpperArmIcon } from './icon/UpperArmIcon';
 import { UpperLegIcon } from './icon/UpperLegIcon';
 import { WaistIcon } from './icon/WaistIcon';
@@ -40,7 +41,7 @@ export const mapPart: Record<
     <UpperLegIcon width={width}></UpperLegIcon>
   ),
   [BodyPart.NECK]: ({ width }) => <NeckIcon width={width}></NeckIcon>,
-  [BodyPart.NONE]: () => <></>,
+  [BodyPart.NONE]: ({ width }) => <SlimeVRIcon width={width}></SlimeVRIcon>,
   [BodyPart.RIGHT_FOOT]: ({ width }) => (
     <FootIcon width={width} flipped></FootIcon>
   ),
