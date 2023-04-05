@@ -291,10 +291,10 @@ export function TrackersTable({
       {column({
         id: DisplayColumn.TPS,
         label: l10n.getString('tracker-table-column-tps'),
-        row: ({ device }) => (
+        row: ({ tracker }) => (
           <Typography color={fontColor}>
-            {(device?.hardwareStatus?.tps != null && (
-              <>{device.hardwareStatus.tps || 0}</>
+            {(tracker?.tps != null && (
+              <>{tracker.tps || 0}</>
             )) || <></>}
           </Typography>
         ),
