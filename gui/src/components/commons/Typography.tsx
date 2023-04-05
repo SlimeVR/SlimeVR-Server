@@ -7,7 +7,7 @@ export function Typography({
   color = 'primary',
   whitespace = 'whitespace-normal',
   children,
-  italic = false
+  italic = false,
 }: {
   variant?: 'main-title' | 'section-title' | 'standard' | 'vr-accessible';
   bold?: boolean;
@@ -47,7 +47,7 @@ export function Typography({
         color === 'secondary' && 'text-background-30',
         typeof color === 'string' && color,
         whitespace,
-        italic && 'italic'
+        italic && 'italic',
       ]),
     },
     children

@@ -41,7 +41,9 @@ export const mapPart: Record<
   ),
   [BodyPart.NECK]: ({ width }) => <NeckIcon width={width}></NeckIcon>,
   [BodyPart.NONE]: () => <></>,
-  [BodyPart.RIGHT_FOOT]: ({ width }) => <FootIcon width={width} flipped></FootIcon>,
+  [BodyPart.RIGHT_FOOT]: ({ width }) => (
+    <FootIcon width={width} flipped></FootIcon>
+  ),
   [BodyPart.RIGHT_HAND]: ({ width }) => (
     <ControllerIcon width={width}></ControllerIcon>
   ),
