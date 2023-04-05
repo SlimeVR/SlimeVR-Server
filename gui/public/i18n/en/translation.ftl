@@ -631,6 +631,17 @@ onboarding-automatic_mounting-put_trackers_on-title = Put on your trackers
 onboarding-automatic_mounting-put_trackers_on-description = To calibrate mounting rotations, we're gonna use the trackers you just assigned. Put on all your trackers, you can see which are which in the figure to the right.
 onboarding-automatic_mounting-put_trackers_on-next = I have all my trackers on
 
+## Tracker proportions method choose
+onboarding-choose_proportions = What proportions method do you want to use?
+onboarding-choose_proportions-auto_proportions = Automatic proportions
+# Italized text
+onboarding-choose_proportions-auto_proportions-subtitle = Recommended
+onboarding-choose_proportions-auto_proportions-description = This will measure your body by recording a sample of your movements and calculating an approximation of your proportions
+onboarding-choose_proportions-manual_proportions = Manual proportions
+# Italized text
+onboarding-choose_proportions-manual_proportions-subtitle = For small touches
+onboarding-choose_proportions-manual_proportions-description = This will let you adjust your proportions manually by letting you choose the offset, lengths and ratios of your body parts
+
 ## Tracker manual proportions setup
 onboarding-manual_proportions-back = Go Back to Reset tutorial
 onboarding-manual_proportions-title = Manual Body Proportions

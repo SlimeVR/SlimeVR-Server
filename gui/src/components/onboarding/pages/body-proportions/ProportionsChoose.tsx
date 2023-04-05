@@ -10,6 +10,7 @@ export function ProportionsChoose() {
   const { l10n } = useLocalization();
   const { applyProgress, skipSetup, state } = useOnboarding();
   const [skipWarning, setSkipWarning] = useState(false);
+  const [animated, setAnimated] = useState(false);
 
   applyProgress(0.65);
 
@@ -65,9 +66,7 @@ export function ProportionsChoose() {
                     className="self-start mt-auto"
                     state={{ alonePage: state.alonePage }}
                   >
-                    {l10n.getString(
-                      'onboarding-automatic_proportions-manual'
-                    )}
+                    {l10n.getString('onboarding-automatic_proportions-manual')}
                   </Button>
                 </div>
               </div>
@@ -82,8 +81,13 @@ export function ProportionsChoose() {
                   <div className="flex flex-grow flex-col gap-4 max-w-sm">
                     <div>
                       <img
-                        src="/images/boxslime.png"
-                        className="absolute w-1/3 -right-10 -top-16"
+                        onMouseEnter={() => setAnimated(() => true)}
+                        onAnimationEnd={() => setAnimated(() => false)}
+                        src="/images/slimetower.png"
+                        className={classNames(
+                          'absolute w-1/3 -right-2 -top-32',
+                          animated && 'animate-[bounce_1s_1]'
+                        )}
                       ></img>
                       <Typography variant="main-title" bold>
                         {l10n.getString(

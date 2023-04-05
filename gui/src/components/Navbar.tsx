@@ -72,14 +72,6 @@ export function Navbar() {
           {l10n.getString('navbar-home')}
         </NavButton>
         <NavButton
-          to={lastUsedPage}
-          match="/onboarding/body-proportions/*"
-          state={{ alonePage: true }}
-          icon={<RulerIcon></RulerIcon>}
-        >
-          {l10n.getString('navbar-body_proportions')}
-        </NavButton>
-        <NavButton
           to="/onboarding/trackers-assign"
           state={{ alonePage: true }}
           icon={<HumanIcon></HumanIcon>}
@@ -93,6 +85,14 @@ export function Navbar() {
           icon={<WrenchIcon></WrenchIcon>}
         >
           {l10n.getString('navbar-mounting')}
+        </NavButton>
+        <NavButton
+          to={lastUsedPage}
+          match="/onboarding/body-proportions/*"
+          state={{ alonePage: true }}
+          icon={<RulerIcon></RulerIcon>}
+        >
+          {l10n.getString('navbar-body_proportions')}
         </NavButton>
         <NavButton to="/onboarding/home" icon={<SparkleIcon></SparkleIcon>}>
           {l10n.getString('navbar-onboarding')}

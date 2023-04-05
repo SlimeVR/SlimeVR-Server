@@ -12,6 +12,7 @@ import { UpperArmIcon } from './icon/UpperArmIcon';
 import { UpperLegIcon } from './icon/UpperLegIcon';
 import { WaistIcon } from './icon/WaistIcon';
 
+// All body parts that are right or left, are by default left!
 export const mapPart: Record<
   BodyPart,
   ({ width }: { width?: number }) => JSX.Element
@@ -40,24 +41,24 @@ export const mapPart: Record<
   ),
   [BodyPart.NECK]: ({ width }) => <NeckIcon width={width}></NeckIcon>,
   [BodyPart.NONE]: () => <></>,
-  [BodyPart.RIGHT_FOOT]: ({ width }) => <FootIcon width={width}></FootIcon>,
+  [BodyPart.RIGHT_FOOT]: ({ width }) => <FootIcon width={width} flipped></FootIcon>,
   [BodyPart.RIGHT_HAND]: ({ width }) => (
     <ControllerIcon width={width}></ControllerIcon>
   ),
   [BodyPart.RIGHT_LOWER_ARM]: ({ width }) => (
-    <LowerArmIcon width={width}></LowerArmIcon>
+    <LowerArmIcon width={width} flipped></LowerArmIcon>
   ),
   [BodyPart.RIGHT_LOWER_LEG]: ({ width }) => (
-    <AnkleIcon width={width}></AnkleIcon>
+    <AnkleIcon width={width} flipped></AnkleIcon>
   ),
   [BodyPart.RIGHT_SHOULDER]: ({ width }) => (
     <ShoulderIcon width={width}></ShoulderIcon>
   ),
   [BodyPart.RIGHT_UPPER_ARM]: ({ width }) => (
-    <UpperArmIcon width={width}></UpperArmIcon>
+    <UpperArmIcon width={width} flipped></UpperArmIcon>
   ),
   [BodyPart.RIGHT_UPPER_LEG]: ({ width }) => (
-    <UpperLegIcon width={width}></UpperLegIcon>
+    <UpperLegIcon width={width} flipped></UpperLegIcon>
   ),
   [BodyPart.WAIST]: ({ width }) => <WaistIcon width={width}></WaistIcon>,
 };

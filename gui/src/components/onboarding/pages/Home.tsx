@@ -47,7 +47,7 @@ export function HomePage() {
           className="absolute"
           src="/images/slime-girl.png"
           style={{
-            width: '40%',
+            width: '35%',
             maxWidth: 800,
             bottom: '1%',
             left: '9%',
@@ -57,7 +57,7 @@ export function HomePage() {
           className="absolute"
           src="/images/slimes.png"
           style={{
-            width: '40%',
+            width: '35%',
             maxWidth: 800,
             bottom: '1%',
             right: '9%',
