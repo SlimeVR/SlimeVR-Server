@@ -37,7 +37,16 @@ public class SerialHandler implements SerialPortMessageListener {
 		this.watchingNewDevices = true;
 		this.getDevicesTimer.scheduleAtFixedRate(new TimerTask() {
 			public void run() {
-				detectNewPorts();
+				try {
+					detectNewPorts();
+				} catch (Throwable t) {
+					LogManager
+						.severe(
+							"[SerialHandler] Error while watching for new devices, cancelling the \"getDevicesTimer\".",
+							t
+						);
+					getDevicesTimer.cancel();
+				}
 			}
 		}, 0, 3000);
 	}

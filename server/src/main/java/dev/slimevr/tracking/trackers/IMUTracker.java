@@ -136,11 +136,7 @@ public class IMUTracker
 			}
 			Optional<TrackerPosition> trackerPosition = TrackerPosition
 				.getByDesignation(config.getDesignation());
-			if (trackerPosition.isEmpty()) {
-				bodyPosition = null;
-			} else {
-				bodyPosition = trackerPosition.get();
-			}
+			bodyPosition = trackerPosition.orElse(null);
 			if (config.getAllowDriftCompensation() == null) {
 				// If value didn't exist, default to true and save
 				allowDriftCompensation = true;

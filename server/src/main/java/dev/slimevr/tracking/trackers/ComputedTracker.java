@@ -61,11 +61,7 @@ public class ComputedTracker implements Tracker, TrackerWithTPS {
 			setCustomName(config.getCustomName());
 			Optional<TrackerPosition> trackerPosition = TrackerPosition
 				.getByDesignation(config.getDesignation());
-			if (trackerPosition.isEmpty()) {
-				bodyPosition = null;
-			} else {
-				bodyPosition = trackerPosition.get();
-			}
+			bodyPosition = trackerPosition.orElse(null);
 		}
 	}
 
