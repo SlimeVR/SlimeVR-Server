@@ -33,6 +33,9 @@
           "/usr/share/slimevr/slimevr.jar": "../../server/build/libs/slimevr.jar"
         }
       },
+      "appimage": {
+        "bundleMediaFramework": true 
+      },
       "macOS": {
         "frameworks": [],
         "exceptionDomain": "localhost",
