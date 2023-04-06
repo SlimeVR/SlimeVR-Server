@@ -451,8 +451,8 @@ onboarding-continue = Continue
 onboarding-wip = Work in progress
 onboarding-previous_step = Previous step
 onboarding-setup_warning =
-    <b>Warning:</b> The setup is needed for good tracking,
-    it is required if it is your first time using SlimeVR.
+    <b>Warning:</b> The setup is required for good tracking,
+    it is needed if it is your first time using SlimeVR.
 onboarding-setup_warning-skip = Skip setup
 onboarding-setup_warning-cancel = Continue setup
 
