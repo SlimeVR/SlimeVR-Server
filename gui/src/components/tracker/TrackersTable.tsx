@@ -293,9 +293,7 @@ export function TrackersTable({
         label: l10n.getString('tracker-table-column-tps'),
         row: ({ tracker }) => (
           <Typography color={fontColor}>
-            {(tracker?.tps != null && (
-              <>{tracker.tps || 0}</>
-            )) || <></>}
+            {tracker?.tps != null ? <>{tracker.tps}</> : <></>}
           </Typography>
         ),
       })}
