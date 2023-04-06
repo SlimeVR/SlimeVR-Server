@@ -211,7 +211,7 @@ public class DataFeedBuilder {
 			}
 		}
 		if (mask.getTps()) {
-			HardwareStatus.addTps(fbb, (int) tracker.getTps());
+			TrackerData.addTps(fbb, (int) tracker.getTps());
 		}
 
 		return TrackerData.endTrackerData(fbb);
