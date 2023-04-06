@@ -192,7 +192,7 @@ class TrackerResetsHandler(val tracker: Tracker) {
 		rot *= attachmentFix
 		rot *= mountRotFix
 		rot = rot.project(Vector3.POS_Y).unit()
-		yawFix = rot.inv().times(reference.project(Vector3.POS_Y).unit())
+		yawFix = rot.inv() * reference.project(Vector3.POS_Y).unit()
 	}
 
 	fun resetMounting(reverseYaw: Boolean, reference: Quaternion) {

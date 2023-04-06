@@ -7,7 +7,7 @@ import io.github.axisangles.ktmath.Vector3;
 
 /**
  * class that holds data related to the state and other various attributes of
- * the legs such as the position of the foot, knee, and waist, after and before
+ * the legs such as the position of the foot, knee, and hip, after and before
  * correction, the velocity of the foot and the computed state of the feet at
  * that frame. mainly calculates the state of the legs per frame using these
  * rules: The conditions for an unlock are as follows: 1. the foot is too far
@@ -41,7 +41,7 @@ public class LegTweakBuffer {
 	private Vector3 rightFootPosition = Vector3.Companion.getNULL();
 	private Vector3 leftKneePosition = Vector3.Companion.getNULL();
 	private Vector3 rightKneePosition = Vector3.Companion.getNULL();
-	private Vector3 waistPosition = Vector3.Companion.getNULL();
+	private Vector3 hipPosition = Vector3.Companion.getNULL();
 	private Quaternion leftFootRotation = Quaternion.Companion.getIDENTITY();
 	private Quaternion rightFootRotation = Quaternion.Companion.getIDENTITY();
 
@@ -49,7 +49,7 @@ public class LegTweakBuffer {
 	private Vector3 rightFootPositionCorrected = Vector3.Companion.getNULL();
 	private Vector3 leftKneePositionCorrected = Vector3.Companion.getNULL();
 	private Vector3 rightKneePositionCorrected = Vector3.Companion.getNULL();
-	private Vector3 waistPositionCorrected = Vector3.Companion.getNULL();
+	private Vector3 hipPositionCorrected = Vector3.Companion.getNULL();
 	private Quaternion leftFootRotationCorrected = Quaternion.Companion.getIDENTITY();
 	private Quaternion rightFootRotationCorrected = Quaternion.Companion.getIDENTITY();
 
@@ -162,12 +162,12 @@ public class LegTweakBuffer {
 		this.rightKneePosition = rightKneePosition;
 	}
 
-	public Vector3 getWaistPosition() {
-		return waistPosition;
+	public Vector3 getHipPosition() {
+		return hipPosition;
 	}
 
-	public void setWaistPosition(Vector3 waistPosition) {
-		this.waistPosition = waistPosition;
+	public void setHipPosition(Vector3 hipPosition) {
+		this.hipPosition = hipPosition;
 	}
 
 	public Quaternion getLeftFootRotation() {
@@ -234,12 +234,12 @@ public class LegTweakBuffer {
 		this.rightKneePositionCorrected = rightKneePositionCorrected;
 	}
 
-	public Vector3 getWaistPositionCorrected() {
-		return waistPositionCorrected;
+	public Vector3 getHipPositionCorrected() {
+		return hipPositionCorrected;
 	}
 
-	public void setWaistPositionCorrected(Vector3 waistPositionCorrected) {
-		this.waistPositionCorrected = waistPositionCorrected;
+	public void setHipPositionCorrected(Vector3 hipPositionCorrected) {
+		this.hipPositionCorrected = hipPositionCorrected;
 	}
 
 	public Vector3 getLeftFootVelocity() {
