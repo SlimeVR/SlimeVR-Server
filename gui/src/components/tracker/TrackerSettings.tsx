@@ -14,9 +14,9 @@ import {
   MountingOrientationDegreesToQuatT,
 } from '../../maths/quaternion';
 import { ArrowLink } from '../commons/ArrowLink';
+import { BodyPartIcon } from '../commons/BodyPartIcon';
 import { Button } from '../commons/Button';
 import { CheckBox } from '../commons/Checkbox';
-import { FootIcon } from '../commons/icon/FootIcon';
 import { WarningIcon } from '../commons/icon/WarningIcon';
 import { Input } from '../commons/Input';
 import { Typography } from '../commons/Typography';
@@ -263,7 +263,9 @@ export function TrackerSettingsPage() {
             <div className="flex justify-between bg-background-80 w-full p-3 rounded-lg">
               <div className="flex gap-3 items-center">
                 {tracker?.tracker.info?.bodyPart !== BodyPart.NONE && (
-                  <FootIcon></FootIcon>
+                  <BodyPartIcon
+                    bodyPart={tracker?.tracker.info?.bodyPart}
+                  ></BodyPartIcon>
                 )}
                 {tracker?.tracker.info?.bodyPart === BodyPart.NONE && (
                   <WarningIcon className="text-yellow-300" />
@@ -302,7 +304,9 @@ export function TrackerSettingsPage() {
               </Typography>
               <div className="flex justify-between bg-background-80 w-full p-3 rounded-lg">
                 <div className="flex gap-3 items-center">
-                  <FootIcon></FootIcon>
+                  <BodyPartIcon
+                    bodyPart={tracker?.tracker.info?.bodyPart}
+                  ></BodyPartIcon>
                   <Typography>
                     {l10n.getString(rotationsLabels[currRotationDegrees])}
                   </Typography>

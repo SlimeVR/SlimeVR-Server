@@ -40,6 +40,8 @@ import { OSCRouterSettings } from './components/settings/pages/OSCRouterSettings
 import { useLocalization } from '@fluent/react';
 import { os } from '@tauri-apps/api';
 import { VMCSettings } from './components/settings/pages/VMCSettings';
+import { MountingChoose } from './components/onboarding/pages/mounting/MountingChoose';
+import { ProportionsChoose } from './components/onboarding/pages/body-proportions/ProportionsChoose';
 
 function Layout() {
   const { loading } = useConfig();
@@ -92,9 +94,14 @@ function Layout() {
           <Route path="connect-trackers" element={<ConnectTrackersPage />} />
           <Route path="trackers-assign" element={<TrackersAssignPage />} />
           <Route path="enter-vr" element={<EnterVRPage />} />
+          <Route path="mounting/choose" element={<MountingChoose />}></Route>
           <Route path="mounting/auto" element={<AutomaticMountingPage />} />
           <Route path="mounting/manual" element={<ManualMountingPage />} />
           <Route path="reset-tutorial" element={<ResetTutorialPage />} />
+          <Route
+            path="body-proportions/choose"
+            element={<ProportionsChoose />}
+          />
           <Route
             path="body-proportions/auto"
             element={<AutomaticProportionsPage />}

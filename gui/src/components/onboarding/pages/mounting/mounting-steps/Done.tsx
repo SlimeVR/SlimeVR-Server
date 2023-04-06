@@ -1,7 +1,6 @@
 import { Button } from '../../../../commons/Button';
 import { Typography } from '../../../../commons/Typography';
 import { useLocalization } from '@fluent/react';
-import { SkeletonVisualizerWidget } from '../../../../widgets/SkeletonVisualizerWidget';
 
 export function DoneStep({
   resetSteps,

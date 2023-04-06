@@ -3,7 +3,7 @@ import { MouseEventHandler } from 'react';
 import ReactModal from 'react-modal';
 import { useElemSize, useLayout } from '../../../../hooks/layout';
 import { Button } from '../../../commons/Button';
-import { FootIcon } from '../../../commons/icon/FootIcon';
+import { AnkleIcon } from '../../../commons/icon/AnkleIcon';
 import { Typography } from '../../../commons/Typography';
 import { rotationToQuatMap } from '../../../tracker/TrackerSettings';
 import { useLocalization } from '@fluent/react';
@@ -15,6 +15,7 @@ function MoutingOrientationCard({
   orientation: string;
   onClick?: MouseEventHandler<HTMLDivElement>;
 }) {
+  // FIXME: Dont use AnkleIcon for this please
   return (
     <div
       onClick={onClick}
@@ -24,7 +25,7 @@ function MoutingOrientationCard({
         <Typography variant="main-title">{orientation}</Typography>
       </div>
       <div className="flex flex-col justify-center fill-white">
-        <FootIcon width={58}></FootIcon>
+        <AnkleIcon width={58}></AnkleIcon>
       </div>
     </div>
   );
