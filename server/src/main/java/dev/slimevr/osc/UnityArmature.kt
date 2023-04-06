@@ -45,7 +45,7 @@ class UnityArmature(localRot: Boolean) {
 		headNode = TransformNode(localRotation = localRot)
 		neckTailNode = TransformNode(localRotation = localRot)
 		neckHeadNode = TransformNode(localRotation = localRot)
-		upperChestNode = TransformNode(localRotation = localRot)
+		upperChestNode = TransformNode(localRotation = true)
 		chestNode = TransformNode(localRotation = localRot)
 		waistTailNode = TransformNode(localRotation = localRot)
 		waistHeadNode = TransformNode(localRotation = localRot)

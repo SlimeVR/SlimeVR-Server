@@ -1406,7 +1406,8 @@ public class HumanSkeleton {
 		if (headTracker != null) {
 			if (headTracker.getNeedsReset())
 				headTracker.getResetsHandler().resetFull(referenceRotation);
-			referenceRotation = headTracker.getRotation();
+			else
+				referenceRotation = headTracker.getRotation();
 		}
 
 		for (Tracker tracker : trackersToReset) {
@@ -1467,7 +1468,8 @@ public class HumanSkeleton {
 				headTracker
 					.getResetsHandler()
 					.resetMounting(shouldReverseYaw(headTracker), referenceRotation);
-			referenceRotation = headTracker.getRotation();
+			else
+				referenceRotation = headTracker.getRotation();
 		}
 
 		for (Tracker tracker : trackersToReset) {
@@ -1497,7 +1499,8 @@ public class HumanSkeleton {
 		if (headTracker != null) {
 			if (headTracker.getNeedsReset())
 				headTracker.getResetsHandler().resetYaw(referenceRotation);
-			referenceRotation = headTracker.getRotation();
+			else
+				referenceRotation = headTracker.getRotation();
 		}
 
 		for (Tracker tracker : trackersToReset) {
