@@ -13,9 +13,7 @@ export function ControllerIcon({
       viewBox="0 0 21 25.078"
       xmlSpace="preserve"
     >
-      <g
-        transform={flipped ? undefined : 'scale(-1,1) translate(-21, 0)'}
-      >
+      <g transform={flipped ? undefined : 'scale(-1,1) translate(-21, 0)'}>
         <g
           stroke="none"
           strokeOpacity="1"
