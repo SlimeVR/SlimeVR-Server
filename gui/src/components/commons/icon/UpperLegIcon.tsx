@@ -8,10 +8,10 @@ export function UpperLegIcon({
   return (
     <svg
       xmlns="http://www.w3.org/2000/svg"
-      x="0px"
-      y="0px"
+      x="1.25px"
+      y="1.25px"
       width={width}
-      viewBox="0 0 50 50"
+      viewBox="0 0 55 55"
     >
       <path
         transform={flipped ? 'scale(-1,1) translate(-50,0)' : undefined}
