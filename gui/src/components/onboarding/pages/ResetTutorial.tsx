@@ -39,7 +39,7 @@ export function ResetTutorialPage() {
                 </Button>
                 <Button
                   variant="primary"
-                  to="/onboarding/body-proportions/auto"
+                  to="/onboarding/body-proportions/choose"
                   className="ml-auto"
                 >
                   {l10n.getString('onboarding-continue')}
