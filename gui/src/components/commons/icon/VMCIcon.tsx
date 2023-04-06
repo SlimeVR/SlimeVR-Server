@@ -1,4 +1,4 @@
-export function VMCIcon() {
+export function VMCIcon({ width }: { width?: number }) {
   return (
     <svg
       id="svg5"
@@ -6,6 +6,7 @@ export function VMCIcon() {
       xmlnsXlink="http://www.w3.org/1999/xlink"
       x={0}
       y={0}
+      width={width ?? 'fit-content'}
       viewBox="-38 0 409 155"
       xmlSpace="preserve"
     >

@@ -46,7 +46,7 @@ export const mapPart: Record<
     <FootIcon width={width} flipped></FootIcon>
   ),
   [BodyPart.RIGHT_HAND]: ({ width }) => (
-    <ControllerIcon width={width}></ControllerIcon>
+    <ControllerIcon width={width} flipped></ControllerIcon>
   ),
   [BodyPart.RIGHT_LOWER_ARM]: ({ width }) => (
     <LowerArmIcon width={width} flipped></LowerArmIcon>
