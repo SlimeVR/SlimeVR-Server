@@ -34,7 +34,7 @@ export function ResetTutorialPage() {
                 {l10n.getString('onboarding-reset_tutorial-description')}
               </Typography>
               <div className="flex">
-                <Button variant="secondary" to="/onboarding/mounting/auto">
+                <Button variant="secondary" to="/onboarding/mounting/choose">
                   {l10n.getString('onboarding-previous_step')}
                 </Button>
                 <Button
