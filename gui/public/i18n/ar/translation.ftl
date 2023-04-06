@@ -368,6 +368,7 @@ settings-general-interface-serial_detection-label = الكشف عن جهاز ت�
 settings-general-interface-feedback_sound = صوت ردود الفعل
 settings-general-interface-feedback_sound-description = سيصدر هذا الخيار صوتًا عند تشغيل إعادة الضبط
 settings-general-interface-feedback_sound-label = صوت ردود الفعل
+settings-general-interface-feedback_sound-volume = حجم صوت ردود الفعل
 settings-general-interface-lang = اختر اللغة
 settings-general-interface-lang-description = قم بتغيير اللغة الافتراضية التي تريد استخدامها.
 settings-general-interface-lang-placeholder = اختر اللغة التي تريد استخدامها
@@ -486,6 +487,12 @@ settings-osc-vmc-anchor_hip-label = ثبت في الوركين
 onboarding-skip = تخطى الإعداد
 onboarding-continue = ‏‏متابعة
 onboarding-wip = جاري العمل
+onboarding-previous_step = الخطوة السابقة
+onboarding-setup_warning =
+    <b>تحذير:<b> الإعداد ضروري للتعقب الجيد،
+    إنه مطلوب إذا كانت هذه هي المرة الأولى التي تستخدم سلايم في ار.
+onboarding-setup_warning-skip = تخطى الإعداد
+onboarding-setup_warning-cancel = متابعة الإعداد
 
 ## Wi-Fi setup
 
@@ -700,22 +707,32 @@ onboarding-automatic_proportions-prev_step = الخطوة السابقة
 onboarding-automatic_proportions-put_trackers_on-title = ارتدي أجهزة التعقب
 onboarding-automatic_proportions-put_trackers_on-description = لمعايرة نسب جسمك ، سنستخدم أجهزة التعقب التي قمت بتعيينها. ضع جميع أجهزة التعقب، يمكنك معرفة أين تم تعيينه في المستند على اليمين.
 onboarding-automatic_proportions-put_trackers_on-next = ارتديت جميع أجهزة التعقب.
-onboarding-automatic_proportions-preparation-title = التحضير
-onboarding-automatic_proportions-preparation-description = ضع كرسيًا خلفك مباشرةً داخل مساحة اللعب الخاصة بك. كن مستعد للجلوس أثناء الإعداد.
-onboarding-automatic_proportions-preparation-next = أنا أمام كرسي
+onboarding-automatic_proportions-requirements-title = المتطلبات
+# Each line of text is a different list item
+onboarding-automatic_proportions-requirements-description =
+    لديك على الأقل ما يكفي من أجهزة تعقب لتعقب قدميك (بشكل عام 5 أجهزة تعقب).
+    ارتديت أجهزة التعقب وسماعة الرأس.
+    شغلت أجهزة التعقب وسماعة الرأس.
+    أجهزة التعقب وسماعات الرأس متصلة بسرفر سلايم في ار.
+    تعمل أجهزة التتبع وسماعات الرأس بشكل صحيح داخل سرفر سلايم في ار .
+    تقوم سماعة الرأس الخاصة بك بالإبلاغ عن بيانات الموقع إلى  سرفر سلايم في ار (وهذا يعني بشكل عام تشغيل سلايم في ار وتوصيله بـ سلايم في ار باستخدام برنامج تشغيل ستيم في ار  من سلايم في ار ).
+onboarding-automatic_proportions-requirements-next = لقد قرأت المتطلبات
 onboarding-automatic_proportions-start_recording-title = استعد للتحرك
 onboarding-automatic_proportions-start_recording-description = سنقوم الآن بتسجيل بعض الوضعيات والحركات المحددة. ستتم مطالبتك بذلك في الشاشة التالية. كن مستعدا للبدء عند الضغط على الزر!
 onboarding-automatic_proportions-start_recording-next = بدء التسجيل
 onboarding-automatic_proportions-recording-title = تسجيل
 onboarding-automatic_proportions-recording-description-p0 = جاري التسجيل...
 onboarding-automatic_proportions-recording-description-p1 = قم بالحركات الموضحة أدناه:
-onboarding-automatic_proportions-recording-steps-0 = اثني الركبتين عدة مرات.
-onboarding-automatic_proportions-recording-steps-1 = اجلس على كرسي ثم قف.
-onboarding-automatic_proportions-recording-steps-2 = قم بتدوير الجزء العلوي من الجسم إلى اليسار ، ثم انحني إلى اليمين.
-onboarding-automatic_proportions-recording-steps-3 = قم بتدوير الجزء العلوي من الجسم إلى اليمين ، ثم انحني إلى اليسار.
-onboarding-automatic_proportions-recording-steps-4 = تهزهز حتى ينتهي الموقت.
+# Each line of text is a different list item
+onboarding-automatic_proportions-recording-steps =
+    قف بشكل مستقيم، لف رأسك بشكل دائري.
+    اثنِ ظهرك للأمام و قرفص. أثناء الجلوس ، انظر إلى يسارك ، ثم إلى يمينك.
+    قم بتدوير الجزء العلوي من جسمك إلى اليسار (عكس اتجاه عقارب الساعة) ، ثم انزل نحو الأرض.
+    قم بتدوير الجزء العلوي من جسمك إلى اليمين (في اتجاه عقارب الساعة) ، ثم انزل نحو الأرض.
+    قم بتدوير وركيك في حركة دائرية كما لو كنت تستخدم طوق هولا هوب.
+    إذا كان هناك وقت متبقي على التسجيل ، فيمكنك تكرار هذه الخطوات حتى تنتهي.
 onboarding-automatic_proportions-recording-processing = معالجة النتيجة
-# $time (Number) - Seconds left for the automatic calibration recording to finish (max 15)
+# $time (Number) - Seconds left for the automatic calibration recording to finish (max 20)
 onboarding-automatic_proportions-recording-timer =
     { $time ->
         [zero] { $time } ثانية متبقية

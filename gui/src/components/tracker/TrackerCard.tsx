@@ -8,9 +8,9 @@ import { Typography } from '../commons/Typography';
 import { TrackerBattery } from './TrackerBattery';
 import { TrackerWifi } from './TrackerWifi';
 import { TrackerStatus } from './TrackerStatus';
-import { FootIcon } from '../commons/icon/FootIcon';
 import classNames from 'classnames';
 import { useTracker } from '../../hooks/tracker';
+import { BodyPartIcon } from '../commons/BodyPartIcon';
 
 function TrackerBig({
   device,
@@ -26,7 +26,7 @@ function TrackerBig({
   return (
     <div className="flex flex-col justify-center rounded-md py-3 pr-4 pl-4 w-full gap-2 box-border my-8 px-6 h-32">
       <div className="flex justify-center fill-background-10">
-        <FootIcon></FootIcon>
+        <BodyPartIcon bodyPart={tracker.info?.bodyPart}></BodyPartIcon>
       </div>
       <div className="flex justify-center">
         <Typography bold>{trackerName}</Typography>
@@ -74,7 +74,7 @@ function TrackerSmol({
   return (
     <div className="flex rounded-md py-3 px-5 w-full gap-4 h-16">
       <div className="flex flex-col justify-center items-center fill-background-10">
-        <FootIcon></FootIcon>
+        <BodyPartIcon bodyPart={tracker.info?.bodyPart}></BodyPartIcon>
       </div>
       <div className="flex flex-col flex-grow">
         <Typography bold>{trackerName}</Typography>

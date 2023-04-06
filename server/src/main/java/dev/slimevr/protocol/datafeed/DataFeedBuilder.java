@@ -210,6 +210,9 @@ public class DataFeedBuilder {
 					.addRotationIdentityAdjusted(fbb, createQuat(fbb, tracker.getRawRotation()));
 			}
 		}
+		if (mask.getTps()) {
+			HardwareStatus.addTps(fbb, (int) tracker.getTps());
+		}
 
 		return TrackerData.endTrackerData(fbb);
 	}
@@ -260,7 +263,6 @@ public class DataFeedBuilder {
 
 		HardwareStatus.startHardwareStatus(fbb);
 		HardwareStatus.addErrorStatus(fbb, tracker.getStatus().getId());
-		HardwareStatus.addTps(fbb, (int) tracker.getTps());
 
 		if (tracker.getBatteryVoltage() != null) {
 			HardwareStatus.addBatteryVoltage(fbb, tracker.getBatteryVoltage());

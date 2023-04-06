@@ -682,6 +682,7 @@ onboarding-manual_proportions-back = Вернутся к началу обуче
 onboarding-manual_proportions-title = Ручные пропорции тела
 onboarding-manual_proportions-precision = Регулировка предсказывания
 onboarding-manual_proportions-auto = Автоматическая калибровка
+onboarding-manual_proportions-ratio = Настроить по группам пропорций
 
 ## Tracker automatic proportions setup
 

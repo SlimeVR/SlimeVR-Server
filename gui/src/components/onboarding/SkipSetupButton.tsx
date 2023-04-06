@@ -11,7 +11,7 @@ export function SkipSetupButton({
   modalVisible: boolean;
   visible: boolean;
 }) {
-  if (!visible) return <div></div>;
+  if (!visible) return <></>;
   useEffect(() => {
     if (modalVisible) return;
 

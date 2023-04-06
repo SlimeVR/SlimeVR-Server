@@ -74,7 +74,7 @@ skeleton_bone-ELBOW_OFFSET = ewbow awfsewt
 reset-reset_all = weset aww pwopowtions~
 reset-full = fuww weset~
 reset-mounting = weset meownting
-reset-yaw = waw weset
+reset-yaw = yaw weset
 
 ## Serial detection stuff
 
@@ -310,14 +310,14 @@ settings-general-fk_settings-leg_tweak-floor_clip = fwoow cwip
 # since this largely prevents this it corrects for it hence skating correction (note this may be renamed to sliding correction)
 # definition - Guesses when each foot is in contact with the ground and uses that information to improve tracking
 settings-general-fk_settings-leg_tweak-skating_correction = skayting wowcowwection
-settings-general-fk_settings-leg_tweak-toe_snap = toe snappp
+settings-general-fk_settings-leg_tweak-toe_snap = toe snap
 settings-general-fk_settings-leg_tweak-foot_plant = pawb pwant
 settings-general-fk_settings-leg_tweak-skating_correction-amount = skawting cowwection stwength
 settings-general-fk_settings-leg_tweak-skating_correction-description = skating-cowwection cowwects fow ice skating but can decwease accuwacy in cewtain movement pattewns. When enabwing this make suwe to fuww weset and wecawibwate in game.
 settings-general-fk_settings-leg_tweak-floor_clip-description = fwoow-cwip can reduce ow even ewiminates cwipping thwough the fwoow. When enabwing this, make suwe to fuww weset and wecawibwate in game.
 settings-general-fk_settings-leg_tweak-toe_snap-description = toe-snap atempts to gwess da wotation of ur fweet if fweet tracker thingys arewnt in use
 settings-general-fk_settings-leg_tweak-foot_plant-description = pawb-pwant wotates youw feet to be pawawwew to the gwound wen in cawntact.
-settings-general-fk_settings-leg_fk = weg twackin
+settings-general-fk_settings-leg_fk = leg twacking
 settings-general-fk_settings-arm_fk = awm twacking
 settings-general-fk_settings-arm_fk-description = chawnge teh way teh awms awe twacked.
 settings-general-fk_settings-arm_fk-force_arms = fowce awms fwom hmd
@@ -364,6 +364,7 @@ settings-general-interface-serial_detection-label = shewyaw device deteccion
 settings-general-interface-feedback_sound = feeback sownd
 settings-general-interface-feedback_sound-description = dis awptshun wiww pway a sownd wen a weset is twiggered (meow~!)
 settings-general-interface-feedback_sound-label = feeback sownd
+settings-general-interface-feedback_sound-volume = feedback sownd volyume
 settings-general-interface-lang = sewect wanguage
 settings-general-interface-lang-description = change the defawwt wanguage yuw want to use
 settings-general-interface-lang-placeholder = sewect teh wanguage to use
@@ -688,22 +689,32 @@ onboarding-automatic_proportions-prev_step = pwevious stwep
 onboarding-automatic_proportions-put_trackers_on-title = put on yowuw twackaws
 onboarding-automatic_proportions-put_trackers_on-description = to cawybwate yowuw pwopowtiesions, we'we gonna use teh twackaws yowu just assigned. put on awl yowuw twackaws, yowu can see which awe which in teh figuwe to teh wowight.
 onboarding-automatic_proportions-put_trackers_on-next = i have awl my twackaws on
-onboarding-automatic_proportions-preparation-title = pwepawation
-onboarding-automatic_proportions-preparation-description = pwace a chayaw diwectly behind yowu inside yowuw pway spawce. be pwepawed to sit down duwing teh owtobone setyup.
-onboarding-automatic_proportions-preparation-next = i am in fwont of a chayaw
+onboarding-automatic_proportions-requirements-title = wequiyements
+# Each line of text is a different list item
+onboarding-automatic_proportions-requirements-description =
+    u have at weast enyough twackews to twack youw pawbs (genyewawwy 5 twackews).
+    u have youw twackews and headset on.
+    u awe weawing youw twackews and headset.
+    ur twackews and headset awe connyected to da SwimeVR sewvew.
+    ur twackews and headset awe wowking pwopewwy within the SwimeVR sewvew.
+    ur headset is wepowting positionyaw data to the SwimeVR sewvew (this genyewawwy wenyewawwy means having SteamVR wunnying and connyected to SwimeVR using SwimeVR's SteamVR dwivew).
+onboarding-automatic_proportions-requirements-next = i have wed da wequiwemens
 onboarding-automatic_proportions-start_recording-title = get wowdy to move
 onboarding-automatic_proportions-start_recording-description = we'we now going to wowcawd some specific poses and moves. these will be pwompted in teh wowst screen. be wowdy to stawt when teh buttawn is pwessed!
 onboarding-automatic_proportions-start_recording-next = stawt wowcawding
 onboarding-automatic_proportions-recording-title = wowcawd
 onboarding-automatic_proportions-recording-description-p0 = wowcawding in pwowgwess...
 onboarding-automatic_proportions-recording-description-p1 = make teh moves shown bowow:
-onboarding-automatic_proportions-recording-steps-0 = bend knees a few times.
-onboarding-automatic_proportions-recording-steps-1 = sit on a chayaw then stawnd up.
-onboarding-automatic_proportions-recording-steps-2 = twist upwe wowdy wowft, then bend wowft.
-onboarding-automatic_proportions-recording-steps-3 = twist upwe wowdy wowight, then bend wowight.
-onboarding-automatic_proportions-recording-steps-4 = wiggy aweound until tymey ends.
+# Each line of text is a different list item
+onboarding-automatic_proportions-recording-steps =
+    standeng up stwaight, woll youw head in a ciwcwe.
+    bend youw back fowwawds and squat. whiwe squatting, wook to youw weft, den to youw wight.
+    twist youw uppew body to da weft (countew-cwockwise), den weach down towawds the gwound.
+    twist youw uppew body to da wight (cwockwise), den weach down towawds the gwound.
+    woll youw hips in a ciwcuwaw motion as if youwe using a huwa hoop.
+    if thewe is time weft on the wecowding, you can wepeat these steps untiw its finyished.
 onboarding-automatic_proportions-recording-processing = pwowcessing teh wowesult
-# $time (Number) - Seconds left for the automatic calibration recording to finish (max 15)
+# $time (Number) - Seconds left for the automatic calibration recording to finish (max 20)
 onboarding-automatic_proportions-recording-timer =
     { $time ->
         [one] 1 second wowft

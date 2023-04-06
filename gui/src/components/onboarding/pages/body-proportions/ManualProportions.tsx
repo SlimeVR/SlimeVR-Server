@@ -85,26 +85,22 @@ export function ManualProportionsPage() {
             </div>
           </div>
           <div className="flex gap-3 mt-5">
-            {!state.alonePage && (
-              <>
-                <Button variant="secondary" to="/onboarding/reset-tutorial">
-                  {l10n.getString('onboarding-previous_step')}
-                </Button>
-              </>
-            )}
-            <Button variant="secondary" onClick={resetAll}>
-              {l10n.getString('reset-reset_all')}
-            </Button>
             <Button
               variant="secondary"
               state={{ alonePage: state.alonePage }}
-              to="/onboarding/body-proportions/auto"
-              className="ml-auto"
+              to="/onboarding/body-proportions/choose"
             >
-              {l10n.getString('onboarding-manual_proportions-auto')}
+              {l10n.getString('onboarding-previous_step')}
+            </Button>
+            <Button variant="secondary" onClick={resetAll}>
+              {l10n.getString('reset-reset_all')}
             </Button>
             {!state.alonePage && (
-              <Button variant="primary" to="/onboarding/done">
+              <Button
+                variant="primary"
+                className="ml-auto"
+                to="/onboarding/done"
+              >
                 {l10n.getString('onboarding-continue')}
               </Button>
             )}

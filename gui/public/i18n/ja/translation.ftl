@@ -30,7 +30,6 @@ body_part-RIGHT_HAND = 右手
 body_part-RIGHT_UPPER_LEG = 右膝
 body_part-RIGHT_LOWER_LEG = 右足
 body_part-RIGHT_FOOT = 右足先
-body_part-RIGHT_CONTROLLER = 右コントローラ
 body_part-CHEST = 胸
 body_part-WAIST = 腰
 body_part-HIP = ヒップ
@@ -41,7 +40,6 @@ body_part-LEFT_HAND = 左手
 body_part-LEFT_UPPER_LEG = 左膝
 body_part-LEFT_LOWER_LEG = 左足
 body_part-LEFT_FOOT = 左足先
-body_part-LEFT_CONTROLLER = 左コントローラ
 
 ## Proportions
 
@@ -63,8 +61,6 @@ skeleton_bone-SHOULDERS_DISTANCE = 肩の距離
 skeleton_bone-SHOULDERS_WIDTH = 肩幅
 skeleton_bone-UPPER_ARM = 上腕長さ
 skeleton_bone-LOWER_ARM = 前腕長さ
-skeleton_bone-CONTROLLER_Y = コントローラ距離 Y
-skeleton_bone-CONTROLLER_Z = コントローラ距離 Z
 skeleton_bone-ELBOW_OFFSET = 肘オフセット
 
 ## Tracker reset buttons
@@ -72,7 +68,7 @@ skeleton_bone-ELBOW_OFFSET = 肘オフセット
 reset-reset_all = すべてのプロポーションをリセット
 reset-full = リセット
 reset-mounting = リセットマウンティング
-reset-quick = クイックリセット
+reset-yaw = ヨーリセット
 
 ## Serial detection stuff
 
@@ -103,6 +99,9 @@ bvh-recording = レコーディング中...
 widget-overlay = オーバーレイ設定
 widget-overlay-is_visible_label = SteamVRでオーバーレイを表示する
 widget-overlay-is_mirrored_label = オーバーレイをミラーとして表示する
+
+## Widget: Drift compensation
+
 
 ## Widget: Developer settings
 
@@ -156,6 +155,7 @@ tracker-infos-manufacturer = メーカ－
 tracker-infos-display_name = 表示名
 tracker-infos-custom_name = カスタム名称
 tracker-infos-url = トラッカーURL
+tracker-infos-hardware_rev = ハードウエアのリビジョン
 
 ## Tracker settings
 
@@ -288,8 +288,6 @@ settings-general-tracker_mechanics-drift_compensation-max_resets-label = 最大�
 ## FK/Tracking settings
 
 settings-general-fk_settings = FK設定
-settings-general-fk_settings-leg_tweak = 脚の微調整
-settings-general-fk_settings-leg_tweak-description = フロアクリップは、床とのクリッピングを減らす、あるいはなくすことができますが、膝をついたときに問題が発生する可能性があります。スケーティング補正は足の滑りを補正できますが、特定の動作パターンでは精度が落ちることがあります。
 # Floor clip:
 # why the name - came from the idea of noclip in video games, but is the opposite where clipping to the floor is a desired feature
 # definition - Prevents the foot trackers from going lower than they where when a reset was performed
@@ -324,12 +322,12 @@ settings-general-gesture_control-taps =
         [one] 1 tap
        *[other] { $amount } タップ
     }
-settings-general-gesture_control-quickResetEnabled = タップによるクイックリセットを有効にする
-settings-general-gesture_control-quickResetDelay = クイックリセットディレイ
-settings-general-gesture_control-quickResetTaps = タップによるクイックリセット
-settings-general-gesture_control-resetEnabled = タップによるリセットを有効にする
-settings-general-gesture_control-resetDelay = リセットディレイ
-settings-general-gesture_control-resetTaps = タップによるリセット
+settings-general-gesture_control-yawResetEnabled = タップによるヨーリセットを有効にします
+settings-general-gesture_control-yawResetDelay = ヨーリセット遅延
+settings-general-gesture_control-yawResetTaps = ヨーリセット用のタップ
+settings-general-gesture_control-fullResetEnabled = タップによるフルリセットを有効にします
+settings-general-gesture_control-fullResetDelay = フルリセット遅延
+settings-general-gesture_control-fullResetTaps = フルリセット用のタップ
 settings-general-gesture_control-mountingResetEnabled = タップによるマウントリセットを有効にする
 settings-general-gesture_control-mountingResetDelay = マウントリセットディレイ
 settings-general-gesture_control-mountingResetTaps = タップによるマウントリセット
@@ -343,6 +341,9 @@ settings-general-interface-dev_mode-label = 開発者モード
 settings-general-interface-serial_detection = シリアルデバイスの検出
 settings-general-interface-serial_detection-description = このオプションは、トラッカーとなり得る新しいシリアルデバイスを接続するたびにポップアップを表示します。これはトラッカーの設定プロセスを改善するのに役立ちます。
 settings-general-interface-serial_detection-label = シリアルデバイスの検出
+settings-general-interface-feedback_sound = フィードバック音
+settings-general-interface-feedback_sound-label = フィードバック音
+settings-general-interface-feedback_sound-volume = フィードバック音量
 settings-general-interface-lang = 言語を選択
 settings-general-interface-lang-description = 使用したいデフォルトの言語を変更する
 settings-general-interface-lang-placeholder = 使用する言語を選択する
@@ -417,6 +418,16 @@ settings-osc-vrchat-network-trackers-knees = 膝
 settings-osc-vrchat-network-trackers-feet = 足
 settings-osc-vrchat-network-trackers-elbows = 肘
 
+## VMC OSC settings
+
+settings-osc-vmc = バーチャルモーションキャプチャ
+settings-osc-vmc-enable = 有効
+settings-osc-vmc-enable-label = 有効
+settings-osc-vmc-network = ネットワークポート
+settings-osc-vmc-network-address = ネットワークアドレス
+settings-osc-vmc-network-address-placeholder = IPV4アドレス
+settings-osc-vmc-vrm = VRMモデル
+
 ## Setup/onboarding menu
 
 onboarding-skip = 設定をスキップする
@@ -449,10 +460,6 @@ onboarding-reset_tutorial-description = この機能は終了していません�
 ## Setup start
 
 onboarding-home = SlimeVRへようこそ
-# This cares about multilines and it's centered!!
-onboarding-home-description =
-    フルボディトラッキングを実現する
-    すべての人に!
 onboarding-home-start = セットアップ開始！
 
 ## Enter VR part of setup
@@ -477,10 +484,6 @@ onboarding-connect_tracker-description-p1 = まだ接続されていないトラ
 onboarding-connect_tracker-issue-serial = 接続に問題があります！
 onboarding-connect_tracker-usb = USBトラッカー
 onboarding-connect_tracker-connection_status-connecting = Wi-Fiの認証情報を送信中
-onboarding-connect_tracker-connection_status-connected = Wi-Fiに接続されました
-onboarding-connect_tracker-connection_status-error = Wi-Fiに接続できません
-onboarding-connect_tracker-connection_status-start_connecting = トラッカーを探しています
-onboarding-connect_tracker-connection_status-handshake = サーバーに接続されました
 # $amount (Number) - Amount of trackers connected (this is a number, but you can use CLDR plural rules for your language)
 # More info on https://www.unicode.org/cldr/cldr-aux/charts/22/supplemental/language_plural_rules.html
 # English in this case only has 2 plural rules, which are "one" and "other",
@@ -509,6 +512,12 @@ onboarding-assign_trackers-assigned =
     } assigned
 onboarding-assign_trackers-advanced = 高度な割り当て場所の表示
 onboarding-assign_trackers-next = すべてのトラッカーを割り当てました
+
+## Tracker assignment warnings
+
+
+## Tracker mounting method choose
+
 
 ## Tracker manual mounting setup
 
@@ -539,6 +548,9 @@ onboarding-automatic_mounting-put_trackers_on-title = トラッカーを装着�
 onboarding-automatic_mounting-put_trackers_on-description = マウントの方向を較正するために、先ほど割り当てたトラッカーを使用します。右の図でどれがどれだかわかると思います。
 onboarding-automatic_mounting-put_trackers_on-next = すべてのトラッカーを装着しました
 
+## Tracker proportions method choose
+
+
 ## Tracker manual proportions setup
 
 onboarding-manual_proportions-back = チュートリアルをリセットする
@@ -556,22 +568,16 @@ onboarding-automatic_proportions-prev_step = 前のステップ
 onboarding-automatic_proportions-put_trackers_on-title = トラッカーを装着する
 onboarding-automatic_proportions-put_trackers_on-description = プロポーションを調整するために、先ほど割り当てたトラッカーを使用します。右の図で、どれがどのトラッカーかわかると思います。
 onboarding-automatic_proportions-put_trackers_on-next = すべてのトラッカーを装着しました
-onboarding-automatic_proportions-preparation-title = 準備
-onboarding-automatic_proportions-preparation-description = プレイスペース内のあなたの真後ろに椅子を置いてください。オートボーンセットアップの間、座れるように準備してください。
-onboarding-automatic_proportions-preparation-next = 椅子の前にいます
+onboarding-automatic_proportions-requirements-title = 要件
+onboarding-automatic_proportions-requirements-next = 要件を読みました
 onboarding-automatic_proportions-start_recording-title = 測定の準備をする
 onboarding-automatic_proportions-start_recording-description = これから具体的なポーズや動きを記録します。これらは次の画面に表示されます。ボタンが押されたらすぐに始められるように準備しておいてください！
 onboarding-automatic_proportions-start_recording-next = レコーディングスタート
 onboarding-automatic_proportions-recording-title = REC
 onboarding-automatic_proportions-recording-description-p0 = レコーディング中...
 onboarding-automatic_proportions-recording-description-p1 = 以下に示すような動きをします。
-onboarding-automatic_proportions-recording-steps-0 = 膝を数回曲げてください
-onboarding-automatic_proportions-recording-steps-1 = 椅子に座り、立ち上がる
-onboarding-automatic_proportions-recording-steps-2 = 上半身を左にひねり、右に曲げる
-onboarding-automatic_proportions-recording-steps-3 = 上半身を右にひねり、左に曲げる
-onboarding-automatic_proportions-recording-steps-4 = タイマーが終わるまで体をくねらせる
 onboarding-automatic_proportions-recording-processing = 結果を処理中
-# $time (Number) - Seconds left for the automatic calibration recording to finish (max 15)
+# $time (Number) - Seconds left for the automatic calibration recording to finish (max 20)
 onboarding-automatic_proportions-recording-timer =
     { $time ->
         [one] 1 second left
