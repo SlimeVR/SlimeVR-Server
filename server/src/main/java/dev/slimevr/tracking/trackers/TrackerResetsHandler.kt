@@ -25,7 +25,12 @@ class TrackerResetsHandler(val tracker: Tracker) {
 	var allowDriftCompensation = false
 
 	// Manual mounting orientation
-	var mountingOrientation: Quaternion? = null
+	var mountingOrientation: Quaternion = EulerAngles(
+		EulerOrder.YZX,
+		0f,
+		Math.PI.toFloat(),
+		0f
+	).toQuaternion()
 		set(value) {
 			field = value
 			// Clear the mounting reset now that it's been set manually
@@ -90,13 +95,12 @@ class TrackerResetsHandler(val tracker: Tracker) {
 	}
 
 	private fun getMountedAdjustedRotation(): Quaternion {
-		mountingOrientation?.let { return tracker.getRawRotation() * it }
-		return tracker.getRawRotation()
+		return tracker.getRawRotation() * mountingOrientation
 	}
 
 	private fun getMountedAdjustedDriftRotation(): Quaternion {
 		var rot = tracker.getRawRotation()
-		mountingOrientation?.let { rot *= it }
+		rot *= mountingOrientation
 		rot = adjustToDrift(rot)
 		return rot
 	}
@@ -104,14 +108,11 @@ class TrackerResetsHandler(val tracker: Tracker) {
 	/**
 	 * Converts raw or filtered rotation into reference- and
 	 * mounting-reset-adjusted by applying quaternions produced after
-	 * [.resetFull], [.resetYaw] and
-	 * [.resetMounting].
-	 *
-	 * @param store Raw or filtered rotation to mutate.
+	 * [.resetFull], [.resetYaw] and [.resetMounting].
 	 */
 	private fun adjustToReference(rotation: Quaternion): Quaternion {
 		var rot = rotation
-		mountingOrientation?.let { rot *= it }
+		rot *= mountingOrientation
 		rot = gyroFix * rot
 		rot *= attachmentFix
 		rot *= mountRotFix

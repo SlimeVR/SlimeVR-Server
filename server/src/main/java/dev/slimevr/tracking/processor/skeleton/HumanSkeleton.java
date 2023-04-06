@@ -87,7 +87,7 @@ public class HumanSkeleton {
 		0
 	).toQuaternion();
 	// #region Tracker Input
-	protected Tracker hmdTracker;
+	protected Tracker headTracker;
 	protected Tracker neckTracker;
 	protected Tracker chestTracker;
 	protected Tracker waistTracker;
@@ -194,7 +194,7 @@ public class HumanSkeleton {
 
 	@ThreadSafe
 	protected void assembleSkeleton() {
-		// #region Assemble skeleton from hmd to hip
+		// #region Assemble skeleton from head to hip
 		hmdNode.attachChild(headNode);
 		headNode.attachChild(neckNode);
 		neckNode.attachChild(chestNode);
@@ -371,7 +371,7 @@ public class HumanSkeleton {
 
 	// #region Set trackers inputs
 	protected void setTrackersFromList(List<Tracker> trackers) {
-		hmdTracker = TrackerUtils
+		headTracker = TrackerUtils
 			.getNonInternalTrackerForBodyPosition(
 				trackers,
 				TrackerPosition.HEAD
@@ -571,7 +571,7 @@ public class HumanSkeleton {
 	// #region Update the node transforms from the trackers
 	protected void updateLocalTransforms() {
 		// #region Pass all trackers through trackerPreUpdate for Autobone
-		Tracker hmdTracker = trackerPreUpdate(this.hmdTracker);
+		Tracker headTracker = trackerPreUpdate(this.headTracker);
 
 		Tracker neckTracker = trackerPreUpdate(this.neckTracker);
 		Tracker chestTracker = trackerPreUpdate(this.chestTracker);
@@ -598,11 +598,11 @@ public class HumanSkeleton {
 
 		// HMD, head and neck
 		Quaternion headRot = Quaternion.Companion.getIDENTITY();
-		if (hmdTracker != null) {
-			if (hmdTracker.getHasPosition())
-				hmdNode.getLocalTransform().setTranslation(hmdTracker.getPosition());
+		if (headTracker != null) {
+			if (headTracker.getHasPosition())
+				hmdNode.getLocalTransform().setTranslation(headTracker.getPosition());
 
-			headRot = hmdTracker.getRotation();
+			headRot = headTracker.getRotation();
 			hmdNode.getLocalTransform().setRotation(headRot);
 			trackerHeadNode.getLocalTransform().setRotation(headRot);
 
@@ -644,7 +644,7 @@ public class HumanSkeleton {
 			waistNode.getLocalTransform().setRotation(torsoRot);
 			hipNode.getLocalTransform().setRotation(torsoRot);
 			trackerHipNode.getLocalTransform().setRotation(torsoRot);
-		} else if (hmdTracker != null) {
+		} else if (headTracker != null) {
 			// Align with last tracker's yaw (HMD or neck)
 			Quaternion yawQuat = headRot.project(Vector3.Companion.getPOS_Y()).unit();
 
@@ -1127,7 +1127,7 @@ public class HumanSkeleton {
 
 		switch (nodeOffset) {
 			case HEAD -> {
-				if (hmdTracker != null && hmdTracker.getHasPosition()) {
+				if (headTracker != null && headTracker.getHasPosition()) {
 					headNode.getLocalTransform().setTranslation(offset);
 				} else {
 					headNode.getLocalTransform().setTranslation(Vector3.Companion.getNULL());
@@ -1346,8 +1346,8 @@ public class HumanSkeleton {
 	}
 
 	public float getHmdHeight() {
-		if (hmdTracker != null && hmdTracker.getHasPosition())
-			return hmdTracker.getPosition().getY();
+		if (headTracker != null && headTracker.getHasPosition())
+			return headTracker.getPosition().getY();
 		return 0f;
 	}
 
@@ -1398,15 +1398,15 @@ public class HumanSkeleton {
 
 	public void resetTrackersFull(String resetSourceName) {
 		// Pass all trackers through trackerPreUpdate
-		Tracker hmdTracker = trackerPreUpdate(this.hmdTracker);
+		Tracker headTracker = trackerPreUpdate(this.headTracker);
 		Tracker[] trackersToReset = getTrackersToReset();
 
 		// Resets all axis of the trackers with the HMD as reference.
 		Quaternion referenceRotation = Quaternion.Companion.getIDENTITY();
-		if (hmdTracker != null) {
-			if (hmdTracker.getNeedsReset())
-				hmdTracker.getResetsHandler().resetFull(referenceRotation);
-			referenceRotation = hmdTracker.getRotation();
+		if (headTracker != null) {
+			if (headTracker.getNeedsReset())
+				headTracker.getResetsHandler().resetFull(referenceRotation);
+			referenceRotation = headTracker.getRotation();
 		}
 
 		for (Tracker tracker : trackersToReset) {
@@ -1456,18 +1456,18 @@ public class HumanSkeleton {
 	@VRServerThread
 	public void resetTrackersMounting(String resetSourceName) {
 		// Pass all trackers through trackerPreUpdate
-		Tracker hmdTracker = trackerPreUpdate(this.hmdTracker);
+		Tracker headTracker = trackerPreUpdate(this.headTracker);
 		Tracker[] trackersToReset = getTrackersToReset();
 
 		// Resets the mounting rotation of the trackers with the HMD as
 		// reference.
 		Quaternion referenceRotation = Quaternion.Companion.getIDENTITY();
-		if (hmdTracker != null) {
-			if (hmdTracker.getNeedsMounting())
-				hmdTracker
+		if (headTracker != null) {
+			if (headTracker.getNeedsMounting())
+				headTracker
 					.getResetsHandler()
-					.resetMounting(shouldReverseYaw(hmdTracker), referenceRotation);
-			referenceRotation = hmdTracker.getRotation();
+					.resetMounting(shouldReverseYaw(headTracker), referenceRotation);
+			referenceRotation = headTracker.getRotation();
 		}
 
 		for (Tracker tracker : trackersToReset) {
@@ -1489,15 +1489,15 @@ public class HumanSkeleton {
 	@VRServerThread
 	public void resetTrackersYaw(String resetSourceName) {
 		// Pass all trackers through trackerPreUpdate
-		Tracker hmdTracker = trackerPreUpdate(this.hmdTracker);
+		Tracker headTracker = trackerPreUpdate(this.headTracker);
 		Tracker[] trackersToReset = getTrackersToReset();
 
-		// Resets the yaw of the trackers with the HMD as reference.
+		// Resets the yaw of the trackers with the head as reference.
 		Quaternion referenceRotation = Quaternion.Companion.getIDENTITY();
-		if (hmdTracker != null) {
-			if (hmdTracker.getNeedsReset())
-				hmdTracker.getResetsHandler().resetYaw(referenceRotation);
-			referenceRotation = hmdTracker.getRotation();
+		if (headTracker != null) {
+			if (headTracker.getNeedsReset())
+				headTracker.getResetsHandler().resetYaw(referenceRotation);
+			referenceRotation = headTracker.getRotation();
 		}
 
 		for (Tracker tracker : trackersToReset) {

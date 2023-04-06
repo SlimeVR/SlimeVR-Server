@@ -1,12 +1,9 @@
 package dev.slimevr.tracking.trackers
 
-import com.jme3.math.FastMath
 import dev.slimevr.config.TrackerConfig
 import dev.slimevr.tracking.trackers.TrackerPosition.Companion.getByDesignation
 import dev.slimevr.vrServer
 import io.eiren.util.BufferedTimer
-import io.github.axisangles.ktmath.EulerAngles
-import io.github.axisangles.ktmath.EulerOrder
 import io.github.axisangles.ktmath.Quaternion
 import io.github.axisangles.ktmath.Vector3
 
@@ -74,7 +71,7 @@ class Tracker @JvmOverloads constructor(
 				getByDesignation(designation)?.let { trackerPosition = it }
 			}
 			if (needsMounting) {
-				resetsHandler.mountingOrientation = config.mountingOrientation
+				config.mountingOrientation?.let { resetsHandler.mountingOrientation = it }
 			}
 			if (isImu && config.allowDriftCompensation == null) {
 				// If value didn't exist, default to true and save
@@ -98,12 +95,6 @@ class Tracker @JvmOverloads constructor(
 			customName?.let { config.customName = it }
 			if (needsMounting) {
 				config.mountingOrientation = resetsHandler.mountingOrientation
-					?: EulerAngles(
-						EulerOrder.YZX,
-						0f,
-						FastMath.PI,
-						0f
-					).toQuaternion()
 			}
 			if (isImu) {
 				config.allowDriftCompensation = resetsHandler.allowDriftCompensation

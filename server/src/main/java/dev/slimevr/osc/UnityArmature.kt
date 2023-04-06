@@ -7,6 +7,8 @@ import io.github.axisangles.ktmath.EulerOrder
 import io.github.axisangles.ktmath.Quaternion
 import io.github.axisangles.ktmath.Vector3
 
+private val LEFT_SHOULDER_OFFSET = EulerAngles(EulerOrder.YZX, 0f, 0f, FastMath.HALF_PI).toQuaternion()
+private val RIGHT_SHOULDER_OFFSET = EulerAngles(EulerOrder.YZX, 0f, 0f, -FastMath.HALF_PI).toQuaternion()
 class UnityArmature(localRot: Boolean) {
 
 	private val headNode: TransformNode
@@ -35,9 +37,6 @@ class UnityArmature(localRot: Boolean) {
 	private val rightWristNode: TransformNode
 	private val leftHandNode: TransformNode
 	private val rightHandNode: TransformNode
-
-	private val LEFT_SHOULDER_OFFSET = EulerAngles(EulerOrder.YZX, 0f, 0f, FastMath.HALF_PI).toQuaternion()
-	private val RIGHT_SHOULDER_OFFSET = EulerAngles(EulerOrder.YZX, 0f, 0f, -FastMath.HALF_PI).toQuaternion()
 
 	private var rootPosition = Vector3.NULL
 	private var rootRotation = Quaternion.IDENTITY
@@ -130,14 +129,12 @@ class UnityArmature(localRot: Boolean) {
 		if (node != null) {
 			if (unityBone === UnityBone.HIPS) {
 				node.worldTransform.rotation = localRot
+			} else if (unityBone === UnityBone.LEFT_UPPER_ARM) {
+				node.localTransform.rotation = localRot * RIGHT_SHOULDER_OFFSET
+			} else if (unityBone === UnityBone.RIGHT_UPPER_ARM) {
+				node.localTransform.rotation = localRot * LEFT_SHOULDER_OFFSET
 			} else {
-				if (unityBone === UnityBone.LEFT_UPPER_ARM) {
-					node.localTransform.rotation = localRot * RIGHT_SHOULDER_OFFSET
-				} else if (unityBone === UnityBone.RIGHT_UPPER_ARM) {
-					node.localTransform.rotation = localRot * LEFT_SHOULDER_OFFSET
-				} else {
-					node.localTransform.rotation = localRot
-				}
+				node.localTransform.rotation = localRot
 			}
 		}
 	}

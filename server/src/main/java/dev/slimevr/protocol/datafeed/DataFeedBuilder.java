@@ -120,10 +120,8 @@ public class DataFeedBuilder {
 		}
 
 		if (tracker.getNeedsMounting()) {
-			if (tracker.getResetsHandler().getMountingOrientation() != null) {
-				Quaternion quaternion = tracker.getResetsHandler().getMountingOrientation();
-				TrackerInfo.addMountingOrientation(fbb, createQuat(fbb, quaternion));
-			}
+			Quaternion quaternion = tracker.getResetsHandler().getMountingOrientation();
+			TrackerInfo.addMountingOrientation(fbb, createQuat(fbb, quaternion));
 		}
 
 		return TrackerInfo.endTrackerInfo(fbb);
