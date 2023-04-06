@@ -17,6 +17,7 @@ websocket-connection_lost = Conexión al servidor perdida. Intentando reconectar
 
 tips-find_tracker = ¿No estás seguro de cuál sensor es cuál? Agita un sensor y se resaltará donde está asignado.
 tips-do_not_move_heels = ¡Asegúrate de no mover los talones en la grabación!
+tips-file_select = Arrastra y suelta archivos para usarlos, o <u>selecciónalos<u>.
 
 ## Body parts
 
@@ -46,19 +47,22 @@ body_part-LEFT_FOOT = Pie izquierdo
 skeleton_bone-NONE = Nada
 skeleton_bone-HEAD = Inclinación de cabeza
 skeleton_bone-NECK = Largo del cuello
-skeleton_bone-CHEST = Chest Length
+skeleton_bone-torso_group = Largo del torso
+skeleton_bone-CHEST = Largo del pecho
 skeleton_bone-CHEST_OFFSET = Chest Offset
-skeleton_bone-WAIST = Waist Length
-skeleton_bone-HIP = Hip Length
+skeleton_bone-WAIST = Largo de la cintura
+skeleton_bone-HIP = Largo de la cadera
 skeleton_bone-HIP_OFFSET = Desplazamiento de la cadera
 skeleton_bone-HIPS_WIDTH = Ancho de la cadera
-skeleton_bone-UPPER_LEG = Upper Leg Length
-skeleton_bone-LOWER_LEG = Lower Leg Length
-skeleton_bone-FOOT_LENGTH = Largo de pies
+skeleton_bone-leg_group = Largo de la pierna
+skeleton_bone-UPPER_LEG = Largo del muslo
+skeleton_bone-LOWER_LEG = Largo de la tibia
+skeleton_bone-FOOT_LENGTH = Largo del pie
 skeleton_bone-FOOT_SHIFT = Desplazamiento de pies
 skeleton_bone-SKELETON_OFFSET = Desplazamiento del esqueleto
 skeleton_bone-SHOULDERS_DISTANCE = Distancia de los hombros
 skeleton_bone-SHOULDERS_WIDTH = Ancho de los hombros
+skeleton_bone-arm_group = Largo del brazo
 skeleton_bone-UPPER_ARM = Largo del brazo superior
 skeleton_bone-LOWER_ARM = Distancia del antebrazo
 skeleton_bone-HAND_Y = Distancia Y de la mano
@@ -68,9 +72,9 @@ skeleton_bone-ELBOW_OFFSET = Desplazamiento del codo
 ## Tracker reset buttons
 
 reset-reset_all = Reiniciar todas las proporciones
-reset-full = Reiniciar
-reset-mounting = Reiniciar montura
-reset-quick = Reinicio rápido
+reset-full = Reinicio completo
+reset-mounting = Reinicio de montura
+reset-yaw = Reinicio horizontal
 
 ## Serial detection stuff
 
@@ -297,8 +301,6 @@ settings-general-tracker_mechanics-drift_compensation-max_resets-label = Utiliza
 ## FK/Tracking settings
 
 settings-general-fk_settings = Ajustes de sensores
-settings-general-fk_settings-leg_tweak = Corrección de piernas
-settings-general-fk_settings-leg_tweak-description = El clip del suelo puede reducir o incluso eliminar el traspaso del piso pero puede causar problemas cuando te arrodilles. Corrección del patinaje corrige el patinaje, pero puede disminuir la precisión de ciertos movimientos.
 # Floor clip:
 # why the name - came from the idea of noclip in video games, but is the opposite where clipping to the floor is a desired feature
 # definition - Prevents the foot trackers from going lower than they where when a reset was performed
@@ -309,6 +311,9 @@ settings-general-fk_settings-leg_tweak-floor_clip = Clip del suelo
 # definition - Guesses when each foot is in contact with the ground and uses that information to improve tracking
 settings-general-fk_settings-leg_tweak-skating_correction = Corrección del patinaje
 settings-general-fk_settings-leg_tweak-skating_correction-amount = Agresividad de la corrección del patinaje
+settings-general-fk_settings-leg_tweak-skating_correction-description = Corrección del patinaje corrige el patinaje en hielo que sucede en los pies, pero puede disminuir la precisión de ciertos patrones de movimientos. Al activar esto, asegúrate de realizar un reinicio completo y recalibrar en el juego.
+settings-general-fk_settings-leg_tweak-floor_clip-description = El clip del suelo puede reducir o incluso evitar que tus pies atraviesen el suelo. Al activar esto, asegúrate de realizar un reinicio completo y recalibrar en el juego.
+settings-general-fk_settings-leg_fk = Tracking de piernas
 settings-general-fk_settings-arm_fk = Trackeo de brazos
 settings-general-fk_settings-arm_fk-description = Cambia cómo el movimiento de los brazos es detectado.
 settings-general-fk_settings-arm_fk-force_arms = Forzar brazos desde el HMD
@@ -319,7 +324,7 @@ settings-general-fk_settings-skeleton_settings-extended_pelvis = Extención de p
 settings-general-fk_settings-skeleton_settings-extended_knees = Extención de rodillas
 settings-general-fk_settings-vive_emulation-title = Vive emulation
 settings-general-fk_settings-vive_emulation-description = Emulate the waist tracker problems that Vive trackers have. This is a joke and makes tracking worse.
-settings-general-fk_settings-vive_emulation-label = Enable Vive emulation
+settings-general-fk_settings-vive_emulation-label = Habilitar emulación de Vive
 
 ## Gesture control settings (tracker tapping)
 
@@ -333,14 +338,14 @@ settings-general-gesture_control-taps =
         [one] 1 toque
        *[other] { $amount } toques
     }
-settings-general-gesture_control-quickResetEnabled = Activar toques para reinicio rápido
-settings-general-gesture_control-quickResetDelay = Retraso de reinicio rápido
-settings-general-gesture_control-quickResetTaps = Toques para reinicio rápido
-settings-general-gesture_control-resetEnabled = Activar toques para reinicio
-settings-general-gesture_control-resetDelay = Retraso de reinicio
-settings-general-gesture_control-resetTaps = Toques para reinicio
+settings-general-gesture_control-yawResetEnabled = Activar toques para reinicio horizontal
+settings-general-gesture_control-yawResetDelay = Retraso del reinicio horizontal
+settings-general-gesture_control-yawResetTaps = Toques para reinicio horizontal
+settings-general-gesture_control-fullResetEnabled = Activar toques para reinicio completo
+settings-general-gesture_control-fullResetDelay = Retraso del reinicio completo
+settings-general-gesture_control-fullResetTaps = Toques para reinicio completo
 settings-general-gesture_control-mountingResetEnabled = Activar toques para reinicio de montura
-settings-general-gesture_control-mountingResetDelay = Retraso de reinicio de montura
+settings-general-gesture_control-mountingResetDelay = Retraso del reinicio de montura
 settings-general-gesture_control-mountingResetTaps = Toques para reinicio de montura
 
 ## Interface settings
@@ -431,11 +436,51 @@ settings-osc-vrchat-network-trackers-knees = Rodillas
 settings-osc-vrchat-network-trackers-feet = Pies
 settings-osc-vrchat-network-trackers-elbows = Codos
 
+## VMC OSC settings
+
+settings-osc-vmc = Virtual Motion Capture
+# This cares about multilines
+settings-osc-vmc-description =
+    Cambia la configuracion especifica al protocolo VMC (Virtual Motion Capture)
+      para enviar datos de los huesos de SlimeVR y recibir data de los huesos de otras aplicaciones.
+settings-osc-vmc-enable = Habilitar
+settings-osc-vmc-enable-description = Habilita el envio y recibo de datos.
+settings-osc-vmc-enable-label = Habilitar
+settings-osc-vmc-network = Puertos de conexión
+settings-osc-vmc-network-description = Establece los puertos de entrada y salida de datos por medio de VMC.
+settings-osc-vmc-network-port_in =
+    .label = Puerto de entrada
+    .placeholder = Puerto de entrada (por defecto: 39540)
+settings-osc-vmc-network-port_out =
+    .label = Puerto de salida
+    .placeholder = Puerto de salida (por defecto: 39539)
+settings-osc-vmc-network-address = Dirección de red
+settings-osc-vmc-network-address-description = Establece la dirección donde se enviarán los datos por VMC
+settings-osc-vmc-network-address-placeholder = Dirección IPv4
+settings-osc-vmc-vrm = Modelo VRM
+settings-osc-vmc-vrm-description = Carga un modelo VRM para permitir el anclaje de cabeza y habilitar una mejor compatibilidad con otras aplicaciones
+settings-osc-vmc-vrm-model_unloaded = Ningún modelo cargado
+settings-osc-vmc-vrm-model_loaded =
+    { $titled ->
+        [true] Modelo cargado: { $name }
+       *[other] Modelo sin nombre cargado
+    }
+settings-osc-vmc-vrm-file_select = Arrastra y suelta un modelo para usar, o <u>selecciona uno</u>.
+settings-osc-vmc-anchor_hip = Anclaje por cadera
+settings-osc-vmc-anchor_hip-description = Anclar el tracking a la cadera, útil para hacer de VTuber sentado. Si lo desactivas, carga un modelo VRM.
+settings-osc-vmc-anchor_hip-label = Anclaje por cadera
+
 ## Setup/onboarding menu
 
 onboarding-skip = Saltar configuración
 onboarding-continue = Continuar
 onboarding-wip = Trabajo en progreso
+onboarding-previous_step = Paso anterior
+onboarding-setup_warning =
+    <b>Advertencia:</b> La configuración se necesita hacer para tener buen tracking,
+    y es requerido si es tu primera vez usando SlimeVR.
+onboarding-setup_warning-skip = Saltar configuración
+onboarding-setup_warning-cancel = Continuar configuración
 
 ## Wi-Fi setup
 
@@ -630,6 +675,7 @@ onboarding-manual_proportions-back = Volver al tutorial de reinicio
 onboarding-manual_proportions-title = Proporciones de cuerpo manuales
 onboarding-manual_proportions-precision = Ajuste con precisión
 onboarding-manual_proportions-auto = Calibración automática
+onboarding-manual_proportions-ratio = Ajustar por porcentajes
 
 ## Tracker automatic proportions setup
 
@@ -641,22 +687,32 @@ onboarding-automatic_proportions-prev_step = Paso anterior
 onboarding-automatic_proportions-put_trackers_on-title = Ponte tus sensores
 onboarding-automatic_proportions-put_trackers_on-description = Para calibrar tus proporciones, usaremos los sensores que acabas de asignar. Ponte todos tus sensores, puedes ver cuál es cual en la figura de la derecha.
 onboarding-automatic_proportions-put_trackers_on-next = Tengo puestos todos mis sensores
-onboarding-automatic_proportions-preparation-title = Preparación
-onboarding-automatic_proportions-preparation-description = Coloca una silla directamente detrás de ti en tu area de juego. Prepárate para sentarte durante la configuración del autobone.
-onboarding-automatic_proportions-preparation-next = Estoy al frente de una silla
+onboarding-automatic_proportions-requirements-title = Requisitos
+# Each line of text is a different list item
+onboarding-automatic_proportions-requirements-description =
+    Tienes al menos suficientes trackers para rastrear tus pies (generalmente 5 trackers).
+    Tienes tus trackers y VR encendidos.
+    Tienes tus trackers y VR puestos.
+    Tus trackers y VR están conectados al servidor de SlimeVR.
+    Tus trackers y VR están funcionando correctamente con el servidor de SlimeVR.
+    Tu VR está reportando datos posicionales al servidor de SlimeVR (esto generalmente implica que SteamVR esté corriendo y conectado a SlimeVR usando el driver de SlimeVR para SteamVR).
+onboarding-automatic_proportions-requirements-next = He leído los requisitos
 onboarding-automatic_proportions-start_recording-title = Prepárate para moverte
 onboarding-automatic_proportions-start_recording-description = Ahora vamos a grabar poses y movimientos en específico. Estas serán mostradas en la siguiente ventana. ¡Prepárate para empezar cuando presiones el botón!
 onboarding-automatic_proportions-start_recording-next = Empezar grabación
 onboarding-automatic_proportions-recording-title = REC
 onboarding-automatic_proportions-recording-description-p0 = Grabación en proceso...
 onboarding-automatic_proportions-recording-description-p1 = Realiza los siguientes movimientos:
-onboarding-automatic_proportions-recording-steps-0 = Dobla tus rodillas unas cuantas veces.
-onboarding-automatic_proportions-recording-steps-1 = Sientate en una silla y párate.
-onboarding-automatic_proportions-recording-steps-2 = Gira tu torso hacia la izquierda, luego inclínate hacia la derecha.
-onboarding-automatic_proportions-recording-steps-3 = Gira tu torso hacia la derecha, luego inclínate hacia la izquierda.
-onboarding-automatic_proportions-recording-steps-4 = Menea tu cuerpo hasta que el tiempo se acabe.
+# Each line of text is a different list item
+onboarding-automatic_proportions-recording-steps =
+    Párate derecho, y mueve tu cabeza circularmente.
+    Hace una sentadilla y dobla tu cuerpo hacia adelante. Mientras te agachas, mira hacia tu izquierda, luego a tu derecha.
+    Gira la parte superior de tu cuerpo hacia la izquierda (Contra el sentido de las agujas del reloj), y extiéndete hacia el suelo.
+    Gira la parte superior de tu cuerpo hacia la derecha (En el sentido de las agujas del reloj), y extiéndete hacia al suelo.
+    Gira tus caderas, como si estuvieras realizando un hula hula.
+    Si te queda tiempo en la grabación, puedes repetir estos pasos hasta que termine.
 onboarding-automatic_proportions-recording-processing = Procesando el resultado
-# $time (Number) - Seconds left for the automatic calibration recording to finish (max 15)
+# $time (Number) - Seconds left for the automatic calibration recording to finish (max 20)
 onboarding-automatic_proportions-recording-timer =
     { $time ->
         [one] falta 1 segundo

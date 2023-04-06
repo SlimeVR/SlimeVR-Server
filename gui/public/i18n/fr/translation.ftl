@@ -10,7 +10,7 @@
 
 ## Websocket (server) status
 
-websocket-connecting = Connexion au serveur..
+websocket-connecting = Connexion au serveur
 websocket-connection_lost = Connexion avec le serveur perdue. Reconnexion...
 
 ## Tips
@@ -161,7 +161,7 @@ tracker-rotation-back = Arrière
 tracker-infos-manufacturer = Fabricant
 tracker-infos-display_name = Nom
 tracker-infos-custom_name = Nom personnalisé
-tracker-infos-url = URL
+tracker-infos-url = URL du capteur
 tracker-infos-version = Version du firmware
 tracker-infos-hardware_rev = Révision du hardware
 
@@ -364,6 +364,7 @@ settings-general-interface-serial_detection-label = Détection de périphérique
 settings-general-interface-feedback_sound = Son de retour
 settings-general-interface-feedback_sound-description = Cette option va jouer un son lorsqu'une réanitilisation est enclenchée
 settings-general-interface-feedback_sound-label = Son de retour
+settings-general-interface-feedback_sound-volume = Volume du son de retour
 settings-general-interface-lang = Sélectionner la langue
 settings-general-interface-lang-description = Choisir la langue par défaut.
 settings-general-interface-lang-placeholder = Choisissez la langue
@@ -482,6 +483,12 @@ settings-osc-vmc-anchor_hip-label = Ancrage aux hanches
 onboarding-skip = Passer
 onboarding-continue = Continuer
 onboarding-wip = Pas encore implémenté
+onboarding-previous_step = Étape précédente
+onboarding-setup_warning =
+    <b>Avertissement:</b> La configuration est requise pour assurer une bonne capture des mouvements,
+    elle est nécessaire si vous utilisez SlimeVR pour la première fois.
+onboarding-setup_warning-skip = Passer la configuration
+onboarding-setup_warning-cancel = Continuer la configuration
 
 ## Wi-Fi setup
 
@@ -688,22 +695,32 @@ onboarding-automatic_proportions-prev_step = Étape précédente
 onboarding-automatic_proportions-put_trackers_on-title = Enfilez vos capteurs
 onboarding-automatic_proportions-put_trackers_on-description = Pour calibrer vos proportions, nous allons utiliser les capteurs que vous venez d'attribuer.
 onboarding-automatic_proportions-put_trackers_on-next = J'ai tous mes capteurs
-onboarding-automatic_proportions-preparation-title = Préparation
-onboarding-automatic_proportions-preparation-description = Placez une chaise directement derrière vous dans votre espace de jeu.
-onboarding-automatic_proportions-preparation-next = je suis devant une chaise
+onboarding-automatic_proportions-requirements-title = Exigences
+# Each line of text is a different list item
+onboarding-automatic_proportions-requirements-description =
+    Vous avez au moins assez de capteurs pour capturer vos pieds (généralement 5 capteurs).
+    Vos capteurs et votre casque VR sont allumés.
+    Vous portez vos capteurs et votre casque VR.
+    Vos capteurs et votre casque VR sont connectés au serveur SlimeVR.
+    Vos capteurs et votre casque VR fonctionnent correctement au sein du serveur SlimeVR.
+    Votre casque envoie sa position au serveur SlimeVR (cela signifie généralement que SteamVR est ouvert et connecté à SlimeVR en utilisant le driver SteamVR de SlimeVR).
+onboarding-automatic_proportions-requirements-next = J'ai lu les exigences
 onboarding-automatic_proportions-start_recording-title = Préparez-vous à bouger
 onboarding-automatic_proportions-start_recording-description = Nous allons maintenant enregistrer des poses et des mouvements spécifiques.
 onboarding-automatic_proportions-start_recording-next = Commencer l'enregistrement
 onboarding-automatic_proportions-recording-title = Enregistrement
 onboarding-automatic_proportions-recording-description-p0 = Enregistrement en cours...
 onboarding-automatic_proportions-recording-description-p1 = Effectuez les mouvements indiqués ci-dessous:
-onboarding-automatic_proportions-recording-steps-0 = Pliez les genoux plusieurs fois.
-onboarding-automatic_proportions-recording-steps-1 = Asseyez-vous sur une chaise puis levez-vous.
-onboarding-automatic_proportions-recording-steps-2 = Tournez le haut du corps vers la gauche, puis penchez vous vers la droite.
-onboarding-automatic_proportions-recording-steps-3 = Tournez le haut du corps vers la droite, puis penchez vous vers la gauche.
-onboarding-automatic_proportions-recording-steps-4 = Remuez jusqu'à ce que la minuterie se termine.
+# Each line of text is a different list item
+onboarding-automatic_proportions-recording-steps =
+    Debout, bien droit, faites tourner votre tête en cercle.
+    Inclinez le dos vers l'avant et accroupissez-vous. Accroupi, regardez vers la gauche, puis vers la droite.
+    Tournez le haut de votre corps vers la gauche (dans le sens inverse des aiguilles d'une montre), puis penchez-vous vers le sol.
+    Tournez le haut de votre corps vers la droite (dans le sens des aiguilles d'une montre), puis penchez-vous vers le sol.
+    Faites rouler vos hanches dans un mouvement circulaire comme si vous utilisiez un cerceau.
+    S'il reste du temps à l'enregistrement, répétez les étapes jusqu'à la fin de ce dernier.
 onboarding-automatic_proportions-recording-processing = Traitement du résultat
-# $time (Number) - Seconds left for the automatic calibration recording to finish (max 15)
+# $time (Number) - Seconds left for the automatic calibration recording to finish (max 20)
 onboarding-automatic_proportions-recording-timer =
     { $time ->
         [one] 1 secondes restantes

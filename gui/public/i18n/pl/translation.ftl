@@ -247,7 +247,7 @@ mounting_selection_menu-close = Zamknij
 
 settings-sidebar-title = Ustawienia
 settings-sidebar-general = Ogólne
-settings-sidebar-tracker_mechanics = Tracker mechanics
+settings-sidebar-tracker_mechanics = Mechanika trackerów
 settings-sidebar-fk_settings = FK settings
 settings-sidebar-gesture_control = Sterowanie gestami
 settings-sidebar-interface = Interfejs
@@ -275,7 +275,7 @@ settings-general-steamvr-trackers-hands = Ręce
 
 ## Tracker mechanics
 
-settings-general-tracker_mechanics = Tracker mechanics
+settings-general-tracker_mechanics = Mechanika trackerów
 settings-general-tracker_mechanics-filtering = Filtrowanie
 # This also cares about multilines
 settings-general-tracker_mechanics-filtering-description =
@@ -366,6 +366,7 @@ settings-general-interface-serial_detection-label = Wykrywanie urządzeń
 settings-general-interface-feedback_sound = Dźwięk Informacji
 settings-general-interface-feedback_sound-description = Ta opcja odtworzy dźwięk, gdy reset zostanie uruchomiony
 settings-general-interface-feedback_sound-label = Dźwięk Informacji
+settings-general-interface-feedback_sound-volume = Poziom głośności sprzężenia zwrotnego
 settings-general-interface-lang = Wybierz Język
 settings-general-interface-lang-description = Zmień podstawowy język jaki chcesz używać
 settings-general-interface-lang-placeholder = Wybierz Język który będziesz używać
@@ -484,6 +485,12 @@ settings-osc-vmc-anchor_hip-label = Blokada na biodrach
 onboarding-skip = Pomiń wstępną konfiguracje
 onboarding-continue = Kontynuuj
 onboarding-wip = W trakcie prac
+onboarding-previous_step = Poprzedni krok
+onboarding-setup_warning =
+    <b>Ostrzeżenie:</b> konfiguracja jest konieczna do dobrego śledzenia,
+    i jest to wymagane, jeśli używasz SlimeVR po raz pierwszy.
+onboarding-setup_warning-skip = Pomiń konfigurację
+onboarding-setup_warning-cancel = Kontynuuj konfigurację
 
 ## Wi-Fi setup
 
@@ -694,22 +701,32 @@ onboarding-automatic_proportions-prev_step = Poprzedni krok
 onboarding-automatic_proportions-put_trackers_on-title = Załóż trackery
 onboarding-automatic_proportions-put_trackers_on-description = Aby skalibrować proporcje, użyjemy trackerów które przed chwilą przypisałeś. Załóż wszystkie trackery, będziesz widział który to który na postaci po prawej.
 onboarding-automatic_proportions-put_trackers_on-next = Mam wszystkie trackery założone
-onboarding-automatic_proportions-preparation-title = Przygotowania
-onboarding-automatic_proportions-preparation-description = Połóż krzesło za sobą w twojej przeszczeni grania. Bądź gotowy do siadania podczas automatycznej kalibracji kości.
-onboarding-automatic_proportions-preparation-next = Jestem przed krzesłem
+onboarding-automatic_proportions-requirements-title = Wymagania
+# Each line of text is a different list item
+onboarding-automatic_proportions-requirements-description =
+    Masz co najmniej wystarczającą liczbę trackerów do śledzenia twoich stóp (zazwyczaj 5 trackerów).
+    Masz włączone trackery i zestaw VR.
+    Masz na sobie trackery i zestaw VR.
+    Twoje urządzenia śledzące i zestaw VR są połączone z serwerem SlimeVR.
+    Twoje urządzenia śledzące i zestaw VR działają poprawnie na serwerze SlimeVR.
+    Twój zestaw VR przesyła dane pozycyjne do serwera SlimeVR (oznacza to ogólnie, że SteamVR działa i jest połączony ze SlimeVR za pomocą sterownika SlimeVR dla SteamVR).
+onboarding-automatic_proportions-requirements-next = Zapoznałem się z wymaganiami
 onboarding-automatic_proportions-start_recording-title = Bądź gotowy żeby się ruszać
 onboarding-automatic_proportions-start_recording-description = Będziemy teraz nagrywać specyficzne pozycje i ruchy. Będą one pokazane w następnym okienku. Bądź gotowy po naciśnięciu przycisku!
 onboarding-automatic_proportions-start_recording-next = Uruchom nagrywanie
 onboarding-automatic_proportions-recording-title = REC
 onboarding-automatic_proportions-recording-description-p0 = Nagrywanie w toku...
 onboarding-automatic_proportions-recording-description-p1 = Wykonuj ruchy pokazane niżej:
-onboarding-automatic_proportions-recording-steps-0 = Zegnij kolana kilka razy.
-onboarding-automatic_proportions-recording-steps-1 = Usiądź na krześle ,po czym wstań.
-onboarding-automatic_proportions-recording-steps-2 = Przekręć ciało w lewo ,po czym przechyl się w prawo.
-onboarding-automatic_proportions-recording-steps-3 = Przekręć ciało w prawo ,po czym przechyl się w lewo.
-onboarding-automatic_proportions-recording-steps-4 = Poruszaj się dopuki czas się nie skończy
+# Each line of text is a different list item
+onboarding-automatic_proportions-recording-steps =
+    Stojąc prosto, obracaj głowę w kółko.
+    Pochyl plecy do przodu i zrób przysiad. Podczas kucania spójrz w lewo, a następnie w prawo.
+    Obróć górną część ciała w lewo (przeciwnie do ruchu wskazówek zegara), a następnie sięgnij w dół w kierunku ziemi.
+    Obróć górną część ciała w prawo (zgodnie z ruchem wskazówek zegara), a następnie sięgnij w dół w kierunku podłoża.
+    Obracaj biodrami okrężnymi ruchami, jakbyś używał hula-hoop.
+    Jeśli na nagraniu pozostało trochę czasu, możesz powtarzać te czynności, aż do zakończenia.
 onboarding-automatic_proportions-recording-processing = Przetwarzanie wyników
-# $time (Number) - Seconds left for the automatic calibration recording to finish (max 15)
+# $time (Number) - Seconds left for the automatic calibration recording to finish (max 20)
 onboarding-automatic_proportions-recording-timer =
     { $time ->
         [one] Pozostała 1 sekunda
