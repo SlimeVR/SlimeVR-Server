@@ -45,7 +45,7 @@ export function Radio({
             value={value}
             checked={value == checked}
             {...props}
-          ></input>
+          />
           <div className="flex flex-col gap-2">
             <Typography bold>{label}</Typography>
             {desciption && (

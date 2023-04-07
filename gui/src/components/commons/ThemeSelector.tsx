@@ -1,6 +1,5 @@
 import classNames from 'classnames';
 import { Control, Controller } from 'react-hook-form';
-import { Typography } from './Typography';
 
 export function ThemeSelector({
   control,
@@ -39,7 +38,7 @@ export function ThemeSelector({
           checked={value == checked}
           disabled={disabled}
           {...props}
-        ></input>
+        />
       )}
     />
   );
