@@ -123,7 +123,7 @@ class PoseRecorder(private val server: VRServer) {
 	}
 
 	@Synchronized
-	fun internalStopFrameRecording(cancel: Boolean) {
+	private fun internalStopFrameRecording(cancel: Boolean) {
 		val currentRecording = currentRecording
 		if (currentRecording != null && !currentRecording.isDone) {
 			val currentFrames = poseFrame
