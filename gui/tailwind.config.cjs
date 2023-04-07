@@ -105,6 +105,10 @@ module.exports = {
           },
         },
       },
+      backgroundImage: {
+        'trans-flag': `linear-gradient(135deg, ${colors['trans-blue'][800]} 40%, ${colors['trans-blue'][700]} 40% 70%, ${colors['trans-blue'][600]} 70% 100%)`,
+        slime: `linear-gradient(135deg, ${colors.purple[100]} 50%, ${colors['blue-gray'][700]} 50% 100%)`,
+      },
     },
   },
   plugins: [

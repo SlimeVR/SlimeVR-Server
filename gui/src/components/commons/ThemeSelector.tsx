@@ -27,9 +27,11 @@ export function ThemeSelector({
             colors,
             'focus:ring-transparent focus:ring-offset-transparent',
             'focus:outline-transparent appearance-none border-4 border-solid',
-            'border-transparent checked:!border-accent-background-30 w-16 h-16',
-            '!text-current checked:bg-none',
+            'border-transparent checked:!border-accent-background-30 w-16 h-16'
           )}
+          style={{
+            WebkitTextFillColor: 'transparent',
+          }}
           name={name}
           ref={ref}
           onChange={onChange}

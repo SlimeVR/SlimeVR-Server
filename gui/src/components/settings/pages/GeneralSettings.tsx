@@ -78,6 +78,7 @@ interface SettingsForm {
     watchNewDevices: boolean;
     feedbackSound: boolean;
     feedbackSoundVolume: number;
+    theme: string;
   };
 }
 
@@ -124,6 +125,7 @@ const defaultValues = {
     watchNewDevices: true,
     feedbackSound: true,
     feedbackSoundVolume: 0.5,
+    theme: 'slime',
   },
 };
 
@@ -208,6 +210,7 @@ export function GeneralSettings() {
       watchNewDevices: values.interface.watchNewDevices,
       feedbackSound: values.interface.feedbackSound,
       feedbackSoundVolume: values.interface.feedbackSoundVolume,
+      theme: values.interface.theme,
     });
   };
 
@@ -906,24 +909,24 @@ export function GeneralSettings() {
               step={0.1}
             />
           </div>
-          <Typography bold>
-            {l10n.getString(
-              'settings-general-interface-theme'
-            )}
-          </Typography>
-          <div className="flex md:flex-row flex-col gap-3 pt-2">
-            <ThemeSelector
-              control={control}
-              name="theme.selector"
-              value={'slime'}
-              colors=""
-            ></ThemeSelector>
-            <ThemeSelector
-              control={control}
-              name="theme.selector"
-              value={'trans'}
-              colors=""
-            ></ThemeSelector>
+          <div className="pb-4">
+            <Typography bold>
+              {l10n.getString('settings-general-interface-theme')}
+            </Typography>
+            <div className="flex md:flex-row flex-col gap-3 pt-2">
+              <ThemeSelector
+                control={control}
+                name="interface.theme"
+                value={'slime'}
+                colors="!bg-slime"
+              ></ThemeSelector>
+              <ThemeSelector
+                control={control}
+                name="interface.theme"
+                value={'trans'}
+                colors="!bg-trans-flag"
+              ></ThemeSelector>
+            </div>
           </div>
           <Typography bold>
             {l10n.getString('settings-general-interface-lang')}

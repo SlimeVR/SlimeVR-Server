@@ -71,7 +71,7 @@ body {
   --default-color: 255, 255, 255;
 }
 
-:root[data-theme=trans] {
+:root[data-theme='trans'] {
   --background-10: 77, 34, 43;
   --background-20: 26, 102, 130;
   --background-30: 9, 84, 112;
