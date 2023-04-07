@@ -35,7 +35,10 @@ export function Radio({
         >
           <input
             type="radio"
-            className="text-accent-background-30 focus:ring-transparent focus:ring-offset-transparent focus:outline-transparent"
+            className={classNames(
+              'text-accent-background-30 focus:ring-transparent',
+              'focus:ring-offset-transparent focus:outline-transparent'
+            )}
             name={name}
             ref={ref}
             onChange={onChange}

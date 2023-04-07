@@ -26,6 +26,7 @@ import { WrenchIcon } from '../../commons/icon/WrenchIcons';
 import { LangSelector } from '../../commons/LangSelector';
 import { NumberSelector } from '../../commons/NumberSelector';
 import { Radio } from '../../commons/Radio';
+import { ThemeSelector } from '../../commons/ThemeSelector';
 import { Typography } from '../../commons/Typography';
 import { SettingsPageLayout } from '../SettingsPageLayout';
 
@@ -905,7 +906,25 @@ export function GeneralSettings() {
               step={0.1}
             />
           </div>
-
+          <Typography bold>
+            {l10n.getString(
+              'settings-general-interface-theme'
+            )}
+          </Typography>
+          <div className="flex md:flex-row flex-col gap-3 pt-2">
+            <ThemeSelector
+              control={control}
+              name="theme.selector"
+              value={'slime'}
+              colors=""
+            ></ThemeSelector>
+            <ThemeSelector
+              control={control}
+              name="theme.selector"
+              value={'trans'}
+              colors=""
+            ></ThemeSelector>
+          </div>
           <Typography bold>
             {l10n.getString('settings-general-interface-lang')}
           </Typography>
