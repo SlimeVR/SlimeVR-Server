@@ -636,7 +636,7 @@ onboarding-choose_proportions = What proportion calibration method to use?
 onboarding-choose_proportions-auto_proportions = Automatic proportions
 # Italized text
 onboarding-choose_proportions-auto_proportions-subtitle = Recommended
-onboarding-choose_proportions-auto_proportions-description = This will guess your proportions by recording a sample of your movements and passing it through an AI
+onboarding-choose_proportions-auto_proportions-description = This will guess your proportions by recording a sample of your movements and passing it through an algorithm
 onboarding-choose_proportions-manual_proportions = Manual proportions
 # Italized text
 onboarding-choose_proportions-manual_proportions-subtitle = For small touches
