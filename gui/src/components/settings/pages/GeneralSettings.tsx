@@ -230,6 +230,7 @@ export function GeneralSettings() {
         watchNewDevices: config?.watchNewDevices,
         feedbackSound: config?.feedbackSound,
         feedbackSoundVolume: config?.feedbackSoundVolume,
+        theme: config?.theme,
       },
     };
 
