@@ -18,6 +18,7 @@ export interface Config {
   devSettings: DeveloperModeWidgetForm;
   feedbackSound: boolean;
   feedbackSoundVolume: number;
+  theme: string;
 }
 
 export interface ConfigContext {
@@ -33,6 +34,7 @@ const defaultConfig: Partial<Config> = {
   watchNewDevices: true,
   feedbackSound: true,
   feedbackSoundVolume: 0.5,
+  theme: 'slime'
 };
 
 function fallbackToDefaults(loadedConfig: any): Config {
@@ -52,6 +54,9 @@ export function useConfigProvider(): ConfigContext {
         }
       : null;
     set(newConfig as Config);
+    if('theme' in config) {
+      document.documentElement.dataset.theme = config.theme
+    }
 
     if (!debounceTimer.current) {
       debounceTimer.current = setTimeout(async () => {
@@ -85,6 +90,7 @@ export function useConfigProvider(): ConfigContext {
 
         const loadedConfig = fallbackToDefaults(JSON.parse(json));
         set(loadedConfig);
+        document.documentElement.dataset.theme = loadedConfig.theme
         setLoading(false);
         return loadedConfig;
       } catch (e) {
