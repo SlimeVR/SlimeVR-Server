@@ -337,6 +337,7 @@ settings-general-interface-feedback_sound = Feedback sound
 settings-general-interface-feedback_sound-description = This option will play a sound when a reset is triggered
 settings-general-interface-feedback_sound-label = Feedback sound
 settings-general-interface-feedback_sound-volume = Feedback sound volume
+settings-general-interface-theme = Color theme
 settings-general-interface-lang = Select language
 settings-general-interface-lang-description = Change the default language you want to use.
 settings-general-interface-lang-placeholder = Select the language to use

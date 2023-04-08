@@ -58,7 +58,7 @@ export function Dropdown({
           <div className="relative w-fit">
             <div
               className={classNames(
-                'min-h-[35px] text-white px-5 py-2.5 rounded-md focus:ring-4 text-center',
+                'min-h-[35px] text-background-10 px-5 py-2.5 rounded-md focus:ring-4 text-center',
                 'flex cursor-pointer',
                 variant == 'primary' &&
                   'bg-background-60 hover:bg-background-50',
@@ -109,11 +109,11 @@ export function Dropdown({
                   alignment === 'left' && 'left-0'
                 )}
               >
-                <ul className="py-1 text-sm text-gray-200 flex flex-col pr-2">
+                <ul className="py-1 text-sm text-background-20 flex flex-col pr-2">
                   {items.map((item) => (
                     <li
                       className={classNames(
-                        'py-2 px-4 hover:text-white min-w-max cursor-pointer',
+                        'py-2 px-4 hover:text-background-10 min-w-max cursor-pointer',
                         variant == 'primary' && 'hover:bg-background-50',
                         variant == 'secondary' && 'hover:bg-background-60'
                       )}
