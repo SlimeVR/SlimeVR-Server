@@ -119,12 +119,12 @@ fn main() {
 						let emit_me = match cmd_event {
 							CommandEvent::Stderr(s) => ("stderr", s),
 							CommandEvent::Stdout(s) => ("stdout", s),
-							CommandEvent::Error(s) => ("error", s),
+							CommandEvent::Error(s) => ("error", s.into_bytes()),
 							CommandEvent::Terminated(s) => {
 								exit_flag_terminated.store(true, Ordering::Relaxed);
-								("terminated", format!("{s:?}"))
+								("terminated", format!("{s:?}").into_bytes())
 							}
-							_ => ("other", "".to_string()),
+							_ => ("other", vec!()),
 						};
 						app_handle
 							.emit_all("server-status", emit_me)
