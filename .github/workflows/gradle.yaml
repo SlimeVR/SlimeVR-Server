@@ -78,7 +78,7 @@ jobs:
 
 
   bundle-linux:
-    runs-on: ubuntu-20.04
+    runs-on: ubuntu-22.04
     needs: [build, test]
     if: contains(fromJSON('["workflow_dispatch", "create"]'), github.event_name)
     steps:
@@ -105,7 +105,7 @@ jobs:
       - name: Cache cargo dependencies
         uses: Swatinem/rust-cache@v2
         with:
-          shared-key: "ubuntu-20.04"
+          shared-key: "ubuntu-22.04"
 
       - name: Use Node.js
         uses: actions/setup-node@v3
