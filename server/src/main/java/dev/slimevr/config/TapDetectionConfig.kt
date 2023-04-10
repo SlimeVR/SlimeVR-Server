@@ -13,21 +13,21 @@ class TapDetectionConfig {
 	var fullResetEnabled = true
 	var mountingResetEnabled = true
 	var setupMode = false
-    var yawResetTaps = 2
-        // clamp to 2-3 to prevent errors
-        set(yawResetTaps) {
-            field = FastMath.clamp(yawResetTaps.toFloat(), 2f, 10f).toInt()
-            field = yawResetTaps
-        }
-    var fullResetTaps = 3
-        set(fullResetTaps) {
-            field = FastMath.clamp(fullResetTaps.toFloat(), 2f, 10f).toInt()
-            field = fullResetTaps
-        }
-    var mountingResetTaps = 3
-        set(mountingResetTaps) {
-            field = FastMath.clamp(mountingResetTaps.toFloat(), 2f, 10f).toInt()
-            field = mountingResetTaps
-        }
+	var yawResetTaps = 2
+		// clamp to 2-3 to prevent errors
+		set(yawResetTaps) {
+			field = FastMath.clamp(yawResetTaps.toFloat(), 2f, 10f).toInt()
+			field = yawResetTaps
+		}
+	var fullResetTaps = 3
+		set(fullResetTaps) {
+			field = FastMath.clamp(fullResetTaps.toFloat(), 2f, 10f).toInt()
+			field = fullResetTaps
+		}
+	var mountingResetTaps = 3
+		set(mountingResetTaps) {
+			field = FastMath.clamp(mountingResetTaps.toFloat(), 2f, 10f).toInt()
+			field = mountingResetTaps
+		}
 	var numberTrackersOverThreshold = 1
 }
