@@ -1,6 +1,9 @@
 package dev.slimevr.tracking.processor.skeleton;
 
 
+import java.util.ArrayList;
+import java.util.List;
+
 import dev.slimevr.config.TapDetectionConfig;
 import dev.slimevr.reset.ResetHandler;
 import dev.slimevr.tracking.processor.HumanPoseManager;
@@ -23,6 +26,8 @@ public class TapDetectionManager {
 	private TapDetection yawResetDetector;
 	private TapDetection fullResetDetector;
 	private TapDetection mountingResetDetector;
+
+	private ArrayList<TapDetection> tapDetectors;
 
 	// number of taps to detect
 	private int yawResetTaps = 2;
@@ -50,7 +55,8 @@ public class TapDetectionManager {
 		HumanSkeleton skeleton,
 		HumanPoseManager humanPoseManager,
 		TapDetectionConfig config,
-		ResetHandler resetHandler
+		ResetHandler resetHandler,
+		List<Tracker> trackers
 	) {
 		this.skeleton = skeleton;
 		this.humanPoseManager = humanPoseManager;
@@ -60,6 +66,14 @@ public class TapDetectionManager {
 		yawResetDetector = new TapDetection(skeleton, getTrackerToWatchYawReset());
 		fullResetDetector = new TapDetection(skeleton, getTrackerToWatchFullReset());
 		mountingResetDetector = new TapDetection(skeleton, getTrackerToWatchMountingReset());
+
+		// a list of tap detectors for each tracker 
+		tapDetectors = new ArrayList<TapDetection>();
+		for (Tracker tracker : trackers) {
+			TapDetection tapDetector = new TapDetection(skeleton, tracker);
+			tapDetector.setEnabled(true);
+			tapDetectors.add(tapDetector);
+		}
 
 		// since this config value is only modified by editing the config file,
 		// we can set it here
@@ -95,7 +109,7 @@ public class TapDetectionManager {
 	}
 
 	public void update() {
-		if (yawResetDetector == null || fullResetDetector == null || mountingResetDetector == null)
+		if (yawResetDetector == null || fullResetDetector == null || mountingResetDetector == null || tapDetectors == null)
 			return;
 		// update the tap detectors
 		yawResetDetector.update();
@@ -106,6 +120,18 @@ public class TapDetectionManager {
 		checkYawReset();
 		checkFullReset();
 		checkMountingReset();
+
+		// if setup mode is enabled, update the tap detectors for each tracker
+		if (config.getSetupMode()) {
+			for (TapDetection tapDetector : tapDetectors) {
+				tapDetector.update();
+
+				if (tapDetector.getTaps() > 1) {
+					// do something here
+					tapDetector.resetDetector();
+				}
+			}
+		}
 	}
 
 	private void checkYawReset() {
