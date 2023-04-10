@@ -72,10 +72,10 @@ class AutoBone(server: VRServer) {
 	// #endregion
 	private val rand = Random()
 
-	val config: AutoBoneConfig
+	val globalConfig: AutoBoneConfig
 
 	init {
-		config = server.configManager.vrConfig.autoBone
+		globalConfig = server.configManager.vrConfig.autoBone
 		this.server = server
 		loadConfigValues()
 	}
@@ -344,11 +344,10 @@ class AutoBone(server: VRServer) {
 	@Throws(AutoBoneException::class)
 	fun processFrames(
 		frames: PoseFrames,
-		calcInitError: Boolean = true,
-		targetHeight: Float = -1f,
-		epochCallback: Consumer<Epoch?>?,
+		config: AutoBoneConfig = globalConfig,
+		epochCallback: Consumer<Epoch?>? = null,
 	): AutoBoneResults {
-		var targetHeight = targetHeight
+		var targetHeight = config.targetHeight
 		val frameCount = frames.maxFrameCount
 		val frames1 = TrackerFramesPlayer(frames)
 		val frames2 = TrackerFramesPlayer(frames)
@@ -376,6 +375,7 @@ class AutoBone(server: VRServer) {
 			offsets
 		)
 		val trainingStep = AutoBoneTrainingStep(
+			config,
 			targetHeight,
 			skeleton1,
 			skeleton2,
@@ -390,7 +390,7 @@ class AutoBone(server: VRServer) {
 		val errorStats = StatsCalculator()
 
 		// Epoch loop, each epoch is one full iteration over the full dataset
-		for (epoch in (if (calcInitError) -1 else 0) until config.numEpochs) {
+		for (epoch in (if (config.calcInitError) -1 else 0) until config.numEpochs) {
 			val adjustRate = decayFunc(config.initialAdjustRate, config.adjustRateDecay, epoch)
 
 			var randomFrameIndices: IntArray? = null
@@ -580,6 +580,7 @@ class AutoBone(server: VRServer) {
 
 	@Throws(AutoBoneException::class)
 	protected fun getErrorDeriv(trainingStep: AutoBoneTrainingStep): Float {
+		val config = trainingStep.config
 		var sumError = 0f
 		if (config.slideErrorFactor > 0f) {
 			sumError += slideError.getStepError(trainingStep) * config.slideErrorFactor

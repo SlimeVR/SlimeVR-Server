@@ -1,10 +1,12 @@
 package dev.slimevr.autobone
 
+import dev.slimevr.config.AutoBoneConfig
 import dev.slimevr.poseframeformat.PoseFrames
 import dev.slimevr.tracking.processor.BoneType
 import dev.slimevr.tracking.processor.HumanPoseManager
 
 class AutoBoneTrainingStep(
+	val config: AutoBoneConfig,
 	val targetHeight: Float,
 	val humanPoseManager1: HumanPoseManager,
 	val humanPoseManager2: HumanPoseManager,
