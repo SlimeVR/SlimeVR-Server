@@ -143,18 +143,11 @@ class PoseFrames : Iterable<Array<TrackerFrame?>> {
 
 	inner class PoseFrameIterator(private val poseFrame: PoseFrames) : Iterator<Array<TrackerFrame?>> {
 		private val trackerFrameBuffer: Array<TrackerFrame?> = arrayOfNulls(poseFrame.frameHolders.size)
+		private val maxCursor = poseFrame.maxFrameCount
 		private var cursor = 0
 
 		override fun hasNext(): Boolean {
-			if (frameHolders.isEmpty()) {
-				return false
-			}
-			for (tracker in frameHolders) {
-				if (tracker != null && cursor < tracker.frames.size) {
-					return true
-				}
-			}
-			return false
+			return frameHolders.isNotEmpty() && cursor < maxCursor
 		}
 
 		override fun next(): Array<TrackerFrame?> {
