@@ -28,9 +28,14 @@ class MainActivity : AppCompatActivity() {
 		// Load the web GUI web page
 		LogManager.info("[MainActivity] Initializing GUI WebView...")
 		val guiWebView = findViewById<WebView>(R.id.guiWebView)
+
+		// Configure for web GUI
+		WebView.setWebContentsDebuggingEnabled(true)
 		guiWebView.settings.javaScriptEnabled = true
 		guiWebView.settings.domStorageEnabled = true
 		guiWebView.settings.setSupportZoom(true)
+
+		// Load GUI page
 		guiWebView.loadUrl("http://127.0.0.1:8080/")
 		LogManager.info("[MainActivity] GUI WebView has been initialized and loaded.")
 	}

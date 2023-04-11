@@ -2,6 +2,7 @@
 
 package dev.slimevr
 
+import androidx.appcompat.app.AppCompatActivity
 import io.eiren.util.logging.LogManager
 import io.ktor.server.engine.embeddedServer
 import io.ktor.server.http.content.defaultResource
@@ -20,7 +21,7 @@ lateinit var vrServer: VRServer
 val vrServerInitialized: Boolean
 	get() = ::vrServer.isInitialized
 
-fun main(mainActivity: MainActivity) {
+fun main(activity: AppCompatActivity) {
 	// Host the web GUI server
 	embeddedServer(Netty, port = 8080) {
 		routing {
@@ -34,13 +35,13 @@ fun main(mainActivity: MainActivity) {
 
 	thread(start = true, name = "Main VRServer Thread") {
 		try {
-			LogManager.initialize(mainActivity.filesDir)
+			LogManager.initialize(activity.filesDir)
 		} catch (e1: java.lang.Exception) {
 			e1.printStackTrace()
 		}
 		LogManager.info("Running version $VERSION")
 		try {
-			vrServer = VRServer(File(mainActivity.filesDir, "vrconfig.yml").absolutePath)
+			vrServer = VRServer(File(activity.filesDir, "vrconfig.yml").absolutePath)
 			vrServer.start()
 			Keybinding(vrServer)
 			vrServer.join()
