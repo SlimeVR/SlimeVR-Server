@@ -1,8 +1,12 @@
 #![cfg_attr(all(not(debug_assertions), windows), windows_subsystem = "windows")]
 use std::env;
 use std::panic;
+use std::sync::atomic::AtomicBool;
+use std::sync::atomic::Ordering;
+use std::sync::Arc;
 use std::thread;
 use std::time::Duration;
+use std::time::Instant;
 
 use clap::Parser;
 use tauri::api::process::{Command, CommandChild};
@@ -39,8 +43,8 @@ fn main() {
 	// and then check for WebView2's existence
 	#[cfg(windows)]
 	{
-		use win32job::{ExtendedLimitInfo, Job};
 		use crate::util::webview2_exists;
+		use win32job::{ExtendedLimitInfo, Job};
 
 		let mut info = ExtendedLimitInfo::new();
 		info.limit_kill_on_job_close();
@@ -71,6 +75,7 @@ fn main() {
 	}
 
 	// Spawn server process
+	let exit_flag = Arc::new(AtomicBool::new(false));
 	let mut backend: Option<CommandChild> = None;
 	let run_path = get_launch_path(cli);
 
@@ -101,9 +106,10 @@ fn main() {
 		None
 	};
 
+	let exit_flag_terminated = exit_flag.clone();
 	let build_result = tauri::Builder::default()
 		.plugin(tauri_plugin_window_state::Builder::default().build())
-		.setup(|app| {
+		.setup(move |app| {
 			if let Some(mut recv) = stdout_recv {
 				let app_handle = app.app_handle();
 				tauri::async_runtime::spawn(async move {
@@ -115,6 +121,7 @@ fn main() {
 							CommandEvent::Stdout(s) => ("stdout", s),
 							CommandEvent::Error(s) => ("error", s),
 							CommandEvent::Terminated(s) => {
+								exit_flag_terminated.store(true, Ordering::Relaxed);
 								("terminated", format!("{s:?}"))
 							}
 							_ => ("other", "".to_string()),
@@ -138,6 +145,7 @@ fn main() {
 			_ => (),
 		})
 		.build(tauri::generate_context!());
+	let exit_flag_requested = Arc::clone(&exit_flag);
 	match build_result {
 		Ok(app) => {
 			app.run(move |_app_handle, event| match event {
@@ -148,12 +156,14 @@ fn main() {
 						Ok(()) => log::info!("send exit to backend"),
 						Err(_) => log::info!("fail to send exit to backend"),
 					}
-					// We can't wait the process to die because Tauri doesn't expose
-					// such thing, so the only way is sleeping and hope for the best
-					// for now...
-					// (We can wait pids in POSIX but not in Windows if we wanted
-					// to workaround this)
-					thread::sleep(Duration::from_secs(10))
+					let ten_seconds = Duration::from_secs(10);
+					let start_time = Instant::now();
+					while start_time.elapsed() < ten_seconds {
+						if exit_flag_requested.load(Ordering::Relaxed) {
+							break;
+						}
+						thread::sleep(Duration::from_secs(1));
+					}
 				}
 				_ => {}
 			});
