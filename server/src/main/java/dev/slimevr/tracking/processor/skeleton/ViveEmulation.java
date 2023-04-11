@@ -99,7 +99,7 @@ public class ViveEmulation {
 				targetPosition = skeleton.computedHipTracker.getPosition();
 				return;
 			}
-			skeleton.computedHipTracker.setPosition((getFlyingBackPos()));
+			skeleton.computedHipTracker.setPosition(getFlyingBackPos());
 		}
 		// in this state the tracker will return to its original position
 		else if (flyingBack) {
