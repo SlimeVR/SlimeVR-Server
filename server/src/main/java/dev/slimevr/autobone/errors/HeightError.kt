@@ -8,8 +8,8 @@ class HeightError : IAutoBoneError {
 	@Throws(AutoBoneException::class)
 	override fun getStepError(trainingStep: AutoBoneTrainingStep): Float {
 		return getHeightError(
-			trainingStep.currentHeight,
-			trainingStep.targetHeight
+			trainingStep.currentHmdHeight,
+			trainingStep.targetHmdHeight
 		)
 	}
 
