@@ -1,7 +1,7 @@
 package dev.slimevr.autobone.errors
 
 import com.jme3.math.FastMath
-import dev.slimevr.autobone.AutoBoneTrainingStep
+import dev.slimevr.autobone.AutoBoneStep
 import dev.slimevr.autobone.errors.proportions.ProportionLimiter
 import dev.slimevr.autobone.errors.proportions.RangeProportionLimiter
 import dev.slimevr.tracking.processor.HumanPoseManager
@@ -10,9 +10,9 @@ import dev.slimevr.tracking.processor.config.SkeletonConfigOffsets
 // The distance from average human proportions
 class BodyProportionError : IAutoBoneError {
 	@Throws(AutoBoneException::class)
-	override fun getStepError(trainingStep: AutoBoneTrainingStep): Float {
+	override fun getStepError(trainingStep: AutoBoneStep): Float {
 		return getBodyProportionError(
-			trainingStep.humanPoseManager1,
+			trainingStep.skeleton1,
 			trainingStep.currentHmdHeight
 		)
 	}

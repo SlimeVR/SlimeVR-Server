@@ -1,21 +1,21 @@
 package dev.slimevr.autobone.errors
 
 import com.jme3.math.FastMath
-import dev.slimevr.autobone.AutoBoneTrainingStep
+import dev.slimevr.autobone.AutoBoneStep
 import dev.slimevr.poseframeformat.trackerdata.TrackerFrames
 import dev.slimevr.tracking.processor.skeleton.HumanSkeleton
 
 // The difference between offset of absolute position and the corresponding point over time
 class PositionOffsetError : IAutoBoneError {
 	@Throws(AutoBoneException::class)
-	override fun getStepError(trainingStep: AutoBoneTrainingStep): Float {
+	override fun getStepError(trainingStep: AutoBoneStep): Float {
 		val trackers = trainingStep.trainingFrames.frameHolders
 		return getPositionOffsetError(
 			trackers,
 			trainingStep.cursor1,
 			trainingStep.cursor2,
-			trainingStep.humanPoseManager1.skeleton,
-			trainingStep.humanPoseManager2.skeleton
+			trainingStep.skeleton1.skeleton,
+			trainingStep.skeleton2.skeleton
 		)
 	}
 

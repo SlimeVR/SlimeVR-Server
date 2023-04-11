@@ -9,7 +9,7 @@ import dev.slimevr.tracking.processor.HumanPoseManager
 import java.util.*
 import java.util.function.Consumer
 
-class AutoBoneTrainingStep(
+class AutoBoneStep(
 	val config: AutoBoneConfig,
 	val targetHmdHeight: Float,
 	val targetFullHeight: Float,

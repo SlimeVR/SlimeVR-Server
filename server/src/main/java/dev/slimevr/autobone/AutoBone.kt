@@ -111,7 +111,7 @@ class AutoBone(server: VRServer) {
 		offsets.clear()
 
 		// Get current or default skeleton configs
-		val skeleton = humanPoseManager
+		val skeleton = server.humanPoseManager
 		val getOffset: Function<SkeletonConfigOffsets, Float> =
 			if (skeleton != null) {
 				Function { key: SkeletonConfigOffsets -> skeleton.getOffset(key) }
@@ -158,17 +158,6 @@ class AutoBone(server: VRServer) {
 		val dot2 = normalizedOffset.dot(getBoneDirection(skeleton2, node, rightSide))
 		return dot2 - dot1
 	}
-
-	private val humanPoseManager: HumanPoseManager?
-		/**
-		 * A simple utility method to get the [HumanSkeleton] from the
-		 * [VRServer]
-		 *
-		 * @return The [HumanSkeleton] associated with the [VRServer],
-		 * or null if there is none available
-		 * @see {@link VRServer}, {@link HumanSkeleton}
-		 */
-		get() = server.humanPoseManager
 
 	fun applyConfig(
 		configConsumer: BiConsumer<SkeletonConfigOffsets, Float>,
@@ -245,7 +234,7 @@ class AutoBone(server: VRServer) {
 	}
 
 	@JvmOverloads
-	fun applyAndSaveConfig(humanPoseManager: HumanPoseManager? = this.humanPoseManager): Boolean {
+	fun applyAndSaveConfig(humanPoseManager: HumanPoseManager? = this.server.humanPoseManager): Boolean {
 		if (humanPoseManager == null) return false
 		if (!applyConfig(humanPoseManager)) return false
 		humanPoseManager.saveConfig()
@@ -312,7 +301,7 @@ class AutoBone(server: VRServer) {
 	fun calcTargetHmdHeight(frames: PoseFrames): Float {
 		val targetHeight: Float
 		// Get the current skeleton from the server
-		val humanPoseManager = humanPoseManager
+		val humanPoseManager = server.humanPoseManager
 		if (humanPoseManager != null) {
 			// If there is a skeleton available, calculate the target height
 			// from its configs
@@ -361,7 +350,9 @@ class AutoBone(server: VRServer) {
 			targetHmdHeight * BodyProportionError.eyeHeightToHeightRatio
 		}
 
-		val trainingStep = AutoBoneTrainingStep(
+		// Set up the current state, making all required players and setting up the
+		// skeletons appropriately
+		val trainingStep = AutoBoneStep(
 			config,
 			targetHmdHeight,
 			targetFullHeight,
@@ -394,7 +385,7 @@ class AutoBone(server: VRServer) {
 		)
 	}
 
-	private fun internalEpoch(trainingStep: AutoBoneTrainingStep) {
+	private fun internalEpoch(trainingStep: AutoBoneStep) {
 		// Pull frequently used variables out of trainingStep to reduce call length
 		val config = trainingStep.config
 		val frameCount = trainingStep.maxFrameCount
@@ -474,7 +465,7 @@ class AutoBone(server: VRServer) {
 		trainingStep.epochCallback?.accept(Epoch(epoch + 1, config.numEpochs, errorStats, legacyConfigs))
 	}
 
-	private fun internalIter(trainingStep: AutoBoneTrainingStep) {
+	private fun internalIter(trainingStep: AutoBoneStep) {
 		// Pull frequently used variables out of trainingStep to reduce call length
 		val skeleton1 = trainingStep.skeleton1
 		val skeleton2 = trainingStep.skeleton2
@@ -591,7 +582,7 @@ class AutoBone(server: VRServer) {
 		}
 	}
 
-	private fun scaleToTargetHeight(trainingStep: AutoBoneTrainingStep) {
+	private fun scaleToTargetHeight(trainingStep: AutoBoneStep) {
 		val stepHeight = sumSelectConfigs(heightOffsets, offsets)
 		if (stepHeight > 0f) {
 			val stepHeightDiff = trainingStep.targetHmdHeight - stepHeight
@@ -619,7 +610,7 @@ class AutoBone(server: VRServer) {
 	}
 
 	@Throws(AutoBoneException::class)
-	private fun getErrorDeriv(trainingStep: AutoBoneTrainingStep): Float {
+	private fun getErrorDeriv(trainingStep: AutoBoneStep): Float {
 		val config = trainingStep.config
 		var sumError = 0f
 		if (config.slideErrorFactor > 0f) {
