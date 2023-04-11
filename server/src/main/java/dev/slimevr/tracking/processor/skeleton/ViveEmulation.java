@@ -93,7 +93,7 @@ public class ViveEmulation {
 		// in this state the tracker is returning to its position but has not
 		// yet overshot its target
 		else if (flyingBack && overShooting) {
-			if (targetPosition.minus(lastPosition).lenSq() < NEARLY_ZERO * NEARLY_ZERO) {
+			if (lastPosition.minus(targetPosition).lenSq() < NEARLY_ZERO * NEARLY_ZERO) {
 				overShooting = false;
 				flySpeed = FLY_BACK_OVERSHOOT;
 				targetPosition = skeleton.computedHipTracker.getPosition();
