@@ -104,7 +104,7 @@ public class ViveEmulation {
 		// in this state the tracker will return to its original position
 		else if (flyingBack) {
 			if (
-				skeleton.computedHipTracker.getPosition().minus(lastPosition).len() < NEARLY_ZERO
+				lastPosition.minus(skeleton.computedHipTracker.getPosition()).len() < NEARLY_ZERO
 			) {
 				flyingBack = false;
 				ticksToFly = random.nextInt(CHANCE);
