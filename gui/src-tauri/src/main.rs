@@ -145,7 +145,6 @@ fn main() {
 			_ => (),
 		})
 		.build(tauri::generate_context!());
-	let exit_flag_requested = Arc::clone(&exit_flag);
 	match build_result {
 		Ok(app) => {
 			app.run(move |_app_handle, event| match event {
@@ -159,7 +158,7 @@ fn main() {
 					let ten_seconds = Duration::from_secs(10);
 					let start_time = Instant::now();
 					while start_time.elapsed() < ten_seconds {
-						if exit_flag_requested.load(Ordering::Relaxed) {
+						if exit_flag.load(Ordering::Relaxed) {
 							break;
 						}
 						thread::sleep(Duration::from_secs(1));
