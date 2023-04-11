@@ -47,7 +47,7 @@ export function SkipSetupWarningModal({
             </WarningBox>
           </Localized>
 
-          <div className="flex flex-row gap-3 pt-5 place-content-center">
+          <div className="flex flex-col gap-3 pt-5 place-content-center">
             <Button variant="primary" onClick={onClose}>
               {l10n.getString('onboarding-setup_warning-cancel')}
             </Button>

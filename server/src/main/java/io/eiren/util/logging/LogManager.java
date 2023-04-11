@@ -26,12 +26,19 @@ public class LogManager {
 			return;
 		FileLogFormatter loc = new FileLogFormatter();
 		if (mainLogDir != null) {
+			// Ensure the log directory exists
 			if (!mainLogDir.exists())
 				mainLogDir.mkdirs();
-			for (File f : mainLogDir.listFiles()) {
-				if (f.getName().startsWith("log_last"))
-					f.delete();
+
+			// Clean old log files if they exist
+			File[] logFiles = mainLogDir.listFiles();
+			if (logFiles != null) {
+				for (File f : logFiles) {
+					if (f.getName().startsWith("log_last"))
+						f.delete();
+				}
 			}
+
 			String lastLogPattern = Path.of(mainLogDir.getPath(), "log_last_%g.log").toString();
 			FileHandler filehandler = new FileHandler(lastLogPattern, 25 * 1000000, 2);
 			filehandler.setFormatter(loc);

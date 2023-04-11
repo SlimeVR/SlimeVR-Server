@@ -23,23 +23,11 @@ export function HomePage() {
           modalVisible={skipWarning}
           onClick={() => setSkipWarning(true)}
         ></SkipSetupButton>
-        <div className="flex flex-col gap-5 items-center z-10">
+        <div className="flex flex-col gap-5 items-center z-10 scale-150 mb-20">
           <SlimeVRIcon></SlimeVRIcon>
           <Typography variant="main-title">
             {l10n.getString('onboarding-home')}
           </Typography>
-          <div className="flex flex-col items-center">
-            <>
-              {l10n
-                .getString('onboarding-home-description')
-                .split('\n')
-                .map((line, i) => (
-                  <Typography color="secondary" key={i}>
-                    {line}
-                  </Typography>
-                ))}
-            </>
-          </div>
           <Button variant="primary" to="/onboarding/wifi-creds">
             {l10n.getString('onboarding-home-start')}
           </Button>
@@ -59,7 +47,7 @@ export function HomePage() {
           className="absolute"
           src="/images/slime-girl.png"
           style={{
-            width: '40%',
+            width: '35%',
             maxWidth: 800,
             bottom: '1%',
             left: '9%',
@@ -69,7 +57,7 @@ export function HomePage() {
           className="absolute"
           src="/images/slimes.png"
           style={{
-            width: '40%',
+            width: '35%',
             maxWidth: 800,
             bottom: '1%',
             right: '9%',

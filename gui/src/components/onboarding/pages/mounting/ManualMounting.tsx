@@ -81,18 +81,12 @@ export function ManualMountingPage() {
               </Typography>
               <TipBox>{l10n.getString('tips-find_tracker')}</TipBox>
               <div className="flex flex-row gap-3 mt-auto">
-                {!state.alonePage && (
-                  <Button variant="secondary" to="/onboarding/trackers-assign">
-                    {l10n.getString('onboarding-previous_step')}
-                  </Button>
-                )}
                 <Button
                   variant="secondary"
-                  state={{ alonePage: state.alonePage }}
-                  to="/onboarding/mounting/auto"
-                  className="ml-auto"
+                  to="/onboarding/mounting/choose"
+                  state={state}
                 >
-                  {l10n.getString('onboarding-manual_mounting-auto_mounting')}
+                  {l10n.getString('onboarding-previous_step')}
                 </Button>
                 {!state.alonePage && (
                   <Button variant="primary" to="/onboarding/reset-tutorial">

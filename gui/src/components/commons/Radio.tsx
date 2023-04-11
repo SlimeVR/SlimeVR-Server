@@ -35,14 +35,17 @@ export function Radio({
         >
           <input
             type="radio"
-            className="text-accent-background-30 focus:ring-transparent focus:ring-offset-transparent focus:outline-transparent"
+            className={classNames(
+              'text-accent-background-30 focus:ring-transparent',
+              'focus:ring-offset-transparent focus:outline-transparent'
+            )}
             name={name}
             ref={ref}
             onChange={onChange}
             value={value}
             checked={value == checked}
             {...props}
-          ></input>
+          />
           <div className="flex flex-col gap-2">
             <Typography bold>{label}</Typography>
             {desciption && (

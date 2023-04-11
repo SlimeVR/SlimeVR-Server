@@ -337,6 +337,7 @@ settings-general-interface-feedback_sound = Feedback sound
 settings-general-interface-feedback_sound-description = This option will play a sound when a reset is triggered
 settings-general-interface-feedback_sound-label = Feedback sound
 settings-general-interface-feedback_sound-volume = Feedback sound volume
+settings-general-interface-theme = Color theme
 settings-general-interface-lang = Select language
 settings-general-interface-lang-description = Change the default language you want to use.
 settings-general-interface-lang-placeholder = Select the language to use
@@ -451,8 +452,8 @@ onboarding-continue = Continue
 onboarding-wip = Work in progress
 onboarding-previous_step = Previous step
 onboarding-setup_warning =
-    <b>Warning:</b> The setup is needed for good tracking,
-    it is required if it is your first time using SlimeVR.
+    <b>Warning:</b> The initial setup is required for good tracking,
+    it is needed if this is your first time using SlimeVR.
 onboarding-setup_warning-skip = Skip setup
 onboarding-setup_warning-cancel = Continue setup
 
@@ -479,11 +480,7 @@ onboarding-reset_tutorial-description = This feature isn't done, just press cont
 
 ## Setup start
 onboarding-home = Welcome to SlimeVR
-# This cares about multilines and it's centered!!
-onboarding-home-description =
-    Bringing full-body tracking
-    to everyone
-onboarding-home-start = Lets get set up!
+onboarding-home-start = Let's get set up!
 
 ## Enter VR part of setup
 onboarding-enter_vr-back = Go Back to Tracker assignent
@@ -493,8 +490,8 @@ onboarding-enter_vr-ready = I'm ready
 
 ## Setup done
 onboarding-done-title = You're all set!
-onboarding-done-description = Enjoy your full body experience
-onboarding-done-close = Close the guide
+onboarding-done-description = Enjoy your full-body experience
+onboarding-done-close = Close setup
 
 ## Tracker connection setup
 onboarding-connect_tracker-back = Go Back to Wi-Fi credentials
@@ -596,6 +593,18 @@ onboarding-assign_trackers-warning-WAIST = Waist is assigned but you need { $una
     *[unknown] Unknown unassigned body part
 } to also be assigned!
 
+## Tracker mounting method choose
+onboarding-choose_mounting = What mounting calibration method to use?
+onboarding-choose_mounting-auto_mounting = Automatic mounting
+# Italized text
+onboarding-choose_mounting-auto_mounting-subtitle = Recommended
+onboarding-choose_mounting-auto_mounting-description = This will automatically detect the mounting directions for all of your trackers from 2 poses
+onboarding-choose_mounting-manual_mounting = Manual mounting
+# Italized text
+onboarding-choose_mounting-manual_mounting-subtitle = If you know what you are doing
+onboarding-choose_mounting-manual_mounting-description = This will let you choose the mounting direction manually for each tracker
+
+
 ## Tracker manual mounting setup
 onboarding-manual_mounting-back = Go Back to Enter VR
 onboarding-manual_mounting = Manual Mounting
@@ -607,7 +616,7 @@ onboarding-manual_mounting-next = Next step
 onboarding-automatic_mounting-back = Go Back to Enter VR
 onboarding-automatic_mounting-title = Mounting Calibration
 onboarding-automatic_mounting-description = For SlimeVR trackers to work, we need to assign a mounting rotation to your trackers to align them with your physical tracker mounting.
-onboarding-automatic_mounting-manual_mounting = Manually set mounting
+onboarding-automatic_mounting-manual_mounting = Manual mounting
 onboarding-automatic_mounting-next = Next step
 onboarding-automatic_mounting-prev_step = Previous step
 onboarding-automatic_mounting-done-title = Mounting rotations calibrated.
@@ -623,18 +632,29 @@ onboarding-automatic_mounting-put_trackers_on-title = Put on your trackers
 onboarding-automatic_mounting-put_trackers_on-description = To calibrate mounting rotations, we're gonna use the trackers you just assigned. Put on all your trackers, you can see which are which in the figure to the right.
 onboarding-automatic_mounting-put_trackers_on-next = I have all my trackers on
 
+## Tracker proportions method choose
+onboarding-choose_proportions = What proportion calibration method to use?
+onboarding-choose_proportions-auto_proportions = Automatic proportions
+# Italized text
+onboarding-choose_proportions-auto_proportions-subtitle = Recommended
+onboarding-choose_proportions-auto_proportions-description = This will guess your proportions by recording a sample of your movements and passing it through an algorithm
+onboarding-choose_proportions-manual_proportions = Manual proportions
+# Italized text
+onboarding-choose_proportions-manual_proportions-subtitle = For small touches
+onboarding-choose_proportions-manual_proportions-description = This will let you adjust your proportions manually by modifying them directly
+
 ## Tracker manual proportions setup
 onboarding-manual_proportions-back = Go Back to Reset tutorial
 onboarding-manual_proportions-title = Manual Body Proportions
 onboarding-manual_proportions-precision = Precision adjust
-onboarding-manual_proportions-auto = Automatic calibration
+onboarding-manual_proportions-auto = Automatic proportions
 onboarding-manual_proportions-ratio = Adjust by ratio groups
 
 ## Tracker automatic proportions setup
 onboarding-automatic_proportions-back = Go Back to Reset tutorial
 onboarding-automatic_proportions-title = Measure your body
 onboarding-automatic_proportions-description = For SlimeVR trackers to work, we need to know the length of your bones. This short calibration will measure it for you.
-onboarding-automatic_proportions-manual = Manual calibration
+onboarding-automatic_proportions-manual = Manual proportions
 onboarding-automatic_proportions-prev_step = Previous step
 onboarding-automatic_proportions-put_trackers_on-title = Put on your trackers
 onboarding-automatic_proportions-put_trackers_on-description = To calibrate your proportions, we're gonna use the trackers you just assigned. Put on all your trackers, you can see which are which in the figure to the right.
@@ -676,7 +696,7 @@ onboarding-automatic_proportions-verify_results-processing = Processing the resu
 onboarding-automatic_proportions-verify_results-redo = Redo recording
 onboarding-automatic_proportions-verify_results-confirm = They're correct
 onboarding-automatic_proportions-done-title = Body measured and saved.
-onboarding-automatic_proportions-done-description = Your body proportions calibration is complete!
+onboarding-automatic_proportions-done-description = Your body proportions' calibration is complete!
 
 ## Home
 home-no_trackers = No trackers detected or assigned

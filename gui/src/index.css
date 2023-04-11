@@ -39,9 +39,62 @@ body {
   font-display: swap;
 }
 
-html {
+:root {
   overflow: hidden;
   background: theme('colors.background.20');
+}
+
+/* Colors have to be in RGB format currently */
+:root {
+  --background-10: 255, 255, 255;
+  --background-20: 120, 164, 198;
+  --background-30: 96, 138, 171;
+  --background-40: 61, 99, 129;
+  --background-50: 26, 61, 89;
+  --background-60: 17, 45, 67;
+  --background-70: 8, 30, 48;
+  --background-80: 0, 16, 28;
+  --background-90: 0, 5, 9;
+
+  --accent-background-10: 187, 138, 229;
+  --accent-background-20: 157, 92, 212;
+  --accent-background-30: 101, 69, 154;
+  --accent-background-40: 98, 59, 131;
+  --accent-background-50: 46, 33, 69;
+
+  --success: 80, 232, 151;
+  --warning: 216, 205, 55;
+  --critical: 223, 109, 140;
+  --special: 164, 79, 237;
+  --window-icon-stroke: 192, 161, 216;
+
+  --default-color: 255, 255, 255;
+}
+
+:root[data-theme='trans'] {
+  --background-10: 77, 34, 43;
+  --background-20: 26, 102, 130;
+  --background-30: 9, 84, 112;
+  --background-40: 79, 159, 189;
+  --background-50: 238, 238, 238;
+  --background-60: 255, 255, 255;
+  --background-70: 245, 169, 184;
+  --background-80: 91, 206, 250;
+  --background-90: 0, 5, 9;
+
+  --accent-background-10: 181, 58, 82;
+  --accent-background-20: 252, 202, 212;
+  --accent-background-30: 247, 183, 196;
+  --accent-background-40: 247, 183, 196;
+  --accent-background-50: 245, 169, 184;
+
+  --success: 68, 194, 127;
+  --warning: 240, 221, 58;
+  --critical: 223, 109, 140;
+  --special: 164, 79, 237;
+  --window-icon-stroke: 28, 154, 201;
+
+  --default-color: 29, 29, 29;
 }
 
 #root {

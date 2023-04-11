@@ -363,6 +363,7 @@ settings-general-interface-serial_detection-label = 串口设备检测
 settings-general-interface-feedback_sound = 声音反馈
 settings-general-interface-feedback_sound-description = 开启此选项会在触发重置时发出提示音
 settings-general-interface-feedback_sound-label = 声音反馈
+settings-general-interface-feedback_sound-volume = 提示音音量
 settings-general-interface-lang = 选择语言
 settings-general-interface-lang-description = 更改要使用的默认语言
 settings-general-interface-lang-placeholder = 选择要使用的语言
@@ -481,6 +482,12 @@ settings-osc-vmc-anchor_hip-label = 髋部锚定
 onboarding-skip = 跳过设置
 onboarding-continue = 继续
 onboarding-wip = 仍在开发中
+onboarding-previous_step = 上一步
+onboarding-setup_warning =
+    <b>警告：</b> 需要进行设置以得到良好的追踪质量，
+    如果这是您第一次使用 SlimeVR 则需要先进行设置。
+onboarding-setup_warning-skip = 跳过设置
+onboarding-setup_warning-cancel = 继续设置
 
 ## Wi-Fi setup
 
@@ -682,22 +689,32 @@ onboarding-automatic_proportions-prev_step = 上一步
 onboarding-automatic_proportions-put_trackers_on-title = 穿戴好追踪器
 onboarding-automatic_proportions-put_trackers_on-description = 为了校准你的身体比例，我们将使用你刚才分配的追踪器。戴上你所有的追踪器，你可以在右边的图中看到哪个追踪器对应哪个。
 onboarding-automatic_proportions-put_trackers_on-next = 所有的追踪器都已开启！
-onboarding-automatic_proportions-preparation-title = 准备
-onboarding-automatic_proportions-preparation-description = 在你的正后方放一把椅子，并准备好在接下来的设置过程中坐下。
-onboarding-automatic_proportions-preparation-next = 我在椅子前面啦
+onboarding-automatic_proportions-requirements-title = 准备工作
+# Each line of text is a different list item
+onboarding-automatic_proportions-requirements-description =
+    你需要足够的追踪器以追踪脚部（通常为 5 个）。
+    你已经打开追踪器和头戴设备的电源。
+    你已经穿戴好追踪器和头戴设备。
+    你的追踪器和头戴设备都已经连接到 SlimeVR 服务器。
+    你的追踪器和头戴设备在 SlimeVR 服务器中工作正常。
+    你的头戴设备在回报位置信息给 SlimeVR 服务器（通常需要 SteamVR 正在运行且通过 SlimeVR 的 SteamVR 驱动连接到 SlimeVR）。
+onboarding-automatic_proportions-requirements-next = 我已阅读
 onboarding-automatic_proportions-start_recording-title = 准备录制运动
 onboarding-automatic_proportions-start_recording-description = 我们现在要记录一些特定的姿势和动作。这些将在下一个屏幕中提示。当按钮被按下时，准备好开始！
 onboarding-automatic_proportions-start_recording-next = 开始录制
 onboarding-automatic_proportions-recording-title = REC
 onboarding-automatic_proportions-recording-description-p0 = 录制中...
 onboarding-automatic_proportions-recording-description-p1 = 依次做出以下动作:
-onboarding-automatic_proportions-recording-steps-0 = 弯曲几次膝盖。
-onboarding-automatic_proportions-recording-steps-1 = 坐在椅子上，然后站起来。
-onboarding-automatic_proportions-recording-steps-2 = 向左扭转上身，然后向右弯。
-onboarding-automatic_proportions-recording-steps-3 = 向右扭转上身，然后向左弯。
-onboarding-automatic_proportions-recording-steps-4 = 持续摆动身体，直到计时器结束。
+# Each line of text is a different list item
+onboarding-automatic_proportions-recording-steps =
+    站直，用头部在头顶画圈。 
+    向前弯腰并做半蹲姿势，然后向左摇头，之后向右。
+    上半身向左（逆时针）扭动后，向前倾，使右半侧身体朝向地面。
+    上半身向右（顺时针）扭动后，向前倾，使左半侧身体朝向地面。
+    像在摇呼啦圈一样，以圆形轨迹扭动髋部。
+    如还有时间剩余，可以重复进行以上动作。
 onboarding-automatic_proportions-recording-processing = 正在处理结果
-# $time (Number) - Seconds left for the automatic calibration recording to finish (max 15)
+# $time (Number) - Seconds left for the automatic calibration recording to finish (max 20)
 onboarding-automatic_proportions-recording-timer = 剩余{ $time }秒
 onboarding-automatic_proportions-verify_results-title = 校验结果
 onboarding-automatic_proportions-verify_results-description = 检查下面的结果，它们看起来是正确的吗？

@@ -44,7 +44,7 @@ export function CheckBox({
         <div
           className={classNames(
             {
-              'bg-background-60 rounded-lg text-white': outlined,
+              'bg-background-60 rounded-lg text-background-10': outlined,
               'text-background-30': !outlined,
             },
             'flex items-center gap-2 w-full'

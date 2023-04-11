@@ -201,6 +201,9 @@ public class DataFeedBuilder {
 				TrackerData.addRotationIdentityAdjusted(fbb, createQuat(fbb, quaternion));
 			}
 		}
+		if (mask.getTps() && tracker instanceof TrackerWithTPS trackerWithTps) {
+			TrackerData.addTps(fbb, (int) trackerWithTps.getTPS());
+		}
 
 		return TrackerData.endTrackerData(fbb);
 	}
@@ -251,9 +254,6 @@ public class DataFeedBuilder {
 
 		HardwareStatus.startHardwareStatus(fbb);
 		HardwareStatus.addErrorStatus(fbb, tracker.getStatus().id);
-
-		if (tracker instanceof TrackerWithTPS)
-			HardwareStatus.addTps(fbb, (int) ((TrackerWithTPS) tracker).getTPS());
 
 		if (tracker instanceof TrackerWithBattery twb) {
 			HardwareStatus.addBatteryVoltage(fbb, twb.getBatteryVoltage());
