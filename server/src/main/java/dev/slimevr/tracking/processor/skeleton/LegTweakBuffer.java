@@ -473,10 +473,11 @@ public class LegTweakBuffer {
 	// get the difference in feet position between the kinematic and corrected
 	// positions of the feet
 	private float getRightFootHorizontalDifference() {
+		Vector3 diff = rightFootPositionCorrected.minus(rightFootPosition);
 		return new Vector3(
-			rightFootPositionCorrected.minus(rightFootPosition).getX(),
+			diff.getX(),
 			0f,
-			rightFootPositionCorrected.minus(rightFootPosition).getZ()
+			diff.getZ()
 		).len();
 	}
 
