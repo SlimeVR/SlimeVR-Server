@@ -41,7 +41,7 @@ class PositionError : IAutoBoneError {
 
 				val computedTracker = skeleton.getComputedTracker(trackerRole) ?: continue
 
-				offset += (computedTracker.position - position).len()
+				offset += (position - computedTracker.position).len()
 				offsetCount++
 			}
 			return if (offsetCount > 0) offset / offsetCount else 0f

@@ -110,12 +110,12 @@ object PoseFrameIO {
 
 	@Throws(IOException::class)
 	private fun readQuaternion(inputStream: DataInputStream): Quaternion {
-		return Quaternion(
-			inputStream.readFloat(),
-			inputStream.readFloat(),
-			inputStream.readFloat(),
-			inputStream.readFloat()
-		)
+		val x = inputStream.readFloat()
+		val y = inputStream.readFloat()
+		val z = inputStream.readFloat()
+		val w = inputStream.readFloat()
+
+		return Quaternion(w, x, y, z)
 	}
 
 	fun readFrames(inputStream: DataInputStream): PoseFrames {

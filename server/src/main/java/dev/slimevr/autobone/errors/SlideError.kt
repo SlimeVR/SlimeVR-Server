@@ -38,7 +38,7 @@ class SlideError : IAutoBoneError {
 
 		fun getSlideError(tracker1: Tracker, tracker2: Tracker): Float {
 			// Return the midpoint distance
-			return (tracker1.position - tracker2.position).len() / 2f
+			return (tracker2.position - tracker1.position).len() / 2f
 		}
 	}
 }
