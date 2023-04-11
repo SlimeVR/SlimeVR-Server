@@ -15,12 +15,14 @@ import java.io.IOException
 import java.lang.System
 import java.net.ServerSocket
 import javax.swing.JOptionPane
+import kotlin.concurrent.thread
 import kotlin.system.exitProcess
 
 val VERSION =
 	(GIT_VERSION_TAG.ifEmpty { GIT_COMMIT_HASH }) +
 		if (GIT_CLEAN) "" else "-dirty"
-var vrServer: VRServer? = null
+lateinit var vrServer: VRServer
+	private set
 
 fun main(args: Array<String>) {
 	System.setProperty("awt.useSystemAAFontSettings", "on")
@@ -63,6 +65,7 @@ fun main(args: Array<String>) {
 				"SlimeVR: Java Runtime Mismatch",
 				JOptionPane.ERROR_MESSAGE
 			)
+		LogManager.closeLogger()
 		return
 	}
 	try {
@@ -84,27 +87,27 @@ fun main(args: Array<String>) {
 				"SlimeVR: Ports are busy",
 				JOptionPane.ERROR_MESSAGE
 			)
+		LogManager.closeLogger()
 		return
 	}
 	try {
 		vrServer = VRServer()
-		vrServer!!.start()
+		vrServer.start()
 		Keybinding(vrServer)
+		val scanner = thread {
+			while (true) {
+				if (readln() == "exit") {
+					vrServer.interrupt()
+					break
+				}
+			}
+		}
+		vrServer.join()
+		scanner.join()
+		LogManager.closeLogger()
+		exitProcess(0)
 	} catch (e: Throwable) {
 		e.printStackTrace()
-		try {
-			Thread.sleep(2000L)
-		} catch (e2: InterruptedException) {
-			e.printStackTrace()
-		}
-		exitProcess(1) // Exit in case error happened on init and window
-		// not appeared, but some thread
-		// started
-	} finally {
-		try {
-			Thread.sleep(2000L)
-		} catch (e: InterruptedException) {
-			e.printStackTrace()
-		}
+		exitProcess(1)
 	}
 }
