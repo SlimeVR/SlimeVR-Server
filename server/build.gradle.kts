@@ -146,7 +146,7 @@ android {
 		targetSdk = 33
 
 		// Defines the version number of your app.
-		versionCode = 3
+		versionCode = 5
 
 		// Defines a user-friendly version name for your app.
 		versionName = "0.7.0"
