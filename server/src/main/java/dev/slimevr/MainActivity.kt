@@ -4,56 +4,34 @@ import android.os.Bundle
 import android.webkit.WebView
 import androidx.appcompat.app.AppCompatActivity
 import io.eiren.util.logging.LogManager
-import io.ktor.server.engine.embeddedServer
-import io.ktor.server.http.content.*
-import io.ktor.server.netty.Netty
-import io.ktor.server.routing.routing
-import java.io.File
-import kotlin.concurrent.thread
-import kotlin.system.exitProcess
-
 
 class MainActivity : AppCompatActivity() {
 	override fun onCreate(savedInstanceState: Bundle?) {
 		super.onCreate(savedInstanceState)
 		setContentView(R.layout.activity_main)
 
-		// Host the web GUI server
-		embeddedServer(Netty, port = 8080) {
-			routing {
-				static("/") {
-					staticBasePackage = "web-gui"
-					resources()
-					defaultResource("index.html")
-				}
-			}
-		}.start(wait = false)
+		// Initialize logger (doesn't re-initialize if already run)
+		try {
+			LogManager.initialize(filesDir)
+		} catch (e1: java.lang.Exception) {
+			e1.printStackTrace()
+		}
+
+		// Start the server if it isn't already running
+		if (!vrServerInitialized) {
+			LogManager.info("[MainActivity] VRServer isn't running yet, starting it...")
+			main(this)
+		} else {
+			LogManager.info("[MainActivity] VRServer is already running, skipping initialization.")
+		}
 
 		// Load the web GUI web page
+		LogManager.info("[MainActivity] Initializing GUI WebView...")
 		val guiWebView = findViewById<WebView>(R.id.guiWebView)
 		guiWebView.settings.javaScriptEnabled = true
 		guiWebView.settings.domStorageEnabled = true
 		guiWebView.settings.setSupportZoom(true)
-		guiWebView.loadUrl("http://localhost:8080/")
-
-		thread(start = true, name = "Main VRServer Thread") {
-			try {
-				LogManager.initialize(filesDir)
-			} catch (e1: java.lang.Exception) {
-				e1.printStackTrace()
-			}
-			LogManager.info("Running version $VERSION")
-			try {
-				vrServer = VRServer(File(filesDir, "vrconfig.yml").absolutePath)
-				vrServer.start()
-				Keybinding(vrServer)
-				vrServer.join()
-				LogManager.closeLogger()
-				exitProcess(0)
-			} catch (e: Throwable) {
-				e.printStackTrace()
-				exitProcess(1)
-			}
-		}
+		guiWebView.loadUrl("http://127.0.0.1:8080/")
+		LogManager.info("[MainActivity] GUI WebView has been initialized and loaded.")
 	}
 }
