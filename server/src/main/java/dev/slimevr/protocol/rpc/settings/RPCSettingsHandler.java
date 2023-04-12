@@ -223,6 +223,10 @@ public record RPCSettingsHandler(RPCHandler rpcHandler, ProtocolAPI api) {
 				tapDetectionConfig
 					.setMountingResetEnabled(tapDetectionSettings.mountingResetEnabled());
 
+				if (tapDetectionSettings.hasSetupMode()) {
+					tapDetectionConfig.setSetupMode(tapDetectionSettings.setupMode());
+				}
+
 				// set tap detection delays
 				if (tapDetectionSettings.hasYawResetDelay()) {
 					tapDetectionConfig.setYawResetDelay(tapDetectionSettings.yawResetDelay());

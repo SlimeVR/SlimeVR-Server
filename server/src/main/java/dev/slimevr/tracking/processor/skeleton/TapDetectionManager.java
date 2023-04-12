@@ -6,6 +6,7 @@ import java.util.List;
 
 import dev.slimevr.config.TapDetectionConfig;
 import dev.slimevr.reset.ResetHandler;
+import dev.slimevr.setup.TapSetupHandler;
 import dev.slimevr.tracking.processor.HumanPoseManager;
 import dev.slimevr.tracking.trackers.Tracker;
 import solarxr_protocol.rpc.ResetType;
@@ -46,6 +47,7 @@ public class TapDetectionManager {
 	private boolean mountingResetAllowPlaySound = true;
 
 	private ResetHandler resetHandler;
+	private TapSetupHandler tapSetupHandler;
 
 	public TapDetectionManager(HumanSkeleton skeleton) {
 		this.skeleton = skeleton;
@@ -56,12 +58,14 @@ public class TapDetectionManager {
 		HumanPoseManager humanPoseManager,
 		TapDetectionConfig config,
 		ResetHandler resetHandler,
+		TapSetupHandler tapSetupHandler,
 		List<Tracker> trackers
 	) {
 		this.skeleton = skeleton;
 		this.humanPoseManager = humanPoseManager;
 		this.config = config;
 		this.resetHandler = resetHandler;
+		this.tapSetupHandler = tapSetupHandler;
 
 		yawResetDetector = new TapDetection(skeleton, getTrackerToWatchYawReset());
 		fullResetDetector = new TapDetection(skeleton, getTrackerToWatchFullReset());
@@ -132,7 +136,7 @@ public class TapDetectionManager {
 				tapDetector.update();
 
 				if (tapDetector.getTaps() > 1) {
-					// do something here
+					tapSetupHandler.sendTap(tapDetector.getTracker());
 					tapDetector.resetDetector();
 				}
 			}
