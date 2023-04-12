@@ -383,43 +383,40 @@ public class VMCHandler implements OSCHandler {
 						// and subtracts the difference between the VRM's head
 						// and hip
 						// FIXME this way isn't perfect, but I give up - Erimel
+						Vector3 upperLegsAverage = (outputUnityArmature
+							.getHeadNodeOfBone(UnityBone.LEFT_UPPER_LEG)
+							.getWorldTransform()
+							.getTranslation()
+							.plus(
+								outputUnityArmature
+									.getHeadNodeOfBone(UnityBone.RIGHT_UPPER_LEG)
+									.getWorldTransform()
+									.getTranslation()
+							)).times(0.5f);
+						Vector3 scaledHead = humanPoseManager
+							.getTailNodeOfBone(BoneType.HEAD)
+							.getWorldTransform()
+							.getTranslation()
+							.times(
+								vrmHeight
+									/ (humanPoseManager.getUserHeightFromConfig()
+										* BodyProportionError.eyeHeightToHeightRatio)
+							);
+						Vector3 pos = scaledHead
+							.minus(
+								(outputUnityArmature
+									.getHeadNodeOfBone(UnityBone.HEAD)
+									.getParent()
+									.getWorldTransform()
+									.getTranslation()
+									.minus(upperLegsAverage))
+							);
+
+
 						outputUnityArmature
 							.getHeadNodeOfBone(UnityBone.HIPS)
 							.getLocalTransform()
-							.setTranslation(
-								humanPoseManager
-									.getTailNodeOfBone(BoneType.HEAD)
-									.getWorldTransform()
-									.getTranslation()
-									.times(
-										vrmHeight
-											/ (humanPoseManager.getUserHeightFromConfig()
-												* BodyProportionError.eyeHeightToHeightRatio)
-									)
-									.minus(
-										(outputUnityArmature
-											.getHeadNodeOfBone(UnityBone.HEAD)
-											.getParent()
-											.getWorldTransform()
-											.getTranslation()
-											.minus(
-												(outputUnityArmature
-													.getHeadNodeOfBone(
-														UnityBone.LEFT_UPPER_LEG
-													)
-													.getWorldTransform()
-													.getTranslation()
-													.plus(
-														outputUnityArmature
-															.getHeadNodeOfBone(
-																UnityBone.RIGHT_UPPER_LEG
-															)
-															.getWorldTransform()
-															.getTranslation()
-													)).times(0.5f)
-											))
-									)
-							);
+							.setTranslation(pos);
 					}
 
 					// Update Unity skeleton

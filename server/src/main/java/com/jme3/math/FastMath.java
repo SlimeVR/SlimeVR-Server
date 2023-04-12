@@ -368,16 +368,18 @@ final public class FastMath {
 
 		float epsilon = 0.001f;
 		float middleValue = (startRange + endRange) * 0.5f;
+		Vector3 start = Vector3.Companion.getNULL();
+		Vector3 end = Vector3.Companion.getNULL();
 		if (startRange != 0) {
-			p1 = FastMath.interpolateCatmullRom(startRange, curveTension, p0, p1, p2, p3);
+			start = FastMath.interpolateCatmullRom(startRange, curveTension, p0, p1, p2, p3);
 		}
 		if (endRange != 1) {
-			p2 = FastMath.interpolateCatmullRom(endRange, curveTension, p0, p1, p2, p3);
+			end = FastMath.interpolateCatmullRom(endRange, curveTension, p0, p1, p2, p3);
 		}
 		Vector3 middle = FastMath.interpolateCatmullRom(middleValue, curveTension, p0, p1, p2, p3);
-		float l = p2.minus(p1).len();
-		float l1 = middle.minus(p1).len();
-		float l2 = p2.minus(middle).len();
+		float l = end.minus(start).len();
+		float l1 = middle.minus(start).len();
+		float l2 = end.minus(middle).len();
 		float len = l1 + l2;
 		if (l + epsilon < len) {
 			l1 = getCatmullRomP1toP2Length(p0, p1, p2, p3, startRange, middleValue, curveTension);
@@ -398,9 +400,8 @@ final public class FastMath {
 	 */
 	public static float getBezierP1toP2Length(Vector3 p0, Vector3 p1, Vector3 p2, Vector3 p3) {
 		float delta = 0.02f, t = 0.0f, result = 0.0f;
-		Vector3 v2;
 		while (t <= 1.0f) {
-			v2 = FastMath.interpolateBezier(t, p0, p1, p2, p3);
+			Vector3 v2 = FastMath.interpolateBezier(t, p0, p1, p2, p3);
 			result += p0.minus(v2).len();
 			p0 = v2;
 			t += delta;
@@ -838,7 +839,7 @@ final public class FastMath {
 			vy += FastMath.PI;
 		}
 		float vz = FastMath.asin(cartCoords.getY() / vx);
-		return new Vector3(x, vy, vz);
+		return new Vector3(vx, vy, vz);
 	}
 
 	/**
@@ -876,7 +877,7 @@ final public class FastMath {
 		}
 		float vy = FastMath.asin(cartCoords.getY() / vx);
 
-		return new Vector3(x, vy, vz);
+		return new Vector3(vx, vy, vz);
 	}
 
 	/**

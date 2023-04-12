@@ -5,6 +5,7 @@ import dev.slimevr.tracking.processor.BoneInfo;
 import dev.slimevr.tracking.trackers.Device;
 import dev.slimevr.tracking.trackers.Tracker;
 import io.github.axisangles.ktmath.Quaternion;
+import io.github.axisangles.ktmath.Vector3;
 import solarxr_protocol.data_feed.Bone;
 import solarxr_protocol.data_feed.DataFeedUpdate;
 import solarxr_protocol.data_feed.device_data.DeviceData;
@@ -128,12 +129,13 @@ public class DataFeedBuilder {
 	}
 
 	public static int createTrackerPosition(FlatBufferBuilder fbb, Tracker tracker) {
+		Vector3 pos = tracker.getPosition();
 		return Vec3f
 			.createVec3f(
 				fbb,
-				tracker.getPosition().getX(),
-				tracker.getPosition().getY(),
-				tracker.getPosition().getZ()
+				pos.getX(),
+				pos.getY(),
+				pos.getZ()
 			);
 	}
 
@@ -142,12 +144,13 @@ public class DataFeedBuilder {
 	}
 
 	public static int createTrackerAcceleration(FlatBufferBuilder fbb, Tracker tracker) {
+		Vector3 accel = tracker.getAcceleration();
 		return Vec3f
 			.createVec3f(
 				fbb,
-				tracker.getAcceleration().getX(),
-				tracker.getAcceleration().getY(),
-				tracker.getAcceleration().getZ()
+				accel.getX(),
+				accel.getY(),
+				accel.getZ()
 			);
 	}
 

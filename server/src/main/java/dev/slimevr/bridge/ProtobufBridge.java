@@ -9,6 +9,7 @@ import io.eiren.util.ann.Synchronize;
 import io.eiren.util.ann.ThreadSafe;
 import io.eiren.util.collections.FastList;
 import io.eiren.util.logging.LogManager;
+import io.github.axisangles.ktmath.Quaternion;
 import io.github.axisangles.ktmath.Vector3;
 
 import java.util.HashMap;
@@ -114,15 +115,17 @@ public abstract class ProtobufBridge implements Bridge {
 	protected void writeTrackerUpdate(Tracker localTracker) {
 		Position.Builder builder = Position.newBuilder().setTrackerId(localTracker.getId());
 		if (localTracker.getHasPosition()) {
-			builder.setX(localTracker.getPosition().getX());
-			builder.setY(localTracker.getPosition().getY());
-			builder.setZ(localTracker.getPosition().getZ());
+			Vector3 pos = localTracker.getPosition();
+			builder.setX(pos.getX());
+			builder.setY(pos.getY());
+			builder.setZ(pos.getZ());
 		}
 		if (localTracker.getHasRotation()) {
-			builder.setQx(localTracker.getRotation().getX());
-			builder.setQy(localTracker.getRotation().getY());
-			builder.setQz(localTracker.getRotation().getZ());
-			builder.setQw(localTracker.getRotation().getW());
+			Quaternion rot = localTracker.getRotation();
+			builder.setQx(rot.getX());
+			builder.setQy(rot.getY());
+			builder.setQz(rot.getZ());
+			builder.setQw(rot.getW());
 		}
 		sendMessage(ProtobufMessage.newBuilder().setPosition(builder).build());
 	}
@@ -157,7 +160,7 @@ public abstract class ProtobufBridge implements Bridge {
 					);
 			tracker
 				.setRotation(
-					new io.github.axisangles.ktmath.Quaternion(
+					new Quaternion(
 						positionMessage.getQw(),
 						positionMessage.getQx(),
 						positionMessage.getQy(),

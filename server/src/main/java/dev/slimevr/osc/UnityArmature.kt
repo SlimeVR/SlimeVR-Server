@@ -114,12 +114,10 @@ class UnityArmature(localRot: Boolean) {
 	fun setBoneRotationFromGlobal(unityBone: UnityBone, globalRot: Quaternion) {
 		val node = getHeadNodeOfBone(unityBone)
 		if (node != null) {
-			if (unityBone === UnityBone.LEFT_UPPER_ARM || unityBone === UnityBone.LEFT_LOWER_ARM || unityBone === UnityBone.LEFT_HAND) {
-				node.localTransform.rotation = globalRot * LEFT_SHOULDER_OFFSET
-			} else if (unityBone === UnityBone.RIGHT_UPPER_ARM || unityBone === UnityBone.RIGHT_LOWER_ARM || unityBone === UnityBone.RIGHT_HAND) {
-				node.localTransform.rotation = globalRot * RIGHT_SHOULDER_OFFSET
-			} else {
-				node.localTransform.rotation = globalRot
+			node.localTransform.rotation = when (unityBone) {
+				UnityBone.LEFT_UPPER_ARM, UnityBone.LEFT_LOWER_ARM, UnityBone.LEFT_HAND -> globalRot * LEFT_SHOULDER_OFFSET
+				UnityBone.RIGHT_UPPER_ARM, UnityBone.RIGHT_LOWER_ARM, UnityBone.RIGHT_HAND -> globalRot * RIGHT_SHOULDER_OFFSET
+				else -> globalRot
 			}
 		}
 	}
@@ -129,12 +127,12 @@ class UnityArmature(localRot: Boolean) {
 		if (node != null) {
 			if (unityBone === UnityBone.HIPS) {
 				node.worldTransform.rotation = localRot
-			} else if (unityBone === UnityBone.LEFT_UPPER_ARM) {
-				node.localTransform.rotation = localRot * RIGHT_SHOULDER_OFFSET
-			} else if (unityBone === UnityBone.RIGHT_UPPER_ARM) {
-				node.localTransform.rotation = localRot * LEFT_SHOULDER_OFFSET
 			} else {
-				node.localTransform.rotation = localRot
+				node.localTransform.rotation = when (unityBone) {
+					UnityBone.LEFT_UPPER_ARM -> localRot * RIGHT_SHOULDER_OFFSET
+					UnityBone.RIGHT_UPPER_ARM -> localRot * LEFT_SHOULDER_OFFSET
+					else -> localRot
+				}
 			}
 		}
 	}
