@@ -1,8 +1,8 @@
 package dev.slimevr.tracking.processor
 
 import io.eiren.util.ann.ThreadSafe
-import io.eiren.util.collections.FastList
 import io.github.axisangles.ktmath.Transform
+import java.util.concurrent.CopyOnWriteArrayList
 import java.util.function.Consumer
 
 class TransformNode @JvmOverloads constructor(
@@ -11,7 +11,7 @@ class TransformNode @JvmOverloads constructor(
 ) {
 	val localTransform = Transform()
 	val worldTransform = Transform()
-	val children: MutableList<TransformNode> = FastList()
+	val children: MutableList<TransformNode> = CopyOnWriteArrayList()
 	var parent: TransformNode? = null
 		private set
 
