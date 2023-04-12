@@ -19,6 +19,9 @@ body {
   body {
     font-family: 'poppins', sans-serif, 'Twemoji Webkit', emoji;
   }
+  body.linux {
+    font-family: 'poppins', sans-serif, emoji;
+  }
 }
 
 @font-face {
