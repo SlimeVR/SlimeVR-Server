@@ -58,8 +58,8 @@ export function TrackerPartCard({
   };
 
   useEffect(() => {
-    if(!td) setVelocities([0,0,0])
-  }, [td])
+    if (!td) setVelocities([0, 0, 0]);
+  }, [td]);
 
   const globalVelocity = useMemo(
     () =>
