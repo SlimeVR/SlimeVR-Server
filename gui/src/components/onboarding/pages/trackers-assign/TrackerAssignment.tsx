@@ -28,6 +28,8 @@ import { NeckWarningModal } from '../../NeckWarningModal';
 import { TrackerSelectionMenu } from './TrackerSelectionMenu';
 import { SkipSetupWarningModal } from '../../SkipSetupWarningModal';
 import { SkipSetupButton } from '../../SkipSetupButton';
+import { useConfig } from '../../../../hooks/config';
+import { playTapSetupSound } from '../../../../sounds/sounds';
 
 export type BodyPartError = {
   label: string | undefined;
@@ -54,6 +56,7 @@ export function TrackersAssignPage() {
   const [selectedRole, setSelectRole] = useState<BodyPart>(BodyPart.NONE);
   const assignedTrackers = useAssignedTrackers();
   const [skipWarning, setSkipWarning] = useState(false);
+  const { config } = useConfig();
   const [tapDetectionSettings, setTapDetectionSettings] = useState<Omit<
     TapDetectionSettingsT,
     'pack'
@@ -217,6 +220,7 @@ export function TrackersAssignPage() {
       onTrackerSelected({
         tracker: { trackerId: tapSetup.trackerId, info: undefined },
       });
+      playTapSetupSound(config?.feedbackSoundVolume);
     }
   );
 
