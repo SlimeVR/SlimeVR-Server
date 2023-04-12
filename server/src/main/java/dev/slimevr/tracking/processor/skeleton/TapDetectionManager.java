@@ -68,7 +68,7 @@ public class TapDetectionManager {
 		mountingResetDetector = new TapDetection(skeleton, getTrackerToWatchMountingReset());
 
 		// a list of tap detectors for each tracker
-		tapDetectors = new ArrayList<TapDetection>();
+		tapDetectors = new ArrayList<>();
 		for (Tracker tracker : trackers) {
 			TapDetection tapDetector = new TapDetection(skeleton, tracker);
 			tapDetector.setEnabled(true);
