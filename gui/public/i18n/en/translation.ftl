@@ -337,6 +337,7 @@ settings-general-interface-feedback_sound = Feedback sound
 settings-general-interface-feedback_sound-description = This option will play a sound when a reset is triggered
 settings-general-interface-feedback_sound-label = Feedback sound
 settings-general-interface-feedback_sound-volume = Feedback sound volume
+settings-general-interface-theme = Color theme
 settings-general-interface-lang = Select language
 settings-general-interface-lang-description = Change the default language you want to use.
 settings-general-interface-lang-placeholder = Select the language to use
@@ -636,7 +637,7 @@ onboarding-choose_proportions = What proportion calibration method to use?
 onboarding-choose_proportions-auto_proportions = Automatic proportions
 # Italized text
 onboarding-choose_proportions-auto_proportions-subtitle = Recommended
-onboarding-choose_proportions-auto_proportions-description = This will guess your proportions by recording a sample of your movements and passing it through an AI
+onboarding-choose_proportions-auto_proportions-description = This will guess your proportions by recording a sample of your movements and passing it through an algorithm
 onboarding-choose_proportions-manual_proportions = Manual proportions
 # Italized text
 onboarding-choose_proportions-manual_proportions-subtitle = For small touches

@@ -307,7 +307,10 @@ public class VRServer extends Thread {
 			// final long time = System.currentTimeMillis() - start;
 			try {
 				Thread.sleep(1); // 1000Hz
-			} catch (InterruptedException ignored) {}
+			} catch (InterruptedException error) {
+				LogManager.info("VRServer thread interrupted");
+				break;
+			}
 		}
 	}
 

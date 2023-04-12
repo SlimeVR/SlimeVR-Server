@@ -169,3 +169,5 @@ configure<com.diffplug.gradle.spotless.SpotlessExtension> {
 		eclipse().configFile("spotless.xml")
 	}
 }
+
+tasks.getByName("run", JavaExec::class) { standardInput = System.`in` }
