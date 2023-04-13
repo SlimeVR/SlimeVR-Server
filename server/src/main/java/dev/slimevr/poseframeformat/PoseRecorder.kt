@@ -173,7 +173,6 @@ class PoseRecorder(private val server: VRServer) {
 	@get:Synchronized
 	val frames: PoseFrames?
 		get() {
-			val currentRecording = currentRecording
 			return currentRecording?.get()
 		}
 }

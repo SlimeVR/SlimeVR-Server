@@ -261,6 +261,8 @@ public class BVHFileStream extends PoseDataStream {
 		}
 
 		// Roll (X), pitch (Y), yaw (Z) (intrinsic)
+		// TODO: `quatToXyzAngles` should no longer be needed, this should be
+		// changed to use `Quaternion.toEulerAngles()` instead
 		angleBuf = quatToXyzAngles(rot.unit(), angleBuf);
 
 		// Output in order of roll (Z), pitch (X), yaw (Y) (extrinsic)
