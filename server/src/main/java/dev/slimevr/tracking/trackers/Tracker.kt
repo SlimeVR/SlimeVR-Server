@@ -33,12 +33,12 @@ class Tracker @JvmOverloads constructor(
 ) {
 	private val timer = BufferedTimer(1f)
 	private var timeAtLastUpdate: Long = 0
+	private var status = TrackerStatus.DISCONNECTED
 	private var rotation = Quaternion.IDENTITY
 	var position = Vector3.NULL
 	var acceleration = Vector3.NULL
 	val resetsHandler: TrackerResetsHandler = TrackerResetsHandler(this)
 	val filteringHandler: TrackerFilteringHandler = TrackerFilteringHandler()
-	var status = TrackerStatus.DISCONNECTED
 	var batteryVoltage: Float? = null
 	var batteryLevel: Float? = null
 	var ping: Int? = null
@@ -108,7 +108,7 @@ class Tracker @JvmOverloads constructor(
 	fun tick() {
 		if (usesTimeout) {
 			if (System.currentTimeMillis() - timeAtLastUpdate > TIMEOUT_MS) {
-				status = TrackerStatus.DISCONNECTED
+				setStatus(TrackerStatus.DISCONNECTED)
 			}
 		}
 		filteringHandler.tick()
@@ -121,6 +121,19 @@ class Tracker @JvmOverloads constructor(
 		timer.update()
 		timeAtLastUpdate = System.currentTimeMillis()
 		filteringHandler.dataTick(rotation)
+	}
+
+	fun getStatus(): TrackerStatus {
+		return status
+	}
+
+	fun setStatus(newStatus: TrackerStatus) {
+		if (status != newStatus) {
+			status = newStatus
+			if (!isInternal) {
+				vrServer!!.updateSkeletonModel()
+			}
+		}
 	}
 
 	/**

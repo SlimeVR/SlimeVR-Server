@@ -13,7 +13,7 @@ object TrackerUtils {
 		allTrackers: List<Tracker>,
 		position: TrackerPosition,
 	): Tracker? = allTrackers.firstOrNull {
-		it.trackerPosition === position && !it.isInternal && it.status != TrackerStatus.DISCONNECTED
+		it.trackerPosition === position && !it.isInternal && it.getStatus() != TrackerStatus.DISCONNECTED && it.getStatus() != TrackerStatus.ERROR
 	}
 
 	/**

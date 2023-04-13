@@ -330,8 +330,7 @@ public class TrackersUDPServer extends Thread {
 								);
 							if (conn.lastPacket + 1000 < System.currentTimeMillis()) {
 								for (Tracker value : conn.getTrackers().values()) {
-									if (value.getStatus() != TrackerStatus.DISCONNECTED)
-										value.setStatus(TrackerStatus.DISCONNECTED);
+									value.setStatus(TrackerStatus.DISCONNECTED);
 								}
 								if (!conn.timedOut) {
 									conn.timedOut = true;
@@ -340,8 +339,7 @@ public class TrackersUDPServer extends Thread {
 							} else {
 								conn.timedOut = false;
 								for (Tracker value : conn.getTrackers().values()) {
-									if (value.getStatus() == TrackerStatus.DISCONNECTED)
-										value.setStatus(TrackerStatus.OK);
+									value.setStatus(TrackerStatus.OK);
 								}
 							}
 							if (conn.serialBuffer.length() > 0) {
