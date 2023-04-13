@@ -3,6 +3,7 @@ package dev.slimevr.config;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.node.*;
 import com.github.jonpeterson.jackson.module.versioning.VersionedModelConverter;
+import dev.slimevr.tracking.processor.config.SkeletonConfigOffsets;
 import io.eiren.util.logging.LogManager;
 
 import java.util.Map;
@@ -17,9 +18,9 @@ public class CurrentVRConfigConverter implements VersionedModelConverter {
 		String targetModelVersion,
 		JsonNodeFactory nodeFactory
 	) {
-		int version = Integer.parseInt(modelVersion);
-
 		try {
+			int version = Integer.parseInt(modelVersion);
+
 			// Configs with old versions need a migration to the latest config
 			if (version < 2) {
 				// Move zoom to the window config
@@ -63,8 +64,7 @@ public class CurrentVRConfigConverter implements VersionedModelConverter {
 					while (bodyIter.hasNext()) {
 						Map.Entry<String, JsonNode> node = bodyIter.next();
 						// Filter only number values because other types would
-						// be
-						// stuff that didn't get migrated correctly before
+						// be stuff that didn't get migrated correctly before
 						if (node.getValue().isNumber()) {
 							offsetsNode.set(node.getKey(), node.getValue());
 						}
@@ -113,7 +113,11 @@ public class CurrentVRConfigConverter implements VersionedModelConverter {
 					if (offsetsNode != null) {
 						// torsoLength, chestDistance and waistDistance become
 						// chestLength, waistLength and hipLength.
-						float torsoLength = 0, chestDistance = 0, waistDistance = 0;
+						float torsoLength = SkeletonConfigOffsets.CHEST.defaultValue
+							+ SkeletonConfigOffsets.WAIST.defaultValue
+							+ SkeletonConfigOffsets.HIP.defaultValue;
+						float chestDistance = SkeletonConfigOffsets.CHEST.defaultValue;
+						float waistDistance = SkeletonConfigOffsets.HIP.defaultValue;
 						JsonNode torsoNode = offsetsNode.get("torsoLength");
 						if (torsoNode != null)
 							torsoLength = torsoNode.floatValue();
@@ -136,7 +140,9 @@ public class CurrentVRConfigConverter implements VersionedModelConverter {
 
 						// legsLength and kneeHeight become
 						// upperLegLength and lowerLegLength
-						float legsLength = 0, kneeHeight = 0;
+						float legsLength = SkeletonConfigOffsets.UPPER_LEG.defaultValue
+							+ SkeletonConfigOffsets.LOWER_LEG.defaultValue;
+						float kneeHeight = SkeletonConfigOffsets.LOWER_LEG.defaultValue;
 						JsonNode legsNode = offsetsNode.get("legsLength");
 						if (legsNode != null)
 							legsLength = legsNode.floatValue();
