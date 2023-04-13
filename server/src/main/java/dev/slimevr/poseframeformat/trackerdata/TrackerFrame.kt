@@ -103,7 +103,7 @@ data class TrackerFrame(
 
 		fun fromTracker(tracker: Tracker): TrackerFrame? {
 			// If the tracker is not ready
-			if (tracker.getStatus() != TrackerStatus.OK && tracker.getStatus() != TrackerStatus.BUSY && tracker.getStatus() != TrackerStatus.OCCLUDED) {
+			if (tracker.status != TrackerStatus.OK && tracker.status != TrackerStatus.BUSY && tracker.status != TrackerStatus.OCCLUDED) {
 				return null
 			}
 

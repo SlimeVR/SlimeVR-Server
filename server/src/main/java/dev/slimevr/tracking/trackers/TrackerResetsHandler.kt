@@ -229,6 +229,11 @@ class TrackerResetsHandler(val tracker: Tracker) {
 	}
 
 	fun clearMounting() {
+		// If there is no mounting reset quaternion, skip clearing
+		if (mountRotFix == Quaternion.IDENTITY) {
+			return
+		}
+
 		// Undo the effect on yaw fix
 		yawFix *= mountRotFix.inv()
 		// Clear the mounting reset

@@ -9,6 +9,8 @@ import io.github.axisangles.ktmath.Vector3
 
 const val TIMEOUT_MS = 2000L
 
+// TODO: Document vague constructor parameters like `isInternal`, `isComputed`, and
+// `usesTimeout`
 /**
  * Generic tracker class for input and output tracker,
  * with flags on instantiation.
@@ -33,7 +35,6 @@ class Tracker @JvmOverloads constructor(
 ) {
 	private val timer = BufferedTimer(1f)
 	private var timeAtLastUpdate: Long = 0
-	private var status = TrackerStatus.DISCONNECTED
 	private var rotation = Quaternion.IDENTITY
 	var position = Vector3.NULL
 	var acceleration = Vector3.NULL
@@ -45,6 +46,19 @@ class Tracker @JvmOverloads constructor(
 	var signalStrength: Int? = null
 	var temperature: Float? = null
 	var customName: String? = null
+
+	var status = TrackerStatus.DISCONNECTED
+		set(value) {
+			if (field != value) {
+				field = value
+				if (!isInternal) {
+					// If the status of a non-internal tracker has changed, inform
+					// the VRServer to recreate the skeleton, as it may need to
+					// assign or unassign the tracker
+					vrServer.updateSkeletonModel()
+				}
+			}
+		}
 
 	// Computed value to simplify availability checks
 	val hasAdjustedRotation = hasRotation && (needsFiltering || needsReset)
@@ -108,7 +122,7 @@ class Tracker @JvmOverloads constructor(
 	fun tick() {
 		if (usesTimeout) {
 			if (System.currentTimeMillis() - timeAtLastUpdate > TIMEOUT_MS) {
-				setStatus(TrackerStatus.DISCONNECTED)
+				status = TrackerStatus.DISCONNECTED
 			}
 		}
 		filteringHandler.tick()
@@ -123,19 +137,9 @@ class Tracker @JvmOverloads constructor(
 		filteringHandler.dataTick(rotation)
 	}
 
-	fun getStatus(): TrackerStatus {
-		return status
-	}
-
-	fun setStatus(newStatus: TrackerStatus) {
-		if (status != newStatus) {
-			status = newStatus
-			if (!isInternal) {
-				vrServer.updateSkeletonModel()
-			}
-		}
-	}
-
+	// TODO: Make note in this documentation that calculations may be performed with
+	// each call, therefore excessive use may be computationally expensive and should
+	// generally be avoided if not necessary
 	/**
 	 * Gets the adjusted tracker rotation after all corrections
 	 * (filtering, reset, mounting and drift compensation).

@@ -46,7 +46,7 @@ data class TrackerFrames(val name: String = "", val frames: FastList<TrackerFram
 			isComputed = true
 		)
 
-		tracker.setStatus(TrackerStatus.OK)
+		tracker.status = TrackerStatus.OK
 
 		return tracker
 	}
