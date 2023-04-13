@@ -76,8 +76,8 @@ class Tracker @JvmOverloads constructor(
 			if (isImu && config.allowDriftCompensation == null) {
 				// If value didn't exist, default to true and save
 				resetsHandler.allowDriftCompensation = true
-				vrServer!!.configManager.vrConfig.getTracker(this).allowDriftCompensation = true
-				vrServer!!.configManager.saveConfig()
+				vrServer.configManager.vrConfig.getTracker(this).allowDriftCompensation = true
+				vrServer.configManager.saveConfig()
 			} else {
 				config.allowDriftCompensation?.let {
 					resetsHandler.allowDriftCompensation = it
@@ -131,7 +131,7 @@ class Tracker @JvmOverloads constructor(
 		if (status != newStatus) {
 			status = newStatus
 			if (!isInternal) {
-				vrServer!!.updateSkeletonModel()
+				vrServer.updateSkeletonModel()
 			}
 		}
 	}

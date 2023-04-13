@@ -27,7 +27,7 @@ class QuaternionMovingAverage(
 	private var latestQuaternion = IDENTITY
 	private var smoothingQuaternion = IDENTITY
 	var filteredQuaternion = IDENTITY
-	private val fpsTimer: NanoTimer = vrServer!!.fpsTimer
+	private val fpsTimer: NanoTimer = vrServer.fpsTimer
 	private var smoothingCounter = 0
 
 	init {

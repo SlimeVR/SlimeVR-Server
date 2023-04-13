@@ -11,7 +11,7 @@ class FiltersConfig {
 	var amount = 0.2f
 
 	fun updateTrackersFilters() {
-		for (tracker in vrServer!!.allTrackers) {
+		for (tracker in vrServer.allTrackers) {
 			if (tracker.needsFiltering) {
 				tracker.filteringHandler.readFilteringConfig(this, tracker.getRawRotation())
 			}
