@@ -9,26 +9,24 @@ import io.github.axisangles.ktmath.Vector3
 
 const val TIMEOUT_MS = 2000L
 
-// TODO: Document vague constructor parameters like `isInternal`, `isComputed`, and
-// `usesTimeout`
 /**
  * Generic tracker class for input and output tracker,
  * with flags on instantiation.
  */
 class Tracker @JvmOverloads constructor(
 	val device: Device?,
-	val id: Int,
-	val name: String,
-	val displayName: String = "Tracker #$id",
+	val id: Int, // VRServer.nextLocalTrackerId
+	val name: String, // unique, for config
+	val displayName: String = "Tracker #$id", // default display GUI name
 	var trackerPosition: TrackerPosition?,
 	val hasPosition: Boolean = false,
 	val hasRotation: Boolean = false,
 	val hasAcceleration: Boolean = false,
-	val userEditable: Boolean = false,
-	val isInternal: Boolean = false,
-	val isComputed: Boolean = false,
+	val userEditable: Boolean = false, // User can change TrackerPosition, mounting...
+	val isInternal: Boolean = false, // Is used within SlimeVR (shareable trackers)
+	val isComputed: Boolean = false, // Has solved position + rotation (Vive trackers)
 	val isImu: Boolean = false,
-	val usesTimeout: Boolean = false,
+	val usesTimeout: Boolean = false, // Automatically set the status to DISCONNECTED
 	val needsFiltering: Boolean = false,
 	val needsReset: Boolean = false,
 	val needsMounting: Boolean = false,
@@ -54,7 +52,7 @@ class Tracker @JvmOverloads constructor(
 				if (!isInternal) {
 					// If the status of a non-internal tracker has changed, inform
 					// the VRServer to recreate the skeleton, as it may need to
-					// assign or unassign the tracker
+					// assign or un-assign the tracker to a body part
 					vrServer.updateSkeletonModel()
 				}
 			}

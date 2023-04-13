@@ -371,6 +371,7 @@ public class HumanSkeleton {
 
 	// #region Set trackers inputs
 	protected void setTrackersFromList(List<Tracker> trackers) {
+		// TODO prioritize IMU over Computed for head
 		headTracker = TrackerUtils
 			.getNonInternalTrackerForBodyPosition(
 				trackers,

@@ -6,7 +6,7 @@ object TrackerUtils {
 	 * Finds the first non-internal tracker from allTrackers
 	 * matching the position, that is not DISCONNECTED
 	 *
-	 * @return The non ComputedHumanPoseTracker as a Tracker
+	 * @return A non-internal tracker
 	 */
 	@JvmStatic
 	fun getNonInternalTrackerForBodyPosition(
