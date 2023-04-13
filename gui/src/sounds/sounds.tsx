@@ -50,8 +50,9 @@ export function playSoundOnResetStarted(resetType: ResetType, volume = 1) {
 }
 
 let lastKnownVolume = 1;
+/* Easter egg */
 tapSetupSound.onended = () => {
-  if (Math.floor(Math.random() * 1000) !== 0) return;
+  if (Math.floor(Math.random() * 12000) !== 0) return;
   restartAndPlay(tapSetupExtraSound, lastKnownVolume);
 };
 export function playTapSetupSound(volume = 1) {
