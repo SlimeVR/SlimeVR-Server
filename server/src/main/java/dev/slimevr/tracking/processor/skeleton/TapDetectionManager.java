@@ -17,6 +17,7 @@ import solarxr_protocol.rpc.ResetType;
  */
 public class TapDetectionManager {
 	private static final String resetSourceName = "TapDetection";
+	private static final int tapsForSetupMode = 2;
 
 	// server and related classes
 	private final HumanSkeleton skeleton;
@@ -120,26 +121,27 @@ public class TapDetectionManager {
 				|| tapDetectors == null
 		)
 			return;
-		// update the tap detectors
-		yawResetDetector.update();
-		fullResetDetector.update();
-		mountingResetDetector.update();
-
-		// check if any tap detectors have detected taps
-		checkYawReset();
-		checkFullReset();
-		checkMountingReset();
 
 		// if setup mode is enabled, update the tap detectors for each tracker
 		if (config.getSetupMode()) {
 			for (TapDetection tapDetector : tapDetectors) {
 				tapDetector.update();
 
-				if (tapDetector.getTaps() > 1) {
+				if (tapDetector.getTaps() >= tapsForSetupMode) {
 					tapSetupHandler.sendTap(tapDetector.getTracker());
 					tapDetector.resetDetector();
 				}
 			}
+		} else {
+			// update the tap detectors
+			yawResetDetector.update();
+			fullResetDetector.update();
+			mountingResetDetector.update();
+
+			// check if any tap detectors have detected taps
+			checkYawReset();
+			checkFullReset();
+			checkMountingReset();
 		}
 	}
 
