@@ -15,7 +15,9 @@ import dev.slimevr.tracking.trackers.TrackerRole;
 import dev.slimevr.tracking.trackers.TrackerStatus;
 import io.eiren.util.collections.FastList;
 import io.eiren.util.logging.LogManager;
+import io.github.axisangles.ktmath.EulerAngles;
 import io.github.axisangles.ktmath.EulerOrder;
+import io.github.axisangles.ktmath.Quaternion;
 import io.github.axisangles.ktmath.Vector3;
 
 import java.io.IOException;
@@ -236,14 +238,24 @@ public class VRCOSCHandler implements OSCHandler {
 					}
 
 					// Send regular trackers' rotations
-					var unity = computedTrackers
-						.get(i)
-						.getRotation()
-						.toEulerAngles(EulerOrder.ZXY);
+					Quaternion rot = computedTrackers.get(i).getRotation();
+					// We flip the X and Y components of the quaternion because
+					// we flip the z direction when communicating from
+					// our right-handed API to VRChat's left-handed API.
+					// X quaternion represents a rotation from y to z
+					// Y quaternion represents a rotation from z to x
+					// When we negate the z direction, X and Y quaternion
+					// components must be negated.
+					EulerAngles unityAngles = new Quaternion(
+						rot.getW(),
+						-rot.getX(),
+						-rot.getY(),
+						rot.getZ()
+					).toEulerAngles(EulerOrder.YXZ);
 					oscArgs.clear();
-					oscArgs.add(unity.getX() * FastMath.RAD_TO_DEG);
-					oscArgs.add(unity.getY() * FastMath.RAD_TO_DEG);
-					oscArgs.add(unity.getZ() * FastMath.RAD_TO_DEG);
+					oscArgs.add(unityAngles.getX() * FastMath.RAD_TO_DEG);
+					oscArgs.add(unityAngles.getY() * FastMath.RAD_TO_DEG);
+					oscArgs.add(unityAngles.getZ() * FastMath.RAD_TO_DEG);
 
 					oscMessage = new OSCMessage(
 						"/tracking/trackers/" + id + "/rotation",
@@ -257,10 +269,7 @@ public class VRCOSCHandler implements OSCHandler {
 					}
 				}
 
-				if (
-					computedTrackers.get(i).getTrackerPosition().getTrackerRole()
-						== TrackerRole.HEAD
-				) {
+				if (computedTrackers.get(i).getTrackerPosition() == TrackerPosition.HEAD) {
 					// Send HMD position
 					var pos = computedTrackers.get(i).getPosition();
 					oscArgs.clear();
