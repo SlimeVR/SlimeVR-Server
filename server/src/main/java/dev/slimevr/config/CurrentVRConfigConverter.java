@@ -176,27 +176,15 @@ public class CurrentVRConfigConverter implements VersionedModelConverter {
 				if (skeletonNode != null) {
 					ObjectNode offsetsNode = (ObjectNode) skeletonNode.get("offsets");
 					if (offsetsNode != null) {
-						if (offsetsNode.get("chestOffset") != null) {
-							offsetsNode
-								.set(
-									"chestOffset",
-									new FloatNode(-offsetsNode.get("chestOffset").floatValue())
-								);
-						}
-						if (offsetsNode.get("hipOffset") != null) {
-							offsetsNode
-								.set(
-									"hipOffset",
-									new FloatNode(-offsetsNode.get("hipOffset").floatValue())
-								);
-						}
-						if (offsetsNode.get("elbowOffset") != null) {
-							offsetsNode
-								.set(
-									"elbowOffset",
-									new FloatNode(-offsetsNode.get("elbowOffset").floatValue())
-								);
-						}
+						JsonNode chestNode = offsetsNode.get("chestOffset");
+						if (chestNode != null)
+							offsetsNode.set("chestOffset", new FloatNode(-chestNode.floatValue()));
+						JsonNode hipNode = offsetsNode.get("hipOffset");
+						if (hipNode != null)
+							offsetsNode.set("hipOffset", new FloatNode(-hipNode.floatValue()));
+						JsonNode elbowNode = offsetsNode.get("elbowOffset");
+						if (elbowNode != null)
+							offsetsNode.set("elbowOffset", new FloatNode(-elbowNode.floatValue()));
 					}
 				}
 			}
@@ -204,18 +192,25 @@ public class CurrentVRConfigConverter implements VersionedModelConverter {
 				// reset > fullReset, quickReset > yawReset
 				ObjectNode keybindingsNode = (ObjectNode) modelData.get("keybindings");
 				if (keybindingsNode != null) {
-					keybindingsNode.set("fullResetBinding", keybindingsNode.get("resetBinding"));
-					keybindingsNode
-						.set("yawResetBinding", keybindingsNode.get("quickResetBinding"));
-					keybindingsNode
-						.set("mountingResetBinding", keybindingsNode.get("resetMountingBinding"));
-					if (keybindingsNode.get("resetDelay") != null) {
-						keybindingsNode.set("fullResetDelay", keybindingsNode.get("resetDelay"));
-						keybindingsNode
-							.set("yawResetDelay", keybindingsNode.get("quickResetDelay"));
-						keybindingsNode
-							.set("mountingResetDelay", keybindingsNode.get("resetMountingDelay"));
-					}
+					JsonNode fullResetNode = keybindingsNode.get("resetBinding");
+					if (fullResetNode != null)
+						keybindingsNode.set("fullResetBinding", fullResetNode);
+					JsonNode yawResetNode = keybindingsNode.get("quickResetBinding");
+					if (yawResetNode != null)
+						keybindingsNode.set("yawResetBinding", yawResetNode);
+					JsonNode mountingResetNode = keybindingsNode.get("resetMountingBinding");
+					if (mountingResetNode != null)
+						keybindingsNode.set("mountingResetBinding", mountingResetNode);
+
+					JsonNode fullDelayNode = keybindingsNode.get("resetDelay");
+					if (fullDelayNode != null)
+						keybindingsNode.set("fullResetDelay", fullDelayNode);
+					JsonNode yawDelayNode = keybindingsNode.get("quickResetDelay");
+					if (yawDelayNode != null)
+						keybindingsNode.set("yawResetDelay", yawDelayNode);
+					JsonNode mountingDelayNode = keybindingsNode.get("resetMountingDelay");
+					if (mountingDelayNode != null)
+						keybindingsNode.set("mountingResetDelay", mountingDelayNode);
 				}
 
 				ObjectNode tapDetectionNode = (ObjectNode) modelData.get("tapDetection");
