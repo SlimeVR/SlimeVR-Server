@@ -692,14 +692,14 @@ public class HumanSkeleton {
 		if (leftUpperLegTracker != null && leftLowerLegTracker != null && extendedKneeModel) {
 			// Averages the knee's rotation with the local ankle's
 			// pitch and roll and apply to the tracker node.
-			Quaternion leftHip = leftHipNode.getLocalTransform().getRotation();
-			Quaternion leftKnee = leftKneeNode.getLocalTransform().getRotation();
+			Quaternion leftHipRot = leftHipNode.getLocalTransform().getRotation();
+			Quaternion leftKneeRot = leftKneeNode.getLocalTransform().getRotation();
 
-			Quaternion extendedRot = extendedKneeYawRoll(leftHip, leftKnee);
+			Quaternion extendedRot = extendedKneeYawRoll(leftHipRot, leftKneeRot);
 
 			trackerLeftKneeNode
 				.getLocalTransform()
-				.setRotation(leftHip.interpR(extendedRot, kneeTrackerAnkleAveraging));
+				.setRotation(leftHipRot.interpR(extendedRot, kneeTrackerAnkleAveraging));
 		}
 
 		// Right Leg
@@ -739,10 +739,11 @@ public class HumanSkeleton {
 			Quaternion rightHipRot = rightHipNode.getLocalTransform().getRotation();
 			Quaternion rightKneeRot = rightKneeNode.getLocalTransform().getRotation();
 
-			var extendedRoll = extendedKneeYawRoll(rightHipRot, rightKneeRot);
+			Quaternion extendedRot = extendedKneeYawRoll(rightHipRot, rightKneeRot);
 
-			var slerp = extendedRoll.interpR(rightKneeRot, kneeTrackerAnkleAveraging);
-			trackerRightKneeNode.getLocalTransform().setRotation(slerp);
+			trackerRightKneeNode
+				.getLocalTransform()
+				.setRotation(rightHipRot.interpR(extendedRot, kneeTrackerAnkleAveraging));
 		}
 
 		// Extended spine
