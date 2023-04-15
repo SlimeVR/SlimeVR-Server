@@ -141,8 +141,10 @@ class UnityArmature(localRot: Boolean) {
 		val node = getHeadNodeOfBone(unityBone)
 		return if (node != null) {
 			if (unityBone === UnityBone.HIPS) {
-				val hipsAverage = (leftHipNode.worldTransform.translation +
-					rightHipNode.worldTransform.translation) * 0.5f
+				val hipsAverage = (
+					leftHipNode.worldTransform.translation +
+						rightHipNode.worldTransform.translation
+					) * 0.5f
 				node.worldTransform.translation * 2f - hipsAverage + rootPosition
 			} else {
 				node.worldTransform.translation + rootPosition
@@ -156,8 +158,10 @@ class UnityArmature(localRot: Boolean) {
 		val node = getHeadNodeOfBone(unityBone)
 		return if (node != null) {
 			if (unityBone === UnityBone.HIPS) {
-				val hipsAverage = (leftHipNode.worldTransform.translation +
-					rightHipNode.worldTransform.translation) * 0.5f
+				val hipsAverage = (
+					leftHipNode.worldTransform.translation +
+						rightHipNode.worldTransform.translation
+					) * 0.5f
 				node.worldTransform.translation * 2f - hipsAverage + rootPosition
 			} else {
 				node.localTransform.translation
