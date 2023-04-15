@@ -310,7 +310,7 @@ public class VMCHandler implements OSCHandler {
 			if (localRotation) {
 				// Instantiate unityHierarchy if not done
 				if (inputUnityArmature == null)
-					inputUnityArmature = new UnityArmature(false);
+					inputUnityArmature = new UnityArmature(true);
 				inputUnityArmature.setLocalRotationForBone(unityBone, rotation);
 				rotation = inputUnityArmature.getGlobalRotationForBone(unityBone);
 			}
