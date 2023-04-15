@@ -10,19 +10,23 @@ Sensors implementations:
 
 Integrations:
 * Use [SlimeVR OpenVR Driver](https://github.com/SlimeVR/SlimeVR-OpenVR-Driver) as a driver for SteamVR
-* Use built-in OSC support for integration with other apps, such as VRChat, using OSC
-* Integrations with other systems will be added later
+* Use built-in OSC Trackers support for FBT integration with VRChat, PCVR or Standalone.
+* Use built-in VMC support for sending and receiving tracking data to and from other apps such as VSeeFace.
+* Export recordings as .BVH files to integrate motion capture data into 3d applications such as Blender.
 
-## How to use
+## Installing
 It's highly recommended to install using the installer downloadable here: https://github.com/SlimeVR/SlimeVR-Installer/releases/latest/download/slimevr_web_installer.exe
 
-Latest setup instructions are [on our site](https://docs.slimevr.dev/server/index.html).
+Latest setup instructions are [in our docs](https://docs.slimevr.dev/server/index.html).
+
+## Building & Contributing
+For information on building and contributing to the codebase, see [CONTRIBUTING.md](CONTRIBUTING.md).
 
 ## License clarification
 **SlimeVR software** (including server, firmware, drivers, installer, documents, and others - see
 licence for each case specifically) **is distributed under a dual MIT/Apache 2.0 License
 ([LICENSE-MIT] and [LICENSE-APACHE]). The software is the copyright of the SlimeVR
-contributors.** 
+contributors.**
 
 **However, these licenses have some limits, and if you wish to distribute software based
 on SlimeVR, you need to be aware of them:**
@@ -53,8 +57,6 @@ licensed as above, without any additional terms or conditions.
 You also certify that the code you have used is compatible with those licenses or is
 authored by you. If you're doing so on your work time, you certify that your employer is
 okay with this and that you are authorized to provide the above licenses.
-
-For a how-to on contributing, see [CONTRIBUTING.md](CONTRIBUTING.md).
 
 [LICENSE-MIT]: LICENSE-MIT
 [LICENSE-APACHE]: LICENSE-APACHE
