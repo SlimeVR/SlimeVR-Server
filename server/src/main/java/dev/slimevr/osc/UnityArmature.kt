@@ -45,7 +45,7 @@ class UnityArmature(localRot: Boolean) {
 		headNode = TransformNode(localRotation = localRot)
 		neckTailNode = TransformNode(localRotation = localRot)
 		neckHeadNode = TransformNode(localRotation = localRot)
-		upperChestNode = TransformNode(localRotation = true)
+		upperChestNode = TransformNode(localRotation = localRot)
 		chestNode = TransformNode(localRotation = localRot)
 		waistTailNode = TransformNode(localRotation = localRot)
 		waistHeadNode = TransformNode(localRotation = localRot)
@@ -141,12 +141,9 @@ class UnityArmature(localRot: Boolean) {
 		val node = getHeadNodeOfBone(unityBone)
 		return if (node != null) {
 			if (unityBone === UnityBone.HIPS) {
-				node.worldTransform.translation * 2f - (
-					(
-						leftHipNode.worldTransform.translation +
-							rightHipNode.worldTransform.translation
-						) * 0.5f
-					) + rootPosition
+				val hipsAverage = (leftHipNode.worldTransform.translation +
+					rightHipNode.worldTransform.translation) * 0.5f
+				node.worldTransform.translation * 2f - hipsAverage + rootPosition
 			} else {
 				node.worldTransform.translation + rootPosition
 			}
@@ -159,12 +156,9 @@ class UnityArmature(localRot: Boolean) {
 		val node = getHeadNodeOfBone(unityBone)
 		return if (node != null) {
 			if (unityBone === UnityBone.HIPS) {
-				node.worldTransform.translation * 2f - (
-					(
-						leftHipNode.worldTransform.translation +
-							rightHipNode.worldTransform.translation
-						) * 0.5f
-					) + rootPosition
+				val hipsAverage = (leftHipNode.worldTransform.translation +
+					rightHipNode.worldTransform.translation) * 0.5f
+				node.worldTransform.translation * 2f - hipsAverage + rootPosition
 			} else {
 				node.localTransform.translation
 			}
@@ -176,7 +170,7 @@ class UnityArmature(localRot: Boolean) {
 	fun getGlobalRotationForBone(unityBone: UnityBone?): Quaternion {
 		val node = getHeadNodeOfBone(unityBone)
 		return if (node != null) {
-			node.worldTransform.rotation * (rootRotation)
+			node.worldTransform.rotation * rootRotation
 		} else {
 			Quaternion.IDENTITY
 		}

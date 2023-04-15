@@ -244,10 +244,10 @@ public class VMCHandler implements OSCHandler {
 								-((float) event.getMessage().getArguments().get(3))
 							),
 							new Quaternion(
+								-((float) event.getMessage().getArguments().get(7)),
 								(float) event.getMessage().getArguments().get(4),
 								(float) event.getMessage().getArguments().get(5),
-								-((float) event.getMessage().getArguments().get(6)),
-								-((float) event.getMessage().getArguments().get(7))
+								-((float) event.getMessage().getArguments().get(6))
 							)
 						);
 				}
