@@ -1,50 +1,66 @@
 # Contributing to SlimeVR
 
-This document describes essential knowledge for contributors to SlimeVR.
+This document describes essential knowledge required to contribute to the SlimeVR Server.
 
-## How to get started
+### Prerequisites
 
-### Getting the code
-First, clone the codebase using `git`. If you don't have `git` installed, go install it.
+- [Git](https://git-scm.com/downloads)
+- [Java v17+](https://www.oracle.com/java/technologies/downloads/)
+- [Node.js v16+](https://nodejs.org) (We recommend the use of `nvm` instead of installing Node.js directly)
+- [Windows Webview](https://developer.microsoft.com/en-us/microsoft-edge/webview2/#download-section)
+- [Rust](https://rustup.rs)
+
+## Cloning the code
+First, clone the codebase using git in a terminal in the folder you want.
 
 ```bash
-# Clone repositories
 git clone --recursive https://github.com/SlimeVR/SlimeVR-Server.git
-
-# Enter the directory of the codebase
-cd SlimeVR-Server
 ```
 
-Now you can open the codebase in your favorite IDE or text editor.
-
-### Installing Java
-The codebase is required to build with Java version 17 or higher.
-
-```bash
-# Check java version
-java --version
-```
+Now you can open the codebase in [IDEA](https://www.jetbrains.com/idea/download/) (Recommended; VSCode and Eclipse also work but have limited Kotlin support).
 
 
-### Building the code
-The code is built with `gradle`, a cli tool that manages java projects and their
-dependencies. You can build the code with `./gradlew build` and run it with
-`./gradlew run`.
+## Building the code
 
+### Java (server)
 
-## Code Style
-Code is autoformatted with [spotless](https://github.com/diffplug/spotless/tree/main/plugin-gradle).
+The Java code is built with `gradle`, a CLI tool that manages java projects and their
+dependencies.
+- You can run the server by running `./gradlew run` in your IDE's terminal.
+- To compile the code, run `./gradlew shadowJar`. The result will
+be at `server/build/libs/slimevr.jar` (you can ignore `server.jar`).
+
+(Note: your IDE may do all of the above for you.)
+
+### Tauri (gui)
+
+- Run `npm install` in your IDE's terminal to download and install dependencies.
+- To launch the GUI in dev mode, run `npm run gui`.
+- Finally, to compile for production, run `npm run tauri build`. The result
+will be at `target/release/slimevr.exe`.
+
+## Code style
+
+### Java (server)
+
+The Java code is auto-formatted with [spotless](https://github.com/diffplug/spotless/tree/main/plugin-gradle).
 Code is checked for autoformatting whenever you build, but you can also run
 `./gradlew spotlessCheck` if you prefer.
 
-To autoformat your code from the command line, you can run `./gradlew spotlessApply`.
-We recommend installing support for spotless in your IDE of choice, and formatting
-whenever you save a file, to make things easy.
+To auto-format your Java code from the command line, you can run `./gradlew spotlessApply`.
+We recommend installing support for spotless in your IDE, and formatting
+whenever you save a file to make things easy.
 
-If you need to prevent autoformatting for a particular region of code, use
+If you need to prevent autoformatting for a select region of code, use
 `// @formatter:off` and `// @formatter:on`
 
-### Setting up spotless in VSCode
+#### Setting up spotless for IntelliJ IDEA
+* Install https://plugins.jetbrains.com/plugin/18321-spotless-gradle.
+* Add a keyboard shortcut for `Code` > `Reformat Code with Spotless`
+* They are working on support to do this on save without a keybind
+  [here](https://github.com/ragurney/spotless-intellij-gradle/issues/8)
+
+#### Setting up spotless for VSCode
 * Install the `richardwillis.vscode-spotless-gradle` extension
 * Add the following to your workspace settings, at `.vscode/settings.json`:
 ```json
@@ -55,13 +71,7 @@ If you need to prevent autoformatting for a particular region of code, use
 }
 ```
 
-### Setting up spotless for IntelliJ
-* Install https://plugins.jetbrains.com/plugin/18321-spotless-gradle.
-* Add a keyboard shortcut for `Code` > `Reformat Code with Spotless`
-* They are working on support to do this on save without a keybind
-[here](https://github.com/ragurney/spotless-intellij-gradle/issues/8)
-
-### Setting up Eclipse autoformatting
+#### Setting up Eclipse autoformatting
 Import the formatting settings defined in `spotless.xml`, like this:
 * Go to `File > Properties`, then `Java Code Style > Formatter`
 * Check `Enable project specific settings`
@@ -73,19 +83,18 @@ Import the formatting settings defined in `spotless.xml`, like this:
 Eclipse will only do a subset of the checks in `spotless`, so you may still want to do
 `./gradlew spotlessApply` if you ever see an error from spotless.
 
-### Version bumping
-* Add new release inside ``<releases>`` in the ``dev.slimevr.SlimeVR.metainfo.xml`` file. (Example: ``<release version="a.b.c" date="YYYY-MM-DD"><url>https://github.com/SlimeVR/SlimeVR-Server/releases/tag/va.b.c</url></release>``)
-* Create the git tag instead of making it from releases, you can do it by just ``git tag VERSION``,
-  example ``git tag v0.5.0``
-* You need to push this change with ``git push origin VERSION`` or ``git push origin --tags``
-(will push all tags you made).
+### Tauri (gui)
 
-We recommend committing first and then making the tag, that tag will point to the commit you are currently
-on.
+We use ESLint and Prettier to format GUI code.
+- First, go into the GUI's directory with your terminal by running `cd gui`.
+- To check code formatting, run `npm run lint`.
+- To fix code formatting, run `npm run lint:fix` and `npm run format`
+
+Don't forget to run `cd ..` to go back in the main directory.
 
 ## Code Licensing
 SlimeVR uses dual MIT and Apache-2.0 license. Be sure that any code that you reference,
-or dependencies you add, are compatible with these licenses. `GPL-v3` for example is
+or dependencies you add, are compatible with these licenses. For example, `GPL-v3` is
 not compatible because it requires any and all code that depends on it to *also* be
 licensed under `GPL-v3`.
 
