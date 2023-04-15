@@ -10,7 +10,10 @@ import dev.slimevr.config.VMCConfig;
 import dev.slimevr.tracking.processor.BoneType;
 import dev.slimevr.tracking.processor.HumanPoseManager;
 import dev.slimevr.tracking.processor.TransformNode;
-import dev.slimevr.tracking.trackers.*;
+import dev.slimevr.tracking.trackers.Device;
+import dev.slimevr.tracking.trackers.Tracker;
+import dev.slimevr.tracking.trackers.TrackerPosition;
+import dev.slimevr.tracking.trackers.TrackerStatus;
 import io.eiren.util.collections.FastList;
 import io.eiren.util.logging.LogManager;
 import io.github.axisangles.ktmath.Quaternion;
@@ -307,8 +310,8 @@ public class VMCHandler implements OSCHandler {
 			if (localRotation) {
 				// Instantiate unityHierarchy if not done
 				if (inputUnityArmature == null)
-					inputUnityArmature = new UnityArmature(true);
-				inputUnityArmature.setBoneRotationFromLocal(unityBone, rotation);
+					inputUnityArmature = new UnityArmature(false);
+				inputUnityArmature.setLocalRotationForBone(unityBone, rotation);
 				rotation = inputUnityArmature.getGlobalRotationForBone(unityBone);
 			}
 			rotation = yawOffset.times(rotation);
@@ -372,7 +375,7 @@ public class VMCHandler implements OSCHandler {
 						// Update unity hierarchy from bone's global rotation
 						if (tailNode != null && tailNode.getParent() != null)
 							outputUnityArmature
-								.setBoneRotationFromGlobal(
+								.setGlobalRotationForBone(
 									bone,
 									tailNode.getParent().getWorldTransform().getRotation()
 								);
@@ -455,11 +458,11 @@ public class VMCHandler implements OSCHandler {
 						shareableTracker.getRotation()
 					);
 					String address;
-					TrackerRole role = shareableTracker.getTrackerPosition().getTrackerRole();
-					if (role == TrackerRole.HMD) {
+					TrackerPosition role = shareableTracker.getTrackerPosition();
+					if (role == TrackerPosition.HEAD) {
 						address = "/VMC/Ext/Hmd/Pos";
 					} else if (
-						role == TrackerRole.LEFT_CONTROLLER || role == TrackerRole.RIGHT_CONTROLLER
+						role == TrackerPosition.LEFT_HAND || role == TrackerPosition.RIGHT_HAND
 					) {
 						address = "/VMC/Ext/Con/Pos";
 					} else {
@@ -494,9 +497,9 @@ public class VMCHandler implements OSCHandler {
 	}
 
 	/**
-	 * Set the Quaternion to offset the received VMC tracking rotations' yaw by
+	 * Set the Quaternion to shift the received VMC tracking rotations' yaw
 	 *
-	 * @param reference usually the HMD's rotation
+	 * @param reference the head's rotation
 	 */
 	public void alignVMCTracking(Quaternion reference) {
 		yawOffset = reference.project(Vector3.Companion.getPOS_Y()).unit();

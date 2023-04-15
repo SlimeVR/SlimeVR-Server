@@ -103,6 +103,9 @@ class UnityArmature(localRot: Boolean) {
 	}
 
 	fun updateNodes() {
+		// Set the upper chest's rotation to the chest's
+		upperChestNode.localTransform.rotation = chestNode.localTransform.rotation
+		// Update the root node
 		hipNode.update()
 	}
 
@@ -111,7 +114,7 @@ class UnityArmature(localRot: Boolean) {
 		rootRotation = globalRot
 	}
 
-	fun setBoneRotationFromGlobal(unityBone: UnityBone, globalRot: Quaternion) {
+	fun setGlobalRotationForBone(unityBone: UnityBone, globalRot: Quaternion) {
 		val node = getHeadNodeOfBone(unityBone)
 		if (node != null) {
 			node.localTransform.rotation = when (unityBone) {
@@ -122,7 +125,7 @@ class UnityArmature(localRot: Boolean) {
 		}
 	}
 
-	fun setBoneRotationFromLocal(unityBone: UnityBone, localRot: Quaternion) {
+	fun setLocalRotationForBone(unityBone: UnityBone, localRot: Quaternion) {
 		val node = getHeadNodeOfBone(unityBone)
 		if (node != null) {
 			if (unityBone === UnityBone.HIPS) {
