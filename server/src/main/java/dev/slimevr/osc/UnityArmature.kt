@@ -11,64 +11,37 @@ private val LEFT_SHOULDER_OFFSET = EulerAngles(EulerOrder.YZX, 0f, 0f, FastMath.
 private val RIGHT_SHOULDER_OFFSET = EulerAngles(EulerOrder.YZX, 0f, 0f, -FastMath.HALF_PI).toQuaternion()
 class UnityArmature(localRot: Boolean) {
 
-	private val headNode: TransformNode
-	private val neckTailNode: TransformNode
-	private val neckHeadNode: TransformNode
-	private val upperChestNode: TransformNode
-	private val chestNode: TransformNode
-	private val waistTailNode: TransformNode
-	private val waistHeadNode: TransformNode
-	private val hipNode: TransformNode
-	private val leftHipNode: TransformNode
-	private val rightHipNode: TransformNode
-	private val leftKneeNode: TransformNode
-	private val leftAnkleNode: TransformNode
-	private val leftFootNode: TransformNode
-	private val rightKneeNode: TransformNode
-	private val rightAnkleNode: TransformNode
-	private val rightFootNode: TransformNode
-	private val leftShoulderHeadNode: TransformNode
-	private val rightShoulderHeadNode: TransformNode
-	private val leftShoulderTailNode: TransformNode
-	private val rightShoulderTailNode: TransformNode
-	private val leftElbowNode: TransformNode
-	private val rightElbowNode: TransformNode
-	private val leftWristNode: TransformNode
-	private val rightWristNode: TransformNode
-	private val leftHandNode: TransformNode
-	private val rightHandNode: TransformNode
+	private val headNode = TransformNode(localRotation = localRot)
+	private val neckTailNode = TransformNode(localRotation = localRot)
+	private val neckHeadNode = TransformNode(localRotation = localRot)
+	private val upperChestNode = TransformNode(localRotation = localRot)
+	private val chestNode = TransformNode(localRotation = localRot)
+	private val waistTailNode = TransformNode(localRotation = localRot)
+	private val waistHeadNode = TransformNode(localRotation = localRot)
+	private val hipNode = TransformNode(localRotation = localRot)
+	private val leftHipNode = TransformNode(localRotation = localRot)
+	private val rightHipNode = TransformNode(localRotation = localRot)
+	private val leftKneeNode = TransformNode(localRotation = localRot)
+	private val leftAnkleNode = TransformNode(localRotation = localRot)
+	private val leftFootNode = TransformNode(localRotation = localRot)
+	private val rightKneeNode = TransformNode(localRotation = localRot)
+	private val rightAnkleNode = TransformNode(localRotation = localRot)
+	private val rightFootNode = TransformNode(localRotation = localRot)
+	private val leftShoulderHeadNode = TransformNode(localRotation = localRot)
+	private val rightShoulderHeadNode = TransformNode(localRotation = localRot)
+	private val leftShoulderTailNode = TransformNode(localRotation = localRot)
+	private val rightShoulderTailNode = TransformNode(localRotation = localRot)
+	private val leftElbowNode = TransformNode(localRotation = localRot)
+	private val rightElbowNode = TransformNode(localRotation = localRot)
+	private val leftWristNode = TransformNode(localRotation = localRot)
+	private val rightWristNode = TransformNode(localRotation = localRot)
+	private val leftHandNode = TransformNode(localRotation = localRot)
+	private val rightHandNode = TransformNode(localRotation = localRot)
 
 	private var rootPosition = Vector3.NULL
 	private var rootRotation = Quaternion.IDENTITY
 
 	init {
-		headNode = TransformNode(localRotation = localRot)
-		neckTailNode = TransformNode(localRotation = localRot)
-		neckHeadNode = TransformNode(localRotation = localRot)
-		upperChestNode = TransformNode(localRotation = localRot)
-		chestNode = TransformNode(localRotation = localRot)
-		waistTailNode = TransformNode(localRotation = localRot)
-		waistHeadNode = TransformNode(localRotation = localRot)
-		hipNode = TransformNode(localRotation = localRot)
-		leftHipNode = TransformNode(localRotation = localRot)
-		rightHipNode = TransformNode(localRotation = localRot)
-		leftKneeNode = TransformNode(localRotation = localRot)
-		leftAnkleNode = TransformNode(localRotation = localRot)
-		leftFootNode = TransformNode(localRotation = localRot)
-		rightKneeNode = TransformNode(localRotation = localRot)
-		rightAnkleNode = TransformNode(localRotation = localRot)
-		rightFootNode = TransformNode(localRotation = localRot)
-		leftShoulderHeadNode = TransformNode(localRotation = localRot)
-		rightShoulderHeadNode = TransformNode(localRotation = localRot)
-		leftShoulderTailNode = TransformNode(localRotation = localRot)
-		rightShoulderTailNode = TransformNode(localRotation = localRot)
-		leftElbowNode = TransformNode(localRotation = localRot)
-		rightElbowNode = TransformNode(localRotation = localRot)
-		leftWristNode = TransformNode(localRotation = localRot)
-		rightWristNode = TransformNode(localRotation = localRot)
-		leftHandNode = TransformNode(localRotation = localRot)
-		rightHandNode = TransformNode(localRotation = localRot)
-
 		// Attach nodes
 		// Spine
 		hipNode.attachChild(waistHeadNode)
