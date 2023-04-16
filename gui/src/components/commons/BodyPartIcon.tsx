@@ -33,7 +33,7 @@ export const mapPart: Record<
     currentLocales.includes('en-x-owo') ? (
       <PawIcon></PawIcon>
     ) : (
-      <FootIcon width={width} flipped></FootIcon>
+      <FootIcon width={width}></FootIcon>
     ),
   [BodyPart.LEFT_HAND]: ({ width }) => (
     <ControllerIcon width={width}></ControllerIcon>

@@ -391,14 +391,8 @@ class AutoBone(server: VRServer) {
 
 		// Epoch loop, each epoch is one full iteration over the full dataset
 		for (epoch in (if (calcInitError) -1 else 0) until config.numEpochs) {
-			val adjustRate = if (epoch >= 0) {
-				(
-					config.initialAdjustRate
-						* FastMath.pow(config.adjustRateMultiplier, epoch.toFloat())
-					)
-			} else {
-				0f
-			}
+			val adjustRate = decayFunc(config.initialAdjustRate, config.adjustRateDecay, epoch)
+
 			var randomFrameIndices: IntArray? = null
 			if (config.randomizeFrameOrder) {
 				randomFrameIndices = IntArray(frameCount)
@@ -557,7 +551,7 @@ class AutoBone(server: VRServer) {
 								val adjVal = stepHeightDiff * (length / stepHeight)
 
 								// Scale the length to fit the target height
-								entry.setValue(Math.max(length + adjVal / 2f, 0.01f))
+								entry.setValue((length + adjVal / 2f).coerceAtLeast(0.01f))
 							}
 						}
 					}
@@ -570,7 +564,7 @@ class AutoBone(server: VRServer) {
 			if (epoch <= 0 || epoch >= config.numEpochs - 1 || (epoch + 1) % config.printEveryNumEpochs == 0) {
 				LogManager
 					.info(
-						"[AutoBone] Epoch ${epoch + 1} average error: ${errorStats.mean} (SD ${errorStats.standardDeviation})"
+						"[AutoBone] Epoch: ${epoch + 1}, Mean error: ${errorStats.mean} (SD ${errorStats.standardDeviation}), Adjust rate: $adjustRate"
 					)
 			}
 			applyConfig(legacyConfigs)
@@ -579,7 +573,7 @@ class AutoBone(server: VRServer) {
 		val finalHeight = sumSelectConfigs(heightOffsets, offsets)
 		LogManager
 			.info(
-				"[AutoBone] Target height: $targetHeight New height: $finalHeight"
+				"[AutoBone] Target height: $targetHeight, New height: $finalHeight"
 			)
 		return AutoBoneResults(finalHeight, targetHeight, errorStats, legacyConfigs)
 	}
@@ -712,7 +706,7 @@ class AutoBone(server: VRServer) {
 		val configValues: EnumMap<SkeletonConfigOffsets, Float>,
 	) {
 		override fun toString(): String {
-			return "Epoch: $epoch, Epoch Error: $epochError"
+			return "Epoch: $epoch, Epoch error: $epochError"
 		}
 	}
 
@@ -731,8 +725,12 @@ class AutoBone(server: VRServer) {
 		val loadDir = File("Load AutoBone Recordings")
 
 		// Mean square error function
-		protected fun errorFunc(errorDeriv: Float): Float {
+		private fun errorFunc(errorDeriv: Float): Float {
 			return 0.5f * (errorDeriv * errorDeriv)
+		}
+
+		private fun decayFunc(initialAdjustRate: Float, adjustRateDecay: Float, epoch: Int): Float {
+			return if (epoch >= 0) initialAdjustRate / (1 + (adjustRateDecay * epoch)) else 0.0f
 		}
 	}
 }
