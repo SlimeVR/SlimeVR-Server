@@ -255,9 +255,7 @@ export function VRCOSCSettings() {
               outlined
               control={control}
               name="vrchat.trackers.waist"
-              label={l10n.getString(
-                'settings-osc-vrchat-network-trackers-hip'
-              )}
+              label={l10n.getString('settings-osc-vrchat-network-trackers-hip')}
             />
             <CheckBox
               variant="toggle"
