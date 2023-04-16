@@ -201,10 +201,10 @@ public class VMCHandler implements OSCHandler {
 						trackerPosition,
 						null,
 						new Quaternion(
+							-((float) event.getMessage().getArguments().get(7)),
 							(float) event.getMessage().getArguments().get(4),
 							(float) event.getMessage().getArguments().get(5),
-							-((float) event.getMessage().getArguments().get(6)),
-							-((float) event.getMessage().getArguments().get(7))
+							-((float) event.getMessage().getArguments().get(6))
 						),
 						true,
 						UnityBone
@@ -292,7 +292,7 @@ public class VMCHandler implements OSCHandler {
 				false,
 				true,
 				false,
-				true
+				position != null
 			);
 			trackerDevice.getTrackers().put(trackerDevice.getTrackers().size(), tracker);
 			byTrackerNameTracker.put(name, tracker);
@@ -313,8 +313,8 @@ public class VMCHandler implements OSCHandler {
 					inputUnityArmature = new UnityArmature(true);
 				inputUnityArmature.setLocalRotationForBone(unityBone, rotation);
 				rotation = inputUnityArmature.getGlobalRotationForBone(unityBone);
+				rotation = yawOffset.times(rotation);
 			}
-			rotation = yawOffset.times(rotation);
 			tracker.setRotation(rotation);
 		}
 
