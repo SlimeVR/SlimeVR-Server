@@ -25,8 +25,7 @@ export function SerialDetectionModal() {
   const [isOpen, setOpen] = useState<SerialDeviceT | null>(null);
   const [showWifiForm, setShowWifiForm] = useState(false);
 
-  const { handleSubmit, submitWifiCreds, formState, control } =
-    useWifiForm();
+  const { handleSubmit, submitWifiCreds, formState, control } = useWifiForm();
 
   const closeModal = () => {
     setOpen(null);

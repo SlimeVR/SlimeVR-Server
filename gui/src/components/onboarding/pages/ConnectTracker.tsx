@@ -179,7 +179,9 @@ export function ConnectTrackersPage() {
               state={{ alonePage: state.alonePage }}
               to="/onboarding/wifi-creds"
             >
-              {state.alonePage ? l10n.getString('onboarding-connect_tracker-back') : l10n.getString('onboarding-previous_step')}
+              {state.alonePage
+                ? l10n.getString('onboarding-connect_tracker-back')
+                : l10n.getString('onboarding-previous_step')}
             </Button>
             <Button
               variant="primary"

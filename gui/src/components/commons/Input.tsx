@@ -40,7 +40,7 @@ export const InputInside = forwardRef<
     const variantsMap = {
       primary: classNames('bg-background-60 border-background-60'),
       secondary: classNames('bg-background-50 border-background-50'),
-      tertiary: classNames('bg-background-40 border-background-40')
+      tertiary: classNames('bg-background-40 border-background-40'),
     };
 
     return classNames(
