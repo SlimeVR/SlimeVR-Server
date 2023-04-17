@@ -785,7 +785,8 @@ public class HumanSkeleton {
 					// Interpolate between the pelvis, averaged from the legs,
 					// and the chest
 					chestRot = chestRot
-						.interpQ(leftHipRot.lerpQ(rightHipRot, 0.5f), waistFromChestLegsAveraging);
+						.interpQ(leftHipRot.lerpQ(rightHipRot, 0.5f), waistFromChestLegsAveraging)
+						.unit();
 
 					chestNode.getLocalTransform().setRotation(chestRot);
 				}
@@ -810,7 +811,8 @@ public class HumanSkeleton {
 					// Interpolate between the pelvis, averaged from the legs,
 					// and the chest
 					waistRot = waistRot
-						.interpQ(leftHipRot.lerpQ(rightHipRot, 0.5f), hipFromWaistLegsAveraging);
+						.interpQ(leftHipRot.lerpQ(rightHipRot, 0.5f), hipFromWaistLegsAveraging)
+						.unit();
 
 					waistNode.getLocalTransform().setRotation(waistRot);
 					hipNode.getLocalTransform().setRotation(waistRot);
@@ -834,7 +836,8 @@ public class HumanSkeleton {
 					// Interpolate between the pelvis, averaged from the legs,
 					// and the chest
 					chestRot = chestRot
-						.interpQ(leftHipRot.lerpQ(rightHipRot, 0.5f), hipFromChestLegsAveraging);
+						.interpQ(leftHipRot.lerpQ(rightHipRot, 0.5f), hipFromChestLegsAveraging)
+						.unit();
 
 					waistNode.getLocalTransform().setRotation(chestRot);
 					hipNode.getLocalTransform().setRotation(chestRot);
