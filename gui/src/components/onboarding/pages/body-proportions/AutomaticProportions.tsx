@@ -1,11 +1,10 @@
 import { useLocalization } from '@fluent/react';
-import { useEffect, useState } from 'react';
+import { useState } from 'react';
 import { RpcMessage, SkeletonResetAllRequestT } from 'solarxr-protocol';
 import {
   AutoboneContextC,
   useProvideAutobone,
 } from '../../../../hooks/autobone';
-import { useBodyProportions } from '../../../../hooks/body-proportions';
 import { useOnboarding } from '../../../../hooks/onboarding';
 import { useWebsocketAPI } from '../../../../hooks/websocket-api';
 import { Button } from '../../../commons/Button';
@@ -26,7 +25,6 @@ export function AutomaticProportionsPage() {
   const { applyProgress, skipSetup, state } = useOnboarding();
   const { sendRPCPacket } = useWebsocketAPI();
   const context = useProvideAutobone();
-  const { onPageOpened } = useBodyProportions();
   const [skipWarning, setSkipWarning] = useState(false);
   const { isCounting, startCountdown, timer } = useCountdown({
     onCountdownEnd: () => {
@@ -38,10 +36,6 @@ export function AutomaticProportionsPage() {
   });
 
   applyProgress(0.9);
-
-  useEffect(() => {
-    onPageOpened();
-  }, []);
 
   return (
     <AutoboneContextC.Provider value={context}>
