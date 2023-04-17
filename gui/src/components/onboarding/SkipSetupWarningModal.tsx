@@ -52,7 +52,7 @@ export function SkipSetupWarningModal({
               {l10n.getString('onboarding-setup_warning-cancel')}
             </Button>
             <Button
-              variant="tiertiary"
+              variant="tertiary"
               onClick={() => {
                 accept();
                 navigate('/');

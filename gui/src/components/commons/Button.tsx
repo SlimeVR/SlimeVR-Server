@@ -49,7 +49,7 @@ export function Button({
 }: {
   children: ReactNode;
   icon?: ReactNode;
-  variant: 'primary' | 'secondary' | 'tiertiary' | 'quaternary';
+  variant: 'primary' | 'secondary' | 'tertiary' | 'quaternary';
   to?: string;
   loading?: boolean;
   rounded?: boolean;
@@ -69,7 +69,7 @@ export function Button({
         'bg-background-60 hover:bg-background-60 cursor-not-allowed text-background-40':
           disabled,
       }),
-      tiertiary: classNames({
+      tertiary: classNames({
         'bg-background-50 hover:bg-background-40 text-standard text-background-10':
           !disabled,
         'bg-background-50 hover:bg-background-50 cursor-not-allowed text-background-40':

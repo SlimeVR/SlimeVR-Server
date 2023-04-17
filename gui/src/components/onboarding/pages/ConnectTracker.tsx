@@ -173,12 +173,14 @@ export function ConnectTrackersPage() {
               ></ProgressBar>
             </div>
           </div>
-          <div className="flex flex-row mt-4">
-            {!state.alonePage && (
-              <Button variant="secondary" to="/onboarding/wifi-creds">
-                {l10n.getString('onboarding-previous_step')}
-              </Button>
-            )}
+          <div className="flex flex-row mt-4 gap-3">
+            <Button
+              variant="secondary"
+              state={{ alonePage: state.alonePage }}
+              to="/onboarding/wifi-creds"
+            >
+              {state.alonePage ? l10n.getString('onboarding-connect_tracker-back') : l10n.getString('onboarding-previous_step')}
+            </Button>
             <Button
               variant="primary"
               to={state.alonePage ? '/' : '/onboarding/trackers-assign'}
