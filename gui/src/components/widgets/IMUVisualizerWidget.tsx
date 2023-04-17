@@ -125,7 +125,12 @@ export function IMUVisualizerWidget({ tracker }: { tracker: TrackerDataT }) {
           >
             {l10n.getString('widget-imu_visualizer-rotation_hide')}
           </Button>
-          <SceneRenderer quat={{...quat}} model={isExtension ? '/models/extension.gltf' : '/models/tracker.gltf'} ></SceneRenderer>
+          <SceneRenderer
+            quat={{ ...quat }}
+            model={
+              isExtension ? '/models/extension.gltf' : '/models/tracker.gltf'
+            }
+          ></SceneRenderer>
         </>
       )}
     </div>
