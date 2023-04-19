@@ -108,7 +108,7 @@ class TrackerResetsHandler(val tracker: Tracker) {
 	/**
 	 * Converts raw or filtered rotation into reference- and
 	 * mounting-reset-adjusted by applying quaternions produced after
-	 * [.resetFull], [.resetYaw] and [.resetMounting].
+	 * full reset, yaw rest and mounting reset
 	 */
 	private fun adjustToReference(rotation: Quaternion): Quaternion {
 		var rot = rotation
@@ -121,8 +121,7 @@ class TrackerResetsHandler(val tracker: Tracker) {
 
 	/**
 	 * Converts raw or filtered rotation into zero-reference-adjusted by
-	 * applying quaternions produced after [.resetFull],
-	 * [.resetYaw].
+	 * applying quaternions produced after full reset and yaw reset only
 	 *
 	 * @param store Raw or filtered rotation to mutate.
 	 */
@@ -154,6 +153,8 @@ class TrackerResetsHandler(val tracker: Tracker) {
 		if (tracker.needsMounting) {
 			fixGyroscope(getMountedAdjustedRotation())
 		} else {
+			// Set mounting to the HMD's yaw so that the non-mounting-adjusted
+			// tracker goes forward.
 			mountRotFix = reference.project(Vector3.POS_Y).unit()
 		}
 		fixAttachment(getMountedAdjustedRotation())
@@ -174,8 +175,8 @@ class TrackerResetsHandler(val tracker: Tracker) {
 	}
 
 	/**
-	 * Reset the tracker so that it's current yaw rotation is counted as <HMD
-	 * Yaw>. This allows the tracker to have yaw independent of the HMD. Tracker
+	 * Reset the tracker so that it's current yaw rotation is aligned with the HMD's
+	 * Yaw. This allows the tracker to have yaw independent of the HMD. Tracker
 	 * should still report yaw as if it was mounted facing HMD, mounting
 	 * position should be corrected in the source. Also aligns gyro magnetometer
 	 * if it's reliable.

@@ -27,7 +27,7 @@ class Tracker @JvmOverloads constructor(
 	val isComputed: Boolean = false, // Has solved position + rotation (Vive trackers)
 	val isImu: Boolean = false,
 	val usesTimeout: Boolean = false, // Automatically set the status to DISCONNECTED
-	val needsFiltering: Boolean = false,
+	val allowFiltering: Boolean = false,
 	val needsReset: Boolean = false,
 	val needsMounting: Boolean = false,
 ) {
@@ -59,7 +59,7 @@ class Tracker @JvmOverloads constructor(
 		}
 
 	// Computed value to simplify availability checks
-	val hasAdjustedRotation = hasRotation && (needsFiltering || needsReset)
+	val hasAdjustedRotation = hasRotation && (allowFiltering || needsReset)
 
 	init {
 		// IMPORTANT: Look here for the required states of inputs
@@ -135,16 +135,15 @@ class Tracker @JvmOverloads constructor(
 		filteringHandler.dataTick(rotation)
 	}
 
-	// TODO: Make note in this documentation that calculations may be performed with
-	// each call, therefore excessive use may be computationally expensive and should
-	// generally be avoided if not necessary
 	/**
 	 * Gets the adjusted tracker rotation after all corrections
 	 * (filtering, reset, mounting and drift compensation).
 	 * This is the rotation that is applied on the SlimeVR skeleton bones.
+	 * Warning: This may perform several Quaternion multiplications, so calling
+	 * it too much should be avoided for performance reasons.
 	 */
 	fun getRotation(): Quaternion {
-		var rot = if (needsFiltering && filteringHandler.enabled) {
+		var rot = if (allowFiltering && filteringHandler.enabled) {
 			// Get filtered rotation
 			filteringHandler.getFilteredRotation()
 		} else {

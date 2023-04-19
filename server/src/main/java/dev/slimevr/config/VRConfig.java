@@ -150,7 +150,7 @@ public class VRConfig {
 		tracker.readConfig(config);
 		if (tracker.isImu())
 			tracker.getResetsHandler().readDriftCompensationConfig(driftCompensation);
-		if (tracker.getNeedsFiltering())
+		if (tracker.getAllowFiltering())
 			tracker.getFilteringHandler().readFilteringConfig(filters, tracker.getRawRotation());
 	}
 

@@ -14,7 +14,7 @@ class DriftCompensationConfig {
 	var maxResets = 6
 	fun updateTrackersDriftCompensation() {
 		for (t in vrServer.allTrackers) {
-			if (t.needsFiltering) {
+			if (t.allowFiltering) {
 				t.resetsHandler.readDriftCompensationConfig(this)
 			}
 		}
