@@ -151,7 +151,11 @@ class TrackerResetsHandler(val tracker: Tracker) {
 	fun resetFull(reference: Quaternion) {
 		val rot: Quaternion = adjustToReference(tracker.getRawRotation())
 
-		fixGyroscope(getMountedAdjustedRotation())
+		if (tracker.needsMounting) {
+			fixGyroscope(getMountedAdjustedRotation())
+		} else {
+			mountRotFix = reference.project(Vector3.POS_Y).unit()
+		}
 		fixAttachment(getMountedAdjustedRotation())
 
 		makeIdentityAdjustmentQuatsFull()
