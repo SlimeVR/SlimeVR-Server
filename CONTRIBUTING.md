@@ -5,7 +5,7 @@ This document describes essential knowledge required to contribute to the SlimeV
 ### Prerequisites
 
 - [Git](https://git-scm.com/downloads)
-- [Java v17+](https://www.oracle.com/java/technologies/downloads/)
+- [Java v17+](https://adoptium.net/temurin/releases/)
 - [Node.js v16+](https://nodejs.org) (We recommend the use of `nvm` instead of installing Node.js directly)
 - [Windows Webview](https://developer.microsoft.com/en-us/microsoft-edge/webview2/#download-section)
 - [Rust](https://rustup.rs)
