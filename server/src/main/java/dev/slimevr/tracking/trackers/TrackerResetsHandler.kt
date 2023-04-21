@@ -27,6 +27,7 @@ class TrackerResetsHandler(val tracker: Tracker) {
 	private var driftSince: Long = 0
 	private var timeAtLastReset: Long = 0
 	var allowDriftCompensation = false
+	var lastResetQuaternion: Quaternion? = null
 
 	// Manual mounting orientation
 	var mountingOrientation: Quaternion = EulerAngles(
@@ -139,7 +140,9 @@ class TrackerResetsHandler(val tracker: Tracker) {
 	 * 0). This allows the tracker to be strapped to body at any pitch and roll.
 	 */
 	fun resetFull(reference: Quaternion) {
-		val rot = adjustToReference(tracker.getRawRotation())
+		lastResetQuaternion = adjustToReference(tracker.getRawRotation())
+
+		val rot: Quaternion = adjustToReference(tracker.getRawRotation())
 
 		if (tracker.needsMounting) {
 			fixGyroscope(tracker.getRawRotation() * mountingOrientation)
@@ -164,7 +167,9 @@ class TrackerResetsHandler(val tracker: Tracker) {
 	 * position should be corrected in the source.
 	 */
 	fun resetYaw(reference: Quaternion) {
-		val rot = adjustToReference(tracker.getRawRotation())
+		lastResetQuaternion = adjustToReference(tracker.getRawRotation())
+
+		val rot: Quaternion = adjustToReference(tracker.getRawRotation())
 
 		fixYaw(tracker.getRawRotation() * mountingOrientation, reference)
 

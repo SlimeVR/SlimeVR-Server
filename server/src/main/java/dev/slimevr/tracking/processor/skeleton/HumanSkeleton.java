@@ -1380,33 +1380,34 @@ public class HumanSkeleton {
 		return rightHandTracker != null && rightHandTracker.getHasPosition() && !forceArmsFromHMD;
 	}
 
-	protected Tracker[] getTrackersToReset() {
-		return new Tracker[] {
-			trackerPreUpdate(this.neckTracker),
-			trackerPreUpdate(this.chestTracker),
-			trackerPreUpdate(this.waistTracker),
-			trackerPreUpdate(this.hipTracker),
-			trackerPreUpdate(this.leftUpperLegTracker),
-			trackerPreUpdate(this.leftLowerLegTracker),
-			trackerPreUpdate(this.leftFootTracker),
-			trackerPreUpdate(this.rightUpperLegTracker),
-			trackerPreUpdate(this.rightLowerLegTracker),
-			trackerPreUpdate(this.rightFootTracker),
-			trackerPreUpdate(this.leftLowerArmTracker),
-			trackerPreUpdate(this.rightLowerArmTracker),
-			trackerPreUpdate(this.leftUpperArmTracker),
-			trackerPreUpdate(this.rightUpperArmTracker),
-			trackerPreUpdate(this.leftHandTracker),
-			trackerPreUpdate(this.rightHandTracker),
-			trackerPreUpdate(this.leftShoulderTracker),
-			trackerPreUpdate(this.rightShoulderTracker),
-		};
+	public List<Tracker> getLocalTrackers() {
+		return List
+			.of(
+				trackerPreUpdate(this.neckTracker),
+				trackerPreUpdate(this.chestTracker),
+				trackerPreUpdate(this.waistTracker),
+				trackerPreUpdate(this.hipTracker),
+				trackerPreUpdate(this.leftUpperLegTracker),
+				trackerPreUpdate(this.leftLowerLegTracker),
+				trackerPreUpdate(this.leftFootTracker),
+				trackerPreUpdate(this.rightUpperLegTracker),
+				trackerPreUpdate(this.rightLowerLegTracker),
+				trackerPreUpdate(this.rightFootTracker),
+				trackerPreUpdate(this.leftLowerArmTracker),
+				trackerPreUpdate(this.rightLowerArmTracker),
+				trackerPreUpdate(this.leftUpperArmTracker),
+				trackerPreUpdate(this.rightUpperArmTracker),
+				trackerPreUpdate(this.leftHandTracker),
+				trackerPreUpdate(this.rightHandTracker),
+				trackerPreUpdate(this.leftShoulderTracker),
+				trackerPreUpdate(this.rightShoulderTracker)
+			);
 	}
 
 	public void resetTrackersFull(String resetSourceName) {
 		// Pass all trackers through trackerPreUpdate
 		Tracker headTracker = trackerPreUpdate(this.headTracker);
-		Tracker[] trackersToReset = getTrackersToReset();
+		List<Tracker> trackersToReset = humanPoseManager.getTrackersToReset();
 
 		// Resets all axis of the trackers with the HMD as reference.
 		Quaternion referenceRotation = Quaternion.Companion.getIDENTITY();
@@ -1428,7 +1429,32 @@ public class HumanSkeleton {
 		this.legTweaks.resetFloorLevel();
 		this.legTweaks.resetBuffer();
 
-		LogManager.info("Reset: full (%s)".formatted(resetSourceName));
+		LogManager.info("[HumanSkeleton] Reset: full (%s)".formatted(resetSourceName));
+	}
+
+	@VRServerThread
+	public void resetTrackersYaw(String resetSourceName) {
+		// Pass all trackers through trackerPreUpdate
+		Tracker headTracker = trackerPreUpdate(this.headTracker);
+		List<Tracker> trackersToReset = humanPoseManager.getTrackersToReset();
+
+		// Resets the yaw of the trackers with the head as reference.
+		Quaternion referenceRotation = Quaternion.Companion.getIDENTITY();
+		if (headTracker != null) {
+			if (headTracker.getNeedsReset())
+				headTracker.getResetsHandler().resetYaw(referenceRotation);
+			else
+				referenceRotation = headTracker.getRotation();
+		}
+
+		for (Tracker tracker : trackersToReset) {
+			if (tracker != null && tracker.getNeedsReset()) {
+				tracker.getResetsHandler().resetYaw(referenceRotation);
+			}
+		}
+		this.legTweaks.resetBuffer();
+
+		LogManager.info("[HumanSkeleton] Reset: yaw (%s)".formatted(resetSourceName));
 	}
 
 	@VRServerThread
@@ -1490,7 +1516,7 @@ public class HumanSkeleton {
 	public void resetTrackersMounting(String resetSourceName) {
 		// Pass all trackers through trackerPreUpdate
 		Tracker headTracker = trackerPreUpdate(this.headTracker);
-		Tracker[] trackersToReset = getTrackersToReset();
+		List<Tracker> trackersToReset = humanPoseManager.getTrackersToReset();
 
 		// Resets the mounting rotation of the trackers with the HMD as
 		// reference.
@@ -1517,7 +1543,7 @@ public class HumanSkeleton {
 		}
 		this.legTweaks.resetBuffer();
 
-		LogManager.info("Reset: mounting (%s)".formatted(resetSourceName));
+		LogManager.info("[HumanSkeleton] Reset: mounting (%s)".formatted(resetSourceName));
 	}
 
 	public void updateTapDetectionConfig() {
