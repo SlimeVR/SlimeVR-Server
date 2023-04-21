@@ -644,7 +644,6 @@ public class HumanPoseManager {
 		skeletonConfigManager.computeNodeOffset(node);
 	}
 
-	@VRServerThread
 	public void resetTrackersFull(String resetSourceName) {
 		if (isSkeletonPresent()) {
 			skeleton.resetTrackersFull(resetSourceName);
@@ -658,7 +657,6 @@ public class HumanPoseManager {
 		}
 	}
 
-	@VRServerThread
 	public void resetTrackersYaw(String resetSourceName) {
 		if (isSkeletonPresent()) {
 			skeleton.resetTrackersYaw(resetSourceName);
@@ -680,22 +678,25 @@ public class HumanPoseManager {
 		long timeSinceLastReset = (System.currentTimeMillis() - timeAtLastReset) / 1000L;
 		timeAtLastReset = System.currentTimeMillis();
 
+		// Build String for trackers drifts
 		StringBuilder trackersDriftText = new StringBuilder();
 		for (Tracker tracker : server.getAllTrackers()) {
 			if (
 				tracker.getNeedsReset()
 					&& tracker.getResetsHandler().getLastResetQuaternion() != null
 			) {
-				// Get the absolute drift amount since last reset in degrees
+				// Get the difference between last reset and now
 				Quaternion difference = tracker
 					.getRotation()
 					.times(tracker.getResetsHandler().getLastResetQuaternion().inv());
+				// Get the pure yaw
 				float trackerDriftAngle = Math
 					.abs(
 						FastMath.atan2(difference.getY(), difference.getW())
 							* 2
 							* FastMath.RAD_TO_DEG
 					);
+				// Fix for polarity or something
 				if (trackerDriftAngle > 180)
 					trackerDriftAngle = Math.abs(trackerDriftAngle - 360);
 				// Round it to 4 decimal places
@@ -727,7 +728,6 @@ public class HumanPoseManager {
 		}
 	}
 
-	@VRServerThread
 	public void resetTrackersMounting(String resetSourceName) {
 		if (isSkeletonPresent())
 			skeleton.resetTrackersMounting(resetSourceName);
