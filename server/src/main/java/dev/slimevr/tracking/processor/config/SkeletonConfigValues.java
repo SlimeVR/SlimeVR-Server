@@ -11,7 +11,8 @@ public enum SkeletonConfigValues {
 	HIP_FROM_CHEST_LEGS_AVERAGING(3, "Hip from chest legs averaging", "hipFromChestLegsAveraging", 0.45f),
 	HIP_FROM_WAIST_LEGS_AVERAGING(4, "Hip from waist legs averaging", "hipFromWaistLegsAveraging", 0.4f),
 	HIP_LEGS_AVERAGING(5, "Hip legs averaging", "hipLegsAveraging", 0.25f),
-	KNEE_TRACKER_ANKLE_AVERAGING(6, "Knee tracker ankle averaging", "kneeTrackerAnkleAveraging", 0.75f),;
+	KNEE_TRACKER_ANKLE_AVERAGING(6, "Knee tracker ankle averaging", "kneeTrackerAnkleAveraging", 0.75f),
+	KNEE_ANKLE_AVERAGING(7, "Knee ankle averaging", "kneeAnkleAveraging", 0.2f),;
 	// @formatter:on
 
 	public static final SkeletonConfigValues[] values = values();

@@ -134,6 +134,7 @@ public class HumanSkeleton {
 	protected float hipFromWaistLegsAveraging;
 	protected float hipLegsAveraging;
 	protected float kneeTrackerAnkleAveraging;
+	protected float kneeAnkleAveraging;
 	// Others
 	protected boolean sendAllBones = false;
 	// #endregion
@@ -699,6 +700,9 @@ public class HumanSkeleton {
 
 			Quaternion extendedRot = extendedKneeYawRoll(leftHipRot, leftKneeRot);
 
+			leftHipNode
+				.getLocalTransform()
+				.setRotation(leftHipRot.interpR(extendedRot, kneeAnkleAveraging));
 			trackerLeftKneeNode
 				.getLocalTransform()
 				.setRotation(leftHipRot.interpR(extendedRot, kneeTrackerAnkleAveraging));
@@ -743,6 +747,9 @@ public class HumanSkeleton {
 
 			Quaternion extendedRot = extendedKneeYawRoll(rightHipRot, rightKneeRot);
 
+			rightHipNode
+				.getLocalTransform()
+				.setRotation(rightHipRot.interpR(extendedRot, kneeAnkleAveraging));
 			trackerRightKneeNode
 				.getLocalTransform()
 				.setRotation(rightHipRot.interpR(extendedRot, kneeTrackerAnkleAveraging));
@@ -1124,6 +1131,7 @@ public class HumanSkeleton {
 			case HIP_FROM_WAIST_LEGS_AVERAGING -> hipFromWaistLegsAveraging = newValue;
 			case HIP_LEGS_AVERAGING -> hipLegsAveraging = newValue;
 			case KNEE_TRACKER_ANKLE_AVERAGING -> kneeTrackerAnkleAveraging = newValue;
+			case KNEE_ANKLE_AVERAGING -> kneeAnkleAveraging = newValue;
 		}
 	}
 

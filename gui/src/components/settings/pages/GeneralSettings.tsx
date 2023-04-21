@@ -8,6 +8,8 @@ import {
   FilteringSettingsT,
   FilteringType,
   LegTweaksSettingsT,
+  ModelRatios,
+  ModelRatiosT,
   ModelSettingsT,
   ModelTogglesT,
   RpcMessage,
@@ -59,6 +61,9 @@ interface SettingsForm {
     toeSnap: boolean;
     footPlant: boolean;
   };
+  ratios: {
+    kneeAnkleAveraging: number;
+  };
   tapDetection: {
     mountingResetEnabled: boolean;
     yawResetEnabled: boolean;
@@ -100,8 +105,9 @@ const defaultValues = {
     skatingCorrection: false,
     viveEmulation: false,
     toeSnap: false,
-    flootPlant: true,
+    footPlant: true,
   },
+  ratios: { kneeAnkleAveraging: 0.2 },
   filtering: { amount: 0.1, type: FilteringType.NONE },
   driftCompensation: {
     enabled: false,
@@ -172,10 +178,14 @@ export function GeneralSettings() {
     toggles.toeSnap = values.toggles.toeSnap;
     toggles.footPlant = values.toggles.footPlant;
 
+    const ratios = new ModelRatiosT();
+    ratios.interpKneeAnkle = values.ratios.kneeAnkleAveraging;
+
     const legTweaks = new LegTweaksSettingsT();
     legTweaks.correctionStrength = values.legTweaks.correctionStrength;
 
     modelSettings.toggles = toggles;
+    modelSettings.ratios = ratios;
     modelSettings.legTweaks = legTweaks;
     settings.modelSettings = modelSettings;
 
@@ -258,6 +268,14 @@ export function GeneralSettings() {
         }),
         {}
       );
+    }
+
+    if (settings.modelSettings?.ratios) {
+      formData.ratios = {
+        kneeAnkleAveraging:
+          settings.modelSettings?.ratios.interpKneeAnkle ||
+          defaultValues.ratios.kneeAnkleAveraging,
+      };
     }
 
     if (settings.tapDetectionSettings) {
@@ -605,6 +623,17 @@ export function GeneralSettings() {
               label={l10n.getString(
                 'settings-general-fk_settings-leg_tweak-toe_snap'
               )}
+            />
+          </div>
+          <div className="grid sm:grid-cols-1 gap-3 pb-3">
+            <NumberSelector
+              control={control}
+              name="ratios.kneeAnkleAveraging"
+              label="Knee-ankle averaging [BETA]"
+              valueLabelFormat={(value) => percentageFormat.format(value)}
+              min={0.0}
+              max={1.0}
+              step={0.1}
             />
           </div>
 

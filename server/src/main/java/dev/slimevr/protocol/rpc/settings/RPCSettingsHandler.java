@@ -339,6 +339,13 @@ public record RPCSettingsHandler(RPCHandler rpcHandler, ProtocolAPI api) {
 							ratios.interpKneeTrackerAnkle()
 						);
 				}
+				if (ratios.hasInterpKneeAnkle()) {
+					hpm
+						.setValue(
+							SkeletonConfigValues.KNEE_ANKLE_AVERAGING,
+							ratios.interpKneeAnkle()
+						);
+				}
 			}
 
 			if (legTweaks != null) {
