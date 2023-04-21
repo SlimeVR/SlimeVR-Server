@@ -707,13 +707,12 @@ public class HumanPoseManager {
 				// Round it to 4 decimal places
 				driftPerMin = Math.round(driftPerMin * 10000f) / 10000f;
 
-				String trackerName = tracker.getName();
+				trackersDriftText.append(tracker.getName());
 				TrackerPosition trackerPosition = tracker.getTrackerPosition();
 				if (trackerPosition != null)
-					trackerName += " (" + trackerPosition.name() + ")";
+					trackersDriftText.append(" (").append(trackerPosition.name()).append(")");
 
 				trackersDriftText
-					.append(trackerName)
 					.append(", ")
 					.append(trackerDriftAngle)
 					.append(" deg (")
