@@ -42,6 +42,16 @@ tasks.withType<Javadoc> {
 	options.encoding = "UTF-8"
 }
 
+tasks
+	.withType<org.jetbrains.kotlin.gradle.tasks.KotlinCompilationTask<*>>()
+	.configureEach {
+		compilerOptions
+			.languageVersion
+			.set(
+				org.jetbrains.kotlin.gradle.dsl.KotlinVersion.KOTLIN_1_9
+			)
+	}
+
 allprojects {
 	repositories {
 		// Use jcenter for resolving dependencies.
