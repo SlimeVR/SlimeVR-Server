@@ -62,7 +62,7 @@ class TrackersUDPServer(private val port: Int, name: String, private val tracker
 			val connection = UDPDevice(handshakePacket.socketAddress, addr)
 			vrServer.deviceManager.addDevice(connection)
 			connection.firmwareBuild = handshake.firmwareBuild
-			connection.protocol = if (handshake.firmware == null || handshake.firmware.isEmpty()) {
+			connection.protocol = if (handshake.firmware?.isEmpty() == true) {
 				// Only old owoTrack doesn't report firmware and have different packet IDs with SlimeVR
 				NetworkProtocol.OWO_LEGACY
 			} else {
@@ -102,7 +102,7 @@ class TrackersUDPServer(private val port: Int, name: String, private val tracker
 					connections.add(connection)
 					connectionsByAddress[addr] = connection
 					if (handshake.macString != null) {
-						connectionsByMAC[handshake.macString] = connection
+						connectionsByMAC[handshake.macString!!] = connection
 					}
 					LogManager
 						.info(
@@ -173,7 +173,7 @@ class TrackersUDPServer(private val port: Int, name: String, private val tracker
 							for (addr in broadcastAddresses) {
 								bb.limit(bb.capacity())
 								bb.rewind()
-								parser.write(bb, null, UDPPacket0Heartbeat())
+								parser.write(bb, null, UDPPacket0Heartbeat)
 								socket.send(DatagramPacket(rcvBuffer, bb.position(), addr))
 							}
 							prevPacketTime = discoveryPacketTime
@@ -199,7 +199,7 @@ class TrackersUDPServer(private val port: Int, name: String, private val tracker
 						for (conn in connections) {
 							bb.limit(bb.capacity())
 							bb.rewind()
-							parser.write(bb, conn, UDPPacket1Heartbeat())
+							parser.write(bb, conn, UDPPacket1Heartbeat)
 							socket.send(DatagramPacket(rcvBuffer, bb.position(), conn.address))
 							if (conn.lastPacket + 1000 < System.currentTimeMillis()) {
 								for (value in conn.trackers.values) {
@@ -250,32 +250,27 @@ class TrackersUDPServer(private val port: Int, name: String, private val tracker
 
 	private fun processPacket(received: DatagramPacket, packet: UDPPacket, connection: UDPDevice?) {
 		val tracker: Tracker?
-		when (packet.packetId) {
-			UDPProtocolParser.PACKET_HEARTBEAT -> {}
-			UDPProtocolParser.PACKET_HANDSHAKE -> setUpNewConnection(received, packet as UDPPacket3Handshake)
-			UDPProtocolParser.PACKET_ROTATION, UDPProtocolParser.PACKET_ROTATION_2 -> {
-				if (connection == null) return
-				val rotationPacket = packet as UDPPacket1Rotation
-				var rot = rotationPacket.rotation
-				rot = AXES_OFFSET.times(rot!!)
-				tracker = connection.getTracker(rotationPacket.sensorId)
+		when (packet) {
+			is UDPPacket0Heartbeat, is UDPPacket1Heartbeat -> {}
+			is UDPPacket3Handshake -> setUpNewConnection(received, packet)
+			is RotationPacket -> {
+				var rot = packet.rotation
+				rot = AXES_OFFSET.times(rot)
+				tracker = connection?.getTracker(packet.sensorId)
 				if (tracker == null) return
 				tracker.setRotation(rot)
 				tracker.dataTick()
 			}
-
-			UDPProtocolParser.PACKET_ROTATION_DATA -> {
-				if (connection == null) return
-				val rotationData = packet as UDPPacket17RotationData
-				tracker = connection.getTracker(rotationData.getSensorId())
+			is UDPPacket17RotationData -> {
+				tracker = connection?.getTracker(packet.sensorId)
 				if (tracker == null) return
-				var rot17 = rotationData.rotation
-				rot17 = AXES_OFFSET.times(rot17!!)
-				when (rotationData.dataType) {
+				var rot17 = packet.rotation
+				rot17 = AXES_OFFSET.times(rot17)
+				when (packet.dataType) {
 					UDPPacket17RotationData.DATA_TYPE_NORMAL -> {
 						tracker.setRotation(rot17)
 						tracker.dataTick()
-						// 						tracker.calibrationStatus = rotationData.calibrationInfo;
+						// tracker.calibrationStatus = rotationData.calibrationInfo;
 						// Not implemented in server
 					}
 
@@ -287,163 +282,107 @@ class TrackersUDPServer(private val port: Int, name: String, private val tracker
 					}
 				}
 			}
-
-			UDPProtocolParser.PACKET_MAGNETOMETER_ACCURACY -> {}
-			UDPProtocolParser.PACKET_ACCEL -> {
-				if (connection == null) return
-				val accelPacket = packet as UDPPacket4Acceleration
-				tracker = connection.getTracker(accelPacket.getSensorId())
+			is UDPPacket18MagnetometerAccuracy -> {}
+			is UDPPacket4Acceleration -> {
+				tracker = connection?.getTracker(packet.sensorId)
 				if (tracker == null) return
-				val acceleration = tracker.getRotation().sandwich(accelPacket.acceleration)
+				val acceleration = tracker.getRotation().sandwich(packet.acceleration)
 				tracker.acceleration = acceleration
 			}
-
-			2, 5, 9 -> {}
-			8 -> if (connection == null) return
-			UDPProtocolParser.PACKET_PING_PONG -> {
+			is UDPPacket10PingPong -> {
 				if (connection == null) return
-				val ping = packet as UDPPacket10PingPong
-				if (connection.lastPingPacketId == ping.pingId) {
+				if (connection.lastPingPacketId == packet.pingId) {
 					for (t in connection.trackers.values) {
-						t
-							.ping = (System.currentTimeMillis() - connection.lastPingPacketTime).toInt() / 2
+						t.ping = (System.currentTimeMillis() - connection.lastPingPacketTime).toInt() / 2
 						t.dataTick()
 					}
 				} else {
-					LogManager
-						.debug(
-							"[TrackerServer] Wrong ping id " +
-								ping.pingId +
-								" != " +
-								connection.lastPingPacketId
-						)
+					LogManager.debug(
+						"[TrackerServer] Wrong ping id ${packet.pingId} != ${connection.lastPingPacketId}"
+					)
 				}
 			}
 
-			UDPProtocolParser.PACKET_SERIAL -> {
+			is UDPPacket11Serial -> {
 				if (connection == null) return
-				val serial = packet as UDPPacket11Serial
-				println("[" + connection.name + "] " + serial.serial)
+				println("[${connection.name}] ${packet.serial}")
 			}
 
-			UDPProtocolParser.PACKET_BATTERY_LEVEL -> {
-				if (connection == null) return
-				val battery = packet as UDPPacket12BatteryLevel
-				if (connection.trackers.size > 0) {
-					for (value in connection.trackers.values) {
-						value.batteryVoltage = battery.voltage
-						value.batteryLevel = battery.level * 100
-					}
-				}
+			is UDPPacket12BatteryLevel -> connection?.trackers?.values?.forEach {
+				it.batteryVoltage = packet.voltage
+				it.batteryLevel = packet.level * 100
 			}
 
-			UDPProtocolParser.PACKET_TAP -> {
-				if (connection == null) return
-				val tap = packet as UDPPacket13Tap
-				tracker = connection.getTracker(tap.getSensorId())
+			is UDPPacket13Tap -> {
+				tracker = connection?.getTracker(packet.sensorId)
 				if (tracker == null) return
-				LogManager
-					.info(
-						"[TrackerServer] Tap packet received from " +
-							tracker.name +
-							": " +
-							tap.tap
-					)
+				LogManager.info(
+					"[TrackerServer] Tap packet received from ${tracker.name}: ${packet.tap}"
+				)
 			}
 
-			UDPProtocolParser.PACKET_ERROR -> {
-				val error = packet as UDPPacket14Error
-				LogManager
-					.severe(
-						"[TrackerServer] Error received from " +
-							received.socketAddress +
-							": " +
-							error.errorNumber
-					)
-				if (connection == null) return
-				tracker = connection.getTracker(error.getSensorId())
+			is UDPPacket14Error -> {
+				LogManager.severe(
+					"[TrackerServer] Error received from ${received.socketAddress}: ${packet.errorNumber}"
+				)
+				tracker = connection?.getTracker(packet.sensorId)
 				if (tracker == null) return
 				tracker.status = TrackerStatus.ERROR
 			}
 
-			UDPProtocolParser.PACKET_SENSOR_INFO -> {
+			is UDPPacket15SensorInfo -> {
 				if (connection == null) return
-				val info = packet as UDPPacket15SensorInfo
-				setUpSensor(connection, info.getSensorId(), info.sensorType, info.sensorStatus)
+				setUpSensor(connection, packet.sensorId, packet.sensorType, packet.sensorStatus)
 				// Send ack
 				bb.limit(bb.capacity())
 				bb.rewind()
-				parser.writeSensorInfoResponse(bb, connection, info)
-				socket!!.send(DatagramPacket(rcvBuffer, bb.position(), connection.address))
-				LogManager
-					.info(
-						"[TrackerServer] Sensor info for " +
-							connection.descriptiveName +
-							"/" +
-							info.getSensorId() +
-							": " +
-							info.sensorStatus
-					)
+				parser.writeSensorInfoResponse(bb, connection, packet)
+				socket.send(DatagramPacket(rcvBuffer, bb.position(), connection.address))
+				LogManager.info(
+					"[TrackerServer] Sensor info for ${connection.descriptiveName}/${packet.sensorId}: ${packet.sensorStatus}"
+				)
 			}
 
-			UDPProtocolParser.PACKET_SIGNAL_STRENGTH -> {
-				if (connection == null) return
-				val signalStrength = packet as UDPPacket19SignalStrength
-				if (connection.trackers.size > 0) {
-					for (value in connection.trackers.values) {
-						value.signalStrength = signalStrength.signalStrength
-					}
-				}
+			is UDPPacket19SignalStrength -> connection?.trackers?.values?.forEach {
+				it.signalStrength = packet.signalStrength
 			}
 
-			UDPProtocolParser.PACKET_TEMPERATURE -> {
-				if (connection == null) return
-				val temp = packet as UDPPacket20Temperature
-				tracker = connection.getTracker(temp.getSensorId())
+			is UDPPacket20Temperature -> {
+				tracker = connection?.getTracker(packet.sensorId)
 				if (tracker == null) return
-				tracker.temperature = temp.temperature
+				tracker.temperature = packet.temperature
 			}
 
-			UDPProtocolParser.PACKET_USER_ACTION -> {
+			is UDPPacket21UserAction -> {
 				if (connection == null) return
-				val action = packet as UDPPacket21UserAction
-				when (action.type) {
-					UDPPacket21UserAction.RESET_FULL, UDPPacket21UserAction.RESET_YAW, UDPPacket21UserAction.RESET_MOUNTING -> {
-						var name = ""
-						when (action.type) {
-							UDPPacket21UserAction.RESET_FULL -> {
-								name = "Full"
-								vrServer.resetHandler.sendStarted(ResetType.Full)
-								vrServer.resetTrackersFull(resetSourceName)
-							}
+				var name = ""
+				when (packet.type) {
+					UDPPacket21UserAction.RESET_FULL -> {
+						name = "Full"
+						vrServer.resetHandler.sendStarted(ResetType.Full)
+						vrServer.resetTrackersFull(resetSourceName)
+					}
 
-							UDPPacket21UserAction.RESET_YAW -> {
-								name = "Yaw"
-								vrServer.resetHandler.sendStarted(ResetType.Yaw)
-								vrServer.resetTrackersYaw(resetSourceName)
-							}
+					UDPPacket21UserAction.RESET_YAW -> {
+						name = "Yaw"
+						vrServer.resetHandler.sendStarted(ResetType.Yaw)
+						vrServer.resetTrackersYaw(resetSourceName)
+					}
 
-							UDPPacket21UserAction.RESET_MOUNTING -> {
-								name = "Mounting"
-								vrServer
-									.resetHandler
-									.sendStarted(ResetType.Mounting)
-								vrServer.resetTrackersMounting(resetSourceName)
-							}
-						}
-						LogManager
-							.info(
-								"[TrackerServer] User action from " +
-									connection.descriptiveName +
-									" received. " +
-									name +
-									" reset performed."
-							)
+					UDPPacket21UserAction.RESET_MOUNTING -> {
+						name = "Mounting"
+						vrServer
+							.resetHandler
+							.sendStarted(ResetType.Mounting)
+						vrServer.resetTrackersMounting(resetSourceName)
 					}
 				}
-			}
 
-			else -> LogManager.warning("[TrackerServer] Skipped packet $packet")
+				LogManager.info(
+					"[TrackerServer] User action from ${connection.descriptiveName } received. $name reset performed."
+				)
+			}
+			is UDPPacket200ProtocolChange -> {}
 		}
 	}
 

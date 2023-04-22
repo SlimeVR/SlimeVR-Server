@@ -22,10 +22,10 @@ class UDPProtocolParser {
 		if (newPacket != null) {
 			newPacket.readData(buf)
 		} else {
-//			LogManager.log.debug(
-//				"[UDPProtocolParser] Skipped packet id " +
-//					packetId + " from " + connection
-//			)
+// 			LogManager.log.debug(
+// 				"[UDPProtocolParser] Skipped packet id " +
+// 					packetId + " from " + connection
+// 			)
 		}
 		return newPacket
 	}
@@ -55,7 +55,7 @@ class UDPProtocolParser {
 
 	protected fun getNewPacket(packetId: Int): UDPPacket? {
 		return when (packetId) {
-			PACKET_HEARTBEAT -> dev.slimevr.tracking.trackers.udp.UDPPacket0Heartbeat()
+			PACKET_HEARTBEAT -> UDPPacket0Heartbeat
 			PACKET_ROTATION -> UDPPacket1Rotation()
 			PACKET_HANDSHAKE -> UDPPacket3Handshake()
 			PACKET_PING_PONG -> UDPPacket10PingPong()
