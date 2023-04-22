@@ -8,7 +8,7 @@ data class SensorTap(val tapBits: Int) {
 	}
 }
 
-interface SensorSpecificPacket {
+sealed interface SensorSpecificPacket {
 	val sensorId: Int
 	companion object {
 		/**
