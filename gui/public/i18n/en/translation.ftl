@@ -392,7 +392,7 @@ settings-osc-vrchat = VRChat OSC Trackers
 # This cares about multilines
 settings-osc-vrchat-description =
     Change VRChat-specific settings to receive HMD data and send
-    tracker data for FBT without SteamVR (Quest standalone).
+    tracker data for FBT without SteamVR (ex. Quest standalone).
 settings-osc-vrchat-enable = Enable
 settings-osc-vrchat-enable-description = Toggle the sending and receiving of data.
 settings-osc-vrchat-enable-label = Enable
