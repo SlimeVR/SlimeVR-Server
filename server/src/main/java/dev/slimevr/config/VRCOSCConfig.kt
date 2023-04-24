@@ -13,6 +13,7 @@ class VRCOSCConfig : OSCConfig() {
 	@JsonDeserialize(using = BooleanMapDeserializer::class)
 	@JsonSerialize(keyUsing = StdKeySerializers.StringKeySerializer::class)
 	var trackers: MutableMap<String, Boolean> = HashMap()
+	
 	fun getOSCTrackerRole(role: TrackerRole, def: Boolean): Boolean {
 		return trackers.getOrDefault(role.name.lowercase(Locale.getDefault()), def)
 	}
