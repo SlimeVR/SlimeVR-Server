@@ -972,7 +972,7 @@ public class HumanSkeleton {
 	 */
 	private Quaternion extendedKneeYawRoll(Quaternion knee, Quaternion ankle) {
 		// R = InverseKnee * Ankle
-		// C = Quaternion(-R.x, 0, 0, R.w)
+		// C = Quaternion(R.w, -R.x, 0, 0)
 		// Knee = Knee * R * C
 		// normalize(Knee)
 		Quaternion r = knee.inv().times(ankle);
@@ -1005,7 +1005,7 @@ public class HumanSkeleton {
 		}
 
 		// R = InverseHip * (LeftLeft + RightLeg)
-		// C = Quaternion(-R.x, 0, 0, R.w)
+		// C = Quaternion(R.w, -R.x, 0, 0)
 		// Pelvis = Hip * R * C
 		// normalize(Pelvis)
 		var r = hip.inv().times(leftKnee.plus(rightKnee));

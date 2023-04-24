@@ -10,7 +10,7 @@ data class Transform @JvmOverloads constructor(
 	}
 
 	fun set(transform: Transform): Transform {
-		// FIXME: Should those attributes get copied?
+		// Quaternions and vectors are immutable, so we're copying links
 		this.rotation = transform.rotation
 		this.translation = transform.translation
 		this.scale = transform.scale
