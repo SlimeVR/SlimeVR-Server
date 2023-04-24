@@ -15,7 +15,7 @@ import { useTrackers } from '../../../hooks/tracker';
 import { useWebsocketAPI } from '../../../hooks/websocket-api';
 import { ArrowLink } from '../../commons/ArrowLink';
 import { Button } from '../../commons/Button';
-import { LoaderIcon } from '../../commons/icon/LoaderIcon';
+import { LoaderIcon, SlimeState } from '../../commons/icon/LoaderIcon';
 import { ProgressBar } from '../../commons/ProgressBar';
 import { TipBox } from '../../commons/TipBox';
 import { Typography } from '../../commons/Typography';
@@ -109,6 +109,21 @@ export function ConnectTrackersPage() {
     }
   }, [provisioningStatus]);
 
+  const slimeStatus = useMemo(() => {
+    if (isError) {
+      return SlimeState.SAD;
+    }
+
+    switch (provisioningStatus) {
+      case WifiProvisioningStatus.DONE:
+        return SlimeState.HAPPY;
+      case WifiProvisioningStatus.NONE:
+        return SlimeState.CURIOUS;
+      default:
+        return SlimeState.JUMPY;
+    }
+  }, [provisioningStatus]);
+
   return (
     <div className="flex flex-col items-center relative">
       <SkipSetupButton
@@ -148,26 +163,35 @@ export function ConnectTrackersPage() {
 
           <div
             className={classNames(
-              'rounded-xl h-16 flex gap-2 p-3 lg:w-full mt-4',
+              'rounded-xl h-24 flex gap-2 p-3 lg:w-full mt-4 relative',
               state.alonePage ? 'bg-background-60' : 'bg-background-70',
               isError && 'border-2 border-status-critical'
             )}
           >
-            <div className="flex flex-col justify-center fill-background-10">
-              <LoaderIcon
-                youSpinMeRightRoundBabyRightRound={!isError}
-              ></LoaderIcon>
+            <div
+              className={classNames(
+                'flex flex-col justify-center fill-background-10 absolute',
+                'right-5 bottom-8'
+              )}
+            >
+              <LoaderIcon slimeState={slimeStatus}></LoaderIcon>
             </div>
-            <div className="flex flex-col grow">
+
+            <div className="flex flex-col grow self-center">
               <Typography bold>
                 {l10n.getString('onboarding-connect_tracker-usb')}
               </Typography>
-              <Typography color="secondary">
-                {l10n.getString(statusLabelMap[provisioningStatus])}
-              </Typography>
+              <div className="flex fill-background-10 gap-1">
+                {/* <SpinIcon
+                  youSpinMeRightRoundBabyRightRound={!isError}
+                ></SpinIcon> */}
+                <Typography color="secondary">
+                  {l10n.getString(statusLabelMap[provisioningStatus])}
+                </Typography>
+              </div>
               <ProgressBar
                 progress={statusProgressMap[provisioningStatus]}
-                height={6}
+                height={14}
                 animated={true}
                 colorClass={progressBarClass}
               ></ProgressBar>
