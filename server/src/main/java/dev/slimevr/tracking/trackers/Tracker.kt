@@ -153,7 +153,7 @@ class Tracker @JvmOverloads constructor(
 
 		if (needsReset && !(isComputed && trackerPosition == TrackerPosition.HEAD)) {
 			// Adjust to reset, mounting and drift compensation
-			rot = resetsHandler.getReferenceAdjustedRotationFrom(rot)
+			rot = resetsHandler.getReferenceAdjustedDriftRotationFrom(rot)
 		}
 
 		return rot

@@ -2,7 +2,10 @@ package dev.slimevr.tracking.trackers
 
 import dev.slimevr.config.DriftCompensationConfig
 import dev.slimevr.filtering.CircularArrayList
-import io.github.axisangles.ktmath.*
+import io.github.axisangles.ktmath.EulerAngles
+import io.github.axisangles.ktmath.EulerOrder
+import io.github.axisangles.ktmath.Quaternion
+import io.github.axisangles.ktmath.Vector3
 import kotlin.math.*
 
 private const val DRIFT_COOLDOWN_MS = 30000L
@@ -43,7 +46,7 @@ class TrackerResetsHandler(val tracker: Tracker) {
 	private var mountRotFix = Quaternion.IDENTITY
 	private var yawFix = Quaternion.IDENTITY
 
-	// Zero-reference adjustment quats for IMU debugging
+	// Zero-reference/identity adjustment quats for IMU debugging
 	private var gyroFixNoMounting = Quaternion.IDENTITY
 	private var attachmentFixNoMounting = Quaternion.IDENTITY
 	private var yawFixZeroReference = Quaternion.IDENTITY
@@ -76,7 +79,7 @@ class TrackerResetsHandler(val tracker: Tracker) {
 	 * Takes a rotation and adjusts it to resets, mounting,
 	 * and drift compensation, with the HMD as the reference.
 	 */
-	fun getReferenceAdjustedRotationFrom(rotation: Quaternion): Quaternion {
+	fun getReferenceAdjustedDriftRotationFrom(rotation: Quaternion): Quaternion {
 		var rot = adjustToReference(rotation)
 		rot = adjustToDrift(rot)
 		return rot
@@ -88,21 +91,6 @@ class TrackerResetsHandler(val tracker: Tracker) {
 	 */
 	fun getIdentityAdjustedRotationFrom(rotation: Quaternion): Quaternion {
 		return adjustToIdentity(rotation)
-	}
-
-	private fun getAdjustedRawRotation(): Quaternion {
-		return adjustToReference(tracker.getRawRotation())
-	}
-
-	private fun getMountedAdjustedRotation(): Quaternion {
-		return tracker.getRawRotation() * mountingOrientation
-	}
-
-	private fun getMountedAdjustedDriftRotation(): Quaternion {
-		var rot = tracker.getRawRotation()
-		rot *= mountingOrientation
-		rot = adjustToDrift(rot)
-		return rot
 	}
 
 	/**
@@ -150,68 +138,51 @@ class TrackerResetsHandler(val tracker: Tracker) {
 	 * 0). This allows the tracker to be strapped to body at any pitch and roll.
 	 */
 	fun resetFull(reference: Quaternion) {
-		val rot: Quaternion = adjustToReference(tracker.getRawRotation())
+		val rot = adjustToReference(tracker.getRawRotation())
 
 		if (tracker.needsMounting) {
-			fixGyroscope(getMountedAdjustedRotation())
+			fixGyroscope(tracker.getRawRotation() * mountingOrientation)
 		} else {
 			// Set mounting to the HMD's yaw so that the non-mounting-adjusted
 			// tracker goes forward.
 			mountRotFix = reference.project(Vector3.POS_Y).unit()
 		}
-		fixAttachment(getMountedAdjustedRotation())
+		fixAttachment(tracker.getRawRotation() * mountingOrientation)
 
 		makeIdentityAdjustmentQuatsFull()
 
-		fixYaw(getMountedAdjustedRotation(), reference)
+		fixYaw(tracker.getRawRotation() * mountingOrientation, reference)
 
 		calculateDrift(rot)
 	}
 
-	private fun fixGyroscope(sensorRotation: Quaternion) {
-		gyroFix = sensorRotation.project(Vector3.POS_Y).unit().inv()
-	}
-
-	private fun fixAttachment(sensorRotation: Quaternion) {
-		attachmentFix = (gyroFix * sensorRotation).inv()
-	}
-
 	/**
-	 * Reset the tracker so that it's current yaw rotation is aligned with the HMD's
+	 * Reset the tracker so that its current yaw rotation is aligned with the HMD's
 	 * Yaw. This allows the tracker to have yaw independent of the HMD. Tracker
 	 * should still report yaw as if it was mounted facing HMD, mounting
 	 * position should be corrected in the source.
 	 */
 	fun resetYaw(reference: Quaternion) {
-		val rot: Quaternion = adjustToReference(tracker.getRawRotation())
+		val rot = adjustToReference(tracker.getRawRotation())
 
-		fixYaw(getMountedAdjustedRotation(), reference)
+		fixYaw(tracker.getRawRotation() * mountingOrientation, reference)
 
 		makeIdentityAdjustmentQuatsYaw()
 
 		calculateDrift(rot)
 	}
 
-	private fun fixYaw(sensorRotation: Quaternion, reference: Quaternion) {
-		// Use only yaw HMD rotation
-		var rot = gyroFix * sensorRotation
-		rot *= attachmentFix
-		rot *= mountRotFix
-		rot = rot.project(Vector3.POS_Y).unit()
-		yawFix = rot.inv() * reference.project(Vector3.POS_Y).unit()
-	}
-
 	/**
 	 * Perform the math to align the tracker to go forward
-	 * and stores it in mountRotFix
+	 * and stores it in mountRotFix, and adjusts yawFix
 	 */
 	fun resetMounting(reverseYaw: Boolean, reference: Quaternion) {
 		// Get the current calibrated rotation
-		var buffer: Quaternion = getMountedAdjustedDriftRotation()
+		var buffer = adjustToDrift(tracker.getRawRotation() * mountingOrientation)
 		buffer = gyroFix * buffer
 		buffer *= attachmentFix
 
-		// Use the HMD as the reference
+		// Use the HMD's yaw as the reference
 		buffer *= reference.project(Vector3.POS_Y).unit().inv()
 
 		// Reset the vector for the rotation to point straight up
@@ -240,14 +211,41 @@ class TrackerResetsHandler(val tracker: Tracker) {
 
 	fun clearMounting() {
 		// If there is no mounting reset quaternion, skip clearing
-		if (mountRotFix == Quaternion.IDENTITY) {
-			return
-		}
+		if (mountRotFix == Quaternion.IDENTITY) return
 
 		// Undo the effect on yaw fix
 		yawFix *= mountRotFix.inv()
 		// Clear the mounting reset
 		mountRotFix = Quaternion.IDENTITY
+	}
+
+	private fun fixGyroscope(sensorRotation: Quaternion) {
+		gyroFix = sensorRotation.project(Vector3.POS_Y).unit().inv()
+	}
+
+	private fun fixAttachment(sensorRotation: Quaternion) {
+		attachmentFix = (gyroFix * sensorRotation).inv()
+	}
+
+	private fun fixYaw(sensorRotation: Quaternion, reference: Quaternion) {
+		var rot = gyroFix * sensorRotation
+		rot *= attachmentFix
+		rot *= mountRotFix
+		rot = rot.project(Vector3.POS_Y).unit()
+		yawFix = rot.inv() * reference.project(Vector3.POS_Y).unit()
+	}
+
+	private fun makeIdentityAdjustmentQuatsFull() {
+		val sensorRotation = tracker.getRawRotation()
+		gyroFixNoMounting = sensorRotation.project(Vector3.POS_Y).unit().inv()
+		attachmentFixNoMounting = (gyroFixNoMounting * sensorRotation).inv()
+	}
+
+	private fun makeIdentityAdjustmentQuatsYaw() {
+		var sensorRotation = tracker.getRawRotation()
+		sensorRotation = gyroFixNoMounting * sensorRotation
+		sensorRotation *= attachmentFixNoMounting
+		yawFixZeroReference = sensorRotation.project(Vector3.POS_Y).unit().inv()
 	}
 
 	/**
@@ -327,27 +325,18 @@ class TrackerResetsHandler(val tracker: Tracker) {
 		}
 	}
 
+	/**
+	 * Calculates and returns the averaged Quaternion
+	 * from the given Quaternions and weights.
+	 */
 	private fun fromAveragedQuaternions(
 		qn: CircularArrayList<Quaternion>,
 		tn: ArrayList<Float>,
 	): Quaternion {
-		var totalMatrix: Matrix3 = qn[0].toMatrix() * tn[0]
+		var totalMatrix = qn[0].toMatrix() * tn[0]
 		for (i in 1 until qn.size) {
 			totalMatrix += (qn[i].toMatrix() * tn[i])
 		}
 		return totalMatrix.toQuaternion()
-	}
-
-	private fun makeIdentityAdjustmentQuatsFull() {
-		val sensorRotation = tracker.getRawRotation()
-		gyroFixNoMounting = sensorRotation.project(Vector3.POS_Y).unit().inv()
-		attachmentFixNoMounting = (gyroFixNoMounting * sensorRotation).inv()
-	}
-
-	private fun makeIdentityAdjustmentQuatsYaw() {
-		var sensorRotation = tracker.getRawRotation()
-		sensorRotation = gyroFixNoMounting * sensorRotation
-		sensorRotation *= attachmentFixNoMounting
-		yawFixZeroReference = sensorRotation.project(Vector3.POS_Y).unit().inv()
 	}
 }
