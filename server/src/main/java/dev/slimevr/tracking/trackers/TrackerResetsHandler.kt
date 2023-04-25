@@ -122,8 +122,6 @@ class TrackerResetsHandler(val tracker: Tracker) {
 	/**
 	 * Converts raw or filtered rotation into zero-reference-adjusted by
 	 * applying quaternions produced after full reset and yaw reset only
-	 *
-	 * @param store Raw or filtered rotation to mutate.
 	 */
 	private fun adjustToIdentity(rotation: Quaternion): Quaternion {
 		var rot = gyroFixNoMounting * rotation
@@ -132,6 +130,10 @@ class TrackerResetsHandler(val tracker: Tracker) {
 		return rot
 	}
 
+	/**
+	 * Adjust the given rotation for drift compensation if enabled,
+	 * and returns it
+	 */
 	private fun adjustToDrift(rotation: Quaternion): Quaternion {
 		if (compensateDrift && allowDriftCompensation && totalDriftTime > 0) {
 			return rotation
@@ -178,8 +180,7 @@ class TrackerResetsHandler(val tracker: Tracker) {
 	 * Reset the tracker so that it's current yaw rotation is aligned with the HMD's
 	 * Yaw. This allows the tracker to have yaw independent of the HMD. Tracker
 	 * should still report yaw as if it was mounted facing HMD, mounting
-	 * position should be corrected in the source. Also aligns gyro magnetometer
-	 * if it's reliable.
+	 * position should be corrected in the source.
 	 */
 	fun resetYaw(reference: Quaternion) {
 		val rot: Quaternion = adjustToReference(tracker.getRawRotation())
@@ -200,6 +201,10 @@ class TrackerResetsHandler(val tracker: Tracker) {
 		yawFix = rot.inv() * reference.project(Vector3.POS_Y).unit()
 	}
 
+	/**
+	 * Perform the math to align the tracker to go forward
+	 * and stores it in mountRotFix
+	 */
 	fun resetMounting(reverseYaw: Boolean, reference: Quaternion) {
 		// Get the current calibrated rotation
 		var buffer: Quaternion = getMountedAdjustedDriftRotation()
@@ -247,7 +252,7 @@ class TrackerResetsHandler(val tracker: Tracker) {
 
 	/**
 	 * Calculates drift since last reset and store the data related to it in
-	 * driftQuat, timeAtLastReset and timeForLastReset
+	 * driftQuat and timeAtLastReset
 	 */
 	private fun calculateDrift(beforeQuat: Quaternion) {
 		if (compensateDrift && allowDriftCompensation) {
