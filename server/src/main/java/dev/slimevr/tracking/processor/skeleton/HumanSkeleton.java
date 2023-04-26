@@ -1457,7 +1457,7 @@ public class HumanSkeleton {
 	private boolean shouldResetMounting(TrackerPosition position) {
 		return position != null
 			// TODO: Feet can't currently be reset using this method, maybe
-			//		they'll need a separate step just for them?
+			// they'll need a separate step just for them?
 			&& position != TrackerPosition.LEFT_FOOT
 			&& position != TrackerPosition.RIGHT_FOOT;
 	}
