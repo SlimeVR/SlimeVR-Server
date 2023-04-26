@@ -33,7 +33,7 @@ export function ResetButton({
   };
 
   const { isCounting, startCountdown, timer } = useCountdown({
-    duration: type === ResetType.Yaw ? 1 : undefined,
+    duration: type === ResetType.Yaw ? 0.2 : undefined,
     onCountdownEnd: () => {
       reset();
       if (onReseted) onReseted();
@@ -79,13 +79,13 @@ export function ResetButton({
       >
         <div className="relative">
           <div className="opacity-0 h-0">{text}</div>
-          {!isCounting ? text : String(timer)}
+          {!isCounting || type === ResetType.Yaw ? text : String(timer)}
         </div>
       </Button>
     ),
     big: (
       <BigButton
-        text={!isCounting ? text : String(timer)}
+        text={!isCounting || type === ResetType.Yaw ? text : String(timer)}
         icon={getIcon()}
         onClick={() => {
           startCountdown();
