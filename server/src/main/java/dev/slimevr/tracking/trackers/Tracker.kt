@@ -75,7 +75,7 @@ class Tracker @JvmOverloads constructor(
 	 * Reads/loads from the given config
 	 */
 	fun readConfig(config: TrackerConfig) {
-		if (userEditable && !isInternal) {
+		if (userEditable) {
 			config.customName?.let {
 				customName = it
 			}
@@ -102,7 +102,7 @@ class Tracker @JvmOverloads constructor(
 	 * Writes/saves to the given config
 	 */
 	fun writeConfig(config: TrackerConfig) {
-		if (userEditable && !isInternal) {
+		if (userEditable) {
 			trackerPosition?.let { config.designation = it.designation }
 			customName?.let { config.customName = it }
 			if (needsMounting) {

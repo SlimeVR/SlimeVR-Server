@@ -146,17 +146,21 @@ public class VRConfig {
 	}
 
 	public void readTrackerConfig(Tracker tracker) {
-		TrackerConfig config = getTracker(tracker);
-		tracker.readConfig(config);
-		if (tracker.isImu())
-			tracker.getResetsHandler().readDriftCompensationConfig(driftCompensation);
-		if (tracker.getAllowFiltering())
-			tracker.getFilteringHandler().readFilteringConfig(filters, tracker.getRawRotation());
+		if(!tracker.isInternal()){
+			TrackerConfig config = getTracker(tracker);
+			tracker.readConfig(config);
+			if (tracker.isImu())
+				tracker.getResetsHandler().readDriftCompensationConfig(driftCompensation);
+			if (tracker.getAllowFiltering())
+				tracker.getFilteringHandler().readFilteringConfig(filters, tracker.getRawRotation());
+		}
 	}
 
 	public void writeTrackerConfig(Tracker tracker) {
-		TrackerConfig tc = getTracker(tracker);
-		tracker.writeConfig(tc);
+		if(!tracker.isInternal()){
+			TrackerConfig tc = getTracker(tracker);
+			tracker.writeConfig(tc);
+		}
 	}
 
 	public BridgeConfig getBridge(String bridgeKey) {
