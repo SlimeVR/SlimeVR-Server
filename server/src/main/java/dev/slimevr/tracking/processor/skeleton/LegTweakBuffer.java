@@ -729,8 +729,8 @@ public class LegTweakBuffer {
 
 		// set the pressure to the force on each foot times the force to
 		// pressure scalar
-		leftFootPressure = leftFootForce.cross(FORCE_VECTOR_TO_PRESSURE).len();
-		rightFootPressure = rightFootForce.cross(FORCE_VECTOR_TO_PRESSURE).len();
+		leftFootPressure = leftFootForce.hadamard(FORCE_VECTOR_TO_PRESSURE).len();
+		rightFootPressure = rightFootForce.hadamard(FORCE_VECTOR_TO_PRESSURE).len();
 
 		// distance from the ground is a factor in the pressure
 		// using the inverse of the distance to the ground scale the
