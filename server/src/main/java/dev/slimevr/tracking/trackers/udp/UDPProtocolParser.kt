@@ -6,7 +6,7 @@ import java.nio.charset.StandardCharsets
 
 class UDPProtocolParser {
 	@Throws(IOException::class)
-	fun parse(buf: ByteBuffer, connection: UDPDevice?): UDPPacket? {
+	fun parse(buf: ByteBuffer, connection: UDPDevice?): Array<UDPPacket?> {
 		val packetId = buf.int
 		val packetNumber = buf.long
 		if (connection != null) {
@@ -18,6 +18,17 @@ class UDPProtocolParser {
 			}
 			connection.lastPacket = System.currentTimeMillis()
 		}
+		if (packetId == PACKET_BUNDLE) {
+			bundleBuffer.clear()
+			while (buf.hasRemaining()) {
+				val bundlePacketId = buf.int
+				val newPacket = getNewPacket(bundlePacketId) ?: break
+				newPacket.readData(buf)
+				bundleBuffer.add(newPacket)
+			}
+			return bundleBuffer.toTypedArray()
+		}
+
 		val newPacket = getNewPacket(packetId)
 		if (newPacket != null) {
 			newPacket.readData(buf)
@@ -27,7 +38,7 @@ class UDPProtocolParser {
 // 					packetId + " from " + connection
 // 			)
 		}
-		return newPacket
+		return arrayOf(newPacket)
 	}
 
 	@Throws(IOException::class)
@@ -71,6 +82,7 @@ class UDPProtocolParser {
 			PACKET_SIGNAL_STRENGTH -> UDPPacket19SignalStrength()
 			PACKET_TEMPERATURE -> UDPPacket20Temperature()
 			PACKET_USER_ACTION -> UDPPacket21UserAction()
+			PACKET_FEATURE_FLAGS -> UDPPacket22FeatureFlags()
 			PACKET_PROTOCOL_CHANGE -> UDPPacket200ProtocolChange()
 			else -> null
 		}
@@ -103,8 +115,11 @@ class UDPProtocolParser {
 		const val PACKET_SIGNAL_STRENGTH = 19
 		const val PACKET_TEMPERATURE = 20
 		const val PACKET_USER_ACTION = 21
+		const val PACKET_FEATURE_FLAGS = 22
+		const val PACKET_BUNDLE = 100
 		const val PACKET_PROTOCOL_CHANGE = 200
 		private val HANDSHAKE_BUFFER = ByteArray(64)
+		private val bundleBuffer = ArrayList<UDPPacket>(128)
 
 		init {
 			HANDSHAKE_BUFFER[0] = 3
