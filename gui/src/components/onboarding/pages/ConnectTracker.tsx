@@ -8,6 +8,7 @@ import {
   StopWifiProvisioningRequestT,
   WifiProvisioningStatus,
   WifiProvisioningStatusResponseT,
+  ImuType,
 } from 'solarxr-protocol';
 import { useLayout } from '../../../hooks/layout';
 import { useOnboarding } from '../../../hooks/onboarding';
@@ -69,6 +70,14 @@ export function ConnectTrackersPage() {
   applyProgress(0.4);
 
   const connectedTrackers = useConnectedTrackers();
+
+  const bnoExists = useMemo(
+    () =>
+      connectedTrackers.some(
+        (tracker) => tracker.tracker.info?.imuType === ImuType.BNO085
+      ),
+    [connectedTrackers]
+  );
 
   useEffect(() => {
     if (!state.wifi) {
@@ -209,7 +218,13 @@ export function ConnectTrackersPage() {
             </Button>
             <Button
               variant="primary"
-              to={state.alonePage ? '/' : '/onboarding/trackers-assign'}
+              to={
+                state.alonePage
+                  ? '/'
+                  : bnoExists
+                  ? '/onboarding/calibration-tutorial'
+                  : 'onboarding/tracker-assignment'
+              }
               className="ml-auto"
             >
               {l10n.getString('onboarding-connect_tracker-next')}

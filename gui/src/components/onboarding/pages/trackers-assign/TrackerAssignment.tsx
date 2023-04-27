@@ -5,6 +5,7 @@ import { useForm } from 'react-hook-form';
 import {
   AssignTrackerRequestT,
   BodyPart,
+  ImuType,
   QuatT,
   RpcMessage,
   TrackerIdT,
@@ -31,7 +32,7 @@ export type BodyPartError = {
 
 export function TrackersAssignPage() {
   const { l10n } = useLocalization();
-  const { useAssignedTrackers, trackers } = useTrackers();
+  const { useAssignedTrackers, trackers, useConnectedTrackers } = useTrackers();
   const { applyProgress, skipSetup, state } = useOnboarding();
   const { sendRPCPacket } = useWebsocketAPI();
 
@@ -42,6 +43,15 @@ export function TrackersAssignPage() {
   const [selectedRole, setSelectRole] = useState<BodyPart>(BodyPart.NONE);
   const assignedTrackers = useAssignedTrackers();
   const [skipWarning, setSkipWarning] = useState(false);
+  const connectedTrackers = useConnectedTrackers();
+
+  const bnoExists = useMemo(
+    () =>
+      connectedTrackers.some(
+        (tracker) => tracker.tracker.info?.imuType === ImuType.BNO085
+      ),
+    [connectedTrackers]
+  );
 
   const trackerPartGrouped = useMemo(
     () =>
@@ -203,7 +213,14 @@ export function TrackersAssignPage() {
               <div className="flex flex-row mt-auto">
                 {!state.alonePage && (
                   <>
-                    <Button variant="secondary" to="/onboarding/wifi-creds">
+                    <Button
+                      variant="secondary"
+                      to={
+                        bnoExists
+                          ? '/onboarding/calibration-tutorial'
+                          : '/onboarding/wifi-creds'
+                      }
+                    >
                       {l10n.getString('onboarding-previous_step')}
                     </Button>
                     <Button
