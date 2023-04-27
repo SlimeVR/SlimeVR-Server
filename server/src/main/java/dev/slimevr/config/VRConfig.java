@@ -146,7 +146,7 @@ public class VRConfig {
 	}
 
 	public void readTrackerConfig(Tracker tracker) {
-		if (!tracker.isInternal()) {
+		if (tracker.getUserEditable()) {
 			TrackerConfig config = getTracker(tracker);
 			tracker.readConfig(config);
 			if (tracker.isImu())
@@ -159,7 +159,7 @@ public class VRConfig {
 	}
 
 	public void writeTrackerConfig(Tracker tracker) {
-		if (!tracker.isInternal()) {
+		if (tracker.getUserEditable()) {
 			TrackerConfig tc = getTracker(tracker);
 			tracker.writeConfig(tc);
 		}

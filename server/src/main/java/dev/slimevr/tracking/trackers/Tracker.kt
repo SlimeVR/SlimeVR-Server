@@ -75,25 +75,23 @@ class Tracker @JvmOverloads constructor(
 	 * Reads/loads from the given config
 	 */
 	fun readConfig(config: TrackerConfig) {
-		if (userEditable) {
-			config.customName?.let {
-				customName = it
-			}
-			config.designation?.let { designation ->
-				getByDesignation(designation)?.let { trackerPosition = it }
-			}
-			if (needsMounting) {
-				config.mountingOrientation?.let { resetsHandler.mountingOrientation = it }
-			}
-			if (isImu && config.allowDriftCompensation == null) {
-				// If value didn't exist, default to true and save
-				resetsHandler.allowDriftCompensation = true
-				vrServer.configManager.vrConfig.getTracker(this).allowDriftCompensation = true
-				vrServer.configManager.saveConfig()
-			} else {
-				config.allowDriftCompensation?.let {
-					resetsHandler.allowDriftCompensation = it
-				}
+		config.customName?.let {
+			customName = it
+		}
+		config.designation?.let { designation ->
+			getByDesignation(designation)?.let { trackerPosition = it }
+		}
+		if (needsMounting) {
+			config.mountingOrientation?.let { resetsHandler.mountingOrientation = it }
+		}
+		if (isImu && config.allowDriftCompensation == null) {
+			// If value didn't exist, default to true and save
+			resetsHandler.allowDriftCompensation = true
+			vrServer.configManager.vrConfig.getTracker(this).allowDriftCompensation = true
+			vrServer.configManager.saveConfig()
+		} else {
+			config.allowDriftCompensation?.let {
+				resetsHandler.allowDriftCompensation = it
 			}
 		}
 	}
@@ -102,15 +100,13 @@ class Tracker @JvmOverloads constructor(
 	 * Writes/saves to the given config
 	 */
 	fun writeConfig(config: TrackerConfig) {
-		if (userEditable) {
-			trackerPosition?.let { config.designation = it.designation }
-			customName?.let { config.customName = it }
-			if (needsMounting) {
-				config.mountingOrientation = resetsHandler.mountingOrientation
-			}
-			if (isImu) {
-				config.allowDriftCompensation = resetsHandler.allowDriftCompensation
-			}
+		trackerPosition?.let { config.designation = it.designation }
+		customName?.let { config.customName = it }
+		if (needsMounting) {
+			config.mountingOrientation = resetsHandler.mountingOrientation
+		}
+		if (isImu) {
+			config.allowDriftCompensation = resetsHandler.allowDriftCompensation
 		}
 	}
 
