@@ -63,6 +63,21 @@ sealed class UDPPacket(val packetId: Int) {
 	}
 }
 
+sealed interface SensorSpecificPacket {
+	val sensorId: Int
+	companion object {
+		/**
+		 * Sensor with id 255 is "global" representing a whole device
+		 *
+		 * @param sensorId
+		 * @return
+		 */
+		fun isGlobal(sensorId: Int): Boolean {
+			return sensorId == 255
+		}
+	}
+}
+
 sealed interface RotationPacket : SensorSpecificPacket {
 	var rotation: Quaternion
 }
@@ -82,18 +97,24 @@ data class UDPPacket1Rotation(override var rotation: Quaternion = Quaternion.IDE
 }
 
 data class UDPPacket3Handshake(
-	var boardType: Int = 0,
-	var imuType: Int = 0,
-	var mcuType: Int = 0,
+	var boardType: BoardType = BoardType.UNKNOWN,
+	var imuType: IMUType = IMUType.UNKNOWN,
+	var mcuType: MCUType = MCUType.UNKNOWN,
 	var firmwareBuild: Int = 0,
 	var firmware: String? = null,
 	var macString: String? = null,
 ) : UDPPacket(3) {
 	override fun readData(buf: ByteBuffer) {
 		if (buf.remaining() == 0) return
-		if (buf.remaining() > 3) boardType = buf.int
-		if (buf.remaining() > 3) imuType = buf.int
-		if (buf.remaining() > 3) mcuType = buf.int // MCU TYPE
+		if (buf.remaining() > 3) {
+			boardType = BoardType.getById(buf.int.toUInt()) ?: BoardType.UNKNOWN
+		}
+		if (buf.remaining() > 3) {
+			imuType = IMUType.getById(buf.int.toUInt()) ?: IMUType.UNKNOWN
+		}
+		if (buf.remaining() > 3) {
+			mcuType = MCUType.getById(buf.int.toUInt()) ?: MCUType.UNKNOWN
+		} // MCU TYPE
 		if (buf.remaining() > 11) {
 			buf.int; buf.int; buf.int // IMU info
 		}
@@ -201,13 +222,16 @@ data class UDPPacket14Error(var errorNumber: Int = 0) :
 
 data class UDPPacket15SensorInfo(
 	var sensorStatus: Int = 0,
-	var sensorType: Int = 0,
+	var sensorType: IMUType = IMUType.UNKNOWN,
 ) : UDPPacket(15), SensorSpecificPacket {
 	override var sensorId = 0
 	override fun readData(buf: ByteBuffer) {
 		sensorId = buf.get().toInt() and 0xFF
 		sensorStatus = buf.get().toInt() and 0xFF
-		if (buf.remaining() > 0) sensorType = buf.get().toInt() and 0xFF
+		if (buf.remaining() > 0) {
+			sensorType =
+				IMUType.getById(buf.get().toUInt() and 0xFFu) ?: IMUType.UNKNOWN
+		}
 	}
 
 	companion object {

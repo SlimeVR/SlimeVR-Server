@@ -59,7 +59,7 @@ class TrackersUDPServer(private val port: Int, name: String, private val tracker
 		val addr = handshakePacket.address
 
 		val connection: UDPDevice = synchronized(connections) { connectionsByAddress[addr] } ?: run {
-			val connection = UDPDevice(handshakePacket.socketAddress, addr)
+			val connection = UDPDevice(handshakePacket.socketAddress, addr, handshake.boardType)
 			vrServer.deviceManager.addDevice(connection)
 			connection.firmwareBuild = handshake.firmwareBuild
 			connection.protocol = if (handshake.firmware?.isEmpty() == true) {
@@ -131,7 +131,7 @@ class TrackersUDPServer(private val port: Int, name: String, private val tracker
 		socket.send(DatagramPacket(rcvBuffer, bb.position(), connection.address))
 	}
 
-	private fun setUpSensor(connection: UDPDevice, trackerId: Int, sensorType: Int, sensorStatus: Int) {
+	private fun setUpSensor(connection: UDPDevice, trackerId: Int, sensorType: IMUType, sensorStatus: Int) {
 		LogManager.info("[TrackerServer] Sensor $trackerId for ${connection.name} status: $sensorStatus")
 		var imuTracker = connection.getTracker(trackerId)
 		if (imuTracker == null) {
@@ -144,7 +144,7 @@ class TrackersUDPServer(private val port: Int, name: String, private val tracker
 				hasRotation = true,
 				hasAcceleration = true,
 				userEditable = true,
-				isImu = true,
+				imuType = sensorType,
 				allowFiltering = true,
 				needsReset = true,
 				needsMounting = true

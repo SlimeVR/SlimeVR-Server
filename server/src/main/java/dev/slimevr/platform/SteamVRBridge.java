@@ -117,7 +117,7 @@ public abstract class SteamVRBridge extends ProtobufBridge implements Runnable {
 			true,
 			false,
 			true,
-			false,
+			null,
 			false,
 			false,
 			true
