@@ -218,7 +218,7 @@ public class TrackersUDPServer extends Thread {
 		socket.send(new DatagramPacket(rcvBuffer, bb.position(), connection.address));
 	}
 
-	private void setUpSensor(UDPDevice connection, int trackerId, int yd, int sensorStatus)
+	private void setUpSensor(UDPDevice connection, int trackerId, int sensorType, int sensorStatus)
 		throws IOException {
 		LogManager
 			.info(
