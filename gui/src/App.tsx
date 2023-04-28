@@ -137,6 +137,7 @@ export default function App() {
     };
   }, []);
 
+  // This doesn't seem to resize it live, but if you close it, it gets restored to min size
   useEffect(() => {
     if (!document.body.classList.contains('windows_nt')) return;
     const interval = setInterval(() => {
@@ -148,7 +149,6 @@ export default function App() {
             logicalSize.height < MIN_SIZE.height ||
             logicalSize.width < MIN_SIZE.width
           ) {
-            console.log(`setting new size ${logicalSize.width}x${logicalSize.height} to MIN_SIZE`)
             appWindow.setSize(new LogicalSize(MIN_SIZE.width, MIN_SIZE.height));
           }
         })
