@@ -144,6 +144,7 @@ export default function App() {
         .outerSize()
         .then(async (size) => {
           const logicalSize = size.toLogical(await appWindow.scaleFactor());
+          console.log(logicalSize)
           if (
             logicalSize.height < MIN_SIZE.height ||
             logicalSize.width < MIN_SIZE.width
