@@ -223,7 +223,7 @@ export function ConnectTrackersPage() {
                   ? '/'
                   : bnoExists
                   ? '/onboarding/calibration-tutorial'
-                  : 'onboarding/tracker-assignment'
+                  : '/onboarding/trackers-assign'
               }
               className="ml-auto"
             >

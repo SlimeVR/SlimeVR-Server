@@ -4,18 +4,29 @@ import { useWifiForm } from '../../../hooks/wifi-form';
 import { Button } from '../../commons/Button';
 import { Input } from '../../commons/Input';
 import { Typography } from '../../commons/Typography';
-import { useState } from 'react';
+import { useState, useMemo } from 'react';
 import { SkipSetupWarningModal } from '../SkipSetupWarningModal';
 import { SkipSetupButton } from '../SkipSetupButton';
 import classNames from 'classnames';
+import { useTrackers } from '../../../hooks/tracker';
+import { ImuType } from 'solarxr-protocol';
 
 export function WifiCredsPage() {
   const { l10n } = useLocalization();
   const { applyProgress, skipSetup, state } = useOnboarding();
   const { control, handleSubmit, submitWifiCreds, formState } = useWifiForm();
+  const { useConnectedTrackers } = useTrackers();
   const [skipWarning, setSkipWarning] = useState(false);
+  const connectedTrackers = useConnectedTrackers();
 
   applyProgress(0.2);
+
+  const bnoExists = useMemo(() => {
+    console.log(connectedTrackers.map((tracker) => tracker.tracker.info?.imuType))
+    return connectedTrackers.some(
+      (tracker) => tracker.tracker.info?.imuType === ImuType.BNO085
+    );
+  }, [connectedTrackers]);
 
   return (
     <form
@@ -92,7 +103,11 @@ export function WifiCredsPage() {
               <Button
                 variant="secondary"
                 className={state.alonePage ? 'opacity-0' : ''}
-                to="/onboarding/trackers-assign"
+                to={
+                  bnoExists
+                    ? '/onboarding/calibration-tutorial'
+                    : '/onboarding/trackers-assign'
+                }
               >
                 {l10n.getString('onboarding-wifi_creds-skip')}
               </Button>
