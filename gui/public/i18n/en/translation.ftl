@@ -230,6 +230,7 @@ settings-sidebar-fk_settings = Tracking settings
 settings-sidebar-gesture_control = Gesture control
 settings-sidebar-interface = Interface
 settings-sidebar-osc_router = OSC router
+settings-sidebar-osc_trackers = VRChat OSC Trackers
 settings-sidebar-utils = Utilities
 settings-sidebar-serial = Serial console
 
@@ -392,7 +393,7 @@ settings-osc-vrchat = VRChat OSC Trackers
 # This cares about multilines
 settings-osc-vrchat-description =
     Change VRChat-specific settings to receive HMD data and send
-    trackers data for FBT (works on Quest standalone).
+    tracker data for FBT without SteamVR (ex. Quest standalone).
 settings-osc-vrchat-enable = Enable
 settings-osc-vrchat-enable-description = Toggle the sending and receiving of data.
 settings-osc-vrchat-enable-label = Enable
@@ -410,7 +411,7 @@ settings-osc-vrchat-network-address-placeholder = VRChat ip address
 settings-osc-vrchat-network-trackers = Trackers
 settings-osc-vrchat-network-trackers-description = Toggle the sending of specific trackers via OSC.
 settings-osc-vrchat-network-trackers-chest = Chest
-settings-osc-vrchat-network-trackers-waist = Waist
+settings-osc-vrchat-network-trackers-hip = Hip
 settings-osc-vrchat-network-trackers-knees = Knees
 settings-osc-vrchat-network-trackers-feet = Feet
 settings-osc-vrchat-network-trackers-elbows = Elbows
