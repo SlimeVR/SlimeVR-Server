@@ -42,6 +42,7 @@ import { os } from '@tauri-apps/api';
 import { VMCSettings } from './components/settings/pages/VMCSettings';
 import { MountingChoose } from './components/onboarding/pages/mounting/MountingChoose';
 import { ProportionsChoose } from './components/onboarding/pages/body-proportions/ProportionsChoose';
+import { LogicalSize, appWindow } from '@tauri-apps/api/window';
 
 function Layout() {
   const { loading } = useConfig();
@@ -118,24 +119,43 @@ function Layout() {
   );
 }
 
+const MIN_SIZE = { width: 880, height: 740 };
+
 export default function App() {
   const websocketAPI = useProvideWebsocketApi();
   const { l10n } = useLocalization();
 
   useEffect(() => {
     os.type()
-      .then((type) => {
-        document.body.classList.add(type.toLowerCase());
-      })
+      .then((type) => document.body.classList.add(type.toLowerCase()))
       .catch(console.error);
 
     return () => {
       os.type()
-        .then((type) => {
-          document.body.classList.remove(type.toLowerCase());
-        })
+        .then((type) => document.body.classList.remove(type.toLowerCase()))
         .catch(console.error);
     };
+  }, []);
+
+  useEffect(() => {
+    const interval = setInterval(() => {
+      appWindow
+        .outerSize()
+        .then(async (size) => {
+          const logicalSize = size.toLogical(await appWindow.scaleFactor());
+          if (
+            logicalSize.height < MIN_SIZE.height ||
+            logicalSize.width < MIN_SIZE.width
+          ) {
+            appWindow.setSize(new LogicalSize(MIN_SIZE.width, MIN_SIZE.height));
+          }
+        })
+        .catch((r) => {
+          console.error(r);
+          clearInterval(interval);
+        });
+    }, 5000);
+    return () => clearInterval(interval);
   }, []);
 
   useEffect(() => {
