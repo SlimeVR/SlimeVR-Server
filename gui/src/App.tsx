@@ -148,6 +148,7 @@ export default function App() {
             logicalSize.height < MIN_SIZE.height ||
             logicalSize.width < MIN_SIZE.width
           ) {
+            console.log(`setting new size ${logicalSize.width}x${logicalSize.height} to MIN_SIZE`)
             appWindow.setSize(new LogicalSize(MIN_SIZE.width, MIN_SIZE.height));
           }
         })
