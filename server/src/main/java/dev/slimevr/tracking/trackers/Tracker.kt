@@ -2,6 +2,7 @@ package dev.slimevr.tracking.trackers
 
 import dev.slimevr.config.TrackerConfig
 import dev.slimevr.tracking.trackers.TrackerPosition.Companion.getByDesignation
+import dev.slimevr.tracking.trackers.udp.IMUType
 import dev.slimevr.vrServer
 import io.eiren.util.BufferedTimer
 import io.github.axisangles.ktmath.Quaternion
@@ -25,7 +26,7 @@ class Tracker @JvmOverloads constructor(
 	val userEditable: Boolean = false, // User can change TrackerPosition, mounting...
 	val isInternal: Boolean = false, // Is used within SlimeVR (shareable trackers)
 	val isComputed: Boolean = false, // Has solved position + rotation (Vive trackers)
-	val isImu: Boolean = false,
+	val imuType: IMUType? = null,
 	val usesTimeout: Boolean = false, // Automatically set the status to DISCONNECTED
 	val allowFiltering: Boolean = false,
 	val needsReset: Boolean = false,
@@ -84,7 +85,7 @@ class Tracker @JvmOverloads constructor(
 		if (needsMounting) {
 			config.mountingOrientation?.let { resetsHandler.mountingOrientation = it }
 		}
-		if (isImu && config.allowDriftCompensation == null) {
+		if (this.isImu() && config.allowDriftCompensation == null) {
 			// If value didn't exist, default to true and save
 			resetsHandler.allowDriftCompensation = true
 			vrServer.configManager.vrConfig.getTracker(this).allowDriftCompensation = true
@@ -105,7 +106,7 @@ class Tracker @JvmOverloads constructor(
 		if (needsMounting) {
 			config.mountingOrientation = resetsHandler.mountingOrientation
 		}
-		if (isImu) {
+		if (this.isImu()) {
 			config.allowDriftCompensation = resetsHandler.allowDriftCompensation
 		}
 	}
@@ -190,6 +191,10 @@ class Tracker @JvmOverloads constructor(
 	 */
 	fun setRotation(rotation: Quaternion) {
 		this.rotation = rotation
+	}
+
+	fun isImu(): Boolean {
+		return imuType != null
 	}
 
 	/**

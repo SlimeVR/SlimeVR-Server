@@ -289,7 +289,7 @@ public class VMCHandler implements OSCHandler {
 				true,
 				false,
 				position != null,
-				false,
+				null,
 				true,
 				false,
 				position != null
