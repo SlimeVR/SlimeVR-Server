@@ -138,6 +138,7 @@ export default function App() {
   }, []);
 
   useEffect(() => {
+    if(!document.body.classList.contains('windows_nt')) return;
     const interval = setInterval(() => {
       appWindow
         .outerSize()
