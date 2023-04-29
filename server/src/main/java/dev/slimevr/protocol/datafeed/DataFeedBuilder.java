@@ -58,8 +58,8 @@ public class DataFeedBuilder {
 		// hardwareRevisionOffset);
 		// TODO need support: HardwareInfo.addDisplayName(fbb, de);
 
-		HardwareInfo.addMcuId(fbb, device.getMcuType().getId());
-		HardwareInfo.addBoardType(fbb, device.getBoardType().getId());
+		HardwareInfo.addMcuId(fbb, device.getMcuType().getSolarType());
+		HardwareInfo.addBoardType(fbb, device.getBoardType().getSolarType());
 		return HardwareInfo.endHardwareInfo(fbb);
 	}
 
@@ -106,7 +106,7 @@ public class DataFeedBuilder {
 		TrackerInfo.addDisplayName(fbb, displayNameOffset);
 		TrackerInfo.addCustomName(fbb, customNameOffset);
 		if (tracker.getImuType() != null) {
-			TrackerInfo.addImuType(fbb, tracker.getImuType().getId());
+			TrackerInfo.addImuType(fbb, tracker.getImuType().getSolarType());
 		}
 
 		// TODO need support: TrackerInfo.addPollRate(fbb, tracker.);

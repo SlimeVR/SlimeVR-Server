@@ -1,5 +1,7 @@
 package dev.slimevr.tracking.trackers.udp
 
+import solarxr_protocol.datatypes.hardware_info.ImuType
+
 enum class IMUType(val id: UInt) {
 	UNKNOWN(0u),
 	MPU9250(1u),
@@ -12,6 +14,8 @@ enum class IMUType(val id: UInt) {
 	BMI160(8u),
 	ICM20948(9u),
 	;
+
+	fun getSolarType(): Int = this.id.toInt()
 
 	companion object {
 		private val byId = IMUType.values().associateBy { it.id }
@@ -37,6 +41,8 @@ enum class BoardType(val id: UInt) {
 	ES32C3DEVKITM1(12u),
 	;
 
+	fun getSolarType(): Int = this.id.toInt()
+
 	companion object {
 		private val byId = BoardType.values().associateBy { it.id }
 
@@ -50,6 +56,8 @@ enum class MCUType(val id: UInt) {
 	ESP8266(1u),
 	ESP32(2u),
 	;
+
+	fun getSolarType(): Int = this.id.toInt()
 
 	companion object {
 		private val byId = MCUType.values().associateBy { it.id }
