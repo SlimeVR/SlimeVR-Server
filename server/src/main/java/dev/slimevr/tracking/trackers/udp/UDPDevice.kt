@@ -10,6 +10,7 @@ class UDPDevice(
 	var address: SocketAddress,
 	override var ipAddress: InetAddress,
 	override val boardType: BoardType = BoardType.UNKNOWN,
+	override val mcuType: MCUType = MCUType.UNKNOWN,
 ) : Device() {
 
 	override val id: Int = nextLocalDeviceId.incrementAndGet()

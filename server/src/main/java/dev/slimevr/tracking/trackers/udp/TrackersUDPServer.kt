@@ -59,7 +59,12 @@ class TrackersUDPServer(private val port: Int, name: String, private val tracker
 		val addr = handshakePacket.address
 
 		val connection: UDPDevice = synchronized(connections) { connectionsByAddress[addr] } ?: run {
-			val connection = UDPDevice(handshakePacket.socketAddress, addr, handshake.boardType)
+			val connection = UDPDevice(
+				handshakePacket.socketAddress,
+				addr,
+				handshake.boardType,
+				handshake.mcuType
+			)
 			vrServer.deviceManager.addDevice(connection)
 			connection.firmwareBuild = handshake.firmwareBuild
 			connection.protocol = if (handshake.firmware?.isEmpty() == true) {

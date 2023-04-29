@@ -58,7 +58,8 @@ public class DataFeedBuilder {
 		// hardwareRevisionOffset);
 		// TODO need support: HardwareInfo.addDisplayName(fbb, de);
 
-		// TODO need support: HardwareInfo.addMcuId(device);
+		HardwareInfo.addMcuId(fbb, device.getMcuType().getId());
+		HardwareInfo.addBoardType(fbb, device.getBoardType().getId());
 		return HardwareInfo.endHardwareInfo(fbb);
 	}
 
@@ -104,8 +105,10 @@ public class DataFeedBuilder {
 		TrackerInfo.addIsComputed(fbb, tracker.isComputed());
 		TrackerInfo.addDisplayName(fbb, displayNameOffset);
 		TrackerInfo.addCustomName(fbb, customNameOffset);
+		if (tracker.getImuType() != null) {
+			TrackerInfo.addImuType(fbb, tracker.getImuType().getId());
+		}
 
-		// TODO need support: TrackerInfo.addImuType(fbb, tracker.im);
 		// TODO need support: TrackerInfo.addPollRate(fbb, tracker.);
 
 		if (tracker.isImu()) {
