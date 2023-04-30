@@ -15,21 +15,28 @@ export function LoaderIcon({
       <img
         hidden={slimeState !== SlimeState.JUMPY}
         src="/images/jumping-slime.gif"
-        alt="Slime Jumping"
+        alt="Slime jumping"
         width="85"
         className="crisp-edges"
       ></img>
       <img
         hidden={slimeState !== SlimeState.HAPPY}
         src="/images/happy-slime.gif"
-        alt="Slime Happy"
+        alt="Happy slime"
         width="85"
         className="crisp-edges"
       ></img>
       <img
         hidden={slimeState !== SlimeState.SAD}
         src="/images/sad-slime.gif"
-        alt="Slime Happy"
+        alt="Sad slime"
+        width="85"
+        className="crisp-edges"
+      ></img>
+      <img
+        hidden={slimeState !== SlimeState.CURIOUS}
+        src="/images/curious-slime.gif"
+        alt="Slime looking for something"
         width="85"
         className="crisp-edges"
       ></img>
