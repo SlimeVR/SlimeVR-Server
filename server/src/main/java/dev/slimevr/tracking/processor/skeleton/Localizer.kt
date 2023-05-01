@@ -139,8 +139,6 @@ class Localizer(humanSkeleton: HumanSkeleton) {
 			)
 		}
 
-		println(worldReference)
-
 		// update the skeletons root position
 		updateSkeletonPos(finalTravel)
 	}
@@ -165,8 +163,6 @@ class Localizer(humanSkeleton: HumanSkeleton) {
 	}
 
 	private fun getPlantedFoot(): MovmentStates {
-		if (bufPrev == null) return MovmentStates.BOTH_LOCKED
-
 		// return the foot planted if a certain state is active
 		if (bufCur.leftLegState == LegTweakBuffer.LOCKED &&
 			bufCur.rightLegState == LegTweakBuffer.LOCKED
@@ -214,8 +210,6 @@ class Localizer(humanSkeleton: HumanSkeleton) {
 	// get the foot or feet that are planted
 	// also sets the planted foot, foot init, and target pos variables
 	private fun getPlantedFootTravel(): Vector3 {
-		if (bufPrev == null) return Vector3.NULL
-
 		// get the foot that is planted
 		var foot: MovmentStates = getPlantedFoot()
 
