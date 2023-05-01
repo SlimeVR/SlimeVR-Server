@@ -592,7 +592,8 @@ public class HumanSkeleton {
 				headRot = neckTracker.getRotation();
 			headNode.getLocalTransform().setRotation(headRot);
 		} else {
-			hmdNode.getLocalTransform().setTranslation(Vector3.Companion.getNULL());
+			if  (!localizer.getEnabled())
+				hmdNode.getLocalTransform().setTranslation(Vector3.Companion.getNULL());
 
 			if (neckTracker != null) {
 				headRot = neckTracker.getRotation();
