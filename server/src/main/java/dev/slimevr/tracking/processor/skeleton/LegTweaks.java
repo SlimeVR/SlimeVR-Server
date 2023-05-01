@@ -30,7 +30,7 @@ public class LegTweaks {
 
 	// hyperparameters (clip correction)
 	static float DYNAMIC_DISPLACEMENT_CUTOFF = 1.0f;
-	private static final float FLOOR_CALIBRATION_OFFSET = 0.015f;
+	static final float FLOOR_CALIBRATION_OFFSET = 0.015f;
 
 	// hyperparameters (skating correction)
 	private static final float MIN_ACCEPTABLE_ERROR = 0.01f;
@@ -241,8 +241,19 @@ public class LegTweaks {
 		return this.footPlantEnabled;
 	}
 
+	public void setLocalizerMode(boolean val) {
+		this.initialized = false;
+
+		if (val)
+			setFloorLevel(0.0f);
+	}
+
 	public void resetBuffer() {
 		bufferInvalid = true;
+	}
+
+	public LegTweakBuffer getBuffer() {
+		return this.bufferHead;
 	}
 
 	public void setConfig(LegTweaksConfig config) {
