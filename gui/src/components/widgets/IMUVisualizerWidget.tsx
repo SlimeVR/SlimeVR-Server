@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useEffect, useMemo, useState } from 'react';
 import { TrackerDataT } from 'solarxr-protocol';
 import { useTracker } from '../../hooks/tracker';
 import { Typography } from '../commons/Typography';
@@ -15,8 +15,8 @@ const groundColor = '#4444aa';
 
 const scale = 6.5;
 
-export function TrackerModel() {
-  const gltf = useLoader(GLTFLoader, '/models/tracker.gltf');
+export function TrackerModel({ model }: { model: string }) {
+  const gltf = useLoader(GLTFLoader, model);
   return (
     <group scale={scale} rotation={[Math.PI / 2, 0, 0]}>
       <primitive object={gltf.scene} />
@@ -24,7 +24,13 @@ export function TrackerModel() {
   );
 }
 
-function SceneRenderer({ x, y, z, w }: QuatObject) {
+function SceneRenderer({
+  quat: { x, y, z, w },
+  model,
+}: {
+  quat: QuatObject;
+  model: string;
+}) {
   return (
     <Canvas
       className="container"
@@ -36,7 +42,7 @@ function SceneRenderer({ x, y, z, w }: QuatObject) {
       <ambientLight intensity={0.5} />
       <spotLight position={[20, 20, 20]} angle={0.09} penumbra={1} />
       <group quaternion={new THREE.Quaternion(x, y, z, w)}>
-        <TrackerModel></TrackerModel>
+        <TrackerModel model={model}></TrackerModel>
         <axesHelper args={[10]} />
       </group>
 
@@ -57,6 +63,15 @@ function SceneRenderer({ x, y, z, w }: QuatObject) {
 export function IMUVisualizerWidget({ tracker }: { tracker: TrackerDataT }) {
   const { l10n } = useLocalization();
   const [enabled, setEnabled] = useState(false);
+  const isExtension = useMemo(
+    () => (tracker.trackerId?.trackerNum ?? 0) > 0,
+    [tracker]
+  );
+
+  useEffect(() => {
+    const state = localStorage.getItem('modelPreview');
+    if (state) setEnabled(state === 'true');
+  }, []);
 
   const { useRawRotationEulerDegrees, useIdentAdjRotationEulerDegrees } =
     useTracker(tracker);
@@ -89,11 +104,35 @@ export function IMUVisualizerWidget({ tracker }: { tracker: TrackerDataT }) {
       </div>
 
       {!enabled && (
-        <Button variant="secondary" onClick={() => setEnabled(true)}>
+        <Button
+          variant="secondary"
+          onClick={() => {
+            setEnabled(true);
+            localStorage.setItem('modelPreview', 'true');
+          }}
+        >
           {l10n.getString('widget-imu_visualizer-rotation_preview')}
         </Button>
       )}
-      {enabled && <SceneRenderer {...quat}></SceneRenderer>}
+      {enabled && (
+        <>
+          <Button
+            variant="secondary"
+            onClick={() => {
+              setEnabled(false);
+              localStorage.setItem('modelPreview', 'false');
+            }}
+          >
+            {l10n.getString('widget-imu_visualizer-rotation_hide')}
+          </Button>
+          <SceneRenderer
+            quat={{ ...quat }}
+            model={
+              isExtension ? '/models/extension.gltf' : '/models/tracker.gltf'
+            }
+          ></SceneRenderer>
+        </>
+      )}
     </div>
   );
 }

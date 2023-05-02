@@ -30,7 +30,7 @@ export function Home() {
       )}
 
       {!config?.debug && trackers.length > 0 && (
-        <div className="grid sm:grid-cols-1 md:grid-cols-2 gap-3  px-4 my-4">
+        <div className="grid sm:grid-cols-1 md:grid-cols-2 gap-3 px-4 my-4">
           {trackers.map(({ tracker, device }, index) => (
             <TrackerCard
               key={index}

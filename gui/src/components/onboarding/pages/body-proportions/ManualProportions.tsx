@@ -9,7 +9,6 @@ import { Typography } from '../../../commons/Typography';
 import { BodyProportions } from './BodyProportions';
 import { useLocalization } from '@fluent/react';
 import { useEffect, useMemo, useState } from 'react';
-import { useBodyProportions } from '../../../../hooks/body-proportions';
 import { SkipSetupWarningModal } from '../../SkipSetupWarningModal';
 import { SkipSetupButton } from '../../SkipSetupButton';
 
@@ -17,7 +16,6 @@ export function ManualProportionsPage() {
   const { l10n } = useLocalization();
   const { applyProgress, skipSetup, state } = useOnboarding();
   const { sendRPCPacket } = useWebsocketAPI();
-  const { onPageOpened } = useBodyProportions();
   const [skipWarning, setSkipWarning] = useState(false);
 
   applyProgress(0.9);
@@ -39,10 +37,6 @@ export function ManualProportionsPage() {
   useEffect(() => {
     localStorage.setItem('ratioMode', ratio.toString());
   }, [ratio]);
-
-  useEffect(() => {
-    onPageOpened();
-  }, []);
 
   return (
     <>

@@ -7,10 +7,11 @@ import { Typography } from '../../commons/Typography';
 import { useState } from 'react';
 import { SkipSetupWarningModal } from '../SkipSetupWarningModal';
 import { SkipSetupButton } from '../SkipSetupButton';
+import classNames from 'classnames';
 
 export function WifiCredsPage() {
   const { l10n } = useLocalization();
-  const { applyProgress, skipSetup } = useOnboarding();
+  const { applyProgress, skipSetup, state } = useOnboarding();
   const { control, handleSubmit, submitWifiCreds, formState } = useWifiForm();
   const [skipWarning, setSkipWarning] = useState(false);
 
@@ -42,15 +43,23 @@ export function WifiCredsPage() {
                   </Typography>
                 ))}
             </>
-            <Button
-              variant="secondary"
-              to="/onboarding/home"
-              className="mt-auto mb-10 self-start"
-            >
-              {l10n.getString('onboarding-previous_step')}
-            </Button>
+            {!state.alonePage && (
+              <Button
+                variant="secondary"
+                to="/onboarding/home"
+                className="mt-auto mb-10 self-start"
+              >
+                {l10n.getString('onboarding-previous_step')}
+              </Button>
+            )}
           </div>
-          <div className="flex flex-col bg-background-70 gap-3 p-10 rounded-xl max-w-sm">
+          <div
+            className={classNames(
+              'flex flex-col gap-3 p-10 rounded-xl max-w-sm',
+              !state.alonePage && 'bg-background-70',
+              state.alonePage && 'bg-background-60'
+            )}
+          >
             <Localized
               id="onboarding-wifi_creds-ssid"
               attrs={{ placeholder: true, label: true }}
@@ -80,7 +89,11 @@ export function WifiCredsPage() {
               />
             </Localized>
             <div className="flex flex-row gap-3">
-              <Button variant="secondary" to="/onboarding/trackers-assign">
+              <Button
+                variant="secondary"
+                className={state.alonePage ? 'opacity-0' : ''}
+                to="/onboarding/trackers-assign"
+              >
                 {l10n.getString('onboarding-wifi_creds-skip')}
               </Button>
               <Button

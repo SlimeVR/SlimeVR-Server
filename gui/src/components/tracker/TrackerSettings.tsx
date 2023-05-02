@@ -5,7 +5,6 @@ import { useEffect, useMemo, useState } from 'react';
 import { useForm } from 'react-hook-form';
 import { useParams } from 'react-router-dom';
 import { AssignTrackerRequestT, BodyPart, RpcMessage } from 'solarxr-protocol';
-import { useConfig } from '../../hooks/config';
 import { useDebouncedEffect } from '../../hooks/timeout';
 import { useTrackerFromId } from '../../hooks/tracker';
 import { useWebsocketAPI } from '../../hooks/websocket-api';
@@ -41,7 +40,6 @@ const rotationsLabels = {
 
 export function TrackerSettingsPage() {
   const { l10n } = useLocalization();
-  const { config } = useConfig();
 
   const { sendRPCPacket } = useWebsocketAPI();
   const [firstLoad, setFirstLoad] = useState(false);
@@ -238,7 +236,7 @@ export function TrackerSettingsPage() {
               </Typography>
             </div>
           </div>
-          {tracker?.tracker && config?.debug && (
+          {tracker?.tracker && (
             <IMUVisualizerWidget
               tracker={tracker?.tracker}
             ></IMUVisualizerWidget>

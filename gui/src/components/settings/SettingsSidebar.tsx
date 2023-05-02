@@ -77,7 +77,7 @@ export function SettingsSidebar() {
         </div>
         <div className="flex flex-col gap-2">
           <SettingsLink to="/settings/osc/vrchat" scrollTo="vrchat">
-            VRChat
+            {l10n.getString('settings-sidebar-osc_trackers')}
           </SettingsLink>
         </div>
         <div className="flex flex-col gap-2">

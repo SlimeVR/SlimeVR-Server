@@ -40,7 +40,7 @@ export function MountingResetStep({
 
         <div className="flex gap-3">
           <Button
-            variant={variant === 'onboarding' ? 'secondary' : 'tiertiary'}
+            variant={variant === 'onboarding' ? 'secondary' : 'tertiary'}
             onClick={prevStep}
           >
             {l10n.getString('onboarding-automatic_mounting-prev_step')}
