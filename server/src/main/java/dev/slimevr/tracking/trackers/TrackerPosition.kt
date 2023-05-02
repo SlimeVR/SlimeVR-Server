@@ -53,13 +53,15 @@ enum class TrackerPosition(
 		fun getByDesignation(designation: String): TrackerPosition? = byDesignation[designation.lowercase()]
 
 		@JvmStatic
-		fun getByTrackerRole(role: TrackerRole): TrackerPosition?{
+		fun getByTrackerRole(role: TrackerRole): TrackerPosition? {
 			// Hands TrackerPositions are bound to the hands TrackerRoles,
 			// so we hardcode getting those.
-			if(role == TrackerRole.LEFT_CONTROLLER)
+			if (role == TrackerRole.LEFT_CONTROLLER) {
 				return LEFT_HAND
-			if(role == TrackerRole.RIGHT_CONTROLLER)
+			}
+			if (role == TrackerRole.RIGHT_CONTROLLER) {
 				return RIGHT_HAND
+			}
 			return byTrackerRole[role]
 		}
 
