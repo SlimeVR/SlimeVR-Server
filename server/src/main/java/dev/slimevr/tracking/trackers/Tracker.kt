@@ -80,7 +80,7 @@ class Tracker @JvmOverloads constructor(
 		}
 		config.designation?.let { designation ->
 			getByDesignation(designation)?.let { trackerPosition = it }
-		}
+		} ?: run { trackerPosition = null }
 		if (needsMounting) {
 			config.mountingOrientation?.let { resetsHandler.mountingOrientation = it }
 		}
@@ -100,7 +100,7 @@ class Tracker @JvmOverloads constructor(
 	 * Writes/saves to the given config
 	 */
 	fun writeConfig(config: TrackerConfig) {
-		trackerPosition?.let { config.designation = it.designation }
+		trackerPosition?.let { config.designation = it.designation } ?: run { config.designation = null }
 		customName?.let { config.customName = it }
 		if (needsMounting) {
 			config.mountingOrientation = resetsHandler.mountingOrientation
