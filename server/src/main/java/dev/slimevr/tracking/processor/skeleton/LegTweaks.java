@@ -479,12 +479,12 @@ public class LegTweaks {
 		if (!rightLegActive) {
 			rightFootPosition = new Vector3(
 				rightFootPosition.getX(),
-				bufferHead.getLeftFootPosition().getY(),
+				bufferHead.getRightFootPosition().getY(),
 				rightFootPosition.getZ()
 			);
 			rightKneePosition = new Vector3(
 				rightKneePosition.getX(),
-				bufferHead.getLeftKneePosition().getY(),
+				bufferHead.getRightKneePosition().getY(),
 				rightKneePosition.getZ()
 			);
 		}
@@ -1174,7 +1174,6 @@ public class LegTweaks {
 	}
 
 	// return a quaternion that has been rotated by the new pitch amount
-	// TODO verify that this is working as expected
 	private Quaternion replacePitch(Quaternion quaternion, float newPitch) {
 		EulerAngles curAngs = quaternion.toEulerAngles(EulerOrder.YZX);
 		EulerAngles newAngs = new EulerAngles(
