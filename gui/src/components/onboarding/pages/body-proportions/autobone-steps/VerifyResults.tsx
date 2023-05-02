@@ -81,7 +81,7 @@ export function VerifyResultsStep({
         </div>
         <div className="flex gap-2">
           <Button
-            variant={variant === 'onboarding' ? 'secondary' : 'tiertiary'}
+            variant={variant === 'onboarding' ? 'secondary' : 'tertiary'}
             onClick={redo}
           >
             {l10n.getString(

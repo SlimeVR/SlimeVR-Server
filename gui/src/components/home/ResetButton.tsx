@@ -33,6 +33,7 @@ export function ResetButton({
   };
 
   const { isCounting, startCountdown, timer } = useCountdown({
+    duration: type === ResetType.Yaw ? 0.2 : undefined,
     onCountdownEnd: () => {
       reset();
       if (onReseted) onReseted();
@@ -66,55 +67,33 @@ export function ResetButton({
   };
 
   const variantsMap = {
-    small:
-      type == ResetType.Yaw ? (
-        <Button
-          icon={getIcon()}
-          onClick={() => {
-            reset();
-            maybePlaySoundOnResetStarted(type);
-          }}
-          variant="primary"
-        >
-          {text}
-        </Button>
-      ) : (
-        <Button
-          icon={getIcon()}
-          onClick={() => {
-            startCountdown();
-            maybePlaySoundOnResetStarted(type);
-          }}
-          variant="primary"
-          disabled={isCounting}
-        >
-          <div className="relative">
-            <div className="opacity-0 h-0">{text}</div>
-            {!isCounting ? text : String(timer)}
-          </div>
-        </Button>
-      ),
-    big:
-      type == ResetType.Yaw ? (
-        <BigButton
-          text={text}
-          icon={getIcon()}
-          onClick={() => {
-            reset();
-            maybePlaySoundOnResetStarted(type);
-          }}
-        ></BigButton>
-      ) : (
-        <BigButton
-          text={!isCounting ? text : String(timer)}
-          icon={getIcon()}
-          onClick={() => {
-            startCountdown();
-            maybePlaySoundOnResetStarted(type);
-          }}
-          disabled={isCounting}
-        ></BigButton>
-      ),
+    small: (
+      <Button
+        icon={getIcon()}
+        onClick={() => {
+          startCountdown();
+          maybePlaySoundOnResetStarted(type);
+        }}
+        variant="primary"
+        disabled={isCounting}
+      >
+        <div className="relative">
+          <div className="opacity-0 h-0">{text}</div>
+          {!isCounting || type === ResetType.Yaw ? text : String(timer)}
+        </div>
+      </Button>
+    ),
+    big: (
+      <BigButton
+        text={!isCounting || type === ResetType.Yaw ? text : String(timer)}
+        icon={getIcon()}
+        onClick={() => {
+          startCountdown();
+          maybePlaySoundOnResetStarted(type);
+        }}
+        disabled={isCounting}
+      ></BigButton>
+    ),
   };
 
   return variantsMap[variant];
