@@ -1,7 +1,5 @@
 package dev.slimevr.tracking.trackers.udp
 
-import solarxr_protocol.datatypes.hardware_info.ImuType
-
 enum class IMUType(val id: UInt) {
 	UNKNOWN(0u),
 	MPU9250(1u),
