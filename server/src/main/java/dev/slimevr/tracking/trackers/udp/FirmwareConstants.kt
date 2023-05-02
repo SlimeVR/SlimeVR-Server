@@ -41,7 +41,23 @@ enum class BoardType(val id: UInt) {
 	ES32C3DEVKITM1(12u),
 	;
 
-	fun getSolarType(): Int = this.id.toInt()
+	override fun toString(): String {
+		return when (this) {
+			UNKNOWN -> "Unknown"
+			SLIMEVR_LEGACY -> "SlimeVR Legacy"
+			SLIMEVR_DEV -> "SlimeVR Dev"
+			NODEMCU -> "NodeMCU"
+			CUSTOM -> "Custom Board"
+			WROOM32 -> "WROOM32"
+			WEMOSD1MINI -> "Wemos D1 Mini"
+			TTGO_TBASE -> "TTGO T-Base"
+			ESP01 -> "ESP-01"
+			SLIMEVR -> "SlimeVR"
+			LOLIN_C3_MINI -> "Lolin C3 Mini"
+			BEETLE32C32 -> "Beetle ESP32-C3"
+			ES32C3DEVKITM1 -> "Espressif ESP32-C3 DevKitM-1"
+		}
+	}
 
 	companion object {
 		private val byId = BoardType.values().associateBy { it.id }

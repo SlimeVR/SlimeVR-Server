@@ -11,7 +11,12 @@ open class Device {
 	open var firmwareVersion: String? = null
 	open var manufacturer: String? = null
 	open val trackers = HashMap<Int, Tracker>()
-	open val boardType: BoardType = BoardType.UNKNOWN
+
+	/**
+	 * Implement toString() to return a string that uniquely identifies the board type
+	 * SHOULDN'T RETURN NULL WHEN toString() IS CALLED
+	 */
+	open val boardType: Any = BoardType.UNKNOWN
 	open val mcuType: MCUType = MCUType.UNKNOWN
 
 	open val ipAddress: InetAddress?
