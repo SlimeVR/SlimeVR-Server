@@ -111,6 +111,7 @@ widget-developer_mode-more_info = More info
 widget-imu_visualizer = Rotation
 widget-imu_visualizer-rotation_raw = Raw
 widget-imu_visualizer-rotation_preview = Preview
+widget-imu_visualizer-rotation_hide = Hide
 
 ## Tracker status
 tracker-status-none = No Status

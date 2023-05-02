@@ -25,8 +25,7 @@ export function SerialDetectionModal() {
   const [isOpen, setOpen] = useState<SerialDeviceT | null>(null);
   const [showWifiForm, setShowWifiForm] = useState(false);
 
-  const { handleSubmit, submitWifiCreds, formState, hasWifiCreds, control } =
-    useWifiForm();
+  const { handleSubmit, submitWifiCreds, formState, control } = useWifiForm();
 
   const closeModal = () => {
     setOpen(null);
@@ -39,12 +38,13 @@ export function SerialDetectionModal() {
   };
 
   const openWifi = () => {
-    if (!hasWifiCreds) {
-      setShowWifiForm(true);
-    } else {
-      closeModal();
-      nav('/onboarding/connect-trackers', { state: { alonePage: true } });
-    }
+    setShowWifiForm(true);
+    // if (!hasWifiCreds) {
+    //   setShowWifiForm(true);
+    // } else {
+    //   closeModal();
+    //   nav('/onboarding/connect-trackers', { state: { alonePage: true } });
+    // }
   };
 
   const modalWifiSubmit = (form: WifiFormData) => {
@@ -88,10 +88,10 @@ export function SerialDetectionModal() {
             <Button variant="primary" onClick={openWifi}>
               {l10n.getString('serial_detection-open_wifi')}
             </Button>
-            <Button variant="tiertiary" onClick={openSerial}>
+            <Button variant="tertiary" onClick={openSerial}>
               {l10n.getString('serial_detection-open_serial')}
             </Button>
-            <Button variant="secondary" onClick={closeModal}>
+            <Button variant="tertiary" onClick={closeModal}>
               {l10n.getString('serial_detection-close')}
             </Button>
           </>
@@ -102,7 +102,9 @@ export function SerialDetectionModal() {
             className="flex flex-col gap-3"
           >
             <div className="flex flex-col items-center gap-3">
-              <BulbIcon></BulbIcon>
+              <div className="fill-background-10">
+                <BulbIcon></BulbIcon>
+              </div>
               <Typography variant="main-title">
                 {l10n.getString('serial_detection-new_device-p0')}
               </Typography>
@@ -147,7 +149,7 @@ export function SerialDetectionModal() {
             >
               {l10n.getString('serial_detection-submit')}
             </Button>
-            <Button variant="secondary" onClick={closeModal}>
+            <Button variant="tertiary" onClick={closeModal}>
               {l10n.getString('serial_detection-close')}
             </Button>
           </form>

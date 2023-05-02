@@ -1,6 +1,9 @@
 import { useLayoutEffect, useState } from 'react';
 import { useLocation } from 'react-router-dom';
 
+/**
+ * @deprecated now we just use choose option
+ */
 export function useBodyProportions() {
   const { pathname } = useLocation();
   const [lastUsedPage, setLastUsedPage] = useState(

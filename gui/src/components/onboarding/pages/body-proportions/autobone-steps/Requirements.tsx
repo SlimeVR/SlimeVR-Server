@@ -40,7 +40,7 @@ export function RequirementsStep({
 
         <div className="flex gap-3">
           <Button
-            variant={variant === 'onboarding' ? 'secondary' : 'tiertiary'}
+            variant={variant === 'onboarding' ? 'secondary' : 'tertiary'}
             onClick={prevStep}
           >
             {l10n.getString('onboarding-automatic_proportions-prev_step')}

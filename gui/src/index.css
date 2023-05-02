@@ -140,3 +140,8 @@ input::-ms-reveal,
 input::-ms-clear {
   display: none;
 }
+
+.crisp-edges {
+  image-rendering: -webkit-optimize-contrast;
+  image-rendering: crisp-edges;
+}
