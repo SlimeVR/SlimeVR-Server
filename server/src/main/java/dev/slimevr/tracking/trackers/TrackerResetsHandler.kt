@@ -1,5 +1,6 @@
 package dev.slimevr.tracking.trackers
 
+import com.jme3.math.FastMath
 import dev.slimevr.config.DriftCompensationConfig
 import dev.slimevr.filtering.CircularArrayList
 import io.github.axisangles.ktmath.EulerAngles
@@ -185,14 +186,13 @@ class TrackerResetsHandler(val tracker: Tracker) {
 		// Use the HMD's yaw as the reference
 		buffer *= reference.project(Vector3.POS_Y).unit().inv()
 
-		// Reset the vector for the rotation to point straight up
+		// Make a vector pointing straight up
 		var rotVector = Vector3(0f, 1f, 0f)
 
-		// Rotate the vector by the quat, then flatten and normalize the vector
+		// Rotate the normalized vector by the quat
 		rotVector = buffer.sandwich(rotVector.unit())
 
 		// Calculate the yaw angle using tan
-		// Just use an angle offset of zero for unsolvable circumstances
 		val yawAngle = atan2(rotVector.x, rotVector.z)
 
 		// Make an adjustment quaternion from the angle
@@ -231,8 +231,30 @@ class TrackerResetsHandler(val tracker: Tracker) {
 		var rot = gyroFix * sensorRotation
 		rot *= attachmentFix
 		rot *= mountRotFix
-		rot = rot.project(Vector3.POS_Y).unit()
+		rot = EulerAngles(EulerOrder.YZX, 0f, getYaw(rot), 0f).toQuaternion()
 		yawFix = rot.inv() * reference.project(Vector3.POS_Y).unit()
+	}
+
+	// FIXME : isolating yaw for yaw reset bad.
+	// The way we isolate the tracker's yaw for yaw reset is
+	// incorrect. This is old math from JME; projection around the
+	// Y-axis is worse. In both cases, the isolated yaw value changes
+	// with the tracker's roll when pointing forward.
+	// A resets-rewrite might be beneficial as well.
+	private fun getYaw(rot: Quaternion): Float {
+		val sqw = rot.w * rot.w
+		val sqx = rot.x * rot.x
+		val sqy = rot.y * rot.y
+		val sqz = rot.z * rot.z
+		val unit = sqx + sqy + sqz + sqw
+		val test = rot.x * rot.y + rot.z * rot.w
+		return if (test > 0.499 * unit) { // singularity at North Pole
+			2 * FastMath.atan2(rot.x, rot.w)
+		} else if (test < -0.499 * unit) { // singularity at South Pole
+			-2 * FastMath.atan2(rot.x, rot.w)
+		} else {
+			FastMath.atan2(2 * rot.y * rot.w - 2 * rot.x * rot.z, sqx - sqy - sqz + sqw)
+		}
 	}
 
 	private fun makeIdentityAdjustmentQuatsFull() {

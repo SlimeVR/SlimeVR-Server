@@ -60,7 +60,7 @@ data class Vector3(val x: Float, val y: Float, val z: Float) {
 	fun lenSq() = x * x + y * y + z * z
 
 	/**
-	 * computes the length of this quaternion
+	 * computes the length of this vector
 	 * @return the length
 	 **/
 	fun len() = sqrt(x * x + y * y + z * z)
