@@ -34,7 +34,6 @@ export function useCountdown({
   const resetEnd = () => {
     setIsCounting(false);
     clearInterval(countdownTimer.current);
-    console.log('hello?')
     onCountdownEnd();
   };
 
