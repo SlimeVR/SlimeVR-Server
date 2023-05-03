@@ -227,12 +227,20 @@ export function TrackerSettingsPage() {
                 {tracker?.device?.hardwareInfo?.firmwareVersion || '--'}
               </Typography>
             </div>
-            <div className="flex justify-between">
+            {/* <div className="flex justify-between">
               <Typography color="secondary">
                 {l10n.getString('tracker-infos-hardware_rev')}
               </Typography>
               <Typography>
                 {tracker?.device?.hardwareInfo?.hardwareRevision || '--'}
+              </Typography>
+            </div> */}
+            <div className="flex justify-between">
+              <Typography color="secondary">
+                {l10n.getString('tracker-infos-hardware_identifier')}
+              </Typography>
+              <Typography>
+                {tracker?.device?.hardwareInfo?.hardwareIdentifier || '--'}
               </Typography>
             </div>
           </div>
