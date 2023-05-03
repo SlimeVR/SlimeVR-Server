@@ -247,15 +247,13 @@ public class ReferenceAdjustmentsTests {
 		Quaternion read = tracker.getRotation();
 		assertNotNull(read, "Adjusted tracker didn't return rotation");
 
-		assertEquals(
-			new QuatEqualYawWithEpsilon(referenceQuat),
-			new QuatEqualYawWithEpsilon(read),
-			"Adjusted quat is not equal to reference quat ("
-				+ toDegs(referenceQuat)
-				+ " vs "
-				+ toDegs(read)
-				+ ")"
-		);
+		QuaternionTest.Companion
+			.assertEquals(
+				referenceQuat.project(Vector3.Companion.getPOS_Y()).unit(),
+				new EulerAngles(EulerOrder.YZX, 0f, TrackerResetsHandler.Companion.getYaw(read), 0f)
+					.toQuaternion(),
+				1e-7
+			);
 	}
 
 	private void testAdjustedTrackerRotation(

@@ -231,30 +231,8 @@ class TrackerResetsHandler(val tracker: Tracker) {
 		var rot = gyroFix * sensorRotation
 		rot *= attachmentFix
 		rot *= mountRotFix
-		rot = EulerAngles(EulerOrder.YZX, 0f, getYaw(rot), 0f).toQuaternion()
+		rot = EulerAngles(EulerOrder.YZX, 0f, getYaw(rot), 0f).toQuaternion() // FIXME
 		yawFix = rot.inv() * reference.project(Vector3.POS_Y).unit()
-	}
-
-	// FIXME : isolating yaw for yaw reset bad.
-	// The way we isolate the tracker's yaw for yaw reset is
-	// incorrect. This is old math from JME; projection around the
-	// Y-axis is worse. In both cases, the isolated yaw value changes
-	// with the tracker's roll when pointing forward.
-	// A resets-rewrite might be beneficial as well.
-	private fun getYaw(rot: Quaternion): Float {
-		val sqw = rot.w * rot.w
-		val sqx = rot.x * rot.x
-		val sqy = rot.y * rot.y
-		val sqz = rot.z * rot.z
-		val unit = sqx + sqy + sqz + sqw
-		val test = rot.x * rot.y + rot.z * rot.w
-		return if (test > 0.499 * unit) { // singularity at North Pole
-			2 * FastMath.atan2(rot.x, rot.w)
-		} else if (test < -0.499 * unit) { // singularity at South Pole
-			-2 * FastMath.atan2(rot.x, rot.w)
-		} else {
-			FastMath.atan2(2 * rot.y * rot.w - 2 * rot.x * rot.z, sqx - sqy - sqz + sqw)
-		}
 	}
 
 	private fun makeIdentityAdjustmentQuatsFull() {
@@ -362,5 +340,30 @@ class TrackerResetsHandler(val tracker: Tracker) {
 			totalMatrix += (qn[i].toMatrix() * tn[i])
 		}
 		return totalMatrix.toQuaternion()
+	}
+
+	companion object {
+		// FIXME : isolating yaw for yaw reset bad.
+		// The way we isolate the tracker's yaw for yaw reset is
+		// incorrect. This is old math from JME; projection around the
+		// Y-axis is worse. In both cases, the isolated yaw value changes
+		// with the tracker's roll when pointing forward.
+		// A resets-rewrite might be beneficial as well.
+		@JvmStatic
+		fun getYaw(rot: Quaternion): Float {
+			val sqw = rot.w * rot.w
+			val sqx = rot.x * rot.x
+			val sqy = rot.y * rot.y
+			val sqz = rot.z * rot.z
+			val unit = sqx + sqy + sqz + sqw
+			val test = rot.x * rot.y + rot.z * rot.w
+			return if (test > 0.499 * unit) { // singularity at North Pole
+				2 * FastMath.atan2(rot.x, rot.w)
+			} else if (test < -0.499 * unit) { // singularity at South Pole
+				-2 * FastMath.atan2(rot.x, rot.w)
+			} else {
+				FastMath.atan2(2 * rot.y * rot.w - 2 * rot.x * rot.z, sqx - sqy - sqz + sqw)
+			}
+		}
 	}
 }
