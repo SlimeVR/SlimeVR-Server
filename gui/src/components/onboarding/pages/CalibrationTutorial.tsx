@@ -2,17 +2,13 @@ import { Localized, useLocalization } from '@fluent/react';
 import { useOnboarding } from '../../../hooks/onboarding';
 import { Button } from '../../commons/Button';
 import { Typography } from '../../commons/Typography';
-import { useEffect, useMemo, useRef, useState } from 'react';
+import { useMemo, useState } from 'react';
 import { SkipSetupWarningModal } from '../SkipSetupWarningModal';
 import { SkipSetupButton } from '../SkipSetupButton';
 import { ProgressBar } from '../../commons/ProgressBar';
 import { LoaderIcon, SlimeState } from '../../commons/icon/LoaderIcon';
 import { useCountdown } from '../../../hooks/countdown';
 import classNames from 'classnames';
-import { useTrackers } from '../../../hooks/tracker';
-import { FlatDeviceTracker } from '../../../hooks/app';
-import { ImuType } from 'solarxr-protocol';
-import { compareQuatT } from '../../../maths/quaternion';
 
 export enum CalibrationStatus {
   SUCCESS,
@@ -25,49 +21,16 @@ export const IMU_CALIBRATION_TIME = 4;
 
 export function CalibrationTutorialPage() {
   const { l10n } = useLocalization();
-  const { useConnectedTrackers } = useTrackers();
   const { applyProgress, skipSetup } = useOnboarding();
   const [skipWarning, setSkipWarning] = useState(false);
   const [calibrationStatus, setCalibrationStatus] = useState(
     CalibrationStatus.WAITING
   );
-  const { timer, isCounting, startCountdown, abortCountdown } = useCountdown({
+  const { timer, isCounting, startCountdown } = useCountdown({
     duration: IMU_CALIBRATION_TIME,
     onCountdownEnd: () => setCalibrationStatus(CalibrationStatus.SUCCESS),
   });
-  const connectedTrackers = useConnectedTrackers();
-  const previousTrackers = useRef<FlatDeviceTracker[]>([]);
 
-  useEffect(() => {
-    if (!isCounting) return;
-
-    const filtered = connectedTrackers.filter((x) =>
-      [ImuType.BNO055, ImuType.BNO080, ImuType.BNO085].includes(
-        x.tracker.info?.imuType || ImuType.Other
-      )
-    );
-
-    for (const {tracker: oldTracker} of previousTrackers.current) {
-      const newTracker = filtered.find(
-        (x) =>
-          x.tracker.trackerId?.deviceId ===
-            oldTracker.trackerId?.deviceId &&
-          x.tracker.trackerId?.trackerNum ===
-            oldTracker.trackerId?.trackerNum
-      );
-      if(!newTracker) continue;
-
-      console.log(newTracker.tracker.rotation);
-      console.log(oldTracker.rotation)
-      if(!compareQuatT(newTracker.tracker.rotation, oldTracker.rotation)) {
-        abortCountdown();
-        setCalibrationStatus(CalibrationStatus.ERROR);
-        break;
-      }
-    }
-
-    previousTrackers.current = filtered;
-  }, [isCounting, calibrationStatus, connectedTrackers]);
 
   const progressBarClass = useMemo(() => {
     switch (calibrationStatus) {
@@ -147,7 +110,6 @@ export function CalibrationTutorialPage() {
               <Button
                 variant="primary"
                 onClick={() => {
-                  previousTrackers.current = connectedTrackers.slice(0)
                   setCalibrationStatus(CalibrationStatus.CALIBRATING);
                   startCountdown();
                 }}
