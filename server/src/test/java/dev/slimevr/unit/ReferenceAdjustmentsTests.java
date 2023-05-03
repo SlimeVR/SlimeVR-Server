@@ -245,7 +245,8 @@ public class ReferenceAdjustmentsTests {
 		QuaternionTest.Companion
 			.assertEquals(
 				referenceQuat.project(Vector3.Companion.getPOS_Y()).unit(),
-				read.project(Vector3.Companion.getPOS_Y()).unit(),
+				new EulerAngles(EulerOrder.YZX, 0f, TrackerResetsHandler.Companion.getYaw(read), 0f)
+					.toQuaternion(),
 				1e-7
 			);
 	}
