@@ -9,7 +9,10 @@ import dev.slimevr.tracking.trackers.TrackerResetsHandler;
 import dev.slimevr.tracking.trackers.udp.IMUType;
 import io.eiren.math.FloatMath;
 import io.eiren.util.StringUtils;
-import io.github.axisangles.ktmath.*;
+import io.github.axisangles.ktmath.EulerAngles;
+import io.github.axisangles.ktmath.EulerOrder;
+import io.github.axisangles.ktmath.Quaternion;
+import io.github.axisangles.ktmath.Vector3;
 import org.junit.jupiter.api.DynamicTest;
 import org.junit.jupiter.api.TestFactory;
 
@@ -243,12 +246,15 @@ public class ReferenceAdjustmentsTests {
 		Quaternion read = tracker.getRotation();
 		assertNotNull(read, "Adjusted tracker didn't return rotation");
 
-		QuaternionTest.Companion
-			.assertEquals(
-				referenceQuat.project(Vector3.Companion.getPOS_Y()).unit(),
-				read.project(Vector3.Companion.getPOS_Y()).unit(),
-				1e-7
-			);
+		assertEquals(
+			new QuatEqualYawWithEpsilon(referenceQuat),
+			new QuatEqualYawWithEpsilon(read),
+			"Adjusted quat is not equal to reference quat ("
+				+ toDegs(referenceQuat)
+				+ " vs "
+				+ toDegs(read)
+				+ ")"
+		);
 	}
 
 	private void testAdjustedTrackerRotation(
@@ -338,6 +344,40 @@ public class ReferenceAdjustmentsTests {
 		}
 		if (PRINT_TEST_RESULTS)
 			System.out.println("Errors: " + errors + ", successes: " + successes);
+	}
+
+	private record QuatEqualYawWithEpsilon(Quaternion q) {
+
+		@Override
+		public String toString() {
+			return String.valueOf(q);
+		}
+
+		@Override
+		public boolean equals(Object obj) {
+			if (obj instanceof Quaternion)
+				obj = new QuatEqualYawWithEpsilon((Quaternion) obj);
+			if (!(obj instanceof QuatEqualYawWithEpsilon))
+				return false;
+			Quaternion q2 = ((QuatEqualYawWithEpsilon) obj).q;
+			EulerAngles degs1 = q.toEulerAngles(EulerOrder.YZX);
+			EulerAngles degs2 = q2.toEulerAngles(EulerOrder.YZX);
+			if (degs1.getY() < -FloatMath.ANGLE_EPSILON_RAD)
+				degs1 = new EulerAngles(
+					EulerOrder.YZX,
+					degs1.getX(),
+					degs1.getY() + FastMath.TWO_PI,
+					degs1.getZ()
+				);
+			if (degs2.getY() < -FloatMath.ANGLE_EPSILON_RAD)
+				degs2 = new EulerAngles(
+					EulerOrder.YZX,
+					degs2.getX(),
+					degs2.getY() + FastMath.TWO_PI,
+					degs2.getZ()
+				);
+			return FloatMath.equalsWithEpsilon(degs1.getY(), degs2.getY());
+		}
 	}
 
 	public static class QuatEqualFullWithEpsilon {
