@@ -4,12 +4,12 @@ import { useWifiForm } from '../../../hooks/wifi-form';
 import { Button } from '../../commons/Button';
 import { Input } from '../../commons/Input';
 import { Typography } from '../../commons/Typography';
-import { useState, useMemo } from 'react';
+import { useState } from 'react';
 import { SkipSetupWarningModal } from '../SkipSetupWarningModal';
 import { SkipSetupButton } from '../SkipSetupButton';
 import classNames from 'classnames';
 import { useTrackers } from '../../../hooks/tracker';
-import { ImuType } from 'solarxr-protocol';
+import { useBnoExists } from '../../../hooks/imu-logic';
 
 export function WifiCredsPage() {
   const { l10n } = useLocalization();
@@ -21,12 +21,7 @@ export function WifiCredsPage() {
 
   applyProgress(0.2);
 
-  const bnoExists = useMemo(() => {
-    console.log(connectedTrackers.map((tracker) => tracker.tracker.info?.imuType))
-    return connectedTrackers.some(
-      (tracker) => tracker.tracker.info?.imuType === ImuType.BNO085
-    );
-  }, [connectedTrackers]);
+  const bnoExists = useBnoExists(connectedTrackers);
 
   return (
     <form

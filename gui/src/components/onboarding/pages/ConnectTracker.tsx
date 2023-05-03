@@ -8,7 +8,6 @@ import {
   StopWifiProvisioningRequestT,
   WifiProvisioningStatus,
   WifiProvisioningStatusResponseT,
-  ImuType,
 } from 'solarxr-protocol';
 import { useLayout } from '../../../hooks/layout';
 import { useOnboarding } from '../../../hooks/onboarding';
@@ -23,6 +22,7 @@ import { Typography } from '../../commons/Typography';
 import { TrackerCard } from '../../tracker/TrackerCard';
 import { SkipSetupWarningModal } from '../SkipSetupWarningModal';
 import { SkipSetupButton } from '../SkipSetupButton';
+import { useBnoExists } from '../../../hooks/imu-logic';
 
 const BOTTOM_HEIGHT = 80;
 
@@ -71,13 +71,7 @@ export function ConnectTrackersPage() {
 
   const connectedTrackers = useConnectedTrackers();
 
-  const bnoExists = useMemo(
-    () =>
-      connectedTrackers.some(
-        (tracker) => tracker.tracker.info?.imuType === ImuType.BNO085
-      ),
-    [connectedTrackers]
-  );
+  const bnoExists = useBnoExists(connectedTrackers);
 
   useEffect(() => {
     if (!state.wifi) {

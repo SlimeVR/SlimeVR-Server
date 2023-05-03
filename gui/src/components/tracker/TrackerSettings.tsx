@@ -185,7 +185,7 @@ export function TrackerSettingsPage() {
               Update now
             </Button>
           </div> */}
-          <div className="flex flex-col bg-background-70 p-3 rounded-lg gap-2">
+          <div className="flex flex-col bg-background-70 p-3 rounded-lg gap-2 overflow-x-auto">
             <div className="flex justify-between">
               <Typography color="secondary">
                 {l10n.getString('tracker-infos-manufacturer')}

@@ -5,7 +5,6 @@ import { useForm } from 'react-hook-form';
 import {
   AssignTrackerRequestT,
   BodyPart,
-  ImuType,
   QuatT,
   RpcMessage,
   TrackerIdT,
@@ -24,6 +23,7 @@ import { NeckWarningModal } from '../../NeckWarningModal';
 import { TrackerSelectionMenu } from './TrackerSelectionMenu';
 import { SkipSetupWarningModal } from '../../SkipSetupWarningModal';
 import { SkipSetupButton } from '../../SkipSetupButton';
+import { useBnoExists } from '../../../../hooks/imu-logic';
 
 export type BodyPartError = {
   label: string | undefined;
@@ -45,13 +45,7 @@ export function TrackersAssignPage() {
   const [skipWarning, setSkipWarning] = useState(false);
   const connectedTrackers = useConnectedTrackers();
 
-  const bnoExists = useMemo(
-    () =>
-      connectedTrackers.some(
-        (tracker) => tracker.tracker.info?.imuType === ImuType.BNO085
-      ),
-    [connectedTrackers]
-  );
+  const bnoExists = useBnoExists(connectedTrackers);
 
   const trackerPartGrouped = useMemo(
     () =>
