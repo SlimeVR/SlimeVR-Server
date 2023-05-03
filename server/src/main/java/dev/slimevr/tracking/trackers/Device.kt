@@ -4,7 +4,7 @@ import dev.slimevr.tracking.trackers.udp.BoardType
 import dev.slimevr.tracking.trackers.udp.MCUType
 import java.util.concurrent.atomic.AtomicInteger
 
-abstract class Device {
+open class Device {
 	open val id: Int = nextLocalDeviceId.incrementAndGet()
 	open var name: String? = null
 	open var firmwareVersion: String? = null
@@ -18,7 +18,7 @@ abstract class Device {
 	open val boardType: Any = BoardType.UNKNOWN
 	open val mcuType: MCUType = MCUType.UNKNOWN
 
-	abstract val hardwareIdentifier: String
+	open val hardwareIdentifier: String = "Unknown"
 
 	companion object {
 		@JvmField
