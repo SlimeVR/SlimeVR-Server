@@ -62,6 +62,7 @@ class TrackersUDPServer(private val port: Int, name: String, private val tracker
 			val connection = UDPDevice(
 				handshakePacket.socketAddress,
 				addr,
+				handshake.macString ?: addr.hostAddress,
 				handshake.boardType,
 				handshake.mcuType
 			)

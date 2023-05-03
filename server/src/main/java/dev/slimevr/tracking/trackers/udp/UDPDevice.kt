@@ -8,7 +8,8 @@ import java.net.SocketAddress
 
 class UDPDevice(
 	var address: SocketAddress,
-	override var ipAddress: InetAddress,
+	var ipAddress: InetAddress,
+	override val hardwareIdentifier: String,
 	override val boardType: BoardType = BoardType.UNKNOWN,
 	override val mcuType: MCUType = MCUType.UNKNOWN,
 ) : Device() {
