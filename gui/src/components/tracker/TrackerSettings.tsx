@@ -4,7 +4,12 @@ import { IPv4 } from 'ip-num/IPNumber';
 import { useEffect, useMemo, useState } from 'react';
 import { useForm } from 'react-hook-form';
 import { useParams } from 'react-router-dom';
-import { AssignTrackerRequestT, BodyPart, RpcMessage } from 'solarxr-protocol';
+import {
+  AssignTrackerRequestT,
+  BodyPart,
+  ImuType,
+  RpcMessage,
+} from 'solarxr-protocol';
 import { useDebouncedEffect } from '../../hooks/timeout';
 import { useTrackerFromId } from '../../hooks/tracker';
 import { useWebsocketAPI } from '../../hooks/websocket-api';
@@ -241,6 +246,24 @@ export function TrackerSettingsPage() {
               </Typography>
               <Typography>
                 {tracker?.device?.hardwareInfo?.hardwareIdentifier || '--'}
+              </Typography>
+            </div>
+            <div className="flex justify-between">
+              <Typography color="secondary">
+                {l10n.getString('tracker-infos-imu')}
+              </Typography>
+              <Typography>
+                {tracker?.tracker.info?.imuType
+                  ? ImuType[tracker?.tracker.info?.imuType]
+                  : '--'}
+              </Typography>
+            </div>
+            <div className="flex justify-between">
+              <Typography color="secondary">
+                {l10n.getString('tracker-infos-board_type')}
+              </Typography>
+              <Typography>
+                {tracker?.device?.hardwareInfo?.boardType || '--'}
               </Typography>
             </div>
           </div>

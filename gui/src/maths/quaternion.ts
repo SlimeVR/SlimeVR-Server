@@ -49,3 +49,8 @@ export function QuaternionToEulerDegrees(q?: QuatObject | null) {
   const a = new Euler().setFromQuaternion(new Quaternion(q.x, q.y, q.z, q.w));
   return { x: a.x * RAD_TO_DEG, y: a.y * RAD_TO_DEG, z: a.z * RAD_TO_DEG };
 }
+
+export function compareQuatT(a: QuatT | null, b: QuatT | null): boolean {
+  if (!a || !b) return false;
+  return a.w === b.w && a.x === b.x && a.y === b.y && a.z === b.z;
+}
