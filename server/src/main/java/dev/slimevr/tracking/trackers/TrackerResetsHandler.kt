@@ -231,7 +231,7 @@ class TrackerResetsHandler(val tracker: Tracker) {
 		var rot = gyroFix * sensorRotation
 		rot *= attachmentFix
 		rot *= mountRotFix
-		rot = EulerAngles(EulerOrder.YZX, 0f, getYaw(rot), 0f).toQuaternion()
+		rot = EulerAngles(EulerOrder.YZX, 0f, getYaw(rot), 0f).toQuaternion() // FIXME
 		yawFix = rot.inv() * reference.project(Vector3.POS_Y).unit()
 	}
 
@@ -241,7 +241,7 @@ class TrackerResetsHandler(val tracker: Tracker) {
 	// Y-axis is worse. In both cases, the isolated yaw value changes
 	// with the tracker's roll when pointing forward.
 	// A resets-rewrite might be beneficial as well.
-	private fun getYaw(rot: Quaternion): Float {
+	fun getYaw(rot: Quaternion): Float {
 		val sqw = rot.w * rot.w
 		val sqx = rot.x * rot.x
 		val sqy = rot.y * rot.y
