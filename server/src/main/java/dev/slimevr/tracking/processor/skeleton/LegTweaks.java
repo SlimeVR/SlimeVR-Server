@@ -196,18 +196,12 @@ public class LegTweaks {
 
 	public void setFloorclipEnabled(boolean floorclipEnabled) {
 		this.floorclipEnabled = floorclipEnabled;
-
-		// reset the buffer
-		this.bufferHead = new LegTweakBuffer();
-		this.bufferInvalid = true;
+		this.resetBuffer();
 	}
 
 	public void setSkatingReductionEnabled(boolean skatingCorrectionEnabled) {
 		this.skatingCorrectionEnabled = skatingCorrectionEnabled;
-
-		// reset the buffer
-		this.bufferHead = new LegTweakBuffer();
-		this.bufferInvalid = true;
+		this.resetBuffer();
 	}
 
 	public void setToeSnapEnabled(boolean val) {
@@ -239,7 +233,8 @@ public class LegTweaks {
 	}
 
 	public void resetBuffer() {
-		bufferInvalid = true;
+		this.bufferHead = new LegTweakBuffer();
+		this.bufferInvalid = true;
 	}
 
 	public void setConfig(LegTweaksConfig config) {
@@ -631,6 +626,9 @@ public class LegTweaks {
 	}
 
 	private void correctUnlockedLeftFootTracker() {
+		if (bufferHead == null || bufferHead.getParent() == null)
+			return;
+
 		Vector3 leftFootDif = leftFootPosition
 			.minus(bufferHead.getParent().getLeftFootPositionCorrected());
 		leftFootDif = new Vector3(leftFootDif.getX(), 0f, leftFootDif.getZ());
@@ -715,6 +713,9 @@ public class LegTweaks {
 	}
 
 	private void correctUnlockedRightFootTracker() {
+		if (bufferHead == null || bufferHead.getParent() == null)
+			return;
+
 		Vector3 rightFootDif = rightFootPosition
 			.minus(bufferHead.getParent().getRightFootPositionCorrected());
 		rightFootDif = new Vector3(rightFootDif.getX(), 0f, rightFootDif.getZ());

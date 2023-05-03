@@ -280,6 +280,7 @@ public class VRServer extends Thread {
 	@Override
 	@VRServerThread
 	public void run() {
+		final Object sleepLock = new Object();
 		trackersServer.start();
 		while (true) {
 			// final long start = System.currentTimeMillis();
@@ -306,11 +307,13 @@ public class VRServer extends Thread {
 			vrcOSCHandler.update();
 			vmcHandler.update();
 			// final long time = System.currentTimeMillis() - start;
-			try {
-				Thread.sleep(1); // 1000Hz
-			} catch (InterruptedException error) {
-				LogManager.info("VRServer thread interrupted");
-				break;
+			synchronized (sleepLock) {
+				try {
+					sleepLock.wait(2); // 500Hz
+				} catch (InterruptedException ignored) {
+					LogManager.info("VRServer thread interrupted");
+					break;
+				}
 			}
 		}
 	}
