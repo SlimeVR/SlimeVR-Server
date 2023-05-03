@@ -330,7 +330,7 @@ class Localizer(humanSkeleton: HumanSkeleton) {
 	private fun getCOMVelocity(): Vector3 {
 		// calculate the amount of gravity to add
 		val remainingGravity = if (comAccel.y > ACCEL_UP_THRESHOLD) {
-			LegTweakBuffer.GRAVITY_MAGNITUDE - comAccel.y
+			LegTweakBuffer.GRAVITY_MAGNITUDE
 		} else {
 			LegTweakBuffer.GRAVITY_MAGNITUDE + comAccel.y
 		}
