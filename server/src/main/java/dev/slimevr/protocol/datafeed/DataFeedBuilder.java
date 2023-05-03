@@ -65,7 +65,7 @@ public class DataFeedBuilder {
 	public static int createTrackerId(FlatBufferBuilder fbb, Tracker tracker) {
 		TrackerId.startTrackerId(fbb);
 
-		TrackerId.addTrackerNum(fbb, tracker.getId());
+		TrackerId.addTrackerNum(fbb, tracker.getTrackerNum());
 		if (tracker.getDevice() != null)
 			TrackerId.addDeviceId(fbb, DeviceId.createDeviceId(fbb, tracker.getDevice().getId()));
 

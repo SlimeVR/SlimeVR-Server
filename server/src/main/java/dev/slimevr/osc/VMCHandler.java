@@ -283,6 +283,9 @@ public class VMCHandler implements OSCHandler {
 				name,
 				"VMC Tracker #" + VRServer.getCurrentLocalTrackerId(),
 				trackerPosition,
+				// FIXME: Should trackerNum be null on the case of the VMC
+				// virtual device?
+				null,
 				position != null,
 				rotation != null,
 				false,

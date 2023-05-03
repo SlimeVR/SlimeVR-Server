@@ -104,9 +104,11 @@ public abstract class SteamVRBridge extends ProtobufBridge implements Runnable {
 
 		Tracker tracker = new Tracker(
 			device,
+			// FIXME: Why dont we use the atomic counter in here?
 			trackerAdded.getTrackerId(),
 			trackerAdded.getTrackerName(),
 			displayName,
+			null,
 			null,
 			true,
 			true,

@@ -19,6 +19,10 @@ class Tracker @JvmOverloads constructor(
 	val name: String, // unique, for config
 	val displayName: String = "Tracker #$id", // default display GUI name
 	var trackerPosition: TrackerPosition?,
+	/**
+	 * It's like the ID, but it should be local to the device if it has one
+	 */
+	trackerNum: Int? = null,
 	val hasPosition: Boolean = false,
 	val hasRotation: Boolean = false,
 	val hasAcceleration: Boolean = false,
@@ -61,6 +65,11 @@ class Tracker @JvmOverloads constructor(
 	// Computed value to simplify availability checks
 	val hasAdjustedRotation = hasRotation && (allowFiltering || needsReset)
 
+	/**
+	 * It's like the ID, but it should be local to the device if it has one
+	 */
+	val trackerNum: Int = trackerNum ?: id
+
 	init {
 		// IMPORTANT: Look here for the required states of inputs
 		require(!needsReset || (hasRotation && needsReset)) {
@@ -69,6 +78,9 @@ class Tracker @JvmOverloads constructor(
 		require(!needsMounting || (needsReset && needsMounting)) {
 			"If ${::needsMounting.name} is true, then ${::needsReset.name} must also be true"
 		}
+// 		require(device != null && _trackerNum == null) {
+// 			"If ${::device.name} exists, then ${::trackerNum.name} must not be null"
+// 		}
 	}
 
 	/**

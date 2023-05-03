@@ -97,6 +97,7 @@ public class VRServer extends Thread {
 			"HMD",
 			"HMD",
 			TrackerPosition.HEAD,
+			null,
 			true,
 			true,
 			false,
@@ -411,7 +412,7 @@ public class VRServer extends Thread {
 
 	public Tracker getTrackerById(TrackerIdT id) {
 		for (Tracker tracker : trackers) {
-			if (tracker.getId() != id.getTrackerNum()) {
+			if (tracker.getTrackerNum() != id.getTrackerNum()) {
 				continue;
 			}
 
