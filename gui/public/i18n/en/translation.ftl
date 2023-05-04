@@ -528,12 +528,12 @@ onboarding-connect_tracker-next = I connected all my trackers
 ## Tracker calibration tutorial
 onboarding-calibration_tutorial = IMU Calibration Tutorial
 onboarding-calibration_tutorial-subtitle = This will help with tracker drifting!
-onboarding-calibration_tutorial-description = When you turn on your trackers, they need to stay for a moment on a flat surface to calibrate. Let's try doing the same thing by clicking the Calibrate button, <b>try to not move them!</b>
+onboarding-calibration_tutorial-description = Every time you turn on your trackers, they need to stay for a moment on a flat surface to calibrate. Let's do the same thing by clicking the Calibrate button, <b>do not move them!</b>
 onboarding-calibration_tutorial-calibrate = Calibrate
 onboarding-calibration_tutorial-status-waiting = Waiting for you
 onboarding-calibration_tutorial-status-calibrating = Calibrating
 onboarding-calibration_tutorial-status-success = You did it!
-onboarding-calibration_tutorial-status-error = You moved the tracker
+onboarding-calibration_tutorial-status-error = The tracker was moved
 
 ## Tracker assignment setup
 onboarding-assign_trackers-back = Go Back to Wi-Fi Credentials
