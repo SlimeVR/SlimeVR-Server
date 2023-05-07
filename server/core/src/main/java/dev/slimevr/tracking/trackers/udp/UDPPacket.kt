@@ -331,15 +331,15 @@ class UDPPacket22FeatureFlags(
 	}
 
 	override fun writeData(buf: ByteBuffer) {
-		// features supported by server
+		// features supported by the server
 		val flags: Int = FLAG_SERVER_PROTOCOL_BUNDLE_SUPPORT
 		buf.putInt(flags)
 	}
 
 	companion object {
-		const val FLAG_SERVER_PROTOCOL_BUNDLE_SUPPORT = 1 shl 0
+		const val FLAG_SERVER_PROTOCOL_BUNDLE_SUPPORT = 1 shl 1
 
-		// const val FLAG_TRACKER_EXAMPLE_FEATURE = 1 shl 0
+		// const val FLAG_TRACKER_EXAMPLE_FEATURE = 1 shl 2
 	}
 }
 
