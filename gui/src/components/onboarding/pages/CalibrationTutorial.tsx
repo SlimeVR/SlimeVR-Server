@@ -31,7 +31,6 @@ export function CalibrationTutorialPage() {
     onCountdownEnd: () => setCalibrationStatus(CalibrationStatus.SUCCESS),
   });
 
-
   const progressBarClass = useMemo(() => {
     switch (calibrationStatus) {
       case CalibrationStatus.ERROR:
@@ -77,8 +76,8 @@ export function CalibrationTutorialPage() {
           modalVisible={skipWarning}
           onClick={() => setSkipWarning(true)}
         ></SkipSetupButton>
-        <div className="flex flex-col w-full h-full justify-center px-20">
-          <div className="flex gap-8 self-center mt-auto">
+        <div className="flex w-full h-full justify-center px-20 gap-14">
+          <div className="flex gap-8 self-center">
             <div className="flex flex-col max-w-md gap-3">
               <div>
                 <Typography variant="main-title">
@@ -96,57 +95,62 @@ export function CalibrationTutorialPage() {
                   Description on calibration of IMU
                 </Typography>
               </Localized>
+              <div>
+                <div className="flex justify-center">
+                  <LoaderIcon slimeState={slimeStatus}></LoaderIcon>
+                </div>
+                <ProgressBar
+                  progress={
+                    isCounting
+                      ? (IMU_CALIBRATION_TIME - timer) / IMU_CALIBRATION_TIME
+                      : calibrationStatus === CalibrationStatus.SUCCESS
+                      ? 1
+                      : 0
+                  }
+                  height={14}
+                  animated={true}
+                  colorClass={progressBarClass}
+                ></ProgressBar>
+              </div>
+              <div className="flex justify-center">
+                <Typography variant="section-title">{progressText}</Typography>
+              </div>
+              <div className="flex gap-3">
+                <Button
+                  variant="secondary"
+                  to="/onboarding/wifi-creds"
+                  className="mr-auto"
+                >
+                  {l10n.getString('onboarding-previous_step')}
+                </Button>
+                <Button
+                  variant="primary"
+                  onClick={() => {
+                    setCalibrationStatus(CalibrationStatus.CALIBRATING);
+                    startCountdown();
+                  }}
+                  disabled={isCounting}
+                  hidden={CalibrationStatus.SUCCESS === calibrationStatus}
+                  className="ml-auto"
+                >
+                  {l10n.getString('onboarding-calibration_tutorial-calibrate')}
+                </Button>
+                <Button
+                  variant="primary"
+                  to="/onboarding/trackers-assign"
+                  className={classNames(
+                    'ml-auto',
+                    CalibrationStatus.SUCCESS !== calibrationStatus && 'hidden'
+                  )}
+                >
+                  {l10n.getString('onboarding-continue')}
+                </Button>
+              </div>
             </div>
           </div>
-          <div className="flex flex-col mt-auto self-center mb-10 w-96">
-            <div className="flex gap-3">
-              <Button
-                variant="secondary"
-                to="/onboarding/wifi-creds"
-                className="mr-auto"
-              >
-                {l10n.getString('onboarding-previous_step')}
-              </Button>
-              <Button
-                variant="primary"
-                onClick={() => {
-                  setCalibrationStatus(CalibrationStatus.CALIBRATING);
-                  startCountdown();
-                }}
-                disabled={isCounting}
-                hidden={CalibrationStatus.SUCCESS === calibrationStatus}
-                className="ml-auto"
-              >
-                {l10n.getString('onboarding-calibration_tutorial-calibrate')}
-              </Button>
-              <Button
-                variant="primary"
-                to="/onboarding/trackers-assign"
-                className={classNames(
-                  'ml-auto',
-                  CalibrationStatus.SUCCESS !== calibrationStatus && 'hidden'
-                )}
-              >
-                {l10n.getString('onboarding-continue')}
-              </Button>
-            </div>
-            <div className="flex justify-center">
-              <LoaderIcon slimeState={slimeStatus}></LoaderIcon>
-            </div>
-            <ProgressBar
-              progress={
-                isCounting
-                  ? (IMU_CALIBRATION_TIME - timer) / IMU_CALIBRATION_TIME
-                  : calibrationStatus === CalibrationStatus.SUCCESS
-                  ? 1
-                  : 0
-              }
-              height={14}
-              animated={true}
-              colorClass={progressBarClass}
-            ></ProgressBar>
-            <div className="flex justify-center">
-              <Typography variant="section-title">{progressText}</Typography>
+          <div className="flex self-center w-[32rem]">
+            <div>
+              <img src="/images/taybol.png"></img>
             </div>
           </div>
         </div>
