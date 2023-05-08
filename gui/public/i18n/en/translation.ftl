@@ -532,7 +532,7 @@ onboarding-calibration_tutorial-description = Every time you turn on your tracke
 onboarding-calibration_tutorial-calibrate = I placed trackers on the table
 onboarding-calibration_tutorial-status-waiting = Waiting for you
 onboarding-calibration_tutorial-status-calibrating = Calibrating
-onboarding-calibration_tutorial-status-success = You did it!
+onboarding-calibration_tutorial-status-success = Nice!
 onboarding-calibration_tutorial-status-error = The tracker was moved
 
 ## Tracker assignment setup
