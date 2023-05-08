@@ -241,7 +241,7 @@ class TrackerResetsHandler(val tracker: Tracker) {
 	// Y-axis is worse. In both cases, the isolated yaw value changes
 	// with the tracker's roll when pointing forward.
 	// A resets-rewrite might be beneficial as well.
-	fun getYaw(rot: Quaternion): Float {
+	private fun getYaw(rot: Quaternion): Float {
 		val sqw = rot.w * rot.w
 		val sqx = rot.x * rot.x
 		val sqy = rot.y * rot.y
