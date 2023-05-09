@@ -47,7 +47,11 @@ public class RPCHandler extends ProtocolHandler<RpcMessageHeader>
 		new RPCSerialHandler(this, api);
 		new RPCProvisioningHandler(this, api);
 		new RPCSettingsHandler(this, api);
+<<<<<<< HEAD
 		new RPCTapSetupHandler(this, api);
+=======
+		new RPCStatusHandler(this, api);
+>>>>>>> 26537a66 (start working on this)
 
 		registerPacketListener(RpcMessage.ResetRequest, this::onResetRequest);
 		registerPacketListener(RpcMessage.AssignTrackerRequest, this::onAssignTrackerRequest);

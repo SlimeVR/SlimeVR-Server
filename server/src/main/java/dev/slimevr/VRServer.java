@@ -16,7 +16,11 @@ import dev.slimevr.protocol.ProtocolAPI;
 import dev.slimevr.reset.ResetHandler;
 import dev.slimevr.serial.ProvisioningHandler;
 import dev.slimevr.serial.SerialHandler;
+<<<<<<< HEAD
 import dev.slimevr.setup.TapSetupHandler;
+=======
+import dev.slimevr.status.StatusSystem;
+>>>>>>> 26537a66 (start working on this)
 import dev.slimevr.tracking.processor.HumanPoseManager;
 import dev.slimevr.tracking.processor.skeleton.HumanSkeleton;
 import dev.slimevr.tracking.trackers.DeviceManager;
@@ -67,6 +71,7 @@ public class VRServer extends Thread {
 	private final ProvisioningHandler provisioningHandler;
 	private final static AtomicInteger nextLocalTrackerId = new AtomicInteger();
 	private final ResetHandler resetHandler;
+	private final StatusSystem statusSystem = new StatusSystem();
 
 	/**
 	 * This function is used by VRWorkout, do not remove!
@@ -491,6 +496,10 @@ public class VRServer extends Thread {
 
 	public ProvisioningHandler getProvisioningHandler() {
 		return provisioningHandler;
+	}
+
+	public StatusSystem getStatusSystem() {
+		return statusSystem;
 	}
 
 	public void clearTrackersDriftCompensation() {
