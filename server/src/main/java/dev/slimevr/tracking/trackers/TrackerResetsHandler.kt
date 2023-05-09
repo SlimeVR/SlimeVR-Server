@@ -220,7 +220,7 @@ class TrackerResetsHandler(val tracker: Tracker) {
 	}
 
 	private fun fixGyroscope(sensorRotation: Quaternion) {
-		gyroFix = sensorRotation.project(Vector3.POS_Y).unit().inv()
+		gyroFix = EulerAngles(EulerOrder.YZX, 0f, getYaw(sensorRotation), 0f).toQuaternion().inv()
 	}
 
 	private fun fixAttachment(sensorRotation: Quaternion) {
