@@ -3,7 +3,7 @@ import { useState } from 'react';
 import { BaseModal } from './commons/BaseModal';
 import { Button } from './commons/Button';
 import { Typography } from './commons/Typography';
-import {open} from '@tauri-apps/api/shell';
+import { open } from '@tauri-apps/api/shell';
 import semver from 'semver';
 
 export function VersionUpdateModal({ newVersion }: { newVersion: string }) {
@@ -13,23 +13,19 @@ export function VersionUpdateModal({ newVersion }: { newVersion: string }) {
     localStorage.setItem('lastVersionFound', newVersion);
     setForceClose(true);
   };
-  let isVersionNew = false
-  try{
+  let isVersionNew = false;
+  try {
     isVersionNew = semver.gt(
-        newVersion,
-        localStorage.getItem('lastVersionFound') || 'v0.0.0'
-    )
-  }catch{
+      newVersion,
+      localStorage.getItem('lastVersionFound') || 'v0.0.0'
+    );
+  } catch {
     console.error('failed to parse new version');
   }
 
   return (
     <BaseModal
-      isOpen={
-        !forceClose &&
-        !!newVersion &&
-          isVersionNew
-      }
+      isOpen={!forceClose && !!newVersion && isVersionNew}
       onRequestClose={closeModal}
     >
       <div className="flex flex-col gap-3">
