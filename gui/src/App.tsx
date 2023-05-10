@@ -56,8 +56,6 @@ function Layout() {
         `https://api.github.com/repos/${GH_REPO}/releases`
       ).then((res) => res.json());
 
-      // what is this? - Uriel
-      // setUpdateFound('v69.69.428');
       if (__VERSION_TAG__ && releases[0].tag_name !== __VERSION_TAG__) {
         setUpdateFound(releases[0].tag_name);
       }
