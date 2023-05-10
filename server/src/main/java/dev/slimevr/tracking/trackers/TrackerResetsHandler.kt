@@ -146,7 +146,7 @@ class TrackerResetsHandler(val tracker: Tracker) {
 		} else {
 			// Set mounting to the HMD's yaw so that the non-mounting-adjusted
 			// tracker goes forward.
-			mountRotFix = reference.project(Vector3.POS_Y).unit()
+			mountRotFix = EulerAngles(EulerOrder.YZX, 0f, getYaw(reference), 0f).toQuaternion()
 		}
 		fixAttachment(tracker.getRawRotation() * mountingOrientation)
 
@@ -231,7 +231,7 @@ class TrackerResetsHandler(val tracker: Tracker) {
 		var rot = gyroFix * sensorRotation
 		rot *= attachmentFix
 		rot *= mountRotFix
-		rot = EulerAngles(EulerOrder.YZX, 0f, getYaw(rot), 0f).toQuaternion() // FIXME
+		rot = EulerAngles(EulerOrder.YZX, 0f, getYaw(rot), 0f).toQuaternion()
 		yawFix = rot.inv() * reference.project(Vector3.POS_Y).unit()
 	}
 
@@ -276,6 +276,8 @@ class TrackerResetsHandler(val tracker: Tracker) {
 	 */
 	private fun calculateDrift(beforeQuat: Quaternion) {
 		if (compensateDrift && allowDriftCompensation) {
+			val rotQuat = adjustToReference(tracker.getRawRotation())
+
 			if (driftSince > 0 && System.currentTimeMillis() - timeAtLastReset > DRIFT_COOLDOWN_MS) {
 				// Check and remove from lists to keep them under the reset limit
 				if (driftQuats.size == driftQuats.capacity()) {
@@ -285,8 +287,8 @@ class TrackerResetsHandler(val tracker: Tracker) {
 
 				// Add new drift quaternion
 				driftQuats.add(
-					EulerAngles(EulerOrder.YZX, 0f, getYaw(adjustToReference(tracker.getRawRotation())), 0f).toQuaternion() *
-						EulerAngles(EulerOrder.YZX, 0f, getYaw(beforeQuat), 0f).toQuaternion()
+					EulerAngles(EulerOrder.YZX, 0f, getYaw(rotQuat), 0f).toQuaternion() *
+						EulerAngles(EulerOrder.YZX, 0f, getYaw(beforeQuat), 0f).toQuaternion().inv()
 				)
 
 				// Add drift time to total
@@ -315,8 +317,8 @@ class TrackerResetsHandler(val tracker: Tracker) {
 			} else if (System.currentTimeMillis() - timeAtLastReset < DRIFT_COOLDOWN_MS && driftQuats.size > 0) {
 				// Replace latest drift quaternion
 				rotationSinceReset *= (
-					EulerAngles(EulerOrder.YZX, 0f, getYaw(adjustToReference(tracker.getRawRotation())), 0f).toQuaternion() *
-						EulerAngles(EulerOrder.YZX, 0f, getYaw(beforeQuat), 0f).toQuaternion()
+					EulerAngles(EulerOrder.YZX, 0f, getYaw(rotQuat), 0f).toQuaternion() *
+						EulerAngles(EulerOrder.YZX, 0f, getYaw(beforeQuat), 0f).toQuaternion().inv()
 					)
 				driftQuats[driftQuats.size - 1] = rotationSinceReset
 
