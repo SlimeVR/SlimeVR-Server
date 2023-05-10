@@ -7,7 +7,7 @@ This document describes essential knowledge required to contribute to the SlimeV
 - [Git](https://git-scm.com/downloads)
 - [Java v17+](https://adoptium.net/temurin/releases/)
 - [Node.js v16+](https://nodejs.org) (We recommend the use of `nvm` instead of installing Node.js directly)
-- [Windows Webview](https://developer.microsoft.com/en-us/microsoft-edge/webview2/#download-section) or ``webkit2gtk`` for Linux
+- [Microsoft Edge WebView2](https://developer.microsoft.com/en-us/microsoft-edge/webview2/#download-section) or `webkit2gtk` for Linux
 - [Rust](https://rustup.rs)
 
 ## Cloning the code
@@ -30,7 +30,7 @@ dependencies.
 - To compile the code, run `./gradlew shadowJar`. The result will
 be at `server/build/libs/slimevr.jar` (you can ignore `server.jar`).
 
-(Note: your IDE may do all of the above for you.)
+(Note: Your IDE may be able to do all of the above for you.)
 
 ### Tauri (gui)
 
@@ -47,7 +47,7 @@ The Java code is auto-formatted with [spotless](https://github.com/diffplug/spot
 Code is checked for autoformatting whenever you build, but you can also run
 `./gradlew spotlessCheck` if you prefer.
 
-To auto-format your Java code from the command line, you can run `./gradlew spotlessApply`.
+To auto-format your Java and Kotlin code from the command line, you can run `./gradlew spotlessApply`.
 We recommend installing support for spotless in your IDE, and formatting
 whenever you save a file to make things easy.
 
@@ -55,7 +55,7 @@ If you need to prevent autoformatting for a select region of code, use
 `// @formatter:off` and `// @formatter:on`
 
 #### Setting up spotless for IntelliJ IDEA
-* Install https://plugins.jetbrains.com/plugin/18321-spotless-gradle.
+* Install https://plugins.jetbrains.com/plugin/18321-spotless-gradle
 * Add a keyboard shortcut for `Code` > `Reformat Code with Spotless`
 * They are working on support to do this on save without a keybind
   [here](https://github.com/ragurney/spotless-intellij-gradle/issues/8)
@@ -90,7 +90,7 @@ We use ESLint and Prettier to format GUI code.
 - To check code formatting, run `npm run lint`.
 - To fix code formatting, run `npm run lint:fix` and `npm run format`
 
-Don't forget to run `cd ..` to go back in the main directory.
+Don't forget to run `cd ..` to return to the root directory.
 
 ## SolarXR Protocol
 

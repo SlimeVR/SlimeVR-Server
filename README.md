@@ -9,7 +9,7 @@ Sensors implementations:
 * [SlimeVR Wrangler](https://github.com/carl-anders/slimevr-wrangler) - use Nintendo Switch Joycon controllers as trackers
 
 Integrations:
-* Use [SlimeVR OpenVR Driver](https://github.com/SlimeVR/SlimeVR-OpenVR-Driver) as a driver for SteamVR
+* Use [SlimeVR OpenVR Driver](https://github.com/SlimeVR/SlimeVR-OpenVR-Driver) as a driver for SteamVR.
 * Use built-in OSC Trackers support for FBT integration with VRChat, PCVR or Standalone.
 * Use built-in VMC support for sending and receiving tracking data to and from other apps such as VSeeFace.
 * Export recordings as .BVH files to integrate motion capture data into 3d applications such as Blender.
