@@ -1,4 +1,4 @@
-import { useEffect } from 'react';
+import { useEffect, useState } from 'react';
 import {
   BrowserRouter as Router,
   Outlet,
@@ -43,14 +43,30 @@ import { VMCSettings } from './components/settings/pages/VMCSettings';
 import { MountingChoose } from './components/onboarding/pages/mounting/MountingChoose';
 import { ProportionsChoose } from './components/onboarding/pages/body-proportions/ProportionsChoose';
 import { LogicalSize, appWindow } from '@tauri-apps/api/window';
+import { Release, VersionUpdateModal } from './components/VersionUpdateModal';
 
 function Layout() {
   const { loading } = useConfig();
+  const [updateFound, setUpdateFound] = useState('');
+  useEffect(() => {
+    async function fetchReleases() {
+      const releases: Release[] = await fetch(
+        'https://api.github.com/repos/SlimeVR/SlimeVR-Server/releases'
+      ).then((res) => res.json());
+
+      setUpdateFound('v69.69.428');
+      if (__VERSION_TAG__ && releases[0].tag_name !== __VERSION_TAG__) {
+        setUpdateFound(releases[0].tag_name);
+      }
+    }
+    fetchReleases().catch(() => console.error('failed to fetch releases'));
+  }, []);
   if (loading) return <></>;
 
   return (
     <>
       <SerialDetectionModal></SerialDetectionModal>
+      <VersionUpdateModal newVersion={updateFound}></VersionUpdateModal>
       <Routes>
         <Route
           path="/"

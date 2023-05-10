@@ -9,6 +9,12 @@
 websocket-connecting = Connecting to the server
 websocket-connection_lost = Connection lost to the server. Trying to reconnect...
 
+## Update notification
+version_update-title = New version available: { $version }
+version_update-description = Clicking "Update" will download the SlimeVR installer for you.
+version_update-update = Update
+version_update-close = Close
+
 ## Tips
 tips-find_tracker = Not sure which tracker is which? Shake a tracker and it will highlight the corresponding item.
 tips-do_not_move_heels = Ensure your heels do not move during recording!
