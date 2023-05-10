@@ -98,9 +98,12 @@ SolarXR is used to communicate between the server (backend) and GUI (frontend).
 It can also be used to communicate to third party applications.
 
 When touching SolarXR:
+- You will need `flatc`. To know which version to get, refer to
+[SolarXR's README](https://github.com/SlimeVR/SolarXR-Protocol/blob/main/README.md#flatc)
 - The only files you should edit are in the `schema` directory.
 - After editing files, you should run `cd solarxr-protocol`, then either run
 `./generate-flatbuffer.ps1` (Windows) or `./generate-flatbuffer.sh` (Linux/OSX)
+- Make sure to commit your changes inside the submodule.
 
 ## Code Licensing
 SlimeVR uses dual MIT and Apache-2.0 license. Be sure that any code that you reference,
