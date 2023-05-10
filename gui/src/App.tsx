@@ -132,7 +132,10 @@ function Layout() {
           />
           <Route path="done" element={<DonePage />} />
         </Route>
-        <Route path="*" element={<TopBar version={updateFound}></TopBar>}></Route>
+        <Route
+          path="*"
+          element={<TopBar version={updateFound}></TopBar>}
+        ></Route>
       </Routes>
     </>
   );
