@@ -34,7 +34,7 @@
         }
       },
       "appimage": {
-        "bundleMediaFramework": true 
+        "bundleMediaFramework": true
       },
       "macOS": {
         "frameworks": [],
@@ -76,7 +76,8 @@
         "minimize": true,
         "unminimize": true,
         "close": true,
-        "startDragging": true
+        "startDragging": true,
+        "setSize": true
       }
     },
     "windows": [

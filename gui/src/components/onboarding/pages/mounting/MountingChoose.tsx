@@ -60,7 +60,7 @@ export function MountingChoose() {
                   </div>
 
                   <Button
-                    variant={!state.alonePage ? 'secondary' : 'tiertiary'}
+                    variant={!state.alonePage ? 'secondary' : 'tertiary'}
                     to="/onboarding/mounting/manual"
                     className="self-start mt-auto"
                     state={{ alonePage: state.alonePage }}
