@@ -5,6 +5,7 @@ import { Button } from './commons/Button';
 import { Typography } from './commons/Typography';
 import { open } from '@tauri-apps/api/shell';
 import semver from 'semver';
+import { GH_REPO } from '../App';
 
 export function VersionUpdateModal({ newVersion }: { newVersion: string }) {
   const { l10n } = useLocalization();
@@ -15,10 +16,12 @@ export function VersionUpdateModal({ newVersion }: { newVersion: string }) {
   };
   let isVersionNew = false;
   try {
-    isVersionNew = semver.gt(
-      newVersion,
-      localStorage.getItem('lastVersionFound') || 'v0.0.0'
-    );
+    if (newVersion) {
+      isVersionNew = semver.gt(
+        newVersion,
+        localStorage.getItem('lastVersionFound') || 'v0.0.0'
+      );
+    }
   } catch {
     console.error('failed to parse new version');
   }
@@ -48,7 +51,7 @@ export function VersionUpdateModal({ newVersion }: { newVersion: string }) {
             onClick={async () => {
               const url = document.body.classList.contains('windows_nt')
                 ? 'https://slimevr.dev/download'
-                : 'https://github.com/SlimeVR/SlimeVR-Server/releases/latest';
+                : `https://github.com/${GH_REPO}/releases/latest`;
               await open(url).catch(() => window.open(url, '_blank'));
               closeModal();
             }}

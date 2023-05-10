@@ -1,4 +1,4 @@
-export function DownloadIcon({ width = 28 }: { width?: number }) {
+export function DownloadIcon({ width = 22 }: { width?: number }) {
   return (
     <svg
       xmlns="http://www.w3.org/2000/svg"

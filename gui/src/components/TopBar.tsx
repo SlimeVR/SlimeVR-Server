@@ -13,12 +13,21 @@ import { MinimiseIcon } from './commons/icon/MinimiseIcon';
 import { SlimeVRIcon } from './commons/icon/SimevrIcon';
 import { ProgressBar } from './commons/ProgressBar';
 import { Typography } from './commons/Typography';
+import { DownloadIcon } from './commons/icon/DownloadIcon';
+import { open } from '@tauri-apps/api/shell';
+import { GH_REPO } from '../App';
+import classNames from 'classnames';
 
 export function TopBar({
   progress,
+  version,
 }: {
   children?: ReactNode;
   progress?: number;
+  /**
+   * If not falsy, we will make an update icon appear
+   */
+  version?: string;
 }) {
   const { useRPCPacket, sendRPCPacket } = useWebsocketAPI();
   const [localIp, setLocalIp] = useState<string | null>(null);
@@ -54,13 +63,41 @@ export function TopBar({
           <div className="flex justify-around flex-col" data-tauri-drag-region>
             <Typography>SlimeVR</Typography>
           </div>
-          <div className="flex justify-around flex-col text-standard-bold text-status-success bg-status-success bg-opacity-20 rounded-lg px-3 select-text">
+          <div
+            className={classNames(
+              'flex justify-around flex-col text-standard-bold',
+              'text-status-success bg-status-success bg-opacity-20 rounded-lg',
+              'px-3 select-text cursor-pointer'
+            )}
+            onClick={() => {
+              const url = `https://github.com/${GH_REPO}/releases`;
+              open(url).catch(() => window.open(url, '_blank'));
+            }}
+          >
             {(__VERSION_TAG__ || __COMMIT_HASH__) +
               (__GIT_CLEAN__ ? '' : '-dirty')}
           </div>
           {doesMatchSettings && (
-            <div className="flex justify-around flex-col text-standard-bold text-status-special bg-status-special bg-opacity-20 rounded-lg px-3 select-text">
+            <div
+              className={classNames(
+                'flex justify-around flex-col text-standard-bold text-status-special',
+                'bg-status-special bg-opacity-20 rounded-lg px-3 select-text'
+              )}
+            >
               {localIp || 'unknown local ip'}
+            </div>
+          )}
+          {version && (
+            <div
+              className="cursor-pointer"
+              onClick={() => {
+                const url = document.body.classList.contains('windows_nt')
+                  ? 'https://slimevr.dev/download'
+                  : `https://github.com/${GH_REPO}/releases/latest`;
+                open(url).catch(() => window.open(url, '_blank'));
+              }}
+            >
+              <DownloadIcon></DownloadIcon>
             </div>
           )}
         </div>

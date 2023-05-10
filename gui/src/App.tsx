@@ -45,16 +45,19 @@ import { ProportionsChoose } from './components/onboarding/pages/body-proportion
 import { LogicalSize, appWindow } from '@tauri-apps/api/window';
 import { Release, VersionUpdateModal } from './components/VersionUpdateModal';
 
+export const GH_REPO = 'SlimeVR/SlimeVR-Server';
+
 function Layout() {
   const { loading } = useConfig();
   const [updateFound, setUpdateFound] = useState('');
   useEffect(() => {
     async function fetchReleases() {
       const releases: Release[] = await fetch(
-        'https://api.github.com/repos/SlimeVR/SlimeVR-Server/releases'
+        `https://api.github.com/repos/${GH_REPO}/releases`
       ).then((res) => res.json());
 
-      setUpdateFound('v69.69.428');
+      // what is this? - Uriel
+      // setUpdateFound('v69.69.428');
       if (__VERSION_TAG__ && releases[0].tag_name !== __VERSION_TAG__) {
         setUpdateFound(releases[0].tag_name);
       }
@@ -129,7 +132,7 @@ function Layout() {
           />
           <Route path="done" element={<DonePage />} />
         </Route>
-        <Route path="*" element={<TopBar></TopBar>}></Route>
+        <Route path="*" element={<TopBar version={updateFound}></TopBar>}></Route>
       </Routes>
     </>
   );
