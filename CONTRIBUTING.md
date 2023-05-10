@@ -92,6 +92,16 @@ We use ESLint and Prettier to format GUI code.
 
 Don't forget to run `cd ..` to go back in the main directory.
 
+## SolarXR Protocol
+
+SolarXR is used to communicate between the server (backend) and GUI (frontend).
+It can also be used to communicate to third party applications.
+
+When touching SolarXR:
+- The only files you should edit are in the `schema` directory.
+- After editing files, you should run `cd solarxr-protocol`, then either run
+`./generate-flatbuffer.ps1` (Windows) or `./generate-flatbuffer.sh` (Linux/OSX)
+
 ## Code Licensing
 SlimeVR uses dual MIT and Apache-2.0 license. Be sure that any code that you reference,
 or dependencies you add, are compatible with these licenses. For example, `GPL-v3` is
