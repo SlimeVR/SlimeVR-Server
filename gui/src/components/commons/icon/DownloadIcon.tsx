@@ -4,7 +4,7 @@ export function DownloadIcon({ width = 22 }: { width?: number }) {
       xmlns="http://www.w3.org/2000/svg"
       viewBox="0 0 24 24"
       width={width}
-      className="fill-status-success"
+      className="fill-status-success stroke-status-success"
     >
       <path
         fillRule="evenodd"
