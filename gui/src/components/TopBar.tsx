@@ -1,5 +1,5 @@
 import { appWindow } from '@tauri-apps/api/window';
-import { ReactNode, useEffect, useState } from 'react';
+import { ReactNode, useContext, useEffect, useState } from 'react';
 import { NavLink, useMatch } from 'react-router-dom';
 import {
   RpcMessage,
@@ -15,21 +15,17 @@ import { ProgressBar } from './commons/ProgressBar';
 import { Typography } from './commons/Typography';
 import { DownloadIcon } from './commons/icon/DownloadIcon';
 import { open } from '@tauri-apps/api/shell';
-import { GH_REPO } from '../App';
+import { GH_REPO, VersionContext } from '../App';
 import classNames from 'classnames';
 
 export function TopBar({
   progress,
-  version,
 }: {
   children?: ReactNode;
   progress?: number;
-  /**
-   * If not falsy, we will make an update icon appear
-   */
-  version?: string;
 }) {
   const { useRPCPacket, sendRPCPacket } = useWebsocketAPI();
+  const version = useContext(VersionContext);
   const [localIp, setLocalIp] = useState<string | null>(null);
   const doesMatchSettings = useMatch({
     path: '/settings/*',

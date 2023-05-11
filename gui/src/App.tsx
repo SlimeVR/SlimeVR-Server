@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import { createContext, useEffect, useState } from 'react';
 import {
   BrowserRouter as Router,
   Outlet,
@@ -46,28 +46,16 @@ import { LogicalSize, appWindow } from '@tauri-apps/api/window';
 import { Release, VersionUpdateModal } from './components/VersionUpdateModal';
 
 export const GH_REPO = 'SlimeVR/SlimeVR-Server';
+export const VersionContext = createContext('');
 
 function Layout() {
   const { loading } = useConfig();
-  const [updateFound, setUpdateFound] = useState('');
-  useEffect(() => {
-    async function fetchReleases() {
-      const releases: Release[] = await fetch(
-        `https://api.github.com/repos/${GH_REPO}/releases`
-      ).then((res) => res.json());
-
-      if (__VERSION_TAG__ && releases[0].tag_name !== __VERSION_TAG__) {
-        setUpdateFound(releases[0].tag_name);
-      }
-    }
-    fetchReleases().catch(() => console.error('failed to fetch releases'));
-  }, []);
   if (loading) return <></>;
 
   return (
     <>
       <SerialDetectionModal></SerialDetectionModal>
-      <VersionUpdateModal newVersion={updateFound}></VersionUpdateModal>
+      <VersionUpdateModal></VersionUpdateModal>
       <Routes>
         <Route
           path="/"
@@ -130,10 +118,7 @@ function Layout() {
           />
           <Route path="done" element={<DonePage />} />
         </Route>
-        <Route
-          path="*"
-          element={<TopBar version={updateFound}></TopBar>}
-        ></Route>
+        <Route path="*" element={<TopBar></TopBar>}></Route>
       </Routes>
     </>
   );
@@ -144,6 +129,19 @@ const MIN_SIZE = { width: 880, height: 740 };
 export default function App() {
   const websocketAPI = useProvideWebsocketApi();
   const { l10n } = useLocalization();
+  const [updateFound, setUpdateFound] = useState('');
+  useEffect(() => {
+    async function fetchReleases() {
+      const releases: Release[] = await fetch(
+        `https://api.github.com/repos/${GH_REPO}/releases`
+      ).then((res) => res.json());
+
+      if (__VERSION_TAG__ && releases[0].tag_name !== __VERSION_TAG__) {
+        setUpdateFound(releases[0].tag_name);
+      }
+    }
+    fetchReleases().catch(() => console.error('failed to fetch releases'));
+  }, []);
 
   useEffect(() => {
     os.type()
@@ -226,21 +224,23 @@ export default function App() {
         <WebSocketApiContext.Provider value={websocketAPI}>
           <AppContextProvider>
             <OnboardingContextProvider>
-              <div className="h-full w-full text-standard bg-background-80 text-background-10">
-                <div className="flex-col h-full">
-                  {!websocketAPI.isConnected && (
-                    <>
-                      <TopBar></TopBar>
-                      <div className="flex w-full h-full justify-center items-center p-2">
-                        {websocketAPI.isFirstConnection
-                          ? l10n.getString('websocket-connecting')
-                          : l10n.getString('websocket-connection_lost')}
-                      </div>
-                    </>
-                  )}
-                  {websocketAPI.isConnected && <Layout></Layout>}
+              <VersionContext.Provider value={updateFound}>
+                <div className="h-full w-full text-standard bg-background-80 text-background-10">
+                  <div className="flex-col h-full">
+                    {!websocketAPI.isConnected && (
+                      <>
+                        <TopBar></TopBar>
+                        <div className="flex w-full h-full justify-center items-center p-2">
+                          {websocketAPI.isFirstConnection
+                            ? l10n.getString('websocket-connecting')
+                            : l10n.getString('websocket-connection_lost')}
+                        </div>
+                      </>
+                    )}
+                    {websocketAPI.isConnected && <Layout></Layout>}
+                  </div>
                 </div>
-              </div>
+              </VersionContext.Provider>
             </OnboardingContextProvider>
           </AppContextProvider>
         </WebSocketApiContext.Provider>

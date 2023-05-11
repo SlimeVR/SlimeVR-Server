@@ -1,14 +1,15 @@
 import { useLocalization } from '@fluent/react';
-import { useState } from 'react';
+import { useContext, useState } from 'react';
 import { BaseModal } from './commons/BaseModal';
 import { Button } from './commons/Button';
 import { Typography } from './commons/Typography';
 import { open } from '@tauri-apps/api/shell';
 import semver from 'semver';
-import { GH_REPO } from '../App';
+import { GH_REPO, VersionContext } from '../App';
 
-export function VersionUpdateModal({ newVersion }: { newVersion: string }) {
+export function VersionUpdateModal() {
   const { l10n } = useLocalization();
+  const newVersion = useContext(VersionContext);
   const [forceClose, setForceClose] = useState(false);
   const closeModal = () => {
     localStorage.setItem('lastVersionFound', newVersion);
