@@ -88,6 +88,11 @@ class Localizer(humanSkeleton: HumanSkeleton) {
 			return
 		}
 
+		// if there is a 6dof device just use it
+		if (skeleton.headTracker != null && !skeleton.headTracker.isImu) {
+			return
+		}
+
 		// set the acceleration of the com for this frame
 		comAccel = getTorsoAccel()
 
