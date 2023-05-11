@@ -1,7 +1,8 @@
-package dev.slimevr.protocol.rpc
+package dev.slimevr.protocol.rpc.status
 
 import com.google.flatbuffers.FlatBufferBuilder
 import dev.slimevr.protocol.ProtocolAPI
+import dev.slimevr.protocol.rpc.RPCHandler
 import dev.slimevr.status.StatusListener
 import solarxr_protocol.rpc.RpcMessage
 import solarxr_protocol.rpc.StatusDataUnion
@@ -23,7 +24,7 @@ class RPCStatusHandler(
 		message: StatusDataUnion,
 		prioritized: Boolean,
 	) {
-		val fbb = FlatBufferBuilder(32)
+		val fbb = FlatBufferBuilder(STATUS_EXPECTED_SIZE)
 
 		val messageOffset = StatusDataUnion.pack(fbb, message)
 
@@ -39,7 +40,9 @@ class RPCStatusHandler(
 		val update = StatusSystemUpdate.endStatusSystemUpdate(fbb)
 
 		val outbound = this.rpcHandler.createRPCMessage(
-			fbb, RpcMessage.StatusSystemUpdate, update
+			fbb,
+			RpcMessage.StatusSystemUpdate,
+			update
 		)
 		fbb.finish(outbound)
 
@@ -65,5 +68,9 @@ class RPCStatusHandler(
 		this.api.apiServers.forEach { apiServer ->
 			apiServer.apiConnections.forEach { it.send(fbb.dataBuffer()) }
 		}
+	}
+
+	companion object {
+		const val STATUS_EXPECTED_SIZE = 32
 	}
 }

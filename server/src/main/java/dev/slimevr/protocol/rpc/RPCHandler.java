@@ -14,6 +14,7 @@ import dev.slimevr.protocol.rpc.serial.RPCProvisioningHandler;
 import dev.slimevr.protocol.rpc.serial.RPCSerialHandler;
 import dev.slimevr.protocol.rpc.settings.RPCSettingsHandler;
 import dev.slimevr.protocol.rpc.setup.RPCTapSetupHandler;
+import dev.slimevr.protocol.rpc.status.RPCStatusHandler;
 import dev.slimevr.tracking.processor.config.SkeletonConfigOffsets;
 import dev.slimevr.tracking.trackers.Tracker;
 import dev.slimevr.tracking.trackers.TrackerPosition;
@@ -47,11 +48,8 @@ public class RPCHandler extends ProtocolHandler<RpcMessageHeader>
 		new RPCSerialHandler(this, api);
 		new RPCProvisioningHandler(this, api);
 		new RPCSettingsHandler(this, api);
-<<<<<<< HEAD
 		new RPCTapSetupHandler(this, api);
-=======
 		new RPCStatusHandler(this, api);
->>>>>>> 26537a66 (start working on this)
 
 		registerPacketListener(RpcMessage.ResetRequest, this::onResetRequest);
 		registerPacketListener(RpcMessage.AssignTrackerRequest, this::onAssignTrackerRequest);
@@ -86,6 +84,8 @@ public class RPCHandler extends ProtocolHandler<RpcMessageHeader>
 		registerPacketListener(RpcMessage.LegTweaksTmpChange, this::onLegTweaksTmpChange);
 
 		registerPacketListener(RpcMessage.LegTweaksTmpClear, this::onLegTweaksTmpClear);
+
+		registerPacketListener(RpcMessage.StatusSystemRequest, this::onStatusSystemRequest);
 
 		this.api.server.getAutoBoneHandler().addListener(this);
 	}
@@ -448,10 +448,29 @@ public class RPCHandler extends ProtocolHandler<RpcMessageHeader>
 			);
 	}
 
-
 	@Override
 	public void onAutoBoneEnd(EnumMap<SkeletonConfigOffsets, Float> configValues) {
 		// Do nothing, the last epoch from "onAutoBoneEpoch" should be all
 		// that's needed
 	}
+
+	public void onStatusSystemRequest(GenericConnection conn, RpcMessageHeader messageHeader) {
+		StatusSystemRequest req = (StatusSystemRequest) messageHeader
+			.message(new StatusSystemRequest());
+		if (req == null)
+			return;
+
+		var statuses = this.api.server.getStatusSystem().getStatuses();
+
+		FlatBufferBuilder fbb = new FlatBufferBuilder(
+			statuses.length * RPCStatusHandler.STATUS_EXPECTED_SIZE
+		);
+		var response = new StatusSystemResponseT();
+		response.setCurrentStatuses(statuses);
+		int offset = StatusSystemResponse.pack(fbb, response);
+		int outbound = this.createRPCMessage(fbb, RpcMessage.StatusSystemResponse, offset);
+		fbb.finish(outbound);
+		conn.send(fbb.dataBuffer());
+	}
+
 }
