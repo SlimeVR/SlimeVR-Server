@@ -7,6 +7,11 @@ import dev.slimevr.vrServer
 import io.eiren.util.BufferedTimer
 import io.github.axisangles.ktmath.Quaternion
 import io.github.axisangles.ktmath.Vector3
+import solarxr_protocol.datatypes.DeviceIdT
+import solarxr_protocol.datatypes.TrackerIdT
+import solarxr_protocol.rpc.StatusData
+import solarxr_protocol.rpc.StatusDataUnion
+import solarxr_protocol.rpc.StatusTrackerResetT
 
 const val TIMEOUT_MS = 2000L
 
@@ -53,6 +58,9 @@ class Tracker @JvmOverloads constructor(
 	var status = TrackerStatus.DISCONNECTED
 		set(value) {
 			if (field != value) {
+				if (lastResetStatus == 0u && value.sendData) {
+					reportRequireReset()
+				}
 				field = value
 				if (!isInternal) {
 					// If the status of a non-internal tracker has changed, inform
@@ -82,6 +90,30 @@ class Tracker @JvmOverloads constructor(
 // 		require(device != null && _trackerNum == null) {
 // 			"If ${::device.name} exists, then ${::trackerNum.name} must not be null"
 // 		}
+
+		// Report status that this tracker requires lto be reset when it gets initialized
+		reportRequireReset()
+	}
+
+	/**
+	 * If 0 then it's null
+	 */
+	var lastResetStatus = 0u
+	private fun reportRequireReset() {
+		val tempTrackerNum = this.trackerNum
+		val statusMsg = StatusTrackerResetT().apply {
+			trackerId = TrackerIdT().apply {
+				if (device != null) {
+					deviceId = DeviceIdT().apply { id = device.id }
+				}
+				trackerNum = tempTrackerNum
+			}
+		}
+		val status = StatusDataUnion().apply {
+			type = StatusData.StatusTrackerReset
+			value = statusMsg
+		}
+		lastResetStatus = vrServer.statusSystem.addStatus(status, true)
 	}
 
 	/**

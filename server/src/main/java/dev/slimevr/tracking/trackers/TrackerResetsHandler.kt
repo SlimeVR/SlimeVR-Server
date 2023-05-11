@@ -3,6 +3,7 @@ package dev.slimevr.tracking.trackers
 import com.jme3.math.FastMath
 import dev.slimevr.config.DriftCompensationConfig
 import dev.slimevr.filtering.CircularArrayList
+import dev.slimevr.vrServer
 import io.github.axisangles.ktmath.EulerAngles
 import io.github.axisangles.ktmath.EulerOrder
 import io.github.axisangles.ktmath.Quaternion
@@ -155,6 +156,11 @@ class TrackerResetsHandler(val tracker: Tracker) {
 		fixYaw(tracker.getRawRotation() * mountingOrientation, reference)
 
 		calculateDrift(rot)
+
+		if (this.tracker.lastResetStatus != 0u) {
+			vrServer.statusSystem.removeStatus(this.tracker.lastResetStatus)
+			this.tracker.lastResetStatus = 0u
+		}
 	}
 
 	/**

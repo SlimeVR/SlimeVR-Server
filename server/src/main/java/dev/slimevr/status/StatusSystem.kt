@@ -11,7 +11,7 @@ class StatusSystem {
 	private val listeners: MutableList<StatusListener> = CopyOnWriteArrayList()
 	private val statuses: MutableMap<Int, StatusDataUnion> = Int2ObjectOpenHashMap()
 	private val prioritizedStatuses: MutableSet<Int> = IntOpenHashSet()
-	private val idCounter = AtomicInteger(0)
+	private val idCounter = AtomicInteger(1)
 
 	fun addListener(listener: StatusListener) {
 		listeners.add(listener)
@@ -29,6 +29,9 @@ class StatusSystem {
 		status
 	}.toTypedArray()
 
+	/**
+	 * @return the ID of the status, 0 is not a valid ID, can be used as replacement of null
+	 */
 	fun addStatus(statusData: StatusDataUnion, prioritized: Boolean = false): UInt {
 		val id = idCounter.getAndUpdate {
 			(it.toUInt() + 1u).toInt() // the simple way of making unsigned math
