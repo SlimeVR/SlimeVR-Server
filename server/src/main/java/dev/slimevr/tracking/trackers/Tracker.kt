@@ -24,7 +24,7 @@ class Tracker @JvmOverloads constructor(
 	val id: Int, // VRServer.nextLocalTrackerId
 	val name: String, // unique, for config
 	val displayName: String = "Tracker #$id", // default display GUI name
-	var trackerPosition: TrackerPosition?,
+	trackerPosition: TrackerPosition?,
 	/**
 	 * It's like the ID, but it should be local to the device if it has one
 	 */
@@ -57,16 +57,36 @@ class Tracker @JvmOverloads constructor(
 
 	var status = TrackerStatus.DISCONNECTED
 		set(value) {
-			if (field != value) {
-				if (lastResetStatus == 0u && value.sendData) {
-					reportRequireReset()
+			if (field == value) return
+			field = value
+			if (!isInternal) {
+				// If the status of a non-internal tracker has changed, inform
+				// the VRServer to recreate the skeleton, as it may need to
+				// assign or un-assign the tracker to a body part
+				vrServer.updateSkeletonModel()
+
+				if (lastResetStatus == 0u) {
+					if (value.sendData && trackerPosition != null) {
+						reportRequireReset()
+					}
+				} else if (!value.sendData) {
+					vrServer.statusSystem.removeStatus(lastResetStatus)
+					lastResetStatus = 0u
 				}
-				field = value
-				if (!isInternal) {
-					// If the status of a non-internal tracker has changed, inform
-					// the VRServer to recreate the skeleton, as it may need to
-					// assign or un-assign the tracker to a body part
-					vrServer.updateSkeletonModel()
+			}
+		}
+
+	var trackerPosition = trackerPosition
+		set(value) {
+			if (field == value) return
+			field = value
+
+			if (!isInternal) {
+				if (value != null && lastResetStatus == 0u && status.sendData) {
+					reportRequireReset()
+				} else if (value == null && lastResetStatus != 0u) {
+					vrServer.statusSystem.removeStatus(lastResetStatus)
+					lastResetStatus = 0u
 				}
 			}
 		}
@@ -90,9 +110,6 @@ class Tracker @JvmOverloads constructor(
 // 		require(device != null && _trackerNum == null) {
 // 			"If ${::device.name} exists, then ${::trackerNum.name} must not be null"
 // 		}
-
-		// Report status that this tracker requires lto be reset when it gets initialized
-		reportRequireReset()
 	}
 
 	/**

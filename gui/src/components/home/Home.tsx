@@ -6,11 +6,13 @@ import { useTrackers } from '../../hooks/tracker';
 import { Typography } from '../commons/Typography';
 import { TrackerCard } from '../tracker/TrackerCard';
 import { TrackersTable } from '../tracker/TrackersTable';
+import { useStatusContext } from '../../hooks/status-system';
 
 export function Home() {
   const { l10n } = useLocalization();
   const { config } = useConfig();
   const { trackers } = useTrackers();
+  const { statuses } = useStatusContext();
   const navigate = useNavigate();
 
   const sendToSettings = (tracker: TrackerDataT) => {
@@ -21,6 +23,9 @@ export function Home() {
 
   return (
     <div className="overflow-y-auto flex flex-col gap-2">
+      <div className="flex flex-row flex-wrap gap-3">
+        {}
+      </div>
       {trackers.length === 0 && (
         <div className="flex px-5 pt-5 justify-center">
           <Typography variant="standard">

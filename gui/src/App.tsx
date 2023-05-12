@@ -43,6 +43,7 @@ import { VMCSettings } from './components/settings/pages/VMCSettings';
 import { MountingChoose } from './components/onboarding/pages/mounting/MountingChoose';
 import { ProportionsChoose } from './components/onboarding/pages/body-proportions/ProportionsChoose';
 import { LogicalSize, appWindow } from '@tauri-apps/api/window';
+import { StatusProvider } from './components/providers/StatusSystemContext';
 
 function Layout() {
   const { loading } = useConfig();
@@ -205,23 +206,25 @@ export default function App() {
       <ConfigContextProvider>
         <WebSocketApiContext.Provider value={websocketAPI}>
           <AppContextProvider>
-            <OnboardingContextProvider>
-              <div className="h-full w-full text-standard bg-background-80 text-background-10">
-                <div className="flex-col h-full">
-                  {!websocketAPI.isConnected && (
-                    <>
-                      <TopBar></TopBar>
-                      <div className="flex w-full h-full justify-center items-center p-2">
-                        {websocketAPI.isFirstConnection
-                          ? l10n.getString('websocket-connecting')
-                          : l10n.getString('websocket-connection_lost')}
-                      </div>
-                    </>
-                  )}
-                  {websocketAPI.isConnected && <Layout></Layout>}
+            <StatusProvider>
+              <OnboardingContextProvider>
+                <div className="h-full w-full text-standard bg-background-80 text-background-10">
+                  <div className="flex-col h-full">
+                    {!websocketAPI.isConnected && (
+                      <>
+                        <TopBar></TopBar>
+                        <div className="flex w-full h-full justify-center items-center p-2">
+                          {websocketAPI.isFirstConnection
+                            ? l10n.getString('websocket-connecting')
+                            : l10n.getString('websocket-connection_lost')}
+                        </div>
+                      </>
+                    )}
+                    {websocketAPI.isConnected && <Layout></Layout>}
+                  </div>
                 </div>
-              </div>
-            </OnboardingContextProvider>
+              </OnboardingContextProvider>
+            </StatusProvider>
           </AppContextProvider>
         </WebSocketApiContext.Provider>
       </ConfigContextProvider>
