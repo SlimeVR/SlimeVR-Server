@@ -1,6 +1,7 @@
 import { createContext, useEffect, useReducer, useContext } from 'react';
 import {
   RpcMessage,
+  StatusData,
   StatusMessageT,
   StatusSystemFixedT,
   StatusSystemRequestT,
@@ -8,6 +9,7 @@ import {
   StatusSystemUpdateT,
 } from 'solarxr-protocol';
 import { useWebsocketAPI } from './websocket-api';
+import { FluentVariable } from '@fluent/bundle';
 
 type StatusSystemStateAction =
   | StatusSystemStateFixedAction
@@ -103,4 +105,17 @@ export function useStatusContext() {
     throw new Error('useStatusContext must be within a StatusSystemContext Provider');
   }
   return context;
+}
+
+export function parseStatusToLocale(
+  status: StatusMessageT
+): Record<string, FluentVariable> {
+  switch (status.dataType) {
+    case StatusData.NONE:
+    case StatusData.StatusTrackerReset:
+      return {};
+    case StatusData.StatusDoublyAssignedBody:
+      // const data = status.data as StatusDoublyAssignedBodyT;
+      return {};
+  }
 }
