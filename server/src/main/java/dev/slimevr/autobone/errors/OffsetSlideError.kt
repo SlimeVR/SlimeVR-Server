@@ -3,7 +3,7 @@ package dev.slimevr.autobone.errors
 import com.jme3.math.FastMath
 import dev.slimevr.autobone.AutoBoneTrainingStep
 import dev.slimevr.tracking.processor.skeleton.HumanSkeleton
-import dev.slimevr.tracking.trackers.ComputedTracker
+import dev.slimevr.tracking.trackers.Tracker
 import dev.slimevr.tracking.trackers.TrackerRole
 
 // The change in distance between both of the ankles over time
@@ -18,27 +18,27 @@ class OffsetSlideError : IAutoBoneError {
 
 	companion object {
 		fun getSlideError(skeleton1: HumanSkeleton, skeleton2: HumanSkeleton): Float {
-			val leftTracker1: ComputedTracker = skeleton1.getComputedTracker(TrackerRole.LEFT_FOOT)
-			val rightTracker1: ComputedTracker = skeleton1.getComputedTracker(TrackerRole.RIGHT_FOOT)
-			val leftTracker2: ComputedTracker = skeleton2.getComputedTracker(TrackerRole.LEFT_FOOT)
-			val rightTracker2: ComputedTracker = skeleton2.getComputedTracker(TrackerRole.RIGHT_FOOT)
+			val leftTracker1: Tracker = skeleton1.getComputedTracker(TrackerRole.LEFT_FOOT)
+			val rightTracker1: Tracker = skeleton1.getComputedTracker(TrackerRole.RIGHT_FOOT)
+			val leftTracker2: Tracker = skeleton2.getComputedTracker(TrackerRole.LEFT_FOOT)
+			val rightTracker2: Tracker = skeleton2.getComputedTracker(TrackerRole.RIGHT_FOOT)
 			return getSlideError(leftTracker1, rightTracker1, leftTracker2, rightTracker2)
 		}
 
 		fun getSlideError(
-			leftTracker1: ComputedTracker,
-			rightTracker1: ComputedTracker,
-			leftTracker2: ComputedTracker,
-			rightTracker2: ComputedTracker,
+			leftTracker1: Tracker,
+			rightTracker1: Tracker,
+			leftTracker2: Tracker,
+			rightTracker2: Tracker,
 		): Float {
 			val leftFoot1 = leftTracker1.position
 			val rightFoot1 = rightTracker1.position
 			val leftFoot2 = leftTracker2.position
 			val rightFoot2 = rightTracker2.position
-			val slideDist1 = leftFoot1.distance(rightFoot1)
-			val slideDist2 = leftFoot2.distance(rightFoot2)
-			val slideDist3 = leftFoot1.distance(rightFoot2)
-			val slideDist4 = leftFoot2.distance(rightFoot1)
+			val slideDist1 = (rightFoot1 - leftFoot1).len()
+			val slideDist2 = (rightFoot2 - leftFoot2).len()
+			val slideDist3 = (rightFoot2 - leftFoot1).len()
+			val slideDist4 = (rightFoot1 - leftFoot2).len()
 
 			// Compute all combinations of distances
 			val dist1 = FastMath.abs(slideDist1 - slideDist2)

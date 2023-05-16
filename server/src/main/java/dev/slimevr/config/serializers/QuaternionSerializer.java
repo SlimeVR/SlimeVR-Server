@@ -3,7 +3,7 @@ package dev.slimevr.config.serializers;
 import com.fasterxml.jackson.core.JsonGenerator;
 import com.fasterxml.jackson.databind.JsonSerializer;
 import com.fasterxml.jackson.databind.SerializerProvider;
-import com.jme3.math.Quaternion;
+import io.github.axisangles.ktmath.Quaternion;
 
 import java.io.IOException;
 

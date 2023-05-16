@@ -6,11 +6,11 @@ import com.fasterxml.jackson.databind.module.SimpleModule;
 import com.fasterxml.jackson.dataformat.yaml.YAMLFactory;
 import com.fasterxml.jackson.dataformat.yaml.YAMLGenerator;
 import com.github.jonpeterson.jackson.module.versioning.VersioningModule;
-import com.jme3.math.Quaternion;
 import dev.slimevr.config.serializers.QuaternionDeserializer;
 import dev.slimevr.config.serializers.QuaternionSerializer;
 import io.eiren.util.ann.ThreadSafe;
 import io.eiren.util.logging.LogManager;
+import io.github.axisangles.ktmath.Quaternion;
 
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;

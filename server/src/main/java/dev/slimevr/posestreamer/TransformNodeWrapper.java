@@ -1,10 +1,10 @@
 package dev.slimevr.posestreamer;
 
-import com.jme3.math.Quaternion;
-import com.jme3.math.Transform;
 import dev.slimevr.tracking.processor.BoneType;
 import dev.slimevr.tracking.processor.TransformNode;
 import io.eiren.util.collections.FastList;
+import io.github.axisangles.ktmath.Quaternion;
+import io.github.axisangles.ktmath.Transform;
 
 import java.util.List;
 
@@ -29,8 +29,8 @@ public class TransformNodeWrapper {
 
 		this.boneType = boneType;
 
-		this.localTransform = nodeToWrap.localTransform;
-		this.worldTransform = nodeToWrap.worldTransform;
+		this.localTransform = nodeToWrap.getLocalTransform();
+		this.worldTransform = nodeToWrap.getWorldTransform();
 
 		this.reversedHierarchy = reversedHierarchy;
 
@@ -92,14 +92,17 @@ public class TransformNodeWrapper {
 	}
 
 	public static TransformNodeWrapper wrapHierarchyDown(TransformNode root) {
-		return wrapNodeHierarchyDown(root, new TransformNodeWrapper(root, root.children.size()));
+		return wrapNodeHierarchyDown(
+			root,
+			new TransformNodeWrapper(root, root.getChildren().size())
+		);
 	}
 
 	public static TransformNodeWrapper wrapNodeHierarchyDown(
 		TransformNode root,
 		TransformNodeWrapper target
 	) {
-		for (TransformNode child : root.children) {
+		for (TransformNode child : root.getChildren()) {
 			target.attachChild(wrapHierarchyDown(child));
 		}
 
@@ -129,13 +132,13 @@ public class TransformNodeWrapper {
 		TransformNodeWrapper wrapper = new TransformNodeWrapper(
 			parent,
 			true,
-			(parent.getParent() != null ? 1 : 0) + Math.max(0, parent.children.size() - 1)
+			(parent.getParent() != null ? 1 : 0) + Math.max(0, parent.getChildren().size() - 1)
 		);
 		target.attachChild(wrapper);
 
 		// Re-attach other children
-		if (parent.children.size() > 1) {
-			for (TransformNode child : parent.children) {
+		if (parent.getChildren().size() > 1) {
+			for (TransformNode child : parent.getChildren()) {
 				// Skip the original node
 				if (child == target.wrappedNode) {
 					continue;
@@ -160,22 +163,17 @@ public class TransformNodeWrapper {
 	}
 
 	public boolean hasLocalRotation() {
-		return wrappedNode.localRotation;
+		return wrappedNode.getLocalRotation();
 	}
 
-	public Quaternion calculateLocalRotation(Quaternion relativeTo, Quaternion result) {
-		return calculateLocalRotationInverse(relativeTo.inverse(), result);
+	public Quaternion calculateLocalRotation(Quaternion relativeTo) {
+		return calculateLocalRotationInverse(relativeTo.inv());
 	}
 
 	public Quaternion calculateLocalRotationInverse(
-		Quaternion inverseRelativeTo,
-		Quaternion result
+		Quaternion inverseRelativeTo
 	) {
-		if (result == null) {
-			result = new Quaternion();
-		}
-
-		return inverseRelativeTo.mult(worldTransform.getRotation(), result);
+		return inverseRelativeTo.times(worldTransform.getRotation());
 	}
 
 	public void attachChild(TransformNodeWrapper node) {

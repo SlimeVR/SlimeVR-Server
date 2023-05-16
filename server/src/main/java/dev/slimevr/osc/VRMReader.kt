@@ -1,8 +1,7 @@
 package dev.slimevr.osc
 
-import com.jme3.math.Vector3f
-import dev.slimevr.tracking.trackers.UnityBone
 import io.eiren.util.logging.LogManager
+import io.github.axisangles.ktmath.Vector3
 import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
 import kotlinx.serialization.decodeFromString
@@ -14,25 +13,19 @@ class VRMReader(vrmJson: String) {
 
 	private val data: GLTF = jsonIgnoreKeys.decodeFromString(vrmJson)
 
-	fun getOffsetForBone(unityBone: UnityBone): Vector3f {
-		val translation = Vector3f()
-
+	fun getOffsetForBone(unityBone: UnityBone): Vector3 {
 		val bone = try {
 			data.extensions.vrm.humanoid.humanBones.first { it.bone.equals(unityBone.stringVal, ignoreCase = true) }
 		} catch (e: NoSuchElementException) {
 			LogManager.warning("[VRMReader] Bone ${unityBone.stringVal} not found in JSON")
-			return translation
+			return Vector3.NULL
 		}
 
-		val translationNode = data.nodes[bone.node].translation ?: return translation
-		translation.x = translationNode[0].toFloat()
-		translation.y = translationNode[1].toFloat()
-		translation.z = -translationNode[2].toFloat()
+		val translationNode = data.nodes[bone.node].translation ?: return Vector3.NULL
 		if (unityBone != UnityBone.LEFT_FOOT && unityBone != UnityBone.RIGHT_FOOT) {
-			translation.z = -translation.z
+			return Vector3(translationNode[0].toFloat(), translationNode[1].toFloat(), translationNode[2].toFloat())
 		}
-
-		return translation
+		return Vector3(translationNode[0].toFloat(), translationNode[1].toFloat(), -translationNode[2].toFloat())
 	}
 }
 

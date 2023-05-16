@@ -1,16 +1,14 @@
 package dev.slimevr.autobone.errors
 
-import com.jme3.math.FastMath
 import dev.slimevr.autobone.AutoBoneTrainingStep
-import dev.slimevr.poserecorder.PoseFrameTracker
+import dev.slimevr.poseframeformat.trackerdata.TrackerFrames
 import dev.slimevr.tracking.processor.skeleton.HumanSkeleton
-import dev.slimevr.tracking.trackers.ComputedTracker
 
 // The distance of any points to the corresponding absolute position
 class PositionError : IAutoBoneError {
 	@Throws(AutoBoneException::class)
 	override fun getStepError(trainingStep: AutoBoneTrainingStep): Float {
-		val trackers = trainingStep.trainingFrames.trackers
+		val trackers = trainingStep.trainingFrames.frameHolders
 		return (
 			(
 				getPositionError(
@@ -30,27 +28,21 @@ class PositionError : IAutoBoneError {
 
 	companion object {
 		fun getPositionError(
-			trackers: List<PoseFrameTracker>,
+			trackers: List<TrackerFrames>,
 			cursor: Int,
 			skeleton: HumanSkeleton,
 		): Float {
 			var offset = 0f
 			var offsetCount = 0
 			for (tracker in trackers) {
-				val trackerFrame = tracker.safeGetFrame(cursor)
-				if (trackerFrame == null ||
-					!trackerFrame.hasPosition() ||
-					trackerFrame.bodyPosition == null ||
-					trackerFrame.bodyPosition.trackerRole.isEmpty
-				) {
-					continue
-				}
-				val computedTracker: ComputedTracker? = skeleton
-					.getComputedTracker(trackerFrame.bodyPosition.trackerRole.get())
-				if (computedTracker != null) {
-					offset += FastMath.abs(computedTracker.position.distance(trackerFrame.position))
-					offsetCount++
-				}
+				val trackerFrame = tracker.tryGetFrame(cursor) ?: continue
+				val position = trackerFrame.tryGetPosition() ?: continue
+				val trackerRole = trackerFrame.tryGetTrackerPosition()?.trackerRole ?: continue
+
+				val computedTracker = skeleton.getComputedTracker(trackerRole) ?: continue
+
+				offset += (position - computedTracker.position).len()
+				offsetCount++
 			}
 			return if (offsetCount > 0) offset / offsetCount else 0f
 		}
