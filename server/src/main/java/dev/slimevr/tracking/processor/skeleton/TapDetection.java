@@ -58,6 +58,10 @@ public class TapDetection {
 		trackerToWatch = tracker;
 	}
 
+	public Tracker getTracker() {
+		return trackerToWatch;
+	}
+
 	public int getTaps() {
 		return taps;
 	}

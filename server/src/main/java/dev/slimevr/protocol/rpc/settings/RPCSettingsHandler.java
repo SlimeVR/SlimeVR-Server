@@ -218,21 +218,18 @@ public record RPCSettingsHandler(RPCHandler rpcHandler, ProtocolAPI api) {
 
 			if (tapDetectionSettings != null) {
 				// enable/disable tap detection
-				tapDetectionConfig
-					.setYawResetEnabled(tapDetectionSettings.yawResetEnabled());
-				tapDetectionConfig
-					.setFullResetEnabled(tapDetectionSettings.fullResetEnabled());
+				tapDetectionConfig.setYawResetEnabled(tapDetectionSettings.yawResetEnabled());
+				tapDetectionConfig.setFullResetEnabled(tapDetectionSettings.fullResetEnabled());
 				tapDetectionConfig
 					.setMountingResetEnabled(tapDetectionSettings.mountingResetEnabled());
+				tapDetectionConfig.setSetupMode(tapDetectionSettings.setupMode());
 
 				// set tap detection delays
 				if (tapDetectionSettings.hasYawResetDelay()) {
-					tapDetectionConfig
-						.setYawResetDelay(tapDetectionSettings.yawResetDelay());
+					tapDetectionConfig.setYawResetDelay(tapDetectionSettings.yawResetDelay());
 				}
 				if (tapDetectionSettings.hasFullResetDelay()) {
-					tapDetectionConfig
-						.setFullResetDelay(tapDetectionSettings.fullResetDelay());
+					tapDetectionConfig.setFullResetDelay(tapDetectionSettings.fullResetDelay());
 				}
 				if (tapDetectionSettings.hasMountingResetDelay()) {
 					tapDetectionConfig
