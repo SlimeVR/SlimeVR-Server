@@ -9,8 +9,8 @@ import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
 import java.io.ByteArrayOutputStream
 
 plugins {
-	kotlin("jvm") version "1.8.0"
-	kotlin("plugin.serialization") version "1.8.0"
+	kotlin("jvm") version "1.8.21"
+	kotlin("plugin.serialization") version "1.8.21"
 	application
 	id("com.github.johnrengelman.shadow") version "7.1.2"
 	id("com.diffplug.spotless") version "6.12.0"
@@ -41,6 +41,16 @@ tasks.withType<Test> {
 tasks.withType<Javadoc> {
 	options.encoding = "UTF-8"
 }
+
+tasks
+	.withType<org.jetbrains.kotlin.gradle.tasks.KotlinCompilationTask<*>>()
+	.configureEach {
+		compilerOptions
+			.languageVersion
+			.set(
+				org.jetbrains.kotlin.gradle.dsl.KotlinVersion.KOTLIN_1_9
+			)
+	}
 
 allprojects {
 	repositories {
