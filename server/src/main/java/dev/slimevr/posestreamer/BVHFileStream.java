@@ -1,11 +1,11 @@
 package dev.slimevr.posestreamer;
 
 import com.jme3.math.FastMath;
-import com.jme3.math.Quaternion;
-import com.jme3.math.Transform;
-import com.jme3.math.Vector3f;
 import dev.slimevr.tracking.processor.TransformNode;
 import dev.slimevr.tracking.processor.skeleton.HumanSkeleton;
+import io.github.axisangles.ktmath.Quaternion;
+import io.github.axisangles.ktmath.Transform;
+import io.github.axisangles.ktmath.Vector3;
 import org.apache.commons.lang3.StringUtils;
 
 import java.io.*;
@@ -21,7 +21,6 @@ public class BVHFileStream extends PoseDataStream {
 	private long frameCountOffset;
 
 	private float[] angleBuf = new float[3];
-	private Quaternion rotBuf = new Quaternion();
 
 	private HumanSkeleton wrappedSkeleton;
 	private TransformNodeWrapper rootNode;
@@ -134,7 +133,7 @@ public class BVHFileStream extends PoseDataStream {
 
 		// Ignore the root offset and original root offset
 		if (level > 0 && node != null && node.wrappedNode.getParent() != null) {
-			Vector3f offset = node.localTransform.getTranslation();
+			Vector3 offset = node.localTransform.getTranslation();
 			float reverseMultiplier = node.hasReversedHierarchy() ? -1 : 1;
 			float offsetScale = bvhSettings.getOffsetScale() * reverseMultiplier;
 			writer
@@ -254,15 +253,17 @@ public class BVHFileStream extends PoseDataStream {
 		 * childNode.worldTransform; break; } } }
 		 */
 
-		rotBuf = transform.getRotation(rotBuf);
+		Quaternion rot = transform.getRotation();
 
 		// Adjust to local rotation
 		if (inverseRootRot != null) {
-			rotBuf = inverseRootRot.mult(rotBuf, rotBuf);
+			rot = inverseRootRot.times(rot);
 		}
 
 		// Roll (X), pitch (Y), yaw (Z) (intrinsic)
-		angleBuf = quatToXyzAngles(rotBuf.normalizeLocal(), angleBuf);
+		// TODO: `quatToXyzAngles` should no longer be needed, this should be
+		// changed to use `Quaternion.toEulerAngles()` instead
+		angleBuf = quatToXyzAngles(rot.unit(), angleBuf);
 
 		// Output in order of roll (Z), pitch (X), yaw (Y) (extrinsic)
 		writer
@@ -276,7 +277,7 @@ public class BVHFileStream extends PoseDataStream {
 
 		// Get inverse rotation for child local rotations
 		if (!node.children.isEmpty()) {
-			Quaternion inverseRot = transform.getRotation().inverse();
+			Quaternion inverseRot = transform.getRotation().inv();
 			for (TransformNodeWrapper childNode : node.children) {
 				if (isEndNode(childNode)) {
 					// If it's an end node, skip
@@ -298,7 +299,7 @@ public class BVHFileStream extends PoseDataStream {
 
 		TransformNodeWrapper rootNode = wrapSkeletonIfNew(skeleton);
 
-		Vector3f rootPos = rootNode.worldTransform.getTranslation();
+		Vector3 rootPos = rootNode.worldTransform.getTranslation();
 
 		// Write root position
 		float positionScale = bvhSettings.getPositionScale();

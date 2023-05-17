@@ -1,19 +1,12 @@
 package dev.slimevr.autobone
 
 import com.jme3.math.FastMath
-import com.jme3.math.Vector3f
 import dev.slimevr.VRServer
-import dev.slimevr.autobone.errors.AutoBoneException
-import dev.slimevr.autobone.errors.BodyProportionError
-import dev.slimevr.autobone.errors.FootHeightOffsetError
-import dev.slimevr.autobone.errors.HeightError
-import dev.slimevr.autobone.errors.OffsetSlideError
-import dev.slimevr.autobone.errors.PositionError
-import dev.slimevr.autobone.errors.PositionOffsetError
-import dev.slimevr.autobone.errors.SlideError
+import dev.slimevr.autobone.errors.*
 import dev.slimevr.config.AutoBoneConfig
-import dev.slimevr.poserecorder.PoseFrameIO
-import dev.slimevr.poserecorder.PoseFrames
+import dev.slimevr.poseframeformat.PoseFrameIO
+import dev.slimevr.poseframeformat.PoseFrames
+import dev.slimevr.poseframeformat.player.TrackerFramesPlayer
 import dev.slimevr.tracking.processor.BoneType
 import dev.slimevr.tracking.processor.HumanPoseManager
 import dev.slimevr.tracking.processor.config.SkeletonConfigManager
@@ -22,6 +15,7 @@ import dev.slimevr.tracking.trackers.TrackerRole
 import io.eiren.util.StringUtils
 import io.eiren.util.collections.FastList
 import io.eiren.util.logging.LogManager
+import io.github.axisangles.ktmath.Vector3
 import org.apache.commons.lang3.tuple.Pair
 import java.io.File
 import java.util.*
@@ -140,32 +134,17 @@ class AutoBone(server: VRServer) {
 		skeleton: HumanPoseManager,
 		node: BoneType,
 		rightSide: Boolean,
-		buffer: Vector3f?,
-	): Vector3f {
-		var node = node
-		var buffer = buffer
-		if (buffer == null) {
-			buffer = Vector3f()
-		}
-		when (node) {
-			BoneType.LEFT_HIP, BoneType.RIGHT_HIP -> node = if (rightSide) BoneType.RIGHT_HIP else BoneType.LEFT_HIP
+	): Vector3 {
+		var node = when (node) {
+			BoneType.LEFT_HIP, BoneType.RIGHT_HIP -> if (rightSide) BoneType.RIGHT_HIP else BoneType.LEFT_HIP
 			BoneType.LEFT_UPPER_LEG, BoneType.RIGHT_UPPER_LEG ->
-				node =
-					if (rightSide) BoneType.RIGHT_UPPER_LEG else BoneType.LEFT_UPPER_LEG
-
+				if (rightSide) BoneType.RIGHT_UPPER_LEG else BoneType.LEFT_UPPER_LEG
 			BoneType.LEFT_LOWER_LEG, BoneType.RIGHT_LOWER_LEG ->
-				node =
-					if (rightSide) BoneType.RIGHT_LOWER_LEG else BoneType.LEFT_LOWER_LEG
-
-			else -> {
-				// Node is correct
-			}
+				if (rightSide) BoneType.RIGHT_LOWER_LEG else BoneType.LEFT_LOWER_LEG
+			else -> node
 		}
 		val relevantTransform = skeleton.getTailNodeOfBone(node)
-		return relevantTransform.worldTransform
-			.translation
-			.subtract(relevantTransform.parent.worldTransform.translation, buffer)
-			.normalizeLocal()
+		return (relevantTransform.worldTransform.translation - relevantTransform.parent!!.worldTransform.translation).unit()
 	}
 
 	fun getDotProductDiff(
@@ -173,14 +152,11 @@ class AutoBone(server: VRServer) {
 		skeleton2: HumanPoseManager,
 		node: BoneType,
 		rightSide: Boolean,
-		offset: Vector3f,
+		offset: Vector3,
 	): Float {
-		val normalizedOffset = offset.normalize()
-		val boneRotation = Vector3f()
-		getBoneDirection(skeleton1, node, rightSide, boneRotation)
-		val dot1 = normalizedOffset.dot(boneRotation)
-		getBoneDirection(skeleton2, node, rightSide, boneRotation)
-		val dot2 = normalizedOffset.dot(boneRotation)
+		val normalizedOffset = offset.unit()
+		val dot1 = normalizedOffset.dot(getBoneDirection(skeleton1, node, rightSide))
+		val dot2 = normalizedOffset.dot(getBoneDirection(skeleton2, node, rightSide))
 		return dot2 - dot1
 	}
 
@@ -374,10 +350,10 @@ class AutoBone(server: VRServer) {
 	): AutoBoneResults {
 		var targetHeight = targetHeight
 		val frameCount = frames.maxFrameCount
-		val frames1 = PoseFrames(frames)
-		val frames2 = PoseFrames(frames)
-		val trackers1 = frames1.trackers
-		val trackers2 = frames2.trackers
+		val frames1 = TrackerFramesPlayer(frames)
+		val frames2 = TrackerFramesPlayer(frames)
+		val trackers1 = frames1.trackers.toList()
+		val trackers2 = frames2.trackers.toList()
 
 		// Load current values for adjustable configs
 		loadConfigValues()
@@ -445,10 +421,10 @@ class AutoBone(server: VRServer) {
 					val frameCursor2 = frameCursor + cursorOffset
 					applyConfig(skeleton1)
 					applyConfig(skeleton2)
-					if (config.randomizeFrameOrder) {
+					if (config.randomizeFrameOrder && randomFrameIndices != null) {
 						trainingStep
 							.setCursors(
-								randomFrameIndices!![frameCursor],
+								randomFrameIndices[frameCursor],
 								randomFrameIndices[frameCursor2]
 							)
 					} else {
@@ -493,15 +469,11 @@ class AutoBone(server: VRServer) {
 					}
 					val slideLeft = skeleton2
 						.getComputedTracker(TrackerRole.LEFT_FOOT).position
-						.subtract(
-							skeleton1.getComputedTracker(TrackerRole.LEFT_FOOT).position
-						)
+					-skeleton1.getComputedTracker(TrackerRole.LEFT_FOOT).position
+
 					val slideRight = skeleton2
 						.getComputedTracker(TrackerRole.RIGHT_FOOT).position
-						.subtract(
-							skeleton1
-								.getComputedTracker(TrackerRole.RIGHT_FOOT).position
-						)
+					-skeleton1.getComputedTracker(TrackerRole.RIGHT_FOOT).position
 					intermediateOffsets.putAll(offsets)
 					for (entry in offsets.entries) {
 						// Skip adjustment if the epoch is before starting (for
@@ -652,7 +624,7 @@ class AutoBone(server: VRServer) {
 		get() {
 			val configInfo = StringBuilder()
 			offsets.forEach { (key: BoneType, value: Float) ->
-				if (configInfo.length > 0) {
+				if (configInfo.isNotEmpty()) {
 					configInfo.append(", ")
 				}
 				configInfo
@@ -663,11 +635,11 @@ class AutoBone(server: VRServer) {
 			return configInfo.toString()
 		}
 
-	fun saveRecording(frames: PoseFrames?, recordingFile: File) {
+	fun saveRecording(frames: PoseFrames, recordingFile: File) {
 		if (saveDir.isDirectory || saveDir.mkdirs()) {
 			LogManager
 				.info("[AutoBone] Exporting frames to \"${recordingFile.path}\"...")
-			if (PoseFrameIO.writeToFile(recordingFile, frames)) {
+			if (PoseFrameIO.tryWriteToFile(recordingFile, frames)) {
 				LogManager
 					.info(
 						"[AutoBone] Done exporting! Recording can be found at \"${recordingFile.path}\"."
@@ -713,7 +685,7 @@ class AutoBone(server: VRServer) {
 							.info(
 								"[AutoBone] Detected recording at \"${file.path}\", loading frames..."
 							)
-						val frames = PoseFrameIO.readFromFile(file)
+						val frames = PoseFrameIO.tryReadFromFile(file)
 						if (frames == null) {
 							LogManager
 								.severe("Reading frames from \"${file.path}\" failed...")

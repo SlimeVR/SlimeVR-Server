@@ -1,16 +1,16 @@
 package dev.slimevr.tracking.trackers.udp;
 
+import io.github.axisangles.ktmath.Vector3;
+
 import java.io.IOException;
 import java.nio.BufferUnderflowException;
 import java.nio.ByteBuffer;
-
-import com.jme3.math.Vector3f;
 
 
 public class UDPPacket4Acceleration extends UDPPacket implements SensorSpecificPacket {
 
 	public int sensorId;
-	public Vector3f acceleration = new Vector3f();
+	public Vector3 acceleration = Vector3.Companion.getNULL();
 
 	public UDPPacket4Acceleration() {
 	}
@@ -22,7 +22,7 @@ public class UDPPacket4Acceleration extends UDPPacket implements SensorSpecificP
 
 	@Override
 	public void readData(ByteBuffer buf) throws IOException {
-		acceleration.set(buf.getFloat(), buf.getFloat(), buf.getFloat());
+		acceleration = new Vector3(buf.getFloat(), buf.getFloat(), buf.getFloat());
 
 		try {
 			sensorId = buf.get() & 0xFF;

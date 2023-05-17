@@ -5,18 +5,20 @@ import com.illposed.osc.messageselector.OSCPatternAddressMessageSelector;
 import com.illposed.osc.transport.OSCPortIn;
 import com.illposed.osc.transport.OSCPortOut;
 import com.jme3.math.FastMath;
-import com.jme3.math.Quaternion;
-import com.jme3.math.Vector3f;
 import dev.slimevr.VRServer;
 import dev.slimevr.config.VRCOSCConfig;
 import dev.slimevr.platform.SteamVRBridge;
 import dev.slimevr.tracking.processor.HumanPoseManager;
-import dev.slimevr.tracking.trackers.HMDTracker;
-import dev.slimevr.tracking.trackers.ShareableTracker;
+import dev.slimevr.tracking.trackers.Tracker;
+import dev.slimevr.tracking.trackers.TrackerPosition;
 import dev.slimevr.tracking.trackers.TrackerRole;
 import dev.slimevr.tracking.trackers.TrackerStatus;
 import io.eiren.util.collections.FastList;
 import io.eiren.util.logging.LogManager;
+import io.github.axisangles.ktmath.EulerAngles;
+import io.github.axisangles.ktmath.EulerOrder;
+import io.github.axisangles.ktmath.Quaternion;
+import io.github.axisangles.ktmath.Vector3;
 
 import java.io.IOException;
 import java.net.InetAddress;
@@ -32,15 +34,11 @@ public class VRCOSCHandler implements OSCHandler {
 	private OSCMessage oscMessage;
 	private final VRCOSCConfig config;
 	private final VRServer server;
-	private final HMDTracker hmd;
+	private final Tracker vrcHmd;
 	private final SteamVRBridge steamvrBridge;
 	private final HumanPoseManager humanPoseManager;
-	private final List<? extends ShareableTracker> shareableTrackers;
+	private final List<Tracker> computedTrackers;
 	private final FastList<Float> oscArgs = new FastList<>(3);
-	private final Vector3f vec = new Vector3f();
-	private final Quaternion quatBuf = new Quaternion();
-	private final Vector3f vecBuf1 = new Vector3f();
-	private final Vector3f vecBuf2 = new Vector3f();
 	private final boolean[] trackersEnabled;
 	private int lastPortIn;
 	private int lastPortOut;
@@ -49,20 +47,33 @@ public class VRCOSCHandler implements OSCHandler {
 
 	public VRCOSCHandler(
 		VRServer server,
-		HMDTracker hmd,
 		HumanPoseManager humanPoseManager,
 		SteamVRBridge steamvrBridge,
 		VRCOSCConfig oscConfig,
-		List<? extends ShareableTracker> shareableTrackers
+		List<Tracker> computedTrackers
 	) {
 		this.server = server;
-		this.hmd = hmd;
 		this.humanPoseManager = humanPoseManager;
 		this.steamvrBridge = steamvrBridge;
 		this.config = oscConfig;
-		this.shareableTrackers = shareableTrackers;
+		this.computedTrackers = computedTrackers;
 
-		trackersEnabled = new boolean[shareableTrackers.size()];
+		vrcHmd = new Tracker(
+			null,
+			VRServer.getNextLocalTrackerId(),
+			"VRC HMD",
+			"VRC HMD",
+			TrackerPosition.HEAD,
+			null,
+			true,
+			false,
+			false,
+			false,
+			true,
+			true
+		);
+
+		trackersEnabled = new boolean[computedTrackers.size()];
 
 		refreshSettings(false);
 	}
@@ -70,14 +81,17 @@ public class VRCOSCHandler implements OSCHandler {
 	@Override
 	public void refreshSettings(boolean refreshRouterSettings) {
 		// Sets which trackers are enabled and force HEAD to false
-		for (int i = 0; i < shareableTrackers.size(); i++) {
+		for (int i = 0; i < computedTrackers.size(); i++) {
 			if (
-				shareableTrackers.get(i).getTrackerRole() != TrackerRole.HEAD
-					|| shareableTrackers.get(i).getTrackerRole() != TrackerRole.LEFT_HAND
-					|| shareableTrackers.get(i).getTrackerRole() != TrackerRole.RIGHT_HAND
+				computedTrackers.get(i).getTrackerPosition() != TrackerPosition.HEAD
+					|| computedTrackers.get(i).getTrackerPosition() != TrackerPosition.LEFT_HAND
+					|| computedTrackers.get(i).getTrackerPosition() != TrackerPosition.RIGHT_HAND
 			) {
 				trackersEnabled[i] = config
-					.getOSCTrackerRole(shareableTrackers.get(i).getTrackerRole(), false);
+					.getOSCTrackerRole(
+						computedTrackers.get(i).getTrackerPosition().getTrackerRole(),
+						false
+					);
 			} else {
 				trackersEnabled[i] = false;
 			}
@@ -169,24 +183,23 @@ public class VRCOSCHandler implements OSCHandler {
 	void handleReceivedMessage(OSCMessageEvent event) {
 		if (steamvrBridge != null && !steamvrBridge.isConnected()) {
 			// Sets HMD status to OK
-			if (hmd.getStatus() != TrackerStatus.OK) {
-				hmd.setStatus(TrackerStatus.OK);
-			}
+			vrcHmd.setStatus(TrackerStatus.OK);
 
 			// Sets the HMD y position to
 			// the vrc Upright parameter (0-1) * the user's height
-			hmd.position
-				.set(
-					0f,
-					(float) event
-						.getMessage()
-						.getArguments()
-						.get(0) * humanPoseManager.getUserHeightFromConfig(),
-					0f
+			vrcHmd
+				.setPosition(
+					new Vector3(
+						0f,
+						(float) event
+							.getMessage()
+							.getArguments()
+							.get(0) * humanPoseManager.getUserHeightFromConfig(),
+						0f
+					)
 				);
-			hmd.rotation.set(Quaternion.IDENTITY);
 
-			hmd.dataTick();
+			vrcHmd.dataTick();
 		}
 	}
 
@@ -197,15 +210,15 @@ public class VRCOSCHandler implements OSCHandler {
 		// Send OSC data
 		if (oscSender != null && oscSender.isConnected()) {
 			int id = 0;
-			for (int i = 0; i < shareableTrackers.size(); i++) {
+			for (int i = 0; i < computedTrackers.size(); i++) {
 				if (trackersEnabled[i]) {
 					id++;
 					// Send regular trackers' positions
-					shareableTrackers.get(i).getPosition(vec);
+					Vector3 vec = computedTrackers.get(i).getPosition();
 					oscArgs.clear();
-					oscArgs.add(vec.x);
-					oscArgs.add(vec.y);
-					oscArgs.add(-vec.z);
+					oscArgs.add(vec.getX());
+					oscArgs.add(vec.getY());
+					oscArgs.add(-vec.getZ());
 					oscMessage = new OSCMessage(
 						"/tracking/trackers/" + id + "/position",
 						oscArgs
@@ -226,12 +239,24 @@ public class VRCOSCHandler implements OSCHandler {
 					}
 
 					// Send regular trackers' rotations
-					shareableTrackers.get(i).getRotation(quatBuf);
-					float[] floatBuf = quatToUnityAngles(quatBuf);
+					Quaternion rot = computedTrackers.get(i).getRotation();
+					// We flip the X and Y components of the quaternion because
+					// we flip the z direction when communicating from
+					// our right-handed API to VRChat's left-handed API.
+					// X quaternion represents a rotation from y to z
+					// Y quaternion represents a rotation from z to x
+					// When we negate the z direction, X and Y quaternion
+					// components must be negated.
+					EulerAngles unityAngles = new Quaternion(
+						rot.getW(),
+						-rot.getX(),
+						-rot.getY(),
+						rot.getZ()
+					).toEulerAngles(EulerOrder.YXZ);
 					oscArgs.clear();
-					oscArgs.add(floatBuf[0] * FastMath.RAD_TO_DEG);
-					oscArgs.add(floatBuf[1] * FastMath.RAD_TO_DEG);
-					oscArgs.add(floatBuf[2] * FastMath.RAD_TO_DEG);
+					oscArgs.add(unityAngles.getX() * FastMath.RAD_TO_DEG);
+					oscArgs.add(unityAngles.getY() * FastMath.RAD_TO_DEG);
+					oscArgs.add(unityAngles.getZ() * FastMath.RAD_TO_DEG);
 
 					oscMessage = new OSCMessage(
 						"/tracking/trackers/" + id + "/rotation",
@@ -245,13 +270,13 @@ public class VRCOSCHandler implements OSCHandler {
 					}
 				}
 
-				if (shareableTrackers.get(i).getTrackerRole() == TrackerRole.HEAD) {
+				if (computedTrackers.get(i).getTrackerPosition() == TrackerPosition.HEAD) {
 					// Send HMD position
-					shareableTrackers.get(i).getPosition(vec);
+					var pos = computedTrackers.get(i).getPosition();
 					oscArgs.clear();
-					oscArgs.add(vec.x);
-					oscArgs.add(vec.y);
-					oscArgs.add(-vec.z);
+					oscArgs.add(pos.getX());
+					oscArgs.add(pos.getY());
+					oscArgs.add(-pos.getZ());
 					oscMessage = new OSCMessage(
 						"/tracking/trackers/head/position",
 						oscArgs
@@ -272,13 +297,12 @@ public class VRCOSCHandler implements OSCHandler {
 	 */
 	public void yawAlign() {
 		if (oscSender != null && oscSender.isConnected()) {
-			for (ShareableTracker shareableTracker : shareableTrackers) {
-				if (shareableTracker.getTrackerRole() == TrackerRole.HEAD) {
-					Quaternion hmdYawQuatBuf = new Quaternion();
-					shareableTracker.getRotation(hmdYawQuatBuf);
+			for (Tracker shareableTracker : computedTrackers) {
+				if (shareableTracker.getTrackerPosition().getTrackerRole() == TrackerRole.HEAD) {
+					var hmdAngles = shareableTracker.getRotation().toEulerAngles(EulerOrder.XYZ);
 					oscArgs.clear();
 					oscArgs.add(0f);
-					oscArgs.add(-hmdYawQuatBuf.getYaw() * FastMath.RAD_TO_DEG);
+					oscArgs.add(-hmdAngles.getY() * FastMath.RAD_TO_DEG);
 					oscArgs.add(0f);
 					oscMessage = new OSCMessage(
 						"/tracking/trackers/head/rotation",
@@ -318,60 +342,5 @@ public class VRCOSCHandler implements OSCHandler {
 	@Override
 	public int getPortIn() {
 		return lastPortIn;
-	}
-
-	/*
-	 * Apache Commons Math Copyright 2001-2022 The Apache Software Foundation
-	 *
-	 * The code below includes code developed at The Apache Software Foundation
-	 * (http://www.apache.org/).
-	 */
-
-	// Code from Apache's Rotation class
-	public float[] quatToUnityAngles(Quaternion q) {
-		// X = pitch, Y = yaw, Z = roll
-		applyTo(Vector3f.UNIT_Y, q, vecBuf1);
-		applyInverseTo(Vector3f.UNIT_Z, q, vecBuf2);
-		// Order of application is ZXY (but sent in XYZ order)
-		// pitch (+X is forward), yaw (+Y is clockwise), roll
-		// (+Z is left)
-		return new float[] {
-			FastMath.asin(vecBuf2.getY()),
-			FastMath.atan2(-(vecBuf2.getX()), vecBuf2.getZ()),
-			-FastMath.atan2(-(vecBuf1.getX()), vecBuf1.getY())
-		};
-	}
-
-	// Code from Apache's Rotation class
-	public void applyTo(Vector3f u, Quaternion q, Vector3f store) {
-		float x = u.getX();
-		float y = u.getY();
-		float z = u.getZ();
-
-		float s = q.getX() * x + q.getY() * y + q.getZ() * z;
-
-		store
-			.set(
-				2f * (q.getW() * (x * q.getW() - (q.getY() * z - q.getZ() * y)) + s * q.getX()) - x,
-				2f * (q.getW() * (y * q.getW() - (q.getZ() * x - q.getX() * z)) + s * q.getY()) - y,
-				2f * (q.getW() * (z * q.getW() - (q.getX() * y - q.getY() * x)) + s * q.getZ()) - z
-			);
-	}
-
-	// Code from Apache's Rotation class
-	public void applyInverseTo(Vector3f u, Quaternion q, Vector3f store) {
-		float x = u.getX();
-		float y = u.getY();
-		float z = u.getZ();
-
-		float s = q.getX() * x + q.getY() * y + q.getZ() * z;
-		float m0 = -q.getW();
-
-		store
-			.set(
-				2f * (m0 * (x * m0 - (q.getY() * z - q.getZ() * y)) + s * q.getX()) - x,
-				2f * (m0 * (y * m0 - (q.getZ() * x - q.getX() * z)) + s * q.getY()) - y,
-				2f * (m0 * (z * m0 - (q.getX() * y - q.getY() * x)) + s * q.getZ()) - z
-			);
 	}
 }

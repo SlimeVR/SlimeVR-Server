@@ -85,7 +85,7 @@ public class DataFeedHandler extends ProtocolHandler<DataFeedMessageHeader> {
 				this.api.server
 					.getAllTrackers()
 					.stream()
-					.filter(tracker -> tracker.get().getDevice() == null)
+					.filter(tracker -> tracker.getDevice() == null)
 					.collect(Collectors.toList())
 			);
 

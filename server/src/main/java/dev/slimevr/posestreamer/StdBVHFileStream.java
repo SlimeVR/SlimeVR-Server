@@ -37,7 +37,7 @@ public class StdBVHFileStream extends BVHFileStream {
 			return node;
 		}
 
-		for (TransformNode child : node.children) {
+		for (TransformNode child : node.getChildren()) {
 			TransformNode result = getNodeFromHierarchy(child, boneType);
 			if (result != null) {
 				return result;

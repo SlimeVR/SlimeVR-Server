@@ -1,8 +1,7 @@
 package io.eiren.math;
 
 import com.jme3.math.FastMath;
-import com.jme3.math.Vector3f;
-import com.jme3.math.Vector4f;
+import io.github.axisangles.ktmath.Vector3;
 
 
 public class FloatMath {
@@ -261,7 +260,7 @@ public class FloatMath {
 
 	/**
 	 * Applies linear contrast (with clamping).
-	 * 
+	 *
 	 * @param t - input value in range (0..1)
 	 * @param k - contrast factor in range (-1..1):
 	 * <ul>
@@ -280,7 +279,7 @@ public class FloatMath {
 
 	/**
 	 * Applies non-linear contrast by power function.
-	 * 
+	 *
 	 * @param t - input value in range (0..1)
 	 * @param k - contrast factor in range (-1..1) exclusive:
 	 * <ul>
@@ -299,7 +298,7 @@ public class FloatMath {
 
 	/**
 	 * Applies non-linear contrast by square splines.
-	 * 
+	 *
 	 * @param t - input value in range (0..1)
 	 * @param k - contrast factor in range (-1..1):
 	 * <ul>
@@ -317,7 +316,7 @@ public class FloatMath {
 
 	/**
 	 * Applies non-linear contrast by square splines inverted function.
-	 * 
+	 *
 	 * @param t - input value in range (0..1)
 	 * @param k - contrast factor in range (-2..2):
 	 * <ul>
@@ -341,7 +340,7 @@ public class FloatMath {
 
 	/**
 	 * Applies non-linear contrast by cubic splines.
-	 * 
+	 *
 	 * @param t - input value in range (0..1)
 	 * @param k - contrast factor in range (-1..1):
 	 * <ul>
@@ -459,8 +458,8 @@ public class FloatMath {
 		return x * x + y * y;
 	}
 
-	public static float sqrDistance(Vector3f v, float x1, float y1, float z1) {
-		return sqrDistance(x1 - v.x, y1 - v.y, z1 - v.z);
+	public static float sqrDistance(Vector3 v, float x1, float y1, float z1) {
+		return sqrDistance(x1 - v.getX(), y1 - v.getY(), z1 - v.getZ());
 	}
 
 	public static float sqrDistance(float x0, float y0, float z0, float x1, float y1, float z1) {
@@ -482,62 +481,64 @@ public class FloatMath {
 		return Math.max(min, Math.min(max, value));
 	}
 
-	public static Vector3f int2101010RevToFloats(int packedValue, Vector3f store) {
-		if (store == null)
-			store = new Vector3f();
-		store.x = packedValue & TEN_BITS_MAX;
+	public static Vector3 int2101010RevToFloats(int packedValue, Vector3 source) {
+		float x = source.getX();
+		float y = source.getY();
+		float z = source.getZ();
+
+		x = packedValue & TEN_BITS_MAX;
 		if ((packedValue & TENTH_BIT) != 0)
-			store.x *= -1;
-		store.y = (packedValue >>> 10) & TEN_BITS_MAX;
+			x *= -1;
+		y = (packedValue >>> 10) & TEN_BITS_MAX;
 		if ((packedValue & (TENTH_BIT << 10)) != 0)
-			store.y *= -1;
-		store.z = (packedValue >>> 20) & TEN_BITS_MAX;
+			y *= -1;
+		z = (packedValue >>> 20) & TEN_BITS_MAX;
 		if ((packedValue & (TENTH_BIT << 20)) != 0)
-			store.z *= -1;
-		return store;
+			z *= -1;
+		return new Vector3(x, y, z);
 	}
 
-	public static int floatToInt210101Rev(Vector3f values) {
+	public static int floatToInt210101Rev(Vector3 values) {
 		int store = 0;
-		store |= ((int) values.x) & TEN_BITS_MAX;
-		if (values.x < 0)
+		store |= ((int) values.getX()) & TEN_BITS_MAX;
+		if (values.getX() < 0)
 			store |= TENTH_BIT;
-		store |= (((int) values.y) & TEN_BITS_MAX) << 10;
-		if (values.y < 0)
+		store |= (((int) values.getY()) & TEN_BITS_MAX) << 10;
+		if (values.getY() < 0)
 			store |= TENTH_BIT << 10;
-		store |= (((int) values.z) & TEN_BITS_MAX) << 20;
-		if (values.z < 0)
+		store |= (((int) values.getZ()) & TEN_BITS_MAX) << 20;
+		if (values.getZ() < 0)
 			store |= TENTH_BIT << 20;
 		return store;
 	}
 
-	public static int floatToInt210101RevNormalized(Vector3f values) {
+	public static int floatToInt210101RevNormalized(Vector3 values) {
 		int store = 0;
-		store |= ((int) (values.x * TEN_BITS)) & TEN_BITS_MAX;
-		if (values.x < 0)
+		store |= ((int) (values.getX() * TEN_BITS)) & TEN_BITS_MAX;
+		if (values.getX() < 0)
 			store |= TENTH_BIT;
-		store |= (((int) (values.y * TEN_BITS)) & TEN_BITS_MAX) << 10;
-		if (values.y < 0)
+		store |= (((int) (values.getY() * TEN_BITS)) & TEN_BITS_MAX) << 10;
+		if (values.getY() < 0)
 			store |= TENTH_BIT << 10;
-		store |= (((int) (values.z * TEN_BITS)) & TEN_BITS_MAX) << 20;
-		if (values.z < 0)
+		store |= (((int) (values.getZ() * TEN_BITS)) & TEN_BITS_MAX) << 20;
+		if (values.getZ() < 0)
 			store |= TENTH_BIT << 20;
 		return store;
 	}
 
-	public static int floatToUnsignedInt210101Rev(Vector3f values) {
+	public static int floatToUnsignedInt210101Rev(Vector3 values) {
 		int store = 0;
-		store |= ((int) values.x) & TEN_BITS;
-		store |= (((int) values.y) & TEN_BITS) << 10;
-		store |= (((int) values.z) & TEN_BITS) << 20;
+		store |= ((int) values.getX()) & TEN_BITS;
+		store |= (((int) values.getY()) & TEN_BITS) << 10;
+		store |= (((int) values.getZ()) & TEN_BITS) << 20;
 		return store;
 	}
 
-	public static int floatToUnsignedInt210101RevNormalized(Vector3f values) {
+	public static int floatToUnsignedInt210101RevNormalized(Vector3 values) {
 		int store = 0;
-		store |= ((int) (values.x * TEN_BITS)) & TEN_BITS;
-		store |= (((int) (values.y * TEN_BITS)) & TEN_BITS) << 10;
-		store |= (((int) (values.z * TEN_BITS)) & TEN_BITS) << 20;
+		store |= ((int) (values.getX() * TEN_BITS)) & TEN_BITS;
+		store |= (((int) (values.getY() * TEN_BITS)) & TEN_BITS) << 10;
+		store |= (((int) (values.getZ() * TEN_BITS)) & TEN_BITS) << 20;
 		return store;
 	}
 
@@ -563,106 +564,43 @@ public class FloatMath {
 		return store;
 	}
 
-	public static Vector4f int2101010RevToFloats(int packedValue, Vector4f store) {
-		if (store == null)
-			store = new Vector4f();
-		store.x = packedValue & TEN_BITS_MAX;
-		if ((packedValue & TENTH_BIT) != 0)
-			store.x *= -1;
-		store.y = (packedValue >>> 10) & TEN_BITS_MAX;
-		if ((packedValue & (TENTH_BIT << 10)) != 0)
-			store.y *= -1;
-		store.z = (packedValue >>> 20) & TEN_BITS_MAX;
-		if ((packedValue & (TENTH_BIT << 20)) != 0)
-			store.z *= -1;
-		store.w = (packedValue >>> 30) & TWO_BITS_MAX;
-		if ((packedValue & (SECOND_BIT << 30)) != 0)
-			store.w *= -1;
-		return store;
+	public static Vector3 unsignedInt2101010RevToFloats(int packedValue, Vector3 source) {
+		float x = source.getX();
+		float y = source.getY();
+		float z = source.getZ();
+
+		x = packedValue & TEN_BITS;
+		y = (packedValue >>> 10) & TEN_BITS;
+		z = (packedValue >>> 20) & TEN_BITS;
+
+		return new Vector3(x, y, z);
 	}
 
-	public static int floatToInt210101Rev(Vector4f values) {
-		int store = 0;
-		store |= ((int) values.x) & TEN_BITS_MAX;
-		if (values.x < 0)
-			store |= TENTH_BIT;
-		store |= (((int) values.y) & TEN_BITS_MAX) << 10;
-		if (values.y < 0)
-			store |= TENTH_BIT << 10;
-		store |= (((int) values.z) & TEN_BITS_MAX) << 20;
-		if (values.z < 0)
-			store |= TENTH_BIT << 20;
-		store |= (((int) values.z) & TWO_BITS_MAX) << 30;
-		if (values.w < 0)
-			store |= SECOND_BIT << 30;
-		return store;
+	public static Vector3 int2101010RevNormalizedToFloats(int packedValue, Vector3 source) {
+		source = int2101010RevToFloats(packedValue, source);
+		float x = source.getX();
+		float y = source.getY();
+		float z = source.getZ();
+
+		x /= TEN_BITS_MAX;
+		y /= TEN_BITS_MAX;
+		z /= TEN_BITS_MAX;
+		return new Vector3(x, y, z);
 	}
 
-	public static int floatToUnsignedInt210101Rev(Vector4f values) {
-		int store = 0;
-		store |= ((int) values.x) & TEN_BITS;
-		store |= (((int) values.y) & TEN_BITS) << 10;
-		store |= (((int) values.z) & TEN_BITS) << 20;
-		store |= (((int) values.z) & TWO_BITS) << 30;
-		return store;
-	}
-
-	public static Vector3f unsignedInt2101010RevToFloats(int packedValue, Vector3f store) {
-		if (store == null)
-			store = new Vector3f();
-		store.x = packedValue & TEN_BITS;
-		store.y = (packedValue >>> 10) & TEN_BITS;
-		store.z = (packedValue >>> 20) & TEN_BITS;
-		return store;
-	}
-
-	public static Vector4f unsignedInt2101010RevToFloats(int packedValue, Vector4f store) {
-		if (store == null)
-			store = new Vector4f();
-		store.x = packedValue & TEN_BITS;
-		store.y = (packedValue >>> 10) & TEN_BITS;
-		store.z = (packedValue >>> 20) & TEN_BITS;
-		store.w = (packedValue >>> 30) & TWO_BITS;
-		return store;
-	}
-
-	public static Vector3f int2101010RevNormalizedToFloats(int packedValue, Vector3f store) {
-		store = int2101010RevToFloats(packedValue, store);
-		store.x /= TEN_BITS_MAX;
-		store.y /= TEN_BITS_MAX;
-		store.z /= TEN_BITS_MAX;
-		return store;
-	}
-
-	public static Vector4f int2101010RevNormalizedToFloats(int packedValue, Vector4f store) {
-		store = int2101010RevToFloats(packedValue, store);
-		store.x /= TEN_BITS_MAX;
-		store.y /= TEN_BITS_MAX;
-		store.z /= TEN_BITS_MAX;
-		store.w /= TWO_BITS_MAX;
-		return store;
-	}
-
-	public static Vector3f unsignedInt2101010RevNormalizedToFloats(
+	public static Vector3 unsignedInt2101010RevNormalizedToFloats(
 		int packedValue,
-		Vector3f store
+		Vector3 source
 	) {
-		store = unsignedInt2101010RevToFloats(packedValue, store);
-		store.x /= TEN_BITS;
-		store.y /= TEN_BITS;
-		store.z /= TEN_BITS;
-		return store;
-	}
+		source = unsignedInt2101010RevToFloats(packedValue, source);
+		float x = source.getX();
+		float y = source.getY();
+		float z = source.getZ();
 
-	public static Vector4f unsignedInt2101010RevNormalizedToFloats(
-		int packedValue,
-		Vector4f store
-	) {
-		store = unsignedInt2101010RevToFloats(packedValue, store);
-		store.x /= TEN_BITS;
-		store.y /= TEN_BITS;
-		store.z /= TEN_BITS;
-		store.w /= TWO_BITS;
-		return store;
+		x /= TEN_BITS;
+		y /= TEN_BITS;
+		z /= TEN_BITS;
+
+		return new Vector3(x, y, z);
 	}
 }

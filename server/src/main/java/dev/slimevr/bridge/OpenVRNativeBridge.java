@@ -1,7 +1,7 @@
 package dev.slimevr.bridge;
 
+import dev.slimevr.tracking.trackers.Tracker;
 import dev.slimevr.util.ann.VRServerThread;
-import dev.slimevr.tracking.trackers.ShareableTracker;
 
 
 public class OpenVRNativeBridge implements Bridge {
@@ -23,13 +23,13 @@ public class OpenVRNativeBridge implements Bridge {
 	}
 
 	@Override
-	public void addSharedTracker(ShareableTracker tracker) {
+	public void addSharedTracker(Tracker tracker) {
 		// TODO Auto-generated method stub
 
 	}
 
 	@Override
-	public void removeSharedTracker(ShareableTracker tracker) {
+	public void removeSharedTracker(Tracker tracker) {
 		// TODO Auto-generated method stub
 
 	}

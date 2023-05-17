@@ -1,7 +1,7 @@
 package dev.slimevr.autobone
 
 import dev.slimevr.autobone.AutoBone.Epoch
-import dev.slimevr.poserecorder.PoseFrames
+import dev.slimevr.poseframeformat.PoseFrames
 import dev.slimevr.tracking.processor.config.SkeletonConfigOffsets
 import java.util.EnumMap
 

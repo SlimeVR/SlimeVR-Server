@@ -8,7 +8,9 @@ import dev.slimevr.tracking.trackers.Tracker;
 import solarxr_protocol.rpc.ResetType;
 
 
-// handles tap detection for the skeleton
+/**
+ * Handles tap detection for reset
+ */
 public class TapDetectionManager {
 	private static final String resetSourceName = "TapDetection";
 
