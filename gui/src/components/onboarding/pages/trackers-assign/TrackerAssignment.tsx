@@ -12,7 +12,7 @@ import {
   SettingsResponseT,
   TapDetectionSettingsT,
   ChangeSettingsRequestT,
-  TapDetectionSetupResponseT,
+  TapDetectionSetupNotificationT,
 } from 'solarxr-protocol';
 import { FlatDeviceTracker } from '../../../../hooks/app';
 import { useChokerWarning } from '../../../../hooks/choker-warning';
@@ -214,8 +214,8 @@ export function TrackersAssignPage() {
   };
 
   useRPCPacket(
-    RpcMessage.TapDetectionSetupResponse,
-    (tapSetup: TapDetectionSetupResponseT) => {
+    RpcMessage.TapDetectionSetupNotification,
+    (tapSetup: TapDetectionSetupNotificationT) => {
       if (selectedRole === BodyPart.NONE || !tapSetup.trackerId) return;
       onTrackerSelected({
         tracker: { trackerId: tapSetup.trackerId, info: undefined },
