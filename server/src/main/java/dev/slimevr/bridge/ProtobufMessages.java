@@ -1056,9 +1056,9 @@ public final class ProtobufMessages {
 				if (
 					java.lang.Float.floatToIntBits(getX())
 						!= java.lang.Float
-						.floatToIntBits(
-							other.getX()
-						)
+							.floatToIntBits(
+								other.getX()
+							)
 				)
 					return false;
 			}
@@ -1068,9 +1068,9 @@ public final class ProtobufMessages {
 				if (
 					java.lang.Float.floatToIntBits(getY())
 						!= java.lang.Float
-						.floatToIntBits(
-							other.getY()
-						)
+							.floatToIntBits(
+								other.getY()
+							)
 				)
 					return false;
 			}
@@ -1080,42 +1080,42 @@ public final class ProtobufMessages {
 				if (
 					java.lang.Float.floatToIntBits(getZ())
 						!= java.lang.Float
-						.floatToIntBits(
-							other.getZ()
-						)
+							.floatToIntBits(
+								other.getZ()
+							)
 				)
 					return false;
 			}
 			if (
 				java.lang.Float.floatToIntBits(getQx())
 					!= java.lang.Float
-					.floatToIntBits(
-						other.getQx()
-					)
+						.floatToIntBits(
+							other.getQx()
+						)
 			)
 				return false;
 			if (
 				java.lang.Float.floatToIntBits(getQy())
 					!= java.lang.Float
-					.floatToIntBits(
-						other.getQy()
-					)
+						.floatToIntBits(
+							other.getQy()
+						)
 			)
 				return false;
 			if (
 				java.lang.Float.floatToIntBits(getQz())
 					!= java.lang.Float
-					.floatToIntBits(
-						other.getQz()
-					)
+						.floatToIntBits(
+							other.getQz()
+						)
 			)
 				return false;
 			if (
 				java.lang.Float.floatToIntBits(getQw())
 					!= java.lang.Float
-					.floatToIntBits(
-						other.getQw()
-					)
+						.floatToIntBits(
+							other.getQw()
+						)
 			)
 				return false;
 			if (hasDataSource() != other.hasDataSource())
@@ -1142,50 +1142,50 @@ public final class ProtobufMessages {
 				hash = (37 * hash) + X_FIELD_NUMBER;
 				hash = (53 * hash)
 					+ java.lang.Float
-					.floatToIntBits(
-						getX()
-					);
+						.floatToIntBits(
+							getX()
+						);
 			}
 			if (hasY()) {
 				hash = (37 * hash) + Y_FIELD_NUMBER;
 				hash = (53 * hash)
 					+ java.lang.Float
-					.floatToIntBits(
-						getY()
-					);
+						.floatToIntBits(
+							getY()
+						);
 			}
 			if (hasZ()) {
 				hash = (37 * hash) + Z_FIELD_NUMBER;
 				hash = (53 * hash)
 					+ java.lang.Float
-					.floatToIntBits(
-						getZ()
-					);
+						.floatToIntBits(
+							getZ()
+						);
 			}
 			hash = (37 * hash) + QX_FIELD_NUMBER;
 			hash = (53 * hash)
 				+ java.lang.Float
-				.floatToIntBits(
-					getQx()
-				);
+					.floatToIntBits(
+						getQx()
+					);
 			hash = (37 * hash) + QY_FIELD_NUMBER;
 			hash = (53 * hash)
 				+ java.lang.Float
-				.floatToIntBits(
-					getQy()
-				);
+					.floatToIntBits(
+						getQy()
+					);
 			hash = (37 * hash) + QZ_FIELD_NUMBER;
 			hash = (53 * hash)
 				+ java.lang.Float
-				.floatToIntBits(
-					getQz()
-				);
+					.floatToIntBits(
+						getQz()
+					);
 			hash = (37 * hash) + QW_FIELD_NUMBER;
 			hash = (53 * hash)
 				+ java.lang.Float
-				.floatToIntBits(
-					getQw()
-				);
+					.floatToIntBits(
+						getQw()
+					);
 			if (hasDataSource()) {
 				hash = (37 * hash) + DATA_SOURCE_FIELD_NUMBER;
 				hash = (53 * hash) + dataSource_;
@@ -2387,8 +2387,8 @@ public final class ProtobufMessages {
 			}
 			for (
 				java.util.Map.Entry<java.lang.String, java.lang.String> entry : internalGetActionArguments()
-				.getMap()
-				.entrySet()
+					.getMap()
+					.entrySet()
 			) {
 				com.google.protobuf.MapEntry<java.lang.String, java.lang.String> actionArguments__ = ActionArgumentsDefaultEntryHolder.defaultEntry
 					.newBuilderForType()
@@ -4743,7 +4743,7 @@ public final class ProtobufMessages {
 			if (
 				status_
 					!= dev.slimevr.bridge.ProtobufMessages.TrackerStatus.Status.DISCONNECTED
-					.getNumber()
+						.getNumber()
 			) {
 				output.writeEnum(2, status_);
 			}
@@ -4774,15 +4774,15 @@ public final class ProtobufMessages {
 			if (
 				status_
 					!= dev.slimevr.bridge.ProtobufMessages.TrackerStatus.Status.DISCONNECTED
-					.getNumber()
+						.getNumber()
 			) {
 				size += com.google.protobuf.CodedOutputStream
 					.computeEnumSize(2, status_);
 			}
 			for (
 				java.util.Map.Entry<java.lang.String, java.lang.String> entry : internalGetExtra()
-				.getMap()
-				.entrySet()
+					.getMap()
+					.entrySet()
 			) {
 				com.google.protobuf.MapEntry<java.lang.String, java.lang.String> extra__ = ExtraDefaultEntryHolder.defaultEntry
 					.newBuilderForType()
@@ -5848,9 +5848,9 @@ public final class ProtobufMessages {
 			if (
 				java.lang.Float.floatToIntBits(getBatteryLevel())
 					!= java.lang.Float
-					.floatToIntBits(
-						other.getBatteryLevel()
-					)
+						.floatToIntBits(
+							other.getBatteryLevel()
+						)
 			)
 				return false;
 			if (
@@ -5875,15 +5875,15 @@ public final class ProtobufMessages {
 			hash = (37 * hash) + BATTERY_LEVEL_FIELD_NUMBER;
 			hash = (53 * hash)
 				+ java.lang.Float
-				.floatToIntBits(
-					getBatteryLevel()
-				);
+					.floatToIntBits(
+						getBatteryLevel()
+					);
 			hash = (37 * hash) + IS_CHARGING_FIELD_NUMBER;
 			hash = (53 * hash)
 				+ com.google.protobuf.Internal
-				.hashBoolean(
-					getIsCharging()
-				);
+					.hashBoolean(
+						getIsCharging()
+					);
 			hash = (29 * hash) + getUnknownFields().hashCode();
 			memoizedHashCode = hash;
 			return hash;
@@ -7644,7 +7644,7 @@ public final class ProtobufMessages {
 							&&
 							message_
 								!= dev.slimevr.bridge.ProtobufMessages.UserAction
-								.getDefaultInstance()
+									.getDefaultInstance()
 					) {
 						message_ = dev.slimevr.bridge.ProtobufMessages.UserAction
 							.newBuilder((dev.slimevr.bridge.ProtobufMessages.UserAction) message_)
@@ -7805,7 +7805,7 @@ public final class ProtobufMessages {
 							&&
 							message_
 								!= dev.slimevr.bridge.ProtobufMessages.TrackerAdded
-								.getDefaultInstance()
+									.getDefaultInstance()
 					) {
 						message_ = dev.slimevr.bridge.ProtobufMessages.TrackerAdded
 							.newBuilder((dev.slimevr.bridge.ProtobufMessages.TrackerAdded) message_)
@@ -7968,7 +7968,7 @@ public final class ProtobufMessages {
 							&&
 							message_
 								!= dev.slimevr.bridge.ProtobufMessages.TrackerStatus
-								.getDefaultInstance()
+									.getDefaultInstance()
 					) {
 						message_ = dev.slimevr.bridge.ProtobufMessages.TrackerStatus
 							.newBuilder(
