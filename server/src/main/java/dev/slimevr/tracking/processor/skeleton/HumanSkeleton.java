@@ -1457,31 +1457,6 @@ public class HumanSkeleton {
 		LogManager.info("[HumanSkeleton] Reset: yaw (%s)".formatted(resetSourceName));
 	}
 
-	@VRServerThread
-	public void resetTrackersYaw(String resetSourceName) {
-		// Pass all trackers through trackerPreUpdate
-		Tracker headTracker = trackerPreUpdate(this.headTracker);
-		Tracker[] trackersToReset = getTrackersToReset();
-
-		// Resets the yaw of the trackers with the head as reference.
-		Quaternion referenceRotation = Quaternion.Companion.getIDENTITY();
-		if (headTracker != null) {
-			if (headTracker.getNeedsReset())
-				headTracker.getResetsHandler().resetYaw(referenceRotation);
-			else
-				referenceRotation = headTracker.getRotation();
-		}
-
-		for (Tracker tracker : trackersToReset) {
-			if (tracker != null && tracker.getNeedsReset()) {
-				tracker.getResetsHandler().resetYaw(referenceRotation);
-			}
-		}
-		this.legTweaks.resetBuffer();
-
-		LogManager.info("Reset: yaw (%s)".formatted(resetSourceName));
-	}
-
 	private boolean shouldResetMounting(TrackerPosition position) {
 		return position != null
 			// TODO: Feet can't currently be reset using this method, maybe
