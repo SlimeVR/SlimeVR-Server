@@ -12,6 +12,7 @@ import {
 } from '../../hooks/status-system';
 import { useMemo } from 'react';
 import { WarningBox } from '../commons/TipBox';
+import { trackerStatusRelated } from '../utils/formatting';
 
 export function Home() {
   const { l10n } = useLocalization();
@@ -43,18 +44,20 @@ export function Home() {
 
   return (
     <div className="overflow-y-auto flex flex-col gap-2">
-      <div className="flex flex-row flex-wrap gap-3">
+      <div className="flex flex-col flex-wrap gap-3 px-4 pt-4 lg:flex-row">
         {filteredStatuses
           .filter(([, status]) => status.prioritized)
           .map(([, status]) => (
-            <Localized
-              id={`status_system-${StatusData[status.dataType]}`}
-              vars={parseStatusToLocale(status)}
-            >
-              <WarningBox>
-                {`Warning, you should fix ${StatusData[status.dataType]}`}
-              </WarningBox>
-            </Localized>
+            <div className="lg:w-1/3 w-full">
+              <Localized
+                id={`status_system-${StatusData[status.dataType]}`}
+                vars={parseStatusToLocale(status)}
+              >
+                <WarningBox whitespace={false}>
+                  {`Warning, you should fix ${StatusData[status.dataType]}`}
+                </WarningBox>
+              </Localized>
+            </div>
           ))}
       </div>
       {trackers.length === 0 && (
@@ -75,6 +78,7 @@ export function Home() {
               onClick={() => sendToSettings(tracker)}
               smol
               interactable
+              warning={Object.values(statuses).some((status) => trackerStatusRelated(tracker, status))}
             />
           ))}
         </div>

@@ -115,6 +115,7 @@ export function TrackerCard({
   onClick,
   bg = 'bg-background-60',
   shakeHighlight = true,
+  warning = false,
 }: {
   tracker: TrackerDataT;
   device?: DeviceDataT;
@@ -124,6 +125,7 @@ export function TrackerCard({
   bg?: string;
   shakeHighlight?: boolean;
   onClick?: MouseEventHandler<HTMLDivElement>;
+  warning?: boolean;
 }) {
   const { useVelocity } = useTracker(tracker);
 
@@ -136,6 +138,7 @@ export function TrackerCard({
         'rounded-lg overflow-hidden',
         interactable && 'hover:bg-background-50 cursor-pointer',
         outlined && 'outline outline-2 outline-accent-background-40',
+        warning && 'border-status-warning border-solid border-2',
         bg
       )}
       style={

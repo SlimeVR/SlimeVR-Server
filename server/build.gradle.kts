@@ -83,12 +83,8 @@ dependencies {
 	implementation("org.java-websocket:Java-WebSocket:1.+")
 	implementation("com.melloware:jintellitype:1.+")
 	implementation("org.jetbrains.kotlinx:kotlinx-serialization-json:1.5.0-RC")
-
 	implementation("it.unimi.dsi:fastutil:8.5.12")
-<<<<<<< HEAD
 
-=======
->>>>>>> 26537a66 (start working on this)
 	testImplementation(kotlin("test"))
 	// Use JUnit test framework
 	testImplementation(platform("org.junit:junit-bom:5.9.0"))

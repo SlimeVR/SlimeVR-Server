@@ -705,5 +705,5 @@ onboarding-automatic_proportions-done-description = Your body proportions' calib
 home-no_trackers = No trackers detected or assigned
 
 ## Status system
-status_system-StatusDoublyAssignedBody = { $body_part } is assigned to { $tracker_1 } and { $tracker_2 }
-status_system-StatusTrackerReset = It's recommended to do a full reset because there is one or more trackers that is unconfigured
+status_system-StatusDoublyAssignedBody = { $bodyPart } is assigned to more than one tracker!
+status_system-StatusTrackerReset = It's recommended to do a full reset because there is one or more trackers that are unconfigured

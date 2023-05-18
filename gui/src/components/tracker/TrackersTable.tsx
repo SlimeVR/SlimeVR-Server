@@ -12,10 +12,11 @@ import { useConfig } from '../../hooks/config';
 import { useTracker } from '../../hooks/tracker';
 import { BodyPartIcon } from '../commons/BodyPartIcon';
 import { Typography } from '../commons/Typography';
-import { formatVector3 } from '../utils/formatting';
+import { formatVector3, trackerStatusRelated } from '../utils/formatting';
 import { TrackerBattery } from './TrackerBattery';
 import { TrackerStatus } from './TrackerStatus';
 import { TrackerWifi } from './TrackerWifi';
+import { useStatusContext } from '../../hooks/status-system';
 
 enum DisplayColumn {
   NAME,
@@ -105,6 +106,7 @@ export function RowContainer({
   onClick,
   onMouseOver,
   onMouseOut,
+  warning,
 }: {
   children: ReactNode;
   rounded?: 'left' | 'right' | 'none';
@@ -113,6 +115,7 @@ export function RowContainer({
   onClick?: MouseEventHandler<HTMLDivElement>;
   onMouseOver?: MouseEventHandler<HTMLDivElement>;
   onMouseOut?: MouseEventHandler<HTMLDivElement>;
+  warning: boolean;
 }) {
   const { useVelocity } = useTracker(tracker);
 
@@ -138,9 +141,10 @@ export function RowContainer({
         }}
         className={classNames(
           'h-[50px]  flex flex-col justify-center px-3',
-          rounded === 'left' && 'rounded-l-lg',
-          rounded === 'right' && 'rounded-r-lg',
-          hover ? 'bg-background-50 cursor-pointer' : 'bg-background-60'
+          rounded === 'left' && 'rounded-l-lg border-l-2',
+          rounded === 'right' && 'rounded-r-lg border-r-2',
+          hover ? 'bg-background-50 cursor-pointer' : 'bg-background-60',
+          warning && 'border-status-warning border-solid border-t-2 border-b-2'
         )}
       >
         {children}
@@ -159,6 +163,7 @@ export function TrackersTable({
   const { l10n } = useLocalization();
   const [hoverTracker, setHoverTracker] = useState<TrackerIdT | null>(null);
   const { config } = useConfig();
+  const { statuses } = useStatusContext();
 
   const trackerEqual = (id: TrackerIdT | null) =>
     id?.trackerNum == hoverTracker?.trackerNum &&
@@ -230,6 +235,9 @@ export function TrackersTable({
             hover={trackerEqual(data.tracker.trackerId)}
             onMouseOver={() => setHoverTracker(data.tracker.trackerId)}
             onMouseOut={() => setHoverTracker(null)}
+            warning={Object.values(statuses).some((status) =>
+              trackerStatusRelated(data.tracker, status)
+            )}
           >
             {row(data) || <></>}
           </RowContainer>

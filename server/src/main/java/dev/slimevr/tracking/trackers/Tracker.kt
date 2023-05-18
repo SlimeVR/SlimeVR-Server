@@ -11,6 +11,7 @@ import solarxr_protocol.datatypes.DeviceIdT
 import solarxr_protocol.datatypes.TrackerIdT
 import solarxr_protocol.rpc.StatusData
 import solarxr_protocol.rpc.StatusDataUnion
+import solarxr_protocol.rpc.StatusDoublyAssignedBodyT
 import solarxr_protocol.rpc.StatusTrackerResetT
 
 const val TIMEOUT_MS = 2000L
@@ -82,6 +83,7 @@ class Tracker @JvmOverloads constructor(
 			field = value
 
 			if (!isInternal) {
+				// Check if a full reset is needed
 				if (value != null && lastResetStatus == 0u && status.sendData) {
 					reportRequireReset()
 				} else if (value == null && lastResetStatus != 0u) {
@@ -117,6 +119,10 @@ class Tracker @JvmOverloads constructor(
 	 */
 	var lastResetStatus = 0u
 	private fun reportRequireReset() {
+		require(lastResetStatus == 0u) {
+			"lastResetStatus must be 0u, but was $lastResetStatus"
+		}
+
 		val tempTrackerNum = this.trackerNum
 		val statusMsg = StatusTrackerResetT().apply {
 			trackerId = TrackerIdT().apply {

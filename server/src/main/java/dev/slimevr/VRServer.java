@@ -16,11 +16,8 @@ import dev.slimevr.protocol.ProtocolAPI;
 import dev.slimevr.reset.ResetHandler;
 import dev.slimevr.serial.ProvisioningHandler;
 import dev.slimevr.serial.SerialHandler;
-<<<<<<< HEAD
 import dev.slimevr.setup.TapSetupHandler;
-=======
 import dev.slimevr.status.StatusSystem;
->>>>>>> 26537a66 (start working on this)
 import dev.slimevr.tracking.processor.HumanPoseManager;
 import dev.slimevr.tracking.processor.skeleton.HumanSkeleton;
 import dev.slimevr.tracking.trackers.DeviceManager;
