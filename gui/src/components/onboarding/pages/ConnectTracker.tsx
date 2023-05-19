@@ -22,6 +22,7 @@ import { Typography } from '../../commons/Typography';
 import { TrackerCard } from '../../tracker/TrackerCard';
 import { SkipSetupWarningModal } from '../SkipSetupWarningModal';
 import { SkipSetupButton } from '../SkipSetupButton';
+import { useBnoExists } from '../../../hooks/imu-logic';
 
 const BOTTOM_HEIGHT = 80;
 
@@ -69,6 +70,8 @@ export function ConnectTrackersPage() {
   applyProgress(0.4);
 
   const connectedTrackers = useConnectedTrackers();
+
+  const bnoExists = useBnoExists(connectedTrackers);
 
   useEffect(() => {
     if (!state.wifi) {
@@ -209,7 +212,13 @@ export function ConnectTrackersPage() {
             </Button>
             <Button
               variant="primary"
-              to={state.alonePage ? '/' : '/onboarding/trackers-assign'}
+              to={
+                state.alonePage
+                  ? '/'
+                  : bnoExists
+                  ? '/onboarding/calibration-tutorial'
+                  : '/onboarding/trackers-assign'
+              }
               className="ml-auto"
             >
               {l10n.getString('onboarding-connect_tracker-next')}
