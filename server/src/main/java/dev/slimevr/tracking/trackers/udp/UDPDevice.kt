@@ -6,7 +6,13 @@ import dev.slimevr.tracking.trackers.Tracker
 import java.net.InetAddress
 import java.net.SocketAddress
 
-class UDPDevice(var address: SocketAddress, override var ipAddress: InetAddress) : Device() {
+class UDPDevice(
+	var address: SocketAddress,
+	var ipAddress: InetAddress,
+	override val hardwareIdentifier: String,
+	override val boardType: BoardType = BoardType.UNKNOWN,
+	override val mcuType: MCUType = MCUType.UNKNOWN,
+) : Device() {
 
 	override val id: Int = nextLocalDeviceId.incrementAndGet()
 

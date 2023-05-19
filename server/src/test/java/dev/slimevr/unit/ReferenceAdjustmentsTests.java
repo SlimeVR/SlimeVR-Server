@@ -6,6 +6,7 @@ import dev.slimevr.tracking.processor.BoneType;
 import dev.slimevr.tracking.processor.TransformNode;
 import dev.slimevr.tracking.trackers.Tracker;
 import dev.slimevr.tracking.trackers.TrackerResetsHandler;
+import dev.slimevr.tracking.trackers.udp.IMUType;
 import io.eiren.math.FloatMath;
 import io.eiren.util.StringUtils;
 import io.github.axisangles.ktmath.EulerAngles;
@@ -192,7 +193,7 @@ public class ReferenceAdjustmentsTests {
 			false,
 			true,
 			false,
-			true,
+			IMUType.UNKNOWN,
 			false,
 			false,
 			true
@@ -237,7 +238,7 @@ public class ReferenceAdjustmentsTests {
 			false,
 			true,
 			false,
-			true,
+			IMUType.UNKNOWN,
 			false,
 			false,
 			true
@@ -278,7 +279,7 @@ public class ReferenceAdjustmentsTests {
 			false,
 			true,
 			false,
-			true,
+			IMUType.UNKNOWN,
 			false,
 			false,
 			true

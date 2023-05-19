@@ -177,7 +177,9 @@ public class HumanSkeleton {
 			this,
 			humanPoseManager,
 			server.getConfigManager().getVrConfig().getTapDetection(),
-			server.getResetHandler()
+			server.getResetHandler(),
+			server.getTapSetupHandler(),
+			server.getAllTrackers()
 		);
 		legTweaks.setConfig(server.getConfigManager().getVrConfig().getLegTweaks());
 	}

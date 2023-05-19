@@ -4,6 +4,7 @@ import com.google.flatbuffers.FlatBufferBuilder;
 import dev.slimevr.tracking.processor.BoneInfo;
 import dev.slimevr.tracking.trackers.Device;
 import dev.slimevr.tracking.trackers.Tracker;
+import dev.slimevr.tracking.trackers.udp.UDPDevice;
 import io.github.axisangles.ktmath.Quaternion;
 import io.github.axisangles.ktmath.Vector3;
 import solarxr_protocol.data_feed.Bone;
@@ -38,27 +39,35 @@ public class DataFeedBuilder {
 			? fbb.createString(device.getManufacturer())
 			: 0;
 
+		int boardTypeOffset = fbb.createString(device.getBoardType().toString());
+
+		int hardwareIdentifierOffset = fbb.createString(device.getHardwareIdentifier());
+
 		HardwareInfo.startHardwareInfo(fbb);
 		HardwareInfo.addFirmwareVersion(fbb, nameOffset);
 		HardwareInfo.addManufacturer(fbb, manufacturerOffset);
-		var ipAddr = device.getIpAddress();
-		if (ipAddr != null && ipAddr.getAddress() != null) {
+		HardwareInfo.addHardwareIdentifier(fbb, hardwareIdentifierOffset);
+
+		if (device instanceof UDPDevice udpDevice) {
+			var address = udpDevice.getIpAddress().getAddress();
 			HardwareInfo
 				.addIpAddress(
 					fbb,
 					Ipv4Address
 						.createIpv4Address(
 							fbb,
-							ByteBuffer.wrap(ipAddr.getAddress()).getInt()
+							ByteBuffer.wrap(address).getInt()
 						)
 				);
 		}
+
 		// BRUH MOMENT
 		// TODO need support: HardwareInfo.addHardwareRevision(fbb,
 		// hardwareRevisionOffset);
 		// TODO need support: HardwareInfo.addDisplayName(fbb, de);
 
-		// TODO need support: HardwareInfo.addMcuId(device);
+		HardwareInfo.addMcuId(fbb, device.getMcuType().getSolarType());
+		HardwareInfo.addBoardType(fbb, boardTypeOffset);
 		return HardwareInfo.endHardwareInfo(fbb);
 	}
 
@@ -104,8 +113,10 @@ public class DataFeedBuilder {
 		TrackerInfo.addIsComputed(fbb, tracker.isComputed());
 		TrackerInfo.addDisplayName(fbb, displayNameOffset);
 		TrackerInfo.addCustomName(fbb, customNameOffset);
+		if (tracker.getImuType() != null) {
+			TrackerInfo.addImuType(fbb, tracker.getImuType().getSolarType());
+		}
 
-		// TODO need support: TrackerInfo.addImuType(fbb, tracker.im);
 		// TODO need support: TrackerInfo.addPollRate(fbb, tracker.);
 
 		if (tracker.isImu()) {
