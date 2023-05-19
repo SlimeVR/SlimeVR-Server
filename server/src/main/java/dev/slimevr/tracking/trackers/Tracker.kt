@@ -11,7 +11,6 @@ import solarxr_protocol.datatypes.DeviceIdT
 import solarxr_protocol.datatypes.TrackerIdT
 import solarxr_protocol.rpc.StatusData
 import solarxr_protocol.rpc.StatusDataUnion
-import solarxr_protocol.rpc.StatusDoublyAssignedBodyT
 import solarxr_protocol.rpc.StatusTrackerResetT
 
 const val TIMEOUT_MS = 2000L

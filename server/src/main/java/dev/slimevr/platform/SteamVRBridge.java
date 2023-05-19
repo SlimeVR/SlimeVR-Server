@@ -10,8 +10,13 @@ import dev.slimevr.tracking.trackers.Tracker;
 import dev.slimevr.tracking.trackers.TrackerPosition;
 import dev.slimevr.tracking.trackers.TrackerRole;
 import dev.slimevr.util.ann.VRServerThread;
+import solarxr_protocol.rpc.StatusData;
+import solarxr_protocol.rpc.StatusDataUnion;
+import solarxr_protocol.rpc.StatusSteamVRDisconnectedT;
 
 import java.util.List;
+
+import dev.slimevr.Main;
 
 
 public abstract class SteamVRBridge extends ProtobufBridge implements Runnable {
@@ -130,6 +135,21 @@ public abstract class SteamVRBridge extends ProtobufBridge implements Runnable {
 			tracker.setTrackerPosition(TrackerPosition.getByTrackerRole(role));
 		}
 		return tracker;
+	}
+
+	protected int lastSteamVRStatus = 0;
+
+	protected void reportDisconnected() {
+		if (lastSteamVRStatus == 0) {
+			throw new IllegalStateException(
+				"lastSteamVRStatus wasn't 0 and it was " + lastSteamVRStatus + " instead"
+			);
+		}
+
+		var status = new StatusDataUnion();
+		status.setType(StatusData.StatusSteamVRDisconnected);
+		status.setValue(new StatusSteamVRDisconnectedT());
+		lastSteamVRStatus = Main.getVrServer().getStatusSystem().addStatus(status, false);
 	}
 
 	public abstract boolean isConnected();
