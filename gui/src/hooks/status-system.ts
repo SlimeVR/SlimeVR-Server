@@ -3,13 +3,18 @@ import {
   RpcMessage,
   StatusData,
   StatusMessageT,
+  StatusSteamVRDisconnectedT,
   StatusSystemFixedT,
   StatusSystemRequestT,
   StatusSystemResponseT,
   StatusSystemUpdateT,
+  StatusTrackerErrorT,
+  StatusTrackerResetT,
+  TrackerDataT,
 } from 'solarxr-protocol';
 import { useWebsocketAPI } from './websocket-api';
 import { FluentVariable } from '@fluent/bundle';
+import { FlatDeviceTracker } from './app';
 
 type StatusSystemStateAction =
   | StatusSystemStateFixedAction
@@ -108,14 +113,60 @@ export function useStatusContext() {
 }
 
 export function parseStatusToLocale(
-  status: StatusMessageT
+  status: StatusMessageT,
+  trackers: FlatDeviceTracker[] | null
 ): Record<string, FluentVariable> {
   switch (status.dataType) {
     case StatusData.NONE:
     case StatusData.StatusTrackerReset:
       return {};
-    case StatusData.StatusDoublyAssignedBody:
-      // const data = status.data as StatusDoublyAssignedBodyT;
+    case StatusData.StatusSteamVRDisconnected: {
+      const data = status.data as StatusSteamVRDisconnectedT;
+      if (typeof data.bridgeSettingsName === 'string') {
+        return { type: data.bridgeSettingsName };
+      }
       return {};
+    }
+    case StatusData.StatusTrackerError: {
+      const data = status.data as StatusTrackerErrorT;
+      if (!data.trackerId?.trackerNum || !data.trackerId.deviceId || !trackers) {
+        return {};
+      }
+
+      const tracker = trackers.find(
+        ({ tracker }) =>
+          data.trackerId?.trackerNum &&
+          data.trackerId.deviceId?.id &&
+          tracker?.trackerId?.trackerNum == data.trackerId.trackerNum &&
+          tracker?.trackerId?.deviceId?.id == data.trackerId.deviceId.id
+      );
+      if (typeof tracker?.tracker.info?.customName !== 'string') return {};
+
+      return {
+        trackerName: tracker.tracker.info?.customName,
+      };
+    }
+  }
+}
+
+export const doesntContainTrackerInfo: readonly StatusData[] = [StatusData.NONE];
+export function trackerStatusRelated(
+  tracker: TrackerDataT,
+  status: StatusMessageT
+): boolean {
+  if (doesntContainTrackerInfo.includes(status.dataType)) {
+    return false;
+  }
+
+  switch (status.dataType) {
+    case StatusData.StatusTrackerReset: {
+      const data = status.data as StatusTrackerResetT;
+      return (
+        data.trackerId?.trackerNum == tracker.trackerId?.trackerNum &&
+        data.trackerId?.deviceId?.id === tracker.trackerId?.deviceId?.id
+      );
+    }
+    default:
+      return false;
   }
 }

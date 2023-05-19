@@ -8,11 +8,13 @@ import { TrackerCard } from '../tracker/TrackerCard';
 import { TrackersTable } from '../tracker/TrackersTable';
 import {
   parseStatusToLocale,
+  trackerStatusRelated,
   useStatusContext,
 } from '../../hooks/status-system';
 import { useMemo } from 'react';
 import { WarningBox } from '../commons/TipBox';
-import { trackerStatusRelated } from '../utils/formatting';
+
+const DONT_REPEAT_STATUSES = [StatusData.StatusTrackerReset];
 
 export function Home() {
   const { l10n } = useLocalization();
@@ -28,16 +30,10 @@ export function Home() {
   };
 
   const filteredStatuses = useMemo(() => {
-    let foundFullResetWarning = false;
+    const dontRepeat = new Map(DONT_REPEAT_STATUSES.map((x) => [x, false]));
     return Object.entries(statuses).filter(([, value]) => {
-      if (
-        value.dataType === StatusData.StatusTrackerReset &&
-        foundFullResetWarning
-      ) {
-        return false;
-      } else {
-        foundFullResetWarning = true;
-      }
+      if (dontRepeat.get(value.dataType)) return false;
+      if (dontRepeat.has(value.dataType)) dontRepeat.set(value.dataType, true);
       return true;
     });
   }, [statuses]);
@@ -51,7 +47,7 @@ export function Home() {
             <div className="lg:w-1/3 w-full">
               <Localized
                 id={`status_system-${StatusData[status.dataType]}`}
-                vars={parseStatusToLocale(status)}
+                vars={parseStatusToLocale(status, trackers)}
               >
                 <WarningBox whitespace={false}>
                   {`Warning, you should fix ${StatusData[status.dataType]}`}
@@ -78,7 +74,9 @@ export function Home() {
               onClick={() => sendToSettings(tracker)}
               smol
               interactable
-              warning={Object.values(statuses).some((status) => trackerStatusRelated(tracker, status))}
+              warning={Object.values(statuses).some((status) =>
+                trackerStatusRelated(tracker, status)
+              )}
             />
           ))}
         </div>

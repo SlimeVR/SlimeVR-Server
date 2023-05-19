@@ -705,5 +705,9 @@ onboarding-automatic_proportions-done-description = Your body proportions' calib
 home-no_trackers = No trackers detected or assigned
 
 ## Status system
-status_system-StatusDoublyAssignedBody = { $bodyPart } is assigned to more than one tracker!
 status_system-StatusTrackerReset = It's recommended to do a full reset because there is one or more trackers that are unconfigured
+status_system-StatusSteamVRDisconnected = { $type ->
+    *[steamvr] The SteamVR driver is not connected to the server!
+    [steamvr_feeder] The SteamVR feeder is not connected to the server!
+}
+status_system-StatusTrackerError = The { $trackerName } tracker has an error.

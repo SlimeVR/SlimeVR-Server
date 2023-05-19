@@ -32,6 +32,7 @@ class StatusSystem {
 	/**
 	 * @return the ID of the status, 0 is not a valid ID, can be used as replacement of null
 	 */
+	@JvmName("addStatusInt")
 	fun addStatus(statusData: StatusDataUnion, prioritized: Boolean = false): UInt {
 		val id = idCounter.getAndUpdate {
 			(it.toUInt() + 1u).toInt() // the simple way of making unsigned math
@@ -48,6 +49,7 @@ class StatusSystem {
 		return id.toUInt()
 	}
 
+	@JvmName("removeStatusInt")
 	fun removeStatus(id: UInt) {
 		statuses.remove(id.toInt())
 		prioritizedStatuses.remove(id.toInt())

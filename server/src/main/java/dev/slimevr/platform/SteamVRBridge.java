@@ -137,19 +137,24 @@ public abstract class SteamVRBridge extends ProtobufBridge implements Runnable {
 		return tracker;
 	}
 
+	/**
+	 * When 0, then it means null
+	 */
 	protected int lastSteamVRStatus = 0;
 
 	protected void reportDisconnected() {
-		if (lastSteamVRStatus == 0) {
+		if (lastSteamVRStatus != 0) {
 			throw new IllegalStateException(
 				"lastSteamVRStatus wasn't 0 and it was " + lastSteamVRStatus + " instead"
 			);
 		}
+		var statusData = new StatusSteamVRDisconnectedT();
+		statusData.setBridgeSettingsName(bridgeSettingsKey);
 
 		var status = new StatusDataUnion();
 		status.setType(StatusData.StatusSteamVRDisconnected);
-		status.setValue(new StatusSteamVRDisconnectedT());
-		lastSteamVRStatus = Main.getVrServer().getStatusSystem().addStatus(status, false);
+		status.setValue(statusData);
+		lastSteamVRStatus = Main.getVrServer().getStatusSystem().addStatusInt(status, false);
 	}
 
 	public abstract boolean isConnected();
