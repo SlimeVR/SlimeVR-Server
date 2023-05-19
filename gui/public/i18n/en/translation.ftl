@@ -13,6 +13,7 @@ websocket-connection_lost = Connection lost to the server. Trying to reconnect..
 tips-find_tracker = Not sure which tracker is which? Shake a tracker and it will highlight the corresponding item.
 tips-do_not_move_heels = Ensure your heels do not move during recording!
 tips-file_select = Drag & drop files to use, or <u>browse</u>.
+tips-tap_setup = You can slowly tap 2 times your tracker to choose it instead of selecting it from the menu.
 
 ## Body parts
 body_part-NONE = Unassigned
@@ -211,7 +212,7 @@ tracker_selection_menu-LEFT_CONTROLLER = { -tracker_selection-part } left contro
 
 tracker_selection_menu-unassigned = Unassigned Trackers
 tracker_selection_menu-assigned = Assigned Trackers
-tracker_selection_menu-dont_assign = Do not assign
+tracker_selection_menu-dont_assign = Unassign
 
 # This line cares about multilines.
 # <b>text</b> means that the text should be bold.

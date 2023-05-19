@@ -190,6 +190,7 @@ export function GeneralSettings() {
       values.tapDetection.mountingResetEnabled;
     tapDetection.mountingResetDelay = values.tapDetection.mountingResetDelay;
     tapDetection.mountingResetTaps = values.tapDetection.mountingResetTaps;
+    tapDetection.setupMode = false;
     settings.tapDetectionSettings = tapDetection;
 
     const filtering = new FilteringSettingsT();
