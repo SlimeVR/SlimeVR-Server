@@ -65,7 +65,7 @@ class Tracker @JvmOverloads constructor(
 				// assign or un-assign the tracker to a body part
 				vrServer.updateSkeletonModel()
 
-				if (lastResetStatus == 0u) {
+				if (needsReset && lastResetStatus == 0u) {
 					if (value.sendData && trackerPosition != null) {
 						reportRequireReset()
 					}
@@ -83,7 +83,7 @@ class Tracker @JvmOverloads constructor(
 
 			if (!isInternal) {
 				// Check if a full reset is needed
-				if (value != null && lastResetStatus == 0u && status.sendData) {
+				if (needsReset && value != null && lastResetStatus == 0u && status.sendData) {
 					reportRequireReset()
 				} else if (value == null && lastResetStatus != 0u) {
 					vrServer.statusSystem.removeStatus(lastResetStatus)

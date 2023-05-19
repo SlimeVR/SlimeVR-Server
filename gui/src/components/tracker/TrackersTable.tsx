@@ -144,10 +144,12 @@ export function RowContainer({
         }}
         className={classNames(
           'h-[50px]  flex flex-col justify-center px-3',
-          rounded === 'left' && 'rounded-l-lg border-l-2',
-          rounded === 'right' && 'rounded-r-lg border-r-2',
+          rounded === 'left' && 'rounded-l-lg',
+          rounded === 'right' && 'rounded-r-lg',
           hover ? 'bg-background-50 cursor-pointer' : 'bg-background-60',
-          warning && 'border-status-warning border-solid border-t-2 border-b-2'
+          warning && 'border-status-warning border-solid border-t-2 border-b-2',
+          rounded === 'left' && warning && 'border-l-2',
+          rounded === 'right' && warning && 'border-r-2'
         )}
       >
         {children}

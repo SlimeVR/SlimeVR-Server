@@ -124,13 +124,13 @@ export function MainLayoutRoute({
                 <div className="w-full">
                   <OverlayWidget></OverlayWidget>
                 </div>
-                <div className="w-full flex flex-col max-h-[33%] gap-3 overflow-y-auto">
+                <div className="w-full flex flex-col max-h-[33%] gap-3 overflow-y-auto mb-2">
                   {unprioritizedStatuses.map((status) => (
                     <Localized
                       id={`status_system-${StatusData[status.dataType]}`}
                       vars={parseStatusToLocale(status, trackers)}
                     >
-                      <WarningBox whitespace={false}>
+                      <WarningBox whitespace={false} hideIcon={true}>
                         {`Warning, you should fix ${
                           StatusData[status.dataType]
                         }`}
