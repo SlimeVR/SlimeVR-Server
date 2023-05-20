@@ -18,6 +18,7 @@ import io.eiren.util.collections.FastList;
 import io.eiren.util.logging.LogManager;
 import io.github.axisangles.ktmath.Quaternion;
 import io.github.axisangles.ktmath.Vector3;
+import org.apache.commons.math3.util.Precision;
 
 import java.util.List;
 import java.util.Map;
@@ -685,6 +686,10 @@ public class HumanPoseManager {
 				tracker.getNeedsReset()
 					&& tracker.getResetsHandler().getLastResetQuaternion() != null
 			) {
+				if (!trackersDriftText.isEmpty()) {
+					trackersDriftText.append(" | ");
+				}
+
 				// Get the difference between last reset and now
 				Quaternion difference = tracker
 					.getRotation()
@@ -699,13 +704,9 @@ public class HumanPoseManager {
 				// Fix for polarity or something
 				if (trackerDriftAngle > 180)
 					trackerDriftAngle = Math.abs(trackerDriftAngle - 360);
-				// Round it to 4 decimal places
-				trackerDriftAngle = Math.round(trackerDriftAngle * 10000f) / 10000f;
 
 				// Calculate drift per minute
 				float driftPerMin = trackerDriftAngle / (timeSinceLastReset / 60f);
-				// Round it to 4 decimal places
-				driftPerMin = Math.round(driftPerMin * 10000f) / 10000f;
 
 				trackersDriftText.append(tracker.getName());
 				TrackerPosition trackerPosition = tracker.getTrackerPosition();
@@ -714,10 +715,10 @@ public class HumanPoseManager {
 
 				trackersDriftText
 					.append(", ")
-					.append(trackerDriftAngle)
+					.append(Precision.round(trackerDriftAngle, 4))
 					.append(" deg (")
-					.append(driftPerMin)
-					.append(" deg/min) | ");
+					.append(Precision.round(driftPerMin, 4))
+					.append(" deg/min)");
 			}
 		}
 

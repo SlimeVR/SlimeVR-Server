@@ -536,12 +536,6 @@ public class HumanSkeleton {
 	}
 
 	// #region Processing
-	// Useful for subclasses that need to return a sub-tracker (like
-	// PoseFrameTracker -> TrackerFrame)
-	protected Tracker trackerPreUpdate(Tracker tracker) {
-		return tracker;
-	}
-
 	// Updates the pose from tracker positions
 	@VRServerThread
 	public void updatePose() {
@@ -573,32 +567,6 @@ public class HumanSkeleton {
 
 	// #region Update the node transforms from the trackers
 	protected void updateLocalTransforms() {
-		// #region Pass all trackers through trackerPreUpdate for Autobone
-		Tracker headTracker = trackerPreUpdate(this.headTracker);
-
-		Tracker neckTracker = trackerPreUpdate(this.neckTracker);
-		Tracker chestTracker = trackerPreUpdate(this.chestTracker);
-		Tracker waistTracker = trackerPreUpdate(this.waistTracker);
-		Tracker hipTracker = trackerPreUpdate(this.hipTracker);
-
-		Tracker leftUpperLegTracker = trackerPreUpdate(this.leftUpperLegTracker);
-		Tracker leftLowerLegTracker = trackerPreUpdate(this.leftLowerLegTracker);
-		Tracker leftFootTracker = trackerPreUpdate(this.leftFootTracker);
-
-		Tracker rightUpperLegTracker = trackerPreUpdate(this.rightUpperLegTracker);
-		Tracker rightLowerLegTracker = trackerPreUpdate(this.rightLowerLegTracker);
-		Tracker rightFootTracker = trackerPreUpdate(this.rightFootTracker);
-
-		Tracker leftLowerArmTracker = trackerPreUpdate(this.leftLowerArmTracker);
-		Tracker rightLowerArmTracker = trackerPreUpdate(this.rightLowerArmTracker);
-		Tracker leftUpperArmTracker = trackerPreUpdate(this.leftUpperArmTracker);
-		Tracker rightUpperArmTracker = trackerPreUpdate(this.rightUpperArmTracker);
-		Tracker leftHandTracker = trackerPreUpdate(this.leftHandTracker);
-		Tracker rightHandTracker = trackerPreUpdate(this.rightHandTracker);
-		Tracker leftShoulderTracker = trackerPreUpdate(this.leftShoulderTracker);
-		Tracker rightShoulderTracker = trackerPreUpdate(this.rightShoulderTracker);
-		// #endregion
-
 		// HMD, head and neck
 		Quaternion headRot = Quaternion.Companion.getIDENTITY();
 		if (headTracker != null) {
@@ -1383,30 +1351,28 @@ public class HumanSkeleton {
 	public List<Tracker> getLocalTrackers() {
 		return List
 			.of(
-				trackerPreUpdate(this.neckTracker),
-				trackerPreUpdate(this.chestTracker),
-				trackerPreUpdate(this.waistTracker),
-				trackerPreUpdate(this.hipTracker),
-				trackerPreUpdate(this.leftUpperLegTracker),
-				trackerPreUpdate(this.leftLowerLegTracker),
-				trackerPreUpdate(this.leftFootTracker),
-				trackerPreUpdate(this.rightUpperLegTracker),
-				trackerPreUpdate(this.rightLowerLegTracker),
-				trackerPreUpdate(this.rightFootTracker),
-				trackerPreUpdate(this.leftLowerArmTracker),
-				trackerPreUpdate(this.rightLowerArmTracker),
-				trackerPreUpdate(this.leftUpperArmTracker),
-				trackerPreUpdate(this.rightUpperArmTracker),
-				trackerPreUpdate(this.leftHandTracker),
-				trackerPreUpdate(this.rightHandTracker),
-				trackerPreUpdate(this.leftShoulderTracker),
-				trackerPreUpdate(this.rightShoulderTracker)
+				this.neckTracker,
+				this.chestTracker,
+				this.waistTracker,
+				this.hipTracker,
+				this.leftUpperLegTracker,
+				this.leftLowerLegTracker,
+				this.leftFootTracker,
+				this.rightUpperLegTracker,
+				this.rightLowerLegTracker,
+				this.rightFootTracker,
+				this.leftLowerArmTracker,
+				this.rightLowerArmTracker,
+				this.leftUpperArmTracker,
+				this.rightUpperArmTracker,
+				this.leftHandTracker,
+				this.rightHandTracker,
+				this.leftShoulderTracker,
+				this.rightShoulderTracker
 			);
 	}
 
 	public void resetTrackersFull(String resetSourceName) {
-		// Pass all trackers through trackerPreUpdate
-		Tracker headTracker = trackerPreUpdate(this.headTracker);
 		List<Tracker> trackersToReset = humanPoseManager.getTrackersToReset();
 
 		// Resets all axis of the trackers with the HMD as reference.
@@ -1434,8 +1400,6 @@ public class HumanSkeleton {
 
 	@VRServerThread
 	public void resetTrackersYaw(String resetSourceName) {
-		// Pass all trackers through trackerPreUpdate
-		Tracker headTracker = trackerPreUpdate(this.headTracker);
 		List<Tracker> trackersToReset = humanPoseManager.getTrackersToReset();
 
 		// Resets the yaw of the trackers with the head as reference.
@@ -1489,8 +1453,6 @@ public class HumanSkeleton {
 
 	@VRServerThread
 	public void resetTrackersMounting(String resetSourceName) {
-		// Pass all trackers through trackerPreUpdate
-		Tracker headTracker = trackerPreUpdate(this.headTracker);
 		List<Tracker> trackersToReset = humanPoseManager.getTrackersToReset();
 
 		// Resets the mounting rotation of the trackers with the HMD as
