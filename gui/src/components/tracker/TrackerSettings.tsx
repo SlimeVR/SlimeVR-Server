@@ -4,7 +4,12 @@ import { IPv4 } from 'ip-num/IPNumber';
 import { useEffect, useMemo, useState } from 'react';
 import { useForm } from 'react-hook-form';
 import { useParams } from 'react-router-dom';
-import { AssignTrackerRequestT, BodyPart, RpcMessage } from 'solarxr-protocol';
+import {
+  AssignTrackerRequestT,
+  BodyPart,
+  ImuType,
+  RpcMessage,
+} from 'solarxr-protocol';
 import { useDebouncedEffect } from '../../hooks/timeout';
 import { useTrackerFromId } from '../../hooks/tracker';
 import { useWebsocketAPI } from '../../hooks/websocket-api';
@@ -185,7 +190,7 @@ export function TrackerSettingsPage() {
               Update now
             </Button>
           </div> */}
-          <div className="flex flex-col bg-background-70 p-3 rounded-lg gap-2">
+          <div className="flex flex-col bg-background-70 p-3 rounded-lg gap-2 overflow-x-auto">
             <div className="flex justify-between">
               <Typography color="secondary">
                 {l10n.getString('tracker-infos-manufacturer')}
@@ -227,12 +232,38 @@ export function TrackerSettingsPage() {
                 {tracker?.device?.hardwareInfo?.firmwareVersion || '--'}
               </Typography>
             </div>
-            <div className="flex justify-between">
+            {/* <div className="flex justify-between">
               <Typography color="secondary">
                 {l10n.getString('tracker-infos-hardware_rev')}
               </Typography>
               <Typography>
                 {tracker?.device?.hardwareInfo?.hardwareRevision || '--'}
+              </Typography>
+            </div> */}
+            <div className="flex justify-between">
+              <Typography color="secondary">
+                {l10n.getString('tracker-infos-hardware_identifier')}
+              </Typography>
+              <Typography>
+                {tracker?.device?.hardwareInfo?.hardwareIdentifier || '--'}
+              </Typography>
+            </div>
+            <div className="flex justify-between">
+              <Typography color="secondary">
+                {l10n.getString('tracker-infos-imu')}
+              </Typography>
+              <Typography>
+                {tracker?.tracker.info?.imuType
+                  ? ImuType[tracker?.tracker.info?.imuType]
+                  : '--'}
+              </Typography>
+            </div>
+            <div className="flex justify-between">
+              <Typography color="secondary">
+                {l10n.getString('tracker-infos-board_type')}
+              </Typography>
+              <Typography>
+                {tracker?.device?.hardwareInfo?.boardType || '--'}
               </Typography>
             </div>
           </div>
