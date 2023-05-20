@@ -176,6 +176,20 @@ public abstract class SteamVRBridge extends ProtobufBridge implements Runnable {
 						);
 				}
 				break;
+			case CHEST:
+				if (!(config.getBridgeTrackerRole(TrackerRole.WAIST, true))) {
+					secondaryTracker = TrackerUtils
+						.getNonInternalTrackerForBodyPosition(
+							allTrackers,
+							TrackerPosition.HIP
+						);
+					tertiaryTracker = TrackerUtils
+						.getNonInternalTrackerForBodyPosition(
+							allTrackers,
+							TrackerPosition.WAIST
+						);
+				}
+				break;
 			case LEFT_FOOT:
 				secondaryTracker = TrackerUtils
 					.getNonInternalTrackerForBodyPosition(
