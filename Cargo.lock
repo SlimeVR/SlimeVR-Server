@@ -2943,6 +2943,7 @@ dependencies = [
  "ignore",
  "objc",
  "once_cell",
+ "open",
  "os_info",
  "os_pipe",
  "percent-encoding",

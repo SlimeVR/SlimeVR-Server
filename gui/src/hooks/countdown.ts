@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useRef, useState } from 'react';
 
 export function useCountdown({
   duration = 3,
@@ -11,24 +11,41 @@ export function useCountdown({
 }) {
   const [isCounting, setIsCounting] = useState(false);
   const [timer, setDisplayTimer] = useState(0);
+  const countdownTimer = useRef<NodeJS.Timer>();
+  const counter = useRef(0);
 
   const startCountdown = () => {
     setIsCounting(true);
     setDisplayTimer(duration);
-    for (let i = 1; i < duration; i++) {
-      setTimeout(() => setDisplayTimer(duration - i), i * 1000);
-    }
-    setTimeout(resetEnd, duration * 1000);
+    counter.current = 0;
+    countdownTimer.current = setInterval(
+      () => {
+        counter.current++;
+        setDisplayTimer(duration - counter.current);
+        if (counter.current >= duration) {
+          clearInterval(countdownTimer.current);
+          resetEnd();
+        }
+      },
+      duration > 1 ? 1000 : 500
+    );
   };
 
   const resetEnd = () => {
     setIsCounting(false);
+    clearInterval(countdownTimer.current);
     onCountdownEnd();
+  };
+
+  const abortCountdown = () => {
+    setIsCounting(false);
+    clearInterval(countdownTimer.current);
   };
 
   return {
     timer,
     isCounting,
     startCountdown,
+    abortCountdown,
   };
 }
