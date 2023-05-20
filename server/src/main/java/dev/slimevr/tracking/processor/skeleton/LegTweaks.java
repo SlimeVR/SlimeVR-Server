@@ -813,8 +813,8 @@ public class LegTweaks {
 			return;
 
 		// boolean for if there is a foot tracker
-		boolean footTrackers = skeleton.leftFootTracker != null
-			|| skeleton.rightFootTracker != null;
+		boolean leftFootTracker = skeleton.leftFootTracker != null;
+		boolean rightFootTracker = skeleton.rightFootTracker != null;
 
 		// get the foot positions
 		Quaternion leftFootRotation = bufferHead.getLeftFootRotation();
@@ -840,10 +840,10 @@ public class LegTweaks {
 			weightR = getFootPlantWeight(rightFootPosition);
 
 			// if foot trackers exist add to the weights
-			if (footTrackers) {
+			if (leftFootTracker)
 				weightL *= getRotationalDistanceToPlant(leftFootRotation);
+			if (rightFootTracker)
 				weightR *= getRotationalDistanceToPlant(rightFootRotation);
-			}
 
 			// perform the correction
 			leftFootRotation = (leftFootRotation
@@ -861,7 +861,7 @@ public class LegTweaks {
 
 		// corrects rotations when the foot is in the air by rotating the foot
 		// down so that the toes are touching
-		if (toeSnapEnabled && !footTrackers) {
+		if (toeSnapEnabled && !(leftFootTracker && rightFootTracker)) {
 			// this correction step has its own weight vars
 			float weightL;
 			float weightR;
@@ -884,16 +884,20 @@ public class LegTweaks {
 			}
 
 			// then slerp the rotation to the new rotation based on the weight
-			leftFootRotation = leftFootRotation
-				.interpR(
-					replacePitch(leftFootRotation, -angleL),
-					weightL * masterWeightL
-				);
-			rightFootRotation = rightFootRotation
-				.interpR(
-					replacePitch(rightFootRotation, -angleR),
-					weightR * masterWeightR
-				);
+			if (leftFootTracker) {
+				leftFootRotation = leftFootRotation
+					.interpR(
+						replacePitch(leftFootRotation, -angleL),
+						weightL * masterWeightL
+					);
+			}
+			if (rightFootTracker) {
+				rightFootRotation = rightFootRotation
+					.interpR(
+						replacePitch(rightFootRotation, -angleR),
+						weightR * masterWeightR
+					);
+			}
 
 			// update state variables regarding toe snap
 			if (leftFootPosition.getY() - floorLevel > footLength * MAXIMUM_TOE_DOWN_ANGLE) {
@@ -916,7 +920,7 @@ public class LegTweaks {
 		bufferHead.setLeftFootRotationCorrected(leftFootRotation);
 		bufferHead.setRightFootRotationCorrected(rightFootRotation);
 
-		// Set the corrected rotations in the skeleton
+		// update the skeleton
 		skeleton.computedLeftFootTracker.setRotation(leftFootRotation);
 		skeleton.computedRightFootTracker.setRotation(rightFootRotation);
 	}
