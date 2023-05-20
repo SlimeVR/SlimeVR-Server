@@ -44,7 +44,7 @@ export function Home() {
         {filteredStatuses
           .filter(([, status]) => status.prioritized)
           .map(([, status]) => (
-            <div className="lg:w-1/3 w-full">
+            <div className="md:w-1/2 w-full">
               <Localized
                 id={`status_system-${StatusData[status.dataType]}`}
                 vars={parseStatusToLocale(status, trackers)}

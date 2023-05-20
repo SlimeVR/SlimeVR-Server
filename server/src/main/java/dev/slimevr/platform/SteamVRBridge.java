@@ -16,8 +16,6 @@ import solarxr_protocol.rpc.StatusSteamVRDisconnectedT;
 
 import java.util.List;
 
-import dev.slimevr.Main;
-
 
 public abstract class SteamVRBridge extends ProtobufBridge implements Runnable {
 	protected final String bridgeSettingsKey;
@@ -102,10 +100,14 @@ public abstract class SteamVRBridge extends ProtobufBridge implements Runnable {
 			);
 
 		String displayName;
-		if (trackerAdded.getTrackerId() == 0)
+		boolean needsReset;
+		if (trackerAdded.getTrackerId() == 0) {
 			displayName = "OpenVR HMD";
-		else
+			needsReset = false;
+		} else {
 			displayName = trackerAdded.getTrackerName();
+			needsReset = true;
+		}
 
 		Tracker tracker = new Tracker(
 			device,
@@ -125,7 +127,7 @@ public abstract class SteamVRBridge extends ProtobufBridge implements Runnable {
 			null,
 			false,
 			false,
-			true
+			needsReset
 		);
 
 		device.getTrackers().put(0, tracker);
