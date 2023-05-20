@@ -4,10 +4,12 @@ import dev.slimevr.Main;
 import dev.slimevr.VRServer;
 import dev.slimevr.bridge.ProtobufBridge;
 import dev.slimevr.bridge.ProtobufMessages;
+import dev.slimevr.bridge.ProtobufMessages.*;
 import dev.slimevr.config.BridgeConfig;
 import dev.slimevr.tracking.trackers.Device;
 import dev.slimevr.tracking.trackers.Tracker;
 import dev.slimevr.tracking.trackers.TrackerPosition;
+import dev.slimevr.tracking.trackers.TrackerUtils;
 import dev.slimevr.tracking.trackers.TrackerRole;
 import dev.slimevr.util.ann.VRServerThread;
 
@@ -130,6 +132,176 @@ public abstract class SteamVRBridge extends ProtobufBridge implements Runnable {
 			tracker.setTrackerPosition(TrackerPosition.getByTrackerRole(role));
 		}
 		return tracker;
+	}
+
+	// Battery Status
+	@VRServerThread
+	protected void writeBatteryUpdate(Tracker localTracker) {
+		float lowestLevel = 200; // Arbitrarily higher than expected battery
+		// percentage
+		float trackerLevel = 0; // Tracker battery percentage on a scale from 0
+		// to 100. SteamVR expects a value from 0 to 1.
+		float trackerVoltage = 0; // Tracker voltage. This is used to determine
+		// if the tracker is being charged. owoTrack
+		// devices do not have a tracker voltage.
+		boolean isCharging = false;
+
+		List<Tracker> allTrackers = Main.getVrServer().getAllTrackers();
+		TrackerRole role = localTracker.getTrackerPosition().getTrackerRole();
+
+		Tracker primaryTracker = null;
+		Tracker secondaryTracker = null;
+		Tracker tertiaryTracker = null;
+
+		// Given what the role is of localTracker, the tracker positions that
+		// make up that role are set to primaryTracker, secondaryTracker, and
+		// tertiaryTracker respectively.
+		primaryTracker = TrackerUtils
+			.getNonInternalTrackerForBodyPosition(
+				allTrackers,
+				TrackerPosition.getByTrackerRole(role)
+			);
+		switch (role) {
+			case WAIST:
+				secondaryTracker = TrackerUtils
+					.getNonInternalTrackerForBodyPosition(
+						allTrackers,
+						TrackerPosition.WAIST
+					);
+				if (!(config.getBridgeTrackerRole(TrackerRole.CHEST, true))) {
+					tertiaryTracker = TrackerUtils
+						.getNonInternalTrackerForBodyPosition(
+							allTrackers,
+							TrackerPosition.CHEST
+						);
+				}
+				break;
+			case LEFT_FOOT:
+				secondaryTracker = TrackerUtils
+					.getNonInternalTrackerForBodyPosition(
+						allTrackers,
+						TrackerPosition.LEFT_LOWER_LEG
+					);
+				if (!(config.getBridgeTrackerRole(TrackerRole.LEFT_KNEE, true))) {
+					tertiaryTracker = TrackerUtils
+						.getNonInternalTrackerForBodyPosition(
+							allTrackers,
+							TrackerPosition.LEFT_UPPER_LEG
+						);
+				}
+				break;
+			case RIGHT_FOOT:
+				secondaryTracker = TrackerUtils
+					.getNonInternalTrackerForBodyPosition(
+						allTrackers,
+						TrackerPosition.RIGHT_LOWER_LEG
+					);
+				if ((config.getBridgeTrackerRole(TrackerRole.RIGHT_KNEE, true))) {
+					tertiaryTracker = TrackerUtils
+						.getNonInternalTrackerForBodyPosition(
+							allTrackers,
+							TrackerPosition.RIGHT_UPPER_LEG
+						);
+				}
+				break;
+			case LEFT_ELBOW:
+				secondaryTracker = TrackerUtils
+					.getNonInternalTrackerForBodyPosition(
+						allTrackers,
+						TrackerPosition.LEFT_LOWER_ARM
+					);
+				tertiaryTracker = TrackerUtils
+					.getNonInternalTrackerForBodyPosition(
+						allTrackers,
+						TrackerPosition.LEFT_SHOULDER
+					);
+				break;
+			case RIGHT_ELBOW:
+				secondaryTracker = TrackerUtils
+					.getNonInternalTrackerForBodyPosition(
+						allTrackers,
+						TrackerPosition.RIGHT_LOWER_ARM
+					);
+				tertiaryTracker = TrackerUtils
+					.getNonInternalTrackerForBodyPosition(
+						allTrackers,
+						TrackerPosition.RIGHT_SHOULDER
+					);
+				break;
+		}
+
+		// If the battery level of the tracker is lower than lowestLevel, then
+		// the battery level of the tracker position becomes lowestLevel.
+		// Tracker voltage is set if the tracker position has a battery level
+		// lower than lowest level and has a battery voltage (owoTrack devices
+		// do not).
+		if (
+			(primaryTracker != null) && (primaryTracker.getBatteryLevel() != null)
+		) {
+			lowestLevel = primaryTracker.getBatteryLevel();
+
+			if (primaryTracker.getBatteryVoltage() != null) {
+				trackerVoltage = primaryTracker.getBatteryVoltage();
+			}
+		}
+		if (
+			(secondaryTracker != null)
+				&& (secondaryTracker.getBatteryLevel() != null)
+				&& (secondaryTracker.getBatteryLevel() < lowestLevel)
+		) {
+			lowestLevel = secondaryTracker.getBatteryLevel();
+
+			if (secondaryTracker.getBatteryVoltage() != null) {
+				trackerVoltage = secondaryTracker.getBatteryVoltage();
+			}
+		}
+		if (
+			(tertiaryTracker != null)
+				&& (tertiaryTracker.getBatteryLevel() != null)
+				&& (tertiaryTracker.getBatteryLevel() < lowestLevel)
+		) {
+			lowestLevel = tertiaryTracker.getBatteryLevel();
+
+			if (tertiaryTracker.getBatteryVoltage() != null) {
+				trackerVoltage = tertiaryTracker.getBatteryVoltage();
+			}
+		}
+
+		if (lowestLevel == 200) {
+			return;
+		} else {
+			trackerLevel = lowestLevel / 100;
+			if (trackerVoltage >= 4.3) {
+				// TO DO: Add sending whether the tracker is charging from the
+				// tracker itself rather than checking voltage.
+				isCharging = true;
+			}
+		}
+
+		Battery.Builder builder = Battery.newBuilder().setTrackerId(localTracker.getId());
+
+		builder.setBatteryLevel(trackerLevel);
+		builder.setIsCharging(isCharging);
+
+		sendMessage(ProtobufMessage.newBuilder().setBattery(builder).build());
+	}
+
+	@VRServerThread
+	protected void batteryReceived(Battery batteryMessage) {
+		Tracker tracker = getInternalRemoteTrackerById(batteryMessage.getTrackerId());
+
+		if (tracker != null) {
+			tracker.setBatteryLevel(batteryMessage.getBatteryLevel());
+
+			// Purely for cosmetic purposes, SteamVR does not report device
+			// voltage.
+			if (batteryMessage.getIsCharging()) {
+				tracker.setBatteryVoltage(4.3f);
+				// TO DO: Add "tracker.setIsCharging"
+			} else {
+				tracker.setBatteryVoltage(3.7f);
+			}
+		}
 	}
 
 	public abstract boolean isConnected();
