@@ -841,8 +841,8 @@ public class LegTweaks {
 
 			// if foot trackers exist add to the weights
 			if (footTrackers) {
-				weightL = weightL * getRotationalDistanceToPlant(leftFootRotation);
-				weightR = weightR * getRotationalDistanceToPlant(rightFootRotation);
+				weightL *= getRotationalDistanceToPlant(leftFootRotation);
+				weightR *= getRotationalDistanceToPlant(rightFootRotation);
 			}
 
 			// perform the correction
