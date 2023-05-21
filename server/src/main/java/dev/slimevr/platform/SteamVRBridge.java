@@ -168,6 +168,7 @@ public abstract class SteamVRBridge extends ProtobufBridge implements Runnable {
 						allTrackers,
 						TrackerPosition.WAIST
 					);
+				// When the chest SteamVR tracking point is disabled, aggregate its battery level alongside waist and hip.
 				if (!(config.getBridgeTrackerRole(TrackerRole.CHEST, true))) {
 					tertiaryTracker = TrackerUtils
 						.getNonInternalTrackerForBodyPosition(
@@ -177,6 +178,7 @@ public abstract class SteamVRBridge extends ProtobufBridge implements Runnable {
 				}
 				break;
 			case CHEST:
+				// When the waist SteamVR tracking point is disabled, aggregate waist and hip battery level with the chest.
 				if (!(config.getBridgeTrackerRole(TrackerRole.WAIST, true))) {
 					secondaryTracker = TrackerUtils
 						.getNonInternalTrackerForBodyPosition(
@@ -196,6 +198,7 @@ public abstract class SteamVRBridge extends ProtobufBridge implements Runnable {
 						allTrackers,
 						TrackerPosition.LEFT_LOWER_LEG
 					);
+				// When the left knee SteamVR tracking point is disabled, aggregate its battery level with left ankle and left foot.
 				if (!(config.getBridgeTrackerRole(TrackerRole.LEFT_KNEE, true))) {
 					tertiaryTracker = TrackerUtils
 						.getNonInternalTrackerForBodyPosition(
@@ -210,7 +213,8 @@ public abstract class SteamVRBridge extends ProtobufBridge implements Runnable {
 						allTrackers,
 						TrackerPosition.RIGHT_LOWER_LEG
 					);
-				if ((config.getBridgeTrackerRole(TrackerRole.RIGHT_KNEE, true))) {
+				// When the right knee SteamVR tracking point is disabled, aggregate its battery level with right ankle and right foot.
+				if (!(config.getBridgeTrackerRole(TrackerRole.RIGHT_KNEE, true))) {
 					tertiaryTracker = TrackerUtils
 						.getNonInternalTrackerForBodyPosition(
 							allTrackers,
@@ -281,7 +285,7 @@ public abstract class SteamVRBridge extends ProtobufBridge implements Runnable {
 			}
 		}
 
-		if (lowestLevel == 200) {
+		if (lowestLevel >= 200) {
 			return;
 		} else {
 			trackerLevel = lowestLevel / 100;
@@ -311,7 +315,7 @@ public abstract class SteamVRBridge extends ProtobufBridge implements Runnable {
 			// voltage.
 			if (batteryMessage.getIsCharging()) {
 				tracker.setBatteryVoltage(4.3f);
-				// TO DO: Add "tracker.setIsCharging"
+				// TO DO: Add "tracker.setIsCharging()"
 			} else {
 				tracker.setBatteryVoltage(3.7f);
 			}
