@@ -664,6 +664,8 @@ onboarding-choose_proportions-manual_proportions = Manual proportions
 # Italized text
 onboarding-choose_proportions-manual_proportions-subtitle = For small touches
 onboarding-choose_proportions-manual_proportions-description = This will let you adjust your proportions manually by modifying them directly
+onboarding-choose_proportions-save = Save proportions
+onboarding-choose_proportions-file_type = Body proportions file
 
 ## Tracker manual proportions setup
 onboarding-manual_proportions-back = Go Back to Reset tutorial

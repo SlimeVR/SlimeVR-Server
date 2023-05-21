@@ -6,11 +6,49 @@ import { SkipSetupButton } from '../../SkipSetupButton';
 import classNames from 'classnames';
 import { Typography } from '../../../commons/Typography';
 import { Button } from '../../../commons/Button';
+import {
+  SkeletonConfigResponseT,
+  RpcMessage,
+  SkeletonConfigRequestT,
+} from 'solarxr-protocol';
+import { useWebsocketAPI } from '../../../../hooks/websocket-api';
+import saveAs from 'file-saver';
+import { save } from '@tauri-apps/api/dialog';
+import { writeTextFile } from '@tauri-apps/api/fs';
+
 export function ProportionsChoose() {
   const { l10n } = useLocalization();
   const { applyProgress, skipSetup, state } = useOnboarding();
   const [skipWarning, setSkipWarning] = useState(false);
+  const { useRPCPacket, sendRPCPacket } = useWebsocketAPI();
   const [animated, setAnimated] = useState(false);
+
+  useRPCPacket(
+    RpcMessage.SkeletonConfigResponse,
+    (data: SkeletonConfigResponseT) => {
+      const blob = new Blob([JSON.stringify(data)], {
+        type: 'application/json',
+      });
+      save({
+        filters: [
+          {
+            name: l10n.getString('onboarding-choose_proportions-file_type'),
+            extensions: ['json'],
+          },
+        ],
+        defaultPath: 'body-proportions.json'
+      })
+        .then((path) =>
+          path
+            ? writeTextFile(path, JSON.stringify(data))
+            : undefined
+        )
+        .catch((err) => {
+          console.error(err);
+          saveAs(blob, 'body-proportions.json');
+        });
+    }
+  );
 
   applyProgress(0.65);
 
@@ -120,15 +158,29 @@ export function ProportionsChoose() {
               </div>
             </div>
           </div>
-          {!state.alonePage && (
+          <div className="flex flex-row">
+            {!state.alonePage && (
+              <Button
+                variant="secondary"
+                className="ml-4"
+                to="/onboarding/reset-tutorial"
+              >
+                {l10n.getString('onboarding-previous_step')}
+              </Button>
+            )}
             <Button
-              variant="secondary"
-              className="self-start ml-4"
-              to="/onboarding/reset-tutorial"
+              variant={!state.alonePage ? 'secondary' : 'tertiary'}
+              className="ml-auto mr-4"
+              onClick={() =>
+                sendRPCPacket(
+                  RpcMessage.SkeletonConfigRequest,
+                  new SkeletonConfigRequestT()
+                )
+              }
             >
-              {l10n.getString('onboarding-previous_step')}
+              {l10n.getString('onboarding-choose_proportions-save')}
             </Button>
-          )}
+          </div>
         </div>
       </div>
       <SkipSetupWarningModal
