@@ -17,6 +17,7 @@ import dev.slimevr.protocol.rpc.setup.RPCTapSetupHandler;
 import dev.slimevr.tracking.processor.config.SkeletonConfigOffsets;
 import dev.slimevr.tracking.trackers.Tracker;
 import dev.slimevr.tracking.trackers.TrackerPosition;
+import dev.slimevr.tracking.trackers.TrackerUtils;
 import io.eiren.util.logging.LogManager;
 import io.github.axisangles.ktmath.Quaternion;
 import solarxr_protocol.MessageBundle;
@@ -223,7 +224,16 @@ public class RPCHandler extends ProtocolHandler<RpcMessageHeader>
 		if (tracker == null)
 			return;
 
+
 		TrackerPosition pos = TrackerPosition.getByBodyPart(req.bodyPosition());
+		Tracker previousTracker = pos != null
+			? TrackerUtils
+				.getNonInternalTrackerForBodyPosition(this.api.server.getAllTrackers(), pos)
+			: null;
+		if (previousTracker != null) {
+			previousTracker.setTrackerPosition(null);
+			this.api.server.trackerUpdated(previousTracker);
+		}
 		tracker.setTrackerPosition(pos);
 
 		if (req.mountingOrientation() != null) {
