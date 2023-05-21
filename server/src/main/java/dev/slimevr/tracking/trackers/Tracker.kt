@@ -11,6 +11,7 @@ import solarxr_protocol.datatypes.DeviceIdT
 import solarxr_protocol.datatypes.TrackerIdT
 import solarxr_protocol.rpc.StatusData
 import solarxr_protocol.rpc.StatusDataUnion
+import solarxr_protocol.rpc.StatusTrackerErrorT
 import solarxr_protocol.rpc.StatusTrackerResetT
 
 const val TIMEOUT_MS = 2000L
@@ -65,11 +66,18 @@ class Tracker @JvmOverloads constructor(
 				// assign or un-assign the tracker to a body part
 				vrServer.updateSkeletonModel()
 
+				if (lastErrorStatus == 0u && value == TrackerStatus.ERROR) {
+					reportErrorStatus()
+				} else if (lastErrorStatus != 0u && value != TrackerStatus.ERROR) {
+					vrServer.statusSystem.removeStatus(lastErrorStatus)
+					lastErrorStatus = 0u
+				}
+
 				if (needsReset && lastResetStatus == 0u) {
 					if (value.sendData && trackerPosition != null) {
 						reportRequireReset()
 					}
-				} else if (!value.sendData) {
+				} else if (!value.sendData && lastResetStatus != 0u) {
 					vrServer.statusSystem.removeStatus(lastResetStatus)
 					lastResetStatus = 0u
 				}
@@ -136,6 +144,28 @@ class Tracker @JvmOverloads constructor(
 			value = statusMsg
 		}
 		lastResetStatus = vrServer.statusSystem.addStatus(status, true)
+	}
+
+	var lastErrorStatus = 0u
+	private fun reportErrorStatus() {
+		require(lastErrorStatus == 0u) {
+			"lastResetStatus must be 0u, but was $lastErrorStatus"
+		}
+
+		val tempTrackerNum = this.trackerNum
+		val statusMsg = StatusTrackerErrorT().apply {
+			trackerId = TrackerIdT().apply {
+				if (device != null) {
+					deviceId = DeviceIdT().apply { id = device.id }
+				}
+				trackerNum = tempTrackerNum
+			}
+		}
+		val status = StatusDataUnion().apply {
+			type = StatusData.StatusTrackerError
+			value = statusMsg
+		}
+		lastErrorStatus = vrServer.statusSystem.addStatus(status, true)
 	}
 
 	/**
