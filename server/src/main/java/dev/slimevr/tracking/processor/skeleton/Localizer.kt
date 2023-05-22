@@ -89,7 +89,7 @@ class Localizer(humanSkeleton: HumanSkeleton) {
 		}
 
 		// if there is a 6dof device just use it
-		if (skeleton.headTracker != null && !skeleton.headTracker.isImu) {
+		if (skeleton.headTracker != null && !skeleton.headTracker.isImu()) {
 			return
 		}
 
