@@ -116,7 +116,7 @@ class Localizer(humanSkeleton: HumanSkeleton) {
 		worldReference = getWorldReference()
 
 		// update the final travel vector
-		if (worldReference == MovmentStates.FOLLOW_FOOT || warmupFrames < warmupFrames) {
+		if (worldReference == MovmentStates.FOLLOW_FOOT || warmupFrames < WARMUP_FRAMES) {
 			finalTravel = footTravel
 		} else if (worldReference == MovmentStates.FOLLOW_COM) {
 			finalTravel = comTravel
