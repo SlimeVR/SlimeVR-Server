@@ -14,6 +14,7 @@ import dev.slimevr.protocol.rpc.serial.RPCProvisioningHandler;
 import dev.slimevr.protocol.rpc.serial.RPCSerialHandler;
 import dev.slimevr.protocol.rpc.settings.RPCSettingsHandler;
 import dev.slimevr.protocol.rpc.setup.RPCTapSetupHandler;
+import dev.slimevr.protocol.rpc.setup.RPCUtil;
 import dev.slimevr.tracking.processor.config.SkeletonConfigOffsets;
 import dev.slimevr.tracking.trackers.Tracker;
 import dev.slimevr.tracking.trackers.TrackerPosition;
@@ -24,8 +25,6 @@ import solarxr_protocol.MessageBundle;
 import solarxr_protocol.datatypes.TransactionId;
 import solarxr_protocol.rpc.*;
 
-import java.net.InetAddress;
-import java.net.UnknownHostException;
 import java.util.EnumMap;
 import java.util.Map.Entry;
 import java.util.function.BiConsumer;
@@ -93,16 +92,12 @@ public class RPCHandler extends ProtocolHandler<RpcMessageHeader>
 	) {
 		FlatBufferBuilder fbb = new FlatBufferBuilder(32);
 
-		try {
-			String localIp = InetAddress.getLocalHost().getHostAddress();
-			int response = ServerInfosResponse
-				.createServerInfosResponse(fbb, fbb.createString(localIp));
-			int outbound = this.createRPCMessage(fbb, RpcMessage.ServerInfosResponse, response);
-			fbb.finish(outbound);
-			conn.send(fbb.dataBuffer());
-		} catch (UnknownHostException e) {
-			throw new RuntimeException(e);
-		}
+		String localIp = RPCUtil.getLocalIp();
+		int response = ServerInfosResponse
+			.createServerInfosResponse(fbb, fbb.createString(localIp));
+		int outbound = this.createRPCMessage(fbb, RpcMessage.ServerInfosResponse, response);
+		fbb.finish(outbound);
+		conn.send(fbb.dataBuffer());
 	}
 
 	private void onOverlayDisplayModeRequest(
