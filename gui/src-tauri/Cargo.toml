@@ -21,17 +21,20 @@ default = ["custom-protocol"]
 custom-protocol = ["tauri/custom-protocol"]
 
 [build-dependencies]
-tauri-build = { version = "2.0.0-alpha.3", features = [] }
+tauri-build = { version = "2.0.0-alpha.5", features = [] }
 cfg_aliases = "0.1"
 shadow-rs = "0.21"
 
 [dependencies]
 serde_json = "1"
 serde = { version = "1", features = ["derive"] }
-tauri = { version = "2.0.0-alpha.6", features = ["devtools", "dialog", "fs-all", "os-all", "path-all", "shell-execute", "window-close", "window-maximize", "window-minimize", "window-set-resizable", "window-set-title", "window-start-dragging", "window-unmaximize", "window-unminimize"] }
-tauri-runtime = "0.13.0-alpha.3"
-tauri-plugin-window-state = { git = "https://github.com/tauri-apps/plugins-workspace", branch = "feat/alpha.7" }
-pretty_env_logger = "0.4"
+
+tauri = { version = "2.0.0-alpha.9", features = [] }
+tauri-runtime = "0.13.0-alpha.5"
+tauri-plugin-window-state = { git = "https://github.com/tauri-apps/plugins-workspace", branch = "v2" }
+tauri-plugin-os = { git = "https://github.com/tauri-apps/plugins-workspace", branch = "v2" }
+
+pretty_env_logger = "0.5"
 log = "0.4"
 clap = { version = "4.0.29", features = ["derive"] }
 clap-verbosity-flag = "2"
@@ -46,4 +49,4 @@ cfg-if = "1"
 
 [target.'cfg(windows)'.dependencies]
 win32job = "1"
-winreg = "0.10.1"
+winreg = "0.50"

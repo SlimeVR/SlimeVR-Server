@@ -50,37 +50,6 @@
         "timestampUrl": ""
       }
     },
-    "updater": {
-      "active": false
-    },
-    "allowlist": {
-      "shell": {
-        "all": false,
-        "execute": true,
-        "open": true
-      },
-      "fs": {
-        "scope": ["$APP/*", "$APP"],
-        "all": true
-      },
-      "path": {
-        "all": true
-      },
-      "os": {
-        "all": true
-      },
-      "window": {
-        "setResizable": true,
-        "setTitle": true,
-        "maximize": true,
-        "unmaximize": true,
-        "minimize": true,
-        "unminimize": true,
-        "close": true,
-        "startDragging": true,
-        "setSize": true
-      }
-    },
     "windows": [
       {
         "title": "SlimeVR",
