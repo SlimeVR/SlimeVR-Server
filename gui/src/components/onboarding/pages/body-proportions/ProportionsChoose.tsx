@@ -36,12 +36,10 @@ export function ProportionsChoose() {
             extensions: ['json'],
           },
         ],
-        defaultPath: 'body-proportions.json'
+        defaultPath: 'body-proportions.json',
       })
         .then((path) =>
-          path
-            ? writeTextFile(path, JSON.stringify(data))
-            : undefined
+          path ? writeTextFile(path, JSON.stringify(data)) : undefined
         )
         .catch((err) => {
           console.error(err);
