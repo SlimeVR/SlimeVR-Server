@@ -280,7 +280,7 @@ class Localizer(humanSkeleton: HumanSkeleton) {
 		dist = Vector3(dist.x, currentCOM.y, dist.z)
 		dist = dist.minus(targetCOM)
 
-		// prevent overshoots
+		// prevent overshoots TODO move this in to getComVelocity
 		val leftFoot: Vector3 = bufCur.leftFootPosition
 		val rightFoot: Vector3 = bufCur.rightFootPosition
 
