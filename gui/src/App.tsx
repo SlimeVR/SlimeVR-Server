@@ -48,6 +48,7 @@ import { Release, VersionUpdateModal } from './components/VersionUpdateModal';
 export const GH_REPO = 'SlimeVR/SlimeVR-Server';
 export const VersionContext = createContext('');
 import { CalibrationTutorialPage } from './components/onboarding/pages/CalibrationTutorial';
+import { AssignmentTutorialPage } from './components/onboarding/pages/assignment-preparation/AssignmentTutorial';
 
 function Layout() {
   const { loading } = useConfig();
@@ -103,6 +104,7 @@ function Layout() {
             path="calibration-tutorial"
             element={<CalibrationTutorialPage />}
           />
+          <Route path="assign-tutorial" element={<AssignmentTutorialPage />} />
           <Route path="trackers-assign" element={<TrackersAssignPage />} />
           <Route path="enter-vr" element={<EnterVRPage />} />
           <Route path="mounting/choose" element={<MountingChoose />}></Route>

@@ -101,7 +101,7 @@ export function WifiCredsPage() {
                 to={
                   bnoExists
                     ? '/onboarding/calibration-tutorial'
-                    : '/onboarding/trackers-assign'
+                    : '/onboarding/assign-tutorial'
                 }
               >
                 {l10n.getString('onboarding-wifi_creds-skip')}
