@@ -1,7 +1,9 @@
 package dev.slimevr.tracking.processor.skeleton
 
+import dev.slimevr.tracking.trackers.Tracker
 import io.github.axisangles.ktmath.Quaternion
 import io.github.axisangles.ktmath.Vector3
+import kotlin.math.*
 
 /* Handles localizing the skeleton in 3d space when no 6dof device is present.
  * This is accomplished by using the foot state calculated by legtweaks. This of course
@@ -37,6 +39,7 @@ class Localizer(humanSkeleton: HumanSkeleton) {
 
 	private val skeleton: HumanSkeleton
 	private val legTweaks: LegTweaks
+	private val  trackerList: ArrayList<Tracker> = ArrayList()
 	private var bufCur: LegTweakBuffer
 	private var bufPrev: LegTweakBuffer
 
@@ -45,6 +48,19 @@ class Localizer(humanSkeleton: HumanSkeleton) {
 		legTweaks = skeleton.legTweaks
 		bufCur = legTweaks.buffer
 		bufPrev = LegTweakBuffer()
+
+		trackerList.add(skeleton.computedHeadTracker)
+		trackerList.add(skeleton.computedChestTracker)
+		trackerList.add(skeleton.computedChestTracker)
+		trackerList.add(skeleton.computedHipTracker)
+		trackerList.add(skeleton.computedLeftElbowTracker)
+		trackerList.add(skeleton.computedRightElbowTracker)
+		trackerList.add(skeleton.computedLeftHandTracker)
+		trackerList.add(skeleton.computedRightHandTracker)
+		trackerList.add(skeleton.computedLeftKneeTracker)
+		trackerList.add(skeleton.computedRightKneeTracker)
+		trackerList.add(skeleton.computedLeftFootTracker)
+		trackerList.add(skeleton.computedRightFootTracker)
 	}
 
 	// state variables
@@ -92,6 +108,9 @@ class Localizer(humanSkeleton: HumanSkeleton) {
 		if (skeleton.headTracker != null && !skeleton.headTracker.isImu()) {
 			return
 		}
+
+		// check if the tracker list is populated
+		updateTrackerList()
 
 		// set the acceleration of the com for this frame
 		comAccel = getTorsoAccel()
@@ -271,31 +290,13 @@ class Localizer(humanSkeleton: HumanSkeleton) {
 		return dist
 	}
 
-	// guess the travel of the COM from its last positions
+	// returns the travel of the COM from its last position
 	private fun getCOMTravel(): Vector3 {
 		// update COM attributes
 		updateCOMAttributes()
 
 		var dist: Vector3 = bufCur.centerOfMass
-		dist = Vector3(dist.x, currentCOM.y, dist.z)
 		dist = dist.minus(targetCOM)
-
-		// prevent overshoots TODO move this in to getComVelocity
-		val leftFoot: Vector3 = bufCur.leftFootPosition
-		val rightFoot: Vector3 = bufCur.rightFootPosition
-
-		if (leftFoot.y - dist.y < uncorrectedFloor) {
-			dist = Vector3(dist.x, (bufCur.leftFootPosition.y - uncorrectedFloor).coerceAtMost(dist.y), dist.z)
-		}
-
-		if (rightFoot.y - dist.y < uncorrectedFloor) {
-			dist = Vector3(dist.x, (bufCur.rightFootPosition.y - uncorrectedFloor).coerceAtMost(dist.y), dist.z)
-		}
-
-		// disallow any trackers from going below the floor TODO make this do what the comment says
-		if (currentCOM.y - dist.y < uncorrectedFloor) {
-			dist = Vector3(dist.x, (bufCur.centerOfMass.y - uncorrectedFloor).coerceAtMost(dist.y), dist.z)
-		}
 
 		return dist
 	}
@@ -315,31 +316,34 @@ class Localizer(humanSkeleton: HumanSkeleton) {
 		sittingFrames = if (worldReference === MovmentStates.FOLLOW_SITTING) sittingFrames + 1 else 0
 	}
 
-	// gets the position the COM should be at based on the velocity of the com
+	// gets the position the COM should be at based on the velocity of the com and
+	// the location of the floor
 	private fun updateTargetCOM() {
 		// if not in COM tracking mode, just use the current COM
-		if (worldReference === MovmentStates.FOLLOW_FOOT) {
-			targetCOM = Vector3(
-				bufCur.centerOfMass.x,
-				targetCOM.y,
-				bufCur.centerOfMass.z
-			)
+		if (worldReference === MovmentStates.FOLLOW_FOOT || worldReference === MovmentStates.FOLLOW_SITTING) {
+			targetCOM = bufCur.centerOfMass
 		} else {
 			// if the COM is the reference point, use the dead reckoned COM
 			currentCOM = targetCOM
 		}
+
 		targetCOM = targetCOM.plus(comVelocity.div(bufCur.timeDelta))
+
+		// correct any clipping through the floor
+		val lowTracker = getLowestTracker()
+
+		println(targetCOM)
+
+		// update the target COM and velocity to reflect this new distance
+		if (lowTracker.position.y < uncorrectedFloor) {
+			targetCOM = Vector3(targetCOM.x, targetCOM.y + (uncorrectedFloor - lowTracker.position.y), targetCOM.z)
+			comVelocity = Vector3(comVelocity.x, 0.0f, comVelocity.z)
+			deadReconedCOMVelocity = Vector3(deadReconedCOMVelocity.x, 0.0f, deadReconedCOMVelocity.z)
+		}
 	}
 
 	// get the velocity of the COM
 	private fun getCOMVelocity(): Vector3 {
-		// calculate the amount of gravity to add
-		val remainingGravity = if (comAccel.y > ACCEL_UP_THRESHOLD) {
-			LegTweakBuffer.GRAVITY_MAGNITUDE
-		} else {
-			LegTweakBuffer.GRAVITY_MAGNITUDE + comAccel.y
-		}
-
 		if (worldReference === MovmentStates.FOLLOW_FOOT) {
 			// if the foot is the reference point use the in world velocity
 			// get the average velocity over the last VELOCITY_SAMPLE_RATE (this
@@ -371,7 +375,7 @@ class Localizer(humanSkeleton: HumanSkeleton) {
 			// add the remaining gravity to the dead reckoned value
 			deadReconedCOMVelocity = Vector3(
 				deadReconedCOMVelocity.x,
-				deadReconedCOMVelocity.y - (remainingGravity / bufCur.timeDelta),
+				deadReconedCOMVelocity.y - (LegTweakBuffer.GRAVITY_MAGNITUDE / bufCur.timeDelta),
 				deadReconedCOMVelocity.z
 			)
 
@@ -380,13 +384,13 @@ class Localizer(humanSkeleton: HumanSkeleton) {
 		}
 
 		// filter out any upwards velocity TODO make this not necessary
-		if (comVelocity.y > 0) {
-			comVelocity = Vector3(
-				comVelocity.x,
-				0f,
-				comVelocity.z
-			)
-		}
+		//if (comVelocity.y > 0) {
+		//	comVelocity = Vector3(
+		//		comVelocity.x,
+		//		0f,
+		//		comVelocity.z
+		//	)
+		//}
 
 		return comVelocity
 	}
@@ -415,13 +419,7 @@ class Localizer(humanSkeleton: HumanSkeleton) {
 			numDeadReconSamples = 0
 		}
 
-		// dampen the velocity after a while
-		if (numDeadReconSamples > MAX_DEAD_RECON_SAMPLES) {
-			// TODO do this better
-			deadReconedCOMVelocity = deadReconedCOMVelocity.times(0.99f).plus(
-				DEFAULT_DOWN_VELOCITY.times(0.01f)
-			)
-		}
+
 		return deadReconedCOMVelocity
 	}
 
@@ -431,6 +429,27 @@ class Localizer(humanSkeleton: HumanSkeleton) {
 			bufCur.leftFootPosition.y <= floor ||
 				bufCur.rightFootPosition.y <= floor
 			)
+	}
+
+	// returns the tracker closest to or the furthest in the ground
+	// (a negative return value implies a tracker is in the ground)
+	private fun getLowestTracker(): Tracker {
+		var minVal = 9999f
+		var tempVal: Float
+		var retVal: Tracker = trackerList[0]
+		for (tracker in trackerList) {
+			if (tracker == null)
+				continue
+
+			// get the max distance to the ground
+			tempVal = tracker.position.y - uncorrectedFloor
+			if (tempVal < minVal) {
+				minVal = tempVal
+				retVal = tracker
+			}
+		}
+
+		return retVal
 	}
 
 	// returns true if the user is likely sitting
@@ -470,6 +489,43 @@ class Localizer(humanSkeleton: HumanSkeleton) {
 			accel = skeleton.chestTracker.acceleration
 		}
 		return accel
+	}
+
+	// updates the tracker list with new trackers if available
+	private fun updateTrackerList() {
+		if (skeleton.computedHeadTracker != null) {
+			trackerList[0] = skeleton.computedHeadTracker
+		}
+		if (skeleton.computedChestTracker != null) {
+			trackerList[1] = skeleton.computedChestTracker
+		}
+		if (skeleton.computedHipTracker != null) {
+			trackerList[2] = skeleton.computedHipTracker
+		}
+		if (skeleton.computedLeftElbowTracker != null) {
+			trackerList[3] = skeleton.computedLeftElbowTracker
+		}
+		if (skeleton.computedRightElbowTracker != null) {
+			trackerList[4] = skeleton.computedRightElbowTracker
+		}
+		if (skeleton.computedLeftHandTracker != null) {
+			trackerList[5] = skeleton.computedLeftHandTracker
+		}
+		if (skeleton.computedRightHandTracker != null) {
+			trackerList[6] = skeleton.computedRightHandTracker
+		}
+		if (skeleton.computedLeftKneeTracker != null) {
+			trackerList[7] = skeleton.computedLeftKneeTracker
+		}
+		if (skeleton.computedRightKneeTracker != null) {
+			trackerList[8] = skeleton.computedRightKneeTracker
+		}
+		if (skeleton.computedLeftFootTracker != null) {
+			trackerList[9] = skeleton.computedLeftFootTracker
+		}
+		if (skeleton.computedRightFootTracker != null) {
+			trackerList[10] = skeleton.computedRightFootTracker
+		}
 	}
 
 	// update the hmd position and rotation
