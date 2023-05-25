@@ -29,8 +29,8 @@ export function AssignmentTutorialPage() {
           modalVisible={skipWarning}
           onClick={() => setSkipWarning(true)}
         ></SkipSetupButton>
-        <div className="flex w-full h-full justify-center px-20 gap-14">
-          <div className="mt-10 absolute">
+        <div className="flex flex-col w-full h-full justify-center px-20 gap-3">
+          <div className="mt-10 self-center">
             <Typography variant="main-title">
               {l10n.getString('onboarding-assignment_tutorial')}
             </Typography>
@@ -39,30 +39,36 @@ export function AssignmentTutorialPage() {
             <div className="flex gap-12 flex-row self-center justify-center">
               <div className="flex flex-col gap-5 w-1/4">
                 <div>
-                  <Typography variant="main-title">
-                    {l10n.getString('onboarding-assignment_tutorial-first_step')}
+                  <Typography variant="section-title">
+                    {l10n.getString(
+                      'onboarding-assignment_tutorial-first_step'
+                    )}
                   </Typography>
                 </div>
                 <div className="stroke-background-10 fill-background-10">
-                  <StickerSlime width="95%"></StickerSlime>
+                  <StickerSlime width="30vmin"></StickerSlime>
                 </div>
               </div>
-              <div className="flex flex-col gap-10 w-[33%]">
+              <div className="flex flex-col gap-10 w-1/4">
                 <div>
-                  <Typography variant="main-title">
-                    {l10n.getString('onboarding-assignment_tutorial-second_step')}
+                  <Typography variant="section-title">
+                    {l10n.getString(
+                      'onboarding-assignment_tutorial-second_step'
+                    )}
                   </Typography>
                 </div>
                 <div className="fill-background-10 stroke-background-10">
-                  <TrackerArrow width="95%"></TrackerArrow>
+                  <TrackerArrow width="35vmin"></TrackerArrow>
                 </div>
                 <div>
-                  <Typography variant="main-title">
-                    {l10n.getString('onboarding-assignment_tutorial-second_step-continuation')}
+                  <Typography variant="section-title">
+                    {l10n.getString(
+                      'onboarding-assignment_tutorial-second_step-continuation'
+                    )}
                   </Typography>
                 </div>
                 <div className="fill-background-10 stroke-background-10">
-                  <ExtensionArrow width="95%"></ExtensionArrow>
+                  <ExtensionArrow width="35vmin"></ExtensionArrow>
                 </div>
               </div>
             </div>

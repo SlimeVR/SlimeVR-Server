@@ -150,8 +150,8 @@ export function CalibrationTutorialPage() {
             </div>
           </div>
           <div className="flex self-center w-[32rem]">
-            <div className='stroke-none fill-background-10'>
-              <TaybolIcon width="500" ></TaybolIcon>
+            <div className="stroke-none fill-background-10">
+              <TaybolIcon width="500"></TaybolIcon>
               {/* <img src="/images/taybol.png"></img> */}
             </div>
           </div>

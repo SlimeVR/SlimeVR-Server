@@ -31,7 +31,7 @@ export function StickerSlime({ width = 820 }: { width?: number | string }) {
             style={{
               textAlign: 'center',
               verticalAlign: 'center',
-              whiteSpace: 'normal'
+              whiteSpace: 'normal',
             }}
             x="36%"
             y="79%"

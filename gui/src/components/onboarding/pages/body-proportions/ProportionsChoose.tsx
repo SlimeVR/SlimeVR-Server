@@ -6,6 +6,7 @@ import { SkipSetupButton } from '../../SkipSetupButton';
 import classNames from 'classnames';
 import { Typography } from '../../../commons/Typography';
 import { Button } from '../../../commons/Button';
+
 export function ProportionsChoose() {
   const { l10n } = useLocalization();
   const { applyProgress, skipSetup, state } = useOnboarding();
@@ -26,6 +27,13 @@ export function ProportionsChoose() {
           <div className="w-[666px]">
             <Typography variant="main-title">
               {l10n.getString('onboarding-choose_proportions')}
+            </Typography>
+            <Typography
+              variant="standard"
+              color="secondary"
+              whitespace="whitespace-pre-line"
+            >
+              {l10n.getString('onboarding-choose_proportions-description')}
             </Typography>
           </div>
           <div className={classNames('h-full w-[760px] min-w-[760px]')}>
