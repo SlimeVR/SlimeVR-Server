@@ -11,7 +11,7 @@ websocket-connection_lost = Connection lost to the server. Trying to reconnect..
 
 ## Update notification
 version_update-title = New version available: { $version }
-version_update-description = Clicking "Update" will download the SlimeVR installer for you.
+version_update-description = Clicking "{ version_update-update }" will download the SlimeVR installer for you.
 version_update-update = Update
 version_update-close = Close
 
