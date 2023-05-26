@@ -6,7 +6,7 @@ import java.nio.charset.StandardCharsets
 
 class UDPProtocolParser {
 	@Throws(IOException::class)
-	fun parse(buf: ByteBuffer, connection: UDPDevice?): Array<UDPPacket?> {
+	fun parse(buf: ByteBuffer, connection: UDPDevice?): UDPPacket? {
 		val packetId = buf.int
 		val packetNumber = buf.long
 		if (connection != null) {
@@ -18,26 +18,6 @@ class UDPProtocolParser {
 			}
 			connection.lastPacket = System.currentTimeMillis()
 		}
-		if (packetId == PACKET_BUNDLE) {
-			bundlePackets.clear()
-			while (buf.hasRemaining()) {
-				val bundlePacketLen = Math.min(buf.short.toInt(), buf.remaining())
-				if (bundlePacketLen == 0) continue
-
-				val bundlePacketStart = buf.position()
-				val bundleBuf = buf.slice(bundlePacketStart, bundlePacketLen)
-				val bundlePacketId = bundleBuf.int
-				val newPacket = getNewPacket(bundlePacketId)
-				newPacket?.let {
-					newPacket.readData(bundleBuf)
-					bundlePackets.add(newPacket)
-				}
-
-				buf.position(bundlePacketStart + bundlePacketLen)
-			}
-			return bundlePackets.toTypedArray()
-		}
-
 		val newPacket = getNewPacket(packetId)
 		if (newPacket != null) {
 			newPacket.readData(buf)
@@ -47,7 +27,7 @@ class UDPProtocolParser {
 // 					packetId + " from " + connection
 // 			)
 		}
-		return arrayOf(newPacket)
+		return newPacket
 	}
 
 	@Throws(IOException::class)
@@ -91,7 +71,6 @@ class UDPProtocolParser {
 			PACKET_SIGNAL_STRENGTH -> UDPPacket19SignalStrength()
 			PACKET_TEMPERATURE -> UDPPacket20Temperature()
 			PACKET_USER_ACTION -> UDPPacket21UserAction()
-			PACKET_FEATURE_FLAGS -> UDPPacket22FeatureFlags()
 			PACKET_PROTOCOL_CHANGE -> UDPPacket200ProtocolChange()
 			else -> null
 		}
@@ -124,11 +103,8 @@ class UDPProtocolParser {
 		const val PACKET_SIGNAL_STRENGTH = 19
 		const val PACKET_TEMPERATURE = 20
 		const val PACKET_USER_ACTION = 21
-		const val PACKET_FEATURE_FLAGS = 22
-		const val PACKET_BUNDLE = 100
 		const val PACKET_PROTOCOL_CHANGE = 200
 		private val HANDSHAKE_BUFFER = ByteArray(64)
-		private val bundlePackets = ArrayList<UDPPacket>(128)
 
 		init {
 			HANDSHAKE_BUFFER[0] = 3

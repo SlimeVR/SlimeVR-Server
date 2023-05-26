@@ -1,6 +1,6 @@
 import { useLocalization } from '@fluent/react';
 import classNames from 'classnames';
-import { useMemo, useState } from 'react';
+import { useMemo, useState, useEffect } from 'react';
 import { useForm } from 'react-hook-form';
 import {
   AssignTrackerRequestT,
@@ -8,6 +8,11 @@ import {
   QuatT,
   RpcMessage,
   TrackerIdT,
+  SettingsRequestT,
+  SettingsResponseT,
+  TapDetectionSettingsT,
+  ChangeSettingsRequestT,
+  TapDetectionSetupNotificationT,
 } from 'solarxr-protocol';
 import { FlatDeviceTracker } from '../../../../hooks/app';
 import { useChokerWarning } from '../../../../hooks/choker-warning';
@@ -23,17 +28,27 @@ import { NeckWarningModal } from '../../NeckWarningModal';
 import { TrackerSelectionMenu } from './TrackerSelectionMenu';
 import { SkipSetupWarningModal } from '../../SkipSetupWarningModal';
 import { SkipSetupButton } from '../../SkipSetupButton';
+import { useBnoExists } from '../../../../hooks/imu-logic';
+import { useConfig } from '../../../../hooks/config';
+import { playTapSetupSound } from '../../../../sounds/sounds';
 
 export type BodyPartError = {
   label: string | undefined;
   affectedRoles: BodyPart[];
 };
 
+interface FlatDeviceTrackerDummy {
+  tracker: {
+    trackerId: TrackerIdT;
+    info: undefined;
+  };
+}
+
 export function TrackersAssignPage() {
   const { l10n } = useLocalization();
-  const { useAssignedTrackers, trackers } = useTrackers();
+  const { useAssignedTrackers, trackers, useConnectedTrackers } = useTrackers();
   const { applyProgress, skipSetup, state } = useOnboarding();
-  const { sendRPCPacket } = useWebsocketAPI();
+  const { sendRPCPacket, useRPCPacket } = useWebsocketAPI();
 
   const { control, watch } = useForm<{ advanced: boolean }>({
     defaultValues: { advanced: false },
@@ -42,6 +57,69 @@ export function TrackersAssignPage() {
   const [selectedRole, setSelectRole] = useState<BodyPart>(BodyPart.NONE);
   const assignedTrackers = useAssignedTrackers();
   const [skipWarning, setSkipWarning] = useState(false);
+  const connectedTrackers = useConnectedTrackers();
+
+  const bnoExists = useBnoExists(connectedTrackers);
+  const { config } = useConfig();
+  const [tapDetectionSettings, setTapDetectionSettings] = useState<Omit<
+    TapDetectionSettingsT,
+    'pack'
+  > | null>(null);
+
+  useEffect(() => {
+    sendRPCPacket(RpcMessage.SettingsRequest, new SettingsRequestT());
+  }, []);
+
+  useRPCPacket(RpcMessage.SettingsResponse, (settings: SettingsResponseT) => {
+    setTapDetectionSettings(settings.tapDetectionSettings);
+  });
+
+  useEffect(() => {
+    if (!tapDetectionSettings) return;
+    const newTapSettings = new TapDetectionSettingsT(
+      tapDetectionSettings.fullResetDelay,
+      tapDetectionSettings.fullResetEnabled,
+      tapDetectionSettings.fullResetTaps,
+      tapDetectionSettings.yawResetDelay,
+      tapDetectionSettings.yawResetEnabled,
+      tapDetectionSettings.yawResetTaps,
+      tapDetectionSettings.mountingResetDelay,
+      tapDetectionSettings.mountingResetEnabled,
+      tapDetectionSettings.mountingResetTaps,
+      true
+    );
+
+    sendRPCPacket(
+      RpcMessage.ChangeSettingsRequest,
+      new ChangeSettingsRequestT(
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        newTapSettings
+      )
+    );
+
+    return () => {
+      newTapSettings.setupMode = false;
+      sendRPCPacket(
+        RpcMessage.ChangeSettingsRequest,
+        new ChangeSettingsRequestT(
+          null,
+          null,
+          null,
+          null,
+          null,
+          null,
+          null,
+          newTapSettings
+        )
+      );
+    };
+  }, [tapDetectionSettings]);
 
   const trackerPartGrouped = useMemo(
     () =>
@@ -103,7 +181,9 @@ export function TrackersAssignPage() {
       }, {} as any);
   }, [trackers]);
 
-  const onTrackerSelected = (tracker: FlatDeviceTracker | null) => {
+  const onTrackerSelected = (
+    tracker: FlatDeviceTracker | FlatDeviceTrackerDummy | null
+  ) => {
     const assign = (
       role: BodyPart,
       rotation: QuatT | null,
@@ -129,7 +209,6 @@ export function TrackersAssignPage() {
       setSelectRole(BodyPart.NONE);
       return;
     }
-
     assign(
       selectedRole,
       tracker.tracker.info?.mountingOrientation || null,
@@ -137,6 +216,17 @@ export function TrackersAssignPage() {
     );
     setSelectRole(BodyPart.NONE);
   };
+
+  useRPCPacket(
+    RpcMessage.TapDetectionSetupNotification,
+    (tapSetup: TapDetectionSetupNotificationT) => {
+      if (selectedRole === BodyPart.NONE || !tapSetup.trackerId) return;
+      onTrackerSelected({
+        tracker: { trackerId: tapSetup.trackerId, info: undefined },
+      });
+      playTapSetupSound(config?.feedbackSoundVolume);
+    }
+  );
 
   applyProgress(0.5);
 
@@ -203,7 +293,14 @@ export function TrackersAssignPage() {
               <div className="flex flex-row mt-auto">
                 {!state.alonePage && (
                   <>
-                    <Button variant="secondary" to="/onboarding/wifi-creds">
+                    <Button
+                      variant="secondary"
+                      to={
+                        bnoExists
+                          ? '/onboarding/calibration-tutorial'
+                          : '/onboarding/wifi-creds'
+                      }
+                    >
                       {l10n.getString('onboarding-previous_step')}
                     </Button>
                     <Button

@@ -104,9 +104,12 @@ public abstract class SteamVRBridge extends ProtobufBridge implements Runnable {
 
 		Tracker tracker = new Tracker(
 			device,
+			// FIXME use SteamVR tracker's id for SlimeVR tracker's trackerNum,
+			// and use VRServer's unique id for SlimeVR tracker' id
 			trackerAdded.getTrackerId(),
 			trackerAdded.getTrackerName(),
 			displayName,
+			null,
 			null,
 			true,
 			true,

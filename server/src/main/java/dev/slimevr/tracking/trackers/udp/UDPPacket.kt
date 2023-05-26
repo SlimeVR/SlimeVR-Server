@@ -8,7 +8,7 @@ import java.nio.BufferUnderflowException
 import java.nio.ByteBuffer
 
 sealed class UDPPacket(val packetId: Int) {
-	@Throws(IOException::class, BufferUnderflowException::class)
+	@Throws(IOException::class)
 	open fun readData(buf: ByteBuffer) {}
 
 	@Throws(IOException::class)
@@ -317,29 +317,6 @@ data class UDPPacket21UserAction(var type: Int = 0) : UDPPacket(21) {
 		const val RESET_FULL = 2
 		const val RESET_YAW = 3
 		const val RESET_MOUNTING = 4
-	}
-}
-
-class UDPPacket22FeatureFlags(
-	// var trackerExampleFeature: Boolean = false
-) :
-	UDPPacket(22) {
-	override fun readData(buf: ByteBuffer) {
-		// features supported by trackers
-		// val flags = buf.int
-		// trackerExampleFeature = (flags and FLAG_TRACKER_EXAMPLE_FEATURE) != 0
-	}
-
-	override fun writeData(buf: ByteBuffer) {
-		// features supported by the server
-		val flags: Int = FLAG_SERVER_PROTOCOL_BUNDLE_SUPPORT
-		buf.putInt(flags)
-	}
-
-	companion object {
-		const val FLAG_SERVER_PROTOCOL_BUNDLE_SUPPORT = 1 shl 1
-
-		// const val FLAG_TRACKER_EXAMPLE_FEATURE = 1 shl 2
 	}
 }
 

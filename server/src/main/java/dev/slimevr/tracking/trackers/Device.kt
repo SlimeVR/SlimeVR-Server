@@ -2,7 +2,6 @@ package dev.slimevr.tracking.trackers
 
 import dev.slimevr.tracking.trackers.udp.BoardType
 import dev.slimevr.tracking.trackers.udp.MCUType
-import java.net.InetAddress
 import java.util.concurrent.atomic.AtomicInteger
 
 open class Device {
@@ -19,8 +18,7 @@ open class Device {
 	open val boardType: Any = BoardType.UNKNOWN
 	open val mcuType: MCUType = MCUType.UNKNOWN
 
-	open val ipAddress: InetAddress?
-		get() = null
+	open val hardwareIdentifier: String = "Unknown"
 
 	companion object {
 		@JvmField

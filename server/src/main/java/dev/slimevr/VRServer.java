@@ -16,6 +16,7 @@ import dev.slimevr.protocol.ProtocolAPI;
 import dev.slimevr.reset.ResetHandler;
 import dev.slimevr.serial.ProvisioningHandler;
 import dev.slimevr.serial.SerialHandler;
+import dev.slimevr.setup.TapSetupHandler;
 import dev.slimevr.tracking.processor.HumanPoseManager;
 import dev.slimevr.tracking.processor.skeleton.HumanSkeleton;
 import dev.slimevr.tracking.trackers.DeviceManager;
@@ -58,6 +59,7 @@ public class VRServer extends Thread {
 	private final BVHRecorder bvhRecorder;
 	private final SerialHandler serialHandler;
 	private final AutoBoneHandler autoBoneHandler;
+	private final TapSetupHandler tapSetupHandler;
 	private final ProtocolAPI protocolAPI;
 	private final ConfigManager configManager;
 	private final Timer timer = new Timer();
@@ -87,6 +89,7 @@ public class VRServer extends Thread {
 		provisioningHandler = new ProvisioningHandler(this);
 
 		resetHandler = new ResetHandler();
+		tapSetupHandler = new TapSetupHandler();
 
 		autoBoneHandler = new AutoBoneHandler(this);
 		protocolAPI = new ProtocolAPI(this);
@@ -97,6 +100,7 @@ public class VRServer extends Thread {
 			"HMD",
 			"HMD",
 			TrackerPosition.HEAD,
+			null,
 			true,
 			true,
 			false,
@@ -280,7 +284,6 @@ public class VRServer extends Thread {
 	@Override
 	@VRServerThread
 	public void run() {
-		final Object sleepLock = new Object();
 		trackersServer.start();
 		while (true) {
 			// final long start = System.currentTimeMillis();
@@ -307,13 +310,11 @@ public class VRServer extends Thread {
 			vrcOSCHandler.update();
 			vmcHandler.update();
 			// final long time = System.currentTimeMillis() - start;
-			synchronized (sleepLock) {
-				try {
-					sleepLock.wait(2); // 500Hz
-				} catch (InterruptedException ignored) {
-					LogManager.info("VRServer thread interrupted");
-					break;
-				}
+			try {
+				Thread.sleep(1); // 1000Hz
+			} catch (InterruptedException error) {
+				LogManager.info("VRServer thread interrupted");
+				break;
 			}
 		}
 	}
@@ -414,7 +415,7 @@ public class VRServer extends Thread {
 
 	public Tracker getTrackerById(TrackerIdT id) {
 		for (Tracker tracker : trackers) {
-			if (tracker.getId() != id.getTrackerNum()) {
+			if (tracker.getTrackerNum() != id.getTrackerNum()) {
 				continue;
 			}
 
@@ -446,6 +447,10 @@ public class VRServer extends Thread {
 
 	public ResetHandler getResetHandler() {
 		return this.resetHandler;
+	}
+
+	public TapSetupHandler getTapSetupHandler() {
+		return this.tapSetupHandler;
 	}
 
 	public AutoBoneHandler getAutoBoneHandler() {

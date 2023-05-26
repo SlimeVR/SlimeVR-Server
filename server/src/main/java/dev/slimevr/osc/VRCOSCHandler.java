@@ -64,6 +64,7 @@ public class VRCOSCHandler implements OSCHandler {
 			"VRC HMD",
 			"VRC HMD",
 			TrackerPosition.HEAD,
+			null,
 			true,
 			false,
 			false,

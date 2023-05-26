@@ -62,6 +62,7 @@ class TrackersUDPServer(private val port: Int, name: String, private val tracker
 			val connection = UDPDevice(
 				handshakePacket.socketAddress,
 				addr,
+				handshake.macString ?: addr.hostAddress,
 				handshake.boardType,
 				handshake.mcuType
 			)
@@ -189,9 +190,8 @@ class TrackersUDPServer(private val port: Int, name: String, private val tracker
 					bb.limit(received.length)
 					bb.rewind()
 					val connection = synchronized(connections) { connectionsByAddress[received.address] }
-					parser.parse(bb, connection)
-						.filterNotNull()
-						.forEach { processPacket(received, it, connection) }
+					val packet = parser.parse(bb, connection)
+					packet?.let { processPacket(received, it, connection) }
 				} catch (ignored: SocketTimeoutException) {
 				} catch (e: Exception) {
 					LogManager.warning(
@@ -388,16 +388,6 @@ class TrackersUDPServer(private val port: Int, name: String, private val tracker
 					"[TrackerServer] User action from ${connection.descriptiveName } received. $name reset performed."
 				)
 			}
-
-			is UDPPacket22FeatureFlags -> {
-				if (connection == null) return
-				// Respond with server flags
-				bb.limit(bb.capacity())
-				bb.rewind()
-				parser.write(bb, connection, packet)
-				socket.send(DatagramPacket(rcvBuffer, bb.position(), connection.address))
-			}
-
 			is UDPPacket200ProtocolChange -> {}
 		}
 	}

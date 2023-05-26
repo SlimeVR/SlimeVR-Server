@@ -8,14 +8,20 @@ import { useState } from 'react';
 import { SkipSetupWarningModal } from '../SkipSetupWarningModal';
 import { SkipSetupButton } from '../SkipSetupButton';
 import classNames from 'classnames';
+import { useTrackers } from '../../../hooks/tracker';
+import { useBnoExists } from '../../../hooks/imu-logic';
 
 export function WifiCredsPage() {
   const { l10n } = useLocalization();
   const { applyProgress, skipSetup, state } = useOnboarding();
   const { control, handleSubmit, submitWifiCreds, formState } = useWifiForm();
+  const { useConnectedTrackers } = useTrackers();
   const [skipWarning, setSkipWarning] = useState(false);
+  const connectedTrackers = useConnectedTrackers();
 
   applyProgress(0.2);
+
+  const bnoExists = useBnoExists(connectedTrackers);
 
   return (
     <form
@@ -92,7 +98,11 @@ export function WifiCredsPage() {
               <Button
                 variant="secondary"
                 className={state.alonePage ? 'opacity-0' : ''}
-                to="/onboarding/trackers-assign"
+                to={
+                  bnoExists
+                    ? '/onboarding/calibration-tutorial'
+                    : '/onboarding/trackers-assign'
+                }
               >
                 {l10n.getString('onboarding-wifi_creds-skip')}
               </Button>
