@@ -97,8 +97,8 @@ bvh-start_recording = Record BVH
 bvh-recording = Recording...
 
 ## Tracking pause
-tracking-unpaused = Pause Tracking
-tracking-paused = Unpause Tracking
+tracking-unpaused = Pause tracking
+tracking-paused = Unpause tracking
 
 ## Widget: Overlay settings
 widget-overlay = Overlay
