@@ -544,10 +544,11 @@ onboarding-calibration_tutorial-status-error = The tracker was moved
 
 ## Tracker assignment tutorial
 onboarding-assignment_tutorial = How to prepare the slime before putting it on
-onboarding-assignment_tutorial-first_step = 1. Place a body part sticker on the slime according to your choosing
+onboarding-assignment_tutorial-first_step = 1. Place a body part sticker (if you have) on the slime according to your choosing
+# This text has a character limit of around 11 characters, so please keep it short
 onboarding-assignment_tutorial-sticker = Sticker
-onboarding-assignment_tutorial-second_step = 2. Put the straps on your slime and make the side that adheres to the orientation showed
-onboarding-assignment_tutorial-second_step-continuation = The hook side should be in the following orientation:
+onboarding-assignment_tutorial-second_step = 2. Put the straps on your slime and make the hook and loop side of the strap face in the following orientation:
+onboarding-assignment_tutorial-second_step-continuation = The hook and loop side in the extension should also be facing like this:
 onboarding-assignment_tutorial-done = I put stickers and straps
 
 ## Tracker assignment setup
@@ -626,8 +627,7 @@ onboarding-assign_trackers-warning-WAIST = Waist is assigned but you need { $una
 ## Tracker mounting method choose
 onboarding-choose_mounting = What mounting calibration method to use?
 # Multiline text
-onboarding-choose_mounting-description = Mounting calibration is used to determine the orientation of the trackers on your body, so for example, you have them on the front side of your leg.
-    This is used to take into account placement on tracker for calculation of the body pose.
+onboarding-choose_mounting-description = Mounting orientation corrects for the placement of the tracker on your body, for example; if your tracker is looking to the left side when putting it on, you would correct for it using the "Left" option.
 onboarding-choose_mounting-auto_mounting = Automatic mounting
 # Italized text
 onboarding-choose_mounting-auto_mounting-subtitle = Recommended
@@ -667,7 +667,9 @@ onboarding-automatic_mounting-put_trackers_on-next = I have all my trackers on
 
 ## Tracker proportions method choose
 onboarding-choose_proportions = What proportion calibration method to use?
-onboarding-choose_proportions-description = Body proportions are used to know the measurements of your body, the main reason for this is because we only know the rotation of trackers, not their position. It's also used for taking into account errors in just knowing how you are rotating your body.
+# Multiline string
+onboarding-choose_proportions-description = Body proportions are used to know the measurements of your body, the main reason for why the need for this is because we only know the rotation of trackers, not where they are.
+    When proportions of your body don't match the ones saved, it will provoke stuff like sliding, mainly things that would be based on your body.
 onboarding-choose_proportions-auto_proportions = Automatic proportions
 # Italized text
 onboarding-choose_proportions-auto_proportions-subtitle = Recommended
