@@ -15,12 +15,8 @@
     "prepare": "husky install && npm run update-solarxr"
   },
   "devDependencies": {
-    "@types/file-saver": "^2.0.5",
     "@typescript-eslint/parser": "^5.43.0",
     "husky": "^8.0.2",
     "typescript": "^4.9.3"
-  },
-  "dependencies": {
-    "file-saver": "^2.0.5"
   }
 }
