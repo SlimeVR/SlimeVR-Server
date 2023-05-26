@@ -83,7 +83,7 @@ public class RPCHandler extends ProtocolHandler<RpcMessageHeader>
 
 		registerPacketListener(RpcMessage.LegTweaksTmpClear, this::onLegTweaksTmpClear);
 
-		registerPacketListener(RpcMessage.SetPauseTracking, this::onSetPauseTracking);
+		registerPacketListener(RpcMessage.SetPauseTrackingRequest, this::onSetPauseTrackingRequest);
 
 		this.api.server.getAutoBoneHandler().addListener(this);
 	}
@@ -453,8 +453,9 @@ public class RPCHandler extends ProtocolHandler<RpcMessageHeader>
 		// that's needed
 	}
 
-	public void onSetPauseTracking(GenericConnection conn, RpcMessageHeader messageHeader) {
-		SetPauseTracking req = (SetPauseTracking) messageHeader.message(new SetPauseTracking());
+	public void onSetPauseTrackingRequest(GenericConnection conn, RpcMessageHeader messageHeader) {
+		SetPauseTrackingRequest req = (SetPauseTrackingRequest) messageHeader
+			.message(new SetPauseTrackingRequest());
 		if (req == null)
 			return;
 
