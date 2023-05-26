@@ -34,6 +34,9 @@ class MainActivity : AppCompatActivity() {
 		guiWebView.settings.javaScriptEnabled = true
 		guiWebView.settings.domStorageEnabled = true
 		guiWebView.settings.setSupportZoom(true)
+		guiWebView.settings.useWideViewPort = true
+		guiWebView.settings.loadWithOverviewMode = true
+		guiWebView.invokeZoomPicker()
 
 		// Load GUI page
 		guiWebView.loadUrl("http://127.0.0.1:8080/")
