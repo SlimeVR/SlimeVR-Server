@@ -14,7 +14,7 @@ plugins {
 	id("com.github.gmazzo.buildconfig") version "4.0.4"
 
 	id("com.android.application") version "8.0.2"
-	id("org.jetbrains.kotlin.android") version "1.8.0"
+	id("org.jetbrains.kotlin.android") version "1.8.21"
 }
 
 kotlin {
@@ -92,15 +92,15 @@ dependencies {
 
 	// Android stuff
 	implementation("androidx.appcompat:appcompat:1.6.1")
-	implementation("androidx.core:core-ktx:1.9.0")
-	implementation("com.google.android.material:material:1.8.0")
+	implementation("androidx.core:core-ktx:1.10.1")
+	implementation("com.google.android.material:material:1.9.0")
 	implementation("androidx.constraintlayout:constraintlayout:2.1.4")
 	implementation(fileTree(mapOf("dir" to "libs", "include" to listOf("*.jar"))))
 	androidTestImplementation("androidx.test.ext:junit:1.1.5")
 	androidTestImplementation("androidx.test.espresso:espresso-core:3.5.1")
 	// For hosting web GUI
-	implementation("io.ktor:ktor-server-core:2.2.4")
-	implementation("io.ktor:ktor-server-netty:2.2.4")
+	implementation("io.ktor:ktor-server-core:2.3.0")
+	implementation("io.ktor:ktor-server-netty:2.3.0")
 }
 
 /**
@@ -130,7 +130,7 @@ android {
 	 * these values for different versions of your app.
 	 */
 
-	packagingOptions {
+	packaging {
 		resources.excludes.add("META-INF/*")
 	}
 
@@ -146,10 +146,10 @@ android {
 		targetSdk = 33
 
 		// Defines the version number of your app.
-		versionCode = 6
+		versionCode = 7
 
 		// Defines a user-friendly version name for your app.
-		versionName = "0.7.0"
+		versionName = "0.7.1"
 
 		testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
 	}

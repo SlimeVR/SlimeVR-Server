@@ -192,7 +192,7 @@ public class HumanSkeleton {
 	) {
 		this(humanPoseManager);
 
-		List<? extends Tracker> trackersList = trackers;
+		List<Tracker> trackersList = trackers;
 		if (trackersList == null) {
 			trackersList = new FastList<>(0);
 		}

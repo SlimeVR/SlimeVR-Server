@@ -5,17 +5,14 @@ package dev.slimevr
 import androidx.appcompat.app.AppCompatActivity
 import io.eiren.util.logging.LogManager
 import io.ktor.server.engine.embeddedServer
-import io.ktor.server.http.content.defaultResource
-import io.ktor.server.http.content.resources
-import io.ktor.server.http.content.static
-import io.ktor.server.http.content.staticBasePackage
+import io.ktor.server.http.content.staticResources
 import io.ktor.server.netty.Netty
 import io.ktor.server.routing.routing
 import java.io.File
 import kotlin.concurrent.thread
 import kotlin.system.exitProcess
 
-val VERSION = "v0.7.0/android"
+val VERSION = "v0.7.1/android"
 lateinit var vrServer: VRServer
 	private set
 val vrServerInitialized: Boolean
@@ -25,11 +22,7 @@ fun main(activity: AppCompatActivity) {
 	// Host the web GUI server
 	embeddedServer(Netty, port = 8080) {
 		routing {
-			static("/") {
-				staticBasePackage = "web-gui"
-				resources()
-				defaultResource("index.html")
-			}
+			staticResources("/", "web-gui", "index.html")
 		}
 	}.start(wait = false)
 

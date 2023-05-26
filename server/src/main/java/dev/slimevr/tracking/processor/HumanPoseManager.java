@@ -686,7 +686,7 @@ public class HumanPoseManager {
 				tracker.getNeedsReset()
 					&& tracker.getResetsHandler().getLastResetQuaternion() != null
 			) {
-				if (!trackersDriftText.isEmpty()) {
+				if (trackersDriftText.length() > 0) {
 					trackersDriftText.append(" | ");
 				}
 
