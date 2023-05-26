@@ -96,6 +96,10 @@ navbar-settings = Settings
 bvh-start_recording = Record BVH
 bvh-recording = Recording...
 
+## Tracking pause
+tracking-unpaused = Pause tracking
+tracking-paused = Unpause tracking
+
 ## Widget: Overlay settings
 widget-overlay = Overlay
 widget-overlay-is_visible_label = Show Overlay in SteamVR
