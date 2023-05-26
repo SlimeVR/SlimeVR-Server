@@ -83,6 +83,8 @@ public class RPCHandler extends ProtocolHandler<RpcMessageHeader>
 
 		registerPacketListener(RpcMessage.LegTweaksTmpClear, this::onLegTweaksTmpClear);
 
+		registerPacketListener(RpcMessage.SetPauseTracking, this::onSetPauseTracking);
+
 		this.api.server.getAutoBoneHandler().addListener(this);
 	}
 
@@ -449,5 +451,13 @@ public class RPCHandler extends ProtocolHandler<RpcMessageHeader>
 	public void onAutoBoneEnd(EnumMap<SkeletonConfigOffsets, Float> configValues) {
 		// Do nothing, the last epoch from "onAutoBoneEpoch" should be all
 		// that's needed
+	}
+
+	public void onSetPauseTracking(GenericConnection conn, RpcMessageHeader messageHeader) {
+		SetPauseTracking req = (SetPauseTracking) messageHeader.message(new SetPauseTracking());
+		if (req == null)
+			return;
+
+		this.api.server.humanPoseManager.setPauseTracking(req.pauseTracking());
 	}
 }
