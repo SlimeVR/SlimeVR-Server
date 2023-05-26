@@ -136,6 +136,7 @@ public class HumanSkeleton {
 	protected float kneeTrackerAnkleAveraging;
 	// Others
 	protected boolean sendAllBones = false;
+	// Pauses skeleton tracking if true, resumes skeleton tracking if false
 	protected boolean pauseTracking = false;
 	// #endregion
 
