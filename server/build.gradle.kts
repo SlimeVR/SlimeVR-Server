@@ -13,7 +13,7 @@ plugins {
 	id("com.diffplug.spotless") version "6.12.0"
 	id("com.github.gmazzo.buildconfig") version "4.0.4"
 
-	id("com.android.application") version "7.4.2"
+	id("com.android.application") version "8.0.2"
 	id("org.jetbrains.kotlin.android") version "1.8.0"
 }
 
