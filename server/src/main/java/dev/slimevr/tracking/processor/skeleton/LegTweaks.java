@@ -329,12 +329,6 @@ public class LegTweaks {
 		// update the foot length
 		footLength = skeleton.leftFootNode.getLocalTransform().getTranslation().len();
 
-		// if not enabled, do nothing and return false
-		if (!enabled) {
-			bufferInvalid = true;
-			return false;
-		}
-
 		// if the user is standing start checking for a good time to enable leg
 		// tweaks
 		active = isStanding();
@@ -414,9 +408,14 @@ public class LegTweaks {
 
 	// tweak the position of the legs based on data from the last frames
 	public void tweakLegs() {
+		// If user doesn't have knees or legtweaks is disabled,
+		// don't spend time doing calculations!
+		if (!skeleton.hasKneeTrackers || !enabled)
+			return;
+
 		// update the class with the latest data from the skeleton
-		// if false is returned something indicated that the legs should not be
-		// tweaked
+		// if false is returned something indicated that the legs should not
+		// be tweaked
 		if (!preUpdate())
 			return;
 
@@ -432,7 +431,8 @@ public class LegTweaks {
 		if (skatingCorrectionEnabled)
 			correctSkating();
 
-		// determine if either leg is in a position to activate or deactivate
+		// determine if either leg is in a position to activate or
+		// deactivate
 		// (use the buffer to get the positions before corrections)
 		float leftFootDif = FastMath
 			.abs(
@@ -523,8 +523,8 @@ public class LegTweaks {
 		float rightOffset = getRightFootOffset();
 		float avgOffset = 0;
 
-		// if there is no clipping, or clipping is not enabled, return false
-		if (!isClipped(leftOffset, rightOffset) || !enabled)
+		// if there is no clipping, return
+		if (!isClipped(leftOffset, rightOffset))
 			return;
 
 		// move the feet to their new positions
