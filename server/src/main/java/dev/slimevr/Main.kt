@@ -52,7 +52,7 @@ fun main(args: Array<String>) {
 		System.err.println("No command specified, expected 'run'")
 		exitProcess(1)
 	}
-	if (!cmd.args[0].equalsIgnoreCase("run")) {
+	if (!cmd.args[0].equals("run", true)) {
 		System.err.println("Unknown command: ${cmd.args[0]}, expected 'run'")
 		exitProcess(1)
 	}
