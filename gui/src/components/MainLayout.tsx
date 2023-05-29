@@ -129,6 +129,7 @@ export function MainLayoutRoute({
                     <Localized
                       id={`status_system-${StatusData[status.dataType]}`}
                       vars={parseStatusToLocale(status, trackers)}
+                      key={status.id}
                     >
                       <WarningBox whitespace={false} hideIcon={true}>
                         {`Warning, you should fix ${
