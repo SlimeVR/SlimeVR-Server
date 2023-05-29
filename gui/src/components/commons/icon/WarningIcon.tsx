@@ -5,7 +5,8 @@ export function WarningIcon(props: any) {
       viewBox="0 0 20 20"
       fill="currentColor"
       {...props}
-      className={`w-7 h-7 ${props.className || ''}`}
+      width={props.width || 30}
+      className={`${props.className || ''}`}
     >
       <path
         fillRule="evenodd"

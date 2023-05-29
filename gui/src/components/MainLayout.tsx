@@ -1,5 +1,5 @@
 import classNames from 'classnames';
-import { ReactNode, useEffect, useState } from 'react';
+import { ReactNode, useEffect, useMemo, useState } from 'react';
 import {
   LegTweaksTmpChangeT,
   LegTweaksTmpClearT,
@@ -7,6 +7,7 @@ import {
   RpcMessage,
   SettingsRequestT,
   SettingsResponseT,
+  StatusData,
 } from 'solarxr-protocol';
 import { useConfig } from '../hooks/config';
 import { useLayout } from '../hooks/layout';
@@ -18,6 +19,10 @@ import { DeveloperModeWidget } from './widgets/DeveloperModeWidget';
 import { OverlayWidget } from './widgets/OverlayWidget';
 import { ClearDriftCompensationButton } from './ClearDriftCompensationButton';
 import { useWebsocketAPI } from '../hooks/websocket-api';
+import { useStatusContext, parseStatusToLocale } from '../hooks/status-system';
+import { Localized } from '@fluent/react';
+import { WarningBox } from './commons/TipBox';
+import { useAppContext } from '../hooks/app';
 import { TrackingPauseButton } from './TrackingPauseButton';
 
 export function MainLayoutRoute({
@@ -33,9 +38,15 @@ export function MainLayoutRoute({
   const { layoutWidth, ref: refw } = useLayout<HTMLDivElement>();
   const { config } = useConfig();
   const { useRPCPacket, sendRPCPacket } = useWebsocketAPI();
+  const { trackers } = useAppContext();
   const [driftCompensationEnabled, setDriftCompensationEnabled] =
     useState(false);
   const [ProportionsLastPageOpen, setProportionsLastPageOpen] = useState(true);
+  const { statuses } = useStatusContext();
+  const unprioritizedStatuses = useMemo(
+    () => Object.values(statuses).filter((status) => !status.prioritized),
+    [statuses]
+  );
 
   useEffect(() => {
     sendRPCPacket(RpcMessage.SettingsRequest, new SettingsRequestT());
@@ -114,6 +125,21 @@ export function MainLayoutRoute({
                 </div>
                 <div className="w-full">
                   <OverlayWidget></OverlayWidget>
+                </div>
+                <div className="w-full flex flex-col max-h-[33%] gap-3 overflow-y-auto mb-2">
+                  {unprioritizedStatuses.map((status) => (
+                    <Localized
+                      id={`status_system-${StatusData[status.dataType]}`}
+                      vars={parseStatusToLocale(status, trackers)}
+                      key={status.id}
+                    >
+                      <WarningBox whitespace={false} hideIcon={true}>
+                        {`Warning, you should fix ${
+                          StatusData[status.dataType]
+                        }`}
+                      </WarningBox>
+                    </Localized>
+                  ))}
                 </div>
                 {config?.debug && (
                   <div className="w-full">
