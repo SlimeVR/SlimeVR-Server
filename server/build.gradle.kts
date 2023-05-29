@@ -189,4 +189,7 @@ configure<com.diffplug.gradle.spotless.SpotlessExtension> {
 	}
 }
 
-tasks.getByName("run", JavaExec::class) { standardInput = System.`in` }
+tasks.getByName("run", JavaExec::class) {
+	standardInput = System.`in`
+	args = listOf("run")
+}
