@@ -543,11 +543,11 @@ onboarding-calibration_tutorial-status-success = Nice!
 onboarding-calibration_tutorial-status-error = The tracker was moved
 
 ## Tracker assignment tutorial
-onboarding-assignment_tutorial = How to prepare the slime before putting it on
-onboarding-assignment_tutorial-first_step = 1. Place a body part sticker (if you have) on the slime according to your choosing
+onboarding-assignment_tutorial = How to prepare Slime Tracker before putting it on
+onboarding-assignment_tutorial-first_step = 1. Place a body part sticker (if you have one) on the tracker according to your choosing
 # This text has a character limit of around 11 characters, so please keep it short
 onboarding-assignment_tutorial-sticker = Sticker
-onboarding-assignment_tutorial-second_step = 2. Put the straps on your slime and make the hook and loop side of the strap face in the following orientation:
+onboarding-assignment_tutorial-second_step = 2. Attach the straps to your tracker, keeping the hook and loop side of the strap face in the following orientation:
 onboarding-assignment_tutorial-second_step-continuation = The hook and loop side in the extension should also be facing like this:
 onboarding-assignment_tutorial-done = I put stickers and straps
 
@@ -668,8 +668,8 @@ onboarding-automatic_mounting-put_trackers_on-next = I have all my trackers on
 ## Tracker proportions method choose
 onboarding-choose_proportions = What proportion calibration method to use?
 # Multiline string
-onboarding-choose_proportions-description = Body proportions are used to know the measurements of your body, the main reason for why the need for this is because we only know the rotation of trackers, not where they are.
-    When proportions of your body don't match the ones saved, it will provoke stuff like sliding, mainly things that would be based on your body.
+onboarding-choose_proportions-description = Body proportions are used to know the measurements of your body. It's required to calculate the trackers position.
+    When proportions of your body don't match the ones saved, your tracking precision will be worse and you will notice things like skating or sliding, or your body not matching your avatar well.
 onboarding-choose_proportions-auto_proportions = Automatic proportions
 # Italized text
 onboarding-choose_proportions-auto_proportions-subtitle = Recommended
