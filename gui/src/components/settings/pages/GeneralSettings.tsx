@@ -190,6 +190,7 @@ export function GeneralSettings() {
       values.tapDetection.mountingResetEnabled;
     tapDetection.mountingResetDelay = values.tapDetection.mountingResetDelay;
     tapDetection.mountingResetTaps = values.tapDetection.mountingResetTaps;
+    tapDetection.setupMode = false;
     settings.tapDetectionSettings = tapDetection;
 
     const filtering = new FilteringSettingsT();
@@ -914,12 +915,48 @@ export function GeneralSettings() {
             <Typography bold>
               {l10n.getString('settings-general-interface-theme')}
             </Typography>
-            <div className="flex md:flex-row flex-col gap-3 pt-2">
+            <div className="flex flex-wrap gap-3 pt-2">
               <ThemeSelector
                 control={control}
                 name="interface.theme"
                 value={'slime'}
                 colors="!bg-slime"
+              ></ThemeSelector>
+              <ThemeSelector
+                control={control}
+                name="interface.theme"
+                value={'slime-green'}
+                colors="!bg-slime-green"
+              ></ThemeSelector>
+              <ThemeSelector
+                control={control}
+                name="interface.theme"
+                value={'slime-yellow'}
+                colors="!bg-slime-yellow"
+              ></ThemeSelector>
+              <ThemeSelector
+                control={control}
+                name="interface.theme"
+                value={'slime-orange'}
+                colors="!bg-slime-orange"
+              ></ThemeSelector>
+              <ThemeSelector
+                control={control}
+                name="interface.theme"
+                value={'slime-red'}
+                colors="!bg-slime-red"
+              ></ThemeSelector>
+              <ThemeSelector
+                control={control}
+                name="interface.theme"
+                value={'dark'}
+                colors="!bg-dark"
+              ></ThemeSelector>
+              <ThemeSelector
+                control={control}
+                name="interface.theme"
+                value={'light'}
+                colors="!bg-light"
               ></ThemeSelector>
               <ThemeSelector
                 control={control}

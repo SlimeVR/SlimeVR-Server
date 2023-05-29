@@ -9,8 +9,8 @@ import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
 import java.io.ByteArrayOutputStream
 
 plugins {
-	kotlin("jvm") version "1.8.0"
-	kotlin("plugin.serialization") version "1.8.0"
+	kotlin("jvm") version "1.8.21"
+	kotlin("plugin.serialization") version "1.8.21"
 	application
 	id("com.github.johnrengelman.shadow") version "7.1.2"
 	id("com.diffplug.spotless") version "6.12.0"
@@ -41,6 +41,16 @@ tasks.withType<Test> {
 tasks.withType<Javadoc> {
 	options.encoding = "UTF-8"
 }
+
+tasks
+	.withType<org.jetbrains.kotlin.gradle.tasks.KotlinCompilationTask<*>>()
+	.configureEach {
+		compilerOptions
+			.languageVersion
+			.set(
+				org.jetbrains.kotlin.gradle.dsl.KotlinVersion.KOTLIN_1_9
+			)
+	}
 
 allprojects {
 	repositories {
@@ -73,6 +83,8 @@ dependencies {
 	implementation("org.java-websocket:Java-WebSocket:1.+")
 	implementation("com.melloware:jintellitype:1.+")
 	implementation("org.jetbrains.kotlinx:kotlinx-serialization-json:1.5.0-RC")
+
+	implementation("it.unimi.dsi:fastutil:8.5.12")
 
 	testImplementation(kotlin("test"))
 	// Use JUnit test framework
@@ -144,7 +156,8 @@ configure<com.diffplug.gradle.spotless.SpotlessExtension> {
 			"indent_style" to "tab",
 // 			"max_line_length" to 88,
 			"ktlint_experimental" to "enabled",
-			"ij_kotlin_packages_to_use_import_on_demand" to "java.util.*,kotlin.math.*",
+			"ij_kotlin_packages_to_use_import_on_demand" to
+				"java.util.*,kotlin.math.*,dev.slimevr.autobone.errors.*,io.github.axisangles.ktmath.*",
 			"ij_kotlin_allow_trailing_comma" to true
 		)
 	val ktlintVersion = "0.47.1"

@@ -3,9 +3,8 @@ package dev.slimevr.config;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.node.JsonNodeFactory;
 import com.fasterxml.jackson.databind.node.ObjectNode;
-import com.jme3.math.Quaternion;
-import dev.slimevr.tracking.trackers.IMUTracker;
 import dev.slimevr.tracking.trackers.Tracker;
+import io.github.axisangles.ktmath.Quaternion;
 
 
 public class TrackerConfig {
@@ -22,10 +21,10 @@ public class TrackerConfig {
 	}
 
 	public TrackerConfig(Tracker tracker) {
-		this.designation = tracker.getBodyPosition()
-			!= null ? tracker.getBodyPosition().designation : null;
+		this.designation = tracker.getTrackerPosition()
+			!= null ? tracker.getTrackerPosition().getDesignation() : null;
 		this.customName = tracker.getCustomName();
-		allowDriftCompensation = tracker instanceof IMUTracker;
+		allowDriftCompensation = tracker.isImu();
 	}
 
 	static JsonNode toV2(JsonNode v1, JsonNodeFactory factory) {

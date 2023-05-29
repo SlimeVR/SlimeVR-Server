@@ -2,14 +2,14 @@ package dev.slimevr.autobone.errors
 
 import com.jme3.math.FastMath
 import dev.slimevr.autobone.AutoBoneTrainingStep
-import dev.slimevr.poserecorder.PoseFrameTracker
+import dev.slimevr.poseframeformat.trackerdata.TrackerFrames
 import dev.slimevr.tracking.processor.skeleton.HumanSkeleton
 
 // The difference between offset of absolute position and the corresponding point over time
 class PositionOffsetError : IAutoBoneError {
 	@Throws(AutoBoneException::class)
 	override fun getStepError(trainingStep: AutoBoneTrainingStep): Float {
-		val trackers = trainingStep.trainingFrames.trackers
+		val trackers = trainingStep.trainingFrames.frameHolders
 		return getPositionOffsetError(
 			trackers,
 			trainingStep.cursor1,
@@ -20,7 +20,7 @@ class PositionOffsetError : IAutoBoneError {
 	}
 
 	fun getPositionOffsetError(
-		trackers: List<PoseFrameTracker>,
+		trackers: List<TrackerFrames>,
 		cursor1: Int,
 		cursor2: Int,
 		skeleton1: HumanSkeleton,
@@ -29,28 +29,19 @@ class PositionOffsetError : IAutoBoneError {
 		var offset = 0f
 		var offsetCount = 0
 		for (tracker in trackers) {
-			val trackerFrame1 = tracker.safeGetFrame(cursor1)
-			if (trackerFrame1 == null ||
-				!trackerFrame1.hasPosition() ||
-				trackerFrame1.bodyPosition == null ||
-				trackerFrame1.bodyPosition.trackerRole.isEmpty
-			) {
-				continue
-			}
-			val trackerFrame2 = tracker.safeGetFrame(cursor2)
-			if (trackerFrame2 == null ||
-				!trackerFrame2.hasPosition() ||
-				trackerFrame2.bodyPosition == null ||
-				trackerFrame2.bodyPosition.trackerRole.isEmpty
-			) {
-				continue
-			}
-			val computedTracker1 = skeleton1
-				.getComputedTracker(trackerFrame1.bodyPosition.trackerRole.get()) ?: continue
-			val computedTracker2 = skeleton2
-				.getComputedTracker(trackerFrame2.bodyPosition.trackerRole.get()) ?: continue
-			val dist1 = FastMath.abs(computedTracker1.position.distance(trackerFrame1.position))
-			val dist2 = FastMath.abs(computedTracker2.position.distance(trackerFrame2.position))
+			val trackerFrame1 = tracker.tryGetFrame(cursor1) ?: continue
+			val position1 = trackerFrame1.tryGetPosition() ?: continue
+			val trackerRole1 = trackerFrame1.tryGetTrackerPosition()?.trackerRole ?: continue
+
+			val trackerFrame2 = tracker.tryGetFrame(cursor2) ?: continue
+			val position2 = trackerFrame2.tryGetPosition() ?: continue
+			val trackerRole2 = trackerFrame2.tryGetTrackerPosition()?.trackerRole ?: continue
+
+			val computedTracker1 = skeleton1.getComputedTracker(trackerRole1) ?: continue
+			val computedTracker2 = skeleton2.getComputedTracker(trackerRole2) ?: continue
+
+			val dist1 = (position1 - computedTracker1.position).len()
+			val dist2 = (position2 - computedTracker2.position).len()
 			offset += FastMath.abs(dist2 - dist1)
 			offsetCount++
 		}

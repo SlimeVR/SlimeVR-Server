@@ -52,9 +52,12 @@ export function TrackerSelectionMenu({
             <Typography variant="main-title" bold>
               {l10n.getString('tracker_selection_menu-' + BodyPart[bodyPart])}
             </Typography>
+            <div className="w-full max-w-sm">
+              <TipBox>{l10n.getString('tips-tap_setup')}</TipBox>
+            </div>
             <div className="relative">
               <div
-                className="w-full h-full min-w-[700px] overflow-y-auto p-2 flex flex-col gap-6"
+                className="w-full h-full min-w-[700px] overflow-y-auto p-2 pt-0 flex flex-col gap-6"
                 ref={refTrackers}
                 style={{ height: trackersHeight - optionsHeight }}
               >
@@ -115,7 +118,7 @@ export function TrackerSelectionMenu({
           ref={refOptions}
         >
           <div className="w-full max-w-sm">
-            <TipBox>{l10n.getString('tips-find_tracker')}</TipBox>
+            {/* <TipBox>{l10n.getString('tips-find_tracker')}</TipBox> */}
           </div>
           <div className="flex flex-col justify-end pointer-events-auto">
             <Button variant="primary" onClick={() => onTrackerSelected(null)}>

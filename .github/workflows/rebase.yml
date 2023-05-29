@@ -27,6 +27,7 @@ jobs:
           git config --local user.email pantoon@slimevr.dev
           git fetch origin main
           git rebase origin/main
+          git submodule update
       - name: Push rebase
         uses: github-actions-x/commit@v2.9
         with:

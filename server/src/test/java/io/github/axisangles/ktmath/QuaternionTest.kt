@@ -253,7 +253,7 @@ class QuaternionTest {
 	companion object {
 		private const val RELATIVE_TOLERANCE = 0.0
 
-		internal fun assertEquals(
+		fun assertEquals(
 			expected: Quaternion,
 			actual: Quaternion,
 			tolerance: Double = RELATIVE_TOLERANCE,

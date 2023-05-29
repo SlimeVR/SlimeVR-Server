@@ -108,7 +108,7 @@ public class RPCSettingsBuilder {
 		return FilteringSettings
 			.createFilteringSettings(
 				fbb,
-				TrackerFilters.getByConfigkey(filtersConfig.getType()).id,
+				TrackerFilters.getByConfigkey(filtersConfig.getType()).getId(),
 				filtersConfig.getAmount()
 			);
 	}
@@ -141,7 +141,8 @@ public class RPCSettingsBuilder {
 				tapDetectionConfig.getYawResetTaps(),
 				tapDetectionConfig.getMountingResetDelay(),
 				tapDetectionConfig.getMountingResetEnabled(),
-				tapDetectionConfig.getMountingResetTaps()
+				tapDetectionConfig.getMountingResetTaps(),
+				tapDetectionConfig.getSetupMode()
 			);
 	}
 

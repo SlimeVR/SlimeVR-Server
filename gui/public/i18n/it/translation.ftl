@@ -134,7 +134,7 @@ tracker-status-busy = Occupato
 tracker-status-error = Errore
 tracker-status-disconnected = Disconnesso
 tracker-status-occluded = Ostruito
-tracker-status-ok = Connesso
+tracker-status-ok = OK
 
 ## Tracker status columns
 
@@ -160,7 +160,7 @@ tracker-rotation-back = Dietro
 
 tracker-infos-manufacturer = Produttore
 tracker-infos-display_name = Nome da visualizzare
-tracker-infos-custom_name = Nome Personalizzato
+tracker-infos-custom_name = Nome personalizzato
 tracker-infos-url = URL del tracker
 tracker-infos-version = Versione firmware
 tracker-infos-hardware_rev = Versione hardware
@@ -171,17 +171,17 @@ tracker-settings-back = Torna alla lista dei tracker
 tracker-settings-title = Impostazioni del tracker
 tracker-settings-assignment_section = Assegnazione
 tracker-settings-assignment_section-description = Definisce a che parte del corpo è assegnato il tracker.
-tracker-settings-assignment_section-edit = Cambia assegnazione
+tracker-settings-assignment_section-edit = Modifica assegnazione
 tracker-settings-mounting_section = Posizionamento di montaggio
 tracker-settings-mounting_section-description = Dove è posizionato il tracker?
-tracker-settings-mounting_section-edit = Cambia posizionamento
+tracker-settings-mounting_section-edit = Modifica posizionamento
 tracker-settings-drift_compensation_section = Consenti compensazione per il drift
 tracker-settings-drift_compensation_section-description = Questo tracker dovrebbe compensare per il drift quando la compensazione per il drift è abilitata?
 tracker-settings-drift_compensation_section-edit = Consenti compensazione per il drift
 # The .<name> means it's an attribute and it's related to the top key.
 # In this case that is the settings for the assignment section.
 tracker-settings-name_section = Nome del tracker
-tracker-settings-name_section-description = Scegli un nomignolo carino :)
+tracker-settings-name_section-description = Scegli un soprannome carino :)
 tracker-settings-name_section-placeholder = Gamba destra di NightyQueer
 
 ## Tracker part card info
@@ -217,7 +217,7 @@ tracker_selection_menu-RIGHT_LOWER_LEG = { -tracker_selection-part } caviglia de
 tracker_selection_menu-RIGHT_FOOT = { -tracker_selection-part } piede destro?
 tracker_selection_menu-RIGHT_CONTROLLER = { -tracker_selection-part } controller destro?
 tracker_selection_menu-CHEST = { -tracker_selection-part } petto?
-tracker_selection_menu-WAIST = { -tracker_selection-part } vita?
+tracker_selection_menu-WAIST = { -tracker_selection-part } girovita?
 tracker_selection_menu-HIP = { -tracker_selection-part } bacino?
 tracker_selection_menu-LEFT_SHOULDER = { -tracker_selection-part } spalla sinistra?
 tracker_selection_menu-LEFT_UPPER_ARM = { -tracker_selection-part } parte superiore del braccio sinistro?
@@ -252,6 +252,7 @@ settings-sidebar-fk_settings = Impostazioni di traking
 settings-sidebar-gesture_control = Controllo con gesti
 settings-sidebar-interface = Interfaccia
 settings-sidebar-osc_router = Router OSC
+settings-sidebar-osc_trackers = Tracker OSC per VRChat
 settings-sidebar-utils = Strumenti
 settings-sidebar-serial = Console seriale
 
@@ -279,10 +280,10 @@ settings-general-tracker_mechanics = Comportamento del tracker
 settings-general-tracker_mechanics-filtering = Filtro movimenti
 # This also cares about multilines
 settings-general-tracker_mechanics-filtering-description =
-    Scegli la tipologia di filtraggio movimenti per il tuo tracker.
+    Scegli la tipologia di filtro per il tuo tracker.
     Predizione anticipa i movimenti, mentre Attenuazione attenua movimenti eccessivi.
-settings-general-tracker_mechanics-filtering-type = Tipologia di filtraggio
-settings-general-tracker_mechanics-filtering-type-none = Non usare alcun filtraggio
+settings-general-tracker_mechanics-filtering-type = Tipologia di filtro
+settings-general-tracker_mechanics-filtering-type-none = Non usare alcun filtro
 settings-general-tracker_mechanics-filtering-type-none-description = Usa le rotazioni così come sono. Non eseguirà alcun filtro.
 settings-general-tracker_mechanics-filtering-type-smoothing = Attenuazione
 settings-general-tracker_mechanics-filtering-type-smoothing-description = Attenua movimenti eccessivi ma aggiunge ritardo.
@@ -310,7 +311,7 @@ settings-general-fk_settings-leg_tweak-floor_clip = Compenetrazione pavimento
 settings-general-fk_settings-leg_tweak-skating_correction = Correzione slittamento
 settings-general-fk_settings-leg_tweak-toe_snap = Dita dei piedi piantate
 settings-general-fk_settings-leg_tweak-foot_plant = Piedi piantati
-settings-general-fk_settings-leg_tweak-skating_correction-amount = Forza fattore di correzione pattinaggio
+settings-general-fk_settings-leg_tweak-skating_correction-amount = Forza fattore di correzione slittamento
 settings-general-fk_settings-leg_tweak-skating_correction-description = "Correzione slittamento" corregge l'effetto che fa sembrare che pattini sul ghiaccio, ma può peggiorare la precisione di certi movimenti. Quando abiliti questa funzione é necessario eseguire un reset completo e ri-calibrazione in gioco per il corretto funzionamento.
 settings-general-fk_settings-leg_tweak-floor_clip-description = "Compenetrazione pavimento" può ridurre o anche eliminare completamente la compenetrazione con il pavimento. Quando abiliti questa funzione é necessario eseguire un reset completo e ri-calibrazione in gioco per il corretto funzionamento.
 settings-general-fk_settings-leg_tweak-toe_snap-description = "Dita dei piedi piantate" prova ad indovinare la rotazione dei tuoi piedi quando non stai usando dei tracker per i piedi.
@@ -362,7 +363,8 @@ settings-general-interface-serial_detection-label = Rilevazione nuovi dispositiv
 settings-general-interface-feedback_sound = Suono di feedback
 settings-general-interface-feedback_sound-description = Questa opzione riprodurrà un suono quando viene effettuato un reset
 settings-general-interface-feedback_sound-label = Suono di feedback
-settings-general-interface-feedback_sound-volume = Volume del suono si feedback
+settings-general-interface-feedback_sound-volume = Volume del suono di feedback
+settings-general-interface-theme = Colore di tema
 settings-general-interface-lang = Seleziona la lingua
 settings-general-interface-lang-description = Seleziona la lingua che vuoi utilizzare
 settings-general-interface-lang-placeholder = Seleziona la lingua da utilizzare
@@ -437,7 +439,7 @@ settings-osc-vrchat-network-address-placeholder = Indirizzo IP di VRChat
 settings-osc-vrchat-network-trackers = Tracker
 settings-osc-vrchat-network-trackers-description = Attiva o disattiva l'invio e la ricezione dei dati
 settings-osc-vrchat-network-trackers-chest = Petto
-settings-osc-vrchat-network-trackers-waist = Girovita
+settings-osc-vrchat-network-trackers-hip = Bacino
 settings-osc-vrchat-network-trackers-knees = Ginocchia
 settings-osc-vrchat-network-trackers-feet = Piedi
 settings-osc-vrchat-network-trackers-elbows = Gomiti
@@ -514,10 +516,6 @@ onboarding-reset_tutorial-description = Questa funzionalità non è completa, pr
 ## Setup start
 
 onboarding-home = Benvenuti a SlimeVR
-# This cares about multilines and it's centered!!
-onboarding-home-description =
-    Portiamo full-body tracking
-    a tuttə
 onboarding-home-start = Prepariamoci!
 
 ## Enter VR part of setup
@@ -531,7 +529,7 @@ onboarding-enter_vr-ready = Sono prontə!
 
 onboarding-done-title = È tutto pronto!
 onboarding-done-description = Goditi la tua esperienza di full-body tracking
-onboarding-done-close = Chiudi la guida
+onboarding-done-close = Chiudi la configurazione
 
 ## Tracker connection setup
 
@@ -544,7 +542,7 @@ onboarding-connect_tracker-usb = Tracker USB
 onboarding-connect_tracker-connection_status-none = Ricerca dei tracker in corso
 onboarding-connect_tracker-connection_status-serial_init = Connessione al dispositivo seriale in corso
 onboarding-connect_tracker-connection_status-provisioning = Invio credenziali Wi-Fi in corso
-onboarding-connect_tracker-connection_status-connecting = Invio credenziali Wi-Fi in corso.
+onboarding-connect_tracker-connection_status-connecting = Tentativo di connessione al Wi-Fi in corso
 onboarding-connect_tracker-connection_status-looking_for_server = Ricerca del server in corso
 onboarding-connect_tracker-connection_status-connection_error = Impossibile connettersi al Wi-Fi
 onboarding-connect_tracker-connection_status-could_not_find_server = Impossibile trovare il server
@@ -571,10 +569,10 @@ onboarding-assign_trackers-description = Scegliamo quale tracker va dove. Fare c
 # $assigned (Number) - Trackers that have been assigned a body part
 # $trackers (Number) - Trackers connected to the server
 onboarding-assign_trackers-assigned =
-    { $assigned } of { $trackers ->
-        [one] 1 tracker
-       *[other] { $trackers } trackers
-    } assigned
+    { $trackers ->
+        [one] { $assigned } di 1 tracker assegnato
+       *[other] { $assigned } di { $trackers } tracker assegnati
+    }
 onboarding-assign_trackers-advanced = Mostra impostazioni avanzate di assegnazione
 onboarding-assign_trackers-next = Ho assegnato tutti i miei tracker
 
@@ -646,6 +644,18 @@ onboarding-assign_trackers-warning-WAIST =
        *[unknown] Il girovita è assegnato, ma una parte del corpo sconosciuta non ha un tracker assegnato!
     }
 
+## Tracker mounting method choose
+
+onboarding-choose_mounting = Quale metodo di calibrazione del posizionamento vuoi usare?
+onboarding-choose_mounting-auto_mounting = Posizionamento automatico
+# Italized text
+onboarding-choose_mounting-auto_mounting-subtitle = Raccomandato
+onboarding-choose_mounting-auto_mounting-description = Questo processo identificherá automaticamente le direzioni per la posizione di montaggio di tutti i traker facendo 2 pose
+onboarding-choose_mounting-manual_mounting = Posizionamento manuale
+# Italized text
+onboarding-choose_mounting-manual_mounting-subtitle = Se sai cosa stai facendo
+onboarding-choose_mounting-manual_mounting-description = Questo processo ti lascerá scegliere manualmente le direzioni per la posizione di montaggio di tutti i tracker
+
 ## Tracker manual mounting setup
 
 onboarding-manual_mounting-back = Torna indietro per entrare in VR
@@ -659,7 +669,7 @@ onboarding-manual_mounting-next = Passo successivo
 onboarding-automatic_mounting-back = Torna indietro per entrare in VR
 onboarding-automatic_mounting-title = Calibrazione posizionamento
 onboarding-automatic_mounting-description = Affinché i tracker di SlimeVR funzionino, dobbiamo configurare una rotazione di posizione di montaggio ai tuoi tracker per allinearli con la posizione di montaggio del tuo tracker fisico.
-onboarding-automatic_mounting-manual_mounting = Imposta posizione manualmente
+onboarding-automatic_mounting-manual_mounting = Posizionamento manuale
 onboarding-automatic_mounting-next = Passo successivo
 onboarding-automatic_mounting-prev_step = Passaggio precedente
 onboarding-automatic_mounting-done-title = Rotazione delle posizioni di montaggio calibrate.
@@ -675,6 +685,18 @@ onboarding-automatic_mounting-put_trackers_on-title = Indossa i tuoi tracker
 onboarding-automatic_mounting-put_trackers_on-description = Per calibrare le rotazioni delle posizioni di montaggio useremo i tracker che hai appena assegnato. Indossa tutti i tuoi tracker, puoi vedere quali sono quali nella figura a destra.
 onboarding-automatic_mounting-put_trackers_on-next = Sto indossando tutti i miei tracker
 
+## Tracker proportions method choose
+
+onboarding-choose_proportions = Quale metodo di calibrazione delle proporzioni vuoi usare?
+onboarding-choose_proportions-auto_proportions = Proporzioni automatiche
+# Italized text
+onboarding-choose_proportions-auto_proportions-subtitle = Raccomandato
+onboarding-choose_proportions-auto_proportions-description = Questo processo indovinerá le tue proporzioni del corpo registrando alcuni specifici movimenti che sono poi elaborati tramite un algoritmo
+onboarding-choose_proportions-manual_proportions = Proporzioni manuali
+# Italized text
+onboarding-choose_proportions-manual_proportions-subtitle = Per piccole modifiche
+onboarding-choose_proportions-manual_proportions-description = Questo processo ti permetterà di regolare manualmente le proporzioni del corpo modificandole direttamente.
+
 ## Tracker manual proportions setup
 
 onboarding-manual_proportions-back = Torna al tutorial di reset
@@ -688,7 +710,7 @@ onboarding-manual_proportions-ratio = Regolazione tramite gruppi di rapporti
 onboarding-automatic_proportions-back = Torna al tutorial di reset
 onboarding-automatic_proportions-title = Misura il tuo corpo
 onboarding-automatic_proportions-description = Affinché i tracker di SlimeVR funzionino dobbiamo conoscere la lunghezza dei tuoi arti. Questa breve calibrazione le misurerà per te.
-onboarding-automatic_proportions-manual = Calibrazione manuale
+onboarding-automatic_proportions-manual = Proporzioni manuali
 onboarding-automatic_proportions-prev_step = Passaggio precedente
 onboarding-automatic_proportions-put_trackers_on-title = Indossa i tuoi tracker
 onboarding-automatic_proportions-put_trackers_on-description = Per calibrare le tue proporzioni useremo i tracker che hai appena assegnato. Indossa tutti i tuoi tracker, puoi vedere quali sono quali nella figura a destra.

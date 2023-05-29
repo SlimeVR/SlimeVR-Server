@@ -1,16 +1,23 @@
 package dev.slimevr.tracking.processor.skeleton;
 
 
+import java.util.ArrayList;
+import java.util.List;
+
 import dev.slimevr.config.TapDetectionConfig;
 import dev.slimevr.reset.ResetHandler;
+import dev.slimevr.setup.TapSetupHandler;
 import dev.slimevr.tracking.processor.HumanPoseManager;
 import dev.slimevr.tracking.trackers.Tracker;
 import solarxr_protocol.rpc.ResetType;
 
 
-// handles tap detection for the skeleton
+/**
+ * Handles tap detection for reset
+ */
 public class TapDetectionManager {
 	private static final String resetSourceName = "TapDetection";
+	private static final int tapsForSetupMode = 2;
 
 	// server and related classes
 	private final HumanSkeleton skeleton;
@@ -21,6 +28,8 @@ public class TapDetectionManager {
 	private TapDetection yawResetDetector;
 	private TapDetection fullResetDetector;
 	private TapDetection mountingResetDetector;
+
+	private ArrayList<TapDetection> tapDetectors;
 
 	// number of taps to detect
 	private int yawResetTaps = 2;
@@ -39,6 +48,7 @@ public class TapDetectionManager {
 	private boolean mountingResetAllowPlaySound = true;
 
 	private ResetHandler resetHandler;
+	private TapSetupHandler tapSetupHandler;
 
 	public TapDetectionManager(HumanSkeleton skeleton) {
 		this.skeleton = skeleton;
@@ -48,16 +58,27 @@ public class TapDetectionManager {
 		HumanSkeleton skeleton,
 		HumanPoseManager humanPoseManager,
 		TapDetectionConfig config,
-		ResetHandler resetHandler
+		ResetHandler resetHandler,
+		TapSetupHandler tapSetupHandler,
+		List<Tracker> trackers
 	) {
 		this.skeleton = skeleton;
 		this.humanPoseManager = humanPoseManager;
 		this.config = config;
 		this.resetHandler = resetHandler;
+		this.tapSetupHandler = tapSetupHandler;
 
 		yawResetDetector = new TapDetection(skeleton, getTrackerToWatchYawReset());
 		fullResetDetector = new TapDetection(skeleton, getTrackerToWatchFullReset());
 		mountingResetDetector = new TapDetection(skeleton, getTrackerToWatchMountingReset());
+
+		// a list of tap detectors for each tracker
+		tapDetectors = new ArrayList<>();
+		for (Tracker tracker : trackers) {
+			TapDetection tapDetector = new TapDetection(skeleton, tracker);
+			tapDetector.setEnabled(true);
+			tapDetectors.add(tapDetector);
+		}
 
 		// since this config value is only modified by editing the config file,
 		// we can set it here
@@ -93,17 +114,35 @@ public class TapDetectionManager {
 	}
 
 	public void update() {
-		if (yawResetDetector == null || fullResetDetector == null || mountingResetDetector == null)
+		if (
+			yawResetDetector == null
+				|| fullResetDetector == null
+				|| mountingResetDetector == null
+				|| tapDetectors == null
+		)
 			return;
-		// update the tap detectors
-		yawResetDetector.update();
-		fullResetDetector.update();
-		mountingResetDetector.update();
 
-		// check if any tap detectors have detected taps
-		checkYawReset();
-		checkFullReset();
-		checkMountingReset();
+		// if setup mode is enabled, update the tap detectors for each tracker
+		if (config.getSetupMode()) {
+			for (TapDetection tapDetector : tapDetectors) {
+				tapDetector.update();
+
+				if (tapDetector.getTaps() >= tapsForSetupMode) {
+					tapSetupHandler.sendTap(tapDetector.getTracker());
+					tapDetector.resetDetector();
+				}
+			}
+		} else {
+			// update the tap detectors
+			yawResetDetector.update();
+			fullResetDetector.update();
+			mountingResetDetector.update();
+
+			// check if any tap detectors have detected taps
+			checkYawReset();
+			checkFullReset();
+			checkMountingReset();
+		}
 	}
 
 	private void checkYawReset() {
