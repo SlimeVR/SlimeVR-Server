@@ -126,6 +126,7 @@ widget-developer_mode-more_info = المزيد
 widget-imu_visualizer = دوران
 widget-imu_visualizer-rotation_raw = صافي
 widget-imu_visualizer-rotation_preview = عرض مسبق
+widget-imu_visualizer-rotation_hide = إخفاء
 
 ## Tracker status
 
@@ -252,6 +253,7 @@ settings-sidebar-fk_settings = إعدادات التعقب
 settings-sidebar-gesture_control = التحكم بالإيماءات
 settings-sidebar-interface = واجهة المستخدم
 settings-sidebar-osc_router = راوتر أوه أس سي
+settings-sidebar-osc_trackers = أجهزة تعقب في ار تشات أوه أس سي
 settings-sidebar-utils = الأدوات المساعدة
 settings-sidebar-serial = وحدة التحكم التسلسلية
 
@@ -369,6 +371,7 @@ settings-general-interface-feedback_sound = صوت ردود الفعل
 settings-general-interface-feedback_sound-description = سيصدر هذا الخيار صوتًا عند تشغيل إعادة الضبط
 settings-general-interface-feedback_sound-label = صوت ردود الفعل
 settings-general-interface-feedback_sound-volume = حجم صوت ردود الفعل
+settings-general-interface-theme = موضوع اللون
 settings-general-interface-lang = اختر اللغة
 settings-general-interface-lang-description = قم بتغيير اللغة الافتراضية التي تريد استخدامها.
 settings-general-interface-lang-placeholder = اختر اللغة التي تريد استخدامها
@@ -443,7 +446,7 @@ settings-osc-vrchat-network-address-placeholder = عنوان آي بي الخا�
 settings-osc-vrchat-network-trackers = أجهزة التعقب
 settings-osc-vrchat-network-trackers-description = تبديل إرسال أجهزة تتبع محددة عبر أوه أس سي.
 settings-osc-vrchat-network-trackers-chest = الصدر
-settings-osc-vrchat-network-trackers-waist = الخصر
+settings-osc-vrchat-network-trackers-hip = الورك
 settings-osc-vrchat-network-trackers-knees = الركبتين
 settings-osc-vrchat-network-trackers-feet = القدمين
 settings-osc-vrchat-network-trackers-elbows = الكوعين
@@ -520,10 +523,6 @@ onboarding-reset_tutorial-description = هذه الميزة لم تنته بعد
 ## Setup start
 
 onboarding-home = مرحبا بكم في سلايم في ار
-# This cares about multilines and it's centered!!
-onboarding-home-description =
-    جلب التعقب كامل الجسم
-    للجميع
 onboarding-home-start = هيا نتجهز!
 
 ## Enter VR part of setup
@@ -660,6 +659,18 @@ onboarding-assign_trackers-warning-WAIST =
        *[unknown] تم تحديد الخصر، ولكنك تحتاج إلى تحديد جزء جسم غير معروف غير مخصص أيضًا!
     }
 
+## Tracker mounting method choose
+
+onboarding-choose_mounting = ما طريقة معايرة التركيب المستخدمة؟
+onboarding-choose_mounting-auto_mounting = التركيب التلقائي
+# Italized text
+onboarding-choose_mounting-auto_mounting-subtitle = الموصى به
+onboarding-choose_mounting-auto_mounting-description = سيكتشف هذا تلقائيًا اتجاهات التركيب لجميع أجهزة التعقب من وضعين
+onboarding-choose_mounting-manual_mounting = التركيب اليدوي
+# Italized text
+onboarding-choose_mounting-manual_mounting-subtitle = إذا كنت تعلم ماذا تفعل
+onboarding-choose_mounting-manual_mounting-description = سيسمح لك باختيار اتجاه التثبيت يدويًا لكل جهاز تعقب
+
 ## Tracker manual mounting setup
 
 onboarding-manual_mounting-back = العودة إلى دخول في ار
@@ -688,6 +699,18 @@ onboarding-automatic_mounting-preparation-step-1 = اضغط على زر "إعا�
 onboarding-automatic_mounting-put_trackers_on-title = ارتدي أجهزة التعقب
 onboarding-automatic_mounting-put_trackers_on-description = لمعايرة دوران التركيب، سنستخدم أجهزة التعقب التي قمت بتعيينها. ارتدي جميع أجهزة التعقب، يمكنك معرفة أي منها في المستند على اليمين.
 onboarding-automatic_mounting-put_trackers_on-next = ارتديت جميع أجهزة التعقب.
+
+## Tracker proportions method choose
+
+onboarding-choose_proportions = ما هي طريقة معايرة النسب التي يجب استخدامها؟
+onboarding-choose_proportions-auto_proportions = النسب التلقائية
+# Italized text
+onboarding-choose_proportions-auto_proportions-subtitle = الموصى به
+onboarding-choose_proportions-auto_proportions-description = سيقدر هذا النسب الخاصة بك عن طريق تسجيل عينة من حركاتك وتمريرها من خلال برنامج
+onboarding-choose_proportions-manual_proportions = النسب اليدوية
+# Italized text
+onboarding-choose_proportions-manual_proportions-subtitle = للمسات الصغيرة
+onboarding-choose_proportions-manual_proportions-description = سيسمح لك بتعديل النسب يدويًا عن طريق تعديلها مباشرة
 
 ## Tracker manual proportions setup
 

@@ -252,6 +252,7 @@ settings-sidebar-fk_settings = twacking settyings
 settings-sidebar-gesture_control = gestauw cantwol
 settings-sidebar-interface = intyawface~
 settings-sidebar-osc_router = OSC wouwter
+settings-sidebar-osc_trackers = VRChawt OSC Twayckaws
 settings-sidebar-utils = utiwities
 settings-sidebar-serial = sewiaw cownsaw
 
@@ -365,6 +366,7 @@ settings-general-interface-feedback_sound = feeback sownd
 settings-general-interface-feedback_sound-description = dis awptshun wiww pway a sownd wen a weset is twiggered (meow~!)
 settings-general-interface-feedback_sound-label = feeback sownd
 settings-general-interface-feedback_sound-volume = feedback sownd volyume
+settings-general-interface-theme = cowor theem
 settings-general-interface-lang = sewect wanguage
 settings-general-interface-lang-description = change the defawwt wanguage yuw want to use
 settings-general-interface-lang-placeholder = sewect teh wanguage to use
@@ -439,7 +441,7 @@ settings-osc-vrchat-network-address-placeholder = vwchat ip addwess
 settings-osc-vrchat-network-trackers = trayckawws
 settings-osc-vrchat-network-trackers-description = toggle teh sending of spweciwic twackers viwa OSC
 settings-osc-vrchat-network-trackers-chest = chwest~
-settings-osc-vrchat-network-trackers-waist = wyayst~
+settings-osc-vrchat-network-trackers-hip = hyip
 settings-osc-vrchat-network-trackers-knees = knyees~
 settings-osc-vrchat-network-trackers-feet = pweets~
 settings-osc-vrchat-network-trackers-elbows = ewbows~
@@ -483,6 +485,12 @@ settings-osc-vmc-anchor_hip-label = anchow at hips
 onboarding-skip = skipy setup
 onboarding-continue = continyue
 onboarding-wip = wowwk in pwowgress
+onboarding-previous_step = pwevious stwep
+onboarding-setup_warning =
+    <b>Wawning:</b> The inyitiaw setup is wequiwed fow good twacking,
+    it is nyeeded if this is youw fiwst time using SwimeVR.
+onboarding-setup_warning-skip = skipy setup
+onboarding-setup_warning-cancel = continu setup
 
 ## Wi-Fi setup
 
@@ -510,10 +518,6 @@ onboarding-reset_tutorial-description = dis featuwe isn't done, just pwess conti
 ## Setup start
 
 onboarding-home = wewcome to swimevr
-# This cares about multilines and it's centered!!
-onboarding-home-description =
-    bwinging fuww-bawdy twacking
-    to evewyone
 onboarding-home-start = wets get set up!
 
 ## Enter VR part of setup
@@ -642,6 +646,18 @@ onboarding-assign_trackers-warning-WAIST =
        *[unknown] waiwst is assignyed but you nyeed unknyoun unyassignyed body pawt to awso be assignyed!
     }
 
+## Tracker mounting method choose
+
+onboarding-choose_mounting = wut meownting cawibwation mefod to use?
+onboarding-choose_mounting-auto_mounting = awtomawic meownting
+# Italized text
+onboarding-choose_mounting-auto_mounting-subtitle = wecommended
+onboarding-choose_mounting-auto_mounting-description = dis will automaticawwy detec da meownting diwecshuns fow aww of ya twackews fwom 2 poses
+onboarding-choose_mounting-manual_mounting = manyul meownting
+# Italized text
+onboarding-choose_mounting-manual_mounting-subtitle = if yu know wut u r doin
+onboarding-choose_mounting-manual_mounting-description = dis will let u chose da meownting diwecshun manuwawwy fow eech twackew
+
 ## Tracker manual mounting setup
 
 onboarding-manual_mounting-back = go bak to entaw vawe
@@ -670,6 +686,18 @@ onboarding-automatic_mounting-preparation-step-1 = 2. pwess the "fuww weset" but
 onboarding-automatic_mounting-put_trackers_on-title = put on yowo twackaws
 onboarding-automatic_mounting-put_trackers_on-description = to cawibwate meownting wowations, we'we gonna use the twackaws yowo just assigned. put on awe yowo twackaws, yowo can see which awe which in the figuwe to the wowight.
 onboarding-automatic_mounting-put_trackers_on-next = i haff awe my twackaws on
+
+## Tracker proportions method choose
+
+onboarding-choose_proportions = wut pwopowshun cawibwation mefod to use?
+onboarding-choose_proportions-auto_proportions = awtomatic pwopowtions
+# Italized text
+onboarding-choose_proportions-auto_proportions-subtitle = wecommended
+onboarding-choose_proportions-auto_proportions-description = dis will guess ur pwopowshuns by wecowding a sampwe of ur movement and pass it thwough an ai
+onboarding-choose_proportions-manual_proportions = manuwal pwopowtions
+# Italized text
+onboarding-choose_proportions-manual_proportions-subtitle = fow smol touchies
+onboarding-choose_proportions-manual_proportions-description = dis will let u ajust ur pwopowtions manuwally by modifying dem diwectwy
 
 ## Tracker manual proportions setup
 
