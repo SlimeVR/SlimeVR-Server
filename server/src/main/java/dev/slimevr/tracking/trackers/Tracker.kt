@@ -66,21 +66,8 @@ class Tracker @JvmOverloads constructor(
 				// assign or un-assign the tracker to a body part
 				vrServer.updateSkeletonModel()
 
-				if (lastErrorStatus == 0u && value == TrackerStatus.ERROR) {
-					reportErrorStatus()
-				} else if (lastErrorStatus != 0u && value != TrackerStatus.ERROR) {
-					vrServer.statusSystem.removeStatus(lastErrorStatus)
-					lastErrorStatus = 0u
-				}
-
-				if (needsReset && lastResetStatus == 0u) {
-					if (value.sendData && trackerPosition != null) {
-						reportRequireReset()
-					}
-				} else if (!value.sendData && lastResetStatus != 0u) {
-					vrServer.statusSystem.removeStatus(lastResetStatus)
-					lastResetStatus = 0u
-				}
+				checkReportErrorStatus()
+				checkReportRequireReset()
 			}
 		}
 
@@ -90,13 +77,7 @@ class Tracker @JvmOverloads constructor(
 			field = value
 
 			if (!isInternal) {
-				// Check if a full reset is needed
-				if (needsReset && value != null && lastResetStatus == 0u && status.sendData) {
-					reportRequireReset()
-				} else if (value == null && lastResetStatus != 0u) {
-					vrServer.statusSystem.removeStatus(lastResetStatus)
-					lastResetStatus = 0u
-				}
+				checkReportRequireReset()
 			}
 		}
 
@@ -119,6 +100,15 @@ class Tracker @JvmOverloads constructor(
 // 		require(device != null && _trackerNum == null) {
 // 			"If ${::device.name} exists, then ${::trackerNum.name} must not be null"
 // 		}
+	}
+
+	private fun checkReportRequireReset() {
+		if (needsReset && trackerPosition != null && lastResetStatus == 0u && status.sendData) {
+			reportRequireReset()
+		} else if (lastResetStatus != 0u && (trackerPosition == null || !status.sendData)) {
+			vrServer.statusSystem.removeStatus(lastResetStatus)
+			lastResetStatus = 0u
+		}
 	}
 
 	/**
@@ -144,6 +134,15 @@ class Tracker @JvmOverloads constructor(
 			value = statusMsg
 		}
 		lastResetStatus = vrServer.statusSystem.addStatus(status, true)
+	}
+
+	private fun checkReportErrorStatus() {
+		if (status == TrackerStatus.ERROR && lastErrorStatus == 0u) {
+			reportErrorStatus()
+		} else if (lastErrorStatus != 0u && status != TrackerStatus.ERROR) {
+			vrServer.statusSystem.removeStatus(lastErrorStatus)
+			lastErrorStatus = 0u
+		}
 	}
 
 	var lastErrorStatus = 0u
