@@ -60,6 +60,7 @@ public class UnixSocketBridge extends SteamVRBridge implements AutoCloseable {
 			this.server = createSocket();
 			while (true) {
 				if (this.channel == null) {
+					reportDisconnected();
 					this.selector = Selector.open();
 					this.channel = server.accept();
 					this.channel.configureBlocking(false);
@@ -85,6 +86,9 @@ public class UnixSocketBridge extends SteamVRBridge implements AutoCloseable {
 						updateMessageQueue();
 						if (!updated) {
 							this.waitForData(10);
+						} else if (lastSteamVRStatus != 0) {
+							Main.getVrServer().getStatusSystem().removeStatusInt(lastSteamVRStatus);
+							lastSteamVRStatus = 0;
 						}
 					} catch (IOException ioError) {
 						this.resetChannel();

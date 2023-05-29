@@ -96,6 +96,10 @@ navbar-settings = Settings
 bvh-start_recording = Record BVH
 bvh-recording = Recording...
 
+## Tracking pause
+tracking-unpaused = Pause tracking
+tracking-paused = Unpause tracking
+
 ## Widget: Overlay settings
 widget-overlay = Overlay
 widget-overlay-is_visible_label = Show Overlay in SteamVR
@@ -724,3 +728,11 @@ onboarding-automatic_proportions-done-description = Your body proportions' calib
 
 ## Home
 home-no_trackers = No trackers detected or assigned
+
+## Status system
+status_system-StatusTrackerReset = It is recommended to perform a full reset as one or more trackers are unadjusted.
+status_system-StatusSteamVRDisconnected = { $type ->
+    *[steamvr] Unable to connect to SteamVR via the SlimeVR driver.
+    [steamvr_feeder] Unable to connect to the SlimeVR Feeder App.
+}
+status_system-StatusTrackerError = The { $trackerName } tracker has an error.

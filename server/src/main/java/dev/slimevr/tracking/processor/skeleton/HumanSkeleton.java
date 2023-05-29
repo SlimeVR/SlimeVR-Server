@@ -136,6 +136,8 @@ public class HumanSkeleton {
 	protected float kneeTrackerAnkleAveraging;
 	// Others
 	protected boolean sendAllBones = false;
+	// Pauses skeleton tracking if true, resumes skeleton tracking if false
+	protected boolean pauseTracking = false;
 	// #endregion
 
 	// #region Clip Correction
@@ -543,7 +545,9 @@ public class HumanSkeleton {
 		updateLocalTransforms();
 		updateRootTrackers();
 		updateComputedTrackers();
-		tweakLegPos();
+		// Don't run leg tweaks if the tracking is paused
+		if (!pauseTracking)
+			tweakLegPos();
 		viveEmulation.update();
 	}
 	// #endregion
@@ -595,6 +599,11 @@ public class HumanSkeleton {
 			trackerHeadNode.getLocalTransform().setRotation(headRot);
 			headNode.getLocalTransform().setRotation(headRot);
 		}
+
+		// Only update the head and neck as they are relevant to the position
+		// of the computed trackers for VR, the rest should be frozen
+		if (pauseTracking)
+			return;
 
 		// Spine
 		if (hasSpineTracker) {
@@ -1552,5 +1561,13 @@ public class HumanSkeleton {
 	@VRServerThread
 	public void setSkatingCorrectionEnabled(boolean value) {
 		humanPoseManager.setToggle(SkeletonConfigToggles.SKATING_CORRECTION, value);
+	}
+
+	public boolean getPauseTracking() {
+		return pauseTracking;
+	}
+
+	public void setPauseTracking(boolean pauseTracking) {
+		this.pauseTracking = pauseTracking;
 	}
 }
