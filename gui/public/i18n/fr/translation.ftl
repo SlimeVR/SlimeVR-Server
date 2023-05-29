@@ -252,6 +252,7 @@ settings-sidebar-fk_settings = Paramètres de la capture
 settings-sidebar-gesture_control = Contrôle gestuel
 settings-sidebar-interface = Interface
 settings-sidebar-osc_router = Routeur OSC
+settings-sidebar-osc_trackers = Capteurs OSC VRChat
 settings-sidebar-utils = Utilitaires
 settings-sidebar-serial = Console série
 
@@ -365,6 +366,7 @@ settings-general-interface-feedback_sound = Son de retour
 settings-general-interface-feedback_sound-description = Cette option va jouer un son lorsqu'une réanitilisation est enclenchée
 settings-general-interface-feedback_sound-label = Son de retour
 settings-general-interface-feedback_sound-volume = Volume du son de retour
+settings-general-interface-theme = Thème de couleurs
 settings-general-interface-lang = Sélectionner la langue
 settings-general-interface-lang-description = Choisir la langue par défaut.
 settings-general-interface-lang-placeholder = Choisissez la langue
@@ -417,7 +419,7 @@ settings-osc-router-network-address-placeholder = Adresse IPv4
 
 ## OSC VRChat settings
 
-settings-osc-vrchat = VRChat OSC Trackers
+settings-osc-vrchat = Capteurs OSC VRChat
 # This cares about multilines
 settings-osc-vrchat-description =
     Modifiez les paramètres spécifiques à VRChat pour recevoir et envoyer
@@ -439,7 +441,7 @@ settings-osc-vrchat-network-address-placeholder = Adresse IP VRChat
 settings-osc-vrchat-network-trackers = capteurs
 settings-osc-vrchat-network-trackers-description = Sélectionner quels capteurs envoyer via OSC.
 settings-osc-vrchat-network-trackers-chest = Poitrine
-settings-osc-vrchat-network-trackers-waist = Taille
+settings-osc-vrchat-network-trackers-hip = Hanche
 settings-osc-vrchat-network-trackers-knees = Genoux
 settings-osc-vrchat-network-trackers-feet = Pieds
 settings-osc-vrchat-network-trackers-elbows = Coudes
@@ -516,10 +518,6 @@ onboarding-reset_tutorial-description = Cette fonctionnalité n'est pas encore t
 ## Setup start
 
 onboarding-home = Bienvenue sur SlimeVR
-# This cares about multilines and it's centered!!
-onboarding-home-description =
-    Rendre la capture des mouvements
-    accessible à toutes et tous!
 onboarding-home-start = Commencer!
 
 ## Enter VR part of setup
@@ -648,6 +646,18 @@ onboarding-assign_trackers-warning-WAIST =
        *[unknown] La taille est attribuée mais il faut qu'une partie du corps inconnue non assignée soit également attribuée!
     }
 
+## Tracker mounting method choose
+
+onboarding-choose_mounting = Quelle méthode de calibration de l’alignement utiliser?
+onboarding-choose_mounting-auto_mounting = Alignement automatique
+# Italized text
+onboarding-choose_mounting-auto_mounting-subtitle = Recommendée
+onboarding-choose_mounting-auto_mounting-description = Ceci permettra de détecter automatiquement la direction de tous vos capteurs à partir de 2 poses
+onboarding-choose_mounting-manual_mounting = Alignement manuel
+# Italized text
+onboarding-choose_mounting-manual_mounting-subtitle = Si vous savez ce que vous faites
+onboarding-choose_mounting-manual_mounting-description = Ceci vous permettra de choisir la direction de chaque capteur manuellement
+
 ## Tracker manual mounting setup
 
 onboarding-manual_mounting-back = Retournez à entrer dans la réalité virtuelle
@@ -676,6 +686,18 @@ onboarding-automatic_mounting-preparation-step-1 = 2. Appuyez sur le bouton "Ré
 onboarding-automatic_mounting-put_trackers_on-title = Enfilez vos capteurs
 onboarding-automatic_mounting-put_trackers_on-description = Pour calibrer l'alignement, nous allons utiliser les capteurs que vous venez d'attribuer.
 onboarding-automatic_mounting-put_trackers_on-next = J'ai tous mes capteurs
+
+## Tracker proportions method choose
+
+onboarding-choose_proportions = Quelle méthode de calibration des proportions utiliser?
+onboarding-choose_proportions-auto_proportions = Proportions automatiques
+# Italized text
+onboarding-choose_proportions-auto_proportions-subtitle = Recommendée
+onboarding-choose_proportions-auto_proportions-description = Ceci estimera vos proportions en enregistrant un extrait de vos mouvements et en le faisant traiter par un algorithme
+onboarding-choose_proportions-manual_proportions = Proportions manuelles
+# Italized text
+onboarding-choose_proportions-manual_proportions-subtitle = Pour les retouches
+onboarding-choose_proportions-manual_proportions-description = Ceci vous permettra d'ajuster vos proportions manuellement en les modifiant directement
 
 ## Tracker manual proportions setup
 

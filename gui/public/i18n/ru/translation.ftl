@@ -366,6 +366,8 @@ settings-general-interface-serial_detection-label = Обнаружение се�
 settings-general-interface-feedback_sound = Звук обратной связи
 settings-general-interface-feedback_sound-description = Эта опция будет воспроизводить звук при срабатывании сброса.
 settings-general-interface-feedback_sound-label = Звук обратной связи
+settings-general-interface-feedback_sound-volume = Громкость реакции интерфейса на косание треккера
+settings-general-interface-theme = Варианты оформления
 settings-general-interface-lang = Выбрать язык
 settings-general-interface-lang-description = Измените язык по умолчанию, который вы хотите использовать.
 settings-general-interface-lang-placeholder = Выберите язык для использования
@@ -440,7 +442,6 @@ settings-osc-vrchat-network-address-placeholder = VRChat ip адрес
 settings-osc-vrchat-network-trackers = Трекеры
 settings-osc-vrchat-network-trackers-description = Переключите отправку определенных трекеров через OSC.
 settings-osc-vrchat-network-trackers-chest = Грудь
-settings-osc-vrchat-network-trackers-waist = Талия
 settings-osc-vrchat-network-trackers-knees = Колени
 settings-osc-vrchat-network-trackers-feet = Ступни
 settings-osc-vrchat-network-trackers-elbows = Локти
@@ -484,6 +485,11 @@ settings-osc-vmc-anchor_hip-label = Привязать к бедрам
 onboarding-skip = Пропустить установку
 onboarding-continue = Продолжить
 onboarding-wip = В разработке
+onboarding-previous_step = Предыдущий шаг
+onboarding-setup_warning =
+    <b>Предупреждение.</b> Для правильного отслеживания требуется первоначальная настройка,
+    это необходимо, если вы впервые используете SlimeVR.
+onboarding-setup_warning-skip = Пропустить настройку
 
 ## Wi-Fi setup
 
@@ -511,10 +517,6 @@ onboarding-reset_tutorial-description = Эта функция не заверш�
 ## Setup start
 
 onboarding-home = Добро пожаловать в SlimeVR!
-# This cares about multilines and it's centered!!
-onboarding-home-description =
-    Обеспечение полного отслеживания тела
-    для всех
 onboarding-home-start = Давайте все настроим!
 
 ## Enter VR part of setup
@@ -570,12 +572,12 @@ onboarding-assign_trackers-description = Давайте выберем, расп
 # $assigned (Number) - Trackers that have been assigned a body part
 # $trackers (Number) - Trackers connected to the server
 onboarding-assign_trackers-assigned =
-    { $assigned } из { $trackers ->
-        [one] 1 трекер
-        [few] { $amount } трекера
-        [many] { $amount } трекеров
-       *[other] { $amount } трекеров
-    } привязано
+    { $trackers ->
+        [one] { $assigned } из 1 трекер привязано
+        [few] { $assigned } из { $trackers } трекера привязано
+        [many] { $assigned } из { $trackers } трекеров привязано
+       *[other] { $assigned } из { $trackers } трекеров привязано
+    }
 onboarding-assign_trackers-advanced = Показать дополнительные места привязки
 onboarding-assign_trackers-next = Я привязал все трекеры
 
@@ -647,6 +649,9 @@ onboarding-assign_trackers-warning-WAIST =
        *[unknown] Талия назначена, но вам нужно, чтобы неизвестная неназначенная часть тела также была назначена!
     }
 
+## Tracker mounting method choose
+
+
 ## Tracker manual mounting setup
 
 onboarding-manual_mounting-back = Вернуться чтобы войти в VR
@@ -676,6 +681,9 @@ onboarding-automatic_mounting-put_trackers_on-title = Наденьте ваши 
 onboarding-automatic_mounting-put_trackers_on-description = Чтобы откалибровать повороты крепления, мы будем использовать трекеры, которые вы только что назначили. Включите все свои трекеры, вы можете увидеть, какие из них какие на рисунке справа.
 onboarding-automatic_mounting-put_trackers_on-next = Я включил и надел все свои трекеры
 
+## Tracker proportions method choose
+
+
 ## Tracker manual proportions setup
 
 onboarding-manual_proportions-back = Вернутся к началу обучения
@@ -694,22 +702,14 @@ onboarding-automatic_proportions-prev_step = Предыдущий шаг
 onboarding-automatic_proportions-put_trackers_on-title = Наденьте ваши трекеры
 onboarding-automatic_proportions-put_trackers_on-description = Чтобы откалибровать ваши пропорции, мы собираемся использовать трекеры, которые вы только что назначили. Включите все свои трекеры, вы можете увидеть, какие из них какие на рисунке справа.
 onboarding-automatic_proportions-put_trackers_on-next = Я надел все свои трекеры
-onboarding-automatic_proportions-preparation-title = Подготовка
-onboarding-automatic_proportions-preparation-description = Поставьте стул прямо позади себя в вашем игровом пространстве. Будьте готовы сесть во время автоматической настройки костей.
-onboarding-automatic_proportions-preparation-next = Я перед стулом
 onboarding-automatic_proportions-start_recording-title = Будьте готовы к движению
 onboarding-automatic_proportions-start_recording-description = Теперь мы собираемся записать некоторые конкретные позы и движения. Они будут запрошены на следующем экране. Будьте готовы начать, когда кнопка будет нажата!
 onboarding-automatic_proportions-start_recording-next = Начать запись
 onboarding-automatic_proportions-recording-title = Запись
 onboarding-automatic_proportions-recording-description-p0 = Запись в процессе...
 onboarding-automatic_proportions-recording-description-p1 = Сделайте эти движения:
-onboarding-automatic_proportions-recording-steps-0 = Согните колени несколько раз.
-onboarding-automatic_proportions-recording-steps-1 = Сядьте на стул, затем встаньте.
-onboarding-automatic_proportions-recording-steps-2 = Поверните верхнюю часть туловища влево, затем наклонитесь вправо.
-onboarding-automatic_proportions-recording-steps-3 = Поверните верхнюю часть туловища вправо, затем наклонитесь влево.
-onboarding-automatic_proportions-recording-steps-4 = Покачайтесь, пока таймер не закончится.
 onboarding-automatic_proportions-recording-processing = Обработка результата...
-# $time (Number) - Seconds left for the automatic calibration recording to finish (max 15)
+# $time (Number) - Seconds left for the automatic calibration recording to finish (max 20)
 onboarding-automatic_proportions-recording-timer =
     { $time ->
         [one] { $time } секунда

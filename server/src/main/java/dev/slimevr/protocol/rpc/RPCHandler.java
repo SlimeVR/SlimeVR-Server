@@ -87,6 +87,8 @@ public class RPCHandler extends ProtocolHandler<RpcMessageHeader>
 
 		registerPacketListener(RpcMessage.StatusSystemRequest, this::onStatusSystemRequest);
 
+		registerPacketListener(RpcMessage.SetPauseTrackingRequest, this::onSetPauseTrackingRequest);
+
 		this.api.server.getAutoBoneHandler().addListener(this);
 	}
 
@@ -473,4 +475,12 @@ public class RPCHandler extends ProtocolHandler<RpcMessageHeader>
 		conn.send(fbb.dataBuffer());
 	}
 
+	public void onSetPauseTrackingRequest(GenericConnection conn, RpcMessageHeader messageHeader) {
+		SetPauseTrackingRequest req = (SetPauseTrackingRequest) messageHeader
+			.message(new SetPauseTrackingRequest());
+		if (req == null)
+			return;
+
+		this.api.server.humanPoseManager.setPauseTracking(req.pauseTracking());
+	}
 }

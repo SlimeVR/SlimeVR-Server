@@ -23,6 +23,7 @@ import { useStatusContext, parseStatusToLocale } from '../hooks/status-system';
 import { Localized } from '@fluent/react';
 import { WarningBox } from './commons/TipBox';
 import { useAppContext } from '../hooks/app';
+import { TrackingPauseButton } from './TrackingPauseButton';
 
 export function MainLayoutRoute({
   children,
@@ -117,6 +118,7 @@ export function MainLayoutRoute({
                     ></ResetButton>
                   )}
                   <BVHButton></BVHButton>
+                  <TrackingPauseButton></TrackingPauseButton>
                   {driftCompensationEnabled && (
                     <ClearDriftCompensationButton></ClearDriftCompensationButton>
                   )}
