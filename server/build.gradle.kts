@@ -97,6 +97,13 @@ tasks.test {
 }
 
 tasks.shadowJar {
+	minimize {
+		exclude(dependency("com.fazecast:jSerialComm:.*"))
+		exclude(dependency("net.java.dev.jna:.*:.*"))
+		exclude(dependency("com.google.flatbuffers:flatbuffers-java:.*"))
+
+		exclude(project(":solarxr-protocol"))
+	}
 	archiveBaseName.set("slimevr")
 	archiveClassifier.set("")
 	archiveVersion.set("")
@@ -182,4 +189,7 @@ configure<com.diffplug.gradle.spotless.SpotlessExtension> {
 	}
 }
 
-tasks.getByName("run", JavaExec::class) { standardInput = System.`in` }
+tasks.getByName("run", JavaExec::class) {
+	standardInput = System.`in`
+	args = listOf("run")
+}

@@ -92,7 +92,7 @@ navbar-mounting = Mounting Calibration
 navbar-onboarding = Setup Wizard
 navbar-settings = Settings
 
-## Bounding volume hierarchy recording
+## Biovision hierarchy recording
 bvh-start_recording = Record BVH
 bvh-recording = Recording...
 
