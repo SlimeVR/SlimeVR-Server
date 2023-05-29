@@ -18,6 +18,7 @@ import { DeveloperModeWidget } from './widgets/DeveloperModeWidget';
 import { OverlayWidget } from './widgets/OverlayWidget';
 import { ClearDriftCompensationButton } from './ClearDriftCompensationButton';
 import { useWebsocketAPI } from '../hooks/websocket-api';
+import { TrackingPauseButton } from './TrackingPauseButton';
 
 export function MainLayoutRoute({
   children,
@@ -106,6 +107,7 @@ export function MainLayoutRoute({
                     ></ResetButton>
                   )}
                   <BVHButton></BVHButton>
+                  <TrackingPauseButton></TrackingPauseButton>
                   {driftCompensationEnabled && (
                     <ClearDriftCompensationButton></ClearDriftCompensationButton>
                   )}
