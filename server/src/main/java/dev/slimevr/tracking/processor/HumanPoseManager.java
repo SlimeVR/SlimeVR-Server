@@ -1,5 +1,6 @@
 package dev.slimevr.tracking.processor;
 
+import com.jme3.math.FastMath;
 import dev.slimevr.VRServer;
 import dev.slimevr.config.ConfigManager;
 import dev.slimevr.tracking.processor.config.SkeletonConfigManager;
@@ -14,7 +15,10 @@ import dev.slimevr.tracking.trackers.TrackerStatus;
 import dev.slimevr.util.ann.VRServerThread;
 import io.eiren.util.ann.ThreadSafe;
 import io.eiren.util.collections.FastList;
+import io.eiren.util.logging.LogManager;
+import io.github.axisangles.ktmath.Quaternion;
 import io.github.axisangles.ktmath.Vector3;
+import org.apache.commons.math3.util.Precision;
 
 import java.util.List;
 import java.util.Map;
@@ -31,6 +35,7 @@ public class HumanPoseManager {
 	private final List<Consumer<HumanSkeleton>> onSkeletonUpdated = new FastList<>();
 	private final SkeletonConfigManager skeletonConfigManager;
 	private HumanSkeleton skeleton;
+	private long timeAtLastReset;
 
 	// #region Constructors
 	private HumanPoseManager() {
@@ -394,6 +399,21 @@ public class HumanPoseManager {
 	}
 
 	/**
+	 * Returns all trackers if VRServer is non-null. Else, returns the
+	 * skeleton's assigned trackers.
+	 *
+	 * @return a list of trackers to use for reset.
+	 */
+	public List<Tracker> getTrackersToReset() {
+		if (server != null)
+			return server.getAllTrackers();
+		else if (isSkeletonPresent()) {
+			return skeleton.getLocalTrackers();
+		}
+		return null;
+	}
+
+	/**
 	 * @return the root node of the skeleton, which is the HMD
 	 */
 	@ThreadSafe
@@ -625,7 +645,6 @@ public class HumanPoseManager {
 		skeletonConfigManager.computeNodeOffset(node);
 	}
 
-	@VRServerThread
 	public void resetTrackersFull(String resetSourceName) {
 		if (isSkeletonPresent()) {
 			skeleton.resetTrackersFull(resetSourceName);
@@ -634,17 +653,11 @@ public class HumanPoseManager {
 				server
 					.getVMCHandler()
 					.alignVMCTracking(getRootNode().getWorldTransform().getRotation());
+				logTrackersDrift();
 			}
 		}
 	}
 
-	@VRServerThread
-	public void resetTrackersMounting(String resetSourceName) {
-		if (isSkeletonPresent())
-			skeleton.resetTrackersMounting(resetSourceName);
-	}
-
-	@VRServerThread
 	public void resetTrackersYaw(String resetSourceName) {
 		if (isSkeletonPresent()) {
 			skeleton.resetTrackersYaw(resetSourceName);
@@ -653,8 +666,76 @@ public class HumanPoseManager {
 				server
 					.getVMCHandler()
 					.alignVMCTracking(getRootNode().getWorldTransform().getRotation());
+				logTrackersDrift();
 			}
 		}
+	}
+
+	private void logTrackersDrift() {
+		if (timeAtLastReset == 0L)
+			timeAtLastReset = System.currentTimeMillis();
+
+		// Get time since last reset in seconds
+		long timeSinceLastReset = (System.currentTimeMillis() - timeAtLastReset) / 1000L;
+		timeAtLastReset = System.currentTimeMillis();
+
+		// Build String for trackers drifts
+		StringBuilder trackersDriftText = new StringBuilder();
+		for (Tracker tracker : server.getAllTrackers()) {
+			if (
+				tracker.getNeedsReset()
+					&& tracker.getResetsHandler().getLastResetQuaternion() != null
+			) {
+				if (!trackersDriftText.isEmpty()) {
+					trackersDriftText.append(" | ");
+				}
+
+				// Get the difference between last reset and now
+				Quaternion difference = tracker
+					.getRotation()
+					.times(tracker.getResetsHandler().getLastResetQuaternion().inv());
+				// Get the pure yaw
+				float trackerDriftAngle = Math
+					.abs(
+						FastMath.atan2(difference.getY(), difference.getW())
+							* 2
+							* FastMath.RAD_TO_DEG
+					);
+				// Fix for polarity or something
+				if (trackerDriftAngle > 180)
+					trackerDriftAngle = Math.abs(trackerDriftAngle - 360);
+
+				// Calculate drift per minute
+				float driftPerMin = trackerDriftAngle / (timeSinceLastReset / 60f);
+
+				trackersDriftText.append(tracker.getName());
+				TrackerPosition trackerPosition = tracker.getTrackerPosition();
+				if (trackerPosition != null)
+					trackersDriftText.append(" (").append(trackerPosition.name()).append(")");
+
+				trackersDriftText
+					.append(", ")
+					.append(Precision.round(trackerDriftAngle, 4))
+					.append(" deg (")
+					.append(Precision.round(driftPerMin, 4))
+					.append(" deg/min)");
+			}
+		}
+
+		if (trackersDriftText.length() > 0) {
+			LogManager
+				.info(
+					"[HumanPoseManager] "
+						+ timeSinceLastReset
+						+ " seconds since last reset. Tracker yaw drifts: "
+						+ trackersDriftText
+				);
+		}
+	}
+
+	public void resetTrackersMounting(String resetSourceName) {
+		if (isSkeletonPresent())
+			skeleton.resetTrackersMounting(resetSourceName);
 	}
 
 	@ThreadSafe
@@ -738,5 +819,10 @@ public class HumanPoseManager {
 		return 0f;
 	}
 	// #endregion
+
+	public void setPauseTracking(boolean pauseTracking) {
+		if (isSkeletonPresent())
+			skeleton.setPauseTracking(pauseTracking);
+	}
 	// #endregion
 }

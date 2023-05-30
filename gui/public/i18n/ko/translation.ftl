@@ -363,6 +363,8 @@ settings-general-interface-serial_detection-label = 시리얼 디바이스 감�
 settings-general-interface-feedback_sound = 피드백 사운드
 settings-general-interface-feedback_sound-description = 이 옵션을 켜면 트래커를 정렬할 때 효과음을 재생해요
 settings-general-interface-feedback_sound-label = 피드백 사운드
+settings-general-interface-feedback_sound-volume = 피드백 사운드 음량
+settings-general-interface-theme = 컬러 테마
 settings-general-interface-lang = 언어 선택
 settings-general-interface-lang-description = 사용하고 싶은 기본 언어를 선택하세요.
 settings-general-interface-lang-placeholder = 사용할 언어를 선택하세요
@@ -481,6 +483,12 @@ settings-osc-vmc-anchor_hip-label = 골반에 앵커 설정
 onboarding-skip = 설정 건너뛰기
 onboarding-continue = 계속하기
 onboarding-wip = 아직 공사중이에요!
+onboarding-previous_step = 이전 단계
+onboarding-setup_warning =
+    <b>주의:</b> SlimeVR을 처음 설정하고 계시다면...
+    트래커가 올바르게 움직이기 위해 이 초기 설정이 필요해요
+onboarding-setup_warning-skip = 설정 건너뛰기
+onboarding-setup_warning-cancel = 설정 계속하기
 
 ## Wi-Fi setup
 
@@ -508,10 +516,6 @@ onboarding-reset_tutorial-description = 이 기능은 아직 완성되지 않았
 ## Setup start
 
 onboarding-home = SlimeVR에 어서오세요!
-# This cares about multilines and it's centered!!
-onboarding-home-description =
-    Bringing full-body tracking
-    to everyone
 onboarding-home-start = 설정하러 가보죠!
 
 ## Enter VR part of setup
@@ -635,6 +639,18 @@ onboarding-assign_trackers-warning-WAIST =
        *[other] 허리 트래커를 할당했다면 다른 몸통 트래커도 할당해야 해요.
     }
 
+## Tracker mounting method choose
+
+onboarding-choose_mounting = 착용 방향을 정렬하기 위해 어떤 방법을 사용할래요?
+onboarding-choose_mounting-auto_mounting = 자동으로 방향 설정
+# Italized text
+onboarding-choose_mounting-auto_mounting-subtitle = 권장
+onboarding-choose_mounting-auto_mounting-description = 이렇게 하면 두 가지 자세로 모든 트래커의 착용 방향을 자동으로 설정할 수 있어요
+onboarding-choose_mounting-manual_mounting = 수동으로 방향 설정
+# Italized text
+onboarding-choose_mounting-manual_mounting-subtitle = 무엇을 하려는 지 알고 있다면요
+onboarding-choose_mounting-manual_mounting-description = 이렇게 하면 각 트래커의 착용 방향을 직접 고를 수 있어요
+
 ## Tracker manual mounting setup
 
 onboarding-manual_mounting-back = VR 입장 페이지로 돌아가기
@@ -664,6 +680,18 @@ onboarding-automatic_mounting-put_trackers_on-title = 트래커를 착용해주�
 onboarding-automatic_mounting-put_trackers_on-description = 트래커의 착용 방향이 돌아가는 것을 보정하기 위해 방금 할당한 트래커를 사용할 거예요. 모든 트래커를 착용했다면 오른쪽 그림에서 어떤 트래커인지 확인할 수 있어요.
 onboarding-automatic_mounting-put_trackers_on-next = 모든 트래커를 착용했어요
 
+## Tracker proportions method choose
+
+onboarding-choose_proportions = 신체 비율을 설정하 위해 어떤 방법을 사용할래요?
+onboarding-choose_proportions-auto_proportions = 자동으로 비율 설정
+# Italized text
+onboarding-choose_proportions-auto_proportions-subtitle = 권장
+onboarding-choose_proportions-auto_proportions-description = 이렇게 하면 움직임 샘플을 기록하고 알고리즘을 통과해서 자동으로 신체 비율을 설정할 수 있어요
+onboarding-choose_proportions-manual_proportions = 수동으로 비율 설정
+# Italized text
+onboarding-choose_proportions-manual_proportions-subtitle = 정밀하게 설정하고 싶다면
+onboarding-choose_proportions-manual_proportions-description = 이렇게 하면 신체 비율을 직접 수정하여 수동으로 조절할 수 있어요
+
 ## Tracker manual proportions setup
 
 onboarding-manual_proportions-back = 정렬 튜토리얼로 돌아가기
@@ -682,22 +710,32 @@ onboarding-automatic_proportions-prev_step = 뒤로
 onboarding-automatic_proportions-put_trackers_on-title = 트래커를 착용하세요
 onboarding-automatic_proportions-put_trackers_on-description = 비율을 조정하기 위해 방금 할당한 트래커를 사용할 거예요. 모든 트래커를 착용하면 오른쪽 그림에서 어떤 것이 있는지 알 수 있어요.
 onboarding-automatic_proportions-put_trackers_on-next = 트래커를 다 착용했어요
-onboarding-automatic_proportions-preparation-title = 준비하기
-onboarding-automatic_proportions-preparation-description = 여러분의 놀이 공간 안에 여러분의 바로 뒤에 의자를 놓으세요. 오토본 설정 중에 앉을 수 있도록 준비해주세요.
-onboarding-automatic_proportions-preparation-next = 의자 앞에 서 있어요
+onboarding-automatic_proportions-requirements-title = 요구사항
+# Each line of text is a different list item
+onboarding-automatic_proportions-requirements-description =
+    발까지 추적할 수 있는 적어도 5개의 트래커가 있어야 해요.
+    전원이 켜진 트래커와 헤드셋이 필요해요.
+    트래커와 헤드셋을 착용하고 있어야 해요.
+    트래커와 헤드셋이 SlimeVR 서버와 연결되어 있어야 해요.
+    트래커와 헤드셋이 SlimeVR 서버에서 제대로 작동하고 있어야 해요.
+    헤드셋이 SlimeVR 서버에 위치 데이터를 보고하고 있어야 해요. (SteamVR이 실행 중이고 SlimeVR의 SteamVR 드라이버를 사용하여 SlimeVR에 연결되어 있어야 해요).
+onboarding-automatic_proportions-requirements-next = 요구사항을 모두 읽었어요
 onboarding-automatic_proportions-start_recording-title = 움직일 준비
 onboarding-automatic_proportions-start_recording-description = 이제 몇 가지 특정 포즈와 동작을 기록할 거예요. 다음 화면에서 메시지가 표시되면 버튼을 눌러서 시작하세요!
 onboarding-automatic_proportions-start_recording-next = 기록 시작하기
 onboarding-automatic_proportions-recording-title = REC
 onboarding-automatic_proportions-recording-description-p0 = 기록하는 중...
 onboarding-automatic_proportions-recording-description-p1 = 아래에 표시된 동작을 따라 하세요
-onboarding-automatic_proportions-recording-steps-0 = 무릎을 몇 번 구부리세요
-onboarding-automatic_proportions-recording-steps-1 = 의자에 앉았다가 일어서세요.
-onboarding-automatic_proportions-recording-steps-2 = 상체를 왼쪽으로 비틀고 오른쪽으로 구부리세요.
-onboarding-automatic_proportions-recording-steps-3 = 상체를 오른쪽으로 비틀고 왼쪽으로 구부리세요.
-onboarding-automatic_proportions-recording-steps-4 = 타이머가 종료될 때까지 이리저리 움직여 보세요.
+# Each line of text is a different list item
+onboarding-automatic_proportions-recording-steps =
+    자리에서 똑바로 일어나서, 머리를 원을 그리듯이 움직이세요. 
+    등을 앞으로 구부리고 쪼그리고 앉으세요. 그대로 왼쪽을 바라본 다음 오른쪽을 바라보세요.
+    상체를 왼쪽(시계 반대 방향)으로 비틀어서 바닥을 향해 손을 뻗으세요.
+    상체를 오른쪽(시계 방향)으로 비틀어서 바닥을 향해 손을 뻗으세요.
+    훌라후프를 사용하는 것처럼 골반을 원을 그리며 굴리세요.
+    아직 기록이 끝나기 전까지 시간이 남아 있다면, 위처럼 여러 가지로 움직이세요.
 onboarding-automatic_proportions-recording-processing = 결과 처리 중
-# $time (Number) - Seconds left for the automatic calibration recording to finish (max 15)
+# $time (Number) - Seconds left for the automatic calibration recording to finish (max 20)
 onboarding-automatic_proportions-recording-timer =
     { $time ->
        *[other] { $time } 초 남음

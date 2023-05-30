@@ -54,9 +54,14 @@
       "active": false
     },
     "allowlist": {
+      "dialog": {
+        "all": false,
+        "save": true
+      },
       "shell": {
         "all": false,
-        "execute": true
+        "execute": true,
+        "open": true
       },
       "fs": {
         "scope": ["$APP/*", "$APP"],

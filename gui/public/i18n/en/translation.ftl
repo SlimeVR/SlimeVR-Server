@@ -9,6 +9,12 @@
 websocket-connecting = Connecting to the server
 websocket-connection_lost = Connection lost to the server. Trying to reconnect...
 
+## Update notification
+version_update-title = New version available: { $version }
+version_update-description = Clicking "{ version_update-update }" will download the SlimeVR installer for you.
+version_update-update = Update
+version_update-close = Close
+
 ## Tips
 tips-find_tracker = Not sure which tracker is which? Shake a tracker and it will highlight the corresponding item.
 tips-do_not_move_heels = Ensure your heels do not move during recording!
@@ -86,9 +92,13 @@ navbar-mounting = Mounting Calibration
 navbar-onboarding = Setup Wizard
 navbar-settings = Settings
 
-## Bounding volume hierarchy recording
+## Biovision hierarchy recording
 bvh-start_recording = Record BVH
 bvh-recording = Recording...
+
+## Tracking pause
+tracking-unpaused = Pause tracking
+tracking-paused = Unpause tracking
 
 ## Widget: Overlay settings
 widget-overlay = Overlay
@@ -147,6 +157,9 @@ tracker-infos-custom_name = Custom Name
 tracker-infos-url = Tracker URL
 tracker-infos-version = Firmware Version
 tracker-infos-hardware_rev = Hardware Revision
+tracker-infos-hardware_identifier = Hardware ID
+tracker-infos-imu = IMU Sensor
+tracker-infos-board_type = Main board
 
 ## Tracker settings
 tracker-settings-back = Go back to trackers list
@@ -523,6 +536,16 @@ onboarding-connect_tracker-connected_trackers = { $amount ->
 } connected
 onboarding-connect_tracker-next = I connected all my trackers
 
+## Tracker calibration tutorial
+onboarding-calibration_tutorial = IMU Calibration Tutorial
+onboarding-calibration_tutorial-subtitle = This will help reduce tracker drifting!
+onboarding-calibration_tutorial-description = Every time you turn on your trackers, they need to rest for a moment on a flat surface to calibrate. Let's do the same thing by clicking the "{ onboarding-calibration_tutorial-calibrate }" button, <b>do not move them!</b>
+onboarding-calibration_tutorial-calibrate = I placed my trackers on the table
+onboarding-calibration_tutorial-status-waiting = Waiting for you
+onboarding-calibration_tutorial-status-calibrating = Calibrating
+onboarding-calibration_tutorial-status-success = Nice!
+onboarding-calibration_tutorial-status-error = The tracker was moved
+
 ## Tracker assignment setup
 onboarding-assign_trackers-back = Go Back to Wi-Fi Credentials
 onboarding-assign_trackers-title = Assign trackers
@@ -645,6 +668,8 @@ onboarding-choose_proportions-manual_proportions = Manual proportions
 # Italized text
 onboarding-choose_proportions-manual_proportions-subtitle = For small touches
 onboarding-choose_proportions-manual_proportions-description = This will let you adjust your proportions manually by modifying them directly
+onboarding-choose_proportions-save = Save proportions
+onboarding-choose_proportions-file_type = Body proportions file
 
 ## Tracker manual proportions setup
 onboarding-manual_proportions-back = Go Back to Reset tutorial
@@ -703,3 +728,11 @@ onboarding-automatic_proportions-done-description = Your body proportions' calib
 
 ## Home
 home-no_trackers = No trackers detected or assigned
+
+## Status system
+status_system-StatusTrackerReset = It is recommended to perform a full reset as one or more trackers are unadjusted.
+status_system-StatusSteamVRDisconnected = { $type ->
+    *[steamvr] Unable to connect to SteamVR via the SlimeVR driver.
+    [steamvr_feeder] Unable to connect to the SlimeVR Feeder App.
+}
+status_system-StatusTrackerError = The { $trackerName } tracker has an error.
