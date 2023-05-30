@@ -1,4 +1,3 @@
-### SlimeVR complete GUI translations
 # Please developers (not translators) don't reuse a key inside another key
 # or concat text with a translation string in the code, use the appropriate
 # features like variables and selectors in each appropriate case!
@@ -492,7 +491,22 @@ onboarding-wifi_creds-password =
 ## Mounting setup
 onboarding-reset_tutorial-back = Go Back to Mounting calibration
 onboarding-reset_tutorial = Reset tutorial
-onboarding-reset_tutorial-description = This feature isn't done, just press continue
+onboarding-reset_tutorial-description = When you play, your trackers will start "drifting" while you using them or you might have moved them, for any of these reasons, you have multiple ways to fix them.
+onboarding-reset_tutorial-skip = Skip step
+# Cares about multiline
+onboarding-reset_tutorial-0 = Tap { $taps } times the highlighted tracker for triggering yaw reset.
+
+    This will cause the trackers to "look" at the direction of the HMD.
+# Cares about multiline
+onboarding-reset_tutorial-1 = Tap { $taps } times the highlighted tracker for triggering full reset.
+
+    You need to be in an standing pose (i-pose) for this, you have a 3 seconds delay (configurable) before it actually happens. This just fully resets the position and rotation of all trackers, it should fix most of your issues.
+# Cares about multiline
+onboarding-reset_tutorial-2 = Tap { $taps } times the highlighted tracker for triggering mounting reset.
+
+    Mounting reset helps on how the trackers are actually put on you, so if you accidentally moved them and changed how they are oriented by a big amount, this will help.
+
+    You need to be on a pose like you are skiing like it's shown on the Automatic Mounting wizard and you have a 3 second delay (configurable) before it gets triggered.
 
 ## Setup start
 onboarding-home = Welcome to SlimeVR

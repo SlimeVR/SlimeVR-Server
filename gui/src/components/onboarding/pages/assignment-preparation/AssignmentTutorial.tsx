@@ -46,7 +46,7 @@ export function AssignmentTutorialPage() {
                   </Typography>
                 </div>
                 <div className="stroke-background-10 fill-background-10">
-                  <StickerSlime width="30vmin"></StickerSlime>
+                  <StickerSlime width="65%"></StickerSlime>
                 </div>
               </div>
               <div className="flex flex-col gap-10 w-1/4">
@@ -58,7 +58,7 @@ export function AssignmentTutorialPage() {
                   </Typography>
                 </div>
                 <div className="fill-background-10 stroke-background-10">
-                  <TrackerArrow width="35vmin"></TrackerArrow>
+                  <TrackerArrow width="75%"></TrackerArrow>
                 </div>
                 <div>
                   <Typography variant="section-title">
@@ -68,7 +68,7 @@ export function AssignmentTutorialPage() {
                   </Typography>
                 </div>
                 <div className="fill-background-10 stroke-background-10">
-                  <ExtensionArrow width="35vmin"></ExtensionArrow>
+                  <ExtensionArrow width="75%"></ExtensionArrow>
                 </div>
               </div>
             </div>

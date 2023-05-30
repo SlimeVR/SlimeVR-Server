@@ -290,7 +290,10 @@ export function TrackersAssignPage() {
               <div className="flex flex-row mt-auto">
                 {!state.alonePage && (
                   <>
-                    <Button variant="secondary" to="/onboarding/assign-tutorial">
+                    <Button
+                      variant="secondary"
+                      to="/onboarding/assign-tutorial"
+                    >
                       {l10n.getString('onboarding-previous_step')}
                     </Button>
                     <Button
