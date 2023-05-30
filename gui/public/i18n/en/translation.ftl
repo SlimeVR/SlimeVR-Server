@@ -500,7 +500,8 @@ onboarding-reset_tutorial-0 = Tap { $taps } times the highlighted tracker for tr
 # Cares about multiline
 onboarding-reset_tutorial-1 = Tap { $taps } times the highlighted tracker for triggering full reset.
 
-    You need to be in an standing pose (i-pose) for this, you have a 3 seconds delay (configurable) before it actually happens. This just fully resets the position and rotation of all trackers, it should fix most of your issues.
+    You need to be in an standing pose (i-pose) for this, you have a 3 seconds delay (configurable) before it actually happens.
+    This just fully resets the position and rotation of all trackers, it should fix most of your issues.
 # Cares about multiline
 onboarding-reset_tutorial-2 = Tap { $taps } times the highlighted tracker for triggering mounting reset.
 
