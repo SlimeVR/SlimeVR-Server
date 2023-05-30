@@ -372,9 +372,11 @@ class AutoBone(server: VRServer) {
 		skeleton1.setLegTweaksEnabled(false)
 		skeleton2.setLegTweaksEnabled(false)
 
-		val intermediateOffsets = EnumMap(
-			offsets
-		)
+		val intermediateOffsets = EnumMap(offsets)
+		// If target height isn't specified, auto-detect
+		if (targetHeight < 0f) {
+			targetHeight = getTargetHeight(frames)
+		}
 		val trainingStep = AutoBoneTrainingStep(
 			targetHeight,
 			skeleton1,
@@ -383,10 +385,6 @@ class AutoBone(server: VRServer) {
 			intermediateOffsets
 		)
 
-		// If target height isn't specified, auto-detect
-		if (targetHeight < 0f) {
-			targetHeight = getTargetHeight(frames)
-		}
 		val errorStats = StatsCalculator()
 
 		// Epoch loop, each epoch is one full iteration over the full dataset
