@@ -35,7 +35,7 @@ public class SkeletonConfigManager {
 
 	protected final boolean autoUpdateOffsets;
 	protected HumanPoseManager humanPoseManager;
-	protected float userHeight;
+	protected float userHeight = calculateUserHeight();
 	static final float FLOOR_OFFSET = 0.05f;
 
 	public SkeletonConfigManager(boolean autoUpdateOffsets) {
@@ -107,12 +107,7 @@ public class SkeletonConfigManager {
 		}
 
 		// Re-calculate user height
-		userHeight = getOffset(SkeletonConfigOffsets.NECK)
-			+ getOffset(SkeletonConfigOffsets.CHEST)
-			+ getOffset(SkeletonConfigOffsets.WAIST)
-			+ getOffset(SkeletonConfigOffsets.HIP)
-			+ getOffset(SkeletonConfigOffsets.UPPER_LEG)
-			+ getOffset(SkeletonConfigOffsets.LOWER_LEG);
+		userHeight = calculateUserHeight();
 	}
 
 	public void setOffset(SkeletonConfigOffsets config, Float newValue) {
@@ -126,6 +121,15 @@ public class SkeletonConfigManager {
 
 		Float val = configOffsets.get(config);
 		return val != null ? val : config.defaultValue;
+	}
+
+	private float calculateUserHeight() {
+		return getOffset(SkeletonConfigOffsets.NECK)
+			+ getOffset(SkeletonConfigOffsets.CHEST)
+			+ getOffset(SkeletonConfigOffsets.WAIST)
+			+ getOffset(SkeletonConfigOffsets.HIP)
+			+ getOffset(SkeletonConfigOffsets.UPPER_LEG)
+			+ getOffset(SkeletonConfigOffsets.LOWER_LEG);
 	}
 
 	public float getUserHeightFromOffsets() {
