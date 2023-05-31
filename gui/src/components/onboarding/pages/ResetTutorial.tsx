@@ -161,13 +161,32 @@ export function ResetTutorialPage() {
                 {l10n.getString('onboarding-continue')}
               </Button>
             </div>
+            <div
+              className={classNames(
+                'self-center w-72 md:hidden mt-10 ml-auto border-background-10',
+                'border-l-4 pl-4',
+                curIndex < order.length && 'visible',
+                curIndex >= order.length && 'hidden'
+              )}
+            >
+              <Typography whitespace="whitespace-pre-line" color="secondary">
+                {l10n.getString(`onboarding-reset_tutorial-${curIndex}`, {
+                  taps: tapSettings[curIndex],
+                })}
+              </Typography>
+            </div>
           </div>
           <div className="flex flex-row">
             <BodyDisplay
               trackers={[order[curIndex]]}
               hideUnassigned={true}
             ></BodyDisplay>
-            <div className="self-center w-72" hidden={curIndex >= order.length}>
+            <div
+              className={classNames(
+                'self-center w-72 md-max:hidden',
+                curIndex >= order.length && 'hidden'
+              )}
+            >
               <Typography whitespace="whitespace-pre-line" color="secondary">
                 {l10n.getString(`onboarding-reset_tutorial-${curIndex}`, {
                   taps: tapSettings[curIndex],
