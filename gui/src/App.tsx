@@ -43,11 +43,12 @@ import { VMCSettings } from './components/settings/pages/VMCSettings';
 import { MountingChoose } from './components/onboarding/pages/mounting/MountingChoose';
 import { ProportionsChoose } from './components/onboarding/pages/body-proportions/ProportionsChoose';
 import { LogicalSize, appWindow } from '@tauri-apps/api/window';
+import { StatusProvider } from './components/providers/StatusSystemContext';
 import { Release, VersionUpdateModal } from './components/VersionUpdateModal';
+import { CalibrationTutorialPage } from './components/onboarding/pages/CalibrationTutorial';
 
 export const GH_REPO = 'SlimeVR/SlimeVR-Server';
 export const VersionContext = createContext('');
-import { CalibrationTutorialPage } from './components/onboarding/pages/CalibrationTutorial';
 
 function Layout() {
   const { loading } = useConfig();
@@ -229,23 +230,25 @@ export default function App() {
         <WebSocketApiContext.Provider value={websocketAPI}>
           <AppContextProvider>
             <OnboardingContextProvider>
-              <VersionContext.Provider value={updateFound}>
-                <div className="h-full w-full text-standard bg-background-80 text-background-10">
-                  <div className="flex-col h-full">
-                    {!websocketAPI.isConnected && (
-                      <>
-                        <TopBar></TopBar>
-                        <div className="flex w-full h-full justify-center items-center p-2">
-                          {websocketAPI.isFirstConnection
-                            ? l10n.getString('websocket-connecting')
-                            : l10n.getString('websocket-connection_lost')}
-                        </div>
-                      </>
-                    )}
-                    {websocketAPI.isConnected && <Layout></Layout>}
+              <StatusProvider>
+                <VersionContext.Provider value={updateFound}>
+                  <div className="h-full w-full text-standard bg-background-80 text-background-10">
+                    <div className="flex-col h-full">
+                      {!websocketAPI.isConnected && (
+                        <>
+                          <TopBar></TopBar>
+                          <div className="flex w-full h-full justify-center items-center p-2">
+                            {websocketAPI.isFirstConnection
+                              ? l10n.getString('websocket-connecting')
+                              : l10n.getString('websocket-connection_lost')}
+                          </div>
+                        </>
+                      )}
+                      {websocketAPI.isConnected && <Layout></Layout>}
+                    </div>
                   </div>
-                </div>
-              </VersionContext.Provider>
+                </VersionContext.Provider>
+              </StatusProvider>
             </OnboardingContextProvider>
           </AppContextProvider>
         </WebSocketApiContext.Provider>

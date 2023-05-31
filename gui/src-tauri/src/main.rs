@@ -96,7 +96,7 @@ fn main() {
 		log::info!("Using Java binary: {:?}", java_bin);
 		let (recv, child) = Command::new(java_bin.to_str().unwrap())
 			.current_dir(p)
-			.args(["-Xmx512M", "-jar", "slimevr.jar", "--no-gui"])
+			.args(["-Xmx512M", "-jar", "slimevr.jar", "run"])
 			.spawn()
 			.expect("Unable to start the server jar");
 		backend = Some(child);

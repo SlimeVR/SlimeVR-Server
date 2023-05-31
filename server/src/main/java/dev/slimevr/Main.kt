@@ -7,7 +7,6 @@ import org.apache.commons.cli.CommandLine
 import org.apache.commons.cli.CommandLineParser
 import org.apache.commons.cli.DefaultParser
 import org.apache.commons.cli.HelpFormatter
-import org.apache.commons.cli.Option
 import org.apache.commons.cli.Options
 import org.apache.commons.lang3.SystemUtils
 import java.io.File
@@ -31,16 +30,15 @@ fun main(args: Array<String>) {
 	val parser: CommandLineParser = DefaultParser()
 	val formatter = HelpFormatter()
 	val options = Options()
-	val help = Option("h", "help", false, "Show help")
-	val version = Option("V", "version", false, "Show version")
-	options.addOption(help)
-	options.addOption(version)
+	options.addOption("h", "help", false, "Show help")
+	options.addOption("V", "version", false, "Show version")
 	val cmd: CommandLine = try {
 		parser.parse(options, args, true)
 	} catch (e: org.apache.commons.cli.ParseException) {
 		formatter.printHelp("slimevr.jar", options)
 		exitProcess(1)
 	}
+
 	if (cmd.hasOption("help")) {
 		formatter.printHelp("slimevr.jar", options)
 		exitProcess(0)
@@ -49,6 +47,16 @@ fun main(args: Array<String>) {
 		println("SlimeVR Server $VERSION")
 		exitProcess(0)
 	}
+
+	if (cmd.args.isEmpty()) {
+		System.err.println("No command specified, expected 'run'")
+		exitProcess(1)
+	}
+	if (!cmd.args[0].equals("run", true)) {
+		System.err.println("Unknown command: ${cmd.args[0]}, expected 'run'")
+		exitProcess(1)
+	}
+
 	val dir = File("").absoluteFile
 	try {
 		LogManager.initialize(dir)

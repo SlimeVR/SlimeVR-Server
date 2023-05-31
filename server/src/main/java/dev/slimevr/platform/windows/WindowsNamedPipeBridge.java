@@ -76,10 +76,16 @@ public class WindowsNamedPipeBridge extends SteamVRBridge {
 			while (true) {
 				boolean pipesUpdated = false;
 				if (pipe.state == PipeState.CREATED) {
+					// Report that our pipe is disconnected right now
+					reportDisconnected();
 					tryOpeningPipe(pipe);
 				}
 				if (pipe.state == PipeState.OPEN) {
 					pipesUpdated = updatePipe();
+					if (lastSteamVRStatus != 0 && pipesUpdated) {
+						Main.getVrServer().getStatusSystem().removeStatusInt(lastSteamVRStatus);
+						lastSteamVRStatus = 0;
+					}
 					updateMessageQueue();
 				}
 				if (pipe.state == PipeState.ERROR) {

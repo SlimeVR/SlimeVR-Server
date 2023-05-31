@@ -12,6 +12,9 @@ import dev.slimevr.tracking.trackers.TrackerPosition;
 import dev.slimevr.tracking.trackers.TrackerUtils;
 import dev.slimevr.tracking.trackers.TrackerRole;
 import dev.slimevr.util.ann.VRServerThread;
+import solarxr_protocol.rpc.StatusData;
+import solarxr_protocol.rpc.StatusDataUnion;
+import solarxr_protocol.rpc.StatusSteamVRDisconnectedT;
 
 import java.util.List;
 
@@ -99,10 +102,14 @@ public abstract class SteamVRBridge extends ProtobufBridge implements Runnable {
 			);
 
 		String displayName;
-		if (trackerAdded.getTrackerId() == 0)
+		boolean needsReset;
+		if (trackerAdded.getTrackerId() == 0) {
 			displayName = "OpenVR HMD";
-		else
+			needsReset = false;
+		} else {
 			displayName = trackerAdded.getTrackerName();
+			needsReset = true;
+		}
 
 		Tracker tracker = new Tracker(
 			device,
@@ -122,7 +129,7 @@ public abstract class SteamVRBridge extends ProtobufBridge implements Runnable {
 			null,
 			false,
 			false,
-			true
+			needsReset
 		);
 
 		device.getTrackers().put(0, tracker);
@@ -324,6 +331,27 @@ public abstract class SteamVRBridge extends ProtobufBridge implements Runnable {
 				tracker.setBatteryVoltage(3.7f);
 			}
 		}
+  }
+
+	/**
+	 * When 0, then it means null
+	 */
+	protected int lastSteamVRStatus = 0;
+
+	protected void reportDisconnected() {
+		if (lastSteamVRStatus != 0) {
+			throw new IllegalStateException(
+				"lastSteamVRStatus wasn't 0 and it was " + lastSteamVRStatus + " instead"
+			);
+		}
+		var statusData = new StatusSteamVRDisconnectedT();
+		statusData.setBridgeSettingsName(bridgeSettingsKey);
+
+		var status = new StatusDataUnion();
+		status.setType(StatusData.StatusSteamVRDisconnected);
+		status.setValue(statusData);
+		lastSteamVRStatus = Main.getVrServer().getStatusSystem().addStatusInt(status, false);
+
 	}
 
 	public abstract boolean isConnected();
