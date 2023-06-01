@@ -86,10 +86,6 @@ class Localizer(humanSkeleton: HumanSkeleton) {
 	private var comTravel: Vector3 = Vector3.NULL
 	private var sittingTravel: Vector3 = Vector3.NULL
 
-	// dead reconing variables TODO redo dead reconing
-	private var deadReconedCOMVelocity: Vector3 = Vector3.NULL
-	private var numDeadReconSamples = 0
-
 	fun getEnabled(): Boolean {
 		return enabled
 	}
@@ -117,7 +113,6 @@ class Localizer(humanSkeleton: HumanSkeleton) {
 
 		if (warmupFrames < WARMUP_FRAMES) {
 			comVelocity = Vector3.NULL
-			deadReconedCOMVelocity = Vector3.NULL
 		}
 		warmupFrames++
 
@@ -176,7 +171,6 @@ class Localizer(humanSkeleton: HumanSkeleton) {
 
 		// reset the velocity
 		comVelocity = Vector3.NULL
-		deadReconedCOMVelocity = Vector3.NULL
 
 		// when localizing without a 6 dof device we choose the floor level
 		// 0 happens to be an easy number to use
@@ -338,13 +332,15 @@ class Localizer(humanSkeleton: HumanSkeleton) {
 		if (lowTracker.position.y < uncorrectedFloor) {
 			targetCOM = Vector3(targetCOM.x, targetCOM.y + (uncorrectedFloor - lowTracker.position.y), targetCOM.z)
 			comVelocity = Vector3(comVelocity.x, 0.0f, comVelocity.z)
-			deadReconedCOMVelocity = Vector3(deadReconedCOMVelocity.x, 0.0f, deadReconedCOMVelocity.z)
 		}
 	}
 
 	// get the velocity of the COM
 	private fun getCOMVelocity(): Vector3 {
-		if (worldReference === MovmentStates.FOLLOW_FOOT) {
+		// TODO make this more sophisticated
+		val comY = comVelocity.y
+
+		if (worldReference === MovmentStates.FOLLOW_FOOT || worldReference === MovmentStates.FOLLOW_SITTING) {
 			// if the foot is the reference point use the in world velocity
 			// get the average velocity over the last VELOCITY_SAMPLE_RATE (this
 			// smooths out the velocity)
@@ -363,64 +359,21 @@ class Localizer(humanSkeleton: HumanSkeleton) {
 
 			// calculate the velocity
 			comVelocity = comPosStart.minus(comPosEnd).div((timeStart - timeEnd) / LegTweakBuffer.NS_CONVERT)
-
-			// add the acceleration of gravity when there is no acceleration
-			// upwards
-			comVelocity = Vector3(
-				comVelocity.x,
-				comVelocity.y - (LegTweakBuffer.GRAVITY_MAGNITUDE / bufCur.timeDelta),
-				comVelocity.z
-			)
-		} else {
-			// add the remaining gravity to the dead reckoned value
-			deadReconedCOMVelocity = Vector3(
-				deadReconedCOMVelocity.x,
-				deadReconedCOMVelocity.y - (LegTweakBuffer.GRAVITY_MAGNITUDE / bufCur.timeDelta),
-				deadReconedCOMVelocity.z
-			)
-
-			// if the COM is the reference point, use the dead reckoned velocity
-			comVelocity = deadReconedCOMVelocity
 		}
 
-		// filter out any upwards velocity TODO make this not necessary
-		//if (comVelocity.y > 0) {
-		//	comVelocity = Vector3(
-		//		comVelocity.x,
-		//		0f,
-		//		comVelocity.z
-		//	)
-		//}
+		// add the acceleration of gravity
+		comVelocity = Vector3(
+			comVelocity.x,
+			comY - (LegTweakBuffer.GRAVITY_MAGNITUDE / bufCur.timeDelta),
+			comVelocity.z)
 
 		return comVelocity
 	}
 
 	// dead reckon the COM velocity to determine the target COM
-	// in short any time there is any major acceleration, start dead reckoning
-	// the COM velocity, and once the COM velocity is stable, stop dead
-	// reckoning
 	private fun deadReconCOMVelocity(): Vector3 {
-		numDeadReconSamples++
-
-		// add the current acceleration to the dead reckoned COM velocity
-		deadReconedCOMVelocity = deadReconedCOMVelocity.plus(comAccel.div(bufCur.timeDelta))
-
-		if (worldReference === MovmentStates.FOLLOW_FOOT && comAccel.y > ACCEL_UP_THRESHOLD) {
-			deadReconedCOMVelocity = Vector3(
-				deadReconedCOMVelocity.x,
-				if (comVelocity.y > deadReconedCOMVelocity.y) comVelocity.y else deadReconedCOMVelocity.y,
-				deadReconedCOMVelocity.z
-			)
-		}
-
-		// once we have a stable velocity, reset the dead reconed velocity
-		if (comVelocity.len() < DEAD_RECON_VELOCITY_THRESHOLD && worldReference === MovmentStates.FOLLOW_FOOT) {
-			deadReconedCOMVelocity = comVelocity
-			numDeadReconSamples = 0
-		}
-
-
-		return deadReconedCOMVelocity
+		// TODO use ml??
+		return Vector3.NULL
 	}
 
 	// returns true if either foot is below 0.0
@@ -438,7 +391,7 @@ class Localizer(humanSkeleton: HumanSkeleton) {
 		var tempVal: Float
 		var retVal: Tracker = trackerList[0]
 		for (tracker in trackerList) {
-			if (tracker == null)
+			if (tracker == null) // this is needed the IDE lies
 				continue
 
 			// get the max distance to the ground
