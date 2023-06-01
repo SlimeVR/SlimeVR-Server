@@ -567,7 +567,7 @@ onboarding-assignment_tutorial-first_step = 1. Place a body part sticker (if you
 # This text has a character limit of around 11 characters, so please keep it short
 onboarding-assignment_tutorial-sticker = Sticker
 onboarding-assignment_tutorial-second_step = 2. Attach the strap to your tracker, keeping the hook and loop side of the strap face in the following orientation:
-onboarding-assignment_tutorial-second_step-continuation = The hook and loop side in the extension should also be facing like this:
+onboarding-assignment_tutorial-second_step-continuation = The hook and loop side for the extension should be in this orientation:
 onboarding-assignment_tutorial-done = I put stickers and straps!
 
 ## Tracker assignment setup
