@@ -21,7 +21,7 @@ import { ClearDriftCompensationButton } from './ClearDriftCompensationButton';
 import { useWebsocketAPI } from '../hooks/websocket-api';
 import { useStatusContext, parseStatusToLocale } from '../hooks/status-system';
 import { Localized } from '@fluent/react';
-import { WarningBox } from './commons/TipBox';
+import { TipBox } from './commons/TipBox';
 import { useAppContext } from '../hooks/app';
 import { TrackingPauseButton } from './TrackingPauseButton';
 
@@ -133,11 +133,11 @@ export function MainLayoutRoute({
                       vars={parseStatusToLocale(status, trackers)}
                       key={status.id}
                     >
-                      <WarningBox whitespace={false} hideIcon={true}>
+                      <TipBox whitespace={false} hideIcon={true}>
                         {`Warning, you should fix ${
                           StatusData[status.dataType]
                         }`}
-                      </WarningBox>
+                      </TipBox>
                     </Localized>
                   ))}
                 </div>

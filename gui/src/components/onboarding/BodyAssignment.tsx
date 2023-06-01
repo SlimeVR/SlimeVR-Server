@@ -36,7 +36,7 @@ export function BodyAssignment({
   onlyAssigned = false,
 }: {
   advanced: boolean;
-  onlyAssigned: boolean;
+  onlyAssigned?: boolean;
   rolesWithErrors?: Partial<Record<BodyPart, BodyPartError>>;
   highlightedRoles?: BodyPart[];
   onRoleSelected: (role: BodyPart) => void;

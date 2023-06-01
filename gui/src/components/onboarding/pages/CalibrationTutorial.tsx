@@ -9,6 +9,7 @@ import { ProgressBar } from '../../commons/ProgressBar';
 import { LoaderIcon, SlimeState } from '../../commons/icon/LoaderIcon';
 import { useCountdown } from '../../../hooks/countdown';
 import classNames from 'classnames';
+import { TaybolIcon } from '../../commons/icon/TaybolIcon';
 
 export enum CalibrationStatus {
   SUCCESS,
@@ -66,7 +67,7 @@ export function CalibrationTutorialPage() {
     }
   }, [calibrationStatus, l10n]);
 
-  applyProgress(0.45);
+  applyProgress(0.43);
 
   return (
     <>
@@ -137,7 +138,7 @@ export function CalibrationTutorialPage() {
                 </Button>
                 <Button
                   variant="primary"
-                  to="/onboarding/trackers-assign"
+                  to="/onboarding/assign-tutorial"
                   className={classNames(
                     'ml-auto',
                     CalibrationStatus.SUCCESS !== calibrationStatus && 'hidden'
@@ -149,8 +150,9 @@ export function CalibrationTutorialPage() {
             </div>
           </div>
           <div className="flex self-center w-[32rem]">
-            <div>
-              <img src="/images/taybol.png"></img>
+            <div className="stroke-none fill-background-10">
+              <TaybolIcon width="500"></TaybolIcon>
+              {/* <img src="/images/taybol.png"></img> */}
             </div>
           </div>
         </div>
