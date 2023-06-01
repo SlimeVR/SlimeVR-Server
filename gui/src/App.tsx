@@ -230,7 +230,6 @@ export default function App() {
 
   useEffect(() => {
     function onKeyboard(ev: KeyboardEvent) {
-      console.log(ev.key)
       if (ev.key === 'F1') {
         return open(DOCS_SITE).catch(() => window.open(DOCS_SITE, '_blank'));
       }
