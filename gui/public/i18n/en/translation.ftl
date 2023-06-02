@@ -1,4 +1,3 @@
-### SlimeVR complete GUI translations
 # Please developers (not translators) don't reuse a key inside another key
 # or concat text with a translation string in the code, use the appropriate
 # features like variables and selectors in each appropriate case!
@@ -492,7 +491,23 @@ onboarding-wifi_creds-password =
 ## Mounting setup
 onboarding-reset_tutorial-back = Go Back to Mounting calibration
 onboarding-reset_tutorial = Reset tutorial
-onboarding-reset_tutorial-description = This feature isn't done, just press continue
+onboarding-reset_tutorial-description = While you use your trackers they might get out of alignment because of IMU yaw drift, or because you might have moved them physically. You have several ways to fix this.
+onboarding-reset_tutorial-skip = Skip step
+# Cares about multiline
+onboarding-reset_tutorial-0 = Tap { $taps } times the highlighted tracker for triggering yaw reset.
+
+    This will make the trackers face the same direction as your HMD.
+# Cares about multiline
+onboarding-reset_tutorial-1 = Tap { $taps } times the highlighted tracker for triggering full reset.
+
+    You need to be standing for this (i-pose). There is a 3 seconds delay (configurable) before it actually happens.
+    This fully resets the position and rotation of all your trackers. It should fix most issues.
+# Cares about multiline
+onboarding-reset_tutorial-2 = Tap { $taps } times the highlighted tracker for triggering mounting reset.
+
+    Mounting reset helps on how the trackers are actually put on you, so if you accidentally moved them and changed how they are oriented by a big amount, this will help.
+
+    You need to be on a pose like you are skiing like it's shown on the Automatic Mounting wizard and you have a 3 second delay (configurable) before it gets triggered.
 
 ## Setup start
 onboarding-home = Welcome to SlimeVR
@@ -545,6 +560,15 @@ onboarding-calibration_tutorial-status-waiting = Waiting for you
 onboarding-calibration_tutorial-status-calibrating = Calibrating
 onboarding-calibration_tutorial-status-success = Nice!
 onboarding-calibration_tutorial-status-error = The tracker was moved
+
+## Tracker assignment tutorial
+onboarding-assignment_tutorial = How to prepare a Slime Tracker before putting it on
+onboarding-assignment_tutorial-first_step = 1. Place a body part sticker (if you have one) on the tracker according to your choosing
+# This text has a character limit of around 11 characters, so please keep it short
+onboarding-assignment_tutorial-sticker = Sticker
+onboarding-assignment_tutorial-second_step = 2. Attach the strap to your tracker, keeping the hook and loop side of the strap face in the following orientation:
+onboarding-assignment_tutorial-second_step-continuation = The hook and loop side for the extension should be in this orientation:
+onboarding-assignment_tutorial-done = I put stickers and straps!
 
 ## Tracker assignment setup
 onboarding-assign_trackers-back = Go Back to Wi-Fi Credentials
@@ -621,6 +645,8 @@ onboarding-assign_trackers-warning-WAIST = Waist is assigned but you need { $una
 
 ## Tracker mounting method choose
 onboarding-choose_mounting = What mounting calibration method to use?
+# Multiline text
+onboarding-choose_mounting-description = Mounting orientation corrects for the placement of trackers on your body.
 onboarding-choose_mounting-auto_mounting = Automatic mounting
 # Italized text
 onboarding-choose_mounting-auto_mounting-subtitle = Recommended
@@ -660,6 +686,9 @@ onboarding-automatic_mounting-put_trackers_on-next = I have all my trackers on
 
 ## Tracker proportions method choose
 onboarding-choose_proportions = What proportion calibration method to use?
+# Multiline string
+onboarding-choose_proportions-description = Body proportions are used to know the measurements of your body. They're required to calculate the trackers' positions.
+    When proportions of your body don't match the ones saved, your tracking precision will be worse and you will notice things like skating or sliding, or your body not matching your avatar well.
 onboarding-choose_proportions-auto_proportions = Automatic proportions
 # Italized text
 onboarding-choose_proportions-auto_proportions-subtitle = Recommended
@@ -732,7 +761,7 @@ home-no_trackers = No trackers detected or assigned
 ## Status system
 status_system-StatusTrackerReset = It is recommended to perform a full reset as one or more trackers are unadjusted.
 status_system-StatusSteamVRDisconnected = { $type ->
-    *[steamvr] Unable to connect to SteamVR via the SlimeVR driver.
-    [steamvr_feeder] Unable to connect to the SlimeVR Feeder App.
+    *[steamvr] Currently not connected to SteamVR via the SlimeVR driver.
+    [steamvr_feeder] Currently not connected to the SlimeVR Feeder App.
 }
 status_system-StatusTrackerError = The { $trackerName } tracker has an error.
