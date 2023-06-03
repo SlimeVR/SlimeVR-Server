@@ -149,7 +149,11 @@ export default function App() {
         .then((res) => res.json())
         .then((json: any[]) => json.filter((rl) => rl?.prerelease === false));
 
-      if (__VERSION_TAG__ && semver.gt(releases[0].tag_name, __VERSION_TAG__)) {
+      if (
+        __VERSION_TAG__ &&
+        typeof releases[0].tag_name === 'string' &&
+        semver.gt(releases[0].tag_name, __VERSION_TAG__)
+      ) {
         setUpdateFound(releases[0].tag_name);
       }
     }
