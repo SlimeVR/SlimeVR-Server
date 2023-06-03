@@ -57,6 +57,7 @@ allprojects {
 		// Use jcenter for resolving dependencies.
 		// You can declare any Maven/Ivy/file repository here.
 		mavenCentral()
+		maven(url = "https://jitpack.io")
 	}
 }
 
@@ -78,12 +79,12 @@ dependencies {
 	implementation("net.java.dev.jna:jna:5.+")
 	implementation("net.java.dev.jna:jna-platform:5.+")
 	implementation("com.illposed.osc:javaosc-core:0.8")
-	implementation("com.fazecast:jSerialComm:2.+")
 	implementation("com.google.protobuf:protobuf-java:3.21.12")
 	implementation("org.java-websocket:Java-WebSocket:1.+")
 	implementation("com.melloware:jintellitype:1.+")
 	implementation("org.jetbrains.kotlinx:kotlinx-serialization-json:1.5.0-RC")
 	implementation("it.unimi.dsi:fastutil:8.5.12")
+	implementation("com.github.SlimeVR:jSerialComm:2f1fb28185")
 
 	testImplementation(kotlin("test"))
 	// Use JUnit test framework
