@@ -44,7 +44,7 @@ import { MountingChoose } from './components/onboarding/pages/mounting/MountingC
 import { ProportionsChoose } from './components/onboarding/pages/body-proportions/ProportionsChoose';
 import { LogicalSize, appWindow } from '@tauri-apps/api/window';
 import { StatusProvider } from './components/providers/StatusSystemContext';
-import { Release, VersionUpdateModal } from './components/VersionUpdateModal';
+import { VersionUpdateModal } from './components/VersionUpdateModal';
 import { CalibrationTutorialPage } from './components/onboarding/pages/CalibrationTutorial';
 import { AssignmentTutorialPage } from './components/onboarding/pages/assignment-preparation/AssignmentTutorial';
 import { open } from '@tauri-apps/api/shell';
@@ -147,7 +147,7 @@ export default function App() {
         `https://api.github.com/repos/${GH_REPO}/releases`
       )
         .then((res) => res.json())
-        .then((json: Release[]) => json.filter((rl) => !rl.prerelease));
+        .then((json: any[]) => json.filter((rl) => rl?.prerelease === false));
 
       if (__VERSION_TAG__ && semver.gt(releases[0].tag_name, __VERSION_TAG__)) {
         setUpdateFound(releases[0].tag_name);
