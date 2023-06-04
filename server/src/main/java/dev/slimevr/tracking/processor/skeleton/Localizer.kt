@@ -14,7 +14,6 @@ import kotlin.math.*
 enum class MovmentStates {
 	LEFT_LOCKED,
 	RIGHT_LOCKED,
-	BOTH_LOCKED,
 	NONE_LOCKED,
 	FOLLOW_FOOT,
 	FOLLOW_COM,
@@ -39,7 +38,6 @@ class Localizer(humanSkeleton: HumanSkeleton) {
 
 	private val skeleton: HumanSkeleton
 	private val legTweaks: LegTweaks
-	private val  trackerList: ArrayList<Tracker> = ArrayList()
 	private var bufCur: LegTweakBuffer
 	private var bufPrev: LegTweakBuffer
 
@@ -48,19 +46,6 @@ class Localizer(humanSkeleton: HumanSkeleton) {
 		legTweaks = skeleton.legTweaks
 		bufCur = legTweaks.buffer
 		bufPrev = LegTweakBuffer()
-
-		trackerList.add(skeleton.computedHeadTracker)
-		trackerList.add(skeleton.computedChestTracker)
-		trackerList.add(skeleton.computedChestTracker)
-		trackerList.add(skeleton.computedHipTracker)
-		trackerList.add(skeleton.computedLeftElbowTracker)
-		trackerList.add(skeleton.computedRightElbowTracker)
-		trackerList.add(skeleton.computedLeftHandTracker)
-		trackerList.add(skeleton.computedRightHandTracker)
-		trackerList.add(skeleton.computedLeftKneeTracker)
-		trackerList.add(skeleton.computedRightKneeTracker)
-		trackerList.add(skeleton.computedLeftFootTracker)
-		trackerList.add(skeleton.computedRightFootTracker)
 	}
 
 	// state variables
@@ -72,7 +57,7 @@ class Localizer(humanSkeleton: HumanSkeleton) {
 	private var comVelocity: Vector3 = Vector3.NULL
 	private var lastComVelocity: Vector3 = Vector3.NULL
 	private var comAccel: Vector3 = Vector3.NULL
-	private var plantedFoot = MovmentStates.BOTH_LOCKED
+	private var plantedFoot = MovmentStates.LEFT_LOCKED
 	private var worldReference = MovmentStates.FOLLOW_FOOT
 	private var uncorrectedFloor = 0.0f - LegTweaks.FLOOR_CALIBRATION_OFFSET
 	private var floor = 0.0f
@@ -104,9 +89,6 @@ class Localizer(humanSkeleton: HumanSkeleton) {
 		if (skeleton.headTracker != null && !skeleton.headTracker.isImu()) {
 			return
 		}
-
-		// check if the tracker list is populated
-		updateTrackerList()
 
 		// set the acceleration of the com for this frame
 		comAccel = getTorsoAccel()
@@ -181,15 +163,7 @@ class Localizer(humanSkeleton: HumanSkeleton) {
 	}
 
 	private fun getPlantedFoot(): MovmentStates {
-		// return the foot planted if a certain state is active
-		if (bufCur.leftLegState == LegTweakBuffer.LOCKED &&
-			bufCur.rightLegState == LegTweakBuffer.LOCKED
-		) {
-			return MovmentStates.BOTH_LOCKED
-		}
-
-		// the integer value of the state has very low false positives so listen
-		// to it
+		// if locked in legtweaks it's the locked foot
 		if (bufCur.leftLegState == LegTweakBuffer.LOCKED) return MovmentStates.LEFT_LOCKED
 		if (bufCur.rightLegState == LegTweakBuffer.LOCKED) return MovmentStates.RIGHT_LOCKED
 
@@ -229,15 +203,8 @@ class Localizer(humanSkeleton: HumanSkeleton) {
 	// also sets the planted foot, foot init, and target pos variables
 	private fun getPlantedFootTravel(): Vector3 {
 		// get the foot that is planted
-		var foot: MovmentStates = getPlantedFoot()
+		val foot: MovmentStates = getPlantedFoot()
 
-		// both feet being locked is treated as the locked foot not changing
-		if (foot == MovmentStates.BOTH_LOCKED) {
-			// if neither foot was locked, default to the left
-			// this should be unlikely to happen
-			if (plantedFoot === MovmentStates.NONE_LOCKED) plantedFoot = MovmentStates.LEFT_LOCKED
-			foot = MovmentStates.LEFT_LOCKED
-		}
 		if (foot == MovmentStates.LEFT_LOCKED) {
 			val footLoc: Vector3 = bufCur.leftFootPosition
 			updateTargetPos(footLoc, foot)
@@ -262,8 +229,8 @@ class Localizer(humanSkeleton: HumanSkeleton) {
 				targetFoot = loc
 			}
 		} else {
-			plantedFoot = foot
 			targetFoot = loc
+			plantedFoot = foot
 		}
 	}
 
@@ -326,13 +293,12 @@ class Localizer(humanSkeleton: HumanSkeleton) {
 		// correct any clipping through the floor
 		val lowTracker = getLowestTracker()
 
-		println(targetCOM)
-
 		// update the target COM and velocity to reflect this new distance
 		if (lowTracker.position.y < uncorrectedFloor) {
 			targetCOM = Vector3(targetCOM.x, targetCOM.y + (uncorrectedFloor - lowTracker.position.y), targetCOM.z)
 			comVelocity = Vector3(comVelocity.x, 0.0f, comVelocity.z)
 		}
+
 	}
 
 	// get the velocity of the COM
@@ -350,7 +316,7 @@ class Localizer(humanSkeleton: HumanSkeleton) {
 			val comPosStart: Vector3 = buf.centerOfMass
 
 			// get the buffer that occurred VELOCITY_SAMPLE_RATE ago in time
-			while (buf.timeOfFrame > timeEnd && buf.parent != null) {
+			while (buf.timeOfFrame > timeEnd && buf.parent !== null) {
 				buf = buf.parent
 			}
 
@@ -359,12 +325,13 @@ class Localizer(humanSkeleton: HumanSkeleton) {
 
 			// calculate the velocity
 			comVelocity = comPosStart.minus(comPosEnd).div((timeStart - timeEnd) / LegTweakBuffer.NS_CONVERT)
+
 		}
 
 		// add the acceleration of gravity
 		comVelocity = Vector3(
 			comVelocity.x,
-			comY - (LegTweakBuffer.GRAVITY_MAGNITUDE / bufCur.timeDelta),
+			comY - (LegTweakBuffer.GRAVITY_MAGNITUDE / bufCur.timeDelta) + (comAccel.y / bufCur.timeDelta),
 			comVelocity.z)
 
 		return comVelocity
@@ -387,11 +354,26 @@ class Localizer(humanSkeleton: HumanSkeleton) {
 	// returns the tracker closest to or the furthest in the ground
 	// (a negative return value implies a tracker is in the ground)
 	private fun getLowestTracker(): Tracker {
+		val trackerList = arrayOf(
+			skeleton.computedHeadTracker,
+			skeleton.computedChestTracker,
+			skeleton.computedHipTracker,
+			skeleton.computedLeftElbowTracker,
+			skeleton.computedRightElbowTracker,
+			skeleton.computedLeftHandTracker,
+			skeleton.computedRightHandTracker,
+			skeleton.computedLeftKneeTracker,
+			skeleton.computedRightKneeTracker,
+			skeleton.computedLeftFootTracker,
+			skeleton.computedRightFootTracker
+		)
+
+
 		var minVal = 9999f
 		var tempVal: Float
 		var retVal: Tracker = trackerList[0]
 		for (tracker in trackerList) {
-			if (tracker == null) // this is needed the IDE lies
+			if (tracker == null)
 				continue
 
 			// get the max distance to the ground
@@ -442,43 +424,6 @@ class Localizer(humanSkeleton: HumanSkeleton) {
 			accel = skeleton.chestTracker.acceleration
 		}
 		return accel
-	}
-
-	// updates the tracker list with new trackers if available
-	private fun updateTrackerList() {
-		if (skeleton.computedHeadTracker != null) {
-			trackerList[0] = skeleton.computedHeadTracker
-		}
-		if (skeleton.computedChestTracker != null) {
-			trackerList[1] = skeleton.computedChestTracker
-		}
-		if (skeleton.computedHipTracker != null) {
-			trackerList[2] = skeleton.computedHipTracker
-		}
-		if (skeleton.computedLeftElbowTracker != null) {
-			trackerList[3] = skeleton.computedLeftElbowTracker
-		}
-		if (skeleton.computedRightElbowTracker != null) {
-			trackerList[4] = skeleton.computedRightElbowTracker
-		}
-		if (skeleton.computedLeftHandTracker != null) {
-			trackerList[5] = skeleton.computedLeftHandTracker
-		}
-		if (skeleton.computedRightHandTracker != null) {
-			trackerList[6] = skeleton.computedRightHandTracker
-		}
-		if (skeleton.computedLeftKneeTracker != null) {
-			trackerList[7] = skeleton.computedLeftKneeTracker
-		}
-		if (skeleton.computedRightKneeTracker != null) {
-			trackerList[8] = skeleton.computedRightKneeTracker
-		}
-		if (skeleton.computedLeftFootTracker != null) {
-			trackerList[9] = skeleton.computedLeftFootTracker
-		}
-		if (skeleton.computedRightFootTracker != null) {
-			trackerList[10] = skeleton.computedRightFootTracker
-		}
 	}
 
 	// update the hmd position and rotation
