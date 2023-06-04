@@ -15,8 +15,8 @@ websocket-connection_lost = Connexion avec le serveur perdue. Reconnexion...
 
 ## Tips
 
-tips-find_tracker = Impossible de différencier vos capteurs? Secouez-en un pour qu'il soit mis en évidence.
-tips-do_not_move_heels = Assurez-vous de ne pas bouger vos pieds pendant la calibration!
+tips-find_tracker = Impossible de différencier vos capteurs ? Secouez-en un pour qu'il soit mis en évidence.
+tips-do_not_move_heels = Assurez-vous de ne pas bouger vos pieds pendant la calibration !
 tips-file_select = Glissez et déposez des fichiers à utiliser, ou <u>parcourir</u>.
 
 ## Body parts
@@ -59,7 +59,7 @@ skeleton_bone-UPPER_LEG = Longueur des jambes supérieures
 skeleton_bone-LOWER_LEG = Longueur des jambes inférieures
 skeleton_bone-FOOT_LENGTH = Longueur des pieds
 skeleton_bone-FOOT_SHIFT = Décalage des pieds
-skeleton_bone-SKELETON_OFFSET = Écart du squelette
+skeleton_bone-SKELETON_OFFSET = Décalage du squelette
 skeleton_bone-SHOULDERS_DISTANCE = Distance des épaules
 skeleton_bone-SHOULDERS_WIDTH = Largeur des épaules
 skeleton_bone-arm_group = Longueur des bras
@@ -78,12 +78,12 @@ reset-yaw = Réinitialisation horizontale
 
 ## Serial detection stuff
 
-serial_detection-new_device-p0 = Nouveau périphérique détecté!
-serial_detection-new_device-p1 = Entrez vos identifiants Wi-Fi!
+serial_detection-new_device-p0 = Nouveau périphérique détecté !
+serial_detection-new_device-p1 = Entrez vos identifiants Wi-Fi !
 serial_detection-new_device-p2 = Veuillez sélectionner quoi en faire
 serial_detection-open_wifi = Connecter au Wi-Fi
 serial_detection-open_serial = Ouvrir la console série
-serial_detection-submit = Soumettre!
+serial_detection-submit = Soumettre !
 serial_detection-close = Fermer
 
 ## Navigation bar
@@ -97,7 +97,7 @@ navbar-settings = Réglages
 
 ## Bounding volume hierarchy recording
 
-bvh-start_recording = Enregistrer BVH
+bvh-start_recording = Enregistrer en BVH
 bvh-recording = Enregistrement...
 
 ## Widget: Overlay settings
@@ -108,17 +108,17 @@ widget-overlay-is_mirrored_label = Afficher le squelette en tant que miroir
 
 ## Widget: Drift compensation
 
-widget-drift_compensation-clear = Remise à zéro de la compensation de la dérive
+widget-drift_compensation-clear = Réinitialiser la compensation de la dérive
 
 ## Widget: Developer settings
 
 widget-developer_mode = Mode développeur
 widget-developer_mode-high_contrast = Contraste élevé
 widget-developer_mode-precise_rotation = Rotation précise
-widget-developer_mode-fast_data_feed = Flux de données rapide
+widget-developer_mode-fast_data_feed = Fréquence des données élevée
 widget-developer_mode-filter_slimes_and_hmd = Filtrer les capteurs SlimeVR et le casque VR
 widget-developer_mode-sort_by_name = Trier par nom
-widget-developer_mode-raw_slime_rotation = Rotation brute
+widget-developer_mode-raw_slime_rotation = Données de rotation brutes
 widget-developer_mode-more_info = Plus d'informations
 
 ## Widget: IMU Visualizer
@@ -170,13 +170,13 @@ tracker-infos-hardware_rev = Révision du hardware
 tracker-settings-back = Retour à la liste des capteurs
 tracker-settings-title = Paramètres du capteur
 tracker-settings-assignment_section = Attribution du capteur
-tracker-settings-assignment_section-description = À quelle partie du corps le capteur est attribué.
-tracker-settings-assignment_section-edit = Ré-attribuer
+tracker-settings-assignment_section-description = Partie du corps à laquelle le capteur est attribué
+tracker-settings-assignment_section-edit = Modifier
 tracker-settings-mounting_section = Orientation du capteur
-tracker-settings-mounting_section-description = Dans quelle direction pointe le capteur?
+tracker-settings-mounting_section-description = Dans quelle direction pointe le capteur ?
 tracker-settings-mounting_section-edit = Changer l'orientation
 tracker-settings-drift_compensation_section = Permettre la compensation de la dérive
-tracker-settings-drift_compensation_section-description = Ce capteur devrait-il compenser pour sa dérive si l'option est activée?
+tracker-settings-drift_compensation_section-description = Ce capteur devrait-il compenser pour sa dérive si l'option est activée ?
 tracker-settings-drift_compensation_section-edit = Permettre la compensation de la dérive
 # The .<name> means it's an attribute and it's related to the top key.
 # In this case that is the settings for the assignment section.
@@ -191,7 +191,7 @@ tracker-part_card-unassigned = Non-attribué
 
 ## Body assignment menu
 
-body_assignment_menu = Où attribuer ce capteur?
+body_assignment_menu = Où attribuer ce capteur ?
 body_assignment_menu-description = Choisissez où attribuer ce capteur. Vous pouvez également gérer tous les capteurs à la fois au lieu d'un à la fois.
 body_assignment_menu-show_advanced_locations = Afficher les emplacements d'attribution avancés
 body_assignment_menu-manage_trackers = Gérer tous les capteurs
@@ -205,28 +205,28 @@ body_assignment_menu-unassign_tracker = Désattribuer
 # We are using it here because english doesn't require changing the text in each case but
 # maybe your language does.
 -tracker_selection-part = Quel capteur à attribuer à votre
-tracker_selection_menu-NONE = Quel capteur voulez-vous désattribuer?
-tracker_selection_menu-HEAD = { -tracker_selection-part } tête?
-tracker_selection_menu-NECK = { -tracker_selection-part } cou?
-tracker_selection_menu-RIGHT_SHOULDER = { -tracker_selection-part } épaule droite?
-tracker_selection_menu-RIGHT_UPPER_ARM = { -tracker_selection-part } bras droit?
-tracker_selection_menu-RIGHT_LOWER_ARM = { -tracker_selection-part } avant-bras droit?
-tracker_selection_menu-RIGHT_HAND = { -tracker_selection-part } main droite?
-tracker_selection_menu-RIGHT_UPPER_LEG = { -tracker_selection-part } cuisse droite?
-tracker_selection_menu-RIGHT_LOWER_LEG = { -tracker_selection-part } cheville droite?
-tracker_selection_menu-RIGHT_FOOT = { -tracker_selection-part } pied droit?
-tracker_selection_menu-RIGHT_CONTROLLER = { -tracker_selection-part } manette droite?
-tracker_selection_menu-CHEST = { -tracker_selection-part } poitrine?
-tracker_selection_menu-WAIST = { -tracker_selection-part } taille?
-tracker_selection_menu-HIP = { -tracker_selection-part } hanche?
-tracker_selection_menu-LEFT_SHOULDER = { -tracker_selection-part } épaule gauche?
-tracker_selection_menu-LEFT_UPPER_ARM = { -tracker_selection-part } bras gauche?
-tracker_selection_menu-LEFT_LOWER_ARM = { -tracker_selection-part } avant-bras gauche?
-tracker_selection_menu-LEFT_HAND = { -tracker_selection-part } main gauche?
-tracker_selection_menu-LEFT_UPPER_LEG = { -tracker_selection-part } cuisse gauche?
-tracker_selection_menu-LEFT_LOWER_LEG = { -tracker_selection-part } cheville gauche?
-tracker_selection_menu-LEFT_FOOT = { -tracker_selection-part } pied gauche?
-tracker_selection_menu-LEFT_CONTROLLER = { -tracker_selection-part } manette gauche?
+tracker_selection_menu-NONE = Quel capteur voulez-vous désattribuer ?
+tracker_selection_menu-HEAD = { -tracker_selection-part } tête ?
+tracker_selection_menu-NECK = { -tracker_selection-part } cou ?
+tracker_selection_menu-RIGHT_SHOULDER = { -tracker_selection-part } épaule droite ?
+tracker_selection_menu-RIGHT_UPPER_ARM = { -tracker_selection-part } bras droit ?
+tracker_selection_menu-RIGHT_LOWER_ARM = { -tracker_selection-part } avant-bras droit ?
+tracker_selection_menu-RIGHT_HAND = { -tracker_selection-part } main droite ?
+tracker_selection_menu-RIGHT_UPPER_LEG = { -tracker_selection-part } cuisse droite ?
+tracker_selection_menu-RIGHT_LOWER_LEG = { -tracker_selection-part } cheville droite ?
+tracker_selection_menu-RIGHT_FOOT = { -tracker_selection-part } pied droit ?
+tracker_selection_menu-RIGHT_CONTROLLER = { -tracker_selection-part } manette droite ?
+tracker_selection_menu-CHEST = { -tracker_selection-part } poitrine ?
+tracker_selection_menu-WAIST = { -tracker_selection-part } taille ?
+tracker_selection_menu-HIP = { -tracker_selection-part } hanche ?
+tracker_selection_menu-LEFT_SHOULDER = { -tracker_selection-part } épaule gauche ?
+tracker_selection_menu-LEFT_UPPER_ARM = { -tracker_selection-part } bras gauche ?
+tracker_selection_menu-LEFT_LOWER_ARM = { -tracker_selection-part } avant-bras gauche ?
+tracker_selection_menu-LEFT_HAND = { -tracker_selection-part } main gauche ?
+tracker_selection_menu-LEFT_UPPER_LEG = { -tracker_selection-part } cuisse gauche ?
+tracker_selection_menu-LEFT_LOWER_LEG = { -tracker_selection-part } cheville gauche ?
+tracker_selection_menu-LEFT_FOOT = { -tracker_selection-part } pied gauche ?
+tracker_selection_menu-LEFT_CONTROLLER = { -tracker_selection-part } manette gauche ?
 tracker_selection_menu-unassigned = Capteurs non-attribués
 tracker_selection_menu-assigned = Capteurs attribués
 tracker_selection_menu-dont_assign = Ne pas attribuer
@@ -234,13 +234,13 @@ tracker_selection_menu-dont_assign = Ne pas attribuer
 # <b>text</b> means that the text should be bold.
 tracker_selection_menu-neck_warning =
     <b>Attention:</b> Un capteur au cou peut être mortel s'il est trop serré,
-            la sangle pourrait couper la circulation à la tête!
+            la sangle pourrait couper la circulation à la tête !
 tracker_selection_menu-neck_warning-done = Je suis conscient des risques
 tracker_selection_menu-neck_warning-cancel = Annuler
 
 ## Mounting menu
 
-mounting_selection_menu = Dans quelle direction pointe ce capteur?
+mounting_selection_menu = Dans quelle direction pointe ce capteur ?
 mounting_selection_menu-close = Fermer
 
 ## Sidebar settings
@@ -345,13 +345,13 @@ settings-general-gesture_control-taps =
     }
 settings-general-gesture_control-yawResetEnabled = Taper pour réinitialisation horizontale
 settings-general-gesture_control-yawResetDelay = Délai de réinitialisation horizontale
-settings-general-gesture_control-yawResetTaps = Tapes pour réinitialisation horizontale
+settings-general-gesture_control-yawResetTaps = Nombre de tapes pour réinitialisation horizontale
 settings-general-gesture_control-fullResetEnabled = Taper pour réinitialisation complète
 settings-general-gesture_control-fullResetDelay = Délai de réinitialisation complète
-settings-general-gesture_control-fullResetTaps = Tapes pour réinitialisation complète
+settings-general-gesture_control-fullResetTaps = Nombre de tapes pour réinitialisation complète
 settings-general-gesture_control-mountingResetEnabled = Taper pour réinitialisation de l'alignement
 settings-general-gesture_control-mountingResetDelay = Délai de réinitialisation de l'alignement
-settings-general-gesture_control-mountingResetTaps = Tapes pour la réinitialisation de l'alignement
+settings-general-gesture_control-mountingResetTaps = Nombre de tapes pour la réinitialisation de l'alignement
 
 ## Interface settings
 
@@ -366,8 +366,8 @@ settings-general-interface-feedback_sound = Son de retour
 settings-general-interface-feedback_sound-description = Cette option va jouer un son lorsqu'une réanitilisation est enclenchée
 settings-general-interface-feedback_sound-label = Son de retour
 settings-general-interface-feedback_sound-volume = Volume du son de retour
-settings-general-interface-theme = Thème de couleurs
-settings-general-interface-lang = Sélectionner la langue
+settings-general-interface-theme = Thème
+settings-general-interface-lang = Langue
 settings-general-interface-lang-description = Choisir la langue par défaut.
 settings-general-interface-lang-placeholder = Choisissez la langue
 
@@ -385,7 +385,7 @@ settings-serial-factory_reset = Remise à zéro
 # <b>text</b> means that the text should be bold
 settings-serial-factory_reset-warning =
     <b>Attention:</b> Cela réinitialisera les paramètres du capteur à zéro.
-            Ce qui signifie que les paramètres de Wi-Fi et de calibration <b>seront tous perdus!</b>
+            Ce qui signifie que les paramètres de Wi-Fi et de calibration <b>seront tous perdus !</b>
 settings-serial-factory_reset-warning-ok = Je sais ce que je fais
 settings-serial-factory_reset-warning-cancel = Annuler
 settings-serial-get_infos = Obtenir des informations
@@ -400,7 +400,7 @@ settings-osc-router-description =
     Transférez les messages OSC provenant d'un autre programme
     Utile pour utiliser un autre programme OSC avec VRChat par exemple.
 settings-osc-router-enable = Activer
-settings-osc-router-enable-description = Activer/désactiver le transfert de messages.
+settings-osc-router-enable-description = Activer / désactiver le transfert de messages.
 settings-osc-router-enable-label = Activer
 settings-osc-router-network = Ports réseau
 # This cares about multilines
@@ -518,18 +518,18 @@ onboarding-reset_tutorial-description = Cette fonctionnalité n'est pas encore t
 ## Setup start
 
 onboarding-home = Bienvenue sur SlimeVR
-onboarding-home-start = Commencer!
+onboarding-home-start = Commencer !
 
 ## Enter VR part of setup
 
 onboarding-enter_vr-back = Revenir à l'attribution des capteurs
-onboarding-enter_vr-title = Il est temps d'entrer en réalité virtuelle!
-onboarding-enter_vr-description = Enfilez tous vos capteurs puis entrez en réalité virtuelle!
-onboarding-enter_vr-ready = je suis prêt!
+onboarding-enter_vr-title = Il est temps d'entrer en réalité virtuelle !
+onboarding-enter_vr-description = Enfilez tous vos capteurs puis entrez en réalité virtuelle !
+onboarding-enter_vr-ready = je suis prêt !
 
 ## Setup done
 
-onboarding-done-title = Vous êtes prêt!
+onboarding-done-title = Vous êtes prêt !
 onboarding-done-description = Amusez-vous bien :)
 onboarding-done-close = Fermer le guide
 
@@ -537,9 +537,9 @@ onboarding-done-close = Fermer le guide
 
 onboarding-connect_tracker-back = Revenir aux informations d'identification Wi-Fi
 onboarding-connect_tracker-title = Connecter les capteurs
-onboarding-connect_tracker-description-p0 = Passons maintenant à la partie amusante, en connectant tous les capteurs!
+onboarding-connect_tracker-description-p0 = Passons maintenant à la partie amusante, en connectant tous les capteurs !
 onboarding-connect_tracker-description-p1 = Connectez chaque capteur qui n'est pas encore connecté via un port USB.
-onboarding-connect_tracker-issue-serial = J'ai du mal à me connecter!
+onboarding-connect_tracker-issue-serial = J'ai du mal à me connecter !
 onboarding-connect_tracker-usb = Capteur USB
 onboarding-connect_tracker-connection_status-none = Recherche de capteurs
 onboarding-connect_tracker-connection_status-serial_init = Connexion au périphérique en série
@@ -584,71 +584,71 @@ onboarding-assign_trackers-next = J'ai attribué tous mes capteurs
 # $unassigned (Number) - Bits are based on BodyAssignment.ASSIGNMENT_RULES order
 onboarding-assign_trackers-warning-LEFT_FOOT =
     { $unassigned ->
-        [0] Le pied gauche est attribué mais il faut que la cheville gauche, la cuisse gauche et soit la poitrine, la hanche ou la taille soient également attribuées!
-        [1] Le pied gauche est attribué mais il faut que la cuisse gauche et soit la poitrine, la hanche ou la taille soient également attribuées!
-        [2] Le pied gauche est attribué mais il faut que la cheville gauche et soit la poitrine, la hanche ou la taille soient également attribuées!
-        [3] Le pied gauche est attribué mais il faut que la poitrine, la hanche ou la taille soient également attribuées!
-        [4] Le pied gauche est attribué mais il faut que la cheville gauche et la cuisse gauche soient également attribuées!
-        [5] Le pied gauche est attribué mais il faut que la cuisse gauche le soit également!
-        [6] Le pied gauche est attribué mais il faut que la cheville gauche le soit également!
-       *[unknown] Le pied gauche est attribué mais il faut qu'une autre partie du corps inconnue non assignée soit également attribuée!
+        [0] Le pied gauche est attribué mais il faut que la cheville gauche, la cuisse gauche et soit la poitrine, la hanche ou la taille soient également attribuées !
+        [1] Le pied gauche est attribué mais il faut que la cuisse gauche et soit la poitrine, la hanche ou la taille soient également attribuées !
+        [2] Le pied gauche est attribué mais il faut que la cheville gauche et soit la poitrine, la hanche ou la taille soient également attribuées !
+        [3] Le pied gauche est attribué mais il faut que la poitrine, la hanche ou la taille soient également attribuées !
+        [4] Le pied gauche est attribué mais il faut que la cheville gauche et la cuisse gauche soient également attribuées !
+        [5] Le pied gauche est attribué mais il faut que la cuisse gauche le soit également !
+        [6] Le pied gauche est attribué mais il faut que la cheville gauche le soit également !
+       *[unknown] Le pied gauche est attribué mais il faut qu'une autre partie du corps inconnue non assignée soit également attribuée !
     }
 # $unassigned (Number) - Bits are based on BodyAssignment.ASSIGNMENT_RULES order
 onboarding-assign_trackers-warning-RIGHT_FOOT =
     { $unassigned ->
-        [0] Le pied droit est attribué mais il faut que la cheville droite, la cuisse droite et soit la poitrine, la hanche ou la taille soient également attribuées!
-        [1] Le pied droit est assigné mais il faut que la cuisse droite et soit la poitrine, la hanche ou la taille soient également attribuées!
-        [2] Le pied droit est assigné mais il faut que la cheville droite et soit la poitrine, la hanche ou la taille soient également attribuées!
-        [3] Le pied droit est attribué mais il faut que la poitrine, la hanche ou la taille soient également attribuées!
-        [4] Le pied droit est attribué mais il faut que la cheville droite et la cuisse droite soient également attribuées!
-        [5] Le pied droit est attribué mais il faut que la cuisse droite le soit également!
-        [6] Le pied droit est attribué mais il faut que la cheville droite le soit également!
-       *[unknown] Le pied droit est assigné mais il faut qu'une autre partie du corps inconnue non assignée soit également attribuée!
+        [0] Le pied droit est attribué mais il faut que la cheville droite, la cuisse droite et soit la poitrine, la hanche ou la taille soient également attribuées !
+        [1] Le pied droit est assigné mais il faut que la cuisse droite et soit la poitrine, la hanche ou la taille soient également attribuées !
+        [2] Le pied droit est assigné mais il faut que la cheville droite et soit la poitrine, la hanche ou la taille soient également attribuées !
+        [3] Le pied droit est attribué mais il faut que la poitrine, la hanche ou la taille soient également attribuées !
+        [4] Le pied droit est attribué mais il faut que la cheville droite et la cuisse droite soient également attribuées !
+        [5] Le pied droit est attribué mais il faut que la cuisse droite le soit également !
+        [6] Le pied droit est attribué mais il faut que la cheville droite le soit également !
+       *[unknown] Le pied droit est assigné mais il faut qu'une autre partie du corps inconnue non assignée soit également attribuée !
     }
 # $unassigned (Number) - Bits are based on BodyAssignment.ASSIGNMENT_RULES order
 onboarding-assign_trackers-warning-LEFT_LOWER_LEG =
     { $unassigned ->
-        [0] La cheville gauche est attribuée mais il faut que la cuisse gauche et soit la poitrine, la hanche ou la taille soient également attribuées!
-        [1] La cheville gauche est attribuée mais il faut que la poitrine, la hanche ou la taille soient également attribuées!
-        [2] La cheville gauche est attribuée mais il faut que la cuisse gauche soit également attribuée!
-       *[unknown] La cheville gauche est attribuée mais il faut qu'une partie du corps inconnue non assignée soit également attribuée!
+        [0] La cheville gauche est attribuée mais il faut que la cuisse gauche et soit la poitrine, la hanche ou la taille soient également attribuées !
+        [1] La cheville gauche est attribuée mais il faut que la poitrine, la hanche ou la taille soient également attribuées !
+        [2] La cheville gauche est attribuée mais il faut que la cuisse gauche soit également attribuée !
+       *[unknown] La cheville gauche est attribuée mais il faut qu'une partie du corps inconnue non assignée soit également attribuée !
     }
 # $unassigned (Number) - Bits are based on BodyAssignment.ASSIGNMENT_RULES order
 onboarding-assign_trackers-warning-RIGHT_LOWER_LEG =
     { $unassigned ->
-        [0] La cheville droite est attribuée mais il faut que la cuisse droite et soit la poitrine, la hanche ou la taille soient également attribuées!
-        [1] La cheville droite est attribuée mais il faut que la poitrine, la hanche ou la taille soient également attribuées!
+        [0] La cheville droite est attribuée mais il faut que la cuisse droite et soit la poitrine, la hanche ou la taille soient également attribuées !
+        [1] La cheville droite est attribuée mais il faut que la poitrine, la hanche ou la taille soient également attribuées !
         [2] La cheville droite est attribuée mais il faut que la cuisse droite soit également attribuée !
-       *[unknown] La cheville droite est attribuée mais il faut qu'une partie du corps inconnue non assignée soit également attribuée!
+       *[unknown] La cheville droite est attribuée mais il faut qu'une partie du corps inconnue non assignée soit également attribuée !
     }
 # $unassigned (Number) - Bits are based on BodyAssignment.ASSIGNMENT_RULES order
 onboarding-assign_trackers-warning-LEFT_UPPER_LEG =
     { $unassigned ->
-        [0] La cuisse gauche est attribuée mais il faut que la poitrine, la hanche ou la taille soient également attribuées!
-       *[unknown] La cuisse gauche est attribuée mais il faut qu'une partie du corps inconnue non assignée soit également attribuée!
+        [0] La cuisse gauche est attribuée mais il faut que la poitrine, la hanche ou la taille soient également attribuées !
+       *[unknown] La cuisse gauche est attribuée mais il faut qu'une partie du corps inconnue non assignée soit également attribuée !
     }
 # $unassigned (Number) - Bits are based on BodyAssignment.ASSIGNMENT_RULES order
 onboarding-assign_trackers-warning-RIGHT_UPPER_LEG =
     { $unassigned ->
-        [0] La cuisse droite est attribuée mais il faut que la poitrine, la hanche ou la taille soient également attribuées!
-       *[unknown] La cuisse droite est attribuée mais il faut qu'une partie du corps inconnue non assignée soit également attribuée!
+        [0] La cuisse droite est attribuée mais il faut que la poitrine, la hanche ou la taille soient également attribuées !
+       *[unknown] La cuisse droite est attribuée mais il faut qu'une partie du corps inconnue non assignée soit également attribuée !
     }
 # $unassigned (Number) - Bits are based on BodyAssignment.ASSIGNMENT_RULES order
 onboarding-assign_trackers-warning-HIP =
     { $unassigned ->
-        [0] La hanche est attribuée mais il faut que la poitrine le soit aussi!
-       *[unknown] La hanche est attribuée mais il faut qu'une partie du corps inconnue non assignée soit également attribuée!
+        [0] La hanche est attribuée mais il faut que la poitrine le soit aussi !
+       *[unknown] La hanche est attribuée mais il faut qu'une partie du corps inconnue non assignée soit également attribuée !
     }
 # $unassigned (Number) - Bits are based on BodyAssignment.ASSIGNMENT_RULES order
 onboarding-assign_trackers-warning-WAIST =
     { $unassigned ->
-        [0] La taille est attribuée mais il faut que la poitrine le soit aussi!
-       *[unknown] La taille est attribuée mais il faut qu'une partie du corps inconnue non assignée soit également attribuée!
+        [0] La taille est attribuée mais il faut que la poitrine le soit aussi !
+       *[unknown] La taille est attribuée mais il faut qu'une partie du corps inconnue non assignée soit également attribuée !
     }
 
 ## Tracker mounting method choose
 
-onboarding-choose_mounting = Quelle méthode de calibration de l’alignement utiliser?
+onboarding-choose_mounting = Quelle méthode de calibration de l’alignement utiliser ?
 onboarding-choose_mounting-auto_mounting = Alignement automatique
 # Italized text
 onboarding-choose_mounting-auto_mounting-subtitle = Recommendée
@@ -674,11 +674,11 @@ onboarding-automatic_mounting-description = Pour que vos capteurs SlimeVR foncti
 onboarding-automatic_mounting-manual_mounting = Alignement manuel
 onboarding-automatic_mounting-next = Prochaine étape
 onboarding-automatic_mounting-prev_step = Étape précédente
-onboarding-automatic_mounting-done-title = C'est terminé!
-onboarding-automatic_mounting-done-description = L'alignement des capteurs est calibré!
+onboarding-automatic_mounting-done-title = C'est terminé !
+onboarding-automatic_mounting-done-description = L'alignement des capteurs est calibré !
 onboarding-automatic_mounting-done-restart = Retourner au début
 onboarding-automatic_mounting-mounting_reset-title = Réinitialisation de l'alignement
-onboarding-automatic_mounting-mounting_reset-step-0 = 1. Accroupissez-vous dans une pose de "ski" avec les jambes pliées, le haut du corps incliné vers l'avant et les bras pliés.
+onboarding-automatic_mounting-mounting_reset-step-0 = 1. Accroupissez-vous dans une position de "ski" avec les jambes pliées, le haut du corps incliné vers l'avant et les bras pliés.
 onboarding-automatic_mounting-mounting_reset-step-1 = 2. Appuyez sur le bouton "Réinitialiser l'alignement" et attendez 3 secondes avant que l'alignement des capteurs se calibre.
 onboarding-automatic_mounting-preparation-title = Préparation
 onboarding-automatic_mounting-preparation-step-0 = 1. Tenez-vous debout avec vos bras à vos côtés.
@@ -689,7 +689,7 @@ onboarding-automatic_mounting-put_trackers_on-next = J'ai tous mes capteurs
 
 ## Tracker proportions method choose
 
-onboarding-choose_proportions = Quelle méthode de calibration des proportions utiliser?
+onboarding-choose_proportions = Quelle méthode de calibration des proportions utiliser ?
 onboarding-choose_proportions-auto_proportions = Proportions automatiques
 # Italized text
 onboarding-choose_proportions-auto_proportions-subtitle = Recommendée
@@ -749,13 +749,13 @@ onboarding-automatic_proportions-recording-timer =
        *[other] { $time } secondes restantes
     }
 onboarding-automatic_proportions-verify_results-title = Vérifier les résultats
-onboarding-automatic_proportions-verify_results-description = Les résultats ci-dessous vous semblent-ils corrects?
+onboarding-automatic_proportions-verify_results-description = Les résultats ci-dessous vous semblent-ils corrects ?
 onboarding-automatic_proportions-verify_results-results = Enregistrement des résultats
 onboarding-automatic_proportions-verify_results-processing = Traitement du résultat
 onboarding-automatic_proportions-verify_results-redo = Refaire l'enregistrement
 onboarding-automatic_proportions-verify_results-confirm = Les résultats sont corrects
 onboarding-automatic_proportions-done-title = Calibration terminée
-onboarding-automatic_proportions-done-description = Votre calibration est terminée!
+onboarding-automatic_proportions-done-description = Votre calibration est terminée !
 
 ## Home
 
