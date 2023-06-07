@@ -140,7 +140,7 @@ export function ResetTutorialPage() {
               </Button>
 
               <Button
-                hidden={curIndex >= order.length}
+                hidden={curIndex + 1 >= order.length}
                 variant="secondary"
                 className="ml-auto"
                 onClick={() => {
@@ -155,7 +155,7 @@ export function ResetTutorialPage() {
                 to="/onboarding/body-proportions/choose"
                 className={classNames(
                   'ml-auto',
-                  order.length !== curIndex && 'hidden'
+                  order.length > curIndex + 1 && 'hidden'
                 )}
               >
                 {l10n.getString('onboarding-continue')}

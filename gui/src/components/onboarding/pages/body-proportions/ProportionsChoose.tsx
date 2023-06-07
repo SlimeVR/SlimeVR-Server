@@ -48,7 +48,7 @@ export function ProportionsChoose() {
     }
   );
 
-  applyProgress(0.65);
+  applyProgress(0.85);
 
   return (
     <>
