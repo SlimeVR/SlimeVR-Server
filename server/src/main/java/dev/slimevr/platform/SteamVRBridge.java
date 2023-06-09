@@ -296,11 +296,11 @@ public abstract class SteamVRBridge extends ProtobufBridge implements Runnable {
 			}
 		}
 
-		if (lowestLevel >= 200) {
+		if ((lowestLevel >= 200) || (lowestLevel == 0) || (trackerVoltage < 3.2)) {
 			return;
 		} else {
 			trackerLevel = lowestLevel / 100;
-			if (trackerVoltage >= 4.3) {
+			if ((trackerVoltage >= 4.3) && (trackerVoltage < 5)) {
 				// TO DO: Add sending whether the tracker is charging from the
 				// tracker itself rather than checking voltage.
 				isCharging = true;
