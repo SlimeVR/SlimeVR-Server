@@ -20,7 +20,7 @@ import { OverlayWidget } from './widgets/OverlayWidget';
 import { ClearDriftCompensationButton } from './ClearDriftCompensationButton';
 import { useWebsocketAPI } from '../hooks/websocket-api';
 import { useStatusContext, parseStatusToLocale } from '../hooks/status-system';
-import { Localized } from '@fluent/react';
+import { Localized, useLocalization } from '@fluent/react';
 import { TipBox } from './commons/TipBox';
 import { useAppContext } from '../hooks/app';
 import { TrackingPauseButton } from './TrackingPauseButton';
@@ -47,6 +47,7 @@ export function MainLayoutRoute({
     () => Object.values(statuses).filter((status) => !status.prioritized),
     [statuses]
   );
+  const { l10n } = useLocalization();
 
   useEffect(() => {
     sendRPCPacket(RpcMessage.SettingsRequest, new SettingsRequestT());
@@ -130,7 +131,7 @@ export function MainLayoutRoute({
                   {unprioritizedStatuses.map((status) => (
                     <Localized
                       id={`status_system-${StatusData[status.dataType]}`}
-                      vars={parseStatusToLocale(status, trackers)}
+                      vars={parseStatusToLocale(status, trackers, l10n)}
                       key={status.id}
                     >
                       <TipBox whitespace={false} hideIcon={true}>

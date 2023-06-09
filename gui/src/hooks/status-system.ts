@@ -1,5 +1,6 @@
 import { createContext, useEffect, useReducer, useContext } from 'react';
 import {
+  BodyPart,
   RpcMessage,
   StatusData,
   StatusMessageT,
@@ -15,6 +16,7 @@ import {
 import { useWebsocketAPI } from './websocket-api';
 import { FluentVariable } from '@fluent/bundle';
 import { FlatDeviceTracker } from './app';
+import { ReactLocalization } from '@fluent/react';
 
 type StatusSystemStateAction =
   | StatusSystemStateFixedAction
@@ -114,7 +116,8 @@ export function useStatusContext() {
 
 export function parseStatusToLocale(
   status: StatusMessageT,
-  trackers: FlatDeviceTracker[] | null
+  trackers: FlatDeviceTracker[] | null,
+  l10n: ReactLocalization
 ): Record<string, FluentVariable> {
   switch (status.dataType) {
     case StatusData.NONE:
@@ -140,11 +143,21 @@ export function parseStatusToLocale(
           tracker?.trackerId?.trackerNum == data.trackerId.trackerNum &&
           tracker?.trackerId?.deviceId?.id == data.trackerId.deviceId.id
       );
-      if (typeof tracker?.tracker.info?.customName !== 'string') return {};
-
-      return {
-        trackerName: tracker.tracker.info?.customName,
-      };
+      if (!tracker)
+        return {
+          trackerName: 'unknown',
+        };
+      const name = tracker.tracker.info?.customName
+        ? tracker.tracker.info?.customName
+        : tracker.tracker.info?.bodyPart
+        ? l10n.getString('body_part-' + BodyPart[tracker.tracker.info?.bodyPart])
+        : tracker.tracker.info?.displayName || 'unknown';
+      if (typeof name !== 'string') {
+        return {
+          trackerName: new TextDecoder().decode(name),
+        };
+      }
+      return { trackerName: name };
     }
   }
 }
@@ -161,6 +174,13 @@ export function trackerStatusRelated(
   switch (status.dataType) {
     case StatusData.StatusTrackerReset: {
       const data = status.data as StatusTrackerResetT;
+      return (
+        data.trackerId?.trackerNum == tracker.trackerId?.trackerNum &&
+        data.trackerId?.deviceId?.id === tracker.trackerId?.deviceId?.id
+      );
+    }
+    case StatusData.StatusTrackerError: {
+      const data = status.data as StatusTrackerErrorT;
       return (
         data.trackerId?.trackerNum == tracker.trackerId?.trackerNum &&
         data.trackerId?.deviceId?.id === tracker.trackerId?.deviceId?.id

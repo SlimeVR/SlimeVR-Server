@@ -47,7 +47,7 @@ export function Home() {
             <div className="md:w-1/2 w-full" key={status.id}>
               <Localized
                 id={`status_system-${StatusData[status.dataType]}`}
-                vars={parseStatusToLocale(status, trackers)}
+                vars={parseStatusToLocale(status, trackers, l10n)}
               >
                 <WarningBox whitespace={false}>
                   {`Warning, you should fix ${StatusData[status.dataType]}`}
