@@ -296,7 +296,7 @@ public abstract class SteamVRBridge extends ProtobufBridge implements Runnable {
 			}
 		}
 
-		// Internal battery reporting reports 5V max, and <= 3.36V when >=50mV
+		// Internal battery reporting reports 5V max, and <= 3.2V when >=50mV
 		// lower than initial reading (e.g. 3.25V down from 3.3V).
 		// 3.2V is technically 0%, but the last 5% of battery level is ignored,
 		// which makes 3.36V 0% in practice.
@@ -305,9 +305,7 @@ public abstract class SteamVRBridge extends ProtobufBridge implements Runnable {
 		// readings.
 		if (
 			(lowestLevel >= 200)
-				|| (lowestLevel == 0)
-				|| (trackerVoltage >= 5)
-				|| (trackerVoltage <= 3.36)
+				|| ((lowestLevel == 0) && ((trackerVoltage < 3.2) || (trackerVoltage >= 5)))
 		) {
 			return;
 		} else {
