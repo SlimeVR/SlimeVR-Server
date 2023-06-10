@@ -303,7 +303,11 @@ public abstract class SteamVRBridge extends ProtobufBridge implements Runnable {
 		// External battery reporting reports anything > 0V.
 		// The following should catch internal battery reporting and erroneous
 		// readings.
-		if ((lowestLevel >= 200) || ((lowestLevel <= 0) && (trackerVoltage < 3.2))) {
+		if (
+			((lowestLevel >= 200) || (lowestLevel < 0))
+				|| ((trackerVoltage < 3.2) && (lowestLevel <= 0)
+					|| ((trackerVoltage >= 5) && (lowestLevel > 150)))
+		) {
 			return;
 		} else {
 			trackerLevel = lowestLevel / 100;
