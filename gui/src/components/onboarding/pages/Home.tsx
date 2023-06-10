@@ -7,8 +7,10 @@ import { LangSelector } from '../../commons/LangSelector';
 import { Typography } from '../../commons/Typography';
 import { SkipSetupButton } from '../SkipSetupButton';
 import { SkipSetupWarningModal } from '../SkipSetupWarningModal';
+import { useBreakpoint } from '../../../hooks/breakpoint';
 
 export function HomePage() {
+  const { isMobile } = useBreakpoint('mobile');
   const { l10n } = useLocalization();
   const { applyProgress, skipSetup } = useOnboarding();
   const [skipWarning, setSkipWarning] = useState(false);
@@ -17,7 +19,7 @@ export function HomePage() {
 
   return (
     <>
-      <div className="flex flex-col gap-5 h-full items-center w-full justify-center relative">
+      <div className="flex flex-col gap-5 h-full items-center w-full justify-center relative px-4">
         <SkipSetupButton
           visible={true}
           modalVisible={skipWarning}
@@ -25,14 +27,14 @@ export function HomePage() {
         ></SkipSetupButton>
         <div className="flex flex-col gap-5 items-center z-10 scale-150 mb-20">
           <SlimeVRIcon></SlimeVRIcon>
-          <Typography variant="main-title">
+          <Typography variant={isMobile ?'section-title' : 'main-title'}>
             {l10n.getString('onboarding-home')}
           </Typography>
           <Button variant="primary" to="/onboarding/wifi-creds">
             {l10n.getString('onboarding-home-start')}
           </Button>
         </div>
-        <div className="absolute right-0 bottom-4 z-50">
+        <div className="absolute right-4 bottom-4 z-50">
           <LangSelector />
         </div>
         <div

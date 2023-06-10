@@ -1,5 +1,6 @@
-const plugin = require('tailwindcss/plugin');
-
+import plugin from 'tailwindcss/plugin'
+import forms from '@tailwindcss/forms'
+import gradient from 'tailwind-gradient-mask-image'
 const rem = (pt) => `${pt / 16}rem`;
 
 const colors = {
@@ -151,10 +152,11 @@ const colors = {
   },
 };
 
-module.exports = {
+export default {
   content: ['./src/**/*.{js,jsx,ts,tsx}'],
   theme: {
     screens: {
+      mobile: { raw: 'not (min-width: 800px)' },
       xs: '800px',
       sm: '900px',
       md: '1100px',
@@ -227,8 +229,8 @@ module.exports = {
     },
   },
   plugins: [
-    require('@tailwindcss/forms'),
-    require('tailwind-gradient-mask-image'),
+    forms,
+    gradient,
     plugin(function ({ addUtilities }) {
       const textConfig = (fontSize, fontWeight) => ({
         fontSize,

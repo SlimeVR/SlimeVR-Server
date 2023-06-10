@@ -3,6 +3,7 @@ import { Button } from '../../../../commons/Button';
 import { Typography } from '../../../../commons/Typography';
 import { ResetButton } from '../../../../home/ResetButton';
 import { useLocalization } from '@fluent/react';
+import { useBreakpoint } from '../../../../../hooks/breakpoint';
 
 export function PreparationStep({
   nextStep,
@@ -13,11 +14,12 @@ export function PreparationStep({
   prevStep: () => void;
   variant: 'onboarding' | 'alone';
 }) {
+  const { isMobile } = useBreakpoint('mobile');
   const { l10n } = useLocalization();
 
   return (
-    <>
-      <div className="flex flex-col flex-grow">
+    <div className="flex mobile:flex-col items-center w-full">
+      <div className="flex flex-col flex-grow justify-between">
         <div className="flex flex-col gap-4 max-w-sm">
           <Typography variant="main-title" bold>
             {l10n.getString('onboarding-automatic_mounting-preparation-title')}
@@ -35,9 +37,16 @@ export function PreparationStep({
             </Typography>
           </div>
         </div>
-
-        <div className="flex flex-grow items-center"></div>
-        <div className="flex gap-3">
+        {isMobile && (
+          <div className="flex flex-col pt-1 items-center fill-background-50 justify-center px-12">
+            <img
+              src="/images/reset-pose.png"
+              width={100}
+              alt="Reset position"
+            />
+          </div>
+        )}
+        <div className="flex gap-3 mobile:justify-between">
           <Button
             variant={variant === 'onboarding' ? 'secondary' : 'tertiary'}
             onClick={prevStep}
@@ -51,9 +60,11 @@ export function PreparationStep({
           ></ResetButton>
         </div>
       </div>
-      <div className="flex flex-col pt-1 items-center fill-background-50 justify-center px-12">
-        <img src="/images/reset-pose.png" width={90} alt="Reset position" />
-      </div>
-    </>
+      {!isMobile && (
+        <div className="flex flex-col pt-1 items-center fill-background-50 justify-center px-12">
+          <img src="/images/reset-pose.png" width={90} alt="Reset position" />
+        </div>
+      )}
+    </div>
   );
 }

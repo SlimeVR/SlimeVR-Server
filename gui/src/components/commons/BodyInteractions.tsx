@@ -2,6 +2,7 @@ import classNames from 'classnames';
 import { ReactNode, useLayoutEffect, useRef, useState } from 'react';
 import { BodyPart } from 'solarxr-protocol';
 import { PersonFrontIcon } from './PersonFrontIcon';
+import { useBreakpoint } from '../../hooks/breakpoint';
 
 export function BodyInteractions({
   leftControls,
@@ -22,6 +23,8 @@ export function BodyInteractions({
   onSelectRole: (role: BodyPart) => void;
   highlightedRoles: BodyPart[];
 }) {
+  const { isMobile } = useBreakpoint('mobile');
+
   const personRef = useRef<HTMLDivElement | null>(null);
   const leftContainerRef = useRef<HTMLDivElement | null>(null);
   const rightContainerRef = useRef<HTMLDivElement | null>(null);
@@ -123,7 +126,7 @@ export function BodyInteractions({
             controlPosition.left < slot.left ? controlPosition.width : 0;
 
           const constolLeft = controlPosition.left + offsetX;
-          const LINE_BREAK_WIDTH = 40;
+          const LINE_BREAK_WIDTH = isMobile ? 20 : 40;
           const leftOffsetX =
             LINE_BREAK_WIDTH * (controlPosition.left < slot.left ? -1 : 1);
 
@@ -160,7 +163,7 @@ export function BodyInteractions({
           ref={personRef}
           className={classNames(
             'relative w-full flex justify-center',
-            variant === 'tracker-select' && 'mx-10'
+            variant === 'tracker-select' && (isMobile ? 'mx-0' : 'mx-10')
           )}
         >
           <PersonFrontIcon width={width}></PersonFrontIcon>

@@ -25,7 +25,7 @@ export function AutomaticMountingPage() {
 
   return (
     <>
-      <div className="flex flex-col gap-2 h-full items-center w-full justify-center relative">
+      <div className="flex flex-col gap-2 h-full items-center w-full xs:justify-center relative px-4 pb-4">
         <SkipSetupButton
           visible={!state.alonePage}
           modalVisible={skipWarning}

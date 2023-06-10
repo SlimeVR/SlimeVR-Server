@@ -24,6 +24,7 @@ import { Localized } from '@fluent/react';
 import { TipBox } from './commons/TipBox';
 import { useAppContext } from '../hooks/app';
 import { TrackingPauseButton } from './TrackingPauseButton';
+import { useBreakpoint } from '../hooks/breakpoint';
 
 export function MainLayoutRoute({
   children,
@@ -34,6 +35,8 @@ export function MainLayoutRoute({
   background?: boolean;
   widgets?: boolean;
 }) {
+  const { isMobile } = useBreakpoint('mobile');
+
   const { layoutHeight, ref } = useLayout<HTMLDivElement>();
   const { layoutWidth, ref: refw } = useLayout<HTMLDivElement>();
   const { config } = useConfig();
@@ -87,23 +90,27 @@ export function MainLayoutRoute({
   return (
     <>
       <TopBar></TopBar>
-      <div ref={ref} className="flex-grow" style={{ height: layoutHeight }}>
-        <div className="flex h-full pb-3">
-          <Navbar></Navbar>
+      <div
+        ref={ref}
+        className="flex-grow"
+        style={{ height: layoutHeight - (isMobile ? 84 : 0) }}
+      >
+        <div className="flex h-full xs:pb-3">
+          {!isMobile && <Navbar></Navbar>}
           <div
-            className="flex gap-2 pr-3 w-full"
+            className="flex gap-2 xs:pr-3  w-full"
             ref={refw}
             style={{ minWidth: layoutWidth }}
           >
             <div
               className={classNames(
-                'flex flex-col rounded-xl w-full overflow-hidden',
+                'flex flex-col rounded-xl w-full overflow-hidden mobile:overflow-y-auto',
                 background && 'bg-background-70'
               )}
             >
               {children}
             </div>
-            {widgets && (
+            {!isMobile && widgets && (
               <div className="flex flex-col px-2 min-w-[274px] w-[274px] gap-2 pt-2 rounded-xl overflow-y-auto bg-background-70">
                 <div className="grid grid-cols-2 gap-2 w-full [&>*:nth-child(odd):last-of-type]:col-span-full">
                   <ResetButton type={ResetType.Yaw} variant="big"></ResetButton>
@@ -150,6 +157,7 @@ export function MainLayoutRoute({
             )}
           </div>
         </div>
+        {isMobile && <Navbar></Navbar>}
       </div>
     </>
   );

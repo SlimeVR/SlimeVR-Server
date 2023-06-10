@@ -13,7 +13,7 @@ export function OnboardingLayout({ children }: { children: ReactNode }) {
       <TopBar progress={state.progress}></TopBar>
       <div
         ref={ref}
-        className="flex-grow pt-10 mx-4"
+        className="flex-grow xs:pt-10 mobile:pt-2"
         style={{ height: layoutHeight }}
       >
         {children}
@@ -21,7 +21,7 @@ export function OnboardingLayout({ children }: { children: ReactNode }) {
     </>
   ) : (
     <MainLayoutRoute widgets={false}>
-      <div className="flex-grow pt-10 mx-4">{children}</div>
+      <div className="flex-grow xs:pt-10 mobile:pt-2">{children}</div>
     </MainLayoutRoute>
   );
 }

@@ -245,20 +245,22 @@ export function TrackersAssignPage() {
       <NeckWarningModal
         isOpen={shouldShowChokerWarn}
         overlayClassName={classNames(
-          'fixed top-0 right-0 left-0 bottom-0 flex flex-col items-center w-full h-full justify-center bg-black bg-opacity-90 z-20'
+          'fixed top-0 right-0 left-0 bottom-0 flex flex-col items-center w-full h-full justify-center bg-black bg-opacity-90 z-20 '
         )}
         onClose={() => closeChokerWarning(true)}
         accept={() => closeChokerWarning(false)}
       ></NeckWarningModal>
-      <div className="flex flex-col gap-5 h-full items-center w-full justify-center relative">
+      <div className='relative mx-4 top-4'>
         <SkipSetupButton
           visible={!state.alonePage}
           modalVisible={skipWarning}
           onClick={() => setSkipWarning(true)}
         ></SkipSetupButton>
-        <div className="flex flex-col w-full h-full justify-center items-center">
-          <div className="flex md:gap-8">
-            <div className="flex flex-col max-w-sm gap-3">
+      </div>
+      <div className="flex flex-col gap-5 h-full items-center w-full justify-center">
+        <div className="flex flex-col w-full overflow-y-auto px-4 xs:items-center">
+          <div className="flex mobile:flex-col md:gap-8 mobile:gap-4 mobile:pb-4">
+            <div className="flex flex-col xs:max-w-sm gap-3">
               <Typography variant="main-title">
                 {l10n.getString('onboarding-assign_trackers-title')}
               </Typography>
@@ -287,7 +289,7 @@ export function TrackersAssignPage() {
                   </div>
                 </div>
               )}
-              <div className="flex flex-row mt-auto">
+              <div className="flex flex-row">
                 {!state.alonePage && (
                   <>
                     <Button
@@ -310,8 +312,9 @@ export function TrackersAssignPage() {
                 )}
               </div>
             </div>
-            <div className="flex flex-col flex-grow gap-3 rounded-xl fill-background-50">
+            <div className="flex flex-col rounded-xl fill-background-50">
               <BodyAssignment
+                width={150}
                 onlyAssigned={false}
                 highlightedRoles={firstError?.affectedRoles || []}
                 rolesWithErrors={rolesWithErrors}
@@ -320,10 +323,6 @@ export function TrackersAssignPage() {
               ></BodyAssignment>
             </div>
           </div>
-        </div>
-        <div className="w-full pb-4 flex flex-row">
-          <div className="flex flex-grow gap-3"></div>
-          <div className="flex gap-3"></div>
         </div>
       </div>
       <SkipSetupWarningModal

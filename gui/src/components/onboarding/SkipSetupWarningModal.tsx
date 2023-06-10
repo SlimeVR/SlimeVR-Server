@@ -4,6 +4,7 @@ import { Localized, useLocalization } from '@fluent/react';
 import { BaseModal } from '../commons/BaseModal';
 import ReactModal from 'react-modal';
 import { useNavigate } from 'react-router-dom';
+import { useBreakpoint } from '../../hooks/breakpoint';
 
 export function SkipSetupWarningModal({
   isOpen = true,
@@ -24,6 +25,7 @@ export function SkipSetupWarningModal({
    */
   accept: () => void;
 } & ReactModal.Props) {
+  const { isMobile } = useBreakpoint('mobile');
   const { l10n } = useLocalization();
   const navigate = useNavigate();
 
@@ -39,9 +41,9 @@ export function SkipSetupWarningModal({
       overlayClassName={props.overlayClassName}
     >
       <div className="flex w-full h-full flex-col ">
-        <div className="flex w-full flex-col flex-grow items-center gap-3">
+        <div className="flex flex-col flex-grow items-center gap-3">
           <Localized id="onboarding-setup_warning" elems={{ b: <b></b> }}>
-            <WarningBox>
+            <WarningBox whitespace={!isMobile}>
               <b>Warning:</b> The setup is needed for good tracking, this is
               required if this is your first time using SlimeVR.
             </WarningBox>

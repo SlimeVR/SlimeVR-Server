@@ -1,3 +1,4 @@
+import { useBreakpoint } from '../../../../../hooks/breakpoint';
 import { useTrackers } from '../../../../../hooks/tracker';
 import { BodyDisplay } from '../../../../commons/BodyDisplay';
 import { Button } from '../../../../commons/Button';
@@ -12,6 +13,7 @@ export function PutTrackersOnStep({
   nextStep: () => void;
   variant: 'alone' | 'onboarding';
 }) {
+  const { isMobile } = useBreakpoint('mobile');
   const { l10n } = useLocalization();
   const { trackers } = useTrackers();
 
@@ -36,8 +38,20 @@ export function PutTrackersOnStep({
           </div>
         </div>
 
+        {isMobile && (
+          <div className="flex flex-col pt-1 items-center fill-background-50 justify-center px-16">
+            <BodyDisplay
+              trackers={trackers}
+              width={120}
+              dotsSize={15}
+              variant="dots"
+              hideUnassigned={true}
+            />
+          </div>
+        )}
+
         <div className="flex flex-col gap-3">
-          <div className="flex gap-3">
+          <div className="flex gap-3 mobile:justify-between">
             <Button
               variant={variant === 'onboarding' ? 'secondary' : 'tertiary'}
               to="/onboarding/body-proportions/choose"
@@ -53,15 +67,17 @@ export function PutTrackersOnStep({
           </div>
         </div>
       </div>
-      <div className="flex flex-col pt-1 items-center fill-background-50 justify-center px-16">
-        <BodyDisplay
-          trackers={trackers}
-          width={150}
-          dotsSize={15}
-          variant="dots"
-          hideUnassigned={true}
-        />
-      </div>
+      {!isMobile && (
+        <div className="flex flex-col pt-1 items-center fill-background-50 justify-center px-16">
+          <BodyDisplay
+            trackers={trackers}
+            width={150}
+            dotsSize={15}
+            variant="dots"
+            hideUnassigned={true}
+          />
+        </div>
+      )}
     </>
   );
 }
