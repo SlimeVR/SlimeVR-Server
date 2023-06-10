@@ -297,9 +297,11 @@ public abstract class SteamVRBridge extends ProtobufBridge implements Runnable {
 		}
 
 		// Internal battery reporting reports 5V max, and <= 3.2V when >=50mV
-		// lower than initial reading (e.g. 3.25V down from 3.3V).
+		// lower than initial reading (e.g. 3.25V down from 3.3V), and ~0V when
+		// battery is fine.
 		// 3.2V is technically 0%, but the last 5% of battery level is ignored,
-		// which makes 3.36V 0% in practice.
+		// which makes 3.36V 0% in practice. Refer to batterymonitor.cpp in
+		// SlimeVR-Tracker-ESP for exact details.
 		// External battery reporting reports anything > 0V.
 		// The following should catch internal battery reporting and erroneous
 		// readings.
