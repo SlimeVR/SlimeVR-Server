@@ -30,7 +30,7 @@ export function AssignmentTutorialPage() {
           onClick={() => setSkipWarning(true)}
         ></SkipSetupButton>
         <div className="flex flex-col w-full h-full justify-center xs:px-20 gap-3 pb-2">
-          <div className='overflow-y-auto px-4'>
+          <div className="overflow-y-auto px-4">
             <div className="mb-10 self-center">
               <Typography variant="main-title">
                 {l10n.getString('onboarding-assignment_tutorial')}

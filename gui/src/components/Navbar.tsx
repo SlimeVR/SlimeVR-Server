@@ -49,14 +49,16 @@ export function NavButton({
           {icon}
         </div>
       </div>
-      {true && <div
-        className={classnames('text-center', {
-          'text-accent-background-10': doesMatch,
-          'text-background-10': !doesMatch,
-        })}
-      >
-        {children}
-      </div>}
+      {true && (
+        <div
+          className={classnames('text-center', {
+            'text-accent-background-10': doesMatch,
+            'text-background-10': !doesMatch,
+          })}
+        >
+          {children}
+        </div>
+      )}
     </NavLink>
   );
 }
@@ -64,37 +66,39 @@ export function NavButton({
 export function MainLinks() {
   const { l10n } = useLocalization();
 
-  return (<>
-    <NavButton to="/" icon={<CubeIcon></CubeIcon>}>
-      {l10n.getString('navbar-home')}
-    </NavButton>
-    <NavButton
-      to="/onboarding/trackers-assign"
-      state={{ alonePage: true }}
-      icon={<HumanIcon></HumanIcon>}
-    >
-      {l10n.getString('navbar-trackers_assign')}
-    </NavButton>
-    <NavButton
-      to="/onboarding/mounting/choose"
-      match="/onboarding/mounting/*"
-      state={{ alonePage: true }}
-      icon={<WrenchIcon></WrenchIcon>}
-    >
-      {l10n.getString('navbar-mounting')}
-    </NavButton>
-    <NavButton
-      to="/onboarding/body-proportions/choose"
-      match="/onboarding/body-proportions/*"
-      state={{ alonePage: true }}
-      icon={<RulerIcon></RulerIcon>}
-    >
-      {l10n.getString('navbar-body_proportions')}
-    </NavButton>
-    <NavButton to="/onboarding/home" icon={<SparkleIcon></SparkleIcon>}>
-      {l10n.getString('navbar-onboarding')}
-    </NavButton>
-  </>)
+  return (
+    <>
+      <NavButton to="/" icon={<CubeIcon></CubeIcon>}>
+        {l10n.getString('navbar-home')}
+      </NavButton>
+      <NavButton
+        to="/onboarding/trackers-assign"
+        state={{ alonePage: true }}
+        icon={<HumanIcon></HumanIcon>}
+      >
+        {l10n.getString('navbar-trackers_assign')}
+      </NavButton>
+      <NavButton
+        to="/onboarding/mounting/choose"
+        match="/onboarding/mounting/*"
+        state={{ alonePage: true }}
+        icon={<WrenchIcon></WrenchIcon>}
+      >
+        {l10n.getString('navbar-mounting')}
+      </NavButton>
+      <NavButton
+        to="/onboarding/body-proportions/choose"
+        match="/onboarding/body-proportions/*"
+        state={{ alonePage: true }}
+        icon={<RulerIcon></RulerIcon>}
+      >
+        {l10n.getString('navbar-body_proportions')}
+      </NavButton>
+      <NavButton to="/onboarding/home" icon={<SparkleIcon></SparkleIcon>}>
+        {l10n.getString('navbar-onboarding')}
+      </NavButton>
+    </>
+  );
 }
 
 export function Navbar() {
@@ -103,7 +107,7 @@ export function Navbar() {
 
   return isMobile ? (
     <div className="flex flex-row justify-around px-2 pt-2 bg-background-80 gap-2">
-        <MainLinks></MainLinks>
+      <MainLinks></MainLinks>
     </div>
   ) : (
     <div className="flex flex-col px-2 pt-2">

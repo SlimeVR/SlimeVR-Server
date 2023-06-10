@@ -1,29 +1,15 @@
 import classNames from 'classnames';
-import { ReactNode, useEffect, useMemo, useState } from 'react';
+import { ReactNode, useEffect, useState } from 'react';
 import {
   LegTweaksTmpChangeT,
   LegTweaksTmpClearT,
-  ResetType,
   RpcMessage,
   SettingsRequestT,
-  SettingsResponseT,
-  StatusData,
 } from 'solarxr-protocol';
-import { useConfig } from '../hooks/config';
 import { useElemSize, useLayout } from '../hooks/layout';
-import { BVHButton } from './BVHButton';
-import { ResetButton } from './home/ResetButton';
 import { Navbar } from './Navbar';
 import { TopBar } from './TopBar';
-import { DeveloperModeWidget } from './widgets/DeveloperModeWidget';
-import { OverlayWidget } from './widgets/OverlayWidget';
-import { ClearDriftCompensationButton } from './ClearDriftCompensationButton';
 import { useWebsocketAPI } from '../hooks/websocket-api';
-import { useStatusContext, parseStatusToLocale } from '../hooks/status-system';
-import { Localized } from '@fluent/react';
-import { TipBox } from './commons/TipBox';
-import { useAppContext } from '../hooks/app';
-import { TrackingPauseButton } from './TrackingPauseButton';
 import { WidgetsComponent } from './WidgetsComponent';
 
 export function MainLayoutRoute({

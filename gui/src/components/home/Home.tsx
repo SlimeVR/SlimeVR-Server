@@ -13,7 +13,6 @@ import {
 } from '../../hooks/status-system';
 import { useMemo } from 'react';
 import { WarningBox } from '../commons/TipBox';
-import { VRCIcon } from '../commons/icon/VRCIcon';
 import { HeadsetIcon } from '../commons/icon/HeadsetIcon';
 
 const DONT_REPEAT_STATUSES = [StatusData.StatusTrackerReset];

@@ -1,7 +1,6 @@
 import { Localized, useLocalization } from '@fluent/react';
-import { useEffect, useRef } from 'react';
+import { useEffect } from 'react';
 import { useForm } from 'react-hook-form';
-import { useLocation } from 'react-router-dom';
 import {
   ChangeSettingsRequestT,
   OSCRouterSettingsT,

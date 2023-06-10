@@ -1,7 +1,6 @@
 import { useLocalization } from '@fluent/react';
-import { useEffect, useRef } from 'react';
+import { useEffect } from 'react';
 import { DefaultValues, useForm } from 'react-hook-form';
-import { useLocation } from 'react-router-dom';
 import {
   ChangeSettingsRequestT,
   DriftCompensationSettingsT,
