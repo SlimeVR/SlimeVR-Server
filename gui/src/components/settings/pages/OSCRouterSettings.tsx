@@ -15,7 +15,10 @@ import { CheckBox } from '../../commons/Checkbox';
 import { RouterIcon } from '../../commons/icon/RouterIcon';
 import { Input } from '../../commons/Input';
 import { Typography } from '../../commons/Typography';
-import { SettingsPageLayout } from '../SettingsPageLayout';
+import {
+  SettingsPageLayout,
+  SettingsPagePaneLayout,
+} from '../SettingsPageLayout';
 
 interface OSCRouterSettingsForm {
   router: {
@@ -42,8 +45,6 @@ const defaultValues = {
 export function OSCRouterSettings() {
   const { l10n } = useLocalization();
   const { sendRPCPacket, useRPCPacket } = useWebsocketAPI();
-  const { state } = useLocation();
-  const pageRef = useRef<HTMLFormElement | null>(null);
 
   const { reset, control, watch, handleSubmit } =
     useForm<OSCRouterSettingsForm>({
@@ -96,125 +97,115 @@ export function OSCRouterSettings() {
     reset(formData);
   });
 
-  // Handle scrolling to selected page
-  useEffect(() => {
-    const typedState: { scrollTo: string } = state as any;
-    if (!pageRef.current || !typedState || !typedState.scrollTo) {
-      return;
-    }
-    const elem = pageRef.current.querySelector(`#${typedState.scrollTo}`);
-    if (elem) {
-      elem.scrollIntoView({ behavior: 'smooth' });
-    }
-  }, [state]);
-
   return (
-    <form className="flex flex-col gap-2 w-full" ref={pageRef}>
-      <SettingsPageLayout icon={<RouterIcon></RouterIcon>} id="router">
-        <>
-          <Typography variant="main-title">
-            {l10n.getString('settings-osc-router')}
-          </Typography>
-          <div className="flex flex-col pt-2 pb-4">
-            <>
-              {l10n
-                .getString('settings-osc-router-description')
-                .split('\n')
-                .map((line, i) => (
-                  <Typography color="secondary" key={i}>
-                    {line}
-                  </Typography>
-                ))}
-            </>
-          </div>
-          <Typography bold>
-            {l10n.getString('settings-osc-router-enable')}
-          </Typography>
-          <div className="flex flex-col pb-2">
-            <Typography color="secondary">
-              {l10n.getString('settings-osc-router-enable-description')}
+    <SettingsPageLayout>
+      <form className="flex flex-col gap-2 w-full">
+        <SettingsPagePaneLayout icon={<RouterIcon></RouterIcon>} id="router">
+          <>
+            <Typography variant="main-title">
+              {l10n.getString('settings-osc-router')}
             </Typography>
-          </div>
-          <div className="grid grid-cols-2 gap-3 pb-5">
-            <CheckBox
-              variant="toggle"
-              outlined
-              control={control}
-              name="router.oscSettings.enabled"
-              label={l10n.getString('settings-osc-router-enable-label')}
-            />
-          </div>
-          <Typography bold>
-            {l10n.getString('settings-osc-router-network')}
-          </Typography>
-          <div className="flex flex-col pb-2">
-            <>
-              {l10n
-                .getString('settings-osc-router-network-description')
-                .split('\n')
-                .map((line, i) => (
-                  <Typography color="secondary" key={i}>
-                    {line}
-                  </Typography>
-                ))}
-            </>
-          </div>
-          <div className="grid grid-cols-2 gap-3 pb-5">
-            <Localized
-              id="settings-osc-router-network-port_in"
-              attrs={{ placeholder: true, label: true }}
-            >
-              <Input
-                type="number"
+            <div className="flex flex-col pt-2 pb-4">
+              <>
+                {l10n
+                  .getString('settings-osc-router-description')
+                  .split('\n')
+                  .map((line, i) => (
+                    <Typography color="secondary" key={i}>
+                      {line}
+                    </Typography>
+                  ))}
+              </>
+            </div>
+            <Typography bold>
+              {l10n.getString('settings-osc-router-enable')}
+            </Typography>
+            <div className="flex flex-col pb-2">
+              <Typography color="secondary">
+                {l10n.getString('settings-osc-router-enable-description')}
+              </Typography>
+            </div>
+            <div className="grid grid-cols-2 gap-3 pb-5">
+              <CheckBox
+                variant="toggle"
+                outlined
                 control={control}
-                rules={{ required: true }}
-                name="router.oscSettings.portIn"
-                placeholder="9002"
+                name="router.oscSettings.enabled"
+                label={l10n.getString('settings-osc-router-enable-label')}
+              />
+            </div>
+            <Typography bold>
+              {l10n.getString('settings-osc-router-network')}
+            </Typography>
+            <div className="flex flex-col pb-2">
+              <>
+                {l10n
+                  .getString('settings-osc-router-network-description')
+                  .split('\n')
+                  .map((line, i) => (
+                    <Typography color="secondary" key={i}>
+                      {line}
+                    </Typography>
+                  ))}
+              </>
+            </div>
+            <div className="grid grid-cols-2 gap-3 pb-5">
+              <Localized
+                id="settings-osc-router-network-port_in"
+                attrs={{ placeholder: true, label: true }}
+              >
+                <Input
+                  type="number"
+                  control={control}
+                  rules={{ required: true }}
+                  name="router.oscSettings.portIn"
+                  placeholder="9002"
+                  label=""
+                ></Input>
+              </Localized>
+              <Localized
+                id="settings-osc-router-network-port_out"
+                attrs={{ placeholder: true, label: true }}
+              >
+                <Input
+                  type="number"
+                  control={control}
+                  rules={{ required: true }}
+                  name="router.oscSettings.portOut"
+                  placeholder="9000"
+                  label=""
+                ></Input>
+              </Localized>
+            </div>
+            <Typography bold>
+              {l10n.getString('settings-osc-router-network-address')}
+            </Typography>
+            <div className="flex flex-col pb-2">
+              <Typography color="secondary">
+                {l10n.getString(
+                  'settings-osc-router-network-address-description'
+                )}
+              </Typography>
+            </div>
+            <div className="grid gap-3 pb-5">
+              <Input
+                type="text"
+                control={control}
+                rules={{
+                  required: true,
+                  pattern:
+                    /^(?!0)(?!.*\.$)((1?\d?\d|25[0-5]|2[0-4]\d)(\.|$)){4}$/i,
+                }}
+                name="router.oscSettings.address"
+                placeholder={l10n.getString(
+                  'settings-osc-router-network-address-placeholder'
+                )}
                 label=""
               ></Input>
-            </Localized>
-            <Localized
-              id="settings-osc-router-network-port_out"
-              attrs={{ placeholder: true, label: true }}
-            >
-              <Input
-                type="number"
-                control={control}
-                rules={{ required: true }}
-                name="router.oscSettings.portOut"
-                placeholder="9000"
-                label=""
-              ></Input>
-            </Localized>
-          </div>
-          <Typography bold>
-            {l10n.getString('settings-osc-router-network-address')}
-          </Typography>
-          <div className="flex flex-col pb-2">
-            <Typography color="secondary">
-              {l10n.getString(
-                'settings-osc-router-network-address-description'
-              )}
-            </Typography>
-          </div>
-          <div className="grid gap-3 pb-5">
-            <Input
-              type="text"
-              control={control}
-              rules={{
-                required: true,
-                pattern:
-                  /^(?!0)(?!.*\.$)((1?\d?\d|25[0-5]|2[0-4]\d)(\.|$)){4}$/i,
-              }}
-              name="router.oscSettings.address"
-              placeholder={l10n.getString(
-                'settings-osc-router-network-address-placeholder'
-              )}
-              label=""
-            ></Input>
-          </div>
-        </>
-      </SettingsPageLayout>
-    </form>
+            </div>
+          </>
+        </SettingsPagePaneLayout>
+      </form>
+    </SettingsPageLayout>
   );
 }

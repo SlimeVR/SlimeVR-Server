@@ -10,7 +10,7 @@ import {
   StatusData,
 } from 'solarxr-protocol';
 import { useConfig } from '../hooks/config';
-import { useLayout } from '../hooks/layout';
+import { useElemSize, useLayout } from '../hooks/layout';
 import { BVHButton } from './BVHButton';
 import { ResetButton } from './home/ResetButton';
 import { Navbar } from './Navbar';
@@ -24,41 +24,28 @@ import { Localized } from '@fluent/react';
 import { TipBox } from './commons/TipBox';
 import { useAppContext } from '../hooks/app';
 import { TrackingPauseButton } from './TrackingPauseButton';
-import { useBreakpoint } from '../hooks/breakpoint';
+import { WidgetsComponent } from './WidgetsComponent';
 
 export function MainLayoutRoute({
   children,
   background = true,
   widgets = true,
+  isMobile = undefined,
 }: {
   children: ReactNode;
   background?: boolean;
+  isMobile?: boolean;
   widgets?: boolean;
 }) {
-  const { isMobile } = useBreakpoint('mobile');
-
+  const { height, ref: navRef } = useElemSize<HTMLDivElement>();
   const { layoutHeight, ref } = useLayout<HTMLDivElement>();
   const { layoutWidth, ref: refw } = useLayout<HTMLDivElement>();
-  const { config } = useConfig();
-  const { useRPCPacket, sendRPCPacket } = useWebsocketAPI();
-  const { trackers } = useAppContext();
-  const [driftCompensationEnabled, setDriftCompensationEnabled] =
-    useState(false);
+  const { sendRPCPacket } = useWebsocketAPI();
   const [ProportionsLastPageOpen, setProportionsLastPageOpen] = useState(true);
-  const { statuses } = useStatusContext();
-  const unprioritizedStatuses = useMemo(
-    () => Object.values(statuses).filter((status) => !status.prioritized),
-    [statuses]
-  );
 
   useEffect(() => {
     sendRPCPacket(RpcMessage.SettingsRequest, new SettingsRequestT());
   }, []);
-
-  useRPCPacket(RpcMessage.SettingsResponse, (settings: SettingsResponseT) => {
-    if (settings.driftCompensation != null)
-      setDriftCompensationEnabled(settings.driftCompensation.enabled);
-  });
 
   function usePageChanged(callback: () => void) {
     useEffect(() => {
@@ -93,7 +80,7 @@ export function MainLayoutRoute({
       <div
         ref={ref}
         className="flex-grow"
-        style={{ height: layoutHeight - (isMobile ? 84 : 0) }}
+        style={{ height: layoutHeight - height }}
       >
         <div className="flex h-full xs:pb-3">
           {!isMobile && <Navbar></Navbar>}
@@ -112,52 +99,12 @@ export function MainLayoutRoute({
             </div>
             {!isMobile && widgets && (
               <div className="flex flex-col px-2 min-w-[274px] w-[274px] gap-2 pt-2 rounded-xl overflow-y-auto bg-background-70">
-                <div className="grid grid-cols-2 gap-2 w-full [&>*:nth-child(odd):last-of-type]:col-span-full">
-                  <ResetButton type={ResetType.Yaw} variant="big"></ResetButton>
-                  <ResetButton
-                    type={ResetType.Full}
-                    variant="big"
-                  ></ResetButton>
-                  {config?.debug && (
-                    <ResetButton
-                      type={ResetType.Mounting}
-                      variant="big"
-                    ></ResetButton>
-                  )}
-                  <BVHButton></BVHButton>
-                  <TrackingPauseButton></TrackingPauseButton>
-                  {driftCompensationEnabled && (
-                    <ClearDriftCompensationButton></ClearDriftCompensationButton>
-                  )}
-                </div>
-                <div className="w-full">
-                  <OverlayWidget></OverlayWidget>
-                </div>
-                <div className="w-full flex flex-col max-h-[33%] gap-3 overflow-y-auto mb-2">
-                  {unprioritizedStatuses.map((status) => (
-                    <Localized
-                      id={`status_system-${StatusData[status.dataType]}`}
-                      vars={parseStatusToLocale(status, trackers)}
-                      key={status.id}
-                    >
-                      <TipBox whitespace={false} hideIcon={true}>
-                        {`Warning, you should fix ${
-                          StatusData[status.dataType]
-                        }`}
-                      </TipBox>
-                    </Localized>
-                  ))}
-                </div>
-                {config?.debug && (
-                  <div className="w-full">
-                    <DeveloperModeWidget></DeveloperModeWidget>
-                  </div>
-                )}
+                <WidgetsComponent></WidgetsComponent>
               </div>
             )}
           </div>
         </div>
-        {isMobile && <Navbar></Navbar>}
+        <div ref={navRef}>{isMobile && <Navbar></Navbar>}</div>
       </div>
     </>
   );

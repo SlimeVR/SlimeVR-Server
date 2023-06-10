@@ -139,16 +139,18 @@ export function ProportionsChoose() {
                       animated && 'animate-[bounce_1s_1]'
                     )}
                   ></img>
-                  <Typography variant="main-title" bold>
-                    {l10n.getString(
-                      'onboarding-choose_proportions-auto_proportions'
-                    )}
-                  </Typography>
-                  <Typography variant="vr-accessible" italic>
-                    {l10n.getString(
-                      'onboarding-choose_proportions-auto_proportions-subtitle'
-                    )}
-                  </Typography>
+                  <div>
+                    <Typography variant="main-title" bold>
+                      {l10n.getString(
+                        'onboarding-choose_proportions-auto_proportions'
+                      )}
+                    </Typography>
+                    <Typography variant="vr-accessible" italic>
+                      {l10n.getString(
+                        'onboarding-choose_proportions-auto_proportions-subtitle'
+                      )}
+                    </Typography>
+                  </div>
                   <div>
                     <Typography color="secondary">
                       {l10n.getString(

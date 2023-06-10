@@ -250,7 +250,7 @@ export function TrackersAssignPage() {
         onClose={() => closeChokerWarning(true)}
         accept={() => closeChokerWarning(false)}
       ></NeckWarningModal>
-      <div className='relative mx-4 top-4'>
+      <div className="relative mx-4 top-4">
         <SkipSetupButton
           visible={!state.alonePage}
           modalVisible={skipWarning}

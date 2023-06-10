@@ -47,7 +47,7 @@ export function useElemSize<T extends HTMLElement>(
     })
   );
 
-  useEffect(() => {
+  useLayoutEffect(() => {
     if (ref.current) {
       observer.current.observe(ref.current);
     }
