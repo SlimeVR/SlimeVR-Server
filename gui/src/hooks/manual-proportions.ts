@@ -182,7 +182,12 @@ export interface GroupPartLabel {
 const BONE_MAPPING: Map<string, SkeletonBone[]> = new Map([
   [
     'skeleton_bone-torso_group',
-    [SkeletonBone.UPPER_CHEST, SkeletonBone.CHEST, SkeletonBone.HIP, SkeletonBone.WAIST],
+    [
+      SkeletonBone.UPPER_CHEST,
+      SkeletonBone.CHEST,
+      SkeletonBone.HIP,
+      SkeletonBone.WAIST,
+    ],
   ],
   ['skeleton_bone-leg_group', [SkeletonBone.UPPER_LEG, SkeletonBone.LOWER_LEG]],
   ['skeleton_bone-arm_group', [SkeletonBone.UPPER_ARM, SkeletonBone.LOWER_ARM]],
