@@ -17,8 +17,6 @@ function IncrementButton({
   children: ReactNode;
   onClick?: MouseEventHandler<HTMLDivElement>;
 }) {
-  const { isMobile } = useBreakpoint('mobile');
-
   return (
     <div
       onClick={onClick}
