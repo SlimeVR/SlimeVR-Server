@@ -49,16 +49,14 @@ export function NavButton({
           {icon}
         </div>
       </div>
-      {true && (
-        <div
-          className={classnames('text-center', {
-            'text-accent-background-10': doesMatch,
-            'text-background-10': !doesMatch,
-          })}
-        >
-          {children}
-        </div>
-      )}
+      <div
+        className={classnames('text-center', {
+          'text-accent-background-10': doesMatch,
+          'text-background-10': !doesMatch,
+        })}
+      >
+        {children}
+      </div>
     </NavLink>
   );
 }
