@@ -77,11 +77,11 @@ export function CalibrationTutorialPage() {
           modalVisible={skipWarning}
           onClick={() => setSkipWarning(true)}
         ></SkipSetupButton>
-        <div className="flex w-full h-full justify-center px-20 gap-14">
-          <div className="flex gap-8 self-center">
+        <div className="flex w-full h-full justify-center xs:px-20 mobile:px-5 pb-5 gap-14">
+          <div className="flex gap-4 self-center mobile:z-10">
             <div className="flex flex-col max-w-md gap-3">
               <div>
-                <Typography variant="main-title">
+                <Typography variant="mobile-title">
                   {l10n.getString('onboarding-calibration_tutorial')}
                 </Typography>
                 <Typography variant="vr-accessible" italic>
@@ -97,6 +97,11 @@ export function CalibrationTutorialPage() {
                 </Typography>
               </Localized>
               <div>
+                <div className="xs:hidden flex flex-row justify-center">
+                  <div className="stroke-none fill-background-10 ">
+                    <TaybolIcon width="220"></TaybolIcon>
+                  </div>
+                </div>
                 <div className="flex justify-center">
                   <LoaderIcon slimeState={slimeStatus}></LoaderIcon>
                 </div>
@@ -116,11 +121,11 @@ export function CalibrationTutorialPage() {
               <div className="flex justify-center">
                 <Typography variant="section-title">{progressText}</Typography>
               </div>
-              <div className="flex gap-3">
+              <div className="flex gap-3 mobile:flex-col">
                 <Button
                   variant="secondary"
                   to="/onboarding/wifi-creds"
-                  className="mr-auto"
+                  className="xs:mr-auto"
                 >
                   {l10n.getString('onboarding-previous_step')}
                 </Button>
@@ -132,7 +137,7 @@ export function CalibrationTutorialPage() {
                   }}
                   disabled={isCounting}
                   hidden={CalibrationStatus.SUCCESS === calibrationStatus}
-                  className="ml-auto"
+                  className="xs:ml-auto"
                 >
                   {l10n.getString('onboarding-calibration_tutorial-calibrate')}
                 </Button>
@@ -140,7 +145,7 @@ export function CalibrationTutorialPage() {
                   variant="primary"
                   to="/onboarding/assign-tutorial"
                   className={classNames(
-                    'ml-auto',
+                    'xs:ml-auto',
                     CalibrationStatus.SUCCESS !== calibrationStatus && 'hidden'
                   )}
                 >
@@ -149,10 +154,9 @@ export function CalibrationTutorialPage() {
               </div>
             </div>
           </div>
-          <div className="flex self-center w-[32rem]">
-            <div className="stroke-none fill-background-10">
+          <div className="mobile:hidden flex self-center w-[32rem] mobile:absolute">
+            <div className="stroke-none xs:fill-background-10 mobile:fill-background-50 mobile:blur-sm">
               <TaybolIcon width="500"></TaybolIcon>
-              {/* <img src="/images/taybol.png"></img> */}
             </div>
           </div>
         </div>
