@@ -25,7 +25,7 @@
     "react/no-unescaped-entities": "off",
     "camelcase": "error",
     "@typescript-eslint/no-unused-vars": [
-      "error",
+      "warn",
       {
         "argsIgnorePattern": "^_",
         "varsIgnorePattern": "^_"

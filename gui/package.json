@@ -40,7 +40,7 @@
     "dev": "tauri dev",
     "skipbundler": "tauri build -b none",
     "tauri": "tauri",
-    "lint": "eslint \"src/**/*.{js,jsx,ts,tsx,json}\" && prettier --check \"src/**/*.{js,jsx,ts,tsx,css,md,json}\"",
+    "lint": "eslint --max-warnings=0 \"src/**/*.{js,jsx,ts,tsx,json}\" && prettier --check \"src/**/*.{js,jsx,ts,tsx,css,md,json}\"",
     "lint:fix": "eslint --fix \"src/**/*.{js,jsx,ts,tsx,json}\"",
     "format": "prettier --write \"src/**/*.{js,jsx,ts,tsx,css,md,json}\"",
     "preview-vite": "vite preview",
