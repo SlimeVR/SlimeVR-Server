@@ -224,6 +224,25 @@ public class CurrentVRConfigConverter implements VersionedModelConverter {
 					tapDetectionNode.set("fullResetTaps", tapDetectionNode.get("resetTaps"));
 				}
 			}
+			if (version < 9) {
+				// split chest into 2 offsets
+				ObjectNode skeletonNode = (ObjectNode) modelData.get("skeleton");
+				if (skeletonNode != null) {
+					ObjectNode offsetsNode = (ObjectNode) skeletonNode.get("offsets");
+					if (offsetsNode != null) {
+						JsonNode chestNode = offsetsNode.get("chestLength");
+						if (chestNode != null) {
+							offsetsNode
+								.set("chestLength", new FloatNode(chestNode.floatValue() / 2f));
+							offsetsNode
+								.set(
+									"upperChestLength",
+									new FloatNode(chestNode.floatValue() / 2f)
+								);
+						}
+					}
+				}
+			}
 		} catch (Exception e) {
 			LogManager.severe("Error during config migration: " + e);
 		}

@@ -18,6 +18,13 @@ export function PersonFrontIcon({ width }: { width?: number }) {
       <circle
         className="body-part-circle"
         cx="82"
+        cy="114"
+        r={CIRCLE_RADIUS}
+        id={BodyPart[BodyPart.UPPER_CHEST]}
+      />
+      <circle
+        className="body-part-circle"
+        cx="82"
         cy="130"
         r={CIRCLE_RADIUS}
         id={BodyPart[BodyPart.CHEST]}
@@ -73,8 +80,8 @@ export function PersonFrontIcon({ width }: { width?: number }) {
       />
       <circle
         className="body-part-circle"
-        cx="125"
-        cy="194"
+        cx="122"
+        cy="180"
         r={CIRCLE_RADIUS}
         id={BodyPart[BodyPart.RIGHT_LOWER_ARM]}
       />
@@ -124,8 +131,8 @@ export function PersonFrontIcon({ width }: { width?: number }) {
       />
       <circle
         className="body-part-circle"
-        cx="39"
-        cy="194"
+        cx="42"
+        cy="180"
         r={CIRCLE_RADIUS}
         id={BodyPart[BodyPart.LEFT_LOWER_ARM]}
       />

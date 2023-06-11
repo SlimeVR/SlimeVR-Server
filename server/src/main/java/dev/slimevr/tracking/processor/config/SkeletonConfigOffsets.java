@@ -19,11 +19,11 @@ public enum SkeletonConfigOffsets {
 		0.1f,
 		new BoneType[] { BoneType.NECK }
 	),
-	CHEST(
+	UPPER_CHEST(
 		3,
-		"chestLength",
-		0.32f,
-		new BoneType[] { BoneType.CHEST, BoneType.CHEST_TRACKER }
+		"upperChestLength",
+		0.16f,
+		new BoneType[] { BoneType.UPPER_CHEST, BoneType.CHEST_TRACKER }
 	),
 	CHEST_OFFSET(
 		4,
@@ -31,56 +31,62 @@ public enum SkeletonConfigOffsets {
 		0.0f,
 		new BoneType[] { BoneType.CHEST_TRACKER }
 	),
-	WAIST(
+	CHEST(
 		5,
+		"chestLength",
+		0.16f,
+		new BoneType[] { BoneType.CHEST, BoneType.CHEST_TRACKER }
+	),
+	WAIST(
+		6,
 		"waistLength",
 		0.20f,
 		new BoneType[] { BoneType.WAIST }
 	),
 	HIP(
-		6,
+		7,
 		"hipLength",
 		0.04f,
 		new BoneType[] { BoneType.HIP }
 	),
 	HIP_OFFSET(
-		7,
+		8,
 		"hipOffset",
 		0.0f,
 		new BoneType[] { BoneType.HIP_TRACKER }
 	),
 	HIPS_WIDTH(
-		8,
+		9,
 		"hipsWidth",
 		0.26f,
 		new BoneType[] { BoneType.LEFT_HIP, BoneType.RIGHT_HIP }
 	),
 	UPPER_LEG(
-		9,
+		10,
 		"upperLegLength",
 		0.42f,
 		new BoneType[] { BoneType.LEFT_UPPER_LEG, BoneType.RIGHT_UPPER_LEG }
 	),
 	LOWER_LEG(
-		10,
+		11,
 		"lowerLegLength",
 		0.50f,
 		new BoneType[] { BoneType.LEFT_LOWER_LEG, BoneType.RIGHT_LOWER_LEG }
 	),
 	FOOT_LENGTH(
-		11,
+		12,
 		"footLength",
 		0.05f,
 		new BoneType[] { BoneType.LEFT_FOOT, BoneType.RIGHT_FOOT }
 	),
 	FOOT_SHIFT(
-		12,
+		13,
 		"footShift",
 		-0.05f,
 		new BoneType[] { BoneType.LEFT_LOWER_LEG, BoneType.RIGHT_LOWER_LEG }
 	),
 	SKELETON_OFFSET(
-		13,
+		14,
 		"skeletonOffset",
 		0.0f,
 		new BoneType[] { BoneType.CHEST_TRACKER, BoneType.HIP_TRACKER,
@@ -88,43 +94,43 @@ public enum SkeletonConfigOffsets {
 			BoneType.LEFT_FOOT_TRACKER, BoneType.RIGHT_KNEE_TRACKER }
 	),
 	SHOULDERS_DISTANCE(
-		14,
+		15,
 		"shouldersDistance",
 		0.08f,
 		new BoneType[] { BoneType.LEFT_SHOULDER, BoneType.RIGHT_SHOULDER }
 	),
 	SHOULDERS_WIDTH(
-		15,
+		16,
 		"shouldersWidth",
 		0.36f,
 		new BoneType[] { BoneType.LEFT_SHOULDER, BoneType.RIGHT_SHOULDER }
 	),
 	UPPER_ARM(
-		16,
+		17,
 		"upperArmLength",
 		0.26f,
 		new BoneType[] { BoneType.LEFT_UPPER_ARM, BoneType.RIGHT_UPPER_ARM }
 	),
 	LOWER_ARM(
-		17,
+		18,
 		"lowerArmLength",
 		0.26f,
 		new BoneType[] { BoneType.LEFT_LOWER_ARM, BoneType.RIGHT_LOWER_ARM }
 	),
 	HAND_Y(
-		18,
+		19,
 		"handDistanceY",
 		0.035f,
 		new BoneType[] { BoneType.LEFT_HAND, BoneType.RIGHT_HAND }
 	),
 	HAND_Z(
-		19,
+		20,
 		"handDistanceZ",
 		0.13f,
 		new BoneType[] { BoneType.LEFT_HAND, BoneType.RIGHT_HAND }
 	),
 	ELBOW_OFFSET(
-		20,
+		21,
 		"elbowOffset",
 		0.0f,
 		new BoneType[] { BoneType.LEFT_ELBOW_TRACKER, BoneType.RIGHT_ELBOW_TRACKER }
@@ -150,7 +156,7 @@ public enum SkeletonConfigOffsets {
 		float defaultValue,
 		BoneType[] affectedOffsets
 	) {
-		this.id = id;
+		this.id = id; // id of SkeletonBone in solarxr
 		this.configKey = configKey;
 
 		this.defaultValue = defaultValue;
