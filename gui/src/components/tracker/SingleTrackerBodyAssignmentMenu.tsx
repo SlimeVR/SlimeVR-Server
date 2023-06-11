@@ -49,10 +49,7 @@ export function SingleTrackerBodyAssignmentMenu({
         <div className="flex w-full h-full flex-col gap-10 px-3">
           <div className="flex xs:flex-row h-full xs:gap-8 mobile:flex-col  xs:justify-center items-center">
             <div className="flex flex-col xs:max-w-sm gap-3">
-              <Typography
-                variant={isMobile ? 'section-title' : 'main-title'}
-                bold
-              >
+              <Typography variant="mobile-title" bold>
                 {l10n.getString('body_assignment_menu')}
               </Typography>
               <Typography color="secondary">

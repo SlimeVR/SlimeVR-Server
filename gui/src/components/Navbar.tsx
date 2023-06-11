@@ -32,7 +32,9 @@ export function NavButton({
       to={to}
       state={state}
       className={classnames(
-        'flex flex-col justify-center xs:gap-4 mobile:gap-2 xs:w-[85px] mobile:w-[80px] mobile:h-[80px] xs:py-3 mobile:py-4 rounded-md mobile:rounded-b-none group select-text',
+        'flex flex-col justify-center xs:gap-4 mobile:gap-2',
+        'xs:w-[85px] mobile:w-[80px] mobile:h-[80px]',
+        'xs:py-3 mobile:py-4 rounded-md mobile:rounded-b-none group select-text',
         {
           'bg-accent-background-50 fill-accent-background-20': doesMatch,
           'hover:bg-background-70': !doesMatch,

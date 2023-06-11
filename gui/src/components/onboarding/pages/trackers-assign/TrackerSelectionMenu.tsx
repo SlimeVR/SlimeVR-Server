@@ -51,10 +51,7 @@ export function TrackerSelectionMenu({
       >
         <div className="flex w-full h-full flex-col ">
           <div className="flex w-full flex-col flex-grow items-center gap-3">
-            <Typography
-              variant={isMobile ? 'section-title' : 'main-title'}
-              bold
-            >
+            <Typography variant="mobile-title" bold>
               {l10n.getString('tracker_selection_menu-' + BodyPart[bodyPart])}
             </Typography>
             <div className="w-full max-w-sm">

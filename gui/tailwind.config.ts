@@ -1,7 +1,7 @@
 import plugin from 'tailwindcss/plugin'
 import forms from '@tailwindcss/forms'
 import gradient from 'tailwind-gradient-mask-image'
-const rem = (pt) => `${pt / 16}rem`;
+const rem = (pt: number) => `${pt / 16}rem`;
 
 const colors = {
   'blue-gray': {
@@ -232,7 +232,8 @@ export default {
     forms,
     gradient,
     plugin(function ({ addUtilities }) {
-      const textConfig = (fontSize, fontWeight) => ({
+
+      const textConfig = (fontSize: any, fontWeight: any) => ({
         fontSize,
         fontWeight,
       });

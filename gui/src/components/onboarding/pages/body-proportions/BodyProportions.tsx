@@ -26,7 +26,7 @@ function IncrementButton({
         'p-3 rounded-lg xs:w-16 xs:h-16 mobile:w-10 flex flex-col justify-center items-center bg-background-60 hover:bg-opacity-50'
       )}
     >
-      <Typography variant={isMobile ? 'section-title' : 'main-title'} bold>
+      <Typography variant="mobile-title" bold>
         {children}
       </Typography>
     </div>
@@ -200,10 +200,7 @@ export function BodyProportions({
                     <Typography variant="section-title" bold>
                       {l10n.getString(label)}
                     </Typography>
-                    <Typography
-                      variant={isMobile ? 'section-title' : 'main-title'}
-                      bold
-                    >
+                    <Typography variant="mobile-title" bold>
                       {type === LabelType.GroupPart
                         ? /* Make number rounding so it's based on .5 decimals */
                           percentageFormat.format(Math.round(value * 200) / 200)

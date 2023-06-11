@@ -83,7 +83,7 @@ export function CalibrationTutorialPage() {
           <div className="flex gap-4 self-center mobile:z-10">
             <div className="flex flex-col max-w-md gap-3">
               <div>
-                <Typography variant={isMobile ? 'section-title' : 'main-title'}>
+                <Typography variant="mobile-title">
                   {l10n.getString('onboarding-calibration_tutorial')}
                 </Typography>
                 <Typography variant="vr-accessible" italic>

@@ -67,14 +67,10 @@ export function Dropdown({
 
     document.addEventListener('click', onClick, false);
     document.addEventListener('touchmove', onTouchEvent, false);
-    if (!isMobile) {
-      // TS doesn't let me specify { passive: true }, but I believe it will work anyways
-      document.addEventListener('wheel', onWheelEvent, { passive: true });
-    }
+    // TS doesn't let me specify { passive: true }, but I believe it will work anyways
+    document.addEventListener('wheel', onWheelEvent, { passive: true });
     return () => {
-      if (!isMobile) {
-        document.removeEventListener('wheel', onWheelEvent);
-      }
+      document.removeEventListener('wheel', onWheelEvent);
       document.removeEventListener('click', onClick);
       document.removeEventListener('touchmove', onTouchEvent);
     };

@@ -60,7 +60,7 @@ export function WarningBox({
       <div className="flex flex-col">
         <Typography
           color="text-background-60"
-          whitespace={whitespace ? 'whitespace-pre' : undefined}
+          whitespace={whitespace ? 'whitespace-pre-line' : undefined}
         >
           {children}
         </Typography>

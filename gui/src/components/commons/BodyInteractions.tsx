@@ -163,7 +163,7 @@ export function BodyInteractions({
           ref={personRef}
           className={classNames(
             'relative w-full flex justify-center',
-            variant === 'tracker-select' && (isMobile ? 'mx-0' : 'mx-10')
+            variant === 'tracker-select' && 'mobile:mx-0 xs:mx-10'
           )}
         >
           <PersonFrontIcon width={width}></PersonFrontIcon>

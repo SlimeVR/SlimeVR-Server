@@ -27,7 +27,7 @@ export function HomePage() {
         ></SkipSetupButton>
         <div className="flex flex-col gap-5 items-center z-10 scale-150 mb-20">
           <SlimeVRIcon></SlimeVRIcon>
-          <Typography variant={isMobile ? 'section-title' : 'main-title'}>
+          <Typography variant="mobile-title">
             {l10n.getString('onboarding-home')}
           </Typography>
           <Button variant="primary" to="/onboarding/wifi-creds">

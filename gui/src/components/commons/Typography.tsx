@@ -9,7 +9,12 @@ export function Typography({
   children,
   italic = false,
 }: {
-  variant?: 'main-title' | 'section-title' | 'standard' | 'vr-accessible';
+  variant?:
+    | 'main-title'
+    | 'section-title'
+    | 'standard'
+    | 'vr-accessible'
+    | 'mobile-title';
   bold?: boolean;
   italic?: boolean;
   block?: boolean;
@@ -26,6 +31,7 @@ export function Typography({
     const tags = {
       'main-title': 'h1',
       'section-title': 'h2',
+      'mobile-title': 'h1',
       standard: 'p',
       'vr-accessible': 'p',
     };
@@ -37,6 +43,8 @@ export function Typography({
     {
       className: classNames([
         'transition-colors',
+        variant === 'mobile-title' &&
+          'xs:text-main-title mobile:text-section-title',
         variant === 'main-title' && 'text-main-title',
         variant === 'section-title' && 'text-section-title',
         variant === 'standard' &&
