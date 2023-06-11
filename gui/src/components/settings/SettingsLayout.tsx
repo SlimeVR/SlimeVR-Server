@@ -72,7 +72,8 @@ export function SettingSelectorMobile() {
         }))}
         variant="tertiary"
         direction="down"
-        placeholder="Select a Setting Menu"
+        // There is always an option selected placholder is not used
+        placeholder=""
         name="link"
       ></Dropdown>
     </div>
