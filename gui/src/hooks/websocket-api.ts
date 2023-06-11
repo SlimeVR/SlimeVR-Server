@@ -43,7 +43,7 @@ export function useProvideWebsocketApi(): WebSocketApi {
   const [isConnected, setConnected] = useState(false);
 
   const urlParams = new URLSearchParams(window.location.search);
-  const targetIp = urlParams.get('ip') ?? '192.168.1.9';
+  const targetIp = urlParams.get('ip') ?? 'localhost';
   const targetPort = urlParams.get('port') ?? '21110';
 
   useInterval(() => {
