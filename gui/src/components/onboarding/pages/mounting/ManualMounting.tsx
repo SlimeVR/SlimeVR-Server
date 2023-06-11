@@ -51,6 +51,9 @@ export function ManualMountingPage() {
         mountingOrientationDegrees
       );
       assignreq.trackerId = td.tracker.trackerId;
+      assignreq.allowDriftCompensation =
+        td.tracker.info?.allowDriftCompensation ?? false;
+
       sendRPCPacket(RpcMessage.AssignTrackerRequest, assignreq);
     });
 
