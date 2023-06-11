@@ -44,11 +44,15 @@ import { MountingChoose } from './components/onboarding/pages/mounting/MountingC
 import { ProportionsChoose } from './components/onboarding/pages/body-proportions/ProportionsChoose';
 import { LogicalSize, appWindow } from '@tauri-apps/api/window';
 import { StatusProvider } from './components/providers/StatusSystemContext';
-import { Release, VersionUpdateModal } from './components/VersionUpdateModal';
+import { VersionUpdateModal } from './components/VersionUpdateModal';
 import { CalibrationTutorialPage } from './components/onboarding/pages/CalibrationTutorial';
+import { AssignmentTutorialPage } from './components/onboarding/pages/assignment-preparation/AssignmentTutorial';
+import { open } from '@tauri-apps/api/shell';
+import semver from 'semver';
 
 export const GH_REPO = 'SlimeVR/SlimeVR-Server';
 export const VersionContext = createContext('');
+export const DOCS_SITE = 'https://docs.slimevr.dev/';
 
 function Layout() {
   const { loading } = useConfig();
@@ -104,6 +108,7 @@ function Layout() {
             path="calibration-tutorial"
             element={<CalibrationTutorialPage />}
           />
+          <Route path="assign-tutorial" element={<AssignmentTutorialPage />} />
           <Route path="trackers-assign" element={<TrackersAssignPage />} />
           <Route path="enter-vr" element={<EnterVRPage />} />
           <Route path="mounting/choose" element={<MountingChoose />}></Route>
@@ -138,11 +143,17 @@ export default function App() {
   const [updateFound, setUpdateFound] = useState('');
   useEffect(() => {
     async function fetchReleases() {
-      const releases: Release[] = await fetch(
+      const releases = await fetch(
         `https://api.github.com/repos/${GH_REPO}/releases`
-      ).then((res) => res.json());
+      )
+        .then((res) => res.json())
+        .then((json: any[]) => json.filter((rl) => rl?.prerelease === false));
 
-      if (__VERSION_TAG__ && releases[0].tag_name !== __VERSION_TAG__) {
+      if (
+        __VERSION_TAG__ &&
+        typeof releases[0].tag_name === 'string' &&
+        semver.gt(releases[0].tag_name, __VERSION_TAG__)
+      ) {
         setUpdateFound(releases[0].tag_name);
       }
     }
@@ -222,6 +233,17 @@ export default function App() {
       // eslint-disable-next-line @typescript-eslint/no-empty-function
       unlisten.then(() => {});
     };
+  }, []);
+
+  useEffect(() => {
+    function onKeyboard(ev: KeyboardEvent) {
+      if (ev.key === 'F1') {
+        return open(DOCS_SITE).catch(() => window.open(DOCS_SITE, '_blank'));
+      }
+    }
+
+    document.addEventListener('keyup', onKeyboard);
+    return () => document.removeEventListener('keyup', onKeyboard);
   }, []);
 
   return (

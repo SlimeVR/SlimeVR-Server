@@ -4,14 +4,32 @@ import { WarningIcon } from './icon/WarningIcon';
 import { Typography } from './Typography';
 import classNames from 'classnames';
 
-export function TipBox({ children }: { children: ReactNode }) {
+export function TipBox({
+  children,
+  hideIcon = false,
+  whitespace = false,
+}: {
+  children: ReactNode;
+  hideIcon?: boolean;
+  whitespace?: boolean;
+}) {
   return (
     <div className="flex flex-row gap-4 bg-accent-background-50 p-4 rounded-md">
-      <div className="fill-accent-background-20 flex flex-col justify-center">
+      <div
+        className={classNames(
+          'fill-accent-background-20 flex flex-col justify-center',
+          hideIcon && 'hidden'
+        )}
+      >
         <BulbIcon></BulbIcon>
       </div>
       <div className="flex flex-col">
-        <Typography color="text-accent-background-10">{children}</Typography>
+        <Typography
+          color="text-accent-background-10"
+          whitespace={whitespace ? 'whitespace-pre' : undefined}
+        >
+          {children}
+        </Typography>
       </div>
     </div>
   );

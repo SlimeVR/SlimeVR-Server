@@ -48,7 +48,7 @@ export function ProportionsChoose() {
     }
   );
 
-  applyProgress(0.65);
+  applyProgress(0.85);
 
   return (
     <>
@@ -62,6 +62,13 @@ export function ProportionsChoose() {
           <div className="w-[666px]">
             <Typography variant="main-title">
               {l10n.getString('onboarding-choose_proportions')}
+            </Typography>
+            <Typography
+              variant="standard"
+              color="secondary"
+              whitespace="whitespace-pre-line"
+            >
+              {l10n.getString('onboarding-choose_proportions-description')}
             </Typography>
           </div>
           <div className={classNames('h-full w-[760px] min-w-[760px]')}>

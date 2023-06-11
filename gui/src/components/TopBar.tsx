@@ -15,8 +15,9 @@ import { ProgressBar } from './commons/ProgressBar';
 import { Typography } from './commons/Typography';
 import { DownloadIcon } from './commons/icon/DownloadIcon';
 import { open } from '@tauri-apps/api/shell';
-import { GH_REPO, VersionContext } from '../App';
+import { GH_REPO, VersionContext, DOCS_SITE } from '../App';
 import classNames from 'classnames';
+import { QuestionIcon } from './commons/icon/QuestionIcon';
 
 export function TopBar({
   progress,
@@ -115,6 +116,17 @@ export function TopBar({
         className="flex justify-end items-center px-2 gap-2 z-50"
         data-tauri-drag-region
       >
+        <div
+          className={classNames(
+            'flex items-center justify-center stroke-window-icon',
+            'hover:bg-background-60 rounded-full w-7 h-7 cursor-pointer'
+          )}
+          onClick={() =>
+            open(DOCS_SITE).catch(() => window.open(DOCS_SITE, '_blank'))
+          }
+        >
+          <QuestionIcon></QuestionIcon>
+        </div>
         <div
           className="flex items-center justify-center hover:bg-background-60 rounded-full w-7 h-7"
           onClick={() => appWindow.minimize()}

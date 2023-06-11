@@ -28,7 +28,6 @@ import { NeckWarningModal } from '../../NeckWarningModal';
 import { TrackerSelectionMenu } from './TrackerSelectionMenu';
 import { SkipSetupWarningModal } from '../../SkipSetupWarningModal';
 import { SkipSetupButton } from '../../SkipSetupButton';
-import { useBnoExists } from '../../../../hooks/imu-logic';
 import { useConfig } from '../../../../hooks/config';
 import { playTapSetupSound } from '../../../../sounds/sounds';
 
@@ -46,7 +45,7 @@ interface FlatDeviceTrackerDummy {
 
 export function TrackersAssignPage() {
   const { l10n } = useLocalization();
-  const { useAssignedTrackers, trackers, useConnectedTrackers } = useTrackers();
+  const { useAssignedTrackers, trackers } = useTrackers();
   const { applyProgress, skipSetup, state } = useOnboarding();
   const { sendRPCPacket, useRPCPacket } = useWebsocketAPI();
 
@@ -57,9 +56,7 @@ export function TrackersAssignPage() {
   const [selectedRole, setSelectRole] = useState<BodyPart>(BodyPart.NONE);
   const assignedTrackers = useAssignedTrackers();
   const [skipWarning, setSkipWarning] = useState(false);
-  const connectedTrackers = useConnectedTrackers();
 
-  const bnoExists = useBnoExists(connectedTrackers);
   const { config } = useConfig();
   const [tapDetectionSettings, setTapDetectionSettings] = useState<Omit<
     TapDetectionSettingsT,
@@ -295,11 +292,7 @@ export function TrackersAssignPage() {
                   <>
                     <Button
                       variant="secondary"
-                      to={
-                        bnoExists
-                          ? '/onboarding/calibration-tutorial'
-                          : '/onboarding/wifi-creds'
-                      }
+                      to="/onboarding/assign-tutorial"
                     >
                       {l10n.getString('onboarding-previous_step')}
                     </Button>
