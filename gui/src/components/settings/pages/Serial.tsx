@@ -259,7 +259,6 @@ export function Serial() {
                   }))}
                 ></Dropdown>
               )}
-              <div className="flex justify-end"></div>
             </div>
           </div>
         </div>
