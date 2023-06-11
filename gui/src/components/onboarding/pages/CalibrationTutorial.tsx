@@ -102,7 +102,6 @@ export function CalibrationTutorialPage() {
                 <div className="xs:hidden flex flex-row justify-center">
                   <div className="stroke-none fill-background-10 ">
                     <TaybolIcon width="220"></TaybolIcon>
-                    {/* <img src="/images/taybol.png"></img> */}
                   </div>
                 </div>
                 <div className="flex justify-center">
