@@ -6,6 +6,7 @@ body {
   font-variant-numeric: tabular-nums;
   font-family: 'poppins', sans-serif, 'Twemoji Chromium', emoji;
   width: 100vw;
+  height: 100vh;
   user-select: none;
   background: theme('colors.background.20');
 
