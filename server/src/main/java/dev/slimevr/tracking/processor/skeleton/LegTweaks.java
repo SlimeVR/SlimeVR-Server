@@ -81,6 +81,7 @@ public class LegTweaks {
 	private boolean initialized = true;
 	private boolean enabled = true; // master switch
 	private boolean floorclipEnabled = false;
+	private boolean alwaysUseFloorclip = false;
 	private boolean skatingCorrectionEnabled = false;
 	private boolean toeSnapEnabled = false;
 	private boolean footPlantEnabled = false;
@@ -254,6 +255,7 @@ public class LegTweaks {
 		LegTweaks.updateHyperParameters(config.getCorrectionStrength());
 
 		floorclipEnabled = skeleton.humanPoseManager.getToggle(SkeletonConfigToggles.FLOOR_CLIP);
+		alwaysUseFloorclip = config.getAlwaysUseFloorclip();
 		skatingCorrectionEnabled = skeleton.humanPoseManager
 			.getToggle(SkeletonConfigToggles.SKATING_CORRECTION);
 		toeSnapEnabled = skeleton.humanPoseManager.getToggle(SkeletonConfigToggles.TOE_SNAP);
@@ -413,7 +415,7 @@ public class LegTweaks {
 	public void tweakLegs() {
 		// If user doesn't have knees or legtweaks is disabled,
 		// don't spend time doing calculations!
-		if (!skeleton.hasKneeTrackers || !enabled)
+		if ((!skeleton.hasKneeTrackers && !alwaysUseFloorclip) || !enabled)
 			return;
 
 		// update the class with the latest data from the skeleton
