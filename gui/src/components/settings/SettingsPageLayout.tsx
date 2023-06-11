@@ -13,7 +13,7 @@ export function SettingsPageLayout({
   const { state } = useLocation();
 
   useEffect(() => {
-    const typedState: { scrollTo: string } = state as any;
+    const typedState: { scrollTo: string } = state;
     if (!pageRef.current || !typedState || !typedState.scrollTo) {
       return;
     }

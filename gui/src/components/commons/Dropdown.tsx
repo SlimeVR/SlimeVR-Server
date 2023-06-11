@@ -2,7 +2,6 @@ import classNames from 'classnames';
 import { useEffect, useState } from 'react';
 import { Control, Controller } from 'react-hook-form';
 import { a11yClick } from '../utils/a11y';
-import { useBreakpoint } from '../../hooks/breakpoint';
 
 export interface DropdownItem {
   label: string;
@@ -30,7 +29,6 @@ export function Dropdown({
   name: string;
   items: DropdownItem[];
 }) {
-  const isMobile = useBreakpoint('mobile');
   const [isOpen, setOpen] = useState(false);
   useEffect(() => {
     if (!isOpen) return;
@@ -57,7 +55,9 @@ export function Dropdown({
       const isInDropdownScroll = document
         .querySelector('div.dropdown-scroll')
         ?.contains(event.target as any);
-      const isInDropdown = document.querySelector('div.dropdown')?.contains(event.target as any);
+      const isInDropdown = document
+        .querySelector('div.dropdown')
+        ?.contains(event.target as any);
       if (isOpen && !isInDropdownScroll && !isInDropdown) {
         setOpen(false);
       }

@@ -10,7 +10,6 @@ import { LoaderIcon, SlimeState } from '../../commons/icon/LoaderIcon';
 import { useCountdown } from '../../../hooks/countdown';
 import classNames from 'classnames';
 import { TaybolIcon } from '../../commons/icon/TaybolIcon';
-import { useBreakpoint } from '../../../hooks/breakpoint';
 
 export enum CalibrationStatus {
   SUCCESS,
@@ -22,7 +21,6 @@ export enum CalibrationStatus {
 export const IMU_CALIBRATION_TIME = 4;
 
 export function CalibrationTutorialPage() {
-  const { isMobile } = useBreakpoint('mobile');
   const { l10n } = useLocalization();
   const { applyProgress, skipSetup } = useOnboarding();
   const [skipWarning, setSkipWarning] = useState(false);

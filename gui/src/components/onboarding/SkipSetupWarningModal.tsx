@@ -4,7 +4,6 @@ import { Localized, useLocalization } from '@fluent/react';
 import { BaseModal } from '../commons/BaseModal';
 import ReactModal from 'react-modal';
 import { useNavigate } from 'react-router-dom';
-import { useBreakpoint } from '../../hooks/breakpoint';
 
 export function SkipSetupWarningModal({
   isOpen = true,
@@ -25,7 +24,6 @@ export function SkipSetupWarningModal({
    */
   accept: () => void;
 } & ReactModal.Props) {
-  const { isMobile } = useBreakpoint('mobile');
   const { l10n } = useLocalization();
   const navigate = useNavigate();
 

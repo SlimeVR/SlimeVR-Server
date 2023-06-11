@@ -9,7 +9,6 @@ import { TipBox } from '../../../commons/TipBox';
 import { Typography } from '../../../commons/Typography';
 import { TrackerCard } from '../../../tracker/TrackerCard';
 import { useLocalization } from '@fluent/react';
-import { useBreakpoint } from '../../../../hooks/breakpoint';
 
 export function TrackerSelectionMenu({
   isOpen = true,
@@ -22,7 +21,6 @@ export function TrackerSelectionMenu({
   onClose: () => void;
   onTrackerSelected: (tracker: FlatDeviceTracker | null) => void;
 }) {
-  const { isMobile } = useBreakpoint('mobile');
   const { l10n } = useLocalization();
   const { ref: refTrackers, layoutHeight: trackersHeight } =
     useLayout<HTMLDivElement>();

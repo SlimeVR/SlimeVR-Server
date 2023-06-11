@@ -63,7 +63,7 @@ export function ConnectTrackersPage() {
   const { layoutHeight, ref } = isMobile
     ? { layoutHeight: 0, ref: undefined }
     : useLayout<HTMLDivElement>();
-  const { trackers, useConnectedTrackers } = useTrackers();
+  const { useConnectedTrackers } = useTrackers();
   const { applyProgress, state, skipSetup } = useOnboarding();
   const navigate = useNavigate();
   const { sendRPCPacket, useRPCPacket } = useWebsocketAPI();

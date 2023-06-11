@@ -1,6 +1,9 @@
 import plugin from 'tailwindcss/plugin'
 import forms from '@tailwindcss/forms'
 import gradient from 'tailwind-gradient-mask-image'
+import type { Config } from 'tailwindcss'
+
+
 const rem = (pt: number) => `${pt / 16}rem`;
 
 const colors = {
@@ -152,7 +155,7 @@ const colors = {
   },
 };
 
-export default {
+const config = {
   content: ['./src/**/*.{js,jsx,ts,tsx}'],
   theme: {
     screens: {
@@ -199,7 +202,7 @@ export default {
         DEFAULT: rem(12),
       },
       fontWeight: {
-        DEFAULT: 500,
+        DEFAULT: '500',
       },
       color: {
         DEFAULT: 'rgb(var(--default-color), <alpha-value>)',
@@ -248,4 +251,6 @@ export default {
       });
     }),
   ],
-};
+} satisfies Config
+
+export default config;
