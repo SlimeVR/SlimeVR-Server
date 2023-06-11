@@ -80,8 +80,8 @@ export function PersonFrontIcon({ width }: { width?: number }) {
       />
       <circle
         className="body-part-circle"
-        cx="122"
-        cy="180"
+        cx="125"
+        cy="194"
         r={CIRCLE_RADIUS}
         id={BodyPart[BodyPart.RIGHT_LOWER_ARM]}
       />
@@ -131,8 +131,8 @@ export function PersonFrontIcon({ width }: { width?: number }) {
       />
       <circle
         className="body-part-circle"
-        cx="42"
-        cy="180"
+        cx="39"
+        cy="194"
         r={CIRCLE_RADIUS}
         id={BodyPart[BodyPart.LEFT_LOWER_ARM]}
       />
