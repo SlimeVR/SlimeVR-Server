@@ -1,6 +1,14 @@
 import { useLocalization } from '@fluent/react';
 import classNames from 'classnames';
-import { MouseEventHandler, ReactNode, useEffect } from 'react';
+import {
+  MouseEventHandler,
+  ReactNode,
+  useEffect,
+  useRef,
+  UIEvent,
+  MouseEvent,
+  useMemo,
+} from 'react';
 import {
   LabelType,
   ProportionChangeType,
@@ -8,7 +16,7 @@ import {
 } from '../../../../hooks/manual-proportions';
 import { useLocaleConfig } from '../../../../i18n/config';
 import { Typography } from '../../../commons/Typography';
-import { useBreakpoint } from '../../../../hooks/breakpoint';
+import { ArrowDownIcon, ArrowUpIcon } from '../../../commons/icon/ArrowIcons';
 
 function IncrementButton({
   children,
@@ -21,7 +29,8 @@ function IncrementButton({
     <div
       onClick={onClick}
       className={classNames(
-        'p-3 rounded-lg xs:w-16 xs:h-16 mobile:w-10 flex flex-col justify-center items-center bg-background-60 hover:bg-opacity-50'
+        'p-3 rounded-lg xs:w-16 xs:h-16 mobile:w-10 flex flex-col justify-center items-center',
+        'bg-background-60 hover:bg-opacity-50 active:bg-accent-background-30'
       )}
     >
       <Typography variant="mobile-title" bold>
@@ -40,23 +49,23 @@ export function BodyProportions({
   type: 'linear' | 'ratio';
   variant: 'onboarding' | 'alone';
 }) {
-  const { isMobile } = useBreakpoint('mobile');
-
-  const [bodyParts, _ratioMode, currentSelection, dispatch, setRatioMode] =
-    useManualProportions();
-  const { currentLocales } = useLocaleConfig();
+  const { bodyParts, dispatch, state, setRatioMode } = useManualProportions();
   const { l10n } = useLocalization();
+  const { currentLocales } = useLocaleConfig();
+
+  const srcollerRef = useRef<HTMLDivElement | null>(null);
+
   const cmFormat = Intl.NumberFormat(currentLocales, {
     style: 'unit',
     unit: 'centimeter',
     maximumFractionDigits: 1,
   });
-  const configFormat = Intl.NumberFormat(currentLocales, {
-    signDisplay: 'always',
-    maximumFractionDigits: 1,
-  });
   const percentageFormat = Intl.NumberFormat(currentLocales, {
     style: 'percent',
+    maximumFractionDigits: 1,
+  });
+  const configFormat = Intl.NumberFormat(currentLocales, {
+    signDisplay: 'always',
     maximumFractionDigits: 1,
   });
 
@@ -68,131 +77,223 @@ export function BodyProportions({
     }
   }, [type]);
 
+  useEffect(() => {
+    if (srcollerRef.current && bodyParts.length > 0) {
+      moveToIndex(1);
+    }
+  }, [srcollerRef, bodyParts.length]);
+
+  const handleUIEvent = (e: UIEvent<HTMLDivElement>) => {
+    const target = e.target as HTMLDivElement;
+
+    const itemHeight = target.offsetHeight / 3;
+
+    const atSnappingPoint = target.scrollTop % itemHeight === 0;
+
+    if (atSnappingPoint) {
+      const index = target.scrollTop / itemHeight;
+      const elem = srcollerRef.current?.childNodes[index + 1] as HTMLDivElement;
+      const id = elem.getAttribute('itemid');
+      if (id) selectNew(id);
+    }
+  };
+
+  const clickPart = (id: string) => (e: MouseEvent<HTMLDivElement>) => {
+    const target = e.target as HTMLDivElement;
+    target.scrollIntoView({ behavior: 'smooth', block: 'center' });
+    selectNew(id);
+  };
+
+  const moveToIndex = (index: number, smooth = true) => {
+    // We add one because of the offset placeholder
+    const elem = srcollerRef.current?.childNodes[index + 1] as HTMLDivElement;
+    elem?.scrollIntoView({
+      behavior: smooth ? 'smooth' : 'auto',
+      block: 'center',
+    });
+
+    const id = elem.getAttribute('itemid');
+    if (id) selectNew(id);
+  };
+
+  const selectNew = (id: string) => {
+    const part = bodyParts.find(({ label }) => label === id);
+    if (!part) return;
+
+    const { value: originalValue, label, type, ...props } = part;
+
+    const value =
+      'index' in props && props.index !== undefined
+        ? props.bones[props.index].value
+        : originalValue;
+
+    switch (type) {
+      case LabelType.Bone: {
+        if (!('bone' in props)) throw 'unreachable';
+        dispatch({
+          ...props,
+          label,
+          value,
+          type: ProportionChangeType.Bone,
+        });
+        break;
+      }
+      case LabelType.Group: {
+        if (!('bones' in props)) throw 'unreachable';
+        dispatch({
+          ...props,
+          label,
+          value,
+          type: ProportionChangeType.Group,
+          index: undefined,
+          parentLabel: label,
+        });
+        break;
+      }
+      case LabelType.GroupPart: {
+        if (!('index' in props)) throw 'unreachable';
+        dispatch({
+          ...props,
+          label,
+          // If this isn't done, we are replacing total
+          // with percentage value
+          value: originalValue,
+          type: ProportionChangeType.Group,
+          index: props.index,
+        });
+      }
+    }
+  };
+
+  const seletedLabel = useMemo(() => {
+    return bodyParts.find(({ label }) => label === state.currentLabel);
+  }, [state]);
+
+  const move = (action: 'next' | 'prev') => {
+    const elem = srcollerRef.current?.querySelector(
+      `div[itemid=${state.currentLabel}]`
+    );
+
+    const moveId = (id: string, elem: HTMLDivElement) => {
+      elem?.scrollIntoView({
+        behavior: 'smooth',
+        block: 'center',
+      });
+      selectNew(id);
+    };
+
+    if (action === 'prev') {
+      const prevElem = elem?.previousSibling as HTMLDivElement;
+      const prevId = prevElem.getAttribute('itemid');
+      if (!prevId) return;
+      moveId(prevId, prevElem);
+    }
+
+    if (action === 'next') {
+      const nextElem = elem?.nextSibling as HTMLDivElement;
+      const nextId = nextElem.getAttribute('itemid');
+      if (!nextId) return;
+      moveId(nextId, nextElem);
+    }
+  };
+
   return (
-    <div className="relative w-full">
-      <div
-        className={classNames(
-          'flex flex-col xs:overflow-y-scroll xs:overflow-x-hidden xs:max-h-[450px] xs:h-[54vh]',
-          'w-full px-1 gap-3 xs:gradient-mask-b-90'
-        )}
-      >
-        <>
-          {bodyParts.map(({ label, type, value: originalValue, ...props }) => {
-            const value =
-              'index' in props && props.index !== undefined
-                ? props.bones[props.index].value
-                : originalValue;
-            const selected = isMobile || currentSelection.label === label;
-
-            const selectNew = () => {
-              switch (type) {
-                case LabelType.Bone: {
-                  if (!('bone' in props)) throw 'unreachable';
-                  dispatch({
-                    ...props,
-                    label,
-                    value,
-                    type: ProportionChangeType.Bone,
-                  });
-                  break;
-                }
-                case LabelType.Group: {
-                  if (!('bones' in props)) throw 'unreachable';
-                  dispatch({
-                    ...props,
-                    label,
-                    value,
-                    type: ProportionChangeType.Group,
-                    index: undefined,
-                    parentLabel: label,
-                  });
-                  break;
-                }
-                case LabelType.GroupPart: {
-                  if (!('index' in props)) throw 'unreachable';
-                  dispatch({
-                    ...props,
-                    label,
-                    // If this isn't done, we are replacing total
-                    // with percentage value
-                    value: originalValue,
-                    type: ProportionChangeType.Group,
-                    index: props.index,
-                  });
-                }
+    (bodyParts.length > 0 && (
+      <div className="flex w-full gap-3">
+        <div className="flex items-center mobile:justify-center mobile:flex-col gap-2 my-2">
+          {!precise && (
+            <IncrementButton
+              onClick={() =>
+                seletedLabel?.type === LabelType.GroupPart
+                  ? dispatch({
+                      type: ProportionChangeType.Ratio,
+                      value: -0.05,
+                    })
+                  : dispatch({
+                      type: ProportionChangeType.Linear,
+                      value: -5,
+                    })
               }
-            };
+            >
+              {configFormat.format(-5)}
+            </IncrementButton>
+          )}
+          <IncrementButton
+            onClick={() =>
+              seletedLabel?.type === LabelType.GroupPart
+                ? dispatch({
+                    type: ProportionChangeType.Ratio,
+                    value: -0.01,
+                  })
+                : dispatch({
+                    type: ProportionChangeType.Linear,
+                    value: -1,
+                  })
+            }
+          >
+            {configFormat.format(-1)}
+          </IncrementButton>
+          {precise && (
+            <IncrementButton
+              onClick={() =>
+                seletedLabel?.type === LabelType.GroupPart
+                  ? dispatch({
+                      type: ProportionChangeType.Ratio,
+                      value: -0.005,
+                    })
+                  : dispatch({
+                      type: ProportionChangeType.Linear,
+                      value: -0.5,
+                    })
+              }
+            >
+              {configFormat.format(-0.5)}
+            </IncrementButton>
+          )}
+        </div>
+        <div className="flex flex-grow flex-col">
+          <div className="flex justify-center">
+            <div
+              onClick={() => move('prev')}
+              className={classNames(
+                'h-12 w-32 rounded-lg bg-background-60 flex flex-col justify-center',
+                'items-center fill-background-10',
+                srcollerRef?.current?.scrollTop ?? 0 > 0
+                  ? 'opacity-100 active:bg-accent-background-30'
+                  : 'opacity-50'
+              )}
+            >
+              <ArrowUpIcon size={32}></ArrowUpIcon>
+            </div>
+          </div>
+          <div
+            ref={srcollerRef}
+            onScroll={handleUIEvent}
+            className="h-60 flex-grow flex-col overflow-y-auto snap-y snap-mandatory snap-always no-scrollbar"
+          >
+            <div className="h-20 snap-start "></div>
+            {bodyParts.map((part) => {
+              const { label, value: originalValue, type, ...props } = part;
+              const value =
+                'index' in props && props.index !== undefined
+                  ? props.bones[props.index].value
+                  : originalValue;
 
-            return (
-              <div className="flex" key={label}>
+              const selected = state.currentLabel === label;
+
+              return (
                 <div
-                  className={classNames(
-                    'flex gap-2 transition-opacity duration-300',
-                    !selected && 'opacity-0 pointer-events-none'
-                  )}
-                >
-                  {!precise && (
-                    <IncrementButton
-                      onClick={() => {
-                        selectNew();
-                        return type === LabelType.GroupPart
-                          ? dispatch({
-                              type: ProportionChangeType.Ratio,
-                              value: -0.05,
-                            })
-                          : dispatch({
-                              type: ProportionChangeType.Linear,
-                              value: -5,
-                            });
-                      }}
-                    >
-                      {configFormat.format(-5)}
-                    </IncrementButton>
-                  )}
-                  <IncrementButton
-                    onClick={() => {
-                      selectNew();
-                      return type === LabelType.GroupPart
-                        ? dispatch({
-                            type: ProportionChangeType.Ratio,
-                            value: -0.01,
-                          })
-                        : dispatch({
-                            type: ProportionChangeType.Linear,
-                            value: -1,
-                          });
-                    }}
-                  >
-                    {configFormat.format(-1)}
-                  </IncrementButton>
-                  {precise && (
-                    <IncrementButton
-                      onClick={() => {
-                        selectNew();
-                        return type === LabelType.GroupPart
-                          ? dispatch({
-                              type: ProportionChangeType.Ratio,
-                              value: -0.005,
-                            })
-                          : dispatch({
-                              type: ProportionChangeType.Linear,
-                              value: -0.5,
-                            });
-                      }}
-                    >
-                      {configFormat.format(-0.5)}
-                    </IncrementButton>
-                  )}
-                </div>
-                <div
-                  className="flex flex-grow flex-col px-2"
-                  onClick={selectNew}
+                  key={label}
+                  itemID={label}
+                  onClick={clickPart(label)}
+                  className="snap-start h-20 flex-col flex justify-center"
                 >
                   <div
-                    key={label}
                     className={classNames(
-                      'p-3 rounded-lg xs:h-16 flex w-full items-center justify-between xs:px-6 mobile:px-3 transition-colors duration-300 bg-background-60',
-                      (selected && 'opacity-100') || 'opacity-50'
+                      'h-16 p-3 rounded-lg flex w-full items-center justify-between px-6 transition-colors',
+                      'duration-300 bg-background-60',
+                      (selected && 'opacity-100') ||
+                        'opacity-50 active:bg-accent-background-30'
                     )}
                   >
                     <Typography variant="section-title" bold>
@@ -211,70 +312,81 @@ export function BodyProportions({
                     </Typography>
                   </div>
                 </div>
-                <div
-                  className={classNames(
-                    'flex gap-2 transition-opacity duration-300',
-                    !selected && 'opacity-0 pointer-events-none'
-                  )}
-                >
-                  {precise && (
-                    <IncrementButton
-                      onClick={() => {
-                        selectNew();
-                        return type === LabelType.GroupPart
-                          ? dispatch({
-                              type: ProportionChangeType.Ratio,
-                              value: 0.005,
-                            })
-                          : dispatch({
-                              type: ProportionChangeType.Linear,
-                              value: 0.5,
-                            });
-                      }}
-                    >
-                      {configFormat.format(+0.5)}
-                    </IncrementButton>
-                  )}
-                  <IncrementButton
-                    onClick={() => {
-                      selectNew();
-                      return type === LabelType.GroupPart
-                        ? dispatch({
-                            type: ProportionChangeType.Ratio,
-                            value: 0.01,
-                          })
-                        : dispatch({
-                            type: ProportionChangeType.Linear,
-                            value: 1,
-                          });
-                    }}
-                  >
-                    {configFormat.format(+1)}
-                  </IncrementButton>
-                  {!precise && (
-                    <IncrementButton
-                      onClick={() => {
-                        selectNew();
-                        return type === LabelType.GroupPart
-                          ? dispatch({
-                              type: ProportionChangeType.Ratio,
-                              value: 0.05,
-                            })
-                          : dispatch({
-                              type: ProportionChangeType.Linear,
-                              value: 5,
-                            });
-                      }}
-                    >
-                      {configFormat.format(+5)}
-                    </IncrementButton>
-                  )}
-                </div>
-              </div>
-            );
-          })}
-        </>
+              );
+            })}
+            <div className="h-20 snap-start"></div>
+          </div>
+          <div className="flex justify-center">
+            <div
+              onClick={() => move('next')}
+              className={classNames(
+                'h-12 w-32 rounded-lg bg-background-60 flex flex-col justify-center',
+                'items-center fill-background-10',
+                srcollerRef?.current?.scrollTop !==
+                  (srcollerRef?.current?.scrollHeight ?? 0) -
+                    (srcollerRef?.current?.offsetHeight ?? 0)
+                  ? 'opacity-100 active:bg-accent-background-30'
+                  : 'opacity-50'
+              )}
+            >
+              <ArrowDownIcon size={32}></ArrowDownIcon>
+            </div>
+          </div>
+        </div>
+
+        <div className="flex items-center mobile:justify-center mobile:flex-col gap-2">
+          {precise && (
+            <IncrementButton
+              onClick={() =>
+                seletedLabel?.type === LabelType.GroupPart
+                  ? dispatch({
+                      type: ProportionChangeType.Ratio,
+                      value: 0.005,
+                    })
+                  : dispatch({
+                      type: ProportionChangeType.Linear,
+                      value: 0.5,
+                    })
+              }
+            >
+              {configFormat.format(+0.5)}
+            </IncrementButton>
+          )}
+
+          <IncrementButton
+            onClick={() =>
+              seletedLabel?.type === LabelType.GroupPart
+                ? dispatch({
+                    type: ProportionChangeType.Ratio,
+                    value: 0.01,
+                  })
+                : dispatch({
+                    type: ProportionChangeType.Linear,
+                    value: 1,
+                  })
+            }
+          >
+            {configFormat.format(+1)}
+          </IncrementButton>
+          {!precise && (
+            <IncrementButton
+              onClick={() =>
+                seletedLabel?.type === LabelType.GroupPart
+                  ? dispatch({
+                      type: ProportionChangeType.Ratio,
+                      value: 0.05,
+                    })
+                  : dispatch({
+                      type: ProportionChangeType.Linear,
+                      value: 5,
+                    })
+              }
+            >
+              {configFormat.format(+5)}
+            </IncrementButton>
+          )}
+        </div>
       </div>
-    </div>
+    )) || <></>
   );
 }
