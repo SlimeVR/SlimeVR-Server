@@ -45,7 +45,7 @@ export function Dropdown({
         isOpen &&
         !document
           .querySelector('div.dropdown-scroll')
-          ?.contains(event.target as any)
+          ?.contains(event.target as HTMLDivElement)
       ) {
         setOpen(false);
       }
@@ -54,10 +54,10 @@ export function Dropdown({
     function onClick(event: MouseEvent) {
       const isInDropdownScroll = document
         .querySelector('div.dropdown-scroll')
-        ?.contains(event.target as any);
+        ?.contains(event.target as HTMLDivElement);
       const isInDropdown = document
         .querySelector('div.dropdown')
-        ?.contains(event.target as any);
+        ?.contains(event.target as HTMLDivElement);
       if (isOpen && !isInDropdownScroll && !isInDropdown) {
         setOpen(false);
       }

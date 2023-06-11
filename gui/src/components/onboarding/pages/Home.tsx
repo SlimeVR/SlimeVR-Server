@@ -7,10 +7,8 @@ import { LangSelector } from '../../commons/LangSelector';
 import { Typography } from '../../commons/Typography';
 import { SkipSetupButton } from '../SkipSetupButton';
 import { SkipSetupWarningModal } from '../SkipSetupWarningModal';
-import { useBreakpoint } from '../../../hooks/breakpoint';
 
 export function HomePage() {
-  const { isMobile } = useBreakpoint('mobile');
   const { l10n } = useLocalization();
   const { applyProgress, skipSetup } = useOnboarding();
   const [skipWarning, setSkipWarning] = useState(false);
