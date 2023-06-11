@@ -80,7 +80,7 @@ export function CalibrationTutorialPage() {
           onClick={() => setSkipWarning(true)}
         ></SkipSetupButton>
         <div className="flex w-full h-full justify-center xs:px-20 mobile:px-5 pb-5 gap-14">
-          <div className="flex gap-4  self-center mobile:z-10">
+          <div className="flex gap-4 self-center mobile:z-10">
             <div className="flex flex-col max-w-md gap-3">
               <div>
                 <Typography variant={isMobile ? 'section-title' : 'main-title'}>
