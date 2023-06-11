@@ -67,15 +67,15 @@ export function ManualProportionsPage() {
 
   return (
     <>
-      <div className="flex flex-col gap-5 h-full items-center w-full xs:justify-center relative">
+      <div className="flex flex-col gap-5 h-full items-center w-full xs:justify-center overflow-y-auto relative">
         <SkipSetupButton
           visible={!state.alonePage}
           modalVisible={skipWarning}
           onClick={() => setSkipWarning(true)}
         ></SkipSetupButton>
-        <div className="flex flex-col w-full h-full max-w-5xl justify-center">
+        <div className="flex flex-col w-full h-full xs:max-w-5xl xs:justify-center">
           <div className="flex gap-8 justify-center">
-            <div className="flex flex-col w-full max-w-2xl gap-3 items-center">
+            <div className="flex flex-col w-full xs:max-w-2xl gap-3 items-center">
               <div className="flex flex-col">
                 <Typography variant="main-title">
                   {l10n.getString('onboarding-manual_proportions-title')}

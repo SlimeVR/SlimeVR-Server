@@ -134,8 +134,8 @@ export function ConnectTrackersPage() {
         modalVisible={skipWarning}
         onClick={() => setSkipWarning(true)}
       ></SkipSetupButton>
-      <div className="flex gap-10 w-full max-w-7xl ">
-        <div className="flex flex-col w-full max-w-sm">
+      <div className="flex gap-10 w-full xs:max-w-7xl">
+        <div className="flex flex-col w-full max-w-sm px-4">
           <Typography variant="main-title">
             {l10n.getString('onboarding-connect_tracker-title')}
           </Typography>
