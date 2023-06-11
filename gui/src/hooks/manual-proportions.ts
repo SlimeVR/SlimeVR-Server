@@ -198,11 +198,11 @@ export const INVALID_BONE: BoneState = {
 };
 
 export function useManualProportions(): {
-  bodyParts: Label[],
-  ratioMode: boolean,
-  state: ProportionState,
-  dispatch: (change: ProportionChange) => void,
-  setRatioMode: (ratio: boolean) => void
+  bodyParts: Label[];
+  ratioMode: boolean;
+  state: ProportionState;
+  dispatch: (change: ProportionChange) => void;
+  setRatioMode: (ratio: boolean) => void;
 } {
   const { useRPCPacket, sendRPCPacket } = useWebsocketAPI();
   const [config, setConfig] = useState<Omit<SkeletonConfigResponseT, 'pack'> | null>(
@@ -348,7 +348,7 @@ export function useManualProportions(): {
     setConfig(conf);
   }, [state]);
 
-  return { bodyParts, ratioMode: ratio, state, dispatch, setRatioMode: setRatio};
+  return { bodyParts, ratioMode: ratio, state, dispatch, setRatioMode: setRatio };
 }
 
 function roundedStep(value: number, step: number, add: boolean): number {
