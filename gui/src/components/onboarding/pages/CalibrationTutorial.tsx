@@ -157,7 +157,7 @@ export function CalibrationTutorialPage() {
             </div>
           </div>
           <div className="mobile:hidden flex self-center w-[32rem] mobile:absolute">
-            <div className="stroke-none xs:fill-background-10  mobile:fill-background-50 mobile:blur-sm">
+            <div className="stroke-none xs:fill-background-10 mobile:fill-background-50 mobile:blur-sm">
               <TaybolIcon width="500"></TaybolIcon>
             </div>
           </div>
