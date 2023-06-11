@@ -23,7 +23,7 @@ export function MountingChoose() {
           modalVisible={skipWarning}
           onClick={() => setSkipWarning(true)}
         ></SkipSetupButton>
-        <div className="flex flex-col gap-4 justify-center ">
+        <div className="flex flex-col gap-4 justify-center">
           <div className="xs:w-10/12 xs:max-w-[666px]">
             <Typography variant="main-title">
               {l10n.getString('onboarding-choose_mounting')}

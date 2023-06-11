@@ -245,7 +245,7 @@ export function TrackersAssignPage() {
       <NeckWarningModal
         isOpen={shouldShowChokerWarn}
         overlayClassName={classNames(
-          'fixed top-0 right-0 left-0 bottom-0 flex flex-col items-center w-full h-full justify-center bg-black bg-opacity-90 z-20 '
+          'fixed top-0 right-0 left-0 bottom-0 flex flex-col items-center w-full h-full justify-center bg-black bg-opacity-90 z-20'
         )}
         onClose={() => closeChokerWarning(true)}
         accept={() => closeChokerWarning(false)}

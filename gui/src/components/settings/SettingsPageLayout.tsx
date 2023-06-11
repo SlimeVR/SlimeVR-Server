@@ -8,7 +8,7 @@ export function SettingsPageLayout({
   ...props
 }: {
   children: ReactNode;
-} & React.HTMLAttributes<any>) {
+} & React.HTMLAttributes<HTMLDivElement>) {
   const pageRef = useRef<HTMLDivElement | null>(null);
   const { state } = useLocation();
 
