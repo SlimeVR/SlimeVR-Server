@@ -1,6 +1,7 @@
 package dev.slimevr
 
 import android.os.Bundle
+import android.webkit.WebSettings
 import android.webkit.WebView
 import androidx.appcompat.app.AppCompatActivity
 import io.eiren.util.logging.LogManager
@@ -29,14 +30,23 @@ class MainActivity : AppCompatActivity() {
 		LogManager.info("[MainActivity] Initializing GUI WebView...")
 		val guiWebView = findViewById<WebView>(R.id.guiWebView)
 
-		// Configure for web GUI
+		// ## Configure for web GUI ##
+		// Enable debug mode
 		WebView.setWebContentsDebuggingEnabled(true)
+
+		// Set required features
 		guiWebView.settings.javaScriptEnabled = true
 		guiWebView.settings.domStorageEnabled = true
+
+		// Try fixing zoom usability
 		guiWebView.settings.setSupportZoom(true)
 		guiWebView.settings.useWideViewPort = true
 		guiWebView.settings.loadWithOverviewMode = true
 		guiWebView.invokeZoomPicker()
+
+		// Disable cache! This is all local anyways
+		guiWebView.settings.cacheMode = WebSettings.LOAD_NO_CACHE
+		guiWebView.clearCache(true)
 
 		// Load GUI page
 		guiWebView.loadUrl("http://127.0.0.1:8080/")
