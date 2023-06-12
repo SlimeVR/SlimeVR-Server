@@ -7,6 +7,7 @@ import java.util.Map;
 
 
 public enum SkeletonConfigOffsets {
+	// Note: GUI uses this order to sort (not ID)
 	HEAD(
 		1,
 		"headShift",
@@ -20,10 +21,16 @@ public enum SkeletonConfigOffsets {
 		new BoneType[] { BoneType.NECK }
 	),
 	UPPER_CHEST(
-		3,
+		21,
 		"upperChestLength",
 		0.16f,
 		new BoneType[] { BoneType.UPPER_CHEST, BoneType.CHEST_TRACKER }
+	),
+	CHEST(
+		3,
+		"chestLength",
+		0.16f,
+		new BoneType[] { BoneType.CHEST, BoneType.CHEST_TRACKER }
 	),
 	CHEST_OFFSET(
 		4,
@@ -31,62 +38,56 @@ public enum SkeletonConfigOffsets {
 		0.0f,
 		new BoneType[] { BoneType.CHEST_TRACKER }
 	),
-	CHEST(
-		5,
-		"chestLength",
-		0.16f,
-		new BoneType[] { BoneType.CHEST, BoneType.CHEST_TRACKER }
-	),
 	WAIST(
-		6,
+		5,
 		"waistLength",
 		0.20f,
 		new BoneType[] { BoneType.WAIST }
 	),
 	HIP(
-		7,
+		6,
 		"hipLength",
 		0.04f,
 		new BoneType[] { BoneType.HIP }
 	),
 	HIP_OFFSET(
-		8,
+		7,
 		"hipOffset",
 		0.0f,
 		new BoneType[] { BoneType.HIP_TRACKER }
 	),
 	HIPS_WIDTH(
-		9,
+		8,
 		"hipsWidth",
 		0.26f,
 		new BoneType[] { BoneType.LEFT_HIP, BoneType.RIGHT_HIP }
 	),
 	UPPER_LEG(
-		10,
+		9,
 		"upperLegLength",
 		0.42f,
 		new BoneType[] { BoneType.LEFT_UPPER_LEG, BoneType.RIGHT_UPPER_LEG }
 	),
 	LOWER_LEG(
-		11,
+		10,
 		"lowerLegLength",
 		0.50f,
 		new BoneType[] { BoneType.LEFT_LOWER_LEG, BoneType.RIGHT_LOWER_LEG }
 	),
 	FOOT_LENGTH(
-		12,
+		11,
 		"footLength",
 		0.05f,
 		new BoneType[] { BoneType.LEFT_FOOT, BoneType.RIGHT_FOOT }
 	),
 	FOOT_SHIFT(
-		13,
+		12,
 		"footShift",
 		-0.05f,
 		new BoneType[] { BoneType.LEFT_LOWER_LEG, BoneType.RIGHT_LOWER_LEG }
 	),
 	SKELETON_OFFSET(
-		14,
+		13,
 		"skeletonOffset",
 		0.0f,
 		new BoneType[] { BoneType.CHEST_TRACKER, BoneType.HIP_TRACKER,
@@ -94,43 +95,43 @@ public enum SkeletonConfigOffsets {
 			BoneType.LEFT_FOOT_TRACKER, BoneType.RIGHT_KNEE_TRACKER }
 	),
 	SHOULDERS_DISTANCE(
-		15,
+		14,
 		"shouldersDistance",
 		0.08f,
 		new BoneType[] { BoneType.LEFT_SHOULDER, BoneType.RIGHT_SHOULDER }
 	),
 	SHOULDERS_WIDTH(
-		16,
+		15,
 		"shouldersWidth",
 		0.36f,
 		new BoneType[] { BoneType.LEFT_SHOULDER, BoneType.RIGHT_SHOULDER }
 	),
 	UPPER_ARM(
-		17,
+		16,
 		"upperArmLength",
 		0.26f,
 		new BoneType[] { BoneType.LEFT_UPPER_ARM, BoneType.RIGHT_UPPER_ARM }
 	),
 	LOWER_ARM(
-		18,
+		17,
 		"lowerArmLength",
 		0.26f,
 		new BoneType[] { BoneType.LEFT_LOWER_ARM, BoneType.RIGHT_LOWER_ARM }
 	),
 	HAND_Y(
-		19,
+		18,
 		"handDistanceY",
 		0.035f,
 		new BoneType[] { BoneType.LEFT_HAND, BoneType.RIGHT_HAND }
 	),
 	HAND_Z(
-		20,
+		19,
 		"handDistanceZ",
 		0.13f,
 		new BoneType[] { BoneType.LEFT_HAND, BoneType.RIGHT_HAND }
 	),
 	ELBOW_OFFSET(
-		21,
+		20,
 		"elbowOffset",
 		0.0f,
 		new BoneType[] { BoneType.LEFT_ELBOW_TRACKER, BoneType.RIGHT_ELBOW_TRACKER }
