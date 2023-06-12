@@ -18,7 +18,7 @@ import java.time.ZonedDateTime
 import kotlin.concurrent.thread
 import kotlin.system.exitProcess
 
-val VERSION = "v0.7.1/android"
+val VERSION = "v0.8.0-rc.1/android"
 lateinit var vrServer: VRServer
 	private set
 val vrServerInitialized: Boolean

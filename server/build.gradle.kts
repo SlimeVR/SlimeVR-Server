@@ -147,10 +147,10 @@ android {
 		targetSdk = 33
 
 		// Defines the version number of your app.
-		versionCode = 7
+		versionCode = 8
 
 		// Defines a user-friendly version name for your app.
-		versionName = "0.7.1"
+		versionName = "0.8.0-rc.1"
 
 		testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
 	}
