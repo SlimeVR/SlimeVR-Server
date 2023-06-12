@@ -11,7 +11,7 @@ import java.io.ByteArrayOutputStream
 plugins {
 	kotlin("plugin.serialization") version "1.8.21"
 	id("com.diffplug.spotless") version "6.12.0"
-	id("com.github.gmazzo.buildconfig") version "4.0.4"
+	id("com.github.gmazzo.buildconfig") version "3.1.0"
 
 	id("com.android.application") version "8.0.2"
 	id("org.jetbrains.kotlin.android") version "1.8.21"
