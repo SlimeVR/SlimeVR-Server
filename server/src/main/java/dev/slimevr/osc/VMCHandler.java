@@ -39,7 +39,6 @@ public class VMCHandler implements OSCHandler {
 	private final VMCConfig config;
 	private final VRServer server;
 	private final HumanPoseManager humanPoseManager;
-	private final List<Tracker> computedTrackers;
 	private final FastList<Object> oscArgs = new FastList<>();
 	private final long startTime;
 	private final Map<String, Tracker> byTrackerNameTracker = new HashMap<>();
@@ -64,7 +63,6 @@ public class VMCHandler implements OSCHandler {
 		this.server = server;
 		this.humanPoseManager = humanPoseManager;
 		this.config = oscConfig;
-		this.computedTrackers = computedTrackers;
 
 		startTime = System.currentTimeMillis();
 
@@ -451,31 +449,38 @@ public class VMCHandler implements OSCHandler {
 					}
 				}
 
-				for (Tracker shareableTracker : computedTrackers) {
-					oscArgs.clear();
-					oscArgs.add(String.valueOf(shareableTracker.getId()));
-					addTransformToArgs(
-						shareableTracker.getPosition(),
-						shareableTracker.getRotation()
-					);
-					String address;
-					TrackerPosition role = shareableTracker.getTrackerPosition();
-					if (role == TrackerPosition.HEAD) {
-						address = "/VMC/Ext/Hmd/Pos";
-					} else if (
-						role == TrackerPosition.LEFT_HAND || role == TrackerPosition.RIGHT_HAND
-					) {
-						address = "/VMC/Ext/Con/Pos";
-					} else {
-						address = "/VMC/Ext/Tra/Pos";
-					}
-					oscBundle
-						.addPacket(
-							new OSCMessage(
-								address,
-								oscArgs.clone()
-							)
+				// TODO don't loop every loop
+				for (Tracker tracker : server.getAllTrackers()) {
+					if (tracker.getHasPosition()) {
+						oscArgs.clear();
+						// TODO guh
+						String name = tracker.getName();
+						if (tracker.getDevice() != null)
+							name = tracker.getDevice().getFirmwareVersion();
+						oscArgs.add(name);
+						addTransformToArgs(
+							tracker.getPosition(),
+							tracker.getRotation()
 						);
+						String address;
+						TrackerPosition role = tracker.getTrackerPosition();
+						if (role == TrackerPosition.HEAD) {
+							address = "/VMC/Ext/Hmd/Pos";
+						} else if (
+							role == TrackerPosition.LEFT_HAND || role == TrackerPosition.RIGHT_HAND
+						) {
+							address = "/VMC/Ext/Con/Pos";
+						} else {
+							address = "/VMC/Ext/Tra/Pos";
+						}
+						oscBundle
+							.addPacket(
+								new OSCMessage(
+									address,
+									oscArgs.clone()
+								)
+							);
+					}
 				}
 
 				// Send OSC packets as bundle

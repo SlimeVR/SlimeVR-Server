@@ -4,13 +4,10 @@ import dev.slimevr.Main;
 import dev.slimevr.VRServer;
 import dev.slimevr.bridge.ProtobufBridge;
 import dev.slimevr.bridge.ProtobufMessages;
-import dev.slimevr.bridge.ProtobufMessages.*;
+import dev.slimevr.bridge.ProtobufMessages.Battery;
+import dev.slimevr.bridge.ProtobufMessages.ProtobufMessage;
 import dev.slimevr.config.BridgeConfig;
-import dev.slimevr.tracking.trackers.Device;
-import dev.slimevr.tracking.trackers.Tracker;
-import dev.slimevr.tracking.trackers.TrackerPosition;
-import dev.slimevr.tracking.trackers.TrackerUtils;
-import dev.slimevr.tracking.trackers.TrackerRole;
+import dev.slimevr.tracking.trackers.*;
 import dev.slimevr.util.ann.VRServerThread;
 import solarxr_protocol.rpc.StatusData;
 import solarxr_protocol.rpc.StatusDataUnion;
@@ -116,7 +113,8 @@ public abstract class SteamVRBridge extends ProtobufBridge implements Runnable {
 			// FIXME use SteamVR tracker's id for SlimeVR tracker's trackerNum,
 			// and use VRServer's unique id for SlimeVR tracker' id
 			trackerAdded.getTrackerId(),
-			trackerAdded.getTrackerName(),
+			trackerAdded.getTrackerName(), // TODO this isn't unique and somehow
+											// config works, da hell
 			displayName,
 			null,
 			null,
