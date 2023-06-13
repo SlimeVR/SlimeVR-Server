@@ -165,7 +165,7 @@ export function TrackerSettingsPage() {
         onClose={() => setSelectRotation(false)}
         onDirectionSelected={onDirectionSelected}
       ></MountingSelectionMenu>
-      <div className="flex gap-2 md:h-full max-md:flex-wrap md:flex-row ">
+      <div className="flex gap-2 md:h-full max-md:flex-wrap md:flex-row xs:flex-col mobile:flex-col">
         <div className="flex flex-col w-full md:max-w-xs gap-2">
           {tracker && (
             <TrackerCard

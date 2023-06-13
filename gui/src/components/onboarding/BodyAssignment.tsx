@@ -41,12 +41,14 @@ export function BodyAssignment({
   rolesWithErrors = {},
   highlightedRoles = [],
   onlyAssigned = false,
+  width,
 }: {
   advanced: boolean;
   onlyAssigned?: boolean;
   rolesWithErrors?: Partial<Record<BodyPart, BodyPartError>>;
   highlightedRoles?: BodyPart[];
   onRoleSelected: (role: BodyPart) => void;
+  width?: number;
 }) {
   const { useAssignedTrackers } = useTrackers();
 
@@ -81,6 +83,7 @@ export function BodyAssignment({
   return (
     <>
       <BodyInteractions
+        width={width}
         assignedRoles={assignedRoles}
         highlightedRoles={highlightedRoles}
         onSelectRole={onRoleSelected}

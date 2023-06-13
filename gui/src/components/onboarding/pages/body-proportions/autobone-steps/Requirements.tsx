@@ -22,7 +22,7 @@ export function RequirementsStep({
               'onboarding-automatic_proportions-requirements-title'
             )}
           </Typography>
-          <ul className="list-disc">
+          <ul className="list-disc mobile:px-4">
             <>
               {l10n
                 .getString(
@@ -38,7 +38,7 @@ export function RequirementsStep({
           </ul>
         </div>
 
-        <div className="flex gap-3">
+        <div className="flex gap-3 mobile:justify-between">
           <Button
             variant={variant === 'onboarding' ? 'secondary' : 'tertiary'}
             onClick={prevStep}

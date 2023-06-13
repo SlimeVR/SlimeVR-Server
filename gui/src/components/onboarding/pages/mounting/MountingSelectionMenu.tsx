@@ -19,7 +19,7 @@ function MoutingOrientationCard({
   return (
     <div
       onClick={onClick}
-      className="h-32 bg-background-60 rounded-md flex justify-between p-4 hover:bg-background-50"
+      className="xs:h-32 mobile:h-20 bg-background-60 rounded-md flex justify-between p-4 hover:bg-background-50"
     >
       <div className="flex flex-col justify-center">
         <Typography variant="main-title">{orientation}</Typography>
@@ -56,7 +56,7 @@ export function MountingSelectionMenu({
         'fixed top-0 right-0 left-0 bottom-0 flex flex-col items-center w-full h-full bg-black bg-opacity-90 z-20'
       )}
       className={classNames(
-        'focus:ring-transparent focus:ring-offset-transparent focus:outline-transparent outline-none mt-20 z-10'
+        'focus:ring-transparent focus:ring-offset-transparent focus:outline-transparent outline-none mt-20 z-10 px-2'
       )}
     >
       <div className="flex w-full h-full flex-col ">
@@ -64,11 +64,11 @@ export function MountingSelectionMenu({
           {l10n.getString('mounting_selection_menu')}
         </Typography>
         <div
-          className="flex w-full flex-col flex-grow items-center gap-3 justify-center"
+          className="flex w-full flex-col flex-grow items-center gap-3 xs:justify-center"
           ref={refTrackers}
           style={{ height: trackersHeight - optionsHeight }}
         >
-          <div className="grid grid-cols-2 grid-rows-2 gap-6 w-full">
+          <div className="grid xs:grid-cols-2 xs:grid-rows-2 mobile:grid-cols-1 gap-6 w-full">
             <MoutingOrientationCard
               orientation={l10n.getString('tracker-rotation-left')}
               onClick={() => onDirectionSelected(rotationToQuatMap.LEFT)}
