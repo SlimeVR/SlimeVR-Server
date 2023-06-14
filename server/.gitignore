@@ -21,4 +21,4 @@ Load AutoBone Recordings
 logs/
 
 # Android
-/src/main/resources/web-gui/
+/core/src/main/resources/web-gui/
