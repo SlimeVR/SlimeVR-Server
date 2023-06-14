@@ -5,6 +5,7 @@ import dev.slimevr.tracking.trackers.Device
 import dev.slimevr.tracking.trackers.Tracker
 import java.net.InetAddress
 import java.net.SocketAddress
+import java.util.concurrent.ConcurrentHashMap
 
 class UDPDevice(
 	var address: SocketAddress,
@@ -50,7 +51,7 @@ class UDPDevice(
 
 	@JvmField
 	var timedOut = false
-	override val trackers = HashMap<Int, Tracker>()
+	override val trackers = ConcurrentHashMap<Int, Tracker>()
 
 	fun isNextPacket(packetId: Long): Boolean {
 		if (packetId != 0L && packetId <= lastPacketNumber) return false

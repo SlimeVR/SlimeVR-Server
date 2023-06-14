@@ -39,7 +39,7 @@ export function SkipSetupWarningModal({
       overlayClassName={props.overlayClassName}
     >
       <div className="flex w-full h-full flex-col ">
-        <div className="flex w-full flex-col flex-grow items-center gap-3">
+        <div className="flex flex-col flex-grow items-center gap-3">
           <Localized id="onboarding-setup_warning" elems={{ b: <b></b> }}>
             <WarningBox>
               <b>Warning:</b> The setup is needed for good tracking, this is

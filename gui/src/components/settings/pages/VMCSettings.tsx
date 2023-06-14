@@ -1,7 +1,6 @@
 import { Localized, useLocalization } from '@fluent/react';
-import { useEffect, useRef, useState } from 'react';
+import { useEffect, useState } from 'react';
 import { useForm } from 'react-hook-form';
-import { useLocation } from 'react-router-dom';
 import {
   ChangeSettingsRequestT,
   RpcMessage,
@@ -17,7 +16,10 @@ import { VMCIcon } from '../../commons/icon/VMCIcon';
 import { Input } from '../../commons/Input';
 import { Typography } from '../../commons/Typography';
 import { magic } from '../../utils/formatting';
-import { SettingsPageLayout } from '../SettingsPageLayout';
+import {
+  SettingsPageLayout,
+  SettingsPagePaneLayout,
+} from '../SettingsPageLayout';
 
 interface VMCSettingsForm {
   vmc: {
@@ -47,8 +49,6 @@ const defaultValues = {
 export function VMCSettings() {
   const { l10n } = useLocalization();
   const { sendRPCPacket, useRPCPacket } = useWebsocketAPI();
-  const { state } = useLocation();
-  const pageRef = useRef<HTMLFormElement | null>(null);
   const [modelName, setModelName] = useState<string | null>(null);
   const [flashLoaded, setFlashLoaded] = useState(false);
 
@@ -119,170 +119,162 @@ export function VMCSettings() {
     reset(formData);
   });
 
-  // Handle scrolling to selected page
-  useEffect(() => {
-    const typedState: { scrollTo: string } = state as any;
-    if (!pageRef.current || !typedState || !typedState.scrollTo) {
-      return;
-    }
-    const elem = pageRef.current.querySelector(`#${typedState.scrollTo}`);
-    if (elem) {
-      elem.scrollIntoView({ behavior: 'smooth' });
-    }
-  }, [state]);
-
   return (
-    <form className="flex flex-col gap-2 w-full" ref={pageRef}>
-      <SettingsPageLayout icon={<VMCIcon></VMCIcon>} id="vmc">
-        <>
-          <Typography variant="main-title">
-            {l10n.getString('settings-osc-vmc')}
-          </Typography>
-          <div className="flex flex-col pt-2 pb-4">
-            <>
-              {l10n
-                .getString('settings-osc-vmc-description')
-                .split('\n')
-                .map((line, i) => (
-                  <Typography color="secondary" key={i}>
-                    {line}
-                  </Typography>
-                ))}
-            </>
-          </div>
-          <Typography bold>
-            {l10n.getString('settings-osc-vmc-enable')}
-          </Typography>
-          <div className="flex flex-col pb-2">
-            <Typography color="secondary">
-              {l10n.getString('settings-osc-vmc-enable-description')}
+    <SettingsPageLayout>
+      <form className="flex flex-col gap-2 w-full">
+        <SettingsPagePaneLayout icon={<VMCIcon></VMCIcon>} id="vmc">
+          <>
+            <Typography variant="main-title">
+              {l10n.getString('settings-osc-vmc')}
             </Typography>
-          </div>
-          <div className="grid grid-cols-2 gap-3 pb-5">
-            <CheckBox
-              variant="toggle"
-              outlined
-              control={control}
-              name="vmc.oscSettings.enabled"
-              label={l10n.getString('settings-osc-vmc-enable-label')}
-            />
-          </div>
-          <Typography bold>
-            {l10n.getString('settings-osc-vmc-network')}
-          </Typography>
-          <div className="flex flex-col pb-2">
-            <>
-              {l10n
-                .getString('settings-osc-vmc-network-description')
-                .split('\n')
-                .map((line, i) => (
-                  <Typography color="secondary" key={i}>
-                    {line}
-                  </Typography>
-                ))}
-            </>
-          </div>
-          <div className="grid grid-cols-2 gap-3 pb-5">
-            <Localized
-              id="settings-osc-vmc-network-port_in"
-              attrs={{ placeholder: true, label: true }}
-            >
-              <Input
-                type="number"
+            <div className="flex flex-col pt-2 pb-4">
+              <>
+                {l10n
+                  .getString('settings-osc-vmc-description')
+                  .split('\n')
+                  .map((line, i) => (
+                    <Typography color="secondary" key={i}>
+                      {line}
+                    </Typography>
+                  ))}
+              </>
+            </div>
+            <Typography bold>
+              {l10n.getString('settings-osc-vmc-enable')}
+            </Typography>
+            <div className="flex flex-col pb-2">
+              <Typography color="secondary">
+                {l10n.getString('settings-osc-vmc-enable-description')}
+              </Typography>
+            </div>
+            <div className="grid grid-cols-2 gap-3 pb-5">
+              <CheckBox
+                variant="toggle"
+                outlined
                 control={control}
-                name="vmc.oscSettings.portIn"
-                rules={{ required: true }}
-                placeholder="9002"
+                name="vmc.oscSettings.enabled"
+                label={l10n.getString('settings-osc-vmc-enable-label')}
+              />
+            </div>
+            <Typography bold>
+              {l10n.getString('settings-osc-vmc-network')}
+            </Typography>
+            <div className="flex flex-col pb-2">
+              <>
+                {l10n
+                  .getString('settings-osc-vmc-network-description')
+                  .split('\n')
+                  .map((line, i) => (
+                    <Typography color="secondary" key={i}>
+                      {line}
+                    </Typography>
+                  ))}
+              </>
+            </div>
+            <div className="grid grid-cols-2 gap-3 pb-5">
+              <Localized
+                id="settings-osc-vmc-network-port_in"
+                attrs={{ placeholder: true, label: true }}
+              >
+                <Input
+                  type="number"
+                  control={control}
+                  name="vmc.oscSettings.portIn"
+                  rules={{ required: true }}
+                  placeholder="9002"
+                  label=""
+                ></Input>
+              </Localized>
+              <Localized
+                id="settings-osc-vmc-network-port_out"
+                attrs={{ placeholder: true, label: true }}
+              >
+                <Input
+                  type="number"
+                  control={control}
+                  name="vmc.oscSettings.portOut"
+                  rules={{ required: true }}
+                  placeholder="9000"
+                  label=""
+                ></Input>
+              </Localized>
+            </div>
+            <Typography bold>
+              {l10n.getString('settings-osc-vmc-network-address')}
+            </Typography>
+            <div className="flex flex-col pb-2">
+              <Typography color="secondary">
+                {l10n.getString('settings-osc-vmc-network-address-description')}
+              </Typography>
+            </div>
+            <div className="grid gap-3 pb-5">
+              <Input
+                type="text"
+                control={control}
+                name="vmc.oscSettings.address"
+                rules={{
+                  required: true,
+                  pattern:
+                    /^(?!0)(?!.*\.$)((1?\d?\d|25[0-5]|2[0-4]\d)(\.|$)){4}$/i,
+                }}
+                placeholder={l10n.getString(
+                  'settings-osc-vmc-network-address-placeholder'
+                )}
                 label=""
               ></Input>
-            </Localized>
-            <Localized
-              id="settings-osc-vmc-network-port_out"
-              attrs={{ placeholder: true, label: true }}
-            >
-              <Input
-                type="number"
+            </div>
+            <Typography bold>
+              {l10n.getString('settings-osc-vmc-vrm')}
+            </Typography>
+            <div className="flex flex-col pb-2">
+              <Typography color="secondary">
+                {l10n.getString('settings-osc-vmc-vrm-description')}
+              </Typography>
+            </div>
+            <div className="flex flex-col pb-2">
+              <Typography color={flashLoaded ? 'primary' : 'secondary'}>
+                {modelName === null
+                  ? l10n.getString('settings-osc-vmc-vrm-model_unloaded')
+                  : l10n.getString('settings-osc-vmc-vrm-model_loaded', {
+                      name: modelName,
+                      titled: (!!modelName).toString(),
+                    })}
+              </Typography>
+            </div>
+            <div className="grid gap-3 pb-5">
+              <FileInput
                 control={control}
-                name="vmc.oscSettings.portOut"
-                rules={{ required: true }}
-                placeholder="9000"
-                label=""
-              ></Input>
-            </Localized>
-          </div>
-          <Typography bold>
-            {l10n.getString('settings-osc-vmc-network-address')}
-          </Typography>
-          <div className="flex flex-col pb-2">
-            <Typography color="secondary">
-              {l10n.getString('settings-osc-vmc-network-address-description')}
+                name="vmc.vrmJson"
+                rules={{
+                  required: false,
+                }}
+                value="help"
+                label="settings-osc-vmc-vrm-file_select"
+                accept="model/gltf-binary, model/gltf+json, model/vrml, .vrm, .glb, .gltf"
+              ></FileInput>
+              {/* For some reason, linux (GNOME) is detecting the VRM file is a VRML */}
+            </div>
+            <Typography bold>
+              {l10n.getString('settings-osc-vmc-anchor_hip')}
             </Typography>
-          </div>
-          <div className="grid gap-3 pb-5">
-            <Input
-              type="text"
-              control={control}
-              name="vmc.oscSettings.address"
-              rules={{
-                required: true,
-                pattern:
-                  /^(?!0)(?!.*\.$)((1?\d?\d|25[0-5]|2[0-4]\d)(\.|$)){4}$/i,
-              }}
-              placeholder={l10n.getString(
-                'settings-osc-vmc-network-address-placeholder'
-              )}
-              label=""
-            ></Input>
-          </div>
-          <Typography bold>{l10n.getString('settings-osc-vmc-vrm')}</Typography>
-          <div className="flex flex-col pb-2">
-            <Typography color="secondary">
-              {l10n.getString('settings-osc-vmc-vrm-description')}
-            </Typography>
-          </div>
-          <div className="flex flex-col pb-2">
-            <Typography color={flashLoaded ? 'primary' : 'secondary'}>
-              {modelName === null
-                ? l10n.getString('settings-osc-vmc-vrm-model_unloaded')
-                : l10n.getString('settings-osc-vmc-vrm-model_loaded', {
-                    name: modelName,
-                    titled: (!!modelName).toString(),
-                  })}
-            </Typography>
-          </div>
-          <div className="grid gap-3 pb-5">
-            <FileInput
-              control={control}
-              name="vmc.vrmJson"
-              rules={{
-                required: false,
-              }}
-              value="help"
-              label="settings-osc-vmc-vrm-file_select"
-              accept="model/gltf-binary, model/gltf+json, model/vrml, .vrm, .glb, .gltf"
-            ></FileInput>
-            {/* For some reason, linux (GNOME) is detecting the VRM file is a VRML */}
-          </div>
-          <Typography bold>
-            {l10n.getString('settings-osc-vmc-anchor_hip')}
-          </Typography>
-          <div className="flex flex-col pb-2">
-            <Typography color="secondary">
-              {l10n.getString('settings-osc-vmc-anchor_hip-description')}
-            </Typography>
-          </div>
-          <div className="grid grid-cols-2 gap-3 pb-5">
-            <CheckBox
-              variant="toggle"
-              outlined
-              control={control}
-              name="vmc.anchorHip"
-              label={l10n.getString('settings-osc-vmc-anchor_hip-label')}
-            />
-          </div>
-        </>
-      </SettingsPageLayout>
-    </form>
+            <div className="flex flex-col pb-2">
+              <Typography color="secondary">
+                {l10n.getString('settings-osc-vmc-anchor_hip-description')}
+              </Typography>
+            </div>
+            <div className="grid grid-cols-2 gap-3 pb-5">
+              <CheckBox
+                variant="toggle"
+                outlined
+                control={control}
+                name="vmc.anchorHip"
+                label={l10n.getString('settings-osc-vmc-anchor_hip-label')}
+              />
+            </div>
+          </>
+        </SettingsPagePaneLayout>
+      </form>
+    </SettingsPageLayout>
   );
 }
 

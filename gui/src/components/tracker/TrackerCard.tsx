@@ -72,7 +72,7 @@ function TrackerSmol({
   const trackerName = useName();
 
   return (
-    <div className="flex rounded-md py-3 px-5 w-full gap-4 h-16">
+    <div className="flex rounded-md py-3 px-4 w-full gap-4 h-16">
       <div className="flex flex-col justify-center items-center fill-background-10">
         <BodyPartIcon bodyPart={tracker.info?.bodyPart}></BodyPartIcon>
       </div>

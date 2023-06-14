@@ -39,7 +39,7 @@ export function AutomaticProportionsPage() {
 
   return (
     <AutoboneContextC.Provider value={context}>
-      <div className="flex flex-col gap-5 h-full items-center w-full justify-center relative">
+      <div className="flex flex-col gap-5 h-full items-center w-full xs:justify-center relative px-4 pb-4">
         <SkipSetupButton
           visible={!state.alonePage}
           modalVisible={skipWarning}
@@ -70,21 +70,19 @@ export function AutomaticProportionsPage() {
             ></StepperSlider>
           </div>
         </div>
-        <div className="w-full pb-4 flex flex-row">
-          <div className="flex flex-grow gap-3">
-            <Button
-              variant="secondary"
-              onClick={startCountdown}
-              disabled={isCounting}
-            >
-              <div className="relative">
-                <div className="opacity-0 h-0">
-                  {l10n.getString('reset-reset_all')}
-                </div>
-                {!isCounting ? l10n.getString('reset-reset_all') : timer}
+        <div className="w-full pb-4 flex flex-grow flex-row mobile:justify-center">
+          <Button
+            variant="secondary"
+            onClick={startCountdown}
+            disabled={isCounting}
+          >
+            <div className="relative">
+              <div className="opacity-0 h-0">
+                {l10n.getString('reset-reset_all')}
               </div>
-            </Button>
-          </div>
+              {!isCounting ? l10n.getString('reset-reset_all') : timer}
+            </div>
+          </Button>
         </div>
       </div>
       <SkipSetupWarningModal
