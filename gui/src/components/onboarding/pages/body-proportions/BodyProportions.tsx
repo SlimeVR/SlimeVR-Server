@@ -202,53 +202,59 @@ export function BodyProportions({
       <div className="flex w-full gap-3">
         <div className="flex items-center mobile:justify-center mobile:flex-col gap-2 my-2">
           {!precise && (
-            <IncrementButton
-              onClick={() =>
-                seletedLabel?.type === LabelType.GroupPart
-                  ? dispatch({
-                      type: ProportionChangeType.Ratio,
-                      value: -0.05,
-                    })
-                  : dispatch({
-                      type: ProportionChangeType.Linear,
-                      value: -5,
-                    })
-              }
-            >
-              {configFormat.format(-5)}
-            </IncrementButton>
+            <div className="mobile:order-2">
+              <IncrementButton
+                onClick={() =>
+                  seletedLabel?.type === LabelType.GroupPart
+                    ? dispatch({
+                        type: ProportionChangeType.Ratio,
+                        value: -0.05,
+                      })
+                    : dispatch({
+                        type: ProportionChangeType.Linear,
+                        value: -5,
+                      })
+                }
+              >
+                {configFormat.format(-5)}
+              </IncrementButton>
+            </div>
           )}
-          <IncrementButton
-            onClick={() =>
-              seletedLabel?.type === LabelType.GroupPart
-                ? dispatch({
-                    type: ProportionChangeType.Ratio,
-                    value: -0.01,
-                  })
-                : dispatch({
-                    type: ProportionChangeType.Linear,
-                    value: -1,
-                  })
-            }
-          >
-            {configFormat.format(-1)}
-          </IncrementButton>
-          {precise && (
+          <div className="mobile:order-1">
             <IncrementButton
               onClick={() =>
                 seletedLabel?.type === LabelType.GroupPart
                   ? dispatch({
                       type: ProportionChangeType.Ratio,
-                      value: -0.005,
+                      value: -0.01,
                     })
                   : dispatch({
                       type: ProportionChangeType.Linear,
-                      value: -0.5,
+                      value: -1,
                     })
               }
             >
-              {configFormat.format(-0.5)}
+              {configFormat.format(-1)}
             </IncrementButton>
+          </div>
+          {precise && (
+            <div className="mobile:order-2">
+              <IncrementButton
+                onClick={() =>
+                  seletedLabel?.type === LabelType.GroupPart
+                    ? dispatch({
+                        type: ProportionChangeType.Ratio,
+                        value: -0.005,
+                      })
+                    : dispatch({
+                        type: ProportionChangeType.Linear,
+                        value: -0.5,
+                      })
+                }
+              >
+                {configFormat.format(-0.5)}
+              </IncrementButton>
+            </div>
           )}
         </div>
         <div className="flex flex-grow flex-col">
@@ -336,54 +342,60 @@ export function BodyProportions({
 
         <div className="flex items-center mobile:justify-center mobile:flex-col gap-2">
           {precise && (
-            <IncrementButton
-              onClick={() =>
-                seletedLabel?.type === LabelType.GroupPart
-                  ? dispatch({
-                      type: ProportionChangeType.Ratio,
-                      value: 0.005,
-                    })
-                  : dispatch({
-                      type: ProportionChangeType.Linear,
-                      value: 0.5,
-                    })
-              }
-            >
-              {configFormat.format(+0.5)}
-            </IncrementButton>
+            <div className="mobile:order-2">
+              <IncrementButton
+                onClick={() =>
+                  seletedLabel?.type === LabelType.GroupPart
+                    ? dispatch({
+                        type: ProportionChangeType.Ratio,
+                        value: 0.005,
+                      })
+                    : dispatch({
+                        type: ProportionChangeType.Linear,
+                        value: 0.5,
+                      })
+                }
+              >
+                {configFormat.format(+0.5)}
+              </IncrementButton>
+            </div>
           )}
 
-          <IncrementButton
-            onClick={() =>
-              seletedLabel?.type === LabelType.GroupPart
-                ? dispatch({
-                    type: ProportionChangeType.Ratio,
-                    value: 0.01,
-                  })
-                : dispatch({
-                    type: ProportionChangeType.Linear,
-                    value: 1,
-                  })
-            }
-          >
-            {configFormat.format(+1)}
-          </IncrementButton>
-          {!precise && (
+          <div className="mobile:order-1">
             <IncrementButton
               onClick={() =>
                 seletedLabel?.type === LabelType.GroupPart
                   ? dispatch({
                       type: ProportionChangeType.Ratio,
-                      value: 0.05,
+                      value: 0.01,
                     })
                   : dispatch({
                       type: ProportionChangeType.Linear,
-                      value: 5,
+                      value: 1,
                     })
               }
             >
-              {configFormat.format(+5)}
+              {configFormat.format(+1)}
             </IncrementButton>
+          </div>
+          {!precise && (
+            <div className="mobile:order-2">
+              <IncrementButton
+                onClick={() =>
+                  seletedLabel?.type === LabelType.GroupPart
+                    ? dispatch({
+                        type: ProportionChangeType.Ratio,
+                        value: 0.05,
+                      })
+                    : dispatch({
+                        type: ProportionChangeType.Linear,
+                        value: 5,
+                      })
+                }
+              >
+                {configFormat.format(+5)}
+              </IncrementButton>
+            </div>
           )}
         </div>
       </div>
