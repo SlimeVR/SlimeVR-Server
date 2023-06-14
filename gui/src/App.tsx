@@ -49,6 +49,9 @@ import { CalibrationTutorialPage } from './components/onboarding/pages/Calibrati
 import { AssignmentTutorialPage } from './components/onboarding/pages/assignment-preparation/AssignmentTutorial';
 import { open } from '@tauri-apps/api/shell';
 import semver from 'semver';
+import { tauri } from '../src-tauri/tauri.conf.json';
+import { useBreakpoint } from './hooks/breakpoint';
+import { VRModePage } from './components/vr-mode/VRModePage';
 
 export const GH_REPO = 'SlimeVR/SlimeVR-Server';
 export const VersionContext = createContext('');
@@ -56,8 +59,10 @@ export const DOCS_SITE = 'https://docs.slimevr.dev/';
 
 function Layout() {
   const { loading } = useConfig();
+
   if (loading) return <></>;
 
+  const { isMobile } = useBreakpoint('mobile');
   return (
     <>
       <SerialDetectionModal></SerialDetectionModal>
@@ -66,15 +71,23 @@ function Layout() {
         <Route
           path="/"
           element={
-            <MainLayoutRoute>
+            <MainLayoutRoute isMobile={isMobile}>
               <Home />
+            </MainLayoutRoute>
+          }
+        />
+        <Route
+          path="/vr-mode"
+          element={
+            <MainLayoutRoute isMobile={isMobile}>
+              <VRModePage />
             </MainLayoutRoute>
           }
         />
         <Route
           path="/tracker/:trackernum/:deviceid"
           element={
-            <MainLayoutRoute background={false}>
+            <MainLayoutRoute background={false} isMobile={isMobile}>
               <TrackerSettingsPage />
             </MainLayoutRoute>
           }
@@ -135,7 +148,10 @@ function Layout() {
   );
 }
 
-const MIN_SIZE = { width: 880, height: 740 };
+const MIN_SIZE = {
+  width: tauri.windows[0].minWidth,
+  height: tauri.windows[0].minHeight,
+};
 
 export default function App() {
   const websocketAPI = useProvideWebsocketApi();
@@ -160,17 +176,19 @@ export default function App() {
     fetchReleases().catch(() => console.error('failed to fetch releases'));
   }, []);
 
-  useEffect(() => {
-    os.type()
-      .then((type) => document.body.classList.add(type.toLowerCase()))
-      .catch(console.error);
-
-    return () => {
+  if (window.__TAURI_METADATA__) {
+    useEffect(() => {
       os.type()
-        .then((type) => document.body.classList.remove(type.toLowerCase()))
+        .then((type) => document.body.classList.add(type.toLowerCase()))
         .catch(console.error);
-    };
-  }, []);
+
+      return () => {
+        os.type()
+          .then((type) => document.body.classList.remove(type.toLowerCase()))
+          .catch(console.error);
+      };
+    }, []);
+  }
 
   // This doesn't seem to resize it live, but if you close it, it gets restored to min size
   useEffect(() => {
@@ -195,45 +213,47 @@ export default function App() {
     return () => clearInterval(interval);
   }, []);
 
-  useEffect(() => {
-    const unlisten = listen(
-      'server-status',
-      (event: Event<[string, string]>) => {
-        const [eventType, s] = event.payload;
-        if ('stderr' === eventType) {
-          // This strange invocation is what lets us lose the line information in the console
-          // See more here: https://stackoverflow.com/a/48994308
-          setTimeout(
-            console.log.bind(
-              console,
-              `%c[SERVER] %c${s}`,
-              'color:cyan',
-              'color:red'
-            )
-          );
-        } else if (eventType === 'stdout') {
-          setTimeout(
-            console.log.bind(
-              console,
-              `%c[SERVER] %c${s}`,
-              'color:cyan',
-              'color:green'
-            )
-          );
-        } else if (eventType === 'error') {
-          console.error('Error: %s', s);
-        } else if (eventType === 'terminated') {
-          console.error('Server Process Terminated: %s', s);
-        } else if (eventType === 'other') {
-          console.log('Other process event: %s', s);
+  if (window.__TAURI_METADATA__) {
+    useEffect(() => {
+      const unlisten = listen(
+        'server-status',
+        (event: Event<[string, string]>) => {
+          const [eventType, s] = event.payload;
+          if ('stderr' === eventType) {
+            // This strange invocation is what lets us lose the line information in the console
+            // See more here: https://stackoverflow.com/a/48994308
+            setTimeout(
+              console.log.bind(
+                console,
+                `%c[SERVER] %c${s}`,
+                'color:cyan',
+                'color:red'
+              )
+            );
+          } else if (eventType === 'stdout') {
+            setTimeout(
+              console.log.bind(
+                console,
+                `%c[SERVER] %c${s}`,
+                'color:cyan',
+                'color:green'
+              )
+            );
+          } else if (eventType === 'error') {
+            console.error('Error: %s', s);
+          } else if (eventType === 'terminated') {
+            console.error('Server Process Terminated: %s', s);
+          } else if (eventType === 'other') {
+            console.log('Other process event: %s', s);
+          }
         }
-      }
-    );
-    return () => {
-      // eslint-disable-next-line @typescript-eslint/no-empty-function
-      unlisten.then(() => {});
-    };
-  }, []);
+      );
+      return () => {
+        // eslint-disable-next-line @typescript-eslint/no-empty-function
+        unlisten.then(() => {});
+      };
+    }, []);
+  }
 
   useEffect(() => {
     function onKeyboard(ev: KeyboardEvent) {

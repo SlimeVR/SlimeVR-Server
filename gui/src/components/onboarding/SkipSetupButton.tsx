@@ -30,7 +30,7 @@ export function SkipSetupButton({
       className={classNames(
         'text-background-40 hover:text-background-30',
         'stroke-background-40 hover:stroke-background-30',
-        'absolute -top-10 right-0'
+        'absolute xs:-top-10 xs:right-4 mobile:top-0 mobile:right-0'
       )}
       onClick={onClick}
     >

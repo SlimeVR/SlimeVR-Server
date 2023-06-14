@@ -13,8 +13,10 @@ import { MountingSelectionMenu } from './MountingSelectionMenu';
 import { useLocalization } from '@fluent/react';
 import { SkipSetupWarningModal } from '../../SkipSetupWarningModal';
 import { SkipSetupButton } from '../../SkipSetupButton';
+import { useBreakpoint } from '../../../../hooks/breakpoint';
 
 export function ManualMountingPage() {
+  const { isMobile } = useBreakpoint('mobile');
   const { l10n } = useLocalization();
   const { applyProgress, skipSetup, state } = useOnboarding();
   const { sendRPCPacket } = useWebsocketAPI();
@@ -67,44 +69,43 @@ export function ManualMountingPage() {
         onClose={() => setSelectRole(BodyPart.NONE)}
         onDirectionSelected={onDirectionSelected}
       ></MountingSelectionMenu>
-      <div className="flex flex-col gap-5 h-full items-center w-full justify-center relative">
+      <div className="flex flex-col gap-5 h-full items-center w-full xs:justify-center relative overflow-y-auto">
         <SkipSetupButton
           visible={!state.alonePage}
           modalVisible={skipWarning}
           onClick={() => setSkipWarning(true)}
         ></SkipSetupButton>
-        <div className="flex flex-col w-full h-full justify-center items-center">
-          <div className="flex md:gap-8">
-            <div className="flex flex-col w-full max-w-md gap-3">
-              <Typography variant="main-title">
-                {l10n.getString('onboarding-manual_mounting')}
-              </Typography>
-              <Typography color="secondary">
-                {l10n.getString('onboarding-manual_mounting-description')}
-              </Typography>
-              <TipBox>{l10n.getString('tips-find_tracker')}</TipBox>
-              <div className="flex flex-row gap-3 mt-auto">
-                <Button
-                  variant="secondary"
-                  to="/onboarding/mounting/choose"
-                  state={state}
-                >
-                  {l10n.getString('onboarding-previous_step')}
+        <div className="flex xs:flex-row mobile:flex-col h-full px-8 xs:w-full xs:justify-center mobile:px-4 items-center">
+          <div className="flex flex-col w-full xs:max-w-sm gap-3">
+            <Typography variant="main-title">
+              {l10n.getString('onboarding-manual_mounting')}
+            </Typography>
+            <Typography color="secondary">
+              {l10n.getString('onboarding-manual_mounting-description')}
+            </Typography>
+            <TipBox>{l10n.getString('tips-find_tracker')}</TipBox>
+            <div className="flex flex-row gap-3 mt-auto">
+              <Button
+                variant="secondary"
+                to="/onboarding/mounting/choose"
+                state={state}
+              >
+                {l10n.getString('onboarding-previous_step')}
+              </Button>
+              {!state.alonePage && (
+                <Button variant="primary" to="/onboarding/reset-tutorial">
+                  {l10n.getString('onboarding-manual_mounting-next')}
                 </Button>
-                {!state.alonePage && (
-                  <Button variant="primary" to="/onboarding/reset-tutorial">
-                    {l10n.getString('onboarding-manual_mounting-next')}
-                  </Button>
-                )}
-              </div>
+              )}
             </div>
-            <div className="flex flex-col flex-grow gap-3 rounded-xl fill-background-50">
-              <BodyAssignment
-                onlyAssigned={true}
-                advanced={true}
-                onRoleSelected={setSelectRole}
-              ></BodyAssignment>
-            </div>
+          </div>
+          <div className="flex flex-row justify-center">
+            <BodyAssignment
+              width={isMobile ? 160 : undefined}
+              onlyAssigned={true}
+              advanced={true}
+              onRoleSelected={setSelectRole}
+            ></BodyAssignment>
           </div>
         </div>
       </div>
