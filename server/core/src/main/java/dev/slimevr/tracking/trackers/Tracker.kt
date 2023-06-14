@@ -1,9 +1,9 @@
 package dev.slimevr.tracking.trackers
 
+import dev.slimevr.VRServer
 import dev.slimevr.config.TrackerConfig
 import dev.slimevr.tracking.trackers.TrackerPosition.Companion.getByDesignation
 import dev.slimevr.tracking.trackers.udp.IMUType
-import dev.slimevr.vrServer
 import io.eiren.util.BufferedTimer
 import io.github.axisangles.ktmath.Quaternion
 import io.github.axisangles.ktmath.Vector3
@@ -64,7 +64,7 @@ class Tracker @JvmOverloads constructor(
 				// If the status of a non-internal tracker has changed, inform
 				// the VRServer to recreate the skeleton, as it may need to
 				// assign or un-assign the tracker to a body part
-				vrServer.updateSkeletonModel()
+				VRServer.instance.updateSkeletonModel()
 
 				checkReportErrorStatus()
 				checkReportRequireReset()
@@ -106,7 +106,7 @@ class Tracker @JvmOverloads constructor(
 		if (needsReset && trackerPosition != null && lastResetStatus == 0u && status.sendData) {
 			reportRequireReset()
 		} else if (lastResetStatus != 0u && (trackerPosition == null || !status.sendData)) {
-			vrServer.statusSystem.removeStatus(lastResetStatus)
+			VRServer.instance.statusSystem.removeStatus(lastResetStatus)
 			lastResetStatus = 0u
 		}
 	}
@@ -133,14 +133,14 @@ class Tracker @JvmOverloads constructor(
 			type = StatusData.StatusTrackerReset
 			value = statusMsg
 		}
-		lastResetStatus = vrServer.statusSystem.addStatus(status, true)
+		lastResetStatus = VRServer.instance.statusSystem.addStatus(status, true)
 	}
 
 	private fun checkReportErrorStatus() {
 		if (status == TrackerStatus.ERROR && lastErrorStatus == 0u) {
 			reportErrorStatus()
 		} else if (lastErrorStatus != 0u && status != TrackerStatus.ERROR) {
-			vrServer.statusSystem.removeStatus(lastErrorStatus)
+			VRServer.instance.statusSystem.removeStatus(lastErrorStatus)
 			lastErrorStatus = 0u
 		}
 	}
@@ -164,7 +164,7 @@ class Tracker @JvmOverloads constructor(
 			type = StatusData.StatusTrackerError
 			value = statusMsg
 		}
-		lastErrorStatus = vrServer.statusSystem.addStatus(status, true)
+		lastErrorStatus = VRServer.instance.statusSystem.addStatus(status, true)
 	}
 
 	/**
@@ -183,8 +183,8 @@ class Tracker @JvmOverloads constructor(
 		if (this.isImu() && config.allowDriftCompensation == null) {
 			// If value didn't exist, default to true and save
 			resetsHandler.allowDriftCompensation = true
-			vrServer.configManager.vrConfig.getTracker(this).allowDriftCompensation = true
-			vrServer.configManager.saveConfig()
+			VRServer.instance.configManager.vrConfig.getTracker(this).allowDriftCompensation = true
+			VRServer.instance.configManager.saveConfig()
 		} else {
 			config.allowDriftCompensation?.let {
 				resetsHandler.allowDriftCompensation = it

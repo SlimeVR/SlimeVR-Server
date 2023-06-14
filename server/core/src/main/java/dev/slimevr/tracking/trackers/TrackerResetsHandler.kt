@@ -1,9 +1,9 @@
 package dev.slimevr.tracking.trackers
 
 import com.jme3.math.FastMath
+import dev.slimevr.VRServer
 import dev.slimevr.config.DriftCompensationConfig
 import dev.slimevr.filtering.CircularArrayList
-import dev.slimevr.vrServer
 import io.github.axisangles.ktmath.EulerAngles
 import io.github.axisangles.ktmath.EulerOrder
 import io.github.axisangles.ktmath.Quaternion
@@ -161,7 +161,7 @@ class TrackerResetsHandler(val tracker: Tracker) {
 		calculateDrift(rot)
 
 		if (this.tracker.lastResetStatus != 0u) {
-			vrServer.statusSystem.removeStatus(this.tracker.lastResetStatus)
+			VRServer.instance.statusSystem.removeStatus(this.tracker.lastResetStatus)
 			this.tracker.lastResetStatus = 0u
 		}
 	}

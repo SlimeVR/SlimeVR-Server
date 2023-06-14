@@ -5,7 +5,6 @@ import dev.slimevr.NetworkProtocol
 import dev.slimevr.VRServer
 import dev.slimevr.tracking.trackers.Tracker
 import dev.slimevr.tracking.trackers.TrackerStatus
-import dev.slimevr.vrServer
 import io.eiren.util.Util
 import io.eiren.util.collections.FastList
 import io.eiren.util.logging.LogManager
@@ -66,7 +65,7 @@ class TrackersUDPServer(private val port: Int, name: String, private val tracker
 				handshake.boardType,
 				handshake.mcuType
 			)
-			vrServer.deviceManager.addDevice(connection)
+			VRServer.instance.deviceManager.addDevice(connection)
 			connection.firmwareBuild = handshake.firmwareBuild
 			connection.protocol = if (handshake.firmware?.isEmpty() == true) {
 				// Only old owoTrack doesn't report firmware and have different packet IDs with SlimeVR
@@ -145,7 +144,7 @@ class TrackersUDPServer(private val port: Int, name: String, private val tracker
 				connection,
 				VRServer.getNextLocalTrackerId(),
 				connection.name + "/" + trackerId,
-				"IMU Tracker #" + VRServer.getCurrentLocalTrackerId(),
+				"IMU Tracker #" + VRServer.currentLocalTrackerId,
 				null,
 				trackerNum = trackerId,
 				hasRotation = true,
@@ -366,22 +365,23 @@ class TrackersUDPServer(private val port: Int, name: String, private val tracker
 				when (packet.type) {
 					UDPPacket21UserAction.RESET_FULL -> {
 						name = "Full"
-						vrServer.resetHandler.sendStarted(ResetType.Full)
-						vrServer.resetTrackersFull(resetSourceName)
+						VRServer.instance.resetHandler.sendStarted(ResetType.Full)
+						VRServer.instance.resetTrackersFull(resetSourceName)
 					}
 
 					UDPPacket21UserAction.RESET_YAW -> {
 						name = "Yaw"
-						vrServer.resetHandler.sendStarted(ResetType.Yaw)
-						vrServer.resetTrackersYaw(resetSourceName)
+						VRServer.instance.resetHandler.sendStarted(ResetType.Yaw)
+						VRServer.instance.resetTrackersYaw(resetSourceName)
 					}
 
 					UDPPacket21UserAction.RESET_MOUNTING -> {
 						name = "Mounting"
-						vrServer
+						VRServer
+							.instance
 							.resetHandler
 							.sendStarted(ResetType.Mounting)
-						vrServer.resetTrackersMounting(resetSourceName)
+						VRServer.instance.resetTrackersMounting(resetSourceName)
 					}
 				}
 

@@ -23,7 +23,6 @@ import io.github.axisangles.ktmath.Vector3;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Objects;
 
 
 public class HumanSkeleton {
@@ -179,8 +178,8 @@ public class HumanSkeleton {
 			this,
 			humanPoseManager,
 			server.configManager.getVrConfig().getTapDetection(),
-                server.resetHandler,
-                server.tapSetupHandler,
+			server.resetHandler,
+			server.tapSetupHandler,
 			server.getAllTrackers()
 		);
 		legTweaks.setConfig(server.configManager.getVrConfig().getLegTweaks());

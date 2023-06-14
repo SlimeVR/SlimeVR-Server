@@ -1,6 +1,6 @@
 package dev.slimevr.bridge;
 
-import dev.slimevr.Main;
+import dev.slimevr.VRServer;
 import dev.slimevr.bridge.ProtobufMessages.*;
 import dev.slimevr.tracking.trackers.Tracker;
 import dev.slimevr.tracking.trackers.TrackerRole;
@@ -203,7 +203,7 @@ public abstract class ProtobufBridge implements Bridge {
 		if (trackerAdded.getTrackerRole() == TrackerRole.HMD.getId()) {
 			hmdTracker = tracker;
 		} else {
-			Main.getVrServer().registerTracker(tracker);
+			VRServer.Companion.getInstance().registerTracker(tracker);
 		}
 	}
 
@@ -216,10 +216,10 @@ public abstract class ProtobufBridge implements Bridge {
 					.warning("[" + bridgeName + "] Received deprecated user action 'calibrate'!");
 			case "reset":
 				// TODO : Check pose field
-				Main.getVrServer().resetTrackersFull(resetSourceName);
+				VRServer.Companion.getInstance().resetTrackersFull(resetSourceName);
 				break;
 			case "fast_reset":
-				Main.getVrServer().resetTrackersYaw(resetSourceName);
+				VRServer.Companion.getInstance().resetTrackersYaw(resetSourceName);
 				break;
 		}
 	}

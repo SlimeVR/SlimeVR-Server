@@ -1,8 +1,6 @@
 package dev.slimevr.osc;
 
 import com.illposed.osc.*;
-import com.illposed.osc.argument.ArgumentHandler;
-import com.illposed.osc.argument.handler.Activator;
 import com.illposed.osc.messageselector.OSCPatternAddressMessageSelector;
 import com.illposed.osc.transport.OSCPortIn;
 import com.illposed.osc.transport.OSCPortOut;

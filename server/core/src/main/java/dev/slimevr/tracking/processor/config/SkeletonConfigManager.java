@@ -1,6 +1,6 @@
 package dev.slimevr.tracking.processor.config;
 
-import dev.slimevr.Main;
+import dev.slimevr.VRServer;
 import dev.slimevr.autobone.errors.BodyProportionError;
 import dev.slimevr.autobone.errors.proportions.ProportionLimiter;
 import dev.slimevr.config.ConfigManager;
@@ -374,9 +374,7 @@ public class SkeletonConfigManager {
 		// Remove from config to use default if they change in the future.
 		Arrays.fill(changedToggles, false);
 		for (SkeletonConfigToggles value : SkeletonConfigToggles.values) {
-			Main
-				.getVrServer()
-				.getConfigManager()
+			VRServer.Companion.getInstance().configManager
 				.getVrConfig()
 				.getSkeleton()
 				.getToggles()
@@ -399,9 +397,7 @@ public class SkeletonConfigManager {
 		// Remove from config to use default if they change in the future.
 		Arrays.fill(changedValues, false);
 		for (SkeletonConfigValues value : SkeletonConfigValues.values) {
-			Main
-				.getVrServer()
-				.getConfigManager()
+			VRServer.Companion.getInstance().configManager
 				.getVrConfig()
 				.getSkeleton()
 				.getValues()
@@ -488,11 +484,10 @@ public class SkeletonConfigManager {
 	}
 
 	public void save() {
-		dev.slimevr.config.SkeletonConfig skeletonConfig = Main
-			.getVrServer()
-			.getConfigManager()
-			.getVrConfig()
-			.getSkeleton();
+		dev.slimevr.config.SkeletonConfig skeletonConfig = VRServer.Companion
+			.getInstance().configManager
+				.getVrConfig()
+				.getSkeleton();
 
 		// Write all possible values to keep consistent even if defaults changed
 		for (SkeletonConfigOffsets value : SkeletonConfigOffsets.values) {

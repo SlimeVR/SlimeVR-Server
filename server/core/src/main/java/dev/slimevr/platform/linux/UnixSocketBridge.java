@@ -1,7 +1,6 @@
 package dev.slimevr.platform.linux;
 
 import com.google.protobuf.InvalidProtocolBufferException;
-import dev.slimevr.Main;
 import dev.slimevr.VRServer;
 import dev.slimevr.bridge.BridgeThread;
 import dev.slimevr.bridge.ProtobufMessages;
@@ -10,9 +9,7 @@ import dev.slimevr.tracking.trackers.Tracker;
 import io.eiren.util.ann.ThreadSafe;
 import io.eiren.util.logging.LogManager;
 
-import java.io.File;
 import java.io.IOException;
-import java.net.StandardProtocolFamily;
 import java.nio.ByteBuffer;
 import java.nio.ByteOrder;
 import java.nio.channels.ServerSocketChannel;
@@ -60,7 +57,7 @@ public class UnixSocketBridge extends SteamVRBridge implements AutoCloseable {
 					this.channel.register(this.selector, SelectionKey.OP_READ);
 					if (this.channel == null)
 						continue;
-					Main.getVrServer().queueTask(this::reconnected);
+					VRServer.Companion.getInstance().queueTask(this::reconnected);
 					LogManager
 						.info(
 							"["
@@ -80,7 +77,8 @@ public class UnixSocketBridge extends SteamVRBridge implements AutoCloseable {
 						if (!updated) {
 							this.waitForData(10);
 						} else if (lastSteamVRStatus != 0) {
-							Main.getVrServer().getStatusSystem().removeStatusInt(lastSteamVRStatus);
+							VRServer.Companion.getInstance().statusSystem
+								.removeStatusInt(lastSteamVRStatus);
 							lastSteamVRStatus = 0;
 						}
 					} catch (IOException ioError) {
@@ -216,7 +214,7 @@ public class UnixSocketBridge extends SteamVRBridge implements AutoCloseable {
 		this.channel = null;
 		this.socketError = false;
 		this.dst.clear();
-		Main.getVrServer().queueTask(this::disconnected);
+		VRServer.Companion.getInstance().queueTask(this::disconnected);
 	}
 
 	private ServerSocketChannel createSocket() throws IOException {

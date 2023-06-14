@@ -1,6 +1,5 @@
 package dev.slimevr.platform;
 
-import dev.slimevr.Main;
 import dev.slimevr.VRServer;
 import dev.slimevr.bridge.ProtobufBridge;
 import dev.slimevr.bridge.ProtobufMessages;
@@ -83,7 +82,7 @@ public abstract class SteamVRBridge extends ProtobufBridge implements Runnable {
 					removeSharedTracker(tr);
 				}
 				config.setBridgeTrackerRole(role, share);
-				Main.getVrServer().getConfigManager().saveConfig();
+				VRServer.Companion.getInstance().configManager.saveConfig();
 			}
 		}
 	}
@@ -92,9 +91,7 @@ public abstract class SteamVRBridge extends ProtobufBridge implements Runnable {
 	@VRServerThread
 	protected Tracker createNewTracker(ProtobufMessages.TrackerAdded trackerAdded) {
 		// Todo: We need the manufacturer
-		Device device = Main
-			.getVrServer()
-			.getDeviceManager()
+		Device device = VRServer.Companion.getInstance().deviceManager
 			.createDevice(
 				trackerAdded.getTrackerName(),
 				trackerAdded.getTrackerSerial(),
@@ -133,7 +130,7 @@ public abstract class SteamVRBridge extends ProtobufBridge implements Runnable {
 		);
 
 		device.getTrackers().put(0, tracker);
-		Main.getVrServer().getDeviceManager().addDevice(device);
+		VRServer.Companion.getInstance().deviceManager.addDevice(device);
 		TrackerRole role = TrackerRole.getById(trackerAdded.getTrackerRole());
 		if (role != null) {
 			tracker.setTrackerPosition(TrackerPosition.getByTrackerRole(role));
@@ -153,7 +150,7 @@ public abstract class SteamVRBridge extends ProtobufBridge implements Runnable {
 		// devices do not have a tracker voltage.
 		boolean isCharging = false;
 
-		List<Tracker> allTrackers = Main.getVrServer().getAllTrackers();
+		List<Tracker> allTrackers = VRServer.Companion.getInstance().getAllTrackers();
 		TrackerRole role = localTracker.getTrackerPosition().getTrackerRole();
 
 		Tracker primaryTracker = null;
@@ -350,7 +347,8 @@ public abstract class SteamVRBridge extends ProtobufBridge implements Runnable {
 		var status = new StatusDataUnion();
 		status.setType(StatusData.StatusSteamVRDisconnected);
 		status.setValue(statusData);
-		lastSteamVRStatus = Main.getVrServer().getStatusSystem().addStatusInt(status, false);
+		lastSteamVRStatus = VRServer.Companion.getInstance().statusSystem
+			.addStatusInt(status, false);
 
 	}
 

@@ -1,6 +1,6 @@
 package dev.slimevr.config
 
-import dev.slimevr.vrServer
+import dev.slimevr.VRServer
 
 class DriftCompensationConfig {
 
@@ -13,7 +13,7 @@ class DriftCompensationConfig {
 	// Max resets for the calculated average drift
 	var maxResets = 6
 	fun updateTrackersDriftCompensation() {
-		for (t in vrServer.allTrackers) {
+		for (t in VRServer.instance.allTrackers) {
 			if (t.allowFiltering) {
 				t.resetsHandler.readDriftCompensationConfig(this)
 			}

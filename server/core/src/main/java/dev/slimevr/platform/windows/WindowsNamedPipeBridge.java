@@ -7,7 +7,6 @@ import com.sun.jna.platform.win32.*;
 import com.sun.jna.platform.win32.Kernel32;
 import com.sun.jna.ptr.IntByReference;
 import com.sun.jna.win32.W32APIOptions;
-import dev.slimevr.Main;
 import dev.slimevr.VRServer;
 import dev.slimevr.bridge.BridgeThread;
 import dev.slimevr.bridge.PipeState;
@@ -83,7 +82,8 @@ public class WindowsNamedPipeBridge extends SteamVRBridge {
 				if (pipe.state == PipeState.OPEN) {
 					pipesUpdated = updatePipe();
 					if (lastSteamVRStatus != 0 && pipesUpdated) {
-						Main.getVrServer().getStatusSystem().removeStatusInt(lastSteamVRStatus);
+						VRServer.Companion.getInstance().statusSystem
+							.removeStatusInt(lastSteamVRStatus);
 						lastSteamVRStatus = 0;
 					}
 					updateMessageQueue();
@@ -250,7 +250,7 @@ public class WindowsNamedPipeBridge extends SteamVRBridge {
 	private void resetPipe() {
 		WindowsPipe.safeDisconnect(pipe);
 		pipe.state = PipeState.CREATED;
-		Main.getVrServer().queueTask(this::disconnected);
+		VRServer.Companion.getInstance().queueTask(this::disconnected);
 	}
 
 	private void createPipe() throws IOException {
@@ -302,7 +302,7 @@ public class WindowsNamedPipeBridge extends SteamVRBridge {
 
 		pipe.state = PipeState.OPEN;
 		LogManager.info("[" + bridgeName + "] Pipe " + pipe.name + " is open");
-		Main.getVrServer().queueTask(this::reconnected);
+		VRServer.Companion.getInstance().queueTask(this::reconnected);
 		return true;
 	}
 

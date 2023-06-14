@@ -39,386 +39,403 @@ import java.util.concurrent.atomic.AtomicInteger
 import java.util.function.Consumer
 
 class VRServer @JvmOverloads constructor(configPath: String? = "vrconfig.yml") : Thread("VRServer") {
-    @JvmField
-	val humanPoseManager: HumanPoseManager
-    val hmdTracker: Tracker
-    private val trackers: MutableList<Tracker> = FastList()
-    val trackersServer: TrackersUDPServer
-    private val bridges: MutableList<Bridge> = FastList()
-    private val tasks: Queue<Runnable> = LinkedBlockingQueue()
-    private val newTrackersConsumers: MutableList<Consumer<Tracker>> = FastList()
-    private val onTick: MutableList<Runnable> = FastList()
-    val oSCRouter: OSCRouter
-    @JvmField
-	val vrcOSCHandler: VRCOSCHandler
-    val vMCHandler: VMCHandler
-    @JvmField
-	val deviceManager: DeviceManager
-    @JvmField
-	val bvhRecorder: BVHRecorder
-    @JvmField
-	val serialHandler: SerialHandler
-    @JvmField
-	val autoBoneHandler: AutoBoneHandler
-    @JvmField
-	val tapSetupHandler: TapSetupHandler
-    @JvmField
-	val protocolAPI: ProtocolAPI
-    @JvmField
+	@JvmField
 	val configManager: ConfigManager
-    private val timer = Timer()
-    val fpsTimer = NanoTimer()
-    @JvmField
+
+	@JvmField
+	val humanPoseManager: HumanPoseManager
+	val hmdTracker: Tracker
+	private val trackers: MutableList<Tracker> = FastList()
+	val trackersServer: TrackersUDPServer
+	private val bridges: MutableList<Bridge> = FastList()
+	private val tasks: Queue<Runnable> = LinkedBlockingQueue()
+	private val newTrackersConsumers: MutableList<Consumer<Tracker>> = FastList()
+	private val onTick: MutableList<Runnable> = FastList()
+	val oSCRouter: OSCRouter
+
+	@JvmField
+	val vrcOSCHandler: VRCOSCHandler
+	val vMCHandler: VMCHandler
+
+	@JvmField
+	val deviceManager: DeviceManager
+
+	@JvmField
+	val bvhRecorder: BVHRecorder
+
+	@JvmField
+	val serialHandler: SerialHandler
+
+	@JvmField
+	val autoBoneHandler: AutoBoneHandler
+
+	@JvmField
+	val tapSetupHandler: TapSetupHandler
+
+	@JvmField
+	val protocolAPI: ProtocolAPI
+	private val timer = Timer()
+	val fpsTimer = NanoTimer()
+
+	@JvmField
 	val provisioningHandler: ProvisioningHandler
-    @JvmField
+
+	@JvmField
 	val resetHandler: ResetHandler
-    @JvmField
+
+	@JvmField
 	val statusSystem = StatusSystem()
 
-    /**
-     * This function is used by VRWorkout, do not remove!
-     */
-    init {
-        // UwU
-        configManager = ConfigManager(configPath)
-        configManager.loadConfig()
-        deviceManager = DeviceManager(this)
-        serialHandler = SerialHandler()
-        provisioningHandler = ProvisioningHandler(this)
-        resetHandler = ResetHandler()
-        tapSetupHandler = TapSetupHandler()
-        autoBoneHandler = AutoBoneHandler(this)
-        protocolAPI = ProtocolAPI(this)
-        hmdTracker = Tracker(
-            null,
-            0,
-            "HMD",
-            "HMD",
-            TrackerPosition.HEAD,
-            null,
-            true,
-            true,
-            false,
-            false,
-            false,
-            true
-        )
-        humanPoseManager = HumanPoseManager(this)
-        val computedTrackers = humanPoseManager.computedTrackers
+	/**
+	 * This function is used by VRWorkout, do not remove!
+	 */
+	init {
+		// UwU
+		configManager = ConfigManager(configPath)
+		configManager.loadConfig()
+		deviceManager = DeviceManager(this)
+		serialHandler = SerialHandler()
+		provisioningHandler = ProvisioningHandler(this)
+		resetHandler = ResetHandler()
+		tapSetupHandler = TapSetupHandler()
+		autoBoneHandler = AutoBoneHandler(this)
+		protocolAPI = ProtocolAPI(this)
+		hmdTracker = Tracker(
+			null,
+			0,
+			"HMD",
+			"HMD",
+			TrackerPosition.HEAD,
+			null,
+			true,
+			true,
+			false,
+			false,
+			false,
+			true
+		)
+		humanPoseManager = HumanPoseManager(this)
+		val computedTrackers = humanPoseManager.computedTrackers
 
-        // Start server for SlimeVR trackers
-        val trackerPort = configManager.vrConfig.server.trackerPort
-        LogManager.info("Starting the tracker server on port $trackerPort...")
-        trackersServer = TrackersUDPServer(
-            trackerPort,
-            "Sensors UDP server"
-        ) { tracker: Tracker -> registerTracker(tracker) }
-        val driverBridge: SteamVRBridge?
-        if (OperatingSystem.getCurrentPlatform() == OperatingSystem.WINDOWS) {
+		// Start server for SlimeVR trackers
+		val trackerPort = configManager.vrConfig.server.trackerPort
+		LogManager.info("Starting the tracker server on port $trackerPort...")
+		trackersServer = TrackersUDPServer(
+			trackerPort,
+			"Sensors UDP server"
+		) { tracker: Tracker -> registerTracker(tracker) }
+		val driverBridge: SteamVRBridge?
+		if (OperatingSystem.getCurrentPlatform() == OperatingSystem.WINDOWS) {
 
-            // Create named pipe bridge for SteamVR driver
-            driverBridge = WindowsNamedPipeBridge(
-                this,
-                hmdTracker,
-                "steamvr",
-                "SteamVR Driver Bridge",
-                "\\\\.\\pipe\\SlimeVRDriver",
-                computedTrackers
-            )
-            tasks.add(Runnable { driverBridge.startBridge() })
-            bridges.add(driverBridge)
+			// Create named pipe bridge for SteamVR driver
+			driverBridge = WindowsNamedPipeBridge(
+				this,
+				hmdTracker,
+				"steamvr",
+				"SteamVR Driver Bridge",
+				"\\\\.\\pipe\\SlimeVRDriver",
+				computedTrackers
+			)
+			tasks.add(Runnable { driverBridge.startBridge() })
+			bridges.add(driverBridge)
 
-            // Create named pipe bridge for SteamVR input
-            // TODO: how do we want to handle HMD input from the feeder app?
-            val feederBridge = WindowsNamedPipeBridge(
-                this,
-                null,
-                "steamvr_feeder",
-                "SteamVR Feeder Bridge",
-                "\\\\.\\pipe\\SlimeVRInput",
-                FastList()
-            )
-            tasks.add(Runnable { feederBridge.startBridge() })
-            bridges.add(feederBridge)
-        } else if (OperatingSystem.getCurrentPlatform() == OperatingSystem.LINUX) {
-            var linuxBridge: SteamVRBridge? = null
-            try {
-                linuxBridge = UnixSocketBridge(
-                    this,
-                    hmdTracker,
-                    "steamvr",
-                    "SteamVR Driver Bridge",
-                    Paths.get(OperatingSystem.getTempDirectory(), "SlimeVRDriver").toString(),
-                    computedTrackers
-                )
-            } catch (ex: Exception) {
-                LogManager.severe("Failed to initiate Unix socket, disabling driver bridge...", ex)
-            }
-            driverBridge = linuxBridge
-            if (driverBridge != null) {
-                tasks.add(Runnable { driverBridge.startBridge() })
-                bridges.add(driverBridge)
-            }
-            try {
-                val feederBridge: SteamVRBridge = UnixSocketBridge(
-                    this,
-                    null,
-                    "steamvr_feeder",
-                    "SteamVR Feeder Bridge",
-                    Paths.get(OperatingSystem.getTempDirectory(), "SlimeVRInput").toString(),
-                    FastList()
-                )
-                tasks.add(Runnable { feederBridge.startBridge() })
-                bridges.add(feederBridge)
-            } catch (ex: Exception) {
-                LogManager.severe("Failed to initiate Unix socket, disabling feeder bridge...", ex)
-            }
-        } else {
-            driverBridge = null
-        }
+			// Create named pipe bridge for SteamVR input
+			// TODO: how do we want to handle HMD input from the feeder app?
+			val feederBridge = WindowsNamedPipeBridge(
+				this,
+				null,
+				"steamvr_feeder",
+				"SteamVR Feeder Bridge",
+				"\\\\.\\pipe\\SlimeVRInput",
+				FastList()
+			)
+			tasks.add(Runnable { feederBridge.startBridge() })
+			bridges.add(feederBridge)
+		} else if (OperatingSystem.getCurrentPlatform() == OperatingSystem.LINUX) {
+			var linuxBridge: SteamVRBridge? = null
+			try {
+				linuxBridge = UnixSocketBridge(
+					this,
+					hmdTracker,
+					"steamvr",
+					"SteamVR Driver Bridge",
+					Paths.get(OperatingSystem.getTempDirectory(), "SlimeVRDriver").toString(),
+					computedTrackers
+				)
+			} catch (ex: Exception) {
+				LogManager.severe("Failed to initiate Unix socket, disabling driver bridge...", ex)
+			}
+			driverBridge = linuxBridge
+			if (driverBridge != null) {
+				tasks.add(Runnable { driverBridge.startBridge() })
+				bridges.add(driverBridge)
+			}
+			try {
+				val feederBridge: SteamVRBridge = UnixSocketBridge(
+					this,
+					null,
+					"steamvr_feeder",
+					"SteamVR Feeder Bridge",
+					Paths.get(OperatingSystem.getTempDirectory(), "SlimeVRInput").toString(),
+					FastList()
+				)
+				tasks.add(Runnable { feederBridge.startBridge() })
+				bridges.add(feederBridge)
+			} catch (ex: Exception) {
+				LogManager.severe("Failed to initiate Unix socket, disabling feeder bridge...", ex)
+			}
+		} else {
+			driverBridge = null
+		}
 
-        // Add shutdown hook
-        Runtime.getRuntime().addShutdownHook(Thread {
-            try {
-                (driverBridge as? UnixSocketBridge)?.close()
-            } catch (e: Exception) {
-                throw RuntimeException(e)
-            }
-        })
+		// Add shutdown hook
+		Runtime.getRuntime().addShutdownHook(
+			Thread {
+				try {
+					(driverBridge as? UnixSocketBridge)?.close()
+				} catch (e: Exception) {
+					throw RuntimeException(e)
+				}
+			}
+		)
 
-        // Create WebSocket server
-        val wsBridge = WebSocketVRBridge(hmdTracker, computedTrackers, this)
-        tasks.add(Runnable { wsBridge.startBridge() })
-        bridges.add(wsBridge)
+		// Create WebSocket server
+		val wsBridge = WebSocketVRBridge(hmdTracker, computedTrackers, this)
+		tasks.add(Runnable { wsBridge.startBridge() })
+		bridges.add(wsBridge)
 
-        // Initialize OSC handlers
-        vrcOSCHandler = VRCOSCHandler(
-            this,
-            humanPoseManager,
-            driverBridge,
-            configManager.vrConfig.vrcOSC,
-            computedTrackers
-        )
-        vMCHandler = VMCHandler(
-            this,
-            humanPoseManager,
-            configManager.vrConfig.vmc,
-            computedTrackers
-        )
+		// Initialize OSC handlers
+		vrcOSCHandler = VRCOSCHandler(
+			this,
+			humanPoseManager,
+			driverBridge,
+			configManager.vrConfig.vrcOSC,
+			computedTrackers
+		)
+		vMCHandler = VMCHandler(
+			this,
+			humanPoseManager,
+			configManager.vrConfig.vmc,
+			computedTrackers
+		)
 
-        // Initialize OSC router
-        val oscHandlers = FastList<OSCHandler>()
-        oscHandlers.add(vrcOSCHandler)
-        oscHandlers.add(vMCHandler)
-        oSCRouter = OSCRouter(configManager.vrConfig.oscRouter, oscHandlers)
-        bvhRecorder = BVHRecorder(this)
-        registerTracker(hmdTracker)
-        for (tracker in computedTrackers) {
-            registerTracker(tracker)
-        }
-    }
+		// Initialize OSC router
+		val oscHandlers = FastList<OSCHandler>()
+		oscHandlers.add(vrcOSCHandler)
+		oscHandlers.add(vMCHandler)
+		oSCRouter = OSCRouter(configManager.vrConfig.oscRouter, oscHandlers)
+		bvhRecorder = BVHRecorder(this)
+		registerTracker(hmdTracker)
+		for (tracker in computedTrackers) {
+			registerTracker(tracker)
+		}
+		instance = this
+	}
 
-    fun hasBridge(bridgeClass: Class<out Bridge?>): Boolean {
-        for (bridge in bridges) {
-            if (bridgeClass.isAssignableFrom(bridge.javaClass)) {
-                return true
-            }
-        }
-        return false
-    }
+	fun hasBridge(bridgeClass: Class<out Bridge?>): Boolean {
+		for (bridge in bridges) {
+			if (bridgeClass.isAssignableFrom(bridge.javaClass)) {
+				return true
+			}
+		}
+		return false
+	}
 
-    @ThreadSafe
-    fun <E : Bridge?> getVRBridge(bridgeClass: Class<E>): E? {
-        for (bridge in bridges) {
-            if (bridgeClass.isAssignableFrom(bridge.javaClass)) {
-                return bridgeClass.cast(bridge)
-            }
-        }
-        return null
-    }
+	@ThreadSafe
+	fun <E : Bridge?> getVRBridge(bridgeClass: Class<E>): E? {
+		for (bridge in bridges) {
+			if (bridgeClass.isAssignableFrom(bridge.javaClass)) {
+				return bridgeClass.cast(bridge)
+			}
+		}
+		return null
+	}
 
-    fun addOnTick(runnable: Runnable) {
-        onTick.add(runnable)
-    }
+	fun addOnTick(runnable: Runnable) {
+		onTick.add(runnable)
+	}
 
-    @ThreadSafe
-    fun addNewTrackerConsumer(consumer: Consumer<Tracker>) {
-        queueTask {
-            newTrackersConsumers.add(consumer)
-            for (tracker in trackers) {
-                consumer.accept(tracker)
-            }
-        }
-    }
+	@ThreadSafe
+	fun addNewTrackerConsumer(consumer: Consumer<Tracker>) {
+		queueTask {
+			newTrackersConsumers.add(consumer)
+			for (tracker in trackers) {
+				consumer.accept(tracker)
+			}
+		}
+	}
 
-    @ThreadSafe
-    fun trackerUpdated(tracker: Tracker?) {
-        queueTask {
-            humanPoseManager.trackerUpdated(tracker)
-            configManager.vrConfig.writeTrackerConfig(tracker)
-            configManager.saveConfig()
-        }
-    }
+	@ThreadSafe
+	fun trackerUpdated(tracker: Tracker?) {
+		queueTask {
+			humanPoseManager.trackerUpdated(tracker)
+			configManager.vrConfig.writeTrackerConfig(tracker)
+			configManager.saveConfig()
+		}
+	}
 
-    @ThreadSafe
-    fun addSkeletonUpdatedCallback(consumer: Consumer<HumanSkeleton?>?) {
-        queueTask { humanPoseManager.addSkeletonUpdatedCallback(consumer) }
-    }
+	@ThreadSafe
+	fun addSkeletonUpdatedCallback(consumer: Consumer<HumanSkeleton?>?) {
+		queueTask { humanPoseManager.addSkeletonUpdatedCallback(consumer) }
+	}
 
-    @VRServerThread
-    override fun run() {
-        trackersServer.start()
-        while (true) {
-            // final long start = System.currentTimeMillis();
-            fpsTimer.update()
-            do {
-                val task = tasks.poll() ?: break
-                task.run()
-            } while (true)
-            for (task in onTick) {
-                task.run()
-            }
-            for (bridge in bridges) {
-                bridge.dataRead()
-            }
-            for (tracker in trackers) {
-                tracker.tick()
-            }
-            humanPoseManager.update()
-            for (bridge in bridges) {
-                bridge.dataWrite()
-            }
-            vrcOSCHandler.update()
-            vMCHandler.update()
-            // final long time = System.currentTimeMillis() - start;
-            try {
-                sleep(1) // 1000Hz
-            } catch (error: InterruptedException) {
-                LogManager.info("VRServer thread interrupted")
-                break
-            }
-        }
-    }
+	@VRServerThread
+	override fun run() {
+		trackersServer.start()
+		while (true) {
+			// final long start = System.currentTimeMillis();
+			fpsTimer.update()
+			do {
+				val task = tasks.poll() ?: break
+				task.run()
+			} while (true)
+			for (task in onTick) {
+				task.run()
+			}
+			for (bridge in bridges) {
+				bridge.dataRead()
+			}
+			for (tracker in trackers) {
+				tracker.tick()
+			}
+			humanPoseManager.update()
+			for (bridge in bridges) {
+				bridge.dataWrite()
+			}
+			vrcOSCHandler.update()
+			vMCHandler.update()
+			// final long time = System.currentTimeMillis() - start;
+			try {
+				sleep(1) // 1000Hz
+			} catch (error: InterruptedException) {
+				LogManager.info("VRServer thread interrupted")
+				break
+			}
+		}
+	}
 
-    @ThreadSafe
-    fun queueTask(r: Runnable) {
-        tasks.add(r)
-    }
+	@ThreadSafe
+	fun queueTask(r: Runnable) {
+		tasks.add(r)
+	}
 
-    @VRServerThread
-    private fun trackerAdded(tracker: Tracker) {
-        humanPoseManager.trackerAdded(tracker)
-    }
+	@VRServerThread
+	private fun trackerAdded(tracker: Tracker) {
+		humanPoseManager.trackerAdded(tracker)
+	}
 
-    @ThreadSecure
-    fun registerTracker(tracker: Tracker) {
-        configManager.vrConfig.readTrackerConfig(tracker)
-        queueTask {
-            trackers.add(tracker)
-            trackerAdded(tracker)
-            for (tc in newTrackersConsumers) {
-                tc.accept(tracker)
-            }
-        }
-    }
+	@ThreadSecure
+	fun registerTracker(tracker: Tracker) {
+		configManager.vrConfig.readTrackerConfig(tracker)
+		queueTask {
+			trackers.add(tracker)
+			trackerAdded(tracker)
+			for (tc in newTrackersConsumers) {
+				tc.accept(tracker)
+			}
+		}
+	}
 
-    @ThreadSafe
-    fun updateSkeletonModel() {
-        queueTask { humanPoseManager.updateSkeletonModelFromServer() }
-    }
+	@ThreadSafe
+	fun updateSkeletonModel() {
+		queueTask { humanPoseManager.updateSkeletonModelFromServer() }
+	}
 
-    fun resetTrackersFull(resetSourceName: String?) {
-        queueTask { humanPoseManager.resetTrackersFull(resetSourceName) }
-    }
+	fun resetTrackersFull(resetSourceName: String?) {
+		queueTask { humanPoseManager.resetTrackersFull(resetSourceName) }
+	}
 
-    fun resetTrackersYaw(resetSourceName: String?) {
-        queueTask { humanPoseManager.resetTrackersYaw(resetSourceName) }
-    }
+	fun resetTrackersYaw(resetSourceName: String?) {
+		queueTask { humanPoseManager.resetTrackersYaw(resetSourceName) }
+	}
 
-    fun resetTrackersMounting(resetSourceName: String?) {
-        queueTask { humanPoseManager.resetTrackersMounting(resetSourceName) }
-    }
+	fun resetTrackersMounting(resetSourceName: String?) {
+		queueTask { humanPoseManager.resetTrackersMounting(resetSourceName) }
+	}
 
-    fun scheduleResetTrackersFull(resetSourceName: String?, delay: Long) {
-        val resetTask: TimerTask = object : TimerTask() {
-            override fun run() {
-                queueTask { humanPoseManager.resetTrackersFull(resetSourceName) }
-            }
-        }
-        timer.schedule(resetTask, delay)
-    }
+	fun scheduleResetTrackersFull(resetSourceName: String?, delay: Long) {
+		val resetTask: TimerTask = object : TimerTask() {
+			override fun run() {
+				queueTask { humanPoseManager.resetTrackersFull(resetSourceName) }
+			}
+		}
+		timer.schedule(resetTask, delay)
+	}
 
-    fun scheduleResetTrackersYaw(resetSourceName: String?, delay: Long) {
-        val yawResetTask: TimerTask = object : TimerTask() {
-            override fun run() {
-                queueTask { humanPoseManager.resetTrackersYaw(resetSourceName) }
-            }
-        }
-        timer.schedule(yawResetTask, delay)
-    }
+	fun scheduleResetTrackersYaw(resetSourceName: String?, delay: Long) {
+		val yawResetTask: TimerTask = object : TimerTask() {
+			override fun run() {
+				queueTask { humanPoseManager.resetTrackersYaw(resetSourceName) }
+			}
+		}
+		timer.schedule(yawResetTask, delay)
+	}
 
-    fun scheduleResetTrackersMounting(resetSourceName: String?, delay: Long) {
-        val resetMountingTask: TimerTask = object : TimerTask() {
-            override fun run() {
-                queueTask { humanPoseManager.resetTrackersMounting(resetSourceName) }
-            }
-        }
-        timer.schedule(resetMountingTask, delay)
-    }
+	fun scheduleResetTrackersMounting(resetSourceName: String?, delay: Long) {
+		val resetMountingTask: TimerTask = object : TimerTask() {
+			override fun run() {
+				queueTask { humanPoseManager.resetTrackersMounting(resetSourceName) }
+			}
+		}
+		timer.schedule(resetMountingTask, delay)
+	}
 
-    fun setLegTweaksEnabled(value: Boolean) {
-        queueTask { humanPoseManager.setLegTweaksEnabled(value) }
-    }
+	fun setLegTweaksEnabled(value: Boolean) {
+		queueTask { humanPoseManager.setLegTweaksEnabled(value) }
+	}
 
-    fun setSkatingReductionEnabled(value: Boolean) {
-        queueTask { humanPoseManager.setSkatingCorrectionEnabled(value) }
-    }
+	fun setSkatingReductionEnabled(value: Boolean) {
+		queueTask { humanPoseManager.setSkatingCorrectionEnabled(value) }
+	}
 
-    fun setFloorClipEnabled(value: Boolean) {
-        queueTask { humanPoseManager.setFloorClipEnabled(value) }
-    }
+	fun setFloorClipEnabled(value: Boolean) {
+		queueTask { humanPoseManager.setFloorClipEnabled(value) }
+	}
 
-    val trackersCount: Int
-        get() = trackers.size
-    val allTrackers: List<Tracker>
-        get() = FastList(trackers)
+	val trackersCount: Int
+		get() = trackers.size
+	val allTrackers: List<Tracker>
+		get() = FastList(trackers)
 
-    fun getTrackerById(id: TrackerIdT): Tracker? {
-        for (tracker in trackers) {
-            if (tracker.trackerNum != id.trackerNum) {
-                continue
-            }
+	fun getTrackerById(id: TrackerIdT): Tracker? {
+		for (tracker in trackers) {
+			if (tracker.trackerNum != id.trackerNum) {
+				continue
+			}
 
-            // Handle synthetic devices
-            if (id.deviceId == null && tracker.device == null) {
-                return tracker
-            }
-            if (tracker.device != null && id.deviceId != null && id.deviceId.id == tracker.device.id) {
-                // This is a physical tracker, and both device id and the
-                // tracker num match
-                return tracker
-            }
-        }
-        return null
-    }
+			// Handle synthetic devices
+			if (id.deviceId == null && tracker.device == null) {
+				return tracker
+			}
+			if (tracker.device != null && id.deviceId != null && id.deviceId.id == tracker.device.id) {
+				// This is a physical tracker, and both device id and the
+				// tracker num match
+				return tracker
+			}
+		}
+		return null
+	}
 
-    fun clearTrackersDriftCompensation() {
-        for (t in allTrackers) {
-            if (t.isImu()) {
-                t.resetsHandler.clearDriftCompensation()
-            }
-        }
-    }
+	fun clearTrackersDriftCompensation() {
+		for (t in allTrackers) {
+			if (t.isImu()) {
+				t.resetsHandler.clearDriftCompensation()
+			}
+		}
+	}
 
-    companion object {
-        private val nextLocalTrackerId = AtomicInteger()
-        @JvmStatic
+	companion object {
+		private val nextLocalTrackerId = AtomicInteger()
+		lateinit var instance: VRServer
+			private set
+
+		@JvmStatic
 		fun getNextLocalTrackerId(): Int {
-            return nextLocalTrackerId.incrementAndGet()
-        }
+			return nextLocalTrackerId.incrementAndGet()
+		}
 
-        @JvmStatic
+		@JvmStatic
 		val currentLocalTrackerId: Int
-            get() = nextLocalTrackerId.get()
-    }
+			get() = nextLocalTrackerId.get()
+	}
 }

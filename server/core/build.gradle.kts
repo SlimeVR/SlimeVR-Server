@@ -15,18 +15,19 @@ plugins {
 	id("com.diffplug.spotless")
 }
 
+// FIXME: Please replace these to Java 11 as that's what they actually are
 kotlin {
 	jvmToolchain {
-		languageVersion.set(JavaLanguageVersion.of(11))
+		languageVersion.set(JavaLanguageVersion.of(17))
 	}
 }
 java {
 	toolchain {
-		languageVersion.set(JavaLanguageVersion.of(11))
+		languageVersion.set(JavaLanguageVersion.of(17))
 	}
 }
 tasks.withType<KotlinCompile> {
-	kotlinOptions.jvmTarget = "11"
+	kotlinOptions.jvmTarget = "17"
 }
 
 // Set compiler to use UTF-8

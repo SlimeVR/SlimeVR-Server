@@ -1,6 +1,6 @@
 package dev.slimevr.config
 
-import dev.slimevr.vrServer
+import dev.slimevr.VRServer
 
 class FiltersConfig {
 
@@ -11,7 +11,7 @@ class FiltersConfig {
 	var amount = 0.2f
 
 	fun updateTrackersFilters() {
-		for (tracker in vrServer.allTrackers) {
+		for (tracker in VRServer.instance.allTrackers) {
 			if (tracker.allowFiltering) {
 				tracker.filteringHandler.readFilteringConfig(this, tracker.getRawRotation())
 			}

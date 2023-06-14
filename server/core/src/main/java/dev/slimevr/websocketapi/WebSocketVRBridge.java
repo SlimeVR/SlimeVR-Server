@@ -2,7 +2,6 @@ package dev.slimevr.websocketapi;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.node.ObjectNode;
-import dev.slimevr.Main;
 import dev.slimevr.VRServer;
 import dev.slimevr.bridge.Bridge;
 import dev.slimevr.tracking.trackers.Tracker;
@@ -200,8 +199,10 @@ public class WebSocketVRBridge extends WebsocketAPI implements Bridge {
 
 	private void parseAction(ObjectNode json, WebSocket conn) {
 		switch (json.get("name").asText()) {
-			case "calibrate" -> Main.getVrServer().resetTrackersYaw(resetSourceName);
-			case "full_calibrate" -> Main.getVrServer().resetTrackersFull(resetSourceName);
+			case "calibrate" -> VRServer.Companion.getInstance().resetTrackersYaw(resetSourceName);
+			case "full_calibrate" -> VRServer.Companion
+				.getInstance()
+				.resetTrackersFull(resetSourceName);
 		}
 	}
 

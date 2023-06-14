@@ -16,7 +16,6 @@ import io.github.axisangles.ktmath.Vector3;
 import org.junit.jupiter.api.DynamicTest;
 import org.junit.jupiter.api.TestFactory;
 
-import java.util.function.Function;
 import java.util.stream.IntStream;
 import java.util.stream.Stream;
 

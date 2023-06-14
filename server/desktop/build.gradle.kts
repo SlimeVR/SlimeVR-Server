@@ -79,7 +79,7 @@ tasks.shadowJar {
 	archiveVersion.set("")
 }
 application {
-	mainClass.set("dev.slimevr.Main")
+	mainClass.set("dev.slimevr.desktop.Main")
 }
 
 fun String.runCommand(currentWorkingDir: File = file("./")): String {
