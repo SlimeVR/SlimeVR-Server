@@ -6,14 +6,14 @@
  * User Manual available at https://docs.gradle.org/6.3/userguide/java_library_plugin.html
  */
 import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
-import java.io.ByteArrayOutputStream
 
 plugins {
+	kotlin("android")
 	kotlin("plugin.serialization")
 	id("com.github.gmazzo.buildconfig")
 
 	id("com.android.application") version "8.0.2"
-	id("org.jetbrains.kotlin.android")
+	id("org.ajoberstar.grgit")
 }
 
 kotlin {
@@ -83,6 +83,10 @@ dependencies {
  * build options.
  */
 
+extra.apply {
+	set("gitVersionCode", grgit.tag.list().size)
+	set("gitVersionName", grgit.describe(mapOf("tags" to true, "always" to true)))
+}
 android {
 	/**
 	 * The app's namespace. Used primarily to access app resources.
@@ -121,10 +125,10 @@ android {
 		targetSdk = 33
 
 		// Defines the version number of your app.
-		versionCode = 8
+		versionCode = extra["gitVersionCode"] as? Int
 
 		// Defines a user-friendly version name for your app.
-		versionName = "0.8.0-rc.1"
+		versionName = extra["gitVersionName"] as? String
 
 		testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
 	}
@@ -160,26 +164,4 @@ android {
 	kotlinOptions {
 		jvmTarget = "17"
 	}
-}
-
-fun String.runCommand(currentWorkingDir: File = file("./")): String {
-	val byteOut = ByteArrayOutputStream()
-	project.exec {
-		workingDir = currentWorkingDir
-		commandLine = this@runCommand.split("\\s".toRegex())
-		standardOutput = byteOut
-	}
-	return String(byteOut.toByteArray()).trim()
-}
-
-buildConfig {
-	val gitCommitHash = "git rev-parse --verify --short HEAD".runCommand().trim()
-	val gitVersionTag = "git --no-pager tag --points-at HEAD".runCommand().trim()
-	val gitClean = "git status --porcelain".runCommand().trim().isEmpty()
-	useKotlinOutput { topLevelConstants = true }
-	packageName("dev.slimevr.android")
-
-	buildConfigField("String", "GIT_COMMIT_HASH", "\"${gitCommitHash}\"")
-	buildConfigField("String", "GIT_VERSION_TAG", "\"${gitVersionTag}\"")
-	buildConfigField("boolean", "GIT_CLEAN", gitClean.toString())
 }

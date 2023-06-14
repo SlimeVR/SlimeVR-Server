@@ -1,21 +1,3 @@
-buildscript {
-	repositories {
-		mavenCentral()
-	}
-	dependencies {
-		classpath("org.jetbrains.kotlinx:atomicfu-gradle-plugin:0.20.2")
-	}
-}
-
 plugins {
-	kotlin("jvm") apply false
+	id("org.ajoberstar.grgit") version "5.2.0"
 }
-
-subprojects {
-	plugins.apply("kotlinx-atomicfu")
-}
-
-repositories {
-	mavenCentral()
-}
-

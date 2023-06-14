@@ -13,6 +13,7 @@ plugins {
 	application
 	id("com.github.johnrengelman.shadow")
 	id("com.github.gmazzo.buildconfig")
+	id("org.ajoberstar.grgit")
 }
 
 kotlin {
@@ -93,15 +94,19 @@ fun String.runCommand(currentWorkingDir: File = file("./")): String {
 }
 
 buildConfig {
-	val gitCommitHash = "git rev-parse --verify --short HEAD".runCommand().trim()
-	val gitVersionTag = "git --no-pager tag --points-at HEAD".runCommand().trim()
-	val gitClean = "git status --porcelain".runCommand().trim().isEmpty()
 	useKotlinOutput { topLevelConstants = true }
 	packageName("dev.slimevr.desktop")
 
-	buildConfigField("String", "GIT_COMMIT_HASH", "\"${gitCommitHash}\"")
-	buildConfigField("String", "GIT_VERSION_TAG", "\"${gitVersionTag}\"")
-	buildConfigField("boolean", "GIT_CLEAN", gitClean.toString())
+	val gitVersionTag = grgit.describe(mapOf(
+		"tags" to true,
+		"abbrev" to 0,
+	))
+	val latestCommitTag =
+		grgit.tag.list().find { it.name == gitVersionTag }!!.commit.abbreviatedId == grgit.head().abbreviatedId
+	val gitLatestVersionTag = if (latestCommitTag) { gitVersionTag} else { "" }
+	buildConfigField("String", "GIT_COMMIT_HASH", "\"${grgit.head().abbreviatedId}\"")
+	buildConfigField("String", "GIT_VERSION_TAG", "\"${gitLatestVersionTag}\"")
+	buildConfigField("boolean", "GIT_CLEAN", grgit.status().isClean.toString())
 }
 
 tasks.getByName("run", JavaExec::class) {

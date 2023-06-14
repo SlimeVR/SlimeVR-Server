@@ -3,6 +3,7 @@
 package dev.slimevr.android
 
 import androidx.appcompat.app.AppCompatActivity
+import dev.slimevr.Keybinding
 import dev.slimevr.VRServer
 import io.eiren.util.logging.LogManager
 import io.ktor.http.CacheControl
@@ -19,7 +20,6 @@ import java.time.ZonedDateTime
 import kotlin.concurrent.thread
 import kotlin.system.exitProcess
 
-val VERSION = "v0.8.0-rc.1/android"
 lateinit var vrServer: VRServer
 	private set
 val vrServerInitialized: Boolean
@@ -44,7 +44,6 @@ fun main(activity: AppCompatActivity) {
 		} catch (e1: java.lang.Exception) {
 			e1.printStackTrace()
 		}
-		LogManager.info("Running version $VERSION")
 		try {
 			vrServer = VRServer(File(activity.filesDir, "vrconfig.yml").absolutePath)
 			vrServer.start()
