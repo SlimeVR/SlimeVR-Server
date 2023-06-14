@@ -327,7 +327,7 @@ public class HumanPoseManager {
 		// t-pose each time
 		if (oldSkeleton.getPauseTracking()) {
 			TransformNode[] oldNodes = oldSkeleton.getAllNodes();
-			TransformNode[] newNodes = oldSkeleton.getAllNodes();
+			TransformNode[] newNodes = skeleton.getAllNodes();
 
 			for (int i = 0; i < newNodes.length; i++) {
 				newNodes[i]
