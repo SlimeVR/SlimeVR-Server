@@ -994,8 +994,10 @@ public class LegTweaks {
 			- (hipToFloorDist * STANDING_CUTOFF_VERTICAL);
 
 		if (hipPosition.getY() < cutoff) {
-			currentDisengagementOffset = (1 - ((floorLevel - hipPosition.getY()) /
-				(floorLevel - cutoff)))
+			currentDisengagementOffset = (1
+				- ((floorLevel - hipPosition.getY())
+					/
+					(floorLevel - cutoff)))
 				* MAX_DISENGAGEMENT_OFFSET;
 
 			return false;
