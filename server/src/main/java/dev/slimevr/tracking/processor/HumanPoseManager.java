@@ -323,6 +323,19 @@ public class HumanPoseManager {
 		skeleton = new HumanSkeleton(this, server);
 		skeleton.setPauseTracking(oldSkeleton.getPauseTracking());
 
+		// If paused, copy the pose to the new skeleton so it doesn't reset to
+		// t-pose each time
+		if (oldSkeleton.getPauseTracking()) {
+			TransformNode[] oldNodes = oldSkeleton.getAllNodes();
+			TransformNode[] newNodes = oldSkeleton.getAllNodes();
+
+			for (int i = 0; i < newNodes.length; i++) {
+				newNodes[i]
+					.getLocalTransform()
+					.setRotation(oldNodes[i].getLocalTransform().getRotation());
+			}
+		}
+
 		// This recomputes all node offsets, so the defaults don't need to be
 		// explicitly loaded into the skeleton (no need for
 		// `updateNodeOffsetsInSkeleton()`)

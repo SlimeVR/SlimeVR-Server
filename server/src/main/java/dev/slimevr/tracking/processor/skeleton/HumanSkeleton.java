@@ -1270,7 +1270,7 @@ public class HumanSkeleton {
 		return hmdNode;
 	}
 
-	protected TransformNode[] getAllNodes() {
+	public TransformNode[] getAllNodes() {
 		return new TransformNode[] {
 			hmdNode,
 			headNode,
