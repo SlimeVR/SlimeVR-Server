@@ -318,21 +318,25 @@ public class HumanPoseManager {
 	public void updateSkeletonModelFromServer() {
 		disconnectComputedHumanPoseTrackers();
 
-		// Make a new skeleton and transfer the state
+		// Make a new skeleton and store the old state
 		HumanSkeleton oldSkeleton = skeleton;
 		skeleton = new HumanSkeleton(this, server);
-		skeleton.setPauseTracking(oldSkeleton.getPauseTracking());
 
-		// If paused, copy the pose to the new skeleton so it doesn't reset to
-		// t-pose each time
-		if (oldSkeleton.getPauseTracking()) {
-			TransformNode[] oldNodes = oldSkeleton.getAllNodes();
-			TransformNode[] newNodes = skeleton.getAllNodes();
+		// Transfer the state of the old skeleton to the new one
+		if (oldSkeleton != null) {
+			skeleton.setPauseTracking(oldSkeleton.getPauseTracking());
 
-			for (int i = 0; i < newNodes.length; i++) {
-				newNodes[i]
-					.getLocalTransform()
-					.setRotation(oldNodes[i].getLocalTransform().getRotation());
+			// If paused, copy the pose to the new skeleton so it doesn't reset
+			// to t-pose each time
+			if (oldSkeleton.getPauseTracking()) {
+				TransformNode[] oldNodes = oldSkeleton.getAllNodes();
+				TransformNode[] newNodes = skeleton.getAllNodes();
+
+				for (int i = 0; i < newNodes.length; i++) {
+					newNodes[i]
+						.getLocalTransform()
+						.setRotation(oldNodes[i].getLocalTransform().getRotation());
+				}
 			}
 		}
 
