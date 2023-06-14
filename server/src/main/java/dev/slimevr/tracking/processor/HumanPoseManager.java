@@ -317,7 +317,12 @@ public class HumanPoseManager {
 	@VRServerThread
 	public void updateSkeletonModelFromServer() {
 		disconnectComputedHumanPoseTrackers();
+
+		// Make a new skeleton and transfer the state
+		HumanSkeleton oldSkeleton = skeleton;
 		skeleton = new HumanSkeleton(this, server);
+		skeleton.setPauseTracking(oldSkeleton.getPauseTracking());
+
 		// This recomputes all node offsets, so the defaults don't need to be
 		// explicitly loaded into the skeleton (no need for
 		// `updateNodeOffsetsInSkeleton()`)
