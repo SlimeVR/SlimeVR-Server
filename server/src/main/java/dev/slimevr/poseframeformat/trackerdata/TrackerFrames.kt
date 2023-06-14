@@ -42,7 +42,8 @@ data class TrackerFrames(val name: String = "", val frames: FastList<TrackerFram
 			hasPosition = firstFrame.hasPosition(),
 			hasRotation = firstFrame.hasRotation(),
 			hasAcceleration = firstFrame.hasAcceleration(),
-			isInternal = true,
+			// Make sure this is false!! Otherwise HumanSkeleton ignores it
+			isInternal = false,
 			isComputed = true
 		)
 
