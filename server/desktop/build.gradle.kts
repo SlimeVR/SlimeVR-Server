@@ -98,21 +98,17 @@ buildConfig {
 	useKotlinOutput { topLevelConstants = true }
 	packageName("dev.slimevr.desktop")
 
-	val gitVersionTag = grgit.describe(
-		mapOf(
-			"tags" to true,
-			"abbrev" to 0
-		)
-	)
-	val latestCommitTag =
-		grgit.tag.list().find { it.name == gitVersionTag }!!.commit.abbreviatedId == grgit.head().abbreviatedId
-	val gitLatestVersionTag = if (latestCommitTag) { gitVersionTag } else { "" }
+
+
+	val gitVersionTag = providers.exec {
+		commandLine("git", "--no-pager", "tag", "--points-at", "HEAD")
+	}.standardOutput.asText.get()
 	buildConfigField("String", "GIT_COMMIT_HASH", "\"${grgit.head().abbreviatedId}\"")
-	buildConfigField("String", "GIT_VERSION_TAG", "\"${gitLatestVersionTag}\"")
+	buildConfigField("String", "GIT_VERSION_TAG", "\"${gitVersionTag}\"")
 	buildConfigField("boolean", "GIT_CLEAN", grgit.status().isClean.toString())
 }
 
-tasks.getByName("run", JavaExec::class) {
-	standardInput = System.`in`
+tasks.run<JavaExec> {
+	standardInput = System.`in` // this is not working
 	args = listOf("run")
 }
