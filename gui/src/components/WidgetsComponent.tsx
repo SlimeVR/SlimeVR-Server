@@ -1,4 +1,4 @@
-import { Localized } from '@fluent/react';
+import { Localized, useLocalization } from '@fluent/react';
 import { BVHButton } from './BVHButton';
 import { ClearDriftCompensationButton } from './ClearDriftCompensationButton';
 import { TrackingPauseButton } from './TrackingPauseButton';
@@ -25,6 +25,7 @@ export function WidgetsComponent() {
     useState(false);
   const { trackers } = useAppContext();
   const { statuses } = useStatusContext();
+  const { l10n } = useLocalization();
   const unprioritizedStatuses = useMemo(
     () => Object.values(statuses).filter((status) => !status.prioritized),
     [statuses]
@@ -56,7 +57,7 @@ export function WidgetsComponent() {
         {unprioritizedStatuses.map((status) => (
           <Localized
             id={`status_system-${StatusData[status.dataType]}`}
-            vars={parseStatusToLocale(status, trackers)}
+            vars={parseStatusToLocale(status, trackers, l10n)}
             key={status.id}
           >
             <TipBox whitespace={false} hideIcon={true}>
