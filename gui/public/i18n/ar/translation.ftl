@@ -1,6 +1,3 @@
-### SlimeVR complete GUI translations
-
-
 # Please developers (not translators) don't reuse a key inside another key
 # or concat text with a translation string in the code, use the appropriate
 # features like variables and selectors in each appropriate case!
@@ -12,6 +9,9 @@
 
 websocket-connecting = جاري التوصيل بالسيرفر
 websocket-connection_lost = انقطع الاتصال بالسيرفر. يتم إعادة التوصيل...
+
+## Update notification
+
 
 ## Tips
 
@@ -95,10 +95,13 @@ navbar-mounting = معايرة التركيب
 navbar-onboarding = معالج الإعداد
 navbar-settings = الإعدادات
 
-## Bounding volume hierarchy recording
+## Biovision hierarchy recording
 
 bvh-start_recording = سجل بي في ايتش
 bvh-recording = تسجيل...
+
+## Tracking pause
+
 
 ## Widget: Overlay settings
 
@@ -571,6 +574,12 @@ onboarding-connect_tracker-connected_trackers =
     }
 onboarding-connect_tracker-next = لقد قمت بتوصيل جميع أجهزة التعقب
 
+## Tracker calibration tutorial
+
+
+## Tracker assignment tutorial
+
+
 ## Tracker assignment setup
 
 onboarding-assign_trackers-back = العودة إلى بيانات اعتماد الواي فاي
@@ -580,12 +589,10 @@ onboarding-assign_trackers-description = دعنا نختار موقع أجهزة
 # $assigned (Number) - Trackers that have been assigned a body part
 # $trackers (Number) - Trackers connected to the server
 onboarding-assign_trackers-assigned =
-    { $trackers ->
+    { $assigned ->
         [zero] { $assigned } من { $trackers } أجهزة تعقب عينت
         [one] جهاز واحد من { $trackers } أجهزة تعقب عينت
         [two] جهازان من { $trackers } أجهزة تعقب عينت
-        [few] { $assigned } من { $trackers } أجهزة تعقب عينت
-        [many] { $assigned } من { $trackers } أجهزة تعقب عينت
        *[other] { $assigned } من { $trackers } أجهزة تعقب عينت
     }
 onboarding-assign_trackers-advanced = إظهار مواقع التعيين المتقدمة
@@ -777,3 +784,6 @@ onboarding-automatic_proportions-done-description = اكتملت معايرة ن
 ## Home
 
 home-no_trackers = لم يتم الكشف أو تعيين عن أي جهاز تعقب
+
+## Status system
+
