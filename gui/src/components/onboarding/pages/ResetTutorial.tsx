@@ -18,8 +18,10 @@ import { useTrackers } from '../../../hooks/tracker';
 import { BodyDisplay } from '../../commons/BodyDisplay';
 import { useWebsocketAPI } from '../../../hooks/websocket-api';
 import classNames from 'classnames';
+import { useBreakpoint } from '../../../hooks/breakpoint';
 
 export function ResetTutorialPage() {
+  const { isMobile } = useBreakpoint('mobile');
   const { l10n } = useLocalization();
   const { applyProgress, skipSetup } = useOnboarding();
   const [skipWarning, setSkipWarning] = useState(false);
@@ -119,80 +121,79 @@ export function ResetTutorialPage() {
   ];
 
   return (
-    <div className="flex flex-col gap-5 h-full items-center w-full justify-center relative">
+    <div className="flex flex-col gap-5 h-full items-center w-full xs:justify-center relative overflow-y-auto">
       <SkipSetupButton
         visible={true}
         modalVisible={skipWarning}
         onClick={() => setSkipWarning(true)}
       ></SkipSetupButton>
-      <div className="flex flex-col w-full h-full justify-center px-20">
-        <div className="flex gap-8 self-center">
-          <div className="flex flex-col gap-3 w-96 self-center">
-            <Typography variant="main-title">
-              {l10n.getString('onboarding-reset_tutorial')}
-            </Typography>
-            <Typography color="secondary">
-              {l10n.getString('onboarding-reset_tutorial-description')}
-            </Typography>
-            <div className="flex">
-              <Button variant="secondary" to="/onboarding/mounting/choose">
-                {l10n.getString('onboarding-previous_step')}
-              </Button>
+      <div className="flex xs:flex-row mobile:flex-col w-full h-full xs:justify-center xs:px-20 mobile:px-4 gap-8 self-center">
+        <div className="flex flex-col gap-3 xs:w-96 self-center">
+          <Typography variant="main-title">
+            {l10n.getString('onboarding-reset_tutorial')}
+          </Typography>
+          <Typography color="secondary">
+            {l10n.getString('onboarding-reset_tutorial-description')}
+          </Typography>
+          <div className="flex">
+            <Button variant="secondary" to="/onboarding/mounting/choose">
+              {l10n.getString('onboarding-previous_step')}
+            </Button>
 
-              <Button
-                hidden={curIndex + 1 >= order.length}
-                variant="secondary"
-                className="ml-auto"
-                onClick={() => {
-                  setCurIndex(curIndex + 1);
-                }}
-              >
-                {l10n.getString('onboarding-reset_tutorial-skip')}
-              </Button>
+            <Button
+              hidden={curIndex + 1 >= order.length}
+              variant="secondary"
+              className="ml-auto"
+              onClick={() => {
+                setCurIndex(curIndex + 1);
+              }}
+            >
+              {l10n.getString('onboarding-reset_tutorial-skip')}
+            </Button>
 
-              <Button
-                variant="primary"
-                to="/onboarding/body-proportions/choose"
-                className={classNames(
-                  'ml-auto',
-                  order.length > curIndex + 1 && 'hidden'
-                )}
-              >
-                {l10n.getString('onboarding-continue')}
-              </Button>
-            </div>
-            <div
+            <Button
+              variant="primary"
+              to="/onboarding/body-proportions/choose"
               className={classNames(
-                'self-center w-72 md:hidden mt-10 ml-auto border-background-10',
-                'border-l-4 pl-4',
-                curIndex < order.length && 'visible',
-                curIndex >= order.length && 'hidden'
+                'ml-auto',
+                order.length > curIndex + 1 && 'hidden'
               )}
             >
-              <Typography whitespace="whitespace-pre-line" color="secondary">
-                {l10n.getString(`onboarding-reset_tutorial-${curIndex}`, {
-                  taps: tapSettings[curIndex],
-                })}
-              </Typography>
-            </div>
+              {l10n.getString('onboarding-continue')}
+            </Button>
           </div>
-          <div className="flex flex-row">
-            <BodyDisplay
-              trackers={[order[curIndex]]}
-              hideUnassigned={true}
-            ></BodyDisplay>
-            <div
-              className={classNames(
-                'self-center w-72 md-max:hidden',
-                curIndex >= order.length && 'hidden'
-              )}
-            >
-              <Typography whitespace="whitespace-pre-line" color="secondary">
-                {l10n.getString(`onboarding-reset_tutorial-${curIndex}`, {
-                  taps: tapSettings[curIndex],
-                })}
-              </Typography>
-            </div>
+          <div
+            className={classNames(
+              'self-center xs:w-72 md:hidden xs:mt-10 mobile:mt-5 xs:ml-auto border-background-10',
+              'border-l-4 pl-4',
+              curIndex < order.length && 'visible',
+              curIndex >= order.length && 'hidden'
+            )}
+          >
+            <Typography whitespace="whitespace-pre-line" color="secondary">
+              {l10n.getString(`onboarding-reset_tutorial-${curIndex}`, {
+                taps: tapSettings[curIndex],
+              })}
+            </Typography>
+          </div>
+        </div>
+        <div className="flex flex-row justify-center">
+          <BodyDisplay
+            width={isMobile ? 160 : undefined}
+            trackers={[order[curIndex]]}
+            hideUnassigned={true}
+          ></BodyDisplay>
+          <div
+            className={classNames(
+              'self-center w-72 md-max:hidden',
+              curIndex >= order.length && 'hidden'
+            )}
+          >
+            <Typography whitespace="whitespace-pre-line" color="secondary">
+              {l10n.getString(`onboarding-reset_tutorial-${curIndex}`, {
+                taps: tapSettings[curIndex],
+              })}
+            </Typography>
           </div>
         </div>
       </div>

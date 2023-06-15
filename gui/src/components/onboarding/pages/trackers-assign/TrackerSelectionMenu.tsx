@@ -49,7 +49,7 @@ export function TrackerSelectionMenu({
       >
         <div className="flex w-full h-full flex-col ">
           <div className="flex w-full flex-col flex-grow items-center gap-3">
-            <Typography variant="main-title" bold>
+            <Typography variant="mobile-title" bold>
               {l10n.getString('tracker_selection_menu-' + BodyPart[bodyPart])}
             </Typography>
             <div className="w-full max-w-sm">
@@ -57,7 +57,7 @@ export function TrackerSelectionMenu({
             </div>
             <div className="relative">
               <div
-                className="w-full h-full min-w-[700px] overflow-y-auto p-2 pt-0 flex flex-col gap-6"
+                className="w-full h-full xs:min-w-[700px] overflow-y-auto p-2 pt-0 flex flex-col gap-6"
                 ref={refTrackers}
                 style={{ height: trackersHeight - optionsHeight }}
               >
@@ -67,7 +67,7 @@ export function TrackerSelectionMenu({
                       <Typography>
                         {l10n.getString('tracker_selection_menu-unassigned')}
                       </Typography>
-                      <div className="grid grid-cols-2 gap-3">
+                      <div className="grid xs:grid-cols-2 mobile:grid-cols-1 gap-3">
                         {unassignedTrackers.map((fd, index) => (
                           <TrackerCard
                             key={index}
@@ -88,7 +88,7 @@ export function TrackerSelectionMenu({
                   <Typography>
                     {l10n.getString('tracker_selection_menu-assigned')}
                   </Typography>
-                  <div className=" grid grid-cols-2 gap-3">
+                  <div className=" grid xs:grid-cols-2 mobile:grid-cols-1 gap-3">
                     {assignedTrackers.map((fd, index) => (
                       <TrackerCard
                         key={index}
@@ -105,9 +105,6 @@ export function TrackerSelectionMenu({
                     ))}
                   </div>
                 </div>
-              </div>
-              <div className="absolute px-2 pr-4 bottom-0 h-10 w-full border-b-[1px] border-background-40">
-                <div className="w-full h-full bg-gradient-to-b from-transparent to-black opacity-50"></div>
               </div>
             </div>
           </div>
