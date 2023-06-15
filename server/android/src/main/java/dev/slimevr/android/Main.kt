@@ -45,7 +45,7 @@ fun main(activity: AppCompatActivity) {
 			e1.printStackTrace()
 		}
 		try {
-			vrServer = VRServer(File(activity.filesDir, "vrconfig.yml").absolutePath)
+			vrServer = VRServer(configPath = File(activity.filesDir, "vrconfig.yml").absolutePath)
 			vrServer.start()
 			Keybinding(vrServer)
 			vrServer.join()

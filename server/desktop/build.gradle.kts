@@ -64,8 +64,9 @@ dependencies {
 
 	implementation("commons-cli:commons-cli:1.5.0")
 	implementation("org.apache.commons:commons-lang3:3.12.0")
+	implementation("net.java.dev.jna:jna:5.+")
+	implementation("net.java.dev.jna:jna-platform:5.+")
 }
-
 
 tasks.shadowJar {
 	minimize {
@@ -97,13 +98,15 @@ buildConfig {
 	useKotlinOutput { topLevelConstants = true }
 	packageName("dev.slimevr.desktop")
 
-	val gitVersionTag = grgit.describe(mapOf(
-		"tags" to true,
-		"abbrev" to 0,
-	))
+	val gitVersionTag = grgit.describe(
+		mapOf(
+			"tags" to true,
+			"abbrev" to 0
+		)
+	)
 	val latestCommitTag =
 		grgit.tag.list().find { it.name == gitVersionTag }!!.commit.abbreviatedId == grgit.head().abbreviatedId
-	val gitLatestVersionTag = if (latestCommitTag) { gitVersionTag} else { "" }
+	val gitLatestVersionTag = if (latestCommitTag) { gitVersionTag } else { "" }
 	buildConfigField("String", "GIT_COMMIT_HASH", "\"${grgit.head().abbreviatedId}\"")
 	buildConfigField("String", "GIT_VERSION_TAG", "\"${gitLatestVersionTag}\"")
 	buildConfigField("boolean", "GIT_CLEAN", grgit.status().isClean.toString())

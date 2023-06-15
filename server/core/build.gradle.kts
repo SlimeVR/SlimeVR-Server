@@ -12,7 +12,6 @@ plugins {
 	kotlin("jvm")
 	kotlin("plugin.serialization")
 	`java-library`
-	id("com.diffplug.spotless")
 }
 
 // FIXME: Please replace these to Java 11 as that's what they actually are
@@ -74,11 +73,9 @@ dependencies {
 	implementation("org.apache.commons:commons-lang3:3.12.0")
 	implementation("org.apache.commons:commons-collections4:4.4")
 
-	implementation("net.java.dev.jna:jna:5.+")
-	implementation("net.java.dev.jna:jna-platform:5.+")
 	implementation("com.illposed.osc:javaosc-core:0.8")
 	implementation("com.fazecast:jSerialComm:2.+")
-	implementation("com.google.protobuf:protobuf-java:3.21.12")
+	api("com.google.protobuf:protobuf-java:3.21.12")
 	implementation("org.java-websocket:Java-WebSocket:1.+")
 	implementation("com.melloware:jintellitype:1.+")
 	implementation("org.jetbrains.kotlinx:kotlinx-serialization-json:1.5.1")
@@ -102,59 +99,4 @@ fun String.runCommand(currentWorkingDir: File = file("./")): String {
 		standardOutput = byteOut
 	}
 	return String(byteOut.toByteArray()).trim()
-}
-
-configure<com.diffplug.gradle.spotless.SpotlessExtension> {
-	// optional: limit format enforcement to just the files changed by this feature branch
-	// ratchetFrom "origin/main"
-
-	format("misc") {
-		// define the files to apply `misc` to
-		target("*.gradle", "*.md", ".gitignore")
-
-		// define the steps to apply to those files
-		trimTrailingWhitespace()
-		endWithNewline()
-		indentWithTabs()
-	}
-	// format "yaml", {
-	// 	target "*.yml", "*.yaml",
-
-	// 	trimTrailingWhitespace()
-	// 	endWithNewline()
-	// 	indentWithSpaces(2)  // YAML cannot contain tabs: https://yaml.org/faq.html
-	// }
-
-	// .editorconfig doesn't work so, manual override
-	// https://github.com/diffplug/spotless/issues/142
-	val editorConfig =
-		mapOf(
-			"indent_size" to 4,
-			"indent_style" to "tab",
-// 			"max_line_length" to 88,
-			"ktlint_experimental" to "enabled",
-			"ij_kotlin_packages_to_use_import_on_demand" to
-				"java.util.*,kotlin.math.*,dev.slimevr.autobone.errors.*,io.github.axisangles.ktmath.*,kotlinx.atomicfu.*",
-			"ij_kotlin_allow_trailing_comma" to true
-		)
-	val ktlintVersion = "0.47.1"
-	kotlinGradle {
-		target("*.gradle.kts") // default target for kotlinGradle
-		ktlint(ktlintVersion)
-			.setUseExperimental(true)
-			.editorConfigOverride(editorConfig)
-	}
-	kotlin {
-		targetExclude("build/**/**.kt")
-		ktlint(ktlintVersion)
-			.setUseExperimental(true)
-			.editorConfigOverride(editorConfig)
-	}
-	java {
-		targetExclude("**/BuildConfig.java")
-
-		removeUnusedImports()
-		// Use eclipse JDT formatter
-		eclipse().configFile("spotless.xml")
-	}
 }

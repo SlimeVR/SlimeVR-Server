@@ -9,8 +9,6 @@ import dev.slimevr.osc.OSCRouter
 import dev.slimevr.osc.VMCHandler
 import dev.slimevr.osc.VRCOSCHandler
 import dev.slimevr.platform.SteamVRBridge
-import dev.slimevr.platform.linux.UnixSocketBridge
-import dev.slimevr.platform.windows.WindowsNamedPipeBridge
 import dev.slimevr.posestreamer.BVHRecorder
 import dev.slimevr.protocol.ProtocolAPI
 import dev.slimevr.reset.ResetHandler
@@ -26,19 +24,27 @@ import dev.slimevr.tracking.trackers.TrackerPosition
 import dev.slimevr.tracking.trackers.udp.TrackersUDPServer
 import dev.slimevr.util.ann.VRServerThread
 import dev.slimevr.websocketapi.WebSocketVRBridge
-import io.eiren.util.OperatingSystem
 import io.eiren.util.ann.ThreadSafe
 import io.eiren.util.ann.ThreadSecure
 import io.eiren.util.collections.FastList
 import io.eiren.util.logging.LogManager
 import solarxr_protocol.datatypes.TrackerIdT
-import java.nio.file.Paths
 import java.util.*
 import java.util.concurrent.LinkedBlockingQueue
 import java.util.concurrent.atomic.AtomicInteger
 import java.util.function.Consumer
 
-class VRServer @JvmOverloads constructor(configPath: String? = "vrconfig.yml") : Thread("VRServer") {
+typealias SteamBridgeProvider = (
+	server: VRServer,
+	hmdTracker: Tracker,
+	computedTrackers: List<Tracker>,
+) -> SteamVRBridge?
+
+class VRServer constructor(
+	driverBridgeProvider: SteamBridgeProvider = { _: VRServer, _: Tracker, _: List<Tracker> -> null },
+	feederBridgeProvider: (VRServer) -> SteamVRBridge? = { _: VRServer -> null },
+	configPath: String,
+) : Thread("VRServer") {
 	@JvmField
 	val configManager: ConfigManager
 
@@ -107,12 +113,9 @@ class VRServer @JvmOverloads constructor(configPath: String? = "vrconfig.yml") :
 			"HMD",
 			TrackerPosition.HEAD,
 			null,
-			true,
-			true,
-			false,
-			false,
-			false,
-			true
+			hasPosition = true,
+			hasRotation = true,
+			isComputed = true
 		)
 		humanPoseManager = HumanPoseManager(this)
 		val computedTrackers = humanPoseManager.computedTrackers
@@ -124,80 +127,18 @@ class VRServer @JvmOverloads constructor(configPath: String? = "vrconfig.yml") :
 			trackerPort,
 			"Sensors UDP server"
 		) { tracker: Tracker -> registerTracker(tracker) }
-		val driverBridge: SteamVRBridge?
-		if (OperatingSystem.getCurrentPlatform() == OperatingSystem.WINDOWS) {
 
-			// Create named pipe bridge for SteamVR driver
-			driverBridge = WindowsNamedPipeBridge(
-				this,
-				hmdTracker,
-				"steamvr",
-				"SteamVR Driver Bridge",
-				"\\\\.\\pipe\\SlimeVRDriver",
-				computedTrackers
-			)
+		// Start bridges for SteamVR and Feeder
+		val driverBridge = driverBridgeProvider(this, hmdTracker, computedTrackers)
+		if (driverBridge != null) {
 			tasks.add(Runnable { driverBridge.startBridge() })
 			bridges.add(driverBridge)
-
-			// Create named pipe bridge for SteamVR input
-			// TODO: how do we want to handle HMD input from the feeder app?
-			val feederBridge = WindowsNamedPipeBridge(
-				this,
-				null,
-				"steamvr_feeder",
-				"SteamVR Feeder Bridge",
-				"\\\\.\\pipe\\SlimeVRInput",
-				FastList()
-			)
+		}
+		val feederBridge = feederBridgeProvider(this)
+		if (feederBridge != null) {
 			tasks.add(Runnable { feederBridge.startBridge() })
 			bridges.add(feederBridge)
-		} else if (OperatingSystem.getCurrentPlatform() == OperatingSystem.LINUX) {
-			var linuxBridge: SteamVRBridge? = null
-			try {
-				linuxBridge = UnixSocketBridge(
-					this,
-					hmdTracker,
-					"steamvr",
-					"SteamVR Driver Bridge",
-					Paths.get(OperatingSystem.getTempDirectory(), "SlimeVRDriver").toString(),
-					computedTrackers
-				)
-			} catch (ex: Exception) {
-				LogManager.severe("Failed to initiate Unix socket, disabling driver bridge...", ex)
-			}
-			driverBridge = linuxBridge
-			if (driverBridge != null) {
-				tasks.add(Runnable { driverBridge.startBridge() })
-				bridges.add(driverBridge)
-			}
-			try {
-				val feederBridge: SteamVRBridge = UnixSocketBridge(
-					this,
-					null,
-					"steamvr_feeder",
-					"SteamVR Feeder Bridge",
-					Paths.get(OperatingSystem.getTempDirectory(), "SlimeVRInput").toString(),
-					FastList()
-				)
-				tasks.add(Runnable { feederBridge.startBridge() })
-				bridges.add(feederBridge)
-			} catch (ex: Exception) {
-				LogManager.severe("Failed to initiate Unix socket, disabling feeder bridge...", ex)
-			}
-		} else {
-			driverBridge = null
 		}
-
-		// Add shutdown hook
-		Runtime.getRuntime().addShutdownHook(
-			Thread {
-				try {
-					(driverBridge as? UnixSocketBridge)?.close()
-				} catch (e: Exception) {
-					throw RuntimeException(e)
-				}
-			}
-		)
 
 		// Create WebSocket server
 		val wsBridge = WebSocketVRBridge(hmdTracker, computedTrackers, this)

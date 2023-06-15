@@ -4,6 +4,12 @@ package dev.slimevr.desktop
 
 import dev.slimevr.Keybinding
 import dev.slimevr.VRServer
+import dev.slimevr.desktop.platform.linux.UnixSocketBridge
+import dev.slimevr.desktop.platform.windows.WindowsNamedPipeBridge
+import dev.slimevr.platform.SteamVRBridge
+import dev.slimevr.tracking.trackers.Tracker
+import io.eiren.util.OperatingSystem
+import io.eiren.util.collections.FastList
 import io.eiren.util.logging.LogManager
 import org.apache.commons.cli.CommandLine
 import org.apache.commons.cli.CommandLineParser
@@ -15,6 +21,7 @@ import java.io.File
 import java.io.IOException
 import java.lang.System
 import java.net.ServerSocket
+import java.nio.file.Paths
 import javax.swing.JOptionPane
 import kotlin.concurrent.thread
 import kotlin.system.exitProcess
@@ -99,7 +106,7 @@ fun main(args: Array<String>) {
 		return
 	}
 	try {
-		val vrServer = VRServer()
+		val vrServer = VRServer(::provideSteamVRBridge, ::provideFeederBridge, "vrconfig.yml")
 		vrServer.start()
 		Keybinding(vrServer)
 		val scanner = thread {
@@ -118,4 +125,90 @@ fun main(args: Array<String>) {
 		e.printStackTrace()
 		exitProcess(1)
 	}
+}
+
+fun provideSteamVRBridge(
+	server: VRServer,
+	hmdTracker: Tracker,
+	computedTrackers: List<Tracker>,
+): SteamVRBridge? {
+	val driverBridge: SteamVRBridge?
+	if (OperatingSystem.getCurrentPlatform() == OperatingSystem.WINDOWS) {
+		// Create named pipe bridge for SteamVR driver
+		driverBridge = WindowsNamedPipeBridge(
+			server,
+			hmdTracker,
+			"steamvr",
+			"SteamVR Driver Bridge",
+			"""\\.\pipe\SlimeVRDriver""",
+			computedTrackers
+		)
+	} else if (OperatingSystem.getCurrentPlatform() == OperatingSystem.LINUX) {
+		var linuxBridge: SteamVRBridge? = null
+		try {
+			linuxBridge = UnixSocketBridge(
+				server,
+				hmdTracker,
+				"steamvr",
+				"SteamVR Driver Bridge",
+				Paths.get(OperatingSystem.getTempDirectory(), "SlimeVRDriver")
+					.toString(),
+				computedTrackers
+			)
+		} catch (ex: Exception) {
+			LogManager.severe(
+				"Failed to initiate Unix socket, disabling driver bridge...",
+				ex
+			)
+		}
+		driverBridge = linuxBridge
+		if (driverBridge != null) {
+			// Close the named socket on shutdown, or otherwise it's not going to get removed
+			Runtime.getRuntime().addShutdownHook(
+				Thread {
+					try {
+						(driverBridge as? UnixSocketBridge)?.close()
+					} catch (e: Exception) {
+						throw RuntimeException(e)
+					}
+				}
+			)
+		}
+	} else {
+		driverBridge = null
+	}
+
+	return driverBridge
+}
+
+fun provideFeederBridge(
+	server: VRServer,
+): SteamVRBridge? {
+	val feederBridge: SteamVRBridge?
+	if (OperatingSystem.getCurrentPlatform() == OperatingSystem.WINDOWS) {
+		// Create named pipe bridge for SteamVR input
+		// TODO: how do we want to handle HMD input from the feeder app?
+		feederBridge = WindowsNamedPipeBridge(
+			server,
+			null,
+			"steamvr_feeder",
+			"SteamVR Feeder Bridge",
+			"""\\.\pipe\SlimeVRInput""",
+			FastList()
+		)
+	} else if (OperatingSystem.getCurrentPlatform() == OperatingSystem.LINUX) {
+		feederBridge = UnixSocketBridge(
+			server,
+			null,
+			"steamvr_feeder",
+			"SteamVR Feeder Bridge",
+			Paths.get(OperatingSystem.getTempDirectory(), "SlimeVRInput")
+				.toString(),
+			FastList()
+		)
+	} else {
+		feederBridge = null
+	}
+
+	return feederBridge
 }

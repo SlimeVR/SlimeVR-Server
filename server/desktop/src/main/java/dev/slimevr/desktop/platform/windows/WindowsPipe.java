@@ -1,4 +1,4 @@
-package dev.slimevr.platform.windows;
+package dev.slimevr.desktop.platform.windows;
 
 import com.sun.jna.platform.win32.Kernel32;
 import com.sun.jna.platform.win32.WinNT.HANDLE;

@@ -1,4 +1,4 @@
-package dev.slimevr.platform.windows;
+package dev.slimevr.desktop.platform.windows;
 
 import com.google.protobuf.CodedOutputStream;
 import com.google.protobuf.InvalidProtocolBufferException;

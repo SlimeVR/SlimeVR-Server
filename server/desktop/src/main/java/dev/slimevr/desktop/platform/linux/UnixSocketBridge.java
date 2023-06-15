@@ -1,4 +1,4 @@
-package dev.slimevr.platform.linux;
+package dev.slimevr.desktop.platform.linux;
 
 import com.google.protobuf.InvalidProtocolBufferException;
 import dev.slimevr.VRServer;
@@ -9,7 +9,10 @@ import dev.slimevr.tracking.trackers.Tracker;
 import io.eiren.util.ann.ThreadSafe;
 import io.eiren.util.logging.LogManager;
 
+import java.io.File;
 import java.io.IOException;
+import java.net.StandardProtocolFamily;
+import java.net.UnixDomainSocketAddress;
 import java.nio.ByteBuffer;
 import java.nio.ByteOrder;
 import java.nio.channels.ServerSocketChannel;
@@ -21,6 +24,7 @@ import java.util.List;
 
 public class UnixSocketBridge extends SteamVRBridge implements AutoCloseable {
 	public final String socketPath;
+	public final UnixDomainSocketAddress socketAddress;
 	private final ByteBuffer dst = ByteBuffer.allocate(2048);
 	private final ByteBuffer src = ByteBuffer.allocate(2048).order(ByteOrder.LITTLE_ENDIAN);
 
@@ -39,8 +43,13 @@ public class UnixSocketBridge extends SteamVRBridge implements AutoCloseable {
 	) {
 		super(server, hmd, "Named socket thread", bridgeName, bridgeSettingsKey, shareableTrackers);
 		this.socketPath = socketPath;
+		this.socketAddress = UnixDomainSocketAddress.of(socketPath);
 
-		throw new RuntimeException("Unix socket cannot be run on Android.");
+		File socketFile = new File(socketPath);
+		if (socketFile.exists()) {
+			throw new RuntimeException(socketPath + " socket already exists.");
+		}
+		socketFile.deleteOnExit();
 	}
 
 	@Override
@@ -218,7 +227,10 @@ public class UnixSocketBridge extends SteamVRBridge implements AutoCloseable {
 	}
 
 	private ServerSocketChannel createSocket() throws IOException {
-		return null;
+		ServerSocketChannel server = ServerSocketChannel.open(StandardProtocolFamily.UNIX);
+		server.bind(this.socketAddress);
+		LogManager.info("[" + bridgeName + "] Socket " + this.socketPath + " created");
+		return server;
 	}
 
 	@Override
