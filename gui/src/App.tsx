@@ -193,16 +193,15 @@ export default function App() {
   // This doesn't seem to resize it live, but if you close it, it gets restored to min size
   useEffect(() => {
     if (!document.body.classList.contains('windows_nt')) return;
-    const interval = setInterval(() => {
-      appWindow
+    appWindow
         .outerSize()
         .then(async (size) => {
-          console.log(`Resizing from ${size.width}x${size.height} to MIN_SIZE`)
           const logicalSize = size.toLogical(await appWindow.scaleFactor());
           if (
             logicalSize.height < MIN_SIZE.height ||
             logicalSize.width < MIN_SIZE.width
           ) {
+            console.log(`Resizing from ${size.width}x${size.height} to MIN_SIZE`)
             await appWindow.setSize(new LogicalSize(MIN_SIZE.width, MIN_SIZE.height));
           }
           const newSize = await appWindow.outerSize();
@@ -210,10 +209,7 @@ export default function App() {
         })
         .catch((r) => {
           console.error(r);
-          clearInterval(interval);
         });
-    }, 5000);
-    return () => clearInterval(interval);
   }, []);
 
   if (window.__TAURI_METADATA__) {
