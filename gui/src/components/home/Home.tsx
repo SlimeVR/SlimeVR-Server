@@ -48,7 +48,13 @@ export function Home() {
         <HeadsetIcon></HeadsetIcon>
       </NavLink>
       <div className="h-full overflow-y-auto">
-        <div className="px-2 pt-4 gap-3 w-full grid md:grid-cols-2 mobile:grid-cols-1">
+        <div
+          className="px-2 pt-4 gap-3 w-full grid md:grid-cols-2 mobile:grid-cols-1"
+          hidden={
+            filteredStatuses.filter(([, status]) => status.prioritized)
+              .length === 0
+          }
+        >
           {filteredStatuses
             .filter(([, status]) => status.prioritized)
             .map(([, status]) => (
