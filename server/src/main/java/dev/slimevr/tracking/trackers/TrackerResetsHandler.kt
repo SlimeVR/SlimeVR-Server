@@ -182,6 +182,12 @@ class TrackerResetsHandler(val tracker: Tracker) {
 		makeIdentityAdjustmentQuatsYaw()
 
 		calculateDrift(rot)
+
+		// Let's just remove the status if you do yaw reset, apparently it works
+		if (this.tracker.lastResetStatus != 0u) {
+			vrServer.statusSystem.removeStatus(this.tracker.lastResetStatus)
+			this.tracker.lastResetStatus = 0u
+		}
 	}
 
 	/**
