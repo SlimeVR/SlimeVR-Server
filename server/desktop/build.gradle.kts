@@ -98,8 +98,6 @@ buildConfig {
 	useKotlinOutput { topLevelConstants = true }
 	packageName("dev.slimevr.desktop")
 
-
-
 	val gitVersionTag = providers.exec {
 		commandLine("git", "--no-pager", "tag", "--points-at", "HEAD")
 	}.standardOutput.asText.get()
