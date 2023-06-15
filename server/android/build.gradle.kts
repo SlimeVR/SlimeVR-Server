@@ -92,7 +92,7 @@ android {
 	 * The app's namespace. Used primarily to access app resources.
 	 */
 
-	namespace = "dev.slimevr"
+	namespace = "dev.slimevr.android"
 
 	/**
 	 * compileSdk specifies the Android API level Gradle should use to

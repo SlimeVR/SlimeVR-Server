@@ -19,6 +19,3 @@ Load AutoBone Recordings
 *.log.lck
 *.log
 logs/
-
-# Android
-/core/src/main/resources/web-gui/

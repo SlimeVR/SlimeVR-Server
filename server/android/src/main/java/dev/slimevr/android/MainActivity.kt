@@ -4,7 +4,6 @@ import android.os.Bundle
 import android.webkit.WebSettings
 import android.webkit.WebView
 import androidx.appcompat.app.AppCompatActivity
-import dev.slimevr.R
 import io.eiren.util.logging.LogManager
 
 class MainActivity : AppCompatActivity() {

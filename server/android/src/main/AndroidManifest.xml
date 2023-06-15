@@ -16,7 +16,7 @@
         tools:targetApi="33"
         android:usesCleartextTraffic="true">
         <activity
-            android:name=".android.MainActivity"
+            android:name=".MainActivity"
             android:exported="true"
             android:configChanges="orientation|screenSize|screenLayout|keyboardHidden">
             <intent-filter>
