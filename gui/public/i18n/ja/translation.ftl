@@ -1,6 +1,3 @@
-### SlimeVR complete GUI translations
-
-
 # Please developers (not translators) don't reuse a key inside another key
 # or concat text with a translation string in the code, use the appropriate
 # features like variables and selectors in each appropriate case!
@@ -12,6 +9,11 @@
 
 websocket-connecting = サーバー接続中
 websocket-connection_lost = サーバーへの接続が失われました。再接続を試みています...
+
+## Update notification
+
+version_update-update = アップデート
+version_update-close = 閉じる
 
 ## Tips
 
@@ -89,10 +91,13 @@ navbar-mounting = マウントキャリブレーション
 navbar-onboarding = セットアップ ウィザード
 navbar-settings = 設定
 
-## Bounding volume hierarchy recording
+## Biovision hierarchy recording
 
 bvh-start_recording = BVHレコーディング
 bvh-recording = レコーディング中...
+
+## Tracking pause
+
 
 ## Widget: Overlay settings
 
@@ -119,6 +124,7 @@ widget-developer_mode-more_info = 他情報
 widget-imu_visualizer = 回転
 widget-imu_visualizer-rotation_raw = 生
 widget-imu_visualizer-rotation_preview = 生
+widget-imu_visualizer-rotation_hide = 隠す
 
 ## Tracker status
 
@@ -413,7 +419,6 @@ settings-osc-vrchat-network-address-placeholder = VRChatのIPアドレス
 settings-osc-vrchat-network-trackers = トラッカー
 settings-osc-vrchat-network-trackers-description = データの送受信を切り替える。
 settings-osc-vrchat-network-trackers-chest = 胸
-settings-osc-vrchat-network-trackers-waist = 腰
 settings-osc-vrchat-network-trackers-knees = 膝
 settings-osc-vrchat-network-trackers-feet = 足
 settings-osc-vrchat-network-trackers-elbows = 肘
@@ -497,6 +502,13 @@ onboarding-connect_tracker-connected_trackers =
     } connected
 onboarding-connect_tracker-next = すべてのトラッカーを接続しました
 
+## Tracker calibration tutorial
+
+onboarding-calibration_tutorial-status-calibrating = 校正中
+
+## Tracker assignment tutorial
+
+
 ## Tracker assignment setup
 
 onboarding-assign_trackers-back = Wi-Fi認証に戻る
@@ -518,6 +530,8 @@ onboarding-assign_trackers-next = すべてのトラッカーを割り当てま�
 
 ## Tracker mounting method choose
 
+# Italized text
+onboarding-choose_mounting-auto_mounting-subtitle = おすすめされた
 
 ## Tracker manual mounting setup
 
@@ -550,6 +564,8 @@ onboarding-automatic_mounting-put_trackers_on-next = すべてのトラッカー
 
 ## Tracker proportions method choose
 
+# Italized text
+onboarding-choose_proportions-auto_proportions-subtitle = おすすめされた
 
 ## Tracker manual proportions setup
 
@@ -595,3 +611,6 @@ onboarding-automatic_proportions-done-description = ボディプロポーショ�
 ## Home
 
 home-no_trackers = トラッカーを検出できません。もしくは割り当てられていません。
+
+## Status system
+

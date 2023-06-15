@@ -30,6 +30,7 @@ import { SkipSetupWarningModal } from '../../SkipSetupWarningModal';
 import { SkipSetupButton } from '../../SkipSetupButton';
 import { useConfig } from '../../../../hooks/config';
 import { playTapSetupSound } from '../../../../sounds/sounds';
+import { useBreakpoint } from '../../../../hooks/breakpoint';
 
 export type BodyPartError = {
   label: string | undefined;
@@ -44,6 +45,7 @@ interface FlatDeviceTrackerDummy {
 }
 
 export function TrackersAssignPage() {
+  const { isMobile } = useBreakpoint('mobile');
   const { l10n } = useLocalization();
   const { useAssignedTrackers, trackers } = useTrackers();
   const { applyProgress, skipSetup, state } = useOnboarding();
@@ -314,7 +316,7 @@ export function TrackersAssignPage() {
             </div>
             <div className="flex flex-col rounded-xl fill-background-50">
               <BodyAssignment
-                width={150}
+                width={isMobile ? 150 : undefined}
                 onlyAssigned={false}
                 highlightedRoles={firstError?.affectedRoles || []}
                 rolesWithErrors={rolesWithErrors}
