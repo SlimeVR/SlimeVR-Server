@@ -197,13 +197,16 @@ export default function App() {
       appWindow
         .outerSize()
         .then(async (size) => {
+          console.log(`Resizing from ${size.width}x${size.height} to MIN_SIZE`)
           const logicalSize = size.toLogical(await appWindow.scaleFactor());
           if (
             logicalSize.height < MIN_SIZE.height ||
             logicalSize.width < MIN_SIZE.width
           ) {
-            appWindow.setSize(new LogicalSize(MIN_SIZE.width, MIN_SIZE.height));
+            await appWindow.setSize(new LogicalSize(MIN_SIZE.width, MIN_SIZE.height));
           }
+          const newSize = await appWindow.outerSize();
+          console.log(`New size is now ${newSize.width}x${newSize.height}`)
         })
         .catch((r) => {
           console.error(r);
