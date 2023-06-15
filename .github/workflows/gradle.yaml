@@ -37,6 +37,9 @@ jobs:
       - name: Check code formatting
         run: ./gradlew spotlessCheck
 
+      - run: mkdir ./gui/dist
+        shell: bash
+
       - name: Test with Gradle
         run: ./gradlew test
 
