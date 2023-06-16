@@ -37,7 +37,10 @@ jobs:
       - name: Check code formatting
         run: ./gradlew spotlessCheck
 
-      - run: mkdir ./gui/dist
+      # The git restore is for windows, soft-link might be broken :p
+      - run: |
+          mkdir ./gui/dist
+          git restore -- ./android/src/main/resources/web-gui
         shell: bash
 
       - name: Test with Gradle
