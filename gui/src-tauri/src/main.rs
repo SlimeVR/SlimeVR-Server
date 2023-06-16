@@ -181,7 +181,8 @@ fn main() {
 				RunEvent::ExitRequested { .. } => {
 					let window_state = app_handle.state::<Mutex<state::WindowState>>();
 					let lock = window_state.lock().unwrap();
-					let config_dir = app_handle.path_resolver().app_config_dir().unwrap();
+					let config_dir =
+						app_handle.path_resolver().app_config_dir().unwrap();
 					let window_state_res = lock.save_state(config_dir);
 					match window_state_res {
 						Ok(()) => log::info!("saved window state"),
