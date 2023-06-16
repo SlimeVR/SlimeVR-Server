@@ -11,6 +11,7 @@ use std::time::Instant;
 use clap::Parser;
 use tauri::api::process::{Command, CommandChild};
 use tauri::Manager;
+use tauri::PhysicalSize;
 use tauri::RunEvent;
 
 #[cfg(windows)]
@@ -21,6 +22,11 @@ use crate::util::{
 };
 
 mod util;
+
+const MIN_WIDTH: u32 = 393;
+const MIN_HEIGHT: u32 = 667;
+const DEFAULT_WIDTH: u32 = 1289;
+const DEFAULT_HEIGHT: u32 = 709;
 
 fn main() {
 	// Make an error dialog box when panicking
@@ -147,7 +153,18 @@ fn main() {
 		.build(tauri::generate_context!());
 	match build_result {
 		Ok(app) => {
-			app.run(move |_app_handle, event| match event {
+			app.run(move |app_handle, event| match event {
+				RunEvent::Ready => {
+					// unwrap hell
+					let windows = app_handle.windows();
+					let window = windows.values().next().unwrap();
+					let inner_size = window.inner_size().unwrap();
+					if inner_size.width < MIN_WIDTH || inner_size.height < MIN_HEIGHT {
+						window
+							.set_size(PhysicalSize::new(DEFAULT_WIDTH, DEFAULT_HEIGHT))
+							.unwrap();
+					}
+				}
 				RunEvent::ExitRequested { .. } => {
 					let Some(ref mut child) = backend else { return };
 					let write_result = child.write(b"exit\n");
