@@ -56,10 +56,23 @@ class Tracker @JvmOverloads constructor(
 	var temperature: Float? = null
 	var customName: String? = null
 
+	/**
+	 * If the tracker has gotten disconnected after it was initialized first time
+	 */
+	var disconnectedRecently = false
+	private var alreadyInitialized = false
 	var status = TrackerStatus.DISCONNECTED
 		set(value) {
 			if (field == value) return
+
 			field = value
+
+			if (field == TrackerStatus.DISCONNECTED && alreadyInitialized) {
+				disconnectedRecently = true
+			}
+			if (field.sendData) {
+				alreadyInitialized = true
+			}
 			if (!isInternal) {
 				// If the status of a non-internal tracker has changed, inform
 				// the VRServer to recreate the skeleton, as it may need to

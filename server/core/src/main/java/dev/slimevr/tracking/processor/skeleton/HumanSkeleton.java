@@ -1274,7 +1274,7 @@ public class HumanSkeleton {
 		return hmdNode;
 	}
 
-	protected TransformNode[] getAllNodes() {
+	public TransformNode[] getAllNodes() {
 		return new TransformNode[] {
 			hmdNode,
 			headNode,
@@ -1572,6 +1572,11 @@ public class HumanSkeleton {
 	}
 
 	public void setPauseTracking(boolean pauseTracking) {
+		if (!pauseTracking && this.pauseTracking) {
+			// If unpausing tracking, clear the legtweaks buffer
+			legTweaks.resetBuffer();
+		}
+
 		this.pauseTracking = pauseTracking;
 	}
 }
