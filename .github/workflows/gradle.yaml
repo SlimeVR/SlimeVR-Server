@@ -37,10 +37,9 @@ jobs:
       - run: mkdir ./gui/dist
         shell: bash
 
-      # The git restore is for windows, soft-link might be broken :p
       - if: matrix.os == 'windows-latest'
         run: |
-          rmdir server\android\src\main\resources\web-gui
+          del .\server\android\src\main\resources\web-gui
           mkdir server\android\src\main\resources\web-gui
         shell: cmd
 
