@@ -53,6 +53,54 @@ export function MountingChoose() {
                   <div>
                     <Typography variant="main-title" bold>
                       {l10n.getString(
+                        'onboarding-choose_mounting-auto_mounting'
+                      )}
+                    </Typography>
+                    <Typography variant="vr-accessible" italic>
+                      {l10n.getString(
+                        'onboarding-choose_mounting-auto_mounting-subtitle'
+                      )}
+                    </Typography>
+                  </div>
+                  <div>
+                    <Typography color="secondary">
+                      {l10n.getString(
+                        'onboarding-choose_mounting-auto_mounting-description'
+                      )}
+                    </Typography>
+                  </div>
+                </div>
+                <Button
+                  variant={!state.alonePage ? 'secondary' : 'tertiary'}
+                  to="/onboarding/mounting/auto"
+                  className="self-start mt-auto"
+                  state={{ alonePage: state.alonePage }}
+                >
+                  {l10n.getString('onboarding-manual_mounting-auto_mounting')}
+                </Button>
+              </div>
+            </div>
+            <div
+              className={classNames(
+                'rounded-lg p-4 flex flex-row relative',
+                !state.alonePage && 'bg-background-70',
+                state.alonePage && 'bg-background-60'
+              )}
+            >
+              <div className="flex flex-col gap-4">
+                <div className="flex flex-grow flex-col gap-4 max-w-sm">
+                  <div>
+                  <img
+                      onMouseEnter={() => setAnimated(() => true)}
+                      onAnimationEnd={() => setAnimated(() => false)}
+                      src="/images/boxslime.png"
+                      className={classNames(
+                        'absolute w-[100px] -right-2 -top-10',
+                        animated && 'animate-[bounce_1s_1]'
+                      )}
+                    ></img>
+                    <Typography variant="main-title" bold>
+                      {l10n.getString(
                         'onboarding-choose_mounting-manual_mounting'
                       )}
                     </Typography>
@@ -72,7 +120,7 @@ export function MountingChoose() {
                 </div>
 
                 <Button
-                  variant={!state.alonePage ? 'secondary' : 'tertiary'}
+                  variant="primary"
                   to="/onboarding/mounting/manual"
                   className="self-start mt-auto"
                   state={{ alonePage: state.alonePage }}
@@ -80,54 +128,6 @@ export function MountingChoose() {
                   {l10n.getString(
                     'onboarding-automatic_mounting-manual_mounting'
                   )}
-                </Button>
-              </div>
-            </div>
-            <div
-              className={classNames(
-                'rounded-lg p-4 flex flex-row relative',
-                !state.alonePage && 'bg-background-70',
-                state.alonePage && 'bg-background-60'
-              )}
-            >
-              <div className="flex flex-col gap-4">
-                <div className="flex flex-grow flex-col gap-4 max-w-sm">
-                  <div>
-                    <img
-                      onMouseEnter={() => setAnimated(() => true)}
-                      onAnimationEnd={() => setAnimated(() => false)}
-                      src="/images/boxslime.png"
-                      className={classNames(
-                        'absolute w-[100px] -right-2 -top-10',
-                        animated && 'animate-[bounce_1s_1]'
-                      )}
-                    ></img>
-                    <Typography variant="main-title" bold>
-                      {l10n.getString(
-                        'onboarding-choose_mounting-auto_mounting'
-                      )}
-                    </Typography>
-                    <Typography variant="vr-accessible" italic>
-                      {l10n.getString(
-                        'onboarding-choose_mounting-auto_mounting-subtitle'
-                      )}
-                    </Typography>
-                  </div>
-                  <div>
-                    <Typography color="secondary">
-                      {l10n.getString(
-                        'onboarding-choose_mounting-auto_mounting-description'
-                      )}
-                    </Typography>
-                  </div>
-                </div>
-                <Button
-                  variant="primary"
-                  to="/onboarding/mounting/auto"
-                  className="self-start mt-auto"
-                  state={{ alonePage: state.alonePage }}
-                >
-                  {l10n.getString('onboarding-manual_mounting-auto_mounting')}
                 </Button>
               </div>
             </div>
