@@ -80,6 +80,7 @@ public class LegTweaks {
 	private boolean initialized = true;
 	private boolean enabled = true; // master switch
 	private boolean floorclipEnabled = false;
+	private boolean alwaysUseFloorclip = false;
 	private boolean skatingCorrectionEnabled = false;
 	private boolean toeSnapEnabled = false;
 	private boolean footPlantEnabled = false;
@@ -253,6 +254,7 @@ public class LegTweaks {
 		LegTweaks.updateHyperParameters(config.getCorrectionStrength());
 
 		floorclipEnabled = skeleton.humanPoseManager.getToggle(SkeletonConfigToggles.FLOOR_CLIP);
+		alwaysUseFloorclip = config.getAlwaysUseFloorclip();
 		skatingCorrectionEnabled = skeleton.humanPoseManager
 			.getToggle(SkeletonConfigToggles.SKATING_CORRECTION);
 		toeSnapEnabled = skeleton.humanPoseManager.getToggle(SkeletonConfigToggles.TOE_SNAP);
@@ -352,7 +354,7 @@ public class LegTweaks {
 
 			// if the system is active, populate the buffer with corrected floor
 			// clip feet positions
-			if (active && isStanding()) {
+			if (active) {
 				correctClipping();
 				bufferHead.setLeftFootPositionCorrected(leftFootPosition);
 				bufferHead.setRightFootPositionCorrected(rightFootPosition);
@@ -412,7 +414,7 @@ public class LegTweaks {
 	public void tweakLegs() {
 		// If user doesn't have knees or legtweaks is disabled,
 		// don't spend time doing calculations!
-		if (!skeleton.hasKneeTrackers || !enabled)
+		if ((!skeleton.hasKneeTrackers && !alwaysUseFloorclip) || !enabled)
 			return;
 
 		// update the class with the latest data from the skeleton
@@ -512,8 +514,8 @@ public class LegTweaks {
 
 	// returns true if the foot is clipped and false if it is not
 	public boolean isClipped(float leftOffset, float rightOffset) {
-		return (leftFootPosition.getY() < floorLevel + leftOffset
-			|| rightFootPosition.getY() < floorLevel + rightOffset);
+		return (leftFootPosition.getY() < floorLevel + (leftOffset * footLength)
+			|| rightFootPosition.getY() < floorLevel + (rightOffset * footLength));
 	}
 
 	// corrects the foot position to be above the floor level that is calculated
@@ -992,7 +994,10 @@ public class LegTweaks {
 			- (hipToFloorDist * STANDING_CUTOFF_VERTICAL);
 
 		if (hipPosition.getY() < cutoff) {
-			currentDisengagementOffset = (1 - hipPosition.getY() / cutoff)
+			currentDisengagementOffset = (1
+				- ((floorLevel - hipPosition.getY())
+					/
+					(floorLevel - cutoff)))
 				* MAX_DISENGAGEMENT_OFFSET;
 
 			return false;

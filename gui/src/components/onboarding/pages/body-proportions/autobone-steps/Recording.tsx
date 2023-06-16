@@ -35,7 +35,7 @@ export function Recording({ nextStep }: { nextStep: () => void }) {
           )}
         </Typography>
       </div>
-      <ol className="list-decimal">
+      <ol className="list-decimal mobile:px-4">
         <>
           {l10n
             .getString('onboarding-automatic_proportions-recording-steps')

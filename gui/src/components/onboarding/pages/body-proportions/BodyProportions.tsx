@@ -8,6 +8,7 @@ import {
 } from '../../../../hooks/manual-proportions';
 import { useLocaleConfig } from '../../../../i18n/config';
 import { Typography } from '../../../commons/Typography';
+import { useBreakpoint } from '../../../../hooks/breakpoint';
 
 function IncrementButton({
   children,
@@ -20,10 +21,10 @@ function IncrementButton({
     <div
       onClick={onClick}
       className={classNames(
-        'p-3  rounded-lg w-16 h-16 flex flex-col justify-center items-center bg-background-60 hover:bg-opacity-50'
+        'p-3 rounded-lg xs:w-16 xs:h-16 mobile:w-10 flex flex-col justify-center items-center bg-background-60 hover:bg-opacity-50'
       )}
     >
-      <Typography variant="main-title" bold>
+      <Typography variant="mobile-title" bold>
         {children}
       </Typography>
     </div>
@@ -39,6 +40,8 @@ export function BodyProportions({
   type: 'linear' | 'ratio';
   variant: 'onboarding' | 'alone';
 }) {
+  const { isMobile } = useBreakpoint('mobile');
+
   const [bodyParts, _ratioMode, currentSelection, dispatch, setRatioMode] =
     useManualProportions();
   const { currentLocales } = useLocaleConfig();
@@ -69,8 +72,8 @@ export function BodyProportions({
     <div className="relative w-full">
       <div
         className={classNames(
-          'flex flex-col overflow-y-scroll overflow-x-hidden max-h-[450px] h-[54vh]',
-          'w-full px-1 gap-3 gradient-mask-b-90'
+          'flex flex-col xs:overflow-y-scroll xs:overflow-x-hidden xs:max-h-[450px] xs:h-[54vh]',
+          'w-full px-1 gap-3 xs:gradient-mask-b-90'
         )}
       >
         <>
@@ -79,7 +82,7 @@ export function BodyProportions({
               'index' in props && props.index !== undefined
                 ? props.bones[props.index].value
                 : originalValue;
-            const selected = currentSelection.label === label;
+            const selected = isMobile || currentSelection.label === label;
 
             const selectNew = () => {
               switch (type) {
@@ -130,8 +133,9 @@ export function BodyProportions({
                 >
                   {!precise && (
                     <IncrementButton
-                      onClick={() =>
-                        type === LabelType.GroupPart
+                      onClick={() => {
+                        selectNew();
+                        return type === LabelType.GroupPart
                           ? dispatch({
                               type: ProportionChangeType.Ratio,
                               value: -0.05,
@@ -139,15 +143,16 @@ export function BodyProportions({
                           : dispatch({
                               type: ProportionChangeType.Linear,
                               value: -5,
-                            })
-                      }
+                            });
+                      }}
                     >
                       {configFormat.format(-5)}
                     </IncrementButton>
                   )}
                   <IncrementButton
-                    onClick={() =>
-                      type === LabelType.GroupPart
+                    onClick={() => {
+                      selectNew();
+                      return type === LabelType.GroupPart
                         ? dispatch({
                             type: ProportionChangeType.Ratio,
                             value: -0.01,
@@ -155,15 +160,16 @@ export function BodyProportions({
                         : dispatch({
                             type: ProportionChangeType.Linear,
                             value: -1,
-                          })
-                    }
+                          });
+                    }}
                   >
                     {configFormat.format(-1)}
                   </IncrementButton>
                   {precise && (
                     <IncrementButton
-                      onClick={() =>
-                        type === LabelType.GroupPart
+                      onClick={() => {
+                        selectNew();
+                        return type === LabelType.GroupPart
                           ? dispatch({
                               type: ProportionChangeType.Ratio,
                               value: -0.005,
@@ -171,8 +177,8 @@ export function BodyProportions({
                           : dispatch({
                               type: ProportionChangeType.Linear,
                               value: -0.5,
-                            })
-                      }
+                            });
+                      }}
                     >
                       {configFormat.format(-0.5)}
                     </IncrementButton>
@@ -185,14 +191,14 @@ export function BodyProportions({
                   <div
                     key={label}
                     className={classNames(
-                      'p-3  rounded-lg h-16 flex w-full items-center justify-between px-6 transition-colors duration-300 bg-background-60',
+                      'p-3 rounded-lg xs:h-16 flex w-full items-center justify-between xs:px-6 mobile:px-3 transition-colors duration-300 bg-background-60',
                       (selected && 'opacity-100') || 'opacity-50'
                     )}
                   >
                     <Typography variant="section-title" bold>
                       {l10n.getString(label)}
                     </Typography>
-                    <Typography variant="main-title" bold>
+                    <Typography variant="mobile-title" bold>
                       {type === LabelType.GroupPart
                         ? /* Make number rounding so it's based on .5 decimals */
                           percentageFormat.format(Math.round(value * 200) / 200)
@@ -213,8 +219,9 @@ export function BodyProportions({
                 >
                   {precise && (
                     <IncrementButton
-                      onClick={() =>
-                        type === LabelType.GroupPart
+                      onClick={() => {
+                        selectNew();
+                        return type === LabelType.GroupPart
                           ? dispatch({
                               type: ProportionChangeType.Ratio,
                               value: 0.005,
@@ -222,15 +229,16 @@ export function BodyProportions({
                           : dispatch({
                               type: ProportionChangeType.Linear,
                               value: 0.5,
-                            })
-                      }
+                            });
+                      }}
                     >
                       {configFormat.format(+0.5)}
                     </IncrementButton>
                   )}
                   <IncrementButton
-                    onClick={() =>
-                      type === LabelType.GroupPart
+                    onClick={() => {
+                      selectNew();
+                      return type === LabelType.GroupPart
                         ? dispatch({
                             type: ProportionChangeType.Ratio,
                             value: 0.01,
@@ -238,15 +246,16 @@ export function BodyProportions({
                         : dispatch({
                             type: ProportionChangeType.Linear,
                             value: 1,
-                          })
-                    }
+                          });
+                    }}
                   >
                     {configFormat.format(+1)}
                   </IncrementButton>
                   {!precise && (
                     <IncrementButton
-                      onClick={() =>
-                        type === LabelType.GroupPart
+                      onClick={() => {
+                        selectNew();
+                        return type === LabelType.GroupPart
                           ? dispatch({
                               type: ProportionChangeType.Ratio,
                               value: 0.05,
@@ -254,8 +263,8 @@ export function BodyProportions({
                           : dispatch({
                               type: ProportionChangeType.Linear,
                               value: 5,
-                            })
-                      }
+                            });
+                      }}
                     >
                       {configFormat.format(+5)}
                     </IncrementButton>

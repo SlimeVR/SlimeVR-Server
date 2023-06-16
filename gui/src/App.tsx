@@ -44,10 +44,14 @@ import { MountingChoose } from './components/onboarding/pages/mounting/MountingC
 import { ProportionsChoose } from './components/onboarding/pages/body-proportions/ProportionsChoose';
 import { LogicalSize, appWindow } from '@tauri-apps/api/window';
 import { StatusProvider } from './components/providers/StatusSystemContext';
-import { Release, VersionUpdateModal } from './components/VersionUpdateModal';
+import { VersionUpdateModal } from './components/VersionUpdateModal';
 import { CalibrationTutorialPage } from './components/onboarding/pages/CalibrationTutorial';
 import { AssignmentTutorialPage } from './components/onboarding/pages/assignment-preparation/AssignmentTutorial';
 import { open } from '@tauri-apps/api/shell';
+import semver from 'semver';
+import { tauri } from '../src-tauri/tauri.conf.json';
+import { useBreakpoint } from './hooks/breakpoint';
+import { VRModePage } from './components/vr-mode/VRModePage';
 
 export const GH_REPO = 'SlimeVR/SlimeVR-Server';
 export const VersionContext = createContext('');
@@ -55,8 +59,10 @@ export const DOCS_SITE = 'https://docs.slimevr.dev/';
 
 function Layout() {
   const { loading } = useConfig();
+
   if (loading) return <></>;
 
+  const { isMobile } = useBreakpoint('mobile');
   return (
     <>
       <SerialDetectionModal></SerialDetectionModal>
@@ -65,15 +71,23 @@ function Layout() {
         <Route
           path="/"
           element={
-            <MainLayoutRoute>
+            <MainLayoutRoute isMobile={isMobile}>
               <Home />
+            </MainLayoutRoute>
+          }
+        />
+        <Route
+          path="/vr-mode"
+          element={
+            <MainLayoutRoute isMobile={isMobile}>
+              <VRModePage />
             </MainLayoutRoute>
           }
         />
         <Route
           path="/tracker/:trackernum/:deviceid"
           element={
-            <MainLayoutRoute background={false}>
+            <MainLayoutRoute background={false} isMobile={isMobile}>
               <TrackerSettingsPage />
             </MainLayoutRoute>
           }
@@ -134,7 +148,10 @@ function Layout() {
   );
 }
 
-const MIN_SIZE = { width: 880, height: 740 };
+const MIN_SIZE = {
+  width: tauri.windows[0].minWidth,
+  height: tauri.windows[0].minHeight,
+};
 
 export default function App() {
   const websocketAPI = useProvideWebsocketApi();
@@ -142,28 +159,36 @@ export default function App() {
   const [updateFound, setUpdateFound] = useState('');
   useEffect(() => {
     async function fetchReleases() {
-      const releases: Release[] = await fetch(
+      const releases = await fetch(
         `https://api.github.com/repos/${GH_REPO}/releases`
-      ).then((res) => res.json());
+      )
+        .then((res) => res.json())
+        .then((json: any[]) => json.filter((rl) => rl?.prerelease === false));
 
-      if (__VERSION_TAG__ && releases[0].tag_name !== __VERSION_TAG__) {
+      if (
+        __VERSION_TAG__ &&
+        typeof releases[0].tag_name === 'string' &&
+        semver.gt(releases[0].tag_name, __VERSION_TAG__)
+      ) {
         setUpdateFound(releases[0].tag_name);
       }
     }
     fetchReleases().catch(() => console.error('failed to fetch releases'));
   }, []);
 
-  useEffect(() => {
-    os.type()
-      .then((type) => document.body.classList.add(type.toLowerCase()))
-      .catch(console.error);
-
-    return () => {
+  if (window.__TAURI_METADATA__) {
+    useEffect(() => {
       os.type()
-        .then((type) => document.body.classList.remove(type.toLowerCase()))
+        .then((type) => document.body.classList.add(type.toLowerCase()))
         .catch(console.error);
-    };
-  }, []);
+
+      return () => {
+        os.type()
+          .then((type) => document.body.classList.remove(type.toLowerCase()))
+          .catch(console.error);
+      };
+    }, []);
+  }
 
   // This doesn't seem to resize it live, but if you close it, it gets restored to min size
   useEffect(() => {
@@ -188,45 +213,47 @@ export default function App() {
     return () => clearInterval(interval);
   }, []);
 
-  useEffect(() => {
-    const unlisten = listen(
-      'server-status',
-      (event: Event<[string, string]>) => {
-        const [eventType, s] = event.payload;
-        if ('stderr' === eventType) {
-          // This strange invocation is what lets us lose the line information in the console
-          // See more here: https://stackoverflow.com/a/48994308
-          setTimeout(
-            console.log.bind(
-              console,
-              `%c[SERVER] %c${s}`,
-              'color:cyan',
-              'color:red'
-            )
-          );
-        } else if (eventType === 'stdout') {
-          setTimeout(
-            console.log.bind(
-              console,
-              `%c[SERVER] %c${s}`,
-              'color:cyan',
-              'color:green'
-            )
-          );
-        } else if (eventType === 'error') {
-          console.error('Error: %s', s);
-        } else if (eventType === 'terminated') {
-          console.error('Server Process Terminated: %s', s);
-        } else if (eventType === 'other') {
-          console.log('Other process event: %s', s);
+  if (window.__TAURI_METADATA__) {
+    useEffect(() => {
+      const unlisten = listen(
+        'server-status',
+        (event: Event<[string, string]>) => {
+          const [eventType, s] = event.payload;
+          if ('stderr' === eventType) {
+            // This strange invocation is what lets us lose the line information in the console
+            // See more here: https://stackoverflow.com/a/48994308
+            setTimeout(
+              console.log.bind(
+                console,
+                `%c[SERVER] %c${s}`,
+                'color:cyan',
+                'color:red'
+              )
+            );
+          } else if (eventType === 'stdout') {
+            setTimeout(
+              console.log.bind(
+                console,
+                `%c[SERVER] %c${s}`,
+                'color:cyan',
+                'color:green'
+              )
+            );
+          } else if (eventType === 'error') {
+            console.error('Error: %s', s);
+          } else if (eventType === 'terminated') {
+            console.error('Server Process Terminated: %s', s);
+          } else if (eventType === 'other') {
+            console.log('Other process event: %s', s);
+          }
         }
-      }
-    );
-    return () => {
-      // eslint-disable-next-line @typescript-eslint/no-empty-function
-      unlisten.then(() => {});
-    };
-  }, []);
+      );
+      return () => {
+        // eslint-disable-next-line @typescript-eslint/no-empty-function
+        unlisten.then(() => {});
+      };
+    }, []);
+  }
 
   useEffect(() => {
     function onKeyboard(ev: KeyboardEvent) {
@@ -235,8 +262,8 @@ export default function App() {
       }
     }
 
-    document.addEventListener('keypress', onKeyboard);
-    return () => document.removeEventListener('keypress', onKeyboard);
+    document.addEventListener('keyup', onKeyboard);
+    return () => document.removeEventListener('keyup', onKeyboard);
   }, []);
 
   return (

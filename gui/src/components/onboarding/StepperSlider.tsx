@@ -40,7 +40,7 @@ export function StepContainer({
   return (
     <div
       className={classNames(
-        'step-container transition-transform duration-500 w-full p-8 rounded-lg flex gap-4 h-full',
+        'step-container transition-transform duration-500 relative w-full xs:p-8 mobile:p-2 rounded-lg flex gap-4 h-full',
         !active && 'opacity-40 pointer-events-none',
         variant === 'onboarding' && 'bg-background-70',
         variant === 'alone' && 'bg-background-60'
@@ -51,7 +51,7 @@ export function StepContainer({
       }}
     >
       {type === 'numbered' && (
-        <div className="flex flex-col">
+        <div className="xs:flex xs:flex-col mobile:absolute mobile:-top-3 mobile:-right-4">
           <div className="bg-accent-background-40 rounded-full h-8 w-8 flex flex-col items-center justify-center">
             <Typography variant="section-title" bold>
               {step + 1}
