@@ -114,7 +114,14 @@ fn main() {
 
 	let exit_flag_terminated = exit_flag.clone();
 	let build_result = tauri::Builder::default()
-		.plugin(tauri_plugin_window_state::Builder::default().build())
+		.plugin(
+			tauri_plugin_window_state::Builder::default()
+				.with_state_flags(
+					tauri_plugin_window_state::StateFlags::all()
+						.difference(tauri_plugin_window_state::StateFlags::MAXIMIZED),
+				)
+				.build(),
+		)
 		.setup(move |app| {
 			if let Some(mut recv) = stdout_recv {
 				let app_handle = app.app_handle();
