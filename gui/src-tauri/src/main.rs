@@ -139,7 +139,6 @@ fn main() {
 				.visible(true)
 				.decorations(false)
 				.fullscreen(false)
-				.transparent(false)
 				.disable_file_drop_handler()
 				.restore_state(&window_state)
 				.build()?;
