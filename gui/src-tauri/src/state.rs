@@ -43,7 +43,7 @@ impl WindowState {
 	pub fn update_state(&mut self, window: &Window) -> Result<()> {
 		self.maximized = window.is_maximized()?;
 		let scale_factor = window.scale_factor()?;
-		let size = window.outer_size()?.to_logical::<f64>(scale_factor);
+		let size = window.inner_size()?.to_logical::<f64>(scale_factor);
 		let pos = window.outer_position()?;
 
 		self.width = size.width;
@@ -75,6 +75,20 @@ impl WindowState {
 		}
 
 		Ok(())
+	}
+}
+
+pub trait WindowBuilderExt {
+	fn restore_state(self, state: &WindowState) -> Self;
+}
+
+impl WindowBuilderExt for tauri::WindowBuilder<'_> {
+	fn restore_state(self, state: &WindowState) -> Self {
+		if !state.is_old() {
+			return self;
+		}
+		self.inner_size(state.width, state.height)
+			// .maximized(state.maximized)
 	}
 }
 

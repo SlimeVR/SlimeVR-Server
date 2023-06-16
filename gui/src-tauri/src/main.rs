@@ -10,6 +10,7 @@ use std::time::Duration;
 use std::time::Instant;
 
 use clap::Parser;
+use state::WindowBuilderExt;
 use tauri::api::process::{Command, CommandChild};
 use tauri::Manager;
 use tauri::RunEvent;
@@ -122,13 +123,31 @@ fn main() {
 	let build_result = tauri::Builder::default()
 		.invoke_handler(tauri::generate_handler![update_window_state])
 		.setup(move |app| {
-			if let Some(window_state) = state::WindowState::open_state(
+			let window_state = if let Some(window_state) = state::WindowState::open_state(
 				app.path_resolver().app_config_dir().unwrap(),
 			) {
-				app.manage(Mutex::new(window_state));
+				window_state
 			} else {
-				app.manage(Mutex::new(state::WindowState::default()));
+				state::WindowState::default()
+			};
+
+			let window = tauri::WindowBuilder::new(app, "local", tauri::WindowUrl::App("index.html".into()))
+				.title("SlimeVR")
+				.inner_size(1289.0, 709.0)
+				.min_inner_size(393.0, 667.0)
+				.resizable(true)
+				.visible(true)
+				.decorations(false)
+				.fullscreen(false)
+				.transparent(false)
+				.disable_file_drop_handler()
+				.restore_state(&window_state)
+				.build()?;
+			if window_state.is_old() {
+				window_state.update_window(&window)?;
 			}
+
+			app.manage(Mutex::new(window_state));
 
 			if let Some(mut recv) = stdout_recv {
 				let app_handle = app.app_handle();

@@ -85,23 +85,6 @@
         "setSize": true
       }
     },
-    "windows": [
-      {
-        "title": "SlimeVR",
-        "width": 1289,
-        "height": 709,
-        "minWidth": 393,
-        "minHeight": 667,
-        "resizable": true,
-        "fullscreen": false,
-        "decorations": false,
-        "transparent": false,
-        "fileDropEnabled": false,
-        "visible": true,
-        "hiddenTitle": true,
-        "tabbingIdentifier": "slimevr"
-      }
-    ],
     "security": {
       "csp": null
     }
