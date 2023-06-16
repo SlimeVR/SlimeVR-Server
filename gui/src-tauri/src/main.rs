@@ -118,7 +118,8 @@ fn main() {
 			tauri_plugin_window_state::Builder::default()
 				.with_state_flags(
 					tauri_plugin_window_state::StateFlags::all()
-						.difference(tauri_plugin_window_state::StateFlags::MAXIMIZED),
+						.difference(tauri_plugin_window_state::StateFlags::MAXIMIZED)
+						.difference(tauri_plugin_window_state::StateFlags::POSITION),
 				)
 				.build(),
 		)
