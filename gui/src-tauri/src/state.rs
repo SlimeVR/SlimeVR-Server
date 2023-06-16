@@ -58,8 +58,6 @@ impl WindowState {
 		let maximized = window.is_maximized()?;
 		if maximized && !self.maximized {
 			window.unmaximize()?;
-		} else if !maximized && self.maximized {
-			window.maximize()?;
 		}
 
 		window.set_size(LogicalSize::new(self.width, self.height))?;
@@ -70,6 +68,10 @@ impl WindowState {
 				window.set_position(pos)?;
 				break;
 			}
+		}
+
+		if !maximized && self.maximized {
+			window.maximize()?;
 		}
 
 		Ok(())
