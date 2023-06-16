@@ -30,7 +30,6 @@ serde_json = "1"
 serde = { version = "1", features = ["derive"] }
 tauri = { version = "1.4", features = ["devtools", "dialog", "dialog-save", "fs-all", "os-all", "path-all", "shell-execute", "shell-open", "window-close", "window-maximize", "window-minimize", "window-set-resizable", "window-set-size", "window-set-title", "window-start-dragging", "window-unmaximize", "window-unminimize"] }
 tauri-runtime = "0.14"
-tauri-plugin-window-state = { git = "https://github.com/tauri-apps/plugins-workspace", branch = "v1" }
 pretty_env_logger = "0.5"
 log = "0.4"
 clap = { version = "4.0.29", features = ["derive"] }
@@ -43,6 +42,7 @@ open = "4"
 shadow-rs = { version = "0.22", default-features = false }
 const_format = "0.2.30"
 cfg-if = "1"
+anyhow = "1.0"
 
 [target.'cfg(windows)'.dependencies]
 win32job = "1"

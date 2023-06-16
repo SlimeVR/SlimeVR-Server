@@ -4,6 +4,7 @@ use std::panic;
 use std::sync::atomic::AtomicBool;
 use std::sync::atomic::Ordering;
 use std::sync::Arc;
+use std::sync::Mutex;
 use std::thread;
 use std::time::Duration;
 use std::time::Instant;
@@ -11,7 +12,6 @@ use std::time::Instant;
 use clap::Parser;
 use tauri::api::process::{Command, CommandChild};
 use tauri::Manager;
-use tauri::PhysicalSize;
 use tauri::RunEvent;
 
 #[cfg(windows)]
@@ -21,12 +21,18 @@ use crate::util::{
 	get_launch_path, show_error, valid_java_paths, Cli, JAVA_BIN, MINIMUM_JAVA_VERSION,
 };
 
+mod state;
 mod util;
 
-const MIN_WIDTH: u32 = 393;
-const MIN_HEIGHT: u32 = 667;
-const DEFAULT_WIDTH: u32 = 1289;
-const DEFAULT_HEIGHT: u32 = 709;
+#[tauri::command]
+fn update_window_state(
+	window: tauri::Window,
+	state: tauri::State<Mutex<state::WindowState>>,
+) -> Result<(), String> {
+	let mut lock = state.lock().unwrap();
+	lock.update_state(&window).map_err(|err| err.to_string())?;
+	Ok(())
+}
 
 fn main() {
 	// Make an error dialog box when panicking
@@ -114,16 +120,16 @@ fn main() {
 
 	let exit_flag_terminated = exit_flag.clone();
 	let build_result = tauri::Builder::default()
-		.plugin(
-			tauri_plugin_window_state::Builder::default()
-				.with_state_flags(
-					tauri_plugin_window_state::StateFlags::all()
-						.difference(tauri_plugin_window_state::StateFlags::MAXIMIZED)
-						.difference(tauri_plugin_window_state::StateFlags::POSITION),
-				)
-				.build(),
-		)
+		.invoke_handler(tauri::generate_handler![update_window_state])
 		.setup(move |app| {
+			if let Some(window_state) = state::WindowState::open_state(
+				app.path_resolver().app_config_dir().unwrap(),
+			) {
+				app.manage(Mutex::new(window_state));
+			} else {
+				app.manage(Mutex::new(state::WindowState::default()));
+			}
+
 			if let Some(mut recv) = stdout_recv {
 				let app_handle = app.app_handle();
 				tauri::async_runtime::spawn(async move {
@@ -166,14 +172,22 @@ fn main() {
 					// unwrap hell
 					let windows = app_handle.windows();
 					let window = windows.values().next().unwrap();
-					let inner_size = window.inner_size().unwrap();
-					if inner_size.width < MIN_WIDTH || inner_size.height < MIN_HEIGHT {
-						window
-							.set_size(PhysicalSize::new(DEFAULT_WIDTH, DEFAULT_HEIGHT))
-							.unwrap();
+					let window_state = app_handle.state::<Mutex<state::WindowState>>();
+					let lock = window_state.lock().unwrap();
+					if lock.is_old() {
+						lock.update_window(window).unwrap();
 					}
 				}
 				RunEvent::ExitRequested { .. } => {
+					let window_state = app_handle.state::<Mutex<state::WindowState>>();
+					let lock = window_state.lock().unwrap();
+					let config_dir = app_handle.path_resolver().app_config_dir().unwrap();
+					let window_state_res = lock.save_state(config_dir);
+					match window_state_res {
+						Ok(()) => log::info!("saved window state"),
+						Err(_) => log::error!("failed to save window state"),
+					}
+
 					let Some(ref mut child) = backend else { return };
 					let write_result = child.write(b"exit\n");
 					match write_result {
