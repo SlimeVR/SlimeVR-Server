@@ -90,7 +90,7 @@ export function MountingChoose() {
               <div className="flex flex-col gap-4">
                 <div className="flex flex-grow flex-col gap-4 max-w-sm">
                   <div>
-                  <img
+                    <img
                       onMouseEnter={() => setAnimated(() => true)}
                       onAnimationEnd={() => setAnimated(() => false)}
                       src="/images/boxslime.png"
