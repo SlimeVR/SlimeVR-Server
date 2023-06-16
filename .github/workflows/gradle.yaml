@@ -34,14 +34,15 @@ jobs:
       - name: Setup Gradle
         uses: gradle/gradle-build-action@v2
 
-      - name: Check code formatting
-        run: ./gradlew spotlessCheck
-
       # The git restore is for windows, soft-link might be broken :p
       - run: |
           mkdir ./gui/dist
           git restore -- ./server/android/src/main/resources/web-gui
+          ls ./server/android/src/main/resources/web-gui
         shell: bash
+
+      - name: Check code formatting
+        run: ./gradlew spotlessCheck
 
       - name: Test with Gradle
         run: ./gradlew test
