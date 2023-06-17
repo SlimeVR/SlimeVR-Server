@@ -184,15 +184,6 @@ fn main() {
 	match build_result {
 		Ok(app) => {
 			app.run(move |app_handle, event| match event {
-				RunEvent::Ready => {
-					// unwrap hell
-					let window = app_handle.get_window("local").unwrap();
-					let window_state = app_handle.state::<Mutex<state::WindowState>>();
-					let lock = window_state.lock().unwrap();
-					if lock.is_old() {
-						lock.update_window(&window, false).unwrap();
-					}
-				}
 				RunEvent::ExitRequested { .. } => {
 					let window_state = app_handle.state::<Mutex<state::WindowState>>();
 					let lock = window_state.lock().unwrap();
