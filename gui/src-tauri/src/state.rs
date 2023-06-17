@@ -52,7 +52,7 @@ impl WindowState {
 		self.maximized = window.is_maximized()?;
 		let scale_factor = window.scale_factor()?;
 		let size = window.inner_size()?.to_logical::<f64>(scale_factor);
-		let pos = window.outer_position()?;
+		let pos = window.inner_position()?;
 
 		self.width = size.width;
 		self.height = size.height;
@@ -105,7 +105,8 @@ pub trait MonitorExt {
 	fn contains(&self, position: PhysicalPosition<i32>) -> bool;
 }
 
-const ABSOLUTE_ERROR: i32 = 16;
+/// Allowed amount to overflow out of the screen
+const ABSOLUTE_ERROR: i32 = 32;
 impl MonitorExt for Monitor {
 	fn contains(&self, position: PhysicalPosition<i32>) -> bool {
 		let PhysicalPosition { x, y } = *self.position();
