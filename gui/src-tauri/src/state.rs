@@ -54,9 +54,9 @@ impl WindowState {
 		Ok(())
 	}
 
-	pub fn update_window(&self, window: &Window) -> Result<()> {
-		let maximized = window.is_maximized()?;
-		if maximized && !self.maximized {
+	pub fn update_window(&self, window: &Window, ignore_maximized: bool) -> Result<()> {
+		let maximized = !ignore_maximized && window.is_maximized()?;
+		if !ignore_maximized && maximized && !self.maximized {
 			window.unmaximize()?;
 		}
 
@@ -70,7 +70,7 @@ impl WindowState {
 			}
 		}
 
-		if !maximized && self.maximized {
+		if !ignore_maximized && !maximized && self.maximized {
 			window.maximize()?;
 		}
 

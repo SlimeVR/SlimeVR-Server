@@ -141,7 +141,7 @@ fn main() {
 				.disable_file_drop_handler()
 				.build()?;
 			if window_state.is_old() {
-				window_state.update_window(&window)?;
+				window_state.update_window(&window, true)?;
 			}
 
 			app.manage(Mutex::new(window_state));
@@ -184,6 +184,15 @@ fn main() {
 	match build_result {
 		Ok(app) => {
 			app.run(move |app_handle, event| match event {
+				RunEvent::Ready => {
+					// unwrap hell
+					let window = app_handle.get_window("local").unwrap();
+					let window_state = app_handle.state::<Mutex<state::WindowState>>();
+					let lock = window_state.lock().unwrap();
+					if lock.is_old() {
+						lock.update_window(&window, false).unwrap();
+					}
+				}
 				RunEvent::ExitRequested { .. } => {
 					let window_state = app_handle.state::<Mutex<state::WindowState>>();
 					let lock = window_state.lock().unwrap();
