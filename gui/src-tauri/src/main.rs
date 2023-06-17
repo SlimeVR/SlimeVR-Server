@@ -193,7 +193,7 @@ fn main() {
 					let window_state_res = lock.save_state(config_dir);
 					match window_state_res {
 						Ok(()) => log::info!("saved window state"),
-						Err(_) => log::error!("failed to save window state"),
+						Err(e) => log::error!("failed to save window state: {}", e),
 					}
 
 					let Some(ref mut child) = backend else { return };
