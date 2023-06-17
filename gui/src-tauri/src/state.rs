@@ -42,6 +42,7 @@ impl WindowState {
 
 	pub fn update_state(&mut self, window: &Window) -> Result<()> {
 		self.maximized = window.is_maximized()?;
+		if self.maximized { return Ok(()) }
 		let scale_factor = window.scale_factor()?;
 		let size = window.inner_size()?.to_logical::<f64>(scale_factor);
 		let pos = window.outer_position()?;
@@ -56,7 +57,7 @@ impl WindowState {
 
 	pub fn update_window(&self, window: &Window, ignore_maximized: bool) -> Result<()> {
 		let maximized = !ignore_maximized && window.is_maximized()?;
-		if !ignore_maximized && maximized && !self.maximized {
+		if maximized && !self.maximized {
 			window.unmaximize()?;
 		}
 
@@ -101,9 +102,9 @@ impl MonitorExt for Monitor {
 		let PhysicalPosition { x, y } = *self.position();
 		let PhysicalSize { width, height } = *self.size();
 
-		x < position.x as _
-			&& position.x < (x + width as i32)
-			&& y < position.y as _
-			&& position.y < (y + height as i32)
+		(x < position.x + 16) as _
+			&& (position.x - 16) < (x + width as i32)
+			&& (y + 16) < position.y as _
+			&& (position.y - 16) < (y + height as i32)
 	}
 }

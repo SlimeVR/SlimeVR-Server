@@ -141,7 +141,7 @@ fn main() {
 				.disable_file_drop_handler()
 				.build()?;
 			if window_state.is_old() {
-				window_state.update_window(&window, true)?;
+				window_state.update_window(&window, false)?;
 			}
 
 			app.manage(Mutex::new(window_state));
