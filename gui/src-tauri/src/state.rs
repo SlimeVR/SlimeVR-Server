@@ -35,6 +35,9 @@ impl WindowState {
 	}
 
 	pub fn save_state(&self, path: PathBuf) -> Result<()> {
+		if !path.exists() {
+			fs::create_dir(&path)?
+		}
 		let file = fs::File::create(path.join(STATE_FILENAME))?;
 		serde_json::to_writer(file, self)?;
 		Ok(())
