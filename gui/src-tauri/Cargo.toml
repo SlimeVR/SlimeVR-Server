@@ -23,7 +23,7 @@ custom-protocol = ["tauri/custom-protocol"]
 [build-dependencies]
 tauri-build = { version = "1.2", features = [] }
 cfg_aliases = "0.1"
-shadow-rs = "0.22"
+shadow-rs = "0.23"
 
 [dependencies]
 serde_json = "1"
@@ -39,10 +39,10 @@ tempfile = "3"
 which = "4.3"
 glob = "0.3"
 open = "4"
-shadow-rs = { version = "0.22", default-features = false }
+shadow-rs = { version = "0.23", default-features = false }
 const_format = "0.2.30"
 cfg-if = "1"
-anyhow = "1.0"
+color-eyre = { version = "0.6", default-features = false }
 
 [target.'cfg(windows)'.dependencies]
 win32job = "1"

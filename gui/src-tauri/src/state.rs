@@ -1,6 +1,6 @@
 use std::{fs, path::PathBuf};
 
-use anyhow::Result;
+use color_eyre::Result;
 use serde::{Deserialize, Serialize};
 use tauri::{LogicalSize, Monitor, PhysicalPosition, PhysicalSize, Window};
 

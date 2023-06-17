@@ -29,10 +29,12 @@ fn update_window_state(
 	state: tauri::State<Mutex<WindowState>>,
 ) -> Result<(), String> {
 	let mut lock = state.lock().unwrap();
-	lock.update_state(&window, false).unwrap();
-	if window.is_maximized().unwrap() {
-		window.unmaximize().unwrap();
-		lock.update_state(&window, true).unwrap();
+	lock.update_state(&window, false)
+		.map_err(|e| format!("{:?}", e))?;
+	if window.is_maximized().map_err(|e| e.to_string())? {
+		window.unmaximize().map_err(|e| e.to_string())?;
+		lock.update_state(&window, true)
+			.map_err(|e| format!("{:?}", e))?;
 	}
 	Ok(())
 }
@@ -184,7 +186,9 @@ fn main() {
 		.on_window_event(|e| match e.event() {
 			WindowEvent::CloseRequested { .. } => {
 				let window_state = e.window().state::<Mutex<WindowState>>();
-				update_window_state(e.window().clone(), window_state).unwrap();
+				if let Err(e) = update_window_state(e.window().clone(), window_state) {
+					log::error!("failed to update window state {}", e)
+				}
 			}
 			// See https://github.com/tauri-apps/tauri/issues/4012#issuecomment-1449499149
 			#[cfg(windows)]
