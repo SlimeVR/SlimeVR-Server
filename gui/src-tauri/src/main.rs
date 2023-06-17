@@ -23,6 +23,20 @@ use crate::util::{
 mod state;
 mod util;
 
+#[tauri::command]
+fn update_window_state(
+	window: tauri::Window,
+	state: tauri::State<Mutex<WindowState>>,
+) -> Result<(), String> {
+	let mut lock = state.lock().unwrap();
+	lock.update_state(&window, false).unwrap();
+	if window.is_maximized().unwrap() {
+		window.unmaximize().unwrap();
+		lock.update_state(&window, true).unwrap();
+	}
+	Ok(())
+}
+
 fn main() {
 	// Make an error dialog box when panicking
 	panic::set_hook(Box::new(|panic_info| {
@@ -109,6 +123,7 @@ fn main() {
 
 	let exit_flag_terminated = exit_flag.clone();
 	let build_result = tauri::Builder::default()
+		.invoke_handler(tauri::generate_handler![update_window_state])
 		.setup(move |app| {
 			let window_state = if let Some(window_state) =
 				WindowState::open_state(app.path_resolver().app_config_dir().unwrap())
@@ -169,12 +184,7 @@ fn main() {
 		.on_window_event(|e| match e.event() {
 			WindowEvent::CloseRequested { .. } => {
 				let window_state = e.window().state::<Mutex<WindowState>>();
-				let mut lock = window_state.lock().unwrap();
-				lock.update_state(e.window(), false).unwrap();
-				if e.window().is_maximized().unwrap() {
-					e.window().unmaximize().unwrap();
-					lock.update_state(e.window(), true).unwrap();
-				}
+				update_window_state(e.window().clone(), window_state).unwrap();
 			}
 			// See https://github.com/tauri-apps/tauri/issues/4012#issuecomment-1449499149
 			#[cfg(windows)]
