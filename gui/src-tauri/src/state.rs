@@ -78,33 +78,19 @@ impl WindowState {
 	}
 }
 
-pub trait WindowBuilderExt {
-	fn restore_state(self, state: &WindowState) -> Self;
-}
-
-impl WindowBuilderExt for tauri::WindowBuilder<'_> {
-	fn restore_state(self, state: &WindowState) -> Self {
-		if !state.is_old() {
-			return self;
-		}
-		self.inner_size(state.width, state.height)
-			// .maximized(state.maximized)
-	}
-}
-
 trait MonitorExt {
 	fn contains(&self, position: PhysicalPosition<i32>) -> bool;
 }
 
-const ERROR: i32 = 16;
+const ABSOLUTE_ERROR: i32 = 16;
 impl MonitorExt for Monitor {
 	fn contains(&self, position: PhysicalPosition<i32>) -> bool {
 		let PhysicalPosition { x, y } = *self.position();
 		let PhysicalSize { width, height } = *self.size();
 
-		(x < position.x + ERROR) as _
-			&& (position.x - ERROR) < (x + width as i32)
-			&& (y + ERROR) < position.y as _
-			&& (position.y - ERROR) < (y + height as i32)
+		(x < position.x + ABSOLUTE_ERROR) as _
+			&& (position.x - ABSOLUTE_ERROR) < (x + width as i32)
+			&& (y + ABSOLUTE_ERROR) < position.y as _
+			&& (position.y - ABSOLUTE_ERROR) < (y + height as i32)
 	}
 }
