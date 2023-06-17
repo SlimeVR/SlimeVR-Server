@@ -1,4 +1,4 @@
-#![cfg_attr(all(not(debug_assertions), windows), windows_subsystem = "windows")]
+// #![cfg_attr(all(not(debug_assertions), windows), windows_subsystem = "windows")]
 use std::env;
 use std::panic;
 use std::sync::atomic::AtomicBool;
