@@ -42,7 +42,6 @@ impl WindowState {
 
 	pub fn update_state(&mut self, window: &Window) -> Result<()> {
 		self.maximized = window.is_maximized()?;
-		if self.maximized { return Ok(()) }
 		let scale_factor = window.scale_factor()?;
 		let size = window.inner_size()?.to_logical::<f64>(scale_factor);
 		let pos = window.outer_position()?;
@@ -97,14 +96,15 @@ trait MonitorExt {
 	fn contains(&self, position: PhysicalPosition<i32>) -> bool;
 }
 
+const ERROR: i32 = 16;
 impl MonitorExt for Monitor {
 	fn contains(&self, position: PhysicalPosition<i32>) -> bool {
 		let PhysicalPosition { x, y } = *self.position();
 		let PhysicalSize { width, height } = *self.size();
 
-		(x < position.x + 16) as _
-			&& (position.x - 16) < (x + width as i32)
-			&& (y + 16) < position.y as _
-			&& (position.y - 16) < (y + height as i32)
+		(x < position.x + ERROR) as _
+			&& (position.x - ERROR) < (x + width as i32)
+			&& (y + ERROR) < position.y as _
+			&& (position.y - ERROR) < (y + height as i32)
 	}
 }
