@@ -34,14 +34,6 @@ impl WindowState {
 		self.old
 	}
 
-	pub fn x(&self) -> i32 {
-		self.x
-	}
-
-	pub fn y(&self) -> i32 {
-		self.y
-	}
-
 	pub fn save_state(&self, path: PathBuf) -> Result<()> {
 		let file = fs::File::create(path.join(STATE_FILENAME))?;
 		serde_json::to_writer(file, self)?;
@@ -51,8 +43,8 @@ impl WindowState {
 	pub fn update_state(&mut self, window: &Window) -> Result<()> {
 		self.maximized = window.is_maximized()?;
 		let scale_factor = window.scale_factor()?;
-		let size = window.inner_size()?.to_logical::<f64>(scale_factor);
-		let pos = window.inner_position()?;
+		let size = window.outer_size()?.to_logical::<f64>(scale_factor);
+		let pos = window.outer_position()?;
 
 		self.width = size.width;
 		self.height = size.height;
@@ -86,21 +78,6 @@ impl WindowState {
 	}
 }
 
-pub trait WindowBuilderExt {
-	fn restore_state(self, state: &WindowState) -> Self;
-}
-
-impl WindowBuilderExt for tauri::WindowBuilder<'_> {
-	fn restore_state(self, state: &WindowState) -> Self {
-		if !state.is_old() {
-			return self;
-		}
-		self.position(state.x as f64, state.y as f64)
-			.inner_size(state.width, state.height)
-			.maximized(state.maximized)
-	}
-}
-
 pub trait MonitorExt {
 	fn contains(&self, position: PhysicalPosition<i32>) -> bool;
 }
@@ -112,8 +89,8 @@ impl MonitorExt for Monitor {
 		let PhysicalPosition { x, y } = *self.position();
 		let PhysicalSize { width, height } = *self.size();
 
-		(x < position.x - ABSOLUTE_ERROR) as _
-			&& (position.x + ABSOLUTE_ERROR) < (x + width as i32)
+		(x < position.x + ABSOLUTE_ERROR) as _
+			&& (position.x - ABSOLUTE_ERROR) < (x + width as i32)
 			&& (y - ABSOLUTE_ERROR) < position.y as _
 			&& (position.y + ABSOLUTE_ERROR) < (y + height as i32)
 	}

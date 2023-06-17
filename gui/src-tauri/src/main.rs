@@ -10,11 +10,9 @@ use std::time::Duration;
 use std::time::Instant;
 
 use clap::Parser;
-use state::MonitorExt;
-use state::WindowBuilderExt;
+use state::WindowState;
 use tauri::api::process::{Command, CommandChild};
 use tauri::Manager;
-use tauri::PhysicalPosition;
 use tauri::RunEvent;
 
 #[cfg(windows)]
@@ -30,7 +28,7 @@ mod util;
 #[tauri::command]
 fn update_window_state(
 	window: tauri::Window,
-	state: tauri::State<Mutex<state::WindowState>>,
+	state: tauri::State<Mutex<WindowState>>,
 ) -> Result<(), String> {
 	let mut lock = state.lock().unwrap();
 	lock.update_state(&window).map_err(|err| err.to_string())?;
@@ -126,12 +124,11 @@ fn main() {
 		.invoke_handler(tauri::generate_handler![update_window_state])
 		.setup(move |app| {
 			let window_state = if let Some(window_state) =
-				state::WindowState::open_state(
-					app.path_resolver().app_config_dir().unwrap(),
-				) {
+				WindowState::open_state(app.path_resolver().app_config_dir().unwrap())
+			{
 				window_state
 			} else {
-				state::WindowState::default()
+				WindowState::default()
 			};
 
 			let window = tauri::WindowBuilder::new(
@@ -147,22 +144,9 @@ fn main() {
 			.decorations(false)
 			.fullscreen(false)
 			.disable_file_drop_handler()
-			.restore_state(&window_state)
 			.build()?;
 			if window_state.is_old() {
-				let mut contained = false;
-				for monitor in window.available_monitors()? {
-					if monitor.contains(PhysicalPosition::new(
-						window_state.x(),
-						window_state.y(),
-					)) {
-						contained = true;
-						break;
-					}
-				}
-				if !contained {
-					window.center()?;
-				}
+				window_state.update_window(&window, false)?;
 			}
 
 			app.manage(Mutex::new(window_state));
@@ -206,7 +190,7 @@ fn main() {
 		Ok(app) => {
 			app.run(move |app_handle, event| match event {
 				RunEvent::ExitRequested { .. } => {
-					let window_state = app_handle.state::<Mutex<state::WindowState>>();
+					let window_state = app_handle.state::<Mutex<WindowState>>();
 					let lock = window_state.lock().unwrap();
 					let config_dir =
 						app_handle.path_resolver().app_config_dir().unwrap();

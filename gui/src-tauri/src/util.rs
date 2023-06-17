@@ -73,10 +73,7 @@ pub fn get_launch_path(cli: Cli) -> Option<PathBuf> {
 		Some(PathBuf::from("/usr/share/slimevr/")),
 	];
 
-	paths
-		.into_iter()
-		.flatten()
-		.find(|x| is_valid_path(x))
+	paths.into_iter().flatten().find(|x| is_valid_path(x))
 }
 
 pub fn spawn_java(java: &OsStr, java_version: &OsStr) -> std::io::Result<Child> {
