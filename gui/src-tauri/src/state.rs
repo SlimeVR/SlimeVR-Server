@@ -96,15 +96,15 @@ pub trait MonitorExt {
 }
 
 /// Allowed amount to overflow out of the screen
-const ABSOLUTE_ERROR: i32 = 16;
+const ALLOWED_OVERFLOW: i32 = 16;
 impl MonitorExt for Monitor {
 	fn contains(&self, position: PhysicalPosition<i32>) -> bool {
 		let PhysicalPosition { x, y } = *self.position();
 		let PhysicalSize { width, height } = *self.size();
 
-		(x < position.x + ABSOLUTE_ERROR) as _
-			&& (position.x - ABSOLUTE_ERROR) < (x + width as i32)
-			&& (y - ABSOLUTE_ERROR) < position.y as _
-			&& (position.y + ABSOLUTE_ERROR) < (y + height as i32)
+		(x < position.x + ALLOWED_OVERFLOW) as _
+			&& (position.x - ALLOWED_OVERFLOW) < (x + width as i32)
+			&& (y - ALLOWED_OVERFLOW) < position.y as _
+			&& (position.y + ALLOWED_OVERFLOW) < (y + height as i32)
 	}
 }
