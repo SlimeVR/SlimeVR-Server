@@ -10,7 +10,6 @@ use std::time::Duration;
 use std::time::Instant;
 
 use clap::Parser;
-use state::WindowBuilderExt;
 use tauri::api::process::{Command, CommandChild};
 use tauri::Manager;
 use tauri::RunEvent;
@@ -140,7 +139,6 @@ fn main() {
 				.decorations(false)
 				.fullscreen(false)
 				.disable_file_drop_handler()
-				.restore_state(&window_state)
 				.build()?;
 			if window_state.is_old() {
 				window_state.update_window(&window)?;
@@ -186,16 +184,6 @@ fn main() {
 	match build_result {
 		Ok(app) => {
 			app.run(move |app_handle, event| match event {
-				RunEvent::Ready => {
-					// unwrap hell
-					let windows = app_handle.windows();
-					let window = windows.values().next().unwrap();
-					let window_state = app_handle.state::<Mutex<state::WindowState>>();
-					let lock = window_state.lock().unwrap();
-					if lock.is_old() {
-						lock.update_window(window).unwrap();
-					}
-				}
 				RunEvent::ExitRequested { .. } => {
 					let window_state = app_handle.state::<Mutex<state::WindowState>>();
 					let lock = window_state.lock().unwrap();
