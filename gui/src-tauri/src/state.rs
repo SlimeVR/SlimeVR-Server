@@ -19,7 +19,7 @@ pub struct WindowState {
 
 impl WindowState {
 	pub fn open_state(path: PathBuf) -> Option<Self> {
-		if let Some(file) = fs::File::open(path.join(STATE_FILENAME)).ok() {
+		if let Ok(file) = fs::File::open(path.join(STATE_FILENAME)) {
 			return serde_json::from_reader(file)
 				.map(|mut s: WindowState| {
 					s.old = true;
@@ -32,6 +32,14 @@ impl WindowState {
 
 	pub fn is_old(&self) -> bool {
 		self.old
+	}
+
+	pub fn x(&self) -> i32 {
+		self.x
+	}
+
+	pub fn y(&self) -> i32 {
+		self.y
 	}
 
 	pub fn save_state(&self, path: PathBuf) -> Result<()> {
@@ -78,7 +86,22 @@ impl WindowState {
 	}
 }
 
-trait MonitorExt {
+pub trait WindowBuilderExt {
+	fn restore_state(self, state: &WindowState) -> Self;
+}
+
+impl WindowBuilderExt for tauri::WindowBuilder<'_> {
+	fn restore_state(self, state: &WindowState) -> Self {
+		if !state.is_old() {
+			return self;
+		}
+		self.position(state.x as f64, state.y as f64)
+			.inner_size(state.width, state.height)
+			.maximized(state.maximized)
+	}
+}
+
+pub trait MonitorExt {
 	fn contains(&self, position: PhysicalPosition<i32>) -> bool;
 }
 

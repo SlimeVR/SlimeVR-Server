@@ -58,7 +58,7 @@ pub fn get_launch_path(cli: Cli) -> Option<PathBuf> {
 	let paths = [
 		cli.launch_from_path,
 		// AppImage passes the fakeroot in `APPDIR` env var.
-		env::var_os("APPDIR").map(|x| PathBuf::from(x)),
+		env::var_os("APPDIR").map(PathBuf::from),
 		env::current_dir().ok(),
 		// getcwd in Mac can't be trusted, so let's get the executable's path
 		env::current_exe()
@@ -75,7 +75,7 @@ pub fn get_launch_path(cli: Cli) -> Option<PathBuf> {
 
 	paths
 		.into_iter()
-		.filter_map(|x| x)
+		.flatten()
 		.find(|x| is_valid_path(x))
 }
 
