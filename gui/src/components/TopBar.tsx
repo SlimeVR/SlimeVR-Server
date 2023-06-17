@@ -69,7 +69,7 @@ export function TopBar({
   return (
     <>
       <div className="flex gap-0 flex-col">
-        <div className="h-[2px]"></div>
+        <div className="h-[3px]"></div>
         <div data-tauri-drag-region className="flex gap-2 h-[38px] z-50">
           <div
             className="flex px-2 pb-1 mt-3 justify-around z-50"
