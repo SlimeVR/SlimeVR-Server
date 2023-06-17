@@ -197,7 +197,7 @@ export function TopBar({
                 className="flex items-center justify-center hover:bg-background-60 rounded-full w-7 h-7"
                 onClick={async () => {
                   await invoke('update_window_state');
-                  await appWindow.close();
+                  appWindow.close();
                 }}
               >
                 <CloseIcon></CloseIcon>
