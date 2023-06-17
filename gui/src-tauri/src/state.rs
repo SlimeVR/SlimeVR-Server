@@ -40,8 +40,18 @@ impl WindowState {
 		Ok(())
 	}
 
-	pub fn update_state(&mut self, window: &Window) -> Result<()> {
-		self.maximized = window.is_maximized()?;
+	pub fn update_state(
+		&mut self,
+		window: &Window,
+		ignore_maximized: bool,
+	) -> Result<()> {
+		let maximized = window.is_maximized()?;
+		self.maximized = maximized || (self.maximized && ignore_maximized);
+		// We early return when it's maximized because we dont have to save the state
+		// of the rest of the window when it's maximized.
+		if maximized {
+			return Ok(());
+		}
 		let scale_factor = window.scale_factor()?;
 		let size = window.outer_size()?.to_logical::<f64>(scale_factor);
 		let pos = window.outer_position()?;
@@ -83,7 +93,7 @@ pub trait MonitorExt {
 }
 
 /// Allowed amount to overflow out of the screen
-const ABSOLUTE_ERROR: i32 = 32;
+const ABSOLUTE_ERROR: i32 = 16;
 impl MonitorExt for Monitor {
 	fn contains(&self, position: PhysicalPosition<i32>) -> bool {
 		let PhysicalPosition { x, y } = *self.position();

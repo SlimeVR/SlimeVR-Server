@@ -20,7 +20,6 @@ import classNames from 'classnames';
 import { QuestionIcon } from './commons/icon/QuestionIcon';
 import { useBreakpoint, useIsTauri } from '../hooks/breakpoint';
 import { GearIcon } from './commons/icon/GearIcon';
-import { invoke } from '@tauri-apps/api';
 
 export function VersionTag() {
   return (
@@ -195,10 +194,7 @@ export function TopBar({
               </div>
               <div
                 className="flex items-center justify-center hover:bg-background-60 rounded-full w-7 h-7"
-                onClick={async () => {
-                  await invoke('update_window_state');
-                  appWindow.close();
-                }}
+                onClick={async () => appWindow.close()}
               >
                 <CloseIcon></CloseIcon>
               </div>
