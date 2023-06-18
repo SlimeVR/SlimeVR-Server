@@ -1,0 +1,18 @@
+<config>
+    <executableName>${app.executable}</executableName>
+    <mainClass>${app.mainclass}</mainClass>
+    <os>ios</os>
+    <target>ios</target>
+    <iosInfoPList>Info.plist.xml</iosInfoPList>
+    <resources>
+        <resource>
+            <directory>resources</directory>
+        </resource>
+    </resources>
+    <!-- Remove comment to automatically skip compilation and linking in IDEA -->
+    <!-- <smartSkipRebuild>true</smartSkipRebuild> -->
+    <forceLinkClasses>
+        <pattern>com.google.protobuf.**</pattern>
+        <pattern>dev.slimevr.**</pattern>
+    </forceLinkClasses>
+</config>
