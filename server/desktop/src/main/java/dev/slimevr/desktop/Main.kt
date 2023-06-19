@@ -5,9 +5,9 @@ package dev.slimevr.desktop
 import dev.slimevr.Keybinding
 import dev.slimevr.VRServer
 import dev.slimevr.bridge.ISteamVRBridge
+import dev.slimevr.desktop.platform.SteamVRBridge
 import dev.slimevr.desktop.platform.linux.UnixSocketBridge
 import dev.slimevr.desktop.platform.windows.WindowsNamedPipeBridge
-import dev.slimevr.desktop.platform.SteamVRBridge
 import dev.slimevr.tracking.trackers.Tracker
 import io.eiren.util.OperatingSystem
 import io.eiren.util.collections.FastList

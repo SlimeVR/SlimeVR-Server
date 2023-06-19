@@ -1,7 +1,6 @@
 package dev.slimevr.desktop.platform;
 
 import dev.slimevr.VRServer;
-import dev.slimevr.bridge.Bridge;
 import dev.slimevr.bridge.BridgeThread;
 import dev.slimevr.bridge.ISteamVRBridge;
 import dev.slimevr.desktop.platform.ProtobufMessages.*;

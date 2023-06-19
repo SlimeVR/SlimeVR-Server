@@ -6,7 +6,6 @@ import com.illposed.osc.transport.OSCPortIn;
 import com.illposed.osc.transport.OSCPortOut;
 import com.jme3.math.FastMath;
 import dev.slimevr.VRServer;
-import dev.slimevr.bridge.Bridge;
 import dev.slimevr.bridge.ISteamVRBridge;
 import dev.slimevr.config.VRCOSCConfig;
 import dev.slimevr.tracking.processor.HumanPoseManager;
