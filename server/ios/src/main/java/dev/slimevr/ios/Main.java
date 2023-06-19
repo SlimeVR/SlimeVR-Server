@@ -1,11 +1,7 @@
 package dev.slimevr.ios;
 
-import org.robovm.apple.foundation.NSAutoreleasePool;
-import org.robovm.apple.foundation.NSErrorException;
-import org.robovm.apple.foundation.NSFileManager;
-import org.robovm.apple.foundation.NSSearchPathDirectory;
-import org.robovm.apple.foundation.NSSearchPathDomainMask;
-import org.robovm.apple.foundation.NSURL;
+import dev.slimevr.ios.logging.FoundationConsoleHandler;
+import org.robovm.apple.foundation.*;
 import org.robovm.apple.uikit.UIApplication;
 import org.robovm.apple.uikit.UIApplicationDelegateAdapter;
 import org.robovm.apple.uikit.UIApplicationLaunchOptions;
@@ -13,14 +9,13 @@ import org.robovm.apple.uikit.UIScreen;
 import org.robovm.apple.uikit.UIWindow;
 
 import java.io.File;
-import java.io.IOException;
+import java.io.PrintWriter;
+import java.io.StringWriter;
 
 import dev.slimevr.Keybinding;
 import dev.slimevr.VRServer;
 import io.eiren.util.logging.LogManager;
-import org.robovm.rt.bro.NativeObject;
 import org.robovm.rt.bro.ptr.BytePtr;
-import org.robovm.rt.bro.ptr.CharPtr;
 
 
 public class Main extends UIApplicationDelegateAdapter {
@@ -32,6 +27,8 @@ public class Main extends UIApplicationDelegateAdapter {
 		UIApplication application,
 		UIApplicationLaunchOptions launchOptions
 	) {
+		LogManager.replaceMainHandler(new FoundationConsoleHandler());
+
 		// Set up the view controller.
 		rootViewController = new WebviewController();
 
@@ -74,12 +71,19 @@ public class Main extends UIApplicationDelegateAdapter {
 	}
 
 	public static void runServer() {
-		new Thread(() -> {
+		var thread = new Thread(() -> {
 			try {
+				Foundation.log("before dying");
 				LogManager.initialize(new File(getString(getAppFolder())));
-			} catch (IOException e) {
-				e.printStackTrace();
+			} catch (Exception e) {
+				Foundation.log("error");
+				StringWriter sw = new StringWriter();
+				PrintWriter pw = new PrintWriter(sw);
+				e.printStackTrace(pw);
+				String sStackTrace = sw.toString();
+				Foundation.log("%@\n%@", new NSString(e.toString()), new NSString(sStackTrace));
 			}
+			Foundation.log("it worked?");
 			try {
 				var vrServer = new VRServer(
 					getString(getAppFolder()
@@ -90,10 +94,21 @@ public class Main extends UIApplicationDelegateAdapter {
 				vrServer.join();
 				LogManager.closeLogger();
 				System.exit(0);
-			} catch (InterruptedException e) {
-				e.printStackTrace();
-				System.exit(1);
+			} catch (Exception e) {
+				StringWriter sw = new StringWriter();
+				PrintWriter pw = new PrintWriter(sw);
+				e.printStackTrace(pw);
+				String sStackTrace = sw.toString();
+				Foundation.log("%@\n%@", new NSString(e.toString()), new NSString(sStackTrace));
 			}
-		}, "SlimeVR Main Thread").start();
+		}, "SlimeVR Main Thread");
+		thread.setUncaughtExceptionHandler((th, e) -> {
+			StringWriter sw = new StringWriter();
+			PrintWriter pw = new PrintWriter(sw);
+			e.printStackTrace(pw);
+			String sStackTrace = sw.toString();
+			Foundation.log("%@\n%@", new NSString(e.toString()), new NSString(sStackTrace));
+		});
+		thread.start();
 	}
 }

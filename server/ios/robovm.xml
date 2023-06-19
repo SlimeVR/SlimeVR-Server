@@ -12,7 +12,13 @@
     <!-- Remove comment to automatically skip compilation and linking in IDEA -->
     <!-- <smartSkipRebuild>true</smartSkipRebuild> -->
     <forceLinkClasses>
-        <pattern>com.google.protobuf.**</pattern>
         <pattern>dev.slimevr.**</pattern>
+        <pattern>java.util.logging.SimpleFormatter</pattern>
+        <pattern>io.eiren.**</pattern>
+        <pattern>io.github.axisangles.**</pattern>
+        <pattern>com.jme3.**</pattern>
     </forceLinkClasses>
+    <frameworks>
+        <framework>WebKit</framework>
+    </frameworks>
 </config>

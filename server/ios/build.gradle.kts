@@ -21,7 +21,6 @@ dependencies {
 	val robovmVersion = "10.2.2-SNAPSHOT"
 
 	implementation(project(":server:core"))
-	implementation("com.google.protobuf:protobuf-java:3.21.12")
 	implementation("com.robovmx:robovm-rt:$robovmVersion")
 	implementation("com.robovmx:robovm-cocoatouch:$robovmVersion")
 }
