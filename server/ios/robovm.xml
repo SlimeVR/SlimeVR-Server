@@ -13,10 +13,11 @@
     <!-- <smartSkipRebuild>true</smartSkipRebuild> -->
     <forceLinkClasses>
         <pattern>dev.slimevr.**</pattern>
-        <pattern>java.util.logging.SimpleFormatter</pattern>
         <pattern>io.eiren.**</pattern>
         <pattern>io.github.axisangles.**</pattern>
         <pattern>com.jme3.**</pattern>
+        <pattern>java.util.logging.SimpleFormatter</pattern>
+        <pattern>java.util.logging.LoggingProxyImpl</pattern>
     </forceLinkClasses>
     <frameworks>
         <framework>WebKit</framework>

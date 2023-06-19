@@ -23,7 +23,7 @@ pluginManagement {
 	resolutionStrategy {
 		eachPlugin {
 			if (requested.id.name == "robovm") {
-				useModule("com.mobidevelop.robovm:robovm-gradle-plugin:${requested.version ?: robovmVersion}")
+				useModule("com.robovmx:robovm-gradle-plugin:${requested.version ?: robovmVersion}")
 			}
 		}
 	}

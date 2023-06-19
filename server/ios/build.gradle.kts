@@ -18,7 +18,7 @@ allprojects {
 }
 
 dependencies {
-	val robovmVersion = "10.2.2-SNAPSHOT"
+	val robovmVersion = rootProject.properties["robovmVersion"] as String
 
 	implementation(project(":server:core"))
 	implementation("com.robovmx:robovm-rt:$robovmVersion")
