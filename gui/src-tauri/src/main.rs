@@ -1,5 +1,4 @@
 #![cfg_attr(all(not(debug_assertions), windows), windows_subsystem = "windows")]
-use std::env;
 use std::panic;
 use std::sync::atomic::AtomicBool;
 use std::sync::atomic::Ordering;
@@ -127,13 +126,9 @@ fn main() {
 	let build_result = tauri::Builder::default()
 		.invoke_handler(tauri::generate_handler![update_window_state])
 		.setup(move |app| {
-			let window_state = if let Some(window_state) =
+			let window_state =
 				WindowState::open_state(app.path_resolver().app_config_dir().unwrap())
-			{
-				window_state
-			} else {
-				WindowState::default()
-			};
+					.unwrap_or_default();
 
 			let window = tauri::WindowBuilder::new(
 				app,
