@@ -93,8 +93,8 @@ class PoseRecorder(private val server: VRServer) {
 		// Update tracker list
 		this.trackers.ensureCapacity(trackers.size)
 		for (tracker in trackers) {
-			// Ignore null trackers
-			if (tracker == null) {
+			// Ignore null and internal trackers
+			if (tracker == null || tracker.isInternal) {
 				continue
 			}
 
