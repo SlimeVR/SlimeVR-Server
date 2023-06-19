@@ -42,7 +42,7 @@ open = "4"
 shadow-rs = { version = "0.23", default-features = false }
 const_format = "0.2.30"
 cfg-if = "1"
-color-eyre = { version = "0.6", default-features = false }
+color-eyre = "0.6"
 
 [target.'cfg(windows)'.dependencies]
 win32job = "1"
