@@ -23,7 +23,7 @@ public class WebviewController extends UIViewController {
 		super.loadView();
 		UIView view = getView();
 
-		if(!VRServer.Companion.getInstanceInitialized()) {
+		if (!VRServer.Companion.getInstanceInitialized()) {
 			Main.runServer();
 		}
 
@@ -33,10 +33,12 @@ public class WebviewController extends UIViewController {
 			public void startURLSchemeTask(WKWebView webView, WKURLSchemeTask urlSchemeTask) {
 				var url = urlSchemeTask.getRequest().getURL();
 				var fileUrl = fileUrlFromUrl(url);
-				if(fileUrl == null) return;
+				if (fileUrl == null)
+					return;
 				var mimeType = mimeType(fileUrl);
 				var data = NSData.read(fileUrl);
-				if(data == null) return;
+				if (data == null)
+					return;
 
 				var response = new NSHTTPURLResponse(url, mimeType, data.getLength(), null);
 
@@ -55,7 +57,7 @@ public class WebviewController extends UIViewController {
 				String last = paths.remove(paths.size() - 1);
 				paths.remove(0); // Remove "/"
 				StringBuilder joining = new StringBuilder();
-				for(String path : paths) {
+				for (String path : paths) {
 					joining.append("/").append(path);
 				}
 				return NSBundle.getMainBundle().findResourceURL(last, "", "dist" + joining);
@@ -63,12 +65,13 @@ public class WebviewController extends UIViewController {
 
 			private String mimeType(NSURL url) {
 				var type = UTType.createUsingFilenameExtension(url.getPathExtension());
-				if(type == null) return null;
+				if (type == null)
+					return null;
 				return type.getPreferredMIMEType();
 			}
 		}, "slimevr");
 		webView = new WKWebView(view.getFrame(), config);
-		if(webView != null) {
+		if (webView != null) {
 			view.addSubview(webView);
 		}
 	}

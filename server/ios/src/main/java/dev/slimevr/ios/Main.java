@@ -60,7 +60,8 @@ public class Main extends UIApplicationDelegateAdapter {
 	private static String getString(NSURL url) {
 		var buffer = new BytePtr();
 		boolean test = url.getFileSystemRepresentation(buffer, 1024L);
-		if (!test) throw new RuntimeException("Couldn't fit URL into buffer");
+		if (!test)
+			throw new RuntimeException("Couldn't fit URL into buffer");
 		return buffer.toStringZ();
 	}
 
@@ -86,8 +87,10 @@ public class Main extends UIApplicationDelegateAdapter {
 			Foundation.log("it worked?");
 			try {
 				var vrServer = new VRServer(
-					getString(getAppFolder()
-						.newURLByAppendingPathComponent("vrserver.yml"))
+					getString(
+						getAppFolder()
+							.newURLByAppendingPathComponent("vrserver.yml")
+					)
 				);
 				vrServer.start();
 				new Keybinding(vrServer);
