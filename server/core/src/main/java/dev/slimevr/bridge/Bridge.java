@@ -1,44 +1,51 @@
-package dev.slimevr.bridge;
+package dev.slimevr.bridge
 
-import dev.slimevr.tracking.trackers.Tracker;
-import dev.slimevr.util.ann.VRServerThread;
-
+import dev.slimevr.tracking.trackers.Tracker
+import dev.slimevr.tracking.trackers.TrackerRole
+import dev.slimevr.util.ann.VRServerThread
 
 /**
  * Bridge handles sending and receiving tracker data between SlimeVR and other
  * systems like VR APIs (SteamVR, OpenXR, etc), apps and protocols (VMC,
- * WebSocket, TIP). It can create and manage tracker received from the <b>remote
- * side</b> or send shared <b>local trackers</b> to the other side.
+ * WebSocket, TIP). It can create and manage tracker received from the **remote
+ * side** or send shared **local trackers** to the other side.
  */
-public interface Bridge {
+interface Bridge {
+    @VRServerThread
+    fun dataRead()
 
-	@VRServerThread
-	void dataRead();
+    @VRServerThread
+    fun dataWrite()
 
-	@VRServerThread
-	void dataWrite();
+    /**
+     * Adds shared tracker to the bridge. Bridge should notify the other side of
+     * this tracker, if it's the type of tracker this bridge serves, and start
+     * sending data each update
+     *
+     * @param tracker
+     */
+    @VRServerThread
+    fun addSharedTracker(tracker: Tracker?)
 
-	/**
-	 * Adds shared tracker to the bridge. Bridge should notify the other side of
-	 * this tracker, if it's the type of tracker this bridge serves, and start
-	 * sending data each update
-	 *
-	 * @param tracker
-	 */
-	@VRServerThread
-	void addSharedTracker(Tracker tracker);
+    /**
+     * Removes tracker from a bridge. If the other side supports tracker
+     * removal, bridge should notify it and stop sending new data. If it doesn't
+     * support tracker removal, the bridge can either stop sending new data, or
+     * keep sending it if it's available.
+     *
+     * @param tracker
+     */
+    @VRServerThread
+    fun removeSharedTracker(tracker: Tracker?)
 
-	/**
-	 * Removes tracker from a bridge. If the other side supports tracker
-	 * removal, bridge should notify it and stop sending new data. If it doesn't
-	 * support tracker removal, the bridge can either stop sending new data, or
-	 * keep sending it if it's available.
-	 *
-	 * @param tracker
-	 */
-	@VRServerThread
-	void removeSharedTracker(Tracker tracker);
+    @VRServerThread
+    fun startBridge()
 
-	@VRServerThread
-	void startBridge();
+	fun isConnected(): Boolean
+}
+
+interface ISteamVRBridge: Bridge {
+	fun getShareSetting(role: TrackerRole): Boolean
+
+	fun changeShareSettings(role: TrackerRole, share: Boolean)
 }
