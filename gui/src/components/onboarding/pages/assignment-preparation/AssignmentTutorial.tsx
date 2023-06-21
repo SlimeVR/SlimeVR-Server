@@ -2,9 +2,6 @@ import { useLocalization } from '@fluent/react';
 import { useOnboarding } from '../../../../hooks/onboarding';
 import { Button } from '../../../commons/Button';
 import { Typography } from '../../../commons/Typography';
-import { useState } from 'react';
-import { SkipSetupWarningModal } from '../../SkipSetupWarningModal';
-import { SkipSetupButton } from '../../SkipSetupButton';
 import { useTrackers } from '../../../../hooks/tracker';
 import { useBnoExists } from '../../../../hooks/imu-logic';
 import { StickerSlime } from './StickerSlime';
@@ -13,8 +10,7 @@ import { ExtensionArrow } from './ExtensionArrow';
 
 export function AssignmentTutorialPage() {
   const { l10n } = useLocalization();
-  const { applyProgress, skipSetup } = useOnboarding();
-  const [skipWarning, setSkipWarning] = useState(false);
+  const { applyProgress } = useOnboarding();
   const { useConnectedTrackers } = useTrackers();
   const connectedTrackers = useConnectedTrackers();
   const bnoExists = useBnoExists(connectedTrackers);
@@ -24,11 +20,6 @@ export function AssignmentTutorialPage() {
   return (
     <>
       <div className="flex flex-col gap-5 h-full items-center w-full justify-center relative">
-        <SkipSetupButton
-          visible={true}
-          modalVisible={skipWarning}
-          onClick={() => setSkipWarning(true)}
-        ></SkipSetupButton>
         <div className="flex flex-col w-full h-full justify-center xs:px-20 gap-3 pb-2">
           <div className="overflow-y-auto px-4">
             <div className="mb-10 self-center">
@@ -95,11 +86,6 @@ export function AssignmentTutorialPage() {
             </div>
           </div>
         </div>
-        <SkipSetupWarningModal
-          accept={skipSetup}
-          onClose={() => setSkipWarning(false)}
-          isOpen={skipWarning}
-        ></SkipSetupWarningModal>
       </div>
     </>
   );

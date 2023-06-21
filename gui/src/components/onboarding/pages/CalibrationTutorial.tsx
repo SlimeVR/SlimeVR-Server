@@ -3,8 +3,6 @@ import { useOnboarding } from '../../../hooks/onboarding';
 import { Button } from '../../commons/Button';
 import { Typography } from '../../commons/Typography';
 import { useMemo, useState } from 'react';
-import { SkipSetupWarningModal } from '../SkipSetupWarningModal';
-import { SkipSetupButton } from '../SkipSetupButton';
 import { ProgressBar } from '../../commons/ProgressBar';
 import { LoaderIcon, SlimeState } from '../../commons/icon/LoaderIcon';
 import { useCountdown } from '../../../hooks/countdown';
@@ -22,8 +20,7 @@ export const IMU_CALIBRATION_TIME = 4;
 
 export function CalibrationTutorialPage() {
   const { l10n } = useLocalization();
-  const { applyProgress, skipSetup } = useOnboarding();
-  const [skipWarning, setSkipWarning] = useState(false);
+  const { applyProgress } = useOnboarding();
   const [calibrationStatus, setCalibrationStatus] = useState(
     CalibrationStatus.WAITING
   );
@@ -72,11 +69,6 @@ export function CalibrationTutorialPage() {
   return (
     <>
       <div className="flex flex-col gap-5 h-full items-center w-full justify-center relative">
-        <SkipSetupButton
-          visible={true}
-          modalVisible={skipWarning}
-          onClick={() => setSkipWarning(true)}
-        ></SkipSetupButton>
         <div className="flex w-full h-full justify-center xs:px-20 mobile:px-5 pb-5 gap-14">
           <div className="flex gap-4 self-center mobile:z-10">
             <div className="flex flex-col max-w-md gap-3">
@@ -160,11 +152,6 @@ export function CalibrationTutorialPage() {
             </div>
           </div>
         </div>
-        <SkipSetupWarningModal
-          accept={skipSetup}
-          onClose={() => setSkipWarning(false)}
-          isOpen={skipWarning}
-        ></SkipSetupWarningModal>
       </div>
     </>
   );

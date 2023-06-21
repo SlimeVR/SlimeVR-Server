@@ -1,28 +1,19 @@
 import { useLocalization } from '@fluent/react';
-import { useState } from 'react';
 import { useOnboarding } from '../../../hooks/onboarding';
 import { Button } from '../../commons/Button';
 import { SlimeVRIcon } from '../../commons/icon/SimevrIcon';
 import { LangSelector } from '../../commons/LangSelector';
 import { Typography } from '../../commons/Typography';
-import { SkipSetupButton } from '../SkipSetupButton';
-import { SkipSetupWarningModal } from '../SkipSetupWarningModal';
 
 export function HomePage() {
   const { l10n } = useLocalization();
-  const { applyProgress, skipSetup } = useOnboarding();
-  const [skipWarning, setSkipWarning] = useState(false);
+  const { applyProgress } = useOnboarding();
 
   applyProgress(0.1);
 
   return (
     <>
       <div className="flex flex-col gap-5 h-full items-center w-full justify-center relative px-4">
-        <SkipSetupButton
-          visible={true}
-          modalVisible={skipWarning}
-          onClick={() => setSkipWarning(true)}
-        ></SkipSetupButton>
         <div className="flex flex-col gap-5 items-center z-10 scale-150 mb-20">
           <SlimeVRIcon></SlimeVRIcon>
           <Typography variant="mobile-title">
@@ -64,11 +55,6 @@ export function HomePage() {
           }}
         />
       </div>
-      <SkipSetupWarningModal
-        accept={skipSetup}
-        onClose={() => setSkipWarning(false)}
-        isOpen={skipWarning}
-      ></SkipSetupWarningModal>
     </>
   );
 }
