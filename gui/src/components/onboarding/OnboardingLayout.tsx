@@ -18,7 +18,7 @@ export function OnboardingLayout({ children }: { children: ReactNode }) {
       <TopBar progress={state.progress}></TopBar>
       <div
         ref={ref}
-        className="flex-grow xs:pt-10 mobile:pt-2 relative"
+        className="flex-grow relative"
         style={{ height: layoutHeight }}
       >
         <div className="absolute top-12 mobile:top-0 right-2 z-50">

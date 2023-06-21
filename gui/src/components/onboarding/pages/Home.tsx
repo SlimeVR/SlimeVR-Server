@@ -13,7 +13,7 @@ export function HomePage() {
 
   return (
     <>
-      <div className="flex flex-col gap-5 h-full items-center w-full justify-center relative px-4">
+      <div className="flex flex-col gap-5 h-full items-center w-full justify-center px-4">
         <div className="flex flex-col gap-5 items-center z-10 scale-150 mb-20">
           <SlimeVRIcon></SlimeVRIcon>
           <Typography variant="mobile-title">

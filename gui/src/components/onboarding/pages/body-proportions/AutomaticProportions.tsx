@@ -35,8 +35,8 @@ export function AutomaticProportionsPage() {
 
   return (
     <AutoboneContextC.Provider value={context}>
-      <div className="flex flex-col gap-5 h-full items-center w-full xs:justify-center relative px-4 pb-4">
-        <div className="flex flex-col w-full h-full justify-center max-w-3xl gap-5">
+      <div className="flex flex-col gap-5 h-full items-center w-full xs:justify-center overflow-y-auto overflow-x-hidden relative px-4 pb-4">
+        <div className="flex flex-col w-full xs:h-full xs:justify-center max-w-3xl gap-5">
           <div className="flex flex-col max-w-lg gap-3">
             <Typography variant="main-title">
               {l10n.getString('onboarding-automatic_proportions-title')}
