@@ -293,9 +293,7 @@ class TrackersUDPServer(private val port: Int, name: String, private val tracker
 			is UDPPacket4Acceleration -> {
 				tracker = connection?.getTracker(packet.sensorId)
 				if (tracker == null) return
-				val accelRot = tracker.resetsHandler.getMountingAdjustedRotationFrom(tracker.getRawRotation())
-				val acceleration = accelRot.sandwich(packet.acceleration)
-				tracker.acceleration = acceleration
+				tracker.acceleration = tracker.resetsHandler.getMountingAdjustedAccelerationFrom(packet.acceleration)
 			}
 			is UDPPacket10PingPong -> {
 				if (connection == null) return

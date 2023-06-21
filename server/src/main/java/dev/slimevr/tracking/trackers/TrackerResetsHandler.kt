@@ -97,13 +97,14 @@ class TrackerResetsHandler(val tracker: Tracker) {
 	}
 
 	/**
-	 * Takes a rotation and adjusts it to mounting
+	 * Takes a vector representing acceleration of a tracker relative to the
+	 * tracker's rotation and adjusts it to the local space
 	 */
-	fun getMountingAdjustedRotationFrom(rotation: Quaternion): Quaternion {
+	fun getMountingAdjustedAccelerationFrom(vector: Vector3): Vector3 {
 		if (mountRotFix == Quaternion.IDENTITY) {
-			return rotation * mountingOrientation
+			return (tracker.getRawRotation() * mountingOrientation).sandwich(vector)
 		}
-		return rotation * mountRotFix
+		return (tracker.getRawRotation() * mountRotFix).sandwich(vector)
 	}
 
 	/**
