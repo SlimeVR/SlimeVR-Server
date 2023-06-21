@@ -758,7 +758,7 @@ onboarding-choose_proportions-manual_proportions = Proporciones manuales
 # Italized text
 onboarding-choose_proportions-manual_proportions-subtitle = Para toques pequeños
 onboarding-choose_proportions-manual_proportions-description = Esto te permitirá ajustar tus proporciones manualmente de forma directa
-onboarding-choose_proportions-save = Guardar proporciones
+onboarding-choose_proportions-save = Exportar proporciones
 onboarding-choose_proportions-file_type = Archivo de proporciones del cuerpo
 
 ## Tracker manual proportions setup
