@@ -60,9 +60,7 @@ const statusProgressMap = {
 export function ConnectTrackersPage() {
   const { isMobile } = useBreakpoint('mobile');
   const { l10n } = useLocalization();
-  const { layoutHeight, ref } = isMobile
-    ? { layoutHeight: 0, ref: undefined }
-    : useLayout<HTMLDivElement>();
+  const { layoutHeight, ref } = useLayout<HTMLDivElement>();
   const { useConnectedTrackers } = useTrackers();
   const { applyProgress, state, skipSetup } = useOnboarding();
   const navigate = useNavigate();
