@@ -18,6 +18,8 @@
         <pattern>com.jme3.**</pattern>
         <pattern>java.util.logging.SimpleFormatter</pattern>
         <pattern>java.util.logging.LoggingProxyImpl</pattern>
+        <databind>com.fasterxml.jackson.databind.**</databind>
+        <databind>com.google.flatbuffers.**</databind>
     </forceLinkClasses>
     <frameworks>
         <framework>WebKit</framework>

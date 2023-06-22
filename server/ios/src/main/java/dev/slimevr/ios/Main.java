@@ -1,6 +1,6 @@
 package dev.slimevr.ios;
 
-import dev.slimevr.ios.logging.FoundationConsoleHandler;
+import dev.slimevr.ios.logging.FoundationLogPrintStream;
 import org.robovm.apple.foundation.*;
 import org.robovm.apple.uikit.UIApplication;
 import org.robovm.apple.uikit.UIApplicationDelegateAdapter;
@@ -27,8 +27,6 @@ public class Main extends UIApplicationDelegateAdapter {
 		UIApplication application,
 		UIApplicationLaunchOptions launchOptions
 	) {
-		LogManager.replaceMainHandler(new FoundationConsoleHandler());
-
 		// Set up the view controller.
 		rootViewController = new WebviewController();
 
@@ -74,17 +72,16 @@ public class Main extends UIApplicationDelegateAdapter {
 	public static void runServer() {
 		var thread = new Thread(() -> {
 			try {
-				Foundation.log("before dying");
 				LogManager.initialize(new File(getString(getAppFolder())));
+				System.setErr(new FoundationLogPrintStream());
+				System.setOut(new FoundationLogPrintStream());
 			} catch (Exception e) {
-				Foundation.log("error");
 				StringWriter sw = new StringWriter();
 				PrintWriter pw = new PrintWriter(sw);
 				e.printStackTrace(pw);
 				String sStackTrace = sw.toString();
 				Foundation.log("%@\n%@", new NSString(e.toString()), new NSString(sStackTrace));
 			}
-			Foundation.log("it worked?");
 			try {
 				var vrServer = new VRServer(
 					getString(

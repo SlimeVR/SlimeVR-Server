@@ -11,9 +11,10 @@ java {
 allprojects {
 	repositories {
 		mavenCentral()
-		maven {
-			url = uri("https://oss.sonatype.org/content/repositories/snapshots")
-		}
+		mavenLocal()
+// 		maven {
+// 			url = uri("https://oss.sonatype.org/content/repositories/snapshots")
+// 		}
 	}
 }
 
@@ -23,6 +24,9 @@ dependencies {
 	implementation(project(":server:core"))
 	implementation("com.robovmx:robovm-rt:$robovmVersion")
 	implementation("com.robovmx:robovm-cocoatouch:$robovmVersion")
+	implementation("com.fasterxml.jackson.core:jackson-databind:2.15.1")
+	implementation("com.fasterxml.jackson.dataformat:jackson-dataformat-yaml:2.15.1")
+	implementation("org.slf4j:slf4j-simple:2.0.7")
 }
 
 tasks.launchIPhoneSimulator {
