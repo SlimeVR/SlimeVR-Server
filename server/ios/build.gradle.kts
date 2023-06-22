@@ -38,7 +38,7 @@ tasks.launchIPadSimulator {
 tasks.launchIOSDevice {
 	dependsOn(tasks.build)
 }
-tasks.createIPA {
+tasks.robovmArchive {
 	dependsOn(tasks.build)
 }
 

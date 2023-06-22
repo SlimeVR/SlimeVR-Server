@@ -31,7 +31,7 @@ public class Main extends UIApplicationDelegateAdapter {
 		rootViewController = new WebviewController();
 
 		// Create a new window at screen size.
-		window = new UIWindow(UIScreen.getMainScreen().getBounds());
+		window = new UIWindow();
 		// Set the view controller as the root controller for the window.
 		window.setRootViewController(rootViewController);
 		// Make the window visible.
