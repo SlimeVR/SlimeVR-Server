@@ -18,6 +18,7 @@
         <pattern>com.jme3.**</pattern>
         <pattern>java.util.logging.SimpleFormatter</pattern>
         <pattern>java.util.logging.LoggingProxyImpl</pattern>
+        <pattern>android.icu.impl.TimeZoneNamesFactoryImpl</pattern>
         <databind>com.fasterxml.jackson.databind.**</databind>
         <databind>com.google.flatbuffers.**</databind>
     </forceLinkClasses>

@@ -24,8 +24,8 @@ dependencies {
 	implementation(project(":server:core"))
 	implementation("com.robovmx:robovm-rt:$robovmVersion")
 	implementation("com.robovmx:robovm-cocoatouch:$robovmVersion")
-	implementation("com.fasterxml.jackson.core:jackson-databind:2.15.1")
-	implementation("com.fasterxml.jackson.dataformat:jackson-dataformat-yaml:2.15.1")
+	implementation("com.fasterxml.jackson.core:jackson-databind:2.13.5")
+	implementation("com.fasterxml.jackson.dataformat:jackson-dataformat-yaml:2.13.5")
 	implementation("org.slf4j:slf4j-simple:2.0.7")
 }
 
