@@ -1,8 +1,8 @@
 package dev.slimevr.serial;
 
-import com.fazecast.jSerialComm.SerialPort;
 import dev.slimevr.VRServer;
 import io.eiren.util.logging.LogManager;
+import org.jetbrains.annotations.NotNull;
 
 import java.util.List;
 import java.util.Timer;
@@ -107,7 +107,7 @@ public class ProvisioningHandler implements SerialListener {
 
 
 	@Override
-	public void onSerialConnected(SerialPort port) {
+	public void onSerialConnected(@NotNull SerialPort port) {
 		if (!isRunning)
 			return;
 		this.tryProvisioning();
@@ -121,7 +121,7 @@ public class ProvisioningHandler implements SerialListener {
 	}
 
 	@Override
-	public void onSerialLog(String str) {
+	public void onSerialLog(@NotNull String str) {
 		if (!isRunning)
 			return;
 

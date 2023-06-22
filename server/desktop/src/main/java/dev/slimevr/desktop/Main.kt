@@ -8,6 +8,7 @@ import dev.slimevr.bridge.ISteamVRBridge
 import dev.slimevr.desktop.platform.SteamVRBridge
 import dev.slimevr.desktop.platform.linux.UnixSocketBridge
 import dev.slimevr.desktop.platform.windows.WindowsNamedPipeBridge
+import dev.slimevr.desktop.serial.DesktopSerialHandler
 import dev.slimevr.tracking.trackers.Tracker
 import io.eiren.util.OperatingSystem
 import io.eiren.util.collections.FastList
@@ -107,7 +108,12 @@ fun main(args: Array<String>) {
 		return
 	}
 	try {
-		val vrServer = VRServer(::provideSteamVRBridge, ::provideFeederBridge, "vrconfig.yml")
+		val vrServer = VRServer(
+			::provideSteamVRBridge,
+			::provideFeederBridge,
+			{ _ -> DesktopSerialHandler() },
+			"vrconfig.yml"
+		)
 		vrServer.start()
 		Keybinding(vrServer)
 		val scanner = thread {

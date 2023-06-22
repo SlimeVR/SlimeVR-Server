@@ -14,6 +14,7 @@ import dev.slimevr.protocol.ProtocolAPI
 import dev.slimevr.reset.ResetHandler
 import dev.slimevr.serial.ProvisioningHandler
 import dev.slimevr.serial.SerialHandler
+import dev.slimevr.serial.SerialHandlerStub
 import dev.slimevr.setup.TapSetupHandler
 import dev.slimevr.status.StatusSystem
 import dev.slimevr.tracking.processor.HumanPoseManager
@@ -41,8 +42,9 @@ typealias SteamBridgeProvider = (
 ) -> ISteamVRBridge?
 
 class VRServer @JvmOverloads constructor(
-	driverBridgeProvider: SteamBridgeProvider = { _: VRServer, _: Tracker, _: List<Tracker> -> null },
-	feederBridgeProvider: (VRServer) -> ISteamVRBridge? = { _: VRServer -> null },
+	driverBridgeProvider: SteamBridgeProvider = { _, _, _ -> null },
+	feederBridgeProvider: (VRServer) -> ISteamVRBridge? = { _ -> null },
+	serialHandlerProvider: (VRServer) -> SerialHandler = { _ -> SerialHandlerStub() },
 	configPath: String,
 ) : Thread("VRServer") {
 	@JvmField
@@ -100,7 +102,7 @@ class VRServer @JvmOverloads constructor(
 		configManager = ConfigManager(configPath)
 		configManager.loadConfig()
 		deviceManager = DeviceManager(this)
-		serialHandler = SerialHandler()
+		serialHandler = serialHandlerProvider(this)
 		provisioningHandler = ProvisioningHandler(this)
 		resetHandler = ResetHandler()
 		tapSetupHandler = TapSetupHandler()
