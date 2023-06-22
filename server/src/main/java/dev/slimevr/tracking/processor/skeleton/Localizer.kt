@@ -81,7 +81,7 @@ class Localizer(humanSkeleton: HumanSkeleton) {
 	}
 
 	fun update() {
-		if (!enabled) {
+		if (!enabled || bufCur.parent == null) {
 			return
 		}
 
