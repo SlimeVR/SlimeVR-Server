@@ -186,7 +186,7 @@ export function ProportionsChoose() {
                 )
               }
             >
-              {l10n.getString('onboarding-choose_proportions-save')}
+              {l10n.getString('onboarding-choose_proportions-export')}
             </Button>
           </div>
         </div>

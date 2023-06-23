@@ -58,7 +58,7 @@ export function MountingChoose() {
                     </Typography>
                     <Typography variant="vr-accessible" italic>
                       {l10n.getString(
-                        'onboarding-choose_mounting-auto_mounting-subtitle'
+                        'onboarding-choose_mounting-auto_mounting-label'
                       )}
                     </Typography>
                   </div>
@@ -106,7 +106,7 @@ export function MountingChoose() {
                     </Typography>
                     <Typography variant="vr-accessible" italic>
                       {l10n.getString(
-                        'onboarding-choose_mounting-manual_mounting-subtitle'
+                        'onboarding-choose_mounting-manual_mounting-label'
                       )}
                     </Typography>
                   </div>
