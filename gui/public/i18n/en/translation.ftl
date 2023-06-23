@@ -652,11 +652,11 @@ onboarding-choose_mounting = What mounting calibration method to use?
 onboarding-choose_mounting-description = Mounting orientation corrects for the placement of trackers on your body.
 onboarding-choose_mounting-auto_mounting = Automatic mounting
 # Italized text
-onboarding-choose_mounting-auto_mounting-subtitle = Recommended
+onboarding-choose_mounting-auto_mounting-subtitle = Experimental
 onboarding-choose_mounting-auto_mounting-description = This will automatically detect the mounting directions for all of your trackers from 2 poses
 onboarding-choose_mounting-manual_mounting = Manual mounting
 # Italized text
-onboarding-choose_mounting-manual_mounting-subtitle = If you know what you are doing
+onboarding-choose_mounting-manual_mounting-subtitle = Recommended
 onboarding-choose_mounting-manual_mounting-description = This will let you choose the mounting direction manually for each tracker
 
 
@@ -700,7 +700,7 @@ onboarding-choose_proportions-manual_proportions = Manual proportions
 # Italized text
 onboarding-choose_proportions-manual_proportions-subtitle = For small touches
 onboarding-choose_proportions-manual_proportions-description = This will let you adjust your proportions manually by modifying them directly
-onboarding-choose_proportions-save = Save proportions
+onboarding-choose_proportions-save = Export proportions
 onboarding-choose_proportions-file_type = Body proportions file
 
 ## Tracker manual proportions setup

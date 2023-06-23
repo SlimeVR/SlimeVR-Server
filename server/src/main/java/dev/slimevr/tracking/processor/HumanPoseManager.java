@@ -317,7 +317,29 @@ public class HumanPoseManager {
 	@VRServerThread
 	public void updateSkeletonModelFromServer() {
 		disconnectComputedHumanPoseTrackers();
+
+		// Make a new skeleton and store the old state
+		HumanSkeleton oldSkeleton = skeleton;
 		skeleton = new HumanSkeleton(this, server);
+
+		// Transfer the state of the old skeleton to the new one
+		if (oldSkeleton != null) {
+			skeleton.setPauseTracking(oldSkeleton.getPauseTracking());
+
+			// If paused, copy the pose to the new skeleton so it doesn't reset
+			// to t-pose each time
+			if (oldSkeleton.getPauseTracking()) {
+				TransformNode[] oldNodes = oldSkeleton.getAllNodes();
+				TransformNode[] newNodes = skeleton.getAllNodes();
+
+				for (int i = 0; i < newNodes.length; i++) {
+					newNodes[i]
+						.getLocalTransform()
+						.setRotation(oldNodes[i].getLocalTransform().getRotation());
+				}
+			}
+		}
+
 		// This recomputes all node offsets, so the defaults don't need to be
 		// explicitly loaded into the skeleton (no need for
 		// `updateNodeOffsetsInSkeleton()`)

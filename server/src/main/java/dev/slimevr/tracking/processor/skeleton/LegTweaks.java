@@ -355,7 +355,7 @@ public class LegTweaks {
 
 			// if the system is active, populate the buffer with corrected floor
 			// clip feet positions
-			if (active && isStanding()) {
+			if (active) {
 				correctClipping();
 				bufferHead.setLeftFootPositionCorrected(leftFootPosition);
 				bufferHead.setRightFootPositionCorrected(rightFootPosition);
@@ -515,8 +515,8 @@ public class LegTweaks {
 
 	// returns true if the foot is clipped and false if it is not
 	public boolean isClipped(float leftOffset, float rightOffset) {
-		return (leftFootPosition.getY() < floorLevel + leftOffset
-			|| rightFootPosition.getY() < floorLevel + rightOffset);
+		return (leftFootPosition.getY() < floorLevel + (leftOffset * footLength)
+			|| rightFootPosition.getY() < floorLevel + (rightOffset * footLength));
 	}
 
 	// corrects the foot position to be above the floor level that is calculated
@@ -995,7 +995,10 @@ public class LegTweaks {
 			- (hipToFloorDist * STANDING_CUTOFF_VERTICAL);
 
 		if (hipPosition.getY() < cutoff) {
-			currentDisengagementOffset = (1 - hipPosition.getY() / cutoff)
+			currentDisengagementOffset = (1
+				- ((floorLevel - hipPosition.getY())
+					/
+					(floorLevel - cutoff)))
 				* MAX_DISENGAGEMENT_OFFSET;
 
 			return false;

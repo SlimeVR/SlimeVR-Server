@@ -14,6 +14,7 @@ import {
 import { useMemo } from 'react';
 import { WarningBox } from '../commons/TipBox';
 import { HeadsetIcon } from '../commons/icon/HeadsetIcon';
+import classNames from 'classnames';
 
 const DONT_REPEAT_STATUSES = [StatusData.StatusTrackerReset];
 
@@ -48,14 +49,20 @@ export function Home() {
         <HeadsetIcon></HeadsetIcon>
       </NavLink>
       <div className="h-full overflow-y-auto">
-        <div className="px-2 pt-4 gap-3 w-full grid md:grid-cols-2 mobile:grid-cols-1">
+        <div
+          className={classNames(
+            'px-2 pt-4 gap-3 w-full grid md:grid-cols-2 mobile:grid-cols-1',
+            filteredStatuses.filter(([, status]) => status.prioritized)
+              .length === 0 && 'hidden'
+          )}
+        >
           {filteredStatuses
             .filter(([, status]) => status.prioritized)
             .map(([, status]) => (
               <Localized
                 key={status.id}
                 id={`status_system-${StatusData[status.dataType]}`}
-                vars={parseStatusToLocale(status, trackers)}
+                vars={parseStatusToLocale(status, trackers, l10n)}
               >
                 <WarningBox whitespace={false}>
                   {`Warning, you should fix ${StatusData[status.dataType]}`}

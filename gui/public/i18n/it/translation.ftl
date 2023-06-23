@@ -1,6 +1,3 @@
-### SlimeVR complete GUI translations
-
-
 # Please developers (not translators) don't reuse a key inside another key
 # or concat text with a translation string in the code, use the appropriate
 # features like variables and selectors in each appropriate case!
@@ -13,11 +10,19 @@
 websocket-connecting = Connessione al server in corso
 websocket-connection_lost = Connessione con il server persa. Tentativo di riconnessione in corso...
 
+## Update notification
+
+version_update-title = Nuova versione disponibile: { $version }
+version_update-description = Cliccando su "{ version_update-update }" si scaricherà il programma di installazione di SlimeVR.
+version_update-update = Aggiorna
+version_update-close = Chiudi
+
 ## Tips
 
 tips-find_tracker = Non sei sicurə quale tracker è quale? Agitalo e l'oggetto corrispondente sarà evidenziato.
 tips-do_not_move_heels = Assicurati di non muovere i tuoi talloni durante la registrazione!
 tips-file_select = Trascina qui i file da usare, o <u>sfoglia</u>.
+tips-tap_setup = Puoi toccare lentamente 2 volte il tracker per sceglierlo invece di selezionarlo dal menu.
 
 ## Body parts
 
@@ -95,10 +100,15 @@ navbar-mounting = Calibrazione del posizionamento
 navbar-onboarding = Installazione guidata
 navbar-settings = Impostazioni
 
-## Bounding volume hierarchy recording
+## Biovision hierarchy recording
 
 bvh-start_recording = Registra BVH
 bvh-recording = Registrazione in corso...
+
+## Tracking pause
+
+tracking-unpaused = Pausa il tracking
+tracking-paused = Riprendio il tracking
 
 ## Widget: Overlay settings
 
@@ -126,6 +136,7 @@ widget-developer_mode-more_info = Ulteriori informazioni
 widget-imu_visualizer = Rotazione
 widget-imu_visualizer-rotation_raw = Non processato
 widget-imu_visualizer-rotation_preview = Anteprima
+widget-imu_visualizer-rotation_hide = Nascondi
 
 ## Tracker status
 
@@ -164,6 +175,9 @@ tracker-infos-custom_name = Nome personalizzato
 tracker-infos-url = URL del tracker
 tracker-infos-version = Versione firmware
 tracker-infos-hardware_rev = Versione hardware
+tracker-infos-hardware_identifier = Hardware ID
+tracker-infos-imu = Sensore IMU
+tracker-infos-board_type = Scheda principale
 
 ## Tracker settings
 
@@ -512,6 +526,25 @@ onboarding-wifi_creds-password =
 onboarding-reset_tutorial-back = Torna alla calibrazione posizionamento
 onboarding-reset_tutorial = Tutorial di reset
 onboarding-reset_tutorial-description = Questa funzionalità non è completa, premi continua
+onboarding-reset_tutorial-skip = Salta passaggio
+# Cares about multiline
+onboarding-reset_tutorial-0 =
+    Tocca { $taps } volte il tracker evidenziato per eseguire il reset orientamento
+    
+    Ciò farà sì che i tracker siano rivolti nella stessa direzione del tuo HMD.
+# Cares about multiline
+onboarding-reset_tutorial-1 =
+    Tocca { $taps } volte il tracker evidenziato per eseguire il reset completo.
+    
+    Devi stare in piedi drittə per questo (I-pose). C'è un ritardo di 3 secondi (configurabile) prima che accada effettivamente.
+    Questo ripristinerà  completamente la posizione e la rotazione di tutti i tuoi tracker. Dovrebbe risolvere la maggior parte dei problemi.
+# Cares about multiline
+onboarding-reset_tutorial-2 =
+    Tocca { $taps } volte il tracker evidenziato per eseguire il reset posizionamento.
+    
+    Il reset posizionamento aiuta su come i tracker vengono effettivamente posizionati su di te, quindi se li hai spostati accidentalmente e hai cambiato il modo in cui sono orientati di una grande quantità, questo aiuterà.
+    
+    Devi essere in posa come se stessi sciando come mostrato nella procedura guidata di posizionamento automatico e ha un ritardo di 3 secondi (configurabile) prima che venga attivato.
 
 ## Setup start
 
@@ -559,6 +592,14 @@ onboarding-connect_tracker-connected_trackers =
        *[other] { $amount } tracker connessi
     }
 onboarding-connect_tracker-next = Ho collegato tutti i miei tracker
+
+## Tracker calibration tutorial
+
+onboarding-calibration_tutorial = Tutorial di calibrazione IMU
+onboarding-calibration_tutorial-subtitle = Ciò aiuterà a ridurre il drift del tracker!
+
+## Tracker assignment tutorial
+
 
 ## Tracker assignment setup
 
@@ -757,3 +798,6 @@ onboarding-automatic_proportions-done-description = La calibrazione delle propor
 ## Home
 
 home-no_trackers = Nessun tracker rilevato o assegnato
+
+## Status system
+

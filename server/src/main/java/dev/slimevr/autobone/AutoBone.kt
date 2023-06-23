@@ -321,7 +321,7 @@ class AutoBone(server: VRServer) {
 		val targetHeight: Float
 		// Get the current skeleton from the server
 		val humanPoseManager = humanPoseManager
-		if (humanPoseManager != null) {
+		if (config.useSkeletonHeight && humanPoseManager != null) {
 			// If there is a skeleton available, calculate the target height
 			// from its configs
 			targetHeight = humanPoseManager.userHeightFromConfig

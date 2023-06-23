@@ -1,6 +1,3 @@
-### SlimeVR complete GUI translations
-
-
 # Please developers (not translators) don't reuse a key inside another key
 # or concat text with a translation string in the code, use the appropriate
 # features like variables and selectors in each appropriate case!
@@ -13,11 +10,19 @@
 websocket-connecting = Conectando al servidor
 websocket-connection_lost = Conexión al servidor perdida. Intentando reconectar...
 
+## Update notification
+
+version_update-title = Nueva versión disponible: { $version }
+version_update-description = Presionando «{ version_update-update }» descargara un instalador de SlimeVR para usar.
+version_update-update = Actualizar
+version_update-close = Cerrar
+
 ## Tips
 
 tips-find_tracker = ¿No estás seguro de cuál sensor es cuál? Agita un sensor y se resaltará donde está asignado.
 tips-do_not_move_heels = ¡Asegúrate de no mover los talones en la grabación!
 tips-file_select = Arrastra y suelta archivos para usarlos, o <u>selecciónalos<u>.
+tips-tap_setup = Puedes tocar lentamente 2 veces el tracker para seleccionarlo en lugar de seleccionarlo desde el menú.
 
 ## Body parts
 
@@ -95,10 +100,15 @@ navbar-mounting = Calibración de montura
 navbar-onboarding = Asistente de configuración
 navbar-settings = Ajustes
 
-## Bounding volume hierarchy recording
+## Biovision hierarchy recording
 
 bvh-start_recording = Grabar BVH
 bvh-recording = Grabando...
+
+## Tracking pause
+
+tracking-unpaused = Pausar el tracking
+tracking-paused = Reanudar el tracking
 
 ## Widget: Overlay settings
 
@@ -126,6 +136,7 @@ widget-developer_mode-more_info = More info
 widget-imu_visualizer = Rotation
 widget-imu_visualizer-rotation_raw = Raw
 widget-imu_visualizer-rotation_preview = Preview
+widget-imu_visualizer-rotation_hide = Ocultar
 
 ## Tracker status
 
@@ -164,6 +175,9 @@ tracker-infos-custom_name = Nombre personalizado
 tracker-infos-url = URL del sensor
 tracker-infos-version = Versión del firmware
 tracker-infos-hardware_rev = Revisión del hardware
+tracker-infos-hardware_identifier = ID del hardware
+tracker-infos-imu = Sensor IMU
+tracker-infos-board_type = Placa principal
 
 ## Tracker settings
 
@@ -252,6 +266,7 @@ settings-sidebar-fk_settings = Ajustes de FK
 settings-sidebar-gesture_control = Control de gestos
 settings-sidebar-interface = Interfaz
 settings-sidebar-osc_router = Router OSC
+settings-sidebar-osc_trackers = Sensores OSC de VRChat
 settings-sidebar-utils = Utilidades
 settings-sidebar-serial = Consola serial
 
@@ -310,9 +325,13 @@ settings-general-fk_settings-leg_tweak-floor_clip = Clip del suelo
 # since this largely prevents this it corrects for it hence skating correction (note this may be renamed to sliding correction)
 # definition - Guesses when each foot is in contact with the ground and uses that information to improve tracking
 settings-general-fk_settings-leg_tweak-skating_correction = Corrección del patinaje
+settings-general-fk_settings-leg_tweak-toe_snap = Encajado de dedos
+settings-general-fk_settings-leg_tweak-foot_plant = Plantado del pie
 settings-general-fk_settings-leg_tweak-skating_correction-amount = Agresividad de la corrección del patinaje
 settings-general-fk_settings-leg_tweak-skating_correction-description = Corrección del patinaje corrige el patinaje en hielo que sucede en los pies, pero puede disminuir la precisión de ciertos patrones de movimientos. Al activar esto, asegúrate de realizar un reinicio completo y recalibrar en el juego.
 settings-general-fk_settings-leg_tweak-floor_clip-description = El clip del suelo puede reducir o incluso evitar que tus pies atraviesen el suelo. Al activar esto, asegúrate de realizar un reinicio completo y recalibrar en el juego.
+settings-general-fk_settings-leg_tweak-toe_snap-description = El encajado de dedos intenta adivinar la rotación de los pies si sus respectivos trackers no están en uso.
+settings-general-fk_settings-leg_tweak-foot_plant-description = El plantado del pie rota los pies para que sean paralelos con el suelo al entrar en contacto.
 settings-general-fk_settings-leg_fk = Tracking de piernas
 settings-general-fk_settings-arm_fk = Trackeo de brazos
 settings-general-fk_settings-arm_fk-description = Cambia cómo el movimiento de los brazos es detectado.
@@ -357,6 +376,11 @@ settings-general-interface-dev_mode-label = Modo desarrollador
 settings-general-interface-serial_detection = Detección de dispositivo serial
 settings-general-interface-serial_detection-description = Esta opción mostrará un notificación cada vez que conectes un nuevo dispositivo serial que pueda ser un sensor. Ayuda a mejorar el proceso de configuración de un sensor.
 settings-general-interface-serial_detection-label = Detección de dispositivo serial
+settings-general-interface-feedback_sound = Sonido de feedback
+settings-general-interface-feedback_sound-description = Esta opción reproducirá un sonido cuando se realice un reinicio.
+settings-general-interface-feedback_sound-label = Sonido de feedback
+settings-general-interface-feedback_sound-volume = Volumen del sonido de feedback
+settings-general-interface-theme = Tema de color
 settings-general-interface-lang = Selecciona un idioma
 settings-general-interface-lang-description = Cambia el idioma que quieras usar.
 settings-general-interface-lang-placeholder = Selecciona el idioma a utilizar
@@ -431,7 +455,7 @@ settings-osc-vrchat-network-address-placeholder = Dirección IP de VRChat
 settings-osc-vrchat-network-trackers = Sensores
 settings-osc-vrchat-network-trackers-description = Habilita el envío de sensores específicos mediante OSC.
 settings-osc-vrchat-network-trackers-chest = Pecho
-settings-osc-vrchat-network-trackers-waist = Cintura
+settings-osc-vrchat-network-trackers-hip = Cadera
 settings-osc-vrchat-network-trackers-knees = Rodillas
 settings-osc-vrchat-network-trackers-feet = Pies
 settings-osc-vrchat-network-trackers-elbows = Codos
@@ -504,14 +528,29 @@ onboarding-wifi_creds-password =
 onboarding-reset_tutorial-back = Volver a la calibración de montura
 onboarding-reset_tutorial = Reiniciar tutorial
 onboarding-reset_tutorial-description = Esta aún parte no está finalizada, por favor presione continuar
+onboarding-reset_tutorial-skip = Saltar paso
+# Cares about multiline
+onboarding-reset_tutorial-0 =
+    Toca { $taps } veces el tracker resaltado para activar el reinicio horizontal.
+    
+    Esto va a hacer que tus sensores miren para la misma dirección que tu HMD.
+# Cares about multiline
+onboarding-reset_tutorial-1 =
+    Toca { $taps } veces el tracker resaltado para activar el reinicio completo.
+    
+    Se requiere que estas de forma parada (pose en i). Esto tiene un delay de 3 segundos (configurable) antes de que actualmente suceda.
+    Esto reinicia completamente la posición y rotación de todos tus sensores, debería de arreglar la mayoría de tus problemas.
+# Cares about multiline
+onboarding-reset_tutorial-2 =
+    Toca { $taps } veces el tracker resaltado para activar el reinicio de montura.
+    
+    El reinicio de montura ayuda en como tus sensores están puestos en tu cuerpo, ya que si los movistes o cambiaste para donde están orientados bastante, esto debería de ayudar.
+    
+    Requiere que estas en una pose como que estás esquiando, como se muestra en el tutorial de montura automática y tenes un retraso de 3 segundos (configurable) antes de que actualmente suceda.
 
 ## Setup start
 
 onboarding-home = Bienvenido a SlimeVR
-# This cares about multilines and it's centered!!
-onboarding-home-description =
-    ¡Acercando el seguimiento
-    de cuerpo completo a todos!
 onboarding-home-start = ¡Comencemos!
 
 ## Enter VR part of setup
@@ -555,6 +594,27 @@ onboarding-connect_tracker-connected_trackers =
        *[other] { $amount } sensores conectados
     }
 onboarding-connect_tracker-next = He conectado todos mis sensores
+
+## Tracker calibration tutorial
+
+onboarding-calibration_tutorial = Tutorial de calibración de IMU
+onboarding-calibration_tutorial-subtitle = ¡Esto te ayudara a reducir la desviación del tracker!
+onboarding-calibration_tutorial-description = Cada vez que enciendes tus trackers, van a necesitar descansar un ratito en una superficie plana para calibrarse. Tratemos de hacer lo mismo presionando el botón «{ onboarding-calibration_tutorial-calibrate }», <b>¡No los muevas!</b>
+onboarding-calibration_tutorial-calibrate = Puse los sensores en una mesa.
+onboarding-calibration_tutorial-status-waiting = Esperando por ti
+onboarding-calibration_tutorial-status-calibrating = Calibrando
+onboarding-calibration_tutorial-status-success = ¡Genial!
+onboarding-calibration_tutorial-status-error = El tracker fue movido
+
+## Tracker assignment tutorial
+
+onboarding-assignment_tutorial = Como preparar un Tracker Slime antes de ponertelo
+onboarding-assignment_tutorial-first_step = 1. Pon un sticker con la parte del cuerpo de tu elección (si tenes uno)
+# This text has a character limit of around 11 characters, so please keep it short
+onboarding-assignment_tutorial-sticker = Sticker
+onboarding-assignment_tutorial-second_step = 2. Coloque la correa en el tracker, manteniendo el lado con velcro de la correa en la siguiente orientación:
+onboarding-assignment_tutorial-second_step-continuation = El lado con velcro en las extensiones deben también estar en la siguiente orientación:
+onboarding-assignment_tutorial-done = ¡Puse las correas y stickers!
 
 ## Tracker assignment setup
 
@@ -640,6 +700,20 @@ onboarding-assign_trackers-warning-WAIST =
        *[unknown] La cintura está asignada, pero necesitas asignar la parte del cuerpo desconocida sin asignar.
     }
 
+## Tracker mounting method choose
+
+onboarding-choose_mounting = ¿Qué método de calibración de montura quiere usar?
+# Multiline text
+onboarding-choose_mounting-description = La orientación de montura corrige la colocación (o orientación) de los trackers en tu cuerpo.
+onboarding-choose_mounting-auto_mounting = Montura automática
+# Italized text
+onboarding-choose_mounting-auto_mounting-subtitle = Recomendado
+onboarding-choose_mounting-auto_mounting-description = Esto detectará automáticamente las direcciones de montura para todos tus trackers a partir de 2 poses
+onboarding-choose_mounting-manual_mounting = Montura manual
+# Italized text
+onboarding-choose_mounting-manual_mounting-subtitle = Si sabes lo que estás haciendo
+onboarding-choose_mounting-manual_mounting-description = Esto te permitirá elegir la dirección de montura manualmente para cada tracker.
+
 ## Tracker manual mounting setup
 
 onboarding-manual_mounting-back = Volver para entrar a la RV
@@ -668,6 +742,24 @@ onboarding-automatic_mounting-preparation-step-1 = 2. Presiona el botón «Reini
 onboarding-automatic_mounting-put_trackers_on-title = Ponte tus sensores
 onboarding-automatic_mounting-put_trackers_on-description = Para calibrar la ubicación de tus monturas, usaremos los sensores que has asignado. Ponte todos tus sensores, puedes ver cuál es cual en la figura de la derecha.
 onboarding-automatic_mounting-put_trackers_on-next = Tengo puestos todos mis sensores
+
+## Tracker proportions method choose
+
+onboarding-choose_proportions = ¿Qué método de calibración de proporciones quiere usar?
+# Multiline string
+onboarding-choose_proportions-description =
+    Las proporciones del cuerpo se utilizan para conocer las medidas de todo tu cuerpo. Es necesario para calcular las posiciones de los trackers.
+    Cuando las proporciones de tu cuerpo no coinciden con las guardadas, la precisión del senseo será peor y notarás cosas como patinaje o deslizamiento, o que tu cuerpo no coincide bien con tu avatar.
+onboarding-choose_proportions-auto_proportions = Proporciones automáticas
+# Italized text
+onboarding-choose_proportions-auto_proportions-subtitle = Recomendado
+onboarding-choose_proportions-auto_proportions-description = Esto adivinará tus proporciones en base de muestras de tus movimientos y pasándola a través de un algoritmo.
+onboarding-choose_proportions-manual_proportions = Proporciones manuales
+# Italized text
+onboarding-choose_proportions-manual_proportions-subtitle = Para toques pequeños
+onboarding-choose_proportions-manual_proportions-description = Esto te permitirá ajustar tus proporciones manualmente de forma directa
+onboarding-choose_proportions-save = Exportar proporciones
+onboarding-choose_proportions-file_type = Archivo de proporciones del cuerpo
 
 ## Tracker manual proportions setup
 
@@ -730,3 +822,13 @@ onboarding-automatic_proportions-done-description = ¡La calibración de tus pro
 ## Home
 
 home-no_trackers = No hay sensores detectados o asignados
+
+## Status system
+
+status_system-StatusTrackerReset = Se recomienda realizar un reinicio completo ya que uno o más trackers están sin reiniciar.
+status_system-StatusSteamVRDisconnected =
+    { $type ->
+        [steamvr_feeder] Actualmente no está conectado al SlimeVR Feeder
+       *[other] Actualmente no está conectado a SteamVR a través del driver de SlimeVR.
+    }
+status_system-StatusTrackerError = El tracker { $trackerName } tiene un error.
