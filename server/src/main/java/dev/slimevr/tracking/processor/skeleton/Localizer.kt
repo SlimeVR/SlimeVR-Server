@@ -1,24 +1,23 @@
 package dev.slimevr.tracking.processor.skeleton
 
+import com.jme3.math.FastMath
 import dev.slimevr.tracking.trackers.Tracker
 import io.github.axisangles.ktmath.Quaternion
 import io.github.axisangles.ktmath.Vector3
-import kotlin.math.*
 
 /* Handles localizing the skeleton in 3d space when no 6dof device is present.
  * This is accomplished by using the foot state calculated by legtweaks. This of course
  * has the problem of the true position and predicted location drifting apart over time.
- * (in the comments COM means center of mass)
+ * Jumping is quite unreliable
  */
 
-enum class MovmentStates {
+enum class MovementStates {
 	LEFT_LOCKED,
 	RIGHT_LOCKED,
 	NONE_LOCKED,
 	FOLLOW_FOOT,
 	FOLLOW_COM,
 	FOLLOW_SITTING,
-	FOLLOW_NONE,
 }
 
 class Localizer(humanSkeleton: HumanSkeleton) {
@@ -29,11 +28,8 @@ class Localizer(humanSkeleton: HumanSkeleton) {
 		private const val MAX_ACCEL_UP = 2.0f
 		private const val SITTING_KNEE_THRESHOLD = 1.1f
 		private const val SITTING_EARLY = 1000f
-		private const val VELOCITY_SAMPLE_RATE: Long = 50000000 // 10ms
-		private const val ACCEL_UP_THRESHOLD = 1.0f
-		private const val DEAD_RECON_VELOCITY_THRESHOLD = 0.5f
-		private const val MAX_DEAD_RECON_SAMPLES = 1000
-		private val DEFAULT_DOWN_VELOCITY: Vector3 = Vector3(0.0f, -0.5f, 0.0f)
+		private const val VELOCITY_SAMPLE_RATE: Long = 100000000 // 10ms
+		private const val CONSTANT_ACCELERATION: Float = 2.0f
 	}
 
 	private val skeleton: HumanSkeleton
@@ -55,10 +51,9 @@ class Localizer(humanSkeleton: HumanSkeleton) {
 	private var targetCOM: Vector3 = Vector3.NULL
 	private var targetHip: Vector3 = Vector3.NULL
 	private var comVelocity: Vector3 = Vector3.NULL
-	private var lastComVelocity: Vector3 = Vector3.NULL
 	private var comAccel: Vector3 = Vector3.NULL
-	private var plantedFoot = MovmentStates.LEFT_LOCKED
-	private var worldReference = MovmentStates.FOLLOW_FOOT
+	private var plantedFoot = MovementStates.LEFT_LOCKED
+	private var worldReference = MovementStates.FOLLOW_FOOT
 	private var uncorrectedFloor = 0.0f - LegTweaks.FLOOR_CALIBRATION_OFFSET
 	private var floor = 0.0f
 	private var warmupFrames = 0
@@ -81,7 +76,7 @@ class Localizer(humanSkeleton: HumanSkeleton) {
 	}
 
 	fun update() {
-		if (!enabled || bufCur.parent == null) {
+		if (!enabled) {
 			return
 		}
 
@@ -100,6 +95,9 @@ class Localizer(humanSkeleton: HumanSkeleton) {
 
 		// set the buffers for easy access
 		bufCur = legTweaks.buffer
+		if (bufCur.parent == null) {
+			return
+		}
 		bufPrev = bufCur.parent
 
 		var finalTravel = Vector3.NULL
@@ -117,22 +115,21 @@ class Localizer(humanSkeleton: HumanSkeleton) {
 		worldReference = getWorldReference()
 
 		// update the final travel vector
-		if (worldReference == MovmentStates.FOLLOW_FOOT || warmupFrames < WARMUP_FRAMES) {
+		if (worldReference == MovementStates.FOLLOW_FOOT || warmupFrames < WARMUP_FRAMES) {
 			finalTravel = footTravel
-		} else if (worldReference == MovmentStates.FOLLOW_COM) {
+		} else if (worldReference == MovementStates.FOLLOW_COM) {
 			finalTravel = comTravel
-		} else if (worldReference == MovmentStates.FOLLOW_SITTING) {
-			finalTravel = Vector3(
-				sittingTravel.x,
-				if (finalTravel.y < 0.0f) finalTravel.y else 0.0f,
-				sittingTravel.z
-			)
+		} else if (worldReference == MovementStates.FOLLOW_SITTING) {
+			finalTravel = sittingTravel
+			if (sittingFrames < SITTING_EARLY) {
+				finalTravel = footTravel
+			}
 		} else {
 			finalTravel = Vector3.NULL
 		}
 
 		// update the y value
-		if (worldReference != MovmentStates.FOLLOW_SITTING || sittingFrames < SITTING_EARLY) {
+		if (worldReference != MovementStates.FOLLOW_SITTING || sittingFrames < SITTING_EARLY) {
 			finalTravel = Vector3(
 				finalTravel.x,
 				comTravel.y,
@@ -148,24 +145,21 @@ class Localizer(humanSkeleton: HumanSkeleton) {
 	fun reset() {
 		skeleton.hmdNode.localTransform.translation = Vector3.NULL
 
-		// right after reseting the localizer, the foot is not initialized
-		plantedFoot = MovmentStates.NONE_LOCKED
-
 		// reset the velocity
 		comVelocity = Vector3.NULL
 
 		// when localizing without a 6 dof device we choose the floor level
 		// 0 happens to be an easy number to use
-		legTweaks.setFloorLevel(0.0f)
+		legTweaks.setLocalizerMode(true)
 		floor = 0.0f
 		uncorrectedFloor = 0.0f - LegTweaks.FLOOR_CALIBRATION_OFFSET
 		warmupFrames = 0
 	}
 
-	private fun getPlantedFoot(): MovmentStates {
+	private fun getPlantedFoot(): MovementStates {
 		// if locked in legtweaks it's the locked foot
-		if (bufCur.leftLegState == LegTweakBuffer.LOCKED) return MovmentStates.LEFT_LOCKED
-		if (bufCur.rightLegState == LegTweakBuffer.LOCKED) return MovmentStates.RIGHT_LOCKED
+		if (bufCur.leftLegState == LegTweakBuffer.LOCKED) return MovementStates.LEFT_LOCKED
+		if (bufCur.rightLegState == LegTweakBuffer.LOCKED) return MovementStates.RIGHT_LOCKED
 
 		// if the state is not locked, use the numerical state to determine a
 		// foot to follow
@@ -173,29 +167,29 @@ class Localizer(humanSkeleton: HumanSkeleton) {
 			bufCur.leftLegNumericalState < MAX_FOOT_PERCENTAGE &&
 			bufCur.leftFootAcceleration.y < MAX_ACCEL_UP
 		) {
-			return MovmentStates.LEFT_LOCKED
+			return MovementStates.LEFT_LOCKED
 		} else if (bufCur.rightLegNumericalState < bufCur.leftLegNumericalState &&
 			bufCur.rightLegNumericalState < MAX_FOOT_PERCENTAGE &&
 			bufCur.rightFootAcceleration.y < MAX_ACCEL_UP
 		) {
-			MovmentStates.RIGHT_LOCKED
+			MovementStates.RIGHT_LOCKED
 		} else {
-			MovmentStates.NONE_LOCKED
+			MovementStates.NONE_LOCKED
 		}
 	}
 
 	// check if the foot that is planted is actually planted
-	private fun getWorldReference(): MovmentStates {
+	private fun getWorldReference(): MovementStates {
 		// check for sitting position
 		if (isUserSitting()) {
-			return MovmentStates.FOLLOW_SITTING
+			return MovementStates.FOLLOW_SITTING
 		}
 
 		// if the foot is not on the ground, use the COM
 		return if (!isFootOnGround()) {
-			MovmentStates.FOLLOW_COM
+			MovementStates.FOLLOW_COM
 		} else {
-			MovmentStates.FOLLOW_FOOT
+			MovementStates.FOLLOW_FOOT
 		}
 	}
 
@@ -203,13 +197,13 @@ class Localizer(humanSkeleton: HumanSkeleton) {
 	// also sets the planted foot, foot init, and target pos variables
 	private fun getPlantedFootTravel(): Vector3 {
 		// get the foot that is planted
-		val foot: MovmentStates = getPlantedFoot()
+		val foot: MovementStates = getPlantedFoot()
 
-		if (foot == MovmentStates.LEFT_LOCKED) {
+		if (foot == MovementStates.LEFT_LOCKED) {
 			val footLoc: Vector3 = bufCur.leftFootPosition
 			updateTargetPos(footLoc, foot)
 			return getFootTravel(footLoc)
-		} else if (foot == MovmentStates.RIGHT_LOCKED) {
+		} else if (foot == MovementStates.RIGHT_LOCKED) {
 			val footLoc: Vector3 = bufCur.rightFootPosition
 			updateTargetPos(footLoc, foot)
 			return getFootTravel(footLoc)
@@ -223,9 +217,9 @@ class Localizer(humanSkeleton: HumanSkeleton) {
 	}
 
 	// update the target position of the foot
-	private fun updateTargetPos(loc: Vector3, foot: MovmentStates) {
+	private fun updateTargetPos(loc: Vector3, foot: MovementStates) {
 		if (foot == plantedFoot) {
-			if (worldReference === MovmentStates.FOLLOW_COM) {
+			if (worldReference === MovementStates.FOLLOW_COM) {
 				targetFoot = loc
 			}
 		} else {
@@ -245,7 +239,7 @@ class Localizer(humanSkeleton: HumanSkeleton) {
 		val dist: Vector3 = hip.minus(targetHip)
 
 		// if the world reference is not sitting update the target waist
-		if (worldReference !== MovmentStates.FOLLOW_SITTING || sittingFrames < SITTING_EARLY) {
+		if (worldReference != MovementStates.FOLLOW_SITTING || sittingFrames < SITTING_EARLY) {
 			targetHip = hip
 		}
 		return dist
@@ -266,22 +260,21 @@ class Localizer(humanSkeleton: HumanSkeleton) {
 	// the acceleration of the COM assuming the COM is moving at the
 	// average velocity
 	private fun updateCOMAttributes() {
-		deadReconCOMVelocity()
 		getCOMVelocity()
 		updateTargetCOM()
 
 		// update how long the COM has been the reference and how long the foot
 		// has been
-		comFrames = if (worldReference === MovmentStates.FOLLOW_COM) comFrames + 1 else 0
-		footFrames = if (worldReference === MovmentStates.FOLLOW_FOOT) footFrames + 1 else 0
-		sittingFrames = if (worldReference === MovmentStates.FOLLOW_SITTING) sittingFrames + 1 else 0
+		comFrames = if (worldReference === MovementStates.FOLLOW_COM) comFrames + 1 else 0
+		footFrames = if (worldReference === MovementStates.FOLLOW_FOOT) footFrames + 1 else 0
+		sittingFrames = if (worldReference === MovementStates.FOLLOW_SITTING) sittingFrames + 1 else 0
 	}
 
 	// gets the position the COM should be at based on the velocity of the com and
 	// the location of the floor
 	private fun updateTargetCOM() {
 		// if not in COM tracking mode, just use the current COM
-		if (worldReference === MovmentStates.FOLLOW_FOOT || worldReference === MovmentStates.FOLLOW_SITTING) {
+		if (worldReference === MovementStates.FOLLOW_FOOT || worldReference === MovementStates.FOLLOW_SITTING) {
 			targetCOM = bufCur.centerOfMass
 		} else {
 			// if the COM is the reference point, use the dead reckoned COM
@@ -303,44 +296,41 @@ class Localizer(humanSkeleton: HumanSkeleton) {
 
 	// get the velocity of the COM
 	private fun getCOMVelocity(): Vector3 {
-		// TODO make this more sophisticated
 		val comY = comVelocity.y
 
-		if (worldReference === MovmentStates.FOLLOW_FOOT || worldReference === MovmentStates.FOLLOW_SITTING) {
-			// if the foot is the reference point use the in world velocity
-			// get the average velocity over the last VELOCITY_SAMPLE_RATE (this
-			// smooths out the velocity)
-			var buf = bufCur
-			val timeStart: Long = buf.timeOfFrame
-			var timeEnd = timeStart - VELOCITY_SAMPLE_RATE
-			val comPosStart: Vector3 = buf.centerOfMass
+		var buf = bufCur
+		val timeStart: Long = buf.timeOfFrame
+		var timeEnd = timeStart - VELOCITY_SAMPLE_RATE
+		val comPosStart: Vector3 = buf.centerOfMass
 
-			// get the buffer that occurred VELOCITY_SAMPLE_RATE ago in time
-			while (buf.timeOfFrame > timeEnd && buf.parent !== null) {
-				buf = buf.parent
-			}
-
-			val comPosEnd: Vector3 = buf.centerOfMass
-			timeEnd = buf.timeOfFrame
-
-			// calculate the velocity
-			comVelocity = comPosStart.minus(comPosEnd).div((timeStart - timeEnd) / LegTweakBuffer.NS_CONVERT)
-
+		// get the buffer that occurred VELOCITY_SAMPLE_RATE ago in time
+		while (buf.timeOfFrame > timeEnd && buf.parent !== null) {
+			buf = buf.parent
 		}
+
+		val comPosEnd: Vector3 = buf.centerOfMass
+		timeEnd = buf.timeOfFrame
+
+		// calculate the velocity
+		comVelocity = comPosStart.minus(comPosEnd).div((timeStart - timeEnd) / LegTweakBuffer.NS_CONVERT)
+
+		// if the feet have been the reference for a short amount of time nullify any upwards acceleration to prevent flying away
+		if (footFrames < 100) { // ~0.1 seconds
+			comAccel = Vector3(comAccel.x,
+				FastMath.clamp(comAccel.y, -9999.0f, 0.0f),
+				comAccel.z)
+		}
+		// constantly pull the skeleton down a little to account for acceleration
+		// inaccuracy
+		val gravity = comAccel.y - CONSTANT_ACCELERATION
 
 		// add the acceleration of gravity
 		comVelocity = Vector3(
 			comVelocity.x,
-			comY - (LegTweakBuffer.GRAVITY_MAGNITUDE / bufCur.timeDelta) + (comAccel.y / bufCur.timeDelta),
+			comY + (gravity / bufCur.timeDelta),
 			comVelocity.z)
 
 		return comVelocity
-	}
-
-	// dead reckon the COM velocity to determine the target COM
-	private fun deadReconCOMVelocity(): Vector3 {
-		// TODO use ml??
-		return Vector3.NULL
 	}
 
 	// returns true if either foot is below 0.0
@@ -412,18 +402,21 @@ class Localizer(humanSkeleton: HumanSkeleton) {
 		return !bufCur.isStanding || left && right
 	}
 
-	// get the acceleration of the tracker that should be closest to the COM
-	// TODO replace this with something better
+	// get the combined accel of the Torso trackers
 	private fun getTorsoAccel(): Vector3 {
+		var num = 0.0f
 		var accel = Vector3.NULL
 		if (skeleton.waistTracker != null) {
-			accel = skeleton.waistTracker.acceleration
+			accel += skeleton.waistTracker.getAcceleration()
+			num++
 		} else if (skeleton.hipTracker != null) {
-			accel = skeleton.hipTracker.acceleration
+			accel += skeleton.hipTracker.getAcceleration()
+			num++
 		} else if (skeleton.chestTracker != null) {
-			accel = skeleton.chestTracker.acceleration
+			accel += skeleton.chestTracker.getAcceleration()
+			num++
 		}
-		return accel
+		return accel.div(num)
 	}
 
 	// update the hmd position and rotation

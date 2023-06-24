@@ -1410,6 +1410,8 @@ public class HumanSkeleton {
 		// of the computed trackers
 		this.legTweaks.resetFloorLevel();
 		this.legTweaks.resetBuffer();
+		this.localizer.reset();
+
 
 		LogManager.info("[HumanSkeleton] Reset: full (%s)".formatted(resetSourceName));
 	}
@@ -1495,6 +1497,7 @@ public class HumanSkeleton {
 			}
 		}
 		this.legTweaks.resetBuffer();
+		this.localizer.reset();
 
 		LogManager.info("[HumanSkeleton] Reset: mounting (%s)".formatted(resetSourceName));
 	}

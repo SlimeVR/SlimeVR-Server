@@ -183,6 +183,7 @@ public class LegTweaks {
 
 	public void setFloorLevel(float floorLevel) {
 		this.floorLevel = floorLevel;
+		this.hipToFloorDist = hipPosition.getY() - floorLevel;
 	}
 
 	public void resetFloorLevel() {

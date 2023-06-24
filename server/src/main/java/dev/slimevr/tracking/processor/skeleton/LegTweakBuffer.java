@@ -502,7 +502,7 @@ public class LegTweakBuffer {
 	}
 
 	// returns the average percentage the real velocity and acceleration are of
-	// the the scaled thresholds for velocity and acceleration
+	// the scaled thresholds for velocity and acceleration
 	private float computeNumericalStateRight() {
 		float timeStep = getTimeDelta();
 		float velocity = rightFootVelocityMagnitude * timeStep;
