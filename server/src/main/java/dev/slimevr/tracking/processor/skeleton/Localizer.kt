@@ -291,7 +291,6 @@ class Localizer(humanSkeleton: HumanSkeleton) {
 			targetCOM = Vector3(targetCOM.x, targetCOM.y + (uncorrectedFloor - lowTracker.position.y), targetCOM.z)
 			comVelocity = Vector3(comVelocity.x, 0.0f, comVelocity.z)
 		}
-
 	}
 
 	// get the velocity of the COM
@@ -316,9 +315,11 @@ class Localizer(humanSkeleton: HumanSkeleton) {
 
 		// if the feet have been the reference for a short amount of time nullify any upwards acceleration to prevent flying away
 		if (footFrames < 100) { // ~0.1 seconds
-			comAccel = Vector3(comAccel.x,
+			comAccel = Vector3(
+				comAccel.x,
 				FastMath.clamp(comAccel.y, -9999.0f, 0.0f),
-				comAccel.z)
+				comAccel.z
+			)
 		}
 		// constantly pull the skeleton down a little to account for acceleration
 		// inaccuracy
@@ -328,7 +329,8 @@ class Localizer(humanSkeleton: HumanSkeleton) {
 		comVelocity = Vector3(
 			comVelocity.x,
 			comY + (gravity / bufCur.timeDelta),
-			comVelocity.z)
+			comVelocity.z
+		)
 
 		return comVelocity
 	}
@@ -358,13 +360,13 @@ class Localizer(humanSkeleton: HumanSkeleton) {
 			skeleton.computedRightFootTracker
 		)
 
-
 		var minVal = 9999f
 		var tempVal: Float
 		var retVal: Tracker = trackerList[0]
 		for (tracker in trackerList) {
-			if (tracker == null)
+			if (tracker == null) {
 				continue
+			}
 
 			// get the max distance to the ground
 			tempVal = tracker.position.y - uncorrectedFloor
