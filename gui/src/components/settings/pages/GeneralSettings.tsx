@@ -736,7 +736,7 @@ export function GeneralSettings() {
                       'settings-general-fk_settings-self_localization-title'
                     )}
                   />
-                 </div>
+                </div>
               </>
             )}
           </>
