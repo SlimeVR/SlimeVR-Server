@@ -524,25 +524,25 @@ onboarding-wifi_creds-password =
 
 onboarding-reset_tutorial-back = 返回到配戴校正
 onboarding-reset_tutorial = 重置教學
-onboarding-reset_tutorial-description = 使用追蹤器時會產生偏移，可能是因為慣性測量單元 (IMU) 會出現左右飄移，或是您移動了追蹤器所造成的。您有幾種方法來修正這個問題。
+onboarding-reset_tutorial-explanation = 使用追蹤器時會產生偏移，可能是因為慣性測量單元 (IMU) 會出現左右飄移，或是您移動了追蹤器所造成的。您有幾種方法來修正這個問題。
 onboarding-reset_tutorial-skip = 跳過本步驟
 # Cares about multiline
 onboarding-reset_tutorial-0 =
     對所標記之追蹤器敲擊 { $taps } 次即可觸發左右偏擺重置。
-    
+
     追蹤器將會調整與頭戴顯示器所面對的方向一致。
 # Cares about multiline
 onboarding-reset_tutorial-1 =
     對所標記之追蹤器敲擊 { $taps } 次即可觸發完整重置。
-    
+
     做此校正時必須站直，觸發 3 秒後（可修改）才會真正進行重置。
     追蹤器的定位與旋轉將會被完全重置，應該可以解決大多數的問題。
 # Cares about multiline
 onboarding-reset_tutorial-2 =
     對所標記之追蹤器敲擊 { $taps } 次即可觸發配戴重置。
-    
+
     配戴校正能對追蹤器實際的配戴方式進行調整，因此若您不小心移動到追蹤器，或是大幅度的變更配戴方向，這個功能會有所幫助。
-    
+
     做此校正時需要進行滑雪姿勢，如自動配戴校正的畫面所示。在觸發 3 秒後（可修改）才會真正進行重置。
 
 ## Setup start

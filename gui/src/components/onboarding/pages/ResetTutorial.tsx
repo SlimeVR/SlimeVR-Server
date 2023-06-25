@@ -133,7 +133,7 @@ export function ResetTutorialPage() {
             {l10n.getString('onboarding-reset_tutorial')}
           </Typography>
           <Typography color="secondary">
-            {l10n.getString('onboarding-reset_tutorial-description')}
+            {l10n.getString('onboarding-reset_tutorial-explanation')}
           </Typography>
           <div className="flex">
             <Button variant="secondary" to="/onboarding/mounting/choose">
