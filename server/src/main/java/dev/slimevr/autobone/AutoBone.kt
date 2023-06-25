@@ -298,7 +298,10 @@ class AutoBone(server: VRServer) {
 		return length
 	}
 
-	fun calcTargetHmdHeight(frames: PoseFrames): Float {
+	fun calcTargetHmdHeight(
+		frames: PoseFrames,
+		config: AutoBoneConfig = globalConfig,
+	): Float {
 		val targetHeight: Float
 		// Get the current skeleton from the server
 		val humanPoseManager = server.humanPoseManager
@@ -342,7 +345,7 @@ class AutoBone(server: VRServer) {
 		val targetHmdHeight = if (config.targetHmdHeight > 0f) {
 			config.targetHmdHeight
 		} else {
-			calcTargetHmdHeight(frames)
+			calcTargetHmdHeight(frames, config)
 		}
 		val targetFullHeight = if (config.targetFullHeight > 0f) {
 			config.targetFullHeight
