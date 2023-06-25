@@ -53,33 +53,30 @@ export function MountingChoose() {
                   <div>
                     <Typography variant="main-title" bold>
                       {l10n.getString(
-                        'onboarding-choose_mounting-manual_mounting'
+                        'onboarding-choose_mounting-auto_mounting'
                       )}
                     </Typography>
                     <Typography variant="vr-accessible" italic>
                       {l10n.getString(
-                        'onboarding-choose_mounting-manual_mounting-subtitle'
+                        'onboarding-choose_mounting-auto_mounting-label'
                       )}
                     </Typography>
                   </div>
                   <div>
                     <Typography color="secondary">
                       {l10n.getString(
-                        'onboarding-choose_mounting-manual_mounting-description'
+                        'onboarding-choose_mounting-auto_mounting-description'
                       )}
                     </Typography>
                   </div>
                 </div>
-
                 <Button
                   variant={!state.alonePage ? 'secondary' : 'tertiary'}
-                  to="/onboarding/mounting/manual"
+                  to="/onboarding/mounting/auto"
                   className="self-start mt-auto"
                   state={{ alonePage: state.alonePage }}
                 >
-                  {l10n.getString(
-                    'onboarding-automatic_mounting-manual_mounting'
-                  )}
+                  {l10n.getString('onboarding-manual_mounting-auto_mounting')}
                 </Button>
               </div>
             </div>
@@ -104,30 +101,33 @@ export function MountingChoose() {
                     ></img>
                     <Typography variant="main-title" bold>
                       {l10n.getString(
-                        'onboarding-choose_mounting-auto_mounting'
+                        'onboarding-choose_mounting-manual_mounting'
                       )}
                     </Typography>
                     <Typography variant="vr-accessible" italic>
                       {l10n.getString(
-                        'onboarding-choose_mounting-auto_mounting-subtitle'
+                        'onboarding-choose_mounting-manual_mounting-label'
                       )}
                     </Typography>
                   </div>
                   <div>
                     <Typography color="secondary">
                       {l10n.getString(
-                        'onboarding-choose_mounting-auto_mounting-description'
+                        'onboarding-choose_mounting-manual_mounting-description'
                       )}
                     </Typography>
                   </div>
                 </div>
+
                 <Button
                   variant="primary"
-                  to="/onboarding/mounting/auto"
+                  to="/onboarding/mounting/manual"
                   className="self-start mt-auto"
                   state={{ alonePage: state.alonePage }}
                 >
-                  {l10n.getString('onboarding-manual_mounting-auto_mounting')}
+                  {l10n.getString(
+                    'onboarding-automatic_mounting-manual_mounting'
+                  )}
                 </Button>
               </div>
             </div>

@@ -23,4 +23,5 @@ class AutoBoneConfig {
 	var sampleCount = 1000
 	var sampleRateMs: Long = 20
 	var saveRecordings = false
+	var useSkeletonHeight = false
 }
