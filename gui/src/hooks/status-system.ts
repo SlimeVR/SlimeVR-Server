@@ -132,16 +132,15 @@ export function parseStatusToLocale(
     }
     case StatusData.StatusTrackerError: {
       const data = status.data as StatusTrackerErrorT;
-      if (!data.trackerId?.trackerNum || !data.trackerId.deviceId || !trackers) {
+      if (!data.trackerId?.trackerNum || !trackers) {
         return {};
       }
 
       const tracker = trackers.find(
         ({ tracker }) =>
           data.trackerId?.trackerNum &&
-          data.trackerId.deviceId?.id &&
           tracker?.trackerId?.trackerNum == data.trackerId.trackerNum &&
-          tracker?.trackerId?.deviceId?.id == data.trackerId.deviceId.id
+          tracker?.trackerId?.deviceId?.id == data.trackerId.deviceId?.id
       );
       if (!tracker)
         return {

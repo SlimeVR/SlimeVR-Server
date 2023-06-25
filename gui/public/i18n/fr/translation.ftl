@@ -609,8 +609,11 @@ onboarding-calibration_tutorial-status-error = Le capteur a été déplacé
 ## Tracker assignment tutorial
 
 onboarding-assignment_tutorial = Comment préparer un capteur Slime avant de le porter
+onboarding-assignment_tutorial-first_step = 1. Placez un autocollant de partie du corps (si vous en avez un) sur le capteur selon votre choix
 # This text has a character limit of around 11 characters, so please keep it short
 onboarding-assignment_tutorial-sticker = Autocollant
+onboarding-assignment_tutorial-second_step = 2. Attachez la sangle à votre capteur en gardant le côté velcro de la sangle dans l’orientation suivante:
+onboarding-assignment_tutorial-second_step-continuation = La partie velcro pour l’extension doit être dans cette orientation:
 onboarding-assignment_tutorial-done = J'ai mis les autocollants et les sangles !
 
 ## Tracker assignment setup
@@ -700,13 +703,15 @@ onboarding-assign_trackers-warning-WAIST =
 ## Tracker mounting method choose
 
 onboarding-choose_mounting = Quelle méthode de calibration de l’alignement utiliser ?
+# Multiline text
+onboarding-choose_mounting-description = La calibration de l'alignement ajuste pour l'orientation des capteurs sur votre corps.
 onboarding-choose_mounting-auto_mounting = Alignement automatique
 # Italized text
-onboarding-choose_mounting-auto_mounting-subtitle = Recommendée
+onboarding-choose_mounting-auto_mounting-subtitle = Expérimentale
 onboarding-choose_mounting-auto_mounting-description = Ceci permettra de détecter automatiquement la direction de tous vos capteurs à partir de 2 poses
 onboarding-choose_mounting-manual_mounting = Alignement manuel
 # Italized text
-onboarding-choose_mounting-manual_mounting-subtitle = Si vous savez ce que vous faites
+onboarding-choose_mounting-manual_mounting-subtitle = Recommendée
 onboarding-choose_mounting-manual_mounting-description = Ceci vous permettra de choisir la direction de chaque capteur manuellement
 
 ## Tracker manual mounting setup
@@ -741,6 +746,10 @@ onboarding-automatic_mounting-put_trackers_on-next = J'ai tous mes capteurs
 ## Tracker proportions method choose
 
 onboarding-choose_proportions = Quelle méthode de calibration des proportions utiliser ?
+# Multiline string
+onboarding-choose_proportions-description =
+    Les proportions corporelles sont utilisées pour connaître les mesures de votre corps. Elles sont nécéssaires pour calculer les positions des capteurs.
+    Lorsque les proportions de votre corps ne correspondent pas à celles enregistrées, la précision des capteurs sera moins bonne et vous remarquerez des problèmes tel que le patinage, le glissage ou votre corps ne correspondant pas bien à votre avatar.
 onboarding-choose_proportions-auto_proportions = Proportions automatiques
 # Italized text
 onboarding-choose_proportions-auto_proportions-subtitle = Recommendée
@@ -749,7 +758,7 @@ onboarding-choose_proportions-manual_proportions = Proportions manuelles
 # Italized text
 onboarding-choose_proportions-manual_proportions-subtitle = Pour les retouches
 onboarding-choose_proportions-manual_proportions-description = Ceci vous permettra d'ajuster vos proportions manuellement en les modifiant directement
-onboarding-choose_proportions-save = Enregistrer les proportions
+onboarding-choose_proportions-save = Exporter les proportions
 onboarding-choose_proportions-file_type = Fichier de proportions
 
 ## Tracker manual proportions setup
@@ -819,7 +828,7 @@ home-no_trackers = Aucun capteur détecté ou attribué
 status_system-StatusTrackerReset = Il est recommandé d'effectuer une réinitialisation complète vu que un ou plusieurs capteurs sont ne sont pas ajustés.
 status_system-StatusSteamVRDisconnected =
     { $type ->
-        [steamvr_feeder] Impossible de se connecter aux SlimeVR Feeder App.
+        [steamvr_feeder] Impossible de se connecter au SlimeVR Feeder App.
        *[other] Impossible de se connecter à SteamVR via le pilote SlimeVR.
     }
 status_system-StatusTrackerError = Le capteur { $trackerName } a une erreur.
