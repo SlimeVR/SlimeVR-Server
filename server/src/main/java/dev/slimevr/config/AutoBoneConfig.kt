@@ -24,4 +24,5 @@ class AutoBoneConfig {
 	var sampleRateMs: Long = 20
 	var saveRecordings = false
 	var useSkeletonHeight = false
+	var randSeed = 4L
 }

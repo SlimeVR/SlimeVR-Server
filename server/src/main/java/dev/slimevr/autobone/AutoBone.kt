@@ -365,6 +365,9 @@ class AutoBone(server: VRServer) {
 			server.configManager
 		)
 
+		// Initialize the frame order randomizer with a repeatable seed
+		rand.setSeed(config.randSeed)
+
 		// Epoch loop, each epoch is one full iteration over the full dataset
 		for (epoch in (if (config.calcInitError) -1 else 0) until config.numEpochs) {
 			// Set the current epoch to process
