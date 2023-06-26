@@ -7,6 +7,7 @@ import {
   FilteringSettingsT,
   FilteringType,
   LegTweaksSettingsT,
+  ModelRatiosT,
   ModelSettingsT,
   ModelTogglesT,
   RpcMessage,
@@ -61,6 +62,14 @@ interface SettingsForm {
     toeSnap: boolean;
     footPlant: boolean;
   };
+  ratios: {
+    imputeWaistFromChestHip: number;
+    imputeWaistFromChestLegs: number;
+    imputeHipFromChestLegs: number;
+    imputeHipFromWaistLegs: number;
+    interpHipLegs: number;
+    interpKneeTrackerAnkle: number;
+  };
   tapDetection: {
     mountingResetEnabled: boolean;
     yawResetEnabled: boolean;
@@ -103,6 +112,14 @@ const defaultValues = {
     viveEmulation: false,
     toeSnap: false,
     flootPlant: true,
+  },
+  ratios: {
+    imputeWaistFromChestHip: 0.3,
+    imputeWaistFromChestLegs: 0.2,
+    imputeHipFromChestLegs: 0.45,
+    imputeHipFromWaistLegs: 0.4,
+    interpHipLegs: 0.25,
+    interpKneeTrackerAnkle: 0.85,
   },
   filtering: { amount: 0.1, type: FilteringType.NONE },
   driftCompensation: {
@@ -163,22 +180,38 @@ export function GeneralSettings() {
     }
 
     const modelSettings = new ModelSettingsT();
-    const toggles = new ModelTogglesT();
-    toggles.floorClip = values.toggles.floorClip;
-    toggles.skatingCorrection = values.toggles.skatingCorrection;
-    toggles.extendedKnee = values.toggles.extendedKnee;
-    toggles.extendedPelvis = values.toggles.extendedPelvis;
-    toggles.extendedSpine = values.toggles.extendedSpine;
-    toggles.forceArmsFromHmd = values.toggles.forceArmsFromHmd;
-    toggles.viveEmulation = values.toggles.viveEmulation;
-    toggles.toeSnap = values.toggles.toeSnap;
-    toggles.footPlant = values.toggles.footPlant;
 
-    const legTweaks = new LegTweaksSettingsT();
-    legTweaks.correctionStrength = values.legTweaks.correctionStrength;
+    if (values.toggles) {
+      const toggles = new ModelTogglesT();
+      toggles.floorClip = values.toggles.floorClip;
+      toggles.skatingCorrection = values.toggles.skatingCorrection;
+      toggles.extendedKnee = values.toggles.extendedKnee;
+      toggles.extendedPelvis = values.toggles.extendedPelvis;
+      toggles.extendedSpine = values.toggles.extendedSpine;
+      toggles.forceArmsFromHmd = values.toggles.forceArmsFromHmd;
+      toggles.viveEmulation = values.toggles.viveEmulation;
+      toggles.toeSnap = values.toggles.toeSnap;
+      toggles.footPlant = values.toggles.footPlant;
+      modelSettings.toggles = toggles;
+    }
 
-    modelSettings.toggles = toggles;
-    modelSettings.legTweaks = legTweaks;
+    if (values.ratios) {
+      const ratios = new ModelRatiosT();
+      ratios.imputeWaistFromChestHip = values.ratios.imputeWaistFromChestHip;
+      ratios.imputeWaistFromChestLegs = values.ratios.imputeWaistFromChestLegs;
+      ratios.imputeHipFromChestLegs = values.ratios.imputeHipFromChestLegs;
+      ratios.imputeHipFromWaistLegs = values.ratios.imputeHipFromWaistLegs;
+      ratios.interpHipLegs = values.ratios.interpHipLegs;
+      ratios.interpKneeTrackerAnkle = values.ratios.interpKneeTrackerAnkle;
+      modelSettings.ratios = ratios;
+    }
+
+    if (values.legTweaks) {
+      const legTweaks = new LegTweaksSettingsT();
+      legTweaks.correctionStrength = values.legTweaks.correctionStrength;
+      modelSettings.legTweaks = legTweaks;
+    }
+
     settings.modelSettings = modelSettings;
 
     const tapDetection = new TapDetectionSettingsT();
@@ -257,6 +290,19 @@ export function GeneralSettings() {
             (settings.modelSettings?.toggles &&
               (settings.modelSettings.toggles as any)[key]) ||
             false,
+        }),
+        {}
+      );
+    }
+
+    if (settings.modelSettings?.ratios) {
+      formData.ratios = Object.keys(settings.modelSettings?.ratios).reduce(
+        (curr, key: string) => ({
+          ...curr,
+          [key]:
+            (settings.modelSettings?.ratios &&
+              (settings.modelSettings.ratios as any)[key]) ||
+            0.0,
         }),
         {}
       );
@@ -650,7 +696,7 @@ export function GeneralSettings() {
                 <div className="flex flex-col pt-2 pb-3">
                   <Typography bold>
                     {l10n.getString(
-                      'settings-general-fk_settings-skeleton_settings'
+                      'settings-general-fk_settings-skeleton_settings-toggles'
                     )}
                   </Typography>
                   <Typography color="secondary">
@@ -688,6 +734,101 @@ export function GeneralSettings() {
                     )}
                   />
                 </div>
+                <div className="flex flex-col pt-2 pb-3">
+                  <div className="flex flex-col pt-2 pb-3">
+                    <Typography bold>
+                      {l10n.getString(
+                        'settings-general-fk_settings-skeleton_settings-ratios'
+                      )}
+                    </Typography>
+                    <Typography color="secondary">
+                      {l10n.getString(
+                        'settings-general-fk_settings-skeleton_settings-ratios-description'
+                      )}
+                    </Typography>
+                  </div>
+                  <div className="grid sm:grid-cols-2 gap-3 pb-3">
+                    <NumberSelector
+                      control={control}
+                      name="ratios.imputeWaistFromChestHip"
+                      label={l10n.getString(
+                        'settings-general-fk_settings-skeleton_settings-impute_waist_from_chest_hip'
+                      )}
+                      valueLabelFormat={(value) =>
+                        percentageFormat.format(value)
+                      }
+                      min={0.0}
+                      max={1.0}
+                      step={0.05}
+                    />
+                    <NumberSelector
+                      control={control}
+                      name="ratios.imputeWaistFromChestLegs"
+                      label={l10n.getString(
+                        'settings-general-fk_settings-skeleton_settings-impute_waist_from_chest_legs'
+                      )}
+                      valueLabelFormat={(value) =>
+                        percentageFormat.format(value)
+                      }
+                      min={0.0}
+                      max={1.0}
+                      step={0.05}
+                    />
+                    <NumberSelector
+                      control={control}
+                      name="ratios.imputeHipFromChestLegs"
+                      label={l10n.getString(
+                        'settings-general-fk_settings-skeleton_settings-impute_hip_from_chest_legs'
+                      )}
+                      valueLabelFormat={(value) =>
+                        percentageFormat.format(value)
+                      }
+                      min={0.0}
+                      max={1.0}
+                      step={0.05}
+                    />
+                    <NumberSelector
+                      control={control}
+                      name="ratios.imputeHipFromWaistLegs"
+                      label={l10n.getString(
+                        'settings-general-fk_settings-skeleton_settings-impute_hip_from_waist_legs'
+                      )}
+                      valueLabelFormat={(value) =>
+                        percentageFormat.format(value)
+                      }
+                      min={0.0}
+                      max={1.0}
+                      step={0.05}
+                    />
+                    <NumberSelector
+                      control={control}
+                      name="ratios.interpHipLegs"
+                      label={l10n.getString(
+                        'settings-general-fk_settings-skeleton_settings-interp_hip_legs'
+                      )}
+                      valueLabelFormat={(value) =>
+                        percentageFormat.format(value)
+                      }
+                      min={0.0}
+                      max={1.0}
+                      step={0.05}
+                    />
+                    <NumberSelector
+                      control={control}
+                      name="ratios.interpKneeTrackerAnkle"
+                      label={l10n.getString(
+                        'settings-general-fk_settings-skeleton_settings-interp_knee_tracker_ankle'
+                      )}
+                      valueLabelFormat={(value) =>
+                        percentageFormat.format(value)
+                      }
+                      min={0.0}
+                      max={1.0}
+                      step={0.05}
+                    />
+                  </div>
+                </div>
+
                 <div className="flex flex-col pt-2 pb-3">
                   <Typography bold>
                     {l10n.getString(
