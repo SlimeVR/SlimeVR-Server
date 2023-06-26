@@ -532,20 +532,20 @@ onboarding-reset_tutorial-skip = Sauter l'étape
 # Cares about multiline
 onboarding-reset_tutorial-0 =
     Tapotez { $taps } fois sur le capteur en surbrillance pour effectuer une réinitialisation horizontale.
-    
+
     Cela orientera les capteurs dans la même direction que votre casque VR.
 # Cares about multiline
 onboarding-reset_tutorial-1 =
     Tapotez { $taps } fois sur le capteur en surbrillance pour effectuer une réinitialisation complète.
-    
+
     Vous devrez restez en position « i » (droit debout, bras le long du corps). Vous aurez un délai de 3 secondes (configurable) avant la réinitialisation.
     Cela réinitialise complètement la position et la rotation de tout vos capteurs, ce qui devrait corriger la plupart des problèmes.
 # Cares about multiline
 onboarding-reset_tutorial-2 =
     Tapotez { $taps } fois sur le capteur en surbrillance pour réinitialiser l'alignement des capteurs.
-    
+
     La réinitialisation de l'alignement des capteurs aide à définir la façon dont ces derniers sont portés sur vous. Cela aidera si vous en avez déplacé un sur vous accidentellement.
-    
+
     Accroupissez-vous dans une position de « ski » comme affiché sur l'assistant d'alignement des capteurs. Vous aurez un délai de 3 secondes (configurable) avant la réinitialisation.
 
 ## Setup start
@@ -707,11 +707,11 @@ onboarding-choose_mounting = Quelle méthode de calibration de l’alignement ut
 onboarding-choose_mounting-description = La calibration de l'alignement ajuste pour l'orientation des capteurs sur votre corps.
 onboarding-choose_mounting-auto_mounting = Alignement automatique
 # Italized text
-onboarding-choose_mounting-auto_mounting-subtitle = Expérimentale
+onboarding-choose_mounting-auto_mounting-label = Expérimentale
 onboarding-choose_mounting-auto_mounting-description = Ceci permettra de détecter automatiquement la direction de tous vos capteurs à partir de 2 poses
 onboarding-choose_mounting-manual_mounting = Alignement manuel
 # Italized text
-onboarding-choose_mounting-manual_mounting-subtitle = Recommendée
+onboarding-choose_mounting-manual_mounting-label = Recommendée
 onboarding-choose_mounting-manual_mounting-description = Ceci vous permettra de choisir la direction de chaque capteur manuellement
 
 ## Tracker manual mounting setup
@@ -758,7 +758,7 @@ onboarding-choose_proportions-manual_proportions = Proportions manuelles
 # Italized text
 onboarding-choose_proportions-manual_proportions-subtitle = Pour les retouches
 onboarding-choose_proportions-manual_proportions-description = Ceci vous permettra d'ajuster vos proportions manuellement en les modifiant directement
-onboarding-choose_proportions-save = Exporter les proportions
+onboarding-choose_proportions-export = Exporter les proportions
 onboarding-choose_proportions-file_type = Fichier de proportions
 
 ## Tracker manual proportions setup
