@@ -532,20 +532,20 @@ onboarding-reset_tutorial-skip = Saltar paso
 # Cares about multiline
 onboarding-reset_tutorial-0 =
     Toca { $taps } veces el tracker resaltado para activar el reinicio horizontal.
-    
+
     Esto va a hacer que tus sensores miren para la misma dirección que tu HMD.
 # Cares about multiline
 onboarding-reset_tutorial-1 =
     Toca { $taps } veces el tracker resaltado para activar el reinicio completo.
-    
+
     Se requiere que estas de forma parada (pose en i). Esto tiene un delay de 3 segundos (configurable) antes de que actualmente suceda.
     Esto reinicia completamente la posición y rotación de todos tus sensores, debería de arreglar la mayoría de tus problemas.
 # Cares about multiline
 onboarding-reset_tutorial-2 =
     Toca { $taps } veces el tracker resaltado para activar el reinicio de montura.
-    
+
     El reinicio de montura ayuda en como tus sensores están puestos en tu cuerpo, ya que si los movistes o cambiaste para donde están orientados bastante, esto debería de ayudar.
-    
+
     Requiere que estas en una pose como que estás esquiando, como se muestra en el tutorial de montura automática y tenes un retraso de 3 segundos (configurable) antes de que actualmente suceda.
 
 ## Setup start
@@ -758,7 +758,7 @@ onboarding-choose_proportions-manual_proportions = Proporciones manuales
 # Italized text
 onboarding-choose_proportions-manual_proportions-subtitle = Para toques pequeños
 onboarding-choose_proportions-manual_proportions-description = Esto te permitirá ajustar tus proporciones manualmente de forma directa
-onboarding-choose_proportions-save = Exportar proporciones
+onboarding-choose_proportions-export = Exportar proporciones
 onboarding-choose_proportions-file_type = Archivo de proporciones del cuerpo
 
 ## Tracker manual proportions setup

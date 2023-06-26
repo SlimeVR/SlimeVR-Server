@@ -526,25 +526,25 @@ onboarding-wifi_creds-password =
 
 onboarding-reset_tutorial-back = 返回到佩戴校准
 onboarding-reset_tutorial = 重置教程
-onboarding-reset_tutorial-description = 跟踪器在使用时可能会由于IMU的偏航漂移而失准，或者可能因为您对它们进行了物理上的移动。您有几种方法来解决这个问题。
+onboarding-reset_tutorial-explanation = 跟踪器在使用时可能会由于IMU的偏航漂移而失准，或者可能因为您对它们进行了物理上的移动。您有几种方法来解决这个问题。
 onboarding-reset_tutorial-skip = 跳过步骤
 # Cares about multiline
 onboarding-reset_tutorial-0 =
     敲击 { $taps } 次高亮显示的追踪器以触发航向轴重置。
-    
+
     这将使追踪器朝向与您的头显相同的方向。
 # Cares about multiline
 onboarding-reset_tutorial-1 =
     敲击 { $taps } 次高亮显示的追踪器以触发完整重置。
-    
+
     此功能需要你站直（i-pose）后使用。 在重置实际发生前有 3 秒延迟（可配置）。
     这将完全重置所有追踪器的位置和旋转，应该能解决大多数问题。
 # Cares about multiline
 onboarding-reset_tutorial-2 =
     敲击 { $taps } 次高亮显示的追踪器以触发佩戴重置。
-    
+
     佩戴重置能对追踪器实际的配戴方式进行调整，所以如果你不小心移动了追踪器并将它们的佩戴方向改变了很多，这个功能将有所帮助。
-    
+
     你需要摆出一个像滑雪那样的姿势，就像在运行自动设置佩戴向导时做的那样，在重置实际发生前有 3 秒延迟（可配置）。
 
 ## Setup start

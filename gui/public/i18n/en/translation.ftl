@@ -491,7 +491,7 @@ onboarding-wifi_creds-password =
 ## Mounting setup
 onboarding-reset_tutorial-back = Go Back to Mounting calibration
 onboarding-reset_tutorial = Reset tutorial
-onboarding-reset_tutorial-description = While you use your trackers they might get out of alignment because of IMU yaw drift, or because you might have moved them physically. You have several ways to fix this.
+onboarding-reset_tutorial-explanation = While you use your trackers they might get out of alignment because of IMU yaw drift, or because you might have moved them physically. You have several ways to fix this.
 onboarding-reset_tutorial-skip = Skip step
 # Cares about multiline
 onboarding-reset_tutorial-0 = Tap { $taps } times the highlighted tracker for triggering yaw reset.
@@ -649,11 +649,11 @@ onboarding-choose_mounting = What mounting calibration method to use?
 onboarding-choose_mounting-description = Mounting orientation corrects for the placement of trackers on your body.
 onboarding-choose_mounting-auto_mounting = Automatic mounting
 # Italized text
-onboarding-choose_mounting-auto_mounting-subtitle = Experimental
+onboarding-choose_mounting-auto_mounting-label = Experimental
 onboarding-choose_mounting-auto_mounting-description = This will automatically detect the mounting directions for all of your trackers from 2 poses
 onboarding-choose_mounting-manual_mounting = Manual mounting
 # Italized text
-onboarding-choose_mounting-manual_mounting-subtitle = Recommended
+onboarding-choose_mounting-manual_mounting-label = Recommended
 onboarding-choose_mounting-manual_mounting-description = This will let you choose the mounting direction manually for each tracker
 
 
@@ -697,7 +697,7 @@ onboarding-choose_proportions-manual_proportions = Manual proportions
 # Italized text
 onboarding-choose_proportions-manual_proportions-subtitle = For small touches
 onboarding-choose_proportions-manual_proportions-description = This will let you adjust your proportions manually by modifying them directly
-onboarding-choose_proportions-save = Export proportions
+onboarding-choose_proportions-export = Export proportions
 onboarding-choose_proportions-file_type = Body proportions file
 
 ## Tracker manual proportions setup
