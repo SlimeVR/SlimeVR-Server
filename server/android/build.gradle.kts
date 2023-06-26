@@ -26,6 +26,18 @@ java {
 		languageVersion.set(JavaLanguageVersion.of(17))
 	}
 }
+
+tasks.register<Copy>("copyGuiAssets") {
+	from(rootProject.layout.projectDirectory.dir("gui/dist"))
+	into(layout.projectDirectory.dir("src/main/resources/web-gui"))
+	if (inputs.sourceFiles.isEmpty) {
+		throw GradleException("You need to run \"npm run build\" on the gui folder first!")
+	}
+}
+tasks.preBuild {
+	dependsOn(":server:android:copyGuiAssets")
+}
+
 tasks.withType<KotlinCompile> {
 	kotlinOptions.jvmTarget = "17"
 }
@@ -40,16 +52,6 @@ tasks.withType<Test> {
 tasks.withType<Javadoc> {
 	options.encoding = "UTF-8"
 }
-
-tasks
-	.withType<org.jetbrains.kotlin.gradle.tasks.KotlinCompilationTask<*>>()
-	.configureEach {
-		compilerOptions
-			.languageVersion
-			.set(
-				org.jetbrains.kotlin.gradle.dsl.KotlinVersion.KOTLIN_1_9
-			)
-	}
 
 allprojects {
 	repositories {

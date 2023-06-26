@@ -37,12 +37,6 @@ jobs:
       - run: mkdir ./gui/dist
         shell: bash
 
-      - if: matrix.os == 'windows-latest'
-        run: |
-          del .\server\android\src\main\resources\web-gui
-          mkdir server\android\src\main\resources\web-gui
-        shell: cmd
-
       - name: Check code formatting
         run: ./gradlew spotlessCheck
 
