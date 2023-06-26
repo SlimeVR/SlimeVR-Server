@@ -9,7 +9,7 @@ import dev.slimevr.tracking.processor.skeleton.HumanSkeleton
 class PositionOffsetError : IAutoBoneError {
 	@Throws(AutoBoneException::class)
 	override fun getStepError(trainingStep: AutoBoneStep): Float {
-		val trackers = trainingStep.trainingFrames.frameHolders
+		val trackers = trainingStep.frames.frameHolders
 		return getPositionOffsetError(
 			trackers,
 			trainingStep.cursor1,

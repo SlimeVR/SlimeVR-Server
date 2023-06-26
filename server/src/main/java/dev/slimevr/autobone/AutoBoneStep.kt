@@ -13,7 +13,7 @@ class AutoBoneStep(
 	val config: AutoBoneConfig,
 	val targetHmdHeight: Float,
 	val targetFullHeight: Float,
-	val trainingFrames: PoseFrames,
+	val frames: PoseFrames,
 	val intermediateOffsets: EnumMap<BoneType, Float>,
 	val epochCallback: Consumer<AutoBone.Epoch?>?,
 	serverConfig: ConfigManager,
@@ -24,10 +24,10 @@ class AutoBoneStep(
 	var currentHmdHeight: Float = 0f,
 ) {
 
-	val maxFrameCount = trainingFrames.maxFrameCount
+	val maxFrameCount = frames.maxFrameCount
 
-	val framePlayer1 = TrackerFramesPlayer(trainingFrames)
-	val framePlayer2 = TrackerFramesPlayer(trainingFrames)
+	val framePlayer1 = TrackerFramesPlayer(frames)
+	val framePlayer2 = TrackerFramesPlayer(frames)
 
 	val trackers1 = framePlayer1.trackers.toList()
 	val trackers2 = framePlayer2.trackers.toList()

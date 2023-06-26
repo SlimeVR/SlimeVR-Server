@@ -356,13 +356,13 @@ class AutoBone(server: VRServer) {
 		// Set up the current state, making all required players and setting up the
 		// skeletons appropriately
 		val trainingStep = AutoBoneStep(
-			config,
-			targetHmdHeight,
-			targetFullHeight,
-			frames,
-			EnumMap(offsets),
-			epochCallback,
-			server.configManager
+			config = config,
+			targetHmdHeight = targetHmdHeight,
+			targetFullHeight = targetFullHeight,
+			frames = frames,
+			intermediateOffsets = EnumMap(offsets),
+			epochCallback = epochCallback,
+			serverConfig = server.configManager
 		)
 
 		// Initialize the frame order randomizer with a repeatable seed
