@@ -1,6 +1,3 @@
-### SlimeVR complete GUI translations
-
-
 # Please developers (not translators) don't reuse a key inside another key
 # or concat text with a translation string in the code, use the appropriate
 # features like variables and selectors in each appropriate case!
@@ -103,10 +100,15 @@ navbar-mounting = 配戴校正
 navbar-onboarding = 快速設定
 navbar-settings = 詳細設定
 
-## Bounding volume hierarchy recording
+## Biovision hierarchy recording
 
 bvh-start_recording = 錄製 BVH 檔案
 bvh-recording = 錄製中…
+
+## Tracking pause
+
+tracking-unpaused = 暫停追蹤
+tracking-paused = 解除暫停追蹤
 
 ## Widget: Overlay settings
 
@@ -522,7 +524,26 @@ onboarding-wifi_creds-password =
 
 onboarding-reset_tutorial-back = 返回到配戴校正
 onboarding-reset_tutorial = 重置教學
-onboarding-reset_tutorial-description = 此功能尚未開發完成，請點選繼續即可。
+onboarding-reset_tutorial-explanation = 使用追蹤器時會產生偏移，可能是因為慣性測量單元 (IMU) 會出現左右飄移，或是您移動了追蹤器所造成的。您有幾種方法來修正這個問題。
+onboarding-reset_tutorial-skip = 跳過本步驟
+# Cares about multiline
+onboarding-reset_tutorial-0 =
+    對所標記之追蹤器敲擊 { $taps } 次即可觸發左右偏擺重置。
+
+    追蹤器將會調整與頭戴顯示器所面對的方向一致。
+# Cares about multiline
+onboarding-reset_tutorial-1 =
+    對所標記之追蹤器敲擊 { $taps } 次即可觸發完整重置。
+
+    做此校正時必須站直，觸發 3 秒後（可修改）才會真正進行重置。
+    追蹤器的定位與旋轉將會被完全重置，應該可以解決大多數的問題。
+# Cares about multiline
+onboarding-reset_tutorial-2 =
+    對所標記之追蹤器敲擊 { $taps } 次即可觸發配戴重置。
+
+    配戴校正能對追蹤器實際的配戴方式進行調整，因此若您不小心移動到追蹤器，或是大幅度的變更配戴方向，這個功能會有所幫助。
+
+    做此校正時需要進行滑雪姿勢，如自動配戴校正的畫面所示。在觸發 3 秒後（可修改）才會真正進行重置。
 
 ## Setup start
 
@@ -580,6 +601,16 @@ onboarding-calibration_tutorial-status-waiting = 正在等待您完成動作
 onboarding-calibration_tutorial-status-calibrating = 校正中
 onboarding-calibration_tutorial-status-success = 很好，校正完成了！
 onboarding-calibration_tutorial-status-error = 追蹤器移動了
+
+## Tracker assignment tutorial
+
+onboarding-assignment_tutorial = 戴上 Slime 追蹤器前的準備事項
+onboarding-assignment_tutorial-first_step = 1. 若有標示身體部位的貼紙，可在您所要分配使用的追蹤器上貼上。
+# This text has a character limit of around 11 characters, so please keep it short
+onboarding-assignment_tutorial-sticker = 貼紙
+onboarding-assignment_tutorial-second_step = 2. 將綁帶有魔鬼氈的一面，依照下圖所示的方向穿過追蹤器：
+onboarding-assignment_tutorial-second_step-continuation = 延伸追蹤器應照下圖所示：
+onboarding-assignment_tutorial-done = 我把貼紙跟綁帶都弄上了
 
 ## Tracker assignment setup
 
@@ -664,6 +695,8 @@ onboarding-assign_trackers-warning-WAIST =
 ## Tracker mounting method choose
 
 onboarding-choose_mounting = 要使用哪一種配戴校正方式？
+# Multiline text
+onboarding-choose_mounting-description = 配戴校正可以校正追蹤器放在身上的位置。
 onboarding-choose_mounting-auto_mounting = 自動配戴校正
 # Italized text
 onboarding-choose_mounting-auto_mounting-subtitle = 推薦使用
@@ -705,6 +738,10 @@ onboarding-automatic_mounting-put_trackers_on-next = 我所有的追蹤器都戴
 ## Tracker proportions method choose
 
 onboarding-choose_proportions = 要使用哪一種軀幹比例的校正方式？
+# Multiline string
+onboarding-choose_proportions-description =
+    軀幹比例用於取得身體各個部位的長短，為計算追蹤器的位置而有所必要。
+    當您的軀幹比例與設定的比例有差異時，追蹤精確度會變差，您可能會注意到出現腳滑溜冰的情形，或者你的身體與你的虛擬角色對不太上。
 onboarding-choose_proportions-auto_proportions = 自動軀幹比例校正
 # Italized text
 onboarding-choose_proportions-auto_proportions-subtitle = 推薦使用
@@ -713,6 +750,8 @@ onboarding-choose_proportions-manual_proportions = 手動軀幹比例校正
 # Italized text
 onboarding-choose_proportions-manual_proportions-subtitle = 適合進行微調
 onboarding-choose_proportions-manual_proportions-description = 本選項可以讓你直接修改軀幹比例的設定值
+onboarding-choose_proportions-save = 儲存軀幹比例
+onboarding-choose_proportions-file_type = 軀幹比例描述檔
 
 ## Tracker manual proportions setup
 
@@ -750,12 +789,12 @@ onboarding-automatic_proportions-recording-description-p0 = 正在錄製中…�
 onboarding-automatic_proportions-recording-description-p1 = 請做出以下動作:
 # Each line of text is a different list item
 onboarding-automatic_proportions-recording-steps =
-    站直，頭部繞圈轉動。
-    腰部向前伸，腿部彎曲，呈半蹲姿勢後，頭部轉動向左看，再向右看。
-    上身向左（逆時針）扭動後，向前頃，使右半身朝向地面。
-    上身向右（順時針）扭動後，向前頃，使左半身朝向地面。
-    以圓形軌跡扭動臀部，如同使用呼拉圈的姿勢。
-    若還有剩餘時間，可以重複進行以上動作。
+    挺直身子站好，然後活動脖子，使頭部沿逆時針或順時針方向繞一圈；
+    上半身前傾然後屈膝半蹲，保持住這個姿勢不動，然後轉頭看向左邊，再轉頭看向右邊；
+    站直身體，沿逆時針方向扭腰，使你的上半身朝向左前方，然後彎下腰，使上半身傾向左前方的地面；
+    站直身體，沿順時針方向扭腰，使你的上半身朝向右前方，然後彎下腰，使上半身傾向右前方的地面；
+    扭扭腰轉圈圈，就如同你在轉呼啦圈一樣！
+    如果進度條還沒走完，可以重複以上動作直到錄製結束。
 onboarding-automatic_proportions-recording-processing = 正在處理結果
 # $time (Number) - Seconds left for the automatic calibration recording to finish (max 20)
 onboarding-automatic_proportions-recording-timer = 剩餘 { $time } 秒
@@ -771,3 +810,13 @@ onboarding-automatic_proportions-done-description = 你的身體比例校正已�
 ## Home
 
 home-no_trackers = 未偵測到或未分配追蹤器
+
+## Status system
+
+status_system-StatusTrackerReset = 建議執行完全重置，因為有至少一個追蹤器尚未調整
+status_system-StatusSteamVRDisconnected =
+    { $type ->
+        [steamvr_feeder] 尚未連接 SlimeVR 資料迴送程式
+       *[other] 尚未透過 SlimeVR 驅動程式連接到 SteamVR
+    }
+status_system-StatusTrackerError = { $trackerName } 追蹤器發生錯誤

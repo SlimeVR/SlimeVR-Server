@@ -1,6 +1,3 @@
-### SlimeVR complete GUI translations
-
-
 # Please developers (not translators) don't reuse a key inside another key
 # or concat text with a translation string in the code, use the appropriate
 # features like variables and selectors in each appropriate case!
@@ -103,10 +100,15 @@ navbar-mounting = 佩戴校准
 navbar-onboarding = 向导
 navbar-settings = 设置
 
-## Bounding volume hierarchy recording
+## Biovision hierarchy recording
 
 bvh-start_recording = 录制 BVH 文件
 bvh-recording = 录制中...
+
+## Tracking pause
+
+tracking-unpaused = 暂停追踪
+tracking-paused = 解除暂停追踪
 
 ## Widget: Overlay settings
 
@@ -395,8 +397,8 @@ settings-serial-factory_reset = 恢复出厂设置
 # This cares about multilines
 # <b>text</b> means that the text should be bold
 settings-serial-factory_reset-warning =
-    <b>警告：</b> 这会将跟踪器重置为出厂设置。
-    这意味着Wi-Fi凭据和校准数据 <b>都将丢失！</b>
+    <b>警告：</b> 这会将追踪器重置为出厂设置。
+    这意味着 Wi-Fi 凭据和校准数据 <b>都将丢失！</b>
 settings-serial-factory_reset-warning-ok = 我已知晓
 settings-serial-factory_reset-warning-cancel = 取消
 settings-serial-get_infos = 获取信息
@@ -524,7 +526,26 @@ onboarding-wifi_creds-password =
 
 onboarding-reset_tutorial-back = 返回到佩戴校准
 onboarding-reset_tutorial = 重置教程
-onboarding-reset_tutorial-description = 此功能尚未开发完成，请继续就好
+onboarding-reset_tutorial-explanation = 跟踪器在使用时可能会由于IMU的偏航漂移而失准，或者可能因为您对它们进行了物理上的移动。您有几种方法来解决这个问题。
+onboarding-reset_tutorial-skip = 跳过步骤
+# Cares about multiline
+onboarding-reset_tutorial-0 =
+    敲击 { $taps } 次高亮显示的追踪器以触发航向轴重置。
+
+    这将使追踪器朝向与您的头显相同的方向。
+# Cares about multiline
+onboarding-reset_tutorial-1 =
+    敲击 { $taps } 次高亮显示的追踪器以触发完整重置。
+
+    此功能需要你站直（i-pose）后使用。 在重置实际发生前有 3 秒延迟（可配置）。
+    这将完全重置所有追踪器的位置和旋转，应该能解决大多数问题。
+# Cares about multiline
+onboarding-reset_tutorial-2 =
+    敲击 { $taps } 次高亮显示的追踪器以触发佩戴重置。
+
+    佩戴重置能对追踪器实际的配戴方式进行调整，所以如果你不小心移动了追踪器并将它们的佩戴方向改变了很多，这个功能将有所帮助。
+
+    你需要摆出一个像滑雪那样的姿势，就像在运行自动设置佩戴向导时做的那样，在重置实际发生前有 3 秒延迟（可配置）。
 
 ## Setup start
 
@@ -582,6 +603,16 @@ onboarding-calibration_tutorial-status-waiting = 等待你的操作
 onboarding-calibration_tutorial-status-calibrating = 校准中
 onboarding-calibration_tutorial-status-success = 很好！
 onboarding-calibration_tutorial-status-error = 追踪器被移动！
+
+## Tracker assignment tutorial
+
+onboarding-assignment_tutorial = 在佩戴 Slime 追踪器之前的准备工作
+onboarding-assignment_tutorial-first_step = 1. 根据您分配的情况在追踪器上粘贴标识身体部位的贴纸（如果有）
+# This text has a character limit of around 11 characters, so please keep it short
+onboarding-assignment_tutorial-sticker = 贴纸
+onboarding-assignment_tutorial-second_step = 2. 将绑带与追踪器连接，调整绑带的粘扣朝向到如下图所示（如果有）：
+onboarding-assignment_tutorial-second_step-continuation = 扩展追踪器的粘扣朝向：
+onboarding-assignment_tutorial-done = 我把贴纸和绑带都弄好了！
 
 ## Tracker assignment setup
 
@@ -666,6 +697,8 @@ onboarding-assign_trackers-warning-WAIST =
 ## Tracker mounting method choose
 
 onboarding-choose_mounting = 使用哪种方法校准佩戴朝向？
+# Multiline text
+onboarding-choose_mounting-description = 佩戴方向校准用于确定您身上的追踪器的朝向。
 onboarding-choose_mounting-auto_mounting = 自动设置佩戴方向
 # Italized text
 onboarding-choose_mounting-auto_mounting-subtitle = 推荐
@@ -707,6 +740,10 @@ onboarding-automatic_mounting-put_trackers_on-next = 所有的追踪器都已开
 ## Tracker proportions method choose
 
 onboarding-choose_proportions = 使用哪种方法校准身体比例？
+# Multiline string
+onboarding-choose_proportions-description =
+    身体比例校准用于了解您身体的测量值。它们被需要用于计算追踪器的位置。
+    当你的身体比例与保存的不匹配时，你的追踪精度会变差，而且你会注意到诸如脚滑溜冰、不正常的滑动等情况，或者是你的身体与你的虚拟形象对不上。
 onboarding-choose_proportions-auto_proportions = 自动调整身体比例
 # Italized text
 onboarding-choose_proportions-auto_proportions-subtitle = 推荐
@@ -715,6 +752,8 @@ onboarding-choose_proportions-manual_proportions = 手动调整身体比例
 # Italized text
 onboarding-choose_proportions-manual_proportions-subtitle = 用于精细调整
 onboarding-choose_proportions-manual_proportions-description = 这将需要你手动修改以调整你的身体比例
+onboarding-choose_proportions-save = 储存身体比例到文件
+onboarding-choose_proportions-file_type = 身体比例文件
 
 ## Tracker manual proportions setup
 
@@ -773,3 +812,13 @@ onboarding-automatic_proportions-done-description = 你的身体比例校准已�
 ## Home
 
 home-no_trackers = 未检测到或未分配追踪器
+
+## Status system
+
+status_system-StatusTrackerReset = 建议执行完整重置，因为有至少一个追踪器未被调整。
+status_system-StatusSteamVRDisconnected =
+    { $type ->
+        [steamvr_feeder] 尚未连接到 SlimeVR Feeder App
+       *[other] 尚未通过 SlimeVR 驱动程序连接到 SteamVR
+    }
+status_system-StatusTrackerError = { $trackerName } 追踪器发生错误

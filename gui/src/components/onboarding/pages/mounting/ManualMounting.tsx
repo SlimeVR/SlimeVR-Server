@@ -11,16 +11,13 @@ import { Typography } from '../../../commons/Typography';
 import { BodyAssignment } from '../../BodyAssignment';
 import { MountingSelectionMenu } from './MountingSelectionMenu';
 import { useLocalization } from '@fluent/react';
-import { SkipSetupWarningModal } from '../../SkipSetupWarningModal';
-import { SkipSetupButton } from '../../SkipSetupButton';
 import { useBreakpoint } from '../../../../hooks/breakpoint';
 
 export function ManualMountingPage() {
   const { isMobile } = useBreakpoint('mobile');
   const { l10n } = useLocalization();
-  const { applyProgress, skipSetup, state } = useOnboarding();
+  const { applyProgress, state } = useOnboarding();
   const { sendRPCPacket } = useWebsocketAPI();
-  const [skipWarning, setSkipWarning] = useState(false);
 
   const [selectedRole, setSelectRole] = useState<BodyPart>(BodyPart.NONE);
 
@@ -53,6 +50,9 @@ export function ManualMountingPage() {
         mountingOrientationDegrees
       );
       assignreq.trackerId = td.tracker.trackerId;
+      assignreq.allowDriftCompensation =
+        td.tracker.info?.allowDriftCompensation ?? true;
+
       sendRPCPacket(RpcMessage.AssignTrackerRequest, assignreq);
     });
 
@@ -67,11 +67,6 @@ export function ManualMountingPage() {
         onDirectionSelected={onDirectionSelected}
       ></MountingSelectionMenu>
       <div className="flex flex-col gap-5 h-full items-center w-full xs:justify-center relative overflow-y-auto">
-        <SkipSetupButton
-          visible={!state.alonePage}
-          modalVisible={skipWarning}
-          onClick={() => setSkipWarning(true)}
-        ></SkipSetupButton>
         <div className="flex xs:flex-row mobile:flex-col h-full px-8 xs:w-full xs:justify-center mobile:px-4 items-center">
           <div className="flex flex-col w-full xs:max-w-sm gap-3">
             <Typography variant="main-title">
@@ -106,11 +101,6 @@ export function ManualMountingPage() {
           </div>
         </div>
       </div>
-      <SkipSetupWarningModal
-        accept={skipSetup}
-        onClose={() => setSkipWarning(false)}
-        isOpen={skipWarning}
-      ></SkipSetupWarningModal>
     </>
   );
 }

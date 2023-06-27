@@ -1,6 +1,3 @@
-### SlimeVR complete GUI translations
-
-
 # Please developers (not translators) don't reuse a key inside another key
 # or concat text with a translation string in the code, use the appropriate
 # features like variables and selectors in each appropriate case!
@@ -13,11 +10,19 @@
 websocket-connecting = connyecting to teh sewvew
 websocket-connection_lost = oopsie woopsie~ connyection wost to teh sewvew ;m;... uwu am twying to weconnyect owo!
 
+## Update notification
+
+version_update-title = mew vewsion avaiwabwe: { $version }
+version_update-description = cwicking "{ version_update-update }" will downwoad da SwimeVR instawlew fow u.
+version_update-update = pupdate
+version_update-close = cwose
+
 ## Tips
 
 tips-find_tracker = nawt suwe whicsh twayckyaw is whicsh? shayke a twackaw and it will hyighwight the cowowesponding iytem.
 tips-do_not_move_heels = ensuwe yoowr pawsies do nawt mowve duwing wecowding! ^w^
 tips-file_select = dwag & dwop fiwes to use OwO, ow <u>bwowse</u>.
+tips-tap_setup = u can swowly tap youw twackew 2 times to choose it insted of sewecting it fwom the menyu.
 
 ## Body parts
 
@@ -95,10 +100,15 @@ navbar-mounting = meownting calibwation
 navbar-onboarding = suwep wisawd
 navbar-settings = sewtings
 
-## Bounding volume hierarchy recording
+## Biovision hierarchy recording
 
 bvh-start_recording = wecowd bvh
 bvh-recording = wecowding...
+
+## Tracking pause
+
+tracking-unpaused = pauws twacking
+tracking-paused = unpauws twacking
 
 ## Widget: Overlay settings
 
@@ -126,6 +136,7 @@ widget-developer_mode-more_info = mowe info
 widget-imu_visualizer = wotation
 widget-imu_visualizer-rotation_raw = waw
 widget-imu_visualizer-rotation_preview = pwewiew
+widget-imu_visualizer-rotation_hide = hoide
 
 ## Tracker status
 
@@ -164,6 +175,9 @@ tracker-infos-custom_name = custowm name
 tracker-infos-url = twackaw uawl
 tracker-infos-version = fiwmwawe vewsion
 tracker-infos-hardware_rev = hawdwawe revision
+tracker-infos-hardware_identifier = hawdwawe id
+tracker-infos-imu = imu sensow
+tracker-infos-board_type = mane bored
 
 ## Tracker settings
 
@@ -514,6 +528,25 @@ onboarding-wifi_creds-password =
 onboarding-reset_tutorial-back = gaww bawwk to meownting cawwibwation
 onboarding-reset_tutorial = weset wtutowial
 onboarding-reset_tutorial-description = dis featuwe isn't done, just pwess continyue
+onboarding-reset_tutorial-skip = skip sedup
+# Cares about multiline
+onboarding-reset_tutorial-0 =
+    bap { $taps } times the highwighted twackew fow twiggewing yaw weset.
+    
+    dis wiwl make the twackews face the same diwection as youw HMD. ^w^
+# Cares about multiline
+onboarding-reset_tutorial-1 =
+    bap { $taps } times the highwighted twackew fow twiggewing fuwl weset.
+    
+    u need to be standing fow dis (i-pose). thewe is a 3 seconds deway (configuwabwe) befowe it actuawwy habbens.
+    this fuwly wesets duh pawsition and wotation of awl youw twackews. it shouwd fix most issue.
+# Cares about multiline
+onboarding-reset_tutorial-2 =
+    bap { $taps } time da highwighted twackew fow twiggewing meownting weset.
+    
+    meownting weset hewps on how the twackews awe actuawly put on u, so if you accidentawly move dem and change how dey awe owiented by a big ameownt, this wiwl hewp.
+    
+    u need to be on pose wike you awe skiing wike it's shown on da Pawtomatic Meownting wizawd and you have a 3 second deway (configuwabwe) befowe it gets twiggewed.
 
 ## Setup start
 
@@ -561,6 +594,27 @@ onboarding-connect_tracker-connected_trackers =
        *[other] { $amount } twackers
     } cownyected
 onboarding-connect_tracker-next = i cownyected awe my twackaws
+
+## Tracker calibration tutorial
+
+onboarding-calibration_tutorial = imu cawibwashun tutowiawl
+onboarding-calibration_tutorial-subtitle = dis will hewp weduce twackew dwifting!!!
+onboarding-calibration_tutorial-description = evewy time you tuwn on youw twackews, dey need to west fow a moment on a fwat suwface to cawibwate. wet's do da same ting by booping da "{ onboarding-calibration_tutorial-calibrate }" buddon, <b>do nyot move dem!!!</b>
+onboarding-calibration_tutorial-calibrate = i pwace da twackew on da tabwe
+onboarding-calibration_tutorial-status-waiting = waiiiting fur u
+onboarding-calibration_tutorial-status-calibrating = cawibwating
+onboarding-calibration_tutorial-status-success = congwats~!!
+onboarding-calibration_tutorial-status-error = da twackew was move ;w;
+
+## Tracker assignment tutorial
+
+onboarding-assignment_tutorial = how to pwepawe a Swime Twackew befowe puting it on
+onboarding-assignment_tutorial-first_step = 1. pwace a body pawt stickew (if you has wun) on da twackew accowding to u choosing :3
+# This text has a character limit of around 11 characters, so please keep it short
+onboarding-assignment_tutorial-sticker = sticker
+onboarding-assignment_tutorial-second_step = 2. put da stwap to u twackew, keep da hook an woop side of the stwap face in the fowlowing owientation:
+onboarding-assignment_tutorial-second_step-continuation = da hook an woop side fow da extenson shouwd be in this owientation:
+onboarding-assignment_tutorial-done = i put da stickew an stwap on :3
 
 ## Tracker assignment setup
 
@@ -649,6 +703,8 @@ onboarding-assign_trackers-warning-WAIST =
 ## Tracker mounting method choose
 
 onboarding-choose_mounting = wut meownting cawibwation mefod to use?
+# Multiline text
+onboarding-choose_mounting-description = meownting owientation correct fow da pwacement of twackews on u body.
 onboarding-choose_mounting-auto_mounting = awtomawic meownting
 # Italized text
 onboarding-choose_mounting-auto_mounting-subtitle = wecommended
@@ -690,6 +746,10 @@ onboarding-automatic_mounting-put_trackers_on-next = i haff awe my twackaws on
 ## Tracker proportions method choose
 
 onboarding-choose_proportions = wut pwopowshun cawibwation mefod to use?
+# Multiline string
+onboarding-choose_proportions-description =
+    body pawpowtions awe used to know the measuwements of uw body. dey wequiwed to cawcuwate the twackews' pawsitions.
+    wen pawpowtions of youw body dun mach da onyes saved, youw twacking pwecision wiwl be wowse and you wiwl nyotice tings wike skating or swiding, ow youw body nyot matching youw avataw wewl.
 onboarding-choose_proportions-auto_proportions = awtomatic pwopowtions
 # Italized text
 onboarding-choose_proportions-auto_proportions-subtitle = wecommended
@@ -698,6 +758,8 @@ onboarding-choose_proportions-manual_proportions = manuwal pwopowtions
 # Italized text
 onboarding-choose_proportions-manual_proportions-subtitle = fow smol touchies
 onboarding-choose_proportions-manual_proportions-description = dis will let u ajust ur pwopowtions manuwally by modifying dem diwectwy
+onboarding-choose_proportions-save = sav pawpwotions
+onboarding-choose_proportions-file_type = body pawpowshuns file
 
 ## Tracker manual proportions setup
 
@@ -760,3 +822,13 @@ onboarding-automatic_proportions-done-description = yoww body pwopowwtions cawyb
 ## Home
 
 home-no_trackers = no twackaws detecyted owo wowigned
+
+## Status system
+
+status_system-StatusTrackerReset = it wecommended to pewfowm a fuwl weset as one or mowe twackews awe unadjussed. -w-
+status_system-StatusSteamVRDisconnected =
+    { $type ->
+        [steamvr_feeder] cuwwentwy nyot conect to the SwimeVR Feedew App.
+       *[other] cuwwentwly nawt conected to SwimeVR wiff da SwimeVR dwiver.
+    }
+status_system-StatusTrackerError = da { $trackerName } twackew has ewwow. >~<

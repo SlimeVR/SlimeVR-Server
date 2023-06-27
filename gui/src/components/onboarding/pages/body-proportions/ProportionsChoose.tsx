@@ -1,8 +1,6 @@
 import { useOnboarding } from '../../../../hooks/onboarding';
 import { useLocalization } from '@fluent/react';
 import { useState } from 'react';
-import { SkipSetupWarningModal } from '../../SkipSetupWarningModal';
-import { SkipSetupButton } from '../../SkipSetupButton';
 import classNames from 'classnames';
 import { Typography } from '../../../commons/Typography';
 import { Button } from '../../../commons/Button';
@@ -20,8 +18,7 @@ import { useIsTauri } from '../../../../hooks/breakpoint';
 export function ProportionsChoose() {
   const isTauri = useIsTauri();
   const { l10n } = useLocalization();
-  const { applyProgress, skipSetup, state } = useOnboarding();
-  const [skipWarning, setSkipWarning] = useState(false);
+  const { applyProgress, state } = useOnboarding();
   const { useRPCPacket, sendRPCPacket } = useWebsocketAPI();
   const [animated, setAnimated] = useState(false);
 
@@ -58,11 +55,6 @@ export function ProportionsChoose() {
   return (
     <>
       <div className="flex flex-col gap-5 h-full items-center w-full xs:justify-center mobile:overflow-y-auto relative px-4 pb-4">
-        <SkipSetupButton
-          visible={!state.alonePage}
-          modalVisible={skipWarning}
-          onClick={() => setSkipWarning(true)}
-        ></SkipSetupButton>
         <div className="flex flex-col gap-4 justify-center">
           <Typography variant="main-title">
             {l10n.getString('onboarding-choose_proportions')}
@@ -186,16 +178,11 @@ export function ProportionsChoose() {
                 )
               }
             >
-              {l10n.getString('onboarding-choose_proportions-save')}
+              {l10n.getString('onboarding-choose_proportions-export')}
             </Button>
           </div>
         </div>
       </div>
-      <SkipSetupWarningModal
-        accept={skipSetup}
-        onClose={() => setSkipWarning(false)}
-        isOpen={skipWarning}
-      ></SkipSetupWarningModal>
     </>
   );
 }
