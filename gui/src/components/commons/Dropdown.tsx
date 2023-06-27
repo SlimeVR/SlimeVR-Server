@@ -47,7 +47,7 @@ export function Dropdown({
 
     const curItem = itemRefs[formValue.value];
     const dropdownParent = curItem
-      ? (curItem.closest('.dropdown-scroll') as HTMLElement)
+      ? (curItem.closest('.dropdown-scroll') as HTMLElement | null)
       : null;
     if (curItem && dropdownParent) {
       dropdownParent.scroll({
