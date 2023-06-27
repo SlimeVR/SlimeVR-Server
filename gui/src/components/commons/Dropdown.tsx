@@ -173,21 +173,20 @@ export function Dropdown({
                   alignment === 'left' && 'left-0'
                 )}
               >
-                <ul className="py-1 text-sm flex flex-col ">
+                <ul className="py-1 text-sm flex flex-col list-inside">
                   {items.map((item) => (
                     <li
                       className={classNames(
                         'py-2 px-4 min-w-max cursor-pointer',
                         variant == 'primary' &&
-                          'hover:bg-background-50 text-background-20 hover:text-background-10',
+                          'checked-hover:bg-background-50 text-background-20 list-none ' +
+                            'checked-hover:text-background-10 data-checked:list-disc',
                         variant == 'secondary' &&
-                          'hover:bg-background-60 text-background-20 hover:text-background-10',
+                          'checked-hover:bg-background-60 text-background-20 list-none ' +
+                            'checked-hover:text-background-10 data-checked:list-disc',
                         variant == 'tertiary' &&
-                          value !== item.value &&
-                          'bg-accent-background-30 hover:bg-accent-background-20',
-                        variant == 'tertiary' &&
-                          value === item.value &&
-                          'bg-accent-background-20'
+                          'bg-accent-background-30 checked-hover:bg-accent-background-20 ' +
+                            'list-none'
                       )}
                       onClick={() => {
                         onChange(item.value);
@@ -201,6 +200,7 @@ export function Dropdown({
                       ref={(ref) => (ref ? (itemRefs[item.value] = ref) : {})}
                       key={item.value}
                       tabIndex={0}
+                      data-checked={item.value === value}
                     >
                       {item.label}
                     </li>
