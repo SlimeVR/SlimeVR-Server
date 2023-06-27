@@ -65,7 +65,7 @@ export const langs = [
     key: 'ko',
   },
   {
-    name: '🇳🇴  Norsk bokmål',
+    name: '🇳🇴 Norsk bokmål',
     key: 'nb-NO',
   },
   {
