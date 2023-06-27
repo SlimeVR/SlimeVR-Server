@@ -2,6 +2,7 @@ import classNames from 'classnames';
 import { useEffect, useState } from 'react';
 import { Control, Controller } from 'react-hook-form';
 import { a11yClick } from '../utils/a11y';
+import { useLocaleConfig } from '../../i18n/config';
 
 export interface DropdownItem {
   label: string;
@@ -29,9 +30,19 @@ export function Dropdown({
   name: string;
   items: DropdownItem[];
 }) {
+  const itemRefs: Record<string, HTMLLIElement> = {};
   const [isOpen, setOpen] = useState(false);
+  const { currentLocales } = useLocaleConfig();
   useEffect(() => {
     if (!isOpen) return;
+
+    const curItem = itemRefs[currentLocales[0]];
+    const dropdownParent = curItem.closest('.dropdown-scroll') as HTMLElement;
+    if (curItem && dropdownParent) {
+      dropdownParent.scroll({
+        top: curItem.offsetTop - dropdownParent.offsetHeight / 2,
+      });
+    }
 
     function onWheelEvent() {
       if (isOpen && !document.querySelector('div.dropdown-scroll:hover')) {
@@ -55,9 +66,9 @@ export function Dropdown({
       const isInDropdownScroll = document
         .querySelector('div.dropdown-scroll')
         ?.contains(event.target as HTMLDivElement);
-      const isInDropdown = document
-        .querySelector('div.dropdown')
-        ?.contains(event.target as HTMLDivElement);
+      const isInDropdown = !!(event.target as HTMLDivElement).closest(
+        '.dropdown'
+      );
       if (isOpen && !isInDropdownScroll && !isInDropdown) {
         setOpen(false);
       }
@@ -176,6 +187,7 @@ export function Dropdown({
                         onChange(item.value);
                         setOpen(false);
                       }}
+                      ref={(ref) => (ref ? (itemRefs[item.value] = ref) : {})}
                       key={item.value}
                       tabIndex={0}
                     >
