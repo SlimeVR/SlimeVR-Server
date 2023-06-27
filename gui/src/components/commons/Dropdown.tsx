@@ -1,8 +1,12 @@
 import classNames from 'classnames';
 import { useEffect, useState } from 'react';
-import { Control, Controller } from 'react-hook-form';
+import {
+  Control,
+  Controller,
+  UseFormGetValues,
+  useWatch,
+} from 'react-hook-form';
 import { a11yClick } from '../utils/a11y';
-import { useLocaleConfig } from '../../i18n/config';
 
 export interface DropdownItem {
   label: string;
@@ -18,6 +22,7 @@ export function Dropdown({
   display = 'fit',
   placeholder,
   control,
+  getValues,
   name,
   items = [],
 }: {
@@ -27,17 +32,23 @@ export function Dropdown({
   display?: 'fit' | 'block';
   placeholder: string;
   control: Control<any>;
+  getValues: UseFormGetValues<any>;
   name: string;
   items: DropdownItem[];
 }) {
   const itemRefs: Record<string, HTMLLIElement> = {};
   const [isOpen, setOpen] = useState(false);
-  const { currentLocales } = useLocaleConfig();
+  const formValue = {
+    ...{ value: useWatch({ control, name }) as string },
+    ...{ value: getValues(name) as string },
+  };
   useEffect(() => {
     if (!isOpen) return;
 
-    const curItem = itemRefs[currentLocales[0]];
-    const dropdownParent = curItem.closest('.dropdown-scroll') as HTMLElement;
+    const curItem = itemRefs[formValue.value];
+    const dropdownParent = curItem
+      ? (curItem.closest('.dropdown-scroll') as HTMLElement)
+      : null;
     if (curItem && dropdownParent) {
       dropdownParent.scroll({
         top: curItem.offsetTop - dropdownParent.offsetHeight / 2,

@@ -17,9 +17,19 @@ export function SettingsPageLayout({
     if (!pageRef.current || !typedState || !typedState.scrollTo) {
       return;
     }
-    const elem = pageRef.current.querySelector(`#${typedState.scrollTo}`);
+    const elem = pageRef.current.querySelector(
+      `#${typedState.scrollTo}`
+    ) as HTMLElement | null;
     if (elem) {
-      elem.scrollIntoView({ behavior: 'smooth', block: 'start' });
+      // stupid way of doing this, just get the closest overflow-y-auto
+      // usually its just the parentElem
+      const closestScroll = elem.closest(
+        '.overflow-y-auto'
+      ) as HTMLElement | null;
+      if (closestScroll) {
+        // The 45 is just enough padding for making the scroll look perfect
+        closestScroll.scroll({ top: elem.offsetTop - 45, behavior: 'smooth' });
+      }
     }
   }, [state]);
 
