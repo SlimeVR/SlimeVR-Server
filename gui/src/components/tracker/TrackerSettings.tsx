@@ -14,9 +14,10 @@ import { useDebouncedEffect } from '../../hooks/timeout';
 import { useTrackerFromId } from '../../hooks/tracker';
 import { useWebsocketAPI } from '../../hooks/websocket-api';
 import {
-  getYawInDegrees,
   MountingOrientationDegreesToQuatT,
+  QuaternionFromQuatT,
   rotationToQuatMap,
+  similarQuaternions,
 } from '../../maths/quaternion';
 import { ArrowLink } from '../commons/ArrowLink';
 import { BodyPartIcon } from '../commons/BodyPartIcon';
@@ -29,17 +30,18 @@ import { MountingSelectionMenu } from '../onboarding/pages/mounting/MountingSele
 import { IMUVisualizerWidget } from '../widgets/IMUVisualizerWidget';
 import { SingleTrackerBodyAssignmentMenu } from './SingleTrackerBodyAssignmentMenu';
 import { TrackerCard } from './TrackerCard';
+import { Quaternion } from 'three';
 
-const rotationsLabels = {
-  [rotationToQuatMap.BACK]: 'tracker-rotation-back',
-  [rotationToQuatMap.FRONT]: 'tracker-rotation-front',
-  [rotationToQuatMap.LEFT]: 'tracker-rotation-left',
-  [rotationToQuatMap.RIGHT]: 'tracker-rotation-right',
+const rotationsLabels: [Quaternion, string][] = [
+  [rotationToQuatMap.BACK, 'tracker-rotation-back'],
+  [rotationToQuatMap.FRONT, 'tracker-rotation-front'],
+  [rotationToQuatMap.LEFT, 'tracker-rotation-left'],
+  [rotationToQuatMap.RIGHT, 'tracker-rotation-right'],
   // [rotationToQuatMap.LEFT_BACK]: 'tracker-rotation-left_back',
   // [rotationToQuatMap.RIGHT_BACK]: 'tracker-rotation-right_back',
   // [rotationToQuatMap.LEFT_FRONT]: 'tracker-rotation-left_front',
   // [rotationToQuatMap.RIGHT_FRONT]: 'tracker-rotation-right_front',
-};
+];
 
 export function TrackerSettingsPage() {
   const { l10n } = useLocalization();
@@ -66,7 +68,7 @@ export function TrackerSettingsPage() {
 
   const tracker = useTrackerFromId(trackernum, deviceid);
 
-  const onDirectionSelected = (mountingOrientationDegrees: number) => {
+  const onDirectionSelected = (mountingOrientationDegrees: Quaternion) => {
     if (!tracker) return;
 
     const assignreq = new AssignTrackerRequestT();
@@ -94,10 +96,8 @@ export function TrackerSettingsPage() {
     setSelectBodypart(false);
   };
 
-  const currRotationDegrees = useMemo(() => {
-    return tracker?.tracker.info?.mountingOrientation
-      ? getYawInDegrees(tracker?.tracker.info?.mountingOrientation)
-      : null;
+  const currRotation = useMemo(() => {
+    return QuaternionFromQuatT(tracker?.tracker.info?.mountingOrientation);
   }, [tracker?.tracker.info?.mountingOrientation]);
 
   const updateTrackerSettings = () => {
@@ -110,8 +110,8 @@ export function TrackerSettingsPage() {
       return;
     const assignreq = new AssignTrackerRequestT();
     assignreq.bodyPosition = tracker?.tracker.info?.bodyPart || BodyPart.NONE;
-    assignreq.mountingOrientation = currRotationDegrees
-      ? MountingOrientationDegreesToQuatT(currRotationDegrees)
+    assignreq.mountingOrientation = currRotation
+      ? MountingOrientationDegreesToQuatT(currRotation)
       : null;
 
     assignreq.displayName = trackerName;
@@ -335,9 +335,10 @@ export function TrackerSettingsPage() {
                   <BodyPartIcon bodyPart={BodyPart.NONE}></BodyPartIcon>
                   <Typography>
                     {l10n.getString(
-                      currRotationDegrees !== null
-                        ? rotationsLabels[currRotationDegrees] ||
-                            'tracker-rotation-custom'
+                      currRotation !== null
+                        ? (rotationsLabels.find((q) =>
+                            similarQuaternions(q[0], currRotation)
+                          ) || [])[1] || 'tracker-rotation-custom'
                         : 'tracker-rotation-none'
                     )}
                   </Typography>

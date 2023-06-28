@@ -7,6 +7,7 @@ import { Typography } from '../../../commons/Typography';
 import { useLocalization } from '@fluent/react';
 import { FootIcon } from '../../../commons/icon/FootIcon';
 import { rotationToQuatMap } from '../../../../maths/quaternion';
+import { Quaternion } from 'three';
 
 function PieSliceOfFeet({
   onClick,
@@ -24,10 +25,7 @@ function PieSliceOfFeet({
   return (
     <g
       onClick={onClick}
-      className={classNames(
-        'fill-none stroke-none hover:fill-background-10',
-        'hover:stroke-background-10'
-      )}
+      className={classNames('fill-background-10 stroke-background-10')}
     >
       <path
         d={d}
@@ -54,7 +52,7 @@ export function MountingSelectionMenu({
 }: {
   isOpen: boolean;
   onClose: () => void;
-  onDirectionSelected: (direction: number) => void;
+  onDirectionSelected: (direction: Quaternion) => void;
 }) {
   const { l10n } = useLocalization();
   const { ref: refTrackers, layoutHeight: trackersHeight } =

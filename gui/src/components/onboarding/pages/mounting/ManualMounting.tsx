@@ -12,6 +12,7 @@ import { BodyAssignment } from '../../BodyAssignment';
 import { MountingSelectionMenu } from './MountingSelectionMenu';
 import { useLocalization } from '@fluent/react';
 import { useBreakpoint } from '../../../../hooks/breakpoint';
+import { Quaternion } from 'three';
 
 export function ManualMountingPage() {
   const { isMobile } = useBreakpoint('mobile');
@@ -41,7 +42,7 @@ export function ManualMountingPage() {
     [assignedTrackers]
   );
 
-  const onDirectionSelected = (mountingOrientationDegrees: number) => {
+  const onDirectionSelected = (mountingOrientationDegrees: Quaternion) => {
     (trackerPartGrouped[selectedRole] || []).forEach((td) => {
       const assignreq = new AssignTrackerRequestT();
 
