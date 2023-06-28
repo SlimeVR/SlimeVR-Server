@@ -3,31 +3,47 @@ import { MouseEventHandler } from 'react';
 import ReactModal from 'react-modal';
 import { useElemSize, useLayout } from '../../../../hooks/layout';
 import { Button } from '../../../commons/Button';
-import { AnkleIcon } from '../../../commons/icon/AnkleIcon';
 import { Typography } from '../../../commons/Typography';
 import { rotationToQuatMap } from '../../../tracker/TrackerSettings';
 import { useLocalization } from '@fluent/react';
+import { FootIcon } from '../../../commons/icon/FootIcon';
 
-function MoutingOrientationCard({
-  orientation,
+function PieSliceOfFeet({
   onClick,
+  id,
+  d,
+  noText = false,
 }: {
-  orientation: string;
-  onClick?: MouseEventHandler<HTMLDivElement>;
+  onClick?: MouseEventHandler<SVGGElement>;
+  id: string;
+  d: string;
+  noText?: boolean;
 }) {
-  // FIXME: Dont use AnkleIcon for this please
+  const { l10n } = useLocalization();
+
   return (
-    <div
+    <g
       onClick={onClick}
-      className="xs:h-32 mobile:h-20 bg-background-60 rounded-md flex justify-between p-4 hover:bg-background-50"
+      className={classNames(
+        'fill-none stroke-none hover:fill-background-10',
+        'hover:stroke-background-10'
+      )}
     >
-      <div className="flex flex-col justify-center">
-        <Typography variant="main-title">{orientation}</Typography>
-      </div>
-      <div className="flex flex-col justify-center fill-white">
-        <AnkleIcon width={58}></AnkleIcon>
-      </div>
-    </div>
+      <path
+        d={d}
+        className={classNames(
+          'fill-background-40 opacity-50 stroke-background-90',
+          'hover:fill-background-30 active:fill-background-20'
+        )}
+        transform="translate(125 125)"
+        id={id}
+      ></path>
+      <text strokeWidth="1">
+        <textPath xlinkHref={`#${id}`} startOffset="50%" textAnchor="middle">
+          {!noText ? l10n.getString(id) : ''}
+        </textPath>
+      </text>
+    </g>
   );
 }
 
@@ -68,23 +84,70 @@ export function MountingSelectionMenu({
           ref={refTrackers}
           style={{ height: trackersHeight - optionsHeight }}
         >
-          <div className="grid xs:grid-cols-2 xs:grid-rows-2 mobile:grid-cols-1 gap-6 w-full">
-            <MoutingOrientationCard
-              orientation={l10n.getString('tracker-rotation-left')}
-              onClick={() => onDirectionSelected(rotationToQuatMap.LEFT)}
-            />
-            <MoutingOrientationCard
-              orientation={l10n.getString('tracker-rotation-right')}
-              onClick={() => onDirectionSelected(rotationToQuatMap.RIGHT)}
-            />
-            <MoutingOrientationCard
-              orientation={l10n.getString('tracker-rotation-front')}
-              onClick={() => onDirectionSelected(rotationToQuatMap.FRONT)}
-            />
-            <MoutingOrientationCard
-              orientation={l10n.getString('tracker-rotation-back')}
-              onClick={() => onDirectionSelected(rotationToQuatMap.BACK)}
-            />
+          <div className="flex justify-center items-center gap-6 w-full">
+            <svg
+              width="400"
+              viewBox="0 0 250 250"
+              className="fill-background-40"
+            >
+              <g transform="translate(80, 0)" className="fill-background-10">
+                <FootIcon width={100} />
+              </g>
+              <g strokeWidth="4" className="stroke-background-90">
+                <PieSliceOfFeet
+                  d="M0 0-89 44A99 99 0 0 1-89-44Z"
+                  onClick={() => onDirectionSelected(rotationToQuatMap.LEFT)}
+                  id="tracker-rotation-left"
+                ></PieSliceOfFeet>
+                <PieSliceOfFeet
+                  d="M0 0-89-44A99 99 0 0 1-44-89Z"
+                  onClick={() =>
+                    onDirectionSelected(rotationToQuatMap.LEFT_FRONT)
+                  }
+                  id="tracker-rotation_left_front"
+                  noText={true}
+                ></PieSliceOfFeet>
+                <PieSliceOfFeet
+                  onClick={() => onDirectionSelected(rotationToQuatMap.FRONT)}
+                  d="M0 0-44-89A99 99 0 0 1 44-89Z"
+                  id="tracker-rotation-front"
+                ></PieSliceOfFeet>
+                <PieSliceOfFeet
+                  d="M0 0 44-89A99 99 0 0 1 89-44Z"
+                  onClick={() =>
+                    onDirectionSelected(rotationToQuatMap.RIGHT_FRONT)
+                  }
+                  id="tracker-rotation-front_right"
+                  noText={true}
+                ></PieSliceOfFeet>
+                <PieSliceOfFeet
+                  d="M0 0 89-44A99 99 0 0 1 89 44Z"
+                  onClick={() => onDirectionSelected(rotationToQuatMap.RIGHT)}
+                  id="tracker-rotation-right"
+                ></PieSliceOfFeet>
+                <PieSliceOfFeet
+                  d="M0 0 89 44A99 99 0 0 1 44 89Z"
+                  onClick={() =>
+                    onDirectionSelected(rotationToQuatMap.RIGHT_BACK)
+                  }
+                  id="tracker-rotation-back_right"
+                  noText={true}
+                ></PieSliceOfFeet>
+                <PieSliceOfFeet
+                  d="M0 0 44 89A99 99 0 0 1-44 89Z"
+                  onClick={() => onDirectionSelected(rotationToQuatMap.BACK)}
+                  id="tracker-rotation-back"
+                ></PieSliceOfFeet>
+                <PieSliceOfFeet
+                  d="M0 0-44 89A99 99 0 0 1-89 44Z"
+                  onClick={() =>
+                    onDirectionSelected(rotationToQuatMap.RIGHT_BACK)
+                  }
+                  id="tracker-rotation-back_right"
+                  noText={true}
+                ></PieSliceOfFeet>
+              </g>
+            </svg>
           </div>
         </div>
       </div>

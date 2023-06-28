@@ -31,8 +31,12 @@ import { TrackerCard } from './TrackerCard';
 
 export const rotationToQuatMap = {
   FRONT: 180,
+  LEFT_FRONT: 135,
   LEFT: 90,
+  LEFT_BACK: 45,
+  RIGHT_FRONT: -45,
   RIGHT: -90,
+  RIGHT_BACK: -135,
   BACK: 0,
 };
 
@@ -41,6 +45,10 @@ const rotationsLabels = {
   [rotationToQuatMap.FRONT]: 'tracker-rotation-front',
   [rotationToQuatMap.LEFT]: 'tracker-rotation-left',
   [rotationToQuatMap.RIGHT]: 'tracker-rotation-right',
+  [rotationToQuatMap.LEFT_BACK]: 'tracker-rotation-left_back',
+  [rotationToQuatMap.RIGHT_BACK]: 'tracker-rotation-right_back',
+  [rotationToQuatMap.LEFT_FRONT]: 'tracker-rotation-left_front',
+  [rotationToQuatMap.RIGHT_FRONT]: 'tracker-rotation-right_front',
 };
 
 export function TrackerSettingsPage() {
