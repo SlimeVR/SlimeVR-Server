@@ -2,6 +2,17 @@ import { Euler, Quaternion } from 'three';
 import { QuatT } from 'solarxr-protocol';
 import { DEG_TO_RAD } from './angle';
 
+export const rotationToQuatMap = {
+  FRONT: 180,
+  LEFT_FRONT: 135,
+  LEFT: 90,
+  LEFT_BACK: 45,
+  RIGHT_FRONT: -45,
+  RIGHT: -90,
+  RIGHT_BACK: -135,
+  BACK: 0,
+};
+
 export type QuatObject = { x: number; y: number; z: number; w: number };
 
 export function QuaternionFromQuatT(q?: QuatObject | null) {

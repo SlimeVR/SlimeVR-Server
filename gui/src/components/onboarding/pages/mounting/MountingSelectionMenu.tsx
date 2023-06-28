@@ -4,9 +4,9 @@ import ReactModal from 'react-modal';
 import { useElemSize, useLayout } from '../../../../hooks/layout';
 import { Button } from '../../../commons/Button';
 import { Typography } from '../../../commons/Typography';
-import { rotationToQuatMap } from '../../../tracker/TrackerSettings';
 import { useLocalization } from '@fluent/react';
 import { FootIcon } from '../../../commons/icon/FootIcon';
+import { rotationToQuatMap } from '../../../../maths/quaternion';
 
 function PieSliceOfFeet({
   onClick,

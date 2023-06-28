@@ -148,6 +148,7 @@ tracker-rotation-front = Front
 tracker-rotation-left = Left
 tracker-rotation-right = Right
 tracker-rotation-back = Back
+tracker-rotation-custom = Custom
 
 ## Tracker information
 tracker-infos-manufacturer = Manufacturer

@@ -16,6 +16,7 @@ import { useWebsocketAPI } from '../../hooks/websocket-api';
 import {
   getYawInDegrees,
   MountingOrientationDegreesToQuatT,
+  rotationToQuatMap,
 } from '../../maths/quaternion';
 import { ArrowLink } from '../commons/ArrowLink';
 import { BodyPartIcon } from '../commons/BodyPartIcon';
@@ -29,26 +30,15 @@ import { IMUVisualizerWidget } from '../widgets/IMUVisualizerWidget';
 import { SingleTrackerBodyAssignmentMenu } from './SingleTrackerBodyAssignmentMenu';
 import { TrackerCard } from './TrackerCard';
 
-export const rotationToQuatMap = {
-  FRONT: 180,
-  LEFT_FRONT: 135,
-  LEFT: 90,
-  LEFT_BACK: 45,
-  RIGHT_FRONT: -45,
-  RIGHT: -90,
-  RIGHT_BACK: -135,
-  BACK: 0,
-};
-
 const rotationsLabels = {
   [rotationToQuatMap.BACK]: 'tracker-rotation-back',
   [rotationToQuatMap.FRONT]: 'tracker-rotation-front',
   [rotationToQuatMap.LEFT]: 'tracker-rotation-left',
   [rotationToQuatMap.RIGHT]: 'tracker-rotation-right',
-  [rotationToQuatMap.LEFT_BACK]: 'tracker-rotation-left_back',
-  [rotationToQuatMap.RIGHT_BACK]: 'tracker-rotation-right_back',
-  [rotationToQuatMap.LEFT_FRONT]: 'tracker-rotation-left_front',
-  [rotationToQuatMap.RIGHT_FRONT]: 'tracker-rotation-right_front',
+  // [rotationToQuatMap.LEFT_BACK]: 'tracker-rotation-left_back',
+  // [rotationToQuatMap.RIGHT_BACK]: 'tracker-rotation-right_back',
+  // [rotationToQuatMap.LEFT_FRONT]: 'tracker-rotation-left_front',
+  // [rotationToQuatMap.RIGHT_FRONT]: 'tracker-rotation-right_front',
 };
 
 export function TrackerSettingsPage() {
@@ -107,7 +97,7 @@ export function TrackerSettingsPage() {
   const currRotationDegrees = useMemo(() => {
     return tracker?.tracker.info?.mountingOrientation
       ? getYawInDegrees(tracker?.tracker.info?.mountingOrientation)
-      : rotationToQuatMap.FRONT;
+      : null;
   }, [tracker?.tracker.info?.mountingOrientation]);
 
   const updateTrackerSettings = () => {
@@ -120,8 +110,9 @@ export function TrackerSettingsPage() {
       return;
     const assignreq = new AssignTrackerRequestT();
     assignreq.bodyPosition = tracker?.tracker.info?.bodyPart || BodyPart.NONE;
-    assignreq.mountingOrientation =
-      MountingOrientationDegreesToQuatT(currRotationDegrees);
+    assignreq.mountingOrientation = currRotationDegrees
+      ? MountingOrientationDegreesToQuatT(currRotationDegrees)
+      : null;
 
     assignreq.displayName = trackerName;
     assignreq.trackerId = tracker?.tracker.trackerId;
@@ -341,11 +332,14 @@ export function TrackerSettingsPage() {
               </Typography>
               <div className="flex justify-between bg-background-80 w-full p-3 rounded-lg">
                 <div className="flex gap-3 items-center">
-                  <BodyPartIcon
-                    bodyPart={tracker?.tracker.info?.bodyPart}
-                  ></BodyPartIcon>
+                  <BodyPartIcon bodyPart={BodyPart.NONE}></BodyPartIcon>
                   <Typography>
-                    {l10n.getString(rotationsLabels[currRotationDegrees])}
+                    {l10n.getString(
+                      currRotationDegrees !== null
+                        ? rotationsLabels[currRotationDegrees] ||
+                            'tracker-rotation-custom'
+                        : 'tracker-rotation-none'
+                    )}
                   </Typography>
                 </div>
                 <div className="flex">
