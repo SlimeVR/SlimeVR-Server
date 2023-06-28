@@ -145,9 +145,13 @@ tracker-table-column-url = URL
 
 ## Tracker rotation
 tracker-rotation-front = Front
+tracker-rotation-front_left = Front-Left
+tracker-rotation-front_right = Front-Right
 tracker-rotation-left = Left
 tracker-rotation-right = Right
 tracker-rotation-back = Back
+tracker-rotation-back_left = Back-Left
+tracker-rotation-back_right = Back-Right
 tracker-rotation-custom = Custom
 
 ## Tracker information

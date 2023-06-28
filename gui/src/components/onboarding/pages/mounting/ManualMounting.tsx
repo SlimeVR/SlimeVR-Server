@@ -63,6 +63,7 @@ export function ManualMountingPage() {
   return (
     <>
       <MountingSelectionMenu
+        bodyPart={selectedRole}
         isOpen={selectedRole !== BodyPart.NONE}
         onClose={() => setSelectRole(BodyPart.NONE)}
         onDirectionSelected={onDirectionSelected}

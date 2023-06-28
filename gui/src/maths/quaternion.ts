@@ -3,12 +3,12 @@ import { QuatT } from 'solarxr-protocol';
 
 export const rotationToQuatMap = {
   FRONT: new Quaternion(0, 1, 0, 0),
-  LEFT_FRONT: new Quaternion(0, 0.924, 0, 0.383),
+  FRONT_LEFT: new Quaternion(0, 0.924, 0, 0.383),
   LEFT: new Quaternion(0, 0.707, 0, 0.707),
-  LEFT_BACK: new Quaternion(0, 0.383, 0, 0.924),
-  RIGHT_FRONT: new Quaternion(0, -0.924, 0, 0.383),
+  BACK_LEFT: new Quaternion(0, 0.383, 0, 0.924),
+  FRONT_RIGHT: new Quaternion(0, -0.924, 0, 0.383),
   RIGHT: new Quaternion(0, -0.707, 0, 0.707),
-  RIGHT_BACK: new Quaternion(0, -0.383, 0, 0.924),
+  BACK_RIGHT: new Quaternion(0, -0.383, 0, 0.924),
   BACK: new Quaternion(0, 0, 0, 1),
 };
 

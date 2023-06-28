@@ -37,10 +37,10 @@ const rotationsLabels: [Quaternion, string][] = [
   [rotationToQuatMap.FRONT, 'tracker-rotation-front'],
   [rotationToQuatMap.LEFT, 'tracker-rotation-left'],
   [rotationToQuatMap.RIGHT, 'tracker-rotation-right'],
-  // [rotationToQuatMap.LEFT_BACK]: 'tracker-rotation-left_back',
-  // [rotationToQuatMap.RIGHT_BACK]: 'tracker-rotation-right_back',
-  // [rotationToQuatMap.LEFT_FRONT]: 'tracker-rotation-left_front',
-  // [rotationToQuatMap.RIGHT_FRONT]: 'tracker-rotation-right_front',
+  [rotationToQuatMap.BACK_LEFT, 'tracker-rotation-back_left'],
+  [rotationToQuatMap.BACK_RIGHT, 'tracker-rotation-back_right'],
+  [rotationToQuatMap.FRONT_LEFT, 'tracker-rotation-front_left'],
+  [rotationToQuatMap.FRONT_RIGHT, 'tracker-rotation-front_right'],
 ];
 
 export function TrackerSettingsPage() {
@@ -160,6 +160,7 @@ export function TrackerSettingsPage() {
         onRoleSelected={onRoleSelected}
       ></SingleTrackerBodyAssignmentMenu>
       <MountingSelectionMenu
+        bodyPart={tracker?.tracker.info?.bodyPart}
         isOpen={selectRotation}
         onClose={() => setSelectRotation(false)}
         onDirectionSelected={onDirectionSelected}
@@ -168,7 +169,7 @@ export function TrackerSettingsPage() {
         <div className="flex flex-col w-full md:max-w-xs gap-2">
           {tracker && (
             <TrackerCard
-              bg={'bg-background-70'}
+              bg="bg-background-70"
               device={tracker?.device}
               tracker={tracker?.tracker}
               shakeHighlight={false}
