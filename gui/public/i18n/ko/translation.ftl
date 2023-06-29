@@ -1,6 +1,3 @@
-### SlimeVR complete GUI translations
-
-
 # Please developers (not translators) don't reuse a key inside another key
 # or concat text with a translation string in the code, use the appropriate
 # features like variables and selectors in each appropriate case!
@@ -13,11 +10,19 @@
 websocket-connecting = 서버에 연결하는 중...
 websocket-connection_lost = 서버와의 연결이 끊어졌어요. 다시 연결하는 중...
 
+## Update notification
+
+version_update-title = 새로운 버전 발견: { $version }
+version_update-description = "{ version_update-update }"를 눌러 설치 프로그램을 다운로드하세요.
+version_update-update = 업데이트
+version_update-close = 닫기
+
 ## Tips
 
 tips-find_tracker = 내 트래커가 어떤 트래커인지 모르시겠다구요? 트래커를 흔들면 해당 항목이 빛날 거예요.
 tips-do_not_move_heels = 기록하는 동안 발뒤꿈치가 움직이지 않도록 조심하세요!
 tips-file_select = 파일을 <u>열거나,</u> 여기에 드래그&드롭하세요.
+tips-tap_setup = 목록에서 트래커를 선택하는 대신 할당할 트래커를 천천히 2번 탭해서 선택할 수 있어요.
 
 ## Body parts
 
@@ -95,10 +100,15 @@ navbar-mounting = 착용 방향 정렬
 navbar-onboarding = 설정 마법사
 navbar-settings = 설정
 
-## Bounding volume hierarchy recording
+## Biovision hierarchy recording
 
 bvh-start_recording = BVH 기록
 bvh-recording = 기록중...
+
+## Tracking pause
+
+tracking-unpaused = 트래킹 일시 중지
+tracking-paused = 트래킹 재개
 
 ## Widget: Overlay settings
 
@@ -126,6 +136,7 @@ widget-developer_mode-more_info = 더 많은 정보 보기
 widget-imu_visualizer = 회전
 widget-imu_visualizer-rotation_raw = Raw
 widget-imu_visualizer-rotation_preview = 미리보기
+widget-imu_visualizer-rotation_hide = 숨기기
 
 ## Tracker status
 
@@ -164,6 +175,9 @@ tracker-infos-custom_name = 사용자 정의 이름
 tracker-infos-url = 트래커 URL
 tracker-infos-version = 펌웨어 버전
 tracker-infos-hardware_rev = 하드웨어 리비전
+tracker-infos-hardware_identifier = 하드웨어 ID
+tracker-infos-imu = IMU 센서
+tracker-infos-board_type = 메인보드
 
 ## Tracker settings
 
@@ -252,6 +266,7 @@ settings-sidebar-fk_settings = FK 설정
 settings-sidebar-gesture_control = 제스처 제어
 settings-sidebar-interface = 인터페이스
 settings-sidebar-osc_router = OSC 라우터
+settings-sidebar-osc_trackers = VRChat OSC 트래커
 settings-sidebar-utils = 유틸리티
 settings-sidebar-serial = 시리얼 콘솔
 
@@ -439,7 +454,7 @@ settings-osc-vrchat-network-address-placeholder = VRChat IP 주소
 settings-osc-vrchat-network-trackers = 트래커
 settings-osc-vrchat-network-trackers-description = 활성화해서 데이터 송수신
 settings-osc-vrchat-network-trackers-chest = Chest
-settings-osc-vrchat-network-trackers-waist = Waist
+settings-osc-vrchat-network-trackers-hip = 골반
 settings-osc-vrchat-network-trackers-knees = Knees
 settings-osc-vrchat-network-trackers-feet = Feet
 settings-osc-vrchat-network-trackers-elbows = Elbows
@@ -511,7 +526,6 @@ onboarding-wifi_creds-password =
 
 onboarding-reset_tutorial-back = 착용 방향 정렬로 돌아가기
 onboarding-reset_tutorial = 정렬 튜토리얼
-onboarding-reset_tutorial-description = 이 기능은 아직 완성되지 않았어요, 지금은 일단 계속하기를 눌러주세요!
 
 ## Setup start
 
@@ -558,6 +572,22 @@ onboarding-connect_tracker-connected_trackers =
        *[other] 트래커 { $amount }개가 연결되었어요.
     }
 onboarding-connect_tracker-next = 모든 트래커를 잘 연결했어요
+
+## Tracker calibration tutorial
+
+onboarding-calibration_tutorial = IMU 캘리브레이션 튜토리얼
+onboarding-calibration_tutorial-subtitle = 트래커 틀어짐을 줄이는 데 도움이 될 거예요!
+onboarding-calibration_tutorial-status-calibrating = 캘리브레이팅
+
+## Tracker assignment tutorial
+
+onboarding-assignment_tutorial = 슬라임 트래커를 착용하기 전에 준비하는 방법
+onboarding-assignment_tutorial-first_step = 1. 신체 부위가 적힌 스티커를 가지고 있다면 트래커에 붙여보세요
+# This text has a character limit of around 11 characters, so please keep it short
+onboarding-assignment_tutorial-sticker = 스티커
+onboarding-assignment_tutorial-second_step = 2. 스트랩의 벨크로 테이프 쪽을 그림과 같은 방향으로 유지하면서 스트랩을 트래커에 끼우세요:
+onboarding-assignment_tutorial-second_step-continuation = 익스텐션 트래커의 벨크로 테이프는 다음과 같은 방향으로 끼워주세요:
+onboarding-assignment_tutorial-done = 스트랩과 스티커를 트래커에 잘 부착했어요!
 
 ## Tracker assignment setup
 
@@ -642,13 +672,11 @@ onboarding-assign_trackers-warning-WAIST =
 ## Tracker mounting method choose
 
 onboarding-choose_mounting = 착용 방향을 정렬하기 위해 어떤 방법을 사용할래요?
+# Multiline text
+onboarding-choose_mounting-description = 착용 방향 정렬은 트래커가 몸에 착용된 방향을 찾아 수정하도록 도와줘요.
 onboarding-choose_mounting-auto_mounting = 자동으로 방향 설정
-# Italized text
-onboarding-choose_mounting-auto_mounting-subtitle = 권장
 onboarding-choose_mounting-auto_mounting-description = 이렇게 하면 두 가지 자세로 모든 트래커의 착용 방향을 자동으로 설정할 수 있어요
 onboarding-choose_mounting-manual_mounting = 수동으로 방향 설정
-# Italized text
-onboarding-choose_mounting-manual_mounting-subtitle = 무엇을 하려는 지 알고 있다면요
 onboarding-choose_mounting-manual_mounting-description = 이렇게 하면 각 트래커의 착용 방향을 직접 고를 수 있어요
 
 ## Tracker manual mounting setup
@@ -682,7 +710,7 @@ onboarding-automatic_mounting-put_trackers_on-next = 모든 트래커를 착용�
 
 ## Tracker proportions method choose
 
-onboarding-choose_proportions = 신체 비율을 설정하 위해 어떤 방법을 사용할래요?
+onboarding-choose_proportions = 신체 비율을 설정하기 위해 어떤 방법을 사용할래요?
 onboarding-choose_proportions-auto_proportions = 자동으로 비율 설정
 # Italized text
 onboarding-choose_proportions-auto_proportions-subtitle = 권장
@@ -752,3 +780,6 @@ onboarding-automatic_proportions-done-description = 신체 비율 보정이 완�
 ## Home
 
 home-no_trackers = 감지되거나 할당된 트래커가 없어요.
+
+## Status system
+
