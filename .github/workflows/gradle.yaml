@@ -197,7 +197,7 @@ jobs:
           cd ../../../../dmg/
           ./bundle_dmg.sh --volname slimevr --icon slimevr 180 170 --app-drop-link 480 170 \
           --window-size 660 400 --hide-extension ../macos/slimevr.app \
-          --volicon ../macos/slimevr.app/Contents/Resources/slimevr.icns --skip-jenkins \
+          --volicon ../macos/slimevr.app/Contents/Resources/icon.icns --skip-jenkins \
           --eula ../../../../LICENSE-MIT slimevr.dmg ../macos/slimevr.app
 
       - uses: actions/upload-artifact@v3.1.0

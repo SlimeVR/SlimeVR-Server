@@ -1,6 +1,10 @@
-const plugin = require('tailwindcss/plugin');
+import plugin from 'tailwindcss/plugin'
+import forms from '@tailwindcss/forms'
+import gradient from 'tailwind-gradient-mask-image'
+import type { Config } from 'tailwindcss'
 
-const rem = (pt) => `${pt / 16}rem`;
+
+const rem = (pt: number) => `${pt / 16}rem`;
 
 const colors = {
   'blue-gray': {
@@ -151,13 +155,15 @@ const colors = {
   },
 };
 
-module.exports = {
+const config = {
   content: ['./src/**/*.{js,jsx,ts,tsx}'],
   theme: {
     screens: {
+      mobile: { raw: 'not (min-width: 800px)' },
       xs: '800px',
       sm: '900px',
       md: '1100px',
+      'md-max': { raw: 'not (min-width: 1100px)' },
       lg: '1300px',
       xl: '1600px',
     },
@@ -196,7 +202,7 @@ module.exports = {
         DEFAULT: rem(12),
       },
       fontWeight: {
-        DEFAULT: 500,
+        DEFAULT: '500',
       },
       color: {
         DEFAULT: 'rgb(var(--default-color), <alpha-value>)',
@@ -219,17 +225,18 @@ module.exports = {
         'slime-yellow': `linear-gradient(135deg, ${colors['yellow-accent'][100]} 50%, ${colors['yellow-background'][700]} 50% 100%)`,
         'slime-orange': `linear-gradient(135deg, ${colors['orange-accent'][100]} 50%, ${colors['orange-background'][700]} 50% 100%)`,
         'slime-red': `linear-gradient(135deg, ${colors['red-accent'][100]} 50%, ${colors['red-background'][700]} 50% 100%)`,
-        'dark': `linear-gradient(135deg, ${colors['dark-accent'][100]} 50%, ${colors['dark-background'][700]} 50% 100%)`,
-        'light': `linear-gradient(135deg, ${colors['light-accent'][100]} 50%, ${colors['light-background'][700]} 50% 100%)`,
+        dark: `linear-gradient(135deg, ${colors['dark-accent'][100]} 50%, ${colors['dark-background'][700]} 50% 100%)`,
+        light: `linear-gradient(135deg, ${colors['light-accent'][100]} 50%, ${colors['light-background'][700]} 50% 100%)`,
         'trans-flag': `linear-gradient(135deg, ${colors['trans-blue'][800]} 40%, ${colors['trans-blue'][700]} 40% 70%, ${colors['trans-blue'][600]} 70% 100%)`,
       },
     },
   },
   plugins: [
-    require('@tailwindcss/forms'),
-    require('tailwind-gradient-mask-image'),
+    forms,
+    gradient,
     plugin(function ({ addUtilities }) {
-      const textConfig = (fontSize, fontWeight) => ({
+
+      const textConfig = (fontSize: any, fontWeight: any) => ({
         fontSize,
         fontWeight,
       });
@@ -244,4 +251,6 @@ module.exports = {
       });
     }),
   ],
-};
+} satisfies Config
+
+export default config;

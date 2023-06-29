@@ -4,7 +4,7 @@ export function TrashIcon({ width = 33 }: { width: number }) {
       xmlns="http://www.w3.org/2000/svg"
       viewBox="0 0 24 24"
       width={width}
-      height="24"
+      height="29"
     >
       <path
         fillRule="evenodd"

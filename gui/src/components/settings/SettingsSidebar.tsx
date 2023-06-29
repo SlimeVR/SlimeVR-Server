@@ -74,13 +74,9 @@ export function SettingsSidebar() {
           <SettingsLink to="/settings/osc/router" scrollTo="router">
             {l10n.getString('settings-sidebar-osc_router')}
           </SettingsLink>
-        </div>
-        <div className="flex flex-col gap-2">
           <SettingsLink to="/settings/osc/vrchat" scrollTo="vrchat">
             {l10n.getString('settings-sidebar-osc_trackers')}
           </SettingsLink>
-        </div>
-        <div className="flex flex-col gap-2">
           <SettingsLink to="/settings/osc/vmc" scrollTo="vmc">
             VMC
           </SettingsLink>

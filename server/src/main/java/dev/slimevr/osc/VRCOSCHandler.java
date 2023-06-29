@@ -11,7 +11,6 @@ import dev.slimevr.platform.SteamVRBridge;
 import dev.slimevr.tracking.processor.HumanPoseManager;
 import dev.slimevr.tracking.trackers.Tracker;
 import dev.slimevr.tracking.trackers.TrackerPosition;
-import dev.slimevr.tracking.trackers.TrackerRole;
 import dev.slimevr.tracking.trackers.TrackerStatus;
 import io.eiren.util.collections.FastList;
 import io.eiren.util.logging.LogManager;
@@ -298,7 +297,7 @@ public class VRCOSCHandler implements OSCHandler {
 	public void yawAlign() {
 		if (oscSender != null && oscSender.isConnected()) {
 			for (Tracker shareableTracker : computedTrackers) {
-				if (shareableTracker.getTrackerPosition().getTrackerRole() == TrackerRole.HEAD) {
+				if (shareableTracker.getTrackerPosition() == TrackerPosition.HEAD) {
 					var hmdAngles = shareableTracker.getRotation().toEulerAngles(EulerOrder.XYZ);
 					oscArgs.clear();
 					oscArgs.add(0f);

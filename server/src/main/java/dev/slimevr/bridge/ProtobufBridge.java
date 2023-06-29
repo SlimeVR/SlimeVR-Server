@@ -91,6 +91,8 @@ public abstract class ProtobufBridge implements Bridge {
 		target.setPosition(source.getPosition());
 		target.setRotation(source.getRotation());
 		target.setStatus(source.getStatus());
+		target.setBatteryLevel(source.getBatteryLevel());
+		target.setBatteryVoltage(source.getBatteryVoltage());
 		target.dataTick();
 	}
 
@@ -103,6 +105,7 @@ public abstract class ProtobufBridge implements Bridge {
 			return;
 		for (Tracker tracker : sharedTrackers) {
 			writeTrackerUpdate(tracker);
+			writeBatteryUpdate(tracker);
 		}
 	}
 
@@ -126,6 +129,12 @@ public abstract class ProtobufBridge implements Bridge {
 	}
 
 	@VRServerThread
+	protected void writeBatteryUpdate(Tracker localTracker) {
+		return;
+	};
+
+
+	@VRServerThread
 	protected void processMessageReceived(ProtobufMessage message) {
 		// if(!message.hasPosition())
 		// LogManager.log.info("[" + bridgeName + "] MSG: " + message);
@@ -137,6 +146,8 @@ public abstract class ProtobufBridge implements Bridge {
 			trackerStatusReceived(message.getTrackerStatus());
 		} else if (message.hasTrackerAdded()) {
 			trackerAddedReceived(message.getTrackerAdded());
+		} else if (message.hasBattery()) {
+			batteryReceived(message.getBattery());
 		}
 	}
 
@@ -166,6 +177,11 @@ public abstract class ProtobufBridge implements Bridge {
 			tracker.dataTick();
 		}
 	}
+
+	@VRServerThread
+	protected void batteryReceived(Battery batteryMessage) {
+		return;
+	};
 
 	@VRServerThread
 	protected abstract Tracker createNewTracker(TrackerAdded trackerAdded);

@@ -54,6 +54,10 @@
       "active": false
     },
     "allowlist": {
+      "dialog": {
+        "all": false,
+        "save": true
+      },
       "shell": {
         "all": false,
         "execute": true,
@@ -81,23 +85,6 @@
         "setSize": true
       }
     },
-    "windows": [
-      {
-        "title": "SlimeVR",
-        "width": 1289,
-        "height": 709,
-        "minWidth": 880,
-        "minHeight": 740,
-        "resizable": true,
-        "fullscreen": false,
-        "decorations": false,
-        "transparent": false,
-        "fileDropEnabled": false,
-        "visible": true,
-        "hiddenTitle": true,
-        "tabbingIdentifier": "slimevr"
-      }
-    ],
     "security": {
       "csp": null
     }

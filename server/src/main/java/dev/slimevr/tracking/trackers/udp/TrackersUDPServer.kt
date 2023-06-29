@@ -147,6 +147,7 @@ class TrackersUDPServer(private val port: Int, name: String, private val tracker
 				connection.name + "/" + trackerId,
 				"IMU Tracker #" + VRServer.getCurrentLocalTrackerId(),
 				null,
+				trackerNum = trackerId,
 				hasRotation = true,
 				hasAcceleration = true,
 				userEditable = true,

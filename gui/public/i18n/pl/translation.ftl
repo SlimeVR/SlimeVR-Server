@@ -1,6 +1,3 @@
-### SlimeVR complete GUI translations
-
-
 # Please developers (not translators) don't reuse a key inside another key
 # or concat text with a translation string in the code, use the appropriate
 # features like variables and selectors in each appropriate case!
@@ -13,11 +10,19 @@
 websocket-connecting = Łączenie z serwerem
 websocket-connection_lost = Połączenie z serwerem zostało utracone. Próba ponownego połączenia...
 
+## Update notification
+
+version_update-title = Dostępna jest nowa wersja: { $version }
+version_update-description = Kliknięcie „Aktualizuj” spowoduje pobranie instalatora SlimeVR.
+version_update-update = Aktualizacja
+version_update-close = Zamknij
+
 ## Tips
 
 tips-find_tracker = Nie wiesz który tracker to który? Obracaj Trackerem , podczas obracania będzie sie on podświetlał w serwerze.
 tips-do_not_move_heels = Upewnij się aby pięty pozostały w bezruchu podczas nagrywania.
 tips-file_select = Przeciągnij i upuść pliki, których chcesz użyć, lub <u>przeglądaj</u>.
+tips-tap_setup = Możesz powoli stuknąć 2 razy tracker, aby go wybrać, zamiast wybierać go z menu.
 
 ## Body parts
 
@@ -95,10 +100,15 @@ navbar-mounting = Kalibracja Pozycji
 navbar-onboarding = Wstępna Konfiguracja
 navbar-settings = Ustawienia
 
-## Bounding volume hierarchy recording
+## Biovision hierarchy recording
 
 bvh-start_recording = Nagraj BVH
 bvh-recording = Nagrywam...
+
+## Tracking pause
+
+tracking-unpaused = Wstrzymaj śledzenie
+tracking-paused = Wznów śledzenie
 
 ## Widget: Overlay settings
 
@@ -126,6 +136,7 @@ widget-developer_mode-more_info = Więcej info
 widget-imu_visualizer = Obrót
 widget-imu_visualizer-rotation_raw = Raw
 widget-imu_visualizer-rotation_preview = Podgląd
+widget-imu_visualizer-rotation_hide = Ukryj
 
 ## Tracker status
 
@@ -164,6 +175,9 @@ tracker-infos-custom_name = Niestandardowa Nazwa
 tracker-infos-url = Tracker URL
 tracker-infos-version = Wersja Oprogramowania
 tracker-infos-hardware_rev = Wersja Sprzętu
+tracker-infos-hardware_identifier = Identyfikator sprzętu
+tracker-infos-imu = Czujnik IMU
+tracker-infos-board_type = Płyta główna
 
 ## Tracker settings
 
@@ -176,7 +190,7 @@ tracker-settings-mounting_section = Położenie Trackera
 tracker-settings-mounting_section-description = Gdzie jest Tracker zamontowany?
 tracker-settings-mounting_section-edit = Edytuj
 tracker-settings-drift_compensation_section = Allow drift compensation
-tracker-settings-drift_compensation_section-description = Should this tracker compensate for its drift when drift compensation is enabled?
+tracker-settings-drift_compensation_section-description = Czy ten tracker powinien kompensować dryf, gdy kompensacja dryfu jest włączona?
 tracker-settings-drift_compensation_section-edit = Allow drift compensation
 # The .<name> means it's an attribute and it's related to the top key.
 # In this case that is the settings for the assignment section.
@@ -252,6 +266,7 @@ settings-sidebar-fk_settings = FK settings
 settings-sidebar-gesture_control = Sterowanie gestami
 settings-sidebar-interface = Interfejs
 settings-sidebar-osc_router = OSC router
+settings-sidebar-osc_trackers = Śledzenie VRChat OSC
 settings-sidebar-utils = Narzędzia
 settings-sidebar-serial = Konsola Seryjna
 
@@ -367,6 +382,7 @@ settings-general-interface-feedback_sound = Dźwięk Informacji
 settings-general-interface-feedback_sound-description = Ta opcja odtworzy dźwięk, gdy reset zostanie uruchomiony
 settings-general-interface-feedback_sound-label = Dźwięk Informacji
 settings-general-interface-feedback_sound-volume = Poziom głośności sprzężenia zwrotnego
+settings-general-interface-theme = Motyw kolorystyczny
 settings-general-interface-lang = Wybierz Język
 settings-general-interface-lang-description = Zmień podstawowy język jaki chcesz używać
 settings-general-interface-lang-placeholder = Wybierz Język który będziesz używać
@@ -399,9 +415,9 @@ settings-osc-router = OSC router
 settings-osc-router-description =
     Przekaż wiadomości OSC z innego programu.
     Przydatne na przykład do używania innego programu OSC z VRChat.
-settings-osc-router-enable = Enable
-settings-osc-router-enable-description = Przełącz przekazywanie wiadomości.
-settings-osc-router-enable-label = Enable
+settings-osc-router-enable = Zezwól
+settings-osc-router-enable-description = Zezwól na przekazywanie wiadomości.
+settings-osc-router-enable-label = Zezwól
 settings-osc-router-network = Porty sieciowe
 # This cares about multilines
 settings-osc-router-network-description =
@@ -424,9 +440,9 @@ settings-osc-vrchat = VRChat OSC Trackers
 settings-osc-vrchat-description =
     Zmień ustawienia specyficzne dla VRChat, aby odbierać i wysyłać dane HMD
     dane trackerów dla FBT (działa na samodzielnym Quest).
-settings-osc-vrchat-enable = Enable
-settings-osc-vrchat-enable-description = Przełącz wysyłanie i odbieranie danych.
-settings-osc-vrchat-enable-label = Enable
+settings-osc-vrchat-enable = Zezwól
+settings-osc-vrchat-enable-description = Zezwól na wysyłanie i odbieranie danych.
+settings-osc-vrchat-enable-label = Zezwól
 settings-osc-vrchat-network = Porty sieciowe
 settings-osc-vrchat-network-description = Ustaw porty do odbierania i wysyłania danych do VRChat.
 settings-osc-vrchat-network-port_in =
@@ -441,7 +457,7 @@ settings-osc-vrchat-network-address-placeholder = VRChat ip address
 settings-osc-vrchat-network-trackers = Trackers
 settings-osc-vrchat-network-trackers-description = Przełącz wysyłanie określonych trackerów przez OSC.
 settings-osc-vrchat-network-trackers-chest = Klatka piersiowa
-settings-osc-vrchat-network-trackers-waist = Talia
+settings-osc-vrchat-network-trackers-hip = Biodro
 settings-osc-vrchat-network-trackers-knees = Kolana
 settings-osc-vrchat-network-trackers-feet = Stopy
 settings-osc-vrchat-network-trackers-elbows = Łokcie
@@ -514,14 +530,29 @@ onboarding-wifi_creds-password =
 onboarding-reset_tutorial-back = Powrót do Konfiguracji Położenia trackerów
 onboarding-reset_tutorial = Zresetuj poradnik
 onboarding-reset_tutorial-description = Ta funkcja jeszcze nie jest skończona.
+onboarding-reset_tutorial-skip = Pomiń krok
+# Cares about multiline
+onboarding-reset_tutorial-0 =
+    Stuknij { $taps } razy podświetlony tracker, aby uruchomić reset odchylenia.
+    
+    Spowoduje to, że trackery będą skierowane w tym samym kierunku, co Twój HMD.
+# Cares about multiline
+onboarding-reset_tutorial-1 =
+    Stuknij { $taps } razy podświetlony tracker, aby wywołać pełny reset.
+    
+    Musisz stać, aby to zrobić (i-pozycja). Istnieje 3-sekundowe opóźnienie (konfigurowalne), zanim to nastąpi.
+    Spowoduje to całkowite zresetowanie pozycji i rotacji wszystkich trackerów. Powinien rozwiązać większość problemów.
+# Cares about multiline
+onboarding-reset_tutorial-2 =
+    Stuknij { $taps } razy podświetlony tracker, aby uruchomić reset montażu.
+    
+    Resetowanie montażu pomaga w tym, w jaki sposób trackery są faktycznie zakładane na ciebie, więc jeśli przypadkowo je przeniosłeś i zmieniłeś ich orientację o dużą ilość, to pomoże.
+    
+    Musisz być w pozie, jakbyś jechał na nartach, tak jak jest to pokazane w kreatorze automatycznego montażu, i masz 3-sekundowe opóźnienie (konfigurowalne), zanim zostanie uruchomione.
 
 ## Setup start
 
 onboarding-home = Witamy w SlimeVR
-# This cares about multilines and it's centered!!
-onboarding-home-description =
-    Full-body tracking
-    dla każdego
 onboarding-home-start = Zaczynajmny!
 
 ## Enter VR part of setup
@@ -567,6 +598,27 @@ onboarding-connect_tracker-connected_trackers =
        *[other] { $amount } połączonych trackerów
     }
 onboarding-connect_tracker-next = Połączyłem już wszystkie trackery
+
+## Tracker calibration tutorial
+
+onboarding-calibration_tutorial = Samouczek kalibracji IMU
+onboarding-calibration_tutorial-subtitle = Pomoże to ograniczyć dryf trackera!
+onboarding-calibration_tutorial-description = Za każdym razem, gdy włączasz trackery, muszą one chwilę polerzeć na płaskiej powierzchni, aby się skalibrować. Zróbmy to samo, klikając przycisk „Kalibruj”, <b>nie ruszaj ich!</b>
+onboarding-calibration_tutorial-calibrate = Położyłem trackery na stole
+onboarding-calibration_tutorial-status-waiting = Czekam na Ciebie
+onboarding-calibration_tutorial-status-calibrating = Kalibracja
+onboarding-calibration_tutorial-status-success = Nieźle!
+onboarding-calibration_tutorial-status-error = Tracker został przeniesiony
+
+## Tracker assignment tutorial
+
+onboarding-assignment_tutorial = Jak przygotować Slime Tracker przed założeniem
+onboarding-assignment_tutorial-first_step = 1. Umieść naklejkę z częścią ciała (jeśli ją posiadasz) na trackerze według własnego uznania
+# This text has a character limit of around 11 characters, so please keep it short
+onboarding-assignment_tutorial-sticker = Naklejka
+onboarding-assignment_tutorial-second_step = 2. Przymocuj pasek do trackera, utrzymując stronę paska z haczykiem i pętelką w następującej orientacji:
+onboarding-assignment_tutorial-second_step-continuation = Strona z haczykiem i pętelką dla przedłużenia powinna być w tej orientacji:
+onboarding-assignment_tutorial-done = Umieszczam naklejki i paski!
 
 ## Tracker assignment setup
 
@@ -654,6 +706,20 @@ onboarding-assign_trackers-warning-WAIST =
        *[unknown] Talia jest przypisana, ale potrzebujesz również nieznanej nieprzypisanej części ciała!
     }
 
+## Tracker mounting method choose
+
+onboarding-choose_mounting = Jakiej metody kalibracji montażu użyć?
+# Multiline text
+onboarding-choose_mounting-description = Orientacja montażu koryguje umieszczenie trackerów na ciele.
+onboarding-choose_mounting-auto_mounting = Automatyczne mocowanie
+# Italized text
+onboarding-choose_mounting-auto_mounting-subtitle = Zalecana
+onboarding-choose_mounting-auto_mounting-description = To automatycznie wykryje kierunki montażu dla wszystkich twoich trackerów z 2 pozycji
+onboarding-choose_mounting-manual_mounting = Montaż ręczny
+# Italized text
+onboarding-choose_mounting-manual_mounting-subtitle = Jeśli wiesz, co robisz
+onboarding-choose_mounting-manual_mounting-description = Umożliwi to ręczne wybranie kierunku montażu dla każdego trackera
+
 ## Tracker manual mounting setup
 
 onboarding-manual_mounting-back = Cofnij się żeby wejść do VR
@@ -682,6 +748,24 @@ onboarding-automatic_mounting-preparation-step-1 = 2. Naciśnij "Reset" i poczek
 onboarding-automatic_mounting-put_trackers_on-title = Załóż trackery
 onboarding-automatic_mounting-put_trackers_on-description = Aby skalibrować rotacje, użyjemy trackerów które przed chwilą przypisałeś. Załóż wszystkie trackery, będziesz widział który to który na postaci po prawej.
 onboarding-automatic_mounting-put_trackers_on-next = Mam wszystkie trackery założone
+
+## Tracker proportions method choose
+
+onboarding-choose_proportions = Jakiej metody kalibracji proporcji użyć?
+# Multiline string
+onboarding-choose_proportions-description =
+    Proporcje ciała służą do poznania wymiarów twojego ciała. Są wymagane do obliczenia pozycji trackerów.
+    Kiedy proporcje twojego ciała nie odpowiadają zapisanym, precyzja śledzenia będzie gorsza i zauważysz takie rzeczy, jak jazda na łyżwach lub ślizganie się, lub twoje ciało nie pasuje dobrze do twojego awatara.
+onboarding-choose_proportions-auto_proportions = Proporcje automatyczne
+# Italized text
+onboarding-choose_proportions-auto_proportions-subtitle = Zalecana
+onboarding-choose_proportions-auto_proportions-description = To odgadnie twoje proporcje, rejestrując próbkę twoich ruchów i przepuszczając ją przez sztuczną inteligencję
+onboarding-choose_proportions-manual_proportions = Ręczne proporcje
+# Italized text
+onboarding-choose_proportions-manual_proportions-subtitle = Drobne detale
+onboarding-choose_proportions-manual_proportions-description = Umożliwi to ręczne dostosowanie proporcji poprzez ich bezpośrednią modyfikację
+onboarding-choose_proportions-save = Zachowaj proporcje
+onboarding-choose_proportions-file_type = Proporcje ciała
 
 ## Tracker manual proportions setup
 
@@ -746,3 +830,13 @@ onboarding-automatic_proportions-done-description = Twoja kalibracja ciała zost
 ## Home
 
 home-no_trackers = Nie wykryto trackerów
+
+## Status system
+
+status_system-StatusTrackerReset = Zaleca się wykonanie pełnego resetu, ponieważ jeden lub więcej trackerów nie jest wyregulowanych.
+status_system-StatusSteamVRDisconnected =
+    { $type ->
+        [steamvr_feeder] Nie można połączyć się z aplikacją SlimeVR Feeder.
+       *[other] Nie można połączyć się ze SteamVR przez sterownik SlimeVR.
+    }
+status_system-StatusTrackerError = Moduł śledzący { $trackerName } ma błąd.

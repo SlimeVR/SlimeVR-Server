@@ -72,7 +72,7 @@ function TrackerSmol({
   const trackerName = useName();
 
   return (
-    <div className="flex rounded-md py-3 px-5 w-full gap-4 h-16">
+    <div className="flex rounded-md py-3 px-4 w-full gap-4 h-16">
       <div className="flex flex-col justify-center items-center fill-background-10">
         <BodyPartIcon bodyPart={tracker.info?.bodyPart}></BodyPartIcon>
       </div>
@@ -115,6 +115,7 @@ export function TrackerCard({
   onClick,
   bg = 'bg-background-60',
   shakeHighlight = true,
+  warning = false,
 }: {
   tracker: TrackerDataT;
   device?: DeviceDataT;
@@ -124,6 +125,7 @@ export function TrackerCard({
   bg?: string;
   shakeHighlight?: boolean;
   onClick?: MouseEventHandler<HTMLDivElement>;
+  warning?: boolean;
 }) {
   const { useVelocity } = useTracker(tracker);
 
@@ -136,6 +138,7 @@ export function TrackerCard({
         'rounded-lg overflow-hidden',
         interactable && 'hover:bg-background-50 cursor-pointer',
         outlined && 'outline outline-2 outline-accent-background-40',
+        warning && 'border-status-warning border-solid border-2',
         bg
       )}
       style={

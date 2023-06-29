@@ -13,11 +13,19 @@
 websocket-connecting = Verbinding maken met de server
 websocket-connection_lost = Verbinding met de server verbroken. Opniew verbinding maken...
 
+## Update notification
+
+version_update-title = Nieuwe versie beschikbaar: { $version }
+version_update-description = Als u op "Bijwerken" klikt, wordt het SlimeVR-installatieprogramma voor je gedownload.
+version_update-update = Bijwerken
+version_update-close = Sluiten
+
 ## Tips
 
 tips-find_tracker = Weet je niet welke tracker welke is? Schud een tracker en het corresponderende item zal worden gemarkeerd.
 tips-do_not_move_heels = Zorg ervoor dat je hielen niet bewegen tijdens de opname!
 tips-file_select = Sleep bestanden naar hier om ze te gebruiken of <u>blader</u>.
+tips-tap_setup = Je kan langzaam 2 keer op je tracker tikken om deze te kiezen in plaats van deze in het menu te selecteren.
 
 ## Body parts
 
@@ -126,6 +134,7 @@ widget-developer_mode-more_info = Meer informatie
 widget-imu_visualizer = Rotatie
 widget-imu_visualizer-rotation_raw = Rauw
 widget-imu_visualizer-rotation_preview = Preview
+widget-imu_visualizer-rotation_hide = Verbergen
 
 ## Tracker status
 
@@ -164,6 +173,9 @@ tracker-infos-custom_name = Aangepaste naam
 tracker-infos-url = Tracker URL
 tracker-infos-version = Firmware versie
 tracker-infos-hardware_rev = Hardware revisie
+tracker-infos-hardware_identifier = Hardware-id
+tracker-infos-imu = IMU-sensor
+tracker-infos-board_type = Mainbord
 
 ## Tracker settings
 
@@ -252,6 +264,7 @@ settings-sidebar-fk_settings = FK-instellingen
 settings-sidebar-gesture_control = Tikbediening
 settings-sidebar-interface = Interface
 settings-sidebar-osc_router = OSC-router
+settings-sidebar-osc_trackers = VRChat OSC Trackers
 settings-sidebar-utils = Hulpmiddelen
 settings-sidebar-serial = Serieel console
 
@@ -361,6 +374,7 @@ settings-general-interface-feedback_sound = Feedback geluid
 settings-general-interface-feedback_sound-description = Speelt een geluid telkens de reset wordt uitgevoerd
 settings-general-interface-feedback_sound-label = Feedback geluid
 settings-general-interface-feedback_sound-volume = Feedback geluid volume
+settings-general-interface-theme = Themakleur
 settings-general-interface-lang = Selecteer taal
 settings-general-interface-lang-description = Verander de standaardtaal die je wilt gebruiken.
 settings-general-interface-lang-placeholder = Selecteer de te gebruiken taal
@@ -435,7 +449,7 @@ settings-osc-vrchat-network-address-placeholder = VRChat IP-adres
 settings-osc-vrchat-network-trackers = Trackers
 settings-osc-vrchat-network-trackers-description = Schakel het verzenden van specifieke trackers via OSC in en uit.
 settings-osc-vrchat-network-trackers-chest = Borst
-settings-osc-vrchat-network-trackers-waist = Taille
+settings-osc-vrchat-network-trackers-hip = Heup
 settings-osc-vrchat-network-trackers-knees = Knieën
 settings-osc-vrchat-network-trackers-feet = Voeten
 settings-osc-vrchat-network-trackers-elbows = Ellebogen
@@ -471,6 +485,7 @@ settings-osc-vmc-vrm-model_loaded =
     }
 settings-osc-vmc-vrm-file_select = Sleep een modelbestand naar hier om ze te gebruiken of <u>blader</u>.
 settings-osc-vmc-anchor_hip = Heupverankering
+settings-osc-vmc-anchor_hip-description = Veranker de tracking aan de heupen, handig voor zittende VTubing. Als u deze uitschakelt, laadt u een VRM-model.
 settings-osc-vmc-anchor_hip-label = Heupverankering
 
 ## Setup/onboarding menu
@@ -478,6 +493,12 @@ settings-osc-vmc-anchor_hip-label = Heupverankering
 onboarding-skip = Setupgids overslaan
 onboarding-continue = Doorgaan
 onboarding-wip = WIP
+onboarding-previous_step = Vorige stap
+onboarding-setup_warning =
+    <b>Waarschuwing:</b> De initiële setup is nodig voor een goede tracking ervaring,
+    het is aangeraden deze te volgen indien dit de eerste keer is dat je SlimeVR gebruikt.
+onboarding-setup_warning-skip = Setupgids overslaan
+onboarding-setup_warning-cancel = Doorgaan met setupgids
 
 ## Wi-Fi setup
 
@@ -505,10 +526,6 @@ onboarding-reset_tutorial-description = Deze stap is nog niet afgewerkt, druk ge
 ## Setup start
 
 onboarding-home = Welkom bij SlimeVR
-# This cares about multilines and it's centered!!
-onboarding-home-description =
-    Maakt full-body tracking beschikbaar
-    voor iedereen!
 onboarding-home-start = Laten we beginnen!
 
 ## Enter VR part of setup
@@ -553,6 +570,17 @@ onboarding-connect_tracker-connected_trackers =
     } verbonden
 onboarding-connect_tracker-next = Ik heb al mijn trackers verbonden
 
+## Tracker calibration tutorial
+
+onboarding-calibration_tutorial = Handleiding voor IMU-kalibratie
+onboarding-calibration_tutorial-subtitle = Helpt met het verminderen van het driften van de trackers!
+onboarding-calibration_tutorial-description = Elke keer dat je jouw trackers inschakelt, moeten ze even op een plat oppervlak rusten om te kalibreren. Leg al je trackers op een vlak oppervlak en <b>verplaats ze niet!</b>
+onboarding-calibration_tutorial-calibrate = Al mijn trackers liggen neer
+onboarding-calibration_tutorial-status-waiting = Ik wacht op jou
+onboarding-calibration_tutorial-status-calibrating = Kalibreren
+onboarding-calibration_tutorial-status-success = Aardig!
+onboarding-calibration_tutorial-status-error = De tracker werd verplaatst
+
 ## Tracker assignment setup
 
 onboarding-assign_trackers-back = Ga terug naar de instellingen voor WiFi-configuratie
@@ -571,6 +599,83 @@ onboarding-assign_trackers-next = Ik heb alle trackers toegewezen
 
 ## Tracker assignment warnings
 
+# Note for devs, number is used for representing boolean states per bit.
+# $unassigned (Number) - Bits are based on BodyAssignment.ASSIGNMENT_RULES order
+onboarding-assign_trackers-warning-LEFT_FOOT =
+    { $unassigned ->
+        [0] De linkervoet is toegewezen, maar de linkerenkel, linkerdij en de borst, heup of taille moeten ook worden toegewezen!
+        [1] De linkervoet is toegewezen, maar het linkerdij en de borst, heup of taille moeten ook worden toegewezen!
+        [2] De linkervoet is toegewezen, maar de linkerenkel en de borst, heup of taille moeten ook worden toegewezen!
+        [3] De linkervoet is toegewezen, maar de borst, heup of taille moeten ook worden toegewezen!
+        [4] De linkervoet is toegewezen, maar de linkerenkel en linkerdij moeten ook worden toegewezen!
+        [5] De linkervoet is toegewezen, maar het linkerdij moet ook worden toegewezen!
+        [6] De linkervoet is toegewezen, maar de linkerenkel moet ook worden toegewezen!
+       *[other] De linkervoet is toegewezen, maar het onbekend lichaamsdeel moet ook worden toegewezen!
+    }
+# $unassigned (Number) - Bits are based on BodyAssignment.ASSIGNMENT_RULES order
+onboarding-assign_trackers-warning-RIGHT_FOOT =
+    { $unassigned ->
+        [0] De rechtervoet is toegewezen, maar de rechterenkel, rechterdij en de borst, heup of taille moeten ook worden toegewezen!
+        [1] De rechtervoet is toegewezen, maar het rechterdij en de borst, heup of taille moeten ook worden toegewezen!
+        [2] De rechtervoet is toegewezen, maar de rechterenkel en de borst, heup of taille moeten ook worden toegewezen!
+        [3] De rechtervoet is toegewezen, maar de borst, heup of taille moeten ook worden toegewezen!
+        [4] De rechtervoet is toegewezen, maar de rechterenkel en rechterdij moeten ook worden toegewezen!
+        [5] De rechtervoet is toegewezen, maar het rechterdij moet ook worden toegewezen!
+        [6] De rechtervoet is toegewezen, maar de rechterenkel moet ook worden toegewezen!
+       *[other] De rechtervoet is toegewezen, maar het onbekend lichaamsdeel moet ook worden toegewezen!
+    }
+# $unassigned (Number) - Bits are based on BodyAssignment.ASSIGNMENT_RULES order
+onboarding-assign_trackers-warning-LEFT_LOWER_LEG =
+    { $unassigned ->
+        [0] De linkerenkel is toegewezen, maar de linkerdij en de borst, heup of taille moeten ook worden toegewezen!
+        [1] De linkerenkel is toegewezen, maar de borst, heup of taille moeten ook worden toegewezen!
+        [2] De linkerenkel is toegewezen, maar de linkerdij moet ook worden toegewezen!
+       *[other] De linkerenkel is toegewezen, maar het onbekend lichaamsdeel moet ook worden toegewezen!
+    }
+# $unassigned (Number) - Bits are based on BodyAssignment.ASSIGNMENT_RULES order
+onboarding-assign_trackers-warning-RIGHT_LOWER_LEG =
+    { $unassigned ->
+        [0] De rechterenkel is toegewezen, maar de rechterdij en de borst, heup of taille moeten ook worden toegewezen!
+        [1] De rechterenkel is toegewezen, maar de borst, heup of taille moeten ook worden toegewezen!
+        [2] De rechterenkel is toegewezen, maar de rechterdij moet ook worden toegewezen!
+       *[other] De rechterenkel is toegewezen, maar het onbekend lichaamsdeel moet ook worden toegewezen!
+    }
+# $unassigned (Number) - Bits are based on BodyAssignment.ASSIGNMENT_RULES order
+onboarding-assign_trackers-warning-LEFT_UPPER_LEG =
+    { $unassigned ->
+        [0] De linkerdij is toegewezen, maar de borst, heup of taille moeten ook worden toegewezen!
+       *[other] De linkerdij is toegewezen, maar het onbekend lichaamsdeel moet ook worden toegewezen!
+    }
+# $unassigned (Number) - Bits are based on BodyAssignment.ASSIGNMENT_RULES order
+onboarding-assign_trackers-warning-RIGHT_UPPER_LEG =
+    { $unassigned ->
+        [0] De rechterdij is toegewezen, maar de borst, heup of taille moeten ook worden toegewezen!
+       *[other] De rechterdij is toegewezen, maar het onbekend lichaamsdeel moet ook worden toegewezen!
+    }
+# $unassigned (Number) - Bits are based on BodyAssignment.ASSIGNMENT_RULES order
+onboarding-assign_trackers-warning-HIP =
+    { $unassigned ->
+        [0] De heup is toegewezen, maar de borst moet ook worden toegewezen!
+       *[other] De heup is toegewezen, maar het onbekend lichaamsdeel moet ook worden toegewezen!
+    }
+# $unassigned (Number) - Bits are based on BodyAssignment.ASSIGNMENT_RULES order
+onboarding-assign_trackers-warning-WAIST =
+    { $unassigned ->
+        [0] De taille is toegewezen, maar de borst moet ook worden toegewezen!
+       *[other] De taille is toegewezen, maar het onbekend lichaamsdeel moet ook worden toegewezen!
+    }
+
+## Tracker mounting method choose
+
+onboarding-choose_mounting = Welke montagekalibratiemethode moet worden gebruikt?
+onboarding-choose_mounting-auto_mounting = Automatische bevestiging
+# Italized text
+onboarding-choose_mounting-auto_mounting-subtitle = Aanbevolen
+onboarding-choose_mounting-auto_mounting-description = Dit detecteert automatisch de montagerichtingen voor al uw trackers door middel van 2 poses
+onboarding-choose_mounting-manual_mounting = Handmatige bevestiging
+# Italized text
+onboarding-choose_mounting-manual_mounting-subtitle = Als je weet wat je doet
+onboarding-choose_mounting-manual_mounting-description = Hiermee kunt u de montagerichting handmatig kiezen voor elke tracker
 
 ## Tracker manual mounting setup
 
@@ -601,12 +706,25 @@ onboarding-automatic_mounting-put_trackers_on-title = Doe je trackers aan
 onboarding-automatic_mounting-put_trackers_on-description = Om bevestigingsrotaties te kalibreren, gaan we gebruik maken van de trackers die je net hebt toegewezen. Doe al je trackers aan, je kunt zien welke trackers welke zijn in de figuur rechts.
 onboarding-automatic_mounting-put_trackers_on-next = Ik heb al mijn trackers aan
 
+## Tracker proportions method choose
+
+onboarding-choose_proportions = Welke verhoudingskalibratiemethode moet worden gebruikt?
+onboarding-choose_proportions-auto_proportions = Automatische verhoudingen
+# Italized text
+onboarding-choose_proportions-auto_proportions-subtitle = Aanbevolen
+onboarding-choose_proportions-auto_proportions-description = We kunnen je verhoudingen proberen approximeren door middel van jouw bewegingen
+onboarding-choose_proportions-manual_proportions = Handmatige lichaamsverhoudingen
+# Italized text
+onboarding-choose_proportions-manual_proportions-subtitle = Voor kleine details
+onboarding-choose_proportions-manual_proportions-description = Hier kan je jouw verhoudingen handmatig aanpassen
+
 ## Tracker manual proportions setup
 
 onboarding-manual_proportions-back = Ga terug naar de reset tutorial
 onboarding-manual_proportions-title = Handmatige lichaamsverhoudingen
 onboarding-manual_proportions-precision = Precisie-aanpassing
 onboarding-manual_proportions-auto = Automatische kalibratie
+onboarding-manual_proportions-ratio = Aanpassen via verhoudingen
 
 ## Tracker automatic proportions setup
 
@@ -619,6 +737,14 @@ onboarding-automatic_proportions-put_trackers_on-title = Doe je trackers aan
 onboarding-automatic_proportions-put_trackers_on-description = Om je verhoudingen te kalibreren, gaan we gebruik maken van de trackers die je net hebt toegewezen. Doe al je trackers aan, je kunt zien welke trackers welke zijn in de figuur rechts.
 onboarding-automatic_proportions-put_trackers_on-next = Ik heb al mijn trackers aan
 onboarding-automatic_proportions-requirements-title = Vereisten
+# Each line of text is a different list item
+onboarding-automatic_proportions-requirements-description =
+    Je hebt in ieder geval genoeg trackers om je voeten te volgen (over het algemeen 5 trackers).
+    Je hebt je trackers en headset op.
+    Je draagt je trackers en headset.
+    Je trackers en headset zijn verbonden met de SlimeVR server.
+    Je trackers en headset werken goed binnen de SlimeVR server.
+    Je headset rapporteert positiegegevens aan de SlimeVR-server (dit betekent over het algemeen dat SteamVR wordt uitgevoerd en verbonden met SlimeVR met behulp van SlimeVR's SteamVR-stuurprogramma).
 onboarding-automatic_proportions-requirements-next = Ik heb de vereisten gelezen
 onboarding-automatic_proportions-start_recording-title = Zorg dat je klaar bent om te bewegen
 onboarding-automatic_proportions-start_recording-description = We gaan nu enkele specifieke houdingen en bewegingen opnemen. Deze worden in het volgende scherm geprompt. Zorg dat je klaar bent om te beginnen als de knop wordt ingedrukt!
@@ -626,6 +752,14 @@ onboarding-automatic_proportions-start_recording-next = Start opname
 onboarding-automatic_proportions-recording-title = REC
 onboarding-automatic_proportions-recording-description-p0 = Opname bezig...
 onboarding-automatic_proportions-recording-description-p1 = Voer de onderstaande bewegingen uit:
+# Each line of text is a different list item
+onboarding-automatic_proportions-recording-steps =
+    Sta rechtop, rol je hoofd in een cirkel.
+    Buig je rug naar voren en hurk. Kijk tijdens het hurken naar links en dan naar rechts.
+    Draai je bovenlichaam naar links (tegen de klok in) en reik dan naar beneden naar de grond.
+    Draai je bovenlichaam naar rechts (met de klok mee) en reik dan naar beneden naar de grond.
+    Rol je heupen in een cirkelvormige beweging alsof je een hoelahoep gebruikt.
+    Als er nog tijd over is voor de opname, kunt u deze stappen herhalen totdat deze is voltooid.
 onboarding-automatic_proportions-recording-processing = Resultaat verwerken
 # $time (Number) - Seconds left for the automatic calibration recording to finish (max 20)
 onboarding-automatic_proportions-recording-timer =
