@@ -166,9 +166,9 @@ fn main() {
 							}
 							_ => ("other", "".to_string()),
 						};
-						app_handle
-							.emit_all("server-status", emit_me)
-							.expect("Failed to emit");
+						if let Err(e) = app_handle.emit_all("server-status", emit_me) {
+							log::error!("Exception when trying to emit server logs to tauri: {}", e)
+						}
 					}
 					log::error!("Java server receiver died");
 					app_handle
