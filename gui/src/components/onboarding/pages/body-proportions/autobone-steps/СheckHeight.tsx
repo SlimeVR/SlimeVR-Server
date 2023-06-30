@@ -1,17 +1,22 @@
-import { HeightRequestT, HeightResponseT, RpcMessage } from 'solarxr-protocol';
+import {
+  AutoBoneSettingsT,
+  ChangeSettingsRequestT,
+  HeightRequestT,
+  HeightResponseT,
+  RpcMessage,
+} from 'solarxr-protocol';
 import { useWebsocketAPI } from '../../../../../hooks/websocket-api';
 import { Button } from '../../../../commons/Button';
 import { Typography } from '../../../../commons/Typography';
 import { useLocalization } from '@fluent/react';
 import { useForm } from 'react-hook-form';
-import { useEffect, useMemo } from 'react';
+import { useEffect, useMemo, useState } from 'react';
 import { NumberSelector } from '../../../../commons/NumberSelector';
 import { DEFAULT_HEIGHT, MIN_HEIGHT } from '../ProportionsChoose';
 import { useLocaleConfig } from '../../../../../i18n/config';
 
 interface HeightForm {
   height: number;
-  hmdHeight: number;
 }
 
 export function CheckHeight({
@@ -24,7 +29,8 @@ export function CheckHeight({
   variant: 'onboarding' | 'alone';
 }) {
   const { l10n } = useLocalization();
-  const { control, watch, handleSubmit, setValue } = useForm<HeightForm>();
+  const [hmdDiff, setHmdDiff] = useState(0);
+  const { control, handleSubmit, setValue } = useForm<HeightForm>();
   const { sendRPCPacket, useRPCPacket } = useWebsocketAPI();
   const { currentLocales } = useLocaleConfig();
 
@@ -42,7 +48,7 @@ export function CheckHeight({
     RpcMessage.HeightResponse,
     ({ hmdHeight, estimatedFullHeight }: HeightResponseT) => {
       setValue('height', estimatedFullHeight || DEFAULT_HEIGHT);
-      setValue('hmdHeight', hmdHeight);
+      setHmdDiff(estimatedFullHeight - hmdHeight);
     }
   );
 
@@ -51,7 +57,13 @@ export function CheckHeight({
   }, []);
 
   const onSubmit = (values: HeightForm) => {
-    // FIXME: set height
+    const changeSettings = new ChangeSettingsRequestT();
+    const autobone = new AutoBoneSettingsT();
+    autobone.targetFullHeight = values.height;
+    autobone.targetHmdHeight = values.height - hmdDiff;
+    changeSettings.autoBoneSettings = autobone;
+
+    sendRPCPacket(RpcMessage.ChangeSettingsRequest, changeSettings);
     nextStep();
   };
 
