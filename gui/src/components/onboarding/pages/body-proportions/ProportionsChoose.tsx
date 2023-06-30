@@ -16,7 +16,9 @@ import { writeTextFile } from '@tauri-apps/api/fs';
 import { useIsTauri } from '../../../../hooks/breakpoint';
 import { useAppContext } from '../../../../hooks/app';
 
-const MIN_HEIGHT = 0.4;
+export const MIN_HEIGHT = 0.4;
+export const MAX_HEIGHT = 4;
+export const DEFAULT_HEIGHT = 1.5;
 
 export function ProportionsChoose() {
   const isTauri = useIsTauri();
