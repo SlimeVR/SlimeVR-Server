@@ -4,6 +4,7 @@ import com.google.flatbuffers.FlatBufferBuilder;
 import dev.slimevr.autobone.AutoBone.Epoch;
 import dev.slimevr.autobone.AutoBoneListener;
 import dev.slimevr.autobone.AutoBoneProcessType;
+import dev.slimevr.autobone.errors.BodyProportionError;
 import dev.slimevr.config.OverlayConfig;
 import dev.slimevr.poseframeformat.PoseFrames;
 import dev.slimevr.protocol.GenericConnection;
@@ -88,6 +89,8 @@ public class RPCHandler extends ProtocolHandler<RpcMessageHeader>
 		registerPacketListener(RpcMessage.StatusSystemRequest, this::onStatusSystemRequest);
 
 		registerPacketListener(RpcMessage.SetPauseTrackingRequest, this::onSetPauseTrackingRequest);
+
+		registerPacketListener(RpcMessage.HeightRequest, this::onHeightRequest);
 
 		this.api.server.getAutoBoneHandler().addListener(this);
 	}
@@ -487,5 +490,19 @@ public class RPCHandler extends ProtocolHandler<RpcMessageHeader>
 			return;
 
 		this.api.server.humanPoseManager.setPauseTracking(req.pauseTracking());
+	}
+
+	public void onHeightRequest(GenericConnection conn, RpcMessageHeader messageHeader) {
+		FlatBufferBuilder fbb = new FlatBufferBuilder(32);
+
+		float hmdHeight = this.api.server.humanPoseManager.getHmdHeight();
+		int response = HeightResponse
+			.createHeightResponse(
+				fbb,
+				hmdHeight,
+				hmdHeight / BodyProportionError.eyeHeightToHeightRatio
+			);
+		fbb.finish(createRPCMessage(fbb, RpcMessage.HeightResponse, response));
+		conn.send(fbb.dataBuffer());
 	}
 }
