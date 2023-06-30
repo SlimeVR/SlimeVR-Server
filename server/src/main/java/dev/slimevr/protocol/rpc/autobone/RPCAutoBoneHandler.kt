@@ -61,6 +61,7 @@ class RPCAutoBoneHandler(
 		message: String?,
 		current: Long,
 		total: Long,
+		eta: Float,
 		completed: Boolean,
 		success: Boolean,
 	) {
@@ -84,11 +85,9 @@ class RPCAutoBoneHandler(
 				)
 			}
 
-			if (total > 0 && current >= 0) {
-				AutoBoneProcessStatusResponse.addCurrent(fbb, current)
-				AutoBoneProcessStatusResponse.addTotal(fbb, total)
-			}
-
+			AutoBoneProcessStatusResponse.addCurrent(fbb, current)
+			AutoBoneProcessStatusResponse.addTotal(fbb, total)
+			AutoBoneProcessStatusResponse.addEta(fbb, eta)
 			AutoBoneProcessStatusResponse.addCompleted(fbb, completed)
 			AutoBoneProcessStatusResponse.addSuccess(fbb, success)
 

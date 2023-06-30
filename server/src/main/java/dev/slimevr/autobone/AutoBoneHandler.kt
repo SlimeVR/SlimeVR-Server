@@ -43,39 +43,26 @@ class AutoBoneHandler(private val server: VRServer) {
 
 	private fun announceProcessStatus(
 		processType: AutoBoneProcessType,
-		message: String?,
-		current: Long,
-		total: Long,
-		completed: Boolean,
-		success: Boolean,
-	) {
-		listeners
-			.forEach(
-				Consumer { listener: AutoBoneListener ->
-					listener
-						.onAutoBoneProcessStatus(
-							processType,
-							message,
-							current,
-							total,
-							completed,
-							success
-						)
-				}
-			)
-	}
-
-	private fun announceProcessStatus(
-		processType: AutoBoneProcessType,
-		message: String,
+		message: String? = null,
+		current: Long = 0L,
+		total: Long = 0L,
+		eta: Float = 0f,
 		completed: Boolean = false,
 		success: Boolean = true,
 	) {
-		announceProcessStatus(processType, message, 0, 0, completed, success)
-	}
-
-	private fun announceProcessStatus(processType: AutoBoneProcessType, current: Long, total: Long) {
-		announceProcessStatus(processType, null, current, total, completed = false, success = true)
+		listeners.forEach(
+			Consumer {
+				it.onAutoBoneProcessStatus(
+					processType,
+					message,
+					current,
+					total,
+					eta,
+					completed,
+					success
+				)
+			}
+		)
 	}
 
 	val lengthsString: String
@@ -119,6 +106,8 @@ class AutoBoneHandler(private val server: VRServer) {
 				// 1000 samples at 20 ms per sample is 20 seconds
 				val sampleCount = autoBone.globalConfig.sampleCount
 				val sampleRate = autoBone.globalConfig.sampleRateMs
+				val totalTime: Float = (sampleCount * sampleRate).toFloat()
+
 				val framesFuture = poseRecorder
 					.startFrameRecording(
 						sampleCount,
@@ -126,9 +115,9 @@ class AutoBoneHandler(private val server: VRServer) {
 					) { progress: RecordingProgress ->
 						announceProcessStatus(
 							AutoBoneProcessType.RECORD,
-							progress.frame.toLong(),
-							progress.totalFrames
-								.toLong()
+							current = progress.frame.toLong(),
+							total = progress.totalFrames.toLong(),
+							eta = progress.frame * totalTime / progress.totalFrames
 						)
 					}
 				val frames = framesFuture.get()
