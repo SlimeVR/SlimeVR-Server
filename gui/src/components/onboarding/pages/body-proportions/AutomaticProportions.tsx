@@ -54,7 +54,7 @@ export function AutomaticProportionsPage() {
               steps={[
                 { type: 'numbered', component: PutTrackersOnStep },
                 { type: 'numbered', component: RequirementsStep },
-                {type: 'numbered', component: CheckHeight },
+                { type: 'numbered', component: CheckHeight },
                 { type: 'numbered', component: StartRecording },
                 { type: 'fullsize', component: Recording },
                 { type: 'numbered', component: VerifyResultsStep },

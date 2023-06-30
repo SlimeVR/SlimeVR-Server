@@ -24,8 +24,7 @@ export function CheckHeight({
   variant: 'onboarding' | 'alone';
 }) {
   const { l10n } = useLocalization();
-  const { control, watch, handleSubmit, setValue, } =
-    useForm<HeightForm>();
+  const { control, watch, handleSubmit, setValue } = useForm<HeightForm>();
   const { sendRPCPacket, useRPCPacket } = useWebsocketAPI();
   const { currentLocales } = useLocaleConfig();
 
@@ -53,8 +52,8 @@ export function CheckHeight({
 
   const onSubmit = (values: HeightForm) => {
     // FIXME: set height
-    nextStep()
-  }
+    nextStep();
+  };
 
   return (
     <>
