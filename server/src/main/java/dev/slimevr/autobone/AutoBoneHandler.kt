@@ -103,10 +103,11 @@ class AutoBoneHandler(private val server: VRServer) {
 			if (poseRecorder.isReadyToRecord) {
 				announceProcessStatus(AutoBoneProcessType.RECORD, "Recording...")
 
-				// 1000 samples at 20 ms per sample is 20 seconds
+				// ex. 1000 samples at 20 ms per sample is 20 seconds
 				val sampleCount = autoBone.globalConfig.sampleCount
 				val sampleRate = autoBone.globalConfig.sampleRateMs
-				val totalTime: Float = (sampleCount * sampleRate).toFloat()
+				// Calculate total time in seconds
+				val totalTime: Float = (sampleCount * sampleRate) / 1000f
 
 				val framesFuture = poseRecorder
 					.startFrameRecording(

@@ -224,6 +224,17 @@ public class CurrentVRConfigConverter implements VersionedModelConverter {
 					tapDetectionNode.set("fullResetTaps", tapDetectionNode.get("resetTaps"));
 				}
 			}
+			if (version < 9) {
+				// Change default AutoBone recording length from 20 to 30
+				// seconds
+				ObjectNode autoBoneNode = (ObjectNode) modelData.get("autoBone");
+				if (autoBoneNode != null) {
+					JsonNode sampleCountNode = autoBoneNode.get("sampleCount");
+					if (sampleCountNode != null && sampleCountNode.intValue() == 1000) {
+						autoBoneNode.set("sampleCount", new IntNode(1500));
+					}
+				}
+			}
 		} catch (Exception e) {
 			LogManager.severe("Error during config migration: " + e);
 		}
