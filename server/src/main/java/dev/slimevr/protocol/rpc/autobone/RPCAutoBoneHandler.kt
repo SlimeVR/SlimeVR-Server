@@ -70,27 +70,28 @@ class RPCAutoBoneHandler(
 			}
 
 			val fbb = FlatBufferBuilder(32)
-			val messageOffset =
-				if (message != null) fbb.createString(message) else null
-			AutoBoneProcessStatusResponse.startAutoBoneProcessStatusResponse(
-				fbb
-			)
+
+			AutoBoneProcessStatusResponse.startAutoBoneProcessStatusResponse(fbb)
 			AutoBoneProcessStatusResponse.addProcessType(
 				fbb,
 				processType.id
 			)
-			if (messageOffset != null) {
+
+			message?.let {
 				AutoBoneProcessStatusResponse.addMessage(
 					fbb,
-					messageOffset
+					fbb.createString(message)
 				)
 			}
+
 			if (total > 0 && current >= 0) {
 				AutoBoneProcessStatusResponse.addCurrent(fbb, current)
 				AutoBoneProcessStatusResponse.addTotal(fbb, total)
 			}
+
 			AutoBoneProcessStatusResponse.addCompleted(fbb, completed)
 			AutoBoneProcessStatusResponse.addSuccess(fbb, success)
+
 			val update = AutoBoneProcessStatusResponse
 				.endAutoBoneProcessStatusResponse(fbb)
 			val outbound: Int = rpcHandler.createRPCMessage(
@@ -117,18 +118,13 @@ class RPCAutoBoneHandler(
 			}
 
 			val fbb = FlatBufferBuilder(32)
-			val skeletonPartOffsets =
-				IntArray(epoch.configValues.size)
-			var i = 0
-			for ((key, value) in epoch
-				.configValues) {
-				skeletonPartOffsets[i++] = SkeletonPart
-					.createSkeletonPart(fbb, key.id, value)
-			}
+
 			val skeletonPartsOffset = AutoBoneEpochResponse
 				.createAdjustedSkeletonPartsVector(
 					fbb,
-					skeletonPartOffsets
+					epoch.configValues.map { (key, value) ->
+						SkeletonPart.createSkeletonPart(fbb, key.id, value)
+					}.toIntArray()
 				)
 			val update = AutoBoneEpochResponse
 				.createAutoBoneEpochResponse(
