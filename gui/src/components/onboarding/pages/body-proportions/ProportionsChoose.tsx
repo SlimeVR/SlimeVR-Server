@@ -1,6 +1,6 @@
 import { useOnboarding } from '../../../../hooks/onboarding';
 import { useLocalization } from '@fluent/react';
-import { useState } from 'react';
+import { useMemo, useState } from 'react';
 import classNames from 'classnames';
 import { Typography } from '../../../commons/Typography';
 import { Button } from '../../../commons/Button';
@@ -14,8 +14,9 @@ import saveAs from 'file-saver';
 import { save } from '@tauri-apps/api/dialog';
 import { writeTextFile } from '@tauri-apps/api/fs';
 import { useIsTauri } from '../../../../hooks/breakpoint';
-import { useTrackers } from '../../../../hooks/tracker';
 import { useAppContext } from '../../../../hooks/app';
+
+const MIN_HEIGHT = 0.4;
 
 export function ProportionsChoose() {
   const isTauri = useIsTauri();
@@ -23,9 +24,26 @@ export function ProportionsChoose() {
   const { applyProgress, state } = useOnboarding();
   const { useRPCPacket, sendRPCPacket } = useWebsocketAPI();
   const [animated, setAnimated] = useState(false);
-  const { computedTrackers }= useAppContext();
+  const { computedTrackers } = useAppContext();
 
-  console.log(computedTrackers);
+  const hmdTracker = useMemo(
+    () =>
+      computedTrackers.find(
+        (tracker) =>
+          tracker.tracker.trackerId?.trackerNum === 1 &&
+          tracker.tracker.trackerId.deviceId?.id === undefined
+      ),
+    [computedTrackers]
+  );
+
+  const beneathFloor = useMemo(
+    () =>
+      !!(
+        hmdTracker?.tracker.position &&
+        hmdTracker.tracker.position.y < MIN_HEIGHT
+      ),
+    [hmdTracker?.tracker.position?.y]
+  );
 
   useRPCPacket(
     RpcMessage.SkeletonConfigResponse,
@@ -158,6 +176,7 @@ export function ProportionsChoose() {
                 </div>
                 <Button
                   variant="primary"
+                  disabled={beneathFloor}
                   to="/onboarding/body-proportions/auto"
                   className="self-start mt-auto"
                   state={{ alonePage: state.alonePage }}
