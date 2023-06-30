@@ -336,12 +336,19 @@ export function TrackerSettingsPage() {
                   <BodyPartIcon bodyPart={BodyPart.NONE}></BodyPartIcon>
                   <Typography>
                     {l10n.getString(
-                      currRotation !== null
-                        ? (rotationsLabels.find((q) =>
-                            similarQuaternions(q[0], currRotation)
-                          ) || [])[1] || 'tracker-rotation-custom'
-                        : 'tracker-rotation-none'
-                    )}
+                      (rotationsLabels.find((q) =>
+                        similarQuaternions(q[0], currRotation)
+                      ) || [])[1] || 'tracker-rotation-custom'
+                    ) +
+                      (tracker?.tracker.info?.mountingResetOrientation &&
+                      !similarQuaternions(
+                        QuaternionFromQuatT(
+                          tracker.tracker.info.mountingResetOrientation
+                        ),
+                        new Quaternion()
+                      )
+                        ? ` ${l10n.getString('tracker-rotation-overriden')}`
+                        : '')}
                   </Typography>
                 </div>
                 <div className="flex">

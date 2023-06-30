@@ -153,6 +153,7 @@ tracker-rotation-back = Back
 tracker-rotation-back_left = Back-Left
 tracker-rotation-back_right = Back-Right
 tracker-rotation-custom = Custom
+tracker-rotation-overriden = (is getting overriden by mounting reset)
 
 ## Tracker information
 tracker-infos-manufacturer = Manufacturer
