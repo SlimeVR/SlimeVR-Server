@@ -89,12 +89,11 @@ class AutoBoneHandler(private val server: VRServer) {
 			) { epoch: Epoch? -> listeners.forEach(Consumer { listener: AutoBoneListener -> listener.onAutoBoneEpoch(epoch!!) }) }
 	}
 
-	fun startProcessByType(processType: AutoBoneProcessType): Boolean {
+	fun startProcessByType(processType: AutoBoneProcessType?): Boolean {
 		when (processType) {
 			AutoBoneProcessType.RECORD -> startRecording()
 			AutoBoneProcessType.SAVE -> saveRecording()
 			AutoBoneProcessType.PROCESS -> processRecording()
-			AutoBoneProcessType.APPLY -> applyValues()
 			else -> {
 				return false
 			}
@@ -172,6 +171,18 @@ class AutoBoneHandler(private val server: VRServer) {
 			LogManager.severe("[AutoBone] Failed recording!", e)
 		} finally {
 			recordingThread = null
+		}
+	}
+
+	fun stopRecording() {
+		if (poseRecorder.isRecording) {
+			poseRecorder.stopFrameRecording()
+		}
+	}
+
+	fun cancelRecording() {
+		if (poseRecorder.isRecording) {
+			poseRecorder.cancelFrameRecording()
 		}
 	}
 
@@ -393,11 +404,5 @@ class AutoBoneHandler(private val server: VRServer) {
 
 	fun applyValues() {
 		autoBone.applyAndSaveConfig()
-		announceProcessStatus(
-			AutoBoneProcessType.APPLY,
-			"Adjusted values applied!",
-			completed = true,
-			success = true
-		)
 	}
 }
