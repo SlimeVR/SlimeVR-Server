@@ -4,6 +4,7 @@ import com.google.flatbuffers.FlatBufferBuilder;
 import dev.slimevr.protocol.GenericConnection;
 import dev.slimevr.protocol.ProtocolAPI;
 import dev.slimevr.protocol.ProtocolHandler;
+import dev.slimevr.tracking.trackers.Tracker;
 import io.eiren.util.logging.LogManager;
 import solarxr_protocol.MessageBundle;
 import solarxr_protocol.data_feed.*;
@@ -78,6 +79,7 @@ public class DataFeedHandler extends ProtocolHandler<DataFeedMessageHeader> {
 					.getDeviceManager()
 					.getDevices()
 			);
+		// Synthetic tracker is computed tracker apparently
 		int trackersOffset = DataFeedBuilder
 			.createSyntheticTrackersData(
 				fbb,
@@ -85,7 +87,7 @@ public class DataFeedHandler extends ProtocolHandler<DataFeedMessageHeader> {
 				this.api.server
 					.getAllTrackers()
 					.stream()
-					.filter(tracker -> tracker.getDevice() == null)
+					.filter(Tracker::isComputed)
 					.collect(Collectors.toList())
 			);
 

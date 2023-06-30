@@ -14,6 +14,8 @@ import saveAs from 'file-saver';
 import { save } from '@tauri-apps/api/dialog';
 import { writeTextFile } from '@tauri-apps/api/fs';
 import { useIsTauri } from '../../../../hooks/breakpoint';
+import { useTrackers } from '../../../../hooks/tracker';
+import { useAppContext } from '../../../../hooks/app';
 
 export function ProportionsChoose() {
   const isTauri = useIsTauri();
@@ -21,6 +23,9 @@ export function ProportionsChoose() {
   const { applyProgress, state } = useOnboarding();
   const { useRPCPacket, sendRPCPacket } = useWebsocketAPI();
   const [animated, setAnimated] = useState(false);
+  const { computedTrackers }= useAppContext();
+
+  console.log(computedTrackers);
 
   useRPCPacket(
     RpcMessage.SkeletonConfigResponse,

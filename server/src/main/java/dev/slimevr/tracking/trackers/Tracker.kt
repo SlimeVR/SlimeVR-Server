@@ -22,9 +22,18 @@ const val TIMEOUT_MS = 2000L
  */
 class Tracker @JvmOverloads constructor(
 	val device: Device?,
-	val id: Int, // VRServer.nextLocalTrackerId
-	val name: String, // unique, for config
-	val displayName: String = "Tracker #$id", // default display GUI name
+	/**
+	 * VRServer.nextLocalTrackerId
+	 */
+	val id: Int,
+	/**
+	 * unique, for config
+	 */
+	val name: String,
+	/**
+	 * default display GUI name
+	 */
+	val displayName: String = "Tracker #$id",
 	trackerPosition: TrackerPosition?,
 	/**
 	 * It's like the ID, but it should be local to the device if it has one
@@ -33,11 +42,23 @@ class Tracker @JvmOverloads constructor(
 	val hasPosition: Boolean = false,
 	val hasRotation: Boolean = false,
 	val hasAcceleration: Boolean = false,
-	val userEditable: Boolean = false, // User can change TrackerPosition, mounting...
-	val isInternal: Boolean = false, // Is used within SlimeVR (shareable trackers)
-	val isComputed: Boolean = false, // Has solved position + rotation (Vive trackers)
+	/**
+	 * User can change TrackerPosition, mounting...
+	 */
+	val userEditable: Boolean = false,
+	/**
+	 * Is used within SlimeVR (shareable trackers)
+	 */
+	val isInternal: Boolean = false,
+	/**
+	 * Has solved position + rotation (Vive trackers)
+	 */
+	val isComputed: Boolean = false,
 	val imuType: IMUType? = null,
-	val usesTimeout: Boolean = false, // Automatically set the status to DISCONNECTED
+	/**
+	 * Automatically set the status to DISCONNECTED
+	 */
+	val usesTimeout: Boolean = false,
 	val allowFiltering: Boolean = false,
 	val needsReset: Boolean = false,
 	val needsMounting: Boolean = false,
