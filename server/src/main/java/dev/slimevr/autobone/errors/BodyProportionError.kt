@@ -13,12 +13,11 @@ class BodyProportionError : IAutoBoneError {
 	override fun getStepError(trainingStep: AutoBoneStep): Float {
 		return getBodyProportionError(
 			trainingStep.skeleton1,
-			trainingStep.currentHmdHeight
+			trainingStep.currentHmdHeight / trainingStep.eyeHeightToHeightRatio
 		)
 	}
 
-	fun getBodyProportionError(humanPoseManager: HumanPoseManager, height: Float): Float {
-		val fullHeight = height / eyeHeightToHeightRatio
+	fun getBodyProportionError(humanPoseManager: HumanPoseManager, fullHeight: Float): Float {
 		var sum = 0f
 		for (limiter in proportionLimits) {
 			sum += FastMath.abs(limiter.getProportionError(humanPoseManager, fullHeight))
