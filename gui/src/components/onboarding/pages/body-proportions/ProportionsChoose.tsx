@@ -1,5 +1,5 @@
 import { useOnboarding } from '../../../../hooks/onboarding';
-import { useLocalization } from '@fluent/react';
+import { Localized, useLocalization } from '@fluent/react';
 import { useMemo, useState } from 'react';
 import classNames from 'classnames';
 import { Typography } from '../../../commons/Typography';
@@ -38,9 +38,9 @@ export function ProportionsChoose() {
 
   const beneathFloor = useMemo(
     () =>
-      !!(
+      !(
         hmdTracker?.tracker.position &&
-        hmdTracker.tracker.position.y < MIN_HEIGHT
+        hmdTracker.tracker.position.y >= MIN_HEIGHT
       ),
     [hmdTracker?.tracker.position?.y]
   );
@@ -167,16 +167,23 @@ export function ProportionsChoose() {
                     </Typography>
                   </div>
                   <div>
-                    <Typography color="secondary">
-                      {l10n.getString(
-                        'onboarding-choose_proportions-auto_proportions-description'
-                      )}
-                    </Typography>
+                    <Localized
+                      id="onboarding-choose_proportions-auto_proportions-descriptionv2"
+                      elems={{ b: <b></b> }}
+                    >
+                      <Typography
+                        color="secondary"
+                        whitespace="whitespace-pre-line"
+                      >
+                        Description for autobone
+                      </Typography>
+                    </Localized>
                   </div>
                 </div>
                 <Button
                   variant="primary"
-                  disabled={beneathFloor}
+                  // Check if we are in dev mode and just let it be used
+                  disabled={beneathFloor && import.meta.env.PROD}
                   to="/onboarding/body-proportions/auto"
                   className="self-start mt-auto"
                   state={{ alonePage: state.alonePage }}
