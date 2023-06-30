@@ -371,7 +371,7 @@ class AutoBoneHandler(private val server: VRServer) {
 						")"
 				)
 			// #endregion
-			listeners.forEach(Consumer { listener: AutoBoneListener -> listener.onAutoBoneEnd(autoBone.legacyConfigs) })
+			listeners.forEach(Consumer { listener: AutoBoneListener -> listener.onAutoBoneEnd(autoBone.offsets) })
 			announceProcessStatus(
 				AutoBoneProcessType.PROCESS,
 				"Done processing!",

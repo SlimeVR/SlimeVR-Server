@@ -4,7 +4,6 @@ import dev.slimevr.config.AutoBoneConfig
 import dev.slimevr.config.ConfigManager
 import dev.slimevr.poseframeformat.PoseFrames
 import dev.slimevr.poseframeformat.player.TrackerFramesPlayer
-import dev.slimevr.tracking.processor.BoneType
 import dev.slimevr.tracking.processor.HumanPoseManager
 import java.util.*
 import java.util.function.Consumer
@@ -14,7 +13,6 @@ class AutoBoneStep(
 	val targetHmdHeight: Float,
 	val targetFullHeight: Float,
 	val frames: PoseFrames,
-	val intermediateOffsets: EnumMap<BoneType, Float>,
 	val epochCallback: Consumer<AutoBone.Epoch?>?,
 	serverConfig: ConfigManager,
 	var curEpoch: Int = 0,
