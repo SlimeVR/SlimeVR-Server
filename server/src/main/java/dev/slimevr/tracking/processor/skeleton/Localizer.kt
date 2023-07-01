@@ -23,7 +23,7 @@ enum class MovementStates {
 class Localizer(humanSkeleton: HumanSkeleton) {
 	// hyper parameters
 	companion object {
-		private const val WARMUP_FRAMES = 100
+		private const val WARMUP_FRAMES = 100 // ~0.1 seconds
 		private const val MAX_FOOT_PERCENTAGE = 50.0f
 		private const val MAX_ACCEL_UP = 2.0f
 		private const val SITTING_KNEE_THRESHOLD = 1.1f
@@ -100,7 +100,7 @@ class Localizer(humanSkeleton: HumanSkeleton) {
 		}
 		bufPrev = bufCur.parent
 
-		var finalTravel = Vector3.NULL
+		var finalTravel: Vector3
 
 		// get the movement of the skeleton by foot travel
 		footTravel = getPlantedFootTravel()
@@ -108,7 +108,6 @@ class Localizer(humanSkeleton: HumanSkeleton) {
 		// get the movement of the skeleton by the previous COM velocity
 		comTravel = getCOMTravel()
 
-		// sitting travel
 		sittingTravel = getSittingTravel()
 
 		// get the metric that this frame should rely on
@@ -137,7 +136,6 @@ class Localizer(humanSkeleton: HumanSkeleton) {
 			)
 		}
 
-		// update the skeletons root position
 		updateSkeletonPos(finalTravel)
 	}
 
@@ -228,11 +226,8 @@ class Localizer(humanSkeleton: HumanSkeleton) {
 		}
 	}
 
-	// get the sitting travel (just prevents hip movement)
+	// get the sitting travel (emulates hip lock)
 	private fun getSittingTravel(): Vector3 {
-		// calculate the sitting travel by computing the movement to keep the
-		// waist
-		// at the same location
 		val hip: Vector3 = skeleton.computedHipTracker.position
 
 		// get the distance to move the waist to the target waist
@@ -256,9 +251,7 @@ class Localizer(humanSkeleton: HumanSkeleton) {
 		return dist
 	}
 
-	// get the average velocity of the COM, the dead reckoned velocity, and
-	// the acceleration of the COM assuming the COM is moving at the
-	// average velocity
+	// get the movement of the COM based on the last velocity
 	private fun updateCOMAttributes() {
 		getCOMVelocity()
 		updateTargetCOM()
@@ -277,13 +270,11 @@ class Localizer(humanSkeleton: HumanSkeleton) {
 		if (worldReference === MovementStates.FOLLOW_FOOT || worldReference === MovementStates.FOLLOW_SITTING) {
 			targetCOM = bufCur.centerOfMass
 		} else {
-			// if the COM is the reference point, use the dead reckoned COM
 			currentCOM = targetCOM
 		}
 
 		targetCOM = targetCOM.plus(comVelocity.div(bufCur.timeDelta))
 
-		// correct any clipping through the floor
 		val lowTracker = getLowestTracker()
 
 		// update the target COM and velocity to reflect this new distance
@@ -314,13 +305,14 @@ class Localizer(humanSkeleton: HumanSkeleton) {
 		comVelocity = comPosStart.minus(comPosEnd).div((timeStart - timeEnd) / LegTweakBuffer.NS_CONVERT)
 
 		// if the feet have been the reference for a short amount of time nullify any upwards acceleration to prevent flying away
-		if (footFrames < 100) { // ~0.1 seconds
+		if (footFrames < WARMUP_FRAMES) {
 			comAccel = Vector3(
 				comAccel.x,
 				FastMath.clamp(comAccel.y, -9999.0f, 0.0f),
 				comAccel.z
 			)
 		}
+
 		// constantly pull the skeleton down a little to account for acceleration
 		// inaccuracy
 		val gravity = comAccel.y - CONSTANT_ACCELERATION
@@ -344,7 +336,6 @@ class Localizer(humanSkeleton: HumanSkeleton) {
 	}
 
 	// returns the tracker closest to or the furthest in the ground
-	// (a negative return value implies a tracker is in the ground)
 	private fun getLowestTracker(): Tracker {
 		val trackerList = arrayOf(
 			skeleton.computedHeadTracker,
@@ -360,14 +351,13 @@ class Localizer(humanSkeleton: HumanSkeleton) {
 			skeleton.computedRightFootTracker
 		)
 
-		var minVal = 9999f
+		var minVal = trackerList[0].position.y
 		var tempVal: Float
 		var retVal: Tracker = trackerList[0]
 		for (tracker in trackerList) {
 			if (tracker == null) {
 				continue
 			}
-
 			// get the max distance to the ground
 			tempVal = tracker.position.y - uncorrectedFloor
 			if (tempVal < minVal) {
