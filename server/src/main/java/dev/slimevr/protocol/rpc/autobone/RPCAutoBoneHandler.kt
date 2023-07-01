@@ -8,6 +8,7 @@ import dev.slimevr.autobone.AutoBoneProcessType.Companion.getById
 import dev.slimevr.poseframeformat.PoseFrames
 import dev.slimevr.protocol.GenericConnection
 import dev.slimevr.protocol.ProtocolAPI
+import dev.slimevr.protocol.rpc.RPCBuilder
 import dev.slimevr.protocol.rpc.RPCHandler
 import dev.slimevr.tracking.processor.config.SkeletonConfigOffsets
 import solarxr_protocol.rpc.AutoBoneEpochResponse
@@ -153,6 +154,16 @@ class RPCAutoBoneHandler(
 		messageHeader: RpcMessageHeader,
 	) {
 		api.server.autoBoneHandler.applyValues()
+
+		// Send the new body proportions, this is to update the listener's state
+		val fbb = FlatBufferBuilder(300)
+		val outbound = rpcHandler.createRPCMessage(
+			fbb,
+			RpcMessage.SkeletonConfigResponse,
+			RPCBuilder.createSkeletonConfig(fbb, api.server.humanPoseManager)
+		)
+		fbb.finish(outbound)
+		conn.send(fbb.dataBuffer())
 	}
 
 	private fun onAutoBoneStopRecordingRequest(

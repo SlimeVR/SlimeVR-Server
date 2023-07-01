@@ -38,7 +38,7 @@ class AutoBoneHandler(private val server: VRServer) {
 	}
 
 	fun removeListener(listener: AutoBoneListener) {
-		listeners.removeIf { l: AutoBoneListener -> listener === l }
+		listeners.removeIf { listener == it }
 	}
 
 	private fun announceProcessStatus(
@@ -50,19 +50,17 @@ class AutoBoneHandler(private val server: VRServer) {
 		completed: Boolean = false,
 		success: Boolean = true,
 	) {
-		listeners.forEach(
-			Consumer {
-				it.onAutoBoneProcessStatus(
-					processType,
-					message,
-					current,
-					total,
-					eta,
-					completed,
-					success
-				)
-			}
-		)
+		listeners.forEach {
+			it.onAutoBoneProcessStatus(
+				processType,
+				message,
+				current,
+				total,
+				eta,
+				completed,
+				success
+			)
+		}
 	}
 
 	val lengthsString: String
