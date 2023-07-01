@@ -1,12 +1,12 @@
 import { createContext, useContext, useMemo, useState } from 'react';
 import {
+  AutoBoneApplyRequestT,
   AutoBoneEpochResponseT,
   AutoBoneProcessRequestT,
   AutoBoneProcessStatusResponseT,
   AutoBoneProcessType,
   RpcMessage,
   SkeletonBone,
-  SkeletonConfigRequestT,
   SkeletonPartT,
 } from 'solarxr-protocol';
 import { useWebsocketAPI } from './websocket-api';
@@ -67,7 +67,7 @@ export function useProvideAutobone(): AutoboneContext {
   };
 
   const applyProcessing = () => {
-    startProcess(AutoBoneProcessType.APPLY);
+    sendRPCPacket(RpcMessage.AutoBoneApplyRequest, new AutoBoneApplyRequestT());
   };
 
   useRPCPacket(
@@ -101,16 +101,15 @@ export function useProvideAutobone(): AutoboneContext {
 
             case AutoBoneProcessType.PROCESS:
               setHasCalibration(data.success);
-
               break;
 
-            case AutoBoneProcessType.APPLY:
-              // Update skeleton config when applied
-              sendRPCPacket(
-                RpcMessage.SkeletonConfigRequest,
-                new SkeletonConfigRequestT()
-              );
-              break;
+            // case AutoBoneProcessType.APPLY:
+            //   // Update skeleton config when applied
+            //   sendRPCPacket(
+            //     RpcMessage.SkeletonConfigRequest,
+            //     new SkeletonConfigRequestT()
+            //   );
+            //   break;
           }
         }
       }
