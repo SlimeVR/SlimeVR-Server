@@ -139,7 +139,7 @@ export function Dropdown({
               <div
                 className={classNames(
                   'absolute z-10 rounded shadow min-w-max max-h-[50vh]',
-                  'overflow-y-auto dropdown-scroll',
+                  'overflow-y-auto dropdown-scroll overflow-x-hidden',
                   display === 'fit' && 'w-fit',
                   display === 'block' && 'w-full',
                   direction === 'up' && 'bottom-[45px]',
@@ -155,7 +155,7 @@ export function Dropdown({
                   {items.map((item) => (
                     <li
                       className={classNames(
-                        'py-2 px-4 min-w-max cursor-pointer pr-2',
+                        'py-2 px-4 min-w-max cursor-pointer',
                         variant == 'primary' &&
                           'hover:bg-background-50 text-background-20 hover:text-background-10',
                         variant == 'secondary' &&
