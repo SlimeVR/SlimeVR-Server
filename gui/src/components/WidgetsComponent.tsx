@@ -10,17 +10,19 @@ import { useConfig } from '../hooks/config';
 import {
   ResetType,
   RpcMessage,
+  SettingsRequestT,
   SettingsResponseT,
   StatusData,
 } from 'solarxr-protocol';
-import { useMemo, useState } from 'react';
+import { useEffect, useMemo, useState } from 'react';
 import { parseStatusToLocale, useStatusContext } from '../hooks/status-system';
 import { useWebsocketAPI } from '../hooks/websocket-api';
 import { useAppContext } from '../hooks/app';
+import { ClearMountingButton } from './ClearMountingButton';
 
 export function WidgetsComponent() {
   const { config } = useConfig();
-  const { useRPCPacket } = useWebsocketAPI();
+  const { useRPCPacket, sendRPCPacket } = useWebsocketAPI();
   const [driftCompensationEnabled, setDriftCompensationEnabled] =
     useState(false);
   const { trackers } = useAppContext();
@@ -30,6 +32,10 @@ export function WidgetsComponent() {
     () => Object.values(statuses).filter((status) => !status.prioritized),
     [statuses]
   );
+
+  useEffect(() => {
+    sendRPCPacket(RpcMessage.SettingsRequest, new SettingsRequestT());
+  }, []);
 
   useRPCPacket(RpcMessage.SettingsResponse, (settings: SettingsResponseT) => {
     if (settings.driftCompensation != null)
@@ -44,6 +50,7 @@ export function WidgetsComponent() {
         {config?.debug && (
           <ResetButton type={ResetType.Mounting} variant="big"></ResetButton>
         )}
+        {config?.debug && <ClearMountingButton></ClearMountingButton>}
         <BVHButton></BVHButton>
         <TrackingPauseButton></TrackingPauseButton>
         {driftCompensationEnabled && (
@@ -53,7 +60,7 @@ export function WidgetsComponent() {
       <div className="w-full">
         <OverlayWidget></OverlayWidget>
       </div>
-      <div className="w-full flex flex-col max-h-[33%] gap-3 overflow-y-auto mb-2">
+      <div className="w-full flex flex-col min-h-[12%] max-h-[33%] gap-3 overflow-y-auto mb-2">
         {unprioritizedStatuses.map((status) => (
           <Localized
             id={`status_system-${StatusData[status.dataType]}`}

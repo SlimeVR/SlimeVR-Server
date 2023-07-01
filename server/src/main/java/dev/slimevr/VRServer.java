@@ -368,6 +368,10 @@ public class VRServer extends Thread {
 		queueTask(() -> humanPoseManager.resetTrackersMounting(resetSourceName));
 	}
 
+	public void clearTrackersMounting(String resetSourceName) {
+		queueTask(() -> humanPoseManager.clearTrackersMounting(resetSourceName));
+	}
+
 	public void scheduleResetTrackersFull(String resetSourceName, long delay) {
 		TimerTask resetTask = new TimerTask() {
 			public void run() {
