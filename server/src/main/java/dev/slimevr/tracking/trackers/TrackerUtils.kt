@@ -3,17 +3,53 @@ package dev.slimevr.tracking.trackers
 object TrackerUtils {
 
 	/**
+	 * Finds a suitable tracker for use in the SlimeVR skeleton
+	 * in allTrackers matching the position.
+	 * This won't return disconnected, errored or internal trackers.
+	 *
+	 * @return A tracker for use in the SlimeVR skeleton.
+	 */
+	@JvmStatic
+	fun getTrackerForSkeleton(
+		allTrackers: List<Tracker>,
+		position: TrackerPosition,
+	): Tracker? {
+		if (position == TrackerPosition.HEAD) {
+			// Prioritize non-computed
+			val head = getNonInternalNonComputedTrackerForBodyPosition(allTrackers, position)
+			if (head != null) return head
+		}
+		return getNonInternalTrackerForBodyPosition(allTrackers, position)
+	}
+
+	/**
 	 * Finds the first non-internal tracker from allTrackers
 	 * matching the position, that is not DISCONNECTED
 	 *
 	 * @return A non-internal tracker
 	 */
-	@JvmStatic
-	fun getNonInternalTrackerForBodyPosition(
+	private fun getNonInternalTrackerForBodyPosition(
 		allTrackers: List<Tracker>,
 		position: TrackerPosition,
 	): Tracker? = allTrackers.firstOrNull {
 		it.trackerPosition === position &&
+			!it.isInternal &&
+			it.status != TrackerStatus.DISCONNECTED &&
+			it.status != TrackerStatus.ERROR
+	}
+
+	/**
+	 * Finds the first non-internal non-computed tracker from allTrackers
+	 * matching the position, that is not DISCONNECTED.
+	 *
+	 * @return A non-internal non-computed tracker
+	 */
+	private fun getNonInternalNonComputedTrackerForBodyPosition(
+		allTrackers: List<Tracker>,
+		position: TrackerPosition,
+	): Tracker? = allTrackers.firstOrNull {
+		it.trackerPosition === position &&
+			!it.isComputed &&
 			!it.isInternal &&
 			it.status != TrackerStatus.DISCONNECTED &&
 			it.status != TrackerStatus.ERROR

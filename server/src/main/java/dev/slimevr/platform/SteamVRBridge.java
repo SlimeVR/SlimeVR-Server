@@ -4,13 +4,10 @@ import dev.slimevr.Main;
 import dev.slimevr.VRServer;
 import dev.slimevr.bridge.ProtobufBridge;
 import dev.slimevr.bridge.ProtobufMessages;
-import dev.slimevr.bridge.ProtobufMessages.*;
+import dev.slimevr.bridge.ProtobufMessages.Battery;
+import dev.slimevr.bridge.ProtobufMessages.ProtobufMessage;
 import dev.slimevr.config.BridgeConfig;
-import dev.slimevr.tracking.trackers.Device;
-import dev.slimevr.tracking.trackers.Tracker;
-import dev.slimevr.tracking.trackers.TrackerPosition;
-import dev.slimevr.tracking.trackers.TrackerUtils;
-import dev.slimevr.tracking.trackers.TrackerRole;
+import dev.slimevr.tracking.trackers.*;
 import dev.slimevr.util.ann.VRServerThread;
 import solarxr_protocol.rpc.StatusData;
 import solarxr_protocol.rpc.StatusDataUnion;
@@ -164,14 +161,14 @@ public abstract class SteamVRBridge extends ProtobufBridge implements Runnable {
 		// make up that role are set to primaryTracker, secondaryTracker, and
 		// tertiaryTracker respectively.
 		primaryTracker = TrackerUtils
-			.getNonInternalTrackerForBodyPosition(
+			.getTrackerForSkeleton(
 				allTrackers,
 				TrackerPosition.getByTrackerRole(role)
 			);
 		switch (role) {
 			case WAIST:
 				secondaryTracker = TrackerUtils
-					.getNonInternalTrackerForBodyPosition(
+					.getTrackerForSkeleton(
 						allTrackers,
 						TrackerPosition.WAIST
 					);
@@ -179,7 +176,7 @@ public abstract class SteamVRBridge extends ProtobufBridge implements Runnable {
 				// its battery level alongside waist and hip.
 				if (!(config.getBridgeTrackerRole(TrackerRole.CHEST, true))) {
 					tertiaryTracker = TrackerUtils
-						.getNonInternalTrackerForBodyPosition(
+						.getTrackerForSkeleton(
 							allTrackers,
 							TrackerPosition.CHEST
 						);
@@ -190,12 +187,12 @@ public abstract class SteamVRBridge extends ProtobufBridge implements Runnable {
 				// waist and hip battery level with the chest.
 				if (!(config.getBridgeTrackerRole(TrackerRole.WAIST, true))) {
 					secondaryTracker = TrackerUtils
-						.getNonInternalTrackerForBodyPosition(
+						.getTrackerForSkeleton(
 							allTrackers,
 							TrackerPosition.HIP
 						);
 					tertiaryTracker = TrackerUtils
-						.getNonInternalTrackerForBodyPosition(
+						.getTrackerForSkeleton(
 							allTrackers,
 							TrackerPosition.WAIST
 						);
@@ -203,7 +200,7 @@ public abstract class SteamVRBridge extends ProtobufBridge implements Runnable {
 				break;
 			case LEFT_FOOT:
 				secondaryTracker = TrackerUtils
-					.getNonInternalTrackerForBodyPosition(
+					.getTrackerForSkeleton(
 						allTrackers,
 						TrackerPosition.LEFT_LOWER_LEG
 					);
@@ -211,7 +208,7 @@ public abstract class SteamVRBridge extends ProtobufBridge implements Runnable {
 				// aggregate its battery level with left ankle and left foot.
 				if (!(config.getBridgeTrackerRole(TrackerRole.LEFT_KNEE, true))) {
 					tertiaryTracker = TrackerUtils
-						.getNonInternalTrackerForBodyPosition(
+						.getTrackerForSkeleton(
 							allTrackers,
 							TrackerPosition.LEFT_UPPER_LEG
 						);
@@ -219,7 +216,7 @@ public abstract class SteamVRBridge extends ProtobufBridge implements Runnable {
 				break;
 			case RIGHT_FOOT:
 				secondaryTracker = TrackerUtils
-					.getNonInternalTrackerForBodyPosition(
+					.getTrackerForSkeleton(
 						allTrackers,
 						TrackerPosition.RIGHT_LOWER_LEG
 					);
@@ -227,7 +224,7 @@ public abstract class SteamVRBridge extends ProtobufBridge implements Runnable {
 				// aggregate its battery level with right ankle and right foot.
 				if (!(config.getBridgeTrackerRole(TrackerRole.RIGHT_KNEE, true))) {
 					tertiaryTracker = TrackerUtils
-						.getNonInternalTrackerForBodyPosition(
+						.getTrackerForSkeleton(
 							allTrackers,
 							TrackerPosition.RIGHT_UPPER_LEG
 						);
@@ -235,24 +232,24 @@ public abstract class SteamVRBridge extends ProtobufBridge implements Runnable {
 				break;
 			case LEFT_ELBOW:
 				secondaryTracker = TrackerUtils
-					.getNonInternalTrackerForBodyPosition(
+					.getTrackerForSkeleton(
 						allTrackers,
 						TrackerPosition.LEFT_LOWER_ARM
 					);
 				tertiaryTracker = TrackerUtils
-					.getNonInternalTrackerForBodyPosition(
+					.getTrackerForSkeleton(
 						allTrackers,
 						TrackerPosition.LEFT_SHOULDER
 					);
 				break;
 			case RIGHT_ELBOW:
 				secondaryTracker = TrackerUtils
-					.getNonInternalTrackerForBodyPosition(
+					.getTrackerForSkeleton(
 						allTrackers,
 						TrackerPosition.RIGHT_LOWER_ARM
 					);
 				tertiaryTracker = TrackerUtils
-					.getNonInternalTrackerForBodyPosition(
+					.getTrackerForSkeleton(
 						allTrackers,
 						TrackerPosition.RIGHT_SHOULDER
 					);

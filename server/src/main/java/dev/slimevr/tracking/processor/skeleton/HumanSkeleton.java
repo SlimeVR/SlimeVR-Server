@@ -375,99 +375,98 @@ public class HumanSkeleton {
 
 	// #region Set trackers inputs
 	protected void setTrackersFromList(List<Tracker> trackers) {
-		// TODO prioritize IMU over Computed for head
 		headTracker = TrackerUtils
-			.getNonInternalTrackerForBodyPosition(
+			.getTrackerForSkeleton(
 				trackers,
 				TrackerPosition.HEAD
 			);
 		neckTracker = TrackerUtils
-			.getNonInternalTrackerForBodyPosition(
+			.getTrackerForSkeleton(
 				trackers,
 				TrackerPosition.NECK
 			);
 		chestTracker = TrackerUtils
-			.getNonInternalTrackerForBodyPosition(
+			.getTrackerForSkeleton(
 				trackers,
 				TrackerPosition.CHEST
 			);
 		waistTracker = TrackerUtils
-			.getNonInternalTrackerForBodyPosition(
+			.getTrackerForSkeleton(
 				trackers,
 				TrackerPosition.WAIST
 			);
 		hipTracker = TrackerUtils
-			.getNonInternalTrackerForBodyPosition(
+			.getTrackerForSkeleton(
 				trackers,
 				TrackerPosition.HIP
 			);
 		leftUpperLegTracker = TrackerUtils
-			.getNonInternalTrackerForBodyPosition(
+			.getTrackerForSkeleton(
 				trackers,
 				TrackerPosition.LEFT_UPPER_LEG
 			);
 		leftLowerLegTracker = TrackerUtils
-			.getNonInternalTrackerForBodyPosition(
+			.getTrackerForSkeleton(
 				trackers,
 				TrackerPosition.LEFT_LOWER_LEG
 			);
 		leftFootTracker = TrackerUtils
-			.getNonInternalTrackerForBodyPosition(
+			.getTrackerForSkeleton(
 				trackers,
 				TrackerPosition.LEFT_FOOT
 			);
 		rightUpperLegTracker = TrackerUtils
-			.getNonInternalTrackerForBodyPosition(
+			.getTrackerForSkeleton(
 				trackers,
 				TrackerPosition.RIGHT_UPPER_LEG
 			);
 		rightLowerLegTracker = TrackerUtils
-			.getNonInternalTrackerForBodyPosition(
+			.getTrackerForSkeleton(
 				trackers,
 				TrackerPosition.RIGHT_LOWER_LEG
 			);
 		rightFootTracker = TrackerUtils
-			.getNonInternalTrackerForBodyPosition(
+			.getTrackerForSkeleton(
 				trackers,
 				TrackerPosition.RIGHT_FOOT
 			);
 		leftLowerArmTracker = TrackerUtils
-			.getNonInternalTrackerForBodyPosition(
+			.getTrackerForSkeleton(
 				trackers,
 				TrackerPosition.LEFT_LOWER_ARM
 			);
 		rightLowerArmTracker = TrackerUtils
-			.getNonInternalTrackerForBodyPosition(
+			.getTrackerForSkeleton(
 				trackers,
 				TrackerPosition.RIGHT_LOWER_ARM
 			);
 		leftUpperArmTracker = TrackerUtils
-			.getNonInternalTrackerForBodyPosition(
+			.getTrackerForSkeleton(
 				trackers,
 				TrackerPosition.LEFT_UPPER_ARM
 			);
 		rightUpperArmTracker = TrackerUtils
-			.getNonInternalTrackerForBodyPosition(
+			.getTrackerForSkeleton(
 				trackers,
 				TrackerPosition.RIGHT_UPPER_ARM
 			);
 		leftHandTracker = TrackerUtils
-			.getNonInternalTrackerForBodyPosition(
+			.getTrackerForSkeleton(
 				trackers,
 				TrackerPosition.LEFT_HAND
 			);
 		rightHandTracker = TrackerUtils
-			.getNonInternalTrackerForBodyPosition(
+			.getTrackerForSkeleton(
 				trackers,
 				TrackerPosition.RIGHT_HAND
 			);
 		leftShoulderTracker = TrackerUtils
-			.getNonInternalTrackerForBodyPosition(
+			.getTrackerForSkeleton(
 				trackers,
 				TrackerPosition.LEFT_SHOULDER
 			);
 		rightShoulderTracker = TrackerUtils
-			.getNonInternalTrackerForBodyPosition(
+			.getTrackerForSkeleton(
 				trackers,
 				TrackerPosition.RIGHT_SHOULDER
 			);
