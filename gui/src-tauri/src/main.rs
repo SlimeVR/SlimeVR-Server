@@ -191,7 +191,6 @@ fn main() -> Result<()> {
 				let app_handle = app.app_handle();
 				tauri::async_runtime::spawn(async move {
 					use tauri::api::process::CommandEvent;
-					thread::sleep(Duration::from_millis(200));
 
 					while let Some(cmd_event) = recv.recv().await {
 						let emit_me = match cmd_event {
