@@ -12,11 +12,18 @@ import {
 import { useWebsocketAPI } from './websocket-api';
 import { useLocalization } from '@fluent/react';
 
+export enum ProcessStatus {
+  PENDING,
+  FULFILLED,
+  REJECTED,
+}
+
 export interface AutoboneContext {
-  hasRecording: boolean;
-  hasCalibration: boolean;
+  hasRecording: ProcessStatus;
+  hasCalibration: ProcessStatus;
   progress: number;
   bodyParts: { bone: SkeletonBone; label: string; value: number }[] | null;
+  eta: number;
   startRecording: () => void;
   startProcessing: () => void;
   applyProcessing: () => void;
@@ -25,9 +32,10 @@ export interface AutoboneContext {
 export function useProvideAutobone(): AutoboneContext {
   const { l10n } = useLocalization();
   const { useRPCPacket, sendRPCPacket } = useWebsocketAPI();
-  const [hasRecording, setHasRecording] = useState(false);
-  const [hasCalibration, setHasCalibration] = useState(false);
+  const [hasRecording, setHasRecording] = useState(ProcessStatus.PENDING);
+  const [hasCalibration, setHasCalibration] = useState(ProcessStatus.PENDING);
   const [progress, setProgress] = useState(0);
+  const [eta, setEta] = useState(-1);
   const [skeletonParts, setSkeletonParts] = useState<SkeletonPartT[] | null>(null);
 
   const bodyParts = useMemo(() => {
@@ -47,6 +55,7 @@ export function useProvideAutobone(): AutoboneContext {
     // }
 
     setProgress(0);
+    setEta(-1);
 
     const processRequest = new AutoBoneProcessRequestT();
     processRequest.processType = processType;
@@ -55,14 +64,14 @@ export function useProvideAutobone(): AutoboneContext {
   };
 
   const startRecording = () => {
-    setHasCalibration(false);
-    setHasRecording(false);
+    setHasCalibration(ProcessStatus.PENDING);
+    setHasRecording(ProcessStatus.PENDING);
     setSkeletonParts(null);
     startProcess(AutoBoneProcessType.RECORD);
   };
 
   const startProcessing = () => {
-    setHasCalibration(false);
+    setHasCalibration(ProcessStatus.PENDING);
     startProcess(AutoBoneProcessType.PROCESS);
   };
 
@@ -86,21 +95,23 @@ export function useProvideAutobone(): AutoboneContext {
           setProgress(data.current / data.total);
         }
 
+        setEta(data.eta);
+
         if (data.completed) {
-          console.log(
-            'Process ',
-            AutoBoneProcessType[data.processType],
-            ' has completed'
-          );
+          console.log(`Process ${AutoBoneProcessType[data.processType]} has completed`);
 
           switch (data.processType) {
             case AutoBoneProcessType.RECORD:
-              setHasRecording(data.success);
+              setHasRecording(
+                data.success ? ProcessStatus.FULFILLED : ProcessStatus.REJECTED
+              );
               startProcessing();
               break;
 
             case AutoBoneProcessType.PROCESS:
-              setHasCalibration(data.success);
+              setHasCalibration(
+                data.success ? ProcessStatus.FULFILLED : ProcessStatus.REJECTED
+              );
               break;
 
             // case AutoBoneProcessType.APPLY:
@@ -137,6 +148,7 @@ export function useProvideAutobone(): AutoboneContext {
     hasCalibration,
     hasRecording,
     progress,
+    eta,
     bodyParts,
     startProcessing,
     startRecording,

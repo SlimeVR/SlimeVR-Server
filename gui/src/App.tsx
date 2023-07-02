@@ -53,7 +53,8 @@ import { VRModePage } from './components/vr-mode/VRModePage';
 
 export const GH_REPO = 'SlimeVR/SlimeVR-Server';
 export const VersionContext = createContext('');
-export const DOCS_SITE = 'https://docs.slimevr.dev/';
+export const DOCS_SITE = 'https://docs.slimevr.dev';
+export const SLIMEVR_DISCORD = 'https://discord.gg/slimevr';
 
 function Layout() {
   const { loading } = useConfig();
