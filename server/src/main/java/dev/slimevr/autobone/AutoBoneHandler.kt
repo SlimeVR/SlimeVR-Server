@@ -114,7 +114,7 @@ class AutoBoneHandler(private val server: VRServer) {
 							AutoBoneProcessType.RECORD,
 							current = progress.frame.toLong(),
 							total = progress.totalFrames.toLong(),
-							eta = progress.frame * totalTime / progress.totalFrames
+							eta = totalTime - (progress.frame * totalTime / progress.totalFrames)
 						)
 					}
 				val frames = framesFuture.get()
