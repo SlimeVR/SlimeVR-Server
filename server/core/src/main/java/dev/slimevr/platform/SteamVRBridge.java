@@ -3,13 +3,10 @@ package dev.slimevr.platform;
 import dev.slimevr.VRServer;
 import dev.slimevr.bridge.ProtobufBridge;
 import dev.slimevr.bridge.ProtobufMessages;
-import dev.slimevr.bridge.ProtobufMessages.*;
+import dev.slimevr.bridge.ProtobufMessages.Battery;
+import dev.slimevr.bridge.ProtobufMessages.ProtobufMessage;
 import dev.slimevr.config.BridgeConfig;
-import dev.slimevr.tracking.trackers.Device;
-import dev.slimevr.tracking.trackers.Tracker;
-import dev.slimevr.tracking.trackers.TrackerPosition;
-import dev.slimevr.tracking.trackers.TrackerUtils;
-import dev.slimevr.tracking.trackers.TrackerRole;
+import dev.slimevr.tracking.trackers.*;
 import dev.slimevr.util.ann.VRServerThread;
 import solarxr_protocol.rpc.StatusData;
 import solarxr_protocol.rpc.StatusDataUnion;
@@ -178,7 +175,7 @@ public abstract class SteamVRBridge extends ProtobufBridge implements Runnable {
 					tertiaryTracker = TrackerUtils
 						.getNonInternalTrackerForBodyPosition(
 							allTrackers,
-							TrackerPosition.CHEST
+							TrackerPosition.UPPER_CHEST
 						);
 				}
 				break;
