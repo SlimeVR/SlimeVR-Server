@@ -31,7 +31,7 @@ serde = { version = "1", features = ["derive"] }
 tauri = { version = "1.4", features = ["devtools", "dialog", "dialog-save", "fs-all", "os-all", "path-all", "shell-execute", "shell-open", "window-close", "window-maximize", "window-minimize", "window-set-resizable", "window-set-size", "window-set-title", "window-start-dragging", "window-unmaximize", "window-unminimize"] }
 tauri-runtime = "0.14"
 flexi_logger = "0.25"
-log-panics = { version = "2", features = ["with-backtrace"]}
+log-panics = { version = "2", features = ["with-backtrace"] }
 log = "0.4"
 clap = { version = "4.0.29", features = ["derive"] }
 clap-verbosity-flag = "2"
