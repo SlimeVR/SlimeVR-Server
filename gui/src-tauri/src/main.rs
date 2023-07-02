@@ -55,9 +55,11 @@ fn warning(msg: String) {
 }
 
 fn main() -> Result<()> {
+	log_panics::init();
+	let hook = panic::take_hook();
 	// Make an error dialog box when panicking
-	panic::set_hook(Box::new(|panic_info| {
-		println!("{}", panic_info);
+	panic::set_hook(Box::new(move |panic_info| {
+		hook(panic_info);
 		show_error(&panic_info.to_string());
 	}));
 
@@ -116,7 +118,7 @@ fn main() -> Result<()> {
 			if confirm {
 				open::that("https://docs.slimevr.dev/server-setup/installing-and-connecting.html#install-the-latest-slimevr-installer").unwrap();
 			}
-			return;
+			return Ok(());
 		}
 	}
 
