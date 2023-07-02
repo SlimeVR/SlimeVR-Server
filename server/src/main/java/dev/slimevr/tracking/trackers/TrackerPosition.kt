@@ -15,7 +15,8 @@ enum class TrackerPosition(
 ) {
 	HEAD("body:head", TrackerRole.HMD, BodyPart.HEAD),
 	NECK("body:neck", TrackerRole.NECK, BodyPart.NECK),
-	CHEST("body:chest", TrackerRole.CHEST, BodyPart.CHEST),
+	UPPER_CHEST("body:upper_chest", TrackerRole.CHEST, BodyPart.UPPER_CHEST),
+	CHEST("body:chest", null, BodyPart.CHEST),
 	WAIST("body:waist", null, BodyPart.WAIST),
 	HIP("body:hip", TrackerRole.WAIST, BodyPart.HIP),
 	LEFT_UPPER_LEG("body:left_upper_leg", TrackerRole.LEFT_KNEE, BodyPart.LEFT_UPPER_LEG),
