@@ -5,8 +5,6 @@ object TrackerUtils {
 	/**
 	 * Finds the first non-internal tracker from allTrackers
 	 * matching the position, that is not DISCONNECTED
-	 * These can be IMU (physical/SlimeVR) trackers, trackers from SteamVR (Vive),
-	 * or even trackers from third party applications (joycons)
 	 *
 	 * @return A non-internal tracker
 	 */
@@ -22,20 +20,18 @@ object TrackerUtils {
 	}
 
 	/**
-	 * Finds the first non-internal Computed tracker from allTrackers
+	 * Finds the first non-internal and non-imu tracker from allTrackers
 	 * matching the position, that is not DISCONNECTED.
-	 * This should return the HMD or any SteamVR tracker assigned
-	 * to the head position.
 	 *
-	 * @return A non-internal computed tracker (e.g. HMD)
+	 * @return A non-internal non-imu tracker
 	 */
 	@JvmStatic
-	fun getNonInternalComputedTrackerForBodyPosition(
+	fun getNonInternalNonImuTrackerForBodyPosition(
 		allTrackers: List<Tracker>,
 		position: TrackerPosition,
 	): Tracker? = allTrackers.firstOrNull {
 		it.trackerPosition === position &&
-			it.isComputed &&
+			!it.isImu() &&
 			!it.isInternal &&
 			it.status != TrackerStatus.DISCONNECTED &&
 			it.status != TrackerStatus.ERROR

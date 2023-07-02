@@ -88,7 +88,7 @@ class TrackerResetsHandler(val tracker: Tracker) {
 	 */
 	fun refreshDriftCompensationEnabled() {
 		driftCompensationEnabled = compensateDrift && allowDriftCompensation &&
-			TrackerUtils.getNonInternalComputedTrackerForBodyPosition(vrServer.allTrackers, TrackerPosition.HEAD) != null
+			TrackerUtils.getNonInternalNonImuTrackerForBodyPosition(vrServer.allTrackers, TrackerPosition.HEAD) != null
 	}
 
 	/**
