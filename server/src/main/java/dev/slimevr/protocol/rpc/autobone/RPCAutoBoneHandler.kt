@@ -79,13 +79,6 @@ class RPCAutoBoneHandler(
 				processType.id
 			)
 
-			message?.let {
-				AutoBoneProcessStatusResponse.addMessage(
-					fbb,
-					fbb.createString(message)
-				)
-			}
-
 			AutoBoneProcessStatusResponse.addCurrent(fbb, current)
 			AutoBoneProcessStatusResponse.addTotal(fbb, total)
 			AutoBoneProcessStatusResponse.addEta(fbb, eta)

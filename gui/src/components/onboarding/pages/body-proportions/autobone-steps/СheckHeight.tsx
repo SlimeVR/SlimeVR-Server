@@ -48,10 +48,7 @@ export function CheckHeight({
     [currentLocales]
   );
 
-  useEffect(
-    () => setValue('hmdHeight', watchHeight - hmdDiff),
-    [watchHeight]
-  );
+  useEffect(() => setValue('hmdHeight', watchHeight - hmdDiff), [watchHeight]);
 
   useRPCPacket(
     RpcMessage.HeightResponse,

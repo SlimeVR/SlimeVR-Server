@@ -10,7 +10,7 @@ export function NumberSelector({
   min,
   max,
   step,
-  disabled = false
+  disabled = false,
 }: {
   label: string;
   valueLabelFormat?: (value: number) => string;
@@ -19,7 +19,7 @@ export function NumberSelector({
   min: number;
   max: number;
   step: number | ((value: number, add: boolean) => number);
-  disabled?: boolean
+  disabled?: boolean;
 }) {
   const stepFn =
     typeof step === 'function'

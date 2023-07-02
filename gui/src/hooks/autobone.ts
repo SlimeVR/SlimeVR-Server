@@ -87,10 +87,6 @@ export function useProvideAutobone(): AutoboneContext {
       }
 
       if (data.processType) {
-        if (data.message) {
-          console.log(AutoBoneProcessType[data.processType], ': ', data.message);
-        }
-
         if (data.total > 0 && data.current >= 0) {
           setProgress(data.current / data.total);
         }
