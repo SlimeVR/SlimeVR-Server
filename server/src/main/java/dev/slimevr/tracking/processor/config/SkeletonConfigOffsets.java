@@ -7,6 +7,7 @@ import java.util.Map;
 
 
 public enum SkeletonConfigOffsets {
+	// Note: GUI uses this order to sort (not ID)
 	HEAD(
 		1,
 		"headShift",
@@ -19,10 +20,16 @@ public enum SkeletonConfigOffsets {
 		0.1f,
 		new BoneType[] { BoneType.NECK }
 	),
+	UPPER_CHEST(
+		21,
+		"upperChestLength",
+		0.16f,
+		new BoneType[] { BoneType.UPPER_CHEST, BoneType.CHEST_TRACKER }
+	),
 	CHEST(
 		3,
 		"chestLength",
-		0.32f,
+		0.16f,
 		new BoneType[] { BoneType.CHEST, BoneType.CHEST_TRACKER }
 	),
 	CHEST_OFFSET(
@@ -150,7 +157,7 @@ public enum SkeletonConfigOffsets {
 		float defaultValue,
 		BoneType[] affectedOffsets
 	) {
-		this.id = id;
+		this.id = id; // id of SkeletonBone in solarxr
 		this.configKey = configKey;
 
 		this.defaultValue = defaultValue;

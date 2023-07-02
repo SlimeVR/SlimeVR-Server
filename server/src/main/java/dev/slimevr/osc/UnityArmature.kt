@@ -74,8 +74,6 @@ class UnityArmature(localRot: Boolean) {
 	}
 
 	fun updateNodes() {
-		// Set the upper chest's rotation to the chest's
-		upperChestNode.localTransform.rotation = chestNode.localTransform.rotation
 		// Update the root node
 		hipNode.update()
 	}

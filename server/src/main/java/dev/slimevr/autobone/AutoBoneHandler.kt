@@ -321,13 +321,15 @@ class AutoBoneHandler(private val server: VRServer) {
 				skeletonConfigManagerBuffer.setOffsets(autoBoneResults.configValues)
 				val neckLength = skeletonConfigManagerBuffer
 					.getOffset(SkeletonConfigOffsets.NECK)
+				val upperChestLength = skeletonConfigManagerBuffer
+					.getOffset(SkeletonConfigOffsets.UPPER_CHEST)
 				val chestLength = skeletonConfigManagerBuffer
 					.getOffset(SkeletonConfigOffsets.CHEST)
 				val waistLength = skeletonConfigManagerBuffer
 					.getOffset(SkeletonConfigOffsets.WAIST)
 				val hipLength = skeletonConfigManagerBuffer
 					.getOffset(SkeletonConfigOffsets.HIP)
-				val torsoLength = chestLength + waistLength + hipLength
+				val torsoLength = upperChestLength + chestLength + waistLength + hipLength
 				val hipWidth = skeletonConfigManagerBuffer
 					.getOffset(SkeletonConfigOffsets.HIPS_WIDTH)
 				val legLength = (
@@ -339,7 +341,7 @@ class AutoBoneHandler(private val server: VRServer) {
 				val lowerLegLength = skeletonConfigManagerBuffer
 					.getOffset(SkeletonConfigOffsets.LOWER_LEG)
 				val neckTorso = neckLength / torsoLength
-				val chestTorso = chestLength / torsoLength
+				val chestTorso = (upperChestLength + chestLength) / torsoLength
 				val torsoWaist = hipWidth / torsoLength
 				val legTorso = legLength / torsoLength
 				val legBody = legLength / (torsoLength + neckLength)
